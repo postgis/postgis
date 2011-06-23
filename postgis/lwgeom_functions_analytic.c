@@ -1251,36 +1251,35 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
 		if ( in_ring == -1 ) /* outside the exterior ring */
 		{
 			LWDEBUG(3, "point_in_multipolygon_rtree: outside exterior ring.");
-			continue;
 		}
-                if ( in_ring == 0 ) /* on the boundary */
-                {
+         	else if ( in_ring == 0 ) /* on the boundary */
+		{
 			LWDEBUGF(3, "point_in_multipolygon_rtree: on edge of exterior ring %d", p);
                         return 0;
-                }
+		} else {
+                	result = in_ring;
 
-                result = in_ring;
-
-                for(r=1; r<ringCounts[p]; r++)
-                {
-                        in_ring = point_in_ring_rtree(root[i+r], &pt);
-		        LWDEBUGF(4, "point_in_multipolygon_rtree: interior ring (%d), point_in_ring returned %d", r, in_ring);
-                        if (in_ring == 1) /* inside a hole => outside the polygon */
-                        {
-                                LWDEBUGF(3, "point_in_multipolygon_rtree: within hole %d of exterior ring %d", r, p);
-                                result = -1;
-                                break;
-                        }
-                        if (in_ring == 0) /* on the edge of a hole */
-                        {
-			        LWDEBUGF(3, "point_in_multipolygon_rtree: on edge of hole %d of exterior ring %d", r, p);
-                                return 0;
-		        }
-                }
-                /* if we have a positive result, we can short-circuit and return it */
-                if ( result != -1)
-                {
-                        return result;
+	                for(r=1; r<ringCounts[p]; r++)
+     	                {
+                        	in_ring = point_in_ring_rtree(root[i+r], &pt);
+		        	LWDEBUGF(4, "point_in_multipolygon_rtree: interior ring (%d), point_in_ring returned %d", r, in_ring);
+                        	if (in_ring == 1) /* inside a hole => outside the polygon */
+                        	{
+                                	LWDEBUGF(3, "point_in_multipolygon_rtree: within hole %d of exterior ring %d", r, p);
+                                	result = -1;
+                                	break;
+                        	}
+                        	if (in_ring == 0) /* on the edge of a hole */
+                        	{
+			        	LWDEBUGF(3, "point_in_multipolygon_rtree: on edge of hole %d of exterior ring %d", r, p);
+                                	return 0;
+		        	}
+                	}
+                	/* if we have a positive result, we can short-circuit and return it */
+                	if ( result != -1)
+                	{
+                        	return result;
+                	}
                 }
                 /* increment the index by the total number of rings in the sub-poly */
                 /* we do this here in case we short-cutted out of the poly before looking at all the rings */ 
