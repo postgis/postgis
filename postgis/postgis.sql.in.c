@@ -4794,27 +4794,66 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 ---------------------------------------------------------------
 -- GEOMETRY_COLUMNS view
 ---------------------------------------------------------------
-CREATE OR REPLACE VIEW geometry_columns_v AS
-	SELECT
-		current_database() AS f_table_catalog, 
-		n.nspname AS f_table_schema, 
-		c.relname AS f_table_name, 
-		a.attname AS f_geometry_column,
-		postgis_typmod_dims(a.atttypmod) AS coord_dimension,
-		postgis_typmod_srid(a.atttypmod) AS srid,
-		postgis_typmod_type(a.atttypmod) AS type
-	FROM 
-		pg_class c, 
-		pg_attribute a, 
-		pg_type t, 
-		pg_namespace n
-	WHERE t.typname = 'geometry'
-        AND a.attisdropped = false
-        AND a.atttypid = t.oid
-        AND a.attrelid = c.oid
-        AND c.relnamespace = n.oid
-        AND ( c.relkind = 'r' OR c.relkind = 'v' )
-        AND NOT pg_is_other_temp_schema(c.relnamespace);
+CREATE FUNCTION postgis_constraint_srid(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
+$$
+SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+		 WHERE n.nspname = $1
+		 AND c.relname = $2
+		 AND a.attname = $3
+		 AND a.attrelid = c.oid
+		 AND s.connamespace = n.oid
+		 AND s.conrelid = c.oid
+		 AND a.attnum = ANY (s.conkey)
+		 AND s.consrc LIKE '%srid(% = %';
+$$
+LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
+$$
+SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
+		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+		 WHERE n.nspname = $1
+		 AND c.relname = $2
+		 AND a.attname = $3
+		 AND a.attrelid = c.oid
+		 AND s.connamespace = n.oid
+		 AND s.conrelid = c.oid
+		 AND a.attnum = ANY (s.conkey)
+		 AND s.consrc LIKE '%geometrytype(% = %';
+$$
+LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION postgis_constraint_dims(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
+$$
+SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
+		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+		 WHERE n.nspname = $1
+		 AND c.relname = $2
+		 AND a.attname = $3
+		 AND a.attrelid = c.oid
+		 AND s.connamespace = n.oid
+		 AND s.conrelid = c.oid
+		 AND a.attnum = ANY (s.conkey)
+		 AND s.consrc LIKE '%ndims(% = %';
+$$
+LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE VIEW geometry_columns_v AS 
+ SELECT current_database()::varchar(256) AS f_table_catalog, 
+    n.nspname::varchar(256) AS f_table_schema, 
+    c.relname::varchar(256) AS f_table_name, 
+    a.attname::varchar(256) AS f_geometry_column, 
+    COALESCE(NULLIF(postgis_typmod_dims(a.atttypmod),2), postgis_constraint_dims(n.nspname, c.relname, a.attname), 2) AS coord_dimension, 
+    COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod),0), postgis_constraint_srid(n.nspname, c.relname, a.attname), 0) AS srid, 
+    COALESCE(NULLIF(postgis_typmod_type(a.atttypmod), 'Geometry'), postgis_constraint_type(n.nspname, c.relname, a.attname), 'Geometry')::varchar(30) AS type
+   FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n
+  WHERE t.typname = 'geometry'::name 
+    AND a.attisdropped = false 
+    AND a.atttypid = t.oid 
+    AND a.attrelid = c.oid 
+    AND c.relnamespace = n.oid 
+    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char") AND NOT pg_is_other_temp_schema(c.relnamespace);
 #endif
 
 
