@@ -2680,8 +2680,8 @@ t
 				spatial reference system of the geometry. Geography: Units are in meters and also acts as a Perimeter function for areal geogs.</para>
 
 			<para>Currently for geometry this is an alias for ST_Length2D, but this may change to support higher dimensions.</para>
-			<note><para>Currently applying this to a MULTI/POLYGON of type geography will give you the perimeter of the POLYGON/MULTIPOLYGON.  This is not the 
-			case with the geometry implementation.</para></note>
+			<warning><para>Changed: 2.0.0 Breaking change -- in prior versions applying this to a MULTI/POLYGON of type geography would give you the perimeter of the POLYGON/MULTIPOLYGON.  In 2.0.0 
+			this was changed to return 0 to be in line with geometry behavior.  Please use ST_Perimeter if you want the perimeter of a polygon</para></warning>
 			<note><para>For geography measurement defaults spheroid measurement.  To use the faster less accurate sphere use ST_Length(gg,false);</para></note>
 			<para>&sfs_compliant; s2.1.5.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4</para>
