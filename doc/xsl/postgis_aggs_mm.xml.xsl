@@ -499,35 +499,37 @@
 					</xsl:for-each>
 				</itemizedlist>
 				
-				<para id="NewFunctions_2_0_Changed">The functions given below are PostGIS functions that have changed behavior in PostGIS 2.0.</para>
-				<note><para>Most deprecated functions have been removed.  These are functions that haven't been documented since 1.2
-					or some internal functions that were never documented.  If you are using a function that you don't see documented,
-					it's probably deprecated, about to be deprecated, or internal and should be avoided.  If you have applications or tools
-					that rely on deprecated functions, please refer to <link linked="legacy_faq" /> for more details.</para></note>
-				<note><para>The arguments hasnodata was replaced with exclude_nodata_value which has the same meaning as the older hasnodata but clearer in purpose.</para></note>
-				<itemizedlist>
-				<!-- Pull out the purpose section for each ref entry   -->
-					<xsl:for-each select='//refentry'>
-						<xsl:sort select="@id"/>
-						<xsl:variable name="refid">
-							<xsl:value-of select="@id" />
-						</xsl:variable>
-						
-						<xsl:variable name="refname">
-							<xsl:value-of select="refnamediv/refname" />
-						</xsl:variable>
-				<!-- For each section if there is note about enhanced in this version -->
-							<xsl:for-each select="refsection">
-								<xsl:for-each select="para | */para">
-									<xsl:choose>
-										<xsl:when test="contains(.,'Changed: 2.0')">
-											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
-										</xsl:when>
-									</xsl:choose>
-								</xsl:for-each>
-							</xsl:for-each>
-					</xsl:for-each>
-				</itemizedlist>
+				<sect3 id="NewFunctions_2_0_Changed">
+                    <para>The functions given below are PostGIS functions that have changed behavior in PostGIS 2.0.</para>
+                    <note><para>Most deprecated functions have been removed.  These are functions that haven't been documented since 1.2
+                        or some internal functions that were never documented.  If you are using a function that you don't see documented,
+                        it's probably deprecated, about to be deprecated, or internal and should be avoided.  If you have applications or tools
+                        that rely on deprecated functions, please refer to <link linked="legacy_faq" /> for more details.</para></note>
+                    <note><para>The arguments hasnodata was replaced with exclude_nodata_value which has the same meaning as the older hasnodata but clearer in purpose.</para></note>
+                    <itemizedlist>
+                    <!-- Pull out the purpose section for each ref entry   -->
+                        <xsl:for-each select='//refentry'>
+                            <xsl:sort select="@id"/>
+                            <xsl:variable name="refid">
+                                <xsl:value-of select="@id" />
+                            </xsl:variable>
+                            
+                            <xsl:variable name="refname">
+                                <xsl:value-of select="refnamediv/refname" />
+                            </xsl:variable>
+                    <!-- For each section if there is note about enhanced in this version -->
+                                <xsl:for-each select="refsection">
+                                    <xsl:for-each select="para | */para">
+                                        <xsl:choose>
+                                            <xsl:when test="contains(.,'Changed: 2.0')">
+                                                <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
+                                            </xsl:when>
+                                        </xsl:choose>
+                                    </xsl:for-each>
+                                </xsl:for-each>
+                        </xsl:for-each>
+                    </itemizedlist>
+				</sect3>
 			</sect2>
 			<sect2 id="NewFunctions_1_5">
 				<title>PostGIS Functions new, behavior changed, or enhanced in 1.5</title>
