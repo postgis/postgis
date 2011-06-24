@@ -189,17 +189,17 @@ GDALResampleAlg
 rt_util_gdal_resample_alg(const char *algname) {
 	if (!algname || !strlen(algname))	return GRA_NearestNeighbour;
 
-	if (strcmp(algname, "NearestNeighbour") == 0)
+	if (strcmp(algname, "NEARESTNEIGHBOUR") == 0)
 		return GRA_NearestNeighbour;
-	else if (strcmp(algname, "NearestNeighbor") == 0)
+	else if (strcmp(algname, "NEARESTNEIGHBOR") == 0)
 		return GRA_NearestNeighbour;
-	else if (strcmp(algname, "Bilinear") == 0)
+	else if (strcmp(algname, "BILINEAR") == 0)
 		return GRA_Bilinear;
-	else if (strcmp(algname, "Cubic") == 0)
-		return GRA_Cubic;
-	else if (strcmp(algname, "CubicSpline") == 0)
+	else if (strcmp(algname, "CUBICSPLINE") == 0)
 		return GRA_CubicSpline;
-	else if (strcmp(algname, "Lanczos") == 0)
+	else if (strcmp(algname, "CUBIC") == 0)
+		return GRA_Cubic;
+	else if (strcmp(algname, "LANCZOS") == 0)
 		return GRA_Lanczos;
 
 	return GRA_NearestNeighbour;

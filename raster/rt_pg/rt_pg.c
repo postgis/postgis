@@ -4910,7 +4910,7 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	/* resampling algorithm */
 	if (!PG_ARGISNULL(2)) {
 		algtext = PG_GETARG_TEXT_P(2);
-		algchar = text_to_cstring(algtext);
+		algchar = trim(strtoupper(text_to_cstring(algtext)));
 		alg = rt_util_gdal_resample_alg(algchar);
 	}
 	POSTGIS_RT_DEBUGF(4, "Resampling algorithm: %d", alg);
