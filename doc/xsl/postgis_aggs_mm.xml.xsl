@@ -497,10 +497,11 @@
 								</xsl:for-each>
 							</xsl:for-each>
 					</xsl:for-each>
-				</itemizedlist>
-				
-				<sect3 id="NewFunctions_2_0_Changed">
-                    <para>The functions given below are PostGIS functions that have changed behavior in PostGIS 2.0.</para>
+				</itemizedlist>				
+			</sect2>
+			<sect2 id="NewFunctions_2_0_Changed">
+			       <title>PostGIS Functions changed behavior in 2.0</title>
+			       <para>The functions given below are PostGIS functions that have changed behavior in PostGIS 2.0 and may require application changes.</para>
                     <note><para>Most deprecated functions have been removed.  These are functions that haven't been documented since 1.2
                         or some internal functions that were never documented.  If you are using a function that you don't see documented,
                         it's probably deprecated, about to be deprecated, or internal and should be avoided.  If you have applications or tools
@@ -529,8 +530,7 @@
                                 </xsl:for-each>
                         </xsl:for-each>
                     </itemizedlist>
-				</sect3>
-			</sect2>
+             </sect2>
 			<sect2 id="NewFunctions_1_5">
 				<title>PostGIS Functions new, behavior changed, or enhanced in 1.5</title>
 				<para>The functions given below are PostGIS functions that were introduced or enhanced in this minor release.</para>
