@@ -463,7 +463,7 @@
 
 				<!-- For each section if there is note about availability in this version -->
 							<xsl:for-each select="refsection">
-								<xsl:for-each select="para">
+								<xsl:for-each select="para | */para">
 									<xsl:choose>
 										<xsl:when test="contains(.,'Availability: 2.0')">
 											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
@@ -488,7 +488,7 @@
 						</xsl:variable>
 				<!-- For each section if there is note about enhanced in this version -->
 							<xsl:for-each select="refsection">
-								<xsl:for-each select="para">
+								<xsl:for-each select="para | */para">
 									<xsl:choose>
 										<xsl:when test="contains(.,'Enhanced: 2.0')">
 											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
@@ -518,7 +518,7 @@
 						</xsl:variable>
 				<!-- For each section if there is note about enhanced in this version -->
 							<xsl:for-each select="refsection">
-								<xsl:for-each select="para">
+								<xsl:for-each select="para | */para">
 									<xsl:choose>
 										<xsl:when test="contains(.,'Changed: 2.0')">
 											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
