@@ -8,7 +8,7 @@
 -- Use case example an address at the intersection of 3 streets: SELECT pprint_addy(r.addy[1]) As st1, pprint_addy(r.addy[2]) As st2, pprint_addy(r.addy[3]) As st3, array_to_string(r.street, ',') FROM reverse_geocode(ST_GeomFromText('POINT(-71.057811 42.358274)',4269)) As r;
 --set search_path=tiger,public;
 
-CREATE OR REPLACE FUNCTION reverse_geocode(IN pt geometry, IN include_strnum_range boolean, OUT intpt geometry[], OUT addy norm_addy[], OUT street character varying[])
+CREATE OR REPLACE FUNCTION reverse_geocode(IN pt geometry, IN include_strnum_range boolean DEFAULT false, OUT intpt geometry[], OUT addy norm_addy[], OUT street character varying[])
   RETURNS record AS
 $$
 DECLARE
@@ -24,6 +24,7 @@ DECLARE
   var_stmt text;
   var_debug boolean = false;
 BEGIN
+	--$Id$
 	IF pt IS NULL THEN
 		RETURN;
 	ELSE
