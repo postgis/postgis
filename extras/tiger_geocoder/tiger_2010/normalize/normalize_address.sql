@@ -369,7 +369,7 @@ BEGIN
       SELECT INTO rec abbrev,
           substring(result.location, '(?i)^(' || name || ')' || ws) as value
           FROM direction_lookup 
-            WHERE replace(result.location,',') ILIKE '%' || replace(name,',') || '%' AND texticregexeq(result.location, '(?i)^'
+            WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)^'
           || name || ws) ORDER BY length(name) desc LIMIT 1;
       IF rec.value IS NOT NULL THEN
         postDir := rec.value;
