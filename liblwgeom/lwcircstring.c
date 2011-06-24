@@ -17,6 +17,7 @@
 #include <string.h>
 #include <math.h>
 #include "liblwgeom.h"
+#include "lwalgorithm.h"
 
 BOX3D *lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3);
 void printLWCIRCSTRING(LWCIRCSTRING *curve);
@@ -258,6 +259,96 @@ lwcircstring_serialize_size(LWCIRCSTRING *curve)
 }
 
 
+static inline int signum(double n)
+{
+	if( n < 0 ) return -1;
+	if( n > 0 ) return 1;
+	return 0;
+}
+
+/*
+static int lwcircle_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, GBOX *gbox)
+*/
+BOX3D *
+lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
+{
+	POINT2D xmin, ymin, xmax, ymax;
+	POINT4D *center = NULL;
+	int p2_side = 0;
+	double radius = 0.0;
+
+	LWDEBUG(2, "lwcircle_compute_box3d called.");
+
+	radius = lwcircle_center(p1, p2, p3, &center);
+	BOX3D *box = lwalloc(sizeof(BOX3D));
+	
+	/* Negative radius signals straight line, p1/p2/p3 are colinear */
+	if (radius < 0.0)
+	{
+		if ( center ) lwfree(center);
+        box->xmin = FP_MIN(p1->x, p3->x);
+        box->ymin = FP_MIN(p1->y, p3->y);
+        box->zmin = FP_MIN(p1->z, p3->z);
+        box->xmax = FP_MAX(p1->x, p3->x);
+        box->ymax = FP_MAX(p1->y, p3->y);
+        box->zmax = FP_MAX(p1->z, p3->z);
+	    return box;
+	}
+	
+	/* Matched start/end points imply circle */
+	if ( p1->x == p3->x && p1->y == p3->y )
+	{
+		box->xmin = center->x - radius;
+		box->ymin = center->y - radius;
+		box->zmin = FP_MIN(p1->z,p2->z);
+		box->xmax = center->x + radius;
+		box->ymax = center->y + radius;
+		box->zmax = FP_MAX(p1->z,p2->z);
+		lwfree(center);
+		return box;
+	}
+
+	/* First approximation, bounds of start/end points */
+    box->xmin = FP_MIN(p1->x, p3->x);
+    box->ymin = FP_MIN(p1->y, p3->y);
+    box->zmin = FP_MIN(p1->z, p3->z);
+    box->xmax = FP_MAX(p1->x, p3->x);
+    box->ymax = FP_MAX(p1->y, p3->y);
+    box->zmax = FP_MAX(p1->z, p3->z);
+
+	/* Create points for the possible extrema */
+	xmin.x = center->x - radius;
+	xmin.y = center->y;
+	ymin.x = center->x;
+	ymin.y = center->y - radius;
+	xmax.x = center->x + radius;
+	xmax.y = center->y;
+	ymax.x = center->x;
+	ymax.y = center->y + radius;
+	
+	/* Divide the circle into two parts, one on each side of a line
+	   joining p1 and p3. The circle extrema on the same side of that line
+	   as p2 is on, are also the extrema of the bbox. */
+	
+	p2_side = signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2));
+
+	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &xmin)) )
+		box->xmin = xmin.x;
+
+	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &ymin)) )
+		box->ymin = ymin.y;
+
+	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &xmax)) )
+		box->xmax = xmax.x;
+
+	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &ymax)) )
+		box->ymax = ymax.y;
+
+	lwfree(center);
+	return box;
+}
+
+#if 0
 BOX3D *
 lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 {
@@ -479,6 +570,7 @@ lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3)
 
 	return box;
 }
+#endif
 
 /*
  * Find bounding box (standard one)
