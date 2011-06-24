@@ -330,6 +330,20 @@ BEGIN
       END IF;
       reducedStreet := substring(fullStreet, '^(.*)' || ws || '+'
                     || streetType);
+      -- the post direction might be portion of fullStreet after reducedStreet
+      tempString := trim(regexp_replace(fullStreet,  reducedStreet ||  ws || streetType,'')); 
+      IF tempString > '' THEN
+          tempString := abbrev FROM direction_lookup WHERE
+             tempString ILIKE '%' || name || '%'  
+            ORDER BY length(name) DESC LIMIT 1;
+          IF tempString IS NOT NULL THEN
+            result.postDirAbbrev = tempString;
+          END IF;
+      END IF;
+    END IF;
+    
+    IF debug_flag THEN
+        raise notice '% reduced street: %', clock_timestamp(), reducedStreet;
     END IF;
 
     -- The pre direction should be at the beginning of the fullStreet string.
@@ -355,7 +369,7 @@ BEGIN
       SELECT INTO rec abbrev,
           substring(result.location, '(?i)^(' || name || ')' || ws) as value
           FROM direction_lookup 
-            WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)^'
+            WHERE replace(result.location,',') ILIKE '%' || replace(name,',') || '%' AND texticregexeq(result.location, '(?i)^'
           || name || ws) ORDER BY length(name) desc LIMIT 1;
       IF rec.value IS NOT NULL THEN
         postDir := rec.value;
@@ -371,32 +385,47 @@ BEGIN
         SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup WHERE
             upper(postDir) = upper(name);
         result.location := NULL;
+        
+        IF debug_flag THEN
+            RAISE NOTICE '% postDir exact match: %', clock_timestamp(), result.postDirAbbrev;
+        END IF;
       ELSE
         -- postDirection is not equal location, but may be contained in it.
         SELECT INTO tempString substring(result.location, '(?i)(^' || name
             || ')' || ws) FROM direction_lookup WHERE
             result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws)
             ORDER BY length(name) desc LIMIT 1;
-        IF tempString IS NOT NULL THEN
-          postDir := tempString;
-          SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
-              WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws) ORDER BY length(name) DESC LIMIT 1;
-          result.location := substring(result.location, '^' || postDir || ws || '+(.*)');
+            
+        IF debug_flag THEN
+            RAISE NOTICE '% location trying to extract postdir: %', clock_timestamp(), result.location;
         END IF;
+        IF tempString IS NOT NULL THEN
+            postDir := tempString;
+            SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
+              WHERE result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws) ORDER BY length(name) DESC LIMIT 1;
+              result.location := substring(result.location, '^' || postDir || ws || '+(.*)');
+            IF debug_flag THEN
+                  RAISE NOTICE '% postDir: %', clock_timestamp(), result.postDirAbbrev;
+            END IF;
+        END IF;
+        
       END IF;
     ELSE
       -- internal is not null, but is not at the end of the location string
       -- look for post direction before the internal address
-      SELECT INTO tempString substring(fullStreet, '(?i)' || streetType
+        IF debug_flag THEN
+            RAISE NOTICE '%fullstreet before extract postdir: %', clock_timestamp(), fullStreet;
+        END IF;
+        SELECT INTO tempString substring(fullStreet, '(?i)' || streetType
           || ws || '+(' || name || ')' || ws || '+' || result.internal)
           FROM direction_lookup 
           WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)'
           || ws || name || ws || '+' || result.internal) ORDER BY length(name) desc LIMIT 1;
-      IF tempString IS NOT NULL THEN
-        postDir := tempString;
-        SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
-            WHERE texticregexeq(fullStreet, '(?i)' || ws || name || ws);
-      END IF;
+        IF tempString IS NOT NULL THEN
+            postDir := tempString;
+            SELECT INTO result.postDirAbbrev abbrev FROM direction_lookup
+                WHERE texticregexeq(fullStreet, '(?i)' || ws || name || ws);
+        END IF;
     END IF;
   ELSE
   -- No street type was found
