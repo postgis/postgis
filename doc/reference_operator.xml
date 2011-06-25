@@ -5,7 +5,7 @@
 		  <refnamediv>
 			<refname>&amp;&amp;</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box intersects B's.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if A's 2D bounding box intersects B's 2D bounding box.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
