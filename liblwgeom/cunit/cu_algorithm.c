@@ -16,7 +16,6 @@
 #include "CUnit/Basic.h"
 
 #include "liblwgeom_internal.h"
-#include "lwalgorithm.h"
 #include "cu_tester.h"
 
 /*

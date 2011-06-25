@@ -11,8 +11,17 @@
  **********************************************************************/
 
 #include "liblwgeom_internal.h"
-#include "lwalgorithm.h"
 
+
+/**
+* Returns -1 if n < 0.0 and 1 if n > 0.0
+*/
+int signum(double n)
+{
+	if( n < 0 ) return -1;
+	if( n > 0 ) return 1;
+	return 0;
+}
 
 /**
 ** lw_segment_side()

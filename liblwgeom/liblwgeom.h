@@ -1775,6 +1775,39 @@ extern LWLINE *lwline_segmentize2d(LWLINE *line, double dist);
 extern LWPOLY *lwpoly_segmentize2d(LWPOLY *line, double dist);
 extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 
+/**
+* Calculate the GeoHash (http://geohash.org) string for a geometry. Caller must free.
+*/
+char *lwgeom_geohash(const LWGEOM *lwgeom, int precision);
+
+
+/**
+* The return values of lwline_crossing_direction()
+*/
+enum CG_LINE_CROSS_TYPE {
+    LINE_NO_CROSS = 0,
+    LINE_CROSS_LEFT = -1,
+    LINE_CROSS_RIGHT = 1,
+    LINE_MULTICROSS_END_LEFT = -2,
+    LINE_MULTICROSS_END_RIGHT = 2,
+    LINE_MULTICROSS_END_SAME_FIRST_LEFT = -3,
+    LINE_MULTICROSS_END_SAME_FIRST_RIGHT = 3
+};
+
+/**
+* Given two lines, characterize how (and if) they cross each other
+*/
+int lwline_crossing_direction(LWLINE *l1, LWLINE *l2);
+
+/**
+* Clip a line based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+*/
+LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double from, double to);
+
+/**
+* Clip a multi-line based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+*/
+LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, double from, double to);
 
 /*
  * Export functions

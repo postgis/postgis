@@ -21,6 +21,8 @@
 #include <ieeefp.h>
 #endif
 
+#ifndef LIBLWGEOM_INTERNAL
+#define LIBLWGEOM_INTERNAL
 
 /**
 * PI
@@ -113,6 +115,57 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist);
 LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist);
 
 /*
+* Computational geometry
+*/
+int signum(double n);
+
+/*
+* The possible ways a pair of segments can interact. Returned by lw_segment_intersects 
+*/
+enum CG_SEGMENT_INTERSECTION_TYPE {
+    SEG_ERROR = -1,
+    SEG_NO_INTERSECTION = 0,
+    SEG_COLINEAR = 1,
+    SEG_CROSS_LEFT = 2,
+    SEG_CROSS_RIGHT = 3,
+    SEG_TOUCH_LEFT = 4,
+    SEG_TOUCH_RIGHT = 5
+};
+
+/*
+* Do the segments intersect? How?
+*/
+int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2);
+
+/*
+* What side of the line formed by p1 and p2 does q fall? 
+* Returns < 0 for left and > 0 for right and 0 for co-linearity
+*/
+double lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q);
+
+/* 
+* Do the envelopes of the the segments intersect?
+*/
+int lw_segment_envelope_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2);
+
+/*
+* Get/Set an enumeratoed ordinate. (x,y,z,m)
+*/
+double lwpoint_get_ordinate(const POINT4D *p, int ordinate);
+void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value);
+
+/* 
+* Generate an interpolated coordinate p given an interpolation value and ordinate to apply it to
+*/
+int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int ndims, int ordinate, double interpolation_value);
+
+/*
+* Geohash
+*/
+int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds);
+char *geohash_point(double longitude, double latitude, int precision);
+
+/*
 * Point comparisons
 */
 int p4d_same(POINT4D p1, POINT4D p2);
@@ -158,3 +211,4 @@ void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
 char ptarray_isccw(const POINTARRAY *pa);
 
 
+#endif /* LIBLWGEOM_INTERNAL */

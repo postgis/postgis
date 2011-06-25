@@ -10,7 +10,6 @@
  **********************************************************************/
 
 #include "liblwgeom_internal.h"
-#include "lwalgorithm.h"
 #include <math.h>
 #include <stdlib.h>
 
@@ -336,13 +335,6 @@ size_t gbox_serialized_size(uchar flags)
 		return 2 * FLAGS_NDIMS(flags) * sizeof(float);
 }
 
-
-static inline int signum(double n)
-{
-	if( n < 0 ) return -1;
-	if( n > 0 ) return 1;
-	return 0;
-}
 
 /* ********************************************************************************
 ** Compute cartesian bounding GBOX boxes from LWGEOM.

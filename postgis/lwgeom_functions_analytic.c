@@ -16,7 +16,6 @@
 #include "lwgeom_pg.h"
 #include "math.h"
 #include "lwgeom_rtree.h"
-#include "lwalgorithm.h"
 #include "lwgeom_functions_analytic.h"
 
 

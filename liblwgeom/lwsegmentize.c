@@ -158,10 +158,10 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 	uchar *pt;
 
 	POINT4D center;
-	double radius = 0.0,
-	                sweep = 0.0,
-	                        angle = 0.0,
-	                                increment = 0.0;
+	double radius = 0.0;
+	double sweep = 0.0;
+	double angle = 0.0;
+	double increment = 0.0;
 	double a1, a2, a3, i;
 
 	LWDEBUG(2, "lwcircle_segmentize called. ");
@@ -281,6 +281,86 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 
 	return result;
 }
+
+POINTARRAY *
+lwcircle_segmentize2(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
+{
+	POINT4D center;
+	POINT4D pt, pt_start, pt_end;
+	int p2_side = 0;
+	double radius; /* Arc radius */
+	double increment; /* Angle per segment */
+	double a1, a2, a3, angle;
+	POINTARRAY *pa;
+	int result;
+
+	LWDEBUG(2, "lwcircle_calculate_gbox called.");
+
+	radius = lwcircle_center(p1, p2, p3, &center);
+	
+	/* Negative radius signals straight line, p1/p2/p3 are colinear */
+	if (radius < 0.0)
+	{
+		/* TODO return straight line from p1 to p3 */
+	    return NULL;
+	}
+		
+	/* Matched start/end points imply circle */
+	if ( p1->x == p3->x && p1->y == p3->y )
+	{
+		/* TODO return circle */
+	    return NULL;
+	}
+
+	/* The side of the p1/p3 line that p2 falls on dictates the sweep  
+	   direction from p1 to p3. */
+	p2_side = signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2));
+	increment = fabs(M_PI_2 / perQuad);
+	
+	/* Angles of each point that defines the arc section */
+	a1 = atan2(p1->y - center.y, p1->x - center.x);
+	a2 = atan2(p2->y - center.y, p2->x - center.x);
+	a3 = atan2(p3->y - center.y, p3->x - center.x);
+
+	/* p2 on left side => Clockwise sweep */
+	if ( p2_side == -1 ) 
+	{
+		/* Swap a1/a3 so we can use an anti-clockwise (positive) sweep */
+		double tmp = a3;
+		a3 = a1;
+		a1 = tmp;
+		pt_start = *p3;
+		pt_end = *p1;
+	}
+	else 
+	{
+		pt_start = *p1;
+		pt_end = *p3;
+	}
+	
+	/* Adjust a3 up so we can increment from a1 to a3 cleanly */
+	if ( a3 < a1 )
+	{
+		a3 += 2.0 * M_PI;
+	}
+	
+	/* Initialize point array */
+	pa = ptarray_construct_empty(0, 0, 32);
+	/* Add in start point */
+	result = ptarray_append_point(pa, &pt_start, LW_FALSE);
+	/* Sweep from a1 to a3 */
+	for( angle = a1 + increment; angle < a3; angle += increment )
+	{
+		pt.x = center.x + radius * cos(angle);
+		pt.y = center.y + radius * sin(angle);
+		result = ptarray_append_point(pa, &pt, LW_FALSE);
+	}
+	/* Add in the end point */
+	result = ptarray_append_point(pa, &pt_end, LW_FALSE);
+	
+	return pa;
+}
+
 
 LWLINE *
 lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
