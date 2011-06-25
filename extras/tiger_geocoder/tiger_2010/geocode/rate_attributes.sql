@@ -5,16 +5,18 @@
 -- non-null.  The other eight values are handled by the other rate_attributes
 -- function, so it's requirements must also be met.
 -- changed: 2010-10-18 Regina Obe - all references to verbose to var_verbose since causes compile errors in 9.0
-CREATE OR REPLACE FUNCTION rate_attributes(VARCHAR, VARCHAR, VARCHAR, VARCHAR,
-    VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) RETURNS INTEGER
+-- changed: 2011-06-25 revise to use real named args and fix direction rating typo
+CREATE OR REPLACE FUNCTION rate_attributes(dirpA VARCHAR, dirpB VARCHAR, streetNameA VARCHAR, streetNameB VARCHAR,
+    streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR,  locationA VARCHAR, locationB VARCHAR) RETURNS INTEGER
 AS $_$
 DECLARE
+--$Id$
   result INTEGER := 0;
   locationWeight INTEGER := 14;
   var_verbose BOOLEAN := FALSE;
 BEGIN
-  IF $9 IS NOT NULL AND $10 IS NOT NULL THEN
-    result := levenshtein_ignore_case($9, $10);
+  IF locationA IS NOT NULL AND locationB IS NOT NULL THEN
+    result := levenshtein_ignore_case(locationA, locationB);
   ELSE
     IF var_verbose THEN
       RAISE NOTICE 'rate_attributes() - Location names cannot be null!';
@@ -31,8 +33,8 @@ $_$ LANGUAGE plpgsql IMMUTABLE;
 -- Rates the street based on the given attributes.  Only streetNames are
 -- required.  If any others are null (either A or B) they are treated as
 -- empty strings.
-CREATE OR REPLACE FUNCTION rate_attributes(VARCHAR, VARCHAR, VARCHAR, VARCHAR,
-    VARCHAR, VARCHAR, VARCHAR, VARCHAR) RETURNS INTEGER
+CREATE OR REPLACE FUNCTION rate_attributes(dirpA VARCHAR, dirpB VARCHAR, streetNameA VARCHAR, streetNameB VARCHAR,
+    streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR) RETURNS INTEGER
 AS $_$
 DECLARE
   result INTEGER := 0;
@@ -43,7 +45,7 @@ DECLARE
 BEGIN
   result := result + levenshtein_ignore_case(cull_null($1), cull_null($2)) *
       directionWeight;
-  IF $3 IS NOT NULL AND $4 IS NOT NULL THEN
+  IF streetNameA IS NOT NULL AND streetNameB IS NOT NULL THEN
     result := result + levenshtein_ignore_case($3, $4) * nameWeight;
   ELSE
     IF var_verbose THEN
@@ -51,9 +53,9 @@ BEGIN
     END IF;
     RETURN NULL;
   END IF;
-  result := result + levenshtein_ignore_case(cull_null($5), cull_null($6)) *
+  result := result + levenshtein_ignore_case(cull_null(streetTypeA), cull_null(streetTypeB)) *
       typeWeight;
-  result := result + levenshtein_ignore_case(cull_null($7), cull_null($7)) *
+  result := result + levenshtein_ignore_case(cull_null(dirsA), cull_null(dirsB)) *
       directionWeight;
   return result;
 END;
