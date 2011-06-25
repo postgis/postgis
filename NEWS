@@ -1,4 +1,12 @@
 
+PostGIS 1.5.4
+2011/xx/xx
+
+ - This is a bug fix release, addressing issues that have been
+   filed since the 1.5.3 release.
+ - Bug Fixes
+
+
 PostGIS 1.5.3
 2011/06/25
 
