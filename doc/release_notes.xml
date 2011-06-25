@@ -42,7 +42,7 @@
           <para>ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_ConcaveHull (Regina Obe and Leo Hsu / Paragon Corporation)</para>
           <para>ST_UnaryUnion (Sandro Santilli / Faunalia for RT-SIGTA)</para>
-           <para>ST_AsX3D (Regina Obe / Arrival 3D)</para>
+          <para>ST_AsX3D (Regina Obe / Arrival 3D)</para>
         </simplesect>
         <simplesect>
         	<title>Enhancements</title>
@@ -51,16 +51,19 @@
         	<para>pgsql2shp conversion from predefined list (Loic Dachary)</para>
         	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>  
         	<para>Extras - upgraded tiger_geocoder from using old TIGER format to use new TIGER shp and file structure format (Stephen Frost)</para>
-        	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data and addition of reverse geocoder function. (Regina Obe, Leo Hsu)</para>  
+        	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data and addition of reverse geocoder function, various bug fixes, speed improvements, loading routines. (Regina Obe, Leo Hsu / Paragon Corporation)</para>
+        	<para>Overall Documentation proofreading and corrections. (Kasif Rasul)</para>
         </simplesect>
       </sect1>
      
       <sect1>
         <title>Release 1.5.3</title>
-        <para>Release date: 2011/06/xx</para>
+        <para>Release date: 2011/06/25</para>
         <para>This is a bug fix release, addressing issues that have been filed since the 1.5.2 release.</para>
         <simplesect>
           <title>Bug Fixes</title>
+                <para>#1056, produce correct bboxes for arc geometries, fixes index errors
+                    (Paul Ramsey)</para>
 			   <para>#1007, ST_IsValid crash fix requires GEOS 3.3.0+ or 3.2.3+ 
 				 (Sandro Santilli, reported by Birgit Laggner)</para>
 			   <para>#940, support for PostgreSQL 9.1 beta 1 

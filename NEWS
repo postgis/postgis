@@ -64,13 +64,16 @@ PostGIS 2.0.0
     addition of reverse geocoder function,
     include in Official documentation. 
     (Regina Obe, Leo Hsu / Paragon Corporation)
+  - Overall Documentation proofreading and corrections. (Kasif Rasul)
 
 PostGIS 1.5.3
-2011/06/XX
+2011/06/25
 
  - This is a bug fix release, addressing issues that have been
    filed since the 1.5.2 release.
  - Bug Fixes
+   - #1056, produce correct bboxes for arc geometries, fixes index errors
+         (Paul Ramsey)
    - #1007, ST_IsValid crash - fix requires GEOS 3.3.0+ or 3.2.3+ 
    	 (Sandro Santilli, reported by Birgit Laggner)
    - #940, support for PostgreSQL 9.1 beta 1 
