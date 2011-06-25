@@ -82,11 +82,41 @@ INSERT INTO raster_transform_dst VALUES (
 		rast,
 		1003310, 'NearestNeighbor', 0.0
 	) FROM raster_transform_src)
+), (
+	(SELECT ST_Transform(
+		rast,
+		1003310, 'NearestNeighbor', 0.125, 500, 500
+	) FROM raster_transform_src)
+), (
+	(SELECT ST_Transform(
+		rast,
+		1003309, 'Cubic', 0., 100, 100
+	) FROM raster_transform_src)
+), (
+	(SELECT ST_Transform(
+		rast,
+		1003310, 'CubicSpline', 0., 2000, 2000
+	) FROM raster_transform_src)
+), (
+	(SELECT ST_Transform(
+		rast,
+		1003310, 'Lanczos', 0.1, 1500, 1500
+	) FROM raster_transform_src)
+), (
+	(SELECT ST_Transform(
+		rast,
+		1003310, 500, 500
+	) FROM raster_transform_src)
+), (
+	(SELECT ST_Transform(
+		rast,
+		1003310, 750
+	) FROM raster_transform_src)
 );
 SELECT
 	srid,
-	width > 0,
-	height > 0,
+	width,
+	height,
 	numbands,
 	round(scalex::numeric, 3),
 	round(scaley::numeric, 3),

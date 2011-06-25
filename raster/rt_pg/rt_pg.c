@@ -4867,6 +4867,9 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	int dst_srid = -1;
 	char *dst_srs = NULL;
 	double max_err = 0.125;
+	double scale[2] = {0};
+	double *scale_x = NULL;
+	double *scale_y = NULL;
 
 	int sqllen = 0;
 	char *sql = NULL;
@@ -4990,9 +4993,21 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	SPI_finish();
 	pfree(sql);
 
+	/* scale x */
+	if (!PG_ARGISNULL(4)) {
+		scale[0] = PG_GETARG_FLOAT8(4);
+		scale_x = &scale[0];
+	}
+
+	/* scale y */
+	if (!PG_ARGISNULL(5)) {
+		scale[1] = PG_GETARG_FLOAT8(5);
+		scale_y = &scale[1];
+	}
+
 	rast = rt_raster_gdal_warp(raster, src_srs,
 		dst_srs,
-		NULL, NULL,
+		scale_x, scale_y,
 		NULL, NULL,
 		NULL, NULL,
 		alg, max_err);

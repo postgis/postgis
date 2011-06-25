@@ -1457,10 +1457,20 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 -----------------------------------------------------------------------
 -- ST_Transform
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0)
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_transform'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS $$ SELECT st_transform($1, $2, $5, $6, $3, $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS $$ SELECT st_transform($1, $2, $4, $5, $3, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- MapAlgebra

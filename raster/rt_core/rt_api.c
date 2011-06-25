@@ -6118,12 +6118,27 @@ rt_raster rt_raster_gdal_warp(
 	/* user-defined scale */
 	if (
 		(NULL != scale_x) &&
-		(NULL != scale_y) &&
-		(fabs(*scale_x - 0.0) > FLT_EPSILON) &&
-		(fabs(*scale_y - 0.0) > FLT_EPSILON)
+		(fabs(*scale_x - 0.0) > FLT_EPSILON)
 	) {
 		pix_x = fabs(*scale_x);
+	}
+	if (
+		(NULL != scale_y) &&
+		(fabs(*scale_y - 0.0) > FLT_EPSILON)
+	) {
 		pix_y = fabs(*scale_y);
+	}
+
+	/* process user-defined scale */
+	if (
+		(fabs(pix_x - 0.0) > FLT_EPSILON) ||
+		(fabs(pix_y - 0.0) > FLT_EPSILON)
+	) {
+		/* axis scale is zero, use suggested scale for axis */
+		if (fabs(pix_x - 0.0) < FLT_EPSILON)
+			pix_x = fabs(dst_gt[1]);
+		if (fabs(pix_y - 0.0) < FLT_EPSILON)
+			pix_y = fabs(dst_gt[5]);
 
 		/* upper-left corner not provided by user */
 		if (
@@ -6158,6 +6173,25 @@ rt_raster rt_raster_gdal_warp(
 		dst_gt[0], dst_gt[1], dst_gt[2], dst_gt[3], dst_gt[4], dst_gt[5]);
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
 		width, height);
+
+	if (
+		(fabs(width - 0.0) < FLT_EPSILON) ||
+		(fabs(height - 0.0) < FLT_EPSILON)
+	) {
+		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero\n", width, height);
+
+		GDALClose(src_ds);
+
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		rtdealloc(transform_opts);
+
+		GDALDeregisterDriver(dst_drv);
+		GDALDestroyDriver(dst_drv);
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+
+		return NULL;
+	}
 
 	/* create dst dataset */
 	dst_ds = GDALCreate(dst_drv, "", width, height, 0, GDT_Byte, dst_options);
