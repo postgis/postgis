@@ -734,7 +734,7 @@ char *geohash_point(double longitude, double latitude, int precision)
 	return geohash;
 }
 
-int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
+int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 {
 	double minx, miny, maxx, maxy;
 	double latmax, latmin, lonmax, lonmin;
@@ -821,32 +821,33 @@ int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds)
 */
 char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 {
-	BOX3D *bbox = NULL;
-	BOX3D precision_bounds;
+	GBOX gbox;
+	GBOX gbox_bounds;
 	double lat, lon;
+	int result;
 
-	bbox = lwgeom_compute_box3d(lwgeom);
-	if ( ! bbox ) return NULL;
+	gbox_init(&gbox);
+	gbox_init(&gbox_bounds);
+
+	result = lwgeom_calculate_gbox(lwgeom, &gbox);	
+	if ( result == LW_FAILURE ) return NULL;
 
 	/* Return error if we are being fed something outside our working bounds */
-	if ( bbox->xmin < -180 || bbox->ymin < -90 || bbox->xmax > 180 || bbox->ymax > 90 )
+	if ( gbox.xmin < -180 || gbox.ymin < -90 || gbox.xmax > 180 || gbox.ymax > 90 )
 	{
 		lwerror("Geohash requires inputs in decimal degrees.");
-		lwfree(bbox);
 		return NULL;
 	}
 
 	/* What is the center of our geometry bounds? We'll use that to
 	** approximate location. */
-	lon = bbox->xmin + (bbox->xmax - bbox->xmin) / 2;
-	lat = bbox->ymin + (bbox->ymax - bbox->ymin) / 2;
+	lon = gbox.xmin + (gbox.xmax - gbox.xmin) / 2;
+	lat = gbox.ymin + (gbox.ymax - gbox.ymin) / 2;
 
 	if ( precision <= 0 )
 	{
-		precision = lwgeom_geohash_precision(*bbox, &precision_bounds);
+		precision = lwgeom_geohash_precision(gbox, &gbox_bounds);
 	}
-
-	lwfree(bbox);
 
 	/*
 	** Return the geohash of the center, with a precision determined by the

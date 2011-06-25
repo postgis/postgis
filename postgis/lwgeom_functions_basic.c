@@ -1639,22 +1639,31 @@ PG_FUNCTION_INFO_V1(LWGEOM_to_BOX);
 Datum LWGEOM_to_BOX(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pg_lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	BOX3D *box3d = NULL;
-	BOX *result = (BOX *)lwalloc(sizeof(BOX));
 	LWGEOM *lwgeom = pglwgeom_deserialize(pg_lwgeom);
+	GBOX gbox;
+	int result;
+	BOX *out = NULL;
+	
+	/* Zero out flags */
+	gbox_init(&gbox);
 
-	/* Calculate the BOX3D of the geometry */
-	box3d = lwgeom_compute_box3d(lwgeom);
+	/* Calculate the GBOX of the geometry */
+	result = lwgeom_calculate_gbox(lwgeom, &gbox);
+
+	/* Clean up memory */
 	lwfree(lwgeom);
 	PG_FREE_IF_COPY(pg_lwgeom, 0);
-    
-	if ( box3d )
-	{
-	    box3d_to_box_p(box3d, result);
-	    lwfree(box3d);
-    	PG_RETURN_POINTER(result);
-	}
-    PG_RETURN_NULL();
+	
+	/* Null on failure */
+	if ( ! result )
+		PG_RETURN_NULL();
+	
+    out = lwalloc(sizeof(BOX));
+	out->low.x = gbox.xmin;
+	out->low.y = gbox.ymin;
+	out->high.x = gbox.xmax;
+	out->high.y = gbox.ymax;
+	PG_RETURN_POINTER(out);
 }
 
 /**

@@ -679,9 +679,11 @@ static void test_lwline_clip_big(void)
 
 static void test_geohash_precision(void)
 {
-	BOX3D bbox;
-	BOX3D bounds;
+	GBOX bbox;
+	GBOX bounds;
 	int precision = 0;
+	gbox_init(&bbox);
+	gbox_init(&bounds);
 
 	bbox.xmin = 23.0;
 	bbox.xmax = 23.0;

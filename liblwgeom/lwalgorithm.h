@@ -45,7 +45,7 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int nd
 LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double from, double to);
 LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, double from, double to);
 
-int lwgeom_geohash_precision(BOX3D bbox, BOX3D *bounds);
+int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds);
 char *lwgeom_geohash(const LWGEOM *lwgeom, int precision);
 char *geohash_point(double longitude, double latitude, int precision);
 
