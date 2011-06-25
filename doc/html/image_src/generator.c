@@ -35,7 +35,6 @@
 #include <ctype.h>
 
 #include "liblwgeom.h"
-#include "lwalgorithm.h"
 #include "styles.h"
 
 #define SHOW_DIGS_DOUBLE 15
