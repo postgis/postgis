@@ -6,7 +6,7 @@
 	<para>An example of a topologically based GIS database is the <ulink url="http://www.census.gov/geo/www/tiger/overview.html">US Census Topologically Integrated Geographic Encoding and Reference System (TIGER)</ulink> database.</para>
 	<para>The PostGIS topology module has existed in prior versions of PostGIS but was never part of the Official PostGIS documentation.
 	    In PostGIS 2.0.0 major cleanup is going on to remove use of all deprecated functions in it, fix known usability issues, better document the features and functions, add new functions, and enhance to closer conform to SQL-MM standards.</para>
-	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Tology Wiki</ulink></para>
+	<para>Details of this project can be found at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPostgisTopology">PostGIS Topology Wiki</ulink></para>
 	<para>All functions and tables associated with this module are installed in a schema called <varname>topology</varname>.</para>
 	<para>Functions that are defined in SQL/MM standard are prefixed with ST_ and functions specific to PostGIS are not prefixed.</para>
 	<para>To build PostGIS 2.0 with topology support, compile with the --with-topology option as described in <xref linkend="postgis_installation"/>.  Some functions depend on GEOS 3.3+ so you should compile with GEOS 3.3+ to fully utilize the topology support.</para>
@@ -425,7 +425,7 @@ Creates a new topology with name <varname>new_topology_name</varname> and SRID a
 		</para>
                 
                 <note><para>
-The new rows in topology.layer will contain synthetized values for schema_name, table_name and feature_column. This is because the TopoGeometry will only exist as a definition but won't be available in any user-level table yet.
+The new rows in topology.layer will contain synthesized values for schema_name, table_name and feature_column. This is because the TopoGeometry will only exist as a definition but won't be available in any user-level table yet.
 		</para></note>
         
                 <!-- use this format if new function -->

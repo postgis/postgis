@@ -525,7 +525,7 @@ MULTILINESTRING((1 2,3 4),(3 4,4 5))
 		<para>The target_percent is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting.
 		One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. The
 			target_percent of 1 will give you the same answer as the convex hull.  A target_percent 
-				between 0 and 0.99 will give you something that should have a smaller area than the convex ull.  This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
+				between 0 and 0.99 will give you something that should have a smaller area than the convex hull.  This is different from a convex hull which is more like wrapping a rubber band around the set of geometries.</para>
 
 			<para>It is usually used with MULTI and Geometry Collections.
 		Although it is not an aggregate - you can use it in conjunction
@@ -1697,7 +1697,7 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
 
 			<para>It is often used with MULTI and Geometry Collections.
 		Although it is not an aggregate - you can use it in conjunction
-		with ST_Collect to get the minimum bounding cirlce of a set of geometries.
+		with ST_Collect to get the minimum bounding circle of a set of geometries.
 		ST_MinimumBoundingCircle(ST_Collect(somepointfield)).</para>
 
 		<para>The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle is often referred to as the Roeck test.</para>

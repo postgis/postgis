@@ -40,7 +40,7 @@
 		<term>Chris Hodgson</term>
 
 		<listitem>
-		  <para>General development, site and buildbot maintainance, OSGeo incubation management</para>
+		  <para>General development, site and buildbot maintenance, OSGeo incubation management</para>
 		</listitem>
 	  </varlistentry>
 	 
@@ -78,7 +78,7 @@
 		<term>Kevin Neufeld</term>
 		<listitem>
 		  <para>Prior PSC Member. Documentation and documentation support tools, advanced user support
-		  on PostGIS newsgroup, and postgis maintenance function enhancements.</para>
+		  on PostGIS newsgroup, and PostGIS maintenance function enhancements.</para>
 		</listitem>
 	  </varlistentry>
 	 

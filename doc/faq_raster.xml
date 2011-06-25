@@ -157,7 +157,7 @@
       <answer>
         <para>You can use MapServer compiled with GDAL 1.7+ and PostGIS Raster driver support to view Raster data.  
         In theory any tool that renders data using GDAL can support PostGIS raster data or 
-        support it with fairly minimal effort. Again for Windows Tamas binaries <ulink url="http://vbkto.dyndns.org/sdk/">http://vbkto.dyndns.org/sdk/</ulink> are a good choice if you don't want the hassle of having to setup to compile your own.</para>
+        support it with fairly minimal effort. Again for Windows, Tamas' binaries <ulink url="http://vbkto.dyndns.org/sdk/">http://vbkto.dyndns.org/sdk/</ulink> are a good choice if you don't want the hassle of having to setup to compile your own.</para>
       </answer>
     </qandaentry>
     
