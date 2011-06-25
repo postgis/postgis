@@ -265,13 +265,13 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
 	  <refsection>
 		<title>Description</title>
 
-		<para>Finds all tables with key columns used in geocoder joins that are missing indexes on those columns and will output the SQL DDL to
+		<para>Finds all tables in <varname>tiger</varname> and <varname>tiger_data</varname> schemas with key columns used in geocoder joins that are missing indexes on those columns and will output the SQL DDL to
 		    define the index for those tables. This is a helper function that adds new indexes needed to make queries faster that may have been missing during the load process.
 		    As the geocoder is improved, this function will be updated to accommodate new indexes being used. If this function outputs nothing, it means
 		    all your tables have what we think are the key indexes already in place.</para>
 	
 		
-		<para>Availability: 2.0.0 to support Tiger 2010 structured data.</para>
+		<para>Availability: 2.0.0</para>
 
 
 	  </refsection>
@@ -281,8 +281,6 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
 		<title>Examples</title>
 		<programlisting>SELECT missing_indexes_generate_script();
 -- output: This was run on a database that was created before many corrections were made to the loading script ---
-CREATE INDEX idx_public_featnames_short_tlid ON public.featnames_short USING btree(tlid);
-CREATE INDEX idx_public_testgeocode_zip ON public.testgeocode USING btree(zip);
 CREATE INDEX idx_tiger_county_countyfp ON tiger.county USING btree(countyfp);
 CREATE INDEX idx_tiger_cousub_countyfp ON tiger.cousub USING btree(countyfp);
 CREATE INDEX idx_tiger_edges_tfidr ON tiger.edges USING btree(tfidr);
