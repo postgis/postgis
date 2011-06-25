@@ -327,22 +327,22 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 		 You may find the need to add more abbreviations or alternative namings to the various lookup tables in the  <varname>tiger</varname> schema.</para>
 		<para>It uses various control lookup tables located in <varname>tiger</varname> schema to normalize the input address.</para>
 		<para>Fields in the <varname>norm_addy</varname> type object returned by this function in this order where  () indicates a field required by the geocoder, [] indicates an optional field:</para>
-		<para>(address) [dirPrefix] (streetName) [streetType] [dirSuffix][internal] [location] [state] [zipCode]</para>
+		<para>(address) [predirAbbrev] (streetName) [streetTypeAbbrev] [postdirAbbrev] [internal] [location] [stateAbbrev] [zip]</para>
          <orderedlist>
           <listitem>
             <para><varname>address</varname> is an integer:  The street number</para>
           </listitem>
           <listitem>
-            <para><varname>dirPrefix</varname> is varchar: Directional prefix of road such as N, S, E, W etc.  These are controlled using the <varname>direction_lookup</varname> table.</para>
+            <para><varname>predirAbbrev</varname> is varchar: Directional prefix of road such as N, S, E, W etc.  These are controlled using the <varname>direction_lookup</varname> table.</para>
           </listitem>
           <listitem>
             <para><varname>streetName</varname> varchar</para>
           </listitem>
           <listitem>
-            <para><varname>streetType</varname> varchar abbreviated version of street type: e.g. St, Ave, Cir.  These are controlled using the <varname>street_type_lookup</varname> table.</para>
+            <para><varname>streetTypeAbbrev</varname> varchar abbreviated version of street type: e.g. St, Ave, Cir.  These are controlled using the <varname>street_type_lookup</varname> table.</para>
           </listitem>
           <listitem>
-            <para><varname>dirSuffix</varname> varchar abbreviated version of street suffix. These are controlled using the <varname>direction_lookup</varname> table.</para>
+            <para><varname>postdirAbbrev</varname> varchar abbreviated directional suffice of road N, S, E, W etc. These are controlled using the <varname>direction_lookup</varname> table.</para>
           </listitem>
           <listitem>
             <para><varname>internal</varname> varchar internal address such as an apartment or suite number.</para>
@@ -351,10 +351,13 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
             <para><varname>location</varname> varchar usually a city or governing province.</para>
           </listitem>
            <listitem>
-            <para><varname>state</varname> varchar two character US State.  e.g MA, NY, MI.  These are controlled by the <varname>state_lookup</varname> table.</para>
+            <para><varname>stateAbbrev</varname> varchar two character US State.  e.g MA, NY, MI.  These are controlled by the <varname>state_lookup</varname> table.</para>
           </listitem>
           <listitem>
             <para><varname>zip</varname> varchar 5-digit zipcode. e.g. 02109.</para>
+          </listitem>
+          <listitem>
+            <para><varname>parsed</varname> boolean - denotes if addess was formed from normalize process. The normalize_address function sets this to true before returning the address.</para>
           </listitem>
         </orderedlist>
 
