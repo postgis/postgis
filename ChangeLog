@@ -1,3 +1,24 @@
+2011-06-24 03:51  pramsey
+
+	* liblwgeom/liblwgeom.h, liblwgeom/lwcircstring.c,
+	  regress/sql-mm-circularstring_expected,
+	  regress/sql-mm-curvepoly_expected,
+	  regress/sql-mm-multisurface_expected: Fix Circular BBOXes (#1056)
+
+2011-06-23 23:11  chodgson
+
+	* postgis/lwgeom_functions_analytic.c: further bug fix for#884
+
+2011-06-20 17:01  pramsey
+
+	* liblwgeom/g_box.c: geography: ST_Intersects, ST_DWithin
+	  gbox_overlaps: geometries have mismatched dimensionality (#1037)
+
+2011-06-16 17:18  pramsey
+
+	* ChangeLog, README.postgis, doc, doc/release_notes.xml: Notes for
+	  1.5.3 release
+
 2011-06-13 12:26  robe
 
 	* NEWS, doc/release_notes.xml: Update 1.5.3 release notes
