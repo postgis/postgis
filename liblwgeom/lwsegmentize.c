@@ -19,8 +19,6 @@
 #include "liblwgeom_internal.h"
 
 
-double interpolate_arc(double angle, double zm1, double a1, double zm2, double a2);
-POINTARRAY *lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad);
 LWMLINE *lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad);
 LWMPOLY *lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad);
 LWCOLLECTION *lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad);
@@ -131,190 +129,68 @@ lwcircle_center(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, POINT4D
 	return cr;
 }
 
-double
-interpolate_arc(double angle, double zm1, double a1, double zm2, double a2)
-{
-	double frac = fabs((angle - a1) / (a2 - a1));
-	double result = frac * (zm2 - zm1) + zm1;
-
-	LWDEBUG(2, "interpolate_arc called.");
-
-	LWDEBUGF(3, "interpolate_arc: angle=%.16f, a1=%.16f, a2=%.16f, z1=%.16f, z2=%.16f, frac=%.16f, result=%.16f", angle, a1, a2, zm1, zm2, frac, result);
-
-	return result;
-}
 
 /*******************************************************************************
  * Begin curve segmentize functions
  ******************************************************************************/
 
-POINTARRAY *
-lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
+static double interpolate_arc(double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3)
 {
-	POINTARRAY *result;
-	POINT4D pbuf;
-	size_t ptsize = sizeof(POINT4D);
-	uint32 ptcount;
-	uchar *pt;
-
-	POINT4D center;
-	double radius = 0.0;
-	double sweep = 0.0;
-	double angle = 0.0;
-	double increment = 0.0;
-	double a1, a2, a3, i;
-
-	LWDEBUG(2, "lwcircle_segmentize called. ");
-
-	radius = lwcircle_center(p1, p2, p3, &center);
-	if (radius < 0)
+	LWDEBUGF(4,"angle %.05g a1 %.05g a2 %.05g a3 %.05g zm1 %.05g zm2 %.05g zm3 %.05g",angle,a1,a2,a3,zm1,zm2,zm3);
+	/* Counter-clockwise sweep */
+	if ( a1 < a2 )
 	{
-		/* No center because points are colinear */
-		LWDEBUGF(3, "lwcircle_segmentize, (NULL) radius=%.16f", radius);
-
-		return NULL;
+		if ( angle <= a2 )
+			return zm1 + (zm2-zm1) * (angle-a1) / (a2-a1);
+		else
+			return zm2 + (zm3-zm2) * (angle-a2) / (a3-a2);
 	}
-
-	LWDEBUGF(3, "lwcircle_segmentize, (%.16f, %.16f) radius=%.16f", center.x, center.y, radius);
-
-	a1 = atan2(p1->y - center.y, p1->x - center.x);
-	a2 = atan2(p2->y - center.y, p2->x - center.x);
-	a3 = atan2(p3->y - center.y, p3->x - center.x);
-
-	LWDEBUGF(3, "a1 = %.16f, a2 = %.16f, a3 = %.16f", a1, a2, a3);
-
-	if (fabs(p1->x - p3->x) < EPSILON_SQLMM
-	        && fabs(p1->y - p3->y) < EPSILON_SQLMM)
-	{
-		sweep = 2*M_PI;
-	}
-	/* Clockwise */
-	else if (a1 > a2 && a2 > a3)
-	{
-		sweep = a3 - a1;
-	}
-	/* Counter-clockwise */
-	else if (a1 < a2 && a2 < a3)
-	{
-		sweep = a3 - a1;
-	}
-	/* Clockwise, wrap */
-	else if ((a1 < a2 && a1 > a3) || (a2 < a3 && a1 > a3))
-	{
-		sweep = a3 - a1 + 2*M_PI;
-	}
-	/* Counter-clockwise, wrap */
-	else if ((a1 > a2 && a1 < a3) || (a2 > a3 && a1 < a3))
-	{
-		sweep = a3 - a1 - 2*M_PI;
-	}
+	/* Clockwise sweep */
 	else
 	{
-		sweep = 0.0;
-	}
-
-	ptcount = ceil(fabs(perQuad * sweep / M_PI_2));
-
-	result = ptarray_construct(1, 1, ptcount);
-
-	increment = M_PI_2 / perQuad;
-	if (sweep < 0) increment *= -1.0;
-	angle = a1;
-
-	LWDEBUGF(3, "ptcount: %d, perQuad: %d, sweep: %.16f, increment: %.16f", ptcount, perQuad, sweep, increment);
-
-	for (i = 0; i < ptcount - 1; i++)
-	{
-		pt = getPoint_internal(result, i);
-		angle += increment;
-		if (increment > 0.0 && angle > M_PI) angle -= 2*M_PI;
-		if (increment < 0.0 && angle < -1*M_PI) angle -= 2*M_PI;
-		pbuf.x = center.x + radius*cos(angle);
-		pbuf.y = center.y + radius*sin(angle);
-		if ((sweep > 0 && angle < a2) || (sweep < 0 && angle > a2))
-		{
-			if ((sweep > 0 && a1 < a2) || (sweep < 0 && a1 > a2))
-			{
-				pbuf.z = interpolate_arc(angle, p1->z, a1, p2->z, a2);
-				pbuf.m = interpolate_arc(angle, p1->m, a1, p2->m, a2);
-			}
-			else
-			{
-				if (sweep > 0)
-				{
-					pbuf.z = interpolate_arc(angle, p1->z, a1-(2*M_PI), p2->z, a2);
-					pbuf.m = interpolate_arc(angle, p1->m, a1-(2*M_PI), p2->m, a2);
-				}
-				else
-				{
-					pbuf.z = interpolate_arc(angle, p1->z, a1+(2*M_PI), p2->z, a2);
-					pbuf.m = interpolate_arc(angle, p1->m, a1+(2*M_PI), p2->m, a2);
-				}
-			}
-		}
+		if ( angle >= a2 )
+			return zm1 + (zm2-zm1) * (a1-angle) / (a1-a2);
 		else
-		{
-			if ((sweep > 0 && a2 < a3) || (sweep < 0 && a2 > a3))
-			{
-				pbuf.z = interpolate_arc(angle, p2->z, a2, p3->z, a3);
-				pbuf.m = interpolate_arc(angle, p2->m, a2, p3->m, a3);
-			}
-			else
-			{
-				if (sweep > 0)
-				{
-					pbuf.z = interpolate_arc(angle, p2->z, a2-(2*M_PI), p3->z, a3);
-					pbuf.m = interpolate_arc(angle, p2->m, a2-(2*M_PI), p3->m, a3);
-				}
-				else
-				{
-					pbuf.z = interpolate_arc(angle, p2->z, a2+(2*M_PI), p3->z, a3);
-					pbuf.m = interpolate_arc(angle, p2->m, a2+(2*M_PI), p3->m, a3);
-				}
-			}
-		}
-		memcpy(pt, (uchar *)&pbuf, ptsize);
+			return zm2 + (zm3-zm2) * (a2-angle) / (a2-a3);
 	}
-
-	pt = getPoint_internal(result, ptcount - 1);
-	memcpy(pt, (uchar *)p3, ptsize);
-
-	return result;
 }
 
-POINTARRAY *
-lwcircle_segmentize2(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
+static POINTARRAY *
+lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 {
 	POINT4D center;
-	POINT4D pt, pt_start, pt_end;
+	POINT4D pt;
 	int p2_side = 0;
+	int clockwise = LW_TRUE;
 	double radius; /* Arc radius */
 	double increment; /* Angle per segment */
 	double a1, a2, a3, angle;
 	POINTARRAY *pa;
 	int result;
+	int is_circle = LW_FALSE;
 
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
 
 	radius = lwcircle_center(p1, p2, p3, &center);
+
+	/* Matched start/end points imply circle */
+	if ( p1->x == p3->x && p1->y == p3->y )
+		is_circle = LW_TRUE;
 	
 	/* Negative radius signals straight line, p1/p2/p3 are colinear */
 	if (radius < 0.0)
 	{
-		/* TODO return straight line from p1 to p3 */
 	    return NULL;
 	}
 		
-	/* Matched start/end points imply circle */
-	if ( p1->x == p3->x && p1->y == p3->y )
-	{
-		/* TODO return circle */
-	    return NULL;
-	}
-
 	/* The side of the p1/p3 line that p2 falls on dictates the sweep  
 	   direction from p1 to p3. */
 	p2_side = signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2));
+	if ( p2_side == -1 )
+		clockwise = LW_TRUE;
+	else
+		clockwise = LW_FALSE;
+		
 	increment = fabs(M_PI_2 / perQuad);
 	
 	/* Angles of each point that defines the arc section */
@@ -322,45 +198,49 @@ lwcircle_segmentize2(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 	a2 = atan2(p2->y - center.y, p2->x - center.x);
 	a3 = atan2(p3->y - center.y, p3->x - center.x);
 
-	/* p2 on left side => Clockwise sweep */
-	if ( p2_side == -1 ) 
+	/* p2 on left side => clockwise sweep */
+	if ( clockwise )
 	{
-		/* Swap a1/a3 so we can use an anti-clockwise (positive) sweep */
-		double tmp = a3;
-		a3 = a1;
-		a1 = tmp;
-		pt_start = *p3;
-		pt_end = *p1;
+		increment *= -1;
+		/* Adjust a3 down so we can decrement from a1 to a3 cleanly */
+		if ( a3 > a1 )
+			a3 -= 2.0 * M_PI;
+		if ( a2 > a1 )
+			a2 -= 2.0 * M_PI;
 	}
-	else 
+	/* p2 on right side => counter-clockwise sweep */
+	else
 	{
-		pt_start = *p1;
-		pt_end = *p3;
+		/* Adjust a3 up so we can increment from a1 to a3 cleanly */
+		if ( a3 < a1 )
+			a3 += 2.0 * M_PI;
+		if ( a2 < a1 )
+			a2 += 2.0 * M_PI;
 	}
 	
-	/* Adjust a3 up so we can increment from a1 to a3 cleanly */
-	if ( a3 < a1 )
+	/* Override angles for circle case */
+	if( is_circle )
 	{
-		a3 += 2.0 * M_PI;
+		a3 = a1 + 2.0 * M_PI;
+		a2 = a1 + M_PI;
+		increment = fabs(increment);
+		clockwise = LW_FALSE;
 	}
 	
 	/* Initialize point array */
-	pa = ptarray_construct_empty(0, 0, 32);
-	/* Add in start point */
-	result = ptarray_append_point(pa, &pt_start, LW_FALSE);
+	pa = ptarray_construct_empty(1, 1, 32);
+
 	/* Sweep from a1 to a3 */
-	for( angle = a1 + increment; angle < a3; angle += increment )
+	for ( angle = a1; clockwise ? angle > a3 : angle < a3; angle += increment ) 
 	{
 		pt.x = center.x + radius * cos(angle);
 		pt.y = center.y + radius * sin(angle);
+		pt.z = interpolate_arc(angle, a1, a2, a3, p1->z, p2->z, p3->z);
+		pt.m = interpolate_arc(angle, a1, a2, a3, p1->m, p2->m, p3->m);
 		result = ptarray_append_point(pa, &pt, LW_FALSE);
-	}
-	/* Add in the end point */
-	result = ptarray_append_point(pa, &pt_end, LW_FALSE);
-	
+	}	
 	return pa;
 }
-
 
 LWLINE *
 lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
@@ -374,11 +254,6 @@ lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
 	LWDEBUGF(2, "lwcircstring_segmentize called., dim = %d", icurve->points->flags);
 
 	ptarray = ptarray_construct_empty(FLAGS_GET_Z(icurve->points->flags), FLAGS_GET_M(icurve->points->flags), 64);
-	if (!getPoint4d_p(icurve->points, 0, &p4))
-	{
-		lwerror("lwcircstring_segmentize: Cannot extract point.");
-	}
-	ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
 
 	for (i = 2; i < icurve->points->npoints; i+=2)
 	{
@@ -412,6 +287,9 @@ lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
 		}
 
 	}
+	getPoint4d_p(icurve->points, icurve->points->npoints-1, &p1);
+	ptarray_append_point(ptarray, &p1, REPEATED_POINTS_OK);
+		
 	oline = lwline_construct(icurve->srid, NULL, ptarray);
 	return oline;
 }
