@@ -855,11 +855,13 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 	  </refnamediv>
 
 	  <refsynopsisdiv>
-		<methodsynopsis>
-				<type>text</type> <methodname>ST_AsX3D</methodname>
-				<methodparam><type>geometry </type> <parameter>g1</parameter></methodparam>
-				<methodparam choice='opt'><type>integer </type> <parameter>prec</parameter><initializer>15</initializer></methodparam>
-		</methodsynopsis>
+	     <funcsynopsis>
+	         <funcprototype>
+				<funcdef>text <function>ST_AsX3D</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>prec=15</parameter></paramdef>
+			</funcprototype>
+	    </funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
