@@ -1742,6 +1742,9 @@ extern double lwpoint_get_y(const LWPOINT *point);
 extern double lwpoint_get_z(const LWPOINT *point);
 extern double lwpoint_get_m(const LWPOINT *point);
 
+/* Some lwgeom info */
+extern int lwgeom_has_z(const LWGEOM *geom);
+extern int lwgeom_has_m(const LWGEOM *geom);
 
 /* Return a char string with ASCII versionf of type flags */
 extern const char *lwgeom_typeflags(uchar type);

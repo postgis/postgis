@@ -3746,7 +3746,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		lwerror("Exception in LWGEOM2GEOS: curved geometry not supported.");
 		return NULL;
 	}
-
+	
 	switch (lwgeom->type)
 	{
 		LWPOINT *lwp;
@@ -3777,29 +3777,43 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 
 	case POLYGONTYPE:
 		lwpoly = (LWPOLY *)lwgeom;
-		sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
-		shell = GEOSGeom_createLinearRing(sq);
-		if ( ! shell ) return NULL;
-		/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */
-		ngeoms = lwpoly->nrings-1;
-		geoms = malloc(sizeof(GEOSGeom)*ngeoms);
-		for (i=1; i<lwpoly->nrings; ++i)
+		if ( lwgeom_is_empty(lwgeom) )
 		{
-			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
-			geoms[i-1] = GEOSGeom_createLinearRing(sq);
-			if ( ! geoms[i-1] )
-			{
-				--i;
-				while (i) GEOSGeom_destroy(geoms[--i]);
-				free(geoms);
-				GEOSGeom_destroy(shell);
-				return NULL;
-			}
-			/*lwerror("LWGEOM2GEOS: exception during polygon hole conversion"); */
+#if POSTGIS_GEOS_VERSION < 33
+			POINTARRAY *pa = ptarray_construct_empty(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
+			sq = ptarray_to_GEOSCoordSeq(pa);
+			shell = GEOSGeom_createLinearRing(sq);
+			g = GEOSGeom_createPolygon(shell, NULL, 0);
+#else
+			g = GEOSGeom_createEmptyPolygon();
+#endif
 		}
-		g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
-		if ( ! g ) return NULL;
-		free(geoms);
+		else
+		{
+			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
+			shell = GEOSGeom_createLinearRing(sq);
+			if ( ! shell ) return NULL;
+			/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */
+			ngeoms = lwpoly->nrings-1;
+			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
+			for (i=1; i<lwpoly->nrings; ++i)
+			{
+				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
+				geoms[i-1] = GEOSGeom_createLinearRing(sq);
+				if ( ! geoms[i-1] )
+				{
+					--i;
+					while (i) GEOSGeom_destroy(geoms[--i]);
+					free(geoms);
+					GEOSGeom_destroy(shell);
+					return NULL;
+				}
+				/*lwerror("LWGEOM2GEOS: exception during polygon hole conversion"); */
+			}
+			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
+			if ( ! g ) return NULL;
+			free(geoms);
+		}
 		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:

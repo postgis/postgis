@@ -1055,6 +1055,20 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 	}
 }
 
+int 
+lwgeom_has_z(const LWGEOM *geom)
+{
+	if ( ! geom ) return LW_FALSE;
+	return FLAGS_GET_Z(geom->flags);
+}
+
+int 
+lwgeom_has_m(const LWGEOM *geom)
+{
+	if ( ! geom ) return LW_FALSE;
+	return FLAGS_GET_M(geom->flags);
+}
+
 void
 lwgeom_set_geodetic(LWGEOM *geom, int value)
 {
