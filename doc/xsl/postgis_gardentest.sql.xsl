@@ -31,7 +31,7 @@
 	<xsl:variable name='var_spheroid'>'SPHEROID["GRS_1980",6378137,298.257222101]'</xsl:variable>
 	<xsl:variable name='var_matrix'>'FF1FF0102'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
-	<xsl:variable name='var_logtable'>postgis_garden_log</xsl:variable>
+	<xsl:variable name='var_logtable'>postgis_garden_log20</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
 		FROM (SELECT logid FROM <xsl:value-of select="$var_logtable" /> ORDER BY logid DESC limit 1) As foo
 		WHERE <xsl:value-of select="$var_logtable" />.logid = foo.logid  AND <xsl:value-of select="$var_logtable" />.log_end IS NULL;</xsl:variable>
@@ -579,6 +579,8 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 		<xsl:for-each select="$func">
 			<xsl:for-each select="paramdef">
 				<xsl:choose>
+				    <!-- ignore output parameters -->
+				    <xsl:when test="contains(parameter,'OUT')"></xsl:when>
 				    	<xsl:when test="contains(parameter, 'buffer_style_parameters') or contains(parameter, 'buffer_style_parameters')">
 						<xsl:value-of select="$var_buffer_style" />
 					</xsl:when>
@@ -667,7 +669,8 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 						<xsl:value-of select="$var_boolean" />
 					</xsl:when>
 				</xsl:choose>
-				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
+				<!-- put a comma before an arg if it is not the first argument in a function and it is not an OUT parameter nor does it precede an OUT parameter -->
+				<xsl:if test="position()&lt;last() and not(contains(parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>

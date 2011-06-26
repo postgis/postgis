@@ -359,6 +359,8 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 		<xsl:for-each select="$func">
 			<xsl:for-each select="paramdef">
 				<xsl:choose>
+				     <!-- ignore output parameters -->
+				    <xsl:when test="contains(parameter,'OUT')"></xsl:when>
 					<xsl:when test="contains(parameter, 'georefcoords')">
 						<xsl:value-of select="$var_georefcoords" />
 					</xsl:when>
@@ -451,7 +453,8 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 						<xsl:value-of select="$var_boolean" />
 					</xsl:when>
 				</xsl:choose>
-				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
+				<!-- put a comma before an arg if it is not the first argument in a function and it is not an OUT parameter nor does it precede an OUT parameter -->
+				<xsl:if test="position()&lt;last() and not(contains(parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
 		</xsl:for-each>
 	</xsl:template>
