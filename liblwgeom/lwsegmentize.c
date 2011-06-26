@@ -172,20 +172,18 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
 
 	radius = lwcircle_center(p1, p2, p3, &center);
+	p2_side = signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2));
 
 	/* Matched start/end points imply circle */
 	if ( p1->x == p3->x && p1->y == p3->y )
 		is_circle = LW_TRUE;
 	
 	/* Negative radius signals straight line, p1/p2/p3 are colinear */
-	if (radius < 0.0)
-	{
+	if ( radius < 0.0 || p2_side == 0 )
 	    return NULL;
-	}
 		
 	/* The side of the p1/p3 line that p2 falls on dictates the sweep  
 	   direction from p1 to p3. */
-	p2_side = signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2));
 	if ( p2_side == -1 )
 		clockwise = LW_TRUE;
 	else
