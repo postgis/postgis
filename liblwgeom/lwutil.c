@@ -31,7 +31,7 @@ static char *lwgeomTypeName[] =
 	"MultiPolygon",
 	"GeometryCollection",
 	"CircularString",
-	"CompoundString",
+	"CompoundCurve",
 	"Invalid Type",  /* POINTTYPEI */
 	"Invalid Type",  /* LINETYPEI */
 	"Invalid Type",  /* POLYTYPEI */
