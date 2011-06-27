@@ -5068,7 +5068,7 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	/* raster */
 	raster = rt_raster_deserialize(pgraster, TRUE);
 	if (!raster) {
-		elog(ERROR, "RASTER_transform: Could not deserialize raster");
+		elog(ERROR, "RASTER_metadata; Could not deserialize raster");
 		PG_RETURN_NULL();
 	}
 
@@ -5242,7 +5242,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	/* raster */
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
-		elog(ERROR, "RASTER_transform: Could not deserialize raster");
+		elog(ERROR, "RASTER_bandmetadata: Could not deserialize raster");
 		PG_RETURN_NULL();
 	}
 
