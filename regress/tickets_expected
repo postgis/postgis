@@ -18,7 +18,7 @@ ERROR:  Unsupported geometry type: CircularString
 #112|GEOMETRYCOLLECTION(POINT(-10 50))
 ERROR:  Geometry argument does not have an 'M' ordinate
 #116|POLYGON EMPTY
-ERROR:  lwgeom_grid: Unsupported geometry type: CircularString
+#122|CIRCULARSTRING(220268 150415,220227 150505,220227 150406)
 #124a|COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,30 5),CIRCULARSTRING(30 5,34 56,67 89))
 ERROR:  incontinuous compound curve
 HINT:  "...IRCULARSTRING(0 0,1 1,1 0),(1 0,30 6)" <-- parse error at position 52 within geometry
