@@ -1,7 +1,7 @@
-NOTICE:  Attempting to get pixel value with out of range raster coordinates
-NOTICE:  Attempting to get pixel value with out of range raster coordinates
-NOTICE:  Attempting to get pixel value with out of range raster coordinates
-NOTICE:  Attempting to get pixel value with out of range raster coordinates
+NOTICE:  Attempting to get pixel value with out of range raster coordinates: (65534, 65534)
+NOTICE:  Attempting to get pixel value with out of range raster coordinates: (65534, 65534)
+NOTICE:  Attempting to get pixel value with out of range raster coordinates: (65534, 65534)
+NOTICE:  Attempting to get pixel value with out of range raster coordinates: (65534, 65534)
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
