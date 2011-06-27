@@ -250,10 +250,10 @@ static void out_geojson_test_geoms(void)
 	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
 	    "lwgeom_to_geojson: 'CircularString' geometry type not supported");
 
-	/* CompoundString */
+	/* CompoundCurve */
 	do_geojson_unsupported(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
-	    "lwgeom_to_geojson: 'CompoundString' geometry type not supported");
+	    "lwgeom_to_geojson: 'CompoundCurve' geometry type not supported");
 
 	/* CurvePolygon */
 	do_geojson_unsupported(

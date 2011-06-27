@@ -133,9 +133,9 @@ A CircularString geometry is as follows:
         <UINT32> -- number of elements in following ORDINATE_ARRAY
         <ORDINATE_ARRAY>
 
-=CompoundString=
+=CompoundCurve=
 
-A CompoundString geometry is as follows:
+A CompoundCurve geometry is as follows:
 
         <COMMON_HEADER>
         <UINT32> -- number of segments
@@ -165,7 +165,7 @@ A CurvePolygon geometry is as follows:
         One or more geometries as specified by previous uint32:
                 <SERIALIZED_GEOMETRY> -- Must be some combination of 
                                          LineStrings and CircularStrings.
-                                         CompoundString are not yet supported.
+                                         CompoundCurve are not yet supported.
 
 =Collections=
 

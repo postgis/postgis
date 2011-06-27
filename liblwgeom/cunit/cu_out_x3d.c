@@ -149,10 +149,10 @@ static void out_x3d3_test_geoms(void)
 	    "CIRCULARSTRING(-2 0 1,0 2 1,2 0 1,0 2 1,2 4 1)",
 	    "lwgeom_to_x3d3: 'CircularString' geometry type not supported");
 
-	/* CompoundString */
+	/* CompoundCurve */
 	do_x3d3_unsupported(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 0 1,1 1 1,1 0 1),(1 0 1,0 1 1))",
-	    "lwgeom_to_x3d3: 'CompoundString' geometry type not supported");
+	    "lwgeom_to_x3d3: 'CompoundCurve' geometry type not supported");
 
 }
 

@@ -547,14 +547,14 @@ static void out_gml_test_geoms(void)
 	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
 	    "lwgeom_to_gml3: 'CircularString' geometry type not supported");
 
-	/* GML2 - CompoundString */
+	/* GML2 - CompoundCurve */
 	do_gml2_unsupported(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
-	    "lwgeom_to_gml2: 'CompoundString' geometry type not supported");
-	/* GML3 - CompoundString */
+	    "lwgeom_to_gml2: 'CompoundCurve' geometry type not supported");
+	/* GML3 - CompoundCurve */
 	do_gml3_unsupported(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
-	    "lwgeom_to_gml3: 'CompoundString' geometry type not supported");
+	    "lwgeom_to_gml3: 'CompoundCurve' geometry type not supported");
 
 	/* GML2 - CurvePolygon */
 	do_gml2_unsupported(

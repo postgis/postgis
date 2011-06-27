@@ -173,10 +173,10 @@ static void out_kml_test_geoms(void)
 	    "CIRCULARSTRING(-2 0,0 2,2 0,0 2,2 4)",
 	    "lwgeom_to_kml2: 'CircularString' geometry type not supported");
 
-	/* CompoundString */
+	/* CompoundCurve */
 	do_kml_unsupported(
 	    "COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1))",
-	    "lwgeom_to_kml2: 'CompoundString' geometry type not supported");
+	    "lwgeom_to_kml2: 'CompoundCurve' geometry type not supported");
 
 	/* CurvePolygon */
 	do_kml_unsupported(
