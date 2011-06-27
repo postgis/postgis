@@ -153,7 +153,8 @@ ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
 else
 garden:	postgis_aggs_mm.xml
-	$(XSLTPROC) -o gardentest.sql xsl/postgis_gardentest.sql.xsl postgis.xml
+	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/postgis_gardentest.sql.xsl postgis.xml
+	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/raster_gardentest.sql.xsl postgis.xml
 endif
 
 

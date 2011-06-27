@@ -134,8 +134,8 @@ garden:
 	@echo 'Regression tests in progress (it will take time)'
 	@echo 'Result output: ./regress/garden_result.txt'
 	@echo '-------------------------------------------------'
-	psql -d postgis_garden < ../doc/gardentest.sql > garden_result.txt 2>&1
-	dropdb postgis_garden
+	psql -d postgis_garden < ../doc/postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql > postgis_garden_result.txt 2>&1
+	#dropdb postgis_garden
 
 cleanup:
 	@sleep 1
