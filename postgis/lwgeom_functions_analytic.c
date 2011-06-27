@@ -513,6 +513,7 @@ LWCOLLECTION *lwcollection_grid(LWCOLLECTION *coll, gridspec *grid);
 LWPOINT * lwpoint_grid(LWPOINT *point, gridspec *grid);
 LWPOLY * lwpoly_grid(LWPOLY *poly, gridspec *grid);
 LWLINE *lwline_grid(LWLINE *line, gridspec *grid);
+LWCIRCSTRING *lwcircstring_grid(LWCIRCSTRING *line, gridspec *grid);
 POINTARRAY *ptarray_grid(POINTARRAY *pa, gridspec *grid);
 Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS);
 Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS);
@@ -607,6 +608,23 @@ lwline_grid(LWLINE *line, gridspec *grid)
 
 	/* TODO: grid bounding box... */
 	oline = lwline_construct(line->SRID, NULL, opa);
+
+	return oline;
+}
+
+LWCIRCSTRING *
+lwcircstring_grid(LWCIRCSTRING *line, gridspec *grid)
+{
+	LWCIRCSTRING *oline;
+	POINTARRAY *opa;
+
+	opa = ptarray_grid(line->points, grid);
+
+	/* Skip line3d with less then 2 points */
+	if ( opa->npoints < 2 ) return NULL;
+
+	/* TODO: grid bounding box... */
+	oline = lwcircstring_construct(line->SRID, NULL, opa);
 
 	return oline;
 }
@@ -745,6 +763,12 @@ lwgeom_grid(LWGEOM *lwgeom, gridspec *grid)
 		return (LWGEOM *)lwline_grid((LWLINE *)lwgeom, grid);
 	case POLYGONTYPE:
 		return (LWGEOM *)lwpoly_grid((LWPOLY *)lwgeom, grid);
+	case CIRCSTRINGTYPE:
+		return (LWGEOM*)lwcircstring_grid((LWCIRCSTRING *)lwgeom, grid);
+	case CURVEPOLYTYPE:
+	case COMPOUNDTYPE:
+	case MULTICURVETYPE:
+	case MULTISURFACETYPE:
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
