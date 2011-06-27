@@ -1321,7 +1321,7 @@ rt_band_get_pixel(rt_band band, uint16_t x, uint16_t y, double *result) {
     pixtype = band->pixtype;
 
     if (x >= band->width || y >= band->height) {
-        rtwarn("Attempting to get pixel value with out of range raster coordinates");
+        rtwarn("Attempting to get pixel value with out of range raster coordinates: (%u, %u)", x, y);
         return -1;
     }
 
