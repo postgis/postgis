@@ -1,0 +1,35 @@
+PostGIS 2.0 Migration Guide
+===========================
+
+PostGIS 2.0 introduces changes that may affect backward compatibility
+for some applications. This document lists those changes.
+
+
+geometry_columns
+----------------
+
+In PostGIS 2.0, the ``geometry_columns`` metadata has been changed from
+a table to a view. 
+
+  * For applications that manage ``geometry_columns``
+    using the standard AddGeometryColumn() and other methods, there should
+    be no change. 
+
+  * Applications that have inserted directly into ``geometry_columns`` 
+    will need to either move to the standard functions, or change
+    their create table syntax to include type/srid/dimsionality
+    information. 
+
+    For example, to specify a 3D feature in WGS84::
+
+      CREATE TABLE mytable (
+        id SERIAL PRIMARY KEY,
+        g Geometry(PointZ,4326)
+      );
+
+  * Applications reading metadata from ``geometry_columns`` should expect
+    that the geometry type strings will be mixed case and include the
+    dimensionality modifiers. For example: PointZM, MultiLineStringZ.
+
+
+
