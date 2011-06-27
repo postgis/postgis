@@ -5243,7 +5243,7 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
  *   for freeing the returned data using CPLFree()
  */
 uint8_t*
-rt_raster_to_gdal(rt_raster raster, char *srs,
+rt_raster_to_gdal(rt_raster raster, const char *srs,
 	char *format, char **options, uint64_t *gdalsize) {
 	GDALDriverH src_drv = NULL;
 	GDALDatasetH src_ds = NULL;
@@ -5434,7 +5434,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count) {
  * @return GDAL dataset using GDAL MEM driver
  */
 GDALDatasetH
-rt_raster_to_gdal_mem(rt_raster raster, char *srs,
+rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	uint32_t *bandNums, int count, GDALDriverH *rtn_drv) {
 	GDALDriverH drv = NULL;
 	int drv_gen = 0;
@@ -5915,8 +5915,8 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
  * @return the warped raster
  */
 rt_raster rt_raster_gdal_warp(
-	rt_raster raster, char *src_srs,
-	char *dst_srs,
+	rt_raster raster, const char *src_srs,
+	const char *dst_srs,
 	double *scale_x, double *scale_y,
 	double *ul_x, double *ul_y,
 	double *skew_x, double *skew_y,
@@ -5928,6 +5928,7 @@ rt_raster rt_raster_gdal_warp(
 	GDALWarpOptions *wopts = NULL;
 	GDALDriverH dst_drv = NULL;
 	GDALDatasetH dst_ds = NULL;
+	const char *_dst_srs = NULL;
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
 	char **transform_opts = NULL;
 	int transform_opts_len = 2;
@@ -5972,7 +5973,10 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUGF(4, "max_err = %f", max_err);
 
 	/* dst_srs not provided, set to src_srs */
-	if (NULL == dst_srs) dst_srs = src_srs;
+	if (NULL == dst_srs)
+		_dst_srs = src_srs;
+	else
+		_dst_srs = dst_srs;
 
 	/* load raster into a GDAL MEM dataset */
 	src_ds = rt_raster_to_gdal_mem(raster, src_srs, NULL, 0, &src_drv);
@@ -5985,20 +5989,6 @@ rt_raster rt_raster_gdal_warp(
 		return NULL;
 	}
 	RASTER_DEBUG(3, "raster loaded into GDAL MEM dataset");
-
-	/* load VRT driver */
-	GDALRegister_VRT();
-	dst_drv = GDALGetDriverByName("VRT");
-	if (NULL == dst_drv) {
-		rterror("rt_raster_gdal_warp: Unable to load the output GDAL VRT driver\n");
-
-		GDALClose(src_ds);
-
-		GDALDeregisterDriver(src_drv);
-		GDALDestroyDriver(src_drv);
-
-		return NULL;
-	}
 
 	/* set transform_opts */
 	transform_opts = (char **) rtalloc(sizeof(char *) * (transform_opts_len + 1));
@@ -6015,7 +6005,7 @@ rt_raster rt_raster_gdal_warp(
 	for (i = 0; i < transform_opts_len; i++) {
 		switch (i) {
 			case 1:
-				transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("DST_SRS=") + strlen(dst_srs) + 1));
+				transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("DST_SRS=") + strlen(_dst_srs) + 1));
 				break;
 			case 0:
 				transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("SRC_SRS=") + strlen(src_srs) + 1));
@@ -6038,9 +6028,9 @@ rt_raster rt_raster_gdal_warp(
 			case 1:
 				snprintf(
 					transform_opts[i],
-					sizeof(char) * (strlen("DST_SRS=") + strlen(dst_srs) + 1),
+					sizeof(char) * (strlen("DST_SRS=") + strlen(_dst_srs) + 1),
 					"DST_SRS=%s",
-					dst_srs
+					_dst_srs
 				);
 				break;
 			case 0:
@@ -6185,8 +6175,20 @@ rt_raster rt_raster_gdal_warp(
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
 		rtdealloc(transform_opts);
 
-		GDALDeregisterDriver(dst_drv);
-		GDALDestroyDriver(dst_drv);
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+
+		return NULL;
+	}
+
+	/* load VRT driver */
+	GDALRegister_VRT();
+	dst_drv = GDALGetDriverByName("VRT");
+	if (NULL == dst_drv) {
+		rterror("rt_raster_gdal_warp: Unable to load the output GDAL VRT driver\n");
+
+		GDALClose(src_ds);
+
 		GDALDeregisterDriver(src_drv);
 		GDALDestroyDriver(src_drv);
 
@@ -6285,7 +6287,7 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* set dst srs */
-	cplerr = GDALSetProjection(dst_ds, dst_srs);
+	cplerr = GDALSetProjection(dst_ds, _dst_srs);
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_warp: Unable to set projection\n");
 

@@ -1147,35 +1147,6 @@ CREATE OR REPLACE FUNCTION st_gdaldrivers(OUT idx int, OUT short_name text, OUT 
 	AS 'MODULE_PATHNAME', 'RASTER_getGDALDrivers'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- return the srtext of an srid
-CREATE OR REPLACE FUNCTION _st_srtext(q_srid integer)
-	RETURNS text
-	AS $$
-	DECLARE
-		q_srs text;
-	BEGIN
-		IF q_srid != -1 THEN
-			SELECT
-				CASE
-					WHEN length(srtext) > 0
-						THEN srtext
-					ELSE NULL
-				END
-			INTO q_srs
-			FROM spatial_ref_sys
-			WHERE srid = q_srid;
-
-			IF NOT FOUND THEN
-				q_srs := NULL;
-			END IF;
-		ELSE
-			q_srs := NULL;
-		END IF;
-
-		RETURN q_srs;
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
 -- Cannot be strict as "options" and "srid" can be NULL
 CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[] DEFAULT NULL, srid integer DEFAULT NULL)
 	RETURNS bytea

@@ -890,7 +890,7 @@ rt_band rt_raster_replace_band(rt_raster raster, rt_band band,
  * @return formatted GDAL raster.  the calling function is responsible
  *   for freeing the returned data using CPLFree()
  */
-uint8_t *rt_raster_to_gdal(rt_raster raster, char *srs,
+uint8_t *rt_raster_to_gdal(rt_raster raster, const char *srs,
 	char *format, char **options, uint64_t *gdalsize);
 
 /**
@@ -915,7 +915,7 @@ rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count);
  *
  * @return GDAL dataset using GDAL MEM driver
  */
-GDALDatasetH rt_raster_to_gdal_mem(rt_raster raster, char *srs,
+GDALDatasetH rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	uint32_t *bandNums, int count, GDALDriverH *rtn_drv);
 
 /**
@@ -945,8 +945,8 @@ rt_raster rt_raster_from_gdal_dataset(GDALDatasetH ds);
  *
  * @return the warped raster
  */
-rt_raster rt_raster_gdal_warp(rt_raster raster, char *src_srs,
-	char *dst_srs,
+rt_raster rt_raster_gdal_warp(rt_raster raster, const char *src_srs,
+	const char *dst_srs,
 	double *scale_x, double *scale_y,
 	double *ul_x, double *ul_y,
 	double *skew_x, double *skew_y,

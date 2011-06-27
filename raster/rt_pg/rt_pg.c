@@ -97,6 +97,7 @@ static char	*chartrim(char* input, char *remove); /* for RASTER_reclass */
 static char **strsplit(const char *str, const char *delimiter, int *n); /* for RASTER_reclass */
 static char *removespaces(char *str); /* for RASTER_reclass */
 static char *trim(char* input); /* for RASTER_asGDALRaster */
+static char *getSRTextSPI(int srid);
 
 /***************************************************************
  * Some rules for returning NOTICE or ERROR...
@@ -457,6 +458,70 @@ trim(char *input) {
 	*(++ptr) = '\0';
 
 	return start;
+}
+
+static char*
+getSRTextSPI(int srid)
+{
+	int len = 0;
+	char *sql = NULL;
+	int spi_result;
+	TupleDesc tupdesc;
+	SPITupleTable *tuptable = NULL;
+	HeapTuple tuple;
+	char *tmp = NULL;
+	char *srs = NULL;
+
+	len = sizeof(char) * (strlen("SELECT srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
+	sql = (char *) palloc(len);
+	if (NULL == sql) {
+		elog(ERROR, "getSrtextSPI: Unable to allocate memory for sql\n");
+		return NULL;
+	}
+
+	spi_result = SPI_connect();
+	if (spi_result != SPI_OK_CONNECT) {
+		elog(ERROR, "getSrtextSPI: Could not connect to database using SPI\n");
+		pfree(sql);
+		return NULL;
+	}
+
+	/* execute query */
+	snprintf(sql, len, "SELECT srtext FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
+	spi_result = SPI_execute(sql, TRUE, 0);
+	pfree(sql);
+	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+		elog(ERROR, "getSrtextSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
+		pfree(sql);
+		return NULL;
+	}
+
+	tupdesc = SPI_tuptable->tupdesc;
+	tuptable = SPI_tuptable;
+	tuple = tuptable->vals[0];
+
+	tmp = SPI_getvalue(tuple, tupdesc, 1);
+	if (NULL == tmp || !strlen(tmp)) {
+		elog(ERROR, "getSrtextSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
+		return NULL;
+	}
+
+	SPI_freetuptable(tuptable);
+	SPI_finish();
+
+	len = strlen(tmp);
+	srs = (char *) palloc(sizeof(char) * (len + 1));
+	if (NULL == srs) {
+		elog(ERROR, "getSrtextSPI: Unable to allocate memory for srtext\n");
+		return NULL;
+	}
+	srs = strncpy(srs, tmp, len + 1);
+
+	return srs;
 }
 
 PG_FUNCTION_INFO_V1(RASTER_lib_version);
@@ -4484,13 +4549,6 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	int srid = -1;
 	char *srs = NULL;
 
-	int sqllen = 0;
-	char *sql = NULL;
-	int ret;
-	TupleDesc tupdesc;
-	SPITupleTable * tuptable = NULL;
-	HeapTuple tuple;
-
 	ArrayType *array;
 	Oid etype;
 	Datum *e;
@@ -4607,44 +4665,16 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 
 	/* get srs from srid */
 	if (srid != SRID_UNKNOWN) {
-		sqllen = sizeof(char) * (strlen("SELECT _ST_srtext()") + MAX_INT_CHARLEN);
-		sql = (char *) palloc(sqllen);
-		if (NULL == sql) {
-			elog(ERROR, "RASTER_asGDALRaster: Unable to allocate memory for SRID query");
+		srs = getSRTextSPI(srid);
+		if (NULL == srs) {
+			elog(ERROR, "RASTER_asGDALRaster: Could not find srtext for SRID (%d)", srid);
+			if (NULL != options) {
+				for (i = j - 1; i >= 0; i--) pfree(options[i]);
+				pfree(options);
+			}
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
 		}
-
-		SPI_connect();
-
-		/* srs */
-		snprintf(sql, sqllen, "SELECT _ST_srtext(%d)", srid);
-		POSTGIS_RT_DEBUGF(4, "srs sql: %s", sql);
-		ret = SPI_execute(sql, TRUE, 0);
-		if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-			elog(ERROR, "RASTER_asGDALRaster: SRID provided is unknown");
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
-			SPI_finish();
-			rt_raster_destroy(raster);
-			pfree(sql);
-			PG_RETURN_NULL();
-		}
-		tupdesc = SPI_tuptable->tupdesc;
-		tuptable = SPI_tuptable;
-		tuple = tuptable->vals[0];
-		srs = SPI_getvalue(tuple, tupdesc, 1);
-		if (NULL == srs || !strlen(srs)) {
-			elog(ERROR, "RASTER_asGDALRaster: SRID provided (%d) is invalid", srid);
-			if (SPI_tuptable) SPI_freetuptable(tuptable);
-			SPI_finish();
-			rt_raster_destroy(raster);
-			pfree(sql);
-			PG_RETURN_NULL();
-		}
-		SPI_freetuptable(tuptable);
-		SPI_finish();
-		pfree(sql);
-
 		POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: Arg 3 (srs) is %s", srs);
 	}
 	else
@@ -4658,6 +4688,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		for (i = j - 1; i >= 0; i--) pfree(options[i]);
 		pfree(options);
 	}
+	if (NULL != srs) pfree(srs);
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 
@@ -4871,13 +4902,6 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	double *scale_x = NULL;
 	double *scale_y = NULL;
 
-	int sqllen = 0;
-	char *sql = NULL;
-	int ret;
-	TupleDesc tupdesc;
-	SPITupleTable * tuptable = NULL;
-	HeapTuple tuple;
-
 	POSTGIS_RT_DEBUG(3, "RASTER_transform: Starting");
 
 	/* pgraster is null, return null */
@@ -4926,72 +4950,24 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(4, "max_err: %f", max_err);
 
 	/* get srses from srids */
-	sqllen = sizeof(char) * (strlen("SELECT _ST_srtext()") + MAX_INT_CHARLEN);
-	sql = (char *) palloc(sqllen);
-	if (NULL == sql) {
-		elog(ERROR, "RASTER_transform: Unable to allocate memory for SRID queries");
-		rt_raster_destroy(raster);
-		PG_RETURN_NULL();
-	}
-
-	SPI_connect();
-
 	/* source srs */
-	snprintf(sql, sqllen, "SELECT _ST_srtext(%d)", src_srid);
-	POSTGIS_RT_DEBUGF(4, "sourse srs sql: %s", sql);
-	ret = SPI_execute(sql, TRUE, 0);
-	if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-		elog(ERROR, "RASTER_transform: Input raster has unknown SRID");
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
-		SPI_finish();
+	src_srs = getSRTextSPI(src_srid);
+	if (NULL == src_srs) {
+		elog(ERROR, "RASTER_transform: Input raster has unknown SRID (%d)", src_srid);
 		rt_raster_destroy(raster);
-		pfree(sql);
 		PG_RETURN_NULL();
 	}
-	tupdesc = SPI_tuptable->tupdesc;
-	tuptable = SPI_tuptable;
-	tuple = tuptable->vals[0];
-	src_srs = SPI_getvalue(tuple, tupdesc, 1);
-	if (NULL == src_srs || !strlen(src_srs)) {
-		elog(ERROR, "RASTER_transform: Input raster has invalid SRID");
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
-		SPI_finish();
-		rt_raster_destroy(raster);
-		pfree(sql);
-		PG_RETURN_NULL();
-	}
-	POSTGIS_RT_DEBUGF(4, "sourse srs: %s", src_srs);
-	SPI_freetuptable(tuptable);
+	POSTGIS_RT_DEBUGF(4, "src srs: %s", src_srs);
 
 	/* target srs */
-	sprintf(sql, "SELECT _ST_srtext(%d)", dst_srid);
-	POSTGIS_RT_DEBUGF(4, "destination srs sql: %s", sql);
-	ret = SPI_execute(sql, TRUE, 0);
-	if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-		elog(ERROR, "RASTER_transform: Target SRID is unknown");
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
-		SPI_finish();
+	dst_srs = getSRTextSPI(dst_srid);
+	if (NULL == dst_srs) {
+		elog(ERROR, "RASTER_transform: Target SRID (%d) is unknown", dst_srid);
 		rt_raster_destroy(raster);
-		pfree(sql);
+		if (NULL != src_srs) pfree(src_srs);
 		PG_RETURN_NULL();
 	}
-	tupdesc = SPI_tuptable->tupdesc;
-	tuptable = SPI_tuptable;
-	tuple = tuptable->vals[0];
-	dst_srs = SPI_getvalue(tuple, tupdesc, 1);
-	if (NULL == dst_srs || !strlen(dst_srs)) {
-		elog(ERROR, "RASTER_transform: Target SRID is unknown");
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
-		SPI_finish();
-		rt_raster_destroy(raster);
-		pfree(sql);
-		PG_RETURN_NULL();
-	}
-	POSTGIS_RT_DEBUGF(4, "destination srs: %s", dst_srs);
-	SPI_freetuptable(tuptable);
-
-	SPI_finish();
-	pfree(sql);
+	POSTGIS_RT_DEBUGF(4, "dst srs: %s", dst_srs);
 
 	/* scale x */
 	if (!PG_ARGISNULL(4)) {
@@ -5012,6 +4988,8 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 		NULL, NULL,
 		alg, max_err);
 	rt_raster_destroy(raster);
+	if (NULL != src_srs) pfree(src_srs);
+	if (NULL != dst_srs) pfree(dst_srs);
 	if (!rast) {
 		elog(ERROR, "RASTER_band: Could not create transformed raster");
 		PG_RETURN_NULL();
