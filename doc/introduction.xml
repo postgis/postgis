@@ -192,6 +192,11 @@
 		  geometry operations library, and the algorithmic work of Martin
 		  Davis in making it all work, ongoing maintenance and support of
 		  Mateusz Loskot, Sandro Santilli (strk), Paul Ramsey and others.</para>
+		  
+		  <para>The <ulink url="http://trac.osgeo.org/gdal/">GDAL</ulink>
+		  Geospatial Data Abstraction Library, by Frank Warmerdam and others is used to 
+		  power much of the raster functionality introduced in PostGIS 2.0.0. In kind, improvements needed in GDAL
+		  to support PostGIS are contributed back to the GDAL project.</para>
 
 		  <para>The <ulink url="http://trac.osgeo.org/proj/">Proj4</ulink>
 		  cartographic projection library, and the work of Gerald Evenden and
