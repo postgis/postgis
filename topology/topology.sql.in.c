@@ -278,8 +278,7 @@ BEGIN
 		query = 'SELECT * '
 			|| ' FROM ' || quote_ident(toponame)
 			|| '.relation '
-			|| ' WHERE topogeo_id = ' || OLD.topology_id 
-			|| ' AND layer_id = '|| OLD.layer_id
+			|| ' WHERE layer_id = '|| OLD.layer_id
 			|| ' LIMIT 1';
 		--RAISE NOTICE '%', query;
 		FOR rec IN EXECUTE query
