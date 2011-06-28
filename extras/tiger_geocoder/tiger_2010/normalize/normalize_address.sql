@@ -259,7 +259,7 @@ BEGIN
 
   IF result.location IS NULL THEN
     -- If the internal address is given, the location is everything after it.
-    result.location := substring(fullStreet, result.internal || ws || '+(.*)$');
+    result.location := trim(substring(fullStreet, result.internal || ws || '+(.*)$'));
   END IF;
 
   IF debug_flag THEN
@@ -291,13 +291,13 @@ BEGIN
         IF position(rec.given IN fullStreet) < position(result.internal IN fullStreet) THEN
           IF tempInt < position(rec.given IN fullStreet) THEN
             streetType := rec.given;
-            result.streetTypeAbbrev := rec.abbrev;
+            result.streetTypeAbbrev := trim(rec.abbrev);
             tempInt := position(rec.given IN fullStreet);
           END IF;
         END IF;
       ELSIF tempInt < position(rec.given IN fullStreet) THEN
         streetType := rec.given;
-        result.streetTypeAbbrev := rec.abbrev;
+        result.streetTypeAbbrev := trim(rec.abbrev);
         tempInt := position(rec.given IN fullStreet);
       END IF;
     END LOOP;
@@ -337,7 +337,7 @@ BEGIN
              tempString ILIKE '%' || name || '%'  
             ORDER BY length(name) DESC LIMIT 1;
           IF tempString IS NOT NULL THEN
-            result.postDirAbbrev = tempString;
+            result.postDirAbbrev = trim(tempString);
           END IF;
       END IF;
     END IF;
@@ -358,9 +358,9 @@ BEGIN
       result.preDirAbbrev := abbrev FROM direction_lookup
           where reducedStreet ILIKE '%' || name '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
           ORDER BY length(name) DESC LIMIT 1;
-      result.streetName := substring(reducedStreet, '^' || preDir || ws || '(.*)');
+      result.streetName := trim(substring(reducedStreet, '^' || preDir || ws || '(.*)'));
     ELSE
-      result.streetName := reducedStreet;
+      result.streetName := trim(reducedStreet);
     END IF;
 
     IF texticregexeq(result.location, '(?i)' || result.internal || '$') THEN
@@ -492,10 +492,10 @@ BEGIN
           result.preDirAbbrev := abbrev FROM direction_lookup WHERE
               reducedStreet ILIKE '%' || name || '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
               ORDER BY length(name) DESC;
-          result.streetName := substring(reducedStreet, '^' || preDir || ws
-                     || '+(.*)');
+          result.streetName := trim(substring(reducedStreet, '^' || preDir || ws
+                     || '+(.*)'));
         ELSE
-          result.streetName := reducedStreet;
+          result.streetName := trim(reducedStreet);
         END IF;
       ELSIF tempInt > 1 THEN
         -- Multiple postDir candidates were found.  We need to find the last
