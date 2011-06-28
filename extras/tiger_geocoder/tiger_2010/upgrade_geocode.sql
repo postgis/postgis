@@ -25,6 +25,7 @@ CREATE INDEX tiger_edges_the_geom_gist ON edges USING gist(the_geom);
 CREATE INDEX tiger_state_the_geom_gist ON faces USING gist(the_geom);
 DROP FUNCTION IF EXISTS reverse_geocode(geometry); /** changed to use default parameters **/
 
+-- TODO: Put in logic to update lookup tables as they change.  street_type_lookup has changed since initial release --
 CREATE TABLE zcta5
 (
   gid serial NOT NULL,
@@ -50,7 +51,8 @@ BEGIN;
 -- Type used to pass around a normalized address between functions
 -- This is s bit dangerous since it could potentially drop peoples tables
 -- TODO: put in logic to check if any tables have norm_addy and don't drop if they do
-DROP TYPE IF EXISTS norm_addy CASCADE;
+-- Remarking this out for now since we aren't changing norm_addy anyway
+/*DROP TYPE IF EXISTS norm_addy CASCADE;
 CREATE TYPE norm_addy AS (
     address INTEGER,
     preDirAbbrev VARCHAR,
@@ -61,7 +63,7 @@ CREATE TYPE norm_addy AS (
     location VARCHAR,
     stateAbbrev VARCHAR,
     zip VARCHAR,
-    parsed BOOLEAN);
+    parsed BOOLEAN);*/
 
 -- System/General helper functions
 \i utility/utmzone.sql
