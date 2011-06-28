@@ -20,8 +20,23 @@ CREATE OR REPLACE FUNCTION greatest_hn(fromhn varchar, tohn varchar)
 $$ SELECT greatest(to_number( CASE WHEN trim($1) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'99999999'),to_number(CASE WHEN trim($2) ~ '^[0-9]+$' THEN $2 ELSE '0' END,'99999999') )::integer;  $$
   LANGUAGE sql IMMUTABLE
   COST 5;
-
   
+-- function return  true or false if 2 numeric streets are equal such as 15th St, 23rd st
+-- it compares just the numeric part of the street for equality
+-- PURPOSE: handle bad formats such as 23th St so 23th St = 23rd St
+-- as described in: http://trac.osgeo.org/postgis/ticket/1068
+-- This will always return false if one of the streets is not a numeric street
+-- By numeric it must start with numbers (allow fractions such as 1/2 and spaces such as 12 1/2th) and be less than 10 characters
+CREATE OR REPLACE FUNCTION numeric_streets_equal(input_street varchar, output_street varchar)
+    RETURNS boolean AS
+$$
+    SELECT COALESCE(length($1) < 10 AND length($2) < 10 
+            AND $1 ~ E'^[0-9\/\s]+' AND $2 ~ E'^[0-9\/\s]+' 
+            AND  trim(substring($1, E'^[0-9\/\s]+')) = trim(substring($2, E'^[0-9\/\s]+')), false); 
+$$
+LANGUAGE sql IMMUTABLE
+COST 5;
+
 -- Generate script to create missing indexes in tiger tables. 
 -- This will generate sql you can run to index commonly used join columns in geocoder for tiger and tiger_data schemas --
 CREATE OR REPLACE FUNCTION missing_indexes_generate_script()

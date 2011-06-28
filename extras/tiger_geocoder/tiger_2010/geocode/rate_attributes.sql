@@ -46,7 +46,11 @@ BEGIN
   result := result + levenshtein_ignore_case(cull_null($1), cull_null($2)) *
       directionWeight;
   IF streetNameA IS NOT NULL AND streetNameB IS NOT NULL THEN
-    result := result + levenshtein_ignore_case($3, $4) * nameWeight;
+    -- We want to treat numeric streets that have numerics as equal 
+    -- and not penalize if they are spelled different e.g. have ND instead of TH
+    IF NOT numeric_streets_equal(streetNameA, streetNameB) THEN
+        result := result + levenshtein_ignore_case($3, $4) * nameWeight;
+    END IF;
   ELSE
     IF var_verbose THEN
       RAISE NOTICE 'rate_attributes() - Street names cannot be null!';

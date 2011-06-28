@@ -93,8 +93,8 @@ BEGIN
          || '        statefp = ' || quote_literal(zip_info.statefp) || ''
          || coalesce('    AND b.zip IN (''' || array_to_string(zip_info.zip,''',''') || ''') ','')
          || CASE WHEN zip_info.exact
-                 THEN '    AND lower(' || coalesce(quote_literal(parsed.streetName),'NULL') || ') = lower(a.name)'
-                 ELSE '    AND soundex(' || coalesce(quote_literal(parsed.streetName),'NULL') || ') = soundex(a.name)'
+                 THEN '    AND (lower(' || coalesce(quote_literal(parsed.streetName),'NULL') || ') = lower(a.name) OR  numeric_streets_equal(' || coalesce(quote_literal(parsed.streetName), 'NULL') || ', a.name) ) '
+                 ELSE '    AND (soundex(' || coalesce(quote_literal(parsed.streetName),'NULL') || ') = soundex(a.name) OR  numeric_streets_equal(' || coalesce(quote_literal(parsed.streetName), 'NULL') || ', a.name) ) '
             END
          || '  ORDER BY 11'
          || '  LIMIT 20'
