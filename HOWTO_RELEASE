@@ -57,6 +57,8 @@ Release procedure
     - osgeo-discuss
 13) Update web sites
     - PostGIS News
+    - PostGIS doc release versioned doc - http://www.postgis.org/documentation/
+     (or remind Chris Hodgson)
     - Freshmeat
     - Wikipedia
 14) Update Trac and make old Milestone as completed
