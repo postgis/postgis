@@ -1,6 +1,6 @@
 --$Id$
 CREATE OR REPLACE FUNCTION geocode(
-    input VARCHAR,
+    input VARCHAR, max_results integer DEFAULT 10,
     OUT ADDY NORM_ADDY,
     OUT GEOMOUT GEOMETRY,
     OUT RATING INTEGER
@@ -20,7 +20,7 @@ BEGIN
     RETURN;
   END IF;
 
-  FOR rec IN SELECT * FROM geocode(ADDY)
+/*  FOR rec IN SELECT * FROM geocode(ADDY)
   LOOP
 
     ADDY := rec.addy;
@@ -28,16 +28,16 @@ BEGIN
     RATING := rec.rating;
 
     RETURN NEXT;
-  END LOOP;
-
-  RETURN;
+  END LOOP;*/
+ 
+  RETURN QUERY SELECT g.addy, g.geomout, g.rating FROM geocode(ADDY, max_results) As g ORDER BY g.rating;
 
 END;
 $_$ LANGUAGE plpgsql STABLE;
 
 
 CREATE OR REPLACE FUNCTION geocode(
-    IN_ADDY NORM_ADDY,
+    IN_ADDY NORM_ADDY, max_results integer DEFAULT 10,
     OUT ADDY NORM_ADDY,
     OUT GEOMOUT GEOMETRY,
     OUT RATING INTEGER
@@ -85,7 +85,7 @@ BEGIN
               (a.addy).zip,
               a.rating
           ) as b
-        ORDER BY b.rating
+        ORDER BY b.rating LIMIT max_results
     LOOP
 
       ADDY := rec.addy;
