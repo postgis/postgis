@@ -68,13 +68,13 @@ dimensions are fully encoded.
 Keep identifiers case (don't uppercase field names). 
 .TP 
 \fB\-m\fR <\fIfilename\fR>
-Remap identifiers to ten digit names. The content of the file is lines
-of two symbols separated by a single white space and no trailing
-or leading space:
+Specify a file containing a set of mappings of (long) column names to 10
+character DBF column names. The content of the file is one or more lines 
+of two names separated by white space and no trailing or leading space:
 
-VERYLONGSYMBOL SHORTONE\\n
+COLUMNNAME DBFFIELD1\\n
 .br
-ANOTHERVERYLONGSYMBOL SHORTER\\n
+AVERYLONGCOLUMNNAME DBFFIELD2\\n
 
 etc.
 .TP

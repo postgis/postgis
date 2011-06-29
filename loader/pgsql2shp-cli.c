@@ -41,11 +41,11 @@ usage()
 	         "     the loader. This would not unescape attribute names\n" 
 	         "     and will not skip the 'gid' attribute.\n" ));
 	printf(_("  -k Keep postgresql identifiers case.\n" ));
-	printf(_("  -m <filename> Remap identifiers to ten digit names.\n"
-	         "     The content of the file is lines of two symbols separated by\n"
-	         "     a single white space and no trailing or leading space:\n"
-	         "     VERYLONGSYMBOL SHORTONE\n"
-	         "     ANOTHERVERYLONGSYMBOL SHORTER\n"
+	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column names\n"
+	         "     to 10 character DBF column names. The content of the file is one or more lines\n"
+	         "     of two names separated by white space and no trailing or leading space:\n"
+	         "     COLUMNNAME DBFFIELD1\n"
+	         "     AVERYLONGCOLUMNNAME DBFFIELD2\n"
 	         "     etc.\n" ));
 	printf(_("  -? Display this help screen.\n\n" ));
 }
@@ -102,7 +102,7 @@ main(int argc, char **argv)
 			config->geo_col_name = pgis_optarg;
 			break;
 		case 'm':
-			config->geo_map_filename = pgis_optarg;
+			config->column_map_filename = pgis_optarg;
 			break;
 		case 'k':
 			config->keep_fieldname_case = 1;

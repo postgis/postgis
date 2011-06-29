@@ -56,19 +56,19 @@
 
 
 /* Prototypes */
-int reverse_points(int num_points, double *x, double *y, double *z, double *m);
-int is_clockwise(int num_points,double *x,double *y,double *z);
-int is_bigendian(void);
-SHPObject *create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint);
-SHPObject *create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint);
-SHPObject *create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon);
-SHPObject *create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon);
-SHPObject *create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring);
-SHPObject *create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring);
+static int reverse_points(int num_points, double *x, double *y, double *z, double *m);
+static int is_clockwise(int num_points,double *x,double *y,double *z);
+static int is_bigendian(void);
+static SHPObject *create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint);
+static SHPObject *create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint);
+static SHPObject *create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon);
+static SHPObject *create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon);
+static SHPObject *create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring);
+static SHPObject *create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring);
 static const char *nullDBFValue(char fieldType);
-int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
-int getTableInfo(SHPDUMPERSTATE *state);
-int projFileCreate(SHPDUMPERSTATE *state);
+static int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
+static int getTableInfo(SHPDUMPERSTATE *state);
+static int projFileCreate(SHPDUMPERSTATE *state);
 
 /**
  * @brief Make appropriate formatting of a DBF value based on type.
@@ -88,7 +88,7 @@ void lwgeom_init_allocators()
 }
 
 
-SHPObject *
+static SHPObject *
 create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 {
 	SHPObject *obj;
@@ -123,7 +123,7 @@ create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 	return obj;
 }
 
-SHPObject *
+static SHPObject *
 create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 {
 	SHPObject *obj;
@@ -162,7 +162,7 @@ create_multipoint(SHPDUMPERSTATE *state, LWMPOINT *lwmultipoint)
 	return obj;
 }
 
-SHPObject *
+static SHPObject *
 create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 {
 	SHPObject *obj;
@@ -250,7 +250,7 @@ create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon)
 	return obj;
 }
 
-SHPObject *
+static SHPObject *
 create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 {
 	SHPObject *obj;
@@ -354,7 +354,7 @@ create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon)
 	return obj;
 }
 
-SHPObject *
+static SHPObject *
 create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 {
 	SHPObject *obj;
@@ -393,7 +393,7 @@ create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring)
 	return obj;
 }
 
-SHPObject *
+static SHPObject *
 create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 {
 	SHPObject *obj;
@@ -454,7 +454,7 @@ create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring)
 
 
 /*Reverse the clockwise-ness of the point list... */
-int
+static int
 reverse_points(int num_points, double *x, double *y, double *z, double *m)
 {
 
@@ -495,7 +495,7 @@ reverse_points(int num_points, double *x, double *y, double *z, double *m)
 }
 
 /* Return 1 if the points are in clockwise order */
-int
+static int
 is_clockwise(int num_points, double *x, double *y, double *z)
 {
 	int i;
@@ -539,7 +539,7 @@ is_clockwise(int num_points, double *x, double *y, double *z)
  * Return the maximum octet_length from given table.
  * Return -1 on error.
  */
-int
+static int
 getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 {
 	int size;
@@ -586,7 +586,7 @@ getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname)
 	return size;
 }
 
-int
+static int
 is_bigendian(void)
 {
 	int test = 1;
@@ -722,7 +722,8 @@ char *convert_bytes_to_hex(uchar *ewkb, size_t size)
  * 		If data is a table will use geometry_columns, if a query or view will read SRID from query output.
  *	@warning Will give warning and not output a .prj file if SRID is -1, Unknown, mixed SRIDS or not found in spatial_ref_sys.  The dbf and shp will still be output.
  */
-int projFileCreate(SHPDUMPERSTATE *state)
+static int
+projFileCreate(SHPDUMPERSTATE *state)
 {
 	FILE	*fp;
 	char	*pszFullname, *pszBasename;
@@ -800,6 +801,7 @@ int projFileCreate(SHPDUMPERSTATE *state)
 	{
 		snprintf(state->message, SHPDUMPERMSGLEN, _("WARNING: Could not execute prj query: %s"), PQresultErrorMessage(res));
 		PQclear(res);
+		free(query);
 		return SHPDUMPERWARN;
 	}
 
@@ -810,6 +812,7 @@ int projFileCreate(SHPDUMPERSTATE *state)
 		{
 			snprintf(state->message, SHPDUMPERMSGLEN, _("WARNING: Mixed set of spatial references. No prj file will be generated"));
 			PQclear(res);
+			free(query);
 			return SHPDUMPERWARN;
 		}
 		else
@@ -818,6 +821,7 @@ int projFileCreate(SHPDUMPERSTATE *state)
 			{
 				snprintf(state->message, SHPDUMPERMSGLEN, _("WARNING: Cannot determine spatial reference (empty table or unknown spatial ref). No prj file will be generated."));
 				PQclear(res);
+				free(query);
 				return SHPDUMPERWARN;
 			}
 			else
@@ -862,7 +866,8 @@ int projFileCreate(SHPDUMPERSTATE *state)
 }
 
 
-int getTableInfo(SHPDUMPERSTATE *state)
+static int 
+getTableInfo(SHPDUMPERSTATE *state)
 {
 
 	/* Get some more information from the table:
@@ -1141,92 +1146,100 @@ set_config_defaults(SHPDUMPERCONFIG *config)
 	config->geo_col_name = NULL;
 	config->keep_fieldname_case = 0;
 	config->fetchsize = 100;
-	config->geo_map_filename = 0;
+	config->column_map_filename = NULL;
 }
 
 /**
  * Read the content of filename into a symbol map stored
- * at state->geo_map.
+ * at state->column_map_filename.
  *
- * The content of the file is lines of two symbols separated by
- * a single white space and no trailing or leading space:
+ * The content of the file is lines of two names separated by
+ * white space and no trailing or leading space:
  *
- *    VERYLONGSYMBOL SHORTONE\n
- *    ANOTHERVERYLONGSYMBOL SHORTER\n
+ *    COLUMNNAME DBFFIELD1
+ *    AVERYLONGCOLUMNNAME DBFFIELD2
  *
  *    etc.
- *
- * The file is read in core (one large malloc'd area), each
- * space and newline is replaced by a null character. A pointer
- * to the start of each line is stored in the state->geo_map
- * table.
  *
  * It is the reponsibility of the caller to reclaim the allocated space
  * as follows:
  *
- * free(*state->geo_map) to free the file content
- * free(state->geo_map) to free the pointer list
+ * free(state->column_map_pgfieldnames[]) to free the column names
+ * free(state->column_map_dbffieldnames[]) to free the dbf field names
  *
- * @param filename : path to a readable map file in the format
- *                   described above.
- * @param state : container of state->geo_map where the malloc'd
+ * @param state : container of state->column_map where the malloc'd
  *                symbol map will be stored.
- *
- * @return state->geo_map : NULL on error, symbol map pointer on
- *                          success.
  */
-void
-ShpDumperGeoMapRead(char* filename, SHPDUMPERSTATE *state)
+static int
+read_column_map(SHPDUMPERSTATE *state)
 {
-	struct stat stat_buf;
-	static char* content = 0;
+	FILE *fptr;
+	char linebuffer[1024];
+	char *tmpstr, *tmpptr;
+	int curmapsize, fieldnamesize;
+	
+	/* Read column map file and load the column_map_dbffieldnames and column_map_pgfieldnames
+	   arrays */
+	fptr = fopen(state->config->column_map_filename, "r");
+	if (!fptr)
 	{
-		FILE* fp = 0;
-		if(stat(filename, &stat_buf) < 0)
-		{
-			perror(filename);
-			return;
-		}
-		content = malloc(stat_buf.st_size);
-		fp = fopen(filename, "r");
-		if(stat_buf.st_size != fread(content, 1, stat_buf.st_size, fp))
-		{
-			free(content);
-			fprintf(stderr, "fread did not return the expected amount of chars");
-			fclose(fp);
-			return;
-		}
-		fclose(fp);
+		/* Return an error */
+		snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: Unable to open column map file %s"), state->config->column_map_filename);
+		return SHPDUMPERERR;
 	}
+	
+	/* First count how many columns we have... */
+	while (fgets(linebuffer, 1024, fptr) != NULL)
+		state->column_map_size++;
+	
+	/* Now we know the final size, allocate the arrays and load the data */
+	fseek(fptr, 0, SEEK_SET);
+	state->column_map_pgfieldnames = (char **)malloc(sizeof(char *) * state->column_map_size);
+	state->column_map_dbffieldnames = (char **)malloc(sizeof(char *) * state->column_map_size);
+	
+	/* Read in a line at a time... */
+	curmapsize = 0;
+	while (fgets(linebuffer, 1024, fptr) != NULL)
 	{
-		int i;
-		state->geo_map_size = 0;
+		/* Split into two separate strings - pgfieldname followed by dbffieldname */
 
-		for(i = 0; i < stat_buf.st_size; i++)
+		/* First locate end of first column (pgfieldname) */
+ 		for (tmpptr = tmpstr = linebuffer; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);		
+		fieldnamesize = tmpptr - tmpstr;
+
+		/* Allocate memory and copy the string ensuring it is terminated */
+		state->column_map_pgfieldnames[curmapsize] = malloc(fieldnamesize + 1);
+		strncpy(state->column_map_pgfieldnames[curmapsize], tmpstr, fieldnamesize);
+		state->column_map_pgfieldnames[curmapsize][fieldnamesize] = '\0';
+		
+		/* Now swallow up any whitespace */
+		for (tmpstr = tmpptr; *tmpptr == '\t' || *tmpptr == '\n' || *tmpptr == ' '; tmpptr++);
+
+		/* Finally locate end of second column (dbffieldname) */
+ 		for (tmpstr = tmpptr; *tmpptr != '\t' && *tmpptr != '\n' && *tmpptr != ' ' && *tmpptr != '\0'; tmpptr++);		
+		fieldnamesize = tmpptr - tmpstr;
+		
+		/* Allocate memory and copy the string ensuring it is terminated */
+		state->column_map_dbffieldnames[curmapsize] = malloc(fieldnamesize + 1);
+		strncpy(state->column_map_dbffieldnames[curmapsize], tmpstr, fieldnamesize);
+		state->column_map_dbffieldnames[curmapsize][fieldnamesize] = '\0';
+		
+		/* Error out if the dbffieldname is > 10 chars */
+		if (strlen(state->column_map_dbffieldnames[curmapsize]) > 10)
 		{
-			if(content[i] == '\n')
-			{
-				state->geo_map_size++;
-			}
+			snprintf(state->message, SHPDUMPERMSGLEN, _("ERROR: column map file specifies a DBF field name \"%s\" which is longer than 10 characters"), state->column_map_dbffieldnames[curmapsize]);
+			return SHPDUMPERERR;
 		}
-		state->geo_map = (char**)malloc(sizeof(char*)*state->geo_map_size);
-		{
-			char** map = state->geo_map;
-			*map = content;
-			map++;
-			for(i = 0; i < stat_buf.st_size; i++)
-			{
-				if(content[i] == '\n' && i + 1 < stat_buf.st_size)
-				{
-					*map = content + i + 1;
-					map++;
-				}
-				if(content[i] == '\n' || content[i] == ' ')
-					content[i] = '\0';
-			}
-		}
+		
+		curmapsize++;
 	}
+
+	fclose(fptr);
+
+	/* Done; return success */
+	return SHPDUMPEROK;
 }
+
 
 /* Create a new shapefile state object */
 SHPDUMPERSTATE *
@@ -1245,16 +1258,10 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->schema = NULL;
 	state->table = NULL;
 	state->geo_col_name = NULL;
-
-	if(config->geo_map_filename)
-	{
-		ShpDumperGeoMapRead(config->geo_map_filename, state);
-	}
-	else
-	{
-		state->geo_map = NULL;
-		state->geo_map_size = 0;
-	}
+	state->column_map_pgfieldnames = NULL;
+	state->column_map_dbffieldnames = NULL;
+	state->column_map_size = 0;
+	
 	return state;
 }
 
@@ -1396,40 +1403,6 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	return SHPDUMPEROK;
 }
 
-/**
- * Map a symbol into its 10 chars equivalent according to a map.
- * The map is found in state->geo_map and loaded with the -m option.
- *
- * @param ptr : null terminated string containing the symbol to
- *              be mapped
- * @param state : non null state->geo_map container
- *
- * @return a malloc'd 10 chars symbol that is either the corresponding
- *         symbol found in the state->geo_map or the symbol truncated
- *         to its first 10 chars. The string is null terminated.
- */
-char*
-ShpDumperFieldnameLimit(char* ptr, SHPDUMPERSTATE *state)
-{
-	/* Limit dbf field name to 10-digits */
-	char* dbffieldname = malloc(11);
-	if(state->geo_map)
-	{
-		int i;
-		for(i=0; i<state->geo_map_size; i++)
-		{
-			if(!strcasecmp(state->geo_map[i], ptr))
-			{
-				/* the replacement follows the terminating null */
-				ptr = state->geo_map[i] + strlen(state->geo_map[i]) + 1;
-				break;
-			}
-		}
-	}
-	strncpy(dbffieldname, ptr, 10);
-	dbffieldname[10] = '\0';
-	return dbffieldname;
-}
 
 /* Open the specified table in preparation for extracting rows */
 int
@@ -1442,6 +1415,14 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	int gidfound = 0, i, j, ret, status;
 
 
+	/* Open the column map if one was specified */
+	if (state->config->column_map_filename)
+	{
+		ret = read_column_map(state);
+		if (ret != SHPDUMPEROK)
+			return SHPDUMPERERR;
+	}
+		
 	/* If a user-defined query has been specified, create and point the state to our new table */
 	if (state->config->usrquery)
 	{
@@ -1604,8 +1585,24 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		 */
 
 		/* Limit dbf field name to 10-digits */
-		dbffieldname = ShpDumperFieldnameLimit(ptr, state);
+		dbffieldname = malloc(11);
+		strncpy(dbffieldname, ptr, 10);
+		dbffieldname[10] = '\0';
 
+		/* If a column map file has been passed in, use this to create the dbf field name from
+		   the PostgreSQL column name */
+		if (state->column_map_size > 0)
+		{
+			for (j = 0; j < state->column_map_size; j++)
+			{
+				if (!strcasecmp(state->column_map_pgfieldnames[j], dbffieldname))
+				{
+					strncpy(dbffieldname, state->column_map_dbffieldnames[j], 10);
+					dbffieldname[10] = '\0';
+				}
+			}
+		}
+			
 		/*
 		 * make sure the fields all have unique names,
 		 */
@@ -2254,11 +2251,29 @@ ShpDumperDestroy(SHPDUMPERSTATE *state)
 		free(state->dbffieldtypes);
 		free(state->pgfieldnames);
 
+		/* Free any column map fieldnames if specified */
+		if (state->column_map_size > 0)
+		{
+			for (i = 0; i < state->column_map_size; i++)
+			{
+				if (state->column_map_pgfieldnames[i])
+					free(state->column_map_pgfieldnames[i]);
+				
+				if (state->column_map_dbffieldnames[i])
+					free(state->column_map_dbffieldnames[i]);
+			}
+			
+			free(state->column_map_pgfieldnames);
+			free(state->column_map_dbffieldnames);
+		}
+		
 		/* Free other names */
 		if (state->table)
 			free(state->table);
 		if (state->schema)
 			free(state->schema);
+		if (state->geo_col_name)
+			free(state->geo_col_name);
 
 		/* Free the state itself */
 		free(state);
