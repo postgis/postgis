@@ -2,7 +2,13 @@
 
      529 |              | Main       | St               |               |          | Boston   | MA          | 02129 | t
 
-     529 |              | Main       | St               |               |          | Boston   | MA          | 02129 | t
+     529 |              | Main       | St               |               |          | Boston,MA |             | 02129 | t
 
-     529 |              | Main       | St               |               |          | Boston MA |             |     | t
+     529 |              | Main       | St               |               |          | Boston   | MA          |     | t
+
+     529 |              | Main       | St               |               |          | Boston   | MA          | 021 | t
+
+     212 |              | 3rd        | Ave              | N             |          | MINNEAPOLIS | MN          | 553404 | t
+
+     212 |              | 3rd        | Ave              | N             |          | MINNEAPOLIS | MN          | 55401 | t
 

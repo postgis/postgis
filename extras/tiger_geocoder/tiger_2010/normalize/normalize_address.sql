@@ -89,18 +89,24 @@ BEGIN
 
   -- Assume that the address begins with a digit, and extract it from
   -- the input string.
-  addressString := substring(rawInput from '^([0-9].*?)[ ,/.]');
+  addressString := substring(rawInput from E'^([0-9].*?)[ ,/.]');
 
   IF debug_flag THEN
     raise notice '% addressString: %', clock_timestamp(), addressString;
   END IF;
 
-  -- There are two formats for zip code, the normal 5 digit, and
+  -- There are two formats for zip code, the normal 5 digit , and
   -- the nine digit zip-4.  It may also not exist.
-  zipString := substring(rawInput from ws || '([0-9]{5})$');
+  
+  zipString := substring(rawInput from ws || E'([0-9]{5})$');
   IF zipString IS NULL THEN
-    zipString := substring(rawInput from ws || '([0-9]{5})-[0-9]{4}$');
-    -- Check if all we got was a zipcode, of either form
+    -- Check if the zip is just a partial or a one with -s
+    -- or one that just has more than 5 digits
+    zipString := COALESCE(substring(rawInput from ws || '([0-9]{5})-[0-9]{0,4}$'), 
+                substring(rawInput from ws || '([0-9]{2,5})$'),
+                substring(rawInput from ws || '([0-9]{6,14})$'));
+   
+     -- Check if all we got was a zipcode, of either form
     IF zipString IS NULL THEN
       zipString := substring(rawInput from '^([0-9]{5})$');
       IF zipString IS NULL THEN

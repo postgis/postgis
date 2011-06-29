@@ -38,3 +38,16 @@
  Federal Ct, Boston, MA 02110              | POINT(-71.0567205 42.354134)              |     24
  Federal Ln, Dedham, MA 02026              | POINT(-71.183565 42.238295)               |     33
 
+ 212 3rd Ave N, Minneapolis, MN 55401  | POINT(-93.2718114 44.9850188)             |      1
+ 212 3rd Ave S, Minneapolis, MN 55404  | POINT(-93.2635498396584 44.9806201397408) |      3
+ 212 3rd Ave S, Minneapolis, MN 55401  | POINT(-93.2633388442551 44.9808723431463) |      3
+ 212 3rd Ave NE, Minneapolis, MN 55413 | POINT(-93.2592025 44.990786)              |      4
+ 212 3rd Ave S, Minneapolis, MN 55415  | POINT(-93.2641725306122 44.9798755102041) |      4
+ 212 3rd Ave SE, Minneapolis, MN 55414 | POINT(-93.2526539591837 44.9848287755102) |      5
+ 212 3rd Ave N, Biwabik, MN 55708      | POINT(-92.3450754489796 47.5343256938775) |      8
+ 212 3rd Ave N, Lakefield, MN 56150    | POINT(-95.1733443061224 43.6785488163265) |      9
+ 212 3rd Ave N, Bayport, MN 55003      | POINT(-92.7789324000695 45.019825623949)  |      9
+ 212 3rd Ave N, Long Prairie, MN 56347 | POINT(-94.8618907833944 45.977553389256)  |     10
+
+ Plymouth, MN 55340 | POINT(-93.5757500937089 45.076212213583) |    100
+

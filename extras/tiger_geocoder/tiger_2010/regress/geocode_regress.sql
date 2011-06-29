@@ -25,4 +25,8 @@ SELECT pprint_addy(addy) As address, ST_AsText(geomout) As pt, rating FROM geoco
 --Test misspellings and missing zip --
 SELECT pprint_addy(addy) As address, ST_AsText(geomout) As pt, rating FROM geocode('101 Fedaral Street, Boston, MA',1);
 SELECT pprint_addy(addy) As address, ST_AsText(geomout) As pt, rating FROM geocode('101 Fedaral Street, Boston, MA',50);
+
+--Geocoding mangled zipcodes
+SELECT pprint_addy(addy) As address, ST_AsText(geomout) As pt, rating FROM geocode('212 3rd Ave N, MINNEAPOLIS, MN 553404');
+SELECT pprint_addy(addy) As address, ST_AsText(geomout) As pt, rating FROM geocode('212 3rd Ave N, MINNEAPOLIS, MN 55340-');
 \timing
