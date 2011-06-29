@@ -83,5 +83,5 @@ DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8, float8, float8);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, geometry, float8, float8, float8, float8);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);
-DROP FUNCTION IF FUNCTION transform(geometry,integer);
+DROP FUNCTION IF EXISTS transform(geometry,integer);
 
