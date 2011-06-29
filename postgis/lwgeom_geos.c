@@ -3727,7 +3727,8 @@ GEOSGeometry *
 LWGEOM2GEOS(LWGEOM *lwgeom)
 {
 	GEOSCoordSeq sq;
-	GEOSGeom g, shell, *geoms;
+	GEOSGeom g, shell;
+	GEOSGeom *geoms = NULL;
 	/*
 	LWGEOM *tmp;
 	*/
@@ -3749,15 +3750,31 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 	
 	switch (lwgeom->type)
 	{
-		LWPOINT *lwp;
-		LWPOLY *lwpoly;
-		LWLINE *lwl;
-		LWCOLLECTION *lwc;
-
+		LWPOINT *lwp = NULL;
+		LWPOLY *lwpoly = NULL;
+		LWLINE *lwl = NULL;
+		LWCOLLECTION *lwc = NULL;
+		POINTARRAY *pa = NULL;
+		
 	case POINTTYPE:
 		lwp = (LWPOINT *)lwgeom;
-		sq = ptarray_to_GEOSCoordSeq(lwp->point);
-		g = GEOSGeom_createPoint(sq);
+		
+		if ( lwgeom_is_empty(lwgeom) )
+		{
+#if POSTGIS_GEOS_VERSION < 33
+			pa = ptarray_construct_empty(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 2);
+			sq = ptarray_to_GEOSCoordSeq(pa);
+			shell = GEOSGeom_createLinearRing(sq);
+			g = GEOSGeom_createPolygon(shell, NULL, 0);
+#else
+			g = GEOSGeom_createEmptyPolygon();
+#endif
+		}
+		else
+		{
+			sq = ptarray_to_GEOSCoordSeq(lwp->point);
+			g = GEOSGeom_createPoint(sq);
+		}
 		if ( ! g )
 		{
 			/* lwnotice("Exception in LWGEOM2GEOS"); */
@@ -3795,7 +3812,9 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			if ( ! shell ) return NULL;
 			/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */
 			ngeoms = lwpoly->nrings-1;
-			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
+			if ( ngeoms > 0 )
+				geoms = malloc(sizeof(GEOSGeom)*ngeoms);
+
 			for (i=1; i<lwpoly->nrings; ++i)
 			{
 				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
@@ -3811,9 +3830,9 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 				/*lwerror("LWGEOM2GEOS: exception during polygon hole conversion"); */
 			}
 			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
-			if ( ! g ) return NULL;
-			free(geoms);
+			if (geoms) free(geoms);
 		}
+		if ( ! g ) return NULL;
 		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
@@ -3829,8 +3848,10 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			geostype = GEOS_GEOMETRYCOLLECTION;
 
 		lwc = (LWCOLLECTION *)lwgeom;
+
 		ngeoms = lwc->ngeoms;
-		geoms = malloc(sizeof(GEOSGeom)*ngeoms);
+		if ( ngeoms > 0 )
+			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
 
 		for (i=0; i<ngeoms; ++i)
 		{
@@ -3844,8 +3865,8 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 			geoms[i] = g;
 		}
 		g = GEOSGeom_createCollection(geostype, geoms, ngeoms);
+		if ( geoms ) free(geoms);
 		if ( ! g ) return NULL;
-		free(geoms);
 		break;
 
 	default:

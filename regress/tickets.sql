@@ -387,5 +387,16 @@ DROP TABLE foo;
 -- #668 --
 select '#668',box2d('CIRCULARSTRING(10 2,12 2,14 2)'::geometry) as b;
 
+-- #711 --
+select '#711', ST_GeoHash(ST_GeomFromText('POLYGON EMPTY',4326));
+
+-- #712 --
+SELECT '#712',ST_IsValid(ST_GeomFromText('POLYGON EMPTY',4326));
+
+-- #1069 --
+select '#1060', ST_Relate(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('POINT EMPTY',4326)) As result;
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
+
