@@ -61,9 +61,11 @@ PostGIS 2.0.0
     to use new TIGER shp and file structure format (Stephen Frost)
   - Extras - revised tiger_geocoder to work with 
     TIGER census 2010 data and 
-    addition of reverse geocoder function,
+    addition of reverse geocoder function, various acurracy enhancements,
+    limit result count,
     include in Official documentation. 
-    (Regina Obe, Leo Hsu / Paragon Corporation)
+    (Regina Obe, Leo Hsu / Paragon Corporation / 
+    funding provided by Hunter Systems Group)
   - Overall Documentation proofreading and corrections. (Kasif Rasul)
 
 PostGIS 1.5.3
