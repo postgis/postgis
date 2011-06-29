@@ -31,5 +31,23 @@ a table to a view.
     that the geometry type strings will be mixed case and include the
     dimensionality modifiers. For example: PointZM, MultiLineStringZ.
 
+    
+Restoring data from prior versions -- GOTCHAS
+-----------------------------------------------
+The populate_geometry_columns() function in PostGIS 1.5 and below, used the deprecated functions
+ndims() and srid() for defining constraints.  As a result these tables will not restore into a fresh PostGIS 2.0 database unless you
 
+1) Drop these contraints before you restore the data
 
+or 
+
+2) Install the legacy functions srid() and ndims() found in the legacy.sql file before you try to restore these tables.
+
+Function is not unique after restore
+-------------------------------------
+After you restore old data into a fresh PostGIS 2.0 database, YOU MUST install the uninstall_legacy.sql
+file after the restore.  If you don't you will run into "function is not unique" errors in your applications.
+The other issue with having the old functions is the old functions you restore will be bound to the old postgis library which is incompatible with the
+new postgis geometry structures.
+
+If you still require legacy functions, you can install the legacy.sql file after the uninstall_legacy.sql.
