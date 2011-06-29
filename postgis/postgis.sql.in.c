@@ -3451,14 +3451,6 @@ CREATE OR REPLACE FUNCTION pgis_geometry_makeline_finalfn(pgis_abs)
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C';
 
--- Deprecation in: 1.2.3
-CREATE AGGREGATE accum (
-	sfunc = pgis_geometry_accum_transfn,
-	basetype = geometry,
-	stype = pgis_abs,
-	finalfunc = pgis_geometry_accum_finalfn
-	);
-
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Accum (
 	sfunc = pgis_geometry_accum_transfn,
@@ -5026,7 +5018,7 @@ $BODY$
 		END LOOP;
 
 	-- We now have the diameter of the convex hull.  The following line returns it if desired.
-	-- RETURN MakeLine(PointN(ring,idx1),PointN(ring,idx2));
+	-- RETURN ST_MakeLine(ST_PointN(ring,idx1),ST_PointN(ring,idx2));
 
 	-- Now for the Minimum Bounding Circle.  Since we know the two points furthest from each
 	-- other, the MBC must go through those two points. Start with those points as a diameter of a circle.

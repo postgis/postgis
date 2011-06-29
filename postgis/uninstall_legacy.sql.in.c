@@ -17,6 +17,7 @@ DROP FUNCTION IF EXISTS Translate(geometry,float8,float8);
 DROP FUNCTION IF EXISTS TransScale(geometry,float8,float8,float8,float8);
 
 -- Other functions --
+DROP AGGREGATE IF EXISTS Accum(geometry);
 DROP FUNCTION IF EXISTS AddBBox(geometry);
 DROP FUNCTION IF EXISTS AddPoint(geometry,geometry);
 DROP FUNCTION IF EXISTS AddPoint(geometry,geometry, integer);
@@ -70,6 +71,7 @@ DROP AGGREGATE IF EXISTS Extent(geometry);
 DROP FUNCTION IF EXISTS Find_Extent(text,text);
 DROP FUNCTION IF EXISTS Find_Extent(text,text,text);
 --- End Extent related functions --
+
 DROP FUNCTION IF EXISTS EndPoint(geometry);
 DROP FUNCTION IF EXISTS ExteriorRing(geometry);
 DROP FUNCTION IF EXISTS Force_2d(geometry);
@@ -79,6 +81,29 @@ DROP FUNCTION IF EXISTS Force_3dz(geometry);
 DROP FUNCTION IF EXISTS Force_4d(geometry);
 DROP FUNCTION IF EXISTS Force_Collection(geometry);
 DROP FUNCTION IF EXISTS ForceRHR(geometry);
+DROP FUNCTION IF EXISTS GeomCollFromText(text, int4);
+DROP FUNCTION IF EXISTS GeomCollFromText(text);
+DROP FUNCTION IF EXISTS GeomCollFromWKB(bytea, int);
+DROP FUNCTION IF EXISTS GeomCollFromWKB(bytea);
+DROP FUNCTION IF EXISTS GeometryN(geometry,integer);
+DROP FUNCTION IF EXISTS GeomUnion(geometry,geometry);
+DROP FUNCTION IF EXISTS getbbox(geometry);
+DROP FUNCTION IF EXISTS Intersects(geometry,geometry);
+DROP FUNCTION IF EXISTS IsRing(geometry);
+DROP FUNCTION IF EXISTS IsSimple(geometry);
+DROP FUNCTION IF EXISTS length_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS length2d_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS length3d_spheroid(geometry, spheroid);
+DROP FUNCTION IF EXISTS LineMerge(geometry);
+DROP FUNCTION IF EXISTS locate_along_measure(geometry, float8);
+DROP FUNCTION IF EXISTS MakeBox2d(geometry, geometry);
+DROP AGGREGATE IF EXISTS MakeLine(geometry);
+DROP FUNCTION IF EXISTS MakeLine(geometry, geometry);
+DROP FUNCTION IF EXISTS MakePolygon(geometry, geometry[]);
+DROP FUNCTION IF EXISTS MakePolygon(geometry);
+DROP FUNCTION IF EXISTS MPolyFromWKB(bytea);
+DROP FUNCTION IF EXISTS multi(geometry);
+
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8, float8, float8);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, geometry, float8, float8, float8, float8);

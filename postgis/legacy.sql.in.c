@@ -129,7 +129,9 @@ CREATE OR REPLACE FUNCTION st_geometry(box3d_extent)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry_analyze(internal)
+-- these remarked out functions cause problems and no one uses them directly
+-- They should not be installed
+/** CREATE OR REPLACE FUNCTION st_geometry_analyze(internal)
 	RETURNS bool
 #ifdef GSERIALIZED_ON
 	AS 'MODULE_PATHNAME', 'geometry_analyze'
@@ -174,7 +176,7 @@ CREATE OR REPLACE FUNCTION st_spheroid_out(spheroid)
 	AS 'MODULE_PATHNAME','ellipsoid_out'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
-
+**/
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry_lt(geometry, geometry)
 	RETURNS bool
@@ -1799,6 +1801,13 @@ CREATE OR REPLACE FUNCTION zmflag(geometry)
 -- end old ogc names that have been replaced with new SQL-MM names --
 
 --- Start Aggregates and supporting functions --
+-- Deprecation in: 1.2.3
+CREATE AGGREGATE accum (
+	sfunc = pgis_geometry_accum_transfn,
+	basetype = geometry,
+	stype = pgis_abs,
+	finalfunc = pgis_geometry_accum_finalfn
+	);
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION collect(geometry, geometry)
 	RETURNS geometry
