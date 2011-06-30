@@ -4784,8 +4784,88 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 #ifdef GSERIALIZED_ON
 ---------------------------------------------------------------
--- GEOMETRY_COLUMNS view
+-- GEOMETRY_COLUMNS view support functions
 ---------------------------------------------------------------
+-- New helper function so we can keep list of valid geometry types in one place --
+-- Maps old names to pramsey beautiful names but can take old name or new name as input
+-- By default returns new name but can be overridden to return old name for old constraint like support
+CREATE OR REPLACE FUNCTION postgis_type_name(geomname varchar, coord_dimension integer, use_new_name boolean DEFAULT true) 
+	RETURNS varchar
+AS
+$$
+ SELECT CASE WHEN $3 THEN new_name ELSE old_name END As geomname
+ 	FROM 
+ 	( VALUES
+ 		 ('GEOMETRY', 'Geometry', 2) ,
+ 		 	('GEOMETRY', 'Geometry', 3) ,
+ 		 	('GEOMETRY', 'Geometry', 4) ,
+			('GEOMETRYCOLLECTION', 'GeometryCollection', 2) ,
+			('GEOMETRYCOLLECTION', 'GeometryCollectionZ', 3) ,
+			('GEOMETRYCOLLECTIONM', 'GeometryCollectionM', 3) ,
+			('GEOMETRYCOLLECTION', 'GeometryCollectionZM', 4) ,
+			('POINT', 'Point',2) ,
+			('POINTM','PointM',3) ,
+			('POINT', 'PointZ',3) ,
+			('POINT', 'PointZM',4) ,
+			('MULTIPOINT','MultiPoint',2) ,
+			('MULTIPOINT','MultiPointZ',3) ,
+			('MULTIPOINTM','MultiPointM',3) ,
+			('MULTIPOINT','MultiPointZM',4) ,
+			('POLYGON', 'Polygon',2) ,
+			('POLYGON', 'PolygonZ',3) ,
+			('POLYGONM', 'PolygonM',3) ,
+			('POLYGON', 'PolygonZM',4) ,
+			('MULTIPOLYGON', 'MultiPolygon',2) ,
+			('MULTIPOLYGON', 'MultiPolygonZ',3) ,
+			('MULTIPOLYGONM', 'MultiPolygonM',3) ,
+			('MULTIPOLYGON', 'MultiPolygonZM',4) ,
+			('MULTILINESTRING', 'MultiLineString',2) ,
+			('MULTILINESTRINGM', 'MultiLineStringM',3) ,
+			('MULTILINESTRING', 'MultiLineStringZM',4) ,
+			('LINESTRING', 'LineString',2) ,
+			('LINESTRINGM', 'LineStringM',3) ,
+			('LINESTRING', 'LineStringZM',4) ,
+			('CIRCULARSTRING', 'CircularString',2) ,
+			('CIRCULARSTRING', 'CircularStringZ',3) ,
+			('CIRCULARSTRINGM', 'CircularStringM',3) ,
+			('CIRCULARSTRING', 'CircularStringZM',4) ,
+			('COMPOUNDCURVE', 'CompoundCurve',2) ,
+			('COMPOUNDCURVE', 'CompoundCurveZ',3) ,
+			('COMPOUNDCURVEM', 'CompoundCurveM',3) ,
+			('COMPOUNDCURVE', 'CompoundCurveZM',4) ,
+			('CURVEPOLYGON', 'CompundPolygon',2) ,
+			('CURVEPOLYGON', 'CompundPolygonZ',3) ,
+			('CURVEPOLYGONM', 'CompundPolygonM',3) ,
+			('CURVEPOLYGON', 'CompundPolygonZM',4) ,
+			('MULTICURVE', 'MultiCurve',2 ) ,
+			('MULTICURVE', 'MultiCurveZ',3 ) ,
+			('MULTICURVEM', 'MultiCurveM',3 ) ,
+			('MULTICURVEM', 'MultiCurveZM',4 ) ,
+			('MULTISURFACE', 'MultiSurface', 2) ,
+			('MULTISURFACE', 'MultiSurfaceZ', 3) ,
+			('MULTISURFACEM', 'MultiSurfaceM', 3) ,
+			('MULTISURFACE', 'MultiSurfaceZM', 4) ,
+			('POLYHEDRALSURFACE', 'PolyhedralSurface',2) ,
+			('POLYHEDRALSURFACE', 'PolyhedralSurfaceZ',3) ,
+			('POLYHEDRALSURFACEM', 'PolyhedralSurfaceM',3) ,
+			('POLYHEDRALSURFACE', 'PolyhedralSurfaceZM',4) ,
+			('TRIANGLE', 'TriangleZ',3) ,
+			('TRIANGLEM', 'TriangleM',3) ,
+			('TRIANGLE', 'TriangleZM',4) ,
+			('TRIANGLE', 'Triangle',2) ,
+			('TRIANGLE', 'TriangleZ',3) ,
+			('TRIANGLEM', 'TriangleM',3) ,
+			('TRIANGLE', 'TriangleZM',4) ,
+			('TIN', 'TIN', 2),
+			('TIN', 'TinZ', 3),
+			('TIN', 'TinM', 3),
+			('TIN', 'TinZM', 4) )
+			 As g(old_name, new_name, coord_dimension)
+		WHERE (upper(old_name) = upper($1) OR upper(new_name) = upper($1))
+			AND coord_dimension = $2;
+$$
+language 'sql' IMMUTABLE STRICT COST 200;
+
 CREATE FUNCTION postgis_constraint_srid(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
 $$
 SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
@@ -4801,9 +4881,12 @@ SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integ
 $$
 LANGUAGE 'sql' STABLE STRICT;
 
+-- support function to pull out geometry type from constraint check
+-- will return pretty name instead of ugly name
 CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
 $$
-SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar
+SELECT  postgis_type_name(replace(split_part(s.consrc, '''', 2), ')', '')::varchar
+		, postgis_constraint_dims($1,$2,$3), true )
 		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 		 WHERE n.nspname = $1
 		 AND c.relname = $2
@@ -4830,6 +4913,7 @@ SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
 		 AND s.consrc LIKE '%ndims(% = %';
 $$
 LANGUAGE 'sql' STABLE STRICT;
+
 
 CREATE OR REPLACE VIEW geometry_columns_v AS 
  SELECT current_database()::varchar(256) AS f_table_catalog, 
