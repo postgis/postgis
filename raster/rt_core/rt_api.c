@@ -4746,7 +4746,6 @@ rt_raster_serialize(rt_raster raster) {
     /* Serialize bands now */
     for (i = 0; i < raster->numBands; ++i) {
         rt_band band = raster->bands[i];
-				RASTER_DEBUGF(3, "band %d at %p", i, raster->bands[i]);
         assert(NULL != band);
 
         rt_pixtype pixtype = band->pixtype;
@@ -4776,11 +4775,9 @@ rt_raster_serialize(rt_raster raster) {
         ptr += 1;
 
         /* Add padding (if needed) */
-        RASTER_DEBUGF(3, "modulus: %d", (((uintptr_t) ptr) % pixbytes));
         if (pixbytes > 1) {
             memset(ptr, '\0', pixbytes - 1);
             ptr += pixbytes - 1;
-						RASTER_DEBUG(3, "added padding");
         }
 
 #if POSTGIS_DEBUG_LEVEL > 2
