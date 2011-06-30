@@ -1289,22 +1289,22 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[] DEFAULT NULL)
 	BEGIN
 		num_bands := st_numbands($1);
 
-		-- JPEG only supports 8BUI pixeltype
-		FOR i IN 1..num_bands LOOP
-			IF st_bandpixeltype(rast, i) != '8BUI' THEN
-				RAISE EXCEPTION 'The pixel type of band % in the raster is not 8BUI.  The JPEG format can only be used with the 8BUI pixel type.', i;
-			END IF;
-		END LOOP;
-
 		-- JPEG only allows 1 or 3 bands
 		-- we only use the first
-		IF num_bands <> 1 AND num_bands <> 333 THEN
+		IF num_bands <> 1 AND num_bands <> 3 THEN
 			RAISE NOTICE 'The JPEG format only permits one or three bands.  The first band will be used.';
 			rast2 := st_band(rast, ARRAY[1]);
 			num_bands := st_numbands(rast);
 		ELSE
 			rast2 := rast;
 		END IF;
+
+		-- JPEG only supports 8BUI pixeltype
+		FOR i IN 1..num_bands LOOP
+			IF st_bandpixeltype(rast, i) != '8BUI' THEN
+				RAISE EXCEPTION 'The pixel type of band % in the raster is not 8BUI.  The JPEG format can only be used with the 8BUI pixel type.', i;
+			END IF;
+		END LOOP;
 
 		RETURN st_asgdalraster(rast2, 'JPEG', $2, NULL);
 	END;
