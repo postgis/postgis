@@ -46,6 +46,7 @@ PostGIS 2.0.0
   - ST_UnaryUnion (Sandro Santilli)
   - ST_Relate with boundary node rule (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_AsX3D (Regina Obe / Arrival 3D)
+  - ST_OffsetCurve (Sandro Santilli, Rafal Magda)
 
  * Enhancements *
 
