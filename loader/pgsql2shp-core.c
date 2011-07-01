@@ -1252,6 +1252,7 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->config = config;
 
 	/* Set any state defaults */
+	state->conn = NULL;
 	state->outtype = 's';
 	state->geom_oid = 0;
 	state->geog_oid = 0;
