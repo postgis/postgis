@@ -2497,7 +2497,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- when catalogue and schema is undefined.
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION DropGeometryColumn(varchar,varchar)
+CREATE OR REPLACE FUNCTION DropGeometryColumn(table_name varchar, column_name varchar)
 	RETURNS text
 	AS
 $$
@@ -2518,14 +2518,11 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- Drop a table and all its references in geometry_columns
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION DropGeometryTable(varchar, varchar,varchar)
+CREATE OR REPLACE FUNCTION DropGeometryTable(catalog_name varchar, schema_name varchar, table_name varchar)
 	RETURNS text
 	AS
 $$
 DECLARE
-	catalog_name alias for $1;
-	schema_name alias for $2;
-	table_name alias for $3;
 	real_schema name;
 
 BEGIN
@@ -2535,12 +2532,6 @@ BEGIN
 	ELSE
 		real_schema = schema_name;
 	END IF;
-
-	-- Remove refs from geometry_columns table
-	EXECUTE 'DELETE FROM geometry_columns WHERE ' ||
-		'f_table_schema = ' || quote_literal(real_schema) ||
-		' AND ' ||
-		' f_table_name = ' || quote_literal(table_name);
 
 	-- Remove table
 	EXECUTE 'DROP TABLE IF EXISTS '
@@ -2563,9 +2554,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- Drop a table and all its references in geometry_columns
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION DropGeometryTable(varchar,varchar) RETURNS text AS
+CREATE OR REPLACE FUNCTION DropGeometryTable(schema_name varchar, table_name varchar) RETURNS text AS
 $$ SELECT DropGeometryTable('',$1,$2) $$
-LANGUAGE 'sql' WITH (isstrict);
+LANGUAGE 'sql' VOLATILE STRICT;
 
 -----------------------------------------------------------------------
 -- DROPGEOMETRYTABLE
@@ -2576,7 +2567,7 @@ LANGUAGE 'sql' WITH (isstrict);
 -- For PG>=73 use current_schema()
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION DropGeometryTable(varchar) RETURNS text AS
+CREATE OR REPLACE FUNCTION DropGeometryTable(table_name varchar) RETURNS text AS
 $$ SELECT DropGeometryTable('','',$1) $$
 LANGUAGE 'sql' VOLATILE STRICT;
 
