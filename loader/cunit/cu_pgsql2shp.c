@@ -66,9 +66,10 @@ int clean_pgsql2shp_suite(void)
 void test_ShpDumperCreate(void)
 {	
 	config = (SHPDUMPERCONFIG*)calloc(1, sizeof(SHPDUMPERCONFIG));
+	set_config_defaults(config);
 	state = ShpDumperCreate(config);
 	CU_ASSERT_PTR_NOT_NULL(state);
-	CU_ASSERT_EQUAL(state->outtype, 's');
+	CU_ASSERT_EQUAL(state->config->fetchsize, 100);
 }
 
 void test_ShpDumperDestroy(void)
