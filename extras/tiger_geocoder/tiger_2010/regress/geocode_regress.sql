@@ -1,3 +1,4 @@
+--$Id$
 \timing
 -- Limit 1
 SELECT pprint_addy(addy) As address, ST_AsText(geomout) As pt, rating FROM geocode('529 Main Street, Boston, MA 02129',1);

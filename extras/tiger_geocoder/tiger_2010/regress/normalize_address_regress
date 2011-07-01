@@ -1,18 +1,12 @@
-    3937 |              | 43RD       | Ave              | S             |          | MINNEAPOLIS | MN          | 55406 | t
-
-     529 |              | Main       | St               |               |          | Boston   | MA          | 02129 | t
-
-     529 |              | Main       | St               |               |          | Boston   | MA          | 02129 | t
-
-     529 |              | Main       | St               |               |          | Boston   | MA          |     | t
-
-     529 |              | Main       | St               |               |          | Boston   | MA          | 021 | t
-
-     212 |              | 3rd        | Ave              | N             |          | MINNEAPOLIS | MN          | 553404 | t
-
-     212 |              | 3rd        | Ave              | N             |          | MINNEAPOLIS | MN          | 55401 | t
-
-     949 | N            | 3rd        | St               |               |          | New Hyde Park | NY          | 11040 | t
-
-     949 | N            | 3rd        | St               |               |          | New Hyde Park | NY          | 11040 | t
-
+#887|2450|N|COLORADO|St|||PHILADELPHIA|PA|19132|t
+#1051|212||3rd|Ave|N|Suite 560|Minneapolis|MN|55401|t
+#1051|3937||43RD|Ave|S||MINNEAPOLIS|MN|55406|t
+#1051|212|N|3rd|Ave|||Minneapolis|MN|55401|t
+529||Main|St|||Boston|MA|02129|t
+529||Main|St|||Boston|MA|02129|t
+529||Main|St|||Boston|MA||t
+#1073|212||3rd|Ave|N||MINNEAPOLIS|MN|553404|t
+#1073|212||3rd|Ave|N||MINNEAPOLIS|MN|55401|t
+#1073|529||Main|St|||Boston|MA|021|t
+#1086|949|N|3rd|St|||New Hyde Park|NY|11040|t
+#1086|949|N|3rd|St|||New Hyde Park|NY|11040|t
