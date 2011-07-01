@@ -84,3 +84,34 @@ using these functions that are currently being used in views and sql functions.
 If you run it in PgAdmin, the whole script will rollback not uninstalling anything. So you should run it in PSQL mode.
 If you get errors in uninstall_legacy.sql -- convert those views and sql functions to use the newer equivalent functions
 and then rerun the script again.
+
+BENCHMARK NOTES
+------------------------------
+Querying a whole geometry_columns table of 200-240 someodd records (tables/views all constraint based)( On windows 9.1beta2)
+Speed for this set of data I'm okay with though a bit slower
+I think the main issue why fancy is slower is that to get the fancy name
+I need to do a double call to get dims since fancy_name needs dims as well
+This I expect to be much faster using typ_mod
+SELECT * FROM geometry_columns_v; -- 2063 ms, 1063 ms (using fancy name)
+SELECT * FROM geometry_columns_v2; -- 656 ms (this is not using fancy name) 
+
+SELECT * FROM geometry_columns; -- original static table 31ms - 150 ms
+
+-- Doing single selects of a table
+-- constraint based one -- 76ms, 46ms
+SELECT * FROM geometry_columns_v where f_table_name = 'streets';
+
+-- One I converted to typmod -- 76 ms, 48 ms (first call was slower)
+SELECT * FROM geometry_columns_v where f_table_name = 'buildings_1995';
+
+--Filter query for schema --
+-- these are constraint based (7 rows) -- 76 ms, 240 ms, 68 ms
+SELECT * FROM geometry_columns_v where f_table_schema = 'tiger';
+
+-- CONVERTING TO Typmod as I feared is slow for tables with data.  I think it follows the same model 
+-- as converting varchar(100) to text or varchar(100) to varchar(300) etc.
+-- This maybe can be remedied somehow in 9.1 since it hasn't been released
+-- (haven't tried doing this exercise in 8.4, 9.0)
+-- This took  36,018 ms for table of 350,572 records.  I assume it will be linear with number of records.
+ALTER TABLE buildings_1995 ALTER COLUMN the_geom TYPE geometry(MultiPolygon,2249);
+
