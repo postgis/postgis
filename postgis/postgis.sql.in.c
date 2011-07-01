@@ -4873,7 +4873,7 @@ $$
 $$
 language 'sql' IMMUTABLE STRICT COST 200;
 
-CREATE FUNCTION postgis_constraint_srid(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
+CREATE OR REPLACE FUNCTION postgis_constraint_srid(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
 $$
 SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
 		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
