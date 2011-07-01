@@ -294,17 +294,12 @@ Return an offset line at a given distance and side from an input line.
 
 			<refsynopsisdiv>
 				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
-					<paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
-				  </funcprototype>
 
 				  <funcprototype>
 					<funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
 					<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
 					<paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>style_parameters</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>style_parameters=''</parameter></paramdef>
 				  </funcprototype>
 				  
 				</funcsynopsis>
