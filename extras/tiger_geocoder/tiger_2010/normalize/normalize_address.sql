@@ -128,6 +128,9 @@ BEGIN
   IF zipString IS NOT NULL THEN
     fullStreet := substring(rawInput from '(.*)'
         || ws || '+' || cull_null(zipString) || '[- ]?([0-9]{4})?$');
+    /** strip off any trailing  spaces or ,**/
+    fullStreet :=  btrim(fullStreet, ',');
+    
   ELSE
     fullStreet := rawInput;
   END IF;

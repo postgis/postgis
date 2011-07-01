@@ -31,7 +31,7 @@ BEGIN
   ws := E'[ ,.\n\f\t]';
 
   IF stateAbbrev IS NOT NULL THEN
-    lstate := statefp FROM state WHERE state.stusps = stateAbbrev;
+    lstate := statefp FROM state_lookup WHERE abbrev = stateAbbrev;
   END IF;
   lstate := COALESCE(lstate,'');
 

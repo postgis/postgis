@@ -26,7 +26,8 @@ BEGIN
   -- this is to handle case where people use , instead of space to separate state and zip
   -- such as '2450 N COLORADO ST, PHILADELPHIA, PA, 19132' instead of '2450 N COLORADO ST, PHILADELPHIA, PA 19132'
   
-  tempString := regexp_replace(rawInput, E'(.*)' || ws || '+', E'\\1');
+  --tempString := regexp_replace(rawInput, E'(.*)' || ws || '+', E'\\1');
+  tempString := btrim(rawInput, ', ');
   -- Separate out the last word of the state, and use it to compare to
   -- the state lookup table to determine the entire name, as well as the
   -- abbreviation associated with it.  The zip code may or may not have

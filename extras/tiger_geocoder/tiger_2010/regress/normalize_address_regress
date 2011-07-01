@@ -2,7 +2,7 @@
 
      529 |              | Main       | St               |               |          | Boston   | MA          | 02129 | t
 
-     529 |              | Main       | St               |               |          | Boston,MA |             | 02129 | t
+     529 |              | Main       | St               |               |          | Boston   | MA          | 02129 | t
 
      529 |              | Main       | St               |               |          | Boston   | MA          |     | t
 
@@ -11,4 +11,8 @@
      212 |              | 3rd        | Ave              | N             |          | MINNEAPOLIS | MN          | 553404 | t
 
      212 |              | 3rd        | Ave              | N             |          | MINNEAPOLIS | MN          | 55401 | t
+
+     949 | N            | 3rd        | St               |               |          | New Hyde Park | NY          | 11040 | t
+
+     949 | N            | 3rd        | St               |               |          | New Hyde Park | NY          | 11040 | t
 
