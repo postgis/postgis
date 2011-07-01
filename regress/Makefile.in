@@ -96,7 +96,6 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 	# ST_HausdorffDistance, ST_Buffer(params)
 	TESTS += \
 		hausdorff \
-		offsetcurve \
 		regress_buffer_params
 endif
 
@@ -105,6 +104,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 	# ST_RelateMatch, ST_IsValidDetail, ST_SharedPaths ,
 	# ST_Snap, ST_UnaryUnion, ST_MakeClean 
 	TESTS += \
+		offsetcurve \
 		relatematch  \
 		isvaliddetail \
 		sharedpaths \
