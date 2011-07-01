@@ -3787,18 +3787,16 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 	case GEOS_POINT:
 		POSTGIS_DEBUG(4, "lwgeom_from_geometry: it's a Point");
 		cs = GEOSGeom_getCoordSeq(geom);
-/* FIXME: dunno how to represent an empty point */
-if ( GEOSisEmpty(geom) )
-	return (LWGEOM*)lwcollection_construct_empty(COLLECTIONTYPE, SRID, want3d, 0);
+		if ( GEOSisEmpty(geom) )
+		  return (LWGEOM*)lwpoint_construct_empty(SRID, want3d, 0);
 		pa = ptarray_from_GEOSCoordSeq(cs, want3d);
 		return (LWGEOM *)lwpoint_construct(SRID, NULL, pa);
 
 	case GEOS_LINESTRING:
 	case GEOS_LINEARRING:
 		POSTGIS_DEBUG(4, "lwgeom_from_geometry: it's a LineString or LinearRing");
-/* FIXME: dunno how to represent an empty linestring */
-if ( GEOSisEmpty(geom) )
-	return (LWGEOM*)lwcollection_construct_empty(COLLECTIONTYPE, SRID, want3d, 0);
+		if ( GEOSisEmpty(geom) )
+		  return (LWGEOM*)lwline_construct_empty(SRID, want3d, 0);
 
 		cs = GEOSGeom_getCoordSeq(geom);
 		pa = ptarray_from_GEOSCoordSeq(cs, want3d);
@@ -3806,10 +3804,8 @@ if ( GEOSisEmpty(geom) )
 
 	case GEOS_POLYGON:
 		POSTGIS_DEBUG(4, "lwgeom_from_geometry: it's a Polygon");
-
-/* FIXME: dunno how to represent an empty polygon */
-if ( GEOSisEmpty(geom) )
-	return (LWGEOM*)lwcollection_construct_empty(COLLECTIONTYPE, SRID, want3d, 0);
+		if ( GEOSisEmpty(geom) )
+		  return (LWGEOM*)lwpoly_construct_empty(SRID, want3d, 0);
 		ngeoms = GEOSGetNumInteriorRings(geom);
 		ppaa = lwalloc(sizeof(POINTARRAY *)*(ngeoms+1));
 		g = GEOSGetExteriorRing(geom);

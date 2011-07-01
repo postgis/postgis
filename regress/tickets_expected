@@ -22,7 +22,7 @@ ERROR:  Geometry argument does not have an 'M' ordinate
 #124a|COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,30 5),CIRCULARSTRING(30 5,34 56,67 89))
 ERROR:  incontinuous compound curve
 HINT:  "...0 6),CIRCULARSTRING(30 5,34 56,67 89)" <-- parse error at position 85 within geometry
-#145a|0107000020E610000000000000
+#145a|0103000020E610000000000000
 #145b|0
 #146|0|t|GEOMETRYCOLLECTION(LINESTRING(0 0,-1 -1),MULTIPOINT(1 2,2 3))
 ERROR:  Invalid hex string, length (267) has to be a multiple of two!
