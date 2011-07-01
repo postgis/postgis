@@ -4881,6 +4881,21 @@ SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integ
 $$
 LANGUAGE 'sql' STABLE STRICT;
 
+CREATE OR REPLACE FUNCTION postgis_constraint_dims(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
+$$
+SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
+		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+		 WHERE n.nspname = $1
+		 AND c.relname = $2
+		 AND a.attname = $3
+		 AND a.attrelid = c.oid
+		 AND s.connamespace = n.oid
+		 AND s.conrelid = c.oid
+		 AND a.attnum = ANY (s.conkey)
+		 AND s.consrc LIKE '%ndims(% = %';
+$$
+LANGUAGE 'sql' STABLE STRICT;
+
 -- support function to pull out geometry type from constraint check
 -- will return pretty name instead of ugly name
 CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
@@ -4898,22 +4913,6 @@ SELECT  postgis_type_name(replace(split_part(s.consrc, '''', 2), ')', '')::varch
 		 AND s.consrc LIKE '%geometrytype(% = %';
 $$
 LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION postgis_constraint_dims(geomschema text, geomtable text, geomcolumn text) RETURNS integer AS
-$$
-SELECT  replace(split_part(s.consrc, ' = ', 2), ')', '')::integer
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
-		 WHERE n.nspname = $1
-		 AND c.relname = $2
-		 AND a.attname = $3
-		 AND a.attrelid = c.oid
-		 AND s.connamespace = n.oid
-		 AND s.conrelid = c.oid
-		 AND a.attnum = ANY (s.conkey)
-		 AND s.consrc LIKE '%ndims(% = %';
-$$
-LANGUAGE 'sql' STABLE STRICT;
-
 
 CREATE OR REPLACE VIEW geometry_columns_v AS 
  SELECT current_database()::varchar(256) AS f_table_catalog, 
