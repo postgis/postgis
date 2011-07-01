@@ -1259,6 +1259,11 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->schema = NULL;
 	state->table = NULL;
 	state->geo_col_name = NULL;
+	state->fetch_query = NULL;
+	state->main_scan_query = NULL;
+	state->dbffieldnames = NULL;
+	state->dbffieldtypes = NULL;
+	state->pgfieldnames = NULL;
 	state->column_map_pgfieldnames = NULL;
 	state->column_map_dbffieldnames = NULL;
 	state->column_map_size = 0;
@@ -2242,15 +2247,24 @@ ShpDumperDestroy(SHPDUMPERSTATE *state)
 			PQfinish(state->conn);
 
 		/* Free the query strings */
-		free(state->fetch_query);
-		free(state->main_scan_query);
+		if (state->fetch_query)
+			free(state->fetch_query);
+		if (state->main_scan_query)
+			free(state->main_scan_query);
 
 		/* Free the DBF information fields */
-		for (i = 0; i < state->fieldcount; i++)
-			free(state->dbffieldnames[i]);
-		free(state->dbffieldnames);
-		free(state->dbffieldtypes);
-		free(state->pgfieldnames);
+		if (state->dbffieldnames)
+		{
+			for (i = 0; i < state->fieldcount; i++)
+				free(state->dbffieldnames[i]);
+			free(state->dbffieldnames);
+		}
+		
+		if (state->dbffieldtypes)
+			free(state->dbffieldtypes);
+		
+		if (state->pgfieldnames)
+			free(state->pgfieldnames);
 
 		/* Free any column map fieldnames if specified */
 		if (state->column_map_size > 0)
