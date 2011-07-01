@@ -3086,6 +3086,13 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,text)
 	   $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0 - requires GEOS-3.2 or higher
+CREATE OR REPLACE FUNCTION ST_OffsetCurve(line geometry, distance float8, params cstring DEFAULT '')
+       RETURNS geometry
+       AS 'MODULE_PATHNAME','offsetcurve'
+       LANGUAGE 'C' IMMUTABLE STRICT
+       COST 100;
+
 -- PostGIS equivalent function: convexhull(geometry)
 CREATE OR REPLACE FUNCTION ST_ConvexHull(geometry)
 	RETURNS geometry

@@ -283,6 +283,101 @@ MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 
 			  </refsection>
 		</refentry>
 
+		<refentry id="ST_OffsetCurve">
+			<refnamediv>
+				<refname>ST_OffsetCurve</refname>
+
+				<refpurpose>
+Return an offset line at a given distance and side from an input line.
+			</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>style_parameters</parameter></paramdef>
+				  </funcprototype>
+				  
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			  <refsection>
+				<title>Description</title>
+
+				<para>
+Return an offset line at a given distance and side from an input line.
+All points of the returned geometries are not further than the given
+distance from the input geometry.
+				</para>
+
+				<para>
+For positive distance the offset will be at the left side of the input line
+and retain the same direction. For a negative distance it'll be at the right
+side and in the opposite direction.
+				</para>
+
+				<para>
+Availability: 2.0 - requires GEOS &gt;= 3.2, improved with GEOS &gt;= 3.3
+				</para>
+
+				<para>
+The optional third parameter allows specifying a list of blank-separated
+key=value pairs to tweak operations as follows:
+<itemizedlist>
+<listitem>
+<para>'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).</para>
+</listitem>
+<listitem>
+<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is also accepted as a synonym for 'mitre'.</para>
+</listitem>
+<listitem>
+<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.</para>
+</listitem>
+</itemizedlist>
+				</para>
+
+				<para>
+Units of distance are measured in units of the spatial reference system.
+				</para>
+
+				<para>The inputs can only be LINESTRINGS.</para>
+
+				<para>Performed by the GEOS module.</para>
+
+				<note><para>
+This function ignores the third dimension (z) and will always give a
+2-d result even when presented with a 3d-geometry.</para></note>
+
+			</refsection>
+
+			<refsection>
+			<title>Examples</title>
+<para>Compute an open buffer around roads</para>
+				<programlisting>
+SELECT ST_Union(
+ ST_OffsetCurve(f.the_geom,  f.width/2, "quad_segs=4 join=round"),
+ ST_OffsetCurve(f.the_geom, -f.width/2, "quad_segs=4 join=round")
+) as track
+FROM someroadstable;
+
+				</programlisting>
+			</refsection>
+
+			  <refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_Buffer" /></para>
+			  </refsection>
+		</refentry>
+
 		<refentry id="ST_BuildArea">
 		  <refnamediv>
 			<refname>ST_BuildArea</refname>

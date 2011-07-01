@@ -46,6 +46,7 @@ Datum isvalid(PG_FUNCTION_ARGS);
 Datum isvalidreason(PG_FUNCTION_ARGS);
 Datum isvaliddetail(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
+Datum offsetcurve(PG_FUNCTION_ARGS);
 Datum intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS);
@@ -1375,6 +1376,200 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result);
 }
+
+PG_FUNCTION_INFO_V1(offsetcurve);
+Datum offsetcurve(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION >= 32
+	PG_LWGEOM	*geom1;
+	double	size;
+	GEOSGeometry *g1, *g3;
+	PG_LWGEOM *result;
+	int quadsegs = 8; /* the default */
+	int nargs;
+
+	enum
+	{
+		JOIN_ROUND = 1,
+		JOIN_MITRE = 2,
+		JOIN_BEVEL = 3
+	};
+	static const double DEFAULT_MITRE_LIMIT = 5.0;
+	static const int DEFAULT_JOIN_STYLE = JOIN_ROUND;
+
+	double mitreLimit = DEFAULT_MITRE_LIMIT;
+	int joinStyle  = DEFAULT_JOIN_STYLE;
+	char *param;
+	char *params = NULL;
+
+
+	PROFSTART(PROF_QRUN);
+	// geom arg
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	// distance/size/direction arg
+	size = PG_GETARG_FLOAT8(1);
+
+	/*
+	 * For distance = 0 we just return the input.
+	 * Note that due to a bug, GEOS 3.3.0 would return EMPTY.
+	 * See http://trac.osgeo.org/geos/ticket/454
+	 */
+	if ( size == 0 ) {
+		PG_RETURN_POINTER(geom1);
+	}
+	
+	
+
+	nargs = PG_NARGS();
+
+	initGEOS(lwnotice, lwnotice);
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	PROFSTART(PROF_P2G1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+	if ( ! g1 ) {
+		lwerror("Geometry could not be converted to GEOS: %s",
+		        lwgeom_geos_errmsg);
+		PG_RETURN_NULL();
+	}
+	PROFSTOP(PROF_P2G1);
+	
+	// options arg (optional)
+	if (nargs > 2)
+	{
+		/* We strdup `cause we're going to modify it */
+		params = pstrdup(PG_GETARG_CSTRING(2));
+
+		POSTGIS_DEBUGF(3, "Params: %s", params);
+
+		for (param=params; ; param=NULL)
+		{
+			char *key, *val;
+			param = strtok(param, " ");
+			if ( param == NULL ) break;
+			POSTGIS_DEBUGF(3, "Param: %s", param);
+
+			key = param;
+			val = strchr(key, '=');
+			if ( val == NULL || *(val+1) == '\0' )
+			{
+				lwerror("Missing value for buffer "
+				        "parameter %s", key);
+				break;
+			}
+			*val = '\0';
+			++val;
+
+			POSTGIS_DEBUGF(3, "Param: %s : %s", key, val);
+
+			if ( !strcmp(key, "join") )
+			{
+				if ( !strcmp(val, "round") )
+				{
+					joinStyle = JOIN_ROUND;
+				}
+				else if ( !strcmp(val, "mitre") ||
+				          !strcmp(val, "miter")    )
+				{
+					joinStyle = JOIN_MITRE;
+				}
+				else if ( !strcmp(val, "bevel") )
+				{
+					joinStyle = JOIN_BEVEL;
+				}
+				else
+				{
+					lwerror("Invalid buffer end cap "
+					        "style: %s (accept: "
+					        "'round', 'mitre', 'miter' "
+					        " or 'bevel'"
+					        ")", val);
+					break;
+				}
+			}
+			else if ( !strcmp(key, "mitre_limit") ||
+			          !strcmp(key, "miter_limit")    )
+			{
+				/* mitreLimit is a float */
+				mitreLimit = atof(val);
+			}
+			else if ( !strcmp(key, "quad_segs") )
+			{
+				/* quadrant segments is an int */
+				quadsegs = atoi(val);
+			}
+			else
+			{
+				lwerror("Invalid buffer parameter: %s (accept: "
+				        "'join', 'mitre_limit', "
+				        "'miter_limit and "
+				        "'quad_segs')", key);
+				break;
+			}
+		}
+
+		pfree(params); /* was pstrduped */
+
+		POSTGIS_DEBUGF(3, "joinStyle:%d mitreLimit:%g",
+		               joinStyle, mitreLimit);
+
+	}
+
+	PROFSTART(PROF_GRUN);
+
+#if POSTGIS_GEOS_VERSION < 33
+	g3 = GEOSSingleSidedBuffer(g1, size < 0 ? -size : size,
+	                           quadsegs, joinStyle, mitreLimit,
+	                           size < 0 ? 0 : 1);
+#else
+	g3 = GEOSOffsetCurve(g1, size, quadsegs, joinStyle, mitreLimit);
+#endif
+	PROFSTOP(PROF_GRUN);
+
+	if (g3 == NULL)
+	{
+		lwerror("GEOSOffsetCurve: %s", lwgeom_geos_errmsg);
+		GEOSGeom_destroy(g1);
+		PG_RETURN_NULL(); /* never get here */
+	}
+
+	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
+
+	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
+
+	PROFSTART(PROF_G2P);
+	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
+	PROFSTOP(PROF_G2P);
+
+	if (result == NULL)
+	{
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g3);
+		lwerror("ST_OffsetCurve() threw an error (result postgis geometry formation)!");
+		PG_RETURN_NULL(); /* never get here */
+	}
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g3);
+
+
+	/* compressType(result); */
+
+	PROFSTOP(PROF_QRUN);
+	PROFREPORT("geos",geom1, NULL, result);
+
+	PG_FREE_IF_COPY(geom1, 0);
+
+	PG_RETURN_POINTER(result);
+#else /* POSTGIS_GEOS_VERSION < 32 */
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "ST_OffsetCurve function "
+	        "(needs 3.2 or higher)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL(); /* never get here */
+#endif /* POSTGIS_GEOS_VERSION < 32 */	
+}
+
 
 PG_FUNCTION_INFO_V1(intersection);
 Datum intersection(PG_FUNCTION_ARGS)

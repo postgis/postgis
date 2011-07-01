@@ -96,6 +96,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 	# ST_HausdorffDistance, ST_Buffer(params)
 	TESTS += \
 		hausdorff \
+		offsetcurve \
 		regress_buffer_params
 endif
 
