@@ -9,6 +9,8 @@ SELECT 't4', ST_AsEWKT(ST_OffsetCurve('SRID=42;LINESTRING(10 0, 0 0)', -10));
 SELECT 't5', ST_AsEWKT(ST_SnapToGrid(ST_OffsetCurve(
  'SRID=42;LINESTRING(0 0, 10 0, 10 10)', -10),
 1));
+SELECT 't5b', ST_AsEWKT(ST_OffsetCurve(
+ 'SRID=42;LINESTRING(0 0, 10 0, 10 10)', 10));
 SELECT 't6', ST_AsEWKT(ST_SnapToGrid(ST_OffsetCurve(
  'SRID=42;LINESTRING(0 0, 10 0, 10 10)', -10,
  'quad_segs=2'),
