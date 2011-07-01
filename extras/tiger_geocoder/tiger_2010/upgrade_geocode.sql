@@ -104,4 +104,3 @@ CREATE TYPE norm_addy AS (
 -- Reverse Geocode API, called by user
 \i geocode/reverse_geocode.sql
 COMMIT;
-CREATE INDEX idx_tiger_addr_least_address ON addr USING btree (least_hn(fromhn,tohn));
