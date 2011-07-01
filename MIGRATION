@@ -30,6 +30,31 @@ a table to a view.
   * Applications reading metadata from ``geometry_columns`` should expect
     that the geometry type strings will be mixed case and include the
     dimensionality modifiers. For example: PointZM, MultiLineStringZ.
+    
+  * If you have views built the old constraint way or that use processing functions to return new geometries, 
+  	they will not register correctly in geometry_columns.  They will all appear as Geometry with srid=0.
+  	In order to fix this, you have to cast the geometries in the view.
+  	So for example, If you had a view that looked like this:
+  	CREATE OR REPLACE VIEW vwparcels AS
+  		SELECT gid, parcel_id, 
+  			ST_Transform(geom, 26986) As geom_26986, -- a transformed geometry
+  			geom, --one that used constraints before
+  			ST_Centroid(geom) As cent_geom -- one that used processing function
+  		FROM parcels;
+  		
+  	You will need to drop and recreate the view. 
+  	Sadly CREATE OR REPLACE will not work since the casting
+  	makes geometries be treated as a different type as far as CREATE OR REPLACE is concerned
+  	---note for this might help to lookup in geometry_columns to see the raw table srid/type
+  	Alternatively you can convert some of your table columns to typmod, then you would
+  	only need to CAST when doing processing.  This however still requires you rebuild your dependent views
+  	DROP VIEW vwparcels;
+  	CREATE OR REPLACE VIEW vwparcels AS
+  		SELECT gid, parcel_id, 
+  			ST_Transform(geom, 26986)::geometry(MultiPolygon,26986) As geom_26986,
+  			geom::geometry(MultiPolygon, 2249) As geom,
+  			ST_Centroid(geom)::geometry(Point,2249) As cent_geom
+  		FROM parcels;
 
     
 Restoring data from prior versions -- GOTCHAS
@@ -51,3 +76,11 @@ The other issue with having the old functions is the old functions you restore w
 new postgis geometry structures.
 
 If you still require legacy functions, you can install the legacy.sql file after the uninstall_legacy.sql.
+
+GOTCHA with uninstall_legacy.sql
+--------------------------------
+The uninstall_legacy.sql will not be able to uninstall functions and will output errors detailing objects 
+using these functions that are currently being used in views and sql functions.
+If you run it in PgAdmin, the whole script will rollback not uninstalling anything. So you should run it in PSQL mode.
+If you get errors in uninstall_legacy.sql -- convert those views and sql functions to use the newer equivalent functions
+and then rerun the script again.
