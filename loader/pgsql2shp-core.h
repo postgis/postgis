@@ -201,7 +201,7 @@ typedef struct shp_dumper_state
 
 
 /* Externally accessible functions */
-void set_config_defaults(SHPDUMPERCONFIG *config);
+void set_dumper_config_defaults(SHPDUMPERCONFIG *config);
 char *shapetypename(int num);
 
 SHPDUMPERSTATE *ShpDumperCreate(SHPDUMPERCONFIG *config);

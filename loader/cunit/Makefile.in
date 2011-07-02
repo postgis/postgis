@@ -42,6 +42,7 @@ LDFLAGS = -lm $(GETTEXT_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(ICONV_LDFLAGS) $(CUNIT_LD
 # Object files
 OBJS=	\
 	cu_pgsql2shp.o \
+	cu_shp2pgsql.o \
 	cu_tester.o
 
 LOADER_OBJS= \
@@ -50,7 +51,8 @@ LOADER_OBJS= \
 	../getopt.o \
 	../shpcommon.o \
 	../safileio.o \
-	../pgsql2shp-core.o
+	../pgsql2shp-core.o \
+	../shp2pgsql-core.o
 
 # We test this variable later to see if we're building the GUI
 gtk_build = @GTK_BUILD@

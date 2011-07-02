@@ -30,13 +30,6 @@ typedef struct struct_ring
 } Ring;
 
 
-/* liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
-void lwgeom_init_allocators()
-{
-	lwgeom_install_default_allocators();
-}
-
-
 /*
  * Internal functions
  */
@@ -750,7 +743,7 @@ strtolower(char *s)
 
 /* Default configuration settings */
 void
-set_config_defaults(SHPLOADERCONFIG *config)
+set_loader_config_defaults(SHPLOADERCONFIG *config)
 {
 	config->opt = 'c';
 	config->table = NULL;

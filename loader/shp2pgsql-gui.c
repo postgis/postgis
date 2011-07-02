@@ -2491,7 +2491,7 @@ main(int argc, char *argv[])
 
 	/* Parse command line options and set configuration */
 	config = malloc(sizeof(SHPLOADERCONFIG));
-	set_config_defaults(config);
+	set_loader_config_defaults(config);
 
 	/* Here we override any defaults for the GUI */
 	config->createindex = 1;

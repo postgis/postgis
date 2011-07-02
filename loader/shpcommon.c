@@ -15,6 +15,14 @@
 #include <stdlib.h>
 #include "shpcommon.h"
 
+
+/* liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
+void lwgeom_init_allocators()
+{
+	lwgeom_install_default_allocators();
+}
+
+
 /**
  * Escape strings that are to be used as part of a PostgreSQL connection string. If no 
  * characters require escaping, simply return the input pointer. Otherwise return a 

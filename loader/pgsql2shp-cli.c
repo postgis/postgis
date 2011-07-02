@@ -67,7 +67,7 @@ main(int argc, char **argv)
 
 	/* Parse command line options and set configuration */
 	config = malloc(sizeof(SHPDUMPERCONFIG));
-	set_config_defaults(config);
+	set_dumper_config_defaults(config);
 
 	while ((c = pgis_getopt(argc, argv, "bf:h:du:p:P:g:rkm:")) != EOF)
 	{

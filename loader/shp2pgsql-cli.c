@@ -83,7 +83,7 @@ main (int argc, char **argv)
 
 	/* Parse command line options and set configuration */
 	config = malloc(sizeof(SHPLOADERCONFIG));
-	set_config_defaults(config);
+	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
 	while ((c = pgis_getopt(argc, argv, "acdeg:iknpr:s:wDGIN:ST:W:X:")) != EOF)

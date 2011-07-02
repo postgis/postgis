@@ -81,13 +81,6 @@ static const char * goodDBFValue(const char *in, char fieldType);
 char *convert_bytes_to_hex(uchar *ewkb, size_t size);
 
 
-/* liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
-void lwgeom_init_allocators()
-{
-	lwgeom_install_default_allocators();
-}
-
-
 static SHPObject *
 create_point(SHPDUMPERSTATE *state, LWPOINT *lwpoint)
 {
@@ -1126,7 +1119,7 @@ getTableInfo(SHPDUMPERSTATE *state)
 
 /* Default configuration settings */
 void
-set_config_defaults(SHPDUMPERCONFIG *config)
+set_dumper_config_defaults(SHPDUMPERCONFIG *config)
 {
 	config->conn = malloc(sizeof(SHPCONNECTIONCONFIG));
 	config->conn->host = NULL;

@@ -222,7 +222,7 @@ typedef struct shp_loader_state
 /* Externally accessible functions */
 void strtolower(char *s);
 void vasbappend(stringbuffer_t *sb, char *fmt, ... );
-void set_config_defaults(SHPLOADERCONFIG *config);
+void set_loader_config_defaults(SHPLOADERCONFIG *config);
 
 SHPLOADERSTATE *ShpLoaderCreate(SHPLOADERCONFIG *config);
 int ShpLoaderOpenShape(SHPLOADERSTATE *state);
