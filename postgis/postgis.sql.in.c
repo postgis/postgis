@@ -1589,114 +1589,6 @@ CREATE TABLE spatial_ref_sys (
 	 proj4text varchar(2048)
 );
 
--------------------------------------------------------------------
--- GEOMETRY_COLUMNS
--------------------------------------------------------------------
-CREATE TABLE geometry_columns (
-	f_table_catalog varchar(256) not null,
-	f_table_schema varchar(256) not null,
-	f_table_name varchar(256) not null,
-	f_geometry_column varchar(256) not null,
-	coord_dimension integer not null,
-	srid integer not null,
-	type varchar(30) not null,
-	CONSTRAINT geometry_columns_pk primary key (
-		f_table_catalog,
-		f_table_schema,
-		f_table_name,
-		f_geometry_column )
-) WITH OIDS;
-
-
------------------------------------------------------------------------
--- RENAME_GEOMETRY_TABLE_CONSTRAINTS()
------------------------------------------------------------------------
--- This function has been obsoleted for the difficulty in
--- finding attribute on which the constraint is applied.
--- AddGeometryColumn will name the constraints in a meaningful
--- way, but nobody can rely on it since old postgis versions did
--- not do that.
------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION rename_geometry_table_constraints() RETURNS text
-AS
-$$
-SELECT 'rename_geometry_table_constraint() is obsoleted'::text
-$$
-LANGUAGE 'SQL' IMMUTABLE;
-
------------------------------------------------------------------------
--- FIX_GEOMETRY_COLUMNS()
------------------------------------------------------------------------
--- This function will:
---
---	o try to fix the schema of records with an integer one
---		(for PG>=73)
---
---	o link records to system tables through attrelid and varattnum
---		(for PG<75)
---
---	o delete all records for which no linking was possible
---		(for PG<75)
---
---
------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION fix_geometry_columns() RETURNS text
-AS
-$$
-DECLARE
-	mislinked record;
-	result text;
-	linked integer;
-	deleted integer;
-	foundschema integer;
-BEGIN
-
-	-- Since 7.3 schema support has been added.
-	-- Previous postgis versions used to put the database name in
-	-- the schema column. This needs to be fixed, so we try to
-	-- set the correct schema for each geometry_colums record
-	-- looking at table, column, type and srid.
-	UPDATE geometry_columns SET f_table_schema = n.nspname
-		FROM pg_namespace n, pg_class c, pg_attribute a,
-			pg_constraint sridcheck, pg_constraint typecheck
-			WHERE ( f_table_schema is NULL
-		OR f_table_schema = ''
-			OR f_table_schema NOT IN (
-					SELECT nspname::varchar
-					FROM pg_namespace nn, pg_class cc, pg_attribute aa
-					WHERE cc.relnamespace = nn.oid
-					AND cc.relname = f_table_name::name
-					AND aa.attrelid = cc.oid
-					AND aa.attname = f_geometry_column::name))
-			AND f_table_name::name = c.relname
-			AND c.oid = a.attrelid
-			AND c.relnamespace = n.oid
-			AND f_geometry_column::name = a.attname
-
-			AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE '(%srid(% = %)'
-			AND sridcheck.consrc ~ textcat(' = ', srid::text)
-
-			AND typecheck.conrelid = c.oid
-		AND typecheck.consrc LIKE
-		'((geometrytype(%) = ''%''::text) OR (% IS NULL))'
-			AND typecheck.consrc ~ textcat(' = ''', type::text)
-
-			AND NOT EXISTS (
-					SELECT oid FROM geometry_columns gc
-					WHERE c.relname::varchar = gc.f_table_name
-					AND n.nspname::varchar = gc.f_table_schema
-					AND a.attname::varchar = gc.f_geometry_column
-			);
-
-	GET DIAGNOSTICS foundschema = ROW_COUNT;
-
-	-- no linkage to system table needed
-	return 'fixed:'||foundschema::text;
-
-END;
-$$
-LANGUAGE 'plpgsql' VOLATILE;
 
 -----------------------------------------------------------------------
 -- POPULATE_GEOMETRY_COLUMNS()
@@ -1708,8 +1600,12 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- appropriate spatial contraints (for tables) and exists in the
 -- geometry_columns table.
 -- Availability: 1.4.0
+-- Revised: 2.0.0 -- no longer deletes from geometry_columns
+-- Has new use_typmod option taht defaults to true.  
+-- If use typmod is  set to false will use old constraint behavior.
+-- Will only touch table missing typmod or geometry constraints
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION populate_geometry_columns()
+CREATE OR REPLACE FUNCTION populate_geometry_columns(use_typmod boolean DEFAULT true)
 	RETURNS text AS
 $$
 DECLARE
@@ -1728,8 +1624,6 @@ DECLARE
 BEGIN
 	SELECT count(*) INTO oldcount FROM geometry_columns;
 	inserted := 0;
-
-	EXECUTE 'TRUNCATE geometry_columns';
 
 	-- Count the number of geometry columns in all tables and views
 	SELECT count(DISTINCT c.oid) INTO probed
@@ -1763,7 +1657,7 @@ BEGIN
 		AND n.nspname NOT ILIKE 'pg_temp%'
 	LOOP
 
-	inserted := inserted + populate_geometry_columns(gcs.oid);
+	inserted := inserted + populate_geometry_columns(gcs.oid, use_typmod);
 	END LOOP;
 
 	-- Add views to geometry columns table
@@ -1782,13 +1676,13 @@ BEGIN
 		AND c.relnamespace = n.oid
 	LOOP
 
-	inserted := inserted + populate_geometry_columns(gcs.oid);
+	inserted := inserted + populate_geometry_columns(gcs.oid, use_typmod);
 	END LOOP;
 
 	IF oldcount > inserted THEN
-	stale = oldcount-inserted;
+	    stale = oldcount-inserted;
 	ELSE
-	stale = 0;
+	    stale = 0;
 	END IF;
 
 	RETURN 'probed:' ||probed|| ' inserted:'||inserted|| ' conflicts:'||probed-inserted|| ' deleted:'||stale;
@@ -1819,12 +1713,13 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- table.
 -- Availability: 1.4.0
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION populate_geometry_columns(tbl_oid oid)
+CREATE OR REPLACE FUNCTION populate_geometry_columns(tbl_oid oid, use_typmod boolean DEFAULT true)
 	RETURNS integer AS
 $$
 DECLARE
 	gcs         RECORD;
 	gc          RECORD;
+	gc_old      RECORD;
 	gsrid       integer;
 	gndims      integer;
 	gtype       text;
@@ -1852,291 +1747,82 @@ BEGIN
 		AND c.oid = tbl_oid
 	LOOP
 
-	RAISE DEBUG 'Processing table %.%.%', gcs.nspname, gcs.relname, gcs.attname;
+        RAISE DEBUG 'Processing table %.%.%', gcs.nspname, gcs.relname, gcs.attname;
+    
+        gc_is_valid := true;
+        -- Find the srid, coord_dimension, and type of current geometry
+        -- in geometry_columns -- which is now a view
+        
+        SELECT type, srid, coord_dimension INTO gc_old 
+            FROM geometry_columns 
+            WHERE f_table_schema = gcs.nspname AND f_table_name = gcs.relname AND f_geometry_column = gcs.attname; 
+            
+        IF upper(gc_old.type) = 'GEOMETRY' THEN
+        -- This is an unconstrained geometry we need to do something
+        -- We need to figure out what to set the type by inspecting the data
+            EXECUTE 'SELECT st_srid(' || quote_ident(gcs.attname) || ') As srid, GeometryType(' || quote_ident(gcs.attname) || ') As type, ST_NDims(' || quote_ident(gcs.attname) || ') As dims ' ||
+                     ' FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || 
+                     ' WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1;'
+                INTO gc;
+            gsrid := gc.srid; gtype := gc.type; gndims := gc.dims;
+                
+            IF use_typmod THEN
+                BEGIN
+                    EXECUTE 'ALTER TABLE ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' ALTER COLUMN ' || quote_ident(gcs.attname) || 
+                        ' TYPE geometry(' || postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
+                    inserted := inserted + 1;
+                EXCEPTION
+                        WHEN check_violation THEN
+                            RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid ', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
+                            gc_is_valid := false;
+                END;
+                
+            ELSE
+                -- Try to apply srid check to column
+                IF (gsrid > 0) THEN
+                    BEGIN
+                        EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || 
+                                 ' ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) || 
+                                 ' CHECK (st_srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
+                    EXCEPTION
+                        WHEN check_violation THEN
+                            RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
+                            gc_is_valid := false;
+                    END;
+                END IF;
+                
+                -- Try to apply ndims check to column
+                IF (gndims IS NOT NULL) THEN
+                    BEGIN
+                        EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
+                                 ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || '
+                                 CHECK (st_ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
+                    EXCEPTION
+                        WHEN check_violation THEN
+                            RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
+                            gc_is_valid := false;
+                    END;
+                END IF;
+    
+                -- Try to apply geometrytype check to column
+                IF (gtype IS NOT NULL) THEN
+                    BEGIN
+                        EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
+                        ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
+                        CHECK ((geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ') OR (' || quote_ident(gcs.attname) || ' IS NULL))';
+                    EXCEPTION
+                        WHEN check_violation THEN
+                            -- No geometry check can be applied. This column contains a number of geometry types.
+                            RAISE WARNING 'Could not add geometry type check (%) to table column: %.%.%', gtype, quote_ident(gcs.nspname),quote_ident(gcs.relname),quote_ident(gcs.attname);
+                    END;
+                END IF;
+                inserted := inserted + 1;
+            END IF;	        
+	    END IF;
 
-	DELETE FROM geometry_columns
-	  WHERE f_table_schema = gcs.nspname
-	  AND f_table_name = gcs.relname
-	  AND f_geometry_column = gcs.attname;
-
-	gc_is_valid := true;
-
-	-- Try to find srid check from system tables (pg_constraint)
-	gsrid :=
-		(SELECT replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
-		 WHERE n.nspname = gcs.nspname
-		 AND c.relname = gcs.relname
-		 AND a.attname = gcs.attname
-		 AND a.attrelid = c.oid
-		 AND s.connamespace = n.oid
-		 AND s.conrelid = c.oid
-		 AND a.attnum = ANY (s.conkey)
-		 AND s.consrc LIKE '%srid(% = %');
-	IF (gsrid IS NULL) THEN
-		-- Try to find srid from the geometry itself
-		EXECUTE 'SELECT st_srid(' || quote_ident(gcs.attname) || ') As srid
-				 FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
-			INTO gc;
-		gsrid := gc.srid;
-
-		-- Try to apply srid check to column
-		IF (gsrid IS NOT NULL) THEN
-			BEGIN
-				EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-						 ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) || '
-						 CHECK (st_srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
-			EXCEPTION
-				WHEN check_violation THEN
-					RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
-					gc_is_valid := false;
-			END;
-		END IF;
-	END IF;
-
-	-- Try to find ndims check from system tables (pg_constraint)
-	gndims :=
-		(SELECT replace(split_part(s.consrc, ' = ', 2), ')', '')
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
-		 WHERE n.nspname = gcs.nspname
-		 AND c.relname = gcs.relname
-		 AND a.attname = gcs.attname
-		 AND a.attrelid = c.oid
-		 AND s.connamespace = n.oid
-		 AND s.conrelid = c.oid
-		 AND a.attnum = ANY (s.conkey)
-		 AND s.consrc LIKE '%ndims(% = %');
-	IF (gndims IS NULL) THEN
-		-- Try to find ndims from the geometry itself
-		EXECUTE 'SELECT st_ndims(' || quote_ident(gcs.attname) || ') As ndims
-				 FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
-			INTO gc;
-		gndims := gc.ndims;
-
-		-- Try to apply ndims check to column
-		IF (gndims IS NOT NULL) THEN
-			BEGIN
-				EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-						 ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || '
-						 CHECK (st_ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
-			EXCEPTION
-				WHEN check_violation THEN
-					RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
-					gc_is_valid := false;
-			END;
-		END IF;
-	END IF;
-
-	-- Try to find geotype check from system tables (pg_constraint)
-	gtype :=
-		(SELECT replace(split_part(s.consrc, '''', 2), ')', '')
-		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
-		 WHERE n.nspname = gcs.nspname
-		 AND c.relname = gcs.relname
-		 AND a.attname = gcs.attname
-		 AND a.attrelid = c.oid
-		 AND s.connamespace = n.oid
-		 AND s.conrelid = c.oid
-		 AND a.attnum = ANY (s.conkey)
-		 AND s.consrc LIKE '%geometrytype(% = %');
-	IF (gtype IS NULL) THEN
-		-- Try to find geotype from the geometry itself
-		EXECUTE 'SELECT geometrytype(' || quote_ident(gcs.attname) || ')
-				 FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
-			INTO gc;
-		gtype := gc.geometrytype;
-		--IF (gtype IS NULL) THEN
-		--    gtype := 'GEOMETRY';
-		--END IF;
-
-		-- Try to apply geometrytype check to column
-		IF (gtype IS NOT NULL) THEN
-			BEGIN
-				EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-				ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
-				CHECK ((geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ') OR (' || quote_ident(gcs.attname) || ' IS NULL))';
-			EXCEPTION
-				WHEN check_violation THEN
-					-- No geometry check can be applied. This column contains a number of geometry types.
-					RAISE WARNING 'Could not add geometry type check (%) to table column: %.%.%', gtype, quote_ident(gcs.nspname),quote_ident(gcs.relname),quote_ident(gcs.attname);
-			END;
-		END IF;
-	END IF;
-
-	IF (gsrid IS NULL) THEN
-		RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine the srid', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
-	ELSIF (gndims IS NULL) THEN
-		RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine the number of dimensions', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
-	ELSIF (gtype IS NULL) THEN
-		RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine the geometry type', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
-	ELSE
-		-- Only insert into geometry_columns if table constraints could be applied.
-		IF (gc_is_valid) THEN
-			INSERT INTO geometry_columns (f_table_catalog,f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type)
-			VALUES ('', gcs.nspname, gcs.relname, gcs.attname, gndims, gsrid, gtype);
-			inserted := inserted + 1;
-		END IF;
-	END IF;
-	END LOOP;
-
-	-- Add views to geometry columns table
-	FOR gcs IN
-	SELECT n.nspname, c.relname, a.attname
-		FROM pg_class c,
-			 pg_attribute a,
-			 pg_type t,
-			 pg_namespace n
-		WHERE c.relkind = 'v'
-		AND t.typname = 'geometry'
-		AND a.attisdropped = false
-		AND a.atttypid = t.oid
-		AND a.attrelid = c.oid
-		AND c.relnamespace = n.oid
-		AND n.nspname NOT ILIKE 'pg_temp%'
-		AND c.oid = tbl_oid
-	LOOP
-	
-	DELETE FROM geometry_columns
-	  WHERE f_table_schema = gcs.nspname
-	  AND f_table_name = gcs.relname
-	  AND f_geometry_column = gcs.attname;
-	  
-		RAISE DEBUG 'Processing view %.%.%', gcs.nspname, gcs.relname, gcs.attname;
-
-		EXECUTE 'SELECT st_ndims(' || quote_ident(gcs.attname) || ') As ndims
-				 FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
-			INTO gc;
-		gndims := gc.ndims;
-
-		EXECUTE 'SELECT st_srid(' || quote_ident(gcs.attname) || ') As srid
-				 FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
-			INTO gc;
-		gsrid := gc.srid;
-
-		EXECUTE 'SELECT geometrytype(' || quote_ident(gcs.attname) || ')
-				 FROM ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
-				 WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1'
-			INTO gc;
-		gtype := gc.geometrytype;
-
-		IF (gndims IS NULL) THEN
-			RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine ndims', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
-		ELSIF (gsrid IS NULL) THEN
-			RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine srid', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
-		ELSIF (gtype IS NULL) THEN
-			RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not determine gtype', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname);
-		ELSE
-			query := 'INSERT INTO geometry_columns (f_table_catalog,f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) ' ||
-					 'VALUES ('''', ' || quote_literal(gcs.nspname) || ',' || quote_literal(gcs.relname) || ',' || quote_literal(gcs.attname) || ',' || gndims || ',' || gsrid || ',' || quote_literal(gtype) || ')';
-			EXECUTE query;
-			inserted := inserted + 1;
-		END IF;
 	END LOOP;
 
 	RETURN inserted;
-END
-
-$$
-LANGUAGE 'plpgsql' VOLATILE;
-
-
------------------------------------------------------------------------
--- PROBE_GEOMETRY_COLUMNS()
------------------------------------------------------------------------
--- Fill the geometry_columns table with values probed from the system
--- catalogues. This is done by simply looking up constraints previously
--- added to a geometry column. If geometry constraints are missing, no
--- attempt is made to add the necessary constraints to the geometry
--- column, nor is it recorded in the geometry_columns table.
--- 3d flag cannot be probed, it defaults to 2
---
--- Note that bogus records already in geometry_columns are not
--- overridden (a check for schema.table.column is performed), so
--- to have a fresh probe backup your geometry_columns, delete from
--- it and probe.
------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION probe_geometry_columns() RETURNS text AS
-$$
-DECLARE
-	inserted integer;
-	oldcount integer;
-	probed integer;
-	stale integer;
-BEGIN
-
-	SELECT count(*) INTO oldcount FROM geometry_columns;
-
-	SELECT count(*) INTO probed
-		FROM pg_class c, pg_attribute a, pg_type t,
-			pg_namespace n,
-			pg_constraint sridcheck, pg_constraint typecheck
-
-		WHERE t.typname = 'geometry'
-		AND a.atttypid = t.oid
-		AND a.attrelid = c.oid
-		AND c.relnamespace = n.oid
-		AND sridcheck.connamespace = n.oid
-		AND typecheck.connamespace = n.oid
-		AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE '(%srid('||a.attname||') = %)'
-		AND typecheck.conrelid = c.oid
-		AND typecheck.consrc LIKE
-		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
-		;
-
-	INSERT INTO geometry_columns SELECT
-		''::varchar as f_table_catalogue,
-		n.nspname::varchar as f_table_schema,
-		c.relname::varchar as f_table_name,
-		a.attname::varchar as f_geometry_column,
-		2 as coord_dimension,
-		trim(both  ' =)' from
-			replace(replace(split_part(
-				sridcheck.consrc, ' = ', 2), ')', ''), '(', ''))::integer AS srid,
-		trim(both ' =)''' from substr(typecheck.consrc,
-			strpos(typecheck.consrc, '='),
-			strpos(typecheck.consrc, '::')-
-			strpos(typecheck.consrc, '=')
-			))::varchar as type
-		FROM pg_class c, pg_attribute a, pg_type t,
-			pg_namespace n,
-			pg_constraint sridcheck, pg_constraint typecheck
-		WHERE t.typname = 'geometry'
-		AND a.atttypid = t.oid
-		AND a.attrelid = c.oid
-		AND c.relnamespace = n.oid
-		AND sridcheck.connamespace = n.oid
-		AND typecheck.connamespace = n.oid
-		AND sridcheck.conrelid = c.oid
-		AND sridcheck.consrc LIKE '(%srid('||a.attname||') = %)'
-		AND typecheck.conrelid = c.oid
-		AND typecheck.consrc LIKE
-		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
-
-			AND NOT EXISTS (
-					SELECT oid FROM geometry_columns gc
-					WHERE c.relname::varchar = gc.f_table_name
-					AND n.nspname::varchar = gc.f_table_schema
-					AND a.attname::varchar = gc.f_geometry_column
-			);
-
-	GET DIAGNOSTICS inserted = ROW_COUNT;
-
-	IF oldcount > probed THEN
-		stale = oldcount-probed;
-	ELSE
-		stale = 0;
-	END IF;
-
-	RETURN 'probed:'||probed::text||
-		' inserted:'||inserted::text||
-		' conflicts:'||(probed-inserted)::text||
-		' stale:'||stale::text;
 END
 
 $$
@@ -2158,18 +1844,11 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Should also check the precision grid (future expansion).
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer)
+CREATE OR REPLACE FUNCTION AddGeometryColumn(catalog_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid integer,new_type varchar,new_dim integer, use_typmod boolean DEFAULT true)
 	RETURNS text
 	AS
 $$
 DECLARE
-	catalog_name alias for $1;
-	schema_name alias for $2;
-	table_name alias for $3;
-	column_name alias for $4;
-	new_srid alias for $5;
-	new_type alias for $6;
-	new_dim alias for $7;
 	rec RECORD;
 	sr varchar;
 	real_schema name;
@@ -2178,37 +1857,7 @@ DECLARE
 BEGIN
 
 	-- Verify geometry type
-	IF ( NOT ( (new_type = 'GEOMETRY') OR
-			   (new_type = 'GEOMETRYCOLLECTION') OR
-			   (new_type = 'POINT') OR
-			   (new_type = 'MULTIPOINT') OR
-			   (new_type = 'POLYGON') OR
-			   (new_type = 'MULTIPOLYGON') OR
-			   (new_type = 'LINESTRING') OR
-			   (new_type = 'MULTILINESTRING') OR
-			   (new_type = 'GEOMETRYCOLLECTIONM') OR
-			   (new_type = 'POINTM') OR
-			   (new_type = 'MULTIPOINTM') OR
-			   (new_type = 'POLYGONM') OR
-			   (new_type = 'MULTIPOLYGONM') OR
-			   (new_type = 'LINESTRINGM') OR
-			   (new_type = 'MULTILINESTRINGM') OR
-			   (new_type = 'CIRCULARSTRING') OR
-			   (new_type = 'CIRCULARSTRINGM') OR
-			   (new_type = 'COMPOUNDCURVE') OR
-			   (new_type = 'COMPOUNDCURVEM') OR
-			   (new_type = 'CURVEPOLYGON') OR
-			   (new_type = 'CURVEPOLYGONM') OR
-			   (new_type = 'MULTICURVE') OR
-			   (new_type = 'MULTICURVEM') OR
-			   (new_type = 'MULTISURFACE') OR
-			   (new_type = 'MULTISURFACEM') OR
-			   (new_type = 'TRIANGLE') OR
-			   (new_type = 'TRIANGLEM') OR
-			   (new_type = 'POLYHEDRALSURFACE') OR
-			   (new_type = 'POLYHEDRALSURFACEM') OR
-			   (new_type = 'TIN') OR
-			   (new_type = 'TINM')) )
+	IF (postgis_type_name(new_type,new_dim) IS NULL )
 	THEN
 		RAISE EXCEPTION 'Invalid type name - valid ones are:
 	POINT, MULTIPOINT,
@@ -2241,7 +1890,7 @@ BEGIN
 
 
 	-- Verify SRID
-	IF ( new_srid != -1 ) THEN
+	IF ( new_srid != 0 AND new_srid != -1) THEN
 		SELECT SRID INTO sr FROM spatial_ref_sys WHERE SRID = new_srid;
 		IF NOT FOUND THEN
 			RAISE EXCEPTION 'AddGeometryColumns() - invalid SRID';
@@ -2284,70 +1933,53 @@ BEGIN
 
 
 	-- Add geometry column to table
-	sql := 'ALTER TABLE ' ||
-		quote_ident(real_schema) || '.' || quote_ident(table_name)
-		|| ' ADD COLUMN ' || quote_ident(column_name) ||
-		' geometry ';
-	RAISE DEBUG '%', sql;
+	IF use_typmod THEN
+	     sql := 'ALTER TABLE ' ||
+            quote_ident(real_schema) || '.' || quote_ident(table_name)
+            || ' ADD COLUMN ' || quote_ident(column_name) ||
+            ' geometry(' || postgis_type_name(new_type, new_dim) || ', ' || new_srid::text || ')';
+        RAISE DEBUG '%', sql;
+	ELSE
+        sql := 'ALTER TABLE ' ||
+            quote_ident(real_schema) || '.' || quote_ident(table_name)
+            || ' ADD COLUMN ' || quote_ident(column_name) ||
+            ' geometry ';
+        RAISE DEBUG '%', sql;
+    END IF;
 	EXECUTE sql;
 
-
-	-- Delete stale record in geometry_columns (if any)
-	sql := 'DELETE FROM geometry_columns WHERE
-		f_table_catalog = ' || quote_literal('') ||
-		' AND f_table_schema = ' ||
-		quote_literal(real_schema) ||
-		' AND f_table_name = ' || quote_literal(table_name) ||
-		' AND f_geometry_column = ' || quote_literal(column_name);
-	RAISE DEBUG '%', sql;
-	EXECUTE sql;
-
-
-	-- Add record in geometry_columns
-	sql := 'INSERT INTO geometry_columns (f_table_catalog,f_table_schema,f_table_name,' ||
-										  'f_geometry_column,coord_dimension,srid,type)' ||
-		' VALUES (' ||
-		quote_literal('') || ',' ||
-		quote_literal(real_schema) || ',' ||
-		quote_literal(table_name) || ',' ||
-		quote_literal(column_name) || ',' ||
-		new_dim::text || ',' ||
-		new_srid::text || ',' ||
-		quote_literal(new_type) || ')';
-	RAISE DEBUG '%', sql;
-	EXECUTE sql;
-
-
-	-- Add table CHECKs
-	sql := 'ALTER TABLE ' ||
-		quote_ident(real_schema) || '.' || quote_ident(table_name)
-		|| ' ADD CONSTRAINT '
-		|| quote_ident('enforce_srid_' || column_name)
-		|| ' CHECK (st_srid(' || quote_ident(column_name) ||
-		') = ' || new_srid::text || ')' ;
-	RAISE DEBUG '%', sql;
-	EXECUTE sql;
-
-	sql := 'ALTER TABLE ' ||
-		quote_ident(real_schema) || '.' || quote_ident(table_name)
-		|| ' ADD CONSTRAINT '
-		|| quote_ident('enforce_dims_' || column_name)
-		|| ' CHECK (st_ndims(' || quote_ident(column_name) ||
-		') = ' || new_dim::text || ')' ;
-	RAISE DEBUG '%', sql;
-	EXECUTE sql;
-
-	IF ( NOT (new_type = 'GEOMETRY')) THEN
-		sql := 'ALTER TABLE ' ||
-			quote_ident(real_schema) || '.' || quote_ident(table_name) || ' ADD CONSTRAINT ' ||
-			quote_ident('enforce_geotype_' || column_name) ||
-			' CHECK (GeometryType(' ||
-			quote_ident(column_name) || ')=' ||
-			quote_literal(new_type) || ' OR (' ||
-			quote_ident(column_name) || ') is null)';
-		RAISE DEBUG '%', sql;
-		EXECUTE sql;
-	END IF;
+	IF NOT use_typmod THEN
+        -- Add table CHECKs
+        sql := 'ALTER TABLE ' ||
+            quote_ident(real_schema) || '.' || quote_ident(table_name)
+            || ' ADD CONSTRAINT '
+            || quote_ident('enforce_srid_' || column_name)
+            || ' CHECK (st_srid(' || quote_ident(column_name) ||
+            ') = ' || new_srid::text || ')' ;
+        RAISE DEBUG '%', sql;
+        EXECUTE sql;
+    
+        sql := 'ALTER TABLE ' ||
+            quote_ident(real_schema) || '.' || quote_ident(table_name)
+            || ' ADD CONSTRAINT '
+            || quote_ident('enforce_dims_' || column_name)
+            || ' CHECK (st_ndims(' || quote_ident(column_name) ||
+            ') = ' || new_dim::text || ')' ;
+        RAISE DEBUG '%', sql;
+        EXECUTE sql;
+    
+        IF ( NOT (new_type = 'GEOMETRY')) THEN
+            sql := 'ALTER TABLE ' ||
+                quote_ident(real_schema) || '.' || quote_ident(table_name) || ' ADD CONSTRAINT ' ||
+                quote_ident('enforce_geotype_' || column_name) ||
+                ' CHECK (GeometryType(' ||
+                quote_ident(column_name) || ')=' ||
+                quote_literal(new_type) || ' OR (' ||
+                quote_ident(column_name) || ') is null)';
+            RAISE DEBUG '%', sql;
+            EXECUTE sql;
+        END IF;
+    END IF;
 
 	RETURN
 		real_schema || '.' ||
@@ -2367,11 +1999,11 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- when catalogue is undefined
 --
 ----------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION AddGeometryColumn(schema_name varchar,table_name varchar,column_name varchar,new_srid integer,new_type varchar,new_dim integer, use_typmod boolean DEFAULT true) RETURNS text AS $$
 DECLARE
 	ret  text;
 BEGIN
-	SELECT AddGeometryColumn('',$1,$2,$3,$4,$5,$6) into ret;
+	SELECT AddGeometryColumn('',$1,$2,$3,$4,$5,$6,$7) into ret;
 	RETURN ret;
 END;
 $$
@@ -2385,11 +2017,11 @@ LANGUAGE 'plpgsql' STABLE STRICT;
 -- when catalogue and schema are undefined
 --
 ----------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION AddGeometryColumn(varchar,varchar,integer,varchar,integer) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION AddGeometryColumn(table_name varchar,column_name varchar,new_srid integer,new_type varchar,new_dim integer, use_typmod boolean DEFAULT true) RETURNS text AS $$
 DECLARE
 	ret  text;
 BEGIN
-	SELECT AddGeometryColumn('','',$1,$2,$3,$4,$5) into ret;
+	SELECT AddGeometryColumn('','',$1,$2,$3,$4,$5, $6) into ret;
 	RETURN ret;
 END;
 $$
@@ -2405,15 +2037,11 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- Make some silly enforcements on it for pgsql < 73
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION DropGeometryColumn(varchar, varchar,varchar,varchar)
+CREATE OR REPLACE FUNCTION DropGeometryColumn(catalog_name varchar, schema_name varchar,table_name varchar,column_name varchar)
 	RETURNS text
 	AS
 $$
 DECLARE
-	catalog_name alias for $1;
-	schema_name alias for $2;
-	table_name alias for $3;
-	column_name alias for $4;
 	myrec RECORD;
 	okay boolean;
 	real_schema name;
@@ -2423,13 +2051,13 @@ BEGIN
 
 	-- Find, check or fix schema_name
 	IF ( schema_name != '' ) THEN
-		okay = 'f';
+		okay = false;
 
 		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
-			okay := 't';
+			okay := true;
 		END LOOP;
 
-		IF ( okay <> 't' ) THEN
+		IF ( okay <>  true ) THEN
 			RAISE NOTICE 'Invalid schema name - using current_schema()';
 			SELECT current_schema() into real_schema;
 		ELSE
@@ -2440,20 +2068,14 @@ BEGIN
 	END IF;
 
 	-- Find out if the column is in the geometry_columns table
-	okay = 'f';
+	okay = false;
 	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
-		okay := 't';
+		okay := true;
 	END LOOP;
-	IF (okay <> 't') THEN
+	IF (okay <> true) THEN
 		RAISE EXCEPTION 'column not found in geometry_columns table';
-		RETURN 'f';
+		RETURN false;
 	END IF;
-
-	-- Remove ref from geometry_columns table
-	EXECUTE 'delete from geometry_columns where f_table_schema = ' ||
-		quote_literal(real_schema) || ' and f_table_name = ' ||
-		quote_literal(table_name)  || ' and f_geometry_column = ' ||
-		quote_literal(column_name);
 
 	-- Remove table column
 	EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' ||
@@ -2475,7 +2097,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- when catalogue is undefined
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION DropGeometryColumn(varchar,varchar,varchar)
+CREATE OR REPLACE FUNCTION DropGeometryColumn(schema_name varchar, table_name varchar,column_name varchar)
 	RETURNS text
 	AS
 $$
@@ -2533,6 +2155,7 @@ BEGIN
 		real_schema = schema_name;
 	END IF;
 
+	-- TODO: Should we warn if table doesn't exist probably instead just saying dropped
 	-- Remove table
 	EXECUTE 'DROP TABLE IF EXISTS '
 		|| quote_ident(real_schema) || '.' ||
@@ -2579,16 +2202,11 @@ LANGUAGE 'sql' VOLATILE STRICT;
 -- Change SRID of all features in a spatially-enabled table
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION UpdateGeometrySRID(varchar,varchar,varchar,varchar,integer)
+CREATE OR REPLACE FUNCTION UpdateGeometrySRID(catalogn_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid integer)
 	RETURNS text
 	AS
 $$
 DECLARE
-	catalog_name alias for $1;
-	schema_name alias for $2;
-	table_name alias for $3;
-	column_name alias for $4;
-	new_srid alias for $5;
 	myrec RECORD;
 	okay boolean;
 	cname varchar;
@@ -2599,13 +2217,13 @@ BEGIN
 
 	-- Find, check or fix schema_name
 	IF ( schema_name != '' ) THEN
-		okay = 'f';
+		okay = false;
 
 		FOR myrec IN SELECT nspname FROM pg_namespace WHERE text(nspname) = schema_name LOOP
-			okay := 't';
+			okay := true;
 		END LOOP;
 
-		IF ( okay <> 't' ) THEN
+		IF ( okay <> true ) THEN
 			RAISE EXCEPTION 'Invalid schema name';
 		ELSE
 			real_schema = schema_name;
@@ -2615,43 +2233,45 @@ BEGIN
 	END IF;
 
 	-- Find out if the column is in the geometry_columns table
-	okay = 'f';
-	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
-		okay := 't';
+	okay = false;
+	FOR myrec IN SELECT type, coord_dimension FROM geometry_columns WHERE f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
+		okay := true;
 	END LOOP;
-	IF (okay <> 't') THEN
+	IF (NOT okay) THEN
 		RAISE EXCEPTION 'column not found in geometry_columns table';
-		RETURN 'f';
+		RETURN false;
 	END IF;
 
-	-- Update ref from geometry_columns table
-	EXECUTE 'UPDATE geometry_columns SET SRID = ' || new_srid::text ||
-		' where f_table_schema = ' ||
-		quote_literal(real_schema) || ' and f_table_name = ' ||
-		quote_literal(table_name)  || ' and f_geometry_column = ' ||
-		quote_literal(column_name);
-
-	-- Make up constraint name
-	cname = 'enforce_srid_'  || column_name;
-
-	-- Drop enforce_srid constraint
-	EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
-		'.' || quote_ident(table_name) ||
-		' DROP constraint ' || quote_ident(cname);
-
-	-- Update geometries SRID
-	EXECUTE 'UPDATE ' || quote_ident(real_schema) ||
-		'.' || quote_ident(table_name) ||
-		' SET ' || quote_ident(column_name) ||
-		' = ST_SetSRID(' || quote_ident(column_name) ||
-		', ' || new_srid::text || ')';
-
-	-- Reset enforce_srid constraint
-	EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
-		'.' || quote_ident(table_name) ||
-		' ADD constraint ' || quote_ident(cname) ||
-		' CHECK (st_srid(' || quote_ident(column_name) ||
-		') = ' || new_srid::text || ')';
+	IF postgis_constaint_srid(schema_name, table_name, column_name) > 0 THEN 
+	-- srid was enforced with constraints before, keep it that way
+        -- Make up constraint name
+        cname = 'enforce_srid_'  || column_name;
+    
+        -- Drop enforce_srid constraint
+        EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
+            '.' || quote_ident(table_name) ||
+            ' DROP constraint ' || quote_ident(cname);
+    
+        -- Update geometries SRID
+        EXECUTE 'UPDATE ' || quote_ident(real_schema) ||
+            '.' || quote_ident(table_name) ||
+            ' SET ' || quote_ident(column_name) ||
+            ' = ST_SetSRID(' || quote_ident(column_name) ||
+            ', ' || new_srid::text || ')';
+            
+        -- Reset enforce_srid constraint
+        EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) ||
+            '.' || quote_ident(table_name) ||
+            ' ADD constraint ' || quote_ident(cname) ||
+            ' CHECK (st_srid(' || quote_ident(column_name) ||
+            ') = ' || new_srid::text || ')';
+    ELSE 
+        -- We will use typmod to enforce if no srid constraints
+        -- We are using postgis_type_name to lookup the new name 
+        -- (in case Paul changes his mind and flips geometry_columns to return old upper case name) 
+        EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' || quote_ident(table_name) || 
+            ' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ');' ;
+    END IF;
 
 	RETURN real_schema || '.' || table_name || '.' || column_name ||' SRID changed to ' || new_srid::text;
 
@@ -4831,10 +4451,10 @@ $$
 			('COMPOUNDCURVE', 'CompoundCurveZ',3) ,
 			('COMPOUNDCURVEM', 'CompoundCurveM',3) ,
 			('COMPOUNDCURVE', 'CompoundCurveZM',4) ,
-			('CURVEPOLYGON', 'CompundPolygon',2) ,
-			('CURVEPOLYGON', 'CompundPolygonZ',3) ,
-			('CURVEPOLYGONM', 'CompundPolygonM',3) ,
-			('CURVEPOLYGON', 'CompundPolygonZM',4) ,
+			('CURVEPOLYGON', 'CurvePolygon',2) ,
+			('CURVEPOLYGON', 'CurvePolygonZ',3) ,
+			('CURVEPOLYGONM', 'CurvePolygonM',3) ,
+			('CURVEPOLYGON', 'CurvePolygonZM',4) ,
 			('MULTICURVE', 'MultiCurve',2 ) ,
 			('MULTICURVE', 'MultiCurveZ',3 ) ,
 			('MULTICURVEM', 'MultiCurveM',3 ) ,
@@ -4912,7 +4532,7 @@ SELECT  postgis_type_name(replace(split_part(s.consrc, '''', 2), ')', '')::varch
 $$
 LANGUAGE 'sql' STABLE STRICT;
 
-CREATE OR REPLACE VIEW geometry_columns_v AS 
+CREATE OR REPLACE VIEW geometry_columns AS 
  SELECT current_database()::varchar(256) AS f_table_catalog, 
     n.nspname::varchar(256) AS f_table_schema, 
     c.relname::varchar(256) AS f_table_name, 

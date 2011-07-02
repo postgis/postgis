@@ -4,15 +4,15 @@ SELECT 'Setting up the data table...';
 CREATE TABLE wmstest ( id INTEGER, pt GEOMETRY );
 INSERT INTO wmstest SELECT lon * 100 + lat AS id, st_setsrid(st_buffer(st_makepoint(lon, lat),1.0),4326) AS pt
 FROM (select lon, generate_series(-80,80, 5) AS lat FROM (SELECT generate_series(-175, 175, 5) AS lon) AS sq1) AS sq2;
-INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'public','wmstest','pt',2,4326,'POLYGON');
+--INSERT INTO geometry_columns (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, type) VALUES ('', 'public','wmstest','pt',2,4326,'POLYGON');
 ALTER TABLE wmstest add PRIMARY KEY ( id );
 CREATE INDEX wmstest_geomidx ON wmstest using gist ( pt );
 
 -- Geoserver 2.0 NG tests
 SELECT 'Running Geoserver 2.0 NG tests...';
 -- Run a Geoserver 2.0 NG metadata query
-SELECT 'Geoserver1', TYPE FROM GEOMETRY_COLUMNS WHERE F_TABLE_SCHEMA = 'public' AND F_TABLE_NAME = 'wmstest' AND F_GEOMETRY_COLUMN = 'pt';
-SELECT 'Geoserver2', SRID FROM GEOMETRY_COLUMNS WHERE F_TABLE_SCHEMA = 'public' AND F_TABLE_NAME = 'wmstest' AND F_GEOMETRY_COLUMN = 'pt';
+--SELECT 'Geoserver1', TYPE FROM GEOMETRY_COLUMNS WHERE F_TABLE_SCHEMA = 'public' AND F_TABLE_NAME = 'wmstest' AND F_GEOMETRY_COLUMN = 'pt';
+--SELECT 'Geoserver2', SRID FROM GEOMETRY_COLUMNS WHERE F_TABLE_SCHEMA = 'public' AND F_TABLE_NAME = 'wmstest' AND F_GEOMETRY_COLUMN = 'pt';
 -- Run a Geoserver 2.0 NG WMS query
 SELECT 'Geoserver3', "id",substr(encode(ST_AsBinary(ST_Force_2d("pt"),'XDR'),'base64'),0,16) as "pt" FROM "public"."wmstest" WHERE "pt" && ST_GeomFromText('POLYGON ((-6.58216065979069 -0.7685569763184591, -6.58216065979069 0.911225433349509, -3.050569931030911 0.911225433349509, -3.050569931030911 -0.7685569763184591, -6.58216065979069 -0.7685569763184591))', 4326);
 -- Run a Geoserver 2.0 NG KML query
@@ -32,5 +32,5 @@ select 'MapServer4', "id",substr(encode(ST_AsBinary(ST_Force_collection(ST_Force
 -- Drop the data table
 SELECT 'Removing the data table...';
 DROP TABLE wmstest;
-DELETE FROM geometry_columns WHERE f_table_name = 'wmstest' AND f_table_schema = 'public';
+--DELETE FROM geometry_columns WHERE f_table_name = 'wmstest' AND f_table_schema = 'public';
 SELECT 'Done.';

@@ -16,6 +16,14 @@ DROP FUNCTION IF EXISTS Translate(geometry,float8,float8,float8);
 DROP FUNCTION IF EXISTS Translate(geometry,float8,float8);
 DROP FUNCTION IF EXISTS TransScale(geometry,float8,float8,float8,float8);
 
+-- POSTGIS Management functions now made obsolete with geometry_columns view
+-- Or that were just really dumb
+-- START MANAGEMENT FUNCTIONS
+DROP FUNCTION IF EXISTS rename_geometry_table_constraints();
+DROP FUNCTION IF EXISTS fix_geometry_columns();
+DROP FUNCTION IF EXISTS probe_geometry_columns();
+-- END MANAGEMENT FUNCTIONS
+
 -- Other functions --
 DROP AGGREGATE IF EXISTS Accum(geometry);
 DROP FUNCTION IF EXISTS AddBBox(geometry);

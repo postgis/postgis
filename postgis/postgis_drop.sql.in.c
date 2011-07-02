@@ -4,6 +4,12 @@ DROP AGGREGATE IF EXISTS st_geomunion(geometry);
 DROP AGGREGATE IF EXISTS accum_old(geometry);
 DROP AGGREGATE IF EXISTS st_accum_old(geometry);
 
+-- BEGIN Management functions that now have default param for typmod --
+DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer);
+DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer);
+DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,integer,varchar,integer);
+
+-- END Management functions now have default parameter for typmod --
 -- Then drop old functions
 DROP FUNCTION IF EXISTS box2d_overleft(box2d, box2d);
 DROP FUNCTION IF EXISTS box2d_overright(box2d, box2d);

@@ -128,6 +128,201 @@ CREATE OR REPLACE FUNCTION st_geometry(box3d_extent)
 	AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- START MANAGEMENT FUNCTIONS
+-- These are legacy management functions with no place in our 2.0 world
+-----------------------------------------------------------------------
+-- RENAME_GEOMETRY_TABLE_CONSTRAINTS()
+-----------------------------------------------------------------------
+-- This function has been obsoleted for the difficulty in
+-- finding attribute on which the constraint is applied.
+-- AddGeometryColumn will name the constraints in a meaningful
+-- way, but nobody can rely on it since old postgis versions did
+-- not do that.
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION rename_geometry_table_constraints() RETURNS text
+AS
+$$
+SELECT 'rename_geometry_table_constraint() is obsoleted'::text
+$$
+LANGUAGE 'SQL' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- FIX_GEOMETRY_COLUMNS()
+-----------------------------------------------------------------------
+-- This function will:
+--
+--	o try to fix the schema of records with an integer one
+--		(for PG>=73)
+--
+--	o link records to system tables through attrelid and varattnum
+--		(for PG<75)
+--
+--	o delete all records for which no linking was possible
+--		(for PG<75)
+--
+--
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION fix_geometry_columns() RETURNS text
+AS
+$$
+DECLARE
+	mislinked record;
+	result text;
+	linked integer;
+	deleted integer;
+	foundschema integer;
+BEGIN
+
+	-- Since 7.3 schema support has been added.
+	-- Previous postgis versions used to put the database name in
+	-- the schema column. This needs to be fixed, so we try to
+	-- set the correct schema for each geometry_colums record
+	-- looking at table, column, type and srid.
+	/** UPDATE geometry_columns SET f_table_schema = n.nspname
+		FROM pg_namespace n, pg_class c, pg_attribute a,
+			pg_constraint sridcheck, pg_constraint typecheck
+			WHERE ( f_table_schema is NULL
+		OR f_table_schema = ''
+			OR f_table_schema NOT IN (
+					SELECT nspname::varchar
+					FROM pg_namespace nn, pg_class cc, pg_attribute aa
+					WHERE cc.relnamespace = nn.oid
+					AND cc.relname = f_table_name::name
+					AND aa.attrelid = cc.oid
+					AND aa.attname = f_geometry_column::name))
+			AND f_table_name::name = c.relname
+			AND c.oid = a.attrelid
+			AND c.relnamespace = n.oid
+			AND f_geometry_column::name = a.attname
+
+			AND sridcheck.conrelid = c.oid
+		AND sridcheck.consrc LIKE '(%srid(% = %)'
+			AND sridcheck.consrc ~ textcat(' = ', srid::text)
+
+			AND typecheck.conrelid = c.oid
+		AND typecheck.consrc LIKE
+		'((geometrytype(%) = ''%''::text) OR (% IS NULL))'
+			AND typecheck.consrc ~ textcat(' = ''', type::text)
+
+			AND NOT EXISTS (
+					SELECT oid FROM geometry_columns gc
+					WHERE c.relname::varchar = gc.f_table_name
+					AND n.nspname::varchar = gc.f_table_schema
+					AND a.attname::varchar = gc.f_geometry_column
+			);
+
+	GET DIAGNOSTICS foundschema = ROW_COUNT; 
+
+	-- no linkage to system table needed
+	return 'fixed:'||foundschema::text; **/
+	return 'This function is obsolete now that geometry_columns is a view';
+
+END;
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+
+-----------------------------------------------------------------------
+-- PROBE_GEOMETRY_COLUMNS()
+-----------------------------------------------------------------------
+-- Fill the geometry_columns table with values probed from the system
+-- catalogues. This is done by simply looking up constraints previously
+-- added to a geometry column. If geometry constraints are missing, no
+-- attempt is made to add the necessary constraints to the geometry
+-- column, nor is it recorded in the geometry_columns table.
+-- 3d flag cannot be probed, it defaults to 2
+--
+-- Note that bogus records already in geometry_columns are not
+-- overridden (a check for schema.table.column is performed), so
+-- to have a fresh probe backup your geometry_columns, delete from
+-- it and probe.
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION probe_geometry_columns() RETURNS text AS
+$$
+DECLARE
+	inserted integer;
+	oldcount integer;
+	probed integer;
+	stale integer;
+BEGIN
+
+/*	SELECT count(*) INTO oldcount FROM geometry_columns;
+
+	SELECT count(*) INTO probed
+		FROM pg_class c, pg_attribute a, pg_type t,
+			pg_namespace n,
+			pg_constraint sridcheck, pg_constraint typecheck
+
+		WHERE t.typname = 'geometry'
+		AND a.atttypid = t.oid
+		AND a.attrelid = c.oid
+		AND c.relnamespace = n.oid
+		AND sridcheck.connamespace = n.oid
+		AND typecheck.connamespace = n.oid
+		AND sridcheck.conrelid = c.oid
+		AND sridcheck.consrc LIKE '(%srid('||a.attname||') = %)'
+		AND typecheck.conrelid = c.oid
+		AND typecheck.consrc LIKE
+		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
+		;
+
+	INSERT INTO geometry_columns SELECT
+		''::varchar as f_table_catalogue,
+		n.nspname::varchar as f_table_schema,
+		c.relname::varchar as f_table_name,
+		a.attname::varchar as f_geometry_column,
+		2 as coord_dimension,
+		trim(both  ' =)' from
+			replace(replace(split_part(
+				sridcheck.consrc, ' = ', 2), ')', ''), '(', ''))::integer AS srid,
+		trim(both ' =)''' from substr(typecheck.consrc,
+			strpos(typecheck.consrc, '='),
+			strpos(typecheck.consrc, '::')-
+			strpos(typecheck.consrc, '=')
+			))::varchar as type
+		FROM pg_class c, pg_attribute a, pg_type t,
+			pg_namespace n,
+			pg_constraint sridcheck, pg_constraint typecheck
+		WHERE t.typname = 'geometry'
+		AND a.atttypid = t.oid
+		AND a.attrelid = c.oid
+		AND c.relnamespace = n.oid
+		AND sridcheck.connamespace = n.oid
+		AND typecheck.connamespace = n.oid
+		AND sridcheck.conrelid = c.oid
+		AND sridcheck.consrc LIKE '(%srid('||a.attname||') = %)'
+		AND typecheck.conrelid = c.oid
+		AND typecheck.consrc LIKE
+		'((geometrytype('||a.attname||') = ''%''::text) OR (% IS NULL))'
+
+			AND NOT EXISTS (
+					SELECT oid FROM geometry_columns gc
+					WHERE c.relname::varchar = gc.f_table_name
+					AND n.nspname::varchar = gc.f_table_schema
+					AND a.attname::varchar = gc.f_geometry_column
+			);
+
+	GET DIAGNOSTICS inserted = ROW_COUNT;
+
+	IF oldcount > probed THEN
+		stale = oldcount-probed;
+	ELSE
+		stale = 0;
+	END IF;
+
+	RETURN 'probed:'||probed::text||
+		' inserted:'||inserted::text||
+		' conflicts:'||(probed-inserted)::text||
+		' stale:'||stale::text;*/
+	RETURN 'This function is obsolete now that geometry_columns is a view';
+END
+
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+
+
+
+-- END MANAGEMENT FUNCTIONS --
+
 -- Deprecation in 1.5.0
 -- these remarked out functions cause problems and no one uses them directly
 -- They should not be installed
