@@ -7,7 +7,8 @@
 		<refname>AddGeometryColumn</refname>
 
 		<refpurpose>Adds a geometry column to an existing table of
-		attributes.</refpurpose>
+		attributes. By default uses type modifier to define rather than constraints.  
+		Pass in false for use_typmod to get old check contraint based behavior</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -29,6 +30,8 @@
 
 			<paramdef><type>integer </type>
 			<parameter>dimension</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
@@ -51,6 +54,8 @@
 
 			<paramdef><type>integer </type>
 			<parameter>dimension</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
@@ -76,6 +81,9 @@
 
 			<paramdef><type>integer </type>
 			<parameter>dimension</parameter></paramdef>
+			
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -84,18 +92,26 @@
 		<title>Description</title>
 
 		<para>Adds a geometry column to an existing table of attributes. The
-		<varname>schema_name</varname> is the name of the table schema (unused
-		for pre-schema PostgreSQL installations). The <varname>srid</varname>
+		<varname>schema_name</varname> is the name of the table schema. The <varname>srid</varname>
 		must be an integer value reference to an entry in the SPATIAL_REF_SYS
-		table. The <varname>type</varname> must be an uppercase string
+		table. The <varname>type</varname> must be a string
 		corresponding to the geometry type, eg, 'POLYGON' or
-		'MULTILINESTRING'.  An error is thrown if the schemaname doesn't exist
+		'MULTILINESTRING' .  An error is thrown if the schemaname doesn't exist
 		(or not visible in the current search_path) or the specified SRID,
 		geometry type, or dimension is invalid.</para>
 
 		<note>
-			<para>Views and derivatively created spatial tables will need to be registered in geometry_columns manually,
-				since AddGeometryColumn also adds a spatial column which is not needed when you already have a spatial column.  Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
+			<para>Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
+			also does not create constraints, but instead uses the built in typmode behavior.  So for example building a wgs84 POINT column with this function is now 
+			equivalent to: ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326); </para>
+			<para>Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
+		</note>
+		
+		<note>
+		    <para>Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly
+		            because they inherit the typmod behavior of their parent table column.
+		            Views that use geometry functions that output other geometries will need to be cast to typmod geometries for these view geometry columns to be registered correctly 
+		            in geometry_columns. Refer to <xref linkend="Manual_Register_Spatial_Column"/>.
 			</para>
 		</note>
 		<para>&sfs_compliant;</para>
@@ -106,9 +122,10 @@
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
+		<programlisting>-- Create schema to hold data
+CREATE SCHEMA my_schema;
 -- Create a new simple PostgreSQL table
-postgis=# CREATE TABLE my_schema.my_spatial_table (id serial);
+CREATE TABLE my_schema.my_spatial_table (id serial);
 
 -- Describing the table shows a simple table with a single "id" column.
 postgis=# \d my_schema.my_spatial_table
@@ -118,34 +135,53 @@ postgis=# \d my_schema.my_spatial_table
  id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
 
 -- Add a spatial column to the table
-postgis=# SELECT AddGeometryColumn ('my_schema','my_spatial_table','the_geom',4326,'POINT',2);
+SELECT AddGeometryColumn ('my_schema','my_spatial_table','geom',4326,'POINT',2);
 
---Add a curvepolygon
-SELECT AddGeometryColumn ('my_schema','my_spatial_table','the_geomcp',4326,'CURVEPOLYGON',2);
+-- Add a point using the old constraint based behavior
+SELECT AddGeometryColumn ('my_schema','my_spatial_table','geom_c',4326,'POINT',2, false);
 
--- Describe the table again reveals the addition of a new "the_geom" column.
-postgis=# \d my_schema.my_spatial_table
-   Column   |   Type   |                                Modifiers
+--Add a curvepolygon using old constraint behavior
+SELECT AddGeometryColumn ('my_schema','my_spatial_table','geomcp_c',4326,'CURVEPOLYGON',2, false);
 
-------------+----------+-------------------------------------------------------------------------
- id         | integer  | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
- the_geom   | geometry |
- the_geomcp | geometry |
+-- Describe the table again reveals the addition of a new geometry columns.
+\d my_schema.my_spatial_table
+                            addgeometrycolumn                            
+-------------------------------------------------------------------------
+ my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2 
+(1 row)
+
+                                    Table "my_schema.my_spatial_table"
+  Column  |         Type         |                                Modifiers                                
+----------+----------------------+-------------------------------------------------------------------------
+ id       | integer              | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)
+ geom     | geometry(Point,4326) | 
+ geom_c   | geometry             | 
+ geomcp_c | geometry             | 
 Check constraints:
-	"enforce_dims_the_geom" CHECK (ndims(the_geom) = 2)
-	"enforce_dims_the_geomcp" CHECK (ndims(the_geomcp) = 2)
-	"enforce_geotype_the_geom" CHECK (geometrytype(the_geom) = 'POINT'::text OR
-the_geom IS NULL)
-	"enforce_geotype_the_geomcp" CHECK (geometrytype(the_geomcp) = 'CURVEPOLYGON
-'::text OR the_geomcp IS NULL)
-	"enforce_srid_the_geom" CHECK (srid(the_geom) = 4326)
-	"enforce_srid_the_geomcp" CHECK (srid(the_geomcp) = 4326)</programlisting>
+    "enforce_dims_geom_c" CHECK (st_ndims(geom_c) = 2)
+    "enforce_dims_geomcp_c" CHECK (st_ndims(geomcp_c) = 2)
+    "enforce_geotype_geom_c" CHECK (geometrytype(geom_c) = 'POINT'::text OR geom_c IS NULL)
+    "enforce_geotype_geomcp_c" CHECK (geometrytype(geomcp_c) = 'CURVEPOLYGON'::text OR geomcp_c IS NULL)
+    "enforce_srid_geom_c" CHECK (st_srid(geom_c) = 4326)
+    "enforce_srid_geomcp_c" CHECK (st_srid(geomcp_c) = 4326)
+    
+-- geometry_columns view also registers the new columns --
+SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims 
+    FROM geometry_columns
+    WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';
+
+ col_name |     type     | srid | ndims 
+----------+--------------+------+-------
+ geom     | Point        | 4326 |     2
+ geom_c   | Point        | 4326 |     2
+ geomcp_c | CurvePolygon | 4326 |     2
+</programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="DropGeometryColumn"/>, <xref linkend="DropGeometryTable"/>, <xref linkend="Manual_Register_Spatial_Column"/></para>
+		<para><xref linkend="DropGeometryColumn"/>, <xref linkend="DropGeometryTable"/>, <xref linkend="geometry_columns"/>, <xref linkend="Manual_Register_Spatial_Column"/></para>
 	  </refsection>
 	</refentry>
 
@@ -210,20 +246,30 @@ the_geom IS NULL)
 		<para>&sfs_compliant;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
+		<note>
+			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
+			    you can drop a geometry column like any other table column using <code>ALTER TABLE</code>
+		</note>
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
 
 		<programlisting>
-			SELECT DropGeometryColumn ('my_schema','my_spatial_table','the_geomcp');
+			SELECT DropGeometryColumn ('my_schema','my_spatial_table','geom');
 			----RESULT output ---
-			my_schema.my_spatial_table.the_geomcp effectively removed.
+			                  dropgeometrycolumn
+------------------------------------------------------
+ my_schema.my_spatial_table.geom effectively removed.
+ 
+-- In PostGIS 2.0+ the above is also equivalent to the standard
+-- the standard alter table.  Both will deregister from geometry_columns
+ALTER TABLE my_schema.my_spatial_table DROP column geom;
 		</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryTable"/></para>
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryTable"/>, <xref linkend="geometry_columns"/></para>
 	  </refsection>
 	</refentry>
 
@@ -272,21 +318,28 @@ the_geom IS NULL)
 		<para>Drops a table and all its references in geometry_columns. Note:
 		uses current_schema() on schema-aware pgsql installations if schema is
 		not provided.</para>
+		
+		<note>
+			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
+			    you can drop a table with geometry columns like any other table using <code>DROP TABLE</code>
+		</note>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>
-			SELECT DropGeometryTable ('my_schema','my_spatial_table');
-			----RESULT output ---
-			my_schema.my_spatial_table dropped.
+		<programlisting>SELECT DropGeometryTable ('my_schema','my_spatial_table');
+----RESULT output ---
+my_schema.my_spatial_table dropped.
+			
+-- The above is now equivalent to --
+DROP TABLE my_schema.my_spatial_table;
 		</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryColumn"/></para>
+		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="DropGeometryColumn"/>, <xref linkend="geometry_columns"/></para>
 	  </refsection>
 	</refentry>
 
@@ -793,8 +846,9 @@ the_geom IS NULL)
 	  <refnamediv>
 		<refname>Populate_Geometry_Columns</refname>
 
-		<refpurpose>Ensures geometry columns have appropriate spatial constraints
-		and exist in the <varname>geometry_columns</varname> table.</refpurpose>
+		<refpurpose>Ensures geometry columns are defined with type modifiers or have appropriate spatial constraints
+		This ensures they will be registered correctly in <varname>geometry_columns</varname> view. By default will convert all geometry 
+		    columns with no type modifier to ones with type modifiers. To get old behavior set <varname>use_typmod=false</varname></refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -802,13 +856,14 @@ the_geom IS NULL)
 		  <funcprototype>
 			<funcdef>text <function>Populate_Geometry_Columns</function></funcdef>
 
-			<paramdef></paramdef>
+			<paramdef><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
 			<funcdef>int <function>Populate_Geometry_Columns</function></funcdef>
 
 			<paramdef><type>oid</type> <parameter>relation_oid</parameter></paramdef>
+			<paramdef><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -816,8 +871,11 @@ the_geom IS NULL)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Ensures geometry columns have appropriate spatial constraints and
-		exist in the <varname>geometry_columns</varname> table.  In particular,
+		<para>Ensures geometry columns have appropriate type modifiers or spatial constraints to ensure they are registered correctly in <varname>geometry_columns</varname> table.</para>
+		
+		<para>For backwards compatibility and for spatial needs such as tble inheritance where each child table may have different geometry type, the old check constraint behavior is still supported. 
+		If you need the old behavior, you need to pass in the new optional argument as false <varname>use_typmod=false</varname>. When this is done geometry columns will be created with no type modifiers
+		but will have 3 constraints defined.  In particular,
 		this means that every geometry column belonging to a table has at least
 		three constraints:</para>
 
@@ -863,12 +921,53 @@ the_geom IS NULL)
 		parameterized version simply returns the number of rows inserted into
 		the <varname>geometry_columns</varname> table.</para>
 		<para>Availability: 1.4.0</para>
+		<para>Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types.  You can still use check 
+		    constraint behavior instead by using the new  <varname>use_typmod</varname> and setting it to false.</para>
+		<para>Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was introduced that allows controlling if columns are created with typmodifiers or with check constraints.</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);</programlisting>
+		<programlisting>
+CREATE TABLE public.myspatial_table(gid serial, geom geometry);
+INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
+-- This will now use typ modifiers.  For this to work, there must exist data
+SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);
+
+populate_geometry_columns
+--------------------------
+                        1
+                        
+                        
+\d myspatial_table
+
+                                   Table "public.myspatial_table"
+ Column |           Type            |                           Modifiers                           
+--------+---------------------------+---------------------------------------------------------------
+ gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)
+ geom   | geometry(LineString,4326) | 
+</programlisting>
+		    
+		<programlisting>-- This will change the geometry columns to use constraints if they are not typmod or have constraints already.  
+--For this to work, there must exist data
+CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);
+INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );
+SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);
+populate_geometry_columns
+--------------------------
+                        1
+\d myspatial_table_cs
+
+                          Table "public.myspatial_table_cs"
+ Column |   Type   |                            Modifiers                             
+--------+----------+------------------------------------------------------------------
+ gid    | integer  | not null default nextval('myspatial_table_cs_gid_seq'::regclass)
+ geom   | geometry | 
+Check constraints:
+    "enforce_dims_geom" CHECK (st_ndims(geom) = 2)
+    "enforce_geotype_geom" CHECK (geometrytype(geom) = 'LINESTRING'::text OR geom IS NULL)
+    "enforce_srid_geom" CHECK (st_srid(geom) = 4326)</programlisting>
 	  </refsection>
 
 	  <refsection>
