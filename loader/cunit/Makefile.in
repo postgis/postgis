@@ -39,19 +39,30 @@ GETTEXT_LDFLAGS = @GETTEXT_LDFLAGS@ @LIBINTL@
 # Build full linking line
 LDFLAGS = -lm $(GETTEXT_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(ICONV_LDFLAGS) $(CUNIT_LDFLAGS)
 
+# Object files
 OBJS=	\
-	cu_list.o \
 	cu_pgsql2shp.o \
 	cu_tester.o
 
 LOADER_OBJS= \
-	../structure.o \
 	../dbfopen.o \
 	../shpopen.o \
 	../getopt.o \
 	../shpcommon.o \
 	../safileio.o \
 	../pgsql2shp-core.o
+
+# We test this variable later to see if we're building the GUI
+gtk_build = @GTK_BUILD@
+
+# If we are, define a variable so we can conditionally perform regression
+# and also build an extra test file
+ifneq ($(gtk_build),)
+CFLAGS += -DGTK
+OBJS += cu_list.o
+LOADER_OBJS += ../structure.o
+endif
+
 
 # If we couldn't find the cunit library then display a helpful message
 ifeq ($(CUNIT_LDFLAGS),)

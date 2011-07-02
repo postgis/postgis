@@ -27,12 +27,16 @@ int main()
 	if (CUE_SUCCESS != CU_initialize_registry())
 		return CU_get_error();
 
-	/* Add the algorithms suite to the registry */
+#ifdef GTK
+	/* Add the GUI algorithms suite to the registry */
 	if (NULL == register_list_suite())
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
+#endif
+	
+	/* Add the pgsql2shp test suite */
 	if (NULL == register_pgsql2shp_suite())
 	{
 		CU_cleanup_registry();
