@@ -248,7 +248,7 @@ SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims
 		<para>&curve_support;</para>
 		<note>
 			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
-			    you can drop a geometry column like any other table column using <code>ALTER TABLE</code>
+			    you can drop a geometry column like any other table column using <code>ALTER TABLE</code></para>
 		</note>
 	  </refsection>
 	  <refsection>
