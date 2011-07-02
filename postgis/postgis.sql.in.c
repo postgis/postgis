@@ -4441,6 +4441,7 @@ $$
 			('MULTILINESTRINGM', 'MultiLineStringM',3) ,
 			('MULTILINESTRING', 'MultiLineStringZM',4) ,
 			('LINESTRING', 'LineString',2) ,
+			('LINESTRING', 'LineStringZ',3) ,
 			('LINESTRINGM', 'LineStringM',3) ,
 			('LINESTRING', 'LineStringZM',4) ,
 			('CIRCULARSTRING', 'CircularString',2) ,
