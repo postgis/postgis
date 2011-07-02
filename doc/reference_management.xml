@@ -321,7 +321,7 @@ ALTER TABLE my_schema.my_spatial_table DROP column geom;
 		
 		<note>
 			<para>Changed: 2.0.0 This function is provided for backward compatibility.  Now that since geometry_columns is now a view against the system catalogs,
-			    you can drop a table with geometry columns like any other table using <code>DROP TABLE</code>
+			    you can drop a table with geometry columns like any other table using <code>DROP TABLE</code></para>
 		</note>
 	  </refsection>
 
