@@ -20,6 +20,8 @@
         <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
         <paramdef><type>geometry </type> <parameter>g2</parameter></paramdef>
         <paramdef><type>varchar </type> <parameter>myparam</parameter></paramdef>
+        
+        <paramdef choice='opt'><type>varchar </type> <parameter>myparam=the_default_value</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
   </refsynopsisdiv>
