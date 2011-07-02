@@ -102,8 +102,8 @@
 
 		<note>
 			<para>Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs.  It by default
-			also does not create constraints, but instead uses the built in typmode behavior.  So for example building a wgs84 POINT column with this function is now 
-			equivalent to: ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326); </para>
+			also does not create constraints, but instead uses the built in type modifier behavior of PostgreSQL.  So for example building a wgs84 POINT column with this function is now 
+			equivalent to: <code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code> </para>
 			<para>Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false.</para>
 		</note>
 		
@@ -976,50 +976,6 @@ Check constraints:
 		<para><xref linkend="Probe_Geometry_Columns" /></para>
 	  </refsection>
 	</refentry>
-
-	<refentry id="Probe_Geometry_Columns">
-	  <refnamediv>
-		<refname>Probe_Geometry_Columns</refname>
-
-		<refpurpose>Scans all tables with PostGIS geometry constraints and adds them to the <varname>geometry_columns</varname>
-			table if they are not there.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>Probe_Geometry_Columns</function></funcdef>
-			<paramdef></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Scans all tables with PostGIS geometry constraints and adds them to the <varname>geometry_columns</varname>
-			table if they are not there.  Also give stats on number of inserts and already present or possibly obsolete.</para>
-		<note><para>This will usually only pick up records added by AddGeometryColumn() function.  It will not scan views so views
-			will need to be manually added to geometry_columns table.</para></note>
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>SELECT Probe_Geometry_Columns();
-			probe_geometry_columns
----------------------------------------
-probed:6 inserted:0 conflicts:6 stale:0
-(1 row)</programlisting>
-	  </refsection>
-
-	  <refsection>
-		<title>See Also</title>
-
-		<para><xref linkend="AddGeometryColumn" /></para>
-	  </refsection>
-	</refentry>
-
 
 	<refentry id="UpdateGeometrySRID">
 	  <refnamediv>
