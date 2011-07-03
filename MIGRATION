@@ -31,7 +31,8 @@ a table to a view.
     that the geometry type strings will be mixed case and include the
     dimensionality modifiers. For example: PointZM, MultiLineStringZ.
     
-  * If you have views built the old constraint way or that use processing
+  * If you have views built on tables that were built
+    the old constraint way or that use processing
     functions to return new geometries, they will not register correctly 
     in geometry_columns.  They will all appear as Geometry with srid=0.
     
