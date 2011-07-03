@@ -4415,66 +4415,78 @@ $$
  	FROM 
  	( VALUES
  		 ('GEOMETRY', 'Geometry', 2) ,
- 		 	('GEOMETRY', 'Geometry', 3) ,
- 		 	('GEOMETRY', 'Geometry', 4) ,
+ 		 	('GEOMETRY', 'GeometryZ', 3) ,
+ 		 	('GEOMETRY', 'GeometryZM', 4) ,
 			('GEOMETRYCOLLECTION', 'GeometryCollection', 2) ,
 			('GEOMETRYCOLLECTION', 'GeometryCollectionZ', 3) ,
 			('GEOMETRYCOLLECTIONM', 'GeometryCollectionM', 3) ,
 			('GEOMETRYCOLLECTION', 'GeometryCollectionZM', 4) ,
+			
 			('POINT', 'Point',2) ,
 			('POINTM','PointM',3) ,
 			('POINT', 'PointZ',3) ,
 			('POINT', 'PointZM',4) ,
+			
 			('MULTIPOINT','MultiPoint',2) ,
 			('MULTIPOINT','MultiPointZ',3) ,
 			('MULTIPOINTM','MultiPointM',3) ,
 			('MULTIPOINT','MultiPointZM',4) ,
+			
 			('POLYGON', 'Polygon',2) ,
 			('POLYGON', 'PolygonZ',3) ,
 			('POLYGONM', 'PolygonM',3) ,
 			('POLYGON', 'PolygonZM',4) ,
+			
 			('MULTIPOLYGON', 'MultiPolygon',2) ,
 			('MULTIPOLYGON', 'MultiPolygonZ',3) ,
 			('MULTIPOLYGONM', 'MultiPolygonM',3) ,
 			('MULTIPOLYGON', 'MultiPolygonZM',4) ,
+			
 			('MULTILINESTRING', 'MultiLineString',2) ,
+			('MULTILINESTRING', 'MultiLineStringZ',3) ,
 			('MULTILINESTRINGM', 'MultiLineStringM',3) ,
 			('MULTILINESTRING', 'MultiLineStringZM',4) ,
+			
 			('LINESTRING', 'LineString',2) ,
 			('LINESTRING', 'LineStringZ',3) ,
 			('LINESTRINGM', 'LineStringM',3) ,
 			('LINESTRING', 'LineStringZM',4) ,
+			
 			('CIRCULARSTRING', 'CircularString',2) ,
 			('CIRCULARSTRING', 'CircularStringZ',3) ,
 			('CIRCULARSTRINGM', 'CircularStringM',3) ,
 			('CIRCULARSTRING', 'CircularStringZM',4) ,
+			
 			('COMPOUNDCURVE', 'CompoundCurve',2) ,
 			('COMPOUNDCURVE', 'CompoundCurveZ',3) ,
 			('COMPOUNDCURVEM', 'CompoundCurveM',3) ,
 			('COMPOUNDCURVE', 'CompoundCurveZM',4) ,
+			
 			('CURVEPOLYGON', 'CurvePolygon',2) ,
 			('CURVEPOLYGON', 'CurvePolygonZ',3) ,
 			('CURVEPOLYGONM', 'CurvePolygonM',3) ,
 			('CURVEPOLYGON', 'CurvePolygonZM',4) ,
+			
 			('MULTICURVE', 'MultiCurve',2 ) ,
 			('MULTICURVE', 'MultiCurveZ',3 ) ,
 			('MULTICURVEM', 'MultiCurveM',3 ) ,
 			('MULTICURVEM', 'MultiCurveZM',4 ) ,
+			
 			('MULTISURFACE', 'MultiSurface', 2) ,
 			('MULTISURFACE', 'MultiSurfaceZ', 3) ,
 			('MULTISURFACEM', 'MultiSurfaceM', 3) ,
 			('MULTISURFACE', 'MultiSurfaceZM', 4) ,
+			
 			('POLYHEDRALSURFACE', 'PolyhedralSurface',2) ,
 			('POLYHEDRALSURFACE', 'PolyhedralSurfaceZ',3) ,
 			('POLYHEDRALSURFACEM', 'PolyhedralSurfaceM',3) ,
 			('POLYHEDRALSURFACE', 'PolyhedralSurfaceZM',4) ,
-			('TRIANGLE', 'TriangleZ',3) ,
-			('TRIANGLEM', 'TriangleM',3) ,
-			('TRIANGLE', 'TriangleZM',4) ,
+			
 			('TRIANGLE', 'Triangle',2) ,
 			('TRIANGLE', 'TriangleZ',3) ,
 			('TRIANGLEM', 'TriangleM',3) ,
 			('TRIANGLE', 'TriangleZM',4) ,
+
 			('TIN', 'TIN', 2),
 			('TIN', 'TinZ', 3),
 			('TIN', 'TinM', 3),
