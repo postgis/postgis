@@ -72,7 +72,7 @@ BEGIN
               )
             *
            FROM
-             geocode_address(IN_ADDY) a
+             geocode_address(IN_ADDY, max_results) a
            ORDER BY
               (a.addy).address,
               (a.addy).predirabbrev,

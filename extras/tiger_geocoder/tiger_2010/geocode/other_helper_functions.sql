@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION least_hn(fromhn varchar, tohn varchar)
   RETURNS integer AS
 $$ SELECT least(to_number( CASE WHEN trim($1) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'9999999'),to_number(CASE WHEN trim($2) ~ '^[0-9]+$' THEN $2 ELSE '0' END,'9999999') )::integer;  $$
   LANGUAGE sql IMMUTABLE
-  COST 5;
+  COST 200;
   
 -- Note we are wrapping this in a function so we can make it immutable (for some reason least and greatest aren't considered immutable)
 -- and thu useable in an index or cacheable for multiple calls
@@ -19,7 +19,17 @@ CREATE OR REPLACE FUNCTION greatest_hn(fromhn varchar, tohn varchar)
   RETURNS integer AS
 $$ SELECT greatest(to_number( CASE WHEN trim($1) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'99999999'),to_number(CASE WHEN trim($2) ~ '^[0-9]+$' THEN $2 ELSE '0' END,'99999999') )::integer;  $$
   LANGUAGE sql IMMUTABLE
-  COST 5;
+  COST 200;
+  
+-- Returns an absolute difference between two zips
+-- This is generally more efficient than doing levenshtein
+-- Since when people get the wrong zip, its usually off by one or 2 numeric distance
+-- We only consider the first 5 digits
+CREATE OR REPLACE FUNCTION diff_zip(zip1 varchar, zip2 varchar)
+  RETURNS integer AS
+$$ SELECT abs(to_number( CASE WHEN trim(substring($1,1,5)) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'99999')::integer - to_number( CASE WHEN trim(substring($2,1,5)) ~ '^[0-9]+$' THEN $2 ELSE '0' END,'99999')::integer )::integer;  $$
+  LANGUAGE sql IMMUTABLE
+  COST 200;
   
 -- function return  true or false if 2 numeric streets are equal such as 15th St, 23rd st
 -- it compares just the numeric part of the street for equality

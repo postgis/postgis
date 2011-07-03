@@ -26,6 +26,7 @@ CREATE INDEX tiger_state_the_geom_gist ON faces USING gist(the_geom);
 DROP FUNCTION IF EXISTS reverse_geocode(geometry); /** changed to use default parameters **/
 DROP FUNCTION IF EXISTS geocode(varchar); /** changed to include default parameter for max_results **/
 DROP FUNCTION IF EXISTS geocode(norm_addy); /** changed to include default parameter for max_results **/
+DROP FUNCTION IF EXISTS geocode_address(norm_addy); /** changed to include default parameter for max_results **/
 
 -- TODO: Put in logic to update lookup tables as they change.  street_type_lookup has changed since initial release --
 CREATE TABLE zcta5
