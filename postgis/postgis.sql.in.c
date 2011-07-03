@@ -2242,8 +2242,8 @@ BEGIN
 		RETURN false;
 	END IF;
 
-	IF postgis_constaint_srid(schema_name, table_name, column_name) > 0 THEN 
-	-- srid was enforced with constraints before, keep it that way
+	IF postgis_constraint_srid(schema_name, table_name, column_name) IS NOT NULL THEN 
+	-- srid was enforced with constraints before, keep it that way.
         -- Make up constraint name
         cname = 'enforce_srid_'  || column_name;
     
@@ -2270,7 +2270,7 @@ BEGIN
         -- We are using postgis_type_name to lookup the new name 
         -- (in case Paul changes his mind and flips geometry_columns to return old upper case name) 
         EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.' || quote_ident(table_name) || 
-            ' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ');' ;
+        ' ALTER COLUMN ' || quote_ident(column_name) || ' TYPE  geometry(' || postgis_type_name(myrec.type, myrec.coord_dimension, true) || ', ' || new_srid::text || ') USING ST_SetSRID(' || quote_ident(column_name) || ',' || new_srid::text || ');' ;
     END IF;
 
 	RETURN real_schema || '.' || table_name || '.' || column_name ||' SRID changed to ' || new_srid::text;
