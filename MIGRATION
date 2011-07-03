@@ -136,5 +136,6 @@ SELECT * FROM geometry_columns_v where f_table_schema = 'tiger';
 -- This took  36,018 ms for table of 350,572 records.  
 I assume it will be linear with number of records.
 
-ALTER TABLE buildings_1995 ALTER COLUMN the_geom TYPE geometry(MultiPolygon,2249);
+ALTER TABLE buildings_1995 
+    ALTER COLUMN the_geom TYPE geometry(MultiPolygon,2249);
 
