@@ -47,7 +47,8 @@
 	  <varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
-		  <para>Documentation, general user support on PostGIS newsgroup, windows production and experimental builds, X3D support, Tiger Geocoder Support, and 
+		  <para>Documentation, general user support on PostGIS newsgroup, windows production and experimental builds, 
+		  X3D support, Tiger Geocoder Support, management functions,  and 
 		  smoke testing new functionality or major code changes.</para>
 		</listitem>
 	  </varlistentry>
@@ -167,7 +168,7 @@
 		  III, Carl Anderson, Charlie Savage, Dane Springmeyer, David Skea,
 		  David Techer, Eduin Carrillo,  Frank Warmerdam, George Silva, 
 		  Gerald Fenoy, Gino Lucrezi, Guillaume Lelarge, IIDA Tetsushi, Jeff Adams, Kashif Rasul, Klaus Foerster, Kris Jurka, Loic Dachary, Leo Hsu, 
-		  Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, Michael Fuhr, Nikita Shulga, Norman Vine,
+		  Mark Sondheim, Markus Schaber, Maxime Guillaud, Maxime van Noppen, Michael Fuhr, Nikita Shulga, Norman Vine, Rafal Magda,
 		  Ralph Mason, Steffen Macke, Stephen Frost, Vincent Picavet</para>
 		</listitem>
 	  </varlistentry>

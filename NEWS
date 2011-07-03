@@ -3,7 +3,7 @@ PostGIS 2.0.0
 
   * Important / Breaking Changes *
 
-  - #722, #302 Most deprecated functions removed (over 230 functions) 
+  - #722, #302 Most deprecated functions removed (over 250 functions) 
     (Regina Obe / Paragon Corporation, Paul Ramsey / OpenGeo)
     (most deprecated in 1.2) removed non-ST variants buffer, 
     length, intersects (and internal functions renamed) etc. 
@@ -12,6 +12,18 @@ PostGIS 2.0.0
     Some constraints in older tables were built with deprecated functions.
     If you restore you may need to rebuild these 
     with populate_geometry_columns().
+  - #944 geometry_columns is now a view instead of a table 
+    (Paul Ramsey, Regina Obe)
+    for tables created the old way reads (srid, type, dims) constraints
+    for geometry columns created with type modifiers 
+    reads rom column definition
+  - #1081, #1082, #1084, #1088 - Mangement functions support typmod 
+    geometry column creation functions now default to typmod creation
+    (Regina Obe)
+  - #1083 probe_geometry_columns(), rename_geometry_table_constraints(),
+        fix_geometry_columns(); removed
+    - now obsolete with geometry_column view
+    (Regina Obe)
   - #817 Renaming old 3D functions to the convention ST_3D (Nicklas Avén) 
   - #548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) 
     instead of null for single geometries (Sandro Santilli, Maxime van Noppen)
@@ -52,10 +64,12 @@ PostGIS 2.0.0
 
   - Made loader tolerant of truncated multibyte values found
     in some free worldwide shapefiles (Sandro Santilli)
-  - Lots of bug fixes and enhancements to shp2pgsql (Jeff Adams / Azavea)
+  - Lots of bug fixes and enhancements to shp2pgsql
     Beefing up regression tests for loaders 
     Reproject support for both geometry and geography during import
-  - pgsql2shp conversion from predefined list (Loic Dachary)
+    (Jeff Adams / Azavea, Mark Cave-Ayland)
+  - pgsql2shp conversion from predefined list 
+  (Loic Dachary / Mark Cave-Ayland)  
   - Shp-pgsql GUI loader - support loading multiple 
     files at a time. (Mark Leslie)  
   - Extras - upgraded tiger_geocoder from using old TIGER format 

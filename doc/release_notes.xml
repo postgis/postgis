@@ -8,7 +8,7 @@
         <para>This is a major release.  A full dump reload is required. Refer to <xref linkend="NewFunctions_2_0" /> for more details.</para>
         <simplesect>
         	<title>Important / Breaking Changes</title>
-        	<para>#722, #302, Most deprecated functions removed (over 230 functions) (Regina Obe, Paul Ramsey)</para>
+        	<para>#722, #302, Most deprecated functions removed (over 250 functions) (Regina Obe, Paul Ramsey)</para>
         	<para> -- (most deprecated in 1.2) removed non-ST variants buffer, length, intersects 
         	 (and internal functions renamed) etc. </para>
         	<para>-- If you have been using deprecated functions CHANGE your apps or suffer the consequences.
@@ -16,6 +16,18 @@
      Some constraints in older tables were built with deprecated functions.
      If you restore you may need to rebuild table constraints with populate_geometry_columns().  If you have applications or tools
 					that rely on deprecated functions, please refer to <link linked="legacy_faq" /> for more details.</para>
+		<para>#944 geometry_columns is now a view instead of a table 
+    (Paul Ramsey, Regina Obe)
+    for tables created the old way reads (srid, type, dims) constraints
+    for geometry columns created with type modifiers 
+    reads rom column definition</para>
+        <para>#1081, #1082, #1084, #1088 - Mangement functions support typmod 
+    geometry column creation functions now default to typmod creation
+    (Regina Obe)</para>
+        <para>#1083 probe_geometry_columns(), rename_geometry_table_constraints(),
+        fix_geometry_columns(); removed
+    - now obsolete with geometry_column view
+    (Regina Obe)</para>
         <para>#817 Renaming old 3D functions to the convention ST_3D (Nicklas Avén)</para>
         <para>#548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null 
      for single geometries (Sandro Santilli, Maxime van Noppen)</para>
@@ -43,12 +55,17 @@
           <para>ST_ConcaveHull (Regina Obe and Leo Hsu / Paragon Corporation)</para>
           <para>ST_UnaryUnion (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_AsX3D (Regina Obe / Arrival 3D funding)</para>
+          <para>ST_OffsetCurve (Sandro Santilli, Rafal Magda)</para>
         </simplesect>
         <simplesect>
         	<title>Enhancements</title>
         	<para>Made shape file loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)</para>
-        	<para>Bug Fixes, Enhancements and addition of more regression tests for shp2pgsql. Reproject support for both geometry and geography during import. (Jeff Adams / Azavea)</para>
-        	<para>pgsql2shp conversion from predefined list (Loic Dachary)</para>
+        	<para>Lots of bug fixes and enhancements to shp2pgsql
+        	       Beefing up regression tests for loaders 
+        	       Reproject support for both geometry and geography during import
+        	       (Jeff Adams / Azavea, Mark Cave-Ayland)</para>
+        	<para>pgsql2shp conversion from predefined list 
+        	       (Loic Dachary / Mark Cave-Ayland)</para>
         	<para>Shp-pgsql GUI loader - support loading multiple files at a time.  (Mark Leslie)</para>  
         	<para>Extras - upgraded tiger_geocoder from using old TIGER format to use new TIGER shp and file structure format (Stephen Frost)</para>
         	<para>Extras - revised tiger_geocoder to work with TIGER census 2010 data, addition of reverse geocoder function, various bug fixes, accuracy enhancements, 
