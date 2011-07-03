@@ -51,9 +51,6 @@
 /* Maximum DBF field width (according to ARCGIS) */
 #define MAX_DBF_FIELD_SIZE 254
 
-/* Maximum length of the main scan query */
-#define MAX_QUERY_LEN	2048
-
 
 /* Prototypes */
 static int reverse_points(int num_points, double *x, double *y, double *z, double *m);
@@ -1884,8 +1881,14 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	}
 	
 
-	/* Now we have the complete list of fieldnames, let's generate the SQL query */
-	state->main_scan_query = malloc(MAX_QUERY_LEN);
+	/* Now we have the complete list of fieldnames, let's generate the SQL query. First let's make sure
+	   we reserve enough space for tables with lots of columns */
+	j = 0;
+	for (i = 0; i < state->fieldcount; i++)
+		j += strlen(state->pgfieldnames[i] + 2);	/* Add 2 for leading and trailing quotes */
+	
+	state->main_scan_query = malloc(1024 + j);
+	
 	sprintf(state->main_scan_query, "DECLARE cur ");
 	if (state->config->binary)
 		strcat(state->main_scan_query, "BINARY ");
@@ -1991,7 +1994,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	state->fetchres = NULL;
 
 	/* Generate the fetch query */
-	state->fetch_query = malloc(MAX_QUERY_LEN);
+	state->fetch_query = malloc(256);
 	sprintf(state->fetch_query, "FETCH %d FROM cur", state->config->fetchsize);
 
 	return SHPDUMPEROK;
