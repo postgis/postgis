@@ -1601,7 +1601,7 @@ CREATE TABLE spatial_ref_sys (
 -- geometry_columns table.
 -- Availability: 1.4.0
 -- Revised: 2.0.0 -- no longer deletes from geometry_columns
--- Has new use_typmod option taht defaults to true.  
+-- Has new use_typmod option that defaults to true.  
 -- If use typmod is  set to false will use old constraint behavior.
 -- Will only touch table missing typmod or geometry constraints
 -----------------------------------------------------------------------
