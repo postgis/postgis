@@ -358,7 +358,9 @@ static char * lwdouble_to_dms(double val, const char *pos_dir_symbol, const char
 /* Print two doubles (lat and lon) in DMS form using the specified format.
  * First normalizes them so they will display as -90 to 90 and -180 to 180.
  * Format string may be null or 0-length, in which case a default format will be used.
- * NOTE: Format string is required to be in UTF-8. */
+ * NOTE: Format string is required to be in UTF-8.
+ * NOTE2: returned string is lwalloc'ed, caller is responsible to lwfree it up
+ */
 static char * lwdoubles_to_latlon(double lat, double lon, const char * format)
 {
 	char * lat_text;
@@ -383,7 +385,9 @@ static char * lwdoubles_to_latlon(double lat, double lon, const char * format)
  * the specified format.
  * First normalizes the values so they will display as -90 to 90 and -180 to 180.
  * Format string may be null or 0-length, in which case a default format will be used.
- * NOTE: Format string is required to be in UTF-8. */
+ * NOTE: Format string is required to be in UTF-8.
+ * NOTE2: returned string is lwalloc'ed, caller is responsible to lwfree it up
+ */
 char* lwpoint_to_latlon(const LWPOINT * pt, const char *format)
 {
 	POINT2D p;
