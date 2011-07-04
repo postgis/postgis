@@ -104,6 +104,11 @@ extern bool pglwgeom_has_bbox(const PG_LWGEOM *lwgeom);
 extern bool pglwgeom_has_z(const PG_LWGEOM *lwgeom);
 extern bool pglwgeom_has_m(const PG_LWGEOM *lwgeom);
 extern int pglwgeom_is_empty(const PG_LWGEOM *geom);
+/*
+ * Get the 2d bounding box of the given geometry, in FLOAT4 format.
+ * Use a cached bbox if available, compute it otherwise.
+ * Return LW_FALSE if the geometry has no bounding box (ie: is empty).
+ */
 extern int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box);
 extern BOX3D *pglwgeom_compute_serialized_box3d(const PG_LWGEOM *geom);
 extern int pglwgeom_compute_serialized_box3d_p(const PG_LWGEOM *geom, BOX3D *box3d);
