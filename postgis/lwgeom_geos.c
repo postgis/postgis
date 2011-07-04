@@ -3945,7 +3945,9 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		LWPOLY *lwpoly = NULL;
 		LWLINE *lwl = NULL;
 		LWCOLLECTION *lwc = NULL;
+#if POSTGIS_GEOS_VERSION < 33
 		POINTARRAY *pa = NULL;
+#endif
 		
 	case POINTTYPE:
 		lwp = (LWPOINT *)lwgeom;
