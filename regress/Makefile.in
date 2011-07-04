@@ -69,6 +69,7 @@ TESTS = \
 	sql-mm-multisurface \
 	polyhedralsurface \
 	polygonize \
+	postgis_type_name \
 	out_geometry \
 	out_geography \
 	in_gml \

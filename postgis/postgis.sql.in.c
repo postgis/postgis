@@ -4470,7 +4470,7 @@ $$
 			('MULTICURVE', 'MultiCurve',2 ) ,
 			('MULTICURVE', 'MultiCurveZ',3 ) ,
 			('MULTICURVEM', 'MultiCurveM',3 ) ,
-			('MULTICURVEM', 'MultiCurveZM',4 ) ,
+			('MULTICURVE', 'MultiCurveZM',4 ) ,
 			
 			('MULTISURFACE', 'MultiSurface', 2) ,
 			('MULTISURFACE', 'MultiSurfaceZ', 3) ,
@@ -4487,7 +4487,7 @@ $$
 			('TRIANGLEM', 'TriangleM',3) ,
 			('TRIANGLE', 'TriangleZM',4) ,
 
-			('TIN', 'TIN', 2),
+			('TIN', 'Tin', 2),
 			('TIN', 'TinZ', 3),
 			('TIN', 'TinM', 3),
 			('TIN', 'TinZM', 4) )
