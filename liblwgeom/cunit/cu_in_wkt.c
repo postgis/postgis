@@ -124,8 +124,14 @@ static void test_wkt_in_linestring(void)
 	s = "LINESTRING ZM EMPTY";
 	r = cu_wkt_in(s, WKT_ISO);
 	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	s = "LINESTRING Z (0 0 0 1, 0 1 0 1)";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
+	
 }
 
 static void test_wkt_in_polygon(void)
@@ -133,6 +139,16 @@ static void test_wkt_in_polygon(void)
 	s = "POLYGON((0 0,0 1,1 1,0 0))";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	s = "POLYGON Z ((0 0,0 10,10 10,10 0,0 0),(1 1 1,1 2 1,2 2 1,2 1 1,1 1 1))";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
+	lwfree(r);
+
+	s = "POLYGON Z ((0 0,0 10,10 10,10 0,0 0),(1 1,1 2,2 2,2 1,1 1))";
+	r = cu_wkt_in(s, WKT_SFSQL);
+	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
 }
@@ -253,6 +269,20 @@ static void test_wkt_in_multicurve(void)
 
 static void test_wkt_in_multisurface(void)
 {
+	s = "SRID=4326;MULTICURVE(COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,0 1)))";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+}
+
+static void test_wkt_in_tin(void)
+{
+	s = "TIN(((0 1 2,3 4 5,6 7 8,0 1 2)),((0 1 2,3 4 5,6 7 8,9 10 11,0 1 2)))";
+	r = cu_wkt_in(s, WKT_EXTENDED);
+	CU_ASSERT_STRING_EQUAL(r,"triangle must have exactly 4 points");
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
 }
 
 static void test_wkt_in_polyhedralsurface(void)
@@ -305,6 +335,7 @@ CU_TestInfo wkt_in_tests[] =
 	PG_TEST(test_wkt_in_curvpolygon),
 	PG_TEST(test_wkt_in_multicurve),
 	PG_TEST(test_wkt_in_multisurface),
+	PG_TEST(test_wkt_in_tin),
 	PG_TEST(test_wkt_in_polyhedralsurface),
 	PG_TEST(test_wkt_in_errlocation),
 	CU_TEST_INFO_NULL

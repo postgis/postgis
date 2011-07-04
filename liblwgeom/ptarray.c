@@ -271,6 +271,7 @@ void ptarray_free(POINTARRAY *pa)
 		if(pa->serialized_pointlist && ( ! FLAGS_GET_READONLY(pa->flags) ) )
 			lwfree(pa->serialized_pointlist);	
 		lwfree(pa);
+		LWDEBUG(5,"Freeing a PointArray");
 	}
 }
 

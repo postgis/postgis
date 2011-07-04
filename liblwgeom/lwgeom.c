@@ -1264,6 +1264,8 @@ void lwgeom_free(LWGEOM *lwgeom)
 
 	/* There's nothing here to free... */
 	if( ! lwgeom ) return;
+
+	LWDEBUGF(5,"freeing a %s",lwtype_name(lwgeom->type));
 	
 	switch (lwgeom->type)
 	{
