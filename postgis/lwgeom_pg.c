@@ -533,7 +533,15 @@ int pglwgeom_ndims(const PG_LWGEOM *geom)
 int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box)
 {
 #ifdef GSERIALIZED_ON
-	return gserialized_get_gbox_p(geom, box);
+	LWGEOM *lwgeom;
+	int ret = gserialized_get_gbox_p(geom, box);
+	if ( LW_FAILURE == ret ) {
+		/* See http://trac.osgeo.org/postgis/ticket/1023 */
+		lwgeom = lwgeom_from_gserialized(geom);
+		ret = lwgeom_calculate_gbox(lwgeom, box);
+                lwgeom_free(lwgeom);
+	}
+	return ret;
 #else
 	return getbox2d_p(SERIALIZED_FORM(geom), box);
 #endif
