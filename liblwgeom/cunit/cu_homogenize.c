@@ -44,12 +44,11 @@ static void do_coll_test(char * in, char * out)
 	if (strcmp(tmp, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
 		        in, tmp, out);
-	lwfree(tmp);
-	tmp = lwgeom_to_ewkt(h, PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL(tmp, out);
 	lwfree(tmp);
 	lwgeom_free(g);
-	lwgeom_free(h);
+	/* See http://trac.osgeo.org/postgis/ticket/1104 */
+	lwgeom_release(h);
 }
 
 
