@@ -970,11 +970,14 @@ Check constraints:
     "enforce_srid_geom" CHECK (st_srid(geom) = 4326)</programlisting>
 	  </refsection>
 
+<!--
 	  <refsection>
 		<title>See Also</title>
 
 		<para><xref linkend="Probe_Geometry_Columns" /></para>
 	  </refsection>
+-->
+
 	</refentry>
 
 	<refentry id="UpdateGeometrySRID">
