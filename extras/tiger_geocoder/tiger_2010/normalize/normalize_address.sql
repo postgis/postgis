@@ -71,6 +71,9 @@ DECLARE
   rec RECORD;
   ws VARCHAR;
   rawInput VARCHAR;
+  -- is this a highway 
+  -- (we treat these differently since the road name often comes after the streetType)
+  isHighway boolean := false; 
 BEGIN
 --$Id$-
   result.parsed := FALSE;
@@ -293,17 +296,18 @@ BEGIN
       || ')(?:' || ws || '|$)');
   IF tempInt = 1 THEN
     SELECT INTO rec abbrev, substring(fullStreet, '(?i)' || ws || '('
-        || name || ')(?:' || ws || '|$)') AS given FROM street_type_lookup
+        || name || ')(?:' || ws || '|$)') AS given, is_hw FROM street_type_lookup
         WHERE fullStreet ILIKE '%' || name || '%' AND 
              trim(upper(fullStreet)) != name AND
             texticregexeq(fullStreet, '(?i)' || ws || '(' || name
         || ')(?:' || ws || '|$)') ;
     streetType := rec.given;
     result.streetTypeAbbrev := rec.abbrev;
+    isHighway :=  rec.is_hw;
   ELSIF tempInt > 1 THEN
     tempInt := 0;
     FOR rec IN SELECT abbrev, substring(fullStreet, '(?i)' || ws || '?('
-        || name || ')(?:' || ws || '|$)') AS given FROM street_type_lookup
+        || name || ')(?:' || ws || '|$)') AS given, is_hw FROM street_type_lookup
         WHERE fullStreet ILIKE '%' || name || '%'  AND 
             trim(upper(fullStreet)) != name AND 
             texticregexeq(fullStreet, '(?i)' || ws || '(' || name
@@ -314,13 +318,15 @@ BEGIN
         IF position(rec.given IN fullStreet) < position(result.internal IN fullStreet) THEN
           IF tempInt < position(rec.given IN fullStreet) THEN
             streetType := rec.given;
-            result.streetTypeAbbrev := trim(rec.abbrev);
+            result.streetTypeAbbrev := rec.abbrev;
+            isHighway := rec.is_hw;
             tempInt := position(rec.given IN fullStreet);
           END IF;
         END IF;
       ELSIF tempInt < position(rec.given IN fullStreet) THEN
         streetType := rec.given;
-        result.streetTypeAbbrev := trim(rec.abbrev);
+        result.streetTypeAbbrev := rec.abbrev;
+        isHighway := rec.is_hw;
         tempInt := position(rec.given IN fullStreet);
       END IF;
     END LOOP;
@@ -337,10 +343,13 @@ BEGIN
   -- will be considered location.  If there is no street type, then I'm sad.
   IF streetType IS NOT NULL THEN
     -- Check if the fullStreet contains the streetType and ends in just numbers
-    -- If it does its a road number like a country road or state route
+    -- If it does its a road number like a country road or state route or other highway
     -- Just set the number to be the name of street
-    tempString :=  substring(fullStreet, streetType || ws || '+' || E'([0-9]+)' || ws || '*$');
-   
+    
+    tempString := NULL;
+    IF isHighway THEN
+        tempString :=  substring(fullStreet, streetType || ws || '+' || E'([0-9a-zA-Z]+)' || ws || '*');
+    END IF;    
     IF tempString > '' AND result.location IS NOT NULL THEN
         reducedStreet := tempString;
         result.streetName := trim(reducedStreet);
@@ -643,4 +652,3 @@ END
 $$
   LANGUAGE plpgsql STABLE
   COST 100;
-  

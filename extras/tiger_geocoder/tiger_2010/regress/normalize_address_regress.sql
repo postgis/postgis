@@ -37,4 +37,11 @@ SELECT '#1076c' As ticket, * FROM normalize_address('13800 County Hwy 9, Andover
 SELECT '#1076d' As ticket, * FROM normalize_address('13800 9, Andover, MN 55304');
 -- this one is a regular street that happens to have a street type as the name
 SELECT '#1076e' As ticket, * FROM normalize_address('14 Forest Road, Acton, MA');
+
+-- A country road with a letter name and direction 
+-- NOTE this doesn't completely normalize right since the direction W is being cut off --
+SELECT '#1076f' As ticket, * FROM normalize_address('1940 County Road C W, Roseville, MN 55113'); 
+
+-- Route with a name that sounds like a direction --
+SELECT '#1076g' As ticket, * FROM normalize_address('3900 Route 6, Eastham, Massachusetts 02642');
 \timing

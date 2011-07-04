@@ -28,7 +28,7 @@ $$ SELECT greatest(to_number( CASE WHEN trim($1) ~ '^[0-9]+$' THEN $1 ELSE '0' E
 CREATE OR REPLACE FUNCTION diff_zip(zip1 varchar, zip2 varchar)
   RETURNS integer AS
 $$ SELECT abs(to_number( CASE WHEN trim(substring($1,1,5)) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'99999')::integer - to_number( CASE WHEN trim(substring($2,1,5)) ~ '^[0-9]+$' THEN $2 ELSE '0' END,'99999')::integer )::integer;  $$
-  LANGUAGE sql IMMUTABLE
+  LANGUAGE sql IMMUTABLE STRICT
   COST 200;
   
 -- function return  true or false if 2 numeric streets are equal such as 15th St, 23rd st

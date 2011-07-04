@@ -50,6 +50,10 @@ CREATE TABLE zcta5
   CONSTRAINT pk_tiger_zcta5_zcta5ce PRIMARY KEY (zcta5ce,statefp)
  );
 
+ALTER TABLE street_type_lookup ALTER COLUMN abbrev  TYPE varchar(50);
+ALTER TABLE street_type_lookup ALTER COLUMN name  TYPE varchar(50);
+ALTER TABLE street_type_lookup ADD COLUMN is_hw boolean NOT NULL DEFAULT false;
+
 BEGIN;
 -- Type used to pass around a normalized address between functions
 -- This is s bit dangerous since it could potentially drop peoples tables
@@ -67,43 +71,70 @@ CREATE TYPE norm_addy AS (
     stateAbbrev VARCHAR,
     zip VARCHAR,
     parsed BOOLEAN);*/
--- prefix and suffix street names for highways and roads with spaces in them
-INSERT INTO street_type_lookup (name, abbrev) 
-    SELECT name, abbrev
+-- prefix and suffix street names for numbered highways
+CREATE TEMPORARY TABLE temp_types AS
+SELECT name, abbrev
     FROM (VALUES 
-           ('COUNTY HWY', 'Co Hwy'),
-           ('COUNTY HIGHWAY', 'Co Hwy'),
-           ('COUNTY HIGH WAY', 'Co Hwy'),
-           ('COUNTY ROAD', 'Co Rd'),
-           ('CO RD', 'Co Rd'),
-           ('CORD', 'Co Rd'),
-           ('CO RTE', 'Co Rte'),
-           ('COUNTY ROUTE', 'Co Rte'),
-           ('CO ST AID HWY', 'Co St Aid Hwy'),
-           ('FARM RD', 'Farm Rd'),
-           ('FIRE RD', 'Fire Rd'),
-           ('FOREST RTE', 'Forest Rte'),
-           ('FOREST ROUTE', 'Forest Rte'),
-           ('STATE HWY', 'State Hwy'),
-           ('STATE HIGHWAY', 'State Hwy'),
-           ('STATE HIGH WAY', 'State Hwy'),
-           ('STATE RD', 'State Rd'),
-           ('STATE ROAD', 'State Rd'),
-           ('STATE ROUTE', 'State Rte'),
-           ('STATE RTE', 'State Rte'),
-           ('US HWY', 'US Hwy'),
-           ('US HIGHWAY', 'US Hwy'),
-           ('US HIGH WAY', 'US Hwy'),
-           ('US RTE', 'US Rte'),
-           ('US ROUTE', 'US Rte'),
-           ('US RT', 'US Rte'),
-           ('USFS HWY', 'USFS Hwy'),
-           ('USFS HIGHWAY', 'USFS Hwy'),
-           ('USFS HIGH WAY', 'USFS Hwy'),
-           ('USFS RD', 'USFS Rd'),
-           ('USFS ROAD', 'USFS Rd')
-           ) t(name, abbrev)
+        ('COUNTY HWY', 'Co Hwy'),
+        ('COUNTY HIGHWAY', 'Co Hwy'),
+        ('COUNTY HIGH WAY', 'Co Hwy'),
+        ('COUNTY ROAD', 'Co Rd'),
+        ('CO RD', 'Co Rd'),
+        ('CORD', 'Co Rd'),
+        ('CO RTE', 'Co Rte'),
+        ('COUNTY ROUTE', 'Co Rte'),
+        ('CO ST AID HWY', 'Co St Aid Hwy'),
+        ('FARM RD', 'Farm Rd'),
+        ('FIRE RD', 'Fire Rd'),
+        ('FOREST RD', 'Forest Rd'),
+        ('FOREST ROAD', 'Forest Rd'),
+        ('FOREST RTE', 'Forest Rte'),
+        ('FOREST ROUTE', 'Forest Rte'),
+        ('FREEWAY', 'Fwy'),
+        ('FREEWY', 'Fwy'),
+        ('FRWAY', 'Fwy'),
+        ('FRWY', 'Fwy'),
+        ('FWY', 'Fwy'),
+        ('HIGHWAY', 'Hwy'),
+        ('HIGHWY', 'Hwy'),
+        ('HIWAY', 'Hwy'),
+        ('HIWY', 'Hwy'),
+        ('HWAY', 'Hwy'),
+        ('HWY', 'Hwy'),
+        ('ROUTE', 'Rte'),
+        ('RTE', 'Rte'),
+        ('STATE HWY', 'State Hwy'),
+        ('STATE HIGHWAY', 'State Hwy'),
+        ('STATE HIGH WAY', 'State Hwy'),
+        ('STATE RD', 'State Rd'),
+        ('STATE ROAD', 'State Rd'),
+        ('STATE ROUTE', 'State Rte'),
+        ('STATE RTE', 'State Rte'),
+        ('TPK', 'Tpke'),
+        ('TPKE', 'Tpke'),
+        ('TRNPK', 'Tpke'),
+        ('TRPK', 'Tpke'),
+        ('TURNPIKE', 'Tpke'),
+        ('TURNPK', 'Tpke'),
+        ('US HWY', 'US Hwy'),
+        ('US HIGHWAY', 'US Hwy'),
+        ('US HIGH WAY', 'US Hwy'),
+        ('US RTE', 'US Rte'),
+        ('US ROUTE', 'US Rte'),
+        ('US RT', 'US Rte'),
+        ('USFS HWY', 'USFS Hwy'),
+        ('USFS HIGHWAY', 'USFS Hwy'),
+        ('USFS HIGH WAY', 'USFS Hwy'),
+        ('USFS RD', 'USFS Rd'),
+        ('USFS ROAD', 'USFS Rd')
+           ) t(name, abbrev);
+           
+DELETE FROM street_type_lookup WHERE name IN(SELECT name FROM temp_types);         
+INSERT INTO street_type_lookup (name, abbrev, is_hw) 
+SELECT name, abbrev, true
+    FROM temp_types As t
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
+DROP TABLE temp_types;           
 DELETE FROM street_type_lookup WHERE name = 'FOREST';
 -- System/General helper functions
 \i utility/utmzone.sql

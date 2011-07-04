@@ -35,7 +35,7 @@ BEGIN
     (SELECT zip_state.statefp as statefp,$1 as location, true As exact, ARRAY[zip_state.zip] as zip,1 as pref
         FROM zip_state WHERE zip_state.zip = $2 
             AND (' || quote_nullable(in_statefp) || ' IS NULL OR zip_state.statefp = ' || quote_nullable(in_statefp) || ')
-        UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_accum(zip_state_loc.zip) AS zip,1 + COALESCE(diff_zip(min(zip), $2),0) As pref
+        UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_accum(zip_state_loc.zip) AS zip,1 + abs(COALESCE(diff_zip(max(zip), $2),0) - COALESCE(diff_zip(min(zip), $2),0)) As pref
               FROM zip_state_loc
              WHERE zip_state_loc.statefp = ' || quote_nullable(in_statefp) || ' 
                    AND lower($1) = lower(zip_state_loc.place)
@@ -89,9 +89,9 @@ BEGIN
          || '    interpolate_from_address($1, to_number(sub.fromhn,''99999999'')::integer,'
          || '        to_number(sub.tohn,''99999999'')::integer, e.the_geom) as address_geom,'
          || '       sub.sub_rating + '
-         || CASE WHEN parsed.zip > '' THEN '  least((coalesce(diff_zip(' || quote_nullable(parsed.zip) || ' , sub.zip),0) *1.00/2)::integer, coalesce(levenshtein_ignore_case(' || quote_nullable(zip_info.zip[1]) || ', sub.zip),0) ) '
-            ELSE '1' END::text 
-         || ' + coalesce(levenshtein_ignore_case($3, coalesce(p.name,zip.city,cs.name,co.name)),0)'
+         || CASE WHEN parsed.zip > '' THEN '  least((coalesce(diff_zip($7 , sub.zip),0) *1.00/2)::integer, coalesce(levenshtein_ignore_case($7, sub.zip),0) ) '
+            ELSE '3' END::text 
+         || ' + coalesce(least(levenshtein_ignore_case($3, coalesce(p.name,zip.city,cs.name,co.name)), levenshtein_ignore_case($3, coalesce(cs.name,co.name))),5)'
          || '    as sub_rating,'
          || '    sub.exact_address as exact_address'
          || ' FROM ('
@@ -150,7 +150,7 @@ BEGIN
         RETURN;
     END IF;
 
-    FOR results IN EXECUTE stmt USING parsed.address,parsed.streetName, parsed.location, parsed.streetTypeAbbrev, parsed.preDirAbbrev, parsed.postDirAbbrev LOOP
+    FOR results IN EXECUTE stmt USING parsed.address,parsed.streetName, parsed.location, parsed.streetTypeAbbrev, parsed.preDirAbbrev, parsed.postDirAbbrev, parsed.zip LOOP
 
       -- If we found a match with an exact street, then don't bother
       -- trying to do non-exact matches

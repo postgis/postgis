@@ -149,7 +149,7 @@ UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0');
 
 -- Create street type lookup table
 DROP TABLE IF EXISTS street_type_lookup;
-CREATE TABLE street_type_lookup (name VARCHAR(50) PRIMARY KEY, abbrev VARCHAR(50));
+CREATE TABLE street_type_lookup (name VARCHAR(50) PRIMARY KEY, abbrev VARCHAR(50), is_hw boolean NOT NULL DEFAULT false);
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLEE', 'Aly');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLEY', 'Aly');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLY', 'Aly');
@@ -327,11 +327,6 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('FRKS', 'Frks');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FORT', 'Ft');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FRT', 'Ft');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FT', 'Ft');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('FREEWAY', 'Fwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('FREEWY', 'Fwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('FRWAY', 'Fwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('FRWY', 'Fwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('FWY', 'Fwy');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('GARDEN', 'Gdn');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('GARDN', 'Gdn');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('GDN', 'Gdn');
@@ -369,12 +364,6 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('HEIGHTS', 'Hts');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('HGTS', 'Hts');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('HT', 'Hts');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('HTS', 'Hts');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('HIGHWAY', 'Hwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('HIGHWY', 'Hwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('HIWAY', 'Hwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('HIWY', 'Hwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('HWAY', 'Hwy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('HWY', 'Hwy');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('HILL', 'Hl');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('HL', 'Hl');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('HILLS', 'Hls');
@@ -548,7 +537,6 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('RD', 'Rd');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ROAD', 'Rd');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('RDS', 'Rds');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ROADS', 'Rds');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('ROUTE', 'Rte');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ROW', 'Row');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('RUE', 'Rue');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('RUN', 'Run');
@@ -629,12 +617,6 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('TUNLS', 'Tunl');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('TUNNEL', 'Tunl');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('TUNNELS', 'Tunl');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('TUNNL', 'Tunl');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('TPK', 'Tpke');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('TPKE', 'Tpke');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('TRNPK', 'Tpke');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('TRPK', 'Tpke');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('TURNPIKE', 'Tpke');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('TURNPK', 'Tpke');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UNDERPASS', 'Upas');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UN', 'Un');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UNION', 'Un');
@@ -712,43 +694,63 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('UPAS', 'Upas');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UNS', 'Uns');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('WL', 'Wl');
 
--- prefix and suffix street names for highways and roads with spaces in them
-INSERT INTO street_type_lookup (name, abbrev) 
-SELECT name, abbrev
+-- prefix and suffix street names for highways and roads 
+-- these usually have numbers for street names and often have spaces in type
+INSERT INTO street_type_lookup (name, abbrev, is_hw) 
+SELECT name, abbrev, true
     FROM (VALUES 
-           ('COUNTY HWY', 'Co Hwy'),
-           ('COUNTY HIGHWAY', 'Co Hwy'),
-           ('COUNTY HIGH WAY', 'Co Hwy'),
-           ('COUNTY ROAD', 'Co Rd'),
-           ('CO RD', 'Co Rd'),
-           ('CORD', 'Co Rd'),
-           ('CO RTE', 'Co Rte'),
-           ('COUNTY ROUTE', 'Co Rte'),
-           ('CO ST AID HWY', 'Co St Aid Hwy'),
-           ('FARM RD', 'Farm Rd'),
-           ('FIRE RD', 'Fire Rd'),
-           ('FOREST RD', 'Forest Rd'),
-           ('FOREST ROAD', 'Forest Rd'),
-           ('FOREST RTE', 'Forest Rte'),
-           ('FOREST ROUTE', 'Forest Rte'),
-           ('STATE HWY', 'State Hwy'),
-           ('STATE HIGHWAY', 'State Hwy'),
-           ('STATE HIGH WAY', 'State Hwy'),
-           ('STATE RD', 'State Rd'),
-           ('STATE ROAD', 'State Rd'),
-           ('STATE ROUTE', 'State Rte'),
-           ('STATE RTE', 'State Rte'),
-           ('US HWY', 'US Hwy'),
-           ('US HIGHWAY', 'US Hwy'),
-           ('US HIGH WAY', 'US Hwy'),
-           ('US RTE', 'US Rte'),
-           ('US ROUTE', 'US Rte'),
-           ('US RT', 'US Rte'),
-           ('USFS HWY', 'USFS Hwy'),
-           ('USFS HIGHWAY', 'USFS Hwy'),
-           ('USFS HIGH WAY', 'USFS Hwy'),
-           ('USFS RD', 'USFS Rd'),
-           ('USFS ROAD', 'USFS Rd')
+        ('COUNTY HWY', 'Co Hwy'),
+        ('COUNTY HIGHWAY', 'Co Hwy'),
+        ('COUNTY HIGH WAY', 'Co Hwy'),
+        ('COUNTY ROAD', 'Co Rd'),
+        ('CO RD', 'Co Rd'),
+        ('CORD', 'Co Rd'),
+        ('CO RTE', 'Co Rte'),
+        ('COUNTY ROUTE', 'Co Rte'),
+        ('CO ST AID HWY', 'Co St Aid Hwy'),
+        ('FARM RD', 'Farm Rd'),
+        ('FIRE RD', 'Fire Rd'),
+        ('FOREST RD', 'Forest Rd'),
+        ('FOREST ROAD', 'Forest Rd'),
+        ('FOREST RTE', 'Forest Rte'),
+        ('FOREST ROUTE', 'Forest Rte'),
+        ('FREEWAY', 'Fwy'),
+        ('FREEWY', 'Fwy'),
+        ('FRWAY', 'Fwy'),
+        ('FRWY', 'Fwy'),
+        ('FWY', 'Fwy'),
+        ('HIGHWAY', 'Hwy'),
+        ('HIGHWY', 'Hwy'),
+        ('HIWAY', 'Hwy'),
+        ('HIWY', 'Hwy'),
+        ('HWAY', 'Hwy'),
+        ('HWY', 'Hwy'),
+        ('ROUTE', 'Rte'),
+        ('RTE', 'Rte'),
+        ('STATE HWY', 'State Hwy'),
+        ('STATE HIGHWAY', 'State Hwy'),
+        ('STATE HIGH WAY', 'State Hwy'),
+        ('STATE RD', 'State Rd'),
+        ('STATE ROAD', 'State Rd'),
+        ('STATE ROUTE', 'State Rte'),
+        ('STATE RTE', 'State Rte'),
+        ('TPK', 'Tpke'),
+        ('TPKE', 'Tpke'),
+        ('TRNPK', 'Tpke'),
+        ('TRPK', 'Tpke'),
+        ('TURNPIKE', 'Tpke'),
+        ('TURNPK', 'Tpke'),
+        ('US HWY', 'US Hwy'),
+        ('US HIGHWAY', 'US Hwy'),
+        ('US HIGH WAY', 'US Hwy'),
+        ('US RTE', 'US Rte'),
+        ('US ROUTE', 'US Rte'),
+        ('US RT', 'US Rte'),
+        ('USFS HWY', 'USFS Hwy'),
+        ('USFS HIGHWAY', 'USFS Hwy'),
+        ('USFS HIGH WAY', 'USFS Hwy'),
+        ('USFS RD', 'USFS Rd'),
+        ('USFS ROAD', 'USFS Rd')
            ) t(name, abbrev)
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
 CREATE INDEX street_type_lookup_abbrev_idx ON street_type_lookup (abbrev);
