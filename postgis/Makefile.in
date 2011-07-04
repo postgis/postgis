@@ -105,6 +105,9 @@ ifeq ($(REGRESS),1)
         datadir=/share
 endif
 
+# Make all PostGIS objects depend upon liblwgeom, so that if an underlying
+# change is made, a PostGIS rebuild is triggered.
+$(PG_OBJS): ../liblwgeom/liblwgeom.a 
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
