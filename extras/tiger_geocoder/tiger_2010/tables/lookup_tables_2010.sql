@@ -149,7 +149,7 @@ UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0');
 
 -- Create street type lookup table
 DROP TABLE IF EXISTS street_type_lookup;
-CREATE TABLE street_type_lookup (name VARCHAR(20) PRIMARY KEY, abbrev VARCHAR(4));
+CREATE TABLE street_type_lookup (name VARCHAR(50) PRIMARY KEY, abbrev VARCHAR(50));
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLEE', 'Aly');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLEY', 'Aly');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ALLY', 'Aly');
@@ -313,9 +313,9 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('FLTS', 'Flts');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FORD', 'Frd');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FRD', 'Frd');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FORDS', 'Frds');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('FOREST', 'Frst');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('FORESTS', 'Frst');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('FRST', 'Frst');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('FOREST', 'Frst');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('FORESTS', 'Frst');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('FRST', 'Frst');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FORG', 'Frg');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FORGE', 'Frg');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('FRG', 'Frg');
@@ -711,6 +711,46 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('TRWY', 'Trwy');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UPAS', 'Upas');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UNS', 'Uns');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('WL', 'Wl');
+
+-- prefix and suffix street names for highways and roads with spaces in them
+INSERT INTO street_type_lookup (name, abbrev) 
+SELECT name, abbrev
+    FROM (VALUES 
+           ('COUNTY HWY', 'Co Hwy'),
+           ('COUNTY HIGHWAY', 'Co Hwy'),
+           ('COUNTY HIGH WAY', 'Co Hwy'),
+           ('COUNTY ROAD', 'Co Rd'),
+           ('CO RD', 'Co Rd'),
+           ('CORD', 'Co Rd'),
+           ('CO RTE', 'Co Rte'),
+           ('COUNTY ROUTE', 'Co Rte'),
+           ('CO ST AID HWY', 'Co St Aid Hwy'),
+           ('FARM RD', 'Farm Rd'),
+           ('FIRE RD', 'Fire Rd'),
+           ('FOREST RD', 'Forest Rd'),
+           ('FOREST ROAD', 'Forest Rd'),
+           ('FOREST RTE', 'Forest Rte'),
+           ('FOREST ROUTE', 'Forest Rte'),
+           ('STATE HWY', 'State Hwy'),
+           ('STATE HIGHWAY', 'State Hwy'),
+           ('STATE HIGH WAY', 'State Hwy'),
+           ('STATE RD', 'State Rd'),
+           ('STATE ROAD', 'State Rd'),
+           ('STATE ROUTE', 'State Rte'),
+           ('STATE RTE', 'State Rte'),
+           ('US HWY', 'US Hwy'),
+           ('US HIGHWAY', 'US Hwy'),
+           ('US HIGH WAY', 'US Hwy'),
+           ('US RTE', 'US Rte'),
+           ('US ROUTE', 'US Rte'),
+           ('US RT', 'US Rte'),
+           ('USFS HWY', 'USFS Hwy'),
+           ('USFS HIGHWAY', 'USFS Hwy'),
+           ('USFS HIGH WAY', 'USFS Hwy'),
+           ('USFS RD', 'USFS Rd'),
+           ('USFS ROAD', 'USFS Rd')
+           ) t(name, abbrev)
+           WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
 CREATE INDEX street_type_lookup_abbrev_idx ON street_type_lookup (abbrev);
 
 -- Create place and countysub lookup tables

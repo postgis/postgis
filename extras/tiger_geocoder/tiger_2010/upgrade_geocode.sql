@@ -67,7 +67,44 @@ CREATE TYPE norm_addy AS (
     stateAbbrev VARCHAR,
     zip VARCHAR,
     parsed BOOLEAN);*/
-
+-- prefix and suffix street names for highways and roads with spaces in them
+INSERT INTO street_type_lookup (name, abbrev) 
+    SELECT name, abbrev
+    FROM (VALUES 
+           ('COUNTY HWY', 'Co Hwy'),
+           ('COUNTY HIGHWAY', 'Co Hwy'),
+           ('COUNTY HIGH WAY', 'Co Hwy'),
+           ('COUNTY ROAD', 'Co Rd'),
+           ('CO RD', 'Co Rd'),
+           ('CORD', 'Co Rd'),
+           ('CO RTE', 'Co Rte'),
+           ('COUNTY ROUTE', 'Co Rte'),
+           ('CO ST AID HWY', 'Co St Aid Hwy'),
+           ('FARM RD', 'Farm Rd'),
+           ('FIRE RD', 'Fire Rd'),
+           ('FOREST RTE', 'Forest Rte'),
+           ('FOREST ROUTE', 'Forest Rte'),
+           ('STATE HWY', 'State Hwy'),
+           ('STATE HIGHWAY', 'State Hwy'),
+           ('STATE HIGH WAY', 'State Hwy'),
+           ('STATE RD', 'State Rd'),
+           ('STATE ROAD', 'State Rd'),
+           ('STATE ROUTE', 'State Rte'),
+           ('STATE RTE', 'State Rte'),
+           ('US HWY', 'US Hwy'),
+           ('US HIGHWAY', 'US Hwy'),
+           ('US HIGH WAY', 'US Hwy'),
+           ('US RTE', 'US Rte'),
+           ('US ROUTE', 'US Rte'),
+           ('US RT', 'US Rte'),
+           ('USFS HWY', 'USFS Hwy'),
+           ('USFS HIGHWAY', 'USFS Hwy'),
+           ('USFS HIGH WAY', 'USFS Hwy'),
+           ('USFS RD', 'USFS Rd'),
+           ('USFS ROAD', 'USFS Rd')
+           ) t(name, abbrev)
+           WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
+DELETE FROM street_type_lookup WHERE name = 'FOREST';
 -- System/General helper functions
 \i utility/utmzone.sql
 \i utility/cull_null.sql

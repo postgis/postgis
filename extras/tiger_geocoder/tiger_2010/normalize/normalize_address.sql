@@ -129,7 +129,7 @@ BEGIN
     fullStreet := substring(rawInput from '(.*)'
         || ws || '+' || cull_null(zipString) || '[- ]?([0-9]{4})?$');
     /** strip off any trailing  spaces or ,**/
-    fullStreet :=  btrim(fullStreet, ',');
+    fullStreet :=  btrim(fullStreet, ' ,');
     
   ELSE
     fullStreet := rawInput;
@@ -162,11 +162,16 @@ BEGIN
   --   street level, internal address, location
   --   street level, internal address location
   -- The first three are useful.
+
   tempString := substring(fullStreet, '(?i),' || ws || '+(.*?)(,?' || ws ||
       '*' || cull_null(state) || '$)');
   IF tempString = '' THEN tempString := NULL; END IF;
   IF tempString IS NOT NULL THEN
-    result.location := tempString;
+    IF tempString LIKE '%,%' THEN -- if it has a comma probably has suite, strip it from location
+        result.location := trim(split_part(tempString,',',2));
+    ELSE
+        result.location := tempString;
+    END IF;
     IF addressString IS NOT NULL THEN
       fullStreet := substring(fullStreet, '(?i)' || addressString || ws ||
           '+(.*),' || ws || '+' || result.location);
@@ -278,22 +283,31 @@ BEGIN
   -- Pull potential street types from the full street information
   -- this count is surprisingly slow by itself but much faster if you add an ILIKE AND clause
   -- difference of 98ms vs 16 ms for example
+  -- Put a space in front to make regex easier can always count on it starting with space
+  -- Reject all street types where the fullstreet name is equal to the name
+  fullStreet := ' ' || trim(fullStreet);
   tempInt := count(*) FROM street_type_lookup
-      WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || '(' || name
+      WHERE fullStreet ILIKE '%' || name || '%' AND 
+        trim(upper(fullStreet)) != name AND
+        texticregexeq(fullStreet, '(?i)' || ws || '(' || name
       || ')(?:' || ws || '|$)');
   IF tempInt = 1 THEN
     SELECT INTO rec abbrev, substring(fullStreet, '(?i)' || ws || '('
         || name || ')(?:' || ws || '|$)') AS given FROM street_type_lookup
-        WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || '(' || name
-        || ')(?:' || ws || '|$)');
+        WHERE fullStreet ILIKE '%' || name || '%' AND 
+             trim(upper(fullStreet)) != name AND
+            texticregexeq(fullStreet, '(?i)' || ws || '(' || name
+        || ')(?:' || ws || '|$)') ;
     streetType := rec.given;
     result.streetTypeAbbrev := rec.abbrev;
   ELSIF tempInt > 1 THEN
     tempInt := 0;
-    FOR rec IN SELECT abbrev, substring(fullStreet, '(?i)' || ws || '('
+    FOR rec IN SELECT abbrev, substring(fullStreet, '(?i)' || ws || '?('
         || name || ')(?:' || ws || '|$)') AS given FROM street_type_lookup
-        WHERE fullStreet ILIKE '%' || name || '%' AND  texticregexeq(fullStreet, '(?i)' || ws || '(' || name
-        || ')(?:' || ws || '|$)') LOOP
+        WHERE fullStreet ILIKE '%' || name || '%'  AND 
+            trim(upper(fullStreet)) != name AND 
+            texticregexeq(fullStreet, '(?i)' || ws || '(' || name
+        || ')(?:' || ws || '|$)')  ORDER BY length(name) DESC LIMIT 1 LOOP
       -- If we have found an internal address, make sure the type
       -- precedes it.
       IF result.internal IS NOT NULL THEN
@@ -317,61 +331,76 @@ BEGIN
   END IF;
 
   -- There is a little more processing required now.  If the word after the
-  -- street type begins with a number, the street type should be considered
-  -- part of the name, as well as the next word.  eg, State Route 225a.  If
+  -- street type begins with a number, then its most likely a highway like State Route 225a.  If
+  -- In Tiger 2010+ the reduced Street name just has the number
   -- the next word starts with a char, then everything after the street type
   -- will be considered location.  If there is no street type, then I'm sad.
   IF streetType IS NOT NULL THEN
-    tempString := substring(fullStreet, streetType || ws ||
-        E'+([0-9][^ ,.\t\r\n\f]*?)' || ws);
-    IF tempString IS NOT NULL THEN
-      IF result.location IS NULL THEN
-        result.location := substring(fullStreet, streetType || ws || '+'
-                 || tempString || ws || '+(.*)$');
-      END IF;
-      reducedStreet := substring(fullStreet, '(.*)' || ws || '+'
-                    || result.location || '$');
-      streetType := NULL;
-      result.streetTypeAbbrev := NULL;
+    -- Check if the fullStreet contains the streetType and ends in just numbers
+    -- If it does its a road number like a country road or state route
+    -- Just set the number to be the name of street
+    tempString :=  substring(fullStreet, streetType || ws || '+' || E'([0-9]+)' || ws || '*$');
+   
+    IF tempString > '' AND result.location IS NOT NULL THEN
+        reducedStreet := tempString;
+        result.streetName := trim(reducedStreet);
     ELSE
-      IF result.location IS NULL THEN
-        result.location := substring(fullStreet, streetType || ws || '+(.*)$');
-      END IF;
-      reducedStreet := substring(fullStreet, '^(.*)' || ws || '+'
-                    || streetType);
-      -- the post direction might be portion of fullStreet after reducedStreet
-      tempString := trim(regexp_replace(fullStreet,  reducedStreet ||  ws || streetType,'')); 
-      IF tempString > '' THEN
+        tempString := substring(fullStreet, streetType || ws ||
+            E'+([0-9][^ ,.\t\r\n\f]*?)' || ws);
+        IF tempString IS NOT NULL THEN
+          IF result.location IS NULL THEN
+            result.location := substring(fullStreet, streetType || ws || '+'
+                     || tempString || ws || '+(.*)$');
+          END IF;
+          reducedStreet := substring(fullStreet, '(.*)' || ws || '+'
+                        || result.location || '$');
+          streetType := NULL;
+          result.streetTypeAbbrev := NULL;
+        ELSE
+          IF result.location IS NULL THEN
+            result.location := substring(fullStreet, streetType || ws || '+(.*)$');
+          END IF;
+          reducedStreet := substring(fullStreet, '^(.*)' || ws || '+'
+                        || streetType);
+        END IF;
+        -- the post direction might be portion of fullStreet after reducedStreet
+        -- reducedStreet: Main  fullStreet: Main St, N or fullStreet: Main St N
+        tempString := trim(regexp_replace(fullStreet,  reducedStreet ||  ws || '+' || streetType,''));
+        IF tempString > '' THEN
           tempString := abbrev FROM direction_lookup WHERE
-             tempString ILIKE '%' || name || '%'  
+             tempString ILIKE '%' || name || '%'  AND texticregexeq(reducedStreet || ws || '+' || streetType, '(?i)(' || name || ')' || ws || '+|$')
             ORDER BY length(name) DESC LIMIT 1;
           IF tempString IS NOT NULL THEN
             result.postDirAbbrev = trim(tempString);
           END IF;
-      END IF;
-    END IF;
+        END IF;
+     
     
-    IF debug_flag THEN
-        raise notice '% reduced street: %', clock_timestamp(), reducedStreet;
+        IF debug_flag THEN
+            raise notice '% reduced street: %', clock_timestamp(), reducedStreet;
+        END IF;
+        
+        -- The pre direction should be at the beginning of the fullStreet string.
+        -- The post direction should be at the beginning of the location string
+        -- if there is no internal address
+        reducedStreet := trim(reducedStreet);
+        tempString := trim(regexp_replace(fullStreet,  ws || '+' || reducedStreet ||  ws || '+',''));
+        IF tempString > '' THEN
+            tempString := substring(reducedStreet, '(?i)(^' || name
+                || ')' || ws) FROM direction_lookup WHERE
+                 reducedStreet ILIKE '%' || name || '%'  AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
+                ORDER BY length(name) DESC LIMIT 1;
+        END IF;
+        IF tempString > '' THEN
+          preDir := tempString;
+          result.preDirAbbrev := abbrev FROM direction_lookup
+              where reducedStreet ILIKE '%' || name '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
+              ORDER BY length(name) DESC LIMIT 1;
+          result.streetName := trim(substring(reducedStreet, '^' || preDir || ws || '(.*)'));
+        ELSE
+          result.streetName := trim(reducedStreet);
+        END IF;
     END IF;
-
-    -- The pre direction should be at the beginning of the fullStreet string.
-    -- The post direction should be at the beginning of the location string
-    -- if there is no internal address
-    tempString := substring(reducedStreet, '(?i)(^' || name
-        || ')' || ws) FROM direction_lookup WHERE
-         reducedStreet ILIKE '%' || name || '%'  AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
-        ORDER BY length(name) DESC LIMIT 1;
-    IF tempString IS NOT NULL THEN
-      preDir := tempString;
-      result.preDirAbbrev := abbrev FROM direction_lookup
-          where reducedStreet ILIKE '%' || name '%' AND texticregexeq(reducedStreet, '(?i)(^' || name || ')' || ws)
-          ORDER BY length(name) DESC LIMIT 1;
-      result.streetName := trim(substring(reducedStreet, '^' || preDir || ws || '(.*)'));
-    ELSE
-      result.streetName := trim(reducedStreet);
-    END IF;
-
     IF texticregexeq(result.location, '(?i)' || result.internal || '$') THEN
       -- If the internal address is at the end of the location, then no
       -- location was given.  We still need to look for post direction.
@@ -614,3 +643,4 @@ END
 $$
   LANGUAGE plpgsql STABLE
   COST 100;
+  
