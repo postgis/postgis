@@ -27,7 +27,7 @@ struct geomtype_struct
    before it. Otherwise if we search for "POINT" at the top of the
    list we would also match MULTIPOINT, for example. */
 
-struct geomtype_struct geomtype_struct_array[44] =
+struct geomtype_struct geomtype_struct_array[] =
 {
 	{ "GEOMETRYCOLLECTIONZM", COLLECTIONTYPE, 1, 1 },
 	{ "GEOMETRYCOLLECTIONZ", COLLECTIONTYPE, 1, 0 },
@@ -74,6 +74,7 @@ struct geomtype_struct geomtype_struct_array[44] =
 	{ "POINTM", POINTTYPE, 0, 1 },
 	{ "POINT", POINTTYPE, 0, 0 }
 };
+#define GEOMTYPE_STRUCT_ARRAY_LEN (sizeof geomtype_struct_array/sizeof(struct geomtype_struct))
 
 
 uchar gflags(int hasz, int hasm, int geodetic)
@@ -140,7 +141,7 @@ int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 	tmpstr[i - tmpstartpos] = '\0';
 
 	/* Now check for the type */
-	for (i = 0; i < 44; i++)
+	for (i = 0; i < GEOMTYPE_STRUCT_ARRAY_LEN; i++)
 	{
 		if (!strcmp(tmpstr, geomtype_struct_array[i].typename))
 		{
