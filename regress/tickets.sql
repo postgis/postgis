@@ -395,6 +395,8 @@ SELECT '#712',ST_IsValid(ST_GeomFromText('POLYGON EMPTY',4326));
 
 -- #1023 --
 select '#1023', 'POINT(10 4)'::geometry = 'POINT(10 4)'::geometry;
+select '#1023.a', 'POINT(10 4)'::geometry = 'POINT(10 5)'::geometry;
+select '#1023.b', postgis_addbbox('POINT(10 4)'::geometry) = 'POINT(10 4)'::geometry;
 
 -- #1069 --
 select '#1060', ST_Relate(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('POINT EMPTY',4326)) As result;
