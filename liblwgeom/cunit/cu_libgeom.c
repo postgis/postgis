@@ -221,7 +221,7 @@ static void test_lwgeom_from_gserialized(void)
 		out_ewkt = lwgeom_to_ewkt(geom, PARSER_CHECK_NONE);
 		//printf("\n in = %s\nout = %s\n", in_ewkt, out_ewkt);
 		CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
-		lwgeom_release(geom);
+		lwgeom_free(geom);
 		lwfree(g);
 		lwfree(out_ewkt);
 	}

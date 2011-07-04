@@ -38,13 +38,15 @@ static void test_lwprint_assert_format(char * point_wkt, const char * format, co
 	{
 		printf("\nAssert failed:\n\t%s\t(actual)\n\t%s\t(expected)\n", actual, expected);
 	}
-	lwfree(test_point);
+	lwfree(actual);
+	lwgeom_free(test_point);
 }
 static void test_lwprint_assert_error(char * point_wkt, const char * format)
 {
 	LWPOINT * test_point = (LWPOINT*)lwgeom_from_ewkt(point_wkt, PARSER_CHECK_NONE);
 	cu_error_msg_reset();
-	lwpoint_to_latlon(test_point, format);
+	char* tmp = lwpoint_to_latlon(test_point, format);
+	lwfree(tmp);
 	if (0 == strlen(cu_error_msg))
 	{
 		printf("\nAssert failed:\n\tFormat [%s] did not generate an error.\n", format);

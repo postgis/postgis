@@ -460,16 +460,15 @@ static void test_edge_distance_to_edge(void)
 * Build LWGEOM on top of *aligned* structure so we can use the read-only
 * point access methods on them.
 */
-static LWGEOM* lwgeom_over_gserialized(char *wkt)
+static LWGEOM* lwgeom_over_gserialized(char *wkt, GSERIALIZED **g)
 {
 	LWGEOM *lwg;
-	GSERIALIZED *g;
 
 	lwg = lwgeom_from_ewkt(wkt, PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(lwg->flags, 1);
-	g = gserialized_from_lwgeom(lwg, 1, 0);
+	*g = gserialized_from_lwgeom(lwg, 1, 0);
 	lwgeom_free(lwg);
-	return lwgeom_from_gserialized(g);
+	return lwgeom_from_gserialized(*g);
 }
 
 static void test_lwgeom_check_geodetic(void)
@@ -495,19 +494,23 @@ static void test_lwgeom_check_geodetic(void)
 
 	for ( i = 0; i < 6; i++ )
 	{
-		geom = lwgeom_over_gserialized(ewkt[i]);
+		GSERIALIZED *g;
+		geom = lwgeom_over_gserialized(ewkt[i], &g);
 		CU_ASSERT_EQUAL(lwgeom_check_geodetic(geom), LW_TRUE);
 		lwgeom_free(geom);
+		lwfree(g);
 	}
 
 	for ( i = 6; i < 12; i++ )
 	{
+		GSERIALIZED *g;
 		//char *out_ewkt;
-		geom = lwgeom_over_gserialized(ewkt[i]);
+		geom = lwgeom_over_gserialized(ewkt[i], &g);
 		CU_ASSERT_EQUAL(lwgeom_check_geodetic(geom), LW_FALSE);
 		//out_ewkt = lwgeom_to_ewkt(geom, PARSER_CHECK_NONE);
 		//printf("%s\n", out_ewkt);
 		lwgeom_free(geom);
+		lwfree(g);
 	}
 
 }
@@ -539,7 +542,8 @@ static void test_gbox_calculation(void)
 
 	for ( i = 0; i < 6; i++ )
 	{
-		geom = lwgeom_over_gserialized(ewkt[i]);
+		GSERIALIZED *g;
+		geom = lwgeom_over_gserialized(ewkt[i], &g);
 		lwgeom_calculate_gbox_cartesian(geom, gbox);
 		box3d = lwgeom_compute_box3d(geom);
 		//printf("%g %g\n", gbox->xmin, box3d->xmin);
@@ -547,7 +551,9 @@ static void test_gbox_calculation(void)
 		CU_ASSERT_EQUAL(gbox->xmax, box3d->xmax);
 		CU_ASSERT_EQUAL(gbox->ymin, box3d->ymin);
 		CU_ASSERT_EQUAL(gbox->ymax, box3d->ymax);
+		lwgeom_free(geom);
 		lwfree(box3d);
+		lwfree(g);
 	}
 	lwfree(gbox);
 }

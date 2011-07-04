@@ -36,14 +36,19 @@ static void do_geom_test(char * in, char * out)
 static void do_coll_test(char * in, char * out)
 {
 	LWGEOM *g, *h;
+	char *tmp;
 
 	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
 	h = lwcollection_homogenize((LWCOLLECTION *) g);
-	if (strcmp(lwgeom_to_ewkt(h, PARSER_CHECK_NONE), out))
+	tmp = lwgeom_to_ewkt(h, PARSER_CHECK_NONE);
+	if (strcmp(tmp, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n",
-		        in, lwgeom_to_ewkt(h, PARSER_CHECK_NONE), out);
-	CU_ASSERT_STRING_EQUAL(lwgeom_to_ewkt(h, PARSER_CHECK_NONE), out);
-	lwfree(g);
+		        in, tmp, out);
+	lwfree(tmp);
+	tmp = lwgeom_to_ewkt(h, PARSER_CHECK_NONE);
+	CU_ASSERT_STRING_EQUAL(tmp, out);
+	lwfree(tmp);
+	lwgeom_free(g);
 	lwgeom_free(h);
 }
 
