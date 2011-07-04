@@ -1925,10 +1925,6 @@ BEGIN
 		EXECUTE 'DROP SCHEMA '||quote_ident(atopology)||' CASCADE';
 	END LOOP;
 
-	-- Drop any reference to the topology schema in geometry_columns
-	DELETE FROM geometry_columns WHERE f_table_schema = atopology;
-
-
 	RETURN 'Topology ' || quote_literal(atopology) || ' dropped';
 END
 $$
