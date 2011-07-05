@@ -230,6 +230,7 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	/* Check that the coordinate has the same dimesionality as the array */
 	if( FLAGS_NDIMS(p.flags) != FLAGS_NDIMS(pa->flags) )
 	{
+		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_MIXDIMS);
 		return NULL;
 	}

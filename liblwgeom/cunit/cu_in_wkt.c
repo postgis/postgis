@@ -298,6 +298,13 @@ static void test_wkt_in_polyhedralsurface(void)
 	CU_ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
+
+	s = "POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7,0 1 2)))";
+	r = cu_wkt_in(s, WKT_ISO);
+	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
+	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	lwfree(r);
+
 }
 
 static void test_wkt_in_errlocation(void)
