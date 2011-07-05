@@ -510,7 +510,6 @@ BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col)
 			case MULTISURFACETYPE:
 			case COLLECTIONTYPE:
 				boxtmp1 = lwcollection_compute_box3d((LWCOLLECTION*)(col->geoms[i]));
-				boxfinal = box3d_union(boxtmp1, boxtmp2);
 				break;
 			}
 			boxtmp2 = boxfinal;
