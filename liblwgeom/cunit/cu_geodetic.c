@@ -694,7 +694,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Grazing case for point-in-polygon test, should return LW_FALSE */
-	lwg = lwgeom_from_ewkt("POLYGON((2.0 3.0, 2.0 0.0, 1.0 1.0, 2.0 3.0))", PARSER_CHECK_NONE);
+	/* lwg = lwgeom_from_ewkt("POLYGON((2.0 3.0, 2.0 0.0, 1.0 1.0, 2.0 3.0))", PARSER_CHECK_NONE); */
 	lwg = lwgeom_from_ewkt("POLYGON((1.0 1.0, 1.0 2.0, 1.5 1.5, 1.0 1.0))", PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.5;
@@ -909,6 +909,7 @@ static void test_spheroid_area(void)
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 89.7211470368, 0.0001); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 89.8684316032, 0.0001); /* spheroid */
+	lwgeom_free(lwg);
 
 	/* Big-ass polygon */
 	lwg = lwgeom_from_ewkt("POLYGON((-2 3, -2 4, -1 4, -1 3, -2 3))", PARSER_CHECK_NONE);
@@ -918,6 +919,7 @@ static void test_spheroid_area(void)
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12341436880.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12286574431.9, 10.0); /* spheroid */
+	lwgeom_free(lwg);
 
 	/* One-degree square */
 	lwg = lwgeom_from_ewkt("POLYGON((8.5 2,8.5 1,9.5 1,9.5 2,8.5 2))", PARSER_CHECK_NONE);
@@ -927,6 +929,7 @@ static void test_spheroid_area(void)
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
+	lwgeom_free(lwg);
 
 	/* One-degree square *near* dateline */
 	lwg = lwgeom_from_ewkt("POLYGON((179.5 2,179.5 1,178.5 1,178.5 2,179.5 2))", PARSER_CHECK_NONE);
@@ -936,6 +939,7 @@ static void test_spheroid_area(void)
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
+	lwgeom_free(lwg);
 
 	/* One-degree square *across* dateline */
 	lwg = lwgeom_from_ewkt("POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", PARSER_CHECK_NONE);
@@ -945,6 +949,7 @@ static void test_spheroid_area(void)
 	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.3679, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
+	lwgeom_free(lwg);
 }
 
 
