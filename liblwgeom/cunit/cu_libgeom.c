@@ -325,6 +325,9 @@ static void test_lwcollection_extract(void)
 	col = lwcollection_extract((LWCOLLECTION*)geom, 1);
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(col->type), MULTIPOINTTYPE);
 
+	/* How to properly release 'col' ? 
+	 * See http://http://trac.osgeo.org/postgis/ticket/1102
+	 */
 	lwfree(col);
 	lwgeom_free(geom);
 

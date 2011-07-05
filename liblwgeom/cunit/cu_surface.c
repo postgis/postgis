@@ -18,6 +18,7 @@ void triangle_parse(void)
 {
 	LWGEOM *geom;
 	GSERIALIZED *g;
+	char *tmp;
 
 	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
 
@@ -25,13 +26,17 @@ void triangle_parse(void)
 	geom = lwgeom_from_ewkt("TRIANGLE((0 1,2 3,4 5,0 1))", PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
-	CU_ASSERT_STRING_EQUAL("TRIANGLE((0 1,2 3,4 5,0 1))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	tmp = lwgeom_to_ewkt(geom, PARSER_CHECK_NONE);
+	CU_ASSERT_STRING_EQUAL("TRIANGLE((0 1,2 3,4 5,0 1))", tmp);
+	lwfree(tmp);
 	lwgeom_free(geom);
 	/* 3DM */
 	geom = lwgeom_from_ewkt("TRIANGLEM((0 1 2,3 4 5,6 7 8,0 1 2))", PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
-	CU_ASSERT_STRING_EQUAL("TRIANGLEM((0 1 2,3 4 5,6 7 8,0 1 2))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	tmp = lwgeom_to_ewkt(geom, PARSER_CHECK_NONE);
+	CU_ASSERT_STRING_EQUAL("TRIANGLEM((0 1 2,3 4 5,6 7 8,0 1 2))", tmp);
+	lwfree(tmp);
 	lwgeom_free(geom);
 
 	/* ERROR: a missing Z values */
@@ -91,7 +96,9 @@ void triangle_parse(void)
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
 	CU_ASSERT_EQUAL(geom->srid, 4326);
-	CU_ASSERT_STRING_EQUAL("SRID=4326;TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+	tmp = lwgeom_to_ewkt(geom, PARSER_CHECK_NONE);
+	CU_ASSERT_STRING_EQUAL("SRID=4326;TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", tmp);
+	lwfree(tmp);
 	lwgeom_free(geom);
 
 	/* geography support */
@@ -118,7 +125,9 @@ void tin_parse(void)
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
 	*/
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
-//	CU_ASSERT_STRING_EQUAL("TIN EMPTY", lwgeom_to_ewkt(geom, PARSER_CHECK_NONE));
+//	tmp = lwgeom_to_ewkt(geom, PARSER_CHECK_NONE);
+//	CU_ASSERT_STRING_EQUAL("TIN EMPTY", tmp);
+//	lwfree(tmp);
 	lwgeom_free(geom);
 
 	/* 2 dims */
