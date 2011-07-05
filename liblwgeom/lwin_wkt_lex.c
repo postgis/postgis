@@ -1036,7 +1036,7 @@ YY_RULE_SETUP
 #line 94 "lwin_wkt_lex.l"
 { 
 	LWDEBUG(5,"DIMENSIONALITY");
-	wkt_yylval.stringvalue = strdup(wkt_yytext); 
+	wkt_yylval.stringvalue = wkt_yytext;
 	return DIMENSIONALITY_TOK; 
 	}
 	YY_BREAK
