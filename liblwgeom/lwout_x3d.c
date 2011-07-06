@@ -65,8 +65,7 @@ lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const cha
 		*/
 		LWCOLLECTION *tmp = (LWCOLLECTION*)lwgeom_as_multi(geom);
 		char *ret = asx3d3_multi(tmp, srs, precision, opts, defid);
-		/* See http://trac.osgeo.org/postgis/ticket/1104 about problems with lwgeom_clone */
-		lwcollection_release(tmp);
+		lwcollection_free(tmp);
 		return ret;
 	}
 
