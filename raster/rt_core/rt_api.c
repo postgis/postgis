@@ -5947,6 +5947,7 @@ rt_raster rt_raster_gdal_warp(
 	double dst_extent[4];
 	int width = 0;
 	int height = 0;
+	int ul_user = 0;
 	double min_x = 0;
 	double min_y = 0;
 	double max_x = 0;
@@ -6091,12 +6092,14 @@ rt_raster rt_raster_gdal_warp(
 		(fabs(*ul_x - 0.0) > FLT_EPSILON)
 	) {
 		min_x = *ul_x;
+		ul_user = 1;
 	}
 	if (
 		(NULL != ul_y) &&
 		(fabs(*ul_y - 0.0) > FLT_EPSILON)
 	) {
 		max_y = *ul_y;
+		ul_user = 1;
 	}
 
 	/* skew */
@@ -6131,10 +6134,7 @@ rt_raster rt_raster_gdal_warp(
 			pix_y = fabs(dst_gt[5]);
 
 		/* upper-left corner not provided by user */
-		if (
-			fabs(min_x - 0.0) < FLT_EPSILON &&
-			fabs(max_y - 0.0) < FLT_EPSILON
-		) {
+		if (!ul_user) {
 			min_x = dst_gt[0];
 			max_y = dst_gt[3];
 		}
@@ -6151,10 +6151,7 @@ rt_raster rt_raster_gdal_warp(
 		dst_gt[5] = -1 * pix_y;
 	}
 	/* user-defined upper-left corner */
-	else if (
-		(fabs(min_x - 0.0) > FLT_EPSILON) ||
-		(fabs(max_y - 0.0) > FLT_EPSILON)
-	) {
+	else if (ul_user) {
 		dst_gt[0] = min_x;
 		dst_gt[3] = max_y;
 	}
