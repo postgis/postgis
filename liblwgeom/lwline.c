@@ -330,7 +330,10 @@ lwline_compute_box2d_p(const LWLINE *line, BOX2DFLOAT4 *box)
 	return ptarray_compute_box2d_p(line->points, box);
 }
 
-/* Clone LWLINE object. POINTARRAY is not copied. */
+/* @brief Clone LWLINE object. Serialized point lists are not copied.
+ *
+ * @see ptarray_clone 
+ */
 LWLINE *
 lwline_clone(const LWLINE *g)
 {
@@ -339,6 +342,9 @@ lwline_clone(const LWLINE *g)
 	LWDEBUGF(2, "lwline_clone called with %p", g);
 
 	memcpy(ret, g, sizeof(LWLINE));
+
+	ret->points = ptarray_clone(g->points);
+
 	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }

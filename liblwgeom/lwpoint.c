@@ -397,7 +397,10 @@ lwpoint_compute_box2d_p(const LWPOINT *point, BOX2DFLOAT4 *box)
 	return ptarray_compute_box2d_p(point->point, box);
 }
 
-/* Clone LWPOINT object. POINTARRAY is not copied. */
+/* @brief Clone LWPOINT object. Serialized point lists are not copied.
+ *
+ * @see ptarray_clone 
+ */
 LWPOINT *
 lwpoint_clone(const LWPOINT *g)
 {
@@ -406,6 +409,9 @@ lwpoint_clone(const LWPOINT *g)
 	LWDEBUG(2, "lwpoint_clone called");
 
 	memcpy(ret, g, sizeof(LWPOINT));
+
+	ret->point = ptarray_clone(g->point);
+
 	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }

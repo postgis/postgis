@@ -520,6 +520,56 @@ static void test_f2d(void)
 	CU_ASSERT_DOUBLE_EQUAL(f,d, 0.0000001);
 }
 
+/*
+ * This is a test for memory leaks, can't really test
+ * w/out checking with a leak detector (ie: valgrind)
+ *
+ * See http://trac.osgeo.org/postgis/ticket/1102
+ */
+static void test_lwgeom_clone(void)
+{
+	int i;
+
+	char *ewkt[] =
+	{
+		"POINT(0 0.2)",
+		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
+		"MULTIPOINT(0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9)",
+		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
+		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
+		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
+		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
+		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))",
+		"SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
+		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
+		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
+		"MULTICURVE((5 5 1 3,3 5 2 2,3 3 3 1,0 3 1 1),CIRCULARSTRING(0 0 0 0,0.26794 1 3 -2,0.5857864 1.414213 1 2))",
+		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
+		"TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))"
+	};
+
+
+	for ( i = 0; i < (sizeof ewkt/sizeof(char *)); i++ )
+	{
+		LWGEOM *geom, *cloned;
+		char *in_ewkt;
+		char *out_ewkt;
+
+		in_ewkt = ewkt[i];
+		geom = lwgeom_from_ewkt(in_ewkt, PARSER_CHECK_NONE);
+		cloned = lwgeom_clone(geom);
+		out_ewkt = lwgeom_to_ewkt(cloned, PARSER_CHECK_NONE);
+		if (strcmp(in_ewkt, out_ewkt))
+			fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+		CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+		lwfree(out_ewkt);
+		lwgeom_free(cloned);
+		lwgeom_free(geom);
+	}
+
+
+}
+
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -539,6 +589,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_free),
 	PG_TEST(test_lwgeom_flip_coordinates),
 	PG_TEST(test_f2d),
+	PG_TEST(test_lwgeom_clone),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"LibGeom Suite",  NULL,  NULL, libgeom_tests};

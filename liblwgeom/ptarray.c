@@ -612,7 +612,7 @@ ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2)
 
 
 /**
- * @brief Clone a pointarray
+ * @brief Deep clone a pointarray (also clones serialized pointlist)
  */
 POINTARRAY *
 ptarray_clone_deep(const POINTARRAY *in)
@@ -631,6 +631,27 @@ ptarray_clone_deep(const POINTARRAY *in)
 	size = in->npoints * ptarray_point_size(in);
 	out->serialized_pointlist = lwalloc(size);
 	memcpy(out->serialized_pointlist, in->serialized_pointlist, size);
+
+	return out;
+}
+
+/**
+ * @brief Clone a POINTARRAY object. Serialized pointlist is not copied.
+ */
+POINTARRAY *
+ptarray_clone(const POINTARRAY *in)
+{
+	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
+
+	LWDEBUG(3, "ptarray_clone_deep called.");
+
+	out->flags = in->flags;
+	out->npoints = in->npoints;
+	out->maxpoints = in->maxpoints;
+
+	FLAGS_SET_READONLY(out->flags, 1);
+
+	out->serialized_pointlist = in->serialized_pointlist;
 
 	return out;
 }

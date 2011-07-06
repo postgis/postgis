@@ -337,15 +337,15 @@ lwtriangle_compute_box2d_p(const LWTRIANGLE *triangle, BOX2DFLOAT4 *box)
 	return ptarray_compute_box2d_p(triangle->points, box);
 }
 
-/* Clone LWTRIANGLE object. POINTARRAY are not copied. */
+/* @brief Clone LWTRIANGLE object. Serialized point lists are not copied.
+ *
+ * @see ptarray_clone 
+ */
 LWTRIANGLE *
 lwtriangle_clone(const LWTRIANGLE *g)
 {
-	LWTRIANGLE *ret = lwalloc(sizeof(LWTRIANGLE));
 	LWDEBUGF(2, "lwtriangle_clone called with %p", g);
-	memcpy(ret, g, sizeof(LWTRIANGLE));
-	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
-	return ret;
+	return (LWTRIANGLE *)lwline_clone((const LWLINE *)g);
 }
 
 void

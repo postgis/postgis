@@ -33,7 +33,7 @@ static void do_geom_test(char * in, char * out)
 	lwfree(tmp);
 	lwgeom_free(g);
 	/* See http://trac.osgeo.org/postgis/ticket/1104 */
-	lwgeom_release(h);
+	lwgeom_free(h);
 }
 
 
@@ -52,7 +52,7 @@ static void do_coll_test(char * in, char * out)
 	lwfree(tmp);
 	lwgeom_free(g);
 	/* See http://trac.osgeo.org/postgis/ticket/1104 */
-	lwgeom_release(h);
+	lwgeom_free(h);
 }
 
 

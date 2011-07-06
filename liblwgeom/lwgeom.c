@@ -602,9 +602,10 @@ lwgeom_release(LWGEOM *lwgeom)
 }
 
 
-/** 
-* Clone an #LWGEOM object. #POINTARRAY are not copied. 
-*/
+/* @brief Clone LWGEOM object. Serialized point lists are not copied.
+ *
+ * @see ptarray_clone 
+ */
 LWGEOM *
 lwgeom_clone(const LWGEOM *lwgeom)
 {

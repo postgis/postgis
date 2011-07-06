@@ -590,14 +590,14 @@ void printLWCIRCSTRING(LWCIRCSTRING *curve)
 	lwnotice("}");
 }
 
-/* Clone LWCIRCSTRING object.  POINTARRAY is not copied. */
+/* @brief Clone LWCIRCSTRING object. Serialized point lists are not copied.
+ *
+ * @see ptarray_clone 
+ */
 LWCIRCSTRING *
 lwcircstring_clone(const LWCIRCSTRING *g)
 {
-	LWCIRCSTRING *ret = lwalloc(sizeof(LWCIRCSTRING));
-	memcpy(ret, g, sizeof(LWCIRCSTRING));
-	if (g->bbox) ret->bbox = gbox_copy(g->bbox);
-	return ret;
+	return (LWCIRCSTRING *)lwline_clone((LWLINE *)g);
 }
 
 

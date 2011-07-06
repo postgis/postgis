@@ -446,14 +446,20 @@ lwpoly_compute_box2d_p(const LWPOLY *poly, BOX2DFLOAT4 *box)
 	return 1;
 }
 
-/* Clone LWLINE object. POINTARRAY are not copied, it's ring array is. */
+/* @brief Clone LWLINE object. Serialized point lists are not copied.
+ *
+ * @see ptarray_clone 
+ */
 LWPOLY *
 lwpoly_clone(const LWPOLY *g)
 {
+	int i;
 	LWPOLY *ret = lwalloc(sizeof(LWPOLY));
 	memcpy(ret, g, sizeof(LWPOLY));
 	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
-	memcpy(ret->rings, g->rings, sizeof(POINTARRAY *)*g->nrings);
+	for ( i = 0; i < g->nrings; i++ ) {
+		ret->rings[i] = ptarray_clone(g->rings[i]);
+	}
 	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
 	return ret;
 }

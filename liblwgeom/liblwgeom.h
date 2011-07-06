@@ -1668,8 +1668,12 @@ char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
 
 
 /**
-* Clone an LWGEOM. #POINTARRAY are not copied. #GBOX are copied
-*/
+ * @brief Clone LWGEOM object. Serialized point lists are not copied.
+ *
+ * #GBOX are copied
+ *
+ * @see ptarray_clone 
+ */
 extern LWGEOM *lwgeom_clone(const LWGEOM *lwgeom);
 
 /**
@@ -1687,6 +1691,7 @@ LWPOLY *lwpoly_clone(const LWPOLY *lwgeom);
 LWTRIANGLE *lwtriangle_clone(const LWTRIANGLE *lwgeom);
 LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
 LWCIRCSTRING *lwcircstring_clone(const LWCIRCSTRING *curve);
+POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
 BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
 POINTARRAY *ptarray_clone_deep(const POINTARRAY *ptarray);
 LWLINE *lwline_clone_deep(const LWLINE *lwgeom);
