@@ -28,6 +28,19 @@ $$
 $$
   LANGUAGE 'plpgsql' IMMUTABLE
   COST 100;
+
+-- Helper function that generates script to drop all tables in a particular schema for a particular table
+-- This is useful in case you need to reload a state
+CREATE OR REPLACE FUNCTION drop_state_tables_generate_script(param_state text, param_schema text DEFAULT 'tiger_data')
+  RETURNS text AS
+$$
+SELECT array_to_string(array_agg('DROP TABLE ' || quote_ident(table_schema) || '.' || quote_ident(table_name) || ';'),E'\n')
+	FROM (SELECT * FROM information_schema.tables
+	WHERE table_schema = $2 AND table_name like lower($1) || '_%' ORDER BY table_name) AS foo; 
+;
+$$
+  LANGUAGE sql VOLATILE;
+
 DROP TABLE IF EXISTS loader_platform;
 CREATE TABLE loader_platform(os varchar(50) PRIMARY KEY, declare_sect text, pgbin text, wget text, unzip_command text, psql text, path_sep text, loader text, environ_set_command text, county_process_command text);
 INSERT INTO loader_platform(os, wget, pgbin, declare_sect, unzip_command, psql,path_sep,loader, environ_set_command, county_process_command)

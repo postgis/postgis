@@ -31,6 +31,62 @@
      and uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function.  It is packaged as a webservice interface and seems designed to be called as a webservice.
      Just like the tiger geocoder, it has both a geocoder and a reverse geocoder component.  From the documentation, it is unclear if it has a pure SQL interface like the tiger geocoder, or if a good deal of the logic is implemented in the web interface.</para>
 	
+    <refentry id="Drop_State_Tables_Generate_Script">
+	  <refnamediv>
+		<refname>Drop_State_Tables_Generate_Script</refname>
+
+		<refpurpose>Generates a script that drops all tables in the specified schema that are prefixed with the state abbreviation.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>Drop_State_Tables_Generate_Script</function></funcdef>
+				<paramdef><type>text </type> <parameter>address</parameter></paramdef>
+				<paramdef><type choice='opt'>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
+			</funcprototype>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Generates a script that drops all tables in the specified schema that are prefixed with the state abbreviation.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.
+		This function is useful for dropping tables of a state just before you reload a state in case something went wrong during your previous load.</para>
+	
+		
+		<para>Availability: 2.0.0</para>
+
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT drop_state_tables_generate_script('PA');
+DROP TABLE tiger_data.pa_addr;
+DROP TABLE tiger_data.pa_county;
+DROP TABLE tiger_data.pa_county_lookup;
+DROP TABLE tiger_data.pa_cousub;
+DROP TABLE tiger_data.pa_edges;
+DROP TABLE tiger_data.pa_faces;
+DROP TABLE tiger_data.pa_featnames;
+DROP TABLE tiger_data.pa_place;
+DROP TABLE tiger_data.pa_state;
+DROP TABLE tiger_data.pa_zip_lookup_base;
+DROP TABLE tiger_data.pa_zip_state;
+DROP TABLE tiger_data.pa_zip_state_loc;
+		</programlisting>
+	
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Loader_Generate_Script"/></para>
+	  </refsection>
+	</refentry>
 	<refentry id="Geocode">
 	  <refnamediv>
 		<refname>Geocode</refname>
@@ -259,6 +315,7 @@ wget http://www2.census.gov/geo/pvs/tiger2010st/44_Rhode_Island/ --no-parent --r
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>text <function>Missing_Indexes_Generate_Script</function></funcdef>
+			<paramdef />
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
