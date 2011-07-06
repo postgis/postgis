@@ -56,7 +56,7 @@ static void test_lwprint_assert_error(char * point_wkt, const char * format)
 	{
 		cu_error_msg_reset();
 	}
-	lwfree(test_point);
+	lwgeom_free(test_point);
 }
 
 /*
