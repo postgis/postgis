@@ -300,23 +300,28 @@ BEGIN
         WHERE fullStreet ILIKE '%' || name || '%' AND 
              trim(upper(fullStreet)) != name AND
             texticregexeq(fullStreet, '(?i)' || ws || '(' || name
-        || ')(?:' || ws || '|$)') ;
+        || ')(?:' || ws || '|$)')  ;
     streetType := rec.given;
     result.streetTypeAbbrev := rec.abbrev;
     isHighway :=  rec.is_hw;
     IF debug_flag THEN
-    	RAISE NOTICE 'street Type: %, street Type abbrev: %', rec.given, rec.abbrev;
+    	   RAISE NOTICE 'street Type: %, street Type abbrev: %', rec.given, rec.abbrev;
     END IF;
   ELSIF tempInt > 1 THEN
     tempInt := 0;
+    -- the last matching abbrev in the string is the most likely one
     FOR rec IN SELECT abbrev, substring(fullStreet, '(?i)' || ws || '?('
         || name || ')(?:' || ws || '|$)') AS given, is_hw FROM street_type_lookup
         WHERE fullStreet ILIKE '%' || name || '%'  AND 
             trim(upper(fullStreet)) != name AND 
             texticregexeq(fullStreet, '(?i)' || ws || '(' || name
-        || ')(?:' || ws || '|$)')  ORDER BY length(name) DESC LIMIT 1 LOOP
+            -- we only consider street types that are regular and not at beginning of name or are highways (since those can be at beg or end)
+            -- we take the one that is the longest e.g Country Road would be more correct than Road
+        || ')(?:' || ws || '|$)') AND ((NOT is_hw AND position(name IN trim(fullStreet)) > 2) OR is_hw) ORDER BY length(name) DESC LIMIT 1 LOOP
       -- If we have found an internal address, make sure the type
       -- precedes it.
+      /** TODO: I don't think we need a loop anymore since we are just returning one and the one in the last position
+      * I'll leave for now though **/
       IF result.internal IS NOT NULL THEN
         IF position(rec.given IN fullStreet) < position(result.internal IN fullStreet) THEN
           IF tempInt < position(rec.given IN fullStreet) THEN
@@ -397,6 +402,11 @@ BEGIN
           END IF;
           reducedStreet := substring(fullStreet, '^(.*)' || ws || '+'
                         || streetType);
+          IF COALESCE(reducedStreet,'') = '' THEN --reduced street can't be blank
+            reducedStreet := fullStreet;
+            streetType := NULL;
+            result.streetTypeAbbrev := NULL;
+          END IF;
         END IF;
 		-- the post direction might be portion of fullStreet after reducedStreet
 		-- reducedStreet: Main  fullStreet: Main St, N or fullStreet: Main St N
