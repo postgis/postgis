@@ -31,6 +31,7 @@ Datum geography_expand(PG_FUNCTION_ARGS);
 Datum geography_point_outside(PG_FUNCTION_ARGS);
 Datum geography_covers(PG_FUNCTION_ARGS);
 Datum geography_bestsrid(PG_FUNCTION_ARGS);
+Datum geography_perimeter(PG_FUNCTION_ARGS);
 
 /*
 ** geography_distance(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
