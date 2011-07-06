@@ -105,6 +105,7 @@ static void test_misc_area(void)
 	geom = lwgeom_from_ewkt("LINESTRING EMPTY", PARSER_CHECK_ALL);
 	area = lwgeom_area(geom);
 	CU_ASSERT_DOUBLE_EQUAL(area, 0.0, 0.0001);	
+	lwgeom_free(geom);
 }
 
 static void test_misc_wkb(void)
