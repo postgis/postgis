@@ -138,7 +138,7 @@ typedef struct struct_tin_arcs *tin_arcs;
 
 /* We supposed that the geometry is valid
    we could have wrong result if not */
-int lwtin_is_closed(LWTIN *tin)
+int lwtin_is_closed(const LWTIN *tin)
 {
 	int i, j, k;
 	int narcs, carc;

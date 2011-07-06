@@ -145,7 +145,7 @@ typedef struct struct_psurface_arcs *psurface_arcs;
 
 /* We supposed that the geometry is valid
    we could have wrong result if not */
-int lwpsurface_is_closed(LWPSURFACE *psurface)
+int lwpsurface_is_closed(const LWPSURFACE *psurface)
 {
 	int i, j, k;
 	int narcs, carc;

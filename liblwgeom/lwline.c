@@ -607,7 +607,7 @@ lwline_remove_repeated_points(LWLINE *lwline)
 }
 
 int
-lwline_is_closed(LWLINE *line)
+lwline_is_closed(const LWLINE *line)
 {
 	if (FLAGS_GET_Z(line->type))
 		return ptarray_isclosed3d(line->points);

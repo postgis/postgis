@@ -70,7 +70,7 @@ lwcompound_deserialize(uchar *serialized)
 }
 
 int
-lwcompound_is_closed(LWCOMPOUND *compound)
+lwcompound_is_closed(const LWCOMPOUND *compound)
 {
 	size_t size;
 	int npoints=0;

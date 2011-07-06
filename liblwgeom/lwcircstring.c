@@ -738,7 +738,7 @@ lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint)
 }
 
 int
-lwcircstring_is_closed(LWCIRCSTRING *curve)
+lwcircstring_is_closed(const LWCIRCSTRING *curve)
 {
 	if (FLAGS_GET_Z(curve->flags))
 		return ptarray_isclosed3d(curve->points);

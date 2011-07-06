@@ -1584,11 +1584,11 @@ extern int lwcollection_compute_box2d_p(const LWCOLLECTION *col, BOX2DFLOAT4 *bo
 extern int lwcircstring_compute_box2d_p(const LWCIRCSTRING *curve, BOX2DFLOAT4 *box);
 extern BOX2DFLOAT4* lwgeom_compute_box2d(const LWGEOM *lwgeom);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
-extern int lwline_is_closed(LWLINE *line);
-extern int lwcircstring_is_closed(LWCIRCSTRING *curve);
-extern int lwcompound_is_closed(LWCOMPOUND *curve);
-extern int lwpsurface_is_closed(LWPSURFACE *psurface);
-extern int lwtin_is_closed(LWTIN *tin);
+extern int lwline_is_closed(const LWLINE *line);
+extern int lwcircstring_is_closed(const LWCIRCSTRING *curve);
+extern int lwcompound_is_closed(const LWCOMPOUND *curve);
+extern int lwpsurface_is_closed(const LWPSURFACE *psurface);
+extern int lwtin_is_closed(const LWTIN *tin);
 
 /**
 * Ensure the outer ring is clockwise oriented and all inner rings 
