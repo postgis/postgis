@@ -197,7 +197,6 @@ asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 	POINTARRAY *pa;
 	int np;
 
-	ptr += sprintf(ptr, "");
 	j = 0;
 	for (i=0; i < mgeom->ngeoms; i++)
 	{
@@ -434,18 +433,18 @@ asx3d3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
         case MULTILINETYPE:
             x3dtype = "IndexedLineSet";
             ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
-            ptr += asx3d3_mline_coordindex(col, ptr);
+            ptr += asx3d3_mline_coordindex((const LWMLINE *)col, ptr);
             ptr += sprintf(ptr, "'>");
             break;
         case MULTIPOLYGONTYPE:
             x3dtype = "IndexedFaceSet";
             ptr += sprintf(ptr, "<%s %s coordIndex='", x3dtype, defid);
-            ptr += asx3d3_mpoly_coordindex(col,ptr);
+            ptr += asx3d3_mpoly_coordindex((const LWMPOLY *)col, ptr);
             ptr += sprintf(ptr, "'>");
             break;
         default:
             lwerror("asx3d3_multi_buf: '%s' geometry type not supported", lwtype_name(col->type));
-            return NULL;
+            return 0;
     }
     if (dimension == 3){
         ptr += sprintf(ptr, "<Coordinate point='");
