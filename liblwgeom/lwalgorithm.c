@@ -426,6 +426,7 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 				}
 				/* Shallow free the struct, leaving the geoms behind. */
 				if ( col->bbox ) lwfree(col->bbox);
+				lwfree(col->geoms);
 				lwfree(col);
 			}
 		}
