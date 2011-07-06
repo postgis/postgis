@@ -35,17 +35,17 @@ BEGIN
     (SELECT zip_state.statefp as statefp,$1 as location, true As exact, ARRAY[zip_state.zip] as zip,1 as pref
         FROM zip_state WHERE zip_state.zip = $2 
             AND (' || quote_nullable(in_statefp) || ' IS NULL OR zip_state.statefp = ' || quote_nullable(in_statefp) || ')
-        UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_accum(zip_state_loc.zip) AS zip,1 + abs(COALESCE(diff_zip(max(zip), $2),0) - COALESCE(diff_zip(min(zip), $2),0)) As pref
+        UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_agg(zip_state_loc.zip) AS zip,1 + abs(COALESCE(diff_zip(max(zip), $2),0) - COALESCE(diff_zip(min(zip), $2),0)) As pref
               FROM zip_state_loc
              WHERE zip_state_loc.statefp = ' || quote_nullable(in_statefp) || ' 
                    AND lower($1) = lower(zip_state_loc.place)
              GROUP BY zip_state_loc.statefp,zip_state_loc.place
-      UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_accum(zip_state_loc.zip),3
+      UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_agg(zip_state_loc.zip),3
               FROM zip_state_loc
              WHERE zip_state_loc.statefp = ' || quote_nullable(in_statefp) || '
                    AND soundex($1) = soundex(zip_state_loc.place)
              GROUP BY zip_state_loc.statefp,zip_state_loc.place
-      UNION SELECT zip_lookup_base.statefp,zip_lookup_base.city As location,false As exact, array_accum(zip_lookup_base.zip),4
+      UNION SELECT zip_lookup_base.statefp,zip_lookup_base.city As location,false As exact, array_agg(zip_lookup_base.zip),4
               FROM zip_lookup_base
              WHERE zip_lookup_base.statefp = ' || quote_nullable(in_statefp) || '
                          AND (soundex($1) = soundex(zip_lookup_base.city) OR soundex($1) = soundex(zip_lookup_base.county))
@@ -57,17 +57,17 @@ BEGIN
     (SELECT zip_state.statefp as statefp,parsed.location as location, true As exact, ARRAY[zip_state.zip] as zip,1 as pref
         FROM zip_state WHERE zip_state.zip = parsed.zip 
             AND (in_statefp IS NULL OR zip_state.statefp = in_statefp)
-        UNION SELECT zip_state_loc.statefp,parsed.location,false As exact, array_accum(zip_state_loc.zip),2 + diff_zip(zip[1], parsed.zip)
+        UNION SELECT zip_state_loc.statefp,parsed.location,false As exact, array_agg(zip_state_loc.zip),2 + diff_zip(zip[1], parsed.zip)
               FROM zip_state_loc
              WHERE zip_state_loc.statefp = in_statefp
                    AND lower(parsed.location) = lower(zip_state_loc.place)
              GROUP BY zip_state_loc.statefp,parsed.location
-      UNION SELECT zip_state_loc.statefp,parsed.location,false As exact, array_accum(zip_state_loc.zip),3
+      UNION SELECT zip_state_loc.statefp,parsed.location,false As exact, array_agg(zip_state_loc.zip),3
               FROM zip_state_loc
              WHERE zip_state_loc.statefp = in_statefp
                    AND soundex(parsed.location) = soundex(zip_state_loc.place)
              GROUP BY zip_state_loc.statefp,parsed.location
-      UNION SELECT zip_lookup_base.statefp,parsed.location,false As exact, array_accum(zip_lookup_base.zip),4
+      UNION SELECT zip_lookup_base.statefp,parsed.location,false As exact, array_agg(zip_lookup_base.zip),4
               FROM zip_lookup_base
              WHERE zip_lookup_base.statefp = in_statefp
                          AND (soundex(parsed.location) = soundex(zip_lookup_base.city) OR soundex(parsed.location) = soundex(zip_lookup_base.county))

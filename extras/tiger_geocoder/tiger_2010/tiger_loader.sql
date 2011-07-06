@@ -14,12 +14,6 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SET search_path TO tiger,public;
 BEGIN;
-DROP AGGREGATE IF EXISTS array_accum(anyelement);
-CREATE AGGREGATE array_accum(anyelement) (
-  SFUNC=array_append,
-  STYPE=anyarray,
-  INITCOND='{}'
-);
 CREATE OR REPLACE FUNCTION loader_macro_replace(param_input text, param_keys text[],param_values text[]) 
 RETURNS text AS
 $$
