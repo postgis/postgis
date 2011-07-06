@@ -39,7 +39,7 @@ static void test_lwprint_assert_format(char * point_wkt, const char * format, co
 		printf("\nAssert failed:\n\t%s\t(actual)\n\t%s\t(expected)\n", actual, expected);
 	}
 	lwfree(actual);
-	lwgeom_free(test_point);
+	lwpoint_free(test_point);
 }
 static void test_lwprint_assert_error(char * point_wkt, const char * format)
 {
@@ -56,7 +56,7 @@ static void test_lwprint_assert_error(char * point_wkt, const char * format)
 	{
 		cu_error_msg_reset();
 	}
-	lwgeom_free(test_point);
+	lwpoint_free(test_point);
 }
 
 /*
