@@ -163,9 +163,9 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		LWDEBUGF(4,"coll->ngeoms %d", coll->ngeoms);
 
 		/* We could now free the struct */
-		lwmpoint_release(geoms->points);
-		lwmline_release(geoms->lines);
-		lwmpoly_release(geoms->polys);
+		lwmpoint_free(geoms->points);
+		lwmline_free(geoms->lines);
+		lwmpoly_free(geoms->polys);
 		lwfree(geoms);
 
 		for ( i = 0; i < coll->ngeoms; i++ )
@@ -192,9 +192,9 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		res = lwgeom_clone((LWGEOM *) geoms->polys);
 
 	/* We could now free the struct */
-	lwmpoint_release(geoms->points);
-	lwmline_release(geoms->lines);
-	lwmpoly_release(geoms->polys);
+	lwmpoint_free(geoms->points);
+	lwmline_free(geoms->lines);
+	lwmpoly_free(geoms->polys);
 	lwfree(geoms);
 
 	/* Empty (and recursive) Geometry case */
