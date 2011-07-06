@@ -45,7 +45,6 @@
 				<paramdef><type>text </type> <parameter>address</parameter></paramdef>
 				<paramdef><type choice='opt'>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
 			</funcprototype>
-		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
