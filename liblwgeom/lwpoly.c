@@ -469,7 +469,7 @@ lwpoly_clone_deep(const LWPOLY *g)
 	ret->rings = lwalloc(sizeof(POINTARRAY *)*g->nrings);
 	for ( i = 0; i < ret->nrings; i++ )
 	{
-		ret->rings[i] = ptarray_clone(g->rings[i]);
+		ret->rings[i] = ptarray_clone_deep(g->rings[i]);
 	}
 	FLAGS_SET_READONLY(ret->flags,0);
 	return ret;
@@ -586,7 +586,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 		lwerror("lwpoly_from_lwlines: shell must have at least 4 points");
 	if ( ! ptarray_isclosed2d(shell->points) )
 		lwerror("lwpoly_from_lwlines: shell must be closed");
-	rings[0] = ptarray_clone(shell->points);
+	rings[0] = ptarray_clone_deep(shell->points);
 
 	for (nrings=1; nrings<=nholes; nrings++)
 	{
@@ -600,7 +600,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 		if ( ! ptarray_isclosed2d(hole->points) )
 			lwerror("lwpoly_from_lwlines: holes must be closed");
 
-		rings[nrings] = ptarray_clone(hole->points);
+		rings[nrings] = ptarray_clone_deep(hole->points);
 	}
 
 	ret = lwpoly_construct(srid, NULL, nrings, rings);

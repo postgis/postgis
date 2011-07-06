@@ -333,7 +333,7 @@ static POINTARRAY* parse_kml_coordinates(xmlNodePtr xnode, bool *hasz)
 	xmlFree(kml_coord);
 
 	/* TODO: we shouldn't need to clone here */
-	return ptarray_clone(dpa);
+	return ptarray_clone_deep(dpa);
 }
 
 

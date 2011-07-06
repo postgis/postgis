@@ -396,7 +396,7 @@ lwtriangle_from_lwline(const LWLINE *shell)
 	        (FLAGS_GET_Z(shell->flags) && !ptarray_isclosed3d(shell->points)) )
 		lwerror("lwtriangle_from_lwline: shell must be closed");
 
-	pa = ptarray_clone(shell->points);
+	pa = ptarray_clone_deep(shell->points);
 	ret = lwtriangle_construct(shell->srid, NULL, pa);
 
 	if (lwtriangle_is_repeated_points(ret))

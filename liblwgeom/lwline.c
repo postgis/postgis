@@ -353,7 +353,7 @@ lwline_clone_deep(const LWLINE *g)
 	memcpy(ret, g, sizeof(LWLINE));
 
 	if ( g->bbox ) ret->bbox = gbox_copy(g->bbox);
-	if ( g->points ) ret->points = ptarray_clone(g->points);
+	if ( g->points ) ret->points = ptarray_clone_deep(g->points);
 	FLAGS_SET_READONLY(ret->flags,0);
 
 	return ret;

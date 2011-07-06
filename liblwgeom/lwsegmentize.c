@@ -356,18 +356,18 @@ lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32 perQuad)
 		if (tmp->type == CIRCSTRINGTYPE)
 		{
 			line = lwcircstring_segmentize((LWCIRCSTRING *)tmp, perQuad);
-			ptarray[i] = ptarray_clone(line->points);
+			ptarray[i] = ptarray_clone_deep(line->points);
 			lwfree(line);
 		}
 		else if (tmp->type == LINETYPE)
 		{
 			line = (LWLINE *)tmp;
-			ptarray[i] = ptarray_clone(line->points);
+			ptarray[i] = ptarray_clone_deep(line->points);
 		}
 		else if (tmp->type == COMPOUNDTYPE)
 		{
 			line = lwcompound_segmentize((LWCOMPOUND *)tmp, perQuad);
-			ptarray[i] = ptarray_clone(line->points);
+			ptarray[i] = ptarray_clone_deep(line->points);
 			lwfree(line);
 		}
 		else
@@ -402,7 +402,7 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad)
 		}
 		else if (tmp->type == LINETYPE)
 		{
-			lines[i] = (LWGEOM *)lwline_construct(mcurve->srid, NULL, ptarray_clone(((LWLINE *)tmp)->points));
+			lines[i] = (LWGEOM *)lwline_construct(mcurve->srid, NULL, ptarray_clone_deep(((LWLINE *)tmp)->points));
 		}
 		else
 		{
@@ -442,7 +442,7 @@ lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad)
 			ptarray = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
 			for (j = 0; j < poly->nrings; j++)
 			{
-				ptarray[j] = ptarray_clone(poly->rings[j]);
+				ptarray[j] = ptarray_clone_deep(poly->rings[j]);
 			}
 			polys[i] = (LWGEOM *)lwpoly_construct(msurface->srid, NULL, poly->nrings, ptarray);
 		}

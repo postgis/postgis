@@ -1688,7 +1688,7 @@ LWTRIANGLE *lwtriangle_clone(const LWTRIANGLE *lwgeom);
 LWCOLLECTION *lwcollection_clone(const LWCOLLECTION *lwgeom);
 LWCIRCSTRING *lwcircstring_clone(const LWCIRCSTRING *curve);
 BOX2DFLOAT4 *box2d_clone(const BOX2DFLOAT4 *lwgeom);
-POINTARRAY *ptarray_clone(const POINTARRAY *ptarray);
+POINTARRAY *ptarray_clone_deep(const POINTARRAY *ptarray);
 LWLINE *lwline_clone_deep(const LWLINE *lwgeom);
 LWPOLY *lwpoly_clone_deep(const LWPOLY *lwgeom);
 LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);

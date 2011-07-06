@@ -615,12 +615,12 @@ ptarray_merge(POINTARRAY *pa1, POINTARRAY *pa2)
  * @brief Clone a pointarray
  */
 POINTARRAY *
-ptarray_clone(const POINTARRAY *in)
+ptarray_clone_deep(const POINTARRAY *in)
 {
 	POINTARRAY *out = lwalloc(sizeof(POINTARRAY));
 	size_t size;
 
-	LWDEBUG(3, "ptarray_clone called.");
+	LWDEBUG(3, "ptarray_clone_deep called.");
 
 	out->flags = in->flags;
 	out->npoints = in->npoints;
@@ -1122,7 +1122,7 @@ ptarray_remove_repeated_points(POINTARRAY *in)
 	LWDEBUG(3, "ptarray_remove_repeated_points called.");
 
 	/* Single or zero point arrays can't have duplicates */
-	if ( in->npoints < 3 ) return ptarray_clone(in);
+	if ( in->npoints < 3 ) return ptarray_clone_deep(in);
 
 	ptsize = ptarray_point_size(in);
 

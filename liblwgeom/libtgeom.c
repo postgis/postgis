@@ -272,7 +272,7 @@ tgeom_add_polygon(TGEOM *tgeom, LWPOLY *poly)
 	/* clone internal rings */
 	for (i=0 ; i < tgeom->faces[tgeom->nfaces]->nrings ; i++)
 		tgeom->faces[tgeom->nfaces]->rings[i]
-		= ptarray_clone(poly->rings[i+1]);
+		= ptarray_clone_deep(poly->rings[i+1]);
 
 	tgeom->nfaces++;
 

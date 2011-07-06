@@ -274,7 +274,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
 		/* We need a copy of input ring here */
-		ring = ptarray_clone(poly->rings[state->ringnum]);
+		ring = ptarray_clone_deep(poly->rings[state->ringnum]);
 
 		/* Construct another polygon with shell only */
 		ringgeom = (LWGEOM*)lwpoly_construct(

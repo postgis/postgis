@@ -1818,7 +1818,7 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 
 	outgeom = pglwgeom_serialize(outlwgeom);
 
-	//lwgeom_free(outlwgeom); /* TODO fix lwgeom_clone / ptarray_clone for consistent semantics */
+	//lwgeom_free(outlwgeom); /* TODO fix lwgeom_clone / ptarray_clone_deep for consistent semantics */
 	lwgeom_free(inlwgeom);
 	
 	PG_FREE_IF_COPY(ingeom, 0);
