@@ -208,6 +208,7 @@ cu_errorreporter(const char *fmt, va_list ap)
 	}
 
 	strncpy(cu_error_msg, msg, MAX_CUNIT_ERROR_LENGTH);
+	free(msg);
 }
 
 void
