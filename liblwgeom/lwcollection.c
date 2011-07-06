@@ -580,7 +580,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 				geomlistsize *= 2;
 				geomlist = lwrealloc(geomlist, sizeof(LWGEOM*) * geomlistsize);
 			}
-			geomlist[geomlistlen] = col->geoms[i];
+			geomlist[geomlistlen] = lwgeom_clone(col->geoms[i]);
 			geomlistlen++;
 		}
 		/* Recurse into sub-collections */

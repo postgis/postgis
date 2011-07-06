@@ -328,7 +328,7 @@ static void test_lwcollection_extract(void)
 	/* How to properly release 'col' ? 
 	 * See http://http://trac.osgeo.org/postgis/ticket/1102
 	 */
-	lwfree(col);
+	lwcollection_free(col);
 	lwgeom_free(geom);
 
 }
