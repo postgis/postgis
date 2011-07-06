@@ -10,6 +10,8 @@
  *
  **********************************************************************/
 
+#include "../liblwgeom/liblwgeom.h"
+
 typedef struct shp_connection_state
 {
 	/* PgSQL username to log in with */
