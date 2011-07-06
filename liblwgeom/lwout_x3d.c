@@ -59,10 +59,16 @@ lwgeom_to_x3d3(const LWGEOM *geom, char *srs, int precision, int opts, const cha
 		return asx3d3_line((LWLINE*)geom, srs, precision, opts, defid);
 
 	case POLYGONTYPE:
+	{
 		/** We might change this later, but putting a polygon in an indexed face set
 		* seems like the simplest way to go so treat just like a mulitpolygon
 		*/
-		return asx3d3_multi((LWCOLLECTION*)lwgeom_as_multi(geom), srs, precision, opts, defid);
+		LWCOLLECTION *tmp = (LWCOLLECTION*)lwgeom_as_multi(geom);
+		char *ret = asx3d3_multi(tmp, srs, precision, opts, defid);
+		/* See http://trac.osgeo.org/postgis/ticket/1104 about problems with lwgeom_clone */
+		lwcollection_release(tmp);
+		return ret;
+	}
 
 	case TRIANGLETYPE:
 		return asx3d3_triangle((LWTRIANGLE*)geom, srs, precision, opts, defid);
