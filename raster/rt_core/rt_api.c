@@ -4785,7 +4785,7 @@ rt_raster_serialize(rt_raster raster) {
 #endif
 
         /* Consistency checking (ptr is pixbytes-aligned) */
-        assert(!(((uintptr_t) ptr) % pixbytes));
+        assert(!((ptr - ret) % pixbytes));
 
         /* Add nodata value */
         switch (pixtype) {
@@ -4842,7 +4842,7 @@ rt_raster_serialize(rt_raster raster) {
         }
 
         /* Consistency checking (ptr is pixbytes-aligned) */
-        assert(!((uintptr_t) ptr % pixbytes));
+        assert(!((ptr - ret) % pixbytes));
 
 #if POSTGIS_DEBUG_LEVEL > 2
         d_print_binary_hex("nodata", dbg_ptr, size);
@@ -4877,7 +4877,7 @@ rt_raster_serialize(rt_raster raster) {
         }
 
         /* Consistency checking (ptr is pixbytes-aligned) */
-        assert(!((uintptr_t) ptr % pixbytes));
+        assert(!((ptr - ret) % pixbytes));
 
     } /* for-loop over bands */
 
@@ -5037,7 +5037,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
         RASTER_DEBUGF(3, "rt_raster_deserialize: nodata value %g", band->nodataval);
 
         /* Consistency checking (ptr is pixbytes-aligned) */
-        assert(!(((uintptr_t) ptr) % pixbytes));
+        assert(!((ptr - beg) % pixbytes));
 
         if (band->offline) {
             /* Read band number */
@@ -5065,7 +5065,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
         RASTER_DEBUGF(3, "rt_raster_deserialize: skip %d bytes of 8-bytes boundary padding", ptr - padbeg);
 
         /* Consistency checking (ptr is pixbytes-aligned) */
-        assert(!((uintptr_t) ptr % pixbytes));
+        assert(!((ptr - beg) % pixbytes));
     }
 
     return rast;

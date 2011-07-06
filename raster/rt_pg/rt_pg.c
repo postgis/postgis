@@ -520,6 +520,7 @@ getSRTextSPI(int srid)
 		return NULL;
 	}
 	srs = strncpy(srs, tmp, len + 1);
+	pfree(tmp);
 
 	return srs;
 }
