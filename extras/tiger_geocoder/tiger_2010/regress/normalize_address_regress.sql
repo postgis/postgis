@@ -44,4 +44,21 @@ SELECT '#1076f' As ticket, * FROM normalize_address('1940 County Road C W, Rosev
 
 -- Route with a name that sounds like a direction --
 SELECT '#1076g' As ticket, * FROM normalize_address('3900 Route 6, Eastham, Massachusetts 02642');
+
+-- Street that has same name as type  --
+SELECT '#1076h' As ticket, * FROM normalize_address('4533 PARK AVE S, MINNEAPOLIS, MN 55407');
+
+-- same street with alternate county name
+SELECT '#1076i' As ticket, * FROM normalize_address('4533 County Road 33, MINNEAPOLIS, MN 55407'); 
+
+-- Same case of street type that has name as a type --
+-- this matches -
+SELECT '#1109a' As ticket, * from normalize_address('4373 LAKE DRIVE, ROBBINSDALE, MN 55422');
+
+-- this failed --
+SELECT '#1109b' As ticket, * from normalize_address('4373 LAKE DR, ROBBINSDALE, MN 55422');
+
+-- this failed
+SELECT '#1109b' As ticket, * from normalize_address('4373 LAKE DR, ROBBINSDALE, MN 55422');
+
 \timing
