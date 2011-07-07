@@ -4893,12 +4893,13 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	text *algtext = NULL;
 	char *algchar = NULL;
 	GDALResampleAlg alg = GRA_NearestNeighbour;
-
-	int src_srid = -1;
-	char *src_srs = NULL;
-	int dst_srid = -1;
-	char *dst_srs = NULL;
 	double max_err = 0.125;
+
+	int src_srid = SRID_UNKNOWN;
+	char *src_srs = NULL;
+	int dst_srid = SRID_UNKNOWN;
+	char *dst_srs = NULL;
+
 	double scale[2] = {0};
 	double *scale_x = NULL;
 	double *scale_y = NULL;
@@ -4916,6 +4917,21 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	/* resampling algorithm */
+	if (!PG_ARGISNULL(1)) {
+		algtext = PG_GETARG_TEXT_P(1);
+		algchar = trim(strtoupper(text_to_cstring(algtext)));
+		alg = rt_util_gdal_resample_alg(algchar);
+	}
+	POSTGIS_RT_DEBUGF(4, "Resampling algorithm: %d", alg);
+
+	/* max error */
+	if (!PG_ARGISNULL(2)) {
+		max_err = PG_GETARG_FLOAT8(2);
+		if (max_err < 0.) max_err = 0.;
+	}
+	POSTGIS_RT_DEBUGF(4, "max_err: %f", max_err);
+
 	/* source srid */
 	src_srid = rt_raster_get_srid(raster);
 	if (src_srid == SRID_UNKNOWN) {
@@ -4926,29 +4942,15 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(4, "source srid: %d", src_srid);
 
 	/* target srid */
-	if (PG_ARGISNULL(1)) PG_RETURN_NULL();
-	dst_srid = PG_GETARG_INT32(1);
-	if (dst_srid == SRID_UNKNOWN) {
-		elog(ERROR, "RASTER_resample: -1 is an invalid target SRID");
-		rt_raster_destroy(raster);
-		PG_RETURN_NULL();
-	}
-	POSTGIS_RT_DEBUGF(4, "destination srid: %d", dst_srid);
-
-	/* resampling algorithm */
-	if (!PG_ARGISNULL(2)) {
-		algtext = PG_GETARG_TEXT_P(2);
-		algchar = trim(strtoupper(text_to_cstring(algtext)));
-		alg = rt_util_gdal_resample_alg(algchar);
-	}
-	POSTGIS_RT_DEBUGF(4, "Resampling algorithm: %d", alg);
-
-	/* max error */
 	if (!PG_ARGISNULL(3)) {
-		max_err = PG_GETARG_FLOAT8(3);
-		if (max_err < 0.) max_err = 0.;
+		dst_srid = PG_GETARG_INT32(3);
+		if (dst_srid == SRID_UNKNOWN) {
+			elog(ERROR, "RASTER_resample: -1 is an invalid target SRID");
+			rt_raster_destroy(raster);
+			PG_RETURN_NULL();
+		}
+		POSTGIS_RT_DEBUGF(4, "destination srid: %d", dst_srid);
 	}
-	POSTGIS_RT_DEBUGF(4, "max_err: %f", max_err);
 
 	/* get srses from srids */
 	/* source srs */
@@ -4961,14 +4963,16 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(4, "src srs: %s", src_srs);
 
 	/* target srs */
-	dst_srs = getSRTextSPI(dst_srid);
-	if (NULL == dst_srs) {
-		elog(ERROR, "RASTER_resample: Target SRID (%d) is unknown", dst_srid);
-		rt_raster_destroy(raster);
-		if (NULL != src_srs) pfree(src_srs);
-		PG_RETURN_NULL();
+	if (dst_srid != SRID_UNKNOWN) {
+		dst_srs = getSRTextSPI(dst_srid);
+		if (NULL == dst_srs) {
+			elog(ERROR, "RASTER_resample: Target SRID (%d) is unknown", dst_srid);
+			rt_raster_destroy(raster);
+			if (NULL != src_srs) pfree(src_srs);
+			PG_RETURN_NULL();
+		}
+		POSTGIS_RT_DEBUGF(4, "dst srs: %s", dst_srs);
 	}
-	POSTGIS_RT_DEBUGF(4, "dst srs: %s", dst_srs);
 
 	/* scale x */
 	if (!PG_ARGISNULL(4)) {

@@ -1426,21 +1426,37 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_Resample
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_resample(
+	rast raster,
+	algorithm text DEFAULT 'NearestNeighbour',
+	maxerr double precision DEFAULT 0.125,
+	srid integer DEFAULT NULL,
+	scalex double precision DEFAULT 0, scaley double precision DEFAULT 0,
+	upperleftx double precision DEFAULT NULL, upperlefty double precision DEFAULT NULL,
+	skewx double precision DEFAULT NULL, skewy double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_resample'
+	LANGUAGE 'C' IMMUTABLE;
+
+-----------------------------------------------------------------------
 -- ST_Transform
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0)
 	RETURNS raster
-	AS 'MODULE_PATHNAME', 'RASTER_resample'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	AS $$ SELECT _st_resample($1, $3, $4, $2, $5, $6) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
-	AS $$ SELECT st_transform($1, $2, $5, $6, $3, $4) $$
+	AS $$ SELECT _st_resample($1, $5, $6, $2, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
-	AS $$ SELECT st_transform($1, $2, $4, $5, $3, $3) $$
+	AS $$ SELECT _st_resample($1, $4, $5, $2, $3, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
