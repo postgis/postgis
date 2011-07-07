@@ -1,5 +1,5 @@
 --$Id$
-CREATE OR REPLACE FUNCTION geocode_address(IN parsed norm_addy, max_results integer DEFAULT 10, OUT addy norm_addy, OUT geomout geometry, OUT rating integer)
+CREATE OR REPLACE FUNCTION geocode_address(IN parsed norm_addy, max_results integer DEFAULT 10, restrict_geom geometry DEFAULT NULL, OUT addy norm_addy, OUT geomout geometry, OUT rating integer)
   RETURNS SETOF record AS
 $$
 DECLARE
@@ -11,6 +11,8 @@ DECLARE
   var_debug boolean := false;
   var_sql text := '';
   var_n integer := 0;
+  var_restrict_geom geometry := NULL;
+  var_bfilter text := null;
 BEGIN
   IF parsed.streetName IS NULL THEN
     -- A street name must be given.  Think about it.
@@ -20,6 +22,19 @@ BEGIN
   ADDY.internal := parsed.internal;
 
   in_statefp := statefp FROM state_lookup As s WHERE s.abbrev = parsed.stateAbbrev;
+  
+  IF restrict_geom IS NOT NULL THEN
+  		IF ST_SRID(restrict_geom) < 1 OR ST_SRID(restrict_geom) = 4236 THEN 
+  		-- basically has no srid or if wgs84 close enough to NAD 83 -- assume same as data
+  			var_restrict_geom = ST_SetSRID(restrict_geom,4269);
+  		ELSE
+  		--transform and snap
+  			var_restrict_geom = ST_SnapToGrid(ST_Transform(restrict_geom, 4269), 0.000001);
+  		END IF;
+  END IF;
+  var_bfilter := ' SELECT zcta5ce FROM zcta5 AS zc  
+                    WHERE zc.statefp = ' || quote_nullable(in_statefp) || ' 
+                        AND ST_Intersects(zc.the_geom, ' || quote_literal(var_restrict_geom::text) || '::geometry)  ' ;
 
   -- There are a couple of different things to try, from the highest preference and falling back
   -- to lower-preference options.
@@ -31,15 +46,16 @@ BEGIN
   -- lookup to try and find *something* useful.
   -- In the end, we *have* to find a statefp, one way or another.
   var_sql := 
-  ' SELECT statefp,location,zip,exact,min(pref) FROM
+  ' SELECT statefp,location,a.zip,exact,min(pref) FROM
     (SELECT zip_state.statefp as statefp,$1 as location, true As exact, ARRAY[zip_state.zip] as zip,1 as pref
         FROM zip_state WHERE zip_state.zip = $2 
             AND (' || quote_nullable(in_statefp) || ' IS NULL OR zip_state.statefp = ' || quote_nullable(in_statefp) || ')
-        UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_agg(zip_state_loc.zip) AS zip,1 + abs(COALESCE(diff_zip(max(zip), $2),0) - COALESCE(diff_zip(min(zip), $2),0)) As pref
+          ' || COALESCE(' AND zip_state.zip IN(' || var_bfilter || ')', '') ||
+        ' UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_agg(zip_state_loc.zip) AS zip,1 + abs(COALESCE(diff_zip(max(zip), $2),0) - COALESCE(diff_zip(min(zip), $2),0)) As pref
               FROM zip_state_loc
              WHERE zip_state_loc.statefp = ' || quote_nullable(in_statefp) || ' 
-                   AND lower($1) = lower(zip_state_loc.place)
-             GROUP BY zip_state_loc.statefp,zip_state_loc.place
+                   AND lower($1) = lower(zip_state_loc.place) '  || COALESCE(' AND zip_state_loc.zip IN(' || var_bfilter || ')', '') ||
+        '     GROUP BY zip_state_loc.statefp,zip_state_loc.place
       UNION SELECT zip_state_loc.statefp,zip_state_loc.place As location,false As exact, array_agg(zip_state_loc.zip),3
               FROM zip_state_loc
              WHERE zip_state_loc.statefp = ' || quote_nullable(in_statefp) || '
@@ -50,9 +66,9 @@ BEGIN
              WHERE zip_lookup_base.statefp = ' || quote_nullable(in_statefp) || '
                          AND (soundex($1) = soundex(zip_lookup_base.city) OR soundex($1) = soundex(zip_lookup_base.county))
              GROUP BY zip_lookup_base.statefp,zip_lookup_base.city
-      UNION SELECT ' || quote_nullable(in_statefp) || ' As statefp,$1 As location,false As exact,NULL, 5) as a
-      WHERE statefp IS NOT NULL
-      GROUP BY statefp,location,zip,exact, pref ORDER BY exact desc, pref, zip';
+      UNION SELECT ' || quote_nullable(in_statefp) || ' As statefp,$1 As location,false As exact,NULL, 5) as a ' 
+      ' WHERE a.statefp IS NOT NULL 
+      GROUP BY statefp,location,a.zip,exact, pref ORDER BY exact desc, pref, zip';
   /** FOR zip_info IN     SELECT statefp,location,zip,exact,min(pref) FROM
     (SELECT zip_state.statefp as statefp,parsed.location as location, true As exact, ARRAY[zip_state.zip] as zip,1 as pref
         FROM zip_state WHERE zip_state.zip = parsed.zip 
@@ -129,7 +145,8 @@ BEGIN
          || '  ORDER BY 11'
          || '  LIMIT 20'
          || '    ) AS sub'
-         || '  JOIN edges e ON (' || quote_literal(zip_info.statefp) || ' = e.statefp AND sub.tlid = e.tlid)'
+         || '  JOIN edges e ON (' || quote_literal(zip_info.statefp) || ' = e.statefp AND sub.tlid = e.tlid ' 
+         ||   CASE WHEN var_restrict_geom IS NOT NULL THEN ' AND ST_Intersects(e.the_geom, $8) '  ELSE '' END || ') '
          || '  JOIN state s ON (' || quote_literal(zip_info.statefp) || ' = s.statefp)'
          || '  JOIN faces f ON (' || quote_literal(zip_info.statefp) || ' = f.statefp AND (e.tfidl = f.tfid OR e.tfidr = f.tfid))'
          || '  LEFT JOIN zip_lookup_base zip ON (sub.zip = zip.zip AND zip.statefp=' || quote_literal(zip_info.statefp) || ')'
@@ -150,7 +167,7 @@ BEGIN
         RETURN;
     END IF;
 
-    FOR results IN EXECUTE stmt USING parsed.address,parsed.streetName, parsed.location, parsed.streetTypeAbbrev, parsed.preDirAbbrev, parsed.postDirAbbrev, parsed.zip LOOP
+    FOR results IN EXECUTE stmt USING parsed.address,parsed.streetName, parsed.location, parsed.streetTypeAbbrev, parsed.preDirAbbrev, parsed.postDirAbbrev, parsed.zip, var_restrict_geom LOOP
 
       -- If we found a match with an exact street, then don't bother
       -- trying to do non-exact matches

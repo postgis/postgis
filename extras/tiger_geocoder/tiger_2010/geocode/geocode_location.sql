@@ -1,6 +1,7 @@
 --$Id$
 CREATE OR REPLACE FUNCTION geocode_location(
     parsed NORM_ADDY,
+    restrict_geom geometry DEFAULT null,
     OUT ADDY NORM_ADDY,
     OUT GEOMOUT GEOMETRY,
     OUT RATING INTEGER
@@ -10,10 +11,14 @@ DECLARE
   result RECORD;
   in_statefp VARCHAR;
   stmt VARCHAR;
+  var_debug boolean := false;
 BEGIN
 
   in_statefp := statefp FROM state WHERE state.stusps = parsed.stateAbbrev;
 
+  IF var_debug THEN
+    RAISE NOTICE 'geocode_location starting: %', clock_timestamp();
+  END IF;
   FOR result IN
     SELECT
         coalesce(zip.city)::varchar as place,
@@ -55,12 +60,15 @@ BEGIN
        || ' state.stusps as stateAbbrev, '
        || ' ST_Centroid(pl.the_geom) as address_geom, '
        || ' 100::integer + levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ') as in_rating '
-       || ' FROM place pl '
-       || ' JOIN state USING (statefp)'
-       || ' WHERE soundex(pl.name) = soundex(' || quote_literal(coalesce(parsed.location,'')) || ') and pl.statefp = ' || quote_literal(coalesce(in_statefp,''))
+       || ' FROM (SELECT * FROM place WHERE statefp = ' ||  quote_literal(coalesce(in_statefp,'')) || ' ' || COALESCE(' AND ST_Intersects(' || quote_literal(restrict_geom::text) || '::geometry, the_geom)', '') || ') AS pl '
+       || ' INNER JOIN state ON(pl.statefp = state.statefp)'
+       || ' WHERE soundex(pl.name) = soundex(' || quote_literal(coalesce(parsed.location,'')) || ') and pl.statefp = ' || quote_literal(COALESCE(in_statefp,''))
        || ' ORDER BY levenshtein_ignore_case(coalesce(pl.name), ' || quote_literal(coalesce(parsed.location,'')) || ');'
        ;
 
+  IF var_debug THEN
+    RAISE NOTICE 'geocode_location stmt: %', stmt;
+  END IF;     
   FOR result IN EXECUTE stmt
   LOOP
 
@@ -75,8 +83,15 @@ BEGIN
 
     IF RATING = 100 THEN
       RETURN;
+      IF var_debug THEN
+        RAISE NOTICE 'geocode_location ending hit 100 rating result: %', clock_timestamp();
+      END IF;
     END IF;
   END LOOP;
+  
+  IF var_debug THEN
+    RAISE NOTICE 'geocode_location ending: %', clock_timestamp();
+  END IF;
 
   RETURN;
 

@@ -91,7 +91,7 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 		<refname>Geocode</refname>
 
 		<refpurpose>Takes in an address as a string (or other normalized address) and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a normalized address for each, and the rating.  The lower the rating the more likely the match.  
-			Results are sorted by lowest rating first.</refpurpose>
+			Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10, and restrict_region (defaults to NULL)</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -100,6 +100,7 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 			<funcdef>setof record <function>geocode</function></funcdef>
 			<paramdef><type>varchar </type> <parameter>address</parameter></paramdef>
 			<paramdef><type choice='opt'>integer </type> <parameter>max_results=10</parameter></paramdef>
+			<paramdef><type choice='opt'>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
 			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>

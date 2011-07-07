@@ -52,4 +52,12 @@ SELECT '#1076f' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(S
 
 -- ad road that in some sections no street range recorded --
 SELECT '#1076g' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '15709 Rockford Road, Plymouth, MN 55447'::text As target) As f) AS foo;
+
+-- alternate spellings
+SELECT '#1074a' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '8525 COTTAGE WOOD TERR, Blaine, MN 55434'::text As target) As f) AS foo;
+SELECT '#1074b' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '8525 COTTAGEWOOD TERR, Blaine, MN 55434'::text As target) As f) AS foo;
+
+-- testing region --
+SELECT '#1070a' As ticket, pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('100 Federal Street, Boston, MA 02109',3, (SELECT ST_Union(the_geom) FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry);
+SELECT '#1070b' As ticket, pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('100 Federal Street, MA',3, (SELECT ST_Union(the_geom) FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry);
 \timing
