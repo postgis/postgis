@@ -310,14 +310,21 @@ BEGIN
   ELSIF tempInt > 1 THEN
     tempInt := 0;
     -- the last matching abbrev in the string is the most likely one
-    FOR rec IN SELECT abbrev, substring(fullStreet, '(?i)' || ws || '?('
-        || name || ')(?:' || ws || '|$)') AS given, is_hw FROM street_type_lookup
+    FOR rec IN SELECT * FROM 
+    	(SELECT abbrev, substring(fullStreet, '(?i)' || ws || '?('
+        || name || ')(?:' || ws || '|$)') AS given, is_hw ,
+        		ROW_NUMBER() OVER( ORDER BY position(name IN trim(fullStreet)) ) As n_type,
+        		ROW_NUMBER() OVER() As nrecs
+        		FROM street_type_lookup
         WHERE fullStreet ILIKE '%' || name || '%'  AND 
             trim(upper(fullStreet)) != name AND 
             texticregexeq(fullStreet, '(?i)' || ws || '(' || name
             -- we only consider street types that are regular and not at beginning of name or are highways (since those can be at beg or end)
             -- we take the one that is the longest e.g Country Road would be more correct than Road
-        || ')(?:' || ws || '|$)') AND ((NOT is_hw AND position(name IN trim(fullStreet)) > 2) OR is_hw) ORDER BY length(name) DESC LIMIT 1 LOOP
+        || ')(?:' || ws || '|$)') AND ((NOT is_hw AND position(name IN trim(fullStreet)) > 2) OR is_hw) ) As foo
+        -- If it's a highway, we want the first highway that is street type
+        -- if its a regular, we want the last type in string, if tie, just return the longest
+        ORDER BY CASE WHEN is_hw THEN (nrecs - n_type) ELSE n_type END DESC, length(given) DESC LIMIT 1 LOOP
       -- If we have found an internal address, make sure the type
       -- precedes it.
       /** TODO: I don't think we need a loop anymore since we are just returning one and the one in the last position

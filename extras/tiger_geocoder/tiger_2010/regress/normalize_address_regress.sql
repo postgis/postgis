@@ -47,7 +47,6 @@ SELECT '#1076g' As ticket, * FROM normalize_address('3900 Route 6, Eastham, Mass
 
 -- Street that has same name as type  --
 SELECT '#1076h' As ticket, * FROM normalize_address('4533 PARK AVE S, MINNEAPOLIS, MN 55407');
-
 -- same street with alternate county name
 SELECT '#1076i' As ticket, * FROM normalize_address('4533 County Road 33, MINNEAPOLIS, MN 55407'); 
 
@@ -58,7 +57,7 @@ SELECT '#1109a' As ticket, * from normalize_address('4373 LAKE DRIVE, ROBBINSDAL
 -- this failed --
 SELECT '#1109b' As ticket, * from normalize_address('4373 LAKE DR, ROBBINSDALE, MN 55422');
 
--- this failed
-SELECT '#1109b' As ticket, * from normalize_address('4373 LAKE DR, ROBBINSDALE, MN 55422');
+-- another type (Is) that is part of street name but a compound street name
+SELECT '#1074a' As ticket, * fROM normalize_address('3420 RHODE ISLAND AVE S, ST. LOUIS PARK, MN 55426');
 
 \timing
