@@ -238,8 +238,8 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS);
 Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS);
 Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
 
-/* transform a raster to a new projection */
-Datum RASTER_transform(PG_FUNCTION_ARGS);
+/* resample a raster */
+Datum RASTER_resample(PG_FUNCTION_ARGS);
 
 /* get raster's meta data */
 Datum RASTER_metadata(PG_FUNCTION_ARGS);
@@ -4880,10 +4880,10 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 }
 
 /**
- * Transform a raster to a new projection
+ * Resample a raster
  */
-PG_FUNCTION_INFO_V1(RASTER_transform);
-Datum RASTER_transform(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_resample);
+Datum RASTER_resample(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgraster = NULL;
 	rt_pgraster *pgrast = NULL;
@@ -4903,7 +4903,7 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	double *scale_x = NULL;
 	double *scale_y = NULL;
 
-	POSTGIS_RT_DEBUG(3, "RASTER_transform: Starting");
+	POSTGIS_RT_DEBUG(3, "RASTER_resample: Starting");
 
 	/* pgraster is null, return null */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
@@ -4912,14 +4912,14 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	/* raster */
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
-		elog(ERROR, "RASTER_transform: Could not deserialize raster");
+		elog(ERROR, "RASTER_resample: Could not deserialize raster");
 		PG_RETURN_NULL();
 	}
 
 	/* source srid */
 	src_srid = rt_raster_get_srid(raster);
 	if (src_srid == SRID_UNKNOWN) {
-		elog(ERROR, "RASTER_transform: Input raster has unknown (-1) SRID");
+		elog(ERROR, "RASTER_resample: Input raster has unknown (-1) SRID");
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
 	}
@@ -4929,7 +4929,7 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(1)) PG_RETURN_NULL();
 	dst_srid = PG_GETARG_INT32(1);
 	if (dst_srid == SRID_UNKNOWN) {
-		elog(ERROR, "RASTER_transform: -1 is an invalid target SRID");
+		elog(ERROR, "RASTER_resample: -1 is an invalid target SRID");
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
 	}
@@ -4954,7 +4954,7 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	/* source srs */
 	src_srs = getSRTextSPI(src_srid);
 	if (NULL == src_srs) {
-		elog(ERROR, "RASTER_transform: Input raster has unknown SRID (%d)", src_srid);
+		elog(ERROR, "RASTER_resample: Input raster has unknown SRID (%d)", src_srid);
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
 	}
@@ -4963,7 +4963,7 @@ Datum RASTER_transform(PG_FUNCTION_ARGS)
 	/* target srs */
 	dst_srs = getSRTextSPI(dst_srid);
 	if (NULL == dst_srs) {
-		elog(ERROR, "RASTER_transform: Target SRID (%d) is unknown", dst_srid);
+		elog(ERROR, "RASTER_resample: Target SRID (%d) is unknown", dst_srid);
 		rt_raster_destroy(raster);
 		if (NULL != src_srs) pfree(src_srs);
 		PG_RETURN_NULL();

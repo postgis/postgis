@@ -1430,7 +1430,7 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0)
 	RETURNS raster
-	AS 'MODULE_PATHNAME', 'RASTER_transform'
+	AS 'MODULE_PATHNAME', 'RASTER_resample'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
