@@ -217,7 +217,6 @@ void default_rt_info_handler(const char * fmt, va_list ap);
 
 #endif
 
-
 /*- memory context -------------------------------------------------------*/
 
 void rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
@@ -1019,5 +1018,12 @@ rt_util_gdal_resample_alg(const char *algname);
 */
 GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
+
+/*- helper macros for consistent floating point equality checks-----------*/
+
+#define FLT_NEQ(x, y) (fabs(x - y) > FLT_EPSILON)
+#define FLT_EQ(x, y) (!FLT_NEQ(x, y))
+#define DBL_NEQ(x, y) (fabs(x - y) > DBL_EPSILON)
+#define DBL_EQ(x, y) (!DBL_NEQ(x, y))
 
 #endif /* RT_API_H_INCLUDED */

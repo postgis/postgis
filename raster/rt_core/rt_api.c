@@ -540,7 +540,7 @@ rt_util_display_dbl_trunc_warning(double initialvalue,
                     initialvalue, checkvalint);
                 result = -1;
             }
-            else if (fabs(checkvalint - initialvalue) > FLT_EPSILON) {
+            else if (FLT_NEQ(checkvalint, initialvalue)) {
                 rtwarn("Value set for %s band got truncated from %f to %d",
                     rt_pixtype_name(pixtype),
                     initialvalue, checkvalint);
@@ -556,7 +556,7 @@ rt_util_display_dbl_trunc_warning(double initialvalue,
                     initialvalue, checkvaluint);
                 result = -1;
             }
-            else if (fabs(checkvaluint - initialvalue) > FLT_EPSILON) {
+            else if (FLT_NEQ(checkvaluint, initialvalue)) {
                 rtwarn("Value set for %s band got truncated from %f to %u",
                     rt_pixtype_name(pixtype),
                     initialvalue, checkvaluint);
@@ -568,7 +568,7 @@ rt_util_display_dbl_trunc_warning(double initialvalue,
         {
             /* For float, because the initial value is a double,
             there is very often a difference between the desired value and the obtained one */
-            if (fabs(checkvalfloat - initialvalue) > FLT_EPSILON)
+            if (FLT_NEQ(checkvalfloat, initialvalue))
                 rtwarn("Value set for %s band got converted from %f to %f",
                     rt_pixtype_name(pixtype),
                     initialvalue, checkvalfloat);
@@ -576,7 +576,7 @@ rt_util_display_dbl_trunc_warning(double initialvalue,
         }
         case PT_64BF:
         {
-            if (fabs(checkvaldouble - initialvalue) > FLT_EPSILON)
+            if (FLT_NEQ(checkvaldouble, initialvalue))
                 rtwarn("Value set for %s band got converted from %f to %f",
                     rt_pixtype_name(pixtype),
                     initialvalue, checkvaldouble);
@@ -1161,7 +1161,7 @@ rt_band_set_nodata(rt_band band, double val) {
      */
 
     /*
-    if (fabs(band->nodataval - oldnodataval) > FLT_EPSILON)
+    if (FLT_NEQ(band->nodataval, oldnodataval))
         rt_band_check_is_nodata(band);
     */
 
@@ -1289,7 +1289,7 @@ rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
 #endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
 
     /* If the stored value is different from no data, reset the isnodata flag */
-    if (fabs(checkval - band->nodataval) > FLT_EPSILON) {
+    if (FLT_NEQ(checkval, band->nodataval)) {
         band->isnodata = FALSE;
     }
 
@@ -1496,7 +1496,6 @@ rt_band_check_is_nodata(rt_band band)
 {
     int i, j;
     double pxValue = band->nodataval;
-    double dEpsilon = 0.0;
 
 
 
@@ -1522,8 +1521,7 @@ rt_band_check_is_nodata(rt_band band)
         for(j = 0; j < band->height; j++)
         {
             rt_band_get_pixel(band, i, j, &pxValue);
-            dEpsilon = fabs(pxValue - band->nodataval);
-            if (dEpsilon > FLT_EPSILON) {
+            if (FLT_NEQ(pxValue, band->nodataval)) {
                 band->isnodata = FALSE;
                 return FALSE;
             }
@@ -1659,8 +1657,8 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 
 	/* clamp percentage */
 	if (
-		(sample < 0 || fabs(sample - 0.0) < FLT_EPSILON) ||
-		(sample > 1 || fabs(sample - 1.0) < FLT_EPSILON)
+		(sample < 0 || FLT_EQ(sample, 0.0)) ||
+		(sample > 1 || FLT_EQ(sample, 1.0))
 	) {
 		do_sample = 0;
 		sample = 1;
@@ -1723,7 +1721,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 					!exclude_nodata_value || (
 						exclude_nodata_value &&
 						(hasnodata != FALSE) &&
-						(fabs(value - nodata) > FLT_EPSILON)
+						FLT_NEQ(value, nodata)
 					)
 				) {
 
@@ -1903,7 +1901,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	/* bin width must be positive numbers and not zero */
 	if (NULL != bin_width && bin_width_count > 0) {
 		for (i = 0; i < bin_width_count; i++) {
-			if (bin_width[i] < 0 || fabs(bin_width[i] - 0.0) < FLT_EPSILON) {
+			if (bin_width[i] < 0 || FLT_EQ(bin_width[i], 0.0)) {
 				rterror("rt_util_get_histogram: bin_width element is less than or equal to zero");
 				return NULL;
 			}
@@ -1911,7 +1909,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	}
 
 	/* ignore min and max parameters */
-	if (fabs(max - min) < FLT_EPSILON) {
+	if (FLT_EQ(max, min)) {
 		qmin = stats->min;
 		qmax = stats->max;
 	}
@@ -1960,8 +1958,7 @@ rt_band_get_histogram(rt_bandstats stats,
 	}
 
 	/* min and max the same */
-	if (fabs(qmax - qmin) < FLT_EPSILON)
-		bin_count = 1;
+	if (FLT_EQ(qmax, qmin)) bin_count = 1;
 
 	RASTER_DEBUGF(3, "bin_count = %d", bin_count);
 
@@ -2062,7 +2059,7 @@ rt_band_get_histogram(rt_bandstats stats,
 					(!bins[j].inc_max && value < bins[j].max) || (
 						bins[j].inc_max && (
 							(value < bins[j].max) ||
-							(fabs(value - bins[j].max) < FLT_EPSILON)
+							FLT_EQ(value, bins[j].max)
 						)
 					)
 				) {
@@ -2079,7 +2076,7 @@ rt_band_get_histogram(rt_bandstats stats,
 					(!bins[j].inc_min && value > bins[j].min) || (
 						bins[j].inc_min && (
 							(value > bins[j].min) ||
-							(fabs(value - bins[j].min) < FLT_EPSILON)
+							FLT_EQ(value, bins[j].min)
 						)
 					)
 				) {
@@ -2320,7 +2317,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	RASTER_DEBUGF(3, "exclude_nodata_value = %d", exclude_nodata_value);
 
 	/* process roundto */
-	if (roundto < 0 || (fabs(roundto - 0.0) < FLT_EPSILON)) {
+	if (roundto < 0 || FLT_EQ(roundto, 0.0)) {
 		roundto = 0;
 		scale = 0;
 	}
@@ -2344,7 +2341,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 			case PT_64BF:
 				for (scale = 0; scale <= 20; scale++) {
 					tmpd = roundto * pow(10, scale);
-					if (fabs((tmpd - ((int) tmpd)) - 0.0) < FLT_EPSILON) break;
+					if (FLT_EQ((tmpd - ((int) tmpd)), 0.0)) break;
 				}
 				break;
 			case PT_END:
@@ -2355,7 +2352,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	else {
 		for (scale = 0; scale >= -20; scale--) {
 			tmpd = roundto * pow(10, scale);
-			if (tmpd < 1 || fabs(tmpd - 1.0) < FLT_EPSILON) {
+			if (tmpd < 1 || FLT_EQ(tmpd, 1.0)) {
 				if (scale == 0) doround = 1;
 				break;
 			}
@@ -2407,7 +2404,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 					else
 						tmpd = ROUND(nodata, scale);
 
-					if (fabs(tmpd - vcnts[i].value) > FLT_EPSILON)
+					if (FLT_NEQ(tmpd, vcnts[i].value))
 						continue;
 
 					vcnts[i].count = band->width * band->height;
@@ -2447,7 +2444,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 				!exclude_nodata_value || (
 					exclude_nodata_value &&
 					(hasnodata != FALSE) &&
-					(fabs(pxlval - nodata) > FLT_EPSILON)
+					FLT_NEQ(pxlval, nodata)
 				)
 			) {
 				total++;
@@ -2462,7 +2459,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 				/* search for match in existing valuecounts */
 				for (i = 0; i < vcnts_count; i++) {
 					/* match found */
-					if (fabs(vcnts[i].value - rpxlval) < FLT_EPSILON) {
+					if (FLT_EQ(vcnts[i].value, rpxlval)) {
 						vcnts[i].count++;
 						new_valuecount = 0;
 						RASTER_DEBUGF(5, "(value, count) => (%0.6f, %d)", vcnts[i].value, vcnts[i].count);
@@ -2730,8 +2727,8 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 
 					/* ov matches min and max*/
 					if (
-						fabs(expr->src.min - ov) < FLT_EPSILON &&
-						fabs(expr->src.max - ov) < FLT_EPSILON
+						FLT_EQ(expr->src.min, ov) &&
+						FLT_EQ(expr->src.max, ov)
 					) {
 						do_nv = 1;
 						break;
@@ -2741,11 +2738,11 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 					if ((
 						expr->src.exc_min && (
 							expr->src.min > ov ||
-							fabs(expr->src.min - ov) < FLT_EPSILON
+							FLT_EQ(expr->src.min, ov)
 						)) || (
 						expr->src.inc_min && (
 							expr->src.min < ov ||
-							fabs(expr->src.min - ov) < FLT_EPSILON
+							FLT_EQ(expr->src.min, ov)
 						)) || (
 						expr->src.min < ov
 					)) {
@@ -2753,11 +2750,11 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 						if ((
 							expr->src.exc_max && (
 								ov > expr->src.max ||
-								fabs(expr->src.max - ov) < FLT_EPSILON
+								FLT_EQ(expr->src.max, ov)
 							)) || (
 								expr->src.inc_max && (
 								ov < expr->src.max ||
-								fabs(expr->src.max - ov) < FLT_EPSILON
+								FLT_EQ(expr->src.max, ov)
 							)) || (
 							ov < expr->src.max
 						)) {
@@ -2782,7 +2779,7 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 			if (
 				src_hasnodata &&
 				hasnodata &&
-				fabs(ov - src_nodataval) < FLT_EPSILON
+				FLT_EQ(ov, src_nodataval)
 			) {
 				nv = nodataval;
 			}
@@ -2790,7 +2787,7 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 				"src" min and max is the same, prevent division by zero
 				set nv to "dst" min, which should be the same as "dst" max
 			*/
-			else if (fabs(expr->src.max - expr->src.min) < FLT_EPSILON) {
+			else if (FLT_EQ(expr->src.max, expr->src.min)) {
 				nv = expr->dst.min;
 			}
 			else {
@@ -3192,7 +3189,7 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
         return -1;
     }
 
-    if (fabs(initialvalue - 0.0) < FLT_EPSILON)
+    if (FLT_EQ(initialvalue, 0.0))
         memset(mem, 0, datasize);
     else {
         switch (pixtype)
@@ -6089,14 +6086,14 @@ rt_raster rt_raster_gdal_warp(
 	/* user-defined upper-left corner */
 	if (
 		(NULL != ul_x) &&
-		(fabs(*ul_x - 0.0) > FLT_EPSILON)
+		(FLT_NEQ(*ul_x, 0.0))
 	) {
 		min_x = *ul_x;
 		ul_user = 1;
 	}
 	if (
 		(NULL != ul_y) &&
-		(fabs(*ul_y - 0.0) > FLT_EPSILON)
+		(FLT_NEQ(*ul_y, 0.0))
 	) {
 		max_y = *ul_y;
 		ul_user = 1;
@@ -6111,26 +6108,26 @@ rt_raster rt_raster_gdal_warp(
 	/* user-defined scale */
 	if (
 		(NULL != scale_x) &&
-		(fabs(*scale_x - 0.0) > FLT_EPSILON)
+		(FLT_NEQ(*scale_x, 0.0))
 	) {
 		pix_x = fabs(*scale_x);
 	}
 	if (
 		(NULL != scale_y) &&
-		(fabs(*scale_y - 0.0) > FLT_EPSILON)
+		(FLT_NEQ(*scale_y, 0.0))
 	) {
 		pix_y = fabs(*scale_y);
 	}
 
 	/* process user-defined scale */
 	if (
-		(fabs(pix_x - 0.0) > FLT_EPSILON) ||
-		(fabs(pix_y - 0.0) > FLT_EPSILON)
+		(FLT_NEQ(pix_x, 0.0)) ||
+		(FLT_NEQ(pix_y, 0.0))
 	) {
 		/* axis scale is zero, use suggested scale for axis */
-		if (fabs(pix_x - 0.0) < FLT_EPSILON)
+		if (FLT_EQ(pix_x, 0.0))
 			pix_x = fabs(dst_gt[1]);
-		if (fabs(pix_y - 0.0) < FLT_EPSILON)
+		if (FLT_EQ(pix_y, 0.0))
 			pix_y = fabs(dst_gt[5]);
 
 		/* upper-left corner not provided by user */
@@ -6161,10 +6158,7 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
 		width, height);
 
-	if (
-		(fabs(width - 0.0) < FLT_EPSILON) ||
-		(fabs(height - 0.0) < FLT_EPSILON)
-	) {
+	if (FLT_EQ(width, 0.0) || FLT_EQ(height, 0.0)) {
 		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero\n", width, height);
 
 		GDALClose(src_ds);

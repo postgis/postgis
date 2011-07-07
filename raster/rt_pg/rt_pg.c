@@ -2739,7 +2739,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         }
 
         /* Return the new raster as it will be before computing pixel by pixel */
-        else if (fabs(newval - newinitialvalue) > FLT_EPSILON) {
+        else if (FLT_NEQ(newval, newinitialvalue)) {
             skipcomputation = 2;
         }
     }
@@ -2821,7 +2821,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
              * We compute a value only for the withdata value pixel since the
              * nodata value has already been set by the first optimization
              **/
-            if (ret != -1 && fabs(r - newnodatavalue) > FLT_EPSILON) {
+            if (ret != -1 && FLT_NEQ(r, newnodatavalue)) {
                 if (skipcomputation == 0) {
                     sprintf(strnewval, "%f", r);
 
@@ -3110,7 +3110,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
 		}
-		else if (fabs(sample - 0.0) < FLT_EPSILON)
+		else if (FLT_EQ(sample, 0.0))
 			sample = 1;
 	}
 	else
@@ -3350,7 +3350,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 				rt_raster_destroy(raster);
 				SRF_RETURN_DONE(funcctx);
 			}
-			else if (fabs(sample - 0.0) < FLT_EPSILON)
+			else if (FLT_EQ(sample, 0.0))
 				sample = 1;
 		}
 		else
@@ -3399,7 +3399,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 						break;
 				}
 
-				if (width < 0 || fabs(width - 0.0) < FLT_EPSILON) {
+				if (width < 0 || FLT_EQ(width, 0.0)) {
 					elog(NOTICE, "Invalid value for width (must be greater than 0). Returning NULL");
 					pfree(bin_width);
 					rt_raster_destroy(raster);
@@ -3649,7 +3649,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 				rt_raster_destroy(raster);
 				SRF_RETURN_DONE(funcctx);
 			}
-			else if (fabs(sample - 0.0) < FLT_EPSILON)
+			else if (FLT_EQ(sample, 0.0))
 				sample = 1;
 		}
 		else
