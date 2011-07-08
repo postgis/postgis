@@ -4531,8 +4531,7 @@ LANGUAGE 'sql' STABLE STRICT;
 -- will return pretty name instead of ugly name
 CREATE OR REPLACE FUNCTION postgis_constraint_type(geomschema text, geomtable text, geomcolumn text) RETURNS varchar AS
 $$
-SELECT  postgis_type_name(replace(split_part(s.consrc, '''', 2), ')', '')::varchar
-		, postgis_constraint_dims($1,$2,$3), true )
+SELECT  replace(split_part(s.consrc, '''', 2), ')', '')::varchar		
 		 FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 		 WHERE n.nspname = $1
 		 AND c.relname = $2
@@ -4552,7 +4551,8 @@ CREATE OR REPLACE VIEW geometry_columns AS
     a.attname::varchar(256) AS f_geometry_column, 
     COALESCE(NULLIF(postgis_typmod_dims(a.atttypmod),2), postgis_constraint_dims(n.nspname, c.relname, a.attname), 2) AS coord_dimension, 
     COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod),0), postgis_constraint_srid(n.nspname, c.relname, a.attname), 0) AS srid, 
-    COALESCE(NULLIF(postgis_typmod_type(a.atttypmod), 'Geometry'), postgis_constraint_type(n.nspname, c.relname, a.attname), 'Geometry')::varchar(30) AS type
+    -- force to be uppercase with no ZM so is backwards compatible with old geometry_columns
+    replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)::text), 'GEOMETRY'), postgis_constraint_type(n.nspname, c.relname, a.attname), 'GEOMETRY'), 'ZM', ''),'Z', '')::varchar(30) AS type
    FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n
   WHERE t.typname = 'geometry'::name 
     AND a.attisdropped = false 
