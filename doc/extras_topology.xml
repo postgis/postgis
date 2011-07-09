@@ -1816,14 +1816,14 @@ SELECT topology.ST_ModEdgeSplit('ma_topo',  3, ST_SetSRID(ST_Point(227594,893910
 			
 				<refpurpose>
 Heal two edges by deleting the node connecting them, modifying the first edge
-and deleting the second edge.
+and deleting the second edge. Returns the id of the deleted node.
 				</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>text <function>ST_ModEdgeHeal</function></funcdef>
+					<funcdef>int <function>ST_ModEdgeHeal</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>
@@ -1837,11 +1837,10 @@ and deleting the second edge.
                 <para>
 Heal two edges by deleting the node connecting them, modifying the first edge
 and deleting the second edge.
-Returns the id of the node created that joins the new edges.
+Returns the id of the deleted node.
 Updates all existing joined edges and relationships accordingly.
 		</para>
-              
-			
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details:  X.3.9</para>
@@ -1872,7 +1871,7 @@ edge provided.
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>text <function>ST_NewEdgeHeal</function></funcdef>
+					<funcdef>int <function>ST_NewEdgeHeal</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>anedge</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>anotheredge</parameter></paramdef>
