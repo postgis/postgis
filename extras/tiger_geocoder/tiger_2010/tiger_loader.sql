@@ -120,7 +120,7 @@ COMMENT ON COLUMN loader_lookuptables.columns_exclude IS 'List of columns to exc
 INSERT INTO loader_lookuptables(process_order, lookup_name, table_name, load, level_county, level_state,  single_geom_mode, pre_load_process, post_load_process)
 VALUES(2, 'county', 'county10', true, false, true,
 	false, '${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_${lookup_name}(CONSTRAINT pk_${state_abbrev}_${lookup_name} PRIMARY KEY (gid) ) INHERITS(county); " ',
-	'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${{table_name} RENAME geoid10 TO cntyidfp;  SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT uidx_${state_abbrev}_${lookup_name}_cntyidfp UNIQUE (cntyidfp);"
+	'${psql} -c "ALTER TABLE ${staging_schema}.${state_abbrev}_${table_name} RENAME geoid10 TO cntyidfp;  SELECT loader_load_staged_data(lower(''${state_abbrev}_${table_name}''), lower(''${state_abbrev}_${lookup_name}'')); ALTER TABLE ${data_schema}.${state_abbrev}_${lookup_name} ADD CONSTRAINT uidx_${state_abbrev}_${lookup_name}_cntyidfp UNIQUE (cntyidfp);"
 	${psql} -c "CREATE INDEX ${data_schema}_${state_abbrev}_${lookup_name}_the_geom_gist ON ${data_schema}.${state_abbrev}_${lookup_name} USING gist(the_geom);"
 	${psql} -c "CREATE INDEX idx_${data_schema}_${state_abbrev}_${lookup_name}_countyfp ON ${data_schema}.${state_abbrev}_${lookup_name} USING btree(countyfp);"
 	${psql} -c "CREATE TABLE ${data_schema}.${state_abbrev}_county_lookup ( CONSTRAINT pk_${state_abbrev}_county_lookup PRIMARY KEY (st_code, co_code)) INHERITS (county_lookup);"
