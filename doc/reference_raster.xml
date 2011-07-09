@@ -3269,8 +3269,20 @@ WHERE rid = 2;
 					<funcdef>raster <function>ST_Transform</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_Transform</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>scaley</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3311,15 +3323,22 @@ WHERE rid = 2;
 				 <funcprototype>
 					<funcdef>raster <function>ST_SetBandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>nodatavalue</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>raster <function>ST_SetBandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>val</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>nodatavalue</parameter></paramdef>
 					<paramdef choice='opt'><type>boolean </type> <parameter>forcechecking=false</parameter></paramdef>
+				  </funcprototype>
+				  
+				 <funcprototype>
+					<funcdef>raster <function>ST_SetBandNoDataValue</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>nodatavalue</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
