@@ -109,6 +109,7 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 			<funcdef>setof record <function>geocode</function></funcdef>
 			<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>
 			<paramdef><type choice='opt'>integer </type> <parameter>max_results=10</parameter></paramdef>
+			<paramdef><type choice='opt'>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
 			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
@@ -128,7 +129,7 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Examples: Basic</title>
 		<para>The below examples timings are on a fairly old 1.9 GHZ single processor Windows XP machine with 3GB ram running PostgreSQL 9/PostGIS 2.0 loaded with all of Massachusetts state Tiger data.</para>
 		<para>Exact matches are faster to compute (205ms)</para>
 		<programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat, 
@@ -204,6 +205,22 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
      4 | 124 Mount Auburn St, Cambridge, Massachusetts 02138 | -71.12298 | 42.37336 | 124 Mount Auburn St, Cambridge, MA 02138  |      0
      5 | 950 Main Street, Worcester, MA 01610                | -71.82361 | 42.24948 | 950 Main St, Worcester, MA 01610          |      0
 </programlisting>
+	  </refsection>
+	  <refsection>
+	      <title>Examples: Using Geometry filter</title>
+	      <programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
+    (addy).address As stno, (addy).streetname As street, 
+	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
+	FROM geocode('31 - 37 Stewart Street, Boston, MA 02116', 5,  
+	    ST_GeomFromText('POLYGON((-71.0596 42.35105,-71.05998 42.34914,-71.06106 42.34751,-71.06269 42.34643,
+-71.0646 42.34605,-71.06651 42.34643,-71.06814 42.34751,-71.06922 42.34914,-71.0696 42.35105,
+-71.06922 42.35296,-71.06814 42.35459,-71.06651 42.35567,-71.0646 42.35605,
+-71.06269 42.35567,-71.06106 42.35459,-71.05998 42.35296,-71.0596 42.35105))',4326)) As g; 
+
+ rating |        wktlonlat         | stno | street | styp |  city  | st |  zip
+--------+--------------------------+------+--------+------+--------+----+-------
+     70 | POINT(-71.0646 42.35105) |   31 | Stuart | St   | Boston | MA | 02116
+	      </programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
