@@ -1438,7 +1438,11 @@ Datum offsetcurve(PG_FUNCTION_ARGS)
 	if (nargs > 2)
 	{
 		/* We strdup `cause we're going to modify it */
-		params = pstrdup(PG_GETARG_CSTRING(2));
+		{
+			text *wkttext = PG_GETARG_TEXT_P(2);
+			params = text2cstring(wkttext);
+		}
+		/*params = pstrdup(PG_GETARG_CSTRING(2)); */
 
 		POSTGIS_DEBUGF(3, "Params: %s", params);
 
