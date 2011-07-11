@@ -1490,7 +1490,12 @@ ERROR:  Two or more faces found</programlisting>
 			<refsection>
                 <title>Description</title>
             
-                <para>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.  Each output consists of a sequence and edgeid</para>
+                <para>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.  Each output consists of a sequence and edgeid. Sequence numbers start with value 1.</para>
+
+		<para>
+Enumeration of each ring edges start from the edge with smallest identifier.
+		</para>
+
                 <!-- use this format if new function -->
                 <para>Availability: 2.0 </para>
                 	<para>&sqlmm_compliant; SQL-MM 3 Topo-Geo and Topo-Net 3: Routine Details: X.3.5</para>
@@ -1505,13 +1510,13 @@ SELECT (topology.ST_GetFaceEdges('tt', 1)).*;
 -- result --
  sequence | edge
 ----------+------
-        1 |    5
-        2 |   -4
-        3 |   -6
-        4 |    7
-        5 |    3
+        1 |   -4
+        2 |    5
+        3 |    7
+        4 |   -6
+        5 |    1
         6 |    2
-        7 |    1
+        7 |    3
 (7 rows)
  
 </programlisting>

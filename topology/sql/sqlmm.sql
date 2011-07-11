@@ -61,7 +61,7 @@ BEGIN
 
   n := 1;
 
-  -- Construct the face geometry, then for each polygon:
+  -- Construct the face geometry, then for each ring of each polygon:
   sql := 'SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR('
     || 'ST_BuildArea(ST_Collect(geom))))).geom)).* FROM '
     || quote_ident(toponame) || '.edge_data WHERE left_face = '
@@ -69,11 +69,14 @@ BEGIN
   FOR rec IN EXECUTE sql 
   LOOP -- {
 
-    -- Contents of a directed face are the list of edges
-    -- that cover the specific ring
+    -- Find the edges constituting its boundary
     bounds = ST_Boundary(rec.geom);
 
-    sql := 'SELECT e.*, ST_Line_Locate_Point('
+
+    sql := 'WITH er2 AS ( ' 
+      || 'WITH er AS ( SELECT ' 
+      || 'min(e.edge_id) over (), count(*) over () as cnt, e.edge_id, '
+      || 'ST_Line_Locate_Point('
       || quote_literal(bounds::text)
       || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
       || ', ST_Line_Locate_Point('
@@ -86,13 +89,23 @@ BEGIN
       || quote_literal(bounds::text)
       || ', e.geom)';
     IF face_id = 0 THEN
-      sql := sql || ' ORDER BY pos ASC';
+      sql := sql || ' ORDER BY POS ASC) ';
     ELSE
-      sql := sql || ' ORDER BY POS DESC';
+      sql := sql || ' ORDER BY POS DESC) ';
     END IF;
+
+    -- Reorder rows so to start with the one with smaller edge_id
+    sql := sql || 'SELECT row_number() over () - 1 as rn, * FROM er ) '
+               || 'SELECT *, ( rn + cnt - ( select rn FROM er2 WHERE edge_id = min ) ) % cnt AS reord FROM er2 ORDER BY reord';
+
+
+    --RAISE DEBUG 'SQL: %', sql;
 
     FOR rec IN EXECUTE sql
     LOOP
+
+      RAISE DEBUG 'rn:%, n:%, edg:%, cnt:%, min:%, reord:%',
+         rec.rn, n, rec.edge_id, rec.cnt, rec.min, rec.reord;
 
       retrec.sequence = n;
       retrec.edge = rec.edge_id;
