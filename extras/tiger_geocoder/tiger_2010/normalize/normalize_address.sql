@@ -377,7 +377,7 @@ BEGIN
         IF debug_flag THEN
         	RAISE NOTICE 'reduced Street: %', result.streetName;
         END IF;
-        -- the post direction might be portion of fullStreet after reducedStreet
+        -- the post direction might be portion of fullStreet after reducedStreet and type
 		-- reducedStreet: 24  fullStreet: Country Road 24, N or fullStreet: Country Road 24 N
 		tempString := regexp_replace(fullStreet, streetType || ws || '+' || reducedStreet,'');
 		IF tempString > '' THEN
@@ -412,7 +412,7 @@ BEGIN
           END IF;
           reducedStreet := substring(fullStreet, '^(.*)' || ws || '+'
                         || streetType);
-          IF COALESCE(reducedStreet,'') = '' THEN --reduced street can't be blank
+          IF COALESCE(trim(reducedStreet),'') = '' THEN --reduced street can't be blank
             reducedStreet := fullStreet;
             streetType := NULL;
             result.streetTypeAbbrev := NULL;
@@ -423,7 +423,8 @@ BEGIN
 		tempString := trim(regexp_replace(fullStreet,  reducedStreet ||  ws || '+' || streetType,''));
 		IF tempString > '' THEN
 		  tempString := abbrev FROM direction_lookup WHERE
-			 tempString ILIKE '%' || name || '%'  AND texticregexeq(reducedStreet || ws || '+' || streetType, '(?i)(' || name || ')' || ws || '+|$')
+			 tempString ILIKE '%' || name || '%'  
+			 AND texticregexeq(fullStreet || ' ', '(?i)' || reducedStreet || ws || '+' || streetType || ws || '+(' || name || ')' || ws || '+')
 			ORDER BY length(name) DESC LIMIT 1;
 		  IF tempString IS NOT NULL THEN
 			result.postDirAbbrev = trim(tempString);

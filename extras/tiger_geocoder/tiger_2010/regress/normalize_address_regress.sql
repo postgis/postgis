@@ -20,7 +20,7 @@ SELECT * FROM normalize_address('529 Main Street Apt 201, Boston, MA 02129');
 SELECT * FROM normalize_address('529 Main Street, Apt 201, Boston, MA');
 
 --This one fails so lead out for now
---SELECT * FROM normalize_address('529 Main Street, Suite 201, Boston, MA 02129');
+SELECT '#1108a' As ticket, * FROM normalize_address('529 Main Street, Suite 201, Boston, MA 02129');
 
 -- Partial and Mangled zipcodes
 SELECT '#1073a' As ticket, * FROM normalize_address('212 3rd Ave N, MINNEAPOLIS, MN 553404');
