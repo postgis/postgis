@@ -60,4 +60,12 @@ SELECT '#1074b' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(S
 -- testing region --
 SELECT '#1070a' As ticket, pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('100 Federal Street, Boston, MA 02109',3, (SELECT ST_Union(the_geom) FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry);
 SELECT '#1070b' As ticket, pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('100 Federal Street, MA',3, (SELECT ST_Union(the_geom) FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry);
+
+
+-- service roads and interstates
+SELECT '#1112a' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8401 W 35W Service Dr NE, Blaine, MN 55449'::text As target) As f) As foo; 
+SELECT '#1112b' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8401 35W, Blaine, MN 55449'::text As target) As f) As foo; 
+SELECT '#1112c' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8401 35W West, Blaine, MN 55449'::text As target) As f) As foo; 
+SELECT '#1112d' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8401 West 35W, Blaine, MN 55449'::text As target) As f) As foo; 
+SELECT '#1112e' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8401 W 35W, Blaine, MN 55449'::text As target) As f) As foo; 
 \timing

@@ -557,6 +557,7 @@ BEGIN
 
       -- If a post direction is given, then the location is everything after,
       -- the street name is everything before, less any pre direction.
+      fullStreet := trim(fullStreet);
       tempInt := count(*) FROM direction_lookup
           WHERE fullStreet ILIKE '%' || name || '%' AND texticregexeq(fullStreet, '(?i)' || ws || name || '(?:'
               || ws || '|$)');

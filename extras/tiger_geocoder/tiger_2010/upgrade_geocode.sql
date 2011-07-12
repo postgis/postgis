@@ -140,6 +140,21 @@ SELECT name, abbrev, true
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
 DROP TABLE temp_types;           
 DELETE FROM street_type_lookup WHERE name = 'FOREST';
+
+CREATE TEMPORARY TABLE temp_types AS
+SELECT name, abbrev
+    FROM (VALUES 
+ ('SERVICE DRIVE', 'Svc Dr'),
+ ('SERVICE DR', 'Svc Dr'),
+ ('SERVICE ROAD', 'Svc Rd'),
+ ('SERVICE RD', 'Svc Rd') 
+    ) t(name, abbrev);
+ 
+DELETE FROM street_type_lookup WHERE name IN(SELECT name FROM temp_types);         
+INSERT INTO street_type_lookup (name, abbrev, is_hw) 
+SELECT name, abbrev, false
+    FROM temp_types As t
+           WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
 -- System/General helper functions
 \i utility/utmzone.sql
 \i utility/cull_null.sql

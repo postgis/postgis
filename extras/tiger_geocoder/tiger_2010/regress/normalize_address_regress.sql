@@ -64,6 +64,13 @@ SELECT '#1109b' As ticket, * from normalize_address('4373 LAKE DR, ROBBINSDALE, 
 SELECT '#1074a' As ticket, * FROM normalize_address('3420 RHODE ISLAND AVE S, ST. LOUIS PARK, MN 55426');
 
 -- another type that is part of street name --
-SELECT '#1074b' As ticket, * FROM normalize_address('26 Court Street, Boston,MA 02109')
+SELECT '#1074b' As ticket, * FROM normalize_address('26 Court Street, Boston,MA 02109');
+
+-- service roads and interstates
+SELECT '#1112a' As ticket, * FROM normalize_address('8401 W 35W Service Dr NE, Blaine, MN 55449');
+SELECT '#1112b' As ticket, * FROM normalize_address('8401 35W, Blaine, MN 55449');
+SELECT '#1112c' As ticket, * FROM normalize_address('8401 35W West, Blaine, MN 55449');
+SELECT '#1112d' As ticket, * FROM normalize_address('8401 West 35W, Blaine, MN 55449');
+SELECT '#1112e' As ticket, * FROM normalize_address('8401 W 35W, Blaine, MN 55449');
 
 \timing

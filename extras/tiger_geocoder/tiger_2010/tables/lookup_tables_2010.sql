@@ -540,6 +540,14 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('ROADS', 'Rds');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ROW', 'Row');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('RUE', 'Rue');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('RUN', 'Run');
+-- Start newly added 2011-7-12 --
+INSERT INTO street_type_lookup (name, abbrev)
+ VALUES 
+ ('SERVICE DRIVE', 'Svc Dr'),
+ ('SERVICE DR', 'Svc Dr'),
+ ('SERVICE ROAD', 'Svc Rd'),
+ ('SERVICE RD', 'Svc Rd') ;
+-- end newly added 2011-07-12 --
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('SHL', 'Shl');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('SHOAL', 'Shl');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('SHLS', 'Shls');
