@@ -1428,18 +1428,52 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 -----------------------------------------------------------------------
 -- ST_Resample
 -----------------------------------------------------------------------
+-- cannot be strict as almost all parameters can be NULL
 CREATE OR REPLACE FUNCTION _st_resample(
 	rast raster,
-	algorithm text DEFAULT 'NearestNeighbour',
-	maxerr double precision DEFAULT 0.125,
+	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125,
 	srid integer DEFAULT NULL,
 	scalex double precision DEFAULT 0, scaley double precision DEFAULT 0,
-	upperleftx double precision DEFAULT NULL, upperlefty double precision DEFAULT NULL,
-	skewx double precision DEFAULT NULL, skewy double precision DEFAULT NULL
+	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_resample'
 	LANGUAGE 'C' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_resample(
+	rast raster,
+	srid integer DEFAULT NULL,
+	scalex double precision DEFAULT 0, scaley double precision DEFAULT 0,
+	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0,
+	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
+)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $9,	$10, $2, $3, $4, $5, $6, $7, $8) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_resample(
+	rast raster,
+	ref raster,
+	algorithm text DEFAULT 'NearestNeighbour',
+	maxerr double precision DEFAULT 0.125
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		sr_id int;
+		scale_x double precision;
+		scale_y double precision;
+		grid_x double precision;
+		grid_y double precision;
+		skew_x double precision;
+		skew_y double precision;
+	BEGIN
+		SELECT srid, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y FROM st_metadata($2);
+		RETURN _st_resample($1, $3, $4, sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Transform
@@ -1457,6 +1491,50 @@ CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalex double
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $4, $5, $2, $3, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_Rescale
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $4, $5, NULL, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $3, $4, NULL, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_Reskew
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewx double precision, skewy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $4, $5, NULL, 0, 0, NULL, NULL, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewxy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $3, $4, NULL, 0, 0, NULL, NULL, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_SnapToGrid
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gridy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $4, $5, NULL, $6, $7, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gridy double precision, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $6, $7, NULL, $4, $5, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gridy double precision, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $5, $6, NULL, $4, $4, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------

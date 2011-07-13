@@ -5901,8 +5901,10 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
  * @param dst_srs : the warped raster's coordinate system
  * @param scale_x : the pixel width of the warped raster
  * @param scale_y : the pixel height of the warped raster
- * @param ul_x : the X value of upper left corner of the warped raster
- * @param ul_y : the Y value of upper left corner of the warped raster
+ * @param ul_xw : the X value of upper-left corner of the warped raster
+ * @param ul_yw : the Y value of upper-left corner of the warped raster
+ * @param grid_xw : the X value of point on a grid to align warped raster to
+ * @param grid_yw : the Y value of point on a grid to align warped raster to
  * @param skew_x : the X skew of the warped raster
  * @param skew_y : the Y skew of the warped raster
  * @param resample_alg : the resampling algorithm
@@ -5915,7 +5917,8 @@ rt_raster rt_raster_gdal_warp(
 	rt_raster raster, const char *src_srs,
 	const char *dst_srs,
 	double *scale_x, double *scale_y,
-	double *ul_x, double *ul_y,
+	double *ul_xw, double *ul_yw,
+	double *grid_xw, double *grid_yw,
 	double *skew_x, double *skew_y,
 	GDALResampleAlg resample_alg, double max_err
 ) {
@@ -5951,6 +5954,12 @@ rt_raster rt_raster_gdal_warp(
 	double max_y = 0;
 	double pix_x = 0;
 	double pix_y = 0;
+
+	double djunk = 0;
+	double grid_shift_xw = 0;
+	double grid_shift_yw = 0;
+	double grid_pix_x = 0;
+	double grid_pix_y = 0;
 
 	rt_raster rast = NULL;
 	int i = 0;
@@ -6085,38 +6094,147 @@ rt_raster rt_raster_gdal_warp(
 
 	/* user-defined upper-left corner */
 	if (
-		(NULL != ul_x) &&
-		(FLT_NEQ(*ul_x, 0.0))
+		NULL != ul_xw &&
+		NULL != ul_yw
 	) {
-		min_x = *ul_x;
+		min_x = *ul_xw;
+		max_y = *ul_yw;
 		ul_user = 1;
 	}
-	if (
-		(NULL != ul_y) &&
-		(FLT_NEQ(*ul_y, 0.0))
+	else if (
+		((NULL != ul_xw) && (NULL == ul_yw)) ||
+		((NULL == ul_xw) && (NULL != ul_yw))
 	) {
-		max_y = *ul_y;
-		ul_user = 1;
+		rterror("rt_raster_gdal_warp: Both X and Y coordinate values must be provided for upper-left corner\n");
+
+		GDALClose(src_ds);
+
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		rtdealloc(transform_opts);
+
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+
+		return NULL;
 	}
 
 	/* skew */
-	if (NULL != skew_x && NULL != skew_y) {
+	if (NULL != skew_x)
 		dst_gt[2] = *skew_x;
+	if (NULL != skew_y)
 		dst_gt[4] = *skew_y;
-	}
 
 	/* user-defined scale */
 	if (
 		(NULL != scale_x) &&
-		(FLT_NEQ(*scale_x, 0.0))
-	) {
-		pix_x = fabs(*scale_x);
-	}
-	if (
+		(FLT_NEQ(*scale_x, 0.0)) &&
 		(NULL != scale_y) &&
 		(FLT_NEQ(*scale_y, 0.0))
 	) {
+		pix_x = fabs(*scale_x);
 		pix_y = fabs(*scale_y);
+	}
+	else if (
+		((NULL != scale_x) && (NULL == scale_y)) ||
+		((NULL == scale_x) && (NULL != scale_y))
+	) {
+		rterror("rt_raster_gdal_warp: Both X and Y axis values must be provided for scale\n");
+
+		GDALClose(src_ds);
+
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		rtdealloc(transform_opts);
+
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+
+		return NULL;
+	}
+
+	/* alignment only considered if upper-left corner not provided */
+	if (
+		!ul_user && (
+			(NULL != grid_xw) || (NULL != grid_yw)
+		)
+	) {
+		if (
+			((NULL != grid_xw) && (NULL == grid_yw)) ||
+			((NULL == grid_xw) && (NULL != grid_yw))
+		) {
+			rterror("rt_raster_gdal_warp: Both X and Y coordinate values must be provided for alignment\n");
+
+			GDALClose(src_ds);
+
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+			rtdealloc(transform_opts);
+
+			GDALDeregisterDriver(src_drv);
+			GDALDestroyDriver(src_drv);
+
+			return NULL;
+		}
+
+		/* use scale for alignment */
+		if (FLT_NEQ(pix_x, 0.))
+			grid_pix_x = pix_x;
+		else
+			grid_pix_x = fabs(dst_gt[1]);
+		if (FLT_NEQ(pix_y, 0.))
+			grid_pix_y = pix_y;
+		else
+			grid_pix_y = fabs(dst_gt[5]);
+
+		/* grid shift of upper left to match alignment grid */
+		grid_shift_xw = grid_pix_x * modf(fabs(*grid_xw - dst_gt[0]) / grid_pix_x, &djunk);
+		grid_shift_yw = grid_pix_y * modf(fabs(*grid_yw - dst_gt[3]) / grid_pix_y, &djunk);
+
+		/* shift along X axis for upper left */
+		if (FLT_NEQ(grid_shift_xw, 0.)) {
+			min_x = dst_gt[0] + grid_shift_xw;
+			min_x = modf(fabs(*grid_xw - min_x) / grid_pix_x, &djunk);
+			if (FLT_NEQ(min_x, 0.)) grid_shift_xw *= -1;
+			min_x = dst_gt[0] + grid_shift_xw;
+			if (min_x > dst_gt[0]) {
+				grid_shift_xw = grid_pix_x - fabs(grid_shift_xw);
+				min_x = dst_gt[0] - grid_shift_xw;
+			}
+
+			ul_user = 1;
+		}
+		else
+			min_x = dst_gt[0];
+
+		/* shift along Y axis for upper left */
+		if (FLT_NEQ(grid_shift_yw, 0.)) {
+			max_y = dst_gt[3] + grid_shift_yw;
+			max_y = modf(fabs(*grid_yw - max_y) / grid_pix_y, &djunk);
+			if (FLT_NEQ(max_y, 0.)) grid_shift_yw *= -1;
+			max_y = dst_gt[3] + grid_shift_yw;
+			if (max_y < dst_gt[3]) {
+				grid_shift_yw = grid_pix_y - fabs(grid_shift_yw);
+				max_y = dst_gt[3] + grid_shift_yw;
+			}
+
+			ul_user = 1;
+		}
+		else
+			max_y = dst_gt[3];
+
+		/* adjust width and height to account new upper left */
+		if (ul_user) {
+			/* use suggested lower right corner */
+			max_x = dst_gt[0] + dst_gt[1] * width;
+			min_y = dst_gt[3] + dst_gt[5] * height;
+
+			width = (int) ceil((max_x - min_x + (grid_pix_x / 2.)) / grid_pix_x);
+			height = (int) ceil((max_y - min_y + (grid_pix_y / 2.)) / grid_pix_y);
+			dst_gt[1] = grid_pix_x;
+			dst_gt[5] = -1 * grid_pix_y;
+			RASTER_DEBUGF(3, "new dimensions: %d x %d", width, height);
+		}
+
+		RASTER_DEBUGF(3, "shift is: %f, %f", grid_shift_xw, grid_shift_yw);
+		RASTER_DEBUGF(3, "new ul is: %f, %f", min_x, max_y);
 	}
 
 	/* process user-defined scale */

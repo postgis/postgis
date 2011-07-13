@@ -4904,6 +4904,14 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	double *scale_x = NULL;
 	double *scale_y = NULL;
 
+	double gridw[2] = {0};
+	double *grid_xw = NULL;
+	double *grid_yw = NULL;
+
+	double skew[2] = {0};
+	double *skew_x = NULL;
+	double *skew_y = NULL;
+
 	POSTGIS_RT_DEBUG(3, "RASTER_resample: Starting");
 
 	/* pgraster is null, return null */
@@ -4949,7 +4957,78 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
 		}
-		POSTGIS_RT_DEBUGF(4, "destination srid: %d", dst_srid);
+	}
+	else
+		dst_srid = src_srid;
+	POSTGIS_RT_DEBUGF(4, "destination srid: %d", dst_srid);
+
+	/* scale x */
+	if (!PG_ARGISNULL(4)) {
+		scale[0] = PG_GETARG_FLOAT8(4);
+		if (FLT_NEQ(scale[0], 0)) scale_x = &scale[0];
+	}
+
+	/* scale y */
+	if (!PG_ARGISNULL(5)) {
+		scale[1] = PG_GETARG_FLOAT8(5);
+		if (FLT_NEQ(scale[1], 0)) scale_y = &scale[1];
+	}
+
+	/* grid alignment x */
+	if (!PG_ARGISNULL(6)) {
+		gridw[0] = PG_GETARG_FLOAT8(6);
+		grid_xw = &gridw[0];
+	}
+
+	/* grid alignment y */
+	if (!PG_ARGISNULL(7)) {
+		gridw[1] = PG_GETARG_FLOAT8(7);
+		grid_yw = &gridw[1];
+	}
+
+	/* skew x */
+	if (!PG_ARGISNULL(8)) {
+		skew[0] = PG_GETARG_FLOAT8(8);
+		if (FLT_NEQ(skew[0], 0)) skew_x = &skew[0];
+	}
+
+	/* skew y */
+	if (!PG_ARGISNULL(9)) {
+		skew[1] = PG_GETARG_FLOAT8(9);
+		if (FLT_NEQ(skew[1], 0)) skew_y = &skew[1];
+	}
+
+	/* check that at least something is to be done */
+	if (
+		(dst_srid == SRID_UNKNOWN) &&
+		(scale_x == NULL) &&
+		(scale_y == NULL) &&
+		(grid_xw == NULL) &&
+		(grid_yw == NULL) &&
+		(skew_x == NULL) &&
+		(skew_y == NULL)
+	) {
+		elog(NOTICE, "No resampling parameters provided.  Returning original raster");
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
+	}
+	/* both values of alignment must be provided if any one is provided */
+	else if (
+		(grid_xw != NULL && grid_yw == NULL) ||
+		(grid_xw == NULL && grid_yw != NULL)
+	) {
+		elog(NOTICE, "Values must be provided for both X and Y coordinates when specifying the alignment.  Returning original raster");
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
+	}
+	/* both values of scale must be provided if any one is provided */
+	else if (
+		(scale_x != NULL && scale_y == NULL) ||
+		(scale_x == NULL && scale_y != NULL)
+	) {
+		elog(NOTICE, "Values must be provided for both X and Y axis when specifying the scale.  Returning original raster");
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
 	}
 
 	/* get srses from srids */
@@ -4974,23 +5053,12 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(4, "dst srs: %s", dst_srs);
 	}
 
-	/* scale x */
-	if (!PG_ARGISNULL(4)) {
-		scale[0] = PG_GETARG_FLOAT8(4);
-		scale_x = &scale[0];
-	}
-
-	/* scale y */
-	if (!PG_ARGISNULL(5)) {
-		scale[1] = PG_GETARG_FLOAT8(5);
-		scale_y = &scale[1];
-	}
-
 	rast = rt_raster_gdal_warp(raster, src_srs,
 		dst_srs,
 		scale_x, scale_y,
 		NULL, NULL,
-		NULL, NULL,
+		grid_xw, grid_yw,
+		skew_x, skew_y,
 		alg, max_err);
 	rt_raster_destroy(raster);
 	if (NULL != src_srs) pfree(src_srs);

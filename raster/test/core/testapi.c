@@ -1311,7 +1311,7 @@ static void testRasterToGDAL() {
 	rt_band_set_nodata(band, 0);
 
 	rt_raster_set_offsets(raster, -500000, 600000);
-	rt_raster_set_scale(raster, 1000, 1000);
+	rt_raster_set_scale(raster, 1000, -1000);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
@@ -1481,7 +1481,7 @@ static void testGDALWarp() {
 	rt_band_set_nodata(band, 0);
 
 	rt_raster_set_offsets(raster, -500000, 600000);
-	rt_raster_set_scale(raster, 1000, 1000);
+	rt_raster_set_scale(raster, 1000, -1000);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
@@ -1496,11 +1496,12 @@ static void testGDALWarp() {
 		NULL, NULL,
 		NULL, NULL,
 		NULL, NULL,
+		NULL, NULL,
 		GRA_NearestNeighbour, -1
 	);
 	CHECK(rast);
-	CHECK((rt_raster_get_width(rast) == 124));
-	CHECK((rt_raster_get_height(rast) == 117));
+	CHECK((rt_raster_get_width(rast) == 122));
+	CHECK((rt_raster_get_height(rast) == 116));
 	CHECK((rt_raster_get_num_bands(rast) != 0));
 
 	band = rt_raster_get_band(rast, 0);
