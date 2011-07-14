@@ -1,4 +1,10 @@
-SELECT * FROM ST_BandMetaData(
+SELECT
+	pixeltype,
+	hasnodatavalue,
+	round(nodatavalue::numeric, 3),
+	isoutdb,
+	path
+FROM ST_BandMetaData(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -13,7 +19,13 @@ SELECT * FROM ST_BandMetaData(
 		, 1, 5, 5, 3.14159
 	)
 );
-SELECT * FROM ST_BandMetaData(
+SELECT
+	pixeltype,
+	hasnodatavalue,
+	round(nodatavalue::numeric, 3),
+	isoutdb,
+	path
+FROM ST_BandMetaData(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(
@@ -29,7 +41,13 @@ SELECT * FROM ST_BandMetaData(
 	),
 	1
 );
-SELECT * FROM ST_BandMetaData(
+SELECT
+	pixeltype,
+	hasnodatavalue,
+	round(nodatavalue::numeric, 3),
+	isoutdb,
+	path
+FROM ST_BandMetaData(
 	ST_SetValue(
 		ST_SetValue(
 			ST_SetValue(

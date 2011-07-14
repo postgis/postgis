@@ -3070,11 +3070,10 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	rt_bandstats stats = NULL;
 
 	TupleDesc tupdesc;
-	AttInMetadata *attinmeta;
-
 	int i = 0;
-	char **values = NULL;
-	int values_length = 0;
+	bool *nulls = NULL;
+	Datum values[8];
+	int values_length = 8;
 	HeapTuple tuple;
 	Datum result;
 
@@ -3156,94 +3155,34 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 		));
 	}
 
-	/*
-	 * generate attribute metadata needed later to produce tuples from raw
-	 * C strings
-	 */
-	attinmeta = TupleDescGetAttInMetadata(tupdesc);
+	BlessTupleDesc(tupdesc);
 
-	/*
-	 * Prepare a values array for building the returned tuple.
-	 * This should be an array of C strings which will
-	 * be processed later by the type input functions.
-	 */
-	if (!cstddev)
-		values_length = 6;
-	else
-		values_length = 8;
-	values = (char **) palloc(values_length * sizeof(char *));
+	nulls = palloc(sizeof(bool) * values_length);
+	for (i = 0; i < values_length; i++) nulls[i] = FALSE;
 
-	values[0] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-	values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[2] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[3] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[4] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[5] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+	values[0] = Int64GetDatum(stats->count);
+	values[1] = Float8GetDatum(stats->sum);
+	values[2] = Float8GetDatum(stats->mean);
+	values[3] = Float8GetDatum(stats->stddev);
+	values[4] = Float8GetDatum(stats->min);
+	values[5] = Float8GetDatum(stats->max);
 	if (cstddev) {
-		values[6] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-		values[7] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
+		values[6] = Float8GetDatum(cM);
+		values[7] = Float8GetDatum(cQ);
 	}
-
-	snprintf(
-		values[0],
-		sizeof(char) * (MAX_INT_CHARLEN + 1),
-		"%d",
-		stats->count
-	);
-	snprintf(
-		values[1],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		stats->sum
-	);
-	snprintf(
-		values[2],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		stats->mean
-	);
-	snprintf(
-		values[3],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		stats->stddev
-	);
-	snprintf(
-		values[4],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		stats->min
-	);
-	snprintf(
-		values[5],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		stats->max
-	);
-	if (cstddev) {
-		snprintf(
-			values[6],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			cM
-		);
-		snprintf(
-			values[7],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			cQ
-		);
+	else {
+		nulls[6] = TRUE;
+		nulls[7] = TRUE;
 	}
 
 	/* build a tuple */
-	tuple = BuildTupleFromCStrings(attinmeta, values);
+	tuple = heap_form_tuple(tupdesc, values, nulls);
 
 	/* make the tuple into a datum */
 	result = HeapTupleGetDatum(tuple);
 
 	/* clean up */
-	for (i = 0; i < values_length; i++) pfree(values[i]);
-	pfree(values);
+	pfree(nulls);
 	pfree(stats);
 
 	PG_RETURN_DATUM(result);
@@ -3269,8 +3208,8 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
-	AttInMetadata *attinmeta;
 
+	int i;
 	int count;
 	rt_histogram hist;
 	rt_histogram hist2;
@@ -3297,7 +3236,6 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		double max = 0;
 		rt_bandstats stats = NULL;
 
-		int i;
 		int j;
 		int n;
 
@@ -3474,12 +3412,9 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 			));
 		}
 
-		/*
-		 * generate attribute metadata needed later to produce tuples from raw
-		 * C strings
-		 */
-		attinmeta = TupleDescGetAttInMetadata(tupdesc);
-		funcctx->attinmeta = attinmeta;
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
 		MemoryContextSwitchTo(oldcontext);
 	}
 
@@ -3488,66 +3423,35 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
-	attinmeta = funcctx->attinmeta;
+	tupdesc = funcctx->tuple_desc;
 	hist2 = funcctx->user_fctx;
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		char **values;
+		int values_length = 4;
+		Datum values[values_length];
+		bool *nulls = NULL;
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		/*
-		 * Prepare a values array for building the returned tuple.
-		 * This should be an array of C strings which will
-		 * be processed later by the type input functions.
-		 */
-		values = (char **) palloc(4 * sizeof(char *));
+		nulls = palloc(sizeof(bool) * values_length);
+		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
 
-		values[0] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-		values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-		values[2] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-		values[3] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-
-		snprintf(
-			values[0],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			hist2[call_cntr].min
-		);
-		snprintf(
-			values[1],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			hist2[call_cntr].max
-		);
-		snprintf(
-			values[2],
-			sizeof(char) * (MAX_INT_CHARLEN + 1),
-			"%d",
-			hist2[call_cntr].count
-		);
-		snprintf(
-			values[3],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			hist2[call_cntr].percent
-		);
+		values[0] = Float8GetDatum(hist2[call_cntr].min);
+		values[1] = Float8GetDatum(hist2[call_cntr].max);
+		values[2] = Int64GetDatum(hist2[call_cntr].count);
+		values[3] = Float8GetDatum(hist2[call_cntr].percent);
 
 		/* build a tuple */
-		tuple = BuildTupleFromCStrings(attinmeta, values);
+		tuple = heap_form_tuple(tupdesc, values, nulls);
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
 
-		/* clean up (this is not really necessary) */
-		pfree(values[3]);
-		pfree(values[2]);
-		pfree(values[1]);
-		pfree(values[0]);
-		pfree(values);
+		/* clean up */
+		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -3572,8 +3476,8 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
-	AttInMetadata *attinmeta;
 
+	int i;
 	int count;
 	rt_quantile quant;
 	rt_quantile quant2;
@@ -3596,7 +3500,6 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		double quantile = 0;
 		rt_bandstats stats = NULL;
 
-		int i;
 		int j;
 		int n;
 
@@ -3757,12 +3660,9 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 			));
 		}
 
-		/*
-		 * generate attribute metadata needed later to produce tuples from raw
-		 * C strings
-		 */
-		attinmeta = TupleDescGetAttInMetadata(tupdesc);
-		funcctx->attinmeta = attinmeta;
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
 		MemoryContextSwitchTo(oldcontext);
 	}
 
@@ -3771,50 +3671,33 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
-	attinmeta = funcctx->attinmeta;
+	tupdesc = funcctx->tuple_desc;
 	quant2 = funcctx->user_fctx;
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		char **values;
+		int values_length = 2;
+		Datum values[values_length];
+		bool *nulls = NULL;
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		/*
-		 * Prepare a values array for building the returned tuple.
-		 * This should be an array of C strings which will
-		 * be processed later by the type input functions.
-		 */
-		values = (char **) palloc(2 * sizeof(char *));
+		nulls = palloc(sizeof(bool) * values_length);
+		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
 
-		values[0] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-		values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-
-		snprintf(
-			values[0],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			quant2[call_cntr].quantile
-		);
-		snprintf(
-			values[1],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			quant2[call_cntr].value
-		);
+		values[0] = Float8GetDatum(quant2[call_cntr].quantile);
+		values[1] = Float8GetDatum(quant2[call_cntr].value);
 
 		/* build a tuple */
-		tuple = BuildTupleFromCStrings(attinmeta, values);
+		tuple = heap_form_tuple(tupdesc, values, nulls);
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
 
-		/* clean up (this is not really necessary) */
-		pfree(values[1]);
-		pfree(values[0]);
-		pfree(values);
+		/* clean up */
+		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -3836,8 +3719,8 @@ PG_FUNCTION_INFO_V1(RASTER_valueCount);
 Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
-	AttInMetadata *attinmeta;
 
+	int i;
 	int count;
 	rt_valuecount vcnts;
 	rt_valuecount vcnts2;
@@ -3858,7 +3741,6 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		int search_values_count = 0;
 		double roundto = 0;
 
-		int i;
 		int j;
 		int n;
 
@@ -3994,12 +3876,9 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 			));
 		}
 
-		/*
-		 * generate attribute metadata needed later to produce tuples from raw
-		 * C strings
-		 */
-		attinmeta = TupleDescGetAttInMetadata(tupdesc);
-		funcctx->attinmeta = attinmeta;
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
 		MemoryContextSwitchTo(oldcontext);
 	}
 
@@ -4008,58 +3887,34 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
-	attinmeta = funcctx->attinmeta;
+	tupdesc = funcctx->tuple_desc;
 	vcnts2 = funcctx->user_fctx;
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		char **values;
+		int values_length = 3;
+		Datum values[values_length];
+		bool *nulls = NULL;
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		/*
-		 * Prepare a values array for building the returned tuple.
-		 * This should be an array of C strings which will
-		 * be processed later by the type input functions.
-		 */
-		values = (char **) palloc(3 * sizeof(char *));
+		nulls = palloc(sizeof(bool) * values_length);
+		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
 
-		values[0] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-		values[1] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-		values[2] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-
-		snprintf(
-			values[0],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			vcnts2[call_cntr].value
-		);
-		snprintf(
-			values[1],
-			sizeof(char) * (MAX_INT_CHARLEN + 1),
-			"%d",
-			vcnts2[call_cntr].count
-		);
-		snprintf(
-			values[2],
-			sizeof(char) * (MAX_DBL_CHARLEN + 1),
-			"%f",
-			vcnts2[call_cntr].percent
-		);
+		values[0] = Float8GetDatum(vcnts2[call_cntr].value);
+		values[1] = UInt32GetDatum(vcnts2[call_cntr].count);
+		values[2] = Float8GetDatum(vcnts2[call_cntr].percent);
 
 		/* build a tuple */
-		tuple = BuildTupleFromCStrings(attinmeta, values);
+		tuple = heap_form_tuple(tupdesc, values, nulls);
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
 
-		/* clean up (this is not really necessary) */
-		pfree(values[2]);
-		pfree(values[1]);
-		pfree(values[0]);
-		pfree(values);
+		/* clean up */
+		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -4741,8 +4596,8 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
-	AttInMetadata *attinmeta;
 
+	int i;
 	uint32_t drv_count;
 	rt_gdaldriver drv_set;
 	rt_gdaldriver drv_set2;
@@ -4784,12 +4639,8 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 			));
 		}
 
-		/*
-		 * generate attribute metadata needed later to produce tuples from raw
-		 * C strings
-		 */
-		attinmeta = TupleDescGetAttInMetadata(tupdesc);
-		funcctx->attinmeta = attinmeta;
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
 		MemoryContextSwitchTo(oldcontext);
 	}
 
@@ -4798,59 +4649,26 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
-	attinmeta = funcctx->attinmeta;
+	tupdesc = funcctx->tuple_desc;
 	drv_set2 = funcctx->user_fctx;
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		char **values;
+		int values_length = 4;
+		Datum values[values_length];
+		bool *nulls;
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		/*
-		 * Prepare a values array for building the returned tuple.
-		 * This should be an array of C strings which will
-		 * be processed later by the type input functions.
-		 */
-		values = (char **) palloc(4 * sizeof(char *));
+		nulls = palloc(sizeof(bool) * values_length);
+		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
 
-		values[0] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-		values[1] = (char *) palloc(
-			(strlen(drv_set2[call_cntr].short_name) + 1) * sizeof(char)
-		);
-		values[2] = (char *) palloc(
-			(strlen(drv_set2[call_cntr].long_name) + 1) * sizeof(char)
-		);
-		values[3] = (char *) palloc(
-			(strlen(drv_set2[call_cntr].create_options) + 1) * sizeof(char)
-		);
-
-		snprintf(
-			values[0],
-			sizeof(char) * (MAX_INT_CHARLEN + 1),
-			"%d",
-			drv_set2[call_cntr].idx
-		);
-		snprintf(
-			values[1],
-			(strlen(drv_set2[call_cntr].short_name) + 1) * sizeof(char),
-			"%s",
-			drv_set2[call_cntr].short_name
-		);
-		snprintf(
-			values[2],
-			(strlen(drv_set2[call_cntr].long_name) + 1) * sizeof(char),
-			"%s",
-			drv_set2[call_cntr].long_name
-		);
-		snprintf(
-			values[3],
-			(strlen(drv_set2[call_cntr].create_options) + 1) * sizeof(char),
-			"%s",
-			drv_set2[call_cntr].create_options
-		);
+		values[0] = Int32GetDatum(drv_set2[call_cntr].idx);
+		values[1] = CStringGetTextDatum(drv_set2[call_cntr].short_name);
+		values[2] = CStringGetTextDatum(drv_set2[call_cntr].long_name);
+		values[3] = CStringGetTextDatum(drv_set2[call_cntr].create_options);
 
 		POSTGIS_RT_DEBUGF(4, "Result %d, Index %s", call_cntr, values[0]);
 		POSTGIS_RT_DEBUGF(4, "Result %d, Short Name %s", call_cntr, values[1]);
@@ -4858,17 +4676,13 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(5, "Result %d, Create Options %s", call_cntr, values[3]);
 
 		/* build a tuple */
-		tuple = BuildTupleFromCStrings(attinmeta, values);
+		tuple = heap_form_tuple(tupdesc, values, nulls);
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
 
-		/* clean up (this is not really necessary) */
-		pfree(values[3]);
-		pfree(values[2]);
-		pfree(values[1]);
-		pfree(values[0]);
-		pfree(values);
+		/* clean up */
+		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -5090,7 +4904,7 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	rt_pgraster *pgraster = NULL;
 	rt_raster raster = NULL;
 
-	uint16_t numBands;
+	uint32_t numBands;
 	double scaleX;
 	double scaleY;
 	double ipX;
@@ -5098,15 +4912,14 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	double skewX;
 	double skewY;
 	int32_t srid;
-	uint16_t width;
-	uint16_t height;
-
-	TupleDesc tupdesc;
-	AttInMetadata *attinmeta;
+	uint32_t width;
+	uint32_t height;
 
 	int i = 0;
-	char **values = NULL;
+	TupleDesc tupdesc;
+	bool *nulls = NULL;
 	int values_length = 10;
+	Datum values[values_length];
 	HeapTuple tuple;
 	Datum result;
 
@@ -5159,100 +4972,30 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 		));
 	}
 
-	/*
-	 * generate attribute metadata needed later to produce tuples from raw
-	 * C strings
-	 */
-	attinmeta = TupleDescGetAttInMetadata(tupdesc);
+	BlessTupleDesc(tupdesc);
 
-	/*
-	 * Prepare a values array for building the returned tuple.
-	 * This should be an array of C strings which will
-	 * be processed later by the type input functions.
-	 */
-	values = (char **) palloc(values_length * sizeof(char *));
+	values[0] = Float8GetDatum(ipX);
+	values[1] = Float8GetDatum(ipY);
+	values[2] = UInt32GetDatum(width);
+	values[3] = UInt32GetDatum(height);
+	values[4] = Float8GetDatum(scaleX);
+	values[5] = Float8GetDatum(scaleY);
+	values[6] = Float8GetDatum(skewX);
+	values[7] = Float8GetDatum(skewY);
+	values[8] = Int32GetDatum(srid);
+	values[9] = UInt32GetDatum(numBands);
 
-	values[0] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[1] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[2] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-	values[3] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-	values[4] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[5] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[6] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[7] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[8] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-	values[9] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-
-	snprintf(
-		values[0],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		ipX
-	);
-	snprintf(
-		values[1],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		ipY
-	);
-	snprintf(
-		values[2],
-		sizeof(char) * (MAX_INT_CHARLEN + 1),
-		"%d",
-		width
-	);
-	snprintf(
-		values[3],
-		sizeof(char) * (MAX_INT_CHARLEN + 1),
-		"%d",
-		height
-	);
-	snprintf(
-		values[4],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		scaleX
-	);
-	snprintf(
-		values[5],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		scaleY
-	);
-	snprintf(
-		values[6],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		skewX
-	);
-	snprintf(
-		values[7],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		skewY
-	);
-	snprintf(
-		values[8],
-		sizeof(char) * (MAX_INT_CHARLEN + 1),
-		"%d",
-		srid
-	);
-	snprintf(
-		values[9],
-		sizeof(char) * (MAX_INT_CHARLEN + 1),
-		"%d",
-		numBands
-	);
+	nulls = palloc(sizeof(bool) * values_length);
+	for (i = 0; i < values_length; i++) nulls[i] = FALSE;
 
 	/* build a tuple */
-	tuple = BuildTupleFromCStrings(attinmeta, values);
+	tuple = heap_form_tuple(tupdesc, values, nulls);
 
 	/* make the tuple into a datum */
 	result = HeapTupleGetDatum(tuple);
 
 	/* clean up */
-	for (i = 0; i < values_length; i++) pfree(values[i]);
-	pfree(values);
+	pfree(nulls);
 
 	PG_RETURN_DATUM(result);
 }
@@ -5267,20 +5010,20 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	rt_raster raster = NULL;
 	rt_band band = NULL;
 
-	TupleDesc tupdesc;
-	AttInMetadata *attinmeta;
-
 	uint32_t numBands;
 	uint32_t bandindex = 1;
-	const char *pixtypename = NULL;
+	const char *tmp = NULL;
+	char *pixtypename = NULL;
 	bool hasnodatavalue = FALSE;
 	double nodatavalue;
-	const char *bandpath = NULL;
+	char *bandpath = NULL;
 	bool isoutdb = FALSE;
 
 	int i = 0;
-	char **values = NULL;
+	TupleDesc tupdesc;
+	bool *nulls = NULL;
 	int values_length = 5;
+	Datum values[values_length];
 	HeapTuple tuple;
 	Datum result;
 
@@ -5323,7 +5066,9 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	}
 
 	/* pixeltype */
-	pixtypename = rt_pixtype_name(rt_band_get_pixtype(band));
+	tmp = rt_pixtype_name(rt_band_get_pixtype(band));
+	pixtypename = palloc(sizeof(char) * (strlen(tmp) + 1));
+	strncpy(pixtypename, tmp, strlen(tmp) + 1);
 
 	/* hasnodatavalue */
 	if (rt_band_get_hasnodata_flag(band)) hasnodatavalue = TRUE;
@@ -5332,7 +5077,11 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	nodatavalue = rt_band_get_nodata(band);
 
 	/* path */
-	bandpath = rt_band_get_ext_path(band);
+	tmp = rt_band_get_ext_path(band);
+	if (tmp) {
+		bandpath = palloc(sizeof(char) * (strlen(tmp) + 1));
+		strncpy(bandpath, tmp, strlen(tmp) + 1);
+	}
 
 	/* isoutdb */
 	isoutdb = bandpath ? TRUE : FALSE;
@@ -5352,72 +5101,30 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		));
 	}
 
-	/*
-	 * generate attribute metadata needed later to produce tuples from raw
-	 * C strings
-	 */
-	attinmeta = TupleDescGetAttInMetadata(tupdesc);
+	BlessTupleDesc(tupdesc);
 
-	/*
-	 * Prepare a values array for building the returned tuple.
-	 * This should be an array of C strings which will
-	 * be processed later by the type input functions.
-	 */
-	values = (char **) palloc(values_length * sizeof(char *));
+	nulls = palloc(sizeof(bool) * values_length);
+	for (i = 0; i < values_length; i++) nulls[i] = FALSE;
 
-	values[0] = (char *) palloc(sizeof(char) * (strlen(pixtypename) + 1));
-	values[1] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-	values[2] = (char *) palloc(sizeof(char) * (MAX_DBL_CHARLEN + 1));
-	values[3] = (char *) palloc(sizeof(char) * (MAX_INT_CHARLEN + 1));
-	if (bandpath)
-		values[4] = (char *) palloc(sizeof(char) * (strlen(bandpath) + 1));
+	values[0] = CStringGetTextDatum(pixtypename);
+	values[1] = BoolGetDatum(hasnodatavalue);
+	values[2] = Float8GetDatum(nodatavalue);
+	values[3] = BoolGetDatum(isoutdb);
+	if (bandpath && strlen(bandpath))
+		values[4] = CStringGetTextDatum(bandpath);
 	else
-		values[4] = NULL;
-
-	snprintf(
-		values[0],
-		sizeof(char) * (strlen(pixtypename) + 1),
-		"%s",
-		pixtypename
-	);
-	snprintf(
-		values[1],
-		sizeof(char) * (MAX_INT_CHARLEN + 1),
-		"%d",
-		hasnodatavalue
-	);
-	snprintf(
-		values[2],
-		sizeof(char) * (MAX_DBL_CHARLEN + 1),
-		"%f",
-		nodatavalue
-	);
-	snprintf(
-		values[3],
-		sizeof(char) * (MAX_INT_CHARLEN + 1),
-		"%d",
-		isoutdb
-	);
-	if (bandpath) {
-		snprintf(
-			values[4],
-			sizeof(char) * (strlen(bandpath) + 1),
-			"%s",
-			bandpath
-		);
-	}
+		nulls[4] = TRUE;
 
 	/* build a tuple */
-	tuple = BuildTupleFromCStrings(attinmeta, values);
+	tuple = heap_form_tuple(tupdesc, values, nulls);
 
 	/* make the tuple into a datum */
 	result = HeapTupleGetDatum(tuple);
 
 	/* clean up */
-	for (i = 0; i < values_length; i++) {
-		if (NULL != values[i]) pfree(values[i]);
-	}
-	pfree(values);
+	pfree(nulls);
+	pfree(pixtypename);
+	if (bandpath) pfree(bandpath);
 
 	PG_RETURN_DATUM(result);
 }

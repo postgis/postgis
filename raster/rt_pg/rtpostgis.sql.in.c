@@ -2051,12 +2051,7 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8, yw floa
         f float8 := 0.0;
         xr numeric := 0.0;
     BEGIN
-        a := st_scalex(rast);
-        d := st_skewy(rast);
-        b := st_skewx(rast);
-        e := st_scaley(rast);
-        c := st_upperleftx(rast);
-        f := st_upperlefty(rast);
+				SELECT scalex, skewx, upperleftx, skewy, scaley, upperlefty INTO a, b, c, d, e, f FROM ST_Metadata(rast);
         IF ( b * d - a * e = 0 ) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
         END IF;
@@ -2086,12 +2081,7 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8)
         f float8 := 0.0;
         xr numeric := 0.0;
     BEGIN
-        a := st_scalex(rast);
-        d := st_skewy(rast);
-        b := st_skewx(rast);
-        e := st_scaley(rast);
-        c := st_upperleftx(rast);
-        f := st_upperlefty(rast);
+ 				SELECT scalex, skewx, upperleftx, skewy, scaley, upperlefty INTO a, b, c, d, e, f FROM ST_Metadata(rast);
         IF ( b * d - a * e = 0 ) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
         END IF;
@@ -2140,12 +2130,7 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, xw float8, yw floa
         f float8 := 0.0;
         yr numeric := 0.0;
     BEGIN
-        a := st_scalex(rast);
-        d := st_skewy(rast);
-        b := st_skewx(rast);
-        e := st_scaley(rast);
-        c := st_upperleftx(rast);
-        f := st_upperlefty(rast);
+ 				SELECT scalex, skewx, upperleftx, skewy, scaley, upperlefty INTO a, b, c, d, e, f FROM ST_Metadata(rast);
         IF ( b * d - a * e = 0 ) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
         END IF;
@@ -2175,12 +2160,7 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, yw float8)
         f float8 := 0.0;
         yr numeric := 0.0;
     BEGIN
-        a := st_scalex(rast);
-        d := st_skewy(rast);
-        b := st_skewx(rast);
-        e := st_scaley(rast);
-        c := st_upperleftx(rast);
-        f := st_upperlefty(rast);
+ 				SELECT scalex, skewx, upperleftx, skewy, scaley, upperlefty INTO a, b, c, d, e, f FROM ST_Metadata(rast);
         IF ( b * d - a * e = 0 ) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
         END IF;
@@ -2227,9 +2207,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int, yr int)
         c float8 := 0.0;
         xw numeric := 0.0;
     BEGIN
-        a := st_scalex(rast);
-        b := st_skewx(rast);
-        c := st_upperleftx(rast);
+				SELECT scalex, skewx, upperleftx INTO a, b, c FROM ST_Metadata(rast);
         xw := (a::numeric * (xr::numeric - 1.0) + b::numeric * (yr::numeric - 1.0) + c::numeric)::numeric;
         RETURN xw;
     END;
@@ -2254,9 +2232,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int)
         c float8 := 0.0;
         xw numeric := 0.0;
     BEGIN
-        a := st_scalex(rast);
-        b := st_skewx(rast);
-        c := st_upperleftx(rast);
+				SELECT scalex, skewx, upperleftx INTO a, b, c FROM ST_Metadata(rast);
         IF ( b != 0 ) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinates on a raster with rotation providing X only. A Y coordinate must also be provided';
         END IF;
@@ -2282,9 +2258,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, xr int, yr int)
         f float8 := 0.0;
         yw numeric := 0.0;
     BEGIN
-        d := st_skewy(rast);
-        e := st_scaley(rast);
-        f := st_upperlefty(rast);
+				SELECT skewy, scaley, upperlefty INTO d, e, f FROM ST_Metadata(rast);
         yw := (d::numeric * (xr::numeric - 1.0) + e::numeric * (yr::numeric - 1.0) + f::numeric)::numeric;
         RETURN yw;
     END;
@@ -2309,9 +2283,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, yr int)
         f float8 := 0.0;
         yw numeric := 0.0;
     BEGIN
-        d := st_skewy(rast);
-        e := st_scaley(rast);
-        f := st_upperlefty(rast);
+				SELECT skewy, scaley, upperlefty INTO d, e, f FROM ST_Metadata(rast);
         IF ( d != 0 ) THEN
             RAISE EXCEPTION 'Attempting to compute raster coordinates on a raster with rotation providing Y only. An X coordinate must also be provided';
         END IF;

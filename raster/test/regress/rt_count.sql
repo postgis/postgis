@@ -91,4 +91,3 @@ SELECT ST_Count('test', 'rast', 1);
 SELECT ST_Count('test', 'rast', FALSE);
 SELECT ST_Count('test', 'rast');
 ROLLBACK;
-
