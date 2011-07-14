@@ -94,9 +94,10 @@ BEGIN
       GROUP BY statefp,location,zip,exact, pref ORDER BY exact desc, pref, zip  **/
   FOR zip_info IN EXECUTE var_sql USING parsed.location, parsed.zip  LOOP
   -- For zip distance metric we consider both the distance of zip based on numeric as well aa levenshtein
-    stmt := 'SELECT DISTINCT ON (sub.predirabrv,sub.name,sub.suftypabrv,sub.sufdirabrv,coalesce(p.name,zip.city,cs.name,co.name),s.stusps,sub.zip)'
+  -- We use the prequalabr (these are like Old, that may or may not appear in front of the street name)
+    stmt := 'SELECT DISTINCT ON (sub.predirabrv,sub.fename,sub.suftypabrv,sub.sufdirabrv,coalesce(p.name,zip.city,cs.name,co.name),s.stusps,sub.zip)'
          || '    sub.predirabrv   as fedirp,'
-         || '    sub.name         as fename,'
+         || '    sub.fename,'
          || '    sub.suftypabrv   as fetype,'
          || '    sub.sufdirabrv   as fedirs,'
          || '    coalesce(p.name,zip.city,cs.name,co.name)::varchar as place,'
@@ -111,10 +112,10 @@ BEGIN
          || '    as sub_rating,'
          || '    sub.exact_address as exact_address'
          || ' FROM ('
-         || '  SELECT tlid, predirabrv, name, suftypabrv, sufdirabrv, fromhn, tohn, side, statefp, zip, rate_attributes($5, a.predirabrv,'
-         || '    $2, a.name, $4,'
+         || '  SELECT tlid, predirabrv, COALESCE(a.prequalabr || '' '','''' ) || a.name As fename, suftypabrv, sufdirabrv, fromhn, tohn, side, statefp, zip, rate_attributes($5, a.predirabrv,'
+         || '    $2,  a.name , $4,'
          || '    a.suftypabrv, $6,'
-         || '    a.sufdirabrv) + '
+         || '    a.sufdirabrv, a.prequalabr) + '
          || '    CASE '
          || '        WHEN $1::integer IS NULL OR b.fromhn IS NULL THEN 20'
          || '        WHEN $1::integer >= least_hn(b.fromhn, b.tohn) '
@@ -133,14 +134,14 @@ BEGIN
          || '    as sub_rating,$1::integer >= least_hn(b.fromhn,b.tohn) '
          || '            AND $1::integer <= greatest_hn(b.fromhn,b.tohn) '
          || '            AND ($1 % 2)::numeric::integer = (to_number(b.fromhn,''99999999'') % 2)'
-         || '    as exact_address'
+         || '    as exact_address, a.name, a.prequalabr'
          || '  FROM featnames a join addr b using (tlid,statefp)'
          || '  WHERE'
          || '        statefp = ' || quote_literal(zip_info.statefp) || ''
          || coalesce('    AND b.zip IN (''' || array_to_string(zip_info.zip,''',''') || ''') ','')
          || CASE WHEN zip_info.exact
-                 THEN '    AND (lower($2) = lower(a.name) OR  numeric_streets_equal($2, a.name) ) '
-                 ELSE '    AND (soundex($2) = soundex(a.name) OR  numeric_streets_equal($2, a.name) ) '
+                 THEN '    AND ( lower($2) = lower(a.name) OR  ( a.prequalabr > '''' AND trim(lower($2), lower(a.prequalabr) || '' '') = lower(a.name) ) OR numeric_streets_equal($2, a.name) ) '
+                 ELSE '    AND ( (soundex($2) = soundex(a.name) ) OR ( (length($2) > 10 or a.prequal IS NOT NULL) AND lower(a.fullname) LIKE lower($2) || ''%'' ) OR  numeric_streets_equal($2, a.name) ) '
             END
          || '  ORDER BY 11'
          || '  LIMIT 20'
@@ -160,6 +161,9 @@ BEGIN
          ;
     IF var_debug THEN
         RAISE NOTICE '%', stmt;
+        RAISE NOTICE 'PREPARE query_base_geo(integer, varchar,varchar,varchar,varchar,varchar,varchar,geometry) As %', stmt;
+        RAISE NOTICE 'EXECUTE query_base_geo(%,%,%,%,%,%,%,%); ', parsed.address,quote_nullable(parsed.streetName), quote_nullable(parsed.location), quote_nullable(parsed.streetTypeAbbrev), quote_nullable(parsed.preDirAbbrev), quote_nullable(parsed.postDirAbbrev), quote_nullable(parsed.zip), quote_nullable(var_restrict_geom::text);
+        RAISE NOTICE 'DEALLOCATE query_base_geo;';
     END IF;
     -- If we got an exact street match then when we hit the non-exact
     -- set of tests, just drop out.
@@ -193,6 +197,11 @@ BEGIN
       GEOMOUT := results.address_geom;
       RATING := results.sub_rating;
       var_n := var_n + 1;
+      
+      -- If our ratings go above 99 exit because its a really bad match
+      IF RATING > 99 THEN
+        RETURN;
+      END IF;
 
       RETURN NEXT;
 

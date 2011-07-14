@@ -68,4 +68,12 @@ SELECT '#1112b' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(S
 SELECT '#1112c' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8401 35W West, Blaine, MN 55449'::text As target) As f) As foo; 
 SELECT '#1112d' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8401 West 35W, Blaine, MN 55449'::text As target) As f) As foo; 
 SELECT '#1112e' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8401 W 35W, Blaine, MN 55449'::text As target) As f) As foo; 
+
+-- working with prequalabrv such as Old .. something or other
+SELECT '#1113a' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8040 OLD CEDAR AVE S, BLOOMINGTON, MN 55425'::text As target) As f) As foo; 
+SELECT '#1113b' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8040 CEDAR AVE S, BLOOMINGTON, MN 55425'::text As target) As f) As foo;
+SELECT '#1113c' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '17405 Old Rockford Rd, Plymouth, MN 55446'::text As target) As f) As foo;
+SELECT '#1113d' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '17405 Rockford Rd, Plymouth, MN 55446'::text As target) As f) As foo;
+SELECT '#1113e' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '198 OLD CONSTANCE BLVD, ANDOVER, MN 55304'::text As target) As f) As foo;
+SELECT '#1113f' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '198 CONSTANCE BLVD, ANDOVER, MN 55304'::text As target) As f) As foo;
 \timing

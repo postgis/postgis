@@ -7,7 +7,7 @@
 -- changed: 2010-10-18 Regina Obe - all references to verbose to var_verbose since causes compile errors in 9.0
 -- changed: 2011-06-25 revise to use real named args and fix direction rating typo
 CREATE OR REPLACE FUNCTION rate_attributes(dirpA VARCHAR, dirpB VARCHAR, streetNameA VARCHAR, streetNameB VARCHAR,
-    streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR,  locationA VARCHAR, locationB VARCHAR) RETURNS INTEGER
+    streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR,  locationA VARCHAR, locationB VARCHAR, prequalabr VARCHAR) RETURNS INTEGER
 AS $_$
 DECLARE
 --$Id$
@@ -23,7 +23,7 @@ BEGIN
     END IF;
     RETURN NULL;
   END IF;
-  result := result + rate_attributes($1, $2, $3, $4, $5, $6, $7, $8);
+  result := result + rate_attributes($1, $2, streetNameA, streetNameB, $5, $6, $7, $8,prequalabr);
   RETURN result;
 END;
 $_$ LANGUAGE plpgsql IMMUTABLE;
@@ -34,22 +34,30 @@ $_$ LANGUAGE plpgsql IMMUTABLE;
 -- required.  If any others are null (either A or B) they are treated as
 -- empty strings.
 CREATE OR REPLACE FUNCTION rate_attributes(dirpA VARCHAR, dirpB VARCHAR, streetNameA VARCHAR, streetNameB VARCHAR,
-    streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR) RETURNS INTEGER
+    streetTypeA VARCHAR, streetTypeB VARCHAR, dirsA VARCHAR, dirsB VARCHAR, prequalabr VARCHAR) RETURNS INTEGER
 AS $_$
 DECLARE
   result INTEGER := 0;
   directionWeight INTEGER := 2;
   nameWeight INTEGER := 10;
   typeWeight INTEGER := 5;
-  var_verbose BOOLEAN := FALSE;
+  var_verbose BOOLEAN := false;
 BEGIN
-  result := result + levenshtein_ignore_case(cull_null($1), cull_null($2)) *
-      directionWeight;
+  result := result + levenshtein_ignore_case(cull_null($1), cull_null($2)) * directionWeight;
+  IF var_verbose THEN
+    RAISE NOTICE 'streetNameA: %, streetNameB: %', streetNameA, streetNameB;
+  END IF;
   IF streetNameA IS NOT NULL AND streetNameB IS NOT NULL THEN
     -- We want to treat numeric streets that have numerics as equal 
     -- and not penalize if they are spelled different e.g. have ND instead of TH
     IF NOT numeric_streets_equal(streetNameA, streetNameB) THEN
-        result := result + levenshtein_ignore_case($3, $4) * nameWeight;
+        IF prequalabr IS NOT NULL THEN
+            -- If the reference address (streetNameB) has a prequalabr streetNameA (prequalabr) - note: streetNameB usually comes thru without prequalabr
+            -- and the input street (streetNameA) is lacking the prequal -- only penalize a little
+            result := (result + levenshtein_ignore_case( trim( trim( lower(streetNameA),lower(prequalabr) ) ), trim( trim( lower(streetNameB),lower(prequalabr) ) ) )*nameWeight*0.75 + levenshtein_ignore_case(trim(streetNameA),prequalabr || ' ' ||  streetNameB) * nameWeight*0.25)::integer;
+        ELSE
+            result := result + levenshtein_ignore_case(streetNameA, streetNameB) * nameWeight;
+        END IF;
     END IF;
   ELSE
     IF var_verbose THEN

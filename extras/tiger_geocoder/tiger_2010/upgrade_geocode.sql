@@ -57,6 +57,8 @@ CREATE TABLE zcta5
 ALTER TABLE street_type_lookup ALTER COLUMN abbrev  TYPE varchar(50);
 ALTER TABLE street_type_lookup ALTER COLUMN name  TYPE varchar(50);
 ALTER TABLE street_type_lookup ADD COLUMN is_hw boolean NOT NULL DEFAULT false;
+DROP FUNCTION IF EXISTS rate_attributes(character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying);
+DROP FUNCTION IF EXISTS rate_attributes(character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying);
 
 BEGIN;
 -- Type used to pass around a normalized address between functions
@@ -192,3 +194,7 @@ SELECT name, abbrev, false
 -- Reverse Geocode API, called by user
 \i geocode/reverse_geocode.sql
 COMMIT;
+-- install missing indexes
+\echo 'Installing missing indexes - this might take a while so be patient ..'
+SELECT install_missing_indexes();
+\echo 'Missing index Install completed'
