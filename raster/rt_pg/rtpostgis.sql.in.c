@@ -171,8 +171,22 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx 
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
     RETURNS raster
-    AS 'select st_makeemptyraster(st_width($1), st_height($1), st_upperleftx($1), st_upperlefty($1), st_scalex($1), st_scaley($1), st_skewx($1), st_skewy($1), st_srid($1))'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    AS $$
+		DECLARE
+			w int;
+			h int;
+			ul_x double precision;
+			ul_y double precision;
+			scale_x double precision;
+			scale_y double precision;
+			skew_x double precision;
+			skew_y double precision;
+			sr_id int;
+		BEGIN
+			SELECT width, height, upperleftx, upperlefty, scalex, scaley, skewx, skewy, srid INTO w, h, ul_x, ul_y, scale_x, scale_y, skew_x, skew_y, sr_id FROM ST_Metadata(rast);
+			RETURN st_makeemptyraster(w, h, ul_x, ul_y, scale_x, scale_y, skew_x, skew_y, sr_id);
+		END;
+    $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 -- This function can not be STRICT, because nodataval can be NULL indicating that no nodata value should be set
 CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text, initialvalue float8, nodataval float8)
@@ -1718,33 +1732,42 @@ CREATE OR REPLACE FUNCTION st_georeference(rast raster, format text)
     RETURNS text AS
     $$
     DECLARE
-        x numeric;
+				scale_x numeric;
+				scale_y numeric;
+				skew_x numeric;
+				skew_y numeric;
+				ul_x numeric;
+				ul_y numeric;
+
         result text;
     BEGIN
-            x := st_scalex(rast)::numeric;
-            result := trunc(x, 10) || E'\n';
+			SELECT scalex::numeric, scaley::numeric, skewx::numeric, skewy::numeric, upperleftx::numeric, upperlefty::numeric
+				INTO scale_x, scale_y, skew_x, skew_y, ul_x, ul_y FROM ST_Metadata(rast);
 
-            x := st_skewy(rast)::numeric;
-            result := result || trunc(x, 10) || E'\n';
+						-- scale x
+            result := trunc(scale_x, 10) || E'\n';
 
-            x := st_skewx(rast)::numeric;
-            result := result || trunc(x, 10) || E'\n';
+						-- skew y
+            result := result || trunc(skew_y, 10) || E'\n';
 
-            x := st_scaley(rast)::numeric;
-            result := result || trunc(x, 10) || E'\n';
+						-- skew x
+            result := result || trunc(skew_x, 10) || E'\n';
+
+						-- scale y 
+            result := result || trunc(scale_y, 10) || E'\n';
 
         IF format = 'ESRI' THEN
-            x := (st_upperleftx(rast) + st_scalex(rast)*0.5)::numeric;
-            result := result || trunc(x, 10) || E'\n';
+						-- upper left x
+            result := result || trunc((ul_x + scale_x * 0.5), 10) || E'\n';
 
-            x := (st_upperlefty(rast) + st_scaley(rast)*0.5)::numeric;
-            result = result || trunc(x, 10) || E'\n';
+						-- upper left y 
+            result = result || trunc((ul_y + scale_y * 0.5), 10) || E'\n';
         ELSE -- IF format = 'GDAL' THEN
-            x := st_upperleftx(rast)::numeric;
-            result := result || trunc(x, 10) || E'\n';
+						-- upper left x
+            result := result || trunc(ul_x, 10) || E'\n';
 
-            x := st_upperlefty(rast)::numeric;
-            result := result || trunc(x, 10) || E'\n';
+						-- upper left y
+            result := result || trunc(ul_y, 10) || E'\n';
         END IF;
 
         RETURN result;
@@ -1981,12 +2004,15 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, band integer, x intege
     RETURNS geometry AS
     $$
     DECLARE
-        w integer;
-        h integer;
-        scalex float8;
-        scaley float8;
-        skewx float8;
-        skewy float8;
+        w int;
+        h int;
+        scale_x float8;
+        scale_y float8;
+        skew_x float8;
+        skew_y float8;
+        ul_x float8;
+        ul_y float8;
+				sr_id int;
         x1 float8;
         y1 float8;
         x2 float8;
@@ -1996,18 +2022,15 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, band integer, x intege
         x4 float8;
         y4 float8;
     BEGIN
-        scalex := st_scalex(rast);
-        skewx := st_skewy(rast);
-        skewy := st_skewx(rast);
-        scaley := st_scaley(rast);
-        x1 := scalex * (x - 1) + skewx * (y - 1) + st_upperleftx(rast);
-        y1 := scaley * (y - 1) + skewy * (x - 1) + st_upperlefty(rast);
-        x2 := x1 + scalex;
-        y2 := y1 + skewy;
-        x3 := x1 + scalex + skewx;
-        y3 := y1 + scaley + skewy;
-        x4 := x1 + skewx;
-        y4 := y1 + scaley;
+				SELECT scalex, scaley, skewx, skewy, upperleftx, upperlefty, srid INTO scale_x, scale_y, skew_x, skew_y, ul_x, ul_y, sr_id FROM ST_Metadata(rast);
+        x1 := scale_x * (x - 1) + skew_x * (y - 1) + ul_x;
+        y1 := scale_y * (y - 1) + skew_y * (x - 1) + ul_y;
+        x2 := x1 + scale_x;
+        y2 := y1 + skew_y;
+        x3 := x1 + scale_x + skew_x;
+        y3 := y1 + scale_y + skew_y;
+        x4 := x1 + skew_x;
+        y4 := y1 + scale_y;
         RETURN st_setsrid(st_makepolygon(st_makeline(ARRAY[st_makepoint(x1, y1),
                                                            st_makepoint(x2, y2),
                                                            st_makepoint(x3, y3),
@@ -2015,7 +2038,7 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, band integer, x intege
                                                            st_makepoint(x1, y1)]
                                                     )
                                         ),
-                          st_srid(rast)
+                          sr_id
                          );
     END;
     $$
@@ -2501,6 +2524,8 @@ CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band int
         bintersect boolean := FALSE;
         gtype text;
         scale float8;
+				w int;
+				h int;
     BEGIN
 
         -- Get the intersection between with the geometry.
@@ -2521,7 +2546,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band int
 
         -- We create a minimalistic buffer around the intersection in order to scan every pixels
         -- that would touch the edge or intersect with the geometry
-        scale := st_scalex(rast) + st_skewy(rast);
+        SELECT (scalex * skewy), width, height INTO scale, w, h FROM ST_Metadata(rast);
         geomintersect := st_buffer(geomintersect, scale / 1000000);
 
 --RAISE NOTICE 'geomintersect2=%', astext(geomintersect);
@@ -2556,14 +2581,14 @@ CREATE OR REPLACE FUNCTION _st_intersects(geomin geometry, rast raster, band int
         -- Make sure the range is not lower than 1.
         -- This can happen when world coordinate are exactly on the left border
         -- of the raster and that they do not span on more than one pixel.
-        x1 := int4smaller(int4larger(x1, 1), st_width(rast));
-        y1 := int4smaller(int4larger(y1, 1), st_height(rast));
+        x1 := int4smaller(int4larger(x1, 1), w);
+        y1 := int4smaller(int4larger(y1, 1), h);
 
         -- Also make sure the range does not exceed the width and height of the raster.
         -- This can happen when world coordinate are exactly on the lower right border
         -- of the raster.
-        x2 := int4smaller(x2, st_width(rast));
-        y2 := int4smaller(y2, st_height(rast));
+        x2 := int4smaller(x2, w);
+        y2 := int4smaller(y2, h);
 
 --RAISE NOTICE 'x1=%, y1=%, x2=%, y2=%', x1, y1, x2, y2;
 

@@ -763,7 +763,6 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
     rt_raster raster = NULL;
     FuncCallContext *funcctx;
     TupleDesc tupdesc;
-    AttInMetadata *attinmeta;
     int nband;
     rt_geomval geomval;
     rt_geomval geomval2;
@@ -771,7 +770,6 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
     int max_calls;
     int nElements;
     MemoryContext oldcontext;
-
 
     /* stuff done only on the first call of the function */
     if (SRF_IS_FIRSTCALL())
@@ -831,12 +829,8 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
                      errmsg("function returning record called in context "
                             "that cannot accept type record")));
 
-        /*
-         * generate attribute metadata needed later to produce tuples from raw
-         * C strings
-         */
-        attinmeta = TupleDescGetAttInMetadata(tupdesc);
-        funcctx->attinmeta = attinmeta;
+        BlessTupleDesc(tupdesc);
+        funcctx->tuple_desc = tupdesc;
 
         MemoryContextSwitchTo(oldcontext);
     }
@@ -846,38 +840,30 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
 
     call_cntr = funcctx->call_cntr;
     max_calls = funcctx->max_calls;
-    attinmeta = funcctx->attinmeta;
+    tupdesc = funcctx->tuple_desc;
     geomval2 = funcctx->user_fctx;
 
     if (call_cntr < max_calls)    /* do when there is more left to send */
     {
-        char       **values;
+        int i;
+        bool *nulls = NULL;
+        int values_length = 3;
+        Datum values[values_length];
         HeapTuple    tuple;
         Datum        result;
 
         POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
-        /*
-         * Prepare a values array for building the returned tuple.
-         * This should be an array of C strings which will
-         * be processed later by the type input functions.
-         */
-        values = (char **) palloc(3 * sizeof(char *));
+        nulls = palloc(sizeof(bool) * values_length);
+        for (i = 0; i < values_length; i++) nulls[i] = FALSE;
 
-        values[0] = (char *) palloc(
-                (strlen(geomval2[call_cntr].geom) + 1) * sizeof(char));
-        values[1] = (char *) palloc(18 * sizeof(char));
-        values[2] = (char *) palloc(16 * sizeof(char));
+        values[0] = CStringGetTextDatum(geomval2[call_cntr].geom);
+        values[1] = Float8GetDatum(geomval2[call_cntr].val);
+        values[2] = Int32GetDatum(geomval2[call_cntr].srid);
 
-        snprintf(values[0],
-            (strlen(geomval2[call_cntr].geom) + 1) * sizeof(char), "%s",
-            geomval2[call_cntr].geom);
-        snprintf(values[1], 18 * sizeof(char), "%f", geomval2[call_cntr].val);
-        snprintf(values[2], 16 * sizeof(char), "%d", geomval2[call_cntr].srid);
-
-        POSTGIS_RT_DEBUGF(4, "Result %d, Polygon %s", call_cntr, values[0]);
-        POSTGIS_RT_DEBUGF(4, "Result %d, val %s", call_cntr, values[1]);
-        POSTGIS_RT_DEBUGF(4, "Result %d, val %s", call_cntr, values[2]);
+        POSTGIS_RT_DEBUGF(4, "Result %d, Polygon %s", call_cntr, geomval2[call_cntr].geom);
+        POSTGIS_RT_DEBUGF(4, "Result %d, val %s", call_cntr, geomval2[call_cntr].val);
+        POSTGIS_RT_DEBUGF(4, "Result %d, val %s", call_cntr, geomval2[call_cntr].srid);
 
         /**
          * Free resources.
@@ -885,16 +871,13 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         pfree(geomval2[call_cntr].geom);
 
         /* build a tuple */
-        tuple = BuildTupleFromCStrings(attinmeta, values);
+				tuple = heap_form_tuple(tupdesc, values, nulls);
 
         /* make the tuple into a datum */
         result = HeapTupleGetDatum(tuple);
 
         /* clean up (this is not really necessary) */
-        pfree(values[0]);
-        pfree(values[1]);
-        pfree(values[2]);
-        pfree(values);
+        pfree(nulls);
 
 
         SRF_RETURN_NEXT(funcctx, result);
