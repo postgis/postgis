@@ -230,6 +230,54 @@ SELECT * FROM addresses_to_geocode WHERE rating is not null;
 	  </refsection>
 	</refentry>
 	
+	<refentry id="Install_Missing_Indexes">
+	  <refnamediv>
+		<refname>Install_Missing_Indexes</refname>
+
+		<refpurpose>Finds all tables with key columns used in geocoder joins and fitler conditions that are missing used indexes on those columns and will add them.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>boolean <function>Install_Missing_Indexes</function></funcdef>
+			<paramdef />
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Finds all tables in <varname>tiger</varname> and <varname>tiger_data</varname> schemas with key columns used in geocoder joins that are missing indexes on those columns and will output the SQL DDL to
+		    define the index for those tables. This is a helper function that adds new indexes needed to make queries faster that may have been missing during the load process.
+		   This function is a companion to <xref linkend="Missing_Indexes_Generate_Script" /> that in addition to generating the create index script, also executes it.
+		   It is called as part of the <filename>update_geocode.sql</filename> upgrade script.</para>
+	
+		
+		<para>Availability: 2.0.0</para>
+
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT install_missing_indexes();
+		 install_missing_indexes
+-------------------------
+ t
+		</programlisting>
+	
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Loader_Generate_Script"/>, <xref linkend="Missing_Indexes_Generate_Script"/></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="Loader_Generate_Script">
 	  <refnamediv>
 		<refname>Loader_Generate_Script</refname>
@@ -372,7 +420,7 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="Loader_Generate_Script"/></para>
+		<para><xref linkend="Loader_Generate_Script"/>, <xref linkend="Install_Missing_Indexes" /></para>
 	  </refsection>
 	</refentry>
 	
