@@ -107,6 +107,7 @@ SELECT name, abbrev
         ('HIWY', 'Hwy'),
         ('HWAY', 'Hwy'),
         ('HWY', 'Hwy'),
+        ('RT', 'Rte'),
         ('ROUTE', 'Rte'),
         ('RTE', 'Rte'),
         ('STATE HWY', 'State Hwy'),

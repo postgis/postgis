@@ -46,12 +46,15 @@ SELECT '#1076b' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(S
 SELECT '#1076c' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,1) As g, target FROM (SELECT '13800 County Hwy 9, Andover, MN 55304'::text As target) AS f) As foo; 
 SELECT '#1076d' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,1) As g, target FROM (SELECT '13800 9, Andover, MN 55304'::text As target) AS f) As foo; 
 SELECT '#1076e' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,4) As g, target FROM (SELECT '3900 Route 6, Eastham, Massachusetts 02642'::text As target) AS f) As foo; 
+
 -- country road that starts with a letter
 SELECT '#1076f' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,3) As g, target FROM (SELECT '1940 County Road C W, Roseville, MN 55113'::text As target) AS f) As foo; 
 
-
 -- ad road that in some sections no street range recorded --
 SELECT '#1076g' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '15709 Rockford Road, Plymouth, MN 55447'::text As target) As f) AS foo;
+
+-- testing RT common abbreviation for route --
+SELECT '#1076h' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,1) As g, target FROM (SELECT '300 Rt 3A, Hingham, MA'::text As target) As f) As foo;
 
 -- alternate spellings
 SELECT '#1074a' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '8525 COTTAGE WOOD TERR, Blaine, MN 55434'::text As target) As f) AS foo;
