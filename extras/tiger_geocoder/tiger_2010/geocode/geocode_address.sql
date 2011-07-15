@@ -95,6 +95,7 @@ BEGIN
   FOR zip_info IN EXECUTE var_sql USING parsed.location, parsed.zip  LOOP
   -- For zip distance metric we consider both the distance of zip based on numeric as well aa levenshtein
   -- We use the prequalabr (these are like Old, that may or may not appear in front of the street name)
+  -- We also add in pretypabr to feature name since in normalize we treat these as streetypes  and highways usually have the type here
     stmt := 'SELECT DISTINCT ON (sub.predirabrv,sub.fename,sub.suftypabrv,sub.sufdirabrv,coalesce(p.name,zip.city,cs.name,co.name),s.stusps,sub.zip)'
          || '    sub.predirabrv   as fedirp,'
          || '    sub.fename,'
@@ -110,11 +111,12 @@ BEGIN
             ELSE '3' END::text 
          || ' + coalesce(least(levenshtein_ignore_case($3, coalesce(p.name,zip.city,cs.name,co.name)), levenshtein_ignore_case($3, coalesce(cs.name,co.name))),5)'
          || '    as sub_rating,'
-         || '    sub.exact_address as exact_address'
+         || '    sub.exact_address as exact_address '
          || ' FROM ('
-         || '  SELECT tlid, predirabrv, COALESCE(a.prequalabr || '' '','''' ) || a.name As fename, suftypabrv, sufdirabrv, fromhn, tohn, side, statefp, zip, rate_attributes($5, a.predirabrv,'
+         || '  SELECT tlid, predirabrv, COALESCE(a.pretypabrv || '' '', '''') || COALESCE(a.prequalabr || '' '','''' ) || a.name As fename, suftypabrv, sufdirabrv, fromhn, tohn, 
+                    side, statefp, zip, rate_attributes($5, a.predirabrv,'
          || '    $2,  a.name , $4,'
-         || '    a.suftypabrv, $6,'
+         || '    a.suftypabrv , $6,'
          || '    a.sufdirabrv, a.prequalabr) + '
          || '    CASE '
          || '        WHEN $1::integer IS NULL OR b.fromhn IS NULL THEN 20'
@@ -134,14 +136,14 @@ BEGIN
          || '    as sub_rating,$1::integer >= least_hn(b.fromhn,b.tohn) '
          || '            AND $1::integer <= greatest_hn(b.fromhn,b.tohn) '
          || '            AND ($1 % 2)::numeric::integer = (to_number(b.fromhn,''99999999'') % 2)'
-         || '    as exact_address, a.name, a.prequalabr'
+         || '    as exact_address, a.name, a.prequalabr '
          || '  FROM featnames a join addr b using (tlid,statefp)'
          || '  WHERE'
          || '        statefp = ' || quote_literal(zip_info.statefp) || ''
          || coalesce('    AND b.zip IN (''' || array_to_string(zip_info.zip,''',''') || ''') ','')
          || CASE WHEN zip_info.exact
                  THEN '    AND ( lower($2) = lower(a.name) OR  ( a.prequalabr > '''' AND trim(lower($2), lower(a.prequalabr) || '' '') = lower(a.name) ) OR numeric_streets_equal($2, a.name) ) '
-                 ELSE '    AND ( (soundex($2) = soundex(a.name) ) OR ( (length($2) > 10 or a.prequal IS NOT NULL) AND lower(a.fullname) LIKE lower($2) || ''%'' ) OR  numeric_streets_equal($2, a.name) ) '
+                 ELSE '    AND ( soundex($2) = soundex(a.name)  OR ( (length($2) > 15 or (length($2) > 7 AND a.prequalabr > '''') ) AND lower(a.fullname) LIKE lower(substring($2,1,15)) || ''%'' ) OR  numeric_streets_equal($2, a.name) ) '
             END
          || '  ORDER BY 11'
          || '  LIMIT 20'

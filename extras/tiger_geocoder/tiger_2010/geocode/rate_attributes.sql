@@ -58,6 +58,12 @@ BEGIN
         ELSE
             result := result + levenshtein_ignore_case(streetNameA, streetNameB) * nameWeight;
         END IF;
+    ELSE 
+    -- Penalize for numeric streets if one is completely numeric and the other is not
+    -- This is to minimize on highways like 3A being matched with numbered streets since streets are usually number followed by 2 characters e.g nth ave and highways are just number with optional letter for name
+        IF  (streetNameB ~ E'[a-zA-Z]{2,10}' AND NOT (streetNameA ~ E'[a-zA-Z]{2,10}') ) OR (streetNameA ~ E'[a-zA-Z]{2,10}' AND NOT (streetNameB ~ E'[a-zA-Z]{2,10}') ) THEN
+            result := result + levenshtein_ignore_case(streetNameA, streetNameB) * nameWeight;
+        END IF;
     END IF;
   ELSE
     IF var_verbose THEN

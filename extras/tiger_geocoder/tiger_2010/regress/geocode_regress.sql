@@ -53,8 +53,8 @@ SELECT '#1076f' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(S
 -- ad road that in some sections no street range recorded --
 SELECT '#1076g' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '15709 Rockford Road, Plymouth, MN 55447'::text As target) As f) AS foo;
 
--- testing RT common abbreviation for route --
-SELECT '#1076h' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,1) As g, target FROM (SELECT '300 Rt 3A, Hingham, MA'::text As target) As f) As foo;
+-- testing RT common abbreviation for route, ensure asking for 1 gives most probable  --
+SELECT '#1076h' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,3) As g, target FROM (SELECT '300 Rt 3A, Hingham, MA'::text As target) As f) As foo;
 
 -- alternate spellings
 SELECT '#1074a' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '8525 COTTAGE WOOD TERR, Blaine, MN 55434'::text As target) As f) AS foo;
