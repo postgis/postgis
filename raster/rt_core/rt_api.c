@@ -5231,7 +5231,7 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
  * Return formatted GDAL raster from raster
  *
  * @param raster : the raster to convert
- * @param srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param srs : the raster's coordinate system in OGC WKT
  * @param format : format to convert to. GDAL driver short name
  * @param options : list of format creation options. array of strings
  * @param gdalsize : will be set to the size of returned bytea
@@ -5422,7 +5422,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count) {
  * Return GDAL dataset using GDAL MEM driver from raster
  *
  * @param raster : raster to convert to GDAL MEM
- * @param srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param srs : the raster's coordinate system in OGC WKT
  * @param bandNums : array of band numbers to extract from raster
  *                   and include in the GDAL dataset (0 based)
  * @param count : number of elements in bandNums
@@ -5897,7 +5897,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
  * Return a warped raster using GDAL Warp API
  *
  * @param raster : raster to transform
- * @param src_srs : the raster's coordinate system in OGC WKT or PROJ.4
+ * @param src_srs : the raster's coordinate system in OGC WKT
  * @param dst_srs : the warped raster's coordinate system
  * @param scale_x : the pixel width of the warped raster
  * @param scale_y : the pixel height of the warped raster
