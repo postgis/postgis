@@ -80,7 +80,11 @@ CREATE TYPE norm_addy AS (
 -- prefix and suffix street names for numbered highways
 CREATE TEMPORARY TABLE temp_types AS
 SELECT name, abbrev
-    FROM (VALUES 
+    FROM  ( VALUES
+        ('CAM', 'Cam'),
+        ('CAM.', 'Cam'),
+        ('CAMINO', 'Cam'),
+        ('CO HWY', 'Co Hwy'),
         ('COUNTY HWY', 'Co Hwy'),
         ('COUNTY HIGHWAY', 'Co Hwy'),
         ('COUNTY HIGH WAY', 'Co Hwy'),
@@ -90,6 +94,12 @@ SELECT name, abbrev
         ('CO RTE', 'Co Rte'),
         ('COUNTY ROUTE', 'Co Rte'),
         ('CO ST AID HWY', 'Co St Aid Hwy'),
+        ('EXP', 'Expy'),
+        ('EXPR', 'Expy'),
+        ('EXPRESS', 'Expy'),
+        ('EXPRESSWAY', 'Expy'),
+        ('EXPW', 'Expy'),
+        ('EXPY', 'Expy'),
         ('FARM RD', 'Farm Rd'),
         ('FIRE RD', 'Fire Rd'),
         ('FOREST RD', 'Forest Rd'),
@@ -107,9 +117,13 @@ SELECT name, abbrev
         ('HIWY', 'Hwy'),
         ('HWAY', 'Hwy'),
         ('HWY', 'Hwy'),
-        ('RT', 'Rte'),
+        ('I', 'I-'),
+        ('I-', 'I-'),
+        ('INTERSTATE', 'I-'),
+        ('LOOP', 'Loop'),
         ('ROUTE', 'Rte'),
         ('RTE', 'Rte'),
+        ('RT', 'Rte'),
         ('STATE HWY', 'State Hwy'),
         ('STATE HIGHWAY', 'State Hwy'),
         ('STATE HIGH WAY', 'State Hwy'),

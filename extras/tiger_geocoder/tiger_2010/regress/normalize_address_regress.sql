@@ -73,4 +73,16 @@ SELECT '#1112c' As ticket, * FROM normalize_address('8401 35W West, Blaine, MN 5
 SELECT '#1112d' As ticket, * FROM normalize_address('8401 West 35W, Blaine, MN 55449');
 SELECT '#1112e' As ticket, * FROM normalize_address('8401 W 35W, Blaine, MN 55449');
 
+-- Testing pretty print of highway addresses
+-- These tests excerpted from Brian Hamlin's CASS failures
+-- in #1077
+SELECT '#1125a' As ticket, pprint_addy(normalize_address('19596 COUNTY ROAD 480, COLCORD, OK 74338'));
+SELECT '#1125b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('4345 353 Rte, SALAMANCA, NY 14779') AS addy;
+SELECT '#1125c' As ticket, pprint_addy(addy), addy.* FROM normalize_address('19799 STATE ROUTE O, COSBY, MO 64436') AS addy;
+
+-- some more to test interstate permutations
+SELECT '#1125d' As ticket, pprint_addy(addy), addy.* FROM normalize_address('Interstate 90,Boston, MA') As addy;
+-- this one is wrong (because the lack of space trips it up) but will fix later
+SELECT '#1125e' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I-90,Boston, MA') As addy;
+SELECT '#1125f' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I 90,Boston, MA') As addy;
 \timing

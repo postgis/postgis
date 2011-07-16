@@ -284,12 +284,12 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('EST', 'Est');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ESTATE', 'Est');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ESTATES', 'Ests');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('ESTS', 'Ests');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXP', 'Expy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPR', 'Expy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPRESS', 'Expy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPRESSWAY', 'Expy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPW', 'Expy');
-INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPY', 'Expy');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXP', 'Expy');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPR', 'Expy');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPRESS', 'Expy');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPRESSWAY', 'Expy');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPW', 'Expy');
+--INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXPY', 'Expy');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXT', 'Ext');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXTENSION', 'Ext');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('EXTN', 'Ext');
@@ -702,11 +702,16 @@ INSERT INTO street_type_lookup (name, abbrev) VALUES ('UPAS', 'Upas');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('UNS', 'Uns');
 INSERT INTO street_type_lookup (name, abbrev) VALUES ('WL', 'Wl');
 
--- prefix and suffix street names for highways and roads 
+-- prefix and suffix street names for highways and foreign named roads 
+-- where street type is at front of streetname instead of after
 -- these usually have numbers for street names and often have spaces in type
 INSERT INTO street_type_lookup (name, abbrev, is_hw) 
 SELECT name, abbrev, true
-    FROM (VALUES 
+    FROM (VALUES
+        ('CAM', 'Cam'),
+        ('CAM.', 'Cam'),
+        ('CAMINO', 'Cam'),
+        ('CO HWY', 'Co Hwy'),
         ('COUNTY HWY', 'Co Hwy'),
         ('COUNTY HIGHWAY', 'Co Hwy'),
         ('COUNTY HIGH WAY', 'Co Hwy'),
@@ -716,6 +721,12 @@ SELECT name, abbrev, true
         ('CO RTE', 'Co Rte'),
         ('COUNTY ROUTE', 'Co Rte'),
         ('CO ST AID HWY', 'Co St Aid Hwy'),
+        ('EXP', 'Expy'),
+        ('EXPR', 'Expy'),
+        ('EXPRESS', 'Expy'),
+        ('EXPRESSWAY', 'Expy'),
+        ('EXPW', 'Expy'),
+        ('EXPY', 'Expy'),
         ('FARM RD', 'Farm Rd'),
         ('FIRE RD', 'Fire Rd'),
         ('FOREST RD', 'Forest Rd'),
@@ -733,6 +744,14 @@ SELECT name, abbrev, true
         ('HIWY', 'Hwy'),
         ('HWAY', 'Hwy'),
         ('HWY', 'Hwy'),
+        ('I', 'I-'),
+        ('I-', 'I-'),
+        ('INTERSTATE', 'I-'),
+        ('INTERSTATE ROUTE', 'I-'),
+        ('INTERSTATE RTE', 'I-'),
+        ('INTERSTATE RTE.', 'I-'),
+        ('INTERSTATE RT', 'I-'),
+        ('LOOP', 'Loop'),
         ('ROUTE', 'Rte'),
         ('RTE', 'Rte'),
         ('RT', 'Rte'),
