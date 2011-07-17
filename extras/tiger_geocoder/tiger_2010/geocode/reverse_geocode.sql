@@ -90,38 +90,33 @@ BEGIN
 	    WITH ref AS (
 	        SELECT ' || quote_literal(var_pt::text) || '::geometry As ref_geom ) , 
 			f AS 
-			( SELECT * FROM faces CROSS JOIN ref
+			( SELECT faces.* FROM faces CROSS JOIN ref
 			WHERE statefp = ' || quote_literal(var_state) || ' AND countyfp = ' || quote_literal(var_countyfp) || ' 
 				AND ST_Intersects(faces.the_geom, ref_geom)
 				    ),
 			e AS 
-			( SELECT edges.* , CASE WHEN edges.tfidr = f.tfid THEN ''R'' WHEN edges.tfidl = f.tfid THEN ''L'' ELSE NULL END::varchar As eside
+			( SELECT edges.* , CASE WHEN edges.tfidr = f.tfid THEN ''R'' WHEN edges.tfidl = f.tfid THEN ''L'' ELSE NULL END::varchar As eside,
+                    CASE WHEN edges.tfidr = f.tfid THEN rfromadd ELSE lfromadd END As fromhn, CASE WHEN edges.tfidr = f.tfid THEN rtoadd ELSE ltoadd END As tohn,
+                    CASE WHEN edges.tfidr = f.tfid THEN zipr ELSE zipl END As zip , 
+                    ST_ClosestPoint(edges.the_geom,ref_geom) As center_pt, ref_geom
 				FROM edges INNER JOIN f ON (f.statefp = edges.statefp AND (edges.tfidr = f.tfid OR edges.tfidl = f.tfid)) 
 				    CROSS JOIN ref
 			WHERE edges.statefp = ' || quote_literal(var_state) || ' AND edges.countyfp = ' || quote_literal(var_countyfp) || ' 
 				AND ST_DWithin(edges.the_geom, ref.ref_geom, 0.01) AND (edges.mtfcc LIKE ''S%'') --only consider streets and roads
-				  ),
-			a AS (SELECT addr.* FROM addr INNER JOIN e ON (addr.statefp = e.statefp AND addr.tlid = e.tlid)
-				WHERE addr.statefp = ' || quote_literal(var_state) || '),
-			n AS (SELECT featnames.* FROM featnames INNER JOIN e ON(featnames.statefp = e.statefp AND featnames.tlid = e.tlid)
-			    WHERE featnames.statefp = ' || quote_literal(var_state) || ' AND e.mtfcc LIKE ''S%''  )
-				
+				  )				
 		SELECT * 
 		FROM (SELECT DISTINCT ON(tlid,eside)  foo.fullname, foo.streetname, foo.streettypeabbrev, foo.zip,  foo.center_pt,
 			  eside, to_number(fromhn, ''999999'') As fromhn, to_number(tohn, ''999999'') As tohn, ST_GeometryN(ST_Multi(line),1) As line, 
-			  ST_Distance_Sphere(foo.line, ' || quote_literal(var_pt::text) || '::geometry) As dist
+			   dist
 		FROM 
 		  (SELECT e.tlid, e.the_geom As line, COALESCE(n.fullname,e.fullname) As fullname, COALESCE(n.prequalabr || '' '','''')  || n.name AS streetname, n.predirabrv, COALESCE(suftypabrv, pretypabrv) As streettypeabbrev,
-		      n.sufdirabrv, a.zip, ST_ClosestPoint(e.the_geom,' || quote_literal(var_pt::text) || '::geometry) As center_pt, e.eside, a.fromhn, a.tohn ,
-		          ST_Distance_Sphere(e.the_geom, ' || quote_literal(var_pt::text) || '::geometry) As dist
+		      n.sufdirabrv, e.zip, e.eside, e.fromhn, e.tohn , e.center_pt,
+		          ST_Distance_Sphere(e.center_pt,ref_geom) As dist
 				FROM e 
-					LEFT JOIN a ON    
-					   ( a.tlid = e.tlid 
-					       AND  a.side = e.eside
-					       )  
-					LEFT JOIN n ON (n.statefp =  e.statefp AND n.tlid = e.tlid) 
+					LEFT JOIN (SELECT featnames.* FROM featnames 
+			    WHERE featnames.statefp = ' || quote_literal(var_state) ||' AND featnames.mtfcc LIKE ''S%''  ) AS n ON (n.statefp =  e.statefp AND n.tlid = e.tlid) 
 				ORDER BY dist LIMIT 50 ) As foo 
-				ORDER BY foo.tlid, foo.eside, foo.fullname ASC NULLS LAST, dist LIMIT 15) As f ORDER BY f.dist ';
+				ORDER BY foo.tlid, foo.eside, foo.fullname ASC NULLS LAST, dist LIMIT 50) As f ORDER BY f.dist ';
 				
 	IF var_debug = true THEN
 	    RAISE NOTICE 'Statement 1: %', var_stmt;
