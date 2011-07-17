@@ -119,6 +119,17 @@ FROM (SELECT table_name, table_schema FROM
 		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
 		LEFT JOIN pg_catalog.pg_indexes i ON 
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
+				AND  indexdef LIKE '%btree%(%lower%' || c.column_name || ')%varchar_pattern_ops%') 
+WHERE i.tablename IS NULL
+-- var_ops mtfcc --
+UNION ALL
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || '_var_ops' || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(' || c.column_name || ' varchar_pattern_ops);' As index
+FROM (SELECT table_name, table_schema FROM 
+	information_schema.tables WHERE table_type = 'BASE TABLE' AND table_name LIKE '%featnames' or table_name LIKE '%edges' AND table_schema IN('tiger','tiger_data')) As t  INNER JOIN
+	(SELECT * FROM information_schema.columns WHERE column_name IN('mtfcc') ) AS c  
+		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
+		LEFT JOIN pg_catalog.pg_indexes i ON 
+			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
 				AND  indexdef LIKE '%btree%(' || c.column_name || '%varchar_pattern_ops%') 
 WHERE i.tablename IS NULL
 --full text indexes on name field--
