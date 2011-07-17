@@ -95,11 +95,12 @@ BEGIN
   FOR zip_info IN EXECUTE var_sql USING parsed.location, parsed.zip  LOOP
   -- For zip distance metric we consider both the distance of zip based on numeric as well aa levenshtein
   -- We use the prequalabr (these are like Old, that may or may not appear in front of the street name)
-  -- We also add in pretypabr to feature name since in normalize we treat these as streetypes  and highways usually have the type here
-    stmt := 'SELECT DISTINCT ON (sub.predirabrv,sub.fename,sub.suftypabrv,sub.sufdirabrv,coalesce(p.name,zip.city,cs.name,co.name),s.stusps,sub.zip)'
+  -- We also treat pretypabr as fetype since in normalize we treat these as streetypes  and highways usually have the type here
+  -- In pprint_addy we changed to put it in front if it is a is_hw type
+    stmt := 'SELECT DISTINCT ON (sub.predirabrv,sub.fename,COALESCE(sub.suftypabrv, sub.pretypabrv) ,sub.sufdirabrv,coalesce(p.name,zip.city,cs.name,co.name),s.stusps,sub.zip)'
          || '    sub.predirabrv   as fedirp,'
          || '    sub.fename,'
-         || '    sub.suftypabrv   as fetype,'
+         || '    COALESCE(sub.suftypabrv, sub.pretypabrv)   as fetype,'
          || '    sub.sufdirabrv   as fedirs,'
          || '    coalesce(p.name,zip.city,cs.name,co.name)::varchar as place,'
          || '    s.stusps as state,'
@@ -113,8 +114,8 @@ BEGIN
          || '    as sub_rating,'
          || '    sub.exact_address as exact_address '
          || ' FROM ('
-         || '  SELECT tlid, predirabrv, COALESCE(a.pretypabrv || '' '', '''') || COALESCE(a.prequalabr || '' '','''' ) || a.name As fename, suftypabrv, sufdirabrv, fromhn, tohn, 
-                    side, statefp, zip, rate_attributes($5, a.predirabrv,'
+         || '  SELECT a.tlid, predirabrv, COALESCE(a.prequalabr || '' '','''' ) || a.name As fename, suftypabrv, sufdirabrv, fromhn, tohn, 
+                    side, a.statefp, zip, rate_attributes($5, a.predirabrv,'
          || '    $2,  a.name , $4,'
          || '    a.suftypabrv , $6,'
          || '    a.sufdirabrv, a.prequalabr) + '
@@ -136,10 +137,10 @@ BEGIN
          || '    as sub_rating,$1::integer >= least_hn(b.fromhn,b.tohn) '
          || '            AND $1::integer <= greatest_hn(b.fromhn,b.tohn) '
          || '            AND ($1 % 2)::numeric::integer = (to_number(b.fromhn,''99999999'') % 2)'
-         || '    as exact_address, a.name, a.prequalabr '
-         || '  FROM featnames a join addr b using (tlid,statefp)'
+         || '    as exact_address, a.name, a.prequalabr, a.pretypabrv '
+         || '  FROM featnames a join addr b ON (a.tlid = b.tlid AND a.statefp = b.statefp  )'
          || '  WHERE'
-         || '        statefp = ' || quote_literal(zip_info.statefp) || ''
+         || '        a.statefp = ' || quote_literal(zip_info.statefp) || ' AND a.mtfcc LIKE ''S%''  '
          || coalesce('    AND b.zip IN (''' || array_to_string(zip_info.zip,''',''') || ''') ','')
          || CASE WHEN zip_info.exact
                  THEN '    AND ( lower($2) = lower(a.name) OR  ( a.prequalabr > '''' AND trim(lower($2), lower(a.prequalabr) || '' '') = lower(a.name) ) OR numeric_streets_equal($2, a.name) ) '
@@ -148,7 +149,7 @@ BEGIN
          || '  ORDER BY 11'
          || '  LIMIT 20'
          || '    ) AS sub'
-         || '  JOIN edges e ON (' || quote_literal(zip_info.statefp) || ' = e.statefp AND sub.tlid = e.tlid ' 
+         || '  JOIN edges e ON (' || quote_literal(zip_info.statefp) || ' = e.statefp AND sub.tlid = e.tlid AND e.mtfcc LIKE ''S%'' ' 
          ||   CASE WHEN var_restrict_geom IS NOT NULL THEN ' AND ST_Intersects(e.the_geom, $8) '  ELSE '' END || ') '
          || '  JOIN state s ON (' || quote_literal(zip_info.statefp) || ' = s.statefp)'
          || '  JOIN faces f ON (' || quote_literal(zip_info.statefp) || ' = f.statefp AND (e.tfidl = f.tfid OR e.tfidr = f.tfid))'
@@ -157,7 +158,7 @@ BEGIN
          || '  LEFT JOIN county co ON (' || quote_literal(zip_info.statefp) || ' = co.statefp AND f.countyfp = co.countyfp)'
          || '  LEFT JOIN cousub cs ON (' || quote_literal(zip_info.statefp) || ' = cs.statefp AND cs.cosbidfp = sub.statefp || co.countyfp || f.cousubfp)'
          || ' WHERE'
-         || '  (sub.side = ''L'' and e.tfidl = f.tfid) OR (sub.side = ''R'' and e.tfidr = f.tfid)'
+         || '  ( (sub.side = ''L'' and e.tfidl = f.tfid) OR (sub.side = ''R'' and e.tfidr = f.tfid) ) '
          || ' ORDER BY 1,2,3,4,5,6,7,9'
          || ' LIMIT 10'
          ;
