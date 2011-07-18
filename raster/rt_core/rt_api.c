@@ -6105,7 +6105,7 @@ rt_raster rt_raster_gdal_warp(
 		((NULL != ul_xw) && (NULL == ul_yw)) ||
 		((NULL == ul_xw) && (NULL != ul_yw))
 	) {
-		rterror("rt_raster_gdal_warp: Both X and Y coordinate values must be provided for upper-left corner\n");
+		rterror("rt_raster_gdal_warp: Both X and Y upper-left corner values must be provided\n");
 
 		GDALClose(src_ds);
 
@@ -6138,7 +6138,7 @@ rt_raster rt_raster_gdal_warp(
 		((NULL != scale_x) && (NULL == scale_y)) ||
 		((NULL == scale_x) && (NULL != scale_y))
 	) {
-		rterror("rt_raster_gdal_warp: Both X and Y axis values must be provided for scale\n");
+		rterror("rt_raster_gdal_warp: Both X and Y scale values must be provided for scale\n");
 
 		GDALClose(src_ds);
 
@@ -6161,7 +6161,7 @@ rt_raster rt_raster_gdal_warp(
 			((NULL != grid_xw) && (NULL == grid_yw)) ||
 			((NULL == grid_xw) && (NULL != grid_yw))
 		) {
-			rterror("rt_raster_gdal_warp: Both X and Y coordinate values must be provided for alignment\n");
+			rterror("rt_raster_gdal_warp: Both X and Y alignment values must be provided\n");
 
 			GDALClose(src_ds);
 
@@ -6226,8 +6226,8 @@ rt_raster rt_raster_gdal_warp(
 			max_x = dst_gt[0] + dst_gt[1] * width;
 			min_y = dst_gt[3] + dst_gt[5] * height;
 
-			width = (int) ceil((max_x - min_x + (grid_pix_x / 2.)) / grid_pix_x);
-			height = (int) ceil((max_y - min_y + (grid_pix_y / 2.)) / grid_pix_y);
+			width = (int) ((max_x - min_x + (grid_pix_x / 2.)) / grid_pix_x);
+			height = (int) ((max_y - min_y + (grid_pix_y / 2.)) / grid_pix_y);
 			dst_gt[1] = grid_pix_x;
 			dst_gt[5] = -1 * grid_pix_y;
 			RASTER_DEBUGF(3, "new dimensions: %d x %d", width, height);
