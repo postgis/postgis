@@ -1104,7 +1104,7 @@ CREATE TABLE edges
   gid SERIAL NOT NULL  PRIMARY KEY,
   statefp character varying(2),
   countyfp character varying(3),
-  tlid numeric(10),
+  tlid bigint,
   tfidl numeric(10),
   tfidr numeric(10),
   mtfcc character varying(5),
@@ -1143,7 +1143,6 @@ CREATE INDEX idx_tiger_edges_countyfp ON edges USING btree(countyfp);
 CREATE INDEX tiger_edges_the_geom_gist ON edges USING gist(the_geom);
 
 DROP TABLE IF EXISTS faces;
-
 CREATE TABLE faces
 (
 gid serial NOT NULL PRIMARY KEY,
@@ -1224,7 +1223,7 @@ CREATE INDEX idx_tiger_faces_tfid ON faces USING btree (tfid);
 CREATE INDEX idx_tiger_faces_countyfp ON faces USING btree(countyfp);
 CREATE INDEX tiger_faces_the_geom_gist ON faces USING gist(the_geom);
 
-
+DROP TABLE IF EXISTS featnames;
 CREATE TABLE featnames
 (
   gid SERIAL NOT NULL,
@@ -1275,7 +1274,7 @@ ALTER TABLE addr ADD COLUMN statefp character varying(2);
 CREATE INDEX idx_tiger_addr_tlid_statefp ON addr USING btree(tlid,statefp);
 CREATE INDEX idx_tiger_addr_zip ON addr USING btree (zip);
 
-DROP TABLE IF EXISTS zcta5;
+--DROP TABLE IF EXISTS zcta5;
 CREATE TABLE zcta5
 (
   gid serial NOT NULL,
@@ -1296,4 +1295,3 @@ CREATE TABLE zcta5
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269),
   CONSTRAINT pk_tiger_zcta5_zcta5ce PRIMARY KEY (zcta5ce,statefp)
  );
-
