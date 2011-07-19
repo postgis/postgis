@@ -6060,7 +6060,7 @@ rt_raster rt_raster_gdal_warp(
 
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(src_drv);
@@ -6078,7 +6078,7 @@ rt_raster rt_raster_gdal_warp(
 
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(src_drv);
@@ -6109,7 +6109,7 @@ rt_raster rt_raster_gdal_warp(
 
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(src_drv);
@@ -6142,7 +6142,7 @@ rt_raster rt_raster_gdal_warp(
 
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(src_drv);
@@ -6165,7 +6165,7 @@ rt_raster rt_raster_gdal_warp(
 
 			GDALClose(src_ds);
 
-			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 			rtdealloc(transform_opts);
 
 			GDALDeregisterDriver(src_drv);
@@ -6281,7 +6281,7 @@ rt_raster rt_raster_gdal_warp(
 
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(src_drv);
@@ -6311,7 +6311,7 @@ rt_raster rt_raster_gdal_warp(
 
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(dst_drv);
@@ -6332,7 +6332,7 @@ rt_raster rt_raster_gdal_warp(
 			GDALClose(dst_ds);
 			GDALClose(src_ds);
 
-			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 			rtdealloc(transform_opts);
 
 			GDALDeregisterDriver(dst_drv);
@@ -6355,7 +6355,7 @@ rt_raster rt_raster_gdal_warp(
 			GDALClose(dst_ds);
 			GDALClose(src_ds);
 
-			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 			rtdealloc(transform_opts);
 
 			GDALDeregisterDriver(dst_drv);
@@ -6375,7 +6375,7 @@ rt_raster rt_raster_gdal_warp(
 			GDALClose(dst_ds);
 			GDALClose(src_ds);
 
-			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 			rtdealloc(transform_opts);
 
 			GDALDeregisterDriver(dst_drv);
@@ -6403,7 +6403,7 @@ rt_raster rt_raster_gdal_warp(
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(dst_drv);
@@ -6422,7 +6422,7 @@ rt_raster rt_raster_gdal_warp(
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(dst_drv);
@@ -6441,7 +6441,7 @@ rt_raster rt_raster_gdal_warp(
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
 
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(dst_drv);
@@ -6466,7 +6466,7 @@ rt_raster rt_raster_gdal_warp(
 			GDALClose(src_ds);
 
 			GDALDestroyGenImgProjTransformer(imgproj_arg);
-			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 			rtdealloc(transform_opts);
 
 			GDALDeregisterDriver(dst_drv);
@@ -6490,7 +6490,7 @@ rt_raster rt_raster_gdal_warp(
 
 		GDALDestroyGenImgProjTransformer(imgproj_arg);
 		GDALDestroyApproxTransformer(approx_arg);
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(dst_drv);
@@ -6535,7 +6535,7 @@ rt_raster rt_raster_gdal_warp(
 		GDALDestroyGenImgProjTransformer(imgproj_arg);
 		GDALDestroyApproxTransformer(approx_arg);
 		GDALDestroyWarpOptions(wopts);
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(dst_drv);
@@ -6556,7 +6556,7 @@ rt_raster rt_raster_gdal_warp(
 			GDALDestroyGenImgProjTransformer(imgproj_arg);
 			GDALDestroyApproxTransformer(approx_arg);
 			GDALDestroyWarpOptions(wopts);
-			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 			rtdealloc(transform_opts);
 
 			GDALDeregisterDriver(dst_drv);
@@ -6595,7 +6595,7 @@ rt_raster rt_raster_gdal_warp(
 		if ((transform_func == GDALApproxTransform) && (NULL != imgproj_arg))
 			GDALDestroyGenImgProjTransformer(imgproj_arg);
 		GDALDestroyWarpOptions(wopts);
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
 
 		GDALDeregisterDriver(dst_drv);
@@ -6618,10 +6618,8 @@ rt_raster rt_raster_gdal_warp(
 	if ((transform_func == GDALApproxTransform) && (NULL != imgproj_arg))
 		GDALDestroyGenImgProjTransformer(imgproj_arg);
 	GDALDestroyWarpOptions(wopts);
-	/*
-	for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[j]);
+	for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 	rtdealloc(transform_opts);
-	*/
 
 	GDALDeregisterDriver(dst_drv);
 	GDALDestroyDriver(dst_drv);
