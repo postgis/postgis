@@ -2,9 +2,11 @@
 PostGIS 1.5.4
 2011/xx/xx
 
- - This is a bug fix release, addressing issues that have been
-   filed since the 1.5.3 release.
+ This is a bug fix release, addressing issues that have been
+ filed since the 1.5.3 release.
+
  - Bug Fixes
+   - #1135, improve testsuite predictability (Andreas 'ads' Scherbaum)
 
 
 PostGIS 1.5.3
