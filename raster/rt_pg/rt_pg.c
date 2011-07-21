@@ -4653,10 +4653,10 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		values[2] = CStringGetTextDatum(drv_set2[call_cntr].long_name);
 		values[3] = CStringGetTextDatum(drv_set2[call_cntr].create_options);
 
-		POSTGIS_RT_DEBUGF(4, "Result %d, Index %s", call_cntr, values[0]);
-		POSTGIS_RT_DEBUGF(4, "Result %d, Short Name %s", call_cntr, values[1]);
-		POSTGIS_RT_DEBUGF(4, "Result %d, Full Name %s", call_cntr, values[2]);
-		POSTGIS_RT_DEBUGF(5, "Result %d, Create Options %s", call_cntr, values[3]);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Index %d", call_cntr, drv_set2[call_cntr].idx);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Short Name %s", call_cntr, drv_set2[call_cntr].short_name);
+		POSTGIS_RT_DEBUGF(4, "Result %d, Full Name %s", call_cntr, drv_set2[call_cntr].long_name);
+		POSTGIS_RT_DEBUGF(5, "Result %d, Create Options %s", call_cntr, drv_set2[call_cntr].create_options);
 
 		/* build a tuple */
 		tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -4814,7 +4814,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 		(grid_xw != NULL && grid_yw == NULL) ||
 		(grid_xw == NULL && grid_yw != NULL)
 	) {
-		elog(NOTICE, "Values must be provided for both X and Y coordinates when specifying the alignment.  Returning original raster");
+		elog(NOTICE, "Values must be provided for both X and Y when specifying the alignment.  Returning original raster");
 		rt_raster_destroy(raster);
 		PG_RETURN_POINTER(pgraster);
 	}
@@ -4823,7 +4823,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 		(scale_x != NULL && scale_y == NULL) ||
 		(scale_x == NULL && scale_y != NULL)
 	) {
-		elog(NOTICE, "Values must be provided for both X and Y axis when specifying the scale.  Returning original raster");
+		elog(NOTICE, "Values must be provided for both X and Y when specifying the scale.  Returning original raster");
 		rt_raster_destroy(raster);
 		PG_RETURN_POINTER(pgraster);
 	}
@@ -4873,6 +4873,8 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(pgraster, 0);
 
 	if (NULL == pgrast) PG_RETURN_NULL();
+
+	POSTGIS_RT_DEBUG(3, "RASTER_resample: done");
 
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);
