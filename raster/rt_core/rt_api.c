@@ -6189,15 +6189,12 @@ rt_raster rt_raster_gdal_warp(
 		grid_shift_yw = grid_pix_y * modf(fabs(*grid_yw - dst_gt[3]) / grid_pix_y, &djunk);
 
 		/* shift along X axis for upper left */
-		if (FLT_NEQ(grid_shift_xw, 0.)) {
-			min_x = dst_gt[0] + grid_shift_xw;
+		if (FLT_NEQ(grid_shift_xw, 0.) && FLT_NEQ(grid_shift_xw, grid_pix_x)) {
+			min_x = dst_gt[0] - grid_shift_xw;
 			min_x = modf(fabs(*grid_xw - min_x) / grid_pix_x, &djunk);
-			if (FLT_NEQ(min_x, 0.) && FLT_NEQ(min_x, 1.)) grid_shift_xw *= -1;
-			min_x = dst_gt[0] + grid_shift_xw;
-			if (min_x > dst_gt[0]) {
-				grid_shift_xw = grid_pix_x - fabs(grid_shift_xw);
-				min_x = dst_gt[0] - grid_shift_xw;
-			}
+			if (FLT_NEQ(min_x, 0.) && FLT_NEQ(min_x, 1.))
+				grid_shift_xw = grid_pix_x - grid_shift_xw;
+			min_x = dst_gt[0] - grid_shift_xw;
 
 			ul_user = 1;
 		}
@@ -6205,15 +6202,12 @@ rt_raster rt_raster_gdal_warp(
 			min_x = dst_gt[0];
 
 		/* shift along Y axis for upper left */
-		if (FLT_NEQ(grid_shift_yw, 0.)) {
+		if (FLT_NEQ(grid_shift_yw, 0.) && FLT_NEQ(grid_shift_yw, grid_pix_y)) {
 			max_y = dst_gt[3] + grid_shift_yw;
 			max_y = modf(fabs(*grid_yw - max_y) / grid_pix_y, &djunk);
-			if (FLT_NEQ(max_y, 0.) && FLT_NEQ(max_y, 1.)) grid_shift_yw *= -1;
+			if (FLT_NEQ(max_y, 0.) && FLT_NEQ(max_y, 1.))
+				grid_shift_yw = grid_pix_y - grid_shift_yw;
 			max_y = dst_gt[3] + grid_shift_yw;
-			if (max_y < dst_gt[3]) {
-				grid_shift_yw = grid_pix_y - fabs(grid_shift_yw);
-				max_y = dst_gt[3] + grid_shift_yw;
-			}
 
 			ul_user = 1;
 		}
