@@ -39,9 +39,9 @@
 -- nodatanodataexpr text - Expression used when both pixel values are nodata values or absent.
 
 -- Further enhancements:
--- -Optimization for UNION & FIRST. We might not have to iterate over all the new raster.
--- -Make the function being able to look for neighbour pixels. Ex. rast1[-1,1] or rast2[-3,2]
--- -Make the function to work with neighbour tiles pixels.
+-- -Move the expression parameter in seventh position just before other expression parameters.
+-- -Optimization for UNION & FIRST. We might not have to iterate over all the new raster. See st_mapalgebra_optimized.sql
+-- -Add the possibility to assign the x or y coordinate of the pixel to the pixel (do the same to the one raster version).
 -- -Resample the second raster when necessary (Require ST_Resample)
 -- -More test with rotated images
 --------------------------------------------------------------------
