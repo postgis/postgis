@@ -10,7 +10,7 @@
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
 -- Copyright (c) 2010 David Zwarg <dzwarg@avencia.com>
--- Copyright (C) 2011 Regents of the University of California 
+-- Copyright (C) 2011 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -327,7 +327,7 @@ CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, 
 
 		avg double precision;
 		wavg double precision;
-	BEGIN		
+	BEGIN
 		-- nband
 		IF nband < 1 THEN
 			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
@@ -387,7 +387,7 @@ CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, 
 			ELSE
 				rtn.count := rtn.count + tcount;
 				rtn.sum := rtn.sum + tsum;
-				
+
 				IF tmin < rtn.min THEN
 					rtn.min := tmin;
 				END IF;
@@ -673,7 +673,7 @@ CREATE OR REPLACE FUNCTION _st_histogram(rastertable text, rastercolumn text, nb
 
 		covstats summarystats;
 		htgm histogram;
-	BEGIN		
+	BEGIN
 		-- nband
 		IF nband < 1 THEN
 			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
@@ -723,7 +723,7 @@ CREATE OR REPLACE FUNCTION _st_histogram(rastertable text, rastercolumn text, nb
 					CONTINUE;
 				END IF;
 				--RAISE NOTICE 'htgm = %', htgm;
-				
+
 				RETURN NEXT htgm;
 			END LOOP;
 
@@ -946,7 +946,7 @@ CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, n
 		rast raster;
 
 		vcnts valuecount;
-	BEGIN		
+	BEGIN
 		-- nband
 		IF nband < 1 THEN
 			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
@@ -989,7 +989,7 @@ CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, n
 					CONTINUE;
 				END IF;
 				--RAISE NOTICE 'vcnts = %', vcnts;
-				
+
 				RETURN NEXT vcnts;
 			END LOOP;
 
@@ -1562,12 +1562,6 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer,
     AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra'
     LANGUAGE 'C' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
-        pixeltype text)
-    RETURNS raster
-    AS $$ SELECT st_mapalgebra($1, 1, $2, NULL, $3) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
-
 -- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
 CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
@@ -1753,14 +1747,14 @@ CREATE OR REPLACE FUNCTION st_georeference(rast raster, format text)
 						-- skew x
             result := result || trunc(skew_x, 10) || E'\n';
 
-						-- scale y 
+						-- scale y
             result := result || trunc(scale_y, 10) || E'\n';
 
         IF format = 'ESRI' THEN
 						-- upper left x
             result := result || trunc((ul_x + scale_x * 0.5), 10) || E'\n';
 
-						-- upper left y 
+						-- upper left y
             result = result || trunc((ul_y + scale_y * 0.5), 10) || E'\n';
         ELSE -- IF format = 'GDAL' THEN
 						-- upper left x
