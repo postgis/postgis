@@ -1,4 +1,4 @@
-----------------------------------------------------------------------
+﻿----------------------------------------------------------------------
 --
 -- $Id: st_setvalues.sql 6127 2010-10-25 16:06:00Z jorgearevalo $
 --
@@ -7,50 +7,6 @@
 ----------------------------------------------------------------------
 
 --NOTE: Both ST_SetValues functions found in this file are ready to be being implemented in C
-
-CREATE OR REPLACE FUNCTION max(a int, b int)
-    RETURNS int
-    AS 'SELECT CASE WHEN $1 < $2 THEN $2 ELSE $1 END'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION min(a int, b int)
-    RETURNS int
-    AS 'SELECT CASE WHEN $1 < $2 THEN $1 ELSE $2 END'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION _Inter(x1 int, w1 int, x2 int, w2 int)
-    RETURNS int[] AS 
-    $$
-    DECLARE
-        nx int;
-        nw int;
-    BEGIN
-        nx := x1 + min(max(0, x2 - x1), w1);
-        nw := max(min(x1 + w1, x2 + w2), x1) - nx;        
-        RETURN ARRAY[nx, nw];
-    END;
-    $$
-    LANGUAGE 'plpgsql';
-
---Test
-SELECT _Inter(1, 3, -2, 2);
-SELECT _Inter(1, 3, 0, 2);
-SELECT _Inter(1, 3, 0, 5);
-SELECT _Inter(1, 3, 2, 1);
-SELECT _Inter(1, 3, 2, 2);
-SELECT _Inter(1, 3, 4, 2);
-
-SELECT _Inter(-2, 2, 1, 3);
-SELECT _Inter(0, 2, 1, 3);
-SELECT _Inter(0, 5, 1, 3);
-SELECT _Inter(2, 1, 1, 3);
-SELECT _Inter(2, 2, 1, 3);
-SELECT _Inter(4, 2, 1, 3);
-
-SELECT _Inter(1, 3, 2, 0);
-SELECT _Inter(4, 5, 2, 3);
-
-
 
 --------------------------------------------------------------------
 -- ST_SetValues   - Set a range of raster pixels to a value.
@@ -115,15 +71,15 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast raster, band int, x int, y int, wid
             oldx := 1;
         END IF;
 
-        newx := 1 + min(max(0, oldx - 1), ST_Width(rast));
-        newwidth := max(min(1 + ST_Width(rast), oldx + newwidth), 1) - newx;        
+        newx := 1 + LEAST(GREATEST(0, oldx - 1), ST_Width(rast));
+        newwidth := GREATEST(LEAST(1 + ST_Width(rast), oldx + newwidth), 1) - newx;        
                 
         IF y IS NULL THEN
             oldy := 1;
         END IF;
         
-        newy := 1 + min(max(0, oldy - 1), ST_Height(rast));
-        newheight := max(min(1 + ST_Height(rast), oldy + newheight), 1) - newy;
+        newy := 1 + LEAST(GREATEST(0, oldy - 1), ST_Height(rast));
+        newheight := GREATEST(LEAST(1 + ST_Height(rast), oldy + newheight), 1) - newy;
 
         IF newwidth < 1 OR newheight < 1 THEN
             RETURN rast;
@@ -134,7 +90,7 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast raster, band int, x int, y int, wid
         END IF;
         
         IF newkeepdestnodata THEN
-            IF ST_BandHasNodataValue(rast, newband) THEN
+            IF NOT ST_BandNodataValue(rast, newband) IS NULL THEN
                 rastnodataval := ST_BandNoDataValue(rast, newband);
             ELSE
                 RAISE NOTICE 'ST_SetValues: keepdestnodata was set to TRUE but rast1 does not have a nodata value. keepdestnodata reset to FALSE';
@@ -193,6 +149,17 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast raster, band int, x int, y int, wid
     AS 'SELECT ST_SetValues($1, $2, $3, $4, $5, $6, $7, FALSE)'
     LANGUAGE 'SQL' IMMUTABLE;
 
+--Test rasters
+CREATE OR REPLACE FUNCTION ST_TestRaster(ulx float8, uly float8, val float8) 
+    RETURNS raster AS 
+    $$
+    DECLARE
+    BEGIN
+        RETURN ST_AddBand(ST_MakeEmptyRaster(10, 10, ulx, uly, 1, 1, 0, 0, -1), '32BF', val, -1);
+    END;
+    $$
+    LANGUAGE 'plpgsql';
+
 
 -- Test
 SELECT ST_SetValues(ST_TestRaster(0, 0, 1), 2, 2, 1, 1, 0)
@@ -200,23 +167,23 @@ SELECT ST_SetValues(ST_TestRaster(0, 0, 1), 2, 2, 1, 1, 0)
 SELECT (pix).geom, (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(0, 0, 1)) as pix) foo
 
-SELECT asbinary((pix).geom), (pix).val
+SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_TestRaster(0, 0, 1), 2, 1, 1, 1, 0)) as pix) foo
 
-SELECT asbinary((pix).geom), (pix).val
+SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_TestRaster(0, 0, 1), 2, 1, 1, 10, 0)) as pix) foo
 
-SELECT asbinary((pix).geom), (pix).val
+SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_TestRaster(0, 0, 1), 1, 1, 4, 4, 0)) as pix) foo
 
-SELECT asbinary((pix).geom), (pix).val
+SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_TestRaster(0, 0, 1), 0, 3, 4, 4, 0)) as pix) foo
 
-SELECT asbinary((pix).geom), (pix).val
+SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_TestRaster(0, 0, -1), 2, 2, 2, 2, 0, TRUE)) as pix) foo
 
-SELECT asbinary((pix).geom), (pix).val
-FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_SetBandHasNoDataValue(ST_TestRaster(0, 0, -1), FALSE), 2, 2, 2, 2, 0, TRUE)) as pix) foo
+SELECT ST_AsBinary((pix).geom), (pix).val
+FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_SetBandNoDataValue(ST_TestRaster(0, 0, -1), NULL), 2, 2, 2, 2, 0, TRUE)) as pix) foo
 
 --------------------------------------------------------------------
 -- ST_SetValues   - Set a range of raster pixels to values copied from 
@@ -272,7 +239,7 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
             RETURN rast1;
         END IF;
         
-        IF  ST_IsEmpty(rast2) OR ST_HasNoBand(rast2, band2) OR rast2 IS NULL THEN
+        IF  rast2 IS NULL OR ST_IsEmpty(rast2) OR ST_HasNoBand(rast2, band2) THEN
             RAISE NOTICE 'ST_SetValues: Empty or no band source raster provided. Returns rast1';
             RETURN rast1;
         END IF;
@@ -299,8 +266,8 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
             oldx := 1;
         END IF;
 
-        newx := 1 + min(max(0, oldx - 1), ST_Width(rast1));
-        newwidth := max(min(1 + ST_Width(rast1), oldx + newwidth), 1) - newx;
+        newx := 1 + LEAST(GREATEST(0, oldx - 1), ST_Width(rast1));
+        newwidth := GREATEST(LEAST(1 + ST_Width(rast1), oldx + newwidth), 1) - newx;
         oldx := newx;      
                 
         IF y IS NULL THEN
@@ -309,8 +276,8 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
         
 --RAISE NOTICE 'aaa oldy=%, newheight=%', oldy, newheight;
 
-        newy := 1 + min(max(0, oldy - 1), ST_Height(rast1));
-        newheight := max(min(1 + ST_Height(rast1), oldy + newheight), 1) - newy;
+        newy := 1 + LEAST(GREATEST(0, oldy - 1), ST_Height(rast1));
+        newheight := GREATEST(LEAST(1 + ST_Height(rast1), oldy + newheight), 1) - newy;
         oldy := newy;      
 
 --RAISE NOTICE 'bbb newx=%, newy=%', newx, newy;
@@ -321,14 +288,14 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
 
         x2 := ST_World2RasterCoordX(rast1, ST_Raster2WorldCoordX(rast2, 1, 1), ST_Raster2WorldCoordY(rast2, 1, 1));
         y2 := ST_World2RasterCoordY(rast1, ST_Raster2WorldCoordY(rast2, 1, 1), ST_Raster2WorldCoordY(rast2, 1, 1));
-	
+    
 --RAISE NOTICE '111 x2=%, y2=%', x2, y2;
 
-        newx := x2 + min(max(0, oldx - x2), ST_Width(rast2));
-        newwidth := max(min(x2 + ST_Width(rast2), oldx + newwidth), x2) - newx; 
+        newx := x2 + LEAST(GREATEST(0, oldx - x2), ST_Width(rast2));
+        newwidth := GREATEST(LEAST(x2 + ST_Width(rast2), oldx + newwidth), x2) - newx; 
 
-        newy := y2 + min(max(0, oldy - y2), ST_Height(rast2));
-        newheight := max(min(y2 + ST_Height(rast2), oldy + newheight), y2) - newy; 
+        newy := y2 + LEAST(GREATEST(0, oldy - y2), ST_Height(rast2));
+        newheight := GREATEST(LEAST(y2 + ST_Height(rast2), oldy + newheight), y2) - newy; 
 
         IF newwidth < 1 OR newheight < 1 THEN
             RETURN rast1;
@@ -342,7 +309,7 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
         END IF;
         
         IF newkeepdestnodata THEN
-            IF ST_BandHasNodataValue(rast1, newband1) THEN
+            IF NOT ST_BandNodataValue(rast1, newband1) IS NULL THEN
                 rast1nodataval := ST_BandNoDataValue(rast1, newband1);
             ELSE
                 RAISE NOTICE 'ST_SetValues: keepdestnodata was set to TRUE but rast1 does not have a nodata value. keepdestnodata reset to FALSE';
@@ -358,7 +325,7 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, band1 int, x int, y int, w
         END IF;
         
         IF newkeepsourcenodata THEN
-            IF ST_BandHasNodataValue(rast2, newband2) THEN
+            IF NOT ST_BandNodataValue(rast2, newband2) IS NULL THEN
                 rast2nodataval := ST_BandNoDataValue(rast2, newband2);
             ELSE
                 RAISE NOTICE 'ST_SetValues: keepsourcenodata was set to true but rast2 does not have a nodata value. keepsourcenodata reset to false';
@@ -409,10 +376,10 @@ CREATE OR REPLACE FUNCTION ST_SetValues(rast1 raster, x int, y int, width int, h
     LANGUAGE 'SQL' IMMUTABLE;
 
 -- Test
-SELECT asbinary((pix).geom), (pix).val
+SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(0, 0, 1)) as pix) foo
 
-SELECT asbinary((pix).geom), (pix).val
+SELECT ST_AsBinary((pix).geom), (pix).val
 FROM (SELECT ST_PixelAsPolygons(ST_SetValues(ST_TestRaster(0, 0, 1), 2, 1, 3, 1, ST_TestRaster(3, 0, 3))) as pix) foo
 
 
