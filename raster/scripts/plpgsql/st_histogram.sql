@@ -1,4 +1,12 @@
 ----------------------------------------------------------------------
+--
+-- $Id: st_histogram.sql 6127 2010-10-25 16:06:00Z jorgearevalo $
+--
+-- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
+--
+----------------------------------------------------------------------
+-- NOTE: This function is now implemented as a C function and is provided solely as a plpgsql example.
+----------------------------------------------------------------------
 -- _ST_Values(rast raster, band int)
 -- Return all rast pixels values which center are in a geometry
 -- Values are returned as groups of identical adjacent values (value, count) 
