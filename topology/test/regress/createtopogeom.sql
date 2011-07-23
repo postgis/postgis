@@ -1,3 +1,4 @@
+\set VERBOSITY terse
 set client_min_messages to WARNING;
 
 SELECT topology.CreateTopology('MiX') > 0;
