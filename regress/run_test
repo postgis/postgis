@@ -450,7 +450,7 @@ if test -z "$db_exists"; then
 		# ON_ERROR_STOP is used by psql to return non-0 on an error
 		_psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true"
 
-		createdb "${DB}" > ${TMPDIR}/regress_log
+		createdb --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
 		${PSQL} ${_psql_opts} -Xf ${REGDIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
 		if test x"$OPT_WITH_TOPO" = "xyes"; then
