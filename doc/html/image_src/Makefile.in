@@ -83,6 +83,10 @@ IMAGES= \
 	../images/st_longestline01.png \
 	../images/st_longestline02.png \
 	../images/st_longestline03.png \
+	../images/st_offsetcurve01.png \
+	../images/st_offsetcurve02.png \
+	../images/st_offsetcurve03.png \
+	../images/st_offsetcurve04.png \
 	../images/st_minimumboundingcircle01.png \
 	../images/st_sharedpaths01.png \
 	../images/st_sharedpaths02.png \

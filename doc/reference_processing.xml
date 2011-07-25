@@ -288,7 +288,7 @@ MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 
 				<refname>ST_OffsetCurve</refname>
 
 				<refpurpose>
-Return an offset line at a given distance and side from an input line.
+Return an offset line at a given distance and side from an input line. Useful for computing parallel lines about a center line
 			</refpurpose>
 			</refnamediv>
 
@@ -359,12 +359,95 @@ This function ignores the third dimension (z) and will always give a
 <para>Compute an open buffer around roads</para>
 				<programlisting>
 SELECT ST_Union(
- ST_OffsetCurve(f.the_geom,  f.width/2, "quad_segs=4 join=round"),
- ST_OffsetCurve(f.the_geom, -f.width/2, "quad_segs=4 join=round")
+ ST_OffsetCurve(f.the_geom,  f.width/2, 'quad_segs=4 join=round'),
+ ST_OffsetCurve(f.the_geom, -f.width/2, 'quad_segs=4 join=round')
 ) as track
 FROM someroadstable;
 
 				</programlisting>
+				<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve01.png" />
+							  </imageobject>
+							  <caption><para>15, 'quad_segs=4 join=round' original line and its offset 15 units to the left.</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
+'LINESTRING (154 6, 134 6, 114 6, 94 6, 74 6, 54 6, 34 6, 14 6, 10 6, 
+8 6, 7 7, 6 8, 6 10, 6 30, 6 50, 6 70, 6 90, 6 110, 6 130, 6 150, 6 170, 6 185)'), 15, 'quad_segs=4 join=round'));
+--output --
+LINESTRING(154 -9,8 -9,2.25974851452365 -7.8581929876693,
+-2.60660171779821 -4.60660171779821,-4.60660171779821 -2.60660171779821,
+-7.85819298766932 2.2597485145237,-9 8,-9 185)
+				</programlisting>
+						  </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve02.png" />
+							  </imageobject>
+							  <caption><para>-15, 'quad_segs=4 join=round' original line and its offset 15 units to the right.</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
+'LINESTRING (154 6, 134 6, 114 6, 94 6, 74 6, 54 6, 34 6, 14 6, 10 6, 
+8 6, 7 7, 6 8, 6 10, 6 30, 6 50, 6 70, 6 90, 6 110, 6 130, 6 150, 6 170, 6 185)'), -15, 'quad_segs=4 join=round'));
+-- output --
+LINESTRING(21 185,21 21,154 21);
+				</programlisting>
+						</para></entry>
+					  </row>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve03.png" />
+							  </imageobject>
+							  <caption><para>15, 'quad_segs=4 join=bevel' showm with original line</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
+'LINESTRING (154 6, 134 6, 114 6, 94 6, 74 6, 54 6, 34 6, 14 6, 10 6, 
+8 6, 7 7, 6 8, 6 10, 6 30, 6 50, 6 70, 6 90, 6 110, 6 130, 6 150, 6 170, 6 185)'), 15, 'quad_segs=4 join=bevel'));
+-- output --
+LINESTRING(154 -9,8 -9,-2.60660171779821 -4.60660171779821,-4.60660171779821 -2.60660171779821,-9 8,-9 185)
+				</programlisting>
+						 </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_buffer04.png" />
+							  </imageobject>
+							  <caption><para>15,-15 collected, join=mitre mitre_limit=2.1</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_Collect(
+	ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),
+	ST_OffsetCurve(geom, -15, 'quad_segs=4 join=mitre mitre_limit=2.2')
+	) )
+	FROM ST_GeomFromText(
+'LINESTRING (154 6, 134 6, 114 6, 94 6, 74 6, 54 6, 34 6, 14 6, 10 6, 
+8 6, 7 7, 6 8, 6 10, 6 30, 6 50, 6 70, 6 90, 6 110, 6 130, 6 150, 6 170, 6 185)') As geom;
+-- output --
+MULTILINESTRING((154 -9,1.78679656440358 -9,-9 1.78679656440358,-9 185),(21 185,21 21,154 21))
+				</programlisting>
+						  </para></entry>
+					  </row>
+					</tbody>
+				  </tgroup>
+			</informaltable>
+
 			</refsection>
 
 			  <refsection>
