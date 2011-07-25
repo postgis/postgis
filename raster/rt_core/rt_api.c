@@ -6629,3 +6629,550 @@ rt_raster rt_raster_gdal_warp(
 
 	return rast;
 }
+
+/**
+ * Return a raster of the provided geometry
+ *
+ * @param wkb : WKB representation of the geometry to convert
+ * @param wkb_len : length of the WKB representation of the geometry
+ * @param srs : the geometry's coordinate system in OGC WKT
+ * @param num_bands: number of bands in the output raster
+ * @param pixtype: data type of each band
+ * @param init: array of values to initialize each band with
+ * @param value: array of values for pixels of geometry
+ * @param nodata: array of nodata values for each band
+ * @param hasnodata: array flagging the presence of nodata for each band
+ * @param width : the number of columns of the raster
+ * @param height : the number of rows of the raster
+ * @param scale_x : the pixel width of the raster
+ * @param scale_y : the pixel height of the raster
+ * @param ul_xw : the X value of upper-left corner of the raster
+ * @param ul_yw : the Y value of upper-left corner of the raster
+ * @param grid_xw : the X value of point on grid to align raster to
+ * @param grid_yw : the Y value of point on grid to align raster to
+ * @param skew_x : the X skew of the raster
+ * @param skew_y : the Y skew of the raster
+ *
+ * @return the raster of the provided geometry
+ */
+rt_raster
+rt_raster_gdal_rasterize(const unsigned char *wkb,
+	uint32_t wkb_len, const char *srs,
+	uint32_t num_bands, rt_pixtype *pixtype,
+	double *init, double *value,
+	double *nodata, uint8_t *hasnodata,
+	int *width, int *height,
+	double *scale_x, double *scale_y,
+	double *ul_xw, double *ul_yw,
+	double *grid_xw, double *grid_yw,
+	double *skew_x, double *skew_y
+) {
+	rt_raster rast;
+	int i = 0;
+	int noband = 0;
+	int banderr = 0;
+	int *band_list = NULL;
+
+	rt_pixtype *_pixtype = NULL;
+	double *_init = NULL;
+	double *_nodata = NULL;
+	uint8_t *_hasnodata = NULL;
+	double *_value = NULL;
+
+	double _scale_x = 0;
+	double _scale_y = 0;
+	int _width = 0;
+	int _height = 0;
+	double _skew_x = 0;
+	double _skew_y = 0;
+
+	OGRErr ogrerr;
+	OGRSpatialReferenceH src_sr = NULL;
+	OGRGeometryH src_geom;
+	OGREnvelope src_env;
+
+	int ul_user = 0;
+	double djunk = 0;
+	double grid_shift_xw = 0;
+	double grid_shift_yw = 0;
+	double grid_min_x = 0;
+	double grid_max_y = 0;
+
+	CPLErr cplerr;
+	double dst_gt[6] = {0};
+	GDALDriverH dst_drv = NULL;
+	GDALDatasetH dst_ds = NULL;
+	GDALRasterBandH dst_band = NULL;
+
+	RASTER_DEBUG(3, "starting");
+
+	assert(NULL != wkb);
+	assert(0 != wkb_len);
+
+	/* internal aliases */
+	_pixtype = pixtype;
+	_init = init;
+	_nodata = nodata;
+	_hasnodata = hasnodata;
+	_value = value;
+
+	/* no bands, raster is a mask */
+	if (num_bands < 1) {
+		num_bands = 1;
+		noband = 1;
+
+		_pixtype = (rt_pixtype *) rtalloc(sizeof(rt_pixtype));
+		*_pixtype = PT_8BUI;
+
+		_init = (double *) rtalloc(sizeof(double));
+		*_init = 0;
+
+		_nodata = (double *) rtalloc(sizeof(double));
+		*_nodata = 0;
+
+		_hasnodata = (uint8_t *) rtalloc(sizeof(uint8_t));
+		*_hasnodata = 1;
+
+		_value = (double *) rtalloc(sizeof(double));
+		*_value = 1;
+	}
+
+	assert(NULL != _pixtype);
+	assert(NULL != _init);
+	assert(NULL != _nodata);
+	assert(NULL != _hasnodata);
+
+	/* set OGR spatial reference */
+	if (NULL != srs && strlen(srs)) {
+		src_sr = OSRNewSpatialReference(srs);
+		if (NULL == src_sr) {
+			rterror("rt_raster_gdal_rasterize: Unable to create OSR spatial reference");
+
+			if (noband) {
+				rtdealloc(_pixtype);
+				rtdealloc(_init);
+				rtdealloc(_nodata);
+				rtdealloc(_hasnodata);
+				rtdealloc(_value);
+			}
+
+			return NULL;
+		}
+	}
+
+	/* convert WKB to OGR Geometry */
+	ogrerr = OGR_G_CreateFromWkb((unsigned char *) wkb, src_sr, &src_geom, wkb_len);
+	if (ogrerr != OGRERR_NONE) {
+		rterror("rt_raster_gdal_rasterize: Unable to create OGR Geometry from WKB");
+
+		if (noband) {
+			rtdealloc(_pixtype);
+			rtdealloc(_init);
+			rtdealloc(_nodata);
+			rtdealloc(_hasnodata);
+			rtdealloc(_value);
+		}
+
+		OSRDestroySpatialReference(src_sr);
+		OGRCleanupAll();
+
+		return NULL;
+	}
+
+	/* get envelope of geometry */
+	OGR_G_GetEnvelope(src_geom, &src_env);
+
+	RASTER_DEBUGF(3, "Suggested extent: %f, %f, %f, %f",
+		src_env.MinX, src_env.MaxY, src_env.MaxX, src_env.MinY);
+
+	/* user-defined scale */
+	if (
+		(NULL != scale_x) &&
+		(NULL != scale_y) &&
+		(FLT_NEQ(*scale_x, 0.0)) &&
+		(FLT_NEQ(*scale_y, 0.0))
+	) {
+		_scale_x = fabs(*scale_x);
+		_scale_y = fabs(*scale_y);
+	}
+	else if (
+		(NULL != width) &&
+		(NULL != height) &&
+		(FLT_NEQ(*width, 0.0)) &&
+		(FLT_NEQ(*height, 0.0))
+	) {
+		_width = fabs(*width);
+		_height = fabs(*height);
+		_scale_x = (src_env.MaxX - src_env.MinX) / _width;
+		_scale_y = (src_env.MaxY - src_env.MinY) / _height;
+	}
+	else {
+		rterror("rt_raster_gdal_rasterize: Values must be provided for width and height or X and Y of scale");
+
+		if (noband) {
+			rtdealloc(_pixtype);
+			rtdealloc(_init);
+			rtdealloc(_nodata);
+			rtdealloc(_hasnodata);
+			rtdealloc(_value);
+		}
+
+		OGR_G_DestroyGeometry(src_geom);
+		OSRDestroySpatialReference(src_sr);
+		OGRCleanupAll();
+
+		return NULL;
+	}
+	RASTER_DEBUGF(3, "scale (x, y) = %f, %f", _scale_x, _scale_y);
+	RASTER_DEBUGF(3, "dim (x, y) = %d, %d", _width, _height);
+
+	/* user-defined skew */
+	if (NULL != skew_x)
+		_skew_x = *skew_x;
+	if (NULL != skew_y)
+		_skew_y = *skew_y;
+
+	/* user-specified upper-left corner */
+	if (
+		NULL != ul_xw &&
+		NULL != ul_yw
+	) {
+		src_env.MinX = *ul_xw;
+		src_env.MaxY = *ul_yw;
+		ul_user = 1;
+	}
+	else if (
+		((NULL != ul_xw) && (NULL == ul_yw)) ||
+		((NULL == ul_xw) && (NULL != ul_yw))
+	) {
+		rterror("rt_raster_gdal_rasterize: Both X and Y upper-left corner values must be provided");
+
+		if (noband) {
+			rtdealloc(_pixtype);
+			rtdealloc(_init);
+			rtdealloc(_nodata);
+			rtdealloc(_hasnodata);
+			rtdealloc(_value);
+		}
+
+		OGR_G_DestroyGeometry(src_geom);
+		OSRDestroySpatialReference(src_sr);
+		OGRCleanupAll();
+
+		return NULL;
+	}
+
+	/* alignment only considered if upper-left corner not provided */
+	if (
+		!ul_user && (
+			(NULL != grid_xw) || (NULL != grid_yw)
+		)
+	) {
+		if (
+			((NULL != grid_xw) && (NULL == grid_yw)) ||
+			((NULL == grid_xw) && (NULL != grid_yw))
+		) {
+			rterror("rt_raster_gdal_rasterize: Both X and Y alignment values must be provided\n");
+
+			if (noband) {
+				rtdealloc(_pixtype);
+				rtdealloc(_init);
+				rtdealloc(_nodata);
+				rtdealloc(_hasnodata);
+				rtdealloc(_value);
+			}
+
+			OGR_G_DestroyGeometry(src_geom);
+			OSRDestroySpatialReference(src_sr);
+			OGRCleanupAll();
+
+			return NULL;
+		}
+
+		/* grid shift of upper left to match alignment grid */
+		grid_shift_xw = _scale_x * modf(fabs(*grid_xw - src_env.MinX) / _scale_x, &djunk);
+		grid_shift_yw = _scale_y * modf(fabs(*grid_yw - src_env.MaxY) / _scale_y, &djunk);
+
+		/* shift along X axis for upper left */
+		if (FLT_NEQ(grid_shift_xw, 0.) && FLT_NEQ(grid_shift_xw, _scale_x)) {
+			grid_min_x = src_env.MinX - grid_shift_xw;
+			grid_min_x = modf(fabs(*grid_xw - grid_min_x) / _scale_x, &djunk);
+			if (FLT_NEQ(grid_min_x, 0.) && FLT_NEQ(grid_min_x, 1.))
+				grid_shift_xw = _scale_x - grid_shift_xw;
+			grid_min_x = src_env.MinX - grid_shift_xw;
+
+			src_env.MinX = grid_min_x;
+		}
+
+		/* shift along Y axis for upper left */
+		if (FLT_NEQ(grid_shift_yw, 0.) && FLT_NEQ(grid_shift_yw, _scale_y)) {
+			grid_max_y = src_env.MaxY + grid_shift_yw;
+			grid_max_y = modf(fabs(*grid_yw - grid_max_y) / _scale_y, &djunk);
+			if (FLT_NEQ(grid_max_y, 0.))
+				grid_shift_yw = _scale_y - fabs(grid_shift_yw);
+			grid_max_y = src_env.MaxY + grid_shift_yw;
+
+			src_env.MaxY = grid_max_y;
+		}
+
+		RASTER_DEBUGF(3, "shift is: %f, %f", grid_shift_xw, grid_shift_yw);
+		RASTER_DEBUGF(3, "new ul is: %f, %f", grid_min_x, grid_max_y);
+	}
+
+	/* raster dimensions */
+	if (!_width && !_height) {
+		_width = (int) ((src_env.MaxX - src_env.MinX + (_scale_x / 2.)) / _scale_x);
+		_height = (int) ((src_env.MaxY - src_env.MinY + (_scale_y / 2.)) / _scale_y);
+	}
+
+	/* min and max are same, a point? */
+	if (
+		FLT_EQ(src_env.MaxX, src_env.MinX) &&
+		FLT_EQ(src_env.MaxY, src_env.MinY)
+	) {
+		RASTER_DEBUGF(3, "MinX = MaxX, MinY = MaxY.  Explicitly setting width and height to 1",
+			_width, _height);
+		_width = 1;
+		_height = 1;
+
+		/* set the point to the center of the pixel */
+		src_env.MinX -= (_scale_x / 2.);
+		src_env.MaxX += (_scale_x / 2.);
+		src_env.MinY -= (_scale_y / 2.);
+		src_env.MaxY += (_scale_y / 2.);
+	}
+
+	/* specify geotransform */
+	dst_gt[0] = src_env.MinX;
+	dst_gt[1] = _scale_x;
+	dst_gt[2] = _skew_x;
+	dst_gt[3] = src_env.MaxY;
+	dst_gt[4] = _skew_y;
+	dst_gt[5] = -1 * _scale_y;
+
+	RASTER_DEBUGF(3, "Applied extent: %f, %f, %f, %f",
+		src_env.MinX, src_env.MaxY, src_env.MaxX, src_env.MinY);
+	RASTER_DEBUGF(3, "Applied geotransform: %f, %f, %f, %f, %f, %f",
+		dst_gt[0], dst_gt[1], dst_gt[2], dst_gt[3], dst_gt[4], dst_gt[5]);
+	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
+		_width, _height);
+
+	/* load GDAL mem */
+	GDALRegister_MEM();
+	dst_drv = GDALGetDriverByName("MEM");
+	if (NULL == dst_drv) {
+		rterror("rt_raster_gdal_rasterize: Unable to load the MEM GDAL driver");
+
+		if (noband) {
+			rtdealloc(_pixtype);
+			rtdealloc(_init);
+			rtdealloc(_nodata);
+			rtdealloc(_hasnodata);
+			rtdealloc(_value);
+		}
+
+		OGR_G_DestroyGeometry(src_geom);
+		OSRDestroySpatialReference(src_sr);
+		OGRCleanupAll();
+
+		return NULL;
+	}
+
+	dst_ds = GDALCreate(dst_drv, "", _width, _height, 0, GDT_Byte, NULL);
+	if (NULL == dst_ds) {
+		rterror("rt_raster_gdal_rasterize: Could not create a GDALDataset to rasterize the geometry into");
+
+		if (noband) {
+			rtdealloc(_pixtype);
+			rtdealloc(_init);
+			rtdealloc(_nodata);
+			rtdealloc(_hasnodata);
+			rtdealloc(_value);
+		}
+
+		OGR_G_DestroyGeometry(src_geom);
+		OSRDestroySpatialReference(src_sr);
+		OGRCleanupAll();
+
+		GDALDeregisterDriver(dst_drv);
+		GDALDestroyDriver(dst_drv);
+
+		return NULL;
+	}
+
+	/* set geotransform */
+	cplerr = GDALSetGeoTransform(dst_ds, dst_gt);
+	if (cplerr != CE_None) {
+		rterror("rt_raster_gdal_rasterize: Could not set geotransform on GDALDataset");
+
+		if (noband) {
+			rtdealloc(_pixtype);
+			rtdealloc(_init);
+			rtdealloc(_nodata);
+			rtdealloc(_hasnodata);
+			rtdealloc(_value);
+		}
+
+		OGR_G_DestroyGeometry(src_geom);
+		OSRDestroySpatialReference(src_sr);
+		OGRCleanupAll();
+
+		GDALClose(dst_ds);
+		GDALDeregisterDriver(dst_drv);
+		GDALDestroyDriver(dst_drv);
+
+		return NULL;
+	}
+
+	/* set SRS */
+	if (NULL != src_sr) {
+		cplerr = GDALSetProjection(dst_ds, srs);
+		if (cplerr != CE_None) {
+			rterror("rt_raster_gdal_rasterize: Could not set projection on GDALDataset");
+
+			if (noband) {
+				rtdealloc(_pixtype);
+				rtdealloc(_init);
+				rtdealloc(_nodata);
+				rtdealloc(_hasnodata);
+				rtdealloc(_value);
+			}
+
+			OGR_G_DestroyGeometry(src_geom);
+			OSRDestroySpatialReference(src_sr);
+			OGRCleanupAll();
+
+			GDALClose(dst_ds);
+			GDALDeregisterDriver(dst_drv);
+			GDALDestroyDriver(dst_drv);
+
+			return NULL;
+		}
+	}
+
+	/* create and set bands */
+	for (i = 0; i < num_bands; i++) {
+		banderr = 0;
+
+		do {
+			/* add band */
+			cplerr = GDALAddBand(dst_ds, rt_util_pixtype_to_gdal_datatype(_pixtype[i]), NULL);
+			if (cplerr != CE_None) {
+				rterror("rt_raster_gdal_rasterize: Unable to add band to GDALDataset");
+				banderr = 1;
+				break;
+			}
+
+			dst_band = GDALGetRasterBand(dst_ds, i + 1);
+			if (NULL == dst_band) {
+				rterror("rt_raster_gdal_rasterize: Unable to get band %d from GDALDataset", i + 1);
+				banderr = 1;
+				break;
+			}
+
+			/* nodata value */
+			if (_hasnodata[i]) {
+				cplerr = GDALSetRasterNoDataValue(dst_band, _nodata[i]);
+				if (cplerr != CE_None) {
+					rterror("rt_raster_gdal_rasterize: Unable to set nodata value");
+					banderr = 1;
+					break;
+				}
+			}
+
+			/* initial value */
+			cplerr = GDALFillRaster(dst_band, _init[i], 0);
+			if (cplerr != CE_None) {
+				rterror("rt_raster_gdal_rasterize: Unable to set initial value");
+				banderr = 1;
+				break;
+			}
+		}
+		while (0);
+
+		if (banderr) {
+			if (noband) {
+				rtdealloc(_pixtype);
+				rtdealloc(_init);
+				rtdealloc(_nodata);
+				rtdealloc(_hasnodata);
+				rtdealloc(_value);
+			}
+
+			OGR_G_DestroyGeometry(src_geom);
+			OSRDestroySpatialReference(src_sr);
+			OGRCleanupAll();
+
+			GDALClose(dst_ds);
+			GDALDeregisterDriver(dst_drv);
+			GDALDestroyDriver(dst_drv);
+
+			return NULL;
+		}
+	}
+
+	band_list = (int *) rtalloc(sizeof(double) * num_bands);
+	for (i = 0; i < num_bands; i++) band_list[i] = i + 1;
+
+	/* burn geometry */
+	cplerr = GDALRasterizeGeometries(
+		dst_ds,
+		num_bands, band_list,
+		1, &src_geom,
+		NULL, NULL,
+		_value,
+		NULL,
+		NULL, NULL
+	);
+	rtdealloc(band_list);
+	if (cplerr != CE_None) {
+		rterror("rt_raster_gdal_rasterize: Unable to rasterize geometry");
+
+		if (noband) {
+			rtdealloc(_pixtype);
+			rtdealloc(_init);
+			rtdealloc(_nodata);
+			rtdealloc(_hasnodata);
+			rtdealloc(_value);
+		}
+
+		OGR_G_DestroyGeometry(src_geom);
+		OSRDestroySpatialReference(src_sr);
+		OGRCleanupAll();
+
+		GDALClose(dst_ds);
+		GDALDeregisterDriver(dst_drv);
+		GDALDestroyDriver(dst_drv);
+
+		return NULL;
+	}
+
+	/* convert gdal dataset to raster */
+	RASTER_DEBUG(3, "Converting GDAL dataset to raster");
+	rast = rt_raster_from_gdal_dataset(dst_ds);
+
+	if (noband) {
+		rtdealloc(_pixtype);
+		rtdealloc(_init);
+		rtdealloc(_nodata);
+		rtdealloc(_hasnodata);
+		rtdealloc(_value);
+	}
+
+	OGR_G_DestroyGeometry(src_geom);
+	OSRDestroySpatialReference(src_sr);
+	OGRCleanupAll();
+
+	GDALClose(dst_ds);
+	GDALDeregisterDriver(dst_drv);
+	GDALDestroyDriver(dst_drv);
+
+	if (NULL == rast) {
+		rterror("rt_raster_gdal_rasterize: Unable to rasterize geometry\n");
+		return NULL;
+	}
+
+	RASTER_DEBUG(3, "done");
+
+	return rast;
+}

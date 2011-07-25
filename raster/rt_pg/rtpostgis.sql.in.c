@@ -1440,6 +1440,177 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_AsRaster
+-----------------------------------------------------------------------
+-- None of the ST_AsRaster can be strict as some parameters can be NULL
+CREATE OR REPLACE FUNCTION _st_asraster(
+	geom geometry,
+	scalex double precision DEFAULT 0, scaley double precision DEFAULT 0,
+	width integer DEFAULT 0, height integer DEFAULT 0,
+	pixeltype text[] DEFAULT ARRAY['8BUI']::text[],
+	value double precision[] DEFAULT ARRAY[1]::double precision[],
+	nodataval double precision[] DEFAULT ARRAY[0]::double precision[],
+	upperleftx double precision DEFAULT NULL, upperlefty double precision DEFAULT NULL,
+	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_asRaster'
+	LANGUAGE 'C' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	scalex double precision, scaley double precision,
+	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
+	pixeltype text[] DEFAULT ARRAY['8BUI']::text[],
+	value double precision[] DEFAULT ARRAY[1]::double precision[],
+	nodataval double precision[] DEFAULT ARRAY[0]::double precision[],
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT _st_asraster($1, $2, $3, NULL, NULL, $6, $7, $8, NULL, NULL, $4, $5, $9, $10) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	scalex double precision, scaley double precision,
+	pixeltype text[],
+	value double precision[] DEFAULT ARRAY[1]::double precision[],
+	nodataval double precision[] DEFAULT ARRAY[0]::double precision[],
+	upperleftx double precision DEFAULT NULL, upperlefty double precision DEFAULT NULL,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT _st_asraster($1, $2, $3, NULL, NULL, $4, $5, $6, $7, $8, NULL, NULL,	$9, $10) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	width integer, height integer,
+	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
+	pixeltype text[] DEFAULT ARRAY['8BUI']::text[],
+	value double precision[] DEFAULT ARRAY[1]::double precision[],
+	nodataval double precision[] DEFAULT ARRAY[0]::double precision[],
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT _st_asraster($1, NULL, NULL, $2, $3, $6, $7, $8, NULL, NULL, $4, $5, $9, $10) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	width integer, height integer,
+	pixeltype text[],
+	value double precision[] DEFAULT ARRAY[1]::double precision[],
+	nodataval double precision[] DEFAULT ARRAY[0]::double precision[],
+	upperleftx double precision DEFAULT NULL, upperlefty double precision DEFAULT NULL,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT _st_asraster($1, NULL, NULL, $2, $3, $4, $5, $6, $7, $8, NULL, NULL,	$9, $10) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	scalex double precision, scaley double precision,
+	gridx double precision, gridy double precision,
+	pixeltype text,
+	value double precision DEFAULT 1,
+	nodataval double precision DEFAULT 0,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT _st_asraster($1, $2, $3, NULL, NULL, ARRAY[$6]::text[], ARRAY[$7]::double precision[], ARRAY[$8]::double precision[], NULL, NULL, $4, $5, $9, $10) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	scalex double precision, scaley double precision,
+	pixeltype text,
+	value double precision DEFAULT 1,
+	nodataval double precision DEFAULT 0,
+	upperleftx double precision DEFAULT NULL, upperlefty double precision DEFAULT NULL,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT _st_asraster($1, $2, $3, NULL, NULL, ARRAY[$4]::text[], ARRAY[$5]::double precision[], ARRAY[$6]::double precision[], $7, $8, NULL, NULL, $9, $10) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	width integer, height integer,
+	gridx double precision, gridy double precision,
+	pixeltype text,
+	value double precision DEFAULT 1,
+	nodataval double precision DEFAULT 0,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT _st_asraster($1, NULL, NULL, $2, $3, ARRAY[$6]::text[], ARRAY[$7]::double precision[], ARRAY[$8]::double precision[], NULL, NULL, $4, $5, $9, $10) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	width integer, height integer,
+	pixeltype text,
+	value double precision DEFAULT 1,
+	nodataval double precision DEFAULT 0,
+	upperleftx double precision DEFAULT NULL, upperlefty double precision DEFAULT NULL,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT _st_asraster($1, NULL, NULL, $2, $3, ARRAY[$4]::text[], ARRAY[$5]::double precision[], ARRAY[$6]::double precision[], $7, $8, NULL, NULL,$9, $10) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	ref raster,
+	pixeltype text[] DEFAULT ARRAY['8BUI']::text[],
+	value double precision[] DEFAULT ARRAY[1]::double precision[],
+	nodataval double precision[] DEFAULT ARRAY[0]::double precision[]
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		g geometry;
+		g_srid integer;
+
+		ul_x double precision;
+		ul_y double precision;
+		scale_x double precision;
+		scale_y double precision;
+		skew_x double precision;
+		skew_y double precision;
+		sr_id integer;
+	BEGIN
+		SELECT upperleftx, upperlefty, scalex, scaley, skewx, skewy, srid INTO ul_x, ul_y, scale_x, scale_y, skew_x, skew_y, sr_id FROM ST_Metadata(ref);
+		--RAISE NOTICE '%, %, %, %, %, %, %', ul_x, ul_y, scale_x, scale_y, skew_x, skew_y, sr_id;
+
+		-- geometry and raster has different SRID
+		g_srid := ST_SRID(geom);
+		IF g_srid != sr_id THEN
+			RAISE NOTICE 'The geometry''s SRID (%) is not the same as the raster''s SRID (%).  The geometry will be transformed to the raster''s projection', g_srid, sr_id;
+			g := ST_Transform(geom, sr_id);
+		ELSE
+			g := geom;
+		END IF;
+	
+		RETURN _st_asraster(g, scale_x, scale_y, NULL, NULL, $3, $4, $5, NULL, NULL, ul_x, ul_y, skew_x, skew_y);
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_asraster(
+	geom geometry,
+	ref raster,
+	pixeltype text,
+	value double precision DEFAULT 1,
+	nodataval double precision DEFAULT 0
+)
+	RETURNS raster
+	AS $$ SELECT st_asraster($1, $2, ARRAY[$3]::text[], ARRAY[$4]::double precision[], ARRAY[$5]::double precision[]) $$
+	LANGUAGE 'sql' STABLE;
+
+-----------------------------------------------------------------------
 -- ST_Resample
 -----------------------------------------------------------------------
 -- cannot be strict as almost all parameters can be NULL
@@ -1453,7 +1624,7 @@ CREATE OR REPLACE FUNCTION _st_resample(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_resample'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'C' STABLE;
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
@@ -1465,7 +1636,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 )
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $9,	$10, $2, $3, $4, $5, $6, $7, $8) $$
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
@@ -1487,7 +1658,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 		SELECT srid, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y FROM st_metadata($2);
 		RETURN _st_resample($1, $3, $4, sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y);
 	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Transform
@@ -1495,17 +1666,17 @@ CREATE OR REPLACE FUNCTION st_resample(
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $3, $4, $2, $5, $6) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $5, $6, $2, $3, $4) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $4, $5, $2, $3, $3) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Rescale
@@ -1513,12 +1684,12 @@ CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalexy doubl
 CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $4, $5, NULL, $2, $3) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $3, $4, NULL, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Reskew
@@ -1526,12 +1697,12 @@ CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalexy double precision, alg
 CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewx double precision, skewy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $4, $5, NULL, 0, 0, NULL, NULL, $2, $3) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewxy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $3, $4, NULL, 0, 0, NULL, NULL, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_SnapToGrid
@@ -1539,17 +1710,17 @@ CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewxy double precision, algor
 CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gridy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $4, $5, NULL, $6, $7, $2, $3) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gridy double precision, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $6, $7, NULL, $4, $5, $2, $3) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gridy double precision, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
 	AS $$ SELECT _st_resample($1, $5, $6, NULL, $4, $4, $2, $3) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- MapAlgebra

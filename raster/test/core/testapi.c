@@ -1517,6 +1517,56 @@ static void testGDALWarp() {
 	deepRelease(raster);
 }
 
+static void testGDALRasterize() {
+	rt_raster raster;
+	char srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
+	const char wkb_hex[] = "010300000001000000050000000000000080841ec100000000600122410000000080841ec100000000804f22410000000040e81dc100000000804f22410000000040e81dc100000000600122410000000080841ec10000000060012241";
+	const char *pos = wkb_hex;
+	unsigned char *wkb = NULL;
+	int wkb_len = 0;
+	int i;
+	double scale_x = 100;
+	double scale_y = 100;
+
+	rt_pixtype pixtype[] = {PT_8BUI};
+	double init[] = {0};
+	double value[] = {1};
+	double nodata[] = {0};
+	uint8_t nodata_mask[] = {1};
+
+	/* hex to byte */
+	wkb_len = (int) ceil(((double) strlen(wkb_hex)) / 2);
+	wkb = (unsigned char *) malloc(sizeof(unsigned char) * wkb_len);
+	for (i = 0; i < wkb_len; i++) {
+		sscanf(pos, "%2hhx", &wkb[i]);
+		pos += 2;
+	}
+
+	raster = rt_raster_gdal_rasterize(
+		wkb,
+		wkb_len, srs,
+		1, pixtype,
+		init, value,
+		nodata, nodata_mask,
+		NULL, NULL,
+		&scale_x, &scale_y,
+		NULL, NULL,
+		NULL, NULL,
+		NULL, NULL
+	);
+
+	free(wkb);
+
+	CHECK(raster);
+	CHECK((rt_raster_get_width(raster) == 100));
+	CHECK((rt_raster_get_height(raster) == 100));
+	CHECK((rt_raster_get_num_bands(raster) != 0));
+	CHECK((rt_raster_get_x_offset(raster) == -500000));
+	CHECK((rt_raster_get_y_offset(raster) == 600000));
+
+	deepRelease(raster);
+}
+
 int
 main()
 {
@@ -1906,6 +1956,10 @@ main()
 		printf("Testing rt_raster_gdal_warp\n");
 		testGDALWarp();
 		printf("Successfully tested rt_raster_gdal_warp\n");
+
+		printf("Testing rt_raster_gdal_rasterize\n");
+		testGDALRasterize();
+		printf("Successfully tested rt_raster_gdal_rasterize\n");
 
     deepRelease(raster);
 

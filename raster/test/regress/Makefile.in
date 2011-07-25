@@ -88,6 +88,7 @@ TEST_UTILITY = \
 	rt_mapalgebra.sql \
 	rt_reclass.sql \
 	rt_resample.sql \
+	rt_asraster.sql \
 	$(NULL)
 
 TEST_GIST = \

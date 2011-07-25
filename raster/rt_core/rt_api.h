@@ -954,6 +954,42 @@ rt_raster rt_raster_gdal_warp(rt_raster raster, const char *src_srs,
 	double *skew_x, double *skew_y,
 	GDALResampleAlg resample_alg, double max_err);
 
+/**
+ * Return a raster of the provided geometry
+ *
+ * @param wkb : WKB representation of the geometry to convert
+ * @param wkb_len : length of the WKB representation of the geometry
+ * @param srs : the geometry's coordinate system in OGC WKT
+ * @param num_bands: number of bands in the output raster
+ * @param pixtype: data type of each band
+ * @param init: array of values to initialize each band with
+ * @param value: array of values for pixels of geometry
+ * @param nodata: array of nodata values for each band
+ * @param hasnodata: array flagging the presence of nodata for each band
+ * @param width : the number of columns of the raster
+ * @param height : the number of rows of the raster
+ * @param scale_x : the pixel width of the raster
+ * @param scale_y : the pixel height of the raster
+ * @param ul_xw : the X value of upper-left corner of the raster
+ * @param ul_yw : the Y value of upper-left corner of the raster
+ * @param grid_xw : the X value of point on grid to align raster to
+ * @param grid_yw : the Y value of point on grid to align raster to
+ * @param skew_x : the X skew of the raster
+ * @param skew_y : the Y skew of the raster
+ *
+ * @return the raster of the provided geometry
+ */
+rt_raster rt_raster_gdal_rasterize(const unsigned char *wkb,
+	uint32_t wkb_len, const char *srs,
+	uint32_t num_bands, rt_pixtype *pixtype,
+	double *init, double *value,
+	double *nodata, uint8_t *hasnodata,
+	int *width, int *height,
+	double *scale_x, double *scale_y,
+	double *ul_xw, double *ul_yw,
+	double *grid_xw, double *grid_yw,
+	double *skew_x, double *skew_y);
+
 /*- utilities -------------------------------------------------------*/
 
 /*

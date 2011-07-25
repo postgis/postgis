@@ -238,6 +238,9 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS);
 Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS);
 Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
 
+/* rasterize a geometry */
+Datum RASTER_asRaster(PG_FUNCTION_ARGS);
+
 /* resample a raster */
 Datum RASTER_resample(PG_FUNCTION_ARGS);
 
@@ -4674,6 +4677,585 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		pfree(drv_set2);
 		SRF_RETURN_DONE(funcctx);
 	}
+}
+
+/**
+ * Rasterize a geometry
+ */
+PG_FUNCTION_INFO_V1(RASTER_asRaster);
+Datum RASTER_asRaster(PG_FUNCTION_ARGS)
+{
+#ifdef GSERIALIZED_ON
+	GSERIALIZED *pggeom = NULL;
+#else
+	unsigned char *pggeom = NULL;
+#endif
+
+	LWGEOM *geom = NULL;
+	rt_raster rast = NULL;
+	rt_pgraster *pgrast = NULL;
+
+	unsigned char *wkb;
+	size_t wkb_len = 0;
+	unsigned char variant = WKB_SFSQL;
+
+	double scale[2] = {0};
+	double *scale_x = NULL;
+	double *scale_y = NULL;
+
+	int dim[2] = {0};
+	int *dim_x = NULL;
+	int *dim_y = NULL;
+
+	ArrayType *array;
+	Oid etype;
+	Datum *e;
+	bool *nulls;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
+	int ndims = 1;
+	int *dims;
+	int *lbs;
+	int n = 0;
+	int i = 0;
+	int j = 0;
+	int haserr = 0;
+
+	text *pixeltypetext = NULL;
+	char *pixeltype = NULL;
+	rt_pixtype pixtype = PT_END;
+	rt_pixtype *pixtypes = NULL;
+	int pixtypes_len = 0;
+
+	double *values = NULL;
+	int values_len = 0;
+
+	uint8_t *hasnodatas = NULL;
+	double *nodatavals = NULL;
+	int nodatavals_len = 0;
+
+	double ulw[2] = {0};
+	double *ul_xw = NULL;
+	double *ul_yw = NULL;
+
+	double gridw[2] = {0};
+	double *grid_xw = NULL;
+	double *grid_yw = NULL;
+
+	double skew[2] = {0};
+	double *skew_x = NULL;
+	double *skew_y = NULL;
+
+	uint32_t num_bands = 0;
+
+	int srid = SRID_UNKNOWN;
+	char *srs = NULL;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: Starting");
+
+	/* based upon LWGEOM_asBinary function in postgis/lwgeom_ogc.c */
+
+	/* Get the geometry */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+#ifdef GSERIALIZED_ON
+	pggeom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = lwgeom_from_gserialized(pggeom);
+#else
+	pggeom = (unsigned char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = lwgeom_deserialize(SERIALIZED_FORM(pggeom));
+#endif
+
+	/* Get a 2D version of the geometry if necessary */
+	if (FLAGS_NDIMS(geom->flags) > 2) {
+		LWGEOM *geom2d = lwgeom_force_2d(geom);
+		lwgeom_free(geom);
+		geom = geom2d;
+	}
+
+	/* scale x */
+	if (!PG_ARGISNULL(1)) {
+		scale[0] = PG_GETARG_FLOAT8(1);
+		if (FLT_NEQ(scale[0], 0)) scale_x = &scale[0];
+	}
+
+	/* scale y */
+	if (!PG_ARGISNULL(2)) {
+		scale[1] = PG_GETARG_FLOAT8(2);
+		if (FLT_NEQ(scale[1], 0)) scale_y = &scale[1];
+	}
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: scale (x, y) = %f, %f", scale[0], scale[1]);
+
+	/* width */
+	if (!PG_ARGISNULL(3)) {
+		dim[0] = PG_GETARG_INT32(3);
+		if (FLT_NEQ(dim[0], 0)) dim_x = &dim[0];
+	}
+
+	/* height */
+	if (!PG_ARGISNULL(4)) {
+		dim[1] = PG_GETARG_INT32(4);
+		if (FLT_NEQ(dim[1], 0)) dim_y = &dim[1];
+	}
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: dim (x, y) = %d, %d", dim[0], dim[1]);
+
+	/* pixeltype */
+	if (!PG_ARGISNULL(5)) {
+		array = PG_GETARG_ARRAYTYPE_P(5);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case TEXTOID:
+				break;
+			default:
+				elog(ERROR, "RASTER_asRaster: Invalid data type for pixeltype");
+
+				lwgeom_free(geom);
+				PG_FREE_IF_COPY(pggeom, 0);
+
+				PG_RETURN_NULL();
+				break;
+		}
+
+		ndims = ARR_NDIM(array);
+		dims = ARR_DIMS(array);
+		lbs = ARR_LBOUND(array);
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+			&nulls, &n);
+
+		if (n) {
+			pixtypes = (rt_pixtype *) palloc(sizeof(rt_pixtype) * n);
+			/* clean each pixeltype */
+			for (i = 0, j = 0; i < n; i++) {
+				if (nulls[i]) {
+					pixtypes[j++] = PT_64BF;
+					continue;
+				}
+
+				pixeltype = NULL;
+				switch (etype) {
+					case TEXTOID:
+						pixeltypetext = (text *) DatumGetPointer(e[i]);
+						if (NULL == pixeltypetext) break;
+						pixeltype = text_to_cstring(pixeltypetext);
+
+						/* trim string */
+						pixeltype = trim(pixeltype);
+						POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixeltype is '%s'", pixeltype);
+						break;
+				}
+
+				if (strlen(pixeltype)) {
+					pixtype = rt_pixtype_index_from_name(pixeltype);
+					if (pixtype == PT_END) {
+						elog(ERROR, "RASTER_asRaster: Invalid pixel type provided: %s", pixeltype);
+
+						pfree(pixtypes);
+
+						lwgeom_free(geom);
+						PG_FREE_IF_COPY(pggeom, 0);
+
+						PG_RETURN_NULL();
+					}
+
+					pixtypes[j] = pixtype;
+					j++;
+				}
+			}
+
+			if (j > 0) {
+				/* trim allocation */
+				pixtypes = repalloc(pixtypes, j * sizeof(rt_pixtype));
+				pixtypes_len = j;
+			}
+			else {
+				pfree(pixtypes);
+				pixtypes = NULL;
+				pixtypes_len = 0;
+			}
+		}
+	}
+#if POSTGIS_DEBUG_LEVEL > 0
+	for (i = 0; i < pixtypes_len; i++)
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes[%d] = %d", i, (int) pixtypes[i]);
+#endif
+
+	/* value */
+	if (!PG_ARGISNULL(6)) {
+		array = PG_GETARG_ARRAYTYPE_P(6);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case FLOAT4OID:
+			case FLOAT8OID:
+				break;
+			default:
+				elog(ERROR, "RASTER_asRaster: Invalid data type for value");
+
+				if (pixtypes_len) pfree(pixtypes);
+
+				lwgeom_free(geom);
+				PG_FREE_IF_COPY(pggeom, 0);
+
+				PG_RETURN_NULL();
+				break;
+		}
+
+		ndims = ARR_NDIM(array);
+		dims = ARR_DIMS(array);
+		lbs = ARR_LBOUND(array);
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+			&nulls, &n);
+
+		if (n) {
+			values = (double *) palloc(sizeof(double) * n);
+			for (i = 0, j = 0; i < n; i++) {
+				if (nulls[i]) {
+					values[j++] = 1;
+					continue;
+				}
+
+				switch (etype) {
+					case FLOAT4OID:
+						values[j] = (double) DatumGetFloat4(e[i]);
+						break;
+					case FLOAT8OID:
+						values[j] = (double) DatumGetFloat8(e[i]);
+						break;
+				}
+				POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values[%d] = %f", j, values[j]);
+
+				j++;
+			}
+
+			if (j > 0) {
+				/* trim allocation */
+				values = repalloc(values, j * sizeof(double));
+				values_len = j;
+			}
+			else {
+				pfree(values);
+				values = NULL;
+				values_len = 0;
+			}
+		}
+	}
+#if POSTGIS_DEBUG_LEVEL > 0
+	for (i = 0; i < values_len; i++)
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values[%d] = %f", i, values[i]);
+#endif
+
+	/* nodataval */
+	if (!PG_ARGISNULL(7)) {
+		array = PG_GETARG_ARRAYTYPE_P(7);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case FLOAT4OID:
+			case FLOAT8OID:
+				break;
+			default:
+				elog(ERROR, "RASTER_asRaster: Invalid data type for nodataval");
+
+				if (pixtypes_len) pfree(pixtypes);
+				if (values_len) pfree(values);
+
+				lwgeom_free(geom);
+				PG_FREE_IF_COPY(pggeom, 0);
+
+				PG_RETURN_NULL();
+				break;
+		}
+
+		ndims = ARR_NDIM(array);
+		dims = ARR_DIMS(array);
+		lbs = ARR_LBOUND(array);
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+			&nulls, &n);
+
+		if (n) {
+			nodatavals = (double *) palloc(sizeof(double) * n);
+			hasnodatas = (uint8_t *) palloc(sizeof(uint8_t) * n);
+			for (i = 0, j = 0; i < n; i++) {
+				if (nulls[i]) {
+					hasnodatas[j] = 0;
+					nodatavals[j] = 0;
+					j++;
+					continue;
+				}
+
+				hasnodatas[j] = 1;
+				switch (etype) {
+					case FLOAT4OID:
+						nodatavals[j] = (double) DatumGetFloat4(e[i]);
+						break;
+					case FLOAT8OID:
+						nodatavals[j] = (double) DatumGetFloat8(e[i]);
+						break;
+				}
+				POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: hasnodatas[%d] = %d", j, hasnodatas[j]);
+				POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals[%d] = %f", j, nodatavals[j]);
+
+				j++;
+			}
+
+			if (j > 0) {
+				/* trim allocation */
+				nodatavals = repalloc(nodatavals, j * sizeof(double));
+				hasnodatas = repalloc(hasnodatas, j * sizeof(uint8_t));
+				nodatavals_len = j;
+			}
+			else {
+				pfree(nodatavals);
+				pfree(hasnodatas);
+				nodatavals = NULL;
+				hasnodatas = NULL;
+				nodatavals_len = 0;
+			}
+		}
+	}
+#if POSTGIS_DEBUG_LEVEL > 0
+	for (i = 0; i < nodatavals_len; i++) {
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: hasnodatas[%d] = %d", i, hasnodatas[i]);
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals[%d] = %f", i, nodatavals[i]);
+	}
+#endif
+
+	/* upperleftx */
+	if (!PG_ARGISNULL(8)) {
+		ulw[0] = PG_GETARG_FLOAT8(8);
+		ul_xw = &ulw[0];
+	}
+
+	/* upperlefty */
+	if (!PG_ARGISNULL(9)) {
+		ulw[1] = PG_GETARG_FLOAT8(9);
+		ul_yw = &ulw[1];
+	}
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: upperleft (x, y) = %f, %f", ulw[0], ulw[1]);
+
+	/* gridx */
+	if (!PG_ARGISNULL(10)) {
+		gridw[0] = PG_GETARG_FLOAT8(10);
+		grid_xw = &gridw[0];
+	}
+
+	/* gridy */
+	if (!PG_ARGISNULL(11)) {
+		gridw[1] = PG_GETARG_FLOAT8(11);
+		grid_yw = &gridw[1];
+	}
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: grid (x, y) = %f, %f", gridw[0], gridw[1]);
+
+	/* check dependent variables */
+	haserr = 0;
+	do {
+		/* only part of scale provided */
+		if (
+			(scale_x == NULL && scale_y != NULL) ||
+			(scale_x != NULL && scale_y == NULL)
+		) {
+			elog(NOTICE, "Values must be provided for both X and Y of scale if one is specified");
+			haserr = 1;
+			break;
+		}
+
+		/* only part of dimension provided */
+		if (
+			(dim_x == NULL && dim_y != NULL) ||
+			(dim_x != NULL && dim_y == NULL)
+		) {
+			elog(NOTICE, "Values must be provided for both width and height if one is specified");
+			haserr = 1;
+			break;
+		}
+
+		/* scale and dimension provided */
+		if (
+			(scale_x != NULL && scale_y != NULL) &&
+			(dim_x != NULL && dim_y != NULL)
+		) {
+			elog(NOTICE, "Values provided for X and Y of scale and width and height.  Using the width and height");
+			scale_x = NULL;
+			scale_y = NULL;
+			break;
+		}
+
+		/* neither scale or dimension provided */
+		if (
+			(scale_x == NULL && scale_y == NULL) &&
+			(dim_x == NULL && dim_y == NULL)
+		) {
+			elog(NOTICE, "Values must be provided for X and Y of scale or width and height");
+			haserr = 1;
+			break;
+		}
+
+		/* only part of upper-left provided */
+		if (
+			(ul_xw == NULL && ul_yw != NULL) ||
+			(ul_xw != NULL && ul_yw == NULL)
+		) {
+			elog(NOTICE, "Values must be provided for both X and Y when specifying the upper-left corner");
+			haserr = 1;
+			break;
+		}
+
+		/* only part of alignment provided */
+		if (
+			(grid_xw == NULL && grid_yw != NULL) ||
+			(grid_xw != NULL && grid_yw == NULL)
+		) {
+			elog(NOTICE, "Values must be provided for both X and Y when specifying the alignment");
+			haserr = 1;
+			break;
+		}
+
+		/* upper-left and alignment provided */
+		if (
+			(ul_xw != NULL && ul_yw != NULL) &&
+			(grid_xw != NULL && grid_yw != NULL)
+		) {
+			elog(NOTICE, "Values provided for both X and Y of upper-left corner and alignment.  Using the values of upper-left corner");
+			grid_xw = NULL;
+			grid_yw = NULL;
+			break;
+		}
+	}
+	while (0);
+
+	if (haserr) {
+		if (pixtypes_len) pfree(pixtypes);
+		if (values_len) pfree(values);
+		if (nodatavals_len) {
+			pfree(nodatavals);
+			pfree(hasnodatas);
+		}
+
+		lwgeom_free(geom);
+		PG_FREE_IF_COPY(pggeom, 0);
+
+		PG_RETURN_NULL();
+	}
+
+	/* skewx */
+	if (!PG_ARGISNULL(12)) {
+		skew[0] = PG_GETARG_FLOAT8(12);
+		if (FLT_NEQ(skew[0], 0)) skew_x = &skew[0];
+	}
+
+	/* skewy */
+	if (!PG_ARGISNULL(13)) {
+		skew[1] = PG_GETARG_FLOAT8(13);
+		if (FLT_NEQ(skew[1], 0)) skew_y = &skew[1];
+	}
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: skew (x, y) = %f, %f", skew[0], skew[1]);
+
+	/* get geometry's srid */
+#ifdef GSERIALIZED_ON
+	srid = gserialized_get_srid(pggeom);
+#else
+	srid = lwgeom_getsrid(pggeom);
+#endif
+
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srid = %d", srid);
+	if (srid != SRID_UNKNOWN) {
+		srs = getSRTextSPI(srid);
+		if (NULL == srs) {
+			elog(ERROR, "RASTER_asRaster: Could not find srtext for SRID (%d)", srid);
+
+			if (pixtypes_len) pfree(pixtypes);
+			if (values_len) pfree(values);
+			if (nodatavals_len) {
+				pfree(hasnodatas);
+				pfree(nodatavals);
+			}
+
+			lwgeom_free(geom);
+			PG_FREE_IF_COPY(pggeom, 0);
+
+			PG_RETURN_NULL();
+		}
+		POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srs is %s", srs);
+	}
+	else
+		srs = NULL;
+
+	/* determine number of bands */
+	/* MIN macro is from GDAL's cpl_port.h */
+	num_bands = MIN(pixtypes_len, values_len);
+	num_bands = MIN(num_bands, nodatavals_len);
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixtypes_len = %d", pixtypes_len);
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: values_len = %d", values_len);
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: nodatavals_len = %d", nodatavals_len);
+	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: num_bands = %d", num_bands);
+
+	/* warn of imbalanced number of band elements */
+	if (!(
+		(pixtypes_len == values_len) &&
+		(values_len == nodatavals_len)
+	)) {
+		elog(
+			NOTICE,
+			"Imbalanced number of values provided for pixeltype (%d), value (%d) and nodataval (%d).  Using the first %d values of each parameter",
+			pixtypes_len,
+			values_len,
+			nodatavals_len,
+			num_bands
+		);
+	}
+
+	/* get wkb of geometry */
+	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: getting wkb of geometry");
+	wkb = lwgeom_to_wkb(geom, variant, &wkb_len);
+	lwgeom_free(geom);
+	PG_FREE_IF_COPY(pggeom, 0);
+
+	/* rasterize geometry */
+	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: rasterizing geometry");
+	/* use nodatavals for the init parameter */
+	rast = rt_raster_gdal_rasterize(wkb,
+		(uint32_t) wkb_len, srs,
+		num_bands, pixtypes,
+		nodatavals, values,
+		nodatavals, hasnodatas,
+		dim_x, dim_y,
+		scale_x, scale_y,
+		ul_xw, ul_yw,
+		grid_xw, grid_yw,
+		skew_x, skew_y
+	);
+
+	if (pixtypes_len) pfree(pixtypes);
+	if (values_len) pfree(values);
+	if (nodatavals_len) {
+		pfree(hasnodatas);
+		pfree(nodatavals);
+	}
+
+	if (!rast) {
+		elog(ERROR, "RASTER_asRaster: Could not create rasterize geometry");
+		PG_RETURN_NULL();
+	}
+
+	/* add target srid */
+	rt_raster_set_srid(rast, srid);
+
+	pgrast = rt_raster_serialize(rast);
+	rt_raster_destroy(rast);
+
+	if (NULL == pgrast) PG_RETURN_NULL();
+
+	POSTGIS_RT_DEBUG(3, "RASTER_asRaster: done");
+
+	SET_VARSIZE(pgrast, pgrast->size);
+	PG_RETURN_POINTER(pgrast);
 }
 
 /**
