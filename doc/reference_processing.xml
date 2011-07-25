@@ -426,7 +426,7 @@ LINESTRING(154 -9,8 -9,-2.60660171779821 -4.60660171779821,-4.60660171779821 -2.
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
-								<imagedata fileref="images/st_buffer04.png" />
+								<imagedata fileref="images/st_offsetcurve03.png" />
 							  </imageobject>
 							  <caption><para>15,-15 collected, join=mitre mitre_limit=2.1</para></caption>
 							</mediaobject>
