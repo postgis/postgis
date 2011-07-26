@@ -4464,6 +4464,86 @@ FROM dummy_rast WHERE rid=2;
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_AsRaster">
+			<refnamediv>
+				<refname>ST_AsRaster</refname>
+				<refpurpose>Converts a PostGIS geometry to a PostGIS raster.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>pixeltype=ARRAY[8BUI]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY[8BUI]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+				<!-- TODO: Finish listing all the protos like 3 or 4 more to go -->
+			</refsynopsisdiv>
+		
+            <refsection>
+                <title>Description</title>
+                
+                <para>Converts a postgis geometry to a postgis raster.  This is particularly useful for rendering jpegs and pngs of geometries directly from the database when using in combination
+                    with <xref linkend="RT_ST_AsPNG" /> and other <xref linkend="RT_ST_AsGDALRaster" /> family of functions.</para>
+                 <para>To create the postgis raster, the X and Y scale or the width and height of the new raster or a reference raster must be provided.</para>
+                 <para>The output raster will be in the same coordinate system as the source geometry. The only exception is for ST_AsRaster variations with a raster input parameter. </para>
+                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+            </refsection>
+            
+            <refsection>
+                <title>Examples</title>
+            
+                <!-- TODO: Need examples of ST_AsRaster -->
+        
+            </refsection>
+            <!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />,<xref linkend="RT_ST_AsPNG" /> , <xref linkend="RT_ST_AsJPEG" />, <xref linkend="RT_ST_SRID" /></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_AsTIFF">
 			<refnamediv>
 				<refname>ST_AsTIFF</refname>
