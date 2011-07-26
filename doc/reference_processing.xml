@@ -421,7 +421,7 @@ LINESTRING(31 195,31 31,164 31)
 							  <imageobject>
 								<imagedata fileref="images/st_offsetcurve03.png" />
 							  </imageobject>
-							  <caption><para>15, 'quad_segs=4 join=bevel' showm with original line</para></caption>
+							  <caption><para>15, 'quad_segs=4 join=bevel' shown with original line</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
