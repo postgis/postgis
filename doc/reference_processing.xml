@@ -392,26 +392,76 @@ LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,
 	2.14180701233067 12.2597485145237,1 18,1 195)
 				</programlisting>
 						  </para></entry>
-
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_offsetcurve02.png" />
 							  </imageobject>
 							  <caption><para>-15, 'quad_segs=4 join=round' original line 
-							  	and its offset -15 units and then a double-offset to get more curvy</para></caption>
+							  	and its offset -15 units </para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
 SELECT ST_AsText(ST_OffsetCurve(geom,
-	-15, 'quad_segs=4 join=round')) As nosocurvy
+	-15, 'quad_segs=4 join=round')) As notsocurvy
 	FROM ST_GeomFromText(
 'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
 	44 16,24 16,20 16,18 16,17 17,
 	16 18,16 20,16 40,16 60,16 80,16 100,
 	16 120,16 140,16 160,16 180,16 195)') As geom;
--- output --
+-- notsocurvy --
 LINESTRING(31 195,31 31,164 31)
+				</programlisting>
+						</para></entry>
+					  </row>
+					 <row> 
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve05.png" />
+							  </imageobject>
+							  <caption><para>double-offset to get more curvy, note the first reverses direction, so -30 + 15 = -15</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,
+	-30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As morecurvy
+	FROM ST_GeomFromText(
+'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
+	44 16,24 16,20 16,18 16,17 17,
+	16 18,16 20,16 40,16 60,16 80,16 100,
+	16 120,16 140,16 160,16 180,16 195)') As geom;
+-- morecurvy --
+LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,
+35.3933982822018 35.3933982822018,
+32.1418070123307 40.2597485145237,31 46,31 195)
+				</programlisting>
+						</para></entry>
+<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve06.png" />
+							  </imageobject>
+							  <caption><para>double-offset to get more curvy,combined with regular offset 15 to get parallel lines.  Overlaid with original.</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>SELECT ST_AsText(ST_Collect(
+	ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'), 
+	ST_OffsetCurve(ST_OffsetCurve(geom,
+	-30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')
+	)
+) As parallel_curves
+	FROM ST_GeomFromText(
+'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
+	44 16,24 16,20 16,18 16,17 17,
+	16 18,16 20,16 40,16 60,16 80,16 100,
+	16 120,16 140,16 160,16 180,16 195)') As geom;
+-- parallel curves  --
+MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,
+7.39339828220179 5.39339828220179,5.39339828220179 7.39339828220179,
+2.14180701233067 12.2597485145237,1 18,1 195),
+(164 31,46 31,40.2597485145236 32.1418070123307,35.3933982822018 35.3933982822018,
+32.1418070123307 40.2597485145237,31 46,31 195))
 				</programlisting>
 						</para></entry>
 					  </row>
