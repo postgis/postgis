@@ -1221,6 +1221,8 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 			in the order of the travel.</para>
 
 		<programlisting>
+-- For pre-PostgreSQL 9.0 - this usually works, 
+-- but the planner may on occasion choose not to respect the order of the subquery
 SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 	FROM (SELECT gps_track,gps_time, the_geom
 			FROM gps_points ORDER BY gps_track, gps_time) As gps
@@ -1229,7 +1231,8 @@ SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 		<programlisting>
 -- If you are using PostgreSQL 9.0+ 
 -- (you can use the new ORDER BY support for aggregates)
--- this is a more guaranteed way to get ordered linestring
+-- this is a guaranteed way to get a correctly ordered linestring
+-- Your order by part can order by more than one column if needed
 SELECT gps.gps_track, ST_MakeLine(gps.the_geom ORDER BY gps_time) As newgeom
 	FROM gps_points As gps
 	GROUP BY gps.gps_track;</programlisting>
