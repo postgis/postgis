@@ -1230,7 +1230,7 @@ SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 -- If you are using PostgreSQL 9.0+ 
 -- (you can use the new ORDER BY support for aggregates)
 -- this is a more guaranteed way to get ordered linestring
-SELECT gps.gps_track, ST_MakeLine(gps.the_geom ORDER BY gps_track,gps_time) As newgeom
+SELECT gps.gps_track, ST_MakeLine(gps.the_geom ORDER BY gps_time) As newgeom
 	FROM gps_points As gps
 	GROUP BY gps.gps_track;</programlisting>
 		</refsection>
