@@ -1224,7 +1224,15 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 	FROM (SELECT gps_track,gps_time, the_geom
 			FROM gps_points ORDER BY gps_track, gps_time) As gps
-	GROUP BY gps.gps_track</programlisting>
+	GROUP BY gps.gps_track;</programlisting>
+	
+		<programlisting>
+-- If you are using PostgreSQL 9.0+ 
+-- (you can use the new ORDER BY support for aggregates)
+-- this is a more guaranteed way to get ordered linestring
+SELECT gps.gps_track, ST_MakeLine(gps.the_geom ORDER BY gps_track,gps_time) As newgeom
+	FROM gps_points 
+	GROUP BY gps.gps_track;</programlisting>
 		</refsection>
 		<refsection>
 			<title>Examples: Non-Spatial Aggregate version</title>
