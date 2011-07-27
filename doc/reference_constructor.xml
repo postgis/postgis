@@ -1231,7 +1231,7 @@ SELECT gps.gps_track, ST_MakeLine(gps.the_geom) As newgeom
 -- (you can use the new ORDER BY support for aggregates)
 -- this is a more guaranteed way to get ordered linestring
 SELECT gps.gps_track, ST_MakeLine(gps.the_geom ORDER BY gps_track,gps_time) As newgeom
-	FROM gps_points 
+	FROM gps_points As gps
 	GROUP BY gps.gps_track;</programlisting>
 		</refsection>
 		<refsection>
