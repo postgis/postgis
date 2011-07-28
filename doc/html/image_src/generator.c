@@ -353,7 +353,7 @@ int main( int argc, const char* argv[] )
 	}
 
 	filename = malloc( strlen(argv[1])+11 );
-	strncpy( filename, "../images/", 10 );
+	strncpy( filename, "../images/", 11 );
 	strncat( filename, argv[1], strlen(argv[1])-3 );
 	strncat( filename, "png", 3 );
 
