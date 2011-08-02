@@ -2,6 +2,7 @@
 <chapter id="Topology">
 	<title>Topology</title>
 	<para>The PostGIS Topology types and functions are used to manage topological objects such as faces, edges and nodes. </para>
+	<para>Sandro Santilli's presentation at PostGIS Day Paris 2011  conference gives a good synopsis of PostGIS Topology and where it is headed <ulink url="http://strk.keybit.net/projects/postgis/Paris2011_TopologyWithPostGIS_2_0.pdf">Topology with PostGIS 2.0 slide deck</ulink>.</para>
 	<para>Vincent Picavet provides a good synopsis and overview of what is Topology, how is it used, and various FOSS4G tools that support it in <ulink url="http://2010.foss4g.org/presentations/3555.pdf">State of the art of FOSS4G for topology and network analysis</ulink>.</para>
 	<para>An example of a topologically based GIS database is the <ulink url="http://www.census.gov/geo/www/tiger/overview.html">US Census Topologically Integrated Geographic Encoding and Reference System (TIGER)</ulink> database.</para>
 	<para>The PostGIS topology module has existed in prior versions of PostGIS but was never part of the Official PostGIS documentation.
