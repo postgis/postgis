@@ -1,6 +1,6 @@
 -- $Id$
 -- Legacy functions without chip functions --
-#include "sqldefines.h"
+#include "legacy_compatibility_layer.sql.in.c"
 --- start functions that in theory should never have been used or internal like stuff deprecated
 
 -- these were superceded by PostGIS_AddBBOX , PostGIS_DropBBOX, PostGIS_HasBBOX in 1.5 --
@@ -615,18 +615,6 @@ CREATE OR REPLACE FUNCTION Area2D(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsBinary(geometry)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsBinary(geometry,text)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsEWKB(geometry)
 	RETURNS BYTEA
 	AS 'MODULE_PATHNAME','WKBFromLWGEOM'
@@ -708,12 +696,6 @@ CREATE OR REPLACE FUNCTION AsSVG(geometry,int4,int4)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION AsText(geometry)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asText'
-	LANGUAGE 'C' IMMUTABLE STRICT;	
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION azimuth(geometry,geometry)
@@ -881,25 +863,7 @@ CREATE OR REPLACE FUNCTION Envelope(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_envelope'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Estimated_Extent(text,text,text) RETURNS box2d AS
-#ifdef GSERIALIZED_ON
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
-#else
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-#endif
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-	
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
-#ifdef GSERIALIZED_ON
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
-#else
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-#endif
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-	
+		
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Expand(box2d,float8)
 	RETURNS box2d
@@ -1609,12 +1573,6 @@ CREATE OR REPLACE FUNCTION MultiPolygonFromText(text)
 	RETURNS geometry
 	AS 'SELECT MPolyFromText($1)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Deprecation in 1.2.3
-CREATE OR REPLACE FUNCTION ndims(geometry)
-	RETURNS smallint
-	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION NumInteriorRing(geometry)
