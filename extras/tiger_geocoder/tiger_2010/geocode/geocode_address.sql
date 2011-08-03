@@ -23,7 +23,14 @@ BEGIN
 
   ADDY.internal := parsed.internal;
 
-  in_statefp := statefp FROM state_lookup As s WHERE s.abbrev = parsed.stateAbbrev;
+  IF parsed.stateAbbrev IS NOT NULL THEN
+    in_statefp := statefp FROM state_lookup As s WHERE s.abbrev = parsed.stateAbbrev;
+  END IF;
+  
+  IF in_statefp IS NULL THEN 
+  --if state is not provided or was bogus, just pick the first where the zip is present
+    in_statefp := statefp FROM zip_lookup_base WHERE zip = substring(parsed.zip,1,5) LIMIT 1;
+  END IF;
   
   IF restrict_geom IS NOT NULL THEN
   		IF ST_SRID(restrict_geom) < 1 OR ST_SRID(restrict_geom) = 4236 THEN 

@@ -34,6 +34,10 @@ SELECT 'T16', pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00
 -- my alma mater doesn't geocode right without addr check  --
 SELECT 'T17', pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('77 Massachusetts Avenue, Cambridge, MA 02139',1);
 
+-- zip provided but no state - should still be fast under 250ms
+SELECT 'T18a', pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('26 Court Street, 02109',1);
+SELECT 'T18b', pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('26 Court Street,Boston,02109',1);
+
 -- Ratings wrong for missing or wrong local zips
 SELECT '#1087a' As ticket, pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('75 State Street, Boston, MA 02110',3);
 SELECT '#1087b' As ticket, pprint_addy(addy) As address, ST_AsText(ST_SnapToGrid(geomout,0.00001)) As pt, rating FROM geocode('75 State Street, Boston, MA',3);
@@ -89,5 +93,5 @@ SELECT '#1145a' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(S
 SELECT '#1145b' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '3625 18th Ave S Minneapolis MN 55406'::text As target) As f) As foo; 
 SELECT '#1145c' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '4057 10th Ave S Minneapolis MN 55406'::text As target) As f) As foo; 
 SELECT '#1145d' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8512 141 St Ct Apple Valley MN 55124'::text As target) As f) As foo; 
-SELECT '#1145e' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '103 36th St W Minneapolis MN 55409'::text As target) As f) As foo; 
+SELECT '#1145e' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '103 36th St W Minneapolis MN 55409'::text As target) As f) As foo;
 \timing
