@@ -60,12 +60,16 @@ ALTER TABLE street_type_lookup ADD COLUMN is_hw boolean NOT NULL DEFAULT false;
 DROP FUNCTION IF EXISTS rate_attributes(character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying);
 DROP FUNCTION IF EXISTS rate_attributes(character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying);
 
+--ALTER TABLE tiger.addr ALTER tlid TYPE bigint;
+ALTER TABLE featnames ALTER COLUMN tlid SET NOT NULL;
+ALTER TABLE edges ALTER COLUMN tlid SET NOT NULL;
+ALTER TABLE addr ALTER COLUMN tlid SET NOT NULL;
 BEGIN;
 -- Type used to pass around a normalized address between functions
 -- This is s bit dangerous since it could potentially drop peoples tables
 -- TODO: put in logic to check if any tables have norm_addy and don't drop if they do
 -- Remarking this out for now since we aren't changing norm_addy anyway
-/*DROP TYPE IF EXISTS norm_addy CASCADE;
+/*DROP TYPE IF EXISTS norm_addy CASCADE; 
 CREATE TYPE norm_addy AS (
     address INTEGER,
     preDirAbbrev VARCHAR,
@@ -76,7 +80,7 @@ CREATE TYPE norm_addy AS (
     location VARCHAR,
     stateAbbrev VARCHAR,
     zip VARCHAR,
-    parsed BOOLEAN);*/
+    parsed BOOLEAN); */
 -- prefix and suffix street names for numbered highways
 CREATE TEMPORARY TABLE temp_types AS
 SELECT name, abbrev
@@ -120,7 +124,6 @@ SELECT name, abbrev
         ('I', 'I-'),
         ('I-', 'I-'),
         ('INTERSTATE', 'I-'),
-        ('LOOP', 'Loop'),
         ('ROUTE', 'Rte'),
         ('RTE', 'Rte'),
         ('RT', 'Rte'),
@@ -157,10 +160,12 @@ SELECT name, abbrev, true
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
 DROP TABLE temp_types;           
 DELETE FROM street_type_lookup WHERE name = 'FOREST';
+UPDATE street_type_lookup SET is_hw = false WHERE abbrev = 'Loop';
 
 CREATE TEMPORARY TABLE temp_types AS
 SELECT name, abbrev
     FROM (VALUES 
+ ('LOOP', 'Loop'),
  ('SERVICE DRIVE', 'Svc Dr'),
  ('SERVICE DR', 'Svc Dr'),
  ('SERVICE ROAD', 'Svc Rd'),
@@ -212,4 +217,9 @@ COMMIT;
 -- install missing indexes
 \echo 'Installing missing indexes - this might take a while so be patient ..'
 SELECT install_missing_indexes();
+\a
+--\o 'drop_dup_feat_create_index.sql'
+--\i generate_drop_dupe_featnames.sql
+\o 
+--\i drop_dup_feat_create_index.sql
 \echo 'Missing index Install completed'

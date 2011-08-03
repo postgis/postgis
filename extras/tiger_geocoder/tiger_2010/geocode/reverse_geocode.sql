@@ -23,6 +23,7 @@ DECLARE
   var_primary_dist numeric(10,2) ;
   var_pt geometry;
   var_place varchar;
+  var_county varchar;
   var_stmt text;
   var_debug boolean = false;
   var_zip varchar := NULL;
@@ -58,16 +59,21 @@ BEGIN
 		RAISE NOTICE 'Get matching counties start: %', clock_timestamp();
 	END IF;
 	-- locate county
-	SELECT countyfp INTO var_countyfp FROM county WHERE statefp = var_state AND ST_Intersects(the_geom, var_pt)  LIMIT 1;
+	SELECT countyfp, name INTO var_countyfp, var_county FROM county WHERE statefp = var_state AND ST_Intersects(the_geom, var_pt)  LIMIT 1;
 	
 	--locate zip
 	SELECT zcta5ce INTO var_zip FROM zcta5 WHERE statefp = var_state AND ST_Intersects(the_geom, var_pt)  LIMIT 1;
 	
-	-- lcoate city
+	-- locate city
 	IF var_zip > '' THEN
 	      var_addy.zip := var_zip ;
-	      SELECT z.place INTO var_place FROM zip_state_loc AS z WHERE z.zip = var_zip and z.statefp =  var_state LIMIT 1;
-	      var_addy.location := var_place;
+	END IF;
+	--SELECT z.name INTO var_place FROM place As z WHERE  z.statefp =  var_state AND ST_Intersects(the_geom, var_pt) LIMIT 1;
+	IF var_place > '' THEN
+		var_addy.location := var_place;
+	ELSIF var_zip > '' THEN
+		SELECT z.city INTO var_place FROM zip_lookup_base As z WHERE  z.statefp =  var_state AND z.county = var_county AND z.zip = var_zip LIMIT 1;
+		var_addy.location := var_place;
 	END IF;
 
 	IF var_debug THEN
@@ -90,14 +96,14 @@ BEGIN
 	    WITH ref AS (
 	        SELECT ' || quote_literal(var_pt::text) || '::geometry As ref_geom ) , 
 			f AS 
-			( SELECT faces.* FROM faces CROSS JOIN ref
-			WHERE statefp = ' || quote_literal(var_state) || ' AND countyfp = ' || quote_literal(var_countyfp) || ' 
+			( SELECT faces.* FROM faces  CROSS JOIN ref
+			WHERE faces.statefp = ' || quote_literal(var_state) || ' AND faces.countyfp = ' || quote_literal(var_countyfp) || ' 
 				AND ST_Intersects(faces.the_geom, ref_geom)
 				    ),
 			e AS 
 			( SELECT edges.* , CASE WHEN edges.tfidr = f.tfid THEN ''R'' WHEN edges.tfidl = f.tfid THEN ''L'' ELSE NULL END::varchar As eside,
                     CASE WHEN edges.tfidr = f.tfid THEN rfromadd ELSE lfromadd END As fromhn, CASE WHEN edges.tfidr = f.tfid THEN rtoadd ELSE ltoadd END As tohn,
-                    CASE WHEN edges.tfidr = f.tfid THEN zipr ELSE zipl END As zip , 
+                    CASE WHEN edges.tfidr = f.tfid THEN zipr ELSE zipl END As zip, 
                     ST_ClosestPoint(edges.the_geom,ref_geom) As center_pt, ref_geom
 				FROM edges INNER JOIN f ON (f.statefp = edges.statefp AND (edges.tfidr = f.tfid OR edges.tfidl = f.tfid)) 
 				    CROSS JOIN ref
@@ -168,11 +174,16 @@ BEGIN
                 END IF;
                 var_addy.address := var_nstrnum;
             END IF;
-            IF var_redge.zip > '' AND COALESCE(var_addy.zip,'') <>  var_redge.zip THEN
-                var_addy.zip := var_redge.zip; 
-                SELECT z.place INTO var_place FROM zip_state_loc AS z WHERE z.zip = var_redge.zip and z.statefp =  var_state LIMIT 1;
-                var_addy.location := var_place;
-            END IF;  
+            IF var_redge.zip > ''  THEN
+                var_addy.zip := var_redge.zip;
+            ELSE
+                var_addy.zip := var_zip;
+            END IF;
+            -- IF var_redge.location > '' THEN
+            --     var_addy.location := var_redge.location;
+            -- ELSE
+            --     var_addy.location := var_place;
+            -- END IF;  
             
             -- This is a cross streets - only add if not the primary adress street
             IF var_redge.fullname > '' AND var_redge.fullname <> var_primary_fullname THEN

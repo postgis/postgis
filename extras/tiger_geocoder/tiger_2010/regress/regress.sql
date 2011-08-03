@@ -1,4 +1,5 @@
 \a
+--SET seq_page_cost='1000';
 \o normalize_address_regress.out
 \i normalize_address_regress.sql
 \o geocode_regress.out

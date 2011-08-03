@@ -3,7 +3,7 @@
  * 
  * Copyright (C) 2011 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
--- Note we are wrapping this in a function so we can make it immutable and those useable in an index
+-- Note we are wrapping this in a function so we can make it immutable and thus useable in an index
 -- It also allows us to shorten and possibly better cache the repetitive pattern in the code 
 -- greatest(to_number(b.fromhn,''99999999''),to_number(b.tohn,''99999999'')) 
 -- and least(to_number(b.fromhn,''99999999''),to_number(b.tohn,''99999999''))
@@ -47,6 +47,15 @@ $$
 LANGUAGE sql IMMUTABLE
 COST 5;
 
+
+-- Generate script to drop all non-primary unique indexes on tiger and tiger_data tables
+CREATE OR REPLACE FUNCTION drop_indexes_generate_script(tiger_data_schema text DEFAULT 'tiger_data')
+RETURNS text AS
+$$
+SELECT array_to_string(ARRAY(SELECT 'DROP INDEX ' || schemaname || '.' || indexname || ';' 
+FROM pg_catalog.pg_indexes  where schemaname IN('tiger',$1)  AND indexname NOT LIKE 'uidx%' AND indexname NOT LIKE 'pk_%' AND indexname NOT LIKE '%key'), E'\n');
+$$
+LANGUAGE sql STABLE;
 -- Generate script to create missing indexes in tiger tables. 
 -- This will generate sql you can run to index commonly used join columns in geocoder for tiger and tiger_data schemas --
 CREATE OR REPLACE FUNCTION missing_indexes_generate_script()
@@ -54,10 +63,10 @@ RETURNS text AS
 $$
 SELECT array_to_string(ARRAY(
 -- basic btree regular indexes
-SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(' || c.column_name || ')' As index
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(' || c.column_name || ');' As index
 FROM (SELECT table_name, table_schema  FROM 
 	information_schema.tables WHERE table_type = 'BASE TABLE') As t  INNER JOIN
-	(SELECT * FROM information_schema.columns WHERE column_name IN('countyfp','tlid', 'tfidl', 'tfidr', 'tfid', 'zip') ) AS c  
+	(SELECT * FROM information_schema.columns WHERE column_name IN('countyfp', 'tlid', 'tfidl', 'tfidr', 'tfid', 'zip', 'placefp', 'cousubfp') ) AS c  
 		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
 		LEFT JOIN pg_catalog.pg_indexes i ON 
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
@@ -65,7 +74,7 @@ FROM (SELECT table_name, table_schema  FROM
 WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data')
 -- Gist spatial indexes --
 UNION ALL
-SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || '_gist ON ' || c.table_schema || '.' || c.table_name || ' USING gist(' || c.column_name || ')' As index
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || '_gist ON ' || c.table_schema || '.' || c.table_name || ' USING gist(' || c.column_name || ');' As index
 FROM (SELECT table_name, table_schema FROM 
 	information_schema.tables WHERE table_type = 'BASE TABLE') As t  INNER JOIN
 	(SELECT * FROM information_schema.columns WHERE column_name IN('the_geom', 'geom') ) AS c  
@@ -76,7 +85,7 @@ FROM (SELECT table_name, table_schema FROM
 WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data')
 -- Soundex indexes --
 UNION ALL
-SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_snd_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(soundex(' || c.column_name || '))' As index
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_snd_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(soundex(' || c.column_name || '));' As index
 FROM (SELECT table_name, table_schema FROM 
 	information_schema.tables WHERE table_type = 'BASE TABLE') As t  INNER JOIN
 	(SELECT * FROM information_schema.columns WHERE column_name IN('name', 'place', 'city') ) AS c  
@@ -86,22 +95,22 @@ FROM (SELECT table_name, table_schema FROM
 				AND  indexdef LIKE '%soundex(%' || c.column_name || '%' AND indexdef LIKE '%_snd_' || c.column_name || '%' ) 
 WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data') 
     AND (c.table_name LIKE '%county%' OR c.table_name LIKE '%featnames'
-    OR c.table_name  LIKE '%place' or c.table_name LIKE '%zip%') 
+    OR c.table_name  LIKE '%place' or c.table_name LIKE '%zip%'  or c.table_name LIKE '%cousub') 
 -- Lower indexes --
 UNION ALL
-SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_lower_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(lower(' || c.column_name || '))' As index
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_lower_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(lower(' || c.column_name || '));' As index
 FROM (SELECT table_name, table_schema FROM 
 	information_schema.tables WHERE table_type = 'BASE TABLE') As t  INNER JOIN
 	(SELECT * FROM information_schema.columns WHERE column_name IN('name', 'place', 'city') ) AS c  
 		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
 		LEFT JOIN pg_catalog.pg_indexes i ON 
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
-				AND  indexdef LIKE '%lower(%' || c.column_name || '%') 
+				AND  indexdef LIKE '%btree%(%lower(%' || c.column_name || '%') 
 WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data') 
-    AND (c.table_name LIKE '%county%' OR c.table_name LIKE '%featnames' OR c.table_name  LIKE '%place' or c.table_name LIKE '%zip%') 
+    AND (c.table_name LIKE '%county%' OR c.table_name LIKE '%featnames' OR c.table_name  LIKE '%place' or c.table_name LIKE '%zip%' or c.table_name LIKE '%cousub') 
 -- Least address index btree least_hn(fromhn, tohn)
 UNION ALL
-SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_least_address' || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(least_hn(fromhn, tohn))' As index
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_least_address' || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(least_hn(fromhn, tohn));' As index
 FROM (SELECT table_name, table_schema FROM 
 	information_schema.tables WHERE table_type = 'BASE TABLE' AND table_name LIKE '%addr' AND table_schema IN('tiger','tiger_data')) As t  INNER JOIN
 	(SELECT * FROM information_schema.columns WHERE column_name IN('fromhn') ) AS c  
@@ -110,28 +119,49 @@ FROM (SELECT table_name, table_schema FROM
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
 				AND  indexdef LIKE '%least_hn(%' || c.column_name || '%') 
 WHERE i.tablename IS NULL
--- var_ops fullname --
+-- var_ops lower --
 UNION ALL
 SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_l' || c.column_name || '_var_ops' || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(lower(' || c.column_name || ') varchar_pattern_ops);' As index
 FROM (SELECT table_name, table_schema FROM 
-	information_schema.tables WHERE table_type = 'BASE TABLE' AND table_name LIKE '%featnames' AND table_schema IN('tiger','tiger_data')) As t  INNER JOIN
-	(SELECT * FROM information_schema.columns WHERE column_name IN('fullname') ) AS c  
+	information_schema.tables WHERE table_type = 'BASE TABLE' AND (table_name LIKE '%featnames' or table_name LIKE '%place' or table_name LIKE '%zip_lookup_base' or table_name LIKE '%zip_state_loc') AND table_schema IN('tiger','tiger_data')) As t  INNER JOIN
+	(SELECT * FROM information_schema.columns WHERE column_name IN('name', 'city', 'place', 'fullname') ) AS c  
 		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
 		LEFT JOIN pg_catalog.pg_indexes i ON 
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
 				AND  indexdef LIKE '%btree%(%lower%' || c.column_name || ')%varchar_pattern_ops%') 
 WHERE i.tablename IS NULL
 -- var_ops mtfcc --
-UNION ALL
+/** UNION ALL
 SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || '_var_ops' || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(' || c.column_name || ' varchar_pattern_ops);' As index
 FROM (SELECT table_name, table_schema FROM 
-	information_schema.tables WHERE table_type = 'BASE TABLE' AND table_name LIKE '%featnames' or table_name LIKE '%edges' AND table_schema IN('tiger','tiger_data')) As t  INNER JOIN
+	information_schema.tables WHERE table_type = 'BASE TABLE' AND (table_name LIKE '%featnames' or table_name LIKE '%edges') AND table_schema IN('tiger','tiger_data')) As t  INNER JOIN
 	(SELECT * FROM information_schema.columns WHERE column_name IN('mtfcc') ) AS c  
 		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
 		LEFT JOIN pg_catalog.pg_indexes i ON 
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
 				AND  indexdef LIKE '%btree%(' || c.column_name || '%varchar_pattern_ops%') 
+WHERE i.tablename IS NULL **/
+-- zipl zipr on edges --
+UNION ALL
+SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(' || c.column_name || ' );' As index
+FROM (SELECT table_name, table_schema FROM 
+	information_schema.tables WHERE table_type = 'BASE TABLE' AND table_name LIKE '%edges' AND table_schema IN('tiger','tiger_data')) As t  INNER JOIN
+	(SELECT * FROM information_schema.columns WHERE column_name IN('zipl', 'zipr') ) AS c  
+		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
+		LEFT JOIN pg_catalog.pg_indexes i ON 
+			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
+				AND  indexdef LIKE '%btree%(' || c.column_name || '%)%') 
 WHERE i.tablename IS NULL
+
+-- unique index on tlid state county --
+/*UNION ALL
+SELECT 'CREATE UNIQUE INDEX uidx_' || t.table_schema || '_' || t.table_name || '_tlid_statefp_countyfp ON ' || t.table_schema || '.' || t.table_name || ' USING btree(tlid,statefp,countyfp);' As index
+FROM (SELECT table_name, table_schema FROM 
+	information_schema.tables WHERE table_type = 'BASE TABLE' AND table_name LIKE '%edges' AND table_schema IN('tiger','tiger_data')) As t  
+		LEFT JOIN pg_catalog.pg_indexes i ON 
+			(i.tablename = t.table_name AND i.schemaname = t.table_schema 
+				AND  indexdef LIKE '%btree%(%tlid,%statefp%countyfp%)%') 
+WHERE i.tablename IS NULL*/
 --full text indexes on name field--
 /**UNION ALL
 SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_fullname_ft_gist' || ' ON ' || c.table_schema || '.' || c.table_name || ' USING gist(to_tsvector(''english'',fullname))' As index
@@ -155,7 +185,7 @@ FROM (SELECT table_name, table_schema FROM
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
 				AND  indexdef LIKE '%gist%(' || c.column_name || '%gist_trgm_ops%') 
 WHERE i.tablename IS NULL **/ 
-ORDER BY 1), E';\r');
+ORDER BY 1), E'\r');
 $$
 LANGUAGE sql VOLATILE;
 
@@ -170,3 +200,42 @@ BEGIN
 END
 $$
 language plpgsql;
+
+
+CREATE OR REPLACE FUNCTION drop_dupe_featnames_generate_script() RETURNS text 
+AS
+$$
+
+SELECT array_to_string(ARRAY(SELECT 'CREATE TEMPORARY TABLE dup AS
+SELECT min(f.gid) As min_gid, f.tlid, lower(f.fullname) As fname
+	FROM ONLY ' || t.table_schema || '.' || t.table_name || ' As f
+	GROUP BY f.tlid, lower(f.fullname) 
+	HAVING count(*) > 1;
+	
+DELETE FROM ' || t.table_schema || '.' || t.table_name || ' AS feat
+WHERE EXISTS (SELECT tlid FROM dup WHERE feat.tlid = dup.tlid AND lower(feat.fullname) = dup.fname
+		AND feat.gid > dup.min_gid);
+DROP TABLE dup;
+CREATE INDEX idx_' || t.table_schema || '_' || t.table_name || '_tlid ' || ' ON ' || t.table_schema || '.' || t.table_name || ' USING btree(tlid); 
+' As drop_sql_create_index
+FROM (SELECT table_name, table_schema FROM 
+	information_schema.tables WHERE table_type = 'BASE TABLE' AND (table_name LIKE '%featnames' ) AND table_schema IN('tiger','tiger_data')) As t 
+		LEFT JOIN pg_catalog.pg_indexes i ON 
+			(i.tablename = t.table_name AND i.schemaname = t.table_schema 
+				AND  indexdef LIKE '%btree%(%tlid%') 
+WHERE i.tablename IS NULL) ,E'\r');
+
+$$
+LANGUAGE sql VOLATILE;
+
+--DROP FUNCTION IF EXISTS zip_range(text,integer,integer);
+-- Helper function that useful for catch slight mistakes in zip position given a 5 digit zip code
+-- will return a range of zip codes that are between zip - num_before and zip - num_after
+-- e.g. usage -> zip_range('02109', -1,+1) -> {'02108', '02109', '02110'}
+CREATE OR REPLACE FUNCTION zip_range(zip text, range_start integer, range_end integer) RETURNS varchar[] AS
+$$
+   SELECT ARRAY(
+        SELECT lpad((to_number( CASE WHEN trim(substring($1,1,5)) ~ '^[0-9]+$' THEN $1 ELSE '0' END,'99999')::integer + i)::text, 5, '0')::varchar
+        FROM generate_series($2, $3) As i );
+$$
+LANGUAGE sql IMMUTABLE STRICT;

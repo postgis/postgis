@@ -42,6 +42,9 @@ BEGIN
     END IF;
 
     addrwidth := greatest(addr1,addr2) - least(addr1,addr2);
+    IF addrwidth = 0 or addrwidth IS NULL THEN
+        addrwidth = 1;
+    END IF;
     part := (given_address - least(addr1,addr2)) / trunc(addrwidth, 1);
 
     IF addr1 > addr2 THEN
