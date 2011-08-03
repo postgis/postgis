@@ -31,6 +31,82 @@
      and uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function.  It is packaged as a webservice interface and seems designed to be called as a webservice.
      Just like the tiger geocoder, it has both a geocoder and a reverse geocoder component.  From the documentation, it is unclear if it has a pure SQL interface like the tiger geocoder, or if a good deal of the logic is implemented in the web interface.</para>
 	
+    <refentry id="Drop_Indexes_Generate_Script">
+	  <refnamediv>
+		<refname>Drop_Indexes_Generate_Script</refname>
+
+		<refpurpose>Generates a script that drops all non-primary key and non-unique indexes on tiger schema and user specified schema.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>Drop_Indexes_Generate_Script</function></funcdef>
+				<paramdef><type choice='opt'>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
+			</funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Generates a script that drops all non-primary key and non-unique indexes on tiger schema and user specified schema.  Defaults schema to <varname>tiger_data</varname> if no schema is specified.</para>
+		<para>This is useful for minimizing index bloat that may confuse the query planner or take up unnecessary space.  Use in combination with <xref linkend="Install_Missing_Indexes"/> to add just the indexes used by the geocoder.</para>
+	
+		
+		<para>Availability: 2.0.0</para>
+
+
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>SELECT drop_indexes_generate_script() As actionsql;
+actionsql
+---------------------------------------------------------
+DROP INDEX tiger.idx_tiger_countysub_lookup_lower_name;
+DROP INDEX tiger.idx_tiger_edges_countyfp;
+DROP INDEX tiger.idx_tiger_faces_countyfp;
+DROP INDEX tiger.tiger_place_the_geom_gist;
+DROP INDEX tiger.tiger_edges_the_geom_gist;
+DROP INDEX tiger.tiger_state_the_geom_gist;
+DROP INDEX tiger.idx_tiger_addr_least_address;
+DROP INDEX tiger.idx_tiger_addr_tlid;
+DROP INDEX tiger.idx_tiger_addr_zip;
+DROP INDEX tiger.idx_tiger_county_countyfp;
+DROP INDEX tiger.idx_tiger_county_lookup_lower_name;
+DROP INDEX tiger.idx_tiger_county_lookup_snd_name;
+DROP INDEX tiger.idx_tiger_county_lower_name;
+DROP INDEX tiger.idx_tiger_county_snd_name;
+DROP INDEX tiger.idx_tiger_county_the_geom_gist;
+DROP INDEX tiger.idx_tiger_countysub_lookup_snd_name;
+DROP INDEX tiger.idx_tiger_cousub_countyfp;
+DROP INDEX tiger.idx_tiger_cousub_cousubfp;
+DROP INDEX tiger.idx_tiger_cousub_lower_name;
+DROP INDEX tiger.idx_tiger_cousub_snd_name;
+DROP INDEX tiger.idx_tiger_cousub_the_geom_gist;
+DROP INDEX tiger_data.idx_tiger_data_ma_addr_least_address;
+DROP INDEX tiger_data.idx_tiger_data_ma_addr_tlid;
+DROP INDEX tiger_data.idx_tiger_data_ma_addr_zip;
+DROP INDEX tiger_data.idx_tiger_data_ma_county_countyfp;
+DROP INDEX tiger_data.idx_tiger_data_ma_county_lookup_lower_name;
+DROP INDEX tiger_data.idx_tiger_data_ma_county_lookup_snd_name;
+DROP INDEX tiger_data.idx_tiger_data_ma_county_lower_name;
+DROP INDEX tiger_data.idx_tiger_data_ma_county_snd_name;
+:
+:
+</programlisting>
+	
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Install_Missing_Indexes"/>, <xref linkend="Missing_Indexes_Generate_Script"/></para>
+	  </refsection>
+	</refentry>
+	
     <refentry id="Drop_State_Tables_Generate_Script">
 	  <refnamediv>
 		<refname>Drop_State_Tables_Generate_Script</refname>
@@ -656,13 +732,13 @@ FROM (SELECT address As actual_addr, lon, lat,
     reverse_geocode( ST_SetSRID(ST_Point(lon,lat),4326) ) As rg
     FROM addresses_to_geocode WHERE rating IS NOT NULL) As foo;
 
-                     actual_addr                     |    lon    |   lat    |                 int_addr1    |      cross1       |     cross2
------------------------------------------------------+-----------+----------+------------------------------+-------------------+-----------------
- 529 Main Street, Boston MA, 02129                   | -71.07187 | 42.38351 | 538 Main St, Boston, MA 02129| Main St           |
- 77 Massachusetts Avenue, Cambridge, MA 02139        | -71.09436 | 42.35981 | 60 Massachusetts Ave, Cambr..| Massachusetts Ave | Wellesley St
- 28 Capen Street, Medford, MA                        | -71.12184 | 42.41010 | 29 Capen St, Malden, MA 02155| Capen St Exd      |
- 124 Mount Auburn St, Cambridge, Massachusetts 02138 | -71.12298 | 42.37336 | 2 University Rd, Belmont, M..| University Rd     | Mount Auburn St
- 950 Main Street, Worcester, MA 01610                | -71.82361 | 42.24948 | 963 Main St, Worceste.. 01603| Main St           | Crystal St</programlisting>
+                     actual_addr                     |    lon    |   lat    |                 int_addr1                 |     cross1      |  cross2   
+-----------------------------------------------------+-----------+----------+-------------------------------------------+-----------------+-----------
+ 529 Main Street, Boston MA, 02129                   | -71.07187 | 42.38351 | 538 Main St, Boston, MA 02129             | Mishawum St     | 
+ 77 Massachusetts Avenue, Cambridge, MA 02139        | -71.09436 | 42.35981 | 58 Massachusetts Ave, Cambridge, MA 02139 | Wellesley St    | Vassar St
+ 28 Capen Street, Medford, MA                        | -71.12184 | 42.41010 | 29 Capen St, Medford, MA 02155            |                 | 
+ 124 Mount Auburn St, Cambridge, Massachusetts 02138 | -71.12298 | 42.37336 | 1 University Rd, Cambridge, MA 02138      | Mount Auburn St | 
+ 950 Main Street, Worcester, MA 01610                | -71.82361 | 42.24948 | 950 Main St, Worcester, MA 01610          | Maywood St      | </programlisting>
       </refsection>
     
       <!-- Optionally add a "See Also" section -->
