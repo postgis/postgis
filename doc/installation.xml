@@ -461,8 +461,9 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <para>
 		As of PostGIS v1.4.0, all the functions have comments generated from the
 		documentation. If you wish to install these comments into your spatial
-		databases later, run the command which requires docbook.  The postgis_comments.sql
-			is also packaged in the tar.gz distribution in the doc folder so no need to make comments
+		databases later, run the command which requires docbook.  The postgis_comments.sql and other
+		package comments files raster_comments.sql, topology_comments.sql are
+			also packaged in the tar.gz distribution in the doc folder so no need to make comments
 			if installing from the tar ball.
 	  </para>
 
@@ -831,7 +832,7 @@ Failed: 0
 
 	<para>
 	  PostGIS provides a SOFT UPGRADE procedure for minor or bugfix releases,
-	  and an HARD UPGRADE procedure for major releases.
+	  and a HARD UPGRADE procedure for major releases.
 	</para>
 
 	<para>
@@ -876,6 +877,10 @@ Failed: 0
 		call it "olddb") include binary blobs (-b) and verbose (-v) output.  The user can be the owner of the db, need not be postgres
 		super account.
 	  </para>
+	  <note><para>The following described process will show quite a few errors. DO NOT BE ALARMED.  This is expected
+	  		since functions and objects already defined in the new version of postgis will fail when pg_restore tries to restore them.
+	  		This is desired.  Errors you do need to be cognizant of are those of failed restore of tables other than geometry_columns and spatial_ref_sys.</para>
+	  </note>
 
 	  <programlisting>pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f "/somepath/olddb.backup" olddb</programlisting>
 	  
@@ -884,15 +889,23 @@ Failed: 0
 
 	  <para>Do a fresh install of PostGIS in a new database -- we'll refer to this database as <varname>newdb</varname>.  
 	  Please refer to <xref linkend="create_new_db" /> for instructions on how to do this.</para>
+	  
+	  <para>Install the <filename>legacy_compatibility_layer.sql</filename>.  This installs the minimum legacy functions needed to restore
+	  	most old databases.  If your database is really old or you know you've been using long 
+	  	deprecated functions in your views and functions, you might need to install the <filename>legacy.sql</filename>
+	  	instead of <filename>legacy_compatbility_layer.sql</filename>
+	  	for all your functions and views etc. to properly come back.</para>
+	  
+	  <programlisting>psql  -h localhost -p 5432 -U postgres -d newdb -f legacy_compatibility_layer.sql</programlisting>
 	
 	  <para>Restore your backup into your fresh <varname>newdb</varname> database using pg_restore.</para>
 
 	  <programlisting>pg_restore -h localhost -p 5432 -U postgres -d newdb "/somepath/olddb.backup"</programlisting>
 
-	  <para>Finally run the <filename>uninstall_legacy.sql</filename> script in this new database.  NOTE: This step is
-	      important even if you plan to reinstall legacy functions.  This is because many functions have been revised to use default parameters, and
+	  <para>Finally run the <filename>postgis_upgrade_20_minor.sql</filename> script in this new database.  NOTE: This step is
+	      very important because many functions have been revised to use default parameters, and
 	      your old install would therefore restore these which would result in ambiguous name conflicts when called.</para>
-	  <programlisting>psql  -h localhost -p 5432 -U postgres -d newdb -f uninstall_legacy.sql</programlisting>
+	  <programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f postgis_upgrade_20_minor.sql</programlisting>
 
 	  <para>If your applications or GIS tools rely on old deprecated functions, you can restore these by installing the <filename>legacy.sql</filename></para>
 	  <programlisting>psql  -h localhost -p 5432 -U postgres -d newdb -f legacy.sql</programlisting>
