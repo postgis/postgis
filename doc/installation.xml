@@ -914,7 +914,6 @@ Failed: 0
 
   <sect1>
 	<title>Common Problems</title>
-
 	<para>
 	  There are several things to check when your installation or upgrade
 	  doesn't go as you expected.
@@ -923,7 +922,7 @@ Failed: 0
 	<orderedlist>
 	  <listitem>
 		<para>
-		  Check that you you have installed PostgreSQL &min_postgres_version;
+		  Check that you have installed PostgreSQL &min_postgres_version;
 		  or newer, and that you are compiling against the same version of the
 		  PostgreSQL source as the version of PostgreSQL that is running.
 		  Mix-ups can occur when your (Linux) distribution has already
@@ -942,6 +941,11 @@ Failed: 0
 		  existence of pre-installed packages using the <command>rpm</command>
 		  command as follows: <command>rpm -qa | grep postgresql</command>
 		</para>
+	  </listitem>
+	  
+	  <listitem>
+	  	<para>If your upgrade fails, make sure you are restoring into a database that already has PostGIS installed.</para>
+	  	<programlisting>SELECT postgis_full_version();</programlisting>
 	  </listitem>
 	</orderedlist>
 
