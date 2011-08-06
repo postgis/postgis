@@ -96,12 +96,14 @@ all: liblwgeom.a
 # nothing to install or uninstall
 install uninstall:
 
-install-liblwgeom: liblwgeom.so
+install-liblwgeom: liblwgeom.so liblwgeom.a
 	$(INSTALL) liblwgeom.so $(DESTDIR)$(libdir)/liblwgeom.so.$(SOVER)
+	$(INSTALL) liblwgeom.a $(DESTDIR)$(libdir)/liblwgeom.a
 	@echo "Remember to run ldconfig"
 
 uninstall-liblwgeom: 
 	rm -f $(DESTDIR)$(libdir)/liblwgeom.so.$(SOVER)
+	rm -f $(DESTDIR)$(libdir)/liblwgeom.a
 
 liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
 	ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
