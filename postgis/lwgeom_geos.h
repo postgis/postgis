@@ -1,8 +1,8 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
+ *
  * Copyright 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under
@@ -48,10 +48,4 @@ GEOSGeometry * POSTGIS2GEOS(PG_LWGEOM *g);
 
 
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
-
-/*
- * This function would better be moved to the GEOS C-API
- */
-GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
-
 

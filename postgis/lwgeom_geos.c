@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -78,122 +77,6 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 ** Prototypes end
 */
 
-
-GEOSGeometry*
-LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
-{
-	GEOSGeometry *tmp;
-	GEOSGeometry *geos_result, *shp;
-	GEOSGeometry const *vgeoms[1];
-	uint32 i, ngeoms;
-
-	vgeoms[0] = geom_in;
-	geos_result = GEOSPolygonize(vgeoms, 1);
-
-	POSTGIS_DEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
-
-	/* Null return from GEOSpolygonize (an exception) */
-	if ( ! geos_result ) return 0;
-
-	/*
-	 * We should now have a collection
-	 */
-#if PARANOIA_LEVEL > 0
-	if ( GEOSGeometryTypeId(geos_result) != COLLECTIONTYPE )
-	{
-		GEOSGeom_destroy(geos_result);
-		lwerror("Unexpected return from GEOSpolygonize");
-		return 0;
-	}
-#endif
-
-	ngeoms = GEOSGetNumGeometries(geos_result);
-
-	POSTGIS_DEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
-	POSTGIS_DEBUGF(3, "GEOSpolygonize: polygonized:%s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0), PARSER_CHECK_NONE));
-
-	/*
-	 * No geometries in collection, early out
-	 */
-	if ( ngeoms == 0 )
-	{
-		return geos_result;
-	}
-
-	/*
-	 * Return first geometry if we only have one in collection,
-	 * to avoid the unnecessary Geometry clone below.
-	 */
-	if ( ngeoms == 1 )
-	{
-		tmp = (GEOSGeometry *)GEOSGetGeometryN(geos_result, 0);
-		if ( ! tmp )
-		{
-			GEOSGeom_destroy(geos_result);
-			return 0; /* exception */
-		}
-		shp = GEOSGeom_clone(tmp);
-		GEOSGeom_destroy(geos_result); /* only safe after the clone above */
-		return shp;
-	}
-
-	/*
-	 * Iteratively invoke symdifference on outer rings
-	 * as suggested by Carl Anderson:
-	 * postgis-devel/2005-December/001805.html
-	 */
-	shp = NULL;
-	for (i=0; i<ngeoms; ++i)
-	{
-		GEOSGeom extring;
-		GEOSCoordSeq sq;
-
-		/*
-		 * Construct a Polygon from geometry i exterior ring
-		 * We don't use GEOSGeom_clone on the ExteriorRing
-		 * due to a bug in CAPI contained in GEOS 2.2 branch
-		 * failing to properly return a LinearRing from
-		 * a LinearRing clone.
-		 */
-		sq=GEOSCoordSeq_clone(GEOSGeom_getCoordSeq(
-		                          GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
-		                      ));
-		extring = GEOSGeom_createPolygon(
-		              GEOSGeom_createLinearRing(sq),
-		              NULL, 0
-		          );
-
-		if ( extring == NULL ) /* exception */
-		{
-			lwerror("GEOSCreatePolygon threw an exception");
-			return 0;
-		}
-
-		if ( shp == NULL )
-		{
-			shp = extring;
-			POSTGIS_DEBUGF(3, "GEOSpolygonize: shp:%s",
-			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0), PARSER_CHECK_NONE));
-		}
-		else
-		{
-			tmp = GEOSSymDifference(shp, extring);
-			POSTGIS_DEBUGF(3, "GEOSpolygonize: SymDifference(%s, %s):%s",
-			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0), PARSER_CHECK_NONE),
-			               lwgeom_to_ewkt(GEOS2LWGEOM(extring, 0), PARSER_CHECK_NONE),
-			               lwgeom_to_ewkt(GEOS2LWGEOM(tmp, 0), PARSER_CHECK_NONE)
-			              );
-			GEOSGeom_destroy(shp);
-			GEOSGeom_destroy(extring);
-			shp = tmp;
-		}
-	}
-
-	GEOSGeom_destroy(geos_result);
-
-	return shp;
-}
 
 PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
@@ -3645,82 +3528,31 @@ Datum linemerge(PG_FUNCTION_ARGS)
  * (Polygon or MultiPolygon).
  * Actually a wrapper around GEOSpolygonize,
  * transforming the resulting collection into
- * a valid polygonzl Geometry.
+ * a valid polygon Geometry.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_buildarea);
 Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 {
-	int is3d = 0;
 	PG_LWGEOM *result;
 	PG_LWGEOM *geom;
-	GEOSGeometry* geos_in;
-	GEOSGeometry* geos_out;
-	LWGEOM *lwgeom;
-	int srid=SRID_UNKNOWN;
-#if POSTGIS_DEBUG_LEVEL >= 3
-	static int call=1;
-#endif
+	LWGEOM *lwgeom_in, *lwgeom_out;
 
 	geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom_in = pglwgeom_deserialize(geom);
 
-	/* Can't build an area from an empty! */
-	if ( lwgeom_is_empty(lwgeom) )
-	{
-		lwgeom_free(lwgeom);
-		PG_RETURN_POINTER(geom);
-	}
-
-#if POSTGIS_DEBUG_LEVEL >= 3
-	call++;
-	lwnotice("buildarea called (call %d)", call);
-#endif
-
-	srid = pglwgeom_get_srid(geom);
-	is3d = pglwgeom_has_z(geom);
-
-	POSTGIS_DEBUGF(3, "LWGEOM_buildarea got geom @ %p", geom);
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	geos_in = LWGEOM2GEOS(lwgeom);
-	lwgeom_free(lwgeom);
-	
-	if ( 0 == geos_in )   /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		PG_RETURN_NULL();
-	}
-	geos_out = LWGEOM_GEOS_buildArea(geos_in);
-	GEOSGeom_destroy(geos_in);
-
-	if ( ! geos_out ) /* exception thrown.. */
-	{
-		lwerror("LWGEOM_GEOS_buildArea: %s", lwgeom_geos_errmsg);
+	lwgeom_out = lwgeom_buildarea(lwgeom_in);
+	if ( ! lwgeom_out ) {
+		lwgeom_free(lwgeom_in) ;
+		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
 
-	/* If no geometries are in result collection, return NULL */
-	if ( GEOSGetNumGeometries(geos_out) == 0 )
-	{
-		GEOSGeom_destroy(geos_out);
-		PG_RETURN_NULL();
-	}
+	result = pglwgeom_serialize(lwgeom_out) ;
 
-	GEOSSetSRID(geos_out, srid);
-	result = GEOS2POSTGIS(geos_out, is3d);
-	GEOSGeom_destroy(geos_out);
-
-#if PARANOIA_LEVEL > 0
-	if ( result == NULL )
-	{
-		lwerror("serialization error");
-		PG_RETURN_NULL(); /*never get here */
-	}
-
-#endif
+	lwgeom_free(lwgeom_out) ;
+	lwgeom_free(lwgeom_in) ;
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
-
 }
 
