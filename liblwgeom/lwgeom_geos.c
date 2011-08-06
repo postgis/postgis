@@ -936,3 +936,28 @@ lwgeom_buildarea(LWGEOM *geom)
 
 	return geom_out;
 }
+
+LWGEOM*
+lwgeom_geos_noop(LWGEOM* geom_in)
+{
+	GEOSGeometry *geosgeom;
+	LWGEOM* geom_out;
+
+	int is3d = FLAGS_GET_Z(geom_in->flags);
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+	geosgeom = LWGEOM2GEOS(geom_in);
+	if ( ! geosgeom ) {
+		lwerror("Geometry could not be converted to GEOS: %s",
+			lwgeom_geos_errmsg);
+		return NULL;
+	}
+	geom_out = GEOS2LWGEOM(geosgeom, is3d);
+	GEOSGeom_destroy(geosgeom);
+	if ( ! geom_out ) {
+		lwerror("GEOS Geometry could not be converted to LWGEOM: %s",
+			lwgeom_geos_errmsg);
+	}
+	return geom_out;
+	
+}

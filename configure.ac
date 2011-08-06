@@ -496,6 +496,8 @@ fi
 dnl Extract the linker and include flags 
 GEOS_LDFLAGS=`$GEOSCONFIG --ldflags`
 GEOS_CPPFLAGS=-I`$GEOSCONFIG --includes`
+AC_SUBST([GEOS_LDFLAGS])
+AC_SUBST([GEOS_CPPFLAGS])
 
 dnl Ensure that we can parse geos_c.h
 CPPFLAGS_SAVE="$CPPFLAGS"

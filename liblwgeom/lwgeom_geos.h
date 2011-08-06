@@ -25,6 +25,7 @@ LWGEOM *lwgeom_difference(LWGEOM *geom1, LWGEOM *geom2) ;
 LWGEOM *lwgeom_symdifference(LWGEOM* geom1, LWGEOM* geom2) ;
 LWGEOM* lwgeom_union(LWGEOM *geom1, LWGEOM *geom2) ;
 LWGEOM* lwgeom_buildarea(LWGEOM *geom) ;
+LWGEOM* lwgeom_geos_noop(LWGEOM *geom) ;
 
 
 

@@ -10,9 +10,10 @@
 # *
 # **********************************************************************
 
-CC=@CC@
-CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ 
-NUMERICFLAGS=@NUMERICFLAGS@
+CC = @CC@
+CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@
+LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
+NUMERICFLAGS = @NUMERICFLAGS@
 
 YACC=@YACC@
 LEX=@LEX@

@@ -11,7 +11,8 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @WARNFLAGS@
+CFLAGS=@CFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@
+LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
@@ -23,6 +24,7 @@ OBJS=	\
 	cu_misc.o \
 	cu_ptarray.o \
 	cu_geodetic.o \
+	cu_geos.o \
 	cu_measures.o \
 	cu_libgeom.o \
 	cu_surface.o \
@@ -55,7 +57,7 @@ endif
 
 # Build the main unit test executable
 cu_tester: ../liblwgeom.a $(OBJS)
-	$(CC) -o $@ $(OBJS) ../liblwgeom.a -lm $(CUNIT_LDFLAGS)
+	$(CC) -o $@ $(OBJS) ../liblwgeom.a -lm $(CUNIT_LDFLAGS) $(LDFLAGS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
