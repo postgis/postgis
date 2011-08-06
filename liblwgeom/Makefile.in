@@ -125,7 +125,7 @@ clean:
 # Nothing specific in distclean (will be done by clean)
 distclean:
 
-check: liblwgeom.la
+check: liblwgeom.a
 	make -C cunit check
 
 # Command to build each of the .o files
