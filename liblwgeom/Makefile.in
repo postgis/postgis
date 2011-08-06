@@ -83,7 +83,9 @@ SA_HEADERS = \
 	libtgeom.h \
 	lwgeom_geos.h
 
-LT_OBJS = $(SA_OBJS:.o=.lo) $(NM_OBJS:.o=.lo)
+LT_SA_OBJS = $(SA_OBJS:.o=.lo)
+LT_NM_OBJS = $(NM_OBJS:.o=.lo)
+LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
 
 all: liblwgeom.la
 
@@ -106,7 +108,8 @@ clean:
 	rm -f $(SA_OBJS) 
 	rm -f $(NM_OBJS) 
 	rm -f liblwgeom.a 
-	rm -f $(LT_OBJS) 
+	rm -f $(LT_SA_OBJS) 
+	rm -f $(LT_NM_OBJS) 
 	rm -f liblwgeom.la 
 	rm -rf .libs
 
@@ -117,8 +120,11 @@ check: liblwgeom.la
 	make -C cunit check
 
 # Command to build each of the .lo files
-$(LT_OBJS): %.lo: %.c 
+$(LT_SA_OBJS): %.lo: %.c 
 	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
+
+$(LT_NM_OBJS): %.lo: %.c 
+	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
 # Command to build each of the .o files
 $(SA_OBJS): %.o: %.c 
