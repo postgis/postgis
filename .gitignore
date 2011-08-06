@@ -1,4 +1,7 @@
 *.a
+*.la
+.libs
+*.lo
 aclocal.m4
 autom4te.cache/
 config.guess

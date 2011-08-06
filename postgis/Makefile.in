@@ -74,7 +74,7 @@ OBJS=$(PG_OBJS)
 # older version of PostGIS, rather than with the static liblwgeom.a 
 # supplied with newer versions of PostGIS
 PG_CPPFLAGS+=@CPPFLAGS@ -I../liblwgeom
-SHLIB_LINK+=@SHLIB_LINK@ ../liblwgeom/liblwgeom.a
+SHLIB_LINK+=@SHLIB_LINK@ ../liblwgeom/.libs/liblwgeom.a
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)
@@ -107,7 +107,7 @@ endif
 
 # Make all PostGIS objects depend upon liblwgeom, so that if an underlying
 # change is made, a PostGIS rebuild is triggered.
-$(PG_OBJS): ../liblwgeom/liblwgeom.a 
+$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a 
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in

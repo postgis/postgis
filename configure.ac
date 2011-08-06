@@ -777,7 +777,7 @@ if test "x$RASTER" = "xraster"; then dnl # {
     dnl ================================================
     POSTGIS_SRCDIR=`$PWDREGRESS`
     LIBLWGEOM_CFLAGS="-I${POSTGIS_SRCDIR}/liblwgeom"
-    LIBLWGEOM_LDFLAGS="${POSTGIS_SRCDIR}/liblwgeom/liblwgeom.a"
+    LIBLWGEOM_LDFLAGS="${POSTGIS_SRCDIR}/liblwgeom/.libs/liblwgeom.a"
 
     AC_SUBST([POSTGIS_SRCDIR])
     AC_SUBST([LIBLWGEOM_CFLAGS])
