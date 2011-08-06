@@ -38,6 +38,7 @@
 
 
 #include "liblwgeom_internal.h"
+#include "stringbuffer.h"
 
 /**
 * Allocate a new stringbuffer_t. Use stringbuffer_destroy to free.

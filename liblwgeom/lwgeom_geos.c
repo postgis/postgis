@@ -14,6 +14,8 @@
 #include "liblwgeom.h"
 #include "profile.h"
 
+#include <stdlib.h>
+
 
 char lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE];
 

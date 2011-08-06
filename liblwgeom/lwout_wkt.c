@@ -10,6 +10,7 @@
  **********************************************************************/
 
 #include "liblwgeom_internal.h"
+#include "stringbuffer.h"
 
 static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uchar variant);
 

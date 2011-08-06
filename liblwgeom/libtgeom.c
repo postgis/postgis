@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "liblwgeom_internal.h"
 #include "libtgeom.h"

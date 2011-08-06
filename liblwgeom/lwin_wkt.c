@@ -1,3 +1,16 @@
+/**********************************************************************
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ *
+ * Copyright 2010 Paul Ramsey <pramsey@cleverelephant.ca>
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ *
+ **********************************************************************/
+
+#include <stdlib.h>
+
 #include "lwin_wkt.h"
 #include "lwin_wkt_parse.h"
 
