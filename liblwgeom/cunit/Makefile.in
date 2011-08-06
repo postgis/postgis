@@ -56,8 +56,8 @@ check: cu_tester
 endif
 
 # Build the main unit test executable
-cu_tester: ../.libs/liblwgeom.a $(OBJS)
-	$(CC) -o $@ $(OBJS) ../.libs/liblwgeom.a -lm $(CUNIT_LDFLAGS) $(LDFLAGS)
+cu_tester: ../liblwgeom.a $(OBJS)
+	$(CC) -o $@ $(OBJS) ../liblwgeom.a -lm $(CUNIT_LDFLAGS) $(LDFLAGS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c

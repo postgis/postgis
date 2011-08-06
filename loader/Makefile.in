@@ -39,7 +39,7 @@ ICONV_LDFLAGS=@ICONV_LDFLAGS@
 ICONV_CFLAGS=@ICONV_CFLAGS@
 
 # liblwgeom
-LIBLWGEOM=../liblwgeom/.libs/liblwgeom.a
+LIBLWGEOM=../liblwgeom/liblwgeom.a
 
 # GTK includes and libraries
 GTK_CFLAGS = @GTK_CFLAGS@ @IGE_MAC_CFLAGS@

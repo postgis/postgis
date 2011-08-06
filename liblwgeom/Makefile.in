@@ -15,7 +15,13 @@ CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@
 LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
 NUMERICFLAGS = @NUMERICFLAGS@
 top_builddir = @top_builddir@
-LIBTOOL = @LIBTOOL@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+libdir = @libdir@
+INSTALL = $(SHELL) ../install-sh
+
+SONAME = liblwgeom.so.@POSTGIS_MAJOR_VERSION@
+SOVER = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@.@POSTGIS_MICRO_VERSION@
 
 
 YACC=@YACC@
@@ -77,26 +83,31 @@ SA_OBJS = \
 NM_OBJS = \
 	lwspheroid.o 
 
+OBJS = $(SA_OBJS) $(NM_OBJS)
+
 SA_HEADERS = \
 	liblwgeom.h \
 	liblwgeom_internal.h \
 	libtgeom.h \
 	lwgeom_geos.h
 
-LT_SA_OBJS = $(SA_OBJS:.o=.lo)
-LT_NM_OBJS = $(NM_OBJS:.o=.lo)
-LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
-
-all: liblwgeom.la
+all: liblwgeom.a
 
 # nothing to install or uninstall
 install uninstall:
 
-liblwgeom.la: $(LT_OBJS) $(SA_HEADERS)
-	$(LIBTOOL) --mode=link $(CC) -o liblwgeom.la $(LT_OBJS) 
+install-liblwgeom: liblwgeom.so
+	$(INSTALL) liblwgeom.so $(DESTDIR)$(libdir)/liblwgeom.so.$(SOVER)
+	@echo "Remember to run ldconfig"
+
+uninstall-liblwgeom: 
+	rm -f $(DESTDIR)$(libdir)/liblwgeom.so.$(SOVER)
 
 liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
 	ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
+
+liblwgeom.so: $(OBJS) $(SA_HEADERS)
+	$(CC) -shared -Wl,-soname,$(SONAME) -o $@ $(OBJS) $(LDFLAGS)
 
 maintainer-clean: clean
 	rm -f lwin_wkt_lex.c
@@ -105,26 +116,15 @@ maintainer-clean: clean
 
 clean: 
 	$(MAKE) -C cunit clean
-	rm -f $(SA_OBJS) 
-	rm -f $(NM_OBJS) 
+	rm -f $(OBJS) 
 	rm -f liblwgeom.a 
-	rm -f $(LT_SA_OBJS) 
-	rm -f $(LT_NM_OBJS) 
-	rm -f liblwgeom.la 
-	rm -rf .libs
+	rm -f liblwgeom.so 
 
 # Nothing specific in distclean (will be done by clean)
 distclean:
 
 check: liblwgeom.la
 	make -C cunit check
-
-# Command to build each of the .lo files
-$(LT_SA_OBJS): %.lo: %.c 
-	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
-
-$(LT_NM_OBJS): %.lo: %.c 
-	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
 # Command to build each of the .o files
 $(SA_OBJS): %.o: %.c 
