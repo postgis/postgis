@@ -15,7 +15,6 @@
 
 #include "shp2pgsql-core.h"
 
-
 static void
 usage()
 {

@@ -39,6 +39,8 @@
 
 
 #include "../liblwgeom/liblwgeom.h"
+#include "../liblwgeom/stringbuffer.h"
+#include "../postgis_config.h"
 
 #define RCSID "$Id$"
 

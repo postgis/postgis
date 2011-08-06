@@ -18,6 +18,7 @@
  **********************************************************************/
 
 #include "pgsql2shp-core.h"
+#include "../postgis_config.h"
 
 
 static void
