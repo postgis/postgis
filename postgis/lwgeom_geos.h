@@ -31,6 +31,7 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "profile.h"
+#include "../liblwgeom/lwgeom_geos.h"
 
 #include <string.h>
 
@@ -45,10 +46,7 @@
 PG_LWGEOM *GEOS2POSTGIS(GEOSGeom geom, char want3d);
 GEOSGeometry * POSTGIS2GEOS(PG_LWGEOM *g);
 
-LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
-GEOSGeometry * LWGEOM2GEOS(LWGEOM *g);
 
-POINTARRAY *ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d);
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
 
 /*
@@ -56,7 +54,4 @@ void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
  */
 GEOSGeometry* LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 
-#define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
-extern char lwgeom_geos_errmsg[];
-extern void lwgeom_geos_error(const char *fmt, ...);
 
