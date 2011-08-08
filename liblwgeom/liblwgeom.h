@@ -2189,13 +2189,6 @@ extern void lwfree(void *mem);
 extern void trim_trailing_zeros(char *num);
 extern char *lwmessage_truncate(char *str, int startpos, int endpos, int maxlength, int truncdirection);
 
-/* Machine endianness */
-#define XDR 0
-#define NDR 1
-extern char getMachineEndian(void);
-
-void error_if_srid_mismatch(int srid1, int srid2);
-
 
 /*******************************************************************************
  * SQLMM internal functions - TODO: Move into separate header files

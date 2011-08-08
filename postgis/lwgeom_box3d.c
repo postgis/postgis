@@ -11,6 +11,7 @@
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"
 
 #include <math.h>
 #include <float.h>

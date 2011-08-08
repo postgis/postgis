@@ -36,6 +36,7 @@
  **********************************************************************/
 
 #include "lwgeom_geos.h"
+#include "liblwgeom_internal.h"
 #include "funcapi.h"
 
 #include <string.h>

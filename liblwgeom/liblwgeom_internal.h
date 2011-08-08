@@ -79,6 +79,16 @@
 * Internal prototypes
 */
 
+
+/* Machine endianness */
+#define XDR 0
+#define NDR 1
+extern char getMachineEndian(void);
+
+/* Raise an lwerror if srids do not match */
+void error_if_srid_mismatch(int srid1, int srid2);
+
+
 /*
 * Force dims
 */

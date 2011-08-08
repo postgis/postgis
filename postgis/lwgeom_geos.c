@@ -17,6 +17,7 @@
 #include "lwgeom_geos_prepared.h"
 #include "funcapi.h"
 #include "lwgeom_functions_analytic.h"
+#include "liblwgeom_internal.h"
 
 #include <string.h>
 #include <assert.h>

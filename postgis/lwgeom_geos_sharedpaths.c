@@ -26,6 +26,7 @@
  **********************************************************************/
 
 #include "lwgeom_geos.h"
+#include "liblwgeom_internal.h"
 
 #include <string.h>
 #include <assert.h>
