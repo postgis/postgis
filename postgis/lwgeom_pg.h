@@ -16,6 +16,19 @@ void pg_free(void *ptr);
 void pg_error(const char *msg, va_list vp);
 void pg_notice(const char *msg, va_list vp);
 
+/*
+ * This is the binary representation of lwgeom compatible
+ * with postgresql varlena struct
+ */
+typedef struct
+{
+	uint32 size;        /* varlena header (do not touch directly!) */
+	uchar type;         /* encodes ndims, type, bbox presence,
+			                srid presence */
+	uchar data[1];
+}
+PG_LWGEOM;
+
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -90,6 +103,19 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 /* Serialize/deserialize a PG_LWGEOM (postgis datatype) */
 extern PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
 extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
+
+/*
+ * Construct a full PG_LWGEOM type (including size header)
+ * from a serialized form.
+ * The constructed PG_LWGEOM object will be allocated using palloc
+ * and the serialized form will be copied.
+ * If you specify a SRID other then -1 it will be set.
+ * If you request bbox (wantbbox=1) it will be extracted or computed
+ * from the serialized form.
+ * 
+ * NOTE: only available when GSERIALIZED_ON is undefined
+ * TODO: wrap in #ifndef GSERIALIZED_ON
+ */
 extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int srid, int wantbbox);
 
 /* PG_LWGEOM SRID get/set */

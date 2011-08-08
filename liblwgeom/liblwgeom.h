@@ -945,29 +945,6 @@ extern uchar lwgeom_makeType(char hasZ, char hasM, char has_srid, int type);
 extern uchar lwgeom_makeType_full(char hasZ, char hasM, char has_srid, int type, char hasBBOX);
 
 /*
- * This is the binary representation of lwgeom compatible
- * with postgresql varlena struct
- */
-typedef struct
-{
-	uint32 size;        /* varlena header (do not touch directly!) */
-	uchar type;         /* encodes ndims, type, bbox presence,
-			                srid presence */
-	uchar data[1];
-}
-PG_LWGEOM;
-
-/*
- * Construct a full PG_LWGEOM type (including size header)
- * from a serialized form.
- * The constructed PG_LWGEOM object will be allocated using palloc
- * and the serialized form will be copied.
- * If you specify a SRID other then -1 it will be set.
- * If you request bbox (wantbbox=1) it will be extracted or computed
- * from the serialized form.
- */
-
-/*
  * Compute bbox of serialized geom
  */
 extern BOX3D *compute_serialized_box3d(uchar *serialized_form);
