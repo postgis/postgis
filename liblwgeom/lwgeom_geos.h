@@ -20,12 +20,22 @@
 #include "liblwgeom.h"
 
 
-LWGEOM *lwgeom_intersection(LWGEOM *geom1, LWGEOM *geom2) ;
-LWGEOM *lwgeom_difference(LWGEOM *geom1, LWGEOM *geom2) ;
-LWGEOM *lwgeom_symdifference(LWGEOM* geom1, LWGEOM* geom2) ;
-LWGEOM* lwgeom_union(LWGEOM *geom1, LWGEOM *geom2) ;
-LWGEOM* lwgeom_buildarea(LWGEOM *geom) ;
-LWGEOM* lwgeom_geos_noop(LWGEOM *geom) ;
+LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2) ;
+LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2) ;
+LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2) ;
+LWGEOM* lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2) ;
+
+/**
+ * Take a geometry and return an areal geometry
+ * (Polygon or MultiPolygon).
+ * Actually a wrapper around GEOSpolygonize,
+ * transforming the resulting collection into
+ * a valid polygon Geometry.
+ */
+LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
+
+/** Convert an LWGEOM to a GEOS Geometry and convert back -- for debug only */
+LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
 
 
 
@@ -33,7 +43,7 @@ LWGEOM* lwgeom_geos_noop(LWGEOM *geom) ;
 ** Public prototypes for GEOS utility functions.
 */
 LWGEOM *GEOS2LWGEOM(const GEOSGeometry *geom, char want3d);
-GEOSGeometry * LWGEOM2GEOS(LWGEOM *g);
+GEOSGeometry * LWGEOM2GEOS(const LWGEOM *g);
 GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 
 

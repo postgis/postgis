@@ -193,13 +193,11 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 
 
 
-GEOSCoordSeq ptarray_to_GEOSCoordSeq(POINTARRAY *);
-GEOSGeom LWGEOM2GEOS(LWGEOM *lwgeom);
-
+GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY *);
 
 
 GEOSCoordSeq
-ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
+ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 {
 	uint32 dims = 2;
 	uint32 size, i;
@@ -236,7 +234,7 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 
 
 GEOSGeometry *
-LWGEOM2GEOS(LWGEOM *lwgeom)
+LWGEOM2GEOS(const LWGEOM *lwgeom)
 {
 	GEOSCoordSeq sq;
 	GEOSGeom g, shell;
@@ -402,7 +400,9 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 
 
 
-LWGEOM *lwgeom_intersection(LWGEOM *geom1, LWGEOM *geom2) {
+LWGEOM *
+lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
+{
 	LWGEOM *result ;
 	GEOSGeometry *g1, *g2, *g3 ;
 	int is3d ;
@@ -412,11 +412,11 @@ LWGEOM *lwgeom_intersection(LWGEOM *geom1, LWGEOM *geom2) {
 
 	/* A.Intersection(Empty) == Empty */
 	if ( lwgeom_is_empty(geom2) )
-		return geom2;
+		return lwgeom_clone(geom2);
 
 	/* Empty.Intersection(A) == Empty */
 	if ( lwgeom_is_empty(geom1) )
-		return geom1;
+		return lwgeom_clone(geom1);
 
 	/* ensure srids are identical */
 	srid = (int)(geom1->srid);
@@ -494,7 +494,8 @@ LWGEOM *lwgeom_intersection(LWGEOM *geom1, LWGEOM *geom2) {
 	return result ;
 }
 
-LWGEOM *lwgeom_difference(LWGEOM *geom1, LWGEOM *geom2)
+LWGEOM *
+lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2)
 {
 	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM *result;
@@ -505,11 +506,11 @@ LWGEOM *lwgeom_difference(LWGEOM *geom1, LWGEOM *geom2)
 
 	/* A.Difference(Empty) == A */
 	if ( lwgeom_is_empty(geom2) )
-		return geom1;
+		return lwgeom_clone(geom1);
 
 	/* Empty.Intersection(A) == Empty */
 	if ( lwgeom_is_empty(geom1) )
-		return geom1;
+		return lwgeom_clone(geom1);
 
 	/* ensure srids are identical */
 	srid = (int)(geom1->srid);
@@ -579,7 +580,8 @@ LWGEOM *lwgeom_difference(LWGEOM *geom1, LWGEOM *geom2)
 	return result;
 }
 
-LWGEOM *lwgeom_symdifference(LWGEOM* geom1, LWGEOM* geom2)
+LWGEOM *
+lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 {
 	GEOSGeometry *g1, *g2, *g3;
 	LWGEOM *result;
@@ -590,11 +592,11 @@ LWGEOM *lwgeom_symdifference(LWGEOM* geom1, LWGEOM* geom2)
 
 	/* A.SymDifference(Empty) == A */
 	if ( lwgeom_is_empty(geom2) )
-		return geom1;
+		return lwgeom_clone(geom1);
 
 	/* Empty.DymDifference(B) == Empty */
 	if ( lwgeom_is_empty(geom1) )
-		return geom1;
+		return lwgeom_clone(geom1);
 
 	/* ensure srids are identical */
 	srid = (int)(geom1->srid);
@@ -664,7 +666,8 @@ LWGEOM *lwgeom_symdifference(LWGEOM* geom1, LWGEOM* geom2)
 	return result;
 }
 
-LWGEOM* lwgeom_union(LWGEOM *geom1, LWGEOM *geom2)
+LWGEOM*
+lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 {
 	int is3d;
 	int srid;
@@ -677,11 +680,11 @@ LWGEOM* lwgeom_union(LWGEOM *geom1, LWGEOM *geom2)
 
 	/* A.Union(empty) == A */
 	if ( lwgeom_is_empty(geom1) )
-		return geom2;
+		return lwgeom_clone(geom2);
 
 	/* B.Union(empty) == B */
 	if ( lwgeom_is_empty(geom2) )
-		return geom1;
+		return lwgeom_clone(geom1);
 
 
 	/* ensure srids are identical */
@@ -874,15 +877,8 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	return shp;
 }
 
-/**
- * Take a geometry and return an areal geometry
- * (Polygon or MultiPolygon).
- * Actually a wrapper around GEOSpolygonize,
- * transforming the resulting collection into
- * a valid polygon Geometry.
- */
 LWGEOM*
-lwgeom_buildarea(LWGEOM *geom)
+lwgeom_buildarea(const LWGEOM *geom)
 {
 	GEOSGeometry* geos_in;
 	GEOSGeometry* geos_out;
@@ -941,7 +937,7 @@ lwgeom_buildarea(LWGEOM *geom)
 }
 
 LWGEOM*
-lwgeom_geos_noop(LWGEOM* geom_in)
+lwgeom_geos_noop(const LWGEOM* geom_in)
 {
 	GEOSGeometry *geosgeom;
 	LWGEOM* geom_out;
