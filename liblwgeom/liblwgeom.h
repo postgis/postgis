@@ -2169,7 +2169,7 @@ LWGEOM *lwgeom_desegmentize(LWGEOM *geom);
  ******************************************************************************/
 
 /** Return GEOS version string (not to be freed) */
-const char* lwgeom_geos_version();
+const char* lwgeom_geos_version(void);
 
 /** Convert an LWGEOM to a GEOS Geometry and convert back -- for debug only */
 LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
@@ -2193,6 +2193,10 @@ LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
 
 
+/**
+ * Attempts to make an invalid geometries valid w/out losing points.
+ */
+LWGEOM* lwgeom_make_valid(LWGEOM* geom);
 
 #endif /* !defined _LIBLWGEOM_H  */
 

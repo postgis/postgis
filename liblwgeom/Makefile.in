@@ -11,7 +11,7 @@
 # **********************************************************************
 
 CC = @CC@
-CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@
+CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ -DPOSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
 NUMERICFLAGS = @NUMERICFLAGS@
 top_builddir = @top_builddir@
@@ -78,7 +78,8 @@ SA_OBJS = \
 	lwout_geojson.o \
 	lwout_svg.o \
 	lwout_x3d.o \
-	lwgeom_geos.o
+	lwgeom_geos.o \
+	lwgeom_geos_clean.o
 
 NM_OBJS = \
 	lwspheroid.o 
