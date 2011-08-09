@@ -331,52 +331,6 @@ typedef struct
 } GBOX;
 
 
-typedef struct chiptag
-{
-	int size; /* unused (for use by postgresql) */
-
-	int endian_hint; /* the number 1 in the endian of this datastruct */
-
-	BOX3D bvol;
-	int srid;
-	char future[4];
-	float factor;	/* Usually 1.0.
-				 * Integer values are multiplied by this number
-				 * to get the actual height value
-				 * (for sub-meter accuracy height data).
-				 */
-
-	int datatype;	/* 1 = float32,
-				 * 5 = 24bit integer,
-				 * 6 = 16bit integer (short)
-				 * 7 = 16bit ???
-				 * 8 = 8bit ???
-				 * 101 = float32 (NDR),
-				 * 105 = 24bit integer (NDR),
-				 * 106 = 16bit int (NDR)
-				 * 107 = 16bit ??? (NDR)
-				 * 108 = 8bit ??? (NDR) (this doesn't make sense)
-				 */
-	int height;
-	int width;
-	int compression;	/* 0 = no compression, 1 = differencer
-					 * 0x80 = new value
-					 * 0x7F = nodata
-					 */
-
-	/*
-	 * this is provided for convenience, it should be set to
-	 *  sizeof(chip) bytes into the struct because the serialized form is:
-	 *    <header><data>
-	 * NULL when serialized
-	 */
-	void  *data;	/* data[0] = bottm left,
-				 * data[width] = 1st pixel, 2nd row (uncompressed)
-				 */
-
-}
-CHIP;
-
 /******************************************************************
 * SPHEROID
 *
