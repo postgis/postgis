@@ -38,7 +38,6 @@
 #include "getopt.h"
 
 
-#include "../liblwgeom/liblwgeom.h"
 #include "../liblwgeom/stringbuffer.h"
 #include "../postgis_config.h"
 

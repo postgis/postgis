@@ -14,6 +14,7 @@
  **********************************************************************/
 
 #include "shp2pgsql-core.h"
+#include "../liblwgeom/liblwgeom.h" /* for SRID_UNKNOWN */
 
 static void
 usage()

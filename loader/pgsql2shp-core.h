@@ -37,8 +37,6 @@
 #include "shpcommon.h"
 #include "getopt.h"
 
-#include "../liblwgeom/liblwgeom.h"
-
 #define RCSID "$Id$"
 
 

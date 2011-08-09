@@ -25,6 +25,8 @@
 #include "shp2pgsql-core.h"
 #include "structure.h"
 
+#include "../liblwgeom/liblwgeom.h" /* for lw_vasprintf */
+
 #define GUI_RCSID "shp2pgsql-gui $Revision$"
 #define SHAPEFIELDMAXWIDTH 60
 #define SHAPEFIELDMINWIDTH 30

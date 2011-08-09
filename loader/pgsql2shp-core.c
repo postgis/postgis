@@ -46,7 +46,7 @@
 #include "shapefil.h"
 #include "getopt.h"
 
-#include "../liblwgeom/liblwgeom.h"
+#include "../liblwgeom/liblwgeom.h" /* for LWGEOM struct and funx */
 
 /* Maximum DBF field width (according to ARCGIS) */
 #define MAX_DBF_FIELD_SIZE 254
