@@ -38,25 +38,6 @@
 */
 
 /**
-* Floating point comparitors.
-*/
-#define FP_TOLERANCE 1e-12
-#define FP_IS_ZERO(A) (fabs(A) <= FP_TOLERANCE)
-#define FP_MAX(A, B) (((A) > (B)) ? (A) : (B))
-#define FP_MIN(A, B) (((A) < (B)) ? (A) : (B))
-#define FP_EQUALS(A, B) (fabs((A)-(B)) <= FP_TOLERANCE)
-#define FP_NEQUALS(A, B) (fabs((A)-(B)) > FP_TOLERANCE)
-#define FP_LT(A, B) (((A) + FP_TOLERANCE) < (B))
-#define FP_LTEQ(A, B) (((A) - FP_TOLERANCE) <= (B))
-#define FP_GT(A, B) (((A) - FP_TOLERANCE) > (B))
-#define FP_GTEQ(A, B) (((A) + FP_TOLERANCE) >= (B))
-#define FP_CONTAINS_TOP(A, X, B) (FP_LT(A, X) && FP_LTEQ(X, B))
-#define FP_CONTAINS_BOTTOM(A, X, B) (FP_LTEQ(A, X) && FP_LT(X, B))
-#define FP_CONTAINS_INCL(A, X, B) (FP_LTEQ(A, X) && FP_LTEQ(X, B))
-#define FP_CONTAINS_EXCL(A, X, B) (FP_LT(A, X) && FP_LT(X, B))
-#define FP_CONTAINS(A, X, B) FP_CONTAINS_EXCL(A, X, B)
-
-/**
 * Return types for functions with status returns.
 */
 #define LW_TRUE 1
@@ -100,7 +81,7 @@
 */
 #define	POINTTYPE                1
 #define	LINETYPE                 2
-#define	POLYGONTYPE	             3
+#define	POLYGONTYPE              3
 #define	MULTIPOINTTYPE           4
 #define	MULTILINETYPE            5
 #define	MULTIPOLYGONTYPE         6

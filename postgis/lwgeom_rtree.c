@@ -12,6 +12,7 @@
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"         /* For FP comparators. */
 #include "lwgeom_rtree.h"
 
 
