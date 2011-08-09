@@ -13,11 +13,10 @@
  **********************************************************************/
 
 #include "lwgeom_geos.h"
-#include "lwgeom_rtree.h"
-#include "lwgeom_geos_prepared.h"
-#include "funcapi.h"
-#include "lwgeom_functions_analytic.h"
 #include "liblwgeom_internal.h"
+#include "lwgeom_rtree.h"
+#include "lwgeom_functions_analytic.h" /* for point_in_polygon */
+#include "funcapi.h"
 
 #include <string.h>
 #include <assert.h>
@@ -82,7 +81,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(postgis_geos_version);
 Datum postgis_geos_version(PG_FUNCTION_ARGS)
 {
-	const char *ver = GEOSversion();
+	const char *ver = lwgeom_geos_version();
 	text *result = cstring2text(ver);
 	PG_RETURN_POINTER(result);
 }

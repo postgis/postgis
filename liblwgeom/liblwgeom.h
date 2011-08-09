@@ -2164,5 +2164,35 @@ double lwcircle_center(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, 
 LWGEOM *lwgeom_segmentize(LWGEOM *geom, uint32 perQuad);
 LWGEOM *lwgeom_desegmentize(LWGEOM *geom);
 
+/*******************************************************************************
+ * GEOS proxy functions on LWGEOM
+ ******************************************************************************/
+
+/** Return GEOS version string (not to be freed) */
+const char* lwgeom_geos_version();
+
+/** Convert an LWGEOM to a GEOS Geometry and convert back -- for debug only */
+LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
+
+LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
+LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
+LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
+
+/*******************************************************************************
+ * GEOS-dependent extra functions on LWGEOM
+ ******************************************************************************/
+
+/**
+ * Take a geometry and return an areal geometry
+ * (Polygon or MultiPolygon).
+ * Actually a wrapper around GEOSpolygonize,
+ * transforming the resulting collection into
+ * a valid polygon Geometry.
+ */
+LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
+
+
+
 #endif /* !defined _LIBLWGEOM_H  */
 

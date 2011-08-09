@@ -20,25 +20,6 @@
 #include "liblwgeom.h"
 
 
-LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2) ;
-LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2) ;
-LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2) ;
-LWGEOM* lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2) ;
-
-/**
- * Take a geometry and return an areal geometry
- * (Polygon or MultiPolygon).
- * Actually a wrapper around GEOSpolygonize,
- * transforming the resulting collection into
- * a valid polygon Geometry.
- */
-LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
-
-/** Convert an LWGEOM to a GEOS Geometry and convert back -- for debug only */
-LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
-
-
-
 /*
 ** Public prototypes for GEOS utility functions.
 */
@@ -50,7 +31,6 @@ GEOSGeometry * LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in);
 POINTARRAY *ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d);
 
 
-#define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
 extern char lwgeom_geos_errmsg[];
 extern void lwgeom_geos_error(const char *fmt, ...);
 

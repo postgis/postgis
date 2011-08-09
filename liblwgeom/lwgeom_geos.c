@@ -17,7 +17,7 @@
 
 #include <stdlib.h>
 
-
+#define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
 char lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE];
 
 extern void
@@ -397,6 +397,12 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 	return g;
 }
 
+const char*
+lwgeom_geos_version()
+{
+	const char *ver = GEOSversion();
+	return ver;
+}
 
 
 
