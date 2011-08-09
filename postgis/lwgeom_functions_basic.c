@@ -1593,27 +1593,27 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	pt.y = gbox.ymin;
 	pt.z = gbox.zmin;
 	pt.m = gbox.mmin;
-	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &pt, LW_TRUE);
 	pt.x = gbox.xmin;
 	pt.y = gbox.ymax;
 	pt.z = gbox.zmin;
 	pt.m = gbox.mmin;
-	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &pt, LW_TRUE);
 	pt.x = gbox.xmax;
 	pt.y = gbox.ymax;
 	pt.z = gbox.zmax;
 	pt.m = gbox.mmax;
-	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &pt, LW_TRUE);
 	pt.x = gbox.xmax;
 	pt.y = gbox.ymin;
 	pt.z = gbox.zmax;
 	pt.m = gbox.mmax;
-	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &pt, LW_TRUE);
 	pt.x = gbox.xmin;
 	pt.y = gbox.ymin;
 	pt.z = gbox.zmin;
 	pt.m = gbox.mmin;
-	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &pt, LW_TRUE);
 
 	/* Construct point array */
 	ppa = lwalloc(sizeof(POINTARRAY*));
@@ -1721,10 +1721,10 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		/* Assign coordinates to POINT2D array */
 		pt.x = box.xmin;
 		pt.y = box.ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box.xmax;
 		pt.y = box.ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		/* Construct and serialize linestring */
 		line = lwline_construct(srid, NULL, pa);
@@ -1741,19 +1741,19 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 		/* Assign coordinates to POINT2D array */
 		pt.x = box.xmin;
 		pt.y = box.ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box.xmin;
 		pt.y = box.ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box.xmax;
 		pt.y = box.ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box.xmax;
 		pt.y = box.ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box.xmin;
 		pt.y = box.ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		/* Construct polygon  */
 		poly = lwpoly_construct(srid, NULL, 1, ppa);
@@ -2009,27 +2009,27 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	/* 1st point */
 	p.x = x1;
 	p.y = y1;
-	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa[0], &p, LW_TRUE);
 
 	/* 2nd point */
 	p.x = x1;
 	p.y = y2;
-	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa[0], &p, LW_TRUE);
 
 	/* 3rd point */
 	p.x = x2;
 	p.y = y2;
-	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa[0], &p, LW_TRUE);
 
 	/* 4th point */
 	p.x = x2;
 	p.y = y1;
-	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa[0], &p, LW_TRUE);
 
 	/* 5th point */
 	p.x = x1;
 	p.y = y1;
-	ptarray_append_point(pa[0], &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa[0], &p, LW_TRUE);
 
 	poly = lwpoly_construct(srid, NULL, 1, pa);
 	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));

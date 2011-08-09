@@ -275,7 +275,7 @@ GeneratePointGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry, in
 			point4d.m = obj->padfM[u];
 
 		/* Add in the point! */
-		ptarray_append_point(pa, &point4d, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &point4d, LW_TRUE);
 
 		/* Generate the LWPOINT */
 		lwmultipoints[u] = lwpoint_as_lwgeom(lwpoint_construct(state->from_srid, NULL, pa));
@@ -373,7 +373,7 @@ GenerateLineStringGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometr
 			if (state->has_m)
 				point4d.m = obj->padfM[v];
 
-			ptarray_append_point(pa, &point4d, REPEATED_POINTS_NOT_OK);
+			ptarray_append_point(pa, &point4d, LW_FALSE);
 		}
 
 		/* Generate the LWLINE */
@@ -677,7 +677,7 @@ GeneratePolygonGeometry(SHPLOADERSTATE *state, SHPObject *obj, char **geometry)
 				if (state->has_m)
 					point4d.m = polyring->list[vi].m;
 
-				ptarray_append_point(pa, &point4d, REPEATED_POINTS_OK);
+				ptarray_append_point(pa, &point4d, LW_TRUE);
 			}
 
 			/* Copy the POINTARRAY pointer so we can use the LWPOLY constructor */

@@ -55,26 +55,10 @@
 #define NO_M_VALUE NO_VALUE
 
 /**
-* Repeated points defines
-* TODO, move to _internal
-*/
-#define REPEATED_POINTS_OK 1
-#define REPEATED_POINTS_NOT_OK 0
-#define SPLICE_LINES_YES 1
-#define SPLICE_LINES_NO 1
-
-/**
 * Reference System Type
 */
 #define CARTESIAN 1
 #define GEODETIC 2
-
-/**
-* Largest float value. TODO: Should this be from math.h instead?
-*/
-#ifndef MAXFLOAT
-#define MAXFLOAT      3.402823466e+38F
-#endif
 
 /**
 * LWTYPE numbers, used internally by PostGIS
@@ -823,13 +807,15 @@ extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm, uint32 maxpoint
 
 /**
 * Append a point to the end of an existing #POINTARRAY 
+* If allow_duplicate is LW_TRUE, then a duplicate point will
+* not be added.
 */
 extern int ptarray_append_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates);
 
 /**
-* Append a #POINTARRAY, pa2 to the end of an existing #POINTARRAY, pa1. If splice_ends
-* is LW_TRUE, then duplicate points and the end of pa1 and start of pa2 will 
-* be removed.
+* Append a #POINTARRAY, pa2 to the end of an existing #POINTARRAY, pa1.
+* If splice_ends is LW_TRUE, then duplicate points and the end of pa1 and
+* start of pa2 will be removed.
 */
 extern int ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends);
 

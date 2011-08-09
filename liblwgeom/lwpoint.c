@@ -267,7 +267,7 @@ lwpoint_make2d(int srid, double x, double y)
 	POINT4D p = {x, y, 0.0, 0.0};
 	POINTARRAY *pa = ptarray_construct_empty(0, 0, 1);
 
-	ptarray_append_point(pa, &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &p, LW_TRUE);
 	return lwpoint_construct(srid, NULL, pa);
 }
 
@@ -277,7 +277,7 @@ lwpoint_make3dz(int srid, double x, double y, double z)
 	POINT4D p = {x, y, z, 0.0};
 	POINTARRAY *pa = ptarray_construct_empty(1, 0, 1);
 
-	ptarray_append_point(pa, &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &p, LW_TRUE);
 
 	return lwpoint_construct(srid, NULL, pa);
 }
@@ -288,7 +288,7 @@ lwpoint_make3dm(int srid, double x, double y, double m)
 	POINT4D p = {x, y, 0.0, m};
 	POINTARRAY *pa = ptarray_construct_empty(0, 1, 1);
 
-	ptarray_append_point(pa, &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &p, LW_TRUE);
 
 	return lwpoint_construct(srid, NULL, pa);
 }
@@ -299,7 +299,7 @@ lwpoint_make4d(int srid, double x, double y, double z, double m)
 	POINT4D p = {x, y, z, m};
 	POINTARRAY *pa = ptarray_construct_empty(1, 1, 1);
 
-	ptarray_append_point(pa, &p, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &p, LW_TRUE);
 
 	return lwpoint_construct(srid, NULL, pa);
 }

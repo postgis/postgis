@@ -542,12 +542,12 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 					double interpolation_value;
 					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
 					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-					rv = ptarray_append_point(dp, r, REPEATED_POINTS_NOT_OK);
+					rv = ptarray_append_point(dp, r, LW_FALSE);
 					LWDEBUGF(4, "[0] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
 			}
 			/* Add the current vertex to the point array. */
-			rv = ptarray_append_point(dp, p, REPEATED_POINTS_NOT_OK);
+			rv = ptarray_append_point(dp, p, LW_FALSE);
 			if ( ordinate_value_p == from || ordinate_value_p == to )
 			{
 				added_last_point = 2; /* Added on boundary. */
@@ -568,7 +568,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				double interpolation_value;
 				(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
 				rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-				rv = ptarray_append_point(dp, r, REPEATED_POINTS_NOT_OK);
+				rv = ptarray_append_point(dp, r, LW_FALSE);
 				LWDEBUGF(4, " [1] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 			}
 			else if ( added_last_point == 2 )
@@ -583,7 +583,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 					double interpolation_value;
 					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
 					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
-					rv = ptarray_append_point(dp, r, REPEATED_POINTS_NOT_OK);
+					rv = ptarray_append_point(dp, r, LW_FALSE);
 					LWDEBUGF(4, " [2] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
 			}

@@ -310,7 +310,7 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 			pbuf.m = rint((pbuf.m - grid->ipm)/grid->msize) *
 			         grid->msize + grid->ipm;
 
-		ptarray_append_point(dpa, &pbuf, REPEATED_POINTS_NOT_OK);
+		ptarray_append_point(dpa, &pbuf, LW_FALSE);
 
 	}
 

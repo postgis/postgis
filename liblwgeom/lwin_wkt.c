@@ -259,7 +259,7 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 	if( FLAGS_GET_M(pa->flags) && ! FLAGS_GET_Z(pa->flags) )
 		pt.m = p.z;
 		
-	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK); /* Allow duplicate points in array */
+	ptarray_append_point(pa, &pt, LW_TRUE); /* Allow duplicate points in array */
 	return pa;
 }
 

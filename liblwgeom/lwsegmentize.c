@@ -269,7 +269,7 @@ lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
 			for (j = 0; j < tmp->npoints; j++)
 			{
 				getPoint4d_p(tmp, j, &p4);
-				ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
+				ptarray_append_point(ptarray, &p4, LW_TRUE);
 			}
 			ptarray_free(tmp);
 		}
@@ -280,13 +280,13 @@ lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
 			for (j = i - 1 ; j <= i ; j++)
 			{
 				getPoint4d_p(icurve->points, j, &p4);
-				ptarray_append_point(ptarray, &p4, REPEATED_POINTS_OK);
+				ptarray_append_point(ptarray, &p4, LW_TRUE);
 			}
 		}
 
 	}
 	getPoint4d_p(icurve->points, icurve->points->npoints-1, &p1);
-	ptarray_append_point(ptarray, &p1, REPEATED_POINTS_OK);
+	ptarray_append_point(ptarray, &p1, LW_TRUE);
 		
 	oline = lwline_construct(icurve->srid, NULL, ptarray);
 	return oline;
@@ -314,7 +314,7 @@ lwcompound_segmentize(const LWCOMPOUND *icompound, uint32 perQuad)
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
 				getPoint4d_p(tmp->points, j, &p);
-				ptarray_append_point(ptarray, &p, REPEATED_POINTS_OK);
+				ptarray_append_point(ptarray, &p, LW_TRUE);
 			}
 			lwfree(tmp);
 		}
@@ -324,7 +324,7 @@ lwcompound_segmentize(const LWCOMPOUND *icompound, uint32 perQuad)
 			for (j = 0; j < tmp->points->npoints; j++)
 			{
 				getPoint4d_p(tmp->points, j, &p);
-				ptarray_append_point(ptarray, &p, REPEATED_POINTS_OK);
+				ptarray_append_point(ptarray, &p, LW_TRUE);
 			}
 		}
 		else

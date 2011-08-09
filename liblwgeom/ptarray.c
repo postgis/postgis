@@ -131,7 +131,7 @@ ptarray_append_point(POINTARRAY *pa, POINT4D *pt, int repeated_points)
 	}
 
 	/* Check for duplicate end point */
-	if ( repeated_points == REPEATED_POINTS_NOT_OK && pa->npoints > 0 )
+	if ( repeated_points == LW_FALSE && pa->npoints > 0 )
 	{
 		POINT4D tmp;
 		getPoint4d_p(pa, pa->npoints-1, &tmp);
@@ -394,7 +394,7 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 	
 	/* Add first point */
 	getPoint4d_p(ipa, ipoff, &p1);
-	ptarray_append_point(opa, &p1, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(opa, &p1, LW_FALSE);
 
 	ipoff++;
 
@@ -424,12 +424,12 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 				pbuf.z = p1.z + (p2.z-p1.z)/segdist * dist;
 			if( hasm )
 				pbuf.m = p1.m + (p2.m-p1.m)/segdist * dist;
-			ptarray_append_point(opa, &pbuf, REPEATED_POINTS_NOT_OK);
+			ptarray_append_point(opa, &pbuf, LW_FALSE);
 			p1 = pbuf;
 		}
 		else /* copy second point */
 		{
-			ptarray_append_point(opa, &p2, REPEATED_POINTS_NOT_OK);
+			ptarray_append_point(opa, &p2, LW_FALSE);
 			p1 = p2;
 			ipoff++;
 		}
@@ -706,7 +706,7 @@ ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
 			pt.z = 0.0;
 		if( hasm && ! in_hasm )
 			pt.m = 0.0;
-		ptarray_append_point(pa_out, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa_out, &pt, LW_TRUE);
 	} 
 
 	return pa_out;
@@ -861,7 +861,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				/*
 				 * Second point is our start
 				 */
-				ptarray_append_point(dpa, &p2, REPEATED_POINTS_OK);
+				ptarray_append_point(dpa, &p2, LW_TRUE);
 				state=1; /* we're inside now */
 				goto END;
 			}
@@ -874,7 +874,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				/*
 				 * First point is our start
 				 */
-				ptarray_append_point(dpa, &p1, REPEATED_POINTS_OK);
+				ptarray_append_point(dpa, &p1, LW_TRUE);
 
 				/*
 				 * We're inside now, but will check
@@ -895,7 +895,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				dseg = (from - tlength) / slength;
 				interpolate_point4d(&p1, &p2, &pt, dseg);
 
-				ptarray_append_point(dpa, &pt, REPEATED_POINTS_OK);
+				ptarray_append_point(dpa, &pt, LW_TRUE);
 
 				/*
 				 * We're inside now, but will check
@@ -916,7 +916,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			 */
 			if ( to > tlength + slength )
 			{
-				ptarray_append_point(dpa, &p2, REPEATED_POINTS_NOT_OK);
+				ptarray_append_point(dpa, &p2, LW_FALSE);
 				goto END;
 			}
 
@@ -928,7 +928,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 				LWDEBUG(3, " Second point is our end");
 
-				ptarray_append_point(dpa, &p2, REPEATED_POINTS_NOT_OK);
+				ptarray_append_point(dpa, &p2, LW_FALSE);
 				break; /* substring complete */
 			}
 
@@ -941,7 +941,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 				LWDEBUG(3, " First point is our end");
 
-				ptarray_append_point(dpa, &p1, REPEATED_POINTS_NOT_OK);
+				ptarray_append_point(dpa, &p1, LW_FALSE);
 
 				break; /* substring complete */
 			}
@@ -958,7 +958,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				dseg = (to - tlength) / slength;
 				interpolate_point4d(&p1, &p2, &pt, dseg);
 
-				ptarray_append_point(dpa, &pt, REPEATED_POINTS_NOT_OK);
+				ptarray_append_point(dpa, &pt, LW_FALSE);
 
 				break;
 			}
@@ -1246,7 +1246,7 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon)
 	/* Allocate output POINTARRAY, and add first point. */
 	outpts = ptarray_construct_empty(FLAGS_GET_Z(inpts->flags), FLAGS_GET_M(inpts->flags), inpts->npoints);
 	getPoint4d_p(inpts, 0, &pt);
-	ptarray_append_point(outpts, &pt, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(outpts, &pt, LW_FALSE);
 
 	LWDEBUG(3, "Added P0 to simplified point array (size 1)");
 
@@ -1264,7 +1264,7 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon)
 		else
 		{
 			getPoint4d_p(inpts, stack[sp], &pt);
-			ptarray_append_point(outpts, &pt, REPEATED_POINTS_NOT_OK);
+			ptarray_append_point(outpts, &pt, LW_FALSE);
 			
 			LWDEBUGF(4, "Added P%d to simplified point array (size: %d)", stack[sp], outpts->npoints);
 

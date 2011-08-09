@@ -429,7 +429,7 @@ lwline_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
 		if ( ! lwpoint_is_empty(points[i]) )
 		{
 			lwpoint_getPoint4d_p(points[i], &pt);
-			ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+			ptarray_append_point(pa, &pt, LW_TRUE);
 		}
 	}
 
@@ -494,7 +494,7 @@ lwline_get_lwpoint(LWLINE *line, int where)
 
 	pa = ptarray_construct_empty(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1);
 	pt = getPoint4d(line->points, where);
-	ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+	ptarray_append_point(pa, &pt, LW_TRUE);
 	lwpoint = lwpoint_construct(line->srid, NULL, pa);
 	return lwpoint;
 }

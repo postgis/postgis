@@ -86,12 +86,12 @@ lwgeom_extent_to_gml2(const LWGEOM *geom, char *srs, int precision, const char *
         pt.x = geom->bbox->xmin; 
         pt.y = geom->bbox->ymin; 
         if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmin; 
-        ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+        ptarray_append_point(pa, &pt, LW_TRUE);
     
         pt.x = geom->bbox->xmax; 
         pt.y = geom->bbox->ymax; 
         if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmax; 
-        ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+        ptarray_append_point(pa, &pt, LW_TRUE);
 
 	size = pointArray_GMLsize(pa, precision);
 	size += ( sizeof("<Box><coordinates>/") + (prefixlen*2) ) * 2;
@@ -142,7 +142,7 @@ lwgeom_extent_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, co
         pt.x = geom->bbox->xmin;
         pt.y = geom->bbox->ymin; 
         if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmin; 
-        ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+        ptarray_append_point(pa, &pt, LW_TRUE);
 
 	size = pointArray_GMLsize(pa, precision) * 2;
 	size += ( sizeof("<Envelope><lowerCorner><upperCorner>//") + (prefixlen*3) ) * 2;
@@ -161,7 +161,7 @@ lwgeom_extent_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, co
         pt.x = geom->bbox->xmax;
         pt.y = geom->bbox->ymax; 
         if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmax; 
-        ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+        ptarray_append_point(pa, &pt, LW_TRUE);
 
 	ptr += sprintf(ptr, "<%supperCorner>", prefix);
 	ptr += pointArray_toGML3(pa, ptr, precision, opts);

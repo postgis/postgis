@@ -62,7 +62,7 @@ int main()
 	point4d.x = 0;
 	point4d.y = 51;
 
-ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+ptarray_append_point(dpa, &point4d, LW_FALSE);
 	testpoint = lwpoint_construct(-1, NULL, dpa);
 
 	/* Generate the LWGEOM from LWPOINT, then serialize it ready for the parser */
@@ -88,15 +88,15 @@ ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
 	dpa = ptarray_construct_empty(0, 0, 2);
 	point4d.x = 0;
 	point4d.y = 0;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 2;
 	point4d.y = 2;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 4;
 	point4d.y = 1;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	testline = lwline_construct(-1, NULL, dpa);
 
@@ -127,23 +127,23 @@ ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
 	dpa = ptarray_construct_empty(0, 0, 2);
 	point4d.x = 0;
 	point4d.y = 0;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 0;
 	point4d.y = 10;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 10;
 	point4d.y = 10;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 10;
 	point4d.y = 0;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 0;
 	point4d.y = 0;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	rings[0] = dpa;
 
@@ -151,23 +151,23 @@ ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
 	dpa = ptarray_construct_empty(0, 0, 2);
 	point4d.x = 3;
 	point4d.y = 3;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 3;
 	point4d.y = 6;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 6;
 	point4d.y = 6;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 6;
 	point4d.y = 3;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	point4d.x = 3;
 	point4d.y = 3;
-	ptarray_append_point(dpa, &point4d, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &point4d, LW_FALSE);
 
 	rings[1] = dpa;
 

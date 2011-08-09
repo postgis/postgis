@@ -551,10 +551,10 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 		/* Assign coordinates to point array */
 		pt.x = box->xmin;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmax;
 		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		/* Construct and serialize linestring */
 		line = lwline_construct(SRID_UNKNOWN, NULL, pa);
@@ -569,19 +569,19 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 		/* Assign coordinates to point array */
 		pt.x = box->xmin;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmin;
 		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmax;
 		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmax;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmin;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		/* Construct polygon */
 		ppa[0] = pa;

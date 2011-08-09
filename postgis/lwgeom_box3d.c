@@ -239,7 +239,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 
 		pt.x = box->xmin;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		result = pglwgeom_serialize(lwpoint_as_lwgeom(lwpt));
 	}
@@ -250,10 +250,10 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 
 		pt.x = box->xmin;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmax;
 		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		result = pglwgeom_serialize(lwline_as_lwgeom(lwline));
 	}
@@ -263,19 +263,19 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 
 		pt.x = box->xmin;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmin;
 		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmax;
 		pt.y = box->ymax;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmax;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 		pt.x = box->xmin;
 		pt.y = box->ymin;
-		ptarray_append_point(pa, &pt, REPEATED_POINTS_OK);
+		ptarray_append_point(pa, &pt, LW_TRUE);
 
 		result = pglwgeom_serialize(lwpoly_as_lwgeom(lwpoly));
 		

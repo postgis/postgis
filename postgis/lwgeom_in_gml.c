@@ -637,7 +637,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 				*hasz = false;
 			}
 
-			ptarray_append_point(dpa, &pt, REPEATED_POINTS_NOT_OK);
+			ptarray_append_point(dpa, &pt, LW_FALSE);
 			digit = false;
 
 			q = p+1;
@@ -705,7 +705,7 @@ static POINTARRAY* parse_gml_coord(xmlNodePtr xnode, bool *hasz)
 	if (!x || !y) gml_lwerror("invalid GML representation", 24);
 	if (!z) *hasz = false;
 
-	ptarray_append_point(dpa, &p, REPEATED_POINTS_NOT_OK);
+	ptarray_append_point(dpa, &p, LW_FALSE);
 	x = y = z = false;
 
 	return ptarray_clone_deep(dpa);
@@ -781,7 +781,7 @@ static POINTARRAY* parse_gml_pos(xmlNodePtr xnode, bool *hasz)
 		if (gml_dim < 2 || gml_dim > 3 || gml_dim != dim)
 			gml_lwerror("invalid GML representation", 26);
 
-		ptarray_append_point(dpa, &pt, REPEATED_POINTS_NOT_OK);
+		ptarray_append_point(dpa, &pt, LW_FALSE);
 	}
 
 	return ptarray_clone_deep(dpa);
@@ -838,7 +838,7 @@ static POINTARRAY* parse_gml_poslist(xmlNodePtr xnode, bool *hasz)
 
 			if (gml_dim == dim)
 			{
-				ptarray_append_point(dpa, &pt, REPEATED_POINTS_NOT_OK);
+				ptarray_append_point(dpa, &pt, LW_FALSE);
 				gml_dim = 0;
 			}
 			else if (*(poslist+1) == '\0')
