@@ -1993,7 +1993,15 @@ extern LWGEOM* lwgeom_from_gserialized(const GSERIALIZED *g);
 extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 
 
-/* Parser check flags */
+/**
+ * Parser check flags
+ * 
+ * TODO: give these an LW_ prefix
+ *
+ *  @see lwgeom_from_wkb
+ *  @see lwgeom_from_hexwkb
+ *  @see lwgeom_parse_wkt
+ */
 #define PARSER_CHECK_MINPOINTS  1
 #define PARSER_CHECK_ODD        2
 #define PARSER_CHECK_CLOSURE    4
@@ -2002,19 +2010,20 @@ extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 #define PARSER_CHECK_NONE   0
 #define PARSER_CHECK_ALL	(PARSER_CHECK_MINPOINTS | PARSER_CHECK_ODD | PARSER_CHECK_CLOSURE)
 
-/*
- * Parser result structure: returns the result of attempting to convert (E)WKT/(E)WKB to LWGEOM
+/**
+ * Parser result structure: returns the result of attempting to convert
+ * (E)WKT/(E)WKB to LWGEOM
  */
 typedef struct struct_lwgeom_parser_result
 {
 	const char *wkinput;        /* Copy of pointer to input WKT/WKB */
 	uchar *serialized_lwgeom;   /* Pointer to serialized LWGEOM */
 	int size;                   /* Size of serialized LWGEOM in bytes */
-	LWGEOM *geom;               /* Poingter to LWGEOM struct */
+	LWGEOM *geom;               /* Pointer to LWGEOM struct */
 	const char *message;        /* Error/warning message */
 	int errcode;                /* Error/warning number */
 	int errlocation;            /* Location of error */
-	int parser_check_flags;      /* Bitmask of validity checks run during this parse */
+	int parser_check_flags;     /* Bitmask of validity checks run during this parse */
 }
 LWGEOM_PARSER_RESULT;
 
@@ -2086,19 +2095,54 @@ extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *
 extern char*   lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
 extern uchar*  lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
 extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uchar variant, size_t *size_out);
+
+/**
+ * @param check parser check flags, see PARSER_CHECK_* macros
+ */
 extern LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check);
+
+/**
+ * @param check parser check flags, see PARSER_CHECK_* macros
+ */
 extern LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check);
+
 extern uchar*  bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
+
 extern char*   hexbytes_from_bytes(uchar *bytes, size_t size);
+
 extern void    lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
+
 extern void    lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result);
+
+/**
+ * @param parse_flags parser check flags, see PARSER_CHECK_* macros
+ */
 extern int     lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
 
 
+/**
+ * @param flags parser check flags, see PARSER_CHECK_* macros
+ */
 extern int serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags);
+
+/**
+ * @param flags parser check flags, see PARSER_CHECK_* macros
+ */
 extern int serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, char *wkt_input, int flags);
+
+/**
+ * @param flags parser check flags, see PARSER_CHECK_* macros
+ */
 extern int serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder);
+
+/**
+ * @param flags parser check flags, see PARSER_CHECK_* macros
+ */
 extern int serialized_lwgeom_from_hexwkb(LWGEOM_PARSER_RESULT *lwg_parser_result, char *hexwkb_input, int flags);
+
+/**
+ * @param flags parser check flags, see PARSER_CHECK_* macros
+ */
 extern int serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder);
 
 
