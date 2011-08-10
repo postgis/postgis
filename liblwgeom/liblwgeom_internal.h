@@ -21,8 +21,8 @@
 #include <ieeefp.h>
 #endif
 
-#ifndef LIBLWGEOM_INTERNAL
-#define LIBLWGEOM_INTERNAL
+#ifndef _LIBLWGEOM_INTERNAL_H
+#define _LIBLWGEOM_INTERNAL_H 1
 
 /**
 * PI
@@ -247,4 +247,4 @@ void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
 char ptarray_isccw(const POINTARRAY *pa);
 
 
-#endif /* LIBLWGEOM_INTERNAL */
+#endif /* _LIBLWGEOM_INTERNAL_H */
