@@ -21,7 +21,7 @@
 /*
 ** Global variable to hold WKT strings
 */
-char *s;
+char *s = NULL; 
 
 /*
 ** The suite initialization function.
@@ -39,7 +39,7 @@ static int init_wkt_out_suite(void)
 */
 static int clean_wkt_out_suite(void)
 {
-	free(s);
+	if ( s ) free(s);
 	s = NULL;
 	return 0;
 }
