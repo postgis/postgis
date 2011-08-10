@@ -23,7 +23,7 @@ static void do_kml_test(char * in, char * out, int precision)
 	LWGEOM *g;
 	char * h;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_kml2(g, precision, "");
 
 	if (strcmp(h, out))
@@ -41,7 +41,7 @@ static void do_kml_unsupported(char * in, char * out)
 	LWGEOM *g;
 	char *h;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_kml2(g, 0, "");
 
 	if (strcmp(cu_error_msg, out))
@@ -61,7 +61,7 @@ static void do_kml_test_prefix(char * in, char * out, int precision, const char 
 	LWGEOM *g;
 	char * h;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_kml2(g, precision, prefix);
 
 	if (strcmp(h, out))

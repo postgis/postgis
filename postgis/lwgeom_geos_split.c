@@ -285,15 +285,12 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 
 	/* debugging..
 		lwnotice("Bounds poly: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(g1_bounds, 0),
-		                              PARSER_CHECK_NONE));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(g1_bounds, 0)));
 		lwnotice("Line: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(g2, 0),
-		                              PARSER_CHECK_NONE));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(g2, 0)));
 
 		lwnotice("Noded bounds: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(vgeoms[0], 0),
-		                              PARSER_CHECK_NONE));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(vgeoms[0], 0)));
 	*/
 
 	polygons = GEOSPolygonize(vgeoms, 1);

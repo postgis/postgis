@@ -110,7 +110,7 @@ drawPoint(char *output, LWPOINT *lwp, LAYERSTYLE *styles)
 	getPoint2d_p(pa, 0, &p);
 
 	LWDEBUGF(4, "%s", "drawPoint called");
-	LWDEBUGF( 4, "point = %s", lwgeom_to_ewkt((LWGEOM*)lwp,0) );
+	LWDEBUGF( 4, "point = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
 
 	sprintf(x, "%f", p.x);
 	trim_trailing_zeros(x);
@@ -141,7 +141,7 @@ drawLineString(char *output, LWLINE *lwl, LAYERSTYLE *style)
 	char *ptr = output;
 
 	LWDEBUGF(4, "%s", "drawLineString called");
-	LWDEBUGF( 4, "line = %s", lwgeom_to_ewkt((LWGEOM*)lwl,0) );
+	LWDEBUGF( 4, "line = %s", lwgeom_to_ewkt((LWGEOM*)lwl) );
 
 	ptr += sprintf(ptr, "-fill none -stroke %s -strokewidth %d ", style->lineColor, style->lineWidth);
 	ptr += sprintf(ptr, "-draw \"stroke-linecap round stroke-linejoin round path 'M ");
@@ -167,7 +167,7 @@ drawPolygon(char *output, LWPOLY *lwp, LAYERSTYLE *style)
 	int i;
 
 	LWDEBUGF(4, "%s", "drawPolygon called");
-	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp,0) );
+	LWDEBUGF( 4, "poly = %s", lwgeom_to_ewkt((LWGEOM*)lwp) );
 
 	ptr += sprintf(ptr, "-fill %s -stroke %s -strokewidth %d ", style->polygonFillColor, style->polygonStrokeColor, style->polygonStrokeWidth );
 	ptr += sprintf(ptr, "-draw \"path '");
@@ -376,11 +376,11 @@ int main( int argc, const char* argv[] )
 		if (useDefaultStyle)
 		{
 			printf("   Warning: using Default style for layer %d\n", layerCount);
-			lwgeom = lwgeom_from_ewkt( line, PARSER_CHECK_NONE );
+			lwgeom = lwgeom_from_wkt( line, PARSER_CHECK_NONE );
 		}
 		else
-			lwgeom = lwgeom_from_ewkt( line+strlen(styleName)+1, PARSER_CHECK_NONE );
-		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom,0) );
+			lwgeom = lwgeom_from_wkt( line+strlen(styleName)+1, PARSER_CHECK_NONE );
+		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom) );
 
 		styleNumber = layerCount % length(styles);
 		ptr += drawGeometry( ptr, lwgeom, getStyle(styles, styleName) );

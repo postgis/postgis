@@ -15,7 +15,6 @@
 #include <stdarg.h>
 
 #include "liblwgeom_internal.h"
-#include "wktparse.h"
 #include "libtgeom.h"
 
 
@@ -681,188 +680,19 @@ lwgeom_clone_deep(const LWGEOM *lwgeom)
  * Return an alloced string
  */
 char*
-lwgeom_to_ewkt(LWGEOM *lwgeom, int flags)
+lwgeom_to_ewkt(const LWGEOM *lwgeom)
 {
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-	uchar *serialized = lwgeom_serialize(lwgeom);
-	int result;
-	if ( ! serialized )
+	char* wkt = NULL;
+	size_t wkt_size = 0;
+	
+	wkt = lwgeom_to_wkt(lwgeom, WKT_EXTENDED, 12, &wkt_size);
+
+	if ( ! wkt )
 	{
-		lwerror("Error serializing geom %p", lwgeom);
+		lwerror("Error writing geom %p to WKT", lwgeom);
 	}
 
-	result = unparse_WKT(&lwg_unparser_result, serialized, lwalloc, lwfree, flags);
-	lwfree(serialized);
-
-	return lwg_unparser_result.wkoutput;
-}
-
-/**
- * Return an alloced string
- */
-char*
-lwgeom_to_hexwkb_old(LWGEOM *lwgeom, int flags, uint32 byteorder)
-{
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-	uchar *serialized = lwgeom_serialize(lwgeom);
-	int result;
-
-	result = unparse_WKB(&lwg_unparser_result, serialized, lwalloc, lwfree, flags, byteorder,1);
-
-	lwfree(serialized);
-	return lwg_unparser_result.wkoutput;
-}
-
-/**
- * Return an alloced string
- */
-uchar *
-lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *outsize)
-{
-	LWGEOM_UNPARSER_RESULT lwg_unparser_result;
-	uchar *serialized = lwgeom_serialize(lwgeom);
-	int result;
-
-	/*
-	 * We cast return to "unsigned" char as we are
-	 * requesting a "binary" output, not HEX
-	 * (last argument set to 0)
-	 */
-	result = unparse_WKB(&lwg_unparser_result, serialized, lwalloc, lwfree,
-	                     flags, byteorder, 0);
-	lwfree(serialized);
-	return (uchar *)lwg_unparser_result.wkoutput;
-}
-
-/**
- * Make an LWGEOM object from a EWKB binary representation.
- * Currently highly unoptimized as it:
- * 	- convert EWKB to HEXEWKB
- *	- construct PG_LWGEOM
- *	- deserialize it
- */
-LWGEOM*
-lwgeom_from_ewkb(uchar *ewkb, int flags, size_t size)
-{
-	size_t hexewkblen = size*2;
-	char *hexewkb;
-	long int i;
-	int result;
-	LWGEOM *ret;
-	LWGEOM_PARSER_RESULT lwg_parser_result;
-
-	/* "HEXify" the EWKB */
-	hexewkb = lwalloc(hexewkblen+1);
-	for (i=0; i<size; ++i) deparse_hex(ewkb[i], &hexewkb[i*2]);
-	hexewkb[hexewkblen] = '\0';
-
-	/* Rely on grammar parser to construct a LWGEOM */
-	result = serialized_lwgeom_from_ewkt(&lwg_parser_result, hexewkb, flags);
-	if (result)
-		lwerror("%s", (char *)lwg_parser_result.message);
-
-	/* Free intermediate HEXified representation */
-	lwfree(hexewkb);
-
-	/* Deserialize */
-	ret = lwgeom_deserialize(lwg_parser_result.serialized_lwgeom);
-
-	return ret;
-}
-
-/**
- * Make an LWGEOM object from a EWKT representation.
- */
-LWGEOM*
-lwgeom_from_ewkt(char *ewkt, int flags)
-{
-	int result;
-	LWGEOM_PARSER_RESULT lwg_parser_result;
-	lwgeom_parser_result_init(&lwg_parser_result);
-
-	/* Rely on grammar parser to construct a LWGEOM */
-	result = lwgeom_parse_wkt(&lwg_parser_result, ewkt, flags);
-	if (result == LW_FAILURE)
-	{
-		lwerror("%s", (char *)lwg_parser_result.message);
-		return NULL;
-	}
-
-	return lwg_parser_result.geom;
-}
-
-/*
- * Parser functions for working with serialized LWGEOMs. Useful for cases where
- * the function input is already serialized, e.g. some input and output functions
- */
-
-/**
- * Make a serialzed LWGEOM object from a WKT input string
- */
-int
-serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, char *wkt_input, int flags)
-{
-
-	int result = parse_lwg(lwg_parser_result, wkt_input, flags,
-	                       lwalloc, lwerror);
-
-	LWDEBUGF(2, "serialized_lwgeom_from_ewkt with %s",wkt_input);
-
-	return result;
-}
-
-/**
- * Return an alloced string
- */
-int
-serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags)
-{
-	int result;
-
-	result = unparse_WKT(lwg_unparser_result, serialized, lwalloc, lwfree, flags);
-
-	return result;
-}
-
-/**
- * Return an alloced string
- */
-int
-serialized_lwgeom_from_hexwkb(LWGEOM_PARSER_RESULT *lwg_parser_result, char *hexwkb_input, int flags)
-{
-	/* NOTE: it is actually the same combined WKT/WKB parser that decodes HEXEWKB into LWGEOMs! */
-	int result = parse_lwg(lwg_parser_result, hexwkb_input, flags,
-	                       lwalloc, lwerror);
-
-	LWDEBUGF(2, "serialized_lwgeom_from_hexwkb with %s", hexwkb_input);
-
-	return result;
-}
-
-/**
- * Return an alloced string
- */
-int
-serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder)
-{
-	int result;
-
-	result = unparse_WKB(lwg_unparser_result, serialized, lwalloc, lwfree, flags, byteorder, 1);
-
-	return result;
-}
-
-/**
- * Return an alloced string
- */
-int
-serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder)
-{
-	int result;
-
-	result = unparse_WKB(lwg_unparser_result, serialized, lwalloc, lwfree, flags, byteorder, 0);
-
-	return result;
+	return wkt;
 }
 
 /**

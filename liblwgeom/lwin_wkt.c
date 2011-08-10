@@ -818,5 +818,17 @@ void lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result)
 	   it is a const *char */
 }
 
+/*
+* Public function used for easy access to the parser.
+*/
+LWGEOM *lwgeom_from_wkt(const char *wkt, const char check)
+{
+	LWGEOM_PARSER_RESULT r;
+
+	if( LW_FAILURE == lwgeom_parse_wkt(&r, (char*)wkt, check) )
+		lwerror(r.message);
+	
+	return r.geom;	
+}
 
 

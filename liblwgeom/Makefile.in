@@ -60,12 +60,8 @@ SA_OBJS = \
 	lwutil.o \
 	lwhomogenize.o \
 	lwalgorithm.o \
-	lwgunparse.o \
-	lwgparse.o \
 	lwsegmentize.o \
 	lwprint.o \
-	wktparse.tab.o \
-	lex.yy.o \
 	vsprintf.o \
 	g_box.o \
 	g_serialized.o \
@@ -148,12 +144,3 @@ lwin_wkt_lex.c: lwin_wkt_lex.l
 	$(LEX) -i $<
 
 
-# Commands to generate the lexer and parser from input files
-wktparse.tab.c: wktparse.y
-	$(YACC) -vd -p lwg_parse_yy wktparse.y
-	mv -f y.tab.c wktparse.tab.c
-	mv -f y.tab.h wktparse.tab.h
- 
-lex.yy.c: wktparse.lex wktparse.tab.c
-	$(LEX) -Plwg_parse_yy -i -f -o'lex.yy.c' wktparse.lex
- 

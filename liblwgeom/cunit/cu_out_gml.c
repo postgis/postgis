@@ -24,7 +24,7 @@ static void do_gml2_test(char * in, char * out, char * srs, int precision)
 	LWGEOM *g;
 	char *h;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml2(g, srs, precision, "gml:");
 
 	if (strcmp(h, out))
@@ -41,7 +41,7 @@ static void do_gml2_test_prefix(char * in, char * out, char * srs, int precision
 	LWGEOM *g;
 	char *h;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml2(g, srs, precision, prefix);
 
 	if (strcmp(h, out))
@@ -58,7 +58,7 @@ static void do_gml3_test_opts(char * in, char * out, char * srs, int precision, 
 	LWGEOM *g;
 	char *h;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:");
 
 	if (strcmp(h, out))
@@ -77,7 +77,7 @@ static void do_gml3_test(char * in, char * out, char * srs, int precision, int i
 	int opts = LW_GML_IS_DIMS;
 	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:");
 
 	if (strcmp(h, out))
@@ -97,7 +97,7 @@ static void do_gml3_test_prefix(char * in, char * out, char * srs, int precision
 
 	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml3(g, srs, precision, opts, prefix);
 
 	if (strcmp(h, out))
@@ -118,7 +118,7 @@ static void do_gml3_test_nodims(char * in, char * out, char * srs, int precision
 	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 	if ( is_dims ) opts |= LW_GML_IS_DIMS;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml3(g, srs, precision, opts, prefix);
 
 	if (strcmp(h, out))
@@ -135,7 +135,7 @@ static void do_gml2_unsupported(char * in, char * out)
 	LWGEOM *g;
 	char *h;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml2(g, NULL, 0, "");
 
 	if (strcmp(cu_error_msg, out))
@@ -154,7 +154,7 @@ static void do_gml3_unsupported(char * in, char * out)
 	char *h;
 	int opts = LW_GML_IS_DIMS;
 
-	g = lwgeom_from_ewkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
 	h = lwgeom_to_gml3(g, NULL, 0, opts, "");
 
 	if (strcmp(cu_error_msg, out))

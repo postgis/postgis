@@ -6,7 +6,6 @@
 #include <errno.h>
 
 #include "liblwgeom_internal.h"
-#include "wktparse.h"
 
 /*
  * Lower this to reduce integrity checks

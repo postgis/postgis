@@ -45,14 +45,14 @@ static void test_geos_noop(void)
 		char *out_ewkt;
 
 		in_ewkt = ewkt[i];
-		geom_in = lwgeom_from_ewkt(in_ewkt, PARSER_CHECK_NONE);
+		geom_in = lwgeom_from_wkt(in_ewkt, PARSER_CHECK_NONE);
 		geom_out = lwgeom_geos_noop(geom_in);
 		if ( ! geom_out ) {
 			fprintf(stderr, "\nNull return from lwgeom_geos_noop with wkt:   %s\n", in_ewkt);
 			lwgeom_free(geom_in);
 			continue;
 		}
-		out_ewkt = lwgeom_to_ewkt(geom_out, PARSER_CHECK_NONE);
+		out_ewkt = lwgeom_to_ewkt(geom_out);
 		if (strcmp(in_ewkt, out_ewkt))
 			fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
 		CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);

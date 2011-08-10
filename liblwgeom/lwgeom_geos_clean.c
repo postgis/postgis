@@ -359,8 +359,7 @@ LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 
 	LWDEBUGF(3,
 	               "Boundary point: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(point, 0),
-	                              PARSER_CHECK_NONE));
+	               lwgeom_to_ewkt(GEOS2LWGEOM(point, 0)));
 
 	noded = GEOSUnion(lines, point);
 	if ( NULL == noded )
@@ -373,10 +372,8 @@ LWGEOM_GEOS_nodeLines(const GEOSGeometry* lines)
 
 	LWDEBUGF(3,
 	               "LWGEOM_GEOS_nodeLines: in[%s] out[%s]",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(lines, 0),
-	                              PARSER_CHECK_NONE),
-	               lwgeom_to_ewkt(GEOS2LWGEOM(noded, 0),
-	                              PARSER_CHECK_NONE));
+	               lwgeom_to_ewkt(GEOS2LWGEOM(lines, 0)),
+	               lwgeom_to_ewkt(GEOS2LWGEOM(noded, 0)));
 
 	return noded;
 }
@@ -407,8 +404,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 	LWDEBUGF(3,
 	               "Boundaries: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound, 0),
-	                              PARSER_CHECK_NONE));
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_bound, 0)));
 
 	/* Use noded boundaries as initial "cut" edges */
 
@@ -438,8 +434,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 		LWDEBUGF(3,
 		               "Boundaries input points %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(pi, 0),
-		                              PARSER_CHECK_NONE));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(pi, 0)));
 
 		po = GEOSGeom_extractUniquePoints(geos_cut_edges);
 		if ( NULL == po )
@@ -453,8 +448,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 		LWDEBUGF(3,
 		               "Boundaries output points %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(po, 0),
-		                              PARSER_CHECK_NONE));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(po, 0)));
 
 		collapse_points = GEOSDifference(pi, po);
 		if ( NULL == collapse_points )
@@ -468,8 +462,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 		LWDEBUGF(3,
 		               "Collapse points: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(collapse_points, 0),
-		                              PARSER_CHECK_NONE));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(collapse_points, 0)));
 
 		GEOSGeom_destroy(pi);
 		GEOSGeom_destroy(po);
@@ -478,8 +471,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 	LWDEBUGF(3,
 	               "Noded Boundaries: %s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_cut_edges, 0),
-	                              PARSER_CHECK_NONE));
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_cut_edges, 0)));
 
 	/* And use an empty geometry as initial "area" */
 	geos_area = GEOSGeom_createEmptyPolygon();
@@ -540,8 +532,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			/* We did check for empty area already so
 			 * this must be some other error */
 			lwnotice("GEOSBoundary('%s') threw an error: %s",
-			         lwgeom_to_ewkt(GEOS2LWGEOM(new_area, 0),
-			                        PARSER_CHECK_NONE),
+			         lwgeom_to_ewkt(GEOS2LWGEOM(new_area, 0)),
 			         lwgeom_geos_errmsg);
 			GEOSGeom_destroy(new_area);
 			GEOSGeom_destroy(geos_area);
@@ -780,8 +771,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	{
 		LWDEBUGF(3,
 		               "Geometry [%s] is valid. ",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0),
-		                              PARSER_CHECK_NONE));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0)));
 
 		/* It's valid at this step, return what we have */
 		return GEOSGeom_clone(gin);
@@ -790,8 +780,7 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	LWDEBUGF(3,
 	               "Geometry [%s] is still not valid: %s. "
 	               "Will try to clean up further.",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0),
-	                              PARSER_CHECK_NONE), lwgeom_geos_errmsg);
+	               lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0)), lwgeom_geos_errmsg);
 
 
 

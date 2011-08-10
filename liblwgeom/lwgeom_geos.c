@@ -795,7 +795,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 
 	LWDEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
 	LWDEBUGF(3, "GEOSpolygonize: polygonized:%s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0), PARSER_CHECK_NONE));
+	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0)));
 
 	/*
 	 * No geometries in collection, early out
@@ -860,15 +860,15 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 		{
 			shp = extring;
 			LWDEBUGF(3, "GEOSpolygonize: shp:%s",
-			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0), PARSER_CHECK_NONE));
+			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0)));
 		}
 		else
 		{
 			tmp = GEOSSymDifference(shp, extring);
 			LWDEBUGF(3, "GEOSpolygonize: SymDifference(%s, %s):%s",
-			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0), PARSER_CHECK_NONE),
-			               lwgeom_to_ewkt(GEOS2LWGEOM(extring, 0), PARSER_CHECK_NONE),
-			               lwgeom_to_ewkt(GEOS2LWGEOM(tmp, 0), PARSER_CHECK_NONE)
+			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0)),
+			               lwgeom_to_ewkt(GEOS2LWGEOM(extring, 0)),
+			               lwgeom_to_ewkt(GEOS2LWGEOM(tmp, 0))
 			              );
 			GEOSGeom_destroy(shp);
 			GEOSGeom_destroy(extring);

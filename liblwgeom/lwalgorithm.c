@@ -181,8 +181,8 @@ int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
 	if ( pa1->npoints < 2 || pa2->npoints < 2 )
 		return LINE_NO_CROSS;
 
-	LWDEBUGF(4, "l1 = %s", lwgeom_to_ewkt((LWGEOM*)l1,0));
-	LWDEBUGF(4, "l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2,0));
+	LWDEBUGF(4, "l1 = %s", lwgeom_to_ewkt((LWGEOM*)l1));
+	LWDEBUGF(4, "l2 = %s", lwgeom_to_ewkt((LWGEOM*)l2));
 
 	/* Initialize first point of q */
 	rv = getPoint2d_p(pa2, 0, &q1);
@@ -484,7 +484,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	}
 
 	LWDEBUGF(4, "from = %g, to = %g, ordinate = %d", from, to, ordinate);
-	LWDEBUGF(4, "%s", lwgeom_to_ewkt((LWGEOM*)line, PARSER_CHECK_NONE));
+	LWDEBUGF(4, "%s", lwgeom_to_ewkt((LWGEOM*)line));
 
 	/* Asking for an ordinate we don't have. Error. */
 	if ( ordinate >= dims )

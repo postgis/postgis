@@ -2064,14 +2064,6 @@ LWGEOM_UNPARSER_RESULT;
 #define UNPARSER_ERROR_UNCLOSED		3
 
 
-/* Parser access routines */
-extern char *lwgeom_to_ewkt(LWGEOM *lwgeom, int flags);
-extern char *lwgeom_to_hexwkb_old(LWGEOM *lwgeom, int flags, uint32 byteorder);
-extern LWGEOM *lwgeom_from_ewkb(uchar *ewkb, int flags, size_t ewkblen);
-extern LWGEOM *lwgeom_from_ewkt(char *ewkt, int flags);
-extern uchar *lwgeom_to_ewkb(LWGEOM *lwgeom, int flags, char byteorder, size_t *ewkblen);
-
-
 /*
 ** Variants available for WKB and WKT output types
 */
@@ -2096,10 +2088,22 @@ extern char*   lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, s
 extern uchar*  lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
 extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uchar variant, size_t *size_out);
 
+
+/**
+* @param lwgeom geometry to convert to EWKT
+* @param flags output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
+*/
+extern char *lwgeom_to_ewkt(const LWGEOM *lwgeom);
+
 /**
  * @param check parser check flags, see PARSER_CHECK_* macros
  */
 extern LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check);
+
+/**
+ * @param check parser check flags, see PARSER_CHECK_* macros
+ */
+extern LWGEOM* lwgeom_from_wkt(const char *wkt, const char check);
 
 /**
  * @param check parser check flags, see PARSER_CHECK_* macros
@@ -2110,42 +2114,15 @@ extern uchar*  bytes_from_hexbytes(const char *hexbuf, size_t hexsize);
 
 extern char*   hexbytes_from_bytes(uchar *bytes, size_t size);
 
-extern void    lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
-
-extern void    lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result);
-
-/**
- * @param parse_flags parser check flags, see PARSER_CHECK_* macros
- */
-extern int     lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
+/*
+* WKT detailed parsing support
+*/
+extern int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int parse_flags);
+void lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result);
+void lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result);
 
 
-/**
- * @param flags parser check flags, see PARSER_CHECK_* macros
- */
-extern int serialized_lwgeom_to_ewkt(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags);
-
-/**
- * @param flags parser check flags, see PARSER_CHECK_* macros
- */
-extern int serialized_lwgeom_from_ewkt(LWGEOM_PARSER_RESULT *lwg_parser_result, char *wkt_input, int flags);
-
-/**
- * @param flags parser check flags, see PARSER_CHECK_* macros
- */
-extern int serialized_lwgeom_to_hexwkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder);
-
-/**
- * @param flags parser check flags, see PARSER_CHECK_* macros
- */
-extern int serialized_lwgeom_from_hexwkb(LWGEOM_PARSER_RESULT *lwg_parser_result, char *hexwkb_input, int flags);
-
-/**
- * @param flags parser check flags, see PARSER_CHECK_* macros
- */
-extern int serialized_lwgeom_to_ewkb(LWGEOM_UNPARSER_RESULT *lwg_unparser_result, uchar *serialized, int flags, uint32 byteorder);
-
-
+/* Memory management */
 extern void *lwalloc(size_t size);
 extern void *lwrealloc(void *mem, size_t size);
 extern void lwfree(void *mem);
