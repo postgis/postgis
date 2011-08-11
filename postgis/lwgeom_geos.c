@@ -3556,3 +3556,46 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
+/*
+ * ST_Snap
+ *
+ * Snap a geometry to another with a given tolerance
+ */
+Datum ST_Snap(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Snap);
+Datum ST_Snap(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 33
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_Snap' function (3.3.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 33 */
+	PG_LWGEOM *geom1, *geom2, *result;
+	LWGEOM *lwgeom1, *lwgeom2, *lwresult;
+	double tolerance;
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	tolerance = PG_GETARG_FLOAT8(2);
+
+	lwgeom1 = pglwgeom_deserialize(geom1) ;
+	lwgeom2 = pglwgeom_deserialize(geom2) ;
+
+	lwresult = lwgeom_snap(lwgeom1, lwgeom2, tolerance);
+	result = pglwgeom_serialize(lwresult);
+
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	lwgeom_free(lwresult);
+
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_POINTER(result);
+
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
+
+}
+

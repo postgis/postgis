@@ -2189,5 +2189,14 @@ LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
  */
 LWGEOM* lwgeom_make_valid(LWGEOM* geom);
 
+/**
+ * Snap vertices and segments of a geometry to another using a given tolerance.
+ *
+ * @param geom1 the geometry to snap
+ * @param geom2 the geometry to snap to
+ * @param tolerance the distance under which vertices and segments are snapped
+ */
+LWGEOM* lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance);
+
 #endif /* !defined _LIBLWGEOM_H  */
 
