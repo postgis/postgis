@@ -23,7 +23,7 @@ static void do_geojson_test(char * in, char * out, char * srs, int precision, in
 	LWGEOM *g;
 	char * h;
 
-	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	h = lwgeom_to_geojson(g, srs, precision, has_bbox);
 
 	if (strcmp(h, out))
@@ -41,7 +41,7 @@ static void do_geojson_unsupported(char * in, char * out)
 	LWGEOM *g;
 	char *h;
 
-	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	h = lwgeom_to_geojson(g, NULL, 0, 0);
 
 	if (strcmp(cu_error_msg, out))

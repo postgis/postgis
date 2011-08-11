@@ -49,7 +49,7 @@ static int clean_wkb_out_suite(void)
 */
 static void cu_wkb_from_hexwkb(char *hexwkb)
 {
-	LWGEOM *g = lwgeom_from_hexwkb(hexwkb, PARSER_CHECK_NONE);
+	LWGEOM *g = lwgeom_from_hexwkb(hexwkb, LW_PARSER_CHECK_NONE);
 	if ( s ) free(s);
 	s = (char*)lwgeom_to_wkb(g, WKB_HEX | WKB_XDR | WKB_EXTENDED, 0);
 	lwgeom_free(g);
@@ -60,7 +60,7 @@ static void cu_wkb_from_hexwkb(char *hexwkb)
 */
 static void cu_wkb(char *wkt)
 {
-	LWGEOM *g = lwgeom_from_wkt(wkt, PARSER_CHECK_NONE);
+	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	if ( s ) free(s);
 	s = (char*)lwgeom_to_wkb(g, WKB_HEX | WKB_XDR | WKB_EXTENDED, NULL);
 	lwgeom_free(g);

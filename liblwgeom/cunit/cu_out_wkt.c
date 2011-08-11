@@ -46,7 +46,7 @@ static int clean_wkt_out_suite(void)
 
 static char* cu_wkt(char *wkt, uchar variant)
 {
-	LWGEOM *g = lwgeom_from_wkt(wkt, PARSER_CHECK_NONE);
+	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	if ( s ) free(s);
 	if ( ! g ) 
 	{

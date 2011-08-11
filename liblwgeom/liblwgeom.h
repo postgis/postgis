@@ -1996,19 +1996,17 @@ extern int gserialized_get_gbox_p(const GSERIALIZED *g, GBOX *gbox);
 /**
  * Parser check flags
  * 
- * TODO: give these an LW_ prefix
- *
  *  @see lwgeom_from_wkb
  *  @see lwgeom_from_hexwkb
  *  @see lwgeom_parse_wkt
  */
-#define PARSER_CHECK_MINPOINTS  1
-#define PARSER_CHECK_ODD        2
-#define PARSER_CHECK_CLOSURE    4
-#define PARSER_CHECK_ZCLOSURE   8
+#define LW_PARSER_CHECK_MINPOINTS  1
+#define LW_PARSER_CHECK_ODD        2
+#define LW_PARSER_CHECK_CLOSURE    4
+#define LW_PARSER_CHECK_ZCLOSURE   8
 
-#define PARSER_CHECK_NONE   0
-#define PARSER_CHECK_ALL	(PARSER_CHECK_MINPOINTS | PARSER_CHECK_ODD | PARSER_CHECK_CLOSURE)
+#define LW_PARSER_CHECK_NONE   0
+#define LW_PARSER_CHECK_ALL	(LW_PARSER_CHECK_MINPOINTS | LW_PARSER_CHECK_ODD | LW_PARSER_CHECK_CLOSURE)
 
 /**
  * Parser result structure: returns the result of attempting to convert
@@ -2112,17 +2110,17 @@ extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uchar variant, size_t *size_
 extern char *lwgeom_to_ewkt(const LWGEOM *lwgeom);
 
 /**
- * @param check parser check flags, see PARSER_CHECK_* macros
+ * @param check parser check flags, see LW_PARSER_CHECK_* macros
  */
 extern LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check);
 
 /**
- * @param check parser check flags, see PARSER_CHECK_* macros
+ * @param check parser check flags, see LW_PARSER_CHECK_* macros
  */
 extern LWGEOM* lwgeom_from_wkt(const char *wkt, const char check);
 
 /**
- * @param check parser check flags, see PARSER_CHECK_* macros
+ * @param check parser check flags, see LW_PARSER_CHECK_* macros
  */
 extern LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check);
 

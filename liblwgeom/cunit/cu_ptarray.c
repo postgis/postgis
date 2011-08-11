@@ -22,7 +22,7 @@
 static LWGEOM* lwgeom_from_text(const char *str)
 {
 	LWGEOM_PARSER_RESULT r;
-	if( LW_FAILURE == lwgeom_parse_wkt(&r, (char*)str, PARSER_CHECK_NONE) )
+	if( LW_FAILURE == lwgeom_parse_wkt(&r, (char*)str, LW_PARSER_CHECK_NONE) )
 		return NULL;
 	return r.geom;
 }

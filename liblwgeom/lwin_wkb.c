@@ -401,7 +401,7 @@ static LWLINE* lwline_from_wkb_state(wkb_parse_state *s)
 	if( pa == NULL || pa->npoints == 0 )
 		return lwline_construct_empty(s->srid, s->has_z, s->has_m);
 
-	if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 2 )
+	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 2 )
 	{
 		lwerror("%s must have at least two points", lwtype_name(s->lwtype));
 		return NULL;
@@ -426,13 +426,13 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 	if( pa == NULL || pa->npoints == 0 )
 		return lwcircstring_construct_empty(s->srid, s->has_z, s->has_m);
 
-	if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 3 )
+	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 3 )
 	{
 		lwerror("%s must have at least three points", lwtype_name(s->lwtype));
 		return NULL;
 	}
 
-	if( s->check & PARSER_CHECK_ODD && ! (pa->npoints % 2) )
+	if( s->check & LW_PARSER_CHECK_ODD && ! (pa->npoints % 2) )
 	{
 		lwerror("%s must have an odd number of points", lwtype_name(s->lwtype));
 		return NULL;
@@ -466,7 +466,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 			continue;
 
 		/* Check for at least four points. */
-		if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
+		if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
 		{
 			LWDEBUGF(2, "%s must have at least four points in each ring", lwtype_name(s->lwtype));
 			lwerror("%s must have at least four points in each ring", lwtype_name(s->lwtype));
@@ -474,7 +474,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		}
 
 		/* Check that first and last points are the same. */
-		if( s->check & PARSER_CHECK_CLOSURE && ! ptarray_isclosed2d(pa) )
+		if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_isclosed2d(pa) )
 		{
 			LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
 			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
@@ -518,20 +518,20 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 		return tri;
 
 	/* Check for at least four points. */
-	if( s->check & PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
+	if( s->check & LW_PARSER_CHECK_MINPOINTS && pa->npoints < 4 )
 	{
 		LWDEBUGF(2, "%s must have at least four points", lwtype_name(s->lwtype));
 		lwerror("%s must have at least four points", lwtype_name(s->lwtype));
 		return NULL;
 	}
 
-	if( s->check & PARSER_CHECK_CLOSURE && ! ptarray_isclosed(pa) )
+	if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_isclosed(pa) )
 	{
 		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 		return NULL;
 	}
 
-	if( s->check & PARSER_CHECK_ZCLOSURE && ! ptarray_isclosedz(pa) )
+	if( s->check & LW_PARSER_CHECK_ZCLOSURE && ! ptarray_isclosedz(pa) )
 	{
 		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 		return NULL;
@@ -587,7 +587,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 
 	/* Be strict in polyhedral surface closures */
 	if ( s->lwtype == POLYHEDRALSURFACETYPE )
-		s->check |= PARSER_CHECK_ZCLOSURE;
+		s->check |= LW_PARSER_CHECK_ZCLOSURE;
 
 	for ( i = 0; i < ngeoms; i++ )
 	{
@@ -699,8 +699,8 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 * a one-ring polygon to have 10 rings, causing the WKB reader to walk off the 
 * end of the memory).
 *
-* Check is a bitmask of: PARSER_CHECK_MINPOINTS, PARSER_CHECK_ODD, 
-* PARSER_CHECK_CLOSURE, PARSER_CHECK_NONE, PARSER_CHECK_ALL
+* Check is a bitmask of: LW_PARSER_CHECK_MINPOINTS, LW_PARSER_CHECK_ODD, 
+* LW_PARSER_CHECK_CLOSURE, LW_PARSER_CHECK_NONE, LW_PARSER_CHECK_ALL
 */
 LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check)
 {
@@ -719,7 +719,7 @@ LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char chec
 	s.pos = wkb;
 	
 	/* Hand the check catch-all values */
-	if ( check & PARSER_CHECK_NONE ) 
+	if ( check & LW_PARSER_CHECK_NONE ) 
 		s.check = 0;
 	else
 		s.check = check;

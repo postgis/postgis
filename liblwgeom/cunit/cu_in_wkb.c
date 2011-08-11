@@ -60,7 +60,7 @@ static void cu_wkb_in(char *wkt)
 	if ( hex_b ) free(hex_b);
 
 	/* Turn WKT into geom */
-	lwgeom_parse_wkt(&pr, wkt, PARSER_CHECK_NONE);
+	lwgeom_parse_wkt(&pr, wkt, LW_PARSER_CHECK_NONE);
 	if ( pr.errcode ) 
 	{
 		printf("ERROR: %s\n", pr.message);
@@ -75,7 +75,7 @@ static void cu_wkb_in(char *wkt)
 	wkb_a = lwgeom_to_wkb(g_a, WKB_NDR | WKB_EXTENDED, &wkb_size_a);
 
 	/* Turn WKB back into geom  */
-	g_b = lwgeom_from_wkb(wkb_a, wkb_size_a, PARSER_CHECK_NONE);
+	g_b = lwgeom_from_wkb(wkb_a, wkb_size_a, LW_PARSER_CHECK_NONE);
 
 	/* Turn geom to WKB again */
 	wkb_b = lwgeom_to_wkb(g_b, WKB_NDR | WKB_EXTENDED, &wkb_size_b);

@@ -132,7 +132,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	if ( str[0] == '0' )
 	{
 		/* TODO: 20101206: No parser checks! This is inline with current 1.5 behavior, but needs discussion */
-		lwgeom = lwgeom_from_hexwkb(str, PARSER_CHECK_NONE);
+		lwgeom = lwgeom_from_hexwkb(str, LW_PARSER_CHECK_NONE);
 		/* Error out if something went sideways */
 		if ( ! lwgeom ) 
 			ereport(ERROR,(errmsg("parse error - invalid geometry")));
@@ -140,7 +140,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	/* WKT then. */
 	else
 	{
-		if ( lwgeom_parse_wkt(&lwg_parser_result, str, PARSER_CHECK_ALL) == LW_FAILURE )
+		if ( lwgeom_parse_wkt(&lwg_parser_result, str, LW_PARSER_CHECK_ALL) == LW_FAILURE )
 			PG_PARSER_ERROR(lwg_parser_result);
 
 		lwgeom = lwg_parser_result.geom;

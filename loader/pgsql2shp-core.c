@@ -2128,7 +2128,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 		LWDEBUGF(4, "HexEWKB - length: %d  value: %s", strlen(hexewkb), hexewkb);
 
 		/* Deserialize the LWGEOM */
-		lwgeom = lwgeom_from_hexwkb(hexewkb, PARSER_CHECK_NONE);
+		lwgeom = lwgeom_from_hexwkb(hexewkb, LW_PARSER_CHECK_NONE);
 		if (!lwgeom)
 		{
 			snprintf(state->message, SHPDUMPERMSGLEN, _("Error parsing HEXEWKB for record %d"), state->currow);

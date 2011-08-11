@@ -131,37 +131,37 @@ static void test_gserialized_from_lwgeom_size(void)
 	LWGEOM *g;
 	size_t size = 0;
 
-	g = lwgeom_from_wkt("POINT(0 0)", PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE);
 	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 32 );
 	lwgeom_free(g);
 
-	g = lwgeom_from_wkt("POINT(0 0 0)", PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt("POINT(0 0 0)", LW_PARSER_CHECK_NONE);
 	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 40 );
 	lwgeom_free(g);
 
-	g = lwgeom_from_wkt("MULTIPOINT(0 0 0, 1 1 1)", PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt("MULTIPOINT(0 0 0, 1 1 1)", LW_PARSER_CHECK_NONE);
 	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 80 );
 	lwgeom_free(g);
 
-	g = lwgeom_from_wkt("LINESTRING(0 0, 1 1)", PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt("LINESTRING(0 0, 1 1)", LW_PARSER_CHECK_NONE);
 	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 48 );
 	lwgeom_free(g);
 
-	g = lwgeom_from_wkt("MULTILINESTRING((0 0, 1 1),(0 0, 1 1))", PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt("MULTILINESTRING((0 0, 1 1),(0 0, 1 1))", LW_PARSER_CHECK_NONE);
 	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 96 );
 	lwgeom_free(g);
 
-	g = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
 	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 104 );
 	lwgeom_free(g);
 
-	g = lwgeom_from_wkt("POLYGON((-1 -1, -1 2, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt("POLYGON((-1 -1, -1 2, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
 	size = gserialized_from_lwgeom_size(g);
 	CU_ASSERT_EQUAL( size, 184 );
 	lwgeom_free(g);
@@ -214,7 +214,7 @@ static void test_lwgeom_from_gserialized(void)
 	for ( i = 0; i < 13; i++ )
 	{
 		in_ewkt = ewkt[i];
-		geom = lwgeom_from_wkt(in_ewkt, PARSER_CHECK_NONE);
+		geom = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		g = gserialized_from_lwgeom(geom, 0, 0);
 		lwgeom_free(geom);
 		geom = lwgeom_from_gserialized(g);
@@ -277,15 +277,15 @@ static void test_lwgeom_count_vertices(void)
 {
 	LWGEOM *geom;
 
-	geom = lwgeom_from_wkt("MULTIPOINT(-1 -1,-1 2.5,2 2,2 -1)", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("MULTIPOINT(-1 -1,-1 2.5,2 2,2 -1)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(geom),4);
 	lwgeom_free(geom);
 
-	geom = lwgeom_from_wkt("SRID=1;MULTILINESTRING((-1 -131,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("SRID=1;MULTILINESTRING((-1 -131,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(geom),16);
 	lwgeom_free(geom);
 
-	geom = lwgeom_from_wkt("SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,211 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,211 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(geom),30);
 	lwgeom_free(geom);
 
@@ -297,7 +297,7 @@ static void test_on_gser_lwgeom_count_vertices(void)
 	GSERIALIZED *g_ser1;
 	size_t ret_size;
 
-	lwgeom = lwgeom_from_wkt("MULTIPOINT(-1 -1,-1 2.5,2 2,2 -1,1 1,2 2,4 5)", PARSER_CHECK_NONE);
+	lwgeom = lwgeom_from_wkt("MULTIPOINT(-1 -1,-1 2.5,2 2,2 -1,1 1,2 2,4 5)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(lwgeom_count_vertices(lwgeom),7);
 	g_ser1 = gserialized_from_lwgeom(lwgeom, 1, &ret_size);
 	lwgeom_free(lwgeom);
@@ -321,7 +321,7 @@ static void test_lwcollection_extract(void)
 	LWGEOM *geom;
 	LWCOLLECTION *col;
 
-	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(POINT(0 0))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(POINT(0 0))", LW_PARSER_CHECK_NONE);
 	col = lwcollection_extract((LWCOLLECTION*)geom, 1);
 	CU_ASSERT_EQUAL(TYPE_GETTYPE(col->type), MULTIPOINTTYPE);
 
@@ -338,22 +338,22 @@ static void test_lwgeom_free(void)
 	LWGEOM *geom;
 
 	/* Empty geometries don't seem to free properly (#370) */
-	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION EMPTY", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(geom->type, COLLECTIONTYPE);
 	lwgeom_free(geom);
 
 	/* Empty geometries don't seem to free properly (#370) */
-	geom = lwgeom_from_wkt("POLYGON EMPTY", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYGON EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(geom->type, POLYGONTYPE);
 	lwgeom_free(geom);
 
 	/* Empty geometries don't seem to free properly (#370) */
-	geom = lwgeom_from_wkt("LINESTRING EMPTY", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("LINESTRING EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(geom->type, LINETYPE);
 	lwgeom_free(geom);
 
 	/* Empty geometries don't seem to free properly (#370) */
-	geom = lwgeom_from_wkt("POINT EMPTY", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POINT EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(geom->type, POINTTYPE);
 	lwgeom_free(geom);
 
@@ -364,7 +364,7 @@ static void do_lwgeom_flip_coordinates(char *in, char *out)
 	LWGEOM *g,*h;
 	char * t;
 
-	g = lwgeom_from_wkt(in, PARSER_CHECK_NONE);
+	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	h = lwgeom_flip_coordinates(g);
 
 	t = lwgeom_to_wkt(g, WKT_EXTENDED, 8, NULL);
@@ -556,7 +556,7 @@ static void test_lwgeom_clone(void)
 		char *out_ewkt;
 
 		in_ewkt = ewkt[i];
-		geom = lwgeom_from_wkt(in_ewkt, PARSER_CHECK_NONE);
+		geom = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
 		cloned = lwgeom_clone(geom);
 		out_ewkt = lwgeom_to_ewkt(cloned);
 		if (strcmp(in_ewkt, out_ewkt))

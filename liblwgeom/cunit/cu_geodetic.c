@@ -151,7 +151,7 @@ static void test_gserialized_get_gbox_geocentric(void)
 		printf("\n\n------------\n");
 		printf("%s\n", gbox_data[i]);
 #endif
-		lwg = lwgeom_from_wkt(gbox_data[i], PARSER_CHECK_NONE);
+		lwg = lwgeom_from_wkt(gbox_data[i], LW_PARSER_CHECK_NONE);
 		FLAGS_SET_GEODETIC(lwg->flags, 1);
 		gbox_geocentric_slow = LW_FALSE;
 		lwgeom_calculate_gbox(lwg, &gbox);
@@ -183,7 +183,7 @@ static LWGEOM* lwgeom_over_gserialized(char *wkt)
 	LWGEOM *lwg;
 	GSERIALIZED *g;
 
-	lwg = lwgeom_from_wkt(wkt, PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	g = gserialized_from_lwgeom(lwg, 1, 0);
 	lwgeom_free(lwg);
 	return lwgeom_from_gserialized(g);
@@ -464,7 +464,7 @@ static LWGEOM* lwgeom_over_gserialized(char *wkt, GSERIALIZED **g)
 {
 	LWGEOM *lwg;
 
-	lwg = lwgeom_from_wkt(wkt, PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(lwg->flags, 1);
 	*g = gserialized_from_lwgeom(lwg, 1, 0);
 	lwgeom_free(lwg);
@@ -565,7 +565,7 @@ static void test_gserialized_from_lwgeom(void)
 	uint32 type;
 	double *inspect; /* To poke right into the blob. */
 
-	geom = lwgeom_from_wkt("POINT(0 0.2)", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POINT(0 0.2)", LW_PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(geom->flags, 1);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	type = gserialized_get_type(g);
@@ -575,7 +575,7 @@ static void test_gserialized_from_lwgeom(void)
 	lwgeom_free(geom);
 	lwfree(g);
 
-	geom = lwgeom_from_wkt("POLYGON((-1 -1, -1 2.5, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYGON((-1 -1, -1 2.5, 2 2, 2 -1, -1 -1), (0 0, 0 1, 1 1, 1 0, 0 0))", LW_PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(geom->flags, 1);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	type = gserialized_get_type(g);
@@ -585,7 +585,7 @@ static void test_gserialized_from_lwgeom(void)
 	lwgeom_free(geom);
 	lwfree(g);
 
-	geom = lwgeom_from_wkt("MULTILINESTRING((0 0, 1 1),(0 0.1, 1 1))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("MULTILINESTRING((0 0, 1 1),(0 0.1, 1 1))", LW_PARSER_CHECK_NONE);
 	FLAGS_SET_GEODETIC(geom->flags, 1);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	type = gserialized_get_type(g);
@@ -606,7 +606,7 @@ static void test_ptarray_point_in_ring(void)
 	int result;
 
 	/* Simple containment case */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.05;
 	pt_to_test.y = 1.05;
@@ -617,7 +617,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Simple noncontainment case */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.05;
 	pt_to_test.y = 1.15;
@@ -628,7 +628,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Harder noncontainment case */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.05;
 	pt_to_test.y = 0.9;
@@ -639,7 +639,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Harder containment case */
-	lwg = lwgeom_from_wkt("POLYGON((0 0, 0 2, 1 2, 0 3, 2 3, 0 4, 3 5, 0 6, 6 10, 6 1, 0 0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((0 0, 0 2, 1 2, 0 3, 2 3, 0 4, 3 5, 0 6, 6 10, 6 1, 0 0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.0;
 	pt_to_test.y = 1.0;
@@ -650,7 +650,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Point on ring at vertex case */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.1;
 	pt_to_test.y = 1.05;
@@ -661,7 +661,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Point on ring at first vertex case */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.0;
 	pt_to_test.y = 1.0;
@@ -672,7 +672,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Point on ring between vertexes case */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.0;
 	pt_to_test.y = 1.1;
@@ -683,7 +683,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Co-linear crossing case for point-in-polygon test, should return LW_TRUE */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.2, 1.2 1.2, 1.2 1.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 1.1, 1.1 1.1, 1.1 1.2, 1.2 1.2, 1.2 1.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.1;
 	pt_to_test.y = 1.05;
@@ -694,8 +694,8 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Grazing case for point-in-polygon test, should return LW_FALSE */
-	/* lwg = lwgeom_from_wkt("POLYGON((2.0 3.0, 2.0 0.0, 1.0 1.0, 2.0 3.0))", PARSER_CHECK_NONE); */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 2.0, 1.5 1.5, 1.0 1.0))", PARSER_CHECK_NONE);
+	/* lwg = lwgeom_from_wkt("POLYGON((2.0 3.0, 2.0 0.0, 1.0 1.0, 2.0 3.0))", LW_PARSER_CHECK_NONE); */
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 1.0 2.0, 1.5 1.5, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.5;
 	pt_to_test.y = 1.0;
@@ -706,7 +706,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Grazing case at first point for point-in-polygon test, should return LW_FALSE */
-	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 2.0 3.0, 2.0 0.0, 1.0 1.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((1.0 1.0, 2.0 3.0, 2.0 0.0, 1.0 1.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 1.0;
 	pt_to_test.y = 0.0;
@@ -717,7 +717,7 @@ static void test_ptarray_point_in_ring(void)
 	lwgeom_free(lwg);
 
 	/* Point on vertex of ring */
-	lwg = lwgeom_from_wkt("POLYGON((-9 50,51 -11,-10 50,-9 50))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((-9 50,51 -11,-10 50,-9 50))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = -10.0;
 	pt_to_test.y = 50.0;
@@ -729,7 +729,7 @@ static void test_ptarray_point_in_ring(void)
 
 #if 0
 	/* Small polygon and huge distance between outside point and close-but-not-quite-inside point. Should return LW_FALSE. Pretty degenerate case. */
-	lwg = lwgeom_from_wkt("0103000020E61000000100000025000000ACAD6F91DDB65EC03F84A86D57264540CCABC279DDB65EC0FCE6926B57264540B6DEAA62DDB65EC0A79F6B63572645402E0BE84CDDB65EC065677155572645405D0B1D39DDB65EC0316310425726454082B5DB27DDB65EC060A4E12957264540798BB619DDB65EC0C393A10D57264540D4BC160FDDB65EC0BD0320EE56264540D7AC4E08DDB65EC096C862CC56264540AFD29205DDB65EC02A1F68A956264540363AFA06DDB65EC0722E418656264540B63A780CDDB65EC06E9B0064562645409614E215DDB65EC0E09DA84356264540FF71EF22DDB65EC0B48145265626454036033F33DDB65EC081B8A60C5626454066FB4546DDB65EC08A47A6F7552645409061785BDDB65EC0F05AE0E755264540D4B63772DDB65EC05C86CEDD55264540D2E4C689DDB65EC09B6EBFD95526454082E573A1DDB65EC0C90BD5DB552645401ABE85B8DDB65EC06692FCE35526454039844ECEDDB65EC04D8AF6F155264540928319E2DDB65EC0AD8D570556264540D31055F3DDB65EC02D618F1D56264540343B7A01DEB65EC0EB70CF3956264540920A1A0CDEB65EC03B00515956264540911BE212DEB65EC0E43A0E7B56264540E3F69D15DEB65EC017E4089E562645408D903614DEB65EC0F0D42FC1562645402191B80EDEB65EC0586870E35626454012B84E05DEB65EC09166C80357264540215B41F8DDB65EC08F832B21572645408392F7E7DDB65EC01138C13A57264540F999F0D4DDB65EC0E4A9C14F57264540AC3FB8BFDDB65EC0EED6875F57264540D3DCFEA8DDB65EC04F6C996957264540ACAD6F91DDB65EC03F84A86D57264540", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("0103000020E61000000100000025000000ACAD6F91DDB65EC03F84A86D57264540CCABC279DDB65EC0FCE6926B57264540B6DEAA62DDB65EC0A79F6B63572645402E0BE84CDDB65EC065677155572645405D0B1D39DDB65EC0316310425726454082B5DB27DDB65EC060A4E12957264540798BB619DDB65EC0C393A10D57264540D4BC160FDDB65EC0BD0320EE56264540D7AC4E08DDB65EC096C862CC56264540AFD29205DDB65EC02A1F68A956264540363AFA06DDB65EC0722E418656264540B63A780CDDB65EC06E9B0064562645409614E215DDB65EC0E09DA84356264540FF71EF22DDB65EC0B48145265626454036033F33DDB65EC081B8A60C5626454066FB4546DDB65EC08A47A6F7552645409061785BDDB65EC0F05AE0E755264540D4B63772DDB65EC05C86CEDD55264540D2E4C689DDB65EC09B6EBFD95526454082E573A1DDB65EC0C90BD5DB552645401ABE85B8DDB65EC06692FCE35526454039844ECEDDB65EC04D8AF6F155264540928319E2DDB65EC0AD8D570556264540D31055F3DDB65EC02D618F1D56264540343B7A01DEB65EC0EB70CF3956264540920A1A0CDEB65EC03B00515956264540911BE212DEB65EC0E43A0E7B56264540E3F69D15DEB65EC017E4089E562645408D903614DEB65EC0F0D42FC1562645402191B80EDEB65EC0586870E35626454012B84E05DEB65EC09166C80357264540215B41F8DDB65EC08F832B21572645408392F7E7DDB65EC01138C13A57264540F999F0D4DDB65EC0E4A9C14F57264540AC3FB8BFDDB65EC0EED6875F57264540D3DCFEA8DDB65EC04F6C996957264540ACAD6F91DDB65EC03F84A86D57264540", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = -122.819436560680316;
 	pt_to_test.y = 42.2702301207017328;
@@ -749,7 +749,7 @@ static void test_lwpoly_covers_point2d(void)
 	POINT2D pt_to_test;
 	int result;
 
-	lwg = lwgeom_from_wkt("POLYGON((-9 50,51 -11,-10 50,-9 50))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((-9 50,51 -11,-10 50,-9 50))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = -10.0;
 	pt_to_test.y = 50.0;
@@ -758,7 +758,7 @@ static void test_lwpoly_covers_point2d(void)
 	lwgeom_free(lwg);
 
 	/* Great big ring */
-	lwg = lwgeom_from_wkt("POLYGON((-40.0 52.0, 102.0 -6.0, -67.0 -29.0, -40.0 52.0))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((-40.0 52.0, 102.0 -6.0, -67.0 -29.0, -40.0 52.0))", LW_PARSER_CHECK_NONE);
 	poly = (LWPOLY*)lwg;
 	pt_to_test.x = 4.0;
 	pt_to_test.y = 11.0;
@@ -784,63 +784,63 @@ static void test_lwgeom_distance_sphere(void)
 	gbox2.flags = gflags(0, 0, 1);
 
 	/* Line/line distance, 1 degree apart */
-	lwg1 = lwgeom_from_wkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
-	lwg2 = lwgeom_from_wkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
+	lwg1 = lwgeom_from_wkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, s.radius * M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	/* Line/line distance, crossing, 0.0 apart */
-	lwg1 = lwgeom_from_wkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", PARSER_CHECK_NONE);
-	lwg2 = lwgeom_from_wkt("LINESTRING(-10 -5, -5 20, 5 0, 10 -5)", PARSER_CHECK_NONE);
+	lwg1 = lwgeom_from_wkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("LINESTRING(-10 -5, -5 20, 5 0, 10 -5)", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	/* Line/point distance, 1 degree apart */
-	lwg1 = lwgeom_from_wkt("POINT(-4 1)", PARSER_CHECK_NONE);
-	lwg2 = lwgeom_from_wkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", PARSER_CHECK_NONE);
+	lwg1 = lwgeom_from_wkt("POINT(-4 1)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("LINESTRING(-10 -5, -5 0, 5 0, 10 -5)", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, s.radius * M_PI / 180.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
-	lwg1 = lwgeom_from_wkt("POINT(-4 1)", PARSER_CHECK_NONE);
-	lwg2 = lwgeom_from_wkt("POINT(-4 -1)", PARSER_CHECK_NONE);
+	lwg1 = lwgeom_from_wkt("POINT(-4 1)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT(-4 -1)", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, s.radius * M_PI / 90.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	/* Poly/point distance, point inside polygon, 0.0 apart */
-	lwg1 = lwgeom_from_wkt("POLYGON((-4 1, -3 5, 1 2, 1.5 -5, -4 1))", PARSER_CHECK_NONE);
-	lwg2 = lwgeom_from_wkt("POINT(-1 -1)", PARSER_CHECK_NONE);
+	lwg1 = lwgeom_from_wkt("POLYGON((-4 1, -3 5, 1 2, 1.5 -5, -4 1))", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT(-1 -1)", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	/* Poly/point distance, point inside polygon hole, 1 degree apart */
-	lwg1 = lwgeom_from_wkt("POLYGON((-4 -4, -4 4, 4 4, 4 -4, -4 -4), (-2 -2, -2 2, 2 2, 2 -2, -2 -2))", PARSER_CHECK_NONE);
-	lwg2 = lwgeom_from_wkt("POINT(-1 -1)", PARSER_CHECK_NONE);
+	lwg1 = lwgeom_from_wkt("POLYGON((-4 -4, -4 4, 4 4, 4 -4, -4 -4), (-2 -2, -2 2, 2 2, 2 -2, -2 -2))", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT(-1 -1)", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 111178.142466, 0.1);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	/* Poly/point distance, point on hole boundary, 0.0 apart */
-	lwg1 = lwgeom_from_wkt("POLYGON((-4 -4, -4 4, 4 4, 4 -4, -4 -4), (-2 -2, -2 2, 2 2, 2 -2, -2 -2))", PARSER_CHECK_NONE);
-	lwg2 = lwgeom_from_wkt("POINT(2 2)", PARSER_CHECK_NONE);
+	lwg1 = lwgeom_from_wkt("POLYGON((-4 -4, -4 4, 4 4, 4 -4, -4 -4), (-2 -2, -2 2, 2 2, 2 -2, -2 -2))", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_wkt("POINT(2 2)", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 0.0, 0.00001);
 	lwgeom_free(lwg1);
 	lwgeom_free(lwg2);
 
 	/* Medford test case #1 */
-	lwg1 = lwgeom_from_hexwkb("0105000020E610000001000000010200000002000000EF7B8779C7BD5EC0FD20D94B852845400E539C62B9BD5EC0F0A5BE767C284540", PARSER_CHECK_NONE);
-	lwg2 = lwgeom_from_hexwkb("0106000020E61000000100000001030000000100000007000000280EC3FB8CCA5EC0A5CDC747233C45402787C8F58CCA5EC0659EA2761E3C45400CED58DF8FCA5EC0C37FAE6E1E3C4540AE97B8E08FCA5EC00346F58B1F3C4540250359FD8ECA5EC05460628E1F3C45403738F4018FCA5EC05DC84042233C4540280EC3FB8CCA5EC0A5CDC747233C4540", PARSER_CHECK_NONE);
+	lwg1 = lwgeom_from_hexwkb("0105000020E610000001000000010200000002000000EF7B8779C7BD5EC0FD20D94B852845400E539C62B9BD5EC0F0A5BE767C284540", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_from_hexwkb("0106000020E61000000100000001030000000100000007000000280EC3FB8CCA5EC0A5CDC747233C45402787C8F58CCA5EC0659EA2761E3C45400CED58DF8FCA5EC0C37FAE6E1E3C4540AE97B8E08FCA5EC00346F58B1F3C4540250359FD8ECA5EC05460628E1F3C45403738F4018FCA5EC05DC84042233C4540280EC3FB8CCA5EC0A5CDC747233C4540", LW_PARSER_CHECK_NONE);
 	d = lwgeom_distance_spheroid(lwg1, lwg2, &s, 0.0);
 	CU_ASSERT_DOUBLE_EQUAL(d, 23630.8003, 0.1);
 	lwgeom_free(lwg1);
@@ -902,7 +902,7 @@ static void test_spheroid_area(void)
 	gbox.flags = gflags(0, 0, 1);
 
 	/* Medford lot test polygon */
-	lwg = lwgeom_from_wkt("POLYGON((-122.848227067007 42.5007249610493,-122.848309475585 42.5007179884263,-122.848327688675 42.500835880696,-122.848245279942 42.5008428533324,-122.848227067007 42.5007249610493))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((-122.848227067007 42.5007249610493,-122.848309475585 42.5007179884263,-122.848327688675 42.500835880696,-122.848245279942 42.5008428533324,-122.848227067007 42.5007249610493))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &s);
 	a2 = lwgeom_area_spheroid(lwg, &s);
@@ -912,7 +912,7 @@ static void test_spheroid_area(void)
 	lwgeom_free(lwg);
 
 	/* Big-ass polygon */
-	lwg = lwgeom_from_wkt("POLYGON((-2 3, -2 4, -1 4, -1 3, -2 3))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((-2 3, -2 4, -1 4, -1 3, -2 3))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &s);
 	a2 = lwgeom_area_spheroid(lwg, &s);
@@ -922,7 +922,7 @@ static void test_spheroid_area(void)
 	lwgeom_free(lwg);
 
 	/* One-degree square */
-	lwg = lwgeom_from_wkt("POLYGON((8.5 2,8.5 1,9.5 1,9.5 2,8.5 2))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((8.5 2,8.5 1,9.5 1,9.5 2,8.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &s);
 	a2 = lwgeom_area_spheroid(lwg, &s);
@@ -932,7 +932,7 @@ static void test_spheroid_area(void)
 	lwgeom_free(lwg);
 
 	/* One-degree square *near* dateline */
-	lwg = lwgeom_from_wkt("POLYGON((179.5 2,179.5 1,178.5 1,178.5 2,179.5 2))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((179.5 2,179.5 1,178.5 1,178.5 2,179.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &s);
 	a2 = lwgeom_area_spheroid(lwg, &s);
@@ -942,7 +942,7 @@ static void test_spheroid_area(void)
 	lwgeom_free(lwg);
 
 	/* One-degree square *across* dateline */
-	lwg = lwgeom_from_wkt("POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", PARSER_CHECK_NONE);
+	lwg = lwgeom_from_wkt("POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &s);
 	a2 = lwgeom_area_spheroid(lwg, &s);

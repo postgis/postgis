@@ -335,7 +335,7 @@ LWGEOM* wkt_parser_linestring_new(POINTARRAY *pa, char *dimensionality)
 	}
 	
 	/* Apply check for not enough points, if requested. */	
-	if( (global_parser_result.parser_check_flags & PARSER_CHECK_MINPOINTS) && (pa->npoints < 2) )
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) && (pa->npoints < 2) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
@@ -369,7 +369,7 @@ LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
 	}
 	
 	/* Apply check for not enough points, if requested. */	
-	if( (global_parser_result.parser_check_flags & PARSER_CHECK_MINPOINTS) && (pa->npoints < 3) )
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) && (pa->npoints < 3) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
@@ -377,7 +377,7 @@ LWGEOM* wkt_parser_circularstring_new(POINTARRAY *pa, char *dimensionality)
 	}	
 
 	/* Apply check for odd number of points, if requested. */	
-	if( (global_parser_result.parser_check_flags & PARSER_CHECK_ODD) && ((pa->npoints % 2) == 0) )
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_ODD) && ((pa->npoints % 2) == 0) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_ODDPOINTS);
@@ -469,7 +469,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 	}
 
 	/* Apply check for minimum number of points, if requested. */	
-	if( (global_parser_result.parser_check_flags & PARSER_CHECK_MINPOINTS) && (pa->npoints < 4) )
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) && (pa->npoints < 4) )
 	{
 		ptarray_free(pa);
 		lwgeom_free(poly);
@@ -478,7 +478,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 	}
 	
 	/* Apply check for not closed rings, if requested. */	
-	if( (global_parser_result.parser_check_flags & PARSER_CHECK_CLOSURE) && 
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_CLOSURE) && 
 	    ! (dimcheck == 'Z' ? ptarray_isclosedz(pa) : ptarray_isclosed2d(pa)) )
 	{
 		ptarray_free(pa);
@@ -571,7 +571,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	}
 	
 	/* Apply check for minimum number of points, if requested. */	
-	if( (global_parser_result.parser_check_flags & PARSER_CHECK_MINPOINTS) && 
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) && 
 	    (lwgeom_count_vertices(ring) < 4) )
 	{
 		LWDEBUG(4,"number of points is incorrect");
@@ -582,7 +582,7 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	}
 	
 	/* Apply check for not closed rings, if requested. */	
-	if( (global_parser_result.parser_check_flags & PARSER_CHECK_CLOSURE) )
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_CLOSURE) )
 	{
 		int is_closed = 1;
 		LWDEBUG(4,"checking ring closure");

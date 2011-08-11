@@ -21,7 +21,7 @@
 
 static void test_lwprint_assert_format(char * point_wkt, const char * format, const char * expected)
 {
-	LWPOINT * test_point = (LWPOINT*)lwgeom_from_wkt(point_wkt, PARSER_CHECK_NONE);
+	LWPOINT * test_point = (LWPOINT*)lwgeom_from_wkt(point_wkt, LW_PARSER_CHECK_NONE);
 	int num_old_failures, num_new_failures;
 	char * actual;
 	cu_error_msg_reset();
@@ -43,7 +43,7 @@ static void test_lwprint_assert_format(char * point_wkt, const char * format, co
 }
 static void test_lwprint_assert_error(char * point_wkt, const char * format)
 {
-	LWPOINT * test_point = (LWPOINT*)lwgeom_from_wkt(point_wkt, PARSER_CHECK_NONE);
+	LWPOINT * test_point = (LWPOINT*)lwgeom_from_wkt(point_wkt, LW_PARSER_CHECK_NONE);
 	cu_error_msg_reset();
 	char* tmp = lwpoint_to_latlon(test_point, format);
 	lwfree(tmp);

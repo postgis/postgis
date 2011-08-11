@@ -315,7 +315,7 @@ static void test_wkt_in_errlocation(void)
 	
 	wkt = "LINESTRING((0 0 0,1 1)";
 	lwgeom_parser_result_init(&p);
-	rv = lwgeom_parse_wkt(&p, wkt, PARSER_CHECK_ALL);
+	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
 	CU_ASSERT_EQUAL(12,p.errlocation);
 	lwgeom_parser_result_free(&p);
 

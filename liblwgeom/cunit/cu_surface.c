@@ -23,7 +23,7 @@ void triangle_parse(void)
 	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
 
 	/* 2 dims */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1,2 3,4 5,0 1))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1,2 3,4 5,0 1))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
 	tmp = lwgeom_to_ewkt(geom);
@@ -31,7 +31,7 @@ void triangle_parse(void)
 	lwfree(tmp);
 	lwgeom_free(geom);
 	/* 3DM */
-	geom = lwgeom_from_wkt("TRIANGLEM((0 1 2,3 4 5,6 7 8,0 1 2))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLEM((0 1 2,3 4 5,6 7 8,0 1 2))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
 	tmp = lwgeom_to_ewkt(geom);
@@ -40,59 +40,59 @@ void triangle_parse(void)
 	lwgeom_free(geom);
 
 	/* ERROR: a missing Z values */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7,0 1 2))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7,0 1 2))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("can not mix dimensionality in a geometry", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed rings */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 0 2))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 0 2))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed face in Z dim */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 3))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 3))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed face in Z dim, with a 4D geom */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1 2 3,4 5 6 7,8 9 10 11,0 1 3 3))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1 2 3,4 5 6 7,8 9 10 11,0 1 3 3))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: only 3 points in a face */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,0 1 2))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,0 1 2))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("triangle must have exactly 4 points", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: more than 4 points in a face */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,9 10 11,0 1 2))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,9 10 11,0 1 2))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("triangle must have exactly 4 points", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: no interior rings allowed */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2),(9 10 11,12 13 14,15 16 17,9 10 11)", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2),(9 10 11,12 13 14,15 16 17,9 10 11)", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("parse error - invalid geometry", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* EMPTY face */
-	geom = lwgeom_from_wkt("TRIANGLE EMPTY", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
 	*/
 	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
-//	CU_ASSERT_STRING_EQUAL("TRIANGLE EMPTY", lwgeom_to_wkt(geom, PARSER_CHECK_NONE));
+//	CU_ASSERT_STRING_EQUAL("TRIANGLE EMPTY", lwgeom_to_wkt(geom, LW_PARSER_CHECK_NONE));
 	lwgeom_free(geom);
 
 	/* explicit SRID */
-	geom = lwgeom_from_wkt("SRID=4326;TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("SRID=4326;TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
 	CU_ASSERT_EQUAL(geom->srid, 4326);
@@ -102,7 +102,7 @@ void triangle_parse(void)
 	lwgeom_free(geom);
 
 	/* geography support */
-	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TRIANGLE((0 1 2,3 4 5,6 7 8,0 1 2))", LW_PARSER_CHECK_NONE);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	CU_ASSERT_EQUAL(gserialized_get_type(g), TRIANGLETYPE);
 	lwgeom_free(geom);
@@ -119,7 +119,7 @@ void tin_parse(void)
 	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
 
 	/* empty */
-	geom = lwgeom_from_wkt("TIN EMPTY", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
@@ -131,7 +131,7 @@ void tin_parse(void)
 	lwgeom_free(geom);
 
 	/* 2 dims */
-	geom = lwgeom_from_wkt("TIN(((0 1,2 3,4 5,0 1)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1,2 3,4 5,0 1)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 	tmp = lwgeom_to_ewkt(geom);
@@ -140,7 +140,7 @@ void tin_parse(void)
 	lwgeom_free(geom);
 
 	/* 3DM */
-	geom = lwgeom_from_wkt("TINM(((0 1 2,3 4 5,6 7 8,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TINM(((0 1 2,3 4 5,6 7 8,0 1 2)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 	tmp = lwgeom_to_ewkt(geom);
@@ -149,49 +149,49 @@ void tin_parse(void)
 	lwgeom_free(geom);
 
 	/* ERROR: a missing Z values */
-	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7,0 1 2)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("can not mix dimensionality in a geometry", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed rings */
-	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 0 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 0 2)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed face in Z dim */
-	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 1 3)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 1 3)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed face in Z dim, with a 4D geom */
-	geom = lwgeom_from_wkt("TIN(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 3 3)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 3 3)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: only 3 points in a face */
-	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,0 1 2)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("triangle must have exactly 4 points", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: more than 3 points in a face */
-	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,9 10 11,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,9 10 11,0 1 2)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("triangle must have exactly 4 points", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: use ring for triangle */
-	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 1 2),(9 10 11,12 13 14,15 16 17,9 10 11)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 1 2),(9 10 11,12 13 14,15 16 17,9 10 11)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("parse error - invalid geometry", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* EMPTY face */
-	geom = lwgeom_from_wkt("TIN EMPTY", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
@@ -201,7 +201,7 @@ void tin_parse(void)
 	lwgeom_free(geom);
 
 	/* A simple tetrahedron */
-	geom = lwgeom_from_wkt("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 	CU_ASSERT_EQUAL(geom->srid, SRID_UNKNOWN);
@@ -211,7 +211,7 @@ void tin_parse(void)
 	lwgeom_free(geom);
 
 	/* A 4D tetrahedron */
-	geom = lwgeom_from_wkt("TIN(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 	CU_ASSERT_EQUAL(FLAGS_GET_M(geom->flags), 1);
@@ -222,7 +222,7 @@ void tin_parse(void)
 	lwgeom_free(geom);
 
 	/* explicit SRID */
-	geom = lwgeom_from_wkt("SRID=4326;TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("SRID=4326;TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 	CU_ASSERT_EQUAL(geom->srid, 4326);
@@ -232,7 +232,7 @@ void tin_parse(void)
 	lwgeom_free(geom);
 
 	/* geography support */
-	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("TIN(((0 1 2,3 4 5,6 7 8,0 1 2)))", LW_PARSER_CHECK_NONE);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	CU_ASSERT_EQUAL(gserialized_get_type(g), TINTYPE);
 	lwgeom_free(geom);
@@ -246,7 +246,7 @@ check_tgeom(char *ewkt, int type, uint32 srid, int is_solid)
 	LWGEOM *g1, *g2;
 	TGEOM *tgeom;
 
-	g1 = lwgeom_from_wkt(ewkt, PARSER_CHECK_NONE);
+	g1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	if (strlen(cu_error_msg)) printf("\n[%s], %s\n", ewkt, cu_error_msg);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 
@@ -316,7 +316,7 @@ void polyhedralsurface_parse(void)
 	cu_error_msg_reset();	/* Because i don't trust that much prior tests...  ;) */
 
 	/* 2 dims */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
 	tmp = lwgeom_to_hexwkb(geom, WKB_NDR | WKB_EXTENDED, 0);
@@ -330,7 +330,7 @@ void polyhedralsurface_parse(void)
 	lwgeom_free(geom);
 	
 	/* 3DM */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACEM(((0 1 2,3 4 5,6 7 8,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACEM(((0 1 2,3 4 5,6 7 8,0 1 2)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
 	tmp = lwgeom_to_ewkt(geom);
@@ -342,13 +342,13 @@ void polyhedralsurface_parse(void)
 	lwgeom_free(geom);
 
 	/* ERROR: a missing Z values */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7,0 1 2)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_STRING_EQUAL("can not mix dimensionality in a geometry", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* 1 face with 1 interior ring */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 2),(9 10 11,12 13 14,15 16 17,9 10 11)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 2),(9 10 11,12 13 14,15 16 17,9 10 11)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
 	tmp = lwgeom_to_ewkt(geom);
@@ -360,31 +360,31 @@ void polyhedralsurface_parse(void)
 	lwgeom_free(geom);
 
 	/* ERROR: non closed rings */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 0 2)))", PARSER_CHECK_ALL);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 0 2)))", LW_PARSER_CHECK_ALL);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed face in Z dim */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 3)))", PARSER_CHECK_ALL);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 3)))", LW_PARSER_CHECK_ALL);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: non closed face in Z dim, with a 4D geom */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 3 3)))", PARSER_CHECK_ALL);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 3 3)))", LW_PARSER_CHECK_ALL);
 	CU_ASSERT_STRING_EQUAL("geometry contains non-closed rings", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* ERROR: only 3 points in a face */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,0 1 2)))", PARSER_CHECK_ALL);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,0 1 2)))", LW_PARSER_CHECK_ALL);
 	CU_ASSERT_STRING_EQUAL("geometry requires more points", cu_error_msg);
 	cu_error_msg_reset();
 	lwgeom_free(geom);
 
 	/* EMPTY face */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE EMPTY", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
@@ -395,7 +395,7 @@ void polyhedralsurface_parse(void)
 	lwgeom_free(geom);
 
 	/* A simple tetrahedron */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
 	CU_ASSERT_EQUAL(geom->srid, SRID_UNKNOWN);
@@ -408,7 +408,7 @@ void polyhedralsurface_parse(void)
 	lwgeom_free(geom);
 
 	/* A 4D tetrahedron */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 0 0 0,0 0 1 0,0 1 0 2,0 0 0 0)),((0 0 0 0,0 1 0 0,1 0 0 4,0 0 0 0)),((0 0 0 0,1 0 0 0,0 0 1 6,0 0 0 0)),((1 0 0 0,0 1 0 0,0 0 1 0,1 0 0 0)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
 	CU_ASSERT_EQUAL(FLAGS_GET_M(geom->flags), 1);
@@ -423,7 +423,7 @@ void polyhedralsurface_parse(void)
 
 
 	/* explicit SRID */
-	geom = lwgeom_from_wkt("SRID=4326;POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("SRID=4326;POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
 	CU_ASSERT_EQUAL(geom->srid, 4326);
@@ -437,7 +437,7 @@ void polyhedralsurface_parse(void)
 
 
 	/* geography support */
-	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 2)))", PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt("POLYHEDRALSURFACE(((0 1 2,3 4 5,6 7 8,0 1 2)))", LW_PARSER_CHECK_NONE);
 	g = gserialized_from_lwgeom(geom, 1, 0);
 	CU_ASSERT_EQUAL(gserialized_get_type(g), POLYHEDRALSURFACETYPE);
 	lwgeom_free(geom);
@@ -516,7 +516,7 @@ check_dimension(char *ewkt, int dim)
 {
 	LWGEOM *geom;
 
-	geom = lwgeom_from_wkt(ewkt, PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(lwgeom_dimensionality(geom), dim);
 	lwgeom_free(geom);
@@ -545,7 +545,7 @@ check_perimeter(char *ewkt, int dim, double p)
 	LWGEOM *geom;
 	TGEOM *tgeom;
 
-	geom = lwgeom_from_wkt(ewkt, PARSER_CHECK_NONE);
+	geom = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	tgeom = tgeom_from_lwgeom(geom);
 
