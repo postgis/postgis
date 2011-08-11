@@ -2088,22 +2088,10 @@ rt_band_get_histogram(rt_bandstats stats,
 		}
 	}
 
-	/*
-		percents or sum if user_minmax
-
-		if user_minmax != 0, bins[i].percent is not a percentage but rather the sum of counts for this histogram
-			as it is the the intent that the min and max parameters are used only when dealing with coverages
-		this may be a complete hack, maybe a better implementation is needed?
-	*/
 	for (i = 0; i < bin_count; i++) {
-		if (!user_minmax) {
-			bins[i].percent = ((double) bins[i].count) / sum;
-			if (bin_width_count > 1)
-				bins[i].percent /= (bins[i].max - bins[i].min);
-		}
-		else {
-			bins[i].percent = sum;
-		}
+		bins[i].percent = ((double) bins[i].count) / sum;
+		if (bin_width_count > 1)
+			bins[i].percent /= (bins[i].max - bins[i].min);
 	}
 
 #if POSTGIS_DEBUG_LEVEL > 0

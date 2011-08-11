@@ -266,184 +266,74 @@ CREATE TYPE summarystats AS (
 	max double precision
 );
 
-CREATE OR REPLACE FUNCTION _st_summarystats(
-	rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, k bigint DEFAULT NULL, M double precision DEFAULT NULL, Q double precision DEFAULT NULL,
-	OUT count bigint, OUT sum double precision, OUT mean double precision, OUT stddev double precision, OUT min double precision, OUT max double precision, OUT "M" double precision, OUT "Q" double precision
-)
+CREATE OR REPLACE FUNCTION _st_summarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
+	RETURNS summarystats
 	AS 'MODULE_PATHNAME','RASTER_summaryStats'
 	LANGUAGE 'C' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, 1) $$
+	AS $$ SELECT _st_summarystats($1, $2, $3, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rast raster, exclude_nodata_value boolean)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, $2, 1) $$
+	AS $$ SELECT _st_summarystats($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, $3, $4) $$
+	AS $$ SELECT _st_summarystats($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, $2, TRUE, $3) $$
+	AS $$ SELECT _st_summarystats($1, $2, TRUE, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, $2, $3) $$
+	AS $$ SELECT _st_summarystats($1, 1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM _st_summarystats($1, 1, TRUE, $2) $$
+	AS $$ SELECT _st_summarystats($1, 1, TRUE, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
+CREATE OR REPLACE FUNCTION _st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS summarystats
-	AS $$
-	DECLARE
-		curs refcursor;
+	AS 'MODULE_PATHNAME','RASTER_summaryStatsCoverage'
+	LANGUAGE 'C' IMMUTABLE;
 
-		ctable text;
-		ccolumn text;
-		rast raster;
-		rtn summarystats;
-
-		tcount bigint;
-		tsum double precision;
-		tmean double precision;
-		tstddev double precision;
-		tmin double precision;
-		tmax double precision;
-
-		cK bigint;
-		cM double precision;
-		cQ double precision;
-
-		avg double precision;
-		wavg double precision;
-	BEGIN
-		-- nband
-		IF nband < 1 THEN
-			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
-			RETURN NULL;
-		END IF;
-
-		-- sample percent
-		IF sample_percent < 0 OR sample_percent > 1 THEN
-			RAISE WARNING 'Invalid sample percentage (must be between 0 and 1). Returning NULL';
-			RETURN NULL;
-		END IF;
-
-		-- clean rastertable and rastercolumn
-		ctable := quote_ident(rastertable);
-		ccolumn := quote_ident(rastercolumn);
-
-		BEGIN
-			OPEN curs FOR EXECUTE 'SELECT '
-					|| ccolumn
-					|| ' FROM '
-					|| ctable
-					|| ' WHERE '
-					|| ccolumn
-					|| ' IS NOT NULL';
-		EXCEPTION
-			WHEN OTHERS THEN
-				RAISE WARNING 'Invalid table or column name. Returning NULL';
-				RETURN NULL;
-		END;
-
-		avg := 0;
-		wavg := 0;
-		cK := 0;
-		cM := 0;
-		cQ := 0;
-		LOOP
-			FETCH curs INTO rast;
-			EXIT WHEN NOT FOUND;
-
-			SELECT count, sum, mean, stddev, min, max, "M", "Q"
-				INTO tcount, tsum, tmean, tstddev, tmin, tmax, cM, cQ
-				FROM _st_summarystats(rast, nband, exclude_nodata_value, sample_percent, cK, cM, cQ);
-			IF tcount < 1 THEN
-				CONTINUE;
-			END IF;
-
-			avg := avg + tsum; -- not the mean
-			wavg := wavg + (tcount * tmean); -- not the mean
-
-			IF rtn.count IS NULL THEN
-				rtn.count := tcount;
-				rtn.sum := tsum;
-				rtn.stddev := -1;
-				rtn.mean := tmean;
-				rtn.min := tmin;
-				rtn.max := tmax;
-			ELSE
-				rtn.count := rtn.count + tcount;
-				rtn.sum := rtn.sum + tsum;
-
-				IF tmin < rtn.min THEN
-					rtn.min := tmin;
-				END IF;
-				IF tmax > rtn.max THEN
-					rtn.max := tmax;
-				END IF;
-			END IF;
-
-			cK := rtn.count;
-		END LOOP;
-
-		CLOSE curs;
-
-		-- mean and stddev
-		IF rtn.count IS NOT NULL AND rtn.count > 0 THEN
-			rtn.mean := avg / rtn.count;
-			wavg := wavg / rtn.count;
-			--RAISE NOTICE 'straight avg = %', avg;
-			--RAISE NOTICE 'weighted avg = %', wavg;
-
-			/* sample deviation */
-			IF sample_percent > 0 AND sample_percent < 1 THEN
-				rtn.stddev := sqrt(cQ / (rtn.count - 1));
-			/* standard deviation */
-			ELSE
-				rtn.stddev := sqrt(cQ / rtn.count);
-			END IF;
-		END IF;
-
-		RETURN rtn;
-	END;
-	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
+	RETURNS summarystats
+	AS $$ SELECT _st_summarystats($1, $2, $3, $4, 1) $$
+	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, 1, $3, 1) $$
+	AS $$ SELECT _st_summarystats($1, $2, 1, $3, 1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, $3, $4, $5) $$
+	AS $$ SELECT _st_summarystats($1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, $3, TRUE, $4) $$
+	AS $$ SELECT _st_summarystats($1, $2, $3, TRUE, $4) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, 1, $3, 0.1) $$
+	AS $$ SELECT _st_summarystats($1, $2, 1, $3, 0.1) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, sample_percent double precision)
 	RETURNS summarystats
-	AS $$ SELECT count, sum, mean, stddev, min, max FROM st_summarystats($1, $2, 1, TRUE, $3) $$
+	AS $$ SELECT _st_summarystats($1, $2, 1, TRUE, $3) $$
 	LANGUAGE 'SQL' STABLE STRICT;
 
 -----------------------------------------------------------------------
@@ -523,7 +413,7 @@ CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband 
 
 		-- exclude_nodata_value IS TRUE
 		IF exclude_nodata_value IS TRUE THEN
-			SELECT count INTO rtn FROM st_summarystats($1, $2, $3, $4, $5);
+			SELECT count INTO rtn FROM _st_summarystats($1, $2, $3, $4, $5);
 			RETURN rtn;
 		END IF;
 
@@ -663,129 +553,60 @@ CREATE OR REPLACE FUNCTION st_approxhistogram(rast raster, nband int, sample_per
 -- Cannot be strict as "width" can be NULL
 CREATE OR REPLACE FUNCTION _st_histogram(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
-	AS $$
-	DECLARE
-		curs refcursor;
-
-		ctable text;
-		ccolumn text;
-		rast raster;
-
-		covstats summarystats;
-		htgm histogram;
-	BEGIN
-		-- nband
-		IF nband < 1 THEN
-			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
-			RETURN;
-		END IF;
-
-		-- rastertable and rastercolumn
-		IF rastertable IS NULL THEN
-			RAISE WARNING 'rastertable cannot be NULL. Returning NULL';
-			RETURN;
-		ELSEIF rastercolumn IS NULL THEN
-			RAISE WARNING 'rastercolumn cannot be NULL. Returning NULL';
-			RETURN;
-		END IF;
-
-		-- get coverage stats
-		SELECT count, sum, mean, stddev, min, max INTO covstats FROM st_summarystats(rastertable, rastercolumn, nband, exclude_nodata_value, sample_percent);
-		IF covstats IS NULL THEN
-			RETURN;
-		END IF;
-
-		-- clean rastertable and rastercolumn
-		ctable := quote_ident(rastertable);
-		ccolumn := quote_ident(rastercolumn);
-
-		BEGIN
-			OPEN curs FOR EXECUTE 'SELECT '
-					|| ccolumn
-					|| ' FROM '
-					|| ctable
-					|| ' WHERE '
-					|| ccolumn
-					|| ' IS NOT NULL';
-		EXCEPTION
-			WHEN OTHERS THEN
-				RAISE WARNING 'Invalid table or column name. Returning NULL';
-				RETURN;
-		END;
-
-		LOOP
-			FETCH curs INTO rast;
-			EXIT WHEN NOT FOUND;
-
-			-- the value in percent is NOT a percent but rather the sum of counts for the histogram
-			FOR htgm IN SELECT * FROM _st_histogram(rast, nband, exclude_nodata_value, sample_percent, bins, width, "right", covstats.min, covstats.max) LOOP
-				IF htgm IS NULL THEN
-					CONTINUE;
-				END IF;
-				--RAISE NOTICE 'htgm = %', htgm;
-
-				RETURN NEXT htgm;
-			END LOOP;
-
-		END LOOP;
-
-		CLOSE curs;
-
-		RETURN;
-	END;
-	$$ LANGUAGE 'plpgsql' STABLE;
+	AS 'MODULE_PATHNAME','RASTER_histogramCoverage'
+	LANGUAGE 'C' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, sum(count)::bigint AS count, CASE WHEN sum(percent) > 0 THEN (sum(count) / sum(percent)) ELSE 0 END AS percent FROM _st_histogram($1, $2, $3, $4, 1, $5, $6, $7) GROUP BY 1, 2 ORDER BY 1, 2 $$
+	AS $$ SELECT _st_histogram($1, $2, $3, $4, 1, $5, $6, $7) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, bins int, right boolean)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM st_histogram($1, $2, $3, $4, $5, NULL, $6) $$
+	AS $$ SELECT _st_histogram($1, $2, $3, $4, 1, $5, NULL, $6) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -- Cannot be strict as "width" can be NULL
 CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int, bins int, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM st_histogram($1, $2, $3, TRUE, $4, $5, $6) $$
+	AS $$ SELECT _st_histogram($1, $2, $3, TRUE, 1, $4, $5, $6) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int, bins int, right boolean)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM st_histogram($1, $2, $3, TRUE, $4, NULL, $5) $$
+	AS $$ SELECT _st_histogram($1, $2, $3, TRUE, 1, $4, NULL, $5) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -- Cannot be strict as "width" can be NULL
 CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, sum(count)::bigint AS count, CASE WHEN sum(percent) > 0 THEN (sum(count) / sum(percent)) ELSE 0 END AS percent FROM _st_histogram($1, $2, $3, $4, $5, $6, $7, $8) GROUP BY 1, 2 ORDER BY 1, 2 $$
+	AS $$ SELECT _st_histogram($1, $2, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, bins int, right boolean)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, $3, $4, $5, $6, NULL, $7) $$
+	AS $$ SELECT _st_histogram($1, $2, $3, $4, $5, $6, NULL, $7) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int, sample_percent double precision)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, $3, TRUE, $4, 0, NULL, FALSE) $$
+	AS $$ SELECT _st_histogram($1, $2, $3, TRUE, $4, 0, NULL, FALSE) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, sample_percent double precision)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, 1, TRUE, $3, 0, NULL, FALSE) $$
+	AS $$ SELECT _st_histogram($1, $2, 1, TRUE, $3, 0, NULL, FALSE) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -- Cannot be strict as "width" can be NULL
 CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int, sample_percent double precision, bins int, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, $3, TRUE, $4, $5, $6, $7) $$
+	AS $$ SELECT _st_histogram($1, $2, $3, TRUE, $4, $5, $6, $7) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxhistogram(rastertable text, rastercolumn text, nband int, sample_percent double precision, bins int, right boolean)
 	RETURNS SETOF histogram
-	AS $$ SELECT min, max, count, percent FROM st_approxhistogram($1, $2, $3, TRUE, $4, $5, NULL, $6) $$
+	AS $$ SELECT _st_histogram($1, $2, $3, TRUE, $4, $5, NULL, $6) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
