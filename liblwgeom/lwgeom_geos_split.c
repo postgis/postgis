@@ -11,8 +11,6 @@
  *
  **********************************************************************
  *
- * ST_Split
- *
  * Split polygon by line, line by line, line by point.
  * Returns at most components as a collection.
  * First element of the collection is always the part which
@@ -38,24 +36,20 @@
 
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
-#include "funcapi.h"
 
 #include <string.h>
 #include <assert.h>
 
-/* #define POSTGIS_DEBUG_LEVEL 4 */
-
-static LWGEOM* lwline_split_by_line(LWLINE* lwgeom_in, LWLINE* blade_in);
-static LWGEOM* lwline_split_by_point(LWLINE* lwgeom_in, LWPOINT* blade_in);
-static LWGEOM* lwline_split(LWLINE* lwgeom_in, LWGEOM* blade_in);
-static LWGEOM* lwpoly_split_by_line(LWPOLY* lwgeom_in, LWLINE* blade_in);
-static LWGEOM* lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in);
-static LWGEOM* lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in);
-static LWGEOM* lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in);
+static LWGEOM* lwline_split_by_line(const LWLINE* lwgeom_in, const LWLINE* blade_in);
+static LWGEOM* lwline_split_by_point(const LWLINE* lwgeom_in, const LWPOINT* blade_in);
+static LWGEOM* lwline_split(const LWLINE* lwgeom_in, const LWGEOM* blade_in);
+static LWGEOM* lwpoly_split_by_line(const LWPOLY* lwgeom_in, const LWLINE* blade_in);
+static LWGEOM* lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in);
+static LWGEOM* lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in);
 
 /* Initializes and uses GEOS internally */
 static LWGEOM*
-lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
+lwline_split_by_line(const LWLINE* lwline_in, const LWLINE* blade_in)
 {
 	LWGEOM** components;
 	LWGEOM* diff;
@@ -143,7 +137,7 @@ lwline_split_by_line(LWLINE* lwline_in, LWLINE* blade_in)
 }
 
 static LWGEOM*
-lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
+lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 {
 	double loc, dist;
 	POINT2D pt;
@@ -210,7 +204,7 @@ lwline_split_by_point(LWLINE* lwline_in, LWPOINT* blade_in)
 }
 
 static LWGEOM*
-lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
+lwline_split(const LWLINE* lwline_in, const LWGEOM* blade_in)
 {
 	switch (blade_in->type)
 	{
@@ -230,7 +224,7 @@ lwline_split(LWLINE* lwline_in, LWGEOM* blade_in)
 
 /* Initializes and uses GEOS internally */
 static LWGEOM*
-lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
+lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 {
 	LWCOLLECTION* out;
 	GEOSGeometry* g1;
@@ -381,7 +375,7 @@ lwpoly_split_by_line(LWPOLY* lwpoly_in, LWLINE* blade_in)
 }
 
 static LWGEOM*
-lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
+lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in)
 {
 	LWGEOM** split_vector=NULL;
 	LWCOLLECTION* out;
@@ -437,7 +431,7 @@ lwcollection_split(LWCOLLECTION* lwcoll_in, LWGEOM* blade_in)
 }
 
 static LWGEOM*
-lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
+lwpoly_split(const LWPOLY* lwpoly_in, const LWGEOM* blade_in)
 {
 	switch (blade_in->type)
 	{
@@ -451,60 +445,28 @@ lwpoly_split(LWPOLY* lwpoly_in, LWGEOM* blade_in)
 	return NULL;
 }
 
-static LWGEOM*
-lwgeom_split(LWGEOM* lwgeom_in, LWGEOM* blade_in)
+/* exported */
+LWGEOM*
+lwgeom_split(const LWGEOM* lwgeom_in, const LWGEOM* blade_in)
 {
 	switch (lwgeom_in->type)
 	{
 	case LINETYPE:
-		return lwline_split((LWLINE*)lwgeom_in, blade_in);
+		return lwline_split((const LWLINE*)lwgeom_in, blade_in);
 
 	case POLYGONTYPE:
-		return lwpoly_split((LWPOLY*)lwgeom_in, blade_in);
+		return lwpoly_split((const LWPOLY*)lwgeom_in, blade_in);
 
 	case MULTIPOLYGONTYPE:
 	case MULTILINETYPE:
 	case COLLECTIONTYPE:
-		return lwcollection_split((LWCOLLECTION*)lwgeom_in, blade_in);
+		return lwcollection_split((const LWCOLLECTION*)lwgeom_in, blade_in);
 
 	default:
 		lwerror("Splitting of %s geometries is unsupported",
 		        lwtype_name(lwgeom_in->type));
 		return NULL;
 	}
-
-}
-
-
-Datum ST_Split(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_Split);
-Datum ST_Split(PG_FUNCTION_ARGS)
-{
-	PG_LWGEOM *in, *blade_in, *out;
-	LWGEOM *lwgeom_in, *lwblade_in, *lwgeom_out;
-
-	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	lwgeom_in = pglwgeom_deserialize(in);
-
-	blade_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	lwblade_in = pglwgeom_deserialize(blade_in);
-
-	error_if_srid_mismatch(lwgeom_in->srid, lwblade_in->srid);
-
-	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
-	if ( ! lwgeom_out )
-	{
-		PG_FREE_IF_COPY(in, 0);
-		PG_FREE_IF_COPY(blade_in, 1);
-		PG_RETURN_NULL();
-	}
-
-	out = pglwgeom_serialize(lwgeom_out);
-
-	PG_FREE_IF_COPY(in, 0);
-	PG_FREE_IF_COPY(blade_in, 1);
-
-	PG_RETURN_POINTER(out);
 
 }
 

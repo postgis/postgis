@@ -3599,3 +3599,60 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
 
 }
 
+/*
+ * ST_Split
+ *
+ * Split polygon by line, line by line, line by point.
+ * Returns at most components as a collection.
+ * First element of the collection is always the part which
+ * remains after the cut, while the second element is the
+ * part which has been cut out. We arbitrarely take the part
+ * on the *right* of cut lines as the part which has been cut out.
+ * For a line cut by a point the part which remains is the one
+ * from start of the line to the cut point.
+ *
+ *
+ * Author: Sandro Santilli <strk@keybit.net>
+ *
+ * Work done for Faunalia (http://www.faunalia.it) with fundings
+ * from Regione Toscana - Sistema Informativo per il Governo
+ * del Territorio e dell'Ambiente (RT-SIGTA).
+ *
+ * Thanks to the PostGIS community for sharing poly/line ideas [1]
+ *
+ * [1] http://trac.osgeo.org/postgis/wiki/UsersWikiSplitPolygonWithLineString
+ *
+ */
+Datum ST_Split(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Split);
+Datum ST_Split(PG_FUNCTION_ARGS)
+{
+	PG_LWGEOM *in, *blade_in, *out;
+	LWGEOM *lwgeom_in, *lwblade_in, *lwgeom_out;
+
+	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom_in = pglwgeom_deserialize(in);
+
+	blade_in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	lwblade_in = pglwgeom_deserialize(blade_in);
+
+	error_if_srid_mismatch(lwgeom_in->srid, lwblade_in->srid);
+
+	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
+	if ( ! lwgeom_out )
+	{
+		PG_FREE_IF_COPY(in, 0);
+		PG_FREE_IF_COPY(blade_in, 1);
+		PG_RETURN_NULL();
+	}
+
+	out = pglwgeom_serialize(lwgeom_out);
+
+	PG_FREE_IF_COPY(in, 0);
+	PG_FREE_IF_COPY(blade_in, 1);
+
+	PG_RETURN_POINTER(out);
+
+}
+
+

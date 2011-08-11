@@ -75,7 +75,8 @@ SA_OBJS = \
 	lwout_svg.o \
 	lwout_x3d.o \
 	lwgeom_geos.o \
-	lwgeom_geos_clean.o
+	lwgeom_geos_clean.o \
+	lwgeom_geos_split.o
 
 NM_OBJS = \
 	lwspheroid.o 
