@@ -2084,14 +2084,30 @@ LWGEOM_UNPARSER_RESULT;
 /*
 ** New parsing and unparsing functions.
 */
+
+/**
+* @param lwgeom geometry to convert to WKT
+* @param variant output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
+*/
 extern char*   lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out);
+
+/**
+* @param lwgeom geometry to convert to WKT
+* @param variant output format to use
+*                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
+*/
 extern uchar*  lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out);
+
+/**
+* @param lwgeom geometry to convert to HEXWKB
+* @param variant output format to use
+*                (WKB_ISO, WKB_SFSQL, WKB_EXTENDED, WKB_NDR, WKB_XDR)
+*/
 extern char*   lwgeom_to_hexwkb(const LWGEOM *geom, uchar variant, size_t *size_out);
 
 
 /**
 * @param lwgeom geometry to convert to EWKT
-* @param flags output format to use (WKT_ISO, WKT_SFSQL, WKT_EXTENDED)
 */
 extern char *lwgeom_to_ewkt(const LWGEOM *lwgeom);
 
