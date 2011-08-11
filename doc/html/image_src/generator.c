@@ -376,10 +376,10 @@ int main( int argc, const char* argv[] )
 		if (useDefaultStyle)
 		{
 			printf("   Warning: using Default style for layer %d\n", layerCount);
-			lwgeom = lwgeom_from_wkt( line, PARSER_CHECK_NONE );
+			lwgeom = lwgeom_from_wkt( line, LW_PARSER_CHECK_NONE );
 		}
 		else
-			lwgeom = lwgeom_from_wkt( line+strlen(styleName)+1, PARSER_CHECK_NONE );
+			lwgeom = lwgeom_from_wkt( line+strlen(styleName)+1, LW_PARSER_CHECK_NONE );
 		LWDEBUGF( 4, "geom = %s", lwgeom_to_ewkt((LWGEOM*)lwgeom) );
 
 		styleNumber = layerCount % length(styles);
