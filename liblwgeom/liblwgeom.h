@@ -2170,6 +2170,29 @@ LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
 LWGEOM *lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2);
 
+/**
+ * Snap vertices and segments of a geometry to another using a given tolerance.
+ *
+ * @param geom1 the geometry to snap
+ * @param geom2 the geometry to snap to
+ * @param tolerance the distance under which vertices and segments are snapped
+ * 
+ * Requires GEOS-3.3.0+
+ */
+LWGEOM* lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance);
+
+/*
+ * Return the set of paths shared between two linear geometries,
+ * and their direction (same or opposite).
+ *
+ * @param geom1 a lineal geometry
+ * @param geom2 another lineal geometry
+ *
+ * Requires GEOS-3.3.0+
+ */
+LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
+
+
 /*******************************************************************************
  * GEOS-dependent extra functions on LWGEOM
  ******************************************************************************/
@@ -2189,15 +2212,6 @@ LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
  */
 LWGEOM* lwgeom_make_valid(LWGEOM* geom);
 
-/**
- * Snap vertices and segments of a geometry to another using a given tolerance.
- *
- * @param geom1 the geometry to snap
- * @param geom2 the geometry to snap to
- * @param tolerance the distance under which vertices and segments are snapped
- */
-LWGEOM* lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance);
-
 /*
  * Split polygon by line, line by line, line by point.
  *
@@ -2210,19 +2224,6 @@ LWGEOM* lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance);
  * from start of the line to the cut point.
  */
 LWGEOM* lwgeom_split(const LWGEOM* lwgeom_in, const LWGEOM* blade_in);
-
-/*
- * Return the set of paths shared between two linear geometries,
- * and their direction (same or opposite).
- *
- * Developed by Sandro Santilli <strk@keybit.net> for Faunalia
- * (http://www.faunalia.it) with funding from Regione Toscana - Sistema
- * Informativo per la Gestione del Territorio e dell' Ambiente
- * [RT-SIGTA]". For the project: "Sviluppo strumenti software per il
- * trattamento di dati geografici basati su QuantumGIS e Postgis (CIG
- * 0494241492)"
- */
-LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
 
 #endif /* !defined _LIBLWGEOM_H  */
 
