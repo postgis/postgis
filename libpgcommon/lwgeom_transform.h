@@ -15,7 +15,7 @@
 #include "lwgeom_pg.h"
 #include "proj_api.h"
 
-projPJ make_project(char *str1);
+projPJ lwproj_from_string(char *str1);
 char* GetProj4StringSPI(int srid);
 
 /**

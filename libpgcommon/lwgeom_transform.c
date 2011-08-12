@@ -1,9 +1,9 @@
 /**********************************************************************
- * $Id: lwgeom_transform.c -1M 2011-08-11 09:54:25Z (local) $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2003 Refractions Research Inc.
+ *
+ * Copyright (C) 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -36,7 +36,7 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS);
 #include "utils/hsearch.h"
 #include "lwgeom_transform.h"
 
-projPJ make_project(char *str1);
+projPJ lwproj_from_string(char *str1);
 int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
 
 
@@ -488,7 +488,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 		elog(ERROR, "GetProj4String returned NULL for SRID (%d)", srid);
 	}
 
-	projection = make_project(proj_str);
+	projection = lwproj_from_string(proj_str);
 
 	pj_errno_ref = pj_get_errno_ref();
 	if ( (projection == NULL) || (*pj_errno_ref))
@@ -629,7 +629,7 @@ void SetPROJ4LibPath(void)
 
 /** given a string, make a PJ object */
 projPJ
-make_project(char *str1)
+lwproj_from_string(char *str1)
 {
 	int t;
 	char *params[1024];  /* one for each parameter */
@@ -859,7 +859,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	output_proj4 = text2cstring(output_proj4_text);
 
 	/* make input and output projection objects */
-	input_pj = make_project(input_proj4);
+	input_pj = lwproj_from_string(input_proj4);
 
 	pj_errno_ref = pj_get_errno_ref();
 	if ( (input_pj == NULL) || (*pj_errno_ref))
@@ -874,7 +874,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	}
 	pfree(input_proj4);
 
-	output_pj = make_project(output_proj4);
+	output_pj = lwproj_from_string(output_proj4);
 
 	pj_errno_ref = pj_get_errno_ref();
 	if ((output_pj == NULL)|| (*pj_errno_ref))

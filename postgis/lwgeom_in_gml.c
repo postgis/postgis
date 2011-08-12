@@ -324,8 +324,8 @@ static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 	text_in = GetProj4StringSPI(srid_in);
 	text_out = GetProj4StringSPI(srid_out);
 
-	in_pj = make_project(text_in);
-	out_pj = make_project(text_out);
+	in_pj = lwproj_from_string(text_in);
+	out_pj = lwproj_from_string(text_out);
 
 	lwfree(text_in);
 	lwfree(text_out);

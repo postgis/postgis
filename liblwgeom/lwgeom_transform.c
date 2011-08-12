@@ -1,9 +1,9 @@
 /**********************************************************************
- * $Id:$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2003 Refractions Research Inc.
+ *
+ * Copyright (C) 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
