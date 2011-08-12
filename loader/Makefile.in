@@ -23,7 +23,7 @@ include $(PGXS)
 # Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
 # version which is not what we want. 
 CC=@CC@
-CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ 
+CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 
 # Filenames with extension as determined by the OS
 PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
