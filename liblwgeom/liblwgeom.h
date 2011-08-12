@@ -55,12 +55,6 @@
 #define NO_M_VALUE NO_VALUE
 
 /**
-* Reference System Type
-*/
-#define CARTESIAN 1
-#define GEODETIC 2
-
-/**
 * LWTYPE numbers, used internally by PostGIS
 */
 #define	POINTTYPE                1
