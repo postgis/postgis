@@ -1,3 +1,19 @@
+/**********************************************************************
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ *
+ * http://postgis.refractions.net
+ *
+ * Copyright (C) 2011      Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2009-2010 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright (C) 2008      Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ * Copyright (C) 2004-2007 Refractions Research Inc.
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ *
+ **********************************************************************/
+
 #ifndef _LWGEOM_PG_H
 #define _LWGEOM_PG_H 1
 
