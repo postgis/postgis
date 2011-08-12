@@ -2211,5 +2211,18 @@ LWGEOM* lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance);
  */
 LWGEOM* lwgeom_split(const LWGEOM* lwgeom_in, const LWGEOM* blade_in);
 
+/*
+ * Return the set of paths shared between two linear geometries,
+ * and their direction (same or opposite).
+ *
+ * Developed by Sandro Santilli <strk@keybit.net> for Faunalia
+ * (http://www.faunalia.it) with funding from Regione Toscana - Sistema
+ * Informativo per la Gestione del Territorio e dell' Ambiente
+ * [RT-SIGTA]". For the project: "Sviluppo strumenti software per il
+ * trattamento di dati geografici basati su QuantumGIS e Postgis (CIG
+ * 0494241492)"
+ */
+LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
+
 #endif /* !defined _LIBLWGEOM_H  */
 

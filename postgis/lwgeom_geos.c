@@ -3655,4 +3655,57 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 
 }
 
+/**********************************************************************
+ *
+ * ST_SharedPaths
+ *
+ * Return the set of paths shared between two linear geometries,
+ * and their direction (same or opposite).
+ *
+ * Developed by Sandro Santilli (strk@keybit.net) for Faunalia
+ * (http://www.faunalia.it) with funding from Regione Toscana - Sistema
+ * Informativo per la Gestione del Territorio e dell' Ambiente
+ * [RT-SIGTA]". For the project: "Sviluppo strumenti software per il
+ * trattamento di dati geografici basati su QuantumGIS e Postgis (CIG
+ * 0494241492)"
+ *
+ **********************************************************************/
+Datum ST_SharedPaths(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_SharedPaths);
+Datum ST_SharedPaths(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 33
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_SharedPaths' function (3.3.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 33 */
+	PG_LWGEOM *geom1, *geom2, *out;
+	LWGEOM *g1, *g2, *lwgeom_out;
+
+	geom1 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom2 = (PG_LWGEOM *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	g1 = pglwgeom_deserialize(geom1);
+	g2 = pglwgeom_deserialize(geom2);
+
+	lwgeom_out = lwgeom_sharedpaths(g1, g2);
+	if ( ! lwgeom_out )
+	{
+		PG_FREE_IF_COPY(geom1, 0);
+		PG_FREE_IF_COPY(geom2, 1);
+		PG_RETURN_NULL();
+	}
+
+	out = pglwgeom_serialize(lwgeom_out);
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
+	PG_RETURN_POINTER(out);
+
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
+
+}
+
 

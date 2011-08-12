@@ -1030,3 +1030,67 @@ lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance)
 
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
+
+LWGEOM*
+lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
+{
+#if POSTGIS_GEOS_VERSION < 33
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "'SharedPaths' function (3.3.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	return NULL;
+#else /* POSTGIS_GEOS_VERSION >= 33 */
+	GEOSGeometry *g1, *g2, *g3;
+	LWGEOM *out;
+	int is3d, srid;
+
+	srid = geom1->srid;
+	error_if_srid_mismatch(srid, (int)(geom2->srid));
+
+	is3d = (FLAGS_GET_Z(geom1->flags) || FLAGS_GET_Z(geom2->flags)) ;
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	g1 = (GEOSGeometry *)LWGEOM2GEOS(geom1);
+	if ( 0 == g1 )   /* exception thrown at construction */
+	{
+		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	g2 = (GEOSGeometry *)LWGEOM2GEOS(geom2);
+	if ( 0 == g2 )   /* exception thrown at construction */
+	{
+		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+		GEOSGeom_destroy(g1);
+		return NULL;
+	}
+
+	g3 = GEOSSharedPaths(g1,g2);
+
+	if (g3 == NULL)
+	{
+		GEOSGeom_destroy(g1);
+		GEOSGeom_destroy(g2);
+		lwerror("GEOSSharedPaths: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+
+	GEOSSetSRID(g3, srid);
+	out = GEOS2LWGEOM(g3, is3d);
+
+	if (out == NULL)
+	{
+		GEOSGeom_destroy(g3);
+		lwerror("GEOS2LWGEOM threw an error");
+		return NULL;
+	}
+	GEOSGeom_destroy(g3);
+
+	return out;
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
+}

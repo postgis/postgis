@@ -39,7 +39,6 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_geos.o \
 	lwgeom_geos_prepared.o \
 	lwgeom_geos_clean.o \
-	lwgeom_geos_sharedpaths.o \
 	lwgeom_geos_relatematch.o \
 	lwgeom_export.o \
 	lwgeom_in_gml.o \
