@@ -19,6 +19,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include "proj_api.h"
 
 /**
 * @file liblwgeom.h
@@ -2185,6 +2186,19 @@ LWGEOM* lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance);
  * Requires GEOS-3.3.0+
  */
 LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
+
+
+/*******************************************************************************
+ * PROJ4-dependent extra functions on LWGEOM
+ ******************************************************************************/
+/**
+ * Transform (reproject) a geometry in-place.
+ * @param geom the geometry to transform
+ * @param inpj the input (or current, or source) projection
+ * @param outpj the output (or destination) projection
+ */
+int lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj) ;
+int point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj) ;
 
 
 /*******************************************************************************

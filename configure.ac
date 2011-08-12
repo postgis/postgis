@@ -357,6 +357,11 @@ PGSQL_FE_CPPFLAGS=-I`$PGCONFIG --includedir`
 AC_SUBST([PGSQL_FE_LDFLAGS])
 AC_SUBST([PGSQL_FE_CPPFLAGS])
 
+dnl Extract the include flags for the backend (libpgcommon)
+PGSQL_BE_CPPFLAGS=-I`$PGCONFIG --includedir-server`
+
+AC_SUBST([PGSQL_BE_CPPFLAGS])
+
 dnl Extract the documentation and man page directories
 PGSQL_DOCDIR=`$PGCONFIG --docdir`
 PGSQL_MANDIR=`$PGCONFIG --mandir`
@@ -589,6 +594,9 @@ AC_DEFINE_UNQUOTED([POSTGIS_PROJ_VERSION], [$POSTGIS_PROJ_VERSION], [PROJ librar
 AC_SUBST([POSTGIS_PROJ_VERSION])
 CPPFLAGS="$CPPFLAGS_SAVE"
 
+AC_SUBST([PROJ_CPPFLAGS])
+AC_SUBST([PROJ_LDFLAGS])
+
 dnl Ensure that we are using PROJ >= 4.5.0 (requires pj_set_searchpath) 
 if test ! "$POSTGIS_PROJ_VERSION" -ge 45; then
 	AC_MSG_ERROR([PostGIS requires PROJ >= 4.5.0])
@@ -778,10 +786,14 @@ if test "x$RASTER" = "xraster"; then dnl # {
     POSTGIS_SRCDIR=`$PWDREGRESS`
     LIBLWGEOM_CFLAGS="-I${POSTGIS_SRCDIR}/liblwgeom"
     LIBLWGEOM_LDFLAGS="${POSTGIS_SRCDIR}/liblwgeom/liblwgeom.a"
+    LIBPGCOMMON_CFLAGS="-I${POSTGIS_SRCDIR}/libpgcommon"
+    LIBPGCOMMON_LDFLAGS="${POSTGIS_SRCDIR}/libpgcommon/libpgcommon.a"
 
     AC_SUBST([POSTGIS_SRCDIR])
     AC_SUBST([LIBLWGEOM_CFLAGS])
     AC_SUBST([LIBLWGEOM_LDFLAGS])
+    AC_SUBST([LIBPGCOMMON_CFLAGS])
+    AC_SUBST([LIBPGCOMMON_LDFLAGS])
 
     dnl ========================================================================
     dnl Determine GDAL Support
@@ -910,6 +922,7 @@ fi dnl # }
 dnl Output the relevant files
 AC_OUTPUT([GNUmakefile 
         liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile
+        libpgcommon/Makefile libpgcommon/cunit/Makefile
         postgis/sqldefines.h loader/Makefile loader/cunit/Makefile
         topology/Makefile regress/Makefile doc/Makefile doc/Makefile.comments
         doc/html/image_src/Makefile $RT_MAKEFILE_LIST])

@@ -333,7 +333,7 @@ static POINTARRAY* gml_reproject_pa(POINTARRAY *pa, int srid_in, int srid_out)
 	for (i=0 ; i < pa->npoints ; i++)
 	{
 		getPoint4d_p(pa, i, &p);
-		transform_point(&p, in_pj, out_pj);
+		point4d_transform(&p, in_pj, out_pj);
 		ptarray_set_point4d(pa, i, &p);
 	}
 

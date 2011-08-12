@@ -21,8 +21,7 @@ DATA=../spatial_ref_sys.sql
 SQL_OBJS=postgis.sql.in uninstall_postgis.sql.in legacy.sql.in uninstall_legacy.sql.in legacy_compatibility_layer.sql.in
 
 # PostgreSQL objects
-PG_OBJS=lwgeom_pg.o \
-	lwgeom_debug.o \
+PG_OBJS=lwgeom_debug.o \
 	lwgeom_accum.o \
 	lwgeom_spheroid.o \
 	lwgeom_ogc.o \
@@ -32,7 +31,6 @@ PG_OBJS=lwgeom_pg.o \
 	lwgeom_functions_basic.o \
 	lwgeom_gist.o \
 	lwgeom_btree.o \
-	lwgeom_transform.o \
 	lwgeom_box.o \
 	lwgeom_box3d.o \
 	lwgeom_box2dfloat4.o \
@@ -69,8 +67,8 @@ OBJS=$(PG_OBJS)
 # to an existing liblwgeom.so in the PostgreSQL $libdir supplied by an
 # older version of PostGIS, rather than with the static liblwgeom.a 
 # supplied with newer versions of PostGIS
-PG_CPPFLAGS += @CPPFLAGS@ -I../liblwgeom
-SHLIB_LINK = ../liblwgeom/liblwgeom.a @SHLIB_LINK@ 
+PG_CPPFLAGS += @CPPFLAGS@ -I../liblwgeom -I../libpgcommon
+SHLIB_LINK = ../libpgcommon/libpgcommon.a ../liblwgeom/liblwgeom.a @SHLIB_LINK@ 
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)
@@ -103,7 +101,7 @@ endif
 
 # Make all PostGIS objects depend upon liblwgeom, so that if an underlying
 # change is made, a PostGIS rebuild is triggered.
-$(PG_OBJS): ../liblwgeom/liblwgeom.a 
+$(PG_OBJS): ../liblwgeom/liblwgeom.a ../libpgcommon/libpgcommon.a
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
@@ -114,6 +112,6 @@ postgis_upgrade_20_minor.sql: postgis.sql
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
 $(SQL_OBJS): %.in: %.in.c
-	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
+	$(CPP) -traditional-cpp -I../libpgcommon $< | grep -v '^#' > $@
 
 postgis.sql.in: geography.sql.in.c

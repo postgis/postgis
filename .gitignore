@@ -40,6 +40,8 @@ macros/ltversion.m4
 *.o
 postgis_config.h
 postgis/Makefile
+postgis/legacy_compatibility_layer.sql
+postgis/legacy_compatibility_layer.sql.in
 postgis/legacy.sql
 postgis/legacy.sql.in
 postgis/postgis.sql
@@ -49,6 +51,8 @@ postgis/postgis_upgrade_14_to_15.sql
 postgis/postgis_upgrade_15_minor.sql
 postgis/postgis_upgrade_20_minor.sql
 postgis/sqldefines.h
+postgis/uninstall_legacy.sql
+postgis/uninstall_legacy.sql.in
 postgis/uninstall_postgis.sql
 postgis/uninstall_postgis.sql.in
 raster/Makefile
@@ -77,3 +81,5 @@ topology/test/topo_predicates.sql
 topology/topology.sql
 topology/topology.sql.in
 authors.git
+libpgcommon/Makefile
+libpgcommon/cunit/Makefile

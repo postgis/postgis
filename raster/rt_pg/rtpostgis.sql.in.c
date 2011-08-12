@@ -22,7 +22,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#include "../../postgis/gserialized.h"
+#include "../../libpgcommon/gserialized.h"
 
 -- BEGIN;
 

@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: lwgeom_transform.c -1M 2011-08-11 09:54:25Z (local) $
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -37,10 +37,7 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS);
 #include "lwgeom_transform.h"
 
 projPJ make_project(char *str1);
-void to_rad(POINT4D *pt);
-void to_dec(POINT4D *pt);
 int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
-int transform_point(POINT4D *pt, projPJ srcdefn, projPJ dstdefn);
 
 
 
@@ -104,11 +101,12 @@ static void AddPJHashEntry(MemoryContext mcxt, projPJ projection);
 static projPJ GetPJHashEntry(MemoryContext mcxt);
 static void DeletePJHashEntry(MemoryContext mcxt);
 
-/* Cache API */
-bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
-projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
-void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
-void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
+/* Internal Cache API */
+static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfoData *fcinfo) ;
+static bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
+static projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
+static void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
+static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 
 /* Search path for PROJ.4 library */
 static bool IsPROJ4LibPathSet = false;
@@ -300,12 +298,16 @@ static void DeletePJHashEntry(MemoryContext mcxt)
 		elog(ERROR, "DeletePJHashEntry: There was an error removing the PROJ4 projection object from this MemoryContext (%p)", (void *)mcxt);
 }
 
+bool
+IsInPROJ4Cache(Proj4Cache PROJ4Cache, int srid) {
+	return IsInPROJ4SRSCache((PROJ4PortalCache *)PROJ4Cache, srid) ;
+}
 
 /*
  * Per-cache management functions
  */
 
-bool
+static bool
 IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 {
 	/*
@@ -318,19 +320,23 @@ IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 	for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
 	{
 		if (PROJ4Cache->PROJ4SRSCache[i].srid == srid)
-			return true;
+			return 1;
 	}
 
 	/* Otherwise not found */
-	return false;
+	return 0;
 }
 
+projPJ GetProjectionFromPROJ4Cache(Proj4Cache cache, int srid)
+{
+	return GetProjectionFromPROJ4SRSCache((PROJ4PortalCache *)cache, srid) ;
+}
 
 /**
  * Return the projection object from the cache (we should
  * already have checked it exists using IsInPROJ4SRSCache first)
  */
-projPJ
+static projPJ
 GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 {
 	int i;
@@ -454,13 +460,17 @@ static char* GetProj4String(int srid)
 	}
 }
 
+void AddToPROJ4Cache(Proj4Cache cache, int srid, int other_srid) {
+	AddToPROJ4SRSCache((PROJ4PortalCache *)cache, srid, other_srid) ;
+}
+
 
 /**
  * Add an entry to the local PROJ4 SRS cache. If we need to wrap around then
  * we must make sure the entry we choose to delete does not contain other_srid
  * which is the definition for the other half of the transformation.
  */
-void
+static void
 AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 {
 	MemoryContext PJMemoryContext;
@@ -545,8 +555,12 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 
 }
 
+void DeleteFromPROJ4Cache(Proj4Cache cache, int srid) {
+	DeleteFromPROJ4SRSCache((PROJ4PortalCache *)cache, srid) ;
+}
 
-void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
+
+static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 {
 	/*
 	 * Delete the SRID entry from the cache
@@ -590,40 +604,28 @@ void SetPROJ4LibPath(void)
 	char *path;
 	const char **proj_lib_path;
 
-	/*
-	 * Get the sharepath and append /contrib/postgis/proj to form a suitable
-	 * directory in which to store the grid shift files
-	 */
-	proj_lib_path = palloc(sizeof(char *));
-	path = palloc(MAXPGPATH);
-	*proj_lib_path = path;
+	if (!IsPROJ4LibPathSet) {
 
-	get_share_path(my_exec_path, path);
-	strncat(path, "/contrib/postgis/proj", MAXPGPATH - strlen(path) - 1);
+		/*
+		 * Get the sharepath and append /contrib/postgis/proj to form a suitable
+		 * directory in which to store the grid shift files
+		 */
+		proj_lib_path = palloc(sizeof(char *));
+		path = palloc(MAXPGPATH);
+		*proj_lib_path = path;
 
-	/* Set the search path for PROJ.4 */
-	pj_set_searchpath(1, proj_lib_path);
+		get_share_path(my_exec_path, path);
+		strncat(path, "/contrib/postgis/proj", MAXPGPATH - strlen(path) - 1);
 
-	/* Ensure we only do this once... */
-	IsPROJ4LibPathSet = true;
+		/* Set the search path for PROJ.4 */
+		pj_set_searchpath(1, proj_lib_path);
+
+		/* Ensure we only do this once... */
+		IsPROJ4LibPathSet = true;
+	}
 }
 
 
-/** convert decimal degress to radians */
-void
-to_rad(POINT4D *pt)
-{
-	pt->x *= M_PI/180.0;
-	pt->y *= M_PI/180.0;
-}
-
-/** convert radians to decimal degress */
-void
-to_dec(POINT4D *pt)
-{
-	pt->x *= 180.0/M_PI;
-	pt->y *= 180.0/M_PI;
-}
 
 /** given a string, make a PJ object */
 projPJ
@@ -673,83 +675,54 @@ make_project(char *str1)
 }
 
 
-/**
- * Transform given SERIALIZED geometry
- * from inpj projection to outpj projection
- */
-static int
-lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
-{
-	int j, i;
-	int type = geom->type;
-	POINT4D p;
-	POINTARRAY *pa;
-	
-	/* No points to transform in an empty! */
-	if ( lwgeom_is_empty(geom) )
-		return LW_SUCCESS;
-	
-	switch(type) 
-	{
-		case POINTTYPE:
-		case LINETYPE:
-		case CIRCSTRINGTYPE:
-		case TRIANGLETYPE:
-		{
-			LWLINE *g = (LWLINE*)geom;
-			pa = g->points;
-			for ( i = 0; i < pa->npoints; i++ )
-			{
-				getPoint4d_p(pa, i, &p);
-				transform_point(&p, inpj, outpj);
-				ptarray_set_point4d(pa, i, &p);
-			}
-			break;
-		}
-		case POLYGONTYPE:
-		{
-			LWPOLY *g = (LWPOLY*)geom;
-			for ( j = 0; j < g->nrings; j++ )
-			{
-				pa = g->rings[j];
-				for ( i = 0; i < pa->npoints; i++ )
-				{
-					getPoint4d_p(pa, i, &p);
-					transform_point(&p, inpj, outpj);
-					ptarray_set_point4d(pa, i, &p);
-				}
-			}
-			break;
-		}
-		case MULTIPOINTTYPE:
-		case MULTILINETYPE:
-		case MULTIPOLYGONTYPE:
-		case COLLECTIONTYPE:
-		case COMPOUNDTYPE:
-		case CURVEPOLYTYPE:
-		case MULTICURVETYPE:
-		case MULTISURFACETYPE:
-		case POLYHEDRALSURFACETYPE:
-		case TINTYPE:
-		{
-			LWCOLLECTION *g = (LWCOLLECTION*)geom;
-			for ( i = 0; i < g->ngeoms; i++ )
-			{
-				lwgeom_transform(g->geoms[i], inpj, outpj);
-			}
-			break;
-		}
-		default:
-		{
-			lwerror("lwgeom_transform: Cannot handle type '%s'", lwtype_name(type));
-			return LW_FAILURE;
-		}
-	}
-	return LW_SUCCESS;
 
+Proj4Cache GetPROJ4Cache(FunctionCallInfoData *fcinfo) {
+	return (Proj4Cache)GetPROJ4SRSCache(fcinfo) ;
 }
 
+static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfoData *fcinfo)
+{
+	PROJ4PortalCache *PROJ4Cache ;
 
+	/*
+	 * If we have not already created PROJ4 cache for this portal
+	 * then create it
+	 */
+	if (fcinfo->flinfo->fn_extra == NULL)
+	{
+		MemoryContext old_context;
+
+		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
+		PROJ4Cache = palloc(sizeof(PROJ4PortalCache));
+		MemoryContextSwitchTo(old_context);
+
+		if (PROJ4Cache)
+		{
+			int i;
+
+			POSTGIS_DEBUGF(3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", fcinfo->flinfo->fn_mcxt);
+			/* Put in any required defaults */
+			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
+			{
+				PROJ4Cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
+				PROJ4Cache->PROJ4SRSCache[i].projection = NULL;
+				PROJ4Cache->PROJ4SRSCache[i].projection_mcxt = NULL;
+			}
+			PROJ4Cache->PROJ4SRSCacheCount = 0;
+			PROJ4Cache->PROJ4SRSCacheContext = fcinfo->flinfo->fn_mcxt;
+
+			/* Store the pointer in fcinfo->flinfo->fn_extra */
+			fcinfo->flinfo->fn_extra = PROJ4Cache;
+		}
+	}
+	else
+	{
+		/* Use the existing cache */
+		PROJ4Cache = fcinfo->flinfo->fn_extra;
+	}
+
+	return PROJ4Cache ;
+}
 
 /**
  * transform( GEOMETRY, INT (output srid) )
@@ -798,42 +771,8 @@ Datum transform(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(PG_GETARG_DATUM(0));
 	}
 
-	/*
-	 * If we have not already created PROJ4 cache for this portal
-	 * then create it
-	 */
-	if (fcinfo->flinfo->fn_extra == NULL)
-	{
-		MemoryContext old_context;
-
-		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		PROJ4Cache = palloc(sizeof(PROJ4PortalCache));
-		MemoryContextSwitchTo(old_context);
-
-		if (PROJ4Cache)
-		{
-			int i;
-
-			POSTGIS_DEBUGF(3, "Allocating PROJ4Cache for portal with transform() MemoryContext %p", fcinfo->flinfo->fn_mcxt);
-			/* Put in any required defaults */
-			for (i = 0; i < PROJ4_CACHE_ITEMS; i++)
-			{
-				PROJ4Cache->PROJ4SRSCache[i].srid = SRID_UNKNOWN;
-				PROJ4Cache->PROJ4SRSCache[i].projection = NULL;
-				PROJ4Cache->PROJ4SRSCache[i].projection_mcxt = NULL;
-			}
-			PROJ4Cache->PROJ4SRSCacheCount = 0;
-			PROJ4Cache->PROJ4SRSCacheContext = fcinfo->flinfo->fn_mcxt;
-
-			/* Store the pointer in fcinfo->flinfo->fn_extra */
-			fcinfo->flinfo->fn_extra = PROJ4Cache;
-		}
-	}
-	else
-	{
-		/* Use the existing cache */
-		PROJ4Cache = fcinfo->flinfo->fn_extra;
-	}
+	/* get or initialize the cache for this round */
+	PROJ4Cache = GetPROJ4SRSCache(fcinfo) ;
 
 	/* Add the output srid to the cache if it's not already there */
 	if (!IsInPROJ4SRSCache(PROJ4Cache, result_srid))
@@ -983,49 +922,6 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS)
 }
 
 
-int
-transform_point(POINT4D *pt, projPJ srcpj, projPJ dstpj)
-{
-	int* pj_errno_ref;
-	POINT4D orig_pt;
-
-	/* Make a copy of the input point so we can report the original should an error occur */
-	orig_pt.x = pt->x;
-	orig_pt.y = pt->y;
-	orig_pt.z = pt->z;
-
-	if (pj_is_latlong(srcpj)) to_rad(pt);
-
-	LWDEBUGF(4, "transforming POINT(%f %f) from '%s' to '%s'", orig_pt.x, orig_pt.y, pj_get_def(srcpj,0), pj_get_def(dstpj,0));
-	
-	/* Perform the transform */
-	pj_transform(srcpj, dstpj, 1, 0, &(pt->x), &(pt->y), &(pt->z));
-
-	/* For NAD grid-shift errors, display an error message with an additional hint */
-	pj_errno_ref = pj_get_errno_ref();
-
-	if (*pj_errno_ref != 0)
-	{
-		if (*pj_errno_ref == -38)
-		{
-			ereport(ERROR, (
-			            errmsg_internal("transform: couldn't project point (%g %g %g): %s (%d)",
-			                            orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref),
-			            errhint("PostGIS was unable to transform the point because either no grid shift files were found, or the point does not lie within the range for which the grid shift is defined. Refer to the ST_Transform() section of the PostGIS manual for details on how to configure PostGIS to alter this behaviour.")
-			        ));
-			return 0;
-		}
-		else
-		{
-			elog(ERROR, "transform: couldn't project point (%g %g %g): %s (%d)",
-			     orig_pt.x, orig_pt.y, orig_pt.z, pj_strerrno(*pj_errno_ref), *pj_errno_ref);
-			return 0;
-		}
-	}
-
-	if (pj_is_latlong(dstpj)) to_dec(pt);
-	return 1;
-}
 
 
 

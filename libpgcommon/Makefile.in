@@ -1,0 +1,60 @@
+# **********************************************************************
+# * $Id: Makefile.in 
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# * Copyright 2008 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+CC=@CC@
+CFLAGS=@CFLAGS@ @PGSQL_BE_CPPFLAGS@ -I../liblwgeom @PICFLAGS@ @WARNFLAGS@ 
+NUMERICFLAGS=@NUMERICFLAGS@
+
+YACC=@YACC@
+LEX=@LEX@
+
+# Standalone COMMON objects
+SA_OBJS = \
+	lwgeom_transform.o \
+	lwgeom_pg.o
+
+
+SA_HEADERS = \
+	lwgeom_pg.h \
+	lwgeom_transform.h \
+	pgsql_compat.h
+
+all: libpgcommon.a
+
+# nothing to install or uninstall
+install uninstall:
+
+libpgcommon.a: $(SA_OBJS) $(SA_HEADERS)
+	ar rs libpgcommon.a $(SA_OBJS) 
+
+maintainer-clean: clean
+
+clean: 
+	$(MAKE) -C cunit clean
+	rm -f $(SA_OBJS) 
+	rm -f $(NM_OBJS) 
+	rm -f libpgcommon.a 
+
+# Nothing specific in distclean (will be done by clean)
+distclean:
+
+check: libpgcommon.a
+	make -C cunit check
+
+# Command to build each of the .o files
+$(SA_OBJS): %.o: %.c 
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+
+  
+
+
