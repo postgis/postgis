@@ -11,7 +11,7 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @PGSQL_BE_CPPFLAGS@ -I../liblwgeom @PICFLAGS@ @WARNFLAGS@ 
+CFLAGS=@CFLAGS@ @PGSQL_BE_CPPFLAGS@ @PROJ_CPPFLAGS@ -I../liblwgeom @PICFLAGS@ @WARNFLAGS@ 
 NUMERICFLAGS=@NUMERICFLAGS@
 
 YACC=@YACC@
