@@ -11,7 +11,7 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @WARNFLAGS@
+CFLAGS=@CFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
