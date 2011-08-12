@@ -36,7 +36,6 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS);
 #include "utils/hsearch.h"
 #include "lwgeom_transform.h"
 
-projPJ lwproj_from_string(char *str1);
 int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
 
 
@@ -623,55 +622,6 @@ void SetPROJ4LibPath(void)
 		/* Ensure we only do this once... */
 		IsPROJ4LibPathSet = true;
 	}
-}
-
-
-
-/** given a string, make a PJ object */
-projPJ
-lwproj_from_string(char *str1)
-{
-	int t;
-	char *params[1024];  /* one for each parameter */
-	char *loc;
-	char *str;
-	projPJ result;
-
-
-	if (str1 == NULL) return NULL;
-
-	if (strlen(str1) == 0) return NULL;
-
-	str = pstrdup(str1);
-
-	/*
-	 * first we split the string into a bunch of smaller strings,
-	 * based on the " " separator
-	 */
-
-	params[0] = str; /* 1st param, we'll null terminate at the " " soon */
-
-	loc = str;
-	t = 1;
-	while  ((loc != NULL) && (*loc != 0) )
-	{
-		loc = strchr(loc, ' ');
-		if (loc != NULL)
-		{
-			*loc = 0; /* null terminate */
-			params[t] = loc+1;
-			loc++; /* next char */
-			t++; /*next param */
-		}
-	}
-
-	if (!(result=pj_init(t, params)))
-	{
-		pfree(str);
-		return NULL;
-	}
-	pfree(str);
-	return result;
 }
 
 

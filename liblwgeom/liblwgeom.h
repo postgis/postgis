@@ -2191,6 +2191,14 @@ LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
 /*******************************************************************************
  * PROJ4-dependent extra functions on LWGEOM
  ******************************************************************************/
+
+/**
+ * Get a projection from a string representation
+ *
+ * Eg: "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+ */
+projPJ lwproj_from_string(const char* txt);
+
 /**
  * Transform (reproject) a geometry in-place.
  * @param geom the geometry to transform

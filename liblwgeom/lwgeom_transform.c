@@ -13,6 +13,7 @@
 #include "proj_api.h"
 #include "liblwgeom.h"
 #include <math.h>
+#include <string.h>
 
 
 /** convert decimal degress to radians */
@@ -149,3 +150,56 @@ point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj)
 	if (pj_is_latlong(dstpj)) to_dec(pt);
 	return 1;
 }
+
+projPJ
+lwproj_from_string(const char *str1)
+{
+	int t;
+	char *params[1024];  /* one for each parameter */
+	char *loc;
+	char *str;
+	size_t slen;
+	projPJ result;
+
+
+	if (str1 == NULL) return NULL;
+
+	slen = strlen(str1);
+
+	if (slen == 0) return NULL;
+
+	str = lwalloc(slen+1);
+	strcpy(str, str1);
+
+	/*
+	 * first we split the string into a bunch of smaller strings,
+	 * based on the " " separator
+	 */
+
+	params[0] = str; /* 1st param, we'll null terminate at the " " soon */
+
+	loc = str;
+	t = 1;
+	while  ((loc != NULL) && (*loc != 0) )
+	{
+		loc = strchr(loc, ' ');
+		if (loc != NULL)
+		{
+			*loc = 0; /* null terminate */
+			params[t] = loc+1;
+			loc++; /* next char */
+			t++; /*next param */
+		}
+	}
+
+	if (!(result=pj_init(t, params)))
+	{
+		lwfree(str);
+		return NULL;
+	}
+	lwfree(str);
+	return result;
+}
+
+
+
