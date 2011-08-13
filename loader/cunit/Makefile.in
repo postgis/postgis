@@ -26,7 +26,7 @@ PGSQL_FE_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
 PGSQL_FE_LDFLAGS=@PGSQL_FE_LDFLAGS@
 
 # liblwgeom
-LIBLWGEOM=../../liblwgeom/liblwgeom.a
+LIBLWGEOM=../../liblwgeom/.libs/liblwgeom.a
 
 # iconv flags
 ICONV_LDFLAGS=@ICONV_LDFLAGS@

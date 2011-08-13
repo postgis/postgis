@@ -21,8 +21,8 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 libdir = @libdir@
 INSTALL = $(SHELL) ../install-sh
+LIBTOOL = @LIBTOOL@
 
-SONAME = liblwgeom.so.@POSTGIS_MAJOR_VERSION@
 SOVER = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@.@POSTGIS_MICRO_VERSION@
 
 
@@ -84,7 +84,9 @@ SA_OBJS = \
 NM_OBJS = \
 	lwspheroid.o 
 
-OBJS = $(SA_OBJS) $(NM_OBJS)
+LT_SA_OBJS = $(SA_OBJS:.o=.lo)
+LT_NM_OBJS = $(NM_OBJS:.o=.lo)
+LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
 
 SA_HEADERS = \
 	liblwgeom.h \
@@ -92,25 +94,23 @@ SA_HEADERS = \
 	libtgeom.h \
 	lwgeom_geos.h
 
-all: liblwgeom.a
+all: liblwgeom.la
 
 # nothing to install or uninstall
 install uninstall:
 
-install-liblwgeom: liblwgeom.so liblwgeom.a
-	$(INSTALL) liblwgeom.so $(DESTDIR)$(libdir)/liblwgeom.so.$(SOVER)
-	$(INSTALL) liblwgeom.a $(DESTDIR)$(libdir)/liblwgeom.a
-	@echo "Remember to run ldconfig"
+install-liblwgeom: liblwgeom.la
+	$(LIBTOOL) --mode=install $(INSTALL) liblwgeom.la $(libdir)/liblwgeom.la
+	$(LIBTOOL) --mode=finish $(libdir)
 
 uninstall-liblwgeom: 
-	rm -f $(DESTDIR)$(libdir)/liblwgeom.so.$(SOVER)
-	rm -f $(DESTDIR)$(libdir)/liblwgeom.a
+	$(LIBTOOL) --mode=uninstall rm -f $(libdir)/liblwgeom.la
 
-liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
-	ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
+#liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
+#ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
 
-liblwgeom.so: $(OBJS) $(SA_HEADERS)
-	$(CC) -shared -Wl,-soname,$(SONAME) -o $@ $(OBJS) $(LDFLAGS)
+liblwgeom.la: $(LT_OBJS) $(SA_HEADERS)
+	$(LIBTOOL) --tag=CC --mode=link $(CC) -rpath $(libdir) $(LT_OBJS) -release $(SOVER) $(LDFLAGS) -o $@
 
 maintainer-clean: clean
 	rm -f lwin_wkt_lex.c
@@ -119,28 +119,26 @@ maintainer-clean: clean
 
 clean: 
 	$(MAKE) -C cunit clean
-	rm -f $(OBJS) 
-	rm -f liblwgeom.a 
-	rm -f liblwgeom.so 
+	rm -f $(LT_OBJS) 
+	rm -f liblwgeom.la
+	rm -rf .libs
 
 # Nothing specific in distclean (will be done by clean)
 distclean:
 
-check: liblwgeom.a
+check: liblwgeom.la
 	make -C cunit check
 
-# Command to build each of the .o files
-$(SA_OBJS): %.o: %.c 
-	$(CC) $(CFLAGS) -c -o $@ $<
+# Command to build each of the .lo files
+$(LT_SA_OBJS): %.lo: %.c
+	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) -c -o $@ $<
 
-# Command to build each of the .o files
-$(NM_OBJS): %.o: %.c 
-	$(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
+$(LT_NM_OBJS): %.lo: %.c
+	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
 # Generate WKT parser from Flex/Yacc inputs
 lwin_wkt_parse.c: lwin_wkt_parse.y
 	$(YACC) -o'$@' -d $^
-  
 #       $(YACC) --debug --verbose -o'$@' -d $<
 #       $(YACC) -o'$@' -d $^
 

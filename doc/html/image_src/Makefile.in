@@ -149,12 +149,12 @@ $(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
 	convert $@ -resize 100x100 $@
 
 # Build the main executable
-generator: ../../../liblwgeom/liblwgeom.a $(OBJS)
-	$(CC) -o $@ $(OBJS) ../../../liblwgeom/liblwgeom.a -lm $(CUNIT_LDFLAGS)
+generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
+	$(CC) -o $@ $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a -lm $(CUNIT_LDFLAGS)
 
 # Build liblwgeom
-../../../liblwgeom/liblwgeom.a:
-	make -C ../../../liblwgeom liblwgeom.a
+../../../liblwgeom/.libs/liblwgeom.a:
+	make -C ../../../liblwgeom liblwgeom.la
 
 # Clean target
 clean:
