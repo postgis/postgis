@@ -117,13 +117,151 @@
  *
  **/
 
-
 /**
  * Types definitions
  */
 typedef struct rt_raster_t* rt_raster;
 typedef struct rt_band_t* rt_band;
 typedef struct rt_geomval_t* rt_geomval;
+typedef struct rt_bandstats_t* rt_bandstats;
+typedef struct rt_histogram_t* rt_histogram;
+typedef struct rt_quantile_t* rt_quantile;
+typedef struct rt_valuecount_t* rt_valuecount;
+typedef struct rt_gdaldriver_t* rt_gdaldriver;
+typedef struct rt_reclassexpr_t* rt_reclassexpr;
+
+
+/**
+ * Struct definitions
+ *
+ * These structs are defined here as they are needed elsewhere
+ * including rt_pg/rt_pg.c and reduce duplicative declarations
+ *
+ */
+struct rt_raster_serialized_t {
+    /*---[ 8 byte boundary ]---{ */
+    uint32_t size; /* required by postgresql: 4 bytes */
+    uint16_t version; /* format version (this is version 0): 2 bytes */
+    uint16_t numBands; /* Number of bands: 2 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double scaleX; /* pixel width: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double scaleY; /* pixel height: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double ipX; /* insertion point X: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double ipY; /* insertion point Y: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double skewX; /* skew about the X axis: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double skewY; /* skew about the Y axis: 8 bytes */
+
+    /* }---[ 8 byte boundary ]--- */
+    int32_t srid; /* Spatial reference id: 4 bytes */
+    uint16_t width; /* pixel columns: 2 bytes */
+    uint16_t height; /* pixel rows: 2 bytes */
+};
+
+/* NOTE: the initial part of this structure matches the layout
+ *       of data in the serialized form version 0, starting
+ *       from the numBands element
+ */
+struct rt_raster_t {
+    uint32_t size;
+    uint16_t version;
+
+    /* Number of bands, all share the same dimension
+     * and georeference */
+    uint16_t numBands;
+
+    /* Georeference (in projection units) */
+    double scaleX; /* pixel width */
+    double scaleY; /* pixel height */
+    double ipX; /* geo x ordinate of the corner of upper-left pixel */
+    double ipY; /* geo y ordinate of the corner of bottom-right pixel */
+    double skewX; /* skew about the X axis*/
+    double skewY; /* skew about the Y axis */
+
+    int32_t srid; /* spatial reference id */
+    uint16_t width; /* pixel columns - max 65535 */
+    uint16_t height; /* pixel rows - max 65535 */
+    rt_band *bands; /* actual bands */
+
+};
+
+/* WKT string representing each polygon in WKT format acompagned by its
+correspoding value */
+struct rt_geomval_t {
+    int srid;
+    double val;
+    char * geom;
+};
+
+/* summary stats of specified band */
+struct rt_bandstats_t {
+	double sample;
+	uint32_t count;
+
+	double min;
+	double max;
+	double sum;
+	double mean;
+	double stddev;
+
+	double *values;
+	int sorted; /* flag indicating that values is sorted ascending by value */
+};
+
+/* histogram bin(s) of specified band */
+struct rt_histogram_t {
+	uint32_t count;
+	double percent;
+
+	double min;
+	double max;
+
+	int inc_min;
+	int inc_max;
+};
+
+/* quantile(s) of the specified band */
+struct rt_quantile_t {
+	double quantile;
+	double value;
+};
+
+/* number of times a value occurs */
+struct rt_valuecount_t {
+	double value;
+	uint32_t count;
+	double percent;
+};
+
+/* reclassification expression */
+struct rt_reclassexpr_t {
+	struct rt_reclassrange {
+		double min;
+		double max;
+		int inc_min; /* include min */
+		int inc_max; /* include max */
+		int exc_min; /* exceed min */
+		int exc_max; /* exceed max */
+	} src, dst;
+};
+
+/* gdal driver information */
+struct rt_gdaldriver_t {
+    int idx;
+    char *short_name;
+    char *long_name;
+		char *create_options;
+};
 
 /**
 * Global functions for memory/logging handlers.
@@ -461,7 +599,6 @@ int rt_band_check_is_nodata(rt_band band);
  *
  * @return the summary statistics for a band
  */
-typedef struct rt_bandstats_t* rt_bandstats;
 rt_bandstats rt_band_get_summary_stats(rt_band band, int exclude_nodata_value,
 	double sample, int inc_vals, uint64_t *cK, double *cM, double *cQ);
 	
@@ -483,7 +620,6 @@ rt_bandstats rt_band_get_summary_stats(rt_band band, int exclude_nodata_value,
  *
  * @return the histogram of the data
  */
-typedef struct rt_histogram_t* rt_histogram;
 rt_histogram rt_band_get_histogram(rt_bandstats stats,
 	int bin_count, double *bin_widths, int bin_widths_count,
 	int right, double min, double max, int *rtn_count);
@@ -499,7 +635,6 @@ rt_histogram rt_band_get_histogram(rt_bandstats stats,
  *
  * @return the default set of or requested quantiles for a band
  */
-typedef struct rt_quantile_t* rt_quantile;
 rt_quantile rt_band_get_quantiles(rt_bandstats stats,
 	double *quantiles, int quantiles_count, int *rtn_count);
 
@@ -516,7 +651,6 @@ rt_quantile rt_band_get_quantiles(rt_bandstats stats,
  *
  * @return the default set of or requested quantiles for a band
  */
-typedef struct rt_valuecount_t* rt_valuecount;
 rt_valuecount rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	double *search_values, uint32_t search_values_count,
 	double roundto, int *rtn_count);
@@ -533,7 +667,6 @@ rt_valuecount rt_band_get_value_count(rt_band band, int exclude_nodata_value,
  *
  * @return a new rt_band or 0 on error
  */
-typedef struct rt_reclassexpr_t* rt_reclassexpr;
 rt_band rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 	uint32_t hasnodata, double nodataval,
 	rt_reclassexpr *exprset, int exprcount);
@@ -899,7 +1032,6 @@ uint8_t *rt_raster_to_gdal(rt_raster raster, const char *srs,
  *
  * @return set of "gdaldriver" values of available GDAL drivers
  */
-typedef struct rt_gdaldriver_t* rt_gdaldriver;
 rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count);
 
 /**

@@ -988,33 +988,6 @@ static void testRasterFromBand(rt_raster raster) {
 	rt_raster_destroy(rast);
 }
 
-struct rt_bandstats_t {
-	double sample;
-	uint32_t count;
-
-	double min;
-	double max;
-	double sum;
-	double mean;
-	double stddev;
-
-	double *values;
-	int sorted;
-};
-struct rt_histogram_t {
-	uint32_t count;
-	double percent;
-
-	double min;
-	double max;
-
-	int inc_min;
-	int inc_max;
-};
-struct rt_quantile_t {
-	double quantile;
-	double value;
-};
 static void testBandStats() {
 	rt_bandstats stats = NULL;
 	rt_histogram histogram = NULL;
@@ -1165,16 +1138,6 @@ static void testRasterReplaceBand() {
 	if (mem) rtdealloc(mem);
 }
 
-struct rt_reclassexpr_t {
-	struct rt_reclassrange {
-		double min;
-		double max;
-		int inc_min; /* include min */
-		int inc_max; /* include max */
-		int exc_min; /* exceed min */
-		int exc_max; /* exceed max */
-	} src, dst;
-};
 static void testBandReclass() {
 	rt_reclassexpr *exprset;
 
@@ -1265,12 +1228,6 @@ static void testBandReclass() {
 	rt_band_destroy(newband);
 }
 
-struct rt_gdaldriver_t {
-	int idx;
-	char *short_name;
-	char *long_name;
-	char *create_options;
-};
 static void testGDALDrivers() {
 	int i;
 	uint32_t size;
@@ -1336,11 +1293,6 @@ static void testRasterToGDAL() {
 	deepRelease(raster);
 }
 
-struct rt_valuecount_t {
-	double value;
-	uint32_t count;
-	double percent;
-};
 static void testValueCount() {
 	rt_valuecount vcnts = NULL;
 
@@ -1711,16 +1663,6 @@ main()
 		/* We can check rt_raster_has_no_band here too */
 		CHECK(!rt_raster_has_no_band(rt, 1));
 
-        /**
-         * Need to define again, to access the struct fields
-         **/
-        struct rt_geomval_t {
-            int srid;
-            double val;
-            char * geom;
-        };
-
-        typedef struct rt_geomval_t* rt_geomval;
         int nPols = 0;
 
         rt_geomval gv = (rt_geomval) rt_raster_dump_as_wktpolygons(rt, 1, &nPols);

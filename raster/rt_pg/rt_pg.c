@@ -64,24 +64,6 @@
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
 
-/* size of rt_raster_serialized_t */
-struct rt_raster_serialized_t {
-    uint32_t size;
-    uint16_t version;
-    uint16_t numBands;
-    double scaleX;
-    double scaleY;
-    double ipX;
-    double ipY;
-    double skewX;
-    double skewY;
-    int32_t srid;
-    uint16_t width;
-    uint16_t height;
-};
-
-#define RT_RASTER_SERIALIZED_T_LEN sizeof(struct rt_raster_serialized_t)
-
 /*
  * This is required for builds against pgsql 8.2
  */
@@ -708,7 +690,7 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
     uchar* pglwgeom;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     {
         raster = rt_raster_deserialize(pgraster, TRUE);
@@ -748,16 +730,6 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 
     PG_RETURN_POINTER(pglwgeom);
 }
-
-
-/**
- * Needed for sizeof
- */
-struct rt_geomval_t {
-    int srid;
-    double val;
-    char * geom;
-};
 
 
 PG_FUNCTION_INFO_V1(RASTER_dumpAsWKTPolygons);
@@ -998,7 +970,7 @@ Datum RASTER_getSRID(PG_FUNCTION_ARGS)
     int32_t srid;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1055,7 +1027,7 @@ Datum RASTER_getWidth(PG_FUNCTION_ARGS)
     uint16_t width;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1082,7 +1054,7 @@ Datum RASTER_getHeight(PG_FUNCTION_ARGS)
     uint16_t height;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1109,7 +1081,7 @@ Datum RASTER_getNumBands(PG_FUNCTION_ARGS)
     int32_t num_bands;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1136,7 +1108,7 @@ Datum RASTER_getXScale(PG_FUNCTION_ARGS)
     double xsize;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1163,7 +1135,7 @@ Datum RASTER_getYScale(PG_FUNCTION_ARGS)
     double ysize;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1252,7 +1224,7 @@ Datum RASTER_getXSkew(PG_FUNCTION_ARGS)
     double xskew;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1280,7 +1252,7 @@ Datum RASTER_getYSkew(PG_FUNCTION_ARGS)
     double yskew;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1369,7 +1341,7 @@ Datum RASTER_getXUpperLeft(PG_FUNCTION_ARGS)
     double xul;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -1396,7 +1368,7 @@ Datum RASTER_getYUpperLeft(PG_FUNCTION_ARGS)
     double yul;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster ) {
@@ -2237,7 +2209,7 @@ Datum RASTER_isEmpty(PG_FUNCTION_ARGS)
 
     /* Deserialize raster */
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster )
@@ -2269,7 +2241,7 @@ Datum RASTER_hasNoBand(PG_FUNCTION_ARGS)
 
     /* Deserialize raster */
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if ( ! raster )
@@ -3023,20 +2995,6 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(pgraster);
 }
 
-struct rt_bandstats_t {
-	double sample;
-	uint32_t count;
-
-	double min;
-	double max;
-	double sum;
-	double mean;
-	double stddev;
-
-	double *values;
-	int sorted;
-};
-
 /**
  * Get summary stats of a band
  */
@@ -3446,18 +3404,6 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 	PG_RETURN_DATUM(result);
 }
-
-/* get histogram */
-struct rt_histogram_t {
-	uint32_t count;
-	double percent;
-
-	double min;
-	double max;
-
-	int inc_min;
-	int inc_max;
-};
 
 /**
  * Returns histogram for a band
@@ -4235,12 +4181,6 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 	}
 }
 
-/* get quantiles */
-struct rt_quantile_t {
-	double quantile;
-	double value;
-};
-
 /**
  * Returns quantiles for a band
  */
@@ -4481,12 +4421,6 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 	}
 }
 
-struct rt_valuecount_t {
-	double value;
-	uint32_t count;
-	double percent;
-};
-
 /* get counts of values */
 PG_FUNCTION_INFO_V1(RASTER_valueCount);
 Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
@@ -4697,17 +4631,6 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		SRF_RETURN_DONE(funcctx);
 	}
 }
-
-struct rt_reclassexpr_t {
-	struct rt_reclassrange {
-		double min;
-		double max;
-		int inc_min;
-		int inc_max;
-		int exc_min;
-		int exc_max;
-	} src, dst;
-};
 
 /**
  * Reclassify the specified bands of the raster
@@ -5350,16 +5273,6 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUG(3, "RASTER_asGDALRaster: Returning pointer to GDAL raster");
 	PG_RETURN_POINTER(result);
 }
-
-/**
- * Needed for sizeof
- */
-struct rt_gdaldriver_t {
-    int idx;
-    char *short_name;
-    char *long_name;
-		char *create_options;
-};
 
 /**
  * Returns available GDAL drivers
@@ -6281,7 +6194,7 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 
 	/* pgraster is null, return null */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, RT_RASTER_SERIALIZED_T_LEN);
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
 	/* raster */
 	raster = rt_raster_deserialize(pgraster, TRUE);
