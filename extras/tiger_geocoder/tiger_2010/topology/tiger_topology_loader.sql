@@ -70,6 +70,17 @@ BEGIN
 	GET DIAGNOSTICS var_rcnt = ROW_COUNT;
 	var_result := var_result || ' ' || var_rcnt::text || ' nodes added. ';
    -- end load in nodes
+   -- start Mark which nodes are contained in faces
+   	var_sql := 'UPDATE ' || quote_ident(toponame) || '.node AS n
+					SET containing_face = f.tfid
+						FROM (SELECT tfid, the_geom
+							FROM tiger.faces WHERE statefp = $1 AND ST_Intersects(the_geom, $2) 
+							) As f
+						WHERE ST_Contains(f.the_geom, n.geom) ';
+	EXECUTE var_sql USING var_statefp, var_rgeom;
+	GET DIAGNOSTICS var_rcnt = ROW_COUNT;
+	var_result := var_result || ' ' || var_rcnt::text || ' nodes contained in a face. ';
+   -- end Mark nodes contained in faces
    
    -- TODO: Load in edges --
 	RETURN var_result;
