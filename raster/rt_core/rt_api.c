@@ -1563,9 +1563,6 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 
 	uint32_t do_sample = 0;
 	uint32_t sample_size = 0;
-	int byY = 0;
-	uint32_t outer = 0;
-	uint32_t inner = 0;
 	uint32_t sample_per = 0;
 	uint32_t sample_int = 0;
 	uint32_t i = 0;
@@ -1630,17 +1627,6 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 		}
 	}
 
-	if (band->height > band->width) {
-		byY = 1;
-		outer = band->height;
-		inner = band->width;
-	}
-	else {
-		byY = 0;
-		outer = band->width;
-		inner = band->height;
-	}
-
 	/* clamp percentage */
 	if (
 		(sample < 0 || FLT_EQ(sample, 0.0)) ||
@@ -1656,7 +1642,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 	/* sample all pixels */
 	if (do_sample != 1) {
 		sample_size = band->width * band->height;
-		sample_per = inner;
+		sample_per = band->height;
 	}
 	/*
 	 randomly sample a percentage of available pixels
@@ -1665,8 +1651,8 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 	*/
 	else {
 		sample_size = round((band->width * band->height) * sample);
-		sample_per = round(sample_size / outer);
-		sample_int = round(inner / sample_per);
+		sample_per = round(sample_size / band->width);
+		sample_int = round(band->height / sample_per);
 		srand(time(NULL));
 	}
 
@@ -1681,7 +1667,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 		}
 	}
 
-	for (x = 0, j = 0, k = 0; x < outer; x++) {
+	for (x = 0, j = 0, k = 0; x < band->width; x++) {
 		y = -1;
 		diff = 0;
 
@@ -1693,13 +1679,10 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 				y += diff + offset;
 				diff = sample_int - offset;
 			}
-			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", (byY ? y : x), (byY ? x : y), z);
-			if (y >= inner || z > sample_per) break;
+			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", x, y, z);
+			if (y >= band->height || z > sample_per) break;
 
-			if (byY)
-				rtn = rt_band_get_pixel(band, y, x, &value);
-			else
-				rtn = rt_band_get_pixel(band, x, y, &value);
+			rtn = rt_band_get_pixel(band, x, y, &value);
 
 			j++;
 			if (rtn != -1) {
@@ -2212,7 +2195,7 @@ rt_band_get_quantiles(rt_bandstats stats,
  * @param roundto: the decimal place to round the values to
  * @param rtn_count: the number of value counts being returned
  *
- * @return the default set of or requested quantiles for a band
+ * @return the number of times the provide value(s) occur
  */
 rt_valuecount
 rt_band_get_value_count(rt_band band, int exclude_nodata_value,

@@ -649,7 +649,7 @@ rt_quantile rt_band_get_quantiles(rt_bandstats stats,
  * @param roundto: the decimal place to round the values to
  * @param rtn_count: the number of value counts being returned
  *
- * @return the default set of or requested quantiles for a band
+ * @return the number of times the provide value(s) occur
  */
 rt_valuecount rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	double *search_values, uint32_t search_values_count,
