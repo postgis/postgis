@@ -55,6 +55,10 @@
 #define MAXFLOAT      3.402823466e+38F
 #endif
 
+/* for the measure functions*/
+#define DIST_MAX		-1
+#define DIST_MIN		1
+
 
 /**
 * Well-Known Text (WKT) Output Variant Types

@@ -1416,10 +1416,6 @@ extern int geometry_type_from_string(const char *str, int *type, int *z, int *m)
 #define LW_MIN(a,b) ((a) <= (b) ? (a) : (b))
 #define LW_ABS(a)   ((a) <	(0) ? -(a) : (a))
 
-/* for the measure functions*/
-#define DIST_MAX		-1
-#define DIST_MIN		1
-
 /* general utilities
 	2D*/
 extern double distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);
