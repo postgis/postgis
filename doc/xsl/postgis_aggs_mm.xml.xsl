@@ -506,6 +506,10 @@
                         or some internal functions that were never documented.  If you are using a function that you don't see documented,
                         it's probably deprecated, about to be deprecated, or internal and should be avoided.  If you have applications or tools
                         that rely on deprecated functions, please refer to <link linked="legacy_faq" /> for more details.</para></note>
+                    <note><para>Bounding boxes of geometries have been changed from float4 to double precision (float8).  This has an impact
+                    	on answers you get using bounding box operators and casting of bounding boxes to geometries. E.g ST_SetSRID(abbox) will
+                    	often return a different more accurate answer in PostGIS 2.0+ than it did in prior versions which may very well slightly
+                    	change answers to view port queries.</para></note>
                     <note><para>The arguments hasnodata was replaced with exclude_nodata_value which has the same meaning as the older hasnodata but clearer in purpose.</para></note>
                     <itemizedlist>
                     <!-- Pull out the purpose section for each ref entry   -->
