@@ -100,11 +100,10 @@ all: liblwgeom.la
 install uninstall:
 
 install-liblwgeom: liblwgeom.la
-	$(LIBTOOL) --mode=install $(INSTALL) liblwgeom.la $(libdir)/liblwgeom.la
-	$(LIBTOOL) --mode=finish $(libdir)
+	$(LIBTOOL) --mode=install $(INSTALL) liblwgeom.la "$(DESTDIR)$(libdir)/liblwgeom.la"
 
 uninstall-liblwgeom: 
-	$(LIBTOOL) --mode=uninstall rm -f $(libdir)/liblwgeom.la
+	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/liblwgeom.la"
 
 #liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
 #ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
