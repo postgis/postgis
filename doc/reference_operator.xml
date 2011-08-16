@@ -534,7 +534,7 @@ FROM
 		  <refnamediv>
 			<refname>&#61;</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses double precision bounding box.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -596,6 +596,10 @@ FROM
 				
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
+			<para>Changed:  2.0.0 , the bounding box of geometries was changed to use double precision instead of float4 precision of
+			prior. The side effect of this is that in particular points in prior versions that were a little different may have returned
+				true in prior versions and false in 2.0+ since their float4 boxes would be the same but there float8 (double precision), would be
+				different.</para>
 
 		  </refsection>
 
@@ -627,7 +631,15 @@ GROUP BY column1;
 	  st_astext
 ---------------------
  LINESTRING(0 0,1 1)
-(1 row)</programlisting>
+(1 row)
+
+-- In versions prior to 2.0, this used to return true --
+ SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
+	ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;
+	
+--pt_intersect --
+f
+</programlisting>
 		  </refsection>
 
 		  <refsection>
