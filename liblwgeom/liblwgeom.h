@@ -47,14 +47,6 @@
 #define LW_FAILURE 0
 #define LW_SUCCESS 1
 
-/*
-* this will change to NaN when I figure out how to
-* get NaN in a platform-independent way
-*/
-#define NO_VALUE 0.0
-#define NO_Z_VALUE NO_VALUE
-#define NO_M_VALUE NO_VALUE
-
 /**
 * LWTYPE numbers, used internally by PostGIS
 */
