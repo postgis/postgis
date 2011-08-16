@@ -445,7 +445,7 @@ FROM
 		  <refnamediv>
 			<refname>&#61;</refname>
 
-			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's.</refpurpose>
+			<refpurpose>Returns <varname>TRUE</varname> if A's bounding box is the same as B's (uses float4 boxes).</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -499,7 +499,8 @@ FROM
 			  geometryB it will return true even when the geometries are clearly
 			  different IF their bounding boxes are the same. To check for true
 			  equality use <xref linkend="ST_OrderingEquals" /> or <xref
-			  linkend="ST_Equals" /></para>
+			  linkend="ST_Equals" />.  Even for points, doing a bounding box check is not sufficient
+			  	to determine true equality of points since bounding box prior to PostGIS 2.0 are stored as float4.</para>
 			</warning>
 
 			<caution><para>This operand will NOT make use of any indexes that may be available on the
@@ -537,7 +538,14 @@ GROUP BY column1;
 	  st_astext
 ---------------------
  LINESTRING(0 0,1 1)
-(1 row)</programlisting>
+(1 row)
+-- NOTE: Although the points are different, the float4 boxes are the same
+-- In versions 2.0+ and after, this will return false since 2.0+ switched
+-- to store double-precision (float8) bounding boxes instead of float4 (used in 1.5 and prior) --
+ SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =
+	ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;	
+--pt_intersect --
+t</programlisting>
 		  </refsection>
 
 		  <refsection>
