@@ -27,7 +27,7 @@ typedef struct struct_ring
 	Point *list;		/* list of points */
 	struct struct_ring *next;
 	int n;			/* number of points in list */
-	uint32 linked; 	/* number of "next" rings */
+	unsigned int linked; 	/* number of "next" rings */
 } Ring;
 
 
