@@ -47,6 +47,7 @@ PG_OBJS=lwgeom_debug.o \
 	long_xact.o \
 	lwgeom_sqlmm.o \
 	lwgeom_rtree.o \
+	lwgeom_transform.o \
 	geography_inout.o \
 	gserialized_gist.o \
 	gserialized_typmod.o \

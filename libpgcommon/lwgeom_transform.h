@@ -16,6 +16,8 @@
 #include "proj_api.h"
 
 char* GetProj4StringSPI(int srid);
+void SetPROJ4LibPath(void) ;
+
 
 /**
  * Opaque type to use in the projection cache API.
