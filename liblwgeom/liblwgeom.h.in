@@ -40,6 +40,14 @@
 */
 
 /**
+ * liblwgeom versions
+ */
+#define LIBLWGEOM_VERSION "@POSTGIS_LIB_VERSION@"
+#define LIBLWGEOM_VERSION_MAJOR "@POSTGIS_MAJOR_VERSION@"
+#define LIBLWGEOM_VERSION_MINOR "@POSTGIS_MINOR_VERSION@"
+#define LIBLWGEOM_GEOS_VERSION "@POSTGIS_GEOS_VERSION@"
+
+/**
 * Return types for functions with status returns.
 */
 #define LW_TRUE 1

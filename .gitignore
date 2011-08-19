@@ -23,6 +23,7 @@ GNUmakefile
 liblwgeom/cunit/cu_tester
 liblwgeom/cunit/Makefile
 liblwgeom/liblwgeom.a
+liblwgeom/liblwgeom.h
 liblwgeom/Makefile
 libtool
 loader/cunit/cu_tester

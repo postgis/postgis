@@ -928,8 +928,8 @@ fi dnl # }
 
 dnl Output the relevant files
 AC_OUTPUT([GNUmakefile 
-        liblwgeom/Makefile liblwgeom/cunit/Makefile postgis/Makefile
-        libpgcommon/Makefile libpgcommon/cunit/Makefile
+        liblwgeom/Makefile liblwgeom/cunit/Makefile liblwgeom/liblwgeom.h
+        libpgcommon/Makefile libpgcommon/cunit/Makefile postgis/Makefile
         postgis/sqldefines.h loader/Makefile loader/cunit/Makefile
         topology/Makefile regress/Makefile doc/Makefile doc/Makefile.comments
         doc/html/image_src/Makefile $RT_MAKEFILE_LIST])

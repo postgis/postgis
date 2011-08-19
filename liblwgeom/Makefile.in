@@ -124,8 +124,8 @@ clean:
 	rm -f liblwgeom.la
 	rm -rf .libs
 
-# Nothing specific in distclean (will be done by clean)
-distclean:
+distclean: clean
+	rm -f liblwgeom.h
 
 check: liblwgeom.la
 	make -C cunit check
