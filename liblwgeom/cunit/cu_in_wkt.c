@@ -48,7 +48,7 @@ static int clean_wkt_in_suite(void)
 * as an output WKT using the supplied variant.
 * If there is an error, return that.
 */
-static char* cu_wkt_in(char *wkt, uchar variant)
+static char* cu_wkt_in(char *wkt, uint8_t variant)
 {
 	LWGEOM_PARSER_RESULT p;
 	int rv = 0;

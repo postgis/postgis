@@ -642,7 +642,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	int geomstats_nvalues=0;
 	Node *other;
 	Var *self;
-	uchar *in;
+	uint8_t *in;
 	BOX2DFLOAT4 search_box;
 	float8 selectivity=0;
 
@@ -695,7 +695,7 @@ Datum LWGEOM_gist_sel(PG_FUNCTION_ARGS)
 	 * Convert the constant to a BOX
 	 */
 
-	in = (uchar *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
+	in = (uint8_t *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
 	if ( ! getbox2d_p(in+4, &search_box) )
 	{
 		POSTGIS_DEBUG(3, "search box is EMPTY");

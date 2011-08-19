@@ -13,7 +13,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-GBOX* gbox_new(uchar flags)
+GBOX* gbox_new(uint8_t flags)
 {
 	GBOX *g = (GBOX*)lwalloc(sizeof(GBOX));
 	gbox_init(g);
@@ -327,7 +327,7 @@ void gbox_duplicate(const GBOX *original, GBOX *duplicate)
 	memcpy(duplicate, original, sizeof(GBOX));
 }
 
-size_t gbox_serialized_size(uchar flags)
+size_t gbox_serialized_size(uint8_t flags)
 {
 	if ( FLAGS_GET_GEODETIC(flags) )
 		return 6 * sizeof(float);
@@ -465,7 +465,7 @@ int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )
 
 static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox)
 {
-	uchar flags = gflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
+	uint8_t flags = gflags(FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags), 0);
 	GBOX tmp;
 	POINT4D p1, p2, p3;
 	int i;

@@ -43,7 +43,7 @@ int main()
 	int result;
 
 	LWGEOM *lwgeom;
-	uchar *serialized_lwgeom;
+	uint8_t *serialized_lwgeom;
 
 	POINTARRAY *dpa;
 	POINT4D point4d;

@@ -20,11 +20,11 @@
  * Convert this point into its serialize form
  * result's first char will be the 8bit type.  See serialized form doc
  */
-uchar *
+uint8_t *
 lwpoint_serialize(LWPOINT *point)
 {
 	size_t size, retsize;
-	uchar *result;
+	uint8_t *result;
 
 	size = lwpoint_serialize_size(point);
 	result = lwalloc(size);
@@ -45,11 +45,11 @@ lwpoint_serialize(LWPOINT *point)
  * result's first char will be the 8bit type.  See serialized form doc
  */
 void
-lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
+lwpoint_serialize_buf(LWPOINT *point, uint8_t *buf, size_t *retsize)
 {
 	int size=1;
 	char has_srid;
-	uchar *loc;
+	uint8_t *loc;
 	int ptsize = ptarray_point_size(point->point);
 
 	if ( FLAGS_GET_ZM(point->flags) != FLAGS_GET_ZM(point->point->flags) )
@@ -74,7 +74,7 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 
 	size += sizeof(double)*FLAGS_NDIMS(point->flags);
 
-	buf[0] = (uchar) lwgeom_makeType_full(
+	buf[0] = (uint8_t) lwgeom_makeType_full(
 	             FLAGS_GET_Z(point->flags), FLAGS_GET_M(point->flags),
 	             has_srid, POINTTYPE, point->bbox?1:0);
 	loc = buf+1;
@@ -91,7 +91,7 @@ lwpoint_serialize_buf(LWPOINT *point, uchar *buf, size_t *retsize)
 
 	if (has_srid)
 	{
-		memcpy(loc, &point->srid, sizeof(int32));
+		memcpy(loc, &point->srid, sizeof(int32_t));
 		loc += 4;
 	}
 
@@ -231,7 +231,7 @@ LWPOINT *
 lwpoint_construct(int srid, GBOX *bbox, POINTARRAY *point)
 {
 	LWPOINT *result;
-	uchar flags = 0;
+	uint8_t flags = 0;
 
 	if (point == NULL)
 		return NULL; /* error */
@@ -311,19 +311,19 @@ lwpoint_make4d(int srid, double x, double y, double z, double m)
  * See serialized form doc
  */
 LWPOINT *
-lwpoint_deserialize(uchar *serialized_form)
+lwpoint_deserialize(uint8_t *serialized_form)
 {
 	int geom_type;
 	LWPOINT *result;
-	uchar *loc = NULL;
+	uint8_t *loc = NULL;
 	POINTARRAY *pa;
-	uchar type;
+	uint8_t type;
 
 	LWDEBUG(2, "lwpoint_deserialize called");
 
 	result = (LWPOINT*) lwalloc(sizeof(LWPOINT)) ;
 
-	type = (uchar) serialized_form[0];
+	type = (uint8_t) serialized_form[0];
 	geom_type = TYPE_GETTYPE(type);
 
 	if ( geom_type != POINTTYPE)
@@ -356,7 +356,7 @@ lwpoint_deserialize(uchar *serialized_form)
 	{
 		LWDEBUG(3, "lwpoint_deserialize: input has SRID");
 
-		result->srid = lw_get_int32(loc);
+		result->srid = lw_get_int32_t(loc);
 		loc += 4; /* type + SRID */
 	}
 	else
@@ -419,11 +419,11 @@ lwpoint_clone(const LWPOINT *g)
 
 /* Find length of this serialized point */
 size_t
-lwgeom_size_point(const uchar *serialized_point)
+lwgeom_size_point(const uint8_t *serialized_point)
 {
-	uint32  result = 1;
-	uchar type;
-	const uchar *loc;
+	uint32_t  result = 1;
+	uint8_t type;
+	const uint8_t *loc;
 
 	type = serialized_point[0];
 

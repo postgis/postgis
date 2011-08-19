@@ -89,7 +89,7 @@ GSERIALIZED* geometry_serialize(LWGEOM *lwgeom)
 * of same, and GEOMETRYCOLLECTION. If the input type is not one of those, shut
 * down the query.
 */
-void geography_valid_type(uchar type)
+void geography_valid_type(uint8_t type)
 {
 	if ( ! (
 	            type == POINTTYPE ||
@@ -557,7 +557,7 @@ PG_FUNCTION_INFO_V1(geography_as_binary);
 Datum geography_as_binary(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
-	uchar *wkb = NULL;
+	uint8_t *wkb = NULL;
 	bytea *wkb_result;
 	size_t wkb_size = 0;
 	GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));

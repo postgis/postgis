@@ -12,17 +12,17 @@
  *
  **********************************************************************/
 
+#ifndef _LIBLWGEOM_INTERNAL_H
+#define _LIBLWGEOM_INTERNAL_H 1
+
 #include <assert.h>
 #include "liblwgeom.h"
 #include <string.h>
 #include <math.h>
-#include <inttypes.h>
+#include <stdint.h>
 #if HAVE_IEEEFP_H
 #include <ieeefp.h>
 #endif
-
-#ifndef _LIBLWGEOM_INTERNAL_H
-#define _LIBLWGEOM_INTERNAL_H 1
 
 /**
 * PI
@@ -244,9 +244,9 @@ double lwtriangle_perimeter_2d(const LWTRIANGLE *triangle);
 /*
 * Segmentization
 */
-LWLINE *lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad);
-LWLINE *lwcompound_segmentize(const LWCOMPOUND *icompound, uint32 perQuad);
-LWPOLY *lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32 perQuad);
+LWLINE *lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32_t perQuad);
+LWLINE *lwcompound_segmentize(const LWCOMPOUND *icompound, uint32_t perQuad);
+LWPOLY *lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32_t perQuad);
 
 /*
 * Affine

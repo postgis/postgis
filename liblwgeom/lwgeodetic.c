@@ -2169,7 +2169,7 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 */
 int getPoint2d_p_ro(const POINTARRAY *pa, int n, POINT2D **point)
 {
-	uchar *pa_ptr = NULL;
+	uint8_t *pa_ptr = NULL;
 	assert(pa);
 	assert(n >= 0);
 	assert(n < pa->npoints);

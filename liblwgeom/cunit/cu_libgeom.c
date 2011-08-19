@@ -20,7 +20,7 @@
 
 static void test_typmod_macros(void)
 {
-	int32 typmod = 0;
+	int32_t typmod = 0;
 	int srid = 4326;
 	int type = 6;
 	int z = 1;
@@ -65,7 +65,7 @@ static void test_typmod_macros(void)
 
 static void test_flags_macros(void)
 {
-	uchar flags = 0;
+	uint8_t flags = 0;
 
 	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
 	FLAGS_SET_Z(flags, 1);
@@ -97,7 +97,7 @@ static void test_flags_macros(void)
 static void test_serialized_srid(void)
 {
 	GSERIALIZED s;
-	int32 srid, rv;
+	int32_t srid, rv;
 
 	srid = 4326;
 	gserialized_set_srid(&s, srid);
@@ -170,7 +170,7 @@ static void test_gserialized_from_lwgeom_size(void)
 
 static void test_gbox_serialized_size(void)
 {
-	uchar flags = gflags(0, 0, 0);
+	uint8_t flags = gflags(0, 0, 0);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);
 	FLAGS_SET_BBOX(flags, 1);
 	CU_ASSERT_EQUAL(gbox_serialized_size(flags),16);

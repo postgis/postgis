@@ -249,14 +249,14 @@ pglwgeom_deserialize(PG_LWGEOM *in)
 
 
 PG_LWGEOM *
-PG_LWGEOM_construct(uchar *ser, int srid, int wantbbox)
+PG_LWGEOM_construct(uint8_t *ser, int srid, int wantbbox)
 {
 #ifdef GSERIALIZED_ON
 	lwerror("PG_LWGEOM_construct called!");
 	return NULL;
 #else
 	int size;
-	uchar *iptr, *optr, *eptr;
+	uint8_t *iptr, *optr, *eptr;
 	int wantsrid = 0;
 	BOX2DFLOAT4 box;
 	PG_LWGEOM *result;
@@ -332,11 +332,11 @@ pglwgeom_set_srid(PG_LWGEOM *lwgeom, int32 new_srid)
 	gserialized_set_srid(lwgeom, new_srid);
 	return lwgeom;
 #else
-	uchar type = lwgeom->type;
+	uint8_t type = lwgeom->type;
 	int bbox_offset=0; /* 0=no bbox, otherwise sizeof(BOX2DFLOAT4) */
 	int len,len_new,len_left;
 	PG_LWGEOM *result;
-	uchar *loc_new, *loc_old;
+	uint8_t *loc_new, *loc_old;
 
 	if (lwgeom_hasBBOX(type))
 		bbox_offset = sizeof(BOX2DFLOAT4);
@@ -436,8 +436,8 @@ pglwgeom_get_srid(PG_LWGEOM *lwgeom)
 #ifdef GSERIALIZED_ON
 	return gserialized_get_srid(lwgeom);
 #else
-	uchar type = lwgeom->type;
-	uchar *loc = lwgeom->data;
+	uint8_t type = lwgeom->type;
+	uint8_t *loc = lwgeom->data;
 
 	if ( ! lwgeom_hasSRID(type)) return -1;
 
@@ -509,7 +509,7 @@ PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom)
 	size_t newsize = size;
 	bool hasbox = pglwgeom_has_bbox(geom);
 	PG_LWGEOM *geomout;
-	uchar type = geom->type;
+	uint8_t type = geom->type;
 	
 	if ( hasbox )
 		newsize = size - sizeof(BOX2DFLOAT4);
@@ -590,10 +590,10 @@ pglwgeom_is_empty(const PG_LWGEOM *geom)
 #ifdef GSERIALIZED_ON
 	return gserialized_is_empty(geom);
 #else
-	uchar *serialized_form = SERIALIZED_FORM(geom);
+	uint8_t *serialized_form = SERIALIZED_FORM(geom);
 	int type = pglwgeom_get_type(geom);
-	uchar utype = serialized_form[0];
-	uchar *loc = serialized_form + 1;
+	uint8_t utype = serialized_form[0];
+	uint8_t *loc = serialized_form + 1;
 
 	if ( type == POINTTYPE ) return LW_FALSE;
 

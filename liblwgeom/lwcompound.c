@@ -16,7 +16,7 @@
 #include "liblwgeom_internal.h"
 
 LWCOMPOUND *
-lwcompound_deserialize(uchar *serialized)
+lwcompound_deserialize(uint8_t *serialized)
 {
 	LWCOMPOUND *result;
 	LWGEOM_INSPECTED *insp;

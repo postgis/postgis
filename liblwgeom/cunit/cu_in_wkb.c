@@ -52,7 +52,7 @@ static void cu_wkb_in(char *wkt)
 {
 	LWGEOM_PARSER_RESULT pr;
 	LWGEOM *g_a, *g_b;
-	uchar *wkb_a, *wkb_b;
+	uint8_t *wkb_a, *wkb_b;
 	size_t wkb_size_a, wkb_size_b;
 	/* int i; char *hex; */
 	

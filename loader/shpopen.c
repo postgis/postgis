@@ -257,7 +257,7 @@
 
 SHP_CVSID("$Id$")
 
-typedef unsigned char uchar;
+typedef unsigned char uint8_t;
 
 #if UINT_MAX == 65535
 typedef unsigned long	      int32;
@@ -295,13 +295,13 @@ static void	SwapWord( int length, void * wordP )
 
 {
     int		i;
-    uchar	temp;
+    uint8_t	temp;
 
     for( i=0; i < length/2; i++ )
     {
-	temp = ((uchar *) wordP)[i];
-	((uchar *)wordP)[i] = ((uchar *) wordP)[length-i-1];
-	((uchar *) wordP)[length-i-1] = temp;
+	temp = ((uint8_t *) wordP)[i];
+	((uint8_t *)wordP)[i] = ((uint8_t *) wordP)[length-i-1];
+	((uint8_t *) wordP)[length-i-1] = temp;
     }
 }
 
@@ -331,7 +331,7 @@ static void * SfRealloc( void * pMem, int nNewSize )
 void SHPWriteHeader( SHPHandle psSHP )
 
 {
-    uchar     	abyHeader[100];
+    uint8_t     	abyHeader[100];
     int		i;
     int32	i32;
     double	dValue;
@@ -477,7 +477,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
     char		*pszFullname, *pszBasename;
     SHPHandle		psSHP;
     
-    uchar		*pabyBuf;
+    uint8_t		*pabyBuf;
     int			i;
     double		dValue;
     int                 recordsInSHP;
@@ -497,7 +497,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
 /*	Establish the byte order on this machine.			*/
 /* -------------------------------------------------------------------- */
     i = 1;
-    if( *((uchar *) &i) == 1 )
+    if( *((uint8_t *) &i) == 1 )
         bBigEndian = FALSE;
     else
         bBigEndian = TRUE;
@@ -578,7 +578,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
 /* -------------------------------------------------------------------- */
 /*  Read the file size from the SHP file.				*/
 /* -------------------------------------------------------------------- */
-    pabyBuf = (uchar *) malloc(100);
+    pabyBuf = (uint8_t *) malloc(100);
     psSHP->sHooks.FRead( pabyBuf, 100, 1, psSHP->fpSHP );
 
     psSHP->nFileSize = ((unsigned int)pabyBuf[24] * 256 * 256 * 256
@@ -673,7 +673,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
         malloc(sizeof(unsigned int) * MAX(1,psSHP->nMaxRecords) );
     psSHP->panRecSize = (unsigned int *)
         malloc(sizeof(unsigned int) * MAX(1,psSHP->nMaxRecords) );
-    pabyBuf = (uchar *) malloc(8 * MAX(1,psSHP->nRecords) );
+    pabyBuf = (uint8_t *) malloc(8 * MAX(1,psSHP->nRecords) );
 
     if (psSHP->panRecOffset == NULL ||
         psSHP->panRecSize == NULL ||
@@ -842,7 +842,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
     char	*pszBasename, *pszFullname;
     int		i;
     SAFile	fpSHP, fpSHX;
-    uchar     	abyHeader[100];
+    uint8_t     	abyHeader[100];
     int32	i32;
     double	dValue;
     
@@ -850,7 +850,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
 /*      Establish the byte order on this system.                        */
 /* -------------------------------------------------------------------- */
     i = 1;
-    if( *((uchar *) &i) == 1 )
+    if( *((uint8_t *) &i) == 1 )
         bBigEndian = FALSE;
     else
         bBigEndian = TRUE;
@@ -957,7 +957,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
 /*      indicated location in the record.                               */
 /************************************************************************/
 
-static void	_SHPSetBounds( uchar * pabyRec, SHPObject * psShape )
+static void	_SHPSetBounds( uint8_t * pabyRec, SHPObject * psShape )
 
 {
     ByteCopy( &(psShape->dfXMin), pabyRec +  0, 8 );
@@ -1158,7 +1158,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
 {
     unsigned int	       	nRecordOffset, nRecordSize=0;
     int i;
-    uchar	*pabyRec;
+    uint8_t	*pabyRec;
     int32	i32;
 
     psSHP->bUpdated = TRUE;
@@ -1197,7 +1197,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
 /* -------------------------------------------------------------------- */
 /*      Initialize record.                                              */
 /* -------------------------------------------------------------------- */
-    pabyRec = (uchar *) malloc(psObject->nVertices * 4 * sizeof(double) 
+    pabyRec = (uint8_t *) malloc(psObject->nVertices * 4 * sizeof(double) 
                                + psObject->nParts * 8 + 128);
     
 /* -------------------------------------------------------------------- */
@@ -1565,7 +1565,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
     nEntitySize = psSHP->panRecSize[hEntity]+8;
     if( nEntitySize > psSHP->nBufSize )
     {
-        psSHP->pabyRec = (uchar *) SfRealloc(psSHP->pabyRec,nEntitySize);
+        psSHP->pabyRec = (uint8_t *) SfRealloc(psSHP->pabyRec,nEntitySize);
         if (psSHP->pabyRec == NULL)
         {
             char szError[200];

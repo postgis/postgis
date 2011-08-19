@@ -19,7 +19,7 @@
 
 
 LWGEOM *
-lwgeom_deserialize(uchar *srl)
+lwgeom_deserialize(uint8_t *srl)
 {
 	int type = TYPE_GETTYPE(srl[0]);
 
@@ -106,7 +106,7 @@ lwgeom_serialize_size(LWGEOM *lwgeom)
 }
 
 void
-lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
+lwgeom_serialize_buf(LWGEOM *lwgeom, uint8_t *buf, size_t *retsize)
 {
 	LWDEBUGF(2, "lwgeom_serialize_buf called with a %s",
 	         lwtype_name(lwgeom->type));
@@ -155,12 +155,12 @@ lwgeom_serialize_buf(LWGEOM *lwgeom, uchar *buf, size_t *retsize)
 	return;
 }
 
-uchar *
+uint8_t *
 lwgeom_serialize(LWGEOM *lwgeom)
 {
 	size_t size = lwgeom_serialize_size(lwgeom);
 	size_t retsize;
-	uchar *serialized = lwalloc(size);
+	uint8_t *serialized = lwalloc(size);
 
 	lwgeom_serialize_buf(lwgeom, serialized, &retsize);
 
@@ -505,7 +505,7 @@ LWGEOM *lwpoint_as_lwgeom(const LWPOINT *obj)
 /**
 ** Look-up for the correct MULTI* type promotion for singleton types.
 */
-static uchar MULTITYPE[16] =
+static uint8_t MULTITYPE[16] =
 {
 	0,
 	MULTIPOINTTYPE,
@@ -567,7 +567,7 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 void
 lwgeom_release(LWGEOM *lwgeom)
 {
-	uint32 i;
+	uint32_t i;
 	LWCOLLECTION *col;
 
 	if ( ! lwgeom )
@@ -1524,7 +1524,7 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	return NULL;
 }
 
-void lwgeom_set_srid(LWGEOM *geom, int32 srid)
+void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
 {
 	int i;
 

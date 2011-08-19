@@ -8,7 +8,7 @@
 */
 typedef struct
 {
-	uchar flags;
+	uint8_t flags;
 	double x;
 	double y;
 	double z;

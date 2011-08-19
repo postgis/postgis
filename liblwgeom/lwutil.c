@@ -207,7 +207,7 @@ void lwgeom_install_default_allocators(void)
 }
 
 
-const char* lwtype_name(uchar type)
+const char* lwtype_name(uint8_t type)
 {
 	if ( type > 15 )
 	{

@@ -75,7 +75,7 @@ static int projFileCreate(SHPDUMPERSTATE *state);
 static const char * goodDBFValue(const char *in, char fieldType);
 
 /** @brief Binary to hexewkb conversion function */
-char *convert_bytes_to_hex(uchar *ewkb, size_t size);
+char *convert_bytes_to_hex(uint8_t *ewkb, size_t size);
 
 
 static SHPObject *
@@ -693,7 +693,7 @@ goodDBFValue(const char *in, char fieldType)
 	}
 }
 
-char *convert_bytes_to_hex(uchar *ewkb, size_t size)
+char *convert_bytes_to_hex(uint8_t *ewkb, size_t size)
 {
 	int i;
 	char *hexewkb;

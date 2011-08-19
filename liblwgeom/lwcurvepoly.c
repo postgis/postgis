@@ -19,11 +19,11 @@
 
 
 LWCURVEPOLY *
-lwcurvepoly_deserialize(uchar *srl)
+lwcurvepoly_deserialize(uint8_t *srl)
 {
 	LWCURVEPOLY *result;
 	LWGEOM_INSPECTED *insp;
-	uchar type = (uchar)srl[0];
+	uint8_t type = (uint8_t)srl[0];
 	int geomtype = lwgeom_getType(type);
 	int i;
 

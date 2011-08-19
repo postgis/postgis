@@ -87,7 +87,7 @@ static void test_gbox_from_spherical_coordinates(void)
 	ll[2] = 15.5;
 	ll[3] = -5.25;
 
-	pa = ptarray_construct_reference_data(0, 0, 2, (uchar*)ll);
+	pa = ptarray_construct_reference_data(0, 0, 2, (uint8_t*)ll);
 	
 	lwline = lwline_as_lwgeom(lwline_construct(-1, 0, pa));
 	FLAGS_SET_GEODETIC(lwline->flags, 1);
@@ -562,7 +562,7 @@ static void test_gserialized_from_lwgeom(void)
 {
 	LWGEOM *geom;
 	GSERIALIZED *g;
-	uint32 type;
+	uint32_t type;
 	double *inspect; /* To poke right into the blob. */
 
 	geom = lwgeom_from_wkt("POINT(0 0.2)", LW_PARSER_CHECK_NONE);

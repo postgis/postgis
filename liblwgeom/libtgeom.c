@@ -24,7 +24,7 @@
  * Return a pointer on the newly allocated struct
  */
 TGEOM*
-tgeom_new(uchar type, int hasz, int hasm)
+tgeom_new(uint8_t type, int hasz, int hasm)
 {
 	TGEOM *tgeom;
 
@@ -598,9 +598,9 @@ tgeom_serialize_size(const TGEOM *tgeom)
 	size_t size;
 	int dims = FLAGS_NDIMS(tgeom->flags);
 
-	size = sizeof(uchar);					/* type */
-	size += sizeof(uchar);					/* flags */
-	size += sizeof(uint32);					/* srid */
+	size = sizeof(uint8_t);					/* type */
+	size += sizeof(uint8_t);					/* flags */
+	size += sizeof(uint32_t);					/* srid */
 	if (tgeom->bbox) size += sizeof(BOX3D);			/* bbox */
 
 	size += sizeof(int);					/* nedges */
@@ -630,28 +630,28 @@ tgeom_serialize_size(const TGEOM *tgeom)
  * retsize return by reference the allocated buf size
  */
 static size_t
-tgeom_serialize_buf(const TGEOM *tgeom, uchar *buf, size_t *retsize)
+tgeom_serialize_buf(const TGEOM *tgeom, uint8_t *buf, size_t *retsize)
 {
 	int i,j;
 	size_t size=0;
-	uchar *loc=buf;
+	uint8_t *loc=buf;
 	int dims = FLAGS_NDIMS(tgeom->flags);
 
 	assert(tgeom);
 	assert(buf);
 
 	/* Write in the type. */
-	memcpy(loc, &tgeom->type, sizeof(uchar));
+	memcpy(loc, &tgeom->type, sizeof(uint8_t));
 	loc  += 1;
 	size += 1;
 
 	/* Write in the flags. */
-	memcpy(loc, &tgeom->flags, sizeof(uchar));
+	memcpy(loc, &tgeom->flags, sizeof(uint8_t));
 	loc  += 1;
 	size += 1;
 
 	/* Write in the srid. */
-	memcpy(loc, &tgeom->srid, sizeof(uint32));
+	memcpy(loc, &tgeom->srid, sizeof(uint32_t));
 	loc  += 4;
 	size += 4;
 
@@ -751,7 +751,7 @@ tgeom_serialize(const TGEOM *tgeom)
 {
 	size_t size, retsize;
 	TSERIALIZED * t;
-	uchar *data;
+	uint8_t *data;
 
 	size = tgeom_serialize_size(tgeom);
 	data = lwalloc(size);
@@ -785,9 +785,9 @@ tgeom_serialize(const TGEOM *tgeom)
 TGEOM *
 tgeom_deserialize(TSERIALIZED *serialized_form)
 {
-	uchar type, flags;
+	uint8_t type, flags;
 	TGEOM *result;
-	uchar *loc, *data;
+	uint8_t *loc, *data;
 	int i, j;
 
 	assert(serialized_form);
@@ -802,7 +802,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	loc = data + 2;
 
 	/* srid */
-	result->srid = lw_get_int32(loc);
+	result->srid = lw_get_int32_t(loc);
 	loc += 4;
 
 	/* bbox */
@@ -815,7 +815,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	else result->bbox = NULL;
 
 	/* edges number (0=> EMPTY) */
-	result->nedges = lw_get_int32(loc);
+	result->nedges = lw_get_int32_t(loc);
 	loc  += 4;
 
 	/* edges */
@@ -851,12 +851,12 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 			loc  += sizeof(double) * FLAGS_NDIMS(flags);
 		}
 
-		result->edges[i]->count = lw_get_int32(loc);
+		result->edges[i]->count = lw_get_int32_t(loc);
 		loc  += 4;
 	}
 
 	/* faces number */
-	result->nfaces = lw_get_int32(loc);
+	result->nfaces = lw_get_int32_t(loc);
 	loc  += 4;
 
 	/* faces */
@@ -866,7 +866,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 		result->faces[i] = lwalloc(sizeof(TFACE));
 
 		/* number of edges */
-		result->faces[i]->nedges = lw_get_int32(loc);
+		result->faces[i]->nedges = lw_get_int32_t(loc);
 		loc  += 4;
 
 		/* edges array */
@@ -877,7 +877,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 		loc  += 4 * result->faces[i]->nedges;
 
 		/* number of rings */
-		result->faces[i]->nrings = lw_get_int32(loc);
+		result->faces[i]->nrings = lw_get_int32_t(loc);
 		loc  += 4;
 
 		if (result->faces[i]->nrings)
@@ -889,7 +889,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 			int npoints;
 
 			/* number of points */
-			npoints = lw_get_int32(loc);
+			npoints = lw_get_int32_t(loc);
 			loc  += 4;
 
 			/* pointarray */

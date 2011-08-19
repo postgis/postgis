@@ -16,12 +16,12 @@
 #include "liblwgeom_internal.h"
 
 LWMCURVE *
-lwmcurve_deserialize(uchar *srl)
+lwmcurve_deserialize(uint8_t *srl)
 {
 	LWMCURVE *result;
 	LWGEOM_INSPECTED *insp;
 	int stype;
-	uchar type = (uchar)srl[0];
+	uint8_t type = (uint8_t)srl[0];
 	int geomtype = lwgeom_getType(type);
 	int i;
 

@@ -687,7 +687,7 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
     rt_pgraster *pgraster;
     rt_raster raster;
     LWPOLY* convexhull;
-    uchar* pglwgeom;
+    uint8_t* pglwgeom;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
@@ -712,11 +712,11 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
         GSERIALIZED *gser;
         gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(convexhull), 0, &gser_size);
         SET_VARSIZE(gser, gser_size);
-        pglwgeom = (uchar*)gser;
+        pglwgeom = (uint8_t*)gser;
 #else
         size_t sz = lwpoly_serialize_size(convexhull);
         pglwgeom = palloc(VARHDRSZ+sz);
-        lwpoly_serialize_buf(convexhull, (uchar*)VARDATA(pglwgeom), &sz);
+        lwpoly_serialize_buf(convexhull, (uint8_t*)VARDATA(pglwgeom), &sz);
         SET_VARSIZE(pglwgeom, VARHDRSZ+sz);
 #endif
     }

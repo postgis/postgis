@@ -23,11 +23,11 @@ void printLWCIRCSTRING(LWCIRCSTRING *curve);
 void lwcircstring_reverse(LWCIRCSTRING *curve);
 void lwcircstring_release(LWCIRCSTRING *lwcirc);
 char lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you);
-LWCIRCSTRING *lwcircstring_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points);
+LWCIRCSTRING *lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points);
 LWCIRCSTRING *lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint);
-LWCIRCSTRING *lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32 where);
-LWCIRCSTRING *lwcircstring_removepoint(LWCIRCSTRING *curve, uint32 index);
-void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint);
+LWCIRCSTRING *lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32_t where);
+LWCIRCSTRING *lwcircstring_removepoint(LWCIRCSTRING *curve, uint32_t index);
+void lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32_t index, POINT4D *newpoint);
 
 
 
@@ -89,15 +89,15 @@ lwcircstring_release(LWCIRCSTRING *lwcirc)
  * See serialized form doc
  */
 LWCIRCSTRING *
-lwcircstring_deserialize(uchar *serialized_form)
+lwcircstring_deserialize(uint8_t *serialized_form)
 {
-	uchar type;
+	uint8_t type;
 	LWCIRCSTRING *result;
-	uchar *loc=NULL;
-	uint32 npoints;
+	uint8_t *loc=NULL;
+	uint32_t npoints;
 	POINTARRAY *pa;
 
-	type = (uchar)serialized_form[0];
+	type = (uint8_t)serialized_form[0];
 	if (lwgeom_getType(type) != CIRCSTRINGTYPE)
 	{
 		lwerror("lwcircstring_deserialize: attempt to deserialize a circularstring which is really a %s",
@@ -134,7 +134,7 @@ lwcircstring_deserialize(uchar *serialized_form)
 	{
 		LWDEBUG(3, "lwcircstring_deserialize: input has srid");
 
-		result->srid = lw_get_int32(loc);
+		result->srid = lw_get_int32_t(loc);
 		loc += 4; /* type + SRID */
 	}
 	else
@@ -146,7 +146,7 @@ lwcircstring_deserialize(uchar *serialized_form)
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
 
-	npoints = lw_get_uint32(loc);
+	npoints = lw_get_uint32_t(loc);
 
 	LWDEBUGF(3, "circstring npoints = %d", npoints);
 
@@ -161,11 +161,11 @@ lwcircstring_deserialize(uchar *serialized_form)
  * convert this circularstring into its serialized form
  * result's first char will be the 8bit type. See serialized form doc
  */
-uchar *
+uint8_t *
 lwcircstring_serialize(LWCIRCSTRING *curve)
 {
 	size_t size, retsize;
-	uchar * result;
+	uint8_t * result;
 
 	if (curve == NULL)
 	{
@@ -187,10 +187,10 @@ lwcircstring_serialize(LWCIRCSTRING *curve)
  * the given int pointer.
  * result's first char will be the 8bit type.  See serialized form doc
  */
-void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize)
+void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uint8_t *buf, size_t *retsize)
 {
 	char has_srid;
-	uchar *loc;
+	uint8_t *loc;
 	int ptsize;
 	size_t size;
 
@@ -213,7 +213,7 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 
 	has_srid = (curve->srid != SRID_UNKNOWN);
 
-	buf[0] = (uchar)lwgeom_makeType_full(
+	buf[0] = (uint8_t)lwgeom_makeType_full(
 	             FLAGS_GET_Z(curve->flags), FLAGS_GET_M(curve->flags),
 	             has_srid, CIRCSTRINGTYPE, curve->bbox ? 1 : 0);
 	loc = buf+1;
@@ -234,14 +234,14 @@ void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uchar *buf, size_t *retsize
 
 	if (has_srid)
 	{
-		memcpy(loc, &curve->srid, sizeof(int32));
-		loc += sizeof(int32);
+		memcpy(loc, &curve->srid, sizeof(int32_t));
+		loc += sizeof(int32_t);
 
 		LWDEBUG(3, "lwcircstring_serialize_buf added SRID");
 	}
 
-	memcpy(loc, &curve->points->npoints, sizeof(uint32));
-	loc += sizeof(uint32);
+	memcpy(loc, &curve->points->npoints, sizeof(uint32_t));
+	loc += sizeof(uint32_t);
 
 	LWDEBUGF(3, "lwcircstring_serialize_buf added npoints (%d)",
 	         curve->points->npoints);
@@ -545,12 +545,12 @@ void lwcircstring_free(LWCIRCSTRING *curve)
 
 /* find length of this serialized curve */
 size_t
-lwgeom_size_circstring(const uchar *serialized_curve)
+lwgeom_size_circstring(const uint8_t *serialized_curve)
 {
-	int type = (uchar)serialized_curve[0];
-	uint32 result = 1; /* type */
-	const uchar *loc;
-	uint32 npoints;
+	int type = (uint8_t)serialized_curve[0];
+	uint32_t result = 1; /* type */
+	const uint8_t *loc;
+	uint32_t npoints;
 
 	LWDEBUG(2, "lwgeom_size_circstring called");
 
@@ -571,8 +571,8 @@ lwgeom_size_circstring(const uchar *serialized_curve)
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-	npoints = lw_get_uint32(loc);
-	result += sizeof(uint32); /* npoints */
+	npoints = lw_get_uint32_t(loc);
+	result += sizeof(uint32_t); /* npoints */
 
 	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
 
@@ -618,12 +618,12 @@ lwcircstring_same(const LWCIRCSTRING *me, const LWCIRCSTRING *you)
  * LWCIRCSTRING dimensions are large enough to host all input dimensions.
  */
 LWCIRCSTRING *
-lwcircstring_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
+lwcircstring_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
 {
 	int zmflag=0;
-	uint32 i;
+	uint32_t i;
 	POINTARRAY *pa;
-	uchar *newpoints, *ptr;
+	uint8_t *newpoints, *ptr;
 	size_t ptsize, size;
 
 	/*
@@ -671,11 +671,11 @@ lwcircstring_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
 LWCIRCSTRING *
 lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint)
 {
-	uint32 i;
+	uint32_t i;
 	POINTARRAY *pa;
 	char zmflag = FLAGS_GET_ZM(mpoint->flags);
 	size_t ptsize, size;
-	uchar *newpoints, *ptr;
+	uint8_t *newpoints, *ptr;
 
 	if (zmflag == 0) ptsize = 2 * sizeof(double);
 	else if (zmflag == 3) ptsize = 4 * sizeof(double);
@@ -703,7 +703,7 @@ lwcircstring_from_lwmpoint(int srid, LWMPOINT *mpoint)
 }
 
 LWCIRCSTRING *
-lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32 where)
+lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32_t where)
 {
 	POINTARRAY *newpa;
 	LWCIRCSTRING *ret;
@@ -717,7 +717,7 @@ lwcircstring_addpoint(LWCIRCSTRING *curve, LWPOINT *point, uint32 where)
 }
 
 LWCIRCSTRING *
-lwcircstring_removepoint(LWCIRCSTRING *curve, uint32 index)
+lwcircstring_removepoint(LWCIRCSTRING *curve, uint32_t index)
 {
 	POINTARRAY *newpa;
 	LWCIRCSTRING *ret;
@@ -732,7 +732,7 @@ lwcircstring_removepoint(LWCIRCSTRING *curve, uint32 index)
  * Note: input will be changed, make sure you have permissions for this.
  * */
 void
-lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32 index, POINT4D *newpoint)
+lwcircstring_setPoint4d(LWCIRCSTRING *curve, uint32_t index, POINT4D *newpoint)
 {
 	ptarray_set_point4d(curve->points, index, newpoint);
 }

@@ -24,13 +24,13 @@
  * use SRID=SRID_UNKNOWN for unknown SRID (will have 8bit type's S = 0)
  */
 LWPOLY*
-lwpoly_construct(int srid, GBOX *bbox, uint32 nrings, POINTARRAY **points)
+lwpoly_construct(int srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points)
 {
 	LWPOLY *result;
 	int hasz, hasm;
 #ifdef CHECK_POLY_RINGS_ZM
 	char zm;
-	uint32 i;
+	uint32_t i;
 #endif
 
 	if ( nrings < 1 ) lwerror("lwpoly_construct: need at least 1 ring");
@@ -82,15 +82,15 @@ lwpoly_construct_empty(int srid, char hasz, char hasm)
  * See serialized form doc
  */
 LWPOLY *
-lwpoly_deserialize(uchar *serialized_form)
+lwpoly_deserialize(uint8_t *serialized_form)
 {
 
 	LWPOLY *result;
-	uint32 nrings;
+	uint32_t nrings;
 	int ndims, hasz, hasm;
-	uint32 npoints;
-	uchar type;
-	uchar *loc;
+	uint32_t npoints;
+	uint8_t type;
+	uint8_t *loc;
 	int t;
 
 	if (serialized_form == NULL)
@@ -139,7 +139,7 @@ lwpoly_deserialize(uchar *serialized_form)
 
 	if ( lwgeom_hasSRID(type))
 	{
-		result->srid = lw_get_int32(loc);
+		result->srid = lw_get_int32_t(loc);
 		loc +=4; /* type + SRID */
 	}
 	else
@@ -147,7 +147,7 @@ lwpoly_deserialize(uchar *serialized_form)
 		result->srid = SRID_UNKNOWN;
 	}
 
-	nrings = lw_get_uint32(loc);
+	nrings = lw_get_uint32_t(loc);
 	result->nrings = nrings;
 	result->maxrings = nrings;
 	loc +=4;
@@ -163,7 +163,7 @@ lwpoly_deserialize(uchar *serialized_form)
 	for (t =0; t<nrings; t++)
 	{
 		/* read in a single ring and make a PA */
-		npoints = lw_get_uint32(loc);
+		npoints = lw_get_uint32_t(loc);
 		loc +=4;
 		result->rings[t] = ptarray_construct_reference_data(hasz, hasm, npoints, loc);
 		loc += sizeof(double)*ndims*npoints;
@@ -177,11 +177,11 @@ lwpoly_deserialize(uchar *serialized_form)
  * result's first char will be the 8bit type.  See serialized form doc
  * points copied
  */
-uchar *
+uint8_t *
 lwpoly_serialize(LWPOLY *poly)
 {
 	size_t size, retsize;
-	uchar *result;
+	uint8_t *result;
 
 	size = lwpoly_serialize_size(poly);
 	result = lwalloc(size);
@@ -203,12 +203,12 @@ lwpoly_serialize(LWPOLY *poly)
  * points copied
  */
 void
-lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
+lwpoly_serialize_buf(LWPOLY *poly, uint8_t *buf, size_t *retsize)
 {
 	size_t size=1;  /* type byte */
 	char has_srid;
 	int t;
-	uchar *loc;
+	uint8_t *loc;
 	int ptsize;
 
 	LWDEBUG(2, "lwpoly_serialize_buf called");
@@ -220,7 +220,7 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 	size += 4; /* nrings */
 	size += 4*poly->nrings; /* npoints/ring */
 
-	buf[0] = (uchar) lwgeom_makeType_full(
+	buf[0] = (uint8_t) lwgeom_makeType_full(
 	             FLAGS_GET_Z(poly->flags), FLAGS_GET_M(poly->flags),
 	             has_srid, POLYGONTYPE, poly->bbox ? 1 : 0);
 	loc = buf+1;
@@ -238,19 +238,19 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 
 	if (has_srid)
 	{
-		memcpy(loc, &poly->srid, sizeof(int32));
+		memcpy(loc, &poly->srid, sizeof(int32_t));
 		loc += 4;
 		size +=4;  /* 4 byte SRID */
 	}
 
-	memcpy(loc, &poly->nrings, sizeof(int32));  /* nrings */
+	memcpy(loc, &poly->nrings, sizeof(int32_t));  /* nrings */
 	loc+=4;
 
 	for (t=0; t<poly->nrings; t++)
 	{
 		POINTARRAY *pa = poly->rings[t];
 		size_t pasize;
-		uint32 npoints;
+		uint32_t npoints;
 
 		LWDEBUGF(4, "FLAGS_GET_ZM(poly->type) == %d", FLAGS_GET_ZM(poly->flags));
 		LWDEBUGF(4, "FLAGS_GET_ZM(pa->flags) == %d", FLAGS_GET_ZM(pa->flags));
@@ -260,7 +260,7 @@ lwpoly_serialize_buf(LWPOLY *poly, uchar *buf, size_t *retsize)
 
 		npoints = pa->npoints;
 
-		memcpy(loc, &npoints, sizeof(uint32)); /* npoints this ring */
+		memcpy(loc, &npoints, sizeof(uint32_t)); /* npoints this ring */
 		loc+=4;
 
 		pasize = npoints*ptsize;
@@ -292,21 +292,21 @@ lwpoly_compute_box3d(LWPOLY *poly)
 
 /* find length of this serialized polygon */
 size_t
-lwgeom_size_poly(const uchar *serialized_poly)
+lwgeom_size_poly(const uint8_t *serialized_poly)
 {
-	uint32 result = 1; /* char type */
-	uint32 nrings;
+	uint32_t result = 1; /* char type */
+	uint32_t nrings;
 	int ndims;
 	int t;
-	uchar type;
-	uint32 npoints;
-	const uchar *loc;
+	uint8_t type;
+	uint32_t npoints;
+	const uint8_t *loc;
 
 	if (serialized_poly == NULL)
 		return -9999;
 
 
-	type = (uchar) serialized_poly[0];
+	type = (uint8_t) serialized_poly[0];
 	ndims = TYPE_NDIMS(type);
 
 	if ( lwgeom_getType(type) != POLYGONTYPE)
@@ -333,7 +333,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 	}
 
 
-	nrings = lw_get_uint32(loc);
+	nrings = lw_get_uint32_t(loc);
 	loc +=4;
 	result +=4;
 
@@ -342,7 +342,7 @@ lwgeom_size_poly(const uchar *serialized_poly)
 	for (t =0; t<nrings; t++)
 	{
 		/* read in a single ring and make a PA */
-		npoints = lw_get_uint32(loc);
+		npoints = lw_get_uint32_t(loc);
 		loc += 4;
 		result += 4;
 
@@ -373,7 +373,7 @@ size_t
 lwpoly_serialize_size(LWPOLY *poly)
 {
 	size_t size = 1; /* type */
-	uint32 i;
+	uint32_t i;
 
 	if ( poly->srid != SRID_UNKNOWN ) size += 4; /* SRID */
 	if ( poly->bbox ) size += sizeof(BOX2DFLOAT4);
@@ -432,7 +432,7 @@ int
 lwpoly_compute_box2d_p(const LWPOLY *poly, BOX2DFLOAT4 *box)
 {
 	BOX2DFLOAT4 boxbuf;
-	uint32 i;
+	uint32_t i;
 
 	if ( ! poly->nrings ) return 0;
 	if ( ! ptarray_compute_box2d_p(poly->rings[0], box) ) return 0;
@@ -543,7 +543,7 @@ LWPOLY *
 lwpoly_segmentize2d(LWPOLY *poly, double dist)
 {
 	POINTARRAY **newrings;
-	uint32 i;
+	uint32_t i;
 
 	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);
 	for (i=0; i<poly->nrings; i++)
@@ -561,7 +561,7 @@ lwpoly_segmentize2d(LWPOLY *poly, double dist)
 char
 lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
 {
-	uint32 i;
+	uint32_t i;
 
 	if ( p1->nrings != p2->nrings ) return 0;
 	for (i=0; i<p1->nrings; i++)
@@ -581,9 +581,9 @@ lwpoly_same(const LWPOLY *p1, const LWPOLY *p2)
  */
 LWPOLY *
 lwpoly_from_lwlines(const LWLINE *shell,
-                    uint32 nholes, const LWLINE **holes)
+                    uint32_t nholes, const LWLINE **holes)
 {
-	uint32 nrings;
+	uint32_t nrings;
 	POINTARRAY **rings = lwalloc((nholes+1)*sizeof(POINTARRAY *));
 	int srid = shell->srid;
 	LWPOLY *ret;
@@ -616,7 +616,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 LWGEOM*
 lwpoly_remove_repeated_points(LWPOLY *poly)
 {
-	uint32 i;
+	uint32_t i;
 	POINTARRAY **newrings;
 
 	newrings = lwalloc(sizeof(POINTARRAY *)*poly->nrings);

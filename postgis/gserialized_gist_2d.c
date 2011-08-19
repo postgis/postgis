@@ -330,7 +330,7 @@ static int
 gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 {
 	GSERIALIZED *gpart;
-	uchar flags;
+	uint8_t flags;
 	int result = LW_SUCCESS;
 
 	POSTGIS_DEBUG(4, "entered function");

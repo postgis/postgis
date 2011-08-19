@@ -28,7 +28,7 @@ ptarray_point_size(const POINTARRAY *pa)
 }
 
 POINTARRAY*
-ptarray_construct(char hasz, char hasm, uint32 npoints)
+ptarray_construct(char hasz, char hasm, uint32_t npoints)
 {
 	POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, npoints);
 	pa->npoints = npoints;
@@ -36,9 +36,9 @@ ptarray_construct(char hasz, char hasm, uint32 npoints)
 }
 
 POINTARRAY*
-ptarray_construct_empty(char hasz, char hasm, uint32 maxpoints)
+ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoints)
 {
-	uchar dims = gflags(hasz, hasm, 0);
+	uint8_t dims = gflags(hasz, hasm, 0);
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	pa->serialized_pointlist = NULL;
 	
@@ -229,7 +229,7 @@ ptarray_remove_point(POINTARRAY *pa, int where)
 * Build a new #POINTARRAY, but on top of someone else's ordinate array. 
 * Flag as read-only, so that ptarray_free() does not free the serialized_ptlist
 */
-POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoints, uchar *ptlist)
+POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32_t npoints, uint8_t *ptlist)
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 	LWDEBUGF(5, "hasz = %d, hasm = %d, npoints = %d, ptlist = %p", hasz, hasm, npoints, ptlist);
@@ -243,7 +243,7 @@ POINTARRAY* ptarray_construct_reference_data(char hasz, char hasm, uint32 npoint
 
 
 POINTARRAY*
-ptarray_construct_copy_data(char hasz, char hasm, uint32 npoints, const uchar *ptlist)
+ptarray_construct_copy_data(char hasz, char hasm, uint32_t npoints, const uint8_t *ptlist)
 {
 	POINTARRAY *pa = lwalloc(sizeof(POINTARRAY));
 
@@ -281,19 +281,19 @@ ptarray_reverse(POINTARRAY *pa)
 {
 	/* TODO change this to double array operations once point array is double alligned */
 	POINT4D pbuf;
-	uint32 i;
+	uint32_t i;
 	int ptsize = ptarray_point_size(pa);
 	int last = pa->npoints-1;
 	int mid = last/2;
 
 	for (i=0; i<=mid; i++)
 	{
-		uchar *from, *to;
+		uint8_t *from, *to;
 		from = getPoint_internal(pa, i);
 		to = getPoint_internal(pa, (last-i));
-		memcpy((uchar *)&pbuf, to, ptsize);
+		memcpy((uint8_t *)&pbuf, to, ptsize);
 		memcpy(to, from, ptsize);
-		memcpy(from, (uchar *)&pbuf, ptsize);
+		memcpy(from, (uint8_t *)&pbuf, ptsize);
 	}
 
 }
@@ -441,7 +441,7 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 char
 ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
 {
-	uint32 i;
+	uint32_t i;
 	size_t ptsize;
 
 	if ( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) ) return LW_FALSE;
@@ -477,7 +477,7 @@ ptarray_same(const POINTARRAY *pa1, const POINTARRAY *pa2)
  *          for the actual points, or NULL on error.
  */
 POINTARRAY *
-ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, uint32 where)
+ptarray_addPoint(const POINTARRAY *pa, uint8_t *p, size_t pdims, uint32_t where)
 {
 	POINTARRAY *ret;
 	POINT4D pbuf;
@@ -503,7 +503,7 @@ ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, uint32 where)
 	LWDEBUG(3, "called with a %dD point");
 
 	pbuf.x = pbuf.y = pbuf.z = pbuf.m = 0.0;
-	memcpy((uchar *)&pbuf, p, pdims*sizeof(double));
+	memcpy((uint8_t *)&pbuf, p, pdims*sizeof(double));
 
 	LWDEBUG(3, "initialized point buffer");
 
@@ -517,7 +517,7 @@ ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, uint32 where)
 		memcpy(getPoint_internal(ret, 0), getPoint_internal(pa, 0), ptsize*where);
 	}
 
-	memcpy(getPoint_internal(ret, where), (uchar *)&pbuf, ptsize);
+	memcpy(getPoint_internal(ret, where), (uint8_t *)&pbuf, ptsize);
 
 	if ( where+1 != ret->npoints )
 	{
@@ -536,7 +536,7 @@ ptarray_addPoint(const POINTARRAY *pa, uchar *p, size_t pdims, uint32 where)
  * @return #POINTARRAY is newly allocated
  */
 POINTARRAY *
-ptarray_removePoint(POINTARRAY *pa, uint32 which)
+ptarray_removePoint(POINTARRAY *pa, uint32_t which)
 {
 	POINTARRAY *ret;
 	size_t ptsize = ptarray_point_size(pa);
@@ -1345,11 +1345,11 @@ p4d_same(POINT4D p1, POINT4D p2)
  * You cannot safely cast this to a real POINT, due to memory alignment
  * constraints. Use getPoint*_p for that.
  */
-uchar *
+uint8_t *
 getPoint_internal(const POINTARRAY *pa, int n)
 {
 	size_t size;
-	uchar *ptr;
+	uint8_t *ptr;
 
 #if PARANOIA_LEVEL > 0
 	if ( pa == NULL )

@@ -17,7 +17,7 @@
 
 
 LWTIN *
-lwtin_deserialize(uchar *srl)
+lwtin_deserialize(uint8_t *srl)
 {
 	LWTIN *result;
 	LWGEOM_INSPECTED *insp;

@@ -49,8 +49,8 @@ lwgeom_geos_error(const char *fmt, ...)
 POINTARRAY *
 ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d)
 {
-	uint32 dims=2;
-	uint32 size, i, ptsize;
+	uint32_t dims=2;
+	uint32_t size, i, ptsize;
 	POINTARRAY *pa;
 	POINT4D point;
 
@@ -124,7 +124,7 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 		POINTARRAY *pa, **ppaa;
 		const GEOSGeometry *g;
 		LWGEOM **geoms;
-		uint32 i, ngeoms;
+		uint32_t i, ngeoms;
 
 	case GEOS_POINT:
 		LWDEBUG(4, "lwgeom_from_geometry: it's a Point");
@@ -199,8 +199,8 @@ GEOSCoordSeq ptarray_to_GEOSCoordSeq(const POINTARRAY *);
 GEOSCoordSeq
 ptarray_to_GEOSCoordSeq(const POINTARRAY *pa)
 {
-	uint32 dims = 2;
-	uint32 size, i;
+	uint32_t dims = 2;
+	uint32_t size, i;
 	POINT3DZ p;
 	GEOSCoordSeq sq;
 
@@ -242,7 +242,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 	/*
 	LWGEOM *tmp;
 	*/
-	uint32 ngeoms, i;
+	uint32_t ngeoms, i;
 	int geostype;
 #if LWDEBUG_LEVEL >= 4
 	char *wkt;
@@ -768,7 +768,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	GEOSGeometry *tmp;
 	GEOSGeometry *geos_result, *shp;
 	GEOSGeometry const *vgeoms[1];
-	uint32 i, ngeoms;
+	uint32_t i, ngeoms;
 	int srid = GEOSGetSRID(geom_in);
 
 	vgeoms[0] = geom_in;

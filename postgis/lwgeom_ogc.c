@@ -109,7 +109,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	char *text_ob;
 	char *result;
 	int32 size;
-	uchar type;
+	uint8_t type;
 
 	lwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	text_ob = lwalloc(20+VARHDRSZ);
@@ -854,11 +854,11 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom;
 	LWGEOM *lwgeom;
-	uchar *wkb;
+	uint8_t *wkb;
 	size_t wkb_size;
 	bytea *result;
 	/* By default we are currently emitting OGC WKB (2D) only */
-	uchar variant = WKB_SFSQL;
+	uint8_t variant = WKB_SFSQL;
 
 	/* Get a 2D version of the geometry */
 	geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));

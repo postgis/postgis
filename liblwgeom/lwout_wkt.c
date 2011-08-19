@@ -12,7 +12,7 @@
 #include "liblwgeom_internal.h"
 #include "stringbuffer.h"
 
-static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uchar variant);
+static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uint8_t variant);
 
 
 /*
@@ -21,7 +21,7 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 * clear what the third dimension represents.
 * SFSQL format never has more than two dimensions, so no qualifiers.
 */
-static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, uchar variant)
+static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, uint8_t variant)
 {
 
 	/* Extended WKT: POINTM(0 0 0) */
@@ -61,7 +61,7 @@ static void empty_to_wkt_sb(stringbuffer_t *sb)
 * we may suppress some dimensions. ISO and Extended formats include
 * all dimensions. Standard OGC output only includes X/Y coordinates.
 */
-static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int precision, uchar variant)
+static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	/* OGC only includes X/Y */
 	int dimensions = 2;
@@ -78,7 +78,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 	/* Digits and commas */
 	for (i = 0; i < ptarray->npoints; i++)
 	{
-		uchar *p = getPoint_internal(ptarray, i);
+		uint8_t *p = getPoint_internal(ptarray, i);
 		double d;
 
 		/* Commas before ever coord but the first */
@@ -110,7 +110,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 *   Extended: POINTM(0 0 0)
 *   OGC: POINT(0 0)
 */
-static void lwpoint_to_wkt_sb(const LWPOINT *pt, stringbuffer_t *sb, int precision, uchar variant)
+static void lwpoint_to_wkt_sb(const LWPOINT *pt, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -130,7 +130,7 @@ static void lwpoint_to_wkt_sb(const LWPOINT *pt, stringbuffer_t *sb, int precisi
 /*
 * LINESTRING(0 0 0, 1 1 1)
 */
-static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precision, uchar variant)
+static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -149,7 +149,7 @@ static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precisi
 /*
 * POLYGON(0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)
 */
-static void lwpoly_to_wkt_sb(const LWPOLY *poly, stringbuffer_t *sb, int precision, uchar variant)
+static void lwpoly_to_wkt_sb(const LWPOLY *poly, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 	if ( ! (variant & WKT_NO_TYPE) )
@@ -176,7 +176,7 @@ static void lwpoly_to_wkt_sb(const LWPOLY *poly, stringbuffer_t *sb, int precisi
 /*
 * CIRCULARSTRING
 */
-static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb, int precision, uchar variant)
+static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -196,7 +196,7 @@ static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb,
 * Multi-points do not wrap their sub-members in parens, unlike other multi-geometries.
 *   MULTPOINT(0 0, 1 1) instead of MULTIPOINT((0 0),(1 1))
 */
-static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int precision, uchar variant)
+static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 	if ( ! (variant & WKT_NO_TYPE) )
@@ -224,7 +224,7 @@ static void lwmpoint_to_wkt_sb(const LWMPOINT *mpoint, stringbuffer_t *sb, int p
 /*
 * MULTILINESTRING
 */
-static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int precision, uchar variant)
+static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -254,7 +254,7 @@ static void lwmline_to_wkt_sb(const LWMLINE *mline, stringbuffer_t *sb, int prec
 /*
 * MULTIPOLYGON
 */
-static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int precision, uchar variant)
+static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -286,7 +286,7 @@ static void lwmpoly_to_wkt_sb(const LWMPOLY *mpoly, stringbuffer_t *sb, int prec
 * but not their linestring sub-geometries.
 *   COMPOUNDCURVE((0 0, 1 1), CURVESTRING(1 1, 2 2, 3 3))
 */
-static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int precision, uchar variant)
+static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -331,7 +331,7 @@ static void lwcompound_to_wkt_sb(const LWCOMPOUND *comp, stringbuffer_t *sb, int
 * but not their linestring rings.
 *   CURVEPOLYGON((0 0, 1 1, 0 1, 0 0), CURVESTRING(0 0, 1 1, 0 1, 0.5 1, 0 0))
 */
-static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, int precision, uchar variant)
+static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -379,7 +379,7 @@ static void lwcurvepoly_to_wkt_sb(const LWCURVEPOLY *cpoly, stringbuffer_t *sb, 
 * but not their linear sub-geometries.
 *   MULTICURVE((0 0, 1 1), CURVESTRING(0 0, 1 1, 2 2))
 */
-static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int precision, uchar variant)
+static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -427,7 +427,7 @@ static void lwmcurve_to_wkt_sb(const LWMCURVE *mcurv, stringbuffer_t *sb, int pr
 * but not their linear sub-geometries.
 *   MULTISURFACE(((0 0, 1 1, 1 0, 0 0)), CURVEPOLYGON(CURVESTRING(0 0, 1 1, 2 2, 0 1, 0 0)))
 */
-static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, int precision, uchar variant)
+static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -470,7 +470,7 @@ static void lwmsurface_to_wkt_sb(const LWMSURFACE *msurf, stringbuffer_t *sb, in
 * but not their linear sub-geometries.
 *   GEOMETRYCOLLECTION(POLYGON((0 0, 1 1, 1 0, 0 0)), CURVEPOLYGON(CURVESTRING(0 0, 1 1, 2 2, 0 1, 0 0)))
 */
-static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_t *sb, int precision, uchar variant)
+static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -498,7 +498,7 @@ static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_
 /*
 * TRIANGLE 
 */
-static void lwtriangle_to_wkt_sb(const LWTRIANGLE *tri, stringbuffer_t *sb, int precision, uchar variant)
+static void lwtriangle_to_wkt_sb(const LWTRIANGLE *tri, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	if ( ! (variant & WKT_NO_TYPE) )
 	{
@@ -519,7 +519,7 @@ static void lwtriangle_to_wkt_sb(const LWTRIANGLE *tri, stringbuffer_t *sb, int 
 /*
 * TIN
 */
-static void lwtin_to_wkt_sb(const LWTIN *tin, stringbuffer_t *sb, int precision, uchar variant)
+static void lwtin_to_wkt_sb(const LWTIN *tin, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -548,7 +548,7 @@ static void lwtin_to_wkt_sb(const LWTIN *tin, stringbuffer_t *sb, int precision,
 /*
 * POLYHEDRALSURFACE
 */
-static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, int precision, uchar variant)
+static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	int i = 0;
 
@@ -580,7 +580,7 @@ static void lwpsurface_to_wkt_sb(const LWPSURFACE *psurf, stringbuffer_t *sb, in
 /*
 * Generic GEOMETRY
 */
-static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uchar variant)
+static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precision, uint8_t variant)
 {
 	LWDEBUGF(4, "lwgeom_to_wkt_sb: type %s, hasz %d, hasm %d",
 		lwtype_name(geom->type), (geom->type),
@@ -649,7 +649,7 @@ static void lwgeom_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *sb, int precisi
 * @param size_out If supplied, will return the size of the returned string,
 * including the null terminator.
 */
-char* lwgeom_to_wkt(const LWGEOM *geom, uchar variant, int precision, size_t *size_out)
+char* lwgeom_to_wkt(const LWGEOM *geom, uint8_t variant, int precision, size_t *size_out)
 {
 	stringbuffer_t *sb;
 	char *str = NULL;

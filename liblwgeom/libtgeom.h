@@ -10,15 +10,20 @@
  *
  **********************************************************************/
 
+#ifndef _LIBTGEOM_H
+#define _LIBTGEOM_H 1
+
+#include <stdint.h>
+
 /**
 * TSERIALIZED (mostly inspired by GSERIALIZED struct)
 */
 typedef struct
 {
-        uint32 size; /* For PgSQL use only, use VAR* macros to manipulate. */
-        uint32 srid; /* SRID */
-        uchar flags; /* HasZ, HasM, HasBBox, IsGeodetic, IsReadOnly, IsSolid */
-        uchar *data; /* See tserialized.txt */
+        uint32_t size; /* For PgSQL use only, use VAR* macros to manipulate. */
+        uint32_t srid; /* SRID */
+        uint8_t flags; /* HasZ, HasM, HasBBox, IsGeodetic, IsReadOnly, IsSolid */
+        uint8_t *data; /* See tserialized.txt */
 } TSERIALIZED;
 
 
@@ -43,9 +48,9 @@ typedef struct
 
 typedef struct
 {
-	uchar type;		
-	uchar flags;		
-	uint32 srid;		/* 0 == unknown */
+	uint8_t type;		
+	uint8_t flags;		
+	uint32_t srid;		/* 0 == unknown */
 	BOX3D *bbox;		/* NULL == unneeded */
 	int nedges;
 	int maxedges;
@@ -55,7 +60,7 @@ typedef struct
 	TFACE **faces;
 } TGEOM;
 
-extern TGEOM* tgeom_new(uchar type, int hasz, int hasm);
+extern TGEOM* tgeom_new(uint8_t type, int hasz, int hasm);
 extern void tgeom_free(TGEOM *tgeom);
 extern TSERIALIZED* tserialized_from_lwgeom(LWGEOM *lwgeom);
 extern TGEOM* tgeom_from_lwgeom(const LWGEOM *lwgeom);
@@ -67,3 +72,5 @@ TGEOM * tgeom_deserialize(TSERIALIZED *serialized_form);
 double tgeom_perimeter2d(TGEOM* tgeom);
 double tgeom_perimeter(TGEOM* tgeom);
 extern void printTGEOM(TGEOM *tgeom);
+
+#endif /* !defined _LIBTGEOM_H */

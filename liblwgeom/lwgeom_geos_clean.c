@@ -50,15 +50,15 @@
  * Return Nth vertex in GEOSGeometry as a POINT.
  * May return NULL if the geometry has NO vertexex.
  */
-GEOSGeometry* LWGEOM_GEOS_getPointN(const GEOSGeometry*, uint32);
+GEOSGeometry* LWGEOM_GEOS_getPointN(const GEOSGeometry*, uint32_t);
 GEOSGeometry*
-LWGEOM_GEOS_getPointN(const GEOSGeometry* g_in, uint32 n)
+LWGEOM_GEOS_getPointN(const GEOSGeometry* g_in, uint32_t n)
 {
-	uint32 dims;
+	uint32_t dims;
 	const GEOSCoordSequence* seq_in;
 	GEOSCoordSeq seq_out;
 	double val;
-	uint32 sz;
+	uint32_t sz;
 	int gn;
 	GEOSGeometry* ret;
 
@@ -307,7 +307,7 @@ LWGEOM *
 lwcollection_make_geos_friendly(LWCOLLECTION *g)
 {
 	LWGEOM **new_geoms;
-	uint32 i, new_ngeoms=0;
+	uint32_t i, new_ngeoms=0;
 	LWCOLLECTION *ret;
 
 	/* enough space for all components */
@@ -648,10 +648,10 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 	GEOSGeometry* mline_out=0;
 	GEOSGeometry* mpoint_out=0;
 	GEOSGeometry* gout=0;
-	uint32 nlines=0, nlines_alloc;
-	uint32 npoints=0;
-	uint32 ngeoms=0, nsubgeoms;
-	uint32 i, j;
+	uint32_t nlines=0, nlines_alloc;
+	uint32_t npoints=0;
+	uint32_t ngeoms=0, nsubgeoms;
+	uint32_t i, j;
 
 	ngeoms = GEOSGetNumGeometries(gin);
 

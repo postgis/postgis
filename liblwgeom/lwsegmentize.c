@@ -19,9 +19,9 @@
 #include "liblwgeom_internal.h"
 
 
-LWMLINE *lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad);
-LWMPOLY *lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad);
-LWCOLLECTION *lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad);
+LWMLINE *lwmcurve_segmentize(LWMCURVE *mcurve, uint32_t perQuad);
+LWMPOLY *lwmsurface_segmentize(LWMSURFACE *msurface, uint32_t perQuad);
+LWCOLLECTION *lwcollection_segmentize(LWCOLLECTION *collection, uint32_t perQuad);
 LWGEOM *append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int srid);
 LWGEOM *pta_desegmentize(POINTARRAY *points, int type, int srid);
 LWGEOM *lwline_desegmentize(LWLINE *line);
@@ -156,7 +156,7 @@ static double interpolate_arc(double angle, double a1, double a2, double a3, dou
 }
 
 static POINTARRAY *
-lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
+lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 {
 	POINT4D center;
 	POINT4D pt;
@@ -241,12 +241,12 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32 perQuad)
 }
 
 LWLINE *
-lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
+lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32_t perQuad)
 {
 	LWLINE *oline;
 	POINTARRAY *ptarray;
 	POINTARRAY *tmp;
-	uint32 i, j;
+	uint32_t i, j;
 	POINT4D p1, p2, p3, p4;
 
 	LWDEBUGF(2, "lwcircstring_segmentize called., dim = %d", icurve->points->flags);
@@ -293,12 +293,12 @@ lwcircstring_segmentize(const LWCIRCSTRING *icurve, uint32 perQuad)
 }
 
 LWLINE *
-lwcompound_segmentize(const LWCOMPOUND *icompound, uint32 perQuad)
+lwcompound_segmentize(const LWCOMPOUND *icompound, uint32_t perQuad)
 {
 	LWGEOM *geom;
 	POINTARRAY *ptarray = NULL;
 	LWLINE *tmp = NULL;
-	uint32 i, j;
+	uint32_t i, j;
 	POINT4D p;
 
 	LWDEBUG(2, "lwcompound_segmentize called.");
@@ -338,7 +338,7 @@ lwcompound_segmentize(const LWCOMPOUND *icompound, uint32 perQuad)
 }
 
 LWPOLY *
-lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32 perQuad)
+lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32_t perQuad)
 {
 	LWPOLY *ogeom;
 	LWGEOM *tmp;
@@ -382,7 +382,7 @@ lwcurvepoly_segmentize(const LWCURVEPOLY *curvepoly, uint32 perQuad)
 }
 
 LWMLINE *
-lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad)
+lwmcurve_segmentize(LWMCURVE *mcurve, uint32_t perQuad)
 {
 	LWMLINE *ogeom;
 	LWGEOM *tmp;
@@ -416,7 +416,7 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32 perQuad)
 }
 
 LWMPOLY *
-lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad)
+lwmsurface_segmentize(LWMSURFACE *msurface, uint32_t perQuad)
 {
 	LWMPOLY *ogeom;
 	LWGEOM *tmp;
@@ -452,7 +452,7 @@ lwmsurface_segmentize(LWMSURFACE *msurface, uint32 perQuad)
 }
 
 LWCOLLECTION *
-lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
+lwcollection_segmentize(LWCOLLECTION *collection, uint32_t perQuad)
 {
 	LWCOLLECTION *ocol;
 	LWGEOM *tmp;
@@ -490,7 +490,7 @@ lwcollection_segmentize(LWCOLLECTION *collection, uint32 perQuad)
 }
 
 LWGEOM *
-lwgeom_segmentize(LWGEOM *geom, uint32 perQuad)
+lwgeom_segmentize(LWGEOM *geom, uint32_t perQuad)
 {
 	LWGEOM * ogeom = NULL;
 	switch (geom->type)

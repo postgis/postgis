@@ -65,15 +65,15 @@ lwline_construct_empty(int srid, char hasz, char hasm)
  * See serialized form doc
  */
 LWLINE *
-lwline_deserialize(uchar *serialized_form)
+lwline_deserialize(uint8_t *serialized_form)
 {
-	uchar type;
+	uint8_t type;
 	LWLINE *result;
-	uchar *loc =NULL;
-	uint32 npoints;
+	uint8_t *loc =NULL;
+	uint32_t npoints;
 	POINTARRAY *pa;
 
-	type = (uchar) serialized_form[0];
+	type = (uint8_t) serialized_form[0];
 
 	if ( lwgeom_getType(type) != LINETYPE)
 	{
@@ -109,7 +109,7 @@ lwline_deserialize(uchar *serialized_form)
 	if ( lwgeom_hasSRID(type))
 	{
 		/*lwnotice("line has srid"); */
-		result->srid = lw_get_int32(loc);
+		result->srid = lw_get_int32_t(loc);
 		loc +=4; /* type + SRID */
 	}
 	else
@@ -120,7 +120,7 @@ lwline_deserialize(uchar *serialized_form)
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
 
-	npoints = lw_get_uint32(loc);
+	npoints = lw_get_uint32_t(loc);
 	/*lwnotice("line npoints = %d", npoints); */
 	loc +=4;
 	pa = ptarray_construct_reference_data(TYPE_HASZ(type)?1:0,
@@ -135,11 +135,11 @@ lwline_deserialize(uchar *serialized_form)
  * convert this line into its serialize form
  * result's first char will be the 8bit type.  See serialized form doc
  */
-uchar *
+uint8_t *
 lwline_serialize(LWLINE *line)
 {
 	size_t size, retsize;
-	uchar * result;
+	uint8_t * result;
 
 	if (line == NULL) lwerror("lwline_serialize:: given null line");
 
@@ -162,10 +162,10 @@ lwline_serialize(LWLINE *line)
  * result's first char will be the 8bit type.  See serialized form doc
  */
 void
-lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
+lwline_serialize_buf(LWLINE *line, uint8_t *buf, size_t *retsize)
 {
 	char has_srid;
-	uchar *loc;
+	uint8_t *loc;
 	int ptsize;
 	size_t size;
 
@@ -182,7 +182,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 
 	has_srid = (line->srid != SRID_UNKNOWN);
 
-	buf[0] = (uchar) lwgeom_makeType_full(
+	buf[0] = (uint8_t) lwgeom_makeType_full(
 	             FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags),
 	             has_srid, LINETYPE, line->bbox ? 1 : 0);
 	loc = buf+1;
@@ -203,14 +203,14 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 
 	if (has_srid)
 	{
-		memcpy(loc, &line->srid, sizeof(int32));
-		loc += sizeof(int32);
+		memcpy(loc, &line->srid, sizeof(int32_t));
+		loc += sizeof(int32_t);
 
 		LWDEBUG(3, "lwline_serialize_buf added SRID");
 	}
 
-	memcpy(loc, &line->points->npoints, sizeof(uint32));
-	loc += sizeof(uint32);
+	memcpy(loc, &line->points->npoints, sizeof(uint32_t));
+	loc += sizeof(uint32_t);
 
 	LWDEBUGF(3, "lwline_serialize_buf added npoints (%d)",
 	         line->points->npoints);
@@ -225,7 +225,7 @@ lwline_serialize_buf(LWLINE *line, uchar *buf, size_t *retsize)
 
 	if (retsize) *retsize = loc-buf;
 
-	/*printBYTES((uchar *)result, loc-buf); */
+	/*printBYTES((uint8_t *)result, loc-buf); */
 
 	LWDEBUGF(3, "lwline_serialize_buf returning (loc: %p, size: %d)",
 	         loc, loc-buf);
@@ -277,12 +277,12 @@ void lwline_free (LWLINE  *line)
 
 /* find length of this serialized line */
 size_t
-lwgeom_size_line(const uchar *serialized_line)
+lwgeom_size_line(const uint8_t *serialized_line)
 {
-	int type = (uchar) serialized_line[0];
-	uint32 result = 1;  /*type */
-	const uchar *loc;
-	uint32 npoints;
+	int type = (uint8_t) serialized_line[0];
+	uint32_t result = 1;  /*type */
+	const uint8_t *loc;
+	uint32_t npoints;
 
 	LWDEBUG(2, "lwgeom_size_line called");
 
@@ -305,8 +305,8 @@ lwgeom_size_line(const uchar *serialized_line)
 	}
 
 	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-	npoints = lw_get_uint32(loc);
-	result += sizeof(uint32); /* npoints */
+	npoints = lw_get_uint32_t(loc);
+	result += sizeof(uint32_t); /* npoints */
 
 	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
 
@@ -398,7 +398,7 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
  * LWLINE dimensions are large enough to host all input dimensions.
  */
 LWLINE *
-lwline_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
+lwline_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
 {
  	int i;
 	int hasz = LW_FALSE;
@@ -447,11 +447,11 @@ lwline_from_lwpointarray(int srid, uint32 npoints, LWPOINT **points)
 LWLINE *
 lwline_from_lwmpoint(int srid, LWMPOINT *mpoint)
 {
-	uint32 i;
+	uint32_t i;
 	POINTARRAY *pa;
 	char zmflag = FLAGS_GET_ZM(mpoint->flags);
 	size_t ptsize, size;
-	uchar *newpoints, *ptr;
+	uint8_t *newpoints, *ptr;
 
 	if ( zmflag == 0 ) ptsize=2*sizeof(double);
 	else if ( zmflag == 3 ) ptsize=4*sizeof(double);
@@ -511,7 +511,7 @@ lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where)
 
 
 LWLINE *
-lwline_removepoint(LWLINE *line, uint32 index)
+lwline_removepoint(LWLINE *line, uint32_t index)
 {
 	POINTARRAY *newpa;
 	LWLINE *ret;
@@ -528,7 +528,7 @@ lwline_removepoint(LWLINE *line, uint32 index)
  * Note: input will be changed, make sure you have permissions for this.
  */
 void
-lwline_setPoint4d(LWLINE *line, uint32 index, POINT4D *newpoint)
+lwline_setPoint4d(LWLINE *line, uint32_t index, POINT4D *newpoint)
 {
 	ptarray_set_point4d(line->points, index, newpoint);
 	/* Update the box, if there is one to update */

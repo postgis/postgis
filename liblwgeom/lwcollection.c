@@ -26,14 +26,14 @@ lwcollection_release(LWCOLLECTION *lwcollection)
 
 
 LWCOLLECTION *
-lwcollection_construct(uchar type, int srid, GBOX *bbox,
-                       uint32 ngeoms, LWGEOM **geoms)
+lwcollection_construct(uint8_t type, int srid, GBOX *bbox,
+                       uint32_t ngeoms, LWGEOM **geoms)
 {
 	LWCOLLECTION *ret;
 	int hasz, hasm;
 #ifdef CHECK_LWGEOM_ZM
 	char zm;
-	uint32 i;
+	uint32_t i;
 #endif
 
 	LWDEBUGF(2, "lwcollection_construct called with %d, %d, %p, %d, %p.", type, srid, bbox, ngeoms, geoms);
@@ -74,7 +74,7 @@ lwcollection_construct(uchar type, int srid, GBOX *bbox,
 }
 
 LWCOLLECTION *
-lwcollection_construct_empty(uchar type, int srid, char hasz, char hasm)
+lwcollection_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 {
 	LWCOLLECTION *ret;
 	if( ! lwtype_is_collection(type) )
@@ -94,7 +94,7 @@ lwcollection_construct_empty(uchar type, int srid, char hasz, char hasm)
 
 
 LWCOLLECTION *
-lwcollection_deserialize(uchar *srl)
+lwcollection_deserialize(uint8_t *srl)
 {
 	LWCOLLECTION *result;
 	LWGEOM_INSPECTED *insp;
@@ -187,12 +187,12 @@ lwcollection_serialize_size(LWCOLLECTION *col)
  *          the given int pointer.
  */
 void
-lwcollection_serialize_buf(LWCOLLECTION *coll, uchar *buf, size_t *retsize)
+lwcollection_serialize_buf(LWCOLLECTION *coll, uint8_t *buf, size_t *retsize)
 {
 	size_t size=1; /* type  */
 	size_t subsize=0;
 	char has_srid;
-	uchar *loc;
+	uint8_t *loc;
 	int i;
 
 	LWDEBUGF(2, "lwcollection_serialize_buf called (%s with %d elems)",
@@ -249,7 +249,7 @@ int
 lwcollection_compute_box2d_p(const LWCOLLECTION *col, BOX2DFLOAT4 *box)
 {
 	BOX2DFLOAT4 boxbuf;
-	uint32 i;
+	uint32_t i;
 
 	if ( ! col->ngeoms ) return 0;
 	if ( ! lwgeom_compute_box2d_p(col->geoms[0], box) ) return 0;
@@ -270,7 +270,7 @@ lwcollection_compute_box2d_p(const LWCOLLECTION *col, BOX2DFLOAT4 *box)
 LWCOLLECTION *
 lwcollection_clone(const LWCOLLECTION *g)
 {
-	uint32 i;
+	uint32_t i;
 	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
 	memcpy(ret, g, sizeof(LWCOLLECTION));
 	if ( g->ngeoms > 0 )
@@ -296,7 +296,7 @@ lwcollection_clone(const LWCOLLECTION *g)
 LWCOLLECTION *
 lwcollection_clone_deep(const LWCOLLECTION *g)
 {
-	uint32 i;
+	uint32_t i;
 	LWCOLLECTION *ret = lwalloc(sizeof(LWCOLLECTION));
 	memcpy(ret, g, sizeof(LWCOLLECTION));
 	if ( g->ngeoms > 0 )
@@ -363,7 +363,7 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 LWCOLLECTION *
 lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 {
-	uint32 i;
+	uint32_t i;
 	LWGEOM **newgeoms;
 
 	if ( ! col->ngeoms ) return lwcollection_clone(col);
@@ -381,7 +381,7 @@ lwcollection_segmentize2d(LWCOLLECTION *col, double dist)
 char
 lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 {
-	uint32 i;
+	uint32_t i;
 
 	LWDEBUG(2, "lwcollection_same called");
 
@@ -396,8 +396,8 @@ lwcollection_same(const LWCOLLECTION *c1, const LWCOLLECTION *c2)
 
 	/* Former method allowed out-of-order equality between collections
 
-		hit = lwalloc(sizeof(uint32)*c1->ngeoms);
-		memset(hit, 0, sizeof(uint32)*c1->ngeoms);
+		hit = lwalloc(sizeof(uint32_t)*c1->ngeoms);
+		memset(hit, 0, sizeof(uint32_t)*c1->ngeoms);
 
 		for (i=0; i<c1->ngeoms; i++)
 		{
@@ -540,7 +540,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 	LWCOLLECTION *outcol;
 	int geomlistsize = 16;
 	int geomlistlen = 0;
-	uchar outtype;
+	uint8_t outtype;
 
 	if ( ! col ) return NULL;
 
@@ -621,7 +621,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 LWGEOM*
 lwcollection_remove_repeated_points(LWCOLLECTION *coll)
 {
-	uint32 i;
+	uint32_t i;
 	LWGEOM **newgeoms;
 
 	newgeoms = lwalloc(sizeof(LWGEOM *)*coll->ngeoms);

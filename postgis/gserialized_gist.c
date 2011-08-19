@@ -77,7 +77,7 @@ GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx)
 	else
 	{
 		size_t varsize_new = VARSIZE(g) + box_size;
-		uchar *ptr;
+		uint8_t *ptr;
 		g_out = palloc(varsize_new);
 		/* Copy the head of g into place */
 		memcpy(g_out, g, 8);
@@ -110,8 +110,8 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g)
 	/* Copy the contents while omitting the box */
 	if ( FLAGS_GET_BBOX(g->flags) )
 	{
-		uchar *outptr = (uchar*)g_out;
-		uchar *inptr = (uchar*)g;
+		uint8_t *outptr = (uint8_t*)g_out;
+		uint8_t *inptr = (uint8_t*)g;
 		/* Copy the header (size+type) of g into place */
 		memcpy(outptr, inptr, 8);
 		outptr += 8;

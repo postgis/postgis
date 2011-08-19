@@ -12,15 +12,15 @@
 #include "liblwgeom_internal.h"
 #include <sys/param.h>
 
-static uchar* lwgeom_to_wkb_buf(const LWGEOM *geom, uchar *buf, uchar variant);
-static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant);
+static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant);
+static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant);
 
 /*
 * Look-up table for hex writer
 */
 static char *hexchr = "0123456789ABCDEF";
 
-char* hexbytes_from_bytes(uchar *bytes, size_t size) 
+char* hexbytes_from_bytes(uint8_t *bytes, size_t size) 
 {
 	char *hex;
 	int i;
@@ -44,7 +44,7 @@ char* hexbytes_from_bytes(uchar *bytes, size_t size)
 /*
 * Optional SRID
 */
-static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uchar variant)
+static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uint8_t variant)
 {
 	/* Sub-components of collections inherit their SRID from the parent.
 	   We force that behavior with the WKB_NO_SRID flag */
@@ -63,9 +63,9 @@ static int lwgeom_wkb_needs_srid(const LWGEOM *geom, uchar variant)
 /*
 * GeometryType
 */
-static uint32 lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
+static uint32_t lwgeom_wkb_type(const LWGEOM *geom, uint8_t variant)
 {
-	uint32 wkb_type = 0;
+	uint32_t wkb_type = 0;
 
 	switch ( geom->type )
 	{
@@ -144,7 +144,7 @@ static uint32 lwgeom_wkb_type(const LWGEOM *geom, uchar variant)
 /*
 * Endian
 */
-static uchar* endian_to_wkb_buf(uchar *buf, uchar variant)
+static uint8_t* endian_to_wkb_buf(uint8_t *buf, uint8_t variant)
 {
 	if ( variant & WKB_HEX )
 	{
@@ -162,7 +162,7 @@ static uchar* endian_to_wkb_buf(uchar *buf, uchar variant)
 /*
 * SwapBytes?
 */
-static inline int wkb_swap_bytes(uchar variant)
+static inline int wkb_swap_bytes(uint8_t variant)
 {
 	/* If requested variant matches machine arch, we don't have to swap! */
 	if ( ((variant & WKB_NDR) && (BYTE_ORDER == LITTLE_ENDIAN)) ||
@@ -176,7 +176,7 @@ static inline int wkb_swap_bytes(uchar variant)
 /*
 * Integer32
 */
-static uchar* integer_to_wkb_buf(const int ival, uchar *buf, uchar variant)
+static uint8_t* integer_to_wkb_buf(const int ival, uint8_t *buf, uint8_t variant)
 {
 	char *iptr = (char*)(&ival);
 	int i = 0;
@@ -193,7 +193,7 @@ static uchar* integer_to_wkb_buf(const int ival, uchar *buf, uchar variant)
 		for ( i = 0; i < WKB_INT_SIZE; i++ )
 		{
 			int j = (swap ? WKB_INT_SIZE - 1 - i : i);
-			uchar b = iptr[j];
+			uint8_t b = iptr[j];
 			/* Top four bits to 0-F */
 			buf[2*i] = hexchr[b >> 4];
 			/* Bottom four bits to 0-F */
@@ -223,7 +223,7 @@ static uchar* integer_to_wkb_buf(const int ival, uchar *buf, uchar variant)
 /*
 * Float64
 */
-static uchar* double_to_wkb_buf(const double d, uchar *buf, uchar variant)
+static uint8_t* double_to_wkb_buf(const double d, uint8_t *buf, uint8_t variant)
 {
 	char *dptr = (char*)(&d);
 	int i = 0;
@@ -240,7 +240,7 @@ static uchar* double_to_wkb_buf(const double d, uchar *buf, uchar variant)
 		for ( i = 0; i < WKB_DOUBLE_SIZE; i++ )
 		{
 			int j = (swap ? WKB_DOUBLE_SIZE - 1 - i : i);
-			uchar b = dptr[j];
+			uint8_t b = dptr[j];
 			/* Top four bits to 0-F */
 			buf[2*i] = hexchr[b >> 4];
 			/* Bottom four bits to 0-F */
@@ -271,7 +271,7 @@ static uchar* double_to_wkb_buf(const double d, uchar *buf, uchar variant)
 /*
 * Empty
 */
-static size_t empty_to_wkb_size(const LWGEOM *geom, uchar variant)
+static size_t empty_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 {
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
 
@@ -281,9 +281,9 @@ static size_t empty_to_wkb_size(const LWGEOM *geom, uchar variant)
 	return size;
 }
 
-static uchar* empty_to_wkb_buf(const LWGEOM *geom, uchar *buf, uchar variant)
+static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
 {
-	uint32 wkb_type = lwgeom_wkb_type(geom, variant);
+	uint32_t wkb_type = lwgeom_wkb_type(geom, variant);
 
 	if ( geom->type == POINTTYPE )
 		wkb_type = WKB_MULTIPOINT_TYPE; /* Change POINT to MULTIPOINT */
@@ -306,7 +306,7 @@ static uchar* empty_to_wkb_buf(const LWGEOM *geom, uchar *buf, uchar variant)
 /*
 * POINTARRAY
 */
-static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uchar variant)
+static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uint8_t variant)
 {
 	int dims = 2;
 	size_t size = 0;
@@ -324,7 +324,7 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uchar variant)
 	return size;
 }
 
-static uchar* ptarray_to_wkb_buf(const POINTARRAY *pa, uchar *buf, uchar variant)
+static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant)
 {
 	int dims = 2;
 	int i, j;
@@ -360,7 +360,7 @@ static uchar* ptarray_to_wkb_buf(const POINTARRAY *pa, uchar *buf, uchar variant
 /*
 * POINT
 */
-static size_t lwpoint_to_wkb_size(const LWPOINT *pt, uchar variant)
+static size_t lwpoint_to_wkb_size(const LWPOINT *pt, uint8_t variant)
 {
 	/* Endian flag + type number */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE;
@@ -374,7 +374,7 @@ static size_t lwpoint_to_wkb_size(const LWPOINT *pt, uchar variant)
 	return size;
 }
 
-static uchar* lwpoint_to_wkb_buf(const LWPOINT *pt, uchar *buf, uchar variant)
+static uint8_t* lwpoint_to_wkb_buf(const LWPOINT *pt, uint8_t *buf, uint8_t variant)
 {
 	/* Set the endian flag */
 	LWDEBUGF(4, "Entering function, buf = %p", buf);
@@ -398,7 +398,7 @@ static uchar* lwpoint_to_wkb_buf(const LWPOINT *pt, uchar *buf, uchar variant)
 /*
 * LINESTRING, CIRCULARSTRING
 */
-static size_t lwline_to_wkb_size(const LWLINE *line, uchar variant)
+static size_t lwline_to_wkb_size(const LWLINE *line, uint8_t variant)
 {
 	/* Endian flag + type number */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE;
@@ -412,7 +412,7 @@ static size_t lwline_to_wkb_size(const LWLINE *line, uchar variant)
 	return size;
 }
 
-static uchar* lwline_to_wkb_buf(const LWLINE *line, uchar *buf, uchar variant)
+static uint8_t* lwline_to_wkb_buf(const LWLINE *line, uint8_t *buf, uint8_t variant)
 {
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
@@ -429,7 +429,7 @@ static uchar* lwline_to_wkb_buf(const LWLINE *line, uchar *buf, uchar variant)
 /*
 * TRIANGLE
 */
-static size_t lwtriangle_to_wkb_size(const LWTRIANGLE *tri, uchar variant)
+static size_t lwtriangle_to_wkb_size(const LWTRIANGLE *tri, uint8_t variant)
 {
 	/* endian flag + type number + number of rings */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
@@ -444,7 +444,7 @@ static size_t lwtriangle_to_wkb_size(const LWTRIANGLE *tri, uchar variant)
 	return size;
 }
 
-static uchar* lwtriangle_to_wkb_buf(const LWTRIANGLE *tri, uchar *buf, uchar variant)
+static uint8_t* lwtriangle_to_wkb_buf(const LWTRIANGLE *tri, uint8_t *buf, uint8_t variant)
 {
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);
@@ -468,7 +468,7 @@ static uchar* lwtriangle_to_wkb_buf(const LWTRIANGLE *tri, uchar *buf, uchar var
 /*
 * POLYGON
 */
-static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uchar variant)
+static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uint8_t variant)
 {
 	/* endian flag + type number + number of rings */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
@@ -487,7 +487,7 @@ static size_t lwpoly_to_wkb_size(const LWPOLY *poly, uchar variant)
 	return size;
 }
 
-static uchar* lwpoly_to_wkb_buf(const LWPOLY *poly, uchar *buf, uchar variant)
+static uint8_t* lwpoly_to_wkb_buf(const LWPOLY *poly, uint8_t *buf, uint8_t variant)
 {
 	int i;
 
@@ -515,7 +515,7 @@ static uchar* lwpoly_to_wkb_buf(const LWPOLY *poly, uchar *buf, uchar variant)
 * MULTICURVE, COMPOUNDCURVE, MULTISURFACE, CURVEPOLYGON, TIN, 
 * POLYHEDRALSURFACE
 */
-static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uchar variant)
+static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uint8_t variant)
 {
 	/* Endian flag + type number + number of subgeoms */
 	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE + WKB_INT_SIZE;
@@ -534,7 +534,7 @@ static size_t lwcollection_to_wkb_size(const LWCOLLECTION *col, uchar variant)
 	return size;
 }
 
-static uchar* lwcollection_to_wkb_buf(const LWCOLLECTION *col, uchar *buf, uchar variant)
+static uint8_t* lwcollection_to_wkb_buf(const LWCOLLECTION *col, uint8_t *buf, uint8_t variant)
 {
 	int i;
 
@@ -561,7 +561,7 @@ static uchar* lwcollection_to_wkb_buf(const LWCOLLECTION *col, uchar *buf, uchar
 /*
 * GEOMETRY
 */
-static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant)
+static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uint8_t variant)
 {
 	size_t size = 0;
 
@@ -620,7 +620,7 @@ static size_t lwgeom_to_wkb_size(const LWGEOM *geom, uchar variant)
 
 /* TODO handle the TRIANGLE type properly */
 
-static uchar* lwgeom_to_wkb_buf(const LWGEOM *geom, uchar *buf, uchar variant)
+static uint8_t* lwgeom_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t variant)
 {
 
 	if ( lwgeom_is_empty(geom) )
@@ -676,11 +676,11 @@ static uchar* lwgeom_to_wkb_buf(const LWGEOM *geom, uchar *buf, uchar variant)
 * @param size_out If supplied, will return the size of the returned memory segment,
 * including the null terminator in the case of ASCII.
 */
-uchar* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
+uint8_t* lwgeom_to_wkb(const LWGEOM *geom, uint8_t variant, size_t *size_out)
 {
 	size_t buf_size;
-	uchar *buf = NULL;
-	uchar *wkb_out = NULL;
+	uint8_t *buf = NULL;
+	uint8_t *wkb_out = NULL;
 
 	/* Initialize output size */
 	if ( size_out ) *size_out = 0;
@@ -760,7 +760,7 @@ uchar* lwgeom_to_wkb(const LWGEOM *geom, uchar variant, size_t *size_out)
 	return wkb_out;
 }
 
-char* lwgeom_to_hexwkb(const LWGEOM *geom, uchar variant, size_t *size_out)
+char* lwgeom_to_hexwkb(const LWGEOM *geom, uint8_t variant, size_t *size_out)
 {
 	return (char*)lwgeom_to_wkb(geom, variant | WKB_HEX, size_out);
 }

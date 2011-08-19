@@ -44,7 +44,7 @@ static int clean_wkt_out_suite(void)
 	return 0;
 }
 
-static char* cu_wkt(char *wkt, uchar variant)
+static char* cu_wkt(char *wkt, uint8_t variant)
 {
 	LWGEOM *g = lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
 	if ( s ) free(s);

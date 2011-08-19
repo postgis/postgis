@@ -30,11 +30,11 @@ lwmpoly_construct_empty(int srid, char hasz, char hasm)
 }
 
 LWMPOLY *
-lwmpoly_deserialize(uchar *srl)
+lwmpoly_deserialize(uint8_t *srl)
 {
 	LWMPOLY *result;
 	LWGEOM_INSPECTED *insp;
-	uchar type = (uchar)srl[0];
+	uint8_t type = (uint8_t)srl[0];
 	int geomtype = TYPE_GETTYPE(type);
 	int i;
 

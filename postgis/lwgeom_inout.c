@@ -159,7 +159,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	char * formatted_text;
 
 	/* Only supports points. */
-	uchar geom_type = pglwgeom_get_type(pg_lwgeom);
+	uint8_t geom_type = pglwgeom_get_type(pg_lwgeom);
 	if (POINTTYPE != geom_type)
 	{
 		lwerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
@@ -175,14 +175,14 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 		format_str[str_size] = 0; /* null term */
 
 		/* The input string supposedly will be in the database encoding, so convert to UTF-8. */
-		format_str_utf8 = (char *)pg_do_encoding_conversion((uchar *)format_str, str_size, GetDatabaseEncoding(), PG_UTF8);
+		format_str_utf8 = (char *)pg_do_encoding_conversion((uint8_t *)format_str, str_size, GetDatabaseEncoding(), PG_UTF8);
 	}
 
 	/* Produce the formatted string. */
 	formatted_str_utf8 = lwpoint_to_latlon((LWPOINT *)lwgeom, format_str_utf8);
 
 	/* Convert the formatted string from UTF-8 back to database encoding. */
-	formatted_str = (char *)pg_do_encoding_conversion((uchar *)formatted_str_utf8, strlen(formatted_str_utf8), PG_UTF8, GetDatabaseEncoding());
+	formatted_str = (char *)pg_do_encoding_conversion((uint8_t *)formatted_str_utf8, strlen(formatted_str_utf8), PG_UTF8, GetDatabaseEncoding());
 
 	/* Convert to the postgres output string type. */
 	str_size = strlen(formatted_str) + VARHDRSZ;
@@ -234,7 +234,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	char *hexwkb;
 	size_t hexwkb_size;
-	uchar variant = 0;
+	uint8_t variant = 0;
 	text *result;
 	text *type;
 	size_t text_size;
@@ -321,7 +321,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	int32 srid = 0;
 	PG_LWGEOM *geom;
 	LWGEOM *lwgeom;
-	uchar *wkb = (uchar*)VARDATA(bytea_wkb);
+	uint8_t *wkb = (uint8_t*)VARDATA(bytea_wkb);
 	
 	lwgeom = lwgeom_from_wkb(wkb, VARSIZE(bytea_wkb)-VARHDRSZ, LW_PARSER_CHECK_ALL);
 	
@@ -349,9 +349,9 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *lwgeom;
-	uchar *wkb;
+	uint8_t *wkb;
 	size_t wkb_size;
-	uchar variant = 0;
+	uint8_t variant = 0;
  	bytea *result;
 	text *type;
 
@@ -405,12 +405,12 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 }
 
 char
-is_worth_caching_serialized_bbox(const uchar *in)
+is_worth_caching_serialized_bbox(const uint8_t *in)
 {
 #if ! POSTGIS_AUTOCACHE_BBOX
 	return false;
 #endif
-	if ( TYPE_GETTYPE((uchar)in[0]) == POINTTYPE ) return false;
+	if ( TYPE_GETTYPE((uint8_t)in[0]) == POINTTYPE ) return false;
 	return true;
 }
 
@@ -485,7 +485,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	PG_LWGEOM *geom;
 	LWGEOM *lwgeom;
 	
-	lwgeom = lwgeom_from_wkb((uchar*)buf->data, buf->len, LW_PARSER_CHECK_ALL);
+	lwgeom = lwgeom_from_wkb((uint8_t*)buf->data, buf->len, LW_PARSER_CHECK_ALL);
 	
 	if ( lwgeom_needs_bbox(lwgeom) )
 		lwgeom_add_bbox(lwgeom);

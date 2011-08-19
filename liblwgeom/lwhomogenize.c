@@ -101,8 +101,8 @@ lwgeom_homogenize(const LWGEOM *geom)
 LWGEOM *
 lwcollection_homogenize(const LWCOLLECTION *col)
 {
-	uint32 i, srid;
-	uchar hasz, hasm;
+	uint32_t i, srid;
+	uint8_t hasz, hasm;
 	LWGEOM *res = NULL;
 	LWCOLLECTION *coll;
 	LWGEOM_HOMOGENIZE *geoms;
@@ -210,7 +210,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 static LWGEOM_HOMOGENIZE*
 lwcollection_homogenize_subgeom(LWGEOM_HOMOGENIZE *hgeoms, LWGEOM *geom)
 {
-	uint32 i;
+	uint32_t i;
 
 	if (!geom) lwerror("lwcollection_homogenize: Sub geometry is Null");
 

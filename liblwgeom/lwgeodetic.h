@@ -40,7 +40,7 @@ typedef struct
 typedef struct
 {
 	double measure;
-	uint32 index;
+	uint32_t index;
 } DISTANCE_ORDER;
 
 /**

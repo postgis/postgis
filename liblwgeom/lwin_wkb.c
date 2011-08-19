@@ -17,16 +17,16 @@
 */
 typedef struct 
 {
-	const uchar *wkb; /* Points to start of WKB */
+	const uint8_t *wkb; /* Points to start of WKB */
 	size_t wkb_size; /* Expected size of WKB */
 	int swap_bytes; /* Do an endian flip? */
 	int check; /* Simple validity checks on geometries */
-	uint32 lwtype; /* Current type we are handling */
-	uint32 srid; /* Current SRID we are handling */
+	uint32_t lwtype; /* Current type we are handling */
+	uint32_t srid; /* Current SRID we are handling */
 	int has_z; /* Z? */
 	int has_m; /* M? */
 	int has_srid; /* SRID? */
-	const uchar *pos; /* Current parse position */
+	const uint8_t *pos; /* Current parse position */
 } wkb_parse_state;
 
 
@@ -40,7 +40,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s);
 /**********************************************************************/
 
 /* Our static character->number map. Anything > 15 is invalid */
-static uchar hex2char[256] = {
+static uint8_t hex2char[256] = {
     /* not Hex characters */
     20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
     20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,
@@ -66,10 +66,10 @@ static uchar hex2char[256] = {
     };
 
 
-uchar* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
+uint8_t* bytes_from_hexbytes(const char *hexbuf, size_t hexsize)
 {
-	uchar *buf = NULL;
-	register uchar h1, h2;
+	uint8_t *buf = NULL;
+	register uint8_t h1, h2;
 	int i;
 	
 	if( hexsize % 2 )
@@ -116,9 +116,9 @@ static inline void wkb_parse_state_check(wkb_parse_state *s, size_t next)
 * as an extended WKB type number (with Z/M/SRID flags masked onto the 
 * high bits).
 */
-static void lwtype_from_wkb_state(wkb_parse_state *s, uint32 wkb_type)
+static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 {
-	uint32 wkb_simple_type;
+	uint32_t wkb_simple_type;
 	
 	LWDEBUG(4, "Entered function");
 	
@@ -236,9 +236,9 @@ static char byte_from_wkb_state(wkb_parse_state *s)
 * Int32
 * Read 4-byte integer and advance the parse state forward.
 */
-static uint32 integer_from_wkb_state(wkb_parse_state *s)
+static uint32_t integer_from_wkb_state(wkb_parse_state *s)
 {
-	uint32 i = 0;
+	uint32_t i = 0;
 
 	wkb_parse_state_check(s, WKB_INT_SIZE);
 	
@@ -248,13 +248,13 @@ static uint32 integer_from_wkb_state(wkb_parse_state *s)
 	if( s->swap_bytes )
 	{
 		int j = 0;
-		uchar tmp;
+		uint8_t tmp;
 		
 		for( j = 0; j < WKB_INT_SIZE/2; j++ )
 		{
-			tmp = ((uchar*)(&i))[j];
-			((uchar*)(&i))[j] = ((uchar*)(&i))[WKB_INT_SIZE - j - 1];
-			((uchar*)(&i))[WKB_INT_SIZE - j - 1] = tmp;
+			tmp = ((uint8_t*)(&i))[j];
+			((uint8_t*)(&i))[j] = ((uint8_t*)(&i))[WKB_INT_SIZE - j - 1];
+			((uint8_t*)(&i))[WKB_INT_SIZE - j - 1] = tmp;
 		}
 	}
 
@@ -278,13 +278,13 @@ static double double_from_wkb_state(wkb_parse_state *s)
 	if( s->swap_bytes )
 	{
 		int i = 0;
-		uchar tmp;
+		uint8_t tmp;
 		
 		for( i = 0; i < WKB_DOUBLE_SIZE/2; i++ )
 		{
-			tmp = ((uchar*)(&d))[i];
-			((uchar*)(&d))[i] = ((uchar*)(&d))[WKB_DOUBLE_SIZE - i - 1];
-			((uchar*)(&d))[WKB_DOUBLE_SIZE - i - 1] = tmp;
+			tmp = ((uint8_t*)(&d))[i];
+			((uint8_t*)(&d))[i] = ((uint8_t*)(&d))[WKB_DOUBLE_SIZE - i - 1];
+			((uint8_t*)(&d))[WKB_DOUBLE_SIZE - i - 1] = tmp;
 		}
 
 	}
@@ -302,8 +302,8 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 {
 	POINTARRAY *pa = NULL;
 	size_t pa_size;
-	uint32 ndims = 2;
-	uint32 npoints = 0;
+	uint32_t ndims = 2;
+	uint32_t npoints = 0;
 
 	/* Calculate the size of this point array. */
 	npoints = integer_from_wkb_state(s);
@@ -321,7 +321,7 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 	/* If we're in a native endianness, we can just copy the data directly! */
 	if( ! s->swap_bytes )
 	{
-		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uchar*)s->pos);
+		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uint8_t*)s->pos);
 		s->pos += pa_size;
 	}
 	/* Otherwise we have to read each double, separately. */
@@ -351,10 +351,10 @@ static POINTARRAY* ptarray_from_wkb_state(wkb_parse_state *s)
 */
 static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 {
-	static uint32 npoints = 1;
+	static uint32_t npoints = 1;
 	POINTARRAY *pa = NULL;
 	size_t pa_size;
-	uint32 ndims = 2;
+	uint32_t ndims = 2;
 
 	/* Count the dimensions. */
 	if( s->has_z ) ndims++;
@@ -367,7 +367,7 @@ static LWPOINT* lwpoint_from_wkb_state(wkb_parse_state *s)
 	/* If we're in a native endianness, we can just copy the data directly! */
 	if( ! s->swap_bytes )
 	{
-		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uchar*)s->pos);
+		pa = ptarray_construct_copy_data(s->has_z, s->has_m, npoints, (uint8_t*)s->pos);
 		s->pos += pa_size;
 	}
 	/* Otherwise we have to read each double, separately */
@@ -451,7 +451,7 @@ static LWCIRCSTRING* lwcircstring_from_wkb_state(wkb_parse_state *s)
 */
 static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 {
-	uint32 nrings = integer_from_wkb_state(s);
+	uint32_t nrings = integer_from_wkb_state(s);
 	int i = 0;
 	LWPOLY *poly = lwpoly_construct_empty(s->srid, s->has_z, s->has_m);
 	
@@ -502,7 +502,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 */
 static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 {
-	uint32 nrings = integer_from_wkb_state(s);
+	uint32_t nrings = integer_from_wkb_state(s);
 	LWTRIANGLE *tri = lwtriangle_construct_empty(s->srid, s->has_z, s->has_m);
 	POINTARRAY *pa = NULL;
 
@@ -546,7 +546,7 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 */
 static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 {
-	uint32 ngeoms = integer_from_wkb_state(s);
+	uint32_t ngeoms = integer_from_wkb_state(s);
 	LWCURVEPOLY *cp = lwcurvepoly_construct_empty(s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
 	int i;
@@ -576,7 +576,7 @@ static LWCURVEPOLY* lwcurvepoly_from_wkb_state(wkb_parse_state *s)
 */
 static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 {
-	uint32 ngeoms = integer_from_wkb_state(s);
+	uint32_t ngeoms = integer_from_wkb_state(s);
 	LWCOLLECTION *col = lwcollection_construct_empty(s->lwtype, s->srid, s->has_z, s->has_m);
 	LWGEOM *geom = NULL;
 	int i;
@@ -610,7 +610,7 @@ static LWCOLLECTION* lwcollection_from_wkb_state(wkb_parse_state *s)
 LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 {
 	char wkb_little_endian;
-	uint32 wkb_type;
+	uint32_t wkb_type;
 	
 	LWDEBUG(4,"Entered function");
 	
@@ -702,7 +702,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 * Check is a bitmask of: LW_PARSER_CHECK_MINPOINTS, LW_PARSER_CHECK_ODD, 
 * LW_PARSER_CHECK_CLOSURE, LW_PARSER_CHECK_NONE, LW_PARSER_CHECK_ALL
 */
-LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char check)
+LWGEOM* lwgeom_from_wkb(const uint8_t *wkb, const size_t wkb_size, const char check)
 {
 	wkb_parse_state s;
 	
@@ -730,7 +730,7 @@ LWGEOM* lwgeom_from_wkb(const uchar *wkb, const size_t wkb_size, const char chec
 LWGEOM* lwgeom_from_hexwkb(const char *hexwkb, const char check)
 {
 	int hexwkb_len;
-	uchar *wkb;
+	uint8_t *wkb;
 	LWGEOM *lwgeom;
 	
 	if ( ! hexwkb )	

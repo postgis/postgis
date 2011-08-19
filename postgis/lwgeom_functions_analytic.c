@@ -114,7 +114,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		else
 			getPoint4d_p(ipa, ipa->npoints-1, &pt);
 
-		opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
+		opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uint8_t*)&pt);
 		
 		point = lwpoint_construct(line->srid, NULL, opa);
 		PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
@@ -145,7 +145,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		{
 			double dseg = (distance - tlength) / slength;
 			interpolate_point4d(&p1, &p2, &pt, dseg);
-			opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
+			opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uint8_t*)&pt);
 			point = lwpoint_construct(line->srid, NULL, opa);
 			PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
 		}
@@ -155,7 +155,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	/* Return the last point on the line. This shouldn't happen, but
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints-1, &pt);
-	opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uchar*)&pt);
+	opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uint8_t*)&pt);
 	point = lwpoint_construct(line->srid, NULL, opa);
 	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
 }

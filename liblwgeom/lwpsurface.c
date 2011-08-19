@@ -17,7 +17,7 @@
 
 
 LWPSURFACE *
-lwpsurface_deserialize(uchar *srl)
+lwpsurface_deserialize(uint8_t *srl)
 {
 	LWPSURFACE *result;
 	LWGEOM_INSPECTED *insp;

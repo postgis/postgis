@@ -39,9 +39,9 @@ void pg_notice(const char *msg, va_list vp);
 typedef struct
 {
 	uint32 size;        /* varlena header (do not touch directly!) */
-	uchar type;         /* encodes ndims, type, bbox presence,
+	uint8_t type;         /* encodes ndims, type, bbox presence,
 			                srid presence */
-	uchar data[1];
+	uint8_t data[1];
 }
 PG_LWGEOM;
 
@@ -132,7 +132,7 @@ extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
  * NOTE: only available when GSERIALIZED_ON is undefined
  * TODO: wrap in #ifndef GSERIALIZED_ON
  */
-extern PG_LWGEOM *PG_LWGEOM_construct(uchar *serialized, int srid, int wantbbox);
+extern PG_LWGEOM *PG_LWGEOM_construct(uint8_t *serialized, int srid, int wantbbox);
 
 /* PG_LWGEOM SRID get/set */
 extern PG_LWGEOM *pglwgeom_set_srid(PG_LWGEOM *pglwgeom, int32 newSRID);
@@ -169,7 +169,7 @@ char* text2cstring(const text *textptr);
  * by most functions from an PG_LWGEOM struct.
  * (which is an PG_LWGEOM w/out int32 size casted to char *)
  */
-#define SERIALIZED_FORM(x) ((uchar *)VARDATA((x)))
+#define SERIALIZED_FORM(x) ((uint8_t *)VARDATA((x)))
 
 /* 
  * For PostgreSQL >= 8.5 redefine the STATRELATT macro to its

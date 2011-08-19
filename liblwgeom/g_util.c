@@ -113,9 +113,9 @@ struct geomtype_struct geomtype_struct_array[] =
 #define GEOMTYPE_STRUCT_ARRAY_LEN (sizeof geomtype_struct_array/sizeof(struct geomtype_struct))
 
 
-uchar gflags(int hasz, int hasm, int geodetic)
+uint8_t gflags(int hasz, int hasm, int geodetic)
 {
-	uchar flags = 0;
+	uint8_t flags = 0;
 	if ( hasz )
 		FLAGS_SET_Z(flags, 1);
 	if ( hasm )

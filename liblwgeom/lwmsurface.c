@@ -17,12 +17,12 @@
 
 
 LWMSURFACE *
-lwmsurface_deserialize(uchar *srl)
+lwmsurface_deserialize(uint8_t *srl)
 {
 	LWMSURFACE *result;
 	LWGEOM_INSPECTED *insp;
 	int stype;
-	uchar type = (uchar)srl[0];
+	uint8_t type = (uint8_t)srl[0];
 	int geomtype = lwgeom_getType(type);
 	int i;
 

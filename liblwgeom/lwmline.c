@@ -29,11 +29,11 @@ lwmline_construct_empty(int srid, char hasz, char hasm)
 }
 
 LWMLINE *
-lwmline_deserialize(uchar *srl)
+lwmline_deserialize(uint8_t *srl)
 {
 	LWMLINE *result;
 	LWGEOM_INSPECTED *insp;
-	uchar type = (uchar)srl[0];
+	uint8_t type = (uint8_t)srl[0];
 	int geomtype = TYPE_GETTYPE(srl[0]);
 	int i;
 

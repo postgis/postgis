@@ -12,7 +12,7 @@
 
 #include "cu_surface.h"
 
-static void check_tgeom(char *ewkt, int type, uint32 srid, int is_solid);
+static void check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid);
 
 void triangle_parse(void)
 {
@@ -241,7 +241,7 @@ void tin_parse(void)
 
 
 static void
-check_tgeom(char *ewkt, int type, uint32 srid, int is_solid)
+check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
 {
 	LWGEOM *g1, *g2;
 	TGEOM *tgeom;

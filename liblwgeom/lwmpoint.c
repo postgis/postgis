@@ -30,11 +30,11 @@ lwmpoint_construct_empty(int srid, char hasz, char hasm)
 
 
 LWMPOINT *
-lwmpoint_deserialize(uchar *srl)
+lwmpoint_deserialize(uint8_t *srl)
 {
 	LWMPOINT *result;
 	LWGEOM_INSPECTED *insp;
-	uchar type = (uchar)srl[0];
+	uint8_t type = (uint8_t)srl[0];
 	int geomtype = lwgeom_getType(type);
 	int i;
 
@@ -119,8 +119,8 @@ void lwmpoint_free(LWMPOINT *mpt)
 LWGEOM*
 lwmpoint_remove_repeated_points(LWMPOINT *mpoint)
 {
-	uint32 nnewgeoms;
-	uint32 i, j;
+	uint32_t nnewgeoms;
+	uint32_t i, j;
 	LWGEOM **newgeoms;
 
 	newgeoms = lwalloc(sizeof(LWGEOM *)*mpoint->ngeoms);
