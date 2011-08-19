@@ -162,6 +162,9 @@ Datum RASTER_getXSkew(PG_FUNCTION_ARGS);
 Datum RASTER_getYSkew(PG_FUNCTION_ARGS);
 Datum RASTER_getXUpperLeft(PG_FUNCTION_ARGS);
 Datum RASTER_getYUpperLeft(PG_FUNCTION_ARGS);
+Datum RASTER_getPixelWidth(PG_FUNCTION_ARGS);
+Datum RASTER_getPixelHeight(PG_FUNCTION_ARGS);
+Datum RASTER_getRotation(PG_FUNCTION_ARGS);
 
 /* Set all the properties of a raster */
 Datum RASTER_setSRID(PG_FUNCTION_ARGS);
@@ -170,6 +173,7 @@ Datum RASTER_setScaleXY(PG_FUNCTION_ARGS);
 Datum RASTER_setSkew(PG_FUNCTION_ARGS);
 Datum RASTER_setSkewXY(PG_FUNCTION_ARGS);
 Datum RASTER_setUpperLeftXY(PG_FUNCTION_ARGS);
+Datum RASTER_setRotation(PG_FUNCTION_ARGS);
 
 /* Get all the properties of a raster band */
 Datum RASTER_getBandPixelType(PG_FUNCTION_ARGS);
@@ -1404,6 +1408,184 @@ Datum RASTER_setUpperLeftXY(PG_FUNCTION_ARGS)
     rt_raster_set_offsets(raster, xoffset, yoffset);
 
     //PG_FREE_IF_COPY(pgraster, 0);
+
+    pgraster = rt_raster_serialize(raster);
+    if ( ! pgraster ) PG_RETURN_NULL();
+
+    SET_VARSIZE(pgraster, pgraster->size);
+
+    rt_raster_destroy(raster);
+
+    PG_RETURN_POINTER(pgraster);
+}
+
+/**
+ * Return the pixel width of the raster. The pixel width is
+ * a read-only, dynamically computed value derived from the 
+ * X Scale and the Y Skew.
+ *
+ * Pixel Width = sqrt( X Scale * X Scale + Y Skew * Y Skew )
+ */
+PG_FUNCTION_INFO_V1(RASTER_getPixelWidth);
+Datum RASTER_getPixelWidth(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster;
+    rt_raster raster;
+    double xscale;
+    double yskew;
+    double pwidth;
+
+    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
+    if (!raster) {
+        elog(ERROR, "RASTER_getPixelWidth: Could not deserialize raster");
+        PG_RETURN_NULL();
+    }
+
+    xscale = rt_raster_get_x_scale(raster);
+    yskew = rt_raster_get_y_skew(raster);
+    pwidth = sqrt(xscale*xscale + yskew*yskew);
+
+    rt_raster_destroy(raster);
+    PG_FREE_IF_COPY(pgraster, 0);
+
+    PG_RETURN_FLOAT8(pwidth);
+}
+
+/**
+ * Return the pixel height of the raster. The pixel height is
+ * a read-only, dynamically computed value derived from the 
+ * Y Scale and the X Skew.
+ *
+ * Pixel Height = sqrt( Y Scale * Y Scale + X Skew * X Skew )
+ */
+PG_FUNCTION_INFO_V1(RASTER_getPixelHeight);
+Datum RASTER_getPixelHeight(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster;
+    rt_raster raster;
+    double yscale;
+    double xskew;
+    double pheight;
+
+    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
+    if (!raster) {
+        elog(ERROR, "RASTER_getPixelHeight: Could not deserialize raster");
+        PG_RETURN_NULL();
+    }
+
+    yscale = rt_raster_get_y_scale(raster);
+    xskew = rt_raster_get_x_skew(raster);
+    pheight = sqrt(yscale*yscale + xskew*xskew);
+
+    rt_raster_destroy(raster);
+    PG_FREE_IF_COPY(pgraster, 0);
+
+    PG_RETURN_FLOAT8(pheight);
+}
+
+/**
+ * Return the raster rotation. The raster rotation is calculated from
+ * the scale and skew values stored in the georeference. If the scale
+ * and skew values indicate that the raster is not uniformly rotated
+ * (the pixels are diamond-shaped), this function will return NaN.
+ */
+PG_FUNCTION_INFO_V1(RASTER_getRotation);
+Datum RASTER_getRotation(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster;
+    rt_raster raster;
+    double xscale, xskew, yscale, yskew, xrot, yrot;
+
+    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+
+    raster = rt_raster_deserialize(pgraster, TRUE);
+    if (!raster) {
+        elog(ERROR, "RASTER_getRotation: Could not deserialize raster");
+        PG_RETURN_NULL();
+    }
+
+    xscale = rt_raster_get_x_scale(raster);
+    yscale = rt_raster_get_y_scale(raster);
+
+    if (xscale == 0 || yscale == 0) {
+        rt_raster_destroy(raster);
+        PG_FREE_IF_COPY(pgraster, 0);
+
+        // cannot compute scale with a zero denominator
+        elog(NOTICE, "RASTER_getRotation: Could not divide by zero scale; cannot determine raster rotation.");
+        PG_RETURN_FLOAT8(NAN);
+    }
+
+    xskew = rt_raster_get_x_skew(raster);
+    yskew = rt_raster_get_y_skew(raster);
+
+    xrot = atan(yskew/xscale);
+    yrot = atan(xskew/yscale);
+
+    rt_raster_destroy(raster);
+    PG_FREE_IF_COPY(pgraster, 0);
+
+    if (xrot == yrot) {
+        PG_RETURN_FLOAT8(xrot);
+    }
+
+    PG_RETURN_FLOAT8(NAN);
+}
+
+/**
+ * Set the rotation of the raster. This method will change the X Scale,
+ * Y Scale, X Skew and Y Skew properties all at once to keep the rotations
+ * about the X and Y axis uniform.
+ *
+ * This method will set the rotation about the X axis and Y axis based on
+ * the pixel size. This pixel size may not be uniform if rasters have different
+ * skew values (the raster cells are diamond-shaped). If a raster has different
+ * skew values has a rotation set upon it, this method will remove the 
+ * diamond distortions of the cells, as each axis will have the same rotation.
+ */
+PG_FUNCTION_INFO_V1(RASTER_setRotation);
+Datum RASTER_setRotation(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_raster raster;
+    double rotation = PG_GETARG_FLOAT8(1);
+    double xscale, yscale, xskew, yskew, psize;
+
+    // no matter what, we don't rotate more than once around
+    if (rotation < 0) {
+        rotation = (-2*M_PI) + fmod(rotation, (2*M_PI));
+    }
+    else {
+        rotation = fmod(rotation, (2 * M_PI));
+    }
+
+    raster = rt_raster_deserialize(pgraster, FALSE);
+    if (! raster ) {
+        elog(ERROR, "RASTER_setRotation: Could not deserialize raster");
+        PG_RETURN_NULL();
+    }
+
+    xscale = rt_raster_get_x_scale(raster);
+    yskew = rt_raster_get_y_skew(raster);
+    psize = sqrt(xscale*xscale + yskew*yskew);
+    xscale = psize * cos(rotation);
+    yskew = psize * sin(rotation);
+    
+    yscale = rt_raster_get_y_scale(raster);
+    xskew = rt_raster_get_x_skew(raster);
+    psize = sqrt(yscale*yscale + xskew*xskew);
+    yscale = psize * cos(rotation);
+    xskew = psize * sin(rotation); 
+
+    rt_raster_set_scale(raster, xscale, yscale);
+    rt_raster_set_skews(raster, xskew, yskew);
 
     pgraster = rt_raster_serialize(raster);
     if ( ! pgraster ) PG_RETURN_NULL();

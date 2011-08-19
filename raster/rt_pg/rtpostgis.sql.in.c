@@ -9,7 +9,7 @@
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
--- Copyright (c) 2010 David Zwarg <dzwarg@avencia.com>
+-- Copyright (c) 2010 David Zwarg <dzwarg@azavea.com>
 -- Copyright (C) 2011 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
@@ -133,6 +133,11 @@ CREATE OR REPLACE FUNCTION st_upperlefty(raster)
 CREATE OR REPLACE FUNCTION st_width(raster)
     RETURNS integer
     AS 'MODULE_PATHNAME','RASTER_getWidth'
+    LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_rotation(raster)
+    RETURNS float8
+    AS 'MODULE_PATHNAME','RASTER_getRotation'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_metadata(
@@ -1798,6 +1803,11 @@ CREATE OR REPLACE FUNCTION st_setsrid(rast raster, srid integer)
 CREATE OR REPLACE FUNCTION st_setupperleft(rast raster, upperleftx float8, upperlefty float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setUpperLeftXY'
+    LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_setrotation(rast raster, rotation float8)
+    RETURNS raster
+    AS 'MODULE_PATHNAME','RASTER_setRotation'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------

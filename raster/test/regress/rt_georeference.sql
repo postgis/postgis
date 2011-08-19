@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 -- $Id$
 --
--- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>, David Zwarg <dzwarg@avencia.com>
+-- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>, David Zwarg <dzwarg@azavea.com>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -32,12 +32,27 @@ SELECT
 FROM rt_properties_test 
 WHERE id = 2;
 
+
 SELECT 
     replace(st_georeference(rast)::text, E'\n', E'EOL'),
     replace(st_georeference(rast)::text, E'\n', E'EOL') = 
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
 FROM rt_properties_test 
 WHERE id = 3;
+
+SELECT 
+    replace(st_georeference(rast)::text, E'\n', E'EOL'),
+    replace(st_georeference(rast)::text, E'\n', E'EOL') = 
+    '5.0000000000EOL1.0000000000EOL1.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
+FROM rt_properties_test 
+WHERE id = 4;
+
+SELECT 
+    replace(st_georeference(rast)::text, E'\n', E'EOL'),
+    replace(st_georeference(rast)::text, E'\n', E'EOL') = 
+    '5.0000000000EOL7.0000000000EOL3.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
+FROM rt_properties_test 
+WHERE id = 5;
 
 -----------------------------------------------------------------------
 -- st_georeference (GDAL)
@@ -71,6 +86,20 @@ SELECT
 FROM rt_properties_test 
 WHERE id = 3;
 
+SELECT 
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL'),
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') = 
+    '5.0000000000EOL1.0000000000EOL1.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
+FROM rt_properties_test 
+WHERE id = 4;
+
+SELECT 
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL'),
+    replace(st_georeference(rast,'GDAL')::text, E'\n', E'EOL') = 
+    '5.0000000000EOL7.0000000000EOL3.0000000000EOL5.0000000000EOL7.5000000000EOL2.5000000000EOL'
+FROM rt_properties_test 
+WHERE id = 5;
+
 -----------------------------------------------------------------------
 -- st_georeference (ESRI)
 -----------------------------------------------------------------------
@@ -102,6 +131,20 @@ SELECT
     '5.0000000000EOL0.0000000000EOL0.0000000000EOL5.0000000000EOL10.0000000000EOL5.0000000000EOL'
 FROM rt_properties_test 
 WHERE id = 3;
+
+SELECT
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL'),
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') = 
+    '5.0000000000EOL1.0000000000EOL1.0000000000EOL5.0000000000EOL10.0000000000EOL5.0000000000EOL'
+FROM rt_properties_test 
+WHERE id = 4;
+
+SELECT
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL'),
+	replace(st_georeference(rast,'ESRI')::text, E'\n', E'EOL') = 
+    '5.0000000000EOL7.0000000000EOL3.0000000000EOL5.0000000000EOL10.0000000000EOL5.0000000000EOL'
+FROM rt_properties_test 
+WHERE id = 5;
 
 
 -----------------------------------------------------------------------

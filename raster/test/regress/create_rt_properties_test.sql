@@ -149,3 +149,65 @@ VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
 '0100' -- height (uint16 1)
 )::raster
 ); 
+
+INSERT INTO rt_properties_test 
+VALUES ( 4, '1x1, ip:7.5,2.5 scale:5,5 skew:1,1, srid:-1, width:1, height:1',
+        -1, 1, 1, --- SRID, width, height
+         5, 5, 7.5, 2.5, 1, 1, --- georeference
+(
+'01' -- little endian (uint8 ndr)
+|| 
+'0000' -- version (uint16 0)
+||
+'0000' -- nBands (uint16 0)
+||
+'0000000000001440' -- scaleX (float64 5)
+||
+'0000000000001440' -- scaleY (float64 5)
+||
+'0000000000001E40' -- ipX (float64 7.5)
+||
+'0000000000000440' -- ipY (float64 2.5)
+||
+'000000000000F03F' -- skewX (float64 1)
+||
+'000000000000F03F' -- skewY (float64 1)
+||
+'FFFFFFFF' -- SRID (int32 -1)
+||
+'0100' -- width (uint16 1)
+||
+'0100' -- height (uint16 1)
+)::raster
+);
+
+INSERT INTO rt_properties_test 
+VALUES ( 5, '1x1, ip:7.5,2.5 scale:5,5 skew:3,7, srid:-1, width:1, height:1',
+        -1, 1, 1, --- SRID, width, height
+         5, 5, 7.5, 2.5, 3, 7, --- georeference
+(
+'01' -- little endian (uint8 ndr)
+|| 
+'0000' -- version (uint16 0)
+||
+'0000' -- nBands (uint16 0)
+||
+'0000000000001440' -- scaleX (float64 5)
+||
+'0000000000001440' -- scaleY (float64 5)
+||
+'0000000000001E40' -- ipX (float64 7.5)
+||
+'0000000000000440' -- ipY (float64 2.5)
+||
+'0000000000000840' -- skewX (float64 3)
+||
+'0000000000001C40' -- skewY (float64 7)
+||
+'FFFFFFFF' -- SRID (int32 -1)
+||
+'0100' -- width (uint16 1)
+||
+'0100' -- height (uint16 1)
+)::raster
+); 
