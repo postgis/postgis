@@ -2322,7 +2322,8 @@ int quantile_llist_destroy(struct quantile_llist **list, uint32_t list_count) {
  *
  * @return the default set of or requested quantiles for a band
  */
-rt_quantile rt_band_get_quantiles_stream(rt_band band,
+rt_quantile
+rt_band_get_quantiles_stream(rt_band band,
 	int exclude_nodata_value, double sample,
 	uint64_t cov_count,
 	struct quantile_llist **qlls, int *qlls_count,
@@ -2763,6 +2764,7 @@ rt_quantile rt_band_get_quantiles_stream(rt_band band,
 	rtn = rtalloc(sizeof(struct rt_quantile_t) * *rtn_count);
 	if (NULL == rtn) return NULL;
 
+	RASTER_DEBUGF(3, "returning %d quantiles", *rtn_count);
 	for (i = 0, k = 0; i < *qlls_count; i++) {
 		qll = &((*qlls)[i]);
 
@@ -2823,6 +2825,7 @@ rt_quantile rt_band_get_quantiles_stream(rt_band band,
 		k++;
 	}
 
+	RASTER_DEBUG(3, "done");
 	return rtn;
 }
 

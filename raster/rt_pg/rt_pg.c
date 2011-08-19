@@ -3808,8 +3808,8 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(oldcontext);
 	}
 
-  /* stuff done on every call of the function */
-  funcctx = SRF_PERCALL_SETUP();
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
@@ -4257,6 +4257,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 					SPI_finish();
 
 					if (bin_width_count) pfree(bin_width);
+					pfree(hist);
 
 					SRF_RETURN_DONE(funcctx);
 				}
@@ -4320,8 +4321,8 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(oldcontext);
 	}
 
-  /* stuff done on every call of the function */
-  funcctx = SRF_PERCALL_SETUP();
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
@@ -4562,8 +4563,8 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(oldcontext);
 	}
 
-  /* stuff done on every call of the function */
-  funcctx = SRF_PERCALL_SETUP();
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
@@ -4824,7 +4825,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 		cov_count = strtol(tmp, NULL, 10);
-		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: covcount = %d", covcount);
+		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: covcount = %d", cov_count);
 		pfree(tmp);
 
 		/* iterate through rasters of coverage */
@@ -4947,6 +4948,9 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		SPI_finish();
 
 		quantile_llist_destroy(&qlls, qlls_count);
+		if (quantiles_count) pfree(quantiles);
+
+		POSTGIS_RT_DEBUGF(3, "%d quantiles returned", count);
 
 		/* Store needed information */
 		funcctx->user_fctx = covquant;
@@ -4971,8 +4975,8 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(oldcontext);
 	}
 
-  /* stuff done on every call of the function */
-  funcctx = SRF_PERCALL_SETUP();
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
@@ -5008,6 +5012,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 	}
 	/* do when there is no more left */
 	else {
+		POSTGIS_RT_DEBUG(3, "done");
 		pfree(covquant2);
 		SRF_RETURN_DONE(funcctx);
 	}
@@ -5181,8 +5186,8 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		MemoryContextSwitchTo(oldcontext);
 	}
 
-  /* stuff done on every call of the function */
-  funcctx = SRF_PERCALL_SETUP();
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
@@ -5922,8 +5927,8 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		MemoryContextSwitchTo(oldcontext);
 	}
 
-  /* stuff done on every call of the function */
-  funcctx = SRF_PERCALL_SETUP();
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
 
 	call_cntr = funcctx->call_cntr;
 	max_calls = funcctx->max_calls;
