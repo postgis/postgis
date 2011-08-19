@@ -211,42 +211,36 @@ CREATE TEMP TABLE test
 	) AS id
 		ON 1 = 1;
 SELECT
-	count,
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
 FROM ST_Histogram('test', 'rast', 1, TRUE, 0, NULL, FALSE);
 SELECT
-	count,
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
 FROM ST_Histogram('test', 'rast', 1, TRUE, 0, NULL, FALSE);
 SELECT
-	count,
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
 FROM ST_Histogram('test', 'rast', 1, FALSE);
 SELECT
-	count,
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
 FROM ST_Histogram('test', 'rast', 1, FALSE, 5, FALSE);
 SELECT
-	count,
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
 FROM ST_Histogram('test', 'rast', 1, 10);
 SELECT
-	count,
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,

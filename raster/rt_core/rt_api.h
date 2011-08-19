@@ -236,6 +236,28 @@ struct rt_quantile_t {
 	double value;
 };
 
+/* listed-list structures for rt_band_get_quantiles_stream */
+struct quantile_llist {
+	uint8_t algeq; /* AL-GEQ (1) or AL-GT (0) */
+	double quantile;
+	uint64_t tau; /* position in sequence */
+
+	struct quantile_llist_element *head; /* H index 0 */
+	struct quantile_llist_element *tail; /* H index last */
+	uint32_t count; /* # of elements in H */
+
+	uint64_t sum1; /* N1H */
+	uint64_t sum2; /* N2H */
+};
+
+struct quantile_llist_element {
+	double value;
+	uint32_t count;
+
+	struct quantile_llist_element *prev;
+	struct quantile_llist_element *next;
+};
+
 /* number of times a value occurs */
 struct rt_valuecount_t {
 	double value;
@@ -637,6 +659,43 @@ rt_histogram rt_band_get_histogram(rt_bandstats stats,
  */
 rt_quantile rt_band_get_quantiles(rt_bandstats stats,
 	double *quantiles, int quantiles_count, int *rtn_count);
+
+int quantile_llist_destroy(struct quantile_llist **list,
+	uint32_t list_count);
+
+/**
+ * Compute the default set of or requested quantiles for a coverage
+ *
+ * This function is based upon the algorithm described in:
+ *
+ * A One-Pass Space-Efficient Algorithm for Finding Quantiles (1995)
+ *   by Rakesh Agrawal, Arun Swami
+ *   in Proc. 7th Intl. Conf. Management of Data (COMAD-95)
+ *
+ * http://www.almaden.ibm.com/cs/projects/iis/hdb/Publications/papers/comad95.pdf
+ *
+ * In the future, it may be worth exploring algorithms that don't
+ *   require the size of the coverage
+ *
+ * @param band: the band to include in the quantile search
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
+ * @param sample: percentage of pixels to sample
+ * @param cov_count: number of values in coverage
+ * @param qlls: set of quantile_llist structures
+ * @param qlls_count: the number of quantile_llist structures
+ * @param quantiles: the quantiles to be computed
+ *   if bot qlls and quantiles provided, qlls is used
+ * @param quantiles_count: the number of quantiles to be computed
+ * @param rtn_count: the number of quantiles being returned
+ *
+ * @return the default set of or requested quantiles for a band
+ */
+rt_quantile rt_band_get_quantiles_stream(rt_band band,
+	int exclude_nodata_value, double sample,
+	uint64_t cov_count,
+	struct quantile_llist **qlls, int *qlls_count,
+	double *quantiles, int quantiles_count,
+	int *rtn_count);
 
 /**
  * Count the number of times provided value(s) occur in
@@ -1190,11 +1249,17 @@ rt_util_gdal_resample_alg(const char *algname);
 GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
 
-/*- helper macros for consistent floating point equality checks-----------*/
-
+/*
+	helper macros for consistent floating point equality checks
+*/
 #define FLT_NEQ(x, y) (fabs(x - y) > FLT_EPSILON)
 #define FLT_EQ(x, y) (!FLT_NEQ(x, y))
 #define DBL_NEQ(x, y) (fabs(x - y) > DBL_EPSILON)
 #define DBL_EQ(x, y) (!DBL_NEQ(x, y))
+
+/*
+	helper macro for symmetrical rounding
+*/
+#define ROUND(x, y) (((x > 0.0) ? floor((x * pow(10, y) + 0.5)) : ceil((x * pow(10, y) - 0.5))) / pow(10, y));
 
 #endif /* RT_API_H_INCLUDED */

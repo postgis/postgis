@@ -631,88 +631,180 @@ CREATE OR REPLACE FUNCTION _st_quantile(rast raster, nband int DEFAULT 1, exclud
 -- Cannot be strict as "quantiles" can be NULL
 CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
-	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, 1, $4) $$
+	AS $$ SELECT _st_quantile($1, $2, $3, 1, $4) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, quantiles double precision[])
 	RETURNS SETOF quantile
-	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, TRUE, 1, $3) $$
+	AS $$ SELECT _st_quantile($1, $2, TRUE, 1, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_quantile(rast raster, quantiles double precision[])
 	RETURNS SETOF quantile
-	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, TRUE, 1, $2) $$
+	AS $$ SELECT _st_quantile($1, 1, TRUE, 1, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, exclude_nodata_value boolean, quantile double precision)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, $2, $3, 1, ARRAY[$4]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, $2, $3, 1, ARRAY[$4]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int, quantile double precision)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, $2, TRUE, 1, ARRAY[$3]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, $2, TRUE, 1, ARRAY[$3]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Cannot be strict as "quantile" can be NULL
 CREATE OR REPLACE FUNCTION st_quantile(rast raster, exclude_nodata_value boolean, quantile double precision DEFAULT NULL)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, 1, $2, 1, ARRAY[$3]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, 1, $2, 1, ARRAY[$3]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_quantile(rast raster, quantile double precision)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, 1, TRUE, 1, ARRAY[$2]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, 1, TRUE, 1, ARRAY[$2]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Cannot be strict as "quantiles" can be NULL
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
-	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, $3, $4, $5) $$
+	AS $$ SELECT _st_quantile($1, $2, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Cannot be strict as "quantiles" can be NULL
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, sample_percent double precision, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
-	AS $$ SELECT quantile, value FROM _st_quantile($1, $2, TRUE, $3, $4) $$
+	AS $$ SELECT _st_quantile($1, $2, TRUE, $3, $4) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 -- Cannot be strict as "quantiles" can be NULL
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, sample_percent double precision, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
-	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, TRUE, $2, $3) $$
+	AS $$ SELECT _st_quantile($1, 1, TRUE, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, quantiles double precision[])
 	RETURNS SETOF quantile
-	AS $$ SELECT quantile, value FROM _st_quantile($1, 1, TRUE, 0.1, $2) $$
+	AS $$ SELECT _st_quantile($1, 1, TRUE, 0.1, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, exclude_nodata_value boolean, sample_percent double precision, quantile double precision)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, $2, $3, $4, ARRAY[$5]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, $2, $3, $4, ARRAY[$5]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, nband int, sample_percent double precision, quantile double precision)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, $2, TRUE, $3, ARRAY[$4]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, $2, TRUE, $3, ARRAY[$4]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, sample_percent double precision, quantile double precision)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, 1, TRUE, $2, ARRAY[$3]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, 1, TRUE, $2, ARRAY[$3]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Cannot be strict as "quantile" can be NULL
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, exclude_nodata_value boolean, quantile double precision DEFAULT NULL)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, 1, $2, 1, ARRAY[$3]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, 1, $2, 0.1, ARRAY[$3]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, quantile double precision)
 	RETURNS double precision
-	AS $$ SELECT value FROM _st_quantile($1, 1, TRUE, 1, ARRAY[$2]::double precision[]) $$
+	AS $$ SELECT (_st_quantile($1, 1, TRUE, 0.1, ARRAY[$2]::double precision[])).value $$
 	LANGUAGE 'sql' IMMUTABLE;
+
+-- Cannot be strict as "quantiles" can be NULL
+CREATE OR REPLACE FUNCTION _st_quantile(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, quantiles double precision[] DEFAULT NULL)
+	RETURNS SETOF quantile
+	AS 'MODULE_PATHNAME','RASTER_quantileCoverage'
+	LANGUAGE 'C' STABLE;
+
+-- Cannot be strict as "quantiles" can be NULL
+CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, quantiles double precision[] DEFAULT NULL)
+	RETURNS SETOF quantile
+	AS $$ SELECT _st_quantile($1, $2, $3, $4, 1, $5) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, nband int, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT _st_quantile($1, $2, $3, TRUE, 1, $4) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT _st_quantile($1, $2, 1, TRUE, 1, $3) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, quantile double precision)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, $3, $4, 1, ARRAY[$5]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, nband int, quantile double precision)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, $3, TRUE, 1, ARRAY[$4]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+-- Cannot be strict as "quantile" can be NULL
+CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision DEFAULT NULL)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, 1, $3, 1, ARRAY[$4]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, quantile double precision)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, 1, TRUE, 1, ARRAY[$3]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+-- Cannot be strict as "quantiles" can be NULL
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1, quantiles double precision[] DEFAULT NULL)
+	RETURNS SETOF quantile
+	AS $$ SELECT _st_quantile($1, $2, $3, $4, $5, $6) $$
+	LANGUAGE 'sql' STABLE;
+
+-- Cannot be strict as "quantiles" can be NULL
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, nband int, sample_percent double precision, quantiles double precision[] DEFAULT NULL)
+	RETURNS SETOF quantile
+	AS $$ SELECT _st_quantile($1, $2, $3, TRUE, $4, $5) $$
+	LANGUAGE 'sql' STABLE;
+
+-- Cannot be strict as "quantiles" can be NULL
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, sample_percent double precision, quantiles double precision[] DEFAULT NULL)
+	RETURNS SETOF quantile
+	AS $$ SELECT _st_quantile($1, $2, 1, TRUE, $3, $4) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, quantiles double precision[])
+	RETURNS SETOF quantile
+	AS $$ SELECT _st_quantile($1, $2, 1, TRUE, 0.1, $3) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, nband int, exclude_nodata_value boolean, sample_percent double precision, quantile double precision)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, $3, $4, $5, ARRAY[$6]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, nband int, sample_percent double precision, quantile double precision)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, $3, TRUE, $4, ARRAY[$5]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, sample_percent double precision, quantile double precision)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, 1, TRUE, $3, ARRAY[$4]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+-- Cannot be strict as "quantile" can be NULL
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, exclude_nodata_value boolean, quantile double precision DEFAULT NULL)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, 1, $3, 0.1, ARRAY[$4]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text, quantile double precision)
+	RETURNS double precision
+	AS $$ SELECT (_st_quantile($1, $2, 1, TRUE, 0.1, ARRAY[$3]::double precision[])).value $$
+	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
 -- ST_ValueCount and ST_ValuePercent

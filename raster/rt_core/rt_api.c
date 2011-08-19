@@ -1640,7 +1640,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 	RASTER_DEBUGF(3, "do_sample = %d", do_sample);
 
 	/* sample all pixels */
-	if (do_sample != 1) {
+	if (!do_sample) {
 		sample_size = band->width * band->height;
 		sample_per = band->height;
 	}
@@ -1672,7 +1672,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 		diff = 0;
 
 		for (i = 0, z = 0; i < sample_per; i++) {
-			if (do_sample != 1)
+			if (!do_sample)
 				y = i;
 			else {
 				offset = (rand() % sample_int) + 1;
@@ -1685,76 +1685,76 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 			rtn = rt_band_get_pixel(band, x, y, &value);
 
 			j++;
-			if (rtn != -1) {
-				if (
+			if (
+				rtn != -1 && (
 					!exclude_nodata_value || (
 						exclude_nodata_value &&
 						(hasnodata != FALSE) &&
 						FLT_NEQ(value, nodata)
 					)
-				) {
+				)
+			) {
 
-					/* inc_vals set, collect pixel values */
-					if (inc_vals) values[k] = value;
+				/* inc_vals set, collect pixel values */
+				if (inc_vals) values[k] = value;
 
-					/* average */
-					k++;
-					sum += value;
+				/* average */
+				k++;
+				sum += value;
 
-					/*
-						one-pass standard deviation
-						http://www.eecs.berkeley.edu/~mhoemmen/cs194/Tutorials/variance.pdf
-					*/
-					if (k == 1) {
-						Q = 0;
-						M = value;
+				/*
+					one-pass standard deviation
+					http://www.eecs.berkeley.edu/~mhoemmen/cs194/Tutorials/variance.pdf
+				*/
+				if (k == 1) {
+					Q = 0;
+					M = value;
+				}
+				else {
+					Q += (((k  - 1) * pow(value - M, 2)) / k);
+					M += ((value - M ) / k);
+				}
+
+				/* coverage one-pass standard deviation */
+				if (NULL != cK) {
+					(*cK)++;
+					if (*cK == 1) {
+						*cQ = 0;
+						*cM = value;
 					}
 					else {
-						Q += (((k  - 1) * pow(value - M, 2)) / k);
-						M += ((value - M ) / k);
+						*cQ += (((*cK  - 1) * pow(value - *cM, 2)) / *cK);
+						*cM += ((value - *cM ) / *cK);
 					}
+				}
 
-					/* coverage one-pass standard deviation */
-					if (NULL != cK) {
-						(*cK)++;
-						if (*cK == 1) {
-							*cQ = 0;
-							*cM = value;
-						}
-						else {
-							*cQ += (((*cK  - 1) * pow(value - *cM, 2)) / *cK);
-							*cM += ((value - *cM ) / *cK);
-						}
-					}
-
-					/* min/max */
+				/* min/max */
+				if (NULL == stats) {
+					stats = (rt_bandstats) rtalloc(sizeof(struct rt_bandstats_t));
 					if (NULL == stats) {
-						stats = (rt_bandstats) rtalloc(sizeof(struct rt_bandstats_t));
-						if (NULL == stats) {
-							rterror("rt_band_get_summary_stats: Unable to allocate memory for stats");
-							return NULL;
-						}
-
-						stats->sample = sample;
-						stats->count = 0;
-
-						stats->sum = 0;
-						stats->mean = 0;
-						stats->stddev = -1;
-						stats->min = stats->max = value;
-
-						stats->values = NULL;
-						stats->sorted = 0;
-
+						rterror("rt_band_get_summary_stats: Unable to allocate memory for stats");
+						return NULL;
 					}
-					else {
-						if (value < stats->min)
-							stats->min = value;
-						if (value > stats->max)
-							stats->max = value;
-					}
+
+					stats->sample = sample;
+					stats->count = 0;
+
+					stats->sum = 0;
+					stats->mean = 0;
+					stats->stddev = -1;
+					stats->min = stats->max = value;
+
+					stats->values = NULL;
+					stats->sorted = 0;
 
 				}
+				else {
+					if (value < stats->min)
+						stats->min = value;
+					if (value > stats->max)
+						stats->max = value;
+				}
+
 			}
 
 			z++;
@@ -1778,7 +1778,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 		stats->mean = sum / k;
 
 		/* standard deviation */
-		if (do_sample != 1)
+		if (!do_sample)
 			stats->stddev = sqrt(Q / k);
 		/* sample deviation */
 		else {
@@ -2102,7 +2102,7 @@ rt_band_get_quantiles(rt_bandstats stats,
 	assert(NULL != stats);
 
 	if (stats->count < 1 || NULL == stats->values) {
-		rterror("rt_util_get_quantile: rt_bandstats object has no value");
+		rterror("rt_band_get_quantiles: rt_bandstats object has no value");
 		return NULL;
 	}
 
@@ -2115,7 +2115,7 @@ rt_band_get_quantiles(rt_bandstats stats,
 		quantiles = rtalloc(sizeof(double) * quantiles_count);
 		init_quantiles = 1;
 		if (NULL == quantiles) {
-			rterror("rt_util_get_quantile: Unable to allocate memory for quantile input");
+			rterror("rt_band_get_quantiles: Unable to allocate memory for quantile input");
 			return NULL;
 		}
 
@@ -2128,7 +2128,7 @@ rt_band_get_quantiles(rt_bandstats stats,
 	/* check quantiles */
 	for (i = 0; i < quantiles_count; i++) {
 		if (quantiles[i] < 0. || quantiles[i] > 1.) {
-			rterror("rt_util_get_quantile: Quantile value not between 0 and 1");
+			rterror("rt_band_get_quantiles: Quantile value not between 0 and 1");
 			if (init_quantiles) rtdealloc(quantiles);
 			return NULL;
 		}
@@ -2138,7 +2138,7 @@ rt_band_get_quantiles(rt_bandstats stats,
 	/* initialize rt_quantile */
 	rtn = rtalloc(sizeof(struct rt_quantile_t) * quantiles_count);
 	if (NULL == rtn) {
-		rterror("rt_util_get_quantile: Unable to allocate memory for quantile output");
+		rterror("rt_band_get_quantiles: Unable to allocate memory for quantile output");
 		if (init_quantiles) rtdealloc(quantiles);
 		return NULL;
 	}
@@ -2181,8 +2181,650 @@ rt_band_get_quantiles(rt_bandstats stats,
 	return rtn;
 }
 
-/* symmetrical rounding */
-#define ROUND(x, y) (((x > 0.0) ? floor((x * pow(10, y) + 0.5)) : ceil((x * pow(10, y) - 0.5))) / pow(10, y));
+static struct quantile_llist_element *quantile_llist_search(
+	struct quantile_llist_element *element,
+	double needle
+) {
+	if (NULL == element)
+		return NULL;
+	else if (FLT_NEQ(needle, element->value)) {
+		if (NULL != element->next)
+			return quantile_llist_search(element->next, needle);
+		else
+			return NULL;
+	}
+	else
+		return element;
+}
+
+static struct quantile_llist_element *quantile_llist_insert(
+	struct quantile_llist_element *element,
+	double value
+) {
+	if (NULL == element) {
+		struct quantile_llist_element *qle = NULL;
+		qle = rtalloc(sizeof(struct quantile_llist_element));
+		RASTER_DEBUGF(4, "qle @ %p is only element in list", qle);
+		if (NULL == qle) return NULL;
+
+		qle->value = value;
+		qle->count = 1;
+
+		qle->prev = NULL;
+		qle->next = NULL;
+
+		return qle;
+	}
+	else if (value > element->value) {
+		if (NULL != element->next)
+			return quantile_llist_insert(element->next, value);
+		/* insert as last element in list */
+		else {
+			struct quantile_llist_element *qle = NULL;
+			qle = rtalloc(sizeof(struct quantile_llist_element));
+			RASTER_DEBUGF(4, "insert qle @ %p as last element", qle);
+			if (NULL == qle) return NULL;
+
+			qle->value = value;
+			qle->count = 1;
+
+			qle->prev = element;
+			qle->next = NULL;
+			element->next = qle;
+
+			return qle;
+		}
+	}
+	/* insert before current element */
+	else {
+		struct quantile_llist_element *qle = NULL;
+		qle = rtalloc(sizeof(struct quantile_llist_element));
+		RASTER_DEBUGF(4, "insert qle @ %p before current element", qle);
+		if (NULL == qle) return NULL;
+
+		qle->value = value;
+		qle->count = 1;
+
+		qle->next = element;
+		qle->prev = element->prev;
+		if (NULL != qle->prev) qle->prev->next = qle;
+		element->prev = qle;
+
+		return qle;
+	}
+}
+
+static int quantile_llist_delete(struct quantile_llist_element *element) {
+	if (NULL == element) return 0;
+
+	/* beginning of list */
+	if (NULL == element->prev && NULL != element->next) {
+		element->next->prev = NULL;
+	}
+	/* end of list */
+	else if (NULL != element->prev && NULL == element->next) {
+		element->prev->next = NULL;
+	}
+	/* within list */
+	else if (NULL != element->prev && NULL != element->next) {
+		element->prev->next = element->next;
+		element->next->prev = element->prev;
+	}
+
+	RASTER_DEBUGF(4, "qle @ %p destroyed", element);
+	rtdealloc(element);
+
+	return 1;
+}
+
+int quantile_llist_destroy(struct quantile_llist **list, uint32_t list_count) {
+	struct quantile_llist_element *element = NULL;
+	uint32_t i;
+
+	if (NULL == *list) return 0;
+
+	for (i = 0; i < list_count; i++) {
+		element = (*list)[i].head;
+		while (NULL != element->next) {
+			quantile_llist_delete(element->next);
+		}
+		quantile_llist_delete(element);
+	}
+
+	rtdealloc(*list);
+	return 1;
+}
+
+/**
+ * Compute the default set of or requested quantiles for a coverage
+ *
+ * This function is based upon the algorithm described in:
+ *
+ * A One-Pass Space-Efficient Algorithm for Finding Quantiles (1995)
+ *   by Rakesh Agrawal, Arun Swami
+ *   in Proc. 7th Intl. Conf. Management of Data (COMAD-95)
+ *
+ * http://www.almaden.ibm.com/cs/projects/iis/hdb/Publications/papers/comad95.pdf
+ *
+ * In the future, it may be worth exploring algorithms that don't
+ *   require the size of the coverage
+ *
+ * @param band: the band to include in the quantile search
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
+ * @param sample: percentage of pixels to sample
+ * @param cov_count: number of values in coverage
+ * @param qlls: set of quantile_llist structures
+ * @param qlls_count: the number of quantile_llist structures
+ * @param quantiles: the quantiles to be computed
+ *   if bot qlls and quantiles provided, qlls is used
+ * @param quantiles_count: the number of quantiles to be computed
+ * @param rtn_count: the number of quantiles being returned
+ *
+ * @return the default set of or requested quantiles for a band
+ */
+rt_quantile rt_band_get_quantiles_stream(rt_band band,
+	int exclude_nodata_value, double sample,
+	uint64_t cov_count,
+	struct quantile_llist **qlls, int *qlls_count,
+	double *quantiles, int quantiles_count,
+	int *rtn_count) {
+	rt_quantile rtn = NULL;
+	int init_quantiles = 0;
+
+	struct quantile_llist *qll = NULL;
+	struct quantile_llist_element *qle = NULL;
+	const uint32_t K = 750;
+
+	uint8_t *data = NULL;
+	int hasnodata = FALSE;
+	double nodata = 0;
+	double value;
+
+	uint32_t a = 0;
+	uint32_t i = 0;
+	uint32_t j = 0;
+	uint32_t k = 0;
+	uint32_t x = 0;
+	uint32_t y = 0;
+	uint32_t z = 0;
+	uint32_t offset = 0;
+	uint32_t diff = 0;
+	uint8_t exists = 0;
+
+	uint32_t do_sample = 0;
+	uint32_t sample_size = 0;
+	uint32_t sample_per = 0;
+	uint32_t sample_int = 0;
+	int status;
+
+	RASTER_DEBUG(3, "starting");
+
+	assert(NULL != band);
+	assert(cov_count > 1);
+
+	if (band->offline) {
+		rterror("rt_band_get_summary_stats not implemented yet for OFFDB bands");
+		return NULL;
+	}
+
+	data = rt_band_get_data(band);
+
+	hasnodata = rt_band_get_hasnodata_flag(band);
+	if (hasnodata != FALSE)
+		nodata = rt_band_get_nodata(band);
+	else
+		exclude_nodata_value = 0;
+	RASTER_DEBUGF(3, "nodata = %f", nodata);
+	RASTER_DEBUGF(3, "hasnodata = %d", hasnodata);
+	RASTER_DEBUGF(3, "exclude_nodata_value = %d", exclude_nodata_value);
+
+	/* quantile_llist not provided */
+	if (NULL == *qlls) {
+		/* quantiles not provided */
+		if (NULL == quantiles) {
+			/* quantile count not specified, default to quartiles */
+			if (quantiles_count < 2)
+				quantiles_count = 5;
+
+			quantiles = rtalloc(sizeof(double) * quantiles_count);
+			init_quantiles = 1;
+			if (NULL == quantiles) {
+				rterror("rt_band_get_quantiles_stream: Unable to allocate memory for quantile input");
+				return NULL;
+			}
+
+			quantiles_count--;
+			for (i = 0; i <= quantiles_count; i++)
+				quantiles[i] = ((double) i) / quantiles_count;
+			quantiles_count++;
+		}
+
+		/* check quantiles */
+		for (i = 0; i < quantiles_count; i++) {
+			if (quantiles[i] < 0. || quantiles[i] > 1.) {
+				rterror("rt_band_get_quantiles_stream: Quantile value not between 0 and 1");
+				if (init_quantiles) rtdealloc(quantiles);
+				return NULL;
+			}
+		}
+		quicksort(quantiles, quantiles + quantiles_count - 1);
+
+		/* initialize rt_quantile */
+		*qlls_count = quantiles_count * 2;
+		RASTER_DEBUGF(4, "qlls_count = %d", *qlls_count);
+		*qlls = rtalloc(sizeof(struct quantile_llist) * *qlls_count);
+		if (NULL == *qlls) {
+			rterror("rt_band_get_quantiles_stream: Unable to allocate memory for quantile output");
+			if (init_quantiles) rtdealloc(quantiles);
+			return NULL;
+		}
+
+		for (i = 0; i < *qlls_count; i++) {
+			qll = &((*qlls)[i]);
+			qll->quantile = quantiles[(i * quantiles_count) / *qlls_count];
+			qll->count = 0;
+			qll->sum1 = 0;
+			qll->sum2 = 0;
+			qll->head = NULL;
+			qll->tail = NULL;
+
+			/* AL-GEQ */
+			if (!(i % 2)) {
+				qll->algeq = 1;
+				qll->tau = (uint64_t) ROUND(cov_count - (cov_count * qll->quantile), 0);
+			}
+			/* AL-GT */
+			else {
+				qll->algeq = 0;
+				qll->tau = cov_count - (*qlls)[i - 1].tau + 1;
+			}
+
+			RASTER_DEBUGF(4, "qll init: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+				qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
+			RASTER_DEBUGF(4, "qll init: (head, tail) = (%p, %p)", qll->head, qll->tail);
+		}
+
+		if (init_quantiles) rtdealloc(quantiles);
+	}
+
+	/* clamp percentage */
+	if (
+		(sample < 0 || FLT_EQ(sample, 0.0)) ||
+		(sample > 1 || FLT_EQ(sample, 1.0))
+	) {
+		do_sample = 0;
+		sample = 1;
+	}
+	else
+		do_sample = 1;
+	RASTER_DEBUGF(3, "do_sample = %d", do_sample);
+
+	/* sample all pixels */
+	if (!do_sample) {
+		sample_size = band->width * band->height;
+		sample_per = band->height;
+	}
+	/*
+	 randomly sample a percentage of available pixels
+	 sampling method is known as
+	 	"systematic random sample without replacement"
+	*/
+	else {
+		sample_size = round((band->width * band->height) * sample);
+		sample_per = round(sample_size / band->width);
+		sample_int = round(band->height / sample_per);
+		srand(time(NULL));
+	}
+	RASTER_DEBUGF(3, "sampling %d of %d available pixels w/ %d per set"
+		, sample_size, (band->width * band->height), sample_per);
+
+	for (x = 0, j = 0, k = 0; x < band->width; x++) {
+		y = -1;
+		diff = 0;
+
+		for (i = 0, z = 0; i < sample_per; i++) {
+			if (do_sample != 1)
+				y = i;
+			else {
+				offset = (rand() % sample_int) + 1;
+				y += diff + offset;
+				diff = sample_int - offset;
+			}
+			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", x, y, z);
+			if (y >= band->height || z > sample_per) break;
+
+			status = rt_band_get_pixel(band, x, y, &value);
+
+			j++;
+			if (
+				status != -1 && (
+					!exclude_nodata_value || (
+						exclude_nodata_value &&
+						(hasnodata != FALSE) &&
+						FLT_NEQ(value, nodata)
+					)
+				)
+			) {
+
+				/* process each quantile */
+				for (a = 0; a < *qlls_count; a++) {
+					qll = &((*qlls)[a]);
+					RASTER_DEBUGF(4, "%d of %d (%f)", a + 1, *qlls_count, qll->quantile);
+					RASTER_DEBUGF(5, "qll before: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+						qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
+					RASTER_DEBUGF(5, "qll before: (head, tail) = (%p, %p)", qll->head, qll->tail);
+
+					/* shortcuts for quantiles of zero or one */
+					if (FLT_EQ(qll->quantile, 0.)) {
+						if (NULL != qll->head) {
+							if (value < qll->head->value)
+								qll->head->value = value;
+						}
+						else {
+							qle = quantile_llist_insert(qll->head, value);
+							qll->head = qle;
+							qll->tail = qle;
+							qll->count = 1;
+						}
+
+						RASTER_DEBUGF(4, "quantile shortcut for %f\n\n", qll->quantile);
+						continue;
+					}
+					else if (FLT_EQ(qll->quantile, 1.)) {
+						if (NULL != qll->head) {
+							if (value > qll->head->value)
+								qll->head->value = value;
+						}
+						else {
+							qle = quantile_llist_insert(qll->head, value);
+							qll->head = qle;
+							qll->tail = qle;
+							qll->count = 1;
+						}
+
+						RASTER_DEBUGF(4, "quantile shortcut for %f\n\n", qll->quantile);
+						continue;
+					}
+
+					/* value exists in list */
+					qle = quantile_llist_search(qll->head, value);
+
+					/* value found */
+					if (NULL != qle) {
+						RASTER_DEBUGF(4, "%f found in list", value);
+						RASTER_DEBUGF(5, "qle before: (value, count) = (%f, %d)", qle->value, qle->count);
+
+						qle->count++;
+						qll->sum1++;
+
+						if (qll->algeq)
+							qll->sum2 = qll->sum1 - qll->head->count;
+						else
+							qll->sum2 = qll->sum1 - qll->tail->count;
+
+						RASTER_DEBUGF(4, "qle after: (value, count) = (%f, %d)", qle->value, qle->count);
+					}
+					/* can still add element */
+					else if (qll->count < K) {
+						RASTER_DEBUGF(4, "Adding %f to list", value);
+
+						/* insert */
+						qle = quantile_llist_insert(qll->head, value);
+						if (NULL == qle) return NULL;
+						qll->count++;
+						qll->sum1++;
+
+						/* first element */
+						if (NULL == qle->prev)
+							qll->head = qle;
+						/* last element */
+						if (NULL == qle->next)
+							qll->tail = qle;
+
+						if (qll->algeq)
+							qll->sum2 = qll->sum1 - qll->head->count;
+						else
+							qll->sum2 = qll->sum1 - qll->tail->count;
+
+						RASTER_DEBUGF(5, "qle, prev, next, head, tail = %p, %p, %p, %p, %p", qle, qle->prev, qle->next, qll->head, qll->tail);
+					}
+					/* AL-GEQ */
+					else if (qll->algeq) {
+						RASTER_DEBUGF(4, "value, head->value = %f, %f", value, qll->head->value);
+
+						if (value < qll->head->value) {
+							/* ignore value if test isn't true */
+							if (qll->sum1 >= qll->tau) {
+								RASTER_DEBUGF(4, "skipping %f", value);
+							}
+							else {
+
+								/* delete last element */
+								RASTER_DEBUGF(4, "deleting %f from list", qll->tail->value);
+								qle = qll->tail->prev;
+								RASTER_DEBUGF(5, "to-be tail is %f with count %d", qle->value, qle->count);
+								qle->count += qll->tail->count;
+								quantile_llist_delete(qll->tail);
+								qll->tail = qle;
+								qll->count--;
+								RASTER_DEBUGF(5, "tail is %f with count %d", qll->tail->value, qll->tail->count);
+
+								/* insert value */
+								RASTER_DEBUGF(4, "adding %f to list", value);
+								qle = quantile_llist_insert(qll->head, value);
+								if (NULL == qle) return NULL;
+								qll->count++;
+								qll->sum1++;
+
+								/* first element */
+								if (NULL == qle->prev)
+									qll->head = qle;
+								/* last element */
+								if (NULL == qle->next)
+									qll->tail = qle;
+
+								qll->sum2 = qll->sum1 - qll->head->count;
+
+								RASTER_DEBUGF(5, "qle, head, tail = %p, %p, %p", qle, qll->head, qll->tail);
+
+							}
+						}
+						else {
+							qle = qll->tail;
+							while (NULL != qle) {
+								if (qle->value < value) {
+									qle->count++;
+									qll->sum1++;
+									qll->sum2 = qll->sum1 - qll->head->count;
+									RASTER_DEBUGF(4, "incremented count of %f by 1 to %d", qle->value, qle->count);
+									break;
+								}
+
+								qle = qle->prev;
+							}
+						}
+					}
+					/* AL-GT */
+					else {
+						RASTER_DEBUGF(4, "value, tail->value = %f, %f", value, qll->tail->value);
+
+						if (value > qll->tail->value) {
+							/* ignore value if test isn't true */
+							if (qll->sum1 >= qll->tau) {
+								RASTER_DEBUGF(4, "skipping %f", value);
+							}
+							else {
+
+								/* delete last element */
+								RASTER_DEBUGF(4, "deleting %f from list", qll->head->value);
+								qle = qll->head->next;
+								RASTER_DEBUGF(5, "to-be tail is %f with count %d", qle->value, qle->count);
+								qle->count += qll->head->count;
+								quantile_llist_delete(qll->head);
+								qll->head = qle;
+								qll->count--;
+								RASTER_DEBUGF(5, "tail is %f with count %d", qll->head->value, qll->head->count);
+
+								/* insert value */
+								RASTER_DEBUGF(4, "adding %f to list", value);
+								qle = quantile_llist_insert(qll->head, value);
+								if (NULL == qle) return NULL;
+								qll->count++;
+								qll->sum1++;
+
+								/* first element */
+								if (NULL == qle->prev)
+									qll->head = qle;
+								/* last element */
+								if (NULL == qle->next)
+									qll->tail = qle;
+
+								qll->sum2 = qll->sum1 - qll->tail->count;
+
+								RASTER_DEBUGF(5, "qle, head, tail = %p, %p, %p", qle, qll->head, qll->tail);
+
+							}
+						}
+						else {
+							qle = qll->head;
+							while (NULL != qle) {
+								if (qle->value > value) {
+									qle->count++;
+									qll->sum1++;
+									qll->sum2 = qll->sum1 - qll->tail->count;
+									RASTER_DEBUGF(4, "incremented count of %f by 1 to %d", qle->value, qle->count);
+									break;
+								}
+
+								qle = qle->next;
+							}
+						}
+					}
+
+					RASTER_DEBUGF(5, "sum2, tau = %d, %d", qll->sum2, qll->tau);
+					if (qll->sum2 >= qll->tau) {
+						/* AL-GEQ */
+						if (qll->algeq) {
+							RASTER_DEBUGF(4, "Deleting first element %f from list", qll->head->value);
+
+							if (NULL != qll->head->next) {
+								qle = qll->head->next;
+								qll->sum1 -= qll->head->count;
+								qll->sum2 = qll->sum1 - qle->count;
+								quantile_llist_delete(qll->head);
+								qll->head = qle;
+								qll->count--;
+							}
+							else {
+								quantile_llist_delete(qll->head);
+								qll->head = NULL;
+								qll->tail = NULL;
+								qll->sum1 = 0;
+								qll->sum2 = 0;
+								qll->count = 0;
+							}
+						}
+						/* AL-GT */
+						else {
+							RASTER_DEBUGF(4, "Deleting first element %f from list", qll->tail->value);
+
+							if (NULL != qll->tail->prev) {
+								qle = qll->tail->prev;
+								qll->sum1 -= qll->tail->count;
+								qll->sum2 = qll->sum1 - qle->count;
+								quantile_llist_delete(qll->tail);
+								qll->tail = qle;
+								qll->count--;
+							}
+							else {
+								quantile_llist_delete(qll->tail);
+								qll->head = NULL;
+								qll->tail = NULL;
+								qll->sum1 = 0;
+								qll->sum2 = 0;
+								qll->count = 0;
+							}
+						}
+					}
+
+					RASTER_DEBUGF(5, "qll after: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+						qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
+					RASTER_DEBUGF(5, "qll after: (head, tail) = (%p, %p)\n\n", qll->head, qll->tail);
+				}
+
+			}
+
+			z++;
+		}
+	}
+
+	/* process quantiles */
+	*rtn_count = *qlls_count / 2;
+	rtn = rtalloc(sizeof(struct rt_quantile_t) * *rtn_count);
+	if (NULL == rtn) return NULL;
+
+	for (i = 0, k = 0; i < *qlls_count; i++) {
+		qll = &((*qlls)[i]);
+
+		exists = 0;
+		for (x = 0; x < k; x++) {
+			if (FLT_EQ(qll->quantile, rtn[x].quantile)) {
+				exists = 1;
+				break;
+			}
+		}
+		if (exists) continue;
+
+		RASTER_DEBUGF(5, "qll: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+			qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
+		RASTER_DEBUGF(5, "qll: (head, tail) = (%p, %p)", qll->head, qll->tail);
+
+		rtn[k].quantile = qll->quantile;
+
+		/* AL-GEQ */
+		if (qll->algeq)
+			qle = qll->head;
+		/* AM-GT */
+		else
+			qle = qll->tail;
+
+		RASTER_DEBUGF(5, "qle: (value, count) = (%f, %d)", qle->value, qle->count);
+
+		exists = 0;
+		for (j = i + 1; j < *qlls_count; j++) {
+			if (FLT_EQ((*qlls)[j].quantile, qll->quantile)) {
+
+				RASTER_DEBUGF(5, "qlls[%d]: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
+					j, (*qlls)[j].algeq, (*qlls)[j].quantile, (*qlls)[j].count, (*qlls)[j].tau, (*qlls)[j].sum1, (*qlls)[j].sum2);
+				RASTER_DEBUGF(5, "qlls[%d]: (head, tail) = (%p, %p)", j, (*qlls)[j].head, (*qlls)[j].tail);
+
+				exists = 1;
+				break;
+			}
+		}
+
+		/* weighted average for quantile */
+		if (exists) {
+			if ((*qlls)[j].algeq) {
+				rtn[k].value = ((qle->value * qle->count) + ((*qlls)[j].head->value * (*qlls)[j].head->count)) / (qle->count + (*qlls)[j].head->count);
+				RASTER_DEBUGF(5, "qlls[%d].head: (value, count) = (%f, %d)", j, (*qlls)[j].head->value, (*qlls)[j].head->count);
+			}
+			else {
+				rtn[k].value = ((qle->value * qle->count) + ((*qlls)[j].tail->value * (*qlls)[j].tail->count)) / (qle->count + (*qlls)[j].tail->count);
+				RASTER_DEBUGF(5, "qlls[%d].tail: (value, count) = (%f, %d)", j, (*qlls)[j].tail->value, (*qlls)[j].tail->count);
+			}
+		}
+		/* straight value for quantile */
+		else {
+			rtn[k].value = qle->value;
+		}
+		RASTER_DEBUGF(3, "(quantile, value) = (%f, %f)\n\n", rtn[k].quantile, rtn[k].value);
+
+		k++;
+	}
+
+	return rtn;
+}
 
 /**
  * Count the number of times provided value(s) occur in

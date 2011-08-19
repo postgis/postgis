@@ -215,6 +215,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS);
 
 /* get quantiles */
 Datum RASTER_quantile(PG_FUNCTION_ARGS);
+Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS);
 
 /* get counts of values */
 Datum RASTER_valueCount(PG_FUNCTION_ARGS);
@@ -4464,7 +4465,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 				case FLOAT8OID:
 					break;
 				default:
-					elog(ERROR, "RASTER_quantile: Invalid data type for quanitiles");
+					elog(ERROR, "RASTER_quantile: Invalid data type for quantiles");
 					rt_raster_destroy(raster);
 					PG_RETURN_NULL();
 					break;
@@ -4599,6 +4600,415 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 	/* do when there is no more left */
 	else {
 		pfree(quant2);
+		SRF_RETURN_DONE(funcctx);
+	}
+}
+
+/**
+ * Returns selected quantiles of a coverage for a specified band
+ */
+PG_FUNCTION_INFO_V1(RASTER_quantileCoverage);
+Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+
+	int i;
+	int count;
+	rt_quantile covquant = NULL;
+	rt_quantile covquant2;
+	int call_cntr;
+	int max_calls;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_quantileCoverage: Starting");
+
+	/* first call of function */
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+
+		text *tablenametext = NULL;
+		char *tablename = NULL;
+		text *colnametext = NULL;
+		char *colname = NULL;
+		int32_t bandindex = 1;
+		bool exclude_nodata_value = TRUE;
+		double sample = 0;
+		double *quantiles = NULL;
+		int quantiles_count = 0;
+		double quantile = 0;
+
+		int len = 0;
+		char *sql = NULL;
+		char *tmp = NULL;
+		uint64_t cov_count = 0;
+		int spi_result;
+		Portal portal;
+		SPITupleTable *tuptable = NULL;
+		HeapTuple tuple;
+		Datum datum;
+		bool isNull = FALSE;
+
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int num_bands = 0;
+		struct quantile_llist *qlls = NULL;
+		int qlls_count;
+
+		int j;
+		int n;
+
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+		int16 typlen;
+		bool typbyval;
+		char typalign;
+		int ndims = 1;
+		int *dims;
+		int *lbs;
+
+		POSTGIS_RT_DEBUG(3, "RASTER_quantileCoverage: first call of function");
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/* tablename is null, return null */
+		if (PG_ARGISNULL(0)) {
+			elog(NOTICE, "Table name must be provided");
+			SRF_RETURN_DONE(funcctx);
+		}
+		tablenametext = PG_GETARG_TEXT_P(0);
+		tablename = text_to_cstring(tablenametext);
+		if (!strlen(tablename)) {
+			elog(NOTICE, "Table name must be provided");
+			SRF_RETURN_DONE(funcctx);
+		}
+		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: tablename = %s", tablename);
+
+		/* column name is null, return null */
+		if (PG_ARGISNULL(1)) {
+			elog(NOTICE, "Column name must be provided");
+			PG_RETURN_NULL();
+		}
+		colnametext = PG_GETARG_TEXT_P(1);
+		colname = text_to_cstring(colnametext);
+		if (!strlen(colname)) {
+			elog(NOTICE, "Column name must be provided");
+			SRF_RETURN_DONE(funcctx);
+		}
+		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: colname = %s", colname);
+
+		/* band index is 1-based */
+		if (!PG_ARGISNULL(2))
+			bandindex = PG_GETARG_INT32(2);
+
+		/* exclude_nodata_value flag */
+		if (!PG_ARGISNULL(3))
+			exclude_nodata_value = PG_GETARG_BOOL(3);
+
+		/* sample % */
+		if (!PG_ARGISNULL(4)) {
+			sample = PG_GETARG_FLOAT8(4);
+			if (sample < 0 || sample > 1) {
+				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
+				SRF_RETURN_DONE(funcctx);
+			}
+			else if (FLT_EQ(sample, 0.0))
+				sample = 1;
+		}
+		else
+			sample = 1;
+
+		/* quantiles */
+		if (!PG_ARGISNULL(5)) {
+			array = PG_GETARG_ARRAYTYPE_P(5);
+			etype = ARR_ELEMTYPE(array);
+			get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+			switch (etype) {
+				case FLOAT4OID:
+				case FLOAT8OID:
+					break;
+				default:
+					elog(ERROR, "RASTER_quantileCoverage: Invalid data type for quantiles");
+					rt_raster_destroy(raster);
+					PG_RETURN_NULL();
+					break;
+			}
+
+			ndims = ARR_NDIM(array);
+			dims = ARR_DIMS(array);
+			lbs = ARR_LBOUND(array);
+
+			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+				&nulls, &n);
+
+			quantiles = palloc(sizeof(double) * n);
+			for (i = 0, j = 0; i < n; i++) {
+				if (nulls[i]) continue;
+
+				switch (etype) {
+					case FLOAT4OID:
+						quantile = (double) DatumGetFloat4(e[i]);
+						break;
+					case FLOAT8OID:
+						quantile = (double) DatumGetFloat8(e[i]);
+						break;
+				}
+
+				if (quantile < 0 || quantile > 1) {
+					elog(NOTICE, "Invalid value for quantile (must be between 0 and 1). Returning NULL");
+					pfree(quantiles);
+					rt_raster_destroy(raster);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				quantiles[j] = quantile;
+				POSTGIS_RT_DEBUGF(5, "quantiles[%d] = %f", j, quantiles[j]);
+				j++;
+			}
+			quantiles_count = j;
+
+			if (j < 1) {
+				pfree(quantiles);
+				quantiles = NULL;
+			}
+		}
+
+		/* coverage stats */
+		len = sizeof(char) * (strlen("SELECT count FROM _st_summarystats('','',,::boolean,)") + strlen(tablename) + strlen(colname) + (MAX_INT_CHARLEN * 2) + MAX_DBL_CHARLEN + 1);
+		sql = (char *) palloc(len);
+		if (NULL == sql) {
+			elog(ERROR, "RASTER_quantileCoverage: Unable to allocate memory for sql\n");
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* connect to database */
+		spi_result = SPI_connect();
+		if (spi_result != SPI_OK_CONNECT) {
+			elog(ERROR, "RASTER_quantileCoverage: Could not connect to database using SPI\n");
+			pfree(sql);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* get stats */
+		snprintf(sql, len, "SELECT count FROM _st_summarystats('%s','%s',%d,%d::boolean,%f)", tablename, colname, bandindex, (exclude_nodata_value ? 1 : 0), sample);
+		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: %s", sql);
+		spi_result = SPI_execute(sql, TRUE, 0);
+		pfree(sql);
+		if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+			elog(ERROR, "RASTER_quantileCoverage: Could not get coverage summary stats");
+
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
+
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		tupdesc = SPI_tuptable->tupdesc;
+		tuptable = SPI_tuptable;
+		tuple = tuptable->vals[0];
+
+		tmp = SPI_getvalue(tuple, tupdesc, 1);
+		if (NULL == tmp || !strlen(tmp)) {
+			elog(ERROR, "RASTER_quantileCoverage: Could not get coverage summary stats");
+
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
+
+			SRF_RETURN_DONE(funcctx);
+		}
+		cov_count = strtol(tmp, NULL, 10);
+		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: covcount = %d", covcount);
+		pfree(tmp);
+
+		/* iterate through rasters of coverage */
+		/* create sql */
+		len = sizeof(char) * (strlen("SELECT \"\" FROM \"\" WHERE \"\" IS NOT NULL") + (strlen(colname) * 2) + strlen(tablename) + 1);
+		sql = (char *) palloc(len);
+		if (NULL == sql) {
+			elog(ERROR, "RASTER_quantileCoverage: Unable to allocate memory for sql\n");
+
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
+
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* get cursor */
+		snprintf(sql, len, "SELECT \"%s\" FROM \"%s\" WHERE \"%s\" IS NOT NULL", colname, tablename, colname);
+		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: %s", sql);
+		portal = SPI_cursor_open_with_args(
+			"coverage",
+			sql,
+			0, NULL,
+			NULL, NULL,
+			TRUE, 0
+		);
+		pfree(sql);
+
+		/* process resultset */
+		SPI_cursor_fetch(portal, TRUE, 1);
+		while (SPI_processed == 1 && SPI_tuptable != NULL) {
+			if (NULL != covquant) pfree(covquant);
+
+			tupdesc = SPI_tuptable->tupdesc;
+			tuptable = SPI_tuptable;
+			tuple = tuptable->vals[0];
+
+			datum = SPI_getbinval(tuple, tupdesc, 1, &isNull);
+			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
+				elog(ERROR, "RASTER_quantileCoverage: Unable to get raster of coverage\n");
+
+				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_cursor_close(portal);
+				SPI_finish();
+
+				SRF_RETURN_DONE(funcctx);
+			}
+			else if (isNull) {
+				SPI_cursor_fetch(portal, TRUE, 1);
+				continue;
+			}
+
+			pgraster = (rt_pgraster *) PG_DETOAST_DATUM(datum);
+
+			raster = rt_raster_deserialize(pgraster, FALSE);
+			if (!raster) {
+				elog(ERROR, "RASTER_quantileCoverage: Could not deserialize raster");
+
+				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_cursor_close(portal);
+				SPI_finish();
+
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			/* inspect number of bands*/
+			num_bands = rt_raster_get_num_bands(raster);
+			if (bandindex < 1 || bandindex > num_bands) {
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+
+				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_cursor_close(portal);
+				SPI_finish();
+
+				rt_raster_destroy(raster);
+
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			/* get band */
+			band = rt_raster_get_band(raster, bandindex - 1);
+			if (!band) {
+				elog(NOTICE, "Could not find raster band of index %d. Returning NULL", bandindex);
+
+				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_cursor_close(portal);
+				SPI_finish();
+
+				rt_raster_destroy(raster);
+
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			covquant = rt_band_get_quantiles_stream(
+				band,
+				exclude_nodata_value, sample, cov_count,
+				&qlls, &qlls_count,
+				quantiles, quantiles_count,
+				&count
+			);
+
+			rt_band_destroy(band);
+			rt_raster_destroy(raster);
+
+			if (NULL == covquant || !count) {
+				elog(NOTICE, "Could not retrieve quantiles of roaster band of index %d", bandindex);
+
+				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_cursor_close(portal);
+				SPI_finish();
+
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			/* next record */
+			SPI_cursor_fetch(portal, TRUE, 1);
+		}
+
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_cursor_close(portal);
+		SPI_finish();
+
+		quantile_llist_destroy(&qlls, qlls_count);
+
+		/* Store needed information */
+		funcctx->user_fctx = covquant;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = count;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+  /* stuff done on every call of the function */
+  funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	tupdesc = funcctx->tuple_desc;
+	covquant2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		int values_length = 2;
+		Datum values[values_length];
+		bool *nulls = NULL;
+		HeapTuple tuple;
+		Datum result;
+
+		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
+
+		nulls = palloc(sizeof(bool) * values_length);
+		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+
+		values[0] = Float8GetDatum(covquant2[call_cntr].quantile);
+		values[1] = Float8GetDatum(covquant2[call_cntr].value);
+
+		/* build a tuple */
+		tuple = heap_form_tuple(tupdesc, values, nulls);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		/* clean up */
+		pfree(nulls);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		pfree(covquant2);
 		SRF_RETURN_DONE(funcctx);
 	}
 }
