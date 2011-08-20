@@ -1131,10 +1131,58 @@ static void testBandStats() {
 	CHECK(quantile);
 	CHECK(count);
 	CHECK((qlls_count > 0));
-	quantile_llist_destroy(&qlls, qlls_count);
 	CHECK(FLT_EQ(quantile[0].value, 78));
+	rtdealloc(quantile);
+	quantile_llist_destroy(&qlls, qlls_count);
+	qlls = NULL;
+	qlls_count = 0;
+
+	quantile = (rt_quantile) rt_band_get_quantiles_stream(
+		band, 1, 1, 60,
+		&qlls, &qlls_count,
+		NULL, 0,
+		&count);
+	CHECK(quantile);
+	CHECK(count);
+	CHECK((qlls_count > 0));
+
+	quantile = (rt_quantile) rt_band_get_quantiles_stream(
+		band, 1, 1, 60,
+		&qlls, &qlls_count,
+		NULL, 0,
+		&count);
+	CHECK(quantile);
+	CHECK(count);
+	CHECK((qlls_count > 0));
+
+	quantile = (rt_quantile) rt_band_get_quantiles_stream(
+		band, 1, 1, 60,
+		&qlls, &qlls_count,
+		NULL, 0,
+		&count);
+	CHECK(quantile);
+	CHECK(count);
+	CHECK((qlls_count > 0));
+
+	quantile = (rt_quantile) rt_band_get_quantiles_stream(
+		band, 1, 1, 60,
+		&qlls, &qlls_count,
+		NULL, 0,
+		&count);
+	CHECK(quantile);
+	CHECK(count);
+	CHECK((qlls_count > 0));
+
+	quantile_llist_destroy(&qlls, qlls_count);
+
+	/*
+	for (x = 0; x < count; x++) {
+		printf("%f = %f\n", quantile[x].quantile, quantile[x].value);
+	}
+	*/
 
 	rtdealloc(quantile);
+
 	deepRelease(raster);
 }
 

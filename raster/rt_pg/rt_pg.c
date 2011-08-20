@@ -4952,6 +4952,14 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		quantile_llist_destroy(&qlls, qlls_count);
 		if (quantiles_count) pfree(quantiles);
 
+		covquant2 = palloc(sizeof(struct rt_quantile_t) * count);
+		for (i = 0; i < count; i++) {
+			covquant2[i].quantile = covquant[i].quantile;
+			covquant2[i].value = covquant[i].value;
+		}
+		pfree(covquant);
+		covquant = covquant2;
+
 		POSTGIS_RT_DEBUGF(3, "%d quantiles returned", count);
 
 		/* Store needed information */

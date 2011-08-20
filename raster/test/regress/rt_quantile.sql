@@ -204,7 +204,7 @@ CREATE TEMP TABLE test
 		) AS rast
 	) AS rast
 	FULL JOIN (
-		SELECT generate_series(1, 1000) AS id
+		SELECT generate_series(1, 2) AS id
 	) AS id
 		ON 1 = 1;
 SELECT

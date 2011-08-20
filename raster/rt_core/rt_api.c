@@ -2362,6 +2362,7 @@ rt_band_get_quantiles_stream(rt_band band,
 
 	assert(NULL != band);
 	assert(cov_count > 1);
+	RASTER_DEBUGF(3, "cov_count = %d", cov_count);
 
 	if (band->offline) {
 		rterror("rt_band_get_summary_stats not implemented yet for OFFDB bands");
@@ -2433,6 +2434,7 @@ rt_band_get_quantiles_stream(rt_band band,
 			if (!(i % 2)) {
 				qll->algeq = 1;
 				qll->tau = (uint64_t) ROUND(cov_count - (cov_count * qll->quantile), 0);
+				if (qll->tau < 1) qll->tau = 1;
 			}
 			/* AL-GT */
 			else {
