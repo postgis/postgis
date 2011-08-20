@@ -147,10 +147,6 @@
 #define SRID_MAXIMUM 999999
 #define SRID_UNKNOWN -1
 
-
-/* TODO: drop this in favor of a uint8_t ... */
-typedef unsigned char uint8_t;
-
 /**
 * Global functions for memory/logging handlers.
 */
