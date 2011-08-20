@@ -78,17 +78,6 @@ Datum gserialized_within(PG_FUNCTION_ARGS);
 typedef bool (*gidx_predicate)(GIDX *a, GIDX *b);
 
 
-
-/* Allocates a new GIDX on the heap of the requested dimensionality */
-static GIDX* gidx_new(int ndims)
-{
-	size_t size = GIDX_SIZE(ndims);
-	GIDX *g = (GIDX*)palloc(size);
-	POSTGIS_DEBUGF(5,"created new gidx of %d dimensions, size %d", ndims, (int)size);
-	SET_VARSIZE(g, size);
-	return g;
-}
-
 /* Generate human readable form for GIDX. */
 #if POSTGIS_DEBUG_LEVEL > 0
 static char* gidx_to_string(GIDX *a)
@@ -287,74 +276,6 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 	return result;
 }
 
-/* Convert a double-based GBOX into a float-based GIDX,
-   ensuring the float box is larger than the double box */
-static int gidx_from_gbox_p(GBOX box, GIDX *a)
-{
-	int ndims;
-
-	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
-	SET_VARSIZE(a, VARHDRSZ + ndims * 2 * sizeof(float));
-
-	GIDX_SET_MIN(a,0,next_float_down(box.xmin));
-	GIDX_SET_MAX(a,0,next_float_up(box.xmax));
-	GIDX_SET_MIN(a,1,next_float_down(box.ymin));
-	GIDX_SET_MAX(a,1,next_float_up(box.ymax));
-
-	/* Geodetic indexes are always 3d, geocentric x/y/z */
-	if ( FLAGS_GET_GEODETIC(box.flags) )
-	{
-		GIDX_SET_MIN(a,2,next_float_down(box.zmin));
-		GIDX_SET_MAX(a,2,next_float_up(box.zmax));
-	}
-	else
-	{
-		/* Cartesian with Z implies Z is third dimension */
-		if ( FLAGS_GET_Z(box.flags) )
-		{
-			GIDX_SET_MIN(a,2,next_float_down(box.zmin));
-			GIDX_SET_MAX(a,2,next_float_up(box.zmax));
-			if ( FLAGS_GET_M(box.flags) )
-			{
-				GIDX_SET_MIN(a,3,next_float_down(box.mmin));
-				GIDX_SET_MAX(a,3,next_float_up(box.mmax));
-			}
-		}
-		/* Unless there's no Z, in which case M is third dimension */
-		else if ( FLAGS_GET_M(box.flags) )
-		{
-			GIDX_SET_MIN(a,2,next_float_down(box.mmin));
-			GIDX_SET_MAX(a,2,next_float_up(box.mmax));
-		}
-	}
-
-	POSTGIS_DEBUGF(5, "converted %s to %s", gbox_to_string(&box), gidx_to_string(a));
-
-	return LW_SUCCESS;
-}
-
-
-GIDX* gidx_from_gbox(GBOX box)
-{
-	int	ndims;
-	GIDX *a;
-
-	ndims = (FLAGS_GET_GEODETIC(box.flags) ? 3 : FLAGS_NDIMS(box.flags));
-	a = gidx_new(ndims);
-	gidx_from_gbox_p(box, a);
-	return a;
-}
-
-void gbox_from_gidx(GIDX *a, GBOX *gbox)
-{
-	gbox->xmin = (double)GIDX_GET_MIN(a,0);
-	gbox->ymin = (double)GIDX_GET_MIN(a,1);
-	gbox->zmin = (double)GIDX_GET_MIN(a,2);
-	gbox->xmax = (double)GIDX_GET_MAX(a,0);
-	gbox->ymax = (double)GIDX_GET_MAX(a,1);
-	gbox->zmax = (double)GIDX_GET_MAX(a,2);
-}
-
 /*
 ** Overlapping GIDX box test.
 **
@@ -390,24 +311,6 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 			return FALSE;
 	}
 	return TRUE;
-}
-
-/*
-** GIDX expansion, make d units bigger in all dimensions.
-*/
-void gidx_expand(GIDX *a, float d)
-{
-	int i;
-
-	POSTGIS_DEBUG(5, "entered function");
-
-	if ( a == NULL ) return;
-
-	for (i = 0; i < GIDX_NDIMS(a); i++)
-	{
-		GIDX_SET_MIN(a, i, GIDX_GET_MIN(a, i) - d);
-		GIDX_SET_MAX(a, i, GIDX_GET_MAX(a, i) + d);
-	}
 }
 
 /*
@@ -536,108 +439,6 @@ gserialized_expand(GSERIALIZED *g, double distance)
 	gidx_expand(gidx, fdistance);
 
 	return gserialized_set_gidx(g, gidx);
-}
-
-/**
-* Peak into a #GSERIALIZED datum to find the bounding box. If the
-* box is there, copy it out and return it. If not, calculate the box from the
-* full object and return the box based on that. If no box is available,
-* return #LW_FAILURE, otherwise #LW_SUCCESS.
-*/
-int 
-gserialized_datum_get_gidx_p(Datum gsdatum, GIDX *gidx)
-{
-	GSERIALIZED *gpart;
-	int result = LW_SUCCESS;
-
-	POSTGIS_DEBUG(4, "entered function");
-
-	/*
-	** The most info we need is the 8 bytes of serialized header plus the 32 bytes
-	** of floats necessary to hold the 8 floats of the largest XYZM index
-	** bounding box, so 40 bytes.
-	*/
-	gpart = (GSERIALIZED*)PG_DETOAST_DATUM_SLICE(gsdatum, 0, 40);
-
-	POSTGIS_DEBUGF(4, "got flags %d", gpart->flags);
-
-	/* Do we even have a serialized bounding box? */
-	if ( FLAGS_GET_BBOX(gpart->flags) )
-	{
-		/* Yes! Copy it out into the GIDX! */
-		const size_t size = gbox_serialized_size(gpart->flags);
-		POSTGIS_DEBUG(4, "copying box out of serialization");
-		memcpy(gidx->c, gpart->data, size);
-		SET_VARSIZE(gidx, VARHDRSZ + size);
-		result = LW_SUCCESS;
-	}
-	else
-	{
-		/* No, we need to calculate it from the full object. */
-		GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(gsdatum);
-		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
-		GBOX gbox;
-		if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
-		{
-			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
-			lwgeom_free(lwgeom);
-			return LW_FAILURE;
-		}
-		lwgeom_free(lwgeom);
-		result = gidx_from_gbox_p(gbox, gidx);
-	}
-	
-	if ( result == LW_SUCCESS )
-	{
-		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
-	}
-
-	return result;
-}
-
-
-/*
-** Peak into a geography to find the bounding box. If the
-** box is there, copy it out and return it. If not, calculate the box from the
-** full geography and return the box based on that. If no box is available,
-** return LW_FAILURE, otherwise LW_SUCCESS.
-*/
-int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx)
-{
-	int result = LW_SUCCESS;
-
-	POSTGIS_DEBUG(4, "entered function");
-
-	POSTGIS_DEBUGF(4, "got flags %d", g->flags);
-
-	if ( FLAGS_GET_BBOX(g->flags) )
-	{
-		int ndims = FLAGS_NDIMS_BOX(g->flags);
-		const size_t size = 2 * ndims * sizeof(float);
-		POSTGIS_DEBUG(4, "copying box out of serialization");
-		memcpy(gidx->c, g->data, size);
-		SET_VARSIZE(gidx, VARHDRSZ + size);
-	}
-	else
-	{
-		/* No, we need to calculate it from the full object. */
-		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
-		GBOX gbox;
-		if ( lwgeom_calculate_gbox(lwgeom, &gbox) == LW_FAILURE )
-		{
-			POSTGIS_DEBUG(4, "could not calculate bbox, returning failure");
-			lwgeom_free(lwgeom);
-			return LW_FAILURE;
-		}
-		lwgeom_free(lwgeom);
-		result = gidx_from_gbox_p(gbox, gidx);
-	}
-	if ( result == LW_SUCCESS )
-	{
-		POSTGIS_DEBUGF(4, "got gidx %s", gidx_to_string(gidx));
-	}
-
-	return result;
 }
 
 /***********************************************************************

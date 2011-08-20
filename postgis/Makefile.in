@@ -49,7 +49,6 @@ PG_OBJS=lwgeom_debug.o \
 	lwgeom_rtree.o \
 	lwgeom_transform.o \
 	geography_inout.o \
-	gserialized_gist.o \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
@@ -69,7 +68,7 @@ OBJS=$(PG_OBJS)
 # older version of PostGIS, rather than with the static liblwgeom.a 
 # supplied with newer versions of PostGIS
 PG_CPPFLAGS += @CPPFLAGS@ -I../liblwgeom -I../libpgcommon
-SHLIB_LINK = ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@ 
+SHLIB_LINK = ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a @SHLIB_LINK@ 
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)

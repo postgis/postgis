@@ -19,6 +19,7 @@ LEX=@LEX@
 
 # Standalone COMMON objects
 SA_OBJS = \
+	gserialized_gist.o \
 	lwgeom_transform.o \
 	lwgeom_pg.o
 
@@ -26,6 +27,7 @@ SA_OBJS = \
 SA_HEADERS = \
 	lwgeom_pg.h \
 	lwgeom_transform.h \
+	gserialized_gist.h \
 	pgsql_compat.h
 
 all: libpgcommon.a

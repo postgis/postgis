@@ -67,9 +67,11 @@
 /*
  * This is required for builds against pgsql 8.2
  */
+#if 0 /* defined by libpgcommon { */
 #ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
 #endif
+#endif /* defined by libpgcommon } */
 
 /* Internal funcs */
 static char * replace(const char *str, const char *oldstr, const char *newstr,
@@ -7064,6 +7066,7 @@ rt_pg_notice(const char *fmt, va_list ap)
 }
 
 
+#if 0 /* defined by libpgcommon { */
 /* This is needed by liblwgeom */
 void
 lwgeom_init_allocators(void)
@@ -7075,6 +7078,7 @@ lwgeom_init_allocators(void)
     lwerror_var = rt_pg_error;
     lwnotice_var = rt_pg_notice;
 }
+#endif /* defined by libpgcommon } */
 
 
 void
