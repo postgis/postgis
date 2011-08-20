@@ -4424,7 +4424,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_quantile: Could not deserialize raster");
-			PG_RETURN_NULL();
+			SRF_RETURN_DONE(funcctx);
 		}
 
 		/* band index is 1-based */
