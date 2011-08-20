@@ -65,13 +65,9 @@
 #define MAX_INT_CHARLEN 32
 
 /*
- * This is required for builds against pgsql 8.2
+ * This is required for builds against pgsql 
  */
-#if 0 /* defined by libpgcommon { */
-#ifdef PG_MODULE_MAGIC
 PG_MODULE_MAGIC;
-#endif
-#endif /* defined by libpgcommon } */
 
 /* Internal funcs */
 static char * replace(const char *str, const char *oldstr, const char *newstr,

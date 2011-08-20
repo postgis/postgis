@@ -27,6 +27,11 @@
 #include <stdio.h>
 #include <errno.h>
 
+/*
+ * This is required for builds against pgsql
+ */
+PG_MODULE_MAGIC;
+
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS);
 Datum LWGEOM_summary(PG_FUNCTION_ARGS);
 Datum LWGEOM_npoints(PG_FUNCTION_ARGS);

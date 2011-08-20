@@ -29,11 +29,10 @@
 #define PARANOIA_LEVEL 1
 
 /*
- * This is required for builds against pgsql 8.2
+ * For win32, this can not be in a separate libary
+ * See ticket #1158
  */
-#ifdef PG_MODULE_MAGIC
-PG_MODULE_MAGIC;
-#endif
+/* PG_MODULE_MAGIC; */
 
 /**
 * Utility to convert cstrings to textp pointers 
