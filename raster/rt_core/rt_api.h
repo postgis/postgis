@@ -644,7 +644,7 @@ rt_bandstats rt_band_get_summary_stats(rt_band band, int exclude_nodata_value,
  */
 rt_histogram rt_band_get_histogram(rt_bandstats stats,
 	int bin_count, double *bin_widths, int bin_widths_count,
-	int right, double min, double max, int *rtn_count);
+	int right, double min, double max, uint32_t *rtn_count);
 
 /**
  * Compute the default set of or requested quantiles for a set of data
@@ -658,7 +658,7 @@ rt_histogram rt_band_get_histogram(rt_bandstats stats,
  * @return the default set of or requested quantiles for a band
  */
 rt_quantile rt_band_get_quantiles(rt_bandstats stats,
-	double *quantiles, int quantiles_count, int *rtn_count);
+	double *quantiles, int quantiles_count, uint32_t *rtn_count);
 
 int quantile_llist_destroy(struct quantile_llist **list,
 	uint32_t list_count);
@@ -693,9 +693,9 @@ int quantile_llist_destroy(struct quantile_llist **list,
 rt_quantile rt_band_get_quantiles_stream(rt_band band,
 	int exclude_nodata_value, double sample,
 	uint64_t cov_count,
-	struct quantile_llist **qlls, int *qlls_count,
+	struct quantile_llist **qlls, uint32_t *qlls_count,
 	double *quantiles, int quantiles_count,
-	int *rtn_count);
+	uint32_t *rtn_count);
 
 /**
  * Count the number of times provided value(s) occur in
@@ -706,13 +706,14 @@ rt_quantile rt_band_get_quantiles_stream(rt_band band,
  * @param search_values: array of values to count
  * @param search_values_count: the number of search values
  * @param roundto: the decimal place to round the values to
+ * @param rtn_total: the number of pixels examined in the band
  * @param rtn_count: the number of value counts being returned
  *
  * @return the number of times the provide value(s) occur
  */
 rt_valuecount rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	double *search_values, uint32_t search_values_count,
-	double roundto, int *rtn_count);
+	double roundto, uint32_t *rtn_total, uint32_t *rtn_count);
 
 /**
  * Returns new band with values reclassified

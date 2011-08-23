@@ -840,114 +840,18 @@ CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalues double precis
 
 CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS integer
-	AS $$ SELECT count FROM _st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5) $$
+	AS $$ SELECT (_st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5)).count $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_valuecount(rast raster, nband integer, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS integer
-	AS $$ SELECT count FROM _st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], $4) $$
+	AS $$ SELECT (_st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], $4)).count $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_valuecount(rast raster, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS integer
-	AS $$ SELECT count FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3) $$
+	AS $$ SELECT (_st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3)).count $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
-	RETURNS SETOF valuecount
-	AS $$
-	DECLARE
-		curs refcursor;
-
-		ctable text;
-		ccolumn text;
-		rast raster;
-
-		vcnts valuecount;
-	BEGIN
-		-- nband
-		IF nband < 1 THEN
-			RAISE WARNING 'Invalid band index (must use 1-based). Returning NULL';
-			RETURN;
-		END IF;
-
-		-- rastertable and rastercolumn
-		IF rastertable IS NULL THEN
-			RAISE WARNING 'rastertable cannot be NULL. Returning NULL';
-			RETURN;
-		ELSEIF rastercolumn IS NULL THEN
-			RAISE WARNING 'rastercolumn cannot be NULL. Returning NULL';
-			RETURN;
-		END IF;
-
-		-- clean rastertable and rastercolumn
-		ctable := quote_ident(rastertable);
-		ccolumn := quote_ident(rastercolumn);
-
-		BEGIN
-			OPEN curs FOR EXECUTE 'SELECT '
-					|| ccolumn
-					|| ' FROM '
-					|| ctable
-					|| ' WHERE '
-					|| ccolumn
-					|| ' IS NOT NULL';
-		EXCEPTION
-			WHEN OTHERS THEN
-				RAISE WARNING 'Invalid table or column name. Returning NULL';
-				RETURN;
-		END;
-
-		LOOP
-			FETCH curs INTO rast;
-			EXIT WHEN NOT FOUND;
-
-			FOR vcnts IN SELECT * FROM _st_valuecount(rast, nband, exclude_nodata_value, searchvalues, roundto) LOOP
-				IF vcnts IS NULL THEN
-					CONTINUE;
-				END IF;
-				--RAISE NOTICE 'vcnts = %', vcnts;
-
-				RETURN NEXT vcnts;
-			END LOOP;
-
-		END LOOP;
-
-		CLOSE curs;
-
-		RETURN;
-	END;
-	$$ LANGUAGE 'plpgsql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT count bigint)
-	RETURNS SETOF record
-	AS $$ SELECT value, sum(count) AS count FROM _st_valuecount($1, $2, $3, $4, $5, $6) GROUP BY 1 ORDER BY 1 $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalues double precision[], roundto double precision DEFAULT 0, OUT value double precision, OUT count bigint)
-	RETURNS SETOF record
-	AS $$ SELECT value, count FROM st_valuecount($1, $2, $3, TRUE, $4, $5) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalues double precision[], roundto double precision DEFAULT 0, OUT value double precision, OUT count bigint)
-	RETURNS SETOF record
-	AS $$ SELECT value, count FROM st_valuecount($1, $2, 1, TRUE, $3, $4) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
-	RETURNS bigint
-	AS $$ SELECT count FROM st_valuecount($1, $2, $3, $4, ARRAY[$5]::double precision[], $6) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalue double precision, roundto double precision DEFAULT 0)
-	RETURNS bigint
-	AS $$ SELECT count FROM st_valuecount($1, $2, $3, TRUE, ARRAY[$4]::double precision[], $5) $$
-	LANGUAGE 'sql' STABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalue double precision, roundto double precision DEFAULT 0)
-	RETURNS bigint
-	AS $$ SELECT count FROM st_valuecount($1, $2, 1, TRUE, ARRAY[$3]::double precision[], $4) $$
-	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT percent double precision)
 	RETURNS SETOF record
@@ -966,63 +870,82 @@ CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalues double prec
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS double precision
-	AS $$ SELECT percent FROM _st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5) $$
+	AS $$ SELECT (_st_valuecount($1, $2, $3, ARRAY[$4]::double precision[], $5)).percent $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, nband integer, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS double precision
-	AS $$ SELECT percent FROM _st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], $4) $$
+	AS $$ SELECT (_st_valuecount($1, $2, TRUE, ARRAY[$3]::double precision[], $4)).percent $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS double precision
-	AS $$ SELECT percent FROM _st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3) $$
+	AS $$ SELECT (_st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3)).percent $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
+	RETURNS SETOF valuecount
+	AS 'MODULE_PATHNAME', 'RASTER_valueCountCoverage'
+	LANGUAGE 'C' STABLE;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT count integer)
+	RETURNS SETOF record
+	AS $$ SELECT value, count FROM _st_valuecount($1, $2, $3, $4, $5, $6) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalues double precision[], roundto double precision DEFAULT 0, OUT value double precision, OUT count integer)
+	RETURNS SETOF record
+	AS $$ SELECT value, count FROM _st_valuecount($1, $2, $3, TRUE, $4, $5) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalues double precision[], roundto double precision DEFAULT 0, OUT value double precision, OUT count integer)
+	RETURNS SETOF record
+	AS $$ SELECT value, count FROM _st_valuecount($1, $2, 1, TRUE, $3, $4) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
+	RETURNS integer
+	AS $$ SELECT (_st_valuecount($1, $2, $3, $4, ARRAY[$5]::double precision[], $6)).count $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, nband integer, searchvalue double precision, roundto double precision DEFAULT 0)
+	RETURNS integer
+	AS $$ SELECT (_st_valuecount($1, $2, $3, TRUE, ARRAY[$4]::double precision[], $5)).count $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_valuecount(rastertable text, rastercolumn text, searchvalue double precision, roundto double precision DEFAULT 0)
+	RETURNS integer
+	AS $$ SELECT (_st_valuecount($1, $2, 1, TRUE, ARRAY[$3]::double precision[], $4)).count $$
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0, OUT value double precision, OUT percent double precision)
 	RETURNS SETOF record
-	AS $$
-		SELECT
-			value,
-			CASE
-				WHEN sum(count) != 0
-					THEN sum(count) / sum(
-						CASE
-							WHEN percent != 0
-								THEN (count / percent)
-							ELSE 0
-						END
-					)
-				ELSE 0
-			END AS percent
-		FROM _st_valuecount($1, $2, $3, $4, $5, $6)
-		GROUP BY 1
-		ORDER BY 1
-	$$ LANGUAGE 'sql' STABLE;
+	AS $$ SELECT value, percent FROM _st_valuecount($1, $2, $3, $4, $5, $6) $$
+	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, searchvalues double precision[], roundto double precision DEFAULT 0, OUT value double precision, OUT percent double precision)
 	RETURNS SETOF record
-	AS $$ SELECT value, percent FROM st_valuepercent($1, $2, $3, TRUE, $4, $5) $$
+	AS $$ SELECT value, percent FROM _st_valuecount($1, $2, $3, TRUE, $4, $5) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, searchvalues double precision[], roundto double precision DEFAULT 0, OUT value double precision, OUT percent double precision)
 	RETURNS SETOF record
-	AS $$ SELECT value, percent FROM st_valuepercent($1, $2, 1, TRUE, $3, $4) $$
+	AS $$ SELECT value, percent FROM _st_valuecount($1, $2, 1, TRUE, $3, $4) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS double precision
-	AS $$ SELECT percent FROM st_valuepercent($1, $2, $3, $4, ARRAY[$5]::double precision[], $6) $$
+	AS $$ SELECT (_st_valuecount($1, $2, $3, $4, ARRAY[$5]::double precision[], $6)).percent $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, nband integer, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS double precision
-	AS $$ SELECT percent FROM st_valuepercent($1, $2, $3, TRUE, ARRAY[$4]::double precision[], $5) $$
+	AS $$ SELECT (_st_valuecount($1, $2, $3, TRUE, ARRAY[$4]::double precision[], $5)).percent $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_valuepercent(rastertable text, rastercolumn text, searchvalue double precision, roundto double precision DEFAULT 0)
 	RETURNS double precision
-	AS $$ SELECT percent FROM st_valuepercent($1, $2, 1, TRUE, ARRAY[$3]::double precision[], $4) $$
+	AS $$ SELECT (_st_valuecount($1, $2, 1, TRUE, ARRAY[$3]::double precision[], $4)).percent $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------

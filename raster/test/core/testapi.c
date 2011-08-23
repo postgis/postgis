@@ -995,7 +995,7 @@ static void testBandStats() {
 	double quantiles[] = {0.1, 0.3, 0.5, 0.7, 0.9};
 	double quantiles2[] = {0.66666667};
 	rt_quantile quantile = NULL;
-	int count = 0;
+	uint32_t count = 0;
 
 	rt_raster raster;
 	rt_band band;
@@ -1008,7 +1008,7 @@ static void testBandStats() {
 
 	uint32_t values[] = {0, 91, 55, 86, 76, 41, 36, 97, 25, 63, 68, 2, 78, 15, 82, 47};
 	struct quantile_llist *qlls = NULL;
-	int qlls_count;
+	uint32_t qlls_count;
 
 	raster = rt_raster_new(xmax, ymax);
 	assert(raster); /* or we're out of virtual memory */
@@ -1387,7 +1387,7 @@ static void testValueCount() {
 	uint32_t xmax = 100;
 	uint32_t y;
 	uint32_t ymax = 100;
-	int rtn = 0;
+	uint32_t rtn = 0;
 
 	double count[] = {3, 4, 5};
 
@@ -1403,32 +1403,32 @@ static void testValueCount() {
 			CHECK((rtn != -1));
 		}
 	}
-	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0, &rtn);
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0, NULL, &rtn);
 	CHECK(vcnts);
 	CHECK((rtn > 0));
 	rtdealloc(vcnts);
 
-	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0.01, &rtn);
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0.01, NULL, &rtn);
 	CHECK(vcnts);
 	CHECK((rtn > 0));
 	rtdealloc(vcnts);
 
-	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0.1, &rtn);
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0.1, NULL, &rtn);
 	CHECK(vcnts);
 	CHECK((rtn > 0));
 	rtdealloc(vcnts);
 
-	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 1, &rtn);
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 1, NULL, &rtn);
 	CHECK(vcnts);
 	CHECK((rtn > 0));
 	rtdealloc(vcnts);
 
-	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 10, &rtn);
+	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 10, NULL, &rtn);
 	CHECK(vcnts);
 	CHECK((rtn > 0));
 	rtdealloc(vcnts);
 
-	vcnts = rt_band_get_value_count(band, 1, count, 3, 1, &rtn);
+	vcnts = rt_band_get_value_count(band, 1, count, 3, 1, NULL, &rtn);
 	CHECK(vcnts);
 	CHECK((rtn > 0));
 	rtdealloc(vcnts);

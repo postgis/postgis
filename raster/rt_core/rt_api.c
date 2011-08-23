@@ -1827,7 +1827,7 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 rt_histogram
 rt_band_get_histogram(rt_bandstats stats,
 	int bin_count, double *bin_width, int bin_width_count,
-	int right, double min, double max, int *rtn_count) {
+	int right, double min, double max, uint32_t *rtn_count) {
 	rt_histogram bins = NULL;
 	int init_width = 0;
 	int i;
@@ -2082,7 +2082,7 @@ rt_band_get_histogram(rt_bandstats stats,
  */
 rt_quantile
 rt_band_get_quantiles(rt_bandstats stats,
-	double *quantiles, int quantiles_count, int *rtn_count) {
+	double *quantiles, int quantiles_count, uint32_t *rtn_count) {
 	rt_quantile rtn;
 	int init_quantiles = 0;
 	int i = 0;
@@ -2326,9 +2326,9 @@ rt_quantile
 rt_band_get_quantiles_stream(rt_band band,
 	int exclude_nodata_value, double sample,
 	uint64_t cov_count,
-	struct quantile_llist **qlls, int *qlls_count,
+	struct quantile_llist **qlls, uint32_t *qlls_count,
 	double *quantiles, int quantiles_count,
-	int *rtn_count) {
+	uint32_t *rtn_count) {
 	rt_quantile rtn = NULL;
 	int init_quantiles = 0;
 
@@ -2840,6 +2840,7 @@ rt_band_get_quantiles_stream(rt_band band,
  * @param search_values: array of values to count
  * @param search_values_count: the number of search values
  * @param roundto: the decimal place to round the values to
+ * @param rtn_total: the number of pixels examined in the band
  * @param rtn_count: the number of value counts being returned
  *
  * @return the number of times the provide value(s) occur
@@ -2847,7 +2848,7 @@ rt_band_get_quantiles_stream(rt_band band,
 rt_valuecount
 rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	double *search_values, uint32_t search_values_count, double roundto,
-	int *rtn_count) {
+	uint32_t *rtn_total, uint32_t *rtn_count) {
 	rt_valuecount vcnts = NULL;
 	rt_pixtype pixtype = PT_END;
 	uint8_t *data = NULL;
@@ -2990,6 +2991,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 						continue;
 
 					vcnts[i].count = band->width * band->height;
+					if (NULL != rtn_total) *rtn_total = vcnts[i].count;
 					vcnts->percent = 1.0;
 				}
 
@@ -3006,6 +3008,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 
 				vcnts->value = nodata;
 				vcnts->count = band->width * band->height;
+				if (NULL != rtn_total) *rtn_total = vcnts[i].count;
 				vcnts->percent = 1.0;
 
 				*rtn_count = 1;
@@ -3085,6 +3088,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 	}
 
 	RASTER_DEBUG(3, "done");
+	if (NULL != rtn_total) *rtn_total = total;
 	*rtn_count = vcnts_count;
 	return vcnts;
 }
