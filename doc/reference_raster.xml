@@ -4532,15 +4532,16 @@ FROM dummy_rast WHERE rid=2;
             </refsection>
             
             <refsection>
-                <title>Examples: To see these, you'll need to output the bytea to a rendering device</title>
+                <title>Examples: Output geometries as PNG files</title>
             
                 <programlisting>
 -- this will output a black circle taking up 150 x 150 pixels --
 SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150, '2BUI'));</programlisting>
 
-                <programlisting>
--- this will output a red circle taking up 150 x 150 pixels --
-SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150, ARRAY['8BUI', '8BUI', '8BUI'], ARRAY[200,0,0], ARRAY[0,0,0]));</programlisting>
+                <programlisting>-- this will output a red circle taking up 150 x 150 pixels --
+SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150, 
+	ARRAY['8BUI', '8BUI', '8BUI'], 
+	ARRAY[200,0,0], ARRAY[0,0,0]));</programlisting>
         
             </refsection>
             <!-- Optionally add a "See Also" section -->
