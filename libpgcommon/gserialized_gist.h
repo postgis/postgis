@@ -58,6 +58,13 @@ GIDX* gidx_from_gbox(GBOX box);
 /* Increase the size of a GIDX */
 void gidx_expand(GIDX *a, float d);
 
+
+/* Generate human readable form for GIDX. */
+#if POSTGIS_DEBUG_LEVEL > 0
+char* gidx_to_string(GIDX *a) ; 
+#endif
+
+
 /* Returns number of dimensions for this GIDX */
 #define GIDX_NDIMS(gidx) ((VARSIZE((gidx)) - VARHDRSZ) / (2 * sizeof(float)))
 /* Minimum accessor. */

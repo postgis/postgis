@@ -78,32 +78,6 @@ Datum gserialized_within(PG_FUNCTION_ARGS);
 typedef bool (*gidx_predicate)(GIDX *a, GIDX *b);
 
 
-/* Generate human readable form for GIDX. */
-#if POSTGIS_DEBUG_LEVEL > 0
-static char* gidx_to_string(GIDX *a)
-{
-	char *str, *rv;
-	int i, ndims;
-
-	if ( a == NULL )
-		return pstrdup("<NULLPTR>");
-
-	str = (char*)palloc(128);
-	rv = str;
-	ndims = GIDX_NDIMS(a);
-
-	str += sprintf(str, "GIDX(");
-	for ( i = 0; i < ndims; i++ )
-		str += sprintf(str, " %.12g", GIDX_GET_MIN(a,i));
-	str += sprintf(str, ",");
-	for ( i = 0; i < ndims; i++ )
-		str += sprintf(str, " %.12g", GIDX_GET_MAX(a,i));
-	str += sprintf(str, " )");
-
-	return rv;
-}
-#endif
-
 /* Allocate a new copy of GIDX */
 static GIDX* gidx_copy(GIDX *b)
 {
