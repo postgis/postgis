@@ -63,6 +63,9 @@
 /* PostGIS Raster version */
 #undef POSTGIS_RASTER_VERSION
 
+/* Define to 1 if GDAL has GDALFPolygonize function. */
+#undef GDALFPOLYGONIZE
+
 /* Enable development variable */
 #undef ENABLE_DEVELOPMENT
 

@@ -51,8 +51,6 @@
 #include "liblwgeom.h"
 #include "rt_pg.h"
 #include "pgsql_compat.h"
-#include "rt_api.h"
-#include "../raster_config.h"
 
 #include <utils/lsyscache.h> /* for get_typlenbyvalalign */
 #include <utils/array.h> /* for ArrayType */

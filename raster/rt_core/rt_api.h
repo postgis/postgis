@@ -98,6 +98,7 @@
 #include "cpl_vsi.h"
 #include "cpl_conv.h"
 #include "../../postgis_config.h"
+#include "../raster_config.h"
 
 /**
  * @file rt_api.h
