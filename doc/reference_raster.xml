@@ -4529,25 +4529,45 @@ FROM dummy_rast WHERE rid=2;
                  <para>To create the postgis raster, the X and Y scale or the width and height of the new raster or a reference raster must be provided.</para>
                  <para>The output raster will be in the same coordinate system as the source geometry. The only exception is for ST_AsRaster variations with a raster input parameter. </para>
                  <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+                 <note><para>Not yet capable of rendering complex geometry types such as curves, TINS, and PolyhedralSurfaces, but should be
+                 able too once GDAL can.</para></note>
             </refsection>
             
             <refsection>
                 <title>Examples: Output geometries as PNG files</title>
-            
+                <para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_asraster01.png" />
+							  </imageobject>
+							  <caption><para>black circle</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
                 <programlisting>
 -- this will output a black circle taking up 150 x 150 pixels --
 SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150, '2BUI'));</programlisting>
 
-                <programlisting>-- this will output a red circle taking up 150 x 150 pixels --
-SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10),150, 150, 
-	ARRAY['8BUI', '8BUI', '8BUI'], 
-	ARRAY[200,0,0], ARRAY[0,0,0]));</programlisting>
+ <para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_asraster02.png" />
+							  </imageobject>
+							  <caption><para>example from buffer rendered with just PostGIS</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+
+                <programlisting>-- the bands map to RGB bands - the value (118,154,118) - teal  --
+SELECT ST_AsPNG(
+	ST_AsRaster(
+		ST_Buffer(
+			ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), 10,'join=bevel'), 
+			200,200,ARRAY['8BUI', '8BUI', '8BUI'], ARRAY[118,154,118], ARRAY[0,0,0]));</programlisting>
         
             </refsection>
             <!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />,<xref linkend="RT_ST_AsPNG" /> , <xref linkend="RT_ST_AsJPEG" />, <xref linkend="RT_ST_SRID" /></para>
+				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="ST_Buffer" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />,<xref linkend="RT_ST_AsPNG" /> , <xref linkend="RT_ST_AsJPEG" />, <xref linkend="RT_ST_SRID" /></para>
 			</refsection>
 		</refentry>
 		
