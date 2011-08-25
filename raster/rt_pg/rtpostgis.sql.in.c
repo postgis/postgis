@@ -2836,7 +2836,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
 
     BEGIN
 
-        RAISE DEBUG 'Parameters: catalog=%, schema=%, table=%, column=%, srid=%, pixel_types=%, out_db=%, regular_blocking=%, nodata_values=%, scale_x=%, scale_y=%, blocksize_x=%, blocksize_y=%',
+        --RAISE DEBUG 'Parameters: catalog=%, schema=%, table=%, column=%, srid=%, pixel_types=%, out_db=%, regular_blocking=%, nodata_values=%, scale_x=%, scale_y=%, blocksize_x=%, blocksize_y=%',
                      p_catalog_name, p_schema_name, p_table_name, p_column_name, p_srid, p_pixel_types, p_out_db, p_regular_blocking, p_nodata_values, p_scale_x, p_scale_y, p_blocksize_x, p_blocksize_y;
 
         -- Validate required parametersa and combinations
@@ -2886,7 +2886,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
                 RAISE EXCEPTION 'Invalid SRID';
                 RETURN 'fail';
             END IF;
-            RAISE DEBUG 'Verified SRID = %', p_srid;
+            --RAISE DEBUG 'Verified SRID = %', p_srid;
         END IF;
 
 
@@ -2901,7 +2901,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             FOR pti IN array_lower(pixel_types, 1) .. array_upper(pixel_types, 1) LOOP
                 IF p_pixel_types[npti] = pixel_types[pti] THEN
                     pixel_types_found := 1;
-                    RAISE DEBUG 'Identified pixel type %', p_pixel_types[npti];
+                    --RAISE DEBUG 'Identified pixel type %', p_pixel_types[npti];
                 END IF;
             END LOOP;
 
@@ -2974,7 +2974,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             sql := 'SELECT nspname FROM pg_namespace '
                 || 'WHERE text(nspname) = ' || quote_literal(p_schema_name)
                 || 'LIMIT 1';
-            RAISE DEBUG '%', sql;
+            --RAISE DEBUG '%', sql;
             EXECUTE sql INTO real_schema;
 
             IF ( real_schema IS NULL ) THEN
@@ -2984,7 +2984,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
         END IF;
 
         IF ( real_schema IS NULL ) THEN
-            RAISE DEBUG 'Detecting schema';
+            --RAISE DEBUG 'Detecting schema';
             sql := 'SELECT n.nspname AS schemaname '
                 || 'FROM pg_catalog.pg_class c '
                 || 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
@@ -2993,7 +2993,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
                 || quote_literal('pg_catalog') || ', ' || quote_literal('pg_toast') || ')'
                 || ' AND pg_catalog.pg_table_is_visible(c.oid)'
                 || ' AND c.relname = ' || quote_literal(p_table_name);
-            RAISE DEBUG '%', sql;
+            --RAISE DEBUG '%', sql;
             EXECUTE sql INTO real_schema;
 
             IF ( real_schema IS NULL ) THEN
@@ -3008,7 +3008,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
         sql := 'ALTER TABLE '
             || quote_ident(real_schema) || '.' || quote_ident(p_table_name)
             || ' ADD COLUMN ' || quote_ident(p_column_name) ||  ' raster ';
-        RAISE DEBUG '%', sql;
+        --RAISE DEBUG '%', sql;
         EXECUTE sql;
 
 
@@ -3018,7 +3018,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             || ' AND r_table_schema = ' || quote_literal(real_schema)
             || ' AND r_table_name = ' || quote_literal(p_table_name)
             || ' AND r_column = ' || quote_literal(p_column_name);
-        RAISE DEBUG '%', sql;
+        --RAISE DEBUG '%', sql;
         EXECUTE sql;
 
 
@@ -3042,7 +3042,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             || COALESCE(quote_literal(p_blocksize_x), 'NULL') || ','
             || COALESCE(quote_literal(p_blocksize_y), 'NULL') || ','
             || COALESCE(quote_literal(p_extent::text), 'NULL') || ')';
-        RAISE DEBUG '%', sql;
+        --RAISE DEBUG '%', sql;
         EXECUTE sql;
 
 
@@ -3053,7 +3053,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             || quote_ident('enforce_srid_' || p_column_name)
             || ' CHECK (ST_SRID(' || quote_ident(p_column_name)
             || ') = ' || p_srid::text || ')';
-        RAISE DEBUG '%', sql;
+        --RAISE DEBUG '%', sql;
         EXECUTE sql;
 
 
