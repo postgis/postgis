@@ -2756,51 +2756,53 @@ CREATE OR REPLACE FUNCTION st_intersection(rast raster, band integer, geom geome
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationFinal01
 ------------------------------------------------------------------------------
 CREATE TABLE raster_columns (
-    r_table_catalog varchar(256) not null,
-    r_table_schema varchar(256) not null,
-    r_table_name varchar(256) not null,
-    r_column varchar(256) not null,
-    srid integer not null,
-    pixel_types varchar[] not null,
-    out_db boolean not null,
-    regular_blocking boolean not null,
-    nodata_values double precision[],
-    scale_x double precision,
-    scale_y double precision,
-    blocksize_x integer,
-    blocksize_y integer,
-    extent geometry,
+	r_table_catalog varchar(256) not null,
+	r_table_schema varchar(256) not null,
+	r_table_name varchar(256) not null,
+	r_column varchar(256) not null,
+	srid integer not null,
+	pixel_types varchar[] not null,
+	out_db boolean not null,
+	regular_blocking boolean not null,
+	nodata_values double precision[],
+	scale_x double precision,
+	scale_y double precision,
+	blocksize_x integer,
+	blocksize_y integer,
+	extent geometry,
 
-    CONSTRAINT raster_columns_pk PRIMARY KEY (
-        r_table_catalog,
-        r_table_schema,
-        r_table_name,
-        r_column )
-    ) WITH OIDS;
-
+	CONSTRAINT raster_columns_pk PRIMARY KEY (
+		r_table_catalog,
+		r_table_schema,
+		r_table_name,
+		r_column
+	)
+)
+	WITHOUT OIDS;
 
 ------------------------------------------------------------------------------
 -- RASTER_OVERVIEWS
 ------------------------------------------------------------------------------
 CREATE TABLE raster_overviews (
-    o_table_catalog character varying(256) NOT NULL,
-    o_table_schema character varying(256) NOT NULL,
-    o_table_name character varying(256) NOT NULL,
-    o_column character varying(256) NOT NULL,
-    r_table_catalog character varying(256) NOT NULL,
-    r_table_schema character varying(256) NOT NULL,
-    r_table_name character varying(256) NOT NULL,
-    r_column character varying(256) NOT NULL,
-    out_db boolean NOT NULL,
-    overview_factor integer NOT NULL,
+	o_table_catalog character varying(256) NOT NULL,
+	o_table_schema character varying(256) NOT NULL,
+	o_table_name character varying(256) NOT NULL,
+	o_column character varying(256) NOT NULL,
+	r_table_catalog character varying(256) NOT NULL,
+	r_table_schema character varying(256) NOT NULL,
+	r_table_name character varying(256) NOT NULL,
+	r_column character varying(256) NOT NULL,
+	out_db boolean NOT NULL,
+	overview_factor integer NOT NULL,
 
-    CONSTRAINT raster_overviews_pk PRIMARY KEY (
-      o_table_catalog,
-      o_table_schema,
-      o_table_name,
-      o_column, overview_factor )
-    ) WITH OIDS;
-
+	CONSTRAINT raster_overviews_pk PRIMARY KEY (
+		o_table_catalog,
+		o_table_schema,
+		o_table_name,
+		o_column, overview_factor
+	)
+)
+	WITHOUT OIDS;
 
 ------------------------------------------------------------------------------
 -- AddRasterColumn
