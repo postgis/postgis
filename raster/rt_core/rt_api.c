@@ -1705,8 +1705,9 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 
 			rtn = rt_band_get_pixel(band, x, y, &value);
 #if POSTGIS_DEBUG_LEVEL > 0
-			if (rtn != -1)
-				RASTER_DEBUGF(4, "(x, y, value) = (%d,%d, %f)", x, y, value);
+			if (rtn != -1) {
+				RASTER_DEBUGF(5, "(x, y, value) = (%d,%d, %f)", x, y, value);
+			}
 #endif
 
 			j++;

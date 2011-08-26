@@ -4154,7 +4154,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				if (NULL != covhist) pfree(covhist);
+				if (NULL != covhist) free(covhist);
 				if (bin_width_count) pfree(bin_width);
 
 				SRF_RETURN_DONE(funcctx);
@@ -4174,7 +4174,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				if (NULL != covhist) pfree(covhist);
+				if (NULL != covhist) free(covhist);
 				if (bin_width_count) pfree(bin_width);
 
 				SRF_RETURN_DONE(funcctx);
@@ -4190,7 +4190,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				SPI_finish();
 
 				rt_raster_destroy(raster);
-				if (NULL != covhist) pfree(covhist);
+				if (NULL != covhist) free(covhist);
 				if (bin_width_count) pfree(bin_width);
 
 				SRF_RETURN_DONE(funcctx);
@@ -4206,7 +4206,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				SPI_finish();
 
 				rt_raster_destroy(raster);
-				if (NULL != covhist) pfree(covhist);
+				if (NULL != covhist) free(covhist);
 				if (bin_width_count) pfree(bin_width);
 
 				SRF_RETURN_DONE(funcctx);
@@ -4225,7 +4225,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				if (NULL != covhist) pfree(covhist);
+				if (NULL != covhist) free(covhist);
 				if (bin_width_count) pfree(bin_width);
 
 				SRF_RETURN_DONE(funcctx);
@@ -4242,7 +4242,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 					SPI_cursor_close(portal);
 					SPI_finish();
 
-					if (NULL != covhist) pfree(covhist);
+					if (NULL != covhist) free(covhist);
 					if (bin_width_count) pfree(bin_width);
 
 					SRF_RETURN_DONE(funcctx);
@@ -4252,7 +4252,13 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 				/* coverage histogram */
 				if (NULL == covhist) {
-					covhist = (rt_histogram) palloc(sizeof(struct rt_histogram_t) * count);
+					/*
+						dustymugs 2011-08-25
+						covhist is initialized using malloc instead of palloc due to
+							strange memory issues where covvcnts is corrupted in
+							subsequent calls of SRF
+					*/
+					covhist = (rt_histogram) malloc(sizeof(struct rt_histogram_t) * count);
 					if (NULL == covhist) {
 						elog(ERROR, "RASTER_histogramCoverage: Unable to allocate memory for histogram of coverage");
 
@@ -4365,7 +4371,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 	}
 	/* do when there is no more left */
 	else {
-		pfree(covhist2);
+		free(covhist2);
 		SRF_RETURN_DONE(funcctx);
 	}
 }
@@ -4834,7 +4840,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 		cov_count = strtol(tmp, NULL, 10);
-		POSTGIS_RT_DEBUGF(3, "covcount = %d", cov_count);
+		POSTGIS_RT_DEBUGF(3, "covcount = %d", (int) cov_count);
 		pfree(tmp);
 
 		/* iterate through rasters of coverage */
@@ -4961,22 +4967,21 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 
 		/*
 			dustymugs 2011-08-23
-			The following block seems to remove a strange memory
-				issue only in OSX (tested on 64-bit only) where
-				covquant is corrupted in subsequent calls of SRF
+			covquant2 is initialized using malloc instead of palloc due to
+				strange memory issues where covvcnts is corrupted in
+				subsequent calls of SRF
 		*/
-		covquant2 = palloc(sizeof(struct rt_quantile_t) * count);
+		covquant2 = malloc(sizeof(struct rt_quantile_t) * count);
 		for (i = 0; i < count; i++) {
 			covquant2[i].quantile = covquant[i].quantile;
 			covquant2[i].value = covquant[i].value;
 		}
 		pfree(covquant);
-		covquant = covquant2;
 
 		POSTGIS_RT_DEBUGF(3, "%d quantiles returned", count);
 
 		/* Store needed information */
-		funcctx->user_fctx = covquant;
+		funcctx->user_fctx = covquant2;
 
 		/* total number of tuples to be returned */
 		funcctx->max_calls = count;
@@ -5036,7 +5041,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 	/* do when there is no more left */
 	else {
 		POSTGIS_RT_DEBUG(3, "done");
-		pfree(covquant2);
+		free(covquant2);
 		SRF_RETURN_DONE(funcctx);
 	}
 }
@@ -5528,9 +5533,9 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			if (NULL == covvcnts) {
 				/*
 					dustymugs 2011-08-23
-					covvcnts is initialized using malloc instead of palloc due to the strange
-						memory issue only seen in OSX (tested on 64-bit only) where
-						covvcnts is corrupted in subsequent calls of SRF
+					covvcnts is initialized using malloc instead of palloc due to
+						strange memory issues where covvcnts is corrupted in
+						subsequent calls of SRF
 				*/
 				covvcnts = (rt_valuecount) malloc(sizeof(struct rt_valuecount_t) * count);
 				if (NULL == covvcnts) {
