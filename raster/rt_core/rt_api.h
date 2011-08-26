@@ -72,6 +72,12 @@
 #endif
 #endif
 
+#if defined(sun) || defined(__sun) 
+#if !defined(UNIX) 
+#define UNIX 
+#endif 
+#endif
+
 /* if we are in Unix define stricmp to be strcasecmp and strnicmp to */
 /* be strncasecmp. I'm not sure if all Unices have these, but Linux */
 /* does. */
