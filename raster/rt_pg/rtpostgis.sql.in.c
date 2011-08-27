@@ -2836,8 +2836,10 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
 
     BEGIN
 
-        --RAISE DEBUG 'Parameters: catalog=%, schema=%, table=%, column=%, srid=%, pixel_types=%, out_db=%, regular_blocking=%, nodata_values=%, scale_x=%, scale_y=%, blocksize_x=%, blocksize_y=%',
+		/*
+        RAISE DEBUG 'Parameters: catalog=%, schema=%, table=%, column=%, srid=%, pixel_types=%, out_db=%, regular_blocking=%, nodata_values=%, scale_x=%, scale_y=%, blocksize_x=%, blocksize_y=%',
                      p_catalog_name, p_schema_name, p_table_name, p_column_name, p_srid, p_pixel_types, p_out_db, p_regular_blocking, p_nodata_values, p_scale_x, p_scale_y, p_blocksize_x, p_blocksize_y;
+		*/
 
         -- Validate required parametersa and combinations
         IF ( (p_catalog_name IS NULL) OR (p_schema_name IS NULL)
