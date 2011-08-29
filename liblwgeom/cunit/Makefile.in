@@ -13,6 +13,8 @@
 CC=@CC@
 CFLAGS=@CFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@
 LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
+top_builddir = @top_builddir@
+LIBTOOL = @LIBTOOL@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
@@ -56,8 +58,9 @@ check: cu_tester
 endif
 
 # Build the main unit test executable
-cu_tester: ../.libs/liblwgeom.a $(OBJS)
-	$(CC) -o $@ $(OBJS) ../.libs/liblwgeom.a -lm $(CUNIT_LDFLAGS) $(LDFLAGS)
+cu_tester: ../liblwgeom.la $(OBJS)
+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $@ $(OBJS) ../liblwgeom.la $(CUNIT_LDFLAGS)
+	#$(CC) -o $@ $(OBJS) ../.libs/liblwgeom.a -lm $(CUNIT_LDFLAGS) $(LDFLAGS)
 
 # Command to build each of the .o files
 $(OBJS): %.o: %.c
