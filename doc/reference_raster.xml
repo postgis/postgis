@@ -4491,11 +4491,53 @@ FROM dummy_rast WHERE rid=2;
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef><type>double precision[] </type> <parameter>value</parameter></paramdef>
+					<paramdef><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
 					<paramdef><type>text[] </type> <parameter>pixeltype=ARRAY[8BUI]</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
 				  </funcprototype>
@@ -4517,8 +4559,36 @@ FROM dummy_rast WHERE rid=2;
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
 				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY[8BUI]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+				  </funcprototype>
+				 
 				</funcsynopsis>
-				<!-- TODO: Finish listing all the protos like 3 or 4 more to go -->
 			</refsynopsisdiv>
 		
             <refsection>
