@@ -31,6 +31,8 @@ DROP FUNCTION IF EXISTS geocode(varchar, integer); /** changed to include defaul
 DROP FUNCTION IF EXISTS geocode(norm_addy,integer); /** changed to include default parameter for max_results and restrict_geom **/
 DROP FUNCTION IF EXISTS geocode_address(norm_addy); /** changed to include default parameter for max_results **/
 DROP FUNCTION IF EXISTS geocode_address(norm_addy,integer); /** changed to include default parameter for max_results and restrict_geom **/
+DROP FUNCTION IF EXISTS interpolate_from_address(integer, character varying, character varying, geometry); /** changed to use feault args and added offset and side **/
+DROP FUNCTION IF EXISTS interpolate_from_address(integer, integer, integer, geometry); /**don't need this since got collapes into varchar version **/
 
 -- TODO: Put in logic to update lookup tables as they change.  street_type_lookup has changed since initial release --
 CREATE TABLE zcta5

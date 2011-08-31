@@ -119,8 +119,8 @@ BEGIN
          || '    sub.place ,'
          || '    s.stusps as state,'
          || '    sub.zip as zip,'
-         || '    interpolate_from_address($1, to_number(sub.fromhn,''99999999'')::integer,'
-         || '        to_number(sub.tohn,''99999999'')::integer, sub.the_geom) as address_geom,'
+         || '    interpolate_from_address($1, sub.fromhn,'
+         || '        sub.tohn, sub.the_geom, sub.side) as address_geom,'
          || '       sub.sub_rating + '
          || CASE WHEN parsed.zip > '' THEN '  least(coalesce(diff_zip($7 , sub.zip),0), 10)::integer  '
             ELSE '1' END::text 
@@ -315,8 +315,8 @@ BEGIN
          || '    coalesce(p.name,zip.city,cs.name,co.name)::varchar as place,'
          || '    s.stusps as state,'
          || '    sub.zip as zip,'
-         || '    interpolate_from_address($1, to_number(sub.fromhn,''99999999'')::integer,'
-         || '        to_number(sub.tohn,''99999999'')::integer, e.the_geom) as address_geom,'
+         || '    interpolate_from_address($1, sub.fromhn,'
+         || '        sub.tohn, e.the_geom, sub.side) as address_geom,'
          || '       sub.sub_rating + '
          || CASE WHEN parsed.zip > '' THEN '  least((coalesce(diff_zip($7 , sub.zip),0) *1.00/2)::integer, coalesce(levenshtein_ignore_case($7, sub.zip),0) ) '
             ELSE '3' END::text 
