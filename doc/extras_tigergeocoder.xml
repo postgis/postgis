@@ -197,53 +197,44 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 		<title>Description</title>
 
 		<para>Takes in an address as a string (or already normalized address) and outputs a set of possible locations which include a point geometry in NAD 83 long lat, a <varname>normalized_address</varname> (addy) for each, and the rating.  The lower the rating the more likely the match.  
-			Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) and PostGIS line interpolation functions to interpolate address along the Tiger edges. The higher the rating the less likely the geocode is right.</para>
+			Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) and PostGIS line interpolation functions to interpolate address along the Tiger edges. The higher the rating the less likely the geocode is right.
+			The geocoded point is defaulted to offset 10 meters from center-line off to side (L/R) of street address is located on.</para>
 
-		<para>Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic to improve speed and accuracy of geocoding. New parameter max_results useful for specifying ot just return the best result.</para>
+		<para>Enhanced: 2.0.0 to support Tiger 2010 structured data and revised some logic to improve speed, accuracy of geocoding, and to offset point from centerline to side of street address is located on. New parameter max_results useful for specifying ot just return the best result.</para>
 		
 	  </refsection>
 
 
 	  <refsection>
 		<title>Examples: Basic</title>
-		<para>The below examples timings are on a fairly old 1.9 GHZ single processor Windows XP machine with 3GB ram running PostgreSQL 9/PostGIS 2.0 loaded with all of Massachusetts state Tiger data.</para>
-		<para>Exact matches are faster to compute (205ms)</para>
+		<para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.1rc1/PostGIS 2.0 loaded with all of MA,MN,CA, RI state Tiger data loaded.</para>
+		<para>Exact matches are faster to compute (61ms)</para>
 		<programlisting>SELECT g.rating, ST_X(g.geomout) As lon, ST_Y(g.geomout) As lat, 
 	(addy).address As stno, (addy).streetname As street, 
 	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
 	FROM geocode('75 State Street, Boston MA 02109') As g;  
- rating |        lon        |       lat        | stno | street | styp |  city   |st  |  zip
- --------+-------------------+------------------+------+--------+------+--------+----+-------
-      0 | -71.0556974285714 | 42.3590795714286 |   75 | State  | St   | Boston  | MA | 02109
+ rating |        lon        |       lat        | stno | street | styp |  city  | st |  zip  
+--------+-------------------+------------------+------+--------+------+--------+----+-------
+      0 | -71.0556722990239 | 42.3589914927049 |   75 | State  | St   | Boston | MA | 02109
 </programlisting>
-		<para>Even if zip is not passed in the geocoder can guess (took about 450 ms)</para>
+		<para>Even if zip is not passed in the geocoder can guess (took about 122-150 ms)</para>
 		<programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
 	(addy).address As stno, (addy).streetname As street, 
 	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
-	FROM geocode('226 Hanover Street, Boston, MA') As g;  
- rating |         wktlonlat         | stno | street  | styp |  city  | st |  zip
+	FROM geocode('226 Hanover Street, Boston, MA',1) As g;  
+ rating |         wktlonlat         | stno | street  | styp |  city  | st |  zip  
 --------+---------------------------+------+---------+------+--------+----+-------
-      0 | POINT(-71.05518 42.36311) |  226 | Hanover | St   | Boston | MA | 02113
+      1 | POINT(-71.05528 42.36316) |  226 | Hanover | St   | Boston | MA | 02113
 </programlisting>     
-<para>Can handle misspellings and provides more than one possible solution with ratings and takes longer (4 seconds on fairly crappy single processor 3GIG RAM XP box, but 453 ms on windows 2003 8 GIG ram 2 processor quad core server).</para>
+<para>Can handle misspellings and provides more than one possible solution with ratings and takes longer (500ms).</para>
 <programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
     (addy).address As stno, (addy).streetname As street, 
 	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
 	FROM geocode('31 - 37 Stewart Street, Boston, MA 02116') As g; 
- rating |         wktlonlat         | stno | street  | styp |     city      | st|  zip
---------+---------------------------+------+---------+------+---------------+----+-------
-     55 | POINT(-71.36934 42.68158) |   31 | Stewart | St   | Lowell        | MA | 01826
-     55 | POINT(-71.34825 42.63324) |   31 | Stewart | St   | Lowell        | MA | 01851
-     55 | POINT(-71.59109 42.22556) |   31 | Stewart | St   | Hopkinton     | MA | 01748
-     56 | POINT(-71.26747 42.54075) |   31 | Stewart | St   | Burlington    | MA | 01821
-     56 | POINT(-71.20324 42.53543) |   31 | Stewart | St   | Burlington    | MA | 01803
-     57 | POINT(-72.57319 42.22111) |   31 | Stewart | St   | Chicopee      | MA | 01075
-     57 | POINT(-72.59728 42.16919) |   31 | Stewart | St   | Chicopee      | MA | 01020
-     59 | POINT(-71.08627 42.78109) |   31 | Stewart | St   | Haverhill     | MA | 01830
-     60 | POINT(-71.36752 42.09772) |   31 | Stewart | St   | Franklin Town | MA | 02038
-     60 | POINT(-71.14573 41.72036) |   31 | Stewart | St   | Fall River    | MA | 02720
-     70 | POINT(-71.0646 42.35105)  |   31 | Stuart  | St   | Boston        | MA | 02116
-(11 rows)	</programlisting>
+ rating |         wktlonlat         | stno | street | styp |  city  | st |  zip  
+--------+---------------------------+------+--------+------+--------+----+-------
+     70 | POINT(-71.06459 42.35113) |   31 | Stuart | St   | Boston | MA | 02116
+	</programlisting>
 
 <para>Using to do a batch geocode of addresses. Easiest is to set <varname>max_results=1</varname>. Only process those not yet geocoded (have no rating).</para>
 <programlisting>CREATE TABLE addresses_to_geocode(addid serial PRIMARY KEY, address text,
@@ -252,50 +243,59 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 INSERT INTO addresses_to_geocode(address)
 VALUES ('529 Main Street, Boston MA, 02129'),
  ('77 Massachusetts Avenue, Cambridge, MA 02139'),
- ('28 Capen Street, Medford, MA'),
+ ('25 Wizard of Oz, Walaford, KS 99912323'),
+ ('26 Capen Street, Medford, MA'),
  ('124 Mount Auburn St, Cambridge, Massachusetts 02138'),
  ('950 Main Street, Worcester, MA 01610');
  
--- only update the first two addresses (323-704 ms -  there are caching and shared memory effects so first geocode you do is always slower) --
+-- only update the first 3 addresses (323-704 ms -  there are caching and shared memory effects so first geocode you do is always slower) --
 -- for large numbers of addresses you don't want to update all at once
 -- since the whole geocode must commit at once 
+-- For this example we rejoin with LEFT JOIN 
+-- and set to rating to -1 rating if no match 
+-- to ensure we don't regeocode a bad address 
 UPDATE addresses_to_geocode
   SET  (rating, new_address, lon, lat) 
-	= ( (g.geo).rating, pprint_addy((g.geo).addy),
+	= ( COALESCE((g.geo).rating,-1), pprint_addy((g.geo).addy),
 	   ST_X((g.geo).geomout)::numeric(8,5), ST_Y((g.geo).geomout)::numeric(8,5) )
-FROM (SELECT addid, (geocode(address,1)) As geo
+FROM (SELECT addid 
+	FROM addresses_to_geocode 
+	WHERE rating IS NULL ORDER BY addid LIMIT 3) As a
+	LEFT JOIN (SELECT addid, (geocode(address,1)) As geo
     FROM addresses_to_geocode As ag
-	WHERE ag.rating IS NULL ORDER BY addid LIMIT 5) As g
-WHERE g.addid = addresses_to_geocode.addid;
+	WHERE ag.rating IS NULL ORDER BY addid LIMIT 3) As g ON a.addid = g.addid
+WHERE a.addid = addresses_to_geocode.addid;
 
 result
 -----
-5 rows affected, 345 ms execution time.
+Query returned successfully: 3 rows affected, 480 ms execution time.
 
 SELECT * FROM addresses_to_geocode WHERE rating is not null;
- addid |                       address                       |    lon    |   lat    |                new_address                | rating 
--------+-----------------------------------------------------+-----------+----------+-------------------------------------------+--------
-     1 | 529 Main Street, Boston MA, 02129                   | -71.07187 | 42.38351 | 529 Main St, Boston, MA 02129             |      0
-     2 | 77 Massachusetts Avenue, Cambridge, MA 02139        | -71.09436 | 42.35981 | 77 Massachusetts Ave, Cambridge, MA 02139 |      0
-     3 | 28 Capen Street, Medford, MA                        | -71.12370 | 42.41108 | 28 Capen St, Medford, MA 02155            |      0
-     4 | 124 Mount Auburn St, Cambridge, Massachusetts 02138 | -71.12298 | 42.37336 | 124 Mount Auburn St, Cambridge, MA 02138  |      0
-     5 | 950 Main Street, Worcester, MA 01610                | -71.82361 | 42.24948 | 950 Main St, Worcester, MA 01610          |      0
+
+ addid |                   address                    |    lon    |   lat    |                new_address                | rating 
+-------+----------------------------------------------+-----------+----------+-------------------------------------------+--------
+     1 | 529 Main Street, Boston MA, 02129            | -71.07181 | 42.38359 | 529 Main St, Boston, MA 02129             |      0
+     2 | 77 Massachusetts Avenue, Cambridge, MA 02139 | -71.09428 | 42.35988 | 77 Massachusetts Ave, Cambridge, MA 02139 |      0
+     3 | 25 Wizard of Oz, Walaford, KS 99912323       |           |          |                                           |     -1
 </programlisting>
 	  </refsection>
 	  <refsection>
 	      <title>Examples: Using Geometry filter</title>
-	      <programlisting>SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
+	      <programlisting>
+SELECT g.rating, ST_AsText(ST_SnapToGrid(g.geomout,0.00001)) As wktlonlat, 
     (addy).address As stno, (addy).streetname As street, 
-	(addy).streettypeabbrev As styp, (addy).location As city, (addy).stateabbrev As st,(addy).zip 
-	FROM geocode('31 - 37 Stewart Street, Boston, MA 02116', 5,  
-	    ST_GeomFromText('POLYGON((-71.0596 42.35105,-71.05998 42.34914,-71.06106 42.34751,-71.06269 42.34643,
--71.0646 42.34605,-71.06651 42.34643,-71.06814 42.34751,-71.06922 42.34914,-71.0696 42.35105,
--71.06922 42.35296,-71.06814 42.35459,-71.06651 42.35567,-71.0646 42.35605,
--71.06269 42.35567,-71.06106 42.35459,-71.05998 42.35296,-71.0596 42.35105))',4326)) As g; 
+	(addy).streettypeabbrev As styp, 
+	(addy).location As city, (addy).stateabbrev As st,(addy).zip 
+  FROM geocode('100 Federal Street, MA',
+		3, 
+		(SELECT ST_Union(the_geom) 
+			FROM place WHERE statefp = '25' AND name = 'Lynn')::geometry
+		) As g;
 
- rating |        wktlonlat         | stno | street | styp |  city  | st |  zip
---------+--------------------------+------+--------+------+--------+----+-------
-     70 | POINT(-71.0646 42.35105) |   31 | Stuart | St   | Boston | MA | 02116
+ rating |        wktlonlat         | stno | street  | styp | city | st |  zip
+--------+--------------------------+------+---------+------+------+----+-------
+      8 | POINT(-70.96796 42.4659) |  100 | Federal | St   | Lynn | MA | 01905
+Total query runtime: 245 ms.
 	      </programlisting>
 	  </refsection>
 
@@ -570,13 +570,14 @@ CREATE INDEX idx_tiger_data_ma_faces_countyfp ON tiger_data.ma_faces USING btree
  FROM (SELECT address, normalize_address(address) As na
         FROM addresses_to_geocode) As g;
         
-                        orig                         |  streetname   | streettypeabbrev
+                        orig                         |  streetname   | streettypeabbrev 
 -----------------------------------------------------+---------------+------------------
- 529 Main Street, Boston MA, 02129                   | Main          | St
- 77 Massachusetts Avenue, Cambridge, MA 02139        | Massachusetts | Ave
  28 Capen Street, Medford, MA                        | Capen         | St
  124 Mount Auburn St, Cambridge, Massachusetts 02138 | Mount Auburn  | St
  950 Main Street, Worcester, MA 01610                | Main          | St
+ 529 Main Street, Boston MA, 02129                   | Main          | St
+ 77 Massachusetts Avenue, Cambridge, MA 02139        | Massachusetts | Ave
+ 25 Wizard of Oz, Walaford, KS 99912323              | Wizard of Oz  | 
 		</programlisting>
 		
 		
@@ -721,24 +722,23 @@ result
 --------
                st1               |               st2               | st3 | cross_str
 ---------------------------------+---------------------------------+-----+------------------------
- 5 Bradford St, Boston, MA 02118 | 49 Waltham St, Boston, MA 02118 |     | Bradford St,Waltham St
+ 5 Bradford St, Boston, MA 02118 | 49 Waltham St, Boston, MA 02118 |     | Waltham St
 </programlisting>
 
-<para>For this one we reuse our geocoded example from <xref linkend="Geocode" /> and we only want the primary address and at most 2 cross streets.
-TODO: Fix suspected bug in geocode (guessing wrong side of street -- suspect geocode is wrong and reverse_geocode is right by spot check of map).</para>
+<para>For this one we reuse our geocoded example from <xref linkend="Geocode" /> and we only want the primary address and at most 2 cross streets.</para>
 <programlisting>SELECT actual_addr, lon, lat, pprint_addy((rg).addy[1]) As int_addr1, 
 	(rg).street[1] As cross1, (rg).street[2] As cross2
 FROM (SELECT address As actual_addr, lon, lat,
     reverse_geocode( ST_SetSRID(ST_Point(lon,lat),4326) ) As rg
-    FROM addresses_to_geocode WHERE rating IS NOT NULL) As foo;
+    FROM addresses_to_geocode WHERE rating > -1) As foo;
 
-                     actual_addr                     |    lon    |   lat    |                 int_addr1                 |     cross1      |  cross2   
------------------------------------------------------+-----------+----------+-------------------------------------------+-----------------+-----------
- 529 Main Street, Boston MA, 02129                   | -71.07187 | 42.38351 | 538 Main St, Boston, MA 02129             | Mishawum St     | 
- 77 Massachusetts Avenue, Cambridge, MA 02139        | -71.09436 | 42.35981 | 58 Massachusetts Ave, Cambridge, MA 02139 | Wellesley St    | Vassar St
- 28 Capen Street, Medford, MA                        | -71.12184 | 42.41010 | 29 Capen St, Medford, MA 02155            |                 | 
- 124 Mount Auburn St, Cambridge, Massachusetts 02138 | -71.12298 | 42.37336 | 1 University Rd, Cambridge, MA 02138      | Mount Auburn St | 
- 950 Main Street, Worcester, MA 01610                | -71.82361 | 42.24948 | 950 Main St, Worcester, MA 01610          | Maywood St      | </programlisting>
+                     actual_addr                     |    lon    |   lat    |                 int_addr1                 |     cross1      |   cross2   
+-----------------------------------------------------+-----------+----------+-------------------------------------------+-----------------+------------
+ 529 Main Street, Boston MA, 02129                   | -71.07181 | 42.38359 | 527 Main St, Boston, MA 02129             | Medford St      | 
+ 77 Massachusetts Avenue, Cambridge, MA 02139        | -71.09428 | 42.35988 | 77 Massachusetts Ave, Cambridge, MA 02139 | Vassar St       | 
+ 26 Capen Street, Medford, MA                        | -71.12377 | 42.41101 | 9 Edison Ave, Medford, MA 02155           | Capen St        | Tesla Ave
+ 124 Mount Auburn St, Cambridge, Massachusetts 02138 | -71.12304 | 42.37328 | 3 University Rd, Cambridge, MA 02138      | Mount Auburn St | 
+ 950 Main Street, Worcester, MA 01610                | -71.82368 | 42.24956 | 3 Maywood St, Worcester, MA 01603         | Main St         | Maywood Pl
       </refsection>
     
       <!-- Optionally add a "See Also" section -->
