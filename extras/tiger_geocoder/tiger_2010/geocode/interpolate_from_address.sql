@@ -16,7 +16,8 @@ DECLARE
   road GEOMETRY;
   result GEOMETRY;
   var_addr1 INTEGER; var_addr2 INTEGER;
-  center_pt GEOMETRY;
+  center_pt GEOMETRY; cl_pt GEOMETRY;
+  npos integer;
   delx float; dely float;  x0 float; y0 float; x1 float; y1 float; az float;
   var_dist float; dir integer;
 BEGIN
@@ -53,7 +54,26 @@ BEGIN
     center_pt = ST_Line_Interpolate_Point(road, part);
     IF in_side > '' AND in_offset_m > 0 THEN
     /** Compute point the point to the in_side of the geometry **/
-    	az := ST_Azimuth (ST_StartPoint(road), ST_EndPoint(road));
+    /**Take into consideration non-straight so we consider azimuth 
+    	of the 2 points that straddle the center location**/ 
+    	IF part = 0 THEN
+    		az := ST_Azimuth (ST_StartPoint(road), ST_PointN(road,2));
+    	ELSIF part = 1 THEN
+    		az := ST_Azimuth (ST_PointN(road,ST_NPoints(road) - 1), ST_EndPoint(road));
+    	ELSE 
+    		/** Find the largest nth point position that is before the center point
+    			This will be the start of our azimuth calc **/
+    		SELECT i INTO npos
+    			FROM generate_series(1,ST_NPoints(road)) As i 
+    					WHERE part > ST_Line_Locate_Point(road,ST_PointN(road,i)) 
+    					ORDER BY i DESC;
+    		IF npos < ST_NPoints(road) THEN				
+    			az := ST_Azimuth (ST_PointN(road,npos), ST_PointN(road, npos + 1));
+    		ELSE
+    			az := ST_Azimuth (center_pt, ST_PointN(road, npos));
+    		END IF;
+    	END IF;
+    	
         dir := CASE WHEN az < pi() THEN -1 ELSE 1 END;
         --dir := 1;
         var_dist := in_offset_m*CASE WHEN in_side = 'L' THEN -1 ELSE 1 END;
