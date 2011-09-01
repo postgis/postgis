@@ -691,8 +691,9 @@ BEGIN
     END IF;
   END IF;
 
-  --get rid of extraneous spaces before we return
-  result.address := to_number(addressString, '99999999999');
+ -- For address number only put numbers and stop if reach a non-number e.g. 123-456 will return 123
+  result.address := to_number(substring(addressString, '[0-9]+'), '99999999999');
+   --get rid of extraneous spaces before we return
   result.zip := trim(zipString);
   result.streetName := trim(result.streetName);
   result.location := trim(result.location);
