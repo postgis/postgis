@@ -60,23 +60,23 @@ BEGIN
 	END IF;
 	-- locate county
 	var_stmt := 'SELECT countyfp, name  FROM  county WHERE  statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
-	EXECUTE var_stmt USING var_state, var_pt INTO var_countyfp, var_county;
+	EXECUTE var_stmt INTO var_countyfp, var_county USING var_state, var_pt ;
 
 	--locate zip
 	var_stmt := 'SELECT zcta5ce  FROM zcta5 WHERE statefp = $1 AND ST_Intersects(the_geom, $2)  LIMIT 1;';
-	EXECUTE var_stmt USING var_state, var_pt INTO var_zip;
+	EXECUTE var_stmt INTO var_zip USING var_state, var_pt;
 	-- locate city
 	IF var_zip > '' THEN
 	      var_addy.zip := var_zip ;
 	END IF;
 	
 	var_stmt := 'SELECT z.name  FROM place As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
-	EXECUTE var_stmt USING var_state, var_pt INTO var_place;
+	EXECUTE var_stmt INTO var_place USING var_state, var_pt ;
 	IF var_place > '' THEN
 			var_addy.location := var_place;
 	ELSE
 		var_stmt := 'SELECT z.name  FROM cousub As z WHERE  z.statefp =  $1 AND ST_Intersects(the_geom, $2) LIMIT 1;';
-		EXECUTE var_stmt USING var_state, var_pt INTO var_place;
+		EXECUTE var_stmt INTO var_place USING var_state, var_pt ;
 		IF var_place > '' THEN
 			var_addy.location := var_place;
 		-- ELSIF var_zip > '' THEN
@@ -138,23 +138,6 @@ BEGIN
 	IF var_debug = true THEN
 	    RAISE NOTICE 'Statement 1: %', var_stmt;
 	END IF;
-	/** FOR var_redge IN
-		SELECT * 
-		FROM (SELECT DISTINCT ON(fullname)  foo.fullname, foo.stusps, foo.zip, 
-			   (SELECT z.place FROM zip_state_loc AS z WHERE z.zip = foo.zip and z.statefp = foo.statefp LIMIT 1) As place, foo.center_pt,
-			  side, to_number(fromhn, '999999') As fromhn, to_number(tohn, '999999') As tohn, ST_GeometryN(ST_Multi(line),1) As line, foo.dist
-		FROM 
-		  (SELECT e.the_geom As line, e.fullname, a.zip, s.abbrev As stusps, ST_ClosestPoint(e.the_geom, var_pt) As center_pt, e.statefp, a.side, a.fromhn, a.tohn, ST_Distance_Sphere(e.the_geom, var_pt) As dist
-				FROM (SELECT * FROM edges WHERE statefp = var_state AND countyfp = var_countyfp ) AS e INNER JOIN (SELECT * FROM state_lookup WHERE statefp = var_state ) As s ON (e.statefp = s.statefp )
-					INNER JOIN (SELECT * FROM faces WHERE statefp = var_state AND countyfp = var_countyfp ) As fl ON (e.tfidl = fl.tfid AND e.statefp = fl.statefp)
-					INNER JOIN (SELECT * FROM faces WHERE statefp = var_state AND countyfp = var_countyfp ) As fr ON (e.tfidr = fr.tfid AND e.statefp = fr.statefp)
-					INNER JOIN (SELECT * FROM addr WHERE statefp = var_state ) As a ON ( e.tlid = a.tlid AND e.statefp = a.statefp AND  
-					   ( ( ST_Covers(fl.the_geom, var_pt) AND a.side = 'L') OR ( ST_Covers(fr.the_geom, var_pt) AND a.side = 'R' ) ) )
-					-- INNER JOIN zip_state_loc As z ON (a.statefp =  z.statefp AND a.zip = z.zip) 
-				WHERE ST_DWithin(e.the_geom, var_pt, 0.005)
-				ORDER BY ST_Distance(e.the_geom, var_pt) LIMIT 4) As foo 
-				WHERE dist < 150 --less than 150 m
-				ORDER BY foo.fullname, foo.dist) As f ORDER BY f.dist LOOP **/
 
     FOR var_redge IN EXECUTE var_stmt LOOP
         IF var_debug THEN
@@ -231,10 +214,7 @@ BEGIN
     IF var_debug THEN
 		RAISE NOTICE 'End Get matching edges loop: %', clock_timestamp();
 	END IF;
-    
-
-
-          		
+	
 	RETURN;   
 END;
 $$
