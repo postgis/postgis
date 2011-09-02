@@ -2211,10 +2211,12 @@ static struct quantile_llist_element *quantile_llist_search(
 
 static struct quantile_llist_element *quantile_llist_insert(
 	struct quantile_llist_element *element,
-	double value
+	double value,
+	uint32_t *idx
 ) {
+	struct quantile_llist_element *qle = NULL;
+
 	if (NULL == element) {
-		struct quantile_llist_element *qle = NULL;
 		qle = rtalloc(sizeof(struct quantile_llist_element));
 		RASTER_DEBUGF(4, "qle @ %p is only element in list", qle);
 		if (NULL == qle) return NULL;
@@ -2225,14 +2227,15 @@ static struct quantile_llist_element *quantile_llist_insert(
 		qle->prev = NULL;
 		qle->next = NULL;
 
+		if (NULL != idx) *idx = 0;
 		return qle;
 	}
 	else if (value > element->value) {
+		if (NULL != idx) *idx += 1;
 		if (NULL != element->next)
-			return quantile_llist_insert(element->next, value);
+			return quantile_llist_insert(element->next, value, idx);
 		/* insert as last element in list */
 		else {
-			struct quantile_llist_element *qle = NULL;
 			qle = rtalloc(sizeof(struct quantile_llist_element));
 			RASTER_DEBUGF(4, "insert qle @ %p as last element", qle);
 			if (NULL == qle) return NULL;
@@ -2249,7 +2252,6 @@ static struct quantile_llist_element *quantile_llist_insert(
 	}
 	/* insert before current element */
 	else {
-		struct quantile_llist_element *qle = NULL;
 		qle = rtalloc(sizeof(struct quantile_llist_element));
 		RASTER_DEBUGF(4, "insert qle @ %p before current element", qle);
 		if (NULL == qle) return NULL;
@@ -2257,9 +2259,9 @@ static struct quantile_llist_element *quantile_llist_insert(
 		qle->value = value;
 		qle->count = 1;
 
+		if (NULL != element->prev) element->prev->next = qle;
 		qle->next = element;
 		qle->prev = element->prev;
-		if (NULL != qle->prev) qle->prev->next = qle;
 		element->prev = qle;
 
 		return qle;
@@ -2301,10 +2303,95 @@ int quantile_llist_destroy(struct quantile_llist **list, uint32_t list_count) {
 			quantile_llist_delete(element->next);
 		}
 		quantile_llist_delete(element);
+
+		rtdealloc((*list)[i].index);
 	}
 
 	rtdealloc(*list);
 	return 1;
+}
+
+static void quantile_llist_index_update(struct quantile_llist *qll, struct quantile_llist_element *qle, uint32_t idx) {
+	uint32_t anchor = (uint32_t) floor(idx / 100);
+
+	if (qll->tail == qle) return;
+
+	if (
+		(anchor != 0) && (
+			NULL == qll->index[anchor].element ||
+			idx <= qll->index[anchor].index
+		)
+	) {
+		qll->index[anchor].index = idx;
+		qll->index[anchor].element = qle;
+	}
+
+	if (anchor != 0 && NULL == qll->index[0].element) {
+		qll->index[0].index = 0;
+		qll->index[0].element = qll->head;
+	}
+}
+
+static void quantile_llist_index_delete(struct quantile_llist *qll, struct quantile_llist_element *qle) {
+	uint32_t i = 0;
+
+	for (i = 0; i < qll->index_max; i++) {
+		if (
+			NULL == qll->index[i].element ||
+			(qll->index[i].element) != qle
+		) {
+			continue;
+		}
+
+		RASTER_DEBUGF(5, "deleting index: %d => %f", i, qle->value);
+		qll->index[i].index = -1;
+		qll->index[i].element = NULL;
+	}
+}
+
+static struct quantile_llist_element *quantile_llist_index_search(
+	struct quantile_llist *qll,
+	double value,
+	uint32_t *index
+) {
+	uint32_t i = 0, j = 0;
+	RASTER_DEBUGF(5, "searching index for value %f", value);
+
+	for (i = 0; i < qll->index_max; i++) {
+		if (NULL == qll->index[i].element) {
+			if (i < 1) break;
+			continue;
+		}
+		if (value > (qll->index[i]).element->value) continue;
+
+		if (FLT_EQ(value, qll->index[i].element->value)) {
+			RASTER_DEBUGF(5, "using index value at %d = %f", i, qll->index[i].element->value);
+			*index = i * 100;
+			return qll->index[i].element;
+		}
+		else if (i > 0) {
+			for (j = 1; j < i; j++) {
+				if (NULL != qll->index[i - j].element) {
+					RASTER_DEBUGF(5, "using index value at %d = %f", i - j, qll->index[i - j].element->value);
+					*index = (i - j) * 100;
+					return qll->index[i - j].element;
+				}
+			}
+		}
+	}
+
+	*index = 0;
+	return qll->head;
+}
+
+static void quantile_llist_index_reset(struct quantile_llist *qll) {
+	uint32_t i = 0;
+
+	RASTER_DEBUG(5, "resetting index");
+	for (i = 0; i < qll->index_max; i++) {
+		qll->index[i].index = -1;
+		qll->index[i].element = NULL;
+	}
 }
 
 /**
@@ -2346,7 +2433,8 @@ rt_band_get_quantiles_stream(rt_band band,
 
 	struct quantile_llist *qll = NULL;
 	struct quantile_llist_element *qle = NULL;
-	const uint32_t K = 750;
+	struct quantile_llist_element *qls = NULL;
+	const uint32_t MAX_VALUES = 750;
 
 	uint8_t *data = NULL;
 	int hasnodata = FALSE;
@@ -2360,6 +2448,7 @@ rt_band_get_quantiles_stream(rt_band band,
 	uint32_t x = 0;
 	uint32_t y = 0;
 	uint32_t z = 0;
+	uint32_t idx = 0;
 	uint32_t offset = 0;
 	uint32_t diff = 0;
 	uint8_t exists = 0;
@@ -2433,6 +2522,7 @@ rt_band_get_quantiles_stream(rt_band band,
 			return NULL;
 		}
 
+		j = (uint32_t) floor(MAX_VALUES / 100.) + 1;
 		for (i = 0; i < *qlls_count; i++) {
 			qll = &((*qlls)[i]);
 			qll->quantile = quantiles[(i * quantiles_count) / *qlls_count];
@@ -2441,6 +2531,16 @@ rt_band_get_quantiles_stream(rt_band band,
 			qll->sum2 = 0;
 			qll->head = NULL;
 			qll->tail = NULL;
+
+			/* initialize index */
+			qll->index = rtalloc(sizeof(struct quantile_llist_index) * j);
+			if (NULL == qll->index) {
+				rterror("rt_band_get_quantiles_stream: Unable to allocate memory for quantile output");
+				if (init_quantiles) rtdealloc(quantiles);
+				return NULL;
+			}
+			qll->index_max = j;
+			quantile_llist_index_reset(qll);
 
 			/* AL-GEQ */
 			if (!(i % 2)) {
@@ -2524,19 +2624,20 @@ rt_band_get_quantiles_stream(rt_band band,
 				/* process each quantile */
 				for (a = 0; a < *qlls_count; a++) {
 					qll = &((*qlls)[a]);
+					qls = NULL;
 					RASTER_DEBUGF(4, "%d of %d (%f)", a + 1, *qlls_count, qll->quantile);
 					RASTER_DEBUGF(5, "qll before: (algeq, quantile, count, tau, sum1, sum2) = (%d, %f, %d, %d, %d, %d)",
 						qll->algeq, qll->quantile, qll->count, qll->tau, qll->sum1, qll->sum2);
 					RASTER_DEBUGF(5, "qll before: (head, tail) = (%p, %p)", qll->head, qll->tail);
 
-					/* shortcuts for quantiles of zero or one */
+					/* OPTIMIZATION: shortcuts for quantiles of zero or one */
 					if (FLT_EQ(qll->quantile, 0.)) {
 						if (NULL != qll->head) {
 							if (value < qll->head->value)
 								qll->head->value = value;
 						}
 						else {
-							qle = quantile_llist_insert(qll->head, value);
+							qle = quantile_llist_insert(qll->head, value, NULL);
 							qll->head = qle;
 							qll->tail = qle;
 							qll->count = 1;
@@ -2551,7 +2652,7 @@ rt_band_get_quantiles_stream(rt_band band,
 								qll->head->value = value;
 						}
 						else {
-							qle = quantile_llist_insert(qll->head, value);
+							qle = quantile_llist_insert(qll->head, value, NULL);
 							qll->head = qle;
 							qll->tail = qle;
 							qll->count = 1;
@@ -2562,7 +2663,17 @@ rt_band_get_quantiles_stream(rt_band band,
 					}
 
 					/* value exists in list */
-					qle = quantile_llist_search(qll->head, value);
+					/* OPTIMIZATION: check to see if value exceeds last value */
+					if (NULL != qll->tail && value > qll->tail->value)
+						qle = NULL;
+					/* OPTIMIZATION: check to see if value equals last value */
+					else if (NULL != qll->tail && FLT_EQ(value, qll->tail->value))
+						qle = qll->tail;
+					/* OPTIMIZATION: use index if possible */
+					else {
+						qls = quantile_llist_index_search(qll, value, &idx);
+						qle = quantile_llist_search(qls, value);
+					}
 
 					/* value found */
 					if (NULL != qle) {
@@ -2580,12 +2691,20 @@ rt_band_get_quantiles_stream(rt_band band,
 						RASTER_DEBUGF(4, "qle after: (value, count) = (%f, %d)", qle->value, qle->count);
 					}
 					/* can still add element */
-					else if (qll->count < K) {
+					else if (qll->count < MAX_VALUES) {
 						RASTER_DEBUGF(4, "Adding %f to list", value);
 
 						/* insert */
-						qle = quantile_llist_insert(qll->head, value);
+						/* OPTIMIZATION: check to see if value exceeds last value */
+						if (NULL != qll->tail && (value > qll->tail->value || FLT_EQ(value, qll->tail->value))) {
+							idx = qll->count;
+							qle = quantile_llist_insert(qll->tail, value, &idx);
+						}
+						/* OPTIMIZATION: use index if possible */
+						else
+							qle = quantile_llist_insert(qls, value, &idx);
 						if (NULL == qle) return NULL;
+						RASTER_DEBUGF(5, "value added at index: %d => %f", idx, value);
 						qll->count++;
 						qll->sum1++;
 
@@ -2600,6 +2719,9 @@ rt_band_get_quantiles_stream(rt_band band,
 							qll->sum2 = qll->sum1 - qll->head->count;
 						else
 							qll->sum2 = qll->sum1 - qll->tail->count;
+
+						/* index is only needed if there are at least 100 values */
+						quantile_llist_index_update(qll, qle, idx);
 
 						RASTER_DEBUGF(5, "qle, prev, next, head, tail = %p, %p, %p, %p, %p", qle, qle->prev, qle->next, qll->head, qll->tail);
 					}
@@ -2619,6 +2741,7 @@ rt_band_get_quantiles_stream(rt_band band,
 								qle = qll->tail->prev;
 								RASTER_DEBUGF(5, "to-be tail is %f with count %d", qle->value, qle->count);
 								qle->count += qll->tail->count;
+								quantile_llist_index_delete(qll, qll->tail);
 								quantile_llist_delete(qll->tail);
 								qll->tail = qle;
 								qll->count--;
@@ -2626,8 +2749,18 @@ rt_band_get_quantiles_stream(rt_band band,
 
 								/* insert value */
 								RASTER_DEBUGF(4, "adding %f to list", value);
-								qle = quantile_llist_insert(qll->head, value);
+								/* OPTIMIZATION: check to see if value exceeds last value */
+								if (NULL != qll->tail && (value > qll->tail->value || FLT_EQ(value, qll->tail->value))) {
+									idx = qll->count;
+									qle = quantile_llist_insert(qll->tail, value, &idx);
+								}
+								/* OPTIMIZATION: use index if possible */
+								else {
+									qls = quantile_llist_index_search(qll, value, &idx);
+									qle = quantile_llist_insert(qls, value, &idx);
+								}
 								if (NULL == qle) return NULL;
+								RASTER_DEBUGF(5, "value added at index: %d => %f", idx, value);
 								qll->count++;
 								qll->sum1++;
 
@@ -2639,6 +2772,8 @@ rt_band_get_quantiles_stream(rt_band band,
 									qll->tail = qle;
 
 								qll->sum2 = qll->sum1 - qll->head->count;
+
+								quantile_llist_index_update(qll, qle, idx);
 
 								RASTER_DEBUGF(5, "qle, head, tail = %p, %p, %p", qle, qll->head, qll->tail);
 
@@ -2675,15 +2810,27 @@ rt_band_get_quantiles_stream(rt_band band,
 								qle = qll->head->next;
 								RASTER_DEBUGF(5, "to-be tail is %f with count %d", qle->value, qle->count);
 								qle->count += qll->head->count;
+								quantile_llist_index_delete(qll, qll->head);
 								quantile_llist_delete(qll->head);
 								qll->head = qle;
 								qll->count--;
+								quantile_llist_index_update(qll, NULL, 0);
 								RASTER_DEBUGF(5, "tail is %f with count %d", qll->head->value, qll->head->count);
 
 								/* insert value */
 								RASTER_DEBUGF(4, "adding %f to list", value);
-								qle = quantile_llist_insert(qll->head, value);
+								/* OPTIMIZATION: check to see if value exceeds last value */
+								if (NULL != qll->tail && (value > qll->tail->value || FLT_EQ(value, qll->tail->value))) {
+									idx = qll->count;
+									qle = quantile_llist_insert(qll->tail, value, &idx);
+								}
+								/* OPTIMIZATION: use index if possible */
+								else {
+									qls = quantile_llist_index_search(qll, value, &idx);
+									qle = quantile_llist_insert(qls, value, &idx);
+								}
 								if (NULL == qle) return NULL;
+								RASTER_DEBUGF(5, "value added at index: %d => %f", idx, value);
 								qll->count++;
 								qll->sum1++;
 
@@ -2695,6 +2842,8 @@ rt_band_get_quantiles_stream(rt_band band,
 									qll->tail = qle;
 
 								qll->sum2 = qll->sum1 - qll->tail->count;
+
+								quantile_llist_index_update(qll, qle, idx);
 
 								RASTER_DEBUGF(5, "qle, head, tail = %p, %p, %p", qle, qll->head, qll->tail);
 
@@ -2720,15 +2869,18 @@ rt_band_get_quantiles_stream(rt_band band,
 					if (qll->sum2 >= qll->tau) {
 						/* AL-GEQ */
 						if (qll->algeq) {
-							RASTER_DEBUGF(4, "Deleting first element %f from list", qll->head->value);
+							RASTER_DEBUGF(4, "deleting first element %f from list", qll->head->value);
 
 							if (NULL != qll->head->next) {
 								qle = qll->head->next;
 								qll->sum1 -= qll->head->count;
 								qll->sum2 = qll->sum1 - qle->count;
+								quantile_llist_index_delete(qll, qll->head);
 								quantile_llist_delete(qll->head);
 								qll->head = qle;
 								qll->count--;
+
+								quantile_llist_index_update(qll, NULL, 0);
 							}
 							else {
 								quantile_llist_delete(qll->head);
@@ -2737,16 +2889,19 @@ rt_band_get_quantiles_stream(rt_band band,
 								qll->sum1 = 0;
 								qll->sum2 = 0;
 								qll->count = 0;
+
+								quantile_llist_index_reset(qll);
 							}
 						}
 						/* AL-GT */
 						else {
-							RASTER_DEBUGF(4, "Deleting first element %f from list", qll->tail->value);
+							RASTER_DEBUGF(4, "deleting first element %f from list", qll->tail->value);
 
 							if (NULL != qll->tail->prev) {
 								qle = qll->tail->prev;
 								qll->sum1 -= qll->tail->count;
 								qll->sum2 = qll->sum1 - qle->count;
+								quantile_llist_index_delete(qll, qll->tail);
 								quantile_llist_delete(qll->tail);
 								qll->tail = qle;
 								qll->count--;
@@ -2758,6 +2913,8 @@ rt_band_get_quantiles_stream(rt_band band,
 								qll->sum1 = 0;
 								qll->sum2 = 0;
 								qll->count = 0;
+
+								quantile_llist_index_reset(qll);
 							}
 						}
 					}
