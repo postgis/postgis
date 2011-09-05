@@ -7,5 +7,4 @@
   are not always packaged with PostGIS binary releases, but are usually plpgsql based or standard shell scripts that can be run as is.</para>
 
   &extras_tigergeocoder;
-  &extras_historytable;
 </chapter>
