@@ -164,13 +164,13 @@ const char *parser_error_messages[] =
 	} while (0);
 
 
-/* Macro to return the error message and the current position within WKB
-   NOTE: the position is handled automatically by strhex_readbyte */
+/* Macro to return the error message and the current position within WKB */
 #define LWGEOM_WKB_PARSER_ERROR(errcode) \
 	do { \
 		if (!parser_ferror_occured) { \
 			parser_ferror_occured = -1 * errcode; \
 			current_lwg_parser_result->message = parser_error_messages[errcode]; \
+			current_lwg_parser_result->errlocation = lwg_parse_yylloc.last_column; \
 		} \
 	} while (0);
 
@@ -1346,7 +1346,7 @@ strhex_readbyte(const char* in)
 
 	if (!parser_ferror_occured)
 	{
-		lwg_parse_yylloc.last_column++;
+		lwg_parse_yylloc.last_column += 2;
 		return to_hex[(int)*in]<<4 | to_hex[(int)*(in+1)];
 	}
 	else
@@ -1679,6 +1679,7 @@ parse_it(LWGEOM_PARSER_RESULT *lwg_parser_result, const char *geometry, int flag
 	lwg_parser_result->serialized_lwgeom = NULL;
 	lwg_parser_result->size = 0;
 	lwg_parser_result->wkinput = geometry;
+	lwg_parser_result->errlocation = 0;
 
 	init_parser(geometry);
 
