@@ -3499,14 +3499,14 @@ WHERE rid = 2;
 					<paramdef choice='opt'><type>double precision </type> <parameter>scaley=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
-		
+
 			<refsection>
 				<title>Description</title>
 				
@@ -5214,7 +5214,48 @@ FROM dummy_rast WHERE rid = 2;
 
  b1pixtyp
 ----------
- 2BUI</programlisting>				
+ 2BUI</programlisting>
+ <informaltable>
+  <tgroup cols="2">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgrebra01.png" />
+			  </imageobject>
+			  <caption><para>original (column rast-view)</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_band02.png" />
+			  </imageobject>
+			  <caption><para>rast_view_ma</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
+ <para>Create a new 3 band raster same pixel type from our original 3 band raster with first band
+ altered by map algebra and remaining 2 bands unaltered.</para>
+				<programlisting>SELECT ST_AddBand(
+ST_AddBand(
+	ST_AddBand(
+		ST_MakeEmptyRaster(rast_view),
+			ST_MapAlgebra(rast_view,1, 'tan(rast)*rast')
+			), 
+		ST_Band(rast_view,2)
+			),
+	ST_Band(rast_view, 3) As rast_view_ma
+)
+FROM wind
+WHERE rid=167;		
+				</programlisting>			
 			</refsection>
 
 			<refsection>
@@ -5408,10 +5449,26 @@ col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
   2 |   3 | 254 |   0 | 112 |   0 | 108 |   3
   3 |   3 | 254 |   0 | 169 |   0 | 175 |   4</programlisting>		
 			</refsection>
+			<refsection>
+				<title>Example: Advanced Map a single band 32BF raster to multiple viewable bands</title>
+				
+				<para>Create a new 3 band (8BUI,8BUI,8BUI viewable raster) from a raster that has only one 32bf band </para>
+				<programlisting>
+ALTER TABLE wind ADD COLUMN rast_view raster;
+UPDATE wind 
+	SET rast_view = 
+		ST_AddBand(
+			ST_AddBand(
+				ST_AddBand(ST_MakeEmptyRaster(rast), 
+					ST_Reclass(rast, 1,'0.1-5]:1-255,(5-1000:0'::text, '8BUI'::text,0))
+				, ST_Reclass(rast,1, '0-5):0,[5-8:1-255,(8-1000:0'::text, '8BUI'::text,0)),
+				ST_Reclass(rast,1,'0-8]:0,(8-100:200-255'::text, '8BUI'::text,0));</programlisting>		
+			</refsection>
+
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Band" />, <xref linkend="RT_ST_BandPixelType" />,  <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" /></para>
+				<para><xref linkend="RT_ST_AddBand" />,<xref linkend="RT_ST_Band" />, <xref linkend="RT_ST_BandPixelType" />,<xref linkend="RT_ST_MakeEmptyRaster" />,  <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
