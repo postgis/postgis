@@ -5222,7 +5222,7 @@ FROM dummy_rast WHERE rid = 2;
 		<entry><informalfigure>
 			<mediaobject>
 			  <imageobject>
-				<imagedata fileref="images/st_mapalgrebra01.png" />
+				<imagedata fileref="images/st_mapalgebra01.png" />
 			  </imageobject>
 			  <caption><para>original (column rast-view)</para></caption>
 			</mediaobject>
@@ -5231,7 +5231,7 @@ FROM dummy_rast WHERE rid = 2;
 		<entry><informalfigure>
 			<mediaobject>
 			  <imageobject>
-				<imagedata fileref="images/st_band02.png" />
+				<imagedata fileref="images/st_mapalgebra02.png" />
 			  </imageobject>
 			  <caption><para>rast_view_ma</para></caption>
 			</mediaobject>
