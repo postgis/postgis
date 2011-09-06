@@ -82,7 +82,7 @@
 		<refentry id="Postgis_Enable_History">
 			<refnamediv>
 				<refname>Postgis_Enable_History</refname>
-				<refpurpose>Registers a table geometry column in the history_information table for tracking and also adds in side line history table and insert, update, delete rules on the table.</refpurpose>
+				<refpurpose>Registers a tablein the history_information table for tracking and also adds in side line history table and insert, update, delete rules on the table.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -91,7 +91,6 @@
 						<funcdef>boolean <function>Postgis_Enable_History</function></funcdef>
 						<paramdef><type>text </type> <parameter>p_schema</parameter></paramdef>
 						<paramdef><type>text </type> <parameter>p_table</parameter></paramdef>
-						<paramdef><type>text </type> <parameter>p_geometry_field</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
