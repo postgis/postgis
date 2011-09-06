@@ -1301,6 +1301,48 @@ SELECT ST_NumBands(ST_Band(rast, ARRAY[2,3])) As num_bands
     FROM dummy_rast 
 WHERE rid=2;
 					</programlisting>
+<informaltable>
+  <tgroup cols="3">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_band01.png" />
+			  </imageobject>
+			  <caption><para>original (column rast)</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_band02.png" />
+			  </imageobject>
+			  <caption><para>dupe_band</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_band03.png" />
+			  </imageobject>
+			  <caption><para>sing_band</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
+		<programlisting>--Make a new raster with 2nd band of original and 1st band repeated twice,
+and another with just the third band
+SELECT rast, ST_Band(rast, ARRAY[2,1,1]) As dupe_band,  
+	ST_Band(rast, 3) As sing_band 
+FROM samples.than_chunked 
+WHERE rid=35;							
+					</programlisting>
 			
 			</refsection>
 
