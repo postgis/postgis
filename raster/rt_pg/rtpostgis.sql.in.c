@@ -1154,8 +1154,7 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[] DEFAULT NULL)
 	BEGIN
 		num_bands := st_numbands($1);
 
-		-- JPEG only allows 1 or 3 bands
-		-- we only use the first
+		-- JPEG allows 1 or 3 bands
 		IF num_bands <> 1 AND num_bands <> 3 THEN
 			RAISE NOTICE 'The JPEG format only permits one or three bands.  The first band will be used.';
 			rast2 := st_band(rast, ARRAY[1]);
@@ -1230,9 +1229,9 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 	BEGIN
 		num_bands := st_numbands($1);
 
-		-- PNG only allows 1 or 3 bands
-		IF num_bands <> 1 AND num_bands <> 3 THEN
-			RAISE NOTICE 'The PNG format only permits one or three bands.  The first band will be used.';
+		-- PNG allows 1, 3 or 4 bands
+		IF num_bands <> 1 AND num_bands <> 3 AND num_bands <> 4 THEN
+			RAISE NOTICE 'The PNG format only permits one, three or four bands.  The first band will be used.';
 			rast2 := st_band($1, ARRAY[1]);
 			num_bands := st_numbands(rast2);
 		ELSE
