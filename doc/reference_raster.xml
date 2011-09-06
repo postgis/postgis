@@ -4582,7 +4582,7 @@ FROM dummy_rast WHERE rid=2;
 		<refentry id="RT_ST_AsJPEG">
 			<refnamediv>
 				<refname>ST_AsJPEG</refname>
-				<refpurpose>Return the raster tile selected bands as a single Joint Photographic Exports Group (JPEG) image (byte array).  If no band is specified, then the first 3 bands are used.</refpurpose>
+				<refpurpose>Return the raster tile selected bands as a single Joint Photographic Exports Group (JPEG) image (byte array).  If no band is specified and 1 or more than 3 bands, then only the first band is used.  If only 3 bands then all 3 bands are used and mapped to RGB.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -4622,7 +4622,7 @@ FROM dummy_rast WHERE rid=2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the selected bands of the raster as a single  Joint Photographic Exports Group Image (JPEG).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. If no band is specified, then the first 3 bands are exported.  There are many variants of the function with many options. These are itemized below:</para>
+				<para>Returns the selected bands of the raster as a single  Joint Photographic Exports Group Image (JPEG).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. If no band is specified and 1 or more than 3 bands, then only the first band is used.  If 3 bands then all 3 bands are used.  There are many variants of the function with many options. These are itemized below:</para>
                 <itemizedlist>
                     <listitem>
                        <varname>nband</varname> is for single band exports.
@@ -4664,7 +4664,7 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 		<refentry id="RT_ST_AsPNG">
 			<refnamediv>
 				<refname>ST_AsPNG</refname>
-				<refpurpose>Return the raster tile selected bands as a single portable network graphics (PNG) image (byte array).  If no band is specified, then the first 3 bands are used.</refpurpose>
+				<refpurpose>Return the raster tile selected bands as a single portable network graphics (PNG) image (byte array).  If 1,3, or 4 bands in raster and no bands are specified, then all bands are used.  If more 2 or more than 4 bands and no bands specified, then only band 1 is used.  Bands are mapped to RGB or RGBA space.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -4725,6 +4725,10 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 				
 					<programlisting>SELECT ST_AsPNG(rast) As rastpng
 FROM dummy_rast WHERE rid=2;
+
+-- export the first 3 bands and map band 3 to Red, band 1 to Green, band 2 to blue
+SELECT ST_AsPNG(rast, ARRAY[3,1,2]) As rastpng
+FROM dummy_rast WHERE rid=2;  
 				</programlisting>
 			
 			</refsection>
