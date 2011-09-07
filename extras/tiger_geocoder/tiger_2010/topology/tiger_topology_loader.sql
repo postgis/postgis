@@ -91,10 +91,10 @@ BEGIN
 						FROM 
 						( 
 							SELECT start_node AS tnid, ST_StartPoint(geom) As geom 
-								FROM tmp_edges As e LEFT JOIN ' || quote_ident(toponame) || '.node AS n ON e.start_node = n.node_id
+								FROM tmp_edge As e LEFT JOIN ' || quote_ident(toponame) || '.node AS n ON e.start_node = n.node_id
 						UNION ALL 
 							SELECT end_node AS tnid, ST_EndPoint(geom) As geom 
-							FROM tmp_edges As e LEFT JOIN ' || quote_ident(toponame) || '.node AS n ON e.end_node = n.node_id 
+							FROM tmp_edge As e LEFT JOIN ' || quote_ident(toponame) || '.node AS n ON e.end_node = n.node_id 
 							WHERE n.node_id IS NULL) As f
 					 ';
 	EXECUTE var_sql USING var_statefp, var_rgeom;
