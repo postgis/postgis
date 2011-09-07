@@ -52,7 +52,7 @@ BEGIN
 									FROM tiger.edges 
 									WHERE statefp = $1 AND ST_Intersects(the_geom, $2)
 										)
-					SELECT DISTINCT ON (t.tlid) t.tlid As edge_id,t.the_geom As geom, t.tnidf As start_node, t.tnidt As end_node, t.tfidl As left_face, t.tfidr As right_face, tl.tlid AS next_left_edge,  tr.tlid As next_right_egdge
+					SELECT DISTINCT ON (t.tlid) t.tlid As edge_id,t.the_geom As geom, t.tnidf As start_node, t.tnidt As end_node, t.tfidl As left_face, t.tfidr As right_face, tl.tlid AS next_left_edge,  tr.tlid As next_right_edge
 						FROM 
 							te AS t INNER JOIN te As tl ON (t.tnidf = tl.tnidt) 
 							 INNER JOIN te As tr ON (t.tnidt = tr.tnidf) 				
@@ -90,10 +90,10 @@ BEGIN
 					SELECT DISTINCT ON(tnid) tnid, geom
 						FROM 
 						( 
-							SELECT start_node AS tnid, ST_StartPoint(geom) As geom 
+							SELECT start_node AS tnid, ST_StartPoint(e.geom) As geom 
 								FROM tmp_edge As e LEFT JOIN ' || quote_ident(toponame) || '.node AS n ON e.start_node = n.node_id
 						UNION ALL 
-							SELECT end_node AS tnid, ST_EndPoint(geom) As geom 
+							SELECT end_node AS tnid, ST_EndPoint(e.geom) As geom 
 							FROM tmp_edge As e LEFT JOIN ' || quote_ident(toponame) || '.node AS n ON e.end_node = n.node_id 
 							WHERE n.node_id IS NULL) As f
 					 ';
