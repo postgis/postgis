@@ -63,7 +63,7 @@ BEGIN
 	var_sql := 'ALTER TABLE tmp_edge ADD CONSTRAINT pk_tmp_edge PRIMARY KEY(edge_id );';
 	EXECUTE var_sql;
 	-- CREATE node indexes on temporary edges
-	var_sql := 'CREATE INDEX idx_tmp_edge_start_node ON tmp_edge USING btree (start_node ); CREATE INDEX idx_tmp_edge_start_node ON tmp_edge USING btree (end_node );';
+	var_sql := 'CREATE INDEX idx_tmp_edge_start_node ON tmp_edge USING btree (start_node ); CREATE INDEX idx_tmp_edge_end_node ON tmp_edge USING btree (end_node );';
 
 	EXECUTE var_sql;
 
@@ -130,4 +130,3 @@ END
 $$
   LANGUAGE plpgsql VOLATILE
   COST 1000;
-
