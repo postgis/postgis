@@ -22,7 +22,7 @@ $$
 DECLARE
   rec RECORD;
   rec2 RECORD;
-  topology_id integer;
+  var_topology_id integer;
   n int4;
   ret text;
 BEGIN
@@ -32,7 +32,7 @@ BEGIN
   BEGIN
     SELECT * FROM topology.topology WHERE name = atopology INTO STRICT rec;
     -- TODO: catch <no_rows> to give a nice error message
-    topology_id := rec.id;
+    var_topology_id := rec.id;
 
     ret := ret || ' (' || rec.id || '), ';
     ret := ret || 'SRID ' || rec.srid || ', '
@@ -89,7 +89,7 @@ BEGIN
 
   -- TODO: print informations about layers
   FOR rec IN SELECT * FROM topology.layer l
-    WHERE l.topology_id = topology_id
+    WHERE l.topology_id = var_topology_id
     ORDER by layer_id
   LOOP -- {
     ret = ret || 'Layer ' || rec.layer_id || ', type ';
