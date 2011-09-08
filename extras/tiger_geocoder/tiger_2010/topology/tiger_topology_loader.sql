@@ -57,8 +57,8 @@ BEGIN
                         , t.tnidf As start_node, t.tnidt As end_node, t.tfidl As left_face
                         , t.tfidr As right_face, tl.tlid AS next_left_edge,  tr.tlid As next_right_edge
 						FROM 
-							te AS t LEFT JOIN te As tl ON (t.tnidf = tl.tnidt AND t.tfidl IN(tl.tfidl,tl.tfidr) ) 
-							 LEFT JOIN te As tr ON (t.tnidt = tr.tnidf AND t.tfidr IN(tr.tfidl,tr.tfidr)) 				
+							te AS t LEFT JOIN te As tl ON (t.tnidf = tl.tnidt AND t.tfidl = tl.tfidl)
+							 LEFT JOIN te As tr ON (t.tnidt = tr.tnidf AND t.tfidr = tr.tfidr)				
 						';
 	EXECUTE var_sql USING var_statefp, var_rgeom;
 	GET DIAGNOSTICS var_rcnt = ROW_COUNT;
