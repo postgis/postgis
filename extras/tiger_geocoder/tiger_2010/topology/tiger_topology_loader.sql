@@ -1,4 +1,4 @@
-﻿/**********************************************************************
+/**********************************************************************
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
@@ -23,6 +23,8 @@
  * SELECT topology.DropTopology('topo_boston');
  * SELECT topology.CreateTopology('topo_boston', 4269);
  * SELECT tiger.topology_load_tiger('topo_boston', 'place', '2507000'); 
+ * SELECT topology.TopologySummary('topo_boston');
+ * SELECT topology.ValidateTopology('topo_boston');
  ****/
 CREATE OR REPLACE FUNCTION tiger.topology_load_tiger(IN toponame varchar,  
 	region_type varchar, region_id varchar)
@@ -110,8 +112,7 @@ BEGIN
 						SELECT f.tfid, ST_Envelope(f.the_geom) As mbr 
 							FROM tiger.faces AS f
 								WHERE statefp = $1 AND 
-								( ST_Intersects(the_geom, $2) 
-									OR tfid IN(SELECT left_face FROM tmp_edge)
+								(  tfid IN(SELECT left_face FROM tmp_edge)
 									OR tfid IN(SELECT right_face FROM tmp_edge) )
 							AND tfid NOT IN(SELECT face_id FROM ' || quote_ident(toponame) || '.face) ';
 	EXECUTE var_sql USING var_statefp, var_rgeom;
@@ -119,6 +120,28 @@ BEGIN
 	var_result := var_result || var_rcnt::text || ' faces added. ';
    -- end load in faces
    
+   -- add remaining missing edges of present faces --
+   var_sql := 'INSERT INTO tmp_edge(edge_id, geom, start_node, end_node, left_face, right_face, next_left_edge, next_right_edge)	
+   			WITH te AS 
+   			(SELECT tlid,  ST_GeometryN(the_geom,1) As the_geom, tnidf, tnidt, tfidl, tfidr 
+									FROM tiger.edges 
+									WHERE statefp = $1 AND
+									 tfidl IN(SELECT face_id FROM ' || quote_ident(toponame) || '.face)
+				AND tfidr IN(SELECT face_id FROM ' || quote_ident(toponame) || '.face)
+				AND tlid NOT IN(SELECT edge_id FROM tmp_edge)
+				 )
+				
+			SELECT DISTINCT ON (t.tlid) t.tlid As edge_id,t.the_geom As geom 
+                        , t.tnidf As start_node, t.tnidt As end_node, t.tfidl As left_face
+                        , t.tfidr As right_face, tl.tlid AS next_left_edge,  tr.tlid As next_right_edge
+				FROM 
+						te AS t LEFT JOIN te As tl 
+								ON (t.tnidf = tl.tnidt AND t.tfidl = tl.tfidl)
+			LEFT JOIN te As tr ON (t.tnidt = tr.tnidf AND t.tfidr = tr.tfidr)
+			';
+	EXECUTE var_sql USING var_statefp;
+	GET DIAGNOSTICS var_rcnt = ROW_COUNT;
+	var_result := var_result || var_rcnt::text || ' edges of faces added. ';
    	-- start load in nodes
 	var_sql := 'INSERT INTO ' || quote_ident(toponame) || '.node(node_id, geom)
 					SELECT DISTINCT ON(tnid) tnid, geom
@@ -141,7 +164,8 @@ BEGIN
    	var_sql := 'UPDATE ' || quote_ident(toponame) || '.node AS n
 					SET containing_face = f.tfid
 						FROM (SELECT tfid, the_geom
-							FROM tiger.faces WHERE statefp = $1 AND ST_Intersects(the_geom, $2) 
+							FROM tiger.faces WHERE statefp = $1 
+							AND tfid IN(SELECT face_id FROM ' || quote_ident(toponame) || '.face) 
 							) As f
 						WHERE ST_Contains(f.the_geom, n.geom) ';
 	EXECUTE var_sql USING var_statefp, var_rgeom;
@@ -162,6 +186,8 @@ BEGIN
 							WHERE t.edge_id NOT IN(SELECT edge_id FROM ' || quote_ident(toponame) || '.edge) 				
 						';
 	EXECUTE var_sql USING var_statefp, var_rgeom;
+	GET DIAGNOSTICS var_rcnt = ROW_COUNT;
+	var_result := var_result || ' ' || var_rcnt::text || ' edges added. ';
 	var_sql = 'DROP TABLE tmp_edge;';
 	EXECUTE var_sql;
 	RETURN var_result;
