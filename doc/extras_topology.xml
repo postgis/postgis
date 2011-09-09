@@ -1519,14 +1519,21 @@ SELECT (topology.ST_GetFaceEdges('tt', 1)).*;
         6 |    2
         7 |    3
 (7 rows)
- 
+</programlisting>
+<programlisting>
+-- Returns the sequenc, edge id
+-- , and geometry of the edges that bound face 1
+-- If you just need geom and seq, can use ST_GetFaceGeometry
+SELECT t.seq, t.edge, geom
+FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
+	INNER JOIN tt.edge AS e ON abs(t.edge) = e.edge_id;
 </programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddFace"/></para>
+				<para><xref linkend="AddFace"/>, <xref linkend="ST_GetFaceGeometry"/></para>
 			</refsection>
 		</refentry>
 		
@@ -1570,8 +1577,7 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 --------------------------------------------------------------------------------
  POLYGON((234776.9 899563.7,234896.5 899456.7,234914 899436.4,234946.6 899356.9,
 234872.5 899328.7,234891 899285.4,234992.5 899145,234890.6 899069,
-234755.2 899255.4,234612.7 899379.4,234776.9 899563.7))
- 
+234755.2 899255.4,234612.7 899379.4,234776.9 899563.7)) 
 </programlisting>
 			</refsection>
 		
