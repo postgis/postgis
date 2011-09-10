@@ -810,7 +810,7 @@ SELECT tiger.topology_load_tiger('topo_boston', 'place', '2507000');
 19962 nodes contained in a face.  0 edge start end corrected.  31597 edges added. 
  
 -- 41 ms --
-SELECT topology.TopologySummary('topo_suffolk');
+SELECT topology.TopologySummary('topo_boston');
  -- topologysummary--
 Topology topo_boston (15), SRID 2249, precision 0.25
 20576 nodes, 31597 edges, 11109 faces, 0 topogeoms in 0 layers
