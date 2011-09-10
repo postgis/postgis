@@ -26,7 +26,7 @@
  * SELECT topology.CreateTopology('topo_boston', 2249,1);
  * SELECT tiger.topology_load_tiger('topo_boston', 'place', '2507000'); 
  * SELECT topology.TopologySummary('topo_boston');
- * SELECT topology.ValidateTopology('topo_boston');  ("edge crosses node",81045651,85742215)
+ * SELECT topology.ValidateTopology('topo_boston');  
  ****/
 CREATE OR REPLACE FUNCTION tiger.topology_load_tiger(IN toponame varchar,  
 	region_type varchar, region_id varchar)
