@@ -858,7 +858,7 @@ SELECT * FROM
       </refsection>
       <refsection>
         <title>See Also</title>
-        <para><xref linkend="Create_Topology" />, <xref linkend="TopologySummary" />, <xref linkend="ValidateTopology" /></para>
+        <para><xref linkend="CreateTopology" />, <xref linkend="TopologySummary" />, <xref linkend="ValidateTopology" /></para>
       </refsection>
    </refentry>
   </sect1>
