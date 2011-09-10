@@ -1,4 +1,4 @@
-/**********************************************************************
+/*******************************************************************
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
@@ -86,31 +86,6 @@ BEGIN
 	var_sql := 'CREATE INDEX idx_tmp_edge_next_left_edge ON tmp_edge USING btree (next_left_edge ); CREATE INDEX idx_tmp_edge_next_right_edge ON tmp_edge USING btree (next_right_edge);';
 
 	EXECUTE var_sql;
-
-	-- Add missing edges that are next right of existing edges
-	/** var_sql := 'INSERT INTO tmp_edge(edge_id, geom, start_node, end_node, left_face, right_face, next_left_edge, next_right_edge)
-	SELECT DISTINCT ON (t.tlid) t.tlid As edge_id,ST_GeometryN(ST_LineMerge(t.the_geom),1) As geom 
-                        , t.tnidf As start_node, t.tnidt As end_node, t.tfidl As left_face
-                        , t.tfidr As right_face, tl.edge_id AS next_left_edge,  tr.tlid As next_right_edge
-						FROM 
-							(SELECT * FROM edges WHERE statefp = $1 ) AS t INNER JOIN tmp_edge As tl ON (t.tnidt = tl.start_node AND t.tlid = tl.next_left_edge) 
-							 INNER JOIN (SELECT * FROM edges WHERE statefp = $1 )  As tr ON (t.tnidt = tr.tnidf AND t.tfidr IN( tr.tfidl, tr.tfidr) ) 
-						 WHERE t.tlid NOT IN(SELECT edge_id FROM tmp_edge); ';
-	EXECUTE var_sql USING var_statefp;
-
-	-- Add missing edges that are next left of existing edges
-	var_sql := 'INSERT INTO tmp_edge(edge_id, geom, start_node, end_node, left_face, right_face, next_left_edge, next_right_edge)
-	SELECT DISTINCT ON (t.tlid) t.tlid As edge_id,ST_GeometryN(ST_LineMerge(t.the_geom),1)  As geom 
-                        , t.tnidf As start_node, t.tnidt As end_node, t.tfidl As left_face
-                        , t.tfidr As right_face, tl.tlid AS next_left_edge,  tr.edge_id As next_right_edge
-						FROM 
-							(SELECT * FROM edges WHERE statefp = $1 ) AS t INNER JOIN tmp_edge As tr ON (t.tlid = tr.next_left_edge
-							AND t.tnidt = tr.start_node) 
-							 INNER JOIN (SELECT * FROM edges WHERE statefp = $1 )  As tl ON (t.tnidf = tl.tnidt AND  t.tfidl IN( tl.tfidl, tl.tfidr)) 
-							 WHERE t.tlid NOT IN(SELECT edge_id FROM tmp_edge); ';
-	EXECUTE var_sql USING var_statefp;
-
-	**/
 	
 	-- start load in faces
 	var_sql := 'INSERT INTO ' || quote_ident(toponame) || '.face(face_id, mbr) 
@@ -196,7 +171,7 @@ BEGIN
    -- TODO: Load in edges --
    var_sql := '
    	INSERT INTO ' || quote_ident(toponame) || '.edge(edge_id, geom, start_node, end_node, left_face, right_face, next_left_edge, next_right_edge)
-					SELECT t.edge_id, t.geom, t.start_node, t.end_node, t.left_face, t.right_face, t.next_left_edge, t.next_right_edge
+					SELECT t.edge_id, t.geom, t.start_node, t.end_node, COALESCE(t.left_face,0) As left_face, COALESCE(t.right_face,0) As right_face, t.next_left_edge, t.next_right_edge
 						FROM 
 							tmp_edge AS t
 							WHERE t.edge_id NOT IN(SELECT edge_id FROM ' || quote_ident(toponame) || '.edge) 				

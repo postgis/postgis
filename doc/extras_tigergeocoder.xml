@@ -749,5 +749,116 @@ FROM (SELECT address As actual_addr, lon, lat,
         <para><xref linkend="Pprint_Addy" />, <xref linkend="Geocode" /></para>
       </refsection>
     </refentry>
+    
+   <refentry id="Topology_Load_Tiger">
+      <refnamediv>
+        <refname>Topology_Load_Tiger</refname>
+    
+        <refpurpose>Loads a defined region of tiger data into a PostGIS Topology and transforming the tiger data to spatial reference of the topology
+        	and snapping to the precision tolerance of the topology.</refpurpose>
+      </refnamediv>
+    
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>text <function>Topology_Load_Tiger</function></funcdef>
+            <paramdef><type>varchar </type> <parameter>topo_name</parameter></paramdef>
+            <paramdef><type>varchar </type> <parameter>region_type</parameter></paramdef>
+            <paramdef><type>varchar </type> <parameter>region_id</parameter></paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+    
+      <refsection>
+        <title>Description</title>
+    
+        <para>Loads a defined region of tiger data into a PostGIS Topology. The faces, nodes and edges are transformed to the spatial reference system of the target topology and points are snapped to the tolerance of the target topology. The created faces, nodes, edges maintain the same ids as the original Tiger data faces, nodes, edges
+        so that datasets can be in the future be more easily reconciled with tiger data. Returns summary details about the process.</para>
+        
+        <para>This would be useful for example for redistricting data where you require the newly formed polygons to follow the center lines of streets.</para>
+    
+        <note><para>This function relies on Tiger data as well as the <xref linkend="Topology" /> module.  If you have not loaded data covering the region of interest, then no topology records will be created. This function will also fail if you have not created a topology using the topology functions.</para></note>
+        
+        <note><para>Most topology validation errors are a result of tolerance issues where after transformation the edges points don't quite line up or overlap. 
+        To remedy the situation you may want to increase or lower the precision if you get topology validation failures.</para></note>
+        <para> Required arguments:</para>
+         <orderedlist>
+          <listitem>
+            <para><varname>topo_name</varname> The name of an existing PostGIS topology to load data into.</para>
+          </listitem>
+          <listitem>
+            <para><varname>region_type</varname> The type of bounding region. Currently only <varname>place</varname> and <varname>county</varname> are supported.  Plan is to have several more.  This is the table to look into to define the region bounds.  e.g <varname>tiger.place</varname>, <varname>tiger.county</varname></para>
+          </listitem>
+          <listitem>
+            <para><varname>region_id</varname> This is what TIGER calls the geoid.  It is the unique identifier of the region in the table.  For place it is the  <varname>plcidfp</varname> column in <varname>tiger.place</varname>.  For county it is the <varname>cntyidfp</varname> column in <varname>tiger.county</varname>
+            </para>
+          </listitem>
+        </orderedlist>
+      
+        <!-- use this format if new function -->
+        <para>Availability: 2.0.0 </para>
+      </refsection>
+      <refsection>
+      <title>Example: Boston, Massachusetts Topology</title>
+      <para>Create a topology for Boston, Massachusetts in Mass State Plane Feet (2249) 
+      	with tolerance 0.25 feet and then load in Boston city tiger faces, edges, nodes.</para>
+      <programlisting>SELECT topology.CreateTopology('topo_boston', 2249, 0.25);
+-- this took 209,763 ms ~ 4 minutes on my slow windows 2003 disk running 9.1rc1
+SELECT tiger.topology_load_tiger('topo_boston', 'place', '2507000'); 
+-- topology_loader_tiger --
+29722 edges holding in temporary. 11108 faces added. 1875 edges of faces added.  20576 nodes added.  
+19962 nodes contained in a face.  0 edge start end corrected.  31597 edges added. 
+ 
+-- 41 ms --
+SELECT topology.TopologySummary('topo_suffolk');
+ -- topologysummary--
+Topology topo_boston (15), SRID 2249, precision 0.25
+20576 nodes, 31597 edges, 11109 faces, 0 topogeoms in 0 layers
 
+-- 59,814 ms to validate yeh returned no errors --
+SELECT * FROM 
+    topology.ValidateTopology('topo_boston'); 
+    
+       error       |   id1    |    id2
+-------------------+----------+-----------
+      </programlisting>
+      </refsection>
+      
+      <refsection>
+      <title>Example: Suffolk, Massachusetts Topology</title>
+      <para>Create a topology for Suffolk, Massachusetts in Mass State Plane Meters (26986) 
+      	with tolerance 0.25 meters and then load in Suffolk county tiger faces, edges, nodes.</para>
+      <programlisting>SELECT topology.CreateTopology('topo_suffolk', 26986, 0.25);
+-- this took 253,187 ms ~ 4 minutes on my slow disk running 9.1rc1
+SELECT tiger.topology_loader_tiger('topo_suffolk', 'county', '25025'); 
+-- topology_loader_tiger --
+ 36003 edges holding in temporary. 13518 faces added. 2172 edges of faces added.  24761 nodes added.  
+ 24075 nodes contained in a face.  0 edge start end corrected.  38175 edges added. 
+ 
+-- 111 ms --
+SELECT topology.TopologySummary('topo_suffolk');
+ -- topologysummary--
+ Topology topo_suffolk (14), SRID 26986, precision 0.25
+24761 nodes, 38175 edges, 13519 faces, 0 topogeoms in 0 layers
+
+-- 80,146 ms to validate --
+SELECT * FROM 
+    topology.ValidateTopology('topo_suffolk'); 
+    
+       error       |   id1    |    id2
+-------------------+----------+-----------
+ coincident nodes  | 81045651 |  81064553
+ edge crosses node | 81045651 |  85737793
+ edge crosses node | 81045651 |  85742215
+ edge crosses node | 81045651 | 620628939
+ edge crosses node | 81064553 |  85697815
+ edge crosses node | 81064553 |  85728168
+ edge crosses node | 81064553 |  85733413
+      </programlisting>
+      </refsection>
+      <refsection>
+        <title>See Also</title>
+        <para><xref linkend="Create_Topology" />, <xref linkend="TopologySummary" />, <xref linkend="ValidateTopology" /></para>
+      </refsection>
+   </refentry>
   </sect1>
