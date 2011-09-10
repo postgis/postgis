@@ -139,18 +139,18 @@ comments-uninstall:
 	make -f Makefile.comments uninstall
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
-	@mkdir -p $(PGSQL_DOCDIR)/postgis
-	@mkdir -p $(PGSQL_MANDIR)/man1
-	cp html/postgis.html $(PGSQL_DOCDIR)/postgis/postgis.html
-	cp ../README.postgis $(PGSQL_DOCDIR)/postgis/README.postgis
-	cp man/pgsql2shp.1 $(PGSQL_MANDIR)/man1/pgsql2shp.1
-	cp man/shp2pgsql.1 $(PGSQL_MANDIR)/man1/shp2pgsql.1
+	@mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
+	@mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
+	cp html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+	cp ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
+	cp man/pgsql2shp.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
+	cp man/shp2pgsql.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
 
 uninstall:
-	rm -f $(PGSQL_DOCDIR)/postgis/postgis.html
-	rm -f $(PGSQL_DOCDIR)/postgis/README.postgis
-	rm -f $(PGSQL_MANDIR)/man1/shp2pgsql.1
-	rm -f $(PGSQL_MANDIR)/man1/pgsql2shp.1
+	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
+	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
+	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
 
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
