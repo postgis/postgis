@@ -282,7 +282,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  Windows or Mac.
 	</para>
 
-	<sect2>
+	<sect2 id="installation_configuration">
 	  <title>Configuration</title>
 
 	  <para>

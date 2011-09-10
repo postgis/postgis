@@ -775,9 +775,9 @@ FROM (SELECT address As actual_addr, lon, lat,
         <para>Loads a defined region of tiger data into a PostGIS Topology. The faces, nodes and edges are transformed to the spatial reference system of the target topology and points are snapped to the tolerance of the target topology. The created faces, nodes, edges maintain the same ids as the original Tiger data faces, nodes, edges
         so that datasets can be in the future be more easily reconciled with tiger data. Returns summary details about the process.</para>
         
-        <para>This would be useful for example for redistricting data where you require the newly formed polygons to follow the center lines of streets.</para>
+        <para>This would be useful for example for redistricting data where you require the newly formed polygons to follow the center lines of streets and for the resulting polygons not to overlap.</para>
     
-        <note><para>This function relies on Tiger data as well as the <xref linkend="Topology" /> module.  If you have not loaded data covering the region of interest, then no topology records will be created. This function will also fail if you have not created a topology using the topology functions.</para></note>
+        <note><para>This function relies on Tiger data as well as the installation of the PostGIS topology module.  For more information, refer to <xref linkend="Topology" /> and <xfref linkend="installation_configuration" />.  If you have not loaded data covering the region of interest, then no topology records will be created. This function will also fail if you have not created a topology using the topology functions.</para></note>
         
         <note><para>Most topology validation errors are a result of tolerance issues where after transformation the edges points don't quite line up or overlap. 
         To remedy the situation you may want to increase or lower the precision if you get topology validation failures.</para></note>
