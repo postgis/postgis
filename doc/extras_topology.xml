@@ -360,7 +360,7 @@ topoid
 			<refsection>
 				<title>See Also</title>
 			
-				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_InitTopoGeo" /></para>
+				<para><xref linkend="spatial_ref_sys"/>, <xref linkend="ST_InitTopoGeo" />, <xref linkend="Topology_Load_Tiger" /></para>
 			</refsection>
 		</refentry>
 		<refentry id="DropTopology">
@@ -580,6 +580,11 @@ This example makes a backup of a topology called ma_topo
   Hierarchy level 1, child layer 2
   Deploy: features.big_signs.feature</programlisting>
 			</refsection>
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="Topology_Load_Tiger" /></para>
+			</refsection>
 		</refentry>
 		
 		<refentry id="ValidateTopology">
@@ -623,7 +628,7 @@ face without edges |   0 |
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="validatetopology_returntype"/></para>
+				<para><xref linkend="validatetopology_returntype"/>, <xref linkend="Topology_Load_Tiger" /></para>
 			</refsection>
 		</refentry>
 	</sect1>
