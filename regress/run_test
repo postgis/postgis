@@ -396,6 +396,23 @@ run_loader_test ()
 	return 0
 }
 
+# Log an initialization error and optionally drop the db
+init_db_error ()
+{
+	echo
+	echo " Something went wrong ($1)." 
+	echo " For details, check ${TMPDIR}/regress_log"
+	echo
+
+	if test x"$OPT_DROP" = "xyes" -a x"$OPT_CREATE" = "xyes"; then
+		dropdb "${DB}" > /dev/null
+	else
+		: echo "Drop database ${DB} manually"
+	fi
+
+	exit 1
+}
+
 ###################################################
 # 
 # Parse command line opts
@@ -452,11 +469,11 @@ if test -z "$db_exists"; then
 
 		createdb --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
-		${PSQL} ${_psql_opts} -Xf ${REGDIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+		${PSQL} ${_psql_opts} -Xf ${REGDIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module initialization"
 		if test x"$OPT_WITH_TOPO" = "xyes"; then
 			if test -e ${REGDIR}/../topology/topology.sql; then
 				echo "Adding topology support" 
-				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1
+				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology initialization"
 			else
 				echo "Topology support skipped (topology.sql  not found)" 
 			fi
@@ -465,7 +482,7 @@ if test -z "$db_exists"; then
 			SCRIPT=${REGDIR}/../raster/test/regress/rtpostgis.sql
 			if test -e ${SCRIPT}; then
 				echo "Adding raster support"
-				${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1
+				${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster module initialization"
 			else
 				echo "Raster support skipped (rtpostgis.sql  not found)" 
 			fi
