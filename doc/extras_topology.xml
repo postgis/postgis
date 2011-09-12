@@ -168,24 +168,24 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
 		  </refsection>
             <refsection>
                 <title>Examples</title>
-                 <programlisting>SELECT '{{1,2},{3,4}}'::topology.topoelementarray As tea;
+                 <programlisting>SELECT '{{1,2},{4,3}}'::topology.topoelementarray As tea;
   tea
 -------
-{{1,2},{3,4}}
+{{1,2},{4,3}}
 
 -- more verbose equivalent --
-SELECT ARRAY[ARRAY[1,2], ARRAY[3,4]]::topology.topoelementarray As tea;
+SELECT ARRAY[ARRAY[1,2], ARRAY[4,3]]::topology.topoelementarray As tea;
 
   tea
 -------
-{{1,2},{3,4}}
+{{1,2},{4,3}}
 
 --using the array agg function packaged with topology --
 SELECT topology.TopoElementArray_Agg(ARRAY[e,t]) As tea
-  FROM generate_series(1,3) As e CROSS JOIN generate_series(1,4) As t;
+  FROM generate_series(1,4) As e CROSS JOIN generate_series(1,3) As t;
   tea
 --------------------------------------------------------------------------
-{{1,1},{1,2},{1,3},{1,4},{2,1},{2,2},{2,3},{2,4},{3,1},{3,2},{3,3},{3,4}}
+{{1,1},{1,2},{1,3},{2,1},{2,2},{2,3},{3,1},{3,2},{3,3},{4,1},{4,2},{4,3}}
                  </programlisting>
                  <programlisting>SELECT '{{1,2,4},{3,4,5}}'::topology.topoelementarray As tea;
 ERROR:  value for domain topology.topoelementarray violates check constraint "dimensions"
