@@ -164,6 +164,7 @@ ERROR:  value for domain topology.topoelement violates check constraint "dimensi
 		  <refsection>
 			<title>Description</title>
 			<para>An array of 1 or more topoelements ( a bidimensional array of integers: '{{id,type}, {id,type}, ...}').  So an array of 1 or more arrays each having 2 integers generally used to return an array of sets of element id and element type of a topology relation.</para>
+			<para>For types currrently only 3 types are supported: <varname>node</varname>=1, <varname>edge</varname>=2, <varname>face</varname>=3</para>
 		  </refsection>
             <refsection>
                 <title>Examples</title>
