@@ -3253,7 +3253,41 @@ SELECT ST_OrderingEquals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 
 	  <refsection>
 		<title>Examples</title>
+          <para>The following illustrations all return <varname>TRUE</varname>.</para>
 
+	  <informaltable>
+		<tgroup cols="3">
+		  <tbody>
+			<row>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_overlaps01.png" />
+					</imageobject>
+					<caption><para><varname>MULTIPOINT</varname> / <varname>MULTIPOINT</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_overlaps02.png" />
+					</imageobject>
+					<caption><para><varname>LINESTRING</varname> / <varname>LINESTRING</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			  <entry><para><informalfigure>
+				  <mediaobject>
+					<imageobject>
+					  <imagedata fileref="images/st_overlaps03.png" />
+					</imageobject>
+					<caption><para><varname>POLYGON</varname> / <varname>POLYGON</varname></para></caption>
+				  </mediaobject>
+				</informalfigure></para></entry>
+			</row>
+		  </tbody>
+		</tgroup>
+	  </informaltable>
 		<programlisting>--a point on a line is contained by the line and is of a lower dimension, and therefore does not overlap the line
 			nor crosses
 
@@ -3295,6 +3329,8 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 -------------+-------------+----------------+--------------+-------+-------+---------------------
  t           | f           | t              | f            |     2 |     2 |              2
 </programlisting>
+	  
+
 	  </refsection>
 
 	  <refsection>
