@@ -15,6 +15,7 @@
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_rtree.h"
+#include "lwgeom_geos_prepared.h" /* for PREPARED_GEOM define */
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
 #include "funcapi.h"
 
