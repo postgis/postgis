@@ -39,7 +39,7 @@ LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
 LIBPROJ_CFLAGS=@PROJ_CPPFLAGS@
 
 PG_CPPFLAGS+=@CPPFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
-SHLIB_LINK+=@SHLIB_LINK@ ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS)
+SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@ 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS) rtpostgis.sql
 
@@ -47,6 +47,10 @@ EXTRA_CLEAN=$(SQL_OBJS) rtpostgis.sql
 PG_CONFIG = @PGCONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
+
+# This is to workaround a bug in PGXS 8.4 win32 link line,
+# see http://trac.osgeo.org/postgis/ticket/1158#comment:57
+SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 
 # PGXS override feature. The ability to allow PostGIS to install itself
 # in a versioned directory is only available in PostgreSQL >= 8.5. To

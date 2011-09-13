@@ -68,7 +68,7 @@ OBJS=$(PG_OBJS)
 # older version of PostGIS, rather than with the static liblwgeom.a 
 # supplied with newer versions of PostGIS
 PG_CPPFLAGS += @CPPFLAGS@ -I../liblwgeom -I../libpgcommon
-SHLIB_LINK = ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a @SHLIB_LINK@ 
+SHLIB_LINK_F = ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a @SHLIB_LINK@ 
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)
@@ -77,6 +77,10 @@ EXTRA_CLEAN=$(SQL_OBJS)
 PG_CONFIG = @PGCONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
+
+# This is to workaround a bug in PGXS 8.4 win32 link line,
+# see http://trac.osgeo.org/postgis/ticket/1158#comment:57
+SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)
 
 # PGXS override feature. The ability to allow PostGIS to install itself
 # in a versioned directory is only available in PostgreSQL >= 8.5. To
