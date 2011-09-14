@@ -945,7 +945,7 @@ UPDATE boston.blockgroups AS bg
         , foo.bfaces)
 FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
 	FROM boston.blockgroups As b
-            INNER JOIN topo_boston.face As f ON b.geom && f.mbr
+            INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
         WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
             GROUP BY b.gid) As foo
 WHERE foo.gid = bg.gid; 
@@ -961,7 +961,7 @@ UPDATE boston.blockgroups AS bg
         , foo.bfaces)
 FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
 	FROM boston.blockgroups As b
-            INNER JOIN topo_boston.face As f ON b.geom && f.mbr
+            INNER JOIN topo_boston.face As f ON b.geom &amp;&amp; f.mbr
         WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
         	OR
  (  ST_Intersects(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
