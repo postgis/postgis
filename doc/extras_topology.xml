@@ -909,23 +909,83 @@ nodeid
                 <title>Description</title>
             
                 <para>Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in tho <varname>toponame</varname> schema.</para>
-                <para>tg_type is an integer: 1:[multi]point, 2:[multi]line, 3:[multi]poly, 4:collection. layer_id is the layer id in the topology.layer table.</para>
-        
+                <para>tg_type is an integer: 1:[multi]point (punctal), 2:[multi]line (lineal), 3:[multi]poly (areal), 4:collection. layer_id is the layer id in the topology.layer table.</para>
+                <para>punctal layers are formed from set of nodes, lineal layers are formed from a set of edges, areal layers are formed from a set of faces,
+                	and collections can be formed from a mixture of nodes, edges, and faces.</para>
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
 		
 		
 			<refsection>
-				<title>Examples</title>
+				<title>Examples: Form from existing edges</title>
 				<para>Create a topogeom in ri_topo schema for layer 2 (our ri_roads), of type (2) LINE, for the first edge (we loaded in <varname>ST_CreateTopoGeo</varname>.</para> 
 				<programlisting>INSERT INTO ri.ri_roads(road_name, topo) VALUES('Unknown', topology.CreateTopoGeom('ri_topo',2,2,'{{1,2}}'::topology.topoelementarray);</programlisting>
+				
+			</refsection>
+			
+			<refsection>
+				<title>Examples: Convert an areal geometry to best guess topogeometry</title>
+				<para>Lets say we have geometries that should be formed from a collection of faces. We have for example blockgroups table 
+					and want to know the topo geometry of each block group. If our data was perfectly aligned, we could do this:</para> 
+				<programlisting>
+-- create our topo geometry column --
+SELECT topology.AddTopoGeometryColumn(
+	'topo_boston', 
+	'boston', 'blockgroups', 'topo', 'POLYGON');
+	
+-- addtopgeometrycolumn --
+1
+	
+-- update our column assuming 
+-- everything is perfectly aligned with our edges
+UPDATE boston.blockgroups AS bg
+	SET topo = topology.CreateTopoGeom('topo_boston'
+        ,3,1
+        , foo.bfaces)
+FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
+	FROM boston.blockgroups As b
+            INNER JOIN topo_boston.face As f ON b.geom && f.mbr
+        WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
+            GROUP BY b.gid) As foo
+WHERE foo.gid = bg.gid; 
+</programlisting>
+
+<programlisting>
+--the world is rarely perfect allow for some error
+--count the face if 50% of it falls 
+-- within what we think is our blockgroup boundary
+UPDATE boston.blockgroups AS bg
+	SET topo = topology.CreateTopoGeom('topo_boston'
+        ,3,1
+        , foo.bfaces)
+FROM (SELECT b.gid,  topology.TopoElementArray_Agg(ARRAY[f.face_id,3]) As bfaces
+	FROM boston.blockgroups As b
+            INNER JOIN topo_boston.face As f ON b.geom && f.mbr
+        WHERE ST_Covers(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
+        	OR
+ (  ST_Intersects(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id))
+            AND ST_Area(ST_Intersection(b.geom, topology.ST_GetFaceGeometry('topo_boston', f.face_id) ) ) > 
+                ST_Area(topology.ST_GetFaceGeometry('topo_boston', f.face_id))*0.5
+                )
+            GROUP BY b.gid) As foo
+WHERE foo.gid = bg.gid; 
+
+-- and if we wanted to convert our topogeometry back
+-- to a denomalized geometry aligned with our faces and edges 
+-- cast the topo to a geometry
+-- The really cool thing is my new geometries
+-- are now aligned with my tiger street centerlines
+UPDATE boston.blockgroups SET new_geom = topo::geometry;
+</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddTopoGeometryColumn"/>, <xref linkend="ST_CreateTopoGeo" />, <xref linkend="topoelementarray" /></para>
+				<para><xref linkend="AddTopoGeometryColumn"/>, <xref linkend="ST_CreateTopoGeo" />, <xref linkend="ST_GetFaceGeometry"/>,
+					<xref linkend="topoelementarray" />, <xref linkend="TopoElementArray_Agg" />  
+				</para>
 			</refsection>
 		</refentry>
 		
