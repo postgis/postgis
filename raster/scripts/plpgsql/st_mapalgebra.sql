@@ -1,4 +1,4 @@
-﻿----------------------------------------------------------------------
+----------------------------------------------------------------------
 -- $Id$
 --
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
@@ -211,45 +211,45 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(val float8)
 
 -- Tests
 -- Test NULL Raster. Should be true.
-SELECT ST_MapAlgebra(NULL, 1, 'rast + 20', '2', NULL) IS NULL FROM ST_TestRaster(0, 0, -1) rast;
+--SELECT ST_MapAlgebra(NULL, 1, 'rast + 20', '2', NULL) IS NULL FROM ST_TestRaster(0, 0, -1) rast;
 
 -- Test empty Raster. Should be true.
-SELECT ST_IsEmpty(ST_MapAlgebra(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, -1), 1, 'rast + 20', '2', NULL))
+--SELECT ST_IsEmpty(ST_MapAlgebra(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, -1), 1, 'rast + 20', '2', NULL))
 
 -- Test has no band raster. Should be true.
-SELECT ST_HasNoBand(ST_MapAlgebra(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, 'rast + 20', '2', NULL))
+--SELECT ST_HasNoBand(ST_MapAlgebra(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, 'rast + 20', '2', NULL))
 
 -- Test has no nodata value. Should return null and 19.
-SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebra(ST_SetBandNoDataValue(ST_TestRaster(0, 0, 1), NULL), 1, 'rast + 20', '2', NULL), 1, 1) 
-FROM ST_TestRaster(0, 0, 1) rast;
+--SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebra(ST_SetBandNoDataValue(ST_TestRaster(0, 0, 1), NULL), 1, 'rast + 20', '2', NULL), 1, 1) 
+--FROM ST_TestRaster(0, 0, 1) rast;
 
 -- Test has nodata value. Should return null and 2.
-SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 3', NULL), 1, 1) 
-FROM ST_TestRaster(0, 0, 1) rast;
+--SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 3', NULL), 1, 1) 
+--FROM ST_TestRaster(0, 0, 1) rast;
 
 -- Test has nodata value. Should return null and null.
-SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', NULL, NULL), 1, 1) 
-FROM ST_TestRaster(0, 0, 1) rast;
+--SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', NULL, NULL), 1, 1) 
+--FROM ST_TestRaster(0, 0, 1) rast;
 
 -- Test 'rast' expression. Should be 1 and 1.
-SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast', 'rast', NULL), 1, 2) 
-FROM ST_TestRaster(0, 0, 0) rast;
+--SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast', 'rast', NULL), 1, 2) 
+--FROM ST_TestRaster(0, 0, 0) rast;
 
 -- Test 'rast' expression on a no nodata value raster. Should be null and -1.
-SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebra(ST_SetBandNoDataValue(rast, NULL), 1, 'rast', NULL, NULL), 1, 1) 
-FROM ST_TestRaster(0, 0, -1) rast;
+--SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebra(ST_SetBandNoDataValue(rast, NULL), 1, 'rast', NULL, NULL), 1, 1) 
+--FROM ST_TestRaster(0, 0, -1) rast;
 
 -- Test pixeltype 1. Should return 100 and 15.
-SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 2', '4BUI'), 1, 2) 
-FROM ST_TestRaster(0, 0, 100) rast;
+--SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 2', '4BUI'), 1, 2) 
+--FROM ST_TestRaster(0, 0, 100) rast;
 
 -- Test pixeltype 1. Should return an error.
-SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 2', '4BUId'), 1, 2) 
-FROM ST_TestRaster(0, 0, 100) rast;
+--SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 2', '4BUId'), 1, 2) 
+--FROM ST_TestRaster(0, 0, 100) rast;
 
 -- Test pixeltype 1. Should return 101 and 3.
-SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 2', '2BUI'), 1, 2) 
-FROM ST_TestRaster(0, 0, 101) rast;
+--SELECT ST_Value(rast, 1, 2), ST_Value(ST_MapAlgebra(rast, 1, 'rast + 20', 'rast + 2', '2BUI'), 1, 2) 
+--FROM ST_TestRaster(0, 0, 101) rast;
 
 
 --------------------------------------------------------------------
@@ -977,101 +977,101 @@ CREATE OR REPLACE FUNCTION ST_TestRotatedRaster(ulx float8, uly float8)
 -- Note that every time an expression resume to 'rast1' or 'rast2' you can optimize the value setting memcpy the pixel values.
 
 -- First display the two test rasters used in the following examples in OpenJump
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(0, 0, 1)) gv) foo
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(0, 0, 1)) gv) foo
 
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(1, 1, 3)) gv) foo
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(1, 1, 3)) gv) foo
 
 
 -- 1) ST_Intersection and ST_Clip
-SELECT ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION')
-FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
+--SELECT ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION')
+--FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
 
 -- Display in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION')) gv
-      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION')) gv
+--      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
 
 -- 2) ST_Intersection returning a two band raster
-SELECT ST_AddBand(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION'), ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'INTERSECTION'))
-FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
+--SELECT ST_AddBand(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION'), ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'INTERSECTION'))
+--FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
 
 -- Display band 1 in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_AddBand(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION'), ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'INTERSECTION'))) gv
-      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_AddBand(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION'), ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'INTERSECTION'))) gv
+--      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
 -- Display band 2 in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_AddBand(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION'), ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'INTERSECTION')), 2) gv
-      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_AddBand(ST_MapAlgebra(rast1, rast2, 'rast1', '32BF', 'INTERSECTION'), ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'INTERSECTION')), 2) gv
+--      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
 
 -- 3) ST_Union
-SELECT ST_MapAlgebra(rast1, rast2, '(rast1 + rast2)/2::numeric', '32BF', 'UNION', 'rast2', 'rast1', NULL)
-FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
+--SELECT ST_MapAlgebra(rast1, rast2, '(rast1 + rast2)/2::numeric', '32BF', 'UNION', 'rast2', 'rast1', NULL)
+--FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
 
 -- Display in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, '(rast1 + rast2)/2::numeric', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
-      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, '(rast1 + rast2)/2::numeric', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
+--      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
 
 -- 4) ST_Collect
-SELECT ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
-FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
+--SELECT ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
+--FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
 
 -- Display in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
-      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
+--      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
 
 -- 5) ST_Difference making a mere geometric difference
-SELECT ST_MapAlgebra(rast1, rast2, 'CASE WHEN NOT rast2 IS NULL THEN NULL ELSE rast1 END', '32BF', 'FIRST', NULL, 'rast1', NULL)
-FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
+--SELECT ST_MapAlgebra(rast1, rast2, 'CASE WHEN NOT rast2 IS NULL THEN NULL ELSE rast1 END', '32BF', 'FIRST', NULL, 'rast1', NULL)
+--FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
 
 -- Display in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'CASE WHEN NOT rast2 IS NULL THEN NULL ELSE rast1 END', '32BF', 'FIRST', NULL, 'rast1', NULL)) gv
-      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'CASE WHEN NOT rast2 IS NULL THEN NULL ELSE rast1 END', '32BF', 'FIRST', NULL, 'rast1', NULL)) gv
+--      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
 
 -- 6) ST_Difference making an arithmetic difference
-SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'FIRST', NULL, 'rast1', NULL)
-FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
+--SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'FIRST', NULL, 'rast1', NULL)
+--FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
 
 -- Display in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'FIRST', NULL, 'rast1', NULL)) gv
-      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'FIRST', NULL, 'rast1', NULL)) gv
+--      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
 
 -- 7) ST_SymDifference making a mere geometric difference (commutative)
-SELECT ST_MapAlgebra(rast1, rast2, 'NULL', '32BF', 'UNION', 'rast2', 'rast1', NULL)
-FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
+--SELECT ST_MapAlgebra(rast1, rast2, 'NULL', '32BF', 'UNION', 'rast2', 'rast1', NULL)
+--FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo
 
 -- Display first commutation in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'NULL', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
-      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'NULL', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
+--      FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 3) rast2) foo) foo2
 
 -- Display second commutation in OpenJump.
-SELECT (gv).val, ST_AsBinary((gv).geom)
-FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'NULL', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
-      FROM (SELECT ST_TestRaster(1, 1, 3) rast1, ST_TestRaster(0, 0, 1) rast2) foo) foo2
+--SELECT (gv).val, ST_AsBinary((gv).geom)
+--FROM (SELECT ST_PixelAsPolygons(ST_MapAlgebra(rast1, rast2, 'NULL', '32BF', 'UNION', 'rast2', 'rast1', NULL)) gv
+--      FROM (SELECT ST_TestRaster(1, 1, 3) rast1, ST_TestRaster(0, 0, 1) rast2) foo) foo2
 
 
 -- 8) ST_SymDifference making an arithmetic difference (not commutative)
 --Commutation 1
-SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
-FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 2) rast2) foo
+--SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
+--FROM (SELECT ST_TestRaster(0, 0, 1) rast1, ST_TestRaster(1, 1, 2) rast2) foo
 
 --Commutation 2
-SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
-FROM (SELECT ST_TestRaster(1, 1, 2) rast1, ST_TestRaster(0, 0, 1) rast2) foo
+--SELECT ST_MapAlgebra(rast1, rast2, 'rast1 - rast2', '32BF', 'UNION', 'rast2', 'rast1', NULL)
+--FROM (SELECT ST_TestRaster(1, 1, 2) rast1, ST_TestRaster(0, 0, 1) rast2) foo
 
 
 -- Other tests
