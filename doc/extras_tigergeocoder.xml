@@ -818,7 +818,7 @@ SELECT topology.TopologySummary('topo_boston');
 Topology topo_boston (15), SRID 2249, precision 0.25
 20576 nodes, 31597 edges, 11109 faces, 0 topogeoms in 0 layers
 
--- 59,814 ms to validate yeh returned no errors --
+-- 28,797 ms to validate yeh returned no errors --
 SELECT * FROM 
     topology.ValidateTopology('topo_boston'); 
     
