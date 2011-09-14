@@ -803,7 +803,10 @@ FROM (SELECT address As actual_addr, lon, lat,
       <para>Create a topology for Boston, Massachusetts in Mass State Plane Feet (2249) 
       	with tolerance 0.25 feet and then load in Boston city tiger faces, edges, nodes.</para>
       <programlisting>SELECT topology.CreateTopology('topo_boston', 2249, 0.25);
--- this took 209,763 ms ~ 4 minutes on my slow windows 2003 disk running 9.1rc1
+createtopology
+--------------
+   15
+-- 60,902 ms ~ 1 minute on windows 7 desktop running 9.1 (with 5 states tiger data loaded) 
 SELECT tiger.topology_load_tiger('topo_boston', 'place', '2507000'); 
 -- topology_loader_tiger --
 29722 edges holding in temporary. 11108 faces added. 1875 edges of faces added.  20576 nodes added.  
@@ -829,19 +832,19 @@ SELECT * FROM
       <para>Create a topology for Suffolk, Massachusetts in Mass State Plane Meters (26986) 
       	with tolerance 0.25 meters and then load in Suffolk county tiger faces, edges, nodes.</para>
       <programlisting>SELECT topology.CreateTopology('topo_suffolk', 26986, 0.25);
--- this took 253,187 ms ~ 4 minutes on my slow disk running 9.1rc1
-SELECT tiger.topology_loader_tiger('topo_suffolk', 'county', '25025'); 
+-- this took 56,275 ms ~ 1 minute on Windows 7 32-bit with 5 states of tiger loaded
+-- must have been warmed up after loading boston
+SELECT tiger.topology_load_tiger('topo_suffolk', 'county', '25025');  
 -- topology_loader_tiger --
- 36003 edges holding in temporary. 13518 faces added. 2172 edges of faces added.  24761 nodes added.  
- 24075 nodes contained in a face.  0 edge start end corrected.  38175 edges added. 
- 
--- 111 ms --
+ 36003 edges holding in temporary. 13518 faces added. 2172 edges of faces added. 
+ 24761 nodes added.  24075 nodes contained in a face.  0 edge start end corrected.  38175 edges added. 
+-- 31 ms --
 SELECT topology.TopologySummary('topo_suffolk');
  -- topologysummary--
  Topology topo_suffolk (14), SRID 26986, precision 0.25
 24761 nodes, 38175 edges, 13519 faces, 0 topogeoms in 0 layers
 
--- 80,146 ms to validate --
+-- 33,606 ms to validate --
 SELECT * FROM 
     topology.ValidateTopology('topo_suffolk'); 
     
