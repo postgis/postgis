@@ -8,6 +8,7 @@ DROP AGGREGATE IF EXISTS st_accum_old(geometry);
 DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,varchar,varchar,integer,varchar,integer);
 DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,varchar,integer,varchar,integer);
 DROP FUNCTION IF EXISTS AddGeometryColumn(varchar,varchar,integer,varchar,integer);
+DROP FUNCTION IF EXISTS populate_geometry_columns(oid);
 
 -- END Management functions now have default parameter for typmod --
 -- Then drop old functions
