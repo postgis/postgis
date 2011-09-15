@@ -14,17 +14,10 @@ each
 Then in your PostgreSQL database run
 CREATE EXTENSION postgis_core;
 CREATE EXTENSION postgis_raster;
-
--- this one doesn't seem to work 
--- gives a weird error 
--- can not drop table topology.pg_temp_777...
 CREATE EXTENSION postgis_topology;
 
 Known issue:
-make install for some reason gives an erro though 
-it does correctly install the modules making them available.
-
-Do uninstall you have to drop cascade the extension
+To uninstall postgis_core you have to drop cascade the extension
 which is not ideal but working out the cast issues.
 
 The dependency logic should warn if you try
