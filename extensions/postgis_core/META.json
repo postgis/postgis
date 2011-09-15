@@ -1,17 +1,23 @@
 {
 	"name": "postgis",
 	"abstract": "PostGIS 2.0 OGC/SQL-MM compliant spatial extender for PostgreSQL",
-	"description": "This module provides GIS geometry and geography types and functions",
+	"description": "This module provides GIS geometry and geography types, functions, and tables",
 	"version": "2.0.0",
+	"release_status": "unstable",
 	"maintainer": "PostGIS Steering Committee",
-	"license": "GPL v2",
+	"license": "gpl_2 ",
 	"provides": {
 		"postgis": {
 			"abstract": "PostGIS GIS types, indexes and functions",
 			"version": "2.0.0",
-			"file": "all.sql",
+			"file": "sql/postgis_core.sql",
 			"docfile": "doc/postgis.md"
 		}
+         "spatial_ref_sys": {
+           "file": "sql/spatial_ref_sys.sql",
+           "version": "2.0.0",
+           "abstract": "Directory of spatial reference systems needed for geometry transformation between different spatial reference systems"
+         }
 	},
 	"prereqs": {
       "runtime": {
@@ -21,6 +27,7 @@
          }
       }
     },
+    "generated_by": "Regina O. Obe",
 	"resources": {
 		"bugtracker": {
 			"web": "http://trac.osgeo.org/postgis"

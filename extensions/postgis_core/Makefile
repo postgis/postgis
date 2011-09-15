@@ -1,16 +1,12 @@
 EXTENSION    = postgis_core
-EXTVERSION   = $(shell grep default_version $(EXTENSION).control | sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
+EXTVERSION   = $(shell grep default_version $(EXTENSION).control | \
+               sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
-#DATA_built   = $(patsubst %.sql.in,%.sql,$(wildcard *.sql.in))
-DOCS         = $(wildcard doc/html/*.html)
-TESTS        = $(wildcard test/sql/*.sql)
-REGRESS      = $(patsubst test/sql/%.sql,%,$(TESTS))
-REGRESS_OPTS = --inputdir=test --load-language=plpgsql
-MODULES      = $(patsubst %.c,%,$(wildcard src/*.c))
+
+#DOCS         = $(wildcard ../../doc/html/*.html)
 PG_CONFIG    = pg_config
-# SQL objects (files requiring C pre-processing)
-#SQL_OBJS=postgis.sql.in
+
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
