@@ -4156,32 +4156,32 @@ ORDER BY value, quantile,rid
 				<funcsynopsis>
 				  <funcprototype>
 					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
-				  
+				  				  
 				  <funcprototype>
 					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>sample_percent=1</parameter></paramdef>
 				  </funcprototype>
 				  
-				  <funcprototype>
+				 <funcprototype>
 					<funcdef>summarystats <function>ST_SummaryStats</function></funcdef>
-					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
 				  </funcprototype>
+
 				
 				</funcsynopsis>
 			</refsynopsisdiv>
