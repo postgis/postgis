@@ -207,10 +207,9 @@ CREATE TABLE topology.topology (
 	id SERIAL NOT NULL PRIMARY KEY,
 	name VARCHAR NOT NULL UNIQUE,
 	SRID INTEGER NOT NULL,
-	precision FLOAT8 NOT NULL
+	precision FLOAT8 NOT NULL,
+	hasz BOOLEAN NOT NULL DEFAULT false
 );
-
-ALTER TABLE topology.topology ADD hasz BOOLEAN NOT NULL DEFAULT false;
 
 --{ LayerTrigger()
 --
