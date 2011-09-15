@@ -1,0 +1,5 @@
+# postgis extension
+comment = 'postgis geometry and geography sql-mm spatial types and functions'
+default_version = '2.0.0'
+module_pathname = '$libdir/postgis-2.0'
+relocatable = true

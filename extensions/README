@@ -1,0 +1,34 @@
+These are extension modules for PostgreQL 9.1
+to allow postgis modules
+to be installed using standard PostgreSQL 9.1+
+CREATE EXTENSION syntax
+
+To use: first make install regular PostGIS
+then do the below for each extension
+
+make 
+make install 
+
+each
+
+Then in your PostgreSQL database run
+CREATE EXTENSION postgis_core;
+CREATE EXTENSION postgis_raster;
+
+-- this one doesn't seem to work 
+-- gives a weird error 
+-- can not drop table topology.pg_temp_777...
+CREATE EXTENSION postgis_topology;
+
+Known issue:
+make install for some reason gives an erro though 
+it does correctly install the modules making them available.
+
+Do uninstall you have to drop cascade the extension
+which is not ideal but working out the cast issues.
+
+The dependency logic should warn if you try
+to install postgis_raster without postgis_core, 
+but that seems to not be working right
+thought drop cascade extension postgis_core drops
+postgis_raster extension.

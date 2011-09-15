@@ -1,0 +1,46 @@
+{
+	"name": "postgis_raster",
+	"abstract": "PostGIS 2.0 OGC/SQL-MM compliant spatial extender for PostgreSQL",
+	"description": "This module provides GIS geometry and geography types and functions",
+	"version": "2.0.0",
+	"maintainer": "PostGIS Steering Committee",
+	"license": "GPL v2",
+	"provides": {
+		"postgis_raster": {
+			"abstract": "PostGIS Raster types, indexes and functions",
+			"version": "2.0.0",
+			"file": "all.sql",
+			"docfile": "doc/postgis.md"
+		}
+	}
+	"prereqs": {
+      "runtime": {
+         "requires": {
+            "plpgsql": 0,
+            "PostgreSQL": "8.4.0",
+            "postgis_core": "2.0.0"
+         }
+      }
+    },
+	"resources": {
+		"bugtracker": {
+			"web": "http://trac.osgeo.org/postgis"
+		},
+		"repository": {
+			"url": "svn://svn.osgeo.org/postgis/",
+			"web": "http://www.postgis.org",
+			"type": "svn"
+		}
+	},
+	"meta-spec": {
+		"version": "1.0.0",
+		"url": "http://pgxn.org/meta/spec.txt"
+	},
+	"tags": [
+		"gis",
+		"spatial",
+		"geometry",
+		"geography",
+		"location", "raster"
+	]
+}
