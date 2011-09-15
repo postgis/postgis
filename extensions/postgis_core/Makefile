@@ -11,19 +11,14 @@ PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
 
-sql/$(EXTENSION).sql: $(SQL_BITS)
-	cat $^ > $@
-
-EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
 
 ifeq ($(PG91),yes)
+sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/spatial_ref_sys.sql
+	cat $^ > $@
 all: sql/$(EXTENSION)--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
-	
-sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/spatial_ref_sys.sql
-	cat $^ > $@
 	
 sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql	
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
@@ -31,6 +26,9 @@ sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/postgis.sql: ../../postgis/postgis.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+	
+sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql
+	cp $< $@
 
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql
