@@ -7475,6 +7475,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	) {
 		_width = fabs(*width);
 		_height = fabs(*height);
+
 		_scale_x = (src_env.MaxX - src_env.MinX) / _width;
 		_scale_y = (src_env.MaxY - src_env.MinY) / _height;
 	}
@@ -7497,6 +7498,26 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	}
 	RASTER_DEBUGF(3, "scale (x, y) = %f, %f", _scale_x, _scale_y);
 	RASTER_DEBUGF(3, "dim (x, y) = %d, %d", _width, _height);
+
+	/* min and max are same on X axis */
+	if (FLT_EQ(src_env.MaxX, src_env.MinX)) {
+		RASTER_DEBUG(3, "MinX = MaxX.  Explicitly setting width to 1");
+		_width = 1;
+
+		/* set the point to the center of the pixel */
+		src_env.MinX -= (_scale_x / 2.);
+		src_env.MaxX += (_scale_x / 2.);
+	}
+
+	/* min and max are same on Y axis */
+	if (FLT_EQ(src_env.MaxY, src_env.MinY)) {
+		RASTER_DEBUG(3, "MinY = MaxY.  Explicitly setting height to 1");
+		_height = 1;
+
+		/* set the point to the center of the pixel */
+		src_env.MinY -= (_scale_y / 2.);
+		src_env.MaxY += (_scale_y / 2.);
+	}
 
 	/* user-defined skew */
 	if (NULL != skew_x)
@@ -7574,6 +7595,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			grid_min_x = src_env.MinX - grid_shift_xw;
 
 			src_env.MinX = grid_min_x;
+			ul_user = 1;
 		}
 
 		/* shift along Y axis for upper left */
@@ -7585,6 +7607,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			grid_max_y = src_env.MaxY + grid_shift_yw;
 
 			src_env.MaxY = grid_max_y;
+			ul_user = 1;
+		}
+
+		if (ul_user) {
+			_width = (int) fmax((fabs(src_env.MaxX - src_env.MinX) + (_scale_x / 2.)) / _scale_x, 1);
+			_height = (int) fmax((fabs(src_env.MaxY - src_env.MinY) + (_scale_y / 2.)) / _scale_y, 1);
 		}
 
 		RASTER_DEBUGF(3, "shift is: %f, %f", grid_shift_xw, grid_shift_yw);
@@ -7592,27 +7620,10 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	}
 
 	/* raster dimensions */
-	if (!_width && !_height) {
-		_width = (int) ((src_env.MaxX - src_env.MinX + (_scale_x / 2.)) / _scale_x);
-		_height = (int) ((src_env.MaxY - src_env.MinY + (_scale_y / 2.)) / _scale_y);
-	}
-
-	/* min and max are same, a point? */
-	if (
-		FLT_EQ(src_env.MaxX, src_env.MinX) &&
-		FLT_EQ(src_env.MaxY, src_env.MinY)
-	) {
-		RASTER_DEBUGF(3, "MinX = MaxX, MinY = MaxY.  Explicitly setting width and height to 1",
-			_width, _height);
-		_width = 1;
-		_height = 1;
-
-		/* set the point to the center of the pixel */
-		src_env.MinX -= (_scale_x / 2.);
-		src_env.MaxX += (_scale_x / 2.);
-		src_env.MinY -= (_scale_y / 2.);
-		src_env.MaxY += (_scale_y / 2.);
-	}
+	if (!_width)
+		_width = (int) fmax((fabs(src_env.MaxX - src_env.MinX) + (_scale_x / 2.)) / _scale_x, 1);
+	if (!_height)
+		_height = (int) fmax((fabs(src_env.MaxY - src_env.MinY) + (_scale_y / 2.)) / _scale_y, 1);
 
 	/* specify geotransform */
 	dst_gt[0] = src_env.MinX;
