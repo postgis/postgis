@@ -175,9 +175,9 @@ SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 -- Heal faces 3 and 6 -- should drop them and create a new face
 -- New face has a mbr being the union of the dropped faces
 SELECT 'RN(9)', topology.ST_RemEdgeNewFace('city_data', 9);
-SELECT * FROM check_nodes('RN(26)/nodes');
-SELECT * FROM check_edges('RN(26)/edges');
-SELECT * FROM check_faces('RN(26)/faces');
+SELECT * FROM check_nodes('RN(9)/nodes');
+SELECT * FROM check_edges('RN(9)/edges');
+SELECT * FROM check_faces('RN(9)/faces');
 SELECT save_edges(); SELECT save_faces(); SELECT save_nodes();
 
 -- Heal faces 4 and 11 -- should drop them and create a new face
