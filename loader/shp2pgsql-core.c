@@ -1711,12 +1711,6 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 {
 	stringbuffer_t *sb;
 	char *ret;
-	char *ops;
-
-	if ( state->config->geography )
-		ops = "gist_geography_ops";
-	else
-		ops = "gist_geometry_ops";
 
 	/* Create the stringbuffer containing the header; we use this API as it's easier
 	   for handling string resizing during append */
@@ -1732,7 +1726,7 @@ ShpLoaderGetSQLFooter(SHPLOADERSTATE *state, char **strfooter)
 		{
 			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
 		}
-		stringbuffer_aprintf(sb, "\"%s\" USING GIST (\"%s\" %s)", state->config->table, state->geo_col, ops);
+		stringbuffer_aprintf(sb, "\"%s\" USING GIST (\"%s\")", state->config->table, state->geo_col);
 		/* Tablespace is also optional. */
 		if (state->config->idxtablespace != NULL)
 		{
