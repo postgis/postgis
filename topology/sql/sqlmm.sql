@@ -971,7 +971,7 @@ BEGIN
       EXECUTE sql;
     END IF;
 
-    -- Delete left face, if not universe
+    -- Delete right face, if not universe
     IF e1rec.right_face != 0
     THEN
       sql := 'DELETE FROM ' || quote_ident(toponame)
