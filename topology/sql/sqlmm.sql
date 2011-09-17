@@ -668,11 +668,12 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Not in the specs:
 -- * Raise an exception if any TopoGeometry is defined by only one
 --   of the two faces that will dissolve.
--- * TODO: Raise an exception if any TopoGeometry is defined by 
+-- * Raise an exception if any TopoGeometry is defined by 
 --   the edge being removed.
 -- * Properly set containg_face on nodes that remains isolated by the drop
 -- * Update containg_face for isolated nodes in the dissolved faces
--- * Update references in the Relation table.
+-- * Update references in the Relation table
+-- * Always return a face id (of the face taking up the edge space)
 -- 
 CREATE OR REPLACE FUNCTION topology.ST_RemEdgeNewFace(toponame varchar, e1id integer)
   RETURNS int
@@ -979,7 +980,7 @@ BEGIN
       EXECUTE sql;
     END IF;
 
-  END IF;
+  END IF; -- }
 
   RETURN newfaceid;
 END

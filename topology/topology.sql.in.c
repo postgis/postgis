@@ -172,7 +172,8 @@
 --  	Implemented using polygonize()
 --  
 --   ST_RemEdgeNewFace
---    Unimplemented
+--  	Complete
+--    Also updates the Relation table
 --  
 --   ST_RemEdgeModFace
 --    Unimplemented
