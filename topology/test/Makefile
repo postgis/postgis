@@ -37,6 +37,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/st_getfaceedges.sql \
 	regress/st_modedgeheal.sql \
 	regress/st_newedgeheal.sql \
+  regress/st_remedgenewface.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
 	regress/topo2.5d.sql \

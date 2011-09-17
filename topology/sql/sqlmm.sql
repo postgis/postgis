@@ -374,7 +374,7 @@ BEGIN
   -- NOT IN THE SPECS:
   -- Replace composition rows involving the two
   -- edges as one involving the new edge.
-  -- It makes a DELETE and an UPDATE to do all
+  -- It takes a DELETE and an UPDATE to do all
   sql := 'DELETE FROM ' || quote_ident(toponame)
     || '.relation r USING topology.layer l '
     || 'WHERE l.level = 0 AND l.feature_type = 2'
@@ -658,6 +658,334 @@ END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
 --} ST_ModEdgeHeal
+
+--{
+-- Topo-Geo and Topo-Net 3: Routine Details
+-- X.3.14
+--
+--  ST_RemEdgeNewFace(atopology, anedge)
+--
+-- Not in the specs:
+-- * Raise an exception if any TopoGeometry is defined by only one
+--   of the two faces that will dissolve.
+-- * TODO: Raise an exception if any TopoGeometry is defined by 
+--   the edge being removed.
+-- * Properly set containg_face on nodes that remains isolated by the drop
+-- * Update containg_face for isolated nodes in the dissolved faces
+-- * Update references in the Relation table.
+-- 
+CREATE OR REPLACE FUNCTION topology.ST_RemEdgeNewFace(toponame varchar, e1id integer)
+  RETURNS int
+AS
+$$
+DECLARE
+  e1rec RECORD;
+  rec RECORD;
+  fidary int[];
+  topoid int;
+  sql text;
+  newfaceid int;
+  elink int;
+BEGIN
+  --
+  -- toponame and face_id are required
+  -- 
+  IF toponame IS NULL OR e1id IS NULL THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
+  END IF;
+
+  -- Get topology id
+  BEGIN
+    SELECT id FROM topology.topology
+      INTO STRICT topoid WHERE name = toponame;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+  END;
+
+  BEGIN
+    EXECUTE 'SELECT * FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE edge_id = ' || e1id
+      INTO STRICT e1rec;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+      WHEN INVALID_SCHEMA_NAME THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+      WHEN UNDEFINED_TABLE THEN
+        RAISE EXCEPTION 'corrupted topology "%" (missing edge_data table)',
+          toponame;
+  END;
+
+  -- Check that no TopoGeometry references the edge being removed
+  sql := 'SELECT r.topogeo_id, r.layer_id'
+      || ', l.schema_name, l.table_name, l.feature_column '
+      || 'FROM topology.layer l INNER JOIN '
+      || quote_ident(toponame)
+      || '.relation r ON (l.layer_id = r.layer_id) '
+      || 'WHERE l.level = 0 AND l.feature_type = 2 '
+      || ' AND l.topology_id = ' || topoid
+      || ' AND abs(r.element_id) = ' || e1id ;
+  RAISE DEBUG 'Checking TopoGeometry definitions: %', sql;
+  FOR rec IN EXECUTE sql LOOP
+    RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented dropping edge %',
+            rec.topogeo_id, rec.layer_id,
+            rec.schema_name, rec.table_name, rec.feature_column,
+            e1id;
+  END LOOP;
+
+  -- Update next_left_edge and next_right_edge face
+  -- for all edges bounding the new face
+  RAISE NOTICE 'Updating next_{right,left}_face of ring edges...';
+
+  -- TODO: reduce the following to 2 UPDATE rather than 4
+
+  -- Update next_left_edge of previous edges in left face -- {
+
+  elink := e1rec.next_left_edge;
+
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET next_left_edge = '
+    || elink
+    || ', abs_next_left_edge = '
+    || abs(elink)
+    || ' WHERE next_left_edge < 0 AND abs(next_left_edge) = '
+    || e1id;
+  RAISE DEBUG 'next_left_edge update: %', sql;
+  EXECUTE sql;
+
+  -- If the edge being removed links to self,
+  -- we use the other face
+  IF e1rec.abs_next_right_edge = e1rec.edge_id THEN
+    elink := e1rec.next_left_edge;
+  ELSE
+    elink := e1rec.next_right_edge;
+  END IF;
+
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET next_left_edge = '
+    || elink
+    || ', abs_next_left_edge = '
+    || abs(elink)
+    || ' WHERE next_left_edge > 0 AND abs(next_left_edge) = '
+    || e1id;
+  RAISE DEBUG 'next_left_edge update: %', sql;
+  EXECUTE sql;
+
+  -- }
+
+  -- Update next_right_edge of previous edges in right face -- {
+
+  elink := e1rec.next_left_edge;
+
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET next_right_edge = '
+    || elink
+    || ', abs_next_right_edge = '
+    || abs(elink)
+    || ' WHERE next_right_edge < 0 AND abs(next_right_edge) = '
+    || e1id;
+  RAISE DEBUG 'next_right_edge update: %', sql;
+  EXECUTE sql;
+
+  -- If the edge being removed links to self,
+  -- we use the other face
+  IF e1rec.abs_next_right_edge = e1rec.edge_id THEN
+    elink := e1rec.next_left_edge;
+  ELSE
+    elink := e1rec.next_right_edge;
+  END IF;
+
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.edge_data SET next_right_edge = '
+    || elink
+    || ', abs_next_right_edge = '
+    || abs(elink)
+    || ' WHERE next_right_edge > 0 AND abs(next_right_edge) = '
+    || e1id;
+  RAISE DEBUG 'next_right_edge update: %', sql;
+  EXECUTE sql;
+
+  -- }
+
+  IF e1rec.left_face = e1rec.right_face THEN -- {
+
+    RAISE NOTICE 'Deletion of edge % affects no face',
+                    e1rec.edge_id;
+
+    newfaceid = e1rec.left_face; -- TODO: or what should we return ?
+
+  ELSE -- }{
+
+    RAISE NOTICE 'Deletion of edge % joins faces % and %',
+                    e1rec.edge_id, e1rec.left_face, e1rec.right_face;
+
+    -- NOT IN THE SPECS:
+    -- check if any topo_geom is defined only by one of the
+    -- joined faces. In such case there would be no way to adapt
+    -- the definition in case of healing, so we'd have to bail out
+    --
+    -- We do this only when no universal face is involved
+    -- (no surface can be defined by universal face)
+    -- 
+    IF e1rec.left_face != 0 AND e1rec.right_face != 0
+    THEN -- {
+      fidary = ARRAY[e1rec.left_face, e1rec.right_face];
+      sql := 'SELECT t.* from ('
+        || 'SELECT r.topogeo_id, r.layer_id'
+        || ', l.schema_name, l.table_name, l.feature_column'
+        || ', array_agg(r.element_id) as elems '
+        || 'FROM topology.layer l INNER JOIN '
+        || quote_ident(toponame)
+        || '.relation r ON (l.layer_id = r.layer_id) '
+        || 'WHERE l.level = 0 AND l.feature_type = 3 '
+        || ' AND l.topology_id = ' || topoid
+        || ' AND r.element_id IN (' || e1rec.left_face || ',' || e1rec.right_face || ') '
+        || 'group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
+        || ' l.feature_column ) t WHERE NOT t.elems @> '
+        || quote_literal(fidary);
+      RAISE DEBUG 'SQL: %', sql;
+      FOR rec IN EXECUTE sql LOOP
+        RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
+              rec.topogeo_id, rec.layer_id,
+              rec.schema_name, rec.table_name, rec.feature_column,
+              e1rec.right_face, e1rec.left_face;
+      END LOOP;
+    END IF; -- }
+
+    IF e1rec.left_face = 0 OR e1rec.right_face = 0 THEN -- {
+
+      --
+      -- We won't add any new face, but rather let the universe
+      -- flood the removed face.
+      --
+
+      newfaceid = 0;
+
+    ELSE -- }{
+
+      --
+      -- Insert the new face 
+      --
+
+      sql := 'SELECT nextval(' || quote_literal(
+          quote_ident(toponame) || '.face_face_id_seq'
+        ) || ')';
+
+      EXECUTE sql INTO STRICT newfaceid;
+
+      sql := 'INSERT INTO '
+        || quote_ident(toponame)
+        || '.face(face_id, mbr) SELECT '
+        -- face_id
+        || newfaceid  || ', '
+        -- minimum bounding rectangle is the union of the old faces mbr
+        -- (doing this without GEOS would be faster)
+        || 'ST_Envelope(ST_Union(mbr)) FROM '
+        || quote_ident(toponame)
+        || '.face WHERE face_id IN (' 
+        || e1rec.left_face || ',' || e1rec.right_face 
+        || ')';
+      RAISE DEBUG 'SQL: %', sql;
+      EXECUTE sql;
+
+    END IF; -- }
+
+    -- Update left_face for all edges still referencing old faces
+    sql := 'UPDATE ' || quote_ident(toponame)
+      || '.edge_data SET left_face = ' || newfaceid 
+      || ' WHERE left_face IN ('
+      || e1rec.left_face || ',' || e1rec.right_face 
+      || ')';
+    RAISE DEBUG 'left_face update: %', sql;
+    EXECUTE sql;
+
+    -- Update right_face for all edges still referencing old faces
+    sql := 'UPDATE ' || quote_ident(toponame)
+      || '.edge_data SET right_face = ' || newfaceid 
+      || ' WHERE right_face IN ('
+      || e1rec.left_face || ',' || e1rec.right_face 
+      || ')';
+    RAISE DEBUG 'right_face update: %', sql;
+    EXECUTE sql;
+
+    -- Update containing_face for all nodes still referencing old faces
+    sql := 'UPDATE ' || quote_ident(toponame)
+      || '.node SET containing_face = ' || newfaceid 
+      || ' WHERE containing_face IN ('
+      || e1rec.left_face || ',' || e1rec.right_face 
+      || ')';
+    RAISE DEBUG 'Isolated nodes update: %', sql;
+    EXECUTE sql;
+
+    -- NOT IN THE SPECS:
+    -- Replace composition rows involving the two
+    -- faces as one involving the new face.
+    -- It takes a DELETE and an UPDATE to do all
+    sql := 'DELETE FROM ' || quote_ident(toponame)
+      || '.relation r USING topology.layer l '
+      || 'WHERE l.level = 0 AND l.feature_type = 3'
+      || ' AND l.topology_id = ' || topoid
+      || ' AND l.layer_id = r.layer_id AND abs(r.element_id) = '
+      || e1rec.left_face;
+    RAISE DEBUG 'SQL: %', sql;
+    EXECUTE sql;
+    sql := 'UPDATE ' || quote_ident(toponame)
+      || '.relation r '
+      || ' SET element_id = ' || newfaceid 
+      || ' FROM topology.layer l WHERE l.level = 0 AND l.feature_type = 3'
+      || ' AND l.topology_id = ' || topoid
+      || ' AND l.layer_id = r.layer_id AND r.element_id = '
+      || e1rec.right_face;
+    RAISE DEBUG 'SQL: %', sql;
+    EXECUTE sql;
+
+  END IF; -- } two faces healed...
+
+  -- Delete the edge
+  sql := 'DELETE FROM ' || quote_ident(toponame)
+    || '.edge_data WHERE edge_id = ' || e1id;
+  RAISE DEBUG 'Edge deletion: %', sql;
+  EXECUTE sql;
+
+  -- Check if any of the edge nodes remains isolated, 
+  -- set containing_face  = newfaceid in that case
+  sql := 'UPDATE ' || quote_ident(toponame)
+    || '.node n SET containing_face = ' || newfaceid
+    || ' WHERE node_id IN ('
+    || e1rec.start_node || ','
+    || e1rec.end_node || ') AND NOT EXISTS (SELECT edge_id FROM '
+    || quote_ident(toponame)
+    || '.edge_data WHERE start_node = n.node_id OR end_node = n.node_id)';
+  RAISE DEBUG 'Checking for nodes left isolated: %', sql;
+  EXECUTE sql;
+
+  IF e1rec.right_face != e1rec.left_face THEN -- {
+
+    -- Delete left face, if not universe
+    IF e1rec.left_face != 0 THEN
+      sql := 'DELETE FROM ' || quote_ident(toponame)
+        || '.face WHERE face_id = ' || e1rec.left_face; 
+      RAISE DEBUG 'Left face deletion: %', sql;
+      EXECUTE sql;
+    END IF;
+
+    -- Delete left face, if not universe
+    IF e1rec.right_face != 0
+    THEN
+      sql := 'DELETE FROM ' || quote_ident(toponame)
+        || '.face WHERE face_id = ' || e1rec.right_face;
+      RAISE DEBUG 'Right face deletion: %', sql;
+      EXECUTE sql;
+    END IF;
+
+  END IF;
+
+  RETURN newfaceid;
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--} ST_RemEdgeNewFace
 
 
 --{
