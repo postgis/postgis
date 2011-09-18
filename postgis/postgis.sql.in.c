@@ -1632,12 +1632,12 @@ BEGIN
 		 pg_type t,
 		 pg_namespace n
 	WHERE (c.relkind = 'r' OR c.relkind = 'v')
-	AND t.typname = 'geometry'
-	AND a.attisdropped = false
-	AND a.atttypid = t.oid
-	AND a.attrelid = c.oid
-	AND c.relnamespace = n.oid
-	AND n.nspname NOT ILIKE 'pg_temp%';
+		AND t.typname = 'geometry'
+		AND a.attisdropped = false
+		AND a.atttypid = t.oid
+		AND a.attrelid = c.oid
+		AND c.relnamespace = n.oid
+		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns' ;
 
 	-- Iterate through all non-dropped geometry columns
 	RAISE DEBUG 'Processing Tables.....';
@@ -1654,29 +1654,10 @@ BEGIN
 		AND a.atttypid = t.oid
 		AND a.attrelid = c.oid
 		AND c.relnamespace = n.oid
-		AND n.nspname NOT ILIKE 'pg_temp%'
+		AND n.nspname NOT ILIKE 'pg_temp%' AND c.relname != 'raster_columns' 
 	LOOP
 
-	inserted := inserted + populate_geometry_columns(gcs.oid, use_typmod);
-	END LOOP;
-
-	-- Add views to geometry columns table
-	RAISE DEBUG 'Processing Views.....';
-	FOR gcs IN
-	SELECT DISTINCT ON (c.oid) c.oid, n.nspname, c.relname
-		FROM pg_class c,
-			 pg_attribute a,
-			 pg_type t,
-			 pg_namespace n
-		WHERE c.relkind = 'v'
-		AND t.typname = 'geometry'
-		AND a.attisdropped = false
-		AND a.atttypid = t.oid
-		AND a.attrelid = c.oid
-		AND c.relnamespace = n.oid
-	LOOP
-
-	inserted := inserted + populate_geometry_columns(gcs.oid, use_typmod);
+		inserted := inserted + populate_geometry_columns(gcs.oid, use_typmod);
 	END LOOP;
 
 	IF oldcount > inserted THEN
@@ -1685,7 +1666,7 @@ BEGIN
 	    stale = 0;
 	END IF;
 
-	RETURN 'probed:' ||probed|| ' inserted:'||inserted|| ' conflicts:'||probed-inserted|| ' deleted:'||stale;
+	RETURN 'probed:' ||probed|| ' inserted:'||inserted;
 END
 
 $$
@@ -1764,8 +1745,12 @@ BEGIN
                      ' FROM ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || 
                      ' WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1;'
                 INTO gc;
+            IF gc IS NULL THEN -- there is no data so we can not determine geometry type
+            	RAISE WARNING 'No data in table %.%, so no enough information to determine geometry type and srid', gcs.nspname, gcs.relname;
+            	RETURN 0;
+            END IF;
             gsrid := gc.srid; gtype := gc.type; gndims := gc.dims;
-                
+            	
             IF use_typmod THEN
                 BEGIN
                     EXECUTE 'ALTER TABLE ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || ' ALTER COLUMN ' || quote_ident(gcs.attname) || 
