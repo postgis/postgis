@@ -1707,6 +1707,7 @@ DECLARE
 	query       text;
 	gc_is_valid boolean;
 	inserted    integer;
+	constraint_successful boolean := false;
 
 BEGIN
 	inserted := 0;
@@ -1757,18 +1758,20 @@ BEGIN
                         ' TYPE geometry(' || postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
                     inserted := inserted + 1;
                 EXCEPTION
-                        WHEN check_violation THEN
-                            RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid ', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
+                        WHEN invalid_parameter_value THEN
+                        RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type: % ', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, postgis_type_name(gtype, gndims, true);
                             gc_is_valid := false;
                 END;
                 
             ELSE
                 -- Try to apply srid check to column
-                IF (gsrid > 0) THEN
+            	constraint_successful = false;
+                IF (gsrid > 0 AND postgis_constraint_srid(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
                     BEGIN
                         EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || 
                                  ' ADD CONSTRAINT ' || quote_ident('enforce_srid_' || gcs.attname) || 
                                  ' CHECK (st_srid(' || quote_ident(gcs.attname) || ') = ' || gsrid || ')';
+                        constraint_successful := true;
                     EXCEPTION
                         WHEN check_violation THEN
                             RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_srid(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gsrid;
@@ -1777,11 +1780,12 @@ BEGIN
                 END IF;
                 
                 -- Try to apply ndims check to column
-                IF (gndims IS NOT NULL) THEN
+                IF (gndims IS NOT NULL AND postgis_constraint_dims(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
                     BEGIN
                         EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
                                  ADD CONSTRAINT ' || quote_ident('enforce_dims_' || gcs.attname) || '
                                  CHECK (st_ndims(' || quote_ident(gcs.attname) || ') = '||gndims||')';
+                        constraint_successful := true;
                     EXCEPTION
                         WHEN check_violation THEN
                             RAISE WARNING 'Not inserting ''%'' in ''%.%'' into geometry_columns: could not apply constraint CHECK (st_ndims(%) = %)', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), quote_ident(gcs.attname), gndims;
@@ -1790,18 +1794,22 @@ BEGIN
                 END IF;
     
                 -- Try to apply geometrytype check to column
-                IF (gtype IS NOT NULL) THEN
+                IF (gtype IS NOT NULL AND postgis_constraint_type(gcs.nspname, gcs.relname,gcs.attname) IS NULL ) THEN
                     BEGIN
                         EXECUTE 'ALTER TABLE ONLY ' || quote_ident(gcs.nspname) || '.' || quote_ident(gcs.relname) || '
                         ADD CONSTRAINT ' || quote_ident('enforce_geotype_' || gcs.attname) || '
                         CHECK ((geometrytype(' || quote_ident(gcs.attname) || ') = ' || quote_literal(gtype) || ') OR (' || quote_ident(gcs.attname) || ' IS NULL))';
+                        constraint_successful := true;
                     EXCEPTION
                         WHEN check_violation THEN
                             -- No geometry check can be applied. This column contains a number of geometry types.
                             RAISE WARNING 'Could not add geometry type check (%) to table column: %.%.%', gtype, quote_ident(gcs.nspname),quote_ident(gcs.relname),quote_ident(gcs.attname);
                     END;
                 END IF;
-                inserted := inserted + 1;
+                 --only count if we were successful in applying at least one constraint
+                IF constraint_successful THEN
+                	inserted := inserted + 1;
+                END IF;
             END IF;	        
 	    END IF;
 
