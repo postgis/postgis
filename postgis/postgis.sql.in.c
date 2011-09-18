@@ -1746,7 +1746,7 @@ BEGIN
                      ' WHERE ' || quote_ident(gcs.attname) || ' IS NOT NULL LIMIT 1;'
                 INTO gc;
             IF gc IS NULL THEN -- there is no data so we can not determine geometry type
-            	RAISE WARNING 'No data in table %.%, so no enough information to determine geometry type and srid', gcs.nspname, gcs.relname;
+            	RAISE WARNING 'No data in table %.%, so no information to determine geometry type and srid', gcs.nspname, gcs.relname;
             	RETURN 0;
             END IF;
             gsrid := gc.srid; gtype := gc.type; gndims := gc.dims;
