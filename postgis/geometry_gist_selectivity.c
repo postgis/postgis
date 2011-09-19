@@ -1337,6 +1337,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	bool isnull;
 	GBOX *box;
 	size_t querysize;
+	GEOM_STATS geomstats;
 
 	if ( PG_NARGS() == 3 )
 	{
@@ -1481,14 +1482,21 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, " stats array has %d elems", ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)));
 
 	/*
-	 * Construct box2dfloat4.
+	 * Construct GBOX.
 	 * Must allocate this in upper executor context
 	 * to keep it alive after SPI_finish().
 	 */
 	box = SPI_palloc(sizeof(GBOX));
+	FLAGS_SET_GEODETIC(box->flags, 0);
+	FLAGS_SET_Z(box->flags, 0);
+	FLAGS_SET_M(box->flags, 0);
 
 	/* Construct the box */
-	memcpy(box, ARR_DATA_PTR(array), sizeof(GBOX));
+	memcpy(&(geomstats.xmin), ARR_DATA_PTR(array), sizeof(float)*4);
+	box->xmin = geomstats.xmin;
+	box->xmax = geomstats.xmax;
+	box->ymin = geomstats.ymin;
+	box->ymax = geomstats.ymax;
 
 	POSTGIS_DEBUGF(3, " histogram extent = %g %g, %g %g", box->xmin,
 	               box->ymin, box->xmax, box->ymax);
