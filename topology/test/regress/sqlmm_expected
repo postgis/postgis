@@ -1,4 +1,4 @@
-Topology-Geometry 'sqlmm_topology' (id:4) created. 
+Topology-Geometry 'sqlmm_topology' (id:4) created.
 -- ST_AddIsoNode ------------------------
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument

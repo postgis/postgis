@@ -3505,12 +3505,11 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_InitTopoGeo(atopology)
 --
-CREATE OR REPLACE FUNCTION topology.ST_InitTopoGeo(varchar)
+CREATE OR REPLACE FUNCTION topology.ST_InitTopoGeo(atopology varchar)
 RETURNS text
 AS
 $$
 DECLARE
-  atopology alias for $1;
   rec RECORD;
   topology_id numeric;
 BEGIN
@@ -3530,7 +3529,7 @@ BEGIN
   END LOOP;
 
   RETURN 'Topology-Geometry ' || quote_literal(atopology)
-    || ' (id:' || topology_id || ') created. ';
+    || ' (id:' || topology_id || ') created.';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
