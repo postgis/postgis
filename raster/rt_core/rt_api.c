@@ -7414,7 +7414,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	assert(NULL != _nodata);
 	assert(NULL != _hasnodata);
 
-	/* set OGR spatial reference */
+	/* OGR spatial reference */
 	if (NULL != srs && strlen(srs)) {
 		src_sr = OSRNewSpatialReference(srs);
 		if (NULL == src_sr) {
@@ -7451,7 +7451,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		return NULL;
 	}
 
-	/* get envelope of geometry */
+	/* get extent */
 	OGR_G_GetEnvelope(src_geom, &src_env);
 
 	RASTER_DEBUGF(3, "Suggested extent: %f, %f, %f, %f",
@@ -7499,22 +7499,13 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	RASTER_DEBUGF(3, "scale (x, y) = %f, %f", _scale_x, _scale_y);
 	RASTER_DEBUGF(3, "dim (x, y) = %d, %d", _width, _height);
 
-	/* min and max are same on X axis */
-	if (FLT_EQ(src_env.MaxX, src_env.MinX)) {
-		RASTER_DEBUG(3, "MinX = MaxX.  Explicitly setting width to 1");
-		_width = 1;
-
-		/* set the point to the center of the pixel */
+	if (
+		(wkbFlatten(OGR_G_GetGeometryType(src_geom)) == wkbPoint) &&
+		FLT_NEQ(_scale_x, 0) &&
+		FLT_NEQ(_scale_y, 0)
+	) {
 		src_env.MinX -= (_scale_x / 2.);
 		src_env.MaxX += (_scale_x / 2.);
-	}
-
-	/* min and max are same on Y axis */
-	if (FLT_EQ(src_env.MaxY, src_env.MinY)) {
-		RASTER_DEBUG(3, "MinY = MaxY.  Explicitly setting height to 1");
-		_height = 1;
-
-		/* set the point to the center of the pixel */
 		src_env.MinY -= (_scale_y / 2.);
 		src_env.MaxY += (_scale_y / 2.);
 	}
@@ -7733,7 +7724,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		}
 	}
 
-	/* create and set bands */
+	/* set bands */
 	for (i = 0; i < num_bands; i++) {
 		banderr = 0;
 
@@ -7794,7 +7785,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		}
 	}
 
-	band_list = (int *) rtalloc(sizeof(double) * num_bands);
+	band_list = (int *) rtalloc(sizeof(int) * num_bands);
 	for (i = 0; i < num_bands; i++) band_list[i] = i + 1;
 
 	/* burn geometry */
@@ -7831,6 +7822,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	}
 
 	/* convert gdal dataset to raster */
+	GDALFlushCache(dst_ds);
 	RASTER_DEBUG(3, "Converting GDAL dataset to raster");
 	rast = rt_raster_from_gdal_dataset(dst_ds);
 
