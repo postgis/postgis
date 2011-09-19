@@ -66,7 +66,7 @@ BEGIN
 
   BEGIN
     EXECUTE 'SELECT count(face_id) FROM ' || quote_ident(atopology)
-      || '.face ' INTO STRICT n;
+      || '.face WHERE face_id != 0' INTO STRICT n;
     ret = ret || n || ' faces, ';
   EXCEPTION
     WHEN UNDEFINED_TABLE OR INVALID_SCHEMA_NAME THEN
