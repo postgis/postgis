@@ -1799,7 +1799,13 @@ delete the original faces and replace them with a new face.
                 <para>
 Removes an edge and, if the removed edge separated two faces,
 delete the original faces and replace them with a new face.
-Returns the id of the face remaining in place of the removed edge.
+		            </para>
+
+                <para>
+Returns the id of a newly created face or NULL, if no new face is created.
+No new face is created when the removed edge is dangling or isolated or 
+confined with the universe face (possibly making the universe flood into
+the face on the other side).
 		            </para>
 
                 <para>

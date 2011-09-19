@@ -673,8 +673,8 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- * Properly set containg_face on nodes that remains isolated by the drop
 -- * Update containg_face for isolated nodes in the dissolved faces
 -- * Update references in the Relation table
--- * Always return a face id (of the face taking up the edge space)
 -- 
+-- }{
 CREATE OR REPLACE FUNCTION topology.ST_RemEdgeNewFace(toponame varchar, e1id integer)
   RETURNS int
 AS
@@ -686,6 +686,7 @@ DECLARE
   topoid int;
   sql text;
   newfaceid int;
+  newfacecreated bool;
   elink int;
 BEGIN
   --
@@ -814,7 +815,8 @@ BEGIN
     RAISE NOTICE 'Deletion of edge % affects no face',
                     e1rec.edge_id;
 
-    newfaceid = e1rec.left_face; -- TODO: or what should we return ?
+    newfaceid := e1rec.left_face; -- TODO: or what should we return ?
+    newfacecreated := false;
 
   ELSE -- }{
 
@@ -861,7 +863,8 @@ BEGIN
       -- flood the removed face.
       --
 
-      newfaceid = 0;
+      newfaceid := 0;
+      newfacecreated := false;
 
     ELSE -- }{
 
@@ -874,6 +877,7 @@ BEGIN
         ) || ')';
 
       EXECUTE sql INTO STRICT newfaceid;
+      newfacecreated := true;
 
       sql := 'INSERT INTO '
         || quote_ident(toponame)
@@ -982,7 +986,11 @@ BEGIN
 
   END IF; -- }
 
-  RETURN newfaceid;
+  IF newfacecreated THEN
+    RETURN newfaceid;
+  ELSE
+    RETURN NULL; -- -newfaceid;
+  END IF;
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
