@@ -9,10 +9,9 @@ PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no
 SQL_BITS     = $(wildcard sql_bits/*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
 
-EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -26,9 +25,14 @@ sql_bits/topology.sql: ../../topology/topology.sql
 	
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
-
+	
+#grep all lines that start with CREATE OR REPLACE FUNCTION
+#then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
+#then remove default values
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
+	sed -e '/^CREATE OR REPLACE FUNCTION/!d;' -e 's/CREATE OR REPLACE FUNCTION\(.*\)/ALTER EXTENSION $(EXTENSION) ADD FUNCTION\1;/' -e 's/DEFAULT [a-zA-Z].*//g' $< > $@
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql
+EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 endif
 
 PGXS := $(shell $(PG_CONFIG) --pgxs)
