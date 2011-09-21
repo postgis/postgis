@@ -30,7 +30,15 @@ sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 #then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
 #then remove default values
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
-	sed -e '/^CREATE OR REPLACE FUNCTION/!d;' -e 's/CREATE OR REPLACE FUNCTION\(.*\)/ALTER EXTENSION $(EXTENSION) ADD FUNCTION\1;/' -e 's/DEFAULT [a-zA-Z]\+//g' $< > $@
+	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|SCHEMA\|TABLE\)/!d;' \
+		-e 's/OR REPLACE//g' \
+		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
+		-e 's/DEFAULT [a-zA-Z]\+//g' \
+		-e 's/BEFORE\(.*\)/;/' \
+		-e 's/AS\(.*\)/;/' \
+		-e 's/(;/;/' \
+		-e 's/\\(;/;/' \
+		-e 's/;;/;/g' $< > $@
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 endif
