@@ -48,8 +48,6 @@
 **
 **/
 
-#ifdef PREPARED_GEOM
-
 /*
 ** Backend prepared hash table
 **
@@ -450,5 +448,4 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *p
 	return cache;
 
 }
-#endif /* PREPARED_GEOM */
 
