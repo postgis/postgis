@@ -10,6 +10,9 @@
  *
  **********************************************************************/
 
+#ifndef LWGEOM_GEOS_H_
+#define LWGEOM_GEOS_H_ 1
+
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
@@ -20,13 +23,6 @@
 #include "executor/spi.h"
 
 #include "../postgis_config.h"
-
-/* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain
-   header guards to protect from multiple inclusion */
-#ifndef GEOS_C_INCLUDED
-#define GEOS_C_INCLUDED
-#include "geos_c.h"
-#endif
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
@@ -50,3 +46,4 @@ GEOSGeometry * POSTGIS2GEOS(PG_LWGEOM *g);
 
 void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
 
+#endif /* LWGEOM_GEOS_H_ 1 */

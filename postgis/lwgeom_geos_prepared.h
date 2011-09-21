@@ -10,6 +10,9 @@
  *
  **********************************************************************/
 
+#ifndef LWGEOM_GEOS_PREPARED_H_
+#define LWGEOM_GEOS_PREPARED_H_ 1
+
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
@@ -19,21 +22,9 @@
 
 #include "../postgis_config.h"
 
-/* Workaround for GEOS 2.2 compatibility: old geos_c.h does not contain
-   header guards to protect from multiple inclusion */
-#ifndef GEOS_C_INCLUDED
-#define GEOS_C_INCLUDED
-#include "geos_c.h"
-#endif
-
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "lwgeom_geos.h"
-
-/*
-** GEOS prepared geometry is only available from GEOS 3.1 onwards
-*/
-#define PREPARED_GEOM
 
 /*
 ** Cache structure. We use PG_LWGEOM as keys so no transformations
@@ -45,7 +36,6 @@
 ** Both the Geometry and the PreparedGeometry have to be cached,
 ** because the PreparedGeometry contains a reference to the geometry.
 */
-#ifdef PREPARED_GEOM
 typedef struct
 {
 	char                          type;
@@ -70,6 +60,4 @@ PrepGeomCache;
 */
 PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *pg_geom2);
 
-
-#endif /* PREPARED_GEOM */
-
+#endif /* LWGEOM_GEOS_PREPARED_H_ 1 */

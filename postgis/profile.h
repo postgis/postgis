@@ -1,3 +1,15 @@
+/**********************************************************************
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ *
+ * Copyright (C) 2004 Sandro Santilli <strk@keybit.net>
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ *
+ **********************************************************************/
+
 #ifndef _PROFILE_H
 #define _PROFILE_H 1
 

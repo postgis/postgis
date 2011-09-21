@@ -15,9 +15,17 @@
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_rtree.h"
-#include "lwgeom_geos_prepared.h" /* for PREPARED_GEOM define */
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
 #include "funcapi.h"
+
+/*
+** GEOS prepared geometry is only available from GEOS 3.1 onwards
+*/
+#define PREPARED_GEOM
+
+#ifdef PREPARED_GEOM
+#include "lwgeom_geos_prepared.h" 
+#endif
 
 #include <string.h>
 #include <assert.h>
