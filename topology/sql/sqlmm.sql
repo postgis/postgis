@@ -1203,9 +1203,9 @@ BEGIN
 
     ELSE -- }{
 
-      -- we arbitrarely choose left face as the face that
-      -- will remain (it'll be "left" there ...)
-      floodfaceid = e1rec.left_face;
+      -- we choose right face as the face that will remain
+      -- to be symmetric with ST_AddEdgeModFace 
+      floodfaceid = e1rec.right_face;
 
       sql := 'UPDATE '
         || quote_ident(toponame)
@@ -1286,7 +1286,7 @@ BEGIN
 
   IF e1rec.right_face != e1rec.left_face THEN -- {
 
-    -- Delete left face, if not universe
+    -- Delete left face, if not universe and not "flood" face
     IF e1rec.left_face != 0 AND e1rec.left_face != floodfaceid
     THEN
       sql := 'DELETE FROM ' || quote_ident(toponame)
@@ -1295,7 +1295,7 @@ BEGIN
       EXECUTE sql;
     END IF;
 
-    -- Delete right face, if not universe
+    -- Delete right face, if not universe and not "flood" face
     IF e1rec.right_face != 0 AND e1rec.right_face != floodfaceid
     THEN
       sql := 'DELETE FROM ' || quote_ident(toponame)

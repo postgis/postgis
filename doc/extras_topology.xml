@@ -1714,6 +1714,7 @@ Updates all existing joined edges and relationships accordingly.
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
+				<para><xref linkend="ST_RemEdgeNewFace"/></para>
 				<para><xref linkend="ST_AddEdgeModFace"/></para>
 			</refsection>
 		</refentry>
@@ -1743,7 +1744,7 @@ Updates all existing joined edges and relationships accordingly.
                 <para>
 Add a new edge and, if in doing so it splits a face, modify the original
 face and add a new face. Unless the face being split is the Universal Face, 
-the new edge will be on the right side of the newly added edge.
+the new face will be on the right side of the newly added edge.
 Returns the id of the newly added edge.
 		</para>
 
@@ -1769,6 +1770,7 @@ Updates all existing joined edges and relationships accordingly.
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
+				<para><xref linkend="ST_RemEdgeModFace"/></para>
 				<para><xref linkend="ST_AddEdgeNewFaces"/></para>
 			</refsection>
 		</refentry>
@@ -1841,7 +1843,6 @@ name is invalid then an error is thrown.
 				<title>See Also</title>
 				<para><xref linkend="ST_RemEdgeModFace"/></para>
 				<para><xref linkend="ST_AddEdgeNewFaces"/></para>
-				<para><xref linkend="ST_AddEdgeModFace"/></para>
 			</refsection>
 		</refentry>
 
@@ -1851,8 +1852,7 @@ name is invalid then an error is thrown.
 			
 				<refpurpose>
 Removes an edge and, if the removed edge separated two faces,
-delete one of the faces and modify the other to include the space
-covered by the other.
+delete one of the them and modify the other to take the space of both.
         </refpurpose>
 			</refnamediv>
 		
@@ -1871,8 +1871,9 @@ covered by the other.
             
                 <para>
 Removes an edge and, if the removed edge separated two faces,
-delete one of the faces and modify the other to include the space
-covered by the other.
+delete one of the them and modify the other to take the space of both.
+Preferencially keeps the face on the right, to be symmetric with
+ST_AddEdgeModFace also keeping it.
 Returns the id of the face remaining in place of the removed edge.
 		            </para>
 
@@ -1907,9 +1908,8 @@ name is invalid then an error is thrown.
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="ST_RemEdgeNewFace"/></para>
-				<para><xref linkend="ST_AddEdgeNewFaces"/></para>
 				<para><xref linkend="ST_AddEdgeModFace"/></para>
+				<para><xref linkend="ST_RemEdgeNewFace"/></para>
 			</refsection>
 		</refentry>
 		
