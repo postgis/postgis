@@ -20,22 +20,23 @@ sql/$(EXTENSION).sql: sql_bits/topology.sql sql_bits/topology_comments.sql
 	cat $^ > $@
 	
 #strip BEGIN/COMMIT since these are not allowed in extensions
+#strip CREATE SCHEMA since we force extension 
+# to create schema by setting schema to topology in control
 sql_bits/topology.sql: ../../topology/topology.sql
-	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 	
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
 	
-#grep all lines that start with CREATE OR REPLACE FUNCTION
+#grep all lines that start with CREATE OR REPLACE FUNCTION, TRIGGER...
 #then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
-#then remove default values
+#then remove default values and extra junk
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
-	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|SCHEMA\|TABLE\)/!d;' \
+	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
 		-e 's/OR REPLACE//g' \
 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
 		-e 's/DEFAULT [a-zA-Z]\+//g' \
-		-e 's/BEFORE\(.*\)/;/' \
-		-e 's/AS\(.*\)/;/' \
+		-e 's/\(BEFORE\|AS\)\(.*\)/;/' \
 		-e 's/(;/;/' \
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@

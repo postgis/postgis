@@ -2,3 +2,5 @@
 comment = 'postgis topology spatial types and functions'
 default_version = '2.0.0'
 relocatable = false
+schema = topology
+requires = postgis_core
