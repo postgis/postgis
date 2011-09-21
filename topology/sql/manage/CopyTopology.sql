@@ -16,8 +16,7 @@
 -- Makes a copy of a topology (primitives + topogeometry collections) .
 -- Returns the new topology id.
 --
-CREATE OR REPLACE FUNCTION topology.CopyTopology(atopology varchar,
-                                                 newtopo varchar)
+CREATE OR REPLACE FUNCTION topology.CopyTopology(atopology varchar, newtopo varchar)
 RETURNS int
 AS
 $$

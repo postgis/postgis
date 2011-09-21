@@ -269,9 +269,7 @@ LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
 -- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable, idprefix, gmlver)
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry,
-    nsprefix_in text, precision_in int, options_in int, visitedTable regclass,
-    idprefix text, gmlver int)
+CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry, nsprefix_in text, precision_in int, options_in int, visitedTable regclass, idprefix text, gmlver int)
   RETURNS text
 AS
 $$
@@ -485,8 +483,7 @@ LANGUAGE 'sql' VOLATILE; -- writes into visited table
 -- text AsGML(TopoGeometry, nsprefix, precision, options, visitedTable)
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry,
-    nsprefix text, prec int, options int, vis regclass)
+CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry, nsprefix text, prec int, options int, vis regclass)
   RETURNS text AS
 $$
  SELECT topology.AsGML($1, $2, $3, $4, $5, '');
