@@ -768,29 +768,6 @@ rt_pixtype_name(rt_pixtype pixtype) {
 
 /*- rt_band ----------------------------------------------------------*/
 
-struct rt_extband_t {
-    uint8_t bandNum;
-    char* path; /* externally owned ? */
-};
-
-struct rt_band_t {
-    rt_pixtype pixtype;
-    int32_t offline;
-    uint16_t width;
-    uint16_t height;
-    int32_t hasnodata; /* a flag indicating if this band contains nodata values */
-    int32_t isnodata;   /* a flag indicating if this band is filled only with
-                           nodata values */
-    double nodataval; /* int will be converted ... */
-    int32_t ownsData; /* XXX mloskot: its behaviour needs to be documented */
-
-    union {
-        void* mem; /* actual data, externally owned */
-        struct rt_extband_t offline;
-    } data;
-
-};
-
 rt_band
 rt_band_new_inline(uint16_t width, uint16_t height,
         rt_pixtype pixtype, uint32_t hasnodata, double nodataval,
@@ -1051,7 +1028,9 @@ rt_band_get_isnodata_flag(rt_band band) {
 int
 rt_band_set_nodata(rt_band band, double val) {
     rt_pixtype pixtype = PT_END;
-    //double oldnodataval = band->nodataval;
+    /*
+		double oldnodataval = band->nodataval;
+		*/
 
     int32_t checkvalint = 0;
     uint32_t checkvaluint = 0;
@@ -1146,7 +1125,7 @@ rt_band_set_nodata(rt_band band, double val) {
     RASTER_DEBUGF(3, "rt_band_set_nodata: band->nodataval = %f", band->nodataval);
 
 
-    // the nodata value was just set, so this band has NODATA
+    /* the nodata value was just set, so this band has NODATA */
     rt_band_set_hasnodata_flag(band, 1);
 
 #ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
@@ -4010,26 +3989,112 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
     return index;
 }
 
-
+/**
+ * Convert an xr, yr raster point to an xw, yw point on map
+ *
+ * @param raster : the raster to get info from
+ * @param xr : the pixel's column
+ * @param yr : the pixel's row
+ * @param xw : output parameter, X ordinate of the geographical point
+ * @param yw : output parameter, Y ordinate of the geographical point
+ */
 void
 rt_raster_cell_to_geopoint(rt_raster raster,
-        double x, double y,
-        double* x1, double* y1) {
+	double xr, double yr,
+	double* xw, double* yw
+) {
+	assert(NULL != raster);
+	assert(NULL != xw);
+	assert(NULL != yw);
 
+	/* Six parameters affine transformation */
+	*xw = raster->scaleX * xr + raster->skewX * yr + raster->ipX;
+	*yw = raster->scaleY * yr + raster->skewY * xr + raster->ipY;
 
-    assert(NULL != raster);
-    assert(NULL != x1);
-    assert(NULL != y1);
+	RASTER_DEBUGF(3, "rt_raster_cell_to_geopoint(%g, %g) = %g, %g",
+		xr, yr, *xw, *yw);
 
-    /* Six parameters affine transformation */
-    *x1 = raster->scaleX * x + raster->skewX * y + raster->ipX;
-    *y1 = raster->scaleY * y + raster->skewY * x + raster->ipY;
+	/*
+	{
+		double gt[] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+		double x1;
+		double y1;
 
-    RASTER_DEBUGF(3, "rt_raster_cell_to_geopoint(%g,%g)", x, y);
-    RASTER_DEBUGF(3, " ipx/y:%g/%g", raster->ipX, raster->ipY);
-    RASTER_DEBUGF(3, "cell_to_geopoint: ipX:%g, ipY:%g, %g,%g -> %g,%g",
-            raster->ipX, raster->ipY, x, y, *x1, *y1);
+		gt[0] = rt_raster_get_x_offset(raster);
+		gt[1] = rt_raster_get_x_scale(raster);
+		gt[2] = rt_raster_get_x_skew(raster);
+		gt[3] = rt_raster_get_y_offset(raster);
+		gt[4] = rt_raster_get_y_skew(raster);
+		gt[5] = rt_raster_get_y_scale(raster);
 
+		GDALApplyGeoTransform(gt, xr, yr, &x1, &y1);
+		RASTER_DEBUGF(4, "GDALApplyGeoTransform for (%f, %f) = (%f, %f)",
+			xr, yr, x1, y1);
+	}
+	*/
+}
+
+/**
+ * Convert an xw,yw map point to a xr,yr raster point
+ *
+ * @param raster : the raster to get info from
+ * @param xw : X ordinate of the geographical point
+ * @param yw : Y ordinate of the geographical point
+ * @param xr : output parameter, the pixel's column
+ * @param yr : output parameter, the pixel's row
+ *
+ * @return if zero, error occurred in function
+ */
+int
+rt_raster_geopoint_to_cell(rt_raster raster,
+	double xw, double yw,
+	double *xr, double *yr
+) {
+	double d;
+
+	assert(NULL != raster);
+	assert(NULL != xr);
+	assert(NULL != yr);
+
+	/* Six parameters affine transformation */
+	d = raster->skewX * raster->skewY - raster->scaleX * raster->scaleY;
+	if (FLT_EQ(d, 0)) {
+		rterror("rt_raster_geopoint_to_cell: Attempting to compute coordinates on a raster with scale equal to 0");
+		return 0;
+	}
+
+	*xr = (raster->skewX * (yw - raster->ipY) - raster->scaleY * (xw - raster->ipX)) / d;
+	*yr = (raster->scaleX * (yw - raster->ipY) + raster->skewY * (raster->ipX - xw)) / (-1 * d);
+
+	*xr = floor(*xr);
+	*yr = floor(*yr);
+
+	RASTER_DEBUGF(3, "rt_raster_geopoint_to_cell(%g, %g) = %g, %g",
+		xw, yw, *xr, *yr);
+
+	/*
+	{
+		double gt[] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+		double igt[6];
+		double x1;
+		double y1;
+
+		gt[0] = rt_raster_get_x_offset(raster);
+		gt[1] = rt_raster_get_x_scale(raster);
+		gt[2] = rt_raster_get_x_skew(raster);
+		gt[3] = rt_raster_get_y_offset(raster);
+		gt[4] = rt_raster_get_y_skew(raster);
+		gt[5] = rt_raster_get_y_scale(raster);
+
+		GDALInvGeoTransform(gt, igt);
+
+		GDALApplyGeoTransform(igt, xw, yw, &x1, &y1);
+		RASTER_DEBUGF(4, "GDALApplyGeoTransform for (%f, %f) = (%f, %f)",
+			xw, yw, x1, y1);
+	}
+	*/
+
+	return 1;
 }
 
 rt_geomval
@@ -4270,7 +4335,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
          * postgresql memory context to work with, and the memory created
          * for pszSrcText is created outside this context.
          **/
-         //rtdealloc(pszSrcText);
+        /*rtdealloc(pszSrcText);*/
         free(pszSrcText);
         pszSrcText = NULL;
 
@@ -4883,7 +4948,7 @@ rt_band_from_wkb(uint16_t width, uint16_t height,
 
     /* And we should check if the band is a nodata band */
     /* TODO: No!! This is too slow */
-    //rt_band_check_is_nodata(band);
+    /*rt_band_check_is_nodata(band);*/
 
     return band;
 }
@@ -5172,7 +5237,7 @@ rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
         if (band->isnodata) *ptr |= BANDTYPE_FLAG_ISNODATA;
         ptr += 1;
 
-#if 0 // no padding required for WKB
+#if 0 /* no padding required for WKB */
         /* Add padding (if needed) */
         if (pixbytes > 1) {
             memset(ptr, '\0', pixbytes - 1);
@@ -5239,7 +5304,7 @@ rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
                 return 0;
         }
 
-#if 0 // no padding for WKB
+#if 0 /* no padding for WKB */
         /* Consistency checking (ptr is pixbytes-aligned) */
         assert(!((uint64_t) ptr % pixbytes));
 #endif
@@ -5262,7 +5327,7 @@ rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
             }
         }
 
-#if 0 // no padding for WKB
+#if 0 /* no padding for WKB */
         /* Pad up to 8-bytes boundary */
         while ((uint64_t) ptr % 8) {
             *ptr = 0;
@@ -5361,7 +5426,7 @@ rt_raster_serialized_size(rt_raster raster) {
         /* Align size to 8-bytes boundary (trailing padding) */
         /* XXX jorgearevalo: bug here. If the size is actually 8-bytes aligned,
          this line will add 8 bytes trailing padding, and it's not necessary */
-        //size += 8 - (size % 8);
+        /*size += 8 - (size % 8);*/
         if (size % 8)
             size += 8 - (size % 8);
 
@@ -7324,6 +7389,7 @@ rt_raster rt_raster_gdal_warp(
  * @param grid_yw : the Y value of point on grid to align raster to
  * @param skew_x : the X skew of the raster
  * @param skew_y : the Y skew of the raster
+ * @param options : array of options.  only option is "ALL_TOUCHED"
  *
  * @return the raster of the provided geometry
  */
@@ -7337,7 +7403,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	double *scale_x, double *scale_y,
 	double *ul_xw, double *ul_yw,
 	double *grid_xw, double *grid_yw,
-	double *skew_x, double *skew_y
+	double *skew_x, double *skew_y,
+	char **options
 ) {
 	rt_raster rast;
 	int i = 0;
@@ -7362,6 +7429,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	OGRSpatialReferenceH src_sr = NULL;
 	OGRGeometryH src_geom;
 	OGREnvelope src_env;
+	OGRwkbGeometryType wkbtype = wkbUnknown;
 
 	int ul_user = 0;
 	double djunk = 0;
@@ -7499,10 +7567,17 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	RASTER_DEBUGF(3, "scale (x, y) = %f, %f", _scale_x, _scale_y);
 	RASTER_DEBUGF(3, "dim (x, y) = %d, %d", _width, _height);
 
-	if (
-		(wkbFlatten(OGR_G_GetGeometryType(src_geom)) == wkbPoint) &&
-		FLT_NEQ(_scale_x, 0) &&
-		FLT_NEQ(_scale_y, 0)
+	/*
+	 	if geometry is a point or point-like and bounds not set, increase
+		extent by half-pixel to avoid missing points on border
+	*/
+	wkbtype = wkbFlatten(OGR_G_GetGeometryType(src_geom));
+	if ((
+			(wkbtype == wkbPoint) ||
+			(wkbtype == wkbMultiPoint)
+		) &&
+		FLT_EQ(_width, 0) &&
+		FLT_EQ(_height, 0)
 	) {
 		src_env.MinX -= (_scale_x / 2.);
 		src_env.MaxX += (_scale_x / 2.);
@@ -7795,7 +7870,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		1, &src_geom,
 		NULL, NULL,
 		_value,
-		NULL,
+		options,
 		NULL, NULL
 	);
 	rtdealloc(band_list);
@@ -7850,4 +7925,658 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	RASTER_DEBUG(3, "done");
 
 	return rast;
+}
+
+static
+int rt_raster_intersects_algorithm(
+	rt_raster rast1, rt_raster rast2,
+	rt_band band1, rt_band band2,
+	int hasnodata1, int hasnodata2,
+	double nodata1, double nodata2
+) {
+	int i;
+	int byHeight = 1;
+	uint32_t dimValue;
+
+	uint32_t row;
+	uint32_t rowoffset;
+	uint32_t col;
+	uint32_t coloffset;
+
+	enum line_points {X1, Y1, X2, Y2};
+	enum point {pX, pY};
+	double line1[4];
+	double line2[4];
+	double P[2];
+	double Qw[2];
+	double Qr[2];
+	double d;
+	double val1;
+	int noval1;
+	double val2;
+	int noval2;
+	uint32_t adjacent[8] = {0};
+
+	double xscale;
+	double yscale;
+
+	uint16_t width1;
+	uint16_t height1;
+	uint16_t width2;
+	uint16_t height2;
+
+	width1 = rt_raster_get_width(rast1);
+	height1 = rt_raster_get_height(rast1);
+	width2 = rt_raster_get_width(rast2);
+	height2 = rt_raster_get_height(rast2);
+
+	/* sampling scale */
+	xscale = fmin(rt_raster_get_x_scale(rast1), rt_raster_get_x_scale(rast2)) / 10.;
+	yscale = fmin(rt_raster_get_y_scale(rast1), rt_raster_get_y_scale(rast2)) / 10.;
+
+	/* see if skew made rast2's rows are parallel to rast1's cols */
+	rt_raster_cell_to_geopoint(
+		rast1,
+		0, 0,
+		&(line1[X1]), &(line1[Y1])
+	);
+
+	rt_raster_cell_to_geopoint(
+		rast1,
+		0, height1,
+		&(line1[X2]), &(line1[Y2])
+	);
+
+	rt_raster_cell_to_geopoint(
+		rast2,
+		0, 0,
+		&(line2[X1]), &(line2[Y1])
+	);
+
+	rt_raster_cell_to_geopoint(
+		rast2,
+		width2, 0,
+		&(line2[X2]), &(line2[Y2])
+	);
+
+	/* parallel vertically */
+	if (FLT_EQ(line1[X2] - line1[X1], 0.) && FLT_EQ(line2[X2] - line2[X1], 0.))
+		byHeight = 0;
+	/* parallel */
+	else if (FLT_EQ(((line1[Y2] - line1[Y1]) / (line1[X2] - line1[X1])), ((line2[Y2] - line2[Y1]) / (line2[X2] - line2[X1]))))
+		byHeight = 0;
+
+	if (byHeight)
+		dimValue = height2;
+	else
+		dimValue = width2;
+	RASTER_DEBUGF(4, "byHeight: %d, dimValue: %d", byHeight, dimValue);
+
+	/* 3 x 3 search */
+	for (coloffset = 0; coloffset < 3; coloffset++) {
+		for (rowoffset = 0; rowoffset < 3; rowoffset++) {
+			/* smaller raster */
+			for (col = coloffset; col <= width1; col += 3) {
+
+				rt_raster_cell_to_geopoint(
+					rast1,
+					col, 0,
+					&(line1[X1]), &(line1[Y1])
+				);
+
+				rt_raster_cell_to_geopoint(
+					rast1,
+					col, height1,
+					&(line1[X2]), &(line1[Y2])
+				);
+
+				/* larger raster */
+				for (row = rowoffset; row <= dimValue; row += 3) {
+
+					if (byHeight) {
+						rt_raster_cell_to_geopoint(
+							rast2,
+							0, row,
+							&(line2[X1]), &(line2[Y1])
+						);
+
+						rt_raster_cell_to_geopoint(
+							rast2,
+							width2, row,
+							&(line2[X2]), &(line2[Y2])
+						);
+					}
+					else {
+						rt_raster_cell_to_geopoint(
+							rast2,
+							row, 0,
+							&(line2[X1]), &(line2[Y1])
+						);
+
+						rt_raster_cell_to_geopoint(
+							rast2,
+							row, height2,
+							&(line2[X2]), &(line2[Y2])
+						);
+					}
+
+					RASTER_DEBUGF(4, "(col, row) = (%d, %d)", col, row);
+					RASTER_DEBUGF(4, "line1(x1, y1, x2, y2) = (%f, %f, %f, %f)",
+						line1[X1], line1[Y1], line1[X2], line1[Y2]);
+					RASTER_DEBUGF(4, "line2(x1, y1, x2, y2) = (%f, %f, %f, %f)",
+						line2[X1], line2[Y1], line2[X2], line2[Y2]);
+
+					/* intersection */
+					/* http://en.wikipedia.org/wiki/Line-line_intersection */
+					d = ((line1[X1] - line1[X2]) * (line2[Y1] - line2[Y2])) - ((line1[Y1] - line1[Y2]) * (line2[X1] - line2[X2]));
+					/* no intersection */
+					if (FLT_EQ(d, 0.)) {
+						continue;
+					}
+
+					P[pX] = (((line1[X1] * line1[Y2]) - (line1[Y1] * line1[X2])) * (line2[X1] - line2[X2])) -
+						((line1[X1] - line1[X2]) * ((line2[X1] * line2[Y2]) - (line2[Y1] * line2[X2])));
+					P[pX] = P[pX] / d;
+
+					P[pY] = (((line1[X1] * line1[Y2]) - (line1[Y1] * line1[X2])) * (line2[Y1] - line2[Y2])) -
+						((line1[Y1] - line1[Y2]) * ((line2[X1] * line2[Y2]) - (line2[Y1] * line2[X2])));
+					P[pY] = P[pY] / d;
+
+					RASTER_DEBUGF(4, "P(x, y) = (%f, %f)", P[pX], P[pY]);
+
+					/* intersection within bounds */
+					if ((
+							(FLT_EQ(P[pX], line1[X1]) || FLT_EQ(P[pX], line1[X2])) ||
+								(P[pX] > fmin(line1[X1], line1[X2]) && (P[pX] < fmax(line1[X1], line1[X2])))
+						) && (
+							(FLT_EQ(P[pY], line1[Y1]) || FLT_EQ(P[pY], line1[Y2])) ||
+								(P[pY] > fmin(line1[Y1], line1[Y2]) && (P[pY] < fmax(line1[Y1], line1[Y2])))
+						) && (
+							(FLT_EQ(P[pX], line2[X1]) || FLT_EQ(P[pX], line2[X2])) ||
+								(P[pX] > fmin(line2[X1], line2[X2]) && (P[pX] < fmax(line2[X1], line2[X2])))
+						) && (
+							(FLT_EQ(P[pY], line2[Y1]) || FLT_EQ(P[pY], line2[Y2])) ||
+								(P[pY] > fmin(line2[Y1], line2[Y2]) && (P[pY] < fmax(line2[Y1], line2[Y2])))
+					)) {
+						RASTER_DEBUG(4, "within bounds");
+
+						for (i = 0; i < 8; i++) adjacent[i] = 0;
+
+						/* test points around intersection */
+						for (i = 0; i < 8; i++) {
+							switch (i) {
+								case 7:
+									Qw[pX] = P[pX] - xscale;
+									Qw[pY] = P[pY] + yscale;
+									break;
+								/* 270 degrees = 09:00 */
+								case 6:
+									Qw[pX] = P[pX] - xscale;
+									Qw[pY] = P[pY];
+									break;
+								case 5:
+									Qw[pX] = P[pX] - xscale;
+									Qw[pY] = P[pY] - yscale;
+									break;
+								/* 180 degrees = 06:00 */
+								case 4:
+									Qw[pX] = P[pX];
+									Qw[pY] = P[pY] - yscale;
+									break;
+								case 3:
+									Qw[pX] = P[pX] + xscale;
+									Qw[pY] = P[pY] - yscale;
+									break;
+								/* 90 degrees = 03:00 */
+								case 2:
+									Qw[pX] = P[pX] + xscale;
+									Qw[pY] = P[pY];
+									break;
+								/* 45 degrees */
+								case 1:
+									Qw[pX] = P[pX] + xscale;
+									Qw[pY] = P[pY] + yscale;
+									break;
+								/* 0 degrees = 00:00 */
+								case 0:
+									Qw[pX] = P[pX];
+									Qw[pY] = P[pY] + yscale;
+									break;
+							}
+
+							/* unable to convert point to cell */
+							noval1 = 0;
+							if (!rt_raster_geopoint_to_cell(
+								rast1,
+								Qw[pX], Qw[pY],
+								&(Qr[pX]), &(Qr[pY])
+							)) {
+								noval1 = 1;
+							}
+							/* cell is outside bounds of grid */
+							else if (
+								(Qr[pX] < 0 || Qr[pX] > width1 || FLT_EQ(Qr[pX], width1)) ||
+								(Qr[pY] < 0 || Qr[pY] > height1 || FLT_EQ(Qr[pY], height1))
+							) {
+								noval1 = 1;
+							}
+							else if (hasnodata1 == FALSE)
+								val1 = 1;
+							/* unable to get value at cell */
+							else if (rt_band_get_pixel(band1, Qr[pX], Qr[pY], &val1) < 0)
+								noval1 = 1;
+
+							/* unable to convert point to cell */
+							noval2 = 0;
+							if (!rt_raster_geopoint_to_cell(
+								rast2,
+								Qw[pX], Qw[pY],
+								&(Qr[pX]), &(Qr[pY])
+							)) {
+								noval2 = 1;
+							}
+							/* cell is outside bounds of grid */
+							else if (
+								(Qr[pX] < 0 || Qr[pX] > width2 || FLT_EQ(Qr[pX], width2)) ||
+								(Qr[pY] < 0 || Qr[pY] > height2 || FLT_EQ(Qr[pY], height2))
+							) {
+								noval2 = 1;
+							}
+							else if (hasnodata2 == FALSE)
+								val2 = 1;
+							/* unable to get value at cell */
+							else if (rt_band_get_pixel(band2, Qr[pX], Qr[pY], &val2) < 0)
+								noval2 = 1;
+
+							if (!noval1) {
+								RASTER_DEBUGF(4, "val1 = %f", val1);
+							}
+							if (!noval2) {
+								RASTER_DEBUGF(4, "val2 = %f", val2);
+							}
+
+							/* pixels touch */
+							if (!noval1 && (
+								(hasnodata1 == FALSE) || (
+									(hasnodata1 != FALSE) &&
+									FLT_NEQ(val1, nodata1)
+								)
+							)) {
+								adjacent[i]++;
+							}
+							if (!noval2 && (
+								(hasnodata2 == FALSE) || (
+									(hasnodata2 != FALSE) &&
+									FLT_NEQ(val2, nodata2)
+								)
+							)) {
+								adjacent[i] += 3;
+							}
+
+							/* two pixel values not present */
+							if (noval1 || noval2) {
+								RASTER_DEBUGF(4, "noval1 = %d, noval2 = %d", noval1, noval2);
+								continue;
+							}
+
+							/* pixels valid, so intersect */
+							if ((
+									(hasnodata1 == FALSE) || (
+										(hasnodata1 != FALSE) &&
+										FLT_NEQ(val1, nodata1)
+									)
+								) && (
+									(hasnodata2 == FALSE) || (
+										(hasnodata2 != FALSE) &&
+										FLT_NEQ(val2, nodata2)
+									)
+							)) {
+								RASTER_DEBUG(3, "The two rasters do intersect");
+
+								return 1;
+							}
+						}
+
+						/* pixels touch */
+						for (i = 0; i < 4; i++) {
+							RASTER_DEBUGF(4, "adjacent[%d] = %d, adjacent[%d] = %d"
+								, i, adjacent[i], i + 4, adjacent[i + 4]);
+							if (adjacent[i] == 0) continue;
+
+							if (adjacent[i] + adjacent[i + 4] == 4) {
+								RASTER_DEBUG(3, "The two rasters touch");
+
+								return 1;
+							}
+						}
+					}
+					else {
+						RASTER_DEBUG(4, "outside of bounds");
+					}
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+/**
+ * Return zero if error occurred in function.
+ * Parameter intersects returns non-zero if two rasters intersect
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param intersects : non-zero value if the two rasters' bands intersects
+ *
+ * @return if zero, an error occurred in function
+ */
+int
+rt_raster_intersects(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *intersects
+) {
+	int i;
+	int j;
+	int within = 0;
+
+	LWPOLY *hull[2] = {NULL};
+	GEOSGeometry *ghull[2] = {NULL};
+
+	uint16_t width1;
+	uint16_t height1;
+	uint16_t width2;
+	uint16_t height2;
+	double area1;
+	double area2;
+	double pixarea1;
+	double pixarea2;
+	rt_raster rastS = NULL;
+	rt_raster rastL = NULL;
+	uint16_t *widthS = NULL;
+	uint16_t *heightS = NULL;
+	uint16_t *widthL = NULL;
+	uint16_t *heightL = NULL;
+	int nbandS;
+	int nbandL;
+	rt_band bandS = NULL;
+	rt_band bandL = NULL;
+	int hasnodataS = FALSE;
+	int hasnodataL = FALSE;
+	double nodataS = 0;
+	double nodataL = 0;
+
+	uint32_t row;
+	uint32_t rowoffset;
+	uint32_t col;
+	uint32_t coloffset;
+
+	enum line_points {X1, Y1, X2, Y2};
+	enum point {pX, pY};
+	double lineS[4];
+	double Qr[2];
+	double valS;
+	double valL;
+
+	RASTER_DEBUG(3, "Starting");
+
+	assert(NULL != rast1);
+	assert(NULL != rast2);
+
+	if (nband1 < 0 && nband2 < 0) {
+		nband1 = -1;
+		nband2 = -1;
+	}
+	else {
+		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
+		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
+	}
+
+	/* same srid */
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+		rterror("rt_raster_intersects: The two rasters provided have different SRIDs");
+		*intersects = 0;
+		return 0;
+	}
+
+	/* raster extents need to intersect */
+	do {
+		int rtn;
+
+		initGEOS(lwnotice, lwgeom_geos_error);
+
+		rtn = 1;
+		for (i = 0; i < 2; i++) {
+			hull[i] = rt_raster_get_convex_hull(i < 1 ? rast1 : rast2);
+			if (NULL == hull[i]) {
+				for (j = 0; j < i; j++) {
+					GEOSGeom_destroy(ghull[j]);
+					lwpoly_free(hull[j]);
+				}
+				rtn = 0;
+				break;
+			}
+			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS((LWGEOM *) hull[i]);
+			if (NULL == ghull[i]) {
+				for (j = 0; j < i; j++) {
+					GEOSGeom_destroy(ghull[j]);
+					lwpoly_free(hull[j]);
+				}
+				lwpoly_free(hull[i]);
+				rtn = 0;
+				break;
+			}
+		}
+		if (!rtn) break;
+
+		/* test to see if raster within the other */
+		within = 0;
+		if (GEOSWithin(ghull[0], ghull[1]) == 1)
+			within = -1;
+		else if (GEOSWithin(ghull[1], ghull[0]) == 1)
+			within = 1;
+
+		if (within != 0)
+			rtn = 1;
+		else
+			rtn = GEOSIntersects(ghull[0], ghull[1]);
+
+		for (i = 0; i < 2; i++) {
+			GEOSGeom_destroy(ghull[i]);
+			lwpoly_free(hull[i]);
+		}
+
+		if (rtn != 2) {
+			RASTER_DEBUGF(4, "convex hulls of rasters do %sintersect", rtn != 1 ? "NOT " : "");
+			if (rtn != 1) {
+				*intersects = 0;
+				return 1;
+			}
+			/* band isn't specified */
+			else if (nband1 < 0) {
+				*intersects = 1;
+				return 1;
+			}
+		}
+	}
+	while (0);
+
+	/* smaller raster by area or width */
+	width1 = rt_raster_get_width(rast1);
+	height1 = rt_raster_get_height(rast1);
+	width2 = rt_raster_get_width(rast2);
+	height2 = rt_raster_get_height(rast2);
+	pixarea1 = fabs(rt_raster_get_x_scale(rast1) * rt_raster_get_y_scale(rast1));
+	pixarea2 = fabs(rt_raster_get_x_scale(rast2) * rt_raster_get_y_scale(rast2));
+	area1 = fabs(width1 * height1 * pixarea1);
+	area2 = fabs(width2 * height2 * pixarea2);
+	RASTER_DEBUGF(4, "pixarea1, pixarea2, area1, area2 = %f, %f, %f, %f",
+		pixarea1, pixarea2, area1, area2);
+	if (
+		(within <= 0) ||
+		(area1 < area2) ||
+		FLT_EQ(area1, area2) ||
+		(area1 < pixarea2) || /* area of rast1 smaller than pixel area of rast2 */
+		FLT_EQ(area1, pixarea2)
+	) {
+		rastS = rast1;
+		nbandS = nband1;
+		widthS = &width1;
+		heightS = &height1;
+
+		rastL = rast2;
+		nbandL = nband2;
+		widthL = &width2;
+		heightL = &height2;
+	}
+	else {
+		rastS = rast2;
+		nbandS = nband2;
+		widthS = &width2;
+		heightS = &height2;
+
+		rastL = rast1;
+		nbandL = nband1;
+		widthL = &width1;
+		heightL = &height1;
+	}
+
+	/* no band to use, set band to zero */
+	if (nband1 < 0) {
+		nbandS = 0;
+		nbandL = 0;
+	}
+
+	RASTER_DEBUGF(4, "rast1 @ %p", rast1);
+	RASTER_DEBUGF(4, "rast2 @ %p", rast2);
+	RASTER_DEBUGF(4, "rastS @ %p", rastS);
+	RASTER_DEBUGF(4, "rastL @ %p", rastL);
+
+	/* load band of smaller raster */
+	bandS = rt_raster_get_band(rastS, nbandS);
+	if (NULL == bandS) {
+		rterror("rt_raster_intersects: Unable to get band %d of the first raster\n", nbandS);
+		*intersects = 0;
+		return 0;
+	}
+	if (bandS->offline) {
+		rterror("rt_raster_intersects not implemented yet for OFFDB bands");
+		*intersects = 0;
+		return 0;
+	}
+
+	hasnodataS = rt_band_get_hasnodata_flag(bandS);
+	if (hasnodataS != FALSE)
+		nodataS = rt_band_get_nodata(bandS);
+
+	/* load band of larger raster */
+	bandL = rt_raster_get_band(rastL, nbandL);
+	if (NULL == bandL) {
+		rterror("rt_raster_intersects: Unable to get band %d of the first raster\n", nbandL);
+		*intersects = 0;
+		return 0;
+	}
+	if (bandL->offline) {
+		rterror("rt_raster_intersects not implemented yet for OFFDB bands");
+		*intersects = 0;
+		return 0;
+	}
+
+	hasnodataL = rt_band_get_hasnodata_flag(bandL);
+	if (hasnodataL != FALSE)
+		nodataL = rt_band_get_nodata(bandL);
+
+	/* no band to use, ignore nodata */
+	if (nband1 < 0) {
+		hasnodataS = FALSE;
+		hasnodataL = FALSE;
+	}
+
+	/* special case where a raster can fit inside another raster's pixel */
+	if (within != 0 && ((pixarea1 > area2) || (pixarea2 > area1))) {
+		RASTER_DEBUG(4, "Using special case of raster fitting into another raster's pixel");
+		/* 3 x 3 search */
+		for (coloffset = 0; coloffset < 3; coloffset++) {
+			for (rowoffset = 0; rowoffset < 3; rowoffset++) {
+				for (col = coloffset; col < *widthS; col += 3) {
+					for (row = rowoffset; row < *heightS; row += 3) {
+						if (hasnodataS == FALSE)
+							valS = 1;
+						else if (rt_band_get_pixel(bandS, col, row, &valS) < 0)
+							continue;
+
+						if ((hasnodataS == FALSE) || (
+							(hasnodataS != FALSE) &&
+							FLT_NEQ(valS, nodataS)
+						)) {
+							rt_raster_cell_to_geopoint(
+								rastS,
+								col, row,
+								&(lineS[X1]), &(lineS[Y1])
+							);
+
+							if (!rt_raster_geopoint_to_cell(
+								rastL,
+								lineS[X1], lineS[Y1],
+								&(Qr[pX]), &(Qr[pY])
+							)) {
+								continue;
+							}
+
+							if (
+								(Qr[pX] < 0 || Qr[pX] > *widthL || FLT_EQ(Qr[pX], *widthL)) ||
+								(Qr[pY] < 0 || Qr[pY] > *heightL || FLT_EQ(Qr[pY], *heightL))
+							) {
+								continue;
+							}
+
+							if (hasnodataS == FALSE)
+								valL = 1;
+							else if (rt_band_get_pixel(bandL, Qr[pX], Qr[pY], &valL) < 0)
+								continue;
+
+							if ((hasnodataL == FALSE) || (
+								(hasnodataL != FALSE) &&
+								FLT_NEQ(valL, nodataL)
+							)) {
+								RASTER_DEBUG(3, "The two rasters do intersect");
+								*intersects = 1;
+								return 1;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	*intersects = rt_raster_intersects_algorithm(
+		rastS, rastL,
+		bandS, bandL,
+		hasnodataS, hasnodataL,
+		nodataS, nodataL
+	);
+
+	if (*intersects) return 1;
+
+	*intersects = rt_raster_intersects_algorithm(
+		rastL, rastS,
+		bandL, bandS,
+		hasnodataL, hasnodataS,
+		nodataL, nodataS
+	);
+
+	if (*intersects) return 1;
+
+	RASTER_DEBUG(3, "The two rasters do not intersect");
+
+	*intersects = 0;
+	return 1;
 }

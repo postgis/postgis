@@ -273,19 +273,19 @@ VALUES ( 46, 2, st_setsrid(st_makeline(ARRAY[st_makepoint(
 -- Test 1 - st_intersect(geometry, raster) 
 -----------------------------------------------------------------------
 
-SELECT 'test 1.1', rid, geomid, st_intersects(geom, rast) AS intersect
+SELECT 'test 1.1', rid, geomid, ST_Intersects(geom, rast) AS intersect
 	FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
 	WHERE forrast = rid ORDER BY rid, geomid;
 	
-SELECT 'test 1.2', rid, geomid, st_intersects(geom, rast) AS intersect
+SELECT 'test 1.2', rid, geomid, ST_Intersects(geom, rast) AS intersect
 	FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
 	WHERE forrast = rid AND ST_Intersects(geom, rast, 1) ORDER BY rid, geomid;
 	
-SELECT 'test 1.3', rid, geomid, st_intersects(geom, st_setbandnodatavalue(rast, NULL))
+SELECT 'test 1.3', rid, geomid, ST_Intersects(geom, st_setbandnodatavalue(rast, NULL), 1)
 	FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
 	WHERE forrast = rid ORDER BY rid, geomid;
 
-SELECT 'test 1.4', rid, geomid, st_intersects(geom, st_setbandnodatavalue(rast, NULL))
+SELECT 'test 1.4', rid, geomid, ST_Intersects(geom, st_setbandnodatavalue(rast, NULL))
 	FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
 	WHERE forrast = rid AND ST_Intersects(geom, rast, 1) ORDER BY rid, geomid;
 
@@ -301,7 +301,7 @@ FROM (SELECT *, ST_Intersection(geom, rast) gv
 SELECT 'test 2.2', rid, geomid, ST_AsText((gv).geom), (gv).val
 FROM (SELECT *, ST_Intersection(geom, rast) gv
       FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
-      WHERE forrast = rid AND ST_Intersects(geom, rast)
+      WHERE forrast = rid AND ST_Intersects(geom, rast, 1)
      ) foo;
 
 SELECT 'test 2.3', rid, geomid, ST_AsText((gv).geom), (gv).val
@@ -313,6 +313,6 @@ FROM (SELECT *, ST_Intersection(geom, st_setbandnodatavalue(rast, NULL)) gv
 SELECT 'test 2.4', rid, geomid, ST_AsText((gv).geom), (gv).val
 FROM (SELECT *, ST_Intersection(geom, st_setbandnodatavalue(rast, NULL)) gv
       FROM rt_spatial_relationship_test, rt_spatial_relationship_test_geom
-      WHERE forrast = rid AND ST_Intersects(geom, st_setbandnodatavalue(rast, NULL))
+      WHERE forrast = rid AND ST_Intersects(geom, st_setbandnodatavalue(rast, NULL), 1)
      ) foo;
 

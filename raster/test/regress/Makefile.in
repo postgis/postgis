@@ -110,6 +110,7 @@ TEST_GIST = \
 	
 TEST_SREL = \
 	rt_spatial_relationship.sql \
+	rt_intersects.sql \
 	$(NULL)
 	
 TEST_BUGS = \

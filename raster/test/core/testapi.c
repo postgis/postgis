@@ -1138,6 +1138,8 @@ static void testBandStats() {
 	qlls = NULL;
 	qlls_count = 0;
 
+	deepRelease(raster);
+
 	xmax = 100;
 	ymax = 100;
 	raster = rt_raster_new(xmax, ymax);
@@ -1579,7 +1581,8 @@ static void testGDALRasterize() {
 		&scale_x, &scale_y,
 		NULL, NULL,
 		NULL, NULL,
-		NULL, NULL
+		NULL, NULL,
+		NULL
 	);
 
 	free(wkb);
@@ -1592,6 +1595,469 @@ static void testGDALRasterize() {
 	CHECK((rt_raster_get_y_offset(raster) == 600000));
 
 	deepRelease(raster);
+}
+
+static void testIntersects() {
+	rt_raster rast1;
+	rt_raster rast2;
+	rt_band band1;
+	rt_band band2;
+	double nodata;
+	int rtn;
+	int intersects;
+
+	/*
+		rast1
+
+		(-1, -1)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(1, 1)
+	*/
+	rast1 = rt_raster_new(2, 2);
+	assert(rast1);
+	rt_raster_set_offsets(rast1, -1, -1);
+
+	band1 = addBand(rast1, PT_8BUI, 1, 0);
+	CHECK(band1);
+	rt_band_set_nodata(band1, 0);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+
+	nodata = rt_band_get_nodata(band1);
+	CHECK_EQUALS(nodata, 0);
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(2, 2)
+	*/
+	rast2 = rt_raster_new(2, 2);
+	assert(rast2);
+
+	band2 = addBand(rast2, PT_8BUI, 1, 0);
+	CHECK(band2);
+	rt_band_set_nodata(band2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+
+	nodata = rt_band_get_nodata(band2);
+	CHECK_EQUALS(nodata, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	rtn = rt_raster_intersects(
+		rast1, -1,
+		rast2, -1,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|0|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(2, 2)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|1|0|
+						+-+-+
+						|1|1|
+						+-+-+
+								(2, 2)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|0|0|
+						+-+-+
+						|0|1|
+						+-+-+
+								(2, 2)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|0|0|
+						+-+-+
+						|0|0|
+						+-+-+
+								(2, 2)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects != 1));
+
+	/*
+		rast2
+
+		(2, 0)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(4, 2)
+	*/
+	rt_raster_set_offsets(rast2, 2, 0);
+
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects != 1));
+
+	/*
+		rast2
+
+		(0.1, 0.1)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(0.9, 0.9)
+	*/
+	rt_raster_set_offsets(rast2, 0.1, 0.1);
+	rt_raster_set_scale(rast2, 0.4, 0.4);
+
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(-0.1, 0.1)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(0.9, 0.9)
+	*/
+	rt_raster_set_offsets(rast2, -0.1, 0.1);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	deepRelease(rast2);
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+									(3, 3)
+	*/
+	rast2 = rt_raster_new(3, 3);
+	assert(rast2);
+
+	band2 = addBand(rast2, PT_8BUI, 1, 0);
+	CHECK(band2);
+	rt_band_set_nodata(band2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+
+	nodata = rt_band_get_nodata(band2);
+	CHECK_EQUALS(nodata, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(-2, -2)
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+									(1, 1)
+	*/
+	rt_raster_set_offsets(rast2, -2, -2);
+
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(-2, -2)
+						+-+-+-+
+						|0|1|1|
+						+-+-+-+
+						|1|0|1|
+						+-+-+-+
+						|1|1|0|
+						+-+-+-+
+									(1, 1)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(-2, -2)
+						+-+-+-+
+						|0|1|1|
+						+-+-+-+
+						|1|0|0|
+						+-+-+-+
+						|1|0|0|
+						+-+-+-+
+									(1, 1)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/*
+		rast2
+
+		(-2, -2)
+						+-+-+-+
+						|0|1|0|
+						+-+-+-+
+						|1|0|0|
+						+-+-+-+
+						|0|0|0|
+						+-+-+-+
+									(1, 1)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	deepRelease(rast2);
+
+	/* skew tests */
+	/* rast2 (skewed by -0.5, 0.5) */
+	rast2 = rt_raster_new(3, 3);
+	assert(rast2);
+	rt_raster_set_skews(rast2, -0.5, 0.5);
+
+	band2 = addBand(rast2, PT_8BUI, 1, 0);
+	CHECK(band2);
+	rt_band_set_nodata(band2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/* rast2 (skewed by -1, 1) */
+	rt_raster_set_skews(rast2, -1, 1);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	/* rast2 (skewed by 1, -1) */
+	rt_raster_set_skews(rast2, 1, -1);
+
+	rtn = rt_raster_intersects(
+		rast1, 0,
+		rast2, 0,
+		&intersects
+	);
+	CHECK((rtn != 0));
+	CHECK((intersects == 1));
+
+	deepRelease(rast2);
+	deepRelease(rast1);
 }
 
 int
@@ -2019,6 +2485,10 @@ main()
 		printf("Testing rt_raster_gdal_rasterize\n");
 		testGDALRasterize();
 		printf("Successfully tested rt_raster_gdal_rasterize\n");
+
+		printf("Testing rt_raster_intersects\n");
+		testIntersects();
+		printf("Successfully tested rt_raster_intersects\n");
 
     deepRelease(raster);
 

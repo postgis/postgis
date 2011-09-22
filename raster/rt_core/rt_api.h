@@ -90,10 +90,21 @@
 #endif
 #endif
 
+/* Microsoft does not support fmax or fmin in math.h */
+#if defined(WIN32)
+#if !defined(HAVE_MAX)
+#define fmax max
+#endif
+#if !defined(HAVE_MIN)
+#define fmin min
+#endif
+#endif
+
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
 
 #include "liblwgeom.h"
+#include "lwgeom_geos.h"
 
 #include "gdal_alg.h"
 #include "gdal_frmts.h"
@@ -136,170 +147,6 @@ typedef struct rt_quantile_t* rt_quantile;
 typedef struct rt_valuecount_t* rt_valuecount;
 typedef struct rt_gdaldriver_t* rt_gdaldriver;
 typedef struct rt_reclassexpr_t* rt_reclassexpr;
-
-
-/**
- * Struct definitions
- *
- * These structs are defined here as they are needed elsewhere
- * including rt_pg/rt_pg.c and reduce duplicative declarations
- *
- */
-struct rt_raster_serialized_t {
-    /*---[ 8 byte boundary ]---{ */
-    uint32_t size; /* required by postgresql: 4 bytes */
-    uint16_t version; /* format version (this is version 0): 2 bytes */
-    uint16_t numBands; /* Number of bands: 2 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double scaleX; /* pixel width: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double scaleY; /* pixel height: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double ipX; /* insertion point X: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double ipY; /* insertion point Y: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double skewX; /* skew about the X axis: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double skewY; /* skew about the Y axis: 8 bytes */
-
-    /* }---[ 8 byte boundary ]--- */
-    int32_t srid; /* Spatial reference id: 4 bytes */
-    uint16_t width; /* pixel columns: 2 bytes */
-    uint16_t height; /* pixel rows: 2 bytes */
-};
-
-/* NOTE: the initial part of this structure matches the layout
- *       of data in the serialized form version 0, starting
- *       from the numBands element
- */
-struct rt_raster_t {
-    uint32_t size;
-    uint16_t version;
-
-    /* Number of bands, all share the same dimension
-     * and georeference */
-    uint16_t numBands;
-
-    /* Georeference (in projection units) */
-    double scaleX; /* pixel width */
-    double scaleY; /* pixel height */
-    double ipX; /* geo x ordinate of the corner of upper-left pixel */
-    double ipY; /* geo y ordinate of the corner of bottom-right pixel */
-    double skewX; /* skew about the X axis*/
-    double skewY; /* skew about the Y axis */
-
-    int32_t srid; /* spatial reference id */
-    uint16_t width; /* pixel columns - max 65535 */
-    uint16_t height; /* pixel rows - max 65535 */
-    rt_band *bands; /* actual bands */
-
-};
-
-/* WKT string representing each polygon in WKT format acompagned by its
-correspoding value */
-struct rt_geomval_t {
-    int srid;
-    double val;
-    char * geom;
-};
-
-/* summary stats of specified band */
-struct rt_bandstats_t {
-	double sample;
-	uint32_t count;
-
-	double min;
-	double max;
-	double sum;
-	double mean;
-	double stddev;
-
-	double *values;
-	int sorted; /* flag indicating that values is sorted ascending by value */
-};
-
-/* histogram bin(s) of specified band */
-struct rt_histogram_t {
-	uint32_t count;
-	double percent;
-
-	double min;
-	double max;
-
-	int inc_min;
-	int inc_max;
-};
-
-/* quantile(s) of the specified band */
-struct rt_quantile_t {
-	double quantile;
-	double value;
-};
-
-/* listed-list structures for rt_band_get_quantiles_stream */
-struct quantile_llist {
-	uint8_t algeq; /* AL-GEQ (1) or AL-GT (0) */
-	double quantile;
-	uint64_t tau; /* position in sequence */
-
-	struct quantile_llist_element *head; /* H index 0 */
-	struct quantile_llist_element *tail; /* H index last */
-	uint32_t count; /* # of elements in H */
-
-	/* faster access to elements at specific intervals */
-	struct quantile_llist_index *index;
-	uint32_t index_max; /* max # of elements in index */
-
-	uint64_t sum1; /* N1H */
-	uint64_t sum2; /* N2H */
-};
-
-struct quantile_llist_element {
-	double value;
-	uint32_t count;
-
-	struct quantile_llist_element *prev;
-	struct quantile_llist_element *next;
-};
-
-struct quantile_llist_index {
-	struct quantile_llist_element *element;
-	uint32_t index;
-};
-
-/* number of times a value occurs */
-struct rt_valuecount_t {
-	double value;
-	uint32_t count;
-	double percent;
-};
-
-/* reclassification expression */
-struct rt_reclassexpr_t {
-	struct rt_reclassrange {
-		double min;
-		double max;
-		int inc_min; /* include min */
-		int inc_max; /* include max */
-		int exc_min; /* exceed min */
-		int exc_max; /* exceed max */
-	} src, dst;
-};
-
-/* gdal driver information */
-struct rt_gdaldriver_t {
-    int idx;
-    char *short_name;
-    char *long_name;
-		char *create_options;
-};
 
 /**
 * Global functions for memory/logging handlers.
@@ -676,6 +523,7 @@ rt_histogram rt_band_get_histogram(rt_bandstats stats,
 rt_quantile rt_band_get_quantiles(rt_bandstats stats,
 	double *quantiles, int quantiles_count, uint32_t *rtn_count);
 
+struct quantile_llist;
 int quantile_llist_destroy(struct quantile_llist **list,
 	uint32_t list_count);
 
@@ -966,17 +814,32 @@ void rt_raster_set_srid(rt_raster raster, int32_t srid);
 int32_t rt_raster_get_srid(rt_raster raster);
 
 /**
- * Convert an x,y raster point to an x1,y1 point on map
+ * Convert an xr, yr raster point to an xw, yw point on map
  *
  * @param raster : the raster to get info from
- * @param x : the pixel's column
- * @param y : the pixel's row
- * @param x1 : output parameter, X ordinate of the geographical point
- * @param y1 : output parameter, Y ordinate of the geographical point
+ * @param xr : the pixel's column
+ * @param yr : the pixel's row
+ * @param xw : output parameter, X ordinate of the geographical point
+ * @param yw : output parameter, Y ordinate of the geographical point
  */
 void rt_raster_cell_to_geopoint(rt_raster raster,
-                                double x, double y,
-                                double* x1, double* y1);
+	double xr, double yr,
+	double* xw, double* yw);
+
+/**
+ * Convert an xw, yw map point to a xr, yr raster point
+ *
+ * @param raster : the raster to get info from
+ * @param xw : X ordinate of the geographical point
+ * @param yw : Y ordinate of the geographical point
+ * @param xr : output parameter, the pixel's column
+ * @param yr : output parameter, the pixel's row
+ *
+ * @return if zero, error occurred in function
+ */
+int rt_raster_geopoint_to_cell(rt_raster raster,
+	double xw, double yw,
+	double *xr, double *yr);
 
 /**
  * Get raster's polygon convex hull.
@@ -1184,6 +1047,7 @@ rt_raster rt_raster_gdal_warp(rt_raster raster, const char *src_srs,
  * @param grid_yw : the Y value of point on grid to align raster to
  * @param skew_x : the X skew of the raster
  * @param skew_y : the Y skew of the raster
+ * @param options : array of options.  only option is "ALL_TOUCHED"
  *
  * @return the raster of the provided geometry
  */
@@ -1196,7 +1060,31 @@ rt_raster rt_raster_gdal_rasterize(const unsigned char *wkb,
 	double *scale_x, double *scale_y,
 	double *ul_xw, double *ul_yw,
 	double *grid_xw, double *grid_yw,
-	double *skew_x, double *skew_y);
+	double *skew_x, double *skew_y,
+	char **options
+);
+
+/**
+ * Return zero if error occurred in function.
+ * Parameter intersects returns non-zero if two rasters intersect
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param intersects : non-zero value if the two rasters' bands intersects
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_intersects(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *intersects
+);
 
 /*- utilities -------------------------------------------------------*/
 
@@ -1278,5 +1166,191 @@ rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
 	helper macro for symmetrical rounding
 */
 #define ROUND(x, y) (((x > 0.0) ? floor((x * pow(10, y) + 0.5)) : ceil((x * pow(10, y) - 0.5))) / pow(10, y));
+
+/**
+ * Struct definitions
+ *
+ * These structs are defined here as they are needed elsewhere
+ * including rt_pg/rt_pg.c and reduce duplicative declarations
+ *
+ */
+struct rt_raster_serialized_t {
+    /*---[ 8 byte boundary ]---{ */
+    uint32_t size; /* required by postgresql: 4 bytes */
+    uint16_t version; /* format version (this is version 0): 2 bytes */
+    uint16_t numBands; /* Number of bands: 2 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double scaleX; /* pixel width: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double scaleY; /* pixel height: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double ipX; /* insertion point X: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double ipY; /* insertion point Y: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double skewX; /* skew about the X axis: 8 bytes */
+
+    /* }---[ 8 byte boundary ]---{ */
+    double skewY; /* skew about the Y axis: 8 bytes */
+
+    /* }---[ 8 byte boundary ]--- */
+    int32_t srid; /* Spatial reference id: 4 bytes */
+    uint16_t width; /* pixel columns: 2 bytes */
+    uint16_t height; /* pixel rows: 2 bytes */
+};
+
+/* NOTE: the initial part of this structure matches the layout
+ *       of data in the serialized form version 0, starting
+ *       from the numBands element
+ */
+struct rt_raster_t {
+    uint32_t size;
+    uint16_t version;
+
+    /* Number of bands, all share the same dimension
+     * and georeference */
+    uint16_t numBands;
+
+    /* Georeference (in projection units) */
+    double scaleX; /* pixel width */
+    double scaleY; /* pixel height */
+    double ipX; /* geo x ordinate of the corner of upper-left pixel */
+    double ipY; /* geo y ordinate of the corner of bottom-right pixel */
+    double skewX; /* skew about the X axis*/
+    double skewY; /* skew about the Y axis */
+
+    int32_t srid; /* spatial reference id */
+    uint16_t width; /* pixel columns - max 65535 */
+    uint16_t height; /* pixel rows - max 65535 */
+    rt_band *bands; /* actual bands */
+
+};
+
+struct rt_extband_t {
+    uint8_t bandNum;
+    char* path; /* externally owned ? */
+};
+
+struct rt_band_t {
+    rt_pixtype pixtype;
+    int32_t offline;
+    uint16_t width;
+    uint16_t height;
+    int32_t hasnodata; /* a flag indicating if this band contains nodata values */
+    int32_t isnodata;   /* a flag indicating if this band is filled only with
+                           nodata values */
+    double nodataval; /* int will be converted ... */
+    int32_t ownsData; /* XXX mloskot: its behaviour needs to be documented */
+
+    union {
+        void* mem; /* actual data, externally owned */
+        struct rt_extband_t offline;
+    } data;
+
+};
+
+/* WKT string representing each polygon in WKT format accompanied by its
+corresponding value */
+struct rt_geomval_t {
+    int srid;
+    double val;
+    char * geom;
+};
+
+/* summary stats of specified band */
+struct rt_bandstats_t {
+	double sample;
+	uint32_t count;
+
+	double min;
+	double max;
+	double sum;
+	double mean;
+	double stddev;
+
+	double *values;
+	int sorted; /* flag indicating that values is sorted ascending by value */
+};
+
+/* histogram bin(s) of specified band */
+struct rt_histogram_t {
+	uint32_t count;
+	double percent;
+
+	double min;
+	double max;
+
+	int inc_min;
+	int inc_max;
+};
+
+/* quantile(s) of the specified band */
+struct rt_quantile_t {
+	double quantile;
+	double value;
+};
+
+/* listed-list structures for rt_band_get_quantiles_stream */
+struct quantile_llist {
+	uint8_t algeq; /* AL-GEQ (1) or AL-GT (0) */
+	double quantile;
+	uint64_t tau; /* position in sequence */
+
+	struct quantile_llist_element *head; /* H index 0 */
+	struct quantile_llist_element *tail; /* H index last */
+	uint32_t count; /* # of elements in H */
+
+	/* faster access to elements at specific intervals */
+	struct quantile_llist_index *index;
+	uint32_t index_max; /* max # of elements in index */
+
+	uint64_t sum1; /* N1H */
+	uint64_t sum2; /* N2H */
+};
+
+struct quantile_llist_element {
+	double value;
+	uint32_t count;
+
+	struct quantile_llist_element *prev;
+	struct quantile_llist_element *next;
+};
+
+struct quantile_llist_index {
+	struct quantile_llist_element *element;
+	uint32_t index;
+};
+
+/* number of times a value occurs */
+struct rt_valuecount_t {
+	double value;
+	uint32_t count;
+	double percent;
+};
+
+/* reclassification expression */
+struct rt_reclassexpr_t {
+	struct rt_reclassrange {
+		double min;
+		double max;
+		int inc_min; /* include min */
+		int inc_max; /* include max */
+		int exc_min; /* exceed min */
+		int exc_max; /* exceed max */
+	} src, dst;
+};
+
+/* gdal driver information */
+struct rt_gdaldriver_t {
+	int idx;
+	char *short_name;
+	char *long_name;
+	char *create_options;
+};
 
 #endif /* RT_API_H_INCLUDED */
