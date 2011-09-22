@@ -2571,6 +2571,11 @@ DECLARE
   sql TEXT;
   newfaces INTEGER[];
   newface INTEGER;
+  p1 GEOMETRY;
+  p2 GEOMETRY;
+  seg GEOMETRY;
+  p1b GEOMETRY;
+  p2b GEOMETRY;
 BEGIN
 
   --
@@ -3116,31 +3121,49 @@ BEGIN
   -- Call topology.AddFace for every face containing the new edge
   -- 
   -- The ORDER serves predictability of which face is added first
-  -- TODO: order so to have the face on the _right_ side created first,
-  --       see http://trac.osgeo.org/postgis/ticket/1205
+  -- See http://trac.osgeo.org/postgis/ticket/1205
   --
-  -- TODO: in presence of holes every hole would share a boundary
-  --       with its shell, research on improving performance by avoiding
-  --       the multiple scans.
-  --
-  FOR rec IN SELECT geom FROM ST_Dump(fan.post)
-             WHERE ST_Contains(
-                ST_Boundary(geom),
-                  ST_MakeLine(
-                    ST_StartPoint(newedge.cleangeom),
-                    ST_PointN(newedge.cleangeom, 2)
-                  )
-                )
-             ORDER BY ST_XMin(geom), ST_YMin(geom)
+  p1 := ST_StartPoint(newedge.cleangeom);
+  p2 := ST_PointN(newedge.cleangeom, 2);
+  seg := ST_MakeLine(p1, p2);
+  -- The new rings might start on one of the new edge endpoints
+  -- we we sample two more inner points for the sake of computing
+  -- face side.
+  p1b := ST_Line_Interpolate_Point(seg, 0.1);
+  p2b := ST_Line_Interpolate_Point(seg, 0.9);
+  FOR rec IN
+    WITH faces AS ( SELECT * FROM ST_Dump(ST_ForceRHR(fan.post)) ),
+         rings AS ( SELECT path,
+                      ST_Boundary((ST_DumpRings(geom)).geom) as bnd
+                    FROM faces ),
+         paths AS ( SELECT path,
+                      ST_Line_Locate_Point(bnd, p1b) as pos1,
+                      ST_Line_Locate_Point(bnd, p2b) as pos2,
+                      ST_Line_Locate_Point(bnd, p1b) < 
+                      ST_Line_Locate_Point(bnd, p2b) as right_side
+                    FROM rings
+                    WHERE ST_Contains(bnd, seg) )
+    SELECT
+      CASE WHEN p.right_side THEN 'right' ELSE 'left' END as side,
+      p.pos1, p.pos2,
+      f.geom
+    FROM paths p INNER JOIN faces f ON (p.path = f.path)
+    ORDER BY p.right_side DESC
   LOOP -- {
-    RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
+    RAISE DEBUG 'Adding % face', rec.side;
     sql :=
       'SELECT topology.AddFace(' || quote_literal(atopology)
       || ', ' || quote_literal(rec.geom::text) || ', true)';
     EXECUTE sql INTO newface;
     newfaces := array_append(newfaces, newface);
   END LOOP; --}
+
   RAISE DEBUG 'Added faces: %', newfaces;
+
+  IF array_upper(newfaces, 1) > 2 THEN
+    -- Sanity check..
+    RAISE EXCEPTION 'More than 2 faces found to be formed by new edge';
+  END IF;
 
   IF newedge.left_face != 0 THEN -- {
 
