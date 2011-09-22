@@ -3747,7 +3747,7 @@ BEGIN
   RAISE NOTICE 'ST_AddEdgeModFace: edge % splitted face %',
       newedge.edge_id, newedge.left_face;
 
-  -- Call topology.AddFace for every face containing the new edge
+  -- Call topology.AddFace for every face whose boundary contains the new edge
   p1 = ST_StartPoint(newedge.cleangeom);
   p2 = ST_PointN(newedge.cleangeom, 2);
   FOR rec IN SELECT geom FROM ST_Dump(fan.post)
@@ -3763,7 +3763,7 @@ BEGIN
     --
     IF newedge.left_face != 0 THEN -- {
 
-      RAISE NOTICE 'Checking face %', ST_AsText(rec.geom);
+     RAISE DEBUG 'Checking face %', ST_AsText(rec.geom);
 
      -- Skip this if our edge is on the right side
      IF ST_IsEmpty(ST_GeometryN(
@@ -3780,7 +3780,7 @@ BEGIN
 
     END IF; -- }
 
-    RAISE NOTICE 'Adding face %', ST_AsText(rec.geom);
+    RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
     sql :=
       'SELECT topology.AddFace(' || quote_literal(atopology)
       || ', ' || quote_literal(rec.geom::text) || ', true)';
