@@ -3114,7 +3114,15 @@ BEGIN
       newedge.edge_id, newedge.left_face;
 
   -- Call topology.AddFace for every face containing the new edge
+  -- 
   -- The ORDER serves predictability of which face is added first
+  -- TODO: order so to have the face on the _right_ side created first,
+  --       see http://trac.osgeo.org/postgis/ticket/1205
+  --
+  -- TODO: in presence of holes every hole would share a boundary
+  --       with its shell, research on improving performance by avoiding
+  --       the multiple scans.
+  --
   FOR rec IN SELECT geom FROM ST_Dump(fan.post)
              WHERE ST_Contains(
                 ST_Boundary(geom),
@@ -3748,6 +3756,11 @@ BEGIN
       newedge.edge_id, newedge.left_face;
 
   -- Call topology.AddFace for every face whose boundary contains the new edge
+  --
+  -- TODO: in presence of holes every hole would share a boundary
+  --       with its shell, research on improving performance by avoiding
+  --       the multiple scans.
+  --
   p1 = ST_StartPoint(newedge.cleangeom);
   p2 = ST_PointN(newedge.cleangeom, 2);
   FOR rec IN SELECT geom FROM ST_Dump(fan.post)
@@ -3755,6 +3768,10 @@ BEGIN
                 ST_Boundary(geom),
                 ST_MakeLine(p1, p2)
                 )
+  --
+  -- TODO: order so to have the face on the _right_ side created first,
+  --       see http://trac.osgeo.org/postgis/ticket/1205
+  --
   LOOP -- {
 
     -- NOTE: the only difference with ST_AddEdgeNewFace here is
