@@ -121,7 +121,7 @@
 --  	for primary keys and sequences for serial fields...
 --  
 --   ST_CreateTopoGeo
---  	Being working on. TODO: continue implementation
+--  	Complete
 --  
 --   ST_AddIsoNode
 --  	Complete
@@ -172,11 +172,12 @@
 --  	Implemented using polygonize()
 --  
 --   ST_RemEdgeNewFace
---  	Complete
+--    Complete
 --    Also updates the Relation table
 --  
 --   ST_RemEdgeModFace
---    Unimplemented
+--  	Complete
+--    Also updates the Relation table
 --  
 --   ST_ValidateTopoGeo
 --    Unimplemented (probably a wrapper around ValidateTopology)
