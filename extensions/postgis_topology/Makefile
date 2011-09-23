@@ -7,11 +7,11 @@ PG_CONFIG    = pg_config
 
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
-EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
+EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -40,6 +40,22 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
 		-e 's/(;/;/' \
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@
+
+#upgrade script should have everything but table, schema, type creation/alter
+#first expression deletes all non-removable objects defined on same line
+#second deletes all non-removable defined on multiple lines
+#aggregates are special 
+#they can be dropped but we need to remove
+#them from the extension first
+sql/topology_upgrade_minor.sql:  sql_bits/topology.sql
+	 sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
+	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
+	 	 -e 's/^DROP AGGREGATE IF EXISTS\(.*\);/ALTER EXTENSION $(EXTENSION) DROP AGGREGATE \1;DROP AGGREGATE \1;/' \
+	 	 $< > $@
+
+sql/$(EXTENSION)--2.0.0--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
+	cp $< $@
+	
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 endif
