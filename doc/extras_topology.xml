@@ -1083,8 +1083,9 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 			<refnamediv>
 				<refname>ST_CreateTopoGeo</refname>
 			
-				<refpurpose>Adds a collection of geometries to a given topology and returns a message detailing success.  If collection contains anything but points and linestrings, an error is thrown. Will also 
-				throw an error if there are already edges and nodes in the topology. polygon support not implemented yet.</refpurpose>
+				<refpurpose>
+Adds a collection of geometries to a given empty topology and returns a message detailing success.  
+				</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1100,14 +1101,15 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 			<refsection>
                 <title>Description</title>
             
-                <para>Adds a collection of geometries to a given topology and returns a message detailing success.  If collection contains anything but points and linestrings an error is thrown. Will also 
-				throw an error if there are already edges and nodes in the topology or coincident nodes etc.  Support for polygons not yet implemented.</para>
+                <para>
+Adds a collection of geometries to a given empty topology and returns a message detailing success.  
+                </para>
 				
 				<para>Useful for populating an empty topology.</para>
              
                 
                 <!-- use this format if new function -->
-                <para>Availability: 1.? </para>
+                <para>Availability: 2.0 </para>
                 	<para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details -- X.3.18</para>
 			</refsection>
 		

@@ -3904,94 +3904,166 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- X.3.18
 --
 --  ST_CreateTopoGeo(atopology, acollection)
---
-CREATE OR REPLACE FUNCTION topology.ST_CreateTopoGeo(varchar, geometry)
+--}{
+CREATE OR REPLACE FUNCTION topology.ST_CreateTopoGeo(atopology varchar, acollection geometry)
 RETURNS text
 AS
 $$
 DECLARE
-  atopology alias for $1;
-  acollection alias for $2;
   typ char(4);
   rec RECORD;
   ret int;
-  schemaoid oid;
+  nodededges GEOMETRY;
+  points GEOMETRY;
+  snode_id int;
+  enode_id int;
+  tolerance FLOAT8;
+  topoinfo RECORD;
 BEGIN
+
   IF atopology IS NULL OR acollection IS NULL THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
   END IF;
 
-  -- Verify existance of the topology schema 
-  FOR rec in EXECUTE 'SELECT oid FROM pg_namespace WHERE '
-    || ' nspname = ' || quote_literal(atopology)
-    || ' GROUP BY oid'
-    
-  LOOP
-    schemaoid := rec.oid;
-  END LOOP;
+  -- Get topology information
+  BEGIN
+    SELECT * FROM topology.topology
+      INTO STRICT topoinfo WHERE name = atopology;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+  END;
 
-  IF schemaoid IS NULL THEN
-  RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent schema';
+  -- Check SRID compatibility
+  IF ST_SRID(acollection) != topoinfo.SRID THEN
+    RAISE EXCEPTION 'Geometry SRID (%) does not match topology SRID (%)',
+      ST_SRID(acollection), topoinfo.SRID;
   END IF;
 
-  -- Verify existance of the topology views in the topology schema 
-  FOR rec in EXECUTE 'SELECT count(*) FROM pg_class WHERE '
-    || ' relnamespace = ' || schemaoid 
-    || ' and relname = ''node'''
-    || ' OR relname = ''edge'''
-    || ' OR relname = ''face'''
+  -- Verify pre-conditions (valid, empty topology schema exists)
+  BEGIN -- {
+
+    -- Verify the topology views in the topology schema to be empty
+    FOR rec in EXECUTE
+      'SELECT count(*) FROM '
+      || quote_ident(atopology) || '.edge_data '
+      || ' UNION ' ||
+      'SELECT count(*) FROM '
+      || quote_ident(atopology) || '.node '
+    LOOP
+      IF rec.count > 0 THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-empty view';
+      END IF;
+    END LOOP;
+
+    -- face check is separated as it will contain a single (world)
+    -- face record
+    FOR rec in EXECUTE
+      'SELECT count(*) FROM '
+      || quote_ident(atopology) || '.face '
+    LOOP
+      IF rec.count != 1 THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-empty face view';
+      END IF;
+    END LOOP;
+
+  EXCEPTION
+    WHEN INVALID_SCHEMA_NAME THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+    WHEN UNDEFINED_TABLE THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent view';
+
+  END; -- }
+
+  RAISE DEBUG 'Noding input linework';
+
+  --
+  -- Node input linework with itself
+  --
+  WITH components AS ( SELECT geom FROM ST_Dump(acollection) )
+  SELECT ST_UnaryUnion(ST_Collect(geom)) FROM (
+    SELECT geom FROM components
+      WHERE ST_Dimension(geom) = 1
+    UNION 
+    SELECT ST_Boundary(geom) FROM components
+      WHERE ST_Dimension(geom) = 2
+  ) as linework INTO STRICT nodededges;
+
+  RAISE DEBUG 'Computed % noded edges', ST_NumGeometries(nodededges);
+
+  --
+  -- Linemerge the resulting edges, to reduce the working set
+  --
+  SELECT ST_LineMerge(nodededges) INTO STRICT nodededges;
+
+  RAISE DEBUG 'Merged edges: %', ST_NumGeometries(nodededges);
+
+
+  --
+  -- Collect input points 
+  --
+  SELECT ST_Union(geom) FROM (
+    SELECT geom FROM ST_Dump(acollection)
+      WHERE ST_Dimension(geom) = 0
+  ) as nodes INTO STRICT points;
+
+  RAISE DEBUG 'Collected % input points', ST_NumGeometries(points);
+
+  --
+  -- Further split edges by points
+  --
+  FOR rec IN SELECT geom FROM ST_Dump(points)
   LOOP
-    IF rec.count < 3 THEN
-  RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent view';
-    END IF;
+    -- Use the node to split edges
+    SELECT ST_Union(geom) -- TODO: ST_UnaryUnion ?
+    FROM ST_Dump(ST_Split(nodededges, rec.geom))
+    INTO STRICT nodededges;
   END LOOP;
 
-  -- Verify the topology views in the topology schema to be empty
-  FOR rec in EXECUTE
-    'SELECT count(*) FROM '
-    || quote_ident(atopology) || '.edge_data '
-    || ' UNION ' ||
-    'SELECT count(*) FROM '
-    || quote_ident(atopology) || '.node '
+  RAISE DEBUG 'Noded edges became % after point-split',
+    ST_NumGeometries(nodededges);
+
+  --
+  -- Collect all nodes (from points and noded linework endpoints)
+  --
+
+  WITH edges AS ( SELECT geom FROM ST_Dump(nodededges) )
+  SELECT ST_Union( -- TODO: ST_UnaryUnion ?
+          COALESCE(ST_UnaryUnion(ST_Collect(geom)), 
+            ST_SetSRID('POINT EMPTY'::geometry, topoinfo.SRID)),
+          COALESCE(points,
+            ST_SetSRID('POINT EMPTY'::geometry, topoinfo.SRID))
+         )
+  FROM (
+    SELECT ST_StartPoint(geom) as geom FROM edges
+      UNION
+    SELECT ST_EndPoint(geom) FROM edges
+  ) as endpoints INTO points;
+
+  RAISE DEBUG 'Total nodes count: %', ST_NumGeometries(points);
+
+  --
+  -- Add all nodes as isolated so that 
+  -- later calls to AddEdgeModFace will tweak their being
+  -- isolated or not...
+  --
+  FOR rec IN SELECT geom FROM ST_Dump(points)
   LOOP
-    IF rec.count > 0 THEN
-  RAISE EXCEPTION 'SQL/MM Spatial exception - non-empty view';
-    END IF;
+    PERFORM topology.ST_AddIsoNode(atopology, 0, rec.geom);
   END LOOP;
+  
 
-  -- face check is separated as it will contain a single (world)
-  -- face record
-  FOR rec in EXECUTE
-    'SELECT count(*) FROM '
-    || quote_ident(atopology) || '.face '
+  FOR rec IN SELECT geom FROM ST_Dump(nodededges)
   LOOP
-    IF rec.count != 1 THEN
-  RAISE EXCEPTION 'SQL/MM Spatial exception - non-empty face view';
-    END IF;
-  END LOOP;
-
-  -- 
-  -- LOOP through the elements invoking the specific function
-  -- 
-  FOR rec IN SELECT geom(ST_Dump(acollection))
-  LOOP
-    typ := substring(geometrytype(rec.geom), 1, 3);
-
-    IF typ = 'LIN' THEN
-  SELECT topology.TopoGeo_addLinestring(atopology, rec.geom) INTO ret;
-    ELSIF typ = 'POI' THEN
-  SELECT topology.TopoGeo_AddPoint(atopology, rec.geom) INTO ret;
-    ELSIF typ = 'POL' THEN
-  SELECT topology.TopoGeo_AddPolygon(atopology, rec.geom) INTO ret;
-    ELSE
-  RAISE EXCEPTION 'ST_CreateTopoGeo got unknown geometry type: %', typ;
-    END IF;
-
+    SELECT topology.GetNodeByPoint(atopology, st_startpoint(rec.geom), 0)
+      INTO STRICT snode_id;
+    SELECT topology.GetNodeByPoint(atopology, st_endpoint(rec.geom), 0)
+      INTO STRICT enode_id;
+    PERFORM topology.ST_AddEdgeModFace(atopology, snode_id, enode_id, rec.geom);
   END LOOP;
 
   RETURN 'Topology ' || atopology || ' populated';
 
-  RAISE EXCEPTION 'ST_CreateTopoGeo not implemente yet';
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
