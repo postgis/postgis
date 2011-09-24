@@ -103,8 +103,8 @@
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
 
-#include "liblwgeom.h"
 #include "lwgeom_geos.h"
+#include "liblwgeom.h"
 
 #include "gdal_alg.h"
 #include "gdal_frmts.h"
