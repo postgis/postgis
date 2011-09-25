@@ -90,16 +90,6 @@
 #endif
 #endif
 
-/* Microsoft does not support fmax or fmin in math.h */
-#if defined(WIN32)
-#if !defined(HAVE_MAX)
-#define fmax max
-#endif
-#if !defined(HAVE_MIN)
-#define fmin min
-#endif
-#endif
-
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
 
