@@ -5788,6 +5788,26 @@ a_rid | b_rid | overleft
 				  <parameter>geommin</parameter>
 				</paramdef>
 			  </funcprototype>
+			  
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rasta</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rastb</parameter>
+				</paramdef>
+				<paramdef choice='opt'>
+				  <type>integer </type>
+				  <parameter>nbanda=NULL</parameter>
+				</paramdef>
+				<paramdef choice='opt'>
+				  <type>integer </type>
+				  <parameter>nbandb=NULL</parameter>
+				</paramdef>
+			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
@@ -5799,6 +5819,8 @@ a_rid | b_rid | overleft
 
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries / rasters.</para></note>
+				
+			<para>Enhanced: 2.0.0 support raster/raster intersects was introduced.</para>
 		  </refsection>
 
 		  <refsection>
