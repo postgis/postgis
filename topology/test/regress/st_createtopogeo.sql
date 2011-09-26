@@ -9,7 +9,7 @@ select topology.st_createtopogeo('t', 'GEOMETRYCOLLECTION(POINT(0 0))');
 select topology.st_createtopogeo(null, 'GEOMETRYCOLLECTION(POINT(0 0))');
 
 CREATE function print_isolated_nodes(lbl text)
- RETURNS table(lbl text, msg text)
+ RETURNS table(olbl text, msg text)
 AS $$
 DECLARE
  sql text;
@@ -23,7 +23,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE function print_elements_count(lbl text)
- RETURNS table(lbl text, nodes text, edges text, faces text)
+ RETURNS table(olbl text, nodes text, edges text, faces text)
 AS $$
 DECLARE
  sql text;
