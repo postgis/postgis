@@ -613,10 +613,12 @@ CREATE OR REPLACE FUNCTION geometry_boxdistance(geometry, geometry)
 	AS 'MODULE_PATHNAME' ,'gserialized_boxdistance_2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+#if POSTGIS_PGSQL_VERSION >= 91
 CREATE OPERATOR <-> (
     LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_boxdistance,
     COMMUTATOR = '<->'
 );
+#endif
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_contains(geometry, geometry)
@@ -754,16 +756,17 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	OPERATOR        10       <<| ,
 	OPERATOR        11       |>> ,
 	OPERATOR        12       |&> ,
+#if POSTGIS_PGSQL_VERSION >= 91
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
+	FUNCTION        8        geometry_gist_boxdistance_2d (internal, geometry, int4),
+#endif
 	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
 	FUNCTION        2        geometry_gist_union_2d (bytea, internal),
 	FUNCTION        3        geometry_gist_compress_2d (internal),
 	FUNCTION        4        geometry_gist_decompress_2d (internal),
 	FUNCTION        5        geometry_gist_penalty_2d (internal, internal, internal),
 	FUNCTION        6        geometry_gist_picksplit_2d (internal, internal),
-	FUNCTION        7        geometry_gist_same_2d (geometry, geometry, internal),
-    FUNCTION        8        geometry_gist_boxdistance_2d (internal, geometry, int4);
-
+	FUNCTION        7        geometry_gist_same_2d (geometry, geometry, internal);
 #else
 
 -------------------------------------------------------------------
