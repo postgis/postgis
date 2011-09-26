@@ -63,6 +63,7 @@ Datum gserialized_gist_penalty_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_picksplit_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_union_2d(PG_FUNCTION_ARGS);
 Datum gserialized_gist_same_2d(PG_FUNCTION_ARGS);
+Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS);
 
 /*
 ** GiST 2D operator prototypes
@@ -79,6 +80,7 @@ Datum gserialized_overleft_2d(PG_FUNCTION_ARGS);
 Datum gserialized_overright_2d(PG_FUNCTION_ARGS);
 Datum gserialized_overabove_2d(PG_FUNCTION_ARGS);
 Datum gserialized_overbelow_2d(PG_FUNCTION_ARGS);
+Datum gserialized_boxdistance_2d(PG_FUNCTION_ARGS);
 
 /*
 ** true/false test function type
@@ -237,7 +239,7 @@ static bool box2df_overlaps(BOX2DF *a, BOX2DF *b)
 	if ( (a->xmin > b->xmax) || (b->xmin > a->xmax) ||
 	     (a->ymin > b->ymax) || (b->ymin > a->ymax) )
 	{
-			return FALSE;
+		return FALSE;
 	}
 
 	return TRUE;
@@ -248,7 +250,7 @@ static bool box2df_contains(BOX2DF *a, BOX2DF *b)
 	if ( (a->xmin > b->xmin) || (a->xmax < b->xmax) ||
 	     (a->ymin > b->ymin) || (a->ymax < b->ymax) )
 	{
-			return FALSE;
+		return FALSE;
 	}
 
 	return TRUE;
@@ -319,6 +321,98 @@ static bool box2df_overabove(BOX2DF *a, BOX2DF *b)
 	return a->ymin >= b->ymin;
 }
 
+/**
+* Calculate the centroid->centroid distance between the boxes.
+* We return the square distance to avoid a call to sqrt.
+*/
+static double box2df_distance_leaf(BOX2DF *a, BOX2DF *b)
+{
+    /* The centroid->centroid distance between the boxes */
+    double a_x = (a->xmax + a->xmin) / 2.0;
+    double a_y = (a->ymax + a->ymin) / 2.0;
+    double b_x = (b->xmax + b->xmin) / 2.0;
+    double b_y = (b->ymax + b->ymin) / 2.0;
+
+    /* This "distance" is only used for comparisons, */
+    /* so for speed we drop contants and skip the sqrt step. */
+    return (a_x - b_x) * (a_x - b_x) + (a_y - b_y) * (a_y - b_y);
+}
+
+/**
+* Calculate the The node_box_edge->query_centroid distance 
+* between the boxes.
+* We return the square distance to avoid a call to sqrt.
+*/
+static double box2df_distance_node(BOX2DF *node, BOX2DF *query)
+{
+    BOX2DF q;
+    double qx, qy;
+    double d = 0.0;
+
+    /* Turn query into point */
+    q.xmin = q.xmax = (query->xmin + query->xmax) / 2.0;
+    q.ymin = q.ymax = (query->ymin + query->ymax) / 2.0;
+    qx = q.xmin;
+    qy = q.ymin;
+
+    /* Check for overlap */
+    if ( box2df_overlaps(node, &q) == LW_TRUE )
+        return 0.0;
+
+    /* Above or below */
+    if ( qx >= node->xmin && qx <= node->xmax )
+    {
+        if( qy > node->ymax )
+            d = qy - node->ymax;
+        else if ( qy < node->ymin )
+            d = node->ymin - qy;
+        return d*d;
+    }
+    /* Left or right */
+    else if ( qy >= node->ymin && qy <= node->ymax )
+    {
+        if ( qx > node->xmax )
+            d = qx - node->xmax;
+        else if ( qx < node->xmin )
+            d = node->xmin - qx;
+        return d*d;
+    }
+    /* Corner quadrants */
+    else
+    {
+        /* below/left of xmin/ymin */
+        if ( qx < node->xmin && qy < node->ymin )
+        {
+            d = (node->xmin - qx) * (node->xmin - qx) +
+                (node->ymin - qy) * (node->ymin - qy);
+        }
+        /* above/left of xmin/ymax */
+        else if ( qx < node->xmin && qy > node->ymax )
+        {
+            d = (node->xmin - qx) * (node->xmin - qx) +
+                (node->ymax - qy) * (node->ymax - qy);
+        }
+        /* above/right of xmax/ymax */
+        else if ( qx > node->xmax && qy > node->ymax )
+        {
+            d = (node->xmax - qx) * (node->xmax - qx) +
+                (node->ymax - qy) * (node->ymax - qy);
+        }
+        /* below/right of xmax/ymin */
+        else if ( qx > node->xmin && qy < node->ymin )
+        {
+            d = (node->xmax - qx) * (node->xmax - qx) +
+                (node->ymin - qy) * (node->ymin - qy);
+        }
+        else
+        {
+            /*ERROR*/
+        }
+    }
+    
+    return d;
+}
+
 
 /**
 * Peak into a #GSERIALIZED datum to find the bounding box. If the
@@ -385,10 +479,9 @@ static int
 gserialized_datum_predicate_2d(Datum gs1, Datum gs2, box2df_predicate predicate)
 {
 	BOX2DF b1, b2;
-	
 	POSTGIS_DEBUG(3, "entered function");
 
-	/* Must be able to build box for each arguement (ie, not empty geometry)
+	/* Must be able to build box for each argument (ie, not empty geometry)
 	   and overlap boxes to return true. */
 	if ( (gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) &&
 	     (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) &&
@@ -406,6 +499,26 @@ gserialized_datum_predicate_2d(Datum gs1, Datum gs2, box2df_predicate predicate)
 /***********************************************************************
 * GiST 2-D Index Operator Functions
 */
+
+PG_FUNCTION_INFO_V1(gserialized_boxdistance_2d);
+Datum gserialized_boxdistance_2d(PG_FUNCTION_ARGS)
+{
+	BOX2DF b1, b2;
+    Datum gs1 = PG_GETARG_DATUM(0);
+    Datum gs2 = PG_GETARG_DATUM(1);    
+	
+	POSTGIS_DEBUG(3, "entered function");
+
+	/* Must be able to build box for each argument (ie, not empty geometry). */
+	if ( (gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) &&
+	     (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) )
+	{	    
+        double distance = box2df_distance_leaf(&b1, &b2);
+		POSTGIS_DEBUGF(3, "got boxes %s and %s", box2df_to_string(&b1), box2df_to_string(&b2));
+        PG_RETURN_FLOAT8(distance);
+	}
+    PG_RETURN_FLOAT8(INFINITY);
+}
 
 PG_FUNCTION_INFO_V1(gserialized_same_2d);
 Datum gserialized_same_2d(PG_FUNCTION_ARGS)
@@ -736,6 +849,61 @@ Datum gserialized_gist_consistent_2d(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_BOOL(result);
+}
+
+
+/*
+** GiST support function. Take in a query and an entry and return the "distance"
+** between them.
+** 
+** Given an index entry p and a query value q, this function determines the
+** index entry's "distance" from the query value. This function must be
+** supplied if the operator class contains any ordering operators. A query
+** using the ordering operator will be implemented by returning index entries
+** with the smallest "distance" values first, so the results must be consistent
+** with the operator's semantics. For a leaf index entry the result just
+** represents the distance to the index entry; for an internal tree node, the
+** result must be the smallest distance that any child entry could have.
+** 
+*/
+PG_FUNCTION_INFO_V1(gserialized_gist_distance_2d);
+Datum gserialized_gist_distance_2d(PG_FUNCTION_ARGS)
+{
+	GISTENTRY *entry = (GISTENTRY*) PG_GETARG_POINTER(0);
+	BOX2DF query_box;
+	StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
+	double distance;
+
+	POSTGIS_DEBUG(4, "[GIST] 'distance' function called");
+
+    /* We are using '13' as the gist distance strategy number */
+    if ( strategy != 13 ) {
+        elog(ERROR, "unrecognized strategy number: %d", strategy);
+		PG_RETURN_FLOAT8(INFINITY);
+	}
+
+	/* Null box should never make this far. */
+	if ( gserialized_datum_get_box2df_p(PG_GETARG_DATUM(1), &query_box) == LW_FAILURE )
+	{
+		POSTGIS_DEBUG(4, "[GIST] null query_gbox_index!");
+		PG_RETURN_FLOAT8(INFINITY);
+	}
+
+	/* Treat leaf node tests different from internal nodes */
+	if (GIST_LEAF(entry))
+	{
+	    /* Calculate distance to centroid for leaves */
+        BOX2DF *leaf_box = (BOX2DF*)DatumGetPointer(entry->key);
+        distance = (double)box2df_distance_leaf(leaf_box, &query_box);
+	}
+	else
+	{
+	    /* Calculate distance to nearest corner for internal nodes */
+        BOX2DF *node_box = (BOX2DF*)DatumGetPointer(entry->key);
+        distance = (double)box2df_distance_node(node_box, &query_box);
+	}
+
+	PG_RETURN_FLOAT8(distance);
 }
 
 /*

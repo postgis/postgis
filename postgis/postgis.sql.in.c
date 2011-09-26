@@ -520,6 +520,12 @@ CREATE TYPE box2df (
 );
 
 -- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_boxdistance_2d(internal,geometry,int4) 
+	RETURNS float8 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_distance_2d'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_consistent_2d(internal,geometry,int4) 
 	RETURNS bool 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent_2d'
@@ -599,6 +605,17 @@ CREATE OR REPLACE FUNCTION geometry_same(geometry, geometry)
 CREATE OPERATOR ~= (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_same,
 	RESTRICT = contsel, JOIN = contjoinsel
+);
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_boxdistance(geometry, geometry) 
+	RETURNS float8 
+	AS 'MODULE_PATHNAME' ,'gserialized_boxdistance_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OPERATOR <-> (
+    LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_boxdistance,
+    COMMUTATOR = '<->'
 );
 
 -- Availability: 2.0.0
@@ -737,14 +754,16 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	OPERATOR        10       <<| ,
 	OPERATOR        11       |>> ,
 	OPERATOR        12       |&> ,
+	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
 	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
 	FUNCTION        2        geometry_gist_union_2d (bytea, internal),
 	FUNCTION        3        geometry_gist_compress_2d (internal),
 	FUNCTION        4        geometry_gist_decompress_2d (internal),
 	FUNCTION        5        geometry_gist_penalty_2d (internal, internal, internal),
 	FUNCTION        6        geometry_gist_picksplit_2d (internal, internal),
-	FUNCTION        7        geometry_gist_same_2d (geometry, geometry, internal);
-	
+	FUNCTION        7        geometry_gist_same_2d (geometry, geometry, internal),
+    FUNCTION        8        geometry_gist_boxdistance_2d (internal, geometry, int4);
+
 #else
 
 -------------------------------------------------------------------
@@ -1097,19 +1116,10 @@ CREATE OR REPLACE FUNCTION ST_Area(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_area_polygon'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_distance_spheroid(geometry,geometry,spheroid)
 	RETURNS FLOAT8
 	AS 'MODULE_PATHNAME','LWGEOM_distance_ellipsoid'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_distance_sphere(geometry,geometry)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_distance_sphere'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
@@ -4382,6 +4392,25 @@ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 #include "sqlmm.sql.in.c"
 #include "geography.sql.in.c"
 
+
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_distance_sphere(geometry,geometry)
+	RETURNS FLOAT8
+	AS $$
+	select st_distance(geography($1),geography($2),false)
+	$$
+	LANGUAGE 'SQL' IMMUTABLE STRICT
+	COST 300;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_distance_sphere(geometry,geometry)
+	RETURNS FLOAT8
+	AS $$
+	select st_distance(geography($1),geography($2),false)
+	$$
+	LANGUAGE 'SQL' IMMUTABLE STRICT
+	COST 300;
 
 
 
