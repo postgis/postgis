@@ -1069,7 +1069,7 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 			<refname>&lt;-&gt;</refname>
 
 			<refpurpose>Returns the squared distance between two points.  For point / point checks it's exact.  For other geometry types
-			only the centroid is considered.  Useful for doing distance ordering and nearest neighbor limits.</refpurpose>
+			only the centroid of the bounding box is considered.  Useful for doing distance ordering and nearest neighbor limits.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1096,7 +1096,7 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 			<title>Description</title>
 
 			<para>The <varname>&lt;-&gt;</varname> operator returns squared distance between two points read from the spatial index for points.  For
-			other geometries it returns squared distance from centroid of geometries.  Useful for doing nearest neighbor approximate distance ordering.</para>
+			other geometries it returns squared distance from centroid of bounding box of geometries.  Useful for doing nearest neighbor approximate distance ordering.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.</para></note>
