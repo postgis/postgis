@@ -1077,6 +1077,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1091,6 +1092,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1105,6 +1107,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1119,6 +1122,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1133,6 +1137,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1142,6 +1147,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1151,6 +1157,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY[8BUI]</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1165,6 +1172,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1179,6 +1187,7 @@ WHERE short_name = 'GTiff') As g;
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				 
 				</funcsynopsis>
@@ -1191,6 +1200,8 @@ WHERE short_name = 'GTiff') As g;
                     with <xref linkend="RT_ST_AsPNG" /> and other <xref linkend="RT_ST_AsGDALRaster" /> family of functions.</para>
                  <para>To create the postgis raster, the X and Y scale or the width and height of the new raster or a reference raster must be provided.</para>
                  <para>The output raster will be in the same coordinate system as the source geometry. The only exception is for ST_AsRaster variations with a raster input parameter. </para>
+                 <para>The optional <varname>touched</varname> parameter defaults to false and maps to the GDAL ALL_TOUCHED rasterization option, which determines if pixels touched by lines or
+                 polygons will be updated.  Not just those on the line render path, or whose center point is within the polygon.</para>
                  <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
                  <note><para>Not yet capable of rendering complex geometry types such as curves, TINS, and PolyhedralSurfaces, but should be
                  able too once GDAL can.</para></note>
@@ -5059,18 +5070,12 @@ FROM dummy_rast;
 			</refnamediv>
 		
 			<refsynopsisdiv>
-				<funcsynopsis>
+				<funcsynopsis>  
 				  <funcprototype>
 					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>band_num=1</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -5661,19 +5666,7 @@ a_rid | b_rid | overleft
 		  </refnamediv>
 
 		  <refsynopsisdiv>
-			<funcsynopsis>
-			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rast</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>geometry </type>
-				  <parameter>geommin</parameter>
-				</paramdef>
-			  </funcprototype>
-			  
+			<funcsynopsis>			  
 			  <funcprototype>
 				<funcdef>boolean <function>ST_Intersects</function></funcdef>
 				<paramdef>
@@ -5689,18 +5682,7 @@ a_rid | b_rid | overleft
 				  <parameter>geommin</parameter>
 				</paramdef>
 			  </funcprototype>
-			  
-			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>geometry </type>
-				  <parameter>geomA</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rast</parameter>
-				</paramdef>
-			  </funcprototype>	  
+			    
 			  <funcprototype>
 				<funcdef>boolean <function>ST_Intersects</function></funcdef>
 				<paramdef>
@@ -5711,9 +5693,9 @@ a_rid | b_rid | overleft
 				  <type>raster </type>
 				  <parameter>rast</parameter>
 				</paramdef>
-				<paramdef>
+				<paramdef choice='opt'>
 				  <type>integer </type>
-				  <parameter>band</parameter>
+				  <parameter>nband=NULL</parameter>
 				</paramdef>
 			  </funcprototype>
 
