@@ -1,4 +1,4 @@
-EXTENSION    = postgis_core
+EXTENSION    = postgis
 EXTVERSION   = $(shell grep default_version $(EXTENSION).control | \
                sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
@@ -13,7 +13,7 @@ EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/spatial_ref_sys.sql
+sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	cat $^ > $@
 all: sql/$(EXTENSION)--$(EXTVERSION).sql
 
@@ -28,6 +28,16 @@ sql_bits/postgis.sql: ../../postgis/postgis.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
 	
 sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql
+	cp $< $@
+	
+sql/$(EXTENSION).sql: 
+	cat $^ > $@
+	
+#strip BEGIN/COMMIT since these are not allowed in extensions
+sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
+	
+sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 	cp $< $@
 
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
