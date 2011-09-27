@@ -1063,5 +1063,123 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_EQ" /></para>
 		  </refsection>
 		</refentry>
+		
+		<refentry id="geometry_gist_boxdistance_2d">
+		  <refnamediv>
+			<refname>&lt;-&gt;</refname>
+
+			<refpurpose>Returns the distance between two points.  For point / point checks it's exact.  For other geometry types
+			only the centroid is considered?</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>double precision <function>&lt;-&gt;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&lt;-&gt;</varname> operator returns distance between two points read from the spatial index for points.  For
+			other geometries it returns an approximate distance based on something (SUBJECT TO CHANGE)</para>
+
+			<note><para>This operand will make use of any indexes that may be available on the
+			  geometries.</para></note>
+
+			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
+		
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+
+SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
+FROM va2005 
+ORDER BY d limit 10;
+
+        d         | edabbr | vaabbr
+------------------+--------+--------
+                0 | ALQ    | 128
+ 5541.57712511724 | ALQ    | 129A
+ 5579.67450712005 | ALQ    | 001
+  6083.4207708641 | ALQ    | 131
+  7691.2205404848 | ALQ    | 003
+ 7900.75451037313 | ALQ    | 122
+ 8694.20710669982 | ALQ    | 129B
+ 9564.24289057111 | ALQ    | 130
+  12089.665931705 | ALQ    | 127
+ 18472.5531479404 | ALQ    | 002
+(10 rows)
+</programlisting>
+<programlisting>
+Then the KNN raw answer:
+
+SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
+FROM va2005 
+ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;
+
+        d         | edabbr | vaabbr
+------------------+--------+--------
+                0 | ALQ    | 128
+ 5579.67450712005 | ALQ    | 001
+ 5541.57712511724 | ALQ    | 129A
+ 8694.20710669982 | ALQ    | 129B
+ 9564.24289057111 | ALQ    | 130
+  6083.4207708641 | ALQ    | 131
+  12089.665931705 | ALQ    | 127
+  24795.264503022 | ALQ    | 124
+ 24587.6584922302 | ALQ    | 123
+ 26764.2555463114 | ALQ    | 125
+(10 rows)
+</programlisting>
+Note the misordering in the actual distances and the different entries that actually show up in the top 10.
+
+Finally the hybrid:
+<programlisting>
+WITH index_query AS (
+  SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+  	FROM va2005
+  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100) 
+  SELECT * 
+  	FROM index_query 
+  ORDER BY d limit 10;
+
+        d         | edabbr | vaabbr
+------------------+--------+--------
+                0 | ALQ    | 128
+ 5541.57712511724 | ALQ    | 129A
+ 5579.67450712005 | ALQ    | 001
+  6083.4207708641 | ALQ    | 131
+  7691.2205404848 | ALQ    | 003
+ 7900.75451037313 | ALQ    | 122
+ 8694.20710669982 | ALQ    | 129B
+ 9564.24289057111 | ALQ    | 130
+  12089.665931705 | ALQ    | 127
+ 18472.5531479404 | ALQ    | 002
+(10 rows)
+
+ 			</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" /></para>
+		  </refsection>
+		</refentry>
 
 	</sect1>
