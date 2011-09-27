@@ -1,3 +1,4 @@
+-- $Id$
 -- First drop old aggregates
 DROP AGGREGATE IF EXISTS geomunion(geometry);
 DROP AGGREGATE IF EXISTS st_geomunion(geometry);
