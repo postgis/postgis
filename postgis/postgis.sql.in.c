@@ -61,11 +61,6 @@ CREATE OR REPLACE FUNCTION geometry_out(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_out'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION geometry_out(geometry)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME','LWGEOM_out'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 #ifdef GSERIALIZED_ON
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_typmod_in(cstring[])
