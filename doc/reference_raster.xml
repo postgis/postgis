@@ -5656,8 +5656,8 @@ a_rid | b_rid | overleft
 		<refnamediv>
 			<refname>ST_Intersects</refname>
 
-			<refpurpose>If exclude_nodata_value is omitted returns <varname>TRUE</varname> only if rast pixel in a band with non-nodata band value intersects
-				with a geometry/raster. If band is not specified it defaults to 1. If <varname>exclude_nodata_value</varname> is set to false then <varname>nodata</varname> band values that intersect also return true.</refpurpose>
+			<refpurpose>If band numbers are omitted only considers convex hull of raster. Returns true only if rast pixel in a band with non-nodata band value intersects
+				with a geometry/raster. </refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -5716,79 +5716,7 @@ a_rid | b_rid | overleft
 				  <parameter>band</parameter>
 				</paramdef>
 			  </funcprototype>
-			  
-			   <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rast</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>boolean </type>
-				  <parameter>exclude_nodata_value</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>geometry </type>
-				  <parameter>geommin</parameter>
-				</paramdef>
-			  </funcprototype>
-			  
-			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>geometry </type>
-				  <parameter>geommin</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rast</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>boolean </type>
-				  <parameter>exclude_nodata_value</parameter>
-				</paramdef>
-			  </funcprototype>
-			  
-			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>geometry </type>
-				  <parameter>geommin</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rast</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>integer </type>
-				  <parameter>band</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>boolean </type>
-				  <parameter>exclude_nodata_value</parameter>
-				</paramdef>
-			  </funcprototype>
-			  
-			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rast</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>integer </type>
-				  <parameter>band</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>boolean </type>
-				  <parameter>exclude_nodata_value</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>geometry </type>
-				  <parameter>geommin</parameter>
-				</paramdef>
-			  </funcprototype>
-			  
+
 			  <funcprototype>
 				<funcdef>boolean <function>ST_Intersects</function></funcdef>
 				<paramdef>
@@ -5814,8 +5742,7 @@ a_rid | b_rid | overleft
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns true if the geometry intersects with the raster. Nodata values  are taken into account so that if the geometry intersects only with nodata  values, the function returns false. 
-			<varname>exclude_nodata_value</varname> may modify this behavior: if  set to false, nodata value are not taken into account and the function returns true as soon as the geometry intersects with the convex hull of the raster.</para>
+			<para>Returns true if the geometry intersects with the raster. Nodata values  are taken into account so that if the geometry intersects only with nodata  values, the function returns false. If no bands are specified only convex hull of raster is used (nodata values are not considered).</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries / rasters.</para></note>
