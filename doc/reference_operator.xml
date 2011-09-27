@@ -1107,11 +1107,9 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>
-
-SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
+<programlisting><![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
 FROM va2005 
-ORDER BY d limit 10;
+ORDER BY d limit 10;]]>
 
         d         | edabbr | vaabbr
 ------------------+--------+--------
@@ -1127,12 +1125,10 @@ ORDER BY d limit 10;
  18472.5531479404 | ALQ    | 002
 (10 rows)
 </programlisting>
-<programlisting>
 Then the KNN raw answer:
-
-SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
+<programlisting><![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
 FROM va2005 
-ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;
+ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>
 
         d         | edabbr | vaabbr
 ------------------+--------+--------
@@ -1151,14 +1147,13 @@ ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;
 Note the misordering in the actual distances and the different entries that actually show up in the top 10.
 
 Finally the hybrid:
-<programlisting>
-WITH index_query AS (
-  SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
+<programlisting><![CDATA[WITH index_query AS (
+  SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
   	FROM va2005
   ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100) 
   SELECT * 
   	FROM index_query 
-  ORDER BY d limit 10;
+  ORDER BY d limit 10;]]>
 
         d         | edabbr | vaabbr
 ------------------+--------+--------
