@@ -1,9 +1,9 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2003 Refractions Research Inc.
+ *
+ * Copyright (C) 2001-2003 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -208,9 +208,9 @@ distance_ellipse(double lat1, double long1,
 #if POSTGIS_DEBUG_LEVEL >= 4
 	result2 =  distance_sphere_method(lat1, long1,lat2,long2, sphere);
 
-	LWDEBUGF(4, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
+	POSTGIS_DEBUGF(4, "delta = %lf, skae says: %.15lf,2 circle says: %.15lf",
 	         (result2-result),result,result2);
-	LWDEBUGF(4, "2 circle says: %.15lf",result2);
+	POSTGIS_DEBUGF(4, "2 circle says: %.15lf",result2);
 #endif
 
 	if (result != result)  /* NaN check

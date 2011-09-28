@@ -1,9 +1,9 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
- * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
- * Copyright 2009 David Skea <David.Skea@gov.bc.ca>
+ *
+ * Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+ * Copyright (C) 2009 David Skea <David.Skea@gov.bc.ca>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -11,6 +11,7 @@
  **********************************************************************/
 
 #include "lwgeodetic.h"
+#include "lwgeom_log.h"
 
 /**
 * Initialize spheroid object based on major and minor axis

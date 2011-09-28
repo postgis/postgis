@@ -1,10 +1,11 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://www.postgis.org
- * Copyright 2008 OpenGeo.org
- * Copyright 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ * 
+ * Copyright (C) 2008 OpenGeo.org
+ * Copyright (C) 2009 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
  *
@@ -14,6 +15,7 @@
 
 #include "shp2pgsql-core.h"
 #include "../liblwgeom/liblwgeom.h" /* for lw_vasprintf */
+#include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
 
 
 /* Internal ring/point structures */

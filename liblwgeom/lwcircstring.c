@@ -1,9 +1,9 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2006 Refractions Research Inc.
+ *
+ * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -17,6 +17,7 @@
 #include <string.h>
 #include <math.h>
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 
 BOX3D *lwcircle_compute_box3d(POINT4D *p1, POINT4D *p2, POINT4D *p3);
 void printLWCIRCSTRING(LWCIRCSTRING *curve);

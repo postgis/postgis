@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "lwin_wkt.h"
 #include "lwin_wkt_parse.h"
+#include "lwgeom_log.h"
 
 
 /* Prototypes to quiet the compiler */

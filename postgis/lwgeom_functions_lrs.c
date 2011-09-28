@@ -1,9 +1,9 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2005 Refractions Research Inc.
+ *
+ * Copyright (C) 2001-2005 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -70,7 +70,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	int swapped=0;
 	int ret=0;
 
-	LWDEBUGF(3, "m0: %g m1: %g", m0, m1);
+	POSTGIS_DEBUGF(3, "m0: %g m1: %g", m0, m1);
 
 	/* Handle corner case of m values being the same */
 	if ( p1->m == p2->m )
@@ -124,9 +124,9 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 	dY=p2->y-p1->y;
 	dZ=p2->z-p1->z;
 
-	LWDEBUGF(3, "dM0:%g dM1:%g", dM0, dM1);
-	LWDEBUGF(3, "dX:%g dY:%g dZ:%g", dX, dY, dZ);
-	LWDEBUGF(3, "swapped: %d", swapped);
+	POSTGIS_DEBUGF(3, "dM0:%g dM1:%g", dM0, dM1);
+	POSTGIS_DEBUGF(3, "dX:%g dY:%g dZ:%g", dX, dY, dZ);
+	POSTGIS_DEBUGF(3, "swapped: %d", swapped);
 
 	/*
 	 * First point out of range, project
@@ -142,7 +142,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 		{
 			memcpy(p1, p2, sizeof(POINT4D));
 
-			LWDEBUG(3, "Projected p1 on range (as copy of p2)");
+			POSTGIS_DEBUG(3, "Projected p1 on range (as copy of p2)");
 		}
 		else
 		{
@@ -152,7 +152,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 			p1->z += (dZ*dM0);
 			p1->m = m0;
 
-			LWDEBUG(3, "Projected p1 on range");
+			POSTGIS_DEBUG(3, "Projected p1 on range");
 		}
 
 		if ( swapped ) ret |= 0x0100;
@@ -173,7 +173,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 		{
 			memcpy(p2, p1, sizeof(POINT4D));
 
-			LWDEBUG(3, "Projected p2 on range (as copy of p1)");
+			POSTGIS_DEBUG(3, "Projected p2 on range (as copy of p1)");
 		}
 		else
 		{
@@ -183,7 +183,7 @@ clip_seg_by_m_range(POINT4D *p1, POINT4D *p2, double m0, double m1)
 			p2->z += (dZ*dM1);
 			p2->m = m1;
 
-			LWDEBUG(3, "Projected p2 on range");
+			POSTGIS_DEBUG(3, "Projected p2 on range");
 		}
 
 		if ( swapped ) ret |= 0x0010;
@@ -213,7 +213,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 	 */
 	ret.ptarrays=lwalloc(sizeof(POINTARRAY *)*ipa->npoints-1);
 
-	LWDEBUGF(2, "ptarray_locate...: called for pointarray %x, m0:%g, m1:%g",
+	POSTGIS_DEBUGF(2, "ptarray_locate...: called for pointarray %x, m0:%g, m1:%g",
 	         ipa, m0, m1);
 
 
@@ -225,7 +225,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		getPoint4d_p(ipa, i-1, &p1);
 		getPoint4d_p(ipa, i, &p2);
 
-		LWDEBUGF(3, " segment %d-%d [ %g %g %g %g -  %g %g %g %g ]",
+		POSTGIS_DEBUGF(3, " segment %d-%d [ %g %g %g %g -  %g %g %g %g ]",
 		         i-1, i,
 		         p1.x, p1.y, p1.z, p1.m,
 		         p2.x, p2.y, p2.z, p2.m);
@@ -235,14 +235,14 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		/* segment completely outside, nothing to do */
 		if (! clipval ) continue;
 
-		LWDEBUGF(3, " clipped to: [ %g %g %g %g - %g %g %g %g ]   clipval: %x", p1.x, p1.y, p1.z, p1.m,
+		POSTGIS_DEBUGF(3, " clipped to: [ %g %g %g %g - %g %g %g %g ]   clipval: %x", p1.x, p1.y, p1.z, p1.m,
 		         p2.x, p2.y, p2.z, p2.m, clipval);
 
 		/* If no points have been accumulated so far, then if clipval != 0 the first point must be the
 		   start of the intersection */
 		if (dpa == NULL)
 		{
-			LWDEBUGF(3, " 1 creating new POINTARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
+			POSTGIS_DEBUGF(3, " 1 creating new POINTARRAY with first point %g,%g,%g,%g", p1.x, p1.y, p1.z, p1.m);
 
 			dpa = ptarray_construct_empty(FLAGS_GET_Z(ipa->flags), FLAGS_GET_M(ipa->flags), ipa->npoints-i);
 			ptarray_append_point(dpa, &p1, LW_TRUE);
@@ -257,7 +257,7 @@ ptarray_locate_between_m(POINTARRAY *ipa, double m0, double m1)
 		 */
 		if ( clipval & 0x0100 || i == ipa->npoints-1 )
 		{
-			LWDEBUGF(3, " closing pointarray %x with %d points", dpa, dpa->npoints);
+			POSTGIS_DEBUGF(3, " closing pointarray %x with %d points", dpa, dpa->npoints);
 
 			ret.ptarrays[ret.nptarrays++] = dpa;
 			dpa = NULL;
@@ -283,18 +283,18 @@ lwpoint_locate_between_m(LWPOINT *lwpoint, double m0, double m1)
 {
 	POINT3DM p3dm;
 
-	LWDEBUGF(2, "lwpoint_locate_between called for lwpoint %x", lwpoint);
+	POSTGIS_DEBUGF(2, "lwpoint_locate_between called for lwpoint %x", lwpoint);
 
 	lwpoint_getPoint3dm_p(lwpoint, &p3dm);
 	if ( p3dm.m >= m0 && p3dm.m <= m1)
 	{
-		LWDEBUG(3, " lwpoint... returning a clone of input");
+		POSTGIS_DEBUG(3, " lwpoint... returning a clone of input");
 
 		return (LWGEOM *)lwpoint_clone(lwpoint);
 	}
 	else
 	{
-		LWDEBUG(3, " lwpoint... returning a clone of input");
+		POSTGIS_DEBUG(3, " lwpoint... returning a clone of input");
 
 		return NULL;
 	}
@@ -324,9 +324,9 @@ lwline_locate_between_m(LWLINE *lwline_in, double m0, double m1)
 	const int lineflag=0x10;
 	POINTARRAYSET paset=ptarray_locate_between_m(ipa, m0, m1);
 
-	LWDEBUGF(2, "lwline_locate_between called for lwline %x", lwline_in);
+	POSTGIS_DEBUGF(2, "lwline_locate_between called for lwline %x", lwline_in);
 
-	LWDEBUGF(3, " ptarray_locate... returned %d pointarrays",
+	POSTGIS_DEBUGF(3, " ptarray_locate... returned %d pointarrays",
 	         paset.nptarrays);
 
 	if ( paset.nptarrays == 0 )
@@ -395,7 +395,7 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 	int ngeoms=0;
 	LWGEOM **geoms;
 
-	LWDEBUGF(2, "lwcollection_locate_between_m called for lwcoll %x", lwcoll);
+	POSTGIS_DEBUGF(2, "lwcollection_locate_between_m called for lwcoll %x", lwcoll);
 
 	geoms=lwalloc(sizeof(LWGEOM *)*lwcoll->ngeoms);
 	for (i=0; i<lwcoll->ngeoms; i++)
@@ -424,7 +424,7 @@ lwcollection_locate_between_m(LWCOLLECTION *lwcoll, double m0, double m1)
 static LWGEOM *
 lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 {
-	LWDEBUGF(2, "lwgeom_locate_between called for lwgeom %x", lwin);
+	POSTGIS_DEBUGF(2, "lwgeom_locate_between called for lwgeom %x", lwin);
 
 	switch (lwin->type)
 	{

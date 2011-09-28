@@ -17,6 +17,7 @@
 
 #include <assert.h>
 #include "liblwgeom.h"
+#include <stdarg.h>
 #include <string.h>
 #include <math.h>
 #include <stdint.h>
@@ -257,6 +258,7 @@ void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
 * PointArray
 */
 char ptarray_isccw(const POINTARRAY *pa);
+
 
 
 #endif /* _LIBLWGEOM_INTERNAL_H */

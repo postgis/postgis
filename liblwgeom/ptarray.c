@@ -1,5 +1,4 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -14,6 +13,7 @@
 #include <string.h>
 
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 
 /*
  * Size of point represeneted in the POINTARRAY

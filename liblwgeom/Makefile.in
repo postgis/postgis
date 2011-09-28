@@ -93,6 +93,7 @@ SA_HEADERS = \
 	liblwgeom.h \
 	liblwgeom_internal.h \
 	libtgeom.h \
+	lwgeom_log.h \
 	lwgeom_geos.h
 
 all: liblwgeom.la

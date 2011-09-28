@@ -16,6 +16,7 @@
 #include <stdlib.h>
 
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 #include "libtgeom.h"
 
 

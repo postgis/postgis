@@ -1,4 +1,5 @@
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 #include "lwtree.h"
 
 

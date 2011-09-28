@@ -11,6 +11,7 @@
  **********************************************************************/
 
 #include "lwgeodetic.h"
+#include "lwgeom_log.h"
 
 /**
 * For testing geodetic bounding box, we have a magic global variable.

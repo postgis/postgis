@@ -7,6 +7,7 @@
 /* Global variables */
 #include "../postgis_config.h"
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 
 void *init_allocator(size_t size);
 void init_freeor(void *mem);

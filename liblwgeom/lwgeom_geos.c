@@ -13,6 +13,7 @@
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 #include "profile.h"
 
 #include <stdlib.h>

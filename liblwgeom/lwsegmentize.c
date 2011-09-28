@@ -17,6 +17,7 @@
 #include <math.h>
 
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 
 
 LWMLINE *lwmcurve_segmentize(LWMCURVE *mcurve, uint32_t perQuad);

@@ -10,6 +10,7 @@
  **********************************************************************/
 
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 
 /***********************************************************************
 * GSERIALIZED metadata utility functions.

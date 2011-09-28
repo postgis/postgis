@@ -1,6 +1,4 @@
-
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
@@ -17,6 +15,7 @@
 #include <stdlib.h>
 
 #include "measures.h"
+#include "lwgeom_log.h"
 
 
 /*------------------------------------------------------------------------------------------------------------

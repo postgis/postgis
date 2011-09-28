@@ -1,3 +1,14 @@
+/**********************************************************************
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ *
+ * Copyright (C) 2004 Refractions Research Inc.
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ *
+ **********************************************************************/
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
@@ -84,7 +95,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	int i;
 	char *pad="";
 
-	LWDEBUG(2, "lwcollection_summary called");
+	POSTGIS_DEBUG(2, "lwcollection_summary called");
 
 	result = (char *)lwalloc(size);
 
@@ -99,13 +110,13 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 		size += strlen(tmp)+1;
 		result = lwrealloc(result, size);
 
-		LWDEBUGF(4, "Reallocated %d bytes for result", size);
+		POSTGIS_DEBUGF(4, "Reallocated %d bytes for result", size);
 
 		strcat(result, tmp);
 		lwfree(tmp);
 	}
 
-	LWDEBUG(3, "lwcollection_summary returning");
+	POSTGIS_DEBUG(3, "lwcollection_summary returning");
 
 	return result;
 }
@@ -119,7 +130,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	int i;
 	char *pad="";
 
-	LWDEBUG(2, "lwpoly_summary called");
+	POSTGIS_DEBUG(2, "lwpoly_summary called");
 
 	result = lwalloc(size);
 
@@ -135,7 +146,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 		strcat(result,tmp);
 	}
 
-	LWDEBUG(3, "lwpoly_summary returning");
+	POSTGIS_DEBUG(3, "lwpoly_summary returning");
 
 	return result;
 }

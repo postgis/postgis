@@ -1,3 +1,15 @@
+/**********************************************************************
+ *
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ *
+ * Copyright 2001-2006 Refractions Research Inc.
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ *
+ **********************************************************************/
+
 
 #include <math.h>
 #include <float.h>
@@ -6,6 +18,7 @@
 #include <errno.h>
 
 #include "liblwgeom_internal.h"
+#include "lwgeom_log.h"
 
 /*
  * Lower this to reduce integrity checks

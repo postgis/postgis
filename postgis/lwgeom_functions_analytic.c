@@ -1,9 +1,9 @@
 /**********************************************************************
- * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2005 Refractions Research Inc.
+ *
+ * Copyright (C) 2001-2005 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -285,7 +285,7 @@ ptarray_grid(POINTARRAY *pa, gridspec *grid)
 	int ipn, opn; /* point numbers (input/output) */
 	POINTARRAY *dpa;
 
-	LWDEBUGF(2, "ptarray_grid called on %p", pa);
+	POSTGIS_DEBUGF(2, "ptarray_grid called on %p", pa);
 
 	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->flags),FLAGS_GET_M(pa->flags), pa->npoints);
 
@@ -370,7 +370,7 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 
 	nrings = 0;
 
-	LWDEBUGF(3, "grid_polygon3d: applying grid to polygon with %d rings",
+	POSTGIS_DEBUGF(3, "grid_polygon3d: applying grid to polygon with %d rings",
 	         poly->nrings);
 
 	for (ri=0; ri<poly->nrings; ri++)
@@ -383,7 +383,7 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 		getPoint2d_p(ring, 0, &p1);
 		getPoint2d_p(ring, ring->npoints-1, &p2);
 		if ( ! SAMEPOINT(&p1, &p2) )
-			LWDEBUG(4, "Before gridding: first point != last point");
+			POSTGIS_DEBUG(4, "Before gridding: first point != last point");
 #endif
 
 		newring = ptarray_grid(ring, grid);
@@ -393,7 +393,7 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 		{
 			pfree(newring);
 
-			LWDEBUGF(3, "grid_polygon3d: ring%d skipped ( <4 pts )", ri);
+			POSTGIS_DEBUGF(3, "grid_polygon3d: ring%d skipped ( <4 pts )", ri);
 
 			if ( ri ) continue;
 			else break; /* this is the external ring, no need to work on holes */
@@ -403,10 +403,10 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 		getPoint2d_p(newring, 0, &p1);
 		getPoint2d_p(newring, newring->npoints-1, &p2);
 		if ( ! SAMEPOINT(&p1, &p2) )
-			LWDEBUG(4, "After gridding: first point != last point");
+			POSTGIS_DEBUG(4, "After gridding: first point != last point");
 #endif
 
-		LWDEBUGF(3, "grid_polygon3d: ring%d simplified from %d to %d points", ri,
+		POSTGIS_DEBUGF(3, "grid_polygon3d: ring%d simplified from %d to %d points", ri,
 		         ring->npoints, newring->npoints);
 
 		/*
@@ -429,7 +429,7 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 		newrings[nrings++] = newring;
 	}
 
-	LWDEBUGF(3, "grid_polygon3d: simplified polygon with %d rings", nrings);
+	POSTGIS_DEBUGF(3, "grid_polygon3d: simplified polygon with %d rings", nrings);
 
 	if ( ! nrings ) return NULL;
 
@@ -448,7 +448,7 @@ lwpoint_grid(LWPOINT *point, gridspec *grid)
 	/* TODO: grid bounding box ? */
 	opoint = lwpoint_construct(point->srid, NULL, opa);
 
-	LWDEBUG(2, "lwpoint_grid called");
+	POSTGIS_DEBUG(2, "lwpoint_grid called");
 
 	return opoint;
 }
@@ -1012,17 +1012,17 @@ int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point)
 		minY = seg1->y;
 	}
 
-	LWDEBUGF(3, "maxX minX/maxY minY: %.8f %.8f/%.8f %.8f", maxX, minX, maxY, minY);
+	POSTGIS_DEBUGF(3, "maxX minX/maxY minY: %.8f %.8f/%.8f %.8f", maxX, minX, maxY, minY);
 
 	if (maxX < point->x || minX > point->x)
 	{
-		LWDEBUGF(3, "X value %.8f falls outside the range %.8f-%.8f", point->x, minX, maxX);
+		POSTGIS_DEBUGF(3, "X value %.8f falls outside the range %.8f-%.8f", point->x, minX, maxX);
 
 		return 0;
 	}
 	else if (maxY < point->y || minY > point->y)
 	{
-		LWDEBUGF(3, "Y value %.8f falls outside the range %.8f-%.8f", point->y, minY, maxY);
+		POSTGIS_DEBUGF(3, "Y value %.8f falls outside the range %.8f-%.8f", point->y, minY, maxY);
 
 		return 0;
 	}
@@ -1043,7 +1043,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 	POINT2D seg2;
 	LWMLINE *lines;
 
-	LWDEBUG(2, "point_in_ring called.");
+	POSTGIS_DEBUG(2, "point_in_ring called.");
 
 	lines = findLineSegments(root, point->y);
 	if (!lines)
@@ -1057,14 +1057,14 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 
 		side = determineSide(&seg1, &seg2, point);
 
-		LWDEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
-		LWDEBUGF(3, "side result: %.8f", side);
-		LWDEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
+		POSTGIS_DEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
+		POSTGIS_DEBUGF(3, "side result: %.8f", side);
+		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
 
 		/* zero length segments are ignored. */
 		if (((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12)
 		{
-			LWDEBUG(3, "segment is zero length... ignoring.");
+			POSTGIS_DEBUG(3, "segment is zero length... ignoring.");
 
 			continue;
 		}
@@ -1074,7 +1074,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 		{
 			if (isOnSegment(&seg1, &seg2, point) == 1)
 			{
-				LWDEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
+				POSTGIS_DEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
 
 				return 0;
 			}
@@ -1087,7 +1087,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 		 */
 		if (FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
 		{
-			LWDEBUG(3, "incrementing winding number.");
+			POSTGIS_DEBUG(3, "incrementing winding number.");
 
 			++wn;
 		}
@@ -1098,13 +1098,13 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 		 */
 		else if (FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y) && side<0)
 		{
-			LWDEBUG(3, "decrementing winding number.");
+			POSTGIS_DEBUG(3, "decrementing winding number.");
 
 			--wn;
 		}
 	}
 
-	LWDEBUGF(3, "winding number %d", wn);
+	POSTGIS_DEBUGF(3, "winding number %d", wn);
 
 	if (wn == 0)
 		return -1;
@@ -1125,7 +1125,7 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 	POINT2D seg1;
 	POINT2D seg2;
 
-	LWDEBUG(2, "point_in_ring called.");
+	POSTGIS_DEBUG(2, "point_in_ring called.");
 
 
 	for (i=0; i<pts->npoints-1; i++)
@@ -1136,14 +1136,14 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 
 		side = determineSide(&seg1, &seg2, point);
 
-		LWDEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
-		LWDEBUGF(3, "side result: %.8f", side);
-		LWDEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
+		POSTGIS_DEBUGF(3, "segment: (%.8f, %.8f),(%.8f, %.8f)", seg1.x, seg1.y, seg2.x, seg2.y);
+		POSTGIS_DEBUGF(3, "side result: %.8f", side);
+		POSTGIS_DEBUGF(3, "counterclockwise wrap %d, clockwise wrap %d", FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y), FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y));
 
 		/* zero length segments are ignored. */
 		if (((seg2.x-seg1.x)*(seg2.x-seg1.x)+(seg2.y-seg1.y)*(seg2.y-seg1.y)) < 1e-12*1e-12)
 		{
-			LWDEBUG(3, "segment is zero length... ignoring.");
+			POSTGIS_DEBUG(3, "segment is zero length... ignoring.");
 
 			continue;
 		}
@@ -1153,7 +1153,7 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 		{
 			if (isOnSegment(&seg1, &seg2, point) == 1)
 			{
-				LWDEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
+				POSTGIS_DEBUGF(3, "point on ring boundary between points %d, %d", i, i+1);
 
 				return 0;
 			}
@@ -1166,7 +1166,7 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 		 */
 		if (FP_CONTAINS_BOTTOM(seg1.y,point->y,seg2.y) && side>0)
 		{
-			LWDEBUG(3, "incrementing winding number.");
+			POSTGIS_DEBUG(3, "incrementing winding number.");
 
 			++wn;
 		}
@@ -1177,13 +1177,13 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 		 */
 		else if (FP_CONTAINS_BOTTOM(seg2.y,point->y,seg1.y) && side<0)
 		{
-			LWDEBUG(3, "decrementing winding number.");
+			POSTGIS_DEBUG(3, "decrementing winding number.");
 
 			--wn;
 		}
 	}
 
-	LWDEBUGF(3, "winding number %d", wn);
+	POSTGIS_DEBUGF(3, "winding number %d", wn);
 
 	if (wn == 0)
 		return -1;
@@ -1199,14 +1199,14 @@ int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point)
 	int i;
 	POINT2D pt;
 
-	LWDEBUGF(2, "point_in_polygon called for %p %d %p.", root, ringCount, point);
+	POSTGIS_DEBUGF(2, "point_in_polygon called for %p %d %p.", root, ringCount, point);
 
 	getPoint2d_p(point->point, 0, &pt);
 	/* assume bbox short-circuit has already been attempted */
 
 	if (point_in_ring_rtree(root[0], &pt) != 1)
 	{
-		LWDEBUG(3, "point_in_polygon_rtree: outside exterior ring.");
+		POSTGIS_DEBUG(3, "point_in_polygon_rtree: outside exterior ring.");
 
 		return 0;
 	}
@@ -1215,7 +1215,7 @@ int point_in_polygon_rtree(RTREE_NODE **root, int ringCount, LWPOINT *point)
 	{
 		if (point_in_ring_rtree(root[i], &pt) != -1)
 		{
-			LWDEBUGF(3, "point_in_polygon_rtree: within hole %d.", i);
+			POSTGIS_DEBUGF(3, "point_in_polygon_rtree: within hole %d.", i);
 
 			return 0;
 		}
@@ -1236,7 +1236,7 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
 	POINT2D pt;
 	int result = -1;
 
-	LWDEBUGF(2, "point_in_multipolygon_rtree called for %p %d %p.", root, polyCount, point);
+	POSTGIS_DEBUGF(2, "point_in_multipolygon_rtree called for %p %d %p.", root, polyCount, point);
 
 	getPoint2d_p(point->point, 0, &pt);
 	/* assume bbox short-circuit has already been attempted */
@@ -1247,14 +1247,14 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
 	for ( p = 0; p < polyCount; p++ )
 	{
 		in_ring = point_in_ring_rtree(root[i], &pt);
-		LWDEBUGF(4, "point_in_multipolygon_rtree: exterior ring (%d), point_in_ring returned %d", p, in_ring);
+		POSTGIS_DEBUGF(4, "point_in_multipolygon_rtree: exterior ring (%d), point_in_ring returned %d", p, in_ring);
 		if ( in_ring == -1 ) /* outside the exterior ring */
 		{
-			LWDEBUG(3, "point_in_multipolygon_rtree: outside exterior ring.");
+			POSTGIS_DEBUG(3, "point_in_multipolygon_rtree: outside exterior ring.");
 		}
          	else if ( in_ring == 0 ) /* on the boundary */
 		{
-			LWDEBUGF(3, "point_in_multipolygon_rtree: on edge of exterior ring %d", p);
+			POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: on edge of exterior ring %d", p);
                         return 0;
 		} else {
                 	result = in_ring;
@@ -1262,16 +1262,16 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
 	                for(r=1; r<ringCounts[p]; r++)
      	                {
                         	in_ring = point_in_ring_rtree(root[i+r], &pt);
-		        	LWDEBUGF(4, "point_in_multipolygon_rtree: interior ring (%d), point_in_ring returned %d", r, in_ring);
+		        	POSTGIS_DEBUGF(4, "point_in_multipolygon_rtree: interior ring (%d), point_in_ring returned %d", r, in_ring);
                         	if (in_ring == 1) /* inside a hole => outside the polygon */
                         	{
-                                	LWDEBUGF(3, "point_in_multipolygon_rtree: within hole %d of exterior ring %d", r, p);
+                                	POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: within hole %d of exterior ring %d", r, p);
                                 	result = -1;
                                 	break;
                         	}
                         	if (in_ring == 0) /* on the edge of a hole */
                         	{
-			        	LWDEBUGF(3, "point_in_multipolygon_rtree: on edge of hole %d of exterior ring %d", r, p);
+			        	POSTGIS_DEBUGF(3, "point_in_multipolygon_rtree: on edge of hole %d of exterior ring %d", r, p);
                                 	return 0;
 		        	}
                 	}
@@ -1301,7 +1301,7 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 	POINTARRAY *ring;
 	POINT2D pt;
 
-	LWDEBUG(2, "point_in_polygon called.");
+	POSTGIS_DEBUG(2, "point_in_polygon called.");
 
 	getPoint2d_p(point->point, 0, &pt);
 	/* assume bbox short-circuit has already been attempted */
@@ -1310,7 +1310,7 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 	in_ring = point_in_ring(polygon->rings[0], &pt);
 	if ( in_ring == -1) /* outside the exterior ring */
 	{
-		LWDEBUG(3, "point_in_polygon: outside exterior ring.");
+		POSTGIS_DEBUG(3, "point_in_polygon: outside exterior ring.");
 		return -1;
 	}
 	result = in_ring;
@@ -1321,12 +1321,12 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 		in_ring = point_in_ring(polygon->rings[i], &pt);
 		if (in_ring == 1) /* inside a hole => outside the polygon */
 		{
-			LWDEBUGF(3, "point_in_polygon: within hole %d.", i);
+			POSTGIS_DEBUGF(3, "point_in_polygon: within hole %d.", i);
 			return -1;
 		}
 		if (in_ring == 0) /* on the edge of a hole */
 		{
-			LWDEBUGF(3, "point_in_polygon: on edge of hole %d.", i);
+			POSTGIS_DEBUGF(3, "point_in_polygon: on edge of hole %d.", i);
 			return 0;
 		}
 	}
@@ -1344,7 +1344,7 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 	POINTARRAY *ring;
 	POINT2D pt;
 
-	LWDEBUG(2, "point_in_polygon called.");
+	POSTGIS_DEBUG(2, "point_in_polygon called.");
 
 	getPoint2d_p(point->point, 0, &pt);
 	/* assume bbox short-circuit has already been attempted */
@@ -1359,7 +1359,7 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 		in_ring = point_in_ring(polygon->rings[0], &pt);
 		if ( in_ring == -1) /* outside the exterior ring */
 		{
-			LWDEBUG(3, "point_in_polygon: outside exterior ring.");
+			POSTGIS_DEBUG(3, "point_in_polygon: outside exterior ring.");
 			continue;
 		}
 		if ( in_ring == 0 )
@@ -1375,13 +1375,13 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 			in_ring = point_in_ring(polygon->rings[i], &pt);
 			if (in_ring == 1) /* inside a hole => outside the polygon */
 			{
-				LWDEBUGF(3, "point_in_polygon: within hole %d.", i);
+				POSTGIS_DEBUGF(3, "point_in_polygon: within hole %d.", i);
 				result = -1;
 				break;
 			}
 			if (in_ring == 0) /* on the edge of a hole */
 			{
-				LWDEBUGF(3, "point_in_polygon: on edge of hole %d.", i);
+				POSTGIS_DEBUGF(3, "point_in_polygon: on edge of hole %d.", i);
 				return 0;
 			}
 		}
