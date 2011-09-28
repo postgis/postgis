@@ -336,13 +336,12 @@ static double box2df_distance_leaf_centroid(const BOX2DF *a, const BOX2DF *b)
 
     /* This "distance" is only used for comparisons, */
     /* so for speed we drop contants and skip the sqrt step. */
-    return (a_x - b_x) * (a_x - b_x) + (a_y - b_y) * (a_y - b_y);
+    return sqrt((a_x - b_x) * (a_x - b_x) + (a_y - b_y) * (a_y - b_y));
 }
 
 /**
 * Calculate the The node_box_edge->query_centroid distance 
 * between the boxes.
-* We return the square distance to avoid a call to sqrt.
 */
 static double box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *query)
 {
@@ -367,7 +366,7 @@ static double box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *qu
             d = qy - node->ymax;
         else if ( qy < node->ymin )
             d = node->ymin - qy;
-        return d*d;
+        return d;
     }
     /* Left or right */
     else if ( qy >= node->ymin && qy <= node->ymax )
@@ -376,7 +375,7 @@ static double box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *qu
             d = qx - node->xmax;
         else if ( qx < node->xmin )
             d = node->xmin - qx;
-        return d*d;
+        return d;
     }
     /* Corner quadrants */
     else
@@ -411,7 +410,7 @@ static double box2df_distance_node_centroid(const BOX2DF *node, const BOX2DF *qu
         }
     }
     
-    return d;
+    return sqrt(d);
 }
 
 /* Quick distance function */
