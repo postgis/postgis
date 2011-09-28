@@ -31,7 +31,7 @@
 
 /**********************************************************************
 **  Useful functions for all GSERIALIZED handlers. 
-**  XXX move to gserialized.h eventually
+**  TODO: Move to common.h in pgcommon
 */
 
 /* Convert lwgeom to newly allocated gserialized */

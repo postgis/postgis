@@ -22,8 +22,6 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-#include "../../libpgcommon/gserialized.h"
-
 -- BEGIN;
 
 ------------------------------------------------------------------------------
@@ -2470,11 +2468,7 @@ CREATE OPERATOR &<| (
 CREATE OPERATOR && (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overlap,
     COMMUTATOR = '&&',
-#ifdef GSERIALIZED_ON
     RESTRICT = contsel, JOIN = contjoinsel
-#else
-    RESTRICT = geometry_gist_sel, JOIN = geometry_gist_joinsel
-#endif
     );
 
 CREATE OPERATOR &> (

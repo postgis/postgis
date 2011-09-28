@@ -61,7 +61,6 @@ CREATE OR REPLACE FUNCTION geometry_out(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_out'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-#ifdef GSERIALIZED_ON
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_typmod_in(cstring[])
 	RETURNS integer
@@ -73,15 +72,10 @@ CREATE OR REPLACE FUNCTION geometry_typmod_out(integer)
 	RETURNS cstring
 	AS 'MODULE_PATHNAME','postgis_typmod_out'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
-#endif
 
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 	RETURNS bool
-#ifdef GSERIALIZED_ON
 	AS 'MODULE_PATHNAME', 'geometry_analyze_2d'
-#else
-	AS 'MODULE_PATHNAME', 'LWGEOM_analyze'
-#endif
 	LANGUAGE 'C' VOLATILE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_recv(internal)
@@ -100,12 +94,10 @@ CREATE TYPE geometry (
 	output = geometry_out,
 	send = geometry_send,
 	receive = geometry_recv,
-#ifdef GSERIALIZED_ON
 	typmod_in = geometry_typmod_in,
 	typmod_out = geometry_typmod_out,
 	delimiter = ':',
     alignment = double,
-#endif
 	analyze = geometry_analyze,
 	storage = main
 );
@@ -303,11 +295,7 @@ CREATE OR REPLACE FUNCTION box2d_out(box2d)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE TYPE box2d (
-#ifdef GSERIALIZED_ON
 	internallength = 65,
-#else
-	internallength = 16,
-#endif
 	input = box2d_in,
 	output = box2d_out,
 	storage = plain
@@ -348,11 +336,7 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 -----------------------------------------------------------------------
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
-#ifdef GSERIALIZED_ON
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
-#else
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-#endif
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 
 -----------------------------------------------------------------------
@@ -360,11 +344,7 @@ CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
 -----------------------------------------------------------------------
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
-#ifdef GSERIALIZED_ON
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
-#else
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-#endif
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 
 -----------------------------------------------------------------------
@@ -485,7 +465,6 @@ CREATE OPERATOR CLASS btree_geometry_ops
 
 
 
-#ifdef GSERIALIZED_ON
 -----------------------------------------------------------------------------
 -- GiST 2D GEOMETRY-over-GSERIALIZED
 -----------------------------------------------------------------------------
@@ -774,227 +753,7 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	FUNCTION        5        geometry_gist_penalty_2d (internal, internal, internal),
 	FUNCTION        6        geometry_gist_picksplit_2d (internal, internal),
 	FUNCTION        7        geometry_gist_same_2d (geometry, geometry, internal);
-#else
 
--------------------------------------------------------------------
--- Original geometry GiST indexes
--------------------------------------------------------------------
--- Deprecation in 1.5.0 -- is this deprecated? 2011-01-05 robe
-CREATE OR REPLACE FUNCTION geometry_same(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_samebox'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_gist_sel (internal, oid, internal, int4)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_gist_sel'
-	LANGUAGE 'C';
-
-CREATE OR REPLACE FUNCTION geometry_gist_joinsel(internal, oid, internal, smallint)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_gist_joinsel'
-	LANGUAGE 'C';
-
-CREATE OR REPLACE FUNCTION geometry_overleft(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_overleft'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_overright(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_overright'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_overabove(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_overabove'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_overbelow(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_overbelow'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_left(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_left'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_right(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_right'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_above(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_above'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_below(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_below'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_contain(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_contain'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_contained(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_contained'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_overlap(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_overlap'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry_samebox(geometry, geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_samebox'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OPERATOR << (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_left,
-	COMMUTATOR = '>>',
-	RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR &< (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overleft,
-	COMMUTATOR = '&>',
-	RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR <<| (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_below,
-	COMMUTATOR = '|>>',
-	RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR &<| (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overbelow,
-	COMMUTATOR = '|&>',
-	RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR && (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlap,
-	COMMUTATOR = '&&',
-	RESTRICT = geometry_gist_sel, JOIN = geometry_gist_joinsel
-);
-
-CREATE OPERATOR &> (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overright,
-	COMMUTATOR = '&<',
-	RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR >> (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_right,
-	COMMUTATOR = '<<',
-	RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR |&> (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overabove,
-	COMMUTATOR = '&<|',
-	RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR |>> (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_above,
-	COMMUTATOR = '<<|',
-	RESTRICT = positionsel, JOIN = positionjoinsel
-);
-
-CREATE OPERATOR ~= (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_samebox,
-	COMMUTATOR = '~=',
-	RESTRICT = eqsel, JOIN = eqjoinsel
-);
-
-CREATE OPERATOR @ (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contained,
-	COMMUTATOR = '~',
-	RESTRICT = contsel, JOIN = contjoinsel
-);
-
-CREATE OPERATOR ~ (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_contain,
-	COMMUTATOR = '@',
-	RESTRICT = contsel, JOIN = contjoinsel
-);
-
--- gist support functions
-
-CREATE OR REPLACE FUNCTION LWGEOM_gist_consistent(internal,geometry,int4)
-	RETURNS bool
-	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_consistent'
-	LANGUAGE 'C';
-
-CREATE OR REPLACE FUNCTION LWGEOM_gist_compress(internal)
-	RETURNS internal
-	AS 'MODULE_PATHNAME','LWGEOM_gist_compress'
-	LANGUAGE 'C';
-
-CREATE OR REPLACE FUNCTION LWGEOM_gist_penalty(internal,internal,internal)
-	RETURNS internal
-	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_penalty'
-	LANGUAGE 'C';
-
-CREATE OR REPLACE FUNCTION LWGEOM_gist_picksplit(internal, internal)
-	RETURNS internal
-	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_picksplit'
-	LANGUAGE 'C';
-
-CREATE OR REPLACE FUNCTION LWGEOM_gist_union(bytea, internal)
-	RETURNS internal
-	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_union'
-	LANGUAGE 'C';
-
-CREATE OR REPLACE FUNCTION LWGEOM_gist_same(box2d, box2d, internal)
-	RETURNS internal
-	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_same'
-	LANGUAGE 'C';
-
-CREATE OR REPLACE FUNCTION LWGEOM_gist_decompress(internal)
-	RETURNS internal
-	AS 'MODULE_PATHNAME' ,'LWGEOM_gist_decompress'
-	LANGUAGE 'C';
-
--------------------------------------------
--- GIST opclass index binding entries.
--------------------------------------------
---
--- Create opclass index bindings for PG>=73
---
-
-CREATE OPERATOR CLASS gist_geometry_ops
-	DEFAULT FOR TYPE geometry USING gist AS
-	STORAGE 	box2d,
-	OPERATOR        1        << ,
-	OPERATOR        2        &<	,
-	OPERATOR        3        &&	,
-	OPERATOR        4        &>	,
-	OPERATOR        5        >>	,
-	OPERATOR        6        ~=	,
-	OPERATOR        7        ~	,
-	OPERATOR        8        @	,
-	OPERATOR	9	 &<|	,
-	OPERATOR	10	 <<|	,
-	OPERATOR	11	 |>>	,
-	OPERATOR	12	 |&>	,
-	FUNCTION        1        LWGEOM_gist_consistent (internal, geometry, int4),
-	FUNCTION        2        LWGEOM_gist_union (bytea, internal),
-	FUNCTION        3        LWGEOM_gist_compress (internal),
-	FUNCTION        4        LWGEOM_gist_decompress (internal),
-	FUNCTION        5        LWGEOM_gist_penalty (internal, internal, internal),
-	FUNCTION        6        LWGEOM_gist_picksplit (internal, internal),
-	FUNCTION        7        LWGEOM_gist_same (box2d, box2d, internal);
-
-#endif
 
 -------------------------------------------
 -- other lwgeom functions
@@ -4423,9 +4182,6 @@ CREATE OR REPLACE FUNCTION ST_distance_sphere(geometry,geometry)
 	COST 300;
 
 
-
-
-#ifdef GSERIALIZED_ON
 ---------------------------------------------------------------
 -- GEOMETRY_COLUMNS view support functions
 ---------------------------------------------------------------
@@ -4585,7 +4341,6 @@ CREATE OR REPLACE VIEW geometry_columns AS
     AND a.attrelid = c.oid 
     AND c.relnamespace = n.oid 
     AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char") AND NOT pg_is_other_temp_schema(c.relnamespace);
-#endif
 
 
 

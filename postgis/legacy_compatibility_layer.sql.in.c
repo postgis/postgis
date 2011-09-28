@@ -21,20 +21,12 @@ CREATE OR REPLACE FUNCTION AsText(geometry)
 
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Estimated_Extent(text,text,text) RETURNS box2d AS
-#ifdef GSERIALIZED_ON
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
-#else
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-#endif
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
-#ifdef GSERIALIZED_ON
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
-#else
-	'MODULE_PATHNAME', 'LWGEOM_estimated_extent'
-#endif
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 	
 -- Deprecation in 1.2.3

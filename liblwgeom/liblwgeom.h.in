@@ -23,6 +23,13 @@
 #include "proj_api.h"
 
 /**
+* For now, until all the old code is pulled 
+* TODO: remove this
+*/
+#define GSERIALIZED_ON
+
+
+/**
 * @file liblwgeom.h
 *
 * This library is the generic geometry handling section of PostGIS. The geometry

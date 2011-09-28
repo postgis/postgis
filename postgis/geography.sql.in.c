@@ -775,11 +775,9 @@ CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 
 
 
-#ifdef GSERIALIZED_ON
 -----------------------------------------------------------------------------
 -- GiST ND GEOMETRY-over-GSERIALIZED
 -----------------------------------------------------------------------------
-
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- GiST Support Functions
@@ -870,4 +868,3 @@ CREATE OPERATOR CLASS gist_geometry_ops_nd
 	FUNCTION        6        geometry_gist_picksplit_nd (internal, internal),
 	FUNCTION        7        geometry_gist_same_nd (geometry, geometry, internal);
 
-#endif
