@@ -1064,12 +1064,13 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  </refsection>
 		</refentry>
 		
-		<refentry id="geometry_gist_boxdistance_2d">
+		<refentry id="geometry_distance_centroid">
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
 
-			<refpurpose>Returns the squared distance between two points.  For point / point checks it's exact.  For other geometry types
-			only the centroid of the bounding box is considered.  Useful for doing distance ordering and nearest neighbor limits.</refpurpose>
+			<refpurpose>Returns the distance between two points.  For point / point checks it's exact.  For other geometry types
+			the distance between the bounding box centroids is returned.  Useful for doing distance ordering and nearest neighbor limits
+			using KNN gist functionality.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -1099,7 +1100,8 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 			other geometries it returns squared distance from centroid of bounding box of geometries.  Useful for doing nearest neighbor approximate distance ordering.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
-			  geometries.</para></note>
+			  geometries.  It is different from other operators taht use spatial indexes in that the spatial index is only used when the operator
+			  is in the ORDER BY clause.</para></note>
 
 			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
 		
@@ -1173,7 +1175,83 @@ Finally the hybrid:
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" /></para>
+			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_box" /></para>
+		  </refsection>
+		</refentry>
+		
+		<refentry id="geometry_distance_box">
+		  <refnamediv>
+			<refname>&lt;#&gt;</refname>
+
+			<refpurpose>Returns the distance between two points.  For point / point checks it's exact.  For other geometry types
+			the distance between the bounding box centroids is returned.  Useful for doing distance ordering and nearest neighbor limits
+			using KNN gist functionality.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>double precision <function>&lt;#&gt;</function></funcdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>A</parameter>
+				</paramdef>
+
+				<paramdef>
+				  <type>geometry </type>
+
+				  <parameter>B</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between two bounding boxes read from the spatial index if available.   Useful for doing nearest neighbor approximate distance ordering.</para>
+
+			<note><para>This operand will make use of any indexes that may be available on the
+			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
+			  is in the ORDER BY clause.</para></note>
+
+			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
+		
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+-- this takes 125 ms on 25,000 gist indexed street table
+<![CDATA[SELECT *
+FROM (
+SELECT b.tlid, b.mtfcc, b.geom <#> d.geom As b_dist, ST_Distance(b.geom, d.geom) As act_dist
+    FROM bos_roads As b 
+    CROSS JOIN (SELECT geom FROM bos_roads WHERE tlid = 85732029) As d 
+    ORDER BY b.geom <#> d.geom, b.tlid
+    LIMIT 100) As foo
+    ORDER BY act_dist, tlid LIMIT 10;]]>
+
+   tlid    | mtfcc |      b_dist      |     act_dist
+-----------+-------+------------------+------------------
+  85732027 | S1400 |                0 |                0
+  85732029 | S1400 |                0 |                0
+  85732031 | S1400 |                0 |                0
+  85734335 | S1400 |                0 |                0
+  85736037 | S1400 |                0 |                0
+ 624683742 | S1400 |                0 | 128.528874268666
+  85719343 | S1400 | 260.839270432962 | 260.839270432962
+  85741826 | S1400 | 164.759294123275 | 260.839270432962
+  85732032 | S1400 |           277.75 | 311.830282365264
+  85735592 | S1400 |           222.25 | 311.830282365264
+(10 rows)
+</programlisting>
+		  </refsection>
+		  <refsection>
+			<title>See Also</title>
+			<para><xref linkend="ST_DWithin" />, <xref linkend="ST_Distance" />, <xref linkend="geometry_distance_centroid" /></para>
 		  </refsection>
 		</refentry>
 
