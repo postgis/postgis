@@ -39,8 +39,8 @@ static int init_cg_suite(void)
 {
 	pa21 = ptarray_construct(0, 0, 2);
 	pa22 = ptarray_construct(0, 0, 2);
-	l21 = lwline_construct(-1, NULL, pa21);
-	l22 = lwline_construct(-1, NULL, pa22);
+	l21 = lwline_construct(SRID_UNKNOWN, NULL, pa21);
+	l22 = lwline_construct(SRID_UNKNOWN, NULL, pa22);
 	return 0;
 
 }

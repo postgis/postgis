@@ -189,8 +189,8 @@ lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 
 		/* TODO: check if either pa1 or pa2 are empty ? */
 
-		components[0] = (LWGEOM*)lwline_construct(-1, NULL, pa1);
-		components[1] = (LWGEOM*)lwline_construct(-1, NULL, pa2);
+		components[0] = (LWGEOM*)lwline_construct(SRID_UNKNOWN, NULL, pa1);
+		components[1] = (LWGEOM*)lwline_construct(SRID_UNKNOWN, NULL, pa2);
 		++ncomponents;
 	}
 	while (0);

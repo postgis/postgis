@@ -43,15 +43,15 @@ Datum transform(PG_FUNCTION_ARGS)
 	result_srid = PG_GETARG_INT32(1);
 	if (result_srid == SRID_UNKNOWN)
 	{
-		elog(ERROR,"-1 is an invalid target SRID");
+		elog(ERROR,"%d is an invalid target SRID",SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	if (pglwgeom_get_srid(geom) == -1)
+	if (pglwgeom_get_srid(geom) == SRID_UNKNOWN)
 	{
 		PG_FREE_IF_COPY(geom, 0);
-		elog(ERROR,"Input geometry has unknown (-1) SRID");
+		elog(ERROR,"Input geometry has unknown (%d) SRID",SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
@@ -131,15 +131,15 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	result_srid = PG_GETARG_INT32(3);
 	if (result_srid == SRID_UNKNOWN)
 	{
-		elog(ERROR,"tranform: destination SRID = -1");
+		elog(ERROR,"tranform: destination SRID = %d",SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
 	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	if (pglwgeom_get_srid(geom) == -1)
+	if (pglwgeom_get_srid(geom) == SRID_UNKNOWN)
 	{
 		pfree(geom);
-		elog(ERROR,"tranform: source SRID = -1");
+		elog(ERROR,"tranform: source SRID = %d",SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 

@@ -135,7 +135,7 @@ RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
 	value2 = tmp.y;
 	ptarray_append_point(npa,&tmp,LW_TRUE);
 
-	line = lwline_construct(-1, NULL, npa);
+	line = lwline_construct(SRID_UNKNOWN, NULL, npa);
 	
 	parent = lwalloc(sizeof(RTREE_NODE));
 	parent->interval = createInterval(value1, value2);
@@ -265,7 +265,7 @@ LWMLINE *findLineSegments(RTREE_NODE *root, double value)
 
 		POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, root->segment->type, FLAGS_GET_Z(root->segment->flags));
 
-		result = (LWMLINE *)lwcollection_construct(lwgeom_makeType_full(0, 0, 0, MULTILINETYPE, 0), -1, NULL, 1, lwgeoms);
+		result = (LWMLINE *)lwcollection_construct(lwgeom_makeType_full(0, 0, 0, MULTILINETYPE, 0), SRID_UNKNOWN, NULL, 1, lwgeoms);
 	}
 
 	/* If there is a left child node, recursively include its results. */
@@ -326,7 +326,7 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 	{
 		geoms[j] = lwgeom_clone((LWGEOM *)line2->geoms[i]);
 	}
-	col = lwcollection_construct(MULTILINETYPE, -1, NULL, ngeoms, geoms);
+	col = lwcollection_construct(MULTILINETYPE, SRID_UNKNOWN, NULL, ngeoms, geoms);
 
 	POSTGIS_DEBUGF(3, "mergeMultiLines returning %p, %d, %d", col, col->ngeoms, col->type);
 

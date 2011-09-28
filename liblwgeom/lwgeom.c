@@ -1359,7 +1359,7 @@ int lwgeom_is_empty(const LWGEOM *geom)
 
 int lwgeom_has_srid(const LWGEOM *geom)
 {
-	if ( (int)(geom->srid) > 0 )
+	if ( geom->srid != SRID_UNKNOWN )
 		return LW_TRUE;
 
 	return LW_FALSE;

@@ -288,21 +288,17 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	char *hexwkb;
 	size_t hexwkb_size;
 	text *result;
-	size_t text_size;
 
 	/* Generate WKB hex text */
 	lwgeom = pglwgeom_deserialize(geom);
 	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
 	lwgeom_free(lwgeom);
 	
-	/* Prepare the PgSQL text return type, which doesn't include a null terminator */
-	text_size = hexwkb_size-1+VARHDRSZ;
-	result = palloc(text_size);
-	memcpy(VARDATA(result), hexwkb, hexwkb_size-1);
-	SET_VARSIZE(result, text_size);
+	/* Copy into text obect */
+	result = cstring2text(hexwkb);
+	pfree(hexwkb);
 	
 	/* Clean up and return */
-	pfree(hexwkb);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_TEXT_P(result);
 }

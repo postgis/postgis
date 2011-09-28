@@ -1,7 +1,0 @@
-liblwgeom API examples
-======================
-
-This directory contains examples of how to use the liblwgeom API from other C programs. Since liblwgeom is a static library, it is currently limited to tools within the PostGIS source tree. However, it is envisaged that programmers may make use of this interface to produce other geometry processing tools that can input and output WKT and WKB (which is, of course, easily loadable into PostGIS).
-
-
-Mark.

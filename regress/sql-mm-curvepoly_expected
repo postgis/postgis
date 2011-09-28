@@ -39,10 +39,10 @@ dimension01|2
 dimension02|2
 dimension03|2
 dimension04|2
-SRID01|-1
-SRID02|-1
-SRID03|-1
-SRID04|-1
+SRID01|0
+SRID02|0
+SRID03|0
+SRID04|0
 envelope01|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
 envelope02|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))
 envelope03|POLYGON((-2 -1,-2 2,2 2,2 -1,-2 -1))

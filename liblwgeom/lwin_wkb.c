@@ -209,7 +209,6 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 	}
 
 	LWDEBUGF(4,"Got lwtype %s (%u)", lwtype_name(s->lwtype), s->lwtype);
-	LWDEBUGF(4,"s->has_srid=%d s->srid=%d", s->has_srid, s->srid);
 
 	return;
 }

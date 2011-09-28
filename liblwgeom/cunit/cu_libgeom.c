@@ -35,7 +35,7 @@ static void test_typmod_macros(void)
 	rv = TYPMOD_GET_SRID(typmod);
 	CU_ASSERT_EQUAL(rv, srid);
 
-	srid = -1;
+	srid = SRID_UNKNOWN;
 	TYPMOD_SET_SRID(typmod,srid);
 	rv = TYPMOD_GET_SRID(typmod);
 	CU_ASSERT_EQUAL(rv, srid);
@@ -110,7 +110,7 @@ static void test_serialized_srid(void)
 	//printf("srid=%d rv=%d\n",srid,rv);
 	CU_ASSERT_EQUAL(rv, srid);
 
-	srid = -1;
+	srid = SRID_UNKNOWN;
 	gserialized_set_srid(&s, srid);
 	rv = gserialized_get_srid(&s);
 	CU_ASSERT_EQUAL(rv, srid);
@@ -489,7 +489,7 @@ static void test_lwgeom_flip_coordinates(void)
 	);
 
 	do_lwgeom_flip_coordinates(
-	    "SRID=-1;POINT(1 2)",
+	    "SRID=0;POINT(1 2)",
 	    "POINT(2 1)"
 	);
 }

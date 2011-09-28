@@ -89,7 +89,7 @@ static void test_gbox_from_spherical_coordinates(void)
 
 	pa = ptarray_construct_reference_data(0, 0, 2, (uint8_t*)ll);
 	
-	lwline = lwline_as_lwgeom(lwline_construct(-1, 0, pa));
+	lwline = lwline_as_lwgeom(lwline_construct(SRID_UNKNOWN, 0, pa));
 	FLAGS_SET_GEODETIC(lwline->flags, 1);
 
 	srandomdev();

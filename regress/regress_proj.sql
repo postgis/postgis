@@ -31,7 +31,7 @@ SELECT 5,ST_AsEWKT(ST_SnapToGrid(ST_transform(ST_GeomFromEWKT('SRID=100002;LINES
 SELECT 6,round(ST_X(ST_transform(ST_transform(ST_GeomFromEWKT('SRID=100002;POINT(16 48)'),100001), 100002))::numeric,8),round(ST_Y(ST_transform(ST_transform(ST_GeomFromEWKT('SRID=100002;POINT(16 48)'),100001), 100002))::numeric,8);
 
 --- test #7: Should yield an error since input SRID is unknown
-SELECT ST_transform(ST_GeomFromEWKT('SRID=-1;POINT(0 0)'),100002);
+SELECT ST_transform(ST_GeomFromEWKT('SRID=0;POINT(0 0)'),100002);
 
 --- test #8: Transforming to same SRID
 SELECT 8,ST_AsEWKT(ST_transform(ST_GeomFromEWKT('SRID=100002;POINT(0 0)'),100002));

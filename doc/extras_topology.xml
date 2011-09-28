@@ -1286,13 +1286,13 @@ ERROR:  Two or more edges found</programlisting>
 			<title>Examples</title>
 			<para>These examples use edges faces created in <xref linkend="AddFace" /></para>
 			<programlisting>SELECT topology.GetFaceByPoint('ma_topo',geom, 10) As with1mtol, topology.GetFaceByPoint('ma_topo',geom,0) As withnotol
-	FROM ST_GeomFromEWKT('SRID=-1;POINT(234604.6 899382.0)') As geom;
+	FROM ST_GeomFromEWKT('SRID=0;POINT(234604.6 899382.0)') As geom;
 	
 	 with1mtol | withnotol
 	-----------+-----------
 			 1 |         0</programlisting>
 			<programlisting>SELECT topology.GetFaceByPoint('ma_topo',geom, 1) As nearnode
-	FROM ST_GeomFromEWKT('SRID=-1;POINT(227591.9 893900.4)') As geom;
+	FROM ST_GeomFromEWKT('SRID=0;POINT(227591.9 893900.4)') As geom;
 	
 -- get error --
 ERROR:  Two or more faces found</programlisting>

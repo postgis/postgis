@@ -84,14 +84,14 @@ dimension03|1
 dimension03|1
 dimension04|1
 dimension04|1
-SRID01|-1
-SRID01|-1
-SRID02|-1
-SRID02|-1
-SRID03|-1
-SRID03|-1
-SRID04|-1
-SRID04|-1
+SRID01|0
+SRID01|0
+SRID02|0
+SRID02|0
+SRID03|0
+SRID03|0
+SRID04|0
+SRID04|0
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
