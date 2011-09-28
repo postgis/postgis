@@ -515,7 +515,7 @@ CREATE TYPE box2df (
 );
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_boxdistance_2d(internal,geometry,int4) 
+CREATE OR REPLACE FUNCTION geometry_gist_distance_2d(internal,geometry,int4) 
 	RETURNS float8 
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_distance_2d'
 	LANGUAGE 'C';
@@ -603,15 +603,26 @@ CREATE OPERATOR ~= (
 );
 
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_boxdistance(geometry, geometry) 
+CREATE OR REPLACE FUNCTION geometry_distance_centroid(geometry, geometry) 
 	RETURNS float8 
-	AS 'MODULE_PATHNAME' ,'gserialized_boxdistance_2d'
+	AS 'MODULE_PATHNAME' ,'gserialized_distance_centroid_2d'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_distance_box(geometry, geometry) 
+	RETURNS float8 
+	AS 'MODULE_PATHNAME' ,'gserialized_distance_box_2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 #if POSTGIS_PGSQL_VERSION >= 91
 CREATE OPERATOR <-> (
-    LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_boxdistance,
+    LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_distance_centroid,
     COMMUTATOR = '<->'
+);
+
+CREATE OPERATOR <#> (
+    LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_distance_box,
+    COMMUTATOR = '<#>'
 );
 #endif
 
@@ -753,7 +764,8 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	OPERATOR        12       |&> ,
 #if POSTGIS_PGSQL_VERSION >= 91
 	OPERATOR        13       <-> FOR ORDER BY pg_catalog.float_ops,
-	FUNCTION        8        geometry_gist_boxdistance_2d (internal, geometry, int4),
+	OPERATOR        14       <#> FOR ORDER BY pg_catalog.float_ops,
+	FUNCTION        8        geometry_gist_distance_2d (internal, geometry, int4),
 #endif
 	FUNCTION        1        geometry_gist_consistent_2d (internal, geometry, int4),
 	FUNCTION        2        geometry_gist_union_2d (bytea, internal),
