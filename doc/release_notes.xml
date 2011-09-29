@@ -9,6 +9,7 @@
         <simplesect>
         	<title>Important / Breaking Changes</title>
         	<para>#722, #302, Most deprecated functions removed (over 250 functions) (Regina Obe, Paul Ramsey)</para>
+        	<para>Unknown SRID changed from -1 to 0. (Paul Ramsey)</para>
         	<para> -- (most deprecated in 1.2) removed non-ST variants buffer, length, intersects 
         	 (and internal functions renamed) etc. </para>
         	<para>-- If you have been using deprecated functions CHANGE your apps or suffer the consequences.
@@ -34,6 +35,7 @@
         </simplesect>
         <simplesect>
           <title>New Features</title>
+          <para>KNN Gist index based centroid (&lt;-&gt;) and box (&lt;#&gt;) distance operators (Paul Ramsey / funded by Vizzuality)</para> 
           <para>Support for TIN and PolyHedralSurface and enhancement of many functions to support 3D (Olivier Courtin / Oslandia)</para>
           <para>Raster support integrated and documented
           		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park)
