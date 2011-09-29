@@ -128,10 +128,11 @@ clean:
 	rm -rf .libs
 
 distclean: clean
-	rm -f liblwgeom.h
+	$(MAKE) -C cunit distclean
+	rm -f liblwgeom.h Makefile
 
 check: liblwgeom.la
-	make -C cunit check
+	$(MAKE) -C cunit check
 
 # Command to build each of the .lo files
 $(LT_SA_OBJS): %.lo: %.c
