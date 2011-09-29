@@ -288,7 +288,7 @@ postgis# VACUUM ANALYZE;</programlisting>
   FROM table1 
   LEFT JOIN table2 
   ON table1.id = table2.id
-) AS new_table USING UNIQUE gid USING SRID=-1"</programlisting>
+) AS new_table USING UNIQUE gid USING SRID=4326"</programlisting>
 
       <variablelist>
         <varlistentry>
@@ -416,7 +416,7 @@ END</programlisting>
   DATA "geom FROM (SELECT roads.oid AS oid, roads.geom AS geom, 
         road_names.name as name FROM roads LEFT JOIN road_names ON 
         roads.road_name_id = road_names.road_name_id) 
-        AS named_roads USING UNIQUE oid USING SRID=-1" 
+        AS named_roads USING UNIQUE oid USING SRID=4326" 
   MAXSCALE 20000 
   STATUS ON 
   TYPE ANNOTATION 
