@@ -47,7 +47,7 @@
 #include <executor/executor.h> /* for GetAttributeByName in RASTER_reclass */
 #include <funcapi.h>
 
-/*#include "lwgeom_pg.h"*/
+#include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "rt_pg.h"
 #include "pgsql_compat.h"
@@ -6151,7 +6151,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	char **options = NULL;
 	text *optiontext = NULL;
 	char *option = NULL;
-	int srid = -1;
+	int srid = SRID_UNKNOWN;
 	char *srs = NULL;
 
 	ArrayType *array;
@@ -7102,7 +7102,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	/* source srid */
 	src_srid = rt_raster_get_srid(raster);
 	if (src_srid == SRID_UNKNOWN) {
-		elog(ERROR, "RASTER_resample: Input raster has unknown (-1) SRID");
+		elog(ERROR, "RASTER_resample: Input raster has unknown (%d) SRID", SRID_UNKNOWN);
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
 	}
@@ -7112,7 +7112,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(3)) {
 		dst_srid = PG_GETARG_INT32(3);
 		if (dst_srid == SRID_UNKNOWN) {
-			elog(ERROR, "RASTER_resample: -1 is an invalid target SRID");
+			elog(ERROR, "RASTER_resample: %d is an invalid target SRID", SRID_UNKNOWN);
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
 		}
