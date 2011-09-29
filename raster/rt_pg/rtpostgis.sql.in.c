@@ -2521,10 +2521,15 @@ CREATE OR REPLACE FUNCTION _st_intersects(rastA raster, nbandA integer, rastB ra
 	AS 'MODULE_PATHNAME', 'RASTER_intersects'
 	LANGUAGE 'C' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_intersects(rastA raster, rastB raster, nbandA integer DEFAULT NULL, nbandB integer DEFAULT NULL)
+CREATE OR REPLACE FUNCTION st_intersects(rastA raster, nbandA integer, rastB raster, nbandB integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $2 AND _st_intersects($1, $3, $2, $4) $$
+	AS $$ SELECT $1 && $3 AND _st_intersects($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_intersects(rastA raster, rastB raster)
+	RETURNS boolean
+	AS $$ SELECT $1 && $2 AND _st_intersects($1, 1, $2, 1) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster/Geometry Spatial Relationship

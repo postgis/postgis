@@ -3992,6 +3992,9 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
 /**
  * Convert an xr, yr raster point to an xw, yw point on map
  *
+ * x' = Ax + By + C
+ * y' = Dx + Ey + F
+ *
  * @param raster : the raster to get info from
  * @param xr : the pixel's column
  * @param yr : the pixel's row
@@ -4037,6 +4040,11 @@ rt_raster_cell_to_geopoint(rt_raster raster,
 /**
  * Convert an xw,yw map point to a xr,yr raster point
  *
+ * computed using rearranged six-parameter affine transformation
+ *
+ * x = (B * (y' - F) - E * (x' - C)) / ((B * D) - (A * E))
+ * y = (A * (y' - F) + D * (C - x')) / (-1 * ((B * D) - (A * E)))
+ *
  * @param raster : the raster to get info from
  * @param xw : X ordinate of the geographical point
  * @param yw : Y ordinate of the geographical point
@@ -4056,7 +4064,7 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 	assert(NULL != xr);
 	assert(NULL != yr);
 
-	/* Six parameters affine transformation */
+	/* Six parameters affine transformation in opposite direction */
 	d = raster->skewX * raster->skewY - raster->scaleX * raster->scaleY;
 	if (FLT_EQ(d, 0)) {
 		rterror("rt_raster_geopoint_to_cell: Attempting to compute coordinates on a raster with scale equal to 0");

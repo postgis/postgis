@@ -158,7 +158,7 @@ SELECT
 	'1.1',
 	r1.rid,
 	r2.rid,
-	ST_Intersects(r1.rast, r2.rast)
+	ST_Intersects(r1.rast, NULL, r2.rast, NULL)
 FROM raster_intersects_rast r1
 JOIN raster_intersects_rast r2
 	ON r1.rid != r2.rid
@@ -435,3 +435,8 @@ FROM raster_intersects_rast r1
 JOIN raster_intersects_geom g1
 	ON 1 = 1
 WHERE r1.rid = 2;
+
+/*
+DROP TABLE IF EXISTS raster_intersects_rast;
+DROP TABLE IF EXISTS raster_intersects_geom;
+*/
