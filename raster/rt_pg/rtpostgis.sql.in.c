@@ -1584,18 +1584,18 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gr
 -----------------------------------------------------------------------
 -- MapAlgebra
 -----------------------------------------------------------------------
--- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
+-- This function can not be STRICT, because nodatavaluerepl can be NULL (could be just '' though)
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
 CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer,
-        expression text, nodatavalueexpr text DEFAULT NULL, pixeltype text DEFAULT NULL)
+        expression text, nodatavaluerepl text DEFAULT NULL, pixeltype text DEFAULT NULL)
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra'
     LANGUAGE 'C' IMMUTABLE;
 
--- This function can not be STRICT, because nodatavalueexpr can be NULL (could be just '' though)
+-- This function can not be STRICT, because nodatavaluerepl can be NULL (could be just '' though)
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
 CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
-        nodatavalueexpr text DEFAULT NULL, pixeltype text DEFAULT NULL)
+        nodatavaluerepl text DEFAULT NULL, pixeltype text DEFAULT NULL)
     RETURNS raster
     AS $$ SELECT st_mapalgebra($1, 1, $2, $3, $4) $$
     LANGUAGE SQL;

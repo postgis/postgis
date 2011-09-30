@@ -2462,7 +2462,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     char *initexpr = NULL;
     char *initndvexpr = NULL;
     char *expression = NULL;
-    char *nodatavalueexpr = NULL;
+    char *nodatavaluerepl = NULL;
     rt_pixtype newpixeltype;
     int skipcomputation = 0;
     char strnewnodatavalue[50];
@@ -2678,21 +2678,21 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
 
     /**
-     * Optimization: If a nodatavalueexpr is provided, recompute the initial
+     * Optimization: If a nodatavaluerepl is provided, recompute the initial
      * value. Then, we can initialize the raster with this value and skip the
      * computation of nodata values one by one in the main computing loop
      **/
     if (!PG_ARGISNULL(3)) {
-        nodatavalueexpr = text_to_cstring(PG_GETARG_TEXT_P(3));
-        len = strlen("SELECT ") + strlen(nodatavalueexpr);
+        nodatavaluerepl = text_to_cstring(PG_GETARG_TEXT_P(3));
+        len = strlen("SELECT ") + strlen(nodatavaluerepl);
         initndvexpr = (char *)palloc(len + 1);
         strncpy(initndvexpr, "SELECT ", strlen("SELECT "));
-        strncpy(initndvexpr + strlen("SELECT "), strtoupper(nodatavalueexpr),
-                strlen(nodatavalueexpr));
+        strncpy(initndvexpr + strlen("SELECT "), strtoupper(nodatavaluerepl),
+                strlen(nodatavaluerepl));
         initndvexpr[len] = '\0';
 
-        //lwfree(nodatavalueexpr);
-        //nodatavalueexpr = NULL;
+        //lwfree(nodatavaluerepl);
+        //nodatavaluerepl = NULL;
 
         /* Replace RAST, if present, for NODATA value, to eval the expression */
         if (strstr(initndvexpr, "RAST")) {
@@ -2759,7 +2759,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
     /**
      * Optimization: If the raster is only filled with nodata values return
-     * right now a raster filled with the nodatavalueexpr
+     * right now a raster filled with the nodatavaluerepl
      * TODO: Call rt_band_check_isnodata instead?
      **/
     if (rt_band_get_isnodata_flag(band)) {
@@ -2793,12 +2793,12 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
 
     /**
-     * Optimization: If expression resume to 'RAST' and nodatavalueexpr is NULL
+     * Optimization: If expression resume to 'RAST' and nodatavaluerepl is NULL
      * or also equal to 'RAST', we can just return the band from the original
      * raster
      **/
     if (initexpr != NULL && !strcmp(initexpr, "SELECT RAST") &&
-		    (nodatavalueexpr  == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
+		    (nodatavaluerepl  == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
             //(initndvexpr == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: Expression resumes to RAST. "
@@ -2875,7 +2875,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
          * new raster
          **/
         //if (initndvexpr == NULL) {
-        if (nodatavalueexpr == NULL) {
+        if (nodatavaluerepl == NULL) {
             newinitialvalue = newval;
             skipcomputation = 2;
         }
