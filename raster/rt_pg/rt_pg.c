@@ -196,7 +196,7 @@ Datum RASTER_addband(PG_FUNCTION_ARGS);
 Datum RASTER_copyband(PG_FUNCTION_ARGS);
 
 /* Raster analysis */
-Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS);
+Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS);
 
 /* create new raster from existing raster's bands */
 Datum RASTER_band(PG_FUNCTION_ARGS);
@@ -2445,8 +2445,8 @@ Datum RASTER_hasNoBand(PG_FUNCTION_ARGS)
     PG_RETURN_BOOL(hasnoband);
 }
 
-PG_FUNCTION_INFO_V1(RASTER_mapAlgebra);
-Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_mapAlgebraExpr);
+Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster = NULL;
     rt_raster raster = NULL;
@@ -2476,7 +2476,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     char * strFromText = NULL;
     bool freemem = FALSE;
 
-    POSTGIS_RT_DEBUG(2, "RASTER_mapAlgebra: Starting...");
+    POSTGIS_RT_DEBUG(2, "RASTER_mapAlgebraExpr: Starting...");
 
     /* Check raster */
     if (PG_ARGISNULL(0)) {
@@ -2489,25 +2489,25 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (NULL == raster) {
-        elog(ERROR, "RASTER_mapAlgebra: Could not deserialize raster");
+        elog(ERROR, "RASTER_mapAlgebraExpr: Could not deserialize raster");
         PG_RETURN_NULL();
     }
 
     /* We don't need this */
     //PG_FREE_IF_COPY(pgraster, 0);
 
-	POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: Getting arguments...");
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: Getting arguments...");
 
-	if (PG_ARGISNULL(1))
-		nband = 1;
-	else
-		nband = PG_GETARG_INT32(1);
+    if (PG_ARGISNULL(1))
+        nband = 1;
+    else
+        nband = PG_GETARG_INT32(1);
 
-	if (nband < 1)
-		nband = 1;
+    if (nband < 1)
+        nband = 1;
 
 
-    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: Creating new empty raster...");
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: Creating new empty raster...");
 
     /**
      * Create a new empty raster with having the same georeference as the
@@ -2519,7 +2519,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     newrast = rt_raster_new(width, height);
 
     if ( NULL == newrast ) {
-        elog(ERROR, "RASTER_mapAlgebra: Could not create a new raster. "
+        elog(ERROR, "RASTER_mapAlgebraExpr: Could not create a new raster. "
                 "Returning NULL");
         PG_RETURN_NULL();
     }
@@ -2551,7 +2551,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         pgraster = rt_raster_serialize(newrast);
         if (NULL == pgraster) {
 
-            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not serialize raster. "
                     "Returning NULL");
             PG_RETURN_NULL();
         }
@@ -2563,7 +2563,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     }
 
 
-    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: Getting raster band %d...", nband);
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Getting raster band %d...", nband);
 
     /**
      * Check if the raster has the required band. Otherwise, return a raster
@@ -2576,7 +2576,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
         pgraster = rt_raster_serialize(newrast);
         if (NULL == pgraster) {
-            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not serialize raster. "
                     "Returning NULL");
             PG_RETURN_NULL();
         }
@@ -2596,7 +2596,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
         pgraster = rt_raster_serialize(newrast);
         if (NULL == pgraster) {
-            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not serialize raster. "
                     "Returning NULL");
             PG_RETURN_NULL();
         }
@@ -2611,7 +2611,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      /*
      * Get NODATA value
      */
-    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: Getting NODATA value for band...");
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: Getting NODATA value for band...");
 
     if (rt_band_get_hasnodata_flag(band)) {
         newnodatavalue = rt_band_get_nodata(band);
@@ -2621,7 +2621,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         newnodatavalue = rt_band_get_min_value(band);
     }
 
-    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: NODATA value for band: = %f",
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: NODATA value for band: = %f",
         newnodatavalue);
 
     /**
@@ -2634,14 +2634,14 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     /**
      * Set the new pixeltype
      **/
-    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: Setting pixeltype...");
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: Setting pixeltype...");
 
-    if (PG_ARGISNULL(4)) {
+    if (PG_ARGISNULL(2)) {
         newpixeltype = rt_band_get_pixtype(band);
     }
 
     else {
-        strFromText = text_to_cstring(PG_GETARG_TEXT_P(4));
+        strFromText = text_to_cstring(PG_GETARG_TEXT_P(2));
         newpixeltype = rt_pixtype_index_from_name(strFromText);
         lwfree(strFromText);
         if (newpixeltype == PT_END)
@@ -2649,17 +2649,17 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     }
 
     if (newpixeltype == PT_END) {
-        elog(ERROR, "RASTER_mapAlgebra: Invalid pixeltype. Returning NULL");
+        elog(ERROR, "RASTER_mapAlgebraExpr: Invalid pixeltype. Returning NULL");
         PG_RETURN_NULL();
     }
 
-    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: Pixeltype set to %s",
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Pixeltype set to %s",
         rt_pixtype_name(newpixeltype));
 
 
-	/* Construct expression for raster values */
-    if (!PG_ARGISNULL(2)) {
-        expression = text_to_cstring(PG_GETARG_TEXT_P(2));
+    /* Construct expression for raster values */
+    if (!PG_ARGISNULL(3)) {
+        expression = text_to_cstring(PG_GETARG_TEXT_P(3));
         len = strlen("SELECT ") + strlen(expression);
         initexpr = (char *)palloc(len + 1);
 
@@ -2668,7 +2668,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
             strlen(expression));
         initexpr[len] = '\0';
 
-        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: Expression is %s", initexpr);
+        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression is %s", initexpr);
 
         /* We don't need this memory */
         //lwfree(expression);
@@ -2682,8 +2682,8 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      * value. Then, we can initialize the raster with this value and skip the
      * computation of nodata values one by one in the main computing loop
      **/
-    if (!PG_ARGISNULL(3)) {
-        nodatavaluerepl = text_to_cstring(PG_GETARG_TEXT_P(3));
+    if (!PG_ARGISNULL(4)) {
+        nodatavaluerepl = text_to_cstring(PG_GETARG_TEXT_P(4));
         len = strlen("SELECT ") + strlen(nodatavaluerepl);
         initndvexpr = (char *)palloc(len + 1);
         strncpy(initndvexpr, "SELECT ", strlen("SELECT "));
@@ -2707,7 +2707,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
             newexpr = initndvexpr;
         }
 
-        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: initndvexpr = %s", newexpr);
+        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: initndvexpr = %s", newexpr);
 
         /* Eval the NODATA expression to get new NODATA. Connect with SPI manager
         * NOTE: This creates a NEW memory context and makes it current.
@@ -2722,7 +2722,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL ||
                 SPI_processed != 1) {
-            elog(ERROR, "RASTER_mapAlgebra: Invalid construction for nodata "
+            elog(ERROR, "RASTER_mapAlgebraExpr: Invalid construction for nodata "
                 "expression. Aborting");
 
             if (SPI_tuptable)
@@ -2750,7 +2750,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         if (freemem)
             pfree(newexpr);
 
-        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: new initial value = %f",
+        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: new initial value = %f",
             newinitialvalue);
 
     }
@@ -2764,7 +2764,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      **/
     if (rt_band_get_isnodata_flag(band)) {
 
-        POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: Band is a nodata band, returning "
+        POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: Band is a nodata band, returning "
                 "a raster filled with nodata");
 
         ret = rt_raster_generate_new_band(newrast, newpixeltype,
@@ -2773,7 +2773,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         /* Serialize created raster */
         pgraster = rt_raster_serialize(newrast);
         if (NULL == pgraster) {
-            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not serialize raster. "
                     "Returning NULL");
             PG_RETURN_NULL();
         }
@@ -2798,24 +2798,24 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
      * raster
      **/
     if (initexpr != NULL && !strcmp(initexpr, "SELECT RAST") &&
-		    (nodatavaluerepl  == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
+            (nodatavaluerepl  == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
             //(initndvexpr == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
 
-        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: Expression resumes to RAST. "
+        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression resumes to RAST. "
                 "Returning raster with band %d from original raster", nband);
 
-        POSTGIS_RT_DEBUGF(4, "RASTER_mapAlgebra: New raster has %d bands",
+        POSTGIS_RT_DEBUGF(4, "RASTER_mapAlgebraExpr: New raster has %d bands",
                 rt_raster_get_num_bands(newrast));
 
         rt_raster_copy_band(raster, newrast, nband - 1, 0);
 
-        POSTGIS_RT_DEBUGF(4, "RASTER_mapAlgebra: New raster now has %d bands",
+        POSTGIS_RT_DEBUGF(4, "RASTER_mapAlgebraExpr: New raster now has %d bands",
                 rt_raster_get_num_bands(newrast));
 
         /* Serialize created raster */
         pgraster = rt_raster_serialize(newrast);
         if (NULL == pgraster) {
-            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not serialize raster. "
                     "Returning NULL");
             PG_RETURN_NULL();
         }
@@ -2844,7 +2844,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         ret = SPI_execute(initexpr, FALSE, 0);
 
         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-            elog(ERROR, "RASTER_mapAlgebra: Invalid construction for expression."
+            elog(ERROR, "RASTER_mapAlgebraExpr: Invalid construction for expression."
                     " Aborting");
 
             /* Free memory allocated out of the current context */
@@ -2863,7 +2863,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
         SPI_freetuptable(tuptable);
 
-        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: New raster value = %f",
+        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: New raster value = %f",
                 newval);
 
         SPI_finish();
@@ -2903,7 +2903,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         /* Serialize created raster */
         pgraster = rt_raster_serialize(newrast);
         if (NULL == pgraster) {
-            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not serialize raster. "
                     "Returning NULL");
 
             PG_RETURN_NULL();
@@ -2922,7 +2922,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         PG_RETURN_POINTER(pgraster);
     }
 
-    RASTER_DEBUG(3, "RASTER_mapAlgebra: Creating new raster band...");
+    RASTER_DEBUG(3, "RASTER_mapAlgebraExpr: Creating new raster band...");
 
     /* Get the new raster band */
     newband = rt_raster_get_band(newrast, 0);
@@ -2933,7 +2933,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         /* Serialize created raster */
         pgraster = rt_raster_serialize(newrast);
         if (NULL == pgraster) {
-            elog(ERROR, "RASTER_mapAlgebra: Could not serialize raster. "
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not serialize raster. "
                     "Returning NULL");
 
             PG_RETURN_NULL();
@@ -2952,7 +2952,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
         PG_RETURN_POINTER(pgraster);
     }
 
-    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: Main computing loop (%d x %d)",
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Main computing loop (%d x %d)",
             width, height);
 
     for (x = 0; x < width; x++) {
@@ -2970,7 +2970,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
                     if (initexpr != NULL) {
                         newexpr = replace(initexpr, "RAST", strnewval, &count);
 
-                        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: (%dx%d), "
+                        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: (%dx%d), "
                                 "r = %s, newexpr = %s",
                                 x, y, strnewval, newexpr);
 
@@ -2980,7 +2980,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
                         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL ||
                                 SPI_processed != 1) {
-                            elog(ERROR, "RASTER_mapAlgebra: Invalid construction"
+                            elog(ERROR, "RASTER_mapAlgebraExpr: Invalid construction"
                                     " for expression. Aborting");
 
                             pfree(newexpr);
@@ -3007,7 +3007,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
                     else
                         newval = newinitialvalue;
 
-                    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebra: new value = %f",
+                    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: new value = %f",
                         newval);
                 }
 
@@ -3020,7 +3020,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
     /* The newrast band has been modified */
 
-    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: raster modified, serializing it.");
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: raster modified, serializing it.");
     /* Serialize created raster */
 
     pgraster = rt_raster_serialize(newrast);
@@ -3038,7 +3038,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 
     SET_VARSIZE(pgraster, pgraster->size);
 
-    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebra: raster serialized");
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: raster serialized");
 
     /* Free memory */
     if (initndvexpr)
@@ -3049,7 +3049,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
     rt_raster_destroy(raster);
     rt_raster_destroy(newrast);
 
-    POSTGIS_RT_DEBUG(4, "RASTER_mapAlgebra: returning raster");
+    POSTGIS_RT_DEBUG(4, "RASTER_mapAlgebraExpr: returning raster");
 
 
     PG_RETURN_POINTER(pgraster);
@@ -3062,7 +3062,7 @@ Datum RASTER_mapAlgebra(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_band);
 Datum RASTER_band(PG_FUNCTION_ARGS)
 {
-	rt_pgraster *pgraster;
+    rt_pgraster *pgraster;
 	rt_pgraster *pgrast;
 	rt_raster raster;
 	rt_raster rast;

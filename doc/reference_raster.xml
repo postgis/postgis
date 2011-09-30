@@ -5137,29 +5137,29 @@ WHERE A.rid =2 ) As foo;
 			</refsection>
 		</refentry>
 		
-		<refentry id="RT_ST_MapAlgebra">
+		<refentry id="RT_ST_MapAlgebraExpr">
 			<refnamediv>
-				<refname>ST_MapAlgebra</refname>
+				<refname>ST_MapAlgebraExpr</refname>
 				<refpurpose>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the input raster band and of pixeltype provided.  band 1 is assumed if no band is specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+					<funcdef>raster <function>ST_MapAlgebraExpr</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodatavalueexpr=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>pixeltype=same_as_source</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+					<funcdef>raster <function>ST_MapAlgebraExpr</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodatavalueexpr=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>pixeltype=same_as_source</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5167,10 +5167,9 @@ WHERE A.rid =2 ) As foo;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified
-        band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
         
-                 <para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If no pixeltype is passed in, then the new raster band will have the same pixeltype as the input <varname>rast</varname> band.</para>
+                 <para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If pixeltype is passed NULL, then the new raster band will have the same pixeltype as the input <varname>rast</varname> band.</para>
                  <para>Use the term <varname>rast</varname> to refer to the pixel value of the original band.</para>
 			
                  <para>Availability: 2.0.0 </para>
@@ -5181,7 +5180,7 @@ WHERE A.rid =2 ) As foo;
 				
 				<para>Create a new 1 band raster from our original that is  a function of modulo 2 of the original raster band.</para>
 				<programlisting>ALTER TABLE dummy_rast ADD COLUMN map_rast raster;
-UPDATE dummy_rast SET map_rast = ST_MapAlgebra(rast,'mod(rast,2)') WHERE rid = 2;
+UPDATE dummy_rast SET map_rast = ST_MapAlgebraExpr(rast,NULL,'mod(rast,2)') WHERE rid = 2;
 
 SELECT ST_Value(rast,1,i,j) As origval, ST_Value(map_rast, 1, i, j) As mapval
 FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN generate_series(1,3) AS j
@@ -5201,9 +5200,9 @@ WHERE rid = 2;
 				</programlisting>
 				<para>Create a new 1 band raster of pixel-type 2BUI from our original that is reclassified and set the nodata value to be 0.</para>
 				<programlisting>ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;
-UPDATE dummy_rast SET map_rast2 = ST_MapAlgebra(rast,'CASE WHEN rast BETWEEN 100 and 250 THEN 1 
+UPDATE dummy_rast SET map_rast2 = ST_MapAlgebraExpr(rast,'2BUI','CASE WHEN rast BETWEEN 100 and 250 THEN 1 
 WHEN rast = 252 THEN 2 
-WHEN rast BETWEEN 253 and 254 THEN 3 ELSE 0 END', '0', '2BUI') WHERE rid = 2;
+WHEN rast BETWEEN 253 and 254 THEN 3 ELSE 0 END', '0') WHERE rid = 2;
 
 SELECT DISTINCT ST_Value(rast,1,i,j) As origval, ST_Value(map_rast2, 1, i, j) As mapval
 FROM dummy_rast CROSS JOIN generate_series(1, 5) AS i CROSS JOIN generate_series(1,5) AS j
@@ -5231,7 +5230,7 @@ FROM dummy_rast WHERE rid = 2;
 		<entry><informalfigure>
 			<mediaobject>
 			  <imageobject>
-				<imagedata fileref="images/st_mapalgebra01.png" />
+				<imagedata fileref="images/st_mapalgebraexpr01.png" />
 			  </imageobject>
 			  <caption><para>original (column rast-view)</para></caption>
 			</mediaobject>
@@ -5240,7 +5239,7 @@ FROM dummy_rast WHERE rid = 2;
 		<entry><informalfigure>
 			<mediaobject>
 			  <imageobject>
-				<imagedata fileref="images/st_mapalgebra02.png" />
+				<imagedata fileref="images/st_mapalgebraexpr02.png" />
 			  </imageobject>
 			  <caption><para>rast_view_ma</para></caption>
 			</mediaobject>
@@ -5256,7 +5255,7 @@ FROM dummy_rast WHERE rid = 2;
 ST_AddBand(
 	ST_AddBand(
 		ST_MakeEmptyRaster(rast_view),
-			ST_MapAlgebra(rast_view,1, 'tan(rast)*rast')
+			ST_MapAlgebraExpr(rast_view,1,NULL,'tan(rast)*rast')
 			), 
 		ST_Band(rast_view,2)
 			),

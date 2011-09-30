@@ -1586,18 +1586,18 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gr
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavaluerepl can be NULL (could be just '' though)
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
-CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, band integer,
-        expression text, nodatavaluerepl text DEFAULT NULL, pixeltype text DEFAULT NULL)
+CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, band integer, pixeltype text,
+        expression text, nodatavaluerepl text DEFAULT NULL)
     RETURNS raster
-    AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra'
+    AS 'MODULE_PATHNAME', 'RASTER_mapAlgebraExpr'
     LANGUAGE 'C' IMMUTABLE;
 
 -- This function can not be STRICT, because nodatavaluerepl can be NULL (could be just '' though)
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
-CREATE OR REPLACE FUNCTION st_mapalgebra(rast raster, expression text,
-        nodatavaluerepl text DEFAULT NULL, pixeltype text DEFAULT NULL)
+CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, pixeltype text, expression text,
+        nodatavaluerepl text DEFAULT NULL)
     RETURNS raster
-    AS $$ SELECT st_mapalgebra($1, 1, $2, $3, $4) $$
+    AS $$ SELECT st_mapalgebraexpr($1, 1, $2, $3, $4) $$
     LANGUAGE SQL;
 
 
