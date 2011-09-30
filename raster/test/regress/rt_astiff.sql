@@ -1,7 +1,7 @@
 SELECT CASE
 	WHEN length(
 		ST_AsTIFF(
-			ST_AddBand(ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0, -1), 1, '64BF', 123.4567, NULL)
+			ST_AddBand(ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0), 1, '64BF', 123.4567, NULL)
 		)
 	) > 0
 		THEN 1
@@ -13,7 +13,7 @@ SELECT CASE
 			ST_AddBand(
 				ST_AddBand(
 					ST_AddBand(
-						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0,-1)
+						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0)
 						, 1, '64BF', 1234.5678, NULL
 					)
 					, '64BF', 987.654321, NULL
@@ -31,7 +31,7 @@ SELECT CASE
 			ST_AddBand(
 				ST_AddBand(
 					ST_AddBand(
-						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0, -1)
+						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0)
 						, 1, '64BF', 1234.5678, -9999
 					)
 					, '64BF', 987.654321, -9999
@@ -49,7 +49,7 @@ SELECT CASE
 			ST_AddBand(
 				ST_AddBand(
 					ST_AddBand(
-						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0, -1)
+						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0)
 						, 1, '64BF', 1234.5678, -9999
 					)
 					, '64BF', 987.654321, -9999
@@ -68,7 +68,7 @@ SELECT CASE
 			ST_AddBand(
 				ST_AddBand(
 					ST_AddBand(
-						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0, -1)
+						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0)
 						, 1, '64BF', 1234.5678, -9999
 					)
 					, '64BF', 987.654321, -9999
@@ -86,7 +86,7 @@ SELECT CASE
 			ST_AddBand(
 				ST_AddBand(
 					ST_AddBand(
-						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0, -1)
+						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0)
 						, 1, '64BF', 1234.5678, -1
 					)
 					, '64BF', 987.654321, -9999
@@ -104,7 +104,7 @@ SELECT CASE
 			ST_AddBand(
 				ST_AddBand(
 					ST_AddBand(
-						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0, -1)
+						ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0)
 						, 1, '64BF', 1234.5678, -9999
 					)
 					, '64BF', 987.654321, -9999

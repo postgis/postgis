@@ -2140,7 +2140,7 @@ main()
     { /* Check SRID */
         int32_t srid;
         srid = rt_raster_get_srid(raster);
-        CHECK_EQUALS(srid, -1);
+        CHECK_EQUALS(srid, 0);
 
         rt_raster_set_srid(raster, 65546);
         srid = rt_raster_get_srid(raster);
