@@ -5697,7 +5697,7 @@ a_rid | b_rid | overleft
 				  <parameter>nband=NULL</parameter>
 				</paramdef>
 			  </funcprototype>
-
+			  
 			  <funcprototype>
 				<funcdef>boolean <function>ST_Intersects</function></funcdef>
 				<paramdef>
@@ -5708,13 +5708,25 @@ a_rid | b_rid | overleft
 				  <type>raster </type>
 				  <parameter>rastb</parameter>
 				</paramdef>
-				<paramdef choice='opt'>
+			  </funcprototype>
+
+			  <funcprototype>
+				<funcdef>boolean <function>ST_Intersects</function></funcdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rasta</parameter>
+				</paramdef>
+				<paramdef>
 				  <type>integer </type>
-				  <parameter>nbanda=NULL</parameter>
+				  <parameter>nbanda</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rastb</parameter>
 				</paramdef>
 				<paramdef choice='opt'>
 				  <type>integer </type>
-				  <parameter>nbandb=NULL</parameter>
+				  <parameter>nbandb=1</parameter>
 				</paramdef>
 			  </funcprototype>
 			</funcsynopsis>
@@ -5723,8 +5735,8 @@ a_rid | b_rid | overleft
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns true if the geometry intersects with the raster. Nodata values  are taken into account so that if the geometry intersects only with nodata  values, the function returns false. If no bands are specified only convex hull of raster is used (nodata values are not considered).</para>
-
+			<para>Returns true if the geometry intersects with the raster. Nodata values  are taken into account so that if the geometry intersects only with nodata  values, the function returns false. If no band is specified band 1 is assumed.</para>
+			<note><para>For the case of raster/geometry  and geometry/raster.  ST_Intersects(raster,nband,geometry) is done in raster space (e.g. the geometry is converted to a raster before tested), ST_Intersects(geometry, raster)is done in geometry space -- raster is converted to geometry before checked.  </para></note>
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries / rasters.</para></note>
 				
