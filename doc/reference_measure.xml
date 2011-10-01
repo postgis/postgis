@@ -234,7 +234,7 @@ ST_DWithin(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>,<xref linkend="ST_DWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_Distance"/>,<xref linkend="ST_DWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 	
