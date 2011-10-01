@@ -9,14 +9,14 @@
 #############################################################################
 
 MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
-MODULEDIR=contrib/$(MODULE_big)
+MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql
+DATA_built=rtpostgis.sql rtpostgis_drop.sql
 DATA=
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=rtpostgis.sql.in
+SQL_OBJS=rtpostgis.sql.in rtpostgis_drop.sql.in
 
 # Objects to build using PGXS
 OBJS=rt_pg.o
@@ -41,7 +41,8 @@ LIBPROJ_CFLAGS=@PROJ_CPPFLAGS@
 PG_CPPFLAGS+=@CPPFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
 SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@ 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS) rtpostgis.sql
+#EXTRA_CLEAN=$(SQL_OBJS) rtpostgis.sql
+EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built)
 
 # PGXS information
 PG_CONFIG = @PGCONFIG@ 
