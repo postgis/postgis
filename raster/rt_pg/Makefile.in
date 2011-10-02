@@ -12,7 +12,7 @@ MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_drop.sql
+DATA_built=rtpostgis.sql rtpostgis_upgrade_20_minor.sql
 DATA=
 
 # SQL objects (files requiring C pre-processing)
@@ -42,7 +42,7 @@ PG_CPPFLAGS+=@CPPFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLA
 SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@ 
 # Extra files to remove during 'make clean'
 #EXTRA_CLEAN=$(SQL_OBJS) rtpostgis.sql
-EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built)
+EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql
 
 # PGXS information
 PG_CONFIG = @PGCONFIG@ 
@@ -82,6 +82,15 @@ endif
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
 $(SQL_OBJS): %.in: %.in.c
 	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
+	
+#remove all create object types since these can't be done cleanly in an upgrade
+rtpostgis_upgrade.sql: rtpostgis.sql
+		 sed -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
+	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
+	 	 $< > $@
+	 	 
+rtpostgis_upgrade_20_minor.sql: rtpostgis_drop.sql rtpostgis_upgrade.sql
+	cat $^ > $@
 
 distclean: clean
 	$(RM) Makefile

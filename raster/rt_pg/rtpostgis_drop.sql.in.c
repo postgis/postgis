@@ -18,21 +18,31 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- This file will be used to drop obselete functions and other objects.
 -- It will be used for both upgrade and uninstall
--- Drop obsolete functions (which fully obsolete or changed to take default args) --
+-- Drop obsolete functions 
+-- (which fully obsolete, changed to take default args, or outp params changed) --
+
+DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, sample_percent double precision) ;
+DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean) ;
+DROP FUNCTION IF EXISTS st_summarystats(rast raster, exclude_nodata_value boolean) ;
+DROP FUNCTION IF EXISTS st_summarystats(rast raster, nband integer, exclude_nodata_value boolean) ;
+
+DROP FUNCTION IF EXISTS _st_summarystats(raster, integer, exclude_nodata_value boolean , double precision, bigint, double precision, double precision);
+DROP FUNCTION IF EXISTS _st_summarystats(rast raster, nband integer, exclude_nodata_value boolean, sample_percent double precision) ;
+
 DROP FUNCTION IF EXISTS ST_Intersects(raster,boolean,geometry);
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster,boolean);
 DROP FUNCTION IF EXISTS ST_Intersects(raster,geometry);
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster);
-DROP FUNCTION IF EXISTS ST_Intersects(raster rast , integer band , boolean exclude_nodata_value , geometry geommin);
-DROP FUNCTION IF EXISTS ST_Intersects(geometry geommin , raster rast , integer band , boolean exclude_nodata_value);
-DROP FUNCTION IF EXISTS ST_Intersection(raster rast1,raster rast2, integer nband1, integer nband2);
-
---changed to take default args --
+DROP FUNCTION IF EXISTS ST_Intersects(raster, integer, boolean  , geometry);
+DROP FUNCTION IF EXISTS ST_Intersects(geometry , raster, integer , boolean);
+DROP FUNCTION IF EXISTS ST_Intersection(raster,raster, integer, integer);
 DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
+DROP FUNCTION IF EXISTS ST_Intersection(raster, geometry);
+DROP FUNCTION IF EXISTS ST_Intersection(raster, integer, geometry);
 
 --these were renamed to ST_MapAlgebraExpr --
-ST_MapAlgebra(rast raster, band integer, pixeltype text, expression text, nodatavaluerepl text);
-ST_MapAlgebra(rast raster, pixeltype text, expression text, nodatavaluerepl text);
+DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, integer, text, text, nodatavaluerepl text);
+DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, pixeltype text, expression text, nodatavaluerepl text);
 
 --added extra parameter so these are obsolete --
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , double precision , double precision , text , double precision , double precision , double precision , double precision );
@@ -40,6 +50,6 @@ DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , text[] , doub
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , text , double precision , double precision , double precision , double precision , double precision , double precision );
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , double precision , double precision , text[] , double precision[] , double precision[] , double precision , double precision );
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , double precision , double precision , text[] , double precision[] , double precision[] , double precision , double precision );
-FUNCTION ST_AsRaster(geometry , double precision , double precision , text , double precision , double precision , double precision , double precision , double precision , double precision )
+DROP FUNCTION IF EXISTS ST_AsRaster(geometry , double precision , double precision , text , double precision , double precision , double precision , double precision , double precision , double precision );
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , raster , text , double precision , double precision );
 DROP FUNCTION IF EXISTS  _ST_AsRaster(geom geometry,scalex double precision , scaley double precision, width integer , height integer, pixeltype text[] , value double precision[] , nodataval double precision[] , upperleftx double precision, upperlefty double precision, gridx double precision, gridy double precision, skewx double precision, skewy double precision,touched boolean);
