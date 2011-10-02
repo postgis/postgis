@@ -2556,7 +2556,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(rast raster, geom geometry, nband inte
 			RETURN FALSE;
 		END IF;
 
-		RETURN ST_Intersects(rast, 1, gr, 1);
+		RETURN ST_Intersects(rast, nband, gr, 1);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
