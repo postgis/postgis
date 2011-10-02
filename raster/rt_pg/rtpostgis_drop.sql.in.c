@@ -29,6 +29,19 @@ DROP FUNCTION IF EXISTS st_summarystats(rast raster, nband integer, exclude_noda
 DROP FUNCTION IF EXISTS _st_summarystats(raster, integer, exclude_nodata_value boolean , double precision, bigint, double precision, double precision);
 DROP FUNCTION IF EXISTS _st_summarystats(rast raster, nband integer, exclude_nodata_value boolean, sample_percent double precision) ;
 
+--return types changed evidentally. Dropping first allows us to recreate cleanly --
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, boolean, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, integer, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, double precision[], double precision);
+DROP FUNCTION IF EXISTS _st_valuecount(text, text, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS _st_valuecount(raster, integer, boolean, double precision[], double precision);
+
 DROP FUNCTION IF EXISTS ST_Intersects(raster,boolean,geometry);
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster,boolean);
 DROP FUNCTION IF EXISTS ST_Intersects(raster,geometry);
