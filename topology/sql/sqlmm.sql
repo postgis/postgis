@@ -196,7 +196,7 @@ BEGIN
       INTO STRICT e1rec;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+        RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent edge %', e1id;
       WHEN INVALID_SCHEMA_NAME THEN
         RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
       WHEN UNDEFINED_TABLE THEN
@@ -210,7 +210,7 @@ BEGIN
       INTO STRICT e2rec;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e2id;
+        RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent edge %', e2id;
     -- NOTE: checks for INVALID_SCHEMA_NAME or UNDEFINED_TABLE done before
   END;
 
@@ -237,7 +237,7 @@ BEGIN
     commonnode = e1rec.start_node;
     caseno = 4;
   ELSE
-    RAISE EXCEPTION 'SQL/MM Spatial exception – non-connected edges';
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-connected edges';
   END IF;
 
   -- Check if any other edge is connected to the common node
@@ -247,7 +247,7 @@ BEGIN
     || commonnode || ' OR end_node = ' || commonnode || ' )'
   LOOP
     RAISE EXCEPTION
-      'SQL/MM Spatial exception – other edges connected (ie: %)', rec.edge_id;
+      'SQL/MM Spatial exception - other edges connected (ie: %)', rec.edge_id;
   END LOOP;
 
   -- NOT IN THE SPECS:
@@ -474,7 +474,7 @@ BEGIN
       INTO STRICT e1rec;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+        RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent edge %', e1id;
       WHEN INVALID_SCHEMA_NAME THEN
         RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
       WHEN UNDEFINED_TABLE THEN
@@ -488,7 +488,7 @@ BEGIN
       INTO STRICT e2rec;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e2id;
+        RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent edge %', e2id;
     -- NOTE: checks for INVALID_SCHEMA_NAME or UNDEFINED_TABLE done before
   END;
 
@@ -515,7 +515,7 @@ BEGIN
     commonnode = e1rec.start_node;
     caseno = 4;
   ELSE
-    RAISE EXCEPTION 'SQL/MM Spatial exception – non-connected edges';
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-connected edges';
   END IF;
 
   -- Check if any other edge is connected to the common node
@@ -525,7 +525,7 @@ BEGIN
     || commonnode || ' OR end_node = ' || commonnode || ' )'
   LOOP
     RAISE EXCEPTION
-      'SQL/MM Spatial exception – other edges connected (ie: %)', rec.edge_id;
+      'SQL/MM Spatial exception - other edges connected (ie: %)', rec.edge_id;
   END LOOP;
 
   -- NOT IN THE SPECS:
@@ -1048,7 +1048,7 @@ BEGIN
       INTO STRICT e1rec;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+        RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent edge %', e1id;
       WHEN INVALID_SCHEMA_NAME THEN
         RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
       WHEN UNDEFINED_TABLE THEN

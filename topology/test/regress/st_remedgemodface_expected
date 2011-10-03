@@ -7,8 +7,8 @@ COMMIT
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - invalid topology name
-ERROR:  SQL/MM Spatial exception – non-existent edge 0
-ERROR:  SQL/MM Spatial exception – non-existent edge 143
+ERROR:  SQL/MM Spatial exception - non-existent edge 0
+ERROR:  SQL/MM Spatial exception - non-existent edge 143
 RM(25)|1
 RM(25)/nodes|+|21|1
 RM(25)/nodes|-|21|

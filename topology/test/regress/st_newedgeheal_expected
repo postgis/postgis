@@ -8,8 +8,8 @@ ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - invalid topology name
-ERROR:  SQL/MM Spatial exception – non-connected edges
-ERROR:  SQL/MM Spatial exception – other edges connected (ie: 19)
+ERROR:  SQL/MM Spatial exception - non-connected edges
+ERROR:  SQL/MM Spatial exception - other edges connected (ie: 19)
 ERROR:  Edge 2 is closed, cannot heal to edge 3
 ERROR:  Edge 2 is closed, cannot heal to edge 3
 ERROR:  Cannot heal edge 25 with itself, try with another
@@ -107,8 +107,8 @@ E1
 E2
 ERROR:  TopoGeom 1 in layer 1 (t.f.g) cannot be represented healing edges 1 and 2
 ERROR:  TopoGeom 1 in layer 1 (t.f.g) cannot be represented healing edges 2 and 1
-ERROR:  SQL/MM Spatial exception – non-existent edge 200
-ERROR:  SQL/MM Spatial exception – non-existent edge 100
+ERROR:  SQL/MM Spatial exception - non-existent edge 200
+ERROR:  SQL/MM Spatial exception - non-existent edge 100
 E3
 E4
 2|-4
@@ -116,7 +116,7 @@ E4
 3|4
 3|-3
 MH(3,4)|5
-ERROR:  SQL/MM Spatial exception – non-connected edges
+ERROR:  SQL/MM Spatial exception - non-connected edges
 2|5
 3|-5
 Topology 't' dropped
