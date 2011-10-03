@@ -1216,6 +1216,7 @@ Finally the hybrid:
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
 			  is in the ORDER BY clause.</para></note>
+			<note><para>Index appears to only kick in with contants</para></note>
 
 			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
 		
@@ -1223,14 +1224,17 @@ Finally the hybrid:
 
 		  <refsection>
 			<title>Examples</title>
-<programlisting>
--- this takes 125 ms on 25,000 gist indexed street table
-<![CDATA[SELECT *
+<programlisting><![CDATA[SELECT *
 FROM (
-SELECT b.tlid, b.mtfcc, b.geom <#> d.geom As b_dist, ST_Distance(b.geom, d.geom) As act_dist
+SELECT b.tlid, b.mtfcc, 
+	b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
+		745787 2948499,745740 2948468,745712 2948438,
+		745690 2948384,745677 2948319)',2249) As b_dist, 
+		ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 2948672,745954 2948576,
+		745787 2948499,745740 2948468,745712 2948438,
+		745690 2948384,745677 2948319)',2249)) As act_dist
     FROM bos_roads As b 
-    CROSS JOIN (SELECT geom FROM bos_roads WHERE tlid = 85732029) As d 
-    ORDER BY b.geom <#> d.geom, b.tlid
+    ORDER BY b_dist, b.tlid
     LIMIT 100) As foo
     ORDER BY act_dist, tlid LIMIT 10;]]>
 
