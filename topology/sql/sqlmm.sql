@@ -711,7 +711,7 @@ BEGIN
       INTO STRICT e1rec;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception – non-existent edge %', e1id;
+        RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent edge %', e1id;
       WHEN INVALID_SCHEMA_NAME THEN
         RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
       WHEN UNDEFINED_TABLE THEN
