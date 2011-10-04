@@ -2561,7 +2561,6 @@ CREATE OR REPLACE FUNCTION ST_IsValid(geometry, int4)
 	COST 100;
 
 
-#if POSTGIS_GEOS_VERSION >= 32
 -- Requires GEOS >= 3.2.0
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry)
@@ -2569,9 +2568,7 @@ CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry)
 	AS 'MODULE_PATHNAME', 'hausdorffdistance'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-#endif
 
-#if POSTGIS_GEOS_VERSION >= 32
 -- Requires GEOS >= 3.2.0
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry, float8)
@@ -2579,7 +2576,6 @@ CREATE OR REPLACE FUNCTION ST_HausdorffDistance(geometry, geometry, float8)
 	AS 'MODULE_PATHNAME', 'hausdorffdistancedensify'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
-#endif
 
 -- PostGIS equivalent function: difference(geometry,geometry)
 CREATE OR REPLACE FUNCTION ST_Difference(geometry,geometry)
