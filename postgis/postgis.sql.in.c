@@ -2199,15 +2199,15 @@ CREATE OR REPLACE FUNCTION postgis_lib_build_date() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE;
 
-
-
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
 	libver text;
 	projver text;
 	geosver text;
+#if POSTGIS_GDAL_VERSION > 0
 	gdalver text;
+#endif
 	libxmlver text;
 	usestats bool;
 	dbproc text;
@@ -2217,7 +2217,9 @@ BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
+#if POSTGIS_GDAL_VERSION > 0
 	SELECT postgis_gdal_version() INTO gdalver;
+#endif
 	SELECT postgis_libxml_version() INTO libxmlver;
 	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
@@ -2233,9 +2235,11 @@ BEGIN
 		fullver = fullver || ' PROJ="' || projver || '"';
 	END IF;
 
+#if POSTGIS_GDAL_VERSION > 0
 	IF  gdalver IS NOT NULL THEN
 		fullver = fullver || ' GDAL="' || gdalver || '"';
 	END IF;
+#endif
 
 	IF  libxmlver IS NOT NULL THEN
 		fullver = fullver || ' LIBXML="' || libxmlver || '"';

@@ -11,6 +11,11 @@
 #define POSTGIS_LIBXML2_VERSION @POSTGIS_LIBXML2_VERSION@
 
 /*
+ * The trailing zero is needed in case POSTGIS_GDAL_VERSION does not exist or has no value
+*/
+#define POSTGIS_GDAL_VERSION @POSTGIS_GDAL_VERSION@0
+
+/*
  * Define the build date and the version number
  * (these substitiutions are done with extra quotes sinces CPP
  * won't substitute within apostrophes)
