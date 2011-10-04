@@ -135,6 +135,7 @@ static char *getSRTextSPI(int srid);
 /* Utility functions */
 Datum RASTER_lib_version(PG_FUNCTION_ARGS);
 Datum RASTER_lib_build_date(PG_FUNCTION_ARGS);
+Datum RASTER_gdal_version(PG_FUNCTION_ARGS);
 
 /* Input/output and format conversions */
 Datum RASTER_in(PG_FUNCTION_ARGS);
@@ -536,6 +537,14 @@ Datum RASTER_lib_build_date(PG_FUNCTION_ARGS)
     SET_VARSIZE(result, VARHDRSZ + strlen(ver));
     memcpy(VARDATA(result), ver, strlen(ver));
     PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(RASTER_gdal_version);
+Datum RASTER_gdal_version(PG_FUNCTION_ARGS)
+{
+	const char *ver = rt_util_gdal_version("--version");
+	text *result = cstring2text(ver);
+	PG_RETURN_POINTER(result);
 }
 
 /**

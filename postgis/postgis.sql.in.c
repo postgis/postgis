@@ -2207,6 +2207,7 @@ DECLARE
 	libver text;
 	projver text;
 	geosver text;
+	gdalver text;
 	libxmlver text;
 	usestats bool;
 	dbproc text;
@@ -2216,6 +2217,7 @@ BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
+	SELECT postgis_gdal_version() INTO gdalver;
 	SELECT postgis_libxml_version() INTO libxmlver;
 	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
@@ -2229,6 +2231,10 @@ BEGIN
 
 	IF  projver IS NOT NULL THEN
 		fullver = fullver || ' PROJ="' || projver || '"';
+	END IF;
+
+	IF  gdalver IS NOT NULL THEN
+		fullver = fullver || ' GDAL="' || gdalver || '"';
 	END IF;
 
 	IF  libxmlver IS NOT NULL THEN

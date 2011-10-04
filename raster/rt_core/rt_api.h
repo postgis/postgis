@@ -1145,6 +1145,12 @@ GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
 
 /*
+	get GDAL runtime version information
+*/
+const char*
+rt_util_gdal_version(const char *request);
+
+/*
 	helper macros for consistent floating point equality checks
 */
 #define FLT_NEQ(x, y) (fabs(x - y) > FLT_EPSILON)

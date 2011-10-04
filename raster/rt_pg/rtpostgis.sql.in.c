@@ -51,7 +51,7 @@ CREATE TYPE raster (
 ------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------
--- RasterLib Version
+-- Raster Version
 -----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION postgis_raster_lib_version()
@@ -63,6 +63,11 @@ CREATE OR REPLACE FUNCTION postgis_raster_lib_build_date()
     RETURNS text
     AS 'MODULE_PATHNAME', 'RASTER_lib_build_date'
     LANGUAGE 'C' IMMUTABLE; -- a new lib will require a new session
+
+CREATE OR REPLACE FUNCTION postgis_gdal_version()
+    RETURNS text
+    AS 'MODULE_PATHNAME', 'RASTER_gdal_version'
+    LANGUAGE 'C' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Raster Accessors

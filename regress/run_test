@@ -525,6 +525,7 @@ fi
 
 geosver=`${PSQL} -tAc "select postgis_geos_version()" "${DB}"`
 projver=`${PSQL} -tAc "select postgis_proj_version()" "${DB}"`
+gdalver=`${PSQL} -tAc "select postgis_gdal_version()" "${DB}"`
 libbuilddate=`${PSQL} -tAc "select postgis_lib_build_date()" "${DB}"`
 pgsqlver=`${PSQL} -tAc "select version()" "${DB}"`
 
@@ -539,6 +540,9 @@ if [ -n "$geosver" ]; then
 fi
 if [ -n "$projver" ]; then
 	echo "   PROJ: $projver"
+fi
+if [ -n "$gdalver" ]; then
+	echo "   GDAL: $gdalver"
 fi
 
 ###################################################

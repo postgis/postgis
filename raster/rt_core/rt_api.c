@@ -185,6 +185,9 @@ static void quicksort(double *left, double *right) {
 	}
 }
 
+/*
+	convert name to GDAL Resample Algorithm
+*/
 GDALResampleAlg
 rt_util_gdal_resample_alg(const char *algname) {
 	if (!algname || !strlen(algname))	return GRA_NearestNeighbour;
@@ -205,6 +208,9 @@ rt_util_gdal_resample_alg(const char *algname) {
 	return GRA_NearestNeighbour;
 }
 
+/*
+	convert rt_pixtype to GDALDataType
+*/
 GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt) {
 	switch (pt) {
@@ -234,6 +240,17 @@ rt_util_pixtype_to_gdal_datatype(rt_pixtype pt) {
 	}
 
 	return GDT_Unknown;
+}
+
+/*
+	get GDAL runtime version information
+*/
+const char*
+rt_util_gdal_version(const char *request) {
+	if (NULL == request || !strlen(request))
+		return GDALVersionInfo("RELEASE_NAME");
+	else
+		return GDALVersionInfo(request);
 }
 
 /*- rt_context -------------------------------------------------------*/
