@@ -30,6 +30,8 @@ PostGIS 2.0.0
 
   * New Features *
   
+  - KNN Gist index based centroid (<->) and box (<#>) distance 
+  	operators (Paul Ramsey / funded by Vizzuality)
   - Support for TIN and PolyHedralSurface (Olivier Courtin / Oslandia)
   - Raster support integrated and documented
     (Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli,
