@@ -525,7 +525,9 @@ fi
 
 geosver=`${PSQL} -tAc "select postgis_geos_version()" "${DB}"`
 projver=`${PSQL} -tAc "select postgis_proj_version()" "${DB}"`
-gdalver=`${PSQL} -tAc "select postgis_gdal_version()" "${DB}"`
+if test x"$OPT_WITH_RASTER" = "xyes"; then
+  gdalver=`${PSQL} -tAc "select postgis_gdal_version()" "${DB}"`
+fi
 libbuilddate=`${PSQL} -tAc "select postgis_lib_build_date()" "${DB}"`
 pgsqlver=`${PSQL} -tAc "select version()" "${DB}"`
 
