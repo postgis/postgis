@@ -1866,10 +1866,10 @@ RETURNS integer AS
 ' SELECT topology.CreateTopology($1, $2, 0); '
 LANGUAGE 'SQL' VOLATILE STRICT;
 
---  CreateTopology(name) -- srid = -1, precision = 0
+--  CreateTopology(name) -- srid = unknown, precision = 0
 CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar)
 RETURNS integer AS
-' SELECT topology.CreateTopology($1, -1, 0); '
+$$ SELECT topology.CreateTopology($1, ST_SRID('POINT EMPTY'::geometry), 0); $$
 LANGUAGE 'SQL' VOLATILE STRICT;
 
 --} CreateTopology
