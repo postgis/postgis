@@ -2,7 +2,7 @@ ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
-ERROR:  Geometry SRID (-1) does not match topology SRID (4326)
+ERROR:  Geometry SRID (0) does not match topology SRID (4326)
 T1|POINT(0 0)
 T1|1 nodes|0 edges|0 faces
 T2|SRID=4326;LINESTRING(0 0,8 -40)

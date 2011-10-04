@@ -2,7 +2,7 @@ t
 t
 t
 ERROR:  schema "3d" already exists
-2d|-1|0|f
+2d|0|0|f
 2dAgain|-1|0|f
 3d|-1|0|t
 ERROR:  Column has Z dimension but geometry does not
