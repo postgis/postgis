@@ -2540,7 +2540,6 @@ CREATE OR REPLACE FUNCTION ST_IsValidDetail(geometry, int4)
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
-#if POSTGIS_GEOS_VERSION >= 33
 -- Requires GEOS >= 3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry, int4)
@@ -2552,9 +2551,7 @@ SELECT CASE WHEN valid THEN 'Valid Geometry' ELSE reason END FROM (
 	$$
 	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 100;
-#endif
 
-#if POSTGIS_GEOS_VERSION >= 33
 -- Requires GEOS >= 3.3.0
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_IsValid(geometry, int4)
@@ -2562,7 +2559,6 @@ CREATE OR REPLACE FUNCTION ST_IsValid(geometry, int4)
 	AS 'SELECT (ST_isValidDetail($1, $2)).valid'
 	LANGUAGE 'sql' IMMUTABLE STRICT
 	COST 100;
-#endif
 
 
 #if POSTGIS_GEOS_VERSION >= 32
