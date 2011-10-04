@@ -1102,8 +1102,10 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.  It is different from other operators taht use spatial indexes in that the spatial index is only used when the operator
 			  is in the ORDER BY clause.</para></note>
+			<note><para>Index appears to only kick in with contants</para></note>
 
 			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
+			 	
 		
 		  </refsection>
 
@@ -1183,8 +1185,7 @@ Finally the hybrid:
 		  <refnamediv>
 			<refname>&lt;#&gt;</refname>
 
-			<refpurpose>Returns the distance between two points.  For point / point checks it's exact.  For other geometry types
-			the distance between the bounding box centroids is returned.  Useful for doing distance ordering and nearest neighbor limits
+			<refpurpose>Returns the distance between bounding box of 2 geometries.  For point / point checks it's same as distance.  Useful for doing distance ordering and nearest neighbor limits
 			using KNN gist functionality.</refpurpose>
 		  </refnamediv>
 
