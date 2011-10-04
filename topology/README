@@ -1,27 +1,35 @@
 =Introduction
 
-This module contains an initial implementation of Topology
-model support.
+This module contains support for topological geometry modelling.
+Functions exist to satisfy the ISO/SQLMM topology-geometry model
+and more are provided to add an additional abstraction level for
+topological features and layers, both simple and hierarchical.
 
-All routines, types and other management objects are stored
-in the "topology" SCHEMA.
+You can see an ER diagram of the full conceptual model in the ER dir.
+You need xfig (http://epb.lbl.gov/xfig/).
 
-You can see an ER diagram of the conceptual model under the ER
-directory. You need xfig (http://epb.lbl.gov/xfig/).
+All routines, types and other management objects are stored in the
+"topology" SCHEMA.
 
-Comments welcome --strk(2005-10-13);
+Comments welcome --strk(2011-10-04);
 
 =Requirements
 
-        * schema-aware postgresql (7.3 and up)
-        * PostGIS-1.1.x 
-        * Geos-2.1 or up (GEOS-3.3.0 up recommended)
+  Many ISO/SQLMM functions use GEOS-3.3.0+ signatures.
+  The script is still buildable with previous GEOS versions
+  but you'll need 3.3.0+ at runtime for most uses.
 
-=Build
+=Building
 
-To build the topology script:
+  To build the topology support:
+ 
+  $ make
 
-	$ make
+=Testing
+
+  To run regression tests:
+
+  $ make check
 
 =Install, upgrade, uninstall
 
@@ -169,15 +177,6 @@ cast function. This will probably be made implicit when the
 code is more tested:
 
 	SELECT topology.Geometry(TopoGeometry);
-
-=Tests
-
-Tests are included under the test/ directory.
-Run make w/out args to see a list of supported targets:
-
-	$ cd test
-	$ make 
-
 
 =Issues
 
