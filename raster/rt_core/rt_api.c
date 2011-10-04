@@ -7578,6 +7578,9 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	/*
 	 	if geometry is a point, a linestring or set of either and bounds not set,
 		increase extent by half-pixel to avoid missing points on border
+
+		a whole pixel is used instead of half-pixel due to backward
+		compatibility with GDAL 1.6, 1.7 and 1.8.  1.9+ works fine with half-pixel.
 	*/
 	wkbtype = wkbFlatten(OGR_G_GetGeometryType(src_geom));
 	if ((
@@ -7589,10 +7592,16 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		FLT_EQ(_width, 0) &&
 		FLT_EQ(_height, 0)
 	) {
+		/*
 		src_env.MinX -= (_scale_x / 2.);
 		src_env.MaxX += (_scale_x / 2.);
 		src_env.MinY -= (_scale_y / 2.);
 		src_env.MaxY += (_scale_y / 2.);
+		*/
+		src_env.MinX -= _scale_x;
+		src_env.MaxX += _scale_x;
+		src_env.MinY -= _scale_y;
+		src_env.MaxY += _scale_y;
 	}
 
 	/* user-defined skew */
