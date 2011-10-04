@@ -7576,13 +7576,15 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	RASTER_DEBUGF(3, "dim (x, y) = %d, %d", _width, _height);
 
 	/*
-	 	if geometry is a point or point-like and bounds not set, increase
-		extent by half-pixel to avoid missing points on border
+	 	if geometry is a point, a linestring or set of either and bounds not set,
+		increase extent by half-pixel to avoid missing points on border
 	*/
 	wkbtype = wkbFlatten(OGR_G_GetGeometryType(src_geom));
 	if ((
 			(wkbtype == wkbPoint) ||
-			(wkbtype == wkbMultiPoint)
+			(wkbtype == wkbMultiPoint) ||
+			(wkbtype == wkbLineString) ||
+			(wkbtype == wkbMultiLineString)
 		) &&
 		FLT_EQ(_width, 0) &&
 		FLT_EQ(_height, 0)

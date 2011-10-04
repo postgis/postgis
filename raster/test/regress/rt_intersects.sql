@@ -16,7 +16,7 @@ CREATE OR REPLACE FUNCTION make_test_raster(rid integer, width integer DEFAULT 2
 		y int;
 		rast raster;
 	BEGIN
-		rast := ST_MakeEmptyRaster(width, height, ul_x, ul_y, 1, 1, skew_x, skew_y, 0);
+		rast := ST_MakeEmptyRaster(width, height, ul_x, ul_y, 1, 1, skew_x, skew_y, 994326);
 		rast := ST_AddBand(rast, 1, '8BUI', 1, 0);
 
 
@@ -29,6 +29,8 @@ SELECT make_test_raster(0, 2, 2, -1, -1);
 SELECT make_test_raster(1, 2, 2);
 SELECT make_test_raster(2, 3, 3);
 DROP FUNCTION make_test_raster(integer, integer, integer, double precision, double precision, double precision, double precision);
+
+INSERT into spatial_ref_sys (srid, auth_name, auth_srid, proj4text, srtext) values (994326, 'epsg', 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ', 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]]');
 
 INSERT INTO raster_intersects_rast VALUES (10, (
 	SELECT
@@ -177,35 +179,35 @@ WHERE r1.rid = 0;
 -- point
 INSERT INTO raster_intersects_geom VALUES (
 	1, (
-		SELECT ST_MakePoint(0, 0)
+		SELECT ST_SetSRID(ST_MakePoint(0, 0), 994326)
 	)
 ), (
 	2, (
-		SELECT ST_MakePoint(0.1, 0.1)
+		SELECT ST_SetSRID(ST_MakePoint(0.1, 0.1), 994326)
 	)
 ), (
 	3, (
-		SELECT ST_MakePoint(-0.1, -0.1)
+		SELECT ST_SetSRID(ST_MakePoint(-0.1, -0.1), 994326)
 	)
 ), (
 	4, (
-		SELECT ST_MakePoint(-1, -1)
+		SELECT ST_SetSRID(ST_MakePoint(-1, -1), 994326)
 	)
 ), (
 	5, (
-		SELECT ST_MakePoint(-1.1, -1)
+		SELECT ST_SetSRID(ST_MakePoint(-1.1, -1), 994326)
 	)
 ), (
 	6, (
-		SELECT ST_MakePoint(-1, -1.1)
+		SELECT ST_SetSRID(ST_MakePoint(-1, -1.1), 994326)
 	)
 ), (
 	7, (
-		SELECT ST_MakePoint(-1.5, -1.5)
+		SELECT ST_SetSRID(ST_MakePoint(-1.5, -1.5), 994326)
 	)
 ), (
 	8, (
-		SELECT ST_MakePoint(3, 3)
+		SELECT ST_SetSRID(ST_MakePoint(3, 3), 994326)
 	)
 );
 
@@ -235,84 +237,84 @@ INSERT INTO raster_intersects_geom VALUES (
 -- linestring
 INSERT INTO raster_intersects_geom VALUES (
 	21, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(1, 1),
 			ST_MakePoint(1, 0)
-		])
+		]), 994326)
 	)
 ), (
 	22, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(-1, -1),
 			ST_MakePoint(1, 1),
 			ST_MakePoint(1, 0)
-		])
+		]), 994326)
 	)
 ), (
 	23, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(-1, -1),
 			ST_MakePoint(-1, 1),
 			ST_MakePoint(1, 1),
 			ST_MakePoint(1, -1)
-		])
+		]), 994326)
 	)
 ), (
 	24, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(-1.1, 1.1),
 			ST_MakePoint(1.1, 1.1),
 			ST_MakePoint(1.1, -1.1),
 			ST_MakePoint(-1.1, -1.1),
 			ST_MakePoint(-1.1, 1.1)
-		])
+		]), 994326)
 	)
 ), (
 	25, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(-2, 1),
 			ST_MakePoint(1, 2),
 			ST_MakePoint(2, -1),
 			ST_MakePoint(-1, -2),
 			ST_MakePoint(-2, 1)
-		])
+		]), 994326)
 	)
 ), (
 	26, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(-0.5, 0.5),
 			ST_MakePoint(0, 0.5),
 			ST_MakePoint(0, 0),
 			ST_MakePoint(0, -0.5),
 			ST_MakePoint(-0.5, 0.5)
-		])
+		]), 994326)
 	)
 ), (
 	27, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(0.5, 0.5),
 			ST_MakePoint(1, 1),
 			ST_MakePoint(1, 0),
 			ST_MakePoint(0.5, 0.5)
-		])
+		]), 994326)
 	)
 ), (
 	28, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(1, 1),
 			ST_MakePoint(0, 2),
 			ST_MakePoint(1, 2),
 			ST_MakePoint(1, 1)
-		])
+		]), 994326)
 	)
 ), (
 	29, (
-		SELECT ST_MakeLine(ARRAY[
+		SELECT ST_SetSRID(ST_MakeLine(ARRAY[
 			ST_MakePoint(0, 2),
 			ST_MakePoint(1, 2),
 			ST_MakePoint(1, 4),
 			ST_MakePoint(0, 2)
-		])
+		]), 994326)
 	)
 );
 
@@ -436,7 +438,7 @@ JOIN raster_intersects_geom g1
 	ON 1 = 1
 WHERE r1.rid = 2;
 
-/*
+DELETE FROM spatial_ref_sys WHERE srid = 994326;
+
 DROP TABLE IF EXISTS raster_intersects_rast;
 DROP TABLE IF EXISTS raster_intersects_geom;
-*/
