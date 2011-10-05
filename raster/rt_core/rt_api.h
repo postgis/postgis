@@ -804,6 +804,16 @@ void rt_raster_set_srid(rt_raster raster, int32_t srid);
 int32_t rt_raster_get_srid(rt_raster raster);
 
 /**
+ * Get 6-element array of raster geotransform matrix
+ *
+ * @param raster : the raster to get matrix of
+ * @param gt : output parameter, 6-element geotransform matrix
+ *
+ */
+void rt_raster_get_geotransform_matrix(rt_raster raster,
+	double *gt);
+
+/**
  * Convert an xr, yr raster point to an xw, yw point on map
  *
  * @param raster : the raster to get info from
@@ -811,10 +821,14 @@ int32_t rt_raster_get_srid(rt_raster raster);
  * @param yr : the pixel's row
  * @param xw : output parameter, X ordinate of the geographical point
  * @param yw : output parameter, Y ordinate of the geographical point
+ * @param gt : input/output parameter, 3x2 geotransform matrix
+ *
+ * @return if zero, error occurred in function
  */
-void rt_raster_cell_to_geopoint(rt_raster raster,
+int rt_raster_cell_to_geopoint(rt_raster raster,
 	double xr, double yr,
-	double* xw, double* yw);
+	double* xw, double* yw,
+	double *gt);
 
 /**
  * Convert an xw, yw map point to a xr, yr raster point
@@ -824,12 +838,14 @@ void rt_raster_cell_to_geopoint(rt_raster raster,
  * @param yw : Y ordinate of the geographical point
  * @param xr : output parameter, the pixel's column
  * @param yr : output parameter, the pixel's row
+ * @param igt : input/output parameter, inverse geotransform matrix
  *
  * @return if zero, error occurred in function
  */
 int rt_raster_geopoint_to_cell(rt_raster raster,
 	double xw, double yw,
-	double *xr, double *yr);
+	double *xr, double *yr,
+	double *igt);
 
 /**
  * Get raster's polygon convex hull.

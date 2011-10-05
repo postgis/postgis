@@ -4007,118 +4007,151 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
 }
 
 /**
- * Convert an xr, yr raster point to an xw, yw point on map
+ * Get 6-element array of raster geotransform matrix
  *
- * x' = Ax + By + C
- * y' = Dx + Ey + F
+ * @param raster : the raster to get matrix of
+ * @param gt : output parameter, 6-element geotransform matrix
+ *
+ */
+void
+rt_raster_get_geotransform_matrix(rt_raster raster,
+	double *gt) {
+	assert(NULL != raster);
+	assert(NULL != gt);
+
+	gt[0] = raster->ipX;
+	gt[1] = raster->scaleX;
+	gt[2] = raster->skewX;
+	gt[3] = raster->ipY;
+	gt[4] = raster->skewY;
+	gt[5] = raster->scaleY;
+}
+
+/**
+ * Convert an xr, yr raster point to an xw, yw point on map
  *
  * @param raster : the raster to get info from
  * @param xr : the pixel's column
  * @param yr : the pixel's row
  * @param xw : output parameter, X ordinate of the geographical point
  * @param yw : output parameter, Y ordinate of the geographical point
+ * @param gt : input/output parameter, 3x2 geotransform matrix
+ *
+ * @return if zero, error occurred in function
  */
-void
+int
 rt_raster_cell_to_geopoint(rt_raster raster,
 	double xr, double yr,
-	double* xw, double* yw
+	double *xw, double *yw,
+	double *gt
 ) {
+	double *_gt = NULL;
+	int init_gt = 0;
+	int i = 0;
+
 	assert(NULL != raster);
 	assert(NULL != xw);
 	assert(NULL != yw);
 
-	/* Six parameters affine transformation */
-	*xw = raster->scaleX * xr + raster->skewX * yr + raster->ipX;
-	*yw = raster->scaleY * yr + raster->skewY * xr + raster->ipY;
+	if (NULL == gt) {
+		_gt = rtalloc(sizeof(double) * 6);
+		if (NULL == _gt) {
+			rterror("rt_raster_cell_to_geopoint: Unable to allocate memory for geotransform matrix");
+			return 0;
+		}
+		init_gt = 1;
 
-	RASTER_DEBUGF(3, "rt_raster_cell_to_geopoint(%g, %g) = %g, %g",
+		for (i = 0; i < 6; i++) _gt[i] = 0;
+	}
+	else {
+		_gt = gt;
+		init_gt = 0;
+	}
+
+	/* scale of matrix is not set */
+	if (
+		FLT_EQ(_gt[1], 0) ||
+		FLT_EQ(_gt[5], 0)
+	) {
+		rt_raster_get_geotransform_matrix(raster, _gt);
+	}
+
+	GDALApplyGeoTransform(_gt, xr, yr, xw, yw);
+	RASTER_DEBUGF(4, "GDALApplyGeoTransform for (%f, %f) = (%f, %f)",
 		xr, yr, *xw, *yw);
 
-	/*
-	{
-		double gt[] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
-		double x1;
-		double y1;
-
-		gt[0] = rt_raster_get_x_offset(raster);
-		gt[1] = rt_raster_get_x_scale(raster);
-		gt[2] = rt_raster_get_x_skew(raster);
-		gt[3] = rt_raster_get_y_offset(raster);
-		gt[4] = rt_raster_get_y_skew(raster);
-		gt[5] = rt_raster_get_y_scale(raster);
-
-		GDALApplyGeoTransform(gt, xr, yr, &x1, &y1);
-		RASTER_DEBUGF(4, "GDALApplyGeoTransform for (%f, %f) = (%f, %f)",
-			xr, yr, x1, y1);
-	}
-	*/
+	if (init_gt) rtdealloc(_gt);
+	return 1;
 }
 
 /**
  * Convert an xw,yw map point to a xr,yr raster point
- *
- * computed using rearranged six-parameter affine transformation
- *
- * x = (B * (y' - F) - E * (x' - C)) / ((B * D) - (A * E))
- * y = (A * (y' - F) + D * (C - x')) / (-1 * ((B * D) - (A * E)))
  *
  * @param raster : the raster to get info from
  * @param xw : X ordinate of the geographical point
  * @param yw : Y ordinate of the geographical point
  * @param xr : output parameter, the pixel's column
  * @param yr : output parameter, the pixel's row
+ * @param igt : input/output parameter, 3x2 inverse geotransform matrix
  *
  * @return if zero, error occurred in function
  */
 int
 rt_raster_geopoint_to_cell(rt_raster raster,
 	double xw, double yw,
-	double *xr, double *yr
+	double *xr, double *yr,
+	double *igt
 ) {
-	double d;
+	double *_igt = NULL;
+	int i = 0;
+	int init_igt = 0;
 
 	assert(NULL != raster);
 	assert(NULL != xr);
 	assert(NULL != yr);
 
-	/* Six parameters affine transformation in opposite direction */
-	d = raster->skewX * raster->skewY - raster->scaleX * raster->scaleY;
-	if (FLT_EQ(d, 0)) {
-		rterror("rt_raster_geopoint_to_cell: Attempting to compute coordinates on a raster with scale equal to 0");
-		return 0;
+	if (igt == NULL) {
+		_igt = rtalloc(sizeof(double) * 6);
+		if (_igt == NULL) {
+			rterror("rt_raster_geopoint_to_cell: Unable to allocate memory for inverse geotransform matrix");
+			return 0;
+		}
+		init_igt = 1;
+
+		for (i = 0; i < 6; i++) _igt[i] = 0;
+	}
+	else {
+		_igt = igt;
+		init_igt = 0;
 	}
 
-	*xr = (raster->skewX * (yw - raster->ipY) - raster->scaleY * (xw - raster->ipX)) / d;
-	*yr = (raster->scaleX * (yw - raster->ipY) + raster->skewY * (raster->ipX - xw)) / (-1 * d);
+	/* matrix is not set */
+	if (
+		FLT_EQ(_igt[0], 0.) &&
+		FLT_EQ(_igt[1], 0.) &&
+		FLT_EQ(_igt[2], 0.) &&
+		FLT_EQ(_igt[3], 0.) &&
+		FLT_EQ(_igt[4], 0.) &&
+		FLT_EQ(_igt[5], 0.)
+	) {
+		double gt[6] = {0.0};
+		rt_raster_get_geotransform_matrix(raster, gt);
 
+		if (!GDALInvGeoTransform(gt, _igt)) {
+			rterror("rt_raster_geopoint_to_cell: Unable to compute inverse geotransform matrix");
+			if (init_igt) rtdealloc(_igt);
+			return 0;
+		}
+	}
+
+	GDALApplyGeoTransform(_igt, xw, yw, xr, yr);
 	*xr = floor(*xr);
 	*yr = floor(*yr);
 
-	RASTER_DEBUGF(3, "rt_raster_geopoint_to_cell(%g, %g) = %g, %g",
+	RASTER_DEBUGF(4, "GDALApplyGeoTransform for (%f, %f) = (%f, %f)",
 		xw, yw, *xr, *yr);
 
-	/*
-	{
-		double gt[] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
-		double igt[6];
-		double x1;
-		double y1;
-
-		gt[0] = rt_raster_get_x_offset(raster);
-		gt[1] = rt_raster_get_x_scale(raster);
-		gt[2] = rt_raster_get_x_skew(raster);
-		gt[3] = rt_raster_get_y_offset(raster);
-		gt[4] = rt_raster_get_y_skew(raster);
-		gt[5] = rt_raster_get_y_scale(raster);
-
-		GDALInvGeoTransform(gt, igt);
-
-		GDALApplyGeoTransform(igt, xw, yw, &x1, &y1);
-		RASTER_DEBUGF(4, "GDALApplyGeoTransform for (%f, %f) = (%f, %f)",
-			xw, yw, x1, y1);
-	}
-	*/
-
+	if (init_igt) rtdealloc(_igt);
 	return 1;
 }
 
@@ -4388,6 +4421,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
 
 LWPOLY*
 rt_raster_get_convex_hull(rt_raster raster) {
+		double gt[6] = {0.0};
     POINTARRAY **rings = NULL;
     POINTARRAY *pts = NULL;
     LWPOLY* ret = NULL;
@@ -4419,26 +4453,30 @@ rt_raster_get_convex_hull(rt_raster raster) {
     /* Upper-left corner (first and last points) */
     rt_raster_cell_to_geopoint(raster,
             0, 0,
-            &p4d.x, &p4d.y);
+            &p4d.x, &p4d.y,
+						gt);
     ptarray_set_point4d(pts, 0, &p4d);
     ptarray_set_point4d(pts, 4, &p4d); /* needed for closing it? */
 
     /* Upper-right corner (we go clockwise) */
     rt_raster_cell_to_geopoint(raster,
             raster->width, 0,
-            &p4d.x, &p4d.y);
+            &p4d.x, &p4d.y,
+						gt);
     ptarray_set_point4d(pts, 1, &p4d);
 
     /* Lower-right corner */
     rt_raster_cell_to_geopoint(raster,
             raster->width, raster->height,
-            &p4d.x, &p4d.y);
+            &p4d.x, &p4d.y,
+						gt);
     ptarray_set_point4d(pts, 2, &p4d);
 
     /* Lower-left corner */
     rt_raster_cell_to_geopoint(raster,
             0, raster->height,
-            &p4d.x, &p4d.y);
+            &p4d.x, &p4d.y,
+						gt);
     ptarray_set_point4d(pts, 3, &p4d);
 
     ret = lwpoly_construct(raster->srid, 0, 1, rings);
@@ -6198,7 +6236,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	GDALDriverH drv = NULL;
 	int drv_gen = 0;
 	GDALDatasetH ds = NULL;
-	double gt[] = {0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+	double gt[6] = {0.0};
 	CPLErr cplerr;
 	GDALDataType gdal_pt = GDT_Unknown;
 	GDALRasterBandH band;
@@ -6241,12 +6279,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	}
 
 	/* add geotransform */
-	gt[0] = rt_raster_get_x_offset(raster);
-	gt[1] = rt_raster_get_x_scale(raster);
-	gt[2] = rt_raster_get_x_skew(raster);
-	gt[3] = rt_raster_get_y_offset(raster);
-	gt[4] = rt_raster_get_y_skew(raster);
-	gt[5] = rt_raster_get_y_scale(raster);
+	rt_raster_get_geotransform_matrix(raster, gt);
 	cplerr = GDALSetGeoTransform(ds, gt);
 	if (cplerr != CE_None) {
 		rterror("rt_raster_to_gdal_mem: Unable to set geotransformation\n");
@@ -7991,6 +8024,10 @@ int rt_raster_intersects_algorithm(
 	double P[2];
 	double Qw[2];
 	double Qr[2];
+	double gt1[6] = {0.0};
+	double gt2[6] = {0.0};
+	double igt1[6] = {0};
+	double igt2[6] = {0};
 	double d;
 	double val1;
 	int noval1;
@@ -8019,25 +8056,29 @@ int rt_raster_intersects_algorithm(
 	rt_raster_cell_to_geopoint(
 		rast1,
 		0, 0,
-		&(line1[X1]), &(line1[Y1])
+		&(line1[X1]), &(line1[Y1]),
+		gt1
 	);
 
 	rt_raster_cell_to_geopoint(
 		rast1,
 		0, height1,
-		&(line1[X2]), &(line1[Y2])
+		&(line1[X2]), &(line1[Y2]),
+		gt1
 	);
 
 	rt_raster_cell_to_geopoint(
 		rast2,
 		0, 0,
-		&(line2[X1]), &(line2[Y1])
+		&(line2[X1]), &(line2[Y1]),
+		gt2
 	);
 
 	rt_raster_cell_to_geopoint(
 		rast2,
 		width2, 0,
-		&(line2[X2]), &(line2[Y2])
+		&(line2[X2]), &(line2[Y2]),
+		gt2
 	);
 
 	/* parallel vertically */
@@ -8062,13 +8103,15 @@ int rt_raster_intersects_algorithm(
 				rt_raster_cell_to_geopoint(
 					rast1,
 					col, 0,
-					&(line1[X1]), &(line1[Y1])
+					&(line1[X1]), &(line1[Y1]),
+					gt1
 				);
 
 				rt_raster_cell_to_geopoint(
 					rast1,
 					col, height1,
-					&(line1[X2]), &(line1[Y2])
+					&(line1[X2]), &(line1[Y2]),
+					gt1
 				);
 
 				/* larger raster */
@@ -8078,26 +8121,30 @@ int rt_raster_intersects_algorithm(
 						rt_raster_cell_to_geopoint(
 							rast2,
 							0, row,
-							&(line2[X1]), &(line2[Y1])
+							&(line2[X1]), &(line2[Y1]),
+							gt2
 						);
 
 						rt_raster_cell_to_geopoint(
 							rast2,
 							width2, row,
-							&(line2[X2]), &(line2[Y2])
+							&(line2[X2]), &(line2[Y2]),
+							gt2
 						);
 					}
 					else {
 						rt_raster_cell_to_geopoint(
 							rast2,
 							row, 0,
-							&(line2[X1]), &(line2[Y1])
+							&(line2[X1]), &(line2[Y1]),
+							gt2
 						);
 
 						rt_raster_cell_to_geopoint(
 							rast2,
 							row, height2,
-							&(line2[X2]), &(line2[Y2])
+							&(line2[X2]), &(line2[Y2]),
+							gt2
 						);
 					}
 
@@ -8190,7 +8237,8 @@ int rt_raster_intersects_algorithm(
 							if (!rt_raster_geopoint_to_cell(
 								rast1,
 								Qw[pX], Qw[pY],
-								&(Qr[pX]), &(Qr[pY])
+								&(Qr[pX]), &(Qr[pY]),
+								igt1
 							)) {
 								noval1 = 1;
 							}
@@ -8212,7 +8260,8 @@ int rt_raster_intersects_algorithm(
 							if (!rt_raster_geopoint_to_cell(
 								rast2,
 								Qw[pX], Qw[pY],
-								&(Qr[pX]), &(Qr[pY])
+								&(Qr[pX]), &(Qr[pY]),
+								igt2
 							)) {
 								noval2 = 1;
 							}
@@ -8353,6 +8402,8 @@ rt_raster_intersects(
 	int hasnodataL = FALSE;
 	double nodataS = 0;
 	double nodataL = 0;
+	double gtS[6] = {0};
+	double igtL[6] = {0};
 
 	uint32_t row;
 	uint32_t rowoffset;
@@ -8560,13 +8611,15 @@ rt_raster_intersects(
 							rt_raster_cell_to_geopoint(
 								rastS,
 								col, row,
-								&(lineS[X1]), &(lineS[Y1])
+								&(lineS[X1]), &(lineS[Y1]),
+								gtS
 							);
 
 							if (!rt_raster_geopoint_to_cell(
 								rastL,
 								lineS[X1], lineS[Y1],
-								&(Qr[pX]), &(Qr[pY])
+								&(Qr[pX]), &(Qr[pY]),
+								igtL
 							)) {
 								continue;
 							}
