@@ -822,7 +822,7 @@ if test "x$RASTER" = "xraster"; then dnl # {
 	GDAL_MIN_VERSION=1.6.0
 	GDAL_MIN_VERSION_NUMBER=160 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
 
-    AC_ARG_WITH([gdal],
+    AC_ARG_WITH([gdalconfig],
 		AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path)]),
         	[GDAL_CONFIG="$withval"], [GDAL_CONFIG=""])
 
