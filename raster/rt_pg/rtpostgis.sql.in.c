@@ -2521,6 +2521,19 @@ CREATE OPERATOR ~ (
 -----------------------------------------------------------------------
 -- Raster/Raster Spatial Relationship
 -----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_samealignment(rastA raster, rastB raster)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'RASTER_samealignment'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_samealignment(
+	ulx1 double precision, uly1 double precision, scalex1 double precision, scaley1 double precision, skewx1 double precision, skewy1 double precision,
+	ulx2 double precision, uly2 double precision, scalex2 double precision, scaley2 double precision, skewx2 double precision, skewy2 double precision
+)
+	RETURNS boolean
+	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION _st_intersects(rastA raster, nbandA integer, rastB raster, nbandB integer)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_intersects'

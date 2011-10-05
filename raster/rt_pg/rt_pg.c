@@ -240,6 +240,9 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS);
 /* determine if two rasters intersect */
 Datum RASTER_intersects(PG_FUNCTION_ARGS);
 
+/* determine if two rasters are aligned */
+Datum RASTER_samealignment(PG_FUNCTION_ARGS);
+
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
@@ -7628,6 +7631,54 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_BOOL(intersects);
+}
+
+/**
+ * See if two rasters are aligned
+ */
+PG_FUNCTION_INFO_V1(RASTER_samealignment);
+Datum RASTER_samealignment(PG_FUNCTION_ARGS)
+{
+	const int set_count = 2;
+	rt_pgraster *pgrast;
+	rt_raster rast[2] = {NULL};
+
+	uint32_t i;
+	uint32_t j;
+	uint32_t k;
+	int rtn;
+	int aligned;
+
+	for (i = 0, j = 0; i < set_count; i++) {
+		/* pgrast is null, return null */
+		if (PG_ARGISNULL(j)) {
+			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+			PG_RETURN_NULL();
+		}
+		pgrast = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(j), 0, sizeof(struct rt_raster_serialized_t));
+		j++;
+
+		/* raster */
+		rast[i] = rt_raster_deserialize(pgrast, FALSE);
+		if (!rast[i]) {
+			elog(ERROR, "RASTER_samealignment: Could not deserialize the %s raster", i < 1 ? "first" : "second");
+			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+			PG_RETURN_NULL();
+		}
+	}
+
+	rtn = rt_raster_same_alignment(
+		rast[0],
+		rast[1],
+		&aligned
+	);
+
+	if (!rtn) {
+		elog(ERROR, "RASTER_samealignment: Unable to test for alignment on the two rasters");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_BOOL(aligned);
 }
 
 /* ---------------------------------------------------------------- */

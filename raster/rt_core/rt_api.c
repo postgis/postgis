@@ -8674,3 +8674,82 @@ rt_raster_intersects(
 	*intersects = 0;
 	return 1;
 }
+
+/*
+ * Return zero if error occurred in function.
+ * Paramter aligned returns non-zero if two rasters are aligned
+ *
+ * @param rast1 : the first raster for alignment test
+ * @param rast2 : the second raster for alignment test
+ * @param aligned : non-zero value if the two rasters are aligned
+ *
+ * @return if zero, an error occurred in function
+ */
+int
+rt_raster_same_alignment(
+	rt_raster rast1,
+	rt_raster rast2,
+	int *aligned
+) {
+	double xr;
+	double yr;
+	double xw;
+	double yw;
+
+	/* scales must match */
+	if (FLT_NEQ(rast1->scaleX, rast2->scaleX)) {
+		RASTER_DEBUG(3, "Scale on X-axis is different");
+		*aligned = 0;
+		return 1;
+	}
+	else if (FLT_NEQ(rast1->scaleY, rast2->scaleY)) {
+		RASTER_DEBUG(3, "Scale on Y-axis is different");
+		*aligned = 0;
+		return 1;
+	}
+	/* skews must match */
+	else if (FLT_NEQ(rast1->skewX, rast2->skewX)) {
+		RASTER_DEBUG(3, "Skew on X-axis is different");
+		*aligned = 0;
+		return 1;
+	}
+	else if (FLT_NEQ(rast1->skewY, rast2->skewY)) {
+		RASTER_DEBUG(3, "Skew on Y-axis is different");
+		*aligned = 0;
+		return 1;
+	}
+
+	/* raster coordinates in context of second raster of first raster's upper-left corner */
+	if (rt_raster_geopoint_to_cell(
+			rast2,
+			rast1->ipX, rast1->ipY,
+			&xr, &yr,
+			NULL
+	) == 0) {
+		rterror("rt_raster_same_alignment: Unable to get raster coordinates of second raster from first raster's spatial coordinates");
+		*aligned = 0;
+		return 0;
+	}
+
+	/* spatial coordinates of raster coordinates from above */
+	if (rt_raster_cell_to_geopoint(
+		rast2,
+		xr, yr,
+		&xw, &yw,
+		NULL
+	) == 0) {
+		rterror("rt_raster_same_alignment: Unable to get spatial coordinates of second raster from raster coordinates");
+		*aligned = 0;
+		return 0;
+	}
+
+	/* spatial coordinates are identical to that of first raster's upper-left corner */
+	if (FLT_EQ(xw, rast1->ipX) && FLT_EQ(yw, rast1->ipY)) {
+		*aligned = 1;
+		return 1;
+	}
+
+	/* no alignment */
+	*aligned = 0;
+	return 1;
+}

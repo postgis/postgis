@@ -2060,6 +2060,50 @@ static void testIntersects() {
 	deepRelease(rast1);
 }
 
+static void testAlignment() {
+	rt_raster rast1;
+	rt_raster rast2;
+	int rtn;
+	int aligned;
+
+	rast1 = rt_raster_new(2, 2);
+	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
+
+	rast2 = rt_raster_new(10, 10);
+	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
+
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	CHECK((rtn != 0));
+	CHECK((aligned != 0));
+
+	rt_raster_set_scale(rast2, 0.1, 0.1);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	CHECK((rtn != 0));
+	CHECK((aligned == 0));
+	rt_raster_set_scale(rast2, 1, 1);
+
+	rt_raster_set_skews(rast2, -0.5, 0.5);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	CHECK((rtn != 0));
+	CHECK((aligned == 0));
+	rt_raster_set_skews(rast2, 0, 0);
+
+	rt_raster_set_offsets(rast2, 1, 1);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	CHECK((rtn != 0));
+	CHECK((aligned != 0));
+
+	rt_raster_set_offsets(rast2, 0.1, 0.1);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	CHECK((rtn != 0));
+	CHECK((aligned == 0));
+
+	deepRelease(rast2);
+	deepRelease(rast1);
+}
+
 int
 main()
 {
@@ -2489,6 +2533,10 @@ main()
 		printf("Testing rt_raster_intersects\n");
 		testIntersects();
 		printf("Successfully tested rt_raster_intersects\n");
+
+		printf("Testing rt_raster_same_alignment\n");
+		testAlignment();
+		printf("Successfully tested rt_raster_same_alignment\n");
 
     deepRelease(raster);
 

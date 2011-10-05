@@ -1092,6 +1092,22 @@ int rt_raster_intersects(
 	int *intersects
 );
 
+/*
+ * Return zero if error occurred in function.
+ * Paramter aligned returns non-zero if two rasters are aligned
+ *
+ * @param rast1 : the first raster for alignment test
+ * @param rast2 : the second raster for alignment test
+ * @param aligned : non-zero value if the two rasters are aligned
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_same_alignment(
+	rt_raster rast1,
+	rt_raster rast2,
+	int *aligned
+);
+
 /*- utilities -------------------------------------------------------*/
 
 /*
