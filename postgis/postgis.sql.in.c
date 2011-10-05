@@ -2205,7 +2205,7 @@ DECLARE
 	libver text;
 	projver text;
 	geosver text;
-#if POSTGIS_GDAL_VERSION > 0
+#ifdef POSTGIS_GDAL_VERSION
 	gdalver text;
 #endif
 	libxmlver text;
@@ -2217,7 +2217,7 @@ BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
-#if POSTGIS_GDAL_VERSION > 0
+#ifdef POSTGIS_GDAL_VERSION
 	SELECT postgis_gdal_version() INTO gdalver;
 #endif
 	SELECT postgis_libxml_version() INTO libxmlver;
@@ -2235,7 +2235,7 @@ BEGIN
 		fullver = fullver || ' PROJ="' || projver || '"';
 	END IF;
 
-#if POSTGIS_GDAL_VERSION > 0
+#ifdef POSTGIS_GDAL_VERSION
 	IF  gdalver IS NOT NULL THEN
 		fullver = fullver || ' GDAL="' || gdalver || '"';
 	END IF;

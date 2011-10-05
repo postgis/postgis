@@ -11,9 +11,13 @@
 #define POSTGIS_LIBXML2_VERSION @POSTGIS_LIBXML2_VERSION@
 
 /*
- * The trailing zero is needed in case POSTGIS_GDAL_VERSION does not exist or has no value
+ * POSTGIS_GDAL_VERSION may not be defined or have a value
 */
-#define POSTGIS_GDAL_VERSION @POSTGIS_GDAL_VERSION@0
+#if @POSTGIS_GDAL_VERSION@0 != 0
+#define POSTGIS_GDAL_VERSION @POSTGIS_GDAL_VERSION@
+#else
+#undef POSTGIS_GDAL_VERSION
+#endif
 
 /*
  * Define the build date and the version number
