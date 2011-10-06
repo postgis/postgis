@@ -1,3 +1,4 @@
+
 --
 -- spatial_ref_sys data
 --
@@ -106,9 +107,9 @@ SELECT 'geojson_version_03', ST_AsGeoJson(-4, geography(GeomFromEWKT('SRID=4326;
 
 -- CRS
 SELECT 'geojson_crs_01', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;POINT(1 1)')), 0, 2);
-SELECT 'geojson_crs_02', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;POINT(1 1)')), 0, 2);
+SELECT 'geojson_crs_02', ST_AsGeoJson(geography(GeomFromEWKT('POINT(1 1)')), 0, 2);
 SELECT 'geojson_crs_03', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;POINT(1 1)')), 0, 4);
-SELECT 'geojson_crs_04', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;POINT(1 1)')), 0, 4);
+SELECT 'geojson_crs_04', ST_AsGeoJson(geography(GeomFromEWKT('POINT(1 1)')), 0, 4);
 SELECT 'geojson_crs_05', ST_AsGeoJson(geography(GeomFromEWKT('SRID=1;POINT(1 1)')), 0, 2);
 SELECT 'geojson_crs_06', ST_AsGeoJson(geography(GeomFromEWKT('SRID=1;POINT(1 1)')), 0, 4);
 
@@ -119,21 +120,21 @@ SELECT 'geojson_bbox_03', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2
 SELECT 'geojson_bbox_04', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 5);
 
 -- CRS and Bbox
-SELECT 'geojson_options_01', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 0);
+SELECT 'geojson_options_01', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 0);
 SELECT 'geojson_options_02', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0);
-SELECT 'geojson_options_03', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 1);
+SELECT 'geojson_options_03', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 1);
 SELECT 'geojson_options_04', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 1);
-SELECT 'geojson_options_05', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 2);
+SELECT 'geojson_options_05', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 2);
 SELECT 'geojson_options_06', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 2);
-SELECT 'geojson_options_07', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 3);
+SELECT 'geojson_options_07', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 3);
 SELECT 'geojson_options_08', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 3);
-SELECT 'geojson_options_09', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 4);
+SELECT 'geojson_options_09', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 4);
 SELECT 'geojson_options_10', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 4);
-SELECT 'geojson_options_11', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 5);
+SELECT 'geojson_options_11', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 5);
 SELECT 'geojson_options_12', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 5);
-SELECT 'geojson_options_13', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 6);
+SELECT 'geojson_options_13', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 6);
 SELECT 'geojson_options_14', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 6);
-SELECT 'geojson_options_15', ST_AsGeoJson(geography(GeomFromEWKT('SRID=-1;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 7);
+SELECT 'geojson_options_15', ST_AsGeoJson(geography(GeomFromEWKT('LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 7);
 SELECT 'geojson_options_16', ST_AsGeoJson(geography(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)')), 0, 7);
 
 
