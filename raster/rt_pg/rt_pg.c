@@ -6281,7 +6281,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 		srid = PG_GETARG_INT32(3);
 
 	/* get srs from srid */
-	if (srid > SRID_UNKNOWN) {
+	if (clamp_srid(srid) != SRID_UNKNOWN) {
 		srs = getSRTextSPI(srid);
 		if (NULL == srs) {
 			elog(ERROR, "RASTER_asGDALRaster: Could not find srtext for SRID (%d)", srid);
@@ -6954,7 +6954,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 #endif
 
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srid = %d", srid);
-	if (srid > SRID_UNKNOWN) {
+	if (clamp_srid(srid) != SRID_UNKNOWN) {
 		srs = getSRTextSPI(srid);
 		if (NULL == srs) {
 			elog(ERROR, "RASTER_asRaster: Could not find srtext for SRID (%d)", srid);
@@ -7113,7 +7113,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 
 	/* source srid */
 	src_srid = rt_raster_get_srid(raster);
-	if (src_srid <= SRID_UNKNOWN) {
+	if (clamp_srid(src_srid) == SRID_UNKNOWN) {
 		elog(ERROR, "RASTER_resample: Input raster has unknown (%d) SRID", src_srid);
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
@@ -7123,7 +7123,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	/* target srid */
 	if (!PG_ARGISNULL(3)) {
 		dst_srid = PG_GETARG_INT32(3);
-		if (dst_srid <= SRID_UNKNOWN) {
+		if (clamp_srid(dst_srid) == SRID_UNKNOWN) {
 			elog(ERROR, "RASTER_resample: %d is an invalid target SRID", dst_srid);
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
@@ -7171,7 +7171,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 
 	/* check that at least something is to be done */
 	if (
-		(dst_srid <= SRID_UNKNOWN) &&
+		(clamp_srid(dst_srid) == SRID_UNKNOWN) &&
 		(scale_x == NULL) &&
 		(scale_y == NULL) &&
 		(grid_xw == NULL) &&
@@ -7213,7 +7213,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(4, "src srs: %s", src_srs);
 
 	/* target srs */
-	if (dst_srid > SRID_UNKNOWN) {
+	if (clamp_srid(dst_srid) != SRID_UNKNOWN) {
 		dst_srs = getSRTextSPI(dst_srid);
 		if (NULL == dst_srs) {
 			elog(ERROR, "RASTER_resample: Target SRID (%d) is unknown", dst_srid);
