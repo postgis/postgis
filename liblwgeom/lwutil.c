@@ -369,3 +369,10 @@ error_if_srid_mismatch(int srid1, int srid2)
 		lwerror("Operation on mixed SRID geometries");
 	}
 }
+
+int
+clamp_srid(int srid)
+{
+	if ( srid <= 0 ) return SRID_UNKNOWN;
+	return srid;
+}
