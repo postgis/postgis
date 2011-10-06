@@ -40,8 +40,8 @@ LIBPROJ_CFLAGS=@PROJ_CPPFLAGS@
 
 PG_CPPFLAGS+=@CPPFLAGS@ $(LIBLWGEOM_CFLAGS) $(LIBGDAL_CFLAGS) $(LIBPGCOMMON_CFLAGS) $(LIBPROJ_CFLAGS) -I../rt_core
 SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS) $(LIBGDAL_LDFLAGS) @SHLIB_LINK@ 
+
 # Extra files to remove during 'make clean'
-#EXTRA_CLEAN=$(SQL_OBJS) rtpostgis.sql
 EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql
 
 # PGXS information
