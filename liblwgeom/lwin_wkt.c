@@ -47,11 +47,14 @@ int wkt_lexer_read_srid(char *str)
 {
 	char *c = str;
 	long i = 0;
+	int srid;
 
 	if( ! str ) return SRID_UNKNOWN;
 	c += 5; /* Advance past "SRID=" */
 	i = strtol(c, NULL, 10);
-	return (int)i;
+	srid = clamp_srid((int)i);
+	/* TODO: warn on explicit UNKNOWN srid ? */
+	return srid;
 };
 
 static uint8_t wkt_dimensionality(char *dimensionality)

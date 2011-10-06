@@ -644,7 +644,8 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 	/* Read the SRID, if necessary */
 	if( s->has_srid )
 	{
-		s->srid = integer_from_wkb_state(s);
+		s->srid = clamp_srid(integer_from_wkb_state(s));
+		/* TODO: warn on explicit UNKNOWN srid ? */
 		LWDEBUGF(4,"Got SRID: %u", s->srid);
 	}
 	
