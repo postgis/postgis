@@ -2080,17 +2080,22 @@ static void testAlignment() {
 
 	rt_raster_set_scale(rast2, 0.1, 0.1);
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
-	CHECK((rtn != 0));
+	CHECK((rtn == 0));
 	CHECK((aligned == 0));
 	rt_raster_set_scale(rast2, 1, 1);
 
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
-	CHECK((rtn != 0));
+	CHECK((rtn == 0));
 	CHECK((aligned == 0));
 	rt_raster_set_skews(rast2, 0, 0);
 
 	rt_raster_set_offsets(rast2, 1, 1);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	CHECK((rtn != 0));
+	CHECK((aligned != 0));
+
+	rt_raster_set_offsets(rast2, 2, 3);
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
 	CHECK((rtn != 0));
 	CHECK((aligned != 0));

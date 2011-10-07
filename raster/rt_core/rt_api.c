@@ -8696,27 +8696,33 @@ rt_raster_same_alignment(
 	double xw;
 	double yw;
 
-	/* scales must match */
-	if (FLT_NEQ(rast1->scaleX, rast2->scaleX)) {
-		RASTER_DEBUG(3, "Scale on X-axis is different");
+	/* same srid */
+	if (rast1->srid != rast2->srid) {
+		rterror("rt_raster_same_alignment: The two rasters provided have different SRIDs");
 		*aligned = 0;
-		return 1;
+		return 0;
+	}
+	/* scales must match */
+	else if (FLT_NEQ(rast1->scaleX, rast2->scaleX)) {
+		rterror("rt_raster_same_alignment: The two raster provided have different scales on the X axis");
+		*aligned = 0;
+		return 0;
 	}
 	else if (FLT_NEQ(rast1->scaleY, rast2->scaleY)) {
-		RASTER_DEBUG(3, "Scale on Y-axis is different");
+		rterror("rt_raster_same_alignment: The two raster provided have different scales on the Y axis");
 		*aligned = 0;
-		return 1;
+		return 0;
 	}
 	/* skews must match */
 	else if (FLT_NEQ(rast1->skewX, rast2->skewX)) {
-		RASTER_DEBUG(3, "Skew on X-axis is different");
+		rterror("rt_raster_same_alignment: The two raster provided have different skews on the X axis");
 		*aligned = 0;
-		return 1;
+		return 0;
 	}
 	else if (FLT_NEQ(rast1->skewY, rast2->skewY)) {
-		RASTER_DEBUG(3, "Skew on Y-axis is different");
+		rterror("rt_raster_same_alignment: The two raster provided have different skews on the Y axis");
 		*aligned = 0;
-		return 1;
+		return 0;
 	}
 
 	/* raster coordinates in context of second raster of first raster's upper-left corner */

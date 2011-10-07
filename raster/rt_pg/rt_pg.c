@@ -49,6 +49,7 @@
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h" /* for clamp_srid() */
 #include "rt_pg.h"
 #include "pgsql_compat.h"
 
@@ -7648,6 +7649,7 @@ Datum RASTER_samealignment(PG_FUNCTION_ARGS)
 	uint32_t k;
 	int rtn;
 	int aligned;
+	int err = 0;
 
 	for (i = 0, j = 0; i < set_count; i++) {
 		/* pgrast is null, return null */
@@ -7667,11 +7669,42 @@ Datum RASTER_samealignment(PG_FUNCTION_ARGS)
 		}
 	}
 
+	err = 0;
+	/* SRID must match */
+	if (rt_raster_get_srid(rast[0]) != rt_raster_get_srid(rast[1])) {
+		elog(NOTICE, "The two rasters provided have different SRIDs");
+		err = 1;
+	}
+	/* scales must match */
+	else if (FLT_NEQ(rt_raster_get_x_scale(rast[0]), rt_raster_get_x_scale(rast[1]))) {
+		elog(NOTICE, "The two rasters provided have different scales on the X axis");
+		err = 1;
+	}
+	else if (FLT_NEQ(rt_raster_get_y_scale(rast[0]), rt_raster_get_y_scale(rast[1]))) {
+		elog(NOTICE, "The two rasters provided have different scales on the Y axis");
+		err = 1;
+	}
+	/* skews must match */
+	else if (FLT_NEQ(rt_raster_get_x_skew(rast[0]), rt_raster_get_x_skew(rast[1]))) {
+		elog(NOTICE, "The two rasters provided have different skews on the X axis");
+		err = 1;
+	}
+	else if (FLT_NEQ(rt_raster_get_y_skew(rast[0]), rt_raster_get_y_skew(rast[1]))) {
+		elog(NOTICE, "The two rasters provided have different skews on the Y axis");
+		err = 1;
+	}
+
+	if (err) {
+		for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
+		PG_RETURN_NULL();
+	}
+
 	rtn = rt_raster_same_alignment(
 		rast[0],
 		rast[1],
 		&aligned
 	);
+	for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
 
 	if (!rtn) {
 		elog(ERROR, "RASTER_samealignment: Unable to test for alignment on the two rasters");
