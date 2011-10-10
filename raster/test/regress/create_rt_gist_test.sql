@@ -49,7 +49,7 @@ BEGIN
             rec.x = x;
             rec.y = y;
             rec.tile = st_MakeEmptyRaster(tileWidth, tileHeight, ipx, ipy,
-                                          scalex, scaley, 0, 0, -1);
+                                          scalex, scaley, 0, 0);
             RETURN NEXT rec;
         END LOOP;
     END LOOP;
