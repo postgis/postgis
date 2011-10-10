@@ -391,63 +391,63 @@ char* GetProj4StringSPI(int srid)
 
 
 /**
-*  Given an SRID, return the proj4 text. If the integer is less than zero,
-*  and one of the "well known" projections we support
-*  (WGS84 UTM N/S, Polar Stereographic N/S), return the proj4text
-*  for those.
-*/
+ *  Given an SRID, return the proj4 text.
+ *  If the integer is one of the "well known" projections we support
+ *  (WGS84 UTM N/S, Polar Stereographic N/S - see SRID_* macros),
+ *  return the proj4text for those.
+ */
 static char* GetProj4String(int srid)
 {
 	static int maxproj4len = 512;
 
 	/* SRIDs in SPATIAL_REF_SYS */
-	if ( srid > 0 )
+	if ( srid < SRID_RESERVE_OFFSET )
 	{
 		return GetProj4StringSPI(srid);
 	}
-	/* Automagic SRIDs ( < 0, using abs(srid) = epsg# ) */
+	/* Automagic SRIDs */
 	else
 	{
 		char *proj_str = palloc(maxproj4len);
 		int id = abs(srid);
 		/* UTM North */
-		if ( id >= 32601 && id <= 32660 )
+		if ( id >= SRID_NORTH_UTM_START && id <= SRID_NORTH_UTM_END )
 		{
-			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - 32600);
+			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_NORTH_UTM_START);
 		}
 		/* UTM South */
-		else if ( id >= 32701 && id <= 32760 )
+		else if ( id >= SRID_SOUTH_UTM_START && id <= SRID_SOUTH_UTM_END )
 		{
-			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - 32700);
+			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_SOUTH_UTM_START);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
-		else if ( id == 3409 )
+		else if ( id == SRID_SOUTH_LAMBERT )
 		{
 			strncpy(proj_str, "+proj=laea +lat_0=-90 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
 		}
 		/* Polar Sterographic South */
-		else if ( id == 3031 )
+		else if ( id == SRID_SOUTH_STEREO )
 		{
 			strncpy(proj_str, "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len);
 		}
 		/* Lambert Azimuthal Equal Area North Pole */
-		else if ( id == 3574 )
+		else if ( id == SRID_NORTH_LAMBERT )
 		{
 			strncpy(proj_str, "+proj=laea +lat_0=90 +lon_0=-40 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
 		}
 		/* Polar Stereographic North */
-		else if ( id == 3995 )
+		else if ( id == SRID_NORTH_STEREO )
 		{
 			strncpy(proj_str, "+proj=stere +lat_0=90 +lat_ts=71 +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
 		}
 		/* World Mercator */
-		else if ( id == 3395 )
+		else if ( id == SRID_WORLD_MERCATOR )
 		{
 			strncpy(proj_str, "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", maxproj4len );
 		}
 		else
 		{
-			elog(ERROR, "Cannot find SRID (%d) in spatial_ref_sys", srid);
+			elog(ERROR, "Invalid reserved SRID (%d)", srid);
 			return NULL;
 		}
 
