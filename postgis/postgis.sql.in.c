@@ -1616,7 +1616,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Should also check the precision grid (future expansion).
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION AddGeometryColumn(catalog_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid integer,new_type varchar,new_dim integer, use_typmod boolean DEFAULT true)
+CREATE OR REPLACE FUNCTION AddGeometryColumn(catalog_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid_in integer,new_type varchar,new_dim integer, use_typmod boolean DEFAULT true)
 	RETURNS text
 	AS
 $$
@@ -1625,6 +1625,7 @@ DECLARE
 	sr varchar;
 	real_schema name;
 	sql text;
+	new_srid integer;
 
 BEGIN
 
@@ -1662,11 +1663,20 @@ BEGIN
 
 
 	-- Verify SRID
-	IF ( new_srid != 0 AND new_srid != -1) THEN
+	IF ( new_srid_in > 0 ) THEN
+		IF new_srid_in >= 999000 THEN
+			RAISE EXCEPTION 'AddGeometryColumns() - SRID must be < 999000';
+		END IF;
+		new_srid := new_srid_in;
 		SELECT SRID INTO sr FROM spatial_ref_sys WHERE SRID = new_srid;
 		IF NOT FOUND THEN
 			RAISE EXCEPTION 'AddGeometryColumns() - invalid SRID';
 			RETURN 'fail';
+		END IF;
+	ELSE
+		new_srid := ST_SRID('POINT EMPTY'::geometry);
+		IF ( new_srid_in != new_srid ) THEN
+			RAISE NOTICE 'SRID value % converted to the officially unknown SRID value %', new_srid_in, new_srid;
 		END IF;
 	END IF;
 

@@ -193,9 +193,9 @@ BEGIN
 2
 3
 COMMIT
-features.land_parcels.the_geom SRID:-1 TYPE:MULTIPOLYGON DIMS:2 
-features.city_streets.the_geom SRID:-1 TYPE:MULTILINESTRING DIMS:2 
-features.traffic_signs.the_geom SRID:-1 TYPE:MULTIPOINT DIMS:2 
+features.land_parcels.the_geom SRID:0 TYPE:MULTIPOLYGON DIMS:2 
+features.city_streets.the_geom SRID:0 TYPE:MULTILINESTRING DIMS:2 
+features.traffic_signs.the_geom SRID:0 TYPE:MULTIPOINT DIMS:2 
 ERROR:  TopoGeom 4 in layer 3 (features.city_streets.feature) cannot be represented dropping edge 3
 ERROR:  TopoGeom 2 in layer 3 (features.city_streets.feature) cannot be represented dropping edge 4
 ERROR:  TopoGeom 2 in layer 3 (features.city_streets.feature) cannot be represented dropping edge 5
