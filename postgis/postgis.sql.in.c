@@ -1361,7 +1361,8 @@ CREATE AGGREGATE ST_3DExtent(
 -- SPATIAL_REF_SYS
 -------------------------------------------------------------------
 CREATE TABLE spatial_ref_sys (
-	 srid integer not null primary key,
+	 srid integer not null primary key
+		check (srid > 0 and srid < 999000),
 	 auth_name varchar(256),
 	 auth_srid integer,
 	 srtext varchar(2048),
