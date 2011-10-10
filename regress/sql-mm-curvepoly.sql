@@ -113,11 +113,11 @@ SELECT 'ndims05', ST_Ndims(ST_geomfromewkt('CURVEPOLYGON(
                     CIRCULARSTRING(1.5 2 2 0,1 2.5 3 1,3.5 2 2 2),
                     (3.5 2 2 2,3.5 4 1 3,1.5 4 1 4,1.5 2 2 0)))'));
 
-CREATE TABLE public.curvepolygon (id INTEGER, description VARCHAR);
-SELECT AddGeometryColumn('public', 'curvepolygon', 'the_geom_2d', -1, 'CURVEPOLYGON', 2);
-SELECT AddGeometryColumn('public', 'curvepolygon', 'the_geom_3dm', -1, 'CURVEPOLYGONM', 3);
-SELECT AddGeometryColumn('public', 'curvepolygon', 'the_geom_3dz', -1, 'CURVEPOLYGON', 3);
-SELECT AddGeometryColumn('public', 'curvepolygon', 'the_geom_4d', -1, 'CURVEPOLYGON', 4);
+CREATE TABLE public.curvepolygon (id INTEGER, description VARCHAR,
+the_geom_2d GEOMETRY('CURVEPOLYGON'),
+the_geom_3dm GEOMETRY('CURVEPOLYGONM'),
+the_geom_3dz GEOMETRY('CURVEPOLYGONZ'),
+the_geom_4d GEOMETRY('CURVEPOLYGONZM'));
 
 INSERT INTO public.curvepolygon (
                 id,

@@ -72,11 +72,11 @@ SELECT 'geometrytype04', geometrytype(ST_geomfromewkt('MULTICURVE((
                 0.26794919243112270647255365849413 1, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097))'));
 
-CREATE TABLE public.multicurve (id INTEGER, description VARCHAR);
-SELECT AddGeometryColumn('public', 'multicurve', 'the_geom_2d', -1, 'MULTICURVE', 2);
-SELECT AddGeometryColumn('public', 'multicurve', 'the_geom_3dm', -1, 'MULTICURVEM', 3);
-SELECT AddGeometryColumn('public', 'multicurve', 'the_geom_3dz', -1, 'MULTICURVE', 3);
-SELECT AddGeometryColumn('public', 'multicurve', 'the_geom_4d', -1, 'MULTICURVE', 4);
+CREATE TABLE public.multicurve (id INTEGER, description VARCHAR,
+the_geom_2d GEOMETRY('MULTICURVE'),
+the_geom_3dm GEOMETRY('MULTICURVEM'),
+the_geom_3dz GEOMETRY('MULTICURVEZ'),
+the_geom_4d GEOMETRY('MULTICURVEZM'));
 
 INSERT INTO public.multicurve (
         id,

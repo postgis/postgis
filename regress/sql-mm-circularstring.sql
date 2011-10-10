@@ -82,11 +82,11 @@ SELECT 'isRing02', ST_isRing(ST_geomfromewkt('CIRCULARSTRING(
                 -2 0,
                 0 -2)'));
 
-CREATE TABLE public.circularstring (id INTEGER, description VARCHAR);
-SELECT AddGeometryColumn('public', 'circularstring', 'the_geom_2d', -1, 'CIRCULARSTRING', 2);
-SELECT AddGeometryColumn('public', 'circularstring', 'the_geom_3dm', -1, 'CIRCULARSTRINGM', 3);
-SELECT AddGeometryColumn('public', 'circularstring', 'the_geom_3dz', -1, 'CIRCULARSTRING', 3);
-SELECT AddGeometryColumn('public', 'circularstring', 'the_geom_4d', -1, 'CIRCULARSTRING', 4);
+CREATE TABLE public.circularstring (id INTEGER, description VARCHAR,
+the_geom_2d GEOMETRY('CIRCULARSTRING'),
+the_geom_3dm GEOMETRY('CIRCULARSTRINGM'),
+the_geom_3dz GEOMETRY('CIRCULARSTRINGZ'),
+the_geom_4d GEOMETRY('CIRCULARSTRINGZM'));
 
 INSERT INTO public.circularstring (
         id, 

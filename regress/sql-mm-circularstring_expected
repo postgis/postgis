@@ -12,10 +12,6 @@ ERROR:  isring() should only be called on a LINE
 isClosed02|t
 ERROR:  Exception in LWGEOM2GEOS: curved geometry not supported.
 ERROR:  isring() should only be called on a LINE
-public.circularstring.the_geom_2d SRID:-1 TYPE:CIRCULARSTRING DIMS:2 
-public.circularstring.the_geom_3dm SRID:-1 TYPE:CIRCULARSTRINGM DIMS:3 
-public.circularstring.the_geom_3dz SRID:-1 TYPE:CIRCULARSTRING DIMS:3 
-public.circularstring.the_geom_4d SRID:-1 TYPE:CIRCULARSTRING DIMS:4 
 astext01|CIRCULARSTRING(0 0,0.267949192431123 1,0.585786437626905 1.4142135623731)
 astext01|CIRCULARSTRING(-5 0,0 5,5 0,10 -5,15 0)
 astext02|CIRCULARSTRING(0 0,0.267949192431123 1,0.585786437626905 1.4142135623731)

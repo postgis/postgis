@@ -6,10 +6,6 @@ ndims03|3
 geometrytype03|MULTICURVEM
 ndims04|2
 geometrytype04|MULTICURVE
-public.multicurve.the_geom_2d SRID:-1 TYPE:MULTICURVE DIMS:2 
-public.multicurve.the_geom_3dm SRID:-1 TYPE:MULTICURVEM DIMS:3 
-public.multicurve.the_geom_3dz SRID:-1 TYPE:MULTICURVE DIMS:3 
-public.multicurve.the_geom_4d SRID:-1 TYPE:MULTICURVE DIMS:4 
 ST_CurveToLine-201|MULTILINESTRING((5 5,3 5,3 3,0 3),(0 0,0.58578644 1.41421356))
 ST_CurveToLine-202|MULTILINESTRINGM((5 5 3,3 5 2,3 3 1,0 3 1),(0 0 0,0.58578644 1.41421356 2))
 ST_CurveToLine-203|MULTILINESTRING((5 5 1,3 5 2,3 3 3,0 3 1),(0 0 0,0.58578644 1.41421356 1))

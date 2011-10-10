@@ -160,11 +160,11 @@ SELECT 'geometrytype04', geometrytype(ST_geomfromewkt('MULTISURFACE(CURVEPOLYGON
                 4 11,
                 7 8)))'));
 
-CREATE TABLE public.multisurface (id INTEGER, description VARCHAR);
-SELECT AddGeometryColumn('public', 'multisurface', 'the_geom_2d', -1, 'MULTISURFACE', 2);
-SELECT AddGeometryColumn('public', 'multisurface', 'the_geom_3dm', -1, 'MULTISURFACEM', 3);
-SELECT AddGeometryColumn('public', 'multisurface', 'the_geom_3dz', -1, 'MULTISURFACE', 3);
-SELECT AddGeometryColumn('public', 'multisurface', 'the_geom_4d', -1, 'MULTISURFACE', 4);
+CREATE TABLE public.multisurface (id INTEGER, description VARCHAR,
+the_geom_2d GEOMETRY('MULTISURFACE'),
+the_geom_3dm GEOMETRY('MULTISURFACEM'),
+the_geom_3dz GEOMETRY('MULTISURFACEZ'),
+the_geom_4d GEOMETRY('MULTISURFACEZM'));
 
 INSERT INTO public.multisurface (
         id, description
