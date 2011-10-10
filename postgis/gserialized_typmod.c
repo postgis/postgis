@@ -242,31 +242,26 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 		}
 		if ( i == 1 ) /* SRID */
 		{
-			int srid = pg_atoi(DatumGetCString(elem_values[i]), sizeof(int32), '\0');
-			if ( srid > 0 )
+			int srid = pg_atoi(DatumGetCString(elem_values[i]),
+			                   sizeof(int32), '\0');
+			srid = clamp_srid(srid);
+			POSTGIS_DEBUGF(3, "srid: %d", srid);
+			if ( srid != SRID_UNKNOWN )
 			{
-				POSTGIS_DEBUGF(3, "srid: %d", srid);
-				if ( srid > SRID_MAXIMUM )
+				/* TODO: Check that the value
+				 *	 provided is in fact a lonlat
+				 *       entry in spatial_ref_sysj
+				 */
+				/* For now, we only accept SRID_DEFAULT. */
+				if ( is_geography && srid != SRID_DEFAULT )
 				{
 					ereport(ERROR,
-					        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					         errmsg("SRID value may not exceed %d",
-					                SRID_MAXIMUM)));
+						(errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+						 errmsg("Currently, only %d is accepted as an SRID for GEOGRAPHY", SRID_DEFAULT)));
 				}
 				else
 				{
-					/* TODO: Check that the value provided is in fact a lonlat entry in spatial_ref_sys. */
-					/* For now, we only accept SRID_DEFAULT. */
-					if ( is_geography && srid != SRID_DEFAULT )
-					{
-						ereport(ERROR,
-						        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-						         errmsg("Currently, only %d is accepted as an SRID for GEOGRAPHY", SRID_DEFAULT)));
-					}
-					else
-					{
-						TYPMOD_SET_SRID(typmod, srid);
-					}
+					TYPMOD_SET_SRID(typmod, srid);
 				}
 			}
 			else
