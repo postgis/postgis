@@ -1,3 +1,5 @@
+SET client_min_messages TO warning;
+
 SELECT 'ndims01', ST_ndims(ST_geomfromewkt('CIRCULARSTRING(
                 0 0 0 0, 
                 0.26794919243112270647255365849413 1 3 -2, 
