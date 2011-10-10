@@ -373,11 +373,11 @@ SELECT '#834', ST_AsEWKT(ST_Intersection('LINESTRING(0 0,0 10,10 10,10 0)', 'LIN
 
 -- #884 --
 CREATE TABLE foo (id integer, the_geom geometry);
-INSERT INTO foo VALUES (1, st_geomfromtext('MULTIPOLYGON(((-113.6 35.4,-113.6 35.8,-113.2 35.8,-113.2 35.4,-113.6 35.4),(-113.5 35.5,-113.3 35.5,-113.3 35.7,-113.5 35.7,-113.5 35.5)))', -1));
-INSERT INTO foo VALUES (2, st_geomfromtext('MULTIPOLYGON(((-113.7 35.3,-113.7 35.9,-113.1 35.9,-113.1 35.3,-113.7 35.3),(-113.6 35.4,-113.2 35.4,-113.2 35.8,-113.6 35.8,-113.6 35.4)),((-113.5 35.5,-113.5 35.7,-113.3 35.7,-113.3 35.5,-113.5 35.5)))', -1));
+INSERT INTO foo VALUES (1, st_geomfromtext('MULTIPOLYGON(((-113.6 35.4,-113.6 35.8,-113.2 35.8,-113.2 35.4,-113.6 35.4),(-113.5 35.5,-113.3 35.5,-113.3 35.7,-113.5 35.7,-113.5 35.5)))'));
+INSERT INTO foo VALUES (2, st_geomfromtext('MULTIPOLYGON(((-113.7 35.3,-113.7 35.9,-113.1 35.9,-113.1 35.3,-113.7 35.3),(-113.6 35.4,-113.2 35.4,-113.2 35.8,-113.6 35.8,-113.6 35.4)),((-113.5 35.5,-113.5 35.7,-113.3 35.7,-113.3 35.5,-113.5 35.5)))'));
 
 select '#884', id, ST_Within(
-ST_GeomFromText('POINT (-113.4 35.6)', -1), the_geom
+ST_GeomFromText('POINT (-113.4 35.6)'), the_geom
 ) from foo;
 
 select '#938', 'POLYGON EMPTY'::geometry::box2d;
