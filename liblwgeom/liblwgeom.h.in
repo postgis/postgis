@@ -153,6 +153,7 @@
 */
 #define SRID_MAXIMUM 999999
 #define SRID_UNKNOWN 0
+#define SRID_IS_UNKNOWN(x) ((int)x<=0)
 
 /**
  * Global functions for memory/logging handlers.

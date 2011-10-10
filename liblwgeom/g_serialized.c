@@ -44,19 +44,19 @@ int32_t gserialized_get_srid(const GSERIALIZED *s)
 	if ( srid == 0 ) 
 		return SRID_UNKNOWN;
 	else
-		return srid;
+		return clamp_srid(srid);
 }
 
 void gserialized_set_srid(GSERIALIZED *s, int32_t srid)
 {
 	LWDEBUGF(3, "Called with srid = %d", srid);
 
-	/* 0 is our internal unknown value. We'll map back and forth here for now */
+	srid = clamp_srid(srid);
+
+	/* 0 is our internal unknown value.
+	 * We'll map back and forth here for now */
 	if ( srid == SRID_UNKNOWN )
 		srid = 0;
-		
-	if ( srid > SRID_MAXIMUM )
-		lwerror("gserialized_set_srid called with value (%d) > SRID_MAXIMUM (%d)",srid,SRID_MAXIMUM);
 		
 	s->srid[0] = (srid & 0x001F0000) >> 16;
 	s->srid[1] = (srid & 0x0000FF00) >> 8;

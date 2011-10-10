@@ -108,7 +108,7 @@ static void test_serialized_srid(void)
 	gserialized_set_srid(&s, srid);
 	rv = gserialized_get_srid(&s);
 	//printf("srid=%d rv=%d\n",srid,rv);
-	CU_ASSERT_EQUAL(rv, srid);
+	CU_ASSERT_EQUAL(rv, SRID_UNKNOWN);
 
 	srid = SRID_UNKNOWN;
 	gserialized_set_srid(&s, srid);
