@@ -60,8 +60,12 @@ raster/Makefile
 raster/raster_config.h
 raster/rt_core/Makefile
 raster/rt_pg/Makefile
+raster/rt_pg/rtpostgis_drop.sql
+raster/rt_pg/rtpostgis_drop.sql.in
 raster/rt_pg/rtpostgis.sql
 raster/rt_pg/rtpostgis.sql.in
+raster/rt_pg/rtpostgis_upgrade_20_minor.sql
+raster/rt_pg/rtpostgis_upgrade.sql
 raster/scripts/python/Makefile
 raster/test/core/Makefile
 raster/test/core/testapi
