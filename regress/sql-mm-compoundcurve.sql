@@ -114,10 +114,10 @@ SELECT 'geometrytype04', geometrytype(ST_geomfromewkt('COMPOUNDCURVE(CIRCULARSTR
                 0 0))'));
 
 CREATE TABLE public.compoundcurve (id INTEGER, description VARCHAR,
-the_geom_2d GEOMETRY('COMPOUNDCURVE'),
-the_geom_3dm GEOMETRY('COMPOUNDCURVEM'),
-the_geom_3dz GEOMETRY('COMPOUNDCURVEZ'),
-the_geom_4d GEOMETRY('COMPOUNDCURVEZM')
+the_geom_2d GEOMETRY(COMPOUNDCURVE),
+the_geom_3dm GEOMETRY(COMPOUNDCURVEM),
+the_geom_3dz GEOMETRY(COMPOUNDCURVEZ),
+the_geom_4d GEOMETRY(COMPOUNDCURVEZM)
 );
 
 INSERT INTO public.compoundcurve (

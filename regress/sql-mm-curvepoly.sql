@@ -114,10 +114,10 @@ SELECT 'ndims05', ST_Ndims(ST_geomfromewkt('CURVEPOLYGON(
                     (3.5 2 2 2,3.5 4 1 3,1.5 4 1 4,1.5 2 2 0)))'));
 
 CREATE TABLE public.curvepolygon (id INTEGER, description VARCHAR,
-the_geom_2d GEOMETRY('CURVEPOLYGON'),
-the_geom_3dm GEOMETRY('CURVEPOLYGONM'),
-the_geom_3dz GEOMETRY('CURVEPOLYGONZ'),
-the_geom_4d GEOMETRY('CURVEPOLYGONZM'));
+the_geom_2d GEOMETRY(CURVEPOLYGON),
+the_geom_3dm GEOMETRY(CURVEPOLYGONM),
+the_geom_3dz GEOMETRY(CURVEPOLYGONZ),
+the_geom_4d GEOMETRY(CURVEPOLYGONZM));
 
 INSERT INTO public.curvepolygon (
                 id,

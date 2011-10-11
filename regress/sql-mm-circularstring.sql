@@ -83,10 +83,10 @@ SELECT 'isRing02', ST_isRing(ST_geomfromewkt('CIRCULARSTRING(
                 0 -2)'));
 
 CREATE TABLE public.circularstring (id INTEGER, description VARCHAR,
-the_geom_2d GEOMETRY('CIRCULARSTRING'),
-the_geom_3dm GEOMETRY('CIRCULARSTRINGM'),
-the_geom_3dz GEOMETRY('CIRCULARSTRINGZ'),
-the_geom_4d GEOMETRY('CIRCULARSTRINGZM'));
+the_geom_2d GEOMETRY(CIRCULARSTRING),
+the_geom_3dm GEOMETRY(CIRCULARSTRINGM),
+the_geom_3dz GEOMETRY(CIRCULARSTRINGZ),
+the_geom_4d GEOMETRY(CIRCULARSTRINGZM));
 
 INSERT INTO public.circularstring (
         id, 
