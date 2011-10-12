@@ -2649,10 +2649,12 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 
 		-- We create a minimalistic buffer around the intersection in order to scan every pixels
 		-- that would touch the edge or intersect with the geometry
-		SELECT (scalex * skewy), width, height INTO scale, w, h FROM ST_Metadata(rast);
-		geomintersect := st_buffer(geomintersect, scale / 1000000);
+		SELECT sqrt(scalex * scalex + skewy * skewy), width, height INTO scale, w, h FROM ST_Metadata(rast);
+		IF scale != 0 THEN
+			geomintersect := st_buffer(geomintersect, scale / 1000000);
+		END IF;
 
---RAISE NOTICE 'geomintersect2=%', astext(geomintersect);
+--RAISE NOTICE 'geomintersect2=%', st_astext(geomintersect);
 
 		-- Find the world coordinates of the bounding box of the intersecting area
 		x1w := st_xmin(geomintersect);
