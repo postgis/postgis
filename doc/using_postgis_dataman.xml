@@ -278,7 +278,7 @@ geometry
 	 <!-- TODO: Fill in more information -->
 
 	  <para>One restriction is that it only supports WGS 84 long lat (SRID:4326).  It uses a new data type called
-	  geography.  I None of the GEOS functions support this new
+	  geography.  None of the GEOS functions support this new
 	  type. As a workaround one can convert back and forth between geometry and geography types.</para>
 
 	  <para>The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field
@@ -783,7 +783,7 @@ FROM public.myschema.myspecialpois LIMIT 1;
 	  <para>PostGIS is compliant with the Open Geospatial Consortium’s (OGC)
 	  OpenGIS Specifications.  As such, many PostGIS methods require, or more
 	  accurately, assume that geometries that are operated on are both simple
-	  and valid. for example, it does not make sense to calculate the area of
+	  and valid. For example, it does not make sense to calculate the area of
 	  a polygon that has a hole defined outside of the polygon, or to construct
 	  a polygon from a non-simple boundary line.</para>
 
@@ -2152,7 +2152,7 @@ WHERE
 	  it is important to force PostgreSQL to collect table statistics, which
 	  are used to optimize query plans:</para>
 
-	  <para><programlisting>VACUUM ANALYZE [table_name] [column_name];
+	  <para><programlisting>VACUUM ANALYZE [table_name] ([column_name]);
 -- This is only needed for PostgreSQL 7.4 installations and below
 SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></para>
 
