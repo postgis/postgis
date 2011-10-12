@@ -2152,7 +2152,7 @@ WHERE
 	  it is important to force PostgreSQL to collect table statistics, which
 	  are used to optimize query plans:</para>
 
-	  <para><programlisting>VACUUM ANALYZE [table_name] ([column_name]);
+	  <para><programlisting>VACUUM ANALYZE [table_name] [(column_name)];
 -- This is only needed for PostgreSQL 7.4 installations and below
 SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></para>
 
