@@ -2,7 +2,7 @@ NOTICE:  Raster is NULL. Returning NULL
 t
 NOTICE:  Raster is empty. Returning an empty raster
 t
-NOTICE:  Raster do not have the required band. Returning a raster without a band
+NOTICE:  Raster does not have the required band. Returning a raster without a band
 t
 |19
 |1

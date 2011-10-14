@@ -1605,6 +1605,42 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, pixeltype text, expres
     AS $$ SELECT st_mapalgebraexpr($1, 1, $2, $3, $4) $$
     LANGUAGE SQL;
 
+-- All arguments supplied, use the C implementation.
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer, 
+        pixeltype text, userfunction regprocedure, variadic args text[]) 
+    RETURNS raster
+    AS 'MODULE_PATHNAME', 'RASTER_mapAlgebraFct'
+    LANGUAGE 'C' IMMUTABLE;
+
+-- Variant 1: missing arguments to callback fct.
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
+        pixeltype text, userfunction regprocedure)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, $2, $3, $4, NULL) $$
+    LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
+        userfunction regprocedure)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, $2, NULL, $3, NULL) $$
+    LANGUAGE SQL;
+ 
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
+        userfunction regprocedure)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, 1, $2, $3, NULL) $$
+    LANGUAGE SQL;
+ 
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, userfunction regprocedure)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, 1, NULL, $2, NULL) $$
+    LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
+        userfunction regprocedure, variadic args text[])
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, $2, NULL, $3, VARIADIC $4) $$
+    LANGUAGE SQL;
 
 -----------------------------------------------------------------------
 -- Get information about the raster

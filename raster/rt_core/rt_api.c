@@ -607,7 +607,7 @@ rt_util_display_dbl_trunc_warning(double initialvalue,
 
 /*--- Debug and Testing Utilities --------------------------------------------*/
 
-#if POSTGIS_DEBUG_LEVEL > 3
+#if POSTGIS_DEBUG_LEVEL > 2
 
 static char*
 d_binary_to_hex(const uint8_t * const raw, uint32_t size, uint32_t *hexsize) {
