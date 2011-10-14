@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 	<sect1 id="Geometry_Processing">
-		<title>Geometry Processing Functions</title>
+		<title>Geometry Processing</title>
 		<refentry id="ST_Buffer">
 			<refnamediv>
 				<refname>ST_Buffer</refname>
