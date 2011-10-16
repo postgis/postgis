@@ -1,6 +1,6 @@
 # postgis topology extension
 comment = 'postgis topology spatial types and functions'
-default_version = '2.0.0a1'
+default_version = '2.0.0a3'
 relocatable = false
 schema = topology
 requires = postgis

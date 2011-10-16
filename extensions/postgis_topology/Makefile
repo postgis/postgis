@@ -11,7 +11,7 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -35,15 +35,17 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
 	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
 		-e 's/OR REPLACE//g' \
 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
-		-e 's/DEFAULT [a-zA-Z]\+//g' \
+		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
 		-e 's/\(BEFORE\|AS\)\(.*\)/;/' \
 		-e 's/(;/;/' \
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@
 
 #upgrade script should have everything but table, schema, type creation/alter
+#NOTE: we assume all object definitions end in ;
 #first expression deletes all non-removable objects defined on same line
-#second deletes all non-removable defined on multiple lines
+#second deletes all non-removable defined on multiple lines 
+#  the end of the body of object we assume ends in ;
 #aggregates are special 
 #they can be dropped but we need to remove
 #them from the extension first
@@ -53,7 +55,10 @@ sql/topology_upgrade_minor.sql:  sql_bits/topology.sql
 	 	 -e 's/^DROP AGGREGATE IF EXISTS\(.*\);/ALTER EXTENSION $(EXTENSION) DROP AGGREGATE \1;DROP AGGREGATE \1;/' \
 	 	 $< > $@
 
-sql/$(EXTENSION)--2.0.0--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
+sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
+	cp $< $@
+	
+sql/$(EXTENSION)--2.0.0a2--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
 	cp $< $@
 	
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
