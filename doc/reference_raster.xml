@@ -5267,7 +5267,193 @@ WHERE rid=167;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
+				<para><xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_MapAlgebraFct">
+			<refnamediv>
+				<refname>ST_MapAlgebraFct</refname>
+				<refpurpose>Creates a new one band raster formed by applying a valid PostgreSQL function on the input raster band and of pixeltype prodived. Band 1 is assumed if no band is specified.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
+						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef choice='opt'><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef choice='opt'><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef choice='opt'><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef choice='opt'><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>userfunction</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
+
+				<para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype. If pixeltype is passed NULL, then the new raster band will have the same pixeltype as the input <varname>rast</varname> band.</para>
+
+				<para>Availability: 2.0.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<para>Create a new 1 band raster from our original that is a function of modulo 2 of the original raster band.</para>
+				<programlisting>ALTER TABLE dummy_rast ADD COLUMN map_rast raster;
+CREATE FUNCTION mod_fct(pixel float, variadic args text[])
+RETURNS float
+AS $$
+BEGIN
+    RETURN pixel::integer % 2;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+UPDATE dummy_rast SET map_rast = ST_MapAlgebraFct(rast,NULL,'mod_fct(float,text[])'::regprocedure) WHERE rid = 2;
+
+SELECT ST_Value(rast,1,i,j) As origval, ST_Value(map_rast, 1, i, j) As mapval
+FROM dummy_rast CROSS JOIN generate_series(1, 3) AS i CROSS JOIN generate_series(1,3) AS j
+WHERE rid = 2;
+
+ origval | mapval
+---------+--------
+     253 |      1
+     254 |      0
+     253 |      1
+     253 |      1
+     254 |      0
+     254 |      0
+     250 |      0
+     254 |      0
+     254 |      0
+ 				</programlisting>
+				<para>Create a new 1 band raster of pixel-type 2BUI from our original that is reclassified and set the nodata value to a passed parameter to the user function (0).</para>
+				<programlisting>ALTER TABLE dummy_rast ADD COLUMN map_rast2 raster;
+CREATE FUNCTION classify_fct(pixel float, variadic args text[])
+RETURNS float
+AS
+$$
+DECLARE
+    nodata float := 0;
+BEGIN
+    IF NOT args[1] IS NULL THEN
+        nodata := args[1];
+    END IF;
+    IF pixel &lt; 251 THEN
+        RETURN 1;
+    ELSIF pixel = 252 THEN
+        RETURN 2;
+    ELSIF pixel &gt; 252 THEN
+        RETURN 3;
+    ELSE
+        RETURN nodata;
+    END IF;
+END;
+$$
+LANGUAGE 'plpgsql';
+UPDATE dummy_rast SET map_rast2 = ST_MapAlgebraFct(rast,'2BUI','classify_fct(float,text[])'::regprocedure, '0') WHERE rid = 2;
+
+SELECT DISTINCT ST_Value(rast,1,i,j) As origval, ST_Value(map_rast2, 1, i, j) As mapval
+FROM dummy_rast CROSS JOIN generate_series(1, 5) AS i CROSS JOIN generate_series(1,5) AS j
+WHERE rid = 2;
+
+ origval | mapval
+---------+--------
+     249 |      1
+     250 |      1
+     251 |
+     252 |      2
+     253 |      3
+     254 |      3
+     
+SELECT ST_BandPixelType(map_rast2) As b1pixtyp
+FROM dummy_rast WHERE rid = 2;
+
+ b1pixtyp
+----------
+ 2BUI</programlisting>
+ 				<informaltable>
+					<tgroup cols="2">
+						<tbody>
+							<row>
+								<entry><informalfigure>
+									<mediaobject>
+										<imageobject>
+											<imagedata fileref="images/st_mapalgebraexpr01.png" />
+										</imageobject>
+										<caption><para>original (column rast-view)</para></caption>
+									</mediaobject>
+								</informalfigure></entry>
+								<entry><informalfigure>
+									<mediaobject>
+										<imageobject>
+											<imagedata fileref="images/st_mapalgebraexpr02.png" />
+										</imageobject>
+										<caption><para>rast_view_ma</para></caption>
+									</mediaobject>
+								</informalfigure></entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</informaltable>
+
+				<para>Create a new 3 band raster same pixel type from our original 3 band raster with first band altered by map algebra and remaining 2 bands unaltered.</para>
+				<programlisting>CREATE FUNCTION rast_plus_tan(pixel float, variadic args text[])
+RETURNS float
+AS
+$$
+BEGIN
+	RETURN tan(pixel) * pixel;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+SELECT ST_AddBand(
+	ST_AddBand(
+		ST_AddBand(
+			ST_MakeEmptyRaster(rast_view),
+			ST_MapAlgebraFct(rast_view,1,NULL,'tan(rast)*rast')
+		), 
+		ST_Band(rast_view,2)
+	),
+	ST_Band(rast_view, 3) As rast_view_ma
+)
+FROM wind
+WHERE rid=167;		
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_SetValue" /></para>
 			</refsection>
 		</refentry>
 		
