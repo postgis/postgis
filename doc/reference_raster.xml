@@ -5320,6 +5320,23 @@ WHERE rid=167;
 
 				<para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype. If pixeltype is passed NULL, then the new raster band will have the same pixeltype as the input <varname>rast</varname> band.</para>
 
+                <para>The <varname>userfunction</varname> parameter must be the name and signature of a SQL or PL/pgSQL function, cast to a regprocedure. A very simple and quite useless PL/pgSQL function example is:
+                <programlisting>CREATE OR REPLACE FUNCTION simple_function(pixel FLOAT, VARIADIC args TEXT[])
+    RETURNS FLOAT
+    AS $$ BEGIN
+        RETURN 0.0;
+    END; $$
+    LANGUAGE 'plpgsql';</programlisting>
+                The <varname>userfunction</varname> is required to accept two arguments: a float value, and a variadic text array. The first argument is the value of an individual raster cell (regardless of the raster datatype), and the second argument indicates that all remaining parameters to <xref linkend="RT_ST_MapAlgebraFct" /> shall be passed through to the <varname>userfunction</varname>.</para>
+
+                <para>Passing a <type>regprodedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:<programlisting>'simple_function(float,text[])'::regprocedure</programlisting>Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.</para>
+
+                <para>The second argument to the <varname>userfunction</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct" /> call are passed through to the specified <varname>userfunction</varname>, and are contained in the <varname>args</varname> argument.</para>
+
+                <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/interactive/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
+
+                <note><para>The <type>text[]</type> argument to the <varname>userfunction</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
+
 				<para>Availability: 2.0.0</para>
 			</refsection>
 
@@ -5440,7 +5457,7 @@ SELECT ST_AddBand(
 	ST_AddBand(
 		ST_AddBand(
 			ST_MakeEmptyRaster(rast_view),
-			ST_MapAlgebraFct(rast_view,1,NULL,'tan(rast)*rast')
+			ST_MapAlgebraFct(rast_view,1,NULL,'rast_plus_tan(float,text[])'::regprocedure)
 		), 
 		ST_Band(rast_view,2)
 	),
