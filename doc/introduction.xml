@@ -65,7 +65,7 @@
 		<term>Sandro Santilli</term>
 
 		<listitem>
-		  <para>Bug fixes and maintenance and integration of new GEOS functionality and alignment with GEOS releases, Raster support, and Topology support.</para>
+		  <para>Bug fixes and maintenance and integration of new GEOS functionality and alignment with GEOS releases, Topology support, and Raster framework and low level api functions.</para>
 		</listitem>
 	  </varlistentry>
 	  
@@ -147,7 +147,7 @@
 	 <varlistentry>
 		<term>Mateusz Loskot</term>
 		<listitem>
-		  <para>Raster support</para>
+		  <para>Raster loader, low level raster api functions</para>
 		</listitem>
 	  </varlistentry>
 	  
