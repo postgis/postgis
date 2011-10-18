@@ -18,7 +18,7 @@ DATA_built=postgis.sql uninstall_postgis.sql postgis_upgrade_20_minor.sql legacy
 DATA=../spatial_ref_sys.sql
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=postgis.sql.in uninstall_postgis.sql.in legacy.sql.in uninstall_legacy.sql.in legacy_compatibility_layer.sql.in
+SQL_OBJS=postgis.sql.in uninstall_postgis.sql.in legacy.sql.in uninstall_legacy.sql.in legacy_compatibility_layer.sql.in 
 
 # PostgreSQL objects
 PG_OBJS=lwgeom_debug.o \
@@ -111,7 +111,9 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a
 %.sql: %.sql.in
 	sed 's,MODULE_PATHNAME,$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
 
-postgis_upgrade_20_minor.sql: postgis.sql
+postgis_upgrade_20_minor.sql.in: postgis_drop_before.sql.in.c postgis.sql
+	cat $^ > $@
+postgis_upgrade_20_minor.sql: postgis_upgrade_20_minor.sql.in
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< 2.0 > $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
