@@ -5285,7 +5285,7 @@ WHERE rid=167;
 						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
-						<paramdef choice='opt'><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -5293,7 +5293,13 @@ WHERE rid=167;
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
-						<paramdef choice='opt'><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -5301,7 +5307,7 @@ WHERE rid=167;
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
-						<paramdef choice='opt'><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
