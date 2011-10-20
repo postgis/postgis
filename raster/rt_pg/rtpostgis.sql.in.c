@@ -2578,7 +2578,7 @@ CREATE OPERATOR ~ (
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_samealignment(rastA raster, rastB raster)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME', 'RASTER_samealignment'
+	AS 'MODULE_PATHNAME', 'RASTER_sameAlignment'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_samealignment(

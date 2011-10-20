@@ -243,7 +243,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS);
 Datum RASTER_intersects(PG_FUNCTION_ARGS);
 
 /* determine if two rasters are aligned */
-Datum RASTER_samealignment(PG_FUNCTION_ARGS);
+Datum RASTER_sameAlignment(PG_FUNCTION_ARGS);
 
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
@@ -1492,7 +1492,7 @@ Datum RASTER_getRotation(PG_FUNCTION_ARGS)
     if (xscale == 0 || yscale == 0) {
         rt_raster_destroy(raster);
 
-        // cannot compute scale with a zero denominator
+        /* cannot compute scale with a zero denominator */
         elog(NOTICE, "RASTER_getRotation: Could not divide by zero scale; cannot determine raster rotation.");
         PG_RETURN_FLOAT8(NAN);
     }
@@ -1531,7 +1531,7 @@ Datum RASTER_setRotation(PG_FUNCTION_ARGS)
     double rotation = PG_GETARG_FLOAT8(1);
     double xscale, yscale, xskew, yskew, psize;
 
-    // no matter what, we don't rotate more than once around
+    /* no matter what, we don't rotate more than once around */
     if (rotation < 0) {
         rotation = (-2*M_PI) + fmod(rotation, (2*M_PI));
     }
@@ -1751,7 +1751,7 @@ Datum RASTER_getBandNoDataValue(PG_FUNCTION_ARGS)
     }
 
     if ( ! rt_band_get_hasnodata_flag(band) ) {
-        // Raster does not have a nodata value set so we return NULL
+        /* Raster does not have a nodata value set so we return NULL */
         PG_RETURN_NULL();
     }
 
@@ -2623,8 +2623,10 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression is %s", initexpr);
 
         /* We don't need this memory */
-        //lwfree(expression);
-        //expression = NULL;
+        /*
+				lwfree(expression);
+        expression = NULL;
+				*/
     }
 
 
@@ -2643,8 +2645,10 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
                 strlen(nodatavaluerepl));
         initndvexpr[len] = '\0';
 
-        //lwfree(nodatavaluerepl);
-        //nodatavaluerepl = NULL;
+				/*
+        lwfree(nodatavaluerepl);
+        nodatavaluerepl = NULL;
+				*/
 
         /* Replace RAST, if present, for NODATA value, to eval the expression */
         if (strstr(initndvexpr, "RAST")) {
@@ -2751,7 +2755,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
      **/
     if (initexpr != NULL && !strcmp(initexpr, "SELECT RAST") &&
             (nodatavaluerepl  == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
-            //(initndvexpr == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
+            /* (initndvexpr == NULL || !strcmp(initndvexpr, "SELECT RAST"))) { */
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression resumes to RAST. "
                 "Returning raster with band %d from original raster", nband);
@@ -2826,7 +2830,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
          * Compute the new value, set it and we will return after creating the
          * new raster
          **/
-        //if (initndvexpr == NULL) {
+        /*if (initndvexpr == NULL) {*/
         if (nodatavaluerepl == NULL) {
             newinitialvalue = newval;
             skipcomputation = 2;
@@ -2849,7 +2853,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
      * Optimization: If expression is NULL, or all the pixels could be set in
      * one step, return the initialized raster now
      **/
-    //if (initexpr == NULL || skipcomputation == 2) {
+    /*if (initexpr == NULL || skipcomputation == 2) {*/
     if (expression == NULL || skipcomputation == 2) {
 
         /* Serialize created raster */
@@ -3293,7 +3297,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: (%dx%d), r = %f",
                     x, y, r);
                    
-                // convert r to a datum for OidFunctionCall2
+                /* convert r to a datum for OidFunctionCall2 */
                 tmpnewval = OidFunctionCall2(oid,Float8GetDatum(r),extraargs);
                 newval = DatumGetFloat8(tmpnewval);
 
@@ -7885,8 +7889,8 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 /**
  * See if two rasters are aligned
  */
-PG_FUNCTION_INFO_V1(RASTER_samealignment);
-Datum RASTER_samealignment(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_sameAlignment);
+Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 {
 	const int set_count = 2;
 	rt_pgraster *pgrast;
@@ -7911,7 +7915,7 @@ Datum RASTER_samealignment(PG_FUNCTION_ARGS)
 		/* raster */
 		rast[i] = rt_raster_deserialize(pgrast, FALSE);
 		if (!rast[i]) {
-			elog(ERROR, "RASTER_samealignment: Could not deserialize the %s raster", i < 1 ? "first" : "second");
+			elog(ERROR, "RASTER_sameAlignment: Could not deserialize the %s raster", i < 1 ? "first" : "second");
 			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
 			PG_RETURN_NULL();
 		}
@@ -7955,7 +7959,7 @@ Datum RASTER_samealignment(PG_FUNCTION_ARGS)
 	for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
 
 	if (!rtn) {
-		elog(ERROR, "RASTER_samealignment: Unable to test for alignment on the two rasters");
+		elog(ERROR, "RASTER_sameAlignment: Unable to test for alignment on the two rasters");
 		PG_RETURN_NULL();
 	}
 
