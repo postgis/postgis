@@ -29,8 +29,7 @@
 --
 -- Append a TopoElement to a TopoElementArray
 --
-CREATE OR REPLACE FUNCTION topology.TopoElementArray_append(
-		topology.TopoElementArray, topology.TopoElement)
+CREATE OR REPLACE FUNCTION topology.TopoElementArray_append(topology.TopoElementArray, topology.TopoElement)
 	RETURNS topology.TopoElementArray
 AS
 $$

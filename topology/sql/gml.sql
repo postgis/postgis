@@ -466,8 +466,7 @@ LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
 --            idprefix)
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry,
-    nsprefix text, prec int, options int, visitedTable regclass, idprefix text)
+CREATE OR REPLACE FUNCTION topology.AsGML(tg topology.TopoGeometry,nsprefix text, prec int, options int, visitedTable regclass, idprefix text)
   RETURNS text
 AS
 $$
