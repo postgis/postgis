@@ -1612,36 +1612,55 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
     AS 'MODULE_PATHNAME', 'RASTER_mapAlgebraFct'
     LANGUAGE 'C' IMMUTABLE;
 
--- Variant 1: missing arguments to callback fct.
+-- Variant 1: missing user args
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         pixeltype text, userfunction regprocedure)
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, $2, $3, $4, NULL) $$
     LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
-        userfunction regprocedure)
-    RETURNS raster
-    AS $$ SELECT st_mapalgebrafct($1, $2, NULL, $3, NULL) $$
-    LANGUAGE SQL;
- 
-CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
-        userfunction regprocedure)
-    RETURNS raster
-    AS $$ SELECT st_mapalgebrafct($1, 1, $2, $3, NULL) $$
-    LANGUAGE SQL;
- 
-CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, userfunction regprocedure)
-    RETURNS raster
-    AS $$ SELECT st_mapalgebrafct($1, 1, NULL, $2, NULL) $$
-    LANGUAGE SQL;
-
+-- Variant 2: missing pixeltype; default to pixeltype of rast
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         userfunction regprocedure, variadic args text[])
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, $2, NULL, $3, VARIADIC $4) $$
     LANGUAGE SQL;
+ 
+-- Variant 3: missing pixeltype and user args; default to pixeltype of rast
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
+        userfunction regprocedure)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, $2, NULL, $3, NULL) $$
+    LANGUAGE SQL;
 
+-- Variant 4: missing band; default to band 1
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
+        userfunction regprocedure, variadic args text[])
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, 1, $2, $3, VARIADIC $4) $$
+    LANGUAGE SQL;
+
+-- Variant 5: missing band and user args; default to band 1
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
+        userfunction regprocedure)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, 1, $2, $3, NULL) $$
+    LANGUAGE SQL;
+
+-- Variant 6: missing band, and pixeltype; default to band 1, pixeltype of rast.
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, userfunction regprocedure,
+        variadic args text[])
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, 1, NULL, $2, VARIADIC $3) $$
+    LANGUAGE SQL;
+
+-- Variant 7: missing band, pixeltype, and user args; default to band 1, pixeltype of rast.
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, userfunction regprocedure)
+    RETURNS raster
+    AS $$ SELECT st_mapalgebrafct($1, 1, NULL, $2, NULL) $$
+    LANGUAGE SQL;
+
+-----------------------------------------------------------------------
 -----------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------
