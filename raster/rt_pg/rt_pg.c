@@ -7900,7 +7900,7 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 	uint32_t j;
 	uint32_t k;
 	int rtn;
-	int aligned;
+	int aligned = 0;
 	int err = 0;
 
 	for (i = 0, j = 0; i < set_count; i++) {
@@ -7948,7 +7948,7 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 
 	if (err) {
 		for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
-		PG_RETURN_NULL();
+		PG_RETURN_BOOL(0);
 	}
 
 	rtn = rt_raster_same_alignment(

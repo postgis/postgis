@@ -38,8 +38,14 @@
 #include <time.h> /* for time */
 #include "rt_api.h"
 
-#define POSTGIS_RASTER_WARN_ON_TRUNCATION
+/******************************************************************************
+ * Some rules for *.(c|h) files in rt_core
+ *
+ * All functions in rt_core that receive a band index parameter
+ *   must be 0-based
+ *****************************************************************************/
 
+#define POSTGIS_RASTER_WARN_ON_TRUNCATION
 
 /*--- Utilities -------------------------------------------------*/
 
@@ -8727,34 +8733,36 @@ rt_raster_same_alignment(
 	double yr;
 	double xw;
 	double yw;
+	int err = 0;
 
+	err = 0;
 	/* same srid */
 	if (rast1->srid != rast2->srid) {
-		rterror("rt_raster_same_alignment: The two rasters provided have different SRIDs");
-		*aligned = 0;
-		return 0;
+		RASTER_DEBUG(3, "The two rasters provided have different SRIDs");
+		err = 1;
 	}
 	/* scales must match */
 	else if (FLT_NEQ(rast1->scaleX, rast2->scaleX)) {
-		rterror("rt_raster_same_alignment: The two raster provided have different scales on the X axis");
-		*aligned = 0;
-		return 0;
+		RASTER_DEBUG(3, "The two raster provided have different scales on the X axis");
+		err = 1;
 	}
 	else if (FLT_NEQ(rast1->scaleY, rast2->scaleY)) {
-		rterror("rt_raster_same_alignment: The two raster provided have different scales on the Y axis");
-		*aligned = 0;
-		return 0;
+		RASTER_DEBUG(3, "The two raster provided have different scales on the Y axis");
+		err = 1;
 	}
 	/* skews must match */
 	else if (FLT_NEQ(rast1->skewX, rast2->skewX)) {
-		rterror("rt_raster_same_alignment: The two raster provided have different skews on the X axis");
-		*aligned = 0;
-		return 0;
+		RASTER_DEBUG(3, "The two raster provided have different skews on the X axis");
+		err = 1;
 	}
 	else if (FLT_NEQ(rast1->skewY, rast2->skewY)) {
-		rterror("rt_raster_same_alignment: The two raster provided have different skews on the Y axis");
+		RASTER_DEBUG(3, "The two raster provided have different skews on the Y axis");
+		err = 1;
+	}
+
+	if (err) {
 		*aligned = 0;
-		return 0;
+		return 1;
 	}
 
 	/* raster coordinates in context of second raster of first raster's upper-left corner */
