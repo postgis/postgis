@@ -814,6 +814,16 @@ void rt_raster_get_geotransform_matrix(rt_raster raster,
 	double *gt);
 
 /**
+ * Set raster's geotransform using 6-element array
+ *
+ * @param raster : the raster to set matrix of
+ * @param gt : intput parameter, 6-element geotransform matrix
+ *
+ */
+void rt_raster_set_geotransform_matrix(rt_raster raster,
+	double *gt);
+
+/**
  * Convert an xr, yr raster point to an xw, yw point on map
  *
  * @param raster : the raster to get info from
