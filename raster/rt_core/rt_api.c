@@ -5891,16 +5891,29 @@ rt_raster_deserialize(void* serialized, int header_only) {
     return rast;
 }
 
-int rt_raster_is_empty(rt_raster raster) {
-
-
-    return (NULL == raster || raster->height <= 0 || raster->width <= 0);
+/**
+ * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0
+ *
+ * @param raster: the raster to get info from
+ *
+ * @return TRUE if the raster is empty, FALSE otherwise
+ */
+int
+rt_raster_is_empty(rt_raster raster) {
+	return (NULL == raster || raster->height <= 0 || raster->width <= 0);
 }
 
-int rt_raster_has_no_band(rt_raster raster, int nband) {
-
-
-    return (NULL == raster || raster->numBands < nband);
+/**
+ * Return TRUE if the raster do not have a band of this number.
+ *
+ * @param raster: the raster to get info from
+ * @param nband: the band number. 0-based
+ *
+ * @return TRUE if the raster do not have a band of this number, FALSE otherwise
+ */
+int
+rt_raster_has_no_band(rt_raster raster, int nband) {
+	return (NULL == raster || nband >= raster->numBands || nband < 0);
 }
 
 /**

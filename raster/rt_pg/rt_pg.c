@@ -2393,7 +2393,7 @@ Datum RASTER_hasNoBand(PG_FUNCTION_ARGS)
 
     /* Get band number */
     bandindex = PG_GETARG_INT32(1);
-    hasnoband = rt_raster_has_no_band(raster, bandindex);
+    hasnoband = rt_raster_has_no_band(raster, bandindex - 1);
 
     rt_raster_destroy(raster);
 
@@ -2521,7 +2521,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
      * Check if the raster has the required band. Otherwise, return a raster
      * without band
      **/
-    if (rt_raster_has_no_band(raster, nband)) {
+    if (rt_raster_has_no_band(raster, nband - 1)) {
         elog(NOTICE, "Raster does not have the required band. Returning a raster "
                 "without a band");
         rt_raster_destroy(raster);
@@ -3122,7 +3122,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
      * Check if the raster has the required band. Otherwise, return a raster
      * without band
      **/
-    if (rt_raster_has_no_band(raster, nband)) {
+    if (rt_raster_has_no_band(raster, nband - 1)) {
         elog(NOTICE, "Raster does not have the required band. Returning a raster "
             "without a band");
         rt_raster_destroy(raster);

@@ -2798,14 +2798,10 @@ WHERE rid = 2;
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
-				<funcprototype>
-					<funcdef>boolean <function>ST_HasNoBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
 				  <funcprototype>
-					<funcdef>boolean <function>ST_HasNoBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+						<funcdef>boolean <function>ST_HasNoBand</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>

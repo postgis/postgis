@@ -904,19 +904,22 @@ rt_raster rt_raster_deserialize(void* serialized, int header_only);
 
 /**
  * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0
+ *
  * @param raster: the raster to get info from
+ *
  * @return TRUE if the raster is empty, FALSE otherwise
  */
 int rt_raster_is_empty(rt_raster raster);
 
 /**
  * Return TRUE if the raster do not have a band of this number.
+ *
  * @param raster: the raster to get info from
- * @param nband: the band number.
+ * @param nband: the band number. 0-based
+ *
  * @return TRUE if the raster do not have a band of this number, FALSE otherwise
  */
 int rt_raster_has_no_band(rt_raster raster, int nband);
-
 
 /**
  * Copy one band from one raster to another
