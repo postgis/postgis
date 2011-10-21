@@ -128,7 +128,7 @@ BEGIN
 		FROM 
 		  (SELECT e.tlid, e.the_geom As line, n.fullname, COALESCE(n.prequalabr || '' '','''')  || n.name AS streetname, n.predirabrv, COALESCE(suftypabrv, pretypabrv) As streettypeabbrev,
 		      n.sufdirabrv, e.zip, e.side, e.fromhn, e.tohn , e.center_pt,
-		          ST_Distance_Sphere(e.center_pt,ref_geom) As dist
+		          ST_Distance_Sphere(ST_SetSRID(e.center_pt,4326),ST_SetSRID(ref_geom,4326)) As dist
 				FROM ea AS e 
 					LEFT JOIN (SELECT featnames.* FROM featnames 
 			    WHERE featnames.statefp = ' || quote_literal(var_state) ||'   ) AS n ON (n.statefp =  e.statefp AND n.tlid = e.tlid) 
