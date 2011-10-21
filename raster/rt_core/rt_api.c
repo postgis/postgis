@@ -4155,6 +4155,22 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 	return 1;
 }
 
+/**
+ * Returns a set of "geomval" value, one for each group of pixel
+ * sharing the same value for the provided band.
+ *
+ * A "geomval " value is a complex type composed of a the wkt
+ * representation of a geometry (one for each group of pixel sharing
+ * the same value) and the value associated with this geometry.
+ *
+ * @param raster: the raster to get info from.
+ * @param nband: the band to polygonize. 0-based
+ *
+ * @return A set of "geomval" values, one for each group of pixels
+ * sharing the same value for the provided band. The returned values are
+ * WKT geometries, not real PostGIS geometries (this may change in the
+ * future, and the function returns real geometries)
+ */
 rt_geomval
 rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
 {
@@ -4178,20 +4194,20 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
     int iBandHasNodataValue = FALSE;
     double dBandNoData = 0.0;
 
-    uint32_t bandNums[1] = {nband - 1};
+    uint32_t bandNums[1] = {nband};
 
     /* Checkings */
 
 
     assert(NULL != raster);
-    assert(nband > 0 && nband <= rt_raster_get_num_bands(raster));
+    assert(nband >= 0 && nband < rt_raster_get_num_bands(raster));
 
     RASTER_DEBUG(2, "In rt_raster_dump_as_polygons");
 
     /*******************************
      * Get band
      *******************************/
-    band = rt_raster_get_band(raster, nband - 1);
+    band = rt_raster_get_band(raster, nband);
     if (NULL == band) {
         rterror("rt_raster_dump_as_wktpolygons: Error getting band %d from raster", nband);
         return 0;
@@ -5887,55 +5903,58 @@ int rt_raster_has_no_band(rt_raster raster, int nband) {
     return (NULL == raster || raster->numBands < nband);
 }
 
-int32_t rt_raster_copy_band(rt_raster torast,
-        rt_raster fromrast, int fromindex, int toindex)
-{
-    rt_band newband = NULL;
+/**
+ * Copy one band from one raster to another
+ * @param torast: raster to copy band to
+ * @param fromrast: raster to copy band from
+ * @param fromindex: index of band in source raster, 0-based
+ * @param toindex: index of new band in destination raster, 0-based
+ * @return The band index of the second raster where the new band is copied.
+ */
+int32_t
+rt_raster_copy_band(
+	rt_raster torast, rt_raster fromrast,
+	int fromindex, int toindex
+) {
+	rt_band newband = NULL;
 
+	assert(NULL != torast);
+	assert(NULL != fromrast);
 
-    assert(NULL != torast);
-    assert(NULL != fromrast);
+	/* Check raster dimensions */
+	if (torast->height != fromrast->height || torast->width != fromrast->width) {
+		rtwarn("rt_raster_copy_band: Attempting to add a band with different width or height");
+		return -1;
+	}
 
-    /* Check raster dimensions */
-    if (torast->height != fromrast->height || torast->width != fromrast->width)
-    {
-        rtwarn("rt_raster_copy_band: Attempting to add a band with different width or height");
-        return -1;
-    }
+	/* Check bands limits */
+	if (fromrast->numBands < 1) {
+		rtwarn("rt_raster_copy_band: Second raster has no band");
+		return -1;
+	}
+	else if (fromindex < 0) {
+		rtwarn("rt_raster_copy_band: Band index for second raster < 0. Defaulted to 0");
+		fromindex = 0;
+	}
+	else if (fromindex >= fromrast->numBands) {
+		rtwarn("rt_raster_copy_band: Band index for second raster > number of bands, truncated from %u to %u", fromindex, fromrast->numBands - 1);
+		fromindex = fromrast->numBands - 1;
+	}
 
-    /* Check bands limits */
-    if (fromrast->numBands < 1)
-    {
-        rtwarn("rt_raster_copy_band: Second raster has no band");
-        return -1;
-    }
-    else if (fromindex < 0)
-    {
-        rtwarn("rt_raster_copy_band: Band index for second raster < 0. Defaulted to 1");
-        fromindex = 0;
-    }
-    else if (fromindex >= fromrast->numBands)
-    {
-        rtwarn("rt_raster_copy_band: Band index for second raster > number of bands, truncated from %u to %u", fromindex - 1, fromrast->numBands);
-        fromindex = fromrast->numBands - 1;
-    }
+	if (toindex < 0) {
+		rtwarn("rt_raster_copy_band: Band index for first raster < 0. Defaulted to 0");
+		toindex = 0;
+	}
+	else if (toindex > torast->numBands) {
+		rtwarn("rt_raster_copy_band: Band index for first raster > number of bands, truncated from %u to %u", toindex, torast->numBands);
+		toindex = torast->numBands;
+	}
 
-    if (toindex < 0)
-    {
-        rtwarn("rt_raster_copy_band: Band index for first raster < 0. Defaulted to 1");
-        toindex = 0;
-    }
-    else if (toindex > torast->numBands)
-    {
-        rtwarn("rt_raster_copy_band: Band index for first raster > number of bands, truncated from %u to %u", toindex - 1, torast->numBands);
-        toindex = torast->numBands;
-    }
+	/* Get band from source raster */
+	newband = rt_raster_get_band(fromrast, fromindex);
 
-    /* Get band from source raster */
-    newband = rt_raster_get_band(fromrast, fromindex);
-
-    /* Add band to the second raster */
-    return rt_raster_add_band(torast, newband, toindex);
+	/* Add band to the second raster */
+	return rt_raster_add_band(torast, newband, toindex);
 }
 
 /**
@@ -6004,7 +6023,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
  *
  * @param raster: raster of band to be replaced
  * @param band : new band to add to raster
- * @param index : index of band to replace (1-based)
+ * @param index : index of band to replace (0-based)
  *
  * @return 0 on error or replaced band
  */
@@ -6019,7 +6038,7 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
 		return 0;
 	}
 
-	if (index > raster->numBands || index < 0) {
+	if (index >= raster->numBands || index < 0) {
 		rterror("rt_raster_replace_band: Band index is not valid");
 		return 0;
 	}

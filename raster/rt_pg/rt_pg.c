@@ -788,7 +788,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         /**
          * Dump raster
          */
-        geomval = rt_raster_dump_as_wktpolygons(raster, nband, &nElements);
+        geomval = rt_raster_dump_as_wktpolygons(raster, nband - 1, &nElements);
 				rt_raster_destroy(raster);
         if (NULL == geomval)
         {

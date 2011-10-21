@@ -1587,7 +1587,7 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(rast raster, gridx double precision, gr
 	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
--- MapAlgebra
+-- One Raster ST_MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodatavaluerepl can be NULL (could be just '' though)
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
@@ -1661,7 +1661,6 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, userfunction regprocedu
     LANGUAGE SQL;
 
 -----------------------------------------------------------------------
------------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_isempty(rast raster)
@@ -1669,15 +1668,10 @@ CREATE OR REPLACE FUNCTION st_isempty(rast raster)
     AS 'MODULE_PATHNAME', 'RASTER_isEmpty'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_hasnoband(rast raster, nband int)
+CREATE OR REPLACE FUNCTION st_hasnoband(rast raster, nband int DEFAULT 1)
     RETURNS boolean
     AS 'MODULE_PATHNAME', 'RASTER_hasNoBand'
     LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_hasnoband(rast raster)
-    RETURNS boolean
-    AS 'select st_hasnoband($1, 1)'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Band Accessors

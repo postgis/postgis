@@ -69,3 +69,6 @@ DROP FUNCTION IF EXISTS _ST_AsRaster(geometry,double precision , double precisio
 -- arg names changed
 DROP FUNCTION IF EXISTS _ST_Resample(raster, text, double precision, integer, double precision, double precision, double precision, double precision, double precision, double precision);
 
+-- default parameters added
+DROP FUNCTION IF EXISTS ST_HasNoBand(raster);
+
