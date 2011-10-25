@@ -201,6 +201,20 @@ Datum BOX3D_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(out);
 }
 
+static void
+box3d_to_box_p(BOX3D *box, BOX *out)
+{
+#if PARANOIA_LEVEL > 0
+	if (box == NULL) return;
+#endif
+
+	out->low.x = box->xmin;
+	out->low.y = box->ymin;
+
+	out->high.x = box->xmax;
+	out->high.y = box->ymax;
+}
+
 PG_FUNCTION_INFO_V1(BOX3D_to_BOX);
 Datum BOX3D_to_BOX(PG_FUNCTION_ARGS)
 {
@@ -210,6 +224,7 @@ Datum BOX3D_to_BOX(PG_FUNCTION_ARGS)
 	box3d_to_box_p(in, box);
 	PG_RETURN_POINTER(box);
 }
+
 
 PG_FUNCTION_INFO_V1(BOX3D_to_LWGEOM);
 Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)

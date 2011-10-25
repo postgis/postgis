@@ -179,10 +179,6 @@ char* text2cstring(const text *textptr);
 	#define STATRELATT STATRELATTINH
 #endif
 
-/* BOX is postgresql standard type */
-extern void box_to_box3d_p(BOX *box, BOX3D *out);
-extern void box3d_to_box_p(BOX3D *box, BOX *out);
-
 /* PG-exposed */
 Datum BOX2D_same(PG_FUNCTION_ARGS);
 Datum BOX2D_overlap(PG_FUNCTION_ARGS);

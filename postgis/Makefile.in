@@ -32,7 +32,6 @@ PG_OBJS=lwgeom_debug.o \
 	lwgeom_btree.o \
 	lwgeom_box.o \
 	lwgeom_box3d.o \
-	lwgeom_box2dfloat4.o \
 	lwgeom_geos.o \
 	lwgeom_geos_prepared.o \
 	lwgeom_geos_clean.o \
