@@ -840,13 +840,9 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	/* Copy input bbox if any */
 	if ( pglwgeom_getbox2d_p(geom1, &bbox) )
 	{
-#ifdef GSERIALIZED_ON
 		/* Force the box to have the same dimensionality as the lwgeom */
 		bbox.flags = lwout->flags;
 		lwout->bbox = gbox_copy(&bbox);
-#else
-		lwout->bbox = gbox_from_box2df(lwout->flags, &bbox);
-#endif
 	}
 
 	result = pglwgeom_serialize(lwout);

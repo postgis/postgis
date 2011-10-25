@@ -1072,13 +1072,11 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(pglwgeom_get_type(pglwgeom1)), lwtype_name(pglwgeom_get_type(pglwgeom2)));
 
-#ifdef GSERIALIZED_ON
 	if ( FLAGS_GET_ZM(pglwgeom1->flags) != FLAGS_GET_ZM(pglwgeom2->flags) )
 	{
 		elog(ERROR,"Cannot ST_Collect geometries with differing dimensionality.");
 		PG_RETURN_NULL();
 	}
-#endif
 
 	srid = pglwgeom_get_srid(pglwgeom1);
 	error_if_srid_mismatch(srid, pglwgeom_get_srid(pglwgeom2));
@@ -2052,13 +2050,10 @@ Datum ST_IsCollection(PG_FUNCTION_ARGS)
 	int type;
 	size_t size;
 
-	/* Pull only a small amount of the tuple,
-	* enough to get the type. size = header + type */
-#ifdef GSERIALIZED_ON
-	size = VARHDRSZ + 8 + 32 + 4;  /* header + srid/flags + bbox? + type number */
-#else 
-	size = VARHDRSZ + 1; /* header + type numer */
-#endif
+	/* Pull only a small amount of the tuple, enough to get the type. */
+	/* header + srid/flags + bbox? + type number */
+	size = VARHDRSZ + 8 + 32 + 4;  
+
 	geom = (PG_LWGEOM*)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, size);
 
 	type = pglwgeom_get_type(geom);

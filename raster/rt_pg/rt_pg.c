@@ -696,8 +696,8 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster;
     rt_raster raster;
-    LWPOLY* convexhull;
-    uint8_t* pglwgeom;
+    LWPOLY* convexhull = NULL;
+    GSERIALIZED* gser = NULL;
 
 		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
@@ -717,25 +717,16 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
     }
 
     {
-#ifdef GSERIALIZED_ON
         size_t gser_size;
-        GSERIALIZED *gser;
         gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(convexhull), 0, &gser_size);
         SET_VARSIZE(gser, gser_size);
-        pglwgeom = (uint8_t*)gser;
-#else
-        size_t sz = lwpoly_serialize_size(convexhull);
-        pglwgeom = palloc(VARHDRSZ+sz);
-        lwpoly_serialize_buf(convexhull, (uint8_t*)VARDATA(pglwgeom), &sz);
-        SET_VARSIZE(pglwgeom, VARHDRSZ+sz);
-#endif
     }
 
     /* Free raster and lwgeom memory */
     rt_raster_destroy(raster);
     lwfree(convexhull);
 
-    PG_RETURN_POINTER(pglwgeom);
+    PG_RETURN_POINTER(gser);
 }
 
 
@@ -6713,11 +6704,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_asRaster);
 Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 {
-#ifdef GSERIALIZED_ON
 	GSERIALIZED *pggeom = NULL;
-#else
-	unsigned char *pggeom = NULL;
-#endif
 
 	LWGEOM *geom = NULL;
 	rt_raster rast = NULL;
@@ -6788,14 +6775,11 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	/* based upon LWGEOM_asBinary function in postgis/lwgeom_ogc.c */
 
 	/* Get the geometry */
-	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-#ifdef GSERIALIZED_ON
+	if (PG_ARGISNULL(0)) 
+	    PG_RETURN_NULL();
+
 	pggeom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom = lwgeom_from_gserialized(pggeom);
-#else
-	pggeom = (unsigned char *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom = lwgeom_deserialize(SERIALIZED_FORM(pggeom));
-#endif
 
 	/* Get a 2D version of the geometry if necessary */
 	if (FLAGS_NDIMS(geom->flags) > 2) {
@@ -7205,11 +7189,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	}
 
 	/* get geometry's srid */
-#ifdef GSERIALIZED_ON
 	srid = gserialized_get_srid(pggeom);
-#else
-	srid = lwgeom_getsrid(pggeom);
-#endif
 
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srid = %d", srid);
 	if (clamp_srid(srid) != SRID_UNKNOWN) {
