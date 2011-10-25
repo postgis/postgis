@@ -27,7 +27,6 @@ PG_OBJS=lwgeom_debug.o \
 	lwgeom_ogc.o \
 	lwgeom_functions_analytic.o \
 	lwgeom_inout.o \
-	lwgeom_estimate.o \
 	lwgeom_functions_basic.o \
 	lwgeom_gist.o \
 	lwgeom_btree.o \
@@ -55,7 +54,7 @@ PG_OBJS=lwgeom_debug.o \
 	geography_btree.o \
 	geography_estimate.o \
 	geography_measurement.o \
-	geometry_gist_selectivity.o 
+	geometry_estimate.o 
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)

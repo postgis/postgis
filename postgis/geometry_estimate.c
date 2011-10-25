@@ -21,12 +21,8 @@
 #include "utils/syscache.h"
 
 #include "liblwgeom.h"
-#include "lwgeom_pg.h"
-
-#ifdef GSERIALIZED_ON
-/* TODO Remove this prototype and reordganize code */
-int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
-
+#include "lwgeom_pg.h"       /* For debugging macros. */
+#include "gserialized_gist.h" /* For index common functions */
 
 
 #include <math.h>
@@ -132,9 +128,7 @@ Datum geometry_gist_joinsel(PG_FUNCTION_ARGS)
 
 #else /* REALLY_DO_JOINSEL */
 
-int calculate_column_intersection(GBOX *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2);
-
-int
+static int
 calculate_column_intersection(GBOX *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2)
 {
 	/**
@@ -1511,5 +1505,3 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(box);
 }
-
-#endif /* GSERIALIZED_ON */
