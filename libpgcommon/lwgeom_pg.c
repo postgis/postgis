@@ -297,19 +297,6 @@ int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box)
 	return ret;
 }
 
-BOX3D *pglwgeom_compute_serialized_box3d(const PG_LWGEOM *geom)
-{
-	lwerror("pglwgeom_compute_serialized_box3d called!");
-	return NULL;
-}
-
-int pglwgeom_compute_serialized_box3d_p(const PG_LWGEOM *geom, BOX3D *box3d)
-{
-	lwerror("pglwgeom_compute_serialized_box3d_p called!");
-	return 0;
-}
-
-
 int
 pglwgeom_is_empty(const PG_LWGEOM *geom)
 {

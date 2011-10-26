@@ -152,8 +152,6 @@ extern int pglwgeom_is_empty(const PG_LWGEOM *geom);
  * Return LW_FALSE if the geometry has no bounding box (ie: is empty).
  */
 extern int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box);
-extern BOX3D *pglwgeom_compute_serialized_box3d(const PG_LWGEOM *geom);
-extern int pglwgeom_compute_serialized_box3d_p(const PG_LWGEOM *geom, BOX3D *box3d);
 extern char is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *);
 
 /* PG-dependant */
@@ -197,7 +195,6 @@ Datum BOX2D_union(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_same(PG_FUNCTION_ARGS);
 Datum BOX3D_construct(PG_FUNCTION_ARGS);
-Datum BOX2DFLOAT4_ymin(PG_FUNCTION_ARGS);
 
 Datum LWGEOM_force_2d(PG_FUNCTION_ARGS);
 Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS);
