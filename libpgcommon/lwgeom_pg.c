@@ -209,14 +209,6 @@ pglwgeom_deserialize(PG_LWGEOM *in)
 }
 
 
-PG_LWGEOM *
-PG_LWGEOM_construct(uint8_t *ser, int srid, int wantbbox)
-{
-	lwerror("PG_LWGEOM_construct called!");
-	return NULL;
-}
-
-
 /*
  * Set the SRID of a PG_LWGEOM
  * Returns a newly allocated PG_LWGEOM object.
@@ -303,10 +295,4 @@ pglwgeom_is_empty(const PG_LWGEOM *geom)
 	return gserialized_is_empty(geom);
 }
 
-char
-is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *in)
-{
-	lwerror("is_worth_caching_pglwgeom_bbox called!");
-	return false;
-}
 

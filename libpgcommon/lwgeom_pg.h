@@ -120,19 +120,6 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 extern PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
 extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
 
-/*
- * Construct a full PG_LWGEOM type (including size header)
- * from a serialized form.
- * The constructed PG_LWGEOM object will be allocated using palloc
- * and the serialized form will be copied.
- * If you specify a SRID other then -1 it will be set.
- * If you request bbox (wantbbox=1) it will be extracted or computed
- * from the serialized form.
- * 
- * NOTE: only available when GSERIALIZED_ON is undefined
- * TODO: wrap in #ifndef GSERIALIZED_ON
- */
-extern PG_LWGEOM *PG_LWGEOM_construct(uint8_t *serialized, int srid, int wantbbox);
 
 /* PG_LWGEOM SRID get/set */
 extern PG_LWGEOM *pglwgeom_set_srid(PG_LWGEOM *pglwgeom, int32 newSRID);
@@ -152,7 +139,6 @@ extern int pglwgeom_is_empty(const PG_LWGEOM *geom);
  * Return LW_FALSE if the geometry has no bounding box (ie: is empty).
  */
 extern int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box);
-extern char is_worth_caching_pglwgeom_bbox(const PG_LWGEOM *);
 
 /* PG-dependant */
 
