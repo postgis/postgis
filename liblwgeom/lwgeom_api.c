@@ -408,42 +408,6 @@ box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox)
 }
 
 
-/*
- * Same as getbox2d, but modifies box instead of returning result on the stack
- */
-int
-getbox2d_p(uint8_t *srl, BOX2DFLOAT4 *box)
-{
-	uint8_t type = srl[0];
-	uint8_t *loc;
-	BOX3D box3d;
-
-	LWDEBUGF(2, "getbox2d_p call on type %d -> %d", type, TYPE_GETTYPE(type));
-
-	loc = srl+1;
-
-	if (lwgeom_hasBBOX(type))
-	{
-		/*woot - this is easy */
-		LWDEBUG(4, "getbox2d_p: has box");
-		memcpy(box, loc, sizeof(BOX2DFLOAT4));
-		return LW_TRUE;
-	}
-
-	LWDEBUG(4, "getbox2d_p: has no box - computing");
-
-	/* We have to actually compute it! */
-	if ( ! compute_serialized_box3d_p(srl, &box3d)) return LW_FALSE;
-
-	LWDEBUGF(4, "getbox2d_p: compute_serialized_box3d returned %p", box3d);
-
-	if ( ! box3d_to_box2df_p(&box3d, box) ) return LW_FALSE;
-
-
-	LWDEBUG(4, "getbox2d_p: box3d converted to box2d");
-
-	return LW_TRUE;
-}
 
 /************************************************************************
  * POINTARRAY support functions
@@ -1889,88 +1853,6 @@ ptarray_isccw(const POINTARRAY *pa)
 	else return 1;
 }
 
-/**
- * Returns a BOX2DFLOAT4 that encloses b1 and b2
- *
- * box2d_union(NULL,A) --> A
- * box2d_union(A,NULL) --> A
- * box2d_union(A,B) --> A union B
- */
-BOX2DFLOAT4 *
-box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2)
-{
-	BOX2DFLOAT4 *result;
-
-	if ( (b1 == NULL) && (b2 == NULL) )
-	{
-		return NULL;
-	}
-
-	result = lwalloc(sizeof(BOX2DFLOAT4));
-
-	if  (b1 == NULL)
-	{
-		memcpy(result, b2, sizeof(BOX2DFLOAT4));
-		return result;
-	}
-	if (b2 == NULL)
-	{
-		memcpy(result, b1, sizeof(BOX2DFLOAT4));
-		return result;
-	}
-
-	if (b1->xmin < b2->xmin) result->xmin = b1->xmin;
-	else result->xmin = b2->xmin;
-
-	if (b1->ymin < b2->ymin) result->ymin = b1->ymin;
-	else result->ymin = b2->ymin;
-
-	if (b1->xmax > b2->xmax) result->xmax = b1->xmax;
-	else result->xmax = b2->xmax;
-
-	if (b1->ymax > b2->ymax) result->ymax = b1->ymax;
-	else result->ymax = b2->ymax;
-
-	return result;
-}
-
-/**
- * ubox may be one of the two args...
- * return 1 if done something to ubox, 0 otherwise.
- */
-int
-box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox)
-{
-	if ( (b1 == NULL) && (b2 == NULL) )
-	{
-		return 0;
-	}
-
-	if  (b1 == NULL)
-	{
-		memcpy(ubox, b2, sizeof(BOX2DFLOAT4));
-		return 1;
-	}
-	if (b2 == NULL)
-	{
-		memcpy(ubox, b1, sizeof(BOX2DFLOAT4));
-		return 1;
-	}
-
-	if (b1->xmin < b2->xmin) ubox->xmin = b1->xmin;
-	else ubox->xmin = b2->xmin;
-
-	if (b1->ymin < b2->ymin) ubox->ymin = b1->ymin;
-	else ubox->ymin = b2->ymin;
-
-	if (b1->xmax > b2->xmax) ubox->xmax = b1->xmax;
-	else ubox->xmax = b2->xmax;
-
-	if (b1->ymax > b2->ymax) ubox->ymax = b1->ymax;
-	else ubox->ymax = b2->ymax;
-
-	return 1;
-}
 
 const char *
 lwgeom_typeflags(uint8_t flags)

@@ -75,8 +75,6 @@ FUNCTION	"box2d_contained(box2d, box2d)"	PRIVATE	KEEP
 FUNCTION	"ST_box2d_contained(box2d, box2d)"	PRIVATE	DELETE
 FUNCTION	"box2d_overlap(box2d, box2d)"	PRIVATE	KEEP
 FUNCTION	"ST_box2d_overlap(box2d, box2d)"	PRIVATE	DELETE
-FUNCTION	"box2d_same(box2d, box2d)"	PRIVATE	KEEP
-FUNCTION	"ST_box2d_same(box2d, box2d)"	PRIVATE	DELETE
 FUNCTION	"box2d_intersects(box2d, box2d)"	PRIVATE	KEEP
 FUNCTION	"ST_box2d_intersects(box2d, box2d)"	PRIVATE	DELETE
 FUNCTION	"geometry_lt(geometry, geometry)"	PRIVATE	KEEP
