@@ -524,17 +524,6 @@ lwcircstring_compute_box3d(const LWCIRCSTRING *curve)
 }
 
 
-int
-lwcircstring_compute_box2d_p(const LWCIRCSTRING *curve, BOX2DFLOAT4 *result)
-{
-	BOX3D *box = lwcircstring_compute_box3d(curve);
-	LWDEBUG(2, "lwcircstring_compute_box2d_p called.");
-
-	if (box == NULL) return 0;
-	box3d_to_box2df_p(box, result);
-	return 1;
-}
-
 void lwcircstring_free(LWCIRCSTRING *curve)
 {
 	if ( curve->bbox )

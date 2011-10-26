@@ -325,12 +325,6 @@ void printLWLINE(LWLINE *line)
 	lwnotice("}");
 }
 
-int
-lwline_compute_box2d_p(const LWLINE *line, BOX2DFLOAT4 *box)
-{
-	return ptarray_compute_box2d_p(line->points, box);
-}
-
 /* @brief Clone LWLINE object. Serialized point lists are not copied.
  *
  * @see ptarray_clone 

@@ -392,12 +392,6 @@ void printLWPOINT(LWPOINT *point)
 	lwnotice("}");
 }
 
-int
-lwpoint_compute_box2d_p(const LWPOINT *point, BOX2DFLOAT4 *box)
-{
-	return ptarray_compute_box2d_p(point->point, box);
-}
-
 /* @brief Clone LWPOINT object. Serialized point lists are not copied.
  *
  * @see ptarray_clone 

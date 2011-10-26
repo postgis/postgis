@@ -1439,15 +1439,6 @@ extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwtriangle_reverse(LWTRIANGLE *triangle);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern const char *lwtype_name(uint8_t type);
-extern int ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result);
-extern BOX2DFLOAT4 *ptarray_compute_box2d(const POINTARRAY *pa);
-extern int lwpoint_compute_box2d_p(const LWPOINT *point, BOX2DFLOAT4 *box);
-extern int lwline_compute_box2d_p(const LWLINE *line, BOX2DFLOAT4 *box);
-extern int lwpoly_compute_box2d_p(const LWPOLY *poly, BOX2DFLOAT4 *box);
-extern int lwtriangle_compute_box2d_p(const LWTRIANGLE *triangle, BOX2DFLOAT4 *box);
-extern int lwcollection_compute_box2d_p(const LWCOLLECTION *col, BOX2DFLOAT4 *box);
-extern int lwcircstring_compute_box2d_p(const LWCIRCSTRING *curve, BOX2DFLOAT4 *box);
-extern BOX2DFLOAT4* lwgeom_compute_box2d(const LWGEOM *lwgeom);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
 extern int lwline_is_closed(const LWLINE *line);
 extern int lwcircstring_is_closed(const LWCIRCSTRING *curve);
@@ -1471,7 +1462,7 @@ extern BOX2DFLOAT4 *box2d_union(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2);
 
 /* args may overlap ! */
 extern int box2d_union_p(BOX2DFLOAT4 *b1, BOX2DFLOAT4 *b2, BOX2DFLOAT4 *ubox);
-extern int lwgeom_compute_box2d_p(const LWGEOM *lwgeom, BOX2DFLOAT4 *box);
+
 void lwgeom_longitude_shift(LWGEOM *lwgeom);
 
 

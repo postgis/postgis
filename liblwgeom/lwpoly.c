@@ -429,24 +429,6 @@ void printLWPOLY(LWPOLY *poly)
 	lwnotice("}");
 }
 
-int
-lwpoly_compute_box2d_p(const LWPOLY *poly, BOX2DFLOAT4 *box)
-{
-	BOX2DFLOAT4 boxbuf;
-	uint32_t i;
-
-	if ( ! poly->nrings ) return 0;
-	if ( ! ptarray_compute_box2d_p(poly->rings[0], box) ) return 0;
-	for (i=1; i<poly->nrings; i++)
-	{
-		if ( ! ptarray_compute_box2d_p(poly->rings[0], &boxbuf) )
-			return 0;
-		if ( ! box2d_union_p(box, &boxbuf, box) )
-			return 0;
-	}
-	return 1;
-}
-
 /* @brief Clone LWLINE object. Serialized point lists are not copied.
  *
  * @see ptarray_clone 

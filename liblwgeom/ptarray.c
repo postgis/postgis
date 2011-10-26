@@ -323,53 +323,6 @@ ptarray_flip_coordinates(POINTARRAY *pa)
 
 
 /**
- * @brief calculate the 2d bounding box of a set of points
- * 		write result to the provided BOX2DFLOAT4
- * 		Return 0 if bounding box is NULL (empty geom)
- */
-int
-ptarray_compute_box2d_p(const POINTARRAY *pa, BOX2DFLOAT4 *result)
-{
-	BOX3D box3d;
-
-	/* Note: we perform the calculation using BOX3D and then
-	   convert to BOX2DFLOAT4 to prevent cumulative floating
-	   point rounding errors when calculating using BOX2DFLOAT4
-	   directly. */
-
-	if (pa->npoints == 0) return 0;
-
-	ptarray_compute_box3d_p(pa, &box3d);
-
-	box3d_to_box2df_p(&box3d, result);
-
-	return 1;
-}
-
-/**
- * @brief Calculate the 2d bounding box of a set of points.
- * @return allocated #BOX2DFLOAT4 or NULL (for empty array).
- */
-BOX2DFLOAT4 *
-ptarray_compute_box2d(const POINTARRAY *pa)
-{
-	BOX3D box3d;
-	BOX2DFLOAT4 *result;
-
-	/* Note: we perform the calculation using BOX3D and then
-	   convert to BOX2DFLOAT4 to prevent cumulative floating
-	   point rounding errors when calculating using BOX2DFLOAT4
-	   directly. */
-
-	result = lwalloc(sizeof(BOX2DFLOAT4));
-
-	ptarray_compute_box3d_p(pa, &box3d);
-	box3d_to_box2df_p(&box3d, result);
-
-	return result;
-}
-
-/**
  * @brief Returns a modified #POINTARRAY so that no segment is
  * 		longer than the given distance (computed using 2d).
  *

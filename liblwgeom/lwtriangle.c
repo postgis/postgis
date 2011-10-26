@@ -332,12 +332,6 @@ void printLWTRIANGLE(LWTRIANGLE *triangle)
 	lwnotice("}");
 }
 
-int
-lwtriangle_compute_box2d_p(const LWTRIANGLE *triangle, BOX2DFLOAT4 *box)
-{
-	return ptarray_compute_box2d_p(triangle->points, box);
-}
-
 /* @brief Clone LWTRIANGLE object. Serialized point lists are not copied.
  *
  * @see ptarray_clone 

@@ -273,54 +273,6 @@ BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
 }
 
 
-int
-lwgeom_compute_box2d_p(const LWGEOM *lwgeom, BOX2DFLOAT4 *buf)
-{
-	LWDEBUGF(2, "lwgeom_compute_box2d_p called of %p of type %s.",
-	         lwgeom, lwtype_name(lwgeom->type));
-
-	switch (lwgeom->type)
-	{
-	case POINTTYPE:
-		return lwpoint_compute_box2d_p((LWPOINT *)lwgeom, buf);
-	case LINETYPE:
-		return lwline_compute_box2d_p((LWLINE *)lwgeom, buf);
-	case CIRCSTRINGTYPE:
-		return lwcircstring_compute_box2d_p((LWCIRCSTRING *)lwgeom, buf);
-	case POLYGONTYPE:
-		return lwpoly_compute_box2d_p((LWPOLY *)lwgeom, buf);
-	case TRIANGLETYPE:
-		return lwtriangle_compute_box2d_p((LWTRIANGLE *)lwgeom, buf);
-	case COMPOUNDTYPE:
-	case CURVEPOLYTYPE:
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTICURVETYPE:
-	case MULTIPOLYGONTYPE:
-	case MULTISURFACETYPE:
-	case POLYHEDRALSURFACETYPE:
-	case TINTYPE:
-	case COLLECTIONTYPE:
-		return lwcollection_compute_box2d_p((LWCOLLECTION *)lwgeom, buf);
-	}
-	return 0;
-}
-
-/**
- * do not forget to lwfree() result
- */
-BOX2DFLOAT4*
-lwgeom_compute_box2d(const LWGEOM *lwgeom)
-{
-	BOX2DFLOAT4 *result = lwalloc(sizeof(BOX2DFLOAT4));
-	if ( lwgeom_compute_box2d_p(lwgeom, result) ) return result;
-	else
-	{
-		lwfree(result);
-		return NULL;
-	}
-}
-
 LWPOINT *
 lwgeom_as_lwpoint(const LWGEOM *lwgeom)
 {

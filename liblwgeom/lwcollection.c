@@ -246,24 +246,6 @@ lwcollection_serialize_buf(LWCOLLECTION *coll, uint8_t *buf, size_t *retsize)
 	LWDEBUG(3, "lwcollection_serialize_buf returning");
 }
 
-int
-lwcollection_compute_box2d_p(const LWCOLLECTION *col, BOX2DFLOAT4 *box)
-{
-	BOX2DFLOAT4 boxbuf;
-	uint32_t i;
-
-	if ( ! col->ngeoms ) return 0;
-	if ( ! lwgeom_compute_box2d_p(col->geoms[0], box) ) return 0;
-	for (i=1; i<col->ngeoms; i++)
-	{
-		if ( ! lwgeom_compute_box2d_p(col->geoms[i], &boxbuf) )
-			return 0;
-		if ( ! box2d_union_p(box, &boxbuf, box) )
-			return 0;
-	}
-	return 1;
-}
-
 /**
  * @brief Clone #LWCOLLECTION object. #POINTARRAY are not copied.
  * 			Bbox is cloned if present in input.
