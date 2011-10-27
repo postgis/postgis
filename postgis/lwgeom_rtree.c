@@ -265,7 +265,7 @@ LWMLINE *findLineSegments(RTREE_NODE *root, double value)
 
 		POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, root->segment->type, FLAGS_GET_Z(root->segment->flags));
 
-		result = (LWMLINE *)lwcollection_construct(lwgeom_makeType_full(0, 0, 0, MULTILINETYPE, 0), SRID_UNKNOWN, NULL, 1, lwgeoms);
+		result = (LWMLINE *)lwcollection_construct(MULTILINETYPE, SRID_UNKNOWN, NULL, 1, lwgeoms);
 	}
 
 	/* If there is a left child node, recursively include its results. */

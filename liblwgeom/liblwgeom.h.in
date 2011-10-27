@@ -834,16 +834,6 @@ extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
 
 
-
-extern char lwgeom_hasSRID(uint8_t type); /* true iff S bit is set */
-extern char lwgeom_hasBBOX(uint8_t type); /* true iff B bit set     */
-extern int  lwgeom_hasZ(uint8_t type);    /* has Z ?                */
-extern int  lwgeom_hasM(uint8_t type);    /* has M ?                */
-extern int  lwgeom_getType(uint8_t type); /* returns the tttt value */
-
-extern uint8_t lwgeom_makeType(char hasZ, char hasM, char has_srid, int type);
-extern uint8_t lwgeom_makeType_full(char hasZ, char hasM, char has_srid, int type, char hasBBOX);
-
 /*--------------------------------------------------------
  * all the base types (point/line/polygon) will have a
  * basic constructor, basic de-serializer, basic serializer,
