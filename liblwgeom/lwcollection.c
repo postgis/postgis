@@ -94,60 +94,7 @@ lwcollection_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 }
 
 
-LWCOLLECTION *
-lwcollection_deserialize(uint8_t *srl)
-{
-	LWCOLLECTION *result;
-	LWGEOM_INSPECTED *insp;
-	char typefl = srl[0];
-	int type = lwgeom_getType(typefl);
-	int i;
 
-	if ( type != COLLECTIONTYPE )
-	{
-		lwerror("lwcollection_deserialize called on NON geometrycollection: %d - %s", type, lwtype_name(type));
-		return NULL;
-	}
-
-	insp = lwgeom_inspect(srl);
-
-	result = lwalloc(sizeof(LWCOLLECTION));
-	result->type = type;
-	result->flags = gflags(TYPE_HASZ(typefl),TYPE_HASM(typefl),0);
-	result->srid = insp->srid;
-	result->ngeoms = insp->ngeometries;
-
-	if (lwgeom_hasBBOX(srl[0]))
-	{
-		BOX2DFLOAT4 *box2df;
-		
-		FLAGS_SET_BBOX(result->flags, 1);		
-		box2df = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(box2df, srl+1, sizeof(BOX2DFLOAT4));
-		result->bbox = gbox_from_box2df(result->flags, box2df);
-		lwfree(box2df);
-	}
-	else
-	{
-		result->bbox = NULL;
-	}
-
-
-	if ( insp->ngeometries )
-	{
-		result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
-		for (i=0; i<insp->ngeometries; i++)
-		{
-			result->geoms[i] = lwgeom_deserialize(insp->sub_geoms[i]);
-		}
-	}
-	else
-	{
-		result->geoms = NULL;
-	}
-
-	return result;
-}
 
 LWGEOM *
 lwcollection_getsubgeom(LWCOLLECTION *col, int gnum)

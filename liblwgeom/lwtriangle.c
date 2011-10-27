@@ -55,87 +55,6 @@ lwtriangle_construct_empty(int srid, char hasz, char hasm)
 
 
 /*
- * given the LWTRIANGLE serialized form
- * construct a proper LWTRIANGLE.
- * serialized_form should point to the 8bit type format
- * See serialized form doc
- */
-LWTRIANGLE *
-lwtriangle_deserialize(uint8_t *serialized_form)
-{
-	LWTRIANGLE *result;
-	POINTARRAY *pa;
-	int ndims;
-	uint32_t npoints;
-	uint8_t type;
-	uint8_t *loc;
-
-	LWDEBUG(3, "lwtriangle_deserialize called");
-
-	if (serialized_form == NULL)
-	{
-		lwerror("lwtriangle_deserialize called with NULL arg");
-		return NULL;
-	}
-
-	result = (LWTRIANGLE*) lwalloc(sizeof(LWTRIANGLE));
-
-	type = serialized_form[0];
-	result->type = TRIANGLETYPE;
-
-	ndims = TYPE_NDIMS(type);
-	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
-	loc = serialized_form;
-
-	if ( TYPE_GETTYPE(type) != TRIANGLETYPE)
-	{
-		lwerror("lwtriangle_deserialize: attempt to deserialize a triangle which is really a %s",
-		        lwtype_name(TYPE_GETTYPE(type)));
-		return NULL;
-	}
-
-	loc = serialized_form+1;
-
-	if (lwgeom_hasBBOX(type))
-	{
-		BOX2DFLOAT4 *box2df;
-
-		LWDEBUG(3, "lwtriangle_deserialize: input has bbox");
-
-		FLAGS_SET_BBOX(result->flags, 1);
-		box2df = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
-		result->bbox = gbox_from_box2df(result->flags, box2df);
-		lwfree(box2df);
-
-		loc += sizeof(BOX2DFLOAT4);
-	}
-	else
-	{
-		result->bbox = NULL;
-	}
-
-	if ( lwgeom_hasSRID(type))
-	{
-		result->srid = lw_get_int32_t(loc);
-		loc +=4; /* type + SRID */
-	}
-	else
-	{
-		result->srid = SRID_UNKNOWN;
-	}
-
-	npoints = lw_get_uint32_t(loc);
-	/*lwnotice("triangle npoints = %d", npoints); */
-	loc +=4;
-	pa = ptarray_construct_reference_data(FLAGS_GET_Z(result->flags), FLAGS_GET_M(result->flags), npoints, loc);
-	
-	result->points = pa;
-
-	return result;
-}
-
-/*
  * create the serialized form of the triangle
  * result's first char will be the 8bit type.  See serialized form doc
  * points copied
@@ -250,44 +169,6 @@ lwtriangle_compute_box3d(LWTRIANGLE *triangle)
 	return result;
 }
 
-size_t
-lwgeom_size_triangle(const uint8_t *serialized_triangle)
-{
-	int type = (uint8_t) serialized_triangle[0];
-	uint32_t result = 1;  /*type */
-	const uint8_t *loc;
-	uint32_t npoints;
-
-	LWDEBUG(2, "lwgeom_size_triangle called");
-
-	if ( lwgeom_getType(type) != TRIANGLETYPE)
-		lwerror("lwgeom_size_triangle::attempt to find the length of a non-triangle");
-
-
-	loc = serialized_triangle+1;
-
-	if (lwgeom_hasBBOX(type))
-	{
-		loc += sizeof(BOX2DFLOAT4);
-		result +=sizeof(BOX2DFLOAT4);
-	}
-
-	if ( lwgeom_hasSRID(type))
-	{
-		loc += 4; /* type + SRID */
-		result +=4;
-	}
-
-	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-	npoints = lw_get_uint32_t(loc);
-	result += sizeof(uint32_t); /* npoints */
-
-	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
-
-	LWDEBUGF(3, "lwgeom_size_triangle returning %d", result);
-
-	return result;
-}
 
 
 /* find length of this deserialized triangle */

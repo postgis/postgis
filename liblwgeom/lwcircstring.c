@@ -83,80 +83,7 @@ lwcircstring_release(LWCIRCSTRING *lwcirc)
 	lwgeom_release(lwcircstring_as_lwgeom(lwcirc));
 }
 
-/*
- * given the LWGEOM serialized form (or a point into a multi* one)
- * construct a proper LWCIRCSTRING.
- * serialized_form should point to the 8bit type format (with type = 8)
- * See serialized form doc
- */
-LWCIRCSTRING *
-lwcircstring_deserialize(uint8_t *serialized_form)
-{
-	uint8_t type;
-	LWCIRCSTRING *result;
-	uint8_t *loc=NULL;
-	uint32_t npoints;
-	POINTARRAY *pa;
 
-	type = (uint8_t)serialized_form[0];
-	if (lwgeom_getType(type) != CIRCSTRINGTYPE)
-	{
-		lwerror("lwcircstring_deserialize: attempt to deserialize a circularstring which is really a %s",
-			lwtype_name(TYPE_GETTYPE(type)));
-		return NULL;
-	}
-
-	result = (LWCIRCSTRING*) lwalloc(sizeof(LWCIRCSTRING));
-	result->type = CIRCSTRINGTYPE;
-	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
-
-	loc = serialized_form + 1;
-
-	if (lwgeom_hasBBOX(type))
-	{
-		BOX2DFLOAT4 *box2df;
-		LWDEBUG(3, "lwcircstring_deserialize: input has bbox");
-
-		FLAGS_SET_BBOX(result->flags, 1);
-		box2df = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
-		result->bbox = gbox_from_box2df(result->flags, box2df);
-		lwfree(box2df);
-		loc += sizeof(BOX2DFLOAT4);
-	}
-	else
-	{
-		LWDEBUG(3, "lwcircstring_deserialize: input lacks bbox");
-
-		result->bbox = NULL;
-	}
-
-	if (lwgeom_hasSRID(type))
-	{
-		LWDEBUG(3, "lwcircstring_deserialize: input has srid");
-
-		result->srid = lw_get_int32_t(loc);
-		loc += 4; /* type + SRID */
-	}
-	else
-	{
-		LWDEBUG(3, "lwcircstring_deserialize: input lacks srid");
-
-		result->srid = SRID_UNKNOWN;
-	}
-
-	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-
-	npoints = lw_get_uint32_t(loc);
-
-	LWDEBUGF(3, "circstring npoints = %d", npoints);
-
-	loc += 4;
-	pa = ptarray_construct_reference_data(FLAGS_GET_Z(result->flags), FLAGS_GET_M(result->flags), npoints, loc);
-	
-	result->points = pa;
-	return result;
-}
 
 /*
  * convert this circularstring into its serialized form
@@ -533,43 +460,7 @@ void lwcircstring_free(LWCIRCSTRING *curve)
 	lwfree(curve);
 }
 
-/* find length of this serialized curve */
-size_t
-lwgeom_size_circstring(const uint8_t *serialized_curve)
-{
-	int type = (uint8_t)serialized_curve[0];
-	uint32_t result = 1; /* type */
-	const uint8_t *loc;
-	uint32_t npoints;
 
-	LWDEBUG(2, "lwgeom_size_circstring called");
-
-	if (lwgeom_getType(type) != CIRCSTRINGTYPE)
-		lwerror("lwgeom_size_circstring::attempt to find the length of a non-circularstring");
-
-	loc = serialized_curve + 1;
-	if (lwgeom_hasBBOX(type))
-	{
-		loc += sizeof(BOX2DFLOAT4);
-		result += sizeof(BOX2DFLOAT4);
-	}
-
-	if (lwgeom_hasSRID(type))
-	{
-		loc += 4; /* type + SRID */
-		result += 4;
-	}
-
-	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-	npoints = lw_get_uint32_t(loc);
-	result += sizeof(uint32_t); /* npoints */
-
-	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
-
-	LWDEBUGF(3, "lwgeom_size_circstring returning %d", result);
-
-	return result;
-}
 
 void printLWCIRCSTRING(LWCIRCSTRING *curve)
 {

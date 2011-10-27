@@ -19,52 +19,6 @@
 #include "libtgeom.h"
 
 
-LWGEOM *
-lwgeom_deserialize(uint8_t *srl)
-{
-	int type = TYPE_GETTYPE(srl[0]);
-
-	LWDEBUGF(2, "lwgeom_deserialize got %d - %s", type, lwtype_name(type));
-
-	switch (type)
-	{
-	case POINTTYPE:
-		return (LWGEOM *)lwpoint_deserialize(srl);
-	case LINETYPE:
-		return (LWGEOM *)lwline_deserialize(srl);
-	case CIRCSTRINGTYPE:
-		return (LWGEOM *)lwcircstring_deserialize(srl);
-	case POLYGONTYPE:
-		return (LWGEOM *)lwpoly_deserialize(srl);
-	case TRIANGLETYPE:
-		return (LWGEOM *)lwtriangle_deserialize(srl);
-	case MULTIPOINTTYPE:
-		return (LWGEOM *)lwmpoint_deserialize(srl);
-	case MULTILINETYPE:
-		return (LWGEOM *)lwmline_deserialize(srl);
-	case MULTIPOLYGONTYPE:
-		return (LWGEOM *)lwmpoly_deserialize(srl);
-	case COLLECTIONTYPE:
-		return (LWGEOM *)lwcollection_deserialize(srl);
-	case COMPOUNDTYPE:
-		return (LWGEOM *)lwcompound_deserialize(srl);
-	case CURVEPOLYTYPE:
-		return (LWGEOM *)lwcurvepoly_deserialize(srl);
-	case MULTICURVETYPE:
-		return (LWGEOM *)lwmcurve_deserialize(srl);
-	case MULTISURFACETYPE:
-		return (LWGEOM *)lwmsurface_deserialize(srl);
-	case POLYHEDRALSURFACETYPE:
-		return (LWGEOM *)lwpsurface_deserialize(srl);
-	case TINTYPE:
-		return (LWGEOM *)lwtin_deserialize(srl);
-	default:
-		lwerror("lwgeom_deserialize: Unknown geometry type: %s", lwtype_name(type));
-		return NULL;
-	}
-
-}
-
 size_t
 lwgeom_serialize_size(LWGEOM *lwgeom)
 {

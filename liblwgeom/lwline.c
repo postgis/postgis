@@ -59,78 +59,7 @@ lwline_construct_empty(int srid, char hasz, char hasm)
 }
 
 
-/*
- * given the LWGEOM serialized form (or a pointer into a muli* one)
- * construct a proper LWLINE.
- * serialized_form should point to the 8bit type format (with type = 2)
- * See serialized form doc
- */
-LWLINE *
-lwline_deserialize(uint8_t *serialized_form)
-{
-	uint8_t type;
-	LWLINE *result;
-	uint8_t *loc =NULL;
-	uint32_t npoints;
-	POINTARRAY *pa;
 
-	type = (uint8_t) serialized_form[0];
-
-	if ( lwgeom_getType(type) != LINETYPE)
-	{
-		lwerror("lwline_deserialize: attempt to deserialize a line which is really a %s", lwtype_name(type));
-		return NULL;
-	}
-
-	result = (LWLINE*) lwalloc(sizeof(LWLINE)) ;
-	result->type = LINETYPE;
-	result->flags = gflags(TYPE_HASZ(type),TYPE_HASM(type),0);
-
-	loc = serialized_form+1;
-
-	if (lwgeom_hasBBOX(type))
-	{
-		BOX2DFLOAT4 *box2df;
-
-		LWDEBUG(3, "lwline_deserialize: input has bbox");
-
-		FLAGS_SET_BBOX(result->flags, 1);
-		box2df = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(box2df, loc, sizeof(BOX2DFLOAT4));
-		result->bbox = gbox_from_box2df(result->flags, box2df);
-		lwfree(box2df);
-		loc += sizeof(BOX2DFLOAT4);
-	}
-	else
-	{
-		result->bbox = NULL;
-		/*lwnotice("line has NO bbox"); */
-	}
-
-	if ( lwgeom_hasSRID(type))
-	{
-		/*lwnotice("line has srid"); */
-		result->srid = lw_get_int32_t(loc);
-		loc +=4; /* type + SRID */
-	}
-	else
-	{
-		/*lwnotice("line has NO srid"); */
-		result->srid = SRID_UNKNOWN;
-	}
-
-	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-
-	npoints = lw_get_uint32_t(loc);
-	/*lwnotice("line npoints = %d", npoints); */
-	loc +=4;
-	pa = ptarray_construct_reference_data(TYPE_HASZ(type)?1:0,
-				TYPE_HASM(type)?1:0, npoints, loc);
-	
-	result->points = pa;
-
-	return result;
-}
 
 /*
  * convert this line into its serialize form
@@ -276,45 +205,6 @@ void lwline_free (LWLINE  *line)
 	lwfree(line);
 }
 
-/* find length of this serialized line */
-size_t
-lwgeom_size_line(const uint8_t *serialized_line)
-{
-	int type = (uint8_t) serialized_line[0];
-	uint32_t result = 1;  /*type */
-	const uint8_t *loc;
-	uint32_t npoints;
-
-	LWDEBUG(2, "lwgeom_size_line called");
-
-	if ( lwgeom_getType(type) != LINETYPE)
-		lwerror("lwgeom_size_line::attempt to find the length of a non-line");
-
-
-	loc = serialized_line+1;
-
-	if (lwgeom_hasBBOX(type))
-	{
-		loc += sizeof(BOX2DFLOAT4);
-		result +=sizeof(BOX2DFLOAT4);
-	}
-
-	if ( lwgeom_hasSRID(type))
-	{
-		loc += 4; /* type + SRID */
-		result +=4;
-	}
-
-	/* we've read the type (1 byte) and SRID (4 bytes, if present) */
-	npoints = lw_get_uint32_t(loc);
-	result += sizeof(uint32_t); /* npoints */
-
-	result += TYPE_NDIMS(type) * sizeof(double) * npoints;
-
-	LWDEBUGF(3, "lwgeom_size_line returning %d", result);
-
-	return result;
-}
 
 void printLWLINE(LWLINE *line)
 {

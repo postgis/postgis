@@ -16,59 +16,7 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
-LWCOMPOUND *
-lwcompound_deserialize(uint8_t *serialized)
-{
-	LWCOMPOUND *result;
-	LWGEOM_INSPECTED *insp;
-	int type = lwgeom_getType(serialized[0]);
-	int i;
 
-	if (type != COMPOUNDTYPE)
-	{
-		lwerror("lwcompound_deserialize called on non compound: %d - %s", type, lwtype_name(type));
-		return NULL;
-	}
-
-	insp = lwgeom_inspect(serialized);
-
-	result = lwalloc(sizeof(LWCOMPOUND));
-	result->type = COMPOUNDTYPE;
-	result->flags = gflags(TYPE_HASZ(insp->type),TYPE_HASM(insp->type),0);
-	result->srid = insp->srid;
-	result->ngeoms = insp->ngeometries;
-	result->geoms = lwalloc(sizeof(LWGEOM *)*insp->ngeometries);
-
-	if (lwgeom_hasBBOX(serialized[0]))
-	{
-		BOX2DFLOAT4 *box2df;
-		
-		FLAGS_SET_BBOX(result->flags, 1);
-		box2df = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(box2df, serialized + 1, sizeof(BOX2DFLOAT4));
-		result->bbox = gbox_from_box2df(result->flags, box2df);
-		lwfree(box2df);
-	}
-	else result->bbox = NULL;
-
-	for (i = 0; i < insp->ngeometries; i++)
-	{
-		if (lwgeom_getType(insp->sub_geoms[i][0]) == LINETYPE)
-			result->geoms[i] = (LWGEOM *)lwline_deserialize(insp->sub_geoms[i]);
-		else
-			result->geoms[i] = (LWGEOM *)lwcircstring_deserialize(insp->sub_geoms[i]);
-		if (TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type))
-		{
-			lwerror("Mixed dimensions (compound: %d, line/circularstring %d:%d)",
-			        TYPE_NDIMS(result->type), i,
-			        TYPE_NDIMS(result->geoms[i]->type)
-			       );
-			lwfree(result);
-			return NULL;
-		}
-	}
-	return result;
-}
 
 int
 lwcompound_is_closed(const LWCOMPOUND *compound)

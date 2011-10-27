@@ -17,69 +17,6 @@
 #include "lwgeom_log.h"
 
 
-LWPSURFACE *
-lwpsurface_deserialize(uint8_t *srl)
-{
-	LWPSURFACE *result;
-	LWGEOM_INSPECTED *insp;
-	int type = lwgeom_getType(srl[0]);
-	int i;
-
-	LWDEBUG(2, "lwpsurface_deserialize called");
-
-	if ( type != POLYHEDRALSURFACETYPE )
-	{
-		lwerror("lwpsurface_deserialize called on NON polyhedralsurface: %d - %s",
-		        type, lwtype_name(type));
-		return NULL;
-	}
-
-	insp = lwgeom_inspect(srl);
-
-	result = lwalloc(sizeof(LWPSURFACE));
-	result->type = type;
-	result->flags = gflags(TYPE_HASZ(srl[0]), TYPE_HASM(srl[0]), 0);
-	result->srid = insp->srid;
-	result->ngeoms = insp->ngeometries;
-
-	if ( insp->ngeometries )
-	{
-		result->geoms = lwalloc(sizeof(LWPOLY *)*insp->ngeometries);
-	}
-	else
-	{
-		result->geoms = NULL;
-	}
-
-	if (lwgeom_hasBBOX(srl[0]))
-	{
-		BOX2DFLOAT4 *box2df;
-
-		FLAGS_SET_BBOX(result->flags, 1);
-		box2df = lwalloc(sizeof(BOX2DFLOAT4));
-		memcpy(box2df, srl+1, sizeof(BOX2DFLOAT4));
-		result->bbox = gbox_from_box2df(result->flags, box2df);
-		lwfree(box2df);
-	}
-	else result->bbox = NULL;
-
-	for (i=0; i<insp->ngeometries; i++)
-	{
-		result->geoms[i] = lwpoly_deserialize(insp->sub_geoms[i]);
-		if ( TYPE_NDIMS(result->geoms[i]->type) != TYPE_NDIMS(result->type) )
-		{
-			lwerror("Mixed dimensions (polyhedralsurface:%d, face%d:%d)",
-			        TYPE_NDIMS(result->type), i,
-			        TYPE_NDIMS(result->geoms[i]->type)
-			       );
-			return NULL;
-		}
-	}
-
-	return result;
-}
-
-
 LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj)
 {
 	return (LWPSURFACE*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
