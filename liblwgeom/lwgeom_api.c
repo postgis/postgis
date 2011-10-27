@@ -1014,22 +1014,6 @@ void printPA(POINTARRAY *pa)
 	lwnotice("      }");
 }
 
-void printBYTES(uint8_t *a, int n)
-{
-	int t;
-	char buff[3];
-
-	buff[2] = 0; /* null terminate */
-
-	lwnotice(" BYTE ARRAY (n=%i) IN HEX: {", n);
-	for (t=0; t<n; t++)
-	{
-		deparse_hex(a[t], buff);
-		lwnotice("    %i : %s", t,buff );
-	}
-	lwnotice("  }");
-}
-
 
 
 /**

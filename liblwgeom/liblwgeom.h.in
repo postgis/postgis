@@ -1151,7 +1151,6 @@ extern void printLWPOLY(LWPOLY *poly);
 extern void printLWTRIANGLE(LWTRIANGLE *triangle);
 extern void printLWPSURFACE(LWPSURFACE *psurf);
 extern void printLWTIN(LWTIN *tin);
-extern void printBYTES(uint8_t *a, int n);
 
 
 extern float LWGEOM_Minf(float a, float b);
