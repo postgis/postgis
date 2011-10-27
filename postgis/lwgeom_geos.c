@@ -3322,7 +3322,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 
 	POSTGIS_DEBUGF(4, "GEOS2POSTGIS: GEOS2LWGEOM returned a %s", lwgeom_summary(lwgeom, 0));
 
-	if ( is_worth_caching_lwgeom_bbox(lwgeom) )
+	if ( lwgeom_needs_bbox(lwgeom) == LW_TRUE )
 	{
 		lwgeom_add_bbox(lwgeom);
 	}

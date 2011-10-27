@@ -844,14 +844,6 @@ extern int compute_serialized_box3d_p(uint8_t *serialized_form, BOX3D *box);
 
 
 /*
- * Evaluate with an heuristic if the provided PG_LWGEOM is worth
- * caching a bbox
- */
-char is_worth_caching_serialized_bbox(const uint8_t *);
-char is_worth_caching_lwgeom_bbox(const LWGEOM *);
-
-
-/*
  * This function computes the size in bytes
  * of the serialized geometries.
  */
