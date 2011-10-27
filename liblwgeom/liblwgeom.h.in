@@ -837,13 +837,6 @@ extern uint8_t lwgeom_makeType(char hasZ, char hasM, char has_srid, int type);
 extern uint8_t lwgeom_makeType_full(char hasZ, char hasM, char has_srid, int type, char hasBBOX);
 
 /*
- * Compute bbox of serialized geom
- */
-extern BOX3D *compute_serialized_box3d(uint8_t *serialized_form);
-extern int compute_serialized_box3d_p(uint8_t *serialized_form, BOX3D *box);
-
-
-/*
  * This function computes the size in bytes
  * of the serialized geometries.
  */
