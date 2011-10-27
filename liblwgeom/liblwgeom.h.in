@@ -323,7 +323,7 @@ POINT4D;
 /******************************************************************
 *  POINTARRAY
 *  Point array abstracts a lot of the complexity of points and point lists.
-*  It handles miss-alignment in the serialized form, 2d/3d translation
+*  It handles 2d/3d translation
 *    (2d points converted to 3d will have z=0 or NaN)
 *  DO NOT MIX 2D and 3D POINTS! EVERYTHING* is either one or the other
 */
@@ -353,10 +353,10 @@ typedef struct
 
 
 /******************************************************************
-* LWGEOM (any type)
+* LWGEOM (any geometry type)
 *
-* Abstract type, note that type, bbox and SRID are available in 
-* all variants.
+* Abstract type, note that 'type', 'bbox' and 'srid' are available in 
+* all geometry variants.
 */
 typedef struct
 {
@@ -653,6 +653,9 @@ BOX2DFLOAT4* box2df_from_gbox(const GBOX *gbox);
 */
 extern int lwgeom_is_collection(const LWGEOM *lwgeom);
 
+/******************************************************************/
+/* Functions that work on type numbers */
+
 /** 
 * Determine whether a type number is a collection or not
 */
@@ -662,6 +665,11 @@ extern int lwtype_is_collection(int type);
 * Given an lwtype number, what homogeneous collection can hold it?
 */
 int lwtype_get_collectiontype(int type);
+
+/* Return a char string with ASCII versionf of type flags */
+extern const char *lwgeom_typeflags(uint8_t type);
+
+extern const char *lwtype_name(uint8_t type);
 
 
 /******************************************************************/
@@ -1131,6 +1139,7 @@ extern void lwgeom_release(LWGEOM *lwgeom);
  ****************************************************************/
 
 /* TODO: move to liblwgeom_internal.h */
+
 extern uint32_t lw_get_uint32_t(const uint8_t *loc);
 extern int32_t lw_get_int32_t(const uint8_t *loc);
 
@@ -1196,6 +1205,7 @@ extern LWPOINT* lwline_get_lwpoint(LWLINE *line, int where);
 extern double ptarray_length_2d(const POINTARRAY *pts);
 extern double ptarray_length(const POINTARRAY *pts);
 
+
 extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 extern int pt_in_poly_2d(const POINT2D *p, const LWPOLY *poly);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
@@ -1205,7 +1215,6 @@ extern void lwline_reverse(LWLINE *line);
 extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwtriangle_reverse(LWTRIANGLE *triangle);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
-extern const char *lwtype_name(uint8_t type);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
 extern int lwline_is_closed(const LWLINE *line);
 extern int lwcircstring_is_closed(const LWCIRCSTRING *curve);
@@ -1367,9 +1376,6 @@ extern double lwpoint_get_m(const LWPOINT *point);
 /* Some lwgeom info */
 extern int lwgeom_has_z(const LWGEOM *geom);
 extern int lwgeom_has_m(const LWGEOM *geom);
-
-/* Return a char string with ASCII versionf of type flags */
-extern const char *lwgeom_typeflags(uint8_t type);
 
 
 /*
