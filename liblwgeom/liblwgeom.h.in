@@ -1023,37 +1023,6 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
  ******************************************************************/
 
 
-/******************************************************************
- * Multi-geometries
- *
- * These are all handled equivelently so its easy to write iterator code.
- *  NOTE NOTE: you can hand in a non-multigeometry to most of these functions
- *             and get usual behavior (ie. get geometry 0 on a POINT
- *	       will return the point).
- *             This makes coding even easier since you dont have to necessarily
- *             differenciate between the multi* and non-multi geometries.
- *
- * NOTE: these usually work directly off the serialized form, so
- *	they're a little more difficult to handle (and slower)
- * NOTE NOTE: the get functions maybe slow, so we may want to have an
- *            "analysed" lwgeom that would just have pointer to the start
- *            of each sub-geometry.
- *
- ******************************************************************/
-
-/* use this version for speed.  READ-ONLY! */
-typedef struct
-{
-	int   srid;
-	const uint8_t *serialized_form; /* orginal structure */
-	uint8_t  type;        /* 8-bit type for the LWGEOM */
-	int ngeometries;    /* number of sub-geometries */
-	uint8_t **sub_geoms;  /* list of pointers (into serialized_form)
-				       of the sub-geoms */
-}
-LWGEOM_INSPECTED;
-
-
 /*
  * set finalType to COLLECTIONTYPE or 0 (0 means choose a best type)
  *   (ie. give it 2 points and ask it to be a multipoint)
@@ -1134,8 +1103,6 @@ extern void lwtin_free(LWTIN *tin);
 extern void lwcollection_free(LWCOLLECTION *col);
 extern void lwcircstring_free(LWCIRCSTRING *curve);
 extern void lwgeom_free(LWGEOM *geom);
-
-extern void lwinspected_release(LWGEOM_INSPECTED *inspected); /* TODO: make this deep free... */
 
 /*
  * The *_release family of functions frees the LWGEOM structures
