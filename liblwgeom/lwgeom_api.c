@@ -969,28 +969,6 @@ lwgeom_constructempty_buf(int srid, char hasz, char hasm,
 }
 
 
-/****************************************************************
- * memory management
- *
- *  these only delete the memory associated
- *  directly with the structure - NOT the stuff pointing into
- *  the original de-serialized info
- *
- ****************************************************************/
-
-void
-lwinspected_release(LWGEOM_INSPECTED *inspected)
-{
-	if ( inspected->ngeometries )
-		lwfree(inspected->sub_geoms);
-	lwfree(inspected);
-}
-
-
-
-
-
-
 /************************************************
  * debugging routines
  ************************************************/
