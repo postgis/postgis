@@ -259,6 +259,21 @@ rt_util_gdal_version(const char *request) {
 		return GDALVersionInfo(request);
 }
 
+/*
+	computed extent type
+*/
+rt_extenttype
+rt_util_extent_type(const char *name) {
+	if (strcmp(name, "UNION") == 0)
+		return ET_UNION;
+	else if (strcmp(name, "FIRST") == 0)
+		return ET_FIRST;
+	else if (strcmp(name, "SECOND") == 0)
+		return ET_SECOND;
+	else
+		return ET_INTERSECTION;
+}
+
 /*- rt_context -------------------------------------------------------*/
 
 /* Functions definitions */
@@ -682,111 +697,144 @@ d_binptr_to_pos(const uint8_t * const ptr, const uint8_t * const end, size_t siz
 
 int
 rt_pixtype_size(rt_pixtype pixtype) {
-    int pixbytes = -1;
+	int pixbytes = -1;
 
+	switch (pixtype) {
+		case PT_1BB:
+		case PT_2BUI:
+		case PT_4BUI:
+		case PT_8BSI:
+		case PT_8BUI:
+			pixbytes = 1;
+			break;
+		case PT_16BSI:
+		case PT_16BUI:
+			pixbytes = 2;
+			break;
+		case PT_32BSI:
+		case PT_32BUI:
+		case PT_32BF:
+			pixbytes = 4;
+			break;
+		case PT_64BF:
+			pixbytes = 8;
+			break;
+		default:
+			rterror("rt_pixtype_size: Unknown pixeltype %d", pixtype);
+			pixbytes = -1;
+			break;
+	}
 
+	RASTER_DEBUGF(3, "Pixel type = %s and size = %d bytes",
+		rt_pixtype_name(pixtype), pixbytes);
 
-    switch (pixtype) {
-        case PT_1BB:
-        case PT_2BUI:
-        case PT_4BUI:
-        case PT_8BSI:
-        case PT_8BUI:
-            pixbytes = 1;
-            break;
-        case PT_16BSI:
-        case PT_16BUI:
-            pixbytes = 2;
-            break;
-        case PT_32BSI:
-        case PT_32BUI:
-        case PT_32BF:
-            pixbytes = 4;
-            break;
-        case PT_64BF:
-            pixbytes = 8;
-            break;
-        default:
-            rterror("rt_pixtype_size: Unknown pixeltype %d", pixtype);
-            pixbytes = -1;
-            break;
-    }
-
-    RASTER_DEBUGF(3, "Pixel type = %s and size = %d bytes",
-            rt_pixtype_name(pixtype), pixbytes);
-
-
-    return pixbytes;
+	return pixbytes;
 }
 
 int
 rt_pixtype_alignment(rt_pixtype pixtype) {
-
-    return rt_pixtype_size(pixtype);
+	return rt_pixtype_size(pixtype);
 }
 
 rt_pixtype
 rt_pixtype_index_from_name(const char* pixname) {
-    assert(pixname && strlen(pixname) > 0);
+	assert(pixname && strlen(pixname) > 0);
 
+	if (strcmp(pixname, "1BB") == 0)
+		return PT_1BB;
+	if (strcmp(pixname, "2BUI") == 0)
+		return PT_2BUI;
+	if (strcmp(pixname, "4BUI") == 0)
+		return PT_4BUI;
+	if (strcmp(pixname, "8BSI") == 0)
+		return PT_8BSI;
+	if (strcmp(pixname, "8BUI") == 0)
+		return PT_8BUI;
+	if (strcmp(pixname, "16BSI") == 0)
+		return PT_16BSI;
+	if (strcmp(pixname, "16BUI") == 0)
+		return PT_16BUI;
+	if (strcmp(pixname, "32BSI") == 0)
+		return PT_32BSI;
+	if (strcmp(pixname, "32BUI") == 0)
+		return PT_32BUI;
+	if (strcmp(pixname, "32BF") == 0)
+		return PT_32BF;
+	if (strcmp(pixname, "64BF") == 0)
+		return PT_64BF;
 
-    if (strcmp(pixname, "1BB") == 0)
-        return PT_1BB;
-    if (strcmp(pixname, "2BUI") == 0)
-        return PT_2BUI;
-    if (strcmp(pixname, "4BUI") == 0)
-        return PT_4BUI;
-    if (strcmp(pixname, "8BSI") == 0)
-        return PT_8BSI;
-    if (strcmp(pixname, "8BUI") == 0)
-        return PT_8BUI;
-    if (strcmp(pixname, "16BSI") == 0)
-        return PT_16BSI;
-    if (strcmp(pixname, "16BUI") == 0)
-        return PT_16BUI;
-    if (strcmp(pixname, "32BSI") == 0)
-        return PT_32BSI;
-    if (strcmp(pixname, "32BUI") == 0)
-        return PT_32BUI;
-    if (strcmp(pixname, "32BF") == 0)
-        return PT_32BF;
-    if (strcmp(pixname, "64BF") == 0)
-        return PT_64BF;
-    return PT_END;
+	return PT_END;
 }
 
 const char*
 rt_pixtype_name(rt_pixtype pixtype) {
+	switch (pixtype) {
+		case PT_1BB:
+			return "1BB";
+		case PT_2BUI:
+			return "2BUI";
+		case PT_4BUI:
+			return "4BUI";
+		case PT_8BSI:
+			return "8BSI";
+		case PT_8BUI:
+			return "8BUI";
+		case PT_16BSI:
+			return "16BSI";
+		case PT_16BUI:
+			return "16BUI";
+		case PT_32BSI:
+			return "32BSI";
+		case PT_32BUI:
+			return "32BUI";
+		case PT_32BF:
+			return "32BF";
+		case PT_64BF:
+			return "64BF";
+		default:
+			rterror("rt_pixtype_name: Unknown pixeltype %d", pixtype);
+			return "Unknown";
+	}
+}
 
-
-
-    switch (pixtype) {
-        case PT_1BB:
-            return "1BB";
-        case PT_2BUI:
-            return "2BUI";
-        case PT_4BUI:
-            return "4BUI";
-        case PT_8BSI:
-            return "8BSI";
-        case PT_8BUI:
-            return "8BUI";
-        case PT_16BSI:
-            return "16BSI";
-        case PT_16BUI:
-            return "16BUI";
-        case PT_32BSI:
-            return "32BSI";
-        case PT_32BUI:
-            return "32BUI";
-        case PT_32BF:
-            return "32BF";
-        case PT_64BF:
-            return "64BF";
-        default:
-            rterror("rt_pixtype_name: Unknown pixeltype %d", pixtype);
-            return "Unknown";
-    }
+/**
+ * Return minimum value possible for pixel type
+ *
+ * @param pixtype: the pixel type to get minimum possible value for
+ *
+ * @return the minimum possible value for the pixel type.
+ */
+double
+rt_pixtype_get_min_value(rt_pixtype pixtype) {
+	switch (pixtype) {
+		case PT_1BB:
+		case PT_2BUI:
+		case PT_4BUI:
+		case PT_8BUI: {
+			return (double) CHAR_MIN;
+		}
+		case PT_8BSI: {
+			return (double) SCHAR_MIN;
+		}
+		case PT_16BSI:
+		case PT_16BUI: {
+			return (double) SHRT_MIN;
+		}
+		case PT_32BSI:
+		case PT_32BUI: {
+			return (double) INT_MIN;
+		}
+		case PT_32BF: {
+			return (double) -FLT_MAX;
+		}
+		case PT_64BF: {
+			return (double) -DBL_MAX;
+		}
+		default: {
+			rterror("rt_pixtype_get_min_value: Unknown pixeltype %d", pixtype);
+			return (double) CHAR_MIN;
+		}
+	}
 }
 
 /*- rt_band ----------------------------------------------------------*/
@@ -1446,50 +1494,9 @@ rt_band_get_nodata(rt_band band) {
 
 double
 rt_band_get_min_value(rt_band band) {
-    rt_pixtype pixtype = PT_END;
+	assert(NULL != band);
 
-
-
-    assert(NULL != band);
-
-    pixtype = band->pixtype;
-
-    switch (pixtype) {
-        case PT_1BB:
-        case PT_2BUI:
-        case PT_4BUI:
-        case PT_8BUI:
-        {
-            return (double)CHAR_MIN;
-        }
-        case PT_8BSI:
-        {
-            return (double)SCHAR_MIN;
-        }
-        case PT_16BSI:
-        case PT_16BUI:
-        {
-            return (double)SHRT_MIN;
-        }
-        case PT_32BSI:
-        case PT_32BUI:
-        {
-            return (double)INT_MIN;
-        }
-        case PT_32BF:
-        {
-            return (double)-FLT_MAX;
-        }
-        case PT_64BF:
-        {
-            return (double)-DBL_MAX;
-        }
-        default:
-        {
-            rterror("rt_band_get_min_value: Unknown pixeltype %d", pixtype);
-            return (double)CHAR_MIN;
-        }
-    }
+	return rt_pixtype_get_min_value(band->pixtype);
 }
 
 

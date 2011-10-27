@@ -274,6 +274,15 @@ const char* rt_pixtype_name(rt_pixtype pixtype);
 /* Return pixel type index from human-readable name */
 rt_pixtype rt_pixtype_index_from_name(const char* pixname);
 
+/**
+ * Return minimum value possible for pixel type
+ *
+ * @param pixtype: the pixel type to get minimum possible value for
+ *
+ * @return the minimum possible value for the pixel type.
+ */
+double rt_pixtype_get_min_value(rt_pixtype pixtype);
+
 /*- rt_band ----------------------------------------------------------*/
 
 /**
@@ -681,8 +690,6 @@ uint16_t rt_raster_get_height(rt_raster raster);
  * @return identifier (position) for the just-added raster, or -1 on error
  */
 int32_t rt_raster_add_band(rt_raster raster, rt_band band, int index);
-
-
 
 /**
  * Generate a new band data and add it to a raster.
@@ -1194,6 +1201,19 @@ rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
 */
 const char*
 rt_util_gdal_version(const char *request);
+
+/*
+	computed extent type
+*/
+typedef enum {
+	ET_INTERSECTION = 0,
+	ET_UNION,
+	ET_FIRST,
+	ET_SECOND
+} rt_extenttype;
+
+rt_extenttype
+rt_util_extent_type(const char *name);
 
 /*
 	helper macros for consistent floating point equality checks
