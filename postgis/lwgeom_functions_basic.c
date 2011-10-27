@@ -127,9 +127,14 @@ Datum LWGEOM_summary(PG_FUNCTION_ARGS)
 
 	/* create a text obj to return */
 	mytext = (text *) lwalloc(VARHDRSZ  + strlen(result) + 1);
+#if 1 /* See http://trac.osgeo.org/postgis/ticket/648 */
 	SET_VARSIZE(mytext, VARHDRSZ + strlen(result) + 1);
 	VARDATA(mytext)[0] = '\n';
 	memcpy(VARDATA(mytext)+1, result, strlen(result) );
+#else
+	SET_VARSIZE(mytext, VARHDRSZ + strlen(result));
+	memcpy(VARDATA(mytext), result, strlen(result) );
+#endif
 
 	lwfree(result);
 	PG_FREE_IF_COPY(geom,0);
