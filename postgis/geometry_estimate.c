@@ -891,13 +891,13 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 		else
 		{
-			sample_extent->xmax = LWGEOM_Maxf(sample_extent->xmax,
+			sample_extent->xmax = LW_MAX(sample_extent->xmax,
 			                                  box.xmax);
-			sample_extent->ymax = LWGEOM_Maxf(sample_extent->ymax,
+			sample_extent->ymax = LW_MAX(sample_extent->ymax,
 			                                  box.ymax);
-			sample_extent->xmin = LWGEOM_Minf(sample_extent->xmin,
+			sample_extent->xmin = LW_MIN(sample_extent->xmin,
 			                                  box.xmin);
-			sample_extent->ymin = LWGEOM_Minf(sample_extent->ymin,
+			sample_extent->ymin = LW_MIN(sample_extent->ymin,
 			                                  box.ymin);
 		}
 

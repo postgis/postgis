@@ -306,10 +306,10 @@ Datum BOX2D_intersects(PG_FUNCTION_ARGS)
 
 	n = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
 
-	n->xmax = LWGEOM_Minf(a->xmax, b->xmax);
-	n->ymax = LWGEOM_Minf(a->ymax, b->ymax);
-	n->xmin = LWGEOM_Maxf(a->xmin, b->xmin);
-	n->ymin = LWGEOM_Maxf(a->ymin, b->ymin);
+	n->xmax = LW_MIN(a->xmax, b->xmax);
+	n->ymax = LW_MIN(a->ymax, b->ymax);
+	n->xmin = LW_MAX(a->xmin, b->xmin);
+	n->ymin = LW_MAX(a->ymin, b->ymin);
 
 
 	if (n->xmax < n->xmin || n->ymax < n->ymin)
@@ -338,25 +338,6 @@ Datum BOX2D_union(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(n);
 }
 
-
-/*
- * min(a,b)
- */
-float LWGEOM_Minf(float a, float b)
-{
-	if (a<b)
-		return a;
-	return b;
-}
-
-/*
- * max(a,b)
- */
-float LWGEOM_Maxf(float a, float b)
-{
-	if (b>a) return b;
-	return a;
-}
 
 PG_FUNCTION_INFO_V1(BOX2DFLOAT4_expand);
 Datum BOX2DFLOAT4_expand(PG_FUNCTION_ARGS)
@@ -424,10 +405,10 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	a = (BOX2DFLOAT4 *)PG_GETARG_DATUM(0);
 	b = &box;
 
-	result->xmax = LWGEOM_Maxf(a->xmax, b->xmax);
-	result->ymax = LWGEOM_Maxf(a->ymax, b->ymax);
-	result->xmin = LWGEOM_Minf(a->xmin, b->xmin);
-	result->ymin = LWGEOM_Minf(a->ymin, b->ymin);
+	result->xmax = LW_MAX(a->xmax, b->xmax);
+	result->ymax = LW_MAX(a->ymax, b->ymax);
+	result->xmin = LW_MIN(a->xmin, b->xmin);
+	result->ymin = LW_MIN(a->ymin, b->ymin);
 
 	PG_RETURN_POINTER(result);
 }

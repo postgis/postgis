@@ -1058,12 +1058,6 @@ extern void printLWTRIANGLE(LWTRIANGLE *triangle);
 extern void printLWPSURFACE(LWPSURFACE *psurf);
 extern void printLWTIN(LWTIN *tin);
 
-
-extern float LWGEOM_Minf(float a, float b);
-extern float LWGEOM_Maxf(float a, float b);
-extern double LWGEOM_Mind(double a, double b);
-extern double LWGEOM_Maxd(double a, double b);
-
 extern float  next_float_down(double d);
 extern float  next_float_up(double d);
 extern double next_double_down(float d);

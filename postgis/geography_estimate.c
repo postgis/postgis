@@ -902,12 +902,12 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 		else
 		{
-			sample_extent->xmax = LWGEOM_Maxf(sample_extent->xmax, gbox.xmax);
-			sample_extent->ymax = LWGEOM_Maxf(sample_extent->ymax, gbox.ymax);
-			sample_extent->zmax = LWGEOM_Maxf(sample_extent->zmax, gbox.zmax);
-			sample_extent->xmin = LWGEOM_Minf(sample_extent->xmin, gbox.xmin);
-			sample_extent->ymin = LWGEOM_Minf(sample_extent->ymin, gbox.ymin);
-			sample_extent->zmin = LWGEOM_Minf(sample_extent->zmin, gbox.zmin);
+			sample_extent->xmax = LW_MAX(sample_extent->xmax, gbox.xmax);
+			sample_extent->ymax = LW_MAX(sample_extent->ymax, gbox.ymax);
+			sample_extent->zmax = LW_MAX(sample_extent->zmax, gbox.zmax);
+			sample_extent->xmin = LW_MIN(sample_extent->xmin, gbox.xmin);
+			sample_extent->ymin = LW_MIN(sample_extent->ymin, gbox.ymin);
+			sample_extent->zmin = LW_MIN(sample_extent->zmin, gbox.zmin);
 		}
 
 		/** TODO: ask if we need geom or bvol size for stawidth */
