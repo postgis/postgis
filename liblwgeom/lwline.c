@@ -61,105 +61,6 @@ lwline_construct_empty(int srid, char hasz, char hasm)
 
 
 
-/*
- * convert this line into its serialize form
- * result's first char will be the 8bit type.  See serialized form doc
- */
-uint8_t *
-lwline_serialize(LWLINE *line)
-{
-	size_t size, retsize;
-	uint8_t * result;
-
-	if (line == NULL) lwerror("lwline_serialize:: given null line");
-
-	size = lwline_serialize_size(line);
-	result = lwalloc(size);
-	lwline_serialize_buf(line, result, &retsize);
-
-	if ( retsize != size )
-	{
-		lwerror("lwline_serialize_size returned %d, ..serialize_buf returned %d", size, retsize);
-	}
-
-	return result;
-}
-
-/*
- * convert this line into its serialize form writing it into
- * the given buffer, and returning number of bytes written into
- * the given int pointer.
- * result's first char will be the 8bit type.  See serialized form doc
- */
-void
-lwline_serialize_buf(LWLINE *line, uint8_t *buf, size_t *retsize)
-{
-	char has_srid;
-	uint8_t *loc;
-	int ptsize;
-	size_t size;
-
-	LWDEBUGF(2, "lwline_serialize_buf(%p, %p, %p) called",
-	         line, buf, retsize);
-
-	if (line == NULL)
-		lwerror("lwline_serialize:: given null line");
-
-	if ( FLAGS_GET_ZM(line->flags) != FLAGS_GET_ZM(line->points->flags) )
-		lwerror("Dimensions mismatch in lwline");
-
-	ptsize = ptarray_point_size(line->points);
-
-	has_srid = (line->srid != SRID_UNKNOWN);
-
-	buf[0] = (uint8_t) lwgeom_makeType_full(
-	             FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags),
-	             has_srid, LINETYPE, line->bbox ? 1 : 0);
-	loc = buf+1;
-
-	LWDEBUGF(3, "lwline_serialize_buf added type (%d)", line->type);
-
-	if (line->bbox)
-	{
-		BOX2DFLOAT4 *box2df;
-	
-		box2df = box2df_from_gbox(line->bbox);
-		memcpy(loc, box2df, sizeof(BOX2DFLOAT4));
-		lwfree(box2df);
-		loc += sizeof(BOX2DFLOAT4);
-
-		LWDEBUG(3, "lwline_serialize_buf added BBOX");
-	}
-
-	if (has_srid)
-	{
-		memcpy(loc, &line->srid, sizeof(int32_t));
-		loc += sizeof(int32_t);
-
-		LWDEBUG(3, "lwline_serialize_buf added SRID");
-	}
-
-	memcpy(loc, &line->points->npoints, sizeof(uint32_t));
-	loc += sizeof(uint32_t);
-
-	LWDEBUGF(3, "lwline_serialize_buf added npoints (%d)",
-	         line->points->npoints);
-
-	/*copy in points */
-	size = line->points->npoints*ptsize;
-	memcpy(loc, getPoint_internal(line->points, 0), size);
-	loc += size;
-
-	LWDEBUGF(3, "lwline_serialize_buf copied serialized_pointlist (%d bytes)",
-	         ptsize * line->points->npoints);
-
-	if (retsize) *retsize = loc-buf;
-
-	/*printBYTES((uint8_t *)result, loc-buf); */
-
-	LWDEBUGF(3, "lwline_serialize_buf returning (loc: %p, size: %d)",
-	         loc, loc-buf);
-}
 
 /*
  * Find bounding box (standard one)
@@ -177,24 +78,6 @@ lwline_compute_box3d(LWLINE *line)
 }
 
 
-/* find length of this deserialized line */
-size_t
-lwline_serialize_size(LWLINE *line)
-{
-	size_t size = 1;  /* type */
-
-	LWDEBUG(2, "lwline_serialize_size called");
-
-	if ( line->srid != SRID_UNKNOWN ) size += 4; /* SRID */
-	if ( line->bbox ) size += sizeof(BOX2DFLOAT4);
-
-	size += 4; /* npoints */
-	size += ptarray_point_size(line->points)*line->points->npoints;
-
-	LWDEBUGF(3, "lwline_serialize_size returning %d", size);
-
-	return size;
-}
 
 void lwline_free (LWLINE  *line)
 {

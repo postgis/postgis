@@ -53,110 +53,6 @@ lwtriangle_construct_empty(int srid, char hasz, char hasm)
 	return result;
 }
 
-
-/*
- * create the serialized form of the triangle
- * result's first char will be the 8bit type.  See serialized form doc
- * points copied
- */
-uint8_t *
-lwtriangle_serialize(LWTRIANGLE *triangle)
-{
-	size_t size, retsize;
-	uint8_t *result;
-
-	size = lwtriangle_serialize_size(triangle);
-	result = lwalloc(size);
-	lwtriangle_serialize_buf(triangle, result, &retsize);
-
-	if ( retsize != size )
-	{
-		lwerror("lwtriangle_serialize_size returned %d, ..serialize_buf returned %d", size, retsize);
-	}
-
-	return result;
-}
-
-/*
- * create the serialized form of the triangle writing it into the
- * given buffer, and returning number of bytes written into
- * the given int pointer.
- * result's first char will be the 8bit type.  See serialized form doc
- * points copied
- */
-void
-lwtriangle_serialize_buf(LWTRIANGLE *triangle, uint8_t *buf, size_t *retsize)
-{
-	char has_srid;
-	uint8_t *loc;
-	int ptsize;
-	size_t size;
-
-	LWDEBUGF(2, "lwtriangle_serialize_buf(%p, %p, %p) called",
-	         triangle, buf, retsize);
-
-	if (triangle == NULL)
-		lwerror("lwtriangle_serialize:: given null triangle");
-
-	if ( FLAGS_GET_ZM(triangle->flags) != FLAGS_GET_ZM(triangle->points->flags) )
-		lwerror("Dimensions mismatch in lwtriangle");
-
-	ptsize = ptarray_point_size(triangle->points);
-
-	has_srid = (triangle->srid != SRID_UNKNOWN);
-
-	buf[0] = (uint8_t) lwgeom_makeType_full(
-	             FLAGS_GET_Z(triangle->flags), FLAGS_GET_M(triangle->flags),
-	             has_srid, TRIANGLETYPE, triangle->bbox ? 1 : 0);
-	loc = buf+1;
-
-	LWDEBUGF(3, "lwtriangle_serialize_buf added type (%d)", triangle->type);
-
-	if (triangle->bbox)
-	{
-		BOX2DFLOAT4 *box2df;
-		
-		box2df = box2df_from_gbox(triangle->bbox);
-		memcpy(loc, box2df, sizeof(BOX2DFLOAT4));
-		loc += sizeof(BOX2DFLOAT4);
-		lwfree(box2df);
-
-		LWDEBUG(3, "lwtriangle_serialize_buf added BBOX");
-	}
-
-	if (has_srid)
-	{
-		memcpy(loc, &triangle->srid, sizeof(int32_t));
-		loc += sizeof(int32_t);
-
-		LWDEBUG(3, "lwtriangle_serialize_buf added SRID");
-	}
-
-	memcpy(loc, &triangle->points->npoints, sizeof(uint32_t));
-	loc += sizeof(uint32_t);
-
-	LWDEBUGF(3, "lwtriangle_serialize_buf added npoints (%d)",
-	         triangle->points->npoints);
-
-	/*copy in points */
-	if ( triangle->points->npoints > 0 )
-	{
-		size = triangle->points->npoints*ptsize;
-		memcpy(loc, getPoint_internal(triangle->points, 0), size);
-		loc += size;
-	}
-	LWDEBUGF(3, "lwtriangle_serialize_buf copied serialized_pointlist (%d bytes)",
-	         ptsize * triangle->points->npoints);
-
-	if (retsize) *retsize = loc-buf;
-
-	/*printBYTES((uint8_t *)result, loc-buf); */
-
-	LWDEBUGF(3, "lwtriangle_serialize_buf returning (loc: %p, size: %d)",
-	         loc, loc-buf);
-}
-
-
 /* find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN) */
 BOX3D *
 lwtriangle_compute_box3d(LWTRIANGLE *triangle)
@@ -167,27 +63,6 @@ lwtriangle_compute_box3d(LWTRIANGLE *triangle)
 	result  = ptarray_compute_box3d(triangle->points);
 
 	return result;
-}
-
-
-
-/* find length of this deserialized triangle */
-size_t
-lwtriangle_serialize_size(LWTRIANGLE *triangle)
-{
-	size_t size = 1;  /* type */
-
-	LWDEBUG(2, "lwtriangle_serialize_size called");
-
-	if ( triangle->srid != SRID_UNKNOWN ) size += 4; /* SRID */
-	if ( triangle->bbox ) size += sizeof(BOX2DFLOAT4);
-
-	size += 4; /* npoints */
-	size += ptarray_point_size(triangle->points)*triangle->points->npoints;
-
-	LWDEBUGF(3, "lwtriangle_serialize_size returning %d", size);
-
-	return size;
 }
 
 void lwtriangle_free(LWTRIANGLE  *triangle)

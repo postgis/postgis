@@ -93,104 +93,10 @@ lwcollection_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 	return ret;
 }
 
-
-
-
 LWGEOM *
 lwcollection_getsubgeom(LWCOLLECTION *col, int gnum)
 {
 	return (LWGEOM *)col->geoms[gnum];
-}
-
-/**
- *	@brief find serialized size of this collection
- *	@param col #LWCOLLECTION to find serialized size of
- */
-size_t
-lwcollection_serialize_size(LWCOLLECTION *col)
-{
-	size_t size = 5; /* type + nsubgeoms */
-	int i;
-
-	if ( col->srid != SRID_UNKNOWN ) size += 4; /* srid */
-	if ( col->bbox ) size += sizeof(BOX2DFLOAT4);
-
-	LWDEBUGF(2, "lwcollection_serialize_size[%p]: start size: %d", col, size);
-
-
-	for (i=0; i<col->ngeoms; i++)
-	{
-		size += lwgeom_serialize_size(col->geoms[i]);
-
-		LWDEBUGF(3, "lwcollection_serialize_size[%p]: with geom%d: %d", col, i, size);
-	}
-
-	LWDEBUGF(3, "lwcollection_serialize_size[%p]:  returning %d", col, size);
-
-	return size;
-}
-
-/** @brief convert an #LWCOLLECTION into its serialized form writing it into
- *          the given buffer, and returning number of bytes written into
- *          the given int pointer.
- */
-void
-lwcollection_serialize_buf(LWCOLLECTION *coll, uint8_t *buf, size_t *retsize)
-{
-	size_t size=1; /* type  */
-	size_t subsize=0;
-	char has_srid;
-	uint8_t *loc;
-	int i;
-
-	LWDEBUGF(2, "lwcollection_serialize_buf called (%s with %d elems)",
-	         lwtype_name(coll->type), coll->ngeoms);
-
-	has_srid = (coll->srid != SRID_UNKNOWN);
-
-	buf[0] = lwgeom_makeType_full(FLAGS_GET_Z(coll->flags),
-	                              FLAGS_GET_M(coll->flags),
-	                              has_srid,
-	                              coll->type,
-	                              coll->bbox ? 1 : 0 );
-	loc = buf+1;
-
-	/* Add BBOX if requested */
-	if ( coll->bbox )
-	{
-		BOX2DFLOAT4 *box2df;
-
-		box2df = box2df_from_gbox(coll->bbox);
-		memcpy(loc, box2df, sizeof(BOX2DFLOAT4));
-		lwfree(box2df);
-		size += sizeof(BOX2DFLOAT4);
-		loc += sizeof(BOX2DFLOAT4);
-	}
-
-	/* Add SRID if requested */
-	if (has_srid)
-	{
-		memcpy(loc, &coll->srid, 4);
-		size += 4;
-		loc += 4;
-	}
-
-	/* Write number of subgeoms */
-	memcpy(loc, &coll->ngeoms, 4);
-	size += 4;
-	loc += 4;
-
-	/* Serialize subgeoms */
-	for (i=0; i<coll->ngeoms; i++)
-	{
-		lwgeom_serialize_buf(coll->geoms[i], loc, &subsize);
-		size += subsize;
-		loc += subsize;
-	}
-
-	if (retsize) *retsize = size;
-
-	LWDEBUG(3, "lwcollection_serialize_buf returning");
 }
 
 /**

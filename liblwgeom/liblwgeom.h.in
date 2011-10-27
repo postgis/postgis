@@ -851,21 +851,6 @@ extern uint8_t lwgeom_makeType_full(char hasZ, char hasM, char has_srid, int typ
  *--------------------------------------------------------*/
 
 /*
- * Find size this point would get when serialized (no BBOX)
- */
-extern size_t lwpoint_serialize_size(LWPOINT *point);
-
-/*
- * convert this point into its serialize form
- * result's first char will be the 8bit type.
- * See serialized form doc
- */
-extern uint8_t *lwpoint_serialize(LWPOINT *point);
-
-/* same as above, writes to buf */
-extern void lwpoint_serialize_buf(LWPOINT *point, uint8_t *buf, size_t *size);
-
-/*
  * find bounding box (standard one)
  * zmin=zmax=0 if 2d (might change to NaN)
  */
@@ -883,19 +868,6 @@ extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
  * LWLINE functions
  ******************************************************************/
 
-/* find the size this line would get when serialized */
-extern size_t lwline_serialize_size(LWLINE *line);
-
-/*
- * convert this line into its serialize form
- * result's first char will be the 8bit type.  See serialized form doc
- * copies data.
- */
-extern uint8_t *lwline_serialize(LWLINE *line);
-
-/* same as above, writes to buf */
-extern void lwline_serialize_buf(LWLINE *line, uint8_t *buf, size_t *size);
-
 /*
  * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
  */
@@ -909,19 +881,6 @@ extern int lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where);
 /******************************************************************
  * LWPOLY functions
  ******************************************************************/
-
-/* find the size this polygon would get when serialized */
-extern size_t lwpoly_serialize_size(LWPOLY *poly);
-
-/*
- * create the serialized form of the polygon
- * result's first char will be the 8bit type.  See serialized form doc
- * points copied
- */
-extern uint8_t *lwpoly_serialize(LWPOLY *poly);
-
-/* same as above, writes to buf */
-extern void lwpoly_serialize_buf(LWPOLY *poly, uint8_t *buf, size_t *size);
 
 /*
  * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
@@ -952,19 +911,6 @@ extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
  * LWTRIANGLE functions
  ******************************************************************/
 
-/* find the size this triangle would get when serialized */
-extern size_t lwtriangle_serialize_size(LWTRIANGLE *triangle);
-
-/*
- * convert this triangle into its serialize form
- * result's first char will be the 8bit type.  See serialized form doc
- * copies data.
- */
-extern uint8_t *lwtriangle_serialize(LWTRIANGLE *triangle);
-
-/* same as above, writes to buf */
-extern void lwtriangle_serialize_buf(LWTRIANGLE *triangle, uint8_t *buf, size_t *size);
-
 /*
  * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
  */
@@ -973,19 +919,6 @@ extern BOX3D *lwtriangle_compute_box3d(LWTRIANGLE *triangle);
 /******************************************************************
  * LWCIRCSTRING functions
  ******************************************************************/
-
-/* find the size this curve would get when serialized */
-extern size_t lwcircstring_serialize_size(LWCIRCSTRING *curve);
-
-/*
- * convert this circularstring into its serialize form
- * result's first char will be the 8bit type.  See serialized form doc
- * copies data.
- */
-extern uint8_t *lwcircstring_serialize(LWCIRCSTRING *curve);
-
-/* same as above, writes to buf */
-extern void lwcircstring_serialize_buf(LWCIRCSTRING *curve, uint8_t *buf, size_t *size);
 
 /*
  * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
@@ -998,11 +931,6 @@ extern BOX3D *lwcircstring_compute_box3d(const LWCIRCSTRING *curve);
  * LWGEOM functions
  ******************************************************************/
 
-extern size_t lwgeom_serialize_size(LWGEOM *geom);
-extern size_t lwcollection_serialize_size(LWCOLLECTION *coll);
-extern void lwgeom_serialize_buf(LWGEOM *geom, uint8_t *buf, size_t *size);
-extern uint8_t *lwgeom_serialize(LWGEOM *geom);
-extern void lwcollection_serialize_buf(LWCOLLECTION *mcoll, uint8_t *buf, size_t *size);
 extern int lwcollection_ngeoms(const LWCOLLECTION *col);
 
 /* Given a generic geometry/collection, return the "simplest" form. */
@@ -1029,28 +957,6 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
 /******************************************************************
  * SERIALIZED FORM functions
  ******************************************************************/
-
-
-/*
- * set finalType to COLLECTIONTYPE or 0 (0 means choose a best type)
- *   (ie. give it 2 points and ask it to be a multipoint)
- *  use SRID=SRID_UNKNOWN for unknown SRID  (will have 8bit type's S = 0)
- * all subgeometries must have the same SRID
- * if you want to construct an inspected, call this then inspect the result...
- */
-extern uint8_t *lwgeom_serialized_construct(int srid, int finalType, char hasz, char hasm, int nsubgeometries, uint8_t **serialized_subs);
-
-
-/* construct the empty geometry (GEOMETRYCOLLECTION EMPTY) */
-extern uint8_t *lwgeom_constructempty(int srid, char hasz, char hasm);
-extern void lwgeom_constructempty_buf(int srid, char hasz, char hasm, uint8_t *buf, size_t *size);
-size_t lwgeom_empty_length(int srid);
-
-/*
- * get the SRID from the LWGEOM
- * none present => -1
- */
-extern int lwgeom_getsrid(uint8_t *serialized);
 
 /**
 * Set the SRID on an LWGEOM
