@@ -168,7 +168,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (option & 16) lwopts |= LW_GML_IS_DEGREE;
         if (option & 32) lwopts |= LW_GML_EXTENT;
 
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 
         if (version == 2 && lwopts & LW_GML_EXTENT)
 		gml = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
@@ -249,7 +249,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 		}
 	}
 
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	kml = lwgeom_to_kml2(lwgeom, precision, prefix);
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
@@ -330,7 +330,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (option & 1) has_bbox = 1;
 
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	geojson = lwgeom_to_geojson(lwgeom, srs, precision, has_bbox);
 	lwgeom_free(lwgeom);
 
@@ -374,7 +374,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 		else if ( precision < 0 ) precision = 0;
 	}
 
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	svg = lwgeom_to_svg(lwgeom, precision, relative);
 	result = cstring2text(svg);
 	lwgeom_free(lwgeom);
@@ -460,7 +460,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	if (option & 2)  is_dims = 0;
 	if (option & 16) is_deegree = 1;
 
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 
 
 	x3d = lwgeom_to_x3d3(lwgeom, srs, precision,option, defid);

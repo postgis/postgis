@@ -324,7 +324,7 @@ Datum LWGEOM_length2d_ellipsoid(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
-	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	double dist = lwgeom_length_spheroid(lwgeom, sphere);
 	lwgeom_release(lwgeom);
 	PG_RETURN_FLOAT8(dist);
@@ -345,7 +345,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_length_ellipsoid_linestring);
 Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
 	double length = 0.0;
 
@@ -508,8 +508,8 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	}
 
 	/* Get #LWGEOM structures */
-	lwgeom1 = pglwgeom_deserialize(geom1);
-	lwgeom2 = pglwgeom_deserialize(geom2);
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwgeom2 = lwgeom_from_gserialized(geom2);
 	
 	/* We are going to be calculating geodetic distances */
 	lwgeom_set_geodetic(lwgeom1, LW_TRUE);

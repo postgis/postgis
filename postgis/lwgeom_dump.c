@@ -80,7 +80,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
 		pglwgeom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-		lwgeom = pglwgeom_deserialize(pglwgeom);
+		lwgeom = lwgeom_from_gserialized(pglwgeom);
 
 		/* Create function state */
 		state = lwalloc(sizeof(GEOMDUMPSTATE));
@@ -228,7 +228,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 			lwerror("Input is not a polygon");
 		}
 
-		lwgeom = pglwgeom_deserialize(pglwgeom);
+		lwgeom = lwgeom_from_gserialized(pglwgeom);
 
 		/* Create function state */
 		state = lwalloc(sizeof(struct POLYDUMPSTATE));

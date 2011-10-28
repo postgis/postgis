@@ -45,7 +45,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GSERIALIZED *result;
-	LWGEOM *in = pglwgeom_deserialize(geom);
+	LWGEOM *in = lwgeom_from_gserialized(geom);
 	LWGEOM *out;
 	double dist = PG_GETARG_FLOAT8(1);
 
@@ -101,7 +101,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	line = lwgeom_as_lwline(pglwgeom_deserialize(geom));
+	line = lwgeom_as_lwline(lwgeom_from_gserialized(geom));
 	ipa = line->points;
 
 	/* If distance is one of the two extremes, return the point on that
@@ -536,7 +536,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(in_geom);
 	}
 
-	in_lwgeom = pglwgeom_deserialize(in_geom);
+	in_lwgeom = lwgeom_from_gserialized(in_geom);
 
 	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(in_lwgeom->type));
 
@@ -574,7 +574,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
 	datum = PG_GETARG_DATUM(1);
 	in_point = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
-	in_lwpoint = lwgeom_as_lwpoint(pglwgeom_deserialize(in_point));
+	in_lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(in_point));
 	if ( in_lwpoint == NULL )
 	{
 		lwerror("Offset geometry must be a point");
@@ -611,7 +611,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(in_geom);
 	}
 
-	in_lwgeom = pglwgeom_deserialize(in_geom);
+	in_lwgeom = lwgeom_from_gserialized(in_geom);
 
 	POSTGIS_DEBUGF(3, "SnapToGrid got a %s", lwtype_name(in_lwgeom->type));
 
@@ -655,8 +655,8 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	l1 = lwgeom_as_lwline(pglwgeom_deserialize(geom1));
-	l2 = lwgeom_as_lwline(pglwgeom_deserialize(geom2));
+	l1 = lwgeom_as_lwline(lwgeom_from_gserialized(geom1));
+	l2 = lwgeom_as_lwline(lwgeom_from_gserialized(geom2));
 
 	rv = lwline_crossing_direction(l1, l2);
 
@@ -684,7 +684,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	line_in = pglwgeom_deserialize(geom_in);
+	line_in = lwgeom_from_gserialized(geom_in);
 
 	if ( ! FLAGS_GET_Z(line_in->flags) )
 	{
@@ -749,7 +749,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 	if ( type == LINETYPE )
 	{
-		LWLINE *iline = lwgeom_as_lwline(pglwgeom_deserialize(geom));
+		LWLINE *iline = lwgeom_as_lwline(lwgeom_from_gserialized(geom));
 
 		if ( lwgeom_is_empty((LWGEOM*)iline) )
 		{
@@ -777,7 +777,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		LWGEOM **geoms = NULL;
 		double length = 0.0, sublength = 0.0, minprop = 0.0, maxprop = 0.0;
 
-		iline = lwgeom_as_lwmline(pglwgeom_deserialize(geom));
+		iline = lwgeom_as_lwmline(lwgeom_from_gserialized(geom));
 
 		if ( lwgeom_is_empty((LWGEOM*)iline) )
 		{
@@ -893,8 +893,8 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	lwline = lwgeom_as_lwline(pglwgeom_deserialize(geom1));
-	lwpoint = lwgeom_as_lwpoint(pglwgeom_deserialize(geom2));
+	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(geom1));
+	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom2));
 
 	pa = lwline->points;
 	lwpoint_getPoint2d_p(lwpoint, &p);

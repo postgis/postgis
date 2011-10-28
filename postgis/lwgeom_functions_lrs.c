@@ -499,7 +499,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	lwin = pglwgeom_deserialize(gin);
+	lwin = lwgeom_from_gserialized(gin);
 
 	lwout = lwgeom_locate_between_m(lwin,
 	                                start_measure, end_measure);
@@ -542,7 +542,7 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	lwin = pglwgeom_deserialize(gin);
+	lwin = lwgeom_from_gserialized(gin);
 	if ( type == LINETYPE )
 		lwout = (LWGEOM*)lwline_measured_from_lwline((LWLINE*)lwin, start_measure, end_measure);
 	else

@@ -102,7 +102,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_to_BOX2DFLOAT4);
 Datum LWGEOM_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	GBOX gbox;
 
 	/* Cannot box empty! */
@@ -498,8 +498,8 @@ Datum BOX2DFLOAT4_construct(PG_FUNCTION_ARGS)
 	LWPOINT *minpoint, *maxpoint;
 	double min, max, tmp;
 
-	minpoint = (LWPOINT*)pglwgeom_deserialize(pgmin);
-	maxpoint = (LWPOINT*)pglwgeom_deserialize(pgmax);
+	minpoint = (LWPOINT*)lwgeom_from_gserialized(pgmin);
+	maxpoint = (LWPOINT*)lwgeom_from_gserialized(pgmax);
 
 	if ( (minpoint->type != POINTTYPE) || (maxpoint->type != POINTTYPE) )
 	{

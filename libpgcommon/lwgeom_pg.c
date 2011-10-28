@@ -202,12 +202,6 @@ pglwgeom_serialize(LWGEOM *in)
 	return gser;
 }
 
-LWGEOM *
-pglwgeom_deserialize(GSERIALIZED *in)
-{
-	return lwgeom_from_gserialized(in);
-}
-
 
 /*
  * Set the SRID of a GSERIALIZED

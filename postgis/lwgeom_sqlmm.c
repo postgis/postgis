@@ -37,7 +37,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_has_arc);
 Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	uint32 result = lwgeom_has_arc(lwgeom);
 	lwgeom_free(lwgeom);
 	PG_RETURN_BOOL(result == 1);
@@ -70,7 +70,7 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUGF(3, "perQuad = %d", perQuad);
 	}
 #endif
-	igeom = pglwgeom_deserialize(geom);
+	igeom = lwgeom_from_gserialized(geom);
 	if ( ! lwgeom_has_arc(igeom) )
 	{
 		PG_RETURN_POINTER(geom);
@@ -93,7 +93,7 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "LWGEOM_line_desegmentize.");
 
-	igeom = pglwgeom_deserialize(geom);
+	igeom = lwgeom_from_gserialized(geom);
 	ogeom = lwgeom_desegmentize(igeom);
 	if (ogeom == NULL)
 	{

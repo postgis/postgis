@@ -624,7 +624,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 
 	geography_valid_type(pglwgeom_get_type(geom));
 
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 
 	/* Force default SRID */
 	if ( (int)lwgeom->srid <= 0 )

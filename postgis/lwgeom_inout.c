@@ -159,7 +159,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 		lwerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
 	}
 	/* Convert to LWGEOM type */
-	lwgeom = pglwgeom_deserialize(pg_lwgeom);
+	lwgeom = lwgeom_from_gserialized(pg_lwgeom);
 
 	if (format_text != NULL)
 	{
@@ -211,7 +211,7 @@ Datum LWGEOM_out(PG_FUNCTION_ARGS)
 	char *hexwkb;
 	size_t hexwkb_size;
 
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
 	lwgeom_free(lwgeom);
 	
@@ -250,7 +250,7 @@ Datum LWGEOM_asHEXEWKB(PG_FUNCTION_ARGS)
 	}
 
 	/* Create WKB hex string */
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	hexwkb = lwgeom_to_hexwkb(lwgeom, variant | WKB_EXTENDED, &hexwkb_size);
 	lwgeom_free(lwgeom);
 	
@@ -284,7 +284,7 @@ Datum LWGEOM_to_text(PG_FUNCTION_ARGS)
 	text *result;
 
 	/* Generate WKB hex text */
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	hexwkb = lwgeom_to_hexwkb(lwgeom, WKB_EXTENDED, &hexwkb_size);
 	lwgeom_free(lwgeom);
 	
@@ -362,7 +362,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 	}
 
 	/* Create WKB hex string */
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	wkb = lwgeom_to_wkb(lwgeom, variant | WKB_EXTENDED , &wkb_size);
 	lwgeom_free(lwgeom);
 	
@@ -386,7 +386,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	LWGEOM *lwgeom;
 
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_add_bbox(lwgeom);
 	result = pglwgeom_serialize(lwgeom);
 	

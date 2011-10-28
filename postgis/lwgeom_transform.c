@@ -87,7 +87,7 @@ Datum transform(PG_FUNCTION_ARGS)
 
 
 	/* now we have a geometry, and input/output PJ structs. */
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_transform(lwgeom, input_pj, output_pj);
 	lwgeom->srid = result_srid;
 
@@ -185,7 +185,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	pfree(output_proj4);
 
 	/* now we have a geometry, and input/output PJ structs. */
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_transform(lwgeom, input_pj, output_pj);
 	lwgeom->srid = result_srid;
 

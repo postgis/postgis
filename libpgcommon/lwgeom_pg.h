@@ -94,7 +94,6 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
 /* Serialize/deserialize a GSERIALIZED (postgis datatype) */
 extern GSERIALIZED *pglwgeom_serialize(LWGEOM *lwgeom);
-extern LWGEOM *pglwgeom_deserialize(GSERIALIZED *pglwgeom);
 
 
 /* GSERIALIZED SRID get/set */

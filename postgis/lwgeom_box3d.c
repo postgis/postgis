@@ -332,7 +332,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_to_BOX3D);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	GBOX gbox;
 	BOX3D *result;
 	int rv = lwgeom_calculate_gbox(lwgeom, &gbox);
@@ -409,7 +409,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	if (box3d_ptr == NULL)
 	{
 		geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		lwgeom = pglwgeom_deserialize(geom);
+		lwgeom = lwgeom_from_gserialized(geom);
 		rv = lwgeom_calculate_gbox(lwgeom, &gbox);
 		if ( rv == LW_FAILURE )
 		{
@@ -430,7 +430,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	}
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	lwgeom = pglwgeom_deserialize(geom);
+	lwgeom = lwgeom_from_gserialized(geom);
 	rv = lwgeom_calculate_gbox(lwgeom, &gbox);
 	result = palloc(sizeof(BOX3D));
 	if ( rv == LW_FAILURE )
@@ -462,8 +462,8 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	LWGEOM *minpoint, *maxpoint;
 	POINT3DZ minp, maxp;
 
-	minpoint = pglwgeom_deserialize(min);
-	maxpoint = pglwgeom_deserialize(max);
+	minpoint = lwgeom_from_gserialized(min);
+	maxpoint = lwgeom_from_gserialized(max);
 
 	if ( minpoint->type != POINTTYPE ||
 	     maxpoint->type != POINTTYPE )

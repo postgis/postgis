@@ -358,7 +358,7 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 	result = NULL;
 	igeom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	yval = PG_GETARG_FLOAT8(1);
-	geom = pglwgeom_deserialize(igeom);
+	geom = lwgeom_from_gserialized(igeom);
 	if (geom->type != POLYGONTYPE)
 	{
 		lwgeom_release(geom);
