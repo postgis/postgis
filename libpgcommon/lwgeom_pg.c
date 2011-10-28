@@ -192,7 +192,7 @@ lwgeom_init_allocators(void)
 	lwnotice_var = pg_notice;
 }
 
-PG_LWGEOM *
+GSERIALIZED *
 pglwgeom_serialize(LWGEOM *in)
 {
 	size_t gser_size;
@@ -203,19 +203,19 @@ pglwgeom_serialize(LWGEOM *in)
 }
 
 LWGEOM *
-pglwgeom_deserialize(PG_LWGEOM *in)
+pglwgeom_deserialize(GSERIALIZED *in)
 {
 	return lwgeom_from_gserialized(in);
 }
 
 
 /*
- * Set the SRID of a PG_LWGEOM
- * Returns a newly allocated PG_LWGEOM object.
+ * Set the SRID of a GSERIALIZED
+ * Returns a newly allocated GSERIALIZED object.
  * Allocation will be done using the lwalloc.
  */
-PG_LWGEOM *
-pglwgeom_set_srid(PG_LWGEOM *lwgeom, int32 new_srid)
+GSERIALIZED *
+pglwgeom_set_srid(GSERIALIZED *lwgeom, int32 new_srid)
 {
 	gserialized_set_srid(lwgeom, new_srid);
 	return lwgeom;
@@ -226,57 +226,57 @@ pglwgeom_set_srid(PG_LWGEOM *lwgeom, int32 new_srid)
  * none present => -1
  */
 int
-pglwgeom_get_srid(PG_LWGEOM *lwgeom)
+pglwgeom_get_srid(GSERIALIZED *lwgeom)
 {
 	return gserialized_get_srid(lwgeom);
 }
 
 int
-pglwgeom_get_type(const PG_LWGEOM *lwgeom)
+pglwgeom_get_type(const GSERIALIZED *lwgeom)
 {
 	return gserialized_get_type(lwgeom);
 }
 
 int
-pglwgeom_get_zm(const PG_LWGEOM *lwgeom)
+pglwgeom_get_zm(const GSERIALIZED *lwgeom)
 {
 	return 2 * FLAGS_GET_Z(lwgeom->flags) + FLAGS_GET_M(lwgeom->flags);
 }
 
 bool
-pglwgeom_has_bbox(const PG_LWGEOM *lwgeom)
+pglwgeom_has_bbox(const GSERIALIZED *lwgeom)
 {
 	return FLAGS_GET_BBOX(lwgeom->flags);
 }
 
 bool
-pglwgeom_has_z(const PG_LWGEOM *lwgeom)
+pglwgeom_has_z(const GSERIALIZED *lwgeom)
 {
 	return FLAGS_GET_Z(lwgeom->flags);
 }
 
 bool
-pglwgeom_has_m(const PG_LWGEOM *lwgeom)
+pglwgeom_has_m(const GSERIALIZED *lwgeom)
 {
 	return FLAGS_GET_M(lwgeom->flags);
 }
 
-PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom)
+GSERIALIZED* pglwgeom_drop_bbox(GSERIALIZED *geom)
 {
 	return gserialized_drop_gidx(geom);
 }
 
-size_t pglwgeom_size(const PG_LWGEOM *geom)
+size_t pglwgeom_size(const GSERIALIZED *geom)
 {
 	return VARSIZE(geom) - VARHDRSZ;
 };
 
-int pglwgeom_ndims(const PG_LWGEOM *geom)
+int pglwgeom_ndims(const GSERIALIZED *geom)
 {
 	return FLAGS_NDIMS(geom->flags);
 }
 
-int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box)
+int pglwgeom_getbox2d_p(const GSERIALIZED *geom, GBOX *box)
 {
 	LWGEOM *lwgeom;
 	int ret = gserialized_get_gbox_p(geom, box);
@@ -290,7 +290,7 @@ int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box)
 }
 
 int
-pglwgeom_is_empty(const PG_LWGEOM *geom)
+pglwgeom_is_empty(const GSERIALIZED *geom)
 {
 	return gserialized_is_empty(geom);
 }

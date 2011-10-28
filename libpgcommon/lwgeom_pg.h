@@ -2,8 +2,6 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  *
- * http://postgis.refractions.net
- *
  * Copyright (C) 2011      Sandro Santilli <strk@keybit.net>
  * Copyright (C) 2009-2010 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2008      Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
@@ -31,19 +29,6 @@ void *pg_realloc(void *ptr, size_t size);
 void pg_free(void *ptr);
 void pg_error(const char *msg, va_list vp);
 void pg_notice(const char *msg, va_list vp);
-
-/*
- * This is the binary representation of lwgeom compatible
- * with postgresql varlena struct
- */
-typedef struct
-{
-	uint32 size;        /* varlena header (do not touch directly!) */
-	uint8_t type;         /* encodes ndims, type, bbox presence,
-			                srid presence */
-	uint8_t data[1];
-}
-PG_LWGEOM;
 
 
 /* Debugging macros */
@@ -98,15 +83,6 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 
 
 /*
-* Temporary changeover defines for PG_LWGEOM and GSERIALIZED
-*/
-
-#ifdef GSERIALIZED_ON
-#define PG_LWGEOM GSERIALIZED
-#define BOX2DFLOAT4 GBOX
-#endif
-
-/*
 ** GSERIALIED prototypes used outside the index functions
 */
 
@@ -116,29 +92,29 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
 
 
-/* Serialize/deserialize a PG_LWGEOM (postgis datatype) */
-extern PG_LWGEOM *pglwgeom_serialize(LWGEOM *lwgeom);
-extern LWGEOM *pglwgeom_deserialize(PG_LWGEOM *pglwgeom);
+/* Serialize/deserialize a GSERIALIZED (postgis datatype) */
+extern GSERIALIZED *pglwgeom_serialize(LWGEOM *lwgeom);
+extern LWGEOM *pglwgeom_deserialize(GSERIALIZED *pglwgeom);
 
 
-/* PG_LWGEOM SRID get/set */
-extern PG_LWGEOM *pglwgeom_set_srid(PG_LWGEOM *pglwgeom, int32 newSRID);
-extern int pglwgeom_get_srid(PG_LWGEOM *pglwgeom);
-extern int pglwgeom_get_type(const PG_LWGEOM *lwgeom);
-extern int pglwgeom_get_zm(const PG_LWGEOM *lwgeom);
-extern PG_LWGEOM* pglwgeom_drop_bbox(PG_LWGEOM *geom);
-extern size_t pglwgeom_size(const PG_LWGEOM *geom);
-extern int pglwgeom_ndims(const PG_LWGEOM *geom);
-extern bool pglwgeom_has_bbox(const PG_LWGEOM *lwgeom);
-extern bool pglwgeom_has_z(const PG_LWGEOM *lwgeom);
-extern bool pglwgeom_has_m(const PG_LWGEOM *lwgeom);
-extern int pglwgeom_is_empty(const PG_LWGEOM *geom);
+/* GSERIALIZED SRID get/set */
+extern GSERIALIZED *pglwgeom_set_srid(GSERIALIZED *pglwgeom, int32 newSRID);
+extern int pglwgeom_get_srid(GSERIALIZED *pglwgeom);
+extern int pglwgeom_get_type(const GSERIALIZED *lwgeom);
+extern int pglwgeom_get_zm(const GSERIALIZED *lwgeom);
+extern GSERIALIZED* pglwgeom_drop_bbox(GSERIALIZED *geom);
+extern size_t pglwgeom_size(const GSERIALIZED *geom);
+extern int pglwgeom_ndims(const GSERIALIZED *geom);
+extern bool pglwgeom_has_bbox(const GSERIALIZED *lwgeom);
+extern bool pglwgeom_has_z(const GSERIALIZED *lwgeom);
+extern bool pglwgeom_has_m(const GSERIALIZED *lwgeom);
+extern int pglwgeom_is_empty(const GSERIALIZED *geom);
 /*
  * Get the 2d bounding box of the given geometry, in FLOAT4 format.
  * Use a cached bbox if available, compute it otherwise.
  * Return LW_FALSE if the geometry has no bounding box (ie: is empty).
  */
-extern int pglwgeom_getbox2d_p(const PG_LWGEOM *geom, BOX2DFLOAT4 *box);
+extern int pglwgeom_getbox2d_p(const GSERIALIZED *geom, GBOX *box);
 
 /* PG-dependant */
 
@@ -150,8 +126,8 @@ char* text2cstring(const text *textptr);
 
 /*
  * Use this macro to extract the char * required
- * by most functions from an PG_LWGEOM struct.
- * (which is an PG_LWGEOM w/out int32 size casted to char *)
+ * by most functions from an GSERIALIZED struct.
+ * (which is an GSERIALIZED w/out int32 size casted to char *)
  */
 #define SERIALIZED_FORM(x) ((uint8_t *)VARDATA((x)))
 
