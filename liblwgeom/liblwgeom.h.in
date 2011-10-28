@@ -912,7 +912,7 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
 /**
 * Set the SRID on an LWGEOM
 * For collections, only the parent gets an SRID, all
-* the children get zero.
+* the children get SRID_UNKNOWN.
 */
 extern void lwgeom_set_srid(LWGEOM *geom, int srid);
 
@@ -924,21 +924,9 @@ extern void lwgeom_set_srid(LWGEOM *geom, int srid);
  * between float8 and float4 representations.
  */
 
-extern BOX2DFLOAT4 *box3d_to_box2df(BOX3D *box);
-extern int box3d_to_box2df_p(BOX3D *box, BOX2DFLOAT4 *res);
-
-extern BOX3D box2df_to_box3d(BOX2DFLOAT4 *box);
-extern void box2df_to_box3d_p(BOX2DFLOAT4 *box, BOX3D *box3d);
-
-extern BOX3D *box3d_union(BOX3D *b1, BOX3D *b2);
-extern int box3d_union_p(BOX3D *b1, BOX3D *b2, BOX3D *ubox);
-
-
 extern BOX3D* box3d_from_gbox(const GBOX *gbox);
 extern GBOX* box3d_to_gbox(const BOX3D *b3d);
 
-/* Expand given box of 'd' units in all directions */
-void expand_box2d(BOX2DFLOAT4 *box, double d);
 void expand_box3d(BOX3D *box, double d);
 
 

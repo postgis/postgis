@@ -546,33 +546,6 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX TAINTING */
 	if ( in_lwgeom->bbox ) lwgeom_add_bbox(out_lwgeom);
 
-#if 0
-	/*
-	 * COMPUTE_BBOX WHEN SIMPLE
-	 *
-	 * WARNING: this is not SIMPLE, as snapping
-	 * an existing bbox to a grid does not
-	 * give the same result as computing a
-	 * new bounding box on the snapped coordinates.
-	 *
-	 * This bug has been fixed in postgis-1.1.2
-	 */
-	if ( in_lwgeom->bbox )
-	{
-		box2df_to_box3d_p(in_lwgeom->bbox, &box3d);
-
-		box3d.xmin = rint((box3d.xmin - grid.ipx)/grid.xsize)
-		             * grid.xsize + grid.ipx;
-		box3d.xmax = rint((box3d.xmax - grid.ipx)/grid.xsize)
-		             * grid.xsize + grid.ipx;
-		box3d.ymin = rint((box3d.ymin - grid.ipy)/grid.ysize)
-		             * grid.ysize + grid.ipy;
-		box3d.ymax = rint((box3d.ymax - grid.ipy)/grid.ysize)
-		             * grid.ysize + grid.ipy;
-
-		out_lwgeom->bbox = box3d_to_box2df(&box3d);
-	}
-#endif /* 0 */
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 
@@ -647,34 +620,6 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 
 	/* COMPUTE_BBOX TAINTING */
 	if ( in_lwgeom->bbox ) lwgeom_add_bbox(out_lwgeom);
-
-#if 0
-	/*
-	 * COMPUTE_BBOX WHEN SIMPLE
-	 *
-	 * WARNING: this is not SIMPLE, as snapping
-	 * an existing bbox to a grid does not
-	 * give the same result as computing a
-	 * new bounding box on the snapped coordinates.
-	 *
-	 * This bug has been fixed in postgis-1.1.2
-	 */
-	if ( in_lwgeom->bbox )
-	{
-		box2df_to_box3d_p(in_lwgeom->bbox, &box3d);
-
-		box3d.xmin = rint((box3d.xmin - grid.ipx)/grid.xsize)
-		             * grid.xsize + grid.ipx;
-		box3d.xmax = rint((box3d.xmax - grid.ipx)/grid.xsize)
-		             * grid.xsize + grid.ipx;
-		box3d.ymin = rint((box3d.ymin - grid.ipy)/grid.ysize)
-		             * grid.ysize + grid.ipy;
-		box3d.ymax = rint((box3d.ymax - grid.ipy)/grid.ysize)
-		             * grid.ysize + grid.ipy;
-
-		out_lwgeom->bbox = box3d_to_box2df(&box3d);
-	}
-#endif /* 0 */
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 

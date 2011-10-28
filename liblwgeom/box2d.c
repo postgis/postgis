@@ -13,18 +13,6 @@
 #endif
 
 
-/* Expand given box of 'd' units in all directions */
-void
-expand_box2d(BOX2DFLOAT4 *box, double d)
-{
-	box->xmin -= d;
-	box->ymin -= d;
-
-	box->xmax += d;
-	box->ymax += d;
-}
-
-
 
 BOX2DFLOAT4 *
 box2d_clone(const BOX2DFLOAT4 *in)
