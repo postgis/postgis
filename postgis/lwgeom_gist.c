@@ -99,7 +99,7 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_overlap --entry");
 
-	if ( pglwgeom_get_srid(lwgeom1) != pglwgeom_get_srid(lwgeom2) )
+	if ( gserialized_get_srid(lwgeom1) != gserialized_get_srid(lwgeom2) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -142,7 +142,7 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_overleft --entry");
 
-	if ( pglwgeom_get_srid(lwgeom1) != pglwgeom_get_srid(lwgeom2) )
+	if ( gserialized_get_srid(lwgeom1) != gserialized_get_srid(lwgeom2) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -178,7 +178,7 @@ Datum LWGEOM_left(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_left --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -208,7 +208,7 @@ Datum LWGEOM_right(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_right --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -238,7 +238,7 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_overright --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -268,7 +268,7 @@ Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_overbelow --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -298,7 +298,7 @@ Datum LWGEOM_below(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_below --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -328,7 +328,7 @@ Datum LWGEOM_above(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_above --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -358,7 +358,7 @@ Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_overabove --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -387,7 +387,7 @@ Datum LWGEOM_samebox(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_samebox --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -416,7 +416,7 @@ Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_contained --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{
@@ -446,7 +446,7 @@ Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(2, "GIST: LWGEOM_contain --entry");
 
-	error_if_srid_mismatch(pglwgeom_get_srid(lwgeom1), pglwgeom_get_srid(lwgeom2));
+	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
 	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
 	{

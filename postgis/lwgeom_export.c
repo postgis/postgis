@@ -158,7 +158,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		}
 	}
 
-	srid = pglwgeom_get_srid(geom);
+	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);
@@ -313,7 +313,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	if (option & 2 || option & 4)
 	{
-		srid = pglwgeom_get_srid(geom);
+		srid = gserialized_get_srid(geom);
 		if ( srid != SRID_UNKNOWN )
 		{
 			if (option & 2) srs = getSRSbySRID(srid, true);
@@ -452,7 +452,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 		}
 	}
 
-	srid = pglwgeom_get_srid(geom);
+	srid = gserialized_get_srid(geom);
 	if (srid == SRID_UNKNOWN)      srs = NULL;
 	else if (option & 1) srs = getSRSbySRID(srid, false);
 	else                 srs = getSRSbySRID(srid, true);

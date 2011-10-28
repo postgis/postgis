@@ -203,28 +203,6 @@ pglwgeom_serialize(LWGEOM *in)
 }
 
 
-/*
- * Set the SRID of a GSERIALIZED
- * Returns a newly allocated GSERIALIZED object.
- * Allocation will be done using the lwalloc.
- */
-GSERIALIZED *
-pglwgeom_set_srid(GSERIALIZED *lwgeom, int32 new_srid)
-{
-	gserialized_set_srid(lwgeom, new_srid);
-	return lwgeom;
-}
-
-/*
- * get the SRID from the LWGEOM
- * none present => -1
- */
-int
-pglwgeom_get_srid(GSERIALIZED *lwgeom)
-{
-	return gserialized_get_srid(lwgeom);
-}
-
 int
 pglwgeom_get_type(const GSERIALIZED *lwgeom)
 {

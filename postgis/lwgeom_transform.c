@@ -48,7 +48,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	}
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	if (pglwgeom_get_srid(geom) == SRID_UNKNOWN)
+	if (gserialized_get_srid(geom) == SRID_UNKNOWN)
 	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR,"Input geometry has unknown (%d) SRID",SRID_UNKNOWN);
@@ -62,7 +62,7 @@ Datum transform(PG_FUNCTION_ARGS)
 	 * If input SRID and output SRID are equal, return geometry
 	 * without transform it
 	 */
-	if (pglwgeom_get_srid(geom) == result_srid)
+	if (gserialized_get_srid(geom) == result_srid)
 	{
 		pfree(geom);
 		PG_RETURN_POINTER(PG_GETARG_DATUM(0));
@@ -73,17 +73,17 @@ Datum transform(PG_FUNCTION_ARGS)
 
 	/* Add the output srid to the cache if it's not already there */
 	if (!IsInPROJ4Cache(proj_cache, result_srid))
-		AddToPROJ4Cache(proj_cache, result_srid, pglwgeom_get_srid(geom));
+		AddToPROJ4Cache(proj_cache, result_srid, gserialized_get_srid(geom));
 
 	/* Get the output projection */
 	output_pj = GetProjectionFromPROJ4Cache(proj_cache, result_srid);
 
 	/* Add the input srid to the cache if it's not already there */
-	if (!IsInPROJ4Cache(proj_cache, pglwgeom_get_srid(geom)))
-		AddToPROJ4Cache(proj_cache, pglwgeom_get_srid(geom), result_srid);
+	if (!IsInPROJ4Cache(proj_cache, gserialized_get_srid(geom)))
+		AddToPROJ4Cache(proj_cache, gserialized_get_srid(geom), result_srid);
 
 	/* Get the input projection	 */
-	input_pj = GetProjectionFromPROJ4Cache(proj_cache, pglwgeom_get_srid(geom));
+	input_pj = GetProjectionFromPROJ4Cache(proj_cache, gserialized_get_srid(geom));
 
 
 	/* now we have a geometry, and input/output PJ structs. */
@@ -136,7 +136,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	}
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	if (pglwgeom_get_srid(geom) == SRID_UNKNOWN)
+	if (gserialized_get_srid(geom) == SRID_UNKNOWN)
 	{
 		pfree(geom);
 		elog(ERROR,"tranform: source SRID = %d",SRID_UNKNOWN);

@@ -1078,8 +1078,8 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	srid = pglwgeom_get_srid(pglwgeom1);
-	error_if_srid_mismatch(srid, pglwgeom_get_srid(pglwgeom2));
+	srid = gserialized_get_srid(pglwgeom1);
+	error_if_srid_mismatch(srid, gserialized_get_srid(pglwgeom2));
 
 	lwgeoms[0] = lwgeom_from_gserialized(pglwgeom1);
 	lwgeoms[1] = lwgeom_from_gserialized(pglwgeom2);
@@ -1476,7 +1476,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	error_if_srid_mismatch(pglwgeom_get_srid(pglwg1), pglwgeom_get_srid(pglwg2));
+	error_if_srid_mismatch(gserialized_get_srid(pglwg1), gserialized_get_srid(pglwg2));
 
 	lwpoints[0] = lwgeom_as_lwpoint(lwgeom_from_gserialized(pglwg1));
 	lwpoints[1] = lwgeom_as_lwpoint(lwgeom_from_gserialized(pglwg2));

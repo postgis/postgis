@@ -509,7 +509,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	if ( lwout == NULL )
 	{
 		lwout = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, 
-		            pglwgeom_get_srid(gin), hasz, hasm);
+		            gserialized_get_srid(gin), hasz, hasm);
 	}
 
 	gout = pglwgeom_serialize(lwout);

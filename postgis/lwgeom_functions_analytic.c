@@ -644,7 +644,7 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GSERIALIZED *geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	type1 = pglwgeom_get_type(geom1);
 	type2 = pglwgeom_get_type(geom2);
@@ -887,7 +887,7 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 		elog(ERROR,"line_locate_point: 2st arg isnt a point");
 		PG_RETURN_NULL();
 	}
-	if ( pglwgeom_get_srid(geom1) != pglwgeom_get_srid(geom2) )
+	if ( gserialized_get_srid(geom1) != gserialized_get_srid(geom2) )
 	{
 		elog(ERROR, "Operation on two geometries with different SRIDs");
 		PG_RETURN_NULL();

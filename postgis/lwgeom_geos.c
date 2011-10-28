@@ -312,13 +312,13 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			offset += INTALIGN(VARSIZE(pggeom));
 			if ( ! gotsrid ) /* Initialize SRID */
 			{
-				srid = pglwgeom_get_srid(pggeom);
+				srid = gserialized_get_srid(pggeom);
 				gotsrid = 1;
 				if ( pglwgeom_has_z(pggeom) ) is3d = 1;
 			}
 			else
 			{
-				error_if_srid_mismatch(srid, pglwgeom_get_srid(pggeom));
+				error_if_srid_mismatch(srid, gserialized_get_srid(pggeom));
 			}
 
 			if ( pgtype != POLYGONTYPE && pgtype != MULTIPOLYGONTYPE )
@@ -485,12 +485,12 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 						lwerror("geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
 						PG_RETURN_NULL();
 					}
-					srid = pglwgeom_get_srid(geom);
+					srid = gserialized_get_srid(geom);
 					POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(pglwgeom_get_type(geom)));
 				}
 				else
 				{
-					error_if_srid_mismatch(srid, pglwgeom_get_srid(geom));
+					error_if_srid_mismatch(srid, gserialized_get_srid(geom));
 
 					g1 = POSTGIS2GEOS(pgis_geom);
 					if ( 0 == g1 )   /* exception thrown at construction */
@@ -588,7 +588,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 
 	is3d = ( pglwgeom_has_z(geom1) );
 
-	srid = pglwgeom_get_srid(geom1);
+	srid = gserialized_get_srid(geom1);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -719,7 +719,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	if ( pglwgeom_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
-	srid = pglwgeom_get_srid(geom1);
+	srid = gserialized_get_srid(geom1);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -779,7 +779,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	if ( pglwgeom_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
-	srid = pglwgeom_get_srid(geom1);
+	srid = gserialized_get_srid(geom1);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -877,7 +877,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
-	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
+	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
 	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 
@@ -1084,7 +1084,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
-	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
+	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
 	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 
@@ -1257,7 +1257,7 @@ Datum offsetcurve(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
-	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
+	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
 	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 
@@ -1385,7 +1385,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
-	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
+	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
 	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 
@@ -1436,7 +1436,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	GEOSSetSRID(geosresult, pglwgeom_get_srid(geom));
+	GEOSSetSRID(geosresult, gserialized_get_srid(geom));
 
 	result = GEOS2POSTGIS(geosresult, pglwgeom_has_z(geom));
 
@@ -1756,7 +1756,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Overlaps(Empty) == FALSE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -1832,7 +1832,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Contains(Empty) == FALSE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -1982,7 +1982,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.ContainsProperly(Empty) == FALSE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -2081,7 +2081,7 @@ Datum covers(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(false);
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/*
 	 * short-circuit 1: if geom2 bounding box is not completely inside
@@ -2232,7 +2232,7 @@ Datum within(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Within(Empty) == FALSE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -2367,7 +2367,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.CoveredBy(Empty) == FALSE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -2496,7 +2496,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Crosses(Empty) == FALSE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -2573,7 +2573,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Intersects(Empty) == FALSE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -2740,7 +2740,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Touches(Empty) == FALSE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -2809,7 +2809,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Disjoint(Empty) == TRUE */
 	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
@@ -2882,7 +2882,7 @@ Datum relate_pattern(PG_FUNCTION_ARGS)
 	/* TODO handle empty */
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -2964,7 +2964,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	}
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -3028,7 +3028,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(pglwgeom_get_srid(geom1), pglwgeom_get_srid(geom2));
+	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* Different types can't be equal */
 	if( pglwgeom_get_type(geom1) != pglwgeom_get_type(geom2) )
@@ -3298,11 +3298,11 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 		vgeoms[i] = g;
 		if ( ! i )
 		{
-			srid = pglwgeom_get_srid(geom);
+			srid = gserialized_get_srid(geom);
 		}
 		else
 		{
-			if ( srid != pglwgeom_get_srid(geom) )
+			if ( srid != gserialized_get_srid(geom) )
 			{
 				elog(ERROR, "polygonize: operation on mixed SRID geometries");
 				PG_RETURN_NULL();
@@ -3367,7 +3367,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
-	GEOSSetSRID(g3, pglwgeom_get_srid(geom1));
+	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
 	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
 
