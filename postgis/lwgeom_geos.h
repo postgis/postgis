@@ -39,10 +39,10 @@
 ** Public prototypes for GEOS utility functions.
 */
 
-PG_LWGEOM *GEOS2POSTGIS(GEOSGeom geom, char want3d);
-GEOSGeometry * POSTGIS2GEOS(PG_LWGEOM *g);
+GSERIALIZED *GEOS2POSTGIS(GEOSGeom geom, char want3d);
+GEOSGeometry * POSTGIS2GEOS(GSERIALIZED *g);
 
 
-void errorIfGeometryCollection(PG_LWGEOM *g1, PG_LWGEOM *g2);
+void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2);
 
 #endif /* LWGEOM_GEOS_H_ 1 */

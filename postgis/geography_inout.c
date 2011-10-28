@@ -618,7 +618,7 @@ Datum geography_from_binary(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_from_geometry);
 Datum geography_from_geometry(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g_ser = NULL;
 
@@ -672,7 +672,7 @@ PG_FUNCTION_INFO_V1(geometry_from_geography);
 Datum geometry_from_geography(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom = NULL;
-	PG_LWGEOM *ret = NULL;
+	GSERIALIZED *ret = NULL;
 	GSERIALIZED *g_ser = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	lwgeom = lwgeom_from_gserialized(g_ser);

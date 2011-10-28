@@ -837,7 +837,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	for (i=0; i<samplerows; i++)
 	{
 		Datum datum;
-		PG_LWGEOM *geom;
+		GSERIALIZED *geom;
 		GBOX box;
 
 		datum = fetchfunc(stats, i, &isnull);

@@ -54,10 +54,10 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else /* POSTGIS_GEOS_VERSION >= 33 */
 
-	PG_LWGEOM *in, *out;
+	GSERIALIZED *in, *out;
 	LWGEOM *lwgeom_in, *lwgeom_out;
 
-	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom_in = pglwgeom_deserialize(in);
 
 	switch ( lwgeom_in->type )
@@ -144,10 +144,10 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 	PG_RETURN_NULL();
 #else /* POSTGIS_GEOS_VERSION >= 33 */
 
-	PG_LWGEOM *in, *out;
+	GSERIALIZED *in, *out;
 	LWGEOM *lwgeom_in, *lwgeom_out;
 
-	in = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom_in = pglwgeom_deserialize(in);
 
 	/* Short-circuit: empty geometry are the cleanest ! */

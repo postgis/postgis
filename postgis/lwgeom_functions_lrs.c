@@ -463,8 +463,8 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
 PG_FUNCTION_INFO_V1(LWGEOM_locate_between_m);
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *gin = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_LWGEOM *gout;
+	GSERIALIZED *gin = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gout;
 	double start_measure = PG_GETARG_FLOAT8(1);
 	double end_measure = PG_GETARG_FLOAT8(2);
 	LWGEOM *lwin, *lwout;
@@ -528,8 +528,8 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(ST_AddMeasure);
 Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *gin = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_LWGEOM *gout;
+	GSERIALIZED *gin = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gout;
 	double start_measure = PG_GETARG_FLOAT8(1);
 	double end_measure = PG_GETARG_FLOAT8(2);
 	LWGEOM *lwin, *lwout;

@@ -193,7 +193,7 @@ PG_FUNCTION_INFO_V1(BOX3D_to_BOX2DFLOAT4);
 Datum BOX3D_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
 {
 	BOX3D *in = (BOX3D *)PG_GETARG_POINTER(0);
-	BOX2DFLOAT4 *out = box3d_to_gbox(in);
+	GBOX *out = box3d_to_gbox(in);
 	PG_RETURN_POINTER(out);
 }
 
@@ -227,7 +227,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
 	POINTARRAY *pa;
-	PG_LWGEOM *result;
+	GSERIALIZED *result;
 	POINT4D pt;
 
 
@@ -322,7 +322,7 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 }
 
 /**
- * convert a PG_LWGEOM to BOX3D
+ * convert a GSERIALIZED to BOX3D
  *
  * NOTE: the bounding box is *always* recomputed as the cache
  * is a box2d, not a box3d...
@@ -331,7 +331,7 @@ Datum BOX3D_expand(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_to_BOX3D);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	GBOX gbox;
 	BOX3D *result;
@@ -394,7 +394,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	Pointer box3d_ptr = PG_GETARG_POINTER(0);
 	Pointer geom_ptr = PG_GETARG_POINTER(1);
 	BOX3D *a,*b;
-	PG_LWGEOM *geom;
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	BOX3D *result;
 	GBOX gbox;
@@ -408,7 +408,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 
 	if (box3d_ptr == NULL)
 	{
-		geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+		geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 		lwgeom = pglwgeom_deserialize(geom);
 		rv = lwgeom_calculate_gbox(lwgeom, &gbox);
 		if ( rv == LW_FAILURE )
@@ -429,7 +429,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(result);
 	}
 
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	lwgeom = pglwgeom_deserialize(geom);
 	rv = lwgeom_calculate_gbox(lwgeom, &gbox);
 	result = palloc(sizeof(BOX3D));
@@ -456,8 +456,8 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(BOX3D_construct);
 Datum BOX3D_construct(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *min = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_LWGEOM *max = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	GSERIALIZED *min = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *max = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	BOX3D *result = palloc(sizeof(BOX3D));
 	LWGEOM *minpoint, *maxpoint;
 	POINT3DZ minp, maxp;

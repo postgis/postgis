@@ -36,7 +36,7 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_has_arc);
 Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	LWGEOM *lwgeom = pglwgeom_deserialize(geom);
 	uint32 result = lwgeom_has_arc(lwgeom);
 	lwgeom_free(lwgeom);
@@ -52,9 +52,9 @@ Datum LWGEOM_has_arc(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_curve_segmentize);
 Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	uint32 perQuad = PG_GETARG_INT32(1);
-	PG_LWGEOM *ret;
+	GSERIALIZED *ret;
 	LWGEOM *igeom = NULL, *ogeom = NULL;
 
 	POSTGIS_DEBUG(2, "LWGEOM_curve_segmentize called.");
@@ -87,8 +87,8 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_line_desegmentize);
 Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_LWGEOM *ret;
+	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *ret;
 	LWGEOM *igeom = NULL, *ogeom = NULL;
 
 	POSTGIS_DEBUG(2, "LWGEOM_line_desegmentize.");

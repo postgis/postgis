@@ -57,7 +57,7 @@ static LWGEOM* parse_kml(xmlNodePtr xnode, bool *hasz);
 PG_FUNCTION_INFO_V1(geom_from_kml);
 Datum geom_from_kml(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom, *hlwgeom;
 	xmlDocPtr xmldoc;
 	text *xml_input;

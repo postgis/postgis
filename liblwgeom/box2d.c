@@ -14,10 +14,10 @@
 
 
 
-BOX2DFLOAT4 *
-box2d_clone(const BOX2DFLOAT4 *in)
+GBOX *
+box2d_clone(const GBOX *in)
 {
-	BOX2DFLOAT4 *ret = lwalloc(sizeof(BOX2DFLOAT4));
-	memcpy(ret, in, sizeof(BOX2DFLOAT4));
+	GBOX *ret = lwalloc(sizeof(GBOX));
+	memcpy(ret, in, sizeof(GBOX));
 	return ret;
 }

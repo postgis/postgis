@@ -56,7 +56,7 @@ GEOMDUMPSTATE;
 PG_FUNCTION_INFO_V1(LWGEOM_dump);
 Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *pglwgeom;
+	GSERIALIZED *pglwgeom;
 	LWCOLLECTION *lwcoll;
 	LWGEOM *lwgeom;
 	FuncCallContext *funcctx;
@@ -79,7 +79,7 @@ Datum LWGEOM_dump(PG_FUNCTION_ARGS)
 
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
-		pglwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		pglwgeom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 		lwgeom = pglwgeom_deserialize(pglwgeom);
 
 		/* Create function state */
@@ -203,7 +203,7 @@ struct POLYDUMPSTATE
 PG_FUNCTION_INFO_V1(LWGEOM_dump_rings);
 Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *pglwgeom;
+	GSERIALIZED *pglwgeom;
 	LWGEOM *lwgeom;
 	FuncCallContext *funcctx;
 	struct POLYDUMPSTATE *state;
@@ -222,7 +222,7 @@ Datum LWGEOM_dump_rings(PG_FUNCTION_ARGS)
 
 		oldcontext = MemoryContextSwitchTo(newcontext);
 
-		pglwgeom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		pglwgeom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 		if ( pglwgeom_get_type(pglwgeom) != POLYGONTYPE )
 		{
 			lwerror("Input is not a polygon");

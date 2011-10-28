@@ -27,7 +27,7 @@
 #include "lwgeom_geos.h"
 
 /*
-** Cache structure. We use PG_LWGEOM as keys so no transformations
+** Cache structure. We use GSERIALIZED as keys so no transformations
 ** are needed before we memcmp them with other keys. We store the
 ** size to avoid having to calculate the size every time.
 ** The argnum gives the number of function arguments we are caching.
@@ -39,8 +39,8 @@
 typedef struct
 {
 	char                          type;
-	PG_LWGEOM                     *pg_geom1;
-	PG_LWGEOM                     *pg_geom2;
+	GSERIALIZED                     *pg_geom1;
+	GSERIALIZED                     *pg_geom2;
 	size_t                        pg_geom1_size;
 	size_t                        pg_geom2_size;
 	int32                         argnum;
@@ -58,6 +58,6 @@ PrepGeomCache;
 ** If you are only caching one argument (e.g., in contains) supply 0 as the
 ** value for pg_geom2.
 */
-PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom1, PG_LWGEOM *pg_geom2);
+PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, GSERIALIZED *pg_geom1, GSERIALIZED *pg_geom2);
 
 #endif /* LWGEOM_GEOS_PREPARED_H_ 1 */

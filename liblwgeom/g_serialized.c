@@ -2,6 +2,7 @@
  * $Id$
  *
  * PostGIS - Spatial Types for PostgreSQL
+ *
  * Copyright 2009 Paul Ramsey <pramsey@cleverelephant.ca>
  *
  * This is free software; you can redistribute and/or modify it under

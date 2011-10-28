@@ -31,8 +31,8 @@ Datum postgis_proj_version(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(transform);
 Datum transform(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
-	PG_LWGEOM *result=NULL;
+	GSERIALIZED *geom;
+	GSERIALIZED *result=NULL;
 	LWGEOM *lwgeom;
 	projPJ input_pj, output_pj;
 	int32 result_srid ;
@@ -47,7 +47,7 @@ Datum transform(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	if (pglwgeom_get_srid(geom) == SRID_UNKNOWN)
 	{
 		PG_FREE_IF_COPY(geom, 0);
@@ -117,8 +117,8 @@ Datum transform(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(transform_geom);
 Datum transform_geom(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
-	PG_LWGEOM *result=NULL;
+	GSERIALIZED *geom;
+	GSERIALIZED *result=NULL;
 	LWGEOM *lwgeom;
 	projPJ input_pj, output_pj;
 	char *input_proj4, *output_proj4;
@@ -135,7 +135,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 	if (pglwgeom_get_srid(geom) == SRID_UNKNOWN)
 	{
 		pfree(geom);

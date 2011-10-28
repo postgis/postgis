@@ -97,7 +97,7 @@ char * getSRSbySRID(int srid, bool short_crs)
 PG_FUNCTION_INFO_V1(LWGEOM_asGML);
 Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	char *gml = NULL;
 	text *result;
@@ -122,7 +122,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
@@ -195,7 +195,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asKML);
 Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	char *kml;
 	text *result;
@@ -217,7 +217,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
@@ -270,7 +270,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asGeoJson);
 Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	char *geojson;
 	text *result;
@@ -291,7 +291,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if (PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
@@ -351,7 +351,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asSVG);
 Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	char *svg;
 	text *result;
@@ -360,7 +360,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* check for relative path notation */
 	if ( PG_NARGS() > 1 && ! PG_ARGISNULL(1) )
@@ -390,7 +390,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_asX3D);
 Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 {
-	PG_LWGEOM *geom;
+	GSERIALIZED *geom;
 	LWGEOM *lwgeom;
 	char *x3d;
 	text *result;
@@ -416,7 +416,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if ( PG_ARGISNULL(1) ) PG_RETURN_NULL();
-	geom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
