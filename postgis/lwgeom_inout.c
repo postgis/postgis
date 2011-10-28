@@ -16,16 +16,10 @@
 #include "mb/pg_wchar.h"
 # include "lib/stringinfo.h" /* for binary input */
 
-
 #include "liblwgeom.h"
-
-
-
 #include "lwgeom_pg.h"
-#include "profile.h"
 
 void elog_ERROR(const char* string);
-
 
 Datum LWGEOM_in(PG_FUNCTION_ARGS);
 Datum LWGEOM_out(PG_FUNCTION_ARGS);

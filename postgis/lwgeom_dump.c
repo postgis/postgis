@@ -18,7 +18,6 @@
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
-#include "profile.h"
 
 #include "../postgis_config.h"
 

@@ -26,7 +26,6 @@
 
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
-#include "profile.h"
 #include "../liblwgeom/liblwgeom.h"
 #include "../liblwgeom/lwgeom_geos.h"
 

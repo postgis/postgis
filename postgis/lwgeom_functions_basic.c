@@ -19,7 +19,6 @@
 #include "liblwgeom_internal.h"
 #include "libtgeom.h"
 #include "lwgeom_pg.h"
-#include "profile.h"
 
 #include <math.h>
 #include <float.h>
