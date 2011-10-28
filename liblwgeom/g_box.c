@@ -27,41 +27,6 @@ void gbox_init(GBOX *gbox)
 	memset(gbox, 0, sizeof(GBOX));
 }
 
-/* TODO to be removed */
-GBOX* gbox_from_box2df(int flags, const BOX2DFLOAT4 *box)
-{
-	GBOX *g;
-	assert(box);
-	
-	g = gbox_new(flags);
-
-	g->xmin = next_float_down(box->xmin);
-	g->ymin = next_float_down(box->ymin);
-	g->xmax = next_float_up(box->xmax);
-	g->ymax = next_float_up(box->ymax);
-
-	/* CAUTION Inconsistent GBOX if Z or M Dim present ! */
-	g->zmin = g->zmax = NO_Z_VALUE;
-	g->mmin = g->mmax = NO_M_VALUE;
-
-	return g;
-}
-
-/* TODO to be removed */
-BOX2DFLOAT4* box2df_from_gbox(const GBOX *gbox)
-{
-	BOX2DFLOAT4 *b;
-	assert(gbox);
-	
-	b = lwalloc(sizeof(BOX2DFLOAT4));
-
-	b->xmin = next_float_down(gbox->xmin);
-	b->ymin = next_float_down(gbox->ymin);
-	b->xmax = next_float_up(gbox->xmax);
-	b->ymax = next_float_up(gbox->ymax);
-
- 	return b;	
-}
 
 /* TODO to be removed */
 BOX3D* box3d_from_gbox(const GBOX *gbox)

@@ -654,9 +654,6 @@ extern void lwgeom_drop_srid(LWGEOM *lwgeom);
 */
 extern void lwgeom_add_bbox(LWGEOM *lwgeom);
 
-GBOX* gbox_from_box2df(int flags, const BOX2DFLOAT4 *box);
-BOX2DFLOAT4* box2df_from_gbox(const GBOX *gbox);
-
 /** 
 * Determine whether a LWGEOM can contain sub-geometries or not 
 */
