@@ -59,26 +59,6 @@ lwline_construct_empty(int srid, char hasz, char hasm)
 }
 
 
-
-
-
-/*
- * Find bounding box (standard one)
- * zmin=zmax=NO_Z_VALUE if 2d
- */
-BOX3D *
-lwline_compute_box3d(LWLINE *line)
-{
-	BOX3D *ret;
-
-	if (line == NULL) return NULL;
-
-	ret = ptarray_compute_box3d(line->points);
-	return ret;
-}
-
-
-
 void lwline_free (LWLINE  *line)
 {
 	if ( line->bbox )

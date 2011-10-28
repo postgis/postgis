@@ -756,16 +756,6 @@ extern uint8_t *getPoint_internal(const POINTARRAY *pa, int n);
 
 
 /*
- * Calculate the (BOX3D) bounding box of a set of points.
- * Returns an alloced BOX3D or NULL (for empty geom) in the first form.
- * Write result in user-provided BOX3D in second form (return 0 if untouched).
- * If pa is 2d, then box3d's zmin/zmax will be set to NO_Z_VALUE
- */
-extern BOX3D *ptarray_compute_box3d(const POINTARRAY *pa);
-extern int ptarray_compute_box3d_p(const POINTARRAY *pa, BOX3D *out);
-
-
-/*
  * size of point represeneted in the POINTARRAY
  * 16 for 2d, 24 for 3d, 32 for 4d
  */
@@ -853,12 +843,6 @@ extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
  *--------------------------------------------------------*/
 
 /*
- * find bounding box (standard one)
- * zmin=zmax=0 if 2d (might change to NaN)
- */
-extern BOX3D *lwpoint_compute_box3d(LWPOINT *point);
-
-/*
  * convenience functions to hide the POINTARRAY
  */
 extern int lwpoint_getPoint2d_p(const LWPOINT *point, POINT2D *out);
@@ -870,11 +854,6 @@ extern int lwpoint_getPoint4d_p(const LWPOINT *point, POINT4D *out);
  * LWLINE functions
  ******************************************************************/
 
-/*
- * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
- */
-extern BOX3D *lwline_compute_box3d(LWLINE *line);
-
 /**
  * Add a LWPOINT to an LWLINE
  */
@@ -883,11 +862,6 @@ extern int lwline_add_lwpoint(LWLINE *line, LWPOINT *point, int where);
 /******************************************************************
  * LWPOLY functions
  ******************************************************************/
-
-/*
- * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
- */
-extern BOX3D *lwpoly_compute_box3d(LWPOLY *poly);
 
 /**
 * Add a ring, allocating extra space if necessary. The polygon takes
@@ -909,23 +883,6 @@ extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
 
 
 
-/******************************************************************
- * LWTRIANGLE functions
- ******************************************************************/
-
-/*
- * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
- */
-extern BOX3D *lwtriangle_compute_box3d(LWTRIANGLE *triangle);
-
-/******************************************************************
- * LWCIRCSTRING functions
- ******************************************************************/
-
-/*
- * find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN)
- */
-extern BOX3D *lwcircstring_compute_box3d(const LWCIRCSTRING *curve);
 
 
 
@@ -939,20 +896,12 @@ extern int lwcollection_ngeoms(const LWCOLLECTION *col);
 extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
 extern LWGEOM *lwcollection_homogenize(const LWCOLLECTION *col);
 
-/*
- * Deserialize an lwgeom serialized form.
- * The deserialized (recursive) structure will store
- * pointers to the serialized form (POINTARRAYs).
- */
-BOX3D *lwgeom_compute_box3d(const LWGEOM *geom);
-
 
 /******************************************************************
  * LWMULTIx and LWCOLLECTION functions
  ******************************************************************/
 
 LWGEOM *lwcollection_getsubgeom(LWCOLLECTION *col, int gnum);
-BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col);
 LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type);
 
 

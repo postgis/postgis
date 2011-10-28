@@ -53,18 +53,6 @@ lwtriangle_construct_empty(int srid, char hasz, char hasm)
 	return result;
 }
 
-/* find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN) */
-BOX3D *
-lwtriangle_compute_box3d(LWTRIANGLE *triangle)
-{
-	BOX3D *result;
-
-	if (triangle== NULL) return NULL;
-	result  = ptarray_compute_box3d(triangle->points);
-
-	return result;
-}
-
 void lwtriangle_free(LWTRIANGLE  *triangle)
 {
 	if (triangle->bbox)

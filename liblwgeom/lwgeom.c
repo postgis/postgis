@@ -77,45 +77,6 @@ lwgeom_reverse(LWGEOM *lwgeom)
 	}
 }
 
-BOX3D *lwgeom_compute_box3d(const LWGEOM *lwgeom)
-{
-    /* Null can't have a box */
-	if ( ! lwgeom ) return NULL;
-
-    /* Empty things can't have a box */
-    if ( lwgeom_is_empty(lwgeom) )
-        return NULL;
-
-	switch (lwgeom->type)
-	{
-	case POINTTYPE:
-		return lwpoint_compute_box3d((LWPOINT *)lwgeom);
-	case LINETYPE:
-		return lwline_compute_box3d((LWLINE *)lwgeom);
-	case CIRCSTRINGTYPE:
-		return lwcircstring_compute_box3d((LWCIRCSTRING *)lwgeom);
-	case POLYGONTYPE:
-		return lwpoly_compute_box3d((LWPOLY *)lwgeom);
-	case TRIANGLETYPE:
-		return lwtriangle_compute_box3d((LWTRIANGLE *)lwgeom);
-	case COMPOUNDTYPE:
-	case CURVEPOLYTYPE:
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTICURVETYPE:
-	case MULTIPOLYGONTYPE:
-	case MULTISURFACETYPE:
-	case POLYHEDRALSURFACETYPE:
-	case TINTYPE:
-	case COLLECTIONTYPE:
-		return lwcollection_compute_box3d((LWCOLLECTION *)lwgeom);
-	}
-	/* Never get here, please. */
-    lwerror("Unhandled type in lwgeom_compute_box3d: %d", lwgeom->type);
-	return NULL;
-}
-
-
 LWPOINT *
 lwgeom_as_lwpoint(const LWGEOM *lwgeom)
 {

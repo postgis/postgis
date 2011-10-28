@@ -75,19 +75,6 @@ lwpoly_construct_empty(int srid, char hasz, char hasm)
 	return result;
 }
 
-/* find bounding box (standard one)  zmin=zmax=0 if 2d (might change to NaN) */
-BOX3D *
-lwpoly_compute_box3d(LWPOLY *poly)
-{
-	BOX3D *result;
-
-	/* just need to check outer ring -- interior rings are inside */
-	POINTARRAY *pa = poly->rings[0];
-	result  = ptarray_compute_box3d(pa);
-
-	return result;
-}
-
 void lwpoly_free(LWPOLY  *poly)
 {
 	int t;

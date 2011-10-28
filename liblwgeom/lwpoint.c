@@ -18,29 +18,6 @@
 
 
 /*
- * Find bounding box (standard one)
- *   zmin=zmax=NO_Z_VALUE if 2d
- */
-BOX3D *
-lwpoint_compute_box3d(LWPOINT *point)
-{
-	LWDEBUGF(2, "lwpoint_compute_box3d called with point %p", point);
-
-	if (point == NULL)
-	{
-		LWDEBUG(3, "lwpoint_compute_box3d returning NULL");
-
-		return NULL;
-	}
-
-	LWDEBUG(3, "lwpoint_compute_box3d returning ptarray_compute_box3d return");
-
-	return ptarray_compute_box3d(point->point);
-}
-
-
-
-/*
  * Convenience functions to hide the POINTARRAY
  * TODO: obsolete this
  */

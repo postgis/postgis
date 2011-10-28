@@ -313,57 +313,6 @@ void lwcollection_free(LWCOLLECTION *col)
 	lwfree(col);
 }
 
-BOX3D *lwcollection_compute_box3d(LWCOLLECTION *col)
-{
-	int i;
-	BOX3D *boxfinal = NULL;
-	BOX3D *boxtmp1 = NULL;
-	BOX3D *boxtmp2 = NULL;
-	for ( i = 0; i < col->ngeoms; i++ )
-	{
-		if ( col->geoms[i] )
-		{
-			switch ( col->geoms[i]->type )
-			{
-			case POINTTYPE:
-				boxtmp1 = lwpoint_compute_box3d((LWPOINT*)(col->geoms[i]));
-				break;
-			case LINETYPE:
-				boxtmp1 = lwline_compute_box3d((LWLINE*)(col->geoms[i]));
-				break;
-			case POLYGONTYPE:
-				boxtmp1 = lwpoly_compute_box3d((LWPOLY*)(col->geoms[i]));
-				break;
-			case CIRCSTRINGTYPE:
-				boxtmp1 = lwcircstring_compute_box3d((LWCIRCSTRING *)(col->geoms[i]));
-				break;
-			case COMPOUNDTYPE:
-			case CURVEPOLYTYPE:
-			case MULTIPOINTTYPE:
-			case MULTILINETYPE:
-			case MULTIPOLYGONTYPE:
-			case MULTICURVETYPE:
-			case MULTISURFACETYPE:
-			case COLLECTIONTYPE:
-				boxtmp1 = lwcollection_compute_box3d((LWCOLLECTION*)(col->geoms[i]));
-				break;
-			}
-			boxtmp2 = boxfinal;
-			boxfinal = box3d_union(boxtmp1, boxtmp2);
-			if ( boxtmp1 && boxtmp1 != boxfinal )
-			{
-				lwfree(boxtmp1);
-				boxtmp1 = NULL;
-			}
-			if ( boxtmp2 && boxtmp2 != boxfinal )
-			{
-				lwfree(boxtmp2);
-				boxtmp2 = NULL;
-			}
-		}
-	}
-	return boxfinal;
-}
 
 /**
 * Takes a potentially heterogeneous collection and returns a homogeneous
