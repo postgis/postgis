@@ -116,17 +116,8 @@
 
 
 /*
- * Return a valid srid from an arbitrary integerj
- * Raises a notice if what comes out is different from
- * what went in.
- * Raises an error if srid value is out of bounds.
- */
-int clamp_srid(int srid);
-
-/*
 * Internal prototypes
 */
-
 
 /* Machine endianness */
 #define XDR 0

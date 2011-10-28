@@ -3,7 +3,6 @@
 #include <stdarg.h>
 #include <string.h>
 
-
 /* Global variables */
 #include "../postgis_config.h"
 #include "liblwgeom_internal.h"
@@ -40,7 +39,6 @@ static char *lwgeomTypeName[] =
 	"Triangle",
 	"Tin"
 };
-
 
 /*
  * lwnotice/lwerror handlers
@@ -208,7 +206,8 @@ void lwgeom_install_default_allocators(void)
 }
 
 
-const char* lwtype_name(uint8_t type)
+const char* 
+lwtype_name(uint8_t type)
 {
 	if ( type > 15 )
 	{

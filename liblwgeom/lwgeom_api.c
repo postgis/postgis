@@ -796,7 +796,7 @@ ptarray_isccw(const POINTARRAY *pa)
 
 
 const char *
-lwgeom_typeflags(uint8_t flags)
+lwtype_zmflags(uint8_t flags)
 {
 	static char tflags[4];
 	int flagno=0;

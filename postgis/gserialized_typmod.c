@@ -221,7 +221,7 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 		if ( i == 0 ) /* TYPE */
 		{
 			char *s = DatumGetCString(elem_values[i]);
-			int type = 0;
+			uint8_t type = 0;
 			int z = 0;
 			int m = 0;
 

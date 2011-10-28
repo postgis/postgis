@@ -66,7 +66,7 @@ lwpoint_summary(LWPOINT *point, int offset)
 
 	sprintf(result, "%*.s%s[%s]\n",
 	        offset, pad, lwtype_name(point->type),
-	        lwgeom_typeflags(point->flags));
+	        lwtype_zmflags(point->flags));
 	return result;
 }
 
@@ -80,7 +80,7 @@ lwline_summary(LWLINE *line, int offset)
 
 	sprintf(result, "%*.s%s[%s] with %d points\n",
 	        offset, pad, lwtype_name(line->type),
-	        lwgeom_typeflags(line->flags),
+	        lwtype_zmflags(line->flags),
 	        line->points->npoints);
 	return result;
 }
@@ -101,7 +101,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 
 	sprintf(result, "%*.s%s[%s] with %d elements\n",
 	        offset, pad, lwtype_name(col->type),
-	        lwgeom_typeflags(col->flags),
+	        lwtype_zmflags(col->flags),
 	        col->ngeoms);
 
 	for (i=0; i<col->ngeoms; i++)
@@ -136,7 +136,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	sprintf(result, "%*.s%s[%s] with %i rings\n",
 	        offset, pad, lwtype_name(poly->type),
-	        lwgeom_typeflags(poly->flags),
+	        lwtype_zmflags(poly->flags),
 	        poly->nrings);
 
 	for (i=0; i<poly->nrings; i++)

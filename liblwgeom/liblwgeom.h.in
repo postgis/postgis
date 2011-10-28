@@ -156,6 +156,15 @@
 #define SRID_IS_UNKNOWN(x) ((int)x<=0)
 
 /**
+* Return a valid SRID from an arbitrary integer
+* Raises a notice if what comes out is different from
+* what went in.
+* Raises an error if SRID value is out of bounds.
+*/
+extern int clamp_srid(int srid);
+
+
+/**
  * Global functions for memory/logging handlers.
  */
 typedef void* (*lwallocator)(size_t size);
@@ -659,16 +668,22 @@ extern int lwgeom_is_collection(const LWGEOM *lwgeom);
 /** 
 * Determine whether a type number is a collection or not
 */
-extern int lwtype_is_collection(int type);
+extern int lwtype_is_collection(uint8_t type);
 
 /**
 * Given an lwtype number, what homogeneous collection can hold it?
 */
-int lwtype_get_collectiontype(int type);
+extern int lwtype_get_collectiontype(uint8_t type);
 
-/* Return a char string with ASCII versionf of type flags */
-extern const char *lwgeom_typeflags(uint8_t type);
+/**
+* Return a char string with ASCII version of type flags 
+*/
+extern const char *lwtype_zmflags(uint8_t type);
 
+/**
+* Return the type name string associated with a type number 
+* (e.g. Point, LineString, Polygon)
+*/
 extern const char *lwtype_name(uint8_t type);
 
 
@@ -1052,8 +1067,6 @@ extern float  next_float_down(double d);
 extern float  next_float_up(double d);
 extern double next_double_down(float d);
 extern double next_double_up(float d);
-
-extern int geometry_type_from_string(const char *str, int *type, int *z, int *m);
 
 #define LW_MAX(a,b) ((a) >	(b) ? (a) : (b))
 #define LW_MIN(a,b) ((a) <= (b) ? (a) : (b))
@@ -1578,7 +1591,7 @@ extern int gbox_same(const GBOX *g1, const GBOX *g2);
 * Utility function to get type number from string. For example, a string 'POINTZ' 
 * would return type of 1 and z of 1 and m of 0. Valid 
 */
-extern int geometry_type_from_string(const char *str, int *type, int *z, int *m);
+extern int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m);
 
 /**
 * Calculate required memory segment to contain a serialized form of the LWGEOM.

@@ -836,7 +836,7 @@ lwgeom_is_collection(const LWGEOM *geom)
 
 /** Return TRUE if the geometry may contain sub-geometries, i.e. it is a MULTI* or COMPOUNDCURVE */
 int
-lwtype_is_collection(int type)
+lwtype_is_collection(uint8_t type)
 {
 
 	switch (type)
@@ -862,7 +862,7 @@ lwtype_is_collection(int type)
 * Given an lwtype number, what homogeneous collection can hold it?
 */
 int 
-lwtype_get_collectiontype(int type)
+lwtype_get_collectiontype(uint8_t type)
 {
 	switch (type)
 	{

@@ -1789,7 +1789,7 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 */
 double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const SPHEROID *spheroid, double tolerance)
 {
-	int type1, type2;
+	uint8_t type1, type2;
 	int check_intersection = LW_FALSE;
 	GBOX gbox1, gbox2;
 

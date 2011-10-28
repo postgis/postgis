@@ -947,7 +947,8 @@ getTableInfo(SHPDUMPERSTATE *state)
 		   enough to up-convert the non-MULTI geometry to a MULTI in this case. */
 
 		int dummy, i;
-		int type = 0, typefound = 0, typemismatch = 0;
+		uint8_t type = 0;
+		int typefound = 0, typemismatch = 0;
 
 		state->rowcount = 0;
 

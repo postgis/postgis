@@ -1049,7 +1049,8 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 {
 	PG_LWGEOM *pglwgeom1, *pglwgeom2, *result;
 	LWGEOM *lwgeoms[2], *outlwg;
-	uint32 type1, type2, outtype;
+    uint32 type1, type2;
+    uint8_t outtype;
 	int srid;
 
 	POSTGIS_DEBUG(2, "LWGEOM_collect called.");
@@ -1185,7 +1186,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 		{
 			PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
-			uint32 intype = pglwgeom_get_type(geom);
+			uint8_t intype = pglwgeom_get_type(geom);
 
 			offset += INTALIGN(VARSIZE(geom));
 
