@@ -231,7 +231,8 @@ static void test_lwgeom_from_gserialized(void)
 static void test_geometry_type_from_string(void)
 {
 	int rv;
-	int type = 0, z = 0, m = 0;
+	uint8_t type = 0;
+	int z = 0, m = 0;
 	char *str;
 
 	str = "  POINTZ";
