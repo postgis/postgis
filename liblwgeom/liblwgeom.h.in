@@ -1002,10 +1002,6 @@ extern float  next_float_up(double d);
 extern double next_double_down(float d);
 extern double next_double_up(float d);
 
-#define LW_MAX(a,b) ((a) >	(b) ? (a) : (b))
-#define LW_MIN(a,b) ((a) <= (b) ? (a) : (b))
-#define LW_ABS(a)   ((a) <	(0) ? -(a) : (a))
-
 /* general utilities
 	2D*/
 extern double distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2);

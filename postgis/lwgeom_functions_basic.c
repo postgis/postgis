@@ -1220,10 +1220,10 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 				{
 					if ( lwgeoms[count]->bbox )
 					{
-						box->xmin = LW_MIN(box->xmin, lwgeoms[count]->bbox->xmin);
-						box->ymin = LW_MIN(box->ymin, lwgeoms[count]->bbox->ymin);
-						box->xmax = LW_MAX(box->xmax, lwgeoms[count]->bbox->xmax);
-						box->ymax = LW_MAX(box->ymax, lwgeoms[count]->bbox->ymax);
+						box->xmin = Min(box->xmin, lwgeoms[count]->bbox->xmin);
+						box->ymin = Min(box->ymin, lwgeoms[count]->bbox->ymin);
+						box->xmax = Max(box->xmax, lwgeoms[count]->bbox->xmax);
+						box->ymax = Max(box->ymax, lwgeoms[count]->bbox->ymax);
 					}
 					else
 					{

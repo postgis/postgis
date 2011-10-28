@@ -38,6 +38,7 @@
 #define FP_IS_ZERO(A) (fabs(A) <= FP_TOLERANCE)
 #define FP_MAX(A, B) (((A) > (B)) ? (A) : (B))
 #define FP_MIN(A, B) (((A) < (B)) ? (A) : (B))
+#define FP_ABS(a)   ((a) <	(0) ? -(a) : (a))
 #define FP_EQUALS(A, B) (fabs((A)-(B)) <= FP_TOLERANCE)
 #define FP_NEQUALS(A, B) (fabs((A)-(B)) > FP_TOLERANCE)
 #define FP_LT(A, B) (((A) + FP_TOLERANCE) < (B))

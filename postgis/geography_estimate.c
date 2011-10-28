@@ -301,9 +301,9 @@ estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 				* only the overlap fraction.
 				*/
 
-				intersect_x = LW_MIN(box->xmax, geogstats->xmin + (x+1) * sizex / unitsx) - LW_MAX(box->xmin, geogstats->xmin + x * sizex / unitsx);
-				intersect_y = LW_MIN(box->ymax, geogstats->ymin + (y+1) * sizey / unitsy) - LW_MAX(box->ymin, geogstats->ymin + y * sizey / unitsy);
-				intersect_z = LW_MIN(box->zmax, geogstats->zmin + (z+1) * sizez / unitsz) - LW_MAX(box->zmin, geogstats->zmin + z * sizez / unitsz);
+				intersect_x = Min(box->xmax, geogstats->xmin + (x+1) * sizex / unitsx) - Max(box->xmin, geogstats->xmin + x * sizex / unitsx);
+				intersect_y = Min(box->ymax, geogstats->ymin + (y+1) * sizey / unitsy) - Max(box->ymin, geogstats->ymin + y * sizey / unitsy);
+				intersect_z = Min(box->zmax, geogstats->zmin + (z+1) * sizez / unitsz) - Max(box->zmin, geogstats->zmin + z * sizez / unitsz);
 
 
 				switch ((int)geogstats->dims)
@@ -404,7 +404,7 @@ estimate_selectivity(GBOX *box, GEOG_STATS *geogstats)
 		return 0.0;
 	}
 
-	gain = 1 / LW_MIN(overlapping_cells, avg_feat_cells);
+	gain = 1 / Min(overlapping_cells, avg_feat_cells);
 	selectivity = value * gain;
 
 	POSTGIS_DEBUGF(3, " SUM(ov_histo_cells)=%f", value);
@@ -696,12 +696,12 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 	* Setup the search box - this is the intersection of the two column
 	* extents.
 	*/
-	search_box.xmin = LW_MAX(geogstats1->xmin, geogstats2->xmin);
-	search_box.ymin = LW_MAX(geogstats1->ymin, geogstats2->ymin);
-	search_box.zmin = LW_MAX(geogstats1->zmin, geogstats2->zmin);
-	search_box.xmax = LW_MIN(geogstats1->xmax, geogstats2->xmax);
-	search_box.ymax = LW_MIN(geogstats1->ymax, geogstats2->ymax);
-	search_box.zmax = LW_MIN(geogstats1->zmax, geogstats2->zmax);
+	search_box.xmin = Max(geogstats1->xmin, geogstats2->xmin);
+	search_box.ymin = Max(geogstats1->ymin, geogstats2->ymin);
+	search_box.zmin = Max(geogstats1->zmin, geogstats2->zmin);
+	search_box.xmax = Min(geogstats1->xmax, geogstats2->xmax);
+	search_box.ymax = Min(geogstats1->ymax, geogstats2->ymax);
+	search_box.zmax = Min(geogstats1->zmax, geogstats2->zmax);
 
 	/* If the extents of the two columns don't intersect, return zero */
 	if (search_box.xmin > search_box.xmax || search_box.ymin > search_box.ymax ||
@@ -902,12 +902,12 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 		else
 		{
-			sample_extent->xmax = LW_MAX(sample_extent->xmax, gbox.xmax);
-			sample_extent->ymax = LW_MAX(sample_extent->ymax, gbox.ymax);
-			sample_extent->zmax = LW_MAX(sample_extent->zmax, gbox.zmax);
-			sample_extent->xmin = LW_MIN(sample_extent->xmin, gbox.xmin);
-			sample_extent->ymin = LW_MIN(sample_extent->ymin, gbox.ymin);
-			sample_extent->zmin = LW_MIN(sample_extent->zmin, gbox.zmin);
+			sample_extent->xmax = Max(sample_extent->xmax, gbox.xmax);
+			sample_extent->ymax = Max(sample_extent->ymax, gbox.ymax);
+			sample_extent->zmax = Max(sample_extent->zmax, gbox.zmax);
+			sample_extent->xmin = Min(sample_extent->xmin, gbox.xmin);
+			sample_extent->ymin = Min(sample_extent->ymin, gbox.ymin);
+			sample_extent->zmin = Min(sample_extent->zmin, gbox.zmin);
 		}
 
 		/** TODO: ask if we need geom or bvol size for stawidth */
@@ -987,12 +987,12 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	POSTGIS_DEBUGF(3, "  HIGy - avg:%f sd:%f", avgHIGy, sdHIGy);
 	POSTGIS_DEBUGF(3, "  HIGz - avg:%f sd:%f", avgHIGz, sdHIGz);
 
-	histobox.xmin = LW_MAX((avgLOWx - SDFACTOR * sdLOWx), sample_extent->xmin);
-	histobox.ymin = LW_MAX((avgLOWy - SDFACTOR * sdLOWy), sample_extent->ymin);
-	histobox.zmin = LW_MAX((avgLOWz - SDFACTOR * sdLOWz), sample_extent->zmin);
-	histobox.xmax = LW_MIN((avgHIGx + SDFACTOR * sdHIGx), sample_extent->xmax);
-	histobox.ymax = LW_MIN((avgHIGy + SDFACTOR * sdHIGy), sample_extent->ymax);
-	histobox.zmax = LW_MIN((avgHIGz + SDFACTOR * sdHIGz), sample_extent->zmax);
+	histobox.xmin = Max((avgLOWx - SDFACTOR * sdLOWx), sample_extent->xmin);
+	histobox.ymin = Max((avgLOWy - SDFACTOR * sdLOWy), sample_extent->ymin);
+	histobox.zmin = Max((avgLOWz - SDFACTOR * sdLOWz), sample_extent->zmin);
+	histobox.xmax = Min((avgHIGx + SDFACTOR * sdHIGx), sample_extent->xmax);
+	histobox.ymax = Min((avgHIGy + SDFACTOR * sdHIGy), sample_extent->ymax);
+	histobox.zmax = Min((avgHIGz + SDFACTOR * sdHIGz), sample_extent->zmax);
 
 	POSTGIS_DEBUGF(3, " sd_extent: xmin, ymin, zmin: %f, %f, %f",
 	               histobox.xmin, histobox.ymin, histobox.zmin);
@@ -1179,8 +1179,8 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		/* Sample data lies within 2D space: divide the total area by the total
 		   number of cells, and thus work out the edge size of the unit block */
 		edgelength = sqrt(
-		                 LW_ABS(histodims[0].max - histodims[0].min) *
-		                 LW_ABS(histodims[1].max - histodims[1].min) / (double)histocells
+		                 Abs(histodims[0].max - histodims[0].min) *
+		                 Abs(histodims[1].max - histodims[1].min) / (double)histocells
 		             );
 
 		/* The calculation is easy; the harder part is to work out which dimensions
@@ -1188,44 +1188,44 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		if (histodims[0].axis == 'X' && histodims[1].axis == 'Y')
 		{
 			/* X and Y */
-			unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-			unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+			unitsx = Abs(histodims[0].max - histodims[0].min) / edgelength;
+			unitsy = Abs(histodims[1].max - histodims[1].min) / edgelength;
 			unitsz = 1;
 		}
 		else if (histodims[0].axis == 'Y' && histodims[1].axis == 'X')
 		{
 			/* Y and X */
-			unitsx = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-			unitsy = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsx = Abs(histodims[1].max - histodims[1].min) / edgelength;
+			unitsy = Abs(histodims[0].max - histodims[0].min) / edgelength;
 			unitsz = 1;
 		}
 		else if (histodims[0].axis == 'X' && histodims[1].axis == 'Z')
 		{
 			/* X and Z */
-			unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsx = Abs(histodims[0].max - histodims[0].min) / edgelength;
 			unitsy = 1;
-			unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+			unitsz = Abs(histodims[1].max - histodims[1].min) / edgelength;
 		}
 		else if (histodims[0].axis == 'Z' && histodims[1].axis == 'X')
 		{
 			/* Z and X */
-			unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsx = Abs(histodims[0].max - histodims[0].min) / edgelength;
 			unitsy = 1;
-			unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+			unitsz = Abs(histodims[1].max - histodims[1].min) / edgelength;
 		}
 		else if (histodims[0].axis == 'Y' && histodims[1].axis == 'Z')
 		{
 			/* Y and Z */
 			unitsx = 1;
-			unitsy = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-			unitsz = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
+			unitsy = Abs(histodims[0].max - histodims[0].min) / edgelength;
+			unitsz = Abs(histodims[1].max - histodims[1].min) / edgelength;
 		}
 		else if (histodims[0].axis == 'Z' && histodims[1].axis == 'Y')
 		{
 			/* Z and X */
 			unitsx = 1;
-			unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-			unitsz = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
+			unitsy = Abs(histodims[1].max - histodims[1].min) / edgelength;
+			unitsz = Abs(histodims[0].max - histodims[0].min) / edgelength;
 		}
 
 		break;
@@ -1234,15 +1234,15 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		/* Sample data lies within 3D space: divide the total volume by the total
 		   number of cells, and thus work out the edge size of the unit block */
 		edgelength = pow(
-		                 LW_ABS(histodims[0].max - histodims[0].min) *
-		                 LW_ABS(histodims[1].max - histodims[1].min) *
-		                 LW_ABS(histodims[2].max - histodims[2].min) / (double)histocells,
+		                 Abs(histodims[0].max - histodims[0].min) *
+		                 Abs(histodims[1].max - histodims[1].min) *
+		                 Abs(histodims[2].max - histodims[2].min) / (double)histocells,
 		                 (double)1/3);
 
 		/* Units are simple in 3 dimensions */
-		unitsx = LW_ABS(histodims[0].max - histodims[0].min) / edgelength;
-		unitsy = LW_ABS(histodims[1].max - histodims[1].min) / edgelength;
-		unitsz = LW_ABS(histodims[2].max - histodims[2].min) / edgelength;
+		unitsx = Abs(histodims[0].max - histodims[0].min) / edgelength;
+		unitsy = Abs(histodims[1].max - histodims[1].min) / edgelength;
+		unitsz = Abs(histodims[2].max - histodims[2].min) / edgelength;
 
 		break;
 	}

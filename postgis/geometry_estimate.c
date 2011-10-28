@@ -138,10 +138,10 @@ calculate_column_intersection(GBOX *search_box, GEOM_STATS *geomstats1, GEOM_STA
 	* if a valid intersection was found, false if there is no overlap
 	*/
 
-	float8 i_xmin = LW_MAX(geomstats1->xmin, geomstats2->xmin);
-	float8 i_ymin = LW_MAX(geomstats1->ymin, geomstats2->ymin);
-	float8 i_xmax = LW_MIN(geomstats1->xmax, geomstats2->xmax);
-	float8 i_ymax = LW_MIN(geomstats1->ymax, geomstats2->ymax);
+	float8 i_xmin = Max(geomstats1->xmin, geomstats2->xmin);
+	float8 i_ymin = Max(geomstats1->ymin, geomstats2->ymin);
+	float8 i_xmax = Min(geomstats1->xmax, geomstats2->xmax);
+	float8 i_ymax = Min(geomstats1->ymax, geomstats2->ymax);
 
 	/* If the rectangles don't intersect, return false */
 	if (i_xmin > i_xmax || i_ymin > i_ymax)
@@ -523,8 +523,8 @@ estimate_selectivity(GBOX *box, GEOM_STATS *geomstats)
 			 * only the overlap fraction.
 			 */
 
-			intersect_x = LW_MIN(box->xmax, geomstats->xmin + (x+1) * geow / histocols) - LW_MAX(box->xmin, geomstats->xmin + x * geow / histocols );
-			intersect_y = LW_MIN(box->ymax, geomstats->ymin + (y+1) * geoh / historows) - LW_MAX(box->ymin, geomstats->ymin+ y * geoh / historows) ;
+			intersect_x = Min(box->xmax, geomstats->xmin + (x+1) * geow / histocols) - Max(box->xmin, geomstats->xmin + x * geow / histocols );
+			intersect_y = Min(box->ymax, geomstats->ymin + (y+1) * geoh / historows) - Max(box->ymin, geomstats->ymin+ y * geoh / historows) ;
 
 			AOI = intersect_x*intersect_y;
 			gain = AOI/cell_area;
@@ -593,7 +593,7 @@ estimate_selectivity(GBOX *box, GEOM_STATS *geomstats)
 		return 0.0;
 	}
 
-	gain = 1/LW_MIN(overlapping_cells, avg_feat_cells);
+	gain = 1/Min(overlapping_cells, avg_feat_cells);
 	selectivity = value*gain;
 
 	POSTGIS_DEBUGF(3, " SUM(ov_histo_cells)=%f", value);
@@ -891,13 +891,13 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 		else
 		{
-			sample_extent->xmax = LW_MAX(sample_extent->xmax,
+			sample_extent->xmax = Max(sample_extent->xmax,
 			                                  box.xmax);
-			sample_extent->ymax = LW_MAX(sample_extent->ymax,
+			sample_extent->ymax = Max(sample_extent->ymax,
 			                                  box.ymax);
-			sample_extent->xmin = LW_MIN(sample_extent->xmin,
+			sample_extent->xmin = Min(sample_extent->xmin,
 			                                  box.xmin);
-			sample_extent->ymin = LW_MIN(sample_extent->ymin,
+			sample_extent->ymin = Min(sample_extent->ymin,
 			                                  box.ymin);
 		}
 
@@ -966,13 +966,13 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	POSTGIS_DEBUGF(3, "  HIGx - avg:%f sd:%f", avgHIGx, sdHIGx);
 	POSTGIS_DEBUGF(3, "  HIGy - avg:%f sd:%f", avgHIGy, sdHIGy);
 
-	histobox.xmin = LW_MAX((avgLOWx - SDFACTOR * sdLOWx),
+	histobox.xmin = Max((avgLOWx - SDFACTOR * sdLOWx),
 	                       sample_extent->xmin);
-	histobox.ymin = LW_MAX((avgLOWy - SDFACTOR * sdLOWy),
+	histobox.ymin = Max((avgLOWy - SDFACTOR * sdLOWy),
 	                       sample_extent->ymin);
-	histobox.xmax = LW_MIN((avgHIGx + SDFACTOR * sdHIGx),
+	histobox.xmax = Min((avgHIGx + SDFACTOR * sdHIGx),
 	                       sample_extent->xmax);
-	histobox.ymax = LW_MIN((avgHIGy + SDFACTOR * sdHIGy),
+	histobox.ymax = Min((avgHIGy + SDFACTOR * sdHIGy),
 	                       sample_extent->ymax);
 
 	POSTGIS_DEBUGF(3, " sd_extent: xmin,ymin: %f,%f",

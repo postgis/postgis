@@ -349,42 +349,42 @@ PG_FUNCTION_INFO_V1(BOX3D_xmin);
 Datum BOX3D_xmin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(LW_MIN(box->xmin, box->xmax));
+	PG_RETURN_FLOAT8(Min(box->xmin, box->xmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_ymin);
 Datum BOX3D_ymin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(LW_MIN(box->ymin, box->ymax));
+	PG_RETURN_FLOAT8(Min(box->ymin, box->ymax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_zmin);
 Datum BOX3D_zmin(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(LW_MIN(box->zmin, box->zmax));
+	PG_RETURN_FLOAT8(Min(box->zmin, box->zmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_xmax);
 Datum BOX3D_xmax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(LW_MAX(box->xmin, box->xmax));
+	PG_RETURN_FLOAT8(Max(box->xmin, box->xmax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_ymax);
 Datum BOX3D_ymax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(LW_MAX(box->ymin, box->ymax));
+	PG_RETURN_FLOAT8(Max(box->ymin, box->ymax));
 }
 
 PG_FUNCTION_INFO_V1(BOX3D_zmax);
 Datum BOX3D_zmax(PG_FUNCTION_ARGS)
 {
 	BOX3D *box = (BOX3D *)PG_GETARG_POINTER(0);
-	PG_RETURN_FLOAT8(LW_MAX(box->zmin, box->zmax));
+	PG_RETURN_FLOAT8(Max(box->zmin, box->zmax));
 }
 
 
@@ -443,12 +443,12 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	a = (BOX3D *)PG_GETARG_POINTER(0);
 	b = box3d_from_gbox(&gbox);
 
-	result->xmax = LW_MAX(a->xmax, b->xmax);
-	result->ymax = LW_MAX(a->ymax, b->ymax);
-	result->zmax = LW_MAX(a->zmax, b->zmax);
-	result->xmin = LW_MIN(a->xmin, b->xmin);
-	result->ymin = LW_MIN(a->ymin, b->ymin);
-	result->zmin = LW_MIN(a->zmin, b->zmin);
+	result->xmax = Max(a->xmax, b->xmax);
+	result->ymax = Max(a->ymax, b->ymax);
+	result->zmax = Max(a->zmax, b->zmax);
+	result->xmin = Min(a->xmin, b->xmin);
+	result->ymin = Min(a->ymin, b->ymin);
+	result->zmin = Min(a->zmin, b->zmin);
 
 	PG_RETURN_POINTER(result);
 }

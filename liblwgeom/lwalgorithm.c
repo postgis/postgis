@@ -43,18 +43,18 @@ double lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 
 int lw_segment_envelope_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
-	double minq=LW_MIN(q1->x,q2->x);
-	double maxq=LW_MAX(q1->x,q2->x);
-	double minp=LW_MIN(p1->x,p2->x);
-	double maxp=LW_MAX(p1->x,p2->x);
+	double minq=FP_MIN(q1->x,q2->x);
+	double maxq=FP_MAX(q1->x,q2->x);
+	double minp=FP_MIN(p1->x,p2->x);
+	double maxp=FP_MAX(p1->x,p2->x);
 
 	if (FP_GT(minp,maxq) || FP_LT(maxp,minq))
 		return LW_FALSE;
 
-	minq=LW_MIN(q1->y,q2->y);
-	maxq=LW_MAX(q1->y,q2->y);
-	minp=LW_MIN(p1->y,p2->y);
-	maxp=LW_MAX(p1->y,p2->y);
+	minq=FP_MIN(q1->y,q2->y);
+	maxq=FP_MAX(q1->y,q2->y);
+	minp=FP_MIN(p1->y,p2->y);
+	maxp=FP_MAX(p1->y,p2->y);
 
 	if (FP_GT(minp,maxq) || FP_LT(maxp,minq))
 		return LW_FALSE;

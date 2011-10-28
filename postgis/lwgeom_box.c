@@ -306,10 +306,10 @@ Datum BOX2D_intersects(PG_FUNCTION_ARGS)
 
 	n = (BOX2DFLOAT4 *) palloc(sizeof(BOX2DFLOAT4));
 
-	n->xmax = LW_MIN(a->xmax, b->xmax);
-	n->ymax = LW_MIN(a->ymax, b->ymax);
-	n->xmin = LW_MAX(a->xmin, b->xmin);
-	n->ymin = LW_MAX(a->ymin, b->ymin);
+	n->xmax = Min(a->xmax, b->xmax);
+	n->ymax = Min(a->ymax, b->ymax);
+	n->xmin = Max(a->xmin, b->xmin);
+	n->ymin = Max(a->ymin, b->ymin);
 
 
 	if (n->xmax < n->xmin || n->ymax < n->ymin)
@@ -405,10 +405,10 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	a = (BOX2DFLOAT4 *)PG_GETARG_DATUM(0);
 	b = &box;
 
-	result->xmax = LW_MAX(a->xmax, b->xmax);
-	result->ymax = LW_MAX(a->ymax, b->ymax);
-	result->xmin = LW_MIN(a->xmin, b->xmin);
-	result->ymin = LW_MIN(a->ymin, b->ymin);
+	result->xmax = Max(a->xmax, b->xmax);
+	result->ymax = Max(a->ymax, b->ymax);
+	result->xmin = Min(a->xmin, b->xmin);
+	result->ymin = Min(a->ymin, b->ymin);
 
 	PG_RETURN_POINTER(result);
 }
