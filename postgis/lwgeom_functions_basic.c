@@ -1965,7 +1965,7 @@ Datum LWGEOM_same(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE); /* different types */
 	}
 
-	if ( pglwgeom_get_zm(g1) != pglwgeom_get_zm(g2) )
+	if ( gserialized_get_zm(g1) != gserialized_get_zm(g2) )
 	{
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);

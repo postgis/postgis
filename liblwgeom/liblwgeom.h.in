@@ -639,6 +639,12 @@ extern int gserialized_has_z(const GSERIALIZED *gser);
 extern int gserialized_has_m(const GSERIALIZED *gser);
 
 /**
+* Return a number indicating presence of Z and M coordinates.
+* 0 = None, 1 = M, 2 = Z, 3 = ZM
+*/
+extern int gserialized_get_zm(const GSERIALIZED *gser);
+
+/**
 * Call this function to drop BBOX and SRID
 * from LWGEOM. If LWGEOM type is *not* flagged
 * with the HASBBOX flag and has a bbox, it

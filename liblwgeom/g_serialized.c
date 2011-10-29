@@ -32,6 +32,11 @@ int gserialized_has_m(const GSERIALIZED *gser)
 	return FLAGS_GET_M(gser->flags);
 }
 
+int gserialized_get_zm(const GSERIALIZED *gser)
+{
+	return 2 * FLAGS_GET_Z(gser->flags) + FLAGS_GET_M(gser->flags);
+}
+
 uint32_t gserialized_get_type(const GSERIALIZED *s)
 {
 	uint32_t *ptr;
