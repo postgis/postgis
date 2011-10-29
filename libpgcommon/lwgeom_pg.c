@@ -231,11 +231,3 @@ int pglwgeom_getbox2d_p(const GSERIALIZED *geom, GBOX *box)
 	}
 	return ret;
 }
-
-int
-pglwgeom_is_empty(const GSERIALIZED *geom)
-{
-	return gserialized_is_empty(geom);
-}
-
-

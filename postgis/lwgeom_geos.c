@@ -125,7 +125,7 @@ Datum hausdorffdistance(PG_FUNCTION_ARGS)
 	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_NULL();
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -192,7 +192,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	densifyFrac = PG_GETARG_FLOAT8(2);
 
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_NULL();
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -583,7 +583,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* UnaryUnion(empty) == (empty) */
-	if ( pglwgeom_is_empty(geom1) )
+	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
 	is3d = ( gserialized_has_z(geom1) );
@@ -716,7 +716,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Empty.Boundary() == Empty */
-	if ( pglwgeom_is_empty(geom1) )
+	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
 	srid = gserialized_get_srid(geom1);
@@ -776,7 +776,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Empty.ConvexHull() == Empty */
-	if ( pglwgeom_is_empty(geom1) )
+	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
 	srid = gserialized_get_srid(geom1);
@@ -853,7 +853,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	tolerance = PG_GETARG_FLOAT8(1);
 
 	/* Empty.Simplify() == Empty */
-	if ( pglwgeom_is_empty(geom1) )
+	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -930,7 +930,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	size = PG_GETARG_FLOAT8(1);
 
 	/* Empty.Buffer() == Empty */
-	if ( pglwgeom_is_empty(geom1) )
+	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
 	nargs = PG_NARGS();
@@ -1361,7 +1361,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Empty.PointOnSurface == Empty */
-	if ( pglwgeom_is_empty(geom1) )
+	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -1414,7 +1414,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	geom = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Empty.Centroid() == Empty */
-	if ( pglwgeom_is_empty(geom) )
+	if ( gserialized_is_empty(geom) )
 		PG_RETURN_POINTER(geom);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -1518,7 +1518,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* Empty.IsValid() == TRUE */
-	if ( pglwgeom_is_empty(geom1) )
+	if ( gserialized_is_empty(geom1) )
 		PG_RETURN_BOOL(true);
 
 #if POSTGIS_GEOS_VERSION < 33
@@ -1759,7 +1759,7 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Overlaps(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	/*
@@ -1835,7 +1835,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Contains(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	POSTGIS_DEBUG(3, "contains called.");
@@ -1985,7 +1985,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.ContainsProperly(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	/*
@@ -2077,7 +2077,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
 	/* A.Covers(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	errorIfGeometryCollection(geom1,geom2);
@@ -2235,7 +2235,7 @@ Datum within(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Within(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	/*
@@ -2370,7 +2370,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.CoveredBy(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	/*
@@ -2499,7 +2499,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Crosses(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	/*
@@ -2576,7 +2576,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Intersects(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	/*
@@ -2743,7 +2743,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Touches(Empty) == FALSE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(false);
 
 	/*
@@ -2812,7 +2812,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* A.Disjoint(Empty) == TRUE */
-	if ( pglwgeom_is_empty(geom1) || pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(true);
 
 	/*
@@ -3035,7 +3035,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 		
 	/* Empty == Empty */
-	if ( pglwgeom_is_empty(geom1) && pglwgeom_is_empty(geom2) )
+	if ( gserialized_is_empty(geom1) && gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(TRUE);
 
 
@@ -3100,7 +3100,7 @@ Datum issimple(PG_FUNCTION_ARGS)
 
 	geom = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( pglwgeom_is_empty(geom) )
+	if ( gserialized_is_empty(geom) )
 		PG_RETURN_BOOL(TRUE);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -3140,7 +3140,7 @@ Datum isring(PG_FUNCTION_ARGS)
 	}
 
 	/* Empty things can't close */
-	if ( pglwgeom_is_empty(geom) )
+	if ( gserialized_is_empty(geom) )
 		PG_RETURN_BOOL(FALSE);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
