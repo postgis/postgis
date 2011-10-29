@@ -101,9 +101,6 @@ extern int pglwgeom_get_zm(const GSERIALIZED *lwgeom);
 extern GSERIALIZED* pglwgeom_drop_bbox(GSERIALIZED *geom);
 extern size_t pglwgeom_size(const GSERIALIZED *geom);
 extern int pglwgeom_ndims(const GSERIALIZED *geom);
-extern bool pglwgeom_has_bbox(const GSERIALIZED *lwgeom);
-extern bool pglwgeom_has_z(const GSERIALIZED *lwgeom);
-extern bool pglwgeom_has_m(const GSERIALIZED *lwgeom);
 extern int pglwgeom_is_empty(const GSERIALIZED *geom);
 /*
  * Get the 2d bounding box of the given geometry, in FLOAT4 format.

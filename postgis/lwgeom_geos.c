@@ -314,7 +314,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			{
 				srid = gserialized_get_srid(pggeom);
 				gotsrid = 1;
-				if ( pglwgeom_has_z(pggeom) ) is3d = 1;
+				if ( gserialized_has_z(pggeom) ) is3d = 1;
 			}
 			else
 			{
@@ -474,7 +474,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				POSTGIS_DEBUGF(3, "geom %d @ %p", i, geom);
 
 				/* Check is3d flag */
-				if ( pglwgeom_has_z(geom) ) is3d = 1;
+				if ( gserialized_has_z(geom) ) is3d = 1;
 
 				/* Check SRID homogeneity and initialize geos result */
 				if ( ! geos_result )
@@ -586,7 +586,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 	if ( pglwgeom_is_empty(geom1) )
 		PG_RETURN_POINTER(geom1);
 
-	is3d = ( pglwgeom_has_z(geom1) );
+	is3d = ( gserialized_has_z(geom1) );
 
 	srid = gserialized_get_srid(geom1);
 
@@ -744,7 +744,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, srid);
 
-	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
+	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
 
 	if (result == NULL)
 	{
@@ -805,7 +805,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, srid);
 
-	lwout = GEOS2LWGEOM(g3, pglwgeom_has_z(geom1));
+	lwout = GEOS2LWGEOM(g3, gserialized_has_z(geom1));
 
 	if (lwout == NULL)
 	{
@@ -879,7 +879,7 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
-	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
+	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
 
 	if (result == NULL)
 	{
@@ -1086,7 +1086,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
-	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
+	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
 
 	if (result == NULL)
 	{
@@ -1259,7 +1259,7 @@ Datum offsetcurve(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
-	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
+	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
 
 	if (result == NULL)
 	{
@@ -1387,7 +1387,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
-	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
+	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
 
 	if (result == NULL)
 	{
@@ -1438,7 +1438,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(geosresult, gserialized_get_srid(geom));
 
-	result = GEOS2POSTGIS(geosresult, pglwgeom_has_z(geom));
+	result = GEOS2POSTGIS(geosresult, gserialized_has_z(geom));
 
 	if (result == NULL)
 	{
@@ -3236,7 +3236,7 @@ Datum GEOSnoop(PG_FUNCTION_ARGS)
 	geosgeom = (GEOSGeometry *)POSTGIS2GEOS(geom);
 	if ( ! geosgeom ) PG_RETURN_NULL();
 
-	lwgeom_result = GEOS2POSTGIS(geosgeom, pglwgeom_has_z(geom));
+	lwgeom_result = GEOS2POSTGIS(geosgeom, gserialized_has_z(geom));
 	GEOSGeom_destroy(geosgeom);
 
 
@@ -3369,7 +3369,7 @@ Datum linemerge(PG_FUNCTION_ARGS)
 
 	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
-	result = GEOS2POSTGIS(g3, pglwgeom_has_z(geom1));
+	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
 
 	if (result == NULL)
 	{

@@ -401,7 +401,7 @@ Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* No box? we're done already! */
-	if ( ! pglwgeom_has_bbox(geom) )
+	if ( ! gserialized_has_bbox(geom) )
 		PG_RETURN_POINTER(geom);
 	
 	PG_RETURN_POINTER(pglwgeom_drop_bbox(geom));

@@ -357,7 +357,7 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 3d */
-	if ( pglwgeom_ndims(pg_geom_in) == 3 && pglwgeom_has_z(pg_geom_in) ) 
+	if ( pglwgeom_ndims(pg_geom_in) == 3 && gserialized_has_z(pg_geom_in) ) 
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
@@ -379,7 +379,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 3d */
-	if ( pglwgeom_ndims(pg_geom_in) == 3 && pglwgeom_has_m(pg_geom_in) ) 
+	if ( pglwgeom_ndims(pg_geom_in) == 3 && gserialized_has_m(pg_geom_in) ) 
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
@@ -433,7 +433,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	 * automatic bbox addition FOR_COMPLEX_GEOMS.
 	 */
 	if ( gserialized_get_type(geom) == COLLECTIONTYPE &&
-	        pglwgeom_has_bbox(geom) )
+	        gserialized_has_bbox(geom) )
 	{
 		PG_RETURN_POINTER(geom);
 	}
@@ -485,7 +485,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	** automatic bbox addition FOR_COMPLEX_GEOMS.
 	*/
 	if ( lwtype_is_collection(gserialized_get_type(geom)) && 
-	     pglwgeom_has_bbox(geom) )
+	     gserialized_has_bbox(geom) )
 	{
 		PG_RETURN_POINTER(geom);
 	}
@@ -1906,8 +1906,8 @@ Datum LWGEOM_zmflag(PG_FUNCTION_ARGS)
 	int ret = 0;
 
 	in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	if ( pglwgeom_has_z(in) ) ret += 2;
-	if ( pglwgeom_has_m(in) ) ret += 1;
+	if ( gserialized_has_z(in) ) ret += 2;
+	if ( gserialized_has_m(in) ) ret += 1;
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
 }
@@ -1916,14 +1916,14 @@ PG_FUNCTION_INFO_V1(LWGEOM_hasz);
 Datum LWGEOM_hasz(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_RETURN_BOOL(pglwgeom_has_z(in));
+	PG_RETURN_BOOL(gserialized_has_z(in));
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_hasm);
 Datum LWGEOM_hasm(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	PG_RETURN_BOOL(pglwgeom_has_m(in));
+	PG_RETURN_BOOL(gserialized_has_m(in));
 }
 
 
@@ -1931,7 +1931,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_hasBBOX);
 Datum LWGEOM_hasBBOX(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char res = pglwgeom_has_bbox(in);
+	char res = gserialized_has_bbox(in);
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_BOOL(res);
 }

@@ -600,7 +600,7 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	** If not, pull the full toasted data out, and call the standard box
 	** retrieval function, which will calculate the box from scratch.
 	*/
-	if ( pglwgeom_has_bbox(query) )
+	if ( gserialized_has_bbox(query) )
 	{
 		pglwgeom_getbox2d_p(query, &box);
 	}

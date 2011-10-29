@@ -209,24 +209,6 @@ pglwgeom_get_zm(const GSERIALIZED *lwgeom)
 	return 2 * FLAGS_GET_Z(lwgeom->flags) + FLAGS_GET_M(lwgeom->flags);
 }
 
-bool
-pglwgeom_has_bbox(const GSERIALIZED *lwgeom)
-{
-	return FLAGS_GET_BBOX(lwgeom->flags);
-}
-
-bool
-pglwgeom_has_z(const GSERIALIZED *lwgeom)
-{
-	return FLAGS_GET_Z(lwgeom->flags);
-}
-
-bool
-pglwgeom_has_m(const GSERIALIZED *lwgeom)
-{
-	return FLAGS_GET_M(lwgeom->flags);
-}
-
 GSERIALIZED* pglwgeom_drop_bbox(GSERIALIZED *geom)
 {
 	return gserialized_drop_gidx(geom);
