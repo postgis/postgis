@@ -209,11 +209,6 @@ pglwgeom_get_zm(const GSERIALIZED *lwgeom)
 	return 2 * FLAGS_GET_Z(lwgeom->flags) + FLAGS_GET_M(lwgeom->flags);
 }
 
-GSERIALIZED* pglwgeom_drop_bbox(GSERIALIZED *geom)
-{
-	return gserialized_drop_gidx(geom);
-}
-
 size_t pglwgeom_size(const GSERIALIZED *geom)
 {
 	return VARSIZE(geom) - VARHDRSZ;
