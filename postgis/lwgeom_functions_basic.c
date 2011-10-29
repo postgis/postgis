@@ -2373,10 +2373,6 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(result);
 }
 
-
-
-
-
 /*
  * optimistic_overlap(Polygon P1, Multipolygon MP2, double dist)
  * returns true if P1 overlaps MP2
@@ -2387,24 +2383,17 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(optimistic_overlap);
 Datum optimistic_overlap(PG_FUNCTION_ARGS)
 {
+	GSERIALIZED *pg_geom1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *pg_geom2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	double dist = PG_GETARG_FLOAT8(2);
+	GBOX g1_bvol;
+	double calc_dist;
 
-	GSERIALIZED                  *pg_geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED                  *pg_geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	double                  dist = PG_GETARG_FLOAT8(2);
-	GBOX             g1_bvol;
-	double                  calc_dist;
-
-	LWGEOM                     *geom1;
-	LWGEOM                     *geom2;
-
-
-	/* deserialized PG_LEGEOM into their respective LWGEOM */
-	geom1 = lwgeom_from_gserialized(pg_geom1);
-	geom2 = lwgeom_from_gserialized(pg_geom2);
+	LWGEOM *geom1 = lwgeom_from_gserialized(pg_geom1);
+	LWGEOM *geom2 = lwgeom_from_gserialized(pg_geom2);
 
 	if (geom1->srid != geom2->srid)
 	{
-
 		elog(ERROR,"optimistic_overlap:Operation on two GEOMETRIES with different SRIDs\\n");
 		PG_RETURN_NULL();
 	}
@@ -2422,20 +2411,17 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	}
 
 	/*bbox check */
-
 	pglwgeom_getbox2d_p(pg_geom1, &g1_bvol );
-
 
 	g1_bvol.xmin = g1_bvol.xmin - dist;
 	g1_bvol.ymin = g1_bvol.ymin - dist;
 	g1_bvol.xmax = g1_bvol.xmax + dist;
 	g1_bvol.ymax = g1_bvol.ymax + dist;
 
-	if (  (g1_bvol.xmin > geom2->bbox->xmax) ||
-	        (g1_bvol.xmax < geom2->bbox->xmin) ||
-	        (g1_bvol.ymin > geom2->bbox->ymax) ||
-	        (g1_bvol.ymax < geom2->bbox->ymin)
-	   )
+	if ( (g1_bvol.xmin > geom2->bbox->xmax) ||
+	     (g1_bvol.xmax < geom2->bbox->xmin) ||
+	     (g1_bvol.ymin > geom2->bbox->ymax) ||
+	     (g1_bvol.ymax < geom2->bbox->ymin) )
 	{
 		PG_RETURN_BOOL(FALSE);  /*bbox not overlap */
 	}
@@ -2444,7 +2430,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	 * compute distances
 	 * should be a fast calc if they actually do intersect
 	 */
-	calc_dist =     DatumGetFloat8 ( DirectFunctionCall2(LWGEOM_mindistance2d,   PointerGetDatum( pg_geom1 ),       PointerGetDatum( pg_geom2 )));
+	calc_dist = DatumGetFloat8 ( DirectFunctionCall2(LWGEOM_mindistance2d,   PointerGetDatum( pg_geom1 ),       PointerGetDatum( pg_geom2 )));
 
 	PG_RETURN_BOOL(calc_dist < dist);
 }
