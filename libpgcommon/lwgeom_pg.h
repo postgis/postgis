@@ -95,8 +95,6 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 /* Serialize/deserialize a GSERIALIZED (postgis datatype) */
 extern GSERIALIZED *pglwgeom_serialize(LWGEOM *lwgeom);
 
-
-extern int pglwgeom_ndims(const GSERIALIZED *geom);
 /*
  * Get the 2d bounding box of the given geometry, in FLOAT4 format.
  * Use a cached bbox if available, compute it otherwise.

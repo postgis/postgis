@@ -565,7 +565,7 @@ Datum geography_as_binary(PG_FUNCTION_ARGS)
 	/* Get our lwgeom form */
 	lwgeom = lwgeom_from_gserialized(g);
 
-	if ( FLAGS_NDIMS(lwgeom->flags) > 2 )
+	if ( gserialized_ndims(g) > 2 )
 	{
 		/* Strip out the higher dimensions */
 		LWGEOM *tmp = lwgeom_force_2d(lwgeom);

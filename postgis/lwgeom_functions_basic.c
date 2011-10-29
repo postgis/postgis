@@ -327,7 +327,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 2d */
-	if ( pglwgeom_ndims(pg_geom_in) == 2 ) PG_RETURN_POINTER(pg_geom_in);
+	if ( gserialized_ndims(pg_geom_in) == 2 ) PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
 	lwg_out = lwgeom_force_2d(lwg_in);
@@ -348,7 +348,7 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 3d */
-	if ( pglwgeom_ndims(pg_geom_in) == 3 && gserialized_has_z(pg_geom_in) ) 
+	if ( gserialized_ndims(pg_geom_in) == 3 && gserialized_has_z(pg_geom_in) ) 
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
@@ -370,7 +370,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 3d */
-	if ( pglwgeom_ndims(pg_geom_in) == 3 && gserialized_has_m(pg_geom_in) ) 
+	if ( gserialized_ndims(pg_geom_in) == 3 && gserialized_has_m(pg_geom_in) ) 
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
@@ -392,7 +392,7 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 	LWGEOM *lwg_in, *lwg_out;
 
 	/* already 4d */
-	if ( pglwgeom_ndims(pg_geom_in) == 4 ) 
+	if ( gserialized_ndims(pg_geom_in) == 4 ) 
 		PG_RETURN_POINTER(pg_geom_in);
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
@@ -1935,7 +1935,7 @@ Datum LWGEOM_ndims(PG_FUNCTION_ARGS)
 	int ret;
 
 	in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	ret = (pglwgeom_ndims(in));
+	ret = (gserialized_ndims(in));
 	PG_FREE_IF_COPY(in, 0);
 	PG_RETURN_INT16(ret);
 }

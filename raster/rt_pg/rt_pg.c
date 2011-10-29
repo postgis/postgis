@@ -6782,7 +6782,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	geom = lwgeom_from_gserialized(pggeom);
 
 	/* Get a 2D version of the geometry if necessary */
-	if (FLAGS_NDIMS(geom->flags) > 2) {
+	if (lwgeom_ndims(geom) > 2) {
 		LWGEOM *geom2d = lwgeom_force_2d(geom);
 		lwgeom_free(geom);
 		geom = geom2d;

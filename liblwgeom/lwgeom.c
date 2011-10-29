@@ -657,6 +657,14 @@ lwgeom_has_m(const LWGEOM *geom)
 	return FLAGS_GET_M(geom->flags);
 }
 
+int 
+lwgeom_ndims(const LWGEOM *geom)
+{
+	if ( ! geom ) return 0;
+	return FLAGS_NDIMS(geom->flags);
+}
+
+
 void
 lwgeom_set_geodetic(LWGEOM *geom, int value)
 {

@@ -202,11 +202,6 @@ pglwgeom_serialize(LWGEOM *in)
 	return gser;
 }
 
-int pglwgeom_ndims(const GSERIALIZED *geom)
-{
-	return FLAGS_NDIMS(geom->flags);
-}
-
 int pglwgeom_getbox2d_p(const GSERIALIZED *geom, GBOX *box)
 {
 	LWGEOM *lwgeom;

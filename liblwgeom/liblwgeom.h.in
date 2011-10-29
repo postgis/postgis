@@ -645,6 +645,12 @@ extern int gserialized_has_m(const GSERIALIZED *gser);
 extern int gserialized_get_zm(const GSERIALIZED *gser);
 
 /**
+* Return the number of dimensions (2, 3, 4) in a geometry
+*/
+extern int gserialized_ndims(const GSERIALIZED *gser);
+
+
+/**
 * Call this function to drop BBOX and SRID
 * from LWGEOM. If LWGEOM type is *not* flagged
 * with the HASBBOX flag and has a bbox, it
@@ -1188,10 +1194,20 @@ extern double lwpoint_get_y(const LWPOINT *point);
 extern double lwpoint_get_z(const LWPOINT *point);
 extern double lwpoint_get_m(const LWPOINT *point);
 
-/* Some lwgeom info */
+/**
+* Return #LW_TRUE if geometry has Z ordinates
+*/
 extern int lwgeom_has_z(const LWGEOM *geom);
+
+/**
+* Return #LW_TRUE if geometry has M ordinates.
+*/
 extern int lwgeom_has_m(const LWGEOM *geom);
 
+/**
+* Return the number of dimensions (2, 3, 4) in a geometry
+*/
+extern int lwgeom_ndims(const LWGEOM *geom);
 
 /*
  * Given a point, returns the location of closest point on pointarray

@@ -825,7 +825,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 
 	/* Get a 2D version of the geometry if necessary */
-	if ( FLAGS_NDIMS(lwgeom->flags) > 2 )
+	if ( lwgeom_ndims(lwgeom) > 2 )
 	{
 		LWGEOM *lwgeom2d = lwgeom_force_2d(lwgeom);
 		lwgeom_free(lwgeom);
@@ -862,7 +862,7 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 
 	/* Get a 2D version of the geometry if necessary */
-	if ( FLAGS_NDIMS(lwgeom->flags) > 2 )
+	if ( lwgeom_ndims(lwgeom) > 2 )
 	{
 		LWGEOM *lwgeom2d = lwgeom_force_2d(lwgeom);
 		lwgeom_free(lwgeom);
