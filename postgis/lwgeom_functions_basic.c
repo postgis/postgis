@@ -107,7 +107,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_mem_size);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	size_t size = VARSIZE(geom) - VARHDRSZ;
+	size_t size = VARSIZE(geom);
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(size);
 }
