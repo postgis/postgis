@@ -308,7 +308,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 		{
 			GSERIALIZED *pggeom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-			int pgtype = pglwgeom_get_type(pggeom);
+			int pgtype = gserialized_get_type(pggeom);
 			offset += INTALIGN(VARSIZE(pggeom));
 			if ( ! gotsrid ) /* Initialize SRID */
 			{
@@ -364,7 +364,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 			if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
 			{
 				GSERIALIZED *pggeom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
-				int pgtype = pglwgeom_get_type(pggeom);
+				int pgtype = gserialized_get_type(pggeom);
 				offset += INTALIGN(VARSIZE(pggeom));
 				if ( pgtype == POLYGONTYPE )
 				{
@@ -486,7 +486,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 						PG_RETURN_NULL();
 					}
 					srid = gserialized_get_srid(geom);
-					POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(pglwgeom_get_type(geom)));
+					POSTGIS_DEBUGF(3, "first geom is a %s", lwtype_name(gserialized_get_type(geom)));
 				}
 				else
 				{
@@ -502,7 +502,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					}
 
 					POSTGIS_DEBUGF(3, "unite_garray(%d): adding geom %d to union (%s)",
-					               call, i, lwtype_name(pglwgeom_get_type(geom)));
+					               call, i, lwtype_name(gserialized_get_type(geom)));
 
 					g2 = GEOSUnion(g1, geos_result);
 					if ( g2 == NULL )
@@ -1468,8 +1468,8 @@ Datum centroid(PG_FUNCTION_ARGS)
  */
 void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2)
 {
-	int t1 = pglwgeom_get_type(g1);
-	int t2 = pglwgeom_get_type(g2);
+	int t1 = gserialized_get_type(g1);
+	int t2 = gserialized_get_type(g2);
 
 	char *hintmsg;
 	char *hintwkt;
@@ -1859,8 +1859,8 @@ Datum contains(PG_FUNCTION_ARGS)
 	** short-circuit 2: if geom2 is a point and geom1 is a polygon
 	** call the point-in-polygon function.
 	*/
-	type1 = pglwgeom_get_type(geom1);
-	type2 = pglwgeom_get_type(geom2);
+	type1 = gserialized_get_type(geom1);
+	type2 = gserialized_get_type(geom2);
 	if ((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2101,8 +2101,8 @@ Datum covers(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom2 is a point and geom1 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	type1 = pglwgeom_get_type(geom1);
-	type2 = pglwgeom_get_type(geom2);
+	type1 = gserialized_get_type(geom1);
+	type2 = gserialized_get_type(geom2);
 	if ((type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE) && type2 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2256,8 +2256,8 @@ Datum within(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom1 is a point and geom2 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	type1 = pglwgeom_get_type(geom1);
-	type2 = pglwgeom_get_type(geom2);
+	type1 = gserialized_get_type(geom1);
+	type2 = gserialized_get_type(geom2);
 	if ((type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2393,8 +2393,8 @@ Datum coveredby(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if geom1 is a point and geom2 is a polygon
 	 * call the point-in-polygon function.
 	 */
-	type1 = pglwgeom_get_type(geom1);
-	type2 = pglwgeom_get_type(geom2);
+	type1 = gserialized_get_type(geom1);
+	type2 = gserialized_get_type(geom2);
 	if ((type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
@@ -2598,8 +2598,8 @@ Datum intersects(PG_FUNCTION_ARGS)
 	 * short-circuit 2: if the geoms are a point and a polygon,
 	 * call the point_outside_polygon function.
 	 */
-	type1 = pglwgeom_get_type(geom1);
-	type2 = pglwgeom_get_type(geom2);
+	type1 = gserialized_get_type(geom1);
+	type2 = gserialized_get_type(geom2);
 	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
 	        (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
@@ -3031,7 +3031,7 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
 	/* Different types can't be equal */
-	if( pglwgeom_get_type(geom1) != pglwgeom_get_type(geom2) )
+	if( gserialized_get_type(geom1) != gserialized_get_type(geom2) )
 		PG_RETURN_BOOL(FALSE);
 		
 	/* Empty == Empty */
@@ -3134,7 +3134,7 @@ Datum isring(PG_FUNCTION_ARGS)
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if (pglwgeom_get_type(geom) != LINETYPE)
+	if (gserialized_get_type(geom) != LINETYPE)
 	{
 		elog(ERROR,"isring() should only be called on a LINE");
 	}

@@ -95,7 +95,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( pglwgeom_get_type(geom) != LINETYPE )
+	if ( gserialized_get_type(geom) != LINETYPE )
 	{
 		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
 		PG_RETURN_NULL();
@@ -646,8 +646,8 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
-	type1 = pglwgeom_get_type(geom1);
-	type2 = pglwgeom_get_type(geom2);
+	type1 = gserialized_get_type(geom1);
+	type2 = gserialized_get_type(geom2);
 
 	if ( type1 != LINETYPE || type2 != LINETYPE )
 	{
@@ -675,7 +675,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	double to = PG_GETARG_FLOAT8(2);
 	LWCOLLECTION *geom_out = NULL;
 	LWGEOM *line_in = NULL;
-	char geomtype = pglwgeom_get_type(geom_in);
+	char geomtype = gserialized_get_type(geom_in);
 	static int ordinate = 2; /* Z */
 
 	if ( ! ( geomtype == LINETYPE || geomtype == MULTILINETYPE ) )
@@ -727,7 +727,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	LWGEOM *olwgeom;
 	POINTARRAY *ipa, *opa;
 	GSERIALIZED *ret;
-	int type = pglwgeom_get_type(geom);
+	int type = gserialized_get_type(geom);
 
 	if ( from < 0 || from > 1 )
 	{
@@ -877,12 +877,12 @@ Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
 	POINT2D p;
 	double ret;
 
-	if ( pglwgeom_get_type(geom1) != LINETYPE )
+	if ( gserialized_get_type(geom1) != LINETYPE )
 	{
 		elog(ERROR,"line_locate_point: 1st arg isnt a line");
 		PG_RETURN_NULL();
 	}
-	if ( pglwgeom_get_type(geom2) != POINTTYPE )
+	if ( gserialized_get_type(geom2) != POINTTYPE )
 	{
 		elog(ERROR,"line_locate_point: 2st arg isnt a point");
 		PG_RETURN_NULL();

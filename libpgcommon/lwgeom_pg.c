@@ -204,12 +204,6 @@ pglwgeom_serialize(LWGEOM *in)
 
 
 int
-pglwgeom_get_type(const GSERIALIZED *lwgeom)
-{
-	return gserialized_get_type(lwgeom);
-}
-
-int
 pglwgeom_get_zm(const GSERIALIZED *lwgeom)
 {
 	return 2 * FLAGS_GET_Z(lwgeom->flags) + FLAGS_GET_M(lwgeom->flags);

@@ -471,8 +471,8 @@ Datum geometry_distance_spheroid(PG_FUNCTION_ARGS)
 	GSERIALIZED *geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GSERIALIZED *geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	SPHEROID *sphere = (SPHEROID *)PG_GETARG_POINTER(2);
-	int type1 = pglwgeom_get_type(geom1);
-	int type2 = pglwgeom_get_type(geom2);
+	int type1 = gserialized_get_type(geom1);
+	int type2 = gserialized_get_type(geom2);
 	bool use_spheroid = PG_GETARG_BOOL(3);
 	LWGEOM *lwgeom1, *lwgeom2;
 	double distance;

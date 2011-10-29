@@ -97,7 +97,6 @@ extern GSERIALIZED *pglwgeom_serialize(LWGEOM *lwgeom);
 
 
 /* GSERIALIZED SRID get/set */
-extern int pglwgeom_get_type(const GSERIALIZED *lwgeom);
 extern int pglwgeom_get_zm(const GSERIALIZED *lwgeom);
 extern GSERIALIZED* pglwgeom_drop_bbox(GSERIALIZED *geom);
 extern size_t pglwgeom_size(const GSERIALIZED *geom);

@@ -491,7 +491,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	 * Raise an error if input is a polygon, a multipolygon
 	 * or a collection
 	 */
-	type = pglwgeom_get_type(gin);
+	type = gserialized_get_type(gin);
 
 	if ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE )
 	{
@@ -533,7 +533,7 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	double start_measure = PG_GETARG_FLOAT8(1);
 	double end_measure = PG_GETARG_FLOAT8(2);
 	LWGEOM *lwin, *lwout;
-	int type = pglwgeom_get_type(gin);
+	int type = gserialized_get_type(gin);
 
 	/* Raise an error if input is not a linestring or multilinestring */
 	if ( type != LINETYPE && type != MULTILINETYPE )

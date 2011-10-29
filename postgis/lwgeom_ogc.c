@@ -115,7 +115,7 @@ Datum LWGEOM_getTYPE(PG_FUNCTION_ARGS)
 	text_ob = lwalloc(20+VARHDRSZ);
 	result = text_ob+VARHDRSZ;
 
-	type = pglwgeom_get_type(lwgeom);
+	type = gserialized_get_type(lwgeom);
 
 	memset(VARDATA(text_ob), 0, 20);
 
@@ -179,7 +179,7 @@ Datum geometry_geometrytype(PG_FUNCTION_ARGS)
 
 	/* Build up the output string */
 	strncat(type_str, "ST_", 32);
-	strncat(type_str, lwtype_name(pglwgeom_get_type(lwgeom)), 32);
+	strncat(type_str, lwtype_name(gserialized_get_type(lwgeom)), 32);
 	
 	/* Build a text type to store things in */
 	type_text = cstring2text(type_str);
@@ -239,7 +239,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GSERIALIZED *result;
-	int type = pglwgeom_get_type(geom);
+	int type = gserialized_get_type(geom);
 	int32 idx;
 	LWCOLLECTION *coll;
 	LWGEOM *subgeom;
@@ -320,7 +320,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	LWLINE *line;
 	GBOX *bbox=NULL;
-	int type = pglwgeom_get_type(geom);
+	int type = gserialized_get_type(geom);
 
 	POSTGIS_DEBUG(2, "LWGEOM_exteriorring_polygon called.");
 
@@ -454,7 +454,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 	}
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	type = pglwgeom_get_type(geom);
+	type = gserialized_get_type(geom);
 
 	if ( (type != POLYGONTYPE) && (type != CURVEPOLYTYPE) )
 	{
@@ -566,7 +566,7 @@ Datum LWGEOM_x_point(PG_FUNCTION_ARGS)
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( pglwgeom_get_type(geom) != POINTTYPE )
+	if ( gserialized_get_type(geom) != POINTTYPE )
 		lwerror("Argument to X() must be a point");
 
 	lwgeom = lwgeom_from_gserialized(geom);
@@ -595,7 +595,7 @@ Datum LWGEOM_y_point(PG_FUNCTION_ARGS)
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( pglwgeom_get_type(geom) != POINTTYPE )
+	if ( gserialized_get_type(geom) != POINTTYPE )
 		lwerror("Argument to Y() must be a point");
 
 	lwgeom = lwgeom_from_gserialized(geom);
@@ -626,7 +626,7 @@ Datum LWGEOM_z_point(PG_FUNCTION_ARGS)
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( pglwgeom_get_type(geom) != POINTTYPE )
+	if ( gserialized_get_type(geom) != POINTTYPE )
 		lwerror("Argument to Z() must be a point");
 
 	lwgeom = lwgeom_from_gserialized(geom);
@@ -659,7 +659,7 @@ Datum LWGEOM_m_point(PG_FUNCTION_ARGS)
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	if ( pglwgeom_get_type(geom) != POINTTYPE )
+	if ( gserialized_get_type(geom) != POINTTYPE )
 		lwerror("Argument to M() must be a point");
 
 	lwgeom = lwgeom_from_gserialized(geom);

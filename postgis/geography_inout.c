@@ -622,7 +622,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g_ser = NULL;
 
-	geography_valid_type(pglwgeom_get_type(geom));
+	geography_valid_type(gserialized_get_type(geom));
 
 	lwgeom = lwgeom_from_gserialized(geom);
 

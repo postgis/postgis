@@ -153,7 +153,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	char * formatted_text;
 
 	/* Only supports points. */
-	uint8_t geom_type = pglwgeom_get_type(pg_lwgeom);
+	uint8_t geom_type = gserialized_get_type(pg_lwgeom);
 	if (POINTTYPE != geom_type)
 	{
 		lwerror("Only points are supported, you tried type %s.", lwtype_name(geom_type));
