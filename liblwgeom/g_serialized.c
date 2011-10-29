@@ -17,6 +17,21 @@
 * GSERIALIZED metadata utility functions.
 */
 
+int gserialized_has_bbox(const GSERIALIZED *gser)
+{
+	return FLAGS_GET_BBOX(gser->flags);
+}
+
+int gserialized_has_z(const GSERIALIZED *gser)
+{
+	return FLAGS_GET_Z(gser->flags);
+}
+
+int gserialized_has_m(const GSERIALIZED *gser)
+{
+	return FLAGS_GET_M(gser->flags);
+}
+
 uint32_t gserialized_get_type(const GSERIALIZED *s)
 {
 	uint32_t *ptr;

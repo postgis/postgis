@@ -621,7 +621,22 @@ extern void gserialized_set_srid(GSERIALIZED *g, int32_t srid);
 * is zero, will not catch collections of empty, eg: 
 * GEOMETRYCOLLECTION(POINT EMPTY) 
 */
-int gserialized_is_empty(const GSERIALIZED *g);
+extern int gserialized_is_empty(const GSERIALIZED *g);
+
+/**
+* Check if a #GSERIALIZED has a bounding box without deserializing first.
+*/
+extern int gserialized_has_bbox(const GSERIALIZED *gser);
+
+/**
+* Check if a #GSERIALIZED has a Z ordinate.
+*/
+extern int gserialized_has_z(const GSERIALIZED *gser);
+
+/**
+* Check if a #GSERIALIZED has an M ordinate.
+*/
+extern int gserialized_has_m(const GSERIALIZED *gser);
 
 /**
 * Call this function to drop BBOX and SRID
