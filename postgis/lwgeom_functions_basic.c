@@ -107,16 +107,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_mem_size);
 Datum LWGEOM_mem_size(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	size_t size = VARSIZE(geom);
-	size_t computed_size = pglwgeom_size(geom);
-	computed_size += VARHDRSZ; /* varlena size */
-	if ( size != computed_size )
-	{
-		elog(NOTICE, "varlena size (%lu) != computed size+4 (%lu)",
-		     (unsigned long)size,
-		     (unsigned long)computed_size);
-	}
-
+	size_t size = VARSIZE(geom) - VARHDRSZ;
 	PG_FREE_IF_COPY(geom,0);
 	PG_RETURN_INT32(size);
 }

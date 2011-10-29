@@ -96,8 +96,6 @@ GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 extern GSERIALIZED *pglwgeom_serialize(LWGEOM *lwgeom);
 
 
-/* GSERIALIZED SRID get/set */
-extern size_t pglwgeom_size(const GSERIALIZED *geom);
 extern int pglwgeom_ndims(const GSERIALIZED *geom);
 /*
  * Get the 2d bounding box of the given geometry, in FLOAT4 format.

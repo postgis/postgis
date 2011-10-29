@@ -202,11 +202,6 @@ pglwgeom_serialize(LWGEOM *in)
 	return gser;
 }
 
-size_t pglwgeom_size(const GSERIALIZED *geom)
-{
-	return VARSIZE(geom) - VARHDRSZ;
-};
-
 int pglwgeom_ndims(const GSERIALIZED *geom)
 {
 	return FLAGS_NDIMS(geom->flags);
