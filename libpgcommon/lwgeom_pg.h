@@ -86,9 +86,10 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 ** GSERIALIED prototypes used outside the index functions
 */
 
-/* Remove the embedded bounding box */
+/**
+* Remove the embedded bounding box 
+*/
 GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
-
 
 /**
 * Utility method to call the serialization and then set the
@@ -109,20 +110,17 @@ GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
  */
 extern int pglwgeom_getbox2d_p(const GSERIALIZED *geom, GBOX *box);
 
-/* PG-dependant */
-
 /**
-* Utility to convert cstrings to textp pointers 
+* Convert cstrings (null-terminated byte array) to textp pointers 
+* (PgSQL varlena structure with VARSIZE header).
 */
 text* cstring2text(const char *cstring);
-char* text2cstring(const text *textptr);
 
-/*
- * Use this macro to extract the char * required
- * by most functions from an GSERIALIZED struct.
- * (which is an GSERIALIZED w/out int32 size casted to char *)
- */
-#define SERIALIZED_FORM(x) ((uint8_t *)VARDATA((x)))
+/**
+* Convert textp (PgSQL varlena structure with VARSIZE header) to 
+* cstrings (null-terminated byte array). 
+*/
+char* text2cstring(const text *textptr);
 
 /* 
  * For PostgreSQL >= 8.5 redefine the STATRELATT macro to its
