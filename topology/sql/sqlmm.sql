@@ -3151,10 +3151,7 @@ BEGIN
     ORDER BY p.right_side DESC
   LOOP -- {
     RAISE DEBUG 'Adding % face', rec.side;
-    sql :=
-      'SELECT topology.AddFace(' || quote_literal(atopology)
-      || ', ' || quote_literal(rec.geom::text) || ', true)';
-    EXECUTE sql INTO newface;
+    SELECT topology.AddFace(atopology, rec.geom, true) INTO newface;
     newfaces := array_append(newfaces, newface);
   END LOOP; --}
 
@@ -3820,11 +3817,9 @@ BEGIN
 
     END IF; -- }
 
-    RAISE DEBUG 'Adding face %', ST_AsText(rec.geom);
-    sql :=
-      'SELECT topology.AddFace(' || quote_literal(atopology)
-      || ', ' || quote_literal(rec.geom::text) || ', true)';
-    EXECUTE sql INTO newface;
+    RAISE DEBUG 'Adding % face', ST_AsText(rec.geom);
+    SELECT topology.AddFace(atopology, rec.geom, true) INTO newface;
+    newfaces := array_append(newfaces, newface);
 
   END LOOP; --}
   RAISE DEBUG 'Added face: %', newface;
