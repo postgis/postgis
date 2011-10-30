@@ -331,7 +331,7 @@ Datum LWGEOM_force_2d(PG_FUNCTION_ARGS)
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
 	lwg_out = lwgeom_force_2d(lwg_in);
-	pg_geom_out = pglwgeom_serialize(lwg_out);
+	pg_geom_out = geometry_serialize(lwg_out);
 	lwgeom_free(lwg_out);
 	lwgeom_free(lwg_in);
 
@@ -353,7 +353,7 @@ Datum LWGEOM_force_3dz(PG_FUNCTION_ARGS)
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
 	lwg_out = lwgeom_force_3dz(lwg_in);
-	pg_geom_out = pglwgeom_serialize(lwg_out);
+	pg_geom_out = geometry_serialize(lwg_out);
 	lwgeom_free(lwg_out);
 	lwgeom_free(lwg_in);
 
@@ -375,7 +375,7 @@ Datum LWGEOM_force_3dm(PG_FUNCTION_ARGS)
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
 	lwg_out = lwgeom_force_3dm(lwg_in);
-	pg_geom_out = pglwgeom_serialize(lwg_out);
+	pg_geom_out = geometry_serialize(lwg_out);
 	lwgeom_free(lwg_out);
 	lwgeom_free(lwg_in);
 
@@ -397,7 +397,7 @@ Datum LWGEOM_force_4d(PG_FUNCTION_ARGS)
 
 	lwg_in = lwgeom_from_gserialized(pg_geom_in);
 	lwg_out = lwgeom_force_4d(lwg_in);
-	pg_geom_out = pglwgeom_serialize(lwg_out);
+	pg_geom_out = geometry_serialize(lwg_out);
 	lwgeom_free(lwg_out);
 	lwgeom_free(lwg_in);
 
@@ -452,7 +452,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 		         lwgeoms);
 	}
 
-	result = pglwgeom_serialize(lwgeom);
+	result = geometry_serialize(lwgeom);
 	lwgeom_release(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 0);
@@ -485,7 +485,7 @@ Datum LWGEOM_force_multi(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 	ogeom = lwgeom_as_multi(lwgeom);
 
-	result = pglwgeom_serialize(ogeom);
+	result = geometry_serialize(ogeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -517,7 +517,7 @@ Datum LWGEOM_closestpoint(PG_FUNCTION_ARGS)
 	if (lwgeom_is_empty(point))
 		PG_RETURN_NULL();
 	
-	result = pglwgeom_serialize(point);
+	result = geometry_serialize(point);
 	lwgeom_free(point);
 	lwgeom_free(lwgeom1);
 	lwgeom_free(lwgeom2);
@@ -551,7 +551,7 @@ Datum LWGEOM_shortestline2d(PG_FUNCTION_ARGS)
 	if (lwgeom_is_empty(theline))
 		PG_RETURN_NULL();	
 
-	result = pglwgeom_serialize(theline);
+	result = geometry_serialize(theline);
 	lwgeom_free(theline);
 	lwgeom_free(lwgeom1);
 	lwgeom_free(lwgeom2);
@@ -585,7 +585,7 @@ Datum LWGEOM_longestline2d(PG_FUNCTION_ARGS)
 	if (lwgeom_is_empty(theline))
 		PG_RETURN_NULL();
 
-	result = pglwgeom_serialize(theline);
+	result = geometry_serialize(theline);
 	lwgeom_free(theline);
 	lwgeom_free(lwgeom1);
 	lwgeom_free(lwgeom2);
@@ -757,7 +757,7 @@ Datum LWGEOM_closestpoint3d(PG_FUNCTION_ARGS)
 	if (lwgeom_is_empty(point))
 		PG_RETURN_NULL();	
 
-	result = pglwgeom_serialize(point);
+	result = geometry_serialize(point);
 	
 	lwgeom_free(point);
 	lwgeom_free(lwgeom1);
@@ -792,7 +792,7 @@ Datum LWGEOM_shortestline3d(PG_FUNCTION_ARGS)
 	if (lwgeom_is_empty(theline))
 		PG_RETURN_NULL();
 
-	result = pglwgeom_serialize(theline);
+	result = geometry_serialize(theline);
 	
 	lwgeom_free(theline);
 	lwgeom_free(lwgeom1);
@@ -827,7 +827,7 @@ Datum LWGEOM_longestline3d(PG_FUNCTION_ARGS)
 	if (lwgeom_is_empty(theline))
 		PG_RETURN_NULL();
 	
-	result = pglwgeom_serialize(theline);
+	result = geometry_serialize(theline);
 	
 	lwgeom_free(theline);
 	lwgeom_free(lwgeom1);
@@ -992,7 +992,7 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
 	lwgeom_longitude_shift(lwgeom);
 
 	/* Construct GSERIALIZED */
-	ret = pglwgeom_serialize(lwgeom);
+	ret = geometry_serialize(lwgeom);
 
 	/* Release deserialized geometry */
 	lwgeom_release(lwgeom);
@@ -1092,7 +1092,7 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	lwgeom_drop_srid(lwgeoms[1]);
 
 	outlwg = (LWGEOM *)lwcollection_construct(outtype, srid, NULL, 2, lwgeoms);
-	result = pglwgeom_serialize(outlwg);
+	result = geometry_serialize(outlwg);
 
 	lwgeom_free(lwgeoms[0]);
 	lwgeom_free(lwgeoms[1]);
@@ -1274,7 +1274,7 @@ Datum LWGEOM_collect_garray(PG_FUNCTION_ARGS)
 		             outtype, srid,
 		             box, count, lwgeoms);
 
-		result = pglwgeom_serialize(outlwg);
+		result = geometry_serialize(outlwg);
 
 		PG_RETURN_POINTER(result);
 	}
@@ -1311,7 +1311,7 @@ Datum LWGEOM_line_from_mpoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	result = pglwgeom_serialize(lwline_as_lwgeom(lwline));
+	result = geometry_serialize(lwline_as_lwgeom(lwline));
 
 	PG_FREE_IF_COPY(ingeom, 0);
 	lwline_free(lwline);
@@ -1437,7 +1437,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 
 	outlwg = (LWGEOM *)lwline_from_lwpointarray(srid, npoints, lwpoints);
 
-	result = pglwgeom_serialize(outlwg);
+	result = geometry_serialize(outlwg);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1474,7 +1474,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 
 	outline = lwline_from_lwpointarray(lwpoints[0]->srid, 2, lwpoints);
 
-	result = pglwgeom_serialize((LWGEOM *)outline);
+	result = geometry_serialize((LWGEOM *)outline);
 
 	PG_FREE_IF_COPY(pglwg1, 0);
 	PG_FREE_IF_COPY(pglwg2, 1);
@@ -1535,7 +1535,7 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "%s", lwgeom_summary((LWGEOM*)outpoly, 0));
 
-	result = pglwgeom_serialize((LWGEOM *)outpoly);
+	result = geometry_serialize((LWGEOM *)outpoly);
 
 	PG_FREE_IF_COPY(pglwg1, 0);
 	lwgeom_release((LWGEOM *)shell);
@@ -1618,7 +1618,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));
 
 	/* Construct GSERIALIZED  */
-	result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
+	result = geometry_serialize(lwpoly_as_lwgeom(poly));
 
 	lwgeom_free(lwpoly_as_lwgeom(poly));
 	lwgeom_free(lwgeom);
@@ -1703,7 +1703,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 	{
 		/* Construct and serialize point */
 		LWPOINT *point = lwpoint_make2d(srid, box.xmin, box.ymin);
-		result = pglwgeom_serialize(lwpoint_as_lwgeom(point));
+		result = geometry_serialize(lwpoint_as_lwgeom(point));
 		lwpoint_free(point);
 	}
 	else if ( (box.xmin == box.xmax) || (box.ymin == box.ymax) )
@@ -1722,7 +1722,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 
 		/* Construct and serialize linestring */
 		line = lwline_construct(srid, NULL, pa);
-		result = pglwgeom_serialize(lwline_as_lwgeom(line));
+		result = geometry_serialize(lwline_as_lwgeom(line));
 		lwline_free(line);
 	}
 	else
@@ -1751,7 +1751,7 @@ Datum LWGEOM_envelope(PG_FUNCTION_ARGS)
 
 		/* Construct polygon  */
 		poly = lwpoly_construct(srid, NULL, 1, ppa);
-		result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
+		result = geometry_serialize(lwpoly_as_lwgeom(poly));
 		lwpoly_free(poly);
 	}
 
@@ -1810,7 +1810,7 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	if ( inlwgeom->bbox )
 		outlwgeom->bbox = gbox_copy(inlwgeom->bbox);
 
-	outgeom = pglwgeom_serialize(outlwgeom);
+	outgeom = geometry_serialize(outlwgeom);
 
 	//lwgeom_free(outlwgeom); /* TODO fix lwgeom_clone / ptarray_clone_deep for consistent semantics */
 	lwgeom_free(inlwgeom);
@@ -1834,7 +1834,7 @@ Datum LWGEOM_reverse(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_reverse(lwgeom);
 
-	geom = pglwgeom_serialize(lwgeom);
+	geom = geometry_serialize(lwgeom);
 
 	PG_RETURN_POINTER(geom);
 }
@@ -1853,7 +1853,7 @@ Datum LWGEOM_force_clockwise_poly(PG_FUNCTION_ARGS)
 	lwgeom = lwgeom_from_gserialized(ingeom);
 	lwgeom_force_clockwise(lwgeom);
 
-	outgeom = pglwgeom_serialize(lwgeom);
+	outgeom = geometry_serialize(lwgeom);
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(ingeom, 0);
@@ -1875,7 +1875,7 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "Deserialized: %s", lwgeom_summary(lwgeom, 0));
 
-	out = pglwgeom_serialize(lwgeom);
+	out = geometry_serialize(lwgeom);
 
 	PG_FREE_IF_COPY(in, 0);
 	lwgeom_release(lwgeom);
@@ -2028,7 +2028,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	poly = lwpoly_construct(srid, NULL, 1, pa);
 	lwgeom_add_bbox(lwpoly_as_lwgeom(poly));
 
-	result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
+	result = geometry_serialize(lwpoly_as_lwgeom(poly));
 	lwpoly_free(poly);
 
 	PG_RETURN_POINTER(result);
@@ -2082,7 +2082,7 @@ Datum LWGEOM_makepoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	result = pglwgeom_serialize((LWGEOM *)point);
+	result = geometry_serialize((LWGEOM *)point);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2101,7 +2101,7 @@ Datum LWGEOM_makepoint3dm(PG_FUNCTION_ARGS)
 	m = PG_GETARG_FLOAT8(2);
 
 	point = lwpoint_make3dm(SRID_UNKNOWN, x, y, m);
-	result = pglwgeom_serialize((LWGEOM *)point);
+	result = geometry_serialize((LWGEOM *)point);
 
 	PG_RETURN_POINTER(result);
 }
@@ -2155,7 +2155,7 @@ Datum LWGEOM_addpoint(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	result = pglwgeom_serialize(lwline_as_lwgeom(linecopy));
+	result = geometry_serialize(lwline_as_lwgeom(linecopy));
 
 	/* Release memory */
 	PG_FREE_IF_COPY(pglwg1, 0);
@@ -2200,7 +2200,7 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 
 	outline = lwline_removepoint(line, which);
 
-	result = pglwgeom_serialize((LWGEOM *)outline);
+	result = geometry_serialize((LWGEOM *)outline);
 
 	/* Release memory */
 	PG_FREE_IF_COPY(pglwg1, 0);
@@ -2259,7 +2259,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	 * This will change pointarray of the serialized pglwg1,
 	 */
 	lwline_setPoint4d(line, which, &newpoint);
-	result = pglwgeom_serialize((LWGEOM *)line);
+	result = geometry_serialize((LWGEOM *)line);
 
 	/* Release memory */
 	pfree(pglwg1); /* we forced copy, POINARRAY is released now */
@@ -2456,7 +2456,7 @@ Datum LWGEOM_affine(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX TAINTING */
 	lwgeom_drop_bbox(lwgeom);
 	lwgeom_add_bbox(lwgeom);
-	ret = pglwgeom_serialize(lwgeom);
+	ret = geometry_serialize(lwgeom);
 
 	/* Release memory */
 	lwgeom_free(lwgeom);
@@ -2536,7 +2536,7 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	}
 
 	lwcol = lwcollection_extract((LWCOLLECTION*)lwgeom, type);
-	output = pglwgeom_serialize((LWGEOM*)lwcol);
+	output = geometry_serialize((LWGEOM*)lwcol);
 	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(output);
@@ -2554,7 +2554,7 @@ Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)
 	/* lwnotice("ST_RemoveRepeatedPoints got %p", lwgeom_in); */
 
 	lwgeom_out = lwgeom_remove_repeated_points(lwgeom_in);
-	output = pglwgeom_serialize(lwgeom_out);
+	output = geometry_serialize(lwgeom_out);
 
 	lwgeom_free(lwgeom_in);
 	PG_FREE_IF_COPY(input, 0);
@@ -2572,7 +2572,7 @@ Datum ST_FlipCoordinates(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom_out;
 
 	lwgeom_out = lwgeom_flip_coordinates(lwgeom_in);
-	output = pglwgeom_serialize(lwgeom_out);
+	output = geometry_serialize(lwgeom_out);
 
 	lwgeom_free(lwgeom_in);
 	PG_FREE_IF_COPY(input, 0);

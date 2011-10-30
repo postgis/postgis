@@ -82,7 +82,7 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	out = pglwgeom_serialize(lwgeom_out);
+	out = geometry_serialize(lwgeom_out);
 
 	PG_RETURN_POINTER(out);
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
@@ -154,7 +154,7 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 #if 0
 	if ( lwgeom_is_empty(lwgeom_in) )
 	{
-		out = pglwgeom_serialize(lwgeom_in);
+		out = geometry_serialize(lwgeom_in);
 		PG_FREE_IF_COPY(in, 0);
 		PG_RETURN_POINTER(out);
 	}
@@ -167,7 +167,7 @@ Datum ST_CleanGeometry(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	out = pglwgeom_serialize(lwgeom_out);
+	out = geometry_serialize(lwgeom_out);
 	PG_RETURN_POINTER(out);
 
 #endif /* POSTGIS_GEOS_VERSION >= 33 */

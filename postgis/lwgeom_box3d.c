@@ -252,7 +252,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		pt.y = box->ymin;
 		ptarray_append_point(pa, &pt, LW_TRUE);
 
-		result = pglwgeom_serialize(lwpoint_as_lwgeom(lwpt));
+		result = geometry_serialize(lwpoint_as_lwgeom(lwpt));
 	}
 	else if (box->xmin == box->xmax ||
 	         box->ymin == box->ymax)
@@ -266,7 +266,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		pt.y = box->ymax;
 		ptarray_append_point(pa, &pt, LW_TRUE);
 
-		result = pglwgeom_serialize(lwline_as_lwgeom(lwline));
+		result = geometry_serialize(lwline_as_lwgeom(lwline));
 	}
 	else
 	{
@@ -288,7 +288,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		pt.y = box->ymin;
 		ptarray_append_point(pa, &pt, LW_TRUE);
 
-		result = pglwgeom_serialize(lwpoly_as_lwgeom(lwpoly));
+		result = geometry_serialize(lwpoly_as_lwgeom(lwpoly));
 		
 	}
 

@@ -95,7 +95,7 @@ Datum LWGEOM_set_srid(PG_FUNCTION_ARGS)
 	int srid = PG_GETARG_INT32(1);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_set_srid(lwgeom, srid);
-	result = pglwgeom_serialize(lwgeom);
+	result = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
@@ -271,7 +271,7 @@ Datum LWGEOM_geometryn_collection(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX==TAINTING */
 	if ( coll->bbox ) lwgeom_add_bbox(subgeom);
 
-	result = pglwgeom_serialize(subgeom);
+	result = geometry_serialize(subgeom);
 
 	lwgeom_release((LWGEOM *)coll);
 	PG_FREE_IF_COPY(geom, 0);
@@ -357,7 +357,7 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 			bbox = gbox_copy(poly->bbox);
 
 		line = lwline_construct(poly->srid, bbox, extring);
-		result = pglwgeom_serialize((LWGEOM *)line);
+		result = geometry_serialize((LWGEOM *)line);
 
 		lwgeom_release((LWGEOM *)line);
 	}
@@ -374,14 +374,14 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 			bbox = gbox_copy(triangle->bbox);
 		line = lwline_construct(triangle->srid, bbox, triangle->points);
 
-		result = pglwgeom_serialize((LWGEOM *)line);
+		result = geometry_serialize((LWGEOM *)line);
 
 		lwgeom_release((LWGEOM *)line);
 	}
 	else
 	{
 		LWCURVEPOLY *curvepoly = lwgeom_as_lwcurvepoly(lwgeom);
-		result = pglwgeom_serialize(curvepoly->rings[0]);
+		result = geometry_serialize(curvepoly->rings[0]);
 	}
 
 	lwgeom_free(lwgeom);
@@ -496,7 +496,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 		line = lwline_construct(poly->srid, bbox, ring);
 
 
-		result = pglwgeom_serialize((LWGEOM *)line);
+		result = geometry_serialize((LWGEOM *)line);
 		lwpoly_free(poly);
 		lwline_release(line);
 	}
@@ -511,7 +511,7 @@ Datum LWGEOM_interiorringn_polygon(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
-		result = pglwgeom_serialize(curvepoly->rings[wanted_index]);
+		result = geometry_serialize(curvepoly->rings[wanted_index]);
 		lwgeom_free((LWGEOM *)curvepoly);
 	}
 
@@ -549,7 +549,7 @@ Datum LWGEOM_pointn_linestring(PG_FUNCTION_ARGS)
 	if ( ! lwpoint )
 		PG_RETURN_NULL();
 
-	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(lwpoint)));
+	PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(lwpoint)));
 }
 
 /**
@@ -702,7 +702,7 @@ Datum LWGEOM_startpoint_linestring(PG_FUNCTION_ARGS)
 	if ( ! lwpoint )
 		PG_RETURN_NULL();
 
-	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(lwpoint)));
+	PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(lwpoint)));
 }
 
 /** EndPoint(GEOMETRY) -- find the first linestring in GEOMETRY,
@@ -730,7 +730,7 @@ Datum LWGEOM_endpoint_linestring(PG_FUNCTION_ARGS)
 	if ( ! lwpoint )
 		PG_RETURN_NULL();
 
-	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(lwpoint)));
+	PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(lwpoint)));
 }
 
 /**
@@ -766,7 +766,7 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 1 ) 
 		lwgeom_set_srid(lwgeom, PG_GETARG_INT32(1));
 
-	geom_result = pglwgeom_serialize(lwgeom);
+	geom_result = geometry_serialize(lwgeom);
 	lwgeom_parser_result_free(&lwg_parser_result);
 
 	PG_RETURN_POINTER(geom_result);

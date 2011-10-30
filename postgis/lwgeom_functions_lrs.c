@@ -512,7 +512,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 		            gserialized_get_srid(gin), hasz, hasm);
 	}
 
-	gout = pglwgeom_serialize(lwout);
+	gout = geometry_serialize(lwout);
 	lwgeom_release(lwout);
 
 	PG_RETURN_POINTER(gout);
@@ -553,7 +553,7 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	if ( lwout == NULL )
 		PG_RETURN_NULL();
 
-	gout = pglwgeom_serialize(lwout);
+	gout = geometry_serialize(lwout);
 	lwgeom_release(lwout);
 
 	PG_RETURN_POINTER(gout);

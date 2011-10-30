@@ -192,14 +192,42 @@ lwgeom_init_allocators(void)
 	lwnotice_var = pg_notice;
 }
 
-GSERIALIZED *
-pglwgeom_serialize(LWGEOM *in)
+/**
+* Utility method to call the serialization and then set the
+* PgSQL varsize header appropriately with the serialized size.
+*/
+
+/**
+* Utility method to call the serialization and then set the
+* PgSQL varsize header appropriately with the serialized size.
+*/
+GSERIALIZED* geography_serialize(LWGEOM *lwgeom)
 {
-	size_t gser_size;
-	GSERIALIZED *gser;
-	gser = gserialized_from_lwgeom(in, 0, &gser_size);
-	SET_VARSIZE(gser, gser_size);
-	return gser;
+	static int is_geodetic = 1;
+	size_t ret_size = 0;
+	GSERIALIZED *g = NULL;
+
+	g = gserialized_from_lwgeom(lwgeom, is_geodetic, &ret_size);
+	if ( ! g ) lwerror("Unable to serialize lwgeom.");
+	SET_VARSIZE(g, ret_size);
+	return g;
+}
+
+
+/**
+* Utility method to call the serialization and then set the
+* PgSQL varsize header appropriately with the serialized size.
+*/
+GSERIALIZED* geometry_serialize(LWGEOM *lwgeom)
+{
+	static int is_geodetic = 0;
+	size_t ret_size = 0;
+	GSERIALIZED *g = NULL;
+
+	g = gserialized_from_lwgeom(lwgeom, is_geodetic, &ret_size);
+	if ( ! g ) lwerror("Unable to serialize lwgeom.");
+	SET_VARSIZE(g, ret_size);
+	return g;
 }
 
 int pglwgeom_getbox2d_p(const GSERIALIZED *geom, GBOX *box)

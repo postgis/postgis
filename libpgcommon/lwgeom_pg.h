@@ -90,10 +90,17 @@ extern void pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result);
 GSERIALIZED* gserialized_drop_gidx(GSERIALIZED *g);
 
 
+/**
+* Utility method to call the serialization and then set the
+* PgSQL varsize header appropriately with the serialized size.
+*/
+GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 
-
-/* Serialize/deserialize a GSERIALIZED (postgis datatype) */
-extern GSERIALIZED *pglwgeom_serialize(LWGEOM *lwgeom);
+/**
+* Utility method to call the serialization and then set the
+* PgSQL varsize header appropriately with the serialized size.
+*/
+GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
 
 /*
  * Get the 2d bounding box of the given geometry, in FLOAT4 format.

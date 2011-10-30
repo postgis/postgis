@@ -379,7 +379,7 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 #endif
 
 	if (mline)
-		result = pglwgeom_serialize((LWGEOM *)mline);
+		result = geometry_serialize((LWGEOM *)mline);
 
 	POSTGIS_DEBUGF(3, "returning result %p", result);
 

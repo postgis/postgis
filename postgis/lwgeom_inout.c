@@ -92,7 +92,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		/* Add a bbox if necessary */
 		if ( lwgeom_needs_bbox(lwgeom) ) lwgeom_add_bbox(lwgeom);
 		pfree(wkb);
-		ret = pglwgeom_serialize(lwgeom);
+		ret = geometry_serialize(lwgeom);
 		lwgeom_free(lwgeom);
 	}
 	/* WKT then. */
@@ -105,7 +105,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		lwgeom = lwg_parser_result.geom;
 		if ( lwgeom_needs_bbox(lwgeom) )
 			lwgeom_add_bbox(lwgeom);		
-		ret = pglwgeom_serialize(lwgeom);
+		ret = geometry_serialize(lwgeom);
 		lwgeom_parser_result_free(&lwg_parser_result);
 	}
 	
@@ -324,7 +324,7 @@ Datum LWGEOMFromWKB(PG_FUNCTION_ARGS)
 	if ( lwgeom_needs_bbox(lwgeom) )
 		lwgeom_add_bbox(lwgeom);
 
-	geom = pglwgeom_serialize(lwgeom);
+	geom = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(bytea_wkb, 0);
 	PG_RETURN_POINTER(geom);
@@ -388,7 +388,7 @@ Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_add_bbox(lwgeom);
-	result = pglwgeom_serialize(lwgeom);
+	result = geometry_serialize(lwgeom);
 	
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
@@ -463,7 +463,7 @@ Datum LWGEOM_recv(PG_FUNCTION_ARGS)
 	/* Set cursor to the end of buffer (so the backend is happy) */
 	buf->cursor = buf->len;
 
-	geom = pglwgeom_serialize(lwgeom);
+	geom = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 	PG_RETURN_POINTER(geom);
 }

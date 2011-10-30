@@ -55,7 +55,7 @@ Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS)
 	/* COMPUTE_BBOX TAINTING */
 	if ( in->bbox ) lwgeom_add_bbox(out);
 
-	result = pglwgeom_serialize(out);
+	result = geometry_serialize(out);
 	lwgeom_free(out);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
@@ -117,7 +117,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uint8_t*)&pt);
 		
 		point = lwpoint_construct(line->srid, NULL, opa);
-		PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
+		PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(point)));
 	}
 
 	/* Interpolate a point on the line */
@@ -147,7 +147,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 			interpolate_point4d(&p1, &p2, &pt, dseg);
 			opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uint8_t*)&pt);
 			point = lwpoint_construct(line->srid, NULL, opa);
-			PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
+			PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(point)));
 		}
 		tlength += slength;
 	}
@@ -157,7 +157,7 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	getPoint4d_p(ipa, ipa->npoints-1, &pt);
 	opa = ptarray_construct_reference_data(FLAGS_GET_Z(line->flags), FLAGS_GET_M(line->flags), 1, (uint8_t*)&pt);
 	point = lwpoint_construct(line->srid, NULL, opa);
-	PG_RETURN_POINTER(pglwgeom_serialize(lwpoint_as_lwgeom(point)));
+	PG_RETURN_POINTER(geometry_serialize(lwpoint_as_lwgeom(point)));
 }
 /***********************************************************************
  * --jsunday@rochgrp.com;
@@ -549,7 +549,7 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 
-	out_geom = pglwgeom_serialize(out_lwgeom);
+	out_geom = geometry_serialize(out_lwgeom);
 
 	PG_RETURN_POINTER(out_geom);
 }
@@ -623,7 +623,7 @@ Datum LWGEOM_snaptogrid_pointoff(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "SnapToGrid made a %s", lwtype_name(out_lwgeom->type));
 
-	out_geom = pglwgeom_serialize(out_lwgeom);
+	out_geom = geometry_serialize(out_lwgeom);
 
 	PG_RETURN_POINTER(out_geom);
 }
@@ -709,7 +709,7 @@ Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
 	}
 
 	PG_FREE_IF_COPY(geom_in, 0);
-	PG_RETURN_POINTER(pglwgeom_serialize((LWGEOM*)geom_out));
+	PG_RETURN_POINTER(geometry_serialize((LWGEOM*)geom_out));
 }
 
 /***********************************************************************
@@ -857,7 +857,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	ret = pglwgeom_serialize(olwgeom);
+	ret = geometry_serialize(olwgeom);
 	lwgeom_free(olwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(ret);

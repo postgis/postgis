@@ -108,7 +108,7 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 		lwgeom = tmp;
 	}
 
-	geom = pglwgeom_serialize(lwgeom);
+	geom = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 
 	xmlFreeDoc(xmldoc);

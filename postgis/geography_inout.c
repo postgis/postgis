@@ -49,41 +49,6 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS);
 /* Datum geography_send(PG_FUNCTION_ARGS); TBD */
 /* Datum geography_recv(PG_FUNCTION_ARGS); TBD */
 
-
-/**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
-GSERIALIZED* geography_serialize(LWGEOM *lwgeom)
-{
-	static int is_geodetic = 1;
-	size_t ret_size = 0;
-	GSERIALIZED *g = NULL;
-
-	g = gserialized_from_lwgeom(lwgeom, is_geodetic, &ret_size);
-	if ( ! g ) lwerror("Unable to serialize lwgeom.");
-	SET_VARSIZE(g, ret_size);
-	return g;
-}
-
-
-/**
-* Utility method to call the serialization and then set the
-* PgSQL varsize header appropriately with the serialized size.
-*/
-GSERIALIZED* geometry_serialize(LWGEOM *lwgeom)
-{
-	static int is_geodetic = 0;
-	size_t ret_size = 0;
-	GSERIALIZED *g = NULL;
-
-	g = gserialized_from_lwgeom(lwgeom, is_geodetic, &ret_size);
-	if ( ! g ) lwerror("Unable to serialize lwgeom.");
-	SET_VARSIZE(g, ret_size);
-	return g;
-}
-
-
 /**
 * The geography type only support POINT, LINESTRING, POLYGON, MULTI* variants
 * of same, and GEOMETRYCOLLECTION. If the input type is not one of those, shut
@@ -687,7 +652,7 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 	if ( (int)lwgeom->srid <= 0 )
 		lwgeom->srid = SRID_DEFAULT;
 
-	ret = pglwgeom_serialize(lwgeom);
+	ret = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(ret);

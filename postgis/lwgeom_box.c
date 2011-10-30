@@ -437,7 +437,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 	{
 		/* Construct and serialize point */
 		LWPOINT *point = lwpoint_make2d(SRID_UNKNOWN, box->xmin, box->ymin);
-		result = pglwgeom_serialize(lwpoint_as_lwgeom(point));
+		result = geometry_serialize(lwpoint_as_lwgeom(point));
 		lwpoint_free(point);
 	}
 	else if ( (box->xmin == box->xmax) || (box->ymin == box->ymax) )
@@ -454,7 +454,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 
 		/* Construct and serialize linestring */
 		line = lwline_construct(SRID_UNKNOWN, NULL, pa);
-		result = pglwgeom_serialize(lwline_as_lwgeom(line));
+		result = geometry_serialize(lwline_as_lwgeom(line));
 		lwline_free(line);
 	}
 	else
@@ -482,7 +482,7 @@ Datum BOX2DFLOAT4_to_LWGEOM(PG_FUNCTION_ARGS)
 		/* Construct polygon */
 		ppa[0] = pa;
 		poly = lwpoly_construct(SRID_UNKNOWN, NULL, 1, ppa);
-		result = pglwgeom_serialize(lwpoly_as_lwgeom(poly));
+		result = geometry_serialize(lwpoly_as_lwgeom(poly));
 		lwpoly_free(poly);
 	}
 

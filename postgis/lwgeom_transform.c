@@ -98,7 +98,7 @@ Datum transform(PG_FUNCTION_ARGS)
 		lwgeom_add_bbox(lwgeom);
 	}
 
-	result = pglwgeom_serialize(lwgeom);
+	result = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);
 
@@ -200,7 +200,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 		lwgeom_add_bbox(lwgeom);
 	}
 
-	result = pglwgeom_serialize(lwgeom);
+	result = geometry_serialize(lwgeom);
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 0);

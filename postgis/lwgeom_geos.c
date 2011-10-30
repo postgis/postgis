@@ -658,7 +658,7 @@ Datum geomunion(PG_FUNCTION_ARGS)
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
 	lwresult = lwgeom_union(lwgeom1, lwgeom2) ;
-	result = pglwgeom_serialize(lwresult) ;
+	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
 	lwgeom_free(lwgeom2) ;
@@ -691,7 +691,7 @@ Datum symdifference(PG_FUNCTION_ARGS)
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
 	lwresult = lwgeom_symdifference(lwgeom1, lwgeom2) ;
-	result = pglwgeom_serialize(lwresult) ;
+	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
 	lwgeom_free(lwgeom2) ;
@@ -823,7 +823,7 @@ Datum convexhull(PG_FUNCTION_ARGS)
 		lwout->bbox = gbox_copy(&bbox);
 	}
 
-	result = pglwgeom_serialize(lwout);
+	result = geometry_serialize(lwout);
 
 	if (result == NULL)
 	{
@@ -1303,7 +1303,7 @@ Datum intersection(PG_FUNCTION_ARGS)
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
 	lwresult = lwgeom_intersection(lwgeom1, lwgeom2) ;
-	result = pglwgeom_serialize(lwresult) ;
+	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
 	lwgeom_free(lwgeom2) ;
@@ -1335,7 +1335,7 @@ Datum difference(PG_FUNCTION_ARGS)
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
 	lwresult = lwgeom_difference(lwgeom1, lwgeom2) ;
-	result = pglwgeom_serialize(lwresult) ;
+	result = geometry_serialize(lwresult) ;
 
 	lwgeom_free(lwgeom1) ;
 	lwgeom_free(lwgeom2) ;
@@ -3188,7 +3188,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 		lwgeom_add_bbox(lwgeom);
 	}
 
-	result = pglwgeom_serialize(lwgeom);
+	result = geometry_serialize(lwgeom);
 
 	return result;
 }
@@ -3413,7 +3413,7 @@ Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	result = pglwgeom_serialize(lwgeom_out) ;
+	result = geometry_serialize(lwgeom_out) ;
 
 	lwgeom_free(lwgeom_out) ;
 	lwgeom_free(lwgeom_in) ;
@@ -3450,7 +3450,7 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
 	lwgeom2 = lwgeom_from_gserialized(geom2) ;
 
 	lwresult = lwgeom_snap(lwgeom1, lwgeom2, tolerance);
-	result = pglwgeom_serialize(lwresult);
+	result = geometry_serialize(lwresult);
 
 	lwgeom_free(lwgeom1);
 	lwgeom_free(lwgeom2);
@@ -3512,7 +3512,7 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	out = pglwgeom_serialize(lwgeom_out);
+	out = geometry_serialize(lwgeom_out);
 
 	PG_FREE_IF_COPY(in, 0);
 	PG_FREE_IF_COPY(blade_in, 1);
@@ -3564,7 +3564,7 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	out = pglwgeom_serialize(lwgeom_out);
+	out = geometry_serialize(lwgeom_out);
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 

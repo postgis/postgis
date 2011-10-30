@@ -135,7 +135,7 @@ Datum geom_from_gml(PG_FUNCTION_ARGS)
 		lwgeom = tmp;
 	}
 
-	geom = pglwgeom_serialize(lwgeom);
+	geom = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
 
 	PG_RETURN_POINTER(geom);
