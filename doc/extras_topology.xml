@@ -20,7 +20,7 @@
                 </para>	
             </abstract>
         </sect1info>
-        <title>PostgreSQL PostGIS Topology Types and Domains</title>
+        <title>Topology Types</title>
 		
 		<refentry id="getfaceedges_returntype">
 		  <refnamediv>
@@ -127,7 +127,7 @@
                 </para>	
             </abstract>
         </sect1info>
-        <title>PostgreSQL PostGIS Topology Domains</title>
+        <title>Topology Domains</title>
 		
 		<refentry id="topoelement">
 		  <refnamediv>
@@ -205,7 +205,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
                 <para>This section lists the Topology functions for building new Topology schemas, validating topologies, and managing TopoGeometry Columns</para>
             </abstract>
         </sect1info>
-	    <title>Topology and TopoGeometry Management Functions</title>
+	    <title>Topology and TopoGeometry Management</title>
 	    <refentry id="AddTopoGeometryColumn">
 			<refnamediv>
 				<refname>AddTopoGeometryColumn</refname>
@@ -720,7 +720,7 @@ SELECT topology.AddTopoGeometryColumn('ri_topo', 'ri', 'roads', 'topo', 'LINE');
                 <para>This section covers topology functions for adding, moving, deleting, and splitting edges, faces, and nodes. All of these functions are defined by ISO SQL/MM.</para>
             </abstract>
         </sect1info>
-	    <title>Topology Editing Functions</title>
+	    <title>Topology Editors</title>
 
 		<refentry id="ST_AddIsoNode">
 			<refnamediv>
@@ -1823,7 +1823,7 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
             <para>This section covers the functions for processing topologies in non-standard ways.</para>
         </abstract>
     </sect1info>
-	  <title>Topology Processing Functions</title>
+	  <title>Topology Processing</title>
 	     <refentry id="AddEdge">
 			<refnamediv>
 				<refname>AddEdge</refname>
