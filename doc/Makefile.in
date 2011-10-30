@@ -56,7 +56,7 @@ else
 ifeq ($(IMAGEMAGICK),)
 all: requirements_not_met_imagemagick
 else
-all: images html/postgis.html postgis_comments.sql raster_comments.sql
+all: images html/postgis.html postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
 endif
 endif
 endif
@@ -72,6 +72,9 @@ raster_comments.sql: ./xsl/raster_comments.sql.xsl postgis.xml postgis_aggs_mm.x
 	
 topology_comments.sql: ./xsl/topology_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/topology_comments.sql.xsl postgis.xml > $@
+	
+topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl postgis.xml postgis_aggs_mm.xml
+	$(XSLTPROC) ./xsl/topology_cheatsheet.html.xsl postgis.xml > $@
 	
 tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/tiger_geocoder_comments.sql.xsl postgis.xml > $@
