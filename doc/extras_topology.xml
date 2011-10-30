@@ -2394,7 +2394,19 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
             
                 <para>Returns the GML representation of a topogeometry in version GML3 format. If no <varname>nsprefix_in</varname> is specified then <varname>gml</varname> is used. Pass in an empty string for nsprefix to get a non-qualified name space. The precision (default: 15) and options (default 1) parameters, if given, are passed untouched to the underlying call to ST_AsGML.</para>
 
-		<para>The <varname>visitedTable</varname> parameter, if given, is used for keeping track of the visited Node and Edge elements so to use cross-references (xlink:xref) rather than duplicating definitions. The table is expected to have (at least) two integer fields: 'element_type' and 'element_id'. The calling user must have both read and write privileges on the given table.</para>
+		<para>
+The <varname>visitedTable</varname> parameter, if given, is used for keeping track of the visited Node and Edge elements so to use cross-references (xlink:xref) rather than duplicating definitions. The table is expected to have (at least) two integer fields: 'element_type' and 'element_id'. The calling user must have both read and write privileges on the given table.
+For best performance, an index should be defined on
+<varname>element_type</varname> and <varname>element_id</varname>, 
+in that order. Such index would be created automatically by adding a unique
+constraint to the fields. Example:
+<programlisting>
+CREATE TABLE visited (
+  element_type integer, element_id integer,
+  unique(element_type, element_id)
+);
+</programlisting>
+		</para>
               
 		<para>The <varname>idprefix</varname> parameter, if given, will be prepended to Edge and Node tag identifiers.</para>
 			
