@@ -19,15 +19,10 @@ body {
 	font-size: 8.5pt;
 }
 
-#wrapper {
-	margin: 0px; 
-	max-width: 1200px;
-	background-color: #fff;
-}
-
-#heading {
+#example_heading {
 	border-bottom: 1px solid #000;
 	margin: 10px 15px 10px 85px;
+	color: #00d
 }
 
 #contentbox {
@@ -45,7 +40,6 @@ body {
 	float: right;
 	width: 53%;
 }
-.example_header {color: blue;font-family:arial}
 
 #sidebar1 {
 		position: absolute;
@@ -74,12 +68,7 @@ body {
 	vertical-align: top;
 	border: 0;
 }
-.subheading {
-	background-color: #b63300;
-}
-.subheading2 {
-	background-color: #c6e7ef;
-}
+
 .evenrow {
 	background-color: #eee;
 }
@@ -94,43 +83,6 @@ h1 {
 	font-size: 14pt;
 }
 
-h3 {
-	margin: 0px 0px 3px 0px;
-	padding: 0px;
-	font-size: 11pt;
-	border-bottom: 1px solid #000;
-}
-
-h4 {
-	margin: 0px;
-	padding: 0px;
-	font-size: 10.5pt;
-}
-.exp {
-	font-family: Arial, sans-serif;
-	border-top: 1px solid #000;
-	font-size: 7.5pt;
-	clear: both;
-	
-}
-.values {
-	font-family: Arial, sans-serif;
-	font-size: 7.75pt;
-	background-color: #ffdba1;
-	border: 1px solid #ccc;
-	padding: 1px;
-	margin: 1px;
-}
-.floatcontainer:after { 
-	content: "."; 
-	display: block; 
-	height: 0; 
-	clear: both; 
-	visibility:hidden; 
-}
-hr {
-	display: none;
-	}
 -->
 </style>
 	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Topology Cheatsheet</h1>]]></xsl:text>
@@ -165,7 +117,7 @@ hr {
 	 <xsl:template match="sect1[count(//refentry//refsection//programlisting) > 0]">
 			<!--Beginning of section -->
 		
-			 	<xsl:text><![CDATA[<table><tr><th colspan="2" class="example_header">]]></xsl:text>
+			 	<xsl:text><![CDATA[<table><tr><th colspan="2" class="example_heading">]]></xsl:text>
 				<xsl:value-of select="title" /> Examples
 				<!-- end of section header beginning of function list -->
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
