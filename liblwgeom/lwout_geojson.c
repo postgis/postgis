@@ -12,7 +12,6 @@
  **********************************************************************/
 
 #include "liblwgeom_internal.h"
-#include <math.h>	/* fabs */
 #include <string.h>	/* strlen */
 
 static char *asgeojson_point(const LWPOINT *point, char *srs, GBOX *bbox, int precision);

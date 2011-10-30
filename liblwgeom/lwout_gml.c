@@ -20,7 +20,6 @@
 
 
 #include <string.h>
-#include <math.h> /* fabs */
 #include "liblwgeom_internal.h"
 
 

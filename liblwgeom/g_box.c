@@ -11,7 +11,6 @@
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
-#include <math.h>
 #include <stdlib.h>
 
 GBOX* gbox_new(uint8_t flags)

@@ -11,14 +11,12 @@
  **********************************************************************/
 
 
-#include <math.h>
-#include <float.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
+
+#include <float.h>
+#include <stdio.h>
+#include <errno.h>
 
 /*
  * Lower this to reduce integrity checks

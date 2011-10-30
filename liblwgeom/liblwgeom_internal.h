@@ -17,14 +17,17 @@
 #define _LIBLWGEOM_INTERNAL_H 1
 
 #include <assert.h>
-#include "liblwgeom.h"
 #include <stdarg.h>
-#include <string.h>
-#include <math.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
 #if HAVE_IEEEFP_H
 #include <ieeefp.h>
 #endif
+
+#include "liblwgeom.h"
+
 
 /**
 * PI

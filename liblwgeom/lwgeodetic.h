@@ -9,7 +9,6 @@
  *
  **********************************************************************/
 
-#include <math.h>
 #include "liblwgeom_internal.h"
 
 extern int gbox_geocentric_slow;

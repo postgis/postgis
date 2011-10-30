@@ -17,13 +17,10 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
-#include <math.h>
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
-
-
 
 
 #include "proj_api.h"

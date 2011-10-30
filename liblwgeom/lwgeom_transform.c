@@ -13,7 +13,6 @@
 #include "proj_api.h"
 #include "liblwgeom.h"
 #include "lwgeom_log.h"
-#include <math.h>
 #include <string.h>
 
 

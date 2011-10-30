@@ -18,8 +18,8 @@
 
 
 #include <string.h>
-#include <math.h> /* fabs */
 #include "liblwgeom_internal.h"
+
 /** defid is the id of the coordinate can be used to hold other elements DEF='abc' transform='' etc. **/
 static size_t asx3d3_point_size(const LWPOINT *point, char *srs, int precision, int opts, const char *defid);
 static char *asx3d3_point(const LWPOINT *point, char *srs, int precision, int opts, const char *defid);

@@ -15,7 +15,6 @@
 
 #include "liblwgeom_internal.h"
 #include "stringbuffer.h"
-#include <math.h>	/* fabs */
 
 static int lwgeom_to_kml2_sb(const LWGEOM *geom, int precision, const char *prefix, stringbuffer_t *sb);
 static int lwpoint_to_kml2_sb(const LWPOINT *point, int precision, const char *prefix, stringbuffer_t *sb);
