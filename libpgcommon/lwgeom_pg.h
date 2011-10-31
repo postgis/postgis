@@ -103,13 +103,6 @@ GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 */
 GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
 
-/*
- * Get the 2d bounding box of the given geometry, in FLOAT4 format.
- * Use a cached bbox if available, compute it otherwise.
- * Return LW_FALSE if the geometry has no bounding box (ie: is empty).
- */
-extern int gserialized_get_gbox_p(const GSERIALIZED *geom, GBOX *box);
-
 /**
 * Convert cstrings (null-terminated byte array) to textp pointers 
 * (PgSQL varlena structure with VARSIZE header).
