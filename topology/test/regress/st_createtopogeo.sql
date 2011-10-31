@@ -213,6 +213,16 @@ select * from print_elements_count('T15');
 select * from print_isolated_nodes('T15');
 select null from ( select topology.DropTopology('t') ) as dt;
 
+-- Three mergeable lines 
+select null from ( select topology.CreateTopology('t') > 0 ) as ct;
+select 'T16', st_asewkt(g) FROM (
+SELECT g, topology.st_createtopogeo('t', g) FROM ( SELECT
+'GEOMETRYCOLLECTION(LINESTRING(0 0, 10 0),LINESTRING(0 3, 20 4),LINESTRING(10 0, 20 4))'
+::geometry as g ) as i ) as j;
+select * from print_elements_count('T16');
+select * from print_isolated_nodes('T16');
+select null from ( select topology.DropTopology('t') ) as dt;
+
 -- clean up
 DELETE FROM spatial_ref_sys where srid = 4326;
 DROP FUNCTION print_isolated_nodes(text);

@@ -3988,6 +3988,8 @@ BEGIN
 
   --
   -- Linemerge the resulting edges, to reduce the working set
+  -- NOTE: this is more of a workaround for GEOS splitting overlapping
+  --       lines to each of the segments.
   --
   SELECT ST_LineMerge(nodededges) INTO STRICT nodededges;
 
@@ -3995,17 +3997,22 @@ BEGIN
 
 
   --
-  -- Collect input points 
+  -- Collect input points and input lines endpoints
   --
+  WITH components AS ( SELECT geom FROM ST_Dump(acollection) )
   SELECT ST_Union(geom) FROM (
-    SELECT geom FROM ST_Dump(acollection)
+    SELECT geom FROM components
       WHERE ST_Dimension(geom) = 0
+    UNION ALL
+    SELECT ST_Boundary(geom) FROM components
+      WHERE ST_Dimension(geom) = 1
   ) as nodes INTO STRICT points;
 
   RAISE DEBUG 'Collected % input points', ST_NumGeometries(points);
 
   --
   -- Further split edges by points
+  -- TODO: optimize this !
   --
   FOR rec IN SELECT geom FROM ST_Dump(points)
   LOOP
