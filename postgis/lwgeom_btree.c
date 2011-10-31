@@ -51,8 +51,8 @@ Datum lwgeom_lt(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUG(3, "lwgeom_lt passed getSRID test");
 
-	pglwgeom_getbox2d_p(geom1, &box1);
-	pglwgeom_getbox2d_p(geom2, &box2);
+	gserialized_get_gbox_p(geom1, &box1);
+	gserialized_get_gbox_p(geom2, &box2);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -105,8 +105,8 @@ Datum lwgeom_le(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	pglwgeom_getbox2d_p(geom1, &box1);
-	pglwgeom_getbox2d_p(geom2, &box2);
+	gserialized_get_gbox_p(geom1, &box1);
+	gserialized_get_gbox_p(geom2, &box2);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -170,8 +170,8 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	pglwgeom_getbox2d_p(geom1, &box1);
-	pglwgeom_getbox2d_p(geom2, &box2);
+	gserialized_get_gbox_p(geom1, &box1);
+	gserialized_get_gbox_p(geom2, &box2);
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
 
@@ -207,8 +207,8 @@ Datum lwgeom_ge(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	pglwgeom_getbox2d_p(geom1, &box1);
-	pglwgeom_getbox2d_p(geom2, &box2);
+	gserialized_get_gbox_p(geom1, &box1);
+	gserialized_get_gbox_p(geom2, &box2);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -271,8 +271,8 @@ Datum lwgeom_gt(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	pglwgeom_getbox2d_p(geom1, &box1);
-	pglwgeom_getbox2d_p(geom2, &box2);
+	gserialized_get_gbox_p(geom1, &box1);
+	gserialized_get_gbox_p(geom2, &box2);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
@@ -331,8 +331,8 @@ Datum lwgeom_cmp(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	pglwgeom_getbox2d_p(geom1, &box1);
-	pglwgeom_getbox2d_p(geom2, &box2);
+	gserialized_get_gbox_p(geom1, &box1);
+	gserialized_get_gbox_p(geom2, &box2);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);

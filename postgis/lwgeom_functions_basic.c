@@ -2402,7 +2402,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS)
 	}
 
 	/*bbox check */
-	pglwgeom_getbox2d_p(pg_geom1, &g1_bvol );
+	gserialized_get_gbox_p(pg_geom1, &g1_bvol );
 
 	g1_bvol.xmin = g1_bvol.xmin - dist;
 	g1_bvol.ymin = g1_bvol.ymin - dist;

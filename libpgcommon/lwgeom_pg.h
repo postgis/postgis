@@ -108,7 +108,7 @@ GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
  * Use a cached bbox if available, compute it otherwise.
  * Return LW_FALSE if the geometry has no bounding box (ie: is empty).
  */
-extern int pglwgeom_getbox2d_p(const GSERIALIZED *geom, GBOX *box);
+extern int gserialized_get_gbox_p(const GSERIALIZED *geom, GBOX *box);
 
 /**
 * Convert cstrings (null-terminated byte array) to textp pointers 

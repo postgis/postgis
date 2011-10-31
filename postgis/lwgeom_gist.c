@@ -107,7 +107,7 @@ Datum LWGEOM_overlap(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -150,7 +150,7 @@ Datum LWGEOM_overleft(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -180,7 +180,7 @@ Datum LWGEOM_left(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -210,7 +210,7 @@ Datum LWGEOM_right(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -240,7 +240,7 @@ Datum LWGEOM_overright(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -270,7 +270,7 @@ Datum LWGEOM_overbelow(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -300,7 +300,7 @@ Datum LWGEOM_below(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -330,7 +330,7 @@ Datum LWGEOM_above(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -360,7 +360,7 @@ Datum LWGEOM_overabove(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -389,7 +389,7 @@ Datum LWGEOM_samebox(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -418,7 +418,7 @@ Datum LWGEOM_contained(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -448,7 +448,7 @@ Datum LWGEOM_contain(PG_FUNCTION_ARGS)
 
 	error_if_srid_mismatch(gserialized_get_srid(lwgeom1), gserialized_get_srid(lwgeom2));
 
-	if ( ! (pglwgeom_getbox2d_p(lwgeom1, &box1) && pglwgeom_getbox2d_p(lwgeom2, &box2)) )
+	if ( ! (gserialized_get_gbox_p(lwgeom1, &box1) && gserialized_get_gbox_p(lwgeom2, &box2)) )
 	{
 		PG_FREE_IF_COPY(lwgeom1, 0);
 		PG_FREE_IF_COPY(lwgeom2, 1);
@@ -502,7 +502,7 @@ Datum LWGEOM_gist_compress(PG_FUNCTION_ARGS)
 
 			rr = (GBOX*) palloc(sizeof(GBOX));
 
-			if (    ! pglwgeom_getbox2d_p(in, rr) ||
+			if (    ! gserialized_get_gbox_p(in, rr) ||
 			        ! finite(rr->xmin) ||
 			        ! finite(rr->ymin) ||
 			        ! finite(rr->xmax) ||
@@ -602,12 +602,12 @@ Datum LWGEOM_gist_consistent(PG_FUNCTION_ARGS)
 	*/
 	if ( gserialized_has_bbox(query) )
 	{
-		pglwgeom_getbox2d_p(query, &box);
+		gserialized_get_gbox_p(query, &box);
 	}
 	else
 	{
 		query = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		if ( ! pglwgeom_getbox2d_p(query, &box) )
+		if ( ! gserialized_get_gbox_p(query, &box) )
 		{
 			PG_FREE_IF_COPY(query, 1);
 			PG_RETURN_BOOL(FALSE);

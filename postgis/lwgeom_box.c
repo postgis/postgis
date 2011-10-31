@@ -380,7 +380,7 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	{
 		lwgeom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 		/* empty geom would make getbox2d_p return NULL */
-		if ( ! pglwgeom_getbox2d_p(lwgeom, &box) ) PG_RETURN_NULL();
+		if ( ! gserialized_get_gbox_p(lwgeom, &box) ) PG_RETURN_NULL();
 		memcpy(result, &box, sizeof(GBOX));
 		PG_RETURN_POINTER(result);
 	}
@@ -395,7 +395,7 @@ Datum BOX2DFLOAT4_combine(PG_FUNCTION_ARGS)
 	/*combine_bbox(BOX3D, geometry) => union(BOX3D, geometry->bvol) */
 
 	lwgeom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	if ( ! pglwgeom_getbox2d_p(lwgeom, &box) )
+	if ( ! gserialized_get_gbox_p(lwgeom, &box) )
 	{
 		/* must be the empty geom */
 		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(GBOX));

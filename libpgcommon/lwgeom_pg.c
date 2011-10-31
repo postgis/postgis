@@ -230,15 +230,15 @@ GSERIALIZED* geometry_serialize(LWGEOM *lwgeom)
 	return g;
 }
 
-int pglwgeom_getbox2d_p(const GSERIALIZED *geom, GBOX *box)
+int gserialized_get_gbox_p(const GSERIALIZED *geom, GBOX *box)
 {
 	LWGEOM *lwgeom;
-	int ret = gserialized_get_gbox_p(geom, box);
+	int ret = gserialized_read_gbox_p(geom, box);
 	if ( LW_FAILURE == ret ) {
 		/* See http://trac.osgeo.org/postgis/ticket/1023 */
 		lwgeom = lwgeom_from_gserialized(geom);
 		ret = lwgeom_calculate_gbox(lwgeom, box);
-                lwgeom_free(lwgeom);
+		lwgeom_free(lwgeom);
 	}
 	return ret;
 }

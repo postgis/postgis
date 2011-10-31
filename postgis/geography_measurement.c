@@ -401,7 +401,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS)
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	
 	/* We need the bounding box to get an outside point for area algorithm */
-	if ( gserialized_get_gbox_p(g, &gbox) == LW_FAILURE )
+	if ( gserialized_read_gbox_p(g, &gbox) == LW_FAILURE )
 	{
 		LWGEOM *lwgeom = lwgeom_from_gserialized(g);
 		POSTGIS_DEBUGF(4,"unable to read gbox from gserialized, calculating from lwgeom (%p)", lwgeom);
