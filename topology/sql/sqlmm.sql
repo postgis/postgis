@@ -4012,15 +4012,16 @@ BEGIN
 
   --
   -- Further split edges by points
-  -- TODO: optimize this !
+  -- TODO: optimize this adding ST_Split support for multiline/multipoint
   --
   FOR rec IN SELECT geom FROM ST_Dump(points)
   LOOP
     -- Use the node to split edges
-    SELECT ST_Union(geom) -- TODO: ST_UnaryUnion ?
+    SELECT ST_Collect(geom) 
     FROM ST_Dump(ST_Split(nodededges, rec.geom))
     INTO STRICT nodededges;
   END LOOP;
+  SELECT ST_UnaryUnion(nodededges) INTO STRICT nodededges;
 
   RAISE DEBUG 'Noded edges became % after point-split',
     ST_NumGeometries(nodededges);
