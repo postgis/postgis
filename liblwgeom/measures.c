@@ -1549,6 +1549,7 @@ lwgeom_polygon_area(LWPOLY *poly)
 	int i;
 	POINT2D p1;
 	POINT2D p2;
+	POINT2D o;
 
 	LWDEBUGF(2, "in lwgeom_polygon_area (%d rings)", poly->nrings);
 
@@ -1565,6 +1566,15 @@ lwgeom_polygon_area(LWPOLY *poly)
 		{
 			getPoint2d_p(ring, j, &p1);
 			getPoint2d_p(ring, j+1, &p2);
+			// first vertex is the local origin
+			if (j == 0) {
+				o.x = p1.x;	
+				o.y = p1.y;	
+			}
+			p1.x -= o.x;
+			p1.y -= o.y;
+			p2.x -= o.x;
+			p2.y -= o.y;
 			ringarea += ( p1.x * p2.y ) - ( p1.y * p2.x );
 		}
 
