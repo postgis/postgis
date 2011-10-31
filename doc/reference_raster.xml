@@ -456,7 +456,7 @@ VALUES (1,
 		</refentry>
   </sect1>
   <sect1 id="Raster_Management_Functions">
-  	<title>Raster Management Functions</title>
+  	<title>Raster Management</title>
   	<refentry id="RT_AddRasterColumn">
 	  <refnamediv>
 		<refname>AddRasterColumn</refname>
@@ -4816,7 +4816,7 @@ FROM dummy_rast WHERE rid=2;
 	</sect1>
 	
 	<sect1 id="Raster_Processing">
-		<title>Raster Processing Functions</title>
+		<title>Raster Processing</title>
 		<refentry id="RT_Box2D">
 			<refnamediv>
 				<refname>Box2D</refname>
