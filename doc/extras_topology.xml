@@ -209,7 +209,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
 	    <refentry id="AddTopoGeometryColumn">
 			<refnamediv>
 				<refname>AddTopoGeometryColumn</refname>
-				<refpurpose>Adds a topogeometry column to an existing feature table, registers this new column as a layer in topology.layer and returns the new layer_id.</refpurpose>
+				<refpurpose>Adds a topogeometry column to an existing table, registers this new column as a layer in topology.layer and returns the new layer_id.</refpurpose>
 			</refnamediv>
 		
             <refsynopsisdiv>
