@@ -391,8 +391,10 @@ lwpoly_area(const LWPOLY *poly)
 {
 	double poly_area=0.0;
 	int i;
-	POINT2D p1;
-	POINT2D p2;
+	POINT2D pp;
+	POINT2D cp;
+	POINT2D np;
+        double x0 = cp.x;
 
 	LWDEBUGF(2, "in lwpoly_area (%d rings)", poly->nrings);
 
@@ -405,11 +407,19 @@ lwpoly_area(const LWPOLY *poly)
 		LWDEBUGF(4, " rings %d has %d points", i, ring->npoints);
 
 		if ( ! ring->npoints ) continue; /* empty ring */
-		for (j=0; j<ring->npoints-1; j++)
+
+		getPoint2d_p(ring, 0, &cp);
+		getPoint2d_p(ring, 1, &np);
+                x0 = cp.x;
+                np.x -= x0;
+                for (j=0; j<ring->npoints-1; j++)
 		{
-			getPoint2d_p(ring, j, &p1);
-			getPoint2d_p(ring, j+1, &p2);
-			ringarea += ( p1.x * p2.y ) - ( p1.y * p2.x );
+                        pp.y = cp.y;
+                        cp.x = np.x;
+                        cp.y = np.y;
+			getPoint2d_p(ring, j+1, &np);
+                        np.x -= x0;
+                        ringarea += cp.x * (np.y - pp.y);
 		}
 
 		ringarea  /= 2.0;
