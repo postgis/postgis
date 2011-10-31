@@ -9,7 +9,8 @@
 	 statements from postgis xml doc reference
      ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='postgis_version'>2.0.0</xsl:variable>
+	<xsl:variable name='postgis_version'>2.0</xsl:variable>
+	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Topology Cheat Sheet</title>
 	<style type="text/css">
@@ -19,34 +20,22 @@ body {
 	font-size: 8.5pt;
 }
 
+.comment {font-size:x-small;color:green;font-family:"courier new"}
+
 #example_heading {
 	border-bottom: 1px solid #000;
 	margin: 10px 15px 10px 85px;
 	color: #00d
 }
 
-#contentbox {
-	margin-left: 90px;
-	margin-right: 15px;
-	top: 50px;
-}		
-
 #content_functions {
 	float: left;
-	width:44%;
+	width:40%;
 }
 
 #content_examples {
 	float: right;
-	width: 53%;
-}
-
-#sidebar1 {
-		position: absolute;
-		left:10px;
-		width:75px;
-		top:50px;
-		text-align: right;
+	width: 58%;
 }
 
 .section {
@@ -69,6 +58,8 @@ body {
 	border: 0;
 }
 
+.section td.func {font-weight: 600}
+
 .evenrow {
 	background-color: #eee;
 }
@@ -86,7 +77,7 @@ h1 {
 -->
 </style>
 	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Topology Cheatsheet</h1>]]></xsl:text>
-		<xsl:text><![CDATA[<div id="content_functions">]]></xsl:text>
+		<xsl:text><![CDATA[<div id="content_functions"><span class='comment'>New in this release <sup>1</sup><br />Requires GEOS 3.3 or higher<sup>3.3</sup></span>]]></xsl:text>
 			<xsl:apply-templates select="/book/chapter[@id='Topology']" name="function_list" />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
@@ -106,7 +97,7 @@ h1 {
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
 			<xsl:for-each select="refentry">
 				<!-- add row for each function and alternate colors of rows -->
-		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td>]]><xsl:value-of select="refnamediv/refname" /><![CDATA[</td>]]>
+		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td class='func'>]]><xsl:value-of select="refnamediv/refname" /><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if> <xsl:if test="contains(.,'GEOS 3.3')"><![CDATA[<sup>1</sup> ]]></xsl:if><![CDATA[</td>]]>
 		 		<![CDATA[<td>]]><xsl:value-of select="refnamediv/refpurpose" /><![CDATA[</td></tr>]]>
 		 	</xsl:for-each>
 		 	<!--close section -->
@@ -116,25 +107,32 @@ h1 {
 	
 	 <xsl:template match="sect1[count(//refentry//refsection//programlisting) > 0]">
 			<!--Beginning of section -->
-		
+				<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
+
 			 	<xsl:text><![CDATA[<table><tr><th colspan="2" class="example_heading">]]></xsl:text>
 				<xsl:value-of select="title" /> Examples
 				<!-- end of section header beginning of function list -->
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
-			<xsl:for-each select="refentry/refsection/programlisting[1]">
+			<xsl:for-each select="refentry//refsection[contains(title,'Example')]/programlisting[1]">
 				 <xsl:variable name='plainlisting'>
-				 	<xsl:value-of select="."/>
-				 </xsl:variable>
-				 
-		<xsl:variable name='listing'>
-			<xsl:call-template name="break">
-				<xsl:with-param name="text" select="."/>
-			</xsl:call-template>
-		</xsl:variable>
+					<xsl:call-template name="globalReplace">
+						<xsl:with-param name="outputString" select="."/>
+						<xsl:with-param name="target" select="$lt"/>
+						<xsl:with-param name="replacement" select="'&amp;lt;'"/>
+					</xsl:call-template>
+				</xsl:variable>
+				
+				<xsl:variable name='listing'>
+					<xsl:call-template name="break">
+						<xsl:with-param name="text" select="$plainlisting" />
+					</xsl:call-template>
+				</xsl:variable>
+				
+
 
 				<!-- add row for each function and alternate colors of rows -->
 		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>"<![CDATA[>]]>
-		 		<![CDATA[<td><code>]]><xsl:value-of select="$listing" /><![CDATA[</code></td></tr>]]>
+		 		<![CDATA[<td><code>]]><xsl:value-of select="$listing"  disable-output-escaping="no"/><![CDATA[</code></td></tr>]]>
 		 	</xsl:for-each>
 		 	<!--close section -->
 		 	<![CDATA[</table>]]>
@@ -143,6 +141,29 @@ h1 {
 	
 <!--General replace macro hack to make up for the fact xsl 1.0 does not have a built in one.  
 	Not needed for xsl 2.0 lifted from http://www.xml.com/pub/a/2002/06/05/transforming.html -->
+	<xsl:template name="globalReplace">
+	  <xsl:param name="outputString"/>
+	  <xsl:param name="target"/>
+	  <xsl:param name="replacement"/>
+	  <xsl:choose>
+		<xsl:when test="contains($outputString,$target)">
+		  <xsl:value-of select=
+			"concat(substring-before($outputString,$target),
+				   $replacement)"/>
+		  <xsl:call-template name="globalReplace">
+			<xsl:with-param name="outputString" 
+				 select="substring-after($outputString,$target)"/>
+			<xsl:with-param name="target" select="$target"/>
+			<xsl:with-param name="replacement" 
+				 select="$replacement"/>
+		  </xsl:call-template>
+		</xsl:when>
+		<xsl:otherwise>
+		  <xsl:value-of select="$outputString"/>
+		</xsl:otherwise>
+	  </xsl:choose>
+	</xsl:template>
+	
 <xsl:template name="break">
   <xsl:param name="text" select="."/>
   <xsl:choose>
