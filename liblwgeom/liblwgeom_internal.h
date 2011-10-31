@@ -236,6 +236,12 @@ double lwpoly_area(const LWPOLY *poly);
 double lwcurvepoly_area(const LWCURVEPOLY *curvepoly);
 double lwtriangle_area(const LWTRIANGLE *triangle);
 
+/**
+* Pull a #GBOX from the header of a #GSERIALIZED, if one is available. If
+* it is not, return LW_FAILURE.
+*/
+extern int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox);
+
 /*
 * Length calculations
 */

@@ -237,6 +237,24 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 }
 
 
+/**
+* Read the bounding box off a serialization and calculate one if
+* it is not already there.
+*/
+int gserialized_get_gbox_p(const GSERIALIZED *geom, GBOX *box)
+{
+	LWGEOM *lwgeom;
+	int ret = gserialized_read_gbox_p(geom, box);
+	if ( LW_FAILURE == ret ) {
+		/* See http://trac.osgeo.org/postgis/ticket/1023 */
+		lwgeom = lwgeom_from_gserialized(geom);
+		ret = lwgeom_calculate_gbox(lwgeom, box);
+		lwgeom_free(lwgeom);
+	}
+	return ret;
+}
+
+
 /***********************************************************************
 * Calculate the GSERIALIZED size for an LWGEOM.
 */
