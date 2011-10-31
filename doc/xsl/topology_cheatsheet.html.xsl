@@ -30,12 +30,12 @@ body {
 
 #content_functions {
 	float: left;
-	width:40%;
+	width:100%;
 }
 
 #content_examples {
-	float: right;
-	width: 58%;
+	float: left;
+	width: 100%;
 }
 
 .section {
@@ -82,7 +82,7 @@ h1 {
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
 			<!-- examples go here -->
-			<xsl:apply-templates select="/book/chapter[@id='Topology']/sect1[count(//refentry//refsection//programlisting) > 0]"  />
+			<xsl:apply-templates select="/book/chapter[@id='Topology']/sect1[count(//refentry//refsection//programlisting) &gt; 0]"  />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[</body></html>]]></xsl:text>
 </xsl:template>
@@ -105,15 +105,18 @@ h1 {
 		</xsl:for-each>
 	</xsl:template>
 	
-	 <xsl:template match="sect1[count(//refentry//refsection//programlisting) > 0]">
+	 <xsl:template match="sect1[//refentry//refsection[contains(title,'Example')]]">
+	 		<!-- less than needed for converting html tags in listings so they are printable -->
+	 		<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
+	 		<!-- only print section header if it has examples - not sure why this is necessary -->
+	 		<xsl:if test="contains(., 'Example')">
 			<!--Beginning of section -->
-				<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
-
-			 	<xsl:text><![CDATA[<table><tr><th colspan="2" class="example_heading">]]></xsl:text>
+				<xsl:text><![CDATA[<table><tr><th colspan="2" class="example_heading">]]></xsl:text>
 				<xsl:value-of select="title" /> Examples
+				<!--only pull the first example section of each function -->
+			<xsl:for-each select="refentry//refsection[contains(title,'Example')][1]/programlisting[1]">
 				<!-- end of section header beginning of function list -->
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
-			<xsl:for-each select="refentry//refsection[contains(title,'Example')]/programlisting[1]">
 				 <xsl:variable name='plainlisting'>
 					<xsl:call-template name="globalReplace">
 						<xsl:with-param name="outputString" select="."/>
@@ -132,10 +135,12 @@ h1 {
 
 				<!-- add row for each function and alternate colors of rows -->
 		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>"<![CDATA[>]]>
-		 		<![CDATA[<td><code>]]><xsl:value-of select="$listing"  disable-output-escaping="no"/><![CDATA[</code></td></tr>]]>
+		 		<![CDATA[<td><b>]]><xsl:value-of select="ancestor::refentry/refnamediv/refname" /><![CDATA[</b><br /><code>]]><xsl:value-of select="$listing"  disable-output-escaping="no"/><![CDATA[</code></td></tr>]]>
 		 	</xsl:for-each>
-		 	<!--close section -->
 		 	<![CDATA[</table>]]>
+		 	</xsl:if>
+		 	<!--close section -->
+		 
 		
 	</xsl:template>
 	

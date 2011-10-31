@@ -83,7 +83,7 @@ h1 {
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
 			<!-- examples go here -->
-			<xsl:apply-templates select="/book/chapter[@id='Extras']/sect1[count(//refentry//refsection//programlisting) > 0]"  />
+			<xsl:apply-templates select="/book/chapter[@id='Extras']/sect1[count(//refentry//refsection//programlisting) &gt; 0]"  />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[</body></html>]]></xsl:text>
 </xsl:template>
@@ -106,15 +106,17 @@ h1 {
 		</xsl:for-each>
 	</xsl:template>
 	
-	 <xsl:template match="sect1[count(//refentry//refsection//programlisting) > 0]">
+	 <xsl:template match="sect1[count(//refentry//refsection//programlisting) &gt; 0]">
 			<!--Beginning of section -->
-				<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
+			<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
+			<xsl:if test="contains(., 'Example')">
+			<xsl:text><![CDATA[<table><tr><th colspan="2" class="example_heading">]]></xsl:text>
+			<xsl:value-of select="title" /> Examples
 
-			 	<xsl:text><![CDATA[<table><tr><th colspan="2" class="example_heading">]]></xsl:text>
-				<xsl:value-of select="title" /> Examples
+				<!--only pull the first example seciton of each function -->
+			<xsl:for-each select="refentry//refsection[contains(title,'Example')][1]/programlisting[1]">
 				<!-- end of section header beginning of function list -->
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
-			<xsl:for-each select="refentry//refsection[contains(title,'Example')]/programlisting[1]">
 				 <xsl:variable name='plainlisting'>
 					<xsl:call-template name="globalReplace">
 						<xsl:with-param name="outputString" select="."/>
@@ -129,14 +131,14 @@ h1 {
 					</xsl:call-template>
 				</xsl:variable>
 				
-
-
 				<!-- add row for each function and alternate colors of rows -->
 		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>"<![CDATA[>]]>
 		 		<![CDATA[<td><b>]]><xsl:value-of select="ancestor::refentry/refnamediv/refname" /><![CDATA[</b><br /><code>]]><xsl:value-of select="$listing"  disable-output-escaping="no"/><![CDATA[</code></td></tr>]]>
+		 		
 		 	</xsl:for-each>
 		 	<!--close section -->
 		 	<![CDATA[</table>]]>
+		 	</xsl:if>
 		
 	</xsl:template>
 	
