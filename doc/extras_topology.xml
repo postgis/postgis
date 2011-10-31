@@ -93,7 +93,7 @@
 		<refentry id="validatetopology_returntype">
             <refnamediv>
                 <refname>validatetopology_returntype</refname>
-                    <refpurpose>A composite type that consists of an error message and id1 and id2 to denote location of error.  This is the return type for <varname>ST_ValidateTopology</varname></refpurpose>
+                    <refpurpose>A composite type that consists of an error message and id1 and id2 to denote location of error.  This is the return type for <varname>ValidateTopology</varname></refpurpose>
                 </refnamediv>
             <refsection>
             <title>Description</title>
