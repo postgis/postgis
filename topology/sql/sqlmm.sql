@@ -3979,7 +3979,7 @@ BEGIN
   SELECT ST_UnaryUnion(ST_Collect(geom)) FROM (
     SELECT geom FROM components
       WHERE ST_Dimension(geom) = 1
-    UNION 
+    UNION ALL
     SELECT ST_Boundary(geom) FROM components
       WHERE ST_Dimension(geom) = 2
   ) as linework INTO STRICT nodededges;
