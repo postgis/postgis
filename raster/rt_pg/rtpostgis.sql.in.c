@@ -2617,7 +2617,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(rast raster, geom geometry, nband inte
 
 		-- scale is set to 1/100th of raster for granularity
 		SELECT least(scalex, scaley) / 100. INTO scale FROM ST_Metadata(rast);
-		gr := ST_AsRaster(geom, scale, scale);
+		gr := _st_asraster(geom, scale, scale);
 		IF gr IS NULL THEN
 			RAISE EXCEPTION 'Unable to convert geometry to a raster';
 			RETURN FALSE;
