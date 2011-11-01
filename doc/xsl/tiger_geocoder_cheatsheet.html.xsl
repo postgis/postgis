@@ -11,6 +11,9 @@
 	<xsl:output method="text" />
 	<xsl:variable name='postgis_version'>2.0</xsl:variable>
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
+	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
+	<xsl:variable name='include_examples'>true</xsl:variable>
+	<xsl:variable name='output_purpose'>true</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /> Tiger Geocoder Cheat Sheet <xsl:text><![CDATA[</title>
 	<style type="text/css">
@@ -42,8 +45,9 @@ body {
 .section {
 	border: 1px solid #000;
 	margin: 4px;
-	width: 100%;
-}
+	]]></xsl:text>
+	<xsl:choose><xsl:when test="$output_purpose = 'false'"><![CDATA[width: 45%;]]></xsl:when><xsl:otherwise><![CDATA[width: 100%;]]></xsl:otherwise></xsl:choose>
+<xsl:text><![CDATA[	}
 
 .section th {
 	border: 1px solid #000;
@@ -59,7 +63,11 @@ body {
 	border: 0;
 }
 
-.section td.func {font-weight: 600}
+.func {font-weight: 600}
+.func {font-weight: 600}
+.func_args {font-size: 7.5pt;font-family:courier;}
+.func_args ol {margin: 2px}
+.func_args ol li {margin: 5px}
 
 .evenrow {
 	background-color: #eee;
@@ -98,8 +106,24 @@ h1 {
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
 			<xsl:for-each select="refentry">
 				<!-- add row for each function and alternate colors of rows -->
-		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td class='func'>]]><xsl:value-of select="refnamediv/refname" /><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if> <xsl:if test="contains(.,'GEOS 3.3')"><![CDATA[<sup>1</sup> ]]></xsl:if><![CDATA[</td>]]>
-		 		<![CDATA[<td>]]><xsl:value-of select="refnamediv/refpurpose" /><![CDATA[</td></tr>]]>
+		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td colspan='2'><span class='func'>]]><xsl:value-of select="refnamediv/refname" /><![CDATA[</span>]]><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if> 
+		 		<!-- enhanced tag -->
+		 		<xsl:if test="contains(.,$enhanced_tag)"><![CDATA[<sup>2</sup> ]]></xsl:if>
+		 		<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
+		 		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')"><![CDATA[<sup>G</sup>  ]]></xsl:if>
+		 		<xsl:if test="contains(.,'GEOS &gt;= 3.3')"><![CDATA[<sup>g3.3</sup> ]]></xsl:if>
+		 		<xsl:if test="contains(.,'This function supports 3d')"><![CDATA[<sup>3D</sup> ]]></xsl:if>
+		 		<!-- if only one proto just dispaly it on first line -->
+		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) = 1">
+		 			(<xsl:call-template name="list_in_params"><xsl:with-param name="func" select="refsynopsisdiv/funcsynopsis/funcprototype" /></xsl:call-template>)
+		 		</xsl:if>
+		 		
+		 		<![CDATA[&nbsp;&nbsp;]]>
+		 		<xsl:if test="$output_purpose = 'true'"><xsl:value-of select="refnamediv/refpurpose" /></xsl:if>
+		 		<!-- output different proto arg combos -->
+		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) &gt; 1"><![CDATA[<span class='func_args'><ol>]]><xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype"><![CDATA[<li>]]><xsl:call-template name="list_in_params"><xsl:with-param name="func" select="." /></xsl:call-template><![CDATA[</li>]]></xsl:for-each>
+		 		<![CDATA[</ol></span>]]></xsl:if>
+		 		<![CDATA[</td></tr>]]>
 		 	</xsl:for-each>
 		 	<!--close section -->
 		 	<![CDATA[</table>]]>
@@ -184,6 +208,22 @@ h1 {
       <xsl:value-of select="$text"/>
     </xsl:otherwise>
   </xsl:choose>
+</xsl:template>
+
+<!--macro to pull out function parameter names so we can provide a pretty arg list prefix for each function -->
+<xsl:template name="list_in_params">
+	<xsl:param name="func" />
+	<xsl:for-each select="$func">
+		<xsl:if test="count(paramdef/parameter)  &gt; 0"> </xsl:if>
+		<xsl:for-each select="paramdef">
+			<xsl:choose>
+				<xsl:when test="not( contains(parameter, 'OUT') )"> 
+					<xsl:value-of select="parameter" />
+					<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:for-each>
+	</xsl:for-each>	
 </xsl:template>
 
 </xsl:stylesheet>

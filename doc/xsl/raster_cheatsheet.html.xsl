@@ -31,8 +31,7 @@ body {
 
 #content_functions {
 	width:100%;
-	float: left;
-	page-break-before: always
+	float: left
 }
 
 #content_examples {
