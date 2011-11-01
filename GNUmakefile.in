@@ -113,6 +113,9 @@ docs-clean:
 
 comments:
 	$(MAKE) -C doc comments
+	
+cheatsheets:
+	$(MAKE) -C doc cheatsheets
 
 comments-install:
 	$(MAKE) -C doc comments-install

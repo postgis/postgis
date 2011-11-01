@@ -67,6 +67,9 @@ postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis.xml
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl postgis.xml > $@
 	
+postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl postgis.xml postgis_aggs_mm.xml
+	$(XSLTPROC) ./xsl/postgis_cheatsheet.html.xsl postgis.xml > $@
+	
 raster_comments.sql: ./xsl/raster_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/raster_comments.sql.xsl postgis.xml > $@
 	
@@ -140,7 +143,7 @@ maintainer-clean: clean
 		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 
 comments: postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
-cheatsheets: raster_cheatsheet.html topology_cheatsheet.html tiger_geocoder_cheatsheet.html
+cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html tiger_geocoder_cheatsheet.html
 
 comments-install: comments
 	make -f Makefile.comments install

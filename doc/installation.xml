@@ -470,6 +470,16 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <para>
 		<command>make comments</command>
 	  </para>
+	  
+	  <para>
+		Introduced in PostGIS 2.0. This generates html cheat sheets suitable for quick reference or for student handouts.
+		This requires xsltproc to build and will generate 4 files in doc folder <filename>topology_cheatsheet.html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>, 
+			<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet.html</filename>
+	  </para>
+
+	  <para>
+		<command>make cheatsheets</command>
+	  </para>
 	</sect2>
 
 	<sect2>
@@ -692,7 +702,7 @@ Failed: 0
 
 	  <note>
 		<para>
-		  <filename>postgis_comments.sql</filename> and <filename>raster_comments.sql</filename> was separated from the
+		  <filename>postgis_comments.sql</filename>, <filename>raster_comments.sql</filename>, <filename>topology_comments.sql</filename> was separated from the
 		  typical build and installation targets since with it comes the extra
 		  dependency of <command>xsltproc</command>.
 		</para>
