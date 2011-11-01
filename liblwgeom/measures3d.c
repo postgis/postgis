@@ -201,7 +201,7 @@ int lw_dist3d_recursive(const LWGEOM *lwg1,const LWGEOM *lwg2, DISTPTS3D *dl)
 	LWCOLLECTION *c1 = NULL;
 	LWCOLLECTION *c2 = NULL;
 
-	LWDEBUGF(2, "lw_dist3d_recursive is called with type1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
+	LWDEBUGF(2, "lw_dist3d_recursive is called with type1=%d, type2=%d", lwg1->type, lwg2->type);
 
 	if (lwgeom_is_collection(lwg1))
 	{
@@ -278,7 +278,7 @@ lw_dist3d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS3D *dl)
 	int	t1 = lwg1->type;
 	int	t2 = lwg2->type;
 
-	LWDEBUGF(2, "lw_dist3d_distribute_bruteforce is called with typ1=%d, type2=%d", TYPE_GETTYPE(lwg1->type), TYPE_GETTYPE(lwg2->type));
+	LWDEBUGF(2, "lw_dist3d_distribute_bruteforce is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
 
 	if  ( t1 == POINTTYPE )
 	{

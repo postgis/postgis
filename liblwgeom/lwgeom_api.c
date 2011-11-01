@@ -568,12 +568,12 @@ ptarray_isccw(const POINTARRAY *pa)
 	else return 1;
 }
 
+static char tflags[4];
 
-const char *
+char *
 lwtype_zmflags(uint8_t flags)
 {
-	static char tflags[4];
-	int flagno=0;
+	int flagno = 0;
 	if ( FLAGS_GET_Z(flags) ) tflags[flagno++] = 'Z';
 	if ( FLAGS_GET_M(flags) ) tflags[flagno++] = 'M';
 	if ( FLAGS_GET_BBOX(flags) ) tflags[flagno++] = 'B';

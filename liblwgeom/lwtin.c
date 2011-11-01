@@ -88,7 +88,7 @@ int lwtin_is_closed(const LWTIN *tin)
 	LWTRIANGLE *patch;
 
 	/* If surface is not 3D, it's can't be closed */
-	if (!TYPE_HASZ(tin->type)) return 0;
+	if (!FLAGS_GET_Z(tin->flags)) return 0;
 
 	/* Max theorical arcs number if no one is shared ... */
 	narcs = 3 * tin->ngeoms;

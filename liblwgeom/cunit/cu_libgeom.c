@@ -324,7 +324,7 @@ static void test_lwcollection_extract(void)
 
 	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(POINT(0 0))", LW_PARSER_CHECK_NONE);
 	col = lwcollection_extract((LWCOLLECTION*)geom, 1);
-	CU_ASSERT_EQUAL(TYPE_GETTYPE(col->type), MULTIPOINTTYPE);
+	CU_ASSERT_EQUAL(col->type, MULTIPOINTTYPE);
 
 	/* How to properly release 'col' ? 
 	 * See http://http://trac.osgeo.org/postgis/ticket/1102

@@ -389,7 +389,7 @@ lwmcurve_segmentize(LWMCURVE *mcurve, uint32_t perQuad)
 	LWGEOM **lines;
 	int i;
 
-	LWDEBUGF(2, "lwmcurve_segmentize called, geoms=%d, dim=%d.", mcurve->ngeoms, TYPE_NDIMS(mcurve->type));
+	LWDEBUGF(2, "lwmcurve_segmentize called, geoms=%d, dim=%d.", mcurve->ngeoms, FLAGS_NDIMS(mcurve->flags));
 
 	lines = lwalloc(sizeof(LWGEOM *)*mcurve->ngeoms);
 

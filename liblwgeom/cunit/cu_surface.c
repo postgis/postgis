@@ -196,7 +196,7 @@ void tin_parse(void)
 	/*
 	  NOTA: Theses 3 ASSERT results will change a day cf #294
 	*/
-	CU_ASSERT_EQUAL(TYPE_GETTYPE(geom->type), TINTYPE);
+	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 //	CU_ASSERT_STRING_EQUAL("GEOMETRYCOLLECTION EMPTY", lwgeom_to_ewkt(geom));
 	lwgeom_free(geom);
 
@@ -250,7 +250,7 @@ check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
 	if (strlen(cu_error_msg)) printf("\n[%s], %s\n", ewkt, cu_error_msg);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 
-	if (TYPE_GETTYPE(g1->type) != type)
+	if (g1->type != type)
 		printf("\n[%s], TYPE %s\n", ewkt, lwtype_name(g1->type));
 	CU_ASSERT_EQUAL(g1->type, type);
 	tgeom = tgeom_from_lwgeom(g1);
