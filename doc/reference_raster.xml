@@ -5977,5 +5977,120 @@ WHERE A.rid =2 ;
 				<para><xref linkend="RT_ST_Intersection" /></para>
 			</refsection>
 		</refentry>
+		
+	<refentry id="RT_ST_SameAlignment">
+		<refnamediv>
+			<refname>ST_SameAlignment</refname>
+
+			<refpurpose>Returns true if rasters have same skew,scale, spatial ref and false if they don't with notice detailing issue. </refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>			  
+			  <funcprototype>
+				<funcdef>boolean <function>ST_SameAlignment</function></funcdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rastA</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>raster </type>
+				  <parameter>rastB</parameter>
+				</paramdef>
+			  </funcprototype>
+		
+			  <funcprototype>
+				<funcdef>boolean <function>ST_SameAlignment</function></funcdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>ulx1</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>uly1</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>scalex1</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>scaley1</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>skewx1</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>skewy1</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>ulx2</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>uly2</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>scalex2</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>scaley2</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>skewx2</parameter>
+				</paramdef>
+				<paramdef>
+				  <type>double precision </type>
+				  <parameter>skewy2</parameter>
+				</paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>Returns true if the raster have same skew scale etc.  Returns false if they don't and a NOTICE detailing the alignment issue.</para>
+		
+			<para>Availability: 2.0.0</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples: Rasters</title>
+
+			<programlisting>SELECT ST_SameAlignment(
+	ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+	ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0)
+) as sm;
+
+sm
+----
+t
+</programlisting>
+<programlisting>
+SELECT ST_SameAlignment(A.rast,b.rast)
+ FROM dummy_rast AS A CROSS JOIN dummy_rast AS B;
+
+ NOTICE:  The two rasters provided have different SRIDs
+NOTICE:  The two rasters provided have different SRIDs
+ st_samealignment
+------------------
+ t
+ f
+ f
+ f
+</programlisting>
+		  </refsection>	
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_Loading_Rasters" />,<xref linkend="RT_ST_MakeEmptyRaster" /></para>
+			</refsection>
+		</refentry>
 	</sect1>
 </chapter>
