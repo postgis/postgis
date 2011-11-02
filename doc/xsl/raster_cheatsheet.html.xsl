@@ -12,6 +12,8 @@
 	<xsl:variable name='postgis_version'>2.0</xsl:variable>
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
+	<xsl:variable name='include_examples'>false</xsl:variable>
+	<xsl:variable name='output_purpose'>false</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Raster Cheat Sheet</title>
 	<style type="text/css">
@@ -43,8 +45,9 @@ body {
 .section {
 	border: 1px solid #000;
 	margin: 4px;
-	width: 50%;
-	page-break-after: auto
+	]]></xsl:text>
+	<xsl:choose><xsl:when test="$output_purpose = 'false'"><![CDATA[width: 45%;]]></xsl:when><xsl:otherwise><![CDATA[width: 100%;]]></xsl:otherwise></xsl:choose>
+<xsl:text><![CDATA[		float: left;
 }
 
 .example {
@@ -96,7 +99,7 @@ code {font-size: 8pt}
 -->
 </style>
 	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Raster Cheatsheet</h1>]]></xsl:text>
-		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup> Enhanced in this release <sup>2</sup> Requires GEOS 3.3 or higher<sup>3.3</sup></span><br /><div id="content_functions">]]></xsl:text>
+		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup> Enhanced in this release <sup>2</sup> Requires GEOS 3.3 or higher<sup>g3.3</sup>    &nbsp;2.5/3D support<sup>3d</sup>&nbsp;SQL-MM<sup>mm</sup> &nbsp;Supports geography <sup>G</sup></span> <div id="content_functions">]]></xsl:text>
 			<xsl:apply-templates select="/book/chapter[@id='RT_reference']" name="function_list" />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
@@ -107,7 +110,7 @@ code {font-size: 8pt}
 </xsl:template>
 			
         
-    <xsl:template match="chapter" name="function_list">
+  <xsl:template match="chapter" name="function_list">
 		<xsl:for-each select="sect1">
 			<!--Beginning of section -->
 			<xsl:text><![CDATA[<table class="section"><tr><th colspan="2">]]></xsl:text>
@@ -119,14 +122,17 @@ code {font-size: 8pt}
 		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td colspan='2'><span class='func'>]]><xsl:value-of select="refnamediv/refname" /><![CDATA[</span>]]><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if> 
 		 		<!-- enhanced tag -->
 		 		<xsl:if test="contains(.,$enhanced_tag)"><![CDATA[<sup>2</sup> ]]></xsl:if>
-		 		<xsl:if test="contains(.,'GEOS 3.3')"><![CDATA[<sup>1</sup>]]></xsl:if>
+		 		<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
+		 		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')"><![CDATA[<sup>G</sup>  ]]></xsl:if>
+		 		<xsl:if test="contains(.,'GEOS &gt;= 3.3')"><![CDATA[<sup>g3.3</sup> ]]></xsl:if>
+		 		<xsl:if test="contains(.,'This function supports 3d')"><![CDATA[<sup>3D</sup> ]]></xsl:if>
 		 		<!-- if only one proto just dispaly it on first line -->
 		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) = 1">
 		 			(<xsl:call-template name="list_in_params"><xsl:with-param name="func" select="refsynopsisdiv/funcsynopsis/funcprototype" /></xsl:call-template>)
 		 		</xsl:if>
 		 		
 		 		<![CDATA[&nbsp;&nbsp;]]>
-		 		<xsl:value-of select="refnamediv/refpurpose" />
+		 		<xsl:if test="$output_purpose = 'true'"><xsl:value-of select="refnamediv/refpurpose" /></xsl:if>
 		 		<!-- output different proto arg combos -->
 		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) &gt; 1"><![CDATA[<span class='func_args'><ol>]]><xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype"><![CDATA[<li>]]><xsl:call-template name="list_in_params"><xsl:with-param name="func" select="." /></xsl:call-template><![CDATA[</li>]]></xsl:for-each>
 		 		<![CDATA[</ol></span>]]></xsl:if>

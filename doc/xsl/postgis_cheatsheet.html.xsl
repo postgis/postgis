@@ -13,7 +13,7 @@
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
-	<xsl:variable name='output_purpose'>false</xsl:variable>
+	<xsl:variable name='output_purpose'>true</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Cheat Sheet</title>
 	<style type="text/css">
@@ -39,14 +39,13 @@ body {
 #content_examples {
 	float: left;
 	width: 100%;
-	page-break-before: auto
 }
 
 .section {
 	border: 1px solid #000;
 	margin: 4px;
 	]]></xsl:text>
-	<xsl:choose><xsl:when test="$output_purpose = 'false'"><![CDATA[width: 45%;]]></xsl:when><xsl:otherwise><![CDATA[width: 100%;]]></xsl:otherwise></xsl:choose>
+	<xsl:choose><xsl:when test="$output_purpose = 'false'"><![CDATA[width: 425px;]]></xsl:when><xsl:otherwise><![CDATA[width: 100%;]]></xsl:otherwise></xsl:choose>
 <xsl:text><![CDATA[	
 	float: left;
 }
@@ -82,9 +81,7 @@ body {
 
 .func {font-weight: 600}
 .func {font-weight: 600}
-.func_args {font-size: 7.5pt;font-family:courier;}
-.func_args ol {margin: 2px}
-.func_args ol li {margin: 5px}
+.func_args {font-size: 8pt;font-family:"courier new";float:left}
 
 .evenrow {
 	background-color: #eee;
@@ -103,7 +100,7 @@ code {font-size: 8pt}
 -->
 </style>
 	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Cheatsheet</h1>]]></xsl:text>
-		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup> Enhanced in this release <sup>2</sup> Requires GEOS 3.3 or higher<sup>g3.3</sup>    &nbsp;2.5/3D support<sup>3g</sup>&nbsp;SQL-MM<sup>mm</sup> &nbsp;Supports geography <sup>G</sup></span><br /><div id="content_functions">]]></xsl:text>
+		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup> Enhanced in this release <sup>2</sup> Requires GEOS 3.3 or higher<sup>g3.3</sup>    &nbsp;2.5/3D support<sup>3d</sup>&nbsp;SQL-MM<sup>mm</sup> &nbsp;Supports geography <sup>G</sup></span><div id="content_functions">]]></xsl:text>
 			<xsl:apply-templates select="/book/chapter[@id='reference']" name="function_list" />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
@@ -117,10 +114,10 @@ code {font-size: 8pt}
 			
         
     <xsl:template match="chapter" name="function_list">
-		<xsl:for-each select="sect1">
+		<xsl:for-each select="sect1[count(//funcprototype) &gt; 0]">
+			
 			<!--Beginning of section -->
-			<xsl:text><![CDATA[<table class="section"><tr><th colspan="2">]]></xsl:text>
-				<xsl:value-of select="title" />
+			<xsl:text><![CDATA[<table class="section"><tr><th colspan="2">]]></xsl:text><xsl:value-of select="title" />
 				<!-- end of section header beginning of function list -->
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
 			<xsl:for-each select="refentry">
