@@ -1,0 +1,24 @@
+T1|Point[]
+T1B|Point[B]
+T1S|Point[]
+T1M|Point[M]
+T1Z|Point[Z]
+T1ZM|Point[ZM]
+T1ZMB|Point[ZMB]
+T1ZMBS|Point[ZMB]
+T3|MultiPoint[B] with 1 elements
+  Point[]
+T4|MultiPoint[B] with 1 elements
+  Point[]
+T5|GeometryCollection[B] with 2 elements
+  MultiLineString[] with 2 elements
+    LineString[] with 2 points
+    LineString[] with 2 points
+  MultiPoint[] with 1 elements
+    Point[]
+T6|GeometryCollection[B] with 2 elements
+  MultiLineString[] with 2 elements
+    LineString[] with 2 points
+    LineString[] with 2 points
+  MultiPoint[] with 1 elements
+    Point[]
