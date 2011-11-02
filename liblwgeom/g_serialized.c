@@ -1080,6 +1080,9 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uin
 	else
 		collection->geoms = NULL;
 
+	/* Sub-geometries are never de-serialized with boxes (#1254) */
+	FLAGS_SET_BBOX(g_flags, 0);
+
 	for ( i = 0; i < ngeoms; i++ )
 	{
 		uint32_t subtype = lw_get_uint32_t(data_ptr);

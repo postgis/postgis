@@ -676,11 +676,6 @@ extern int lwtype_is_collection(uint8_t type);
 extern int lwtype_get_collectiontype(uint8_t type);
 
 /**
-* Return a char string with ASCII version of type flags 
-*/
-extern char *lwtype_zmflags(uint8_t type);
-
-/**
 * Return the type name string associated with a type number 
 * (e.g. Point, LineString, Polygon)
 */
@@ -755,8 +750,6 @@ extern void ptarray_set_point4d(POINTARRAY *pa, int n, POINT4D *p4d);
  * it would not be reliable due to memory alignment constraints
  */
 extern uint8_t *getPoint_internal(const POINTARRAY *pa, int n);
-
-
 
 /*
  * size of point represeneted in the POINTARRAY

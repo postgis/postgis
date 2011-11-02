@@ -141,13 +141,14 @@ $(LT_SA_OBJS): %.lo: %.c
 $(LT_NM_OBJS): %.lo: %.c
 	$(LIBTOOL) --mode=compile $(CC) $(CFLAGS) $(NUMERICFLAGS) -c -o $@ $<
 
-# Generate WKT parser from Flex/Yacc inputs
-lwin_wkt_parse.c: lwin_wkt_parse.y
-	$(YACC) -o'$@' -d $^
-#       $(YACC) --debug --verbose -o'$@' -d $<
-#       $(YACC) -o'$@' -d $^
-
-lwin_wkt_lex.c: lwin_wkt_lex.l
-	$(LEX) -i $<
+# Manually generate WKT parser from Flex/Bison inputs
+# Bison 2.5, Flex 2.5.35
+parser:
+	$(YACC) -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
+	$(LEX) -i lwin_wkt_lex.l
+	
+#	$(YACC) --debug --verbose -o'$@' -d $<
+#	$(YACC) -o'$@' -d $^
+#	$(LEX) -i $<
 
 

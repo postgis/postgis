@@ -16,54 +16,34 @@
 #include <stdio.h>
 #include <string.h>
 
+/* Place to hold the ZM string used in other summaries */
+static char tflags[4];
 
-char *lwcollection_summary(LWCOLLECTION *collection, int offset);
-char *lwpoly_summary(LWPOLY *poly, int offset);
-char *lwline_summary(LWLINE *line, int offset);
-char *lwpoint_summary(LWPOINT *point, int offset);
-
-char *
-lwgeom_summary(const LWGEOM *lwgeom, int offset)
+static char *
+lwtype_zmflags(uint8_t flags)
 {
-	char *result;
+	int flagno = 0;
+	if ( FLAGS_GET_Z(flags) ) tflags[flagno++] = 'Z';
+	if ( FLAGS_GET_M(flags) ) tflags[flagno++] = 'M';
+	if ( FLAGS_GET_BBOX(flags) ) tflags[flagno++] = 'B';
+	tflags[flagno] = '\0';
 
-	switch (lwgeom->type)
-	{
-	case POINTTYPE:
-		return lwpoint_summary((LWPOINT *)lwgeom, offset);
+	POSTGIS_DEBUGF(4, "Flags: %s - returning %p", flags, tflags);
 
-	case LINETYPE:
-		return lwline_summary((LWLINE *)lwgeom, offset);
-
-	case POLYGONTYPE:
-		return lwpoly_summary((LWPOLY *)lwgeom, offset);
-
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-		return lwcollection_summary((LWCOLLECTION *)lwgeom, offset);
-	default:
-		result = lwalloc(256);
-		sprintf(result, "Object is of unknown type: %d",
-		        lwgeom->type);
-		return result;
-	}
-
-	return NULL;
+	return tflags;
 }
 
 /*
  * Returns an alloced string containing summary for the LWGEOM object
  */
-char *
+static char *
 lwpoint_summary(LWPOINT *point, int offset)
 {
 	char *result;
 	char *pad="";
 	char *zmflags = lwtype_zmflags(point->flags);
 
-	result = lwalloc(128+offset);
+	result = palloc(128+offset);
 
 	sprintf(result, "%*.s%s[%s]\n",
 	        offset, pad, lwtype_name(point->type),
@@ -71,14 +51,14 @@ lwpoint_summary(LWPOINT *point, int offset)
 	return result;
 }
 
-char *
+static char *
 lwline_summary(LWLINE *line, int offset)
 {
 	char *result;
 	char *pad="";
 	char *zmflags = lwtype_zmflags(line->flags);
 
-	result = lwalloc(128+offset);
+	result = palloc(128+offset);
 
 	sprintf(result, "%*.s%s[%s] with %d points\n",
 	        offset, pad, lwtype_name(line->type),
@@ -88,7 +68,7 @@ lwline_summary(LWLINE *line, int offset)
 }
 
 
-char *
+static char *
 lwcollection_summary(LWCOLLECTION *col, int offset)
 {
 	size_t size = 128;
@@ -100,7 +80,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 
 	POSTGIS_DEBUG(2, "lwcollection_summary called");
 
-	result = (char *)lwalloc(size);
+	result = (char *)palloc(size);
 
 	sprintf(result, "%*.s%s[%s] with %d elements\n",
 	        offset, pad, lwtype_name(col->type),
@@ -124,7 +104,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	return result;
 }
 
-char *
+static char *
 lwpoly_summary(LWPOLY *poly, int offset)
 {
 	char tmp[256];
@@ -136,7 +116,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	POSTGIS_DEBUG(2, "lwpoly_summary called");
 
-	result = lwalloc(size);
+	result = palloc(size);
 
 	sprintf(result, "%*.s%s[%s] with %i rings\n",
 	        offset, pad, lwtype_name(poly->type),
@@ -155,3 +135,33 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	return result;
 }
 
+char *
+lwgeom_summary(const LWGEOM *lwgeom, int offset)
+{
+	char *result;
+
+	switch (lwgeom->type)
+	{
+	case POINTTYPE:
+		return lwpoint_summary((LWPOINT *)lwgeom, offset);
+
+	case LINETYPE:
+		return lwline_summary((LWLINE *)lwgeom, offset);
+
+	case POLYGONTYPE:
+		return lwpoly_summary((LWPOLY *)lwgeom, offset);
+
+	case MULTIPOINTTYPE:
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		return lwcollection_summary((LWCOLLECTION *)lwgeom, offset);
+	default:
+		result = palloc(256);
+		sprintf(result, "Object is of unknown type: %d",
+		        lwgeom->type);
+		return result;
+	}
+
+	return NULL;
+}

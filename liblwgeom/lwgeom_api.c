@@ -568,22 +568,6 @@ ptarray_isccw(const POINTARRAY *pa)
 	else return 1;
 }
 
-static char tflags[4];
-
-char *
-lwtype_zmflags(uint8_t flags)
-{
-	int flagno = 0;
-	if ( FLAGS_GET_Z(flags) ) tflags[flagno++] = 'Z';
-	if ( FLAGS_GET_M(flags) ) tflags[flagno++] = 'M';
-	if ( FLAGS_GET_BBOX(flags) ) tflags[flagno++] = 'B';
-	tflags[flagno] = '\0';
-
-	LWDEBUGF(4, "Flags: %s - returning %p", flags, tflags);
-
-	return tflags;
-}
-
 /**
  * Given a string with at least 2 chars in it, convert them to
  * a byte value.  No error checking done!
