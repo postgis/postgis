@@ -317,4 +317,7 @@ LWGEOM* lwpoly_remove_repeated_points(LWPOLY *in);
  */
 int lwline_split_by_point_to(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to);
 
+/** Ensure the collection can hold at least up to ngeoms geometries */
+void lwcollection_reserve(LWCOLLECTION *col, int ngeoms);
+
 #endif /* _LIBLWGEOM_INTERNAL_H */

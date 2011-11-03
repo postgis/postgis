@@ -153,6 +153,18 @@ lwcollection_clone_deep(const LWCOLLECTION *g)
 }
 
 /**
+ * Ensure the collection can hold up at least ngeoms
+ */
+void lwcollection_reserve(LWCOLLECTION *col, int ngeoms)
+{
+	if ( ngeoms <= col->maxgeoms ) return;
+
+	/* Allocate more space if we need it */
+	do { col->maxgeoms *= 2; } while ( col->maxgeoms < ngeoms );
+	col->geoms = lwrealloc(col->geoms, sizeof(LWGEOM*) * col->maxgeoms);
+}
+
+/**
 * Appends geom to the collection managed by col. Does not copy or
 * clone, simply takes a reference on the passed geom.
 */
@@ -174,13 +186,10 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	}
 
 	/* Allocate more space if we need it */
-	if ( col->ngeoms == col->maxgeoms )
-	{
-		col->maxgeoms *= 2;
-		col->geoms = lwrealloc(col->geoms, sizeof(LWGEOM*) * col->maxgeoms);
-	}
+	lwcollection_reserve(col, col->ngeoms + 1);
 
 	/* Make sure we don't already have a reference to this geom */
+	/* TODO: drop this check ... */
 	for ( i = 0; i < col->ngeoms; i++ )
 	{
 		if ( col->geoms[i] == geom )
