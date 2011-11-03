@@ -139,22 +139,40 @@ lwline_split_by_line(const LWLINE* lwline_in, const LWLINE* blade_in)
 static LWGEOM*
 lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 {
+	LWMLINE* out;
+
+	out = lwmline_construct_empty(lwline_in->srid,
+		FLAGS_GET_Z(lwline_in->flags),
+		FLAGS_GET_M(lwline_in->flags));
+	if ( lwline_split_by_point_to(lwline_in, blade_in, out) < 2 )
+	{
+		lwmline_add_lwline(out, lwline_clone(lwline_in));
+	}
+
+	/* Turn multiline into collection */
+	out->type = COLLECTIONTYPE;
+
+	return (LWGEOM*)out;
+}
+
+int
+lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
+                         LWMLINE* v)
+{
 	double loc, dist;
 	POINT2D pt;
 	POINTARRAY* pa1;
 	POINTARRAY* pa2;
-	LWGEOM** components;
-	LWCOLLECTION* out;
-	int ncomponents;
 
 	/* Possible outcomes:
 	 *
 	 *  1. The point is not on the line or on the boundary
-	 *      -> Return a collection with single element
+	 *      -> Leave collection untouched, return 0
 	 *  2. The point is on the line
-	 *      -> Return a collection 2 elements:
+	 *      -> Push 2 elements on the collection:
 	 *         o start_point - cut_point
 	 *         o cut_point - last_point
+	 *      -> Return 1
 	 */
 
 	getPoint2d_p(blade_in->point, 0, &pt);
@@ -162,45 +180,28 @@ lwline_split_by_point(const LWLINE* lwline_in, const LWPOINT* blade_in)
 
 	/* lwnotice("Location: %g -- Distance: %g", loc, dist); */
 
-	do
+	if ( dist > 0 )   /* TODO: accept a tolerance ? */
 	{
-		components = lwalloc(sizeof(LWGEOM*)*2);
-		ncomponents = 1;
-
-		if ( dist > 0 )   /* TODO: accept a tolerance ? */
-		{
-			/* No intersection */
-			components[0] = (LWGEOM*)lwline_clone(lwline_in);
-			components[0]->srid = SRID_UNKNOWN;
-			break;
-		}
-
-		/* There is an intersection, let's get two substrings */
-		if ( loc == 0 || loc == 1 )
-		{
-			/* Intersection is on the boundary or outside */
-			components[0] = (LWGEOM*)lwline_clone(lwline_in);
-			components[0]->srid = SRID_UNKNOWN;
-			break;
-		}
-
-		pa1 = ptarray_substring(lwline_in->points, 0, loc);
-		pa2 = ptarray_substring(lwline_in->points, loc, 1);
-
-		/* TODO: check if either pa1 or pa2 are empty ? */
-
-		components[0] = (LWGEOM*)lwline_construct(SRID_UNKNOWN, NULL, pa1);
-		components[1] = (LWGEOM*)lwline_construct(SRID_UNKNOWN, NULL, pa2);
-		++ncomponents;
+		/* No intersection */
+		return 0;
 	}
-	while (0);
 
-	out = lwcollection_construct(COLLECTIONTYPE, lwline_in->srid,
-	                             NULL, ncomponents, components);
+	if ( loc == 0 || loc == 1 )
+	{
+		/* Intersection is on the boundary */
+		return 1;
+	}
 
-	/* That's all folks */
+	/* There is a real intersection, let's get two substrings */
 
-	return (LWGEOM*)out;
+	pa1 = ptarray_substring(lwline_in->points, 0, loc);
+	pa2 = ptarray_substring(lwline_in->points, loc, 1);
+
+	/* TODO: check if either pa1 or pa2 are empty ? */
+
+	lwmline_add_lwline(v, lwline_construct(SRID_UNKNOWN, NULL, pa1));
+	lwmline_add_lwline(v, lwline_construct(SRID_UNKNOWN, NULL, pa2));
+	return 2;
 }
 
 static LWGEOM*

@@ -30,6 +30,7 @@ OBJS=	\
 	cu_geos.o \
 	cu_measures.o \
 	cu_libgeom.o \
+	cu_split.o \
 	cu_surface.o \
 	cu_homogenize.o \
 	cu_out_wkt.o \

@@ -28,6 +28,7 @@ extern CU_SuiteInfo wkb_out_suite;
 extern CU_SuiteInfo wkb_in_suite;
 extern CU_SuiteInfo libgeom_suite;
 extern CU_SuiteInfo surface_suite;
+extern CU_SuiteInfo split_suite;
 extern CU_SuiteInfo geodetic_suite;
 extern CU_SuiteInfo geos_suite;
 extern CU_SuiteInfo homogenize_suite;
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
 		wkb_in_suite,
 		libgeom_suite,
 		surface_suite,
+		split_suite,
 		geodetic_suite,
 		geos_suite,
 		homogenize_suite,
