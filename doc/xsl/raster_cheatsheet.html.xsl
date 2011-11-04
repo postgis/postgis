@@ -13,7 +13,7 @@
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
-	<xsl:variable name='output_purpose'>false</xsl:variable>
+	<xsl:variable name='output_purpose'>true</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Raster Cheat Sheet</title>
 	<style type="text/css">
@@ -104,14 +104,16 @@ code {font-size: 8pt}
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
 			<!-- examples go here -->
-			<xsl:apply-templates select="/book/chapter[@id='RT_reference']/sect1[count(//refentry//refsection//programlisting) &gt; 0]"  />
+			<xsl:if test="$include_examples='true'">
+				<xsl:apply-templates select="/book/chapter[@id='RT_reference']/sect1[count(//refentry//refsection//programlisting) &gt; 0]"  />
+			</xsl:if>
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[</body></html>]]></xsl:text>
 </xsl:template>
 			
         
   <xsl:template match="chapter" name="function_list">
-		<xsl:for-each select="sect1">
+		<xsl:for-each select="sect1[//funcprototype]">
 			<!--Beginning of section -->
 			<xsl:text><![CDATA[<table class="section"><tr><th colspan="2">]]></xsl:text>
 				<xsl:value-of select="title" />
@@ -143,7 +145,7 @@ code {font-size: 8pt}
 		</xsl:for-each>
 	</xsl:template>
 	
-	 <xsl:template match="sect1[//refentry//refsection[contains(title,'Example')]]">
+	 <xsl:template match="sect1[//refentry//refsection/programlisting]">
 	 		<!-- less than needed for converting html tags in listings so they are printable -->
 	 		<xsl:variable name="lt"><xsl:text><![CDATA[<]]></xsl:text></xsl:variable>
 	 		<!-- only print section header if it has examples - not sure why this is necessary -->
