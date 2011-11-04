@@ -2848,7 +2848,17 @@ Due to a bug in GEOS up to 3.3.1 this function fails to node self-intersecting
 lines. This is fixed with GEOS 3.3.2 or higher.
 		</para></note>
 	  </refsection>
-
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>
+SELECT ST_AsEWKT(
+		ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
+	) As  output;
+output
+-----------
+ MULTILINESTRINGZ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))		
+		</programlisting>
+	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
