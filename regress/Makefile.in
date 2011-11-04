@@ -111,6 +111,7 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 		isvaliddetail \
 		sharedpaths \
 		snap \
+		node \
 		unaryunion \
 		clean \
 		relate_bnr
