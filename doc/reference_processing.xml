@@ -2812,6 +2812,54 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_Node">
+	  <refnamediv>
+		<refname>ST_Node</refname>
+
+		<refpurpose>
+Node a set of linestrings.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Node</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+Fully node a set of linestrings using the least possible number of nodes
+while preserving all of the input ones.
+		</para>
+
+		<para>&Z_support;</para>
+
+		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0.</para>
+
+		<note><para>
+Due to a bug in GEOS up to 3.3.1 this function fails to node self-intersecting
+lines. This is fixed with GEOS 3.3.2 or higher.
+		</para></note>
+	  </refsection>
+
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+			<xref linkend="ST_UnaryUnion" />
+		</para>
+	  </refsection>
+	</refentry>
+
 
 
 </sect1>
