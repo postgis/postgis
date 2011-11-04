@@ -124,7 +124,7 @@ maintainer-clean: clean
 
 clean: 
 	$(MAKE) -C cunit clean
-	rm -f $(LT_OBJS) 
+	rm -f $(LT_OBJS) $(SA_OBJS) $(NM_OBJS)
 	rm -f liblwgeom.la
 	rm -rf .libs
 
