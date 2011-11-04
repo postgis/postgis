@@ -11,7 +11,7 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a2--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -32,11 +32,12 @@ sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 #then replace CREATE OR REPLACE .. with ALTER EXTENSION..;
 #then remove default values and extra junk
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
-	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
+	sed -e '/^CREATE \(OR REPLACE\|TYPE\|TABLE\|VIEW\|CAST\)/!d;' \
 		-e 's/OR REPLACE//g' \
 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
 		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
-		-e 's/\(BEFORE\|AS\)\(.*\)/;/' \
+		-e 's/\(BEFORE\|WITH FUNCTION\)\(.*\)/;/' \
+		-e 's/[ \t]+;/;/' \
 		-e 's/(;/;/' \
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@
@@ -59,6 +60,9 @@ sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
 	cp $< $@
 	
 sql/$(EXTENSION)--2.0.0a2--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
+	cp $< $@
+	
+sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
 	cp $< $@
 	
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
