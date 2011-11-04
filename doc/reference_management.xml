@@ -117,6 +117,7 @@
 		<para>&sfs_compliant;</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
+		<para>Enhanced: 2.0.0 use_typmod argument introduced.  Defaults to creating typmod geometry column instead of constraint-based.</para>
 	  </refsection>
 
 	  <refsection>
