@@ -3575,3 +3575,44 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 }
 
 
+/**********************************************************************
+ *
+ * ST_Node
+ *
+ * Fully node a set of lines using the least possible nodes while
+ * preserving all of the input ones.
+ *
+ **********************************************************************/
+Datum ST_Node(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_Node);
+Datum ST_Node(PG_FUNCTION_ARGS)
+{
+#if POSTGIS_GEOS_VERSION < 33
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "'ST_Node' function (3.3.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL();
+#else /* POSTGIS_GEOS_VERSION >= 33 */
+	GSERIALIZED *geom1, *out;
+	LWGEOM *g1, *lwgeom_out;
+
+	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	g1 = lwgeom_from_gserialized(geom1);
+
+	lwgeom_out = lwgeom_node(g1);
+	if ( ! lwgeom_out )
+	{
+		PG_FREE_IF_COPY(geom1, 0);
+		PG_RETURN_NULL();
+	}
+
+	out = geometry_serialize(lwgeom_out);
+	PG_FREE_IF_COPY(geom1, 0);
+
+	PG_RETURN_POINTER(out);
+
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
+
+}

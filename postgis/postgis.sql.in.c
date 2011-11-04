@@ -2765,6 +2765,25 @@ CREATE OR REPLACE FUNCTION ST_RelateMatch(text, text)
        LANGUAGE 'C' IMMUTABLE STRICT
        COST 100;
 
+--------------------------------------------------------------------------------
+-- ST_Node
+--------------------------------------------------------------------------------
+
+-- ST_Node(in geometry)
+--
+-- Fully node lines in input using the least set of nodes while
+-- preserving each of the input ones.
+-- Returns a linestring or a multilinestring containing all parts.
+--
+-- Availability: 2.0.0
+-- Requires GEOS >= 3.3.0
+--
+CREATE OR REPLACE FUNCTION ST_Node(g geometry)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'ST_Node'
+       LANGUAGE 'C' IMMUTABLE STRICT
+       COST 100;
+
 
 --------------------------------------------------------------------------------
 -- Aggregates and their supporting functions
