@@ -283,246 +283,6 @@ MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 
 			  </refsection>
 		</refentry>
 
-		<refentry id="ST_OffsetCurve">
-			<refnamediv>
-				<refname>ST_OffsetCurve</refname>
-
-				<refpurpose>
-Return an offset line at a given distance and side from an input line. Useful for computing parallel lines about a center line
-			</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-				<funcsynopsis>
-
-				  <funcprototype>
-					<funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
-					<paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
-					<paramdef choice="opt"><type>text </type> <parameter>style_parameters=''</parameter></paramdef>
-				  </funcprototype>
-				  
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-			  <refsection>
-				<title>Description</title>
-
-				<para>
-Return an offset line at a given distance and side from an input line.
-All points of the returned geometries are not further than the given
-distance from the input geometry.
-				</para>
-
-				<para>
-For positive distance the offset will be at the left side of the input line
-and retain the same direction. For a negative distance it'll be at the right
-side and in the opposite direction.
-				</para>
-
-				<para>
-Availability: 2.0 - requires GEOS &gt;= 3.2, improved with GEOS &gt;= 3.3
-				</para>
-
-				<para>
-The optional third parameter allows specifying a list of blank-separated
-key=value pairs to tweak operations as follows:
-<itemizedlist>
-<listitem>
-<para>'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).</para>
-</listitem>
-<listitem>
-<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is also accepted as a synonym for 'mitre'.</para>
-</listitem>
-<listitem>
-<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.</para>
-</listitem>
-</itemizedlist>
-				</para>
-
-				<para>
-Units of distance are measured in units of the spatial reference system.
-				</para>
-
-				<para>The inputs can only be LINESTRINGS.</para>
-
-				<para>Performed by the GEOS module.</para>
-
-				<note><para>
-This function ignores the third dimension (z) and will always give a
-2-d result even when presented with a 3d-geometry.</para></note>
-
-			</refsection>
-
-			<refsection>
-			<title>Examples</title>
-<para>Compute an open buffer around roads</para>
-				<programlisting>
-SELECT ST_Union(
- ST_OffsetCurve(f.the_geom,  f.width/2, 'quad_segs=4 join=round'),
- ST_OffsetCurve(f.the_geom, -f.width/2, 'quad_segs=4 join=round')
-) as track
-FROM someroadstable;
-
-				</programlisting>
-				<informaltable>
-				  <tgroup cols="2">
-					<tbody>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_offsetcurve01.png" />
-							  </imageobject>
-							  <caption><para>15, 'quad_segs=4 join=round' original line 
-and its offset 15 units.</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
-'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
-	44 16,24 16,20 16,18 16,17 17,
-	16 18,16 20,16 40,16 60,16 80,16 100,
-	16 120,16 140,16 160,16 180,16 195)'),
-	15, 'quad_segs=4 join=round'));
---output --
-LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,
-	7.39339828220179 5.39339828220179,
-	5.39339828220179 7.39339828220179,
-	2.14180701233067 12.2597485145237,1 18,1 195)
-				</programlisting>
-						  </para></entry>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_offsetcurve02.png" />
-							  </imageobject>
-							  <caption><para>-15, 'quad_segs=4 join=round' original line 
-							  	and its offset -15 units </para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(ST_OffsetCurve(geom,
-	-15, 'quad_segs=4 join=round')) As notsocurvy
-	FROM ST_GeomFromText(
-'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
-	44 16,24 16,20 16,18 16,17 17,
-	16 18,16 20,16 40,16 60,16 80,16 100,
-	16 120,16 140,16 160,16 180,16 195)') As geom;
--- notsocurvy --
-LINESTRING(31 195,31 31,164 31)
-				</programlisting>
-						</para></entry>
-					  </row>
-					 <row> 
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_offsetcurve05.png" />
-							  </imageobject>
-							  <caption><para>double-offset to get more curvy, note the first reverses direction, so -30 + 15 = -15</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,
-	-30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As morecurvy
-	FROM ST_GeomFromText(
-'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
-	44 16,24 16,20 16,18 16,17 17,
-	16 18,16 20,16 40,16 60,16 80,16 100,
-	16 120,16 140,16 160,16 180,16 195)') As geom;
--- morecurvy --
-LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,
-35.3933982822018 35.3933982822018,
-32.1418070123307 40.2597485145237,31 46,31 195)
-				</programlisting>
-						</para></entry>
-<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_offsetcurve06.png" />
-							  </imageobject>
-							  <caption><para>double-offset to get more curvy,combined with regular offset 15 to get parallel lines.  Overlaid with original.</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>SELECT ST_AsText(ST_Collect(
-	ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'), 
-	ST_OffsetCurve(ST_OffsetCurve(geom,
-	-30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')
-	)
-) As parallel_curves
-	FROM ST_GeomFromText(
-'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
-	44 16,24 16,20 16,18 16,17 17,
-	16 18,16 20,16 40,16 60,16 80,16 100,
-	16 120,16 140,16 160,16 180,16 195)') As geom;
--- parallel curves  --
-MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,
-7.39339828220179 5.39339828220179,5.39339828220179 7.39339828220179,
-2.14180701233067 12.2597485145237,1 18,1 195),
-(164 31,46 31,40.2597485145236 32.1418070123307,35.3933982822018 35.3933982822018,
-32.1418070123307 40.2597485145237,31 46,31 195))
-				</programlisting>
-						</para></entry>
-					  </row>
-					  <row>
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_offsetcurve03.png" />
-							  </imageobject>
-							  <caption><para>15, 'quad_segs=4 join=bevel' shown with original line</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
-'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
-	44 16,24 16,20 16,18 16,17 17,
-	16 18,16 20,16 40,16 60,16 80,16 100,
-	16 120,16 140,16 160,16 180,16 195)'), 
-		15, 'quad_segs=4 join=bevel'));
--- output --
-LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,
-	5.39339828220179 7.39339828220179,1 18,1 195)
-				</programlisting>
-						 </para></entry>
-
-						<entry><para><informalfigure>
-							<mediaobject>
-							  <imageobject>
-								<imagedata fileref="images/st_offsetcurve04.png" />
-							  </imageobject>
-							  <caption><para>15,-15 collected, join=mitre mitre_limit=2.1</para></caption>
-							</mediaobject>
-						  </informalfigure>
-				<programlisting>
-SELECT ST_AsText(ST_Collect(
-	ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),
-	ST_OffsetCurve(geom, -15, 'quad_segs=4 join=mitre mitre_limit=2.2')
-	) )
-	FROM ST_GeomFromText(
-'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
-	44 16,24 16,20 16,18 16,17 17,
-	16 18,16 20,16 40,16 60,16 80,16 100,
-	16 120,16 140,16 160,16 180,16 195)') As geom;
--- output --
-MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
-	(31 195,31 31,164 31))
-				</programlisting>
-						  </para></entry>
-					  </row>
-					</tbody>
-				  </tgroup>
-			</informaltable>
-
-			</refsection>
-
-			  <refsection>
-				<title>See Also</title>
-				<para><xref linkend="ST_Buffer" /></para>
-			  </refsection>
-		</refentry>
-
 		<refentry id="ST_BuildArea">
 		  <refnamediv>
 			<refname>ST_BuildArea</refname>
@@ -2055,6 +1815,304 @@ geomtextrep
 		</refsection>
 	</refentry>
 	
+	<refentry id="ST_Node">
+	  <refnamediv>
+		<refname>ST_Node</refname>
+
+		<refpurpose>
+Node a set of linestrings.
+		</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Node</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+		  </funcprototype>
+
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>
+Fully node a set of linestrings using the least possible number of nodes
+while preserving all of the input ones.
+		</para>
+
+		<para>&Z_support;</para>
+
+		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0.</para>
+
+		<note><para>
+Due to a bug in GEOS up to 3.3.1 this function fails to node self-intersecting
+lines. This is fixed with GEOS 3.3.2 or higher.
+		</para></note>
+	  </refsection>
+	  <refsection>
+		<title>Examples</title>
+		<programlisting>
+SELECT ST_AsEWKT(
+		ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
+	) As  output;
+output
+-----------
+ MULTILINESTRINGZ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))		
+		</programlisting>
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+
+		<para>
+			<xref linkend="ST_UnaryUnion" />
+		</para>
+	  </refsection>
+	</refentry>
+	
+			<refentry id="ST_OffsetCurve">
+			<refnamediv>
+				<refname>ST_OffsetCurve</refname>
+
+				<refpurpose>
+Return an offset line at a given distance and side from an input line. Useful for computing parallel lines about a center line
+			</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+
+				  <funcprototype>
+					<funcdef>geometry <function>ST_OffsetCurve</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
+					<paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>style_parameters=''</parameter></paramdef>
+				  </funcprototype>
+				  
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			  <refsection>
+				<title>Description</title>
+
+				<para>
+Return an offset line at a given distance and side from an input line.
+All points of the returned geometries are not further than the given
+distance from the input geometry.
+				</para>
+
+				<para>
+For positive distance the offset will be at the left side of the input line
+and retain the same direction. For a negative distance it'll be at the right
+side and in the opposite direction.
+				</para>
+
+				<para>
+Availability: 2.0 - requires GEOS &gt;= 3.2, improved with GEOS &gt;= 3.3
+				</para>
+
+				<para>
+The optional third parameter allows specifying a list of blank-separated
+key=value pairs to tweak operations as follows:
+<itemizedlist>
+<listitem>
+<para>'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8).</para>
+</listitem>
+<listitem>
+<para>'join=round|mitre|bevel' : join style (defaults to "round"). 'miter' is also accepted as a synonym for 'mitre'.</para>
+</listitem>
+<listitem>
+<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.</para>
+</listitem>
+</itemizedlist>
+				</para>
+
+				<para>
+Units of distance are measured in units of the spatial reference system.
+				</para>
+
+				<para>The inputs can only be LINESTRINGS.</para>
+
+				<para>Performed by the GEOS module.</para>
+
+				<note><para>
+This function ignores the third dimension (z) and will always give a
+2-d result even when presented with a 3d-geometry.</para></note>
+
+			</refsection>
+
+			<refsection>
+			<title>Examples</title>
+<para>Compute an open buffer around roads</para>
+				<programlisting>
+SELECT ST_Union(
+ ST_OffsetCurve(f.the_geom,  f.width/2, 'quad_segs=4 join=round'),
+ ST_OffsetCurve(f.the_geom, -f.width/2, 'quad_segs=4 join=round')
+) as track
+FROM someroadstable;
+
+				</programlisting>
+				<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve01.png" />
+							  </imageobject>
+							  <caption><para>15, 'quad_segs=4 join=round' original line 
+and its offset 15 units.</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
+'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
+	44 16,24 16,20 16,18 16,17 17,
+	16 18,16 20,16 40,16 60,16 80,16 100,
+	16 120,16 140,16 160,16 180,16 195)'),
+	15, 'quad_segs=4 join=round'));
+--output --
+LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,
+	7.39339828220179 5.39339828220179,
+	5.39339828220179 7.39339828220179,
+	2.14180701233067 12.2597485145237,1 18,1 195)
+				</programlisting>
+						  </para></entry>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve02.png" />
+							  </imageobject>
+							  <caption><para>-15, 'quad_segs=4 join=round' original line 
+							  	and its offset -15 units </para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_OffsetCurve(geom,
+	-15, 'quad_segs=4 join=round')) As notsocurvy
+	FROM ST_GeomFromText(
+'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
+	44 16,24 16,20 16,18 16,17 17,
+	16 18,16 20,16 40,16 60,16 80,16 100,
+	16 120,16 140,16 160,16 180,16 195)') As geom;
+-- notsocurvy --
+LINESTRING(31 195,31 31,164 31)
+				</programlisting>
+						</para></entry>
+					  </row>
+					 <row> 
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve05.png" />
+							  </imageobject>
+							  <caption><para>double-offset to get more curvy, note the first reverses direction, so -30 + 15 = -15</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,
+	-30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As morecurvy
+	FROM ST_GeomFromText(
+'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
+	44 16,24 16,20 16,18 16,17 17,
+	16 18,16 20,16 40,16 60,16 80,16 100,
+	16 120,16 140,16 160,16 180,16 195)') As geom;
+-- morecurvy --
+LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,
+35.3933982822018 35.3933982822018,
+32.1418070123307 40.2597485145237,31 46,31 195)
+				</programlisting>
+						</para></entry>
+<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve06.png" />
+							  </imageobject>
+							  <caption><para>double-offset to get more curvy,combined with regular offset 15 to get parallel lines.  Overlaid with original.</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>SELECT ST_AsText(ST_Collect(
+	ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'), 
+	ST_OffsetCurve(ST_OffsetCurve(geom,
+	-30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')
+	)
+) As parallel_curves
+	FROM ST_GeomFromText(
+'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
+	44 16,24 16,20 16,18 16,17 17,
+	16 18,16 20,16 40,16 60,16 80,16 100,
+	16 120,16 140,16 160,16 180,16 195)') As geom;
+-- parallel curves  --
+MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,
+7.39339828220179 5.39339828220179,5.39339828220179 7.39339828220179,
+2.14180701233067 12.2597485145237,1 18,1 195),
+(164 31,46 31,40.2597485145236 32.1418070123307,35.3933982822018 35.3933982822018,
+32.1418070123307 40.2597485145237,31 46,31 195))
+				</programlisting>
+						</para></entry>
+					  </row>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve03.png" />
+							  </imageobject>
+							  <caption><para>15, 'quad_segs=4 join=bevel' shown with original line</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(
+'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
+	44 16,24 16,20 16,18 16,17 17,
+	16 18,16 20,16 40,16 60,16 80,16 100,
+	16 120,16 140,16 160,16 180,16 195)'), 
+		15, 'quad_segs=4 join=bevel'));
+-- output --
+LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,
+	5.39339828220179 7.39339828220179,1 18,1 195)
+				</programlisting>
+						 </para></entry>
+
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_offsetcurve04.png" />
+							  </imageobject>
+							  <caption><para>15,-15 collected, join=mitre mitre_limit=2.1</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT ST_AsText(ST_Collect(
+	ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),
+	ST_OffsetCurve(geom, -15, 'quad_segs=4 join=mitre mitre_limit=2.2')
+	) )
+	FROM ST_GeomFromText(
+'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,
+	44 16,24 16,20 16,18 16,17 17,
+	16 18,16 20,16 40,16 60,16 80,16 100,
+	16 120,16 140,16 160,16 180,16 195)') As geom;
+-- output --
+MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
+	(31 195,31 31,164 31))
+				</programlisting>
+						  </para></entry>
+					  </row>
+					</tbody>
+				  </tgroup>
+			</informaltable>
+
+			</refsection>
+
+			  <refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_Buffer" /></para>
+			  </refsection>
+	</refentry>
+	
 	<refentry id="ST_RemoveRepeatedPoints">
 	  <refnamediv>
 		<refname>ST_RemoveRepeatedPoints</refname>
@@ -2811,65 +2869,4 @@ MULTILINESTRING((3 4,4 5),(1 2,3 4))
 		</para>
 	  </refsection>
 	</refentry>
-
-	<refentry id="ST_Node">
-	  <refnamediv>
-		<refname>ST_Node</refname>
-
-		<refpurpose>
-Node a set of linestrings.
-		</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_Node</function></funcdef>
-			<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-		  </funcprototype>
-
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>
-Fully node a set of linestrings using the least possible number of nodes
-while preserving all of the input ones.
-		</para>
-
-		<para>&Z_support;</para>
-
-		<para>Availability: 2.0.0 - requires GEOS &gt;= 3.3.0.</para>
-
-		<note><para>
-Due to a bug in GEOS up to 3.3.1 this function fails to node self-intersecting
-lines. This is fixed with GEOS 3.3.2 or higher.
-		</para></note>
-	  </refsection>
-	  <refsection>
-		<title>Examples</title>
-		<programlisting>
-SELECT ST_AsEWKT(
-		ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)
-	) As  output;
-output
------------
- MULTILINESTRINGZ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))		
-		</programlisting>
-	  </refsection>
-
-	  <!-- Optionally add a "See Also" section -->
-	  <refsection>
-		<title>See Also</title>
-
-		<para>
-			<xref linkend="ST_UnaryUnion" />
-		</para>
-	  </refsection>
-	</refentry>
-
-
-
 </sect1>

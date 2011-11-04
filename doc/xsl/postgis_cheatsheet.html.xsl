@@ -31,10 +31,22 @@ body {
 	color: #4a124a;font-size: 7.5pt;
 }
 
+
 #content_functions {
 	width:100%;
 	float: left;
 }
+
+#content_functions_left {
+	width:52%;
+	float: left;
+}
+
+#content_functions_right {
+	width: 45%;
+	float: right;
+}
+
 
 #content_examples {
 	float: left;
@@ -45,7 +57,7 @@ body {
 	border: 1px solid #000;
 	margin: 4px;
 	]]></xsl:text>
-	<xsl:choose><xsl:when test="$output_purpose = 'false'"><![CDATA[width: 425px;]]></xsl:when><xsl:otherwise><![CDATA[width: 100%;]]></xsl:otherwise></xsl:choose>
+	<xsl:choose><xsl:when test="$output_purpose = 'false'"><![CDATA[width: 100%]]></xsl:when><xsl:otherwise><![CDATA[width: 100%;]]></xsl:otherwise></xsl:choose>
 <xsl:text><![CDATA[	
 	float: left;
 }
@@ -101,7 +113,7 @@ code {font-size: 8pt}
 </style>
 	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Cheatsheet</h1>]]></xsl:text>
 		<xsl:text><![CDATA[<span class='notes'>New in this release <sup>1</sup> Enhanced in this release <sup>2</sup> Requires GEOS 3.3 or higher<sup>g3.3</sup>    &nbsp;2.5/3D support<sup>3d</sup>&nbsp;SQL-MM<sup>mm</sup> &nbsp;Supports geography <sup>G</sup></span><div id="content_functions">]]></xsl:text>
-			<xsl:apply-templates select="/book/chapter[@id='reference']" name="function_list" />
+			<xsl:apply-templates select="/book/chapter[@id='reference']" />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
 			<!-- examples go here -->
@@ -114,7 +126,18 @@ code {font-size: 8pt}
 			
         
     <xsl:template match="chapter" name="function_list">
+    	<![CDATA[<div id="content_functions_left">]]>
+    	
+    	<xsl:variable name="col_func_count"><xsl:value-of select="count(descendant::*//funcprototype) div 1.65" /></xsl:variable>
+    	
+    <!--count(preceding-sibling::*/refentry/refsynopsisdiv/funcsynopsis/funcprototype)-->	
 		<xsl:for-each select="sect1[count(//funcprototype) &gt; 0]">
+			
+			<xsl:variable name="col_cur"><xsl:value-of select="count(current()//funcprototype) + count(preceding-sibling::*//funcprototype)"/></xsl:variable>
+		
+			<xsl:if test="$col_cur &gt;$col_func_count and count(preceding-sibling::*//funcprototype) &lt; $col_func_count ">
+				<![CDATA[</div><div id="content_functions_right">]]>
+			</xsl:if>
 			
 			<!--Beginning of section -->
 			<xsl:text><![CDATA[<table class="section"><tr><th colspan="2">]]></xsl:text><xsl:value-of select="title" />
@@ -128,7 +151,7 @@ code {font-size: 8pt}
 		 		<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(refsynopsisdiv/funcsynopsis,'geography') or contains(refsynopsisdiv/funcsynopsis/funcprototype/funcdef,'geography')"><![CDATA[<sup>G</sup>  ]]></xsl:if>
 		 		<xsl:if test="contains(.,'GEOS &gt;= 3.3')"><![CDATA[<sup>g3.3</sup> ]]></xsl:if>
-		 		<xsl:if test="contains(.,'This function supports 3d')"><![CDATA[<sup>3D</sup> ]]></xsl:if>
+		 		<xsl:if test="contains(.,'This function supports 3d')"><![CDATA[<sup>3d</sup> ]]></xsl:if>
 		 		<!-- if only one proto just dispaly it on first line -->
 		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) = 1">
 		 			(<xsl:call-template name="list_in_params"><xsl:with-param name="func" select="refsynopsisdiv/funcsynopsis/funcprototype" /></xsl:call-template>)
@@ -140,10 +163,12 @@ code {font-size: 8pt}
 		 		<xsl:if test="count(refsynopsisdiv/funcsynopsis/funcprototype) &gt; 1"><![CDATA[<span class='func_args'><ol>]]><xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype"><![CDATA[<li>]]><xsl:call-template name="list_in_params"><xsl:with-param name="func" select="." /></xsl:call-template><![CDATA[</li>]]></xsl:for-each>
 		 		<![CDATA[</ol></span>]]></xsl:if>
 		 		<![CDATA[</td></tr>]]>
+		 		</xsl:for-each>
+		 		<![CDATA[</table><br />]]>
+		 		<!--close section -->
 		 	</xsl:for-each>
-		 	<!--close section -->
-		 	<![CDATA[</table>]]>
-		</xsl:for-each>
+		<![CDATA[</div>]]>
+		
 	</xsl:template>
 	
 	 <xsl:template match="sect1[//refentry//refsection[contains(title,'Example')]]">

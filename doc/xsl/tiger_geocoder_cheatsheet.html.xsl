@@ -24,7 +24,7 @@ body {
 }
 
 .comment {font-size:x-small;color:green;font-family:"courier new"}
-
+.notes {font-size:x-small;color:#dd1111;font-weight:500;font-family:verdana}
 .example_heading {
 	border-bottom: 1px solid #000;
 	margin: 10px 15px 10px 85px;
@@ -85,8 +85,8 @@ h1 {
 
 -->
 </style>
-	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Tiger Gecoder Cheatsheet</h1>]]></xsl:text>
-		<xsl:text><![CDATA[<div id="content_functions"><span class='comment'>New in this release <sup>1</sup><br />Requires GEOS 3.3 or higher<sup>3.3</sup></span>]]></xsl:text>
+	</head><body><h1 style='text-align:center'>PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[ Tiger Geocoder Cheatsheet</h1>]]></xsl:text>
+		<xsl:text><![CDATA[<div id="content_functions"><span class='notes'>New in this release <sup>1</sup> Enhanced in this release<sup>2</sup></span>]]></xsl:text>
 			<xsl:apply-templates select="/book/chapter[@id='Extras']" name="function_list" />
 			<xsl:text><![CDATA[</div>]]></xsl:text>
 			<xsl:text><![CDATA[<div id="content_examples">]]></xsl:text>
