@@ -29,6 +29,7 @@ OBJS=	\
 	cu_geodetic.o \
 	cu_geos.o \
 	cu_measures.o \
+	cu_node.o \
 	cu_libgeom.o \
 	cu_split.o \
 	cu_surface.o \

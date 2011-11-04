@@ -22,6 +22,7 @@ extern CU_SuiteInfo algorithms_suite;
 extern CU_SuiteInfo misc_suite;
 extern CU_SuiteInfo ptarray_suite;
 extern CU_SuiteInfo measures_suite;
+extern CU_SuiteInfo node_suite;
 extern CU_SuiteInfo wkt_out_suite;
 extern CU_SuiteInfo wkt_in_suite;
 extern CU_SuiteInfo wkb_out_suite;
@@ -53,6 +54,7 @@ int main(int argc, char *argv[])
 		ptarray_suite,
 		algorithms_suite,
 		measures_suite,
+		node_suite,
 		wkt_out_suite,
 		wkt_in_suite,
 		wkb_out_suite,

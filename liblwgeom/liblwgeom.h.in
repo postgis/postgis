@@ -1793,5 +1793,13 @@ LWGEOM* lwgeom_make_valid(LWGEOM* geom);
  */
 LWGEOM* lwgeom_split(const LWGEOM* lwgeom_in, const LWGEOM* blade_in);
 
+/*
+ * Fully node a set of linestrings, using the least nodes preserving
+ * all the input ones.
+ *
+ * Requires GEOS-3.3.0 or higher
+ */
+LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
+
 #endif /* !defined _LIBLWGEOM_H  */
 
