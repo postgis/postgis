@@ -2210,13 +2210,6 @@ CREATE OR REPLACE FUNCTION postgis_lib_build_date() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE;
 
-#ifdef POSTGIS_GDAL_VERSION
-CREATE OR REPLACE FUNCTION postgis_gdal_version()
-	RETURNS text
-	AS 'RASTER_MODULE_PATHNAME', 'RASTER_gdal_version'
-	LANGUAGE 'C' IMMUTABLE;
-#endif
-
 CREATE OR REPLACE FUNCTION postgis_full_version() RETURNS text
 AS $$
 DECLARE
@@ -2236,7 +2229,13 @@ BEGIN
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
 #ifdef POSTGIS_GDAL_VERSION
-	SELECT postgis_gdal_version() INTO gdalver;
+	BEGIN
+		SELECT postgis_gdal_version() INTO gdalver;
+	EXCEPTION
+		WHEN undefined_function THEN
+			gdalver := NULL;
+			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is rtpostgis.sql installed?';
+	END;
 #endif
 	SELECT postgis_libxml_version() INTO libxmlver;
 	SELECT postgis_uses_stats() INTO usestats;
