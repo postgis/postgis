@@ -1859,7 +1859,7 @@ SELECT ST_AsEWKT(
 	) As  output;
 output
 -----------
- MULTILINESTRINGZ((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))		
+MULTILINESTRING((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))	
 		</programlisting>
 	  </refsection>
 
