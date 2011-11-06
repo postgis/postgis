@@ -2216,9 +2216,7 @@ DECLARE
 	libver text;
 	projver text;
 	geosver text;
-#ifdef POSTGIS_GDAL_VERSION
 	gdalver text;
-#endif
 	libxmlver text;
 	usestats bool;
 	dbproc text;
@@ -2228,7 +2226,6 @@ BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
-#ifdef POSTGIS_GDAL_VERSION
 	BEGIN
 		SELECT postgis_gdal_version() INTO gdalver;
 	EXCEPTION
@@ -2236,7 +2233,6 @@ BEGIN
 			gdalver := NULL;
 			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is rtpostgis.sql installed?';
 	END;
-#endif
 	SELECT postgis_libxml_version() INTO libxmlver;
 	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
@@ -2252,11 +2248,9 @@ BEGIN
 		fullver = fullver || ' PROJ="' || projver || '"';
 	END IF;
 
-#ifdef POSTGIS_GDAL_VERSION
 	IF  gdalver IS NOT NULL THEN
 		fullver = fullver || ' GDAL="' || gdalver || '"';
 	END IF;
-#endif
 
 	IF  libxmlver IS NOT NULL THEN
 		fullver = fullver || ' LIBXML="' || libxmlver || '"';
