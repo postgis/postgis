@@ -197,7 +197,13 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	pa1 = ptarray_substring(lwline_in->points, 0, loc);
 	pa2 = ptarray_substring(lwline_in->points, loc, 1);
 
-	/* TODO: check if either pa1 or pa2 are empty ? */
+	/* NOTE: I've seen empty pointarrays with loc != 0 and loc != 1 */
+	if ( pa1->npoints == 0 || pa2->npoints == 0 ) {
+		ptarray_free(pa1);
+		ptarray_free(pa2);
+		/* Intersection is on the boundary */
+		return 1;
+	}
 
 	lwmline_add_lwline(v, lwline_construct(SRID_UNKNOWN, NULL, pa1));
 	lwmline_add_lwline(v, lwline_construct(SRID_UNKNOWN, NULL, pa2));
