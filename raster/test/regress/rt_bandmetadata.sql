@@ -1,6 +1,6 @@
 SELECT
 	pixeltype,
-	hasnodatavalue,
+	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path
@@ -21,7 +21,7 @@ FROM ST_BandMetaData(
 );
 SELECT
 	pixeltype,
-	hasnodatavalue,
+	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path
@@ -43,7 +43,7 @@ FROM ST_BandMetaData(
 );
 SELECT
 	pixeltype,
-	hasnodatavalue,
+	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path

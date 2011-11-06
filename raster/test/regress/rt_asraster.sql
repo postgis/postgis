@@ -443,7 +443,7 @@ SELECT
 	round(upperleftx::numeric, 3) AS upperleftx,
 	round(upperlefty::numeric, 3) AS upperlefty,
 	pixeltype,
-	hasnodatavalue,
+	hasnodata,
 	round(nodatavalue::numeric, 3) AS nodatavalue,
 	count > 0 AS count_check,
 	round(min::numeric, 3) AS min,

@@ -1732,7 +1732,7 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(
 	rast raster,
 	band int DEFAULT 1,
 	OUT pixeltype text,
-	OUT hasnodatavalue boolean,
+	OUT hasnodata boolean,
 	OUT nodatavalue float4,
 	OUT isoutdb boolean,
 	OUT path text
@@ -2676,7 +2676,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 	BEGIN
 		convexhull := ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
-			SELECT hasnodatavalue INTO hasnodata FROM ST_BandMetaData(rast, nband);
+			SELECT bmd.hasnodata INTO hasnodata FROM ST_BandMetaData(rast, nband) bmd;
 		END IF;
 
 		IF ST_Intersects(geom, convexhull) IS NOT TRUE THEN
