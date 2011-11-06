@@ -43,5 +43,5 @@ distclean: clean
 core-check:
 	$(MAKE) -C test $@
 
-check: core-check
+check:
 	$(MAKE) -C test $@

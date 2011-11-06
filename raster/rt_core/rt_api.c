@@ -45,8 +45,6 @@
  *   must be 0-based
  *****************************************************************************/
 
-#define POSTGIS_RASTER_WARN_ON_TRUNCATION
-
 /*--- Utilities -------------------------------------------------*/
 
 static void
@@ -1218,6 +1216,19 @@ rt_band_set_nodata(rt_band band, double val) {
     return 0;
 }
 
+/**
+ * Set pixel value
+ *
+ * @param band : the band to set nodata value to
+ * @param x : x ordinate (0-based)
+ * @param y : x ordinate (0-based)
+ * @param val : the pixel value, must be in the range
+ *              of values supported by this band's pixeltype
+ *              or a warning will be printed and non-zero
+ *              returned.
+ *
+ * @return 0 on success, -1 on error (value out of valid range).
+ */
 int
 rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
         double val) {
@@ -1358,6 +1369,16 @@ rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
     return 0;
 }
 
+/**
+ * Get pixel value
+ *
+ * @param band : the band to set nodata value to
+ * @param x : x ordinate (0-based)
+ * @param y : x ordinate (0-based)
+ * @param *result: result if there is a value
+ *
+ * @return 0 on success, -1 on error (value out of valid range).
+ */
 int
 rt_band_get_pixel(rt_band band, uint16_t x, uint16_t y, double *result) {
     rt_pixtype pixtype = PT_END;

@@ -57,8 +57,6 @@
 #include <utils/array.h> /* for ArrayType */
 #include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
 
-#define POSTGIS_RASTER_WARN_ON_TRUNCATION
-
 /* maximum char length required to hold any double or long long value */
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
@@ -582,30 +580,30 @@ Datum RASTER_in(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_out);
 Datum RASTER_out(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = NULL;
-    rt_raster raster = NULL;
-    uint32_t hexwkbsize = 0;
-    char *hexwkb = NULL;
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	uint32_t hexwkbsize = 0;
+	char *hexwkb = NULL;
 
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    raster = rt_raster_deserialize(pgraster, FALSE);
-    if ( ! raster ) {
-        elog(ERROR, "RASTER_out: Could not deserialize raster");
-        PG_RETURN_NULL();
-    }
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		elog(ERROR, "RASTER_out: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
 
-    hexwkb = rt_raster_to_hexwkb(raster, &hexwkbsize);
-    if ( ! hexwkb )
-    {
-        elog(ERROR, "RASTER_out: Could not HEX-WKBize raster");
-        PG_RETURN_NULL();
-    }
+	hexwkb = rt_raster_to_hexwkb(raster, &hexwkbsize);
+	if (!hexwkb) {
+		elog(ERROR, "RASTER_out: Could not HEX-WKBize raster");
+		PG_RETURN_NULL();
+	}
 
-    /* Free the raster objects used */
-    rt_raster_destroy(raster);
+	/* Free the raster objects used */
+	rt_raster_destroy(raster);
 
-    PG_RETURN_CSTRING(hexwkb);
+	PG_RETURN_CSTRING(hexwkb);
 }
 
 /**
@@ -614,38 +612,41 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_to_bytea);
 Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-    rt_raster raster = NULL;
-    uint8_t *wkb = NULL;
-    uint32_t wkb_size = 0;
-    bytea *result = NULL;
-    int result_size = 0;
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	uint8_t *wkb = NULL;
+	uint32_t wkb_size = 0;
+	bytea *result = NULL;
+	int result_size = 0;
 
-    /* Get raster object */
-    raster = rt_raster_deserialize(pgraster, FALSE);
-    if ( ! raster ) {
-        elog(ERROR, "RASTER_to_bytea: Could not deserialize raster");
-        PG_RETURN_NULL();
-    }
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    /* Parse raster to wkb object */
-    wkb = rt_raster_to_wkb(raster, &wkb_size);
-    if ( ! wkb ) {
-        elog(ERROR, "RASTER_to_bytea: Could not allocate and generate WKB data");
-        PG_RETURN_NULL();
-    }
+	/* Get raster object */
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		elog(ERROR, "RASTER_to_bytea: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
 
-    /* Create varlena object */
-    result_size = wkb_size + VARHDRSZ;
-    result = (bytea *)palloc(result_size);
-    SET_VARSIZE(result, result_size);
-    memcpy(VARDATA(result), wkb, VARSIZE(result) - VARHDRSZ);
+	/* Parse raster to wkb object */
+	wkb = rt_raster_to_wkb(raster, &wkb_size);
+	if (!wkb) {
+		elog(ERROR, "RASTER_to_bytea: Could not allocate and generate WKB data");
+		PG_RETURN_NULL();
+	}
 
-    /* Free raster objects used */
-    rt_raster_destroy(raster);
-    rtdealloc(wkb);
+	/* Create varlena object */
+	result_size = wkb_size + VARHDRSZ;
+	result = (bytea *)palloc(result_size);
+	SET_VARSIZE(result, result_size);
+	memcpy(VARDATA(result), wkb, VARSIZE(result) - VARHDRSZ);
 
-    PG_RETURN_POINTER(result);
+	/* Free raster objects used */
+	rt_raster_destroy(raster);
+	rtdealloc(wkb);
+
+	PG_RETURN_POINTER(result);
 }
 
 /**
@@ -654,38 +655,41 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_to_binary);
 Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-    rt_raster raster = NULL;
-    uint8_t *wkb = NULL;
-    uint32_t wkb_size = 0;
-    char *result = NULL;
-    int result_size = 0;
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	uint8_t *wkb = NULL;
+	uint32_t wkb_size = 0;
+	char *result = NULL;
+	int result_size = 0;
 
-    /* Get raster object */
-    raster = rt_raster_deserialize(pgraster, FALSE);
-    if ( ! raster ) {
-        elog(ERROR, "RASTER_to_binary: Could not deserialize raster");
-        PG_RETURN_NULL();
-    }
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    /* Parse raster to wkb object */
-    wkb = rt_raster_to_wkb(raster, &wkb_size);
-    if ( ! wkb ) {
-        elog(ERROR, "RASTER_to_binary: Could not allocate and generate WKB data");
-        PG_RETURN_NULL();
-    }
+	/* Get raster object */
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		elog(ERROR, "RASTER_to_binary: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
 
-    /* Create varlena object */
-    result_size = wkb_size + VARHDRSZ;
-    result = (char *)palloc(result_size);
-    SET_VARSIZE(result, result_size);
-    memcpy(VARDATA(result), wkb, VARSIZE(result) - VARHDRSZ);
+	/* Parse raster to wkb object */
+	wkb = rt_raster_to_wkb(raster, &wkb_size);
+	if (!wkb) {
+		elog(ERROR, "RASTER_to_binary: Could not allocate and generate WKB data");
+		PG_RETURN_NULL();
+	}
 
-    /* Free raster objects used */
-    rt_raster_destroy(raster);
-    rtdealloc(wkb);
+	/* Create varlena object */
+	result_size = wkb_size + VARHDRSZ;
+	result = (char *)palloc(result_size);
+	SET_VARSIZE(result, result_size);
+	memcpy(VARDATA(result), wkb, VARSIZE(result) - VARHDRSZ);
 
-    PG_RETURN_POINTER(result);
+	/* Free raster objects used */
+	rt_raster_destroy(raster);
+	rtdealloc(wkb);
+
+	PG_RETURN_POINTER(result);
 }
 
 /**
@@ -757,6 +761,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
         /* Get input arguments */
+				if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
         pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
         raster = rt_raster_deserialize(pgraster, FALSE);
         if ( ! raster )
@@ -764,7 +769,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
             ereport(ERROR,
                     (errcode(ERRCODE_OUT_OF_MEMORY),
                     errmsg("Could not deserialize raster")));
-            PG_RETURN_NULL();
+            SRF_RETURN_DONE(funcctx);
         }
 
         if (PG_NARGS() == 2)
@@ -786,7 +791,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
             ereport(ERROR,
                     (errcode(ERRCODE_NO_DATA_FOUND),
                     errmsg("Could not polygonize raster")));
-            PG_RETURN_NULL();
+            SRF_RETURN_DONE(funcctx);
         }
 
         POSTGIS_RT_DEBUGF(3, "raster dump, %d elements returned", nElements);
@@ -820,7 +825,6 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
 
     if (call_cntr < max_calls)    /* do when there is more left to send */
     {
-        int i;
         bool *nulls = NULL;
         int values_length = 3;
         Datum values[values_length];
@@ -830,7 +834,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
         nulls = palloc(sizeof(bool) * values_length);
-        for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+				memset(nulls, FALSE, values_length);
 
         values[0] = CStringGetTextDatum(geomval2[call_cntr].geom);
         values[1] = Float8GetDatum(geomval2[call_cntr].val);
@@ -988,26 +992,27 @@ Datum RASTER_getSRID(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_setSRID);
 Datum RASTER_setSRID(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-    rt_raster raster;
-    int32_t newSRID = PG_GETARG_INT32(1);
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster;
+	int32_t newSRID = PG_GETARG_INT32(1);
 
-    raster = rt_raster_deserialize(pgraster, FALSE);
-    if ( ! raster ) {
-        elog(ERROR, "RASTER_setSRID: Could not deserialize raster");
-        PG_RETURN_NULL();
-    }
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    rt_raster_set_srid(raster, newSRID);
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		elog(ERROR, "RASTER_setSRID: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
 
-    pgraster = rt_raster_serialize(raster);
-    if ( ! pgraster ) PG_RETURN_NULL();
+	rt_raster_set_srid(raster, newSRID);
 
-    SET_VARSIZE(pgraster, pgraster->size);
+	pgraster = rt_raster_serialize(raster);
+	if (!pgraster) PG_RETURN_NULL();
 
-    rt_raster_destroy(raster);
-
-    PG_RETURN_POINTER(pgraster);
+	SET_VARSIZE(pgraster, pgraster->size);
+	rt_raster_destroy(raster);
+	PG_RETURN_POINTER(pgraster);
 }
 
 /**
@@ -1146,10 +1151,12 @@ Datum RASTER_getYScale(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_setScale);
 Datum RASTER_setScale(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster = NULL;
     rt_raster raster;
     double size = PG_GETARG_FLOAT8(1);
 
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setScale: Could not deserialize raster");
@@ -1174,11 +1181,13 @@ Datum RASTER_setScale(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_setScaleXY);
 Datum RASTER_setScaleXY(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster = NULL;
     rt_raster raster;
     double xscale = PG_GETARG_FLOAT8(1);
     double yscale = PG_GETARG_FLOAT8(2);
 
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setScaleXY: Could not deserialize raster");
@@ -1255,10 +1264,12 @@ Datum RASTER_getYSkew(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_setSkew);
 Datum RASTER_setSkew(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster = NULL;
     rt_raster raster;
     double skew = PG_GETARG_FLOAT8(1);
 
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setSkew: Could not deserialize raster");
@@ -1283,11 +1294,13 @@ Datum RASTER_setSkew(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_setSkewXY);
 Datum RASTER_setSkewXY(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster = NULL;
     rt_raster raster;
     double xskew = PG_GETARG_FLOAT8(1);
     double yskew = PG_GETARG_FLOAT8(2);
 
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setSkewXY: Could not deserialize raster");
@@ -1364,11 +1377,13 @@ Datum RASTER_getYUpperLeft(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_setUpperLeftXY);
 Datum RASTER_setUpperLeftXY(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster = NULL;
     rt_raster raster;
     double xoffset = PG_GETARG_FLOAT8(1);
     double yoffset = PG_GETARG_FLOAT8(2);
 
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
         elog(ERROR, "RASTER_setUpperLeftXY: Could not deserialize raster");
@@ -1517,10 +1532,13 @@ Datum RASTER_getRotation(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_setRotation);
 Datum RASTER_setRotation(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    rt_pgraster *pgraster = NULL;
     rt_raster raster;
     double rotation = PG_GETARG_FLOAT8(1);
     double xscale, yscale, xskew, yskew, psize;
+
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     /* no matter what, we don't rotate more than once around */
     if (rotation < 0) {
@@ -1574,15 +1592,16 @@ Datum RASTER_getBandPixelType(PG_FUNCTION_ARGS)
     rt_pixtype pixtype;
     int32_t bandindex;
 
+    /* Deserialize raster */
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
     /* Index is 1-based */
     bandindex = PG_GETARG_INT32(1);
     if ( bandindex < 1 ) {
         elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
         PG_RETURN_NULL();
     }
-
-    /* Deserialize raster */
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
@@ -1622,15 +1641,16 @@ Datum RASTER_getBandPixelTypeName(PG_FUNCTION_ARGS)
     char *ptr = NULL;
     text *result = NULL;
 
+    /* Deserialize raster */
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
     /* Index is 1-based */
     bandindex = PG_GETARG_INT32(1);
     if ( bandindex < 1 ) {
         elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
         PG_RETURN_NULL();
     }
-
-    /* Deserialize raster */
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
@@ -1718,15 +1738,16 @@ Datum RASTER_getBandNoDataValue(PG_FUNCTION_ARGS)
     int32_t bandindex;
     double nodata;
 
+    /* Deserialize raster */
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
     /* Index is 1-based */
     bandindex = PG_GETARG_INT32(1);
     if ( bandindex < 1 ) {
         elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
         PG_RETURN_NULL();
     }
-
-    /* Deserialize raster */
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
     if ( ! raster ) {
@@ -1768,6 +1789,10 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
     bool forcechecking = FALSE;
     bool skipset = FALSE;
 
+    /* Deserialize raster */
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
     /* Check index is not NULL or smaller than 1 */
     if (PG_ARGISNULL(1))
         bandindex = -1;
@@ -1777,13 +1802,6 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
         elog(NOTICE, "Invalid band index (must use 1-based). Nodata value not set. Returning original raster");
         skipset = TRUE;
     }
-
-    /* Deserialize raster */
-    if (PG_ARGISNULL(0)) {
-        /* Simply return NULL */
-        PG_RETURN_NULL();
-    }
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster) {
@@ -1845,6 +1863,7 @@ Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS)
     rt_band band = NULL;
     int32_t bandindex;
 
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
@@ -1902,6 +1921,7 @@ Datum RASTER_bandIsNoData(PG_FUNCTION_ARGS)
     }
 
     /* Deserialize raster */
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
@@ -1950,6 +1970,7 @@ Datum RASTER_getBandPath(PG_FUNCTION_ARGS)
     }
 
     /* Deserialize raster */
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
@@ -2019,6 +2040,7 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
     /* Deserialize raster */
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
@@ -2099,6 +2121,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
     /* Deserialize raster */
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
@@ -2163,7 +2186,7 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
     text *pixeltypename = NULL;
     char *new_pixeltypename = NULL;
 
-    int pixtype = PT_END;
+    rt_pixtype pixtype = PT_END;
     int32_t oldnumbands = 0;
     int32_t numbands = 0;
 
@@ -2183,10 +2206,7 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
     }
 
     /* Deserialize raster */
-    if (PG_ARGISNULL(0)) {
-        /* Simply return NULL */
-        PG_RETURN_NULL();
-    }
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     /* Get the pixel type in text form */
@@ -2270,10 +2290,7 @@ Datum RASTER_copyband(PG_FUNCTION_ARGS)
     int newbandindex = 0;
 
     /* Deserialize torast */
-    if (PG_ARGISNULL(0)) {
-        /* Simply return NULL */
-        PG_RETURN_NULL();
-    }
+		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
     pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     torast = rt_raster_deserialize(pgraster, FALSE);
@@ -3326,7 +3343,6 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     PG_RETURN_POINTER(pgraster);
 }
 
-
 /**
  * Return new raster from selected bands of existing raster through ST_Band.
  * second argument is an array of band numbers (1 based)
@@ -3334,7 +3350,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_band);
 Datum RASTER_band(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster;
+	rt_pgraster *pgraster;
 	rt_pgraster *pgrast;
 	rt_raster raster;
 	rt_raster rast;
@@ -3465,7 +3481,6 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	rt_bandstats stats = NULL;
 
 	TupleDesc tupdesc;
-	int i = 0;
 	bool *nulls = NULL;
 	int values_length = 6;
 	Datum values[values_length];
@@ -3541,7 +3556,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	BlessTupleDesc(tupdesc);
 
 	nulls = palloc(sizeof(bool) * values_length);
-	for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+	memset(nulls, FALSE, values_length);
 
 	values[0] = Int64GetDatum(stats->count);
 	values[1] = Float8GetDatum(stats->sum);
@@ -3597,7 +3612,6 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	rt_bandstats stats = NULL;
 	rt_bandstats rtn = NULL;
 
-	int i = 0;
 	bool *nulls = NULL;
 	Datum values[6];
 	int values_length = 6;
@@ -3838,7 +3852,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	BlessTupleDesc(tupdesc);
 
 	nulls = palloc(sizeof(bool) * values_length);
-	for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+	memset(nulls, FALSE, values_length);
 
 	values[0] = Int64GetDatum(rtn->count);
 	values[1] = Float8GetDatum(rtn->sum);
@@ -4102,7 +4116,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
 		nulls = palloc(sizeof(bool) * values_length);
-		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(hist2[call_cntr].min);
 		values[1] = Float8GetDatum(hist2[call_cntr].max);
@@ -4623,7 +4637,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
 		nulls = palloc(sizeof(bool) * values_length);
-		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(covhist2[call_cntr].min);
 		values[1] = Float8GetDatum(covhist2[call_cntr].max);
@@ -4868,7 +4882,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
 		nulls = palloc(sizeof(bool) * values_length);
-		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(quant2[call_cntr].quantile);
 		values[1] = Float8GetDatum(quant2[call_cntr].value);
@@ -5293,7 +5307,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
 		nulls = palloc(sizeof(bool) * values_length);
-		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(covquant2[call_cntr].quantile);
 		values[1] = Float8GetDatum(covquant2[call_cntr].value);
@@ -5503,7 +5517,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
 		nulls = palloc(sizeof(bool) * values_length);
-		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(vcnts2[call_cntr].value);
 		values[1] = UInt32GetDatum(vcnts2[call_cntr].count);
@@ -5928,7 +5942,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
 		nulls = palloc(sizeof(bool) * values_length);
-		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(covvcnts2[call_cntr].value);
 		values[1] = UInt32GetDatum(covvcnts2[call_cntr].count);
@@ -6602,7 +6616,6 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
 
-	int i;
 	uint32_t drv_count;
 	rt_gdaldriver drv_set;
 	rt_gdaldriver drv_set2;
@@ -6668,7 +6681,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
 		nulls = palloc(sizeof(bool) * values_length);
-		for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+		memset(nulls, FALSE, values_length);
 
 		values[0] = Int32GetDatum(drv_set2[call_cntr].idx);
 		values[1] = CStringGetTextDatum(drv_set2[call_cntr].short_name);
@@ -7509,7 +7522,6 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	uint32_t width;
 	uint32_t height;
 
-	int i = 0;
 	TupleDesc tupdesc;
 	bool *nulls = NULL;
 	int values_length = 10;
@@ -7579,7 +7591,7 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	values[9] = UInt32GetDatum(numBands);
 
 	nulls = palloc(sizeof(bool) * values_length);
-	for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+	memset(nulls, FALSE, values_length);
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -7612,7 +7624,6 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	char *bandpath = NULL;
 	bool isoutdb = FALSE;
 
-	int i = 0;
 	TupleDesc tupdesc;
 	bool *nulls = NULL;
 	int values_length = 5;
@@ -7696,7 +7707,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	BlessTupleDesc(tupdesc);
 
 	nulls = palloc(sizeof(bool) * values_length);
-	for (i = 0; i < values_length; i++) nulls[i] = FALSE;
+	memset(nulls, FALSE, values_length);
 
 	values[0] = CStringGetTextDatum(pixtypename);
 	values[1] = BoolGetDatum(hasnodatavalue);
@@ -7797,7 +7808,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 
 	/* SRID must match */
 	if (rt_raster_get_srid(rast[0]) != rt_raster_get_srid(rast[1])) {
-		elog(NOTICE, "The two rasters provided have different SRIDs");
+		elog(ERROR, "The two rasters provided have different SRIDs");
 		for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
 		PG_RETURN_NULL();
 	}

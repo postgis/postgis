@@ -422,9 +422,10 @@ double rt_band_get_nodata(rt_band band);
 
 /**
  * Set pixel value
+ *
  * @param band : the band to set nodata value to
- * @param x : x ordinate
- * @param y : x ordinate
+ * @param x : x ordinate (0-based)
+ * @param y : x ordinate (0-based)
  * @param val : the pixel value, must be in the range
  *              of values supported by this band's pixeltype
  *              or a warning will be printed and non-zero
@@ -439,10 +440,11 @@ int rt_band_set_pixel(rt_band band,
  * Get pixel value
  *
  * @param band : the band to set nodata value to
- * @param x : x ordinate
- * @param y : x ordinate
+ * @param x : x ordinate (0-based)
+ * @param y : x ordinate (0-based)
  * @param *result: result if there is a value
- * @return the pixel value, as a double.
+ *
+ * @return 0 on success, -1 on error (value out of valid range).
  */
 int rt_band_get_pixel(rt_band band,
                          uint16_t x, uint16_t y, double *result );
@@ -1141,6 +1143,8 @@ extern void rtdealloc(void *mem);
 
 /* Set of functions to clamp double to int of different size
  */
+
+#define POSTGIS_RASTER_WARN_ON_TRUNCATION
 
 #define POSTGIS_RT_1BBMAX 1
 #define POSTGIS_RT_2BUIMAX 3
