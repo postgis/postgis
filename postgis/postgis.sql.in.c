@@ -2231,7 +2231,7 @@ BEGIN
 	EXCEPTION
 		WHEN undefined_function THEN
 			gdalver := NULL;
-			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is rtpostgis.sql installed?';
+			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
 	END;
 	SELECT postgis_libxml_version() INTO libxmlver;
 	SELECT postgis_uses_stats() INTO usestats;
