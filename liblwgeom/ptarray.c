@@ -934,6 +934,8 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 		start = end;
 	}
 
+	if ( mindistout ) *mindistout = mindist;
+
 	LWDEBUGF(3, "Closest segment: %d", seg);
 
 	/*
@@ -949,6 +951,13 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 	else
 	{
 		proj = *p;
+	}
+
+	/* For robustness, force 1 when closest point == endpoint */
+	if ( t >= pa->npoints-1 &&
+		( proj.x == end.x) && (proj.y == end.y) )
+	{
+		return 1;
 	}
 
 	LWDEBUGF(3, "Closest point on segment: %g,%g", proj.x, proj.y);
@@ -971,8 +980,6 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 
 	LWDEBUGF(3, "plen %g, tlen %g", plen, tlen);
 	LWDEBUGF(3, "mindist: %g", mindist);
-
-	if ( mindistout ) *mindistout = mindist;
 
 	return plen/tlen;
 }

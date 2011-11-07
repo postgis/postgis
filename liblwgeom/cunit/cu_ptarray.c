@@ -3,7 +3,9 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2008 Paul Ramsey
+ *
+ * Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2008 Paul Ramsey
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -56,6 +58,38 @@ static void test_ptarray_append_point(void)
 
 static void test_ptarray_append_ptarray(void)
 {
+	/* TODO: add tests here ! */
+}
+
+static void test_ptarray_locate_point(void)
+{
+        LWLINE *line;
+	double loc, dist;
+        POINT2D p;
+
+        line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 4)"));
+
+	p = getPoint2d(line->points, 0);
+	loc = ptarray_locate_point(line->points, &p, &dist);
+	CU_ASSERT_EQUAL(loc, 0);
+	CU_ASSERT_EQUAL(dist, 0.0);
+
+	p = getPoint2d(line->points, 1);
+	loc = ptarray_locate_point(line->points, &p, &dist);
+	CU_ASSERT_EQUAL(loc, 1);
+	CU_ASSERT_EQUAL(dist, 0.0);
+
+	p.x = 21; p.y = 4;
+	loc = ptarray_locate_point(line->points, &p, &dist);
+	CU_ASSERT_EQUAL(loc, 1);
+	CU_ASSERT_EQUAL(dist, 1.0);
+
+	p.x = 0; p.y = 2;
+	loc = ptarray_locate_point(line->points, &p, &dist);
+	CU_ASSERT_EQUAL(loc, 0);
+	CU_ASSERT_EQUAL(dist, 1.0);
+
+	lwline_free(line);
 }
 
 
@@ -66,6 +100,7 @@ CU_TestInfo ptarray_tests[] =
 {
 	PG_TEST(test_ptarray_append_point),
 	PG_TEST(test_ptarray_append_ptarray),
+	PG_TEST(test_ptarray_locate_point),
 	CU_TEST_INFO_NULL
 };
-CU_SuiteInfo ptarray_suite = {"PointArray Suite", NULL, NULL, ptarray_tests };
+CU_SuiteInfo ptarray_suite = {"ptarray", NULL, NULL, ptarray_tests };
