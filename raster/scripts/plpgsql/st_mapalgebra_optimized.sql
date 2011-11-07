@@ -276,7 +276,7 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
         newscalex := rast1scalex; 
         newscaley := rast1scaley;
         newskewx := rast1skewx;
-        newskewy := rast1skewx;
+        newskewy := rast1skewy;
 
         --r1x & r2x are the offset of each rasters relatively to global extent
         r1x := 0;

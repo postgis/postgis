@@ -571,7 +571,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
         newscalex := rast1scalex; 
         newscaley := rast1scaley;
         newskewx := rast1skewx;
-        newskewy := rast1skewx;
+        newskewy := rast1skewy;
 
         --rastoffset is the offset of a raster in relatively to the first raster
         rast2offsetx1 := -st_world2rastercoordx(rast2, rast1ulx, rast1uly) + 1;

@@ -87,7 +87,8 @@ TEST_UTILITY = \
 	rt_utility.sql \
 	create_rt_mapalgebra_test.sql \
 	rt_mapalgebraexpr.sql \
-    rt_mapalgebrafct.sql \
+	rt_mapalgebrafct.sql \
+	rt_mapalgebra2expr.sql \
 	rt_reclass.sql \
 	rt_resample.sql \
 	rt_asraster.sql \

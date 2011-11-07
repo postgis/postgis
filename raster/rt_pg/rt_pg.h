@@ -97,37 +97,6 @@ typedef struct rt_pgband_t {
 
 /* Header of PostgreSQL-stored RASTER value,
  * and binary representation of it */
-typedef struct rt_pgraster_header_t {
-
-    /*---[ 8 byte boundary ]---{ */
-    uint32_t size;    /* required by postgresql: 4 bytes */
-    uint16_t version; /* format version (this is version 0): 2 bytes */
-    uint16_t numBands; /* Number of bands: 2 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double scaleX; /* pixel width: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double scaleY; /* pixel height: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double ipX; /* insertion point X: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double ipY; /* insertion point Y: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double skewX;  /* skew about the X axis: 8 bytes */
-
-    /* }---[ 8 byte boundary ]---{ */
-    double skewY;  /* skew about the Y axis: 8 bytes */
-
-    /* }---[ 8 byte boundary ]--- */
-    int32_t srid; /* Spatial reference id: 4 bytes */
-    uint16_t width;  /* pixel columns: 2 bytes */
-    uint16_t height; /* pixel rows: 2 bytes */
-} rt_pgraster_header;
-
-typedef rt_pgraster_header rt_pgraster;
+typedef struct rt_raster_serialized_t rt_pgraster;
 
 #endif /* RT_PG_H_INCLUDED */

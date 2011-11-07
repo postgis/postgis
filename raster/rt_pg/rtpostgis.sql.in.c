@@ -1661,6 +1661,31 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, userfunction regprocedu
     LANGUAGE SQL;
 
 -----------------------------------------------------------------------
+-- Two Raster ST_MapAlgebra
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_mapalgebra2expr(
+	rast1 raster, band1 integer,
+	rast2 raster, band2 integer,
+	expression text,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL, nodatanodataval double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2Expr'
+	LANGUAGE 'C' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra2expr(
+	rast1 raster,
+	rast2 raster,
+	expression text,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL, nodatanodataval double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT st_mapalgebra2expr($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
+	LANGUAGE 'SQL' IMMUTABLE;
+
+-----------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_isempty(rast raster)
@@ -2676,7 +2701,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 	BEGIN
 		convexhull := ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
-			SELECT bmd.hasnodata INTO hasnodata FROM ST_BandMetaData(rast, nband) bmd;
+			SELECT bmd.hasnodata INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
 		END IF;
 
 		IF ST_Intersects(geom, convexhull) IS NOT TRUE THEN

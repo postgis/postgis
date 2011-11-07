@@ -243,6 +243,12 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS);
 /* determine if two rasters are aligned */
 Datum RASTER_sameAlignment(PG_FUNCTION_ARGS);
 
+/* two-raster MapAlgebra */
+Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS);
+/*
+Datum RASTER_mapAlgebra2Fct(PG_FUNCTION_ARGS);
+*/
+
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
@@ -7955,6 +7961,894 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_BOOL(aligned);
+}
+
+/**
+ * Two raster MapAlgebra
+ */
+PG_FUNCTION_INFO_V1(RASTER_mapAlgebra2Expr);
+Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS)
+{
+	const int set_count = 2;
+	rt_pgraster *pgrast;
+	rt_raster rast[2] = {NULL};
+	int _isempty[2] = {0};
+	uint32_t bandindex[2] = {0};
+	rt_raster _rast[2] = {NULL};
+	rt_band _band[2] = {NULL};
+
+	char *pixtypename = NULL;
+	rt_pixtype pixtype = PT_END;
+	char *extenttypename = NULL;
+	rt_extenttype extenttype = ET_INTERSECTION;
+	double nodataval = 0;
+	int _hasnodata[2] = {0};
+	double _nodataval[2] = {0};
+
+	int hasnodatanodataval = 0;
+	double nodatanodataval = 0;
+
+	int spicount = 3;
+	uint16_t exprpos[3] = {4, 7, 8};
+	char *expr = NULL;
+	char *sql = NULL;
+	SPIPlanPtr spiplan[3] = {NULL};
+	uint16_t spiempty = 0;
+	Oid *argtype = NULL;
+	uint32_t argcount[3] = {0};
+	int argexists[3][2] = {{0}};
+	Datum *values = NULL;
+	bool *nulls = NULL;
+	TupleDesc tupdesc;
+	SPITupleTable *tuptable = NULL;
+	HeapTuple tuple;
+	Datum pixeldatum;
+	bool isnull = FALSE;
+
+	double _rastoffset[2][4] = {{0.}};
+	int _haspixel[2] = {0};
+	double _pixel[2] = {0};
+	uint16_t _dim[2][2] = {{0}};
+
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	uint16_t dim[2] = {0};
+	int haspixel = 0;
+	double pixel = 0.;
+
+	uint32_t i = 0;
+	uint32_t j = 0;
+	uint32_t k = 0;
+	uint32_t x = 0;
+	uint32_t y = 0;
+	int _x = 0;
+	int _y = 0;
+	int err;
+	double gt[6] = {0.};
+	int aligned;
+	int len;
+
+	POSTGIS_RT_DEBUG(3, "Starting RASTER_mapAlgebra2Expr");
+
+	for (i = 0, j = 0; i < set_count; i++) {
+		if (!PG_ARGISNULL(j)) {
+			pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(j));
+			j++;
+
+			/* raster */
+			rast[i] = rt_raster_deserialize(pgrast, FALSE);
+			if (!rast[i]) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Could not deserialize the %s raster", i < 1 ? "first" : "second");
+				for (k = 0; k < i; k++) {
+					if (rast[k] != NULL) rt_raster_destroy(rast[k]);
+				}
+				PG_RETURN_NULL();
+			}
+
+			/* empty */
+			_isempty[i] = rt_raster_is_empty(rast[i]);
+
+			/* band index */
+			if (!PG_ARGISNULL(j)) {
+				bandindex[i] = PG_GETARG_INT32(j);
+			}
+			j++;
+		}
+		else {
+			_isempty[i] = 1;
+			j += 2;
+		}
+
+		POSTGIS_RT_DEBUGF(3, "_isempty[%d] = %d", i, _isempty[i]);
+	}
+
+	/* both rasters are NULL */
+	if (rast[0] == NULL && rast[1] == NULL) {
+		elog(NOTICE, "The two rasters provided are NULL.  Returning NULL");
+		PG_RETURN_NULL();
+	}
+
+	/* both rasters are empty */
+	if (_isempty[0] && _isempty[1]) {
+		elog(NOTICE, "The two rasters provided are empty.  Returning empty raster");
+
+		raster = rt_raster_new(0, 0);
+		if (raster == NULL) {
+			elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create empty raster");
+			for (k = 0; k < i; k++) {
+				if (rast[k] != NULL) rt_raster_destroy(rast[k]);
+			}
+			PG_RETURN_NULL();
+		}
+		rt_raster_set_scale(raster, 0, 0);
+
+		pgrast = rt_raster_serialize(raster);
+		rt_raster_destroy(raster);
+		if (!pgrast) PG_RETURN_NULL();
+
+		SET_VARSIZE(pgrast, pgrast->size);
+		PG_RETURN_POINTER(pgrast);
+	}
+
+	/* replace the empty or NULL raster with one matching the other */
+	if (
+		(rast[0] == NULL || _isempty[0]) ||
+		(rast[1] == NULL || _isempty[1])
+	) {
+		if (rast[0] == NULL || _isempty[0]) {
+			i = 0;
+			j = 1;
+		}
+		else {
+			i = 1;
+			j = 0;
+		}
+
+		_rast[j] = rast[j];
+
+		/* raster is empty, destroy it */
+		if (_rast[i] != NULL)
+			rt_raster_destroy(_rast[i]);
+
+		_dim[i][0] = rt_raster_get_width(_rast[j]);
+		_dim[i][1] = rt_raster_get_height(_rast[j]);
+		_dim[j][0] = rt_raster_get_width(_rast[j]);
+		_dim[j][1] = rt_raster_get_height(_rast[j]);
+
+		_rast[i] = rt_raster_new(
+			_dim[j][0],
+			_dim[j][1]
+		);
+		if (_rast[i] == NULL) {
+			elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create nodata raster");
+			rt_raster_destroy(_rast[j]);
+			PG_RETURN_NULL();
+		}
+		rt_raster_set_srid(_rast[i], rt_raster_get_srid(_rast[j]));
+
+		rt_raster_get_geotransform_matrix(_rast[j], gt);
+		rt_raster_set_geotransform_matrix(_rast[i], gt);
+
+	}
+	else {
+		_rast[0] = rast[0];
+		_dim[0][0] = rt_raster_get_width(_rast[0]);
+		_dim[0][1] = rt_raster_get_height(_rast[0]);
+
+		_rast[1] = rast[1];
+		_dim[1][0] = rt_raster_get_width(_rast[1]);
+		_dim[1][1] = rt_raster_get_height(_rast[1]);
+	}
+
+	/* SRID must match */
+	if (rt_raster_get_srid(_rast[0]) != rt_raster_get_srid(_rast[1])) {
+		elog(NOTICE, "The two rasters provided have different SRIDs.  Returning NULL");
+		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		PG_RETURN_NULL();
+	}
+
+	/* same alignment */
+	err = rt_raster_same_alignment(_rast[0], _rast[1], &aligned);
+	if (!err) {
+		elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to test for alignment on the two rasters");
+		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		PG_RETURN_NULL();
+	}
+	if (!aligned) {
+		elog(NOTICE, "The two rasters provided do not have the same alignment.  Returning NULL");
+		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		PG_RETURN_NULL();
+	}
+
+	/* pixel type */
+	if (!PG_ARGISNULL(5)) {
+		pixtypename = text_to_cstring(PG_GETARG_TEXT_P(5));
+		/* Get the pixel type index */
+		pixtype = rt_pixtype_index_from_name(pixtypename);
+		if (pixtype == PT_END ) {
+			elog(ERROR, "RASTER_mapAlgebra2Expr: Invalid pixel type: %s", pixtypename);
+			for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+			PG_RETURN_NULL();
+		}
+	}
+
+	/* extent type */
+	if (!PG_ARGISNULL(6)) {
+		extenttypename = strtoupper(trim(text_to_cstring(PG_GETARG_TEXT_P(6))));
+		extenttype = rt_util_extent_type(extenttypename);
+	}
+
+	/* get raster offsets */
+	if (!rt_raster_geopoint_to_cell(
+		_rast[1],
+		rt_raster_get_x_offset(_rast[0]), rt_raster_get_y_offset(_rast[0]),
+		&(_rastoffset[1][0]), &(_rastoffset[1][1]),
+		NULL
+	)) {
+		elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to compute offsets of the second raster relative to the first raster");
+		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		PG_RETURN_NULL();
+	}
+	_rastoffset[1][0] = -1 * _rastoffset[1][0];
+	_rastoffset[1][1] = -1 * _rastoffset[1][1];
+	_rastoffset[1][2] = _rastoffset[1][0] + _dim[1][0] - 1;
+	_rastoffset[1][3] = _rastoffset[1][1] + _dim[1][1] - 1;
+
+	i = 2;
+	POSTGIS_RT_DEBUGF(3, "extenttype: %d %s", extenttype, extenttypename);
+	switch (extenttype) {
+		case ET_FIRST:
+			i = 0;
+			_rastoffset[0][0] = 0.;
+			_rastoffset[0][1] = 0.;
+		case ET_SECOND:
+			if (i > 1) {
+				i = 1;
+				_rastoffset[0][0] = -1 * _rastoffset[1][0];
+				_rastoffset[0][1] = -1 * _rastoffset[1][1];
+				_rastoffset[1][0] = 0.;
+				_rastoffset[1][1] = 0.;
+			}
+
+			if (
+				_isempty[i] && (
+					(extenttype == ET_FIRST && i == 0) ||
+					(extenttype == ET_SECOND && i == 1)
+				)
+			) {
+				elog(NOTICE, "The %s raster is NULL.  Returning NULL", (i != 1 ? "FIRST" : "SECOND"));
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				PG_RETURN_NULL();
+			}
+
+			dim[0] = _dim[i][0];
+			dim[1] = _dim[i][1];
+			raster = rt_raster_new(
+				dim[0],
+				dim[1]
+			);
+			if (raster == NULL) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create output raster");
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				PG_RETURN_NULL();
+			}
+			rt_raster_set_srid(raster, rt_raster_get_srid(_rast[i]));
+			rt_raster_get_geotransform_matrix(_rast[i], gt);
+			rt_raster_set_geotransform_matrix(raster, gt);
+
+			/* specified band not found */
+			if (rt_raster_has_no_band(_rast[i], bandindex[i] - 1)) {
+				elog(NOTICE, "The %s raster does not have the band at index %d.  Returning no band raster of correct extent",
+					(i != 1 ? "FIRST" : "SECOND"), bandindex[i]
+				);
+
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+
+				pgrast = rt_raster_serialize(raster);
+				rt_raster_destroy(raster);
+				if (!pgrast) PG_RETURN_NULL();
+
+				SET_VARSIZE(pgrast, pgrast->size);
+				PG_RETURN_POINTER(pgrast);
+			}
+			break;
+		case ET_UNION: {
+			double ip[2] = {0};
+			double offset[4] = {0};
+
+			rt_raster_get_geotransform_matrix(_rast[0], gt);
+
+			/* new upper-left */
+			ip[0] = rt_raster_get_x_offset(_rast[1]);
+			ip[1] = rt_raster_get_y_offset(_rast[1]);
+			if (ip[0] < gt[0])
+				gt[0] = ip[0];
+			if (ip[1] < gt[3])
+				gt[3] = ip[1];
+
+			/* new width and height */
+			offset[0] = 0;
+			if (_rastoffset[1][0] < 0)
+				offset[0] = _rastoffset[1][0];
+			offset[1] = 0;
+			if (_rastoffset[1][1] < 0)
+				offset[1] = _rastoffset[1][1];
+
+			offset[2] = _dim[0][0] - 1;
+			if ((int) _rastoffset[1][2] >= _dim[0][0])
+				offset[2] = _rastoffset[1][2];
+			offset[3] = _dim[0][1] - 1;
+			if ((int) _rastoffset[1][3] >= _dim[0][1])
+				offset[3] = _rastoffset[1][3];
+
+			dim[0] = offset[2] - offset[0] + 1;
+			dim[1] = offset[3] - offset[1] + 1;
+
+			raster = rt_raster_new(
+				dim[0],
+				dim[1]
+			);
+			if (raster == NULL) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create output raster");
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				PG_RETURN_NULL();
+			}
+			rt_raster_set_srid(raster, rt_raster_get_srid(_rast[0]));
+			rt_raster_set_geotransform_matrix(raster, gt);
+
+			if (!rt_raster_geopoint_to_cell(
+				_rast[0],
+				gt[0], gt[3],
+				&(_rastoffset[0][0]), &(_rastoffset[0][1]),
+				NULL
+			)) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get offsets of the FIRST raster relative to the output raster");
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+			_rastoffset[0][0] *= -1;
+			_rastoffset[0][1] *= -1;
+
+			if (!rt_raster_geopoint_to_cell(
+				_rast[1],
+				gt[0], gt[3],
+				&(_rastoffset[1][0]), &(_rastoffset[1][1]),
+				NULL
+			)) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get offsets of the SECOND raster relative to the output raster");
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+			_rastoffset[1][0] *= -1;
+			_rastoffset[1][1] *= -1;
+
+		}	break;
+		case ET_INTERSECTION: {
+			double offset[4] = {0};
+			double ip[2] = {0};
+
+			/* no intersection */
+			if (
+				_isempty[0] ||
+				_isempty[1] ||
+				(_rastoffset[1][2] < 0 || _rastoffset[1][0] > (_dim[0][0] - 1)) ||
+				(_rastoffset[1][3] < 0 || _rastoffset[1][1] > (_dim[0][1] - 1))
+			) {
+				elog(NOTICE, "The two rasters provided have no intersection.  Returning no band raster");
+
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+
+				raster = rt_raster_new(0, 0);
+				rt_raster_set_scale(raster, 0, 0);
+				rt_raster_set_srid(raster, rt_raster_get_srid(_rast[0]));
+
+				pgrast = rt_raster_serialize(raster);
+				rt_raster_destroy(raster);
+				if (!pgrast) PG_RETURN_NULL();
+
+				SET_VARSIZE(pgrast, pgrast->size);
+				PG_RETURN_POINTER(pgrast);
+			}
+
+			if (_rastoffset[1][0] > 0)
+				offset[0] = _rastoffset[1][0];
+			if (_rastoffset[1][1] > 0)
+				offset[1] = _rastoffset[1][1];
+
+			offset[2] = _dim[0][0] - 1;
+			if (_rastoffset[1][2] < _dim[0][0])
+				offset[2] = _rastoffset[1][2];
+			offset[3] = _dim[0][1] - 1;
+			if (_rastoffset[1][3] < _dim[0][1])
+				offset[3] = _rastoffset[1][3];
+
+			dim[0] = offset[2] - offset[0] + 1;
+			dim[1] = offset[3] - offset[1] + 1;
+			raster = rt_raster_new(
+				dim[0],
+				dim[1]
+			);
+			if (raster == NULL) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create output raster");
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				PG_RETURN_NULL();
+			}
+			rt_raster_set_srid(raster, rt_raster_get_srid(_rast[0]));
+
+			rt_raster_get_geotransform_matrix(_rast[0], gt);
+			if (!rt_raster_cell_to_geopoint(
+				_rast[0],
+				offset[0], offset[1],
+				&(ip[0]), &(ip[1]),
+				gt
+			)) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get spatial coordinates of upper-left pixel of output raster");
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+
+			gt[0] = ip[0];
+			gt[3] = ip[1];
+			rt_raster_set_geotransform_matrix(raster, gt);
+
+			if (!rt_raster_geopoint_to_cell(
+				_rast[0],
+				gt[0], gt[3],
+				&(_rastoffset[0][0]), &(_rastoffset[0][1]),
+				NULL
+			)) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get pixel coordinates to compute the offsets of the FIRST raster relative to the output raster");
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+			_rastoffset[0][0] *= -1;
+			_rastoffset[0][1] *= -1;
+
+			if (!rt_raster_geopoint_to_cell(
+				_rast[1],
+				gt[0], gt[3],
+				&(_rastoffset[1][0]), &(_rastoffset[1][1]),
+				NULL
+			)) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get pixel coordinates to compute the offsets of the SECOND raster relative to the output raster");
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+			_rastoffset[1][0] *= -1;
+			_rastoffset[1][1] *= -1;
+
+		}	break;
+	}
+
+	/* both rasters do not have specified bands */
+	if (
+		(!_isempty[0] && rt_raster_has_no_band(_rast[0], bandindex[0] - 1)) &&
+		(!_isempty[1] && rt_raster_has_no_band(_rast[1], bandindex[1] - 1))
+	) {
+		elog(NOTICE, "The two rasters provided do not have the respectively specified band indices.  Returning no band raster of correct extent");
+
+		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+
+		pgrast = rt_raster_serialize(raster);
+		rt_raster_destroy(raster);
+		if (!pgrast) PG_RETURN_NULL();
+
+		SET_VARSIZE(pgrast, pgrast->size);
+		PG_RETURN_POINTER(pgrast);
+	}
+
+	/* get bands */
+	for (i = 0; i < set_count; i++) {
+		if (_isempty[i] || rt_raster_has_no_band(_rast[i], bandindex[i] - 1)) {
+			_hasnodata[i] = 1;
+			_nodataval[i] = 0;
+
+			continue;
+		}
+
+		_band[i] = rt_raster_get_band(_rast[i], bandindex[i] - 1);
+		if (_band[i] == NULL) {
+			elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get band %d of the %s raster",
+				bandindex[i],
+				(i < 1 ? "FIRST" : "SECOND")
+			);
+			for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+			rt_raster_destroy(raster);
+			PG_RETURN_NULL();
+		}
+
+		_hasnodata[i] = rt_band_get_hasnodata_flag(_band[i]);
+		if (_hasnodata[i])
+			_nodataval[i] = rt_band_get_nodata(_band[i]);
+	}
+
+	/* pixtype is PT_END, get pixtype based upon extent */
+	if (pixtype == PT_END) {
+		if ((extenttype == ET_SECOND && !_isempty[1]) || _isempty[0])
+			pixtype = rt_band_get_pixtype(_band[1]);
+		else
+			pixtype = rt_band_get_pixtype(_band[0]);
+	}
+
+	/* nodata value for new band */
+	if (extenttype == ET_SECOND && !_isempty[1] && _hasnodata[1]) {
+		nodataval = _nodataval[1];
+	}
+	else if (!_isempty[0] && _hasnodata[0]) {
+		nodataval = _nodataval[0];
+	}
+	else if (!_isempty[1] && _hasnodata[1]) {
+		nodataval = _nodataval[1];
+	}
+	else {
+		elog(NOTICE, "Neither raster provided has a NODATA value for the specified band indices.  NODATA value set to minimum possible for %s", rt_pixtype_name(pixtype));
+		nodataval = rt_pixtype_get_min_value(pixtype);
+	}
+
+	/* add band to output raster */
+	if (rt_raster_generate_new_band(
+		raster,
+		pixtype, nodataval,
+		1, nodataval,
+		0
+	) < 0) {
+		elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to add new band to output raster");
+		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	/* get output band */
+	band = rt_raster_get_band(raster, 0);
+	if (band == NULL) {
+		elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get newly added band of output raster");
+		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	POSTGIS_RT_DEBUGF(4, "offsets = (%d, %d, %d, %d)",
+		(int) _rastoffset[0][0],
+		(int) _rastoffset[0][1],
+		(int) _rastoffset[1][0],
+		(int) _rastoffset[1][1]
+	);
+
+	POSTGIS_RT_DEBUGF(4, "metadata = (%f, %f, %d, %d, %f, %f, %f, %f, %d)",
+		rt_raster_get_x_offset(raster),
+		rt_raster_get_y_offset(raster),
+		rt_raster_get_width(raster),
+		rt_raster_get_height(raster),
+		rt_raster_get_x_scale(raster),
+		rt_raster_get_y_scale(raster),
+		rt_raster_get_x_skew(raster),
+		rt_raster_get_y_skew(raster),
+		rt_raster_get_srid(raster)
+	);
+
+	POSTGIS_RT_DEBUGF(4, "bandmetadata = (%s, %d, %f)",
+		rt_pixtype_name(rt_band_get_pixtype(band)),
+		rt_band_get_hasnodata_flag(band),
+		rt_band_get_nodata(band)
+	);
+
+	/* connect SPI */
+	if (SPI_connect() != SPI_OK_CONNECT) {
+		elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to connect to the SPI manager");
+		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	/*
+		process expressions
+
+		exprpos elements are:
+			4 - expression => spiplan[0]
+			7 - nodata1expr => spiplan[1]
+			8 - nodata2expr => spiplan[2]
+	*/
+	for (i = 0; i < spicount; i++) {
+		if (!PG_ARGISNULL(exprpos[i])) {
+			expr = strtoupper(text_to_cstring(PG_GETARG_TEXT_P(exprpos[i])));
+			POSTGIS_RT_DEBUGF(3, "raw expr #%d: %s", i, expr);
+			len = strlen(expr);
+			expr = replace(expr, "RAST1", "$1", NULL);
+			if (strlen(expr) != len) {
+				argcount[i]++;
+				argexists[i][0] = 1;
+			}
+			len = strlen(expr);
+			expr = replace(expr, "RAST2", (argexists[i][0] ? "$2" : "$1"), NULL);
+			if (strlen(expr) != len) {
+				argcount[i]++;
+				argexists[i][1] = 1;
+			}
+
+			len = strlen("SELECT (") + strlen(expr) + strlen(")::double precision");
+			sql = (char *) palloc(len + 1);
+			if (sql == NULL) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to allocate memory for expression parameter %d", exprpos[i]);
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
+				for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+
+			strncpy(sql, "SELECT (", strlen("SELECT ("));
+			strncpy(sql + strlen("SELECT ("), expr, strlen(expr));
+			strncpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
+			sql[len] = '\0';
+
+			POSTGIS_RT_DEBUGF(3, "sql #%d: %s", i, sql);
+
+			/* create prepared plan */
+			argtype = (Oid *) palloc(argcount[i] * sizeof(Oid));
+			if (argtype == NULL) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to allocate memory for prepared plan argtypes of expression parameter %d", exprpos[i]);
+
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
+
+				for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+				SPI_finish();
+
+				pfree(sql);
+
+				PG_RETURN_NULL();
+			}
+			for (j = 0; j < argcount[i]; j++) argtype[j] = FLOAT8OID;
+
+			spiplan[i] = SPI_prepare(sql, argcount[i], argtype);
+			if (spiplan[i] == NULL) {
+				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create prepared plan of expression parameter %d", exprpos[i]);
+
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
+
+				for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+				SPI_finish();
+
+				pfree(sql);
+				pfree(argtype);
+
+				PG_RETURN_NULL();
+			}
+
+			pfree(sql);
+			pfree(argtype);
+		}
+		else
+			spiempty++;
+	}
+
+	/* nodatanodataval */
+	if (!PG_ARGISNULL(9)) {
+		hasnodatanodataval = 1;
+		nodatanodataval = PG_GETARG_FLOAT8(9);
+	}
+	else
+		hasnodatanodataval = 0;
+
+	/* loop over pixels */
+	/* if spiempty == 4, no need to do this */
+	if (spiempty != 4) {
+		for (x = 0; x < dim[0]; x++) {
+			for (y = 0; y < dim[1]; y++) {
+
+				/* get pixel from each raster */
+				for (i = 0; i < set_count; i++) {
+					_haspixel[i] = 0;
+					_pixel[i] = 0;
+
+					/* row/column */
+					_x = x - (int) _rastoffset[i][0];
+					_y = y - (int) _rastoffset[i][1];
+
+					/* get pixel value */
+					if (
+						!_isempty[i] &&
+						(_x >= 0 && _x < _dim[i][0]) &&
+						(_y >= 0 && _y < _dim[i][1])
+					) {
+						err = rt_band_get_pixel(_band[i], _x, _y, &(_pixel[i]));
+						if (err < 0) {
+							elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get pixel of %s raster", (i < 1 ? "FIRST" : "SECOND"));
+
+							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+							rt_raster_destroy(raster);
+
+							for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+							SPI_finish();
+
+							PG_RETURN_NULL();
+						}
+						if (!_hasnodata[i] || FLT_NEQ(_nodataval[i], _pixel[i]))
+							_haspixel[i] = 1;
+					}
+
+					POSTGIS_RT_DEBUGF(5, "r%d(%d, %d) = %d, %f",
+						i,
+						_x,
+						_y,
+						_haspixel[i],
+						_pixel[i]
+					);
+				}
+
+				haspixel = 0;
+
+				/* which prepared plan to use? */
+				/* !pixel0 && !pixel1 */
+				/* use nodatanodataval */
+				if (!_haspixel[0] && !_haspixel[1])
+					i = 3;
+				/* pixel0 && !pixel1 */
+				/* run spiplan[2] (nodata2expr) */
+				else if (_haspixel[0] && !_haspixel[1])
+					i = 2;
+				/* !pixel0 && pixel1 */
+				/* run spiplan[1] (nodata1expr) */
+				else if (!_haspixel[0] && _haspixel[1])
+					i = 1;
+				/* pixel0 && pixel1 */
+				/* run spiplan[0] (expression) */
+				else
+					i = 0;
+
+				/* process values */
+				if (i == 3) {
+					if (hasnodatanodataval) {
+						haspixel = 1;
+						pixel = nodatanodataval;
+					}
+				}
+				else if (spiplan[i] != NULL) {
+					POSTGIS_RT_DEBUGF(5, "Using prepared plan: %d", i);
+
+					/* expression has argument(s) */
+					if (argcount[i]) {
+						values = (Datum *) palloc(sizeof(Datum) * argcount[i]);
+						if (values == NULL) {
+							elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to allocate memory for value parameters of prepared statement %d", i);
+
+							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+							rt_raster_destroy(raster);
+
+							for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+							SPI_finish();
+
+							PG_RETURN_NULL();
+						}
+
+						nulls = (bool *) palloc(sizeof(bool) * argcount[i]);
+						if (nulls == NULL) {
+							elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to allocate memory for NULL parameters of prepared statement %d", i);
+
+							pfree(values);
+
+							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+							rt_raster_destroy(raster);
+
+							for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+							SPI_finish();
+
+							PG_RETURN_NULL();
+						}
+						memset(nulls, FALSE, argcount[i]);
+
+						/* two arguments */
+						if (argcount[i] > 1) {
+							for (j = 0; j < argcount[i]; j++) {
+								if (_isempty[j] || !_haspixel[j])
+									nulls[j] = TRUE;
+								else
+									values[j] = Float8GetDatum(_pixel[j]);
+							}
+						}
+						/* only one argument */
+						else {
+							if (argexists[i][0])
+								j = 0;
+							else
+								j = 1;
+
+							if (_isempty[j] || !_haspixel[j]) {
+								POSTGIS_RT_DEBUG(5, "using null");
+								nulls[0] = TRUE;
+							}
+							else {
+								POSTGIS_RT_DEBUGF(5, "using value %f", _pixel[j]);
+								values[0] = Float8GetDatum(_pixel[j]);
+							}
+						}
+					}
+
+					/* run prepared plan */
+					err = SPI_execute_plan(spiplan[i], values, nulls, TRUE, 1);
+					if (values != NULL) pfree(values);
+					if (nulls != NULL) pfree(nulls);
+					if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+						elog(ERROR, "RASTER_mapAlgebra2Expr: Unexpected error when running prepared statement %d", i);
+
+						for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+						rt_raster_destroy(raster);
+
+						for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+						SPI_finish();
+
+						PG_RETURN_NULL();
+					}
+
+					/* get output of prepared plan */
+					tupdesc = SPI_tuptable->tupdesc;
+					tuptable = SPI_tuptable;
+					tuple = tuptable->vals[0];
+
+					pixeldatum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+					if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
+						elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get result of prepared statement %d", i);
+
+						for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+						rt_raster_destroy(raster);
+
+						if (SPI_tuptable) SPI_freetuptable(tuptable);
+						for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+						SPI_finish();
+
+						PG_RETURN_NULL();
+					}
+
+					if (!isnull) {
+						haspixel = 1;
+						pixel = DatumGetFloat8(pixeldatum);
+					}
+
+					if (SPI_tuptable) SPI_freetuptable(tuptable);
+				}
+
+				/* burn pixel if haspixel != 0 */
+				if (haspixel) {
+					if (rt_band_set_pixel(band, x, y, pixel) < 0) {
+						elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to set pixel value of output raster");
+
+						for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+						rt_raster_destroy(raster);
+
+						for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+						SPI_finish();
+
+						PG_RETURN_NULL();
+					}
+				}
+
+				POSTGIS_RT_DEBUGF(5, "(x, y, val) = (%d, %d, %f)", x, y, haspixel ? pixel : nodataval);
+			}
+		}
+	}
+
+	/* CLEANUP */
+	for (i = 0; i < spicount; i++) {
+		if (spiplan[i] != NULL) SPI_freeplan(spiplan[i]);
+	}
+	SPI_finish();
+
+	for (k = 0; k < set_count; k++) {
+		if (_rast[k] != NULL) rt_raster_destroy(_rast[k]);
+	}
+
+	pgrast = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (!pgrast) PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrast, pgrast->size);
+	PG_RETURN_POINTER(pgrast);
 }
 
 /* ---------------------------------------------------------------- */
