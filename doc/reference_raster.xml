@@ -3483,7 +3483,7 @@ WHERE rid = 2;
 		<refentry id="RT_ST_Resample">
 			<refnamediv>
 				<refname>ST_Resample</refname>
-				<refpurpose>Warps a raster in a known spatial reference system using a specified resampling algorithm and reference raster.  The new raster will have the same srid, skew and dimensions as the reference.
+				<refpurpose>Warps a raster in a known spatial reference system using a specified resampling algorithm and set of raster attributes or reference raster.  If using a reference raster, the new raster will have the same srid, skew, scale and alignment.
 				    Uses NearestNeighbor if no algorithm is specified Options: NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline, Lanczos.</refpurpose>
 			</refnamediv>
 		
