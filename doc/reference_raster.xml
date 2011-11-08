@@ -5270,7 +5270,7 @@ WHERE rid=167;
 		<refentry id="RT_ST_MapAlgebraExpr2">
 			<refnamediv>
 				<refname>ST_MapAlgebraExpr</refname>
-				<refpurpose>2 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the 2 input raster bands and of pixeltype provided.  band 1 of each raster is assumed if no band numbers are specified.</refpurpose>
+				<refpurpose>2 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the 2 input raster bands and of pixeltype provided.  band 1 of each raster is assumed if no band numbers are specified. The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the "extenttype" parameter. Values for "extenttype" can be: INTERSECTION, UNION, FIRST, SECOND</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5307,12 +5307,45 @@ WHERE rid=167;
 				<title>Description</title>
 				
 				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation to the 2 bands defined by the <varname>expression</varname> on the 2 input raster bands (<varname>rast1</varname>, (<varname>rast2</varname>). If no <varname>band1</varname>,  <varname>band2</varname> is specified band 1 is assumed. 
-				The new raster will have the same georeference, width, and height as the original  <varname>rast1</varname> but will only have one band.</para>
+				The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the "extenttype" parameter. Values for <varname>extenttype</varname>:</para>
+				<variablelist>
+					<varlistentry>
+						<term>INTERSECTION</term>
+						<listitem>
+							<para>
+								The extent of the new raster is the intersection of the two rasters. This is the default.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>UNION</term>
+						<listitem>
+							<para>
+								The extent of the new raster is the union of the two rasters.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>FIRST</term>
+						<listitem>
+							<para>
+								The extent of the new raster is the  same as the one of the first raster.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>SECOND</term>
+						<listitem>
+							<para>
+								The extent of the new raster is the  same as the one of the second raster.
+							</para>
+						</listitem>
+					</varlistentry>
+				</variablelist>
         
                  <para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If pixeltype is passed NULL or no pixel type specified, then the new raster band will have the same pixeltype as the input <varname>rast1</varname> band.</para>
                  <para>Use the term <varname>rast1</varname>  <varname>rast2</varname> to refer to the pixel value of the original raster bands.</para>
-                 
-                 <para><varname>extenttype</varname> defines the type of overlaying operation.  Overlay defaults to INTERSECTION, but UNION is also supported.</para>
+              
 			
                  <para>Availability: 2.0.0 </para>
              </refsection>
