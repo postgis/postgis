@@ -954,7 +954,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 	}
 
 	/* For robustness, force 1 when closest point == endpoint */
-	if ( t >= pa->npoints-1 &&
+	if ( seg >= pa->npoints-1 &&
 		( proj.x == end.x) && (proj.y == end.y) )
 	{
 		return 1;
