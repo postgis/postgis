@@ -3045,12 +3045,12 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( box2.xmax != box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmin != box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax != box1.ymax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin != box2.ymin ) PG_RETURN_BOOL(FALSE);
+		if ( FP_NEQUALS(box2.xmax, box1.xmax) ) PG_RETURN_BOOL(FALSE);
+		if ( FP_NEQUALS(box2.xmin, box1.xmin) ) PG_RETURN_BOOL(FALSE);
+		if ( FP_NEQUALS(box2.ymax, box1.ymax) ) PG_RETURN_BOOL(FALSE);
+		if ( FP_NEQUALS(box2.ymin, box1.ymin) ) PG_RETURN_BOOL(FALSE);
 	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
