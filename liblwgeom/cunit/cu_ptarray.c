@@ -90,6 +90,22 @@ static void test_ptarray_locate_point(void)
 	CU_ASSERT_EQUAL(dist, 1.0);
 
 	lwline_free(line);
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,20 0,40 0)"));
+
+	p.x = 20; p.y = 0;
+	loc = ptarray_locate_point(line->points, &p, &dist);
+	CU_ASSERT_EQUAL(loc, 0.5);
+	CU_ASSERT_EQUAL(dist, 0.0);
+
+	lwline_free(line);
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-40 0,0 0,20 0,40 0)"));
+
+	p.x = 20; p.y = 0;
+	loc = ptarray_locate_point(line->points, &p, &dist);
+	CU_ASSERT_EQUAL(loc, 0.75);
+	CU_ASSERT_EQUAL(dist, 0.0);
+
+	lwline_free(line);
 }
 
 

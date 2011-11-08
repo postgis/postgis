@@ -13,6 +13,8 @@
 #include <string.h>
 
 #include "liblwgeom_internal.h"
+
+/*#define POSTGIS_DEBUG_LEVEL 4*/
 #include "lwgeom_log.h"
 
 /*
@@ -929,7 +931,11 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 			seg=t-1;
 		}
 
-		if ( mindist == 0 ) break;
+		if ( mindist == 0 )
+		{
+			LWDEBUG(3, "Breaking on mindist=0");
+			break;
+		}
 
 		start = end;
 	}
@@ -937,6 +943,7 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 	if ( mindistout ) *mindistout = mindist;
 
 	LWDEBUGF(3, "Closest segment: %d", seg);
+	LWDEBUGF(3, "mindist: %g", mindist);
 
 	/*
 	 * If mindist is not 0 we need to project the
@@ -953,8 +960,10 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 		proj = *p;
 	}
 
+	LWDEBUGF(3, "Closest segment:%d, npoints:%d", seg, pa->npoints);
+
 	/* For robustness, force 1 when closest point == endpoint */
-	if ( seg >= pa->npoints-1 &&
+	if ( seg >= (pa->npoints-2) &&
 		( proj.x == end.x) && (proj.y == end.y) )
 	{
 		return 1;
@@ -979,7 +988,6 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 	plen+=distance2d_pt_pt(&proj, &start);
 
 	LWDEBUGF(3, "plen %g, tlen %g", plen, tlen);
-	LWDEBUGF(3, "mindist: %g", mindist);
 
 	return plen/tlen;
 }
