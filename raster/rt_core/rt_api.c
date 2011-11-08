@@ -7829,7 +7829,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		if (FLT_NEQ(grid_shift_yw, 0.) && FLT_NEQ(grid_shift_yw, _scale_y)) {
 			grid_max_y = src_env.MaxY + grid_shift_yw;
 			grid_max_y = modf(fabs(*grid_yw - grid_max_y) / _scale_y, &djunk);
-			if (FLT_NEQ(grid_max_y, 0.))
+			if (FLT_NEQ(grid_max_y, 0.) && FLT_NEQ(grid_max_y, 1.))
 				grid_shift_yw = _scale_y - fabs(grid_shift_yw);
 			grid_max_y = src_env.MaxY + grid_shift_yw;
 
