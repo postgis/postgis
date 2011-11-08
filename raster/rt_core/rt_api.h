@@ -1230,7 +1230,7 @@ rt_util_extent_type(const char *name);
 /*
 	helper macro for symmetrical rounding
 */
-#define ROUND(x, y) (((x > 0.0) ? floor((x * pow(10, y) + 0.5)) : ceil((x * pow(10, y) - 0.5))) / pow(10, y));
+#define ROUND(x, y) (((x > 0.0) ? floor((x * pow(10, y) + 0.5)) : ceil((x * pow(10, y) - 0.5))) / pow(10, y))
 
 /**
  * Struct definitions

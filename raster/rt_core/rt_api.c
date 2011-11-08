@@ -4132,7 +4132,7 @@ rt_raster_cell_to_geopoint(rt_raster raster,
 	}
 
 	GDALApplyGeoTransform(_gt, xr, yr, xw, yw);
-	RASTER_DEBUGF(4, "GDALApplyGeoTransform for (%f, %f) = (%f, %f)",
+	RASTER_DEBUGF(4, "GDALApplyGeoTransform (c -> g) for (%f, %f) = (%f, %f)",
 		xr, yr, *xw, *yw);
 
 	if (init_gt) rtdealloc(_gt);
@@ -4160,6 +4160,7 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 	double *_igt = NULL;
 	int i = 0;
 	int init_igt = 0;
+	double rnd = 0;
 
 	assert(NULL != raster);
 	assert(NULL != xr);
@@ -4200,10 +4201,22 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 	}
 
 	GDALApplyGeoTransform(_igt, xw, yw, xr, yr);
-	*xr = floor(*xr);
-	*yr = floor(*yr);
+	RASTER_DEBUGF(4, "GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
+		xw, yw, *xr, *yr);
 
-	RASTER_DEBUGF(4, "GDALApplyGeoTransform for (%f, %f) = (%f, %f)",
+	rnd = ROUND(*xr, 0);
+	if (FLT_EQ(rnd, *xr))
+		*xr = rnd;
+	else
+		*xr = floor(*xr);
+
+	rnd = ROUND(*yr, 0);
+	if (FLT_EQ(rnd, *yr))
+		*yr = rnd;
+	else
+		*yr = floor(*yr);
+
+	RASTER_DEBUGF(4, "GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
 		xw, yw, *xr, *yr);
 
 	if (init_igt) rtdealloc(_igt);
@@ -8838,13 +8851,19 @@ rt_raster_same_alignment(
 		return 0;
 	}
 
+	RASTER_DEBUGF(4, "rast1(ipX, ipxY) = (%f, %f)", rast1->ipX, rast1->ipY);
+	RASTER_DEBUGF(4, "rast2(xr, yr) = (%f, %f)", xr, yr);
+	RASTER_DEBUGF(4, "rast2(xw, yw) = (%f, %f)", xw, yw);
+
 	/* spatial coordinates are identical to that of first raster's upper-left corner */
 	if (FLT_EQ(xw, rast1->ipX) && FLT_EQ(yw, rast1->ipY)) {
+		RASTER_DEBUG(3, "The two rasters are aligned");
 		*aligned = 1;
 		return 1;
 	}
 
 	/* no alignment */
+	RASTER_DEBUG(3, "The two rasters are NOT aligned");
 	*aligned = 0;
 	return 1;
 }
