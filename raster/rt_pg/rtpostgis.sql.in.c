@@ -1663,7 +1663,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, userfunction regprocedu
 -----------------------------------------------------------------------
 -- Two Raster ST_MapAlgebra
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_mapalgebra2expr(
+CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 	rast1 raster, band1 integer,
 	rast2 raster, band2 integer,
 	expression text,
@@ -1674,7 +1674,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra2expr(
 	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2Expr'
 	LANGUAGE 'C' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_mapalgebra2expr(
+CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 	rast1 raster,
 	rast2 raster,
 	expression text,
@@ -1682,7 +1682,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebra2expr(
 	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL, nodatanodataval double precision DEFAULT NULL
 )
 	RETURNS raster
-	AS $$ SELECT st_mapalgebra2expr($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
+	AS $$ SELECT st_mapalgebraexpr($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -----------------------------------------------------------------------

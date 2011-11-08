@@ -15,7 +15,7 @@ SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(rast, 1, NULL, 'rast + 2
 
 -- Test 'rast' expression
 SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(rast, 1, NULL, 'rast', 2), 1, 1) FROM ST_TestRaster(0, 0, -1) rast;
-SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(ST_SetBandNoDataValue(rast, NULL), 1, NULL, 'rast', NULL), 1, 1) FROM ST_TestRaster(0, 0, -1) rast;
+SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(ST_SetBandNoDataValue(rast, NULL), 1, NULL, 'rast'), 1, 1) FROM ST_TestRaster(0, 0, -1) rast;
 
 -- Test pixeltype
 SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(rast, 1, '4BUI', 'rast + 20', 2), 1, 1) FROM ST_TestRaster(0, 0, 100) rast;
