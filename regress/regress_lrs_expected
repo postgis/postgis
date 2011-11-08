@@ -15,9 +15,9 @@ LINEZM_3|LINESTRING(0 8 80 2,0 0 0 10,8 0 0 2)
 LINEZM_4|GEOMETRYCOLLECTION(LINESTRING(0 9 90 2,0 1 10 18),LINESTRING(1 0 0 18,9 0 0 2))
 LINEZM_5|GEOMETRYCOLLECTION(LINESTRING(0 9 90 2,0 1 10 18),LINESTRING(5.5 4.5 4.5 18,9.5 0.5 0.5 2))
 LINEZM_6|POINT(9.5 0.5 0.5 2)
-line_locate_point|0.528602749909894
-line_locate_point|1
-line_locate_point|0
+line_locate_point_1|0.528602749909894
+line_locate_point_2|1
+line_locate_point_3|0
 line_substring|SRID=4326;LINESTRING(2 2 2 2,3 3 3 3,3.2 3.2 3.2 3.2)
 line_substring|LINESTRING(2 2 2 2,3 3 3 3)
 line_substring|LINESTRING(0 0,1 1)
