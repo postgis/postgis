@@ -5135,7 +5135,7 @@ WHERE A.rid =2 ) As foo;
 		<refentry id="RT_ST_MapAlgebraExpr">
 			<refnamediv>
 				<refname>ST_MapAlgebraExpr</refname>
-				<refpurpose>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the input raster band and of pixeltype provided.  band 1 is assumed if no band is specified.</refpurpose>
+				<refpurpose>1 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the input raster band and of pixeltype provided.  band 1 is assumed if no band is specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5263,7 +5263,100 @@ WHERE rid=167;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
+				<para><xref linkend="RT_ST_MapAlgebraExpr2" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_MapAlgebraExpr2">
+			<refnamediv>
+				<refname>ST_MapAlgebraExpr</refname>
+				<refpurpose>2 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the 2 input raster bands and of pixeltype provided.  band 1 of each raster is assumed if no band numbers are specified.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>raster <function>ST_MapAlgebraExpr</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+					<paramdef  choice='opt'><type>text </type> <parameter>pixeltype=sames_as_rast1_band</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>dobule precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_MapAlgebraExpr</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band1</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>pixeltype=sames_as_rast1_band</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>dobule precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation to the 2 bands defined by the <varname>expression</varname> on the 2 input raster bands (<varname>rast1</varname>, (<varname>rast2</varname>). If no <varname>band1</varname>,  <varname>band2</varname> is specified band 1 is assumed. 
+				The new raster will have the same georeference, width, and height as the original  <varname>rast1</varname> but will only have one band.</para>
+        
+                 <para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If pixeltype is passed NULL or no pixel type specified, then the new raster band will have the same pixeltype as the input <varname>rast1</varname> band.</para>
+                 <para>Use the term <varname>rast1</varname>  <varname>rast2</varname> to refer to the pixel value of the original raster bands.</para>
+                 
+                 <para><varname>extenttype</varname> defines the type of overlaying operation.  Overlay defaults to INTERSECTION, but UNION is also supported.</para>
+			
+                 <para>Availability: 2.0.0 </para>
+             </refsection>
+				
+             <refsection>
+				<title>Example: 2 Band Intersection</title>
+				
+				<para>Create a new 1 band raster from our original that is  a function of modulo 2 of the original raster band.</para>
+				<programlisting>
+--Create a cool set of rasters --
+CREATE TABLE fun_shapes(rid serial PRIMARY KEY, fun_name text, rast raster);
+
+-- Insert some cool shapes around Boston in Massachusetts state plane meters --
+INSERT INTO fun_shapes(fun_name, rast)
+VALUES ('ref', ST_AsRaster(ST_MakeEnvelope(235229, 899970, 237229, 901930,26986),200,200,'8BUI',0,0));
+
+INSERT INTO fun_shapes(fun_name,rast)
+WITH ref(rast) AS (SELECT rast FROM fun_shapes WHERE fun_name = 'ref' ) 
+SELECT 'area' AS fun_name, ST_AsRaster(ST_Buffer(ST_SetSRID(ST_Point(236229, 900930),26986), 1000), 
+			ref.rast,'8BUI', 118, 0) As rast
+FROM ref
+UNION ALL
+SELECT 'rand bubbles', 
+		 	ST_AsRaster( 
+		 	(SELECT ST_Collect(geom)
+	FROM (SELECT ST_Buffer(ST_SetSRID(ST_Point(236229 + i*random()*100, 900930 + j*random()*100),26986), random()*20) As geom
+			FROM generate_series(1,10) As i, generate_series(1,10) As j
+			) As foo ), ref.rast,'8BUI', 100, 0) 
+FROM ref;
+
+--map them -
+SELECT  st_mapalgebraexpr(
+		area.rast, bub.rast, 'rast1', NULL, 'INTERSECTION') 
+FROM 
+  (SELECT rast FROM fun_shapes WHERE
+ fun_name = 'area') As area
+CROSS JOIN  (SELECT rast FROM fun_shapes WHERE
+ fun_name = 'rand bubbles') As bub;
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_AsRaster" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
 			</refsection>
 		</refentry>
 
