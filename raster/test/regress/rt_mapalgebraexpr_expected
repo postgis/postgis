@@ -5,10 +5,8 @@ t
 NOTICE:  Raster does not have the required band. Returning a raster without a band
 t
 |19
-|1
-NOTICE:  rt_raster_copy_band: Second raster has no band
-NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
-|
+|2
+|2
 NOTICE:  rt_raster_copy_band: Second raster has no band
 NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
 |

@@ -2429,12 +2429,11 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     double newval = 0.0;
     char *newexpr = NULL;
     char *initexpr = NULL;
-    char *initndvexpr = NULL;
     char *expression = NULL;
-    char *nodatavaluerepl = NULL;
+		int hasnodataval = 0;
+		double nodataval = 0.;
     rt_pixtype newpixeltype;
     int skipcomputation = 0;
-    char strnewnodatavalue[50];
     char strnewval[50];
     int count = 0;
     int len = 0;
@@ -2443,7 +2442,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     SPITupleTable * tuptable = NULL;
     HeapTuple tuple;
     char * strFromText = NULL;
-    bool freemem = FALSE;
 
     POSTGIS_RT_DEBUG(2, "RASTER_mapAlgebraExpr: Starting...");
 
@@ -2646,90 +2644,26 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
 
     /**
-     * Optimization: If a nodatavaluerepl is provided, recompute the initial
-     * value. Then, we can initialize the raster with this value and skip the
+     * Optimization: If a nodataval is provided, use it for newinitialvalue.
+     * Then, we can initialize the raster with this value and skip the
      * computation of nodata values one by one in the main computing loop
      **/
     if (!PG_ARGISNULL(4)) {
-        nodatavaluerepl = text_to_cstring(PG_GETARG_TEXT_P(4));
-        len = strlen("SELECT ") + strlen(nodatavaluerepl);
-        initndvexpr = (char *)palloc(len + 1);
-        strncpy(initndvexpr, "SELECT ", strlen("SELECT "));
-        strncpy(initndvexpr + strlen("SELECT "), strtoupper(nodatavaluerepl),
-                strlen(nodatavaluerepl));
-        initndvexpr[len] = '\0';
-
-				/*
-        lwfree(nodatavaluerepl);
-        nodatavaluerepl = NULL;
-				*/
-
-        /* Replace RAST, if present, for NODATA value, to eval the expression */
-        if (strstr(initndvexpr, "RAST")) {
-            sprintf(strnewnodatavalue, "%f", newnodatavalue);
-
-            newexpr = replace(initndvexpr, "RAST", strnewnodatavalue, &count);
-            freemem = TRUE;
-        }
-
-        /* If newexpr reduces to a constant, simply eval it */
-        else {
-            newexpr = initndvexpr;
-        }
-
-        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: initndvexpr = %s", newexpr);
-
-        /* Eval the NODATA expression to get new NODATA. Connect with SPI manager
-        * NOTE: This creates a NEW memory context and makes it current.
-        */
-        SPI_connect();
-
-        /**
-        * Execute the expression for nodata value and store the result as new
-        * initial value
-        **/
-        ret = SPI_execute(newexpr, FALSE, 0);
-
-        if (ret != SPI_OK_SELECT || SPI_tuptable == NULL ||
-                SPI_processed != 1) {
-            elog(ERROR, "RASTER_mapAlgebraExpr: Invalid construction for nodata "
-                "expression. Aborting");
-
-            if (SPI_tuptable)
-                SPI_freetuptable(tuptable);
-
-            /* Disconnect from SPI manager */
-            SPI_finish();
-
-            PG_RETURN_NULL();
-        }
-
-        tupdesc = SPI_tuptable->tupdesc;
-        tuptable = SPI_tuptable;
-
-        tuple = tuptable->vals[0];
-        newinitialvalue = atof(SPI_getvalue(tuple, tupdesc, 1));
-
-        SPI_freetuptable(tuptable);
-
-        /* Close the connection to SPI manager.
-         * NOTE: This restores the previous memory context
-         */
-        SPI_finish();
-
-        if (freemem)
-            pfree(newexpr);
+				hasnodataval = 1;
+				nodataval = PG_GETARG_FLOAT8(4);
+				newinitialvalue = nodataval;
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: new initial value = %f",
             newinitialvalue);
-
     }
+    else
+        hasnodataval = 0;
 
 
 
     /**
      * Optimization: If the raster is only filled with nodata values return
-     * right now a raster filled with the nodatavaluerepl
+     * right now a raster filled with the newinitialvalue
      * TODO: Call rt_band_check_isnodata instead?
      **/
     if (rt_band_get_isnodata_flag(band)) {
@@ -2751,8 +2685,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         SET_VARSIZE(pgraster, pgraster->size);
 
         /* Free memory */
-        if (initndvexpr)
-            pfree(initndvexpr);
         if (initexpr)
             pfree(initexpr);
         rt_raster_destroy(raster);
@@ -2763,13 +2695,10 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
 
     /**
-     * Optimization: If expression resume to 'RAST' and nodatavaluerepl is NULL
-     * or also equal to 'RAST', we can just return the band from the original
-     * raster
+     * Optimization: If expression resume to 'RAST' and hasnodataval is zero,
+		 * we can just return the band from the original raster
      **/
-    if (initexpr != NULL && !strcmp(initexpr, "SELECT RAST") &&
-            (nodatavaluerepl  == NULL || !strcmp(initndvexpr, "SELECT RAST"))) {
-            /* (initndvexpr == NULL || !strcmp(initndvexpr, "SELECT RAST"))) { */
+    if (initexpr != NULL && !strcmp(initexpr, "SELECT RAST") && !hasnodataval) {
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression resumes to RAST. "
                 "Returning raster with band %d from original raster", nband);
@@ -2792,8 +2721,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
         SET_VARSIZE(pgraster, pgraster->size);
 
-        if (initndvexpr)
-            pfree(initndvexpr);
         if (initexpr)
             pfree(initexpr);
         rt_raster_destroy(raster);
@@ -2844,8 +2771,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
          * Compute the new value, set it and we will return after creating the
          * new raster
          **/
-        /*if (initndvexpr == NULL) {*/
-        if (nodatavaluerepl == NULL) {
+        if (!hasnodataval) {
             newinitialvalue = newval;
             skipcomputation = 2;
         }
@@ -2882,8 +2808,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         SET_VARSIZE(pgraster, pgraster->size);
 
         /* Free memory */
-        if (initndvexpr)
-            pfree(initndvexpr);
         if (initexpr)
             pfree(initexpr);
         rt_raster_destroy(raster);
@@ -2911,8 +2835,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
         SET_VARSIZE(pgraster, pgraster->size);
 
-        if (initndvexpr)
-            pfree(initndvexpr);
         if (initexpr)
             pfree(initexpr);
         rt_raster_destroy(raster);
@@ -2996,8 +2918,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     pgraster = rt_raster_serialize(newrast);
     if (NULL == pgraster) {
         /* Free memory allocated out of the current context */
-        if (initndvexpr)
-            pfree(initndvexpr);
         if (initexpr)
             pfree(initexpr);
         rt_raster_destroy(raster);
@@ -3011,8 +2931,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: raster serialized");
 
     /* Free memory */
-    if (initndvexpr)
-        pfree(initndvexpr);
     if (initexpr)
         pfree(initexpr);
 
