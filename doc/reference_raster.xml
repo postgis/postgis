@@ -5284,7 +5284,7 @@ WHERE rid=167;
 					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>dobule precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -5298,7 +5298,7 @@ WHERE rid=167;
 					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>dobule precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5351,11 +5351,12 @@ WHERE rid=167;
              </refsection>
 				
              <refsection>
-				<title>Example: 2 Band Intersection</title>
+				<title>Example: 2 Band Intersection and Union</title>
 				
 				<para>Create a new 1 band raster from our original that is  a function of modulo 2 of the original raster band.</para>
 				<programlisting>
 --Create a cool set of rasters --
+DROP TABLE IF EXISTS fun_shapes; 
 CREATE TABLE fun_shapes(rid serial PRIMARY KEY, fun_name text, rast raster);
 
 -- Insert some cool shapes around Boston in Massachusetts state plane meters --
@@ -5365,7 +5366,7 @@ VALUES ('ref', ST_AsRaster(ST_MakeEnvelope(235229, 899970, 237229, 901930,26986)
 INSERT INTO fun_shapes(fun_name,rast)
 WITH ref(rast) AS (SELECT rast FROM fun_shapes WHERE fun_name = 'ref' ) 
 SELECT 'area' AS fun_name, ST_AsRaster(ST_Buffer(ST_SetSRID(ST_Point(236229, 900930),26986), 1000), 
-			ref.rast,'8BUI', 118, 0) As rast
+			ref.rast,'8BUI', 10, 0) As rast
 FROM ref
 UNION ALL
 SELECT 'rand bubbles', 
@@ -5373,18 +5374,47 @@ SELECT 'rand bubbles',
 		 	(SELECT ST_Collect(geom)
 	FROM (SELECT ST_Buffer(ST_SetSRID(ST_Point(236229 + i*random()*100, 900930 + j*random()*100),26986), random()*20) As geom
 			FROM generate_series(1,10) As i, generate_series(1,10) As j
-			) As foo ), ref.rast,'8BUI', 100, 0) 
+			) As foo ), ref.rast,'8BUI', 200, 0) 
 FROM ref;
 
 --map them -
-SELECT  st_mapalgebraexpr(
-		area.rast, bub.rast, 'rast1', NULL, 'INTERSECTION') 
+SELECT  ST_MapAlgebraExpr(
+		area.rast, bub.rast, 'rast2', '8BUI', 'INTERSECTION', 'rast2', 'rast1') As interrast,
+		ST_MapAlgebraExpr(
+			area.rast, bub.rast, 'rast2', '8BUI', 'UNION', 'rast2', 'rast1') As unionrast
 FROM 
   (SELECT rast FROM fun_shapes WHERE
  fun_name = 'area') As area
-CROSS JOIN  (SELECT rast FROM fun_shapes WHERE
- fun_name = 'rand bubbles') As bub;
+CROSS JOIN  (SELECT rast 
+FROM fun_shapes WHERE
+ fun_name = 'rand bubbles') As bub
 				</programlisting>
+				<informaltable>
+  <tgroup cols="2">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgebraexpr2_01.png" />
+			  </imageobject>
+			  <caption><para>mapalgebra intersection</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgebraexpr2_02.png" />
+			  </imageobject>
+			  <caption><para>map algebra union</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
 			</refsection>
 
 			<refsection>
