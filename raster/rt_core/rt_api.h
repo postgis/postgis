@@ -139,6 +139,32 @@ typedef struct rt_gdaldriver_t* rt_gdaldriver;
 typedef struct rt_reclassexpr_t* rt_reclassexpr;
 
 /**
+ * Enum definitions
+ */
+/* Pixel types */
+typedef enum {
+    PT_1BB=0,     /* 1-bit boolean            */
+    PT_2BUI=1,    /* 2-bit unsigned integer   */
+    PT_4BUI=2,    /* 4-bit unsigned integer   */
+    PT_8BSI=3,    /* 8-bit signed integer     */
+    PT_8BUI=4,    /* 8-bit unsigned integer   */
+    PT_16BSI=5,   /* 16-bit signed integer    */
+    PT_16BUI=6,   /* 16-bit unsigned integer  */
+    PT_32BSI=7,   /* 32-bit signed integer    */
+    PT_32BUI=8,   /* 32-bit unsigned integer  */
+    PT_32BF=10,   /* 32-bit float             */
+    PT_64BF=11,   /* 64-bit float             */
+    PT_END=13
+} rt_pixtype;
+
+typedef enum {
+	ET_INTERSECTION = 0,
+	ET_UNION,
+	ET_FIRST,
+	ET_SECOND
+} rt_extenttype;
+
+/**
 * Global functions for memory/logging handlers.
 */
 typedef void* (*rt_allocator)(size_t size);
@@ -239,22 +265,6 @@ void rt_set_handlers(rt_allocator allocator, rt_reallocator reallocator,
 
 
 /*- rt_pixtype --------------------------------------------------------*/
-
-/* Pixel types */
-typedef enum {
-    PT_1BB=0,     /* 1-bit boolean            */
-    PT_2BUI=1,    /* 2-bit unsigned integer   */
-    PT_4BUI=2,    /* 4-bit unsigned integer   */
-    PT_8BSI=3,    /* 8-bit signed integer     */
-    PT_8BUI=4,    /* 8-bit unsigned integer   */
-    PT_16BSI=5,   /* 16-bit signed integer    */
-    PT_16BUI=6,   /* 16-bit unsigned integer  */
-    PT_32BSI=7,   /* 32-bit signed integer    */
-    PT_32BUI=8,   /* 32-bit unsigned integer  */
-    PT_32BF=10,   /* 32-bit float             */
-    PT_64BF=11,   /* 64-bit float             */
-    PT_END=13
-} rt_pixtype;
 
 /**
  * Return size in bytes of a value in the given pixtype
@@ -1130,6 +1140,27 @@ int rt_raster_same_alignment(
 	int *aligned
 );
 
+/*
+ * Return raster of computed extent specified extenttype applied
+ * on two input rasters.  The raster returned should be freed by
+ * the caller
+ *
+ * @param rast1 : the first raster
+ * @param rast2 : the second raster
+ * @param extenttype : type of extent for the output raster
+ * @param err : if 0, error occurred
+ * @param offset : 4-element array indicating the X,Y offsets
+ * for each raster. 0,1 for rast1 X,Y. 2,3 for rast2 X,Y.
+ *
+ * @return raster object if success, NULL otherwise
+ */
+rt_raster
+rt_raster_from_two_rasters(
+	rt_raster rast1, rt_raster rast2,
+	rt_extenttype extenttype,
+	int *err, double *offset
+);
+
 /*- utilities -------------------------------------------------------*/
 
 /*
@@ -1207,15 +1238,8 @@ const char*
 rt_util_gdal_version(const char *request);
 
 /*
-	computed extent type
+	computed extent type from c string
 */
-typedef enum {
-	ET_INTERSECTION = 0,
-	ET_UNION,
-	ET_FIRST,
-	ET_SECOND
-} rt_extenttype;
-
 rt_extenttype
 rt_util_extent_type(const char *name);
 

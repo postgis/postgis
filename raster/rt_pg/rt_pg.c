@@ -7925,6 +7925,7 @@ Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS)
 	int hasargval[3] = {0};
 	double argval[3] = {0.};
 
+	double _offset[4] = {0.};
 	double _rastoffset[2][4] = {{0.}};
 	int _haspixel[2] = {0};
 	double _pixel[2] = {0};
@@ -8048,7 +8049,6 @@ Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS)
 
 		rt_raster_get_geotransform_matrix(_rast[j], gt);
 		rt_raster_set_geotransform_matrix(_rast[i], gt);
-
 	}
 	else {
 		_rast[0] = rast[0];
@@ -8068,8 +8068,7 @@ Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS)
 	}
 
 	/* same alignment */
-	err = rt_raster_same_alignment(_rast[0], _rast[1], &aligned);
-	if (!err) {
+	if (!rt_raster_same_alignment(_rast[0], _rast[1], &aligned)) {
 		elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to test for alignment on the two rasters");
 		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
 		PG_RETURN_NULL();
@@ -8097,38 +8096,37 @@ Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS)
 		extenttypename = strtoupper(trim(text_to_cstring(PG_GETARG_TEXT_P(6))));
 		extenttype = rt_util_extent_type(extenttypename);
 	}
+	POSTGIS_RT_DEBUGF(3, "extenttype: %d %s", extenttype, extenttypename);
 
-	/* get raster offsets */
-	if (!rt_raster_geopoint_to_cell(
-		_rast[1],
-		rt_raster_get_x_offset(_rast[0]), rt_raster_get_y_offset(_rast[0]),
-		&(_rastoffset[1][0]), &(_rastoffset[1][1]),
-		NULL
-	)) {
-		elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to compute offsets of the second raster relative to the first raster");
+	/* computed raster from extent type */
+	raster = rt_raster_from_two_rasters(
+		_rast[0], _rast[1],
+		extenttype,
+		&err, _offset
+	);
+	if (!err) {
+		elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get output raster of correct extent");
 		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
 		PG_RETURN_NULL();
 	}
-	_rastoffset[1][0] = -1 * _rastoffset[1][0];
-	_rastoffset[1][1] = -1 * _rastoffset[1][1];
-	_rastoffset[1][2] = _rastoffset[1][0] + _dim[1][0] - 1;
-	_rastoffset[1][3] = _rastoffset[1][1] + _dim[1][1] - 1;
+
+	/* copy offsets */
+	_rastoffset[0][0] = _offset[0];
+	_rastoffset[0][1] = _offset[1];
+	_rastoffset[1][0] = _offset[2];
+	_rastoffset[1][1] = _offset[3];
+
+	/* get output raster dimensions */
+	dim[0] = rt_raster_get_width(raster);
+	dim[1] = rt_raster_get_height(raster);
 
 	i = 2;
-	POSTGIS_RT_DEBUGF(3, "extenttype: %d %s", extenttype, extenttypename);
 	switch (extenttype) {
 		case ET_FIRST:
 			i = 0;
-			_rastoffset[0][0] = 0.;
-			_rastoffset[0][1] = 0.;
 		case ET_SECOND:
-			if (i > 1) {
+			if (i > 1)
 				i = 1;
-				_rastoffset[0][0] = -1 * _rastoffset[1][0];
-				_rastoffset[0][1] = -1 * _rastoffset[1][1];
-				_rastoffset[1][0] = 0.;
-				_rastoffset[1][1] = 0.;
-			}
 
 			if (
 				_isempty[i] && (
@@ -8138,23 +8136,9 @@ Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS)
 			) {
 				elog(NOTICE, "The %s raster is NULL.  Returning NULL", (i != 1 ? "FIRST" : "SECOND"));
 				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				rt_raster_destroy(raster);
 				PG_RETURN_NULL();
 			}
-
-			dim[0] = _dim[i][0];
-			dim[1] = _dim[i][1];
-			raster = rt_raster_new(
-				dim[0],
-				dim[1]
-			);
-			if (raster == NULL) {
-				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create output raster");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-				PG_RETURN_NULL();
-			}
-			rt_raster_set_srid(raster, rt_raster_get_srid(_rast[i]));
-			rt_raster_get_geotransform_matrix(_rast[i], gt);
-			rt_raster_set_geotransform_matrix(raster, gt);
 
 			/* specified band not found */
 			if (rt_raster_has_no_band(_rast[i], bandindex[i] - 1)) {
@@ -8172,97 +8156,31 @@ Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(pgrast);
 			}
 			break;
-		case ET_UNION: {
-			double ip[2] = {0};
-			double offset[4] = {0};
-
-			rt_raster_get_geotransform_matrix(_rast[0], gt);
-
-			/* new upper-left */
-			ip[0] = rt_raster_get_x_offset(_rast[1]);
-			ip[1] = rt_raster_get_y_offset(_rast[1]);
-			if (ip[0] < gt[0])
-				gt[0] = ip[0];
-			if (ip[1] < gt[3])
-				gt[3] = ip[1];
-
-			/* new width and height */
-			offset[0] = 0;
-			if (_rastoffset[1][0] < 0)
-				offset[0] = _rastoffset[1][0];
-			offset[1] = 0;
-			if (_rastoffset[1][1] < 0)
-				offset[1] = _rastoffset[1][1];
-
-			offset[2] = _dim[0][0] - 1;
-			if ((int) _rastoffset[1][2] >= _dim[0][0])
-				offset[2] = _rastoffset[1][2];
-			offset[3] = _dim[0][1] - 1;
-			if ((int) _rastoffset[1][3] >= _dim[0][1])
-				offset[3] = _rastoffset[1][3];
-
-			dim[0] = offset[2] - offset[0] + 1;
-			dim[1] = offset[3] - offset[1] + 1;
-
-			raster = rt_raster_new(
-				dim[0],
-				dim[1]
-			);
-			if (raster == NULL) {
-				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create output raster");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-				PG_RETURN_NULL();
-			}
-			rt_raster_set_srid(raster, rt_raster_get_srid(_rast[0]));
-			rt_raster_set_geotransform_matrix(raster, gt);
-
-			if (!rt_raster_geopoint_to_cell(
-				_rast[0],
-				gt[0], gt[3],
-				&(_rastoffset[0][0]), &(_rastoffset[0][1]),
-				NULL
-			)) {
-				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get offsets of the FIRST raster relative to the output raster");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-				rt_raster_destroy(raster);
-				PG_RETURN_NULL();
-			}
-			_rastoffset[0][0] *= -1;
-			_rastoffset[0][1] *= -1;
-
-			if (!rt_raster_geopoint_to_cell(
-				_rast[1],
-				gt[0], gt[3],
-				&(_rastoffset[1][0]), &(_rastoffset[1][1]),
-				NULL
-			)) {
-				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get offsets of the SECOND raster relative to the output raster");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-				rt_raster_destroy(raster);
-				PG_RETURN_NULL();
-			}
-			_rastoffset[1][0] *= -1;
-			_rastoffset[1][1] *= -1;
-
-		}	break;
-		case ET_INTERSECTION: {
-			double offset[4] = {0};
-			double ip[2] = {0};
-
+		case ET_UNION:
+			break;
+		case ET_INTERSECTION:
 			/* no intersection */
 			if (
-				_isempty[0] ||
-				_isempty[1] ||
-				(_rastoffset[1][2] < 0 || _rastoffset[1][0] > (_dim[0][0] - 1)) ||
-				(_rastoffset[1][3] < 0 || _rastoffset[1][1] > (_dim[0][1] - 1))
+				_isempty[0] || _isempty[1] ||
+				!dim[0] || !dim[1]
 			) {
 				elog(NOTICE, "The two rasters provided have no intersection.  Returning no band raster");
 
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				/* raster has dimension, replace with no band raster */
+				if (dim[0] || dim[1]) {
+					rt_raster_destroy(raster);
 
-				raster = rt_raster_new(0, 0);
-				rt_raster_set_scale(raster, 0, 0);
-				rt_raster_set_srid(raster, rt_raster_get_srid(_rast[0]));
+					raster = rt_raster_new(0, 0);
+					if (raster == NULL) {
+						elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create no band raster");
+						for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+						PG_RETURN_NULL();
+					}
+					rt_raster_set_scale(raster, 0, 0);
+					rt_raster_set_srid(raster, rt_raster_get_srid(_rast[0]));
+				}
+
+				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
 
 				pgrast = rt_raster_serialize(raster);
 				rt_raster_destroy(raster);
@@ -8271,78 +8189,7 @@ Datum RASTER_mapAlgebra2Expr(PG_FUNCTION_ARGS)
 				SET_VARSIZE(pgrast, pgrast->size);
 				PG_RETURN_POINTER(pgrast);
 			}
-
-			if (_rastoffset[1][0] > 0)
-				offset[0] = _rastoffset[1][0];
-			if (_rastoffset[1][1] > 0)
-				offset[1] = _rastoffset[1][1];
-
-			offset[2] = _dim[0][0] - 1;
-			if (_rastoffset[1][2] < _dim[0][0])
-				offset[2] = _rastoffset[1][2];
-			offset[3] = _dim[0][1] - 1;
-			if (_rastoffset[1][3] < _dim[0][1])
-				offset[3] = _rastoffset[1][3];
-
-			dim[0] = offset[2] - offset[0] + 1;
-			dim[1] = offset[3] - offset[1] + 1;
-			raster = rt_raster_new(
-				dim[0],
-				dim[1]
-			);
-			if (raster == NULL) {
-				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to create output raster");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-				PG_RETURN_NULL();
-			}
-			rt_raster_set_srid(raster, rt_raster_get_srid(_rast[0]));
-
-			rt_raster_get_geotransform_matrix(_rast[0], gt);
-			if (!rt_raster_cell_to_geopoint(
-				_rast[0],
-				offset[0], offset[1],
-				&(ip[0]), &(ip[1]),
-				gt
-			)) {
-				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get spatial coordinates of upper-left pixel of output raster");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-				rt_raster_destroy(raster);
-				PG_RETURN_NULL();
-			}
-
-			gt[0] = ip[0];
-			gt[3] = ip[1];
-			rt_raster_set_geotransform_matrix(raster, gt);
-
-			if (!rt_raster_geopoint_to_cell(
-				_rast[0],
-				gt[0], gt[3],
-				&(_rastoffset[0][0]), &(_rastoffset[0][1]),
-				NULL
-			)) {
-				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get pixel coordinates to compute the offsets of the FIRST raster relative to the output raster");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-				rt_raster_destroy(raster);
-				PG_RETURN_NULL();
-			}
-			_rastoffset[0][0] *= -1;
-			_rastoffset[0][1] *= -1;
-
-			if (!rt_raster_geopoint_to_cell(
-				_rast[1],
-				gt[0], gt[3],
-				&(_rastoffset[1][0]), &(_rastoffset[1][1]),
-				NULL
-			)) {
-				elog(ERROR, "RASTER_mapAlgebra2Expr: Unable to get pixel coordinates to compute the offsets of the SECOND raster relative to the output raster");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-				rt_raster_destroy(raster);
-				PG_RETURN_NULL();
-			}
-			_rastoffset[1][0] *= -1;
-			_rastoffset[1][1] *= -1;
-
-		}	break;
+			break;
 	}
 
 	/* both rasters do not have specified bands */

@@ -8797,6 +8797,9 @@ rt_raster_same_alignment(
 	double yw;
 	int err = 0;
 
+	assert(NULL != rast1);
+	assert(NULL != rast2);
+
 	err = 0;
 	/* same srid */
 	if (rast1->srid != rast2->srid) {
@@ -8866,4 +8869,296 @@ rt_raster_same_alignment(
 	RASTER_DEBUG(3, "The two rasters are NOT aligned");
 	*aligned = 0;
 	return 1;
+}
+
+/*
+ * Return raster of computed extent specified extenttype applied
+ * on two input rasters.  The raster returned should be freed by
+ * the caller
+ *
+ * @param rast1 : the first raster
+ * @param rast2 : the second raster
+ * @param extenttype : type of extent for the output raster
+ * @param err : if 0, error occurred
+ * @param offset : 4-element array indicating the X,Y offsets
+ * for each raster. 0,1 for rast1 X,Y. 2,3 for rast2 X,Y.
+ *
+ * @return raster object if success, NULL otherwise
+ */
+rt_raster
+rt_raster_from_two_rasters(
+	rt_raster rast1, rt_raster rast2,
+	rt_extenttype extenttype,
+	int *err, double *offset
+) {
+	int i;
+
+	rt_raster _rast[2] = {rast1, rast2};
+	double _offset[2][4] = {{0.}};
+	uint16_t _dim[2][2] = {{0}};
+
+	rt_raster raster = NULL;
+	int aligned = 0;
+	uint16_t dim[2] = {0};
+	double gt[6] = {0.};
+
+	assert(NULL != rast1);
+	assert(NULL != rast2);
+
+	/* rasters must have same srid */
+	if (rast1->srid != rast2->srid) {
+		rterror("rt_raster_from_two_rasters: The two rasters provided do not have the same SRID");
+		*err = 0;
+		return NULL;
+	}
+
+	/* rasters must be aligned */
+	if (!rt_raster_same_alignment(rast1, rast2, &aligned)) {
+		rterror("rt_raster_from_two_rasters: Unable to test for alignment on the two rasters");
+		*err = 0;
+		return NULL;
+	}
+	if (!aligned) {
+		rterror("rt_raster_from_two_rasters: The two rasters provided do not have the same alignment");
+		*err = 0;
+		return NULL;
+	}
+
+	/* dimensions */
+	_dim[0][0] = rast1->width;
+	_dim[0][1] = rast1->height;
+	_dim[1][0] = rast2->width;
+	_dim[1][1] = rast2->height;
+
+	/* get raster offsets */
+	if (!rt_raster_geopoint_to_cell(
+		_rast[1],
+		_rast[0]->ipX, _rast[0]->ipY,
+		&(_offset[1][0]), &(_offset[1][1]),
+		NULL
+	)) {
+		rterror("rt_raster_from_two_rasters: Unable to compute offsets of the second raster relative to the first raster");
+		*err = 0;
+		return NULL;
+	}
+	_offset[1][0] = -1 * _offset[1][0];
+	_offset[1][1] = -1 * _offset[1][1];
+	_offset[1][2] = _offset[1][0] + _dim[1][0] - 1;
+	_offset[1][3] = _offset[1][1] + _dim[1][1] - 1;
+
+	i = -1;
+	switch (extenttype) {
+		case ET_FIRST:
+			i = 0;
+			_offset[0][0] = 0.;
+			_offset[0][1] = 0.;
+		case ET_SECOND:
+			if (i < 0) {
+				i = 1;
+				_offset[0][0] = -1 * _offset[1][0];
+				_offset[0][1] = -1 * _offset[1][1];
+				_offset[1][0] = 0.;
+				_offset[1][1] = 0.;
+			}
+
+			dim[0] = _dim[i][0];
+			dim[1] = _dim[i][1];
+			raster = rt_raster_new(
+				dim[0],
+				dim[1]
+			);
+			if (raster == NULL) {
+				rterror("rt_raster_from_two_rasters: Unable to create output raster");
+				*err = 0;
+				return NULL;
+			}
+			raster->srid = _rast[i]->srid;
+			rt_raster_get_geotransform_matrix(_rast[i], gt);
+			rt_raster_set_geotransform_matrix(raster, gt);
+			break;
+		case ET_UNION: {
+			double ip[2] = {0};
+			double offset[4] = {0};
+
+			rt_raster_get_geotransform_matrix(_rast[0], gt);
+
+			/* new upper-left */
+			ip[0] = _rast[1]->ipX;
+			ip[1] = _rast[1]->ipY;
+			if (ip[0] < gt[0])
+				gt[0] = ip[0];
+			if (ip[1] < gt[3])
+				gt[3] = ip[1];
+
+			/* new width and height */
+			offset[0] = 0;
+			if (_offset[1][0] < 0)
+				offset[0] = _offset[1][0];
+			offset[1] = 0;
+			if (_offset[1][1] < 0)
+				offset[1] = _offset[1][1];
+
+			offset[2] = _dim[0][0] - 1;
+			if ((int) _offset[1][2] >= _dim[0][0])
+				offset[2] = _offset[1][2];
+			offset[3] = _dim[0][1] - 1;
+			if ((int) _offset[1][3] >= _dim[0][1])
+				offset[3] = _offset[1][3];
+
+			dim[0] = offset[2] - offset[0] + 1;
+			dim[1] = offset[3] - offset[1] + 1;
+
+			raster = rt_raster_new(
+				dim[0],
+				dim[1]
+			);
+			if (raster == NULL) {
+				rterror("rt_raster_from_two_rasters: Unable to create output raster");
+				*err = 0;
+				return NULL;
+			}
+			raster->srid = _rast[0]->srid;
+			rt_raster_set_geotransform_matrix(raster, gt);
+
+			/* get offsets */
+			if (!rt_raster_geopoint_to_cell(
+				_rast[0],
+				gt[0], gt[3],
+				&(_offset[0][0]), &(_offset[0][1]),
+				NULL
+			)) {
+				rterror("rt_raster_from_two_rasters: Unable to get offsets of the FIRST raster relative to the output raster");
+				rt_raster_destroy(raster);
+				*err = 0;
+				return NULL;
+			}
+			_offset[0][0] *= -1;
+			_offset[0][1] *= -1;
+
+			if (!rt_raster_geopoint_to_cell(
+				_rast[1],
+				gt[0], gt[3],
+				&(_offset[1][0]), &(_offset[1][1]),
+				NULL
+			)) {
+				rterror("rt_raster_from_two_rasters: Unable to get offsets of the SECOND raster relative to the output raster");
+				rt_raster_destroy(raster);
+				*err = 0;
+				return NULL;
+			}
+			_offset[1][0] *= -1;
+			_offset[1][1] *= -1;
+		}	break;
+		case ET_INTERSECTION: {
+			double offset[4] = {0};
+			double ip[2] = {0};
+
+			/* no intersection */
+			if (
+				(_offset[1][2] < 0 || _offset[1][0] > (_dim[0][0] - 1)) ||
+				(_offset[1][3] < 0 || _offset[1][1] > (_dim[0][1] - 1))
+			) {
+				RASTER_DEBUG(3, "The two rasters provided have no intersection.  Returning no band raster");
+
+				raster = rt_raster_new(0, 0);
+				if (raster == NULL) {
+					rterror("rt_raster_from_two_rasters: Unable to create output raster");
+					*err = 0;
+					return NULL;
+				}
+				raster->srid = _rast[0]->srid;
+				rt_raster_set_scale(raster, 0, 0);
+
+				/* set offsets if provided */
+				if (NULL != offset) {
+					for (i = 0; i < 4; i++)
+						offset[i] = _offset[i / 2][i % 2];
+				}
+
+				*err = 1;
+				return raster;
+			}
+
+			if (_offset[1][0] > 0)
+				offset[0] = _offset[1][0];
+			if (_offset[1][1] > 0)
+				offset[1] = _offset[1][1];
+
+			offset[2] = _dim[0][0] - 1;
+			if (_offset[1][2] < _dim[0][0])
+				offset[2] = _offset[1][2];
+			offset[3] = _dim[0][1] - 1;
+			if (_offset[1][3] < _dim[0][1])
+				offset[3] = _offset[1][3];
+
+			dim[0] = offset[2] - offset[0] + 1;
+			dim[1] = offset[3] - offset[1] + 1;
+			raster = rt_raster_new(
+				dim[0],
+				dim[1]
+			);
+			if (raster == NULL) {
+				rterror("rt_raster_from_two_rasters: Unable to create output raster");
+				*err = 0;
+				return NULL;
+			}
+			raster->srid = _rast[0]->srid;
+
+			/* get upper-left corner */
+			rt_raster_get_geotransform_matrix(_rast[0], gt);
+			if (!rt_raster_cell_to_geopoint(
+				_rast[0],
+				offset[0], offset[1],
+				&(ip[0]), &(ip[1]),
+				gt
+			)) {
+				rterror("rt_raster_from_two_rasters: Unable to get spatial coordinates of upper-left pixel of output raster");
+				rt_raster_destroy(raster);
+				*err = 0;
+				return NULL;
+			}
+
+			gt[0] = ip[0];
+			gt[3] = ip[1];
+			rt_raster_set_geotransform_matrix(raster, gt);
+
+			/* get offsets */
+			if (!rt_raster_geopoint_to_cell(
+				_rast[0],
+				gt[0], gt[3],
+				&(_offset[0][0]), &(_offset[0][1]),
+				NULL
+			)) {
+				rterror("rt_raster_from_two_rasters: Unable to get pixel coordinates to compute the offsets of the FIRST raster relative to the output raster");
+				rt_raster_destroy(raster);
+				*err = 0;
+				return NULL;
+			}
+			_offset[0][0] *= -1;
+			_offset[0][1] *= -1;
+
+			if (!rt_raster_geopoint_to_cell(
+				_rast[1],
+				gt[0], gt[3],
+				&(_offset[1][0]), &(_offset[1][1]),
+				NULL
+			)) {
+				rterror("rt_raster_from_two_rasters: Unable to get pixel coordinates to compute the offsets of the SECOND raster relative to the output raster");
+				rt_raster_destroy(raster);
+				*err = 0;
+				return NULL;
+			}
+			_offset[1][0] *= -1;
+			_offset[1][1] *= -1;
+		}	break;
+	}
+
+	/* set offsets if provided */
+	if (NULL != offset) {
+		for (i = 0; i < 4; i++)
+			offset[i] = _offset[i / 2][i % 2];
+	}
+
+	*err = 1;
+	return raster;
 }
