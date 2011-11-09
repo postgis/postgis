@@ -72,3 +72,5 @@ DROP FUNCTION IF EXISTS _ST_Resample(raster, text, double precision, integer, do
 -- default parameters added
 DROP FUNCTION IF EXISTS ST_HasNoBand(raster);
 
+--function out parameters changed so can not just create or replace
+DROP FUNCTION IF EXISTS ST_BandMetaData(raster, integer);
