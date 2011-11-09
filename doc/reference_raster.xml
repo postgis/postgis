@@ -5312,7 +5312,7 @@ WHERE rid=167;
 				<variablelist>
 					<varlistentry>
 						<term>expression</term>
-						<listitem><para>The algebraic expression involving the 2 rasters that will define the pixel value when pixel values intersect</para></listitem>
+						<listitem><para>The algebraic expression involving the 2 rasters that will define the pixel value when pixels intersect</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>pixeltype</term>
@@ -5332,7 +5332,7 @@ WHERE rid=167;
 								<para><varname>FIRST</varname> The extent of the new raster is the  same as the one of the first raster.</para>
 							</listitem>
 							<listitem>
-								<para><varname>SECOND</varname> The extent of the new raster is the  same as the one of the first raster.</para>
+								<para><varname>SECOND</varname> The extent of the new raster is the  same as the one of the second raster.</para>
 							</listitem>
 						 </orderedlist>
 						</listitem>
