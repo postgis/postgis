@@ -116,6 +116,26 @@ INSERT INTO raster_mapalgebra_out
 ;
 
 INSERT INTO raster_mapalgebra_out
+	(SELECT r1.rid, r2.rid, 'UNION', st_mapalgebraexpr(
+		r1.rast, r2.rast, '((rast1 + rast2)/2.)::numeric', '32BF', 'UNION', '100', '200', NULL
+	)
+	FROM raster_mapalgebra r1
+	JOIN raster_mapalgebra r2
+		ON r1.rid != r2.rid
+	WHERE r1.rid = 0
+		AND r2.rid BETWEEN 1 AND 9
+	) UNION ALL (
+	SELECT r1.rid, r2.rid, 'UNION', st_mapalgebraexpr(
+		r1.rast, r2.rast, '((rast1 + rast2)/2.)::numeric', '32BF', 'UNION', '100', '200', NULL
+	)
+	FROM raster_mapalgebra r1
+	JOIN raster_mapalgebra r2
+		ON r1.rid != r2.rid
+	WHERE r1.rid = 10
+		AND r2.rid BETWEEN 11 AND 19)
+;
+
+INSERT INTO raster_mapalgebra_out
 	SELECT NULL AS rid, rid, 'UNION', st_mapalgebraexpr(
 		NULL::raster, rast, '((rast1 + rast2)/2.)::numeric', '32BF', 'UNION', 'rast2', 'rast1', NULL
 	)
