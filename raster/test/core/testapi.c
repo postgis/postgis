@@ -15,32 +15,33 @@ static rt_raster fillRasterToPolygonize(int hasnodata, double nodatavalue);
 static rt_band
 addBand(rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval)
 {
-	int idx;
-	rt_band band;
+    void* mem;
+    int32_t bandNum;
+    size_t datasize;
+    uint16_t width = rt_raster_get_width(raster);
+    uint16_t height = rt_raster_get_height(raster);
 
-	idx = rt_raster_generate_new_band(raster, pixtype, nodataval, hasnodata, nodataval, 100);
-	CHECK((idx >= 0));
+    datasize = rt_pixtype_size(pixtype)*width*height;
+    mem = malloc(datasize);
 
-	band = rt_raster_get_band(raster, idx);
-	CHECK(band);
-
-	return band;
+    rt_band band = rt_band_new_inline(width, height,
+                                      pixtype, hasnodata, nodataval, mem);
+    assert(band);
+    bandNum = rt_raster_add_band(raster, band, 100);
+    assert(bandNum>=0);
+    return band;
 }
 
 static void
 deepRelease(rt_raster raster)
 {
     uint16_t i, nbands=rt_raster_get_num_bands(raster);
-    for (i=0; i<nbands; i++)
+    for (i=0; i<nbands; ++i)
     {
         rt_band band = rt_raster_get_band(raster, i);
-				CHECK(band);
-
         void* mem = rt_band_get_data(band);
-				CHECK(mem);
-
-   	    rt_band_destroy(band);
- 	      rtdealloc(mem);
+        if ( mem ) free(mem);
+        rt_band_destroy(band);
     }
     rt_raster_destroy(raster);
 }
@@ -2224,7 +2225,6 @@ static void testFromTwoRasters() {
 int
 main()
 {
-	int i;
     rt_raster raster;
     rt_band band_1BB, band_2BUI, band_4BUI,
             band_8BSI, band_8BUI, band_16BSI, band_16BUI,
@@ -2401,9 +2401,7 @@ main()
 		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
 
 
-		for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-		rtdealloc(gv);
-        deepRelease(rt);
+        rt_raster_destroy(rt);
 
 
 		/* Second test: NODATA value = 1.8 */
@@ -2447,8 +2445,6 @@ main()
 		CHECK(!strcmp(gv[2].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
 #endif
 
-		for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-		rtdealloc(gv);
         rt_raster_destroy(rt);
 
 		/* Third test: NODATA value = 2.8 */
@@ -2463,7 +2459,7 @@ main()
 
 		nPols = 0;
 
-    	gv = rt_raster_dump_as_wktpolygons(rt, 1, &nPols);
+    	gv = (rt_geomval) rt_raster_dump_as_wktpolygons(rt, 1, &nPols);
 
 	/*
 		for (i = 0; i < nPols; i++) {
@@ -2476,21 +2472,19 @@ main()
 
 		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
 		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+        rt_raster_destroy(rt);
 #else
    	CHECK(FLT_EQ(gv[0].val, 2.0));
 
 		CHECK_EQUALS_DOUBLE(gv[2].val, 0.0);
 		CHECK(!strcmp(gv[2].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
-#endif
         rt_raster_destroy(rt);
+#endif
 
     CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
 
 		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
 		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
-
-		for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-		rtdealloc(gv);
 
 		/* Fourth test: NODATA value = 0 */
     	rt = fillRasterToPolygonize(1, 0.0);
@@ -2500,7 +2494,7 @@ main()
 
 		nPols = 0;
 
-   		gv = rt_raster_dump_as_wktpolygons(rt, 1, &nPols);
+   		gv = (rt_geomval) rt_raster_dump_as_wktpolygons(rt, 1, &nPols);
 
 		/*
 		for (i = 0; i < nPols; i++) {
@@ -2524,8 +2518,6 @@ main()
 
 	    CHECK(!strcmp(gv[1].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
 
-		for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-		rtdealloc(gv);
 		rt_raster_destroy(rt);
 
     	/* Last test: There is no NODATA value (all values are valid) */
@@ -2565,9 +2557,6 @@ main()
 
 		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
 		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
-
-		for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-		rtdealloc(gv);
 		rt_raster_destroy(rt);
 
     }
