@@ -5338,12 +5338,16 @@ WHERE rid=167;
 						</listitem>
 					</varlistentry>
 					<varlistentry>
-						<term>nodata1expression</term>
-						<listitem><para>An algebraic expression involving <varname>rast2</varname> that defines what to return if pixel of <varname>rast1</varname> is missing pixel value. </para></listitem>
+						<term>nodata1expr</term>
+						<listitem><para>An algebraic expression involving <varname>rast2</varname> or a constant that defines what to return if pixel of <varname>rast1</varname> is missing pixel value but rast2 has pixel value. </para></listitem>
 					</varlistentry>
 					<varlistentry>
-						<term>nodata2expression</term>
-						<listitem><para>An algebraic expression involving <varname>rast1</varname> that defines what to return if pixel of <varname>rast2</varname> is missing pixel value.</para></listitem>
+						<term>nodata2expr</term>
+						<listitem><para>An algebraic expression involving <varname>rast1</varname> or a constant that defines what to return if pixel of <varname>rast2</varname> is missing pixel value but rast1 has pixel value.</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>nodatanodataval</term>
+						<listitem><para>A numeric constant to return for pixel value when both rast1 and rast2 are missing a pixel value (have no data for that pixel)</para></listitem>
 					</varlistentry>
 			
 				</variablelist>
