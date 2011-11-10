@@ -5508,7 +5508,7 @@ WITH mygeoms
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_AsRaster" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
+				<para><xref linkend="RT_ST_MapAlgebraExpr" />,<xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsRaster" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
 			</refsection>
 		</refentry>
 
