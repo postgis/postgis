@@ -57,6 +57,10 @@ DROP FUNCTION IF EXISTS ST_Intersection(raster, integer, geometry);
 DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, integer, text, text, nodatavaluerepl text);
 DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, pixeltype text, expression text, nodatavaluerepl text);
 
+--signatures changed
+DROP FUNCTION IF EXISTS  ST_MapAlgebraExpr(raster, integer, text, text, text);
+DROP FUNCTION IF EXISTS  ST_MapAlgebraExpr(raster, text, text, text);
+
 --added extra parameter so these are obsolete --
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , double precision , double precision , text , double precision , double precision , double precision , double precision );
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , text[] , double precision[] , double precision[] , double precision , double precision , double precision , double precision );
