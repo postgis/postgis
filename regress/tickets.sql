@@ -401,6 +401,9 @@ select '#1023.b', postgis_addbbox('POINT(10 4)'::geometry) = 'POINT(10 4)'::geom
 -- #1069 --
 select '#1060', ST_Relate(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('POINT EMPTY',4326)) As result;
 
+-- #1273 --
+WITH p AS ( SELECT 'POINT(832694.188 816254.625)'::geometry as g ) 
+SELECT '#1273', st_equals(p.g, postgis_addbbox(p.g)) from p;
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

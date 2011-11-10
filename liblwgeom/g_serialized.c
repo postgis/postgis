@@ -126,6 +126,21 @@ char* gserialized_to_string(const GSERIALIZED *g)
 	return lwgeom_to_wkt(lwgeom_from_gserialized(g), WKT_ISO, 12, 0);
 }
 
+void gbox_float_round(GBOX *gbox)
+{
+	gbox->xmin = next_float_down(gbox->xmin);
+	gbox->xmax = next_float_up(gbox->xmax);
+
+	gbox->ymin = next_float_down(gbox->ymin);
+	gbox->ymax = next_float_up(gbox->ymax);
+
+	gbox->mmin = next_float_down(gbox->mmin);
+	gbox->mmax = next_float_up(gbox->mmax);
+
+	gbox->zmin = next_float_down(gbox->zmin);
+	gbox->zmax = next_float_up(gbox->zmax);
+}
+
 int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
 
@@ -185,6 +200,7 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 			{
 				gbox->mmin = gbox->mmax = dptr[i++];
 			}
+			gbox_float_round(gbox);
 			return LW_SUCCESS;
 		}
 		/* We can calculate the box of a two-point cartesian line trivially */
@@ -224,6 +240,7 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 				gbox->zmin = FP_MIN(dptr[i], dptr[i+ndims]);
 				gbox->zmax = FP_MAX(dptr[i], dptr[i+ndims]);
 			}
+			gbox_float_round(gbox);
 			return LW_SUCCESS;
 		}
 		/* We could also do single-entry multi-points */

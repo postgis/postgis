@@ -118,3 +118,4 @@ ERROR:  First argument must be a LINESTRING
 #1023.a|f
 #1023.b|t
 #1060|FFFFFFFF2
+#1273|t
