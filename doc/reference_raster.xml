@@ -5280,7 +5280,7 @@ WHERE rid=167;
 					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-					<paramdef  choice='opt'><type>text </type> <parameter>pixeltype=sames_as_rast1_band</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>pixeltype=same_as_rast1_band</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
@@ -5294,7 +5294,7 @@ WHERE rid=167;
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>pixeltype=sames_as_rast1_band</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>pixeltype=same_as_rast1_band</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
@@ -5528,12 +5528,30 @@ WITH mygeoms
 					<funcprototype>
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+                        <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 					</funcprototype>
 					
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+					</funcprototype>
 					<funcprototype>
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
@@ -5546,22 +5564,16 @@ WITH mygeoms
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
+						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
 					</funcprototype>
-					
 					<funcprototype>
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
-					</funcprototype>
-
-					<funcprototype>
-						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
-						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 					</funcprototype>
 
 				</funcsynopsis>
