@@ -5425,6 +5425,86 @@ FROM fun_shapes WHERE
 </tgroup>
 </informaltable>
 			</refsection>
+			<refsection>
+				<title>Example: Overlaying rasters on a canvas as separate bands</title>
+				<programlisting>
+-- we use ST_AsPNG to render the image so all single band ones look grey --
+WITH mygeoms 
+    AS ( SELECT 2 As bnum, ST_Buffer(ST_Point(1,5),10) As geom
+            UNION ALL
+            SELECT 3 AS bnum, 
+                ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), 10,'join=bevel') As geom
+            UNION ALL
+            SELECT 1 As bnum, 
+                ST_Buffer(ST_GeomFromText('LINESTRING(60 50,150 150,150 50)'), 5,'join=bevel') As geom
+            ),
+   -- define our canvas to be 1 to 1 pixel to geometry
+   canvas
+    AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(200, 
+        200, 
+        ST_XMin(e)::integer, ST_YMax(e)::integer, 1,-1, 0, 0 ) , '8BUI'::text,0) As rast
+        FROM (SELECT ST_Extent(geom) As e,
+                    Max(ST_SRID(geom)) As srid 
+                    from mygeoms 
+                    ) As foo
+            ),
+   rbands AS (SELECT ARRAY(SELECT ST_MapAlgebraExpr(canvas.rast, ST_AsRaster(m.geom, canvas.rast, '8BUI', 100),
+                 'rast2', '8BUI', 'FIRST', 'rast2', 'rast1') As rast
+                FROM mygeoms AS m CROSS JOIN canvas
+                ORDER BY m.bnum) As rasts
+                )
+          SELECT rasts[1] As rast1 , rasts[2] As rast2, rasts[3] As rast3, ST_AddBand(
+                    ST_AddBand(rasts[1],rasts[2]), rasts[3]) As final_rast
+            FROM rbands;</programlisting>
+            
+<informaltable>
+  <tgroup cols="2">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgebraexpr2_04.png" />
+			  </imageobject>
+			  <caption><para>rast1</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgebraexpr2_05.png" />
+			  </imageobject>
+			  <caption><para>rast2</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+	</row>
+	<row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgebraexpr2_06.png" />
+			  </imageobject>
+			  <caption><para>rast3</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		 
+		 <entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgebraexpr2_07.png" />
+			  </imageobject>
+			  <caption><para>final_rast</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+	</row>
+	</tbody>
+</tgroup>
+</informaltable>
+			</refsection>
 
 			<refsection>
 				<title>See Also</title>
