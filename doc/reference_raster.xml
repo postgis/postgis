@@ -5146,7 +5146,7 @@ WHERE A.rid =2 ) As foo;
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>nodatavalueexpr=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -5154,7 +5154,7 @@ WHERE A.rid =2 ) As foo;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>nodatavalueexpr=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
