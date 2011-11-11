@@ -306,3 +306,75 @@ SELECT
     ST_MapAlgebraFctNgb(rast, 1, '2BUI', 1, 1, 'ST_Sum', 'NULL', NULL), 2, 2
   ) = 3
  FROM ST_TestRaster(3, 3, 1) AS rast;
+
+-- Test that the neighborhood function leaves a border of NODATA
+SELECT
+  COUNT(*) = 1
+ FROM (SELECT
+    (ST_DumpAsPolygons(
+      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL)
+    )).*
+   FROM ST_TestRaster(5, 5, 1) AS rast) AS foo
+ WHERE ST_Area(geom) = 9;
+
+-- Test that the neighborhood function leaves a border of NODATA
+SELECT
+  ST_Area(geom) = 8, val = 9
+ FROM (SELECT
+    (ST_DumpAsPolygons(
+      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL)
+    )).*
+   FROM ST_SetValue(ST_TestRaster(5, 5, 1), 1, 1, NULL) AS rast) AS foo;
+
+-- Test that the neighborhood function leaves a border of NODATA
+-- plus a corner where one cell has a value of 8.
+SELECT
+  (ST_Area(geom) = 1 AND val = 8) OR (ST_Area(geom) = 8 AND val = 9)
+ FROM (SELECT
+    (ST_DumpAsPolygons(
+      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'ignore', NULL)
+    )).*
+   FROM ST_SetValue(ST_TestRaster(5, 5, 1), 1, 1, NULL) AS rast) AS foo;
+
+-- Test that the neighborhood function leaves a border of NODATA
+-- plus a hole where 9 cells have NODATA
+-- This results in a donut: a polygon with a hole. The polygon has
+-- an area of 16, with a hole that has an area of 9
+SELECT
+  ST_NRings(geom) = 2,
+  ST_NumInteriorRings(geom) = 1,
+  ST_Area(geom) = 16, 
+  val = 9, 
+  ST_Area(ST_BuildArea(ST_InteriorRingN(geom, 1))) = 9
+ FROM (SELECT
+    (ST_DumpAsPolygons(
+      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL)
+    )).*
+   FROM ST_SetValue(ST_TestRaster(7, 7, 1), 4, 4, NULL) AS rast) AS foo;
+
+-- Test that the neighborhood function leaves a border of NODATA,
+-- and the center pyramids when summed twice, ignoring NODATA values
+SELECT
+  COUNT(*) = 9, SUM(ST_Area(geom)) = 9, SUM(val) = ((36+54+36) + (54+81+54) + (36+54+36)) 
+  --ST_AsText(geom), ST_Area(geom), val
+ FROM (SELECT
+    (ST_DumpAsPolygons(
+      ST_MapAlgebraFctNgb(
+        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'ignore', NULL), 1, NULL, 1, 1, 'ST_Sum', 'ignore', NULL
+      )
+    )).*
+   FROM ST_SetBandNoDataValue(ST_TestRaster(5, 5, 1), NULL) AS rast) AS foo;
+
+-- Test that the neighborhood function leaves a border of NODATA,
+-- and the center contains one cel when summed twice, replacing NULL with NODATA values
+SELECT
+  COUNT(*) = 1, SUM(ST_Area(geom)) = 1, SUM(val) = 81
+  --ST_AsText(geom), ST_Area(geom), val
+ FROM (SELECT
+    (ST_DumpAsPolygons(
+      ST_MapAlgebraFctNgb(
+        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL), 1, NULL, 1, 1, 'ST_Sum', 'NULL', NULL
+      )
+    )).*
+   FROM ST_SetBandNoDataValue(ST_TestRaster(5, 5, 1), NULL) AS rast) AS foo;
+
