@@ -167,7 +167,7 @@ INSERT INTO raster_mapalgebra_out
 		AND r2.rid BETWEEN 1 AND 9
 	) UNION ALL (
 	SELECT r1.rid, r2.rid, 'FIRST', st_mapalgebraexpr(
-		r1.rast, r2.rast, '((rast1 + rast2)/2.)::numeric', '32BF', 'UNION', 'rast2', 'rast1', NULL
+		r1.rast, r2.rast, 'CASE WHEN rast2 IS NOT NULL THEN NULL ELSE rast1 END', '32BF', 'FIRST', NULL, 'rast1', NULL
 	)
 	FROM raster_mapalgebra r1
 	JOIN raster_mapalgebra r2
@@ -178,7 +178,7 @@ INSERT INTO raster_mapalgebra_out
 
 INSERT INTO raster_mapalgebra_out
 	SELECT NULL AS rid, rid, 'FIRST', st_mapalgebraexpr(
-		NULL::raster, rast, 'CASE WHEN rast1 IS NOT NULL THEN NULL ELSE rast2 END', '32BF', 'SECOND', 'rast2', NULL, NULL
+		NULL::raster, rast, 'CASE WHEN rast1 IS NOT NULL THEN NULL ELSE rast2 END', '32BF', 'FIRST', 'rast2', NULL, NULL
 	)
 	FROM raster_mapalgebra
 ;

@@ -1668,22 +1668,56 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 	rast2 raster, band2 integer,
 	expression text,
 	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
-	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL, nodatanodataval double precision DEFAULT NULL
+	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL,
+	nodatanodataval double precision DEFAULT NULL
 )
 	RETURNS raster
-	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2Expr'
-	LANGUAGE 'C' IMMUTABLE;
+	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2'
+	LANGUAGE 'C' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 	rast1 raster,
 	rast2 raster,
 	expression text,
 	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
-	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL, nodatanodataval double precision DEFAULT NULL
+	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL,
+	nodatanodataval double precision DEFAULT NULL
 )
 	RETURNS raster
 	AS $$ SELECT st_mapalgebraexpr($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'SQL' STABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(
+	rast1 raster, band1 integer,
+	rast2 raster, band2 integer,
+	userfunction regprocedure,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	VARIADIC userargs text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2'
+	LANGUAGE 'C' STABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(
+	rast1 raster,
+	rast2 raster,
+	userfunction regprocedure,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	VARIADIC userargs text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT st_mapalgebrafct($1, 1, $2, 1, $3, $4, $5, VARIADIC $6) $$
+	LANGUAGE 'SQL' STABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebrafct(
+	rast1 raster,
+	rast2 raster,
+	userfunction regprocedure,
+	VARIADIC userargs text[]
+)
+	RETURNS raster
+	AS $$ SELECT st_mapalgebrafct($1, 1, $2, 1, $3, NULL, 'INTERSECTION', VARIADIC $4) $$
+	LANGUAGE 'SQL' STABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster
