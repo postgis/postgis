@@ -5312,7 +5312,7 @@ WHERE rid=167;
 				<variablelist>
 					<varlistentry>
 						<term>expression</term>
-						<listitem><para>The algebraic expression involving the 2 rasters that will define the pixel value when pixels intersect</para></listitem>
+						<listitem><para>A PostgreSQL algebraic expression involving the 2 rasters and PostgreSQL defined functions/operators that will define the pixel value when pixels intersect. e.g. ((rast1 + rast2)/2.0)::integer</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>pixeltype</term>
