@@ -245,9 +245,6 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS);
 
 /* two-raster MapAlgebra */
 Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
-/*
-Datum RASTER_mapAlgebra2Fct(PG_FUNCTION_ARGS);
-*/
 
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
@@ -7882,7 +7879,7 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 }
 
 /**
- * Two raster MapAlgebra using expressions
+ * Two raster MapAlgebra
  */
 PG_FUNCTION_INFO_V1(RASTER_mapAlgebra2);
 Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
@@ -8771,17 +8768,6 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);
 }
-
-/**
- * Two raster MapAlgebra using user function
- */
- /*
-PG_FUNCTION_INFO_V1(RASTER_mapAlgebra2Fct);
-Datum RASTER_mapAlgebra2Fct(PG_FUNCTION_ARGS)
-{
-	PG_RETURN_NULL();
-}
-*/
 
 /* ---------------------------------------------------------------- */
 /*  Memory allocation / error reporting hooks                       */
