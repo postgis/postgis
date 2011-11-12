@@ -5857,7 +5857,7 @@ SELECT ST_AddBand(ST_AddBand(rasts[1], rasts[2]),rasts[3]), 4, 'map bands overla
 	FROM (SELECT ARRAY(SELECT ST_MapAlgebraFct(m1.rast, m2.rast, 
 			'raster_mapalgebra_union(double precision,double precision, text[])'::regprocedure, '8BUI', 'FIRST')
                 FROM map_shapes As m1 CROSS JOIN map_shapes As m2
-                	WHERE m1.descrip = 'canvas' AND m2.descrip <> 'canvas' ORDER BY m2.bnum) As rasts) As foo;
+                	WHERE m1.descrip = 'canvas' AND m2.descrip &lt;&gt; 'canvas' ORDER BY m2.bnum) As rasts) As foo;
 
           </programlisting>
             
