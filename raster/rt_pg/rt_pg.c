@@ -8475,6 +8475,29 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				/* get function info */
 				fmgr_info(ufcnoid, &uflinfo);
 
+				/* function cannot return set */
+				err = 0;
+				if (uflinfo.fn_retset) {
+					elog(ERROR, "RASTER_mapAlgebra2: Function provided must return double precision not resultset");
+					err = 1;
+				}
+				/* function should have correct # of args */
+				else if (uflinfo.fn_nargs != 3) {
+					elog(ERROR, "RASTER_mapAlgebra2: Function does not have three input parameters");
+					err = 1;
+				}
+
+				if (err) {
+					for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+					rt_raster_destroy(raster);
+
+					PG_RETURN_NULL();
+				}
+
+				if (func_volatile(ufcnoid) == 'v') {
+					elog(NOTICE, "Function provided is VOLATILE. Unless required and for best performance, function should be IMMUTABLE or STABLE");
+				}
+
 				/* prep function call data */
 #if POSTGIS_PGSQL_VERSION <= 90
 				InitFunctionCallInfoData(ufcinfo, &uflinfo, 3, InvalidOid, NULL);

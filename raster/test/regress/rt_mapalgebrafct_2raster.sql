@@ -69,7 +69,7 @@ CREATE OR REPLACE FUNCTION raster_mapalgebra_intersection(
 
 		RETURN NULL;
 	END;
-	$$ LANGUAGE 'plpgsql';
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_mapalgebra_union(
 	rast1 double precision,
@@ -93,7 +93,7 @@ CREATE OR REPLACE FUNCTION raster_mapalgebra_union(
 
 		RETURN NULL;
 	END;
-	$$ LANGUAGE 'plpgsql';
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_mapalgebra_first(
 	rast1 double precision,
@@ -115,7 +115,7 @@ CREATE OR REPLACE FUNCTION raster_mapalgebra_first(
 
 		RETURN NULL;
 	END;
-	$$ LANGUAGE 'plpgsql';
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_mapalgebra_second(
 	rast1 double precision,

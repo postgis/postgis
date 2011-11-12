@@ -61,6 +61,9 @@ DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, pixeltype text, expression text, n
 DROP FUNCTION IF EXISTS  ST_MapAlgebraExpr(raster, integer, text, text, text);
 DROP FUNCTION IF EXISTS  ST_MapAlgebraExpr(raster, text, text, text);
 
+--dropped functions
+DROP FUNCTION IF EXISTS  ST_MapAlgebraFct(raster, raster, regprocedure, VARIADIC text[]);
+
 --added extra parameter so these are obsolete --
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , double precision , double precision , text , double precision , double precision , double precision , double precision );
 DROP FUNCTION IF EXISTS ST_AsRaster(geometry , integer , integer , text[] , double precision[] , double precision[] , double precision , double precision , double precision , double precision );
