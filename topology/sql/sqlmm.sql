@@ -4039,7 +4039,7 @@ BEGIN
          )
   FROM (
     SELECT ST_StartPoint(geom) as geom FROM edges
-      UNION
+      UNION ALL
     SELECT ST_EndPoint(geom) FROM edges
   ) as endpoints INTO points;
 

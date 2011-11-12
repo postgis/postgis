@@ -223,6 +223,30 @@ select * from print_elements_count('T16');
 select * from print_isolated_nodes('T16');
 select null from ( select topology.DropTopology('t') ) as dt;
 
+-- Very close-by nodes created by intersection
+-- See ticket #1284
+select null from ( select topology.CreateTopology('t') > 0 ) as ct;
+select 'T17', st_asewkt(g) FROM (
+SELECT g, topology.st_createtopogeo('t', g) FROM ( SELECT '
+MULTILINESTRING(
+(
+ 832709.937 816560.25,
+ 832705.813 816470.25,
+ 832661.937 816561.875
+),
+(
+ 832705.812 816470.25,
+ 832709.937 816560.25
+),
+(
+ 832661.938 816561.875,
+ 832705.813 816470.25
+))
+'::geometry as g ) as i ) as j;
+select * from print_elements_count('T17');
+select * from print_isolated_nodes('T17');
+select null from ( select topology.DropTopology('t') ) as dt;
+
 -- clean up
 DELETE FROM spatial_ref_sys where srid = 4326;
 DROP FUNCTION print_isolated_nodes(text);
