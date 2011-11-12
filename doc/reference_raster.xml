@@ -5743,7 +5743,7 @@ WHERE rid=167;
 		<refentry id="RT_ST_MapAlgebraFct2">
 			<refnamediv>
 				<refname>ST_MapAlgebraFct</refname>
-				<refpurpose>2 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the 2 input raster bands and of pixeltype prodived. Band 1 is assumed if no band is specified.</refpurpose>
+				<refpurpose>2 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the 2 input raster bands and of pixeltype prodived. Band 1 is assumed if no band is specified. Extent type defaults to INTERSECTION if not specified</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -5753,9 +5753,22 @@ WHERE rid=167;
 						<paramdef><type>raster</type> <parameter>rast1</parameter></paramdef>
 						<paramdef><type>raster</type> <parameter>rast2</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef choice='opt'><type>text</type> <parameter>pixeltype=same_as_rast1</parameter></paramdef>
+						<paramdef choice='opt'><type>text</type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
 					</funcprototype>				
 				
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
+						<paramdef><type>raster</type> <parameter>rast1</parameter></paramdef>
+						<paramdef><type>integer</type> <parameter>band1</parameter></paramdef>
+						<paramdef><type>raster</type> <parameter>rast2</parameter></paramdef>
+						<paramdef><type>integer</type> <parameter>band2</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef choice='opt'><type>text</type> <parameter>pixeltype=same_as_rast1</parameter></paramdef>
+						<paramdef choice='opt'><type>text</type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
+					</funcprototype>	
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -5767,7 +5780,24 @@ WHERE rid=167;
 				<para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype. If pixeltype is passed NULL or left out, then the new raster band will have the same pixeltype as the input <varname>rast1</varname> band.</para>
 
                 <para>The <varname>userfunction</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
-                <programlisting>CREATE OR REPLACE FUNCTION raster_mapalgebra_union(
+                The <varname>userfunction</varname> is required to accept three arguments: a double precision value, a double precision value  and a variadic text array. The first argument is the value of an individual raster cell in <varname>rast1</varname> (regardless of the raster datatype), the second argument is an individual raster cell value in <varname>rast2</varname>, and the third argument indicates that all remaining parameters to <xref linkend="RT_ST_MapAlgebraFct2" /> shall be passed through to the <varname>userfunction</varname>.</para>
+
+                <para>Passing a <type>regprodedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:<programlisting>'simple_function(double precision,double precision, text[])'::regprocedure</programlisting>Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.</para>
+
+                <para>The third argument to the <varname>userfunction</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct2" /> call are passed through to the specified <varname>userfunction</varname>, and are contained in the <varname>userargs</varname> argument.</para>
+
+                <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/interactive/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
+
+                <note><para>The <type>text[]</type> argument to the <varname>userfunction</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
+
+				<para>Availability: 2.0.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Example: Overlaying rasters on a canvas as separate bands</title>
+				<programlisting>
+-- define our user defined function --
+CREATE OR REPLACE FUNCTION raster_mapalgebra_union(
 	rast1 double precision,
 	rast2 double precision,
 	VARIADIC userargs text[]
@@ -5789,25 +5819,110 @@ WHERE rid=167;
 
 		RETURN NULL;
 	END;
-	$$ LANGUAGE 'plpgsql';</programlisting>
-                The <varname>userfunction</varname> is required to accept three arguments: a double precision value, a double precision value  and a variadic text array. The first argument is the value of an individual raster cell in <varname>rast1</varname> (regardless of the raster datatype), the second argument is an individual raster cell value in <varname>rast2</varname>, and the third argument indicates that all remaining parameters to <xref linkend="RT_ST_MapAlgebraFct2" /> shall be passed through to the <varname>userfunction</varname>.</para>
+	$$ LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
 
-                <para>Passing a <type>regprodedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:<programlisting>'simple_function(double precision,double precision, text[])'::regprocedure</programlisting>Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.</para>
+-- prep our test table of rasters
+DROP TABLE IF EXISTS map_shapes;
+CREATE TABLE map_shapes(rid serial PRIMARY KEY, rast raster, bnum integer, descrip text);
+INSERT INTO map_shapes(rast,bnum, descrip)
+WITH mygeoms 
+    AS ( SELECT 2 As bnum, ST_Buffer(ST_Point(90,90),30) As geom, 'circle' As descrip
+            UNION ALL
+            SELECT 3 AS bnum, 
+                ST_Buffer(ST_GeomFromText('LINESTRING(50 50,150 150,150 50)'), 15) As geom, 'big road' As descrip
+            UNION ALL
+            SELECT 1 As bnum, 
+                ST_Translate(ST_Buffer(ST_GeomFromText('LINESTRING(60 50,150 150,150 50)'), 8,'join=bevel'), 10,-6) As geom, 'small road' As descrip
+            ),
+   -- define our canvas to be 1 to 1 pixel to geometry
+   canvas
+    AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(250, 
+        250, 
+        ST_XMin(e)::integer, ST_YMax(e)::integer, 1,-1, 0, 0 ) , '8BUI'::text,0) As rast
+        FROM (SELECT ST_Extent(geom) As e,
+                    Max(ST_SRID(geom)) As srid 
+                    from mygeoms 
+                    ) As foo
+            )
+-- return our rasters aligned with our canvas
+SELECT ST_AsRaster(m.geom, canvas.rast, '8BUI', 240) As rast, bnum, descrip
+                FROM mygeoms AS m CROSS JOIN canvas
+UNION ALL 
+SELECT canvas.rast, 4, 'canvas'
+FROM canvas;
 
-                <para>The third argument to the <varname>userfunction</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct2" /> call are passed through to the specified <varname>userfunction</varname>, and are contained in the <varname>userargs</varname> argument.</para>
+-- Map algebra on single band rasters and then collect with ST_AddBand
+INSERT INTO map_shapes(rast,bnum,descrip)
+SELECT ST_AddBand(ST_AddBand(rasts[1], rasts[2]),rasts[3]), 4, 'map bands overlay fct union (canvas)'
+	FROM (SELECT ARRAY(SELECT ST_MapAlgebraFct(m1.rast, m2.rast, 
+			'raster_mapalgebra_union(double precision,double precision, text[])'::regprocedure, '8BUI', 'FIRST')
+                FROM map_shapes As m1 CROSS JOIN map_shapes As m2
+                	WHERE m1.descrip = 'canvas' AND m2.descrip <> 'canvas' ORDER BY m2.bnum) As rasts) As foo;
 
-                <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/interactive/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
+          </programlisting>
+            
+<informaltable>
+  <tgroup cols="1">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgebrafct2_01.png" />
+			  </imageobject>
+			    <caption><para>map bands overlay (canvas) (R: small raod, G: circle, B: big road)</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		 </row>
+		 </tbody>
+</tgroup>
+</informaltable>
+</refsection>
+<refsection>
+	<title>User Defined function that takes extra args</title>
+	<programlisting>	
+CREATE OR REPLACE FUNCTION raster_mapalgebra_userargs(
+	rast1 double precision,
+	rast2 double precision,
+	VARIADIC userargs text[]
+)
+	RETURNS double precision
+	AS $$
+	DECLARE
+	BEGIN
+		CASE
+			WHEN rast1 IS NOT NULL AND rast2 IS NOT NULL THEN
+				RETURN least(userargs[1]::integer,(rast1 + rast2)/2.);
+			WHEN rast1 IS NULL AND rast2 IS NULL THEN
+				RETURN userargs[2]::integer;
+			WHEN rast1 IS NULL THEN
+				RETURN greatest(rast2,random()*userargs[3]::integer)::integer;
+			ELSE
+				RETURN greatest(rast1, random()*userargs[4]::integer)::integer;
+		END CASE;
 
-                <note><para>The <type>text[]</type> argument to the <varname>userfunction</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
-
-				<para>Availability: 2.0.0</para>
+		RETURN NULL;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE COST 1000;
+	
+SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
+			'raster_mapalgebra_userargs(double precision,double precision, text[])'::regprocedure,
+				'8BUI', 'INTERSECT', '100','200','200','0') 
+                FROM map_shapes As m1
+                	WHERE m1.descrip = 'map bands overlay fct union (canvas)'; 
+</programlisting>
+	<informalfigure>
+	<mediaobject>
+	  <imageobject>
+		<imagedata fileref="images/st_mapalgebrafct2_02.png" />
+	  </imageobject>
+	  <caption><para>user defined with extra args and different bands from same raster</para></caption>
+	</mediaobject>
+	</informalfigure>
+		
 			</refsection>
 
-			<refsection>
-				<title>Examples</title>
-
-				<para>Coming soon <!-- TODO: Add examples --></para>
-			</refsection>
 
 			<refsection>
 				<title>See Also</title>
