@@ -1709,16 +1709,6 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	AS $$ SELECT st_mapalgebrafct($1, 1, $2, 1, $3, $4, $5, VARIADIC $6) $$
 	LANGUAGE 'SQL' STABLE;
 
-CREATE OR REPLACE FUNCTION st_mapalgebrafct(
-	rast1 raster,
-	rast2 raster,
-	userfunction regprocedure,
-	VARIADIC userargs text[]
-)
-	RETURNS raster
-	AS $$ SELECT st_mapalgebrafct($1, 1, $2, 1, $3, NULL, 'INTERSECTION', VARIADIC $4) $$
-	LANGUAGE 'SQL' STABLE;
-
 -----------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------
