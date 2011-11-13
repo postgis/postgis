@@ -739,39 +739,57 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
 		<title>Manually Registering Geometry Columns in geometry_columns</title>
 		<para>The AddGeometryColumn() approach creates a geometry column and also registers the new
 		column in the geometry_columns table.  If your software utilizes geometry_columns, then
-		any geometry columns you need to query by must be registered in this table.  Two of the cases
-		where you want a geometry column to be registered in the geometry_columns table, but you can't use
+		any geometry columns you need to query by must be registered in this view.  Two of the cases
+		where you want a geometry column to be registered in geometry_columns, but you can't use
 		AddGeometryColumn, is in the case of SQL Views and bulk inserts.  For these cases, you must register the column in the
-		geometry_columns table manually.  Below is a simple script to do that.</para>
+		geometry_columns manually.  Note in PostGIS 2.0+ if your column is typmod based, the creation process would register it correctly, so no need to do anything.
+		Though running this will not cause any harm if you are not sure.
+		Below is a simple script to do that.</para>
 
 		<programlisting>
 --Lets say you have a view created like this
 CREATE VIEW  public.vwmytablemercator AS
-	SELECT gid, ST_Transform(the_geom,3395) As the_geom, f_name
+	SELECT gid, ST_Transform(geom,3395) As geom, f_name
 	FROM public.mytable;
-
---To register this table in AddGeometry columns - do the following
-INSERT INTO geometry_columns(f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, "type")
-SELECT '', 'public', 'vwmytablemercator', 'the_geom', ST_CoordDim(the_geom), ST_SRID(the_geom), GeometryType(the_geom)
-FROM public.vwmytablemercator LIMIT 1;
+	
+-- For it to register correctly in PostGIS 2.0+ 
+-- You need to cast the geometry
+--
+DROP VIEW public.vwmytablemercator;
+CREATE VIEW  public.vwmytablemercator AS
+	SELECT gid, ST_Transform(geom,3395)::geometry(3395) As geom, f_name
+	FROM public.mytable;
+	
+-- If you know the geometry type for sure is a 2D POLYGON then you could do
+DROP VIEW public.vwmytablemercator;
+CREATE VIEW  public.vwmytablemercator AS
+	SELECT gid, ST_Transform(geom,3395)::geometry(Polygon, 3395) As geom, f_name
+	FROM public.mytable;
 
 		</programlisting>
 
 		<programlisting>
 --Lets say you created a derivative table by doing a bulk insert
-SELECT poi.gid, poi.the_geom, citybounds.city_name
-INTO myschema.myspecialpois
-FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.the_geom, poi.the_geom);
+SELECT poi.gid, poi.geom, citybounds.city_name
+INTO myschema.my_special_pois
+FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);
 
---Create index on new table
+--Create 2d index on new table
 CREATE INDEX idx_myschema_myspecialpois_geom_gist
-  ON myschema.myspecialpois USING gist(the_geom);
+  ON myschema.my_special_pois USING gist(geom);
+  
+-- If your points are 3D points or 3M points, 
+-- then you might want to create an nd index instead of a 2d index
+-- like so
+CREATE INDEX my_special_pois_geom_gist_nd 
+	ON my_special_pois USING gist(geom gist_geometry_ops_nd);
 
 --To manually register this new table's geometry column in geometry_columns
--- we do the same thing as with view
-INSERT INTO geometry_columns(f_table_catalog, f_table_schema, f_table_name, f_geometry_column, coord_dimension, srid, "type")
-SELECT '', 'myschema', 'myspecialpois', 'the_geom', ST_CoordDim(the_geom), ST_SRID(the_geom), GeometryType(the_geom)
-FROM public.myschema.myspecialpois LIMIT 1;
+-- Note that this approach will work for both PostGIS 2.0+ and PostGIS 1.4+
+-- For PostGIS 2.0 it will also change the underlying structure of the table to
+-- to make the column typmod based.
+-- For PostGIS prior to 2.0, this technique can also be used to register views
+SELECT populate_geometry_columns('myschema.my_special_pois'::regclass); 
 
 		</programlisting>
 
