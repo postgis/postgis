@@ -2,7 +2,7 @@
  * $Id$
  *
  * WKTRaster - Raster Types for PostGIS
- * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
+ * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright (C) 2011 Regents of the University of California
  *   <bkpark@ucdavis.edu>
@@ -6793,15 +6793,25 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
  *
  * @param raster : raster to transform
  * @param src_srs : the raster's coordinate system in OGC WKT
- * @param dst_srs : the warped raster's coordinate system
- * @param scale_x : the pixel width of the warped raster
- * @param scale_y : the pixel height of the warped raster
- * @param ul_xw : the X value of upper-left corner of the warped raster
- * @param ul_yw : the Y value of upper-left corner of the warped raster
- * @param grid_xw : the X value of point on a grid to align warped raster to
- * @param grid_yw : the Y value of point on a grid to align warped raster to
- * @param skew_x : the X skew of the warped raster
- * @param skew_y : the Y skew of the warped raster
+ * @param dst_srs : the warped raster's coordinate system in OGC WKT
+ * @param scale_x : the x size of pixels of the warped raster's pixels in
+ *   units of dst_srs
+ * @param scale_y : the y size of pixels of the warped raster's pixels in
+ *   units of dst_srs
+ * @param width : the number of columns of the warped raster.  note that
+ *   width/height CANNOT be used with scale_x/scale_y
+ * @param height : the number of rows of the warped raster.  note that
+ *   width/height CANNOT be used with scale_x/scale_y
+ * @param ul_xw : the X value of upper-left corner of the warped raster in
+ *   units of dst_srs
+ * @param ul_yw : the Y value of upper-left corner of the warped raster in
+ *   units of dst_srs
+ * @param grid_xw : the X value of point on a grid to align warped raster
+ *   to in units of dst_srs
+ * @param grid_yw : the Y value of point on a grid to align warped raster
+ *   to in units of dst_srs
+ * @param skew_x : the X skew of the warped raster in units of dst_srs
+ * @param skew_y : the Y skew of the warped raster in units of dst_srs
  * @param resample_alg : the resampling algorithm
  * @param max_err : maximum error measured in input pixels permitted
  *   (0.0 for exact calculations)
@@ -6812,6 +6822,7 @@ rt_raster rt_raster_gdal_warp(
 	rt_raster raster, const char *src_srs,
 	const char *dst_srs,
 	double *scale_x, double *scale_y,
+	int *width, int *height,
 	double *ul_xw, double *ul_yw,
 	double *grid_xw, double *grid_yw,
 	double *skew_x, double *skew_y,
@@ -6840,8 +6851,8 @@ rt_raster rt_raster_gdal_warp(
 
 	double dst_gt[6] = {0};
 	double dst_extent[4];
-	int width = 0;
-	int height = 0;
+	int _width = 0;
+	int _height = 0;
 	int ul_user = 0;
 	double min_x = 0;
 	double min_y = 0;
@@ -6966,7 +6977,7 @@ rt_raster rt_raster_gdal_warp(
 
 	/* get approximate output georeferenced bounds and resolution */
 	cplerr = GDALSuggestedWarpOutput2(src_ds, GDALGenImgProjTransform,
-		transform_arg, dst_gt, &width, &height, dst_extent, 0);
+		transform_arg, dst_gt, &_width, &_height, dst_extent, 0);
 	GDALDestroyGenImgProjTransformer(transform_arg);
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_warp: Unable to get GDAL suggested warp output for output dataset creation\n");
@@ -7019,12 +7030,40 @@ rt_raster rt_raster_gdal_warp(
 	if (NULL != skew_y)
 		dst_gt[4] = *skew_y;
 
+	/* scale and width/height are mutually exclusive */
+	if (
+		((NULL != scale_x) || (NULL != scale_y)) &&
+		((NULL != width) || (NULL != height))
+	) {
+		rterror("rt_raster_gdal_warp: Scale X/Y and width/height are mutually exclusive.  Only provide one.\n");
+
+		GDALClose(src_ds);
+
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+		rtdealloc(transform_opts);
+
+		GDALDeregisterDriver(src_drv);
+		GDALDestroyDriver(src_drv);
+
+		return NULL;
+	}
+
+	/* user-defined width/height */
+	if ((NULL != width) && (*width > 0.)) {
+		_width = *width;
+		dst_gt[1] = (dst_extent[2] - dst_extent[0]) / ((double) _width);
+		pix_x = 0;
+	}
+	if ((NULL != height) && (*height > 0.)) {
+		_height = *height;
+		dst_gt[5] = -1 * fabs((dst_extent[3] - dst_extent[1]) / ((double) _height));
+		pix_y = 0;
+	}
+
 	/* user-defined scale */
 	if (
-		(NULL != scale_x) &&
-		(FLT_NEQ(*scale_x, 0.0)) &&
-		(NULL != scale_y) &&
-		(FLT_NEQ(*scale_y, 0.0))
+		((NULL != scale_x) && (FLT_NEQ(*scale_x, 0.0))) &&
+		((NULL != scale_y) && (FLT_NEQ(*scale_y, 0.0)))
 	) {
 		pix_x = fabs(*scale_x);
 		pix_y = fabs(*scale_y);
@@ -7112,14 +7151,24 @@ rt_raster rt_raster_gdal_warp(
 		/* adjust width and height to account new upper left */
 		if (ul_user) {
 			/* use suggested lower right corner */
-			max_x = dst_gt[0] + dst_gt[1] * width;
-			min_y = dst_gt[3] + dst_gt[5] * height;
+			max_x = dst_gt[0] + dst_gt[1] * _width;
+			min_y = dst_gt[3] + dst_gt[5] * _height;
 
-			width = (int) ((max_x - min_x + (grid_pix_x / 2.)) / grid_pix_x);
-			height = (int) ((max_y - min_y + (grid_pix_y / 2.)) / grid_pix_y);
+			/* user defined width */
+			if ((NULL != width) && (*width > 0.))
+				grid_pix_x = fabs((max_x - min_x) / ((double) _width));
+			else
+				_width = (int) ((max_x - min_x + (grid_pix_x / 2.)) / grid_pix_x);
+
+			/* user defined height  */
+			if ((NULL != height) && (*height > 0.))
+				grid_pix_y = fabs((max_y - min_y) / ((double) _height));
+			else
+				_height = (int) ((max_y - min_y + (grid_pix_y / 2.)) / grid_pix_y);
+
 			dst_gt[1] = grid_pix_x;
 			dst_gt[5] = -1 * grid_pix_y;
-			RASTER_DEBUGF(3, "new dimensions: %d x %d", width, height);
+			RASTER_DEBUGF(3, "new dimensions: %d x %d", _width, _height);
 		}
 
 		RASTER_DEBUGF(3, "shift is: %f, %f", grid_shift_xw, grid_shift_yw);
@@ -7144,15 +7193,17 @@ rt_raster rt_raster_gdal_warp(
 		}
 
 		/* lower-right corner */
-		max_x = min_x + dst_gt[1] * width;
-		min_y = max_y + dst_gt[5] * height;
+		max_x = min_x + dst_gt[1] * _width;
+		min_y = max_y + dst_gt[5] * _height;
 
-		width = (int) ((max_x - min_x + (pix_x / 2.)) / pix_x);
-		height = (int) ((max_y - min_y + (pix_y / 2.)) / pix_y);
+		_width = (int) ((max_x - min_x + (pix_x / 2.)) / pix_x);
+		_height = (int) ((max_y - min_y + (pix_y / 2.)) / pix_y);
 		dst_gt[0] = min_x;
 		dst_gt[3] = max_y;
 		dst_gt[1] = pix_x;
 		dst_gt[5] = -1 * pix_y;
+
+		RASTER_DEBUGF(3, "new dimensions: %d x %d", _width, _height);
 	}
 	/* user-defined upper-left corner */
 	else if (ul_user) {
@@ -7163,10 +7214,10 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUGF(3, "Applied geotransform: %f, %f, %f, %f, %f, %f",
 		dst_gt[0], dst_gt[1], dst_gt[2], dst_gt[3], dst_gt[4], dst_gt[5]);
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
-		width, height);
+		_width, _height);
 
-	if (FLT_EQ(width, 0.0) || FLT_EQ(height, 0.0)) {
-		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero\n", width, height);
+	if (FLT_EQ(_width, 0.0) || FLT_EQ(_height, 0.0)) {
+		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero\n", _width, _height);
 
 		GDALClose(src_ds);
 
@@ -7194,7 +7245,7 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* create dst dataset */
-	dst_ds = GDALCreate(dst_drv, "", width, height, 0, GDT_Byte, dst_options);
+	dst_ds = GDALCreate(dst_drv, "", _width, _height, 0, GDT_Byte, dst_options);
 	if (NULL == dst_ds) {
 		rterror("rt_raster_gdal_warp: Unable to create GDAL VRT dataset\n");
 

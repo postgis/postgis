@@ -1484,7 +1484,8 @@ CREATE OR REPLACE FUNCTION _st_resample(
 	srid integer DEFAULT NULL,
 	scalex double precision DEFAULT 0, scaley double precision DEFAULT 0,
 	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
-	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0,
+	width integer DEFAULT NULL, height integer DEFAULT NULL
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_resample'
@@ -1504,14 +1505,29 @@ CREATE OR REPLACE FUNCTION st_resample(
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
+	width integer, height integer,
+	srid integer DEFAULT NULL,
+	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
+	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0,
+	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
+)
+	RETURNS raster
+	AS $$ SELECT _st_resample($1, $9,	$10, $4, NULL, NULL, $5, $6, $7, $8, $2, $3) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_resample(
+	rast raster,
 	ref raster,
 	algorithm text DEFAULT 'NearestNeighbour',
-	maxerr double precision DEFAULT 0.125
+	maxerr double precision DEFAULT 0.125,
+	usescale boolean DEFAULT TRUE
 )
 	RETURNS raster
 	AS $$
 	DECLARE
 		sr_id int;
+		dim_x int;
+		dim_y int;
 		scale_x double precision;
 		scale_y double precision;
 		grid_x double precision;
@@ -1519,10 +1535,30 @@ CREATE OR REPLACE FUNCTION st_resample(
 		skew_x double precision;
 		skew_y double precision;
 	BEGIN
-		SELECT srid, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y FROM st_metadata($2);
-		RETURN _st_resample($1, $3, $4, sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y);
+		SELECT srid, width, height, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO sr_id, dim_x, dim_y, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y FROM st_metadata($2);
+
+		IF usescale IS TRUE THEN
+			dim_x := NULL;
+			dim_y := NULL;
+		ELSE
+			scale_x := NULL;
+			scale_y := NULL;
+		END IF;
+
+		RETURN _st_resample($1, $3, $4, sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y, dim_x, dim_y);
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_resample(
+	rast raster,
+	ref raster,
+	usescale boolean,
+	algorithm text DEFAULT 'NearestNeighbour',
+	maxerr double precision DEFAULT 0.125
+)
+	RETURNS raster
+	AS $$ SELECT st_resample($1, $2, $4, $5, $3) $$
+	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Transform

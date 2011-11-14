@@ -69,7 +69,7 @@ INSERT INTO raster_resample_dst (rid, rast) VALUES (
 	1.5, (SELECT ST_Resample(
 		rast,
 		993310,
-		500, 500,
+		500., 500.,
 		NULL, NULL,
 		0, 0,
 		'NearestNeighbor', 0.125
@@ -78,25 +78,25 @@ INSERT INTO raster_resample_dst (rid, rast) VALUES (
 	1.6, (SELECT ST_Resample(
 		rast,
 		NULL,
-		100, NULL
+		100., NULL
 	) FROM raster_resample_src)
 ), (
 	1.7, (SELECT ST_Resample(
 		rast,
 		NULL,
-		NULL::double precision, 100
+		NULL::double precision, 100.
 	) FROM raster_resample_src)
 ), (
 	1.8, (SELECT ST_Resample(
 		rast,
 		NULL,
-		500, 500
+		500., 500.
 	) FROM raster_resample_src)
 ), (
 	1.9, (SELECT ST_Resample(
 		rast,
 		NULL,
-		250, 250,
+		250., 250.,
 		NULL, NULL,
 		NULL, NULL
 	) FROM raster_resample_src)
@@ -104,7 +104,7 @@ INSERT INTO raster_resample_dst (rid, rast) VALUES (
 	1.10, (SELECT ST_Resample(
 		rast,
 		NULL,
-		250, 250,
+		250., 250.,
 		NULL, NULL,
 		NULL, NULL,
 		'Bilinear', 0
@@ -141,28 +141,28 @@ INSERT INTO raster_resample_dst (rid, rast) VALUES (
 	1.15, (SELECT ST_Resample(
 		rast,
 		NULL,
-		50, 50,
+		50., 50.,
 		-290, 7
 	) FROM raster_resample_src)
 ), (
 	1.16, (SELECT ST_Resample(
 		rast,
 		NULL,
-		121, 121,
+		121., 121.,
 		0, 0
 	) FROM raster_resample_src)
 ), (
 	1.17, (SELECT ST_Resample(
 		rast,
 		993310,
-		50, 50,
+		50., 50.,
 		-290, 7
 	) FROM raster_resample_src)
 ), (
 	1.18, (SELECT ST_Resample(
 		rast,
 		993309,
-		50, 50,
+		50., 50.,
 		-290, 7
 	) FROM raster_resample_src)
 ), (
@@ -195,7 +195,7 @@ INSERT INTO raster_resample_dst (rid, rast) VALUES (
 	1.22, (SELECT ST_Resample(
 		rast,
 		993310,
-		500, 500,
+		500., 500.,
 		NULL, NULL,
 		3, 3,
 		'Cubic', 0
@@ -204,7 +204,7 @@ INSERT INTO raster_resample_dst (rid, rast) VALUES (
 	1.23, (SELECT ST_Resample(
 		rast,
 		993310,
-		500, 500,
+		500., 500.,
 		-12048, 14682,
 		0, 6,
 		'CubicSpline'
@@ -213,6 +213,29 @@ INSERT INTO raster_resample_dst (rid, rast) VALUES (
 	1.24, (SELECT ST_Resample(
 		rast,
 		ST_MakeEmptyRaster(5, 5, -654321, 123456, 50, -100, 3, 0, 992163)
+	) FROM raster_resample_src)
+), (
+	1.25, (SELECT ST_Resample(
+		rast,
+		ST_MakeEmptyRaster(5, 5, -654321, 123456, 50, -100, 3, 0, 992163),
+		TRUE
+	) FROM raster_resample_src)
+), (
+	1.26, (SELECT ST_Resample(
+		rast,
+		150, 150
+	) FROM raster_resample_src)
+), (
+	1.27, (SELECT ST_Resample(
+		rast,
+		150, 150,
+		993310
+	) FROM raster_resample_src)
+), (
+	1.28, (SELECT ST_Resample(
+		rast,
+		ST_MakeEmptyRaster(5, 5, -654321, 123456, 100, 100, 0, 0, 992163),
+		FALSE
 	) FROM raster_resample_src)
 );
 

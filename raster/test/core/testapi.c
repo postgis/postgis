@@ -1524,6 +1524,7 @@ static void testGDALWarp() {
 		NULL, NULL,
 		NULL, NULL,
 		NULL, NULL,
+		NULL, NULL,
 		GRA_NearestNeighbour, -1
 	);
 	CHECK(rast);

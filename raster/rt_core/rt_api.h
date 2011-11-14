@@ -1040,15 +1040,25 @@ rt_raster rt_raster_from_gdal_dataset(GDALDatasetH ds);
  *
  * @param raster : raster to transform
  * @param src_srs : the raster's coordinate system in OGC WKT
- * @param dst_srs : the warped raster's coordinate system
- * @param scale_x : the pixel width of the warped raster
- * @param scale_y : the pixel height of the warped raster
- * @param ul_xw : the X value of upper-left corner of the warped raster
- * @param ul_yw : the Y value of upper-left corner of the warped raster
- * @param grid_xw : the X value of point on a grid to align warped raster to
- * @param grid_yw : the Y value of point on a grid to align warped raster to
- * @param skew_x : the X skew of the warped raster
- * @param skew_y : the Y skew of the warped raster
+ * @param dst_srs : the warped raster's coordinate system in OGC WKT
+ * @param scale_x : the x size of pixels of the warped raster's pixels in
+ *   units of dst_srs
+ * @param scale_y : the y size of pixels of the warped raster's pixels in
+ *   units of dst_srs
+ * @param width : the number of columns of the warped raster.  note that
+ *   width/height CANNOT be used with scale_x/scale_y
+ * @param height : the number of rows of the warped raster.  note that
+ *   width/height CANNOT be used with scale_x/scale_y
+ * @param ul_xw : the X value of upper-left corner of the warped raster in
+ *   units of dst_srs
+ * @param ul_yw : the Y value of upper-left corner of the warped raster in
+ *   units of dst_srs
+ * @param grid_xw : the X value of point on a grid to align warped raster
+ *   to in units of dst_srs
+ * @param grid_yw : the Y value of point on a grid to align warped raster
+ *   to in units of dst_srs
+ * @param skew_x : the X skew of the warped raster in units of dst_srs
+ * @param skew_y : the Y skew of the warped raster in units of dst_srs
  * @param resample_alg : the resampling algorithm
  * @param max_err : maximum error measured in input pixels permitted
  *   (0.0 for exact calculations)
@@ -1058,6 +1068,7 @@ rt_raster rt_raster_from_gdal_dataset(GDALDatasetH ds);
 rt_raster rt_raster_gdal_warp(rt_raster raster, const char *src_srs,
 	const char *dst_srs,
 	double *scale_x, double *scale_y,
+	int *width, int *height,
 	double *ul_xw, double *ul_yw,
 	double *grid_xw, double *grid_yw,
 	double *skew_x, double *skew_y,

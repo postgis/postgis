@@ -6738,13 +6738,15 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	/* width */
 	if (!PG_ARGISNULL(3)) {
 		dim[0] = PG_GETARG_INT32(3);
-		if (FLT_NEQ(dim[0], 0)) dim_x = &dim[0];
+		if (dim[0] < 0) dim[0] = 0;
+		if (dim[0] != 0) dim_x = &dim[0];
 	}
 
 	/* height */
 	if (!PG_ARGISNULL(4)) {
 		dim[1] = PG_GETARG_INT32(4);
-		if (FLT_NEQ(dim[1], 0)) dim_y = &dim[1];
+		if (dim[1] < 0) dim[1] = 0;
+		if (dim[1] != 0) dim_y = &dim[1];
 	}
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: dim (x, y) = %d, %d", dim[0], dim[1]);
 
@@ -7253,6 +7255,10 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	double *skew_x = NULL;
 	double *skew_y = NULL;
 
+	int dim[2] = {0};
+	int *dim_x = NULL;
+	int *dim_y = NULL;
+
 	POSTGIS_RT_DEBUG(3, "RASTER_resample: Starting");
 
 	/* pgraster is null, return null */
@@ -7339,6 +7345,20 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 		if (FLT_NEQ(skew[1], 0)) skew_y = &skew[1];
 	}
 
+	/* width */
+	if (!PG_ARGISNULL(10)) {
+		dim[0] = PG_GETARG_INT32(10);
+		if (dim[0] < 0) dim[0] = 0;
+		if (dim[0] > 0) dim_x = &dim[0];
+	}
+
+	/* height */
+	if (!PG_ARGISNULL(11)) {
+		dim[1] = PG_GETARG_INT32(11);
+		if (dim[1] < 0) dim[1] = 0;
+		if (dim[1] > 0) dim_y = &dim[1];
+	}
+
 	/* check that at least something is to be done */
 	if (
 		(clamp_srid(dst_srid) == SRID_UNKNOWN) &&
@@ -7347,7 +7367,9 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 		(grid_xw == NULL) &&
 		(grid_yw == NULL) &&
 		(skew_x == NULL) &&
-		(skew_y == NULL)
+		(skew_y == NULL) &&
+		(dim_x == NULL) &&
+		(dim_y == NULL)
 	) {
 		elog(NOTICE, "No resampling parameters provided.  Returning original raster");
 		rt_raster_destroy(raster);
@@ -7368,6 +7390,15 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 		(scale_x == NULL && scale_y != NULL)
 	) {
 		elog(NOTICE, "Values must be provided for both X and Y when specifying the scale.  Returning original raster");
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
+	}
+	/* scale and width/height provided */
+	else if (
+		(scale_x != NULL || scale_y != NULL) &&
+		(dim_x != NULL || dim_y != NULL)
+	) {
+		elog(NOTICE, "Scale X/Y and width/height are mutually exclusive.  Only provide one.  Returning original raster");
 		rt_raster_destroy(raster);
 		PG_RETURN_POINTER(pgraster);
 	}
@@ -7397,6 +7428,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	rast = rt_raster_gdal_warp(raster, src_srs,
 		dst_srs,
 		scale_x, scale_y,
+		dim_x, dim_y,
 		NULL, NULL,
 		grid_xw, grid_yw,
 		skew_x, skew_y,
