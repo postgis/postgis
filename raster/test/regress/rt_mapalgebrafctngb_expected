@@ -1,0 +1,150 @@
+WARNING:  Raster is NULL. Returning NULL
+t
+NOTICE:  Raster is empty. Returning an empty raster
+t
+NOTICE:  Raster does not have the required band. Returning a raster without a band
+t
+t|t
+t|t
+t|t
+t|t
+t|t
+t|t
+t|t
+t|t
+NOTICE:  Value set for 4BUI band got clamped from -340282346638528859811704183484516925440.000000 to 0
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+NOTICE:  Value set for 4BUI band got clamped from 18.000000 to 15
+t|t
+t|t
+NOTICE:  Value set for 2BUI band got clamped from -340282346638528859811704183484516925440.000000 to 0
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+NOTICE:  Value set for 2BUI band got clamped from 9.000000 to 3
+t|t
+NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
+NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
+f

@@ -1746,6 +1746,23 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	LANGUAGE 'SQL' STABLE;
 
 -----------------------------------------------------------------------
+-- Neighborhood single raster map algebra
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_mapalgebrafctngb(
+    rast raster,
+    band integer,
+    pixeltype text,
+    ngbwidth integer,
+    ngbheight integer,
+    userfunction regprocedure,
+    nodatamode text,
+    variadic args text[]
+)
+    RETURNS raster
+    AS 'MODULE_PATHNAME', 'RASTER_mapAlgebraFctNgb'
+    LANGUAGE 'C' IMMUTABLE;
+
+-----------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_isempty(rast raster)

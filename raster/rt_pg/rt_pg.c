@@ -7,7 +7,7 @@
  * Copyright (C) 2011 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
- * Copyright (C) 2010-2011 David Zwarg <dzwarg@avencia.com>
+ * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>
@@ -245,6 +245,9 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS);
 
 /* two-raster MapAlgebra */
 Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
+
+/* one-raster neighborhood MapAlgebra */
+Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS);
 
 /* Replace function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
@@ -2940,7 +2943,9 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     PG_RETURN_POINTER(pgraster);
 }
 
-
+/*
+ * One raster user function MapAlgebra.
+ */
 PG_FUNCTION_INFO_V1(RASTER_mapAlgebraFct);
 Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 {
@@ -3137,7 +3142,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: Pixeltype set to %s",
         rt_pixtype_name(newpixeltype));
 
-    /* Construct expression for raster values */
+    /* Get the name of the callback user function for raster values */
     if (PG_ARGISNULL(3)) {
         elog(ERROR, "RASTER_mapAlgebraFct: Required function is missing. Returning NULL");
         PG_RETURN_NULL();
@@ -8822,6 +8827,537 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);
+}
+
+/**
+ * One raster neighborhood MapAlgebra
+ */
+PG_FUNCTION_INFO_V1(RASTER_mapAlgebraFctNgb);
+Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *pgraster = NULL;
+    rt_raster raster = NULL;
+    rt_raster newrast = NULL;
+    rt_band band = NULL;
+    rt_band newband = NULL;
+    int x, y, nband, width, height, ngbwidth, ngbheight, winwidth, winheight, u, v, nIndex, nNullItems;
+    double r, rpix;
+    double newnodatavalue = 0.0;
+    double newinitialvalue = 0.0;
+    double newval = 0.0;
+    rt_pixtype newpixeltype;
+    int ret = -1;
+    Oid oid;
+    Datum extraargs;
+    Datum tmpnewval;
+    ArrayType * neighborDatum;
+    char * strFromText = NULL;
+    text * txtNodataMode = NULL;
+    text * txtCallbackParam = NULL;
+    int intReplace = 0;
+    float fltReplace = 0;
+    bool valuereplace = false, pixelreplace, nNodataOnly = true, nNullSkip = false;
+    Datum * neighborData = NULL;
+    bool * neighborNulls = NULL;
+    int neighborDims[2];
+    int neighborLbs[2];
+    int16 typlen;
+    bool typbyval;
+    char typalign;
+
+    POSTGIS_RT_DEBUG(2, "RASTER_mapAlgebraFctNgb: STARTING...");
+
+    /* Check raster */
+    if (PG_ARGISNULL(0)) {
+        elog(WARNING, "Raster is NULL. Returning NULL");
+        PG_RETURN_NULL();
+    }
+
+
+    /* Deserialize raster */
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    raster = rt_raster_deserialize(pgraster, FALSE);
+    if (NULL == raster)
+    {
+ 		elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not deserialize raster");
+		PG_RETURN_NULL();    
+    }
+
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: Getting arguments...");
+
+    /* Get the rest of the arguments */
+
+    if (PG_ARGISNULL(1))
+        nband = 1;
+    else
+        nband = PG_GETARG_INT32(1);
+
+    if (nband < 1)
+        nband = 1;
+    
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: Creating new empty raster...");
+
+    /** 
+     * Create a new empty raster with having the same georeference as the
+     * provided raster
+     **/
+    width = rt_raster_get_width(raster);
+    height = rt_raster_get_height(raster);
+
+    newrast = rt_raster_new(width, height);
+
+    if ( NULL == newrast ) {
+        elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not create a new raster. "
+            "Returning NULL");
+        PG_RETURN_NULL();
+    }
+
+    rt_raster_set_scale(newrast, 
+            rt_raster_get_x_scale(raster),
+            rt_raster_get_y_scale(raster));
+
+    rt_raster_set_offsets(newrast,
+            rt_raster_get_x_offset(raster),
+            rt_raster_get_y_offset(raster));
+
+    rt_raster_set_skews(newrast,
+            rt_raster_get_x_skew(raster),
+            rt_raster_get_y_skew(raster));
+
+    rt_raster_set_srid(newrast, rt_raster_get_srid(raster));            
+
+
+    /**
+     * If this new raster is empty (width = 0 OR height = 0) then there is
+     * nothing to compute and we return it right now
+     **/
+    if (rt_raster_is_empty(newrast)) 
+    { 
+        elog(NOTICE, "Raster is empty. Returning an empty raster");
+        rt_raster_destroy(raster);
+
+        pgraster = rt_raster_serialize(newrast);
+        if (NULL == pgraster) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                "Returning NULL");
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_POINTER(pgraster);
+    }
+
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: Getting raster band %d...", nband);
+
+    /**
+     * Check if the raster has the required band. Otherwise, return a raster
+     * without band
+     **/
+    if (rt_raster_has_no_band(raster, nband - 1)) {
+        elog(NOTICE, "Raster does not have the required band. Returning a raster "
+            "without a band");
+        rt_raster_destroy(raster);
+
+        pgraster = rt_raster_serialize(newrast);
+        if (NULL == pgraster) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                "Returning NULL");
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_POINTER(pgraster);
+    }
+
+    /* Get the raster band */
+    band = rt_raster_get_band(raster, nband - 1);
+    if ( NULL == band ) {
+        elog(NOTICE, "Could not get the required band. Returning a raster "
+            "without a band");
+        rt_raster_destroy(raster);
+
+        pgraster = rt_raster_serialize(newrast);
+        if (NULL == pgraster) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                "Returning NULL");
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_POINTER(pgraster);
+    }
+
+    /*
+    * Get NODATA value
+    */
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: Getting NODATA value for band...");
+
+    if (rt_band_get_hasnodata_flag(band)) {
+        newnodatavalue = rt_band_get_nodata(band);
+    }
+
+    else {
+        newnodatavalue = rt_band_get_min_value(band);
+    }
+
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: NODATA value for band: %f",
+            newnodatavalue);
+    /**
+     * We set the initial value of the future band to nodata value. If nodata
+     * value is null, then the raster will be initialized to
+     * rt_band_get_min_value but all the values should be recomputed anyway
+     **/
+    newinitialvalue = newnodatavalue;
+
+    /**
+     * Set the new pixeltype
+     **/    
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: Setting pixeltype...");
+
+    if (PG_ARGISNULL(2)) {
+        newpixeltype = rt_band_get_pixtype(band);
+    }
+
+    else {
+        strFromText = text_to_cstring(PG_GETARG_TEXT_P(2)); 
+        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: Pixeltype parameter: %s", strFromText);
+        newpixeltype = rt_pixtype_index_from_name(strFromText);
+        pfree(strFromText);
+        if (newpixeltype == PT_END)
+            newpixeltype = rt_band_get_pixtype(band);
+    }
+    
+    if (newpixeltype == PT_END) {
+        elog(ERROR, "RASTER_mapAlgebraFctNgb: Invalid pixeltype. Returning NULL");
+        PG_RETURN_NULL();
+    }    
+    
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: Pixeltype set to %s (%d)",
+        rt_pixtype_name(newpixeltype), newpixeltype);
+
+    /* Get the name of the callback userfunction */
+    if (PG_ARGISNULL(5)) {
+        elog(ERROR, "RASTER_mapAlgebraFctNgb: Required function is missing. Returning NULL");
+        PG_RETURN_NULL();
+    }
+
+    oid = PG_GETARG_OID(5);
+
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: Got function oid: %d", oid);
+
+    /**
+     * Optimization: If the raster is only filled with nodata values return
+     * right now a raster filled with the nodatavalueexpr
+     * TODO: Call rt_band_check_isnodata instead?
+     **/
+    if (rt_band_get_isnodata_flag(band)) {
+
+        POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: Band is a nodata band, returning "
+                "a raster filled with nodata");
+
+        rt_raster_generate_new_band(newrast, newpixeltype,
+                newinitialvalue, TRUE, newnodatavalue, 0);
+
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(newrast);
+        if (NULL == pgraster) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                "Returning NULL");
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+
+        /* Free memory */
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+        
+        PG_RETURN_POINTER(pgraster);               
+    }
+
+
+    /**
+     * Create the raster receiving all the computed values. Initialize it to the
+     * new initial value
+     **/
+    rt_raster_generate_new_band(newrast, newpixeltype,
+            newinitialvalue, TRUE, newnodatavalue, 0);
+
+    /* Get the new raster band */
+    newband = rt_raster_get_band(newrast, 0);
+    if ( NULL == newband ) {
+        elog(NOTICE, "Could not modify band for new raster. Returning new "
+            "raster with the original band");
+
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(newrast);
+        if (NULL == pgraster) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                "Returning NULL");
+
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_POINTER(pgraster);      
+    }
+
+    /* Get the width of the neighborhood */
+    if (PG_ARGISNULL(3) || PG_GETARG_INT32(3) <= 0) {
+        elog(NOTICE, "Neighborhood width is NULL or <= 0. Returning new "
+            "raster with the original band");
+
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(newrast);
+        if (NULL == pgraster) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                "Returning NULL");
+
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_POINTER(pgraster);      
+    }
+
+    ngbwidth = PG_GETARG_INT32(3);
+    winwidth = ngbwidth * 2 + 1;
+
+    /* Get the height of the neighborhood */
+    if (PG_ARGISNULL(4) || PG_GETARG_INT32(4) <= 0) {
+        elog(NOTICE, "Neighborhood height is NULL or <= 0. Returning new "
+            "raster with the original band");
+
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(newrast);
+        if (NULL == pgraster) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                "Returning NULL");
+
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_POINTER(pgraster);      
+    }
+
+    ngbheight = PG_GETARG_INT32(4);
+    winheight = ngbheight * 2 + 1;
+
+    /* Get the type of NODATA behavior for the neighborhoods. */
+    if (PG_ARGISNULL(6)) {
+        elog(NOTICE, "Neighborhood NODATA behavior is not specified. Returning new "
+            "raster with the original band");
+
+        /* Serialize created raster */
+        pgraster = rt_raster_serialize(newrast);
+        if (NULL == pgraster) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                "Returning NULL");
+
+            PG_RETURN_NULL();
+        }
+
+        SET_VARSIZE(pgraster, pgraster->size);
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_POINTER(pgraster);      
+    }
+
+    txtNodataMode = PG_GETARG_TEXT_P(6);
+
+    txtCallbackParam = (text*)palloc(VARSIZE(txtNodataMode));
+    SET_VARSIZE(txtCallbackParam, VARSIZE(txtNodataMode));
+    memcpy((void *)VARDATA(txtCallbackParam), (void *)VARDATA(txtNodataMode), VARSIZE(txtNodataMode) - VARHDRSZ);
+
+    strFromText = text_to_cstring(txtNodataMode);
+    strFromText = strtoupper(strFromText);
+
+    if (strcmp(strFromText, "VALUE") == 0)
+        valuereplace = true;
+    else if (strcmp(strFromText, "IGNORE") < 0 && strcmp(strFromText, "NULL") < 0) {
+        // if the text is not "IGNORE" or "NULL", it may be a numerical value
+        if (sscanf(strFromText, "%d", &intReplace) <= 0 && sscanf(strFromText, "%f", &fltReplace) <= 0) {
+            // the value is NOT an integer NOR a floating point
+            elog(NOTICE, "Neighborhood NODATA mode is not recognized. Must be one of 'value', 'ignore', "
+                "'NULL', or a numeric value. Returning new raster with the original band");
+
+            /* clean up the nodatamode string */
+            pfree(txtCallbackParam);
+            pfree(strFromText);
+
+            /* Serialize created raster */
+            pgraster = rt_raster_serialize(newrast);
+            if (NULL == pgraster) {
+                elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
+                    "Returning NULL");
+
+                PG_RETURN_NULL();
+            }
+
+            SET_VARSIZE(pgraster, pgraster->size);
+
+            rt_raster_destroy(raster);
+            rt_raster_destroy(newrast);
+
+            PG_RETURN_POINTER(pgraster);      
+        }
+    }
+    else if (strcmp(strFromText, "NULL") == 0) {
+        /* this setting means that the neighborhood should be skipped if any of the values are null */
+        nNullSkip = true;
+    }
+   
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: Main computing loop (%d x %d)",
+            width, height);
+
+    extraargs = PG_GETARG_DATUM(7);
+
+    /* Allocate room for the neighborhood. */
+    neighborData = (Datum *)palloc(winwidth * winheight * sizeof(Datum));
+    neighborNulls = (bool *)palloc(winwidth * winheight * sizeof(bool));
+
+    /* The dimensions of the neighborhood array, for creating a multi-dimensional array. */
+    neighborDims[0] = winwidth;
+    neighborDims[1] = winheight;
+
+    /* The lower bounds for the new multi-dimensional array. */
+    neighborLbs[0] = 1;
+    neighborLbs[1] = 1;
+
+    /* Get information about the type of item in the multi-dimensional array (float8). */
+    get_typlenbyvalalign(FLOAT8OID, &typlen, &typbyval, &typalign);
+
+    for (x = 0 + ngbwidth; x < width - ngbwidth; x++) {
+        for(y = 0 + ngbheight; y < height - ngbheight; y++) {
+            /* populate an array with the pixel values in the neighborhood */
+            nIndex = 0;
+            nNullItems = 0;
+            nNodataOnly = true;
+            pixelreplace = false;
+            if (valuereplace) {
+                ret = rt_band_get_pixel(band, x, y, &rpix);
+                if (ret != -1 && FLT_NEQ(rpix, newnodatavalue)) {
+                    pixelreplace = true;
+                }
+            }
+            for (u = x - ngbwidth; u <= x + ngbwidth; u++) {
+                for (v = y - ngbheight; v <= y + ngbheight; v++) {
+                    ret = rt_band_get_pixel(band, u, v, &r);
+                    if (ret != -1) {
+                        if (FLT_NEQ(r, newnodatavalue)) {
+                            /* If the pixel value for this neighbor cell is not NODATA */
+                            neighborData[nIndex] = Float8GetDatum((double)r);
+                            neighborNulls[nIndex] = false;
+                            nNodataOnly = false;
+                        }
+                        else {
+                            /* If the pixel value for this neighbor cell is NODATA */
+                            if (valuereplace && pixelreplace) {
+                                /* Replace the NODATA value with the currently processing pixel. */
+                                neighborData[nIndex] = Float8GetDatum((double)rpix);
+                                neighborNulls[nIndex] = false;
+                                /* do not increment nNullItems */
+                            }
+                            else {
+                                neighborData[nIndex] = PointerGetDatum(NULL);
+                                neighborNulls[nIndex] = true;
+                                nNullItems++;
+                            }
+                        }
+                    }
+                    else {
+                        /* Fill this will NULL if we can't read the raster pixel. */
+                        neighborData[nIndex] = PointerGetDatum(NULL);
+                        neighborNulls[nIndex] = true;
+                        nNullItems++;
+                    }
+                    /* Next neighbor position */
+                    nIndex++;
+                }
+            }
+
+            /**
+             * We compute a value only for the withdata value neighborhood since the
+             * nodata value has already been set by the first optimization
+             **/
+            if (!nNodataOnly && !(nNullSkip && nNullItems > 0) && !(valuereplace && nNullItems > 0)) {
+                POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: (%dx%d), %dx%d neighborhood",
+                    x, y, winwidth, winheight);
+
+                neighborDatum = construct_md_array((void *)neighborData, neighborNulls, 2, neighborDims, neighborLbs, 
+                    FLOAT8OID, typlen, typbyval, typalign);
+
+                /* convert neighborData to a datum for OidFunctionCall3 */
+                tmpnewval = OidFunctionCall3(oid, PointerGetDatum(neighborDatum), CStringGetDatum(txtCallbackParam), extraargs);
+                newval = DatumGetFloat8(tmpnewval);
+
+                POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: new value = %f", 
+                    newval);
+                
+                rt_band_set_pixel(newband, x, y, newval);
+            }
+
+            /* reset the number of null items in the neighborhood */
+            nNullItems = 0;
+        }
+    }
+
+
+    /* clean up */
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: cleaning up memory (neighborNulls)");
+    pfree(neighborNulls);
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: cleaning up memory (neighborData)");
+    pfree(neighborData);
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: cleaning up memory (strFromText = '%s')", strFromText);
+    pfree(strFromText);
+    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: cleaning up memory (txtCallbackFaram)", txtCallbackParam);
+    pfree(txtCallbackParam);
+    
+    /* The newrast band has been modified */
+
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: raster modified, serializing it.");
+    /* Serialize created raster */
+
+    pgraster = rt_raster_serialize(newrast);
+    if (NULL == pgraster) {
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_NULL();
+    }
+
+    SET_VARSIZE(pgraster, pgraster->size);    
+
+    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: raster serialized");
+
+    rt_raster_destroy(raster);
+    rt_raster_destroy(newrast);
+
+    POSTGIS_RT_DEBUG(4, "RASTER_mapAlgebraFctNgb: returning raster");
+    
+    PG_RETURN_POINTER(pgraster);
 }
 
 /* ---------------------------------------------------------------- */
