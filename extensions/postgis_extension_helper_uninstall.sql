@@ -1,0 +1,17 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- 
+-- $Id: postgis_extension_helper_uninstall.sql 7936 2011-11-12 14:33:23Z robe $
+----
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://www.postgis.org
+--
+-- Copyright (C) 2011 Regina Obe <lr@pcorp.us>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- Author: Regina Obe <lr@pcorp.us>
+--  
+-- This drops extension helper functions
+-- and should be called at the end of the extension upgrade file
+DROP FUNCTION postgis_extension_remove_objects(text, text);

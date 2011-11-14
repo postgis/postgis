@@ -11,7 +11,7 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a2--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a5--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -53,16 +53,18 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: ../../topology/topology.sql
 sql/topology_upgrade_minor.sql:  sql_bits/topology.sql
 	 sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
-	 	 -e 's/^DROP AGGREGATE IF EXISTS\(.*\);/ALTER EXTENSION $(EXTENSION) DROP AGGREGATE \1;DROP AGGREGATE \1;/' \
 	 	 $< > $@
 
-sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
+sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/topology_comments.sql  ../postgis_extension_helper_uninstall.sql
+	cat $^ > $@
+	
+sql/$(EXTENSION)--2.0.0a2--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql
 	cp $< $@
 	
-sql/$(EXTENSION)--2.0.0a2--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
+sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql
 	cp $< $@
 	
-sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql: sql/topology_upgrade_minor.sql
+sql/$(EXTENSION)--2.0.0a5--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql
 	cp $< $@
 	
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql

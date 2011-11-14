@@ -47,15 +47,16 @@ BEGIN
 				LEFT JOIN pg_type AS ct ON ca.casttarget = ct.oid
 				LEFT JOIN pg_opclass As oc ON oc.oid = d.objid
 				LEFT JOIN pg_opfamily As ofa ON ofa.oid = d.objid
-		WHERE d.deptype = ''e'' and e.extname = $1 and c.relname = $2 AND COALESCE(proc.proisagg, false) = $4
-		ORDER BY item_type, item_name;';
+		WHERE d.deptype = ''e'' and e.extname = $1 and c.relname = $2 AND COALESCE(proc.proisagg, false) = $4;';
 		FOR var_r IN EXECUTE var_sql_list  USING param_extension, var_class, param_type, var_is_aggregate
         LOOP
             var_sql := var_sql || var_r.remove_command || ';';
         END LOOP;
         IF var_sql > '' THEN
             EXECUTE var_sql;
+            var_result := true;
         END IF;
+        RETURN var_result;
 END;
 $$
 LANGUAGE plpgsql VOLATILE;
