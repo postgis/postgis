@@ -179,12 +179,12 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx 
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, pixelsize float8)
     RETURNS raster
-    AS 'select st_makeemptyraster($1, $2, $3, $4, $5, $5, 0, 0, 0)'
+    AS $$ SELECT st_makeemptyraster($1, $2, $3, $4, $5, $5, 0, 0, ST_Srid('POINT(0 0)'::geometry)) $$
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8)
     RETURNS raster
-    AS 'select st_makeemptyraster($1, $2, $3, $4, $5, $6, $7, $8, 0)'
+    AS $$ SELECT st_makeemptyraster($1, $2, $3, $4, $5, $6, $7, $8, ST_Srid('POINT(0 0)'::geometry)) $$
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
