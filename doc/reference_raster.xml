@@ -217,12 +217,12 @@
     </variablelist>    
     <para>An example session using the loader to create an input file and uploading it might look like this:</para>
         
-    <programlisting>python raster2pgsql.py -s 4269 -I -r *.tif -F myschema.demelevation -o elev.sql
+    <programlisting>python raster2pgsql.py -s 4269 -I -r *.tif -F -t myschema.demelevation -o elev.sql
 psql -d gisdb -f elev.sql</programlisting>
         
     <para>A conversion and upload can be done all in one step using UNIX pipes:</para>
         
-    <programlisting>python raster2pgsql.py -s 4269 -I -r *.tif -F myschema.demelevation | psql -d gisdb</programlisting>
+    <programlisting>python raster2pgsql.py -s 4269 -I -r *.tif -F -t myschema.demelevation | psql -d gisdb</programlisting>
     
     
     <para>For the examples in this reference we will be using a raster table of dummy rasters - Formed with the following code </para>
