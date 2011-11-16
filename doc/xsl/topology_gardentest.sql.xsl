@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:pgis="http://www.postgis.org/pgis">
 <!-- ********************************************************************
- * $Id: topology_gardentest.sql.xsl 6490 2010-12-23 17:41:27Z robe $
+ * $Id$
  ********************************************************************
 	 Copyright 2008-2010, Regina Obe
 	 License: BSD

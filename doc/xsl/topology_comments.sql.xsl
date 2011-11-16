@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <!-- ********************************************************************
-     $Id: topology_comments.sql.xsl 6130 2010-10-26 14:47:57Z robe $
+     $Id$
      ********************************************************************
 	 Copyright 2008, Regina Obe
      License: BSD
