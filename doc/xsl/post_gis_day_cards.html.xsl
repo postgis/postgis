@@ -52,20 +52,24 @@ h1 {
 			can have with these cards is priceless. Here is a small listing of the infinite number of games you can play with Post GIS cards:</p>
 			<ul><li><b>Name that thing</b> In this game you have the descriptions face up and have the opponent guess the name of the function, type, or operator.</li>
 				<li><b>What does it do?</b> In this game you have the name of the thing face up and have the opponent describe what the thing does or is for.  Your friends and even
-				strangers you tricked into playing this game will be amazed at your mastery of the 400 someodd functions PostGIS provides. <em>To be able to exercise all 400 someodd functions, you need to be running PostGIS 2.0+</em></li> 
+				strangers you tricked into playing this game will be amazed at your mastery of the 400 some-odd functions PostGIS provides. <em>To be able to exercise all 400 some-odd functions, you need to be running PostGIS 2.0+</em></li> 
 				<li><b>Post GIS war game</b> This game requires no knowledge of PostGIS what-so-ever. In this game, you play with the descriptions face up. Even your kids will like this game, and may learn how to use PostGIS better than you.
-					There are two joker cards -- the &quot;What Is Post GIS?&quot; and &quot;What does Post GIS?&quot;.  Any player that is dealt either of these cards wins - period.  For other cards the order of precendence is: 
-						<sup>1</sup> - Is super and beats anything else except another <sup>1</sup> or joker card. In event of multiple <sup>1</sup>, the one that happens alphabetically first trumps the others.  Symbols always trump letters. <br />
+					There are two joker cards -- the &quot;What Is Post GIS?&quot; and &quot;What does Post GIS?&quot;.  Any player that is dealt either of these cards wins - period.  For other cards the order of precedence is: 
+						<sup>1</sup> - Is super and beats anything else except another <sup>1</sup> or joker card. In the event of multiple <sup>1</sup>, the one that happens alphabetically first trumps the others.  Symbols always trump letters. <br />
 						<sup>2</sup> - Second favorite, alphabetical rules apply (is beaten by a joker, <sup>1</sup>) <br />
 						<sup>mm</sup> - third highest ranking <br />
 						All other cards precedence by alphabetical order.</li>
 				<li><b>Post GIS in a language I don't understand</b> To celebrate the ubiquity of PostGIS, you can create Post GIS playing cards in a language
 					you don't understand.  Here is what you do.  Go to <a href="http://translate.google.com" target="_blank">http://translate.google.com</a> and paste in the URL to this page in the first text box (make sure it is set to English),
 					in the <b>To:</b> drop down, pick a language you do not know, but preferably you have friends that speak that language and can laugh at your grammar and pronounciation. In no time you'll be able to impress your friends living far far away with your command of their language.
-					<b><span style='color:red'>Warning</span> because of the great number of functions PostGIS has to offer, Google (or any other translator) may refuse to translate all cards leaving you with a mix of some other language and English cards to sort out.</b>
+					<b><span style='color:red'>Warning: </span> because of the great number of functions PostGIS has to offer, Google (or any other translator) may refuse to translate all cards leaving you with a mix of some other language and English cards.</b>
 				</li>	
 				<li><b>Post GIS in a language I do understand</b> Similar to the I don't understand game, except you pick a non-english language that you do understand. Enjoy many moments of laughter reading machine generated translations that are sorta accurate but often comical.
 					</li>
+					<li><b>The Scotch and Milk moment, the beginning of all brilliant ideas</b> You realize there are 66 pages each of which has 6 cards. You realize you are a grown-up and grown-ups look silly cutting out cards from paper unless if accompanied by a minor.  You have a kid staring at you wondering why this day is so special.  <em>Eureka Moment</em>
+					Pour yourself a glass of scotch and the kid a glass of milk and whip out the old scissors, glue, and print outs. 
+					<b>Serving suggestion:</b> It might be a good idea to pour the Scotch in a clear glass so you don't hand out the wrong glass to the kids.
+					After the second helping, it might be prudent to stay away from the scissors.</li>
 					<li>Invent your own Post GIS card game.  The possiblities are only limited by your imagination.</li>
 				</ul>
 			<p style='page-break-before:always' />
