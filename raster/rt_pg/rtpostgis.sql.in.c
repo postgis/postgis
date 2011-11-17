@@ -1835,7 +1835,7 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(
 	band int DEFAULT 1,
 	OUT pixeltype text,
 	OUT hasnodata boolean,
-	OUT nodatavalue float4,
+	OUT nodatavalue double precision,
 	OUT isoutdb boolean,
 	OUT path text
 )

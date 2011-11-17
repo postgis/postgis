@@ -358,6 +358,7 @@ strsplit(const char *str, const char *delimiter, int *n) {
 	char **rtn = NULL;
 	char *token = NULL;
 
+	*n = 0;
 	if (!str)
 		return NULL;
 
@@ -386,7 +387,6 @@ strsplit(const char *str, const char *delimiter, int *n) {
 		return rtn;
 	}
 
-	*n = 0;
 	token = strtok(tmp, delimiter);
 	while (token != NULL) {
 		if (*n < 1) {
@@ -6252,7 +6252,9 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 							exprset[j]->dst.max = val;
 					}
 				}
+				pfree(dash_set);
 			}
+			pfree(colon_set);
 
 			POSTGIS_RT_DEBUGF(3, "RASTER_reclass: or: %f - %f nr: %f - %f"
 				, exprset[j]->src.min
@@ -6262,6 +6264,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			);
 			j++;
 		}
+		pfree(comma_set);
 
 		/* pixel type */
 		tupv = GetAttributeByName(tup, "pixeltype", &isnull);
@@ -7636,7 +7639,10 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	if (rt_band_get_hasnodata_flag(band)) hasnodatavalue = TRUE;
 
 	/* nodatavalue */
-	nodatavalue = rt_band_get_nodata(band);
+	if (hasnodatavalue)
+		nodatavalue = rt_band_get_nodata(band);
+	else
+		nodatavalue = 0;
 
 	/* path */
 	tmp = rt_band_get_ext_path(band);
