@@ -1777,7 +1777,7 @@ Datum RASTER_getBandNoDataValue(PG_FUNCTION_ARGS)
 
     rt_raster_destroy(raster);
 
-    PG_RETURN_FLOAT4(nodata);
+    PG_RETURN_FLOAT8(nodata);
 }
 
 

@@ -1031,8 +1031,8 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[] DEFAULT NULL, s
 	DECLARE
 		i int;
 		num_bands int;
-		nodata int;
-		last_nodata int;
+		nodata double precision;
+		last_nodata double precision;
 	BEGIN
 		num_bands := st_numbands($1);
 
@@ -1780,12 +1780,12 @@ CREATE OR REPLACE FUNCTION st_hasnoband(rast raster, nband int DEFAULT 1)
 -----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION st_bandnodatavalue(rast raster, band integer)
-    RETURNS float4
+    RETURNS double precision
     AS 'MODULE_PATHNAME','RASTER_getBandNoDataValue'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_bandnodatavalue(raster)
-    RETURNS float4
+    RETURNS double precision
     AS $$ SELECT st_bandnodatavalue($1, 1) $$
     LANGUAGE SQL IMMUTABLE STRICT;
 
