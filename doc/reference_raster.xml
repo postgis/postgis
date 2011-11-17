@@ -2502,14 +2502,10 @@ FROM dummy_rast WHERE rid=2) As foo;
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
-				<funcprototype>
-					<funcdef>integer <function>ST_BandNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
 				  <funcprototype>
-					<funcdef>integer <function>ST_BandNoDataValue</function></funcdef>
+					<funcdef>double precision <function>ST_BandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>

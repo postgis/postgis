@@ -84,3 +84,8 @@ DROP FUNCTION IF EXISTS ST_HasNoBand(raster);
 
 --function out parameters changed so can not just create or replace
 DROP FUNCTION IF EXISTS ST_BandMetaData(raster, integer);
+
+--function out parameter changed
+DROP FUNCTION IF EXISTS ST_BandNoDataValue(raster, integer);
+--function no longer exists
+DROP FUNCTION IF EXISTS ST_BandNoDataValue(raster);

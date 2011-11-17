@@ -1779,15 +1779,10 @@ CREATE OR REPLACE FUNCTION st_hasnoband(rast raster, nband int DEFAULT 1)
 -- Raster Band Accessors
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_bandnodatavalue(rast raster, band integer)
+CREATE OR REPLACE FUNCTION st_bandnodatavalue(rast raster, band integer DEFAULT 1)
     RETURNS double precision
     AS 'MODULE_PATHNAME','RASTER_getBandNoDataValue'
     LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_bandnodatavalue(raster)
-    RETURNS double precision
-    AS $$ SELECT st_bandnodatavalue($1, 1) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, band integer,
         forceChecking boolean)
