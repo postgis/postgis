@@ -5,23 +5,25 @@ CREATE OR REPLACE FUNCTION ST_Sum(matrix float[][], nodatamode text, variadic ar
     RETURNS float AS
     $$
     DECLARE
+				_matrix float[][];
         x1 integer;
         x2 integer;
         y1 integer;
         y2 integer;
         sum float;
     BEGIN
+				_matrix := matrix;
         sum := 0;
         FOR x in array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
             FOR y in array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
-                IF matrix[x][y] IS NULL THEN
+                IF _matrix[x][y] IS NULL THEN
                     IF nodatamode = 'ignore' THEN
-                        matrix[x][y] := 0;
+                        _matrix[x][y] := 0;
                     ELSE
-                        matrix[x][y] := nodatamode::float;
+                        _matrix[x][y] := nodatamode::float;
                     END IF;
                 END IF;
-                sum := sum + matrix[x][y];
+                sum := sum + _matrix[x][y];
             END LOOP;
         END LOOP;
         RETURN sum;
