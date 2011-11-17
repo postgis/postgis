@@ -47,7 +47,7 @@ h1 {
 
 </style>
 	</head><body><h1 style='text-align:center'>Post GIS ]]></xsl:text> <xsl:text><![CDATA[ Day 2011 Commemorative Playing Cards</h1>
-			<a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src='images/ccbysa.png' /></a><a href="http://www.postgis.org">http://www.postgis.org</a>
+			<a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src='images/ccbysa.png' /></a>&nbsp;&nbsp; <a href="http://www.postgis.org">http://www.postgis.org</a>
 			<p>Celebrate this Post GIS day with these versatile Post GIS day commemorative playing cards. The number of games and fun-filled hours you
 			can have with these cards is priceless. Here is a small listing of the infinite number of games you can play with Post GIS cards:</p>
 			<ul><li><b>Name that thing</b> In this game you have the descriptions face up and have the opponent guess the name of the function, type, or operator.</li>
