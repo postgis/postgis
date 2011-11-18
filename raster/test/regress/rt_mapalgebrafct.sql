@@ -27,3 +27,6 @@ SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraFct(rast, 1, '2BUI', 'raster_
 SELECT ST_Value(rast, 1, 1) + 13, ST_Value(ST_MapAlgebraFct(rast, 1, NULL, 'raster_plus_arg1(float, text[])'::regprocedure, '13'), 1, 1) FROM ST_TestRaster(0, 0, 200) AS rast;
 
 SELECT ST_Value(rast, 1, 1) * 21 + 14, ST_Value(ST_MapAlgebraFct(rast, 1, NULL, 'raster_polynomial(float, text[])'::regprocedure, '21', '14'), 1, 1) FROM ST_TestRaster(0, 0, 300) AS rast;
+
+-- Test null return from a user function = NODATA cell value
+SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraFct(rast, 1, NULL, 'raster_nullage(float, text[])'::regprocedure), 1, 1) FROM ST_TestRaster(0, 0, 100) AS rast;

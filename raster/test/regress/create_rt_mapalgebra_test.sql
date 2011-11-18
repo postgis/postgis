@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION raster_plus_twenty(pixel FLOAT, VARIADIC args TEXT[])
         RETURN pixel + 20;
     END;
     $$ 
-    LANGUAGE 'plpgsql';
+    LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_plus_arg1(pixel FLOAT, VARIADIC args TEXT[])
     RETURNS FLOAT AS 
@@ -34,7 +34,7 @@ CREATE OR REPLACE FUNCTION raster_plus_arg1(pixel FLOAT, VARIADIC args TEXT[])
         RETURN pixel + x;
     END;
     $$ 
-    LANGUAGE 'plpgsql';
+    LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION raster_polynomial(pixel FLOAT, VARIADIC args TEXT[])
     RETURNS FLOAT AS
@@ -52,4 +52,13 @@ CREATE OR REPLACE FUNCTION raster_polynomial(pixel FLOAT, VARIADIC args TEXT[])
         RETURN m * pixel + b;
     END;
     $$
-    LANGUAGE 'plpgsql';
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+ CREATE OR REPLACE FUNCTION raster_nullage(pixel FLOAT, VARIADIC args TEXT[])
+    RETURNS FLOAT AS
+    $$
+    BEGIN
+        RETURN NULL;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;

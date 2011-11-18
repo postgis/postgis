@@ -2962,7 +2962,8 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     rt_pixtype newpixeltype;
     int ret = -1;
     Oid oid;
-    Datum extraargs;
+    FmgrInfo cbinfo;
+    FunctionCallInfoData cbdata;
     Datum tmpnewval;
     char * strFromText = NULL;
 
@@ -3010,6 +3011,9 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     if ( NULL == newrast ) {
         elog(ERROR, "RASTER_mapAlgebraFct: Could not create a new raster. "
             "Returning NULL");
+
+        rt_raster_destroy(raster);
+
         PG_RETURN_NULL();
     }
 
@@ -3136,6 +3140,10 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     
     if (newpixeltype == PT_END) {
         elog(ERROR, "RASTER_mapAlgebraFct: Invalid pixeltype. Returning NULL");
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
         PG_RETURN_NULL();
     }    
     
@@ -3145,12 +3153,73 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     /* Get the name of the callback user function for raster values */
     if (PG_ARGISNULL(3)) {
         elog(ERROR, "RASTER_mapAlgebraFct: Required function is missing. Returning NULL");
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
         PG_RETURN_NULL();
     }
 
     oid = PG_GETARG_OID(3);
+    if (oid == InvalidOid) {
+        elog(ERROR, "RASTER_mapAlgebraFct: Got invalid function object id. Returning NULL");
 
-    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: Got function oid: %d", oid);
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_NULL();
+    }
+
+    fmgr_info(oid, &cbinfo);
+
+    /* function cannot return set */
+    if (cbinfo.fn_retset) {
+        elog(ERROR, "RASTER_mapAlgebraFct: Function provided must return double precision not resultset");
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_NULL();
+    }
+    /* function should have correct # of args */
+    else if (cbinfo.fn_nargs != 2) {
+        elog(ERROR, "RASTER_mapAlgebraFct: Function does not have two input parameters");
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_NULL();
+    }
+
+    if (func_volatile(oid) == 'v') {
+        elog(NOTICE, "Function provided is VOLATILE. Unless required and for best performance, function should be IMMUTABLE or STABLE");
+    }
+
+    /* prep function call data */
+#if POSTGIS_PGSQL_VERSION <= 90
+    InitFunctionCallInfoData(cbdata, &cbinfo, 2, InvalidOid, NULL);
+#else
+    InitFunctionCallInfoData(cbdata, &cbinfo, 2, InvalidOid, NULL, NULL);
+#endif
+    memset(cbdata.argnull, FALSE, 2);
+    
+    /* check that the function isn't strict if the args are null. */
+    if (PG_ARGISNULL(4)) {
+        if (cbinfo.fn_strict) {
+            elog(ERROR, "RASTER_mapAlgebraFct: Strict callback functions cannot have null parameters");
+
+            rt_raster_destroy(raster);
+            rt_raster_destroy(newrast);
+
+            PG_RETURN_NULL();
+        }
+
+        cbdata.arg[1] = (Datum)NULL;
+        cbdata.argnull[1] = TRUE;
+    }
+    else {
+        cbdata.arg[1] = PG_GETARG_DATUM(4);
+    }
 
     /**
      * Optimization: If the raster is only filled with nodata values return
@@ -3212,12 +3281,9 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 
         PG_RETURN_POINTER(pgraster);      
     }
-
     
     POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: Main computing loop (%d x %d)",
             width, height);
-
-    extraargs = PG_GETARG_DATUM(4);
 
     for (x = 0; x < width; x++) {
         for(y = 0; y < height; y++) {
@@ -3227,13 +3293,31 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
              * We compute a value only for the withdata value pixel since the
              * nodata value has already been set by the first optimization
              **/
-            if (ret != -1 && FLT_NEQ(r, newnodatavalue)) {
+            if (ret != -1) {
+                if (FLT_EQ(r, newnodatavalue)) {
+                    if (cbinfo.fn_strict) {
+                        POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFct: Strict callbacks cannot accept NULL arguments, skipping NODATA cell.");
+                        continue;
+                    }
+                    cbdata.argnull[0] = TRUE;
+                    cbdata.arg[0] = (Datum)NULL;
+                }
+                else {
+                    cbdata.argnull[0] = FALSE;
+                    cbdata.arg[0] = Float8GetDatum(r);
+                }
+
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: (%dx%d), r = %f",
                     x, y, r);
                    
-                /* convert r to a datum for OidFunctionCall2 */
-                tmpnewval = OidFunctionCall2(oid,Float8GetDatum(r),extraargs);
-                newval = DatumGetFloat8(tmpnewval);
+                tmpnewval = FunctionCallInvoke(&cbdata);
+
+                if (cbdata.isnull) {
+                    newval = newnodatavalue;
+                }
+                else {
+                    newval = DatumGetFloat8(tmpnewval);
+                }
 
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: new value = %f", 
                     newval);
