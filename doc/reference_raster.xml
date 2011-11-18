@@ -6188,7 +6188,7 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 2, 2, 'rast_avg(float[][], text, te
 		  <refsection>
 			<title>See Also</title>
 		
-			<para><xref linkend="ST_MapAlgebraFct" />, <xref linkend="ST_Rescale" /></para>
+			<para><xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_Rescale" /></para>
 		  </refsection>
 		</refentry>
 		
