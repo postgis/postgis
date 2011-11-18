@@ -114,6 +114,13 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 		  <ulink url="http://xmlsoft.org/downloads.html">http://xmlsoft.org/downloads.html</ulink>.
 		</para>
 	  </listitem>
+	  <listitem>
+		<para>
+		  JSON-C, version 0.9 or higher. JSON-C is currently used to import GeoJSON via the
+		  function ST_GeomFromGeoJson. JSON-C is available for download from
+		  <ulink url="http://oss.metaparadigm.com/json-c/">http://oss.metaparadigm.com/json-c/</ulink>.
+		</para>
+	  </listitem>
 	  
 	  <listitem>
 		<para>

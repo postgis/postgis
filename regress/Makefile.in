@@ -3,7 +3,7 @@ TMPDIR?=/tmp
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
-HAVE_LIBXML2=@HAVE_LIBXML2@
+HAVE_JSON=@HAVE_JSON@
 
 # MingW hack: rather than use PGSQL_BINDIR directly, we change
 # to the directory and then use "pwd" to return the path. This
@@ -115,6 +115,13 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 		unaryunion \
 		clean \
 		relate_bnr
+endif
+
+ifeq ($(HAVE_JSON),Yes)
+	# JSON-C adds:
+	# ST_GeomFromGeoJSON()
+	TESTS += \
+		in_geojson 
 endif
 
 all install uninstall distclean:

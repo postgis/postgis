@@ -39,6 +39,7 @@ PG_OBJS=lwgeom_debug.o \
 	lwgeom_export.o \
 	lwgeom_in_gml.o \
 	lwgeom_in_kml.o \
+	lwgeom_in_geojson.o \
 	lwgeom_triggers.o \
 	lwgeom_dump.o \
 	lwgeom_functions_lrs.o \

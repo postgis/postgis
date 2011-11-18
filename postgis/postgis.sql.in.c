@@ -3200,6 +3200,15 @@ CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- GEOJSON INPUT
+-----------------------------------------------------------------------
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','geom_from_geojson'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- SVG OUTPUT
 -----------------------------------------------------------------------
 -- Availability: 1.2.2

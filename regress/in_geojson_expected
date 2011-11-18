@@ -1,0 +1,6 @@
+geomfromgeojson_01|MULTIPOINT(1 1,1 1)
+geomfromgeojson_02|MULTIPOINT(1 1,1 1)
+geomfromgeojson_03|POINT(1 1)
+geomfromgeojson_04|LINESTRING(0 0,1 1)
+geomfromgeojson_05|POLYGON((0 0,1 1,1 0,0 0))
+geomfromgeojson_06|MULTIPOLYGON(((0 0,1 1,1 0,0 0)))

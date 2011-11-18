@@ -27,6 +27,9 @@
 /* Define to 1 if you have the `proj' library (-lproj). */
 #undef HAVE_LIBPROJ
 
+/* Define to 1 if you have the `json-c' */
+#undef HAVE_LIBJSON
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 

@@ -1500,7 +1500,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	SPIcode = SPI_finish();
 	if (SPIcode != SPI_OK_FINISH )
 	{
-		elog(ERROR, "geometry_estimated_extent: couldnt disconnect from SPI");
+		elog(ERROR, "geometry_estimated_extent: couldn't disconnect from SPI");
 	}
 
 	/* TODO: enlarge the box by some factor */

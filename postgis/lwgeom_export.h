@@ -10,3 +10,4 @@
  **********************************************************************/
 
 char * getSRSbySRID(int SRID, bool short_crs);
+int getSRIDbySRS(const char* SRS);
