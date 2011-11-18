@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 -- $Id$
 --
--- Copyright (c) 2010 David Zwarg <dzwarg@avencia.com>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
+-- Copyright (c) 2010 David Zwarg <dzwarg@azavea.com>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.

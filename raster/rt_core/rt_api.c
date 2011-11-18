@@ -7,7 +7,7 @@
  * Copyright (C) 2011 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
- * Copyright (C) 2010-2011 David Zwarg <dzwarg@avencia.com>
+ * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
  * Copyright (C) 2009-2011 Pierre Racine <pierre.racine@sbf.ulaval.ca>
  * Copyright (C) 2009-2011 Mateusz Loskot <mateusz@loskot.net>
  * Copyright (C) 2008-2009 Sandro Santilli <strk@keybit.net>

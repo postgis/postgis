@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 -- $Id$
 --
--- Copyright (c) 2010 David Zwarg <dzwarg@avencia.com>
+-- Copyright (c) 2010 David Zwarg <dzwarg@azavea.com>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
