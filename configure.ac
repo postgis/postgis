@@ -824,10 +824,10 @@ if test "x$RASTER" = "xraster"; then dnl # {
     POSTGIS_RASTER_BUILD_DATE=`date -u "+%Y-%m-%d %H:%M:%S"`
     POSTGIS_RASTER_SCRIPTS_VERSION="$POSTGIS_RASTER_LIB_VERSION"
 
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_VERSION], ["$POSTGIS_RASTER_VERSION"], [WKTRaster version])
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_LIB_VERSION], ["$POSTGIS_RASTER_LIB_VERSION"], [WKTRaster library version])
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_BUILD_DATE], ["$POSTGIS_RASTER_BUILD_DATE"], [WKTRaster build date])
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_SCRIPTS_VERSION], ["$POSTGIS_RASTER_SCRIPTS_VERSION"], [WKTRaster scripts version])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_VERSION], ["$POSTGIS_RASTER_VERSION"], [PostGIS Raster version])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_LIB_VERSION], ["$POSTGIS_RASTER_LIB_VERSION"], [PostGIS Raster library version])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_BUILD_DATE], ["$POSTGIS_RASTER_BUILD_DATE"], [PostGIS Raster build date])
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_SCRIPTS_VERSION], ["$POSTGIS_RASTER_SCRIPTS_VERSION"], [PostGIS Raster scripts version])
 
     AC_SUBST([POSTGIS_RASTER_VERSION])
     AC_SUBST([POSTGIS_RASTER_LIB_VERSION])
@@ -848,6 +848,15 @@ if test "x$RASTER" = "xraster"; then dnl # {
     AC_SUBST([LIBLWGEOM_LDFLAGS])
     AC_SUBST([LIBPGCOMMON_CFLAGS])
     AC_SUBST([LIBPGCOMMON_LDFLAGS])
+
+    dnl ===========================================================================
+    dnl Allow output of double truncation warnings with --with-raster-dblwarning
+    dnl ===========================================================================
+
+    AC_ARG_WITH([raster-dblwarning], AC_HELP_STRING([--with-raster-dblwarning], [output double truncation warnings.  Only used with --with-raster]), 
+        [POSTGIS_RASTER_WARN_ON_TRUNCATION=1], [POSTGIS_RASTER_WARN_ON_TRUNCATION=0]) 
+
+    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_WARN_ON_TRUNCATION], [$POSTGIS_RASTER_WARN_ON_TRUNCATION], [Define to 1 if a warning is outputted every time a double is truncated])
 
     dnl ========================================================================
     dnl Determine GDAL Support
@@ -870,7 +879,7 @@ if test "x$RASTER" = "xraster"; then dnl # {
 	GDAL_MIN_VERSION_NUMBER=160 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
 
     AC_ARG_WITH([gdalconfig],
-		AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path)]),
+		AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path).  Only used with --with-raster]),
         	[GDAL_CONFIG="$withval"], [GDAL_CONFIG=""])
 
     AC_MSG_CHECKING([for GDAL >= $GDAL_MIN_VERSION])

@@ -549,79 +549,97 @@ rtwarn(const char *fmt, ...) {
 
 
 int
-rt_util_display_dbl_trunc_warning(double initialvalue,
-                                  int32_t checkvalint,
-                                  uint32_t checkvaluint,
-                                  float checkvalfloat,
-                                  double checkvaldouble,
-                                  rt_pixtype pixtype) {
-    int result = 0;
+rt_util_dbl_trunc_warning(
+	double initialvalue,
+	int32_t checkvalint, uint32_t checkvaluint,
+	float checkvalfloat, double checkvaldouble,
+	rt_pixtype pixtype
+) {
+	int result = 0;
 
+	switch (pixtype) {
+		case PT_1BB:
+		case PT_2BUI:
+		case PT_4BUI:
+		case PT_8BSI:
+		case PT_8BUI:
+		case PT_16BSI:
+		case PT_16BUI:
+		case PT_32BSI: {
+			if (fabs(checkvalint - initialvalue) >= 1) {
+#if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
+				rtwarn("Value set for %s band got clamped from %f to %d",
+					rt_pixtype_name(pixtype),
+					initialvalue, checkvalint
+				);
+#endif
+				result = 1;
+			}
+			else if (FLT_NEQ(checkvalint, initialvalue)) {
+#if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
+				rtwarn("Value set for %s band got truncated from %f to %d",
+					rt_pixtype_name(pixtype),
+					initialvalue, checkvalint
+				);
+#endif
+				result = 1;
+			}
+			break;
+		}
+		case PT_32BUI: {
+			if (fabs(checkvaluint - initialvalue) >= 1) {
+#if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
+				rtwarn("Value set for %s band got clamped from %f to %u",
+					rt_pixtype_name(pixtype),
+					initialvalue, checkvaluint
+				);
+#endif
+				result = 1;
+			}
+			else if (FLT_NEQ(checkvaluint, initialvalue)) {
+#if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
+				rtwarn("Value set for %s band got truncated from %f to %u",
+					rt_pixtype_name(pixtype),
+					initialvalue, checkvaluint
+				);
+#endif
+				result = 1;
+			}
+			break;
+		}
+		case PT_32BF: {
+			/*
+				For float, because the initial value is a double,
+				there is very often a difference between the desired value and the obtained one
+			*/
+			if (FLT_NEQ(checkvalfloat, initialvalue)) {
+#if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
+				rtwarn("Value set for %s band got converted from %f to %f",
+					rt_pixtype_name(pixtype),
+					initialvalue, checkvalfloat
+				);
+#endif
+				result = 1;
+			}
+			break;
+		}
+		case PT_64BF: {
+			if (FLT_NEQ(checkvaldouble, initialvalue)) {
+#if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
+				rtwarn("Value set for %s band got converted from %f to %f",
+					rt_pixtype_name(pixtype),
+					initialvalue, checkvaldouble
+				);
+#endif
+				result = 1;
+			}
+			break;
+		}
+		case PT_END:
+			break;
+	}
 
-
-    switch (pixtype)
-    {
-        case PT_1BB:
-        case PT_2BUI:
-        case PT_4BUI:
-        case PT_8BSI:
-        case PT_8BUI:
-        case PT_16BSI:
-        case PT_16BUI:
-        case PT_32BSI:
-        {
-            if (fabs(checkvalint - initialvalue) >= 1) {
-                rtwarn("Value set for %s band got clamped from %f to %d",
-                    rt_pixtype_name(pixtype),
-                    initialvalue, checkvalint);
-                result = -1;
-            }
-            else if (FLT_NEQ(checkvalint, initialvalue)) {
-                rtwarn("Value set for %s band got truncated from %f to %d",
-                    rt_pixtype_name(pixtype),
-                    initialvalue, checkvalint);
-                result = -1;
-            }
-            break;
-        }
-        case PT_32BUI:
-        {
-            if (fabs(checkvaluint - initialvalue) >= 1) {
-                rtwarn("Value set for %s band got clamped from %f to %u",
-                    rt_pixtype_name(pixtype),
-                    initialvalue, checkvaluint);
-                result = -1;
-            }
-            else if (FLT_NEQ(checkvaluint, initialvalue)) {
-                rtwarn("Value set for %s band got truncated from %f to %u",
-                    rt_pixtype_name(pixtype),
-                    initialvalue, checkvaluint);
-                result = -1;
-            }
-            break;
-        }
-        case PT_32BF:
-        {
-            /* For float, because the initial value is a double,
-            there is very often a difference between the desired value and the obtained one */
-            if (FLT_NEQ(checkvalfloat, initialvalue))
-                rtwarn("Value set for %s band got converted from %f to %f",
-                    rt_pixtype_name(pixtype),
-                    initialvalue, checkvalfloat);
-            break;
-        }
-        case PT_64BF:
-        {
-            if (FLT_NEQ(checkvaldouble, initialvalue))
-                rtwarn("Value set for %s band got converted from %f to %f",
-                    rt_pixtype_name(pixtype),
-                    initialvalue, checkvaldouble);
-            break;
-        }
-        case PT_END:
-            break;
-    }
-    return result;
+	return result;
 }
 
 /*--- Debug and Testing Utilities --------------------------------------------*/
@@ -1029,7 +1047,7 @@ setBits(char* ch, double val, int bits, int bitOffset) {
 
     /* clear all but significant bits from ival */
     ival &= mask;
-#ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
+#if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
     if (ival != val) {
         rtwarn("Pixel value for %d-bits band got truncated"
                 " from %g to %hhu\n", bits, val, ival);
@@ -1094,6 +1112,15 @@ rt_band_get_isnodata_flag(rt_band band) {
     return band->isnodata;
 }
 
+/**
+ * Set nodata value
+ *
+ * @param band : the band to set nodata value to
+ * @param val : the nodata value
+ *
+ * @return 0 on success, -1 on error (invalid pixel type),
+ *   1 on truncation/clamping/converting.
+ */
 int
 rt_band_set_nodata(rt_band band, double val) {
     rt_pixtype pixtype = PT_END;
@@ -1197,12 +1224,6 @@ rt_band_set_nodata(rt_band band, double val) {
     /* the nodata value was just set, so this band has NODATA */
     rt_band_set_hasnodata_flag(band, 1);
 
-#ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
-    if (rt_util_display_dbl_trunc_warning(val, checkvalint, checkvaluint, checkvalfloat,
-                                      checkvaldouble, pixtype))
-        return -1;
-#endif
-
     /* If the nodata value is different from the previous one, we need to check
      * again if the band is a nodata band
      * TODO: NO, THAT'S TOO SLOW!!!
@@ -1213,21 +1234,28 @@ rt_band_set_nodata(rt_band band, double val) {
         rt_band_check_is_nodata(band);
     */
 
+    if (rt_util_dbl_trunc_warning(
+			val,
+			checkvalint, checkvaluint,
+			checkvalfloat, checkvaldouble,
+			pixtype
+		)) {
+        return 1;
+		}
+
     return 0;
 }
 
 /**
  * Set pixel value
  *
- * @param band : the band to set nodata value to
+ * @param band : the band to set value to
  * @param x : x ordinate (0-based)
- * @param y : x ordinate (0-based)
- * @param val : the pixel value, must be in the range
- *              of values supported by this band's pixeltype
- *              or a warning will be printed and non-zero
- *              returned.
+ * @param y : y ordinate (0-based)
+ * @param val : the pixel value
  *
- * @return 0 on success, -1 on error (value out of valid range).
+ * @return 0 on success, -1 on error (value out of valid range),
+ *   1 on truncation/clamping/converting.
  */
 int
 rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
@@ -1342,13 +1370,6 @@ rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
         }
     }
 
-    /* Overflow checking */
-#ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
-    if (rt_util_display_dbl_trunc_warning(val, checkvalint, checkvaluint, checkvalfloat,
-                                      checkvaldouble, pixtype))
-       return -1;
-#endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
-
     /* If the stored value is different from no data, reset the isnodata flag */
     if (FLT_NEQ(checkval, band->nodataval)) {
         band->isnodata = FALSE;
@@ -1365,6 +1386,15 @@ rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
     }
     */
 
+    /* Overflow checking */
+    if (rt_util_dbl_trunc_warning(
+			val,
+			checkvalint, checkvaluint,
+			checkvalfloat, checkvaldouble,
+			pixtype
+		)) {
+			return 1;
+		}
 
     return 0;
 }
@@ -3464,11 +3494,13 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 			}
 		}
 
-#ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
 		/* Overflow checking */
-		rt_util_display_dbl_trunc_warning(nodataval, checkvalint, checkvaluint, checkvalfloat,
-			checkvaldouble, pixtype);
-#endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
+		rt_util_dbl_trunc_warning(
+			nodataval,
+			checkvalint, checkvaluint,
+			checkvalfloat, checkvaldouble,
+			pixtype
+		);
 	}
 	RASTER_DEBUGF(3, "rt_band_reclass: width = %d height = %d", width, height);
 
@@ -3602,8 +3634,7 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 				, (NULL != expr) ? expr->dst.max : 0
 				, nv
 			);
-			rtn = rt_band_set_pixel(band, x, y, nv);
-			if (rtn == -1) {
+			if (rt_band_set_pixel(band, x, y, nv) < 0) {
 				rterror("rt_band_reclass: Could not assign value to new band");
 				rt_band_destroy(band);
 				rtdealloc(mem);
@@ -4018,11 +4049,13 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
         }
     }
 
-#ifdef POSTGIS_RASTER_WARN_ON_TRUNCATION
     /* Overflow checking */
-    rt_util_display_dbl_trunc_warning(initialvalue, checkvalint, checkvaluint, checkvalfloat,
-                                      checkvaldouble, pixtype);
-#endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
+    rt_util_dbl_trunc_warning(
+			initialvalue,
+			checkvalint, checkvaluint,
+			checkvalfloat, checkvaldouble,
+			pixtype
+		);
 
     band = rt_band_new_inline(width, height, pixtype, hasnodata, nodatavalue, mem);
     if (! band) {
@@ -9099,7 +9132,8 @@ rt_raster_from_two_rasters(
 			}
 			_offset[1][0] *= -1;
 			_offset[1][1] *= -1;
-		}	break;
+			break;
+		}
 		case ET_INTERSECTION: {
 			double offset[4] = {0};
 			double ip[2] = {0};
@@ -9201,7 +9235,8 @@ rt_raster_from_two_rasters(
 			}
 			_offset[1][0] *= -1;
 			_offset[1][1] *= -1;
-		}	break;
+			break;
+		}
 	}
 
 	/* set offsets if provided */

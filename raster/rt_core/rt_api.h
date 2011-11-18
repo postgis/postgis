@@ -398,6 +398,7 @@ void rt_band_set_hasnodata_flag(rt_band band, int flag);
 
 /**
  * Set isnodata flag value
+ *
  * @param band : the band on which to set the isnodata flag
  * @param flag : the new isnodata flag value. Must be 1 or 0
  */
@@ -412,20 +413,20 @@ int rt_band_get_isnodata_flag(rt_band band);
 
 /**
  * Set nodata value
+ *
  * @param band : the band to set nodata value to
- * @param val : the nodata value, must be in the range
- *              of values supported by this band's pixeltype
- *              or a warning will be printed and non-zero
- *              returned.
+ * @param val : the nodata value
  *
- * @return 0 on success, -1 on error (value out of valid range).
- *
+ * @return 0 on success, -1 on error (invalid pixel type),
+ *   1 on truncation/clamping/converting.
  */
 int rt_band_set_nodata(rt_band band, double val);
 
 /**
  * Get nodata value
+ *
  * @param band : the band to set nodata value to
+ *
  * @return nodata value
  */
 double rt_band_get_nodata(rt_band band);
@@ -433,15 +434,13 @@ double rt_band_get_nodata(rt_band band);
 /**
  * Set pixel value
  *
- * @param band : the band to set nodata value to
+ * @param band : the band to set value to
  * @param x : x ordinate (0-based)
- * @param y : x ordinate (0-based)
- * @param val : the pixel value, must be in the range
- *              of values supported by this band's pixeltype
- *              or a warning will be printed and non-zero
- *              returned.
+ * @param y : y ordinate (0-based)
+ * @param val : the pixel value
  *
- * @return 0 on success, -1 on error (value out of valid range).
+ * @return 0 on success, -1 on error (value out of valid range),
+ *   1 on truncation/clamping/converting.
  */
 int rt_band_set_pixel(rt_band band,
                       uint16_t x, uint16_t y, double val);
@@ -1186,7 +1185,9 @@ extern void rtdealloc(void *mem);
 /* Set of functions to clamp double to int of different size
  */
 
-#define POSTGIS_RASTER_WARN_ON_TRUNCATION
+#if !defined(POSTGIS_RASTER_WARN_ON_TRUNCATION)
+#define POSTGIS_RASTER_WARN_ON_TRUNCATION 0
+#endif
 
 #define POSTGIS_RT_1BBMAX 1
 #define POSTGIS_RT_2BUIMAX 3
@@ -1223,22 +1224,30 @@ float
 rt_util_clamp_to_32F(double value);
 
 int
-rt_util_display_dbl_trunc_warning(double initialvalue,
-                                  int32_t checkvalint,
-                                  uint32_t checkvaluint,
-                                  float checkvalfloat,
-                                  double checkvaldouble,
-                                  rt_pixtype pixtype);
+rt_util_dbl_trunc_warning(
+	double initialvalue,
+	int32_t checkvalint, uint32_t checkvaluint,
+	float checkvalfloat, double checkvaldouble,
+	rt_pixtype pixtype
+);
 
-/*
-	convert name to GDAL Resample Algorithm
-*/
+/**
+ * Convert cstring name to GDAL Resample Algorithm
+ *
+ * @param algname: cstring name to convert
+ *
+ * @return valid GDAL resampling algorithm
+ */
 GDALResampleAlg
 rt_util_gdal_resample_alg(const char *algname);
 
-/*
-	convert rt_pixtype to GDALDataType
-*/
+/**
+ * Convert rt_pixtype to GDALDataType
+ *
+ * @param pt: pixeltype to convert
+ *
+ * @return valid GDALDataType
+ */
 GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
 
