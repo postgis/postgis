@@ -601,7 +601,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 		<para>Constructs a PostGIS geometry object from the GeoJSON representation.</para>
 		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
 		
-		<para>Availability: 2.0.0 requires - requires JSON-C &gt;= 0.9</para>
+		<para>Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
 	  </refsection>
  
 	 <refsection>
