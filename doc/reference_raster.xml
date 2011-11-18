@@ -3592,7 +3592,7 @@ WHERE rid = 2;
 				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. NearestNeighbor is the fastest but worst interpoloation.
 				The <varname>scalex</varname>, <varname>scaley</varname> define the desired new ratio between geometry units and pixel units.</para>
 				<note><para>Note: This is different from <xref linkend="RT_ST_SetScale" /> in that ST_Rescale changes the underlying pixels of the raster using existing scale
-					and rescales it to the new input scales.  <xref linkend="RT_ST_SetScale" />, on the otherhand, changes the metadata of the raster to correct a misSpecified scaling.</para></note> 
+					and rescales it to the new input scales.  <xref linkend="RT_ST_SetScale" />, on the other hand, changes the metadata of the raster to correct an originally mis-specified scaling.</para></note> 
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 			</refsection>
 				
@@ -6079,7 +6079,9 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 		
 			<para>(one raster version) Return a raster which values
                  are the result of a PLPGSQL user function involving a
-               neighborhood of values from the input raster band.</para>
+               neighborhood of values from the input raster band. The user function takes the neighborhood of pixel values
+               as an array of numbers, returns one number per neighborhood,
+               replaces existing pixel values of a neighborhood with that number. </para>
 		
 			<variablelist>
 					<varlistentry>
@@ -6104,7 +6106,8 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 					</varlistentry>
 					<varlistentry>
 						<term>userfunction</term>
-						<listitem><para>PLPGSQL user function to apply to neighborhod pixels.</para></listitem>
+						<listitem><para>PLPGSQL/psql user function to apply to neighborhood pixels. The first element is a 2-dimensional
+							array of numbers representing the rectangular pixel neighborhood</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>args</term>
@@ -6127,14 +6130,14 @@ CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic 
     RETURNS float AS
     $$
     DECLARE
-				_matrix float[][];
+		_matrix float[][];
         x1 integer;
         x2 integer;
         y1 integer;
         y2 integer;
         sum float;
     BEGIN
-				_matrix := matrix;
+		_matrix := matrix;
         sum := 0;
         FOR x in array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
             FOR y in array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
@@ -6151,9 +6154,9 @@ CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic 
         RETURN (sum*1.0/(array_upper(matrix,1)*array_upper(matrix,2) ))::integer ;
     END;
     $$
-    LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
+LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
     
--- now we apply to our rescaled katrina averaging pixels within 2 pixels of each other --
+-- now we apply to our raster averaging pixels within 2 pixels of each other in x and y direction --
 SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 2, 2, 'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', NULL) As neared
 	FROM katrinas_rescaled 
 	limit 1;
