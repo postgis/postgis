@@ -8938,7 +8938,8 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     rt_pixtype newpixeltype;
     int ret = -1;
     Oid oid;
-    Datum extraargs;
+    FmgrInfo cbinfo;
+    FunctionCallInfoData cbdata;
     Datum tmpnewval;
     ArrayType * neighborDatum;
     char * strFromText = NULL;
@@ -9126,6 +9127,10 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     
     if (newpixeltype == PT_END) {
         elog(ERROR, "RASTER_mapAlgebraFctNgb: Invalid pixeltype. Returning NULL");
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
         PG_RETURN_NULL();
     }    
     
@@ -9135,12 +9140,73 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     /* Get the name of the callback userfunction */
     if (PG_ARGISNULL(5)) {
         elog(ERROR, "RASTER_mapAlgebraFctNgb: Required function is missing. Returning NULL");
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
         PG_RETURN_NULL();
     }
 
     oid = PG_GETARG_OID(5);
+    if (oid == InvalidOid) {
+        elog(ERROR, "RASTER_mapAlgebraFctNgb: Got invalid function object id. Returning NULL");
 
-    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: Got function oid: %d", oid);
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_NULL();
+    }
+
+    fmgr_info(oid, &cbinfo);
+
+    /* function cannot return set */
+    if (cbinfo.fn_retset) {
+        elog(ERROR, "RASTER_mapAlgebraFctNgb: Function provided must return double precision not resultset. Returning NULL");
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_NULL();
+    }
+    /* function should have correct # of args */
+    else if (cbinfo.fn_nargs != 3) {
+        elog(ERROR, "RASTER_mapAlgebraFctNgb: Function does not have three input parameters. Returning NULL");
+
+        rt_raster_destroy(raster);
+        rt_raster_destroy(newrast);
+
+        PG_RETURN_NULL();
+    }
+
+    if (func_volatile(oid) == 'v') {
+        elog(NOTICE, "Function provided is VOLATILE. Unless required and for best performance, function should be IMMUTABLE or STABLE");
+    }
+
+    /* prep function call data */
+#if POSTGIS_PGSQL_VERSION <= 90
+    InitFunctionCallInfoData(cbdata, &cbinfo, 3, InvalidOid, NULL);
+#else
+    InitFunctionCallInfoData(cbdata, &cbinfo, 3, InvalidOid, NULL, NULL);
+#endif
+    memset(cbdata.argnull, FALSE, 3);
+
+    /* check that the function isn't strict if the args are null. */
+    if (PG_ARGISNULL(7)) {
+        if (cbinfo.fn_strict) {
+            elog(ERROR, "RASTER_mapAlgebraFctNgb: Strict callback functions cannot have null parameters. Returning NULL");
+
+            rt_raster_destroy(raster);
+            rt_raster_destroy(newrast);
+
+            PG_RETURN_NULL();
+        }
+
+        cbdata.arg[2] = (Datum)NULL;
+        cbdata.argnull[2] = TRUE;
+    }
+    else {
+        cbdata.arg[2] = PG_GETARG_DATUM(7);
+    }
 
     /**
      * Optimization: If the raster is only filled with nodata values return
@@ -9281,6 +9347,9 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     SET_VARSIZE(txtCallbackParam, VARSIZE(txtNodataMode));
     memcpy((void *)VARDATA(txtCallbackParam), (void *)VARDATA(txtNodataMode), VARSIZE(txtNodataMode) - VARHDRSZ);
 
+    /* pass the nodata mode into the user function */
+    cbdata.arg[1] = CStringGetDatum(txtCallbackParam);
+
     strFromText = text_to_cstring(txtNodataMode);
     strFromText = strtoupper(strFromText);
 
@@ -9321,8 +9390,6 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
    
     POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: Main computing loop (%d x %d)",
             width, height);
-
-    extraargs = PG_GETARG_DATUM(7);
 
     /* Allocate room for the neighborhood. */
     neighborData = (Datum *)palloc(winwidth * winheight * sizeof(Datum));
@@ -9399,9 +9466,19 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
                 neighborDatum = construct_md_array((void *)neighborData, neighborNulls, 2, neighborDims, neighborLbs, 
                     FLOAT8OID, typlen, typbyval, typalign);
 
-                /* convert neighborData to a datum for OidFunctionCall3 */
-                tmpnewval = OidFunctionCall3(oid, PointerGetDatum(neighborDatum), CStringGetDatum(txtCallbackParam), extraargs);
-                newval = DatumGetFloat8(tmpnewval);
+                /* Assign the neighbor matrix as the first argument to the user function */
+                cbdata.arg[0] = PointerGetDatum(neighborDatum);
+
+                /* Invoke the user function */
+                tmpnewval = FunctionCallInvoke(&cbdata);
+
+                /* Get the return value of the user function */
+                if (cbdata.isnull) {
+                    newval = newnodatavalue;
+                }
+                else {
+                    newval = DatumGetFloat8(tmpnewval);
+                }
 
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: new value = %f", 
                     newval);
@@ -9416,13 +9493,9 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 
 
     /* clean up */
-    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: cleaning up memory (neighborNulls)");
     pfree(neighborNulls);
-    POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: cleaning up memory (neighborData)");
     pfree(neighborData);
-    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: cleaning up memory (strFromText = '%s')", strFromText);
     pfree(strFromText);
-    POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: cleaning up memory (txtCallbackFaram)", txtCallbackParam);
     pfree(txtCallbackParam);
     
     /* The newrast band has been modified */

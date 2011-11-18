@@ -29,7 +29,17 @@ CREATE OR REPLACE FUNCTION ST_Sum(matrix float[][], nodatamode text, variadic ar
         RETURN sum;
     END;
     $$
-    LANGUAGE 'plpgsql';
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADIC args text[])
+    RETURNS float AS
+    $$
+    BEGIN
+        RETURN NULL;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
 
 --
 --Test rasters

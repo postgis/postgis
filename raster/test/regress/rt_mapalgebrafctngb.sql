@@ -165,3 +165,10 @@ SELECT
     )).*
    FROM ST_TestRasterNgb(5, 5, 1) AS rast) AS foo;
 
+-- test a user function that nullifies everything
+SELECT 
+  ST_Value(rast, 2, 2) = 2,
+  ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Nullage(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
+  ) IS NULL
+ FROM ST_TestRasterNgb(3, 3, 2) AS rast;
