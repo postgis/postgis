@@ -2002,6 +2002,47 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
 				<para><xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewY" /></para>
 			</refsection>
 		</refentry>
+
+        <refentry id="RT_ST_Rotation">
+            <refnamediv>
+                <refname>ST_Rotation</refname>
+                <refpurpose>Returns the rotation of the raster</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>float8 <function>ST_Rotation</function></funcdef>
+                        <paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+                
+                <para>Returns the uniform rotation of the raster. If a raster does not have uniform rotation, NaN is returned.
+                Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink> for more details.</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT rid, ST_Rotation(ST_SetScale(ST_SetSkew(rast, sqrt(2)), sqrt(2))) as rot FROM dummy_rast;
+
+ rid |        rot 
+-----+-------------------
+   1 | 0.785398163397448
+   2 | 0.785398163397448
+                </programlisting>
+	        </refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_SetRotation" />, <xref linkend="RT_ST_SetScale" />, <xref linkend="RT_ST_SetSkew" /></para>
+			</refsection>
+        </refentry>
 		
 		<refentry id="RT_ST_SkewX">
 			<refnamediv>
@@ -2833,7 +2874,7 @@ rid | hb1 | hb2 | hb4 | numbands
 	</sect1>
 	
 	<sect1 id="Raster_Pixel_Accessors">
-	    <title>Raster Pixel Accessors and Settors</title>
+	    <title>Raster Pixel Accessors and Setters</title>
 	    
 	    <refentry id="RT_ST_PixelAsPolygon">
 			<refnamediv>
@@ -3250,6 +3291,52 @@ UPDATE dummy_rast SET rast = ST_SetGeoReference(rast, '2 0 0 3 1.5 2','ESRI')
 				<para><xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_UpperLeftY" /></para>
 			</refsection>
 		</refentry>
+
+        <refentry id="RT_ST_SetRotation">
+            <refnamediv>
+                <refname>ST_SetRotation</refname>
+                <refpurpose>Set the rotation of the raster.</refpurpose>
+            </refnamediv>
+
+            <refsynopsisdiv>
+                <funcsynopsis>
+                    <funcprototype>
+                        <funcdef>float8 <function>ST_SetRotation</function></funcdef>
+                        <paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
+                        <paramdef><type>float8</type> <parameter>rotation</parameter></paramdef>
+                    </funcprototype>
+                </funcsynopsis>
+            </refsynopsisdiv>
+
+            <refsection>
+                <title>Description</title>
+
+                <para>Uniformly rotate the raster. Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink> for more details.</para>
+            </refsection>
+
+            <refsection>
+                <title>Examples</title>
+
+                <programlisting>SELECT 
+  ST_ScaleX(rast1), ST_ScaleY(rast1), ST_SkewX(rast1), ST_SkewY(rast1),
+  ST_ScaleX(rast2), ST_ScaleY(rast2), ST_SkewX(rast2), ST_SkewY(rast2) 
+FROM (
+  SELECT ST_SetRotation(rast, 15) AS rast1, rast as rast2 FROM dummy_rast
+) AS foo;
+      st_scalex      |      st_scaley      |      st_skewx      |      st_skewy      | st_scalex | st_scaley | st_skewx | st_skewy
+---------------------+---------------------+--------------------+--------------------+-----------+-----------+----------+----------
+   -1.51937582571764 |   -2.27906373857646 |   1.95086352047135 |   1.30057568031423 |         2 |         3 |        0 |        0
+ -0.0379843956429411 | -0.0379843956429411 | 0.0325143920078558 | 0.0325143920078558 |      0.05 |     -0.05 |        0 |        0
+                </programlisting>
+            </refsection>
+
+            <!-- Optionally add a "See Also" section -->
+            <refsection>
+                <title>See Also</title>
+                <para><xref linkend="RT_ST_Rotation" />, <xref linkend="RT_ST_ScaleX" />, <xref linked="RT_ST_ScaleY" />, <xref linkend="RT_ST_SkewX" />, <xref linked="RT_ST_SkewY" /></para>
+            </refsection>
+        </refentry>
+
 		
 		<refentry id="RT_ST_SetScale">
 			<refnamediv>
