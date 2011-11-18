@@ -5712,7 +5712,7 @@ WITH mygeoms
     AS $$ BEGIN
         RETURN 0.0;
     END; $$
-    LANGUAGE 'plpgsql';</programlisting>
+    LANGUAGE 'plpgsql' IMMUTABLE;</programlisting>
                 The <varname>userfunction</varname> is required to accept two arguments: a float value, and a variadic text array. The first argument is the value of an individual raster cell (regardless of the raster datatype), and the second argument indicates that all remaining parameters to <xref linkend="RT_ST_MapAlgebraFct" /> shall be passed through to the <varname>userfunction</varname>.</para>
 
                 <para>Passing a <type>regprodedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:<programlisting>'simple_function(float,text[])'::regprocedure</programlisting>Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.</para>
@@ -5738,7 +5738,7 @@ BEGIN
     RETURN pixel::integer % 2;
 END;
 $$
-LANGUAGE 'plpgsql';
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 UPDATE dummy_rast SET map_rast = ST_MapAlgebraFct(rast,NULL,'mod_fct(float,text[])'::regprocedure) WHERE rid = 2;
 
@@ -6048,6 +6048,148 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_MapAlgebraExpr2" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_SetValue" /></para>
 			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_MapAlgebraFctNgb">
+		  <refnamediv>
+			<refname>ST_MapAlgebraFctNgb</refname>
+		
+			<refpurpose>1-band version: Map Algebra Nearest Neighbor using user-defined PostgreSQL function. Return a raster which values are the result of a PLPGSQL user function involving a neighborhood of values from the input raster band.</refpurpose>
+		  </refnamediv>
+		
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>raster <function>ST_MapAlgebraFctNgb</function></funcdef>
+				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>ngbwidth</parameter></paramdef>
+				<paramdef><type>integer </type> <parameter>ngbheight</parameter></paramdef>
+				<paramdef><type>regprocedure </type> <parameter>userfunction</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
+				<paramdef><type>text[] </type> <parameter>VARIADIC args</parameter></paramdef>
+			  </funcprototype>
+		
+			</funcsynopsis>
+		  </refsynopsisdiv>
+		
+		  <refsection>
+			<title>Description</title>
+		
+			<para>(one raster version) Return a raster which values
+                 are the result of a PLPGSQL user function involving a
+               neighborhood of values from the input raster band.</para>
+		
+			<variablelist>
+					<varlistentry>
+						<term>rast</term>
+						<listitem><para>Raster on which the user function is evaluated.</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>band</term>
+						<listitem><para>Band number of the raster to be evaluated. Default to 1.</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>pixeltype</term>
+						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend='RT_ST_BandPixelType' /> or left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the <varname>rast</varname>. Results are truncated if they are larger than what is allowed for the pixeltype</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>ngbwidth</term>
+						<listitem><para>The width of the neighborhood, in cells.</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>ngbheight</term>
+						<listitem><para>The height of the neighborhood, in cells.</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>userfunction</term>
+						<listitem><para>PLPGSQL user function to apply to neighborhod pixels.</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>args</term>
+						<listitem><para>Arguments to pass into the user function.</para></listitem>
+					</varlistentry>
+				</variablelist>
+			<para>Availability: 2.0.0 </para>
+			
+		
+		  </refsection>
+		
+		
+		  <refsection>
+			<title>Examples</title>
+<programlisting>
+--
+-- A simple 'callback' user function that sums up all the values in a neighborhood.
+--
+CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float AS
+    $$
+    DECLARE
+				_matrix float[][];
+        x1 integer;
+        x2 integer;
+        y1 integer;
+        y2 integer;
+        sum float;
+    BEGIN
+				_matrix := matrix;
+        sum := 0;
+        FOR x in array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
+            FOR y in array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
+                IF _matrix[x][y] IS NULL THEN
+                    IF nodatamode = 'ignore' THEN
+                        _matrix[x][y] := 0;
+                    ELSE
+                        _matrix[x][y] := nodatamode::float;
+                    END IF;
+                END IF;
+                sum := sum + _matrix[x][y];
+            END LOOP;
+        END LOOP;
+        RETURN (sum*1.0/(array_upper(matrix,1)*array_upper(matrix,2) ))::integer ;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
+    
+-- now we apply to our rescaled katrina averaging pixels within 2 pixels of each other --
+SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 2, 2, 'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', NULL) As neared
+	FROM katrinas_rescaled 
+	limit 1;
+</programlisting>
+
+	<informaltable>
+		<tgroup cols="2">
+			<tbody>
+				<row>
+					<entry><informalfigure>
+						<mediaobject>
+							<imageobject>
+								<imagedata fileref="images/st_mapalgebrafctngb01.png" />
+							</imageobject>
+							<caption><para>First band of our raster</para></caption>
+						</mediaobject>
+					</informalfigure></entry>
+					<entry><informalfigure>
+						<mediaobject>
+							<imageobject>
+								<imagedata fileref="images/st_mapalgebrafctngb02.png" />
+							</imageobject>
+							<caption><para>new raster after averaging pixels withing 2x2 pixels of each other</para></caption>
+						</mediaobject>
+					</informalfigure></entry>
+				</row>
+			</tbody>
+		</tgroup>
+	</informaltable>
+		  </refsection>
+		
+		  <!-- Optionally add a "See Also" section -->
+		  <refsection>
+			<title>See Also</title>
+		
+			<para><xref linkend="ST_MapAlgebraFct" /></para>
+		  </refsection>
 		</refentry>
 		
 		<refentry id="RT_ST_Polygon">
