@@ -847,8 +847,8 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         values[2] = Int32GetDatum(geomval2[call_cntr].srid);
 
         POSTGIS_RT_DEBUGF(4, "Result %d, Polygon %s", call_cntr, geomval2[call_cntr].geom);
-        POSTGIS_RT_DEBUGF(4, "Result %d, val %s", call_cntr, geomval2[call_cntr].val);
-        POSTGIS_RT_DEBUGF(4, "Result %d, val %s", call_cntr, geomval2[call_cntr].srid);
+        POSTGIS_RT_DEBUGF(4, "Result %d, val %f", call_cntr, geomval2[call_cntr].val);
+        POSTGIS_RT_DEBUGF(4, "Result %d, srid %d", call_cntr, geomval2[call_cntr].srid);
 
         /**
          * Free resources.
@@ -856,7 +856,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         pfree(geomval2[call_cntr].geom);
 
         /* build a tuple */
-				tuple = heap_form_tuple(tupdesc, values, nulls);
+        tuple = heap_form_tuple(tupdesc, values, nulls);
 
         /* make the tuple into a datum */
         result = HeapTupleGetDatum(tuple);

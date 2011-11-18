@@ -4458,7 +4458,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
         hFeature = OGR_L_GetNextFeature(hLayer);
         dValue = OGR_F_GetFieldAsDouble(hFeature, iPixVal);
 
-	hGeom = OGR_F_GetGeometryRef(hFeature);
+        hGeom = OGR_F_GetGeometryRef(hFeature);
      	OGR_G_ExportToWkt(hGeom, &pszSrcText);
 
       	pols[j].val = dValue;
