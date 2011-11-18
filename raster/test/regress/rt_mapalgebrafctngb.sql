@@ -8,6 +8,32 @@ SELECT ST_IsEmpty(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1
 -- Test has no band raster. Should be true
 SELECT ST_HasNoBand(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL));
 
+-- Test huge neighborhood. Original raster returned.
+SELECT
+  ST_Value(rast, 2, 2) = 1,
+  ST_Value(ST_MapAlgebraFctNgb(
+      rast, 1, NULL, 5, 5, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL
+    ), 2, 2) = 1
+ FROM ST_TestRasterNgb(3, 3, 1) AS rast;
+
+-- Test negative width neighborhood. Original raster returned.
+SELECT 
+  ST_Value(rast, 2, 2) = 1,
+  ST_Value(
+    ST_MapAlgebraFctNgb(
+      rast, 1, NULL, -1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL
+    ), 2, 2) = 1
+ FROM ST_TestRasterNgb(3, 3, 1) AS rast;
+
+-- Test negative height neighborhood. Original raster returned.
+SELECT 
+  ST_Value(rast, 2, 2) = 1,
+  ST_Value(
+    ST_MapAlgebraFctNgb(
+      rast, 1, NULL, 1, -1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL
+    ), 2, 2) = 1
+ FROM ST_TestRasterNgb(3, 3, 1) AS rast;
+
 -- Test has no nodata value. Should return null and 7.
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
@@ -23,6 +49,14 @@ SELECT
   ST_Value(
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) IS NULL
+ FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
+
+---- Test default nodatamode (ignore). Should return null and 8.
+SELECT 
+  ST_Value(rast, 2, 2) IS NULL, 
+  ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, NULL, NULL), 2, 2
+  ) = 8
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
 ---- Test ignore nodatamode. Should return null and 8.

@@ -9321,27 +9321,12 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 
     /* Get the type of NODATA behavior for the neighborhoods. */
     if (PG_ARGISNULL(6)) {
-        elog(NOTICE, "Neighborhood NODATA behavior is not specified. Returning new "
-            "raster with the original band");
-
-        /* Serialize created raster */
-        pgraster = rt_raster_serialize(newrast);
-        if (NULL == pgraster) {
-            elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
-                "Returning NULL");
-
-            PG_RETURN_NULL();
-        }
-
-        SET_VARSIZE(pgraster, pgraster->size);
-
-        rt_raster_destroy(raster);
-        rt_raster_destroy(newrast);
-
-        PG_RETURN_POINTER(pgraster);      
+        elog(NOTICE, "Neighborhood NODATA behavior defaulting to 'ignore'");
+        txtNodataMode = cstring_to_text("ignore");
     }
-
-    txtNodataMode = PG_GETARG_TEXT_P(6);
+    else {
+        txtNodataMode = PG_GETARG_TEXT_P(6);
+    }
 
     txtCallbackParam = (text*)palloc(VARSIZE(txtNodataMode));
     SET_VARSIZE(txtCallbackParam, VARSIZE(txtNodataMode));
