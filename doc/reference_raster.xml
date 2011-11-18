@@ -3485,27 +3485,51 @@ WHERE rid = 2;
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>raster <function>ST_Resample</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_Resample</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>srid=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>scalex=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>scaley=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
-				  </funcprototype>
+					<funcprototype>
+						<funcdef>raster <function>ST_Resample</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef><type choice='opt'>integer </type> <parameter>srid=same_as_rast</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>raster <function>ST_Resample</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice='opt'><type>integer </type> <parameter>srid=NULL</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>scalex=0</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>scaley=0</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>raster <function>ST_Resample</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice='opt'><type>boolean </type> <parameter>usescale=true</parameter></paramdef>
+					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>raster <function>ST_Resample</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>usescale</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
