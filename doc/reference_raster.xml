@@ -6121,7 +6121,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 			<title>Examples</title>
 <programlisting>
 --
--- A simple 'callback' user function that sums up all the values in a neighborhood.
+-- A simple 'callback' user function that averages up all the values in a neighborhood.
 --
 CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic args text[])
     RETURNS float AS
