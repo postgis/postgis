@@ -581,6 +581,42 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 	  </refsection>
 	</refentry>
 	
+	<refentry id="ST_GeomFromGeoJSON">
+	  <refnamediv>
+		<refname>ST_GeomFromGeoJSON</refname>
+		<refpurpose>Takes as input a geojson representation of a geometry and outputs a PostGIS geometry object</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_GeomFromGeoJSON</function></funcdef>
+			<paramdef><type>text </type> <parameter>geomjson</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+		<para>Constructs a PostGIS geometry object from the GeoJSON representation.</para>
+		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
+		
+		<para>Availability: 2.0.0 requires - requires JSON-C &gt;= 0.9</para>
+	  </refsection>
+ 
+	 <refsection>
+		<title>Examples</title>
+		<!-- TODO -->
+		COMING SOON
+	  </refsection>
+
+
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="ST_AsGeoJSON" /></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="ST_GeomFromKML">
 	  <refnamediv>
 		<refname>ST_GeomFromKML</refname>
