@@ -2505,7 +2505,7 @@ FROM dummy_rast WHERE rid=2) As foo;
 				  <funcprototype>
 					<funcdef>double precision <function>ST_BandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3551,6 +3551,106 @@ WHERE rid = 2;
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_Transform" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_Rescale">
+			<refnamediv>
+				<refname>ST_Rescale</refname>
+				<refpurpose>Rescales a raster that is in a known spatial ref and using specified algorithm.
+				    Uses NearestNeighbor if no algorithm is specified Options: NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline, Lanczos.
+				    the scalex, scaley, scalexy are the desired new ratio between pixel coordinates and geometry coordinates</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>raster <function>ST_Rescale</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>scalexy</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>raster <function>ST_Rescale</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
+					
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				
+				<para>Rescales a raster using specified pixel warping algorithm. 
+				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
+				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. NearestNeighbor is the fastest but worst interpoloation.
+				The <varname>scalex</varname>, <varname>scaley</varname> define the desired new ratio between geometry units and pixel units.</para>
+				<note><para>Note: This is different from <xref linkend="RT_ST_SetScale" /> in that ST_Rescale changes the underlying pixels of the raster using existing scale
+					and rescales it to the new input scales.  <xref linkend="RT_ST_SetScale" />, on the otherhand, changes the metadata of the raster to correct a misSpecified scaling.</para></note> 
+				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+			</refsection>
+				
+			<refsection>
+					<title>Examples</title>
+				
+					<programlisting>-- My original raster that is in WGS 84 lon lat 1 pixel in x/y represents 0.029.. in long lat -
+SELECT ST_ScaleX(rast) As orig_scalex, ST_ScaleY(rast) As origi_scaley 
+ FROM katrina;
+					
+	orig_scalex     |    origi_scaley
+--------------------+---------------------
+ 0.0293255131964809 | -0.0293255131964809
+ 
+ --I create a table of 2 rasters one 25% of original and one 75% of original
+ CREATE TABLE katrinas_rescaled(rid serial primary key, descrip text, rast raster);
+
+ INSERT INTO katrinas_rescaled(descrip, rast)
+ SELECT 'rescaled ' || round((1.0/i*100),2)::text || '%', ST_Rescale(rast,ST_ScaleX(rast)*i,ST_ScaleY(rast)*i)
+ 	FROM katrina CROSS JOIN generate_series(6,8,2) As i;
+					
+SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
+	FROM katrinas_rescaled;
+	
+    descrip     |       newsx       |       newsy
+----------------+-------------------+--------------------
+ rescaled 16.67% | 0.175953079178886 | -0.175953079178886
+ rescaled 12.50% | 0.234604105571848 | -0.234604105571848
+					</programlisting>
+				<informaltable>
+					<tgroup cols="2">
+						<tbody>
+							<row>
+								<entry><informalfigure>
+									<mediaobject>
+										<imageobject>
+											<imagedata fileref="images/st_rescale01.png" />
+										</imageobject>
+										<caption><para>at 16.67% size of original</para></caption>
+									</mediaobject>
+								</informalfigure></entry>
+								<entry><informalfigure>
+									<mediaobject>
+										<imageobject>
+											<imagedata fileref="images/st_rescale02.png" />
+										</imageobject>
+										<caption><para>at 12.50% size of original</para></caption>
+									</mediaobject>
+								</informalfigure></entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</informaltable>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_SetScale" /><xref linkend="RT_ST_ScaleX" />,<xref linkend="RT_ST_ScaleY" />,<xref linkend="RT_ST_Resample" />, <xref linkend="RT_ST_Transform" /></para>
 			</refsection>
 		</refentry>
 		
