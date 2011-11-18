@@ -1251,6 +1251,16 @@ rt_util_gdal_resample_alg(const char *algname);
 GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt);
 
+/**
+ * Convert GDALDataType to rt_pixtype
+ *
+ * @param gdt: GDAL datatype to convert
+ *
+ * @return valid rt_pixtype
+ */
+rt_pixtype
+rt_util_gdal_datatype_to_pixtype(GDALDataType gdt);
+
 /*
 	get GDAL runtime version information
 */

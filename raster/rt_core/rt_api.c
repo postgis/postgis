@@ -189,9 +189,13 @@ static void quicksort(double *left, double *right) {
 	}
 }
 
-/*
-	convert name to GDAL Resample Algorithm
-*/
+/**
+ * Convert cstring name to GDAL Resample Algorithm
+ *
+ * @param algname: cstring name to convert
+ *
+ * @return valid GDAL resampling algorithm
+ */
 GDALResampleAlg
 rt_util_gdal_resample_alg(const char *algname) {
 	if (!algname || !strlen(algname))	return GRA_NearestNeighbour;
@@ -212,21 +216,23 @@ rt_util_gdal_resample_alg(const char *algname) {
 	return GRA_NearestNeighbour;
 }
 
-/*
-	convert rt_pixtype to GDALDataType
-*/
+/**
+ * Convert rt_pixtype to GDALDataType
+ *
+ * @param pt: pixeltype to convert
+ *
+ * @return valid GDALDataType
+ */
 GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt) {
 	switch (pt) {
 		case PT_1BB: case PT_2BUI: case PT_4BUI: case PT_8BSI: case PT_8BUI:
 			return GDT_Byte;
-			break;
 		case PT_16BSI: case PT_16BUI:
 			if (pt == PT_16BSI)
 				return GDT_Int16;
 			else
 				return GDT_UInt16;
-			break;
 		case PT_32BSI: case PT_32BUI: case PT_32BF:
 			if (pt == PT_32BSI)
 				return GDT_Int32;
@@ -234,16 +240,44 @@ rt_util_pixtype_to_gdal_datatype(rt_pixtype pt) {
 				return GDT_UInt32;
 			else
 				return GDT_Float32;
-			break;
 		case PT_64BF:
 			return GDT_Float64;
-			break;
 		default:
 			return GDT_Unknown;
-			break;
 	}
 
 	return GDT_Unknown;
+}
+
+/**
+ * Convert GDALDataType to rt_pixtype
+ *
+ * @param gdt: GDAL datatype to convert
+ *
+ * @return valid rt_pixtype
+ */
+rt_pixtype
+rt_util_gdal_datatype_to_pixtype(GDALDataType gdt) {
+	switch (gdt) {
+		case GDT_Byte:
+			return PT_8BUI;
+		case GDT_UInt16:
+			return PT_16BUI;
+		case GDT_Int16:
+			return PT_16BSI;
+		case GDT_UInt32:
+			return PT_32BUI;
+		case GDT_Int32:
+			return PT_32BSI;
+		case GDT_Float32:
+			return PT_32BF;
+		case GDT_Float64:
+			return PT_64BF;
+		default:
+			return PT_END;
+	}
+
+	return PT_END;
 }
 
 /*
