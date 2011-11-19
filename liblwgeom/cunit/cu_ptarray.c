@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "CUnit/Basic.h"
+#include "CUnit/CUnit.h"
 
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
@@ -108,6 +109,36 @@ static void test_ptarray_locate_point(void)
 	lwline_free(line);
 }
 
+static void test_ptarray_isccw(void)
+{
+        LWLINE *line;
+	int ccw;
+
+	/* clockwise rectangle */
+        line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 10,10 10,10 0, 0 0)"));
+	ccw = ptarray_isccw(line->points);
+	CU_ASSERT_EQUAL(ccw, 0);
+	lwline_free(line);
+
+	/* clockwise triangle */
+        line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 4,20 3, 0 3)"));
+	ccw = ptarray_isccw(line->points);
+	CU_ASSERT_EQUAL(ccw, 0);
+	lwline_free(line);
+
+	/* counterclockwise triangle */
+        line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 3,20 4, 0 3)"));
+	ccw = ptarray_isccw(line->points);
+	CU_ASSERT_EQUAL(ccw, 1);
+	lwline_free(line);
+
+	/* counterclockwise narrow ring (see ticket #1302) */
+        line = lwgeom_as_lwline(lwgeom_from_hexwkb("01020000000500000000917E9BA468294100917E9B8AEA284137894120A4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA2841C976BE1FA4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841", LW_PARSER_CHECK_NONE));
+	ccw = ptarray_isccw(line->points);
+	CU_ASSERT_EQUAL(ccw, 1);
+	lwline_free(line);
+}
+
 
 /*
 ** Used by the test harness to register the tests in this file.
@@ -117,6 +148,7 @@ CU_TestInfo ptarray_tests[] =
 	PG_TEST(test_ptarray_append_point),
 	PG_TEST(test_ptarray_append_ptarray),
 	PG_TEST(test_ptarray_locate_point),
+	PG_TEST(test_ptarray_isccw),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo ptarray_suite = {"ptarray", NULL, NULL, ptarray_tests };
