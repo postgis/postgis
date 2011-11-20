@@ -571,6 +571,72 @@ static void test_lwgeom_clone(void)
 
 }
 
+/*
+ * Test lwgeom_force_clockwise
+ */
+static void test_lwgeom_force_clockwise(void)
+{
+	LWGEOM *geom;
+	char *in_ewkt, *out_ewkt;
+
+	/* counterclockwise, must be reversed */
+	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_force_clockwise(geom);
+	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0))";
+	out_ewkt = lwgeom_to_ewkt(geom);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+
+	/* clockwise, fine as is */
+	geom = lwgeom_from_wkt("POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))", LW_PARSER_CHECK_NONE);
+	lwgeom_force_clockwise(geom);
+	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0))";
+	out_ewkt = lwgeom_to_ewkt(geom);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+
+	/* counterclockwise shell (must be reversed), mixed-wise holes */
+	geom = lwgeom_from_wkt("POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 4,4 2,2 2),(6 2,8 2,8 4,6 2))", LW_PARSER_CHECK_NONE);
+	lwgeom_force_clockwise(geom);
+	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
+	out_ewkt = lwgeom_to_ewkt(geom);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+
+	/* clockwise shell (fine), mixed-wise holes */
+	geom = lwgeom_from_wkt("POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 4,8 2,6 2))", LW_PARSER_CHECK_NONE);
+	lwgeom_force_clockwise(geom);
+	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
+	out_ewkt = lwgeom_to_ewkt(geom);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+
+	/* counterclockwise, should be reversed */
+	/* NOTE: this is a narrow ring, see ticket #1302 */
+	in_ewkt  = "0103000000010000000500000000917E9BA468294100917E9B8AEA2841C976BE1FA4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA284137894120A4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841";
+	geom = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
+	in_ewkt = "0103000000010000000500000000917E9BA468294100917E9B8AEA284137894120A4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA2841C976BE1FA4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841";
+	lwgeom_force_clockwise(geom);
+	out_ewkt = lwgeom_to_hexwkb(geom, WKB_ISO, NULL);
+	if (strcmp(in_ewkt, out_ewkt))
+		fprintf(stderr, "\nExp:   %s\nObt:   %s\n", in_ewkt, out_ewkt);
+	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+	lwfree(out_ewkt);
+	lwgeom_free(geom);
+}
+
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -591,6 +657,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_flip_coordinates),
 	PG_TEST(test_f2d),
 	PG_TEST(test_lwgeom_clone),
+	PG_TEST(test_lwgeom_force_clockwise),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"LibGeom Suite",  NULL,  NULL, libgeom_tests};
