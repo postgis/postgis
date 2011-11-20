@@ -561,7 +561,7 @@ static void test_lwgeom_clone(void)
 		cloned = lwgeom_clone(geom);
 		out_ewkt = lwgeom_to_ewkt(cloned);
 		if (strcmp(in_ewkt, out_ewkt))
-			fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+			fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_ewkt, out_ewkt);
 		CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 		lwfree(out_ewkt);
 		lwgeom_free(cloned);
@@ -607,7 +607,7 @@ static void test_lwgeom_force_clockwise(void)
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
-		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+		fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_ewkt, out_ewkt);
 	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
@@ -618,7 +618,7 @@ static void test_lwgeom_force_clockwise(void)
 	in_ewkt = "POLYGON((0 0,0 10,10 10,10 0,0 0),(2 2,4 2,2 4,2 2),(6 2,8 2,8 4,6 2))";
 	out_ewkt = lwgeom_to_ewkt(geom);
 	if (strcmp(in_ewkt, out_ewkt))
-		fprintf(stderr, "\nExp:   %s\nObt:  %s\n", in_ewkt, out_ewkt);
+		fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_ewkt, out_ewkt);
 	CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
