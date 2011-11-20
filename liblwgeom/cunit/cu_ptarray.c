@@ -137,6 +137,12 @@ static void test_ptarray_isccw(void)
 	ccw = ptarray_isccw(line->points);
 	CU_ASSERT_EQUAL(ccw, 1);
 	lwline_free(line);
+
+	/* clockwise narrow ring (see ticket #1302) */
+	line = lwgeom_as_lwline(lwgeom_from_hexwkb("01020000000500000000917E9BA468294100917E9B8AEA2841C976BE1FA4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA284137894120A4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841", LW_PARSER_CHECK_NONE));
+	ccw = ptarray_isccw(line->points);
+	CU_ASSERT_EQUAL(ccw, 0);
+	lwline_free(line);
 }
 
 
