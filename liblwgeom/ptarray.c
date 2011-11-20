@@ -281,14 +281,14 @@ void ptarray_free(POINTARRAY *pa)
 void
 ptarray_reverse(POINTARRAY *pa)
 {
-	/* TODO change this to double array operations once point array is double alligned */
+	/* TODO change this to double array operations once point array is double aligned */
 	POINT4D pbuf;
 	uint32_t i;
 	int ptsize = ptarray_point_size(pa);
 	int last = pa->npoints-1;
-	int mid = last/2;
+	int mid = pa->npoints/2;
 
-	for (i=0; i<=mid; i++)
+	for (i=0; i<mid; i++)
 	{
 		uint8_t *from, *to;
 		from = getPoint_internal(pa, i);
