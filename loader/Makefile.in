@@ -134,7 +134,8 @@ ifdef gtk_build
 endif
 
 clean:
-	@rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) $(GTK_WIN32_RES) $(SHP2PGSQL-GUI)
+	rm -rf .libs
+	rm -f *.o $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) $(GTK_WIN32_RES) $(SHP2PGSQL-GUI)
 	$(MAKE) -C cunit clean
 
 
