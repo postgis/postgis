@@ -5730,12 +5730,12 @@ WITH mygeoms
 					<funcprototype>
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>onerasteruserfunc</parameter></paramdef>
 					</funcprototype>				
 					<funcprototype>
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>onerasteruserfunc</parameter></paramdef>
                         <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 					</funcprototype>
 
@@ -5743,13 +5743,13 @@ WITH mygeoms
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>onerasteruserfunc</parameter></paramdef>
 					</funcprototype>
 					<funcprototype>
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>onerasteruserfunc</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 					</funcprototype>
 					
@@ -5757,13 +5757,13 @@ WITH mygeoms
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>onerasteruserfunc</parameter></paramdef>
 					</funcprototype>
 					<funcprototype>
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>onerasteruserfunc</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 					</funcprototype>
 
@@ -5772,14 +5772,14 @@ WITH mygeoms
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>onerasteruserfunc</parameter></paramdef>
 					</funcprototype>
 					<funcprototype>
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>pixeltype</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>onerasteruserfunc</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 					</funcprototype>
 
@@ -5789,11 +5789,11 @@ WITH mygeoms
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>userfunction</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>onerasteruserfunc</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
 
 				<para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype. If pixeltype is passed NULL, then the new raster band will have the same pixeltype as the input <varname>rast</varname> band.</para>
 
-                <para>The <varname>userfunction</varname> parameter must be the name and signature of a SQL or PL/pgSQL function, cast to a regprocedure. A very simple and quite useless PL/pgSQL function example is:
+                <para>The <varname>onerasteruserfunc</varname> parameter must be the name and signature of a SQL or PL/pgSQL function, cast to a regprocedure. A very simple and quite useless PL/pgSQL function example is:
                 <programlisting>CREATE OR REPLACE FUNCTION simple_function(pixel FLOAT, VARIADIC args TEXT[])
     RETURNS FLOAT
     AS $$ BEGIN
@@ -5959,7 +5959,7 @@ WHERE rid=167;
 						<funcdef>raster <function>ST_MapAlgebraFct</function></funcdef>
 						<paramdef><type>raster</type> <parameter>rast1</parameter></paramdef>
 						<paramdef><type>raster</type> <parameter>rast2</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>tworastuserfunc</parameter></paramdef>
 						<paramdef choice='opt'><type>text</type> <parameter>pixeltype=same_as_rast1</parameter></paramdef>
 						<paramdef choice='opt'><type>text</type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
@@ -5971,7 +5971,7 @@ WHERE rid=167;
 						<paramdef><type>integer</type> <parameter>band1</parameter></paramdef>
 						<paramdef><type>raster</type> <parameter>rast2</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band2</parameter></paramdef>
-						<paramdef><type>regprocedure</type> <parameter>userfunction</parameter></paramdef>
+						<paramdef><type>regprocedure</type> <parameter>tworastuserfunc</parameter></paramdef>
 						<paramdef choice='opt'><type>text</type> <parameter>pixeltype=same_as_rast1</parameter></paramdef>
 						<paramdef choice='opt'><type>text</type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
@@ -5982,20 +5982,20 @@ WHERE rid=167;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>userfunction</varname> on the input raster <varname>rast1</varname>,<varname>rast2</varname> . If no <varname>band1</varname> or <varname>band2</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original rasters but will only have one band.</para>
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>tworastuserfunc</varname> on the input raster <varname>rast1</varname>,<varname>rast2</varname> . If no <varname>band1</varname> or <varname>band2</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original rasters but will only have one band.</para>
 
 				<para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype. If pixeltype is passed NULL or left out, then the new raster band will have the same pixeltype as the input <varname>rast1</varname> band.</para>
 
-                <para>The <varname>userfunction</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
-                The <varname>userfunction</varname> is required to accept three arguments: a double precision value, a double precision value  and a variadic text array. The first argument is the value of an individual raster cell in <varname>rast1</varname> (regardless of the raster datatype), the second argument is an individual raster cell value in <varname>rast2</varname>, and the third argument indicates that all remaining parameters to <xref linkend="RT_ST_MapAlgebraFct2" /> shall be passed through to the <varname>userfunction</varname>.</para>
+                <para>The <varname>tworastuserfunc</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
+                The <varname>tworastuserfunc</varname> is required to accept three arguments: a double precision value, a double precision value  and a variadic text array. The first argument is the value of an individual raster cell in <varname>rast1</varname> (regardless of the raster datatype), the second argument is an individual raster cell value in <varname>rast2</varname>, and the third argument indicates that all remaining parameters to <xref linkend="RT_ST_MapAlgebraFct2" /> shall be passed through to the <varname>tworastuserfunc</varname>.</para>
 
                 <para>Passing a <type>regprodedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:<programlisting>'simple_function(double precision,double precision, text[])'::regprocedure</programlisting>Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.</para>
 
-                <para>The third argument to the <varname>userfunction</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct2" /> call are passed through to the specified <varname>userfunction</varname>, and are contained in the <varname>userargs</varname> argument.</para>
+                <para>The third argument to the <varname>tworastuserfunc</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct2" /> call are passed through to the specified <varname>tworastuserfunc</varname>, and are contained in the <varname>userargs</varname> argument.</para>
 
                 <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/interactive/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
 
-                <note><para>The <type>text[]</type> argument to the <varname>userfunction</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
+                <note><para>The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
 
 				<para>Availability: 2.0.0</para>
 			</refsection>
