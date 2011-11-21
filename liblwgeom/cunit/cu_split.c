@@ -84,29 +84,45 @@ static void test_lwline_split_by_point_to(void)
 static void test_lwgeom_split(void)
 {
 	LWGEOM *geom, *blade, *ret;
-	char *wkt;
+	char *wkt, *in_wkt;
 
 	geom = lwgeom_from_wkt(
 "MULTILINESTRING((-5 -2,0 0),(0 0,10 10))",
 	LW_PARSER_CHECK_NONE);
 	CU_ASSERT(geom != NULL);
-
-	blade = lwgeom_as_lwpoint(lwgeom_from_wkt(
+	blade = lwgeom_from_wkt(
 		"POINT(0 0)",
-		LW_PARSER_CHECK_NONE));
+		LW_PARSER_CHECK_NONE);
 	CU_ASSERT(blade != NULL);
-
 	ret = lwgeom_split(geom, blade);
 	CU_ASSERT(ret != NULL);
-
-	wkt = lwgeom_to_ewkt(geom);
-	/*printf("%s\n", wkt);*/
-	CU_ASSERT_STRING_EQUAL(wkt, "MULTILINESTRING((-5 -2,0 0),(0 0,10 10))");
+	wkt = lwgeom_to_ewkt(ret);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(-5 -2,0 0),LINESTRING(0 0,10 10))";
+        if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+	CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
 	lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
 
-	lwgeom_free((LWGEOM*)ret);
-	lwgeom_free((LWGEOM*)geom);
-	lwgeom_free((LWGEOM*)blade);
+        /* See #1311 */
+        geom = lwgeom_from_wkt(
+                "LINESTRING(0 0,10 0,20 4,0 3)",
+                LW_PARSER_CHECK_NONE);
+        CU_ASSERT(geom != NULL);
+        blade = lwgeom_from_wkt("POINT(10 0)", LW_PARSER_CHECK_NONE);
+        ret = lwgeom_split(geom, blade);
+        CU_ASSERT(ret != NULL);
+        wkt = lwgeom_to_ewkt(ret);
+	in_wkt = "GEOMETRYCOLLECTION(LINESTRING(0 0,10 0),LINESTRING(10 0,20 4,0 3))";
+        if (strcmp(in_wkt, wkt))
+                fprintf(stderr, "\nExp:  %s\nObt:  %s\n", in_wkt, wkt);
+        CU_ASSERT_STRING_EQUAL(wkt, in_wkt);
+        lwfree(wkt);
+	lwgeom_free(ret);
+	lwgeom_free(geom);
+	lwgeom_free(blade);
 }
 
 
