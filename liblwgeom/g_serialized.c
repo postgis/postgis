@@ -266,6 +266,7 @@ int gserialized_get_gbox_p(const GSERIALIZED *geom, GBOX *box)
 		/* See http://trac.osgeo.org/postgis/ticket/1023 */
 		lwgeom = lwgeom_from_gserialized(geom);
 		ret = lwgeom_calculate_gbox(lwgeom, box);
+		gbox_float_round(box);
 		lwgeom_free(lwgeom);
 	}
 	return ret;

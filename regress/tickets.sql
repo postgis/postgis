@@ -405,6 +405,10 @@ select '#1060', ST_Relate(ST_GeomFromText('POINT EMPTY',4326), ST_GeomFromText('
 WITH p AS ( SELECT 'POINT(832694.188 816254.625)'::geometry as g ) 
 SELECT '#1273', st_equals(p.g, postgis_addbbox(p.g)) from p;
 
+-- Another for #1273 --
+WITH p AS ( SELECT 'MULTIPOINT((832694.188 816254.625))'::geometry as g ) 
+SELECT '#1273.1', st_equals(p.g, postgis_dropbbox(p.g)) from p;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
