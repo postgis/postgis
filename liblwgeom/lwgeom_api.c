@@ -556,14 +556,21 @@ ptarray_isccw(const POINTARRAY *pa)
 {
 	int i;
 	double area = 0;
-	POINT2D p1, p2;
+	POINT2D p1, p2, p0;
 
+	if ( pa->npoints == 0 ) return 0;
+
+	getPoint2d_p(pa, 0, &p1);
+	p0 = p1;
+	p1.x -= p0.x; p1.y -= p0.y;
 	for (i=0; i<pa->npoints-1; i++)
 	{
-		getPoint2d_p(pa, i, &p1);
 		getPoint2d_p(pa, i+1, &p2);
+		p2.x -= p0.x; p2.y -= p0.y;
 		area += (p1.y * p2.x) - (p1.x * p2.y);
+		p1 = p2;
 	}
+	/* lwnotice("Signed area: %.16g", area); */
 	if ( area > 0 ) return 0;
 	else return 1;
 }
