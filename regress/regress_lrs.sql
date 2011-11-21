@@ -35,20 +35,20 @@ select 'line_locate_point_3', ST_line_locate_point(ST_geomfromtext('LINESTRING(-
 --- line_substring / line_interpolate_point
 
 --- postgis-devel/2006-January/001951.html
-select 'line_substring', ST_asewkt(ST_line_substring(ST_geomfromewkt('SRID=4326;LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)'), 0.5, 0.8));
+select 'line_substring_1', ST_asewkt(ST_line_substring(ST_geomfromewkt('SRID=4326;LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)'), 0.5, 0.8));
 
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)', 0.5, 0.75));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0, 1 1, 2 2)', 0, 0.5));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0, 1 1, 2 2)', 0.5, 1));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0, 2 2)', 0.5, 1));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0, 2 2)', 0, 0.5));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0, 4 4)', .25, 0.5));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRINGM(0 0 0, 4 4 4)', .25, 0.5));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRINGM(0 0 4, 4 4 0)', .25, 0.5));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0 4, 4 4 0)', .25, 0.5));
+select 'line_substring_2', ST_asewkt(ST_line_substring('LINESTRING(0 0 0 0, 1 1 1 1, 2 2 2 2, 3 3 3 3, 4 4 4 4)', 0.5, 0.75));
+select 'line_substring_3', ST_asewkt(ST_line_substring('LINESTRING(0 0, 1 1, 2 2)', 0, 0.5));
+select 'line_substring_4', ST_asewkt(ST_line_substring('LINESTRING(0 0, 1 1, 2 2)', 0.5, 1));
+select 'line_substring_5', ST_asewkt(ST_line_substring('LINESTRING(0 0, 2 2)', 0.5, 1));
+select 'line_substring_6', ST_asewkt(ST_line_substring('LINESTRING(0 0, 2 2)', 0, 0.5));
+select 'line_substring_7', ST_asewkt(ST_line_substring('LINESTRING(0 0, 4 4)', .25, 0.5));
+select 'line_substring_8', ST_asewkt(ST_line_substring('LINESTRINGM(0 0 0, 4 4 4)', .25, 0.5));
+select 'line_substring_9', ST_asewkt(ST_line_substring('LINESTRINGM(0 0 4, 4 4 0)', .25, 0.5));
+select 'line_substring_10', ST_asewkt(ST_line_substring('LINESTRING(0 0 4, 4 4 0)', .25, 0.5));
 
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0, 1 1)', 0, 0));
-select 'line_substring', ST_asewkt(ST_line_substring('LINESTRING(0 0 10, 1 1 5)', 0.5, .5));
+select 'line_substring_11', ST_asewkt(ST_line_substring('LINESTRING(0 0, 1 1)', 0, 0));
+select 'line_substring_12', ST_asewkt(ST_line_substring('LINESTRING(0 0 10, 1 1 5)', 0.5, .5));
 
 --- line_interpolate_point
 
