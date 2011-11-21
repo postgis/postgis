@@ -112,6 +112,7 @@ static void test_ptarray_locate_point(void)
 static void test_ptarray_isccw(void)
 {
         LWLINE *line;
+	LWPOLY* poly;
 	int ccw;
 
 	/* clockwise rectangle */
@@ -143,6 +144,12 @@ static void test_ptarray_isccw(void)
 	ccw = ptarray_isccw(line->points);
 	CU_ASSERT_EQUAL(ccw, 0);
 	lwline_free(line);
+
+	/* Clockwise narrow ring (see ticket #1302) */
+	poly = lwgeom_as_lwpoly(lwgeom_from_hexwkb("0103000000010000000500000000917E9BA468294100917E9B8AEA2841C976BE1FA4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA284137894120A4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841", LW_PARSER_CHECK_NONE));
+	ccw = ptarray_isccw(poly->rings[0]);
+	CU_ASSERT_EQUAL(ccw, 0);
+	lwpoly_free(poly);
 }
 
 

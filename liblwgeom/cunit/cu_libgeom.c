@@ -623,11 +623,10 @@ static void test_lwgeom_force_clockwise(void)
 	lwfree(out_ewkt);
 	lwgeom_free(geom);
 
-	/* counterclockwise, should be reversed */
+	/* clockwise narrow ring, fine as-is */
 	/* NOTE: this is a narrow ring, see ticket #1302 */
 	in_ewkt  = "0103000000010000000500000000917E9BA468294100917E9B8AEA2841C976BE1FA4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA284137894120A4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841";
 	geom = lwgeom_from_hexwkb(in_ewkt, LW_PARSER_CHECK_NONE);
-	in_ewkt = "0103000000010000000500000000917E9BA468294100917E9B8AEA284137894120A4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA2841C976BE1FA4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841";
 	lwgeom_force_clockwise(geom);
 	out_ewkt = lwgeom_to_hexwkb(geom, WKB_ISO, NULL);
 	if (strcmp(in_ewkt, out_ewkt))
