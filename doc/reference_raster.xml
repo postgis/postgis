@@ -3685,7 +3685,8 @@ WHERE rid = 2;
 				
 			<refsection>
 					<title>Examples</title>
-				
+					<para><para>Examples utilize the katrina raster loaded as a single tile described in 
+			<ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</ulink></para>
 					<programlisting>-- My original raster that is in WGS 84 lon lat 1 pixel in x/y represents 0.029.. in long lat -
 SELECT ST_ScaleX(rast) As orig_scalex, ST_ScaleY(rast) As origi_scaley 
  FROM katrina;
@@ -6192,9 +6193,18 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 						<listitem><para>The height of the neighborhood, in cells.</para></listitem>
 					</varlistentry>
 					<varlistentry>
-						<term>onerastngbuserfuncn</term>
+						<term>onerastngbuserfunc</term>
 						<listitem><para>PLPGSQL/psql user function to apply to neighborhood pixels of a single band of a raster. The first element is a 2-dimensional
 							array of numbers representing the rectangular pixel neighborhood</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>nodatamode</term>
+						<listitem><para>Defines what to do in the case if the function returns NULL or nodata. the nodatamode can also be handled within the function.  The value may be a numerical number as text 
+							or one of the following terms:</para>
+							<para>'ignore' or 'NULL': if any values in the neighborhood are the <varname>nodatavalue</varname> then return no data or the minimum value (if there is no nodata value) in the raster for the neighborhood value</para>,
+							<para>'value': If any of the values in the neighborhood are NULL or nodata, then return the original value of each pixel in the neighborhood (so in essence, do not apply any changes to the neigbhorhood)</para>
+							<para>a numerical value: This should be passed in as text like '255'.  If any values in the neighborhood are nodata or NULL, then return this value as the value for the neighborhood</para>
+						</listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>args</term>
@@ -6209,6 +6219,9 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 		
 		  <refsection>
 			<title>Examples</title>
+			<para>Examples utilize the katrina raster loaded as a single tile described in 
+			<ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</ulink>
+			and then prepared in the <xref linkend="RT_ST_Rescale" /> examples </para>
 <programlisting>
 --
 -- A simple 'callback' user function that averages up all the values in a neighborhood.
@@ -6228,13 +6241,6 @@ CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic 
         sum := 0;
         FOR x in array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
             FOR y in array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
-                IF _matrix[x][y] IS NULL THEN
-                    IF nodatamode = 'ignore' THEN
-                        _matrix[x][y] := 0;
-                    ELSE
-                        _matrix[x][y] := nodatamode::float;
-                    END IF;
-                END IF;
                 sum := sum + _matrix[x][y];
             END LOOP;
         END LOOP;
@@ -6244,7 +6250,8 @@ CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic 
 LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
     
 -- now we apply to our raster averaging pixels within 2 pixels of each other in x and y direction --
-SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 2, 2, 'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', NULL) As neared
+SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
+		'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', NULL) As nn_with_border
 	FROM katrinas_rescaled 
 	limit 1;
 </programlisting>
@@ -6266,7 +6273,7 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 2, 2, 'rast_avg(float[][], text, te
 							<imageobject>
 								<imagedata fileref="images/st_mapalgebrafctngb02.png" />
 							</imageobject>
-							<caption><para>new raster after averaging pixels withing 2x2 pixels of each other</para></caption>
+							<caption><para>new raster after averaging pixels withing 4x4 pixels of each other</para></caption>
 						</mediaobject>
 					</informalfigure></entry>
 				</row>
