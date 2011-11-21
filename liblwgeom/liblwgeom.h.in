@@ -818,7 +818,14 @@ extern int ptarray_isclosedz(const POINTARRAY *pa);
 extern void ptarray_longitude_shift(POINTARRAY *pa);
 extern void ptarray_reverse(POINTARRAY *pa);
 extern POINTARRAY* ptarray_flip_coordinates(POINTARRAY *pa);
-extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2);
+
+/**
+ * @d1 start location (distance from start / total distance)
+ * @d2   end location (distance from start / total distance)
+ * @param tolerance snap to vertices at locations < tolerance away from given ones
+ */
+extern POINTARRAY *ptarray_substring(POINTARRAY *pa, double d1, double d2,
+                                                          double tolerance);
 
 
 /**

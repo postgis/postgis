@@ -761,7 +761,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 		ipa = iline->points;
 
-		opa = ptarray_substring(ipa, from, to);
+		opa = ptarray_substring(ipa, from, to, 0);
 
 		if ( opa->npoints == 1 ) /* Point returned */
 			olwgeom = (LWGEOM *)lwpoint_construct(iline->srid, NULL, opa);
@@ -827,7 +827,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 				subto = (to - minprop) / (maxprop - minprop);
 
 
-			opa = ptarray_substring(subline->points, subfrom, subto);
+			opa = ptarray_substring(subline->points, subfrom, subto, 0);
 			if ( opa && opa->npoints > 0 )
 			{
 				if ( opa->npoints == 1 ) /* Point returned */

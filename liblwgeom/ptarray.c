@@ -668,7 +668,7 @@ ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
 }
 
 POINTARRAY *
-ptarray_substring(POINTARRAY *ipa, double from, double to)
+ptarray_substring(POINTARRAY *ipa, double from, double to, double tolerance)
 {
 	POINTARRAY *dpa;
 	POINT4D pt;
@@ -725,13 +725,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 
 			LWDEBUG(3, " Before start");
 
-			/*
-			 * Didn't reach the 'from' point,
-			 * nothing to do
-			 */
-			if ( from > tlength + slength ) goto END;
-
-			else if ( from == tlength + slength )
+			if ( fabs ( from - ( tlength + slength ) ) <= tolerance )
 			{
 
 				LWDEBUG(3, "  Second point is our start");
@@ -739,12 +733,12 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				/*
 				 * Second point is our start
 				 */
-				ptarray_append_point(dpa, &p2, LW_TRUE);
+				ptarray_append_point(dpa, &p2, LW_FALSE);
 				state=1; /* we're inside now */
 				goto END;
 			}
 
-			else if ( from == tlength )
+			else if ( fabs(from - tlength) <= tolerance )
 			{
 
 				LWDEBUG(3, "  First point is our start");
@@ -752,7 +746,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				/*
 				 * First point is our start
 				 */
-				ptarray_append_point(dpa, &p1, LW_TRUE);
+				ptarray_append_point(dpa, &p1, LW_FALSE);
 
 				/*
 				 * We're inside now, but will check
@@ -760,6 +754,12 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				 */
 				state=1;
 			}
+
+			/*
+			 * Didn't reach the 'from' point,
+			 * nothing to do
+			 */
+			else if ( from > tlength + slength ) goto END;
 
 			else  /* tlength < from < tlength+slength */
 			{
@@ -771,9 +771,10 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				 * second point
 				 */
 				dseg = (from - tlength) / slength;
+
 				interpolate_point4d(&p1, &p2, &pt, dseg);
 
-				ptarray_append_point(dpa, &pt, LW_TRUE);
+				ptarray_append_point(dpa, &pt, LW_FALSE);
 
 				/*
 				 * We're inside now, but will check
@@ -789,19 +790,9 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			LWDEBUG(3, " Inside");
 
 			/*
-			 * Didn't reach the 'end' point,
-			 * just copy second point
-			 */
-			if ( to > tlength + slength )
-			{
-				ptarray_append_point(dpa, &p2, LW_FALSE);
-				goto END;
-			}
-
-			/*
 			 * 'to' point is our second point.
 			 */
-			else if ( to == tlength + slength )
+			if ( fabs(to - ( tlength + slength ) ) <= tolerance )
 			{
 
 				LWDEBUG(3, " Second point is our end");
@@ -814,7 +805,7 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 			 * 'to' point is our first point.
 			 * (should only happen if 'to' is 0)
 			 */
-			else if ( to == tlength )
+			else if ( fabs(to - tlength) <= tolerance )
 			{
 
 				LWDEBUG(3, " First point is our end");
@@ -822,6 +813,16 @@ ptarray_substring(POINTARRAY *ipa, double from, double to)
 				ptarray_append_point(dpa, &p1, LW_FALSE);
 
 				break; /* substring complete */
+			}
+
+			/*
+			 * Didn't reach the 'end' point,
+			 * just copy second point
+			 */
+			else if ( to > tlength + slength )
+			{
+				ptarray_append_point(dpa, &p2, LW_FALSE);
+				goto END;
 			}
 
 			/*
