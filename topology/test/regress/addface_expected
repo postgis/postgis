@@ -117,3 +117,10 @@ N5|
 N6|
 N7|
 Topology 't4' dropped
+#1302|t
+#1302|E1
+#1302|E2
+#1302|F1
+#1302|E1|L0|R1
+#1302|E2|L0|R1
+Topology 'tt' dropped
