@@ -1,4 +1,4 @@
-----------------------------------------------------------------------
+﻿----------------------------------------------------------------------
 --
 -- $Id$
 --
@@ -34,7 +34,7 @@ CREATE OR REPLACE FUNCTION ST_MultiBandMapAlgebra(rast1 raster,
         FOR b IN 1..numband LOOP
             pixeltype := ST_BandPixelType(rast1, b);
             nodataval := ST_BandNodataValue(rast1, b);
-            newrast := ST_AddBand(newrast, NULL, ST_MapAlgebra(rast1, b, rast2, b, expression, pixeltype, extentexpr, nodataval), 1);
+            newrast := ST_AddBand(newrast, NULL, ST_MapAlgebraExpr(rast1, b, rast2, b, expression, pixeltype, extentexpr, nodataval), 1);
         END LOOP;
     END;
     $$
@@ -42,16 +42,18 @@ CREATE OR REPLACE FUNCTION ST_MultiBandMapAlgebra(rast1 raster,
 
 CREATE OR REPLACE FUNCTION MultiBandMapAlgebra4Union(rast1 raster, rast2 raster, expression text)
     RETURNS raster 
-    AS 'SELECT ST_MultiBandMapAlgebra(rast1, rast2, expression, NULL, 'UNION')'
+    AS $$
+        SELECT ST_MultiBandMapAlgebra($1, $2, $3, 'UNION');
+       $$
     LANGUAGE 'SQL';
 
-DROP TYPE rastexpr CASCADE;
+DROP TYPE IF EXISTS rastexpr CASCADE;
 CREATE TYPE rastexpr AS (
     rast raster,
     f_expression text,
     f_nodata1expr text, 
     f_nodata2expr text,
-    f_nodatanodataexpr text 
+    f_nodatanodataval double precision 
 );
 
 --DROP FUNCTION MapAlgebra4Union(rast1 raster, rast2 raster, expression text);
@@ -60,47 +62,47 @@ CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 raster,
                                             p_expression text, 
                                             p_nodata1expr text, 
                                             p_nodata2expr text, 
-                                            p_nodatanodataexpr text, 
+                                            p_nodatanodataval double precision, 
                                             t_expression text, 
                                             t_nodata1expr text, 
                                             t_nodata2expr text, 
-                                            t_nodatanodataexpr text)
+                                            t_nodatanodataval double precision)
     RETURNS raster AS 
     $$
     DECLARE
         t_raster raster;
         p_raster raster;
     BEGIN
-        -- With the new ST_MapAlgebra we must split the main expression in three expressions: expression, nodata1expr, nodata2expr
-        -- ST_MapAlgebra(rast1 raster, band1 integer, rast2 raster, band2 integer, expression text, pixeltype text, extentexpr text, nodata1expr text, nodata2expr text, nodatanodatadaexpr text)
-        -- We must make sure that when NULL is passed as the first raster to ST_MapAlgebra, ST_MapAlgebra resolve the nodata1expr
+        -- With the new ST_MapAlgebraExpr we must split the main expression in three expressions: expression, nodata1expr, nodata2expr
+        -- ST_MapAlgebraExpr(rast1 raster, band1 integer, rast2 raster, band2 integer, expression text, pixeltype text, extentexpr text, nodata1expr text, nodata2expr text, nodatanodatadaexpr double precision)
+        -- We must make sure that when NULL is passed as the first raster to ST_MapAlgebraExpr, ST_MapAlgebraExpr resolve the nodata1expr
         IF upper(p_expression) = 'LAST' THEN
-            RETURN ST_MapAlgebra(rast1, 1, rast2, 1, 'rast2'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::text);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'rast2'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'FIRST' THEN
-            RETURN ST_MapAlgebra(rast1, 1, rast2, 1, 'rast1'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::text);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'rast1'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'MIN' THEN
-            RETURN ST_MapAlgebra(rast1, 1, rast2, 1, 'LEAST(rast1, rast2)'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::text);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'LEAST(rast1, rast2)'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'MAX' THEN
-            RETURN ST_MapAlgebra(rast1, 1, rast2, 1, 'GREATEST(rast1, rast2)'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::text);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'GREATEST(rast1, rast2)'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'COUNT' THEN
-            RETURN ST_MapAlgebra(rast1, 1, rast2, 1, 'rast1 + 1'::text, NULL::text, 'UNION'::text, '1'::text, 'rast1'::text, '0'::text);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'rast1 + 1'::text, NULL::text, 'UNION'::text, '1'::text, 'rast1'::text, 0::double precision);
         ELSIF upper(p_expression) = 'SUM' THEN
-            RETURN ST_MapAlgebra(rast1, 1, rast2, 1, 'rast1 + rast2'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::text);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'rast1 + rast2'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'RANGE' THEN
-            t_raster = ST_MapAlgebra(rast1, 2, rast2, 1, 'LEAST(rast1, rast2)'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::text);
-            p_raster := MapAlgebra4Union(rast1, rast2, 'MAX'::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text);
+            t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, 'LEAST(rast1, rast2)'::text, NULL::text, 'UNION'::text, 'rast2'::text, 'rast1'::text, NULL::double precision);
+            p_raster := MapAlgebra4Union(rast1, rast2, 'MAX'::text, NULL::text, NULL::text, NULL::double precision, NULL::text, NULL::text, NULL::text, NULL::double precision);
             RETURN ST_AddBand(p_raster, t_raster, 1, 2);
         ELSIF upper(p_expression) = 'MEAN' THEN
-            t_raster = ST_MapAlgebra(rast1, 2, rast2, 1, 'rast1 + 1'::text, NULL::text, 'UNION'::text, '1'::text, 'rast1'::text, '0'::text);
-            p_raster := MapAlgebra4Union(rast1, rast2, 'SUM'::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text);
+            t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, 'rast1 + 1'::text, NULL::text, 'UNION'::text, '1'::text, 'rast1'::text, 0::double precision);
+            p_raster := MapAlgebra4Union(rast1, rast2, 'SUM'::text, NULL::text, NULL::text, NULL::double precision, NULL::text, NULL::text, NULL::text, NULL::double precision);
             RETURN ST_AddBand(p_raster, t_raster, 1, 2);
         ELSE
             IF t_expression NOTNULL AND t_expression != '' THEN
-                t_raster = ST_MapAlgebra(rast1, 2, rast2, 1, t_expression, NULL::text, 'UNION'::text, t_nodata1expr, t_nodata2expr, t_nodatanodataexpr::text);
-                p_raster = ST_MapAlgebra(rast1, 1, rast2, 1, p_expression, NULL::text, 'UNION'::text, p_nodata1expr, p_nodata2expr, p_nodatanodataexpr::text);
+                t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, t_expression, NULL::text, 'UNION'::text, t_nodata1expr, t_nodata2expr, t_nodatanodataval::double precision);
+                p_raster = ST_MapAlgebraExpr(rast1, 1, rast2, 1, p_expression, NULL::text, 'UNION'::text, p_nodata1expr, p_nodata2expr, p_nodatanodataval::double precision);
                 RETURN ST_AddBand(p_raster, t_raster, 1, 2);
             END IF;     
-            RETURN ST_MapAlgebra(rast1, 1, rast2, 1, p_expression, NULL, 'UNION'::text, NULL::text, NULL::text, NULL::text);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, p_expression, NULL, 'UNION'::text, NULL::text, NULL::text, NULL::double precision);
         END IF;
     END;
     $$
@@ -111,7 +113,7 @@ CREATE OR REPLACE FUNCTION MapAlgebra4UnionFinal3(rast rastexpr)
     $$
     DECLARE
     BEGIN
-        RETURN ST_MapAlgebra(rast.rast, 1, rast.rast, 2, rast.f_expression, NULL::text, 'UNION'::text, rast.f_nodata1expr, rast.f_nodata2expr, rast.f_nodatanodataexpr);
+        RETURN ST_MapAlgebraExpr(rast.rast, 1, rast.rast, 2, rast.f_expression, NULL::text, 'UNION'::text, rast.f_nodata1expr, rast.f_nodata2expr, rast.f_nodatanodataval);
     END;
     $$
     LANGUAGE 'plpgsql';
@@ -122,9 +124,9 @@ CREATE OR REPLACE FUNCTION MapAlgebra4UnionFinal1(rast rastexpr)
     DECLARE
     BEGIN
         IF upper(rast.f_expression) = 'RANGE' THEN
-            RETURN ST_MapAlgebra(rast.rast, 1, rast.rast, 2, 'rast1 - rast2'::text, NULL::text, 'UNION'::text, NULL::text, NULL::text, NULL::text);
+            RETURN ST_MapAlgebraExpr(rast.rast, 1, rast.rast, 2, 'rast1 - rast2'::text, NULL::text, 'UNION'::text, NULL::text, NULL::text, NULL::double precision);
         ELSEIF upper(rast.f_expression) = 'MEAN' THEN
-            RETURN ST_MapAlgebra(rast.rast, 1, rast.rast, 2, 'CASE WHEN rast2 > 0 THEN rast1 / rast2::float8 ELSE NULL END'::text, NULL::text, 'UNION'::text, NULL::text, NULL::text, NULL::text);
+            RETURN ST_MapAlgebraExpr(rast.rast, 1, rast.rast, 2, 'CASE WHEN rast2 > 0 THEN rast1 / rast2::float8 ELSE NULL END'::text, NULL::text, 'UNION'::text, NULL::text, NULL::text, NULL::double precision);
         ELSE
             RETURN rast.rast;
         END IF;
@@ -138,15 +140,15 @@ CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 rastexpr,
                         p_expression text, 
                         p_nodata1expr text, 
                         p_nodata2expr text, 
-                        p_nodatanodataexpr text, 
+                        p_nodatanodataval double precision, 
                         t_expression text, 
                         t_nodata1expr text, 
                         t_nodata2expr text, 
-                        t_nodatanodataexpr text, 
+                        t_nodatanodataval double precision, 
                         f_expression text,
                         f_nodata1expr text, 
                         f_nodata2expr text, 
-                        f_nodatanodataexpr text)
+                        f_nodatanodataval double precision)
     RETURNS rastexpr 
     AS $$
         SELECT (MapAlgebra4Union(($1).rast, $2, $3, $4, $5, $6, $7, $8, $9, $10), $11, $12, $13, $14)::rastexpr
@@ -167,11 +169,11 @@ CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 rastexpr,
                         p_expression text, 
                         p_nodata1expr text, 
                         p_nodata2expr text, 
-                        p_nodatanodataexpr text, 
+                        p_nodatanodataval double precision, 
                         t_expression text, 
                         t_nodata1expr text, 
                         t_nodata2expr text, 
-                        t_nodatanodataexpr text)
+                        t_nodatanodataval double precision)
     RETURNS rastexpr 
     AS $$
         SELECT (MapAlgebra4Union(($1).rast, $2, $3, $4, $5, $6, $7, $8, $9, $10), NULL, NULL, NULL, NULL)::rastexpr
@@ -191,7 +193,7 @@ CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 rastexpr,
                         p_expression text, 
                         p_nodata1expr text, 
                         p_nodata2expr text, 
-                        p_nodatanodataexpr text)
+                        p_nodatanodataval double precision)
     RETURNS rastexpr 
     AS $$
         SELECT (MapAlgebra4Union(($1).rast, $2, $3, $4, $5, $6, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL)::rastexpr
@@ -212,8 +214,8 @@ CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 rastexpr,
         SELECT (MapAlgebra4Union(($1).rast, $2, 'LAST', NULL, NULL, NULL, NULL, NULL, NULL, NULL), NULL, NULL, NULL, NULL)::rastexpr
     $$ LANGUAGE 'SQL';
 
---DROP AGGREGATE ST_Union(raster, text, text, text, text, text, text, text, text, text, text, text, text);
-CREATE AGGREGATE ST_Union(raster, text, text, text, text, text, text, text, text, text, text, text, text) (
+--DROP AGGREGATE ST_Union(raster, text, text, text, double precision, text, text, text, double precision, text, text, text, double precision);
+CREATE AGGREGATE ST_Union(raster, text, text, text, double precision, text, text, text, double precision, text, text, text, double precision) (
     SFUNC = MapAlgebra4Union,
     STYPE = rastexpr,
     FINALFUNC = MapAlgebra4UnionFinal3
@@ -226,8 +228,8 @@ CREATE AGGREGATE ST_Union(raster, text, text, text) (
     FINALFUNC = MapAlgebra4UnionFinal3
 );
 
---DROP AGGREGATE ST_Union(raster, text, text, text, text, text, text, text, text);
-CREATE AGGREGATE ST_Union(raster, text, text, text, text, text, text, text, text) (
+--DROP AGGREGATE ST_Union(raster, text, text, text, double precision, text, text, text, double precision);
+CREATE AGGREGATE ST_Union(raster, text, text, text, double precision, text, text, text, double precision) (
     SFUNC = MapAlgebra4Union,
     STYPE = rastexpr
 );
@@ -238,8 +240,8 @@ CREATE AGGREGATE ST_Union(raster, text, text) (
     STYPE = rastexpr
 );
 
---DROP AGGREGATE ST_Union(raster, text, text, text, text);
-CREATE AGGREGATE ST_Union(raster, text, text, text, text) (
+--DROP AGGREGATE ST_Union(raster, text, text, text, double precision);
+CREATE AGGREGATE ST_Union(raster, text, text, text, double precision) (
     SFUNC = MapAlgebra4Union,
     STYPE = rastexpr,
     FINALFUNC = MapAlgebra4UnionFinal1
@@ -260,7 +262,7 @@ CREATE AGGREGATE ST_Union(raster) (
 
 -- Test ST_TestRaster
 SELECT ST_AsBinary((rast).geom), (rast).val 
-FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(0, 0, 2)) rast) foo
+FROM (SELECT ST_PixelAsPolygons(ST_TestRaster(0, 0, 2)) rast) foo;
 
 -- Test St_Union
 SELECT ST_AsBinary((rast).geom), (rast).val 
@@ -289,9 +291,9 @@ FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, 'last'), 1) rast
       
 -- Explicit implementation of 'MEAN' to make sure directly passing expressions works properly
 SELECT ST_AsBinary((rast).geom), (rast).val 
-FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, 'rast1 + rast2'::text, 'rast2'::text, 'rast1'::text, NULL::text,
-                                               'rast1 + 1'::text, '1'::text, 'rast1'::text, '0'::text,
-                                               'CASE WHEN rast2 > 0 THEN rast1 / rast2::float8 ELSE NULL END'::text, NULL::text, NULL::text, NULL::text), 1) rast 
+FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, 'rast1 + rast2'::text, 'rast2'::text, 'rast1'::text, NULL::double precision,
+                                               'rast1 + 1'::text, '1'::text, 'rast1'::text, 0::double precision,
+                                               'CASE WHEN rast2 > 0 THEN rast1 / rast2::float8 ELSE NULL END'::text, NULL::text, NULL::text, NULL::double precision), 1) rast 
       FROM (SELECT ST_TestRaster(0, 0, 2) AS rast 
             UNION ALL 
             SELECT ST_TestRaster(1, 1, 4) AS rast 
