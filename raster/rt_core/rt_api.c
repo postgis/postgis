@@ -4198,6 +4198,15 @@ rt_raster_cell_to_geopoint(rt_raster raster,
 		rt_raster_get_geotransform_matrix(raster, _gt);
 	}
 
+	RASTER_DEBUGF(4, "gt = (%f, %f, %f, %f, %f, %f)",
+		_gt[0],
+		_gt[1],
+		_gt[2],
+		_gt[3],
+		_gt[4],
+		_gt[5]
+	);
+
 	GDALApplyGeoTransform(_gt, xr, yr, xw, yw);
 	RASTER_DEBUGF(4, "GDALApplyGeoTransform (c -> g) for (%f, %f) = (%f, %f)",
 		xr, yr, *xw, *yw);
@@ -9017,7 +9026,7 @@ rt_raster_from_two_rasters(
 
 	rt_raster raster = NULL;
 	int aligned = 0;
-	uint16_t dim[2] = {0};
+	int dim[2] = {0};
 	double gt[6] = {0.};
 
 	assert(NULL != rast1);
@@ -9095,36 +9104,55 @@ rt_raster_from_two_rasters(
 			rt_raster_set_geotransform_matrix(raster, gt);
 			break;
 		case ET_UNION: {
-			double ip[2] = {0};
-			double offset[4] = {0};
+			double off[4] = {0};
 
 			rt_raster_get_geotransform_matrix(_rast[0], gt);
+			RASTER_DEBUGF(4, "gt = (%f, %f, %f, %f, %f, %f)",
+				gt[0],
+				gt[1],
+				gt[2],
+				gt[3],
+				gt[4],
+				gt[5]
+			);
 
-			/* new upper-left */
-			ip[0] = _rast[1]->ipX;
-			ip[1] = _rast[1]->ipY;
-			if (ip[0] < gt[0])
-				gt[0] = ip[0];
-			if (ip[1] < gt[3])
-				gt[3] = ip[1];
-
-			/* new width and height */
-			offset[0] = 0;
+			/* new raster upper left offset */
+			off[0] = 0;
 			if (_offset[1][0] < 0)
-				offset[0] = _offset[1][0];
-			offset[1] = 0;
+				off[0] = _offset[1][0];
+			off[1] = 0;
 			if (_offset[1][1] < 0)
-				offset[1] = _offset[1][1];
+				off[1] = _offset[1][1];
 
-			offset[2] = _dim[0][0] - 1;
+			/* new raster lower right offset */
+			off[2] = _dim[0][0] - 1;
 			if ((int) _offset[1][2] >= _dim[0][0])
-				offset[2] = _offset[1][2];
-			offset[3] = _dim[0][1] - 1;
+				off[2] = _offset[1][2];
+			off[3] = _dim[0][1] - 1;
 			if ((int) _offset[1][3] >= _dim[0][1])
-				offset[3] = _offset[1][3];
+				off[3] = _offset[1][3];
 
-			dim[0] = offset[2] - offset[0] + 1;
-			dim[1] = offset[3] - offset[1] + 1;
+			/* upper left corner */
+			if (!rt_raster_cell_to_geopoint(
+				_rast[0],
+				off[0], off[1],
+				&(gt[0]), &(gt[3]),
+				NULL
+			)) {
+				rterror("rt_raster_from_two_rasters: Unable to get spatial coordinates of upper-left pixel of output raster");
+				*err = 0;
+				return NULL;
+			}
+
+			dim[0] = off[2] - off[0] + 1;
+			dim[1] = off[3] - off[1] + 1;
+			RASTER_DEBUGF(4, "off = (%f, %f, %f, %f)",
+				off[0],
+				off[1],
+				off[2],
+				off[3]
+			);
+			RASTER_DEBUGF(4, "dim = (%d, %d)", dim[0], dim[1]);
 
 			raster = rt_raster_new(
 				dim[0],
@@ -9137,6 +9165,14 @@ rt_raster_from_two_rasters(
 			}
 			raster->srid = _rast[0]->srid;
 			rt_raster_set_geotransform_matrix(raster, gt);
+			RASTER_DEBUGF(4, "gt = (%f, %f, %f, %f, %f, %f)",
+				gt[0],
+				gt[1],
+				gt[2],
+				gt[3],
+				gt[4],
+				gt[5]
+			);
 
 			/* get offsets */
 			if (!rt_raster_geopoint_to_cell(
@@ -9169,8 +9205,7 @@ rt_raster_from_two_rasters(
 			break;
 		}
 		case ET_INTERSECTION: {
-			double offset[4] = {0};
-			double ip[2] = {0};
+			double off[4] = {0};
 
 			/* no intersection */
 			if (
@@ -9199,19 +9234,19 @@ rt_raster_from_two_rasters(
 			}
 
 			if (_offset[1][0] > 0)
-				offset[0] = _offset[1][0];
+				off[0] = _offset[1][0];
 			if (_offset[1][1] > 0)
-				offset[1] = _offset[1][1];
+				off[1] = _offset[1][1];
 
-			offset[2] = _dim[0][0] - 1;
+			off[2] = _dim[0][0] - 1;
 			if (_offset[1][2] < _dim[0][0])
-				offset[2] = _offset[1][2];
-			offset[3] = _dim[0][1] - 1;
+				off[2] = _offset[1][2];
+			off[3] = _dim[0][1] - 1;
 			if (_offset[1][3] < _dim[0][1])
-				offset[3] = _offset[1][3];
+				off[3] = _offset[1][3];
 
-			dim[0] = offset[2] - offset[0] + 1;
-			dim[1] = offset[3] - offset[1] + 1;
+			dim[0] = off[2] - off[0] + 1;
+			dim[1] = off[3] - off[1] + 1;
 			raster = rt_raster_new(
 				dim[0],
 				dim[1]
@@ -9227,8 +9262,8 @@ rt_raster_from_two_rasters(
 			rt_raster_get_geotransform_matrix(_rast[0], gt);
 			if (!rt_raster_cell_to_geopoint(
 				_rast[0],
-				offset[0], offset[1],
-				&(ip[0]), &(ip[1]),
+				off[0], off[1],
+				&(gt[0]), &(gt[3]),
 				gt
 			)) {
 				rterror("rt_raster_from_two_rasters: Unable to get spatial coordinates of upper-left pixel of output raster");
@@ -9237,8 +9272,6 @@ rt_raster_from_two_rasters(
 				return NULL;
 			}
 
-			gt[0] = ip[0];
-			gt[3] = ip[1];
 			rt_raster_set_geotransform_matrix(raster, gt);
 
 			/* get offsets */
