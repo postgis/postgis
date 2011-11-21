@@ -659,5 +659,5 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_force_clockwise),
 	CU_TEST_INFO_NULL
 };
-CU_SuiteInfo libgeom_suite = {"LibGeom Suite",  NULL,  NULL, libgeom_tests};
+CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};
 
