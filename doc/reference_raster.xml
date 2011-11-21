@@ -6168,8 +6168,8 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 			<para>(one raster version) Return a raster which values
                  are the result of a PLPGSQL user function involving a
                neighborhood of values from the input raster band. The user function takes the neighborhood of pixel values
-               as an array of numbers, returns one number per neighborhood,
-               replaces existing pixel values of a neighborhood with that number. </para>
+               as an array of numbers, for each pixel, returns the result from the user function,
+               replacing pixel value of currently inspected pixel with the function result. </para>
 		
 			<variablelist>
 					<varlistentry>
@@ -6199,11 +6199,10 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 					</varlistentry>
 					<varlistentry>
 						<term>nodatamode</term>
-						<listitem><para>Defines what to do in the case if the function returns NULL or nodata. the nodatamode can also be handled within the function.  The value may be a numerical number as text 
-							or one of the following terms:</para>
-							<para>'ignore' or 'NULL': if any values in the neighborhood are the <varname>nodatavalue</varname> then return no data or the minimum value (if there is no nodata value) in the raster for the neighborhood value</para>,
-							<para>'value': If any of the values in the neighborhood are NULL or nodata, then return the original value of each pixel in the neighborhood (so in essence, do not apply any changes to the neigbhorhood)</para>
-							<para>a numerical value: This should be passed in as text like '255'.  If any values in the neighborhood are nodata or NULL, then return this value as the value for the neighborhood</para>
+						<listitem><para>Defines what value to pass to the function for a neighborhood pixel that is nodata or NULL</para>
+							<para>'ignore' or 'NULL': if the result of the function is NULL or <varname>nodatavalue</varname> then return no data or the minimum value (if there is no nodata value) in the raster for the neighborhood value</para>,
+							<para>'value': Use the currently inspected pixel as the replacement value for any neighbor pixels that are NULL or nodata</para>
+							<para>a numerical value: This should be passed in as text like '255'.  Use this value as replace value in function for any neighbor pixel that is NULL or nodata value.</para>
 						</listitem>
 					</varlistentry>
 					<varlistentry>
