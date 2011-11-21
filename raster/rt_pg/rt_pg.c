@@ -8673,7 +8673,13 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					_y = y - (int) _rastoffset[i][1];
 
 					/* get pixel value */
-					if (
+					if (_band[i] == NULL) {
+						if (!_hasnodata[i]) {
+							_haspixel[i] = 1;
+							_pixel[i] = _nodataval[i];
+						}
+					}
+					else if (
 						!_isempty[i] &&
 						(_x >= 0 && _x < _dim[i][0]) &&
 						(_y >= 0 && _y < _dim[i][1])
@@ -8692,6 +8698,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 							PG_RETURN_NULL();
 						}
+
 						if (!_hasnodata[i] || FLT_NEQ(_nodataval[i], _pixel[i]))
 							_haspixel[i] = 1;
 					}
@@ -9517,7 +9524,7 @@ rt_pg_alloc(size_t size)
 {
     void * result;
 
-    POSTGIS_RT_DEBUGF(5, "rt_pgalloc(%ld) called", size);
+    POSTGIS_RT_DEBUGF(5, "rt_pgalloc(%ld) called", (long int) size);
 
     result = palloc(size);
 
@@ -9529,7 +9536,7 @@ rt_pg_realloc(void *mem, size_t size)
 {
     void * result;
 
-    POSTGIS_RT_DEBUGF(5, "rt_pg_realloc(%ld) called", size);
+    POSTGIS_RT_DEBUGF(5, "rt_pg_realloc(%ld) called", (long int) size);
 
     if (mem)
         result = repalloc(mem, size);
