@@ -2462,6 +2462,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- The following file needs getfaceedges_returntype, defined in sqlmm.sql
 #include "sql/query/GetRingEdges.sql"
 
+--general management --
+#include "sql/manage/ManageHelper.sql"
 
 --COMMIT;
-
+-- Make sure topology is in database search path --
+SELECT topology.AddToSearchPath('topology');
