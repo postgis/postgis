@@ -3685,7 +3685,7 @@ WHERE rid = 2;
 				
 			<refsection>
 					<title>Examples</title>
-					<para><para>Examples utilize the katrina raster loaded as a single tile described in 
+					<para>Examples utilize the katrina raster loaded as a single tile described in 
 			<ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</ulink></para>
 					<programlisting>-- My original raster that is in WGS 84 lon lat 1 pixel in x/y represents 0.029.. in long lat -
 SELECT ST_ScaleX(rast) As orig_scalex, ST_ScaleY(rast) As origi_scaley 
