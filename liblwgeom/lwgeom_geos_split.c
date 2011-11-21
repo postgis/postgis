@@ -428,6 +428,8 @@ lwcollection_split(const LWCOLLECTION* lwcoll_in, const LWGEOM* blade_in)
 			col->geoms[j]->srid = SRID_UNKNOWN; /* strip srid */
 			split_vector[split_vector_size++] = col->geoms[j];
 		}
+		lwfree(col->geoms);
+		lwfree(col);
 	}
 
 	/* Now split_vector has split_vector_size geometries */
