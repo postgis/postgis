@@ -6200,9 +6200,9 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 					<varlistentry>
 						<term>nodatamode</term>
 						<listitem><para>Defines what value to pass to the function for a neighborhood pixel that is nodata or NULL</para>
-							<para>'ignore' or 'NULL': if the result of the function is NULL or <varname>nodatavalue</varname> then return no data or the minimum value (if there is no nodata value) in the raster for the neighborhood value</para>,
-							<para>'value': Use the currently inspected pixel as the replacement value for any neighbor pixels that are NULL or nodata</para>
-							<para>a numerical value: This should be passed in as text like '255'.  Use this value as replace value in function for any neighbor pixel that is NULL or nodata value.</para>
+							<para>'ignore': any NODATA values encountered in the neighborhood are ignored by the computation -- this flag must be sent to the user callback function, and the user function decides how to ignore it.</para>,
+							<para>'NULL': any NODATA values encountered in the neighborhood will cause the resulting pixel to be NULL -- the user callback function is skipped in this case.</para>
+							<para>'value': any NODATA values encountered in the neighborhood are replaced by the reference pixel (the one in the center of the neighborhood). Note that if this value is NODATA, the behavior is the same as 'NULL' (for the affected neighborhood)</para>
 						</listitem>
 					</varlistentry>
 					<varlistentry>
