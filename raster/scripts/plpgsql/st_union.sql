@@ -1,4 +1,4 @@
-﻿----------------------------------------------------------------------
+----------------------------------------------------------------------
 --
 -- $Id$
 --
@@ -137,15 +137,15 @@ CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 rastexpr,
                         rast2 raster, 
                         p_expression text, 
                         p_nodata1expr text, 
-                        p_nodata1expr text, 
+                        p_nodata2expr text, 
                         p_nodatanodataexpr text, 
                         t_expression text, 
                         t_nodata1expr text, 
-                        t_nodata1expr text, 
+                        t_nodata2expr text, 
                         t_nodatanodataexpr text, 
                         f_expression text,
                         f_nodata1expr text, 
-                        f_nodata1expr text, 
+                        f_nodata2expr text, 
                         f_nodatanodataexpr text)
     RETURNS rastexpr 
     AS $$
@@ -166,11 +166,11 @@ CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 rastexpr,
                         rast2 raster, 
                         p_expression text, 
                         p_nodata1expr text, 
-                        p_nodata1expr text, 
+                        p_nodata2expr text, 
                         p_nodatanodataexpr text, 
                         t_expression text, 
                         t_nodata1expr text, 
-                        t_nodata1expr text, 
+                        t_nodata2expr text, 
                         t_nodatanodataexpr text)
     RETURNS rastexpr 
     AS $$
@@ -190,7 +190,7 @@ CREATE OR REPLACE FUNCTION MapAlgebra4Union(rast1 rastexpr,
                         rast2 raster, 
                         p_expression text, 
                         p_nodata1expr text, 
-                        p_nodata1expr text, 
+                        p_nodata2expr text, 
                         p_nodatanodataexpr text)
     RETURNS rastexpr 
     AS $$
