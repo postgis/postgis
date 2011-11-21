@@ -6153,7 +6153,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 				<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>ngbwidth</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>ngbheight</parameter></paramdef>
-				<paramdef><type>regprocedure </type> <parameter>userfunction</parameter></paramdef>
+				<paramdef><type>regprocedure </type> <parameter>onerastngbuserfunc</parameter></paramdef>
 				<paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
 				<paramdef><type>text[] </type> <parameter>VARIADIC args</parameter></paramdef>
 			  </funcprototype>
@@ -6192,8 +6192,8 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast,3 ,
 						<listitem><para>The height of the neighborhood, in cells.</para></listitem>
 					</varlistentry>
 					<varlistentry>
-						<term>userfunction</term>
-						<listitem><para>PLPGSQL/psql user function to apply to neighborhood pixels. The first element is a 2-dimensional
+						<term>onerastngbuserfuncn</term>
+						<listitem><para>PLPGSQL/psql user function to apply to neighborhood pixels of a single band of a raster. The first element is a 2-dimensional
 							array of numbers representing the rectangular pixel neighborhood</para></listitem>
 					</varlistentry>
 					<varlistentry>
@@ -6279,7 +6279,7 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 2, 2, 'rast_avg(float[][], text, te
 		  <refsection>
 			<title>See Also</title>
 		
-			<para><xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_Rescale" /></para>
+			<para><xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_Rescale" /></para>
 		  </refsection>
 		</refentry>
 		

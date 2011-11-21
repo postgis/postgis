@@ -53,13 +53,27 @@ DROP FUNCTION IF EXISTS ST_Intersection(geometry,raster);
 DROP FUNCTION IF EXISTS ST_Intersection(raster, geometry);
 DROP FUNCTION IF EXISTS ST_Intersection(raster, integer, geometry);
 
---these were renamed to ST_MapAlgebraExpr --
+--these were renamed to ST_MapAlgebraExpr or argument names changed --
 DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, integer, text, text, nodatavaluerepl text);
 DROP FUNCTION IF EXISTS ST_MapAlgebra(raster, pixeltype text, expression text, nodatavaluerepl text);
 
---signatures changed
-DROP FUNCTION IF EXISTS  ST_MapAlgebraExpr(raster, integer, text, text, text);
-DROP FUNCTION IF EXISTS  ST_MapAlgebraExpr(raster, text, text, text);
+
+--signatures or arg names changed
+DROP FUNCTION IF EXISTS ST_MapAlgebraExpr(raster, integer, text, text, text);
+DROP FUNCTION IF EXISTS ST_MapAlgebraExpr(raster, text, text, text);
+DROP FUNCTION IF EXISTS ST_MapalgebraFct(raster, regprocedure);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, text, regprocedure, VARIADIC text[]); 
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, text, regprocedure); 
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, regprocedure, VARIADIC text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, regprocedure, variadic text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, text, regprocedure, VARIADIC text[]); 
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, text, regprocedure); 
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, regprocedure, variadic text[]);
+DROP FUNCTION IF EXISTS ST_MapalgebraFct(raster, integer, regprocedure);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, raster, regprocedure, text, text, VARIADIC text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFct(raster, integer, raster, integer, regprocedure, text, text, VARIADIC text[]);
+DROP FUNCTION IF EXISTS ST_MapAlgebraFctNgb(raster, integer, text, integer, integer, regprocedure, text,  VARIADIC text[]);
+
 
 --dropped functions
 DROP FUNCTION IF EXISTS  ST_MapAlgebraFct(raster, raster, regprocedure, VARIADIC text[]);
