@@ -179,4 +179,4 @@ DROP FUNCTION IF EXISTS st_georeference(raster);
 DROP FUNCTION IF EXISTS st_georeference(raster, text);
 
 -- function name change
-CREATE OR REPLACE FUNCTION dumpaswktpolygons(raster, integer);
+DROP FUNCTION IF EXISTS dumpaswktpolygons(raster, integer);
