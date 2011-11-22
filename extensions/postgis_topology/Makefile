@@ -11,7 +11,7 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a5--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a6--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -64,7 +64,7 @@ sql/$(EXTENSION)--2.0.0a2--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a1--$(EXTVE
 sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql
 	cp $< $@
 	
-sql/$(EXTENSION)--2.0.0a5--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql
+sql/$(EXTENSION)--2.0.0a6--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a1--$(EXTVERSION).sql
 	cp $< $@
 	
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
