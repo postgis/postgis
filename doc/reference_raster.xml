@@ -2591,21 +2591,12 @@ WHERE rid = 2;
 					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>forceChecking</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>forceChecking=true</parameter></paramdef>
 				  </funcprototype>
                  <funcprototype>
 					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-                 </funcprototype>
-                 <funcprototype>
-					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>forceChecking</parameter></paramdef>
-				  </funcprototype>
-                  <funcprototype>
-					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>forceChecking=true</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3253,12 +3244,7 @@ GROUP BY (foo.geomval).val;
 					<funcdef>raster <function>ST_SetGeoReference</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>georefcoords</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_SetGeoReference</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>georefcoords</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>format</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>format=GDAL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3819,13 +3805,7 @@ SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
 					<paramdef><type>double precision </type> <parameter>nodatavalue</parameter></paramdef>
 					<paramdef choice='opt'><type>boolean </type> <parameter>forcechecking=false</parameter></paramdef>
 				  </funcprototype>
-				  
-				 <funcprototype>
-					<funcdef>raster <function>ST_SetBandNoDataValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>nodatavalue</parameter></paramdef>
-				  </funcprototype>
+
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -5159,16 +5139,11 @@ FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast
 		  </refnamediv>
 	
 		  <refsynopsisdiv>
-			<funcsynopsis>
+			<funcsynopsis>			  
 			  <funcprototype>
 				<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef>
 				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-			  </funcprototype>
-			  
-			  <funcprototype>
-				<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef>
-				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>band_num=1</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -6297,15 +6272,11 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
 	
 		  <refsynopsisdiv>
 			<funcsynopsis>
+
 			  <funcprototype>
 				<funcdef>geometry <function>ST_Polygon</function></funcdef>
 				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-			  </funcprototype>
-			  
-			  <funcprototype>
-				<funcdef>geometry <function>ST_Polygon</function></funcdef>
-				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>band_num=1</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
