@@ -66,15 +66,23 @@
  */
 PG_MODULE_MAGIC;
 
+/***************************************************************
+ * Internal functions must be prefixed with rtpg_.  This is
+ * keeping inline with the use of pgis_ for ./postgis C utility
+ * functions.
+ ****************************************************************/
 /* Internal funcs */
-static char * replace(const char *str, const char *oldstr, const char *newstr,
-        int *count);
-static char *strtoupper(char *str);
-static char	*chartrim(char* input, char *remove); /* for RASTER_reclass */
-static char **strsplit(const char *str, const char *delimiter, int *n); /* for RASTER_reclass */
-static char *removespaces(char *str); /* for RASTER_reclass */
-static char *trim(char* input); /* for RASTER_asGDALRaster */
-static char *getSRTextSPI(int srid);
+static char *rtpg_replace(
+	const char *str,
+	const char *oldstr, const char *newstr,
+	int *count
+);
+static char *rtpg_strtoupper(char *str);
+static char	*rtpg_chartrim(char* input, char *remove); /* for RASTER_reclass */
+static char **rtpg_strsplit(const char *str, const char *delimiter, int *n); /* for RASTER_reclass */
+static char *rtpg_removespaces(char *str); /* for RASTER_reclass */
+static char *rtpg_trim(char* input); /* for RASTER_asGDALRaster */
+static char *rtpg_getSRTextSPI(int srid);
 
 /***************************************************************
  * Some rules for returning NOTICE or ERROR...
@@ -268,7 +276,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS);
      - Always allocates memory for the result.
 --------------------------------------------------------------------------- */
 static char*
-replace(const char *str, const char *oldstr, const char *newstr, int *count)
+rtpg_replace(const char *str, const char *oldstr, const char *newstr, int *count)
 {
    const char *tmp = str;
    char *result;
@@ -308,7 +316,7 @@ replace(const char *str, const char *oldstr, const char *newstr, int *count)
 
 
 static char *
-strtoupper(char * str)
+rtpg_strtoupper(char * str)
 {
     int j;
 
@@ -320,7 +328,7 @@ strtoupper(char * str)
 }
 
 static char*
-chartrim(char *input, char *remove) {
+rtpg_chartrim(char *input, char *remove) {
 	char *start;
 	char *ptr;
 
@@ -353,7 +361,7 @@ chartrim(char *input, char *remove) {
 
 /* split a string based on a delimiter */
 static char**
-strsplit(const char *str, const char *delimiter, int *n) {
+rtpg_strsplit(const char *str, const char *delimiter, int *n) {
 	char *tmp = NULL;
 	char **rtn = NULL;
 	char *token = NULL;
@@ -418,20 +426,20 @@ strsplit(const char *str, const char *delimiter, int *n) {
 }
 
 static char *
-removespaces(char *str) {
+rtpg_removespaces(char *str) {
 	char *rtn;
 
-	rtn = replace(str, " ", "", NULL);
-	rtn = replace(rtn, "\n", "", NULL);
-	rtn = replace(rtn, "\t", "", NULL);
-	rtn = replace(rtn, "\f", "", NULL);
-	rtn = replace(rtn, "\r", "", NULL);
+	rtn = rtpg_replace(str, " ", "", NULL);
+	rtn = rtpg_replace(rtn, "\n", "", NULL);
+	rtn = rtpg_replace(rtn, "\t", "", NULL);
+	rtn = rtpg_replace(rtn, "\f", "", NULL);
+	rtn = rtpg_replace(rtn, "\r", "", NULL);
 
 	return rtn;
 }
 
 static char*
-trim(char *input) {
+rtpg_trim(char *input) {
 	char *start;
 	char *ptr;
 
@@ -463,7 +471,7 @@ trim(char *input) {
 }
 
 static char*
-getSRTextSPI(int srid)
+rtpg_getSRTextSPI(int srid)
 {
 	int len = 0;
 	char *sql = NULL;
@@ -2628,7 +2636,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         initexpr = (char *)palloc(len + 1);
 
         strncpy(initexpr, "SELECT ", strlen("SELECT "));
-        strncpy(initexpr + strlen("SELECT "), strtoupper(expression),
+        strncpy(initexpr + strlen("SELECT "), rtpg_strtoupper(expression),
             strlen(expression));
         initexpr[len] = '\0';
 
@@ -2861,7 +2869,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
                     if (initexpr != NULL) {
 												count = 0;
-                        newexpr = replace(initexpr, "RAST", strnewval, &count);
+                        newexpr = rtpg_replace(initexpr, "RAST", strnewval, &count);
 
                         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: (%dx%d), "
                                 "r = %s, newexpr = %s",
@@ -6126,12 +6134,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		}
 		expr = text_to_cstring(exprtext);
 		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (raw) %s", expr);
-		expr = removespaces(expr);
+		expr = rtpg_removespaces(expr);
 		POSTGIS_RT_DEBUGF(5, "RASTER_reclass: expr (clean) %s", expr);
 
 		/* split string to its components */
 		/* comma (,) separating rangesets */
-		comma_set = strsplit(expr, ",", &comma_n);
+		comma_set = rtpg_strsplit(expr, ",", &comma_n);
 		if (comma_n < 1) {
 			elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
 			rt_raster_destroy(raster);
@@ -6148,7 +6156,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			POSTGIS_RT_DEBUGF(5, "RASTER_reclass: map %s", comma_set[a]);
 
 			/* colon (:) separating range "src" and "dst" */
-			colon_set = strsplit(comma_set[a], ":", &colon_n);
+			colon_set = rtpg_strsplit(comma_set[a], ":", &colon_n);
 			if (colon_n != 2) {
 				elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
 				for (k = 0; k < j; k++) pfree(exprset[k]);
@@ -6166,7 +6174,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 				POSTGIS_RT_DEBUGF(5, "RASTER_reclass: range %s", colon_set[b]);
 
 				/* dash (-) separating "min" and "max" */
-				dash_set = strsplit(colon_set[b], "-", &dash_n);
+				dash_set = rtpg_strsplit(colon_set[b], "-", &dash_n);
 				if (dash_n < 1 || dash_n > 3) {
 					elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
 					for (k = 0; k < j; k++) pfree(exprset[k]);
@@ -6267,7 +6275,7 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: exc_val %d inc_val %d", exc_val, inc_val);
 
 					/* remove interval flags */
-					dash_set[c] = chartrim(dash_set[c], "()[]");
+					dash_set[c] = rtpg_chartrim(dash_set[c], "()[]");
 					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (char) %s", dash_set[c]);
 
 					/* value from string to double */
@@ -6530,7 +6538,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 						option = text_to_cstring(optiontext);
 
 						/* trim string */
-						option = trim(option);
+						option = rtpg_trim(option);
 						POSTGIS_RT_DEBUGF(3, "RASTER_asGDALRaster: option is '%s'", option);
 						break;
 				}
@@ -6565,7 +6573,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 
 	/* get srs from srid */
 	if (clamp_srid(srid) != SRID_UNKNOWN) {
-		srs = getSRTextSPI(srid);
+		srs = rtpg_getSRTextSPI(srid);
 		if (NULL == srs) {
 			elog(ERROR, "RASTER_asGDALRaster: Could not find srtext for SRID (%d)", srid);
 			if (NULL != options) {
@@ -6885,7 +6893,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 						pixeltype = text_to_cstring(pixeltypetext);
 
 						/* trim string */
-						pixeltype = trim(pixeltype);
+						pixeltype = rtpg_trim(pixeltype);
 						POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: pixeltype is '%s'", pixeltype);
 						break;
 				}
@@ -7222,7 +7230,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srid = %d", srid);
 	if (clamp_srid(srid) != SRID_UNKNOWN) {
-		srs = getSRTextSPI(srid);
+		srs = rtpg_getSRTextSPI(srid);
 		if (NULL == srs) {
 			elog(ERROR, "RASTER_asRaster: Could not find srtext for SRID (%d)", srid);
 
@@ -7368,7 +7376,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	/* resampling algorithm */
 	if (!PG_ARGISNULL(1)) {
 		algtext = PG_GETARG_TEXT_P(1);
-		algchar = trim(strtoupper(text_to_cstring(algtext)));
+		algchar = rtpg_trim(rtpg_strtoupper(text_to_cstring(algtext)));
 		alg = rt_util_gdal_resample_alg(algchar);
 	}
 	POSTGIS_RT_DEBUGF(4, "Resampling algorithm: %d", alg);
@@ -7498,7 +7506,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 
 	/* get srses from srids */
 	/* source srs */
-	src_srs = getSRTextSPI(src_srid);
+	src_srs = rtpg_getSRTextSPI(src_srid);
 	if (NULL == src_srs) {
 		elog(ERROR, "RASTER_resample: Input raster has unknown SRID (%d)", src_srid);
 		rt_raster_destroy(raster);
@@ -7508,7 +7516,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 
 	/* target srs */
 	if (clamp_srid(dst_srid) != SRID_UNKNOWN) {
-		dst_srs = getSRTextSPI(dst_srid);
+		dst_srs = rtpg_getSRTextSPI(dst_srid);
 		if (NULL == dst_srs) {
 			elog(ERROR, "RASTER_resample: Target SRID (%d) is unknown", dst_srid);
 			rt_raster_destroy(raster);
@@ -8223,7 +8231,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	/* extent type */
 	if (!PG_ARGISNULL(6)) {
-		extenttypename = strtoupper(trim(text_to_cstring(PG_GETARG_TEXT_P(6))));
+		extenttypename = rtpg_strtoupper(rtpg_trim(text_to_cstring(PG_GETARG_TEXT_P(6))));
 		extenttype = rt_util_extent_type(extenttypename);
 	}
 	POSTGIS_RT_DEBUGF(3, "extenttype: %d %s", extenttype, extenttypename);
@@ -8467,16 +8475,16 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			*/
 			for (i = 0; i < spicount; i++) {
 				if (!PG_ARGISNULL(exprpos[i])) {
-					expr = strtoupper(text_to_cstring(PG_GETARG_TEXT_P(exprpos[i])));
+					expr = rtpg_strtoupper(text_to_cstring(PG_GETARG_TEXT_P(exprpos[i])));
 					POSTGIS_RT_DEBUGF(3, "raw expr #%d: %s", i, expr);
 					len = 0;
-					expr = replace(expr, "RAST1", "$1", &len);
+					expr = rtpg_replace(expr, "RAST1", "$1", &len);
 					if (len) {
 						argcount[i]++;
 						argexists[i][0] = 1;
 					}
 					len = 0;
-					expr = replace(expr, "RAST2", (argexists[i][0] ? "$2" : "$1"), &len);
+					expr = rtpg_replace(expr, "RAST2", (argexists[i][0] ? "$2" : "$1"), &len);
 					if (len) {
 						argcount[i]++;
 						argexists[i][1] = 1;
@@ -9348,7 +9356,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     cbdata.arg[1] = CStringGetDatum(txtCallbackParam);
 
     strFromText = text_to_cstring(txtNodataMode);
-    strFromText = strtoupper(strFromText);
+    strFromText = rtpg_strtoupper(strFromText);
 
     if (strcmp(strFromText, "VALUE") == 0)
         valuereplace = true;
