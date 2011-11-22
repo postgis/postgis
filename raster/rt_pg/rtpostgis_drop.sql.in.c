@@ -128,3 +128,55 @@ DROP FUNCTION IF EXISTS st_dumpaspolygons(raster, integer);
 DROP FUNCTION IF EXISTS st_polygon(raster);
 -- signature changed
 DROP FUNCTION IF EXISTS st_polygon(raster, integer);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_makeemptyraster(int, int, float8, float8, float8, float8, float8, float8);
+-- signature changed
+DROP FUNCTION IF EXISTS st_makeemptyraster(int, int, float8, float8, float8, float8, float8, float8, int4);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_addband(raster, text);
+DROP FUNCTION IF EXISTS st_addband(raster, text, float8);
+DROP FUNCTION IF EXISTS st_addband(raster, int, text);
+DROP FUNCTION IF EXISTS st_addband(raster, int, text, float8);
+DROP FUNCTION IF EXISTS st_addband(raster, raster, int);
+DROP FUNCTION IF EXISTS st_addband(raster, raster);
+-- signature changed
+DROP FUNCTION IF EXISTS st_addband(raster, text, float8, float8);
+DROP FUNCTION IF EXISTS st_addband(raster, int, text, float8, float8);
+DROP FUNCTION IF EXISTS st_addband(raster, raster, int, int);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_bandisnodata(raster);
+DROP FUNCTION IF EXISTS st_bandisnodata(raster, integer);
+-- signature changed
+DROP FUNCTION IF EXISTS st_bandisnodata(raster, integer, boolean);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_bandpath(raster);
+-- signature changed
+DROP FUNCTION IF EXISTS st_bandpath(raster, integer);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_bandpixeltype(raster);
+-- signature changed
+DROP FUNCTION IF EXISTS st_bandpixeltype(raster, integer);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer);
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer);
+DROP FUNCTION IF EXISTS st_value(raster, integer, geometry);
+DROP FUNCTION IF EXISTS st_value(raster, geometry);
+-- signature changed
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, integer, geometry, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, geometry, boolean);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_georeference(raster);
+-- signature changed
+DROP FUNCTION IF EXISTS st_georeference(raster, text);
+
+-- function name change
+CREATE OR REPLACE FUNCTION dumpaswktpolygons(raster, integer);
