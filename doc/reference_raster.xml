@@ -3863,11 +3863,7 @@ WHERE rid = 2;
 				 <funcprototype>
 					<funcdef>integer <function>ST_SetBandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>integer <function>ST_SetBandIsNoData</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
