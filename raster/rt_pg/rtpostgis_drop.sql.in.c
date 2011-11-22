@@ -103,3 +103,28 @@ DROP FUNCTION IF EXISTS ST_BandMetaData(raster, integer);
 DROP FUNCTION IF EXISTS ST_BandNoDataValue(raster, integer);
 --function no longer exists
 DROP FUNCTION IF EXISTS ST_BandNoDataValue(raster);
+
+--function no longer exists
+DROP FUNCTION IF EXISTS ST_SetGeoReference(raster, text);
+-- signature changed
+DROP FUNCTION IF EXISTS ST_SetGeoReference(raster, text, text);
+
+--function no longer exists
+DROP FUNCTION IF EXISTS st_setbandisnodata(raster);
+-- signature changed
+DROP FUNCTION IF EXISTS st_setbandisnodata(raster, integer);
+
+--function no longer exists
+DROP FUNCTION IF EXISTS st_setbandnodatavalue(raster, integer, double precision);
+-- signature changed
+DROP FUNCTION IF EXISTS st_setbandnodatavalue(raster, integer, double precision, boolean);
+
+--function no longer exists
+DROP FUNCTION IF EXISTS st_dumpaspolygons(raster);
+-- signature changed
+DROP FUNCTION IF EXISTS st_dumpaspolygons(raster, integer);
+
+--function no longer exists
+DROP FUNCTION IF EXISTS st_polygon(raster);
+-- signature changed
+DROP FUNCTION IF EXISTS st_polygon(raster, integer);

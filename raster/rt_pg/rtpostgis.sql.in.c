@@ -1997,7 +1997,7 @@ CREATE OR REPLACE FUNCTION st_setrotation(rast raster, rotation float8)
 -----------------------------------------------------------------------
 -- Raster Editors ST_SetGeoreference()
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format text)
+CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format text DEFAULT 'GDAL')
     RETURNS raster AS
     $$
     DECLARE
@@ -2041,29 +2041,15 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
     $$
     LANGUAGE 'plpgsql' IMMUTABLE STRICT; -- WITH (isstrict);
 
-CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text)
-    RETURNS raster AS
-    $$
-        SELECT st_setgeoreference($1, $2, 'GDAL');
-    $$
-    LANGUAGE 'SQL' IMMUTABLE STRICT; -- WITH (isstrict);
-
 -----------------------------------------------------------------------
 -- Raster Band Editors
 -----------------------------------------------------------------------
 
 -- This function can not be STRICT, because nodatavalue can be NULL indicating that no nodata value should be set
-CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer,
-        nodatavalue float8, forceChecking boolean)
+CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer, nodatavalue float8, forceChecking boolean DEFAULT FALSE)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setBandNoDataValue'
     LANGUAGE 'C' IMMUTABLE;
-
--- This function can not be STRICT, because nodatavalue can be NULL indicating that no nodata value should be set
-CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer, nodatavalue float8)
-    RETURNS raster
-    AS $$ SELECT st_setbandnodatavalue($1, $2, $3, FALSE) $$
-    LANGUAGE SQL;
 
 -- This function can not be STRICT, because nodatavalue can be NULL indicating that no nodata value should be set
 CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8)
@@ -2071,15 +2057,10 @@ CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8
     AS $$ SELECT st_setbandnodatavalue($1, 1, $2, FALSE) $$
     LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer)
+CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer DEFAULT 1)
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_setBandIsNoData'
     LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster)
-    RETURNS raster
-    AS  $$ SELECT st_setbandisnodata($1, 1) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Pixel Editors
@@ -2148,7 +2129,7 @@ CREATE OR REPLACE FUNCTION dumpaswktpolygons(rast raster, band integer)
     AS 'MODULE_PATHNAME','RASTER_dumpAsWKTPolygons'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer)
+CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1)
     RETURNS SETOF geomval AS
     $$
     SELECT st_geomfromtext(wktgeomval.wktgeom, wktgeomval.srid), wktgeomval.val
@@ -2156,27 +2137,11 @@ CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer)
     $$
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_dumpaspolygons(raster)
-    RETURNS SETOF geomval AS
-    $$
-    SELECT st_geomfromtext(wktgeomval.wktgeom, wktgeomval.srid), wktgeomval.val
-    FROM dumpaswktpolygons($1, 1) AS wktgeomval;
-    $$
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer)
+CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
     RETURNS geometry AS
     $$
     SELECT st_union(f.geom) AS singlegeom
     FROM (SELECT (st_dumpaspolygons($1, $2)).geom AS geom) AS f;
-    $$
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_polygon(raster)
-    RETURNS geometry AS
-    $$
-    SELECT st_union(f.geom) AS singlegeom
-    FROM (SELECT (st_dumpaspolygons($1, 1)).geom AS geom) AS f;
     $$
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
