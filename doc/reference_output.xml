@@ -546,13 +546,13 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 	  </refsection>
 		<refsection>
 		<title>Examples: Version 3</title>
-		<programlisting>-- Flip coordinates and output extended EPSG (16 + 1)--
+		<programlisting>-- Flip coordinates and output extended EPSG (16 | 1)--
 <![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
 			st_asgml
 			--------
 		<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>
 			</programlisting>
-		<programlisting>-- Output the envelope --
+		<programlisting>-- Output the envelope (32) --
 <![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
 		st_asgml
 		--------
@@ -562,7 +562,7 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 	</gml:Envelope>]]>
 			</programlisting>
 			
-		<programlisting>-- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 + 16 + 1 = 49 --
+		<programlisting>-- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 | 16 | 1 = 49 --
 <![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
 	st_asgml
 	--------
