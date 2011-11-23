@@ -1065,62 +1065,29 @@ WHERE short_name = 'GTiff') As g;
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
-				   <funcprototype>
-					<funcdef>raster <function>ST_AddBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-				  </funcprototype>
 				  <funcprototype>
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>initialvalue=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_AddBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
-				  </funcprototype>
+				
 				  <funcprototype>
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>index</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>initialvalue=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_AddBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>index</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_AddBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>index</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>initialvalue</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_AddBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
-					<paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_AddBand</function></funcdef>
-					<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
-					<paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>fromband</parameter></paramdef>
-				  </funcprototype>
+				
                   <funcprototype>
 					<funcdef>raster <function>ST_AddBand</function></funcdef>
 					<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>fromband</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>torastindex</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>fromband=1</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef>
 				  </funcprototype>
 
 				</funcsynopsis>
@@ -1488,7 +1455,7 @@ WHERE rid=35;
 			<refnamediv>
 				<refname>ST_MakeEmptyRaster</refname>
 				<refpurpose>Returns an empty raster (having no bands) of given dimensions, with upperleft x y, pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid).  
-				If a raster is passed in, returns a new raster with same meta data properties.</refpurpose>
+				If a raster is passed in, returns a new raster with same meta data properties.  If srid is left out, the spatial ref is set to unknown.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
@@ -1506,18 +1473,7 @@ WHERE rid=35;
 					<paramdef><type>float8 </type> <parameter>scaley</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>skewx</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>skewy</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_MakeEmptyRaster</function></funcdef>
-					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>upperleftx</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>upperlefty</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>scalex</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>scaley</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>skewx</parameter></paramdef>
-					<paramdef><type>float8 </type> <parameter>skewy</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>srid=unknown</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
