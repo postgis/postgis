@@ -507,10 +507,15 @@ st_asgeojson
 								<listitem>
 								  <para>4: For GML 3 only, use &lt;LineString&gt; rather than &lt;Curve&gt; tag for lines.</para>
 								</listitem>
-
+								
 								<listitem>
 								  <para>16: Declare that datas are lat/lon (e.g srid=4326). Default is to assume that data are planars.
-								  This option is useful for GML 3.1.1 output only, related to axis order.</para>
+								  This option is useful for GML 3.1.1 output only, related to axis order. So if you set it, it will swap the coordinates
+								  so order is lat lon instead of database lon lat.</para>
+								</listitem>
+								
+								<listitem>
+								  <para>32: Output the box of the geometry (envelope). Only available for GML 3.1.</para>
 								</listitem>
 						  </itemizedlist>
 						</para>
@@ -525,23 +530,46 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 		 
 
 
-		<note><para>Only version 3 of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
+		<note><para>Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Examples: Version 2</title>
 		<programlisting><![CDATA[SELECT ST_AsGML(ST_GeomFromText('POLYGON((0 0,0 1,1 1,1 0,0 0))',4326));
 		st_asgml
 		--------
 		<gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0,0 0,1 1,1 1,0 0,0</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon>]]>
 			</programlisting>
-		<programlisting><![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
+	  </refsection>
+		<refsection>
+		<title>Examples: Version 3</title>
+		<programlisting>-- Flip coordinates and output extended EPSG (16 + 1)--
+<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('POINT(5.234234233242 6.34534534534)',4326), 5, 17);
 			st_asgml
 			--------
 		<gml:Point srsName="urn:ogc:def:crs:EPSG::4326"><gml:pos>6.34535 5.23423</gml:pos></gml:Point>]]>
+			</programlisting>
+		<programlisting>-- Output the envelope --
+<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 32);
+		st_asgml
+		--------
+	<gml:Envelope srsName="EPSG:4326">
+		<gml:lowerCorner>1 2</gml:lowerCorner>
+		<gml:upperCorner>10 20</gml:upperCorner>
+	</gml:Envelope>]]>
+			</programlisting>
+			
+		<programlisting>-- Output the envelope (32) , reverse (lat lon instead of lon lat) (16), long srs (1)= 32 + 16 + 1 = 49 --
+<![CDATA[SELECT ST_AsGML(3, ST_GeomFromText('LINESTRING(1 2, 3 4, 10 20)',4326), 5, 49);
+	st_asgml
+	--------
+<gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326">
+	<gml:lowerCorner>2 1</gml:lowerCorner>
+	<gml:upperCorner>20 10</gml:upperCorner>
+</gml:Envelope>]]>
 			</programlisting>
 			
 		<programlisting>-- Polyhedral Example --
