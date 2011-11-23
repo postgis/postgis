@@ -23,32 +23,32 @@
 #include "liblwgeom_internal.h"
 
 
-static size_t asgml2_point_size(const LWPOINT *point, char *srs, int precision, const char *prefix);
-static char *asgml2_point(const LWPOINT *point, char *srs, int precision, const char *prefix);
-static size_t asgml2_line_size(const LWLINE *line, char *srs, int precision, const char *prefix);
-static char *asgml2_line(const LWLINE *line, char *srs, int precision, const char *prefix);
-static size_t asgml2_poly_size(const LWPOLY *poly, char *srs, int precision, const char *prefix);
-static char *asgml2_poly(const LWPOLY *poly, char *srs, int precision, const char *prefix);
-static size_t asgml2_multi_size(const LWCOLLECTION *col, char *srs, int precision, const char *prefix);
-static char *asgml2_multi(const LWCOLLECTION *col, char *srs, int precision, const char *prefix);
-static size_t asgml2_collection_size(const LWCOLLECTION *col, char *srs, int precision, const char *prefix);
-static char *asgml2_collection(const LWCOLLECTION *col, char *srs, int precision, const char *prefix);
+static size_t asgml2_point_size(const LWPOINT *point, const char *srs, int precision, const char *prefix);
+static char *asgml2_point(const LWPOINT *point, const char *srs, int precision, const char *prefix);
+static size_t asgml2_line_size(const LWLINE *line, const char *srs, int precision, const char *prefix);
+static char *asgml2_line(const LWLINE *line, const char *srs, int precision, const char *prefix);
+static size_t asgml2_poly_size(const LWPOLY *poly, const char *srs, int precision, const char *prefix);
+static char *asgml2_poly(const LWPOLY *poly, const char *srs, int precision, const char *prefix);
+static size_t asgml2_multi_size(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix);
+static char *asgml2_multi(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix);
+static size_t asgml2_collection_size(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix);
+static char *asgml2_collection(const LWCOLLECTION *col, const char *srs, int precision, const char *prefix);
 static size_t pointArray_toGML2(POINTARRAY *pa, char *buf, int precision);
 
-static size_t asgml3_point_size(const LWPOINT *point, char *srs, int precision, int opts, const char *prefix);
-static char *asgml3_point(const LWPOINT *point, char *srs, int precision, int opts, const char *prefix);
-static size_t asgml3_line_size(const LWLINE *line, char *srs, int precision, int opts, const char *prefix);
-static char *asgml3_line(const LWLINE *line, char *srs, int precision, int opts, const char *prefix);
-static size_t asgml3_poly_size(const LWPOLY *poly, char *srs, int precision, int opts, const char *prefix);
-static char *asgml3_poly(const LWPOLY *poly, char *srs, int precision, int opts, int is_patch, const char *prefix);
-static size_t asgml3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *prefix);
-static char *asgml3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *prefix);
-static size_t asgml3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *prefix);
-static char *asgml3_multi(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *prefix);
-static char *asgml3_psurface(const LWPSURFACE *psur, char *srs, int precision, int opts, const char *prefix);
-static char *asgml3_tin(const LWTIN *tin, char *srs, int precision, int opts, const char *prefix);
-static size_t asgml3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *prefix);
-static char *asgml3_collection(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *prefix);
+static size_t asgml3_point_size(const LWPOINT *point, const char *srs, int precision, int opts, const char *prefix);
+static char *asgml3_point(const LWPOINT *point, const char *srs, int precision, int opts, const char *prefix);
+static size_t asgml3_line_size(const LWLINE *line, const char *srs, int precision, int opts, const char *prefix);
+static char *asgml3_line(const LWLINE *line, const char *srs, int precision, int opts, const char *prefix);
+static size_t asgml3_poly_size(const LWPOLY *poly, const char *srs, int precision, int opts, const char *prefix);
+static char *asgml3_poly(const LWPOLY *poly, const char *srs, int precision, int opts, int is_patch, const char *prefix);
+static size_t asgml3_triangle_size(const LWTRIANGLE *triangle, const char *srs, int precision, int opts, const char *prefix);
+static char *asgml3_triangle(const LWTRIANGLE *triangle, const char *srs, int precision, int opts, const char *prefix);
+static size_t asgml3_multi_size(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix);
+static char *asgml3_multi(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix);
+static char *asgml3_psurface(const LWPSURFACE *psur, const char *srs, int precision, int opts, const char *prefix);
+static char *asgml3_tin(const LWTIN *tin, const char *srs, int precision, int opts, const char *prefix);
+static size_t asgml3_collection_size(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix);
+static char *asgml3_collection(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix);
 static size_t pointArray_toGML3(POINTARRAY *pa, char *buf, int precision, int opts);
 
 static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
@@ -56,7 +56,7 @@ static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
 
 
 extern char *
-lwgeom_extent_to_gml2(const LWGEOM *geom, char *srs, int precision, const char *prefix)
+lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix)
 {
 	int size;
         POINT4D pt;
@@ -112,7 +112,7 @@ lwgeom_extent_to_gml2(const LWGEOM *geom, char *srs, int precision, const char *
 	
 
 extern char *
-lwgeom_extent_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, const char *prefix)
+lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix)
 {
 	int size;
         POINT4D pt;
@@ -179,7 +179,7 @@ lwgeom_extent_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, co
  *  	takes a GEOMETRY and returns a GML2 representation
  */
 extern char *
-lwgeom_to_gml2(const LWGEOM *geom, char *srs, int precision, const char* prefix)
+lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char* prefix)
 {
 	int type = geom->type;
 
@@ -210,7 +210,7 @@ lwgeom_to_gml2(const LWGEOM *geom, char *srs, int precision, const char* prefix)
 }
 
 static size_t
-asgml2_point_size(const LWPOINT *point, char *srs, int precision, const char* prefix)
+asgml2_point_size(const LWPOINT *point, const char *srs, int precision, const char* prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -222,7 +222,7 @@ asgml2_point_size(const LWPOINT *point, char *srs, int precision, const char* pr
 }
 
 static size_t
-asgml2_point_buf(const LWPOINT *point, char *srs, char *output, int precision, const char* prefix)
+asgml2_point_buf(const LWPOINT *point, const char *srs, char *output, int precision, const char* prefix)
 {
 	char *ptr = output;
 
@@ -242,7 +242,7 @@ asgml2_point_buf(const LWPOINT *point, char *srs, char *output, int precision, c
 }
 
 static char *
-asgml2_point(const LWPOINT *point, char *srs, int precision, const char *prefix)
+asgml2_point(const LWPOINT *point, const char *srs, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -254,7 +254,7 @@ asgml2_point(const LWPOINT *point, char *srs, int precision, const char *prefix)
 }
 
 static size_t
-asgml2_line_size(const LWLINE *line, char *srs, int precision, const char *prefix)
+asgml2_line_size(const LWLINE *line, const char *srs, int precision, const char *prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -266,7 +266,7 @@ asgml2_line_size(const LWLINE *line, char *srs, int precision, const char *prefi
 }
 
 static size_t
-asgml2_line_buf(const LWLINE *line, char *srs, char *output, int precision,
+asgml2_line_buf(const LWLINE *line, const char *srs, char *output, int precision,
                 const char *prefix)
 {
 	char *ptr=output;
@@ -287,7 +287,7 @@ asgml2_line_buf(const LWLINE *line, char *srs, char *output, int precision,
 }
 
 static char *
-asgml2_line(const LWLINE *line, char *srs, int precision, const char *prefix)
+asgml2_line(const LWLINE *line, const char *srs, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -299,7 +299,7 @@ asgml2_line(const LWLINE *line, char *srs, int precision, const char *prefix)
 }
 
 static size_t
-asgml2_poly_size(const LWPOLY *poly, char *srs, int precision, const char *prefix)
+asgml2_poly_size(const LWPOLY *poly, const char *srs, int precision, const char *prefix)
 {
 	size_t size;
 	int i;
@@ -319,7 +319,7 @@ asgml2_poly_size(const LWPOLY *poly, char *srs, int precision, const char *prefi
 }
 
 static size_t
-asgml2_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision,
+asgml2_poly_buf(const LWPOLY *poly, const char *srs, char *output, int precision,
                 const char *prefix)
 {
 	int i;
@@ -352,7 +352,7 @@ asgml2_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision,
 }
 
 static char *
-asgml2_poly(const LWPOLY *poly, char *srs, int precision, const char *prefix)
+asgml2_poly(const LWPOLY *poly, const char *srs, int precision, const char *prefix)
 {
 	char *output;
 	int size;
@@ -369,7 +369,7 @@ asgml2_poly(const LWPOLY *poly, char *srs, int precision, const char *prefix)
  * Don't call this with single-geoms inspected.
  */
 static size_t
-asgml2_multi_size(const LWCOLLECTION *col, char *srs, int precision,
+asgml2_multi_size(const LWCOLLECTION *col, const char *srs, int precision,
                   const char *prefix)
 {
 	int i;
@@ -410,7 +410,7 @@ asgml2_multi_size(const LWCOLLECTION *col, char *srs, int precision,
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml2_multi_buf(const LWCOLLECTION *col, char *srs, char *output,
+asgml2_multi_buf(const LWCOLLECTION *col, const char *srs, char *output,
                  int precision, const char *prefix)
 {
 	int type = col->type;
@@ -468,7 +468,7 @@ asgml2_multi_buf(const LWCOLLECTION *col, char *srs, char *output,
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml2_multi(const LWCOLLECTION *col, char *srs, int precision,
+asgml2_multi(const LWCOLLECTION *col, const char *srs, int precision,
              const char *prefix)
 {
 	char *gml;
@@ -485,7 +485,7 @@ asgml2_multi(const LWCOLLECTION *col, char *srs, int precision,
  * Don't call this with single-geoms!
  */
 static size_t
-asgml2_collection_size(const LWCOLLECTION *col, char *srs, int precision,
+asgml2_collection_size(const LWCOLLECTION *col, const char *srs, int precision,
                        const char *prefix)
 {
 	int i;
@@ -531,7 +531,7 @@ asgml2_collection_size(const LWCOLLECTION *col, char *srs, int precision,
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml2_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int precision, const char *prefix)
+asgml2_collection_buf(const LWCOLLECTION *col, const char *srs, char *output, int precision, const char *prefix)
 {
 	char *ptr;
 	int i;
@@ -586,7 +586,7 @@ asgml2_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml2_collection(const LWCOLLECTION *col, char *srs, int precision,
+asgml2_collection(const LWCOLLECTION *col, const char *srs, int precision,
                   const char *prefix)
 {
 	char *gml;
@@ -674,7 +674,7 @@ pointArray_toGML2(POINTARRAY *pa, char *output, int precision)
 
 /* takes a GEOMETRY and returns a GML representation */
 extern char *
-lwgeom_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, const char *prefix)
+lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix)
 {
 	int type = geom->type;
 
@@ -713,7 +713,7 @@ lwgeom_to_gml3(const LWGEOM *geom, char *srs, int precision, int opts, const cha
 }
 
 static size_t
-asgml3_point_size(const LWPOINT *point, char *srs, int precision, int opts, const char *prefix)
+asgml3_point_size(const LWPOINT *point, const char *srs, int precision, int opts, const char *prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -726,7 +726,7 @@ asgml3_point_size(const LWPOINT *point, char *srs, int precision, int opts, cons
 }
 
 static size_t
-asgml3_point_buf(const LWPOINT *point, char *srs, char *output, int precision, int opts, const char *prefix)
+asgml3_point_buf(const LWPOINT *point, const char *srs, char *output, int precision, int opts, const char *prefix)
 {
 	char *ptr = output;
 	int dimension=2;
@@ -749,7 +749,7 @@ asgml3_point_buf(const LWPOINT *point, char *srs, char *output, int precision, i
 }
 
 static char *
-asgml3_point(const LWPOINT *point, char *srs, int precision, int opts, const char *prefix)
+asgml3_point(const LWPOINT *point, const char *srs, int precision, int opts, const char *prefix)
 {
 	char *output;
 	int size;
@@ -762,7 +762,7 @@ asgml3_point(const LWPOINT *point, char *srs, int precision, int opts, const cha
 
 
 static size_t
-asgml3_line_size(const LWLINE *line, char *srs, int precision, int opts, const char *prefix)
+asgml3_line_size(const LWLINE *line, const char *srs, int precision, int opts, const char *prefix)
 {
 	int size;
 	size_t prefixlen = strlen(prefix);
@@ -788,7 +788,7 @@ asgml3_line_size(const LWLINE *line, char *srs, int precision, int opts, const c
 }
 
 static size_t
-asgml3_line_buf(const LWLINE *line, char *srs, char *output, int precision, int opts, const char *prefix)
+asgml3_line_buf(const LWLINE *line, const char *srs, char *output, int precision, int opts, const char *prefix)
 {
 	char *ptr=output;
 	int dimension=2;
@@ -836,7 +836,7 @@ asgml3_line_buf(const LWLINE *line, char *srs, char *output, int precision, int 
 }
 
 static char *
-asgml3_line(const LWLINE *line, char *srs, int precision, int opts, const char *prefix)
+asgml3_line(const LWLINE *line, const char *srs, int precision, int opts, const char *prefix)
 {
 	char *output;
 	int size;
@@ -849,7 +849,7 @@ asgml3_line(const LWLINE *line, char *srs, int precision, int opts, const char *
 
 
 static size_t
-asgml3_poly_size(const LWPOLY *poly, char *srs, int precision, int opts, const char *prefix)
+asgml3_poly_size(const LWPOLY *poly, const char *srs, int precision, int opts, const char *prefix)
 {
 	size_t size;
 	size_t prefixlen = strlen(prefix);
@@ -868,7 +868,7 @@ asgml3_poly_size(const LWPOLY *poly, char *srs, int precision, int opts, const c
 }
 
 static size_t
-asgml3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int opts, int is_patch, const char *prefix)
+asgml3_poly_buf(const LWPOLY *poly, const char *srs, char *output, int precision, int opts, int is_patch, const char *prefix)
 {
 	int i;
 	char *ptr=output;
@@ -909,7 +909,7 @@ asgml3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int 
 }
 
 static char *
-asgml3_poly(const LWPOLY *poly, char *srs, int precision, int opts, int is_patch, const char *prefix)
+asgml3_poly(const LWPOLY *poly, const char *srs, int precision, int opts, int is_patch, const char *prefix)
 {
 	char *output;
 	int size;
@@ -922,7 +922,7 @@ asgml3_poly(const LWPOLY *poly, char *srs, int precision, int opts, int is_patch
 
 
 static size_t
-asgml3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *prefix)
+asgml3_triangle_size(const LWTRIANGLE *triangle, const char *srs, int precision, int opts, const char *prefix)
 {
 	size_t size;
 	size_t prefixlen = strlen(prefix);
@@ -938,7 +938,7 @@ asgml3_triangle_size(const LWTRIANGLE *triangle, char *srs, int precision, int o
 }
 
 static size_t
-asgml3_triangle_buf(const LWTRIANGLE *triangle, char *srs, char *output, int precision, int opts, const char *prefix)
+asgml3_triangle_buf(const LWTRIANGLE *triangle, const char *srs, char *output, int precision, int opts, const char *prefix)
 {
 	char *ptr=output;
 	int dimension=2;
@@ -961,7 +961,7 @@ asgml3_triangle_buf(const LWTRIANGLE *triangle, char *srs, char *output, int pre
 }
 
 static char *
-asgml3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int opts, const char *prefix)
+asgml3_triangle(const LWTRIANGLE *triangle, const char *srs, int precision, int opts, const char *prefix)
 {
 	char *output;
 	int size;
@@ -979,7 +979,7 @@ asgml3_triangle(const LWTRIANGLE *triangle, char *srs, int precision, int opts, 
  * Don't call this with single-geoms inspected.
  */
 static size_t
-asgml3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *prefix)
+asgml3_multi_size(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix)
 {
 	int i;
 	size_t size;
@@ -1018,7 +1018,7 @@ asgml3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, c
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision, int opts, const char *prefix)
+asgml3_multi_buf(const LWCOLLECTION *col, const char *srs, char *output, int precision, int opts, const char *prefix)
 {
 	int type = col->type;
 	char *ptr, *gmltype;
@@ -1075,7 +1075,7 @@ asgml3_multi_buf(const LWCOLLECTION *col, char *srs, char *output, int precision
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml3_multi(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *prefix)
+asgml3_multi(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix)
 {
 	char *gml;
 	size_t size;
@@ -1088,7 +1088,7 @@ asgml3_multi(const LWCOLLECTION *col, char *srs, int precision, int opts, const 
 
 
 static size_t
-asgml3_psurface_size(const LWPSURFACE *psur, char *srs, int precision, int opts, const char *prefix)
+asgml3_psurface_size(const LWPSURFACE *psur, const char *srs, int precision, int opts, const char *prefix)
 {
 	int i;
 	size_t size;
@@ -1110,7 +1110,7 @@ asgml3_psurface_size(const LWPSURFACE *psur, char *srs, int precision, int opts,
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precision, int opts, const char *prefix)
+asgml3_psurface_buf(const LWPSURFACE *psur, const char *srs, char *output, int precision, int opts, const char *prefix)
 {
 	char *ptr;
 	int i;
@@ -1139,7 +1139,7 @@ asgml3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml3_psurface(const LWPSURFACE *psur, char *srs, int precision, int opts, const char *prefix)
+asgml3_psurface(const LWPSURFACE *psur, const char *srs, int precision, int opts, const char *prefix)
 {
 	char *gml;
 	size_t size;
@@ -1152,7 +1152,7 @@ asgml3_psurface(const LWPSURFACE *psur, char *srs, int precision, int opts, cons
 
 
 static size_t
-asgml3_tin_size(const LWTIN *tin, char *srs, int precision, int opts, const char *prefix)
+asgml3_tin_size(const LWTIN *tin, const char *srs, int precision, int opts, const char *prefix)
 {
 	int i;
 	size_t size;
@@ -1174,7 +1174,7 @@ asgml3_tin_size(const LWTIN *tin, char *srs, int precision, int opts, const char
  * Don't call this with single-geoms inspected!
  */
 static size_t
-asgml3_tin_buf(const LWTIN *tin, char *srs, char *output, int precision, int opts, const char *prefix)
+asgml3_tin_buf(const LWTIN *tin, const char *srs, char *output, int precision, int opts, const char *prefix)
 {
 	char *ptr;
 	int i;
@@ -1203,7 +1203,7 @@ asgml3_tin_buf(const LWTIN *tin, char *srs, char *output, int precision, int opt
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml3_tin(const LWTIN *tin, char *srs, int precision, int opts, const char *prefix)
+asgml3_tin(const LWTIN *tin, const char *srs, int precision, int opts, const char *prefix)
 {
 	char *gml;
 	size_t size;
@@ -1215,7 +1215,7 @@ asgml3_tin(const LWTIN *tin, char *srs, int precision, int opts, const char *pre
 }
 
 static size_t
-asgml3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *prefix)
+asgml3_collection_size(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix)
 {
 	int i;
 	size_t size;
@@ -1254,7 +1254,7 @@ asgml3_collection_size(const LWCOLLECTION *col, char *srs, int precision, int op
 }
 
 static size_t
-asgml3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int precision, int opts, const char *prefix)
+asgml3_collection_buf(const LWCOLLECTION *col, const char *srs, char *output, int precision, int opts, const char *prefix)
 {
 	char *ptr;
 	int i;
@@ -1311,7 +1311,7 @@ asgml3_collection_buf(const LWCOLLECTION *col, char *srs, char *output, int prec
  * Don't call this with single-geoms inspected!
  */
 static char *
-asgml3_collection(const LWCOLLECTION *col, char *srs, int precision, int opts, const char *prefix)
+asgml3_collection(const LWCOLLECTION *col, const char *srs, int precision, int opts, const char *prefix)
 {
 	char *gml;
 	size_t size;
