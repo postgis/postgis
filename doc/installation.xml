@@ -394,6 +394,19 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			</para>
 		  </listitem>
 		</varlistentry>
+		
+		<varlistentry>
+		  <term><command>--with-jsondir=DIR</command></term>
+		  <listitem>
+			<para>
+			  <ulink url="http://oss.metaparadigm.com/json-c/">JSON-C</ulink> is an MIT-licensed JSON library required by PostGIS ST_GeomFromJSON support. Use this
+			  parameter (<command>--with-jsondir=/path/to/jsondir</command>) to
+			  manually specify a particular JSON-C installation directory that
+			  PostGIS will build against.
+			</para>
+		  </listitem>
+		</varlistentry>
+
 		<varlistentry>
 		  <term><command>--with-gui</command></term>
 		  <listitem>
