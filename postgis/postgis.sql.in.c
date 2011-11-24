@@ -614,7 +614,7 @@ CREATE OR REPLACE FUNCTION geometry_contains(geometry, geometry)
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_within(geometry, geometry)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'gserialized_within'
+	AS 'MODULE_PATHNAME', 'gserialized_within_2d'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OPERATOR @ (
