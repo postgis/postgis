@@ -33,6 +33,17 @@ SELECT a.feature_name, id(a.feature) as tg_id,
 	ST_AsText(topology.Geometry(a.feature)) as geom
 FROM features.city_streets a;
 
+-- Query hierarchical feautures
+SELECT feature_name, ST_AsText(topology.geometry(feature))
+FROM features.big_signs;
+
+SELECT feature_name,ST_AsText(topology.geometry(feature))
+FROM features.big_streets;
+
+SELECT feature_name,ST_AsText(topology.geometry(feature))
+FROM features.big_parcels;
+
+
 --NOTYET--
 --NOTYET--/* Window is city_streets */
 --NOTYET--SELECT a.feature_name, b.feature_name

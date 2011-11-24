@@ -8,7 +8,7 @@
 
 CREATE TABLE features.big_parcels (
 	feature_name varchar primary key
-);
+) WITH OIDS;
 
 SELECT topology.AddTopoGeometryColumn('city_data', 'features',
 	'big_parcels', 'feature', 'POLYGON',
@@ -38,11 +38,38 @@ INSERT INTO features.big_parcels VALUES ('F3F6', -- Feature name
     (SELECT layer_id FROM topology.layer WHERE table_name = 'big_parcels'),
     '{{6,1},{7,1}}')); -- F3 and F6
 
-SELECT feature_name,ST_AsText(topology.geometry(feature)) from features.big_parcels;
+--
+-- Streets
+--
 
-SELECT a.feature_name, b.feature_name
-	FROM features.land_parcels a, features.big_parcels b
-	WHERE topology.equals(a.feature, b.feature);
+CREATE TABLE features.big_streets (
+	feature_name varchar primary key
+) WITH OIDS;
+
+SELECT topology.AddTopoGeometryColumn('city_data', 'features',
+	'big_streets', 'feature', 'LINE',
+	3 -- the city_streets layer id
+);
+
+INSERT INTO features.big_streets VALUES ('R1R2', -- Feature name
+  topology.CreateTopoGeom(
+    'city_data', -- Topology name
+    2, -- Topology geometry type (lineal)
+    (SELECT layer_id FROM topology.layer WHERE table_name = 'big_streets'),
+    (SELECT topoelementarray_agg(ARRAY[id(feature), 3])
+     FROM features.city_streets
+     WHERE feature_name in ('R1','R2')) -- R1 and R2
+  ));
+
+INSERT INTO features.big_streets VALUES ('R4', -- Feature name
+  topology.CreateTopoGeom(
+    'city_data', -- Topology name
+    2, -- Topology geometry type (lineal)
+    (SELECT layer_id FROM topology.layer WHERE table_name = 'big_streets'),
+    (SELECT topoelementarray_agg(ARRAY[id(feature), 3])
+     FROM features.city_streets
+     WHERE feature_name in ('R4')) 
+  )); 
 
 --
 -- Signs
@@ -50,7 +77,7 @@ SELECT a.feature_name, b.feature_name
 
 CREATE TABLE features.big_signs (
 	feature_name varchar primary key
-);
+) WITH OIDS;
 
 SELECT topology.AddTopoGeometryColumn('city_data', 'features',
 	'big_signs', 'feature', 'POINT',
@@ -66,8 +93,3 @@ INSERT INTO features.big_signs VALUES ('S1S2', -- Feature name
     (SELECT layer_id FROM topology.layer WHERE table_name = 'big_signs'),
     '{{1,2},{2,2}}')); -- S1 and S2
 
-SELECT feature_name, ST_AsText(topology.geometry(feature)) from features.big_signs;
-
-SELECT a.feature_name, b.feature_name
-	FROM features.traffic_signs a, features.big_signs b
-	WHERE topology.equals(a.feature, b.feature);
