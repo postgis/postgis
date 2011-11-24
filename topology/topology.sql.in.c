@@ -1637,9 +1637,7 @@ BEGIN
 	END LOOP;
 
 
-	EXECUTE '
-CREATE SCHEMA ' || quote_ident(atopology) || ';
-	';
+	EXECUTE 'CREATE SCHEMA ' || quote_ident(atopology);
 
 	-------------{ face CREATION
 	EXECUTE 
