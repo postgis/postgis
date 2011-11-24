@@ -117,7 +117,7 @@
 	 <varlistentry>
 		<term>Pierre Racine</term>
 		<listitem>
-		  <para>Raster overall architecture and programming support</para>
+		  <para>Raster overall architecture, prototyping, programming support</para>
 		</listitem>
 	 </varlistentry>
 	 
@@ -133,7 +133,7 @@
 		<term>Jorge Arévalo</term>
 
 		<listitem>
-		  <para>Raster development</para>
+		  <para>Raster development, GDAL driver support, loader</para>
 		</listitem>
 	  </varlistentry>
 
