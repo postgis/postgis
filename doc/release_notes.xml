@@ -58,6 +58,7 @@
           <para>ST_UnaryUnion (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_AsX3D (Regina Obe / Arrival 3D funding)</para>
           <para>ST_OffsetCurve (Sandro Santilli, Rafal Magda)</para>
+          <para>ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality funding)</para>
         </simplesect>
         <simplesect>
         	<title>Enhancements</title>
