@@ -248,6 +248,12 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		In many cases compilation is only necessary if you want the most
 		bleeding edge versions or you are a package maintainer.
 	  </para>
+	  <para>This section includes general compilation instructions, if you are compiling for Windows etc
+	  	or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>
+	  	in the Compilation and Installation Guides section</para>
+	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="http://www.postgis.org/download/windows/">PostGIS Windows download site</ulink>
+	  We also have <ulink url="http://www.postgis.org/download/windows/experimental.php">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
+	  use these to experiment with the in progress releases of PostGIS</para>
 	</note>
 
 	<para>
