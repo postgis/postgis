@@ -11,7 +11,7 @@ edit:
 
 
 topo_predicates.sql: predicates.sql.in
-	@cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:feature:g;s:@SCHEMA@:topology.:g' > topo_predicates.sql
+	cpp -P -traditional-cpp predicates.sql.in | sed -e 's:@COLUMN@:feature:g;s:@SCHEMA@:topology.:g' > topo_predicates.sql
 
 load_topology.sql: load_topology.sql.in
 	@cpp -P -traditional-cpp load_topology.sql.in | sed -e 's:@SRID@:-1:g' > load_topology.sql
@@ -38,10 +38,11 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/st_getfaceedges.sql \
 	regress/st_modedgeheal.sql \
 	regress/st_newedgeheal.sql \
-  regress/st_remedgenewface.sql \
-  regress/st_remedgemodface.sql \
+	regress/st_remedgenewface.sql \
+	regress/st_remedgemodface.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
+	regress/topogeometry_type.sql \
 	regress/topo2.5d.sql \
 	regress/droptopology.sql \
 	regress/copytopology.sql \

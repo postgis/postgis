@@ -2451,6 +2451,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --  TopoElement
 #include "sql/topoelement/topoelement_agg.sql"
 
+--  TopoGeometry
+#include "sql/topogeometry/type.sql"
+
 --  GML
 #include "sql/gml.sql"
 

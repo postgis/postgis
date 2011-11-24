@@ -36,7 +36,10 @@ INSERT INTO features.big_parcels VALUES ('F3F6', -- Feature name
     'city_data', -- Topology name
     3, -- Topology geometry type (polygon/multipolygon)
     (SELECT layer_id FROM topology.layer WHERE table_name = 'big_parcels'),
-    '{{6,1},{7,1}}')); -- F3 and F6
+    (SELECT topoelementarray_agg(ARRAY[id(feature), 1])
+     FROM features.land_parcels
+     WHERE feature_name in ('F3','F6')) 
+  ));
 
 --
 -- Streets
