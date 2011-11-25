@@ -1544,11 +1544,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 				  <funcprototype>
 					<funcdef>text <function>ST_GeoReference</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>text <function>ST_GeoReference</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>format</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>format=GDAL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2658,11 +2654,7 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 				  <funcprototype>
 					<funcdef>text <function>ST_BandPath</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>text <function>ST_BandPath</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2698,11 +2690,7 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 				  <funcprototype>
 					<funcdef>text <function>ST_BandPixelType</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>text <function>ST_BandPixelType</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2889,29 +2877,18 @@ WHERE rid=2;
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
-				 <funcprototype>
-					<funcdef>double precision <function>ST_Value</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-				  </funcprototype>
 				   <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>double precision <function>ST_Value</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				 <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					<paramdef><type choice='opt'>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
@@ -2932,14 +2909,7 @@ WHERE rid=2;
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>double precision <function>ST_Value</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
