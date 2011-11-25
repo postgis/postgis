@@ -2895,13 +2895,7 @@ WHERE rid=2;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>double precision <function>ST_Value</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>

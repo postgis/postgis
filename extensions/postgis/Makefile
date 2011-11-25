@@ -15,7 +15,7 @@ EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
 ifeq ($(PG91),yes)
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	cat $^ > $@
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a4--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a6--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a7--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a6--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a7--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a8--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -55,13 +55,13 @@ sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_b
 sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
 	
-sql/$(EXTENSION)--2.0.0a4--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
-	cp $< $@
-	
 sql/$(EXTENSION)--2.0.0a6--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
 	
 sql/$(EXTENSION)--2.0.0a7--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
+	cp $< $@
+	
+sql/$(EXTENSION)--2.0.0a8--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
 	
 # sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 
