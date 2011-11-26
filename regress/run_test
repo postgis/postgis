@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 DB=postgis_reg
 
