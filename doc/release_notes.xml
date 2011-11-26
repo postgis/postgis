@@ -12,7 +12,8 @@
         		the new features in this release.  No major release can be successful without these folk. Below are those
         		who have been most valiant, provided very detailed and thorough bug reports, and detailed analysis.</para>
         	<para>Andrea Peri - Lots of testing on topology and checking for correctness.</para>
-        	<para>Brian Hamlin - Benchmarking and general testing of various pieces including Tiger and Topology. Testing on various server VMs.</para>
+        	<para>Brian Hamlin -  Benchmarking (also experimental experimental branches before they are folded into core)
+        	, general testing of various pieces including Tiger and Topology. Testing on various server VMs</para>
         	<para>Andreas Forø Tollefsen, Tom van Tilburg - raster testing</para>
         	<para>Tiger geocoder testing: Mike Pease, very detailed reports of issues.</para>
         </simplesect>
