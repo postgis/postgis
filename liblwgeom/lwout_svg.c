@@ -512,6 +512,7 @@ assvg_geom_size(const LWGEOM *geom, int relative, int precision)
 
 	case POLYGONTYPE:
 		size = assvg_polygon_size((LWPOLY*)geom, relative, precision);
+		break;
 
 	case MULTIPOINTTYPE:
 		size = assvg_multipoint_size((LWMPOINT*)geom, relative, precision);
