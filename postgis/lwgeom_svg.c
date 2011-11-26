@@ -592,6 +592,7 @@ assvg_inspected_size(LWGEOM_INSPECTED *insp, bool relative, int precision)
 		poly=lwgeom_getpoly_inspected(insp, 0);
 		size = assvg_polygon_size(poly, relative, precision);
 		lwpoly_release(poly);
+		break;
 
 	case MULTIPOINTTYPE:
 		size = assvg_multipoint_size(insp, relative, precision);
