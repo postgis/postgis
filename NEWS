@@ -1,6 +1,5 @@
 PostGIS 2.0.0
-2011/MM/DD
-
+2012/MM/DD
   * Important / Breaking Changes *
 
   - #722, #302 Most deprecated functions removed (over 250 functions) 
@@ -85,6 +84,19 @@ PostGIS 2.0.0
     (Regina Obe, Leo Hsu / Paragon Corporation / 
     funding provided by Hunter Systems Group)
   - Overall Documentation proofreading and corrections. (Kasif Rasul)
+  
+ * Tester our unsung heroes *
+ 	We are most indebted to the numerous members in the PostGIS community 
+ 	who were brave enough to test out the new features in this release.  
+ 	No major release can be successful without these folk. 
+ 	Below are those who have been most valiant, provided very detailed
+ 	and thorough bug reports,
+ 	and detailed analysis.
+    Andrea Peri - Lots of testing on topology and checking for correctness
+   Brian Hamlin - Benchmarking and general testing of various pieces 
+   including Tiger and Topology. Testing on various server VMs
+   Andreas Forø Tollefsen, Tom van Tilburg - raster testing
+   Tiger geocoder testing: Mike Pease, very detailed reports of issues
 
 PostGIS 1.5.3
 2011/06/25
