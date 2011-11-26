@@ -7,6 +7,10 @@ PostGIS 1.5.4
 
  - Bug Fixes
    - #1135, improve testsuite predictability (Andreas 'ads' Scherbaum)
+   - #1028, ST_AsSVG kills whole postgres server when fails (Paul Ramsey)
+   - #810, Increase accuracy of area calculation (Paul Ramsey)
+   - #1179, ST_AsText crash with bad value (kjurka)
+   - Alter parameter order in 900913 (Paul Ramsey)
 
 
 PostGIS 1.5.3
