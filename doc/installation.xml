@@ -388,6 +388,23 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  </listitem>
 		</varlistentry>
 		
+		<varlistentry>
+		  <term><command>--with-xml2config=FILE</command></term>
+		  <listitem>
+			<para>
+			  LibXML is the library required for doing GeomFromKML/GML processes.
+			  It normally is found if you have libxml installed, but if not or you want
+			  a specific version used, you'll need to point PostGIS at a specific 
+			  <filename>xml2-config</filename> confi file to enable software installations to
+			  locate the LibXML installation directory. Use this parameter
+			  (<command>>--with-xml2config=/path/to/xml2-config</command>) to
+			  manually specify a particular LibXML installation that PostGIS will
+			  build against.
+			</para>
+		  </listitem>
+		</varlistentry>
+		 
+		
 
 		<varlistentry>
 		  <term><command>--with-projdir=DIR</command></term>

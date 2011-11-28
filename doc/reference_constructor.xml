@@ -480,7 +480,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 			OGC GML standards, cf: <ulink url="http://www.opengeospatial.org/standards/gml">http://www.opengeospatial.org/standards/gml</ulink>:
 		</para>
 
-		<para>Availability: 1.5</para>
+		<para>Availability: 1.5, requires libxml2 1.6+</para>
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		<para>Enhanced: 2.0.0 default srid optional parameter added.</para>
 		<para>&Z_support;</para>
@@ -576,8 +576,7 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsGML" /></para>
-		<para><xref linkend="ST_GMLToSQL" /></para>
+		<para><xref linkend="installation_configuration" />, <xref linkend="ST_AsGML" />, <xref linkend="ST_GMLToSQL" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -602,6 +601,8 @@ SELECT ST_GeomFromEWKT('POLYHEDRALSURFACE(
 		<para>ST_GeomFromGeoJSON works only for JSON Geometry fragments. It throws an error if you try to use it on a whole JSON document.</para>
 		
 		<para>Availability: 2.0.0 requires - JSON-C &gt;= 0.9</para>
+		<note><para>If you do not have JSON-C enabled, support you will get an error notice instead of seeing an output.
+			To enable JSON-C, run configure --with-jsondir=/path/to/json-c.  See <xref linkend="installation_configuration" /> for details.</para></note>
 		<para>&Z_support;</para>
 	  </refsection>
  
@@ -624,7 +625,7 @@ LINESTRING(1 2,4 5,7 8)
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsText" />,<xref linkend="ST_AsGeoJSON" /></para>
+		<para><xref linkend="ST_AsText" />,<xref linkend="ST_AsGeoJSON" />, <xref linkend="installation_configuration" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -657,7 +658,7 @@ LINESTRING(1 2,4 5,7 8)
 			OGC KML standards, cf: <ulink url="http://www.opengeospatial.org/standards/kml">http://www.opengeospatial.org/standards/kml</ulink>:
 		</para>
 
-		<para>Availability: 1.5</para>
+		<para>Availability: 1.5,libxml2 2.6+</para>
 		<para>&Z_support;</para>
 		<note>
 			<para>ST_GeomFromKML function not support SQL/MM curves geometries.</para>
@@ -677,7 +678,7 @@ LINESTRING(1 2,4 5,7 8)
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsKML" /></para>
+		<para><xref linkend="installation_configuration" />, <xref linkend="ST_AsKML" /></para>
 	  </refsection>
 	</refentry>
 
@@ -702,14 +703,13 @@ LINESTRING(1 2,4 5,7 8)
 		  <refsection>
 			<title>Description</title>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.50 (except for curves support).</para>
-			<para>Availability: 1.5</para>
+			<para>Availability: 1.5, requires libxml2 1.6+</para>
 		        <para>Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced.</para>
 		        <para>Enhanced: 2.0.0 default srid optional parameter added.</para>
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromGML" /></para>
-			<para><xref linkend="ST_AsGML" /></para>
+			<para><xref linkend="installation_configuration" />, <xref linkend="ST_GeomFromGML" />, <xref linkend="ST_AsGML" /></para>
 		  </refsection>
 	</refentry>
 
