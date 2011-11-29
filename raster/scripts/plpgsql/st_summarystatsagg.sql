@@ -1,14 +1,14 @@
----------------------------------------------------------------------
+﻿---------------------------------------------------------------------
 -- ST_SummaryStatsAgg AGGREGATE
 -- Compute summary statistics for an aggregation of raster.
 --
 -- Exemple
--- SELECT (aws).count, 
---        (aws).sum, 
---        (aws).mean, 
---        (aws).min, 
---        (aws).max
--- FROM (SELECT ST_SummaryStatsAgg(gv) aws
+-- SELECT (ss).count, 
+--        (ss).sum, 
+--        (ss).mean, 
+--        (ss).min, 
+--        (ss).max
+-- FROM (SELECT ST_SummaryStatsAgg(gv) ss
 --       FROM (SELECT ST_Clip(rt.rast, gt.geom) gv
 --             FROM rasttable rt, geomtable gt
 --             WHERE ST_Intersects(rt.rast, gt.geom)
@@ -16,48 +16,41 @@
 --       GROUP BY gt.id
 --      ) foo2
 ---------------------------------------------------------------------
-
--- DROP TYPE summarystatsstate CASCADE;
-CREATE TYPE summarystatsstate AS (
-    count int,
-    sum double precision,
-    min double precision, 
-    max double precision
-);
-
----------------------------------------------------------------------
 -- raster_summarystatsstate
 -- State function used by the ST_SummaryStatsAgg aggregate
-CREATE OR REPLACE FUNCTION raster_summarystatsstate(sss summarystatsstate, rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
-    RETURNS summarystatsstate 
+CREATE OR REPLACE FUNCTION raster_summarystatsstate(ss summarystats, rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
+    RETURNS summarystats 
     AS $$
     DECLARE
         newstats summarystats;
-        ret summarystatsstate;
+        ret summarystats;
     BEGIN
         IF rast IS NULL THEN
-            RETURN sss;
+            RETURN ss;
         END IF;
         newstats := _ST_SummaryStats(rast, nband, exclude_nodata_value, sample_percent);
         IF $1 IS NULL THEN
             ret := (newstats.count, 
-                    newstats.sum, 
+                    newstats.sum,
+                    null,
+                    null,
                     newstats.min, 
-                    newstats.max)::summarystatsstate;
+                    newstats.max)::summarystats;
         ELSE
-            ret := (sss.count + newstats.count, 
-                    sss.sum + newstats.sum, 
-                    least(sss.min, newstats.min), 
-                    greatest(sss.max, newstats.max))::summarystatsstate;
+            ret := (ss.count + newstats.count, 
+                    ss.sum + newstats.sum,
+                    null,
+                    null,
+                    least(ss.min, newstats.min), 
+                    greatest(ss.max, newstats.max))::summarystats;
         END IF;
-RAISE NOTICE 'min=% ',ret.min;            
         RETURN ret;
     END;
     $$
     LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION raster_summarystatsstate(sss summarystatsstate, rast raster)
-    RETURNS summarystatsstate 
+CREATE OR REPLACE FUNCTION raster_summarystatsstate(ss summarystats, rast raster)
+    RETURNS summarystats 
     AS $$
         SELECT raster_summarystatsstate($1, $2, 1, true, 1);
     $$ LANGUAGE 'SQL';
@@ -65,7 +58,7 @@ CREATE OR REPLACE FUNCTION raster_summarystatsstate(sss summarystatsstate, rast 
 ---------------------------------------------------------------------
 -- raster_summarystatsfinal
 -- Final function used by the ST_SummaryStatsAgg aggregate 
-CREATE OR REPLACE FUNCTION raster_summarystatsfinal(sss summarystatsstate)
+CREATE OR REPLACE FUNCTION raster_summarystatsfinal(ss summarystats)
     RETURNS summarystats 
     AS $$
     DECLARE
@@ -88,13 +81,13 @@ CREATE OR REPLACE FUNCTION raster_summarystatsfinal(sss summarystatsstate)
 ---------------------------------------------------------------------
 CREATE AGGREGATE ST_SummaryStatsAgg(raster, int, boolean, double precision) (
   SFUNC=raster_summarystatsstate,
-  STYPE=summarystatsstate,
+  STYPE=summarystats,
   FINALFUNC=raster_summarystatsfinal
 );
 
 CREATE AGGREGATE ST_SummaryStatsAgg(raster) (
   SFUNC=raster_summarystatsstate,
-  STYPE=summarystatsstate,
+  STYPE=summarystats,
   FINALFUNC=raster_summarystatsfinal
 );
 
@@ -110,13 +103,13 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(h integer, w integer, val float8)
     LANGUAGE 'plpgsql';
 
 SELECT id,
-       (sss).count, 
-       (sss).sum, 
-       (sss).mean, 
-       (sss).stddev, 
-       (sss).min, 
-       (sss).max
-FROM (SELECT ST_SummaryStatsAgg(rast) as sss, id
+       (ss).count, 
+       (ss).sum, 
+       (ss).mean, 
+       (ss).stddev, 
+       (ss).min, 
+       (ss).max
+FROM (SELECT ST_SummaryStatsAgg(rast) as ss, id
       FROM (SELECT 1 id, ST_TestRaster(2, 2, 2) rast
             UNION ALL
             SELECT 1 id, ST_TestRaster(2, 2, 4) rast
