@@ -3386,6 +3386,7 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 	int *dims;
 	int *lbs;
 
+	uint32_t numBands;
 	uint32_t *bandNums;
 	uint32 idx = 0;
 	int n;
@@ -3408,6 +3409,8 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 	}
 	do {
 		if (skip) break;
+
+		numBands = rt_raster_get_num_bands(raster);
 
 		array = PG_GETARG_ARRAYTYPE_P(1);
 		etype = ARR_ELEMTYPE(array);
@@ -3445,7 +3448,7 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 			}
 
 			POSTGIS_RT_DEBUGF(3, "band idx (before): %d", idx);
-			if (idx > pgraster->numBands || idx < 1) {
+			if (idx > numBands || idx < 1) {
         elog(NOTICE, "Invalid band index (must use 1-based). Returning original raster");
 				skip = TRUE;
 				break;
@@ -3958,7 +3961,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_histogram: Could not deserialize raster");
-			PG_RETURN_NULL();
+			SRF_RETURN_DONE(funcctx);
 		}
 
 		/* band index is 1-based */
@@ -7660,133 +7663,248 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 }
 
 /**
- * Get raster band's meta data
+ * Get raster bands' meta data
  */
 PG_FUNCTION_INFO_V1(RASTER_bandmetadata);
 Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 {
-	rt_pgraster *pgraster = NULL;
-	rt_raster raster = NULL;
-	rt_band band = NULL;
-
-	uint32_t numBands;
-	uint32_t bandindex = 1;
-	const char *tmp = NULL;
-	char *pixtypename = NULL;
-	bool hasnodatavalue = FALSE;
-	double nodatavalue;
-	char *bandpath = NULL;
-	bool isoutdb = FALSE;
-
+	FuncCallContext *funcctx;
 	TupleDesc tupdesc;
+	int call_cntr;
+	int max_calls;
+
+	struct bandmetadata {
+		uint32_t bandnum;
+		char *pixeltype;
+		bool hasnodata;
+		double nodataval;
+		bool isoutdb;
+		char *bandpath;
+	};
+	struct bandmetadata *bmd = NULL;
+	struct bandmetadata *bmd2 = NULL;
+
 	bool *nulls = NULL;
-	int values_length = 5;
+	int values_length = 6;
 	Datum values[values_length];
 	HeapTuple tuple;
 	Datum result;
 
-	POSTGIS_RT_DEBUG(3, "RASTER_bandmetadata: Starting");
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
 
-	/* pgraster is null, return null */
-	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		rt_band band = NULL;
 
-	/* raster */
-	raster = rt_raster_deserialize(pgraster, FALSE);
-	if (!raster) {
-		elog(ERROR, "RASTER_bandmetadata: Could not deserialize raster");
-		PG_RETURN_NULL();
-	}
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+		int16 typlen;
+		bool typbyval;
+		char typalign;
+		int ndims = 1;
+		int *dims;
+		int *lbs;
+		int i = 0;
+		int j = 0;
+		int n = 0;
 
-	/* numbands */
-	numBands = rt_raster_get_num_bands(raster);
-	if (numBands < 1) {
-		elog(NOTICE, "Raster provided has no bands");
-		rt_raster_destroy(raster);
-		PG_RETURN_NULL();
-	}
+		uint32_t numBands;
+		uint32_t idx = 1;
+		uint32_t *bandNums = NULL;
+		const char *tmp = NULL;
 
-	/* band index */
-	if (!PG_ARGISNULL(1)) {
-		bandindex = PG_GETARG_INT32(1);
-		if (bandindex < 1 || bandindex > numBands) {
-			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
-			rt_raster_destroy(raster);
-			PG_RETURN_NULL();
+		POSTGIS_RT_DEBUG(3, "RASTER_bandmetadata: Starting");
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/* pgraster is null, return null */
+		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		/* raster */
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			elog(ERROR, "RASTER_bandmetadata: Could not deserialize raster");
+			SRF_RETURN_DONE(funcctx);
 		}
-	}
 
-	band = rt_raster_get_band(raster, bandindex - 1);
-	if (NULL == band) {
-		elog(NOTICE, "Could not get raster band at index %d", bandindex);
+		/* numbands */
+		numBands = rt_raster_get_num_bands(raster);
+		if (numBands < 1) {
+			elog(NOTICE, "Raster provided has no bands");
+			rt_raster_destroy(raster);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* band index */
+		array = PG_GETARG_ARRAYTYPE_P(1);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case INT2OID:
+			case INT4OID:
+				break;
+			default:
+				elog(ERROR, "RASTER_bandmetadata: Invalid data type for band number(s)");
+				rt_raster_destroy(raster);
+				SRF_RETURN_DONE(funcctx);
+				break;
+		}
+
+		ndims = ARR_NDIM(array);
+		dims = ARR_DIMS(array);
+		lbs = ARR_LBOUND(array);
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+			&nulls, &n);
+
+		bandNums = palloc(sizeof(uint32_t) * n);
+		for (i = 0, j = 0; i < n; i++) {
+			if (nulls[i]) continue;
+
+			switch (etype) {
+				case INT2OID:
+					idx = (uint32_t) DatumGetInt16(e[i]);
+					break;
+				case INT4OID:
+					idx = (uint32_t) DatumGetInt32(e[i]);
+					break;
+			}
+
+			POSTGIS_RT_DEBUGF(3, "band idx (before): %d", idx);
+			if (idx > numBands || idx < 1) {
+				elog(NOTICE, "Invalid band index: %d. Indices must be 1-based. Returning NULL", idx);
+				pfree(bandNums);
+				rt_raster_destroy(raster);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			bandNums[j] = idx;
+			POSTGIS_RT_DEBUGF(3, "bandNums[%d] = %d", j, bandNums[j]);
+			j++;
+		}
+
+		if (j < n)
+			bandNums = repalloc(bandNums, sizeof(uint32_t) * j);
+		bmd = (struct bandmetadata *) palloc(sizeof(struct bandmetadata) * j);
+
+		for (i = 0; i < j; i++) {
+			band = rt_raster_get_band(raster, bandNums[i] - 1);
+			if (NULL == band) {
+				elog(NOTICE, "Could not get raster band at index %d", bandNums[i]);
+				rt_raster_destroy(raster);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			/* bandnum */
+			bmd[i].bandnum = bandNums[i];
+
+			/* pixeltype */
+			tmp = rt_pixtype_name(rt_band_get_pixtype(band));
+			bmd[i].pixeltype = palloc(sizeof(char) * (strlen(tmp) + 1));
+			strncpy(bmd[i].pixeltype, tmp, strlen(tmp) + 1);
+
+			/* hasnodatavalue */
+			if (rt_band_get_hasnodata_flag(band))
+				bmd[i].hasnodata = TRUE;
+			else
+				bmd[i].hasnodata = FALSE;
+
+			/* nodatavalue */
+			if (bmd[i].hasnodata)
+				bmd[i].nodataval = rt_band_get_nodata(band);
+			else
+				bmd[i].nodataval = 0;
+
+			/* path */
+			tmp = rt_band_get_ext_path(band);
+			if (tmp) {
+				bmd[i].bandpath = palloc(sizeof(char) * (strlen(tmp) + 1));
+				strncpy(bmd[i].bandpath, tmp, strlen(tmp) + 1);
+			}
+			else
+				bmd[i].bandpath = NULL;
+
+			/* isoutdb */
+			bmd[i].isoutdb = bmd[i].bandpath ? TRUE : FALSE;
+
+			rt_band_destroy(band);
+		}
+
 		rt_raster_destroy(raster);
-		PG_RETURN_NULL();
+
+		/* Store needed information */
+		funcctx->user_fctx = bmd;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = j;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
+		MemoryContextSwitchTo(oldcontext);
 	}
 
-	/* pixeltype */
-	tmp = rt_pixtype_name(rt_band_get_pixtype(band));
-	pixtypename = palloc(sizeof(char) * (strlen(tmp) + 1));
-	strncpy(pixtypename, tmp, strlen(tmp) + 1);
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
 
-	/* hasnodatavalue */
-	if (rt_band_get_hasnodata_flag(band)) hasnodatavalue = TRUE;
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	tupdesc = funcctx->tuple_desc;
+	bmd2 = funcctx->user_fctx;
 
-	/* nodatavalue */
-	if (hasnodatavalue)
-		nodatavalue = rt_band_get_nodata(band);
-	else
-		nodatavalue = 0;
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		nulls = palloc(sizeof(bool) * values_length);
+		memset(nulls, FALSE, values_length);
 
-	/* path */
-	tmp = rt_band_get_ext_path(band);
-	if (tmp) {
-		bandpath = palloc(sizeof(char) * (strlen(tmp) + 1));
-		strncpy(bandpath, tmp, strlen(tmp) + 1);
+		values[0] = UInt32GetDatum(bmd2[call_cntr].bandnum);
+		values[1] = CStringGetTextDatum(bmd2[call_cntr].pixeltype);
+		values[2] = BoolGetDatum(bmd2[call_cntr].hasnodata);
+		values[3] = Float8GetDatum(bmd2[call_cntr].nodataval);
+		values[4] = BoolGetDatum(bmd2[call_cntr].isoutdb);
+		if (bmd2[call_cntr].bandpath && strlen(bmd2[call_cntr].bandpath))
+			values[5] = CStringGetTextDatum(bmd2[call_cntr].bandpath);
+		else
+			nulls[5] = TRUE;
+
+		/* build a tuple */
+		tuple = heap_form_tuple(tupdesc, values, nulls);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		/* clean up */
+		pfree(nulls);
+		pfree(bmd2[call_cntr].pixeltype);
+		if (bmd2[call_cntr].bandpath) pfree(bmd2[call_cntr].bandpath);
+
+		SRF_RETURN_NEXT(funcctx, result);
 	}
-
-	/* isoutdb */
-	isoutdb = bandpath ? TRUE : FALSE;
-
-	rt_band_destroy(band);
-	rt_raster_destroy(raster);
-
-	/* Build a tuple descriptor for our result type */
-	if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
-		ereport(ERROR, (
-			errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-			errmsg(
-				"function returning record called in context "
-				"that cannot accept type record"
-			)
-		));
+	/* do when there is no more left */
+	else {
+		pfree(bmd2);
+		SRF_RETURN_DONE(funcctx);
 	}
-
-	BlessTupleDesc(tupdesc);
-
-	nulls = palloc(sizeof(bool) * values_length);
-	memset(nulls, FALSE, values_length);
-
-	values[0] = CStringGetTextDatum(pixtypename);
-	values[1] = BoolGetDatum(hasnodatavalue);
-	values[2] = Float8GetDatum(nodatavalue);
-	values[3] = BoolGetDatum(isoutdb);
-	if (bandpath && strlen(bandpath))
-		values[4] = CStringGetTextDatum(bandpath);
-	else
-		nulls[4] = TRUE;
-
-	/* build a tuple */
-	tuple = heap_form_tuple(tupdesc, values, nulls);
-
-	/* make the tuple into a datum */
-	result = HeapTupleGetDatum(tuple);
-
-	/* clean up */
-	pfree(nulls);
-	pfree(pixtypename);
-	if (bandpath) pfree(bandpath);
-
-	PG_RETURN_DATUM(result);
 }
 
 /**

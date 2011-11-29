@@ -1,4 +1,9 @@
-64BF|t|0.000|f|
-64BF|t|0.000|f|
-NOTICE:  Invalid band index (must use 1-based). Returning NULL
+8BUI|t|1.000|f|
+8BUI|t|2.000|f|
+8BUI|t|3.000|f|
+8BUI|t|4.000|f|
+NOTICE:  Invalid band index: 6. Indices must be 1-based. Returning NULL
 ||||
+1|t|1.000|f|
+2|t|2.000|f|
+5|t|5.000|f|
