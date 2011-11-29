@@ -85,4 +85,7 @@ SELECT '#1125d' As ticket, pprint_addy(addy), addy.* FROM normalize_address('Int
 -- this one is wrong (because the lack of space trips it up) but will fix later
 SELECT '#1125e' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I-90,Boston, MA') As addy;
 SELECT '#1125f' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I 90,Boston, MA') As addy;
+
+-- location with prefixes getting caught in post prefix
+SELECT '#1310a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('1110 W CAPITOL AVE, WEST SACRAMENTO, CA') As addy;
 \timing

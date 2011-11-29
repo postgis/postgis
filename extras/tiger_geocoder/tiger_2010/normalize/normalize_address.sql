@@ -484,14 +484,16 @@ BEGIN
             RAISE NOTICE '% postDir exact match: %', clock_timestamp(), result.postDirAbbrev;
         END IF;
       ELSE
-        -- postDirection is not equal location, but may be contained in it.
+        -- postDirection is not equal location, but may be contained in it
+        -- It is only considered a postDirection if it is not preceded by a ,
         SELECT INTO tempString substring(result.location, '(?i)(^' || name
             || ')' || ws) FROM direction_lookup WHERE
             result.location ILIKE '%' || name || '%' AND texticregexeq(result.location, '(?i)(^' || name || ')' || ws)
+            	AND NOT  texticregexeq(rawInput, '(?i)(,' || ws || '+' || result.location || ')' || ws)
             ORDER BY length(name) desc LIMIT 1;
             
         IF debug_flag THEN
-            RAISE NOTICE '% location trying to extract postdir: %', clock_timestamp(), result.location;
+            RAISE NOTICE '% location trying to extract postdir: %, tempstring: %, rawInput: %', clock_timestamp(), result.location, tempString, rawInput;
         END IF;
         IF tempString IS NOT NULL THEN
             postDir := tempString;
