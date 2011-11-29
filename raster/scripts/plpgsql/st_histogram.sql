@@ -5,7 +5,9 @@
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --
 ----------------------------------------------------------------------
--- NOTE: This function is now implemented as a C function and is provided solely as a plpgsql example.
+-- NOTE: The ST_Histogram() function is already implemented in C. This plpgsql script is provided only as an example. 
+-- Defining the plpgsql function below might overwrite the current C implementation and brake other functions dependent on it.
+-- Use with caution.
 ----------------------------------------------------------------------
 -- _ST_Values(rast raster, band int)
 -- Return all rast pixels values which center are in a geometry

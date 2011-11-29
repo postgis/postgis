@@ -4,12 +4,10 @@
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --
 ----------------------------------------------------------------------
-
--- NOTE: The one raster version of ST_MapAlgebra found in this file is 
--- already implemented in C and is provided solely as a plpgsql example.
--- NOTE: The ST_SameAlignment function found in this files is is ready to be being implemented in C
--- NOTE: The two raster version of ST_MapAlgebra found in this file is to be replaced by the optimized version found in st_mapalgebra_optimized.sql
-
+-- NOTE: The ST_MapAlgebra() function is already implemented in C. This plpgsql script is provided only as an example. 
+-- Defining the plpgsql function below might overwrite the current C implementation and brake other functions dependent on it.
+-- Use with caution.
+----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_MinPossibleVal(pixeltype text)
     RETURNS float8 AS
     $$

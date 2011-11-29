@@ -5,15 +5,10 @@
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 --
 ----------------------------------------------------------------------
-
--- NOTE: This function is now implemented as a C function and is provided solely as a plpgsql example.
-
--- Note: this script is dependent on 
---   ST_DeleteBand(rast raster, band int) 
---   ST_AddBand(newrast, rast, b, NULL)
---   ST_MapAlgebra(rast raster, band integer, expression text, nodatavalueexpr text, pixeltype text)
--- to be found in the script/plpgsql folder
-
+-- NOTE: The ST_Reclass() function is already implemented in C. This plpgsql script is provided only as an example. 
+-- Defining the plpgsql function below might overwrite the current C implementation and brake other functions dependent on it.
+-- Use with caution.
+----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION ST_Reclass(rast raster,
                       band int,
                                       reclassexpr text) 

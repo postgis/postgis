@@ -6,13 +6,15 @@
 --
 ----------------------------------------------------------------------
 
--- NOTE: The ST_AsRaster function found in this file still many improvements before being implemented in C.
+-- NOTE: The ST_AsRaster() function is already implemented in C. This plpgsql script is provided only as an example. 
+-- Defining the plpgsql function below might overwrite the current C implementation and brake other functions dependent on it.
+-- Use with caution.
 
 CREATE OR REPLACE FUNCTION ST_AsRaster(geom geometry, rast raster, pixeltype text, nodatavalue float8, val float8) 
     RETURNS raster AS 
     $$
     DECLARE
-	numband int := ST_NumBands(rast);
+    numband int := ST_NumBands(rast);
         x1w float8 := ST_XMin(geom);
         y1w float8 := ST_YMax(geom);
         x2w float8 := ST_XMax(geom);
@@ -27,14 +29,14 @@ CREATE OR REPLACE FUNCTION ST_AsRaster(geom geometry, rast raster, pixeltype tex
         newheight int := abs(y2r - y1r) + 1;
         newrast raster := ST_AddBand(ST_MakeEmptyRaster(newwidth, newheight, newx1w, newy1w, ST_ScaleX(rast), ST_ScaleY(rast), ST_SkewX(rast), ST_SkewY(rast), ST_SRID(rast)), pixeltype, nodatavalue, nodatavalue);
     BEGIN
-	FOR x IN 1..newwidth LOOP
-		FOR y IN 1..newheight LOOP
-			IF ST_Intersects(geom, ST_Centroid(ST_PixelAsPolygon(newrast, x, y))) THEN
-				newrast := ST_SetValue(newrast, 1, x, y, val);
-			END IF;
-		END LOOP;
-	END LOOP;
-	RETURN newrast;
+    FOR x IN 1..newwidth LOOP
+        FOR y IN 1..newheight LOOP
+            IF ST_Intersects(geom, ST_Centroid(ST_PixelAsPolygon(newrast, x, y))) THEN
+                newrast := ST_SetValue(newrast, 1, x, y, val);
+            END IF;
+        END LOOP;
+    END LOOP;
+    RETURN newrast;
     END;
     $$
     LANGUAGE 'plpgsql';
