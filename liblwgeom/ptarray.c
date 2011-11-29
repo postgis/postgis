@@ -107,7 +107,7 @@ ptarray_insert_point(POINTARRAY *pa, POINT4D *p, int where)
 	if( where < pa->npoints )
 	{
 		size_t copy_size = point_size * (pa->npoints - where);
-		memcpy(getPoint_internal(pa, where+1), getPoint_internal(pa, where), copy_size);
+		memmove(getPoint_internal(pa, where+1), getPoint_internal(pa, where), copy_size);
 		LWDEBUGF(5,"copying %d bytes to start vertex %d from start vertex %d", copy_size, where+1, where);
 	}
 	
@@ -218,7 +218,7 @@ ptarray_remove_point(POINTARRAY *pa, int where)
 	/* If the point is any but the last, we need to copy the data back one point */
 	if( where < pa->npoints - 1 )
 	{
-		memcpy(getPoint_internal(pa, where), getPoint_internal(pa, where+1), ptsize * (pa->npoints - where - 1));
+		memmove(getPoint_internal(pa, where), getPoint_internal(pa, where+1), ptsize * (pa->npoints - where - 1));
 	}
 	
 	/* We have one less point */
