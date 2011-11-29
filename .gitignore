@@ -51,6 +51,7 @@ postgis/postgis_upgrade_13_to_15.sql
 postgis/postgis_upgrade_14_to_15.sql
 postgis/postgis_upgrade_15_minor.sql
 postgis/postgis_upgrade_20_minor.sql
+postgis/postgis_upgrade_20_minor.sql.in
 postgis/sqldefines.h
 postgis/uninstall_legacy.sql
 postgis/uninstall_legacy.sql.in
@@ -85,6 +86,7 @@ topology/test/load_topology.sql
 topology/test/topo_predicates.sql
 topology/topology.sql
 topology/topology.sql.in
+topology/topology_upgrade_20_minor.sql
 authors.git
 libpgcommon/Makefile
 libpgcommon/cunit/Makefile
