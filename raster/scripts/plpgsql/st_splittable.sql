@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------------------------
--- SplitTable
+-- ST_SplitTable
 -- Split a table into a series of table which names are composed of the concatenation of a prefix
 -- and the value of a column. This function is usefull when loading many raster in one operation but 
 -- still wanting to split them in different tables afterward. They must have been loaded with the -F 
@@ -13,9 +13,9 @@
 -- Example to split the table 'test' into a set of table starting with 't_' and 
 -- ending with the value of the column 'rid' to be created in the 'public' schema.
 --
--- SELECT SplitTable('test', 'public', 't_', 'rid');;
+-- SELECT ST_SplitTable('test', 'public', 't_', 'rid');;
 ----------------------------------------------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION SplitTable(sourcetablename text, targettableschema text, targettableprefix text, suffixcolumnname text)
+CREATE OR REPLACE FUNCTION ST_SplitTable(sourcetablename text, targettableschema text, targettableprefix text, suffixcolumnname text)
 RETURNS int AS
 $BODY$
 DECLARE
@@ -44,4 +44,4 @@ SELECT 2 AS rid, ST_MakeEmptyRaster(2,2,0,0,1,1,1,1,4326) AS rast
 
 SELECT * FROM test;
 
-SELECT SplitTable('test', 'public', 't_', 'rid');
+SELECT ST_SplitTable('test', 'public', 't_', 'rid');
