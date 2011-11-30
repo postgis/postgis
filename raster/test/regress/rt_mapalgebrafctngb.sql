@@ -1,18 +1,18 @@
 -- Tests
 -- Test NULL Raster. Should be true.
-SELECT ST_MapAlgebraFctNgb(NULL, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL) IS NULL FROM ST_TestRasterNgb(0, 0, -1) rast;
+SELECT ST_MapAlgebraFctNgb(NULL, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL) IS NULL FROM ST_TestRasterNgb(0, 0, -1) rast;
 
 -- Test empty Raster. Should be true.
-SELECT ST_IsEmpty(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL));
+SELECT ST_IsEmpty(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL));
 
 -- Test has no band raster. Should be true
-SELECT ST_HasNoBand(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL));
+SELECT ST_HasNoBand(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL));
 
 -- Test huge neighborhood. Original raster returned.
 SELECT
   ST_Value(rast, 2, 2) = 1,
   ST_Value(ST_MapAlgebraFctNgb(
-      rast, 1, NULL, 5, 5, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL
+      rast, 1, NULL, 5, 5, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL
     ), 2, 2) = 1
  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
 
@@ -21,7 +21,7 @@ SELECT
   ST_Value(rast, 2, 2) = 1,
   ST_Value(
     ST_MapAlgebraFctNgb(
-      rast, 1, NULL, -1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL
+      rast, 1, NULL, -1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL
     ), 2, 2) = 1
  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
 
@@ -30,7 +30,7 @@ SELECT
   ST_Value(rast, 2, 2) = 1,
   ST_Value(
     ST_MapAlgebraFctNgb(
-      rast, 1, NULL, 1, -1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL
+      rast, 1, NULL, 1, -1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL
     ), 2, 2) = 1
  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
 
@@ -39,7 +39,7 @@ SELECT
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
     ST_MapAlgebraFctNgb(
-      ST_SetBandNoDataValue(rast, NULL), 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL
+      ST_SetBandNoDataValue(rast, NULL), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL
     ), 2, 2) = 7
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
@@ -47,7 +47,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) IS NULL
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
@@ -55,7 +55,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, NULL, NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, NULL, NULL), 2, 2
   ) = 8
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
@@ -63,7 +63,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'ignore', NULL), 2, 2
   ) = 8
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
@@ -71,7 +71,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'value', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'value', NULL), 2, 2
   ) IS NULL 
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
@@ -79,7 +79,7 @@ SELECT
 SELECT 
   ST_Value(rast, 1, 1) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'value', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'value', NULL), 2, 2
   ) = 9
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 1, 1, NULL) AS rast;
 
@@ -87,7 +87,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, '-8', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, '-8', NULL), 2, 2
   ) = 0
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
@@ -95,7 +95,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
   ) = 128
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
@@ -103,7 +103,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'abcd', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'abcd', NULL), 2, 2
   ) IS NULL
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
@@ -111,7 +111,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) = 1, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = 9
  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
 
@@ -119,7 +119,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) IS NULL, 
   ST_Value(
-    ST_MapAlgebraFctNgb(ST_SetBandNoDataValue(rast, NULL), 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
+    ST_MapAlgebraFctNgb(ST_SetBandNoDataValue(rast, NULL), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = -1
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 0), 2, 2, NULL) AS rast;
 
@@ -127,7 +127,7 @@ SELECT
 SELECT
   ST_Value(rast, 2, 2) = 2,
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, '4BUI', 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, '4BUI', 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = 15
  FROM ST_SetBandNoDataValue(ST_TestRasterNgb(3, 3, 2), 1, NULL) AS rast;
 
@@ -135,7 +135,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) = 2, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, '4BUId', 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, '4BUId', 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = 18
  FROM ST_TestRasterNgb(3, 3, 2) AS rast;
 
@@ -143,7 +143,7 @@ SELECT
 SELECT 
   ST_Value(rast, 2, 2) = 1, 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, '2BUI', 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, '2BUI', 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) = 3
  FROM ST_SetBandNoDataValue(ST_TestRasterNgb(3, 3, 1), 1, NULL) AS rast;
 
@@ -152,7 +152,7 @@ SELECT
   COUNT(*) = 1
  FROM (SELECT
     (ST_DumpAsPolygons(
-      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL)
+      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL)
     )).*
    FROM ST_TestRasterNgb(5, 5, 1) AS rast) AS foo;
 
@@ -161,7 +161,7 @@ SELECT
   ST_Area(geom) = 8, val = 9
  FROM (SELECT
     (ST_DumpAsPolygons(
-      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL)
+      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL)
     )).*
    FROM ST_SetValue(ST_TestRasterNgb(5, 5, 1), 1, 1, NULL) AS rast) AS foo;
 
@@ -171,7 +171,7 @@ SELECT
   (ST_Area(geom) = 1 AND val = 8) OR (ST_Area(geom) = 8 AND val = 9)
  FROM (SELECT
     (ST_DumpAsPolygons(
-      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'ignore', NULL)
+      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'ignore', NULL)
     )).*
    FROM ST_SetValue(ST_TestRasterNgb(5, 5, 1), 1, 1, NULL) AS rast) AS foo;
 
@@ -187,7 +187,7 @@ SELECT
   ST_Area(ST_BuildArea(ST_InteriorRingN(geom, 1))) = 9
  FROM (SELECT
     (ST_DumpAsPolygons(
-      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL)
+      ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL)
     )).*
    FROM ST_SetValue(ST_TestRasterNgb(7, 7, 1), 4, 4, NULL) AS rast) AS foo;
 
@@ -198,7 +198,7 @@ SELECT
  FROM (SELECT
     (ST_DumpAsPolygons(
       ST_MapAlgebraFctNgb(
-        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'ignore', NULL), 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'ignore', NULL
+        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'ignore', NULL), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'ignore', NULL
       )
     )).*
    FROM ST_TestRasterNgb(5, 5, 1) AS rast) AS foo;
@@ -210,7 +210,7 @@ SELECT
  FROM (SELECT
     (ST_DumpAsPolygons(
       ST_MapAlgebraFctNgb(
-        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL), 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'NULL', NULL
+        ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL
       )
     )).*
    FROM ST_TestRasterNgb(5, 5, 1) AS rast) AS foo;
@@ -228,6 +228,6 @@ SELECT
 -- expect that the cells processed by the neighborhoods would be replaced by the 'nodatamode' parameter value, and not NODATA.
 SELECT 
   ST_Value(
-    ST_MapAlgebraFctNgb(rast, 1, '8BUI', 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
+    ST_MapAlgebraFctNgb(rast, 1, '8BUI', 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
   ) = 200
 FROM ST_SetValue(ST_SetBandNoDataValue(ST_TestRasterNgb(3, 3, 10), 0), 2, 2, 0) AS rast;

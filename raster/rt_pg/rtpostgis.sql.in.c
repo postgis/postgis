@@ -1796,6 +1796,157 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafctngb(
     LANGUAGE 'C' IMMUTABLE;
 
 -----------------------------------------------------------------------
+-- Neighborhood MapAlgebra processing functions.
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_max4ma(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float AS
+    $$
+    DECLARE
+        _matrix float[][];
+        max float;
+    BEGIN
+        _matrix := matrix;
+        max := '-Infinity'::float;
+        FOR x in array_lower(_matrix, 1)..array_upper(_matrix, 1) LOOP
+            FOR y in array_lower(_matrix, 2)..array_upper(_matrix, 2) LOOP
+                IF _matrix[x][y] IS NULL THEN
+                    IF NOT nodatamode = 'ignore' THEN
+                        _matrix[x][y] := nodatamode::float;
+                    END IF;
+                END IF;
+                IF max < _matrix[x][y] THEN
+                    max := _matrix[x][y];
+                END IF;
+            END LOOP;
+        END LOOP;
+        RETURN max;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+
+CREATE OR REPLACE FUNCTION st_min4ma(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float AS
+    $$
+    DECLARE
+        _matrix float[][];
+        min float;
+    BEGIN
+        _matrix := matrix;
+        min := 'Infinity'::float;
+        FOR x in array_lower(_matrix, 1)..array_upper(_matrix, 1) LOOP
+            FOR y in array_lower(_matrix, 2)..array_upper(_matrix, 2) LOOP
+                IF _matrix[x][y] IS NULL THEN
+                    IF NOT nodatamode = 'ignore' THEN
+                        _matrix[x][y] := nodatamode::float;
+                    END IF;
+                END IF;
+                IF min > _matrix[x][y] THEN
+                    min := _matrix[x][y];
+                END IF;
+            END LOOP;
+        END LOOP;
+        RETURN min;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_sum4ma(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float AS
+    $$
+    DECLARE
+        _matrix float[][];
+        sum float;
+    BEGIN
+        _matrix := matrix;
+        sum := 0;
+        FOR x in array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
+            FOR y in array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
+                IF _matrix[x][y] IS NULL THEN
+                    IF nodatamode = 'ignore' THEN
+                        _matrix[x][y] := 0;
+                    ELSE
+                        _matrix[x][y] := nodatamode::float;
+                    END IF;
+                END IF;
+                sum := sum + _matrix[x][y];
+            END LOOP;
+        END LOOP;
+        RETURN sum;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_mean4ma(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float AS
+    $$
+    DECLARE
+        _matrix float[][];
+        sum float;
+        count float;
+    BEGIN
+        _matrix := matrix;
+        sum := 0;
+        count := 0;
+        FOR x in array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
+            FOR y in array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
+                IF _matrix[x][y] IS NULL THEN
+                    IF nodatamode = 'ignore' THEN
+                        _matrix[x][y] := 0;
+                    ELSE
+                        _matrix[x][y] := nodatamode::float;
+                        count := count + 1;
+                    END IF;
+                ELSE
+                    count := count + 1;
+                END IF;
+                sum := sum + _matrix[x][y];
+            END LOOP;
+        END LOOP;
+        IF count = 0 THEN
+            RETURN NULL;
+        END IF;
+        RETURN sum / count;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_range4ma(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float AS
+    $$
+    DECLARE
+        _matrix float[][];
+        min float;
+        max float;
+    BEGIN
+        _matrix := matrix;
+        min := 'Infinity'::float;
+        max := '-Infinity'::float;
+        FOR x in array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
+            FOR y in array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
+                IF _matrix[x][y] IS NULL THEN
+                    IF NOT nodatamode = 'ignore' THEN
+                        _matrix[x][y] := nodatamode::float;
+                    END IF;
+                END IF;
+                IF min > _matrix[x][y] THEN
+                    min = _matrix[x][y];
+                END IF;
+                IF max < _matrix[x][y] THEN
+                    max = _matrix[x][y];
+                END IF;
+            END LOOP;
+        END LOOP;
+        IF max = '-Infinity'::float OR min = 'Infinity'::float THEN
+            RETURN NULL;
+        END IF;
+        RETURN max - min;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+
+-----------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_isempty(rast raster)
