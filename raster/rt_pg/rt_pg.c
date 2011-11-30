@@ -485,13 +485,13 @@ rtpg_getSRTextSPI(int srid)
 	len = sizeof(char) * (strlen("SELECT srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
 	sql = (char *) palloc(len);
 	if (NULL == sql) {
-		elog(ERROR, "getSrtextSPI: Unable to allocate memory for sql\n");
+		elog(ERROR, "rtpg_getSRTextSPI: Unable to allocate memory for sql\n");
 		return NULL;
 	}
 
 	spi_result = SPI_connect();
 	if (spi_result != SPI_OK_CONNECT) {
-		elog(ERROR, "getSrtextSPI: Could not connect to database using SPI\n");
+		elog(ERROR, "rtpg_getSRTextSPI: Could not connect to database using SPI\n");
 		pfree(sql);
 		return NULL;
 	}
@@ -501,7 +501,7 @@ rtpg_getSRTextSPI(int srid)
 	spi_result = SPI_execute(sql, TRUE, 0);
 	pfree(sql);
 	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-		elog(ERROR, "getSrtextSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		elog(ERROR, "rtpg_getSRTextSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
 		return NULL;
@@ -513,7 +513,7 @@ rtpg_getSRTextSPI(int srid)
 
 	tmp = SPI_getvalue(tuple, tupdesc, 1);
 	if (NULL == tmp || !strlen(tmp)) {
-		elog(ERROR, "getSrtextSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		elog(ERROR, "rtpg_getSRTextSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
 		return NULL;
@@ -525,7 +525,7 @@ rtpg_getSRTextSPI(int srid)
 	len = strlen(tmp);
 	srs = (char *) palloc(sizeof(char) * (len + 1));
 	if (NULL == srs) {
-		elog(ERROR, "getSrtextSPI: Unable to allocate memory for srtext\n");
+		elog(ERROR, "rtpg_getSRTextSPI: Unable to allocate memory for srtext\n");
 		return NULL;
 	}
 	srs = strncpy(srs, tmp, len + 1);
@@ -4011,7 +4011,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 				default:
 					elog(ERROR, "RASTER_histogram: Invalid data type for width");
 					rt_raster_destroy(raster);
-					PG_RETURN_NULL();
+					SRF_RETURN_DONE(funcctx);
 					break;
 			}
 
@@ -4256,7 +4256,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		/* column name is null, return null */
 		if (PG_ARGISNULL(1)) {
 			elog(NOTICE, "Column name must be provided");
-			PG_RETURN_NULL();
+			SRF_RETURN_DONE(funcctx);
 		}
 		colnametext = PG_GETARG_TEXT_P(1);
 		colname = text_to_cstring(colnametext);
@@ -4787,7 +4787,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 				default:
 					elog(ERROR, "RASTER_quantile: Invalid data type for quantiles");
 					rt_raster_destroy(raster);
-					PG_RETURN_NULL();
+					SRF_RETURN_DONE(funcctx);
 					break;
 			}
 
@@ -5016,7 +5016,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		/* column name is null, return null */
 		if (PG_ARGISNULL(1)) {
 			elog(NOTICE, "Column name must be provided");
-			PG_RETURN_NULL();
+			SRF_RETURN_DONE(funcctx);
 		}
 		colnametext = PG_GETARG_TEXT_P(1);
 		colname = text_to_cstring(colnametext);
@@ -5060,7 +5060,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				default:
 					elog(ERROR, "RASTER_quantileCoverage: Invalid data type for quantiles");
 					rt_raster_destroy(raster);
-					PG_RETURN_NULL();
+					SRF_RETURN_DONE(funcctx);
 					break;
 			}
 
@@ -5407,7 +5407,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_valueCount: Could not deserialize raster");
-			PG_RETURN_NULL();
+			SRF_RETURN_DONE(funcctx);
 		}
 
 		/* band index is 1-based */
@@ -5437,7 +5437,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 				default:
 					elog(ERROR, "RASTER_valueCount: Invalid data type for values");
 					rt_raster_destroy(raster);
-					PG_RETURN_NULL();
+					SRF_RETURN_DONE(funcctx);
 					break;
 			}
 
@@ -5646,7 +5646,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		/* column name is null, return null */
 		if (PG_ARGISNULL(1)) {
 			elog(NOTICE, "Column name must be provided");
-			PG_RETURN_NULL();
+			SRF_RETURN_DONE(funcctx);
 		}
 		colnametext = PG_GETARG_TEXT_P(1);
 		colname = text_to_cstring(colnametext);
@@ -5677,7 +5677,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				default:
 					elog(ERROR, "RASTER_valueCountCoverage: Invalid data type for values");
 					rt_raster_destroy(raster);
-					PG_RETURN_NULL();
+					SRF_RETURN_DONE(funcctx);
 					break;
 			}
 

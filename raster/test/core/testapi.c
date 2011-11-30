@@ -1554,7 +1554,7 @@ static void testGDALRasterize() {
 	int wkb_len = 0;
 	int i;
 	double scale_x = 100;
-	double scale_y = 100;
+	double scale_y = -100;
 
 	rt_pixtype pixtype[] = {PT_8BUI};
 	double init[] = {0};

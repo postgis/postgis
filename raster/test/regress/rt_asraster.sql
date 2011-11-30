@@ -63,7 +63,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	1.2, (SELECT ST_AsRaster(
 		geom,
-		100., 100.
+		100., -100.
 	) FROM raster_asraster_geom)
 ), (
 	1.3, (SELECT ST_AsRaster(
@@ -73,42 +73,42 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	1.4, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.
+		1000., -1000.
 	) FROM raster_asraster_geom)
 ), (
 	1.5, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		'8BSI'
 	) FROM raster_asraster_geom)
 ), (
 	1.6, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		'16BUI'
 	) FROM raster_asraster_geom)
 ), (
 	1.7, (SELECT ST_AsRaster(
 		geom,
-		100., 100.,
+		100., -100.,
 		'32BF'
 	) FROM raster_asraster_geom)
 ), (
 	1.8, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		ARRAY['8BSI']
 	) FROM raster_asraster_geom)
 ), (
 	1.9, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		ARRAY['16BUI']
 	) FROM raster_asraster_geom)
 ), (
 	1.10, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		ARRAY['32BF']
 	) FROM raster_asraster_geom)
 ), (
@@ -157,7 +157,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	1.17, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		ARRAY['32BF', '16BUI'],
 		ARRAY[255, 1],
 		ARRAY[NULL, 0]::double precision[]
@@ -173,7 +173,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	1.19, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		ARRAY['32BF', '16BUI', '64BF'],
 		ARRAY[255, 1, -1],
 		ARRAY[NULL, 0, NULL]::double precision[]
@@ -181,7 +181,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	1.20, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		ARRAY['1BB', '2BUI'],
 		ARRAY[1, 1],
 		ARRAY[1, 0]::double precision[]
@@ -192,7 +192,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 	2.1, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		'8BUI',
 		255,
 		0,
@@ -201,7 +201,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	2.2, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		'8BUI',
 		255,
 		0,
@@ -210,7 +210,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	2.3, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		'8BUI',
 		255,
 		0,
@@ -219,7 +219,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	2.4, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		'8BUI',
 		255,
 		0,
@@ -228,7 +228,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	2.5, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		'8BUI',
 		255,
 		0,
@@ -391,7 +391,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	4.8, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		0, 0,
 		ARRAY['16BUI'],
 		ARRAY[13],
@@ -401,7 +401,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	4.9, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		-175453, 114987,
 		ARRAY['16BUI'],
 		ARRAY[13],
@@ -411,7 +411,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	4.10, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		-100, 100,
 		ARRAY['16BUI'],
 		ARRAY[13],
@@ -421,7 +421,7 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 ), (
 	4.11, (SELECT ST_AsRaster(
 		geom,
-		1000., 1000.,
+		1000., -1000.,
 		-100, 100,
 		'16BUI',
 		13,
