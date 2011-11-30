@@ -18,6 +18,9 @@ t|t
 t|t
 t|t
 t|t
+NOTICE:  Neighborhood NODATA mode is not recognized. Must be one of 'value', 'ignore', 'NULL', or a numeric value. Returning new raster with the original band
+t|t
+t|t
 t|t
 t|t
 t|t

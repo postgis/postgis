@@ -91,6 +91,22 @@ SELECT
   ) = 0
  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
 
+-- Test value nodatamode. Should return null and 128.
+SELECT 
+  ST_Value(rast, 2, 2) IS NULL, 
+  ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
+  ) = 128
+ FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
+
+-- Test value nodatamode. Should return null and null.
+SELECT 
+  ST_Value(rast, 2, 2) IS NULL, 
+  ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, 'abcd', NULL), 2, 2
+  ) IS NULL
+ FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 2, 2, NULL) AS rast;
+
 -- Test ST_Sum user function. Should be 1 and 9.
 SELECT 
   ST_Value(rast, 2, 2) = 1, 

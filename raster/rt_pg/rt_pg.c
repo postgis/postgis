@@ -9478,7 +9478,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 
     if (strcmp(strFromText, "VALUE") == 0)
         valuereplace = true;
-    else if (strcmp(strFromText, "IGNORE") < 0 && strcmp(strFromText, "NULL") < 0) {
+    else if (strcmp(strFromText, "IGNORE") != 0 && strcmp(strFromText, "NULL") != 0) {
         // if the text is not "IGNORE" or "NULL", it may be a numerical value
         if (sscanf(strFromText, "%d", &intReplace) <= 0 && sscanf(strFromText, "%f", &fltReplace) <= 0) {
             // the value is NOT an integer NOR a floating point
