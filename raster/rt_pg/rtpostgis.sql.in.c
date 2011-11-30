@@ -1969,6 +1969,36 @@ CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer, pixeltype text)
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_slope4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
     LANGUAGE 'SQL' STABLE;
 
+CREATE OR REPLACE FUNCTION _st_aspect4ma(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float
+    AS
+    $$
+    DECLARE
+        pwidth float;
+        pheight float;
+        dz_dx float;
+        dz_dy float;
+        aspect float;
+    BEGIN
+        pwidth := args[1]::float;
+        pheight := args[2]::float;
+        dz_dx := ((matrix[3][1] + 2.0 * matrix[3][2] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[1][2] + matrix[1][3])) / (8.0 * pwidth);
+        dz_dy := ((matrix[1][3] + 2.0 * matrix[2][3] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[2][1] + matrix[3][1])) / (8.0 * pheight);
+        aspect := atan2(dz_dy, -dz_dx);
+        IF aspect > (pi() / 2.0) THEN
+            RETURN (5.0 * pi() / 2.0) - aspect;
+        ELSE
+            RETURN (pi() / 2.0) - aspect;
+        END IF;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text)
+    RETURNS RASTER
+    AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_aspect4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
+    LANGUAGE 'SQL' STABLE;
+
 
 -----------------------------------------------------------------------
 -- Get information about the raster
