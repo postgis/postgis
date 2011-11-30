@@ -9558,7 +9558,8 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
                                 /* Replace the NODATA value with the currently processing pixel. */
                                 neighborData[nIndex] = Float8GetDatum((double)rpix);
                                 neighborNulls[nIndex] = false;
-                                /* do not increment nNullItems */
+                                /* do not increment nNullItems, since the user requested that the  */
+                                /* neighborhood replace NODATA values with the central pixel value */
                             }
                             else {
                                 neighborData[nIndex] = PointerGetDatum(NULL);
@@ -9582,7 +9583,9 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
              * We compute a value only for the withdata value neighborhood since the
              * nodata value has already been set by the first optimization
              **/
-            if (!nNodataOnly && !(nNullSkip && nNullItems > 0) && !(valuereplace && nNullItems > 0)) {
+            if (!(nNodataOnly ||                     /* neighborhood only contains NODATA -- OR -- */
+                (nNullSkip && nNullItems > 0) ||     /* neighborhood should skip any NODATA cells, and a NODATA cell was detected -- OR -- */
+                (valuereplace && nNullItems > 0))) { /* neighborhood should replace NODATA cells with the central pixel value, and a NODATA cell was detected */
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: (%dx%d), %dx%d neighborhood",
                     x, y, winwidth, winheight);
 

@@ -222,3 +222,12 @@ SELECT
     ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'ST_Nullage(float[][], text, text[])'::regprocedure, 'NULL', NULL), 2, 2
   ) IS NULL
  FROM ST_TestRasterNgb(3, 3, 2) AS rast;
+
+-- 'dog ate my homework' test
+-- raster initialized to one NODATA value, then a literal value passed in as the 'nodatamode' parameter.
+-- expect that the cells processed by the neighborhoods would be replaced by the 'nodatamode' parameter value, and not NODATA.
+SELECT 
+  ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, '8BUI', 1, 1, 'ST_Sum(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
+  ) = 200
+FROM ST_SetValue(ST_SetBandNoDataValue(ST_TestRasterNgb(3, 3, 10), 0), 2, 2, 0) AS rast;
