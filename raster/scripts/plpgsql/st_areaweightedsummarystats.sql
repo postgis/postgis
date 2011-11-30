@@ -4,7 +4,8 @@
 -- Specially written to be used with ST_Intersection(raster, geometry)
 --
 -- Exemple
--- SELECT (aws).count, 
+-- SELECT gt.id,
+--        (aws).count, 
 --        (aws).distinctcount,
 --        (aws).geom, 
 --        (aws).totalarea, 
