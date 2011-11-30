@@ -96,3 +96,26 @@ SELECT
   ) = 9 
   FROM ST_SetValue(ST_TestRasterNgb(3, 3, 10), 3, 3, NULL) AS rast;
 
+-- test st_slope, flat plane
+SELECT
+  ST_Value(rast, 2, 2) = 1,
+  ST_Value(
+    ST_Slope(rast, 1, NULL), 2, 2
+  ) = 0
+  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
+
+-- test st_slope, corner spike
+SELECT
+  ST_Value(rast, 2, 2) = 1,
+  round(degrees(ST_Value(
+    ST_Slope(rast, 1, NULL), 2, 2
+  ))*100000) = 5784902 -- this measurement is in radians
+  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 1, 1, 10) AS rast;
+
+-- test st_slope, corner droop
+SELECT
+  ST_Value(rast, 2, 2) = 10,
+  round(degrees(ST_Value(
+    ST_Slope(rast, 1, NULL), 2, 2
+  ))*100000) = 5784902 -- this measurement is in radians
+  FROM ST_SetValue(ST_TestRasterNgb(3, 3, 10), 1, 1, 1) AS rast;
