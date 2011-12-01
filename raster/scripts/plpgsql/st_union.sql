@@ -1,4 +1,4 @@
-----------------------------------------------------------------------
+﻿----------------------------------------------------------------------
 --
 -- $Id$
 --
@@ -279,14 +279,14 @@ FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, 'SUM'::text,
             ) foi) foo
 
 
-SELECT AsBinary((rast).geom), (rast).val 
+SELECT ST_AsBinary((rast).geom), (rast).val 
 FROM (SELECT ST_PixelAsPolygons(ST_Union(rast), 1) AS rast 
       FROM (SELECT ST_TestRaster(0, 0, 1) AS rast UNION ALL SELECT ST_TestRaster(2, 0, 2)
            ) foi
      ) foo
 
 
-SELECT AsBinary((rast).geom), (rast).val 
+SELECT ST_AsBinary((rast).geom), (rast).val 
 FROM (SELECT ST_PixelAsPolygons(ST_Union(rast, 'mean'), 1) AS rast 
       FROM (SELECT ST_TestRaster(0, 0, 1) AS rast UNION ALL SELECT ST_TestRaster(1, 0, 2) UNION ALL SELECT ST_TestRaster(0, 1, 6)
            ) foi
