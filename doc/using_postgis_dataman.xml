@@ -69,7 +69,7 @@ geometry = ST_GeomFromWKB(bytea WKB, SRID);
 geometry = ST_GeometryFromText(text WKT, SRID);</programlisting>
 
       <para>For example, a valid insert statement to create and insert an OGC
-      spatial object would be:</para>
+      spatial object would be (where 312 is the srid of our geometry):</para>
 
       <programlisting>INSERT INTO geotable ( the_geom, the_name )
   VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
@@ -920,20 +920,21 @@ gisdb=# SELECT
 
       <para>A data upload file (<filename>roads.sql</filename> for example)
       might look like this:</para>
-
+      <note><para>Please note that 312 is a fictitious spatial reference system (312) for demonstration only. Please use a non-imaginary 
+      	one for your location that matches your geometries.</para></note>
       <programlisting>BEGIN; 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (1,ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd'); 
+  VALUES (1,ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',312),'Jeff Rd'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (2,ST_GeomFromText('LINESTRING(189141 244158,189265 244817)',-1),'Geordie Rd'); 
+  VALUES (2,ST_GeomFromText('LINESTRING(189141 244158,189265 244817)',312),'Geordie Rd'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (3,ST_GeomFromText('LINESTRING(192783 228138,192612 229814)',-1),'Paul St'); 
+  VALUES (3,ST_GeomFromText('LINESTRING(192783 228138,192612 229814)',312),'Paul St'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (4,ST_GeomFromText('LINESTRING(189412 252431,189631 259122)',-1),'Graeme Ave'); 
+  VALUES (4,ST_GeomFromText('LINESTRING(189412 252431,189631 259122)',312),'Graeme Ave'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (5,ST_GeomFromText('LINESTRING(190131 224148,190871 228134)',-1),'Phil Tce'); 
+  VALUES (5,ST_GeomFromText('LINESTRING(190131 224148,190871 228134)',312),'Phil Tce'); 
 INSERT INTO roads (road_id, roads_geom, road_name) 
-  VALUES (6,ST_GeomFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres'); 
+  VALUES (6,ST_GeomFromText('LINESTRING(198231 263418,198213 268322)',312),'Dave Cres'); 
 COMMIT;</programlisting>
 
       <para>The data file can be piped into PostgreSQL very easily using the
@@ -1086,9 +1087,10 @@ COMMIT;</programlisting>
     <sect2>
       <title>Using SQL</title>
 
-      <para>The most straightforward means of pulling data out of the database
-      is to use a SQL select query and dump the resulting columns into a
-      parsable text file:</para>
+      <para>The most straightforward means of pulling data out of the
+        database is to use a SQL select query to reduce the number of RECORDS and COLUMNS returned
+        and dump the resulting columns
+        into a parsable text file:</para>
 
       <programlisting>db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads; 
 
@@ -1146,7 +1148,7 @@ road_id | geom                                    | road_name
 
       <programlisting>SELECT road_id, road_name 
   FROM roads 
-  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
+  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)');</programlisting>
 
       <para>The above query would return the single record from the
       "ROADS_GEOM" table in which the geometry was equal to that value.</para>
@@ -1158,7 +1160,7 @@ road_id | geom                                    | road_name
 
       <programlisting>SELECT road_id, road_name 
 FROM roads 
-WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',-1);</programlisting>
+WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))');</programlisting>
 
       <para>The above query will use the bounding box of the polygon for
       comparison purposes.</para>
@@ -1425,7 +1427,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 
       <programlisting>SELECT the_geom 
 FROM geom_table 
-WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)')) &lt; 100</programlisting>
 
       <para>This query is selecting all the geometries in geom_table which are
       within 100 units of the point (100000, 200000). It will be slow because
@@ -1438,7 +1440,7 @@ WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 10
 FROM geom_table 
 WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d 
   AND
-ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)')) &lt; 100</programlisting>
 
       <para>This query selects the same geometries, but it does it in a more
       efficient way. Assuming there is a GiST index on the_geom, the query
