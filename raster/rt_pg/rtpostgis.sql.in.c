@@ -1984,6 +1984,10 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(matrix float[][], nodatamode text, vari
         pheight := args[2]::float;
         dz_dx := ((matrix[3][1] + 2.0 * matrix[3][2] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[1][2] + matrix[1][3])) / (8.0 * pwidth);
         dz_dy := ((matrix[1][3] + 2.0 * matrix[2][3] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[2][1] + matrix[3][1])) / (8.0 * pheight);
+        IF dz_dx = 0 AND dz_dy = 0 THEN
+            RETURN -1;
+        END IF;
+
         aspect := atan2(dz_dy, -dz_dx);
         IF aspect > (pi() / 2.0) THEN
             RETURN (5.0 * pi() / 2.0) - aspect;
@@ -1997,6 +2001,48 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(matrix float[][], nodatamode text, vari
 CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text)
     RETURNS RASTER
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_aspect4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
+    LANGUAGE 'SQL' STABLE;
+
+
+CREATE OR REPLACE FUNCTION _st_hillshade4ma(matrix float[][], nodatamode text, variadic args text[])
+    RETURNS float
+    AS
+    $$
+    DECLARE
+        pwidth float;
+        pheight float;
+        dz_dx float;
+        dz_dy float;
+        zenith float;
+        azimuth float;
+        slope float;
+        aspect float;
+        max_bright float;
+        elevation_scale float;
+    BEGIN
+        pwidth := args[1]::float;
+        pheight := args[2]::float;
+        azimuth := (5.0 * pi() / 2.0) - args[3]::float;
+        zenith := (pi() / 2.0) - args[4]::float;
+        dz_dx := ((matrix[3][1] + 2.0 * matrix[3][2] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[1][2] + matrix[1][3])) / (8.0 * pwidth);
+        dz_dy := ((matrix[1][3] + 2.0 * matrix[2][3] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[2][1] + matrix[3][1])) / (8.0 * pheight);
+        elevation_scale := args[6]::float;
+        slope := atan(sqrt(elevation_scale * pow(dz_dx, 2.0) + pow(dz_dy, 2.0)));
+        aspect := atan2(dz_dy, -dz_dx);
+        max_bright := args[5]::float;
+
+        IF aspect < 0 THEN
+            aspect := aspect + (2.0 * pi());
+        END IF;
+
+        RETURN max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) );
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_hillshade(rast raster, band integer, pixeltype text, azimuth float, altitude float, max_bright float DEFAULT 255.0, elevation_scale float DEFAULT 1.0)
+    RETURNS RASTER
+    AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_hillshade4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text) $$
     LANGUAGE 'SQL' STABLE;
 
 

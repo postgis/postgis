@@ -123,10 +123,10 @@ SELECT
 -- test st_aspect, flat plane
 SELECT
   ST_Value(rast, 2, 2) = 1,
-  round(degrees(ST_Value(
+  ST_Value(
     ST_Aspect(rast, 1, NULL), 2, 2
-  ))*10000) = 2700000
-  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
+  ) = -1
+  FROM ST_SetBandNoDataValue(ST_TestRasterNgb(3, 3, 1), NULL) AS rast;
 
 -- test st_aspect, North
 SELECT
@@ -159,3 +159,62 @@ SELECT
     ST_Aspect(rast, 1, NULL), 2, 2
   ))*10000) = 2700000
   FROM ST_SetValue(ST_TestRasterNgb(3, 3, 1), 1, 2, 0) AS rast;
+
+-- test st_hillshade, flat plane
+SELECT
+  ST_Value(rast, 2, 2) = 1,
+  round(ST_Value(
+    ST_Hillshade(rast, 1, NULL, 0.0, pi()/4.0, 255), 2, 2
+  )*10000) = 1803122
+  FROM ST_TestRasterNgb(3, 3, 1) AS rast;
+
+-- test st_hillshade, known set from: http://webhelp.esri.com/arcgiSDEsktop/9.3/index.cfm?TopicName=How%20Hillshade%20works
+SELECT
+  round(ST_Value(
+    ST_Hillshade(rast, 1, NULL, radians(315.0), pi()/4.0, 255, 1.0), 2, 2
+  )*10000) = 1540287
+  FROM ST_SetValue(
+    ST_SetValue(
+      ST_SetValue(
+        ST_SetValue(
+          ST_SetValue(
+            ST_SetValue(
+              ST_SetValue(
+                ST_SetValue(
+                  ST_SetValue(
+                    ST_SetScale(ST_TestRasterNgb(3, 3, 1), 5), 1, 1, 2450
+                  ), 2, 1, 2461
+                ), 3, 1, 2483
+              ), 1, 2, 2452
+            ), 2, 2, 2461
+          ), 3, 2, 2483
+        ), 1, 3, 2447
+      ), 2, 3, 2455
+    ), 3, 3, 2477
+  ) AS rast;
+
+-- test st_hillshade, defaults on known set from: http://webhelp.esri.com/arcgiSDEsktop/9.3/index.cfm?TopicName=How%20Hillshade%20works  
+SELECT
+  round(ST_Value(
+    ST_Hillshade(rast, 1, NULL, radians(315.0), pi()/4.0), 2, 2
+  )*10000) = 1540287
+  FROM ST_SetValue(
+    ST_SetValue(
+      ST_SetValue(
+        ST_SetValue(
+          ST_SetValue(
+            ST_SetValue(
+              ST_SetValue(
+                ST_SetValue(
+                  ST_SetValue(
+                    ST_SetScale(ST_TestRasterNgb(3, 3, 1), 5), 1, 1, 2450
+                  ), 2, 1, 2461
+                ), 3, 1, 2483
+              ), 1, 2, 2452
+            ), 2, 2, 2461
+          ), 3, 2, 2483
+        ), 1, 3, 2447
+      ), 2, 3, 2455
+    ), 3, 3, 2477
+  ) AS rast;
+
