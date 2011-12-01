@@ -7792,8 +7792,15 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			j++;
 		}
 
-		if (j < n)
+		if (j < 1) {
+			j = numBands;
 			bandNums = repalloc(bandNums, sizeof(uint32_t) * j);
+			for (i = 0; i < j; i++)
+				bandNums[i] = i + 1;
+		}
+		else if (j < n)
+			bandNums = repalloc(bandNums, sizeof(uint32_t) * j);
+
 		bmd = (struct bandmetadata *) palloc(sizeof(struct bandmetadata) * j);
 
 		for (i = 0; i < j; i++) {

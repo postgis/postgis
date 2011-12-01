@@ -7,3 +7,8 @@ NOTICE:  Invalid band index: 6. Indices must be 1-based. Returning NULL
 1|t|1.000|f|
 2|t|2.000|f|
 5|t|5.000|f|
+1|t|1.000|f|
+2|t|2.000|f|
+3|t|3.000|f|
+4|t|4.000|f|
+5|t|5.000|f|
