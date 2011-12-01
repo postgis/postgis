@@ -649,7 +649,7 @@ SELECT AddGeometryColumn('', 'gtest','geom',-1,'LINESTRING',2);</programlisting>
 VALUES (
   1, 
   'First Geometry', 
-  GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1)
+  ST_GeomFromText('LINESTRING(2 3,4 5,6 5,7 8)', -1)
 );</programlisting>
 
           <para>For more information about other GIS objects, see the <link
@@ -690,7 +690,7 @@ VALUES (
           much much faster.</para>
 
           <para>You will also make use of spatial functions, such as
-          Distance(), ST_Intersects(), ST_Contains() and ST_Within(), 
+          ST_Distance(), ST_Intersects(), ST_Contains() and ST_Within(), 
           among others, to
           narrow down the results of your search. Most spatial queries include
           both an indexed test and a spatial function test. The index test
@@ -701,7 +701,7 @@ VALUES (
           <programlisting>SELECT id, the_geom 
 FROM thetable 
 WHERE 
-  the_geom &amp;&amp; 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))' 
+  the_geom &amp;&amp; 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry 
 AND
   _ST_Contains(the_geom,'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))');</programlisting>
         </answer>
@@ -919,7 +919,7 @@ geometry = GeometryFromText(text WKT, SRID);</programlisting>
         OGC spatial object would be:</para>
 
         <programlisting>INSERT INTO geotable ( the_geom, the_name )
-  VALUES ( GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
+  VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');</programlisting>
       </sect2>
 
       <sect2>
@@ -1559,7 +1559,8 @@ COMMIT;</programlisting>
         <title>Using SQL</title>
 
         <para>The most straightforward means of pulling data out of the
-        database is to use a SQL select query and dump the resulting columns
+        database is to use a SQL select query to reduce the number of RECORDS and COLUMNS returned
+        and dump the resulting columns
         into a parsable text file:</para>
 
         <programlisting>db=# SELECT road_id, AsText(road_geom) AS geom, road_name FROM roads; 
@@ -1619,7 +1620,7 @@ road_id | geom                                    | road_name
 
         <programlisting>SELECT road_id, road_name 
   FROM roads 
-  WHERE roads_geom ~= GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
+  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
 
         <para>The above query would return the single record from the
         &quot;ROADS_GEOM&quot; table in which the geometry was equal to that
@@ -1632,7 +1633,7 @@ road_id | geom                                    | road_name
 
         <programlisting>SELECT road_id, road_name 
 FROM roads 
-WHERE roads_geom &amp;&amp; GeomFromText('POLYGON((...))',-1);</programlisting>
+WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',-1);</programlisting>
 
         <para>The above query will use the bounding box of the polygon for
         comparison purposes.</para>
@@ -1899,7 +1900,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 
         <programlisting>SELECT the_geom 
 FROM geom_table 
-WHERE ST_Distance(the_geom, GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
 
         <para>This query is selecting all the geometries in geom_table which
         are within 100 units of the point (100000, 200000). It will be slow
@@ -1913,7 +1914,7 @@ WHERE ST_Distance(the_geom, GeomFromText('POINT(100000 200000)', -1)) &lt; 100</
 FROM geom_table 
 WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d 
   AND
-ST_Distance(the_geom, GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
 
         <para>This query selects the same geometries, but it does it in a more
         efficient way. Assuming there is a GiST index on the_geom, the query
@@ -5310,7 +5311,7 @@ z' = z </programlisting> This method is a subcase of
               <para>This function returns a bounding box expanded in all
               directions from the bounding box of the input geometry, by an
               amount specified in the second argument. Very useful for
-              distance() queries, to add an index filter to the query.</para>
+              ST_Distance() queries, to add an index filter to the query.</para>
             </listitem>
           </varlistentry>
 
@@ -6604,7 +6605,7 @@ z' = z </programlisting> This method is a subcase of
         <sect3>
           <title>Bug fixes / correctness</title>
 
-          <para>BUGFIX in distance(poly,poly) giving wrong results.</para>
+          <para>BUGFIX in ST_Distance(poly,poly) giving wrong results.</para>
 
           <para>BUGFIX in pgsql2shp successful return code.</para>
 
@@ -7098,7 +7099,7 @@ z' = z </programlisting> This method is a subcase of
 
           <para>More robust selectivity estimator</para>
 
-          <para>Minor speedup in distance()</para>
+          <para>Minor speedup in ST_Distance()</para>
 
           <para>Minor cleanups</para>
 
