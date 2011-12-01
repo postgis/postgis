@@ -210,6 +210,7 @@ SELECT name, abbrev, false
 -- Actual lookups/geocoder helpers
 \i geocode/geocode_address.sql
 \i geocode/geocode_location.sql
+\i geocode/geocode_intersection.sql
 -- Geocode API, called by user
 \i geocode/geocode.sql
 
