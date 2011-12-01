@@ -1822,9 +1822,10 @@ COMMIT;</programlisting>
 	<sect2>
 	  <title>Using SQL</title>
 
-	  <para>The most straightforward means of pulling data out of the database
-	  is to use a SQL select query and dump the resulting columns into a
-	  parsable text file:</para>
+	  <para>The most straightforward means of pulling data out of the
+        database is to use a SQL select query to reduce the number of RECORDS and COLUMNS returned
+        and dump the resulting columns
+        into a parsable text file:</para>
 
 	  <programlisting>db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;
 
@@ -1882,7 +1883,7 @@ road_id | geom                                    | road_name
 
 	  <programlisting>SELECT road_id, road_name
   FROM roads
-  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
+  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)');</programlisting>
 
 	  <para>The above query would return the single record from the
 	  "ROADS_GEOM" table in which the geometry was equal to that value.</para>
@@ -1894,7 +1895,7 @@ road_id | geom                                    | road_name
 
 	  <programlisting>SELECT road_id, road_name
 FROM roads
-WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',-1);</programlisting>
+WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))');</programlisting>
 
 	  <para>The above query will use the bounding box of the polygon for
 	  comparison purposes.</para>
@@ -2161,7 +2162,7 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 
 	  <programlisting>SELECT the_geom
 FROM geom_table
-WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)')) &lt; 100</programlisting>
 
 	  <para>This query is selecting all the geometries in geom_table which are
 	  within 100 units of the point (100000, 200000). It will be slow because
@@ -2174,7 +2175,7 @@ WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 10
 FROM geom_table
 WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
   AND
-ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)')) &lt; 100</programlisting>
 
 	  <para>This query selects the same geometries, but it does it in a more
 	  efficient way. Assuming there is a GiST index on the_geom, the query
