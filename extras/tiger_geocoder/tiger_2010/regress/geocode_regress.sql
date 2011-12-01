@@ -94,4 +94,8 @@ SELECT '#1145b' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(S
 SELECT '#1145c' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '4057 10th Ave S Minneapolis MN 55406'::text As target) As f) As foo; 
 SELECT '#1145d' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target,2) As g, target FROM (SELECT '8512 141 St Ct Apple Valley MN 55124'::text As target) As f) As foo; 
 SELECT '#1145e' As ticket, pprint_addy((g).addy) As address, target, ST_AsText(ST_SnapToGrid((g).geomout, 0.00001)) As pt, (g).rating FROM (SELECT geocode(target) As g, target FROM (SELECT '103 36th St W Minneapolis MN 55409'::text As target) As f) As foo;
+
+SELECT '#1333a' AS ticket, pprint_addy(addy), st_astext(geomout),rating FROM geocode_intersection('Weld', 'School', 'MA', 'Boston');
+SELECT '#1333b' AS ticket, pprint_addy(addy), st_astext(geomout),rating FROM geocode_intersection('Haverford St','Germania St', 'MA', 'Boston', '02130',1);
+--
 \timing

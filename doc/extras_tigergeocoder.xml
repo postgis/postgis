@@ -306,6 +306,71 @@ Total query runtime: 245 ms.
 	  </refsection>
 	</refentry>
 	
+	<refentry id="Geocode_Intersection">
+	  <refnamediv>
+		<refname>Geocode_Intersection</refname>
+
+		<refpurpose>Takes in 2 streets that intersect and a state, city, zip,  and outputs a set of possible locations on the first cross street that is at the intersection, also includes a point geometry in NAD 83 long lat, a normalized address for each location, and the rating.  The lower the rating the more likely the match.  
+			Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>setof record <function>geocode</function></funcdef>
+			<paramdef><type>text </type> <parameter> roadway1</parameter></paramdef>
+			<paramdef><type>text </type> <parameter> roadway2</parameter></paramdef>
+			<paramdef><type>text </type> <parameter> in_state</parameter></paramdef>
+			<paramdef><type choice='opt'>text </type> <parameter> in_city</parameter></paramdef>
+			<paramdef><type choice='opt'>text </type> <parameter> in_zip</parameter></paramdef>
+			<paramdef><type choice='opt'>integer </type> <parameter>max_results=10</parameter></paramdef>
+			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
+			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
+			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Takes in 2 streets that intersect and a state, city, zip,  and outputs a set of possible locations on the first cross street that is at the intersection, also includes a point geometry in NAD 83 long lat, a normalized address for each location, and the rating.  The lower the rating the more likely the match.  
+			Results are sorted by lowest rating first. Can optionally pass in maximum results, defaults to 10.
+			Returns <varname>normalized_address</varname> (addy) for each, geomout as the point location in nad 83 long lat, and the rating.  The lower the rating the more likely the match.  
+			Results are sorted by lowest rating first.  Uses Tiger data (edges,faces,addr), PostgreSQL fuzzy string matching (soundex,levenshtein) </para>
+
+		<para>Availability: 2.0.0</para>
+		
+	  </refsection>
+
+
+	  <refsection>
+		<title>Examples: Basic</title>
+		<para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of MA state Tiger data loaded.</para>
+		<para>Currently a bit slow (3000 ms)</para>
+		<programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating 
+			FROM geocode_intersection( 'Haverford St','Germania St', 'MA', 'Boston', '02130',1); 
+           pprint_addy            |         st_astext          | rating
+----------------------------------+----------------------------+--------
+98 Haverford St, Boston, MA 02130 | POINT(-71.101375 42.31376) |      0
+</programlisting>
+		<para>Even if zip is not passed in the geocoder can guess (took about 3500 ms)</para>
+		<programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating 
+				FROM geocode_intersection('Weld', 'School', 'MA', 'Boston');
+          pprint_addy          |        st_astext         | rating
+-------------------------------+--------------------------+--------
+ 98 Weld Ave, Boston, MA 02119 | POINT(-71.099 42.314234) |      3
+ 99 Weld Ave, Boston, MA 02119 | POINT(-71.099 42.314234) |      3
+</programlisting>     
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Geocode" />,<xref linkend="Pprint_Addy" />,<xref linkend="ST_AsText"/></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="Install_Missing_Indexes">
 	  <refnamediv>
 		<refname>Install_Missing_Indexes</refname>
