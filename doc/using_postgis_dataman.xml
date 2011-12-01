@@ -1912,9 +1912,10 @@ COMMIT;</programlisting>
 	<sect2>
 	  <title>Using SQL</title>
 
-	  <para>The most straightforward means of pulling data out of the database
-	  is to use a SQL select query and dump the resulting columns into a
-	  parsable text file:</para>
+	  <para>The most straightforward means of pulling data out of the
+        database is to use a SQL select query to reduce the number of RECORDS and COLUMNS returned
+        and dump the resulting columns
+        into a parsable text file:</para>
 
 	  <programlisting>db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;
 
@@ -1968,11 +1969,12 @@ road_id | geom                                    | road_name
 	  <para>Next, you can use these operators in queries. Note that when
 	  specifying geometries and boxes on the SQL command line, you must
 	  explicitly turn the string representations into geometries by using the
-	  "GeomFromText()" function. So, for example:</para>
+	  "ST_GeomFromText()" function. The 312 is a fictitious spatial reference system that matches our data.  
+	  So, for example:</para>
 
 	  <programlisting>SELECT road_id, road_name
   FROM roads
-  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',-1);</programlisting>
+  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',312);</programlisting>
 
 	  <para>The above query would return the single record from the
 	  "ROADS_GEOM" table in which the geometry was equal to that value.</para>
@@ -1984,7 +1986,7 @@ road_id | geom                                    | road_name
 
 	  <programlisting>SELECT road_id, road_name
 FROM roads
-WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',-1);</programlisting>
+WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',312);</programlisting>
 
 	  <para>The above query will use the bounding box of the polygon for
 	  comparison purposes.</para>
@@ -1997,10 +1999,9 @@ WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',-1);</programlistin
 	  <programlisting>SELECT ST_AsText(roads_geom) AS geom
 FROM roads
 WHERE
-  roads_geom &amp;&amp; SetSRID('BOX3D(191232 243117,191232 243119)'::box3d,-1);</programlisting>
+  roads_geom &amp;&amp; ST_MakeEnvelope(191232, 243117,191232, 243119,312);</programlisting>
 
-	  <para>Note the use of the SRID, to specify the projection of the BOX3D.
-	  The value -1 is used to indicate no specified SRID.</para>
+	  <para>Note the use of the SRID 312, to specify the projection of the envelope.</para>
 	</sect2>
 
 	<sect2>
@@ -2249,7 +2250,14 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 	functionality is performing queries inside the database which would
 	ordinarily require desktop GIS functionality. Using PostGIS effectively
 	requires knowing what spatial functions are available, and ensuring that
-	appropriate indexes are in place to provide good performance.</para>
+	appropriate indexes are in place to provide good performance. The SRID of 312 used in these
+	examples is purely for demonstration.  You should be using a REAL SRID listed in the the spatial_ref_sys table
+	and one that matches the projection of your data.  If your data has no spatial reference system 
+	specified, you should be THINKING very thoughtfully why it doesn't and maybe it should.
+	If your reason is because you are modeling something that doesn't have a geographic spatial reference system defined such as the internals of a molecule
+	or a good location
+	on Mars to transport the human race in the event of a nuclear holocaust,
+	then simply leave out the SRID or make one up and insert it in the <varname>spatial_ref_sys</varname> table.</para>
 
 	<sect2>
 	  <title>Taking Advantage of Indexes</title>
@@ -2257,13 +2265,13 @@ SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);</programlisting></par
 	  <para>When constructing a query it is important to remember that only
 	  the bounding-box-based operators such as &amp;&amp; can take advantage
 	  of the GiST spatial index. Functions such as
-	  <varname>distance()</varname> cannot use the index to optimize their
+	  <varname>ST_Distance()</varname> cannot use the index to optimize their
 	  operation. For example, the following query would be quite slow on a
 	  large table:</para>
 
 	  <programlisting>SELECT the_geom
 FROM geom_table
-WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', 312)) &lt; 100</programlisting>
 
 	  <para>This query is selecting all the geometries in geom_table which are
 	  within 100 units of the point (100000, 200000). It will be slow because
@@ -2274,15 +2282,14 @@ WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 10
 
 	  <programlisting>SELECT the_geom
 FROM geom_table
-WHERE the_geom &amp;&amp; 'BOX3D(90900 190900, 100100 200100)'::box3d
-  AND
-ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', -1)) &lt; 100</programlisting>
+WHERE ST_DWithin(the_geom,  ST_MakeEnvelope(90900, 190900, 100100, 200100,312), 100)
+</programlisting>
 
 	  <para>This query selects the same geometries, but it does it in a more
 	  efficient way. Assuming there is a GiST index on the_geom, the query
 	  planner will recognize that it can use the index to reduce the number of
-	  rows before calculating the result of the <varname>distance()</varname>
-	  function. Notice that the <varname>BOX3D</varname> geometry which is
+	  rows before calculating the result of the <varname>ST_distance()</varname>
+	  function. Notice that the <varname>ST_MakeEnvelope</varname> geometry which is
 	  used in the &amp;&amp; operation is a 200 unit square box centered on
 	  the original point - this is our "query box". The &amp;&amp; operator
 	  uses the index to quickly reduce the result set down to only those
