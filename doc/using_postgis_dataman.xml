@@ -1947,10 +1947,10 @@ road_id | geom                                    | road_name
 		</varlistentry>
 
 		<varlistentry>
-		  <term>~=</term>
+		  <term>ST_OrderingEquals</term>
 
 		  <listitem>
-			<para>This operators tests whether two geometries are
+			<para>This tests whether two geometries are
 			geometrically identical. For example, if 'POLYGON((0 0,1 1,1 0,0
 			0))' is the same as 'POLYGON((0 0,1 1,1 0,0 0))' (it is).</para>
 		  </listitem>
@@ -1974,7 +1974,7 @@ road_id | geom                                    | road_name
 
 	  <programlisting>SELECT road_id, road_name
   FROM roads
-  WHERE roads_geom ~= ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',312);</programlisting>
+  WHERE ST_OrderingEquals(roads_geom , ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',312) ) ;</programlisting>
 
 	  <para>The above query would return the single record from the
 	  "ROADS_GEOM" table in which the geometry was equal to that value.</para>
