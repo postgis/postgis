@@ -1097,7 +1097,7 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 			<title>Description</title>
 
 			<para>The <varname>&lt;-&gt;</varname> operator returns distance between two points read from the spatial index for points (float precision).  For
-			other geometries it returns the distance from centroid of bounding box of geometries.  Useful for doing nearest neighbor approximate distance ordering.</para>
+			other geometries it returns the distance from centroid of bounding box of geometries.  Useful for doing nearest neighbor <emphasis>approximate</emphasis> distance ordering.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
@@ -1212,7 +1212,7 @@ Finally the hybrid:
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between two floating point bounding boxes read from the spatial index if available.   Useful for doing nearest neighbor approximate distance ordering.</para>
+			<para>The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between two floating point bounding boxes read from the spatial index if available.   Useful for doing nearest neighbor <emphasis>approximate</emphasis> distance ordering.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
