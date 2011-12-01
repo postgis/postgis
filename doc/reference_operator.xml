@@ -1096,13 +1096,13 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&lt;-&gt;</varname> operator returns squared distance between two points read from the spatial index for points.  For
-			other geometries it returns squared distance from centroid of bounding box of geometries.  Useful for doing nearest neighbor approximate distance ordering.</para>
+			<para>The <varname>&lt;-&gt;</varname> operator returns distance between two points read from the spatial index for points (float precision).  For
+			other geometries it returns the distance from centroid of bounding box of geometries.  Useful for doing nearest neighbor approximate distance ordering.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
-			  geometries.  It is different from other operators taht use spatial indexes in that the spatial index is only used when the operator
+			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
 			  is in the ORDER BY clause.</para></note>
-			<note><para>Index appears to only kick in with contants</para></note>
+			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
 
 			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
 			 	
@@ -1185,7 +1185,7 @@ Finally the hybrid:
 		  <refnamediv>
 			<refname>&lt;#&gt;</refname>
 
-			<refpurpose>Returns the distance between bounding box of 2 geometries.  For point / point checks it's same as distance.  Useful for doing distance ordering and nearest neighbor limits
+			<refpurpose>Returns the distance between bounding box of 2 geometries.  For point / point checks it's almost the same as distance (though may be different since the bounding box is at floating point accuracy and geometries are double precision).  Useful for doing distance ordering and nearest neighbor limits
 			using KNN gist functionality.</refpurpose>
 		  </refnamediv>
 
@@ -1212,12 +1212,12 @@ Finally the hybrid:
 		  <refsection>
 			<title>Description</title>
 
-			<para>The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between two bounding boxes read from the spatial index if available.   Useful for doing nearest neighbor approximate distance ordering.</para>
+			<para>The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between two floating point bounding boxes read from the spatial index if available.   Useful for doing nearest neighbor approximate distance ordering.</para>
 
 			<note><para>This operand will make use of any indexes that may be available on the
 			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
 			  is in the ORDER BY clause.</para></note>
-			<note><para>Index appears to only kick in with contants</para></note>
+			<note><para>Index only kicks in if one of the geometries is a constant e.g. ORDER BY (ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom)  instead of g1.geom &lt;#&gt;.</para></note>
 
 			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
 		
