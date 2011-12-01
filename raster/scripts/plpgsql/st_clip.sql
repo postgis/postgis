@@ -33,7 +33,20 @@ CREATE OR REPLACE FUNCTION ST_Clip(rast raster, x int, y int, width int, height 
     END;
     $$
     LANGUAGE 'plpgsql';
-
+-------------------------------------------------------------------
+-- ST_Clip
+-- Clip the values of a raster to the shape of a polygon.
+-- 
+-- rast   - raster to be clipped
+-- band   - limit the result to only one band
+-- geom   - geometry defining the she to clip the raster
+-- nodata - define (if there is none defined) or replace the raster nodata value with this value
+-- trimraster - limit the extent of the result to the extent of the geometry
+-- Todo:
+-- test point
+-- test line
+-- test polygon smaller than pixel
+-- test and optimize raster totally included in polygon 
 CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, nodata float8 DEFAULT null, trimraster boolean DEFAULT false) 
     RETURNS raster AS 
     $$
@@ -59,8 +72,8 @@ CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, nodata 
             bandstart := 1;
             bandend := numband;
         ELSEIF ST_HasNoBand(rast, band) THEN
-            bandstart := numband;
-            bandend := numband;
+            RAISE NOTICE 'Raster do not have band %. Returning null', band;
+            RETURN null;
         ELSE
             bandstart := band;
             bandend := band;
@@ -120,7 +133,7 @@ CREATE OR REPLACE FUNCTION ST_TestRaster(h integer, w integer, val float8)
     $$
     DECLARE
     BEGIN
-        RETURN ST_AddBand(ST_MakeEmptyRaster(h, w, 0, 0, 1, 1, 0, 0, 0), '32BF', val, -1);
+        RETURN ST_AddBand(ST_MakeEmptyRaster(h, w, 0, 0, 1, 1, 0, 0, 0), '32BF', val, 0);
     END;
     $$
     LANGUAGE 'plpgsql';
@@ -159,12 +172,20 @@ FROM ST_PixelAsPolygons(ST_SetBandNoDataValue(ST_Clip(ST_SetBandNoDataValue(ST_T
 SELECT ST_Numbands(ST_Clip(ST_AddBand(ST_TestRaster(10, 10, 2), '16BUI'::text, 4, 0), ST_Buffer(ST_MakePoint(8, 5), 4))) gv
 
 SELECT ST_AsBinary((gv).geom), (gv).val 
-FROM ST_PixelAsPolygons(ST_Clip(ST_AddBand(ST_TestRaster(10, 10, 2), '16BUI'::text, 4, 0), ST_Buffer(ST_MakePoint(8, 5), 4)), 2) gv
+FROM ST_PixelAsPolygons(ST_Clip(ST_AddBand(ST_TestRaster(10, 10, 2), '16BUI'::text, 4, 0), ST_Buffer(ST_MakePoint(8, 5), 4)), 1) gv
 
--- Test defaulting to min possible value
+-- Test defaulting to min possible value and band 1
 SELECT ST_AsBinary((gv).geom), (gv).val 
 FROM ST_PixelAsPolygons(ST_SetBandNoDataValue(ST_Clip(ST_SetBandNoDataValue(ST_TestRaster(10, 10, 2), null), ST_Buffer(ST_MakePoint(8, 5), 4)), null)) gv
 
--- Test defaulting to nodatavalue set by the first raster
+-- Test defaulting to nodatavalue set by the first raster and band 1
 SELECT ST_AsBinary((gv).geom), (gv).val 
 FROM ST_PixelAsPolygons(ST_SetBandNoDataValue(ST_Clip(ST_TestRaster(10, 10, 2), ST_Buffer(ST_MakePoint(8, 5), 4)), null)) gv
+
+-- Test when band number does not exist
+SELECT ST_AsBinary((gv).geom), (gv).val 
+FROM ST_PixelAsPolygons(ST_Clip(ST_TestRaster(10, 10, 2), 2, ST_Buffer(ST_MakePoint(8, 5), 4))) gv
+
+-- Test point -- bug. The produced raster does not have the same alignment
+SELECT ST_AsBinary((gv).geom), (gv).val 
+FROM ST_PixelAsPolygons(ST_Clip(ST_TestRaster(10, 10, 2), ST_MakePoint(8.5, 5.5))) gv
