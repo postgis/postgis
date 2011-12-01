@@ -1068,8 +1068,8 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 		  <refnamediv>
 			<refname>&lt;-&gt;</refname>
 
-			<refpurpose>Returns the distance between two points.  For point / point checks it's exact.  For other geometry types
-			the distance between the bounding box centroids is returned.  Useful for doing distance ordering and nearest neighbor limits
+			<refpurpose>Returns the distance between two points.  For point / point checks it uses floating point accuracy (as opposed to the double precision accuracy of the underlying point geometry).  For other geometry types
+			the distance between the floating point bounding box centroids is returned.  Useful for doing distance ordering and nearest neighbor limits
 			using KNN gist functionality.</refpurpose>
 		  </refnamediv>
 
