@@ -1,4 +1,4 @@
-﻿----------------------------------------------------------------------
+----------------------------------------------------------------------
 --
 -- $Id$
 --
@@ -7,45 +7,6 @@
 ----------------------------------------------------------------------
 
 -- Note: The functions provided in this script are in developement. Do not use.
-
--- Fix a bug in ST_HasNoBand
-CREATE OR REPLACE FUNCTION ST_HasNoBand(raster, int)
-    RETURNS boolean
-    AS 'SELECT $1 IS NULL OR ST_NumBands($1) < $2'
-    LANGUAGE 'SQL' IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION ST_MultiBandMapAlgebra(rast1 raster, 
-                                            rast2 raster, 
-                                            expression text, 
-                                            extentexpr text) 
-    RETURNS raster AS 
-    $$
-    DECLARE
-    numband int;
-    newrast raster;
-    pixeltype text;
-    nodataval float;
-    BEGIN
-        numband := ST_NumBands(rast1);
-        IF numband != ST_NumBands(rast2) THEN
-            RAISE EXCEPTION 'ST_MultiBandMapAlgebra: Rasters do not have the same number of band';
-        END IF;
-        newrast := ST_MakeEmptyRaster(rast1);
-        FOR b IN 1..numband LOOP
-            pixeltype := ST_BandPixelType(rast1, b);
-            nodataval := ST_BandNodataValue(rast1, b);
-            newrast := ST_AddBand(newrast, NULL, ST_MapAlgebraExpr(rast1, b, rast2, b, expression, pixeltype, extentexpr, nodataval), 1);
-        END LOOP;
-    END;
-    $$
-    LANGUAGE 'plpgsql';
-
-CREATE OR REPLACE FUNCTION MultiBandMapAlgebra4Union(rast1 raster, rast2 raster, expression text)
-    RETURNS raster 
-    AS $$
-        SELECT ST_MultiBandMapAlgebra($1, $2, $3, 'UNION');
-       $$
-    LANGUAGE 'SQL';
 
 DROP TYPE IF EXISTS rastexpr CASCADE;
 CREATE TYPE rastexpr AS (
