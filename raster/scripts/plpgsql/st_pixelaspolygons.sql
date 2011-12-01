@@ -1,4 +1,4 @@
-﻿----------------------------------------------------------------------
+----------------------------------------------------------------------
 --
 -- $Id$
 --
@@ -27,20 +27,22 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer)
         h integer;
         x integer;
         y integer;
-        numband int;
         result geomvalxy;
     BEGIN
-        SELECT ST_Width(rast), ST_Height(rast), ST_NumBands(rast)
-        INTO w, h, numband;
-        IF band < numband THEN
-            numband := band;
+        IF rast IS NOT NULL THEN
+            IF ST_HasNoBand(rast, band) THEN
+                RAISE NOTICE 'Raster do not have band %. Returning null', band;
+            ELSE
+                SELECT ST_Width(rast), ST_Height(rast)
+                INTO w, h;
+                FOR x IN 1..w LOOP
+                    FOR y IN 1..h LOOP
+                        SELECT ST_PixelAsPolygon(rast, band, x, y), ST_Value(rast, band, x, y), x, y INTO result;
+                        RETURN NEXT result;
+                    END LOOP;
+                END LOOP;
+            END IF;
         END IF;
-        FOR x IN 1..w LOOP
-             FOR y IN 1..h LOOP
-                 SELECT ST_PixelAsPolygon(rast, numband, x, y), ST_Value(rast, numband, x, y), x, y INTO result;
-            RETURN NEXT result;
-         END LOOP;
-        END LOOP;
         RETURN;
     END;
     $$
