@@ -49,7 +49,7 @@ topology_upgrade_20_minor.sql:  topology.sql
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 $< > $@
 
-topology.sql.in: sql/sqlmm.sql sql/populate.sql sql/polygonize.sql sql/gml.sql sql/query/getnodebypoint.sql sql/query/getedgebypoint.sql sql/query/getfacebypoint.sql sql/query/GetRingEdges.sql sql/manage/TopologySummary.sql sql/manage/CopyTopology.sql
+topology.sql.in: sql/sqlmm.sql sql/populate.sql sql/polygonize.sql sql/gml.sql sql/query/getnodebypoint.sql sql/query/getedgebypoint.sql sql/query/getfacebypoint.sql sql/query/GetRingEdges.sql sql/manage/TopologySummary.sql sql/manage/CopyTopology.sql sql/manage/ManageHelper.sql
 
 check: topology.sql
 	$(MAKE) -C test $@
