@@ -180,3 +180,8 @@ DROP FUNCTION IF EXISTS st_georeference(raster, text);
 
 -- function name change
 DROP FUNCTION IF EXISTS dumpaswktpolygons(raster, integer);
+
+-- no longer needed
+DROP TYPE IF EXISTS bandmetadata;
+-- signature changed
+DROP FUNCTION IF EXISTS st_bandmetadata(raster, VARIADIC int[]);
