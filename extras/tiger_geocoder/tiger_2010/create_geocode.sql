@@ -63,9 +63,9 @@ CREATE TYPE norm_addy AS (
 \i geocode/interpolate_from_address.sql
 -- Actual lookups/geocoder helpers
 \i geocode/geocode_address.sql
-\i geocode/geocode_intersection.sql
 \i geocode/geocode_location.sql
 -- Geocode API, called by user
+\i geocode/geocode_intersection.sql
 \i geocode/geocode.sql
 
 -- Reverse Geocode API, called by user
