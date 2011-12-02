@@ -26,7 +26,7 @@ DECLARE
 	var_cur_search_path text;
 BEGIN
 	SELECT reset_val INTO var_cur_search_path FROM pg_settings WHERE name = 'search_path';
-	IF var_cur_search_path LIKE '%' || quote_literal(a_schema_name) || '%' THEN
+	IF var_cur_search_path LIKE '%' || quote_ident(a_schema_name) || '%' THEN
 		var_result := a_schema_name || ' already in database search_path';
 	ELSE
 		EXECUTE 'ALTER DATABASE ' || current_database() || ' SET search_path = ' || var_cur_search_path || ', ' || quote_ident(a_schema_name); 
