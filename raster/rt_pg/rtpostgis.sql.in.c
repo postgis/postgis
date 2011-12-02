@@ -2088,20 +2088,16 @@ CREATE OR REPLACE FUNCTION st_bandpixeltype(rast raster, band integer DEFAULT 1)
     AS 'MODULE_PATHNAME','RASTER_getBandPixelTypeName'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE TYPE bandmetadata AS (
-	bandnum int,
-	pixeltype text,
-	hasnodata boolean,
-	nodatavalue double precision,
-	isoutdb boolean,
-	path text
-);
-
 CREATE OR REPLACE FUNCTION st_bandmetadata(
 	rast raster,
-	VARIADIC band int[]
+	VARIADIC band int[],
+	OUT bandnum int,
+	OUT pixeltype text,
+	OUT hasnodata boolean,
+	OUT nodatavalue double precision,
+	OUT isoutdb boolean,
+	OUT path text
 )
-	RETURNS SETOF bandmetadata
 	AS 'MODULE_PATHNAME','RASTER_bandmetadata'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
