@@ -47,20 +47,18 @@ BEGIN
     END IF;
     var_sql := '
     WITH 
-    	f1 AS (SELECT * FROM featnames 
+    	a1 AS (SELECT f.*, addr.fromhn, addr.tohn, addr.side , addr.zip
+    				FROM addr INNER JOIN (SELECT * FROM featnames 
     							WHERE statefp = $1 AND ( lower(name) = $2  ' ||
     							CASE WHEN length(var_na_road.streetName) > 5 THEN ' or   lower(fullname) LIKE $6 || ''%'' ' ELSE '' END || ')' 
-    							|| ') ,
-    	f2 AS (SELECT * FROM featnames 
-    							WHERE statefp = $1 AND ( lower(name) = $4 ' || 
-    							CASE WHEN length(var_na_inter1.streetName) > 5 THEN ' or lower(fullname) LIKE $7 || ''%'' ' ELSE '' END || ')' 
-    							|| ' ) ,
-    	a1 AS (SELECT f.*, addr.fromhn, addr.tohn, addr.side , addr.zip
-    				FROM addr INNER JOIN f1 AS f ON addr.tlid = f.tlid
+    							|| ')  AS f ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
     					WHERE addr.statefp = $1 AND addr.zip = ANY($5::text[]) 
     			  ),
         a2 AS (SELECT f.*, addr.fromhn, addr.tohn, addr.side , addr.zip
-    				FROM addr INNER JOIN f2 AS f ON addr.tlid = f.tlid
+    				FROM addr INNER JOIN (SELECT * FROM featnames 
+    							WHERE statefp = $1 AND ( lower(name) = $4 ' || 
+    							CASE WHEN length(var_na_inter1.streetName) > 5 THEN ' or lower(fullname) LIKE $7 || ''%'' ' ELSE '' END || ')' 
+    							|| ' )  AS f ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
     					WHERE addr.statefp = $1 AND addr.zip = ANY($5::text[]) 
     			  ),
     	 e1 AS (SELECT e.the_geom, e.tnidf, e.tnidt, a.*,
@@ -82,16 +80,13 @@ BEGIN
                                 e1.tohn END As address, e1.predirabrv As fedirp, COALESCE(e1.prequalabr || '' '','''' ) || e1.name As fename, 
                              COALESCE(e1.suftypabrv,e1.pretypabrv)  As fetype, e1.sufdirabrv AS fedirs, 
                                p.name As place, e1.zip,
-                             CASE WHEN ST_Intersects(ST_StartPoint(e1.the_geom), e2.the_geom) THEN
-                                ST_StartPoint(e1.the_geom)
-                            WHEN ST_Intersects(ST_EndPoint(e1.the_geom), e2.the_geom) THEN
-                                ST_EndPoint(e1.the_geom)
-                             ELSE ST_EndPoint(e1.the_geom) END AS geom ,   
+                             CASE WHEN e1.tnidf = e2.tnidf OR e1.tnidf = e2.tnidt THEN
+                                ST_StartPoint(ST_GeometryN(ST_Multi(e1.the_geom),1))
+                             ELSE ST_EndPoint(ST_GeometryN(ST_Multi(e1.the_geom),1)) END AS geom ,   
                                 CASE WHEN lower(p.name) = $3 THEN 0 ELSE 1 END 
                                 + levenshtein_ignore_case(e1.name || COALESCE('' '' || e1.sufqualabr, ''''),$2) +
                                 CASE WHEN e1.fullname = $6 THEN 0 ELSE levenshtein_ignore_case(e1.fullname, $6) END +
                                 + levenshtein_ignore_case(e2.name || COALESCE('' '' || e2.sufqualabr, ''''),$4)
-                                + CASE WHEN e2.tfid = e1.tfid THEN 0 ELSE 3 END
                                 AS a_rating  
                     FROM e1 
                             INNER JOIN e2 ON (

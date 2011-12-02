@@ -62,6 +62,17 @@ CREATE OR REPLACE FUNCTION missing_indexes_generate_script()
 RETURNS text AS
 $$
 SELECT array_to_string(ARRAY(
+-- create unique index on faces for tfid seems to perform better --
+SELECT 'CREATE UNIQUE INDEX uidx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(' || c.column_name || ');' As index
+FROM (SELECT table_name, table_schema  FROM 
+	information_schema.tables WHERE table_type = 'BASE TABLE') As t  INNER JOIN
+	(SELECT * FROM information_schema.columns WHERE column_name IN('tfid') ) AS c  
+		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
+		LEFT JOIN pg_catalog.pg_indexes i ON 
+			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
+				AND  indexname LIKE 'uidx%' || c.column_name || '%' ) 
+WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data') AND c.table_name LIKE '%faces'
+UNION ALL
 -- basic btree regular indexes
 SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || ' ON ' || c.table_schema || '.' || c.table_name || ' USING btree(' || c.column_name || ');' As index
 FROM (SELECT table_name, table_schema  FROM 
@@ -70,8 +81,8 @@ FROM (SELECT table_name, table_schema  FROM
 		ON (t.table_name = c.table_name AND t.table_schema = c.table_schema)
 		LEFT JOIN pg_catalog.pg_indexes i ON 
 			(i.tablename = c.table_name AND i.schemaname = c.table_schema 
-				AND  indexdef LIKE '%' || c.column_name || '%') 
-WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data')
+				AND  indexdef LIKE '%' || c.column_name || '%' ) 
+WHERE i.tablename IS NULL AND c.table_schema IN('tiger','tiger_data')  AND (NOT c.table_name LIKE '%faces')
 -- Gist spatial indexes --
 UNION ALL
 SELECT 'CREATE INDEX idx_' || c.table_schema || '_' || c.table_name || '_' || c.column_name || '_gist ON ' || c.table_schema || '.' || c.table_name || ' USING gist(' || c.column_name || ');' As index
