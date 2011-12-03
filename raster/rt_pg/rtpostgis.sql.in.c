@@ -2090,7 +2090,7 @@ CREATE OR REPLACE FUNCTION st_bandpixeltype(rast raster, band integer DEFAULT 1)
 
 CREATE OR REPLACE FUNCTION st_bandmetadata(
 	rast raster,
-	VARIADIC band int[],
+	band int[],
 	OUT bandnum int,
 	OUT pixeltype text,
 	OUT hasnodata boolean,
@@ -2110,7 +2110,7 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(
 	OUT isoutdb boolean,
 	OUT path text
 )
-	AS $$ SELECT pixeltype, hasnodata, nodatavalue, isoutdb, path FROM st_bandmetadata($1, VARIADIC ARRAY[$2]::int[]) LIMIT 1 $$
+	AS $$ SELECT pixeltype, hasnodata, nodatavalue, isoutdb, path FROM st_bandmetadata($1, ARRAY[$2]::int[]) LIMIT 1 $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------

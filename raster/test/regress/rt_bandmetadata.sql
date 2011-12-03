@@ -96,7 +96,7 @@ SELECT
 	path
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0, 5, TRUE),
-	1,2,5
+	ARRAY[1,2,5]
 );
 
 SELECT
@@ -108,7 +108,7 @@ SELECT
 	path
 FROM ST_BandMetaData(
 	make_test_raster(10, 10, 0, 0, 0, 0, 5, TRUE),
-	VARIADIC ARRAY[]::int[]
+	ARRAY[]::int[]
 );
 
 DROP FUNCTION IF EXISTS make_test_raster(
