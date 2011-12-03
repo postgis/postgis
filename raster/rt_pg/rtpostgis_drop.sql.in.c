@@ -181,7 +181,12 @@ DROP FUNCTION IF EXISTS st_georeference(raster, text);
 -- function name change
 DROP FUNCTION IF EXISTS dumpaswktpolygons(raster, integer);
 
--- no longer needed
-DROP TYPE IF EXISTS bandmetadata;
 -- signature changed
 DROP FUNCTION IF EXISTS st_bandmetadata(raster, VARIADIC int[]);
+--change to use default parameters
+DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster); 
+DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster,integer);
+
+-- no longer needed functions changed to use out parameters
+DROP TYPE IF EXISTS bandmetadata;
+DROP TYPE IF EXISTS geomvalxy;
