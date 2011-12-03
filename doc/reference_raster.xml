@@ -1719,6 +1719,141 @@ rid | numbands
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_PixelHeight">
+			<refnamediv>
+				<refname>ST_PixelHeight</refname>
+				<refpurpose>Returns the pixel height in geometric units of the spatial reference system</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>double precision <function>ST_PixelHeight</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the height of a pixel in geometric units of the spatial reference system. In the common case where 
+				there is no skew, the pixel height is just the scale ratio between geometric coordinates and raster pixels.</para>
+				<para>Refer to <xref linkend="RT_ST_PixelWidth" /> for a diagramatic visualization of the relationship. </para>
+			</refsection>
+			
+			<refsection>
+				<title>Examples: Rasters with no skew</title>
+			
+				<programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As Pixheight,
+ ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+        ST_SkewY(rast)
+FROM dummy_rast;
+
+ rastheight | pixheight | scalex | scaley | skewx | st_skewy
+------------+-----------+--------+--------+-------+----------
+         20 |         3 |      2 |      3 |     0 |        0
+          5 |      0.05 |   0.05 |  -0.05 |     0 |        0
+			</programlisting>
+		
+		</refsection>
+		
+		<refsection>
+				<title>Examples: Rasters with skew</title>
+			
+				<programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As Pixheight,
+ ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+        ST_SkewY(rast)
+FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast
+        FROM dummy_rast) As skewed;
+
+rastheight |     pixheight     | scalex | scaley | skewx | st_skewy
+-----------+-------------------+--------+--------+-------+----------
+        20 |  3.04138126514911 |      2 |      3 |   0.5 |      0.5
+         5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5
+			</programlisting>
+		
+		</refsection>
+	
+		<!-- Optionally add a "See Also" section -->
+		<refsection>
+			<title>See Also</title>
+			<para><xref linkend="RT_ST_PixelWidth" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_SkewX" />, 
+			<xref linkend="RT_ST_SkewY" /></para>
+		</refsection>
+	</refentry>
+		
+	<refentry id="RT_ST_PixelWidth">
+		<refnamediv>
+			<refname>ST_PixelWidth</refname>
+			<refpurpose>Returns the pixel width in geometric units of the spatial reference system</refpurpose>
+		</refnamediv>
+	
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>double precision <function>ST_PixelWidth</function></funcdef>
+				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+	
+		<refsection>
+			<title>Description</title>
+			
+			<para>Returns the width of a pixel in geometric units of the spatial reference system. In the common case where 
+			there is no skew, the pixel width is just the scale ratio between geometric coordinates and raster pixels.</para>
+			<para>The following diagram demonstrates the relationship:</para>
+			<informalfigure>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="images/raster_xscale_yscale_xskew_yskew.png" />
+					</imageobject>
+					<caption><para>Pixel Width: Pixel size in the i direction</para><para>Pixel Height: Pixel size in the j direction</para></caption>
+				</mediaobject>
+			</informalfigure>
+		</refsection>
+		
+		<refsection>
+			<title>Examples: Rasters with no skew</title>
+		
+			<programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As Pixwidth,
+	ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+	ST_SkewY(rast)
+	FROM dummy_rast;
+	
+	rastwidth | pixwidth | scalex | scaley | skewx | st_skewy
+	-----------+----------+--------+--------+-------+----------
+	10 |        2 |      2 |      3 |     0 |        0
+	 5 |     0.05 |   0.05 |  -0.05 |     0 |        0
+		</programlisting>
+	
+	</refsection>
+	
+	<refsection>
+			<title>Examples: Rasters with skew</title>
+		
+			<programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As Pixwidth,
+	ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+	ST_SkewY(rast)
+	FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast
+	FROM dummy_rast) As skewed;
+	
+	rastwidth |     pixwidth      | scalex | scaley | skewx | st_skewy
+	-----------+-------------------+--------+--------+-------+----------
+	10 |  2.06155281280883 |      2 |      3 |   0.5 |      0.5
+	 5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5
+		</programlisting>
+	
+	</refsection>
+	
+	<!-- Optionally add a "See Also" section -->
+	<refsection>
+		<title>See Also</title>
+		<para><xref linkend="RT_ST_PixelHeight" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_SkewX" />, <xref linkend="RT_ST_SkewY" /></para>
+	</refsection>
+	</refentry>
+		
 		<refentry id="RT_ST_ScaleX">
 			<refnamediv>
 				<refname>ST_ScaleX</refname>
