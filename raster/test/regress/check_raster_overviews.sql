@@ -12,6 +12,6 @@
 -----------------------------------------------------------------------
 
 -- Check table exists
-SELECT c.relname FROM pg_class c, pg_tables t
-  WHERE c.relname = t.tablename
-    AND t.tablename = 'raster_overviews'
+SELECT c.relname FROM pg_class c, pg_views v
+  WHERE c.relname = v.viewname
+    AND v.viewname = 'raster_overviews'

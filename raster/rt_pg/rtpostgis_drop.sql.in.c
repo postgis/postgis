@@ -7,6 +7,8 @@
 --
 -- Copyright (C) 2011 Regina Obe
 --   <lr@pcorp.us>
+-- Copyright (C) 2011 Regents of the University of California
+--   <bkpark@ucdavis.edu>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -20,6 +22,15 @@
 -- It will be used for both upgrade and uninstall
 -- Drop obsolete functions 
 -- (which fully obsolete, changed to take default args, or outp params changed) --
+
+-- drop aggregates
+DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision, text, text, text, double precision, text, text, text, double precision);
+DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text);
+DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision, text, text, text, double precision);
+DROP AGGREGATE IF EXISTS ST_Union(raster, text, text);
+DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision);
+DROP AGGREGATE IF EXISTS ST_Union(raster, text);
+DROP AGGREGATE IF EXISTS ST_Union(raster);
 
 DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, sample_percent double precision) ;
 DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean) ;
@@ -183,6 +194,7 @@ DROP FUNCTION IF EXISTS dumpaswktpolygons(raster, integer);
 
 -- signature changed
 DROP FUNCTION IF EXISTS st_bandmetadata(raster, VARIADIC int[]);
+
 --change to use default parameters
 DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster); 
 DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster,integer);
@@ -190,3 +202,39 @@ DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster,integer);
 -- no longer needed functions changed to use out parameters
 DROP TYPE IF EXISTS bandmetadata;
 DROP TYPE IF EXISTS geomvalxy;
+
+-- raster_columns and raster_overviews tables are deprecated
+DROP FUNCTION IF EXISTS _rename_raster_tables();
+CREATE OR REPLACE FUNCTION _rename_raster_tables()
+	RETURNS void AS $$
+	DECLARE
+		cnt int;
+	BEGIN
+		SELECT count(*) INTO cnt
+		FROM pg_class c
+		JOIN pg_namespace n
+			ON c.relnamespace = n.oid
+		WHERE c.relname = 'raster_columns'
+			AND c.relkind = 'r'::char
+			AND NOT pg_is_other_temp_schema(c.relnamespace);
+
+		IF cnt > 0 THEN
+			EXECUTE 'ALTER TABLE raster_columns RENAME TO deprecated_raster_columns';
+		END IF;
+
+		SELECT count(*) INTO cnt
+		FROM pg_class c
+		JOIN pg_namespace n
+			ON c.relnamespace = n.oid
+		WHERE c.relname = 'raster_overviews'
+			AND c.relkind = 'r'::char
+			AND NOT pg_is_other_temp_schema(c.relnamespace);
+
+		IF cnt > 0 THEN
+			EXECUTE 'ALTER TABLE raster_overviews RENAME TO deprecated_raster_overviews';
+		END IF;
+
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE;
+SELECT _rename_raster_tables();
+DROP FUNCTION IF EXISTS _rename_raster_tables();

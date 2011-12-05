@@ -22,7 +22,9 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
--- BEGIN;
+SET client_min_messages TO warning;
+
+BEGIN;
 
 ------------------------------------------------------------------------------
 -- RASTER Type
@@ -2479,7 +2481,6 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer DEFAULT 
     $$
     LANGUAGE 'plpgsql';
 
-
 -----------------------------------------------------------------------
 -- Raster Utility Functions
 -----------------------------------------------------------------------
@@ -3542,78 +3543,1379 @@ CREATE OR REPLACE FUNCTION ST_Clip(rast raster, geom geometry, trimraster boolea
     $$ LANGUAGE 'SQL';
 
 ------------------------------------------------------------------------------
--- RASTER_COLUMNS
+-- raster constraint functions
+-------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint(cn name, sql text)
+	RETURNS boolean AS $$
+	BEGIN
+		BEGIN
+			EXECUTE sql;
+		EXCEPTION
+			WHEN duplicate_object THEN
+				RAISE NOTICE 'The constraint "%" already exists.  To replace the existing constraint, delete the constraint and call ApplyRasterConstraints again', cn;
+			WHEN OTHERS THEN
+				RAISE NOTICE 'Unable to add constraint "%"', cn;
+				RETURN FALSE;
+		END;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint(rastschema name, rasttable name, cn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		BEGIN
+			EXECUTE 'ALTER TABLE '
+				|| fqtn
+				|| ' DROP CONSTRAINT '
+				|| quote_ident(cn);
+			RETURN TRUE;
+		EXCEPTION
+			WHEN undefined_object THEN
+				RAISE NOTICE 'The constraint "%" does not exist.  Skipping', cn;
+			WHEN OTHERS THEN
+				RAISE NOTICE 'Unable to drop constraint "%"', cn;
+				RETURN FALSE;
+		END;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_srid(rastschema name, rasttable name, rastcolumn name)
+	RETURNS integer AS $$
+	SELECT
+		replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%st_srid(% = %';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_srid(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr int;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_srid_' || $3;
+
+		sql := 'SELECT st_srid('
+			|| quote_ident($3)
+			|| ') FROM ' || fqtn
+			|| ' LIMIT 1';
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the SRID of a sample raster';
+			RETURN FALSE;
+		END;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (st_srid('
+			|| quote_ident($3)
+			|| ') = ' || attr || ')';
+
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_srid(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_srid_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_scale(rastschema name, rasttable name, rastcolumn name, axis char)
+	RETURNS double precision AS $$
+	SELECT
+		replace(replace(split_part(split_part(s.consrc, ' = ', 2), '::', 1), ')', ''), '(', '')::double precision
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%st_scale' || $4 || '(% = %';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttable name, rastcolumn name, axis char)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr double precision;
+	BEGIN
+		IF lower($4) != 'x' AND lower($4) != 'y' THEN
+			RAISE EXCEPTION 'axis must be either "x" or "y"';
+			RETURN FALSE;
+		END IF;
+
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_scale' || $4 || '_' || $3;
+
+		sql := 'SELECT st_scale' || $4 || '('
+			|| quote_ident($3)
+			|| ') FROM '
+			|| fqtn
+			|| ' LIMIT 1';
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the %-scale of a sample raster', upper($4);
+			RETURN FALSE;
+		END;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (st_scale' || $4 || '('
+			|| quote_ident($3)
+			|| ') = ' || attr || ')';
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_scale(rastschema name, rasttable name, rastcolumn name, axis char)
+	RETURNS boolean AS $$
+	BEGIN
+		IF lower($4) != 'x' AND lower($4) != 'y' THEN
+			RAISE EXCEPTION 'axis must be either "x" or "y"';
+			RETURN FALSE;
+		END IF;
+
+		RETURN _drop_raster_constraint($1, $2, 'enforce_scale' || $4 || '_' || $3);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, rasttable name, rastcolumn name, axis text)
+	RETURNS integer AS $$
+	SELECT
+		replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%st_' || $4 || '(% = %';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_blocksize(rastschema name, rasttable name, rastcolumn name, axis text)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr int;
+	BEGIN
+		IF lower($4) != 'width' AND lower($4) != 'height' THEN
+			RAISE EXCEPTION 'axis must be either "width" or "height"';
+			RETURN FALSE;
+		END IF;
+
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_' || $4 || '_' || $3;
+
+		sql := 'SELECT st_' || $4 || '('
+			|| quote_ident($3)
+			|| ') FROM ' || fqtn
+			|| ' LIMIT 1';
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the % of a sample raster', $4;
+			RETURN FALSE;
+		END;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (st_' || $4 || '('
+			|| quote_ident($3)
+			|| ') = ' || attr || ')';
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_blocksize(rastschema name, rasttable name, rastcolumn name, axis text)
+	RETURNS boolean AS $$
+	BEGIN
+		IF lower($4) != 'width' AND lower($4) != 'height' THEN
+			RAISE EXCEPTION 'axis must be either "width" or "height"';
+			RETURN FALSE;
+		END IF;
+
+		RETURN _drop_raster_constraint($1, $2, 'enforce_' || $4 || '_' || $3);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_extent(rastschema name, rasttable name, rastcolumn name)
+	RETURNS geometry AS $$
+	SELECT
+		trim(both '''' from split_part(trim(split_part(s.consrc, ',', 2)), '::', 1))::geometry
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%st_coveredby(st_convexhull(%';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr text;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_max_extent_' || $3;
+
+		sql := 'SELECT st_ashexewkb(st_convexhull(st_collect(st_convexhull('
+			|| quote_ident($3)
+			|| ')))) FROM '
+			|| fqtn;
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the extent of a sample raster';
+			RETURN FALSE;
+		END;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (st_coveredby(st_convexhull('
+			|| quote_ident($3)
+			|| '), ''' || attr || '''::geometry))';
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_extent(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_max_extent_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_alignment(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	SELECT
+		TRUE
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%st_samealignment(%';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_alignment(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr text;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_same_alignment_' || $3;
+
+		sql := 'SELECT st_makeemptyraster(1, 1, upperleftx, upperlefty, scalex, scaley, skewx, skewy, srid) FROM st_metadata((SELECT '
+			|| quote_ident($3)
+			|| ' FROM ' || fqtn || ' LIMIT 1))';
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the alignment of a sample raster';
+			RETURN FALSE;
+		END;
+
+		sql := 'ALTER TABLE ' || fqtn ||
+			' ADD CONSTRAINT ' || quote_ident(cn) ||
+			' CHECK (st_samealignment(' || quote_ident($3) || ', ''' || attr || '''::raster))';
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_alignment(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_same_alignment_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_regular_blocking(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		cn text;
+		sql text;
+		rtn boolean;
+	BEGIN
+		cn := 'enforce_regular_blocking_' || $3;
+
+		sql := 'SELECT TRUE FROM pg_class c, pg_namespace n, pg_constraint s'
+			|| ' WHERE n.nspname = ' || quote_literal($1)
+			|| ' AND c.relname = ' || quote_literal($2)
+			|| ' AND s.connamespace = n.oid AND s.conrelid = c.oid'
+			|| ' AND s.conname = ' || quote_literal(cn);
+		EXECUTE sql INTO rtn;
+		RETURN rtn;
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_regular_blocking(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+	BEGIN
+
+		RAISE INFO 'The regular_blocking constraint is just a flag indicating that the column "%" is regularly blocked.  It is up to the end-user to ensure that the column is truely regularly blocked.', quote_ident($3);
+
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_regular_blocking_' || $3;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (TRUE)';
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_regular_blocking(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_regular_blocking_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_num_bands(rastschema name, rasttable name, rastcolumn name)
+	RETURNS integer AS $$
+	SELECT
+		replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%st_numbands(%';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_num_bands(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr int;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_num_bands_' || $3;
+
+		sql := 'SELECT st_numbands(' || quote_ident($3)
+			|| ') FROM ' || fqtn
+			|| ' LIMIT 1';
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the number of bands of a sample raster';
+			RETURN FALSE;
+		END;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (st_numbands(' || quote_ident($3)
+			|| ') = ' || attr
+			|| ')';
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_num_bands(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_num_bands_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_pixel_types(rastschema name, rasttable name, rastcolumn name)
+	RETURNS text[] AS $$
+	SELECT
+		trim(both '''' from split_part(replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', ''), '::', 1))::text[]
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%_raster_constraint_pixel_types(%';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_pixel_types(rast raster)
+	RETURNS text[] AS
+	$$ SELECT array_agg(pixeltype)::text[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_pixel_types(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr text[];
+		max int;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_pixel_types_' || $3;
+
+		sql := 'SELECT _raster_constraint_pixel_types(' || quote_ident($3)
+			|| ') FROM ' || fqtn
+			|| ' LIMIT 1';
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the pixel types of a sample raster';
+			RETURN FALSE;
+		END;
+		max := array_length(attr, 1);
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (_raster_constraint_pixel_types(' || quote_ident($3)
+			|| ') = ''{';
+		FOR x in 1..max LOOP
+			sql := sql || '"' || attr[x] || '"';
+			IF x < max THEN
+				sql := sql || ',';
+			END IF;
+		END LOOP;
+		sql := sql || '}''::text[])';
+
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_pixel_types(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_pixel_types_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name, rasttable name, rastcolumn name)
+	RETURNS double precision[] AS $$
+	SELECT
+		trim(both '''' from split_part(replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', ''), '::', 1))::double precision[]
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%_raster_constraint_nodata_values(%';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_nodata_values(rast raster)
+	RETURNS double precision[] AS
+	$$ SELECT array_agg(nodatavalue)::double precision[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr double precision[];
+		max int;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_nodata_values_' || $3;
+
+		sql := 'SELECT _raster_constraint_nodata_values(' || quote_ident($3)
+			|| ') FROM ' || fqtn
+			|| ' LIMIT 1';
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the nodata values of a sample raster';
+			RETURN FALSE;
+		END;
+		max := array_length(attr, 1);
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (_raster_constraint_nodata_values(' || quote_ident($3)
+			|| ') = ''{';
+		FOR x in 1..max LOOP
+			sql := sql || attr[x];
+			IF x < max THEN
+				sql := sql || ',';
+			END IF;
+		END LOOP;
+		sql := sql || '}''::double precision[])';
+
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_nodata_values(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_nodata_values_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+------------------------------------------------------------------------------
+-- AddRasterConstraints
+------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION AddRasterConstraints (
+	rastschema name,
+	rasttable name,
+	rastcolumn name,
+	VARIADIC constraints text[]
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		max int;
+		cnt int;
+		sql text;
+		schema name;
+		x int;
+		kw text;
+		rtn boolean;
+	BEGIN
+		cnt := 0;
+		max := array_length(constraints, 1);
+		IF max < 1 THEN
+			RAISE NOTICE 'No constraints indicated to be added.  Doing nothing';
+			RETURN TRUE;
+		END IF;
+
+		-- validate schema
+		schema := NULL;
+		IF length($1) > 0 THEN
+			sql := 'SELECT nspname FROM pg_namespace '
+				|| 'WHERE nspname = ' || quote_literal($1)
+				|| 'LIMIT 1';
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The value provided for schema is invalid';
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		IF schema IS NULL THEN
+			sql := 'SELECT n.nspname AS schemaname '
+				|| 'FROM pg_catalog.pg_class c '
+				|| 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
+				|| 'WHERE c.relkind = ' || quote_literal('r')
+				|| ' AND n.nspname NOT IN (' || quote_literal('pg_catalog')
+				|| ', ' || quote_literal('pg_toast')
+				|| ') AND pg_catalog.pg_table_is_visible(c.oid)'
+				|| ' AND c.relname = ' || quote_literal($2);
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal($2);
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		<<kwloop>>
+		FOR x in 1..max LOOP
+			kw := trim(both from lower(constraints[x]));
+
+			BEGIN
+				CASE
+					WHEN kw = 'srid' THEN
+						rtn := _add_raster_constraint_srid(schema, $2, $3);
+					WHEN kw = 'scale_x' OR kw = 'scalex' THEN
+						rtn := _add_raster_constraint_scale(schema, $2, $3, 'x');
+					WHEN kw = 'scale_y' OR kw = 'scaley' THEN
+						rtn := _add_raster_constraint_scale(schema, $2, $3, 'y');
+					WHEN kw = 'scale' THEN
+						rtn := _add_raster_constraint_scale(schema, $2, $3, 'x');
+						rtn := _add_raster_constraint_scale(schema, $2, $3, 'y');
+					WHEN kw = 'blocksize_x' OR kw = 'blocksizex' OR kw = 'width' THEN
+						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'width');
+					WHEN kw = 'blocksize_y' OR kw = 'blocksizey' OR kw = 'height' THEN
+						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'height');
+					WHEN kw = 'blocksize' THEN
+						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'width');
+						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'height');
+					WHEN kw = 'same_alignment' OR kw = 'samealignment' OR kw = 'alignment' THEN
+						rtn := _add_raster_constraint_alignment(schema, $2, $3);
+					WHEN kw = 'regular_blocking' OR kw = 'regularblocking' THEN
+						rtn := _add_raster_constraint_regular_blocking(schema, $2, $3);
+					WHEN kw = 'num_bands' OR kw = 'numbands' THEN
+						rtn := _add_raster_constraint_num_bands(schema, $2, $3);
+					WHEN kw = 'pixel_types' OR kw = 'pixeltypes' THEN
+						rtn := _add_raster_constraint_pixel_types(schema, $2, $3);
+					WHEN kw = 'nodata_values' OR kw = 'nodatavalues' OR kw = 'nodata' THEN
+						rtn := _add_raster_constraint_nodata_values(schema, $2, $3);
+					WHEN kw = 'extent' THEN
+						rtn := _add_raster_constraint_extent(schema, $2, $3);
+					ELSE
+						RAISE NOTICE 'Unknown constraint: %.  Skipping', quote_literal(constraints[x]);
+						CONTINUE kwloop;
+				END CASE;
+			END;
+
+			IF rtn IS FALSE THEN
+				cnt := cnt + 1;
+				RAISE WARNING 'Unable to add constraint: %.  Skipping', quote_literal(constraints[x]);
+			END IF;
+
+		END LOOP kwloop;
+
+		IF cnt = max THEN
+			RAISE EXCEPTION 'None of the constraints specified could be added.  Is the schema name, table name or column name incorrect?';
+			RETURN FALSE;
+		END IF;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION AddRasterConstraints (
+	rasttable name,
+	rastcolumn name,
+	VARIADIC constraints text[]
+)
+	RETURNS boolean AS
+	$$ SELECT AddRasterConstraints('', $1, $2, VARIADIC $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION AddRasterConstraints (
+	rastschema name,
+	rasttable name,
+	rastcolumn name,
+	srid boolean DEFAULT TRUE,
+	scale_x boolean DEFAULT TRUE,
+	scale_y boolean DEFAULT TRUE,
+	blocksize_x boolean DEFAULT TRUE,
+	blocksize_y boolean DEFAULT TRUE,
+	same_alignment boolean DEFAULT TRUE,
+	regular_blocking boolean DEFAULT FALSE, -- false as regular_blocking is not a usable constraint
+	num_bands boolean DEFAULT TRUE,
+	pixel_types boolean DEFAULT TRUE,
+	nodata_values boolean DEFAULT TRUE,
+	extent boolean DEFAULT TRUE
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		constraints text[];
+	BEGIN
+		IF srid IS TRUE THEN
+			constraints := constraints || 'srid'::text;
+		END IF;
+
+		IF scale_x IS TRUE THEN
+			constraints := constraints || 'scale_x'::text;
+		END IF;
+
+		IF scale_y IS TRUE THEN
+			constraints := constraints || 'scale_y'::text;
+		END IF;
+
+		IF blocksize_x IS TRUE THEN
+			constraints := constraints || 'blocksize_x'::text;
+		END IF;
+
+		IF blocksize_y IS TRUE THEN
+			constraints := constraints || 'blocksize_y'::text;
+		END IF;
+
+		IF same_alignment IS TRUE THEN
+			constraints := constraints || 'same_alignment'::text;
+		END IF;
+
+		IF regular_blocking IS TRUE THEN
+			constraints := constraints || 'regular_blocking'::text;
+		END IF;
+
+		IF num_bands IS TRUE THEN
+			constraints := constraints || 'num_bands'::text;
+		END IF;
+
+		IF pixel_types IS TRUE THEN
+			constraints := constraints || 'pixel_types'::text;
+		END IF;
+
+		IF nodata_values IS TRUE THEN
+			constraints := constraints || 'nodata_values'::text;
+		END IF;
+
+		IF extent IS TRUE THEN
+			constraints := constraints || 'extent'::text;
+		END IF;
+
+		RETURN AddRasterConstraints($1, $2, $3, VARIADIC constraints);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION AddRasterConstraints (
+	rasttable name,
+	rastcolumn name,
+	srid boolean DEFAULT TRUE,
+	scale_x boolean DEFAULT TRUE,
+	scale_y boolean DEFAULT TRUE,
+	blocksize_x boolean DEFAULT TRUE,
+	blocksize_y boolean DEFAULT TRUE,
+	same_alignment boolean DEFAULT TRUE,
+	regular_blocking boolean DEFAULT FALSE, -- false as regular_blocking is not a usable constraint
+	num_bands boolean DEFAULT TRUE,
+	pixel_types boolean DEFAULT TRUE,
+	nodata_values boolean DEFAULT TRUE,
+	extent boolean DEFAULT TRUE
+)
+	RETURNS boolean AS
+	$$ SELECT AddRasterConstraints('', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+------------------------------------------------------------------------------
+-- DropRasterConstraints
+------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION DropRasterConstraints (
+	rastschema name,
+	rasttable name,
+	rastcolumn name,
+	VARIADIC constraints text[]
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		max int;
+		x int;
+		schema name;
+		sql text;
+		kw text;
+		rtn boolean;
+		cnt int;
+	BEGIN
+		cnt := 0;
+		max := array_length(constraints, 1);
+		IF max < 1 THEN
+			RAISE NOTICE 'No constraints indicated to be dropped.  Doing nothing';
+			RETURN TRUE;
+		END IF;
+
+		-- validate schema
+		schema := NULL;
+		IF length($1) > 0 THEN
+			sql := 'SELECT nspname FROM pg_namespace '
+				|| 'WHERE nspname = ' || quote_literal($1)
+				|| 'LIMIT 1';
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The value provided for schema is invalid';
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		IF schema IS NULL THEN
+			sql := 'SELECT n.nspname AS schemaname '
+				|| 'FROM pg_catalog.pg_class c '
+				|| 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
+				|| 'WHERE c.relkind = ' || quote_literal('r')
+				|| ' AND n.nspname NOT IN (' || quote_literal('pg_catalog')
+				|| ', ' || quote_literal('pg_toast')
+				|| ') AND pg_catalog.pg_table_is_visible(c.oid)'
+				|| ' AND c.relname = ' || quote_literal($2);
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal($2);
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		<<kwloop>>
+		FOR x in 1..max LOOP
+			kw := trim(both from lower(constraints[x]));
+
+			BEGIN
+				CASE
+					WHEN kw = 'srid' THEN
+						rtn := _drop_raster_constraint_srid(schema, $2, $3);
+					WHEN kw = 'scale_x' OR kw = 'scalex' THEN
+						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'x');
+					WHEN kw = 'scale_y' OR kw = 'scaley' THEN
+						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'y');
+					WHEN kw = 'scale' THEN
+						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'x');
+						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'y');
+					WHEN kw = 'blocksize_x' OR kw = 'blocksizex' OR kw = 'width' THEN
+						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'width');
+					WHEN kw = 'blocksize_y' OR kw = 'blocksizey' OR kw = 'height' THEN
+						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'height');
+					WHEN kw = 'blocksize' THEN
+						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'width');
+						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'height');
+					WHEN kw = 'same_alignment' OR kw = 'samealignment' OR kw = 'alignment' THEN
+						rtn := _drop_raster_constraint_alignment(schema, $2, $3);
+					WHEN kw = 'regular_blocking' OR kw = 'regularblocking' THEN
+						rtn := _drop_raster_constraint_regular_blocking(schema, $2, $3);
+					WHEN kw = 'num_bands' OR kw = 'numbands' THEN
+						rtn := _drop_raster_constraint_num_bands(schema, $2, $3);
+					WHEN kw = 'pixel_types' OR kw = 'pixeltypes' THEN
+						rtn := _drop_raster_constraint_pixel_types(schema, $2, $3);
+					WHEN kw = 'nodata_values' OR kw = 'nodatavalues' OR kw = 'nodata' THEN
+						rtn := _drop_raster_constraint_nodata_values(schema, $2, $3);
+					WHEN kw = 'extent' THEN
+						rtn := _drop_raster_constraint_extent(schema, $2, $3);
+					ELSE
+						RAISE NOTICE 'Unknown constraint: %.  Skipping', quote_literal(constraints[x]);
+						CONTINUE kwloop;
+				END CASE;
+			END;
+
+			IF rtn IS FALSE THEN
+				cnt := cnt + 1;
+				RAISE WARNING 'Unable to drop constraint: %.  Skipping', quote_literal(constraints[x]);
+			END IF;
+
+		END LOOP kwloop;
+
+		IF cnt = max THEN
+			RAISE EXCEPTION 'None of the constraints specified could be dropped.  Is the schema name, table name or column name incorrect?';
+			RETURN FALSE;
+		END IF;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION DropRasterConstraints (
+	rasttable name,
+	rastcolumn name,
+	VARIADIC constraints text[]
+)
+	RETURNS boolean AS
+	$$ SELECT DropRasterConstraints('', $1, $2, VARIADIC $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION DropRasterConstraints (
+	rastschema name,
+	rasttable name,
+	rastcolumn name,
+	srid boolean DEFAULT TRUE,
+	scale_x boolean DEFAULT TRUE,
+	scale_y boolean DEFAULT TRUE,
+	blocksize_x boolean DEFAULT TRUE,
+	blocksize_y boolean DEFAULT TRUE,
+	same_alignment boolean DEFAULT TRUE,
+	regular_blocking boolean DEFAULT TRUE,
+	num_bands boolean DEFAULT TRUE,
+	pixel_types boolean DEFAULT TRUE,
+	nodata_values boolean DEFAULT TRUE,
+	extent boolean DEFAULT TRUE
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		constraints text[];
+	BEGIN
+		IF srid IS TRUE THEN
+			constraints := constraints || 'srid'::text;
+		END IF;
+
+		IF scale_x IS TRUE THEN
+			constraints := constraints || 'scale_x'::text;
+		END IF;
+
+		IF scale_y IS TRUE THEN
+			constraints := constraints || 'scale_y'::text;
+		END IF;
+
+		IF blocksize_x IS TRUE THEN
+			constraints := constraints || 'blocksize_x'::text;
+		END IF;
+
+		IF blocksize_y IS TRUE THEN
+			constraints := constraints || 'blocksize_y'::text;
+		END IF;
+
+		IF same_alignment IS TRUE THEN
+			constraints := constraints || 'same_alignment'::text;
+		END IF;
+
+		IF regular_blocking IS TRUE THEN
+			constraints := constraints || 'regular_blocking'::text;
+		END IF;
+
+		IF num_bands IS TRUE THEN
+			constraints := constraints || 'num_bands'::text;
+		END IF;
+
+		IF pixel_types IS TRUE THEN
+			constraints := constraints || 'pixel_types'::text;
+		END IF;
+
+		IF nodata_values IS TRUE THEN
+			constraints := constraints || 'nodata_values'::text;
+		END IF;
+
+		IF extent IS TRUE THEN
+			constraints := constraints || 'extent'::text;
+		END IF;
+
+		RETURN DropRasterConstraints($1, $2, $3, VARIADIC constraints);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION DropRasterConstraints (
+	rasttable name,
+	rastcolumn name,
+	srid boolean DEFAULT TRUE,
+	scale_x boolean DEFAULT TRUE,
+	scale_y boolean DEFAULT TRUE,
+	blocksize_x boolean DEFAULT TRUE,
+	blocksize_y boolean DEFAULT TRUE,
+	same_alignment boolean DEFAULT TRUE,
+	regular_blocking boolean DEFAULT TRUE,
+	num_bands boolean DEFAULT TRUE,
+	pixel_types boolean DEFAULT TRUE,
+	nodata_values boolean DEFAULT TRUE,
+	extent boolean DEFAULT TRUE
+)
+	RETURNS boolean AS
+	$$ SELECT DropRasterConstraints('', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+------------------------------------------------------------------------------
+-- raster_columns
 --
 -- The metadata is documented in the PostGIS Raster specification:
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster/SpecificationFinal01
 ------------------------------------------------------------------------------
-CREATE TABLE raster_columns (
-	r_table_catalog varchar(256) not null,
-	r_table_schema varchar(256) not null,
-	r_table_name varchar(256) not null,
-	r_column varchar(256) not null,
-	srid integer not null,
-	pixel_types varchar[] not null,
-	out_db boolean not null,
-	regular_blocking boolean not null,
-	nodata_values double precision[],
-	scale_x double precision,
-	scale_y double precision,
-	blocksize_x integer,
-	blocksize_y integer,
-	extent geometry,
 
-	CONSTRAINT raster_columns_pk PRIMARY KEY (
-		r_table_catalog,
-		r_table_schema,
-		r_table_name,
-		r_column
-	)
+CREATE OR REPLACE VIEW raster_columns AS
+	SELECT
+		current_database() AS r_table_catalog,
+		n.nspname AS r_table_schema,
+		c.relname AS r_table_name,
+		a.attname AS r_raster_column,
+		COALESCE(_raster_constraint_info_srid(n.nspname, c.relname, a.attname), (SELECT ST_SRID('POINT(0 0)'::geometry))) AS srid,
+		_raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'x') AS scale_x,
+		_raster_constraint_info_scale(n.nspname, c.relname, a.attname, 'y') AS scale_y,
+		_raster_constraint_info_blocksize(n.nspname, c.relname, a.attname, 'width') AS blocksize_x,
+		_raster_constraint_info_blocksize(n.nspname, c.relname, a.attname, 'height') AS blocksize_y,
+		COALESCE(_raster_constraint_info_alignment(n.nspname, c.relname, a.attname), FALSE) AS same_alignment,
+		COALESCE(_raster_constraint_info_regular_blocking(n.nspname, c.relname, a.attname), FALSE) AS regular_blocking,
+		_raster_constraint_info_num_bands(n.nspname, c.relname, a.attname) AS num_bands,
+		_raster_constraint_info_pixel_types(n.nspname, c.relname, a.attname) AS pixel_types,
+		_raster_constraint_info_nodata_values(n.nspname, c.relname, a.attname) AS nodata_values,
+		_raster_constraint_info_extent(n.nspname, c.relname, a.attname) AS extent
+	FROM
+		pg_class c,
+		pg_attribute a,
+		pg_type t,
+		pg_namespace n
+	WHERE t.typname = 'raster'::name
+		AND a.attisdropped = false
+		AND a.atttypid = t.oid
+		AND a.attrelid = c.oid
+		AND c.relnamespace = n.oid
+		AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+		AND NOT pg_is_other_temp_schema(c.relnamespace);
+
+------------------------------------------------------------------------------
+-- overview constraint functions
+-------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _overview_constraint(ov raster, factor integer, refschema name, reftable name, refcolumn name)
+	RETURNS boolean AS
+	$$ SELECT COALESCE((SELECT TRUE FROM raster_columns WHERE r_table_catalog = current_database() AND r_table_schema = $3 AND r_table_name = $4 AND r_raster_column = $5), FALSE) $$
+	LANGUAGE 'sql' STABLE
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _overview_constraint_info(
+	ovschema name, ovtable name, ovcolumn name,
+	OUT refschema name, OUT reftable name, OUT refcolumn name, OUT factor integer
 )
-	WITHOUT OIDS;
+	AS $$
+	SELECT
+		split_part(split_part(s.consrc, '''::name', 1), '''', 2)::name,
+		split_part(split_part(s.consrc, '''::name', 2), '''', 2)::name,
+		split_part(split_part(s.consrc, '''::name', 3), '''', 2)::name,
+		trim(both from split_part(s.consrc, ',', 2))::integer
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%_overview_constraint(%'
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_overview_constraint(
+	ovschema name, ovtable name, ovcolumn name,
+	refschema name, reftable name, refcolumn name,
+	factor integer
+)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_overview_' || $3;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (_overview_constraint(' || quote_ident($3)
+			|| ',' || $7
+			|| ',' || quote_literal($4)
+			|| ',' || quote_literal($5)
+			|| ',' || quote_literal($6)
+			|| '))';
+
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_overview_constraint(ovschema name, ovtable name, ovcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_overview_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
 
 ------------------------------------------------------------------------------
 -- RASTER_OVERVIEWS
 ------------------------------------------------------------------------------
-CREATE TABLE raster_overviews (
-	o_table_catalog character varying(256) NOT NULL,
-	o_table_schema character varying(256) NOT NULL,
-	o_table_name character varying(256) NOT NULL,
-	o_column character varying(256) NOT NULL,
-	r_table_catalog character varying(256) NOT NULL,
-	r_table_schema character varying(256) NOT NULL,
-	r_table_name character varying(256) NOT NULL,
-	r_column character varying(256) NOT NULL,
-	out_db boolean NOT NULL,
-	overview_factor integer NOT NULL,
 
-	CONSTRAINT raster_overviews_pk PRIMARY KEY (
-		o_table_catalog,
-		o_table_schema,
-		o_table_name,
-		o_column, overview_factor
-	)
+CREATE OR REPLACE VIEW raster_overviews AS
+	SELECT
+		current_database() AS o_table_catalog,
+		n.nspname AS o_table_schema,
+		c.relname AS o_table_name,
+		a.attname AS o_raster_column,
+		current_database() AS r_table_catalog,
+		split_part(split_part(s.consrc, '''::name', 1), '''', 2)::name AS r_table_schema,
+		split_part(split_part(s.consrc, '''::name', 2), '''', 2)::name AS r_table_name,
+		split_part(split_part(s.consrc, '''::name', 3), '''', 2)::name AS r_raster_column,
+		trim(both from split_part(s.consrc, ',', 2))::integer AS overview_factor
+	FROM
+		pg_class c,
+		pg_attribute a,
+		pg_type t,
+		pg_namespace n,
+		pg_constraint s
+	WHERE t.typname = 'raster'::name
+		AND a.attisdropped = false
+		AND a.atttypid = t.oid
+		AND a.attrelid = c.oid
+		AND c.relnamespace = n.oid
+		AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND s.consrc LIKE '%_overview_constraint(%'
+		AND NOT pg_is_other_temp_schema(c.relnamespace);
+
+------------------------------------------------------------------------------
+-- AddOverviewConstraints
+------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION AddOverviewConstraints (
+	ovschema name, ovtable name, ovcolumn name,
+	refschema name, reftable name, refcolumn name,
+	ovfactor int
 )
-	WITHOUT OIDS;
+	RETURNS boolean
+	AS $$
+	DECLARE
+		x int;
+		s name;
+		t name;
+		oschema name;
+		rschema name;
+		sql text;
+		rtn boolean;
+	BEGIN
+		FOR x IN 1..2 LOOP
+			s := '';
+
+			IF x = 1 THEN
+				s := $1;
+				t := $2;
+			ELSE
+				s := $4;
+				t := $5;
+			END IF;
+
+			-- validate user-provided schema
+			IF length(s) > 0 THEN
+				sql := 'SELECT nspname FROM pg_namespace '
+					|| 'WHERE nspname = ' || quote_literal(s)
+					|| 'LIMIT 1';
+				EXECUTE sql INTO s;
+
+				IF s IS NULL THEN
+					RAISE EXCEPTION 'The value % is not a valid schema', quote_literal(s);
+					RETURN FALSE;
+				END IF;
+			END IF;
+
+			-- no schema, determine what it could be using the table
+			IF length(s) < 1 THEN
+				sql := 'SELECT n.nspname AS schemaname '
+					|| 'FROM pg_catalog.pg_class c '
+					|| 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
+					|| 'WHERE c.relkind = ' || quote_literal('r')
+					|| ' AND n.nspname NOT IN (' || quote_literal('pg_catalog')
+					|| ', ' || quote_literal('pg_toast')
+					|| ') AND pg_catalog.pg_table_is_visible(c.oid)'
+					|| ' AND c.relname = ' || quote_literal(t);
+				EXECUTE sql INTO s;
+
+				IF s IS NULL THEN
+					RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal(t);
+					RETURN FALSE;
+				END IF;
+			END IF;
+
+			IF x = 1 THEN
+				oschema := s;
+			ELSE
+				rschema := s;
+			END IF;
+		END LOOP;
+
+		-- reference raster
+		rtn := _add_overview_constraint(oschema, $2, $3, rschema, $5, $6, 7);
+		IF rtn IS FALSE THEN
+			RAISE EXCEPTION 'Unable to add the overview constraint.  Is the schema name, table name or column name incorrect?';
+			RETURN FALSE;
+		END IF;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION AddOverviewConstraints (
+	ovtable name, ovcolumn name,
+	reftable name, refcolumn name,
+	ovfactor int
+)
+	RETURNS boolean
+	AS $$ SELECT AddOverviewConstraints('', $1, $2, '', $3, $4, $5) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
+------------------------------------------------------------------------------
+-- DropOverviewConstraints
+------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION DropOverviewConstraints (
+	ovschema name,
+	ovtable name,
+	ovcolumn name
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		schema name;
+		sql text;
+		rtn boolean;
+	BEGIN
+		-- validate schema
+		schema := NULL;
+		IF length($1) > 0 THEN
+			sql := 'SELECT nspname FROM pg_namespace '
+				|| 'WHERE nspname = ' || quote_literal($1)
+				|| 'LIMIT 1';
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The value provided for schema is invalid';
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		IF schema IS NULL THEN
+			sql := 'SELECT n.nspname AS schemaname '
+				|| 'FROM pg_catalog.pg_class c '
+				|| 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
+				|| 'WHERE c.relkind = ' || quote_literal('r')
+				|| ' AND n.nspname NOT IN (' || quote_literal('pg_catalog')
+				|| ', ' || quote_literal('pg_toast')
+				|| ') AND pg_catalog.pg_table_is_visible(c.oid)'
+				|| ' AND c.relname = ' || quote_literal($2);
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal($2);
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		rtn := _drop_overview_constraint(schema, $2, $3);
+		IF rtn IS FALSE THEN
+			RAISE EXCEPTION 'Unable to drop the overview constraint .  Is the schema name, table name or column name incorrect?';
+			RETURN FALSE;
+		END IF;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION DropOverviewConstraints (
+	ovtable name,
+	ovcolumn name
+)
+	RETURNS boolean
+	AS $$ SELECT DropOverviewConstraints('', $1, $2) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
 
 ------------------------------------------------------------------------------
 -- AddRasterColumn
--------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
-                                           p_schema_name varchar,
-                                           p_table_name varchar,
-                                           p_column_name varchar,
-                                           p_srid integer,
-                                           p_pixel_types varchar[],
-                                           p_out_db boolean,
-                                           p_regular_blocking boolean,
-                                           p_nodata_values double precision[],
-                                           p_scale_x double precision,
-                                           p_scale_y double precision,
-                                           p_blocksize_x integer,
-                                           p_blocksize_y integer,
-                                           p_extent geometry)
-
+------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION AddRasterColumn(
+	p_catalog_name varchar,
+	p_schema_name varchar,
+	p_table_name varchar,
+	p_column_name varchar,
+	p_srid integer,
+	p_pixel_types varchar[],
+	p_out_db boolean,
+	p_regular_blocking boolean,
+	p_nodata_values double precision[],
+	p_scale_x double precision,
+	p_scale_y double precision,
+	p_blocksize_x integer,
+	p_blocksize_y integer,
+	p_extent geometry
+)
     RETURNS text AS
     $$
     DECLARE
@@ -3628,10 +4930,7 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
 
     BEGIN
 
-		/*
-        RAISE DEBUG 'Parameters: catalog=%, schema=%, table=%, column=%, srid=%, pixel_types=%, out_db=%, regular_blocking=%, nodata_values=%, scale_x=%, scale_y=%, blocksize_x=%, blocksize_y=%',
-                     p_catalog_name, p_schema_name, p_table_name, p_column_name, p_srid, p_pixel_types, p_out_db, p_regular_blocking, p_nodata_values, p_scale_x, p_scale_y, p_blocksize_x, p_blocksize_y;
-		*/
+			RAISE NOTICE 'The set of AddRasterColumn functions are deprecated as the table raster_columns is now a view.  This function will still continue to add the specified raster column to the specified table.  To apply constraints, use AddRasterConstraints after loading the raster column with data';
 
         -- Validate required parametersa and combinations
         IF ( (p_catalog_name IS NULL) OR (p_schema_name IS NULL)
@@ -3639,129 +4938,6 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             RAISE EXCEPTION 'Name of catalog, schema, table or column IS NULL, value expected';
             RETURN 'fail';
         END IF;
-
-        IF ( p_srid IS NULL ) THEN
-            RAISE EXCEPTION 'SRID IS NULL, value expected';
-            RETURN 'fail';
-        END IF;
-
-        IF ( p_pixel_types IS NULL ) THEN
-            RAISE EXCEPTION 'Array of pixel types IS NULL, value expected';
-            RETURN 'fail';
-        END IF;
-
-        IF ( p_out_db IS NULL ) THEN
-            RAISE EXCEPTION 'out_db IS NULL, value expected';
-            RETURN 'fail';
-        END IF;
-
-        IF ( p_regular_blocking IS NULL ) THEN
-            RAISE EXCEPTION 'regular_blocking IS NULL, value expected';
-            RETURN 'fail';
-        END IF;
-
-        IF ( p_regular_blocking = true ) THEN
-           IF ( p_blocksize_x IS NULL or p_blocksize_y IS NULL ) THEN
-               RAISE EXCEPTION 'blocksize_x/blocksize_y IS NULL, value expected if regular_blocking is TRUE';
-               RETURN 'fail';
-           END IF;
-        ELSE
-           IF ( p_blocksize_x IS NOT NULL or p_blocksize_y IS NOT NULL ) THEN
-               RAISE EXCEPTION 'blocksize_x/blocksize_y values given, but regular_blocking is FALSE';
-               RETURN 'fail';
-           END IF;
-        END IF;
-
-
-        -- Verify SRID
-        IF ( (p_srid != 0) AND (p_srid != -1) ) THEN
-            SELECT SRID INTO srid_into FROM spatial_ref_sys WHERE SRID = p_srid;
-            IF NOT FOUND THEN
-                RAISE EXCEPTION 'Invalid SRID';
-                RETURN 'fail';
-            END IF;
-            --RAISE DEBUG 'Verified SRID = %', p_srid;
-        END IF;
-
-
-        -- Verify PIXEL TYPE
-        -- TODO: If only PostgreSQL 8.2+ supported, use @> operator instead of brute-force lookup
-        --       SELECT p_pixel_types <@ pixel_types INTO pixel_types_found_into; -- boolean
-        pixel_types := ARRAY['1BB','2BUI','4BUI','8BSI','8BUI','16BSI','16BUI','32BSI','32BUI','16BF','32BF','64BF'];
-
-        FOR npti IN array_lower(p_pixel_types, 1) .. array_upper(p_pixel_types, 1) LOOP
-
-            pixel_types_found := 0;
-            FOR pti IN array_lower(pixel_types, 1) .. array_upper(pixel_types, 1) LOOP
-                IF p_pixel_types[npti] = pixel_types[pti] THEN
-                    pixel_types_found := 1;
-                    --RAISE DEBUG 'Identified pixel type %', p_pixel_types[npti];
-                END IF;
-            END LOOP;
-
-            IF pixel_types_found = 0 THEN
-                RAISE EXCEPTION 'Invalid pixel type % - valid ones are %', p_pixel_types[npti], pixel_types;
-                RETURN 'fail';
-            END IF;
-
-            pixel_types_size := pixel_types_size + 1;
-        END LOOP;
-
-        -- Verify nodata
-        -- TODO: Validate if nodata values matche range of corresponding pixel types
-        nodata_values_size := 1 + array_upper(p_nodata_values, 1) - array_lower(p_nodata_values, 1);
-        IF ( pixel_types_size != nodata_values_size ) THEN
-            RAISE EXCEPTION 'Number of pixel types (%) and nodata values (%) do not match',
-                            pixel_types_size, nodata_values_size;
-            RETURN 'fail';
-        END IF;
-
-
-        -- Verify extent geometry
-        IF ( p_extent IS NOT NULL ) THEN
-
-            -- Verify POLYGON type
-            SELECT GeometryType(p_extent) INTO geometry_op_into;
-            IF ( NOT ( geometry_op_into = 'POLYGON' ) ) THEN
-                RAISE EXCEPTION 'extent is of invalid type (%), expected simple and non-rotated POLYGON', geometry_op_into;
-                RETURN 'fail';
-            END IF;
-
-            -- Verify SRID
-            SELECT ST_SRID(p_extent) INTO srid_into;
-            IF ( p_srid != srid_into::integer ) THEN
-                RAISE EXCEPTION 'SRID values for raster (%) and extent (%) do not match', p_srid, srid_into;
-                RETURN 'fail';
-            END IF;
-        END IF;
-
-
-        -- Verify regular_blocking
-        IF ( p_regular_blocking = true ) THEN
-
-            IF ( p_blocksize_x IS NULL or p_blocksize_y IS NULL ) THEN
-                RAISE EXCEPTION 'unexpected NULL for blocksize_x or blocksize_y';
-                RETURN 'fail';
-            END IF;
-
-            -- Verify extent is non-rotated rectangle
-            IF ( p_extent IS NOT NULL ) THEN
-                -- TODO: Replace with bounding box overlapping test (&&)
-                SELECT ST_Equals(p_extent, ST_Envelope(p_extent)) INTO geometry_op_into;
-                IF ( NOT ( geometry_op_into = 't' ) ) THEN
-                    RAISE EXCEPTION 'extent does not represent non-rotated rectangle';
-                    RETURN 'fail';
-                END IF;
-            END IF;
-
-            -- TODO: Set number of constraints on target table:
-            --       - all tiles have the same size (blocksize_x and blocksize_y)
-            --       - all tiles do not overlap
-            --       - all tiles appear on the regular block grid
-            --       - top left block start at the top left corner of the extent
-        END IF;
-
-
 
         -- Verify SCHEMA
         IF ( p_schema_name IS NOT NULL AND p_schema_name != '' ) THEN
@@ -3797,64 +4973,12 @@ CREATE OR REPLACE FUNCTION AddRasterColumn(p_catalog_name varchar,
             END IF;
         END IF;
 
-
         -- Add raster column to target table
         sql := 'ALTER TABLE '
             || quote_ident(real_schema) || '.' || quote_ident(p_table_name)
             || ' ADD COLUMN ' || quote_ident(p_column_name) ||  ' raster ';
         --RAISE DEBUG '%', sql;
         EXECUTE sql;
-
-
-        -- Delete stale record in RASTER_COLUMNS (if any)
-        sql := 'DELETE FROM raster_columns '
-            || ' WHERE r_table_catalog = ' || quote_literal('')
-            || ' AND r_table_schema = ' || quote_literal(real_schema)
-            || ' AND r_table_name = ' || quote_literal(p_table_name)
-            || ' AND r_column = ' || quote_literal(p_column_name);
-        --RAISE DEBUG '%', sql;
-        EXECUTE sql;
-
-
-        -- Add record in RASTER_COLUMNS
-        sql := 'INSERT INTO raster_columns '
-            || '(r_table_catalog, r_table_schema, r_table_name, r_column, srid, '
-            || 'pixel_types, out_db, regular_blocking, nodata_values, '
-            || 'scale_x, scale_y, blocksize_x, blocksize_y, extent) '
-            || 'VALUES ('
-            || quote_literal('') || ','
-            || quote_literal(real_schema) || ','
-            || quote_literal(p_table_name) || ','
-            || quote_literal(p_column_name) || ','
-            || p_srid::text || ','
-            || quote_literal(p_pixel_types::text) || ','
-            || p_out_db::text || ','
-            || p_regular_blocking::text || ','
-            || COALESCE(quote_literal(p_nodata_values::text), 'NULL') || ','
-            || COALESCE(quote_literal(p_scale_x), 'NULL') || ','
-            || COALESCE(quote_literal(p_scale_y), 'NULL') || ','
-            || COALESCE(quote_literal(p_blocksize_x), 'NULL') || ','
-            || COALESCE(quote_literal(p_blocksize_y), 'NULL') || ','
-            || COALESCE(quote_literal(p_extent::text), 'NULL') || ')';
-        --RAISE DEBUG '%', sql;
-        EXECUTE sql;
-
-
-        -- Add CHECK for SRID
-        sql := 'ALTER TABLE '
-            || quote_ident(real_schema) || '.' || quote_ident(p_table_name)
-            || ' ADD CONSTRAINT '
-            || quote_ident('enforce_srid_' || p_column_name)
-            || ' CHECK (ST_SRID(' || quote_ident(p_column_name)
-            || ') = ' || p_srid::text || ')';
-        --RAISE DEBUG '%', sql;
-        EXECUTE sql;
-
-
-        -- TODO: Add more CHECKs
-        -- - Add CHECK for pixel types
-        -- - Add CHECK for scale
-        -- - Do we need CHECK for nodata values?
 
 
         RETURN p_schema_name || '.' || p_table_name || '.' || p_column_name
@@ -3945,6 +5069,8 @@ CREATE OR REPLACE FUNCTION DropRasterColumn(catalog_name varchar,
         real_schema name;
         okay boolean;
     BEGIN
+			RAISE NOTICE 'The set of DropRasterColumn functions are deprecated as the table raster_columns is now a view.  This function will still continue to drop the specified raster column and related constraints from the specified table.  To drop a raster column, use the function DropRasterConstraints and call ALTER TABLE ... DROP COLUMN';
+
         -- Find, check or fix schema_name
         IF ( schema_name != '' ) THEN
             okay = 'f';
@@ -3966,7 +5092,7 @@ CREATE OR REPLACE FUNCTION DropRasterColumn(catalog_name varchar,
         -- Find out if the column is in the raster_columns table
         okay = 'f';
         FOR myrec IN SELECT * FROM raster_columns WHERE r_table_schema = text(real_schema)
-                     AND r_table_name = table_name AND r_column = column_name LOOP
+                     AND r_table_name = table_name AND r_raster_column = column_name LOOP
             okay := 't';
         END LOOP;
         IF (okay <> 't') THEN
@@ -3974,11 +5100,8 @@ CREATE OR REPLACE FUNCTION DropRasterColumn(catalog_name varchar,
             RETURN 'f';
         END IF;
 
-        -- Remove ref from raster_columns table
-        EXECUTE 'DELETE FROM raster_columns WHERE r_table_schema = '
-                || quote_literal(real_schema) || ' AND r_table_name = '
-                || quote_literal(table_name)  || ' AND r_column = '
-                || quote_literal(column_name);
+				-- Remove column constraints
+				EXECUTE 'SELECT DropRasterConstraints(' || quote_literal(real_schema) || ',' || quote_literal(table_name) || ',' || quote_literal(column_name) || ')';
 
         -- Remove table column
         EXECUTE 'ALTER TABLE ' || quote_ident(real_schema) || '.'
@@ -4036,16 +5159,13 @@ CREATE OR REPLACE FUNCTION DropRasterTable(catalog_name varchar,
     DECLARE
         real_schema name;
     BEGIN
+			RAISE NOTICE 'The set of DropRasterTable functions are deprecated as the table raster_columns is now a view.  This function will still continue to drop the specified table.  To drop a table, use DROP TABLE';
+
         IF ( schema_name = '' ) THEN
             SELECT current_schema() into real_schema;
         ELSE
             real_schema = schema_name;
         END IF;
-
-        -- Remove refs from raster_columns table
-        EXECUTE 'DELETE FROM raster_columns WHERE '
-                || 'r_table_schema = ' || quote_literal(real_schema)
-                || ' AND ' || ' r_table_name = ' || quote_literal(table_name);
 
         -- Remove table
         EXECUTE 'DROP TABLE ' || quote_ident(real_schema) || '.'
@@ -4094,4 +5214,4 @@ CREATE OR REPLACE FUNCTION DropRasterTable(table_name varchar)
 --  END
 -------------------------------------------------------------------
 
--- COMMIT;
+COMMIT;
