@@ -2154,8 +2154,6 @@ rt_band_get_histogram(rt_bandstats stats,
 
 	for (i = 0; i < bin_count; i++) {
 		bins[i].percent = ((double) bins[i].count) / sum;
-		if (bin_width_count > 1)
-			bins[i].percent /= (bins[i].max - bins[i].min);
 	}
 
 #if POSTGIS_DEBUG_LEVEL > 0
