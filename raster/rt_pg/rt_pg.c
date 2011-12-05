@@ -2294,70 +2294,71 @@ Datum RASTER_addband(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_copyband);
 Datum RASTER_copyband(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster = NULL;
-    rt_raster torast = NULL;
-    rt_raster fromrast = NULL;
-    int toindex = 0;
-    int fromband = 0;
-    int oldtorastnumbands = 0;
-    int newtorastnumbands = 0;
-    int newbandindex = 0;
+	rt_pgraster *pgraster = NULL;
+	rt_raster torast = NULL;
+	rt_raster fromrast = NULL;
+	int toindex = 0;
+	int fromband = 0;
+	int oldtorastnumbands = 0;
+	int newtorastnumbands = 0;
+	int newbandindex = 0;
 
-    /* Deserialize torast */
-		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	/* Deserialize torast */
+	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-    torast = rt_raster_deserialize(pgraster, FALSE);
-    if ( ! torast ) {
-        elog(ERROR, "RASTER_copyband: Could not deserialize first raster");
-        PG_RETURN_NULL();
-    }
+	torast = rt_raster_deserialize(pgraster, FALSE);
+	if (!torast) {
+		elog(ERROR, "RASTER_copyband: Could not deserialize first raster");
+		PG_RETURN_NULL();
+	}
 
-    /* Deserialize fromrast */
-    if (!PG_ARGISNULL(1)) {
-        pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	/* Deserialize fromrast */
+	if (!PG_ARGISNULL(1)) {
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-        fromrast = rt_raster_deserialize(pgraster, FALSE);
-        if ( ! fromrast ) {
-            elog(ERROR, "RASTER_copyband: Could not deserialize second raster");
-            PG_RETURN_NULL();
-        }
+		fromrast = rt_raster_deserialize(pgraster, FALSE);
+		if (!fromrast) {
+			elog(ERROR, "RASTER_copyband: Could not deserialize second raster");
+			PG_RETURN_NULL();
+		}
 
-        oldtorastnumbands = rt_raster_get_num_bands(torast);
+		oldtorastnumbands = rt_raster_get_num_bands(torast);
 
-        if (PG_ARGISNULL(2))
-            fromband = 1;
-        else
-            fromband = PG_GETARG_INT32(2);
+		if (PG_ARGISNULL(2))
+			fromband = 1;
+		else
+			fromband = PG_GETARG_INT32(2);
 
-        if (PG_ARGISNULL(3))
-            toindex = oldtorastnumbands + 1;
-        else
-            toindex = PG_GETARG_INT32(3);
+		if (PG_ARGISNULL(3))
+			toindex = oldtorastnumbands + 1;
+		else
+			toindex = PG_GETARG_INT32(3);
 
-        /* Copy band fromrast torast */
-        newbandindex = rt_raster_copy_band(torast, fromrast, fromband - 1,
-            toindex - 1);
+		/* Copy band fromrast torast */
+		newbandindex = rt_raster_copy_band(
+			torast, fromrast,
+			fromband - 1, toindex - 1
+		);
 
-        newtorastnumbands = rt_raster_get_num_bands(torast);
-        if (newtorastnumbands == oldtorastnumbands || newbandindex == -1) {
-            elog(NOTICE, "RASTER_copyband: Could not add band to raster. "
-                    "Returning original raster.");
-        }
-    }
+		newtorastnumbands = rt_raster_get_num_bands(torast);
+		if (newtorastnumbands == oldtorastnumbands || newbandindex == -1) {
+			elog(NOTICE, "RASTER_copyband: Could not add band to raster. "
+				"Returning original raster."
+			);
+		}
 
-    /* Serialize and return torast */
-    pgraster = rt_raster_serialize(torast);
-    if (!pgraster) PG_RETURN_NULL();
+		rt_raster_destroy(fromrast);
+	}
 
-    SET_VARSIZE(pgraster, pgraster->size);
+	/* Serialize and return torast */
+	pgraster = rt_raster_serialize(torast);
+	rt_raster_destroy(torast);
+	if (!pgraster) PG_RETURN_NULL();
 
-    rt_raster_destroy(fromrast);
-    rt_raster_destroy(torast);
-
-    PG_RETURN_POINTER(pgraster);
+	SET_VARSIZE(pgraster, pgraster->size);
+	PG_RETURN_POINTER(pgraster);
 }
-
 
 /**
  * Check if raster is empty or not
