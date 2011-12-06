@@ -461,7 +461,7 @@ VALUES (1,
 	  <refnamediv>
 		<refname>AddRasterColumn</refname>
 
-		<refpurpose>Adds a raster column to an existing table and generates column constraint on the new column to enforce srid.</refpurpose>
+		<refpurpose>deprecated: Adds a raster column to an existing table and generates column constraint on the new column to enforce srid.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -611,8 +611,8 @@ VALUES (1,
 		<para><varname>raster2pgsql.py</varname> loader uses this function to register raster tables</para>
 
 		<note>
-			<para>Views and derivatively created spatial tables will need to be registered in raster_columns manually,
-				since AddRasterColumn also adds a raster column which is not needed when you already have a raster column.  
+			<para>This function is deprecated and will be removed in later versions.  Instead just create a raster column
+				using <programlisting>CREATE TABLE .. or ALTER TABLE .. ADD COLUMN rast raster;</programlisting> and then use the AddRasterConstraints function.
 			</para>
 		</note>
 	  </refsection>
@@ -651,7 +651,7 @@ UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myra
 	  <refnamediv>
 		<refname>DropRasterColumn</refname>
 
-		<refpurpose>Removes a raster column from a table.</refpurpose>
+		<refpurpose>Obsolete: just use sql ALTER TABLE DROP COLUMN: Removes a raster column from a table.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -700,18 +700,20 @@ UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myra
 	  <refsection>
 		<title>Description</title>
 
-		<para>Removes a raster column from a table. Note that
-		schema_name will need to match the r_table_schema field of the table's
-		row in the raster_columns table.</para>
+		<para><note>Obsolete and will be removed in later versions.  Instead just drop the column using standard SQL.</note></para>
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
 
 		<programlisting>
-			SELECT DropRasterColumn ('my_schema','my_raster_table','rast');
-			----RESULT output ---
-			my_schema.my_raster_table.rast effectively removed.
+-- NOTE this is obsolete
+SELECT DropRasterColumn ('my_schema','my_raster_table','rast');
+----RESULT output ---
+my_schema.my_raster_table.rast effectively removed.
 		</programlisting>
+		
+		<programlisting>-- Instead do --
+ALTER TABLE my_schema.my_raster_table DROP COLUMN rast;</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
@@ -724,7 +726,7 @@ UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myra
 	  <refnamediv>
 		<refname>DropRasterTable</refname>
 
-		<refpurpose>Drops a table and all its references in
+		<refpurpose>Obsolete: Instead use DROP TABLE mytable. Drops a table and all its references in
 		raster_columns.</refpurpose>
 	  </refnamediv>
 
