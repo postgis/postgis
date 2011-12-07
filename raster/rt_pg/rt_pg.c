@@ -29,7 +29,6 @@
  */
 
 #include <math.h>
-#include <float.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h> /* for strtod in RASTER_reclass */

@@ -92,6 +92,8 @@
 
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
+#include <float.h> /* for FLT_EPSILON and float type limits */
+#include <limits.h> /* for integer type limits */
 
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
