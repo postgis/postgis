@@ -6655,14 +6655,14 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	RASTER_DEBUG(3, "Creating new raster");
 	rast = rt_raster_new(width, height);
 	if (NULL == rast) {
-		rterror("rt_raster_from_gdal_dataset: Out of memory allocating new raster\n");
+		rterror("rt_raster_from_gdal_dataset: Out of memory allocating new raster");
 		return NULL;
 	}
 
 	/* get raster attributes */
 	cplerr = GDALGetGeoTransform(ds, gt);
 	if (cplerr != CE_None) {
-		rterror("rt_raster_from_gdal_dataset: Unable to get geotransformation\n");
+		rterror("rt_raster_from_gdal_dataset: Unable to get geotransform matrix");
 		rt_raster_destroy(rast);
 		return NULL;
 	}
@@ -6670,12 +6670,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
 	/* apply raster attributes */
-	/* scale */
-	rt_raster_set_scale(rast, gt[1], gt[5]);
-	/* offset */
-	rt_raster_set_offsets(rast, gt[0], gt[3]);
-	/* skew */
-	rt_raster_set_skews(rast, gt[2], gt[4]);
+	rt_raster_set_geotransform_matrix(rast, gt);
 	/* srid */
 	/* CANNOT SET srid AS srid IS NOT AVAILABLE IN GDAL dataset */
 
@@ -6686,7 +6681,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		gdband = NULL;
 		gdband = GDALGetRasterBand(ds, i);
 		if (NULL == gdband) {
-			rterror("rt_raster_from_gdal_dataset: Unable to get transformed band\n");
+			rterror("rt_raster_from_gdal_dataset: Unable to get GDAL band");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
@@ -6723,7 +6718,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 				RASTER_DEBUG(3, "Pixel type is GDT_Float64");
 				break;
 			default:
-				rterror("rt_raster_from_gdal_dataset: Unknown pixel type for transformed raster\n");
+				rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
 				rt_raster_destroy(rast);
 				return NULL;
 				break;
@@ -6750,7 +6745,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 			hasnodata, nodataval, rt_raster_get_num_bands(rast)
 		);
 		if (idx < 0) {
-			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for band\n");
+			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for raster band");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
@@ -6763,25 +6758,12 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		RASTER_DEBUGF(4, "(nXBlockSize, nYBlockSize) = (%d, %d)", nXBlockSize, nYBlockSize);
 		RASTER_DEBUGF(4, "(nXBlocks, nYBlocks) = (%d, %d)", nXBlocks, nYBlocks);
 
-		values = rtalloc(nXBlockSize * nYBlockSize * sizeof(double));
-		for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++) {
-			for (iXBlock = 0; iXBlock < nXBlocks; iXBlock++) {
+		for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++) { /* row */
+			for (iXBlock = 0; iXBlock < nXBlocks; iXBlock++) { /* column */
 				x = iXBlock * nXBlockSize;
 				y = iYBlock * nYBlockSize;
-
-				cplerr = GDALRasterIO(
-					gdband, GF_Read,
-					x, y,
-					nXBlockSize, nYBlockSize,
-					values, nXBlockSize, nYBlockSize,
-					GDT_Float64,
-					0, 0
-				);
-				if (cplerr != CE_None) {
-					rterror("rt_raster_from_gdal_dataset: Unable to get data from transformed raster\n");
-					rt_raster_destroy(rast);
-					return NULL;
-				}
+				RASTER_DEBUGF(4, "(iXBlock, iYBlock) = (%d, %d)", iXBlock, iYBlock);
+				RASTER_DEBUGF(4, "(x, y) = (%d, %d)", x, y);
 
 				if ((iXBlock + 1) * nXBlockSize > width)
 					nXValid = width - (iXBlock * nXBlockSize);
@@ -6793,6 +6775,23 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 				else
 					nYValid = nYBlockSize;
 
+				values = rtalloc(nXValid * nYValid * sizeof(double));
+				/* values is ordered from left to right, top to bottom */
+				cplerr = GDALRasterIO(
+					gdband, GF_Read,
+					x, y,
+					nXValid, nYValid,
+					values, nXValid, nYValid,
+					GDT_Float64,
+					0, 0
+				);
+				if (cplerr != CE_None) {
+					rterror("rt_raster_from_gdal_dataset: Unable to get data from GDAL band");
+					rtdealloc(values);
+					rt_raster_destroy(rast);
+					return NULL;
+				}
+
 				for (iY = 0; iY < nYValid; iY++) {
 					for (iX = 0; iX < nXValid; iX++) {
 						x = iX + (nXBlockSize * iXBlock);
@@ -6802,16 +6801,17 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 						RASTER_DEBUGF(5, "(x, y, value) = (%d, %d, %f)", x, y, value);
 
 						if (rt_band_set_pixel(band, x, y, value) < 0) {
-							rterror("rt_raster_from_gdal_dataset: Unable to save data from transformed raster\n");
+							rterror("rt_raster_from_gdal_dataset: Unable to save data from GDAL band");
+							rtdealloc(values);
 							rt_raster_destroy(rast);
 							return NULL;
 						}
 					}
 				}
+
+				rtdealloc(values);
 			}
 		}
-
-		rtdealloc(values);
 	}
 
 	return rast;
