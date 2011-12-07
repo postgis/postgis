@@ -1279,7 +1279,118 @@ rt_band_set_nodata(rt_band band, double val) {
 }
 
 /**
- * Set pixel value
+ * Set values of multiple pixels.  Unlike rt_band_set_pixel,
+ * values in vals are expected to be of the band's pixel type
+ * as this function uses memcpy.
+ *
+ * @param band : the band to set value to
+ * @param x : X coordinate (0-based)
+ * @param y : Y coordinate (0-based)
+ * @param vals : the pixel values to apply
+ * @param len : # of elements in vals
+ *
+ * @return 1 on success, 0 on error
+ */
+int
+rt_band_set_pixel_line(
+	rt_band band,
+	uint16_t x, uint16_t y,
+	void *vals, uint16_t len
+) {
+	rt_pixtype pixtype = PT_END;
+	int size = 0;
+	uint8_t *data = NULL;
+	uint32_t offset = 0;
+	double value;
+
+	assert(NULL != band);
+
+	pixtype = band->pixtype;
+	size = rt_pixtype_size(pixtype);
+
+	if (x >= band->width || y >= band->height) {
+		rterror("rt_band_set_pixel_line: Coordinates out of range");
+		return 0;
+	}
+
+	if (band->offline) {
+		rterror("rt_band_set_pixel_line not implemented yet for OFFDB bands");
+		return 0;
+	}
+
+	data = rt_band_get_data(band);
+	offset = x + (y * band->width);
+	RASTER_DEBUGF(3, "offset = %d", offset);
+
+	/* make sure len of values to copy don't exceed end of data */
+	if (len > (band->width * band->height) - offset) {
+		rterror("rt_band_set_pixel_line: Unable to apply pixel values as values length exceeds the ");
+		return 0;
+	}
+
+	RASTER_DEBUGF(5, "val at (%d, %d) = %f", x, y, ((double *) vals)[0]);
+
+	switch (pixtype) {
+		case PT_1BB:
+		case PT_2BUI:
+		case PT_4BUI:
+		case PT_8BUI:
+		case PT_8BSI: {
+			uint8_t *ptr = data;
+			ptr += offset;
+			memcpy(ptr, vals, size * len);
+			break;
+		}
+		case PT_16BUI: {
+			uint16_t *ptr = (uint16_t *) data;
+			ptr += offset;
+			memcpy(ptr, vals, size * len);
+			break;
+		}
+		case PT_16BSI: {
+			int16_t *ptr = (int16_t *) data;
+			ptr += offset;
+			memcpy(ptr, vals, size * len);
+			break;
+		}
+		case PT_32BUI: {
+			uint32_t *ptr = (uint32_t *) data;
+			ptr += offset;
+			memcpy(ptr, vals, size * len);
+			break;
+		}
+		case PT_32BSI: {
+			int32_t *ptr = (int32_t *) data;
+			ptr += offset;
+			memcpy(ptr, vals, size * len);
+			break;
+		}
+		case PT_32BF: {
+			float *ptr = (float *) data;
+			ptr += offset;
+			memcpy(ptr, vals, size * len);
+			break;
+		}
+		case PT_64BF: {
+			double *ptr = (double *) data;
+			ptr += offset;
+			memcpy(ptr, vals, size * len);
+			break;
+		}
+		default: {
+			rterror("rt_band_set_pixel_line: Unknown pixeltype %d", pixtype);
+			return 0;
+		}
+	}
+
+	rt_band_get_pixel(band, x, y, &value);
+	RASTER_DEBUGF(5, "pixel at (%d, %d) = %f", x, y, value);
+
+	return 1;
+}
+
+/**
+ * Set single pixel's value
  *
  * @param band : the band to set value to
  * @param x : x ordinate (0-based)
@@ -6631,10 +6742,16 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	uint32_t hasnodata = 0;
 	double nodataval;
 
-	int x;
-	int y;
-	double value;
-	double *values = NULL;
+	int y = 0;
+
+	uint8_t *valuesUint8 = NULL;
+	uint16_t *valuesUint16 = NULL;
+	int16_t *valuesInt16 = NULL;
+	uint32_t *valuesUint32 = NULL;
+	int32_t *valuesInt32 = NULL;
+	float *valuesFlt = NULL;
+	double *valuesDbl = NULL;
+	void *values = NULL;
 
 	assert(NULL != ds);
 
@@ -6743,35 +6860,100 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		}
 		band = rt_raster_get_band(rast, idx);
 
+		/* allocate memory for values */
+		switch (gdpixtype) {
+			case GDT_Byte:
+				valuesUint8 = rtalloc(sizeof(uint8_t) * width);
+				values = valuesUint8;
+				break;
+			case GDT_UInt16:
+				valuesUint16 = rtalloc(sizeof(uint16_t) * width);
+				values = valuesUint16;
+				break;
+			case GDT_Int16:
+				valuesInt16 = rtalloc(sizeof(int16_t) * width);
+				values = valuesInt16;
+				break;
+			case GDT_UInt32:
+				valuesUint32 = rtalloc(sizeof(uint32_t) * width);
+				values = valuesUint32;
+				break;
+			case GDT_Int32:
+				valuesInt32 = rtalloc(sizeof(int32_t) * width);
+				values = valuesInt32;
+				break;
+			case GDT_Float32:
+				valuesFlt = rtalloc(sizeof(float) * width);
+				values = valuesFlt;
+				break;
+			case GDT_Float64:
+				valuesDbl = rtalloc(sizeof(double) * width);
+				values = valuesDbl;
+				break;
+			default:
+				/* should NEVER get here */
+				rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
+				rt_raster_destroy(rast);
+				return NULL;
+				break;
+		}
+
 		/* use rows */
-		values = rtalloc(sizeof(double) * width);
 		for (y = 0; y < height; y++) {
+			RASTER_DEBUGF(5, "Getting line %d with %d elements", y, width);
+
 			cplerr = GDALRasterIO(
 				gdband, GF_Read,
 				0, y,
 				width, 1,
 				values, width, 1,
-				GDT_Float64,
+				gdpixtype,
 				0, 0
 			);
 			if (cplerr != CE_None) {
 				rterror("rt_raster_from_gdal_dataset: Unable to get data from GDAL band");
-				rtdealloc(values);
 				rt_raster_destroy(rast);
 				return NULL;
 			}
 
-			for (x = 0; x < width; x++) {
-				value = values[x];
-				if (rt_band_set_pixel(band, x, y, value) < 0) {
-					rterror("rt_raster_from_gdal_dataset: Unable to save data from GDAL band");
-					rtdealloc(values);
-					rt_raster_destroy(rast);
-					return NULL;
-				}
+			RASTER_DEBUGF(5, "Setting line %d with %d elements", y, width);
+			if (!rt_band_set_pixel_line(band, 0, y, values, width)) {
+				rterror("rt_raster_from_gdal_dataset: Unable to save data from GDAL band");
+				rt_raster_destroy(rast);
+				return NULL;
 			}
 		}
-		rtdealloc(values);
+
+		/* free memory */
+		switch (gdpixtype) {
+			case GDT_Byte:
+				rtdealloc(valuesUint8);
+				break;
+			case GDT_UInt16:
+				rtdealloc(valuesUint16);
+				break;
+			case GDT_Int16:
+				rtdealloc(valuesInt16);
+				break;
+			case GDT_UInt32:
+				rtdealloc(valuesUint32);
+				break;
+			case GDT_Int32:
+				rtdealloc(valuesInt32);
+				break;
+			case GDT_Float32:
+				rtdealloc(valuesFlt);
+				break;
+			case GDT_Float64:
+				rtdealloc(valuesDbl);
+				break;
+			default:
+				/* should NEVER get here */
+				rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
+				rt_raster_destroy(rast);
+				return NULL;
+				break;
+		}
 	}
 
 	return rast;

@@ -434,7 +434,26 @@ int rt_band_set_nodata(rt_band band, double val);
 double rt_band_get_nodata(rt_band band);
 
 /**
- * Set pixel value
+ * Set values of multiple pixels.  Unlike rt_band_set_pixel,
+ * values in vals are expected to be of the band's pixel type
+ * as this function uses memcpy.
+ *
+ * @param band : the band to set value to
+ * @param x : X coordinate (0-based)
+ * @param y : Y coordinate (0-based)
+ * @param vals : the pixel values to apply
+ * @param len : # of elements in vals
+ *
+ * @return 1 on success, 0 on error
+ */
+int rt_band_set_pixel_line(
+	rt_band band,
+	uint16_t x, uint16_t y,
+	void *vals, uint16_t len
+);
+
+/**
+ * Set single pixel's value
  *
  * @param band : the band to set value to
  * @param x : x ordinate (0-based)
