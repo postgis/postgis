@@ -8,14 +8,22 @@
         <para>This is a major release.  A full dump reload is required. Refer to <xref linkend="NewFunctions_2_0" /> for more details.</para>
        <simplesect>
         	<title>Testers - Our unsung heroes</title>
-        	<para>We are most indebted to the numerous members in the PostGIS community who were brave enough to test out
-        		the new features in this release.  No major release can be successful without these folk. Below are those
-        		who have been most valiant, provided very detailed and thorough bug reports, and detailed analysis.</para>
-        	<para>Andrea Peri - Lots of testing on topology and checking for correctness.</para>
-        	<para>Brian Hamlin -  Benchmarking (also experimental experimental branches before they are folded into core)
-        	, general testing of various pieces including Tiger and Topology. Testing on various server VMs</para>
-        	<para>Andreas Forø Tollefsen, Tom van Tilburg - raster testing</para>
-        	<para>Tiger geocoder testing: Mike Pease, very detailed reports of issues.</para>
+        	<para>We are most indebted to the numerous members in the PostGIS community 
+ 	who were brave enough to test out the new features in this release.  
+ 	No major release can be successful without these folk.</para>
+			<para>Below are those who have been most valiant, provided very detailed
+			and thorough bug reports,
+			and detailed analysis.</para>
+			<para>Andrea Peri - Lots of testing on topology, checking for correctness</para>
+			<para>Andreas Forø Tollefsen - raster testing</para>
+			<para>Chris English - topology stress testing loader functions</para>
+			<para>Brian Hamlin - Benchmarking 
+				(also experimental experimental branches 
+					before they are folded into core)
+				, general testing of various pieces 
+			   including Tiger and Topology. Testing on various server VMs</para>
+			<para>Mike Pease -  Tiger geocoder testing - very detailed reports of issues</para>
+			<para>Tom van Tilburg - raster testing</para>
         </simplesect>
         <simplesect>
         	<title>Important / Breaking Changes</title>

@@ -7,14 +7,16 @@ PostGIS 2.0.0
  	Below are those who have been most valiant, provided very detailed
  	and thorough bug reports,
  	and detailed analysis.
-    Andrea Peri - Lots of testing on topology and checking for correctness
+   Andrea Peri - Lots of testing on topology, checking for correctness
+   Andreas Forø Tollefsen - raster testing
+   Chris English - topology stress testing loader functions
    Brian Hamlin - Benchmarking 
    	(also experimental experimental branches 
    		before they are folded into core)
    	, general testing of various pieces 
    including Tiger and Topology. Testing on various server VMs
-   Andreas Forø Tollefsen, Tom van Tilburg - raster testing
    Mike Pease -  Tiger geocoder testing - very detailed reports of issues
+   Tom van Tilburg - raster testing
    
   * Important / Breaking Changes *
 
