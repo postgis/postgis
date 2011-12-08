@@ -1512,7 +1512,7 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	bool result;
 	GEOSGeom g1;
 #if POSTGIS_GEOS_VERSION < 33
-  GBOX box1;
+	GBOX box1;
 #endif
 
 	geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -1522,14 +1522,14 @@ Datum isvalid(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(true);
 
 #if POSTGIS_GEOS_VERSION < 33
-  /* Short circuit and return FALSE if we have infinite coordinates */
-  /* GEOS 3.3+ is supposed to  handle this stuff OK */
+	/* Short circuit and return FALSE if we have infinite coordinates */
+	/* GEOS 3.3+ is supposed to  handle this stuff OK */
 	if ( gserialized_get_gbox_p(geom1, &box1) )	
 	{
 		if ( isinf(box1.xmax) || isinf(box1.ymax) || isinf(box1.xmin) || isinf(box1.ymin) || 
 		     isnan(box1.xmax) || isnan(box1.ymax) || isnan(box1.xmin) || isnan(box1.ymin)  )
 		{
-      lwnotice("Geometry contains an Inf or NaN coordinate");
+			lwnotice("Geometry contains an Inf or NaN coordinate");
 			PG_RETURN_BOOL(FALSE);
 		}
 	}

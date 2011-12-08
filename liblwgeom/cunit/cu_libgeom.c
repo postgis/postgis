@@ -188,6 +188,7 @@ static void test_lwgeom_calculate_gbox(void)
 	lwgeom_free(g);
 
 	/* LINESTRING(0 0, 0 Inf) = 00 00000002 00000002 0000000000000000 7FF0000000000000 0000000000000000 0000000000000000 */
+	/* Inf should show up in bbox */
 	g = lwgeom_from_hexwkb("00000000020000000200000000000000007FF000000000000000000000000000000000000000000000", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_cartesian(g, &b);
 	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
@@ -195,6 +196,7 @@ static void test_lwgeom_calculate_gbox(void)
 	lwgeom_free(g);
 	
 	/* Geometry with NaN 0101000020E8640000000000000000F8FF000000000000F8FF */
+	/* NaN should show up in bbox */
 	g = lwgeom_from_hexwkb("0101000020E8640000000000000000F8FF000000000000F8FF", LW_PARSER_CHECK_NONE);
 	lwgeom_calculate_gbox_cartesian(g, &b);
 	CU_ASSERT(isnan(b.ymax));
