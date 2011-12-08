@@ -60,7 +60,7 @@
           		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park)
           		(Company developer and funding: University Laval, Deimos Space, CadCorp,  Michigan Tech Research Institute, Azavea, Paragon Corporation, UC Davis Center for Vectorborne Diseases)</para>
           <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
-          <para>Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe</para>
+          <para>Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe, Jose Carlos Martinez Llari</para>
           <para>3D relationship and measurement support functions  (Nicklas Avén)</para>
           <para>   ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, ST_3DShortestLine and more...</para>
           <para>N-Dimensional spatial indexes (Paul Ramsey / OpenGeo)</para>
@@ -94,6 +94,10 @@
         	     limit max result return, speed improvements, loading routines. 
         	   (Regina Obe, Leo Hsu / Paragon Corporation / funding provided by Hunter Systems Group)</para>
         	<para>Overall Documentation proofreading and corrections. (Kasif Rasul)</para>
+        </simplesect>
+        <simplesect>
+        	<title>Bug Fixes</title>
+        	<para>#1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)</para>
         </simplesect>
 
       </sect1>

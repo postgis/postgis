@@ -18,7 +18,7 @@ PostGIS 2.0.0
    Mike Pease -  Tiger geocoder testing - very detailed reports of issues
    Tom van Tilburg - raster testing
    
-  * Important / Breaking Changes *
+  * Important / Breaking Changes  *
 
   - #722, #302 Most deprecated functions removed (over 250 functions) 
     (Regina Obe / Paragon Corporation, Paul Ramsey / OpenGeo)
@@ -57,8 +57,9 @@ PostGIS 2.0.0
     Michigan Tech Research Institute, Paragon Corporation, Azavea)
   - Making spatial indexes 3D aware
     in progress (Paul Ramsey / OpenGeo, Mark Cave-Ayland / Sirius)
-  - Topology support improved, documented, testing 
-    (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri)
+  - Topology support improved, documented, testing, bug fixes 
+    (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri
+    	, Jose Carlos Martinez Llari)
   - 3D relationship support functions (Nicklas Avén)
     ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, 
     ST_3DShortestLine and more ..
@@ -102,6 +103,12 @@ PostGIS 2.0.0
     (Regina Obe, Leo Hsu / Paragon Corporation / 
     funding provided by Hunter Systems Group)
   - Overall Documentation proofreading and corrections. (Kasif Rasul)
+  
+ * Bug Fixes *
+  - #1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)
+PostGIS 1.5.4
+2012/02/XX
+-- to be updated --
   
 PostGIS 1.5.3
 2011/06/25
