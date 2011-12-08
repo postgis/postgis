@@ -2660,6 +2660,15 @@ ptarray_to_GEOSCoordSeq(POINTARRAY *pa)
 
 		POSTGIS_DEBUGF(4, "Point: %g,%g,%g", p.x, p.y, p.z);
 
+#if POSTGIS_GEOS_VERSION < 33
+		/* Make sure we don't pass any infinite values down into GEOS */
+		/* GEOS 3.3+ is supposed to  handle this stuff OK */
+		if ( isinf(p.x) || isinf(p.y) || (dims == 3 && isinf(p.z)) )
+			lwerror("Infinite coordinate value found in geometry.");
+  		if ( isnan(p.x) || isnan(p.y) || (dims == 3 && isnan(p.z)) )
+			lwerror("NaN coordinate value found in geometry.");
+#endif
+
 		GEOSCoordSeq_setX(sq, i, p.x);
 		GEOSCoordSeq_setY(sq, i, p.y);
 		if ( dims == 3 ) GEOSCoordSeq_setZ(sq, i, p.z);
