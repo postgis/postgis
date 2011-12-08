@@ -422,10 +422,6 @@ DROP FUNCTION Simplify(geometry, float8);
 -- CASTS
 ---------------------------------------------------------------
 
-DROP CAST (box3d_extent AS geometry);
-DROP CAST (box3d_extent AS box2d);
-DROP CAST (box3d_extent AS box3d);
-
 DROP CAST (geometry AS bytea);
 DROP CAST (bytea AS geometry);
 DROP CAST (chip AS geometry);
@@ -546,8 +542,6 @@ DROP FUNCTION ST_Combine_BBox(box3d,geometry);
 DROP FUNCTION combine_bbox(box3d,geometry);
 DROP AGGREGATE ST_Extent(geometry);
 DROP AGGREGATE Extent(geometry);
-DROP FUNCTION ST_Combine_BBox(box3d_extent,geometry);
-DROP FUNCTION combine_bbox(box3d_extent,geometry);
 DROP FUNCTION ST_Combine_BBox(box2d,geometry);
 DROP FUNCTION combine_bbox(box2d,geometry);
 
@@ -816,9 +810,6 @@ DROP FUNCTION ST_YMin(box3d);
 DROP FUNCTION ymin(box3d);
 DROP FUNCTION ST_XMin(box3d);
 DROP FUNCTION xmin(box3d);
-
--- This drops box3d_extent_in, box3d_extent_out and the type in an atomic fashion
-DROP TYPE box3d_extent CASCADE;
 
 -- This drops ST_box3d_in, ST_box3d_out, box3d_in, box3d_out and the type in an atomic fashion
 DROP TYPE box3d CASCADE;

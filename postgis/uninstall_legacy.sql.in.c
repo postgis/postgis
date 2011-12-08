@@ -55,7 +55,6 @@ DROP FUNCTION IF EXISTS Buffer(geometry,float8,integer);
 DROP FUNCTION IF EXISTS Buffer(geometry,float8);
 DROP FUNCTION IF EXISTS BuildArea(geometry);
 DROP FUNCTION IF EXISTS Centroid(geometry);
-DROP FUNCTION IF EXISTS Combine_Bbox(box3d_extent,geometry);
 DROP FUNCTION IF EXISTS Contains(geometry,geometry);
 DROP FUNCTION IF EXISTS ConvexHull(geometry);
 DROP FUNCTION IF EXISTS Crosses(geometry,geometry);

@@ -25,8 +25,6 @@
 /* forward defs */
 Datum BOX3D_in(PG_FUNCTION_ARGS);
 Datum BOX3D_out(PG_FUNCTION_ARGS);
-Datum BOX3D_extent_out(PG_FUNCTION_ARGS);
-Datum BOX3D_extent_to_BOX3D(PG_FUNCTION_ARGS);
 Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS);
 Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS);
 Datum BOX3D_expand(PG_FUNCTION_ARGS);
@@ -139,55 +137,6 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 	PG_RETURN_CSTRING(result);
 }
 
-/**
- *  Takes an internal rep of a BOX3D and returns a string rep.
- *  but beginning with BOX(...) and with only 2 dimensions. This
- *  is a temporary hack to allow ST_Extent() to return a result
- *  with the precision of BOX2DFLOAT4 but with the BOX2DFLOAT4
- *  output format.
- *
- *  example:
- *     "BOX(xmin ymin, xmax ymax)"
- */
-PG_FUNCTION_INFO_V1(BOX3D_extent_out);
-Datum BOX3D_extent_out(PG_FUNCTION_ARGS)
-{
-	BOX3D  *bbox = (BOX3D *) PG_GETARG_POINTER(0);
-	int size;
-	char *result;
-
-	if (bbox == NULL)
-	{
-		result = palloc(5);
-		strcat(result,"NULL");
-		PG_RETURN_CSTRING(result);
-	}
-
-
-	/*double digits+ "BOX3D"+ "()" + commas +null */
-	size = MAX_DIGS_DOUBLE*6+5+2+4+5+1;
-
-	result = (char *) palloc(size);
-
-	sprintf(result, "BOX(%.15g %.15g,%.15g %.15g)",
-	        bbox->xmin, bbox->ymin,
-	        bbox->xmax,bbox->ymax);
-
-	PG_RETURN_CSTRING(result);
-}
-
-PG_FUNCTION_INFO_V1(BOX3D_extent_to_BOX3D);
-Datum BOX3D_extent_to_BOX3D(PG_FUNCTION_ARGS)
-{
-	BOX3D *in = (BOX3D *)PG_GETARG_POINTER(0);
-	BOX3D *out = palloc(sizeof(BOX3D));
-	out->xmin = in->xmin;
-	out->xmax = in->xmax;
-	out->ymin = in->ymin;
-	out->ymax = in->ymax;
-
-	PG_RETURN_POINTER(out);
-}
 
 PG_FUNCTION_INFO_V1(BOX3D_to_BOX2DFLOAT4);
 Datum BOX3D_to_BOX2DFLOAT4(PG_FUNCTION_ARGS)
@@ -387,69 +336,68 @@ Datum BOX3D_zmax(PG_FUNCTION_ARGS)
 	PG_RETURN_FLOAT8(Max(box->zmin, box->zmax));
 }
 
-
+/**
+* Used in the ST_Extent and ST_Extent3D aggregates, does not read the 
+* serialized cached bounding box (since that is floating point)
+* but calculates the box in full from the underlying geometry.
+*/
 PG_FUNCTION_INFO_V1(BOX3D_combine);
 Datum BOX3D_combine(PG_FUNCTION_ARGS)
 {
-	Pointer box3d_ptr = PG_GETARG_POINTER(0);
-	Pointer geom_ptr = PG_GETARG_POINTER(1);
-	BOX3D *a,*b;
-	GSERIALIZED *geom;
-	LWGEOM *lwgeom;
-	BOX3D *result;
+	BOX3D *box = (BOX3D*)PG_GETARG_POINTER(0);
+	GSERIALIZED *geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_POINTER(1));
+	LWGEOM *lwgeom = NULL;
+	BOX3D *result = NULL;
 	GBOX gbox;
 	int rv;
 
-	if  ( (box3d_ptr == NULL) && (geom_ptr == NULL) )
-	{
+	/* Can't do anything with null inputs */
+	if  ( (box == NULL) && (geom == NULL) )
 		PG_RETURN_NULL();
+
+	/* Null geometry but non-null box, return the box */
+	if (geom == NULL)
+	{
+		result = palloc(sizeof(BOX3D));
+		memcpy(result, box, sizeof(BOX3D));
+		PG_RETURN_POINTER(result);
 	}
 
+	/* Deserialize geometry and *calculate( the box */
+	/* We can't use the cached box because it's fload, we *must* calculate */
+	lwgeom = lwgeom_from_gserialized(geom);
+	rv = lwgeom_calculate_gbox(lwgeom, &gbox);
+	lwgeom_free(lwgeom);
 
-	if (box3d_ptr == NULL)
+	/* If we couldn't calculate the box, return what we know */
+	if ( rv == LW_FAILURE )
 	{
-		geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-		lwgeom = lwgeom_from_gserialized(geom);
-		rv = lwgeom_calculate_gbox(lwgeom, &gbox);
-		if ( rv == LW_FAILURE )
-		{
-			lwgeom_free(lwgeom);
-			PG_FREE_IF_COPY(geom, 1);
-			PG_RETURN_NULL(); /* must be the empty geom */
-		}
+		PG_FREE_IF_COPY(geom, 1);
+		/* No geom box, no input box, so null return */
+		if ( box == NULL )
+			PG_RETURN_NULL();
+		result = palloc(sizeof(BOX3D));
+		memcpy(result, box, sizeof(BOX3D));
+		PG_RETURN_POINTER(result);
+	}
+
+	/* Null box and non-null geometry, just return the geometry box */
+	if ( box == NULL )
+	{
+		PG_FREE_IF_COPY(geom, 1);
 		result = box3d_from_gbox(&gbox);
 		PG_RETURN_POINTER(result);
 	}
 
-	/* combine_bbox(BOX3D, null) => BOX3D */
-	if (geom_ptr == NULL)
-	{
-		result = palloc(sizeof(BOX3D));
-		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
-		PG_RETURN_POINTER(result);
-	}
-
-	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	lwgeom = lwgeom_from_gserialized(geom);
-	rv = lwgeom_calculate_gbox(lwgeom, &gbox);
 	result = palloc(sizeof(BOX3D));
-	if ( rv == LW_FAILURE )
-	{
-		lwgeom_free(lwgeom);
-		PG_FREE_IF_COPY(geom, 1);
-		memcpy(result, (char *)PG_GETARG_DATUM(0), sizeof(BOX3D));
-		PG_RETURN_POINTER(result);
-	}
-	a = (BOX3D *)PG_GETARG_POINTER(0);
-	b = box3d_from_gbox(&gbox);
+	result->xmax = Max(box->xmax, gbox.xmax);
+	result->ymax = Max(box->ymax, gbox.ymax);
+	result->zmax = Max(box->zmax, gbox.zmax);
+	result->xmin = Min(box->xmin, gbox.xmin);
+	result->ymin = Min(box->ymin, gbox.ymin);
+	result->zmin = Min(box->zmin, gbox.zmin);
 
-	result->xmax = Max(a->xmax, b->xmax);
-	result->ymax = Max(a->ymax, b->ymax);
-	result->zmax = Max(a->zmax, b->zmax);
-	result->xmin = Min(a->xmin, b->xmin);
-	result->ymin = Min(a->ymin, b->ymin);
-	result->zmin = Min(a->zmin, b->zmin);
-
+	PG_FREE_IF_COPY(geom, 1);
 	PG_RETURN_POINTER(result);
 }
 

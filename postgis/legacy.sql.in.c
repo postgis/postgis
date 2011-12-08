@@ -98,18 +98,6 @@ CREATE OR REPLACE FUNCTION st_bytea(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_to_bytea'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
---- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box3d_extent(box3d_extent)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_extent_to_BOX3D'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
---- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_box2d(box3d_extent)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
 -- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box3d_in(cstring)
 	RETURNS box3d
@@ -122,12 +110,6 @@ CREATE OR REPLACE FUNCTION st_box3d_out(box3d)
 	AS 'MODULE_PATHNAME', 'BOX3D_out'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
---- Deprecation in 1.5.0
-CREATE OR REPLACE FUNCTION st_geometry(box3d_extent)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
 -- START MANAGEMENT FUNCTIONS
 -- These are legacy management functions with no place in our 2.0 world
 -----------------------------------------------------------------------
@@ -782,18 +764,12 @@ CREATE OR REPLACE FUNCTION Expand(geometry,float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-	
--- Deprecation in 1.2.3
--- Temporary hack function
-CREATE OR REPLACE FUNCTION Combine_Bbox(box3d_extent,geometry)
-	RETURNS box3d_extent
-	AS 'MODULE_PATHNAME', 'BOX3D_combine'
-	LANGUAGE 'C' IMMUTABLE;
-	
+		
 CREATE AGGREGATE Extent(
 	sfunc = ST_combine_bbox,
 	basetype = geometry,
-	stype = box3d_extent
+	finalfunc = box2d,
+	stype = box3d
 	);
 	
 -- Deprecation in 1.2.3

@@ -211,39 +211,6 @@ CREATE TYPE box3d (
 	output = box3d_out
 );
 
--- Temporary box3d aggregate type to retain full double precision
--- for ST_Extent(). Should be removed when we change the output
--- type of ST_Extent() to return something other than BOX2DFLOAT4.
-CREATE OR REPLACE FUNCTION box3d_extent_in(cstring)
-	RETURNS box3d_extent
-	AS 'MODULE_PATHNAME', 'BOX3D_in'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION box3d_extent_out(box3d_extent)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME', 'BOX3D_extent_out'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE TYPE box3d_extent (
-	alignment = double,
-	internallength = 48,
-	input = box3d_extent_in,
-	output = box3d_extent_out
-);
-
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION box3d_extent(box3d_extent)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_extent_to_BOX3D'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION geometry(box3d_extent)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','BOX3D_to_LWGEOM'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- End of temporary hack
-
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_XMin(box3d)
 	RETURNS FLOAT8
@@ -311,11 +278,6 @@ CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
 CREATE OR REPLACE FUNCTION postgis_getbbox(geometry)
 	RETURNS box2d
 	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION box2d(box3d_extent)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX3D_to_BOX2DFLOAT4'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1324,38 +1286,6 @@ CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry) RETURNS SETOF geometry_dump A
 $$ LANGUAGE SQL  STRICT;
 
 
-------------------------------------------------------------------------
-
---
--- Aggregate functions
---
--- Temporary hack function
-CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d_extent,geometry)
-	RETURNS box3d_extent
-	AS 'MODULE_PATHNAME', 'BOX3D_combine'
-	LANGUAGE 'C' IMMUTABLE;
-
--- Availability: 1.2.2
-CREATE AGGREGATE ST_Extent(
-	sfunc = ST_combine_bbox,
-	basetype = geometry,
-	stype = box3d_extent
-	);
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d,geometry)
-	RETURNS box3d
-	AS 'MODULE_PATHNAME', 'BOX3D_combine'
-	LANGUAGE 'C' IMMUTABLE;
-
--- Availability: 2.0.0
-CREATE AGGREGATE ST_3DExtent(
-	sfunc = ST_combine_bbox,
-	basetype = geometry,
-	stype = box3d
-	);
-
-
 
 -------------------------------------------------------------------
 -- SPATIAL_REF_SYS
@@ -2357,10 +2287,6 @@ CREATE CAST (geometry AS text) WITH FUNCTION text(geometry) AS IMPLICIT;
 CREATE CAST (bytea AS geometry) WITH FUNCTION geometry(bytea) AS IMPLICIT;
 CREATE CAST (geometry AS bytea) WITH FUNCTION bytea(geometry) AS IMPLICIT;
 
--- Casts to allow the box3d_extent type to automatically cast to box3d/box2d in queries
-CREATE CAST (box3d_extent AS box3d) WITH FUNCTION box3d_extent(box3d_extent) AS IMPLICIT;
-CREATE CAST (box3d_extent AS box2d) WITH FUNCTION box2d(box3d_extent) AS IMPLICIT;
-CREATE CAST (box3d_extent AS geometry) WITH FUNCTION geometry(box3d_extent) AS IMPLICIT;
 
 ---------------------------------------------------------------
 -- Algorithms
@@ -2788,6 +2714,28 @@ CREATE OR REPLACE FUNCTION ST_Node(g geometry)
 --------------------------------------------------------------------------------
 -- Aggregates and their supporting functions
 --------------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Combine_BBox(box3d,geometry)
+	RETURNS box3d
+	AS 'MODULE_PATHNAME', 'BOX3D_combine'
+	LANGUAGE 'C' IMMUTABLE;
+
+-- Availability: 1.2.2
+CREATE AGGREGATE ST_Extent(
+	sfunc = ST_combine_bbox,
+	finalfunc = box2d,
+	basetype = geometry,
+	stype = box3d
+	);
+
+-- Availability: 2.0.0
+CREATE AGGREGATE ST_3DExtent(
+	sfunc = ST_combine_bbox,
+	basetype = geometry,
+	stype = box3d
+	);
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Collect(geometry, geometry)

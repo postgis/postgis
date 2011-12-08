@@ -69,50 +69,6 @@
 		</refsection>
     </refentry>
 	
-	<refentry id="box3d_extent">
-      <refnamediv>
-        <refname>box3d_extent</refname>
-        <refpurpose>A box composed of x min, ymin, zmin, xmax, ymax, zmax.  Often used to return the extent of a geometry.</refpurpose>
-      </refnamediv>
-
-      <refsection>
-        <title>Description</title>
-        <para>box3d_extent is a data type returned by ST_Extent. In versions prior to PostGIS 1.4, ST_Extent would return a box2d.</para>
-      </refsection>
-      
-	  <refsection>
-		<title>Casting Behavior</title>
-		<para>This section lists the automatic as well as explicit casts allowed for this data type</para>
-		<informaltable rowsep="1" frame="all">
-		<tgroup cols="2">
-			<tbody>
-			  <row>
-				<entry>Cast To</entry>
-				<entry>Behavior</entry>
-			  </row>
-			  <row>
-				<entry>box2d</entry>
-				<entry>automatic</entry>
-			  </row>
-			  <row>
-				<entry>box3d</entry>
-				<entry>automatic</entry>
-			  </row>
-			  <row>
-				<entry>geometry</entry>
-				<entry>automatic</entry>
-			  </row>
-			</tbody>
-		</tgroup>
-		</informaltable>
-		</refsection>
-		
-		<refsection>
-			<title>See Also</title>
-			<para><xref linkend="PostGIS_BoxFunctions" /> </para>
-		</refsection>
-    </refentry>
-	
 	<refentry id="geometry">
 		<refnamediv>
 			<refname>geometry</refname>

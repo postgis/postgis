@@ -341,7 +341,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>box3d_extent <function>ST_Extent</function></funcdef>
+			<funcdef>box2d <function>ST_Extent</function></funcdef>
 			<paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -365,7 +365,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 		</note>
 		
 		<note>
-		  <para>Availability: 1.4.0 As of 1.4.0 now returns a box3d_extent instead of box2d object.</para>
+		  <para>Availability: 1.4.0</para>
 		</note>
 		
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>

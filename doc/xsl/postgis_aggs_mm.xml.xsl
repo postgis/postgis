@@ -163,7 +163,7 @@
 		<sect1 id="PostGIS_BoxFunctions">
 			<title>PostGIS Box Functions</title>
 			<para>The functions given below are PostGIS functions that take as input or return as output the box* family of PostGIS spatial types.
-				The box family of types consists of <link linkend="box2d">box2d</link>, <link linkend="box3d">box3d</link>, <link linkend="box3d_extent">box3d_extent</link> </para>
+				The box family of types consists of <link linkend="box2d">box2d</link>, and <link linkend="box3d">box3d</link></para>
 				<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 				<xsl:for-each select='//refentry'>
