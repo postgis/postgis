@@ -296,5 +296,16 @@ ST_GeomFromText('POINT (-113.4 35.6)', -1), the_geom
 
 DROP TABLE foo;
 
+-- #877
+create table t(g geometry);
+select '#877.1', st_estimated_extent('t','g');
+analyze t;
+select '#877.2', st_estimated_extent('public', 't','g');
+insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
+select '#877.3', st_estimated_extent('t','g');
+analyze t;
+select '#877.4', st_estimated_extent('t','g');
+drop table t;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

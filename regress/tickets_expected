@@ -76,3 +76,10 @@ NOTICE:  No points in input array
 #845|t
 #884|1|f
 #884|2|t
+WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
+#877.1|
+WARNING:  No stats for "public"."t"."g" (empty or not analyzed)
+#877.2|
+WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
+#877.3|
+#877.4|BOX(-10 -50,20 30)
