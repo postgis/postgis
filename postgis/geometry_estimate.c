@@ -1450,7 +1450,12 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, " %d stat rows", SPI_processed);
 
-		elog(ERROR, "geometry_estimated_extent: couldn't locate table within current schema");
+		/* 
+		 * TODO: distinguish between empty and not analyzed ?
+		 */
+		elog(WARNING, "No stats for \"%s\".\"%s\".\"%s\" "
+			"(empty or not analyzed)",
+			( nsp ? nsp : "<current>" ), tbl, col);
 
 		PG_RETURN_NULL() ;
 	}
@@ -1465,7 +1470,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUG(3, " stats are NULL");
 
-		elog(ERROR, "geometry_estimated_extent: couldn't locate statistics for table");
+		elog(ERROR, "geometry_estimated_extent: null statistics for table");
 
 		PG_RETURN_NULL();
 	}

@@ -120,3 +120,10 @@ ERROR:  First argument must be a LINESTRING
 #1060|FFFFFFFF2
 #1273|t
 #1273.1|t
+WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
+#877.1|
+WARNING:  No stats for "public"."t"."g" (empty or not analyzed)
+#877.2|
+WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
+#877.3|
+#877.4|BOX(-10 -50,20 30)
