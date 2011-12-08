@@ -168,6 +168,34 @@ static void test_gserialized_from_lwgeom_size(void)
 
 }
 
+static void test_lwgeom_calculate_gbox(void)
+{
+	LWGEOM *g;
+	GBOX b;
+
+	g = lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	lwgeom_free(g);
+	
+	/* Inf = 0x7FF0000000000000 */
+	/* POINT(0 0) = 00 00000001 0000000000000000 0000000000000000 */
+	/* POINT(0 Inf) = 00 00000001 0000000000000000 7FF0000000000000 */
+	g = lwgeom_from_hexwkb("000000000100000000000000007FF0000000000000", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT(isinf(b.ymax));
+	lwgeom_free(g);
+
+	/* LINESTRING(0 0, 0 Inf) = 00 00000002 00000002 0000000000000000 7FF0000000000000 0000000000000000 0000000000000000 */
+	g = lwgeom_from_hexwkb("00000000020000000200000000000000007FF000000000000000000000000000000000000000000000", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT_DOUBLE_EQUAL(b.xmin, 0.0, 0.0000001);
+	CU_ASSERT(isinf(b.ymax));
+	lwgeom_free(g);
+	
+}
+
 static void test_gbox_serialized_size(void)
 {
 	uint8_t flags = gflags(0, 0, 0);
@@ -657,6 +685,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_f2d),
 	PG_TEST(test_lwgeom_clone),
 	PG_TEST(test_lwgeom_force_clockwise),
+	PG_TEST(test_lwgeom_calculate_gbox),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};
