@@ -201,8 +201,19 @@ all_em|grabone   | grab_rest
 		ANALYZE and resulting extent will be about 95% of the real
 		one.</para>
 
+                <note>
+                <para>
+In absence of statistics (empty table or no ANALYZE called) this function
+returns NULL.  Prior to version 1.5.4 an exception was thrown
+instead.
+		</para>
+                </note>
+
+
 		<para>For PostgreSQL&lt;8.0.0 statistics are gathered by
 		update_geometry_stats() and resulting extent will be exact.</para>
+
+                <para>Availability: 1.0.0</para>
 
 		<para>&curve_support;</para>
 	  </refsection>
