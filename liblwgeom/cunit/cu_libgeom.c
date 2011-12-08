@@ -194,6 +194,12 @@ static void test_lwgeom_calculate_gbox(void)
 	CU_ASSERT(isinf(b.ymax));
 	lwgeom_free(g);
 	
+	/* Geometry with NaN 0101000020E8640000000000000000F8FF000000000000F8FF */
+	g = lwgeom_from_hexwkb("0101000020E8640000000000000000F8FF000000000000F8FF", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_cartesian(g, &b);
+	CU_ASSERT(isnan(b.ymax));
+	lwgeom_free(g);	
+	
 }
 
 static void test_gbox_serialized_size(void)
