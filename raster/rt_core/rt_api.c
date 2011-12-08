@@ -1301,7 +1301,6 @@ rt_band_set_pixel_line(
 	int size = 0;
 	uint8_t *data = NULL;
 	uint32_t offset = 0;
-	double value;
 
 	assert(NULL != band);
 
@@ -1320,15 +1319,13 @@ rt_band_set_pixel_line(
 
 	data = rt_band_get_data(band);
 	offset = x + (y * band->width);
-	RASTER_DEBUGF(3, "offset = %d", offset);
+	RASTER_DEBUGF(5, "offset = %d", offset);
 
 	/* make sure len of values to copy don't exceed end of data */
 	if (len > (band->width * band->height) - offset) {
 		rterror("rt_band_set_pixel_line: Unable to apply pixel values as values length exceeds the ");
 		return 0;
 	}
-
-	RASTER_DEBUGF(5, "val at (%d, %d) = %f", x, y, ((double *) vals)[0]);
 
 	switch (pixtype) {
 		case PT_1BB:
@@ -1383,8 +1380,13 @@ rt_band_set_pixel_line(
 		}
 	}
 
-	rt_band_get_pixel(band, x, y, &value);
-	RASTER_DEBUGF(5, "pixel at (%d, %d) = %f", x, y, value);
+#if POSTGIS_DEBUG_LEVEL > 0
+	{
+		double value;
+		rt_band_get_pixel(band, x, y, &value);
+		RASTER_DEBUGF(4, "pixel at (%d, %d) = %f", x, y, value);
+	}
+#endif
 
 	return 1;
 }
@@ -6739,19 +6741,22 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	rt_band band;
 	int32_t idx;
 	rt_pixtype pt = PT_END;
+	uint32_t ptlen = 0;
 	uint32_t hasnodata = 0;
 	double nodataval;
 
-	int y = 0;
+	int x;
+	int y;
 
-	uint8_t *valuesUint8 = NULL;
-	uint16_t *valuesUint16 = NULL;
-	int16_t *valuesInt16 = NULL;
-	uint32_t *valuesUint32 = NULL;
-	int32_t *valuesInt32 = NULL;
-	float *valuesFlt = NULL;
-	double *valuesDbl = NULL;
+	int nXBlocks, nYBlocks;
+	int nXBlockSize, nYBlockSize;
+	int iXBlock, iYBlock;
+	int nXValid, nYValid;
+	int iY;
+
 	void *values = NULL;
+	uint32_t valueslen = 0;
+	void *ptr = NULL;
 
 	assert(NULL != ds);
 
@@ -6764,14 +6769,14 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	RASTER_DEBUG(3, "Creating new raster");
 	rast = rt_raster_new(width, height);
 	if (NULL == rast) {
-		rterror("rt_raster_from_gdal_dataset: Out of memory allocating new raster");
+		rterror("rt_raster_from_gdal_dataset: Out of memory allocating new raster\n");
 		return NULL;
 	}
 
 	/* get raster attributes */
 	cplerr = GDALGetGeoTransform(ds, gt);
 	if (cplerr != CE_None) {
-		rterror("rt_raster_from_gdal_dataset: Unable to get geotransform matrix");
+		rterror("rt_raster_from_gdal_dataset: Unable to get geotransformation\n");
 		rt_raster_destroy(rast);
 		return NULL;
 	}
@@ -6790,48 +6795,20 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		gdband = NULL;
 		gdband = GDALGetRasterBand(ds, i);
 		if (NULL == gdband) {
-			rterror("rt_raster_from_gdal_dataset: Unable to get GDAL band");
+			rterror("rt_raster_from_gdal_dataset: Unable to get GDAL band\n");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
 
 		/* pixtype */
 		gdpixtype = GDALGetRasterDataType(gdband);
-		switch (gdpixtype) {
-			case GDT_Byte:
-				pt = PT_8BUI;
-				RASTER_DEBUG(3, "Pixel type is GDT_Byte");
-				break;
-			case GDT_UInt16:
-				pt = PT_16BUI;
-				RASTER_DEBUG(3, "Pixel type is GDT_UInt16");
-				break;
-			case GDT_Int16:
-				pt = PT_16BSI;
-				RASTER_DEBUG(3, "Pixel type is GDT_Int16");
-				break;
-			case GDT_UInt32:
-				pt = PT_32BUI;
-				RASTER_DEBUG(3, "Pixel type is GDT_UInt32");
-				break;
-			case GDT_Int32:
-				pt = PT_32BSI;
-				RASTER_DEBUG(3, "Pixel type is GDT_Int32");
-				break;
-			case GDT_Float32:
-				pt = PT_32BF;
-				RASTER_DEBUG(3, "Pixel type is GDT_Float32");
-				break;
-			case GDT_Float64:
-				pt = PT_64BF;
-				RASTER_DEBUG(3, "Pixel type is GDT_Float64");
-				break;
-			default:
-				rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
-				rt_raster_destroy(rast);
-				return NULL;
-				break;
+		pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
+		if (pt == PT_END) {
+			rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band\n");
+			rt_raster_destroy(rast);
+			return NULL;
 		}
+		ptlen = rt_pixtype_size(pt);
 
 		/* size: width and height */
 		width = GDALGetRasterBandXSize(gdband);
@@ -6848,112 +6825,114 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 			hasnodata = 1;
 		RASTER_DEBUGF(3, "(hasnodata, nodataval) = (%d, %f)", hasnodata, nodataval);
 
+		/* create band object */
 		idx = rt_raster_generate_new_band(
 			rast, pt,
 			(hasnodata ? nodataval : 0),
 			hasnodata, nodataval, rt_raster_get_num_bands(rast)
 		);
 		if (idx < 0) {
-			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for raster band");
+			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for raster band\n");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
 		band = rt_raster_get_band(rast, idx);
 
+		/* this makes use of GDAL's "natural" blocks */
+		GDALGetBlockSize(gdband, &nXBlockSize, &nYBlockSize);
+		nXBlocks = (width + nXBlockSize - 1) / nXBlockSize;
+		nYBlocks = (height + nYBlockSize - 1) / nYBlockSize;
+		RASTER_DEBUGF(4, "(nXBlockSize, nYBlockSize) = (%d, %d)", nXBlockSize, nYBlockSize);
+		RASTER_DEBUGF(4, "(nXBlocks, nYBlocks) = (%d, %d)", nXBlocks, nYBlocks);
+
 		/* allocate memory for values */
+		valueslen = ptlen * nXBlockSize * nYBlockSize;
 		switch (gdpixtype) {
 			case GDT_Byte:
-				valuesUint8 = rtalloc(sizeof(uint8_t) * width);
-				values = valuesUint8;
+				values = (uint8_t *) rtalloc(valueslen);
 				break;
 			case GDT_UInt16:
-				valuesUint16 = rtalloc(sizeof(uint16_t) * width);
-				values = valuesUint16;
+				values = (uint16_t *) rtalloc(valueslen);
 				break;
 			case GDT_Int16:
-				valuesInt16 = rtalloc(sizeof(int16_t) * width);
-				values = valuesInt16;
+				values = (int16_t *) rtalloc(valueslen);
 				break;
 			case GDT_UInt32:
-				valuesUint32 = rtalloc(sizeof(uint32_t) * width);
-				values = valuesUint32;
+				values = (uint32_t *) rtalloc(valueslen);
 				break;
 			case GDT_Int32:
-				valuesInt32 = rtalloc(sizeof(int32_t) * width);
-				values = valuesInt32;
+				values = (int32_t *) rtalloc(valueslen);
 				break;
 			case GDT_Float32:
-				valuesFlt = rtalloc(sizeof(float) * width);
-				values = valuesFlt;
+				values = (float *) rtalloc(valueslen);
 				break;
 			case GDT_Float64:
-				valuesDbl = rtalloc(sizeof(double) * width);
-				values = valuesDbl;
+				values = (double *) rtalloc(valueslen);
 				break;
 			default:
 				/* should NEVER get here */
-				rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
+				rterror("rt_raster_from_gdal_dataset: Could not allocate memory for unknown pixel type");
 				rt_raster_destroy(rast);
 				return NULL;
-				break;
+		}
+		if (values == NULL) {
+			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for GDAL band pixel values");
+			rt_raster_destroy(rast);
+			return NULL;
 		}
 
-		/* use rows */
-		for (y = 0; y < height; y++) {
-			RASTER_DEBUGF(5, "Getting line %d with %d elements", y, width);
+		for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++) {
+			for (iXBlock = 0; iXBlock < nXBlocks; iXBlock++) {
+				memset(values, 0, valueslen);
 
-			cplerr = GDALRasterIO(
-				gdband, GF_Read,
-				0, y,
-				width, 1,
-				values, width, 1,
-				gdpixtype,
-				0, 0
-			);
-			if (cplerr != CE_None) {
-				rterror("rt_raster_from_gdal_dataset: Unable to get data from GDAL band");
-				rt_raster_destroy(rast);
-				return NULL;
-			}
+				x = iXBlock * nXBlockSize;
+				y = iYBlock * nYBlockSize;
+				RASTER_DEBUGF(4, "(iXBlock, iYBlock) = (%d, %d)", iXBlock, iYBlock);
+				RASTER_DEBUGF(4, "(x, y) = (%d, %d)", x, y);
 
-			RASTER_DEBUGF(5, "Setting line %d with %d elements", y, width);
-			if (!rt_band_set_pixel_line(band, 0, y, values, width)) {
-				rterror("rt_raster_from_gdal_dataset: Unable to save data from GDAL band");
-				rt_raster_destroy(rast);
-				return NULL;
+				/* valid block width */
+				if ((iXBlock + 1) * nXBlockSize > width)
+					nXValid = width - (iXBlock * nXBlockSize);
+				else
+					nXValid = nXBlockSize;
+
+				/* valid block height */
+				if ((iYBlock + 1) * nYBlockSize > height)
+					nYValid = height - (iYBlock * nYBlockSize);
+				else
+					nYValid = nYBlockSize;
+
+				RASTER_DEBUGF(4, "(nXValid, nYValid) = (%d, %d)", nXValid, nYValid);
+
+				cplerr = GDALRasterIO(
+					gdband, GF_Read,
+					x, y,
+					nXValid, nYValid,
+					values, nXValid, nYValid,
+					gdpixtype,
+					0, 0
+				);
+				if (cplerr != CE_None) {
+					rterror("rt_raster_from_gdal_dataset: Unable to get data from transformed raster\n");
+					rtdealloc(values);
+					rt_raster_destroy(rast);
+					return NULL;
+				}
+
+				ptr = values;
+				for (iY = 0; iY < nYValid; iY++) {
+					x = nXBlockSize * iXBlock;
+					y = iY + (nYBlockSize * iYBlock);
+
+					RASTER_DEBUGF(4, "Setting pixel line at (%d, %d) for %d pixels", x, y, nXValid);
+					rt_band_set_pixel_line(band, x, y, ptr, nXValid);
+					ptr += (nXValid * ptlen);
+				}
 			}
 		}
 
 		/* free memory */
-		switch (gdpixtype) {
-			case GDT_Byte:
-				rtdealloc(valuesUint8);
-				break;
-			case GDT_UInt16:
-				rtdealloc(valuesUint16);
-				break;
-			case GDT_Int16:
-				rtdealloc(valuesInt16);
-				break;
-			case GDT_UInt32:
-				rtdealloc(valuesUint32);
-				break;
-			case GDT_Int32:
-				rtdealloc(valuesInt32);
-				break;
-			case GDT_Float32:
-				rtdealloc(valuesFlt);
-				break;
-			case GDT_Float64:
-				rtdealloc(valuesDbl);
-				break;
-			default:
-				/* should NEVER get here */
-				rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
-				rt_raster_destroy(rast);
-				return NULL;
-				break;
-		}
+		rtdealloc(values);
 	}
 
 	return rast;
