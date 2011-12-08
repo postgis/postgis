@@ -3038,19 +3038,18 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	if ( gserialized_is_empty(geom1) && gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(TRUE);
 
-
 	/*
-	 * short-circuit: if geom2 bounding box does not equal
-	 * geom1 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
+	 * short-circuit: Loose test, if they don't intersect they
+	 * sure can't be equal.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	     gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( FP_NEQUALS(box2.xmax, box1.xmax) ) PG_RETURN_BOOL(FALSE);
-		if ( FP_NEQUALS(box2.xmin, box1.xmin) ) PG_RETURN_BOOL(FALSE);
-		if ( FP_NEQUALS(box2.ymax, box1.ymax) ) PG_RETURN_BOOL(FALSE);
-		if ( FP_NEQUALS(box2.ymin, box1.ymin) ) PG_RETURN_BOOL(FALSE);
+		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
+		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
 	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
