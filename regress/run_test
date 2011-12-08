@@ -132,6 +132,8 @@ run_simple_test ()
 		| grep -v "^CONTEXT" \
 		| grep -v "^UPDATE" \
 		| grep -v "^DROP" \
+		| grep -v "^VACUUM" \
+		| grep -v "^ANALYZE" \
 		| grep -v "^CREATE" \
 		| grep -v "^SET" \
 		| grep -v "^LINE [0-9]" \
