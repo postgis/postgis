@@ -168,6 +168,46 @@ static void do_gml3_unsupported(char * in, char * out)
 	lwgeom_free(g);
 }
 
+static void do_gml2_extent_test(char * in, char * out, char * srs,
+                                   double precision, char * prefix)
+{
+	LWGEOM *g;
+	char *h;
+
+	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	h = lwgeom_extent_to_gml2(g, srs, precision, prefix);
+	if ( ! h ) h = cu_error_msg;
+
+	if (strcmp(h, out))
+		fprintf(stderr, "\nEXT GML 2 - In:   %s\nObt: %s\nExp: %s\n",
+		        in, h, out);
+	CU_ASSERT_STRING_EQUAL(out, h);
+	cu_error_msg_reset();
+
+	lwfree(h);
+	lwgeom_free(g);
+}
+
+static void do_gml3_extent_test(char * in, char * out, char * srs,
+                                double precision, int opts, char* prefix)
+{
+	LWGEOM *g;
+	char *h;
+
+	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
+	h = lwgeom_extent_to_gml3(g, srs, precision, opts, prefix);
+	if ( ! h ) h = cu_error_msg;
+
+	if (strcmp(h, out))
+		fprintf(stderr, "\nEXT GML 3 - In:   %s\nObt: %s\nExp: %s\n",
+		        in, h, out);
+	CU_ASSERT_STRING_EQUAL(out, h);
+	cu_error_msg_reset();
+
+	lwfree(h);
+	lwgeom_free(g);
+}
+
 
 static void out_gml_test_precision(void)
 {
@@ -945,6 +985,139 @@ static void out_gml_test_geoms_nodims(void)
 	    NULL, 0, 0, 0, "");
 }
 
+static void out_gml2_extent(void)
+{
+	/* GML2: Point */
+	do_gml2_extent_test(
+	    "POINT(-15 60)",
+	    "<Box><coordinates>-15,60 -15,60</coordinates></Box>",
+	    NULL, 15, "");
+	do_gml2_extent_test(
+	    "POINT(-15 60)",
+	    "<gml:Box><gml:coordinates>-15,60 -15,60</gml:coordinates></gml:Box>",
+	    NULL, 15, "gml:");
+	do_gml2_extent_test(
+	    "POINT(-15 60)",
+	    "<Box srsName=\"urn:ogc:def:crs:EPSG::4326\"><coordinates>-15,60 -15,60</coordinates></Box>",
+	    "urn:ogc:def:crs:EPSG::4326", 15, "");
+
+	/* GML2: Multipoint */
+	do_gml2_extent_test(
+	    "MULTIPOINT(2 3, -5 -6)",
+	    "<Box><coordinates>-5,-6 2,3</coordinates></Box>",
+	    NULL, 15, "");
+
+	/* GML2: Linestring */
+	do_gml2_extent_test(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<Box><coordinates>0,1 4,5</coordinates></Box>",
+	    NULL, 15, "");
+
+	/* GML2: MultiLinestring */
+	do_gml2_extent_test(
+	    "MULTILINESTRING((0 1,2 3),(4 5, 10 6))",
+	    "<Box><coordinates>0,1 10,6</coordinates></Box>",
+	    NULL, 15, "");
+
+	/* GML2: Polygon */
+	do_gml2_extent_test(
+	    "POLYGON((1 7,7 14, 14 7, 1 7))",
+	    "<Box><coordinates>1,7 14,14</coordinates></Box>",
+	    NULL, 15, "");
+
+	/* GML2: MultiPolygon */
+	do_gml2_extent_test(
+	    "MULTIPOLYGON(((1 7,7 14, 14 7, 1 7)),((-4 -6, -15 3, 0 0, -4 -6))))",
+	    "<Box><coordinates>-15,-6 14,14</coordinates></Box>",
+	    NULL, 15, "");
+
+	/* GML2: MultiSurface */
+	do_gml2_extent_test(
+	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
+	    "<Box><coordinates>-2,-1 10,14</coordinates></Box>",
+	    NULL, 15, "");
+
+	/* GML2: empty (FIXME) */
+	do_gml2_extent_test(
+	    "GEOMETRYCOLLECTION EMPTY",
+	    "<Box><coordinates>0,0 0,0</coordinates></Box>",
+	    NULL, 15, "");
+
+}
+
+static void out_gml3_extent(void)
+{
+	/* GML3: Point */
+	do_gml3_extent_test(
+	    "POINT(-15 60)",
+	    "<Envelope><lowerCorner>-15 60</lowerCorner><upperCorner>-15 60</upperCorner></Envelope>",
+	    NULL, 15, 0, "");
+	do_gml3_extent_test(
+	    "POINT(-15 60)",
+	    "<gml:Envelope><gml:lowerCorner>-15 60</gml:lowerCorner><gml:upperCorner>-15 60</gml:upperCorner></gml:Envelope>",
+	    NULL, 15, 0, "gml:");
+	do_gml3_extent_test(
+	    "POINT(-15 60)",
+	    "<Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\"><lowerCorner>-15 60</lowerCorner><upperCorner>-15 60</upperCorner></Envelope>",
+	    "urn:ogc:def:crs:EPSG::4326", 15, 0, "");
+
+	/* GML3: Multipoint */
+	do_gml3_extent_test(
+	    "MULTIPOINT(2 3, -5 -6)",
+	    "<Envelope><lowerCorner>-5 -6</lowerCorner><upperCorner>2 3</upperCorner></Envelope>",
+	    NULL, 15, 0, "");
+
+	/* GML3: Linestring */
+	do_gml3_extent_test(
+	    "LINESTRING(0 1,2 3,4 5)",
+	    "<Envelope><lowerCorner>0 1</lowerCorner><upperCorner>4 5</upperCorner></Envelope>",
+	    NULL, 15, 0, "");
+
+	/* GML3: MultiLinestring */
+	do_gml3_extent_test(
+	    "MULTILINESTRING((0 1,2 3),(4 5, 10 6))",
+	    "<Envelope><lowerCorner>0 1</lowerCorner><upperCorner>10 6</upperCorner></Envelope>",
+	    NULL, 15, 0, "");
+	do_gml3_extent_test(
+	    "MULTILINESTRING((0 1,2 3),(4 5, 10 6))",
+	    "<Envelope><lowerCorner>1 0</lowerCorner><upperCorner>6 10</upperCorner></Envelope>",
+	    NULL, 15, LW_GML_IS_DEGREE, "");
+	do_gml3_extent_test(
+	    "MULTILINESTRING((0 1,2 3),(4 5, 10 6))",
+	    "<Envelope srsDimension=\"2\"><lowerCorner>1 0</lowerCorner><upperCorner>6 10</upperCorner></Envelope>",
+	    NULL, 15, LW_GML_IS_DEGREE|LW_GML_IS_DIMS, "");
+	do_gml3_extent_test(
+	    "MULTILINESTRING((0 1 10,2 3 30),(4 5 50, 10 6 -70))",
+	    "<Envelope srsDimension=\"3\"><lowerCorner>1 0 -70</lowerCorner><upperCorner>6 10 50</upperCorner></Envelope>",
+	    NULL, 15, LW_GML_IS_DEGREE|LW_GML_IS_DIMS, "");
+
+	/* GML3: Polygon */
+	do_gml3_extent_test(
+	    "POLYGON((1 7,7 14, 14 7, 1 7))",
+	    "<Envelope><lowerCorner>1 7</lowerCorner><upperCorner>14 14</upperCorner></Envelope>",
+	    NULL, 15, 0, "");
+
+	/* GML3: MultiPolygon */
+	do_gml3_extent_test(
+	    "MULTIPOLYGON(((1 7,7 14, 14 7, 1 7)),((-4 -6, -15 3, 0 0, -4 -6))))",
+	    "<Envelope><lowerCorner>-15 -6</lowerCorner><upperCorner>14 14</upperCorner></Envelope>",
+	    NULL, 15, 0, "");
+
+	/* GML3: MultiSurface */
+	do_gml3_extent_test(
+	    "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
+	    "<Envelope><lowerCorner>-2 -1</lowerCorner><upperCorner>10 14</upperCorner></Envelope>",
+	    NULL, 15, 0, "");
+
+	/* GML3: empty (FIXME) */
+	do_gml3_extent_test(
+	    "GEOMETRYCOLLECTION EMPTY",
+	    "<Envelope><lowerCorner>0 0</lowerCorner><upperCorner>0 0</upperCorner></Envelope>",
+	    NULL, 15, 0, "");
+
+}
+
+
 
 
 /*
@@ -959,6 +1132,8 @@ CU_TestInfo out_gml_tests[] =
 	PG_TEST(out_gml_test_geoms),
 	PG_TEST(out_gml_test_geoms_prefix),
 	PG_TEST(out_gml_test_geoms_nodims),
+	PG_TEST(out_gml2_extent),
+	PG_TEST(out_gml3_extent),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo out_gml_suite = {"GML Out Suite",  NULL,  NULL, out_gml_tests};

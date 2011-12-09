@@ -53,10 +53,16 @@ static size_t pointArray_toGML3(POINTARRAY *pa, char *buf, int precision, int op
 
 static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
 
+static const GBOX *
+lwgeom_get_bbox(const LWGEOM *lwg)
+{
+	/* if ( ! lwg->bbox ) lwnotice("Adding a bbox"); */
+	lwgeom_add_bbox((LWGEOM *)lwg); /* adds one if not already there */
+	return lwg->bbox;
+}
 
-
-extern char *
-lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix)
+static char *
+gbox_to_gml2(const GBOX *bbox, const char *srs, int precision, const char *prefix)
 {
 	int size;
         POINT4D pt;
@@ -64,32 +70,16 @@ lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const 
 	char *ptr, *output;
 	size_t prefixlen = strlen(prefix);
 
-	switch (geom->type)
-	{
-	case POINTTYPE:
-	case LINETYPE:
-	case POLYGONTYPE:
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-		break;
+        pa = ptarray_construct_empty(FLAGS_GET_Z(bbox->flags), 0, 2);
 
-	default:
-		lwerror("lwgeom_extent_to_gml2: '%s' geometry type not supported", lwtype_name(geom->type));
-		return NULL;
-        }
-
-        pa = ptarray_construct_empty(FLAGS_GET_Z(geom->flags), 0, 2);
-
-        pt.x = geom->bbox->xmin; 
-        pt.y = geom->bbox->ymin; 
-        if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmin; 
+        pt.x = bbox->xmin; 
+        pt.y = bbox->ymin; 
+        if (FLAGS_GET_Z(bbox->flags)) pt.z = bbox->zmin; 
         ptarray_append_point(pa, &pt, LW_TRUE);
     
-        pt.x = geom->bbox->xmax; 
-        pt.y = geom->bbox->ymax; 
-        if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmax; 
+        pt.x = bbox->xmax; 
+        pt.y = bbox->ymax; 
+        if (FLAGS_GET_Z(bbox->flags)) pt.z = bbox->zmax; 
         ptarray_append_point(pa, &pt, LW_TRUE);
 
 	size = pointArray_GMLsize(pa, precision);
@@ -109,57 +99,46 @@ lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const 
 
 	return output;
 }
-	
 
-extern char *
-lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix)
+static char *
+gbox_to_gml3(const GBOX *bbox, const char *srs, int precision, int opts, const char *prefix)
 {
 	int size;
         POINT4D pt;
         POINTARRAY *pa;
 	char *ptr, *output;
 	size_t prefixlen = strlen(prefix);
+	int dimension = 2;
 
-	switch (geom->type)
-	{
-	case POINTTYPE:
-	case LINETYPE:
-	case POLYGONTYPE:
-	case MULTIPOINTTYPE:
-	case MULTILINETYPE:
-	case MULTIPOLYGONTYPE:
-	case COLLECTIONTYPE:
-		break;
+        if (FLAGS_GET_Z(bbox->flags)) dimension = 3;
 
-	default:
-		lwerror("lwgeom_extent_to_gml3: '%s' geometry type not supported", lwtype_name(geom->type));
-		return NULL;
-        }
+        pa = ptarray_construct_empty(FLAGS_GET_Z(bbox->flags), 0, 1);
 
-        pa = ptarray_construct_empty(FLAGS_GET_Z(geom->flags), 0, 1);
-
-        pt.x = geom->bbox->xmin;
-        pt.y = geom->bbox->ymin; 
-        if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmin; 
+        pt.x = bbox->xmin;
+        pt.y = bbox->ymin; 
+        if (FLAGS_GET_Z(bbox->flags)) pt.z = bbox->zmin; 
         ptarray_append_point(pa, &pt, LW_TRUE);
 
 	size = pointArray_GMLsize(pa, precision) * 2;
 	size += ( sizeof("<Envelope><lowerCorner><upperCorner>//") + (prefixlen*3) ) * 2;
 	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+	if ( IS_DIMS(opts) ) size += sizeof(" srsDimension=. .");
 
 	ptr = output = lwalloc(size);
 
-	if ( srs ) ptr += sprintf(ptr, "<%sEnvelope srsName=\"%s\">", prefix, srs);
-	else       ptr += sprintf(ptr, "<%sEnvelope>", prefix);
+	ptr += sprintf(ptr, "<%sEnvelope", prefix);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+	if ( IS_DIMS(opts) ) ptr += sprintf(ptr, " srsDimension=\"%d\"", dimension);
+	ptr += sprintf(ptr, ">");
 
 	ptr += sprintf(ptr, "<%slowerCorner>", prefix);
 	ptr += pointArray_toGML3(pa, ptr, precision, opts);
 	ptr += sprintf(ptr, "</%slowerCorner>", prefix);
 
         ptarray_remove_point(pa, 0);
-        pt.x = geom->bbox->xmax;
-        pt.y = geom->bbox->ymax; 
-        if (FLAGS_GET_Z(geom->flags)) pt.z = geom->bbox->zmax; 
+        pt.x = bbox->xmax;
+        pt.y = bbox->ymax; 
+        if (FLAGS_GET_Z(bbox->flags)) pt.z = bbox->zmax; 
         ptarray_append_point(pa, &pt, LW_TRUE);
 
 	ptr += sprintf(ptr, "<%supperCorner>", prefix);
@@ -171,6 +150,31 @@ lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int op
         ptarray_free(pa);
 
 	return output;
+}
+
+
+extern char *
+lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix)
+{
+	const GBOX* bbox = lwgeom_get_bbox(geom);
+	if ( ! bbox ) {
+		lwerror("lwgeom_extent_to_gml2: empty geometry doesn't have a bounding box");
+		return NULL;
+	}
+	char *ret = gbox_to_gml2(bbox, srs, precision, prefix);
+	return ret;
+}
+	
+
+extern char *
+lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix)
+{
+	const GBOX* bbox = lwgeom_get_bbox(geom);
+	if ( ! bbox ) {
+		lwerror("lwgeom_extent_to_gml3: empty geometry doesn't have a bounding box");
+		return NULL;
+	}
+	return gbox_to_gml3(bbox, srs, precision, opts, prefix);
 }
 	
 	
