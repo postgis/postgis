@@ -542,6 +542,9 @@ lwgeom_drop_bbox(LWGEOM *lwgeom)
 void
 lwgeom_add_bbox(LWGEOM *lwgeom)
 {
+	/* an empty LWGEOM has no bbox */
+	if( lwgeom_is_empty(lwgeom) ) return;
+
 	if ( lwgeom->bbox ) return;
 	FLAGS_SET_BBOX(lwgeom->flags, 1);
 	lwgeom->bbox = gbox_new(lwgeom->flags);

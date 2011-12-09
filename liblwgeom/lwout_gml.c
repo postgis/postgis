@@ -70,6 +70,21 @@ gbox_to_gml2(const GBOX *bbox, const char *srs, int precision, const char *prefi
 	char *ptr, *output;
 	size_t prefixlen = strlen(prefix);
 
+	if ( ! bbox ) {
+		size = ( sizeof("<Box>/") + (prefixlen*2) ) * 2;
+		if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+
+		ptr = output = lwalloc(size);
+
+		ptr += sprintf(ptr, "<%sBox", prefix);
+
+		if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+
+		ptr += sprintf(ptr, "/>");
+
+		return output;
+	}
+
         pa = ptarray_construct_empty(FLAGS_GET_Z(bbox->flags), 0, 2);
 
         pt.x = bbox->xmin; 
@@ -109,6 +124,20 @@ gbox_to_gml3(const GBOX *bbox, const char *srs, int precision, int opts, const c
 	char *ptr, *output;
 	size_t prefixlen = strlen(prefix);
 	int dimension = 2;
+
+	if ( ! bbox ) {
+		size = ( sizeof("<Envelope>/") + (prefixlen*2) ) * 2;
+		if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+
+		ptr = output = lwalloc(size);
+
+		ptr += sprintf(ptr, "<%sEnvelope", prefix);
+		if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+
+		ptr += sprintf(ptr, "/>");
+
+		return output;
+	}
 
         if (FLAGS_GET_Z(bbox->flags)) dimension = 3;
 
@@ -157,10 +186,12 @@ extern char *
 lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char *prefix)
 {
 	const GBOX* bbox = lwgeom_get_bbox(geom);
+/*
 	if ( ! bbox ) {
 		lwerror("lwgeom_extent_to_gml2: empty geometry doesn't have a bounding box");
 		return NULL;
 	}
+*/
 	char *ret = gbox_to_gml2(bbox, srs, precision, prefix);
 	return ret;
 }
@@ -170,10 +201,12 @@ extern char *
 lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix)
 {
 	const GBOX* bbox = lwgeom_get_bbox(geom);
+/*
 	if ( ! bbox ) {
 		lwerror("lwgeom_extent_to_gml3: empty geometry doesn't have a bounding box");
 		return NULL;
 	}
+*/
 	return gbox_to_gml3(bbox, srs, precision, opts, prefix);
 }
 	

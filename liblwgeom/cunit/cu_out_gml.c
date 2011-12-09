@@ -176,7 +176,7 @@ static void do_gml2_extent_test(char * in, char * out, char * srs,
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	h = lwgeom_extent_to_gml2(g, srs, precision, prefix);
-	if ( ! h ) h = cu_error_msg;
+	if ( ! h ) h = strdup(cu_error_msg);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nEXT GML 2 - In:   %s\nObt: %s\nExp: %s\n",
@@ -196,7 +196,7 @@ static void do_gml3_extent_test(char * in, char * out, char * srs,
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	h = lwgeom_extent_to_gml3(g, srs, precision, opts, prefix);
-	if ( ! h ) h = cu_error_msg;
+	if ( ! h ) h = strdup(cu_error_msg);
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nEXT GML 3 - In:   %s\nObt: %s\nExp: %s\n",
@@ -1037,11 +1037,17 @@ static void out_gml2_extent(void)
 	    "<Box><coordinates>-2,-1 10,14</coordinates></Box>",
 	    NULL, 15, "");
 
-	/* GML2: empty (FIXME) */
+	/* GML2: empty */
 	do_gml2_extent_test(
 	    "GEOMETRYCOLLECTION EMPTY",
-	    "<Box><coordinates>0,0 0,0</coordinates></Box>",
+	    "<Box/>",
 	    NULL, 15, "");
+
+	/* GML2: empty with srsName */
+	do_gml2_extent_test(
+	    "GEOMETRYCOLLECTION EMPTY",
+	    "<Box srsName=\"urn:ogc:def:crs:EPSG::4326\"/>",
+	    "urn:ogc:def:crs:EPSG::4326", 15, "");
 
 }
 
@@ -1109,11 +1115,17 @@ static void out_gml3_extent(void)
 	    "<Envelope><lowerCorner>-2 -1</lowerCorner><upperCorner>10 14</upperCorner></Envelope>",
 	    NULL, 15, 0, "");
 
-	/* GML3: empty (FIXME) */
+	/* GML3: empty */
 	do_gml3_extent_test(
 	    "GEOMETRYCOLLECTION EMPTY",
-	    "<Envelope><lowerCorner>0 0</lowerCorner><upperCorner>0 0</upperCorner></Envelope>",
+	    "<Envelope/>",
 	    NULL, 15, 0, "");
+
+	/* GML3: empty with srsName */
+	do_gml3_extent_test(
+	    "GEOMETRYCOLLECTION EMPTY",
+	    "<Envelope srsName=\"urn:ogc:def:crs:EPSG::4326\"/>",
+	    "urn:ogc:def:crs:EPSG::4326", 15, 0, "");
 
 }
 
