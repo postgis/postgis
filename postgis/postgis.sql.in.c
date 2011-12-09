@@ -1130,6 +1130,12 @@ CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integ
 	AS 'MODULE_PATHNAME', 'ST_MakeEnvelope'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_MakeEnvelope'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry, geometry[])
 	RETURNS geometry

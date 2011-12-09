@@ -1987,7 +1987,7 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	POINTARRAY **pa;
 	POINT4D p;
 	double x1, y1, x2, y2;
-	int srid;
+	int srid = SRID_UNKNOWN;
 
 	POSTGIS_DEBUG(2, "ST_MakeEnvelope called");
 
@@ -1995,9 +1995,11 @@ Datum ST_MakeEnvelope(PG_FUNCTION_ARGS)
 	y1 = PG_GETARG_FLOAT8(1);
 	x2 = PG_GETARG_FLOAT8(2);
 	y2 = PG_GETARG_FLOAT8(3);
-	srid = PG_GETARG_INT32(4);
+	if ( PG_NARGS() > 4 ) {
+		srid = PG_GETARG_INT32(4);
+	}
 
-	pa = (POINTARRAY**)palloc(sizeof(POINTARRAY*));
+	pa = (POINTARRAY**)palloc(sizeof(POINTARRAY**));
 	pa[0] = ptarray_construct_empty(0, 0, 5);
 
 	/* 1st point */

@@ -247,6 +247,8 @@ select '150', ST_AsEWKT(ST_force_collection(ST_setsrid('POLYGON((0 0, 1 0, 1 1, 
 
 select '151', ST_MakeEnvelope(0, 0, 1, 1, 4326);
 select '152', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1, 4326));
+select '152.1', ST_SRID(ST_MakeEnvelope(0, 0, 1, 1)) = ST_SRID('POINT(0 0)');
+select '152.2', ST_SRID(ST_SetSRID(ST_MakeEnvelope(0, 0, 1, 1), 4326));
 
 select '153', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(POINT(0 0))',1));
 select '154', ST_AsText(ST_CollectionExtract('GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POINT(0 0)))',1));
