@@ -61,10 +61,15 @@ my %ops = ();
 $aggs{"accum"} = 1;
 $aggs{"fastunion"} = 1;
 $aggs{"mem_collect"} = 1;
+$aggs{"extent"} = 1;
 
 # This are old postgis functions which might
 # still be in a dump
 my %obsoleted_function = (
+	'box3d_extent_in', 1,
+	'box3d_extent_out', 1,
+	'box3d_extent', 1,
+	'combine_bbox', 1,
 	'linefromtext', 1,
 	'linestringfromtext', 1,
 	'mlinefromtext', 1,
@@ -434,11 +439,13 @@ while( my $line = <INPUT> )
 		#print "  ARGS: [".@args."]\n";
 
 		my $wkbinvolved = 0;
+		my $box3d_extent_involved = 0;
 		for (my $i=0; $i<@args; $i++)
 		{
 			my $arg = canonicalize_typename($args[$i]);
 			$args[$i] = $arg;
 			$wkbinvolved++ if ( $arg eq 'wkb' );
+			$box3d_extent_involved++ if ( $arg eq 'box3d_extent' );
 		}
 
 		my $args = join(', ', @args);
@@ -448,6 +455,13 @@ while( my $line = <INPUT> )
 
 		# WKB type is obsoleted
 		if ( $wkbinvolved )
+		{
+			print "SKIPPING FUNC $id\n" if $DEBUG;
+			next;
+		}
+
+		# BOX3D_EXTENT involved
+		if ( $box3d_extent_involved )
 		{
 			print "SKIPPING FUNC $id\n" if $DEBUG;
 			next;
