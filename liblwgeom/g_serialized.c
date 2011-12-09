@@ -138,8 +138,11 @@ static void gbox_float_round(GBOX *gbox)
 	gbox->mmin = next_float_down(gbox->mmin);
 	gbox->mmax = next_float_up(gbox->mmax);
 
-	gbox->zmin = next_float_down(gbox->zmin);
-	gbox->zmax = next_float_up(gbox->zmax);
+	if ( FLAGS_GET_Z(gbox->flags) )
+	{
+		gbox->zmin = next_float_down(gbox->zmin);
+		gbox->zmax = next_float_up(gbox->zmax);
+	}
 }
 
 int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
