@@ -551,6 +551,15 @@ lwgeom_add_bbox(LWGEOM *lwgeom)
 	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
 }
 
+const GBOX *
+lwgeom_get_bbox(const LWGEOM *lwg)
+{
+	/* add it if not already there */
+	lwgeom_add_bbox((LWGEOM *)lwg);
+	return lwg->bbox;
+}
+
+
 /**
 * Calculate the gbox for this goemetry, a cartesian box or
 * geodetic box, depending on how it is flagged.

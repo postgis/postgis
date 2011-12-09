@@ -653,9 +653,21 @@ extern void lwgeom_drop_bbox(LWGEOM *lwgeom);
 extern void lwgeom_drop_srid(LWGEOM *lwgeom);
 
 /** 
-* Compute a bbox if not already computed 
-*/
+ * Compute a bbox if not already computed 
+ *
+ * After calling this function lwgeom->bbox is only
+ * NULL if the geometry is empty.
+ */
 extern void lwgeom_add_bbox(LWGEOM *lwgeom);
+
+/** 
+ * Get a non-empty geometry bounding box, computing and
+ * caching it if not already there
+ *
+ * NOTE: empty geometries don't have a bounding box so
+ *       you'd still get a NULL for them.
+ */
+extern const GBOX *lwgeom_get_bbox(const LWGEOM *lwgeom);
 
 /** 
 * Determine whether a LWGEOM can contain sub-geometries or not 

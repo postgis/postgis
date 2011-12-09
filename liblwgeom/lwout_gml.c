@@ -53,14 +53,6 @@ static size_t pointArray_toGML3(POINTARRAY *pa, char *buf, int precision, int op
 
 static size_t pointArray_GMLsize(POINTARRAY *pa, int precision);
 
-static const GBOX *
-lwgeom_get_bbox(const LWGEOM *lwg)
-{
-	/* if ( ! lwg->bbox ) lwnotice("Adding a bbox"); */
-	lwgeom_add_bbox((LWGEOM *)lwg); /* adds one if not already there */
-	return lwg->bbox;
-}
-
 static char *
 gbox_to_gml2(const GBOX *bbox, const char *srs, int precision, const char *prefix)
 {
