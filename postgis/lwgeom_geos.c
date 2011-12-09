@@ -1770,10 +1770,10 @@ Datum overlaps(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( box2.xmax < box1.xmin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.xmin > box1.xmax ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymax < box1.ymin ) PG_RETURN_BOOL(FALSE);
-		if ( box2.ymin > box2.ymax ) PG_RETURN_BOOL(FALSE);
+		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
+		{
+			PG_RETURN_BOOL(FALSE);
+		}
 	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -2510,8 +2510,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box2.ymax ) )
+		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2587,8 +2586,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2754,8 +2752,7 @@ Datum touches(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2823,8 +2820,7 @@ Datum disjoint(PG_FUNCTION_ARGS)
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		        ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
 			PG_RETURN_BOOL(TRUE);
 		}
@@ -3039,14 +3035,13 @@ Datum geomequals(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(TRUE);
 
 	/*
-	 * short-circuit: Loose test, if they don't intersect they
-	 * sure can't be equal.
+	 * short-circuit: Loose test, if geom2 bounding box does not overlap
+	 * geom1 bounding box we can prematurely return FALSE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	     gserialized_get_gbox_p(geom2, &box2) )
 	{
-		if ( ( box2.xmax < box1.xmin ) || ( box2.xmin > box1.xmax ) ||
-		     ( box2.ymax < box1.ymin ) || ( box2.ymin > box1.ymax ) )
+		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}

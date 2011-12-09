@@ -213,6 +213,21 @@ int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
+int gbox_overlaps_2d(const GBOX *g1, const GBOX *g2)
+{
+
+	/* Make sure our boxes are consistent */
+	if ( FLAGS_GET_GEODETIC(g1->flags) != FLAGS_GET_GEODETIC(g2->flags) )
+		lwerror("gbox_overlaps: cannot compare geodetic and non-geodetic boxes");
+
+	/* Check X/Y first */
+	if ( g1->xmax < g2->xmin || g1->ymax < g2->ymin ||
+	     g1->xmin > g2->xmax || g1->ymin > g2->ymax )
+		return LW_FALSE;
+		
+	return LW_TRUE;
+}
+
 /**
 * Warning, this function is only good for x/y/z boxes, used
 * in unit testing of geodetic box generation.
