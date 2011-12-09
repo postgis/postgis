@@ -244,7 +244,8 @@ static void
 check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
 {
 	LWGEOM *g1, *g2;
-	TGEOM *tgeom;
+	TGEOM *tgeom, *tgeom2;
+	TSERIALIZED *tser;
 
 	g1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
 	if (strlen(cu_error_msg)) printf("\n[%s], %s\n", ewkt, cu_error_msg);
@@ -281,9 +282,12 @@ check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
 		}
 	}
 	CU_ASSERT(lwgeom_same(g1, g2));
-	lwfree(g2);
+	lwgeom_free(g2);
 
-	g2 = lwgeom_from_tgeom(tgeom_deserialize(tgeom_serialize(tgeom)));
+#if 0
+	tser = tgeom_serialize(tgeom);
+	tgeom2 = tgeom_deserialize(tser);
+	g2 = lwgeom_from_tgeom(tgeom2);
 	if (!lwgeom_same(g1, g2))
 	{
 		printf("\n[%s]\n, lwgeom_same II", ewkt);
@@ -300,10 +304,13 @@ check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
 		}
 	}
 	CU_ASSERT(lwgeom_same(g1, g2));
+	lwfree(tser);
+	tgeom_free(tgeom2);
+	lwgeom_free(g2);
+#endif
 
 	tgeom_free(tgeom);
 	lwgeom_free(g1);
-	lwgeom_free(g2);
 }
 
 
@@ -447,7 +454,6 @@ void polyhedralsurface_parse(void)
 void
 tin_tgeom(void)
 {
-#if 0
 	/* 2D a single face */
 	check_tgeom("TIN(((0 0,0 1,1 1,0 0)))", TINTYPE, 0, 0);
 
@@ -463,6 +469,7 @@ tin_tgeom(void)
 	/* 3D a simple polyhedron with SRID */
 	check_tgeom("SRID=4326;TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", TINTYPE, 4326, 1);
 
+#if 0
 	/* EMPTY TIN */
 	/* NOTA: This ASSERT type will change a day cf #294 */
 	check_tgeom("TIN EMPTY", COLLECTIONTYPE, 0, 0);
@@ -474,7 +481,6 @@ tin_tgeom(void)
 void
 psurface_tgeom(void)
 {
-#if 0
 	/* 2D a single face */
 	check_tgeom("POLYHEDRALSURFACE(((0 0,0 1,1 1,0 0)))", POLYHEDRALSURFACETYPE, 0, 0);
 
@@ -493,6 +499,7 @@ psurface_tgeom(void)
 	/* 4D a simple polyhedron */
 	check_tgeom("POLYHEDRALSURFACE(((0 0 0 1,0 0 1 2,0 1 0 3,0 0 0 1)),((0 0 0 4,0 1 0 5,1 0 0 6,0 0 0 4)),((0 0 0 7,1 0 0 8,0 0 1 9,0 0 0 7)),((1 0 0 10,0 1 0 11,0 0 1 12,1 0 0 10)))", POLYHEDRALSURFACETYPE, 0, 0);
 
+#if 0
 	/* EMPTY POLYHEDRALSURFACE */
 	/* NOTA: This ASSERT type will change a day cf #294 */
 	check_tgeom("POLYHEDRALSURFACE EMPTY", COLLECTIONTYPE, 0, 0);
@@ -506,8 +513,8 @@ psurface_tgeom(void)
 
 	/* 4D single face with two internal rings */
 	check_tgeom("POLYHEDRALSURFACE(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 2 3),(12 13 14 15,16 17 18 19,20 21 22 23,12 13 14 15),(16 17 18 19,20 21 22 23,24 25 26 27,16 17 18 19)))", POLYHEDRALSURFACETYPE, 0, 0);
-
 #endif
+
 }
 
 
@@ -590,4 +597,4 @@ CU_TestInfo surface_tests[] =
 	PG_TEST(surface_perimeter),
 	CU_TEST_INFO_NULL
 };
-CU_SuiteInfo surface_suite = {"Triangle, Tin and PolyhedralSurface Suite",  NULL,  NULL, surface_tests};
+CU_SuiteInfo surface_suite = {"surface",  NULL,  NULL, surface_tests};
