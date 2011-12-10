@@ -4809,7 +4809,7 @@ CREATE OR REPLACE FUNCTION AddOverviewConstraints (
 		END LOOP;
 
 		-- reference raster
-		rtn := _add_overview_constraint(oschema, $2, $3, rschema, $5, $6, 7);
+		rtn := _add_overview_constraint(oschema, $2, $3, rschema, $5, $6, $7);
 		IF rtn IS FALSE THEN
 			RAISE EXCEPTION 'Unable to add the overview constraint.  Is the schema name, table name or column name incorrect?';
 			RETURN FALSE;
