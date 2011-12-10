@@ -1156,14 +1156,14 @@ FROM (SELECT ST_MetaData(rast) As rmd
 					<title>Examples: Multi-Band versions</title>
 				
 					<programlisting>-- Aggregate the 1st band of a table of like rasters into a single raster 
--- with as many bands as there are test_types and as many rows as there are time_slots
+-- with as many bands as there are test_types and as many rows (new rasters) as there are mice
 -- NOTE: The ORDER BY test_type is only supported in PostgreSQL 9.0
 -- for 8.4 and below it usually works to order your data in a subselect (but not guaranteed)
 -- The resulting raster will have a band for each test_type alphabetical by test_type
 -- For mouse lovers: No mice were harmed in this exercise
-SELECT rabbit, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast 
+SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast 
 	FROM mice_studies
-			GROUP BY mice; 	
+			GROUP BY mouse; 	
 					</programlisting>
 			
 			</refsection>
