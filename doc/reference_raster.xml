@@ -1157,7 +1157,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
 				
 					<programlisting>-- Aggregate the 1st band of a table of like rasters into a single raster 
 -- with as many bands as there are test_types and as many rows (new rasters) as there are mice
--- NOTE: The ORDER BY test_type is only supported in PostgreSQL 9.0
+-- NOTE: The ORDER BY test_type is only supported in PostgreSQL 9.0+
 -- for 8.4 and below it usually works to order your data in a subselect (but not guaranteed)
 -- The resulting raster will have a band for each test_type alphabetical by test_type
 -- For mouse lovers: No mice were harmed in this exercise
