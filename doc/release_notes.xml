@@ -107,7 +107,8 @@
       <sect1>
         <title>Release 1.5.3</title>
         <para>Release date: 2011/06/25</para>
-        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.2 release.</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.2 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient
+        	otherwise a hard upgrade is recommended.</para>
         <simplesect>
           <title>Bug Fixes</title>
                 <para>#1056, produce correct bboxes for arc geometries, fixes index errors
@@ -144,7 +145,8 @@
       <sect1>
         <title>Release 1.5.2</title>
         <para>Release date: 2010/09/27</para>
-        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.1 release.</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient
+        	otherwise a hard upgrade is recommended.</para>
         <simplesect>
           <title>Bug Fixes</title>
            <para>Loader: fix handling of empty (0-verticed) geometries in shapefiles. (Sandro Santilli)</para>
@@ -174,7 +176,8 @@
       <sect1>
         <title>Release 1.5.1</title>
         <para>Release date: 2010/03/11</para>
-        <para>This is a bug fix release, addressing issues that have been filed since the 1.4.1 release.</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.4.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient
+        	otherwise a hard upgrade is recommended.</para>
         <simplesect>
           <title>Bug Fixes</title>
            <para>#410, update embedded bbox when applying ST_SetPoint, ST_AddPoint ST_RemovePoint to a linestring (Paul Ramsey)</para>
@@ -257,7 +260,9 @@
       <sect1>
         <title>Release 1.4.0</title>
         <para>Release date: 2009/07/24</para>
-        <para>This release provides performance enhancements, improved internal structures and testing, new features, and upgraded documentation.</para>
+        <para>This release provides performance enhancements, improved internal structures and testing, new features, and upgraded documentation.
+        If you are running PostGIS 1.1+, a soft upgrade is sufficient
+        	otherwise a hard upgrade is recommended.</para>
   
         <simplesect>
           <title>API Stability</title>
@@ -321,7 +326,8 @@
 	  <sect1>
         <title>Release 1.3.6</title>
         <para>Release date: 2009/05/04</para>
-        <para>This release adds support for PostgreSQL 8.4, exporting
+        <para>If you are running PostGIS 1.1+, a soft upgrade is sufficient
+        	otherwise a hard upgrade is recommended. This release adds support for PostgreSQL 8.4, exporting
         prj files from the database with shape data, some crash fixes for shp2pgsql, and several small
         bug fixes in the handling of "curve" types, logical error importing dbf only files, improved error handling of AddGeometryColumns.</para>
       </sect1>
@@ -329,7 +335,8 @@
       <sect1>
         <title>Release 1.3.5</title>
         <para>Release date: 2008/12/15</para>
-        <para>This release is a bug fix release to address a failure
+        <para>If you are running PostGIS 1.1+, a soft upgrade is sufficient
+        	otherwise a hard upgrade is recommended. This release is a bug fix release to address a failure
         in ST_Force_Collection and related functions that critically
         affects using MapServer with LINE layers.</para>
       </sect1>
