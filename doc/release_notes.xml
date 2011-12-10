@@ -5,7 +5,9 @@
       <sect1>
         <title>Release 2.0.0</title>
         <para>Release date: 2012/02/DD</para>
-        <para>This is a major release.  A full dump reload is required. Refer to <xref linkend="NewFunctions_2_0" /> for more details.</para>
+        <para>This is a major release.  A hard upgrade is required.  Yes this means a full dump reload and some special preparations if you are using obsolete functions. Refer
+        to <xref linkend="hard_upgrade" /> for details on upgrading.
+        Refer to <xref linkend="NewFunctions_2_0" /> for more details and changed/new functions.</para>
        <simplesect>
         	<title>Testers - Our unsung heroes</title>
         	<para>We are most indebted to the numerous members in the PostGIS community 
