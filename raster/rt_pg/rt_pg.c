@@ -348,7 +348,11 @@ rtpg_chartrim(const char *input, char *remove) {
 	while (strchr(remove, *--ptr) != NULL);
 	*(++ptr) = '\0';
 
-	rtn = rtalloc(sizeof(char) * (strlen(input) + 1));
+	rtn = palloc(sizeof(char) * (strlen(input) + 1));
+	if (rtn == NULL) {
+		fprintf(stderr, "Not enough memory\n");
+		return NULL;
+	}
 	strcpy(rtn, input);
 
 	return rtn;
@@ -458,7 +462,11 @@ rtpg_trim(const char *input) {
 	while (isspace(*--ptr));
 	*(++ptr) = '\0';
 
-	rtn = rtalloc(sizeof(char) * (strlen(input) + 1));
+	rtn = palloc(sizeof(char) * (strlen(input) + 1));
+	if (rtn == NULL) {
+		fprintf(stderr, "Not enough memory\n");
+		return NULL;
+	}
 	strcpy(rtn, input);
 
 	return rtn;
