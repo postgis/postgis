@@ -89,3 +89,4 @@ NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raste
 NOTICE:  rt_raster_copy_band: Second raster has no band
 NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
 1234.5678
+90

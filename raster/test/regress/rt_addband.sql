@@ -111,3 +111,5 @@ SELECT St_Value(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1
 SELECT St_Value(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0,-1), 1, '64BF', 1234.5678, NULL), ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1), 1, 1), 3, 3);
 SELECT St_Value(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0,-1), 1, '64BF', 1234.5678, NULL), ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1), 1), 3, 3);
 SELECT St_Value(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0,-1), 1, '64BF', 1234.5678, NULL), ST_MakeEmptyRaster(1000, 1000, 10, 10, 2, 2, 0, 0, -1)), 3, 3);
+-- array version test
+SELECT (ST_DumpAsPolygons(newrast,3)).val As b3val FROM (SELECT ST_AddBand(NULL, array_agg(rast)) AS newrast FROM (SELECT ST_AsRaster(ST_Buffer(ST_Point(10,10), 34),200,200, '8BUI',i*30) As rast FROM generate_series(1,3) As i ) As foo ) As foofoo;
