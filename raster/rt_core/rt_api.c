@@ -887,77 +887,119 @@ rt_pixtype_get_min_value(rt_pixtype pixtype) {
 
 /*- rt_band ----------------------------------------------------------*/
 
+/**
+ * Create an in-db rt_band with no data
+ *
+ * @param width     : number of pixel columns
+ * @param height    : number of pixel rows
+ * @param pixtype   : pixel type for the band
+ * @param hasnodata : indicates if the band has nodata value
+ * @param nodataval : the nodata value, will be appropriately
+ *                    truncated to fit the pixtype size.
+ * @param data      : pointer to actual band data, required to
+ *                    be aligned accordingly to
+ *                    rt_pixtype_aligment(pixtype) and big enough
+ *                    to hold raster width*height values.
+ *                    Data will NOT be copied, ownership is left
+ *                    to caller which is responsible to keep it
+ *                    allocated for the whole lifetime of the returned
+ *                    rt_band.
+ *
+ * @return an rt_band, or 0 on failure
+ */
 rt_band
-rt_band_new_inline(uint16_t width, uint16_t height,
-        rt_pixtype pixtype, uint32_t hasnodata, double nodataval,
-        uint8_t* data) {
-    rt_band band = NULL;
+rt_band_new_inline(
+	uint16_t width, uint16_t height,
+	rt_pixtype pixtype,
+	uint32_t hasnodata, double nodataval,
+	uint8_t* data
+) {
+	rt_band band = NULL;
 
+	assert(NULL != data);
 
-    assert(NULL != data);
+	band = rtalloc(sizeof(struct rt_band_t));
+	if (band == NULL) {
+		rterror("rt_band_new_inline: Out of memory allocating rt_band");
+		return NULL;
+	}
 
-    band = rtalloc(sizeof (struct rt_band_t));
-    if (!band) {
-        rterror("rt_band_new_inline: Out of memory allocating rt_band");
-        return 0;
-    }
+	RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
+		band, rt_pixtype_name(pixtype)
+	);
 
-    RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
-            band, rt_pixtype_name(pixtype));
+	band->pixtype = pixtype;
+	band->offline = 0;
+	band->width = width;
+	band->height = height;
+	band->hasnodata = hasnodata;
+	band->nodataval = nodataval;
+	band->data.mem = data;
+	band->ownsData = 0;
+	band->isnodata = FALSE;
 
-
-    band->pixtype = pixtype;
-    band->offline = 0;
-    band->width = width;
-    band->height = height;
-    band->hasnodata = hasnodata;
-    band->nodataval = nodataval;
-    band->data.mem = data;
-    band->ownsData = 0;
-    band->isnodata = FALSE;
-
-    return band;
+	return band;
 }
 
+/**
+ * Create an out-db rt_band
+ *
+ * @param width     : number of pixel columns
+ * @param height    : number of pixel rows
+ * @param pixtype   : pixel type for the band
+ * @param nodataval : the nodata value, will be appropriately
+ *                    truncated to fit the pixtype size.
+ * @param bandNum   : 0-based band number in the external file
+ *                    to associate this band with.
+ * @param path      : NULL-terminated path string pointing to the file
+ *                    containing band data. The string will NOT be
+ *                    copied, ownership is left to caller which is
+ *                    responsible to keep it allocated for the whole
+ *                    lifetime of the returned rt_band.
+ *
+ * @return an rt_band, or 0 on failure
+ */
 rt_band
-rt_band_new_offline(uint16_t width, uint16_t height,
-        rt_pixtype pixtype, uint32_t hasnodata, double nodataval,
-        uint8_t bandNum, const char* path) {
-    rt_band band = NULL;
+rt_band_new_offline(
+	uint16_t width, uint16_t height,
+	rt_pixtype pixtype,
+	uint32_t hasnodata, double nodataval,
+	uint8_t bandNum, const char* path
+) {
+	rt_band band = NULL;
 
+	assert(NULL != path);
 
-    assert(NULL != path);
+	band = rtalloc(sizeof(struct rt_band_t));
+	if (band == NULL) {
+		rterror("rt_band_new_offline: Out of memory allocating rt_band");
+		return NULL;
+	}
 
-    band = rtalloc(sizeof (struct rt_band_t));
-    if (!band) {
-        rterror("rt_band_new_offline: Out of memory allocating rt_band");
-        return 0;
-    }
+	RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
+		band, rt_pixtype_name(pixtype)
+	); 
 
+	band->pixtype = pixtype;
+	band->offline = 1;
+	band->width = width;
+	band->height = height;
+	band->hasnodata = hasnodata;
+	band->nodataval = nodataval;
+	band->isnodata = FALSE;
 
-    RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
-            band, rt_pixtype_name(pixtype));
+	/* XXX QUESTION (jorgearevalo): What does exactly ownsData mean?? I think that
+	 * ownsData = 0 ==> the memory for band->data is externally owned
+	 * ownsData = 1 ==> the memory for band->data is internally owned
+	 */
+	band->ownsData = 0;
 
-    band->pixtype = pixtype;
-    band->offline = 1;
-    band->width = width;
-    band->height = height;
-    band->hasnodata = hasnodata;
-    band->nodataval = nodataval;
-    band->data.offline.bandNum = bandNum;
+	band->data.offline.bandNum = bandNum;
 
-    /* memory for data.offline.path should be managed externally */
-    band->data.offline.path = (char *) path;
+	/* memory for data.offline.path should be managed externally */
+	band->data.offline.path = (char *) path;
 
-    /* XXX QUESTION (jorgearevalo): What does exactly ownsData mean?? I think that
-     * ownsData = 0 ==> the memory for band->data is externally owned
-     * ownsData = 1 ==> the memory for band->data is internally owned
-     */
-    band->ownsData = 0;
-
-    band->isnodata = FALSE;
-
-    return band;
+	return band;
 }
 
 int
@@ -969,6 +1011,11 @@ rt_band_is_offline(rt_band band) {
     return band->offline;
 }
 
+/**
+ * Destroy a raster band
+ *
+ * @param band : the band to destroy
+ */
 void
 rt_band_destroy(rt_band band) {
 
@@ -3977,6 +4024,16 @@ rt_raster_get_band(rt_raster raster, int n) {
     return raster->bands[n];
 }
 
+/**
+ * Add band data to a raster.
+ *
+ * @param raster : the raster to add a band to
+ * @param band : the band to add, ownership left to caller.
+ *               Band dimensions are required to match with raster ones.
+ * @param index : the position where to insert the new band (0 based)
+ *
+ * @return identifier (position) for the just-added raster, or -1 on error
+ */
 int32_t
 rt_raster_add_band(rt_raster raster, rt_band band, int index) {
     rt_band *oldbands = NULL;
@@ -4039,7 +4096,18 @@ rt_raster_add_band(rt_raster raster, rt_band band, int index) {
     return index;
 }
 
-
+/**
+ * Generate a new inline band and add it to a raster.
+ *
+ * @param raster : the raster to add a band to
+ * @param pixtype: the pixel type for the new band
+ * @param initialvalue: initial value for pixels
+ * @param hasnodata: indicates if the band has a nodata value
+ * @param nodatavalue: nodata value for the new band
+ * @param index: position to add the new band in the raster
+ *
+ * @return identifier (position) for the just-added raster, or -1 on error
+ */
 int32_t
 rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
         double initialvalue, uint32_t hasnodata, double nodatavalue, int index)

@@ -71,16 +71,16 @@ PG_MODULE_MAGIC;
  * functions.
  ****************************************************************/
 /* Internal funcs */
-static char *rtpg_replace(
+static char *rtpg_strreplace(
 	const char *str,
 	const char *oldstr, const char *newstr,
 	int *count
 );
 static char *rtpg_strtoupper(char *str);
-static char	*rtpg_chartrim(char* input, char *remove); /* for RASTER_reclass */
-static char **rtpg_strsplit(const char *str, const char *delimiter, int *n); /* for RASTER_reclass */
-static char *rtpg_removespaces(char *str); /* for RASTER_reclass */
-static char *rtpg_trim(char* input); /* for RASTER_asGDALRaster */
+static char	*rtpg_chartrim(const char* input, char *remove);
+static char **rtpg_strsplit(const char *str, const char *delimiter, int *n);
+static char *rtpg_removespaces(char *str);
+static char *rtpg_trim(const char* input);
 static char *rtpg_getSRTextSPI(int srid);
 
 /***************************************************************
@@ -275,87 +275,83 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS);
      - Always allocates memory for the result.
 --------------------------------------------------------------------------- */
 static char*
-rtpg_replace(const char *str, const char *oldstr, const char *newstr, int *count)
-{
-   const char *tmp = str;
-   char *result;
-   int   found = 0;
-   int   length, reslen;
-   int   oldlen = strlen(oldstr);
-   int   newlen = strlen(newstr);
-   int   limit = (count != NULL && *count > 0) ? *count : -1;
+rtpg_strreplace(
+	const char *str,
+	const char *oldstr, const char *newstr,
+	int *count
+) {
+	const char *tmp = str;
+	char *result;
+	int found = 0;
+	int length, reslen;
+	int oldlen = strlen(oldstr);
+	int newlen = strlen(newstr);
+	int limit = (count != NULL && *count > 0) ? *count : -1;
 
-   tmp = str;
-   while ((tmp = strstr(tmp, oldstr)) != NULL && found != limit)
-      found++, tmp += oldlen;
+	tmp = str;
+	while ((tmp = strstr(tmp, oldstr)) != NULL && found != limit)
+		found++, tmp += oldlen;
 
-   length = strlen(str) + found * (newlen - oldlen);
+	length = strlen(str) + found * (newlen - oldlen);
+	if ((result = (char *) palloc(length + 1)) == NULL) {
+		fprintf(stderr, "Not enough memory\n");
+		found = -1;
+	}
+	else {
+		tmp = str;
+		limit = found; /* Countdown */
+		reslen = 0; /* length of current result */
 
-   if ( (result = (char *)palloc(length+1)) == NULL) {
-      fprintf(stderr, "Not enough memory\n");
-      found = -1;
-   } else {
-      tmp = str;
-      limit = found; /* Countdown */
-      reslen = 0; /* length of current result */
-      /* Replace each old string found with new string  */
-      while ((limit-- > 0) && (tmp = strstr(tmp, oldstr)) != NULL) {
-         length = (tmp - str); /* Number of chars to keep intouched */
-         strncpy(result + reslen, str, length); /* Original part keeped */
-         strcpy(result + (reslen += length), newstr); /* Insert new string */
-         reslen += newlen;
-         tmp += oldlen;
-         str = tmp;
-      }
-      strcpy(result + reslen, str); /* Copies last part and ending nul char */
-   }
-   if (count != NULL) *count = found;
-   return result;
+		/* Replace each old string found with new string  */
+		while ((limit-- > 0) && (tmp = strstr(tmp, oldstr)) != NULL) {
+			length = (tmp - str); /* Number of chars to keep intouched */
+			strncpy(result + reslen, str, length); /* Original part keeped */
+			strcpy(result + (reslen += length), newstr); /* Insert new string */
+
+			reslen += newlen;
+			tmp += oldlen;
+			str = tmp;
+		}
+		strcpy(result + reslen, str); /* Copies last part and ending null char */
+	}
+
+	if (count != NULL) *count = found;
+	return result;
 }
 
-
 static char *
-rtpg_strtoupper(char * str)
-{
-    int j;
+rtpg_strtoupper(char * str) {
+	int j;
 
-    for(j = 0; j < strlen(str); j++)
-        str[j] = toupper(str[j]);
+	for (j = strlen(str) - 1; j >= 0; j--)
+		str[j] = toupper(str[j]);
 
-    return str;
-
+	return str;
 }
 
 static char*
-rtpg_chartrim(char *input, char *remove) {
-	char *start;
-	char *ptr;
+rtpg_chartrim(const char *input, char *remove) {
+	char *rtn = NULL;
+	char *ptr = NULL;
 
-	if (!input) {
+	if (!input)
 		return NULL;
-	}
-	else if (!*input) {
-		return input;
-	}
-
-	start = (char *) palloc(sizeof(char) * strlen(input) + 1);
-	if (NULL == start) {
-		fprintf(stderr, "Not enough memory\n");
-		return NULL;
-	}
-	strcpy(start, input);
+	else if (!*input)
+		return (char *) input;
 
 	/* trim left */
-	while (strchr(remove, *start) != NULL) {
-		start++;
-	}
+	while (strchr(remove, *input) != NULL)
+		input++;
 
 	/* trim right */
-	ptr = start + strlen(start);
+	ptr = ((char *) input) + strlen(input);
 	while (strchr(remove, *--ptr) != NULL);
 	*(++ptr) = '\0';
 
-	return start;
+	rtn = rtalloc(sizeof(char) * (strlen(input) + 1));
+	strcpy(rtn, input);
+
+	return rtn;
 }
 
 /* split a string based on a delimiter */
@@ -427,46 +423,45 @@ rtpg_strsplit(const char *str, const char *delimiter, int *n) {
 static char *
 rtpg_removespaces(char *str) {
 	char *rtn;
+	char *tmp;
 
-	rtn = rtpg_replace(str, " ", "", NULL);
-	rtn = rtpg_replace(rtn, "\n", "", NULL);
-	rtn = rtpg_replace(rtn, "\t", "", NULL);
-	rtn = rtpg_replace(rtn, "\f", "", NULL);
-	rtn = rtpg_replace(rtn, "\r", "", NULL);
+	rtn = rtpg_strreplace(str, " ", "", NULL);
+
+	tmp = rtpg_strreplace(rtn, "\n", "", NULL);
+	pfree(rtn);
+	rtn = rtpg_strreplace(tmp, "\t", "", NULL);
+	pfree(tmp);
+	tmp = rtpg_strreplace(rtn, "\f", "", NULL);
+	pfree(rtn);
+	rtn = rtpg_strreplace(tmp, "\r", "", NULL);
+	pfree(tmp);
 
 	return rtn;
 }
 
 static char*
-rtpg_trim(char *input) {
-	char *start;
+rtpg_trim(const char *input) {
+	char *rtn;
 	char *ptr;
 
-	if (!input) {
+	if (!input)
 		return NULL;
-	}
-	else if (!*input) {
-		return input;
-	}
-
-	start = (char *) palloc(sizeof(char) * strlen(input) + 1);
-	if (NULL == start) {
-		fprintf(stderr, "Not enough memory\n");
-		return NULL;
-	}
-	strcpy(start, input);
+	else if (!*input)
+		return (char *) input;
 
 	/* trim left */
-	while (isspace(*start)) {
-		start++;
-	}
+	while (isspace(*input))
+		input++;
 
 	/* trim right */
-	ptr = start + strlen(start);
+	ptr = ((char *) input) + strlen(input);
 	while (isspace(*--ptr));
 	*(++ptr) = '\0';
 
-	return start;
+	rtn = rtalloc(sizeof(char) * (strlen(input) + 1));
+	strcpy(rtn, input);
+
+	return rtn;
 }
 
 static char*
@@ -2872,7 +2867,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
                     if (initexpr != NULL) {
 												count = 0;
-                        newexpr = rtpg_replace(initexpr, "RAST", strnewval, &count);
+                        newexpr = rtpg_strreplace(initexpr, "RAST", strnewval, &count);
 
                         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: (%dx%d), "
                                 "r = %s, newexpr = %s",
@@ -8595,16 +8590,21 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			*/
 			for (i = 0; i < spicount; i++) {
 				if (!PG_ARGISNULL(exprpos[i])) {
-					expr = rtpg_strtoupper(text_to_cstring(PG_GETARG_TEXT_P(exprpos[i])));
-					POSTGIS_RT_DEBUGF(3, "raw expr #%d: %s", i, expr);
+					char *tmp = rtpg_strtoupper(text_to_cstring(PG_GETARG_TEXT_P(exprpos[i])));
+					POSTGIS_RT_DEBUGF(3, "raw expr #%d: %s", i, tmp);
+
 					len = 0;
-					expr = rtpg_replace(expr, "RAST1", "$1", &len);
+					expr = rtpg_strreplace(tmp, "RAST1", "$1", &len);
+					pfree(tmp);
 					if (len) {
 						argcount[i]++;
 						argexists[i][0] = 1;
 					}
+
 					len = 0;
-					expr = rtpg_replace(expr, "RAST2", (argexists[i][0] ? "$2" : "$1"), &len);
+					tmp = rtpg_strreplace(expr, "RAST2", (argexists[i][0] ? "$2" : "$1"), &len);
+					pfree(expr);
+					expr = tmp;
 					if (len) {
 						argcount[i]++;
 						argexists[i][1] = 1;

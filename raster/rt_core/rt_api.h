@@ -298,7 +298,7 @@ double rt_pixtype_get_min_value(rt_pixtype pixtype);
 /*- rt_band ----------------------------------------------------------*/
 
 /**
- * Create an in-buffer rt_band with no data
+ * Create an in-db rt_band with no data
  *
  * @param width     : number of pixel columns
  * @param height    : number of pixel rows
@@ -317,12 +317,15 @@ double rt_pixtype_get_min_value(rt_pixtype pixtype);
  *
  * @return an rt_band, or 0 on failure
  */
-rt_band rt_band_new_inline(uint16_t width, uint16_t height,
-                           rt_pixtype pixtype, uint32_t hasnodata,
-                           double nodataval, uint8_t* data);
+rt_band rt_band_new_inline(
+	uint16_t width, uint16_t height,
+	rt_pixtype pixtype,
+	uint32_t hasnodata, double nodataval,
+	uint8_t* data
+);
 
 /**
- * Create an on-disk rt_band
+ * Create an out-db rt_band
  *
  * @param width     : number of pixel columns
  * @param height    : number of pixel rows
@@ -339,9 +342,12 @@ rt_band rt_band_new_inline(uint16_t width, uint16_t height,
  *
  * @return an rt_band, or 0 on failure
  */
-rt_band rt_band_new_offline(uint16_t width, uint16_t height,
-                            rt_pixtype pixtype, uint32_t hasnodata,
-                            double nodataval, uint8_t bandNum, const char* path);
+rt_band rt_band_new_offline(
+	uint16_t width, uint16_t height,
+	rt_pixtype pixtype,
+	uint32_t hasnodata, double nodataval,
+	uint8_t bandNum, const char* path
+);
 
 /**
  * Return non-zero if the given band data is on
@@ -381,12 +387,18 @@ uint16_t rt_band_get_height(rt_band band);
  */
 void* rt_band_get_data(rt_band band);
 
-/* Destroy a raster band */
+/**
+ * Destroy a raster band
+ *
+ * @param band : the band to destroy
+ */
 void rt_band_destroy(rt_band band);
 
 /**
  * Get hasnodata flag value
+ *
  * @param band : the band on which to check the hasnodata flag
+ *
  * @return the hasnodata flag.
  */
 int rt_band_get_hasnodata_flag(rt_band band);
@@ -724,7 +736,7 @@ uint16_t rt_raster_get_height(rt_raster raster);
 int32_t rt_raster_add_band(rt_raster raster, rt_band band, int index);
 
 /**
- * Generate a new band data and add it to a raster.
+ * Generate a new inline band and add it to a raster.
  *
  * @param raster : the raster to add a band to
  * @param pixtype: the pixel type for the new band
