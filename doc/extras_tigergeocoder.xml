@@ -317,7 +317,7 @@ Total query runtime: 245 ms.
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>setof record <function>geocode</function></funcdef>
+			<funcdef>setof record <function>geocode_intersection</function></funcdef>
 			<paramdef><type>text </type> <parameter> roadway1</parameter></paramdef>
 			<paramdef><type>text </type> <parameter> roadway2</parameter></paramdef>
 			<paramdef><type>text </type> <parameter> in_state</parameter></paramdef>
