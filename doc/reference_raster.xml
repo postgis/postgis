@@ -6545,6 +6545,65 @@ UPDATE wind
 				<para><xref linkend="RT_ST_AddBand" />,<xref linkend="RT_ST_Band" />, <xref linkend="RT_ST_BandPixelType" />,<xref linkend="RT_ST_MakeEmptyRaster" />,  <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" /></para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="RT_ST_Union">
+			<refnamediv>
+				<refname>ST_Union</refname>
+				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST </refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_Union</function></funcdef>
+					<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Union</function></funcdef>
+					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer</type> <parameter>band_num</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Union</function></funcdef>
+					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text</type> <parameter>p_expression</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_Union</function></funcdef>
+					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>text</type> <parameter>p_expression</parameter></paramdef>
+					<paramdef><type>integer</type> <parameter>band_num</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST </para>
+				
+				<note><para>There are several other variants of this function not installed by default in PostGIS 2.0.0 -- these can be found in the raster/scripts/plpgsql/st_union.sql file of postgis source code.</para>
+				</note>
+				<para>Availability: 2.0.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				<!-- coming soon -->
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Envelope" />, <xref linkend="RT_ST_ConvexHull" /></para>
+			</refsection>
+		</refentry>
 	</sect1>
 	
 	<sect1 id="RT_Operators">
