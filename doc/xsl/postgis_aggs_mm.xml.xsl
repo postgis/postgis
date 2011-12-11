@@ -23,19 +23,22 @@
 			<itemizedlist>
 			<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 			<xsl:for-each select='//refentry'>
-				<xsl:sort select="@id"/>
+				<xsl:sort select="refnamediv/refname"/>
 				<xsl:variable name='comment'>
 					<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
 				</xsl:variable>
 				<xsl:variable name="refid">
 					<xsl:value-of select="@id" />
 				</xsl:variable>
+				<xsl:variable name="refname">
+					<xsl:value-of select="refnamediv/refname" />
+				</xsl:variable>
 
 			<!-- For each function prototype if it takes a geometry set then catalog it as an aggregate function  -->
 				<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
 					<xsl:choose>
 						<xsl:when test="contains(paramdef/type,' set') or contains(paramdef/type,'geography set') or contains(paramdef/type,'raster set')">
-							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refid" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
+							 <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="$comment" /></simpara></listitem>
 						</xsl:when>
 					</xsl:choose>
 				</xsl:for-each>
