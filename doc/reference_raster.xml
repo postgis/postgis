@@ -6549,7 +6549,7 @@ UPDATE wind
 		<refentry id="RT_ST_Union">
 			<refnamediv>
 				<refname>ST_Union</refname>
-				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST </refpurpose>
+				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST, MAX, MIN </refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -6586,7 +6586,7 @@ UPDATE wind
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST </para>
+				<para>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST, MAX, MIN </para>
 				
 				<note><para>There are several other variants of this function not installed by default in PostGIS 2.0.0 -- these can be found in the raster/scripts/plpgsql/st_union.sql file of postgis source code.</para>
 				</note>
