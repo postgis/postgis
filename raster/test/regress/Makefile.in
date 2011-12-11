@@ -48,6 +48,7 @@ TEST_FUNC = \
 	rt_astiff.sql \
 	rt_asjpeg.sql \
 	rt_aspng.sql \
+	rt_union.sql \
 	$(NULL)
 
 TEST_PROPS = \

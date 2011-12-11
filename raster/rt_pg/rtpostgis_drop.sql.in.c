@@ -173,6 +173,14 @@ DROP FUNCTION IF EXISTS st_bandpixeltype(raster);
 -- signature changed
 DROP FUNCTION IF EXISTS st_bandpixeltype(raster, integer);
 
+
+-- signature changed and some functions dropped --
+-- Note: I am only including the surviving variants 
+-- since some people may be using the dead ones which are in scripts 
+-- and we do not have a replace for those
+DROP AGGREGATE IF EXISTS ST_Union(raster);
+DROP AGGREGATE IF EXISTS ST_Union(raster, integer, text); 
+
 -- function no longer exists
 DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer);
 DROP FUNCTION IF EXISTS st_value(raster, integer, integer);
