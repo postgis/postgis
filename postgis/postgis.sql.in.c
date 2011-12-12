@@ -1125,13 +1125,8 @@ CREATE OR REPLACE FUNCTION ST_SetPoint(geometry, integer, geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integer)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'ST_MakeEnvelope'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8)
+-- Availability: 2.0.0 - made srid optional
+CREATE OR REPLACE FUNCTION ST_MakeEnvelope(float8, float8, float8, float8, integer DEFAULT 0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_MakeEnvelope'
 	LANGUAGE 'C' IMMUTABLE STRICT;
