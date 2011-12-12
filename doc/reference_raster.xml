@@ -6594,12 +6594,21 @@ UPDATE wind
 			</refsection>
 				
 			<refsection>
-				<title>Examples: Reconstitute a chunked raster tile</title>
+				<title>Examples: Reconstitute a single band chunked raster tile</title>
 				<programlisting>-- this creates a single band from first band of raster tiles
 -- that form the original file system tile
 SELECT filename, ST_Union(rast) As file_rast
 FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;</programlisting>
 			</refsection>
+			
+			<refsection>
+				<title>Examples: Reconstitute a single band chunked raster tile</title>
+				<programlisting>-- this creates a muli band raster collecting all the tiles that intersect a line
+SELECT ST_AddBand(NULL,ARRAY[ST_Union(rast,1), ST_Union(rast,2), ST_Union(rast,3) ])
+FROM aerials.boston
+WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );</programlisting>
+			</refsection>
+			
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
