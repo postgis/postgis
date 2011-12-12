@@ -30,7 +30,7 @@ BEGIN
         var_na_road := normalize_address('0 ' || roadway1 || ', ' || COALESCE(in_city,'') || ', ' || in_state || ' ' || in_zip);
         var_na_inter1  := normalize_address('0 ' || roadway2 || ', ' || COALESCE(in_city,'') || ', ' || in_state || ' ' || in_zip);
     END IF;
-    in_statefp := statefp FROM state_lookup As s WHERE s.abbrev = in_state;
+    in_statefp := statefp FROM state_lookup As s WHERE s.abbrev = upper(in_state);
     IF COALESCE(in_zip,'') > '' THEN -- limit search to 2 plus or minus the input zip
         var_zip := zip_range(in_zip, -2,2);
     END IF;
