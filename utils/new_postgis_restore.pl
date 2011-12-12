@@ -125,6 +125,36 @@ while( my $l = <INPUT> ) {
     next;
   }
 
+  # Rewrite spatial table constraints
+  #
+  # Example:
+  # CREATE TABLE geos_in (
+  #     id integer NOT NULL,
+  #     g public.geometry,
+  #     CONSTRAINT enforce_dims_g CHECK ((public.st_ndims(g) = 2)),
+  #     CONSTRAINT enforce_geotype_g CHECK (((public.geometrytype(g) = 'MULTILINESTRING'::text) OR (g IS NULL))),
+  #     CONSTRAINT enforce_srid_g CHECK ((public.st_srid(g) = (-1)))
+  # );
+  # 
+  elsif ( $l =~ /CREATE TABLE *([^ ,]*)/)
+  {
+    my @sublines = ($l);
+    while( my $subline = <INPUT>)
+    {
+      if ( $subline =~ /CONSTRAINT enforce_dims_/i ) {
+        $subline =~ s/\.ndims\(/.st_ndims(/;
+      }
+      if ( $subline =~ /CONSTRAINT enforce_srid_/i ) {
+        $subline =~ s/\.srid\(/.st_srid(/;
+        $subline =~ s/\(-1\)/(0)/;
+      }
+      push(@sublines, $subline);
+      last if $subline =~ /;[\t ]*$/;
+    }
+    print STDOUT @sublines;
+    next;
+  }
+
   print STDOUT $l;
 
 }
