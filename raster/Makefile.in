@@ -11,7 +11,7 @@
 #############################################################################
 
 
-all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_POSTGIS_SQL@ 
+all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_LOADER@ @RT_POSTGIS_SQL@ 
 
 corelib:
 	$(MAKE) -C rt_core
@@ -19,20 +19,26 @@ corelib:
 pglib:
 	$(MAKE) -C rt_pg
 
+rtloader:
+	$(MAKE) -C loader
+
 rtpostgis.sql:
 	$(MAKE) -C rt_pg rtpostgis.sql
 
 install: all
 	$(MAKE) -C rt_pg install
+	$(MAKE) -C loader install
 	$(MAKE) -C scripts/python install
 
 uninstall:
 	$(MAKE) -C rt_pg uninstall
+	$(MAKE) -C loader uninstall
 	$(MAKE) -C scripts/python uninstall
 
 clean:
 	$(MAKE) -C rt_core $@
 	$(MAKE) -C rt_pg $@
+	$(MAKE) -C loader $@
 	$(MAKE) -C test $@
 	$(MAKE) -C scripts/python $@
 

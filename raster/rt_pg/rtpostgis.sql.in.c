@@ -4140,32 +4140,47 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 			BEGIN
 				CASE
 					WHEN kw = 'srid' THEN
+						RAISE NOTICE 'Adding SRID constraint';
 						rtn := _add_raster_constraint_srid(schema, $2, $3);
 					WHEN kw = 'scale_x' OR kw = 'scalex' THEN
+						RAISE NOTICE 'Adding scale-X constraint';
 						rtn := _add_raster_constraint_scale(schema, $2, $3, 'x');
 					WHEN kw = 'scale_y' OR kw = 'scaley' THEN
+						RAISE NOTICE 'Adding scale-Y constraint';
 						rtn := _add_raster_constraint_scale(schema, $2, $3, 'y');
 					WHEN kw = 'scale' THEN
+						RAISE NOTICE 'Adding scale-X constraint';
 						rtn := _add_raster_constraint_scale(schema, $2, $3, 'x');
+						RAISE NOTICE 'Adding scale-Y constraint';
 						rtn := _add_raster_constraint_scale(schema, $2, $3, 'y');
 					WHEN kw = 'blocksize_x' OR kw = 'blocksizex' OR kw = 'width' THEN
+						RAISE NOTICE 'Adding blocksize-X constraint';
 						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'width');
 					WHEN kw = 'blocksize_y' OR kw = 'blocksizey' OR kw = 'height' THEN
+						RAISE NOTICE 'Adding blocksize-Y constraint';
 						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'height');
 					WHEN kw = 'blocksize' THEN
+						RAISE NOTICE 'Adding blocksize-X constraint';
 						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'width');
+						RAISE NOTICE 'Adding blocksize-Y constraint';
 						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'height');
 					WHEN kw = 'same_alignment' OR kw = 'samealignment' OR kw = 'alignment' THEN
+						RAISE NOTICE 'Adding alignment constraint';
 						rtn := _add_raster_constraint_alignment(schema, $2, $3);
 					WHEN kw = 'regular_blocking' OR kw = 'regularblocking' THEN
+						RAISE NOTICE 'Adding regular blocking constraint';
 						rtn := _add_raster_constraint_regular_blocking(schema, $2, $3);
 					WHEN kw = 'num_bands' OR kw = 'numbands' THEN
+						RAISE NOTICE 'Adding number of bands constraint';
 						rtn := _add_raster_constraint_num_bands(schema, $2, $3);
 					WHEN kw = 'pixel_types' OR kw = 'pixeltypes' THEN
+						RAISE NOTICE 'Adding pixel type constraint';
 						rtn := _add_raster_constraint_pixel_types(schema, $2, $3);
 					WHEN kw = 'nodata_values' OR kw = 'nodatavalues' OR kw = 'nodata' THEN
+						RAISE NOTICE 'Adding nodata value constraint';
 						rtn := _add_raster_constraint_nodata_values(schema, $2, $3);
 					WHEN kw = 'extent' THEN
+						RAISE NOTICE 'Adding maximum extent constraint';
 						rtn := _add_raster_constraint_extent(schema, $2, $3);
 					ELSE
 						RAISE NOTICE 'Unknown constraint: %.  Skipping', quote_literal(constraints[x]);
@@ -4356,32 +4371,47 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 			BEGIN
 				CASE
 					WHEN kw = 'srid' THEN
+						RAISE NOTICE 'Dropping SRID constraint';
 						rtn := _drop_raster_constraint_srid(schema, $2, $3);
 					WHEN kw = 'scale_x' OR kw = 'scalex' THEN
+						RAISE NOTICE 'Dropping scale-X constraint';
 						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'x');
 					WHEN kw = 'scale_y' OR kw = 'scaley' THEN
+						RAISE NOTICE 'Dropping scale-Y constraint';
 						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'y');
 					WHEN kw = 'scale' THEN
+						RAISE NOTICE 'Dropping scale-X constraint';
 						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'x');
+						RAISE NOTICE 'Dropping scale-Y constraint';
 						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'y');
 					WHEN kw = 'blocksize_x' OR kw = 'blocksizex' OR kw = 'width' THEN
+						RAISE NOTICE 'Dropping blocksize-X constraint';
 						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'width');
 					WHEN kw = 'blocksize_y' OR kw = 'blocksizey' OR kw = 'height' THEN
+						RAISE NOTICE 'Dropping blocksize-Y constraint';
 						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'height');
 					WHEN kw = 'blocksize' THEN
+						RAISE NOTICE 'Dropping blocksize-X constraint';
 						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'width');
+						RAISE NOTICE 'Dropping blocksize-Y constraint';
 						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'height');
 					WHEN kw = 'same_alignment' OR kw = 'samealignment' OR kw = 'alignment' THEN
+						RAISE NOTICE 'Dropping alignment constraint';
 						rtn := _drop_raster_constraint_alignment(schema, $2, $3);
 					WHEN kw = 'regular_blocking' OR kw = 'regularblocking' THEN
+						RAISE NOTICE 'Dropping regular blocking constraint';
 						rtn := _drop_raster_constraint_regular_blocking(schema, $2, $3);
 					WHEN kw = 'num_bands' OR kw = 'numbands' THEN
+						RAISE NOTICE 'Dropping number of bands constraint';
 						rtn := _drop_raster_constraint_num_bands(schema, $2, $3);
 					WHEN kw = 'pixel_types' OR kw = 'pixeltypes' THEN
+						RAISE NOTICE 'Dropping pixel type constraint';
 						rtn := _drop_raster_constraint_pixel_types(schema, $2, $3);
 					WHEN kw = 'nodata_values' OR kw = 'nodatavalues' OR kw = 'nodata' THEN
+						RAISE NOTICE 'Dropping nodata value constraint';
 						rtn := _drop_raster_constraint_nodata_values(schema, $2, $3);
 					WHEN kw = 'extent' THEN
+						RAISE NOTICE 'Dropping maximum extent constraint';
 						rtn := _drop_raster_constraint_extent(schema, $2, $3);
 					ELSE
 						RAISE NOTICE 'Unknown constraint: %.  Skipping', quote_literal(constraints[x]);

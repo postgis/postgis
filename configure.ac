@@ -963,17 +963,20 @@ except ImportError:
     dnl Define raster objects, for makefiles
     RT_CORE_LIB=corelib
     RT_PG_LIB=pglib
+    RT_LOADER=rtloader
     RT_POSTGIS_SQL=rtpostgis.sql
 
     AC_SUBST([RASTER])
     AC_SUBST([RT_CORE_LIB])
     AC_SUBST([RT_PG_LIB])
+    AC_SUBST([RT_LOADER])
     AC_SUBST([RT_POSTGIS_SQL])
 
     RT_MAKEFILE_LIST="
                     raster/Makefile \
                     raster/rt_core/Makefile \ 
                     raster/rt_pg/Makefile \ 
+                    raster/loader/Makefile \ 
                     raster/test/Makefile \
                     raster/test/core/Makefile \ 
                     raster/test/regress/Makefile \ 
