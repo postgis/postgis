@@ -1342,18 +1342,18 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 			<paramdef><type>double precision</type> <parameter>ymin</parameter></paramdef>
 			<paramdef><type>double precision</type> <parameter>xmax</parameter></paramdef>
 			<paramdef><type>double precision</type> <parameter>ymax</parameter></paramdef>
-			<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+			<paramdef choice='opt'><type>integer </type> <parameter>srid=unknown</parameter></paramdef>
 		  </funcprototype>
-		</funcsynopsis>
 		</refsynopsisdiv>
 
 		<refsection>
 			<title>Description</title>
 
 			<para>Creates a rectangular Polygon formed from the minima and maxima. by the given shell. Input
-				values must be in SRS specified by the SRID.</para>
+				values must be in SRS specified by the SRID.  If no SRID is specified the unknown spatial reference system is assumed</para>
 				
 			<para>Availability: 1.5</para>
+			<para>Enhanced: 2.0: Ability to specify an envelope without specifying an SRID was introduced.</para>
 
 		</refsection>
 
