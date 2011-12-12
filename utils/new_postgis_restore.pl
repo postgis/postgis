@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use warnings;
+
 $me = $0;
 
 $usage = qq{
@@ -35,6 +37,7 @@ my %skip = ();
 while(my $l = <DATA>) {
   print STDERR "    $l" if $DEBUG;
   $l =~ s/\s//g;
+  print STDERR "DATA:$l\n" if $DEBUG;
   $skip{$l} = 1;
 }
 
@@ -51,10 +54,11 @@ while( my $l = <DUMP> ) {
 
   next if $l =~ /^\;/;
   my $sig = linesignature($l);
-  $sig =~ s/\s//g;
-  print STDERR "    $sig\n" if $DEBUG;
-  next if $skip{$sig};
-  print STDERR "    $l" if $DEBUG;
+  if ( $skip{$sig} ) {
+    print STDERR "SKIPPING $sig\n" if $DEBUG;
+    next
+  }
+  print STDERR "KEEPING $sig\n" if $DEBUG;
   print MANIFEST $l;
 
 }
@@ -73,6 +77,52 @@ while( my $l = <INPUT> ) {
 
   if ( $l =~ /^SET search_path/ ) {
     $l =~ s/; *$/, public;/; 
+  }
+
+  # This is to avoid confusing OPERATOR CLASS 
+  # with OPERATOR below
+  elsif ( $l =~ /CREATE OPERATOR CLASS/)
+  {
+  }
+
+  # We can't skip OPERATORS from the manifest file
+  # because it doesn't contain enough informations
+  # about the type the operator is for
+  elsif ( $l =~ /CREATE OPERATOR *([^ ,]*)/)
+  {
+    my $name = canonicalize_typename($1);
+    my $larg = undef;
+    my $rarg = undef;
+    my @sublines = ($l);
+    while( my $subline = <INPUT>)
+    {
+      push(@sublines, $subline);
+      last if $subline =~ /;[\t ]*$/;
+      if ( $subline =~ /leftarg *= *([^ ,]*)/i )
+      {
+        $larg=canonicalize_typename($1);
+      }
+      if ( $subline =~ /rightarg *= *([^ ,]*)/i )
+      {
+        $rarg=canonicalize_typename($1);
+      }
+    }
+
+    if ( ! $larg ) {
+      print STDERR "No larg, @sublines: [" . @sublines . "]\n";
+    }
+
+    my $sig = "OPERATOR" . $name .'('.$larg.','.$rarg.')';
+
+    if ( $skip{$sig} )
+    {
+       print STDERR "SKIPPING $sig\n" if $DEBUG;
+       next;
+    }
+
+    print STDERR "KEEPING $sig\n" if $DEBUG;
+    print STDOUT @sublines;
+    next;
   }
 
   print STDOUT $l;
@@ -104,9 +154,51 @@ sub linesignature {
   elsif( $line =~ /PROCEDURALLANGUAGE.*plpgsql/ ) {
     $sig = "PROCEDURALLANGUAGE\tplpgsql";
   }
+  else {
+    # TODO: something smarter here...
+    $sig = $line
+  }
 
-  $sig;
+  $sig =~ s/\s//g;
+  return $sig;
 
+}
+
+#
+# Canonicalize type names (they change between dump versions).
+# Here we also strip schema qualification
+#
+sub
+canonicalize_typename
+{
+	my $arg=shift;
+
+	# Lower case
+	$arg = lc($arg);
+
+	# Trim whitespaces
+	$arg =~ s/^\s*//;
+	$arg =~ s/\s*$//;
+
+	# Strip schema qualification
+	#$arg =~ s/^public.//;
+	$arg =~ s/^.*\.//;
+
+	# Handle type name changes
+	if ( $arg eq 'opaque' ) {
+		$arg = 'internal';
+	} elsif ( $arg eq 'boolean' ) {
+		$arg = 'bool';
+	} elsif ( $arg eq 'oldgeometry' ) {
+		$arg = 'geometry';
+	}
+
+	# Timestamp with or without time zone
+	if ( $arg =~ /timestamp .* time zone/ ) {
+		$arg = 'timestamp';
+	}
+
+	return $arg;
 }
 
 
@@ -1533,35 +1625,60 @@ FUNCTION	z(geometry)
 FUNCTION	zmax(box3d)
 FUNCTION	zmflag(geometry)
 FUNCTION	zmin(box3d)
-OPERATOR	~
-OPERATOR	~=
-OPERATOR	<
-OPERATOR	<<
-OPERATOR	<<|
-OPERATOR	<=
-OPERATOR	=
-OPERATOR	>
-OPERATOR	>=
-OPERATOR	>>
-OPERATOR	|>>
-OPERATOR	|&>
-OPERATOR	@
-OPERATOR	&<
-OPERATOR	&<|
-OPERATOR	&>
-OPERATOR	&&
-OPERATOR	&&&
-OPERATOR	CLASS	btree_geography_ops
-OPERATORCLASS	btree_geography_ops
-OPERATOR	CLASS	btree_geometry_ops
-OPERATORCLASS	btree_geometry_ops
-OPERATOR	CLASS	gist_geography_ops
-OPERATORCLASS	gist_geography_ops
-OPERATORCLASS	gist_geometry_ops
-OPERATOR	CLASS	gist_geometry_ops_2d
-OPERATORCLASS	gist_geometry_ops_2d
-OPERATOR	CLASS	gist_geometry_ops_nd
-OPERATORCLASS	gist_geometry_ops_nd
+OPERATOR CLASS	btree_geography_ops
+OPERATOR CLASS	btree_geometry_ops
+OPERATOR CLASS	gist_geography_ops
+OPERATOR CLASS	gist_geometry_ops
+OPERATOR CLASS	gist_geometry_ops_2d
+OPERATOR CLASS	gist_geometry_ops_nd
+OPERATOR	~=(geography, geography)
+OPERATOR	~(geography, geography)
+OPERATOR	<<|(geography, geography)
+OPERATOR	<<(geography, geography)
+OPERATOR	<=(geography, geography)
+OPERATOR	<(geography, geography)
+OPERATOR	=(geography, geography)
+OPERATOR	>=(geography, geography)
+OPERATOR	>>(geography, geography)
+OPERATOR	>(geography, geography)
+OPERATOR	|>>(geography, geography)
+OPERATOR	|&>(geography, geography)
+OPERATOR	@(geography, geography)
+OPERATOR	&<|(geography, geography)
+OPERATOR	&<(geography, geography)
+OPERATOR	&>(geography, geography)
+OPERATOR	&&(geography, geography)
+OPERATOR	&&&(geography, geography)
+OPERATOR	~=(geometry, geometry)
+OPERATOR	~(geometry, geometry)
+OPERATOR	<<|(geometry, geometry)
+OPERATOR	<<(geometry, geometry)
+OPERATOR	<=(geometry, geometry)
+OPERATOR	<(geometry, geometry)
+OPERATOR	=(geometry, geometry)
+OPERATOR	>=(geometry, geometry)
+OPERATOR	>>(geometry, geometry)
+OPERATOR	>(geometry, geometry)
+OPERATOR	|>>(geometry, geometry)
+OPERATOR	|&>(geometry, geometry)
+OPERATOR	@(geometry, geometry)
+OPERATOR	&<|(geometry, geometry)
+OPERATOR	&<(geometry, geometry)
+OPERATOR	&>(geometry, geometry)
+OPERATOR	&&(geometry, geometry)
+OPERATOR	&&&(geometry, geometry)
+OPERATOR	~=(raster,raster)
+OPERATOR	~(raster,raster)
+OPERATOR	<<|(raster,raster)
+OPERATOR	<<(raster,raster)
+OPERATOR	>>(raster,raster)
+OPERATOR	|>>(raster,raster)
+OPERATOR	|&>(raster,raster)
+OPERATOR	@(raster,raster)
+OPERATOR	&<|(raster,raster)
+OPERATOR	&<(raster,raster)
+OPERATOR	&>(raster,raster)
+OPERATOR	&&(raster,raster)
 PROCEDURALLANGUAGE	plpgsql
 SHELLTYPE	box2d
 SHELLTYPE	box2df
