@@ -6602,7 +6602,7 @@ FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;</programli
 			</refsection>
 			
 			<refsection>
-				<title>Examples: Reconstitute a single band chunked raster tile</title>
+				<title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
 				<programlisting>-- this creates a muli band raster collecting all the tiles that intersect a line
 SELECT ST_AddBand(NULL,ARRAY[ST_Union(rast,1), ST_Union(rast,2), ST_Union(rast,3) ])
 FROM aerials.boston
