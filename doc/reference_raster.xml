@@ -6594,8 +6594,11 @@ UPDATE wind
 			</refsection>
 				
 			<refsection>
-				<title>Examples</title>
-				<!-- coming soon -->
+				<title>Examples: Reconstitute a chunked raster tile</title>
+				<programlisting>-- this creates a single band from first band of raster tiles
+-- that form the original file system tile
+SELECT filename, ST_Union(rast) As file_rast
+FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;</programlisting>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
