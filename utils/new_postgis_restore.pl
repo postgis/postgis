@@ -1573,8 +1573,16 @@ SHELLTYPE	gidx
 SHELLTYPE	pgis_abs
 SHELLTYPE	raster
 SHELLTYPE	spheroid
+TABLE	geography_columns
 TABLE	geometry_columns
+TABLE	raster_columns
+TABLE	raster_overviews
 TABLE	spatial_ref_sys
+TABLE	DATA	geography_columns
+TABLE	DATA	geometry_columns
+TABLE	DATA	raster_columns
+TABLE	DATA	raster_overviews
+TABLE	DATA	spatial_ref_sys
 TYPE	box2d
 TYPE	box2df
 TYPE	box3d
@@ -1600,3 +1608,7 @@ TYPE	validatetopology_returntype
 TYPE	valid_detail
 TYPE	valuecount
 TYPE	wktgeomval
+VIEW	geometry_columns
+VIEW	geography_columns
+VIEW	raster_columns
+VIEW	raster_overviews
