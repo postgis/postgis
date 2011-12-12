@@ -299,6 +299,8 @@ CAST	CAST (topology.topogeometry AS geometry)
 CAST	CAST (topology.topogeometry AS public.geometry)
 CONSTRAINT	geometry_columns_pk
 CONSTRAINT	spatial_ref_sys_pkey
+CONSTRAINT	raster_columns_pk
+CONSTRAINT	raster_overviews_pk
 DOMAIN	topoelement
 DOMAIN	topoelementarray
 FUNCTION	addauth(text)
