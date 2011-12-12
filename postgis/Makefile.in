@@ -28,7 +28,6 @@ PG_OBJS=lwgeom_debug.o \
 	lwgeom_functions_analytic.o \
 	lwgeom_inout.o \
 	lwgeom_functions_basic.o \
-	lwgeom_gist.o \
 	lwgeom_btree.o \
 	lwgeom_box.o \
 	lwgeom_box3d.o \
