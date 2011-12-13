@@ -246,25 +246,14 @@ while(<INPUT>)
 		}
 	}
 
-	# This code handles view by creating them if we are doing a major upgrade
+	# Always output create ore replace view (see ticket #1097)
 	if ( /^create or replace view\s+(\S+)\s*/i )
 	{
-		my $viewname = $1;
-		my $def = $_;
+		print;
 		while(<INPUT>)
 		{
-			$def .= $_;
+			print;
 			last if /\;\s*$/;
-		}
-		my $ver = $version_from_num + 1;
-		while( $version_from_num < $version_to_num && $ver <= $version_to_num )
-		{
-			if( $objs->{$ver}->{"views"}->{$viewname} )
-			{
-				print $def;
-				last;
-			}
-			$ver++;
 		}
 	}
 
