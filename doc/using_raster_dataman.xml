@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="using_raster.xml">
+  <title>Raster Data Management and Queries</title>
+  <sect1 id="RT_Loading_Rasters"> 
+    <title>Loading and Creating Rasters</title>
+    <para>For most use cases, you will create PostGIS rasters by loading existing raster files using the packaged <varname>raster2pgsql</varname> raster loader.</para>
+
+    <para>
+        The <varname>raster2pgsql</varname> is a raster loader executable that loads GDAL supported raster formats into sql suitable for loading into a PostGIS raster table.
+        It is capable of loading folders of raster files as well as creating overviews of rasters. 
+        
+        Note that the older version of this tool waas a python script.  The executable has replaced the python script.  If you still find the need for the Python script
+        Examples of the pyhton one can be found at <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">GDAL PostGIS Raster Driver Usage</ulink> 
+    </para>
+        
+    <para>EXAMPLE USAGE: 
+    	<programlisting>raster2pgsql <varname>raster_options_go_here</varname> <varname>raster_file</varname> <varname>someschema</varname>.<varname>sometable</varname> &gt; out.sql</programlisting>
+    </para>
+    <variablelist>
+         <varlistentry>
+          <term>-?</term>
+          <listitem>
+            <para>
+              Display help screen.  Help will also display if you don't pass in any arguments.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>(c|a|d) These are mutually exclusive options:</term>
+          <listitem>
+            <para>
+              <variablelist>
+                <varlistentry>
+                  <term>-c</term>
+                  <listitem>
+                    <para>
+                      Create new table and populate it with raster(s), <emphasis>this is the default mode</emphasis>
+                    </para>
+                  </listitem>
+                </varlistentry>
+    
+                <varlistentry>
+                  <term>-a</term>
+                  <listitem>
+                    <para>
+                      Append raster(s) to an existing table.
+                    </para>
+                  </listitem>
+                </varlistentry>
+    
+                <varlistentry>
+                  <term>-d</term>
+                  <listitem>
+                    <para>
+                      Drop table, create new one and populate it with raster(s)
+                    </para>
+                  </listitem>
+                </varlistentry>
+              </variablelist>
+            </para>
+          </listitem>
+        </varlistentry>
+     
+        <varlistentry>
+          <term>Raster processing: Optional parameters used to manipulate input raster dataset</term>
+          <listitem>
+            <para>
+              <variablelist>
+              	<varlistentry>
+                    <term>-C </term>
+                    <listitem>
+                        <para>
+                            Apply raster constraints -- srid, pixelsize etc. to ensure raster is properly registered in <varname>raster_columns</varname> view.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                <varlistentry>
+                    <term>-s &lt;SRID&gt;</term>
+                    <listitem>
+                        <para>
+                            Assign output raster with specified SRID.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                
+                <varlistentry>
+                    <term>-b BAND</term>
+                    <listitem>
+                        <para>
+                           Index (1-based) of band to extract from raster.  For more than one band index, separate with comma (,).  If unspecified,
+                           all bands of raster will be extracted.
+                        </para>
+                    </listitem>
+                </varlistentry>
+                
+                <varlistentry>
+                    <term>-t TILE_SIZE</term>
+                    <listitem>
+                        Cut raster into tiles to be inserted one per table row.  <varname>TILE_SIZE</varname> is expressed as WIDTHxHEIGHT.
+                    </listitem>
+                </varlistentry>
+                
+                <varlistentry>
+                    <term>-R, --register</term>
+                    <listitem>
+                        <para>Register the raster as a filesystem (out-db) raster.</para>
+                        <para>Only the metadata of the raster and path location to the raster is stored in the database (not the pixels).</para>
+                    </listitem>
+                </varlistentry>
+                
+                <varlistentry>
+                    <term>-l <varname>OVERVIEW_FACTOR</varname></term>
+                    <listitem><para> -l <varname>overview factor</varname> Create overview of the raster.  For more than
+     one factor, separate with comma(,).  Overview table name follows
+     the pattern o_<varname>overview factor</varname>_<varname>table</varname>.  Created overview is
+     stored in the database and is not affected by -R. Note that your generated sql file will contain both the main table and overview tables.</para>
+                    </listitem>
+                </varlistentry>
+              </variablelist>
+            </para>
+          </listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term>Optional parameters used to manipulate database objects</term>
+          <listitem>
+            <para>
+              <variablelist>  
+              	  <varlistentry>
+                  <term>-q </term>
+                  <listitem>
+                    <para>Wrap PostgreSQL identifiers in quotes
+                    </para>
+                  </listitem>
+                </varlistentry>
+                <varlistentry>
+                  <term>-f COLUMN</term>
+                  <listitem>
+                    <para>Specify name of destination raster column, default is 'rast'
+                    </para>
+                  </listitem>
+                </varlistentry>
+                
+                <varlistentry>
+                  <term>-F</term>
+                  <listitem>
+                    <para>Add a column with the name of the file</para>
+                  </listitem>
+                </varlistentry>
+               
+                <varlistentry>
+                  <term>-I</term>
+                  <listitem>
+                    <para>
+                      Create a GiST index on the raster column.
+                    </para>
+                  </listitem>
+                </varlistentry>
+                
+                <varlistentry>
+                  <term>-M</term>
+                  <listitem>
+                    <para>
+                      Vacuum analyze the raster table.
+                    </para>
+                  </listitem>
+                </varlistentry>
+                
+                <varlistentry>
+                  <term>-T <varname>tablespace</varname></term>
+                  <listitem>
+                    <para>
+                      Specify the tablespace for the new table.
+     Note that indices (including the primary key) will still use
+     the default tablespace unless the -X flag is also used.
+                    </para>
+                  </listitem>
+                </varlistentry>
+                
+              </variablelist>
+            </para>
+          </listitem>
+        </varlistentry>
+       
+        <varlistentry>
+            <term>-e</term>
+            <listitem><para>Execute each statement individually, do not use a transaction.</para></listitem>
+        </varlistentry>
+        
+        <varlistentry>
+            <term>-E ENDIAN</term>
+            <listitem><para>Control endianness of generated binary output of raster; specify 0 for XDR and 1 for NDR (default); only NDR output is supported now</para></listitem>
+        </varlistentry>
+       
+        <varlistentry>
+            <term>-V <varname>version</varname></term>
+            <listitem><para>Specify version of output format.  Default  is 0.  Only 0 is supported at this time.</para></listitem>
+        </varlistentry>
+    </variablelist>  
+    <para>An example session using the loader to create an input file and uploading it might look like this:</para>
+    <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t myschema.demelevation > elev.sql
+psql -d gisdb -f elev.sql</programlisting>
+        
+    <para>A conversion and upload can be done all in one step using UNIX pipes:</para>
+        
+    <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t myschema.demelevation | psql -d gisdb</programlisting>
+ 
+  </sect1>
+</chapter>

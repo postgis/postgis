@@ -22,6 +22,7 @@
 <!ENTITY installation SYSTEM "installation.xml">
 <!ENTITY faq SYSTEM "faq.xml">
 <!ENTITY using_postgis_dataman SYSTEM "using_postgis_dataman.xml">
+<!ENTITY using_postgis_dataman SYSTEM "using_raster_dataman.xml">
 <!ENTITY using_postgis_app SYSTEM "using_postgis_app.xml">
 <!ENTITY performance_tips SYSTEM "performance_tips.xml">
 <!ENTITY reference SYSTEM "reference.xml">
@@ -140,6 +141,7 @@
   &installation;
   &faq;
   &using_postgis_dataman;
+  &using_raster_dataman;
   &using_postgis_app;
   &performance_tips;
   &reference;
