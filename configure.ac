@@ -920,38 +920,6 @@ if test "x$RASTER" = "xraster"; then dnl # {
 	dnl Check if the new polygonize function is present
 	AC_CHECK_LIB([gdal], [GDALFPolygonize], [AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1])], [AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [0])], []) 
 
-	dnl Determine if GDAL Python bindings are available
-	AC_MSG_CHECKING([for GDAL Python bindings])
-	GDAL_PYTHON_TEST='try:
-  from osgeo import gdal
-  print 1
-except ImportError:
-  pass'
-
-	GDAL_PYTHON_FOUND=`python -c "$GDAL_PYTHON_TEST"`
-	if test "$GDAL_PYTHON_FOUND" = "1"; then
-	    AC_MSG_RESULT([found])
-	else	
-		AC_MSG_RESULT([not found])
-	    AC_MSG_ERROR([GDAL Python bindings required by raster2pgsql.py loader])
-  	fi
-
-	dnl Determine if GDAL Python bindings come with NumPy support
-	AC_MSG_CHECKING([for NumPy array support in GDAL Python bindings])
-	GDAL_NUMPY_TEST='try:
-  from osgeo import gdal_array
-  print 1
-except ImportError:
-  pass'
-
-	GDAL_NUMPY_FOUND=`python -c "$GDAL_NUMPY_TEST"`
-	if test "$GDAL_NUMPY_FOUND" = "1"; then
-	    AC_MSG_RESULT([found])
-	else	
-		AC_MSG_RESULT([not found])
-	    AC_MSG_ERROR([GDAL Python bindings with NumPy array support required by raster2pgsql.py loader])
-  	fi
-
     dnl Extract the linker and include flags 
     LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
     LIBGDAL_CFLAGS=`$GDAL_CONFIG --cflags`
@@ -979,8 +947,9 @@ except ImportError:
                     raster/loader/Makefile \ 
                     raster/test/Makefile \
                     raster/test/core/Makefile \ 
-                    raster/test/regress/Makefile \ 
-                    raster/scripts/python/Makefile"
+                    raster/test/regress/Makefile \
+										raster/scripts/Makefile \
+										raster/scripts/python/Makefile"
 
 else dnl # }{
     RT_MAKEFILE_LIST="raster/Makefile"

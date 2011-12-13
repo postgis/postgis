@@ -28,19 +28,19 @@ rtpostgis.sql:
 install: all
 	$(MAKE) -C rt_pg install
 	$(MAKE) -C loader install
-	$(MAKE) -C scripts/python install
+	$(MAKE) -C scripts install
 
 uninstall:
 	$(MAKE) -C rt_pg uninstall
 	$(MAKE) -C loader uninstall
-	$(MAKE) -C scripts/python uninstall
+	$(MAKE) -C scripts uninstall
 
 clean:
 	$(MAKE) -C rt_core $@
 	$(MAKE) -C rt_pg $@
 	$(MAKE) -C loader $@
 	$(MAKE) -C test $@
-	$(MAKE) -C scripts/python $@
+	$(MAKE) -C scripts $@
 
 distclean: clean
 	$(RM) -R autom4te.cache
