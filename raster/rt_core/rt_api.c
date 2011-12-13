@@ -3707,7 +3707,10 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 			rtn = rt_band_get_pixel(srcband, x, y, &ov);
 
 			/* error getting value, skip */
-			if (rtn == -1) continue;
+			if (rtn == -1) {
+				RASTER_DEBUGF(3, "Cannot get value at %d, %d", x, y);
+				continue;
+			}
 
 			do {
 				do_nv = 0;
@@ -3791,10 +3794,20 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 				nr = expr->dst.max - expr->dst.min;
 				nv = (((ov - expr->src.min) * nr) / or) + expr->dst.min;
 
-				if (nv < expr->dst.min)
-					nv = expr->dst.min;
-				else if (nv > expr->dst.max)
-					nv = expr->dst.max;
+				/* if dst range is from high to low */
+				if (expr->dst.min > expr->dst.max) {
+					if (nv > expr->dst.min)
+						nv = expr->dst.min;
+					else if (nv < expr->dst.max)
+						nv = expr->dst.max;
+				}
+				/* if dst range is from low to high */
+				else {
+					if (nv < expr->dst.min)
+						nv = expr->dst.min;
+					else if (nv > expr->dst.max)
+						nv = expr->dst.max;
+				}
 			}
 
 			/* round the value for integers */
@@ -3814,7 +3827,7 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 					break;
 			}
 
-			RASTER_DEBUGF(5, "(%d, %d) ov: %f or: %f - %f nr: %f - %f nv: %f"
+			RASTER_DEBUGF(3, "(%d, %d) ov: %f or: %f - %f nr: %f - %f nv: %f"
 				, x
 				, y
 				, ov
