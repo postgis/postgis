@@ -327,7 +327,7 @@ usage() {
 		"      the -I flag is used.\n"
 	));
 	printf(_(
-		"  -N <nodata> Nodata value to use on bands without a nodata value.\n"
+		"  -N <nodata> NODATA value to use on bands without a NODATA value.\n"
 	));
 	printf(_(
 		"  -E <endian> Control endianness of generated binary output of\n"

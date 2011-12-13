@@ -20,6 +20,10 @@ plpgsql:
 python:
 	$(MAKE) -C python
 
+install:
+#	$(MAKE) -C plpgsql
+	$(MAKE) -C python
+
 clean:
 #	$(MAKE) -C plpgsql $@
 	$(MAKE) -C python $@
