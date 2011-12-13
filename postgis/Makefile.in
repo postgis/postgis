@@ -111,6 +111,7 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a
 
 postgis_upgrade_20_minor.sql.in: postgis_drop_before.sql.in.c postgis.sql
 	cat $^ > $@
+postgis_upgrade_20_minor.sql: ../utils/postgis_proc_upgrade.pl
 postgis_upgrade_20_minor.sql: postgis_upgrade_20_minor.sql.in
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< 2.0 > $@
 
