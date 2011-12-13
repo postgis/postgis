@@ -30,6 +30,7 @@ DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision, te
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text);
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision);
 DROP AGGREGATE IF EXISTS ST_Union(raster, text);
+DROP AGGREGATE IF EXISTS ST_Union(raster, integer);
 DROP AGGREGATE IF EXISTS ST_Union(raster);
 
 DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, sample_percent double precision) ;
