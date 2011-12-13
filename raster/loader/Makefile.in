@@ -10,7 +10,18 @@
 #
 #############################################################################
 
-# Set CFLAGS
+# PGXS information
+#
+# Note that PGXS currently doesn't handle building FE executables, but we need
+# the DESTDIR variable so we can get the correct install paths. 
+# Hence we include the PGXS Makefile here, but ensure that we override the
+# 'all' and 'install' targets with the ones we really want to use below.
+PG_CONFIG = @PGCONFIG@
+PGXS := @PGXS@
+include $(PGXS)
+
+# Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
+# version which is not what we want. 
 CC=@CC@
 CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 top_builddir = @top_builddir@
@@ -58,7 +69,7 @@ $(RASTER2PGSQL): raster2pgsql.o $(RT_CORE)/librtcore.a
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 installdir:
-	@mkdir -p $(DESTDIR)$(bindir)
+	mkdir -p $(DESTDIR)$(bindir)
 
 install: installdir
 	$(LIBTOOL) --mode=install $(INSTALL) $(RASTER2PGSQL) "$(DESTDIR)$(bindir)/$(RASTER2PGSQL)"
