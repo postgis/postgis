@@ -46,7 +46,8 @@
 #define CSEQUAL(a,b) (strcmp(a,b)==0)
 
 /*
-	max length of of "name" data type in PostgreSQL
+	max length of of "name" data type in PostgreSQL as
+	defined in pg_config_manual.h as macro NAMEDATALEN
 	default is 64 bytes (63 usable characters plus NULL)
 */
 #define MAXNAMELEN 63

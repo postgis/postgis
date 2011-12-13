@@ -2142,6 +2142,47 @@ main(int argc, char **argv) {
 	* check that identifiers won't get truncated
 	****************************************************************************/
 
+	if (config->schema != NULL && strlen(config->schema) > MAXNAMELEN) {
+		fprintf(stderr, _("The schema name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+			config->schema,
+			MAXNAMELEN
+		);
+	}
+	if (config->table != NULL && strlen(config->table) > MAXNAMELEN) {
+		fprintf(stderr, _("The table name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+			config->table,
+			MAXNAMELEN
+		);
+	}
+	if (config->raster_column != NULL && strlen(config->raster_column) > MAXNAMELEN) {
+		fprintf(stderr, _("The column name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+			config->raster_column,
+			MAXNAMELEN
+		);
+	}
+	if (config->tablespace != NULL && strlen(config->tablespace) > MAXNAMELEN) {
+		fprintf(stderr, _("The tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+			config->tablespace,
+			MAXNAMELEN
+		);
+	}
+	if (config->idx_tablespace != NULL && strlen(config->idx_tablespace) > MAXNAMELEN) {
+		fprintf(stderr, _("The index tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+			config->idx_tablespace,
+			MAXNAMELEN
+		);
+	}
+	if (config->overview_count) {
+		for (i = 0; i < config->overview_count; i++) {
+			if (strlen(config->overview_table[i]) > MAXNAMELEN) {
+				fprintf(stderr, _("The overview table name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+					config->overview_table[i],
+					MAXNAMELEN
+				);
+			}
+		}
+	}
+
 	/****************************************************************************
 	* double quote identifiers
 	****************************************************************************/
