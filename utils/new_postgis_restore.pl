@@ -10,12 +10,27 @@
 # This is free software; you can redistribute and/or modify it under
 # the terms of the GNU General Public Licence. See the COPYING file.
 #
+#---------------------------------------------------------------------
+#
+# This script is aimed at restoring postgis data
+# from a dumpfile produced by pg_dump -Fc
+#
+# Basically it will restore all but things known to belong
+# to postgis. Will also convert some old known constructs
+# into new ones.
+#
+# Tested on:
+#
+#    pg_dump-8.4.9/pg-8.4.9 => pg_restore-8.4.9/pg-8.4.9
+#
+#---------------------------------------------------------------------
 
 use warnings;
+use strict;
 
-$me = $0;
+my $me = $0;
 
-$usage = qq{
+my $usage = qq{
 Usage:	$me <dumpfile>
 	Restore a custom dump (pg_dump -Fc) of a PostGIS-enabled database.
 	First dump the old database: pg_dump -Fc <olddb> > <olddb.dmp>
@@ -27,14 +42,14 @@ Usage:	$me <dumpfile>
 
 die $usage if (@ARGV != 1);
 
-$dumpfile = $ARGV[0];
-$manifest = $dumpfile . ".lst";
+my $dumpfile = $ARGV[0];
+my $manifest = $dumpfile . ".lst";
 
 die "$me:\tUnable to find 'pg_dump' on the path.\n" if ! `pg_dump --version`;
 die "$me:\tUnable to find 'pg_restore' on the path.\n" if ! `pg_restore --version`;
 die "$me:\tUnable to open dump file '$dumpfile'.\n" if ! -f $dumpfile;
 
-$DEBUG = 0;
+my $DEBUG = 0;
 
 print STDERR "Converting $dumpfile to ASCII on stdout...\n";
 
@@ -60,7 +75,7 @@ while(my $l = <DATA>) {
 print STDERR "  Writing manifest of things to read from dump file...\n";
 
 open( DUMP, "pg_restore -l $dumpfile |" ) || die "$me:\tCannot open dump file '$dumpfile'\n";
-open( MANIFEST, ">$manifest" ) || die "$me:\tCannot open manifest file '$outputfile'\n";
+open( MANIFEST, ">$manifest" ) || die "$me:\tCannot open manifest file '$manifest'\n";
 while( my $l = <DUMP> ) {
 
   next if $l =~ /^\;/;
