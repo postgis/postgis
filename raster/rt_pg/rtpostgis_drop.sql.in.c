@@ -247,3 +247,14 @@ CREATE OR REPLACE FUNCTION _rename_raster_tables()
 	$$ LANGUAGE 'plpgsql' VOLATILE;
 SELECT _rename_raster_tables();
 DROP FUNCTION IF EXISTS _rename_raster_tables();
+
+-- functions no longer supported
+DROP FUNCTION IF EXISTS AddRasterColumn(varchar, varchar, varchar, varchar, integer, varchar[], boolean, boolean, double precision[], double precision, double precision, integer, integer, geometry);
+DROP FUNCTION IF EXISTS AddRasterColumn(varchar, varchar, varchar, integer, varchar[], boolean, boolean, double precision[], double precision, double precision, integer, integer, geometry);
+DROP FUNCTION IF EXISTS AddRasterColumn(varchar, varchar, integer, varchar[], boolean, boolean, double precision[], double precision, double precision, integer, integer, geometry);
+DROP FUNCTION IF EXISTS DropRasterColumn(varchar, varchar, varchar, varchar);
+DROP FUNCTION IF EXISTS DropRasterColumn(varchar, varchar, varchar);
+DROP FUNCTION IF EXISTS DropRasterColumn(varchar, varchar);
+DROP FUNCTION IF EXISTS DropRasterTable(varchar, varchar, varchar);
+DROP FUNCTION IF EXISTS DropRasterTable(varchar, varchar);
+DROP FUNCTION IF EXISTS DropRasterTable(varchar);
