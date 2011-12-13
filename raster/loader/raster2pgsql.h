@@ -56,6 +56,8 @@
 #define MINOVFACTOR 2
 #define MAXOVFACTOR 1000
 
+#define RCSID "$Id$"
+
 typedef struct raster_loader_config {
 	/* raster filename */
 	int rt_file_count;

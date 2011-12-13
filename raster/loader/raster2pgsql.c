@@ -251,6 +251,7 @@ chartrim(const char *input, char *remove) {
 
 static void
 usage() {
+	printf(_("RELEASE: %s GDAL_VERSION=%d (%s)\n"), POSTGIS_VERSION, POSTGIS_GDAL_VERSION, RCSID );
 	printf(_(
 		"USAGE: raster2pgsql [<options>] <raster>[ <raster>[ ...]] [[<schema>.]<table>]\n"
 		"  Multiple rasters can also be specified using wildcards (*,?).\n"
