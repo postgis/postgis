@@ -1,6 +1,17 @@
 #!/usr/bin/perl
 
 #
+# PostGIS - Spatial Types for PostgreSQL
+# http://postgis.refractions.net
+#
+# Copyright (C) 2009-2010 Paul Ramsey <pramsey@opengeo.org>
+# Copyright (C) 2005 Refractions Research Inc.
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+
+#
 # This script produces an .sql file containing
 # CREATE OR REPLACE calls for each function
 # in postgis.sql

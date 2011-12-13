@@ -1,6 +1,18 @@
 #!/usr/bin/perl
 
 #
+# PostGIS - Spatial Types for PostgreSQL
+# http://postgis.refractions.net
+#
+# Copyright (C) 2011 OpenGeo.org
+# Copyright (C) 2009-2010 Paul Ramsey <pramsey@cleverelephant.ca>
+# Copyright (C) 2004-2006 Refractions Research Inc.
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+
+#
 # This script is aimed at restoring postgis data
 # from a dumpfile produced by pg_dump -Fc
 #

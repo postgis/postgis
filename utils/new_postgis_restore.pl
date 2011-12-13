@@ -1,5 +1,16 @@
 #!/usr/bin/perl
 
+#
+# PostGIS - Spatial Types for PostgreSQL
+# http://postgis.refractions.net
+#
+# Copyright (C) 2011 OpenGeo.org
+# Copyright (C) 2009 Paul Ramsey <pramsey@cleverelephant.ca>
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
+
 use warnings;
 
 $me = $0;
