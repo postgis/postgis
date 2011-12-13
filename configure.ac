@@ -948,8 +948,8 @@ if test "x$RASTER" = "xraster"; then dnl # {
                     raster/test/Makefile \
                     raster/test/core/Makefile \ 
                     raster/test/regress/Makefile \
-										raster/scripts/Makefile \
-										raster/scripts/python/Makefile"
+                    raster/scripts/Makefile \
+                    raster/scripts/python/Makefile"
 
 else dnl # }{
     RT_MAKEFILE_LIST="raster/Makefile"
