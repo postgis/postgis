@@ -30,6 +30,7 @@ eval "exec perl -w $0 $@"
 	if (0);
 
 use strict;
+use warnings;
 
 #
 # Conditionally upgraded types and operators. Only include these
