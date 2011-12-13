@@ -44,6 +44,7 @@ die $usage if (@ARGV != 1);
 
 my $dumpfile = $ARGV[0];
 my $manifest = $dumpfile . ".lst";
+my $hasTopology = 0;
 
 die "$me:\tUnable to find 'pg_dump' on the path.\n" if ! `pg_dump --version`;
 die "$me:\tUnable to find 'pg_restore' on the path.\n" if ! `pg_restore --version`;
@@ -80,6 +81,7 @@ while( my $l = <DUMP> ) {
 
   next if $l =~ /^\;/;
   my $sig = linesignature($l);
+  $hasTopology = 1 if $sig eq 'SCHEMAtopology';
   if ( $skip{$sig} ) {
     print STDERR "SKIPPING $sig\n" if $DEBUG;
     next
@@ -97,6 +99,15 @@ close(DUMP);
 #
 print STDERR "  Writing ASCII to stdout...\n";
 open( INPUT, "pg_restore -L $manifest $dumpfile |") || die "$me:\tCan't run pg_restore\n";
+
+#
+# Disable topology metadata tables triggers to allow for population
+# in arbitrary order.
+#
+if ( $hasTopology ) {
+  print STDOUT "ALTER TABLE topology.layer DISABLE TRIGGER ALL;";
+}
+
 while( my $l = <INPUT> ) {
 
   next if $l =~ /^ *--/;
@@ -185,6 +196,10 @@ while( my $l = <INPUT> ) {
 
 }
 
+if ( $hasTopology ) {
+  print STDOUT "ALTER TABLE topology.layer ENABLE TRIGGER ALL;";
+}
+
 
 print STDERR "Done.\n";
 
@@ -204,11 +219,20 @@ sub linesignature {
   $line =~ s/SHELL TYPE/SHELLTYPE/;
   $line =~ s/PROCEDURAL LANGUAGE/PROCEDURALLANGUAGE/;
 
-  if( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) (\w+) (.*) (\w*)/ ) {
+  if( $line =~ /^(\d+)\; (\d+) (\d+) FK (\w+) (\w+) (.*) (\w*)/ ) {
+    $sig = "FK" . $4 . "\t" . $6;
+  }
+  elsif( $line =~ /^(\d+)\; (\d+) (\d+) (\w+) (\w+) (.*) (\w*)/ ) {
     $sig = $4 . "\t" . $6;
   }
   elsif( $line =~ /PROCEDURALLANGUAGE.*plpgsql/ ) {
     $sig = "PROCEDURALLANGUAGE\tplpgsql";
+  }
+  elsif ( $line =~ /SCHEMA - (\w+)/ ) {
+    $sig = "SCHEMA\t$1";
+  }
+  elsif ( $line =~ /SEQUENCE - (\w+)/ ) {
+    $sig = "SEQUENCE\t$1";
   }
   else {
     # TODO: something smarter here...
@@ -324,11 +348,16 @@ CAST	CAST (text AS public.geometry)
 CAST	CAST (topology.topogeometry AS geometry)
 CAST	CAST (topology.topogeometry AS public.geometry)
 CONSTRAINT	geometry_columns_pk
-CONSTRAINT	spatial_ref_sys_pkey
+CONSTRAINT layer_pkey
+CONSTRAINT layer_schema_name_key
 CONSTRAINT	raster_columns_pk
 CONSTRAINT	raster_overviews_pk
+CONSTRAINT	spatial_ref_sys_pkey
+CONSTRAINT topology_name_key
+CONSTRAINT topology_pkey
 DOMAIN	topoelement
 DOMAIN	topoelementarray
+FKCONSTRAINT layer_topology_id_fkey
 FUNCTION	addauth(text)
 FUNCTION	addbbox(geometry)
 FUNCTION	addedge(character varying, public.geometry)
@@ -1738,6 +1767,8 @@ OPERATOR	&<(raster,raster)
 OPERATOR	&>(raster,raster)
 OPERATOR	&&(raster,raster)
 PROCEDURALLANGUAGE	plpgsql
+SCHEMA	topology
+SEQUENCE topology_id_seq
 SHELLTYPE	box2d
 SHELLTYPE	box2df
 SHELLTYPE	box3d
@@ -1749,16 +1780,19 @@ SHELLTYPE	gidx
 SHELLTYPE	pgis_abs
 SHELLTYPE	raster
 SHELLTYPE	spheroid
-TABLE	geography_columns
-TABLE	geometry_columns
-TABLE	raster_columns
-TABLE	raster_overviews
-TABLE	spatial_ref_sys
 TABLE	DATA	geography_columns
 TABLE	DATA	geometry_columns
 TABLE	DATA	raster_columns
 TABLE	DATA	raster_overviews
 TABLE	DATA	spatial_ref_sys
+TABLE	geography_columns
+TABLE	geometry_columns
+TABLE	layer
+TABLE	raster_columns
+TABLE	raster_overviews
+TABLE	spatial_ref_sys
+TABLE	topology
+TRIGGER layer_integrity_checks
 TYPE	box2d
 TYPE	box2df
 TYPE	box3d
@@ -1784,7 +1818,7 @@ TYPE	validatetopology_returntype
 TYPE	valid_detail
 TYPE	valuecount
 TYPE	wktgeomval
-VIEW	geometry_columns
 VIEW	geography_columns
+VIEW	geometry_columns
 VIEW	raster_columns
 VIEW	raster_overviews
