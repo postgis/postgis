@@ -67,7 +67,9 @@ raster/rt_pg/rtpostgis.sql
 raster/rt_pg/rtpostgis.sql.in
 raster/rt_pg/rtpostgis_upgrade_20_minor.sql
 raster/rt_pg/rtpostgis_upgrade.sql
+raster/scripts/Makefile
 raster/scripts/python/Makefile
+raster/loader/Makefile
 raster/test/core/Makefile
 raster/test/core/testapi
 raster/test/core/testwkb
