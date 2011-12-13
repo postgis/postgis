@@ -3614,7 +3614,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_scale(rastschema name, rasttab
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK (st_scale' || $4 || '('
 			|| quote_ident($3)
-			|| ') = ' || attr || ')';
+			|| ')::numeric(16,10) = (' || attr || ')::numeric(16,10))';
 		RETURN _add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
@@ -4054,14 +4054,14 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK (_raster_constraint_nodata_values(' || quote_ident($3)
-			|| ') = ''{';
+			|| ')::numeric(16,10)[] = ''{';
 		FOR x in 1..max LOOP
 			sql := sql || attr[x];
 			IF x < max THEN
 				sql := sql || ',';
 			END IF;
 		END LOOP;
-		sql := sql || '}''::double precision[])';
+		sql := sql || '}''::numeric(16,10)[])';
 
 		RETURN _add_raster_constraint(cn, sql);
 	END;
