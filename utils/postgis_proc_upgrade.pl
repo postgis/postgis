@@ -169,7 +169,7 @@ while(<INPUT>)
 		while(<INPUT>)
 		{
 			print $_;
-			$endfunc = 1 if /^\s*LANGUAGE /;
+			$endfunc = 1 if /^\s*(\$\$\s*)?LANGUAGE /;
 			last if ( $endfunc && /\;/ );
 		}
 	}
