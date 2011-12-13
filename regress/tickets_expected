@@ -65,6 +65,10 @@ NOTICE:  No points in input array
 #304
 #304.a|21
 #304.b|1
+#322.1|SRID=4326;POLYGON EMPTY
+#322.2|SRID=4326;POLYGON EMPTY
+#322.3|SRID=4326;POLYGON EMPTY
+#322.4|4326|POLYGON
 #408|IllegalArgumentException: point array must contain 0 or >1 elements
 NOTICE:  IllegalArgumentException: point array must contain 0 or >1 elements
 #408.1|f

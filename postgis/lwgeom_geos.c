@@ -925,13 +925,19 @@ Datum buffer(PG_FUNCTION_ARGS)
 	int joinStyle  = DEFAULT_JOIN_STYLE;
 	char *param;
 	char *params = NULL;
+	LWGEOM *lwg;
 
 	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	size = PG_GETARG_FLOAT8(1);
 
-	/* Empty.Buffer() == Empty */
+	/* Empty.Buffer() == Empty[polygon] */
 	if ( gserialized_is_empty(geom1) )
-		PG_RETURN_POINTER(geom1);
+	{
+		lwg = lwpoly_as_lwgeom(lwpoly_construct_empty(
+		        gserialized_get_srid(geom1),
+		        0, 0)); // buffer wouldn't give back z or m anyway
+		PG_RETURN_POINTER(geometry_serialize(lwg));
+	}
 
 	nargs = PG_NARGS();
 
