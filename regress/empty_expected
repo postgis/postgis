@@ -5,9 +5,21 @@ T2.1|SRID=4326;POLYGON EMPTY
 T2.2|SRID=4326;POLYGON EMPTY
 T2.3|SRID=4326;POLYGON EMPTY
 T2.4|4326|POLYGON
-T3.1|<gml:Point><gml:coordinates></gml:coordinates></gml:Point>
-T3.2|<gml:LineString><gml:coordinates></gml:coordinates></gml:LineString>
-T3.3|<gml:Polygon></gml:Polygon>
-T3.4|<gml:MultiPolygon></gml:MultiPolygon>
-T3.5|<gml:MultiLineString></gml:MultiLineString>
-T3.6|<gml:MultiGeometry></gml:MultiGeometry>
+T3.1|<gml:Point/>
+T3.2|<gml:LineString/>
+T3.3|<gml:Polygon/>
+T3.4|<gml:MultiPolygon/>
+T3.5|<gml:MultiLineString/>
+T3.6|<gml:MultiGeometry/>
+T3.7|<gml:Point/>
+T3.8|<gml:Curve/>
+T3.9|<gml:Polygon/>
+T3.10|<gml:MultiSurface/>
+T3.11|<gml:MultiCurve/>
+T3.12|<gml:MultiGeometry/>
+T3.13|<gml:Point/>
+T3.14|<gml:Curve/>
+T3.15|<gml:Polygon/>
+T3.16|<gml:MultiSurface/>
+T3.17|<gml:MultiCurve/>
+T3.18|<gml:MultiGeometry/>

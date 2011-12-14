@@ -255,14 +255,13 @@ asgml2_point_buf(const LWPOINT *point, const char *srs, char *output, int precis
 {
 	char *ptr = output;
 
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%sPoint srsName=\"%s\">", prefix, srs);
+	ptr += sprintf(ptr, "<%sPoint", prefix);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+	if ( lwpoint_is_empty(point) ) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sPoint>", prefix);
-	}
+	ptr += sprintf(ptr, ">");
 	ptr += sprintf(ptr, "<%scoordinates>", prefix);
 	ptr += pointArray_toGML2(point->point, ptr, precision);
 	ptr += sprintf(ptr, "</%scoordinates></%sPoint>", prefix, prefix);
@@ -300,14 +299,15 @@ asgml2_line_buf(const LWLINE *line, const char *srs, char *output, int precision
 {
 	char *ptr=output;
 
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%sLineString srsName=\"%s\">", prefix, srs);
+	ptr += sprintf(ptr, "<%sLineString", prefix);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+
+	if ( lwline_is_empty(line) ) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sLineString>", prefix);
-	}
+	ptr += sprintf(ptr, ">");
+
 	ptr += sprintf(ptr, "<%scoordinates>", prefix);
 	ptr += pointArray_toGML2(line->points, ptr, precision);
 	ptr += sprintf(ptr, "</%scoordinates></%sLineString>", prefix, prefix);
@@ -354,26 +354,22 @@ asgml2_poly_buf(const LWPOLY *poly, const char *srs, char *output, int precision
 	int i;
 	char *ptr=output;
 
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%sPolygon srsName=\"%s\">", prefix, srs);
+	ptr += sprintf(ptr, "<%sPolygon", prefix);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+	if ( lwpoly_is_empty(poly) ) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
-	else
+	ptr += sprintf(ptr, ">");
+	ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>",
+		       prefix, prefix, prefix);
+	ptr += pointArray_toGML2(poly->rings[0], ptr, precision);
+	ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
+	for (i=1; i<poly->nrings; i++)
 	{
-		ptr += sprintf(ptr, "<%sPolygon>", prefix);
-	}
-	if ( ! lwpoly_is_empty(poly) )
-	{
-		ptr += sprintf(ptr, "<%souterBoundaryIs><%sLinearRing><%scoordinates>",
-		               prefix, prefix, prefix);
-		ptr += pointArray_toGML2(poly->rings[0], ptr, precision);
-		ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%souterBoundaryIs>", prefix, prefix, prefix);
-		for (i=1; i<poly->nrings; i++)
-		{
-			ptr += sprintf(ptr, "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
-			ptr += pointArray_toGML2(poly->rings[i], ptr, precision);
-			ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>", prefix, prefix, prefix);
-		}
+		ptr += sprintf(ptr, "<%sinnerBoundaryIs><%sLinearRing><%scoordinates>", prefix, prefix, prefix);
+		ptr += pointArray_toGML2(poly->rings[i], ptr, precision);
+		ptr += sprintf(ptr, "</%scoordinates></%sLinearRing></%sinnerBoundaryIs>", prefix, prefix, prefix);
 	}
 	ptr += sprintf(ptr, "</%sPolygon>", prefix);
 
@@ -455,14 +451,14 @@ asgml2_multi_buf(const LWCOLLECTION *col, const char *srs, char *output,
 	else if (type == MULTIPOLYGONTYPE) gmltype = "MultiPolygon";
 
 	/* Open outmost tag */
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%s%s srsName=\"%s\">", prefix, gmltype, srs);
+	ptr += sprintf(ptr, "<%s%s", prefix, gmltype);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+
+	if (!col->ngeoms) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
-	else
-	{
-		ptr += sprintf(ptr, "<%s%s>", prefix, gmltype);
-	}
+	ptr += sprintf(ptr, ">");
 
 	for (i=0; i<col->ngeoms; i++)
 	{
@@ -569,14 +565,14 @@ asgml2_collection_buf(const LWCOLLECTION *col, const char *srs, char *output, in
 	ptr = output;
 
 	/* Open outmost tag */
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%sMultiGeometry srsName=\"%s\">", prefix, srs);
+	ptr += sprintf(ptr, "<%sMultiGeometry", prefix);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+
+	if (!col->ngeoms) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sMultiGeometry>", prefix);
-	}
+	ptr += sprintf(ptr, ">");
 
 	for (i=0; i<col->ngeoms; i++)
 	{
@@ -761,14 +757,15 @@ asgml3_point_buf(const LWPOINT *point, const char *srs, char *output, int precis
 	int dimension=2;
 
 	if (FLAGS_GET_Z(point->flags)) dimension = 3;
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%sPoint srsName=\"%s\">", prefix, srs);
+
+	ptr += sprintf(ptr, "<%sPoint", prefix);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+	if ( lwpoint_is_empty(point) ) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sPoint>", prefix);
-	}
+
+	ptr += sprintf(ptr, ">");
 	if (IS_DIMS(opts)) ptr += sprintf(ptr, "<%spos srsDimension=\"%d\">", prefix, dimension);
 	else         ptr += sprintf(ptr, "<%spos>", prefix);
 	ptr += pointArray_toGML3(point->point, ptr, precision, opts);
@@ -832,10 +829,13 @@ asgml3_line_buf(const LWLINE *line, const char *srs, char *output, int precision
 	}
 
 	if ( srs ) {
-		ptr += sprintf(ptr, " srsName=\"%s\">", srs);
-	} else {
-		ptr += sprintf(ptr, ">");
+		ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+	} 
+	if ( lwline_is_empty(line) ) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
+	ptr += sprintf(ptr, ">");
 
 	if ( ! shortline ) {
 		ptr += sprintf(ptr, "<%ssegments>", prefix);
@@ -906,14 +906,21 @@ asgml3_poly_buf(const LWPOLY *poly, const char *srs, char *output, int precision
 	if (FLAGS_GET_Z(poly->flags)) dimension = 3;
 	if (is_patch)
 	{
-		if (srs) ptr += sprintf(ptr, "<%sPolygonPatch srsName=\"%s\">", prefix, srs);
-		else     ptr += sprintf(ptr, "<%sPolygonPatch>", prefix);
+		ptr += sprintf(ptr, "<%sPolygonPatch", prefix);
+
 	}
 	else
 	{
-		if (srs) ptr += sprintf(ptr, "<%sPolygon srsName=\"%s\">", prefix, srs);
-		else     ptr += sprintf(ptr, "<%sPolygon>", prefix);
+		ptr += sprintf(ptr, "<%sPolygon", prefix);
 	}
+
+	if (srs) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+
+	if ( lwpoly_is_empty(poly) ) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
+	}
+	ptr += sprintf(ptr, ">");
 
 	ptr += sprintf(ptr, "<%sexterior><%sLinearRing>", prefix, prefix);
 	if (IS_DIMS(opts)) ptr += sprintf(ptr, "<%sposList srsDimension=\"%d\">", prefix, dimension);
@@ -1062,14 +1069,14 @@ asgml3_multi_buf(const LWCOLLECTION *col, const char *srs, char *output, int pre
 	else if (type == MULTIPOLYGONTYPE) gmltype = "MultiSurface";
 
 	/* Open outmost tag */
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%s%s srsName=\"%s\">", prefix, gmltype, srs);
+	ptr += sprintf(ptr, "<%s%s", prefix, gmltype);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+
+	if (!col->ngeoms) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
-	else
-	{
-		ptr += sprintf(ptr, "<%s%s>", prefix, gmltype);
-	}
+	ptr += sprintf(ptr, ">");
 
 	for (i=0; i<col->ngeoms; i++)
 	{
@@ -1292,14 +1299,14 @@ asgml3_collection_buf(const LWCOLLECTION *col, const char *srs, char *output, in
 	ptr = output;
 
 	/* Open outmost tag */
-	if ( srs )
-	{
-		ptr += sprintf(ptr, "<%sMultiGeometry srsName=\"%s\">", prefix, srs);
+	ptr += sprintf(ptr, "<%sMultiGeometry", prefix);
+	if ( srs ) ptr += sprintf(ptr, " srsName=\"%s\"", srs);
+
+	if (!col->ngeoms) {
+		ptr += sprintf(ptr, "/>");
+		return (ptr-output);
 	}
-	else
-	{
-		ptr += sprintf(ptr, "<%sMultiGeometry>", prefix);
-	}
+	ptr += sprintf(ptr, ">");
 
 	for (i=0; i<col->ngeoms; i++)
 	{

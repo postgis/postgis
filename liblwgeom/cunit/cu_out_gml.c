@@ -208,7 +208,6 @@ static void do_gml3_extent_test(char * in, char * out, char * srs,
 	lwgeom_free(g);
 }
 
-
 static void out_gml_test_precision(void)
 {
 	/* GML2 - 0 precision, i.e a round */
@@ -442,19 +441,6 @@ static void out_gml_test_dims(void)
 
 static void out_gml_test_geoms(void)
 {
-	/* GML2 - LINESTRING EMPTY 
-	do_gml2_test(
-	    "LINESTRING EMPTY",
-	    "<gml:Polygon></gml:Polygon>",
-	    NULL, 0);
-		*/
-
-	/* GML2 - POLYGON EMPTY */
-	do_gml2_test(
-	    "POLYGON EMPTY",
-	    "<gml:Polygon></gml:Polygon>",
-	    NULL, 0);
-
 	/* GML2 - Linestring */
 	do_gml2_test(
 	    "LINESTRING(0 1,2 3,4 5)",
@@ -551,18 +537,6 @@ static void out_gml_test_geoms(void)
 	    "<gml:MultiGeometry><gml:geometryMember><gml:Point><gml:pos srsDimension=\"2\">0 1</gml:pos></gml:Point></gml:geometryMember><gml:geometryMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList srsDimension=\"2\">2 3 4 5</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:geometryMember></gml:MultiGeometry>",
 	    NULL, 0, 0);
 
-
-	/* GML2 - Empty GeometryCollection */
-	do_gml2_test(
-	    "GEOMETRYCOLLECTION EMPTY",
-	    "<gml:MultiGeometry></gml:MultiGeometry>",
-	    NULL, 0);
-
-	/* GML3 - Empty GeometryCollection */
-	do_gml3_test(
-	    "GEOMETRYCOLLECTION EMPTY",
-	    "<gml:MultiGeometry></gml:MultiGeometry>",
-	    NULL, 0, 0);
 
 	/* GML2 - Nested GeometryCollection */
 	do_gml2_test(
@@ -751,13 +725,13 @@ static void out_gml_test_geoms_prefix(void)
 	/* GML2 - Empty GeometryCollection */
 	do_gml2_test_prefix(
 	    "GEOMETRYCOLLECTION EMPTY",
-	    "<custom:MultiGeometry></custom:MultiGeometry>",
+	    "<custom:MultiGeometry/>",
 	    NULL, 0, "custom:");
 
 	/* GML3 - Empty GeometryCollection */
 	do_gml3_test_prefix(
 	    "GEOMETRYCOLLECTION EMPTY",
-	    "<custom:MultiGeometry></custom:MultiGeometry>",
+	    "<custom:MultiGeometry/>",
 	    NULL, 0, 0, "custom:");
 
 	/* GML2 - Nested GeometryCollection */
@@ -885,13 +859,13 @@ static void out_gml_test_geoms_prefix(void)
 	/* GML2 - Empty GeometryCollection */
 	do_gml2_test_prefix(
 	    "GEOMETRYCOLLECTION EMPTY",
-	    "<MultiGeometry></MultiGeometry>",
+	    "<MultiGeometry/>",
 	    NULL, 0, "");
 
 	/* GML3 - Empty GeometryCollection */
 	do_gml3_test_prefix(
 	    "GEOMETRYCOLLECTION EMPTY",
-	    "<MultiGeometry></MultiGeometry>",
+	    "<MultiGeometry/>",
 	    NULL, 0, 0, "");
 
 	/* GML2 - Nested GeometryCollection */
@@ -1130,6 +1104,51 @@ static void out_gml3_extent(void)
 }
 
 
+static void out_gml_test_empty(void)
+{
+	/* POINT EMPTY, GML2 */
+	do_gml2_test("POINT EMPTY", "<gml:Point/>", NULL, 0);
+
+	/* POINT EMPTY, GML3 */
+	do_gml3_test("POINT EMPTY", "<gml:Point/>", NULL, 0, 0);
+
+	/* LINESTRING EMPTY, GML2 */
+	do_gml2_test("LINESTRING EMPTY", "<gml:LineString/>", NULL, 0);
+
+	/* LINESTRING EMPTY, GML3 */
+	do_gml3_test("LINESTRING EMPTY", "<gml:Curve/>", NULL, 0, 0);
+
+	/* POLYGON EMPTY, GML2 */
+	do_gml2_test("POLYGON EMPTY", "<gml:Polygon/>", NULL, 0);
+
+	/* POLYGON EMPTY, GML3 */
+	do_gml3_test("POLYGON EMPTY", "<gml:Polygon/>", NULL, 0, 0);
+
+	/* MULTIPOINT EMPTY, GML2 */
+	do_gml2_test("MULTIPOINT EMPTY", "<gml:MultiPoint/>", NULL, 0);
+
+	/* MULTIPOINT EMPTY, GML3 */
+	do_gml3_test("MULTIPOINT EMPTY", "<gml:MultiPoint/>", NULL, 0, 0);
+
+	/* MULTILINESTRING EMPTY, GML2 */
+	do_gml2_test("MULTILINESTRING EMPTY", "<gml:MultiLineString/>", NULL, 0);
+
+	/* MULTILINESTRING EMPTY, GML3 */
+	do_gml3_test("MULTILINESTRING EMPTY", "<gml:MultiCurve/>", NULL, 0, 0);
+
+	/* MULTIPOLYGON EMPTY, GML2 */
+	do_gml2_test("MULTIPOLYGON EMPTY", "<gml:MultiPolygon/>", NULL, 0);
+
+	/* MULTIPOLYGON EMPTY, GML3 */
+	do_gml3_test("MULTIPOLYGON EMPTY", "<gml:MultiSurface/>", NULL, 0, 0);
+
+	/* GEOMETRYCOLLECTION EMPTY, GML2 */
+	do_gml2_test("GEOMETRYCOLLECTION EMPTY", "<gml:MultiGeometry/>", NULL, 0);
+
+	/* GEOMETRYCOLLECTION EMPTY, GML3 */
+	do_gml3_test("GEOMETRYCOLLECTION EMPTY", "<gml:MultiGeometry/>", NULL, 0, 0);
+
+}
 
 
 /*
@@ -1146,6 +1165,7 @@ CU_TestInfo out_gml_tests[] =
 	PG_TEST(out_gml_test_geoms_nodims),
 	PG_TEST(out_gml2_extent),
 	PG_TEST(out_gml3_extent),
+	PG_TEST(out_gml_test_empty),
 	CU_TEST_INFO_NULL
 };
-CU_SuiteInfo out_gml_suite = {"GML Out Suite",  NULL,  NULL, out_gml_tests};
+CU_SuiteInfo out_gml_suite = {"out_gml",  NULL,  NULL, out_gml_tests};
