@@ -48,6 +48,7 @@ fi
 mkdir -p ${TMPDIR}
 
 VERBOSE=0
+OPT_CLEAN=no
 OPT_DROP=yes
 OPT_CREATE=yes
 OPT_WITH_TOPO=no
@@ -443,6 +444,10 @@ while [ -n "$1" ]; do
 		OPT_WITH_RASTER=yes
 		shift
 		continue
+	elif test "$1" = "--clean"; then
+		OPT_CLEAN=yes
+		shift
+		continue
 	else
 		break
 	fi
@@ -640,7 +645,7 @@ echo "Run tests: $RUN"
 #echo "Successful: $SUCCESS"
 echo "Failed: $FAIL"
 
-if [ $FAIL -eq 0 ]; then
+if test x"$OPT_CLEAN" = "xyes"; then
 	rm -f "${TMPDIR}/dumper.*"
 	rm -f "${TMPDIR}/loader.*"
 	rm -f "${TMPDIR}/regress_log"
