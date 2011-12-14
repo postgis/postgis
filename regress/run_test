@@ -228,7 +228,7 @@ run_loader_and_check_output()
 		show_progress
 		# Produce the output SQL file.
 		${SHP2PGSQL} $_loader_options -g the_geom ${TEST}.shp $_tblname \
-			> ${TMPDIR}/loader \
+			> ${TMPDIR}/loader.out \
 			2> ${TMPDIR}/loader.err
 
 		if [ $? -gt 0 ]; then
@@ -239,11 +239,11 @@ run_loader_and_check_output()
 		# Compare the output SQL file with the expected if there is one.
 		if [ -r $_expected_sql_file ]; then
 			show_progress
-			if diff "${TMPDIR}/loader" "$_expected_sql_file" > /dev/null; then
+			if diff "${TMPDIR}/loader.out" "$_expected_sql_file" > /dev/null; then
 				:
 			else
 				fail " $_description: actual SQL does not match expected.", \
-					"${TMPDIR}/loader"
+					"${TMPDIR}/loader.out"
 			fi
 		fi
 
@@ -257,7 +257,7 @@ run_loader_and_check_output()
 
 		# Run the loader SQL script.
 		show_progress
-		${PSQL} ${_psql_opts} -f ${TMPDIR}/loader "${DB}" > ${TMPDIR}/loader.err 2>&1
+		${PSQL} ${_psql_opts} -f ${TMPDIR}/loader.out "${DB}" > ${TMPDIR}/loader.err 2>&1
 		if [ $? -gt 0 ]; then
 			fail " $_description: running shp2pgsql output" "${TMPDIR}/loader.err"
 			return 1
@@ -610,7 +610,7 @@ while [ -n "$1" ]; do
 			echo " ok"
 		fi
 	else
-		echo "Skipped (can't read ${TEST}.sql)"
+		echo " skipped (can't read ${TEST}.sql)"
 		SKIP=`expr $SKIP + 1`
 		continue
 	fi
@@ -639,6 +639,13 @@ echo "Run tests: $RUN"
 #echo "Skipped: $SKIP"
 #echo "Successful: $SUCCESS"
 echo "Failed: $FAIL"
+
+if [ $FAIL -eq 0 ]; then
+	rm -f "${TMPDIR}/dumper.*"
+	rm -f "${TMPDIR}/loader.*"
+	rm -f "${TMPDIR}/regress_log"
+	rmdir -p "${TMPDIR}" 2> /dev/null
+fi
 
 if test x"$OPT_DROP" = "xyes" -a x"$OPT_CREATE" = "xyes"; then
 	sleep 1
