@@ -2828,62 +2828,62 @@ CREATE CAST (raster AS bytea)
 --  GiST index OPERATOR support functions
 ------------------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_overleft(raster, raster)
+CREATE OR REPLACE FUNCTION raster_overleft(raster, raster)
     RETURNS bool
     AS 'select $1::geometry &< $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_overright(raster, raster)
+CREATE OR REPLACE FUNCTION raster_overright(raster, raster)
     RETURNS bool
     AS 'select $1::geometry &> $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_left(raster, raster)
+CREATE OR REPLACE FUNCTION raster_left(raster, raster)
     RETURNS bool
     AS 'select $1::geometry << $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_right(raster, raster)
+CREATE OR REPLACE FUNCTION raster_right(raster, raster)
     RETURNS bool
     AS 'select $1::geometry >> $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_overabove(raster, raster)
+CREATE OR REPLACE FUNCTION raster_overabove(raster, raster)
     RETURNS bool
     AS 'select $1::geometry |&> $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_overbelow(raster, raster)
+CREATE OR REPLACE FUNCTION raster_overbelow(raster, raster)
     RETURNS bool
     AS 'select $1::geometry &<| $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_above(raster, raster)
+CREATE OR REPLACE FUNCTION raster_above(raster, raster)
     RETURNS bool
     AS 'select $1::geometry |>> $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_below(raster, raster)
+CREATE OR REPLACE FUNCTION raster_below(raster, raster)
     RETURNS bool
     AS 'select $1::geometry <<| $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_same(raster, raster)
+CREATE OR REPLACE FUNCTION raster_same(raster, raster)
     RETURNS bool
     AS 'select $1::geometry ~= $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_contained(raster, raster)
+CREATE OR REPLACE FUNCTION raster_contained(raster, raster)
     RETURNS bool
     AS 'select $1::geometry @ $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_contain(raster, raster)
+CREATE OR REPLACE FUNCTION raster_contain(raster, raster)
     RETURNS bool
     AS 'select $1::geometry ~ $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_overlap(raster, raster)
+CREATE OR REPLACE FUNCTION raster_overlap(raster, raster)
     RETURNS bool
     AS 'select $1::geometry && $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
@@ -2893,73 +2893,73 @@ CREATE OR REPLACE FUNCTION st_overlap(raster, raster)
 ------------------------------------------------------------------------------
 
 CREATE OPERATOR << (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_left,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_left,
     COMMUTATOR = '>>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
 CREATE OPERATOR &< (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overleft,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overleft,
     COMMUTATOR = '&>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
 CREATE OPERATOR <<| (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_below,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_below,
     COMMUTATOR = '|>>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
 CREATE OPERATOR &<| (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overbelow,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overbelow,
     COMMUTATOR = '|&>',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
 CREATE OPERATOR && (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overlap,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overlap,
     COMMUTATOR = '&&',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
 CREATE OPERATOR &> (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overright,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overright,
     COMMUTATOR = '&<',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
 CREATE OPERATOR >> (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_right,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_right,
     COMMUTATOR = '<<',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
 CREATE OPERATOR |&> (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_overabove,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_overabove,
     COMMUTATOR = '&<|',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
 CREATE OPERATOR |>> (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_above,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_above,
     COMMUTATOR = '<<|',
     RESTRICT = positionsel, JOIN = positionjoinsel
     );
 
 CREATE OPERATOR ~= (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_same,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_same,
     COMMUTATOR = '~=',
     RESTRICT = eqsel, JOIN = eqjoinsel
     );
 
 CREATE OPERATOR @ (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_contained,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_contained,
     COMMUTATOR = '~',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
 CREATE OPERATOR ~ (
-    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = st_contain,
+    LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_contain,
     COMMUTATOR = '@',
     RESTRICT = contsel, JOIN = contjoinsel
     );

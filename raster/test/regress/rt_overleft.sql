@@ -8,10 +8,10 @@
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
--- st_overleft
+-- raster_overleft
 -----------------------------------------------------------------------
 
-SELECT 'st_overleft(X, query(1,1))' as op,
+SELECT 'raster_overleft(X, query(1,1))' as op,
         count(a.y),
         min(a.x) as xmin,
         max(a.x) as xmax,
@@ -20,7 +20,7 @@ SELECT 'st_overleft(X, query(1,1))' as op,
         st_extent(a.tile)
 FROM rt_gist_grid_test a, rt_gist_query_test b
 WHERE b.x = 1 and b.y = 1
-    AND st_overleft(a.tile, b.tile);
+    AND raster_overleft(a.tile, b.tile);
 
 -----------------------------------------------------------------------
 -- Test &< operator (overleft)

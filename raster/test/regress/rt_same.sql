@@ -8,10 +8,10 @@
 -----------------------------------------------------------------------
 
 -------------------------------------------------------------------
--- st_same
+-- raster_same
 -----------------------------------------------------------------------
 
-SELECT 'st_same(X, query(1,1))' as op,
+SELECT 'raster_same(X, query(1,1))' as op,
         count(a.y),
         min(a.x) as xmin,
         max(a.x) as xmax,
@@ -20,9 +20,9 @@ SELECT 'st_same(X, query(1,1))' as op,
         st_extent(a.tile)
 FROM rt_gist_grid_test a, rt_gist_query_test b
 WHERE b.x = 1 and b.y = 1
-    AND st_same(a.tile, b.tile);
+    AND raster_same(a.tile, b.tile);
 
-SELECT 'st_same(X, query(7,7))' as op,
+SELECT 'raster_same(X, query(7,7))' as op,
         count(a.y),
         min(a.x) as xmin,
         max(a.x) as xmax,
@@ -31,7 +31,7 @@ SELECT 'st_same(X, query(7,7))' as op,
         st_extent(a.tile)
 FROM rt_gist_grid_test a, rt_gist_grid_test b
 WHERE b.x = 7 and b.y = 7
-    AND st_same(a.tile, b.tile);
+    AND raster_same(a.tile, b.tile);
 
 -----------------------------------------------------------------------
 -- Test ~= operator (same)

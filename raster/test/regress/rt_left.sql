@@ -8,10 +8,10 @@
 -----------------------------------------------------------------------
 
 -------------------------------------------------------------------
--- st_left
+-- raster_left
 -----------------------------------------------------------------------
 
-SELECT 'st_left(X, query(1,1))' as op,
+SELECT 'raster_left(X, query(1,1))' as op,
         count(a.y),
         min(a.x) as xmin,
         max(a.x) as xmax,
@@ -20,7 +20,7 @@ SELECT 'st_left(X, query(1,1))' as op,
         st_extent(a.tile)
 FROM rt_gist_grid_test a, rt_gist_query_test b
 WHERE b.x = 1 and b.y = 1
-    AND st_left(a.tile, b.tile);
+    AND raster_left(a.tile, b.tile);
 
 -----------------------------------------------------------------------
 -- Test << operator (left)

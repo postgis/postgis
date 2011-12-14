@@ -1,2 +1,2 @@
-st_contained(X, query(1,1))|4|4|5|4|5|BOX(-20 -20,20 20)
+raster_contained(X, query(1,1))|4|4|5|4|5|BOX(-20 -20,20 20)
 X @ query(1,1)|4|4|5|4|5|BOX(-20 -20,20 20)
