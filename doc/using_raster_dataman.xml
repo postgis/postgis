@@ -214,9 +214,22 @@ psql -d gisdb -f elev.sql</programlisting>
         
     <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t myschema.demelevation | psql -d gisdb</programlisting>
     
-    <para>Load rasters Massachusetts state plane feet aerial tiles 
-    	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables and directly insert to database.  Break up the rasters into 100x100 pixel tiles and apply raster constraints. Use copy mode instead of table insert.</para>
-    <programlisting>raster2pgsql -I -C -Y -s 26986 -t 100x100 bostonaerials2008\*.jpg  -l 2,4 aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
+    <para>Load rasters Massachusetts state plane meters aerial tiles 
+    	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables and directly insert to database.  Break up the rasters into 100x100 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
+    <programlisting>raster2pgsql -I -C -Y -F -s 26986 -t 100x100 bostonaerials2008\*.jpg  -l 2,4 aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
  
   </sect1>
+   <sect1 id="RT_Raster_Catalog"> 
+   		<title>Raster Catalog Views</title>
+   		<para>There are two raster catalog views that come package with PostGIS.  Both views utilize information embedded in the constraints of the raster tables.  As a result
+   		the catalog views are always consistent with the raster data in the tables since the constraints are enforced. </para>
+   		 <orderedlist>
+          <listitem>
+            <para><varname>raster_columns</varname> this view catalogs all the raster tables in your database.</para>
+          </listitem>
+          <listitem>
+            <para><varname>raster_overviews</varname> this view catalogs all the rasters tables in your database that server as overviews for a finer grained table.  Tables of this type are generated when you use the <varname>-l</varname> switch during load.</para>
+          </listitem>
+        </orderedlist>
+   </sect1>
 </chapter>
