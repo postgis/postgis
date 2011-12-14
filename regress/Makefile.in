@@ -58,6 +58,7 @@ TESTS = \
 	snaptogrid \
 	summary \
 	affine \
+	empty \
 	measures \
 	long_xact \
 	ctors \

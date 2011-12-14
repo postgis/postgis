@@ -530,8 +530,8 @@ Datum LWGEOM_snaptogrid(PG_FUNCTION_ARGS)
 	/* Do not support gridding Z and M values for now */
 	grid.ipz=grid.ipm=grid.zsize=grid.msize=0;
 
-	/* Return input geometry if grid is null */
-	if ( grid_isNull(&grid) )
+	/* Return input geometry if grid is null or input geometry is empty */
+	if ( grid_isNull(&grid) || gserialized_is_empty(in_geom) )
 	{
 		PG_RETURN_POINTER(in_geom);
 	}
