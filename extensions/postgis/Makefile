@@ -15,7 +15,7 @@ EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
 ifeq ($(PG91),yes)
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	cat $^ > $@
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a6--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a7--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a8--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql  sql/$(EXTENSION)--2.0.0a7--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a8--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a9--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -37,31 +37,45 @@ sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql
 sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
 	
+# we need to also drop this temporary function from the extension
+sql_bits/rtpostgis_upgrade_20_minor.sql: ../../raster/rt_pg/rtpostgis_upgrade_20_minor.sql
+	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+		-e 's/DROP FUNCTION _rename_raster_tables();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _rename_raster_tables();DROP FUNCTION _rename_raster_tables();/g' \
+	$< > $@
+	
 #can't use the one built because can't drop the postgis_version function
-#leave out all casts, operators, types, tables, schema, and aggregates
-sql_bits/postgis_upgrade_minor.sql: ../../postgis/postgis.sql 
-		 sed -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\|AGGREGATE\).*;/d' \
-	 	 	-e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\|AGGREGATE\)/,/\;/d' \
-	 	 	-e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+#leave out all casts, operators, types, tables, schemas
+# sql_bits/postgis_upgrade_minor.sql: ../../postgis/postgis.sql 
+# 		 sed -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
+# 	 	 	-e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
+# 	 	 	-e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+# 	 	 $< > $@
+#don't drop casts just yet since we don't have provision to remove from extension yet
+#need to also drop temeporary function from extenions since it gets auto-added
+sql_bits/postgis_upgrade_minor.sql: ../../postgis/postgis_upgrade_20_minor.sql 
+		 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
+		 -e '/^\(DROP\|CREATE\) \(CAST\).*;/d' \
+		 -e '/^\(DROP\|CREATE\) \(CAST\)/,/\;/d' \
+		 -e 's/DROP FUNCTION postgis_major_version_check();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION postgis_major_version_check();DROP FUNCTION postgis_major_version_check();/g' \
 	 	 $< > $@
 
 	
 sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 	cp $< $@
 
-sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql.in.c  sql_bits/postgis_upgrade_minor.sql 	../../raster/rt_pg/rtpostgis_upgrade_20_minor.sql  ../../doc/raster_comments.sql  ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
+sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql.in.c  sql_bits/postgis_upgrade_minor.sql 	sql_bits/rtpostgis_upgrade_20_minor.sql  ../../doc/raster_comments.sql  ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 
 sql/$(EXTENSION)--2.0.0a3--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
-	cp $< $@
-	
-sql/$(EXTENSION)--2.0.0a6--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
 	
 sql/$(EXTENSION)--2.0.0a7--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
 	
 sql/$(EXTENSION)--2.0.0a8--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
+	cp $< $@
+	
+sql/$(EXTENSION)--2.0.0a9--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
 	
 # sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 

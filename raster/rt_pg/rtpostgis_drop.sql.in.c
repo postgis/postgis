@@ -246,7 +246,7 @@ CREATE OR REPLACE FUNCTION _rename_raster_tables()
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE;
 SELECT _rename_raster_tables();
-DROP FUNCTION IF EXISTS _rename_raster_tables();
+DROP FUNCTION _rename_raster_tables();
 
 -- functions no longer supported
 DROP FUNCTION IF EXISTS AddRasterColumn(varchar, varchar, varchar, varchar, integer, varchar[], boolean, boolean, double precision[], double precision, double precision, integer, integer, geometry);
