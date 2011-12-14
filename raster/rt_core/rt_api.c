@@ -6512,11 +6512,13 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
  * Returns a set of available GDAL drivers
  *
  * @param drv_count : number of GDAL drivers available
+ * @param cancc : if non-zero, filter drivers to only those
+ *   with support for CreateCopy and VirtualIO
  *
  * @return set of "gdaldriver" values of available GDAL drivers
  */
 rt_gdaldriver
-rt_raster_gdal_drivers(uint32_t *drv_count) {
+rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 	const char *state;
 	const char *txt;
 	int txt_len;
@@ -6537,13 +6539,15 @@ rt_raster_gdal_drivers(uint32_t *drv_count) {
 	for (i = 0, j = 0; i < count; i++) {
 		drv = GDALGetDriver(i);
 
-		/* CreateCopy support */
-		state = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
-		if (state == NULL) continue;
+		if (cancc) {
+			/* CreateCopy support */
+			state = GDALGetMetadataItem(drv, GDAL_DCAP_CREATECOPY, NULL);
+			if (state == NULL) continue;
 
-		/* VirtualIO support */
-		state = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
-		if (state == NULL) continue;
+			/* VirtualIO support */
+			state = GDALGetMetadataItem(drv, GDAL_DCAP_VIRTUALIO, NULL);
+			if (state == NULL) continue;
+		}
 
 		/* index of driver */
 		rtn[j].idx = i;
@@ -6552,7 +6556,9 @@ rt_raster_gdal_drivers(uint32_t *drv_count) {
 		txt = GDALGetDriverShortName(drv);
 		txt_len = strlen(txt);
 
-		RASTER_DEBUGF(3, "rt_raster_gdal_driver: driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
+		if (cancc) {
+			RASTER_DEBUGF(3, "rt_raster_gdal_driver: driver %s (%d) supports CreateCopy() and VirtualIO()", txt, i);
+		}
 
 		txt_len = (txt_len + 1) * sizeof(char);
 		rtn[j].short_name = (char *) rtalloc(txt_len);

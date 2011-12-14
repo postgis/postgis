@@ -1038,10 +1038,12 @@ uint8_t *rt_raster_to_gdal(rt_raster raster, const char *srs,
  * Returns a set of available GDAL drivers
  *
  * @param drv_count : number of GDAL drivers available
+ * @param cancc : if non-zero, filter drivers to only those
+ *   with support for CreateCopy and VirtualIO
  *
  * @return set of "gdaldriver" values of available GDAL drivers
  */
-rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count);
+rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc);
 
 /**
  * Return GDAL dataset using GDAL MEM driver from raster

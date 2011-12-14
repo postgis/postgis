@@ -6655,7 +6655,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		/* switch to memory context appropriate for multiple function calls */
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		drv_set = rt_raster_gdal_drivers(&drv_count);
+		drv_set = rt_raster_gdal_drivers(&drv_count, 1);
 		if (NULL == drv_set || !drv_count) {
 			elog(NOTICE, "No GDAL drivers found");
 			SRF_RETURN_DONE(funcctx);
@@ -6724,6 +6724,10 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 
 		/* clean up */
 		pfree(nulls);
+
+		pfree(drv_set2[call_cntr].short_name);
+		pfree(drv_set2[call_cntr].long_name);
+		pfree(drv_set2[call_cntr].create_options);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}

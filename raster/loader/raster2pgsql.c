@@ -52,6 +52,36 @@ raster_destroy(rt_raster raster) {
 	rt_raster_destroy(raster);
 }
 
+static int
+array_range(int min, int max, int step, int **range, int *len) {
+	int i = 0;
+	int j = 0;
+
+	step = abs(step);
+	*len = (abs(max - min) + 1 + (step / 2)) / step;
+	*range = rtalloc(sizeof(int) * *len);
+
+	if (min < max) {
+		for (i = min, j = 0; i <= max; i += step, j++)
+			(*range)[j] = i;
+	}
+	else if (max < min) {
+		if (step > 0) step *= -1;
+		for (i = min, j = 0; i >= max; i += step, j++)
+			(*range)[j] = i;
+	}
+	else if (min == max) {
+		(*range)[0] = min;
+	}
+	else {
+		*len = 0;
+		*range = NULL;
+		return 0;
+	}
+
+	return 1;
+}
+
 /* string replacement function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
@@ -263,8 +293,9 @@ usage() {
 	), SRID_UNKNOWN);
 	printf(_(
 		"  -b <band> Index (1-based) of band to extract from raster.  For more\n"
-		"      than one band index, separate with comma (,).  If unspecified,\n"
-		"      all bands of raster will be extracted.\n"
+		"      than one band index, separate with comma (,).  Ranges can be\n"
+		"      defined by separating with dash (-).  If unspecified, all bands\n"
+		"      of raster will be extracted.\n"
 	));
 	printf(_(
 		"  -t <tile size> Cut raster into tiles to be inserted one per\n"
@@ -345,6 +376,9 @@ usage() {
 		"  -Y  Use COPY statements instead of INSERT statements.\n"
 	));
 	printf(_(
+		"  -G  Print the supported GDAL raster formats.\n"
+	));
+	printf(_(
 		"  -?  Display this help screen.\n"
 	));
 }
@@ -377,6 +411,132 @@ rtdealloc_rastinfo(RASTERINFO *info) {
 		rtdealloc(info->hasnodata);
 	if (info->nodataval != NULL)
 		rtdealloc(info->nodataval);
+}
+
+static int
+copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
+	if (src->srs != NULL) {
+		dst->srs = rtalloc(sizeof(char) * (strlen(src->srs) + 1));
+		if (dst->srs == NULL) {
+			fprintf(stderr, _("Not enough memory\n"));
+			return 0;
+		}
+		strcpy(dst->srs, src->srs);
+	}
+	memcpy(dst->dim, src->dim, sizeof(uint32_t) * 2);
+	dst->nband_count = src->nband_count;
+	if (src->nband_count && src->nband != NULL) {
+		dst->nband = rtalloc(sizeof(int) * src->nband_count);
+		if (dst->nband == NULL) {
+			fprintf(stderr, _("Not enough memory\n"));
+			return 0;
+		}
+		memcpy(dst->nband, src->nband, sizeof(int) * src->nband_count);
+	}
+	if (src->gdalbandtype != NULL) {
+		dst->gdalbandtype = rtalloc(sizeof(GDALDataType) * src->nband_count);
+		if (dst->gdalbandtype == NULL) {
+			fprintf(stderr, _("Not enough memory\n"));
+			return 0;
+		}
+		memcpy(dst->gdalbandtype, src->gdalbandtype, sizeof(GDALDataType) * src->nband_count);
+	}
+	if (src->bandtype != NULL) {
+		dst->bandtype = rtalloc(sizeof(rt_pixtype) * src->nband_count);
+		if (dst->bandtype == NULL) {
+			fprintf(stderr, _("Not enough memory\n"));
+			return 0;
+		}
+		memcpy(dst->bandtype, src->bandtype, sizeof(rt_pixtype) * src->nband_count);
+	}
+	if (src->hasnodata != NULL) {
+		dst->hasnodata = rtalloc(sizeof(int) * src->nband_count);
+		if (dst->hasnodata == NULL) {
+			fprintf(stderr, _("Not enough memory\n"));
+			return 0;
+		}
+		memcpy(dst->hasnodata, src->hasnodata, sizeof(int) * src->nband_count);
+	}
+	if (src->nodataval != NULL) {
+		dst->nodataval = rtalloc(sizeof(double) * src->nband_count);
+		if (dst->nodataval == NULL) {
+			fprintf(stderr, _("Not enough memory\n"));
+			return 0;
+		}
+		memcpy(dst->nodataval, src->nodataval, sizeof(double) * src->nband_count);
+	}
+	memcpy(dst->gt, src->gt, sizeof(double) * 6);
+	memcpy(dst->tile_size, src->tile_size, sizeof(int) * 2);
+
+	return 1;
+}
+
+static void
+diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
+	static uint8_t msg[6] = {0};
+	int i = 0;
+
+	/* # of bands */
+	if (
+		!msg[0] &&
+		x->nband_count != ref->nband_count
+	) {
+		fprintf(stderr, _("WARNING: Different number of bands found in the set of rasters being converted to PostGIS Raster\n"));
+		msg[0]++;
+	}
+
+	/* pixel types */
+	if (!msg[1]) {
+		for (i = 0; i < ref->nband_count; i++) {
+			if (x->bandtype[i] != ref->bandtype[i]) {
+				fprintf(stderr, _("WARNING: Different pixel types found for band %d in the set of rasters being converted to PostGIS Raster\n"), ref->nband[i]);
+				msg[1]++;
+			}
+		}
+	}
+
+	/* hasnodata */
+	if (!msg[2]) {
+		for (i = 0; i < ref->nband_count; i++) {
+			if (x->hasnodata[i] != ref->hasnodata[i]) {
+				fprintf(stderr, _("WARNING: Different hasnodata flags found for band %d in the set of rasters being converted to PostGIS Raster\n"), ref->nband[i]);
+				msg[2]++;
+			}
+		}
+	}
+
+	/* nodataval */
+	if (!msg[3]) {
+		for (i = 0; i < ref->nband_count; i++) {
+			if (!x->hasnodata[i] && !ref->hasnodata[i]) continue;
+			if (FLT_NEQ(x->hasnodata[i], ref->hasnodata[i])) {
+				fprintf(stderr, _("WARNING: Different NODATA values found for band %d in the set of rasters being converted to PostGIS Raster\n"), ref->nband[i]);
+				msg[3]++;
+			}
+		}
+	}
+
+	/* geotransform */
+	if (!msg[4]) {
+		for (i = 0; i < 6; i++) {
+			if (FLT_NEQ(x->gt[i], ref->gt[i])) {
+				fprintf(stderr, _("WARNING: Different geotransform matrices found in the set of rasters being converted to PostGIS Raster\n"));
+				msg[4]++;
+				break;
+			}
+		}
+	}
+
+	/* tile size */
+	if (!msg[5]) {
+		for (i = 0; i < 2; i++) {
+			if (FLT_NEQ(x->gt[i], ref->gt[i])) {
+				fprintf(stderr, _("WARNING: Different tile sizes found in the set of rasters being converted to PostGIS Raster\n"));
+				msg[5]++;
+				break;
+			}
+		}
+	}
 }
 
 static void
@@ -1529,6 +1689,9 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 	/* no need to run if opt is 'p' */
 	if (config->opt != 'p') {
+		RASTERINFO refinfo;
+		init_rastinfo(&refinfo);
+
 		/* register GDAL drivers */
 		GDALAllRegister();
 
@@ -1634,8 +1797,18 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				}
 			}
 
+			if (config->rt_file_count > 1) {
+				if (i < 1)
+					copy_rastinfo(&refinfo, &rastinfo);
+				else {
+					diff_rastinfo(&rastinfo, &refinfo);
+				}
+			}
+
 			rtdealloc_rastinfo(&rastinfo);
 		}
+
+		rtdealloc_rastinfo(&refinfo);
 	}
 
 	/* index */
@@ -1805,16 +1978,76 @@ main(int argc, char **argv) {
 				exit(1);
 			}
 
-			config->nband_count = n;
-			config->nband = rtalloc(sizeof(int) * n);
-			if (config->nband == NULL) {
-				fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
-				rtdealloc_config(config);
-				exit(1);
-			}
+			config->nband_count = 0;
 			for (j = 0; j < n; j++) {
 				char *t = trim(elements[j]);
-				config->nband[j] = atoi(t);
+				char **minmax = NULL;
+				int *range = NULL;
+				int p = 0;
+				int l = 0;
+				int m = 0;
+				int o = 0;
+
+				/* is t a range? */
+				minmax = strsplit(t, "-", &o);
+				if (o == 2) {
+					if (!array_range(atoi(minmax[0]), atoi(minmax[1]), 1, &range, &p)) {
+						fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
+						for (l = 0; l < o; l++)
+							rtdealloc(minmax[l]);
+						rtdealloc(minmax);
+						for (j = 0; j < n; j++)
+							rtdealloc(elements[j]);
+						rtdealloc(elements);
+						rtdealloc(t);
+						rtdealloc_config(config);
+						exit(1);
+					}
+				}
+				else {
+					p = 1;
+					range = rtalloc(sizeof(int));
+					if (range == NULL) {
+						fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
+						for (l = 0; l < o; l++)
+							rtdealloc(minmax[l]);
+						rtdealloc(minmax);
+						for (j = 0; j < n; j++)
+							rtdealloc(elements[j]);
+						rtdealloc(elements);
+						rtdealloc(t);
+						rtdealloc_config(config);
+						exit(1);
+					}
+					*range = atoi(t);
+				}
+
+				m = config->nband_count;
+				config->nband_count += p;
+				config->nband = rtrealloc(config->nband, sizeof(int) * config->nband_count);
+				if (config->nband == NULL) {
+					fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
+					rtdealloc(range);
+					for (l = 0; l < o; l++)
+						rtdealloc(minmax[l]);
+					rtdealloc(minmax);
+					for (j = 0; j < n; j++)
+						rtdealloc(elements[j]);
+					rtdealloc(elements);
+					rtdealloc(t);
+					rtdealloc_config(config);
+					exit(1);
+				}
+
+				for (l = 0; l < p; l++, m++)
+					config->nband[m] = range[l];
+
+				rtdealloc(range);
+
+				for (l = 0; l < o; l++)
+					rtdealloc(minmax[l]);
+				rtdealloc(minmax);
+
 				rtdealloc(t);
 				rtdealloc(elements[j]);
 			}
@@ -1824,7 +2057,7 @@ main(int argc, char **argv) {
 
 			for (j = 0; j < config->nband_count; j++) {
 				if (config->nband[j] < 1) {
-					fprintf(stderr, _("Band index %d must be greater than 0.\n"), config->nband[j]);
+					fprintf(stderr, _("Band index %d must be greater than 0\n"), config->nband[j]);
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -1851,7 +2084,7 @@ main(int argc, char **argv) {
 
 			for (j = 0; j < 2; j++) {
 				if (config->tile_size[j] < 1) {
-					fprintf(stderr, _("Tile size must be greater than 0x0.\n"));
+					fprintf(stderr, _("Tile size must be greater than 0x0\n"));
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -1920,7 +2153,7 @@ main(int argc, char **argv) {
 
 			for (j = 0; j < config->overview_count; j++) {
 				if (config->overview[j] < MINOVFACTOR || config->overview[j] > MAXOVFACTOR) {
-					fprintf(stderr, _("Overview factor %d is not between %d and %d.\n"), config->overview[j], MINOVFACTOR, MAXOVFACTOR);
+					fprintf(stderr, _("Overview factor %d is not between %d and %d\n"), config->overview[j], MINOVFACTOR, MAXOVFACTOR);
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -1992,6 +2225,28 @@ main(int argc, char **argv) {
 		/* COPY statements */
 		else if (CSEQUAL(argv[i], "-Y")) {
 			config->copy_statements = 1;
+		}
+		/* GDAL formats */
+		else if (CSEQUAL(argv[i], "-G")) {
+			uint32_t drv_count = 0;
+			rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
+			if (drv_set == NULL || !drv_count) {
+				fprintf(stderr, _("Cannot get list of available GDAL raster formats\n"));
+			}
+			else {
+				fprintf(stderr, _("Available GDAL raster formats:\n"));
+				for (j = 0; j < drv_count; j++) {
+					fprintf(stderr, _("  %s\n"), drv_set[j].long_name);
+
+					rtdealloc(drv_set[j].short_name);
+					rtdealloc(drv_set[j].long_name);
+					rtdealloc(drv_set[j].create_options);
+				}
+				rtdealloc(drv_set);
+			}
+
+			rtdealloc_config(config);
+			exit(0);
 		}
 		/* help */
 		else if (CSEQUAL(argv[i], "-?")) {

@@ -1308,7 +1308,7 @@ static void testGDALDrivers() {
 	uint32_t size;
 	rt_gdaldriver drv;
 
-	drv = (rt_gdaldriver) rt_raster_gdal_drivers(&size);
+	drv = (rt_gdaldriver) rt_raster_gdal_drivers(&size, 1);
 	/*printf("size: %d\n", size);*/
 	CHECK(size);
 
