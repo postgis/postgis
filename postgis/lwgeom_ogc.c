@@ -223,7 +223,11 @@ Datum LWGEOM_numgeometries_collection(PG_FUNCTION_ARGS)
 	int32 ret = 1;
 
 	lwgeom = lwgeom_from_gserialized(geom);
-	if ( lwgeom_is_collection(lwgeom) )
+	if ( lwgeom_is_empty(lwgeom) )
+	{
+		ret = 0;
+	}
+	else if ( lwgeom_is_collection(lwgeom) )
 	{
 		LWCOLLECTION *col = lwgeom_as_lwcollection(lwgeom);
 		ret = col->ngeoms;
@@ -336,12 +340,12 @@ Datum LWGEOM_exteriorring_polygon(PG_FUNCTION_ARGS)
 	
 	if( lwgeom_is_empty(lwgeom) )
 	{
-		PG_RETURN_NULL();
-		lwgeom_free(lwgeom);
-		PG_FREE_IF_COPY(geom, 0);
+		line = lwline_construct_empty(lwgeom->srid,
+		                              lwgeom_has_z(lwgeom),
+		                              lwgeom_has_m(lwgeom));
+		result = geometry_serialize(lwline_as_lwgeom(line));
 	}
-	
-	if ( lwgeom->type == POLYGONTYPE )
+	else if ( lwgeom->type == POLYGONTYPE )
 	{
 		LWPOLY *poly = lwgeom_as_lwpoly(lwgeom);
 

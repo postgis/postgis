@@ -29,3 +29,107 @@ SELECT 'T3.15', ST_AsGML(3,'POLYGON EMPTY'::geometry);
 SELECT 'T3.16', ST_AsGML(3,'MULTIPOLYGON EMPTY'::geometry);
 SELECT 'T3.17', ST_AsGML(3,'MULTILINESTRING EMPTY'::geometry);
 SELECT 'T3.18', ST_AsGML(3,'GEOMETRYCOLLECTION EMPTY'::geometry);
+
+-- See http://trac.osgeo.org/postgis/wiki/DevWikiEmptyGeometry
+
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry,
+ 120 as tolerance
+ ) SELECT 'ST_Buffer(empty, tolerance) == empty', ST_Buffer(empty, tolerance) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Union(geometry, empty) == geometry', ST_Union(geometry, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_Union(empty, empty) == empty', ST_Union(empty, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Intersection(geometry, empty) == geometry', ST_Intersection(geometry, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_Intersection(empty, empty) == empty', ST_Intersection(empty, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Difference(geometry, empty) == geometry', ST_Difference(geometry, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Difference(empty, geometry) == empty', ST_Difference(empty, geometry) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Distance(geometry, empty) == NULL', ST_Distance(geometry, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry,
+ 120 as tolerance
+ ) SELECT 'ST_DWithin(geometry, empty, tolerance) == FALSE', ST_DWithin(geometry, empty, tolerance) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Within(geometry, empty) == FALSE', ST_Within(geometry, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Contains(empty, geometry) == FALSE', ST_Contains(empty, geometry) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Within(empty, geometry) == FALSE', ST_Within(empty, geometry) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_Contains(empty, empty) == FALSE', ST_Contains(empty, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Intersects(geometry, empty) == FALSE', ST_Intersects(geometry, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_Intersects(empty, empty) == FALSE', ST_Intersects(empty, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Disjoint(empty, empty) == TRUE', ST_Disjoint(empty, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
+ ) SELECT 'ST_Disjoint(geometry, empty) == TRUE', ST_Disjoint(geometry, empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_IsSimple(empty) == TRUE', ST_IsSimple(empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_IsValid(empty) == TRUE', ST_IsValid(empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_NumGeometries(empty) == 0', ST_NumGeometries(empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_NRings(empty) == 0', ST_NRings(empty) FROM inp;
+WITH inp AS (SELECT
+ 'LINESTRING EMPTY'::geometry as empty
+ ) SELECT 'ST_NumPoints(empty) == 0', ST_NumPoints(empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_NPoints(empty) == 0', ST_NPoints(empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 1 as n
+ ) SELECT 'ST_GeometryN(empty, n) == empty', ST_GeometryN(empty, n) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_ExteriorRing(empty) == empty', ST_ExteriorRing(empty) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty,
+ 1 as n
+ ) SELECT 'ST_InteriorRingN(empty, n) == NULL', ST_InteriorRingN(empty, n) FROM inp;
+WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty
+ ) SELECT 'ST_Area(empty) == 0', ST_Area(empty) FROM inp;
+WITH inp AS (SELECT
+ 'LINESTRING EMPTY'::geometry as empty
+ ) SELECT 'ST_Length(empty) == 0', ST_Length(empty) FROM inp;
