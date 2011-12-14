@@ -316,7 +316,7 @@ SELECT '#680', encode(ST_AsBinary(geography(foo1.the_geom)),'hex') As result FRO
 SELECT '#682', ST_Buffer(ST_GeomFromText('POLYGON EMPTY',4326) , 0.5);
 
 -- #683 --
---SELECT '#683', ST_BuildArea(ST_GeomFromText('POINT EMPTY',4326));
+SELECT '#683', ST_BuildArea(ST_GeomFromText('POINT EMPTY',4326));
 
 -- #684 --
 SELECT '#684', ST_Centroid(ST_GeomFromText('POLYGON EMPTY',4326));
