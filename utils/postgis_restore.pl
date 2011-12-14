@@ -31,16 +31,29 @@ use strict;
 my $me = $0;
 
 my $usage = qq{
-Usage:	$me <dumpfile>
-	Restore a custom dump (pg_dump -Fc) of a PostGIS-enabled database.
-	First dump the old database: pg_dump -Fc <olddb> > <olddb.dmp>
-	Then create a new database: createdb <newdb>
-	Then install PostGIS in the new database: psql -f <path>/postgis.sql
-	Finally, run this script on the old dump: $me <olddb.dmp> | psql <newdb>
+Usage:	$me [-v] <dumpfile>
+        Restore a custom dump (pg_dump -Fc) of a PostGIS-enabled database.
+        First dump the old database: pg_dump -Fc MYDB > MYDB.dmp
+        Then create a new database: createdb NEWDB
+        Then install PostGIS in the new database:
+           psql -f postgis/postgis.sql NEWDB
+        Also install PostGIS topology and raster, if you were using them:
+           psql -f topology/topology.sql NEWDB
+           psql -f raster/rtpostgis.sql NEWDB
+        Finally, pass the dump to this script and feed output to psql:
+           $me MYDB.dmp | psql NEWDB
+        The -v switch writes detailed report on stderr.
 
 };
 
-die $usage if (@ARGV != 1);
+my $DEBUG = 0;
+
+if ( @ARGV && $ARGV[0] eq '-v' ) {
+  $DEBUG = 1;
+  shift(@ARGV);
+}
+
+die $usage if (@ARGV < 1);
 
 my $dumpfile = $ARGV[0];
 my $manifest = $dumpfile . ".lst";
@@ -49,8 +62,6 @@ my $hasTopology = 0;
 die "$me:\tUnable to find 'pg_dump' on the path.\n" if ! `pg_dump --version`;
 die "$me:\tUnable to find 'pg_restore' on the path.\n" if ! `pg_restore --version`;
 die "$me:\tUnable to open dump file '$dumpfile'.\n" if ! -f $dumpfile;
-
-my $DEBUG = 0;
 
 print STDERR "Converting $dumpfile to ASCII on stdout...\n";
 
@@ -62,9 +73,8 @@ print STDERR "  Reading list of functions to ignore...\n";
 
 my %skip = ();
 while(my $l = <DATA>) {
-  print STDERR "    $l" if $DEBUG;
   $l =~ s/\s//g;
-  print STDERR "DATA:$l\n" if $DEBUG;
+  print STDERR "DATA $l\n" if $DEBUG;
   $skip{$l} = 1;
 }
 
@@ -83,10 +93,10 @@ while( my $l = <DUMP> ) {
   my $sig = linesignature($l);
   $hasTopology = 1 if $sig eq 'SCHEMAtopology';
   if ( $skip{$sig} ) {
-    print STDERR "SKIPPING $sig\n" if $DEBUG;
+    print STDERR "SKIP $sig\n" if $DEBUG;
     next
   }
-  print STDERR "KEEPING $sig\n" if $DEBUG;
+  print STDERR "KEEP $sig\n" if $DEBUG;
   print MANIFEST $l;
 
 }
@@ -153,11 +163,11 @@ while( my $l = <INPUT> ) {
 
     if ( $skip{$sig} )
     {
-       print STDERR "SKIPPING $sig\n" if $DEBUG;
+       print STDERR "SKIP $sig\n" if $DEBUG;
        next;
     }
 
-    print STDERR "KEEPING $sig\n" if $DEBUG;
+    print STDERR "KEEP $sig\n" if $DEBUG;
     print STDOUT @sublines;
     next;
   }
