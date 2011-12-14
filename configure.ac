@@ -775,16 +775,6 @@ if test "x$TOPOLOGY" = "xtopology"; then
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
 fi
 
-dnl
-dnl Topology Version Information imported from topology/Version.config 
-dnl
-POSTGIS_TOPOLOGY_MAJOR_VERSION=`cat topology/Version.config | grep POSTGIS_TOPOLOGY_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-POSTGIS_TOPOLOGY_MINOR_VERSION=`cat topology/Version.config | grep POSTGIS_TOPOLOGY_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-POSTGIS_TOPOLOGY_MICRO_VERSION=`cat topology/Version.config | grep POSTGIS_TOPOLOGY_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-
-POSTGIS_TOPOLOGY_VERSION="$POSTGIS_TOPOLOGY_MAJOR_VERSION.$POSTGIS_TOPOLOGY_MINOR_VERSION.$POSTGIS_TOPOLOGY_MICRO_VERSION"
-
-AC_SUBST([POSTGIS_TOPOLOGY_VERSION])
 AC_SUBST([TOPOLOGY])
 
 
@@ -995,7 +985,7 @@ if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  PostGIS Raster:       ${POSTGIS_RASTER_LIB_VERSION}])
 fi
 if test "x$TOPOLOGY" = "xtopology"; then
-    AC_MSG_RESULT([  PostGIS Topology:     ${POSTGIS_TOPOLOGY_VERSION}])
+    AC_MSG_RESULT([  PostGIS Topology])
 fi
 fi
 AC_MSG_RESULT()
