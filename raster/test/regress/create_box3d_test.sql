@@ -7,15 +7,15 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 -----------------------------------------------------------------------
 
-CREATE TABLE rt_box2d_test (
+CREATE TABLE rt_box3d_test (
     id numeric,
     name text,
     rast raster,
-    env box2d
+    env box3d
 );
 
 -- 10x20, ip:0.5,0.5 scale:2,3
-INSERT INTO rt_box2d_test 
+INSERT INTO rt_box3d_test 
 VALUES ( 0, '10x20, ip:0.5,0.5 scale:2,3 skew:0,0',
 (
 '01' -- little endian (uint8 ndr)
@@ -42,10 +42,10 @@ VALUES ( 0, '10x20, ip:0.5,0.5 scale:2,3 skew:0,0',
 ||
 '1400' -- height (uint16 20)
 )::raster
-,'BOX(0.5 0.5,20.5 60.5)' -- expected envelope (20x60) == (10*2 x 20*3)
+,'BOX3D(0.5 0.5,20.5 60.5 0)' -- expected envelope (20x60) == (10*2 x 20*3)
 );
 
-INSERT INTO rt_box2d_test 
+INSERT INTO rt_box3d_test 
 VALUES ( 1, '1x1, ip:2.5,2.5 scale:5,5 skew:0,0',
 (
 '01' -- little endian (uint8 ndr)
@@ -72,10 +72,10 @@ VALUES ( 1, '1x1, ip:2.5,2.5 scale:5,5 skew:0,0',
 ||
 '0100' -- height (uint16 1)
 )::raster
-,'BOX(2.5 2.5,7.5 7.5)' -- expected envelope 
+,'BOX3D(2.5 2.5,7.5 7.5 0)' -- expected envelope 
 );
 
-INSERT INTO rt_box2d_test 
+INSERT INTO rt_box3d_test 
 VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0',
 (
 '01' -- little endian (uint8 ndr)
@@ -102,5 +102,5 @@ VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0',
 ||
 '0100' -- height (uint16 1)
 )::raster
-,'BOX(7.5 2.5,12.5 7.5)' -- expected envelope 
+,'BOX3D(7.5 2.5,12.5 7.5 0)' -- expected envelope 
 );

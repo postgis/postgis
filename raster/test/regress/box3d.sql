@@ -13,31 +13,31 @@
 SELECT
 	id,
 	env as expected,
-	rast::box2d as obtained
-FROM rt_box2d_test
+	rast::box3d as obtained
+FROM rt_box3d_test
 WHERE
-	rast::box2d::text != env::text;
+	rast::box3d::text != env::text;
 
 SELECT
 	id,
 	env as expected,
-	box2d(rast) as obtained
-FROM rt_box2d_test
+	box3d(rast) as obtained
+FROM rt_box3d_test
 WHERE
-	box2d(rast)::text != env::text;
+	box3d(rast)::text != env::text;
 
 SELECT
 	id,
 	env as expected,
-	box2d(st_convexhull(rast)) as obtained
-FROM rt_box2d_test
+	box3d(st_convexhull(rast)) as obtained
+FROM rt_box3d_test
 WHERE
-	box2d(st_convexhull(rast))::text != env::text;
+	box3d(st_convexhull(rast))::text != env::text;
 
 SELECT
 	id,
 	env as expected,
-	box2d(st_envelope(rast)) as obtained
-FROM rt_box2d_test
+	box3d(st_envelope(rast)) as obtained
+FROM rt_box3d_test
 WHERE
-	box2d(st_envelope(rast))::text != env::text;
+	box3d(st_envelope(rast))::text != env::text;

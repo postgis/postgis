@@ -40,8 +40,8 @@ TEST_IO = \
 TEST_FUNC = \
 	create_rt_bytea_test.sql \
 	rt_bytea.sql \
-	create_rt_box2d_test.sql \
-	rt_box2d.sql \
+	create_box3d_test.sql \
+	box3d.sql \
 	rt_addband.sql \
 	rt_band.sql \
 	rt_asgdalraster.sql \
