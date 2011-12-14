@@ -145,7 +145,7 @@ VALUES (1,
             </refsection>
         </refentry>
         
-        	<refentry id="reclassarg">
+        <refentry id="reclassarg">
 		  <refnamediv>
 			<refname>reclassarg</refname>
 			<refpurpose>A composite type used as input into the ST_Reclass function defining the behavior of reclassification.</refpurpose>
@@ -239,141 +239,100 @@ VALUES (1,
   </sect1>
   <sect1 id="Raster_Management_Functions">
   	<title>Raster Management</title>
-  	<refentry id="RT_AddRasterColumn">
+  	<refentry id="RT_AddRasterConstraints">
 	  <refnamediv>
-		<refname>AddRasterColumn</refname>
+		<refname>AddRasterConstraints</refname>
 
-		<refpurpose>deprecated: Adds a raster column to an existing table and generates column constraint on the new column to enforce srid.</refpurpose>
+		<refpurpose>Adds raster constraints to a loaded raster table for a specific column that constrains spatial ref, scaling, blocksize, alignment, bands, band type and a flag to denote if raster column is regularly blocked. The table must be loaded with data for the constraints to be inferred. Returns true of the constraint setting was accomplished and if issues a notice.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>text <function>AddRasterColumn</function></funcdef>
+			<funcdef>boolean <function>AddRasterContraints</function></funcdef>
 			
-			<paramdef><type>varchar </type>
-			<parameter>table_name</parameter></paramdef>
+			<paramdef><type>name </type>
+			<parameter>rasttable</parameter></paramdef>
 
-			<paramdef><type>varchar </type>
-			<parameter>column_name</parameter></paramdef>
-
-			<paramdef><type>integer </type>
-			<parameter>srid</parameter></paramdef>
-
-			<paramdef><type>varchar[] </type>
-			<parameter>pixel_types</parameter></paramdef>
+			<paramdef><type>name </type>
+			<parameter>rastcolumn</parameter></paramdef>
 
 			<paramdef><type>boolean </type>
-			<parameter>out_db</parameter></paramdef>
+			<parameter>srid</parameter></paramdef>
+
+			<paramdef><type>boolean </type>
+			<parameter>scale_x</parameter></paramdef>
+
+			<paramdef><type>boolean </type>
+			<parameter>scale_y</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+			<parameter>blocksize_x</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+			<parameter>blocksize_y</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+			<parameter>same_alignment</parameter></paramdef>
 			
 			<paramdef><type>boolean </type>
 			<parameter>regular_blocking</parameter></paramdef>
-			
-			<paramdef><type>double precision[] </type>
-			<parameter>no_data_values</parameter></paramdef>
-			
-			<paramdef><type>double precision </type>
-			<parameter>scale_x</parameter></paramdef>
-			
-			<paramdef><type>double precision </type>
-			<parameter>scale_y</parameter></paramdef>
-			
-			<paramdef><type>integer </type>
-			<parameter>blocksize_x</parameter></paramdef>
-			
-			<paramdef><type>integer </type>
-			<parameter>blocksize_y</parameter></paramdef>
-			
-			<paramdef><type>geometry </type>
-			<parameter>envelope</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
-			<funcdef>text <function>AddRasterColumn</function></funcdef>
-			<paramdef><type>varchar </type>
-			<parameter>schema_name</parameter></paramdef>
+			<funcdef>boolean <function>AddRasterContraints</function></funcdef>
+			<paramdef><type>name </type>
+			<parameter>rastschema</parameter></paramdef>
 
-			<paramdef><type>varchar </type>
-			<parameter>table_name</parameter></paramdef>
+			<paramdef><type>name </type>
+			<parameter>rasttable</parameter></paramdef>
 
-			<paramdef><type>varchar </type>
-			<parameter>column_name</parameter></paramdef>
-
-			<paramdef><type>integer </type>
-			<parameter>srid</parameter></paramdef>
-
-			<paramdef><type>varchar[] </type>
-			<parameter>pixel_types</parameter></paramdef>
-
-			<paramdef><type>boolean </type>
-			<parameter>out_db</parameter></paramdef>
-			
-			<paramdef><type>boolean </type>
-			<parameter>regular_blocking</parameter></paramdef>
-			
-			<paramdef><type>double precision[] </type>
-			<parameter>no_data_values</parameter></paramdef>
-			
-			<paramdef><type>double precision </type>
-			<parameter>scale_x</parameter></paramdef>
-			
-			<paramdef><type>double precision </type>
-			<parameter>scale_y</parameter></paramdef>
-			
-			<paramdef><type>integer </type>
-			<parameter>blocksize_x</parameter></paramdef>
-			
-			<paramdef><type>integer </type>
-			<parameter>blocksize_y</parameter></paramdef>
-			
-			<paramdef><type>geometry </type>
-			<parameter>envelope</parameter></paramdef>
+			<paramdef><type>text[] </type>
+			<parameter>VARIADIC constraints</parameter></paramdef>
 		  </funcprototype>
-
+		  
 		  <funcprototype>
-			<funcdef>text <function>AddRasterColumn</function></funcdef>
+			<funcdef>boolean <function>AddRasterContraints</function></funcdef>
+			
+			<paramdef><type>name </type>
+			<parameter>rastschema</parameter></paramdef>
+			
+			<paramdef><type>name </type>
+			<parameter>rasttable</parameter></paramdef>
 
-			<paramdef><type>varchar </type>
-			<parameter>catalog_name</parameter></paramdef>
-
-			<paramdef><type>varchar </type>
-			<parameter>schema_name</parameter></paramdef>
-
-			<paramdef><type>varchar </type>
-			<parameter>table_name</parameter></paramdef>
-
-			<paramdef><type>varchar </type>
-			<parameter>column_name</parameter></paramdef>
-
-			<paramdef><type>integer </type>
-			<parameter>srid</parameter></paramdef>
-
-			<paramdef><type>varchar[] </type>
-			<parameter>pixel_types</parameter></paramdef>
+			<paramdef><type>name </type>
+			<parameter>rastcolumn</parameter></paramdef>
 
 			<paramdef><type>boolean </type>
-			<parameter>out_db</parameter></paramdef>
+			<parameter choice='opt'>srid=true</parameter></paramdef>
+
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>scale_x=true</parameter></paramdef>
+
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>scale_y=true</parameter></paramdef>
 			
 			<paramdef><type>boolean </type>
-			<parameter>regular_blocking</parameter></paramdef>
+			<parameter choice='opt'>blocksize_x=true</parameter></paramdef>
 			
-			<paramdef><type>double precision[] </type>
-			<parameter>no_data_values</parameter></paramdef>
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>blocksize_y=true</parameter></paramdef>
 			
-			<paramdef><type>double precision </type>
-			<parameter>scale_x</parameter></paramdef>
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>same_alignment=true</parameter></paramdef>
 			
-			<paramdef><type>double precision </type>
-			<parameter>scale_y</parameter></paramdef>
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>regular_blocking=true</parameter></paramdef>
 			
-			<paramdef><type>integer </type>
-			<parameter>blocksize_x</parameter></paramdef>
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>num_bands=true</parameter></paramdef>
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>pixel_types=true</parameter></paramdef>
 			
-			<paramdef><type>integer </type>
-			<parameter>blocksize_y</parameter></paramdef>
-			
-			<paramdef><type>geometry </type>
-			<parameter>envelope</parameter></paramdef>
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>nodata_values=true</parameter></paramdef>
+			<paramdef><type>boolean </type>
+			<parameter choice='opt'>extent=true</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -381,65 +340,65 @@ VALUES (1,
 	  <refsection>
 		<title>Description</title>
 
-		<para>Adds a raster column to an existing table and also generates constraints on the new column. Currently only constrains the <varname>SRID</varname>.
-		The <varname>schema_name</varname> is the name of the table schema (unused
-		for pre-schema PostgreSQL installations). The <varname>srid</varname>
+		<para>Generates constraints on a raster column that are used to display information in the <varname>raster_columns</varname> raster catalog. 
+		The <varname>rastschema</varname> is the name of the table schema the table resides in. The <varname>srid</varname>
 		must be an integer value reference to an entry in the SPATIAL_REF_SYS
-		table. The <varname>pixel_types</varname> must be an array of pixel types as described in <xref linkend="RT_ST_BandPixelType" />, one for each band.  
-		An error is thrown if the schemaname doesn't exist
-		(or not visible in the current search_path) or the specified SRID,
-		pixel types are invalid.</para>
+		table.</para>
 		
-		<para><varname>raster2pgsql.py</varname> loader uses this function to register raster tables</para>
+		<para><varname>raster2pgsql</varname> loader uses this function to register raster tables</para>
 
 		<note>
-			<para>This function is deprecated and will be removed in later versions.  Instead just create a raster column
-				using <programlisting>CREATE TABLE .. or ALTER TABLE .. ADD COLUMN rast raster;</programlisting> and then use the AddRasterConstraints function.
+			<para>This function infers the constraints from the data already present in the table.  As such for it to work, you must create the raster column first
+			and then load it with data.
 			</para>
 		</note>
+		<note>
+			<para>If you need to load more data in your tables after you have already applied constraints, you may want to run the DropRasterConstraints
+				if the extent of your data has changed.
+			</para>
+		</note>
+		<para>Availability: 2.0.0</para>
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT AddRasterColumn('public', 'myrasters', 'rast',4326,
-    '{8BUI,8BUI,8BUI,8BUI}',
-false, true, '{255,255,255,255}', 0.25,-0.25,200,300, null);
+		<programlisting>CREATE TABLE myrasters(rid SERIAL primary key, rast raster);
+INSERT INTO myrasters(rast)
+SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI', -129, NULL);
 
-public.myrasters.rast 
-srid:4326 pixel_types:{8BUI,8BUI,8BUI,8BUI} 
-out_db:false 
-regular_blocking:true 
-nodata_values:'{255,255,255,255}' 
-scale_x:'0.25' 
-scale_y:'-0.25' blocksize_x:'200' blocksize_y:'300' extent:NULL
+SELECT AddRasterConstraints('myrasters', 'rast');
 
---- After loading the data, you can currect the geometry column
-UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myrasters)
-	WHERE r_table_schema = 'public'
-  AND r_table_name = 'myrasters'
-  AND r_column = 'rast';
+
+-- verify it registered correctly in raster_columns --
+SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
+	FROM raster_columns
+	WHERE r_table_name = 'myrasters';
+	
+ srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
+------+---------+---------+-------------+-------------+-----------+-------------+---------------
+ 4326 |       2 |       2 |        1000 |        1000 |         1 | {8BSI}      | {0}
 		</programlisting>
 	  </refsection>
 
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="AddGeometryColumn"/>, <xref linkend="RT_DropRasterTable"/>, <xref linkend="RT_DropRasterColumn"/>, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_SRID" /></para>
+		<para><xref linkend="RT_ST_AddBand"/>, <xref linkend="RT_ST_MakeEmptyRaster"/>, <xref linkend="RT_DropRasterConstraints"/>, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 	
-	<refentry id="RT_DropRasterColumn">
+	<refentry id="RT_DropRasterConstraints">
 	  <refnamediv>
-		<refname>DropRasterColumn</refname>
+		<refname>DropRasterConstraints</refname>
 
-		<refpurpose>Obsolete: just use sql ALTER TABLE DROP COLUMN: Removes a raster column from a table.</refpurpose>
+		<refpurpose>Drops PostGIS raster constraints that refer to a raster table column. Useful if you need to reload data or update your raster column data.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>text <function>DropRasterColumn</function></funcdef>
+			<funcdef>boolean <function>DropRasterConstraints</function></funcdef>
 
 			<paramdef><type>varchar </type>
 			<parameter>table_name</parameter></paramdef>
@@ -481,89 +440,36 @@ UPDATE raster_columns SET extent = (SELECT ST_Union(ST_Envelope(rast)) FROM myra
 
 	  <refsection>
 		<title>Description</title>
-
-		<para><note>Obsolete and will be removed in later versions.  Instead just drop the column using standard SQL.</note></para>
+		<para>Drops PostGIS raster constraints that refer to a raster table column that were added by <xref linkend="RT_AddRasterConstraints" />. Useful if you need to load more data or update your raster column data.
+		You do not need to do this if you want to get rid of a raster table or a raster column. </para>
+		<para>To drop a raster table use the standard <programlisting>DROP TABLE mytable</programlisting></para>
+		<para>To drop justa  araster column and leave the rest of the table, use standard SQL <programlisting>ALTER TABLE mytable DROP COLUMN rast</programlisting></para>
+		<para>the table will disappear from the <varname>raster_columns</varname> catalog if the column or table is dropped.  However if only the constraints are dropped, the
+		raster column will still be listed in the <varname>raster_columns</varname> catalog, but there will be no other information about it aside from the column name and table.</para>
+		<para>Availability: 2.0.0</para>
 	  </refsection>
 	  <refsection>
 		<title>Examples</title>
 
 		<programlisting>
--- NOTE this is obsolete
-SELECT DropRasterColumn ('my_schema','my_raster_table','rast');
+SELECT DropRasterConstraints ('myrasters','rast');
 ----RESULT output ---
-my_schema.my_raster_table.rast effectively removed.
-		</programlisting>
-		
-		<programlisting>-- Instead do --
-ALTER TABLE my_schema.my_raster_table DROP COLUMN rast;</programlisting>
-	  </refsection>
-	  <refsection>
-		<title>See Also</title>
+t
 
-		<para><xref linkend="RT_AddRasterColumn"/>, <xref linkend="RT_DropRasterTable"/></para>
-	  </refsection>
-	</refentry>
+-- verify change in raster_columns --
+SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
+	FROM raster_columns
+	WHERE r_table_name = 'myrasters';
 	
-	<refentry id="RT_DropRasterTable">
-	  <refnamediv>
-		<refname>DropRasterTable</refname>
-
-		<refpurpose>Obsolete: Instead use DROP TABLE mytable. Drops a table and all its references in
-		raster_columns.</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>text <function>DropRasterTable</function></funcdef>
-
-			<paramdef><type>varchar </type>
-			<parameter>table_name</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
-			<funcdef>text <function>DropRasterTable</function></funcdef>
-
-			<paramdef><type>varchar </type>
-			<parameter>schema_name</parameter></paramdef>
-
-			<paramdef><type>varchar </type>
-			<parameter>table_name</parameter></paramdef>
-		  </funcprototype>
-
-		  <funcprototype>
-			<funcdef>text <function>DropRasterTable</function></funcdef>
-			<paramdef><type>varchar </type>
-			<parameter>catalog_name</parameter></paramdef>
-			<paramdef><type>varchar </type>
-			<parameter>schema_name</parameter></paramdef>
-			<paramdef><type>varchar </type>
-			<parameter>table_name</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Drops a table and all its references in raster_columns. Note:
-		uses current_schema() on schema-aware pgsql installations if schema is
-		not provided.</para>
-	  </refsection>
-
-	  <refsection>
-		<title>Examples</title>
-
-		<programlisting>
-			SELECT DropRasterTable ('my_schema','my_raster_table');
-			----RESULT output ---
-			my_schema.my_raster_table dropped.
+ srid | scale_x | scale_y | blocksize_x | blocksize_y | num_bands | pixel_types| nodata_values
+------+---------+---------+-------------+-------------+-----------+-------------+---------------
+    0 |         |         |             |             |           |             |
 		</programlisting>
 	  </refsection>
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="RT_AddRasterColumn"/>, <xref linkend="RT_DropRasterColumn"/></para>
+		<para><xref linkend="RT_AddRasterConstraints"/></para>
 	  </refsection>
 	</refentry>
 	

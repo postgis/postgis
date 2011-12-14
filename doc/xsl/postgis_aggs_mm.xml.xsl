@@ -445,7 +445,7 @@
 				<para>New geometry types: TIN and Polyhedral surfaces was introduced in 2.0</para>
 				<note><para>Greatly improved support for Topology.  Please refer to <xref linkend="Topology" /> for more details.</para></note>
 				<note><para>In PostGIS 2.0, raster type and raster functionality has been integrated.  There are way too many new raster functions to list here and all are new so 
-					please refer to <xref linkend="RT_reference" /> for more details of the raster functions available.</para></note>
+					please refer to <xref linkend="RT_reference" /> for more details of the raster functions available. Earlier pre-2.0 versions had raster_columns/raster_overviews as real tables. These were changed to views before release.  Functions such as <varname>ST_AddRasterColumn</varname> were removed and replaced with <xref linkend="RT_AddRasterConstraints"/>, <xref linkend="RT_DropRasterConstraints"/> as a result some apps that created raster tables may need changing.</para></note>
 				<note><para>Tiger Geocoder upgraded to work with TIGER 2010 census data and now included in the core PostGIS documentation.  A reverse geocoder function was also added.
 					Please refer to <xref linkend="Tiger_Geocoder" /> for more details.</para></note>
 				<itemizedlist>
