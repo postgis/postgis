@@ -7,11 +7,14 @@
 
     <para>
         The <varname>raster2pgsql</varname> is a raster loader executable that loads GDAL supported raster formats into sql suitable for loading into a PostGIS raster table.
-        It is capable of loading folders of raster files as well as creating overviews of rasters. 
-        
-        Note that the older version of this tool waas a python script.  The executable has replaced the python script.  If you still find the need for the Python script
+        It is capable of loading folders of raster files as well as creating overviews of rasters. </para>
+    <para>Since the raster2pgsql is compiled as part of PostGIS most often (unless you compile your own GDAL library), the raster types supported
+    	by the executable will be the same as those compiled in the GDAL dependency library.  To get a list of raster types your particular PostGIS install
+    	supports, refer to  <xref linkend="RT_ST_GDALDrivers" />.</para>
+    <note>
+    	<para>The older version of this tool was a python script.  The executable has replaced the python script.  If you still find the need for the Python script
         Examples of the pyhton one can be found at <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">GDAL PostGIS Raster Driver Usage</ulink> 
-    </para>
+        </para></note>
         
     <para>EXAMPLE USAGE: 
     	<programlisting>raster2pgsql <varname>raster_options_go_here</varname> <varname>raster_file</varname> <varname>someschema</varname>.<varname>sometable</varname> &gt; out.sql</programlisting>
@@ -216,11 +219,11 @@ psql -d gisdb -f elev.sql</programlisting>
     
     <para>Load rasters Massachusetts state plane meters aerial tiles 
     	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables and directly insert to database.  Break up the rasters into 100x100 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
-    <programlisting>raster2pgsql -I -C -Y -F -s 26986 -t 100x100 bostonaerials2008\*.jpg  -l 2,4 aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
+    <programlisting>raster2pgsql -I -C -Y -F -s 26986 -t 100x100  -l 2,4 bostonaerials2008\*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
  
   </sect1>
    <sect1 id="RT_Raster_Catalog"> 
-   		<title>Raster Catalog Views</title>
+   		<title>Raster Catalogs</title>
    		<para>There are two raster catalog views that come package with PostGIS.  Both views utilize information embedded in the constraints of the raster tables.  As a result
    		the catalog views are always consistent with the raster data in the tables since the constraints are enforced. </para>
    		 <orderedlist>
