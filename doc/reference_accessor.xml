@@ -471,7 +471,11 @@ LINESTRING(0 0 1,1 1 1,1 2 1,1 1 1,0 0 1)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_NumInteriorRings" /></para>
+		<para>
+<xref linkend="ST_InteriorRingN" />,
+<xref linkend="ST_Boundary" />,
+<xref linkend="ST_NumInteriorRings" />
+		</para>
 	  </refsection>
 	</refentry>
 
@@ -727,7 +731,14 @@ FROM (SELECT ST_BuildArea(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_BuildArea" />, <xref linkend="ST_Collect" />, <xref linkend="ST_Dump" />, <xref linkend="ST_NumInteriorRing" />, <xref linkend="ST_NumInteriorRings" /></para>
+		<para>
+<xref linkend="ST_ExteriorRing" />
+<xref linkend="ST_BuildArea" />,
+<xref linkend="ST_Collect" />,
+<xref linkend="ST_Dump" />,
+<xref linkend="ST_NumInteriorRing" />,
+<xref linkend="ST_NumInteriorRings" />
+		</para>
 	  </refsection>
 	</refentry>
 
