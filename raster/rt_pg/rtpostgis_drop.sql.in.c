@@ -23,6 +23,10 @@
 -- Drop obsolete functions 
 -- (which fully obsolete, changed to take default args, or outp params changed) --
 
+-- drop box2d
+DROP CAST IF EXISTS (raster AS box2d);
+DROP FUNCTION IF EXISTS box2d(raster);
+
 -- drop aggregates
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision, text, text, text, double precision, text, text, text, double precision);
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text);
