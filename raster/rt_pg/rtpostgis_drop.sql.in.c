@@ -326,3 +326,7 @@ DROP FUNCTION _drop_st_samealignment();
 DROP FUNCTION IF EXISTS _st_intersects(raster, integer, raster, integer);
 DROP FUNCTION IF EXISTS st_intersects(raster, integer, raster, integer);
 DROP FUNCTION IF EXISTS st_intersects(raster, raster);
+
+-- functions have changed dramatically
+DROP FUNCTION IF EXISTS st_intersection(rast raster, band integer, geom geometry);
+DROP FUNCTION IF EXISTS st_intersection(rast raster, geom geometry);

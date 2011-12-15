@@ -91,12 +91,13 @@ TEST_UTILITY = \
 	rt_mapalgebrafct.sql \
 	rt_mapalgebraexpr_2raster.sql \
 	rt_mapalgebrafct_2raster.sql \
-    create_rt_mapalgebrafctngb_test.sql \
-    rt_mapalgebrafctngb.sql \
+	create_rt_mapalgebrafctngb_test.sql \
+	rt_mapalgebrafctngb.sql \
 	rt_mapalgebrafctngb_userfunc.sql \
-    rt_reclass.sql \
+	rt_reclass.sql \
 	rt_resample.sql \
 	rt_asraster.sql \
+	rt_intersection.sql \
 	$(NULL)
 
 TEST_GIST = \

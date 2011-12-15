@@ -3218,15 +3218,144 @@ CREATE OR REPLACE FUNCTION st_intersection(geomin geometry, rast raster, band in
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_intersection(rast raster, geom geometry)
-	RETURNS SETOF geomval
-	AS $$ SELECT (gv).geom, (gv).val FROM st_intersection($2, $1, 1) gv; $$
-	LANGUAGE SQL IMMUTABLE STRICT;
+-----------------------------------------------------------------------
+-- ST_Intersection (2-raster in raster space)
+-----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_intersection(rast raster, band integer, geom geometry)
-	RETURNS SETOF geomval
-	AS $$ SELECT (gv).geom, (gv).val FROM st_intersection($3, $1, $2) gv; $$
-	LANGUAGE SQL IMMUTABLE STRICT;
+CREATE OR REPLACE FUNCTION _st_intersection(
+	rast1 raster, band1 int,
+	rast2 raster, band2 int,
+	extenttype text DEFAULT 'INTERSECTION',
+	returnband text DEFAULT 'BOTH',
+	otheruserfunc regprocedure DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		rtn raster;
+		_returnband text;
+	BEGIN
+		-- returnband
+		_returnband := upper(returnband);
+		IF _returnband NOT IN ('FIRST', 'SECOND', 'BOTH', 'OTHER') THEN
+			RAISE EXCEPTION 'Unknown value provided for returnband: %', returnband;
+			RETURN NULL;
+		END IF;
+
+		-- returnband is OTHER, otheruserfunc provided?
+		IF _returnband = 'OTHER' AND otheruserfunc IS NULL THEN
+			RAISE EXCEPTION 'Function must be provided for otheruserfunc if return band is OTHER';
+			RETURN NULL;
+		END IF;
+
+		rtn := NULL;
+		CASE
+			WHEN _returnband = 'FIRST' THEN
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, 'rast1', NULL, extenttype);
+			WHEN _returnband = 'SECOND' THEN
+				rtn := ST_MapAlgebraExpr(rast2, band2, rast1, band1, 'rast1', NULL, extenttype);
+			WHEN _returnband = 'OTHER' THEN
+				rtn := ST_MapAlgebraFct(rast1, band1, rast2, band2, otheruserfunc, NULL, extenttype);
+			ELSE -- BOTH
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, 'rast1', NULL, extenttype);
+				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast2, band2, rast1, band1, 'rast1', NULL, extenttype));
+		END CASE;
+
+		RETURN rtn;
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster, band1 int,
+	rast2 raster, band2 int,
+	returnband text DEFAULT 'BOTH',
+	otheruserfunc regprocedure DEFAULT NULL
+)
+	RETURNS raster AS
+	$$ SELECT _st_intersection($1, $2, $3, $4, 'INTERSECTION', $5, $6) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster, band1 int,
+	rast2 raster, band2 int,
+	otheruserfunc regprocedure
+)
+	RETURNS raster AS
+	$$ SELECT _st_intersection($1, $2, $3, $4, 'INTERSECTION', 'OTHER', $5) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster,
+	rast2 raster,
+	returnband text DEFAULT 'BOTH',
+	otheruserfunc regprocedure DEFAULT NULL
+)
+	RETURNS raster AS
+	$$ SELECT _st_intersection($1, 1, $2, 1, 'INTERSECTION', $3, $4) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster,
+	rast2 raster,
+	otheruserfunc regprocedure
+)
+	RETURNS raster AS
+	$$ SELECT _st_intersection($1, 1, $2, 1, 'INTERSECTION', 'OTHER', $3) $$
+	LANGUAGE 'sql' STABLE;
+
+-----------------------------------------------------------------------
+-- ST_Intersection (raster, geometry in raster space)
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster, band1 int,
+	geom geometry,
+	extenttype text DEFAULT 'INTERSECTION',
+	otheruserfunc regprocedure DEFAULT NULL
+)
+	RETURNS raster AS $$
+	DECLARE
+		rtn raster;
+	BEGIN
+		rtn := NULL;
+
+		IF $5 IS NULL THEN
+			rtn := _st_intersection($1, $2, ST_AsRaster($3, $1), 1, $4, 'FIRST');
+		ELSE
+			rtn := _st_intersection($1, $2, ST_AsRaster($3, $1), 1, $4, 'OTHER', $5);
+		END IF;
+
+		RETURN rtn;
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster, band1 int,
+	geom geometry,
+	otheruserfunc regprocedure
+)
+	RETURNS raster AS
+	$$ SELECT st_intersection($1, $2, $3, 'INTERSECTION', $4) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster,
+	geom geometry,
+	extenttype text DEFAULT 'INTERSECTION',
+	otheruserfunc regprocedure DEFAULT NULL
+)
+	RETURNS raster AS
+	$$ SELECT st_intersection($1, 1, $2, $3, $4) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster,
+	geom geometry,
+	otheruserfunc regprocedure
+)
+	RETURNS raster AS
+	$$ SELECT st_intersection($1, 1, $2, 'INTERSECTION', $3) $$
+	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
 -- st_union aggregate
@@ -4142,10 +4271,10 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 					WHEN kw = 'srid' THEN
 						RAISE NOTICE 'Adding SRID constraint';
 						rtn := _add_raster_constraint_srid(schema, $2, $3);
-					WHEN kw = 'scale_x' OR kw = 'scalex' THEN
+					WHEN kw IN ('scale_x', 'scalex') THEN
 						RAISE NOTICE 'Adding scale-X constraint';
 						rtn := _add_raster_constraint_scale(schema, $2, $3, 'x');
-					WHEN kw = 'scale_y' OR kw = 'scaley' THEN
+					WHEN kw IN ('scale_y', 'scaley') THEN
 						RAISE NOTICE 'Adding scale-Y constraint';
 						rtn := _add_raster_constraint_scale(schema, $2, $3, 'y');
 					WHEN kw = 'scale' THEN
@@ -4153,10 +4282,10 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 						rtn := _add_raster_constraint_scale(schema, $2, $3, 'x');
 						RAISE NOTICE 'Adding scale-Y constraint';
 						rtn := _add_raster_constraint_scale(schema, $2, $3, 'y');
-					WHEN kw = 'blocksize_x' OR kw = 'blocksizex' OR kw = 'width' THEN
+					WHEN kw IN ('blocksize_x', 'blocksizex', 'width') THEN
 						RAISE NOTICE 'Adding blocksize-X constraint';
 						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'width');
-					WHEN kw = 'blocksize_y' OR kw = 'blocksizey' OR kw = 'height' THEN
+					WHEN kw IN ('blocksize_y', 'blocksizey', 'height') THEN
 						RAISE NOTICE 'Adding blocksize-Y constraint';
 						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'height');
 					WHEN kw = 'blocksize' THEN
@@ -4164,19 +4293,19 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'width');
 						RAISE NOTICE 'Adding blocksize-Y constraint';
 						rtn := _add_raster_constraint_blocksize(schema, $2, $3, 'height');
-					WHEN kw = 'same_alignment' OR kw = 'samealignment' OR kw = 'alignment' THEN
+					WHEN kw IN ('same_alignment', 'samealignment', 'alignment') THEN
 						RAISE NOTICE 'Adding alignment constraint';
 						rtn := _add_raster_constraint_alignment(schema, $2, $3);
-					WHEN kw = 'regular_blocking' OR kw = 'regularblocking' THEN
+					WHEN kw IN ('regular_blocking', 'regularblocking') THEN
 						RAISE NOTICE 'Adding regular blocking constraint';
 						rtn := _add_raster_constraint_regular_blocking(schema, $2, $3);
-					WHEN kw = 'num_bands' OR kw = 'numbands' THEN
+					WHEN kw IN ('num_bands', 'numbands') THEN
 						RAISE NOTICE 'Adding number of bands constraint';
 						rtn := _add_raster_constraint_num_bands(schema, $2, $3);
-					WHEN kw = 'pixel_types' OR kw = 'pixeltypes' THEN
+					WHEN kw IN ('pixel_types', 'pixeltypes') THEN
 						RAISE NOTICE 'Adding pixel type constraint';
 						rtn := _add_raster_constraint_pixel_types(schema, $2, $3);
-					WHEN kw = 'nodata_values' OR kw = 'nodatavalues' OR kw = 'nodata' THEN
+					WHEN kw IN ('nodata_values', 'nodatavalues', 'nodata') THEN
 						RAISE NOTICE 'Adding nodata value constraint';
 						rtn := _add_raster_constraint_nodata_values(schema, $2, $3);
 					WHEN kw = 'extent' THEN
@@ -4373,10 +4502,10 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 					WHEN kw = 'srid' THEN
 						RAISE NOTICE 'Dropping SRID constraint';
 						rtn := _drop_raster_constraint_srid(schema, $2, $3);
-					WHEN kw = 'scale_x' OR kw = 'scalex' THEN
+					WHEN kw IN ('scale_x', 'scalex') THEN
 						RAISE NOTICE 'Dropping scale-X constraint';
 						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'x');
-					WHEN kw = 'scale_y' OR kw = 'scaley' THEN
+					WHEN kw IN ('scale_y', 'scaley') THEN
 						RAISE NOTICE 'Dropping scale-Y constraint';
 						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'y');
 					WHEN kw = 'scale' THEN
@@ -4384,10 +4513,10 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'x');
 						RAISE NOTICE 'Dropping scale-Y constraint';
 						rtn := _drop_raster_constraint_scale(schema, $2, $3, 'y');
-					WHEN kw = 'blocksize_x' OR kw = 'blocksizex' OR kw = 'width' THEN
+					WHEN kw IN ('blocksize_x', 'blocksizex', 'width') THEN
 						RAISE NOTICE 'Dropping blocksize-X constraint';
 						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'width');
-					WHEN kw = 'blocksize_y' OR kw = 'blocksizey' OR kw = 'height' THEN
+					WHEN kw IN ('blocksize_y', 'blocksizey', 'height') THEN
 						RAISE NOTICE 'Dropping blocksize-Y constraint';
 						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'height');
 					WHEN kw = 'blocksize' THEN
@@ -4395,19 +4524,19 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'width');
 						RAISE NOTICE 'Dropping blocksize-Y constraint';
 						rtn := _drop_raster_constraint_blocksize(schema, $2, $3, 'height');
-					WHEN kw = 'same_alignment' OR kw = 'samealignment' OR kw = 'alignment' THEN
+					WHEN kw IN ('same_alignment', 'samealignment', 'alignment') THEN
 						RAISE NOTICE 'Dropping alignment constraint';
 						rtn := _drop_raster_constraint_alignment(schema, $2, $3);
-					WHEN kw = 'regular_blocking' OR kw = 'regularblocking' THEN
+					WHEN kw IN ('regular_blocking', 'regularblocking') THEN
 						RAISE NOTICE 'Dropping regular blocking constraint';
 						rtn := _drop_raster_constraint_regular_blocking(schema, $2, $3);
-					WHEN kw = 'num_bands' OR kw = 'numbands' THEN
+					WHEN kw IN ('num_bands', 'numbands') THEN
 						RAISE NOTICE 'Dropping number of bands constraint';
 						rtn := _drop_raster_constraint_num_bands(schema, $2, $3);
-					WHEN kw = 'pixel_types' OR kw = 'pixeltypes' THEN
+					WHEN kw IN ('pixel_types', 'pixeltypes') THEN
 						RAISE NOTICE 'Dropping pixel type constraint';
 						rtn := _drop_raster_constraint_pixel_types(schema, $2, $3);
-					WHEN kw = 'nodata_values' OR kw = 'nodatavalues' OR kw = 'nodata' THEN
+					WHEN kw IN ('nodata_values', 'nodatavalues', 'nodata') THEN
 						RAISE NOTICE 'Dropping nodata value constraint';
 						rtn := _drop_raster_constraint_nodata_values(schema, $2, $3);
 					WHEN kw = 'extent' THEN

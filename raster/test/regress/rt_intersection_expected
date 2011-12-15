@@ -1,0 +1,144 @@
+NOTICE:  table "raster_intersection" does not exist, skipping
+NOTICE:  table "raster_intersection_out" does not exist, skipping
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  rt_raster_copy_band: Second raster has no band
+NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  rt_raster_copy_band: Second raster has no band
+NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+PL/pgSQL function "st_intersection" line 7 at assignment
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+PL/pgSQL function "st_intersection" line 7 at assignment
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+PL/pgSQL function "st_intersection" line 7 at assignment
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+PL/pgSQL function "st_intersection" line 9 at assignment
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+PL/pgSQL function "st_intersection" line 9 at assignment
+NOTICE:  The two rasters provided have no intersection.  Returning no band raster
+PL/pgSQL function "st_intersection" line 9 at assignment
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Raster provided has no bands
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
+0|1|0.000|0.000|2|2|1.000|1.000|0.000|0.000|0|2|8BUI|t|0.000|1.000|1.000
+0|2|1.000|-1.000|1|2|1.000|1.000|0.000|0.000|0|2|8BUI|t|0.000|1.000|1.000
+0|3|1.000|1.000|1|1|1.000|1.000|0.000|0.000|0|2|8BUI|t|0.000|1.000|1.000
+0|4|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+10|11|0.000|0.000|2|2|1.000|1.000|1.000|-1.000|0|2|8BUI|t|0.000|1.000|1.000
+10|12|1.000|-1.000|2|2|1.000|1.000|1.000|-1.000|0|2|8BUI|t|0.000|1.000|1.000
+10|13|1.000|1.000|2|1|1.000|1.000|1.000|-1.000|0|2|8BUI|t|0.000|1.000|1.000
+10|14|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+0|1|0.000|0.000|2|2|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|1.000|1.000
+0|2|1.000|-1.000|1|2|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|1.000|1.000
+0|3|1.000|1.000|1|1|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|1.000|1.000
+0|4|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+10|11|0.000|0.000|2|2|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|1.000|1.000
+10|12|1.000|-1.000|2|2|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|1.000|1.000
+10|13|1.000|1.000|2|1|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|1.000|1.000
+10|14|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+0|1|0.000|0.000|2|2|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|2.000|2.000
+0|2|1.000|-1.000|1|2|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|3.000|3.000
+0|3|1.000|1.000|1|1|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|4.000|4.000
+0|4|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+10|11|0.000|0.000|2|2|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|2.000|2.000
+10|12|1.000|-1.000|2|2|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|3.000|3.000
+10|13|1.000|1.000|2|1|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|4.000|4.000
+10|14|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+0|1|0.000|0.000|2|2|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|2.000|2.000
+0|2|1.000|-1.000|1|2|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|3.000|3.000
+0|3|1.000|1.000|1|1|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|4.000|4.000
+0|4|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+10|11|0.000|0.000|2|2|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|2.000|2.000
+10|12|1.000|-1.000|2|2|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|3.000|3.000
+10|13|1.000|1.000|2|1|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000|4.000|4.000
+10|14|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+1|2|1.000|0.000|1|1|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|2.000|2.000
+1|3|1.000|1.000|1|1|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|2.000|2.000
+1|4|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+11|10|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+11|12|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+11|13|1.000|-1.000|1|2|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000||2.000
+11|14|2.000|0.000|1|1|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000||
+1|2|1.000|0.000|1|1|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|2.000|2.000
+1|3|1.000|1.000|1|1|1.000|1.000|0.000|0.000|0|1|8BUI|t|0.000|2.000|2.000
+1|4|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+11|10|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+11|12|0.000|0.000|0|0|0.000|0.000|0.000|0.000|0|0|||||
+11|13|1.000|-1.000|1|2|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000||2.000
+11|14|2.000|0.000|1|1|1.000|1.000|1.000|-1.000|0|1|8BUI|t|0.000||
