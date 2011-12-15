@@ -52,8 +52,10 @@ DROP FUNCTION IF EXISTS st_contain(raster, raster);
 */
 
 -- drop box2d
+/* commented out for Regina's consideration
 DROP CAST IF EXISTS (raster AS box2d);
 DROP FUNCTION IF EXISTS box2d(raster);
+*/
 
 -- drop aggregates
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision, text, text, text, double precision, text, text, text, double precision);
