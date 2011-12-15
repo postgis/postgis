@@ -2967,7 +2967,7 @@ CREATE OPERATOR ~ (
 -----------------------------------------------------------------------
 -- Raster/Raster Spatial Relationship
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_samealignment(rastA raster, rastB raster)
+CREATE OR REPLACE FUNCTION st_samealignment(rast1 raster, rast2 raster)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_sameAlignment'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -2980,17 +2980,17 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION _st_intersects(rastA raster, nbandA integer, rastB raster, nbandB integer)
+CREATE OR REPLACE FUNCTION _st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_intersects'
 	LANGUAGE 'C' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_intersects(rastA raster, nbandA integer, rastB raster, nbandB integer)
+CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
 	AS $$ SELECT $1 && $3 AND _st_intersects($1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_intersects(rastA raster, rastB raster)
+CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, rast2 raster)
 	RETURNS boolean
 	AS $$ SELECT $1 && $2 AND _st_intersects($1, 1, $2, 1) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;

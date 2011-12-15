@@ -298,3 +298,31 @@ DROP FUNCTION IF EXISTS DropRasterColumn(varchar, varchar);
 DROP FUNCTION IF EXISTS DropRasterTable(varchar, varchar, varchar);
 DROP FUNCTION IF EXISTS DropRasterTable(varchar, varchar);
 DROP FUNCTION IF EXISTS DropRasterTable(varchar);
+
+-- function parameters renamed
+DROP FUNCTION IF EXISTS _drop_st_samealignment();
+CREATE OR REPLACE FUNCTION _drop_st_samealignment()
+	RETURNS void AS $$
+	DECLARE
+		cnt int;
+	BEGIN
+		SELECT count(*) INTO cnt
+		FROM pg_proc
+		WHERE lower(proname) = 'st_samealignment'
+			AND pronargs = 2
+			AND (
+				proargnames = '{rasta,rastb}'::text[] OR
+				proargnames = '{rastA,rastB}'::text[]
+			);
+
+		IF cnt > 0 THEN
+			RAISE NOTICE 'Dropping ST_SameAlignment(raster, raster) due to parameter name changes.  Unfortunately, this is a DROP ... CASCADE as the alignment raster constraint uses ST_SameAlignment(raster, raster).  You will need to reapply AddRasterConstraint(''SCHEMA'', ''TABLE'', ''COLUMN'', ''alignment'') to any raster column that requires this constraint.';
+			DROP FUNCTION IF EXISTS st_samealignment(raster, raster) CASCADE;
+		END IF;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE;
+SELECT _drop_st_samealignment();
+DROP FUNCTION _drop_st_samealignment();
+DROP FUNCTION IF EXISTS _st_intersects(raster, integer, raster, integer);
+DROP FUNCTION IF EXISTS st_intersects(raster, integer, raster, integer);
+DROP FUNCTION IF EXISTS st_intersects(raster, raster);
