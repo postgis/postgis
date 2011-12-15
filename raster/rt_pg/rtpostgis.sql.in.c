@@ -2804,12 +2804,12 @@ CREATE OR REPLACE FUNCTION ST_MinPossibleVal(pixeltype text)
 CREATE OR REPLACE FUNCTION st_asbinary(raster)
     RETURNS bytea
     AS 'MODULE_PATHNAME', 'RASTER_to_binary'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_bytea(raster)
+CREATE OR REPLACE FUNCTION bytea(raster)
     RETURNS bytea
     AS 'MODULE_PATHNAME', 'RASTER_to_bytea'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'C' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------------
 --  Casts
@@ -2822,7 +2822,7 @@ CREATE CAST (raster AS geometry)
     WITH FUNCTION st_convexhull(raster) AS IMPLICIT;
 
 CREATE CAST (raster AS bytea)
-    WITH FUNCTION st_bytea(raster) AS IMPLICIT;
+    WITH FUNCTION bytea(raster) AS IMPLICIT;
 
 ------------------------------------------------------------------------------
 --  GiST index OPERATOR support functions

@@ -16,9 +16,9 @@ SELECT
     name
 FROM rt_bytea_test
 WHERE
-    encode(st_bytea(rast), 'hex') != encode(rast::bytea, 'hex')
+    encode(bytea(rast), 'hex') != encode(rast::bytea, 'hex')
     OR
-    encode(st_bytea(rast), 'hex') != encode(rast, 'hex')
+    encode(bytea(rast), 'hex') != encode(rast, 'hex')
     ;
 
 -----------------------------------------------------------------------
@@ -30,9 +30,9 @@ SELECT
     name
 FROM rt_bytea_test
 WHERE
-    encode(st_bytea(rast), 'base64') != encode(rast::bytea, 'base64')
+    encode(bytea(rast), 'base64') != encode(rast::bytea, 'base64')
     OR
-    encode(st_bytea(rast), 'base64') != encode(rast, 'base64')
+    encode(bytea(rast), 'base64') != encode(rast, 'base64')
     ;
 
 -----------------------------------------------------------------------

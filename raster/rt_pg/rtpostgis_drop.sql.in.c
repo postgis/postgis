@@ -51,6 +51,12 @@ DROP OPERATOR IF EXISTS ~ (raster, raster);
 DROP FUNCTION IF EXISTS st_contain(raster, raster);
 */
 
+-- drop st_bytea
+/* commented out for Regina's consideration
+DROP CAST IF EXITS (raster as bytea);
+DROP FUNCTION IF EXISTS st_bytea(raster);
+*/
+
 -- drop box2d
 /* commented out for Regina's consideration
 DROP CAST IF EXISTS (raster AS box2d);
