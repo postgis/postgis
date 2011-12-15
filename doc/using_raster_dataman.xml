@@ -241,7 +241,7 @@ psql -d gisdb -f elev.sql</programlisting>
         	<para>If you created your tables not with the loader or forgot to specified the <varname>-C</varname> flag during load, you can enforce the constraints after the 
         	fact using <xref linkend="RT_AddRasterConstraints" /> so that the <varname>raster_columns</varname> catalog registers the common information after your raster tiles.</para>
         	
-			<orderedlist>
+			 <itemizedlist>
 				<listitem>
 					<para><varname>r_table_catalog</varname> The database the table is in.  This will always read the current database.</para>
 				</listitem>
@@ -287,7 +287,7 @@ psql -d gisdb -f elev.sql</programlisting>
 				<listitem>
 					<para><varname>extent</varname> This is the extent of all the raster rows in your raster set. If you plan to load more data that will change the extent of the set, you'll want to drop the <xref linkend="RT_DropRasterConstraints" /> function before load and then reapply constraints with <xref linkend="RT_AddRasterConstraints"  /> after load. </para>
 				</listitem>
-			</orderedlist>
+			 </itemizedlist>
         </sect2>
         <sect2 id="RT_Raster_Overviews">
         	<title>Raster Overviews</title>
@@ -301,7 +301,7 @@ psql -d gisdb -f elev.sql</programlisting>
         	</itemizedlist>
         	
         	<para>The <varname>raster_overviews</varname> catalog contains the following columns of information.</para>
-			<orderedlist>
+			 <itemizedlist>
 				<listitem>
 					<para><varname>o_table_catalog</varname> The database the overview table is in.  This will always reads the current database.</para>
 				</listitem>
@@ -328,9 +328,9 @@ psql -d gisdb -f elev.sql</programlisting>
 					<para><varname>r_raster_column</varname> the raster column that this overview column services.</para>
 				</listitem>
 				<listitem>
-					<para><varname>overview_factor</varname> - this is the pyramid level of the overview table.  The higher the number the lower the resolution of the table.
+					<para><varname>overview_factor</varname> - this is the pyramid level of the overview table.  The higher the number the lower the resolution of the table.</para>
 				</listitem>
-			</orderedlist>
+			 </itemizedlist>
         </sect2>
    </sect1>
 </chapter>
