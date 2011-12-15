@@ -252,7 +252,7 @@ psql -d gisdb -f elev.sql</programlisting>
 					<para><varname>r_table_name</varname> raster table</para>
 				</listitem>
 				<listitem>
-					<para><varname>r_raster_column</varname> the table that is of type raster.  There is nothing in PostGIS preventing you from having multiple raster columns per table so its possible to have a raster table listed multiple times with a different raster column for each.</para>
+					<para><varname>r_raster_column</varname> the column in the <varname>r_table_name</varname> table that is of type raster.  There is nothing in PostGIS preventing you from having multiple raster columns per table so its possible to have a raster table listed multiple times with a different raster column for each.</para>
 				</listitem>
 				<listitem>
 					<para><varname>srid</varname> The spatial reference identifier of the raster.  Should be an entry in the <xref linkend="spatial_ref_sys" />.</para>
@@ -273,7 +273,7 @@ psql -d gisdb -f elev.sql</programlisting>
 					<para><varname>same_alignment</varname> A boolean that is true if all the raster tiles have the same alignment . Refer to <xref linkend="RT_ST_SameAlignment" /> for more details.</para>
 				</listitem>
 				<listitem>
-					<para><varname>regular_blocking</varname> This is a true/false constraint flag set on the table to denote if the tiles form a complete rectangle. It is not really validated but just taken as a given.</para>
+					<para><varname>regular_blocking</varname> This is a true/false constraint flag set on the table to denote that the tiles do not overlap, are of the same alignment, pixel size, srid etc. It is not really validated but just taken as a given so should be used for informational.  In the future we plan to properly constrain this so that this inforamtion is guaranteed to be right when it returns <varname>true</varname></para>
 				</listitem>
 				<listitem>
 					<para><varname>num_bands</varname> The number of bands in each tile of your raster set.  This is the same information as what is provided by <xref linkend="RT_ST_NumBands" /></para>
@@ -292,11 +292,45 @@ psql -d gisdb -f elev.sql</programlisting>
         <sect2 id="RT_Raster_Overviews">
         	<title>Raster Overviews</title>
         	<para><varname>raster_overviews</varname> catalogs information about raster table columns used for overviews and additional information about them that is useful to know when utilizing overviews. Overview tables are cataloged in both <varname>raster_columns</varname> and <varname>raster_overviews</varname> because they are rasters in their own right but also serve an additional special purpose of being a lower resolution caricature of a higher resolution table. These are generated along-side the main raster table when you use the <varname>-l</varname> switch in raster loading.</para>
+        	<para>Overview tables contain the same constraints as other raster tables as well as additional informational only constraints specific to overviews.</para>
+        	<note><para>The informaiton in <varname>raster_overviews</varname> does not duplicate the information in <varname>raster_columns</varname>.  IF you need the information about an overview table present in <varname>raster_columns</varname> you can join the <varname>raster_overviews</varname> and <varname>raster_columns</varname> vuews together to get the full set of information you need.</para> </para></note>
         	<para>Two main reasons for overviews are:</para>
-        	<orderedlist>
+        	 <itemizedlist>
         		<listitem>Low resolution representation of the core tables commonly used for fast mapping zoom-out.</listitem>
-        		<listitem>Computations are generally faster to do on them than their higher resolution parents because there are fewer records and each pixel covers more territory.  Though the computations are not as accurate as the high-res tables they support, they can be suitable in many rule-of-thumb computations.</listitem>
-        	</orderedlist>
+        		<listitem>Computations are generally faster to do on them than their higher resolution parents because there are fewer records and each pixel covers more territory.  Though the computations are not as accurate as the high-res tables they support, they can be sufficient in many rule-of-thumb computations.</listitem>
+        	</itemizedlist>
+        	
+        	<para>The <varname>raster_overviews</varname> catalog contains the following columns of information.</para>
+			<orderedlist>
+				<listitem>
+					<para><varname>o_table_catalog</varname> The database the overview table is in.  This will always reads the current database.</para>
+				</listitem>
+				<listitem>
+					<para><varname>o_table_schema</varname> The database schema the overview raster table belongs to.</para>
+				</listitem>
+				<listitem>
+					<para><varname>o_table_name</varname> raster overview table name</para>
+				</listitem>
+				<listitem>
+					<para><varname>o_raster_column</varname> the raster column in the overview table.</para>
+				</listitem>
+				
+				<listitem>
+					<para><varname>r_table_catalog</varname> The database the raster table that this overview services is in.  This will always read the current database.</para>
+				</listitem>
+				<listitem>
+					<para><varname>r_table_schema</varname> The database schema the raster table that this overview services belongs to.</para>
+				</listitem>
+				<listitem>
+					<para><varname>r_table_name</varname> raster table that this overview services.</para>
+				</listitem>
+				<listitem>
+					<para><varname>r_raster_column</varname> the raster column that this overview column services.</para>
+				</listitem>
+				<listitem>
+					<para><varname>overview_factor</varname> - this is the pyramid level of the overview table.  The higher the number the lower the resolution of the table.
+				</listitem>
+			</orderedlist>
         </sect2>
    </sect1>
 </chapter>
