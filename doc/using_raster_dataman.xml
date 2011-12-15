@@ -239,7 +239,7 @@ psql -d gisdb -f elev.sql</programlisting>
         	<para>The <varname>raster_columns</varname> is a catalog of all columns in the table taht are of type raster.  It is a view utilizing the constraints on the tables
         	so the information is always consistent even if you restore one raster table from a backup of another database.  The following columns exist in the <varname>raster_columns</varname> catalog.</para>
         	<para>If you created your tables not with the loader or forgot to specified the <varname>-C</varname> flag during load, you can enforce the constraints after the 
-        	fact using <xref linkend="AddRasterConstraints" /> so that the <varname>raster_columns</varname> catalog registers the common information after your raster tiles.</para>
+        	fact using <xref linkend="RT_AddRasterConstraints" /> so that the <varname>raster_columns</varname> catalog registers the common information after your raster tiles.</para>
         	
 			<orderedlist>
 				<listitem>
