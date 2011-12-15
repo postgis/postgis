@@ -82,10 +82,14 @@ Datum geography_in(PG_FUNCTION_ARGS)
 {
 	char *str = PG_GETARG_CSTRING(0);
 	/* Datum geog_oid = PG_GETARG_OID(1); Not needed. */
-	int32 geog_typmod = PG_GETARG_INT32(2);
+	int32 geog_typmod = -1;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom = NULL;
 	GSERIALIZED *g_ser = NULL;
+
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) ) {
+		geog_typmod = PG_GETARG_INT32(2);
+	}
 
 	lwgeom_parser_result_init(&lwg_parser_result);
 
