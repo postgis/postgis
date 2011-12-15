@@ -420,6 +420,41 @@ analyze t;
 select '#877.4', st_estimated_extent('t','g');
 drop table t;
 
+-- #1320
+SELECT '<#1320>';
+CREATE TABLE A ( geom geometry(MultiPolygon, 4326),
+                 geog geography(MultiPolygon, 4326) );
+-- Valid inserts
+INSERT INTO a(geog) VALUES('SRID=4326;MULTIPOLYGON (((0 0, 10 0, 10 10, 0 0)))'::geography);
+INSERT INTO a(geom) VALUES('SRID=4326;MULTIPOLYGON (((0 0, 10 0, 10 10, 0 0)))'::geometry);
+SELECT '#1320.geog.1', geometrytype(geog::geometry), st_srid(geog::geometry) FROM a where geog is not null;
+SELECT '#1320.geom.1', geometrytype(geom), st_srid(geom) FROM a where geom is not null;
+-- Type mismatches is not allowed
+INSERT INTO a(geog) VALUES('SRID=4326;POLYGON ((0 0, 10 0, 10 10, 0 0))'::geography);
+INSERT INTO a(geom) VALUES('SRID=4326;POLYGON ((0 0, 10 0, 10 10, 0 0))'::geometry);
+SELECT '#1320.geog.2', geometrytype(geog::geometry), st_srid(geog::geometry) FROM a where geog is not null;
+SELECT '#1320.geom.2', geometrytype(geom), st_srid(geom) FROM a where geom is not null;
+-- Even if it's a trigger changing the type
+CREATE OR REPLACE FUNCTION triga() RETURNS trigger AS
+$$ BEGIN
+	NEW.geom = ST_GeometryN(New.geom,1);
+	NEW.geog = ST_GeometryN(New.geog::geometry,1)::geography;
+	RETURN NEW;
+END; $$ language plpgsql VOLATILE;
+CREATE TRIGGER triga_before
+  BEFORE INSERT ON a FOR EACH ROW
+  EXECUTE PROCEDURE triga();
+INSERT INTO a(geog) VALUES('SRID=4326;MULTIPOLYGON (((0 0, 10 0, 10 10, 0 0)))'::geography);
+INSERT INTO a(geom) VALUES('SRID=4326;MULTIPOLYGON (((0 0, 10 0, 10 10, 0 0)))'::geometry);
+SELECT '#1320.geog.3', geometrytype(geog::geometry), st_srid(geog::geometry) FROM a where geog is not null;
+SELECT '#1320.geom.3', geometrytype(geom), st_srid(geom) FROM a where geom is not null;
+DROP TABLE A;
+DROP FUNCTION triga();
+SELECT '</#1320>';
+
+-- st_AsText POLYGON((0 0,10 0,10 10,0 0))
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 

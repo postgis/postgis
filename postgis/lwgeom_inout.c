@@ -46,11 +46,16 @@ PG_FUNCTION_INFO_V1(LWGEOM_in);
 Datum LWGEOM_in(PG_FUNCTION_ARGS)
 {
 	char *input = PG_GETARG_CSTRING(0);
+	int32 geom_typmod = -1;
 	char *str = input;
 	LWGEOM_PARSER_RESULT lwg_parser_result;
 	LWGEOM *lwgeom;
 	GSERIALIZED *ret;
 	int srid = 0;
+
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) ) {
+		geom_typmod = PG_GETARG_INT32(2);
+	}
 
 	lwgeom_parser_result_init(&lwg_parser_result);
 
@@ -108,6 +113,17 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		ret = geometry_serialize(lwgeom);
 		lwgeom_parser_result_free(&lwg_parser_result);
 	}
+
+	if ( geom_typmod >= 0 )
+	{
+		postgis_valid_typmod(lwgeom, geom_typmod);
+		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
+	}
+	else
+	{
+		POSTGIS_DEBUG(3, "typmod was -1");
+	}
+
 	
 	PG_RETURN_POINTER(ret);
 
