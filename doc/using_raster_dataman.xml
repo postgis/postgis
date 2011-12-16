@@ -5,6 +5,8 @@
     <title>Loading and Creating Rasters</title>
     <para>For most use cases, you will create PostGIS rasters by loading existing raster files using the packaged <varname>raster2pgsql</varname> raster loader.</para>
 
+    <sect2 id="RT_Raster_Loader">
+    	<title>Using raster2pgsql to load rasters</title>
     <para>
         The <varname>raster2pgsql</varname> is a raster loader executable that loads GDAL supported raster formats into sql suitable for loading into a PostGIS raster table.
         It is capable of loading folders of raster files as well as creating overviews of rasters. </para>
@@ -221,6 +223,27 @@ psql -d gisdb -f elev.sql</programlisting>
     	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables and directly insert to database.  Break up the rasters into 100x100 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
     <programlisting>raster2pgsql -I -C -Y -F -s 26986 -t 100x100  -l 2,4 bostonaerials2008\*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
  
+    </sect2>
+    <sect2 id="RT_Creating_Rasters">
+    	<title>Creating rasters using PostGIS raster functions</title>
+    	<para>On many occasions, you'll want to create rasters and raster tables right in the database.  There are a plethora of functions to do that.  The general steps to follow.</para>
+    	<orderedlist>
+    		<listitem><para>Create a table with a raster column to hold the new raster records which can be accomplished with:</para>
+    			<programlisting>CREATE TABLE myrasters(rid serial primary key, rast raster);</programlisting>
+    		</listitem>
+    		<listitem>
+    			<para>There are many functions to help with that goal.  If you are creaeting rasters not as a derivative of other rasters, you will want to start with:
+    				<xref linkend="RT_ST_MakeEmptyRaster" />, followed by <xref linkend="RT_ST_AddBand" /></para>
+    			<para>You can also create rasters from geometries.  To achieve that you'll want to use <xref linkend="RT_ST_AsRaster" /> perhaps accompanied with 
+    			other functions such as <xref linkend="RT_ST_Union" /></para>
+    		</listitem>
+    		<listitem><para>Once you are done populating your table initially, you'll want to create a spatial index on the raster column with something like:</para>
+    			<programlisting>CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist( ST_ConvexHull(rast) );</programlisting>
+    			<para>Note the use of <xref linkend="RT_ST_ConvexHull" /> since most raster operators are based on the convex hull of the rasters.</para>
+    			<note><para>Pre-2.0 versions of PostGIS raster were based on the envelop rather than the convex hull.  For teh spatial idnexes to work properly you'll need to drop those and replace with convex hull based index.</para></note></listitem>
+    		<listitem>Apply raster constraints using <xref linkend="RT_AddRasterConstraints" /></listitem>
+    	</orderedlist>
+    </sect2>
   </sect1>
    <sect1 id="RT_Raster_Catalog"> 
    		<title>Raster Catalogs</title>
@@ -303,7 +326,7 @@ psql -d gisdb -f elev.sql</programlisting>
         	<para>The <varname>raster_overviews</varname> catalog contains the following columns of information.</para>
 			 <itemizedlist>
 				<listitem>
-					<para><varname>o_table_catalog</varname> The database the overview table is in.  This will always reads the current database.</para>
+					<para><varname>o_table_catalog</varname> The database the overview table is in.  This will always read the current database.</para>
 				</listitem>
 				<listitem>
 					<para><varname>o_table_schema</varname> The database schema the overview raster table belongs to.</para>
