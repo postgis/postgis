@@ -232,10 +232,11 @@ psql -d gisdb -f elev.sql</programlisting>
     			<programlisting>CREATE TABLE myrasters(rid serial primary key, rast raster);</programlisting>
     		</listitem>
     		<listitem>
-    			<para>There are many functions to help with that goal.  If you are creaeting rasters not as a derivative of other rasters, you will want to start with:
+    			<para>There are many functions to help with that goal.  If you are creating rasters not as a derivative of other rasters, you will want to start with:
     				<xref linkend="RT_ST_MakeEmptyRaster" />, followed by <xref linkend="RT_ST_AddBand" /></para>
     			<para>You can also create rasters from geometries.  To achieve that you'll want to use <xref linkend="RT_ST_AsRaster" /> perhaps accompanied with 
-    			other functions such as <xref linkend="RT_ST_Union" /></para>
+    			other functions such as <xref linkend="RT_ST_Union" /> or <xref linkend="RT_ST_MapAlgebraFct2" /> or any of the family of other map algebra functions.</para>
+    			<para>There are even many more options for creating new raster tables from existing tables.  For example you can create a raster table in a different projection from an existing one using <xref linkend="RT_ST_Transform" /> </para>
     		</listitem>
     		<listitem><para>Once you are done populating your table initially, you'll want to create a spatial index on the raster column with something like:</para>
     			<programlisting>CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist( ST_ConvexHull(rast) );</programlisting>
