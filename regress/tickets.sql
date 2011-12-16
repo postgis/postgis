@@ -455,6 +455,9 @@ SELECT '</#1320>';
 -- st_AsText POLYGON((0 0,10 0,10 10,0 0))
 
 
+-- #1344
+select '#1344', ST_AsEWKB(st_makeline(g)) FROM ( values ('POINT(0 0)'::geometry ) ) as foo(g);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
