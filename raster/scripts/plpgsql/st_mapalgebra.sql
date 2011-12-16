@@ -82,12 +82,12 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast raster, band integer, expression t
 
         -- Check for notada value
         newnodatavalue := ST_BandNodataValue(rast, band);
-        IF newnodatavalue IS NULL OR newnodatavalue < ST_MinPossibleVal(newpixeltype) OR newnodatavalue > (-ST_MinPossibleVal(newpixeltype) - 1) THEN
+        IF newnodatavalue IS NULL OR newnodatavalue < ST_MinPossibleValue(newpixeltype) OR newnodatavalue > (-ST_MinPossibleValue(newpixeltype) - 1) THEN
             RAISE NOTICE 'ST_MapAlgebra: Source raster do not have a nodata value or is out of range for the new raster pixeltype, nodata value for new raster set to the min value possible';
-            newnodatavalue := ST_MinPossibleVal(newpixeltype);
+            newnodatavalue := ST_MinPossibleValue(newpixeltype);
         END IF;
         -- We set the initial value of the future band to nodata value. 
-        -- If nodatavalue is null then the raster will be initialise to ST_MinPossibleVal 
+        -- If nodatavalue is null then the raster will be initialise to ST_MinPossibleValue 
         -- but all the values should be recomputed anyway.
         newinitialvalue := newnodatavalue;
 
@@ -758,7 +758,7 @@ CREATE OR REPLACE FUNCTION ST_MapAlgebra(rast1 raster,
             newnodatavalue := rast2nodataval;
         ELSE
             RAISE NOTICE 'ST_MapAlgebra: Both source rasters do not have a nodata value, nodata value for new raster set to the minimum value possible';
-            newnodatavalue := ST_MinPossibleVal(newrast);
+            newnodatavalue := ST_MinPossibleValue(newrast);
         END IF;
         
         -------------------------------------------------------------------

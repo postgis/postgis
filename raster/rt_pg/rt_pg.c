@@ -142,6 +142,7 @@ static char *rtpg_getSRTextSPI(int srid);
 Datum RASTER_lib_version(PG_FUNCTION_ARGS);
 Datum RASTER_lib_build_date(PG_FUNCTION_ARGS);
 Datum RASTER_gdal_version(PG_FUNCTION_ARGS);
+Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS);
 
 /* Input/output and format conversions */
 Datum RASTER_in(PG_FUNCTION_ARGS);
@@ -567,6 +568,49 @@ Datum RASTER_gdal_version(PG_FUNCTION_ARGS)
 	const char *ver = rt_util_gdal_version("--version");
 	text *result = cstring2text(ver);
 	PG_RETURN_POINTER(result);
+}
+
+PG_FUNCTION_INFO_V1(RASTER_minPossibleValue);
+Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS)
+{
+	text *pixeltypetext = NULL;
+	char *pixeltypechar = NULL;
+	rt_pixtype pixtype = PT_END;
+	double pixsize = 0;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	pixeltypetext = PG_GETARG_TEXT_P(0);
+	pixeltypechar = text_to_cstring(pixeltypetext);
+
+	pixtype = rt_pixtype_index_from_name(pixeltypechar);
+	if (pixtype == PT_END) {
+		elog(ERROR, "RASTER_minPossibleValue: Invalid pixel type: %s", pixeltypechar);
+		PG_RETURN_NULL();
+	}
+
+	pixsize = rt_pixtype_get_min_value(pixtype);
+
+	/*
+		correct pixsize of unsigned pixel types
+		example: for PT_8BUI, the value is CHAR_MIN but if char is signed, 
+			the value returned is -127 instead of 0.
+	*/
+	switch (pixtype) {
+		case PT_1BB:
+		case PT_2BUI:
+		case PT_4BUI:
+		case PT_8BUI:
+		case PT_16BUI:
+		case PT_32BUI:
+			pixsize = 0;
+			break;
+		default:
+			break;
+	}
+
+	PG_RETURN_FLOAT8(pixsize);
 }
 
 /**

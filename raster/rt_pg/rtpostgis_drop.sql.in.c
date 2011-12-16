@@ -330,3 +330,6 @@ DROP FUNCTION IF EXISTS st_intersects(raster, raster);
 -- functions have changed dramatically
 DROP FUNCTION IF EXISTS st_intersection(rast raster, band integer, geom geometry);
 DROP FUNCTION IF EXISTS st_intersection(rast raster, geom geometry);
+
+-- function was renamed
+DROP FUNCTION IF EXISTS st_minpossibleval(text);

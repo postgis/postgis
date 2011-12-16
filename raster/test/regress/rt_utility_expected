@@ -2,3 +2,14 @@ ERROR:  Attempting to compute raster coordinate on a raster with rotation provid
 ERROR:  Attempting to compute raster coordinate on a raster with rotation providing y only. A x must also be provided
 ERROR:  Attempting to compute raster coordinates on a raster with rotation providing X only. A Y coordinate must also be provided
 ERROR:  Attempting to compute raster coordinates on a raster with rotation providing Y only. An X coordinate must also be provided
+test 11.1|t
+test 11.2|t
+test 11.3|t
+test 11.4|t
+test 11.5|t
+test 11.6|t
+test 11.7|t
+test 11.8|t
+test 11.9|t
+test 11.10|t
+test 11.11|t

@@ -510,7 +510,7 @@ RAISE NOTICE 'ST_MapAlgebra2 000';
             newnodatavalue := rast1nodataval;
         ELSE
             RAISE NOTICE 'ST_MapAlgebra: Both source rasters do not have a nodata value, nodata value for new raster set to the minimum value possible';
-            newnodatavalue := ST_MinPossibleVal(newrast);
+            newnodatavalue := ST_MinPossibleValue(newrast);
         END IF;
          
         upnodatanodataexpr := upper(nodatanodataexpr);

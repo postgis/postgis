@@ -238,3 +238,18 @@ SELECT 'test 10.3', id, name
     FROM rt_utility_test
     WHERE st_raster2worldcoordy(rast, 1)::numeric != ipy::numeric;
     
+-----------------------------------------------------------------------
+-- Test 11 - st_minpossiblevalue(pixtype text)
+-----------------------------------------------------------------------
+
+SELECT 'test 11.1', st_minpossiblevalue('1BB') = 0.;
+SELECT 'test 11.2', st_minpossiblevalue('2BUI') = 0.;
+SELECT 'test 11.3', st_minpossiblevalue('4BUI') = 0.;
+SELECT 'test 11.4', st_minpossiblevalue('8BUI') = 0.;
+SELECT 'test 11.5', st_minpossiblevalue('8BSI') < 0.;
+SELECT 'test 11.6', st_minpossiblevalue('16BUI') = 0.;
+SELECT 'test 11.7', st_minpossiblevalue('16BSI') < 0.;
+SELECT 'test 11.8', st_minpossiblevalue('32BUI') = 0.;
+SELECT 'test 11.9', st_minpossiblevalue('32BSI') < 0.;
+SELECT 'test 11.10', st_minpossiblevalue('32BF') < 0.;
+SELECT 'test 11.11', st_minpossiblevalue('64BF') < 0.;

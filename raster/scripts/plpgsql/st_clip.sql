@@ -79,7 +79,7 @@ CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, nodata 
             bandend := band;
         END IF;
         newpixtype := ST_BandPixelType(rast, bandstart);
-        newnodata := coalesce(nodata, ST_BandNodataValue(rast, bandstart), ST_MinPossibleVal(newpixtype));
+        newnodata := coalesce(nodata, ST_BandNodataValue(rast, bandstart), ST_MinPossibleValue(newpixtype));
         newextent := CASE WHEN trimraster THEN 'INTERSECTION' ELSE 'FIRST' END;
         
 --RAISE NOTICE 'newextent=%', newextent;
@@ -96,7 +96,7 @@ CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, nodata 
 --RAISE NOTICE 'bandi=%', bandi;
             -- for each band we must determine the nodata value
             newpixtype := ST_BandPixelType(rast, bandi);
-            newnodata := coalesce(nodata, ST_BandNodataValue(sourceraster, bandi), ST_MinPossibleVal(newpixtype));
+            newnodata := coalesce(nodata, ST_BandNodataValue(sourceraster, bandi), ST_MinPossibleValue(newpixtype));
             sourceraster := ST_SetBandNodataValue(sourceraster, bandi, newnodata);
             newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(sourceraster, bandi, geomrast, 1, 'rast1', newpixtype, newextent));
         END LOOP;
