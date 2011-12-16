@@ -3476,6 +3476,11 @@ CREATE AGGREGATE ST_Union(raster, integer, text) (
 -- test line
 -- test polygon smaller than pixel
 -- test and optimize raster totally included in polygon
+
+-----------------------------------------------------------------------
+-- ST_Clip
+-----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, nodata float8 DEFAULT null, trimraster boolean DEFAULT false)
     RETURNS raster AS
     $$
