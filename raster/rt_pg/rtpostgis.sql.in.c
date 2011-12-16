@@ -3175,14 +3175,9 @@ CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integ
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -----------------------------------------------------------------------
--- _st_intersection(geom geometry, rast raster, band integer)
--- Returns a geometry set that represents the shared portion of the
--- provided geometry and the geometries produced by the vectorization of rast.
--- Return an empty geometry if the geometry does not intersect with the
--- raster.
--- Raster nodata value areas are not vectorized and hence do not intersect
--- with any geometries.
+-- ST_Intersection (geometry, raster in vector space)
 -----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION st_intersection(geomin geometry, rast raster, band integer DEFAULT 1)
 	RETURNS SETOF geomval AS $$
 	DECLARE
