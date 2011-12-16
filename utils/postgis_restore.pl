@@ -118,6 +118,9 @@ if ( $hasTopology ) {
   print STDOUT "ALTER TABLE topology.layer DISABLE TRIGGER ALL;";
 }
 
+# Drop the spatial_ref_sys_srid_check to allow for custom invalid SRIDs in the dump
+print STDOUT "ALTER TABLE spatial_ref_sys DROP constraint spatial_ref_sys_srid_check;";
+
 while( my $l = <INPUT> ) {
 
   next if $l =~ /^ *--/;
@@ -206,9 +209,18 @@ while( my $l = <INPUT> ) {
 
 }
 
+#
+# Re-enable topology metadata tables triggers 
+#
 if ( $hasTopology ) {
   print STDOUT "ALTER TABLE topology.layer ENABLE TRIGGER ALL;";
 }
+
+# Try re-enforcing spatial_ref_sys_srid_check, would fail if impossible
+# but you'd still have your data
+print STDOUT "ALTER TABLE spatial_ref_sys ADD constraint " 
+           . "spatial_ref_sys_srid_check check "
+           . "( srid > 0 and srid < 999000 ) ;";
 
 
 print STDERR "Done.\n";
@@ -362,13 +374,13 @@ CAST	CAST (text AS public.geometry)
 CAST	CAST (topology.topogeometry AS geometry)
 CAST	CAST (topology.topogeometry AS public.geometry)
 CONSTRAINT	geometry_columns_pk
-CONSTRAINT layer_pkey
-CONSTRAINT layer_schema_name_key
+CONSTRAINT	layer_pkey
+CONSTRAINT	layer_schema_name_key
 CONSTRAINT	raster_columns_pk
 CONSTRAINT	raster_overviews_pk
 CONSTRAINT	spatial_ref_sys_pkey
-CONSTRAINT topology_name_key
-CONSTRAINT topology_pkey
+CONSTRAINT	topology_name_key
+CONSTRAINT	topology_pkey
 DOMAIN	topoelement
 DOMAIN	topoelementarray
 DOMAIN	topogeomelementarray
@@ -1915,7 +1927,6 @@ TABLE	DATA	geography_columns
 TABLE	DATA	geometry_columns
 TABLE	DATA	raster_columns
 TABLE	DATA	raster_overviews
-TABLE	DATA	spatial_ref_sys
 TABLE	geography_columns
 TABLE	geometry_columns
 TABLE	layer
