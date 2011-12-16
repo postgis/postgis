@@ -295,10 +295,10 @@ psql -d gisdb -f elev.sql</programlisting>
         	<para>Overview tables contain the same constraints as other raster tables as well as additional informational only constraints specific to overviews.</para>
         	<note><para>The informaiton in <varname>raster_overviews</varname> does not duplicate the information in <varname>raster_columns</varname>.  IF you need the information about an overview table present in <varname>raster_columns</varname> you can join the <varname>raster_overviews</varname> and <varname>raster_columns</varname> vuews together to get the full set of information you need.</para> </note>
         	<para>Two main reasons for overviews are:</para>
-        	 <itemizedlist>
+        	 <orderedlist>
         		<listitem>Low resolution representation of the core tables commonly used for fast mapping zoom-out.</listitem>
         		<listitem>Computations are generally faster to do on them than their higher resolution parents because there are fewer records and each pixel covers more territory.  Though the computations are not as accurate as the high-res tables they support, they can be sufficient in many rule-of-thumb computations.</listitem>
-        	</itemizedlist>
+        	</orderedlist>
         	
         	<para>The <varname>raster_overviews</varname> catalog contains the following columns of information.</para>
 			 <itemizedlist>
