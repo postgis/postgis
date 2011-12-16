@@ -304,7 +304,7 @@ Datum WKBFromLWGEOM(PG_FUNCTION_ARGS)
 
 #else /* ndef BINARY_FROM_HEX */
 
-	result = serialized_lwgeom_to_ewkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom_input), PARSER_CHECK_ALL, byteorder);
+	result = serialized_lwgeom_to_ewkb(&lwg_unparser_result, SERIALIZED_FORM(lwgeom_input), PARSER_CHECK_NONE, byteorder);
 	if (result)
 		PG_UNPARSER_ERROR(lwg_unparser_result);
 

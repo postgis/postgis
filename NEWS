@@ -12,6 +12,7 @@ PostGIS 1.5.4
    - #1179, ST_AsText crash with bad value (kjurka)
    - Alter parameter order in 900913 (Paul Ramsey)
    - #877, ST_Estimated_Extent returns NULL on empty tables (Sandro Santilli)
+   - #1344, allow exporting tables with invalid geometries (Sandro Santilli)
 
 
 PostGIS 1.5.3
