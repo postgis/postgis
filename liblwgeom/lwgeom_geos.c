@@ -463,7 +463,8 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 	{
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
-		lwerror("Error performing intersection.");
+	        lwerror("Error performing intersection: %s",
+	                lwgeom_geos_errmsg);
 		return NULL; /* never get here */
 	}
 
@@ -478,7 +479,8 @@ lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
-		lwerror("GEOS Intersection() threw an error (result postgis geometry formation)!");
+	        lwerror("Error performing intersection: GEOS2LWGEOM: %s",
+	                lwgeom_geos_errmsg);
 		return NULL ; /* never get here */
 	}
 
@@ -549,7 +551,8 @@ lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2)
 		GEOSGeom_destroy(g1);
 		GEOSGeom_destroy(g2);
 		GEOSGeom_destroy(g3);
-		lwerror("GEOS difference() threw an error (result postgis geometry formation)!");
+	        lwerror("Error performing difference: GEOS2LWGEOM: %s",
+	                lwgeom_geos_errmsg);
 		return NULL; /* never get here */
 	}
 
@@ -704,7 +707,8 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 
 	if (result == NULL)
 	{
-		lwerror("GEOS union() threw an error (result postgis geometry formation)!");
+	        lwerror("Error performing union: GEOS2LWGEOM: %s",
+	                lwgeom_geos_errmsg);
 		return NULL; /*never get here */
 	}
 
