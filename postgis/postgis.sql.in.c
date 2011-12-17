@@ -1597,12 +1597,12 @@ BEGIN
 	-- Verify SRID
 	IF ( new_srid_in > 0 ) THEN
 		IF new_srid_in >= 999000 THEN
-			RAISE EXCEPTION 'AddGeometryColumns() - SRID must be < 999000';
+			RAISE EXCEPTION 'AddGeometryColumn() - SRID must be < 999000';
 		END IF;
 		new_srid := new_srid_in;
 		SELECT SRID INTO sr FROM spatial_ref_sys WHERE SRID = new_srid;
 		IF NOT FOUND THEN
-			RAISE EXCEPTION 'AddGeometryColumns() - invalid SRID';
+			RAISE EXCEPTION 'AddGeometryColumn() - invalid SRID';
 			RETURN 'fail';
 		END IF;
 	ELSE
