@@ -2,7 +2,7 @@
 #11|0
 #21|SRID=31293;POINTM(6220.13 5337367.145 4566)
 t
-ERROR:  AddGeometryColumns() - invalid SRID
+ERROR:  AddGeometryColumn() - invalid SRID
 #44|t|t
 #58|220187|150406|220289|150507
 ERROR:  lwgeom_to_gml2: 'CurvePolygon' geometry type not supported
