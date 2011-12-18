@@ -113,6 +113,7 @@
           <term>Raster processing: Optional parameters used to manipulate input raster dataset</term>
           <listitem>
             <para>
+            <variablelist>
                 <varlistentry>
                     <term>-s &lt;SRID&gt;</term>
                     <listitem>
