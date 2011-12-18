@@ -11,8 +11,7 @@
         The <varname>raster2pgsql</varname> is a raster loader executable that loads GDAL supported raster formats into sql suitable for loading into a PostGIS raster table.
         It is capable of loading folders of raster files as well as creating overviews of rasters. </para>
     <para>Since the raster2pgsql is compiled as part of PostGIS most often (unless you compile your own GDAL library), the raster types supported
-    	by the executable will be the same as those compiled in the GDAL dependency library.  To get a list of raster types your particular PostGIS install
-    	supports, refer to  <xref linkend="RT_ST_GDALDrivers" />.</para>
+    	by the executable will be the same as those compiled in the GDAL dependency library.  To get a list of raster types your particular raster2pgsql supports use the <varname>-G</varname> switch.  These should be the same as those provided by your PostGIS install documented here  <xref linkend="RT_ST_GDALDrivers" /> if you are using the same gdal library for both.</para>
     <note>
     	<para>The older version of this tool was a python script.  The executable has replaced the python script.  If you still find the need for the Python script
         Examples of the pyhton one can be found at <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">GDAL PostGIS Raster Driver Usage</ulink> 
@@ -27,6 +26,15 @@
           <listitem>
             <para>
               Display help screen.  Help will also display if you don't pass in any arguments.
+            </para>
+          </listitem>
+        </varlistentry>
+        
+       <varlistentry>
+          <term>-G</term>
+          <listitem>
+            <para>
+             Print the supported GDAL raster formats.
             </para>
           </listitem>
         </varlistentry>
@@ -67,19 +75,44 @@
           </listitem>
         </varlistentry>
      
-        <varlistentry>
+		<varlistentry>
+			<term>Raster processing: Applying contraints for proper registering in raster catalogs</term>
+			<listitem>
+				<para>
+					<variablelist>
+						<varlistentry>
+							<term>-C </term>
+							<listitem>
+								<para>
+									Apply raster constraints -- srid, pixelsize etc. to ensure raster is properly registered in <varname>raster_columns</varname> view.
+								</para>
+							</listitem>
+						</varlistentry>
+					   <varlistentry>
+							<term>-x </term>
+							<listitem>
+								<para>
+									Disable setting the max extent constraint.  Only applied if -C flag is also used.
+								</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term>-r </term>
+							<listitem>
+								<para>
+									Set the regular blocking constraint.  Only applied if -C flag is also used.
+								</para>
+							</listitem>
+						</varlistentry>
+					</variablelist>	    	
+				</para>
+			</listitem>
+		</varlistentry>
+        
+       <varlistentry>
           <term>Raster processing: Optional parameters used to manipulate input raster dataset</term>
           <listitem>
             <para>
-              <variablelist>
-              	<varlistentry>
-                    <term>-C </term>
-                    <listitem>
-                        <para>
-                            Apply raster constraints -- srid, pixelsize etc. to ensure raster is properly registered in <varname>raster_columns</varname> view.
-                        </para>
-                    </listitem>
-                </varlistentry>
                 <varlistentry>
                     <term>-s &lt;SRID&gt;</term>
                     <listitem>
@@ -223,6 +256,109 @@ psql -d gisdb -f elev.sql</programlisting>
     	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables and directly insert to database.  Break up the rasters into 100x100 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
     <programlisting>raster2pgsql -I -C -Y -F -s 26986 -t 100x100  -l 2,4 bostonaerials2008\*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
  
+    <programlisting>--get a list of raster types supported:
+raster2pgsql -G</programlisting>
+
+<para>The -G commands outputs a list something like </para>
+<screen>
+Available GDAL raster formats:
+  Virtual Raster
+  GeoTIFF
+  National Imagery Transmission Format
+  Raster Product Format TOC format
+  ECRG TOC format
+  Erdas Imagine Images (.img)
+  CEOS SAR Image
+  CEOS Image
+  JAXA PALSAR Product Reader (Level 1.1/1.5)
+  Ground-based SAR Applications Testbed File Format (.gff)
+  ELAS
+  Arc/Info Binary Grid
+  Arc/Info ASCII Grid
+  GRASS ASCII Grid
+  SDTS Raster
+  DTED Elevation Raster
+  Portable Network Graphics
+  JPEG JFIF
+  In Memory Raster
+  Japanese DEM (.mem)
+  Graphics Interchange Format (.gif)
+  Graphics Interchange Format (.gif)
+  Envisat Image Format
+  Maptech BSB Nautical Charts
+  X11 PixMap Format
+  MS Windows Device Independent Bitmap
+  SPOT DIMAP
+  AirSAR Polarimetric Image
+  RadarSat 2 XML Product
+  PCIDSK Database File
+  PCRaster Raster File
+  ILWIS Raster Map
+  SGI Image File Format 1.0
+  SRTMHGT File Format
+  Leveller heightfield
+  Terragen heightfield
+  USGS Astrogeology ISIS cube (Version 3)
+  USGS Astrogeology ISIS cube (Version 2)
+  NASA Planetary Data System
+  EarthWatch .TIL
+  ERMapper .ers Labelled
+  NOAA Polar Orbiter Level 1b Data Set
+  FIT Image
+  GRIdded Binary (.grb)
+  Raster Matrix Format
+  EUMETSAT Archive native (.nat)
+  Idrisi Raster A.1
+  Intergraph Raster
+  Golden Software ASCII Grid (.grd)
+  Golden Software Binary Grid (.grd)
+  Golden Software 7 Binary Grid (.grd)
+  COSAR Annotated Binary Matrix (TerraSAR-X)
+  TerraSAR-X Product
+  DRDC COASP SAR Processor Raster
+  R Object Data Store
+  Portable Pixmap Format (netpbm)
+  USGS DOQ (Old Style)
+  USGS DOQ (New Style)
+  ENVI .hdr Labelled
+  ESRI .hdr Labelled
+  Generic Binary (.hdr Labelled)
+  PCI .aux Labelled
+  Vexcel MFF Raster
+  Vexcel MFF2 (HKV) Raster
+  Fuji BAS Scanner Image
+  GSC Geogrid
+  EOSAT FAST Format
+  VTP .bt (Binary Terrain) 1.3 Format
+  Erdas .LAN/.GIS
+  Convair PolGASP
+  Image Data and Analysis
+  NLAPS Data Format
+  Erdas Imagine Raw
+  DIPEx
+  FARSITE v.4 Landscape File (.lcp)
+  NOAA Vertical Datum .GTX
+  NADCON .los/.las Datum Grid Shift
+  NTv2 Datum Grid Shift
+  ACE2
+  Snow Data Assimilation System
+  Swedish Grid RIK (.rik)
+  USGS Optional ASCII DEM (and CDED)
+  GeoSoft Grid Exchange Format
+  Northwood Numeric Grid Format .grd/.tab
+  Northwood Classified Grid Format .grc/.tab
+  ARC Digitized Raster Graphics
+  Standard Raster Product (ASRP/USRP)
+  Magellan topo (.blx)
+  SAGA GIS Binary Grid (.sdat)
+  Kml Super Overlay
+  ASCII Gridded XYZ
+  HF2/HFZ heightfield raster
+  OziExplorer Image File
+  USGS LULC Composite Theme Grid
+  Arc/Info Export E00 GRID
+  ZMap Plus Grid
+  NOAA NGS Geoid Height Grids</screen>
     </sect2>
     <sect2 id="RT_Creating_Rasters">
     	<title>Creating rasters using PostGIS raster functions</title>
