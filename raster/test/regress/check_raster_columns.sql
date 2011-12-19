@@ -62,22 +62,22 @@ SELECT make_test_raster(3, 2, 2, 1, 1, 0, 0, 4);
 SELECT make_test_raster(4, 2, 2, 2, 2, 0, 0, 5);
 
 SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name);
-SELECT * FROM raster_columns;
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
 SELECT DropRasterConstraints(current_schema(),'test_raster_columns', 'rast'::name);
-SELECT * FROM raster_columns;
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
-SELECT AddRasterConstraints('test_raster_columns', 'rast', 'srid', 'extent', 'blocksize');
-SELECT * FROM raster_columns;
+SELECT AddRasterConstraints('test_raster_columns', 'rast'::name, 'srid'::text, 'extent', 'blocksize');
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
-SELECT DropRasterConstraints('test_raster_columns', 'rast', 'scale');
-SELECT * FROM raster_columns;
+SELECT DropRasterConstraints('test_raster_columns', 'rast'::name, 'scale'::text);
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
 SELECT AddRasterConstraints('test_raster_columns', 'rast', FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE);
-SELECT * FROM raster_columns;
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
-SELECT DropRasterConstraints(current_schema(), 'test_raster_columns', 'rast', 'scale');
-SELECT * FROM raster_columns;
+SELECT DropRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'scale'::text);
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
 DROP FUNCTION make_test_raster(integer, integer, integer, double precision, double precision, double precision, double precision, double precision, double precision);
 DROP TABLE IF EXISTS test_raster_columns;

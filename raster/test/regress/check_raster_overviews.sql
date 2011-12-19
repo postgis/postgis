@@ -65,24 +65,24 @@ SELECT make_test_raster(4, 2, 2, 2, 2, 0, 0, 5);
 SELECT *
 INTO test_raster_overviews
 FROM test_raster_columns;
-SELECT * FROM raster_columns;
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name IN ('test_raster_columns', 'test_raster_overviews');
 SELECT * FROM raster_overviews;
 
 SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name);
-SELECT * FROM raster_columns;
-SELECT * FROM raster_overviews;
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name IN ('test_raster_columns', 'test_raster_overviews');
+SELECT o_table_name, o_raster_column, r_table_name, r_raster_column, overview_factor FROM raster_overviews WHERE o_table_name = 'test_raster_overviews';
 
 SELECT AddOverviewConstraints('test_raster_overviews', 'rast', 'test_raster_columns', 'rast', 1);
-SELECT * FROM raster_columns;
-SELECT * FROM raster_overviews;
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name IN ('test_raster_columns', 'test_raster_overviews');
+SELECT o_table_name, o_raster_column, r_table_name, r_raster_column, overview_factor FROM raster_overviews WHERE o_table_name = 'test_raster_overviews';
 
 SELECT DropOverviewConstraints(current_schema(), 'test_raster_overviews', 'rast');
-SELECT * FROM raster_columns;
-SELECT * FROM raster_overviews;
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name IN ('test_raster_columns', 'test_raster_overviews');
+SELECT o_table_name, o_raster_column, r_table_name, r_raster_column, overview_factor FROM raster_overviews WHERE o_table_name = 'test_raster_overviews';
 
 SELECT DropRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name);
-SELECT * FROM raster_columns;
-SELECT * FROM raster_overviews;
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, extent FROM raster_columns WHERE r_table_name IN ('test_raster_columns', 'test_raster_overviews');
+SELECT o_table_name, o_raster_column, r_table_name, r_raster_column, overview_factor FROM raster_overviews WHERE o_table_name = 'test_raster_overviews';
 
 DROP FUNCTION make_test_raster(integer, integer, integer, double precision, double precision, double precision, double precision, double precision, double precision);
 DROP TABLE IF EXISTS test_raster_overviews;
