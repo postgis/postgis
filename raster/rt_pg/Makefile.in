@@ -16,7 +16,7 @@ DATA_built=rtpostgis.sql rtpostgis_upgrade_20_minor.sql
 DATA=
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=rtpostgis.sql.in rtpostgis_drop.sql.in
+SQL_OBJS=rtpostgis.sql.in rtpostgis_drop.sql.in rtpostgis_upgrade_cleanup.sql.in
 
 # Objects to build using PGXS
 OBJS=rt_pg.o
@@ -89,7 +89,7 @@ rtpostgis_upgrade.sql: rtpostgis.sql
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 $< > $@
 	 	 
-rtpostgis_upgrade_20_minor.sql: rtpostgis_drop.sql rtpostgis_upgrade.sql
+rtpostgis_upgrade_20_minor.sql: rtpostgis_drop.sql rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql 
 	cat $^ > $@
 
 distclean: clean
