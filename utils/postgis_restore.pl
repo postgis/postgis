@@ -116,11 +116,17 @@ open( INPUT, "pg_restore -L $manifest $dumpfile |") || die "$me:\tCan't run pg_r
 # in arbitrary order.
 #
 if ( $hasTopology ) {
-  print STDOUT "ALTER TABLE topology.layer DISABLE TRIGGER ALL;";
+  print STDOUT "ALTER TABLE topology.layer DISABLE TRIGGER ALL;\n";
 }
 
 # Drop the spatial_ref_sys_srid_check to allow for custom invalid SRIDs in the dump
-print STDOUT "ALTER TABLE spatial_ref_sys DROP constraint spatial_ref_sys_srid_check;";
+print STDOUT "ALTER TABLE spatial_ref_sys DROP constraint "
+           . "spatial_ref_sys_srid_check;\n";
+
+# Backup entries found in new spatial_ref_sys for later updating the
+print STDOUT "CREATE TEMP TABLE _pgis_restore_spatial_ref_sys AS "
+            ."SELECT * FROM spatial_ref_sys;\n";
+print STDOUT "DELETE FROM spatial_ref_sys;\n";
 
 while( my $l = <INPUT> ) {
 
@@ -213,22 +219,34 @@ while( my $l = <INPUT> ) {
 if ( $hasTopology ) {
 
   # Re-enable topology.layer table triggers 
-  print STDOUT "ALTER TABLE topology.layer ENABLE TRIGGER ALL;";
+  print STDOUT "ALTER TABLE topology.layer ENABLE TRIGGER ALL;\n";
 
   # Update topology SRID from geometry_columns view.
   # This is mainly to fix srids of -1
   # May be worth providing a "populate_topology_topology"
   print STDOUT "UPDATE topology.topology t set srid = g.srid "
              . "FROM geometry_columns g WHERE t.name = g.f_table_schema "
-             . "AND g.f_table_name = 'face' and f_geometry_column = 'mbr';";
+             . "AND g.f_table_name = 'face' and f_geometry_column = 'mbr';\n";
 
 }
+
+# Update spatial_ref_sys with entries found in new table
+print STDOUT "UPDATE spatial_ref_sys o set auth_name = n.auth_name, "
+           . "auth_srid = n.auth_srid, srtext = n.srtext, "
+           . "proj4text = n.proj4text FROM "
+           . "_pgis_restore_spatial_ref_sys n WHERE o.srid = n.srid;\n";
+# Insert entries only found in new table
+print STDOUT "INSERT INTO spatial_ref_sys SELECT * FROM "
+           . "_pgis_restore_spatial_ref_sys n WHERE n.srid " 
+           . "NOT IN ( SELECT srid FROM spatial_ref_sys );\n";
+# DROP TABLE _pgis_restore_spatial_ref_sys;
+print STDOUT "DROP TABLE _pgis_restore_spatial_ref_sys;\n";
 
 # Try re-enforcing spatial_ref_sys_srid_check, would fail if impossible
 # but you'd still have your data
 print STDOUT "ALTER TABLE spatial_ref_sys ADD constraint " 
            . "spatial_ref_sys_srid_check check "
-           . "( srid > 0 and srid < 999000 ) ;";
+           . "( srid > 0 and srid < 999000 ) ;\n";
 
 
 print STDERR "Done.\n";
