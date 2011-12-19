@@ -22,9 +22,9 @@ usage()
 	printf(_( "RELEASE: %s (r%s)\n" ), POSTGIS_VERSION, RCSID);
 	printf(_( "USAGE: shp2pgsql [<options>] <shapefile> [[<schema>.]<table>]\n"
 	          "OPTIONS:\n" ));
-	printf(_( "  -s <srid>  Set the SRID field. Defaults to %d.\n"
-	          "  -r <srid>  Specify the SRID to reproject from (if -s or -G is also used).\n"
-	          "      Cannot be used with -D.\n"), SRID_UNKNOWN);
+	printf(_( "  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"
+	          "      Optionally reprojects from given SRID (cannot be used with -D).\n"),
+	          SRID_UNKNOWN);
 	printf(_( " (-d|a|c|p) These are mutually exclusive options:\n"
 	          "     -d  Drops the table, then recreates it and populates\n"
 	          "         it with current shape file data.\n"
@@ -35,7 +35,7 @@ usage()
 	          "     -p  Prepare mode, only creates the table.\n" ));
 	printf(_( "  -g <geocolumn> Specify the name of the geometry/geography column\n"
 	          "      (mostly useful in append mode).\n" ));
-	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statments).\n" ));
+	printf(_( "  -D  Use postgresql dump format (defaults to SQL insert statements).\n" ));
 	printf(_( "  -e  Execute each statement individually, do not use a transaction.\n"
 	          "      Not compatible with -D.\n" ));
 	printf(_( "  -G  Use geography type (requires lon/lat data or -r to reproject).\n" ));
@@ -86,7 +86,7 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "acdeg:iknpr:s:wDGIN:ST:W:X:")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "acdeg:iknps:wDGIN:ST:W:X:")) != EOF)
 	{
 		switch (c)
 		{
@@ -122,33 +122,31 @@ main (int argc, char **argv)
 		case 's':
 			if (pgis_optarg)
 			{
-				sscanf(pgis_optarg, "%d", &(config->sr_id));
+				char *ptr = strchr(pgis_optarg, ':');
+				if ( ptr )
+				{
+					if (config->dump_format)
+					{
+						fprintf(stderr, "Cannot use both -D and -r.\n");
+						exit(1);
+					}
+					*ptr++ = '\0';
+					sscanf(pgis_optarg, "%d", &(config->shp_sr_id));
+					if ( ! *ptr ) { printf("No ptr?\n"); usage(); exit(1); }
+					sscanf(ptr, "%d", &(config->sr_id));
+				}
+				else
+				{
+					sscanf(pgis_optarg, "%d", &(config->sr_id));
+				}
 			}
 			else
 			{
-				/* With -s, user must specify SRID */
+				/* With -s, user must specify SRID or FROM_SRID:TO_SRID */
 				usage();
-				exit(0);
-			}
-			break;
-		case 'r':
-			if (config->dump_format)
-			{
-				fprintf(stderr, "Cannot use both -D and -r.\n");
 				exit(1);
 			}
-			if (pgis_optarg)
-			{
-				sscanf(pgis_optarg, "%d", &(config->shp_sr_id));
-			}
-			else
-			{
-				/* With -r, user must specify SRID */
-				usage();
-				exit(0);
-			}
 			break;
-
 		case 'g':
 			config->geo_col = pgis_optarg;
 			break;
