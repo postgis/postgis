@@ -3145,25 +3145,25 @@ FROM (
 	SET rast = ST_SetScale(rast,1.5)
 WHERE rid = 2;
 
-SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box2D(rast) As newbox
+SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box3D(rast) As newbox
 FROM dummy_rast
 WHERE rid = 2;
 
  pixx | pixy |                    newbox
 ------+------+----------------------------------------------
-  1.5 |  1.5 | BOX(3427927.75 5793244,3427935.25 5793251.5)
+  1.5 |  1.5 | BOX(3427927.75 5793244 0,3427935.25 5793251.5 0)
 				</programlisting>
 				<programlisting>UPDATE dummy_rast 
 	SET rast = ST_SetScale(rast,1.5,0.55)
 WHERE rid = 2;
 
-SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box2D(rast) As newbox
+SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box3D(rast) As newbox
 FROM dummy_rast
 WHERE rid = 2;
 
  pixx | pixy |                   newbox
 ------+------+--------------------------------------------
-  1.5 | 0.55 | BOX(3427927.75 5793244,3427935.25 5793247)
+  1.5 | 0.55 | BOX(3427927.75 5793244 0,3427935.25 5793247 0)
 				</programlisting>
 			
 			</refsection>
@@ -4793,7 +4793,7 @@ FROM dummy_rast WHERE rid=2;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>box3d <function>Box2D</function></funcdef>
+					<funcdef>box3d <function>Box3D</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
