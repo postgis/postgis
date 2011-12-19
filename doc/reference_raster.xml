@@ -4784,16 +4784,16 @@ FROM dummy_rast WHERE rid=2;
 	
 	<sect1 id="Raster_Processing">
 		<title>Raster Processing</title>
-		<refentry id="RT_Box2D">
+		<refentry id="RT_Box3D">
 			<refnamediv>
-				<refname>Box2D</refname>
-				<refpurpose>Returns the box 2d representation of the enclosing box of the raster</refpurpose>
+				<refname>Box3D</refname>
+				<refpurpose>Returns the box 3d representation of the enclosing box of the raster</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>box2d <function>Box2D</function></funcdef>
+					<funcdef>box3d <function>Box2D</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -4806,18 +4806,20 @@ FROM dummy_rast WHERE rid=2;
 				<para>The polygon is defined by the corner points of the bounding box
 			((<varname>MINX</varname>, <varname>MINY</varname>),
 			(<varname>MAXX</varname>, <varname>MAXY</varname>))</para>
+			
+				<para>Changed: 2.0.0 In pre-2.0 versions, there used to be a box2d instead of box3d.  Since box2d is a deprecated type, this was changed to box3d.</para>
 			</refsection>
 				
 			<refsection>
 				<title>Examples</title>
 			
-				<programlisting>SELECT rid, Box2D(rast) As rastbox
+				<programlisting>SELECT rid, Box3D(rast) As rastbox
 FROM dummy_rast;
 
 rid |        rastbox
 ----+-------------------------------------------------
-1   | BOX(0.5 0.5,20.5 60.5)
-2   | BOX(3427927.75 5793243.5,3427928 5793244)
+1   | BOX3D(0.5 0.5 0,20.5 60.5 0)
+2   | BOX3D(3427927.75 5793243.5 0,3427928 5793244 0)
 			</programlisting>
 			
 			</refsection>

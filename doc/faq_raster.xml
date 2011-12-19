@@ -39,7 +39,7 @@
 
       <answer>
         <para>The easiest is to download binaries for PostGIS and Raster which are currently available for windows and latest versions of Mac OSX. 
-        	First you need a working PostGIS 1.3.5 or above and be running PostgreSQL 8.3, 8.4, or 9.0. Note in PostGIS 2.0 PostGIS Raster is fully integrated, so it will be compiled when you compile PostGIS.</para>
+        	First you need a working PostGIS 2.0.0 or above and be running PostgreSQL 8.4, 9.0, or 9.1. Note in PostGIS 2.0 PostGIS Raster is fully integrated, so it will be compiled when you compile PostGIS.</para>
         	<para>Instructions for installing and running under windows are available at <ulink url="http://gis4free.wordpress.com/2011/03/10/how-to-install-and-configure-postgis-raster-on-windows/">How to Install and Configure PostGIS raster on windows</ulink></para>
         <para>
 			If you are on windows, you can compile yourself, or use the <ulink
@@ -47,7 +47,7 @@
             PostGIS Raster windows binaries</ulink>.
 			If you are on Mac OSX Leopard or Snow Leopard, there are binaries available at <ulink url="http://www.kyngchaos.com/software/postgres">Kyng Chaos Mac OSX PostgreSQL/GIS binaries</ulink>.
 		</para>
-		<para>Then to enable raster support in your database, run the rtpostgis.sql file in your database.</para>
+		<para>Then to enable raster support in your database, run the rtpostgis.sql file in your database.  To upgrade an existing install use rtpostgis_upgrade_minor..sql instead of rtpostgis.sql</para>
 		<para>For other platforms, you generally need to compile yourself. Dependencies are PostGIS and GDAL. For more details about compiling from source, please refer to <ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/Documentation01#a2.3-CompilingandInstallingfromSources">Installing PostGIS Raster from source (in prior versions of PostGIS)</ulink></para>
       </answer>
     </qandaentry>
@@ -59,7 +59,7 @@
       </question>
 
       <answer>
-        <para>rtpostgis.so/dll is built with dependency on libgdal.dll/so. Make sure for Windows you have libgdal.dll in the bin folder of your PostgreSQL install.  
+        <para>rtpostgis.so/dll is built with dependency on libgdal.dll/so. Make sure for Windows you have libgdal-1.dll in the bin folder of your PostgreSQL install.  
         For Linux libgdal has to be in your path or bin folder.  </para>
 		<para>You may also run into different errors if you don't have PostGIS installed in your database.  Make sure to install PostGIS first in your 
 		database before trying to install the raster support.</para>
@@ -72,16 +72,7 @@
       </question>
 
       <answer>
-        <para>Currently you need <ulink url="http://www.gdal.org/">GDAL 1.6+</ulink> though later versions would be better since they have many memory leak fixes, <ulink url="http://www.python.org/download/releases/2.5/">Python 2.5</ulink> with <ulink url="http://pypi.python.org/pypi/GDAL/1.6.1">GDAL 1.6 or higher bindings</ulink>, 
-			and <ulink url="http://pypi.python.org/pypi/numpy">NumPy</ulink>.</para>
-		<para>
-			For windows users, installing these components from binary sources is documented in the 
-			ReadMe.txt packaged with the <ulink
-            url="http://www.postgis.org/download/windows/experimental.php#wktraster">Windows
-            PostGIS Raster experimental builds</ulink>.</para>
-		<para>Once you have a functioning Python with GDAL and NumPy, you can
-        use the raster2pgsql.py script packaged with PostGIS Raster.</para>
-		<para>Please refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">raster2pgsql.py usage</ulink> and <xref linkend="RT_Loading_Rasters" /> for more details.</para>
+        <para>The latest version of PostGIS comes packaged with a <varname>raster2pgsql</varname> raster loader executable capable of loading many kinds of rasters and also generating lower resolution overviews without any additional software. Please refer to <xref linkend="RT_Raster_Loader" /> for more details. Pre-2.0 versions came with a <varname>raster2pgsql.py</varname> that required python with numpy and GDAL.  This is no longer needed.</para>
       </answer>
     </qandaentry>
 	
@@ -93,7 +84,7 @@
       <answer>
         <para>Any that your GDAL library supports. GDAL supported formats are documented <ulink url="http://www.gdal.org/formats_list.html">GDAL File Formats</ulink>.</para>
 		<para>Your particular GDAL install may not support all formats.  To verify the ones supported by your particular GDAL install, you can use</para> 
-		<programlisting>gdalinfo --formats</programlisting>
+		<programlisting>raster2pgsql -G</programlisting>
       </answer>
     </qandaentry>
     
@@ -138,7 +129,7 @@
     <qandaentry>
     	<question><para>Are their binaries of GDAL available already compiled with PostGIS Raster suppport?</para></question>
     	<answer>
-    		<para>Yes. Check out the page <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries">GDAL Binaries</ulink> page.  Any compiled wiht PostgreSQL
+    		<para>Yes. Check out the page <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries">GDAL Binaries</ulink> page.  Any compiled with PostgreSQL
     		support should have PostGIS Raster in them.  </para>
     		<para>We know for sure the following windows binaries have PostGIS Raster built in.</para>
     		<para><ulink url="http://fwtools.maptools.org/">FWTools latest stable version for Windows is compiled with Raster support</ulink>.</para>
@@ -155,8 +146,9 @@
       </question>
 
       <answer>
-        <para>You can use MapServer compiled with GDAL 1.7+ and PostGIS Raster driver support to view Raster data.  
-        In theory any tool that renders data using GDAL can support PostGIS raster data or 
+        <para>You can use MapServer compiled with GDAL 1.7+ and PostGIS Raster driver support to view Raster data. QuantumGIS (QGIS) now supports viewing of PostGIS Raster if you
+        have PostGIS raster driver installed.</para>
+        <para>In theory any tool that renders data using GDAL can support PostGIS raster data or 
         support it with fairly minimal effort. Again for Windows, Tamas' binaries <ulink url="http://vbkto.dyndns.org/sdk/">http://vbkto.dyndns.org/sdk/</ulink> are a good choice if you don't want the hassle of having to setup to compile your own.</para>
       </answer>
     </qandaentry>

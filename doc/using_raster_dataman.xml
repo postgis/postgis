@@ -14,7 +14,7 @@
     	by the executable will be the same as those compiled in the GDAL dependency library.  To get a list of raster types your particular raster2pgsql supports use the <varname>-G</varname> switch.  These should be the same as those provided by your PostGIS install documented here  <xref linkend="RT_ST_GDALDrivers" /> if you are using the same gdal library for both.</para>
     <note>
     	<para>The older version of this tool was a python script.  The executable has replaced the python script.  If you still find the need for the Python script
-        Examples of the pyhton one can be found at <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">GDAL PostGIS Raster Driver Usage</ulink> 
+        Examples of the pyhton one can be found at <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">GDAL PostGIS Raster Driver Usage</ulink>.  Pease note that the raster2pgsql python script may not work with future versions of PostGIS raster and is no longer supported.
         </para></note>
         
     <para>EXAMPLE USAGE: 
@@ -34,7 +34,7 @@
           <term>-G</term>
           <listitem>
             <para>
-             Print the supported GDAL raster formats.
+             Print the supported raster formats.
             </para>
           </listitem>
         </varlistentry>
