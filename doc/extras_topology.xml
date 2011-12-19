@@ -145,7 +145,10 @@
 -------
  {1,2}
                  </programlisting>
-                 <programlisting>SELECT ARRAY[1,2,3]::topology.topoelement;
+                 <programlisting>
+--Example of what happens when you try to case a 3 element array to topoelement
+-- NOTE: topoement has to be a 2 element array so fails dimension check
+SELECT ARRAY[1,2,3]::topology.topoelement;
 ERROR:  value for domain topology.topoelement violates check constraint "dimensions"
                  </programlisting>
             </refsection>
