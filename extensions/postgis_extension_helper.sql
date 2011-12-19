@@ -60,3 +60,23 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql VOLATILE;
+
+CREATE OR REPLACE FUNCTION postgis_extension_drop_if_exists(param_extension text, param_statement text)
+  RETURNS boolean AS
+$$
+DECLARE 
+	var_sql_ext text := 'ALTER EXTENSION ' || quote_ident(param_extension) || ' ' || replace(param_statement, 'IF EXISTS', '');
+	var_result boolean := false;
+BEGIN
+	BEGIN
+		EXECUTE var_sql_ext;
+		var_result := true;
+	EXCEPTION
+		WHEN OTHERS THEN
+			--this is to allow ignoring if the object does not exist in extension
+			var_result := false;
+	END;
+	RETURN var_result;
+END;
+$$
+LANGUAGE plpgsql VOLATILE;
