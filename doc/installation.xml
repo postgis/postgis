@@ -926,42 +926,120 @@ Failed: 0
 	  </para>
 
 	  <para>
-		Create a "custom-format" dump of the database you want to upgrade (let's
-		call it "olddb") include binary blobs (-b) and verbose (-v) output.  The user can be the owner of the db, need not be postgres
+		The dump/reload process is assisted by the postgis_restore.pl
+		script which takes care of skipping from the dump all
+		definitions which belong to PostGIS (including old ones),
+		allowing you to restore your schemas and data into a
+		database with PostGIS installed without getting duplicate
+		symbol errors or bringing forward deprecated objects.
+	  </para>
+
+	  <para>
+		The Procedure is as follows:
+	  </para>
+
+	<orderedlist>
+
+	<listitem>
+
+	  <para>
+		Create a "custom-format" dump of the database you want
+		to upgrade (let's call it <varname>olddb</varname>)
+		include binary blobs (-b) and verbose (-v) output.
+		The user can be the owner of the db, need not be postgres
 		super account.
 	  </para>
-	  <note><para>The following described process will show quite a few errors. DO NOT BE ALARMED.  This is expected
-	  		since functions and objects already defined in the new version of postgis will fail when pg_restore tries to restore them.
-	  		This is desired.  Errors you do need to be cognizant of are those of failed restore of tables other than geometry_columns and spatial_ref_sys.</para>
-	  </note>
 
 	  <programlisting>pg_dump -h localhost -p 5432 -U postgres -Fc -b -v -f "/somepath/olddb.backup" olddb</programlisting>
-	  
-	  <para>If you made custom entries to your spatial_ref_sys.sql, you may want to backup this table separately or copy out the custom records.
-	  The spatial_ref_sys you will end up with will be the new one packaged with the PostGIS install.</para>
 
-	  <para>Do a fresh install of PostGIS in a new database -- we'll refer to this database as <varname>newdb</varname>.  
-	  Please refer to <xref linkend="create_new_db" /> for instructions on how to do this.</para>
+	</listitem>
+
+	<listitem>
+
+	  <para>
+		Do a fresh install of PostGIS in a new database -- we'll
+		refer to this database as <varname>newdb</varname>.
+		Please refer to <xref linkend="create_new_db" /> for
+		instructions on how to do this.
+	  </para>
+
+	  <para>
+		The spatial_ref_sys entries found in your dump will be
+		restored, but they will not override existing ones in
+		spatial_ref_sys.  This is to ensure that fixes in the
+		official set will be properly propagated to restored
+		databases. If for any reason you really want your own
+		overrides of standard entries just don't load the
+		spatial_ref_sys.sql file when creating the new db.
+	  </para>
+
+	  <para>
+		If your database is really old or you know you've
+		been using long deprecated functions in your
+		views and functions, you might need to load
+		<filename>legacy.sql</filename> for all your functions
+		and views etc. to properly come back.
+		Only do this if _really_ needed. Consider upgrading your
+		views and functions before dumping instead, if possible.
+		The deprecated functions can be later removed by loading
+		<filename>uninstall_legacy.sql</filename>.
+	  </para>
+
+	</listitem>
 	  
-	  <para>Install the <filename>legacy_compatibility_layer.sql</filename>.  This installs the minimum legacy functions needed to restore
-	  	most old databases.  If your database is really old or you know you've been using long 
-	  	deprecated functions in your views and functions, you might need to install the <filename>legacy.sql</filename>
-	  	instead of <filename>legacy_compatbility_layer.sql</filename>
-	  	for all your functions and views etc. to properly come back.</para>
-	  
-	  <programlisting>psql  -h localhost -p 5432 -U postgres -d newdb -f legacy_compatibility_layer.sql</programlisting>
+	<listitem>
+
+	  <para>
+		Restore your backup into your fresh
+		<varname>newdb</varname> database using
+		postgis_restore.pl.
+		Unexpected errors, if any, will be printed to the standard
+		error stream by psql. Keep a log of those.
+	  </para>
+
+	  <programlisting>perl utils/postgis_restore.pl "/somepath/olddb.backup" | psql -h localhost -p 5432 -U postgres newdb 2> errors.txt</programlisting>
+
+	</listitem>
+
+	</orderedlist>
+
+	<para>
+		Errors may arise in the following cases:
+	</para>
+
+	<orderedlist>
+	<listitem>
+	<para>
+		Some of your views or functions make use of deprecated PostGIS objects.
+		In order to fix this you may try loading <filename>legacy.sql</filename>
+		script prior to restore or you'll have to restore to a
+		version of PostGIS which still contains those objects
+		and try a migration again after porting your code.
+		If the <filename>legacy.sql</filename> way works for you, don't forget
+		to fix your code to stop using deprecated functions and drop them
+		loading <filename>uninstall_legacy.sql</filename>.
+	</para>
+	</listitem>
+	<listitem>
+	<para>
+		Some custom records of spatial_ref_sys in dump file have
+		an invalid SRID value. Valid SRID values are bigger than 0
+		and smaller than 999000. In this case your custom records
+		will be retained but the spatial_ref_sys table would loose
+		a check contraint guarding for that invariant to hold.
+		In order to fix this you should copy your custom SRS to
+		a SRID with a valid value (maybe in the 9100000..910999
+		range), convert all your tables to the new srid (see
+		<xref linkend="UpdateGeometrySRID"/>), delete the invalid entry from
+		spatial_ref_sys and re-construct the check with:
+
+		<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</programlisting>
 	
-	  <para>Restore your backup into your fresh <varname>newdb</varname> database using pg_restore.</para>
+	</para>
+	</listitem>
+	</orderedlist>
 
-	  <programlisting>pg_restore -h localhost -p 5432 -U postgres -d newdb "/somepath/olddb.backup"</programlisting>
 
-	  <para>Finally run the <filename>postgis_upgrade_20_minor.sql</filename> script in this new database.  NOTE: This step is
-	      very important because many functions have been revised to use default parameters, and
-	      your old install would therefore restore these which would result in ambiguous name conflicts when called.</para>
-	  <programlisting>psql -h localhost -p 5432 -U postgres -d newdb -f postgis_upgrade_20_minor.sql</programlisting>
-
-	  <para>If your applications or GIS tools rely on old deprecated functions, you can restore these by installing the <filename>legacy.sql</filename></para>
-	  <programlisting>psql  -h localhost -p 5432 -U postgres -d newdb -f legacy.sql</programlisting>
 	</sect2>
   </sect1>
 
