@@ -5024,7 +5024,8 @@ FROM dummy_rast;
 		<refentry id="RT_ST_Intersection">
 			<refnamediv>
 				<refname>ST_Intersection</refname>
-				<refpurpose>Returns a set of geometry-pixelvalue pairs resulting from intersection of a raster band with a geometry. If
+				<refpurpose>Returns a set of geometry-pixelvalue pairs resulting from intersection of a raster band with a geometry when operation is geometry,raster. 
+					If operationis raster,geometry then a raster is returned that is result of the input raser clipped by geometry. If
 					no band number is specified, band 1 is assumed.</refpurpose>
 			</refnamediv>
 		
@@ -5038,16 +5039,35 @@ FROM dummy_rast;
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>regprocedure </type> <parameter>otheruserfunc</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>regprocedure </type> <parameter>otheruserfunc</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5057,12 +5077,12 @@ FROM dummy_rast;
 				
 				<para>Return the intersections of the geometry with the vectorized parts of 
         the raster and the values associated with those parts, if really their intersection is not empty. If no band number is specified
-        band 1 is assumed.</para>
-			
+        band 1 is assumed.  If raster is first argument, then a raster is returned that represents that part of the input raster that intersects with the input geometry.</para>
+				<para>Enhanced: 2.0.0 - output as raster was introduced. In wktraster and earlier pre-2.0.0 releases only geometry-val options were supported.</para>
 				</refsection>
 				
 				<refsection>
-					<title>Examples</title>
+					<title>Examples: Geometry, Raster -- resulting in geometry vals</title>
 				
 					<programlisting>SELECT foo.rid, foo.gid, 
    ST_AsText((foo.geomval).geom) As geomwkt, (foo.geomval).val
@@ -5089,6 +5109,13 @@ WHERE A.rid =2 ) As foo;
 </programlisting>
 			
 			</refsection>
+			
+			<refsection>
+			<title>Example: Raster, Geometry -- resulting is a raster</title>
+			<para>Examples coming soon</para>
+			<!-- TODO: EXAMPLES coming soon -->
+			</refsection>
+
 
 			<refsection>
 				<title>See Also</title>
