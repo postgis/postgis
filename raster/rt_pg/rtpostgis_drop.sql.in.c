@@ -260,7 +260,6 @@ DROP FUNCTION IF EXISTS DropRasterTable(varchar, varchar);
 DROP FUNCTION IF EXISTS DropRasterTable(varchar);
 
 -- function parameters renamed
-DROP FUNCTION IF EXISTS _drop_st_samealignment();
 CREATE OR REPLACE FUNCTION _drop_st_samealignment()
 	RETURNS void AS $$
 	DECLARE
