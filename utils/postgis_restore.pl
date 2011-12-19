@@ -210,11 +210,18 @@ while( my $l = <INPUT> ) {
 
 }
 
-#
-# Re-enable topology metadata tables triggers 
-#
 if ( $hasTopology ) {
+
+  # Re-enable topology.layer table triggers 
   print STDOUT "ALTER TABLE topology.layer ENABLE TRIGGER ALL;";
+
+  # Update topology SRID from geometry_columns view.
+  # This is mainly to fix srids of -1
+  # May be worth providing a "populate_topology_topology"
+  print STDOUT "UPDATE topology.topology t set srid = g.srid "
+             . "FROM geometry_columns g WHERE t.name = g.f_table_schema "
+             . "AND g.f_table_name = 'face' and f_geometry_column = 'mbr';";
+
 }
 
 # Try re-enforcing spatial_ref_sys_srid_check, would fail if impossible
