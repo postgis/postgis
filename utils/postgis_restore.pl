@@ -21,6 +21,7 @@
 #
 # Tested on:
 #
+#    pg-8.4.9/pgis-1.4.3    => pg-8.4.9/pgis-2.0.0SVN
 #    pg-8.4.9/pgis-2.0.0SVN => pg-8.4.9/pgis-2.0.0SVN
 #    pg-8.4.9/pgis-2.0.0SVN => pg-9.1.2/pgis-2.0.0SVN
 #    pg-9.1b3/pgis-1.5.3    => pg-9.1.1/pgis-2.0.0SVN
@@ -103,7 +104,7 @@ while( my $l = <DUMP> ) {
 
 }
 close(MANIFEST);
-close(DUMP);
+close(DUMP) || die "$me: pg_restore returned an error\n";
 
 ######################################################################
 # Convert the dump file into an ASCII file, stripping out the 
@@ -446,6 +447,7 @@ COMMENT	FUNCTION	postgis_scripts_released()
 COMMENT	FUNCTION	postgis_uses_stats()
 COMMENT	FUNCTION	postgis_version()
 COMMENT	FUNCTION	probe_geometry_columns()
+COMMENT	FUNCTION	st_addbbox(geometry)
 COMMENT	FUNCTION	st_addmeasure(geometry,doubleprecision,doubleprecision)
 COMMENT	FUNCTION	st_addpoint(geometry,geometry)
 COMMENT	FUNCTION	st_addpoint(geometry,geometry,integer)
@@ -504,6 +506,8 @@ COMMENT	FUNCTION	st_azimuth(geometry,geometry)
 COMMENT	FUNCTION	st_bdmpolyfromtext(text,integer)
 COMMENT	FUNCTION	st_bdpolyfromtext(text,integer)
 COMMENT	FUNCTION	st_boundary(geometry)
+COMMENT	FUNCTION	st_box2d(geometry)
+COMMENT	FUNCTION	st_box3d(geometry)
 COMMENT	FUNCTION	st_buffer(geography,doubleprecision)
 COMMENT	FUNCTION	st_buffer(geometry,doubleprecision)
 COMMENT	FUNCTION	st_buffer(geometry,doubleprecision,integer)
@@ -534,6 +538,7 @@ COMMENT	FUNCTION	st_distance(geography,geography,boolean)
 COMMENT	FUNCTION	st_distance(geometry,geometry)
 COMMENT	FUNCTION	st_distance_sphere(geometry,geometry)
 COMMENT	FUNCTION	st_distance_spheroid(geometry,geometry,spheroid)
+COMMENT	FUNCTION	st_dropbbox(geometry)
 COMMENT	FUNCTION	st_dump(geometry)
 COMMENT	FUNCTION	st_dumppoints(geometry)
 COMMENT	FUNCTION	st_dumprings(geometry)
@@ -577,6 +582,7 @@ COMMENT	FUNCTION	st_geomfromwkb(bytea)
 COMMENT	FUNCTION	st_geomfromwkb(bytea,integer)
 COMMENT	FUNCTION	st_gmltosql(text)
 COMMENT	FUNCTION	st_hasarc(geometry)
+COMMENT	FUNCTION	st_hasbbox(geometry)
 COMMENT	FUNCTION	st_hausdorffdistance(geometry,geometry)
 COMMENT	FUNCTION	st_hausdorffdistance(geometry,geometry,doubleprecision)
 COMMENT	FUNCTION	st_interiorringn(geometry,integer)
@@ -626,6 +632,7 @@ COMMENT	FUNCTION	st_makepoint(doubleprecision,doubleprecision,doubleprecision,do
 COMMENT	FUNCTION	st_makepointm(doubleprecision,doubleprecision,doubleprecision)
 COMMENT	FUNCTION	st_makepolygon(geometry)
 COMMENT	FUNCTION	st_makepolygon(geometry,geometry[])
+COMMENT	FUNCTION	st_max_distance(geometry,geometry)
 COMMENT	FUNCTION	st_maxdistance(geometry,geometry)
 COMMENT	FUNCTION	st_mem_size(geometry)
 COMMENT	FUNCTION	st_m(geometry)
