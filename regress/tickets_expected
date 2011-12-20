@@ -115,6 +115,7 @@ ERROR:  First argument must be a LINESTRING
 #668|BOX(10 2,14 2)
 #711|
 #712|t
+#756.1|t|t
 #1023|t
 #1023.a|f
 #1023.b|t

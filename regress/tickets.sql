@@ -393,6 +393,14 @@ select '#711', ST_GeoHash(ST_GeomFromText('POLYGON EMPTY',4326));
 -- #712 --
 SELECT '#712',ST_IsValid(ST_GeomFromText('POLYGON EMPTY',4326));
 
+-- #756
+WITH inp AS ( SELECT 'LINESTRING(0 0, 1 1)'::geometry as s,
+                     'LINESTRING EMPTY'::geometry as e      )
+ SELECT '#756.1', ST_Equals(s, st_multi(s)),
+                  ST_Equals(s, st_collect(s, e))
+ FROM inp;
+
+
 -- #1023 --
 select '#1023', 'POINT(10 4)'::geometry = 'POINT(10 4)'::geometry;
 select '#1023.a', 'POINT(10 4)'::geometry = 'POINT(10 5)'::geometry;

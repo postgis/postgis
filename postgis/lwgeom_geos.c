@@ -3032,10 +3032,6 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	errorIfGeometryCollection(geom1,geom2);
 	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
 
-	/* Different types can't be equal */
-	if( gserialized_get_type(geom1) != gserialized_get_type(geom2) )
-		PG_RETURN_BOOL(FALSE);
-		
 	/* Empty == Empty */
 	if ( gserialized_is_empty(geom1) && gserialized_is_empty(geom2) )
 		PG_RETURN_BOOL(TRUE);
