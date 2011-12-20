@@ -27,3 +27,8 @@ install:
 clean:
 #	$(MAKE) -C plpgsql $@
 	$(MAKE) -C python $@
+
+distclean: clean
+#	$(MAKE) -C plpgsql $@
+	$(MAKE) -C python $@
+	$(RM) -f Makefile

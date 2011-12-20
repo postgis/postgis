@@ -43,8 +43,12 @@ clean:
 	$(MAKE) -C scripts $@
 
 distclean: clean
-	$(RM) -R autom4te.cache
-	$(RM) config.status
+	$(MAKE) -C rt_core $@
+	$(MAKE) -C rt_pg $@
+	$(MAKE) -C loader $@
+	$(MAKE) -C test $@
+	$(MAKE) -C scripts $@
+	$(RM) raster_config.h Makefile
 
 core-check:
 	$(MAKE) -C test $@

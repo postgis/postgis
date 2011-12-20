@@ -25,3 +25,5 @@ uninstall:
 
 clean:
 	$(RM) *.o
+
+distclean: clean

@@ -12,7 +12,7 @@ MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_upgrade_20_minor.sql
+DATA_built=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_20_minor.sql rtpostgis_upgrade_cleanup.sql
 DATA=
 
 # SQL objects (files requiring C pre-processing)

@@ -24,3 +24,6 @@ $(RT_CORE)/librtcore.a:
 clean:
 	$(MAKE) -C core $@
 	$(MAKE) -C regress $@
+
+distclean: clean
+	$(RM) Makefile
