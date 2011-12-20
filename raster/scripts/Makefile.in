@@ -24,6 +24,8 @@ install:
 #	$(MAKE) -C plpgsql
 	$(MAKE) -C python
 
+uninstall:
+
 clean:
 #	$(MAKE) -C plpgsql $@
 	$(MAKE) -C python $@

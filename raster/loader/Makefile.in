@@ -68,6 +68,9 @@ installdir:
 install: installdir
 	$(LIBTOOL) --mode=install $(INSTALL) $(RASTER2PGSQL) "$(DESTDIR)$(PGSQL_BINDIR)/$(RASTER2PGSQL)"
 
+uninstall:
+	$(LIBTOOL) --mode=uninstall $(RM) "$(DESTDIR)$(PGSQL_BINDIR)/$(RASTER2PGSQL)"
+
 $(RT_CORE)/librtcore.a:
 	$(MAKE) -C ../rt_core
 
