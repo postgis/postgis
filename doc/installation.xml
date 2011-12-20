@@ -933,6 +933,9 @@ Failed: 0
 		database with PostGIS installed without getting duplicate
 		symbol errors or bringing forward deprecated objects.
 	  </para>
+	  
+	 <para>Supplementary instructions for windows users are available at  <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiWinUpgrade">Windows Hard upgrade</ulink>.</para>
+
 
 	  <para>
 		The Procedure is as follows:
