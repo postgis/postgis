@@ -104,10 +104,10 @@ public class BinaryParser {
         boolean haveM = (typeword & 0x40000000) != 0;
         boolean haveS = (typeword & 0x20000000) != 0;
 
-        int srid = -1;
+        int srid = Geometry.UNKNOWN_SRID;
 
         if (haveS) {
-            srid = data.getInt();
+            srid = Geometry.parseSRID(data.getInt());
         }
         Geometry result1;
         switch (realtype) {
@@ -138,7 +138,7 @@ public class BinaryParser {
 
         Geometry result = result1;
 
-        if (haveS) {
+        if (srid != Geometry.UNKONWN_SRID) {
             result.setSrid(srid);
         }
         return result;

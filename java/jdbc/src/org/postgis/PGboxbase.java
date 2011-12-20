@@ -81,12 +81,12 @@ public abstract class PGboxbase extends PGobject {
     }
 
     public void setValue(String value) throws SQLException {
-        int srid = -1;
+        int srid = Geometry.UNKNOWN_SRID;
         value = value.trim();
         if (value.startsWith("SRID=")) {
             String[] temp = PGgeometry.splitSRID(value);
             value = temp[1].trim();
-            srid = Integer.parseInt(temp[0].substring(5));
+            srid = Geometry.parseSRID(Integer.parseInt(temp[0].substring(5)));
         }
         String myPrefix = getPrefix();
         if (value.startsWith(myPrefix)) {
@@ -95,7 +95,7 @@ public abstract class PGboxbase extends PGobject {
         PGtokenizer t = new PGtokenizer(PGtokenizer.removePara(value), ',');
         llb = new Point(t.getToken(0));
         urt = new Point(t.getToken(1));
-        if (srid != -1) {
+        if (srid != Geometry.UNKNOWN_SRID) {
             llb.setSrid(srid);
             urt.setSrid(srid);
         }

@@ -126,13 +126,13 @@ public class BinaryWriter {
         if (geom.haveMeasure) {
             typeword |= 0x40000000;
         }
-        if (geom.srid != -1) {
+        if (geom.srid != Geometry.UNKNOWN_SRID) {
             typeword |= 0x20000000;
         }
 
         dest.setInt(typeword);
 
-        if (geom.srid != -1) {
+        if (geom.srid != Geometry.UNKNOWN_SRID) {
             dest.setInt(geom.srid);
         }
 
@@ -244,7 +244,7 @@ public class BinaryWriter {
         // write typeword
         result += 4;
 
-        if (geom.srid != -1) {
+        if (geom.srid != Geometry.UNKNOWN_SRID) {
             result += 4;
         }
 

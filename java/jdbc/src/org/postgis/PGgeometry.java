@@ -77,13 +77,13 @@ public class PGgeometry extends PGobject {
             throws SQLException {
         value = value.trim();
 
-        int srid = -1;
+        int srid = Geometry.UNKNOWN_SRID;
 
         if (value.startsWith(SRIDPREFIX)) {
             // break up geometry into srid and wkt
             String[] parts = PGgeometry.splitSRID(value);
             value = parts[1].trim();
-            srid = Integer.parseInt(parts[0].substring(5));
+            srid = Geometry.parseSRID(Integer.parseInt(parts[0].substring(5)));
         }
 
         Geometry result;
@@ -111,7 +111,7 @@ public class PGgeometry extends PGobject {
             throw new SQLException("Unknown type: " + value);
         }
 
-        if (srid != -1) {
+        if (srid != Geometry.UNKNOWN_SRID) {
             result.srid = srid;
         }
 

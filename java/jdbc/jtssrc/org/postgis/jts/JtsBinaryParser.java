@@ -102,14 +102,14 @@ public class JtsBinaryParser {
         boolean haveS = (typeword & 0x20000000) != 0;
 
         if (haveS) {
-            int newsrid = data.getInt();
+            int newsrid = Geometry.parseSRID(data.getInt());
             if (inheritSrid && newsrid != srid) {
                 throw new IllegalArgumentException("Inconsistent srids in complex geometry: " + srid + ", " + newsrid);
             } else {
                 srid = newsrid;
             }
         } else if (!inheritSrid) {
-            srid = -1;
+            srid = Geometry.UNKNOWN_SRID;
         }
        
         Geometry result;

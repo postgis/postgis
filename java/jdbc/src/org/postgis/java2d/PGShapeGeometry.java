@@ -118,7 +118,7 @@ public class PGShapeGeometry extends PGobject implements Shape {
         return false;
     }
 
-    /** Return the SRID or -1 if none was available */
+    /** Return the SRID or Geometry.UNKNOWN_SRID if none was available */
     public int getSRID() {
         return srid;
     }

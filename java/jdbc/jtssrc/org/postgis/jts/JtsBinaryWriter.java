@@ -297,8 +297,7 @@ public class JtsBinaryWriter {
 
     private boolean checkSrid(Geometry geom) {
         final int srid = geom.getSRID();
-        // SRID is default 0 with jts geometries
-        return (srid != -1) && (srid != 0);
+        return (srid > 0);
     }
 
     private int estimatePoint(Point geom) {

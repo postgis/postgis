@@ -91,7 +91,7 @@ public class PLJtsParser {
                 srid = newsrid;
             }
         } else if (!inheritSrid) {
-            srid = -1;
+            srid = Geometry.UNKNOWN_SRID;
         }
        
         Geometry result;

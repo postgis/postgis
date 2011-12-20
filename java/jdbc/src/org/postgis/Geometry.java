@@ -113,9 +113,25 @@ public abstract class Geometry implements Serializable {
     public final int type;
 
     /**
-     * The spacial reference system id of this geometry, default (no srid) is -1
+     * Official UNKNOWN srid value 
      */
-    public int srid = -1;
+    public final final int UNKNOWN_SRID = 0;
+
+    /**
+     * The spacial reference system id of this geometry, default is no srid 
+     */
+    public int srid = UNKNOWN_SRID;
+
+    /**
+     * Parse a SRID value, anything <= 0 is unknown
+     */
+    public static int parseSRID(int srid) {
+        if ( srid < 0 ) {
+            /* TODO: raise a warning ? */
+            srid = 0;
+        }
+        return srid;
+    }
 
     /**
      * Constructor for subclasses
@@ -232,7 +248,7 @@ public abstract class Geometry implements Serializable {
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        if (srid != -1) {
+        if (srid != UNKNOWN_SRID) {
             sb.append("SRID=");
             sb.append(srid);
             sb.append(';');
