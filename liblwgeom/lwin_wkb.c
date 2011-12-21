@@ -11,7 +11,6 @@
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
-#include <sys/param.h>
 
 /**
 * Used for passing the parse state between the parsing functions.
@@ -625,7 +624,7 @@ LWGEOM* lwgeom_from_wkb_state(wkb_parse_state *s)
 
 	/* Check the endianness of our input  */
 	s->swap_bytes = LW_FALSE;
-	if( BYTE_ORDER == LITTLE_ENDIAN ) /* Machine arch is little */
+	if( getMachineEndian() == NDR ) /* Machine arch is little */
 	{
 		if ( ! wkb_little_endian )    /* Data is big! */
 			s->swap_bytes = LW_TRUE;

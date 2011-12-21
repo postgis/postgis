@@ -124,8 +124,8 @@
 */
 
 /* Machine endianness */
-#define XDR 0
-#define NDR 1
+#define XDR 0 /* big endian */
+#define NDR 1 /* little endian */
 extern char getMachineEndian(void);
 
 /* Raise an lwerror if srids do not match */
