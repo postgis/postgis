@@ -454,7 +454,14 @@ while [ -n "$1" ]; do
 done
 
 if [ -z "$1" ]; then
-	echo "Usage: $0 [-v] [--topology] [--nocreate] [--nodrop] <test> [<test>]" >&2
+	echo "Usage: $0 [<options>] <test> [<test>]" >&2
+	echo "Options:" >&2
+	echo " -v           be verbose about failures" >&2
+	echo " --nocreate   do not create the regression database on start" >&2
+	echo " --nodrop     do not drop the regression database on exit" >&2
+	echo " --raster     load also topology extension" >&2
+	echo " --topology   load also topology extension" >&2
+	echo " --clean      cleanup test logs on exit" >&2
 	exit 1
 fi
 
