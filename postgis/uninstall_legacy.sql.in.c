@@ -108,6 +108,7 @@ DROP AGGREGATE IF EXISTS MakeLine(geometry);
 DROP FUNCTION IF EXISTS MakeLine(geometry, geometry);
 DROP FUNCTION IF EXISTS MakePolygon(geometry, geometry[]);
 DROP FUNCTION IF EXISTS MakePolygon(geometry);
+DROP FUNCTION IF EXISTS mem_size(geometry);
 DROP FUNCTION IF EXISTS MPolyFromWKB(bytea);
 DROP FUNCTION IF EXISTS multi(geometry);
 
