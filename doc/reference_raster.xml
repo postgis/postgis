@@ -871,7 +871,7 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandMetaData" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_MakeEmptyRaster" />, <xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_NumBands" /></para>
+				<para><xref linkend="RT_ST_BandMetaData" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_MakeEmptyRaster" />, <xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_NumBands" />, <xref linkend="RT_ST_Reclass" /></para>
 			</refsection>
 		</refentry>
   			<refentry id="RT_ST_AsRaster">
@@ -6260,13 +6260,13 @@ col | row | ov1 | rv1 | ov2 | rv2 | ov3 | rv3
 				<programlisting>
 ALTER TABLE wind ADD COLUMN rast_view raster;
 UPDATE wind 
-	SET rast_view = 
-		ST_AddBand(
-			ST_AddBand(
-				ST_AddBand(ST_MakeEmptyRaster(rast), 
-					ST_Reclass(rast, 1,'0.1-5]:1-255,(5-1000:0'::text, '8BUI'::text,0))
-				, ST_Reclass(rast,1, '0-5):0,[5-8:1-255,(8-1000:0'::text, '8BUI'::text,0)),
-				ST_Reclass(rast,1,'0-8]:0,(8-100:200-255'::text, '8BUI'::text,0));</programlisting>		
+	set rast_view = ST_AddBand( NULL,
+        ARRAY[
+        	ST_Reclass(rast, 1,'0.1-10]:1-10,9-10]:11,(11-33:0'::text, '8BUI'::text,0),
+        	ST_Reclass(rast,1, '11-33):0-255,[0-32:0,(34-1000:0'::text, '8BUI'::text,0),  
+        	ST_Reclass(rast,1,'0-32]:0,(32-100:100-255'::text, '8BUI'::text,0)
+        	]
+        	) ;</programlisting>		
 			</refsection>
 
 
