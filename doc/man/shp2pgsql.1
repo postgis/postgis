@@ -63,15 +63,10 @@ This allows loading of the majority of good data when there are some bad
 geometries that generate errors.  Note that this cannot be used with the
 -D flag as the "dump" format always uses a transaction.
 .TP 
-\fB\-s\fR <\fISRID\fR>
+\fB\-s\fR [<\fIFROM_SRID\fR>:]<\fISRID\fR>
 Creates and populates the geometry tables with the specified SRID.
-.TP 
-\fB\-r\fR <\fISRID\fR>
-Specifies that the input shapefile uses the given SRID.  If -s is not
-specified, this SRID will be used to populate the geometry table. If
--s is specified, the geometries will be reprojected to the SRID given
-in the -s parameter.  If -G is specified, but -s is not, the geometries
-will be reprojected to 4326.  This parameter cannot be used with -D.
+If FROM_SRID is given, the geometries will be reprojected.
+Reprojection cannot be used with -D.
 .TP 
 \fB\-G\fR
 Use the geography type instead of geometry.  Geography is used to store
