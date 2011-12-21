@@ -292,6 +292,11 @@ ST_Dimension
 
 		<para>&sqlmm_compliant; SQL-MM 3: 7.1.4</para>
 		<para>&Z_support;</para>
+		<note><para>Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
+	  versions of PostGIS -- a single line multilinestring would work happily with this
+	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.
+	  The older behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
+	  may experience these returning NULL in 2.0 now.</para></note>
 
 	  </refsection>
 
@@ -2030,6 +2035,11 @@ POINT(3 2)
 
 	  <para>&sqlmm_compliant; SQL-MM 3: 7.1.3</para>
 	  <para>&Z_support;</para>
+	  <note><para>Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
+	  versions of PostGIS -- a single line multilinestring would work happily with this
+	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.
+	  The older behavior was an undocumented feature, but people who assumed they had their data stored as LINESTRING
+	  may experience these returning NULL in 2.0 now.</para></note>
 
 	</refsection>
 
