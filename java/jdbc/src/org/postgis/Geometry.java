@@ -115,7 +115,7 @@ public abstract class Geometry implements Serializable {
     /**
      * Official UNKNOWN srid value 
      */
-    public final final int UNKNOWN_SRID = 0;
+    public final int UNKNOWN_SRID = 0;
 
     /**
      * The spacial reference system id of this geometry, default is no srid 
