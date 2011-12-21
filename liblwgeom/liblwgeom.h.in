@@ -1322,9 +1322,14 @@ extern void spheroid_init(SPHEROID *s, double a, double b);
 extern double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2, const SPHEROID *spheroid, double tolerance);
 
 /**
-* Calculate the location of a point, give a start point, bearing and distance.
+* Calculate the location of a point on a spheroid, give a start point, bearing and distance.
 */
 extern LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, double distance, double azimuth);
+
+/**
+* Calculate the bearing between two points on a spheroid.
+*/
+extern double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROID *spheroid);
 
 /**
 * Calculate the geodetic area of a lwgeom on the sphere. The result

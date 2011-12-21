@@ -36,6 +36,7 @@ Datum geography_covers(PG_FUNCTION_ARGS);
 Datum geography_bestsrid(PG_FUNCTION_ARGS);
 Datum geography_perimeter(PG_FUNCTION_ARGS);
 Datum geography_project(PG_FUNCTION_ARGS);
+Datum geography_azimuth(PG_FUNCTION_ARGS);
 
 /*
 ** geography_distance(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
@@ -659,4 +660,62 @@ Datum geography_project(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_POINTER(g_out);
 }
+
+
+/*
+** geography_azimuth(GSERIALIZED *g1, GSERIALIZED *g2)
+** returns direction between points (north = 0)
+** azimuth (bearing) and distance
+*/
+PG_FUNCTION_INFO_V1(geography_azimuth);
+Datum geography_azimuth(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom1 = NULL;
+	LWGEOM *lwgeom2 = NULL;
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	double azimuth;
+	SPHEROID s;
+	uint32_t type1, type2;
+
+	/* Get our geometry object loaded into memory. */
+	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	
+	/* Only return for points. */
+    type1 = gserialized_get_type(g1);
+    type2 = gserialized_get_type(g2);
+    if ( type1 != POINTTYPE || type2 != POINTTYPE )
+    {
+		elog(ERROR, "ST_Azimuth(geography, geography) is only valid for point inputs");
+		PG_RETURN_NULL();
+    }
+	
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+
+	/* EMPTY things cannot be used */
+	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
+	{
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
+		elog(ERROR, "ST_Azimuth(geography, geography) cannot work with empty points");
+		PG_RETURN_NULL();
+	}
+	
+	/* Initialize spheroid */
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	/* Calculate the direction */
+	azimuth = lwgeom_azumith_spheroid(lwgeom_as_lwpoint(lwgeom1), lwgeom_as_lwpoint(lwgeom2), &s);
+
+	/* Clean up, but not all the way to the point arrays */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+	PG_RETURN_FLOAT8(azimuth);
+}
+
 

@@ -678,6 +678,13 @@ CREATE OR REPLACE FUNCTION ST_Project(geog geography, distance float8, azimuth f
 	COST 100;
 
 -- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_Azimuth(geog1 geography, geog2 geography)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','geography_azimuth'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+
+-- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Perimeter(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','geography_perimeter'

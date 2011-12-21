@@ -1844,6 +1844,35 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	return lwp;
 }
 
+
+/**
+* Calculate a projected point given a source point, a distance and a bearing.
+* @param r - location of first point.
+* @param spheroid - spheroid definition.
+* @param distance - distance, in units of the spheroid def'n.
+* @param azimuth - azimuth in degrees.
+* @return s - location of projected point.
+* 
+*/
+double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROID *spheroid)
+{
+	GEOGRAPHIC_POINT g1, g2;
+	double x1, y1, x2, y2;
+
+	/* Convert r to a geodetic point */
+	x1 = lwpoint_get_x(r);
+	y1 = lwpoint_get_y(r);
+	geographic_point_init(x1, y1, &g1);
+
+	/* Convert s to a geodetic point */
+	x2 = lwpoint_get_x(s);
+	y2 = lwpoint_get_y(s);
+	geographic_point_init(x2, y2, &g2);
+	
+	/* Do the direction calculation */
+	return rad2deg(spheroid_direction(&g1, &g2, spheroid));
+}
+
 /**
 * Calculate the distance between two LWGEOMs, using the coordinates are
 * longitude and latitude. Return immediately when the calulated distance drops
