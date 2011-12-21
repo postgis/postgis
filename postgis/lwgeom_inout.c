@@ -18,6 +18,7 @@
 
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+#include "geography.h" /* for lwgeom_valid_typmod */
 
 void elog_ERROR(const char* string);
 
