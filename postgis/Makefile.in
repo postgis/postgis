@@ -22,6 +22,7 @@ SQL_OBJS=postgis.sql.in uninstall_postgis.sql.in legacy.sql.in uninstall_legacy.
 
 # PostgreSQL objects
 PG_OBJS=lwgeom_debug.o \
+	postgis_module.o \
 	lwgeom_accum.o \
 	lwgeom_spheroid.o \
 	lwgeom_ogc.o \
