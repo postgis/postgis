@@ -127,14 +127,17 @@ endif
 
 all install uninstall distclean:
 
-postgis.sql: ../postgis/postgis.sql
-	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > postgis.sql
+postgis.sql: $(REGRESS_INSTALLDIR)/postgis.sql
 
-staged-install:
+$(REGRESS_INSTALLDIR)/postgis.sql: ../postgis/postgis.sql
+	mkdir -p $(REGRESS_INSTALLDIR)
+	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > $@
+
+staged-install: postgis.sql
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
-test check: postgis.sql staged-install
+test check: staged-install
 	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(RUNTESTFLAGS) $(TESTS)
 
 garden:
@@ -155,4 +158,3 @@ cleanup:
 
 clean:
 	rm -rf $(REGRESS_INSTALLDIR)
-	rm -f postgis.sql 
