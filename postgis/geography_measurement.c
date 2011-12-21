@@ -35,6 +35,7 @@ Datum geography_point_outside(PG_FUNCTION_ARGS);
 Datum geography_covers(PG_FUNCTION_ARGS);
 Datum geography_bestsrid(PG_FUNCTION_ARGS);
 Datum geography_perimeter(PG_FUNCTION_ARGS);
+Datum geography_project(PG_FUNCTION_ARGS);
 
 /*
 ** geography_distance(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
@@ -596,4 +597,66 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 
 }
 
+/*
+** geography_project(GSERIALIZED *g, distance, azimuth)
+** returns point of projection given start point, 
+** azimuth (bearing) and distance
+*/
+PG_FUNCTION_INFO_V1(geography_project);
+Datum geography_project(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = NULL;
+	LWPOINT *lwp_projected;
+	GSERIALIZED *g = NULL;
+	GSERIALIZED *g_out = NULL;
+	double azimuth, distance;
+	SPHEROID s;
+	uint32_t type;
+
+	/* Get our geometry object loaded into memory. */
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	
+	/* Only return for points. */
+    type = gserialized_get_type(g);
+    if ( type != POINTTYPE )
+    {
+		elog(ERROR, "ST_Project(geography) is only valid for point inputs");
+		PG_RETURN_NULL();
+    }
+	
+	lwgeom = lwgeom_from_gserialized(g);
+
+	/* EMPTY things cannot be projected from */
+	if ( lwgeom_is_empty(lwgeom) )
+	{
+		lwgeom_free(lwgeom);
+		elog(ERROR, "ST_Project(geography) cannot project from an empty start point");
+		PG_RETURN_NULL();
+	}
+	
+	/* Read the other parameters */
+	distance = PG_GETARG_FLOAT8(1);
+	azimuth = PG_GETARG_FLOAT8(2);
+
+	/* Initialize spheroid */
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	/* Calculate the length */
+	lwp_projected = lwgeom_project_spheroid(lwgeom_as_lwpoint(lwgeom), &s, distance, azimuth);
+
+	/* Something went wrong... */
+	if ( lwp_projected == NULL )
+	{
+		elog(ERROR, "lwgeom_project_spheroid returned null");
+		PG_RETURN_NULL();
+	}
+
+	/* Clean up, but not all the way to the point arrays */
+	lwgeom_free(lwgeom);
+	g_out = geography_serialize(lwpoint_as_lwgeom(lwp_projected));
+	lwpoint_free(lwp_projected);
+
+	PG_FREE_IF_COPY(g, 0);
+	PG_RETURN_POINTER(g_out);
+}
 

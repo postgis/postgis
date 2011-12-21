@@ -670,6 +670,12 @@ CREATE OR REPLACE FUNCTION ST_Length(text)
 	$$ SELECT ST_Length($1::geometry);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_Project(geog geography, distance float8, azimuth float8)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_project'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Perimeter(geog geography, use_spheroid boolean DEFAULT true)

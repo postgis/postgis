@@ -74,6 +74,7 @@ double latitude_radians_normalize(double lat)
 
 /**
 * Convert a longitude to the range of -180,180
+* @param lon longitude in degrees
 */
 double longitude_degrees_normalize(double lon)
 {
@@ -99,6 +100,7 @@ double longitude_degrees_normalize(double lon)
 
 /**
 * Convert a latitude to the range of -90,90
+* @param lat latitude in degrees
 */
 double latitude_degrees_normalize(double lat)
 {
@@ -142,6 +144,11 @@ int geographic_point_equals(const GEOGRAPHIC_POINT *g1, const GEOGRAPHIC_POINT *
 	return FP_EQUALS(g1->lat, g2->lat) && FP_EQUALS(g1->lon, g2->lon);
 }
 
+/**
+* Initialize a geographic point
+* @param lon longitude in degrees
+* @param lat latitude in degrees
+*/
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g)
 {
 	g->lat = latitude_radians_normalize(deg2rad(lat));
@@ -1780,6 +1787,62 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	return 0.0;
 }
 
+
+/**
+* Calculate a projected point given a source point, a distance and a bearing.
+* @param r - location of first point.
+* @param spheroid - spheroid definition.
+* @param distance - distance, in units of the spheroid def'n.
+* @param azimuth - azimuth in degrees.
+* @return s - location of projected point.
+* 
+*/
+LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, double distance, double azimuth)
+{
+	GEOGRAPHIC_POINT geo_source, geo_dest;
+	POINT4D pt_dest;
+	double azimuth_radians;
+	double x, y;
+	POINTARRAY *pa;
+	LWPOINT *lwp;
+
+	/* Check the azimuth validity, convert to radians */
+	if ( azimuth < -360.0 || azimuth > 360.0 ) 
+	{
+		lwerror("Azimuth must be between -360 and 360");
+		return NULL;
+	}
+	azimuth_radians = deg2rad(azimuth);
+
+	/* Check the distance validity */
+	if ( distance < 0.0 || distance > (M_PI * spheroid->radius) )
+	{
+		lwerror("Distance must be between 0 and %g", M_PI * spheroid->radius);
+		return NULL;
+	}
+		
+	/* Convert to ta geodetic point */
+	x = lwpoint_get_x(r);
+	y = lwpoint_get_y(r);
+	geographic_point_init(x, y, &geo_source);
+	
+	/* Try the projection */
+	if( spheroid_project(&geo_source, spheroid, distance, azimuth_radians, &geo_dest) == LW_FAILURE ) 
+	{
+		LWDEBUGF(3, "Unable to project from (%g %g) with azimuth %g and distance %g", x, y, azimuth, distance);
+		lwerror("Unable to project from (%g %g) with azimuth %g and distance %g", x, y, azimuth, distance);
+		return NULL;
+	}
+	
+	/* Build the output LWPOINT */
+	pa = ptarray_construct(0, 0, 1);
+	pt_dest.x = rad2deg(geo_dest.lon);
+	pt_dest.y = rad2deg(geo_dest.lat);
+	pt_dest.z = pt_dest.m = 0.0;
+	ptarray_set_point4d(pa, 0, &pt_dest);
+	lwp = lwpoint_construct(r->srid, NULL, pa);
+	return lwp;
+}
 
 /**
 * Calculate the distance between two LWGEOMs, using the coordinates are
