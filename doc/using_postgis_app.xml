@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter>
-  <title id="using_postgis_applications">Using PostGIS: Building Applications</title>
+  <title id="using_postgis_applications">Using PostGIS Geometry: Building Applications</title>
   <sect1 id="Using_MapServer">
     <title>Using MapServer</title>
 
