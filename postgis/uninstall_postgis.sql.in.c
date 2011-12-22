@@ -207,6 +207,7 @@ DROP FUNCTION _ST_Touches(geometry,geometry);
 DROP FUNCTION ST_Disjoint(geometry,geometry);
 DROP FUNCTION ST_Relate(geometry,geometry,text);
 DROP FUNCTION ST_relate(geometry,geometry);
+DROP FUNCTION st_relatematch(text, text);
 
 --------------------------------------------------------------------------------
 -- Aggregates and their supporting functions
@@ -464,6 +465,13 @@ DROP FUNCTION ST_mem_size(geometry);
 
 DROP FUNCTION postgis_getBBOX(geometry);
 DROP FUNCTION getSRID(geometry); 
+DROP FUNCTION postgis_cache_bbox();
+DROP FUNCTION postgis_constraint_dims(text, text, text);
+DROP FUNCTION postgis_constraint_srid(text, text, text);
+DROP FUNCTION postgis_constraint_type(text, text, text);
+DROP FUNCTION postgis_type_name(character varying, integer, boolean);
+
+
 
 -------------------------------------------
 -- GIST opclass index binding entries.
@@ -472,6 +480,7 @@ DROP FUNCTION getSRID(geometry);
 DROP OPERATOR CLASS gist_geometry_ops_2d USING gist CASCADE;
 
 -- gist support functions
+
 DROP FUNCTION geometry_gist_decompress_2d(internal);
 DROP FUNCTION geometry_gist_same_2d(geometry, geometry, internal);
 DROP FUNCTION geometry_gist_union_2d(bytea, internal);
@@ -479,6 +488,12 @@ DROP FUNCTION geometry_gist_picksplit_2d(internal, internal);
 DROP FUNCTION geometry_gist_penalty_2d(internal,internal,internal);
 DROP FUNCTION geometry_gist_compress_2d(internal);
 DROP FUNCTION geometry_gist_consistent_2d(internal,geometry,int4);
+
+DROP FUNCTION geometry_gist_compress_nd(internal);
+DROP FUNCTION geometry_gist_decompress_nd(internal);
+DROP FUNCTION geometry_gist_penalty_nd(internal, internal, internal);
+DROP FUNCTION geometry_gist_picksplit_nd(internal, internal);
+DROP FUNCTION geometry_gist_union_nd(bytea, internal);
 
 -- GEOMETRY operators
 
@@ -548,6 +563,12 @@ DROP FUNCTION geometry_lt(geometry, geometry);
 -- This drops ST_box2d_in, ST_box2d_out, box2d_in, box2d_out and the type in an atomic fashion
 DROP TYPE box2d CASCADE;
 
+-----------------------------------------------------------------------
+-- BOX2Df
+-----------------------------------------------------------------------
+
+-- This drops box2df_in, box2df_out and the type in an atomic fashion
+DROP TYPE box2df CASCADE;
 
 
 -------------------------------------------------------------------
@@ -598,7 +619,15 @@ DROP TYPE geometry_dump CASCADE;
 
 DROP TYPE geometry CASCADE;
 
+-- typmod stuff 
+
 DROP FUNCTION geometry_analyze(internal);
+DROP FUNCTION geometry_typmod_in(cstring[]);
+DROP FUNCTION geometry_typmod_out(integer);
+
+DROP FUNCTION postgis_typmod_dims(integer);
+DROP FUNCTION postgis_typmod_srid(integer);
+DROP FUNCTION postgis_typmod_type(integer);
 
 -------------------------------------------------------------------
 --  SPHEROID TYPE
@@ -607,5 +636,10 @@ DROP FUNCTION geometry_analyze(internal);
 -- This drops ST_spheroid_out, spheroid_out, ST_spheroid_in, spheroid_in and the type in an atomic fashion
 DROP TYPE spheroid CASCADE;
 
+-------------------------------------------------------------------
+--  valid_detail
+-------------------------------------------------------------------
+
+DROP TYPE valid_detail CASCADE;
 
 COMMIT;
