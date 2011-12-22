@@ -2,6 +2,8 @@
 -- First drop old aggregates
 DROP AGGREGATE IF EXISTS memgeomunion(geometry);
 DROP AGGREGATE IF EXISTS geomunion(geometry);
+DROP AGGREGATE IF EXISTS polygonize(geometry); -- Deprecated in 1.2.3, Dropped in 2.0.0
+DROP AGGREGATE IF EXISTS collect(geometry); -- Deprecated in 1.2.3, Dropped in 2.0.0
 DROP AGGREGATE IF EXISTS st_geomunion(geometry);
 DROP AGGREGATE IF EXISTS accum_old(geometry);
 DROP AGGREGATE IF EXISTS st_accum_old(geometry);

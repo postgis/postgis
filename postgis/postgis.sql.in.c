@@ -2844,28 +2844,12 @@ CREATE AGGREGATE ST_Union (
 	finalfunc = pgis_geometry_union_finalfn
 	);
 
--- Deprecation in 1.2.3
-CREATE AGGREGATE collect (
-	basetype = geometry,
-	sfunc = pgis_geometry_accum_transfn,
-	stype = pgis_abs,
-	finalfunc = pgis_geometry_collect_finalfn
-);
-
 -- Availability: 1.2.2
 CREATE AGGREGATE ST_Collect (
 	BASETYPE = geometry,
 	SFUNC = pgis_geometry_accum_transfn,
 	STYPE = pgis_abs,
 	FINALFUNC = pgis_geometry_collect_finalfn
-	);
-
--- Deprecation in 1.2.3
-CREATE AGGREGATE Polygonize (
-	BASETYPE = geometry,
-	SFUNC = pgis_geometry_accum_transfn,
-	STYPE = pgis_abs,
-	FINALFUNC = pgis_geometry_polygonize_finalfn
 	);
 
 -- Availability: 1.2.2
