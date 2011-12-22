@@ -447,7 +447,7 @@ Available GDAL raster formats:
 					<para><varname>nodata_values</varname> An array of double precision numbers denoting the <varname>nodata_value</varname> for each band.  You will have the same number of elements in this array as you have number of bands. These numbers define the pixel value for each band that should be ignored for most operations.  This is similar information provided by <xref linkend="RT_ST_BandNoDataValue" />.</para>
 				</listitem>
 				<listitem>
-					<para><varname>extent</varname> This is the extent of all the raster rows in your raster set. If you plan to load more data that will change the extent of the set, you'll want to drop the <xref linkend="RT_DropRasterConstraints" /> function before load and then reapply constraints with <xref linkend="RT_AddRasterConstraints"  /> after load. </para>
+					<para><varname>extent</varname> This is the extent of all the raster rows in your raster set. If you plan to load more data that will change the extent of the set, you'll want to run the <xref linkend="RT_DropRasterConstraints" /> function before load and then reapply constraints with <xref linkend="RT_AddRasterConstraints"  /> after load. </para>
 				</listitem>
 			 </itemizedlist>
         </sect2>
