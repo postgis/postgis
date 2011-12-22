@@ -68,10 +68,30 @@ fi
 #
 ###################################################
 
+#
+# start_test <name>
+#
+start_test ()
+{
+    TEST="$1"
+    ${ECHO_N} " ${TEST} ${ECHO_C}"
+    RUN=`expr $RUN + 1`
+    show_progress
+}
+
 # Print a single dot
 show_progress()
 {
 	${ECHO_N} ".${ECHO_C}"
+}
+
+#
+# pass <msg> 
+#
+pass ()
+{
+  msg="${1}"
+  echo " ok ${msg}"
 }
 
 #
@@ -419,7 +439,7 @@ init_db_error ()
 # Count database objects
 count_db_objects ()
 {
-	${PSQL} ${_psql_opts} -c "WITH counts as (
+	${PSQL} ${_psql_opts} -tAc "WITH counts as (
 		select count(*) from pg_type union all 
 		select count(*) from pg_proc union all 
 		select count(*) from pg_cast union all
@@ -502,7 +522,7 @@ if test -z "$db_exists"; then
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
 
 		# Count database objects before installing anything
-		count_objects_pre=$(count_db_objects "counting object before postgis install")
+		object_count_pre=$(count_db_objects "counting object before postgis install")
 
 		${PSQL} ${_psql_opts} -Xf ${REGDIR}/00-regress-install/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module initialization"
 
@@ -603,11 +623,7 @@ while [ -n "$1" ]; do
 	# catch a common mistake (strip trailing .sql)
 	TEST=`echo "$TEST" | sed 's/\.sql$//'`
 
-	#printf %20s " ${TEST}"
-	#echo -ne " ${TEST}"
-	${ECHO_N} " ${TEST}${ECHO_C}"
-
-	RUN=`expr $RUN + 1`
+	start_test "${TEST}"
 
 	# Check for a "-pre.sh" file in case there are non-SQL setup tasks needed before
 	# the test can be run.
@@ -637,11 +653,11 @@ while [ -n "$1" ]; do
 	# .dbf files without a .shp.
 	if [ -r "${TEST}.dbf" ]; then
 		if run_loader_test; then
-			echo " ok"
+			pass
 		fi
 	elif [ -r "${TEST}.sql" ]; then
 		if run_simple_test ${TEST}.sql ${TEST}_expected; then
-			echo " ok"
+			pass
 		fi
 	else
 		echo " skipped (can't read ${TEST}.sql)"
@@ -674,25 +690,35 @@ done
 #
 ###################################################
 
-# We only uninstall if we've been asked to drop 
-if test x"$OPT_DROP" = "xyes"; then
+# We only test uninstall if we've been asked to drop 
+# and we did create
+# and nobody requested raster or topology
+# (until they have an uninstall script themself)
+if test x"$OPT_DROP" = "xyes" \
+     -a x"$OPT_WITH_TOPO" = "xno" \
+     -a x"$OPT_WITH_RASTER" = "xno" \
+     -a x"$object_count_pre" != "x"
+then # {
+
+  start_test "uninstall"
+
   ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../postgis/uninstall_postgis.sql "${DB}" \
-     > ${TMPDIR}/uninstal.log 2> ${TMPDIR}/uninstall.err
-  if [ $? -gt 0 ]; then
+         > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+  if [ $? -gt 0 ]; then # {
     fail "uninstall_postgis.sql failed" "${TMPDIR}/uninstall.err"
-  else
-    # Until we have an uninstall script for both raster and topology
-    # We can't test uninstall when they are enabled
-    if test x"$OPT_WITH_TOPO" = "xno" -a x"$OPT_WITH_RASTER" = "xno"; then
-      if test x"$object_count_pre" != x; then
-        object_count_post=$(count_db_objects "counting object after postgis uninstall")
-        if test ${object_count_pre} != ${object_count_post}; then
-          fail "Count of db object after install (${object_count_pre}) != count of db object"
-        fi
-      fi
-    fi
-  fi
-fi
+  else # }{
+
+    show_progress # on to objects count
+    object_count_post=$(count_db_objects "counting object after postgis uninstall")
+    if test ${object_count_pre} != ${object_count_post}; then # {
+          fail "Count of object before install (${object_count_pre}) != count after uninstall (${object_count_post})"
+    else
+          pass "(${object_count_pre})"
+    fi # }
+
+  fi # }
+
+fi # }
 
 ###################################################
 # 
