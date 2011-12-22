@@ -447,7 +447,7 @@ count_db_objects ()
 		select count(*) from pg_operator union all
 		select count(*) from pg_opclass union all
 		select count(*) from pg_opfamily ) 
-		select sum(count) from counts;"
+		select sum(count) from counts;" "${DB}"
 	if [ $? -gt 0 ]; then
 		init_db_error $1
 	fi
