@@ -416,6 +416,23 @@ init_db_error ()
 	exit 1
 }
 
+# Count database objects
+count_db_objects ()
+{
+	${PSQL} ${_psql_opts} -c "WITH counts as (
+		select count(*) from pg_type union all 
+		select count(*) from pg_proc union all 
+		select count(*) from pg_cast union all
+		select count(*) from pg_aggregate union all
+		select count(*) from pg_operator union all
+		select count(*) from pg_opclass union all
+		select count(*) from pg_opfamily ) 
+		select sum(count) from counts;"
+	if [ $? -gt 0 ]; then
+		init_db_error $1
+	fi
+}
+
 ###################################################
 # 
 # Parse command line opts
@@ -483,7 +500,12 @@ if test -z "$db_exists"; then
 
 		createdb --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
+
+		# Count database objects before installing anything
+		count_objects_pre=$(count_db_objects "counting object before postgis install")
+
 		${PSQL} ${_psql_opts} -Xf ${REGDIR}/00-regress-install/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module initialization"
+
 		if test x"$OPT_WITH_TOPO" = "xyes"; then
 			if test -e ${REGDIR}/../topology/topology.sql; then
 				echo "Adding topology support" 
@@ -645,6 +667,38 @@ while [ -n "$1" ]; do
         fi
 
 done
+
+###################################################
+# 
+# Uninstall postgis (serves as an uninstall test)
+#
+###################################################
+
+# We only uninstall if we've been asked to drop 
+if test x"$OPT_DROP" = "xyes"; then
+  ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../postgis/uninstall_postgis.sql "${DB}" \
+     > ${TMPDIR}/uninstal.log 2> ${TMPDIR}/uninstall.err
+  if [ $? -gt 0 ]; then
+    fail "uninstall_postgis.sql failed" "${TMPDIR}/uninstall.err"
+  else
+    # Until we have an uninstall script for both raster and topology
+    # We can't test uninstall when they are enabled
+    if test x"$OPT_WITH_TOPO" = "xno" -a x"$OPT_WITH_RASTER" = "xno"; then
+      if test x"$object_count_pre" != x; then
+        object_count_post=$(count_db_objects "counting object after postgis uninstall")
+        if test ${object_count_pre} != ${object_count_post}; then
+          fail "Count of db object after install (${object_count_pre}) != count of db object"
+        fi
+      fi
+    fi
+  fi
+fi
+
+###################################################
+# 
+# Summary report
+#
+###################################################
 
 echo
 echo "Run tests: $RUN"
