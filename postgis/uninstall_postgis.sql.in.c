@@ -477,7 +477,7 @@ DROP FUNCTION postgis_type_name(character varying, integer, boolean);
 -- GIST opclass index binding entries.
 -------------------------------------------
 
-DROP OPERATOR CLASS gist_geometry_ops_2d USING gist CASCADE;
+DROP OPERATOR FAMILY gist_geometry_ops_2d USING gist CASCADE;
 
 -- gist support functions
 
@@ -488,6 +488,8 @@ DROP FUNCTION geometry_gist_picksplit_2d(internal, internal);
 DROP FUNCTION geometry_gist_penalty_2d(internal,internal,internal);
 DROP FUNCTION geometry_gist_compress_2d(internal);
 DROP FUNCTION geometry_gist_consistent_2d(internal,geometry,int4);
+
+DROP OPERATOR FAMILY gist_geometry_ops_nd USING gist CASCADE;
 
 DROP FUNCTION geometry_gist_compress_nd(internal);
 DROP FUNCTION geometry_gist_decompress_nd(internal);
@@ -536,6 +538,7 @@ DROP FUNCTION geometry_gist_sel_2d (internal, oid, internal, int4);
 --
 
 DROP OPERATOR CLASS btree_geometry_ops USING btree;
+DROP OPERATOR FAMILY btree_geometry_ops USING btree;
 DROP OPERATOR > (geometry,geometry);
 DROP OPERATOR >= (geometry,geometry);
 DROP OPERATOR = (geometry,geometry);

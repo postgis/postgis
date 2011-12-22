@@ -15,8 +15,8 @@
 DROP VIEW geography_columns; 
 
 -- indexes
-DROP OPERATOR CLASS gist_geography_ops USING gist CASCADE;
-DROP OPERATOR CLASS btree_geography_ops USING btree CASCADE;
+DROP OPERATOR FAMILY gist_geography_ops USING gist CASCADE;
+DROP OPERATOR FAMILY btree_geography_ops USING btree CASCADE;
 
 -- r-tree operator
 DROP OPERATOR && (geography,geography);
