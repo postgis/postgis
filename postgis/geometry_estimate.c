@@ -1408,8 +1408,8 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	SPIcode = SPI_exec(query, 1);
 	if (SPIcode != SPI_OK_SELECT)
 	{
-		SPI_finish();
 		elog(ERROR, "geometry_estimated_extent: couldn't execute permission check sql via SPI");
+		SPI_finish();
 		PG_RETURN_NULL();
 	}
 
@@ -1419,8 +1419,8 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 
 	if (!DatumGetBool(SPI_getbinval(tuple, tupdesc, 1, &isnull)))
 	{
-		SPI_finish();
 		elog(ERROR, "geometry_estimated_extent: permission denied for relation %s", tbl);
+		SPI_finish();
 		PG_RETURN_NULL();
 	}
 
@@ -1440,23 +1440,22 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	SPIcode = SPI_exec(query, 1);
 	if (SPIcode != SPI_OK_SELECT )
 	{
-		SPI_finish();
 		elog(ERROR,"geometry_estimated_extent: couldnt execute sql via SPI");
+		SPI_finish();
 		PG_RETURN_NULL();
 	}
 	if (SPI_processed != 1)
 	{
-		SPI_finish();
 
 		POSTGIS_DEBUGF(3, " %d stat rows", SPI_processed);
 
 		/* 
 		 * TODO: distinguish between empty and not analyzed ?
 		 */
-		elog(WARNING, "No stats for \"%s\".\"%s\".\"%s\" "
-			"(empty or not analyzed)",
+		elog(WARNING, "No stats for \"%s\".\"%s\".\"%s\" (empty or not analyzed)",
 			( nsp ? nsp : "<current>" ), tbl, col);
 
+		SPI_finish();
 		PG_RETURN_NULL() ;
 	}
 
@@ -1466,12 +1465,12 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	array = DatumGetArrayTypeP(SPI_getbinval(tuple, tupdesc, 1, &isnull));
 	if (isnull)
 	{
-		SPI_finish();
 
 		POSTGIS_DEBUG(3, " stats are NULL");
 
 		elog(ERROR, "geometry_estimated_extent: null statistics for table");
 
+		SPI_finish();
 		PG_RETURN_NULL();
 	}
 	if ( ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)) != 4 )
