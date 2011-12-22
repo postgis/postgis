@@ -127,3 +127,5 @@ $(SQL_OBJS): %.in: %.in.c
 $(SQL_OBJS): ../postgis_config.h
 
 postgis.sql.in: sqldefines.h long_xact.sql.in.c sqlmm.sql.in.c geography.sql.in.c postgis_drop.sql.in.c
+
+uninstall_postgis.sql.in: sqldefines.h uninstall_sqlmm.sql.in.c uninstall_long_xact.sql.in.c uninstall_geography.sql.in.c
