@@ -1881,16 +1881,21 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					fprintf(stderr, _("Cannot add an overview's AddRasterConstraints statement to string buffer\n"));
 					return 0;
 				}
+			}
+		}
+	}
 
-				if (!add_overview_constraints(
-					config->schema, config->overview_table[i], config->raster_column,
-					config->schema, config->table, config->raster_column,
-					config->overview[i],
-					buffer
-				)) {
-					fprintf(stderr, _("Cannot add an overview's AddOverviewConstraints statement to string buffer\n"));
-					return 0;
-				}
+	/* overview constraint is automatically added */
+	if (config->overview_count) {
+		for (i = 0; i < config->overview_count; i++) {
+			if (!add_overview_constraints(
+				config->schema, config->overview_table[i], config->raster_column,
+				config->schema, config->table, config->raster_column,
+				config->overview[i],
+				buffer
+			)) {
+				fprintf(stderr, _("Cannot add an overview's AddOverviewConstraints statement to string buffer\n"));
+				return 0;
 			}
 		}
 	}
