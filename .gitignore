@@ -58,7 +58,6 @@ postgis/sqldefines.h
 postgis/uninstall_legacy.sql
 postgis/uninstall_legacy.sql.in
 postgis/uninstall_postgis.sql
-postgis/uninstall_postgis.sql.in
 raster/Makefile
 raster/raster_config.h
 raster/rt_core/Makefile
