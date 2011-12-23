@@ -1288,7 +1288,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int factor, STRIN
 			if (tileset->length > 10) {
 				if (!insert_records(
 					config->schema, config->table, config->raster_column,
-					(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
+					NULL, config->copy_statements,
 					tileset, buffer
 				)) {
 					fprintf(stderr, _("Cannot convert raster tiles into INSERT or COPY statements\n"));
