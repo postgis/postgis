@@ -524,6 +524,47 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		<command>make cheatsheets</command>
 	  </para>
 	</sect2>
+	
+	<sect2 id="make_install_postgis_extensions">
+	  <title>Building PostGIS Extensions and Deploying them</title>
+
+	  <para>
+		The PostGIS extensions which is usable for PostgreSQL 9.1+, is not yet integrated in the core make install script.
+		To build the extensions, first build PostGIS as usual using the prior section steps.
+	  </para>
+
+	  <para>
+		<command>cd extensions/postgis
+			make
+			make install
+			cd extensions/postgis_topology
+			make 
+			make install
+		</command>
+	  </para>
+
+	  <para>
+		If you want to install the extensions manually on a separate server different from your development,
+		you need to copy the following files from the extensions folder into the <filename>PostgreSQL / share / extension</filename> folder
+		of your PostgreSQL install as well as the needed binaries for regular PostGIS if you don't have them already on the server.
+	  </para>
+
+	  <itemizedlist>
+		<listitem>
+		  <para>
+			These are the control files that denote information such as the version of the extension to install if not specified.
+			<filename>postgis.control, postgis_topology.control</filename>.
+		  </para>
+		</listitem>
+		<listitem>
+		  <para>
+			All the files in the /sql folder of each extension.  Note that these need to be copied to the root of the PostgreSQL share/extension folder
+			<filename>extensions/postgis/sql/*.sql</filename>, <filename>extensions/postgis_topology/sql/*</filename>
+		  </para>
+		</listitem>
+	 </itemizedlist>
+	</sect2>
+
 
 	<sect2>
 	  <title>Testing</title>
@@ -754,7 +795,7 @@ Failed: 0
   </sect1>
 
   <sect1 id="create_new_db">
-	<title>Create a spatially-enabled database</title>
+	<title>Create a spatially-enabled database on PostgreSQL lower than 9.1</title>
 
 	<para>
 	  The first step in creating a PostGIS database is to create a simple
@@ -840,6 +881,36 @@ Failed: 0
 
 	<para>
 	  <command>psql -d [yourdatabase] -f topology/topology_comments.sql</command>
+	</para>
+  </sect1>
+  
+  <sect1 id="create_new_db_extensions">
+	<title>Creating a spatial database using EXTENSIONS</title>
+
+	<para>
+	 If you are using PostgreSQL 9.1+ and have compiled and installed the extensions/ postgis modules, you 
+	 can create a spatial database the new way.
+	</para>
+
+	<para>
+	  <command>createdb [yourdatabase]</command>
+	</para>
+
+	<para>
+	  The core postgis extension installs PostGIS geometry, geography, raster, spatial_ref_sys and all the functions and comments with a simple:
+	  <programlisting>CREATE EXTENSION postgis;</programlisting> command.
+	</para>
+
+	<para>
+	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis;"</command>
+	</para>
+
+	<para>
+	  Topology is packaged as a separate extension and installable with command:
+	</para>
+
+	<para>
+	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis_topology;"</command>
 	</para>
   </sect1>
 
