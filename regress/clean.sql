@@ -42,3 +42,4 @@ SELECT origin,caseno,
        (st_isvaliddetail(orig)).valid
   FROM clean_cases;
 
+DROP TABLE clean_cases;
