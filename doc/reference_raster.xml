@@ -4906,7 +4906,8 @@ rid |        rastbox
 		<refentry id="RT_ST_Clip">
 			<refnamediv>
 				<refname>ST_Clip</refname>
-				<refpurpose>Returns a single band raster that is a band clipped by the input geometry.  If no band is specified band 1 is assumed.</refpurpose>
+				<refpurpose>Returns a single band raster that is a band clipped by the input geometry.  If no band is specified band 1 is assumed. If trimraster setting is not specified, false is assumed meaning
+				the output raster has the same extent as the input raster.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -4916,7 +4917,7 @@ rid |        rastbox
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>nodata=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=true</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				 <funcprototype>
@@ -4925,14 +4926,14 @@ rid |        rastbox
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>nodata=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=true</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>raster <function>ST_Clip</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=true</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>trimraster</parameter></paramdef>
 				  </funcprototype>
 				  
 				 <funcprototype>
@@ -4940,7 +4941,7 @@ rid |        rastbox
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=true</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>trimraster</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -4948,20 +4949,35 @@ rid |        rastbox
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a single band raster that is a band clipped by the input geometry <varname>geom</varname>.  If no band is specified band 1 is assumed. </para>
+				<para>Returns a single band raster that is a band clipped by the input geometry <varname>geom</varname>.  If no band is specified band 1 is assumed. If trimraster setting is not specified, false is assumed meaning
+				the output raster has the same extent as the input raster.  If <varname>trimraster</varname> is set to true, the new raster has the same extent as the intersection of <varname>geom</varname>and <varname>rast</varname>.</para>
 				<para>Availability: 2.0.0 </para>
 				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
 			</refsection>
 				
 			<refsection>
-				<title>Examples: 1 band clipping</title>
-
-				
-<programlisting>-- Clip the first band of an aerial tile by a 20 meter buffer. Trimming raster 
+				<title>Examples: 1 band clipping</title>				
+<programlisting>-- Clip the first band of an aerial tile by a 20 meter buffer.
 SELECT ST_Clip(rast, 
 		ST_Buffer(ST_Centroid(ST_Envelope(rast)),20)
 	) from aerials.boston
 WHERE rid = 4;</programlisting>
+
+<programlisting>-- Demonstrate effect of trimraster on final dimensions of raster
+-- Note how in trimmed final envelope is clipped to that of the clipper
+-- if trimraster = true
+SELECT ST_XMax(ST_Envelope(ST_Clip(rast,clipper,true))) As xmax_w_trim,
+	ST_XMax(clipper) As xmax_clipper,
+	ST_XMax(ST_Envelope(ST_Clip(rast,clipper,false))) As xmax_wo_trim,
+	ST_XMax(ST_Envelope(rast)) As xmax_rast_orig
+FROM (SELECT rast, ST_Buffer(ST_Centroid(ST_Envelope(rast)),6) As clipper
+	FROM aerials.boston
+WHERE rid = 6) As foo;
+
+   xmax_w_trim    |   xmax_clipper   |   xmax_wo_trim   |  xmax_rast_orig
+------------------+------------------+------------------+------------------
+ 230657.436173996 | 230657.436173996 | 230666.436173996 | 230666.436173996
+</programlisting>
 <informaltable>
   <tgroup cols="2">
 	<tbody>
@@ -4993,7 +5009,7 @@ WHERE rid = 4;</programlisting>
 	<refsection>
 				<title>Examples: Multi-band clipping</title>
 			
-<programlisting>-- Clip all bands of an aerial tile by a 20 meter buffer. Trimming raster 
+<programlisting>-- Clip all bands of an aerial tile by a 20 meter buffer. 
 SELECT ST_AddBand(NULL, 
 	ARRAY[ST_Clip(rast, 1, clipper),
 			ST_Clip(rast, 2, clipper),
