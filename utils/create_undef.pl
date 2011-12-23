@@ -14,12 +14,11 @@
 
 use warnings;
 use strict;
+use POSIX 'strftime';
 
 eval "exec perl -w $0 $@"
 	if (0);
 
-# perl create_undef.pl <postgis.sql>
-# creates a new sql script to delete all the postgis functions et al.
 
 ($#ARGV == 1) || die "Usage: perl create_undef.pl <postgis.sql> <pgsql_version #>\nCreates a new SQL script to delete all the PostGIS functions.\n";
 
@@ -46,7 +45,27 @@ my @tables = ();
 
 my $version = $ARGV[1];
 
-print "BEGIN;\n";
+my $time = POSIX::strftime("%c", localtime);
+print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
+print "-- \n";
+print "-- PostGIS - Spatial Types for PostgreSQL \n";
+print "-- http://postgis.refractions.net \n";
+print "-- \n";
+print "-- This is free software; you can redistribute and/or modify it under \n";
+print "-- the terms of the GNU General Public Licence. See the COPYING file. \n";
+print "-- \n";
+print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
+print "-- \n";
+print "-- Generated on: " . $time . "\n";
+print "--           by: " . $0 . "\n";
+print "--         from: " . $ARGV[0] . "\n";
+print "-- \n";
+print "-- Do not edit manually, your changes will be lost.\n";
+print "-- \n";
+print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
+print "\n";
+
+print "BEGIN;\n\n";
 
 open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
 
