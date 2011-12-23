@@ -217,6 +217,13 @@ run_simple_test ()
 	fi
 }
 
+# Drop a table if exists
+drop_table_if_exists()
+{
+	tblname="$1"
+	${PSQL} -c "DROP TABLE ${tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+}
+
 #
 # This runs the loader once and checks the output of it.
 # It will NOT run if neither the expected SQL nor the expected
@@ -266,14 +273,6 @@ run_loader_and_check_output()
 				fail " $_description: actual SQL does not match expected.", \
 					"${TMPDIR}/loader.out"
 			fi
-		fi
-
-		# Blow away the test table if it already exists.
-		# MingW hack: use tr to strip off any trailing CR/LFs introduce by MingW which confuse expr
-		if [ `${PSQL} -t -A -c "SELECT count(*) FROM pg_tables WHERE tablename = '${_tblname}'" "${DB}" \
-				| tr -d '\r\n'` -gt 0 ]; then
-			show_progress
-			${PSQL} -c "DROP TABLE ${_tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
 		fi
 
 		# Run the loader SQL script.
@@ -355,65 +354,75 @@ run_loader_test ()
 		_custom_opts=`grep -v ^\s*# ${TEST}.opts`
 	fi
 
+	tblname="loadedshp"
+
 	# If we have some expected files to compare with, run in wkt mode.
-	if run_loader_and_check_output "wkt test" "loadedshp" "${TEST}-w.sql.expected" "${TEST}-w.select.expected" \
+	if run_loader_and_check_output "wkt test" "${tblname}" "${TEST}-w.sql.expected" "${TEST}-w.select.expected" \
 		"-w $_custom_opts"; then
 		:
 	else
 		return 1
 	fi
+	drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
 
 	# If we have some expected files to compare with, run in geography mode.
-	if run_loader_and_check_output "geog test" "loadedshp" "${TEST}-G.sql.expected" "${TEST}-G.select.expected" \
+	if run_loader_and_check_output "geog test" "${tblname}" "${TEST}-G.sql.expected" "${TEST}-G.select.expected" \
 		"-G $_custom_opts"; then
 		:
 	else
 		return 1
 	fi
 	# If we have some expected files to compare with, run the dumper and compare shape files.
-	if run_dumper_and_check_output "dumper geog test" "loadedshp" "${TEST}-G.shp.expected"; then
+	if run_dumper_and_check_output "dumper geog test" "${tblname}" "${TEST}-G.shp.expected"; then
 		:
 	else
 		return 1
 	fi
+	drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
 
 	# Always run in wkb ("normal") mode, even if there are no expected files to compare with.
-	if run_loader_and_check_output "wkb test" "loadedshp" "${TEST}.sql.expected" "${TEST}.select.expected" \
+	if run_loader_and_check_output "wkb test" "${tblname}" "${TEST}.sql.expected" "${TEST}.select.expected" \
 		"$_custom_opts" "true"; then
 		:
 	else
 		return 1
 	fi
 	# If we have some expected files to compare with, run the dumper and compare shape files.
-	if run_dumper_and_check_output "dumper wkb test" "loadedshp" "${TEST}.shp.expected"; then
+	if run_dumper_and_check_output "dumper wkb test" "${tblname}" "${TEST}.shp.expected"; then
 		:
 	else
 		return 1
 	fi
+	drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
 
 	# Some custom parameters can be incompatible with -D.
 	if [ -z "$_custom_opts" ]; then
 		# If we have some expected files to compare with, run in wkt dump mode.
-		if run_loader_and_check_output "wkt dump test" "loadedshp" "${TEST}-wD.sql.expected" \
+		if run_loader_and_check_output "wkt dump test" "${tblname}" "${TEST}-wD.sql.expected" \
 			"${TEST}-w.select.expected" "-w -D"; then
 			:
 		else
 			return 1
 		fi
+		drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+
 		# If we have some expected files to compare with, run in wkt dump mode.
-		if run_loader_and_check_output "geog dump test" "loadedshp" "${TEST}-GD.sql.expected" \
+		if run_loader_and_check_output "geog dump test" "${tblname}" "${TEST}-GD.sql.expected" \
 			"${TEST}-G.select.expected" "-G -D"; then
 			:
 		else
 			return 1
 		fi
+		drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+
 		# If we have some expected files to compare with, run in wkb dump mode.
-		if run_loader_and_check_output "wkb dump test" "loadedshp" "${TEST}-D.sql.expected" \
+		if run_loader_and_check_output "wkb dump test" "${tblname}" "${TEST}-D.sql.expected" \
 			"${TEST}.select.expected" "-D"; then
 			:
 		else
 			return 1
 		fi
+		drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
 	fi
 
 	return 0
