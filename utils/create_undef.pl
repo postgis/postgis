@@ -71,17 +71,18 @@ open( INPUT, $ARGV[0] ) || die "Couldn't open file: $ARGV[0]\n";
 
 while( my $line = <INPUT>)
 {
-	if ($line =~ /^create function/i) {
-		push (@funcs, $line);
+	if ($line =~ /^create (or replace )?function/i) {
+		my $defn = $line;
+		while( not $defn =~ /\)/ ) {
+			$defn .= <INPUT>;
+		}
+		push (@funcs, $defn)
 	}
 	elsif ($line =~ /^create or replace view\s*(\w+)/i) {
 		push (@views, $1);
 	}
 	elsif ($line =~ /^create table \s*(\w+)/i) {
 		push (@tables, $1);
-	}
-	elsif ($line =~ /^create or replace function/i) {
-		push (@funcs, $line);
 	}
 	elsif ( $line =~ /^create operator class (\w+)/i ) {
 		my $opcname = $1;
@@ -152,9 +153,13 @@ foreach my $agg (@aggs)
 	{
 		print "DROP AGGREGATE $1 ($2);\n";
 	}
-	else
+	elsif ( $agg =~ /create aggregate\s*(\w+)\s*\(\s*([\w,\s]+)\s*\)/ism )
 	{
-		die "Couldn't parse line: $agg\n";
+		print "DROP AGGREGATE $1 ($2);\n";
+	}
+	else 
+	{
+		die "Couldn't parse AGGREGATE line: $agg\n";
 	}
 }
 
@@ -174,7 +179,7 @@ foreach my $op (@ops)
 	}
 	else
 	{
-		die "Couldn't parse line: $op\n";
+		die "Couldn't parse OPERATOR line: $op\n";
 	}
 }
 
@@ -188,7 +193,7 @@ foreach my $cast (@casts)
 	}
 	else
 	{
-		die "Couldn't parse line: $cast\n";
+		die "Couldn't parse CAST line: $cast\n";
 	}
 }
 
@@ -216,7 +221,7 @@ foreach my $fn (@funcs)
 	}
 	else
 	{
-		die "Couldn't parse line: $fn\n";
+		die "Couldn't parse FUNCTION line: $fn\n";
 	}
 }
 
