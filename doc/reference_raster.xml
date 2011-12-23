@@ -4953,15 +4953,96 @@ rid |        rastbox
 			</refsection>
 				
 			<refsection>
-				<title>Examples</title>
-				<!-- TODO -->
-				Coming soon
+				<title>Examples: 1 band clipping</title>
+				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
+				
+<programlisting>-- Clip the first band of an aerial tile by a 20 meter buffer. Trimming raster 
+SELECT ST_Clip(rast, 
+		ST_Buffer(ST_Centroid(ST_Envelope(rast)),20)
+	) from aerials.boston
+WHERE rid = 4;</programlisting>
+<informaltable>
+  <tgroup cols="2">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip01.png" />
+			  </imageobject>
+			  <caption><para>Full raster tile before clipping</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip02.png" />
+			  </imageobject>
+			  <caption><para>After Clipping</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
+			</refsection>
+			
+	<refsection>
+				<title>Examples: Multi-band clipping</title>
+			
+<programlisting>-- Clip all bands of an aerial tile by a 20 meter buffer. Trimming raster 
+SELECT ST_AddBand(NULL, 
+	ARRAY[ST_Clip(rast, 1, clipper),
+			ST_Clip(rast, 2, clipper),
+			ST_Clip(rast, 3, clipper)
+			]
+	) FROM 
+	(SELECT rast, ST_Buffer(ST_Centroid(ST_Envelope(rast)),20) As clipper
+	FROM aerials.boston
+WHERE rid = 4) As foo;</programlisting>
+<informaltable>
+  <tgroup cols="3">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip01.png" />
+			  </imageobject>
+			  <caption><para>Full raster tile before clipping</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip02.png" />
+			  </imageobject>
+			  <caption><para>After Clipping</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+	<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip03.png" />
+			  </imageobject>
+			  <caption><para>After Clipping (Multi-band)</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
 			</refsection>
 		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Intersection" /></para>
+				<para><xref linkend="RT_ST_AddBand" />,<xref linkend="RT_ST_Intersection" /></para>
 			</refsection>
 		</refentry>
 		
