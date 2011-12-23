@@ -4903,6 +4903,68 @@ rid |        rastbox
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_Clip">
+			<refnamediv>
+				<refname>ST_Clip</refname>
+				<refpurpose>Returns a single band raster that is a band clipped by the input geometry.  If no band is specified band 1 is assumed.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_Clip</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodata=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=true</parameter></paramdef>
+				  </funcprototype>
+				  
+				 <funcprototype>
+					<funcdef>raster <function>ST_Clip</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodata=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=true</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_Clip</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=true</parameter></paramdef>
+				  </funcprototype>
+				  
+				 <funcprototype>
+					<funcdef>raster <function>ST_Clip</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=true</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns a single band raster that is a band clipped by the input geometry <varname>geom</varname>.  If no band is specified band 1 is assumed. </para>
+				<para>Availability: 2.0.0 </para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+				<!-- TODO -->
+				Coming soon
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Intersection" /></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_ConvexHull">
 			<refnamediv>
 				<refname>ST_ConvexHull</refname>
