@@ -5010,11 +5010,9 @@ WHERE rid = 6) As foo;
 				<title>Examples: Multi-band clipping</title>
 			
 <programlisting>-- Clip all bands of an aerial tile by a 20 meter buffer. 
-SELECT ST_AddBand(NULL, 
-	ARRAY[ST_Clip(rast, 1, clipper),
-			ST_Clip(rast, 2, clipper),
-			ST_Clip(rast, 3, clipper)
-			]
+SELECT ST_AddBand(ST_Clip(rast, 1, clipper),
+	ARRAY[ ST_Clip(rast, 2, clipper),
+	      ST_Clip(rast, 3, clipper)	]
 	) FROM 
 	(SELECT rast, ST_Buffer(ST_Centroid(ST_Envelope(rast)),20) As clipper
 	FROM aerials.boston
