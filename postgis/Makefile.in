@@ -10,6 +10,7 @@
 # *
 # **********************************************************************
 
+POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 MODULE_big=postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/$(MODULE_big)
 
@@ -128,4 +129,6 @@ $(SQL_OBJS): ../postgis_config.h
 
 postgis.sql.in: sqldefines.h long_xact.sql.in.c sqlmm.sql.in.c geography.sql.in.c postgis_drop.sql.in.c
 
-uninstall_postgis.sql.in: sqldefines.h uninstall_sqlmm.sql.in.c uninstall_long_xact.sql.in.c uninstall_geography.sql.in.c
+#uninstall_postgis.sql.in: sqldefines.h uninstall_sqlmm.sql.in.c uninstall_long_xact.sql.in.c uninstall_geography.sql.in.c
+uninstall_postgis.sql.in: postgis.sql ../utils/create_undef.pl 
+	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
