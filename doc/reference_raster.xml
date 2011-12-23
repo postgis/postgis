@@ -464,7 +464,7 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 		  </funcprototype>
 		  
 		  <funcprototype>
-			<funcdef>boolean <function>DropRasterConstraints</function></funcdef
+			<funcdef>boolean <function>DropRasterConstraints</function></funcdef>
 			<paramdef><type>name </type>
 			<parameter>rastschema</parameter></paramdef>
 
