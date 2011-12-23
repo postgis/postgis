@@ -4950,11 +4950,12 @@ rid |        rastbox
 				
 				<para>Returns a single band raster that is a band clipped by the input geometry <varname>geom</varname>.  If no band is specified band 1 is assumed. </para>
 				<para>Availability: 2.0.0 </para>
+				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
 			</refsection>
 				
 			<refsection>
 				<title>Examples: 1 band clipping</title>
-				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
+
 				
 <programlisting>-- Clip the first band of an aerial tile by a 20 meter buffer. Trimming raster 
 SELECT ST_Clip(rast, 
@@ -5003,7 +5004,7 @@ SELECT ST_AddBand(NULL,
 	FROM aerials.boston
 WHERE rid = 4) As foo;</programlisting>
 <informaltable>
-  <tgroup cols="3">
+  <tgroup cols="2">
 	<tbody>
 	  <row>
 		<entry><informalfigure>
@@ -5012,15 +5013,6 @@ WHERE rid = 4) As foo;</programlisting>
 				<imagedata fileref="images/st_clip01.png" />
 			  </imageobject>
 			  <caption><para>Full raster tile before clipping</para></caption>
-			</mediaobject>
-		  </informalfigure>
-		 </entry>
-		<entry><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip02.png" />
-			  </imageobject>
-			  <caption><para>After Clipping</para></caption>
 			</mediaobject>
 		  </informalfigure>
 		 </entry>
