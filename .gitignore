@@ -19,6 +19,8 @@ doc/postgis_aggs_mm.xml
 doc/postgis_comments.sql
 doc/postgis-out.xml
 doc/raster_comments.sql
+doc/tiger_geocoder_comments.sql
+doc/topology_comments.sql
 GNUmakefile
 liblwgeom/cunit/cu_tester
 liblwgeom/cunit/Makefile
