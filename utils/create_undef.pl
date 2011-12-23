@@ -201,7 +201,7 @@ print "-- Drop all functions except " . (keys %type_funcs) . " needed for type d
 
 foreach my $fn (@funcs)
 {
-	if ($fn =~ /.* function ([^(]+)\((.*)\)/i )
+	if ($fn =~ /.* function ([^(]+)\((.*)\)/is ) # can be multiline
 	{
 		my $fn_nm = $1;
 		my $fn_arg = $2;
