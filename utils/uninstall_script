@@ -1,12 +1,5 @@
 #!/bin/bash
-
 # this script assumes that it is located in utils
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-
-# use utils as our working directory
-cd $DIR
 
 DB=postgis_uninstall
 
@@ -32,8 +25,15 @@ cleanup () {
 
 # get reference uninstall of postgis.sql only
 if [ "$1" == "raster" ]; then
-	${DIR}$0
+	$0
 fi
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+# use utils as our working directory
+cd $DIR
 
 # create database
 createdb $DB
@@ -75,7 +75,7 @@ if [ "raster" == "$1" ]; then
 	OIFS=$IFS
 	IFS=$'\n'
 
-	echo -n '' > $OUTFILE
+	echo -n '' > ${RTPATH}$OUTFILE
 
 	# see if line found in uninstall_postgis.sql
 	for x in `cat $OUTFILE.$RAND`; do
