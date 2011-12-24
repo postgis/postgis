@@ -29,12 +29,8 @@ ORIG_LANG=$LANG
 export LC_ALL=C
 export LANG=C
 
-if [ -n "$USE_VERSION" ]; then
-	if [ "$USE_VERSION" -gt 74 ]; then
-		PGOPTIONS="${PGOPTIONS} -c lc_messages=C"
-		export PGOPTIONS
-	fi
-fi
+PGOPTIONS="${PGOPTIONS} -c lc_messages=C"
+export PGOPTIONS
 
 REGDIR=`dirname $0`
 REGDIR=`cd "${REGDIR}" && pwd`
