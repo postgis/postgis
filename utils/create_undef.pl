@@ -161,11 +161,11 @@ foreach my $table (@tables)
 print "-- Drop all aggregates.\n";
 foreach my $agg (@aggs)
 {
-	if ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*.*basetype = (\w+)/ism )
+	if ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*.*basetype = ([\w\.]+)/ism )
 	{
 		print "DROP AGGREGATE $1 ($2);\n";
 	}
-	elsif ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*([\w,\s]+)\s*\)/ism )
+	elsif ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*([\w,\.\s]+)\s*\)/ism )
 	{
 		print "DROP AGGREGATE $1 ($2);\n";
 	}
