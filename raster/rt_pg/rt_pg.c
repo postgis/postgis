@@ -8132,7 +8132,7 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 		j++;
 
 		/* raster */
-		rast[i] = rt_raster_deserialize(pgrast, FALSE);
+		rast[i] = rt_raster_deserialize(pgrast, TRUE);
 		if (!rast[i]) {
 			elog(ERROR, "RASTER_sameAlignment: Could not deserialize the %s raster", i < 1 ? "first" : "second");
 			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
@@ -8147,11 +8147,11 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 		err = 1;
 	}
 	/* scales must match */
-	else if (FLT_NEQ(rt_raster_get_x_scale(rast[0]), rt_raster_get_x_scale(rast[1]))) {
+	else if (FLT_NEQ(fabs(rt_raster_get_x_scale(rast[0])), fabs(rt_raster_get_x_scale(rast[1])))) {
 		elog(NOTICE, "The two rasters provided have different scales on the X axis");
 		err = 1;
 	}
-	else if (FLT_NEQ(rt_raster_get_y_scale(rast[0]), rt_raster_get_y_scale(rast[1]))) {
+	else if (FLT_NEQ(fabs(rt_raster_get_y_scale(rast[0])), fabs(rt_raster_get_y_scale(rast[1])))) {
 		elog(NOTICE, "The two rasters provided have different scales on the Y axis");
 		err = 1;
 	}
