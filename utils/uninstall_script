@@ -1,5 +1,5 @@
 #!/bin/bash
-# this script assumes that it is located in utils
+# this script will change it's current working directory to utils
 
 DB=postgis_uninstall
 
@@ -15,12 +15,13 @@ else
 	OUTFILE=$PGFILE
 fi
 INFILE=$OUTFILE.in.$RANDOM
-RAND=$RANDOM
+RAND1=$RANDOM
+RAND2=$RANDOM
 
 RTN=0
 
 cleanup () {
-	rm -f $INFILE $OUTFILE.$RAND
+	rm -f $INFILE $OUTFILE.$RAND1 $OUTFILE.$RAND2
 }
 
 # get reference uninstall of postgis.sql only
@@ -62,13 +63,40 @@ for x in $schema; do
 done
 
 # remove SET statements, remove schema names from DROP statements and add IF EXISTS for DROP statements
-grep -v -E "^SET" < $INFILE | eval "sed ${sedarg}" > $OUTFILE.$RAND
+grep -v -E "^SET" < $INFILE | eval "sed ${sedarg}" > $OUTFILE.$RAND1
 RTN=$?
 
 if [ "$RTN" != "0" ]; then
 	cleanup
 	exit $RTN
 fi
+
+kw=""
+OIFS=$IFS
+IFS=$'\n'
+echo -n '' > $OUTFILE.$RAND2
+for x in `cat $OUTFILE.$RAND1`; do
+	y=`echo "$x" | grep "CASCADE;\$"`
+	# CASCADE found, get keyword
+	if [ "x$y" != "x" ]; then
+		kw=`echo "$x" | sed -e 's/^DROP TYPE IF EXISTS //' -e 's/ CASCADE;//'`
+		echo "$x" >> $OUTFILE.$RAND2
+		continue
+	fi
+
+	# no keyword, continue
+	if [ "x$kw" == "x" ]; then
+		echo "$x" >> $OUTFILE.$RAND2
+		continue
+	fi
+
+	y=`echo "$x" | grep "($kw)"`
+	if [ "x$y" == "x" ]; then
+		echo "$x" >> $OUTFILE.$RAND2
+		continue
+	fi
+done
+IFS=$OIFS
 
 # if raster, separate raster from postgis items
 if [ "raster" == "$1" ]; then
@@ -78,7 +106,7 @@ if [ "raster" == "$1" ]; then
 	echo -n '' > ${RTPATH}$OUTFILE
 
 	# see if line found in uninstall_postgis.sql
-	for x in `cat $OUTFILE.$RAND`; do
+	for x in `cat $OUTFILE.$RAND2`; do
 		y=`echo $x | sed -e 's/\(\[\|\]\)/\\\&/g'`
 		y=`grep "^${y}$" < ${PGPATH}$PGFILE`
 
@@ -90,7 +118,7 @@ if [ "raster" == "$1" ]; then
 
 	IFS=$OIFS
 else
-	mv $OUTFILE.$RAND ${PGPATH}${OUTFILE}
+	mv $OUTFILE.$RAND2 ${PGPATH}${OUTFILE}
 fi
 
 # cleanup
