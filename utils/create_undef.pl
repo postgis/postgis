@@ -90,7 +90,7 @@ while( my $line = <INPUT>)
 	elsif ($line =~ /^create or replace view\s*(\w+)/i) {
 		push (@views, $1);
 	}
-	elsif ($line =~ /^create table \s*(\w+)/i) {
+	elsif ($line =~ /^create table \s*([\w\.]+)/i) {
 		push (@tables, $1);
 	}
 	elsif ( $line =~ /^create operator class (\w+)/i ) {
@@ -124,7 +124,7 @@ while( my $line = <INPUT>)
 		}
 		push (@aggs, $defn)
 	}
-	elsif ($line =~ /^create type (\w+)/i) {
+	elsif ($line =~ /^create type ([\w\.]+)/i) {
 		push (@types, $1);
 		while( not $line =~ /;\s*$/ ) {
 			$line = <INPUT>;
@@ -158,11 +158,11 @@ foreach my $table (@tables)
 print "-- Drop all aggregates.\n";
 foreach my $agg (@aggs)
 {
-	if ( $agg =~ /create aggregate\s*(\w+)\s*\(\s*.*basetype = (\w+)/ism )
+	if ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*.*basetype = (\w+)/ism )
 	{
 		print "DROP AGGREGATE $1 ($2);\n";
 	}
-	elsif ( $agg =~ /create aggregate\s*(\w+)\s*\(\s*([\w,\s]+)\s*\)/ism )
+	elsif ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*([\w,\s]+)\s*\)/ism )
 	{
 		print "DROP AGGREGATE $1 ($2);\n";
 	}
