@@ -77,10 +77,8 @@ TEST_BANDPROPS = \
 	rt_valuecount.sql \
 	rt_valuepercent.sql \
 	rt_bandmetadata.sql \
-	$(NULL)
-
-TEST_PIXEL = \
 	rt_pixelvalue.sql \
+	drop_rt_band_properties_test.sql \
 	$(NULL)
 
 TEST_UTILITY = \
@@ -127,7 +125,7 @@ TEST_BUGS = \
 	bug_test_car5.sql
 
 TESTS = $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
-		$(TEST_PROPS) $(TEST_BANDPROPS) $(TEST_PIXEL) \
+		$(TEST_PROPS) $(TEST_BANDPROPS) \
 		$(TEST_UTILITY) $(TEST_GIST) $(TEST_SREL) \
 		$(TEST_BUGS)
 
@@ -144,7 +142,7 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 check: rtpostgis.sql
 	$(MAKE) -C ../../../regress postgis.sql staged-install
 	$(MAKE) -C ../../rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
-	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../../regress/run_test $(RUNTESTFLAGS) --raster $(TESTS)
+	USE_VERSION=$(POSTGIS_PGSQL_VERSION) ../../../regress/run_test $(RUNTESTFLAGS) --raster $(TESTS)
 
 #all: run_test
 
