@@ -923,3 +923,5 @@ SELECT (
         '00' ||-- novalue==0
         '10' -- pixel(0,0)==16 (out of 0..15 range)
 )::raster;
+
+DROP TABLE rt_io_test;
