@@ -3644,7 +3644,7 @@ SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
       200 |     228 |      200 |     170
 					</programlisting>
 <informaltable>
-  <tgroup cols="2">
+  <tgroup cols="3">
 	<tbody>
 	  <row>
 		<entry><informalfigure>
