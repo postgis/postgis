@@ -174,7 +174,7 @@ CREATE OR REPLACE FUNCTION st_metadata(
 -----------------------------------------------------------------------
 -- Constructors ST_MakeEmptyRaster and ST_AddBand
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8, srid int4 DEFAULT ST_SRID('POINT(0 0)'::geometry))
+CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8, srid int4 DEFAULT 0)
     RETURNS RASTER
     AS 'MODULE_PATHNAME', 'RASTER_makeEmpty'
     LANGUAGE 'C' IMMUTABLE STRICT;
