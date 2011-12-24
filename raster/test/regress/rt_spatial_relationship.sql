@@ -316,3 +316,5 @@ FROM (SELECT *, ST_Intersection(geom, st_setbandnodatavalue(rast, NULL)) gv
       WHERE forrast = rid AND ST_Intersects(geom, st_setbandnodatavalue(rast, NULL), 1)
      ) foo;
 
+DROP TABLE rt_spatial_relationship_test;
+DROP TABLE rt_spatial_relationship_test_geom;
