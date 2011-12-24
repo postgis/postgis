@@ -224,3 +224,4 @@ FROM (
 
 DROP TABLE IF EXISTS raster_intersection;
 DROP TABLE IF EXISTS raster_intersection_out;
+DROP FUNCTION raster_intersection_other(rast1 double precision, rast2 double precision, VARIADIC userargs text[])
