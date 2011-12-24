@@ -1308,6 +1308,9 @@ rt_util_gdal_version(const char *request);
 rt_extenttype
 rt_util_extent_type(const char *name);
 
+char*
+rt_util_gdal_sr(const char *srs, int proj4);
+
 /*
 	helper macros for consistent floating point equality checks
 */

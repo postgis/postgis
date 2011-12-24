@@ -304,6 +304,32 @@ rt_util_extent_type(const char *name) {
 		return ET_INTERSECTION;
 }
 
+char*
+rt_util_gdal_sr(const char *srs, int proj4) {
+	OGRSpatialReferenceH hsrs;
+	char *rtn = NULL;
+
+	hsrs = OSRNewSpatialReference(NULL);
+	if (OSRSetFromUserInput(hsrs, srs) == OGRERR_NONE) {
+		if (proj4)
+			OSRExportToProj4(hsrs, &rtn);
+		else
+			OSRExportToWkt(hsrs, &rtn);
+	}
+	else {
+		rterror("rt_util_gdal_sr: Could not process the provided srs:%s", srs);
+		return NULL;
+	}
+
+	OSRDestroySpatialReference(hsrs);
+	if (rtn == NULL) {
+		rterror("rt_util_gdal_sr: Could not process the provided srs:%s", srs);
+		return NULL;
+	}
+
+	return rtn;
+}
+
 /*- rt_context -------------------------------------------------------*/
 
 /* Functions definitions */
@@ -7071,7 +7097,8 @@ rt_raster rt_raster_gdal_warp(
 	GDALWarpOptions *wopts = NULL;
 	GDALDriverH dst_drv = NULL;
 	GDALDatasetH dst_ds = NULL;
-	const char *_dst_srs = NULL;
+	char *_src_srs = NULL;
+	char *_dst_srs = NULL;
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
 	char **transform_opts = NULL;
 	int transform_opts_len = 2;
@@ -7122,20 +7149,25 @@ rt_raster rt_raster_gdal_warp(
 	if (max_err < 0.) max_err = 0.125;
 	RASTER_DEBUGF(4, "max_err = %f", max_err);
 
+	_src_srs = rt_util_gdal_sr(src_srs, 0);
 	/* dst_srs not provided, set to src_srs */
 	if (NULL == dst_srs)
-		_dst_srs = src_srs;
+		_dst_srs = rt_util_gdal_sr(src_srs, 0);
 	else
-		_dst_srs = dst_srs;
+		_dst_srs = rt_util_gdal_sr(dst_srs, 0);
 
 	/* load raster into a GDAL MEM dataset */
-	src_ds = rt_raster_to_gdal_mem(raster, src_srs, NULL, 0, &src_drv);
+	src_ds = rt_raster_to_gdal_mem(raster, _src_srs, NULL, 0, &src_drv);
 	if (NULL == src_ds) {
 		rterror("rt_raster_gdal_warp: Unable to convert raster to GDAL MEM format\n");
 		if (NULL != src_drv) {
 			GDALDeregisterDriver(src_drv);
 			GDALDestroyDriver(src_drv);
 		}
+
+		CPLFree(_src_srs);
+		CPLFree(_dst_srs);
+
 		return NULL;
 	}
 	RASTER_DEBUG(3, "raster loaded into GDAL MEM dataset");
@@ -7150,6 +7182,9 @@ rt_raster rt_raster_gdal_warp(
 		GDALDeregisterDriver(src_drv);
 		GDALDestroyDriver(src_drv);
 
+		CPLFree(_src_srs);
+		CPLFree(_dst_srs);
+
 		return NULL;
 	}
 	for (i = 0; i < transform_opts_len; i++) {
@@ -7158,7 +7193,7 @@ rt_raster rt_raster_gdal_warp(
 				transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("DST_SRS=") + strlen(_dst_srs) + 1));
 				break;
 			case 0:
-				transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("SRC_SRS=") + strlen(src_srs) + 1));
+				transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("SRC_SRS=") + strlen(_src_srs) + 1));
 				break;
 		}
 		if (NULL == transform_opts[i]) {
@@ -7170,6 +7205,9 @@ rt_raster rt_raster_gdal_warp(
 
 			GDALDeregisterDriver(src_drv);
 			GDALDestroyDriver(src_drv);
+
+			CPLFree(_src_srs);
+			CPLFree(_dst_srs);
 
 			return NULL;
 		}
@@ -7186,15 +7224,17 @@ rt_raster rt_raster_gdal_warp(
 			case 0:
 				snprintf(
 					transform_opts[i],
-					sizeof(char) * (strlen("SRC_SRS=") + strlen(src_srs) + 1),
+					sizeof(char) * (strlen("SRC_SRS=") + strlen(_src_srs) + 1),
 					"SRC_SRS=%s",
-					src_srs
+					_src_srs
 				);
 				break;
 		}
 		RASTER_DEBUGF(4, "transform_opts[%d] = %s", i, transform_opts[i]);
 	}
 	transform_opts[transform_opts_len] = NULL;
+	CPLFree(_src_srs);
+	CPLFree(_dst_srs);
 
 	/* transformation object for building dst dataset */
 	transform_arg = GDALCreateGenImgProjTransformer2(src_ds, NULL, transform_opts);
@@ -7573,7 +7613,9 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* set dst srs */
+	_dst_srs = rt_util_gdal_sr((NULL == dst_srs ? src_srs : dst_srs), 1);
 	cplerr = GDALSetProjection(dst_ds, _dst_srs);
+	CPLFree(_dst_srs);
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_warp: Unable to set projection\n");
 
@@ -7930,8 +7972,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 	/* OGR spatial reference */
 	if (NULL != srs && strlen(srs)) {
-		src_sr = OSRNewSpatialReference(srs);
-		if (NULL == src_sr) {
+		src_sr = OSRNewSpatialReference(NULL);
+		if (OSRSetFromUserInput(src_sr, srs) != OGRERR_NONE) {
 			rterror("rt_raster_gdal_rasterize: Unable to create OSR spatial reference");
 
 			if (noband) {

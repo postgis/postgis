@@ -81,7 +81,7 @@ static char	*rtpg_chartrim(const char* input, char *remove);
 static char **rtpg_strsplit(const char *str, const char *delimiter, int *n);
 static char *rtpg_removespaces(char *str);
 static char *rtpg_trim(const char* input);
-static char *rtpg_getSRTextSPI(int srid);
+static char *rtpg_getSR(int srid);
 
 /***************************************************************
  * Some rules for returning NOTICE or ERROR...
@@ -474,7 +474,7 @@ rtpg_trim(const char *input) {
 }
 
 static char*
-rtpg_getSRTextSPI(int srid)
+rtpg_getSR(int srid)
 {
 	int len = 0;
 	char *sql = NULL;
@@ -485,26 +485,26 @@ rtpg_getSRTextSPI(int srid)
 	char *tmp = NULL;
 	char *srs = NULL;
 
-	len = sizeof(char) * (strlen("SELECT srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
+	len = sizeof(char) * (strlen("SELECT CASE WHEN length(proj4text) > 0 THEN proj4text ELSE srtext END FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
 	sql = (char *) palloc(len);
 	if (NULL == sql) {
-		elog(ERROR, "rtpg_getSRTextSPI: Unable to allocate memory for sql\n");
+		elog(ERROR, "rtpg_getSR: Unable to allocate memory for sql\n");
 		return NULL;
 	}
 
 	spi_result = SPI_connect();
 	if (spi_result != SPI_OK_CONNECT) {
-		elog(ERROR, "rtpg_getSRTextSPI: Could not connect to database using SPI\n");
+		elog(ERROR, "rtpg_getSR: Could not connect to database using SPI\n");
 		pfree(sql);
 		return NULL;
 	}
 
 	/* execute query */
-	snprintf(sql, len, "SELECT srtext FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
+	snprintf(sql, len, "SELECT CASE WHEN length(proj4text) > 0 THEN proj4text ELSE srtext END FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
 	spi_result = SPI_execute(sql, TRUE, 0);
 	SPI_pfree(sql);
 	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-		elog(ERROR, "rtpg_getSRTextSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		elog(ERROR, "rtpg_getSR: Cannot find SRID (%d) in spatial_ref_sys", srid);
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
 		return NULL;
@@ -516,7 +516,7 @@ rtpg_getSRTextSPI(int srid)
 
 	tmp = SPI_getvalue(tuple, tupdesc, 1);
 	if (NULL == tmp || !strlen(tmp)) {
-		elog(ERROR, "rtpg_getSRTextSPI: Cannot find SRID (%d) in spatial_ref_sys", srid);
+		elog(ERROR, "rtpg_getSR: Cannot find SRID (%d) in spatial_ref_sys", srid);
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
 		return NULL;
@@ -525,7 +525,7 @@ rtpg_getSRTextSPI(int srid)
 	len = strlen(tmp) + 1;
 	srs = SPI_palloc(sizeof(char) * len);
 	if (NULL == srs) {
-		elog(ERROR, "rtpg_getSRTextSPI: Unable to allocate memory for srtext\n");
+		elog(ERROR, "rtpg_getSR: Unable to allocate memory for srtext\n");
 		pfree(tmp);
 		if (SPI_tuptable) SPI_freetuptable(tuptable);
 		SPI_finish();
@@ -6618,7 +6618,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 
 	/* get srs from srid */
 	if (clamp_srid(srid) != SRID_UNKNOWN) {
-		srs = rtpg_getSRTextSPI(srid);
+		srs = rtpg_getSR(srid);
 		if (NULL == srs) {
 			elog(ERROR, "RASTER_asGDALRaster: Could not find srtext for SRID (%d)", srid);
 			if (NULL != options) {
@@ -7279,7 +7279,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srid = %d", srid);
 	if (clamp_srid(srid) != SRID_UNKNOWN) {
-		srs = rtpg_getSRTextSPI(srid);
+		srs = rtpg_getSR(srid);
 		if (NULL == srs) {
 			elog(ERROR, "RASTER_asRaster: Could not find srtext for SRID (%d)", srid);
 
@@ -7555,7 +7555,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 
 	/* get srses from srids */
 	/* source srs */
-	src_srs = rtpg_getSRTextSPI(src_srid);
+	src_srs = rtpg_getSR(src_srid);
 	if (NULL == src_srs) {
 		elog(ERROR, "RASTER_resample: Input raster has unknown SRID (%d)", src_srid);
 		rt_raster_destroy(raster);
@@ -7565,7 +7565,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 
 	/* target srs */
 	if (clamp_srid(dst_srid) != SRID_UNKNOWN) {
-		dst_srs = rtpg_getSRTextSPI(dst_srid);
+		dst_srs = rtpg_getSR(dst_srid);
 		if (NULL == dst_srs) {
 			elog(ERROR, "RASTER_resample: Target SRID (%d) is unknown", dst_srid);
 			rt_raster_destroy(raster);
