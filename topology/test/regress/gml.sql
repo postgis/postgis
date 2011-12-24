@@ -210,3 +210,4 @@ ORDER BY name;
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;
 DELETE FROM spatial_ref_sys where srid = 4326;
+DROP TABLE visited;
