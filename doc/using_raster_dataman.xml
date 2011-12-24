@@ -256,7 +256,7 @@ psql -d gisdb -f elev.sql</programlisting>
     
     <para>Load rasters Massachusetts state plane meters aerial tiles 
     	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables and directly insert to database.  Break up the rasters into 100x100 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
-    <programlisting>raster2pgsql -I -C -Y -F -s 26986 -t 100x100  -l 2,4 bostonaerials2008\*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
+    <programlisting>raster2pgsql -I -C -Y -F -s 26986 -t 100x100  -l 2,4 bostonaerials2008/*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
  
     <programlisting>--get a list of raster types supported:
 raster2pgsql -G</programlisting>
