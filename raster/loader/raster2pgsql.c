@@ -1170,7 +1170,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int factor, STRIN
 	/* create VRT dataset */
 	hdsOv = VRTCreate(dimOv[0], dimOv[1]);
 	/*
-   GDALSetDescription(hdsOv, "/tmp/ov.vrt");
+	GDALSetDescription(hdsOv, "/tmp/ov.vrt");
 	*/
 	GDALSetProjection(hdsOv, info->srs);
 
@@ -1229,7 +1229,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int factor, STRIN
 		for (xtile = 0; xtile < ntiles[0]; xtile++) {
 			/*
 			char fn[100];
-			sprintf(fn, "/tmp/tile%d.vrt", (ytile * ntiles[0]) + xtile);
+			sprintf(fn, "/tmp/ovtile%d.vrt", (ytile * ntiles[0]) + xtile);
 			*/
 
 			/* compute tile's upper-left corner */
@@ -1288,7 +1288,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int factor, STRIN
 			if (tileset->length > 10) {
 				if (!insert_records(
 					config->schema, config->table, config->raster_column,
-					NULL, config->copy_statements,
+					(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
 					tileset, buffer
 				)) {
 					fprintf(stderr, _("Cannot convert raster tiles into INSERT or COPY statements\n"));
@@ -1676,7 +1676,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			for (i = 0; i < config->overview_count; i++) {
 				if (!create_table(
 					config->schema, config->overview_table[i], config->raster_column,
-					0,
+					config->file_column,
 					config->tablespace, config->idx_tablespace,
 					buffer
 				)) {
@@ -1755,7 +1755,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 					if (config->copy_statements && !copy_from(
 							config->schema, config->overview_table[j], config->raster_column,
-							NULL,
+							(config->file_column ? config->rt_filename[i] : NULL),
 							buffer
 					)) {
 						fprintf(stderr, _("Cannot add COPY statement to string buffer\n"));
@@ -1773,7 +1773,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 					if (tileset.length && !insert_records(
 						config->schema, config->overview_table[j], config->raster_column,
-						NULL, config->copy_statements,
+						(config->file_column ? config->rt_filename[i] : NULL), config->copy_statements,
 						&tileset, buffer
 					)) {
 						fprintf(stderr, _("Cannot convert overview tiles into INSERT or COPY statements\n"));
