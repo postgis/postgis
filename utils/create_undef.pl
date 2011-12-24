@@ -45,6 +45,15 @@ my @tables = ();
 
 my $version = $ARGV[1];
 
+sub strip_default {
+	my $line = shift;
+	# strip quotes first
+	$line =~ s/'[^']*'//ig;
+	# drop default then
+	$line =~ s/DEFAULT [^,)]*//ig;
+	return $line;
+}
+
 my $time = POSIX::strftime("%c", localtime);
 print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n";
 print "-- \n";
@@ -206,8 +215,7 @@ foreach my $fn (@funcs)
 		my $fn_nm = $1;
 		my $fn_arg = $2;
 
-		$fn_arg =~ s/DEFAULT [\w']+//ig;
-
+		$fn_arg = strip_default($fn_arg);
 		if ( ! exists($type_funcs{$fn_nm}) )
 		{
 			print "DROP FUNCTION IF EXISTS $fn_nm ($fn_arg);\n";
