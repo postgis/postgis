@@ -135,6 +135,9 @@ while( my $line = <INPUT>)
 			}
 		}
 	}
+	elsif ($line =~ /^create domain ([\w\.]+)/i) {
+		push (@types, $1);
+	}
 	elsif ($line =~ /^create cast/i) {
 		push (@casts, $line)
 	}
