@@ -114,6 +114,7 @@ TEST_GIST = \
 	rt_overright.sql \
 	rt_right.sql \
 	rt_same.sql \
+	drop_rt_gist_test.sql \
 	$(NULL)
 	
 TEST_SREL = \
