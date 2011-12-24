@@ -705,26 +705,38 @@ done
 # (until they have an uninstall script themself)
 if test x"$OPT_DROP" = "xyes" \
      -a x"$OPT_WITH_TOPO" = "xno" \
-     -a x"$OPT_WITH_RASTER" = "xno" \
      -a x"$object_count_pre" != "x"
 then # {
 
   start_test "uninstall"
+  ok=yes
 
-  ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../postgis/uninstall_postgis.sql "${DB}" \
-         > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
-  if [ $? -gt 0 ]; then # {
-    fail "uninstall_postgis.sql failed" "${TMPDIR}/uninstall.err"
-  else # }{
-
-    show_progress # on to objects count
-    object_count_post=$(count_db_objects "counting object after postgis uninstall")
-    if test ${object_count_pre} != ${object_count_post}; then # {
-          fail "Count of object before install (${object_count_pre}) != count after uninstall (${object_count_post})"
-    else
-          pass "(${object_count_pre})"
+  if test x"$OPT_WITH_RASTER" = "xyes"; then
+    ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../raster/rt_pg/uninstall_rtpostgis.sql "${DB}" \
+           > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+    if [ $? -gt 0 ]; then # {
+      fail "uninstall_rtpostgis.sql failed" "${TMPDIR}/uninstall.err"
+      ok=no
     fi # }
+    show_progress # on to postgis uninstall
+  fi
 
+  if test x"$ok" = "xyes"; then # {
+    ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../postgis/uninstall_postgis.sql "${DB}" \
+           > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+    if [ $? -gt 0 ]; then # {
+      fail "uninstall_postgis.sql failed" "${TMPDIR}/uninstall.err"
+    else # }{
+  
+      show_progress # on to objects count
+      object_count_post=$(count_db_objects "counting object after postgis uninstall")
+      if test ${object_count_pre} != ${object_count_post}; then # {
+            fail "Count of object before install (${object_count_pre}) != count after uninstall (${object_count_post})"
+      else
+            pass "(${object_count_pre})"
+      fi # }
+  
+    fi # }
   fi # }
 
 fi # }
