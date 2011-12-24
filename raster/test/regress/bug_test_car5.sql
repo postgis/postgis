@@ -32,6 +32,9 @@ INSERT INTO car5 (rid,rast) VALUES (3, ('01000003009A9999999999A93F9A9999999999A
 
 -- Run test
 SELECT rid, st_width(rast), st_height(rast), st_bandpixeltype(rast,1), st_bandpixeltype(rast,2), st_bandpixeltype(rast,3) FROM car5;
+
+DROP TABLE car5;
+
 COMMIT;
 
 -----------------------------------------------------------------------
