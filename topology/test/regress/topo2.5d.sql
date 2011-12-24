@@ -45,7 +45,9 @@ INSERT INTO public.lines (g) VALUES (
     '{{1,2},{2,2}}') -- edge_id:1 edge_id:2
     );
 
-SELECT 'f'||id, ST_AsEWKT(topology.geometry(g)) from public.faces;
+SELECT 'f'||id, ST_AsEWKT(topology.geometry(g)) from faces;
 SELECT 'l'||id, ST_AsEWKT(topology.geometry(g)) from public.lines;
 
 SELECT topology.DropTopology('tt3d');
+DROP TABLE lines;
+DROP TABLE faces;
