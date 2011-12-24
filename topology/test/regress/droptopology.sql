@@ -11,3 +11,5 @@ SELECT topology.AddTopoGeometryColumn('t2', 'public', 't2f', 'geom_t2', 'LINE') 
 
 SELECT topology.DropTopology('t1');
 SELECT topology.DropTopology('t2');
+DROP TABLE t2f;
+DROP TABLE t1f;
