@@ -38,9 +38,7 @@ TEST_IO = \
 	$(NULL)
 
 TEST_FUNC = \
-	create_rt_bytea_test.sql \
 	rt_bytea.sql \
-	create_box3d_test.sql \
 	box3d.sql \
 	rt_addband.sql \
 	rt_band.sql \
