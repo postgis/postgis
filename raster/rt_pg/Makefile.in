@@ -1,18 +1,20 @@
 #############################################################################
 # $Id$
 #
-# Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+# Copyright (c) 2009-2011 Sandro Santilli <strk@keybit.net>
 #
 # This is free software; you can redistribute and/or modify it under
 # the terms of the GNU General Public Licence. See the COPYING file.
 #
 #############################################################################
 
+POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
+
 MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_20_minor.sql rtpostgis_upgrade_cleanup.sql
+DATA_built=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_20_minor.sql rtpostgis_upgrade_cleanup.sql uninstall_rtpostgis.sql
 DATA=
 
 # SQL objects (files requiring C pre-processing)
@@ -91,6 +93,9 @@ rtpostgis_upgrade.sql: rtpostgis.sql
 	 	 
 rtpostgis_upgrade_20_minor.sql: rtpostgis_drop.sql rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql 
 	cat $^ > $@
+
+uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl 
+	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean
 	$(RM) Makefile
