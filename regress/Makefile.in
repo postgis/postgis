@@ -138,7 +138,7 @@ staged-install: postgis.sql
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
 test check: staged-install
-	@USE_VERSION=$(POSTGIS_PGSQL_VERSION) ./run_test $(RUNTESTFLAGS) $(TESTS)
+	./run_test $(RUNTESTFLAGS) $(TESTS)
 
 garden:
 	createdb postgis_garden
