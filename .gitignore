@@ -93,6 +93,7 @@ topology/test/topo_predicates.sql
 topology/topology.sql
 topology/topology.sql.in
 topology/topology_upgrade_20_minor.sql
+topology/uninstall_topology.sql
 authors.git
 libpgcommon/Makefile
 libpgcommon/cunit/Makefile
