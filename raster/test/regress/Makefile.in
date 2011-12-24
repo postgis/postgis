@@ -58,6 +58,7 @@ TEST_PROPS = \
 	rt_rotation.sql \
 	rt_georeference.sql \
 	rt_set_properties.sql \
+	drop_rt_properties_test.sql \
 	create_rt_empty_raster_test.sql \
 	rt_isempty.sql \
 	rt_hasnoband.sql \
