@@ -81,9 +81,15 @@ endif
 	sed 's,MODULE_PATHNAME,$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
 
 
+# Objects dependencies
+$(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h
+
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
 $(SQL_OBJS): %.in: %.in.c
 	$(CPP) -I../../postgis/ -I../../ -traditional-cpp $< | grep -v '^#' > $@
+
+# SQL objects deps here
+$(SQL_OBJS): ../../postgis/sqldefines.h
 	
 #remove all create object types since these can't be done cleanly in an upgrade
 rtpostgis_upgrade.sql: rtpostgis.sql
