@@ -7,6 +7,8 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 -----------------------------------------------------------------------
 
+\i create_rt_utility_test.sql
+
 -----------------------------------------------------------------------
 -- Test 1 - st_world2rastercoordx(rast raster, xw float8, yw float8) 
 -----------------------------------------------------------------------
@@ -253,3 +255,5 @@ SELECT 'test 11.8', st_minpossiblevalue('32BUI') = 0.;
 SELECT 'test 11.9', st_minpossiblevalue('32BSI') < 0.;
 SELECT 'test 11.10', st_minpossiblevalue('32BF') < 0.;
 SELECT 'test 11.11', st_minpossiblevalue('64BF') < 0.;
+
+DROP TABLE rt_utility_test;
