@@ -62,6 +62,7 @@ TEST_PROPS = \
 	create_rt_empty_raster_test.sql \
 	rt_isempty.sql \
 	rt_hasnoband.sql \
+	drop_rt_empty_raster_test.sql \
 	rt_metadata.sql \
 	$(NULL)
 
