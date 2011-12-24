@@ -149,6 +149,9 @@ foreach my $view (@views)
 }
 
 print "-- Drop all tables.\n";
+# we reverse table definitions so foreign key constraints
+# are more likely not to get in our way
+@tables = reverse(@tables);
 foreach my $table (@tables)
 {
 	print "DROP TABLE $table;\n";
