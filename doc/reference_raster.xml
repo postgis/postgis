@@ -3622,12 +3622,52 @@ SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
 				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
 				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				<note><para>If you find your transformation support is not working right, you may need to set the environment variable PROJSO to the .so or .dll projection library
+					your PostGIS is using.  This just needs to have the name of the file. So for example on windows, you would in Control PAnel -> Environment Variables add a system variable called <varname>PROJSO</varname> and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1).  You'll have to restart your PostgreSQL service/daemon after this change.</para></note>
 			</refsection>
 				
 			<refsection>
 					<title>Examples</title>
 				
-					<programlisting>-- TO DO --</programlisting>
+					<programlisting>SELECT ST_Width(mass_stm) As w_before, ST_Width(wgs_84) As w_after,
+						ST_Height(mass_stm) As h_before, ST_Height(wgs_84) As h_after
+						FROM 
+						( SELECT rast As mass_stm, ST_Transform(rast,4326) As wgs_84
+						FROM aerials.o_2_boston 
+						WHERE ST_Intersects(rast,
+							ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986) )
+						LIMIT 1) As foo;
+						
+ w_before | w_after | h_before | h_after
+----------+---------+----------+---------
+      200 |     228 |      200 |     170
+					</programlisting>
+<informaltable>
+  <tgroup cols="2">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/rt_st_transform01.png" />
+			  </imageobject>
+			  <caption><para>original mass state plane meters (mass_stm)</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/rt_st_transform02.png" />
+			  </imageobject>
+			  <caption><para>After transform to wgs 84 long lat (wgs_84)</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
 			</refsection>
 
 			<refsection>
