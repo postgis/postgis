@@ -530,7 +530,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	/* tile size */
 	if (!msg[5]) {
 		for (i = 0; i < 2; i++) {
-			if (FLT_NEQ(x->gt[i], ref->gt[i])) {
+			if (FLT_NEQ(x->tile_size[i], ref->tile_size[i])) {
 				fprintf(stderr, _("WARNING: Different tile sizes found in the set of rasters being converted to PostGIS Raster\n"));
 				msg[5]++;
 				break;
