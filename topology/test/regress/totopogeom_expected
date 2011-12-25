@@ -1,0 +1,9 @@
+create|t
+ERROR:  No topology with name "unexistent" in topology.topology
+ERROR:  No layer with id "1" in topology "tt"
+ERROR:  No topology with name "" in topology.topology
+simple_puntual_layer|1
+hierarchical_layer|2
+ERROR:  No layer with id "3" in topology "tt"
+ERROR:  Layer "2" of topology "tt" is hierarchical, cannot convert to it
+Topology 'tt' dropped
