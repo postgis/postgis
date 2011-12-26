@@ -506,8 +506,10 @@ Available GDAL raster formats:
    			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
    				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union" /> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform" />,
    				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG" />.</para>
+   				<para>You would call the below using <programlisting>http://mywebserver/test_raster.php?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
    			<programlisting>
 <![CDATA[<?php
+/** contents of test_raster.php **/
 $conn_str ='dbname=mydb host=localhost port=5432 user=myuser password=mypwd';
 $dbconn = pg_connect($conn_str);
 header('Content-Type: image/png');  
@@ -540,6 +542,7 @@ echo pg_unescape_bytea($row[0]);
    				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union" /> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform" />,
    				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG" />.</para>
    				<para>This is same example as <xref linkend="RT_PHP_Output" /> except implemented in C#.</para>
+   				<para>You would call the below using <programlisting>http://mywebserver/TestRaster.ashx?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet.</para>
    				<programlisting> -- web.config connection string section --
 <![CDATA[<connectionStrings>
     <add name="DSN" 
