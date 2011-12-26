@@ -3492,7 +3492,7 @@ WHERE rid = 2;
 			<entry><informalfigure>
 				<mediaobject>
 				  <imageobject>
-					<imagedata fileref="images/rt_st_resample01.png" />
+					<imagedata fileref="images/st_resample01.png" />
 				  </imageobject>
 				  <caption><para>original mass state plane meters (orig)</para></caption>
 				</mediaobject>
@@ -3501,7 +3501,7 @@ WHERE rid = 2;
 			<entry><informalfigure>
 				<mediaobject>
 				  <imageobject>
-					<imagedata fileref="images/rt_st_resample02.png" />
+					<imagedata fileref="images/st_resample02.png" />
 				  </imageobject>
 				  <caption><para>resampled from 200x200 to 100x100</para></caption>
 				</mediaobject>
