@@ -384,7 +384,7 @@ Available GDAL raster formats:
     	</orderedlist>
     </sect2>
   </sect1>
-   <sect1 id="RT_Raster_Catalog"> 
+  <sect1 id="RT_Raster_Catalog"> 
    		<title>Raster Catalogs</title>
    		<para>There are two raster catalog views that come packaged with PostGIS.  Both views utilize information embedded in the constraints of the raster tables.  As a result
    		the catalog views are always consistent with the raster data in the tables since the constraints are enforced. </para>
@@ -495,5 +495,41 @@ Available GDAL raster formats:
 			 </itemizedlist>
 			
         </sect2>
+   </sect1>
+   <sect1 id="RT_Raster_Applications"> 
+   		<title>Building Custom Applications with PostGIS Raster</title>
+   		<sect2 id="RT_PHP_Output">
+   			<title>PHP Example Outputting using ST_AsPNG in concert with other raster functions</title>
+   			<p>In this section, we'll demonstrate how to use the PHP PostgreSQL driver and the <xref linkend="RT_ST_AsGDALRaster" /> family of functions to
+   				output band 1 of a raster to a PHP request stream that can then be embedded in an img src html tag.</p>
+   				
+   			<p>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
+   				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union" /> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform" />,
+   				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG" />.</p>
+   			<programlisting>
+<?php
+$conn_str ='dbname=mydb host=localhost port=5432 user=myuser password=mypwd';
+$dbconn = pg_connect($conn_str);
+header('Content-Type: image/png');  
+/**If a particular projection was requested use it otherwise use mass state plane feet **/
+if (!empty( $_REQUEST['srid'] ) && is_numeric( $_REQUEST['srid']) ){
+		$input_srid = intval($_REQUEST['srid']);
+}
+else { $input_srid = 26986; }
+
+$sql = "set bytea_output='escape';
+SELECT ST_AsPNG(ST_Transform(
+			ST_AddBand(ST_Union(rast,1), ARRAY[ST_Union(rast,2),ST_Union(rast,3)])
+				,$input_srid) ) As web_merc 
+ FROM aerials.boston 
+	WHERE 
+	 ST_Intersects(rast, ST_Transform(ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),26986) )"; 
+$result = pg_query($sql);
+$row = pg_fetch_row($result);
+pg_free_result($result);
+if ($row === false) return;
+echo pg_unescape_bytea($row[0]);
+?></programlisting>
+   		</sect2>
    </sect1>
 </chapter>
