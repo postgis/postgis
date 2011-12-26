@@ -511,7 +511,7 @@ Available GDAL raster formats:
 $conn_str ='dbname=mydb host=localhost port=5432 user=myuser password=mypwd';
 $dbconn = pg_connect($conn_str);
 header('Content-Type: image/png');  
-/**If a particular projection was requested use it otherwise use mass state plane feet **/
+/**If a particular projection was requested use it otherwise use mass state plane meters **/
 if (!empty( $_REQUEST['srid'] ) && is_numeric( $_REQUEST['srid']) ){
 		$input_srid = intval($_REQUEST['srid']);
 }
@@ -530,6 +530,82 @@ pg_free_result($result);
 if ($row === false) return;
 echo pg_unescape_bytea($row[0]);
 ?>]]></programlisting>
+   		</sect2>
+   		<sect2 id="RT_Net_Output_CS">
+   			<title>ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster functions</title>
+   			<para>In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver and the <xref linkend="RT_ST_AsGDALRaster" /> family of functions to
+   				output band 1,2,3 of a raster to a PHP request stream that can then be embedded in an img src html tag.</para>
+   				
+   			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
+   				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union" /> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform" />,
+   				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG" />.</para>
+   				<para>This is same example as <xref linkend="RT_PHP_Output" /> except implemented in C#.</para>
+   				<programlisting> -- web.config connection string section --
+<![CDATA[<connectionStrings>
+    <add name="DSN" 
+        connectionString="server=localhost;database=mydb;Port=5432;User Id=myuser;password=mypwd"/>
+</connectionStrings>]]></programlisting>
+   			<programlisting>// Code for TestRaster.ashx
+<![CDATA[<%@ WebHandler Language="C#" Class="TestRaster" %>
+using System;
+using System.Data;
+using System.Web;
+using Npgsql;
+
+public class TestRaster : IHttpHandler
+{
+	public void ProcessRequest(HttpContext context)
+	{
+		
+		context.Response.ContentType = "image/png";
+		context.Response.BinaryWrite(GetResults(context));
+		
+	}
+
+	public bool IsReusable {
+		get { return false; }
+	}
+
+	public byte[] GetResults(HttpContext context)
+	{
+		byte[] result = null;
+		NpgsqlCommand command;
+		string sql = null;
+		int input_srid = 26986;
+        try {
+		    using (NpgsqlConnection conn = new NpgsqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["DSN"].ConnectionString)) {
+			    conn.Open();
+
+                if (context.Request["srid"] != null)
+                {
+                    input_srid = Convert.ToInt32(context.Request["srid"]);  
+                }
+                sql = @"SELECT ST_AsPNG(
+                            ST_Transform(
+			                ST_AddBand(
+                                ST_Union(rast,1), ARRAY[ST_Union(rast,2),ST_Union(rast,3)])
+				                    ,:input_srid) ) As new_rast 
+                        FROM aerials.boston 
+	                        WHERE 
+	                            ST_Intersects(rast, 
+                                    ST_Transform(ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),26986) )";
+			    command = new NpgsqlCommand(sql, conn);
+                command.Parameters.Add(new NpgsqlParameter("input_srid", input_srid));
+           
+			
+			    result = (byte[]) command.ExecuteScalar();
+                conn.Close();
+			}
+
+		}
+        catch (Exception ex)
+        {
+            result = null;
+            context.Response.Write(ex.Message.Trim());
+        }
+		return result;
+	}
+}]]></programlisting>
    		</sect2>
    </sect1>
 </chapter>
