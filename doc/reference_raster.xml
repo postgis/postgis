@@ -3480,7 +3480,9 @@ WHERE rid = 2;
  SELECT rast As orig, ST_Resample(rast,100,100) As reduce_100   
   FROM aerials.boston 
 	WHERE ST_Intersects(rast,
-				ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986) ) limit 1 ) As foo;
+	  ST_Transform(
+	    ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986) ) 
+	        limit 1 ) As foo;
  orig_width | new_width
 ------------+-------------
         200 |         100				
