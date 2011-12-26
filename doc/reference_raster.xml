@@ -4697,7 +4697,7 @@ FROM dummy_rast WHERE rid=2;
 					<programlisting>SELECT ST_AsGDALRaster(rast, 'GTiff') As rastjpg
 FROM dummy_rast WHERE rid=2;
 
--- Set georeferencing infornation to NAD83 long lat
+-- Out GeoTiff with jpeg compression, 90% quality
 SELECT ST_AsGDALRaster(rast, 'GTiff',  
   ARRAY['COMPRESS=JPEG', 'JPEG_QUALITY=90'], 
   4269) As rasttiff
