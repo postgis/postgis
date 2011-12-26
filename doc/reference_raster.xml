@@ -3468,18 +3468,54 @@ WHERE rid = 2;
 				<para>Warps a raster using specified pixel warping algorithm. 
 				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
 				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. NearestNeighbor is the fastest but worst interpoloation</para>
+				<note><para>Only works if rasters are in a known spatial reference system</para></note>
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 			</refsection>
 				
 			<refsection>
 					<title>Examples</title>
 				
-					<programlisting>-- TO DO --</programlisting>
+					<programlisting>SELECT ST_Width(orig) As orig_width, ST_Width(reduce_100) As new_width
+ FROM (
+ SELECT rast As orig, ST_Resample(rast,100,100) As reduce_100   
+  FROM aerials.boston 
+	WHERE ST_Intersects(rast,
+				ST_Transform(ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986) ) limit 1 ) As foo;
+ orig_width | new_width
+------------+-------------
+        200 |         100				
+</programlisting>
+<informaltable>
+	<tgroup cols="2">
+		<tbody>
+			<row>
+			<entry><informalfigure>
+				<mediaobject>
+				  <imageobject>
+					<imagedata fileref="images/rt_st_resample01.png" />
+				  </imageobject>
+				  <caption><para>original mass state plane meters (orig)</para></caption>
+				</mediaobject>
+			  </informalfigure>
+			 </entry>
+			<entry><informalfigure>
+				<mediaobject>
+				  <imageobject>
+					<imagedata fileref="images/rt_st_resample02.png" />
+				  </imageobject>
+				  <caption><para>resampled from 200x200 to 100x100</para></caption>
+				</mediaobject>
+			  </informalfigure>
+			 </entry>
+			</row>
+		</tbody>
+	</tgroup>
+</informaltable>
 			</refsection>
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Transform" /></para>
+				<para><xref linkend="RT_ST_Rescale" />, <xref linkend="RT_ST_Transform" /></para>
 			</refsection>
 		</refentry>
 		
