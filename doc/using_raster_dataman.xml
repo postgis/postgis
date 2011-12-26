@@ -500,12 +500,12 @@ Available GDAL raster formats:
    		<title>Building Custom Applications with PostGIS Raster</title>
    		<sect2 id="RT_PHP_Output">
    			<title>PHP Example Outputting using ST_AsPNG in concert with other raster functions</title>
-   			<p>In this section, we'll demonstrate how to use the PHP PostgreSQL driver and the <xref linkend="RT_ST_AsGDALRaster" /> family of functions to
-   				output band 1 of a raster to a PHP request stream that can then be embedded in an img src html tag.</p>
+   			<para>In this section, we'll demonstrate how to use the PHP PostgreSQL driver and the <xref linkend="RT_ST_AsGDALRaster" /> family of functions to
+   				output band 1 of a raster to a PHP request stream that can then be embedded in an img src html tag.</para>
    				
-   			<p>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
+   			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
    				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union" /> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform" />,
-   				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG" />.</p>
+   				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG" />.</para>
    			<programlisting>
 <![CDATA[<?php
 $conn_str ='dbname=mydb host=localhost port=5432 user=myuser password=mypwd';
