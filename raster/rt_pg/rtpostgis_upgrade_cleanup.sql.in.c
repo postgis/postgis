@@ -78,7 +78,7 @@ BEGIN
 		FROM pg_cast AS ca 
         	INNER JOIN pg_type AS cs ON ca.castsource = cs.oid
         	INNER JOIN pg_type AS ct ON ca.casttarget = ct.oid
-        	WHERE cs.typname = 'raster' AND ct.typname = 'box2d') THEN
+        	WHERE cs.typname = 'raster' AND ct.typname = 'box3d') THEN
 		CREATE OR REPLACE FUNCTION box3d(raster)
 		RETURNS box3d
 		AS 'select box3d(st_convexhull($1))'
