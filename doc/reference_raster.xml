@@ -4709,7 +4709,7 @@ FROM dummy_rast WHERE rid=2;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_SRID" /></para>
+				<para><xref linkend="RT_Raster_Applications" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_SRID" /></para>
 			</refsection>
 		</refentry>
 		
@@ -4791,7 +4791,7 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />,<xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsTIFF" /> </para>
+				<para><xref linkend="RT_Raster_Applications" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />,<xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsTIFF" /> </para>
 			</refsection>
 		</refentry>
 		
@@ -4870,7 +4870,7 @@ FROM dummy_rast WHERE rid=2;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" /></para>
+				<para><xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />, <xref linkend="RT_Raster_Applications" /></para>
 			</refsection>
 		</refentry>
 		
