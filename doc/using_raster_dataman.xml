@@ -610,5 +610,90 @@ public class TestRaster : IHttpHandler
 	}
 }]]></programlisting>
    		</sect2>
+   		<sect2 id="RT_Java_Console_App">
+   			<title>Java console app that outputs raster query as PNG file</title>
+   			<para>In this section, we'll demonstrate how to use PostgreSQL JDBC driver and the <xref linkend="RT_ST_AsGDALRaster" /> family of functions to
+   				output band 1,2,3 of a raster to a file.</para>
+   				
+   			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
+   				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union" /> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform" />,
+   				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG" />.</para>
+   				<para>This is same example as <xref linkend="RT_PHP_Output" /> except implemented in C#.</para>
+   				<para>You would call the below using <programlisting>java -jar SaveQueryImage.jar "2249"</programlisting> to get the raster image in Massachusetts state plane feet in a file in the same folder.  The file will be called <varname>test.png</varname></para>
+   				<para>You can compile the following code using a command something like:
+<programlisting>set env CLASSPATH .:..\postgresql-9.0-801.jdbc4.jar
+javac SaveQueryImage.java
+jar cfm SaveQueryImage.jar Manifest.txt *.class</programlisting>
+   				<programlisting> -- Manifest.txt --
+<![CDATA[Class-Path: postgresql-9.0-801.jdbc4.jar
+Main-Class: SaveQueryImage]]></programlisting>
+   			<programlisting>// Code for SaveQueryImage.java
+<![CDATA[import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.io.*;
+
+public class SaveQueryImage {
+  public static void main(String[] argv) {
+      System.out.println("Checking if Driver is registered with DriverManager.");
+      
+      try {
+        //java.sql.DriverManager.registerDriver (new org.postgresql.Driver());
+        Class.forName("org.postgresql.Driver");
+      } 
+      catch (ClassNotFoundException cnfe) {
+        System.out.println("Couldn't find the driver!");
+        cnfe.printStackTrace();
+        System.exit(1);
+      }
+      
+      Connection conn = null;
+	  int srid = 26986;
+      
+      try {
+        conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/mydb","myuser", "mypwd");
+        conn.setAutoCommit(false);
+
+        PreparedStatement sGetImg = conn.prepareStatement("SELECT ST_AsPNG( " +
+			" ST_Transform( " + 
+			   "  ST_AddBand(ST_Union(rast,1), ARRAY[ST_Union(rast,2),ST_Union(rast,3)]) " +
+			"	,?) ) As new_rast " +
+			" FROM aerials.boston " +  
+			" WHERE " + 
+			" ST_Intersects(rast, ST_Transform(ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),26986) );");
+		if (argv.length > 0) {
+			srid = Integer.parseInt(argv[0]);
+		}
+        sGetImg.setInt(1, srid);
+        
+        ResultSet rs = sGetImg.executeQuery();
+		
+		FileOutputStream fout;
+		try
+		{
+			rs.next();
+			fout = new FileOutputStream(new File("test.png") );
+			fout.write(rs.getBytes(1));
+			fout.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Can't create file");
+			e.printStackTrace();
+		}
+		
+        rs.close();
+		sGetImg.close();
+        conn.close();
+      } 
+      catch (SQLException se) {
+        System.out.println("Couldn't connect: print out a stack trace and exit.");
+        se.printStackTrace();
+        System.exit(1);
+      }   
+  }
+}]]></programlisting>
+   		</sect2>
    </sect1>
 </chapter>
