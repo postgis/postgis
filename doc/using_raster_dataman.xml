@@ -255,8 +255,8 @@ psql -d gisdb -f elev.sql</programlisting>
     <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t myschema.demelevation | psql -d gisdb</programlisting>
     
     <para>Load rasters Massachusetts state plane meters aerial tiles 
-    	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables and directly insert to database.  Break up the rasters into 100x100 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
-    <programlisting>raster2pgsql -I -C -Y -F -s 26986 -t 100x100  -l 2,4 bostonaerials2008/*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
+    	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables, use copy mode for inserting (no intermediary file just straight to db), and -e don't force everything in a transaction (good if you want to see data in tables right away without waiting).  Break up the rasters into 128x128 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
+    <programlisting>raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432</programlisting>
  
     <programlisting>--get a list of raster types supported:
 raster2pgsql -G</programlisting>
