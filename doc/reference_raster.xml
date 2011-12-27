@@ -5347,6 +5347,7 @@ FROM dummy_rast;
 					<paramdef choice='opt'><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>elevation_scale=1</parameter></paramdef>
 				  </funcprototype>
+				</funcsynopsis>
 			</refsynopsisdiv>
 		
 			<refsection>
@@ -5356,11 +5357,11 @@ FROM dummy_rast;
 				applies the hill shade equation to neighboring pixels.</para>
 				<para>The hill shade equation is: <programlisting>max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) )</programlisting>.</para>
 				<para>Availability: 2.0.0 </para>
-				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
+			
 			</refsection>
 				
 			<refsection>
-				<title>Examples - comming soon</title>				
+				<title>Examples - coming soon</title>				
 <programlisting>coming soon</programlisting>
 
 			</refsection>
