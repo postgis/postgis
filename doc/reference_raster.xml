@@ -5331,6 +5331,46 @@ FROM dummy_rast;
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_HillShade">
+			<refnamediv>
+				<refname>ST_HillShade</refname>
+				<refpurpose>Returns the hypothetical illumination of a raster band using azimuth, altitude, brightness, and elevation scale inputs</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_HillShade</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>azimuth</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>elevation_scale=1</parameter></paramdef>
+				  </funcprototype>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the hypothetical illumination of a raster band using the azimuth, altitude, brightness, and elevation scale inputs. Utilizes map algebra and
+				applies the hill shade equation to neighboring pixels.</para>
+				<para>The hill shade equation is: <programlisting>max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) )</programlisting>.</para>
+				<para>Availability: 2.0.0 </para>
+				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples - comming soon</title>				
+<programlisting>coming soon</programlisting>
+
+			</refsection>
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_MapAlgebraFctNgb" /></para>
+			</refsection>
+		</refentry>
+		
 		<refentry id="RT_ST_Intersection">
 			<refnamediv>
 				<refname>ST_Intersection</refname>
