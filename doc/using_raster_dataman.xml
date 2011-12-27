@@ -538,6 +538,7 @@ echo pg_unescape_bytea($row[0]);
    			<para>In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver and the <xref linkend="RT_ST_AsGDALRaster" /> family of functions to
    				output band 1,2,3 of a raster to a PHP request stream that can then be embedded in an img src html tag.</para>
    				
+   			<para>You will need the npgsql .NET PostgreSQL driver for this exercise which you can get the latest of from <ulink url="http://npgsql.projects.postgresql.org/">http://npgsql.projects.postgresql.org/</ulink>.  Just download the latest and drop into your ASP.NET bin folder and you'll be good to go.</para>
    			<para>The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect
    				a particular wgs 84 bounding box and then unions with <xref linkend="RT_ST_Union" /> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend="RT_ST_Transform" />,
    				and then outputs the results as a png using <xref linkend="RT_ST_AsPNG" />.</para>
