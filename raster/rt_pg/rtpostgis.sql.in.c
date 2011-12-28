@@ -2965,17 +2965,20 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 CREATE OR REPLACE FUNCTION _st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_intersects'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'C' IMMUTABLE
+	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
 	AS $$ SELECT $1 && $3 AND _st_intersects($1, $2, $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'SQL' IMMUTABLE
+	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, rast2 raster)
 	RETURNS boolean
 	AS $$ SELECT $1 && $2 AND _st_intersects($1, 1, $2, 1) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE
+	COST 1000;
 
 -----------------------------------------------------------------------
 -- Raster/Geometry Spatial Relationship
@@ -3004,17 +3007,20 @@ CREATE OR REPLACE FUNCTION _st_intersects(rast raster, geom geometry, nband inte
 
 		RETURN ST_Intersects(rast, nband, gr, 1);
 	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE
+	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, geom geometry, nband integer DEFAULT NULL)
 	RETURNS boolean
 	AS $$ SELECT $1 && $2 AND _st_intersects($1, $2, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'SQL' IMMUTABLE
+	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, nband integer, geom geometry)
 	RETURNS boolean
 	AS $$ SELECT $1 && $3 AND _st_intersects($1, $3, $2) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE
+	COST 1000;
 
 -----------------------------------------------------------------------
 -- _st_intersects(geom geometry, rast raster, nband integer)
@@ -3148,13 +3154,15 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 
 		RETURN FALSE;
 	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE
+	COST 1000;
 
 -- This function can not be STRICT
 CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integer DEFAULT NULL)
 	RETURNS boolean AS
 	$$ SELECT $1 && $2 AND _st_intersects($1, $2, $3); $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'SQL' IMMUTABLE
+	COST 1000;
 
 -----------------------------------------------------------------------
 -- ST_Intersection (geometry, raster in vector space)
