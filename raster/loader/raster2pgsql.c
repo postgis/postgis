@@ -1128,7 +1128,7 @@ add_overview_constraints(
 }
 
 static int
-build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int factor, STRINGBUFFER *tileset, STRINGBUFFER *buffer) {
+build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBUFFER *tileset, STRINGBUFFER *buffer) {
 	GDALDatasetH hdsSrc;
 	VRTDatasetH hdsOv;
 	VRTSourcedRasterBandH hbandOv;
@@ -1136,6 +1136,8 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int factor, STRIN
 	int dimOv[2] = {0};
 
 	int j = 0;
+	int factor;
+	const char *ovtable = NULL;
 
 	VRTDatasetH hdsDst;
 	VRTSourcedRasterBandH hbandDst;
@@ -1158,7 +1160,14 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int factor, STRIN
 	/* working copy of geotransform matrix */
 	memcpy(gtOv, info->gt, sizeof(double) * 6);
 
-	/* loop over each overview factor */
+	if (ovx >= config->overview_count) {
+		fprintf(stderr, _("Invalid overview index: %d\n"), ovx);
+		return 0;
+	}
+	factor = config->overview[ovx];
+	ovtable = (const char *) config->overview_table[ovx];
+
+	/* factor must be within valid range */
 	if (factor < MINOVFACTOR || factor > MAXOVFACTOR) {
 		fprintf(stderr, _("Overview factor %d is not between %d and %d\n"), factor, MINOVFACTOR, MAXOVFACTOR);
 		return 0;
@@ -1287,7 +1296,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int factor, STRIN
 			/* flush if tileset gets too big */
 			if (tileset->length > 10) {
 				if (!insert_records(
-					config->schema, config->table, config->raster_column,
+					config->schema, ovtable, config->raster_column,
 					(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
 					tileset, buffer
 				)) {
@@ -1764,7 +1773,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						return 0;
 					}
 
-					if (!build_overview(i, config, &rastinfo, config->overview[j], &tileset, buffer)) {
+					if (!build_overview(i, config, &rastinfo, j, &tileset, buffer)) {
 						fprintf(stderr, _("Cannot create overview of factor %d for raster %s\n"), config->overview[j], config->rt_file[i]);
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);

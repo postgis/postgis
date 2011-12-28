@@ -3481,84 +3481,82 @@ CREATE AGGREGATE ST_Union(raster, integer, text) (
 -- ST_Clip
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, nodata float8 DEFAULT null, trimraster boolean DEFAULT false)
-    RETURNS raster AS
-    $$
-    DECLARE
-        sourceraster raster := rast;
-        newrast raster;
-        geomrast raster;
-        numband int := ST_Numbands(rast);
-        bandstart int;
-        bandend int;
-        newextent text;
-        newnodata float8;
-        newpixtype text;
-        bandi int;
-    BEGIN
-        IF rast IS NULL THEN
-            RETURN null;
-        END IF;
-        IF geom IS NULL THEN
-            RETURN rast;
-        END IF;
-        IF band IS NULL THEN
-            bandstart := 1;
-            bandend := numband;
-        ELSEIF ST_HasNoBand(rast, band) THEN
-            RAISE NOTICE 'Raster do not have band %. Returning null', band;
-            RETURN null;
-        ELSE
-            bandstart := band;
-            bandend := band;
-        END IF;
-        newpixtype := ST_BandPixelType(rast, bandstart);
-        newnodata := coalesce(nodata, ST_BandNodataValue(rast, bandstart), ST_MinPossibleValue(newpixtype));
-        newextent := CASE WHEN trimraster THEN 'INTERSECTION' ELSE 'FIRST' END;
+CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata float8 DEFAULT NULL, trimraster boolean DEFAULT FALSE)
+	RETURNS raster
+	AS $$
+	DECLARE
+		sourceraster raster := rast;
+		newrast raster;
+		geomrast raster;
+		numband int := ST_Numbands(rast);
+		bandstart int;
+		bandend int;
+		newextent text;
+		newnodata float8;
+		newpixtype text;
+		bandi int;
+	BEGIN
+		IF rast IS NULL THEN
+			RETURN NULL;
+		END IF;
+		IF geom IS NULL THEN
+			RETURN rast;
+		END IF;
+		IF band IS NULL THEN
+			bandstart := 1;
+			bandend := numband;
+		ELSEIF ST_HasNoBand(rast, band) THEN
+			RAISE NOTICE 'Raster do not have band %. Returning null', band;
+			RETURN NULL;
+		ELSE
+			bandstart := band;
+			bandend := band;
+		END IF;
+
+		newpixtype := ST_BandPixelType(rast, bandstart);
+		newnodata := coalesce(nodata, ST_BandNodataValue(rast, bandstart), ST_MinPossibleValue(newpixtype));
+		newextent := CASE WHEN trimraster THEN 'INTERSECTION' ELSE 'FIRST' END;
 
 --RAISE NOTICE 'newextent=%', newextent;
-        -- Convert the geometry to a raster
-        geomrast := ST_AsRaster(geom, rast, ST_BandPixelType(rast, band), 1, newnodata);
+		-- Convert the geometry to a raster
+		geomrast := ST_AsRaster(geom, rast, ST_BandPixelType(rast, band), 1, newnodata);
 
-        -- Set the newnodata
-        sourceraster := ST_SetBandNodataValue(sourceraster, bandstart, newnodata);
+		-- Set the newnodata
+		sourceraster := ST_SetBandNodataValue(sourceraster, bandstart, newnodata);
 
-        -- Compute the first raster band
-        newrast := ST_MapAlgebraExpr(sourceraster, bandstart, geomrast, 1, 'rast1', newpixtype, newextent);
+		-- Compute the first raster band
+		newrast := ST_MapAlgebraExpr(sourceraster, bandstart, geomrast, 1, 'rast1', newpixtype, newextent);
 
-        FOR bandi IN bandstart+1..bandend LOOP
+		FOR bandi IN bandstart+1..bandend LOOP
 --RAISE NOTICE 'bandi=%', bandi;
-            -- for each band we must determine the nodata value
-            newpixtype := ST_BandPixelType(rast, bandi);
-            newnodata := coalesce(nodata, ST_BandNodataValue(sourceraster, bandi), ST_MinPossibleValue(newpixtype));
-            sourceraster := ST_SetBandNodataValue(sourceraster, bandi, newnodata);
-            newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(sourceraster, bandi, geomrast, 1, 'rast1', newpixtype, newextent));
-        END LOOP;
-        RETURN newrast;
-    END;
-    $$
-    LANGUAGE 'plpgsql';
+			-- for each band we must determine the nodata value
+			newpixtype := ST_BandPixelType(rast, bandi);
+			newnodata := coalesce(nodata, ST_BandNodataValue(sourceraster, bandi), ST_MinPossibleValue(newpixtype));
+			sourceraster := ST_SetBandNodataValue(sourceraster, bandi, newnodata);
+			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(sourceraster, bandi, geomrast, 1, 'rast1', newpixtype, newextent));
+		END LOOP;
+
+		RETURN newrast;
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE;
 
 -- Variant defaulting to band 1
-CREATE OR REPLACE FUNCTION ST_Clip(rast raster, geom geometry, nodata float8 DEFAULT null, trimraster boolean DEFAULT false)
-    RETURNS raster
-    AS $$
-        SELECT ST_Clip($1, 1, $2, $3, $4);
-    $$ LANGUAGE 'SQL';
+CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodata float8 DEFAULT NULL, trimraster boolean DEFAULT FALSE)
+	RETURNS raster AS
+	$$ SELECT ST_Clip($1, 1, $2, $3, $4) $$
+	LANGUAGE 'SQL' STABLE;
 
 -- Variant defaulting nodata to the one of the raster or the min possible value
-CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, trimraster boolean)
-    RETURNS raster
-    AS $$
-        SELECT ST_Clip($1, $2, $3, null, $4);
-    $$ LANGUAGE 'SQL';
+CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, trimraster boolean)
+	RETURNS raster AS
+	$$ SELECT ST_Clip($1, $2, $3, null, $4) $$
+	LANGUAGE 'SQL' STABLE;
 
 -- Variant defaulting nodata to the one of the raster or the min possible value
-CREATE OR REPLACE FUNCTION ST_Clip(rast raster, geom geometry, trimraster boolean)
-    RETURNS raster
-    AS $$
-        SELECT ST_Clip($1, 1, $2, null, $3);
-    $$ LANGUAGE 'SQL';
+CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, trimraster boolean)
+	RETURNS raster AS
+	$$ SELECT ST_Clip($1, 1, $2, null, $3) $$
+	LANGUAGE 'SQL' STABLE;
 
 ------------------------------------------------------------------------------
 -- raster constraint functions
@@ -4089,6 +4087,10 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_pixel_types(rastschema name, r
 			RETURN FALSE;
 		END;
 		max := array_length(attr, 1);
+		IF max < 1 OR max IS NULL THEN
+			RAISE NOTICE 'Unable to get the pixel types of a sample raster';
+			RETURN FALSE;
+		END IF;
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
@@ -4161,6 +4163,10 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 			RETURN FALSE;
 		END;
 		max := array_length(attr, 1);
+		IF max < 1 OR max IS NULL THEN
+			RAISE NOTICE 'Unable to get the nodata values of a sample raster';
+			RETURN FALSE;
+		END IF;
 
 		sql := 'ALTER TABLE ' || fqtn
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
