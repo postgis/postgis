@@ -6089,7 +6089,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
 
     /* Allocate memory for deserialized raster header */
 
-    RASTER_DEBUG(3, "rt_raster_deserialize: Allocationg memory for deserialized raster header");
+    RASTER_DEBUG(3, "rt_raster_deserialize: Allocating memory for deserialized raster header");
     rast = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
     if (!rast) {
         rterror("rt_raster_deserialize: Out of memory allocating raster for deserialization");
@@ -7726,6 +7726,10 @@ rt_raster rt_raster_gdal_warp(
 	wopts->hDstDS = dst_ds;
 	wopts->pfnTransformer = transform_func;
 	wopts->pTransformerArg = transform_arg;
+	wopts->papszWarpOptions = (char **) CPLMalloc(sizeof(char *) * 2);
+	wopts->papszWarpOptions[0] = (char *) CPLMalloc(sizeof(char) * (strlen("INIT_DEST=NO_DATA") + 1));
+	strcpy(wopts->papszWarpOptions[0], "INIT_DEST=NO_DATA");
+	wopts->papszWarpOptions[1] = NULL;
 
 	/* set band mapping */
 	wopts->nBandCount = numBands;
@@ -7795,11 +7799,15 @@ rt_raster rt_raster_gdal_warp(
 		}
 		else {
 			wopts->padfSrcNoDataReal[i] = rt_band_get_nodata(band);
-			RASTER_DEBUGF(4, "Added nodata value %f for band %d", wopts->padfSrcNoDataReal[i], i);
 		}
 
 		wopts->padfDstNoDataReal[i] = wopts->padfSrcNoDataReal[i];
 		wopts->padfDstNoDataImag[i] = wopts->padfSrcNoDataImag[i] = 0.0;
+		RASTER_DEBUGF(4, "Mapped nodata value for band %d: %f (%f) => %f (%f)",
+			i,
+			wopts->padfSrcNoDataReal[i], wopts->padfSrcNoDataImag[i],
+			wopts->padfDstNoDataReal[i], wopts->padfDstNoDataImag[i]
+		);
 	}
 
 	/* warp raster */
