@@ -90,13 +90,13 @@ $(SQL_OBJS): %.in: %.in.c
 
 # SQL objects deps here
 $(SQL_OBJS): ../../postgis/sqldefines.h
-	
+
 #remove all create object types since these can't be done cleanly in an upgrade
 rtpostgis_upgrade.sql: rtpostgis.sql
 		 sed -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 $< > $@
-	 	 
+
 rtpostgis_upgrade_20_minor.sql: rtpostgis_drop.sql rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql 
 	cat $^ > $@
 
