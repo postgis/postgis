@@ -539,17 +539,11 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --  Returns created layer id.
 --
 --
-CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar, integer)
+CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(toponame varchar, schema varchar, tbl varchar, col varchar, ltype varchar, child integer)
 	RETURNS integer
 AS
 $$
 DECLARE
-	toponame alias for $1;
-	schema alias for $2;
-	tbl alias for $3;
-	col alias for $4;
-	ltype alias for $5;
-	child alias for $6;
 	intltype integer;
 	level integer;
 	topoid integer;
@@ -728,14 +722,11 @@ LANGUAGE 'sql' VOLATILE;
 --  cleanup the relation table.
 --
 --
-CREATE OR REPLACE FUNCTION topology.DropTopoGeometryColumn(varchar, varchar, varchar)
+CREATE OR REPLACE FUNCTION topology.DropTopoGeometryColumn(schema varchar, tbl varchar, col varchar)
 	RETURNS text
 AS
 $$
 DECLARE
-	schema alias for $1;
-	tbl alias for $2;
-	col alias for $3;
 	rec RECORD;
 	lyrinfo RECORD;
 	ok BOOL;
@@ -835,20 +826,25 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- level 0 (elements are topological primitives) or higer (elements
 -- are TopoGeoms from child layer).
 -- 
+-- @param toponame Topology name
+--
+-- @param tg_type Spatial type of geometry
+--          1:[multi]point (puntal)
+--          2:[multi]line  (lineal)
+--          3:[multi]poly  (areal)
+--          4:collection   (mixed)
+--
+-- @param layer_id Layer identifier
+--
+-- @param tg_objs Array of components
+-- 
 -- Return a topology.TopoGeometry object.
 --
-CREATE OR REPLACE FUNCTION topology.CreateTopoGeom(varchar, integer, integer, topology.TopoElementArray)
+CREATE OR REPLACE FUNCTION topology.CreateTopoGeom(toponame varchar, tg_type integer, layer_id integer, tg_objs topology.TopoElementArray)
 	RETURNS topology.TopoGeometry
 AS
 $$
 DECLARE
-	toponame alias for $1;
-	tg_type alias for $2; -- 1:[multi]point
-	                      -- 2:[multi]line
-	                      -- 3:[multi]poly
-	                      -- 4:collection
-	layer_id alias for $3;
-	tg_objs alias for $4;
 	i integer;
 	dims varchar;
 	outerdims varchar;
@@ -954,12 +950,11 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --{
 -- GetTopologyName(topology_id)
 --
-CREATE OR REPLACE FUNCTION topology.GetTopologyName(integer)
+CREATE OR REPLACE FUNCTION topology.GetTopologyName(topoid integer)
 	RETURNS varchar
 AS
 $$
 DECLARE
-	topoid alias for $1;
 	ret varchar;
 BEGIN
         SELECT name FROM topology.topology into ret
@@ -973,12 +968,11 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --{
 -- GetTopologyId(toponame)
 --
-CREATE OR REPLACE FUNCTION topology.GetTopologyId(varchar)
+CREATE OR REPLACE FUNCTION topology.GetTopologyId(toponame varchar)
 	RETURNS integer
 AS
 $$
 DECLARE
-	toponame alias for $1;
 	ret integer;
 BEGIN
         SELECT id FROM topology.topology into ret
@@ -997,14 +991,11 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 -- Returns a set of element_id,element_type
 --
-CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(varchar, integer, integer)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(toponame varchar, layer_id integer, tgid integer)
 	RETURNS topology.TopoElementArray
 AS
 $$
 DECLARE
-	toponame alias for $1;
-	layerid alias for $2;
-	tgid alias for $3;
 	rec RECORD;
 	tg_objs varchar := '{';
 	i integer;
@@ -1038,12 +1029,11 @@ END;
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
-CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(tg topology.TopoGeometry)
 	RETURNS topology.TopoElementArray
 AS
 $$
 DECLARE
-	tg alias for $1;
 	toponame varchar;
 	ret topology.TopoElementArray;
 BEGIN
@@ -1062,14 +1052,11 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 -- Returns a set of element_id,element_type
 --
-CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(varchar, integer, integer)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(toponame varchar, layerid integer, tgid integer)
 	RETURNS SETOF topology.TopoElement
 AS
 $$
 DECLARE
-	toponame alias for $1;
-	layerid alias for $2;
-	tgid alias for $3;
 	ret topology.TopoElement;
 	rec RECORD;
 	rec2 RECORD;
@@ -1128,12 +1115,11 @@ END;
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 
-CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(tg topology.TopoGeometry)
 	RETURNS SETOF topology.TopoElement
 AS
 $$
 DECLARE
-	tg alias for $1;
 	toponame varchar;
 	rec RECORD;
 BEGIN
@@ -1156,11 +1142,10 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 -- Construct a Geometry from a TopoGeometry.
 -- 
 --
-CREATE OR REPLACE FUNCTION topology.Geometry(topology.TopoGeometry)
+CREATE OR REPLACE FUNCTION topology.Geometry(topogeom topology.TopoGeometry)
 	RETURNS Geometry
 AS $$
 DECLARE
-	topogeom alias for $1;
 	toponame varchar;
 	geom geometry;
 	rec RECORD;
@@ -1281,12 +1266,11 @@ CREATE CAST (topology.TopoGeometry AS Geometry) WITH FUNCTION topology.Geometry(
 --  Return a Set of ValidateTopology_ReturnType containing
 --  informations on all topology inconsistencies
 --
-CREATE OR REPLACE FUNCTION topology.ValidateTopology(varchar)
+CREATE OR REPLACE FUNCTION topology.ValidateTopology(toponame varchar)
 	RETURNS setof topology.ValidateTopology_ReturnType
 AS
 $$
 DECLARE
-	toponame alias for $1;
 	retrec topology.ValidateTopology_ReturnType;
 	rec RECORD;
 	rec2 RECORD;
@@ -1519,12 +1503,10 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 --  Add a Point (node) into a topology 
 --
-CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(varchar, geometry, integer, integer)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint geometry, integer, integer)
 	RETURNS int AS
 $$
 DECLARE
-	atopology alias for $1;
-	apoint alias for $2;
 	ret int;
 BEGIN
 
@@ -1545,12 +1527,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  Add a LineString into a topology 
 --
-CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(varchar, geometry)
+CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, aline geometry)
 	RETURNS int AS
 $$
 DECLARE
-	atopology alias for $1;
-	aline alias for $2;
 	rec RECORD;
 	query text;
 	firstpoint geometry;
@@ -1877,12 +1857,11 @@ LANGUAGE 'SQL' VOLATILE STRICT;
 --
 -- Drops a topology schema getting rid of every dependent object.
 --
-CREATE OR REPLACE FUNCTION topology.DropTopology(varchar)
+CREATE OR REPLACE FUNCTION topology.DropTopology(atopology varchar)
 RETURNS text
 AS
 $$
 DECLARE
-	atopology alias for $1;
 	topoid integer;
 	rec RECORD;
 BEGIN
