@@ -4,6 +4,15 @@ ERROR:  No layer with id "1" in topology "tt"
 ERROR:  No topology with name "" in topology.topology
 simple_puntual_layer|1
 hierarchical_layer|2
-ERROR:  No layer with id "3" in topology "tt"
-ERROR:  Layer "2" of topology "tt" is hierarchical, cannot convert to it
+simple_lineal_layer|3
+simple_areal_layer|4
+simple_collection_layer|5
+ERROR:  No layer with id "30" in topology "tt"
+ERROR:  Layer "2" of topology "tt" is hierarchical, cannot convert to it.
+ERROR:  Layer "1" of topology "tt" is puntal, cannot hold a lineal feature.
+ERROR:  Layer "4" of topology "tt" is areal, cannot hold a lineal feature.
+ERROR:  Layer "3" of topology "tt" is lineal, cannot hold a puntal feature.
+ERROR:  Layer "4" of topology "tt" is areal, cannot hold a puntal feature.
+ERROR:  Layer "1" of topology "tt" is puntal, cannot hold an areal feature.
+ERROR:  Layer "3" of topology "tt" is lineal, cannot hold an areal feature.
 Topology 'tt' dropped
