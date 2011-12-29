@@ -60,4 +60,11 @@ SELECT 'ML', ST_AsText(CreateTopoGeom( 'MiX', 2, 4, '{{1,2}}')); -- fine line
 SELECT 'MA', ST_AsText(CreateTopoGeom( 'MiX', 3, 4, '{{1,3}}')); -- fine area
 SELECT 'MM', ST_AsText(CreateTopoGeom( 'MiX', 4, 4, '{{1,3},{1,2},{1,1}}')); -- fine mix
 
+-- Test emptyness {
+SELECT 'POINT EMPTY', ST_AsEWKT( CreateTopoGeom( 'MiX', 1, 4, '{{0,0}}' ) );
+SELECT 'LINESTRING EMPTY', ST_AsEWKT( CreateTopoGeom( 'MiX', 2, 4, '{{0,0}}' ) );
+SELECT 'POLYGON EMPTY', ST_AsEWKT( CreateTopoGeom( 'MiX', 3, 4, '{{0,0}}' ) );
+SELECT 'GEOMETRYCOLLECTION EMPTY', ST_AsEWKT( CreateTopoGeom( 'MiX', 4, 4, '{{0,0}}' ) );
+-- } Test emptyness 
+
 SELECT DropTopology('MiX');

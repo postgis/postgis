@@ -1239,6 +1239,9 @@ BEGIN
 		LOOP
 			geom := rec.g;
 		END LOOP;
+		IF geom IS NULL THEN
+			geom := 'POLYGON EMPTY';
+		END IF;
 
 	ELSIF topogeom.type = 2 THEN -- [multi]line
 		FOR rec IN EXECUTE 'SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM '
@@ -1251,6 +1254,9 @@ BEGIN
 		LOOP
 			geom := rec.g;
 		END LOOP;
+		IF geom IS NULL THEN
+			geom := 'LINESTRING EMPTY';
+		END IF;
 	
 	ELSIF topogeom.type = 1 THEN -- [multi]point
 		FOR rec IN EXECUTE 'SELECT st_union(n.geom) as g FROM '
@@ -1263,6 +1269,9 @@ BEGIN
 		LOOP
 			geom := rec.g;
 		END LOOP;
+		IF geom IS NULL THEN
+			geom := 'POINT EMPTY';
+		END IF;
 
 	ELSE
 		RAISE NOTICE 'Geometry from TopoGeometry does not support TopoGeometries of type % so far', topogeom.type;
