@@ -28,7 +28,7 @@
 --
 -- AddNode(atopology, point)
 --
--- Add a node primitive to a topology and get it's identifier.
+-- Add a node primitive to a topology and get its identifier.
 -- Returns an existing node at the same location, if any.
 --
 -- When adding a _new_ node it checks for the existance of any
@@ -37,13 +37,11 @@
 -- The newly added nodes have no containing face.
 --
 -- 
-CREATE OR REPLACE FUNCTION topology.AddNode(varchar, geometry)
+CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry)
 	RETURNS int
 AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	apoint ALIAS FOR $2;
 	nodeid int;
 	rec RECORD;
 BEGIN
@@ -123,7 +121,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- AddEdge(atopology, line)
 --
--- Add an edge primitive to a topology and get it's identifier.
+-- Add an edge primitive to a topology and get its identifier.
 -- Edge endpoints will be added as nodes if missing.
 -- Returns an existing edge at the same location, if any.
 --
@@ -135,13 +133,11 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Calling code is expected to do further linking.
 --
 -- 
-CREATE OR REPLACE FUNCTION topology.AddEdge(varchar, geometry)
+CREATE OR REPLACE FUNCTION topology.AddEdge(atopology varchar, aline geometry)
 	RETURNS int
 AS
 $$
 DECLARE
-	atopology ALIAS FOR $1;
-	aline ALIAS FOR $2;
 	edgeid int;
 	rec RECORD;
   ix geometry; 
@@ -302,7 +298,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- AddFace(atopology, poly, [<force_new>=true])
 --
--- Add a face primitive to a topology and get it's identifier.
+-- Add a face primitive to a topology and get its identifier.
 -- Returns an existing face at the same location, if any, unless
 -- true is passed as the force_new argument
 --
