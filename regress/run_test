@@ -428,8 +428,15 @@ run_loader_test ()
 init_db_error ()
 {
 	echo
-	echo " Something went wrong ($1)." 
-	echo " For details, check ${TMPDIR}/regress_log"
+	echo " Something went wrong during db initialization ($1)." 
+	if test "$VERBOSE" -eq "1"; then
+	  echo " Last 5 lines of ${TMPDIR}/regress_log follow:"
+		echo "-----------------------------------------------------------------------------"
+		tail -5 ${TMPDIR}/regress_log
+		echo "-----------------------------------------------------------------------------"
+  else
+	  echo " For details, check ${TMPDIR}/regress_log"
+  fi
 	echo
 
 	if test x"$OPT_DROP" = "xyes" -a x"$OPT_CREATE" = "xyes"; then
@@ -529,12 +536,12 @@ if test -z "$db_exists"; then
 		# Count database objects before installing anything
 		object_count_pre=$(count_db_objects "counting object before postgis install")
 
-		${PSQL} ${_psql_opts} -Xf ${REGDIR}/00-regress-install/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module initialization"
+		${PSQL} ${_psql_opts} -Xf ${REGDIR}/00-regress-install/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module"
 
 		if test x"$OPT_WITH_TOPO" = "xyes"; then
 			if test -e ${REGDIR}/../topology/topology.sql; then
 				echo "Adding topology support" 
-				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology initialization"
+				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology module"
 			else
 				echo "Topology support skipped (topology.sql  not found)" 
 			fi
@@ -543,7 +550,7 @@ if test -z "$db_exists"; then
 			SCRIPT=${REGDIR}/../raster/test/regress/rtpostgis.sql
 			if test -e ${SCRIPT}; then
 				echo "Adding raster support"
-				${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster module initialization"
+				${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster module"
 			else
 				echo "Raster support skipped (rtpostgis.sql  not found)" 
 			fi
