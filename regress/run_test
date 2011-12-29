@@ -217,7 +217,7 @@ run_simple_test ()
 drop_table_if_exists()
 {
 	tblname="$1"
-	${PSQL} -c "DROP TABLE ${tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+	${PSQL} -c "DROP TABLE IF EXISTS ${tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
 }
 
 #
