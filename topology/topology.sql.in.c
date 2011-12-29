@@ -910,29 +910,37 @@ BEGIN
 	LOOP
 		obj_id = tg_objs[i][1];
 		obj_type = tg_objs[i][2];
-		IF layerlevel = 0 THEN -- array specifies lower-level objects
-			IF tg_type != 4 and tg_type != obj_type THEN
-				RAISE EXCEPTION 'A TopoGeometry of type % cannot contain topology elements of type %', tg_type, obj_type;
+
+		-- Elements of type 0 represent emptiness, just skip them
+		IF obj_type = 0 THEN
+			IF obj_id != 0 THEN
+				RAISE EXCEPTION 'Malformed empty topo element {0,%} -- id must be 0 as well', obj_id;
 			END IF;
-		ELSE -- array specifies lower-level topogeometries
-			IF obj_type != layerchild THEN
-				RAISE EXCEPTION 'TopoGeom element layer do not match TopoGeom child layer';
+		ELSE
+			IF layerlevel = 0 THEN -- array specifies lower-level objects
+				IF tg_type != 4 and tg_type != obj_type THEN
+					RAISE EXCEPTION 'A TopoGeometry of type % cannot contain topology elements of type %', tg_type, obj_type;
+				END IF;
+			ELSE -- array specifies lower-level topogeometries
+				IF obj_type != layerchild THEN
+					RAISE EXCEPTION 'TopoGeom element layer do not match TopoGeom child layer';
+				END IF;
+				-- TODO: verify that the referred TopoGeometry really
+				-- exists in the relation table ?
 			END IF;
-			-- TODO: verify that the referred TopoGeometry really
-			-- exists in the relation table ?
+
+			--RAISE NOTICE 'obj:% type:% id:%', i, obj_type, obj_id;
+
+			--
+			-- Insert record into the Relation table
+			--
+			EXECUTE 'INSERT INTO '||quote_ident(toponame)
+				|| '.relation(topogeo_id, layer_id, '
+				|| 'element_id,element_type) '
+				|| ' VALUES ('||ret.id
+				||','||ret.layer_id
+				|| ',' || obj_id || ',' || obj_type || ');';
 		END IF;
-
-		--RAISE NOTICE 'obj:% type:% id:%', i, obj_type, obj_id;
-
-		--
-		-- Insert record into the Relation table
-		--
-		EXECUTE 'INSERT INTO '||quote_ident(toponame)
-			|| '.relation(topogeo_id, layer_id, '
-			|| 'element_id,element_type) '
-			|| ' VALUES ('||ret.id
-			||','||ret.layer_id
-			|| ',' || obj_id || ',' || obj_type || ');';
 
 		i = i+1;
 		IF i > array_upper(tg_objs, 1) THEN
@@ -945,7 +953,17 @@ BEGIN
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
---} CreateTopoGeom(toponame,topogeom_type, TopoObject[])
+--} CreateTopoGeom(toponame,topogeom_type, layer_id, TopoElementArray)
+
+--{
+-- CreateTopoGeom(topology_name, topogeom_type, layer_id) - creates the empty topogeom
+CREATE OR REPLACE FUNCTION topology.CreateTopoGeom(toponame varchar, tg_type integer, layer_id integer)
+	RETURNS topology.TopoGeometry
+AS
+$$
+  SELECT topology.CreateTopoGeom($1,$2,$3,'{{0,0}}');
+$$ LANGUAGE 'sql' VOLATILE STRICT;
+--} CreateTopoGeom(toponame, topogeom_type, layer_id)
 
 --{
 -- GetTopologyName(topology_id)

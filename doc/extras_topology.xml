@@ -2098,6 +2098,13 @@ nodeid
 					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
 					<paramdef><type>topoelementarray</type> <parameter>tg_objs</parameter></paramdef>
 					</funcprototype>
+
+					<funcprototype>
+					<funcdef>topogeometry <function>CreateTopoGeom</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>tg_type</parameter></paramdef>
+					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -2108,6 +2115,7 @@ nodeid
                 <para>tg_type is an integer: 1:[multi]point (punctal), 2:[multi]line (lineal), 3:[multi]poly (areal), 4:collection. layer_id is the layer id in the topology.layer table.</para>
                 <para>punctal layers are formed from set of nodes, lineal layers are formed from a set of edges, areal layers are formed from a set of faces,
                 	and collections can be formed from a mixture of nodes, edges, and faces.</para>
+                <para>Omitting the array of components generates an empty TopoGeometry object.</para>
                 <!-- use this format if new function -->
                 <para>Availability: 1.?</para>
 			</refsection>
