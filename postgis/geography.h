@@ -35,7 +35,7 @@
 */
 
 /* Check that the typmod matches the flags on the lwgeom */
-void postgis_valid_typmod(LWGEOM *lwgeom, int32 typmod);
+void postgis_valid_typmod(const GSERIALIZED *gser, int32_t typmod);
 /* Check that the type is legal in geography (no curves please!) */
 void geography_valid_type(uint8_t type);
 

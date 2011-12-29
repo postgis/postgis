@@ -117,7 +117,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 
 	if ( geom_typmod >= 0 )
 	{
-		postgis_valid_typmod(lwgeom, geom_typmod);
+		postgis_valid_typmod(ret, geom_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
 	}
 	else
@@ -125,6 +125,8 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 
+	/* Don't free the parser result (and hence lwgeom) until we have done */
+	/* the typemod check with lwgeom */
 	
 	PG_RETURN_POINTER(ret);
 

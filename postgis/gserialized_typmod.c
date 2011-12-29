@@ -101,57 +101,50 @@ Datum postgis_typmod_out(PG_FUNCTION_ARGS)
 * Check the consistency of the metadata we want to enforce in the typmod:
 * srid, type and dimensionality. If things are inconsistent, shut down the query.
 */
-void postgis_valid_typmod(LWGEOM *lwgeom, int32 typmod)
+void postgis_valid_typmod(const GSERIALIZED *gser, int32_t typmod)
 {
-	int32 lwgeom_srid;
-	int32 lwgeom_type;
-	int32 lwgeom_z;
-	int32 lwgeom_m;
+	int32 geom_srid = gserialized_get_srid(gser);
+	int32 geom_type = gserialized_get_type(gser);
+	int32 geom_z = gserialized_has_z(gser);
+	int32 geom_m = gserialized_has_m(gser);
 	int32 typmod_srid = TYPMOD_GET_SRID(typmod);
 	int32 typmod_type = TYPMOD_GET_TYPE(typmod);
 	int32 typmod_z = TYPMOD_GET_Z(typmod);
 	int32 typmod_m = TYPMOD_GET_M(typmod);
-
-	Assert(lwgeom);
-
-	lwgeom_type = lwgeom->type;
-	lwgeom_srid = lwgeom->srid;
-	lwgeom_z = FLAGS_GET_Z(lwgeom->flags);
-	lwgeom_m = FLAGS_GET_M(lwgeom->flags);
 
 	POSTGIS_DEBUG(2, "Entered function");
 
 	/* No typmod (-1) => no preferences */
 	if (typmod < 0) return;
 
-	POSTGIS_DEBUGF(3, "Got lwgeom(type = %d, srid = %d, hasz = %d, hasm = %d)", lwgeom_type, lwgeom_srid, lwgeom_z, lwgeom_m);
+	POSTGIS_DEBUGF(3, "Got geom(type = %d, srid = %d, hasz = %d, hasm = %d)", geom_type, geom_srid, geom_z, geom_m);
 	POSTGIS_DEBUGF(3, "Got typmod(type = %d, srid = %d, hasz = %d, hasm = %d)", typmod_type, typmod_srid, typmod_z, typmod_m);
 
-	/* Typmod has a preference for SRID and lwgeom has a non-default SRID? They had better match. */
-	if ( typmod_srid > 0 && typmod_srid != lwgeom_srid )
+	/* Typmod has a preference for SRID and geom has a non-default SRID? They had better match. */
+	if ( typmod_srid > 0 && typmod_srid != geom_srid )
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Geometry SRID (%d) does not match column SRID (%d)", lwgeom_srid, typmod_srid) ));
+		            errmsg("Geometry SRID (%d) does not match column SRID (%d)", geom_srid, typmod_srid) ));
 	}
 
 	/* Typmod has a preference for geometry type. */
 	if ( typmod_type > 0 &&
 	        /* GEOMETRYCOLLECTION column can hold any kind of collection */
-	        ((typmod_type == COLLECTIONTYPE && ! (lwgeom_type == COLLECTIONTYPE ||
-	                                              lwgeom_type == MULTIPOLYGONTYPE ||
-	                                              lwgeom_type == MULTIPOINTTYPE ||
-	                                              lwgeom_type == MULTILINETYPE )) ||
+	        ((typmod_type == COLLECTIONTYPE && ! (geom_type == COLLECTIONTYPE ||
+	                                              geom_type == MULTIPOLYGONTYPE ||
+	                                              geom_type == MULTIPOINTTYPE ||
+	                                              geom_type == MULTILINETYPE )) ||
 	         /* Other types must be strictly equal. */
-	         (typmod_type != lwgeom_type)) )
+	         (typmod_type != geom_type)) )
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Geometry type (%s) does not match column type (%s)", lwtype_name(lwgeom_type), lwtype_name(typmod_type)) ));
+		            errmsg("Geometry type (%s) does not match column type (%s)", lwtype_name(geom_type), lwtype_name(typmod_type)) ));
 	}
 
 	/* Mismatched Z dimensionality. */
-	if ( typmod_z && ! lwgeom_z )
+	if ( typmod_z && ! geom_z )
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -159,7 +152,7 @@ void postgis_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	}
 
 	/* Mismatched Z dimensionality (other way). */
-	if ( lwgeom_z && ! typmod_z )
+	if ( geom_z && ! typmod_z )
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -167,7 +160,7 @@ void postgis_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	}
 
 	/* Mismatched M dimensionality. */
-	if ( typmod_m && ! lwgeom_m )
+	if ( typmod_m && ! geom_m )
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -175,7 +168,7 @@ void postgis_valid_typmod(LWGEOM *lwgeom, int32 typmod)
 	}
 
 	/* Mismatched M dimensionality (other way). */
-	if ( lwgeom_m && ! typmod_m )
+	if ( geom_m && ! typmod_m )
 	{
 		ereport(ERROR, (
 		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -316,17 +309,14 @@ PG_FUNCTION_INFO_V1(geography_enforce_typmod);
 Datum geography_enforce_typmod(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *arg = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *lwgeom = NULL;
 	int32 typmod = PG_GETARG_INT32(1);
 	/* We don't need to have different behavior based on explicitness. */
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
 
-	lwgeom = lwgeom_from_gserialized(arg);
-
 	/* Check if geometry typmod is consistent with the supplied one. */
-	postgis_valid_typmod(lwgeom, typmod);
+	postgis_valid_typmod(arg, typmod);
 
-	PG_RETURN_POINTER(geography_serialize(lwgeom));
+	PG_RETURN_POINTER(arg);
 }
 
 /*
@@ -338,17 +328,14 @@ PG_FUNCTION_INFO_V1(geometry_enforce_typmod);
 Datum geometry_enforce_typmod(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *arg = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	LWGEOM *lwgeom = NULL;
 	int32 typmod = PG_GETARG_INT32(1);
 	/* We don't need to have different behavior based on explicitness. */
 	/* bool isExplicit = PG_GETARG_BOOL(2); */
 
-	lwgeom = lwgeom_from_gserialized(arg);
-
 	/* Check if geometry typmod is consistent with the supplied one. */
-	postgis_valid_typmod(lwgeom, typmod);
+	postgis_valid_typmod(arg, typmod);
 
-	PG_RETURN_POINTER(geometry_serialize(lwgeom));
+	PG_RETURN_POINTER(arg);
 }
 
 

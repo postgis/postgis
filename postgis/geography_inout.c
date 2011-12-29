@@ -133,9 +133,18 @@ Datum geography_in(PG_FUNCTION_ARGS)
 	if ( (int)lwgeom->srid <= 0 )
 		lwgeom->srid = SRID_DEFAULT;
 
+	/*
+	** Serialize our lwgeom and set the geodetic flag so subsequent
+	** functions do the right thing.
+	*/
+	g_ser = geography_serialize(lwgeom);
+	/* Clean up temporary object */
+	lwgeom_free(lwgeom);
+	
+	/* Check for typmod agreement */
 	if ( geog_typmod >= 0 )
 	{
-		postgis_valid_typmod(lwgeom, geog_typmod);
+		postgis_valid_typmod(g_ser, geog_typmod);
 		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
 	}
 	else
@@ -143,17 +152,7 @@ Datum geography_in(PG_FUNCTION_ARGS)
 		POSTGIS_DEBUG(3, "typmod was -1");
 	}
 
-	/*
-	** Serialize our lwgeom and set the geodetic flag so subsequent
-	** functions do the right thing.
-	*/
-	g_ser = geography_serialize(lwgeom);
-
-	/* Clean up temporary object */
-	lwgeom_free(lwgeom);
-
 	PG_RETURN_POINTER(g_ser);
-
 }
 
 /*
