@@ -30,4 +30,8 @@ SELECT layer_id(tg), id(tg), type(tg) FROM (
  SELECT topology.CreateTopoGeom( 'MiX', 1, 1, '{{1,1}}') as tg
 ) foo; 
 
+-- Invalid TopoGeometry type (out of range)
+SELECT topology.CreateTopoGeom( 'MiX', 5, 1, '{{12,2}}'); 
+SELECT topology.CreateTopoGeom( 'MiX', 0, 1, '{{12,2}}'); 
+
 SELECT topology.DropTopology('MiX');

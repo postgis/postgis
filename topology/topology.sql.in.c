@@ -859,7 +859,7 @@ DECLARE
 BEGIN
 
 	IF tg_type < 1 OR tg_type > 4 THEN
-		RAISE EXCEPTION 'Invalid TopoGeometry type (must be in the range 1..4';
+		RAISE EXCEPTION 'Invalid TopoGeometry type % (must be in the range 1..4)', tg_type;
 	END IF;
 
 	-- Get topology id into return TopoGeometry
