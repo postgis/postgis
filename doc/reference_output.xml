@@ -824,8 +824,8 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 			<funcprototype>
 				<funcdef>text <function>ST_AsSVG</function></funcdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>maxdecimaldigits</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>rel=0</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
