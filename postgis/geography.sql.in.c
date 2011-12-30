@@ -397,7 +397,7 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography,rel int4 DEFAULT 0,maxdecimal
 -- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 	RETURNS text AS
-	$$ SELECT ST_AsSVG($1::geometry);  $$
+	$$ SELECT ST_AsSVG($1::geometry,0,15);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 --
