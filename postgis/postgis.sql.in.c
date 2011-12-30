@@ -4770,9 +4770,9 @@ CREATE OR REPLACE FUNCTION _ST_AsX3D(int4, geometry, int4, int4, text)
 	LANGUAGE 'C' IMMUTABLE;
 	
 -- ST_AsX3D(geom, precision)
-CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, prec integer DEFAULT 15)
+CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, prec integer DEFAULT 15, opts integer DEFAULT 0)
 	RETURNS TEXT
-	AS $$SELECT _ST_AsX3D(3,$1,$2,1,'');$$
+	AS $$SELECT _ST_AsX3D(3,$1,$2,$3,'');$$
 	LANGUAGE 'sql' IMMUTABLE;
 
 COMMIT;
