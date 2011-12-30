@@ -64,6 +64,15 @@ DROP FUNCTION SE_LocateAlong(geometry, float8);
 DROP FUNCTION SE_LocateBetween(geometry, float8, float8);
 
 -------------------------------------------------------------------------------
+-- SQL/MM LRS functions
+-------------------------------------------------------------------------------
+
+DROP FUNCTION ST_LocateBetween(geometry, float8, float8);
+DROP FUNCTION ST_LocateAlong(geometry, float8);
+DROP FUNCTION ST_LocateBetween(geometry, float8, float8, float8);
+DROP FUNCTION ST_LocateAlong(geometry, float8, float8);
+
+-------------------------------------------------------------------------------
 -- END
 -------------------------------------------------------------------------------
 

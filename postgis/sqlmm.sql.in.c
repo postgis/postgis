@@ -313,6 +313,31 @@ CREATE OR REPLACE FUNCTION SE_LocateAlong(geometry, float8)
 	AS $$ SELECT SE_LocateBetween($1, $2, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+---
+-- Linear referencing functions (move to postgis.sql.in.c?)
+---
+CREATE OR REPLACE FUNCTION ST_LocateBetween(geometry, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+CREATE OR REPLACE FUNCTION ST_LocateAlong(geometry, float8)
+	RETURNS geometry
+	AS $$ SELECT SE_LocateBetween($1, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- LRS with offset parameter
+CREATE OR REPLACE FUNCTION ST_LocateBetween(geometry, float8, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- LRS with offset parameter
+CREATE OR REPLACE FUNCTION ST_LocateAlong(geometry, float8, float8)
+	RETURNS geometry
+	AS $$ SELECT SE_LocateBetween($1, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
 
 
 -------------------------------------------------------------------------------
