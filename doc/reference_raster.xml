@@ -5334,7 +5334,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_HillShade">
 			<refnamediv>
 				<refname>ST_HillShade</refname>
-				<refpurpose>Returns the hypothetical illumination of a raster band using azimuth, altitude, brightness, and elevation scale inputs</refpurpose>
+				<refpurpose>Returns the hypothetical illumination of a raster band using provided azimuth, altitude, brightness, and elevation scale inputs.  Useful for visualizing terrain.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>

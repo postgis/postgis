@@ -817,31 +817,13 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>text <function>ST_AsSVG</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>rel=0</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsSVG</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsSVG</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsSVG</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsSVG</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>maxdecimaldigits</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsSVG</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>rel</parameter></paramdef>
 				<paramdef><type>integer </type> <parameter>maxdecimaldigits</parameter></paramdef>
 			</funcprototype>
@@ -864,6 +846,7 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 		  <para>Availability: 1.2.2. Availability: 1.4.0  Changed in PostGIS 1.4.0 to include L command in absolute path to conform to <ulink
 			url="http://www.w3.org/TR/SVG/paths.html#PathDataBNF">http://www.w3.org/TR/SVG/paths.html#PathDataBNF</ulink></para>
 		</note>
+		<para>Changed: 2.0.0 to use default args and support named args</para>
 	  </refsection>
 
 	  <refsection>

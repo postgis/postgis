@@ -3145,19 +3145,8 @@ CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(text)
 -- SVG OUTPUT
 -----------------------------------------------------------------------
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsSVG(geometry,int4,int4)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsSVG(geometry,int4)
-	RETURNS TEXT
-	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsSVG(geometry)
+-- Changed: 2.0.0 changed to use default args and allow calling by named args
+CREATE OR REPLACE FUNCTION ST_AsSVG(geom geometry,rel int4 DEFAULT 0,maxdecimaldigits int4 DEFAULT 15)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asSVG'
 	LANGUAGE 'C' IMMUTABLE STRICT;

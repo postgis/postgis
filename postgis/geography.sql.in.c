@@ -385,20 +385,10 @@ CREATE OPERATOR CLASS btree_geography_ops
 -- SVG OUTPUT
 --
 
--- ST_AsSVG(geography, precision, rel)
-CREATE OR REPLACE FUNCTION ST_AsSVG(geography,int4,int4)
-	RETURNS text
-	AS 'MODULE_PATHNAME','geography_as_svg'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- ST_AsSVG(geography, precision) / rel=0
-CREATE OR REPLACE FUNCTION ST_AsSVG(geography,int4)
-	RETURNS text
-	AS 'MODULE_PATHNAME','geography_as_svg'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- ST_AsSVG(geography) / precision=15, rel=0
-CREATE OR REPLACE FUNCTION ST_AsSVG(geography)
+-- ST_AsSVG(geography, rel, precision)
+-- rel int4 DEFAULT 0, maxdecimaldigits int4 DEFAULT 15
+-- Changed 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography,rel int4 DEFAULT 0,maxdecimaldigits int4 DEFAULT 15)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_svg'
 	LANGUAGE 'C' IMMUTABLE STRICT;
@@ -409,7 +399,6 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 	RETURNS text AS
 	$$ SELECT ST_AsSVG($1::geometry);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 
 --
 -- GML OUTPUT
