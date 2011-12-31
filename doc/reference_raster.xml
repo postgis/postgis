@@ -5344,6 +5344,7 @@ FROM dummy_rast;
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>azimuth</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>altitude</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>elevation_scale=1</parameter></paramdef>
 				  </funcprototype>
