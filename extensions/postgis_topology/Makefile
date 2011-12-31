@@ -11,7 +11,7 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a12--$(EXTVERSION).sql
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -55,10 +55,10 @@ sql/topology_upgrade_minor.sql:  sql_bits/topology.sql
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 $< > $@
 
-sql/$(EXTENSION)--2.0.0a10--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/topology_comments.sql  ../postgis_extension_helper_uninstall.sql
+sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/topology_comments.sql  ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 
-sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a10--$(EXTVERSION).sql
+sql/$(EXTENSION)--2.0.0a12--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql
 	cp $< $@
 	
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
