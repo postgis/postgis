@@ -2036,9 +2036,11 @@ faceid
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-					<funcdef>integer <function>AddNode</function></funcdef>
-					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+						<funcdef>integer <function>AddNode</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+						<paramdef choice='opt'><type>boolean </type> <parameter>allowEdgeSplitting=false</parameter></paramdef>
+						<paramdef choice='opt'><type>boolean </type> <parameter>computeContainingFace=false</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2046,8 +2048,24 @@ faceid
 			<refsection>
                 <title>Description</title>
             
-                <para>Adds a point node to the node table in the specified topology schema.  The <xref linkend="AddEdge" /> function automatically adds start and end points of an edge when called so not necessary to explicitly add nodes of an edge.
-                When adding a new node it checks for the existence of any edge crossing the given point, raising an exception if found.</para>
+                <para>
+Adds a point node to the node table in the specified topology schema.
+The <xref linkend="AddEdge" /> function automatically adds start and end
+points of an edge when called so not necessary to explicitly add nodes
+of an edge.
+                </para>
+
+	<para>
+If any edge crossing the node is found either an exception is raised or
+the edge is splitted, depending on the <varname>allowEdgeSplitting</varname>
+parameter value.
+	</para>
+
+	<para>
+If <varname>computeContainingFace</varname> is true a newly added node would
+get the correct containing face computed.
+	</para>
+
                 <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
                 
                 <!-- use this format if new function -->
