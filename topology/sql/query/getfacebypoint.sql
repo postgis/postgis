@@ -136,7 +136,7 @@ BEGIN
     		|| 'WHERE ST_DWithin(e.geom, ' || quote_literal(apoint::text)||'::geometry,' || tol1::text || ')=true;';
         end if;
 	
-    	raise notice ' ==> %',sql;
+    	RAISE DEBUG ' ==> %',sql;
 
         BEGIN
             EXECUTE sql INTO STRICT idface;
