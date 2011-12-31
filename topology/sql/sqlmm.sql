@@ -1378,13 +1378,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_AddIsoNode(atopology, aface, apoint)
 --
-CREATE OR REPLACE FUNCTION topology.ST_AddIsoNode(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_AddIsoNode(atopology varchar, aface integer, apoint geometry)
   RETURNS INTEGER AS
 $$
 DECLARE
-  atopology ALIAS FOR $1;
-  aface ALIAS FOR $2;
-  apoint ALIAS FOR $3;
   rec RECORD;
   nodeid integer;
     sql text;
@@ -1539,13 +1536,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  ST_MoveIsoNode(atopology, anode, apoint)
 --
-CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(character varying, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_MoveIsoNode(atopology character varying, anode integer, apoint geometry)
   RETURNS text AS
 $$
 DECLARE
-  atopology ALIAS FOR $1;
-  anode ALIAS FOR $2;
-  apoint ALIAS FOR $3;
   rec RECORD;
 BEGIN
 
@@ -1627,12 +1621,10 @@ $$
 --
 --  ST_RemoveIsoNode(atopology, anode)
 --
-CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(varchar, integer)
+CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoNode(atopology varchar, anode integer)
   RETURNS TEXT AS
 $$
 DECLARE
-  atopology ALIAS FOR $1;
-  anode ALIAS FOR $2;
   rec RECORD;
 BEGIN
 
@@ -1682,12 +1674,10 @@ $$ LANGUAGE 'sql' VOLATILE;
 --
 --  ST_RemoveIsoEdge(atopology, anedge)
 --
-CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(varchar, integer)
+CREATE OR REPLACE FUNCTION topology.ST_RemoveIsoEdge(atopology varchar, anedge integer)
   RETURNS TEXT AS
 $$
 DECLARE
-  atopology ALIAS FOR $1;
-  anedge ALIAS FOR $2;
   edge RECORD;
   rec RECORD;
   ok BOOL;
@@ -1758,13 +1748,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Not in the specs:
 -- * Update references in the Relation table.
 --
-CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_NewEdgesSplit(atopology varchar, anedge integer, apoint geometry)
   RETURNS INTEGER AS
 $$
 DECLARE
-  atopology ALIAS FOR $1;
-  anedge ALIAS FOR $2;
-  apoint ALIAS FOR $3;
   oldedge RECORD;
   rec RECORD;
   tmp integer;
@@ -2022,13 +2009,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- Not in the specs:
 -- * Update references in the Relation table.
 --
-CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(varchar, integer, geometry)
+CREATE OR REPLACE FUNCTION topology.ST_ModEdgeSplit(atopology varchar, anedge integer, apoint geometry)
   RETURNS INTEGER AS
 $$
 DECLARE
-  atopology ALIAS FOR $1;
-  anedge ALIAS FOR $2;
-  apoint ALIAS FOR $3;
   oldedge RECORD;
   rec RECORD;
   tmp integer;
