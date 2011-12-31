@@ -26,7 +26,7 @@
 
 --{
 --
--- AddNode(atopology, point)
+-- AddNode(atopology, point, allowEdgeSplitting, setContainingFace)
 --
 -- Add a node primitive to a topology and get its identifier.
 -- Returns an existing node at the same location, if any.
@@ -36,14 +36,15 @@
 --
 -- The newly added nodes have no containing face.
 --
--- 
-CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry)
+-- }{
+CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry, allowEdgeSplitting boolean, setContainingFace boolean DEFAULT false)
 	RETURNS int
 AS
 $$
 DECLARE
 	nodeid int;
 	rec RECORD;
+  containing_face int;
 BEGIN
 	--
 	-- Atopology and apoint are required
@@ -88,8 +89,19 @@ BEGIN
 		|| quote_literal(apoint::text)
 		|| ', ST_EndPoint(geom))'
 	LOOP
-		RAISE EXCEPTION 'An edge crosses the given node.';
+    IF allowEdgeSplitting THEN
+      RETURN ST_ModEdgeSplit(atopology, rec.edge_id, apoint);
+    ELSE
+		  RAISE EXCEPTION 'An edge crosses the given node.';
+    END IF;
 	END LOOP;
+
+  IF setContainingFace THEN
+    containing_face := topology.GetFaceByPoint(atopology, apoint, 0);
+    RAISE DEBUG 'containing face: %', containing_face;
+  ELSE
+    containing_face := NULL;
+  END IF;
 
 	--
 	-- Get new node id from sequence
@@ -106,15 +118,28 @@ BEGIN
 	-- Insert the new row
 	--
 	EXECUTE 'INSERT INTO ' || quote_ident(atopology)
-		|| '.node(node_id, geom) 
-		VALUES('||nodeid||','||quote_literal(apoint::text)||
-		')';
+		|| '.node(node_id, containing_face, geom) 
+		VALUES(' || nodeid || ',' || coalesce(containing_face::text, 'NULL') || ','
+    || quote_literal(apoint::text) || ')';
 
 	RETURN nodeid;
 	
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
+--} AddNode
+
+--{
+--
+-- AddNode(atopology, point)
+--
+CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry)
+	RETURNS int
+AS
+$$
+  SELECT topology.AddNode($1, $2, false, false);
+$$
+LANGUAGE 'sql' VOLATILE;
 --} AddNode
 
 --{
