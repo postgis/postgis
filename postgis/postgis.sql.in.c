@@ -3237,16 +3237,11 @@ CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecim
 ------------------------------------------------------------------------
 
 -- Availability 1.4.0
-CREATE OR REPLACE FUNCTION ST_GeoHash(geometry, int4)
+-- Changed 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars int4 DEFAULT 0)
 	RETURNS TEXT
 		AS 'MODULE_PATHNAME', 'ST_GeoHash'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability 1.4.0
-CREATE OR REPLACE FUNCTION ST_GeoHash(geometry)
-	RETURNS TEXT
-	AS 'SELECT ST_GeoHash($1, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------
 -- OGC defined

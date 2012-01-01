@@ -313,6 +313,7 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 
 			<para>Availability: 1.3.4</para>
 			<para>Availability: 1.5.0 geography support was introduced.</para>
+			<para>Changed: 2.0.0 support default args and named args.</para>
 			<para>&Z_support;</para>
 	  </refsection>
 
@@ -914,12 +915,8 @@ x3dfrag
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>text <function>ST_GeoHash</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_GeoHash</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>maxchars=full_precision_of_point</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -929,9 +926,9 @@ x3dfrag
 
 		<para>Return a GeoHash representation (geohash.org) of the geometry. A GeoHash encodes a point into a text form that is sortable and searchable based on prefixing.  A shorter GeoHash is a less precise representation of a point.  It can also be thought of as a box, that contains the actual point.</para>
 
-		<para>The one-parameter variant of ST_GeoHash returns a GeoHash based on the input geometry type. Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input). Other types return a GeoHash with a variable amount of precision, based on the size of the feature. Larger features are represented with less precision, smaller features with more precision. The idea is that the box implied by the GeoHash will always contain the input feature.</para>
+		<para>If no <varname>maxchars</varname> is specficified ST_GeoHash returns a GeoHash based on full precision of the input geometry type. Points return a GeoHash with 20 characters of precision (about enough to hold the full double precision of the input). Other types return a GeoHash with a variable amount of precision, based on the size of the feature. Larger features are represented with less precision, smaller features with more precision. The idea is that the box implied by the GeoHash will always contain the input feature.</para>
 
-		<para>The two-parameter variant of ST_GeoHash returns a GeoHash with a requested precision. For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
+		<para>If <varname>maxchars</varname> is specified ST_GeoHash returns a GeoHash with at most that many characters so a possibly lower precision representation of the input geometry. For non-points, the starting point of the calculation is the center of the bounding box of the geometry.</para>
 
 		<para>Availability: 1.4.0</para>
 
