@@ -428,10 +428,10 @@ CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAUL
 
 -- ST_AsGML(version, geography, precision, option, prefix)
 -- Changed: 2.0.0 to use default args and allow named args
-CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT '')
+CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT NULL)
 	RETURNS text
-	AS $$ SELECT _ST_AsGML($1, $2, $3, $4, NULLIF($5, ''));$$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	AS $$ SELECT _ST_AsGML($1, $2, $3, $4, $5);$$
+	LANGUAGE 'SQL' IMMUTABLE;
 
 --
 -- KML OUTPUT
