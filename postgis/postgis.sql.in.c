@@ -3186,44 +3186,26 @@ CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigit
 -----------------------------------------------------------------------
 -- KML OUTPUT
 -----------------------------------------------------------------------
--- _ST_AsKML(version, geom, precision)
-CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geometry, int4, text)
+-- _ST_AsKML(version, geom, precision, nprefix)
+CREATE OR REPLACE FUNCTION _ST_AsKML(int4,geometry, int4, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asKML'
 	LANGUAGE 'C' IMMUTABLE;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsKML(geometry, int4)
+-- Changed: 2.0.0 to use default args and allow named args
+CREATE OR REPLACE FUNCTION ST_AsKML(geom geometry, maxdecimaldigits int4 DEFAULT 15)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), $2, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsKML(geometry)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsKML(2, ST_Transform($1,4326), 15, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsKML(version, geom) / precision=15 version=2
--- Availability: 1.3.2
-CREATE OR REPLACE FUNCTION ST_AsKML(int4, geometry)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), 15, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsKML(version, geom, precision)
--- Availability: 1.3.2
-CREATE OR REPLACE FUNCTION ST_AsKML(int4, geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3, null)'
+	AS $$ SELECT _ST_AsKML(2, ST_Transform($1,4326), $2, null); $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsKML(version, geom, precision, text)
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsKML(int4, geometry, int4, text)
+-- Changed: 2.0.0 allows default args and got rid of other permutations
+CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT null)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsKML($1, ST_Transform($2,4326), $3, $4)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	AS $$ SELECT _ST_AsKML($1, ST_Transform($2,4326), $3, $4); $$
+	LANGUAGE 'SQL' IMMUTABLE;
 
 
 -----------------------------------------------------------------------
@@ -4737,7 +4719,7 @@ CREATE OR REPLACE FUNCTION _ST_AsX3D(int4, geometry, int4, int4, text)
 	LANGUAGE 'C' IMMUTABLE;
 	
 -- ST_AsX3D(geom, precision, options)
-CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, prec integer DEFAULT 15, options integer DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFAULT 15, options integer DEFAULT 0)
 	RETURNS TEXT
 	AS $$SELECT _ST_AsX3D(3,$1,$2,$3,'');$$
 	LANGUAGE 'sql' IMMUTABLE;

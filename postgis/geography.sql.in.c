@@ -444,44 +444,26 @@ CREATE OR REPLACE FUNCTION _ST_AsKML(int4, geography, int4, text)
 	LANGUAGE 'C' IMMUTABLE;
 
 -- AsKML(geography,precision) / version=2
-CREATE OR REPLACE FUNCTION ST_AsKML(geography, int4)
+-- Changed: 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAULT 15)
 	RETURNS text
 	AS 'SELECT _ST_AsKML(2, $1, $2, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- AsKML(geography) / precision=15 version=2
-CREATE OR REPLACE FUNCTION ST_AsKML(geography)
-	RETURNS text
-	AS 'SELECT _ST_AsKML(2, $1, 15, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
+-- Deprecated 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsKML(text)
 	RETURNS text AS
-	$$ SELECT ST_AsKML($1::geometry);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsKML(version, geography) / precision=15 
-CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography)
-	RETURNS text
-	AS 'SELECT _ST_AsKML($1, $2, 15, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsKML(version, geography, precision)
-CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography, int4)
-	RETURNS text
-	AS 'SELECT _ST_AsKML($1, $2, $3, null)'
+	$$ SELECT _ST_AsKML(2, $1::geometry, 15, null);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsKML(version, geography, precision, prefix)
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsKML(int4, geography, int4, text)
+-- Availability: 2.0.0 nprefix added
+-- Changed: 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_AsKML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, nprefix text DEFAULT null)
 	RETURNS text
 	AS 'SELECT _ST_AsKML($1, $2, $3, $4)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-
+	LANGUAGE 'SQL' IMMUTABLE;
 
 --
 -- GeoJson Output
