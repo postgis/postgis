@@ -3181,7 +3181,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT
 CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT null)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsGML($1, $2, $3, $4, $5)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- KML OUTPUT
