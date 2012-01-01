@@ -404,7 +404,7 @@ st_asgeojson
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
 				<paramdef choice='opt'><type>text </type> <parameter>nprefix=null</parameter></paramdef>
