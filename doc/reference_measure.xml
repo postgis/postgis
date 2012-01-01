@@ -733,6 +733,11 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 			  <paramdef><type>geometry </type><parameter>pointA</parameter></paramdef>
 			  <paramdef><type>geometry </type><parameter>pointB</parameter></paramdef>
 			</funcprototype>
+			<funcprototype>
+			  <funcdef>float <function>ST_Azimuth</function></funcdef>
+			  <paramdef><type>geography </type><parameter>pointA</parameter></paramdef>
+			  <paramdef><type>geography </type><parameter>pointB</parameter></paramdef>
+			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
 		<refsection>
@@ -746,16 +751,22 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 				and a point. </para>
 
 			<para>Availability: 1.1.0</para>
+			<para>Enhanced: 2.0.0 support for geography was introduced.</para>
 			<para>Azimuth is especially useful in conjunction with ST_Translate for shifting an object along its perpendicular axis. See
 				 upgis_lineshift <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctions">Plpgsqlfunctions PostGIS wiki section</ulink> for example of this.</para>
 		</refsection>
 
 		<refsection>
 		<title>Examples</title>
-		<para>Azimuth in degrees </para>
+		<para>Geometry Azimuth in degrees </para>
 <programlisting>
 SELECT ST_Azimuth(ST_Point(25,45), ST_Point(75,100))/(2*pi())*360 as degAz,
 	ST_Azimuth(ST_Point(75,100), ST_Point(25,45))/(2*pi())*360 As degAzrev;
+	
+-- NOTE easier to remember syntax using PostgreSQL built-in degrees function --
+-- Both yield same answer --
+SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degAz,
+	degrees( ST_Azimuth(ST_Point(75,100), ST_Point(25,45)) ) As degAzrev;
 
       degaz       |     degazrev
 ------------------+------------------
