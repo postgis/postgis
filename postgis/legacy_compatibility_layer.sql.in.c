@@ -30,6 +30,16 @@ CREATE OR REPLACE FUNCTION Estimated_Extent(text,text) RETURNS box2d AS
 	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
 	
 -- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION GeomFromText(text, int4)
+	RETURNS geometry AS 'SELECT ST_GeomFromText($1, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION GeomFromText(text)
+	RETURNS geometry AS 'SELECT ST_GeomFromText($1)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION ndims(geometry)
 	RETURNS smallint
 	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
