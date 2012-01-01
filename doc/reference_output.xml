@@ -390,92 +390,33 @@ st_asgeojson
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
-			</funcprototype>
+
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice='opt'><type>text </type> <parameter>nprefix=null</parameter></paramdef>
 			</funcprototype>
+
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>namespace prefix</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
-			</funcprototype>
-			<funcprototype>
-				<funcdef>text <function>ST_AsGML</function></funcdef>
-				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
-				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>precision</parameter></paramdef>
-				<paramdef><type>integer </type> <parameter>options</parameter></paramdef>
-				<paramdef><type>text </type> <parameter>namespace prefix</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice='opt'><type>text </type> <parameter>nprefix=null</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -486,7 +427,7 @@ st_asgeojson
 		<para>Return the geometry as a Geography Markup Language (GML) element. The version parameter,
 			if specified, may be either 2 or 3. If no version parameter is
 			specified then the default is assumed to be 2. The precision argument
-			may be used to reduce the maximum number of decimal places
+			may be used to reduce the maximum number of decimal places (<varname>maxdecimaldigits</varname>)
 			used in output (defaults to 15).</para>
 		<para>GML 2 refer to 2.1.2 version, GML 3 to 3.1.1 version</para>
 		<para>The 'options' argument is a bitfield. It could be used to define CRS output type
@@ -527,9 +468,8 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 		  <para>Availability: 1.3.2</para>
 		  <para>Availability: 1.5.0 geography support was introduced.</para>
 		  <para>Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was introduced to allow using LineString instead of Curve tag for lines. GML3 Support for Polyhedral surfaces and TINS was introduced. Option 32 was introduced to output the box.</para>
+		  <para>Changed: 2.0.0 use default named args</para>
 		 
-
-
 		<note><para>Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>

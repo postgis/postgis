@@ -3160,52 +3160,25 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text)
 	AS 'MODULE_PATHNAME','LWGEOM_asGML'
 	LANGUAGE 'C' IMMUTABLE;
 
--- ST_AsGML(geom, precision) / version=2
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsGML(geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsGML(geom) / precision=15 version=2
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_AsGML(geometry)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, 15, 0, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- ST_AsGML(version, geom) / precision=15 
 -- Availability: 1.3.2
-CREATE OR REPLACE FUNCTION ST_AsGML(int4, geometry)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGML($1, $2, 15, 0, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- ST_AsGML(version, geom, precision)
 -- Availability: 1.3.2
-CREATE OR REPLACE FUNCTION ST_AsGML(int4, geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGML($1, $2, $3, 0, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGML (geom, precision, option) / version=2
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_AsGML(geometry, int4, int4)
+-- Changed: 2.0.0 to have default args
+CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsGML(2, $1, $2, $3, null)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGML(version, geom, precision, option)
 -- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_AsGML(int4, geometry, int4, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGML($1, $2, $3, $4, null)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
-
 -- ST_AsGML(version, geom, precision, option, prefix)
 -- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION ST_AsGML(int4, geometry, int4, int4, text)
+-- Changed: 2.0.0 to use default and named args
+CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT null)
 	RETURNS TEXT
 	AS 'SELECT _ST_AsGML($1, $2, $3, $4, $5)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
