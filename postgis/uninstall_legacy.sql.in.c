@@ -112,6 +112,7 @@ DROP FUNCTION IF EXISTS mem_size(geometry);
 DROP FUNCTION IF EXISTS MPolyFromWKB(bytea);
 DROP FUNCTION IF EXISTS multi(geometry);
 
+DROP FUNCTION IF EXISTS SetSRID(geometry, int4);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8, float8, float8);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, geometry, float8, float8, float8, float8);

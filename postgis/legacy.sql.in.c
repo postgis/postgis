@@ -26,6 +26,12 @@ CREATE OR REPLACE FUNCTION noop(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
 	LANGUAGE 'C' VOLATILE STRICT;
 	
+-- Deprecation in 1.2.3
+CREATE OR REPLACE FUNCTION SetSRID(geometry,int4)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_set_srid'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box2d(geometry)
 	RETURNS box2d
