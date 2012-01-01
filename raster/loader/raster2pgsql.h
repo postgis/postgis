@@ -141,7 +141,10 @@ typedef struct raster_loader_config {
 } RTLOADERCFG;
 
 typedef struct rasterinfo_t {
-	/* srs as GDAL has no SRID */
+	/* SRID of raster */
+	int srid;
+
+	/* srs of raster */
 	char *srs;
 
 	/* width, height */

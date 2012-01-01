@@ -28,6 +28,7 @@
 
 #include "raster2pgsql.h"
 #include "gdal_vrt.h"
+#include "ogr_srs_api.h"
 #include <assert.h>
 
 /* This is needed by liblwgeom */
@@ -289,8 +290,10 @@ usage() {
 		"OPTIONS:\n"
 	));
 	printf(_(
-		"  -s <srid> Set the raster's SRID. Defaults to %d.\n"
-	), SRID_UNKNOWN);
+		"  -s <srid> Set the raster's SRID. Defaults to %d.  If SRID not\n"
+		"      provided or is %d, raster's metadata will be checked to\n"
+		"      determine an appropriate SRID.\n"
+	), SRID_UNKNOWN, SRID_UNKNOWN);
 	printf(_(
 		"  -b <band> Index (1-based) of band to extract from raster.  For more\n"
 		"      than one band index, separate with comma (,).  Ranges can be\n"
@@ -385,6 +388,7 @@ usage() {
 
 static void
 init_rastinfo(RASTERINFO *info) {
+	info->srid = SRID_UNKNOWN;
 	info->srs = NULL;
 	memset(info->dim, 0, sizeof(double) * 2);
 	info->nband_count = 0;
@@ -1281,7 +1285,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 			rast = rt_raster_from_gdal_dataset(hdsDst);
 
 			/* set srid if provided */
-			rt_raster_set_srid(rast, config->srid);
+			rt_raster_set_srid(rast, info->srid);
 
 			/* convert rt_raster to hexwkb */
 			hex = rt_raster_to_hexwkb(rast, &hexlen);
@@ -1325,10 +1329,13 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int xtile = 0;
 	int ytile = 0;
 	double gt[6] = {0.};
+	const char* pszProjectionRef = NULL;
 
 	rt_raster rast = NULL;
 	char *hex;
 	uint32_t hexlen = 0;
+
+	info->srid = config->srid;
 
 	hdsSrc = GDALOpenShared(config->rt_file[idx], GA_ReadOnly);
 	if (hdsSrc == NULL) {
@@ -1353,21 +1360,42 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	}
 
 	/* record srs */
-	if (GDALGetProjectionRef(hdsSrc) != NULL) {
-		info->srs = rtalloc(sizeof(char) * (strlen(GDALGetProjectionRef(hdsSrc)) + 1));
+	pszProjectionRef = GDALGetProjectionRef(hdsSrc);
+	if (pszProjectionRef != NULL && pszProjectionRef[0] != '\0') {
+		info->srs = rtalloc(sizeof(char) * (strlen(pszProjectionRef) + 1));
 		if (info->srs == NULL) {
 			fprintf(stderr, _("Could not allocate memory for storing SRS\n"));
 			GDALClose(hdsSrc);
 			return 0;
 		}
-		strcpy(info->srs, GDALGetProjectionRef(hdsSrc));
+		strcpy(info->srs, pszProjectionRef);
+
+		if (info->srid == SRID_UNKNOWN) {
+			OGRSpatialReferenceH hSRS = OSRNewSpatialReference(NULL);
+			if (OSRSetFromUserInput(hSRS, pszProjectionRef) == OGRERR_NONE) {
+				const char* pszAuthorityName = OSRGetAuthorityName(hSRS, NULL);
+				const char* pszAuthorityCode = OSRGetAuthorityCode(hSRS, NULL);
+				if (
+					pszAuthorityName != NULL &&
+					strcmp(pszAuthorityName, "EPSG") == 0 &&
+					pszAuthorityCode != NULL
+				) {
+					info->srid = atoi(pszAuthorityCode);
+				}
+			}
+			OSRDestroySpatialReference(hSRS);
+		}
 	}
 
 	/* record geotransform matrix */
 	if (GDALGetGeoTransform(hdsSrc, info->gt) != CE_None) {
-		fprintf(stderr, _("Cannot get geotransform matrix from raster: %s\n"), config->rt_file[idx]);
-		GDALClose(hdsSrc);
-		return 0;
+		fprintf(stderr, _("Using default geotransform matrix (0, 1, 0, 0, 0, -1) for raster: %s\n"), config->rt_file[idx]);
+		info->gt[0] = 0;
+		info->gt[1] = 1;
+		info->gt[2] = 0;
+		info->gt[3] = 0;
+		info->gt[4] = 0;
+		info->gt[5] = -1;
 	}
 	memcpy(gt, info->gt, sizeof(double) * 6);
 
@@ -1504,7 +1532,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				}
 
 				/* set raster attributes */
-				rt_raster_set_srid(rast, config->srid);
+				rt_raster_set_srid(rast, info->srid);
 				rt_raster_set_geotransform_matrix(rast, gt);
 
 				/* add bands */
@@ -1602,7 +1630,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				rast = rt_raster_from_gdal_dataset(hdsDst);
 
 				/* set srid if provided */
-				rt_raster_set_srid(rast, config->srid);
+				rt_raster_set_srid(rast, info->srid);
 
 				/* convert rt_raster to hexwkb */
 				hex = rt_raster_to_hexwkb(rast, &hexlen);
