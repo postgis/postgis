@@ -474,47 +474,25 @@ CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geography, int4, int4)
 	AS 'MODULE_PATHNAME','geography_as_geojson'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- ST_AsGeoJson(geography, precision) / version=1 options=0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geography, int4)
-	RETURNS text
-	AS 'SELECT _ST_AsGeoJson(1, $1, $2, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsGeoJson(geography) / precision=15 version=1 options=0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geography)
-	RETURNS text
-	AS 'SELECT _ST_AsGeoJson(1, $1, 15, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
+-- Deprecated in 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	RETURNS text AS
-	$$ SELECT ST_AsGeoJson($1::geometry);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsGeoJson(version, geography) / precision=15 options=0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography)
-	RETURNS text
-	AS 'SELECT _ST_AsGeoJson($1, $2, 15, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsGeoJson(version, geography, precision) / options=0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4)
-	RETURNS text
-	AS 'SELECT _ST_AsGeoJson($1, $2, $3, 0)'
+	$$ SELECT _ST_AsGeoJson(1, $1::geometry,15,0);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(geography, precision, options) / version=1
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geography, int4, int4)
+-- Changed: 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS text
-	AS 'SELECT _ST_AsGeoJson(1, $1, $2, $3)'
+	AS $$ SELECT _ST_AsGeoJson(1, $1, $2, $3); $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(version, geography, precision,options)
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geography, int4, int4)
+-- Changed: 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS text
-	AS 'SELECT _ST_AsGeoJson($1, $2, $3, $4)'
+	AS $$ SELECT _ST_AsGeoJson($1, $2, $3, $4); $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------

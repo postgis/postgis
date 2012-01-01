@@ -3218,40 +3218,18 @@ CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geometry, int4, int4)
 	AS 'MODULE_PATHNAME','LWGEOM_asGeoJson'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- ST_AsGeoJson(geom, precision) / version=1 options=0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGeoJson(1, $1, $2, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsGeoJson(geom) / precision=15 version=1 options=0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geometry)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGeoJson(1, $1, 15, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsGeoJson(version, geom) / precision=15 options=0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geometry)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGeoJson($1, $2, 15, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- ST_AsGeoJson(version, geom, precision) / options=0
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geometry, int4)
-	RETURNS TEXT
-	AS 'SELECT _ST_AsGeoJson($1, $2, $3, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
 -- ST_AsGeoJson(geom, precision, options) / version=1
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(geometry, int4, int4)
+-- Changed 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGeoJson(1, $1, $2, $3)'
+	AS $$ SELECT _ST_AsGeoJson(1, $1, $2, $3); $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- ST_AsGeoJson(version, geom, precision,options)
-CREATE OR REPLACE FUNCTION ST_AsGeoJson(int4, geometry, int4, int4)
+-- Changed 2.0.0 to use default args and named args
+CREATE OR REPLACE FUNCTION ST_AsGeoJson(gj_version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGeoJson($1, $2, $3, $4)'
+	AS $$ SELECT _ST_AsGeoJson($1, $2, $3, $4); $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------
