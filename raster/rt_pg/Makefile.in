@@ -14,11 +14,11 @@ MODULE_big=rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 # Files to be copied to the contrib/ directory
-DATA_built=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_20_minor.sql rtpostgis_upgrade_cleanup.sql uninstall_rtpostgis.sql
+DATA_built=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_20_minor.sql rtpostgis_upgrade_cleanup.sql uninstall_rtpostgis.sql legacy.sql
 DATA=
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=rtpostgis.sql.in rtpostgis_drop.sql.in rtpostgis_upgrade_cleanup.sql.in
+SQL_OBJS=rtpostgis.sql.in rtpostgis_drop.sql.in rtpostgis_upgrade_cleanup.sql.in legacy.sql.in
 
 # Objects to build using PGXS
 OBJS=rt_pg.o
