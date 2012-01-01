@@ -29,6 +29,7 @@ DROP FUNCTION IF EXISTS box2d_intersects(box2d, box2d);
 DROP FUNCTION IF EXISTS st_area(geography); -- this one changed to use default parameters
 DROP FUNCTION IF EXISTS st_asgml(geometry); -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geometry, int4);  -- changed to use default args
+DROP FUNCTION IF EXISTS st_asgml(int4, geometry);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(int4, geometry, int4,int4);  -- changed to use default args
 DROP FUNCTION IF EXISTS st_asgml(geography); -- changed to use default args
