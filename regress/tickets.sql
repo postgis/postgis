@@ -228,7 +228,7 @@ FROM (SELECT
     ST_GeomFromText('LINESTRING(25 169,89 114,40 70,86 43)') As line1, ST_GeomFromText('LINESTRING(2.99 90.16,71 74,20 140,171 154)') As line2 ) As foo;
 
 -- #277 --
-SELECT '#277', ST_AsGML(2, GeomFromText('POINT(1 1e308)'));
+SELECT '#277', ST_AsGML(2, ST_GeomFromText('POINT(1 1e308)'));
 
 -- #299 --
 SELECT '#299', round(ST_Y(geometry(ST_Intersection(ST_GeographyFromText('POINT(1.2456 2)'), ST_GeographyFromText('POINT(1.2456 2)'))))); 
