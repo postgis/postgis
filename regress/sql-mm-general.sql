@@ -1,20 +1,20 @@
-SELECT ST_HasArc(geomfromtext('POINT(0 0)'));
-SELECT ST_HasArc(geomfromtext('LINESTRING(0 0, 1 1, 1 0)'));
-SELECT ST_HasArc(geomfromewkt('CIRCULARSTRING(
+SELECT ST_HasArc(ST_GeomFromText('POINT(0 0)'));
+SELECT ST_HasArc(ST_GeomFromText('LINESTRING(0 0, 1 1, 1 0)'));
+SELECT ST_HasArc(ST_GeomFromEWKT('CIRCULARSTRING(
                 0 0 0 0, 
                 0.26794919243112270647255365849413 1 3 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2)'));
-SELECT ST_HasArc(geomfromewkt('COMPOUNDCURVE(CIRCULARSTRING(
+SELECT ST_HasArc(ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(
                 0 0 0 0, 
                 0.26794919243112270647255365849413 1 3 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2),
                 (0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2,
                 2 0 0 0,
                 0 0 0 0))'));
-SELECT ST_HasArc(geomfromewkt('POLYGON(
+SELECT ST_HasArc(ST_GeomFromEWKT('POLYGON(
                 (-10 -10, 10 -10, 10 10, -10 10, -10 -10),
                 (5 0, 0 5, -5 0, 0 -5, 5 0))'));
-SELECT ST_HasArc(geomfromewkt('CURVEPOLYGON(CIRCULARSTRING(
+SELECT ST_HasArc(ST_GeomFromEWKT('CURVEPOLYGON(CIRCULARSTRING(
                 -2 0 0 0,
                 -1 -1 1 2,
                 0 0 2 4,
@@ -27,16 +27,16 @@ SELECT ST_HasArc(geomfromewkt('CURVEPOLYGON(CIRCULARSTRING(
                 1 0 3 6,
                 0 1 3 4,
                 -1 0 1 2))'));
-SELECT ST_HasArc(geomfromewkt('MULTIPOINT((0 0), (3 2))'));
-SELECT ST_HasArc(geomfromewkt('MULTILINESTRING(
+SELECT ST_HasArc(ST_GeomFromEWKT('MULTIPOINT((0 0), (3 2))'));
+SELECT ST_HasArc(ST_GeomFromEWKT('MULTILINESTRING(
                 (0 0, 3 2),
                 (4 8, 9 8),
                 (2 9, 4 8))'));
-SELECT ST_HasArc(geomfromewkt('MULTICURVE(
+SELECT ST_HasArc(ST_GeomFromEWKT('MULTICURVE(
                 (0 0, 3 2),
                 (4 8, 9 8),
                 (2 9, 4 8))'));
-SELECT ST_HasArc(geomfromewkt('MULTICURVE((
+SELECT ST_HasArc(ST_GeomFromEWKT('MULTICURVE((
                 5 5 1 3,
                 3 5 2 2,
                 3 3 3 1,
@@ -45,15 +45,15 @@ SELECT ST_HasArc(geomfromewkt('MULTICURVE((
                 0 0 0 0, 
                 0.26794919243112270647255365849413 1 3 -2, 
                 0.5857864376269049511983112757903 1.4142135623730950488016887242097 1 2))'));
-SELECT ST_HasArc(geomfromewkt('MULTIPOLYGON(
+SELECT ST_HasArc(ST_GeomFromEWKT('MULTIPOLYGON(
                 ((-10 -10, 10 -10, 10 10, -10 10, -10 -10),
                 (5 0, 0 5, -5 0, 0 -5, 5 0)),
                 ((9 2, 3 8, 9 4, 9 2)))'));
-SELECT ST_HasArc(geomfromewkt('MULTISURFACE(
+SELECT ST_HasArc(ST_GeomFromEWKT('MULTISURFACE(
                 ((-10 -10, 10 -10, 10 10, -10 10, -10 -10),
                 (5 0, 0 5, -5 0, 0 -5, 5 0)),
                 ((9 2, 3 8, 9 4, 9 2)))'));
-SELECT ST_HasArc(geomfromewkt('MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(
+SELECT ST_HasArc(ST_GeomFromEWKT('MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(
                 -2 0 0 0,
                 -1 -1 1 2,
                 0 0 2 4,
