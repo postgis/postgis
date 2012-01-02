@@ -8,5 +8,5 @@ rtpostgis_upgrade_20_minor.sql
 rtpostgis_upgrade_cleanup.sql
 rtpostgis_upgrade_cleanup.sql.in
 uninstall_rtpostgis.sql
-legacy.sql
-legacy.sql.in
+rtpostgis_legacy.sql
+rtpostgis_legacy.sql.in
