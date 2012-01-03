@@ -642,6 +642,11 @@ DECLARE
   snapedge GEOMETRY;
 BEGIN
 
+  -- 0. Check arguments
+  IF geometrytype(apoint) != 'POINT' THEN
+    RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPoint, expected POINT', geometrytype(apoint);
+  END IF;
+
   -- 1. Check if any existing node falls within tolerance
   --    and if so pick the closest
   sql := 'SELECT a.node_id FROM ' 
@@ -671,9 +676,9 @@ BEGIN
   RAISE DEBUG '%', sql;
   EXECUTE sql INTO rec;
   IF rec IS NOT NULL THEN
-    RAISE DEBUG 'Splitting edge %', rec.edge_id;
     -- project point to line, split edge by point
-    prj := st_closestpoint(rec.geom, apoint);
+    prj := ST_ClosestPoint(rec.geom, apoint);
+    RAISE DEBUG 'Splitting edge % with closest point %', rec.edge_id, ST_AsText(prj);
     IF NOT ST_Contains(rec.geom, prj) THEN
       RAISE DEBUG ' Snapping edge to contain closest point';
       -- Snap the edge geometry to the projected point
@@ -686,7 +691,7 @@ BEGIN
     id := topology.ST_ModEdgeSplit(atopology, rec.edge_id, prj);
   ELSE
     RAISE DEBUG 'No existing edge within tolerance distance';
-    id := ST_AddIsoNode(atopology, NULL, apoint);
+    id := topology.ST_AddIsoNode(atopology, NULL, apoint);
   END IF;
 
   RETURN id;
@@ -700,12 +705,99 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 --  Add a LineString into a topology 
 --
+-- }{
 CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
-	RETURNS void AS
+	RETURNS SETOF int AS
 $$
 DECLARE
+  rec RECORD;
+  sql TEXT;
+  set1 GEOMETRY;
+  set2 GEOMETRY;
+  snapped GEOMETRY;
+  noded GEOMETRY;
+  start_node INTEGER;
+  end_node INTEGER;
+  id INTEGER; 
 BEGIN
-	RAISE EXCEPTION 'TopoGeo_AddLineString not implemented yet';
+
+  -- 0. Check arguments
+  IF geometrytype(aline) != 'LINESTRING' THEN
+    RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPoint, expected LINESTRING', geometrytype(aline);
+  END IF;
+
+  -- 1. Self-node
+  noded := ST_UnaryUnion(aline);
+  RAISE DEBUG 'Self-noded: %', ST_AsText(noded);
+
+  -- 2. Node to edges and nodes falling within tolerance distance
+  sql := 'WITH nearby AS ( SELECT geom FROM ' 
+    || quote_ident(atopology) 
+    || '.node WHERE ST_DWithin(geom,'
+    || quote_literal(aline::text) || '::geometry,'
+    || tolerance || ') UNION ALL SELECT geom FROM '
+    || quote_ident(atopology) 
+    || '.edge WHERE ST_DWithin(geom,'
+    || quote_literal(aline::text) || '::geometry,'
+    || tolerance || ') ) SELECT st_collect(geom) FROM nearby;';
+  RAISE DEBUG '%', sql;
+  EXECUTE sql INTO set1;
+  IF set1 IS NOT NULL THEN
+    snapped := ST_Snap(noded, set1, tolerance);
+    RAISE DEBUG 'Snapped: %', ST_AsText(snapped);
+    noded := ST_Difference(snapped, set1);
+    RAISE DEBUG 'Difference: %', ST_AsText(noded);
+    set2 := ST_Intersection(snapped, set1);
+    RAISE DEBUG 'Intersection: %', ST_AsText(set2);
+    noded := ST_Union(noded, set2);
+  END IF;
+
+  -- 3. For each (now-noded) segment, insert an edge
+  FOR rec IN SELECT (ST_Dump(noded)).geom LOOP
+
+    -- TODO: skip point elements ?
+
+    RAISE DEBUG 'Adding edge %', ST_AsText(rec.geom);
+
+    start_node := topology.TopoGeo_AddPoint(atopology,
+                                          ST_StartPoint(rec.geom),
+                                          tolerance);
+    RAISE DEBUG ' Start Node: %', start_node;
+
+    end_node := topology.TopoGeo_AddPoint(atopology,
+                                        ST_EndPoint(rec.geom),
+                                        tolerance);
+    RAISE DEBUG ' End Node: %', end_node;
+
+    -- Added endpoints may have drifted due to tolerance, so
+    -- we need to re-snap the edge to the new nodes before adding it
+    sql := 'SELECT ST_Collect(geom) FROM ' || quote_ident(atopology)
+      || '.node WHERE node_id IN (' || start_node || ',' || end_node || ')';
+    RAISE DEBUG '%', sql;
+    EXECUTE sql INTO STRICT set2;
+    RAISE DEBUG 'Endnodes: %', ST_AsText(set2);
+    snapped := ST_Snap(rec.geom, set2, tolerance);
+    RAISE DEBUG 'Snapped edge: %', ST_AsText(snapped);
+
+    -- Check if the so-snapped edge _now_ exists
+    sql := 'SELECT edge_id FROM ' || quote_ident(atopology)
+      || '.edge_data WHERE ST_Equals(geom, ' || quote_literal(snapped::text)
+      || '::geometry)';
+    RAISE DEBUG '%', sql;
+    EXECUTE sql INTO id;
+    IF id IS NULL THEN
+      id := topology.ST_AddEdgeModFace(atopology, start_node, end_node,
+                                       snapped);
+      RAISE DEBUG 'New edge id: %', id;
+    ELSE
+      RAISE DEBUG 'Old edge id: %', id;
+    END IF;
+
+    RETURN NEXT id;
+
+  END LOOP;
+
+  RETURN;
 END
 $$
 LANGUAGE 'plpgsql';

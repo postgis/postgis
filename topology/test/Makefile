@@ -43,6 +43,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
 	regress/topogeo_addpoint.sql \
+	regress/topogeo_addlinestring \
 	regress/topogeometry_type.sql \
 	regress/topo2.5d.sql \
 	regress/totopogeom.sql \
