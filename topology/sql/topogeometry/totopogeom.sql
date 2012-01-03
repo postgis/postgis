@@ -16,7 +16,7 @@
 --  See http://trac.osgeo.org/postgis/ticket/1017
 --
 -- }{
-CREATE OR REPLACE FUNCTION topology.toTopoGeom(geom Geometry, toponame varchar, layer_id int, tolerance float8 DEFAULT 0)
+CREATE OR REPLACE FUNCTION topology.toTopoGeom(ageom Geometry, atopology varchar, alayer int, atolerance float8 DEFAULT 0)
   RETURNS topology.TopoGeometry
 AS
 $$
@@ -29,11 +29,11 @@ BEGIN
   BEGIN
     SELECT *
     FROM topology.topology
-      INTO STRICT topology_info WHERE name = toponame;
+      INTO STRICT topology_info WHERE name = atopology;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
       RAISE EXCEPTION 'No topology with name "%" in topology.topology',
-        toponame;
+        atopology;
   END;
 
   -- Get layer information
@@ -47,18 +47,18 @@ BEGIN
       END as typename
     FROM topology.layer l
       INTO STRICT layer_info
-      WHERE l.layer_id = layer_id
+      WHERE l.layer_id = alayer
       AND l.topology_id = topology_info.id;
   EXCEPTION
     WHEN NO_DATA_FOUND THEN
       RAISE EXCEPTION 'No layer with id "%" in topology "%"',
-        layer_id, toponame;
+        alayer, atopology;
   END;
 
   -- Can't convert to a hierarchical topogeometry
   IF layer_info.level > 0 THEN
       RAISE EXCEPTION 'Layer "%" of topology "%" is hierarchical, cannot convert to it.',
-        layer_id, toponame;
+        alayer, atopology;
   END IF;
 
 
@@ -66,28 +66,28 @@ BEGIN
   -- Check type compatibility 
   -- 1:puntal, 2:lineal, 3:areal, 4:collection
   --
-  IF geometrytype(geom) = 'GEOMETRYCOLLECTION' THEN
+  IF geometrytype(ageom) = 'GEOMETRYCOLLECTION' THEN
     --  A collection can only go collection layer
     IF layer_info.feature_type != 4 THEN
       RAISE EXCEPTION
         'Layer "%" of topology "%" is %, cannot hold a collection feature.',
         layer_info.layer_id, topology_info.name, layer_info.typename;
     END IF;
-  ELSIF ST_Dimension(geom) = 0 THEN -- puntal
+  ELSIF ST_Dimension(ageom) = 0 THEN -- puntal
     --  A point can go in puntal or collection layer
     IF layer_info.feature_type != 4 and layer_info.feature_type != 1 THEN
       RAISE EXCEPTION
         'Layer "%" of topology "%" is %, cannot hold a puntal feature.',
         layer_info.layer_id, topology_info.name, layer_info.typename;
     END IF;
-  ELSIF ST_Dimension(geom) = 1 THEN -- lineal
+  ELSIF ST_Dimension(ageom) = 1 THEN -- lineal
     --  A line can go in lineal or collection layer
     IF layer_info.feature_type != 4 and layer_info.feature_type != 2 THEN
       RAISE EXCEPTION
         'Layer "%" of topology "%" is %, cannot hold a lineal feature.',
         layer_info.layer_id, topology_info.name, layer_info.typename;
     END IF;
-  ELSIF ST_Dimension(geom) = 2 THEN -- areal
+  ELSIF ST_Dimension(ageom) = 2 THEN -- areal
     --  An area can go in areal or collection layer
     IF layer_info.feature_type != 4 and layer_info.feature_type != 3 THEN
       RAISE EXCEPTION
@@ -97,7 +97,7 @@ BEGIN
   ELSE
       -- Should never happen
       RAISE EXCEPTION
-        'Unexpected feature dimension %', ST_Dimension(geom);
+        'Unexpected feature dimension %', ST_Dimension(ageom);
   END IF;
 
   -- TODO: handle empty
