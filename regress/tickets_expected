@@ -148,3 +148,4 @@ ERROR:  Geometry type (Polygon) does not match column type (MultiPolygon)
 #657.3|t
 #1305.1|POINT(10 10)
 #1305.2|t
+#1305.3|t

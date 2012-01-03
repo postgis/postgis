@@ -1870,7 +1870,7 @@ double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROI
 	/* Same point, return NaN */
 	if ( FP_EQUALS(x1, x2) && FP_EQUALS(y1, y2) )
 	{
-		return nan("");
+		return NAN;
 	}
 	
 	/* Do the direction calculation */

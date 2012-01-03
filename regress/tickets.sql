@@ -478,6 +478,7 @@ SELECT '#657.3',ST_DWithin(ST_Project('POINT(10 10)'::geography, 2000, pi()/2), 
 SELECT '#1305.1',ST_AsText(ST_Project('POINT(10 10)'::geography, 0, 0));
 WITH pts AS ( SELECT 'POINT(0 45)'::geography AS s, 'POINT(45 45)'::geography AS e ) 
 SELECT '#1305.2',abs(ST_Distance(e, ST_Project(s, ST_Distance(s, e), ST_Azimuth(s, e)))) < 0.001 FROM pts;
+SELECT '#1305.3',ST_Azimuth('POINT(0 45)'::geography, 'POINT(0 45)'::geography) IS NULL;
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

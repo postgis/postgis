@@ -11,6 +11,14 @@
 
 #include "liblwgeom_internal.h"
 
+/* For NAN */
+#define _GNU_SOURCE
+#include <math.h>
+
+#ifndef NAN
+#define NAN 0.0/0.0
+#endif
+
 extern int gbox_geocentric_slow;
 
 #define POW2(x) ((x)*(x))
