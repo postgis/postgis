@@ -575,7 +575,7 @@ CREATE OR REPLACE FUNCTION ST_Length(text)
 CREATE OR REPLACE FUNCTION ST_Project(geog geography, distance float8, azimuth float8)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_project'
-	LANGUAGE 'C' IMMUTABLE STRICT
+	LANGUAGE 'C' IMMUTABLE
 	COST 100;
 
 -- Availability: 2.0.0

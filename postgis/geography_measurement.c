@@ -624,7 +624,12 @@ Datum geography_project(PG_FUNCTION_ARGS)
 		elog(ERROR, "ST_Project(geography) is only valid for point inputs");
 		PG_RETURN_NULL();
     }
+
+	/* Return NULL on NULL distance */
+	if ( PG_ARGISNULL(1) )
+		PG_RETURN_NULL();
 	
+	distance = PG_GETARG_FLOAT8(1); /* Distance in Meters */
 	lwgeom = lwgeom_from_gserialized(g);
 
 	/* EMPTY things cannot be projected from */
@@ -635,12 +640,19 @@ Datum geography_project(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	
-	/* Read the other parameters */
-	distance = PG_GETARG_FLOAT8(1); /* Meters */
-	azimuth = PG_GETARG_FLOAT8(2); /* Radians */
+	if ( PG_ARGISNULL(2) )
+		azimuth = 0.0;
+	else
+		azimuth = PG_GETARG_FLOAT8(2); /* Azimuth in Radians */
 
 	/* Initialize spheroid */
 	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	/* Handle the zero distance case */
+	if( FP_EQUALS(distance, 0.0) )
+	{
+		PG_RETURN_POINTER(g);
+	}
 
 	/* Calculate the length */
 	lwp_projected = lwgeom_project_spheroid(lwgeom_as_lwpoint(lwgeom), &s, distance, azimuth);
@@ -715,6 +727,13 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
+
+	/* Return NULL for unknown (same point) azimuth */
+	if( isnan(azimuth) )
+	{
+		PG_RETURN_NULL();		
+	}
+
 	PG_RETURN_FLOAT8(azimuth);
 }
 

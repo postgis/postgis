@@ -1849,8 +1849,7 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 * @param r - location of first point.
 * @param s - location of second point.
 * @param spheroid - spheroid definition.
-* @param azimuth - azimuth in radians.
-* @return 
+* @return azimuth - azimuth in radians. 
 * 
 */
 double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROID *spheroid)
@@ -1868,10 +1867,10 @@ double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROI
 	y2 = lwpoint_get_y(s);
 	geographic_point_init(x2, y2, &g2);
 	
-	/* Same point, return a standard azimuth instead of NULL or NaN */
+	/* Same point, return NaN */
 	if ( FP_EQUALS(x1, x2) && FP_EQUALS(y1, y2) )
 	{
-		return 0.0;
+		return NAN;
 	}
 	
 	/* Do the direction calculation */

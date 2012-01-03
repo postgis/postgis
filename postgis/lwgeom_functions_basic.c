@@ -2355,7 +2355,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	/* Standard return value for equality case */
 	if ( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) )
 	{
-		PG_RETURN_FLOAT8(0.0);
+		PG_RETURN_NULL();
 	}
 
 	/* Compute azimuth */
