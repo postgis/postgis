@@ -13,15 +13,6 @@
 -- Functions used to populate a topology
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
---
--- Developed by Sandro Santilli <strk@keybit.net>
--- for Faunalia (http://www.faunalia.it) with funding from
--- Regione Toscana - Sistema Informativo per la Gestione del Territorio
--- e dell' Ambiente [RT-SIGTA].
--- For the project: "Sviluppo strumenti software per il trattamento di dati
--- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
---
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 --{
@@ -35,6 +26,13 @@
 -- edge crossing the given point, raising an exception if found.
 --
 -- The newly added nodes have no containing face.
+--
+-- Developed by Sandro Santilli <strk@keybit.net>
+-- for Faunalia (http://www.faunalia.it) with funding from
+-- Regione Toscana - Sistema Informativo per la Gestione del Territorio
+-- e dell' Ambiente [RT-SIGTA].
+-- For the project: "Sviluppo strumenti software per il trattamento di dati
+-- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
 --
 -- }{
 CREATE OR REPLACE FUNCTION topology.AddNode(atopology varchar, apoint geometry, allowEdgeSplitting boolean, setContainingFace boolean DEFAULT false)
@@ -157,6 +155,12 @@ LANGUAGE 'sql' VOLATILE;
 -- and links to itself as per next left/right edge.
 -- Calling code is expected to do further linking.
 --
+-- Developed by Sandro Santilli <strk@keybit.net>
+-- for Faunalia (http://www.faunalia.it) with funding from
+-- Regione Toscana - Sistema Informativo per la Gestione del Territorio
+-- e dell' Ambiente [RT-SIGTA].
+-- For the project: "Sviluppo strumenti software per il trattamento di dati
+-- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
 -- 
 CREATE OR REPLACE FUNCTION topology.AddEdge(atopology varchar, aline geometry)
 	RETURNS int
@@ -345,6 +349,12 @@ LANGUAGE 'plpgsql' VOLATILE;
 --  o The polygon boundary is not fully defined by existing edges.
 --  o The polygon overlaps an existing face.
 --
+-- Developed by Sandro Santilli <strk@keybit.net>
+-- for Faunalia (http://www.faunalia.it) with funding from
+-- Regione Toscana - Sistema Informativo per la Gestione del Territorio
+-- e dell' Ambiente [RT-SIGTA].
+-- For the project: "Sviluppo strumenti software per il trattamento di dati
+-- geografici basati su QuantumGIS e Postgis (CIG 0494241492)"
 -- 
 CREATE OR REPLACE FUNCTION topology.AddFace(atopology varchar, apoly geometry, force_new boolean DEFAULT FALSE)
 	RETURNS int
@@ -609,3 +619,126 @@ END
 $$
 LANGUAGE 'plpgsql' VOLATILE;
 --} AddFace
+
+-- ----------------------------------------------------------------------------
+-- 
+-- Functions to incrementally populate a topology
+-- 
+-- ----------------------------------------------------------------------------
+
+--{
+--  TopoGeo_AddPoint(toponame, pointgeom, tolerance)
+--
+--  Add a Point into a topology, with an optional tolerance 
+--
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPoint(atopology varchar, apoint geometry, tolerance float8 DEFAULT 0)
+	RETURNS int AS
+$$
+DECLARE
+  id integer;
+  rec RECORD;
+  sql text;
+  prj GEOMETRY;
+  snapedge GEOMETRY;
+BEGIN
+
+  -- 1. Check if any existing node falls within tolerance
+  --    and if so pick the closest
+  sql := 'SELECT a.node_id FROM ' 
+    || quote_ident(atopology) 
+    || '.node as a WHERE ST_DWithin(a.geom,'
+    || quote_literal(apoint::text) || '::geometry,'
+    || tolerance || ') ORDER BY ST_Distance('
+    || quote_literal(apoint::text)
+    || '::geometry, a.geom) LIMIT 1;';
+  RAISE DEBUG '%', sql;
+  EXECUTE sql INTO id;
+  IF id IS NOT NULL THEN
+    RETURN id;
+  END IF;
+
+  RAISE DEBUG 'No existing node within tolerance distance';
+
+  -- 2. Check if any existing edge falls within tolerance
+  --    and if so split it by a point projected on it
+  sql := 'SELECT a.edge_id, a.geom FROM ' 
+    || quote_ident(atopology) 
+    || '.edge as a WHERE ST_DWithin(a.geom,'
+    || quote_literal(apoint::text) || '::geometry,'
+    || tolerance || ') ORDER BY ST_Distance('
+    || quote_literal(apoint::text)
+    || '::geometry, a.geom) LIMIT 1;';
+  RAISE DEBUG '%', sql;
+  EXECUTE sql INTO rec;
+  IF rec IS NOT NULL THEN
+    RAISE DEBUG 'Splitting edge %', rec.edge_id;
+    -- project point to line, split edge by point
+    prj := st_closestpoint(rec.geom, apoint);
+    IF NOT ST_Contains(rec.geom, prj) THEN
+      RAISE DEBUG ' Snapping edge to contain closest point';
+      -- Snap the edge geometry to the projected point
+      -- The tolerance is an arbitrary number.
+      -- How much would be enough to ensure any projected point is within
+      -- that distance ? ST_Distance() may very well return 0.
+      snapedge := ST_Snap(rec.geom, prj, 1e-12); -- arbitrarely low number
+      PERFORM ST_ChangeEdgeGeom(atopology, rec.edge_id, snapedge);
+    END IF;
+    id := topology.ST_ModEdgeSplit(atopology, rec.edge_id, prj);
+  ELSE
+    RAISE DEBUG 'No existing edge within tolerance distance';
+    id := ST_AddIsoNode(atopology, NULL, apoint);
+  END IF;
+
+  RETURN id;
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--} TopoGeo_AddPoint
+
+--{
+--  TopoGeo_addLinestring(toponame, linegeom, tolerance)
+--
+--  Add a LineString into a topology 
+--
+CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, aline geometry, tolerance float8 DEFAULT 0)
+	RETURNS void AS
+$$
+DECLARE
+BEGIN
+	RAISE EXCEPTION 'TopoGeo_AddLineString not implemented yet';
+END
+$$
+LANGUAGE 'plpgsql';
+--} TopoGeo_addLinestring
+
+--{
+--  TopoGeo_AddPolygon(toponame, polygeom, tolerance)
+--
+--  Add a Polygon into a topology 
+--
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly geometry, tolerance float8 DEFAULT 0)
+	RETURNS void AS
+$$
+DECLARE
+BEGIN
+	RAISE EXCEPTION 'TopoGeo_AddPolygon not implemented yet';
+END
+$$
+LANGUAGE 'plpgsql';
+--} TopoGeo_AddPolygon
+
+--{
+--  TopoGeo_AddGeometry(toponame, geom, tolerance)
+--
+--  Add a Geometry into a topology 
+--
+CREATE OR REPLACE FUNCTION topology.TopoGeo_AddGeometry(atopology varchar, ageom geometry, tolerance float8 DEFAULT 0)
+	RETURNS void AS
+$$
+DECLARE
+BEGIN
+	RAISE EXCEPTION 'TopoGeo_AddGeometry not implemented yet';
+END
+$$
+LANGUAGE 'plpgsql';
+--} TopoGeo_AddGeometry
