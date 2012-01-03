@@ -1,0 +1,44 @@
+\set VERBOSITY terse
+set client_min_messages to ERROR;
+
+\i load_topology.sql
+
+-- Save max node id
+select 'node'::text as what, max(node_id) INTO city_data.limits FROM city_data.node;
+
+-- Isolated point in universal face
+SELECT 'iso_uni', TopoGeo_addPoint('city_data', 'POINT(38 26)');
+
+-- Isolated point in face 3
+SELECT 'iso_f3', TopoGeo_addPoint('city_data', 'POINT(16 18)');
+
+-- Existing isolated node
+SELECT 'iso_ex', TopoGeo_addPoint('city_data', 'POINT(38 26)');
+
+-- Existing isolated node within tolerance
+SELECT 'iso_ex_tol', TopoGeo_addPoint('city_data', 'POINT(38 27)', 1.5);
+
+-- Existing non-isolated node
+SELECT 'noniso_ex', TopoGeo_addPoint('city_data', 'POINT(25 30)');
+
+-- Existing non-isolated node within tolerance (closer to edge)
+SELECT 'noniso_ex_tol', TopoGeo_addPoint('city_data', 'POINT(26 30.2)', 3);
+
+-- Splitting edge 
+SELECT 'split', TopoGeo_addPoint('city_data', 'POINT(26 30.2)', 1);
+
+-- Check effect on nodes
+SELECT 'N', n.node_id, n.containing_face, ST_AsText(n.geom)
+FROM city_data.node n WHERE n.node_id > (
+  SELECT max FROM city_data.limits WHERE what = 'node'::text )
+ORDER BY n.node_id;
+
+-- Check effect on edges (there should be one split)
+WITH limits AS ( SELECT max FROM city_data.limits WHERE what = 'node'::text )
+SELECT 'E', n.edge_id, n.start_node, n.end_node 
+ FROM city_data.edge n, limits m
+ WHERE n.start_node > m.max
+    OR n.end_node > m.max
+ORDER BY n.edge_id;
+
+SELECT DropTopology('city_data');

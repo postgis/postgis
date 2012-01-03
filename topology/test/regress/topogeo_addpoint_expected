@@ -1,0 +1,19 @@
+BEGIN
+t
+9
+22
+26
+COMMIT
+iso_uni|23
+iso_f3|24
+iso_ex|23
+iso_ex_tol|23
+noniso_ex|2
+noniso_ex_tol|2
+split|25
+N|23|0|POINT(38 26)
+N|24|3|POINT(16 18)
+N|25||POINT(26 30)
+E|2|2|25
+E|27|25|2
+Topology 'city_data' dropped
