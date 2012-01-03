@@ -2509,7 +2509,7 @@ BEGIN
     || quote_literal(acurve::text)
     || '::geometry, 2) as im FROM '
     || quote_ident(atopology)
-    || '.edge_data WHERE geom && '
+    || '.edge_data WHERE edge_id != ' || anedge || ' AND geom && '
     || quote_literal(acurve::text) || '::geometry'
   LOOP
 

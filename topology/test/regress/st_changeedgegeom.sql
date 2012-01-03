@@ -29,6 +29,10 @@ SELECT topology.ST_ChangeEdgeGeom('city_data', 25,
 SELECT topology.ST_ChangeEdgeGeom('city_data', 5,
  'LINESTRING(41 40, 57 33)');
 
+-- Change to edge crossing old self 
+SELECT topology.ST_ChangeEdgeGeom('city_data', 5,
+ 'LINESTRING(41 40, 49 40, 49 34, 57 33)');
+
 -- TODO: test changing closed edge
 -- TODO: test reverse direction of closed edge
 
