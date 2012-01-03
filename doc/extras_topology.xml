@@ -1827,6 +1827,189 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
         </abstract>
     </sect1info>
 	  <title>Topology Processing</title>
+		<refentry id="TopoGeo_AddPoint">
+			<refnamediv>
+				<refname>TopoGeo_AddPoint</refname>
+			
+				<refpurpose>
+Adds a point to an existing topology using a tolerance and possibly splitting an existing edge.
+				</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>integer <function>TopoGeo_AddNode</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Adds a point to an existing topology and return its identifier.
+The given point will snap to existing nodes or edges within given tolerance.
+An existing edge may be split by the snapped point.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="AddNode"/>,
+<xref linkend="CreateTopology"/>
+</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="TopoGeo_AddLineString">
+			<refnamediv>
+				<refname>TopoGeo_AddLineString</refname>
+			
+				<refpurpose>
+Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges.
+				</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>integer <function>TopoGeo_AddLineString</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Adds a linestring to an existing topology and return a set of edge identifiers forming it up.
+The given line will snap to existing nodes or edges within given tolerance.
+Existing edges may be split by the line.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="TopoGeo_AddPoint"/>, <xref linkend="CreateTopology"/></para>
+			</refsection>
+		</refentry>
+
+		<refentry id="TopologyPolygonize">
+			<refnamediv>
+				<refname>Polygonize</refname>
+				<refpurpose>Find and register all faces defined by topology edges</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>text <function>Polygonize</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Register all faces that can be built out a topology edge primitives.</para>
+                <para>The target topology is assumed to contain no self-intersecting edges.</para>
+                <note><para>Already known faces are recognized, so it is safe to call Polygonize multiple times on the same topology.</para></note>
+                
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddFace"/>, <xref linkend="ST_Polygonize"/></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="AddNode">
+			<refnamediv>
+				<refname>AddNode</refname>
+			
+				<refpurpose>Adds a point node to the node table in the specified topology schema and returns the nodeid of new node. If point already exists as node, the existing nodeid is returned.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>integer <function>AddNode</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+						<paramdef choice='opt'><type>boolean </type> <parameter>allowEdgeSplitting=false</parameter></paramdef>
+						<paramdef choice='opt'><type>boolean </type> <parameter>computeContainingFace=false</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Adds a point node to the node table in the specified topology schema.
+The <xref linkend="AddEdge" /> function automatically adds start and end
+points of an edge when called so not necessary to explicitly add nodes
+of an edge.
+                </para>
+
+	<para>
+If any edge crossing the node is found either an exception is raised or
+the edge is splitted, depending on the <varname>allowEdgeSplitting</varname>
+parameter value.
+	</para>
+
+	<para>
+If <varname>computeContainingFace</varname> is true a newly added node would
+get the correct containing face computed.
+	</para>
+
+                <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
+                
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986) ) As nodeid;
+-- result --
+nodeid
+--------
+ 4
+ 
+</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddEdge"/>, <xref linkend="CreateTopology"/></para>
+			</refsection>
+		</refentry>
+
 	     <refentry id="AddEdge">
 			<refnamediv>
 				<refname>AddEdge</refname>
@@ -1994,143 +2177,6 @@ faceid
 			</refsection>
 		</refentry>
 
-		<refentry id="TopoGeo_AddPoint">
-			<refnamediv>
-				<refname>TopoGeo_AddPoint</refname>
-			
-				<refpurpose>
-Adds a point to an existing topology using a tolerance and possibly splitting an existing edge.
-				</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-						<funcdef>integer <function>TopoGeo_AddNode</function></funcdef>
-						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
-						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
-						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-                <title>Description</title>
-            
-                <para>
-Adds a point to an existing topology and return its identifier.
-The given point will snap to existing nodes or edges within given tolerance.
-An existing edge may be split by the snapped point.
-                </para>
-
-                <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
-			</refsection>
-		
-		
-			<!-- Optionally add a "See Also" section -->
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="AddNode"/>, <xref linkend="CreateTopology"/></para>
-			</refsection>
-		</refentry>
-
-		<refentry id="TopologyPolygonize">
-			<refnamediv>
-				<refname>Polygonize</refname>
-				<refpurpose>Find and register all faces defined by topology edges</refpurpose>
-			</refnamediv>
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-					<funcdef>text <function>Polygonize</function></funcdef>
-					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-                <title>Description</title>
-            
-                <para>Register all faces that can be built out a topology edge primitives.</para>
-                <para>The target topology is assumed to contain no self-intersecting edges.</para>
-                <note><para>Already known faces are recognized, so it is safe to call Polygonize multiple times on the same topology.</para></note>
-                
-                <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
-			</refsection>
-		
-			<!-- Optionally add a "See Also" section -->
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="AddFace"/>, <xref linkend="ST_Polygonize"/></para>
-			</refsection>
-		</refentry>
-		
-		<refentry id="AddNode">
-			<refnamediv>
-				<refname>AddNode</refname>
-			
-				<refpurpose>Adds a point node to the node table in the specified topology schema and returns the nodeid of new node. If point already exists as node, the existing nodeid is returned.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-						<funcdef>integer <function>AddNode</function></funcdef>
-						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
-						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>allowEdgeSplitting=false</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>computeContainingFace=false</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-                <title>Description</title>
-            
-                <para>
-Adds a point node to the node table in the specified topology schema.
-The <xref linkend="AddEdge" /> function automatically adds start and end
-points of an edge when called so not necessary to explicitly add nodes
-of an edge.
-                </para>
-
-	<para>
-If any edge crossing the node is found either an exception is raised or
-the edge is splitted, depending on the <varname>allowEdgeSplitting</varname>
-parameter value.
-	</para>
-
-	<para>
-If <varname>computeContainingFace</varname> is true a newly added node would
-get the correct containing face computed.
-	</para>
-
-                <note><para>If the <varname>apoint</varname> geometry already exists as a node, the node is not added but the existing nodeid is returned.</para></note>
-                
-                <!-- use this format if new function -->
-                <para>Availability: 2.0.0</para>
-			</refsection>
-		
-		
-			<refsection>
-				<title>Examples</title>
-				<programlisting>SELECT topology.AddNode('ma_topo', ST_GeomFromText('POINT(227641.6 893816.5)', 26986) ) As nodeid;
--- result --
-nodeid
---------
- 4
- 
-</programlisting>
-			</refsection>
-		
-			<!-- Optionally add a "See Also" section -->
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="AddEdge"/>, <xref linkend="CreateTopology"/></para>
-			</refsection>
-		</refentry>
 		
 	</sect1>
 
