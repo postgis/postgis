@@ -4,9 +4,6 @@ $Id$
 
 * ST_CleanGeometry(geometry)
   Attempt to make invalid geometry valid
-* ST_SplitGeometry(polygon, line) returns components of polygon
-* ST_SplitGeometry(lineA, lineB) returns components of lineA
-* ST_SplitGeometry(line, point) returns components of line 
 * ST_AverageDistance(g1 geometry, g2 geometry, nsamples integer) returns double
   Sum of minimum distances at regular intervals up two geometries, 
   divided by the number of samples.  
