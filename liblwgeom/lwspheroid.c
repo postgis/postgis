@@ -183,7 +183,6 @@ double spheroid_direction(const GEOGRAPHIC_POINT *r, const GEOGRAPHIC_POINT *s, 
 		else
 			alpha = asin(sin_alpha);
 
-		alpha = asin(sin_alpha);
 		cos_alphasq = POW2(cos(alpha));
 		cos2_sigma_m = cos(sigma) - (2.0 * sin_u1 * sin_u2 / cos_alphasq);
 
