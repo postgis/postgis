@@ -54,10 +54,6 @@ CREATE OR REPLACE FUNCTION _rename_raster_tables()
 SELECT _rename_raster_tables();
 DROP FUNCTION _rename_raster_tables();
 
--- drop raster_columns and raster_overviews views
-DROP VIEW IF EXISTS raster_overviews;
-DROP VIEW IF EXISTS raster_columns;
-
 CREATE OR REPLACE VIEW raster_columns AS
 	SELECT
 		current_database() AS r_table_catalog,
