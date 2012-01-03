@@ -4,6 +4,8 @@ t
 22
 26
 COMMIT
+ERROR:  Invalid geometry type (LINESTRING) passed to TopoGeo_AddPoint, expected POINT
+ERROR:  Invalid geometry type (MULTIPOINT) passed to TopoGeo_AddPoint, expected POINT
 iso_uni|23
 iso_f3|24
 iso_ex|23
