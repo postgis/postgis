@@ -2325,7 +2325,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 		lwerror("Error extracting point");
 		PG_RETURN_NULL();
 	}
-	lwgeom_release((LWGEOM *)lwpoint);
+	lwpoint_free(lwpoint);
 	PG_FREE_IF_COPY(geom, 0);
 
 	/* Extract second point */
@@ -2349,8 +2349,14 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 		lwerror("Error extracting point");
 		PG_RETURN_NULL();
 	}
-	lwgeom_release((LWGEOM *)lwpoint);
+	lwpoint_free(lwpoint);
 	PG_FREE_IF_COPY(geom, 1);
+
+	/* Standard return value for equality case */
+	if ( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) )
+	{
+		PG_RETURN_FLOAT8(0.0);
+	}
 
 	/* Compute azimuth */
 	if ( ! azimuth_pt_pt(&p1, &p2, &result) )

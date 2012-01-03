@@ -469,6 +469,16 @@ select '#1344', octet_length(ST_AsEWKB(st_makeline(g))) FROM ( values ('POINT(0 
 -- #1385
 SELECT '#1385', ST_Extent(g) FROM ( select null::geometry as g ) as foo; 
 
+-- #657
+SELECT '#657.1',Round(ST_X(ST_Project('POINT(175 10)'::geography, 2000000, 3.1415/2)::GEOMETRY)::numeric,2);
+SELECT '#657.2',Round(ST_Distance(ST_Project('POINT(10 10)'::geography, 10, 0), 'POINT(10 10)'::geography)::numeric,2);
+SELECT '#657.3',ST_DWithin(ST_Project('POINT(10 10)'::geography, 2000, pi()/2), 'POINT(10 10)'::geography, 2000);
+
+-- #1305
+SELECT '#1305.1',ST_AsText(ST_Project('POINT(10 10)'::geography, 0, 0));
+WITH pts AS ( SELECT 'POINT(0 45)'::geography AS s, 'POINT(45 45)'::geography AS e ) 
+SELECT '#1305.2',abs(ST_Distance(e, ST_Project(s, ST_Distance(s, e), ST_Azimuth(s, e)))) < 0.001 FROM pts;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 

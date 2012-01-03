@@ -601,7 +601,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 /*
 ** geography_project(GSERIALIZED *g, distance, azimuth)
 ** returns point of projection given start point, 
-** azimuth (bearing) and distance
+** azimuth in radians (bearing) and distance in meters
 */
 PG_FUNCTION_INFO_V1(geography_project);
 Datum geography_project(PG_FUNCTION_ARGS)
@@ -636,8 +636,8 @@ Datum geography_project(PG_FUNCTION_ARGS)
 	}
 	
 	/* Read the other parameters */
-	distance = PG_GETARG_FLOAT8(1);
-	azimuth = PG_GETARG_FLOAT8(2);
+	distance = PG_GETARG_FLOAT8(1); /* Meters */
+	azimuth = PG_GETARG_FLOAT8(2); /* Radians */
 
 	/* Initialize spheroid */
 	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
@@ -709,7 +709,7 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 	/* Calculate the direction */
 	azimuth = lwgeom_azumith_spheroid(lwgeom_as_lwpoint(lwgeom1), lwgeom_as_lwpoint(lwgeom2), &s);
 
-	/* Clean up, but not all the way to the point arrays */
+	/* Clean up */
 	lwgeom_free(lwgeom1);
 	lwgeom_free(lwgeom2);
 

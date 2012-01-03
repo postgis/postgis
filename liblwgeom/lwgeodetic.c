@@ -1793,7 +1793,7 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 * @param r - location of first point.
 * @param spheroid - spheroid definition.
 * @param distance - distance, in units of the spheroid def'n.
-* @param azimuth - azimuth in degrees.
+* @param azimuth - azimuth in radians.
 * @return s - location of projected point.
 * 
 */
@@ -1801,18 +1801,16 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 {
 	GEOGRAPHIC_POINT geo_source, geo_dest;
 	POINT4D pt_dest;
-	double azimuth_radians;
 	double x, y;
 	POINTARRAY *pa;
 	LWPOINT *lwp;
 
 	/* Check the azimuth validity, convert to radians */
-	if ( azimuth < -360.0 || azimuth > 360.0 ) 
+	if ( azimuth < -2.0 * M_PI || azimuth > 2.0 * M_PI ) 
 	{
-		lwerror("Azimuth must be between -360 and 360");
+		lwerror("Azimuth must be between -2PI and 2PI");
 		return NULL;
 	}
-	azimuth_radians = deg2rad(azimuth);
 
 	/* Check the distance validity */
 	if ( distance < 0.0 || distance > (M_PI * spheroid->radius) )
@@ -1827,7 +1825,7 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	geographic_point_init(x, y, &geo_source);
 	
 	/* Try the projection */
-	if( spheroid_project(&geo_source, spheroid, distance, azimuth_radians, &geo_dest) == LW_FAILURE ) 
+	if( spheroid_project(&geo_source, spheroid, distance, azimuth, &geo_dest) == LW_FAILURE ) 
 	{
 		LWDEBUGF(3, "Unable to project from (%g %g) with azimuth %g and distance %g", x, y, azimuth, distance);
 		lwerror("Unable to project from (%g %g) with azimuth %g and distance %g", x, y, azimuth, distance);
@@ -1836,22 +1834,23 @@ LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, dou
 	
 	/* Build the output LWPOINT */
 	pa = ptarray_construct(0, 0, 1);
-	pt_dest.x = rad2deg(geo_dest.lon);
-	pt_dest.y = rad2deg(geo_dest.lat);
+	pt_dest.x = rad2deg(longitude_radians_normalize(geo_dest.lon));
+	pt_dest.y = rad2deg(latitude_radians_normalize(geo_dest.lat));
 	pt_dest.z = pt_dest.m = 0.0;
 	ptarray_set_point4d(pa, 0, &pt_dest);
 	lwp = lwpoint_construct(r->srid, NULL, pa);
+	lwgeom_set_geodetic(lwpoint_as_lwgeom(lwp), LW_TRUE);
 	return lwp;
 }
 
 
 /**
-* Calculate a projected point given a source point, a distance and a bearing.
+* Calculate a bearing (azimuth) given a source and destination point.
 * @param r - location of first point.
+* @param s - location of second point.
 * @param spheroid - spheroid definition.
-* @param distance - distance, in units of the spheroid def'n.
-* @param azimuth - azimuth in degrees.
-* @return s - location of projected point.
+* @param azimuth - azimuth in radians.
+* @return 
 * 
 */
 double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROID *spheroid)
@@ -1869,8 +1868,14 @@ double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROI
 	y2 = lwpoint_get_y(s);
 	geographic_point_init(x2, y2, &g2);
 	
+	/* Same point, return a standard azimuth instead of NULL or NaN */
+	if ( FP_EQUALS(x1, x2) && FP_EQUALS(y1, y2) )
+	{
+		return 0.0;
+	}
+	
 	/* Do the direction calculation */
-	return rad2deg(spheroid_direction(&g1, &g2, spheroid));
+	return spheroid_direction(&g1, &g2, spheroid);
 }
 
 /**
