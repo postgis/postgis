@@ -750,6 +750,7 @@ BEGIN
     set2 := ST_Intersection(snapped, set1);
     RAISE DEBUG 'Intersection: %', ST_AsText(set2);
     noded := ST_Union(noded, set2);
+    -- TODO: linemerge ?
   END IF;
 
   -- 3. For each (now-noded) segment, insert an edge
@@ -813,14 +814,45 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly 
 	RETURNS SETOF int AS
 $$
 DECLARE
+  boundary GEOMETRY;
+  fgeom GEOMETRY;
+  rec RECORD;
+  edges INTEGER[];
+  sql TEXT;
 BEGIN
 
   -- 0. Check arguments
-  IF geometrytype(aline) != 'POLYGON' THEN
-    RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPolygon, expected POLYGON', geometrytype(aline);
+  IF geometrytype(apoly) != 'POLYGON' THEN
+    RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPolygon, expected POLYGON', geometrytype(apoly);
   END IF;
 
-	RAISE EXCEPTION 'TopoGeo_AddPolygon not implemented yet';
+  -- 1. Extract boundary
+  boundary := ST_Boundary(apoly);
+  RAISE DEBUG 'Boundary: %', ST_AsText(boundary);
+
+  -- 2. Add boundaries as edges
+  FOR rec IN SELECT (ST_Dump(boundary)).geom LOOP
+    edges := array_cat(edges, array_agg(x)) FROM ( select topology.TopoGeo_addLinestring(atopology, rec.geom, tolerance) as x ) as foo;
+    RAISE DEBUG 'New edges: %', edges;
+  END LOOP;
+
+  -- 3. Find faces covered by input polygon
+  --    NOTE: potential snapping changed polygon edges
+  sql := 'SELECT DISTINCT f.face_id FROM ' || quote_ident(atopology)
+    || '.face f WHERE f.mbr && '
+    || quote_literal(apoly::text)
+    || '::geometry';
+  RAISE DEBUG '%', sql;
+  FOR rec IN EXECUTE sql LOOP
+    -- check for actual containment
+    fgeom := ST_PointOnSurface(ST_GetFaceGeometry(atopology, rec.face_id));
+    IF NOT ST_Covers(apoly, fgeom) THEN
+      RAISE DEBUG 'Face % not covered by input polygon', rec.face_id;
+      CONTINUE;
+    END IF;
+    RETURN NEXT rec.face_id;
+  END LOOP;
+
 END
 $$
 LANGUAGE 'plpgsql';
