@@ -25,6 +25,10 @@ SELECT topology.ST_ChangeEdgeGeom('city_data', 666,
 SELECT topology.ST_ChangeEdgeGeom('city_data', 25,
  'LINESTRING(9 35, 11 40, 13 35)');
 
+-- Test change in presence of edges sharing node (#1428)
+SELECT topology.ST_ChangeEdgeGeom('city_data', 5,
+ 'LINESTRING(41 40, 57 33)');
+
 -- TODO: test changing closed edge
 -- TODO: test reverse direction of closed edge
 

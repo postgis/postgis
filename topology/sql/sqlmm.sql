@@ -2503,16 +2503,38 @@ BEGIN
   END LOOP;
 
   --
-  -- h) Check if curve intersects any other edge
-  -- 
-  FOR rec IN EXECUTE 'SELECT * FROM '
-    || quote_ident(atopology) || '.edge_data '
-    || ' WHERE edge_id != ' || anedge
-    || ' AND ST_Intersects(geom, '
-    || quote_literal(acurve::text) || '::geometry)'
+  -- h) Check if this geometry has any interaction with any existing edge
+  --
+  FOR rec IN EXECUTE 'SELECT edge_id, ST_Relate(geom,' 
+    || quote_literal(acurve::text)
+    || '::geometry, 2) as im FROM '
+    || quote_ident(atopology)
+    || '.edge_data WHERE geom && '
+    || quote_literal(acurve::text) || '::geometry'
   LOOP
-    RAISE EXCEPTION
-    'SQL/MM Spatial exception - geometry intersects an edge';
+
+    --RAISE DEBUG 'IM=%',rec.im;
+
+    IF ST_RelateMatch(rec.im, 'F********') THEN
+      CONTINUE; -- no interior-interior intersection
+    END IF;
+
+    IF ST_RelateMatch(rec.im, '1FFF*FFF2') THEN
+      RAISE EXCEPTION
+        'SQL/MM Spatial exception - coincident edge';
+    END IF;
+
+    -- NOT IN THE SPECS: geometry touches an edge
+    IF ST_RelateMatch(rec.im, '1********') THEN
+      RAISE EXCEPTION
+        'Spatial exception - geometry intersects edge %', rec.edge_id;
+    END IF;
+
+    IF ST_RelateMatch(rec.im, 'T********') THEN
+      RAISE EXCEPTION
+        'SQL/MM Spatial exception - geometry crosses an edge';
+    END IF;
+
   END LOOP;
 
   --
