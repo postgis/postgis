@@ -1866,6 +1866,7 @@ An existing edge may be split by the snapped point.
 				<title>See Also</title>
 				<para>
 <xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="TopoGeo_AddPolygon"/>,
 <xref linkend="AddNode"/>,
 <xref linkend="CreateTopology"/>
 </para>
@@ -1909,7 +1910,58 @@ Existing edges may be split by the line.
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="TopoGeo_AddPoint"/>, <xref linkend="CreateTopology"/></para>
+				<para>
+<xref linkend="TopoGeo_AddPoint"/>,
+<xref linkend="TopoGeo_AddPolygon"/>,
+<xref linkend="AddEdge"/>,
+<xref linkend="CreateTopology"/>
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="TopoGeo_AddPolygon">
+			<refnamediv>
+				<refname>TopoGeo_AddPolygon</refname>
+			
+				<refpurpose>
+Adds a polygon to an existing topology using a tolerance and possibly splitting existing edges/faces.
+				</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>integer <function>TopoGeo_AddPolygon</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>atolerance</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Adds a polygon to an existing topology and return a set of face identifiers forming it up.
+The boundary of the given polygon will snap to existing nodes or edges within given tolerance.
+Existing edges and faces may be split by the boundary of the new polygon.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="TopoGeo_AddPoint"/>,
+<xref linkend="TopoGeo_AddLineString"/>,
+<xref linkend="AddFace"/>,
+<xref linkend="CreateTopology"/>
+				</para>
 			</refsection>
 		</refentry>
 
