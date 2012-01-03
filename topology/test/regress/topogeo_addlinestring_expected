@@ -6,8 +6,8 @@ t
 COMMIT
 max|node|22
 max|edge|26
-ERROR:  Invalid geometry type (MULTILINESTRING) passed to TopoGeo_AddPoint, expected LINESTRING
-ERROR:  Invalid geometry type (POINT) passed to TopoGeo_AddPoint, expected LINESTRING
+ERROR:  Invalid geometry type (MULTILINESTRING) passed to TopoGeo_AddLinestring, expected LINESTRING
+ERROR:  Invalid geometry type (POINT) passed to TopoGeo_AddLinestring, expected LINESTRING
 iso_uni|27
 N|23||POINT(36 26)
 N|24||POINT(38 30)

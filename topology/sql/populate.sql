@@ -723,7 +723,7 @@ BEGIN
 
   -- 0. Check arguments
   IF geometrytype(aline) != 'LINESTRING' THEN
-    RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPoint, expected LINESTRING', geometrytype(aline);
+    RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddLinestring, expected LINESTRING', geometrytype(aline);
   END IF;
 
   -- 1. Self-node
@@ -808,11 +808,18 @@ LANGUAGE 'plpgsql';
 --
 --  Add a Polygon into a topology 
 --
+-- }{
 CREATE OR REPLACE FUNCTION topology.TopoGeo_AddPolygon(atopology varchar, apoly geometry, tolerance float8 DEFAULT 0)
-	RETURNS void AS
+	RETURNS SETOF int AS
 $$
 DECLARE
 BEGIN
+
+  -- 0. Check arguments
+  IF geometrytype(aline) != 'POLYGON' THEN
+    RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPolygon, expected POLYGON', geometrytype(aline);
+  END IF;
+
 	RAISE EXCEPTION 'TopoGeo_AddPolygon not implemented yet';
 END
 $$
