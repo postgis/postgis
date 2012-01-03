@@ -1994,6 +1994,47 @@ faceid
 			</refsection>
 		</refentry>
 
+		<refentry id="TopoGeo_AddPoint">
+			<refnamediv>
+				<refname>TopoGeo_AddPoint</refname>
+			
+				<refpurpose>
+Adds a point to an existing topology using a tolerance and possibly splitting an existing edge.
+				</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>integer <function>TopoGeo_AddNode</function></funcdef>
+						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
+						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Adds a point to an existing topology and return its identifier.
+The given point will snap to existing nodes or edges within given tolerance.
+An existing edge may be split by the snapped point.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="AddNode"/>, <xref linkend="CreateTopology"/></para>
+			</refsection>
+		</refentry>
+
 		<refentry id="TopologyPolygonize">
 			<refnamediv>
 				<refname>Polygonize</refname>
