@@ -23,7 +23,6 @@
 
 SET client_min_messages TO warning;
 
-
 -- INSTALL VERSION: POSTGIS_LIB_VERSION
 
 BEGIN;
@@ -114,82 +113,6 @@ CREATE OR REPLACE FUNCTION geometry(geometry, integer, boolean)
 CREATE CAST (geometry AS geometry) WITH FUNCTION geometry(geometry, integer, boolean) AS IMPLICIT;
 
 
--------------------------------------------
--- Affine transforms
--------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_RotateZ(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT ST_RotateZ($1, $2)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_RotateX(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_RotateY(geometry,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Translate($1, $2, $3, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Scale($1, $2, $3, 1)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Transscale(geometry,float8,float8,float8,float8)
-	RETURNS geometry
-	AS 'SELECT ST_Affine($1,  $4, 0, 0,  0, $5, 0,
-		0, 0, 1,  $2 * $4, $3 * $5, 0)'
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -------------------------------------------------------------------
 --  BOX3D TYPE
 -------------------------------------------------------------------
@@ -210,42 +133,6 @@ CREATE TYPE box3d (
 	input = box3d_in,
 	output = box3d_out
 );
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_XMin(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_xmin'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_YMin(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_ymin'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_ZMin(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_zmin'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_XMax(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_xmax'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_YMax(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_ymax'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
-	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','BOX3D_zmax'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- BOX2D
@@ -268,86 +155,63 @@ CREATE TYPE box2d (
 	storage = plain
 );
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+-------------------------------------------------------------------
+--  BOX2DF TYPE (INTERNAL ONLY)
+-------------------------------------------------------------------
+--
+-- Box2Df type is used by the GiST index bindings. 
+-- In/out functions are stubs, as all access should be internal.
+---
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION box2df_in(cstring)
+	RETURNS box2df
+	AS 'MODULE_PATHNAME','box2df_in'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION box2df_out(box2df)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','box2df_out'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- Availability: 2.0.0
+CREATE TYPE box2df (
+	internallength = 16,
+	input = box2df_in,
+	output = box2df_out,
+	storage = plain,
+	alignment = double
+);
+
+
+-------------------------------------------------------------------
+--  GIDX TYPE (INTERNAL ONLY)
+-------------------------------------------------------------------
+--
+-- GIDX type is used by the N-D and GEOGRAPHY GiST index bindings. 
+-- In/out functions are stubs, as all access should be internal.
+---
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION postgis_getbbox(geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+CREATE OR REPLACE FUNCTION gidx_in(cstring)
+	RETURNS gidx
+	AS 'MODULE_PATHNAME','gidx_in'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_MakeBox2d(geom1 geometry, geom2 geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION gidx_out(gidx)
+	RETURNS cstring
+	AS 'MODULE_PATHNAME','gidx_out'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
-	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
-	LANGUAGE 'C' IMMUTABLE;
-
------------------------------------------------------------------------
--- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
------------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-
------------------------------------------------------------------------
--- ESTIMATED_EXTENT( <table name>, <column name> )
------------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
-	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
-
------------------------------------------------------------------------
--- FIND_EXTENT( <schema name>, <table name>, <column name> )
------------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
-$$
-DECLARE
-	schemaname alias for $1;
-	tablename alias for $2;
-	columnname alias for $3;
-	myrec RECORD;
-
-BEGIN
-	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") As extent FROM "' || schemaname || '"."' || tablename || '"' LOOP
-		return myrec.extent;
-	END LOOP;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
-
------------------------------------------------------------------------
--- FIND_EXTENT( <table name>, <column name> )
------------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
-$$
-DECLARE
-	tablename alias for $1;
-	columnname alias for $2;
-	myrec RECORD;
-
-BEGIN
-	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") As extent FROM "' || tablename || '"' LOOP
-		return myrec.extent;
-	END LOOP;
-END;
-$$
-LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+-- Availability: 1.5.0
+CREATE TYPE gidx (
+	internallength = variable,
+	input = gidx_in,
+	output = gidx_out,
+	storage = plain,
+	alignment = double
+);
 
 -------------------------------------------------------------------
 -- BTREE indexes
@@ -426,34 +290,13 @@ CREATE OPERATOR CLASS btree_geometry_ops
 	FUNCTION	1	geometry_cmp (geom1 geometry, geom2 geometry);
 
 
-
 -----------------------------------------------------------------------------
--- GiST 2D GEOMETRY-over-GSERIALIZED
+-- GiST 2D GEOMETRY-over-GSERIALIZED INDEX
 -----------------------------------------------------------------------------
---
--- Box2Df type is used by the GiST index bindings. 
--- In/out functions are stubs, as all access should be internal.
----
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION box2df_in(cstring)
-	RETURNS box2df
-	AS 'MODULE_PATHNAME','box2df_in'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
 
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION box2df_out(box2df)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME','box2df_out'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
-
--- Availability: 2.0.0
-CREATE TYPE box2df (
-	internallength = 16,
-	input = box2df_in,
-	output = box2df_out,
-	storage = plain,
-	alignment = double
-);
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- GiST Support Functions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_gist_distance_2d(internal,geometry,int4) 
@@ -518,6 +361,10 @@ CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, sma
 -----------------------------------------------------------------------------
 -- GEOMETRY Operators
 -----------------------------------------------------------------------------
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- 2D GEOMETRY Operators
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION geometry_overlaps(geom1 geometry, geom2 geometry) 
@@ -717,6 +564,307 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	FUNCTION        7        geometry_gist_same_2d (geom1 geometry, geom2 geometry, internal);
 
 
+-----------------------------------------------------------------------------
+-- GiST ND GEOMETRY-over-GSERIALIZED
+-----------------------------------------------------------------------------
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- GiST Support Functions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_consistent_nd(internal,geometry,int4) 
+	RETURNS bool 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_compress_nd(internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME','gserialized_gist_compress'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_penalty_nd(internal,internal,internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_picksplit_nd(internal, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_union_nd(bytea, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_union'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_same_nd(geometry, geometry, internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_same'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal) 
+	RETURNS internal 
+	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
+	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+--CREATE OR REPLACE FUNCTION geometry_gist_selectivity_nd (internal, oid, internal, int4)
+--	RETURNS float8
+--	AS 'MODULE_PATHNAME', 'geometry_gist_selectivity_nd'
+--	LANGUAGE 'C';
+
+-- Availability: 2.0.0
+--CREATE OR REPLACE FUNCTION geography_gist_join_selectivity_nd(internal, oid, internal, smallint)
+--	RETURNS float8
+--	AS 'MODULE_PATHNAME', 'geometry_gist_join_selectivity_nd'
+--	LANGUAGE 'C';
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- N-D GEOMETRY Operators
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geometry_overlaps_nd(geometry, geometry) 
+	RETURNS boolean 
+	AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OPERATOR &&& (
+	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps_nd,
+	COMMUTATOR = '&&&'
+	,RESTRICT = contsel, JOIN = contjoinsel
+--	,RESTRICT = geometry_gist_selectivity_nd 
+--	,JOIN = geometry_gist_join_selectivity_nd
+);
+
+-- Availability: 2.0.0
+CREATE OPERATOR CLASS gist_geometry_ops_nd
+	FOR TYPE geometry USING GIST AS
+	STORAGE 	gidx,
+	OPERATOR        3        &&&	,
+--	OPERATOR        6        ~=	,
+--	OPERATOR        7        ~	,
+--	OPERATOR        8        @	,
+	FUNCTION        1        geometry_gist_consistent_nd (internal, geometry, int4),
+	FUNCTION        2        geometry_gist_union_nd (bytea, internal),
+	FUNCTION        3        geometry_gist_compress_nd (internal),
+	FUNCTION        4        geometry_gist_decompress_nd (internal),
+	FUNCTION        5        geometry_gist_penalty_nd (internal, internal, internal),
+	FUNCTION        6        geometry_gist_picksplit_nd (internal, internal),
+	FUNCTION        7        geometry_gist_same_nd (geometry, geometry, internal);
+
+
+-----------------------------------------------------------------------------
+-- Affine transforms
+-----------------------------------------------------------------------------
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_affine'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  $2, $3, 0,  $4, $5, 0,  0, 0, 1,  $6, $7, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_RotateZ(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_RotateZ($1, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_RotateX(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, cos($2), -sin($2), 0, sin($2), cos($2), 0, 0, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_RotateY(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  cos($2), 0, sin($2),  0, 1, 0,  -sin($2), 0, cos($2), 0,  0, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1, 1, 0, 0, 0, 1, 0, 0, 0, 1, $2, $3, $4)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Translate(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Translate($1, $2, $3, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  $2, 0, 0,  0, $3, 0,  0, 0, $4,  0, 0, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Scale(geometry,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Scale($1, $2, $3, 1)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Transscale(geometry,float8,float8,float8,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  $4, 0, 0,  0, $5, 0,
+		0, 0, 1,  $2 * $4, $3 * $5, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Shift_Longitude(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_longitude_shift'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------------
+--  BOX3D FUNCTIONS
+-----------------------------------------------------------------------------
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_XMin(box3d)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','BOX3D_xmin'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_YMin(box3d)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','BOX3D_ymin'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_ZMin(box3d)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','BOX3D_zmin'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_XMax(box3d)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','BOX3D_xmax'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_YMax(box3d)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','BOX3D_ymax'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_ZMax(box3d)
+	RETURNS FLOAT8
+	AS 'MODULE_PATHNAME','BOX3D_zmax'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------------
+--  BOX2D FUNCTIONS
+-----------------------------------------------------------------------------
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_expand(box2d,float8)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION postgis_getbbox(geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_MakeBox2d(geom1 geometry, geom2 geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
+	LANGUAGE 'C' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
+-----------------------------------------------------------------------
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
+
+-----------------------------------------------------------------------
+-- ESTIMATED_EXTENT( <table name>, <column name> )
+-----------------------------------------------------------------------
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+	LANGUAGE 'C' IMMUTABLE STRICT SECURITY DEFINER;
+
+-----------------------------------------------------------------------
+-- FIND_EXTENT( <schema name>, <table name>, <column name> )
+-----------------------------------------------------------------------
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_find_extent(text,text,text) RETURNS box2d AS
+$$
+DECLARE
+	schemaname alias for $1;
+	tablename alias for $2;
+	columnname alias for $3;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") As extent FROM "' || schemaname || '"."' || tablename || '"' LOOP
+		return myrec.extent;
+	END LOOP;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+
+-----------------------------------------------------------------------
+-- FIND_EXTENT( <table name>, <column name> )
+-----------------------------------------------------------------------
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_find_extent(text,text) RETURNS box2d AS
+$$
+DECLARE
+	tablename alias for $1;
+	columnname alias for $2;
+	myrec RECORD;
+
+BEGIN
+	FOR myrec IN EXECUTE 'SELECT ST_Extent("' || columnname || '") As extent FROM "' || tablename || '"' LOOP
+		return myrec.extent;
+	END LOOP;
+END;
+$$
+LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+
 -------------------------------------------
 -- other lwgeom functions
 -------------------------------------------
@@ -773,7 +921,7 @@ CREATE OR REPLACE FUNCTION ST_nrings(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------
--- Misures
+-- Measures
 ------------------------------------------------------------------------
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_3DLength(geometry)
@@ -1062,7 +1210,6 @@ CREATE OR REPLACE FUNCTION ST_MakePoint(float8, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
 	LANGUAGE 'C' IMMUTABLE STRICT;
-
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_MakePoint(float8, float8, float8, float8)

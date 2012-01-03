@@ -9,6 +9,10 @@
 --
 ---------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------
+--  GEOGRAPHY TYPE
+-----------------------------------------------------------------------------
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_typmod_in(cstring[])
 	RETURNS integer
@@ -52,30 +56,6 @@ CREATE TYPE geography (
 	alignment = double
 );
 
---
--- GIDX type is used by the GiST index bindings. 
--- In/out functions are stubs, as all access should be internal.
----
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION gidx_in(cstring)
-	RETURNS gidx
-	AS 'MODULE_PATHNAME','gidx_in'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION gidx_out(gidx)
-	RETURNS cstring
-	AS 'MODULE_PATHNAME','gidx_out'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
-
--- Availability: 1.5.0
-CREATE TYPE gidx (
-	internallength = variable,
-	input = gidx_in,
-	output = gidx_out,
-	storage = plain,
-	alignment = double
-);
 
 
 -- Availability: 1.5.0
@@ -707,98 +687,4 @@ CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 
 -----------------------------------------------------------------------------
 
-
-
------------------------------------------------------------------------------
--- GiST ND GEOMETRY-over-GSERIALIZED
------------------------------------------------------------------------------
-
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- GiST Support Functions
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_consistent_nd(internal,geometry,int4) 
-	RETURNS bool 
-	AS 'MODULE_PATHNAME' ,'gserialized_gist_consistent'
-	LANGUAGE 'C';
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_compress_nd(internal) 
-	RETURNS internal 
-	AS 'MODULE_PATHNAME','gserialized_gist_compress'
-	LANGUAGE 'C';
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_penalty_nd(internal,internal,internal) 
-	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'gserialized_gist_penalty'
-	LANGUAGE 'C';
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_picksplit_nd(internal, internal) 
-	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'gserialized_gist_picksplit'
-	LANGUAGE 'C';
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_union_nd(bytea, internal) 
-	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'gserialized_gist_union'
-	LANGUAGE 'C';
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_same_nd(geometry, geometry, internal) 
-	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'gserialized_gist_same'
-	LANGUAGE 'C';
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal) 
-	RETURNS internal 
-	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
-	LANGUAGE 'C';
-
--- Availability: 2.0.0
---CREATE OR REPLACE FUNCTION geometry_gist_selectivity_nd (internal, oid, internal, int4)
---	RETURNS float8
---	AS 'MODULE_PATHNAME', 'geometry_gist_selectivity_nd'
---	LANGUAGE 'C';
-
--- Availability: 2.0.0
---CREATE OR REPLACE FUNCTION geography_gist_join_selectivity_nd(internal, oid, internal, smallint)
---	RETURNS float8
---	AS 'MODULE_PATHNAME', 'geometry_gist_join_selectivity_nd'
---	LANGUAGE 'C';
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_overlaps_nd(geometry, geometry) 
-	RETURNS boolean 
-	AS 'MODULE_PATHNAME' ,'gserialized_overlaps'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 2.0.0
-CREATE OPERATOR &&& (
-	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps_nd,
-	COMMUTATOR = '&&&'
-	,RESTRICT = contsel, JOIN = contjoinsel
---	,RESTRICT = geometry_gist_selectivity_nd 
---	,JOIN = geometry_gist_join_selectivity_nd
-);
-
--- Availability: 2.0.0
-CREATE OPERATOR CLASS gist_geometry_ops_nd
-	FOR TYPE geometry USING GIST AS
-	STORAGE 	gidx,
-	OPERATOR        3        &&&	,
---	OPERATOR        6        ~=	,
---	OPERATOR        7        ~	,
---	OPERATOR        8        @	,
-	FUNCTION        1        geometry_gist_consistent_nd (internal, geometry, int4),
-	FUNCTION        2        geometry_gist_union_nd (bytea, internal),
-	FUNCTION        3        geometry_gist_compress_nd (internal),
-	FUNCTION        4        geometry_gist_decompress_nd (internal),
-	FUNCTION        5        geometry_gist_penalty_nd (internal, internal, internal),
-	FUNCTION        6        geometry_gist_picksplit_nd (internal, internal),
-	FUNCTION        7        geometry_gist_same_nd (geometry, geometry, internal);
 
