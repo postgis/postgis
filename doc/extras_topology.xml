@@ -2268,7 +2268,7 @@ faceid
 			<refsection>
                 <title>Description</title>
             
-                <para>Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in tho <varname>toponame</varname> schema.</para>
+                <para>Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in the <varname>toponame</varname> schema.</para>
                 <para>tg_type is an integer: 1:[multi]point (punctal), 2:[multi]line (lineal), 3:[multi]poly (areal), 4:collection. layer_id is the layer id in the topology.layer table.</para>
                 <para>punctal layers are formed from set of nodes, lineal layers are formed from a set of edges, areal layers are formed from a set of faces,
                 	and collections can be formed from a mixture of nodes, edges, and faces.</para>
@@ -2344,8 +2344,65 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddTopoGeometryColumn"/>, <xref linkend="ST_CreateTopoGeo" />, <xref linkend="ST_GetFaceGeometry"/>,
-					<xref linkend="topoelementarray" />, <xref linkend="TopoElementArray_Agg" />  
+				<para>
+<xref linkend="AddTopoGeometryColumn"/>,
+<xref linkend="toTopoGeom" />  
+<xref linkend="ST_CreateTopoGeo" />,
+<xref linkend="ST_GetFaceGeometry"/>,
+<xref linkend="topoelementarray" />,
+<xref linkend="TopoElementArray_Agg" />  
+				</para>
+			</refsection>
+		</refentry>
+
+	  	<refentry id="toTopoGeom">
+			<refnamediv>
+				<refname>toTopoGeom</refname>
+			
+				<refpurpose>Creates a new topo geometry from a simple geometry</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>toTopoGeom</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
+					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in the <varname>toponame</varname> schema.
+                </para>
+
+                <para>
+Topological primitives required to represent the input geometry will be added, possibly splitting existing ones.
+Pre-existing TopoGeometry objects will retain their shapes.
+                </para>
+
+                <para>
+When <varname>tolerance</varname> is given it will be used to snap the input geometry to existing primitives.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.0</para>
+			</refsection>
+		
+		
+			<!-- Optionally add an "Examples" section -->
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="CreateTopoGeom" />,
+<xref linkend="AddTopoGeometryColumn"/>
 				</para>
 			</refsection>
 		</refentry>
