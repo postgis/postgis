@@ -6596,11 +6596,12 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 			}
 
 			if (j > 0) {
+				/* trim allocation */
+				options = repalloc(options, (j+1) * sizeof(char *));
+
 				/* add NULL to end */
 				options[j] = NULL;
 
-				/* trim allocation */
-				options = repalloc(options, j * sizeof(char *));
 			}
 			else {
 				pfree(options);
