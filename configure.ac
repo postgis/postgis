@@ -772,6 +772,9 @@ AC_ARG_WITH([topology],
 
 if test "x$TOPOLOGY" = "xtopology"; then
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
+	if test $POSTGIS_GEOS_VERSION -lt 33; then
+		AC_MSG_ERROR([Topology requires GEOS version >= 3.3])
+	fi
 fi
 
 AC_SUBST([TOPOLOGY])
