@@ -12,12 +12,14 @@ INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( '
 CREATE OR REPLACE FUNCTION save_nodes()
 RETURNS VOID
 AS $$
+BEGIN
   DROP TABLE IF EXISTS city_data.orig_node_summary;
   CREATE TABLE city_data.orig_node_summary
   AS SELECT node_id,
     containing_face
     FROM city_data.node;
-$$ LANGUAGE 'SQL';
+END;
+$$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION check_nodes(lbl text)
 RETURNS TABLE (l text, o text, node_id int,
@@ -54,12 +56,14 @@ $$ LANGUAGE 'plpgsql';
 CREATE OR REPLACE FUNCTION save_edges()
 RETURNS VOID
 AS $$
+BEGIN
   DROP TABLE IF EXISTS city_data.orig_edge_summary;
   CREATE TABLE city_data.orig_edge_summary AS
   SELECT edge_id,
     next_left_edge, next_right_edge, left_face, right_face
     FROM city_data.edge_data;
-$$ LANGUAGE 'SQL';
+END;
+$$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION check_edges(lbl text)
 RETURNS TABLE (l text, o text, edge_id int,
@@ -99,11 +103,13 @@ $$ LANGUAGE 'plpgsql';
 CREATE OR REPLACE FUNCTION save_faces()
 RETURNS VOID
 AS $$
+BEGIN
   DROP TABLE IF EXISTS city_data.orig_face_summary;
   CREATE TABLE city_data.orig_face_summary AS
   SELECT face_id, mbr
     FROM city_data.face;
-$$ LANGUAGE 'SQL';
+END;
+$$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION check_faces(lbl text)
 RETURNS TABLE (l text, o text, face_id int, mbr text)
