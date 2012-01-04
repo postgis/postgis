@@ -1159,18 +1159,19 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --
 -- Construct a Geometry from a TopoGeometry.
 -- 
---
+-- }{
 CREATE OR REPLACE FUNCTION topology.Geometry(topogeom topology.TopoGeometry)
 	RETURNS Geometry
 AS $$
 DECLARE
-	toponame varchar;
-	geom geometry;
-	rec RECORD;
-	plyr RECORD;
-	clyr RECORD;
-	query text;
-	ok BOOL;
+  toponame varchar;
+  geom geometry;
+  rec RECORD;
+  plyr RECORD;
+  clyr RECORD;
+  query text;
+  ok BOOL;
+  sql TEXT;
 BEGIN
         -- Get topology name
         SELECT name FROM topology.topology into toponame
@@ -1227,7 +1228,7 @@ BEGIN
 	END IF;
 	
 
-	IF topogeom.type = 3 THEN -- [multi]polygon
+  IF topogeom.type = 3 THEN -- [multi]polygon
 		FOR rec IN EXECUTE 'SELECT st_union('
 			|| 'topology.ST_GetFaceGeometry('
 			|| quote_literal(toponame) || ','
@@ -1243,7 +1244,7 @@ BEGIN
 			geom := 'POLYGON EMPTY';
 		END IF;
 
-	ELSIF topogeom.type = 2 THEN -- [multi]line
+  ELSIF topogeom.type = 2 THEN -- [multi]line
 		FOR rec IN EXECUTE 'SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM '
 			|| quote_ident(toponame) || '.edge e, '
 			|| quote_ident(toponame) || '.relation r '
@@ -1258,7 +1259,7 @@ BEGIN
 			geom := 'LINESTRING EMPTY';
 		END IF;
 	
-	ELSIF topogeom.type = 1 THEN -- [multi]point
+  ELSIF topogeom.type = 1 THEN -- [multi]point
 		FOR rec IN EXECUTE 'SELECT st_union(n.geom) as g FROM '
 			|| quote_ident(toponame) || '.node n, '
 			|| quote_ident(toponame) || '.relation r '
@@ -1273,10 +1274,41 @@ BEGIN
 			geom := 'POINT EMPTY';
 		END IF;
 
-	ELSE
-		RAISE NOTICE 'Geometry from TopoGeometry does not support TopoGeometries of type % so far', topogeom.type;
-		geom := 'GEOMETRYCOLLECTION EMPTY';
-	END IF;
+  ELSIF topogeom.type = 4 THEN -- mixed collection
+    sql := 'WITH areas AS ( SELECT ST_Union('
+      || 'topology.ST_GetFaceGeometry('
+      || quote_literal(toponame) || ','
+      || 'element_id)) as g FROM ' 
+      || quote_ident(toponame)
+      || '.relation WHERE topogeo_id = '
+      || topogeom.id || ' AND layer_id = '
+      || topogeom.layer_id || ' AND element_type = 3), '
+      || 'lines AS ( SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM '
+      || quote_ident(toponame) || '.edge e, '
+      || quote_ident(toponame) || '.relation r '
+      || ' WHERE r.topogeo_id = ' || topogeom.id
+      || ' AND r.layer_id = ' || topogeom.layer_id
+      || ' AND r.element_type = 2 '
+      || ' AND abs(r.element_id) = e.edge_id ), '
+      || ' points as ( SELECT st_union(n.geom) as g FROM '
+      || quote_ident(toponame) || '.node n, '
+      || quote_ident(toponame) || '.relation r '
+      || ' WHERE r.topogeo_id = ' || topogeom.id
+      || ' AND r.layer_id = ' || topogeom.layer_id
+      || ' AND r.element_type = 1 '
+      || ' AND r.element_id = n.node_id ), '
+      || ' un as ( SELECT g FROM areas UNION ALL SELECT g FROM lines '
+      || '          UNION ALL SELECT g FROM points ) '
+      || 'SELECT ST_Collect(g) FROM un';
+    EXECUTE sql INTO geom;
+    IF geom IS NULL THEN
+      geom := 'GEOMETRYCOLLECTION EMPTY';
+    END IF;
+
+  ELSE
+    RAISE NOTICE 'Geometry from TopoGeometry does not support TopoGeometries of type % so far', topogeom.type;
+    geom := 'GEOMETRYCOLLECTION EMPTY';
+  END IF;
 
 	RETURN geom;
 END
