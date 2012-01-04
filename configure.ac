@@ -639,31 +639,30 @@ if test ! "x$JSONDIR" = "x"; then
 			dnl Add the include directory to JSON_CPPFLAGS
 			JSON_CPPFLAGS="-I$JSONDIR/include"
 			JSON_LDFLAGS="-L$JSONDIR/lib -ljson"
-
-			dnl Check that we can find the json/json.h header file
-			CPPFLAGS_SAVE="$CPPFLAGS"
-			CPPFLAGS="$JSON_CPPFLAGS"
-			AC_CHECK_HEADER([json/json.h], [], [AC_MSG_ERROR([could not find json/json.h - you may need to specify the directory of a json-c installation using --with-jsondir])])	
-			CPPFLAGS="$CPPFLAGS_SAVE"
-
-			dnl Ensure we can link against libjson
-			LIBS_SAVE="$LIBS"
-			LIBS="$JSON_LDFLAGS"
-			AC_CHECK_LIB([json], [json_object_get],
-				[],
-				[AC_MSG_ERROR([could not find libjson - you may need to specify the directory of a json-c installation using --with-jsondir])],
-				[])
-			LIBS="$LIBS_SAVE"
-			HAVE_JSON=Yes
 		else
 			AC_MSG_ERROR([the --with-jsondir directory "$JSONDIR" cannot be found])
 		fi
 	fi
 fi
 
+dnl Check that we can find the json/json.h header file
+CPPFLAGS_SAVE="$CPPFLAGS"
+CPPFLAGS="$JSON_CPPFLAGS"
+AC_CHECK_HEADER([json/json.h], [HAVE_JSON=Yes], [])	
+CPPFLAGS="$CPPFLAGS_SAVE"
+
+dnl Ensure we can link against libjson
+LIBS_SAVE="$LIBS"
+LIBS="$JSON_LDFLAGS"
+AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=Yes], [], [])
+LIBS="$LIBS_SAVE"
+
+if test "$HAVE_JSON" = "Yes"; then
+  AC_DEFINE([HAVE_LIBJSON],1)
+fi
+
 AC_SUBST([JSON_CPPFLAGS])
 AC_SUBST([JSON_LDFLAGS])
-AC_SUBST([HAVE_JSON])
 
 dnl ===========================================================================
 dnl Detect GTK+2.0 for GUI
