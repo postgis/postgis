@@ -4155,7 +4155,6 @@ $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 #include "long_xact.sql.in.c"
-#include "sqlmm.sql.in.c"
 #include "geography.sql.in.c"
 
 
@@ -4409,7 +4408,11 @@ CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 ---------------------------------------------------------------
 -- SQL-MM
 ---------------------------------------------------------------
-
+-- PostGIS equivalent function: ST_ndims(geometry)
+CREATE OR REPLACE FUNCTION ST_CoordDim(geometry)
+	RETURNS smallint
+	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 --
 -- SQL-MM
 --
@@ -4443,6 +4446,72 @@ CREATE OR REPLACE FUNCTION ST_LineToCurve(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_desegmentize'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION _ST_OrderingEquals(geometry, geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'LWGEOM_same'
+	LANGUAGE 'C' IMMUTABLE STRICT
+	COST 100;
+
+-- Availability: 1.3.0
+CREATE OR REPLACE FUNCTION ST_OrderingEquals(geometry, geometry)
+	RETURNS boolean
+	AS $$ 
+	SELECT $1 ~= $2 AND _ST_OrderingEquals($1, $2)
+	$$	
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+	
+-------------------------------------------------------------------------------
+-- SQL/MM - SQL Functions on type ST_Point
+-------------------------------------------------------------------------------
+
+-- PostGIS equivalent function: ST_MakePoint(float8,float8)
+CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+	
+-- PostGIS equivalent function: ST_MakePolygon(geometry)
+CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
+	RETURNS geometry
+	AS $$ 
+	SELECT ST_SetSRID(ST_MakePolygon($1), $2)
+	$$	
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+	
+-- PostGIS equivalent function: GeomFromWKB(bytea))
+-- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
+
+CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_from_WKB'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+	
+---
+-- Linear referencing functions
+---
+CREATE OR REPLACE FUNCTION ST_LocateBetween(geometry, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+CREATE OR REPLACE FUNCTION ST_LocateAlong(geometry, float8)
+	RETURNS geometry
+	AS $$ SELECT ST_LocateBetween($1, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- LRS with offset parameter
+CREATE OR REPLACE FUNCTION ST_LocateBetween(geometry, float8, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- LRS with offset parameter
+CREATE OR REPLACE FUNCTION ST_LocateAlong(geometry, float8, float8)
+	RETURNS geometry
+	AS $$ SELECT ST_LocateBetween($1, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 ---------------------------------------------------------------
 -- END
 ---------------------------------------------------------------
