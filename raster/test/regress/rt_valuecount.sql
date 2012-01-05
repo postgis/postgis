@@ -208,6 +208,21 @@ SELECT ST_ValueCount(
 		, 1, 5, 5, 3.14159
 	)
 , 3.14159);
+SELECT ST_ValueCount(
+	ST_SetValue(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					, 1, '64BF', 0, 0
+				)
+				, 1, 1, 1, -10
+			)
+			, 1, 5, 4, 0
+		)
+		, 1, 5, 5, 3.14159
+	)
+, 2);
 BEGIN;
 CREATE TEMP TABLE test
 	ON COMMIT DROP AS
@@ -243,4 +258,18 @@ SELECT ST_ValueCount('test', 'rast', 1, 3.14, 1);
 SELECT ST_ValueCount('test', 'rast', 1, -1);
 SELECT ST_ValueCount('test', 'rast', 3.1, 0.1);
 SELECT ST_ValueCount('test', 'rast', -9.);
+
+SAVEPOINT test;
+SELECT ST_ValueCount('test', 'rast', 2);
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+SELECT ST_ValueCount('test1', 'rast', 2);
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+SELECT ST_ValueCount('test', 'rast1', 2);
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+
 ROLLBACK;

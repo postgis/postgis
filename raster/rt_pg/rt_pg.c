@@ -3736,19 +3736,21 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		sample = 1;
 
 	/* iterate through rasters of coverage */
-	/* create sql */
-	len = sizeof(char) * (strlen("SELECT \"\" FROM \"\" WHERE \"\" IS NOT NULL") + (strlen(colname) * 2) + strlen(tablename) + 1);
-	sql = (char *) palloc(len);
-	if (NULL == sql) {
-		elog(ERROR, "RASTER_summaryStatsCoverage: Unable to allocate memory for sql\n");
-		PG_RETURN_NULL();
-	}
-
 	/* connect to database */
 	spi_result = SPI_connect();
 	if (spi_result != SPI_OK_CONNECT) {
 		elog(ERROR, "RASTER_summaryStatsCoverage: Could not connect to database using SPI\n");
 		pfree(sql);
+		PG_RETURN_NULL();
+	}
+
+	/* create sql */
+	len = sizeof(char) * (strlen("SELECT \"\" FROM \"\" WHERE \"\" IS NOT NULL") + (strlen(colname) * 2) + strlen(tablename) + 1);
+	sql = (char *) palloc(len);
+	if (NULL == sql) {
+		elog(ERROR, "RASTER_summaryStatsCoverage: Unable to allocate memory for sql\n");
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
 		PG_RETURN_NULL();
 	}
 
@@ -3761,7 +3763,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 		NULL, NULL,
 		TRUE, 0
 	);
-	SPI_pfree(sql);
+	pfree(sql);
 
 	/* process resultset */
 	SPI_cursor_fetch(portal, TRUE, 1);
@@ -3779,7 +3781,6 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			if (NULL != rtn) pfree(rtn);
-
 			PG_RETURN_NULL();
 		}
 		else if (isNull) {
@@ -3798,7 +3799,6 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			if (NULL != rtn) pfree(rtn);
-
 			PG_RETURN_NULL();
 		}
 
@@ -3811,9 +3811,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			SPI_cursor_close(portal);
 			SPI_finish();
 
-			rt_raster_destroy(raster);
 			if (NULL != rtn) pfree(rtn);
-
 			PG_RETURN_NULL();
 		}
 
@@ -3826,9 +3824,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			SPI_cursor_close(portal);
 			SPI_finish();
 
-			rt_raster_destroy(raster);
 			if (NULL != rtn) pfree(rtn);
-
 			PG_RETURN_NULL();
 		}
 
@@ -3846,7 +3842,6 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			if (NULL != rtn) pfree(rtn);
-
 			PG_RETURN_NULL();
 		}
 
@@ -4005,12 +4000,16 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/* pgraster is null, return nothing */
-		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_histogram: Could not deserialize raster");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4021,6 +4020,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		if (bandindex < 1 || bandindex > num_bands) {
 			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
 			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4034,6 +4034,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 			if (sample < 0 || sample > 1) {
 				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
 				rt_raster_destroy(raster);
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (FLT_EQ(sample, 0.0))
@@ -4061,6 +4062,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 				default:
 					elog(ERROR, "RASTER_histogram: Invalid data type for width");
 					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
@@ -4089,6 +4091,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 					elog(NOTICE, "Invalid value for width (must be greater than 0). Returning NULL");
 					pfree(bin_width);
 					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 				}
 
@@ -4119,6 +4122,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		if (!band) {
 			elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
 			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4128,10 +4132,12 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		rt_raster_destroy(raster);
 		if (NULL == stats || NULL == stats->values) {
 			elog(NOTICE, "Unable to compute summary statistics for band at index %d", bandindex);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		else if (stats->count < 1) {
 			elog(NOTICE, "Unable to compute histogram for band at index %d as the band has no values", bandindex);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4141,6 +4147,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		pfree(stats);
 		if (NULL == hist || !count) {
 			elog(NOTICE, "Unable to compute histogram for band at index %d", bandindex);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4293,12 +4300,14 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		/* tablename is null, return null */
 		if (PG_ARGISNULL(0)) {
 			elog(NOTICE, "Table name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		tablenametext = PG_GETARG_TEXT_P(0);
 		tablename = text_to_cstring(tablenametext);
 		if (!strlen(tablename)) {
 			elog(NOTICE, "Table name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		POSTGIS_RT_DEBUGF(3, "RASTER_histogramCoverage: tablename = %s", tablename);
@@ -4306,12 +4315,14 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		/* column name is null, return null */
 		if (PG_ARGISNULL(1)) {
 			elog(NOTICE, "Column name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		colnametext = PG_GETARG_TEXT_P(1);
 		colname = text_to_cstring(colnametext);
 		if (!strlen(colname)) {
 			elog(NOTICE, "Column name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		POSTGIS_RT_DEBUGF(3, "RASTER_histogramCoverage: colname = %s", colname);
@@ -4329,6 +4340,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			sample = PG_GETARG_FLOAT8(4);
 			if (sample < 0 || sample > 1) {
 				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (FLT_EQ(sample, 0.0))
@@ -4355,6 +4367,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 					break;
 				default:
 					elog(ERROR, "RASTER_histogramCoverage: Invalid data type for width");
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
@@ -4382,6 +4395,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				if (width < 0 || FLT_EQ(width, 0.0)) {
 					elog(NOTICE, "Invalid value for width (must be greater than 0). Returning NULL");
 					pfree(bin_width);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 				}
 
@@ -4401,23 +4415,29 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		if (!PG_ARGISNULL(7))
 			right = PG_GETARG_BOOL(7);
 
-		/* coverage stats */
-		len = sizeof(char) * (strlen("SELECT min, max FROM _st_summarystats('','',,::boolean,)") + strlen(tablename) + strlen(colname) + (MAX_INT_CHARLEN * 2) + MAX_DBL_CHARLEN + 1);
-		sql = (char *) palloc(len);
-		if (NULL == sql) {
-			elog(ERROR, "RASTER_histogramCoverage: Unable to allocate memory for sql\n");
-			if (bin_width_count) pfree(bin_width);
-			SRF_RETURN_DONE(funcctx);
-		}
-
 		/* connect to database */
 		spi_result = SPI_connect();
 		if (spi_result != SPI_OK_CONNECT) {
 			elog(ERROR, "RASTER_histogramCoverage: Could not connect to database using SPI\n");
 
-			pfree(sql);
 			if (bin_width_count) pfree(bin_width);
 
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* coverage stats */
+		len = sizeof(char) * (strlen("SELECT min, max FROM _st_summarystats('','',,::boolean,)") + strlen(tablename) + strlen(colname) + (MAX_INT_CHARLEN * 2) + MAX_DBL_CHARLEN + 1);
+		sql = (char *) palloc(len);
+		if (NULL == sql) {
+			elog(ERROR, "RASTER_histogramCoverage: Unable to allocate memory for sql\n");
+
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
+
+			if (bin_width_count) pfree(bin_width);
+
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4425,7 +4445,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		snprintf(sql, len, "SELECT min, max FROM _st_summarystats('%s','%s',%d,%d::boolean,%f)", tablename, colname, bandindex, (exclude_nodata_value ? 1 : 0), sample);
 		POSTGIS_RT_DEBUGF(3, "RASTER_histogramCoverage: %s", sql);
 		spi_result = SPI_execute(sql, TRUE, 0);
-		SPI_pfree(sql);
+		pfree(sql);
 		if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
 			elog(ERROR, "RASTER_histogramCoverage: Could not get summary stats of coverage");
 
@@ -4434,6 +4454,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 			if (bin_width_count) pfree(bin_width);
 
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4450,6 +4471,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 			if (bin_width_count) pfree(bin_width);
 
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		min = strtod(tmp, NULL);
@@ -4465,6 +4487,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 			if (bin_width_count) pfree(bin_width);
 
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		max = strtod(tmp, NULL);
@@ -4482,6 +4505,8 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 			SPI_finish();
 
 			if (bin_width_count) pfree(bin_width);
+
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4515,6 +4540,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				if (NULL != covhist) pfree(covhist);
 				if (bin_width_count) pfree(bin_width);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (isNull) {
@@ -4535,6 +4561,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				if (NULL != covhist) pfree(covhist);
 				if (bin_width_count) pfree(bin_width);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -4547,10 +4574,10 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				rt_raster_destroy(raster);
 				if (NULL != covhist) pfree(covhist);
 				if (bin_width_count) pfree(bin_width);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -4563,10 +4590,10 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				rt_raster_destroy(raster);
 				if (NULL != covhist) pfree(covhist);
 				if (bin_width_count) pfree(bin_width);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -4586,6 +4613,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 				if (NULL != covhist) pfree(covhist);
 				if (bin_width_count) pfree(bin_width);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -4603,6 +4631,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 					if (NULL != covhist) pfree(covhist);
 					if (bin_width_count) pfree(bin_width);
 
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 				}
 
@@ -4621,6 +4650,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 						if (bin_width_count) pfree(bin_width);
 
+						MemoryContextSwitchTo(oldcontext);
 						SRF_RETURN_DONE(funcctx);
 					}
 
@@ -4781,12 +4811,16 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/* pgraster is null, return nothing */
-		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_quantile: Could not deserialize raster");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4796,6 +4830,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		if (bandindex < 1 || bandindex > num_bands) {
 			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
 			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		assert(0 <= (bandindex - 1));
@@ -4810,6 +4845,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 			if (sample < 0 || sample > 1) {
 				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
 				rt_raster_destroy(raster);
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (FLT_EQ(sample, 0.0))
@@ -4831,6 +4867,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 				default:
 					elog(ERROR, "RASTER_quantile: Invalid data type for quantiles");
 					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
@@ -4859,6 +4896,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 					elog(NOTICE, "Invalid value for quantile (must be between 0 and 1). Returning NULL");
 					pfree(quantiles);
 					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 				}
 
@@ -4879,6 +4917,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		if (!band) {
 			elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
 			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4888,10 +4927,12 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		rt_raster_destroy(raster);
 		if (NULL == stats || NULL == stats->values) {
 			elog(NOTICE, "Could not retrieve summary statistics for band at index %d", bandindex);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		else if (stats->count < 1) {
 			elog(NOTICE, "Unable to compute quantiles for band at index %d as the band has no values", bandindex);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -4901,6 +4942,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		pfree(stats);
 		if (NULL == quant || !count) {
 			elog(NOTICE, "Unable to compute quantiles for band at index %d", bandindex);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -5047,12 +5089,14 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		/* tablename is null, return null */
 		if (PG_ARGISNULL(0)) {
 			elog(NOTICE, "Table name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		tablenametext = PG_GETARG_TEXT_P(0);
 		tablename = text_to_cstring(tablenametext);
 		if (!strlen(tablename)) {
 			elog(NOTICE, "Table name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: tablename = %s", tablename);
@@ -5060,12 +5104,14 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		/* column name is null, return null */
 		if (PG_ARGISNULL(1)) {
 			elog(NOTICE, "Column name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		colnametext = PG_GETARG_TEXT_P(1);
 		colname = text_to_cstring(colnametext);
 		if (!strlen(colname)) {
 			elog(NOTICE, "Column name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		POSTGIS_RT_DEBUGF(3, "RASTER_quantileCoverage: colname = %s", colname);
@@ -5083,6 +5129,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			sample = PG_GETARG_FLOAT8(4);
 			if (sample < 0 || sample > 1) {
 				elog(NOTICE, "Invalid sample percentage (must be between 0 and 1). Returning NULL");
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (FLT_EQ(sample, 0.0))
@@ -5103,7 +5150,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 					break;
 				default:
 					elog(ERROR, "RASTER_quantileCoverage: Invalid data type for quantiles");
-					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
@@ -5131,7 +5178,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				if (quantile < 0 || quantile > 1) {
 					elog(NOTICE, "Invalid value for quantile (must be between 0 and 1). Returning NULL");
 					pfree(quantiles);
-					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 				}
 
@@ -5148,18 +5195,23 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		}
 
 		/* coverage stats */
-		len = sizeof(char) * (strlen("SELECT count FROM _st_summarystats('','',,::boolean,)") + strlen(tablename) + strlen(colname) + (MAX_INT_CHARLEN * 2) + MAX_DBL_CHARLEN + 1);
-		sql = (char *) palloc(len);
-		if (NULL == sql) {
-			elog(ERROR, "RASTER_quantileCoverage: Unable to allocate memory for sql\n");
-			SRF_RETURN_DONE(funcctx);
-		}
-
 		/* connect to database */
 		spi_result = SPI_connect();
 		if (spi_result != SPI_OK_CONNECT) {
 			elog(ERROR, "RASTER_quantileCoverage: Could not connect to database using SPI\n");
-			pfree(sql);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		len = sizeof(char) * (strlen("SELECT count FROM _st_summarystats('','',,::boolean,)") + strlen(tablename) + strlen(colname) + (MAX_INT_CHARLEN * 2) + MAX_DBL_CHARLEN + 1);
+		sql = (char *) palloc(len);
+		if (NULL == sql) {
+			elog(ERROR, "RASTER_quantileCoverage: Unable to allocate memory for sql\n");
+
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
+
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -5167,13 +5219,14 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		snprintf(sql, len, "SELECT count FROM _st_summarystats('%s','%s',%d,%d::boolean,%f)", tablename, colname, bandindex, (exclude_nodata_value ? 1 : 0), sample);
 		POSTGIS_RT_DEBUGF(3, "stats sql:  %s", sql);
 		spi_result = SPI_execute(sql, TRUE, 0);
-		SPI_pfree(sql);
+		pfree(sql);
 		if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
 			elog(ERROR, "RASTER_quantileCoverage: Could not get summary stats of coverage");
 
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
 
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -5188,6 +5241,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
 
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		cov_count = strtol(tmp, NULL, 10);
@@ -5204,6 +5258,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
 
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -5236,6 +5291,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (isNull) {
@@ -5253,6 +5309,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -5265,8 +5322,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				rt_raster_destroy(raster);
-
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -5279,8 +5335,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				rt_raster_destroy(raster);
-
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -5302,6 +5357,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 				SPI_cursor_close(portal);
 				SPI_finish();
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -5440,12 +5496,16 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/* pgraster is null, return nothing */
-		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
 			elog(ERROR, "RASTER_valueCount: Could not deserialize raster");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -5455,6 +5515,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		if (bandindex < 1 || bandindex > num_bands) {
 			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
 			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		assert(0 <= (bandindex - 1));
@@ -5476,6 +5537,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 				default:
 					elog(ERROR, "RASTER_valueCount: Invalid data type for values");
 					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
@@ -5522,6 +5584,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		if (!band) {
 			elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
 			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -5531,6 +5594,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		rt_raster_destroy(raster);
 		if (NULL == vcnts || !count) {
 			elog(NOTICE, "Unable to count the values for band at index %d", bandindex);
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -5672,12 +5736,14 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		/* tablename is null, return null */
 		if (PG_ARGISNULL(0)) {
 			elog(NOTICE, "Table name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		tablenametext = PG_GETARG_TEXT_P(0);
 		tablename = text_to_cstring(tablenametext);
 		if (!strlen(tablename)) {
 			elog(NOTICE, "Table name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		POSTGIS_RT_DEBUGF(3, "tablename = %s", tablename);
@@ -5685,12 +5751,14 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		/* column name is null, return null */
 		if (PG_ARGISNULL(1)) {
 			elog(NOTICE, "Column name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		colnametext = PG_GETARG_TEXT_P(1);
 		colname = text_to_cstring(colnametext);
 		if (!strlen(colname)) {
 			elog(NOTICE, "Column name must be provided");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 		POSTGIS_RT_DEBUGF(3, "colname = %s", colname);
@@ -5715,7 +5783,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 					break;
 				default:
 					elog(ERROR, "RASTER_valueCountCoverage: Invalid data type for values");
-					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
@@ -5758,24 +5826,29 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		}
 
 		/* iterate through rasters of coverage */
+		/* connect to database */
+		spi_result = SPI_connect();
+		if (spi_result != SPI_OK_CONNECT) {
+			elog(ERROR, "RASTER_valueCountCoverage: Could not connect to database using SPI\n");
+
+			if (search_values_count) pfree(search_values);
+
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
 		/* create sql */
 		len = sizeof(char) * (strlen("SELECT \"\" FROM \"\" WHERE \"\" IS NOT NULL") + (strlen(colname) * 2) + strlen(tablename) + 1);
 		sql = (char *) palloc(len);
 		if (NULL == sql) {
 			elog(ERROR, "RASTER_valueCountCoverage: Unable to allocate memory for sql\n");
 
-			if (search_values_count) pfree(search_values);
-			SRF_RETURN_DONE(funcctx);
-		}
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
 
-		/* connect to database */
-		spi_result = SPI_connect();
-		if (spi_result != SPI_OK_CONNECT) {
-			elog(ERROR, "RASTER_valueCountCoverage: Could not connect to database using SPI\n");
-
-			pfree(sql);
 			if (search_values_count) pfree(search_values);
 
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -5789,7 +5862,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			NULL, NULL,
 			TRUE, 0
 		);
-		SPI_pfree(sql);
+		pfree(sql);
 
 		/* process resultset */
 		SPI_cursor_fetch(portal, TRUE, 1);
@@ -5809,6 +5882,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				if (NULL != covvcnts) pfree(covvcnts);
 				if (search_values_count) pfree(search_values);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 			else if (isNull) {
@@ -5829,6 +5903,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				if (NULL != covvcnts) pfree(covvcnts);
 				if (search_values_count) pfree(search_values);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -5841,10 +5916,10 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				rt_raster_destroy(raster);
 				if (NULL != covvcnts) pfree(covvcnts);
 				if (search_values_count) pfree(search_values);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -5857,10 +5932,10 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				SPI_cursor_close(portal);
 				SPI_finish();
 
-				rt_raster_destroy(raster);
 				if (NULL != covvcnts) pfree(covvcnts);
 				if (search_values_count) pfree(search_values);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -5871,7 +5946,6 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 			if (NULL == vcnts || !count) {
 				elog(NOTICE, "Unable to count the values for band at index %d", bandindex);
 
-				pfree(vcnts);
 				if (SPI_tuptable) SPI_freetuptable(tuptable);
 				SPI_cursor_close(portal);
 				SPI_finish();
@@ -5879,6 +5953,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				if (NULL != covvcnts) free(covvcnts);
 				if (search_values_count) pfree(search_values);
 
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -5889,13 +5964,13 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 				if (NULL == covvcnts) {
 					elog(ERROR, "RASTER_valueCountCoverage: Unable to allocate memory for value counts of coverage");
 
-					pfree(vcnts);
 					if (SPI_tuptable) SPI_freetuptable(tuptable);
 					SPI_cursor_close(portal);
 					SPI_finish();
 
 					if (search_values_count) pfree(search_values);
 
+					MemoryContextSwitchTo(oldcontext);
 					SRF_RETURN_DONE(funcctx);
 				}
 
@@ -5927,7 +6002,6 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 						if (NULL == covvcnts) {
 							elog(ERROR, "RASTER_valueCountCoverage: Unable to change allocated memory for value counts of coverage");
 
-							pfree(vcnts);
 							if (SPI_tuptable) SPI_freetuptable(tuptable);
 							SPI_cursor_close(portal);
 							SPI_finish();
@@ -5935,6 +6009,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 							if (search_values_count) pfree(search_values);
 							if (NULL != covvcnts) free(covvcnts);
 
+							MemoryContextSwitchTo(oldcontext);
 							SRF_RETURN_DONE(funcctx);
 						}
 
@@ -6115,9 +6190,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 
 	if (!n) {
 		elog(NOTICE, "Invalid argument for reclassargset. Returning original raster");
-		rt_raster_destroy(raster);
 
+		pgraster = rt_raster_serialize(raster);
+		rt_raster_destroy(raster);
+		if (!pgraster) PG_RETURN_NULL();
 		SET_VARSIZE(pgraster, pgraster->size);
+
 		PG_RETURN_POINTER(pgraster);
 	}
 
@@ -6133,9 +6211,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		tup = (HeapTupleHeader) DatumGetPointer(e[i]);
 		if (NULL == tup) {
 			elog(NOTICE, "Invalid argument for reclassargset. Returning original raster");
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 
@@ -6143,9 +6224,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		tupv = GetAttributeByName(tup, "nband", &isnull);
 		if (isnull) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of nband for reclassarg of index %d . Returning original raster", i);
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 		nband = DatumGetInt32(tupv);
@@ -6154,9 +6238,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		/* valid band index? */
 		if (nband < 1 || nband > numBands) {
 			elog(NOTICE, "Invalid argument for reclassargset. Invalid band index (must use 1-based) for reclassarg of index %d . Returning original raster", i);
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 
@@ -6164,17 +6251,23 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		tupv = GetAttributeByName(tup, "reclassexpr", &isnull);
 		if (isnull) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of reclassexpr for reclassarg of index %d . Returning original raster", i);
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 		exprtext = (text *) DatumGetPointer(tupv);
 		if (NULL == exprtext) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of reclassexpr for reclassarg of index %d . Returning original raster", i);
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 		expr = text_to_cstring(exprtext);
@@ -6187,9 +6280,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		comma_set = rtpg_strsplit(expr, ",", &comma_n);
 		if (comma_n < 1) {
 			elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 
@@ -6206,9 +6302,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 				elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
 				for (k = 0; k < j; k++) pfree(exprset[k]);
 				pfree(exprset);
-				rt_raster_destroy(raster);
 
+				pgraster = rt_raster_serialize(raster);
+				rt_raster_destroy(raster);
+				if (!pgraster) PG_RETURN_NULL();
 				SET_VARSIZE(pgraster, pgraster->size);
+
 				PG_RETURN_POINTER(pgraster);
 			}
 
@@ -6224,9 +6323,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 					elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
 					for (k = 0; k < j; k++) pfree(exprset[k]);
 					pfree(exprset);
-					rt_raster_destroy(raster);
 
+					pgraster = rt_raster_serialize(raster);
+					rt_raster_destroy(raster);
+					if (!pgraster) PG_RETURN_NULL();
 					SET_VARSIZE(pgraster, pgraster->size);
+
 					PG_RETURN_POINTER(pgraster);
 				}
 
@@ -6273,9 +6375,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 						elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
 						for (k = 0; k < j; k++) pfree(exprset[k]);
 						pfree(exprset);
-						rt_raster_destroy(raster);
 
+						pgraster = rt_raster_serialize(raster);
+						rt_raster_destroy(raster);
+						if (!pgraster) PG_RETURN_NULL();
 						SET_VARSIZE(pgraster, pgraster->size);
+
 						PG_RETURN_POINTER(pgraster);
 					}
 
@@ -6330,9 +6435,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 						elog(NOTICE, "Invalid argument for reclassargset. Invalid expression of reclassexpr for reclassarg of index %d . Returning original raster", i);
 						for (k = 0; k < j; k++) pfree(exprset[k]);
 						pfree(exprset);
-						rt_raster_destroy(raster);
 
+						pgraster = rt_raster_serialize(raster);
+						rt_raster_destroy(raster);
+						if (!pgraster) PG_RETURN_NULL();
 						SET_VARSIZE(pgraster, pgraster->size);
+
 						PG_RETURN_POINTER(pgraster);
 					}
 					POSTGIS_RT_DEBUGF(5, "RASTER_reclass: min/max (double) %f", val);
@@ -6408,17 +6516,23 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 		tupv = GetAttributeByName(tup, "pixeltype", &isnull);
 		if (isnull) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of pixeltype for reclassarg of index %d . Returning original raster", i);
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 		pixeltypetext = (text *) DatumGetPointer(tupv);
 		if (NULL == pixeltypetext) {
 			elog(NOTICE, "Invalid argument for reclassargset. Missing value of pixeltype for reclassarg of index %d . Returning original raster", i);
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 		pixeltype = text_to_cstring(pixeltypetext);
@@ -6444,9 +6558,12 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 			elog(NOTICE, "Could not find raster band of index %d. Returning original raster", nband);
 			for (k = 0; k < j; k++) pfree(exprset[k]);
 			pfree(exprset);
-			rt_raster_destroy(raster);
 
+			pgraster = rt_raster_serialize(raster);
+			rt_raster_destroy(raster);
+			if (!pgraster) PG_RETURN_NULL();
 			SET_VARSIZE(pgraster, pgraster->size);
+
 			PG_RETURN_POINTER(pgraster);
 		}
 		newband = rt_band_reclass(band, pixtype, hasnodata, nodataval, exprset, j);
@@ -7772,23 +7889,26 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
 		/* pgraster is null, return null */
-		if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 		/* raster */
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
-			MemoryContextSwitchTo(oldcontext);
 			elog(ERROR, "RASTER_bandmetadata: Could not deserialize raster");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
 		/* numbands */
 		numBands = rt_raster_get_num_bands(raster);
 		if (numBands < 1) {
+			elog(NOTICE, "Raster provided has no bands");
 			rt_raster_destroy(raster);
 			MemoryContextSwitchTo(oldcontext);
-			elog(NOTICE, "Raster provided has no bands");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -7804,6 +7924,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			default:
 				elog(ERROR, "RASTER_bandmetadata: Invalid data type for band number(s)");
 				rt_raster_destroy(raster);
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 				break;
 		}

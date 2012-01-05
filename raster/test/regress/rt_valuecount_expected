@@ -18,6 +18,7 @@
 1
 1
 1
+NOTICE:  Invalid band index (must use 1-based). Returning NULL
 BEGIN
 -10.000|10
 0.000|980
@@ -32,4 +33,18 @@ BEGIN
 0
 10
 0
+SAVEPOINT
+NOTICE:  Invalid band index (must use 1-based). Returning NULL
+COMMIT
+RELEASE
+SAVEPOINT
+ERROR:  relation "test1" does not exist
+QUERY:  SELECT "rast" FROM "test1" WHERE "rast" IS NOT NULL
+COMMIT
+RELEASE
+SAVEPOINT
+ERROR:  column "rast1" does not exist
+QUERY:  SELECT "rast1" FROM "test" WHERE "rast1" IS NOT NULL
+COMMIT
+RELEASE
 COMMIT

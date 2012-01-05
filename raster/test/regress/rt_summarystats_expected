@@ -3,9 +3,26 @@
 100
 -3.429|6.571
 -0.069|1.046
+NOTICE:  Invalid band index (must use 1-based). Returning NULL
+|
 BEGIN
 20|-68.584|-3.429|6.571|-10.000|3.142
 1000|-68.584|-0.069|1.046|-10.000|3.142
 20|-68.584|-3.429|6.571|-10.000|3.142
 20|-68.584|-3.429|6.571|-10.000|3.142
+SAVEPOINT
+NOTICE:  Invalid band index (must use 1-based). Returning NULL
+|||||
+COMMIT
+RELEASE
+SAVEPOINT
+ERROR:  relation "test1" does not exist
+QUERY:  SELECT "rast" FROM "test1" WHERE "rast" IS NOT NULL
+COMMIT
+RELEASE
+SAVEPOINT
+ERROR:  column "rast1" does not exist
+QUERY:  SELECT "rast1" FROM "test_summarystats" WHERE "rast1" IS NOT NULL
+COMMIT
+RELEASE
 COMMIT

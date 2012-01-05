@@ -186,8 +186,29 @@ FROM ST_Histogram(
 	),
 	1, 5
 );
+SELECT
+	round(min::numeric, 3),
+	round(max::numeric, 3),
+	count,
+	round(percent::numeric, 3)
+FROM ST_Histogram(
+	ST_SetValue(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					, 1, '64BF', 0, 0
+				)
+				, 1, 1, 1, -10
+			)
+			, 1, 5, 4, 0
+		)
+		, 1, 5, 5, 3.14159
+	),
+	2
+);
 BEGIN;
-CREATE TEMP TABLE test
+CREATE TEMP TABLE test_histogram
 	ON COMMIT DROP AS
 	SELECT
 		rast.rast
@@ -215,35 +236,62 @@ SELECT
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
-FROM ST_Histogram('test', 'rast', 1, TRUE, 0, NULL, FALSE);
+FROM ST_Histogram('test_histogram', 'rast', 1, TRUE, 0, NULL, FALSE);
 SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
-FROM ST_Histogram('test', 'rast', 1, TRUE, 0, NULL, FALSE);
+FROM ST_Histogram('test_histogram', 'rast', 1, TRUE, 0, NULL, FALSE);
 SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
-FROM ST_Histogram('test', 'rast', 1, FALSE);
+FROM ST_Histogram('test_histogram', 'rast', 1, FALSE);
 SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
-FROM ST_Histogram('test', 'rast', 1, FALSE, 5, FALSE);
+FROM ST_Histogram('test_histogram', 'rast', 1, FALSE, 5, FALSE);
 SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
-FROM ST_Histogram('test', 'rast', 1, 10);
+FROM ST_Histogram('test_histogram', 'rast', 1, 10);
 SELECT
 	round(min::numeric, 3),
 	round(max::numeric, 3),
 	count,
 	round(percent::numeric, 3)
-FROM ST_Histogram('test', 'rast', 1, 3, FALSE);
+FROM ST_Histogram('test_histogram', 'rast', 1, 3, FALSE);
+SAVEPOINT test;
+SELECT
+	round(min::numeric, 3),
+	round(max::numeric, 3),
+	count,
+	round(percent::numeric, 3)
+FROM ST_Histogram('test_histogram', 'rast', 2, TRUE, 0, NULL, FALSE);
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+SELECT
+	round(min::numeric, 3),
+	round(max::numeric, 3),
+	count,
+	round(percent::numeric, 3)
+FROM ST_Histogram('test1', 'rast', 1, TRUE, 0, NULL, FALSE);
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
+SAVEPOINT test;
+SELECT
+	round(min::numeric, 3),
+	round(max::numeric, 3),
+	count,
+	round(percent::numeric, 3)
+FROM ST_Histogram('test_histogram', 'rast1', 1, TRUE, 0, NULL, FALSE);
+ROLLBACK TO SAVEPOINT test;
+RELEASE SAVEPOINT test;
 ROLLBACK;

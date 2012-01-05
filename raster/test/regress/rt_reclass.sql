@@ -111,3 +111,60 @@ FROM (
 		ROW(1, '-10000--100]:1-50,(-100-1000]:50-150,(1000-10000]:150-254', '8BUI', 0)
 	) AS rast
 ) AS t;
+SELECT
+	ST_Value(t.rast, 1, 1, 1),
+	ST_Value(t.rast, 1, 10, 10),
+	ST_BandNoDataValue(rast, 1)
+FROM (
+	SELECT ST_Reclass(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, -1),
+					1, '32BF', 1, 0
+				),
+				1, 1, 1, 3.14159
+			),
+			1, 10, 10, 2.71828
+		),
+		ROW(1, '-10000--100]:50-1,(-100-1000]:150-50,(1000-10000]:254-150', '8BUI', 0)
+	) AS rast
+) AS t;
+SELECT
+	ST_Value(t.rast, 1, 1, 1),
+	ST_Value(t.rast, 1, 10, 10),
+	ST_BandNoDataValue(rast, 1)
+FROM (
+	SELECT ST_Reclass(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, -1),
+					1, '32BF', 1, 0
+				),
+				1, 1, 1, 3.14159
+			),
+			1, 10, 10, 2.71828
+		),
+		ROW(1, 'a-100]:50-1,(-100-1000]:150-50,(1000-10000]:254-150', '8BUI', 0)
+	) AS rast
+) AS t;
+SELECT
+	ST_Value(t.rast, 1, 1, 1),
+	ST_Value(t.rast, 1, 10, 10),
+	ST_BandNoDataValue(rast, 1)
+FROM (
+	SELECT ST_Reclass(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, -1),
+					1, '32BF', 1, 0
+				),
+				1, 1, 1, 3.14159
+			),
+			1, 10, 10, 2.71828
+		),
+		ROW(2, '-10000--100]:50-1,(-100-1000]:150-50,(1000-10000]:254-150', '8BUI', 0)
+	) AS rast
+) AS t;
