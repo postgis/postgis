@@ -7032,14 +7032,24 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 					return NULL;
 				}
 
-				ptr = values;
-				for (iY = 0; iY < nYValid; iY++) {
-					x = nXBlockSize * iXBlock;
-					y = iY + (nYBlockSize * iYBlock);
+				/* if block width is same as raster width, shortcut */
+				if (nXBlocks == 1 && nYBlockSize > 1 && nXValid == width) {
+					x = 0;
+					y = nYBlockSize * iYBlock;
 
-					RASTER_DEBUGF(4, "Setting pixel line at (%d, %d) for %d pixels", x, y, nXValid);
-					rt_band_set_pixel_line(band, x, y, ptr, nXValid);
-					ptr += (nXValid * ptlen);
+					RASTER_DEBUGF(4, "Setting set of pixel lines at (%d, %d) for %d pixels", x, y, nXValid * nYValid);
+					rt_band_set_pixel_line(band, x, y, values, nXValid * nYValid);
+				}
+				else {
+					ptr = values;
+					x = nXBlockSize * iXBlock;
+					for (iY = 0; iY < nYValid; iY++) {
+						y = iY + (nYBlockSize * iYBlock);
+
+						RASTER_DEBUGF(4, "Setting pixel line at (%d, %d) for %d pixels", x, y, nXValid);
+						rt_band_set_pixel_line(band, x, y, ptr, nXValid);
+						ptr += (nXValid * ptlen);
+					}
 				}
 			}
 		}

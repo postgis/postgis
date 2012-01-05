@@ -1430,10 +1430,11 @@ static void testGDALToRaster() {
 	rt_raster raster;
 	rt_raster rast;
 	rt_band band;
+	const uint32_t xmax = 100;
+	const uint32_t ymax = 100;
 	uint32_t x;
-	uint32_t xmax = 100;
 	uint32_t y;
-	uint32_t ymax = 100;
+	double values[xmax][ymax];
 	int rtn = 0;
 	double value;
 
@@ -1448,7 +1449,8 @@ static void testGDALToRaster() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
+			values[x][y] = (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1);
+			rtn = rt_band_set_pixel(band, x, y, values[x][y]);
 			CHECK((rtn != -1));
 		}
 	}
@@ -1466,17 +1468,13 @@ static void testGDALToRaster() {
 	band = rt_raster_get_band(rast, 0);
 	CHECK(band);
 
-	rtn = rt_band_get_pixel(band, 0, 3, &value);
-	CHECK((rtn != -1));
-	CHECK(FLT_EQ(value, 0.75));
-
-	rtn = rt_band_get_pixel(band, 99, 0, &value);
-	CHECK((rtn != -1));
-	CHECK(FLT_EQ(value, 1.98));
-
-	rtn = rt_band_get_pixel(band, 95, 4, &value);
-	CHECK((rtn != -1));
-	CHECK(FLT_EQ(value, 9.54));
+	for (x = 0; x < xmax; x++) {
+		for (y = 0; y < ymax; y++) {
+			rtn = rt_band_get_pixel(band, x, y, &value);
+			CHECK((rtn != -1));
+			CHECK(FLT_EQ(value, values[x][y]));
+		}
+	}
 
 	GDALClose(gdds);
 	GDALDeregisterDriver(gddrv);
