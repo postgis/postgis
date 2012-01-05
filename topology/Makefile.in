@@ -27,7 +27,7 @@ MODULEDIR=contrib/$(PGIS_MODULE_big)
 DATA_built=topology.sql topology_upgrade_20_minor.sql uninstall_topology.sql
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=topology.sql.in
+SQL_OBJS=topology.sql.in topology_drop_before.sql.in topology_drop_after.sql.in
 
 # Extra files to remove during 'make clean'
 EXTRA_CLEAN=$(SQL_OBJS)
@@ -61,10 +61,13 @@ $(SQL_OBJS): %.in: %.in.c
 	
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
-topology_upgrade_20_minor.sql:  topology.sql
+topology_upgrade.sql:  topology.sql
 	 sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 $< > $@
+	 	 
+topology_upgrade_20_minor.sql:  topology_drop_before.sql topology_upgrade.sql topology_drop_after.sql
+	cat $^ > $@
 
 topology.sql.in: sql/sqlmm.sql sql/populate.sql sql/polygonize.sql sql/gml.sql sql/query/getnodebypoint.sql sql/query/getedgebypoint.sql sql/query/getfacebypoint.sql sql/query/GetRingEdges.sql sql/manage/TopologySummary.sql sql/manage/CopyTopology.sql sql/manage/ManageHelper.sql sql/topoelement/topoelement_agg.sql sql/topogeometry/type.sql sql/topogeometry/totopogeom.sql sql/predicates.sql
 
