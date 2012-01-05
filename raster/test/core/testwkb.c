@@ -133,7 +133,7 @@ main()
     CHECK_EQUALS(rt_raster_get_height(raster), 8);
 
     out  = rt_raster_to_hexwkb(raster, &len);
-    printf(" in hexwkb len: %u\n", strlen(hexwkb));
+    printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     printf(" in hexwkb: %s\n", hexwkb);
     printf("out hexwkb: %s\n", out);
@@ -194,7 +194,7 @@ main()
     }
 
     out  = rt_raster_to_hexwkb(raster, &len);
-    printf(" in hexwkb len: %u\n", strlen(hexwkb));
+    printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
 /* would depend on machine endian...
@@ -280,7 +280,7 @@ main()
     }
 
     out  = rt_raster_to_hexwkb(raster, &len);
-    printf(" in hexwkb len: %u\n", strlen(hexwkb));
+    printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
 /* would depend on machine endian...
@@ -378,7 +378,7 @@ main()
     }
 
     out  = rt_raster_to_hexwkb(raster, &len);
-    printf(" in hexwkb len: %u\n", strlen(hexwkb));
+    printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
 /* would depend on machine endian
@@ -463,7 +463,7 @@ main()
     }
 
     out  = rt_raster_to_hexwkb(raster, &len);
-    printf(" in hexwkb len: %u\n", strlen(hexwkb));
+    printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
 /* would depend on machine endian
@@ -523,7 +523,7 @@ main()
     }
 
     out  = rt_raster_to_hexwkb(raster, &len);
-    printf(" in hexwkb len: %u\n", strlen(hexwkb));
+    printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
 /* would depend on machine endian
@@ -760,7 +760,7 @@ main()
     }
 
     out  = rt_raster_to_hexwkb(raster, &len);
-    printf(" in hexwkb len: %u\n", strlen(hexwkb));
+    printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
     printf("out hexwkb len: %u\n", len);
     CHECK_EQUALS(len, strlen(hexwkb));
 /* would depend on machine endian

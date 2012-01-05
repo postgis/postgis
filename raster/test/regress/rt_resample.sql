@@ -47,6 +47,10 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 
 -- ST_Resample
 INSERT INTO raster_resample_dst (rid, rast) VALUES (
+	1.0, (SELECT ST_Resample(
+		NULL
+	))
+), (
 	1.1, (SELECT ST_Resample(
 		rast
 	) FROM raster_resample_src)
@@ -235,6 +239,12 @@ INSERT INTO raster_resample_dst (rid, rast) VALUES (
 	1.28, (SELECT ST_Resample(
 		rast,
 		ST_MakeEmptyRaster(5, 5, -654321, 123456, 100, 100, 0, 0, 992163),
+		FALSE
+	) FROM raster_resample_src)
+), (
+	1.29, (SELECT ST_Resample(
+		rast,
+		NULL::raster,
 		FALSE
 	) FROM raster_resample_src)
 );

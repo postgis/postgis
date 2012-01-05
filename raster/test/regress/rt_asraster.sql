@@ -56,6 +56,11 @@ ST_GeomFromText('MULTIPOLYGON(((-172210.499109288 114987.660953018,-175453.08638
 
 -- scale or width & height, pixtype, value and nodata
 INSERT INTO raster_asraster_dst (rid, rast) VALUES (
+	1.0, (SELECT ST_AsRaster(
+		NULL,
+		100, 100
+	))
+), (
 	1.1, (SELECT ST_AsRaster(
 		geom,
 		100, 100
@@ -190,6 +195,15 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 
 -- upper left
 INSERT INTO raster_asraster_dst (rid, rast) VALUES (
+	2.0, (SELECT ST_AsRaster(
+		NULL,
+		1000., -1000.,
+		'8BUI',
+		255,
+		0,
+		-175453
+	))
+), (
 	2.1, (SELECT ST_AsRaster(
 		geom,
 		1000., -1000.,
@@ -256,6 +270,16 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 
 -- skew
 INSERT INTO raster_asraster_dst (rid, rast) VALUES (
+	3.0, (SELECT ST_AsRaster(
+		NULL,
+		100, 100,
+		'8BUI',
+		255,
+		0,
+		NULL, NULL,
+		0
+	))
+), (
 	3.1, (SELECT ST_AsRaster(
 		geom,
 		100, 100,
@@ -319,6 +343,14 @@ INSERT INTO raster_asraster_dst (rid, rast) VALUES (
 
 -- snap to grid
 INSERT INTO raster_asraster_dst (rid, rast) VALUES (
+	4.0, (
+		SELECT ST_AsRaster(
+			NULL,
+			rast
+		)
+		FROM raster_asraster_rast
+	)
+), (
 	4.1, (
 		SELECT ST_AsRaster(
 			geom,

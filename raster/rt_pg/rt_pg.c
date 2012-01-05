@@ -6714,7 +6714,7 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 
 			if (j > 0) {
 				/* trim allocation */
-				options = repalloc(options, (j+1) * sizeof(char *));
+				options = repalloc(options, (j + 1) * sizeof(char *));
 
 				/* add NULL to end */
 				options[j] = NULL;
@@ -6820,6 +6820,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		drv_set = rt_raster_gdal_drivers(&drv_count, 1);
 		if (NULL == drv_set || !drv_count) {
 			elog(NOTICE, "No GDAL drivers found");
+			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -6978,7 +6979,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 
 	/* Get the geometry */
 	if (PG_ARGISNULL(0)) 
-	    PG_RETURN_NULL();
+		PG_RETURN_NULL();
 
 	pggeom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom = lwgeom_from_gserialized(pggeom);
@@ -7530,7 +7531,8 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUG(3, "RASTER_resample: Starting");
 
 	/* pgraster is null, return null */
-	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 	/* raster */
@@ -7753,7 +7755,8 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUG(3, "RASTER_metadata: Starting");
 
 	/* pgraster is null, return null */
-	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
 	/* raster */

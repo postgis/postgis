@@ -1,6 +1,16 @@
 SELECT CASE
 	WHEN length(
 		ST_AsGDALRaster(
+			NULL,
+			'GTiff'
+		)
+	) > 0
+		THEN 1
+	ELSE 0
+END;
+SELECT CASE
+	WHEN length(
+		ST_AsGDALRaster(
 			ST_AddBand(ST_MakeEmptyRaster(200, 200, 10, 10, 2, 2, 0, 0), 1, '64BF', 123.4567, NULL),
 			'GTiff'
 		)
