@@ -7778,6 +7778,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		/* raster */
 		raster = rt_raster_deserialize(pgraster, FALSE);
 		if (!raster) {
+			MemoryContextSwitchTo(oldcontext);
 			elog(ERROR, "RASTER_bandmetadata: Could not deserialize raster");
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -7785,8 +7786,9 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		/* numbands */
 		numBands = rt_raster_get_num_bands(raster);
 		if (numBands < 1) {
-			elog(NOTICE, "Raster provided has no bands");
 			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
+			elog(NOTICE, "Raster provided has no bands");
 			SRF_RETURN_DONE(funcctx);
 		}
 
@@ -7831,6 +7833,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 				elog(NOTICE, "Invalid band index: %d. Indices must be 1-based. Returning NULL", idx);
 				pfree(bandNums);
 				rt_raster_destroy(raster);
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -7855,6 +7858,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 			if (NULL == band) {
 				elog(NOTICE, "Could not get raster band at index %d", bandNums[i]);
 				rt_raster_destroy(raster);
+				MemoryContextSwitchTo(oldcontext);
 				SRF_RETURN_DONE(funcctx);
 			}
 
@@ -7903,6 +7907,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 		/* Build a tuple descriptor for our result type */
 		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			MemoryContextSwitchTo(oldcontext);
 			ereport(ERROR, (
 				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
 				errmsg(
