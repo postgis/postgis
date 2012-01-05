@@ -28,18 +28,7 @@
 --      * ESRI in DB2      : RETURNS 1 if TRUE, 0 if FALSE, NULL if NULL 
 --      * PostGIS          : RETURNS 1 if TRUE, 0 if FALSE, NULL if NULL 
 --
--- TODO: Implement ESRI's Shape constructors
---   * SE_AsShape(geometry)
---   * SE_ShapeToSQL
---   * SE_GeomFromShape
---   * SE_PointFromShape
---   * SE_LineFromShape
---   * SE_PolyFromShape
---   * SE_MPointFromShape
---   * SE_MLineFromShape
---   * SE_MPolyFromShape
--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+--
 #include "sqldefines.h"
 
 -------------------------------------------------------------------------------
@@ -113,17 +102,6 @@ CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
 -- ST_AsBinary(geometry) - already defined
 
 -------------------------------------------------------------------------------
--- SQL/MM (ArcSDE subset) - SQL Functions for obtaining the ESRI Shape 
--- representation of an ST_Geometry
--------------------------------------------------------------------------------
-
--- TODO: SE_AsShape(geometry)
---CREATE OR REPLACE FUNCTION SE_AsShape(geometry)
---    RETURNS bytea
---    AS 'MODULE_PATHNAME','LWGEOM_AsShape'
---    LANGUAGE 'C' IMMUTABLE STRICT; 
-
--------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Geometry
 -------------------------------------------------------------------------------
 
@@ -163,38 +141,14 @@ CREATE OR REPLACE FUNCTION ST_OrderingEquals(geometry, geometry)
 	$$	
 	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION SE_Is3D(geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_hasz'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION SE_IsMeasured(geometry)
-	RETURNS bool
-	AS 'MODULE_PATHNAME', 'LWGEOM_hasm'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -------------------------------------------------------------------------------
--- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Point
+-- SQL/MM - SQL Functions on type ST_Point
 -------------------------------------------------------------------------------
 
 -- PostGIS equivalent function: makePoint(float8,float8)
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
-
--- PostGIS equivalent function: Z(geometry)
-CREATE OR REPLACE FUNCTION SE_Z(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_z_point'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
-
--- PostGIS equivalent function: M(geometry)
-CREATE OR REPLACE FUNCTION SE_M(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_m_point'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -------------------------------------------------------------------------------
@@ -276,14 +230,6 @@ CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 -- ST_Contains(geometry, geometry) - already defined.
 -- ST_Relate(geometry, geometry, text) - already defined.
 
--- PostGIS equivalent function: none
-CREATE OR REPLACE FUNCTION SE_EnvelopesIntersect(geometry,geometry)
-	RETURNS boolean
-	AS $$ 
-	SELECT $1 && $2
-	$$	
-	LANGUAGE 'SQL' IMMUTABLE STRICT; 
-
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions for distance relationships
 -------------------------------------------------------------------------------
@@ -301,18 +247,6 @@ CREATE OR REPLACE FUNCTION SE_EnvelopesIntersect(geometry,geometry)
 -- ST_Buffer(geometry, float8) - already defined.
 -- ST_ConvexHull(geometry) already defined.
 
--- PostGIS equivalent function: locate_between_measures(geometry, float8, float8)
-CREATE OR REPLACE FUNCTION SE_LocateBetween(geometry, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
--- PostGIS equivalent function: locate_along_measure(geometry, float8)
-CREATE OR REPLACE FUNCTION SE_LocateAlong(geometry, float8)
-	RETURNS geometry
-	AS $$ SELECT SE_LocateBetween($1, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 ---
 -- Linear referencing functions (move to postgis.sql.in.c?)
 ---
@@ -323,7 +257,7 @@ CREATE OR REPLACE FUNCTION ST_LocateBetween(geometry, float8, float8)
 	
 CREATE OR REPLACE FUNCTION ST_LocateAlong(geometry, float8)
 	RETURNS geometry
-	AS $$ SELECT SE_LocateBetween($1, $2, $2) $$
+	AS $$ SELECT ST_LocateBetween($1, $2, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- LRS with offset parameter
@@ -335,9 +269,8 @@ CREATE OR REPLACE FUNCTION ST_LocateBetween(geometry, float8, float8, float8)
 -- LRS with offset parameter
 CREATE OR REPLACE FUNCTION ST_LocateAlong(geometry, float8, float8)
 	RETURNS geometry
-	AS $$ SELECT SE_LocateBetween($1, $2, $2) $$
+	AS $$ SELECT ST_LocateBetween($1, $2, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
-
 
 
 -------------------------------------------------------------------------------

@@ -50,6 +50,54 @@ CREATE OR REPLACE FUNCTION noop(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_noop'
 	LANGUAGE 'C' VOLATILE STRICT;
 	
+-- ESRI ArcSDE compatibility functions --
+-- We are remiving these because we don't
+-- think ESRI relies on them 
+-- so their existence is pointless
+-- Availability: 1.5.0
+-- PostGIS equivalent function: none
+CREATE OR REPLACE FUNCTION SE_EnvelopesIntersect(geometry,geometry)
+	RETURNS boolean
+	AS $$ 
+	SELECT $1 && $2
+	$$	
+	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+	
+CREATE OR REPLACE FUNCTION SE_Is3D(geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_hasz'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION SE_IsMeasured(geometry)
+	RETURNS bool
+	AS 'MODULE_PATHNAME', 'LWGEOM_hasm'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- PostGIS equivalent function: Z(geometry)
+CREATE OR REPLACE FUNCTION SE_Z(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_z_point'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- PostGIS equivalent function: M(geometry)
+CREATE OR REPLACE FUNCTION SE_M(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_m_point'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+	
+-- PostGIS equivalent function: locate_between_measures(geometry, float8, float8)
+CREATE OR REPLACE FUNCTION SE_LocateBetween(geometry, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- PostGIS equivalent function: locate_along_measure(geometry, float8)
+CREATE OR REPLACE FUNCTION SE_LocateAlong(geometry, float8)
+	RETURNS geometry
+	AS $$ SELECT SE_LocateBetween($1, $2, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
 	
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box2d(geometry)

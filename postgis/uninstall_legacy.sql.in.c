@@ -125,3 +125,12 @@ DROP FUNCTION IF EXISTS SnapToGrid(geometry, geometry, float8, float8, float8, f
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);
 DROP FUNCTION IF EXISTS transform(geometry,integer);
 
+-- ESRI compatibility functions --
+DROP FUNCTION IF EXISTS SE_Is3D(geometry);
+DROP FUNCTION IF EXISTS SE_IsMeasured(geometry);
+DROP FUNCTION IF EXISTS SE_Z(geometry);
+DROP FUNCTION IF EXISTS SE_M(geometry);
+DROP FUNCTION IF EXISTS SE_LocateBetween(geometry, float8, float8);
+DROP FUNCTION IF EXISTS SE_LocateAlong(geometry, float8);
+DROP FUNCTION IF EXISTS SE_EnvelopesIntersect(geometry,geometry);
+DROP FUNCTION IF EXISTS SE_AsShape(geometry);
