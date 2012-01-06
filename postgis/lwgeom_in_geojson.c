@@ -476,8 +476,8 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	poObj = json_tokener_parse_ex(jstok, geojson, -1);
 	if( jstok->err != json_tokener_success)
 	{
-		char *err;
-		err += sprintf(err, "%s (at offset %d)", json_tokener_errors[jstok->err], jstok->char_offset);
+		char err[256];
+		snprintf(err, 256, "%s (at offset %d)", json_tokener_errors[jstok->err], jstok->char_offset);
 		json_tokener_free(jstok);
 		geojson_lwerror(err, 1);
 	}

@@ -54,7 +54,6 @@ Datum isvalid(PG_FUNCTION_ARGS);
 Datum isvalidreason(PG_FUNCTION_ARGS);
 Datum isvaliddetail(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
-Datum offsetcurve(PG_FUNCTION_ARGS);
 Datum intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS);
@@ -107,7 +106,7 @@ PG_FUNCTION_INFO_V1(hausdorffdistance);
 Datum hausdorffdistance(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 32
-	lwerror("The GEOS version this postgis binary "
+	lwerror("The GEOS version this PostGIS binary "
 	        "was compiled against (%d) doesn't support "
 	        "'ST_HausdorffDistance' function (3.2.0+ required)",
 	        POSTGIS_GEOS_VERSION);
@@ -173,7 +172,7 @@ PG_FUNCTION_INFO_V1(hausdorffdistancedensify);
 Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 32
-	lwerror("The GEOS version this postgis binary "
+	lwerror("The GEOS version this PostGIS binary "
 	        "was compiled against (%d) doesn't support "
 	        "'ST_HausdorffDistance' function (3.2.0+ required)",
 	        POSTGIS_GEOS_VERSION);
@@ -566,7 +565,7 @@ Datum ST_UnaryUnion(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 33
 	PG_RETURN_NULL();
-	lwerror("The GEOS version this postgis binary "
+	lwerror("The GEOS version this PostGIS binary "
 	        "was compiled against (%d) doesn't support "
 	        "'GEOSUnaryUnion' function (3.3.0+ required)",
 	        POSTGIS_GEOS_VERSION);
@@ -1070,7 +1069,7 @@ Datum buffer(PG_FUNCTION_ARGS)
 	        endCapStyle != DEFAULT_ENDCAP_STYLE ||
 	        joinStyle != DEFAULT_JOIN_STYLE )
 	{
-		lwerror("The GEOS version this postgis binary "
+		lwerror("The GEOS version this PostGIS binary "
 		        "was compiled against (%d) doesn't support "
 		        "specifying a mitre limit != %d or styles different "
 		        "from 'round' (needs 3.2 or higher)",
@@ -1109,14 +1108,27 @@ Datum buffer(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 }
 
-PG_FUNCTION_INFO_V1(offsetcurve);
-Datum offsetcurve(PG_FUNCTION_ARGS)
+/*
+* Compute at offset curve to a line 
+*/
+Datum ST_OffsetCurve(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_OffsetCurve);
+Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 {
-#if POSTGIS_GEOS_VERSION >= 32
-	GSERIALIZED	*geom1;
-	double	size;
-	GEOSGeometry *g1, *g3;
-	GSERIALIZED *result;
+#if POSTGIS_GEOS_VERSION < 32
+	lwerror("The GEOS version this PostGIS binary "
+	        "was compiled against (%d) doesn't support "
+	        "ST_OffsetCurve function "
+	        "(needs 3.2 or higher)",
+	        POSTGIS_GEOS_VERSION);
+	PG_RETURN_NULL(); /* never get here */
+#else
+
+	GSERIALIZED	*gser_input;
+	GSERIALIZED *gser_result;
+	LWGEOM *lwgeom_input;
+	LWGEOM *lwgeom_result;
+	double size;
 	int quadsegs = 8; /* the default */
 	int nargs;
 
@@ -1126,54 +1138,52 @@ Datum offsetcurve(PG_FUNCTION_ARGS)
 		JOIN_MITRE = 2,
 		JOIN_BEVEL = 3
 	};
+	
 	static const double DEFAULT_MITRE_LIMIT = 5.0;
 	static const int DEFAULT_JOIN_STYLE = JOIN_ROUND;
-
 	double mitreLimit = DEFAULT_MITRE_LIMIT;
 	int joinStyle  = DEFAULT_JOIN_STYLE;
-	char *param;
-	char *params = NULL;
-
-
-	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	char *param = NULL;
+	char *paramstr = NULL;
+	
+	/* Read SQL arguments */
+	nargs = PG_NARGS();
+	gser_input = (GSERIALIZED*) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	size = PG_GETARG_FLOAT8(1);
 
-	/*
-	 * For distance = 0 we just return the input.
-	 * Note that due to a bug, GEOS 3.3.0 would return EMPTY.
-	 * See http://trac.osgeo.org/geos/ticket/454
-	 */
-	if ( size == 0 ) {
-		PG_RETURN_POINTER(geom1);
-	}
-
-
-
-	nargs = PG_NARGS();
-
-	initGEOS(lwnotice, lwnotice);
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
-	if ( ! g1 ) {
-		lwerror("Geometry could not be converted to GEOS: %s",
-		        lwgeom_geos_errmsg);
+	/* Check for a useable type */
+	if ( gserialized_get_type(gser_input) != LINETYPE )
+	{
+		lwerror("ST_OffsetCurve only works with LineStrings");
 		PG_RETURN_NULL();
 	}
 
-	// options arg (optional)
-	if (nargs > 2)
+	/*
+	* For distance == 0, just return the input.
+	* Note that due to a bug, GEOS 3.3.0 would return EMPTY.
+	* See http://trac.osgeo.org/geos/ticket/454
+	*/
+	if ( size == 0 ) 
+		PG_RETURN_POINTER(gser_input);
+
+	/* Read the lwgeom, check for errors */
+	lwgeom_input = lwgeom_from_gserialized(gser_input);
+	if ( ! lwgeom_input )
+		lwerror("ST_OffsetCurve: lwgeom_from_gserialized returned NULL");
+	
+	/* For empty inputs, just echo them back */
+	if ( lwgeom_is_empty(lwgeom_input) )
+		PG_RETURN_POINTER(gser_input);
+
+	/* Process the optional arguments */
+	if ( nargs > 2 )
 	{
-		/* We strdup `cause we're going to modify it */
-		{
-			text *wkttext = PG_GETARG_TEXT_P(2);
-			params = text2cstring(wkttext);
-		}
-		/*params = pstrdup(PG_GETARG_CSTRING(2)); */
+		text *wkttext = PG_GETARG_TEXT_P(2);
+		paramstr = text2cstring(wkttext);
 
-		POSTGIS_DEBUGF(3, "Params: %s", params);
+		POSTGIS_DEBUGF(3, "paramstr: %s", paramstr);
 
-		for (param=params; ; param=NULL)
+		for ( param=paramstr; ; param=NULL )
 		{
 			char *key, *val;
 			param = strtok(param, " ");
@@ -1184,8 +1194,7 @@ Datum offsetcurve(PG_FUNCTION_ARGS)
 			val = strchr(key, '=');
 			if ( val == NULL || *(val+1) == '\0' )
 			{
-				lwerror("Missing value for buffer "
-				        "parameter %s", key);
+				lwerror("ST_OffsetCurve: Missing value for buffer parameter %s", key);
 				break;
 			}
 			*val = '\0';
@@ -1199,22 +1208,18 @@ Datum offsetcurve(PG_FUNCTION_ARGS)
 				{
 					joinStyle = JOIN_ROUND;
 				}
-				else if ( !strcmp(val, "mitre") ||
-				          !strcmp(val, "miter")    )
+				else if ( !(strcmp(val, "mitre") && strcmp(val, "miter")) )
 				{
 					joinStyle = JOIN_MITRE;
 				}
-				else if ( !strcmp(val, "bevel") )
+				else if ( ! strcmp(val, "bevel") )
 				{
 					joinStyle = JOIN_BEVEL;
 				}
 				else
 				{
-					lwerror("Invalid buffer end cap "
-					        "style: %s (accept: "
-					        "'round', 'mitre', 'miter' "
-					        " or 'bevel'"
-					        ")", val);
+					lwerror("Invalid buffer end cap style: %s (accept: "
+					        "'round', 'mitre', 'miter' or 'bevel')", val);
 					break;
 				}
 			}
@@ -1232,64 +1237,25 @@ Datum offsetcurve(PG_FUNCTION_ARGS)
 			else
 			{
 				lwerror("Invalid buffer parameter: %s (accept: "
-				        "'join', 'mitre_limit', "
-				        "'miter_limit and "
+				        "'join', 'mitre_limit', 'miter_limit and "
 				        "'quad_segs')", key);
 				break;
 			}
 		}
-
-		pfree(params); /* was pstrduped */
-
-		POSTGIS_DEBUGF(3, "joinStyle:%d mitreLimit:%g",
-		               joinStyle, mitreLimit);
-
+		POSTGIS_DEBUGF(3, "joinStyle:%d mitreLimit:%g", joinStyle, mitreLimit);
+		pfree(paramstr); /* alloc'ed in text2cstring */
 	}
+	
+	lwgeom_result = lwline_as_lwgeom(lwgeom_offsetcurve(lwgeom_as_lwline(lwgeom_input), size, quadsegs, joinStyle, mitreLimit));
+	
+	if (lwgeom_result == NULL)
+		lwerror("ST_OffsetCurve: lwgeom_offsetcurve returned NULL");
 
-#if POSTGIS_GEOS_VERSION < 33
-	g3 = GEOSSingleSidedBuffer(g1, size < 0 ? -size : size,
-	                           quadsegs, joinStyle, mitreLimit,
-	                           size < 0 ? 0 : 1);
-#else
-	g3 = GEOSOffsetCurve(g1, size, quadsegs, joinStyle, mitreLimit);
-#endif
+	gser_result = gserialized_from_lwgeom(lwgeom_result, 0, 0);
+	lwgeom_free(lwgeom_input);
+	lwgeom_free(lwgeom_result);
+	PG_RETURN_POINTER(gser_result);
 
-	if (g3 == NULL)
-	{
-		lwerror("GEOSOffsetCurve: %s", lwgeom_geos_errmsg);
-		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL(); /* never get here */
-	}
-
-	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
-
-	GEOSSetSRID(g3, gserialized_get_srid(geom1));
-
-	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
-
-	if (result == NULL)
-	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
-		lwerror("ST_OffsetCurve() threw an error (result postgis geometry formation)!");
-		PG_RETURN_NULL(); /* never get here */
-	}
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
-
-
-	/* compressType(result); */
-
-	PG_FREE_IF_COPY(geom1, 0);
-
-	PG_RETURN_POINTER(result);
-#else /* POSTGIS_GEOS_VERSION < 32 */
-	lwerror("The GEOS version this postgis binary "
-	        "was compiled against (%d) doesn't support "
-	        "ST_OffsetCurve function "
-	        "(needs 3.2 or higher)",
-	        POSTGIS_GEOS_VERSION);
-	PG_RETURN_NULL(); /* never get here */
 #endif /* POSTGIS_GEOS_VERSION < 32 */
 }
 
@@ -1648,7 +1614,7 @@ PG_FUNCTION_INFO_V1(isvaliddetail);
 Datum isvaliddetail(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this postgis binary "
+	lwerror("The GEOS version this PostGIS binary "
 	        "was compiled against (%d) doesn't support "
 	        "'isValidDetail' function (3.3.0+ required)",
 	        POSTGIS_GEOS_VERSION);
@@ -2956,7 +2922,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 #if POSTGIS_GEOS_VERSION >= 33
 		bnr = PG_GETARG_INT32(2);
 #else
-		lwerror("The GEOS version this postgis binary "
+		lwerror("The GEOS version this PostGIS binary "
 			"was compiled against (%d) doesn't support "
 			"specifying a boundary node rule with ST_Relate"
 			" (3.3.0+ required)",
@@ -3428,7 +3394,7 @@ PG_FUNCTION_INFO_V1(ST_Snap);
 Datum ST_Snap(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this postgis binary "
+	lwerror("The GEOS version this PostGIS binary "
 	        "was compiled against (%d) doesn't support "
 	        "'ST_Snap' function (3.3.0+ required)",
 	        POSTGIS_GEOS_VERSION);
@@ -3537,7 +3503,7 @@ PG_FUNCTION_INFO_V1(ST_SharedPaths);
 Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this postgis binary "
+	lwerror("The GEOS version this PostGIS binary "
 	        "was compiled against (%d) doesn't support "
 	        "'ST_SharedPaths' function (3.3.0+ required)",
 	        POSTGIS_GEOS_VERSION);
@@ -3584,7 +3550,7 @@ PG_FUNCTION_INFO_V1(ST_Node);
 Datum ST_Node(PG_FUNCTION_ARGS)
 {
 #if POSTGIS_GEOS_VERSION < 33
-	lwerror("The GEOS version this postgis binary "
+	lwerror("The GEOS version this PostGIS binary "
 	        "was compiled against (%d) doesn't support "
 	        "'ST_Node' function (3.3.0+ required)",
 	        POSTGIS_GEOS_VERSION);

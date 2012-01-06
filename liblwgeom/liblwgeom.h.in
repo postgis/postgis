@@ -1200,6 +1200,11 @@ extern double lwpoint_get_z(const LWPOINT *point);
 extern double lwpoint_get_m(const LWPOINT *point);
 
 /**
+* Return SRID number
+*/
+extern int32_t lwgeom_get_srid(const LWGEOM *geom);
+
+/**
 * Return #LW_TRUE if geometry has Z ordinates
 */
 extern int lwgeom_has_z(const LWGEOM *geom);
@@ -1772,6 +1777,20 @@ LWGEOM* lwgeom_snap(const LWGEOM* geom1, const LWGEOM* geom2, double tolerance);
  * Requires GEOS-3.3.0+
  */
 LWGEOM* lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2);
+
+/*
+ * An offset curve against the input line.
+ *
+ * @param lwline a lineal geometry
+ * @param size offset distance. Offset left if negative and right if positive
+ * @param quadsegs number of quadrature segments in curves (try 8)
+ * @param joinStyle (1 = round, 2 = mitre, 3 = bevel)
+ * @param mitreLimit (try 5.0)
+ * @return derived geometry
+ *
+ * Requires GEOS-3.2.0+
+ */
+LWLINE* lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyle, double mitreLimit);
 
 
 /*******************************************************************************

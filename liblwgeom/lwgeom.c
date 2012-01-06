@@ -655,6 +655,13 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 	}
 }
 
+int32_t 
+lwgeom_get_srid(const LWGEOM *geom)
+{
+	if ( ! geom ) return SRID_UNKNOWN;
+	return geom->srid;
+}
+
 int 
 lwgeom_has_z(const LWGEOM *geom)
 {

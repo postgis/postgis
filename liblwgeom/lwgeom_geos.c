@@ -406,8 +406,6 @@ lwgeom_geos_version()
 	return ver;
 }
 
-
-
 LWGEOM *
 lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 {
@@ -1023,28 +1021,79 @@ lwgeom_sharedpaths(const LWGEOM* geom1, const LWGEOM* geom2)
 
 	g3 = GEOSSharedPaths(g1,g2);
 
+	GEOSGeom_destroy(g1);
+	GEOSGeom_destroy(g2);
+
 	if (g3 == NULL)
 	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g2);
 		lwerror("GEOSSharedPaths: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
 
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
-
 	GEOSSetSRID(g3, srid);
 	out = GEOS2LWGEOM(g3, is3d);
+	GEOSGeom_destroy(g3);
 
 	if (out == NULL)
 	{
-		GEOSGeom_destroy(g3);
 		lwerror("GEOS2LWGEOM threw an error");
 		return NULL;
 	}
-	GEOSGeom_destroy(g3);
 
 	return out;
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
+}
+
+LWLINE*
+lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyle, double mitreLimit)
+{
+#if POSTGIS_GEOS_VERSION < 32
+	lwerror("lwgeom_offsetcurve: GEOS 3.2 or higher required");
+#else
+	GEOSGeometry *g1, *g3;
+	LWGEOM *lwgeom_result;
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwline);
+	if ( ! g1 ) 
+	{
+		lwerror("lwgeom_offsetcurve: Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+#if POSTGIS_GEOS_VERSION < 33
+	/* Size is always positive for GEOSSingleSidedBuffer, and a flag determines left/right */
+	g3 = GEOSSingleSidedBuffer(g1, size < 0 ? -size : size,
+	                           quadsegs, joinStyle, mitreLimit,
+	                           size < 0 ? 0 : 1);
+#else
+	g3 = GEOSOffsetCurve(g1, size, quadsegs, joinStyle, mitreLimit);
+#endif
+	/* Don't need input geometry anymore */
+	GEOSGeom_destroy(g1);
+
+	if (g3 == NULL)
+	{
+		GEOSGeom_destroy(g1);
+		lwerror("GEOSOffsetCurve: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
+
+	GEOSSetSRID(g3, lwgeom_get_srid(lwline));
+
+	lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwline));
+	GEOSGeom_destroy(g3);
+
+	if (lwgeom_result == NULL)
+	{
+		lwerror("lwgeom_offsetcurve: GEOS2LWGEOM returned null");
+		return NULL;
+	}
+
+	return lwgeom_result;
+	
+#endif /* POSTGIS_GEOS_VERSION < 32 */
 }

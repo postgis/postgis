@@ -2567,7 +2567,7 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geometry,float8,text)
 -- Availability: 2.0.0 - requires GEOS-3.2 or higher
 CREATE OR REPLACE FUNCTION ST_OffsetCurve(line geometry, distance float8, params text DEFAULT '')
        RETURNS geometry
-       AS 'MODULE_PATHNAME','offsetcurve'
+       AS 'MODULE_PATHNAME','ST_OffsetCurve'
        LANGUAGE 'C' IMMUTABLE STRICT
        COST 100;
 

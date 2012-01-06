@@ -1,4 +1,4 @@
-ERROR:  GEOSOffsetCurve: IllegalArgumentException: BufferBuilder::bufferLineSingleSided only accept linestrings
+ERROR:  ST_OffsetCurve only works with LineStrings
 t0|SRID=42;LINESTRING(0 0,10 0)
 t1|SRID=42;LINESTRING(0 10,10 10)
 t2|SRID=42;LINESTRING(10 -10,0 -10)
