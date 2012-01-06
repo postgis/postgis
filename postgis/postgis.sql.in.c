@@ -3579,6 +3579,13 @@ CREATE OR REPLACE FUNCTION ST_GeomFromText(text, int4)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+	
+-- PostGIS equivalent function: ST_GeometryFromText(text)
+-- SQL/MM alias for ST_GeomFromText
+CREATE OR REPLACE FUNCTION ST_WKTToSQL(text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','LWGEOM_from_text'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_PointFromText(text)
