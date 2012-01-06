@@ -384,7 +384,7 @@ VALUES (1,
 			<listitem><varname>regular_blocking</varname> apply informational flag to denote all tiles are regularly blocked</listitem>
 			<listitem><varname>same_alignment</varname> ensures they all have same alignment meanign any two tiles you compare will return true for Refer to <xref linkend="RT_ST_SameAlignment" /></listitem>
 			<listitem><varname>srid</varname> ensures all have same srid</listitem>
-			<listime>More -- any listed as inputs into the above functions</listime>
+			<listitem>More -- any listed as inputs into the above functions</listitem>
 		</itemizedlist>
 		<note>
 			<para>This function infers the constraints from the data already present in the table.  As such for it to work, you must create the raster column first
