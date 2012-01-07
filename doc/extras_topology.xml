@@ -1839,7 +1839,7 @@ Adds a point to an existing topology using a tolerance and possibly splitting an
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>integer <function>TopoGeo_AddNode</function></funcdef>
+						<funcdef>integer <function>TopoGeo_AddPoint</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
