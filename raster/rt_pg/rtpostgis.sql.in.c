@@ -4141,7 +4141,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 
 CREATE OR REPLACE FUNCTION _raster_constraint_nodata_values(rast raster)
 	RETURNS double precision[] AS
-	$$ SELECT array_agg(nodatavalue)::double precision[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
+	$$ SELECT array_agg(CASE WHEN hasnodata IS TRUE THEN nodatavalue ELSE NULL END)::double precision[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name, rasttable name, rastcolumn name)
