@@ -4181,7 +4181,11 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name,
 			|| ' CHECK (_raster_constraint_nodata_values(' || quote_ident($3)
 			|| ')::numeric(16,10)[] = ''{';
 		FOR x in 1..max LOOP
-			sql := sql || attr[x];
+			IF attr[x] IS NULL THEN
+				sql := sql || 'NULL';
+			ELSE
+				sql := sql || attr[x];
+			END IF;
 			IF x < max THEN
 				sql := sql || ',';
 			END IF;
