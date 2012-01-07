@@ -480,11 +480,6 @@ WITH pts AS ( SELECT 'POINT(0 45)'::geography AS s, 'POINT(45 45)'::geography AS
 SELECT '#1305.2',abs(ST_Distance(e, ST_Project(s, ST_Distance(s, e), ST_Azimuth(s, e)))) < 0.001 FROM pts;
 SELECT '#1305.3',ST_Azimuth('POINT(0 45)'::geography, 'POINT(0 45)'::geography) IS NULL;
 
--- #1434
-select '#1434: Next two errors';
-select '#1434.1',ST_GeomFromGeoJSON('{ "type": "Point", "crashme": [100.0, 0.0] }');
-select '#1434.2',ST_GeomFromGeoJSON('crashme');;
-
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

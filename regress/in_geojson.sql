@@ -6,3 +6,7 @@ select 'geomfromgeojson_04',st_astext(st_geomfromgeojson(st_asgeojson('LINESTRIN
 select 'geomfromgeojson_05',st_astext(st_geomfromgeojson(st_asgeojson('POLYGON((0 0,1 1,1 0,0 0))')));
 select 'geomfromgeojson_06',st_astext(st_geomfromgeojson(st_asgeojson('MULTIPOLYGON(((0 0,1 1,1 0,0 0)))')));
 
+-- #1434
+select '#1434: Next two errors';
+select '#1434.1',ST_GeomFromGeoJSON('{ "type": "Point", "crashme": [100.0, 0.0] }');
+select '#1434.2',ST_GeomFromGeoJSON('crashme');;
