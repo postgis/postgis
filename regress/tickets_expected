@@ -149,3 +149,6 @@ ERROR:  Geometry type (Polygon) does not match column type (MultiPolygon)
 #1305.1|POINT(10 10)
 #1305.2|t
 #1305.3|t
+#1434: Next two errors
+ERROR:  Unable to find 'coordinates' in GeoJSON string
+ERROR:  unexpected character (at offset 0)

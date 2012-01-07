@@ -126,7 +126,9 @@ parse_geojson_point(json_object *geojson, bool *hasz,  int *root_srid)
 	POSTGIS_DEBUGF(3, "parse_geojson_point called with root_srid = %d.", *root_srid );
 
 	coords = findMemberByName( geojson, "coordinates" );
-
+	if ( ! coords )
+		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
+	
 	pa = ptarray_construct_empty(1, 0, 1);
 	parse_geojson_coord(coords, hasz, pa);
 
@@ -146,6 +148,8 @@ parse_geojson_linestring(json_object *geojson, bool *hasz,  int *root_srid)
 	POSTGIS_DEBUG(2, "parse_geojson_linestring called.");
 
 	points = findMemberByName( geojson, "coordinates" );
+	if ( ! points )
+		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
 
 	pa = ptarray_construct_empty(1, 0, 1);
 
@@ -176,6 +180,8 @@ parse_geojson_polygon(json_object *geojson, bool *hasz,  int *root_srid)
 	int ring = 0;
 
 	rings = findMemberByName( geojson, "coordinates" );
+	if ( ! rings )
+		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
 
 	ppa = (POINTARRAY**) lwalloc(sizeof(POINTARRAY*));
 
@@ -232,6 +238,8 @@ parse_geojson_multipoint(json_object *geojson, bool *hasz,  int *root_srid)
 	}
 
 	poObjPoints = findMemberByName( geojson, "coordinates" );
+	if ( ! poObjPoints )
+		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
 
 	if( json_type_array == json_object_get_type( poObjPoints ) )
 	{
@@ -270,6 +278,8 @@ parse_geojson_multilinestring(json_object *geojson, bool *hasz,  int *root_srid)
 	}
 
 	poObjLines = findMemberByName( geojson, "coordinates" );
+	if ( ! poObjLines )
+		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
 
 	if( json_type_array == json_object_get_type( poObjLines ) )
 	{
@@ -317,6 +327,8 @@ parse_geojson_multipolygon(json_object *geojson, bool *hasz,  int *root_srid)
 	}
 
 	poObjPolys = findMemberByName( geojson, "coordinates" );
+	if ( ! poObjPolys )
+		geojson_lwerror("Unable to find 'coordinates' in GeoJSON string", 4);
 
 	if( json_type_array == json_object_get_type( poObjPolys ) )
 	{
@@ -389,6 +401,8 @@ parse_geojson_geometrycollection(json_object *geojson, bool *hasz,  int *root_sr
 	}
 
 	poObjGeoms = findMemberByName( geojson, "geometries" );
+	if ( ! poObjGeoms )
+		geojson_lwerror("Unable to find 'geometries' in GeoJSON string", 4);
 
 	if( json_type_array == json_object_get_type( poObjGeoms ) )
 	{
