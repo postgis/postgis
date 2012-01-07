@@ -6849,6 +6849,8 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	int i = 0;
 	int status;
 
+	const char *srs = NULL;
+
 	GDALRasterBandH gdband = NULL;
 	GDALDataType gdpixtype = GDT_Unknown;
 	rt_band band;
@@ -6898,8 +6900,24 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 
 	/* apply raster attributes */
 	rt_raster_set_geotransform_matrix(rast, gt);
+
 	/* srid */
-	/* CANNOT SET srid AS srid IS NOT AVAILABLE IN GDAL dataset */
+	srs = GDALGetProjectionRef(ds);
+	if (srs != NULL && srs[0] != '\0') {
+		OGRSpatialReferenceH hSRS = OSRNewSpatialReference(NULL);
+		if (OSRSetFromUserInput(hSRS, srs) == OGRERR_NONE) {
+			const char* pszAuthorityName = OSRGetAuthorityName(hSRS, NULL);
+			const char* pszAuthorityCode = OSRGetAuthorityCode(hSRS, NULL);
+			if (
+				pszAuthorityName != NULL &&
+				strcmp(pszAuthorityName, "EPSG") == 0 &&
+				pszAuthorityCode != NULL
+			) {
+				rt_raster_set_srid(rast, atoi(pszAuthorityCode));
+			}
+		}
+		OSRDestroySpatialReference(hSRS);
+	}
 
 	/* copy bands */
 	numBands = GDALGetRasterCount(ds);
