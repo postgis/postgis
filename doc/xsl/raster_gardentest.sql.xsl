@@ -381,6 +381,9 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(parameter, 'georefcoords')">
 						<xsl:value-of select="$var_georefcoords" />
 					</xsl:when>
+					<xsl:when test="contains(parameter, 'index') or contains(parameter, 'band')">
+						<xsl:value-of select="$var_band" />
+					</xsl:when>
 					<xsl:when test="contains(parameter, 'format')">
 						<xsl:value-of select="$var_format" />
 					</xsl:when>
@@ -421,7 +424,13 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="type = 'geography' or type = 'geography '">
 						<xsl:text>geography(foo2.the_geom)</xsl:text>
 					</xsl:when>
-					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set') ">
+					<xsl:when test="contains(type,'raster[]') and (position() = 1) ">
+						<xsl:text>ARRAY[rast1.rast]</xsl:text>
+					</xsl:when>
+					<xsl:when test="contains(type, 'raster[]') ">
+						<xsl:text>ARRAY[rast2.rast]</xsl:text>
+					</xsl:when>
+					<xsl:when test="(type = 'raster' or type = 'raster ' or contains(type, 'raster set') ) and (position() = 1) ">
 						<xsl:text>rast1.rast</xsl:text>
 					</xsl:when>
 					<xsl:when test="type = 'raster' or type = 'raster ' or contains(type, 'raster set')">
