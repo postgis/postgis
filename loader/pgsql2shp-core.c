@@ -1264,6 +1264,54 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	return state;
 }
 
+/* Generate the database connection string used by a state */
+char *
+ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *conn)
+{
+	char *connstring;
+	int connlen;
+	
+	connlen = 64 + 
+		(conn->host ? strlen(conn->host) : 0) + (conn->port ? strlen(conn->port) : 0) +
+		(conn->username ? strlen(conn->username) : 0) + (conn->password ? strlen(conn->password) : 0) +
+		(conn->database ? strlen(conn->database) : 0);
+
+	connstring = malloc(connlen);
+	memset(connstring, 0, connlen);
+
+	if (conn->host)
+	{
+		strcat(connstring, " host=");
+		strcat(connstring, conn->host);
+	}
+
+	if (conn->port)
+	{
+		strcat(connstring, " port=");
+		strcat(connstring, conn->port);
+	}
+
+	if (conn->username)
+	{
+		strcat(connstring, " user=");
+		strcat(connstring, conn->username);
+	}
+
+	if (conn->password)
+	{	
+		strcat(connstring, " password='");
+		strcat(connstring, conn->password);
+		strcat(connstring, "'");
+	}
+
+	if (conn->database)
+	{
+		strcat(connstring, " dbname=");
+		strcat(connstring, conn->database);
+	}
+
+	return connstring;
+}
 
 /* Connect to the database and identify the version of PostGIS (and any other
 capabilities required) */
@@ -1273,46 +1321,9 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	PGresult *res;
 
 	char *connstring, *tmpvalue;
-	int connlen;
 
-	/* Generate database connection string */
-	connlen = 64 + 
-		(state->config->conn->host ? strlen(state->config->conn->host) : 0) + (state->config->conn->port ? strlen(state->config->conn->port) : 0) +
-		(state->config->conn->username ? strlen(state->config->conn->username) : 0) + (state->config->conn->password ? strlen(state->config->conn->password) : 0) +
-		(state->config->conn->database ? strlen(state->config->conn->database) : 0);
-
-	connstring = malloc(connlen);
-	memset(connstring, 0, connlen);
-
-	if (state->config->conn->host)
-	{
-		strcat(connstring, " host=");
-		strcat(connstring, state->config->conn->host);
-	}
-
-	if (state->config->conn->port)
-	{
-		strcat(connstring, " port=");
-		strcat(connstring, state->config->conn->port);
-	}
-
-	if (state->config->conn->username)
-	{
-		strcat(connstring, " user=");
-		strcat(connstring, state->config->conn->username);
-	}
-
-	if (state->config->conn->password)
-	{	
-		strcat(connstring, " password=");
-		strcat(connstring, state->config->conn->password);
-	}
-
-	if (state->config->conn->database)
-	{
-		strcat(connstring, " dbname=");
-		strcat(connstring, state->config->conn->database);
-	}
+	/* Generate the PostgreSQL connection string */
+	connstring = ShpDumperGetConnectionStringFromConn(state->config->conn);
 
 	/* Connect to the database */
 	state->conn = PQconnectdb(connstring);
@@ -1457,7 +1468,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		query = malloc(250 + strlen(state->schema) + strlen(state->table));
 
 		sprintf(query, "SELECT a.attname, a.atttypid, "
-		        "a.atttypmod FROM "
+		        "a.atttypmod, a.attlen FROM "
 		        "pg_attribute a, pg_class c, pg_namespace n WHERE "
 		        "n.nspname = '%s' AND a.attrelid = c.oid AND "
 		        "n.oid = c.relnamespace AND "
@@ -1469,7 +1480,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		query = malloc(250 + strlen(state->table));
 
 		sprintf(query, "SELECT a.attname, a.atttypid, "
-		        "a.atttypmod FROM "
+		        "a.atttypmod, a.attlen FROM "
 		        "pg_attribute a, pg_class c WHERE "
 		        "a.attrelid = c.oid and a.attnum > 0 AND "
 		        "a.atttypid != 0 AND "
@@ -1516,6 +1527,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	state->dbffieldnames = malloc(sizeof(char *) * PQntuples(res));
 	state->dbffieldtypes = malloc(sizeof(int) * PQntuples(res));
 	state->pgfieldnames = malloc(sizeof(char *) * PQntuples(res));
+	state->pgfieldlens = malloc(sizeof(int) * PQntuples(res));
+	state->pgfieldtypmods = malloc(sizeof(int) * PQntuples(res));
 	state->fieldcount = 0;
 	int tmpint = 1;
 
@@ -1523,7 +1536,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 	{
 		char *ptr;
 
-		int pgfieldtype, pgtypmod;
+		int pgfieldtype, pgtypmod, pgfieldlen;
 		char *pgfieldname;
 
 		int dbffieldtype, dbffieldsize, dbffielddecs;
@@ -1532,6 +1545,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		pgfieldname = PQgetvalue(res, i, 0);
 		pgfieldtype = atoi(PQgetvalue(res, i, 1));
 		pgtypmod = atoi(PQgetvalue(res, i, 2));
+		pgfieldlen = atoi(PQgetvalue(res, i, 3));
 		dbffieldtype = -1;
 		dbffieldsize = 0;
 		dbffielddecs = 0;
@@ -1837,7 +1851,9 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			state->dbffieldnames[state->fieldcount] = dbffieldname;
 			state->dbffieldtypes[state->fieldcount] = dbffieldtype;
 			state->pgfieldnames[state->fieldcount] = pgfieldname;
-	
+			state->pgfieldlens[state->fieldcount] = pgfieldlen;
+			state->pgfieldtypmods[state->fieldcount] = pgtypmod;
+			
 			state->fieldcount++;
 		}
 	}

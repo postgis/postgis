@@ -54,18 +54,6 @@ LOADER_OBJS= \
 	../pgsql2shp-core.o \
 	../shp2pgsql-core.o
 
-# We test this variable later to see if we're building the GUI
-gtk_build = @GTK_BUILD@
-
-# If we are, define a variable so we can conditionally perform regression
-# and also build an extra test file
-ifneq ($(gtk_build),)
-CFLAGS += -DGTK
-OBJS += cu_list.o
-LOADER_OBJS += ../structure.o
-endif
-
-
 # If we couldn't find the cunit library then display a helpful message
 ifeq ($(CUNIT_LDFLAGS),)
 all: requirements_not_met_cunit

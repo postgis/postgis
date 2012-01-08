@@ -187,6 +187,9 @@ typedef struct shp_loader_state
 	int *widths;
 	int *precisions;
 
+	/* Pointer to an array of PostgreSQL field types */
+	char **pgfieldtypes;
+	
 	/* String containing colume name list in the form "(col1, col2, col3 ... , colN)" */
 	char *col_names;
 

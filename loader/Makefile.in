@@ -104,13 +104,10 @@ $(PGSQL2SHP-CLI): shpopen.o dbfopen.o getopt.o pgsql2shp-core.o shpcommon.o pgsq
 $(SHP2PGSQL-CLI): shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shpcommon.o shp2pgsql-cli.o safileio.o $(LIBLWGEOM) 
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ -o $@ $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS)
 
-structure.o: structure.c structure.h
-	$(CC) $(CFLAGS) $(GTK_CFLAGS) -o $@ -c structure.c
-
-shp2pgsql-gui.o: shp2pgsql-gui.c structure.h shp2pgsql-core.h shpcommon.h
+shp2pgsql-gui.o: shp2pgsql-gui.c shp2pgsql-core.h shpcommon.h
 	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c shp2pgsql-gui.c
 
-$(SHP2PGSQL-GUI): shpopen.o dbfopen.o shp2pgsql-core.o shpcommon.o shp2pgsql-gui.o getopt.o structure.o safileio.o $(LIBLWGEOM) $(GTK_WIN32_RES)
+$(SHP2PGSQL-GUI): shpopen.o dbfopen.o shp2pgsql-core.o shpcommon.o shp2pgsql-gui.o getopt.o safileio.o pgsql2shp-core.o $(LIBLWGEOM) $(GTK_WIN32_RES)
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS)
 
 installdir:

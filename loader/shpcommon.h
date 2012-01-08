@@ -10,6 +10,9 @@
  *
  **********************************************************************/
 
+#ifndef SHPCOMMON_H
+#define SHPCOMMON_H
+
 typedef struct shp_connection_state
 {
 	/* PgSQL username to log in with */
@@ -31,3 +34,5 @@ typedef struct shp_connection_state
 
 /* External shared functions */
 char *escape_connection_string(char *str);
+
+#endif

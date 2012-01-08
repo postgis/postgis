@@ -1030,6 +1030,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 	state->types = (DBFFieldType *)malloc(state->num_fields * sizeof(int));
 	state->widths = malloc(state->num_fields * sizeof(int));
 	state->precisions = malloc(state->num_fields * sizeof(int));
+	state->pgfieldtypes = malloc(state->num_fields * sizeof(char *));
 	state->col_names = malloc((state->num_fields + 2) * sizeof(char) * MAXFIELDNAMELEN);
 
 	/* Generate a string of comma separated column names of the form "(col1, col2 ... colN)" for the SQL
@@ -1110,6 +1111,62 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 		state->field_names[j] = malloc(strlen(name) + 1);
 		strcpy(state->field_names[j], name);
 
+		/* Now generate the PostgreSQL type name string and width based upon the shapefile type */
+		switch (state->types[j])
+		{
+		case FTString:
+			state->pgfieldtypes[j] = malloc(strlen("varchar") + 1);
+			strcpy(state->pgfieldtypes[j], "varchar");
+			break;
+
+		case FTDate:
+			state->pgfieldtypes[j] = malloc(strlen("date") + 1);
+			strcpy(state->pgfieldtypes[j], "date");
+			break;
+
+		case FTInteger:
+			/* Determine exact type based upon field width */
+			if (state->config->forceint4 || (state->widths[j] >=5 && state->widths[j] < 10))
+			{
+				state->pgfieldtypes[j] = malloc(strlen("int4") + 1);
+				strcpy(state->pgfieldtypes[j], "int4");	
+			}
+			else if (state->widths[j] < 5)
+			{
+				state->pgfieldtypes[j] = malloc(strlen("int2") + 1);
+				strcpy(state->pgfieldtypes[j], "int2");
+			}
+			else
+			{
+				state->pgfieldtypes[j] = malloc(strlen("numeric") + 1);
+				strcpy(state->pgfieldtypes[j], "numeric");
+			}
+			break;
+
+		case FTDouble:
+			/* Determine exact type based upon field width */
+			if (state->widths[j] > 18)
+			{
+				state->pgfieldtypes[j] = malloc(strlen("numeric") + 1);
+				strcpy(state->pgfieldtypes[j], "numeric");
+			}
+			else
+			{
+				state->pgfieldtypes[j] = malloc(strlen("float8") + 1);
+				strcpy(state->pgfieldtypes[j], "float8");
+			}
+			break;
+
+		case FTLogical:
+			state->pgfieldtypes[j] = malloc(strlen("boolean") + 1);
+			strcpy(state->pgfieldtypes[j], "boolean");
+			break;
+
+		default:
+			snprintf(state->message, SHPLOADERMSGLEN, _("Invalid type %x in DBF file"), state->types[j]);
+			return SHPLOADERERR;
+		}
+		
 		strcat(state->col_names, "\"");
 		strcat(state->col_names, name);
 
@@ -1147,13 +1204,13 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 	   for handling string resizing during append */
 	sb = stringbuffer_create();
 	stringbuffer_clear(sb);
-
+	
 	/* Set the client encoding if required */
 	if (state->config->encoding)
 	{
 		stringbuffer_aprintf(sb, "SET CLIENT_ENCODING TO UTF8;\n");
 	}
-
+	
 	/* Use SQL-standard string escaping rather than PostgreSQL standard */
 	stringbuffer_aprintf(sb, "SET STANDARD_CONFORMING_STRINGS TO ON;\n");
 
@@ -1222,57 +1279,18 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		{
 			stringbuffer_aprintf(sb, ",\n\"%s\" ", state->field_names[j]);
 
-			switch (state->types[j])
+			/* First output the raw field type string */
+			stringbuffer_aprintf(sb, "%s", state->pgfieldtypes[j]);
+			
+			/* Some types do have typmods though... */
+			if (!strcmp("varchar", state->pgfieldtypes[j]))
+				stringbuffer_aprintf(sb, "(%d)", state->widths[j]);
+
+			if (!strcmp("numeric", state->pgfieldtypes[j]))
 			{
-			case FTString:
-				/* use DBF attribute size as maximum width */
-				stringbuffer_aprintf(sb, "varchar(%d)", state->widths[j]);
-				break;
-
-			case FTDate:
-				stringbuffer_aprintf(sb, "date");
-				break;
-
-			case FTInteger:
-				/* Determine exact type based upon field width */
-				if (state->config->forceint4)
-				{
-					stringbuffer_aprintf(sb, "int4");
-				}
-				else if (state->widths[j] < 5)
-				{
-					stringbuffer_aprintf(sb, "int2");
-				}
-				else if (state->widths[j] < 10)
-				{
-					stringbuffer_aprintf(sb, "int4");
-				}
-				else
-				{
-					stringbuffer_aprintf(sb, "numeric(%d,0)", state->widths[j]);
-				}
-				break;
-
-			case FTDouble:
-				/* Determine exact type based upon field width */
-				if (state->widths[j] > 18)
-				{
-					stringbuffer_aprintf(sb, "numeric");
-				}
-				else
-				{
-					stringbuffer_aprintf(sb, "float8");
-				}
-				break;
-
-			case FTLogical:
-				stringbuffer_aprintf(sb, "boolean");
-				break;
-
-			default:
-				snprintf(state->message, SHPLOADERMSGLEN, _("Invalid type %x in DBF file"), state->types[j]);
-				stringbuffer_destroy(sb);
-				return SHPLOADERERR;
+				/* Doubles we just allow PostgreSQL to auto-detect the size */
+				if (state->types[j] != FTDouble)
+					stringbuffer_aprintf(sb, "(%d,0)", state->widths[j]);
 			}
 		}
 
@@ -1758,7 +1776,8 @@ void
 ShpLoaderDestroy(SHPLOADERSTATE *state)
 {
 	/* Destroy a state object created with ShpLoaderOpenShape */
-
+	int i;
+	
 	if (state != NULL)
 	{
 		if (state->hSHPHandle)
@@ -1767,11 +1786,17 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 			DBFClose(state->hDBFHandle);
 		if (state->field_names)
 		{
-			int i;
 			for (i = 0; i < state->num_fields; i++)
 				free(state->field_names[i]);
 
 			free(state->field_names);
+		}
+		if (state->pgfieldtypes)
+		{
+			for (i = 0; i < state->num_fields; i++)
+				free(state->pgfieldtypes[i]);
+			
+			free(state->pgfieldtypes);
 		}
 		if (state->types)
 			free(state->types);
@@ -1786,6 +1811,3 @@ ShpLoaderDestroy(SHPLOADERSTATE *state)
 		free(state);
 	}
 }
-
-
-

@@ -27,15 +27,6 @@ int main()
 	if (CUE_SUCCESS != CU_initialize_registry())
 		return CU_get_error();
 
-#ifdef GTK
-	/* Add the GUI algorithms suite to the registry */
-	if (NULL == register_list_suite())
-	{
-		CU_cleanup_registry();
-		return CU_get_error();
-	}
-#endif
-
 	/* Add the shp2pgsql test suite */
 	if (NULL == register_shp2pgsql_suite())
 	{

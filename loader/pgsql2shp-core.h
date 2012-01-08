@@ -141,6 +141,12 @@ typedef struct shp_dumper_state
 	/* PostgreSQL column names for all non-spatial fields */
 	char **pgfieldnames;
 
+	/* PostgreSQL column lengths for all non-spatial fields */
+	int *pgfieldlens;
+	
+	/* PostgreSQL column typmods for all non-spatial fields */
+	int *pgfieldtypmods;
+	
 	/* Number of non-spatial fields in DBF output file */
 	int fieldcount;
 
@@ -203,6 +209,7 @@ void set_dumper_config_defaults(SHPDUMPERCONFIG *config);
 char *shapetypename(int num);
 
 SHPDUMPERSTATE *ShpDumperCreate(SHPDUMPERCONFIG *config);
+char *ShpDumperGetConnectionStringFromConn(SHPCONNECTIONCONFIG *config);
 int ShpDumperConnectDatabase(SHPDUMPERSTATE *state);
 int ShpDumperOpenTable(SHPDUMPERSTATE *state);
 int ShpDumperGetRecordCount(SHPDUMPERSTATE *state);
