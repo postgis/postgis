@@ -10,7 +10,7 @@
 	 ******************************************************************** -->
 	<xsl:output method="text" />
 	<xsl:variable name='testversion'>2.0.0</xsl:variable>
-	<xsl:variable name='fnexclude'>AddRasterColumn DropRasterColumn DropRasterTable</xsl:variable>
+	<xsl:variable name='fnexclude'>AddRasterColumn AddRasterConstraints DropRasterConstraints DropRasterColumn DropRasterTable</xsl:variable>
 	<!--This is just a place holder to state functions not supported in 1.3 or tested separately -->
 
 	<xsl:variable name='var_format'>'GDAL'</xsl:variable>
@@ -27,12 +27,15 @@
 	<xsl:variable name='var_pixeltype'>'1BB'</xsl:variable>
 	<xsl:variable name='var_pixeltypenoq'>8BUI</xsl:variable>
 	<xsl:variable name='var_pixelvalue'>0</xsl:variable>
+	<xsl:variable name='var_rastercolumn'>'rast'</xsl:variable>
+	<xsl:variable name='var_rastertable'>'pgis_rgarden_1bb'</xsl:variable>
 	<xsl:variable name='var_boolean'>false</xsl:variable>
 	<xsl:variable name='var_logtable'>raster_garden_log</xsl:variable>
 	<xsl:variable name='var_pixeltypes'>{8BUI,1BB}</xsl:variable>
 	<xsl:variable name='var_pixelvalues'>{255,0}</xsl:variable>
 	<xsl:variable name='var_algorithm'>'Lanczos'</xsl:variable>
 	<xsl:variable name='var_pt'>ST_Centroid(rast1.rast::geometry)</xsl:variable>
+	
 	<xsl:variable name='var_reclassarg'>ROW(2, '0-100:1-10, 101-500:11-150,501 - 10000: 151-254', '8BUI', 255)</xsl:variable>
 	<xsl:variable name='var_georefcoords'>'2 0 0 3 0.5 0.5'</xsl:variable>
 	<xsl:variable name='var_logupdatesql'>UPDATE <xsl:value-of select="$var_logtable" /> SET log_end = clock_timestamp() 
@@ -157,24 +160,17 @@ BEGIN;
 	SELECT AddRasterConstraints(CAST(lower('pgis_rgarden_<xsl:value-of select="@ID" />') As name), CAST('rast' AS name));
 	<xsl:value-of select="$var_logupdatesql" />
 COMMIT;
+
+INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start,log_sql) 
+VALUES('<xsl:value-of select="$log_label" /> drop raster constraints','drop raster constraints', '<xsl:value-of select="@PixType" />', clock_timestamp(),
+  '<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1">SELECT DropRasterConstraints(CAST(lower('pgis_rgarden_<xsl:value-of select="@ID" />') AS name), CAST('rast' AS name));</xsl:with-param></xsl:call-template>');
+BEGIN;
+	SELECT DropRasterConstraints(CAST(lower('pgis_rgarden_<xsl:value-of select="@ID" />') As name), CAST('rast' AS name));
+	<xsl:value-of select="$var_logupdatesql" />
+COMMIT;
 		</xsl:for-each>
 <!--End Test table creation  -->
 
-<!--Start Test table drop -->
-		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype[not(contains(@createtable,'false'))]">
-			<xsl:variable name='log_label'>drop table Test <xsl:value-of select="@PixType" /></xsl:variable>
-			<xsl:variable name='var_sql'>DROP TABLE public.pgis_rgarden_<xsl:value-of select="@ID" />;</xsl:variable>
-SELECT '<xsl:value-of select="$log_label" />: Start Testing';
-INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
-VALUES('<xsl:value-of select="$log_label" /> drop raster table','drop raster table', '<xsl:value-of select="@PixType" />', clock_timestamp(),
-'<xsl:call-template name="escapesinglequotes"><xsl:with-param name="arg1"><xsl:value-of select="$var_sql" /></xsl:with-param></xsl:call-template>');
-BEGIN;
-	<xsl:value-of select="$var_sql" />
-	<xsl:value-of select="$var_logupdatesql" />
-COMMIT;<xsl:text> 
-</xsl:text>
-		</xsl:for-each>
-<!--End Test table drop -->
 
 <!--Start test on operators  -->
 	<xsl:for-each select="sect1[contains(@id,'RT_Operator')]/refentry">
@@ -283,7 +279,7 @@ SELECT  'Ending <xsl:value-of select="funcdef/function" />(<xsl:value-of select=
 		<xsl:for-each select="document('')//pgis:pixeltypes/pgis:pixeltype">
 		SELECT '<xsl:value-of select="$geoftype" /> <xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of select="@ID" />: Start Testing <xsl:value-of select="@PixType" />';
 			<xsl:choose>
-			  <xsl:when test="contains(funcdef, 'raster ')">
+			  <xsl:when test="contains($fndef, 'raster ') or contains($fndef, 'geometry ')">
 	 <!-- If output is raster show ewkt convexhull rep -->
 	 		INSERT INTO <xsl:value-of select="$var_logtable" />(log_label, func, g1, log_start, log_sql) 
 			  	VALUES('<xsl:value-of select="$log_label" /> <xsl:value-of select="$geoftype" /> <xsl:text> </xsl:text><xsl:value-of select="@ID" /><xsl:text> </xsl:text><xsl:value-of select="@PixType" />','<xsl:value-of select="$fnname" />', '<xsl:value-of select="@PixType" />', clock_timestamp(),
@@ -395,8 +391,17 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 					<xsl:when test="contains(parameter, 'georefcoords')">
 						<xsl:value-of select="$var_georefcoords" />
 					</xsl:when>
-					<xsl:when test="contains(parameter, 'index') or contains(parameter, 'band')">
+					<xsl:when test="(type = 'integer[]'  )">
+						ARRAY[<xsl:value-of select="$var_integer1" />]
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'index') or contains(parameter, 'band') or contains(parameter, 'nband')">
 						<xsl:value-of select="$var_band" />
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'rastercolumn')">
+						<xsl:value-of select="$var_rastercolumn" />
+					</xsl:when>
+					<xsl:when test="contains(parameter, 'rastertable')">
+						<xsl:value-of select="$var_rastertable" />
 					</xsl:when>
 					<xsl:when test="contains(parameter, 'format')">
 						<xsl:value-of select="$var_format" />
@@ -423,14 +428,12 @@ SELECT '<xsl:value-of select="$fnname" /><xsl:text> </xsl:text><xsl:value-of sel
 						<xsl:value-of select="$var_version1" />
 					</xsl:when>
 					<xsl:when test="(contains(type,'box') or type = 'geometry' or type = 'geometry ' or contains(type,'geometry set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geometry') or contains(text(),'box') or contains(text(), 'WKT') or contains(text(), 'bytea')]) = '1')">
-						<xsl:text>foo2.the_geom</xsl:text>
+						<xsl:text>rast1.rast::geometry</xsl:text>
 					</xsl:when>
 					<xsl:when test="(type = 'geography' or type = 'geography ' or contains(type,'geography set')) and (position() = 1 or count($func/paramdef/type[contains(text(),'geography')]) = '1' )">
 						<xsl:text>rast1.rast::geometry::geography</xsl:text>
 					</xsl:when>
-					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
-						<xsl:text>rast1.rast::geometry</xsl:text>
-					</xsl:when>
+	
 					
 					<xsl:when test="contains(type,'box') or type = 'geometry' or type = 'geometry '">
 						<xsl:text>rast2.rast::geometry</xsl:text>
