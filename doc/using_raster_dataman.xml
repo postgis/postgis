@@ -246,13 +246,15 @@
             <listitem><para>Specify version of output format.  Default  is 0.  Only 0 is supported at this time.</para></listitem>
         </varlistentry>
     </variablelist>  
-    <para>An example session using the loader to create an input file and uploading it might look like this:</para>
-    <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t myschema.demelevation > elev.sql
+    <para>An example session using the loader to create an input file and uploading it chunked in 100x100 tiles might look like this:</para>
+    <para><note>You can leave the schema name out e.g <varname>demelevation</varname> instead of <varname>public.demelevation</varname> and
+    the raster table will be created in the default schema of the database or user</note></para>
+    <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation > elev.sql
 psql -d gisdb -f elev.sql</programlisting>
         
     <para>A conversion and upload can be done all in one step using UNIX pipes:</para>
         
-    <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t myschema.demelevation | psql -d gisdb</programlisting>
+    <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation | psql -d gisdb</programlisting>
     
     <para>Load rasters Massachusetts state plane meters aerial tiles 
     	into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables, use copy mode for inserting (no intermediary file just straight to db), and -e don't force everything in a transaction (good if you want to see data in tables right away without waiting).  Break up the rasters into 128x128 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from.</para>
