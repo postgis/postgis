@@ -1309,7 +1309,10 @@ rt_extenttype
 rt_util_extent_type(const char *name);
 
 char*
-rt_util_gdal_sr(const char *srs, int proj4);
+rt_util_gdal_convert_sr(const char *srs, int proj4);
+
+int
+rt_util_gdal_driver_registered(const char *drv);
 
 /*
 	helper macros for consistent floating point equality checks

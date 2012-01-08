@@ -1310,7 +1310,7 @@ static void testGDALDrivers() {
 
 	drv = (rt_gdaldriver) rt_raster_gdal_drivers(&size, 1);
 	/*printf("size: %d\n", size);*/
-	CHECK(size);
+	CHECK(drv);
 
 	for (i = 0; i < size; i++) {
 		/*printf("gdal_driver: %s\n", drv[i].short_name);*/
@@ -1477,8 +1477,6 @@ static void testGDALToRaster() {
 	}
 
 	GDALClose(gdds);
-	GDALDeregisterDriver(gddrv);
-	GDALDestroyDriver(gddrv);
 
 	deepRelease(rast);
 	deepRelease(raster);
