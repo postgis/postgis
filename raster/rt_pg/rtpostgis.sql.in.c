@@ -4203,6 +4203,86 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_nodata_values(rastschema name
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+CREATE OR REPLACE FUNCTION _raster_constraint_info_out_db(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean[] AS $$
+	SELECT
+		trim(both '''' from split_part(replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', ''), '::', 1))::boolean[]
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%_raster_constraint_out_db(%';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _raster_constraint_out_db(rast raster)
+	RETURNS boolean[] AS
+	$$ SELECT array_agg(isoutdb)::boolean[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_out_db(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr boolean[];
+		max int;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_out_db_' || $3;
+
+		sql := 'SELECT _raster_constraint_out_db(' || quote_ident($3)
+			|| ') FROM ' || fqtn
+			|| ' LIMIT 1';
+		BEGIN
+			EXECUTE sql INTO attr;
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to get the out-of-database bands of a sample raster';
+			RETURN FALSE;
+		END;
+		max := array_length(attr, 1);
+		IF max < 1 OR max IS NULL THEN
+			RAISE NOTICE 'Unable to get the out-of-database bands of a sample raster';
+			RETURN FALSE;
+		END IF;
+
+		sql := 'ALTER TABLE ' || fqtn
+			|| ' ADD CONSTRAINT ' || quote_ident(cn)
+			|| ' CHECK (_raster_constraint_out_db(' || quote_ident($3)
+			|| ') = ''{';
+		FOR x in 1..max LOOP
+			IF attr[x] IS FALSE THEN
+				sql := sql || 'FALSE';
+			ELSE
+				sql := sql || 'TRUE';
+			END IF;
+			IF x < max THEN
+				sql := sql || ',';
+			END IF;
+		END LOOP;
+		sql := sql || '}''::boolean[])';
+
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_out_db(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_out_db_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
 ------------------------------------------------------------------------------
 -- AddRasterConstraints
 ------------------------------------------------------------------------------
@@ -4308,6 +4388,9 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 					WHEN kw IN ('nodata_values', 'nodatavalues', 'nodata') THEN
 						RAISE NOTICE 'Adding nodata value constraint';
 						rtn := _add_raster_constraint_nodata_values(schema, $2, $3);
+					WHEN kw IN ('out_db', 'outdb') THEN
+						RAISE NOTICE 'Adding out-of-database constraint';
+						rtn := _add_raster_constraint_out_db(schema, $2, $3);
 					WHEN kw = 'extent' THEN
 						RAISE NOTICE 'Adding maximum extent constraint';
 						rtn := _add_raster_constraint_extent(schema, $2, $3);
@@ -4358,6 +4441,7 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 	num_bands boolean DEFAULT TRUE,
 	pixel_types boolean DEFAULT TRUE,
 	nodata_values boolean DEFAULT TRUE,
+	out_db boolean DEFAULT TRUE,
 	extent boolean DEFAULT TRUE
 )
 	RETURNS boolean
@@ -4405,6 +4489,10 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 			constraints := constraints || 'nodata_values'::text;
 		END IF;
 
+		IF out_db IS TRUE THEN
+			constraints := constraints || 'out_db'::text;
+		END IF;
+
 		IF extent IS TRUE THEN
 			constraints := constraints || 'extent'::text;
 		END IF;
@@ -4427,10 +4515,11 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 	num_bands boolean DEFAULT TRUE,
 	pixel_types boolean DEFAULT TRUE,
 	nodata_values boolean DEFAULT TRUE,
+	out_db boolean DEFAULT TRUE,
 	extent boolean DEFAULT TRUE
 )
 	RETURNS boolean AS
-	$$ SELECT AddRasterConstraints('', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) $$
+	$$ SELECT AddRasterConstraints('', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) $$
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
@@ -4539,6 +4628,9 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 					WHEN kw IN ('nodata_values', 'nodatavalues', 'nodata') THEN
 						RAISE NOTICE 'Dropping nodata value constraint';
 						rtn := _drop_raster_constraint_nodata_values(schema, $2, $3);
+					WHEN kw IN ('out_db', 'outdb') THEN
+						RAISE NOTICE 'Dropping out-of-database constraint';
+						rtn := _drop_raster_constraint_out_db(schema, $2, $3);
 					WHEN kw = 'extent' THEN
 						RAISE NOTICE 'Dropping maximum extent constraint';
 						rtn := _drop_raster_constraint_extent(schema, $2, $3);
@@ -4589,6 +4681,7 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 	num_bands boolean DEFAULT TRUE,
 	pixel_types boolean DEFAULT TRUE,
 	nodata_values boolean DEFAULT TRUE,
+	out_db boolean DEFAULT TRUE,
 	extent boolean DEFAULT TRUE
 )
 	RETURNS boolean
@@ -4636,6 +4729,10 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 			constraints := constraints || 'nodata_values'::text;
 		END IF;
 
+		IF out_db IS TRUE THEN
+			constraints := constraints || 'out_db'::text;
+		END IF;
+
 		IF extent IS TRUE THEN
 			constraints := constraints || 'extent'::text;
 		END IF;
@@ -4658,10 +4755,11 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 	num_bands boolean DEFAULT TRUE,
 	pixel_types boolean DEFAULT TRUE,
 	nodata_values boolean DEFAULT TRUE,
+	out_db boolean DEFAULT TRUE,
 	extent boolean DEFAULT TRUE
 )
 	RETURNS boolean AS
-	$$ SELECT DropRasterConstraints('', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) $$
+	$$ SELECT DropRasterConstraints('', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) $$
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
@@ -4688,6 +4786,7 @@ CREATE OR REPLACE VIEW raster_columns AS
 		_raster_constraint_info_num_bands(n.nspname, c.relname, a.attname) AS num_bands,
 		_raster_constraint_info_pixel_types(n.nspname, c.relname, a.attname) AS pixel_types,
 		_raster_constraint_info_nodata_values(n.nspname, c.relname, a.attname) AS nodata_values,
+		_raster_constraint_info_out_db(n.nspname, c.relname, a.attname) AS out_db,
 		_raster_constraint_info_extent(n.nspname, c.relname, a.attname) AS extent
 	FROM
 		pg_class c,

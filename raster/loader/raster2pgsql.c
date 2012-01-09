@@ -1020,7 +1020,7 @@ add_raster_constraints(
 	_table = chartrim(table, "\"");
 	_column = chartrim(column, "\"");
 
-	len = strlen("SELECT AddRasterConstraints('','','',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,FALSE);") + 1;
+	len = strlen("SELECT AddRasterConstraints('','','',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE);") + 1;
 	if (_schema != NULL)
 		len += strlen(_schema);
 	len += strlen(_table);
@@ -1031,7 +1031,7 @@ add_raster_constraints(
 		fprintf(stderr, _("Could not allocate memory for AddRasterConstraints statement\n"));
 		return 0;
 	}
-	sprintf(sql, "SELECT AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,%s);",
+	sprintf(sql, "SELECT AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s);",
 		(_schema != NULL ? _schema : ""),
 		_table,
 		_column,

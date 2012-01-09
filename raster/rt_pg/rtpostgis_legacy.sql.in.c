@@ -70,9 +70,9 @@ CREATE OR REPLACE VIEW raster_columns AS
 		_raster_constraint_info_num_bands(n.nspname, c.relname, a.attname) AS num_bands,
 		_raster_constraint_info_pixel_types(n.nspname, c.relname, a.attname) AS pixel_types,
 		_raster_constraint_info_nodata_values(n.nspname, c.relname, a.attname) AS nodata_values,
+		_raster_constraint_info_out_db(n.nspname, c.relname, a.attname) AS out_db,
 		_raster_constraint_info_extent(n.nspname, c.relname, a.attname) AS extent,
-		a.attname AS r_column,
-		FALSE AS out_db
+		a.attname AS r_column
 	FROM
 		pg_class c,
 		pg_attribute a,
@@ -99,13 +99,14 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		trim(both from split_part(s.consrc, ',', 2))::integer AS overview_factor,
 		a.attname AS o_column,
 		split_part(split_part(s.consrc, '''::name', 3), '''', 2)::name AS r_column,
-		FALSE AS out_db
+		rc.out_db AS out_db
 	FROM
 		pg_class c,
 		pg_attribute a,
 		pg_type t,
 		pg_namespace n,
-		pg_constraint s
+		pg_constraint s,
+		raster_columns rc
 	WHERE t.typname = 'raster'::name
 		AND a.attisdropped = false
 		AND a.atttypid = t.oid
@@ -114,5 +115,8 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
+		AND n.nspname = rc.r_table_schema
+		AND c.relname = rc.r_table_name
+		AND a.attname = rc.r_raster_column
 		AND s.consrc LIKE '%_overview_constraint(%'
 		AND NOT pg_is_other_temp_schema(c.relnamespace);

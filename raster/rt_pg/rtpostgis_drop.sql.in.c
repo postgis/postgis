@@ -248,6 +248,9 @@ CREATE OR REPLACE FUNCTION _rename_raster_tables()
 SELECT _rename_raster_tables();
 DROP FUNCTION _rename_raster_tables();
 
+-- inserted new column into view
+DROP VIEW IF EXISTS raster_columns;
+
 -- functions no longer supported
 DROP FUNCTION IF EXISTS AddRasterColumn(varchar, varchar, varchar, varchar, integer, varchar[], boolean, boolean, double precision[], double precision, double precision, integer, integer, geometry);
 DROP FUNCTION IF EXISTS AddRasterColumn(varchar, varchar, varchar, integer, varchar[], boolean, boolean, double precision[], double precision, double precision, integer, integer, geometry);
@@ -258,6 +261,12 @@ DROP FUNCTION IF EXISTS DropRasterColumn(varchar, varchar);
 DROP FUNCTION IF EXISTS DropRasterTable(varchar, varchar, varchar);
 DROP FUNCTION IF EXISTS DropRasterTable(varchar, varchar);
 DROP FUNCTION IF EXISTS DropRasterTable(varchar);
+
+-- function parameters added
+DROP FUNCTION IF EXISTS AddRasterConstraints(name, name, name, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean);
+DROP FUNCTION IF EXISTS AddRasterConstraints(name, name, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean);
+DROP FUNCTION IF EXISTS DropRasterConstraints(name, name, name, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean);
+DROP FUNCTION IF EXISTS DropRasterConstraints(name, name, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean);
 
 -- function parameters renamed
 CREATE OR REPLACE FUNCTION _drop_st_samealignment()
