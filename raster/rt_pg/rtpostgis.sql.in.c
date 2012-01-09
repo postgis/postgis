@@ -2965,7 +2965,7 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 CREATE OR REPLACE FUNCTION _st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_intersects'
-	LANGUAGE 'C' IMMUTABLE
+	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
