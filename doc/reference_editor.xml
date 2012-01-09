@@ -647,8 +647,6 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 
 			<refpurpose>
 Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
-Sub-geometries that are not the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned.
-Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.
 			</refpurpose>
 		</refnamediv>
 
@@ -700,7 +698,7 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Multi" /></para>
+			<para><xref linkend="ST_Multi" />, <xref linkend="ST_Dump" /></para>
 		</refsection>
 	</refentry>
 	
