@@ -68,33 +68,24 @@ link against those.
 
 * How do I build it? *
 
-You need a recent pgjdbc driver jar, see the download link from above.
-It is currently tested and supported with 7.2, 7.3, 7.4, 8.0 and 8.1 pgjdbc
-releases. Those are the same PostgreSQL releases that are supported by the
-PostGIS server-side C code, and apart from 7.2, the same as currently 
-supported by PostgreSQL server developers.
+There are older make files with which you can try to build, but maven is recommended, 
+as it handles dependencies on a better and cleaner way.
 
-The current PostGIS jdbc release is also reported to run (but not compile)
-against the postgresql jdbc7.1-1.2.jar, but this is not supported, as well as 
-current PostGIS backend itsself does not support 7.1 servers any more.
+You have to install maven on your computer to build it. To install maven you can try 
+to search on your software repositories or read the documentation:
+http://maven.apache.org/download.html
 
-Note that your pgjdbc driver version does not constrain the PostgreSQL 
+To compile your postgis driver, go to the jdbc folder and execute the console
+command "mvn package". This should create a postgis jar on the target folder 
+inside the jdbc folder.
+
+Note that your postgis driver version does not constrain the PostgreSQL 
 server version. As the JDBC drivers are downwards compatible against older 
 servers, and PostgreSQL servers typically accept older clients, you can 
 easily use e. G. a pgjdbc 8.0 against a PostgreSQL 7.3 server. To benefit
 from optimizations and bugfixes, it is generally suggested to use the 
 newest stable pgjdbc build that is documented to work against your 
 server release.
-
-Make shure the pgjdbc driver is available in your Java CLASSPATH,
-either by setting the environment variable, or by editing the
-Makefile.
-
-A "make jar" then compiles the code and creates two jar files. The
-"postgis.jar" is for normal usage and deployment, the
-"postgis_debug.jar" additionally includes the source code, for
-debugging purposes.
-
 
 * It is called jdbc2 - does it work with jdbc3, too? *
 

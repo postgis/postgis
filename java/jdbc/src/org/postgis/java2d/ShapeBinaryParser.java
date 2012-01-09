@@ -25,6 +25,7 @@ package org.postgis.java2d;
 
 import java.awt.geom.GeneralPath;
 
+import org.postgis.Geometry;
 import org.postgis.binary.ByteGetter;
 import org.postgis.binary.ValueGetter;
 import org.postgis.binary.ByteGetter.BinaryByteGetter;

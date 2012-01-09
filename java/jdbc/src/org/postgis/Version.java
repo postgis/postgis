@@ -29,7 +29,7 @@ import java.util.Properties;
 
 /** Corresponds to the appropriate PostGIS that carried this source */
 public class Version {
-    /** We read our version information from this ressource... */
+    /** We read our version information from this resource... */
     private static final String RESSOURCENAME = "org/postgis/version.properties";
 
     /** The major version */

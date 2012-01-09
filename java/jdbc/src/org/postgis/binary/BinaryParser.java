@@ -138,7 +138,7 @@ public class BinaryParser {
 
         Geometry result = result1;
 
-        if (srid != Geometry.UNKONWN_SRID) {
+        if (srid != Geometry.UNKNOWN_SRID) {
             result.setSrid(srid);
         }
         return result;

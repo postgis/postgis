@@ -3,6 +3,10 @@ $Id$
 
 - even more Testing, especialy against different postgis, 
   pgjdbc and postgresql releases.
+  
+- Use JUnit for testing (maven)
+
+- Unify the build of app java projects -> maven
 
 - Handling of length() - esp. with modifying the geometries
 
@@ -22,5 +26,3 @@ $Id$
 
 - Rework the BinaryParser/BinaryWriter to work on SQLInput/SQLOutput 
   instances, as well as reworking ValueGetter/ValueSetter to implment those interfaces.
-
-- Unify the build of app java projects
