@@ -645,9 +645,11 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 		<refnamediv>
 			<refname>ST_CollectionExtract</refname>
 
-			<refpurpose>Given a GEOMETRYCOLLECTION, returns a MULTI* geometry consisting only of the specified type. Sub-geometries that are not
-			    the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY collection will be returned. Only
-			    points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.</refpurpose>
+			<refpurpose>
+Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
+Sub-geometries that are not the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned.
+Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.
+			</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
@@ -663,12 +665,20 @@ MULTILINESTRING((-45.2 -33.2,-46 -32),(-29 -27,-30 -29.7,-36 -31,-45 -33))
 		<refsection>
 			<title>Description</title>
 
-			<para>Given a GEOMETRYCOLLECTION, returns a MULTI* geometry consisting only of the specified type. Sub-geometries that are not
-			    the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY collection will be returned. Only
-			    points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.</para>
+			<para>
+Given a (multi)geometry, returns a (multi)geometry consisting only of elements of the specified type.
+Sub-geometries that are not the specified type are ignored. If there are no sub-geometries of the right type, an EMPTY geometry will be returned.
+Only points, lines and polygons are supported. Type numbers are 1 == POINT, 2 == LINESTRING, 3 == POLYGON.
+			</para>
 
 			<para>Availability: 1.5.0</para>
-			
+
+			<note><para>
+Prior to 1.5.3 this function returned non-collection inputs untouched, no matter type.
+In 1.5.3 non-matching single geometries result in a NULL return. 
+In of 2.0.0 every case of missing match results in a typed EMPTY return.
+			</para></note>
+
 		</refsection>
 
 		<refsection>
