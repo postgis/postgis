@@ -19,24 +19,24 @@ all: sql/$(EXTENSION)--$(EXTVERSION).sql   sql/$(EXTENSION)--2.0.0a12--$(EXTVERS
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
-	
+
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/rtpostgis--unpackaged.sql sql_bits/postgis--unpackaged.sql
 	cat $^ > $@
-	
+
 sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql	
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
 	#cp $< $@
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/postgis.sql: ../../postgis/postgis.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
-	
+
 sql_bits/postgis_comments.sql: ../../doc/postgis_comments.sql
 	cp $< $@
-	
+
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/rtpostgis.sql: ../../raster/rt_pg/rtpostgis.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
-	
+
 # we need to also drop this temporary function from the extension
 # for casts that are being dropped we need to drop them 
 # from extension only if they are in the existension so we use our postgis_extension_drop..
@@ -47,7 +47,7 @@ sql_bits/rtpostgis_upgrade_20_minor.sql: ../../raster/rt_pg/rtpostgis_upgrade_20
 		-e 's/DROP FUNCTION _drop_st_samealignment();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION _drop_st_samealignment();DROP FUNCTION _drop_st_samealignment();/g' \
 		-e 's/DROP CAST\(.*\)/SELECT postgis_extension_drop_if_exists('\''$(EXTENSION)'\'', '\''DROP CAST \1'\'');DROP CAST \1/' \
 	$< > $@
-	
+
 #can't use the one built because can't drop the postgis_version function
 #leave out all casts, operators, types, tables, schemas
 # sql_bits/postgis_upgrade_minor.sql: ../../postgis/postgis.sql 
@@ -64,7 +64,7 @@ sql_bits/postgis_upgrade_minor.sql: ../../postgis/postgis_upgrade_20_minor.sql
 		 -e 's/DROP FUNCTION postgis_major_version_check();/ALTER EXTENSION ${EXTENSION} DROP FUNCTION postgis_major_version_check();DROP FUNCTION postgis_major_version_check();/g' \
 	 	 $< > $@
 
-	
+
 sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 	cp $< $@
 
@@ -73,13 +73,13 @@ sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_b
 
 sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
-	
+
 sql/$(EXTENSION)--2.0.0a12--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
-	
+
 sql/$(EXTENSION)--2.0.0a13--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 	cp $< $@
-	
+
 # sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 
 # 	sed -e 's/^[\t]*//' \
 # 		-e :a -e '$!N; s/,\n/,/; ta' \
@@ -91,7 +91,7 @@ sql_bits/rtpostgis-filtered.sql:  ../../raster/rt_pg/rtpostgis.sql
 		sed \
 		-e 's/^[\t]*//' \
 		$< > $@
-		
+
 sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql
 		sed \
 		-e 's/^[\t]*//' \
@@ -104,7 +104,7 @@ sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql
 		-e 's/(;/;/' \
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@
-		
+
 sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
 	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
 		-e 's/OR REPLACE//g' \
