@@ -297,6 +297,20 @@ SELECT '#457.7', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 
 SELECT '#457.8', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 2));
 SELECT '#457.9', st_astext(st_collectionExtract('POLYGON((0 0, 1 0, 1 1, 0 1, 0 0))', 3));
 
+-- #835 --
+SELECT '#835.1', st_astext(st_collectionExtract('POLYGON EMPTY', 1));
+SELECT '#835.2', st_astext(st_collectionExtract('POLYGON EMPTY', 2));
+SELECT '#835.3', st_astext(st_collectionExtract('POLYGON EMPTY', 3));
+SELECT '#835.4', st_astext(st_collectionExtract('LINESTRING EMPTY', 1));
+SELECT '#835.5', st_astext(st_collectionExtract('LINESTRING EMPTY', 2));
+SELECT '#835.6', st_astext(st_collectionExtract('LINESTRING EMPTY', 3));
+SELECT '#835.7', st_astext(st_collectionExtract('POINT EMPTY', 1));
+SELECT '#835.8', st_astext(st_collectionExtract('POINT EMPTY', 2));
+SELECT '#835.9', st_astext(st_collectionExtract('POINT EMPTY', 3));
+SELECT '#835.10', st_astext(st_collectionExtract('GEOMETRYCOLLECTION EMPTY', 1));
+SELECT '#835.11', st_astext(st_collectionExtract('GEOMETRYCOLLECTION EMPTY', 2));
+SELECT '#835.12', st_astext(st_collectionExtract('GEOMETRYCOLLECTION EMPTY', 3));
+
 -- #650 --
 SELECT '#650', ST_AsText(ST_Collect(ARRAY[ST_MakePoint(0,0), ST_MakePoint(1,1), null, ST_MakePoint(2,2)]));
 

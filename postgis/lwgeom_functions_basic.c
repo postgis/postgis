@@ -2539,6 +2539,12 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	}
 
 	lwcol = lwcollection_extract((LWCOLLECTION*)lwgeom, type);
+	if (lwgeom_is_empty(lwcollection_as_lwgeom(lwcol)))
+	{
+		lwgeom_free(lwgeom);
+		PG_RETURN_NULL();
+	}
+
 	output = geometry_serialize((LWGEOM*)lwcol);
 	lwgeom_free(lwgeom);
 
