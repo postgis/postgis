@@ -1572,6 +1572,8 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 					return SHPLOADERERR;
 				}
 				strncpy(val, utf8str, MAXVALUELEN);
+				free(utf8str);
+
 			}
 
 			/* Escape attribute correctly according to dump format */
