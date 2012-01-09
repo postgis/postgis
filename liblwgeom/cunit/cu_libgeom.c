@@ -359,15 +359,36 @@ static void test_lwcollection_extract(void)
 	LWCOLLECTION *col;
 
 	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(POINT(0 0))", LW_PARSER_CHECK_NONE);
+
 	col = lwcollection_extract((LWCOLLECTION*)geom, 1);
 	CU_ASSERT_EQUAL(col->type, MULTIPOINTTYPE);
-
-	/* How to properly release 'col' ? 
-	 * See http://http://trac.osgeo.org/postgis/ticket/1102
-	 */
 	lwcollection_free(col);
+
+	col = lwcollection_extract((LWCOLLECTION*)geom, 2);
+	CU_ASSERT_EQUAL(col->type, MULTILINETYPE);
+	lwcollection_free(col);
+
+	col = lwcollection_extract((LWCOLLECTION*)geom, 3);
+	CU_ASSERT_EQUAL(col->type, MULTIPOLYGONTYPE);
+	lwcollection_free(col);
+
 	lwgeom_free(geom);
 
+	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION EMPTY", LW_PARSER_CHECK_NONE);
+
+	col = lwcollection_extract((LWCOLLECTION*)geom, 1);
+	CU_ASSERT_EQUAL(col->type, MULTIPOINTTYPE);
+	lwcollection_free(col);
+
+	col = lwcollection_extract((LWCOLLECTION*)geom, 2);
+	CU_ASSERT_EQUAL(col->type, MULTILINETYPE);
+	lwcollection_free(col);
+
+	col = lwcollection_extract((LWCOLLECTION*)geom, 3);
+	CU_ASSERT_EQUAL(col->type, MULTIPOLYGONTYPE);
+	lwcollection_free(col);
+
+	lwgeom_free(geom);
 }
 
 static void test_lwgeom_free(void)

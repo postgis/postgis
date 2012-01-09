@@ -406,7 +406,8 @@ LWCOLLECTION* lwcollection_extract(LWCOLLECTION *col, int type)
 	}
 	else
 	{
-		outcol = lwcollection_construct_empty(COLLECTIONTYPE, col->srid, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
+		lwfree(geomlist);
+		outcol = lwcollection_construct_empty(outtype, col->srid, FLAGS_GET_Z(col->flags), FLAGS_GET_M(col->flags));
 	}
 
 	return outcol;
