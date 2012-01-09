@@ -29,14 +29,32 @@ lwmpoint_construct_empty(int srid, char hasz, char hasm)
 	return ret;
 }
 
-
-
-
 LWMPOINT* lwmpoint_add_lwpoint(LWMPOINT *mobj, const LWPOINT *obj)
 {
 	LWDEBUG(4, "Called");
 	return (LWMPOINT*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
 }
+
+LWMPOINT *
+lwmpoint_construct(int srid, const POINTARRAY *pa)
+{
+	int i;
+	int hasz = ptarray_has_z(pa);
+	int hasm = ptarray_has_m(pa);
+	LWMPOINT *ret = (LWMPOINT*)lwcollection_construct_empty(MULTIPOINTTYPE, srid, hasz, hasm);
+	
+	for ( i = 0; i < pa->npoints; i++ )
+	{
+		LWPOINT *lwp;
+		POINT4D p;
+		getPoint4d_p(pa, i, &p);		
+		lwp = lwpoint_make(srid, hasz, hasm, &p);
+		lwmpoint_add_lwpoint(ret, lwp);
+	}
+	
+	return ret;
+}
+
 
 void lwmpoint_free(LWMPOINT *mpt)
 {

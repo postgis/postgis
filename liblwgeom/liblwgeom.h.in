@@ -750,7 +750,7 @@ extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
  * will be extracted from it
  *
  */
-extern void ptarray_set_point4d(POINTARRAY *pa, int n, POINT4D *p4d);
+extern void ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d);
 
 /*
  * get a pointer to nth point of a POINTARRAY
@@ -799,7 +799,7 @@ extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoi
 * If allow_duplicate is LW_TRUE, then a duplicate point will
 * not be added.
 */
-extern int ptarray_append_point(POINTARRAY *pa, POINT4D *pt, int allow_duplicates);
+extern int ptarray_append_point(POINTARRAY *pa, const POINT4D *pt, int allow_duplicates);
 
 /**
 * Append a #POINTARRAY, pa2 to the end of an existing #POINTARRAY, pa1.
@@ -812,7 +812,7 @@ extern int ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_e
 * Insert a point into an existing #POINTARRAY. Zero
 * is the index of the start of the array.
 */
-extern int ptarray_insert_point(POINTARRAY *pa, POINT4D *p, int where);
+extern int ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, int where);
 
 /**
 * Remove a point from an existing #POINTARRAY. Zero
@@ -1157,6 +1157,7 @@ POINTARRAY *ptarray_clone_deep(const POINTARRAY *ptarray);
 * from underneath the geometries.
 */
 extern LWPOINT* lwpoint_construct(int srid, GBOX *bbox, POINTARRAY *point);
+extern LWMPOINT *lwmpoint_construct(int srid, const POINTARRAY *pa);
 extern LWLINE* lwline_construct(int srid, GBOX *bbox, POINTARRAY *points);
 extern LWCIRCSTRING* lwcircstring_construct(int srid, GBOX *bbox, POINTARRAY *points);
 extern LWPOLY* lwpoly_construct(int srid, GBOX *bbox, uint32_t nrings, POINTARRAY **points);
@@ -1185,7 +1186,8 @@ extern LWPOINT *lwpoint_make2d(int srid, double x, double y);
 extern LWPOINT *lwpoint_make3dz(int srid, double x, double y, double z);
 extern LWPOINT *lwpoint_make3dm(int srid, double x, double y, double m);
 extern LWPOINT *lwpoint_make4d(int srid, double x, double y, double z, double m);
-extern LWLINE *lwline_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points);
+extern LWPOINT *lwpoint_make(int srid, int hasz, int hasm, const POINT4D *p);
+extern LWLINE *lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points);
 extern LWLINE *lwline_from_lwmpoint(int srid, LWMPOINT *mpoint);
 extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32_t where);
 extern LWLINE *lwline_removepoint(LWLINE *line, uint32_t which);
@@ -1229,9 +1231,18 @@ extern int lwgeom_ndims(const LWGEOM *geom);
  */
 extern double ptarray_locate_point(POINTARRAY *, POINT2D *, double *);
 
-
+/**
+* Add a measure dimension to a line, interpolating linearly from the start 
+* to the end value.
+*/
 extern LWLINE *lwline_measured_from_lwline(const LWLINE *lwline, double m_start, double m_end);
 extern LWMLINE* lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_end);
+
+/**
+* Determine the location(s) along a measured line where m occurs and 
+* return as a multipoint. Offset to left (negative) or right (positive).
+*/
+extern LWGEOM* lwgeom_locate_along(const LWGEOM *lwin, double m, double offset);
 
 /*
  * Ensure every segment is at most 'dist' long.

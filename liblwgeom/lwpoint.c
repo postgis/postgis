@@ -169,6 +169,14 @@ lwpoint_make4d(int srid, double x, double y, double z, double m)
 	return lwpoint_construct(srid, NULL, pa);
 }
 
+LWPOINT *
+lwpoint_make(int srid, int hasz, int hasm, const POINT4D *p)
+{
+	POINTARRAY *pa = ptarray_construct_empty(hasz, hasm, 1);
+	ptarray_append_point(pa, p, LW_TRUE);
+	return lwpoint_construct(srid, NULL, pa);
+}
+
 void lwpoint_free(LWPOINT *pt)
 {
 	if ( pt->bbox )

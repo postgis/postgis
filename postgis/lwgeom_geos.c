@@ -1246,7 +1246,7 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 		pfree(paramstr); /* alloc'ed in text2cstring */
 	}
 	
-	lwgeom_result = lwline_as_lwgeom(lwgeom_offsetcurve(lwgeom_as_lwline(lwgeom_input), size, quadsegs, joinStyle, mitreLimit));
+	lwgeom_result = lwgeom_offsetcurve(lwgeom_as_lwline(lwgeom_input), size, quadsegs, joinStyle, mitreLimit);
 	
 	if (lwgeom_result == NULL)
 		lwerror("ST_OffsetCurve: lwgeom_offsetcurve returned NULL");

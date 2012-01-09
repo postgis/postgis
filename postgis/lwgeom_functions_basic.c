@@ -1430,7 +1430,7 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: point elements: %d", npoints);
 
-	outlwg = (LWGEOM *)lwline_from_lwpointarray(srid, npoints, lwpoints);
+	outlwg = (LWGEOM *)lwline_from_ptarray(srid, npoints, lwpoints);
 
 	result = geometry_serialize(outlwg);
 
@@ -1467,7 +1467,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	lwpoints[0] = lwgeom_as_lwpoint(lwgeom_from_gserialized(pglwg1));
 	lwpoints[1] = lwgeom_as_lwpoint(lwgeom_from_gserialized(pglwg2));
 
-	outline = lwline_from_lwpointarray(lwpoints[0]->srid, 2, lwpoints);
+	outline = lwline_from_ptarray(lwpoints[0]->srid, 2, lwpoints);
 
 	result = geometry_serialize((LWGEOM *)outline);
 

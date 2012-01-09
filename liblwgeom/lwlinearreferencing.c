@@ -14,6 +14,167 @@
 #include "lwgeom_log.h"
 
 
+static int 
+segment_locate_along(const POINT4D *p1, const POINT4D *p2, double m, double offset, POINT4D *pn)
+{
+	double m1 = p1->m;
+	double m2 = p2->m;
+	double mprop;
+
+	/* M is out of range, no new point generated. */
+	if ( (m < FP_MIN(m1,m2)) || (m > FP_MAX(m1,m2)) )
+	{
+		return LW_FALSE;
+	}
+
+	/* We'll just can out on this degenerate case for now. 
+	   Correct behavior is probably an mprop of 0.5? 
+	   Still would have to deal with case of true p1==p2. */
+	if( m1 == m2 ) 
+	{
+		lwerror("Zero measure-length line encountered!");
+	}
+
+	/* M is in range, new point to be generated. */
+	mprop = (m - m1) / (m2 - m1);
+	pn->x = p1->x + (p2->x - p1->x) * mprop;
+	pn->y = p1->y + (p2->y - p1->y) * mprop;
+	pn->z = p1->z + (p2->z - p1->z) * mprop;
+	pn->m = m;
+
+	/* Offset to the left or right, if necessary. */
+	if ( offset != 0.0 )
+	{
+		double theta = atan2(p2->y - p1->y, p2->x - p1->x);
+		pn->x -= sin(theta) * offset;
+		pn->y += cos(theta) * offset;
+	}
+
+	return LW_TRUE;	
+}
+
+
+static POINTARRAY*
+ptarray_locate_along(const POINTARRAY *pa, double m, double offset)
+{
+	int i;
+	POINT4D p1, p2, pn;
+	POINTARRAY *dpa = NULL;
+		
+	/* Can't do anything with degenerate point arrays */
+	if ( ! pa || pa->npoints < 2 ) return NULL;
+	
+	/* Walk through each segment in the point array */
+	for ( i = 1; i < pa->npoints; i++ )
+	{
+		getPoint4d_p(pa, i-1, &p1);
+		getPoint4d_p(pa, i, &p2);
+
+		/* No derived point? Move to next segment. */
+		if ( segment_locate_along(&p1, &p2, m, offset, &pn) == LW_FALSE )
+			continue;
+
+		/* No pointarray, make a fresh one */
+		if ( dpa == NULL )
+			dpa = ptarray_construct_empty(ptarray_has_z(pa), ptarray_has_m(pa), 8);
+
+		/* Add our new point to the array */
+		ptarray_append_point(dpa, &pn, 0);
+	}	
+
+	return dpa;
+}
+
+static LWMPOINT*
+lwline_locate_along(const LWLINE *lwline, double m, double offset)
+{
+	POINTARRAY *opa = NULL;
+	LWMPOINT *mp = NULL;
+	LWGEOM *lwg = lwline_as_lwgeom(lwline);
+	int hasz, hasm, srid;
+
+	/* Return degenerates upwards */
+	if ( ! lwline ) return NULL;
+	
+	/* Create empty return shell */
+	srid = lwgeom_get_srid(lwg);
+	hasz = lwgeom_has_z(lwg);
+	hasm = lwgeom_has_m(lwg);
+
+	if ( hasm )
+	{
+		/* Find points along */
+		opa = ptarray_locate_along(lwline->points, m, offset);
+	}
+	else 
+	{
+		LWLINE *lwline_measured = lwline_measured_from_lwline(lwline, 0.0, 1.0);
+		opa = ptarray_locate_along(lwline_measured->points, m, offset);
+		lwline_free(lwline_measured);
+	}
+
+	/* Return NULL as EMPTY */
+	if ( ! opa ) 
+		return lwmpoint_construct_empty(srid, hasz, hasm);
+	
+	/* Convert pointarray into a multipoint */
+	mp = lwmpoint_construct(srid, opa);
+	ptarray_free(opa);
+	return mp;
+}
+
+static LWMPOINT*
+lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
+{
+	LWMPOINT *lwmpoint = NULL;
+	LWGEOM *lwg = lwmline_as_lwgeom(lwmline);
+	int i, j;
+
+	/* Return degenerates upwards */
+	if ( (!lwmline) || (lwmline->ngeoms < 1) ) return NULL;
+
+	/* Construct return */
+	lwmpoint = lwmpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
+
+	/* Locate along each sub-line */
+	for ( i = 0; i < lwmline->ngeoms; i++ )
+	{
+		LWMPOINT *along = lwline_locate_along(lwmline->geoms[i], m, offset);
+		if ( along != NULL ) 
+		{
+			for ( j = 0; j < along->ngeoms; j++ ) 
+			{
+				lwmpoint_add_lwpoint(lwmpoint, along->geoms[i]);
+			}
+			/* Free the containing geometry, but leave the sub-geometries around */
+			if ( along->bbox ) lwfree(along->bbox);
+			lwfree(along);
+		}
+	}
+	return lwmpoint;
+}
+
+LWGEOM*
+lwgeom_locate_along(const LWGEOM *lwin, double m, double offset)
+{
+	if ( ! lwin ) return NULL;
+	
+	switch (lwin->type)
+	{
+	case LINETYPE:
+		return (LWGEOM*)lwline_locate_along((LWLINE*)lwin, m, offset);
+	case MULTILINETYPE:
+		return (LWGEOM*)lwmline_locate_along((LWMLINE*)lwin, m, offset);
+	/* Only line types supported right now */
+	/* TO DO: CurveString, CompoundCurve, MultiCurve */
+	/* TO DO: Point, MultiPoint */
+	default:
+		lwerror("Only linear geometries are supported, %s provided.",lwtype_name(lwin->type));
+		return NULL;
+	}
+	return NULL;
+}
+
 /**
 * Given a POINT4D and an ordinate number, return
 * the value of the ordinate.

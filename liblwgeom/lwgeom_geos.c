@@ -1052,10 +1052,11 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 #else
 	GEOSGeometry *g1, *g3;
 	LWGEOM *lwgeom_result;
+	LWGEOM *lwgeom_in = lwline_as_lwgeom(lwline);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwline_as_lwgeom(lwline));
+	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwgeom_in);
 	if ( ! g1 ) 
 	{
 		lwerror("lwgeom_offsetcurve: Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
@@ -1082,9 +1083,8 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 
 	LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
-	GEOSSetSRID(g3, lwgeom_get_srid(lwline_as_lwgeom(lwline)));
-
-	lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwline_as_lwgeom(lwline)));
+	GEOSSetSRID(g3, lwgeom_get_srid(lwgeom_in));
+	lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwgeom_in));
 	GEOSGeom_destroy(g3);
 
 	if (lwgeom_result == NULL)

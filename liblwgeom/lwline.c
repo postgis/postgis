@@ -146,7 +146,7 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
  * LWLINE dimensions are large enough to host all input dimensions.
  */
 LWLINE *
-lwline_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
+lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points)
 {
  	int i;
 	int hasz = LW_FALSE;
@@ -162,7 +162,7 @@ lwline_from_lwpointarray(int srid, uint32_t npoints, LWPOINT **points)
 	{
 		if ( points[i]->type != POINTTYPE )
 		{
-			lwerror("lwline_from_lwpointarray: invalid input type: %s", lwtype_name(points[i]->type));
+			lwerror("lwline_from_ptarray: invalid input type: %s", lwtype_name(points[i]->type));
 			return NULL;
 		}
 		if ( FLAGS_GET_Z(points[i]->flags) ) hasz = LW_TRUE;
