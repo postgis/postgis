@@ -22,7 +22,7 @@ addBand(rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval)
     uint16_t height = rt_raster_get_height(raster);
 
     datasize = rt_pixtype_size(pixtype)*width*height;
-    mem = malloc(datasize);
+    mem = rtalloc(datasize);
 
     rt_band band = rt_band_new_inline(width, height,
                                       pixtype, hasnodata, nodataval, mem);
@@ -39,8 +39,10 @@ deepRelease(rt_raster raster)
     for (i=0; i<nbands; ++i)
     {
         rt_band band = rt_raster_get_band(raster, i);
-        void* mem = rt_band_get_data(band);
-        if ( mem ) free(mem);
+				if (!rt_band_is_offline(band)) {
+        	void* mem = rt_band_get_data(band);
+	        if (mem) rtdealloc(mem);
+				}
         rt_band_destroy(band);
     }
     rt_raster_destroy(raster);
@@ -1212,7 +1214,7 @@ static void testRasterReplaceBand() {
 	height = rt_raster_get_height(raster);
 
 	datasize = rt_pixtype_size(PT_8BUI) * width * height;
-	mem = malloc(datasize);
+	mem = rtalloc(datasize);
 	band = rt_band_new_inline(width, height, PT_8BUI, 1, 1, mem);
 	assert(band);
 
@@ -1259,11 +1261,11 @@ static void testBandReclass() {
 	nodata = rt_band_get_nodata(band);
 	CHECK_EQUALS(nodata, 0);
 
-	exprset = malloc(cnt * sizeof(rt_reclassexpr));
+	exprset = rtalloc(cnt * sizeof(rt_reclassexpr));
 	assert(exprset);
 
 	for (i = 0; i < cnt; i++) {
-		exprset[i] = malloc(sizeof(struct rt_reclassexpr_t));
+		exprset[i] = rtalloc(sizeof(struct rt_reclassexpr_t));
 		assert(exprset[i]);
 
 		if (i == 0) {
@@ -1309,12 +1311,12 @@ static void testBandReclass() {
 	CHECK((rtn != -1));
 	CHECK_EQUALS(val, 255);
 
-	for (i = cnt - 1; i >= 0; i--) free(exprset[i]);
-	free(exprset);
+	for (i = cnt - 1; i >= 0; i--) rtdealloc(exprset[i]);
+	rtdealloc(exprset);
 	deepRelease(raster);
 
 	mem = rt_band_get_data(newband);
-	if (mem) free(mem);
+	if (mem) rtdealloc(mem);
 	rt_band_destroy(newband);
 }
 
@@ -1575,7 +1577,7 @@ static void testGDALRasterize() {
 
 	/* hex to byte */
 	wkb_len = (int) ceil(((double) strlen(wkb_hex)) / 2);
-	wkb = (unsigned char *) malloc(sizeof(unsigned char) * wkb_len);
+	wkb = (unsigned char *) rtalloc(sizeof(unsigned char) * wkb_len);
 	for (i = 0; i < wkb_len; i++) {
 		sscanf(pos, "%2hhx", &wkb[i]);
 		pos += 2;
@@ -1595,7 +1597,7 @@ static void testGDALRasterize() {
 		NULL
 	);
 
-	free(wkb);
+	rtdealloc(wkb);
 
 	CHECK(raster);
 	CHECK((rt_raster_get_width(raster) == 100));

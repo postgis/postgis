@@ -1131,6 +1131,10 @@ rt_band_destroy(rt_band band) {
 
     RASTER_DEBUGF(3, "Destroying rt_band @ %p", band);
 
+		/* offline band and has data, free as data is internally owned */
+		if (band->offline && band->data.offline.mem != NULL)
+			rtdealloc(band->data.offline.mem);
+
     /* band->data content is externally owned */
     /* XXX jorgearevalo: not really... rt_band_from_wkb allocates memory for
      * data.mem
@@ -1192,7 +1196,9 @@ rt_band_get_data(rt_band band) {
 }
 
 /**
-	* Load offline band's data
+	* Load offline band's data.  Loaded data is internally owned
+	* and should not be released by the caller.  Data will be
+	* released when band is destroyed with rt_band_destroy().
 	*
 	* @param band : the band who's data to get
 	*
@@ -1302,6 +1308,12 @@ rt_band_load_offline_band(rt_band band) {
 		rterror("rt_band_load_offline_band: Cannot load data from offline raster: %s", band->data.offline.path);
 		rt_raster_destroy(_rast);
 		return 1;
+	}
+
+	/* band->data.offline.mem not NULL, free first */
+	if (band->data.offline.mem != NULL) {
+		rtdealloc(band->data.offline.mem);
+		band->data.offline.mem = NULL;
 	}
 
 	band->data.offline.mem = _band->data.mem;

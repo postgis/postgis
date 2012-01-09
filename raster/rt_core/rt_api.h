@@ -404,7 +404,9 @@ uint16_t rt_band_get_height(rt_band band);
 void* rt_band_get_data(rt_band band);
 
 /**
-	* Load offline band's data
+	* Load offline band's data.  Loaded data is internally owned
+	* and should not be released by the caller.  Data will be
+	* released when band is destroyed with rt_band_destroy().
 	*
 	* @param band : the band who's data to get
 	*
@@ -1426,7 +1428,7 @@ struct rt_raster_t {
 struct rt_extband_t {
     uint8_t bandNum; /* 0-based */
     char* path; /* externally owned ? */
-		void *mem; /* loaded external band data */
+		void *mem; /* loaded external band data, internally owned */
 };
 
 struct rt_band_t {
