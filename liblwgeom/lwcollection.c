@@ -457,9 +457,14 @@ lwcollection_force_dims(const LWCOLLECTION *col, int hasz, int hasm)
 
 int lwcollection_is_empty(const LWCOLLECTION *col)
 {
+	int i;
 	if ( (col->ngeoms == 0) || (!col->geoms) )
 		return LW_TRUE;
-	return LW_FALSE;
+	for( i = 0; i < col->ngeoms; i++ )
+	{
+		if ( ! lwgeom_is_empty(col->geoms[i]) ) return LW_FALSE;
+	}
+	return LW_TRUE;
 }
 
 

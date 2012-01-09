@@ -693,6 +693,48 @@ static void test_lwgeom_force_clockwise(void)
 	lwgeom_free(geom);
 }
 
+/*
+ * Test lwgeom_is_empty
+ */
+static void test_lwgeom_is_empty(void)
+{
+	LWGEOM *geom;
+	char *in_ewkt, *out_ewkt;
+
+	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( !lwgeom_is_empty(geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POINT EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_is_empty(geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("LINESTRING EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_is_empty(geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POLYGON EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_is_empty(geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTIPOINT EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_is_empty(geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTILINESTRING EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_is_empty(geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTIPOLYGON EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_is_empty(geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT EMPTY, LINESTRING EMPTY, POLYGON EMPTY, MULTIPOINT EMPTY, MULTILINESTRING EMPTY, MULTIPOLYGON EMPTY, GEOMETRYCOLLECTION(MULTIPOLYGON EMPTY))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_is_empty(geom) );
+	lwgeom_free(geom);
+
+}
+
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -715,6 +757,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_clone),
 	PG_TEST(test_lwgeom_force_clockwise),
 	PG_TEST(test_lwgeom_calculate_gbox),
+	PG_TEST(test_lwgeom_is_empty),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};
