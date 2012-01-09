@@ -39,7 +39,8 @@ BEGIN
         var_zip := array_agg(zip) FROM zip_lookup_base WHERE statefp = in_statefp AND lower(city) = lower(in_city);
     END IF;
     
-    IF var_zip IS NULL THEN
+    -- if we don't have a city or zip, don't bother doing the zip check, just keep as null
+    IF var_zip IS NULL AND in_city > '' THEN
         var_zip := array_agg(zip) FROM zip_lookup_base WHERE statefp = in_statefp AND lower(city) LIKE lower(in_city) || '%'  ;
     END IF; 
     IF var_debug THEN
@@ -48,30 +49,39 @@ BEGIN
     var_sql := '
     WITH 
     	a1 AS (SELECT f.*, addr.fromhn, addr.tohn, addr.side , addr.zip
-    				FROM addr INNER JOIN (SELECT * FROM featnames 
+    				FROM (SELECT * FROM featnames 
     							WHERE statefp = $1 AND ( lower(name) = $2  ' ||
-    							CASE WHEN length(var_na_road.streetName) > 5 THEN ' or   lower(fullname) LIKE $6 || ''%'' ' ELSE '' END || ')' 
-    							|| ')  AS f ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
-    					WHERE addr.statefp = $1 AND addr.zip = ANY($5::text[]) 
+    							CASE WHEN length(var_na_road.streetName) > 5 THEN ' or  lower(fullname) LIKE $6 || ''%'' ' ELSE '' END || ')' 
+    							|| ')  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) As addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
+    					WHERE $5::text[] IS NULL OR addr.zip = ANY($5::text[]) OR addr.zip IS NULL 
+    				ORDER BY CASE WHEN lower(f.fullname) = $6 THEN 0 ELSE 1 END
+    				LIMIT 5000
     			  ),
         a2 AS (SELECT f.*, addr.fromhn, addr.tohn, addr.side , addr.zip
-    				FROM addr INNER JOIN (SELECT * FROM featnames 
+    				FROM (SELECT * FROM featnames 
     							WHERE statefp = $1 AND ( lower(name) = $4 ' || 
     							CASE WHEN length(var_na_inter1.streetName) > 5 THEN ' or lower(fullname) LIKE $7 || ''%'' ' ELSE '' END || ')' 
-    							|| ' )  AS f ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
-    					WHERE addr.statefp = $1 AND addr.zip = ANY($5::text[]) 
+    							|| ' )  AS f LEFT JOIN (SELECT * FROM addr WHERE addr.statefp = $1) AS addr ON (addr.tlid = f.tlid AND addr.statefp = f.statefp)
+    					WHERE $5::text[] IS NULL OR addr.zip = ANY($5::text[])  or addr.zip IS NULL 
+    			ORDER BY CASE WHEN lower(f.fullname) = $7 THEN 0 ELSE 1 END
+    				LIMIT 5000
     			  ),
     	 e1 AS (SELECT e.the_geom, e.tnidf, e.tnidt, a.*,
     	 			CASE WHEN a.side = ''L'' THEN e.tfidl ELSE e.tfidr END AS tfid
     	 			FROM a1 As a
-    					INNER JOIN  edges AS e ON a.tlid = e.tlid
-    				WHERE e.statefp = $1 ) ,
+    					INNER JOIN  edges AS e ON (e.statefp = a.statefp AND a.tlid = e.tlid)
+    				WHERE e.statefp = $1 
+    				ORDER BY CASE WHEN lower(a.name) = $4 THEN 0 ELSE 1 END + CASE WHEN lower(e.fullname) = $7 THEN 0 ELSE 1 END
+    				LIMIT 1000) ,
     	e2 AS (SELECT e.the_geom, e.tnidf, e.tnidt, a.*,
     	 			CASE WHEN a.side = ''L'' THEN e.tfidl ELSE e.tfidr END AS tfid
-    				FROM e1 INNER JOIN edges AS e ON (e.statefp = $1 AND ST_Intersects(e.the_geom, e1.the_geom) 
+    				FROM (SELECT * FROM edges WHERE statefp = $1) AS e INNER JOIN a2 AS a ON (e.statefp = a.statefp AND a.tlid = e.tlid)
+    					INNER JOIN e1 ON (e.statefp = e1.statefp AND ST_Intersects(e.the_geom, e1.the_geom) 
     					AND ARRAY[e.tnidf, e.tnidt] && ARRAY[e1.tnidf, e1.tnidt] )
-    					INNER JOIN a2 AS a ON a.tlid = e.tlid
-    				WHERE e.statefp = $1 AND  (lower(e.fullname) = $7 or lower(a.name) LIKE $4 || ''%'')
+    					
+    				WHERE (lower(e.fullname) = $7 or lower(a.name) LIKE $4 || ''%'')
+    				ORDER BY CASE WHEN lower(a.name) = $4 THEN 0 ELSE 1 END + CASE WHEN lower(e.fullname) = $7 THEN 0 ELSE 1 END
+    				LIMIT 100
     				), 
     	segs AS (SELECT DISTINCT ON(e1.tlid, e1.side)
                    CASE WHEN e1.tnidf = e2.tnidf OR e1.tnidf = e2.tnidt THEN
@@ -83,7 +93,8 @@ BEGIN
                              CASE WHEN e1.tnidf = e2.tnidf OR e1.tnidf = e2.tnidt THEN
                                 ST_StartPoint(ST_GeometryN(ST_Multi(e1.the_geom),1))
                              ELSE ST_EndPoint(ST_GeometryN(ST_Multi(e1.the_geom),1)) END AS geom ,   
-                                CASE WHEN lower(p.name) = $3 THEN 0 ELSE 1 END 
+                                CASE WHEN lower(p.name) = $3 THEN 0 ELSE 1 END  
+                                + levenshtein_ignore_case(p.name, $3) 
                                 + levenshtein_ignore_case(e1.name || COALESCE('' '' || e1.sufqualabr, ''''),$2) +
                                 CASE WHEN e1.fullname = $6 THEN 0 ELSE levenshtein_ignore_case(e1.fullname, $6) END +
                                 + levenshtein_ignore_case(e2.name || COALESCE('' '' || e2.sufqualabr, ''''),$4)
@@ -108,13 +119,13 @@ BEGIN
                       '$4', quote_nullable(lower(var_na_inter1.streetName) ) ),
                       '$5', quote_nullable(var_zip) ),
                       '$6', quote_nullable(lower(var_na_road.streetName || ' ' || COALESCE(var_na_road.streetTypeAbbrev,'') )) ) ,
-                      '$7', quote_nullable(lower(var_na_inter1.streetName || ' ' || COALESCE(var_na_inter1.streetTypeAbbrev,'') ) ) ) ,
+                      '$7', quote_nullable(trim(lower(var_na_inter1.streetName || ' ' || COALESCE(var_na_inter1.streetTypeAbbrev,'') )) ) ) ,
 		 '$8', quote_nullable(in_state ) ),  '$9', num_results::text );
     END IF;
 
-    FOR results IN EXECUTE var_sql USING in_statefp, lower(var_na_road.streetName), lower(in_city), lower(var_na_inter1.streetName), var_zip,
-		lower(var_na_road.streetName || ' ' || COALESCE(var_na_road.streetTypeAbbrev,'')),
-		lower(var_na_inter1.streetName || ' ' || COALESCE(var_na_inter1.streetTypeAbbrev,'')), in_state, num_results LOOP
+    FOR results IN EXECUTE var_sql USING in_statefp, trim(lower(var_na_road.streetName)), lower(in_city), lower(var_na_inter1.streetName), var_zip,
+		trim(lower(var_na_road.streetName || ' ' || COALESCE(var_na_road.streetTypeAbbrev,''))),
+		trim(lower(var_na_inter1.streetName || ' ' || COALESCE(var_na_inter1.streetTypeAbbrev,''))), in_state, num_results LOOP
 		ADDY.preDirAbbrev     := results.fedirp;
         ADDY.streetName       := results.fename;
         ADDY.streetTypeAbbrev := results.fetype;
