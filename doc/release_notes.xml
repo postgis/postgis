@@ -96,6 +96,7 @@
         	     limit max result return, speed improvements, loading routines. 
         	   (Regina Obe, Leo Hsu / Paragon Corporation / funding provided by Hunter Systems Group)</para>
         	<para>Overall Documentation proofreading and corrections. (Kasif Rasul)</para>
+        	<para>Cleanup PostGIS JDBC classes, revise to use Maven build. (Maria Arias de Reyna, Sandro Santilli)</para>
         </simplesect>
         <simplesect>
         	<title>Bug Fixes</title>
