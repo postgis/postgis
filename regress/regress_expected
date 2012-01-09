@@ -177,7 +177,7 @@ HINT:  "MULTIPOINT(1 1, 2 2" <-- parse error at position 19 within geometry
 156|MULTIPOINT(1 1)
 157|MULTILINESTRING((0 0,1 1))
 158|MULTILINESTRING((0 0,1 1),(2 2,3 3))
-159|
+159|MULTIPOLYGON EMPTY
 160|MULTIPOINT(1 1)
 161|MULTILINESTRING((0 0,1 1),(2 2,3 3))
 ERROR:  Input geometries must be points
