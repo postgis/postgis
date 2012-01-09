@@ -1899,7 +1899,7 @@ pgui_create_file_table(GtkWidget *frame_shape)
 	                  "text",
 	                  FILENAME_COLUMN,
 	                  NULL);
-	g_object_set(filename_column, "resizable", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
+	g_object_set(filename_column, "resizable", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(tree), filename_column);
 
 	/* Schema Field */
