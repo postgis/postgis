@@ -56,7 +56,7 @@ else
 ifeq ($(IMAGEMAGICK),)
 all: requirements_not_met_imagemagick
 else
-all: images html/postgis.html postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
+all: comments
 endif
 endif
 endif
@@ -106,7 +106,7 @@ html/postgis.html: postgis-out.xml
 
 
 postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: postgis-out.xml images
-	@if test x"$(DBLATEX)" = x; then \
+	if test x"$(DBLATEX)" = x; then \
 	   echo "Error: dblatex not found, can't build pdf"; \
 	   echo "       try installing dblatex and then re-run configure"; \
 	   false; \
@@ -134,13 +134,14 @@ doxygen: doxygen.cfg
 images: 
 	make -C html/image_src images
 	
-clean:
+clean: 
+	rm -f html/*.html
+	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	make -C html/image_src clean
-	@rm -f postgis-out.xml postgis_aggs_mm.xml
+	rm -f postgis-out.xml postgis_aggs_mm.xml
 
 maintainer-clean: clean
-	@rm -f html/*.html \
-		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
 
 comments: postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
 cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html tiger_geocoder_cheatsheet.html

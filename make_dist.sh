@@ -43,36 +43,24 @@ echo "Removing .cvsignore and make_dist.sh files"
 find "$outdir" -name .cvsignore -exec rm {} \;
 rm -f "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 
-# generating configure script
+# generating configure script and configuring
 echo "Running autogen.sh; ./configure"
 owd="$PWD"
 cd "$outdir"
 ./autogen.sh
 ./configure
-make
+#make
 cd "$owd"
 
-# generating documentation
-echo "Generating documentation images"
-owd="$PWD"
-cd "$outdir"/doc/html/image_src
-sleep 1 # wait some time 
-make images 
-if [ $? -gt 0 ]; then
-	exit 1
-fi
-cd "$owd"
-
-# generating documentation
+# generating comments
 echo "Generating documentation"
 owd="$PWD"
 cd "$outdir"/doc
-sleep 2 # wait some time to have 'make' recognize it needs to build html
-make 
+make comments
 if [ $? -gt 0 ]; then
 	exit 1
 fi
-make clean # won't drop the html dir, or postgis_comments.sql
+make clean # won't drop the comment files
 cd "$owd"
 
 # Run make distclean
