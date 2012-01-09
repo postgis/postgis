@@ -35,6 +35,7 @@
 #include <assert.h>
 #include <time.h> /* for time */
 #include "rt_api.h"
+#include "gdal_vrt.h"
 
 /******************************************************************************
  * Some rules for *.(c|h) files in rt_core
@@ -984,6 +985,7 @@ rt_band_new_inline(
 	band->data.mem = data;
 	band->ownsData = 0;
 	band->isnodata = FALSE;
+	band->raster = NULL;
 
 	return band;
 }
@@ -994,6 +996,7 @@ rt_band_new_inline(
  * @param width     : number of pixel columns
  * @param height    : number of pixel rows
  * @param pixtype   : pixel type for the band
+ * @param hasnodata : indicates if the band has nodata value
  * @param nodataval : the nodata value, will be appropriately
  *                    truncated to fit the pixtype size.
  * @param bandNum   : 0-based band number in the external file
@@ -1034,6 +1037,7 @@ rt_band_new_offline(
 	band->hasnodata = hasnodata;
 	band->nodataval = nodataval;
 	band->isnodata = FALSE;
+	band->raster = NULL;
 
 	/* XXX QUESTION (jorgearevalo): What does exactly ownsData mean?? I think that
 	 * ownsData = 0 ==> the memory for band->data is externally owned
@@ -1046,7 +1050,65 @@ rt_band_new_offline(
 	/* memory for data.offline.path should be managed externally */
 	band->data.offline.path = (char *) path;
 
+	band->data.offline.mem = NULL;
+
 	return band;
+}
+
+/**
+ * Create a new band duplicated from source band.  Memory is allocated
+ * for band path (if band is offline) or band data (if band is online).
+ * The caller is responsible for freeing the memory when the returned
+ * rt_band is destroyed.
+ *
+ * @param : the band to copy
+ *
+ * @return an rt_band or NULL on failure
+ */
+rt_band
+rt_band_duplicate(rt_band band) {
+	rt_band rtn = NULL;
+	assert(band != NULL);
+
+	/* offline */
+	if (band->offline) {
+		char *path = NULL;
+		path = rtalloc(sizeof(char) * (strlen(band->data.offline.path) + 1));
+		if (path == NULL) {
+			rterror("rt_band_duplicate: Out of memory allocating offline band path");
+			return NULL;
+		}
+		strcpy(path, band->data.offline.path);
+
+		rtn = rt_band_new_offline(
+			band->width, band->height,
+			band->pixtype,
+			band->hasnodata, band->nodataval,
+			band->data.offline.bandNum, (const char *) path
+		);
+	}
+	/* online */
+	else {
+		uint8_t *data = NULL;
+		data = rtalloc(rt_pixtype_size(band->pixtype) * band->width * band->height);
+		if (data == NULL) {
+			rterror("rt_band_duplicate: Out of memory allocating online band data");
+			return NULL;
+		}
+		memcpy(data, band->data.mem, rt_pixtype_size(band->pixtype) * band->width * band->height);
+
+		rtn = rt_band_new_inline(
+			band->width, band->height,
+			band->pixtype,
+			band->hasnodata, band->nodataval,
+			data
+		);
+	}
+
+	if (rtn == NULL)
+		rterror("rt_band_duplicate: Could not copy band");
+
+	return rtn;
 }
 
 int
@@ -1083,8 +1145,7 @@ rt_band_get_ext_path(rt_band band) {
 
 
     if (!band->offline) {
-        RASTER_DEBUG(3, "rt_band_get_ext_path: non-offline band doesn't have "
-                "an associated path");
+        RASTER_DEBUG(3, "rt_band_get_ext_path: Band is not offline");
         return 0;
     }
     return band->data.offline.path;
@@ -1097,25 +1158,158 @@ rt_band_get_ext_band_num(rt_band band) {
 
 
     if (!band->offline) {
-        RASTER_DEBUG(3, "rt_band_get_ext_path: non-offline band doesn't have "
-                "an associated band number");
+        RASTER_DEBUG(3, "rt_band_get_ext_path: Band is not offline");
         return 0;
     }
     return band->data.offline.bandNum;
 }
 
+/**
+	* Get pointer to raster band data
+	*
+	* @param band : the band who's data to get
+	*
+	* @return void pointer to band data
+	*/
 void *
 rt_band_get_data(rt_band band) {
+	assert(NULL != band);
 
-    assert(NULL != band);
+	if (band->offline) {
+		int state = 0;
 
+		if (band->data.offline.mem != NULL)
+			return band->data.offline.mem;
 
-    if (band->offline) {
-        RASTER_DEBUG(3, "rt_band_get_data: "
-                "offline band doesn't have associated data");
-        return 0;
-    }
-    return band->data.mem;
+		state = rt_band_load_offline_band(band);
+		if (state == 0)
+			return band->data.offline.mem;
+		else
+			return NULL;
+	}
+	else
+		return band->data.mem;
+}
+
+/**
+	* Load offline band's data
+	*
+	* @param band : the band who's data to get
+	*
+	* @return 0 if success, non-zero if failure
+	*/
+int
+rt_band_load_offline_band(rt_band band) {
+	GDALDatasetH hdsSrc = NULL;
+	int nband = 0;
+	VRTDatasetH hdsDst = NULL;
+	VRTSourcedRasterBandH hbandDst = NULL;
+	double gt[6] = {0.};
+	double ogt[6] = {0.};
+	double offset[2] = {0};
+
+	rt_raster _rast = NULL;
+	rt_band _band = NULL;
+
+	assert(band != NULL);
+	assert(band->raster != NULL);
+
+	if (!band->offline) {
+		rterror("rt_band_load_offline_band: Band is not offline");
+		return 1;
+	}
+	else if (!strlen(band->data.offline.path)) {
+		rterror("rt_band_load_offline_band: Offline band does not a have a specified file");
+		return 1;
+	}
+
+	GDALAllRegister();
+	hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
+	if (hdsSrc == NULL) {
+		rterror("rt_band_load_offline_band: Cannot open offline raster: %s", band->data.offline.path);
+		return 1;
+	}
+
+	/* # of bands */
+	nband = GDALGetRasterCount(hdsSrc);
+	if (!nband) {
+		rterror("rt_band_load_offline_band: No bands found in offline raster: %s", band->data.offline.path);
+		GDALClose(hdsSrc);
+		return 1;
+	}
+	/* bandNum is 0-based */
+	else if (band->data.offline.bandNum + 1 > nband) {
+		rterror("rt_band_load_offline_band: Specified band %d not found in offline raster: %s", band->data.offline.bandNum, band->data.offline.path);
+		GDALClose(hdsSrc);
+		return 1;
+	}
+
+	/* get raster's geotransform */
+	rt_raster_get_geotransform_matrix(band->raster, gt);
+
+	/* get offline raster's geotransform */
+	GDALGetGeoTransform(hdsSrc, ogt);
+
+	/* get offsets */
+	rt_raster_geopoint_to_cell(
+		band->raster,
+		ogt[0], ogt[3],
+		&(offset[0]), &(offset[1]),
+		gt
+	);
+
+	/* XXX: should there be a check for the spatial attributes between the offline raster file and that of the raster? */
+	
+	/* create VRT dataset */
+	hdsDst = VRTCreate(band->width, band->height);
+	GDALSetGeoTransform(hdsDst, gt);
+	/*
+	GDALSetDescription(hdsDst, "/tmp/offline.vrt");
+	*/
+
+	/* add band as simple sources */
+	GDALAddBand(hdsDst, rt_util_pixtype_to_gdal_datatype(band->pixtype), NULL);
+	hbandDst = (VRTSourcedRasterBandH) GDALGetRasterBand(hdsDst, 1);
+
+	if (band->hasnodata)
+		GDALSetRasterNoDataValue(hbandDst, band->nodataval);
+
+	VRTAddSimpleSource(
+		hbandDst, GDALGetRasterBand(hdsSrc, band->data.offline.bandNum + 1),
+		abs(offset[0]), abs(offset[1]),
+		band->width, band->height,
+		0, 0,
+		band->width, band->height,
+		"near", VRT_NODATA_UNSET
+	);
+
+	/* make sure VRT reflects all changes */
+	VRTFlushCache(hdsDst);
+
+	/* convert VRT dataset to rt_raster */
+	_rast = rt_raster_from_gdal_dataset(hdsDst);
+
+	GDALClose(hdsDst);
+	GDALClose(hdsSrc);
+
+	if (_rast == NULL) {
+		rterror("rt_band_load_offline_band: Cannot load data from offline raster: %s", band->data.offline.path);
+		return 1;
+	}
+
+	_band = rt_raster_get_band(_rast, 0);
+	if (_band == NULL) {
+		rterror("rt_band_load_offline_band: Cannot load data from offline raster: %s", band->data.offline.path);
+		rt_raster_destroy(_rast);
+		return 1;
+	}
+
+	band->data.offline.mem = _band->data.mem;
+
+	rt_band_destroy(_band);
+	rt_raster_destroy(_rast);
+
+	return 0;
 }
 
 rt_pixtype
@@ -1398,16 +1592,16 @@ rt_band_set_pixel_line(
 
 	assert(NULL != band);
 
+	if (band->offline) {
+		rterror("rt_band_set_pixel_line not implemented yet for OFFDB bands");
+		return 0;
+	}
+
 	pixtype = band->pixtype;
 	size = rt_pixtype_size(pixtype);
 
 	if (x >= band->width || y >= band->height) {
 		rterror("rt_band_set_pixel_line: Coordinates out of range");
-		return 0;
-	}
-
-	if (band->offline) {
-		rterror("rt_band_set_pixel_line not implemented yet for OFFDB bands");
 		return 0;
 	}
 
@@ -1514,15 +1708,15 @@ rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
 
     assert(NULL != band);
 
+    if (band->offline) {
+        rterror("rt_band_set_pixel not implemented yet for OFFDB bands");
+        return -1;
+    }
+
     pixtype = band->pixtype;
 
     if (x >= band->width || y >= band->height) {
         rterror("rt_band_set_pixel: Coordinates out of range");
-        return -1;
-    }
-
-    if (band->offline) {
-        rterror("rt_band_set_pixel not implemented yet for OFFDB bands");
         return -1;
     }
 
@@ -1665,12 +1859,12 @@ rt_band_get_pixel(rt_band band, uint16_t x, uint16_t y, double *result) {
         return -1;
     }
 
-    if (band->offline) {
-        rterror("rt_band_get_pixel not implemented yet for OFFDB bands");
-        return -1;
-    }
-
     data = rt_band_get_data(band);
+		if (data == NULL) {
+			rterror("rt_band_get_pixel: Cannot get band data");
+			return -1;
+		}
+
     offset = x + (y * band->width); /* +1 for the nodata value */
 
     switch (pixtype) {
@@ -1808,10 +2002,11 @@ rt_band_check_is_nodata(rt_band band)
         return FALSE;
     }
 
-    /* TODO: How to know it in case of offline bands? */
-    if (band->offline) {
-        RASTER_DEBUG(3, "Unknown nodata value for OFFDB band");
-        band->isnodata = FALSE;
+    if (band->offline && band->data.offline.mem == NULL) {
+			if (rt_band_load_offline_band(band)) {
+				rterror("rt_band_check_is_nodata: Cannot load offline band's data");
+				return FALSE;
+			}
     }
 
     /* Check all pixels */
@@ -1883,12 +2078,11 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 
 	assert(NULL != band);
 
-	if (band->offline) {
-		rterror("rt_band_get_summary_stats not implemented yet for OFFDB bands");
+	data = rt_band_get_data(band);
+	if (data == NULL) {
+		rterror("rt_band_get_summary_stats: Cannot get band data");
 		return NULL;
 	}
-
-	data = rt_band_get_data(band);
 
 	hasnodata = rt_band_get_hasnodata_flag(band);
 	if (hasnodata != FALSE)
@@ -2762,12 +2956,12 @@ rt_band_get_quantiles_stream(rt_band band,
 	assert(cov_count > 1);
 	RASTER_DEBUGF(3, "cov_count = %d", cov_count);
 
-	if (band->offline) {
-		rterror("rt_band_get_summary_stats not implemented yet for OFFDB bands");
-		return NULL;
-	}
 
 	data = rt_band_get_data(band);
+	if (data == NULL) {
+		rterror("rt_band_get_summary_stats: Cannot get band data");
+		return NULL;
+	}
 
 	hasnodata = rt_band_get_hasnodata_flag(band);
 	if (hasnodata != FALSE)
@@ -3347,12 +3541,12 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 
 	assert(NULL != band);
 
-	if (band->offline) {
-		rterror("rt_band_get_count_of_values not implemented yet for OFFDB bands");
+	data = rt_band_get_data(band);
+	if (data == NULL) {
+		rterror("rt_band_get_summary_stats: Cannot get band data");
 		return NULL;
 	}
 
-	data = rt_band_get_data(band);
 	pixtype = band->pixtype;
 
 	hasnodata = rt_band_get_hasnodata_flag(band);
@@ -4148,6 +4342,8 @@ rt_raster_add_band(rt_raster raster, rt_band band, int index) {
             oldband = tmpband;
         }
     }
+
+		band->raster = raster;
 
     raster->numBands++;
 
@@ -5296,6 +5492,8 @@ rt_band_from_wkb(uint16_t width, uint16_t height,
         }
         band->data.offline.bandNum = read_int8(ptr);
 
+        band->data.offline.mem = NULL;
+
         {
             /* check we have a NULL-termination */
             sz = 0;
@@ -5515,6 +5713,7 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
             /* TODO: dealloc any previously allocated band too ! */
             return 0;
         }
+				band->raster = rast;
         rast->bands[i] = band;
     }
 
@@ -6150,6 +6349,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
         band->width = rast->width;
         band->height = rast->height;
         band->ownsData = 0;
+				band->raster = rast;
 
         /* Advance by data padding */
         pixbytes = rt_pixtype_size(band->pixtype);
@@ -6235,6 +6435,8 @@ rt_raster_deserialize(void* serialized, int header_only) {
             /* Register path */
             band->data.offline.path = (char*) ptr;
             ptr += strlen(band->data.offline.path) + 1;
+
+						band->data.offline.mem = NULL;
         } else {
             /* Register data */
             const uint32_t datasize = rast->width * rast->height * pixbytes;
@@ -6285,11 +6487,16 @@ rt_raster_has_no_band(rt_raster raster, int nband) {
 }
 
 /**
- * Copy one band from one raster to another
+ * Copy one band from one raster to another.  Bands are duplicated from
+ * fromrast to torast using rt_band_duplicate.  The caller will need
+ * to ensure that the copied band's data or path remains allocated
+ * for the lifetime of the copied bands.
+ *
  * @param torast: raster to copy band to
  * @param fromrast: raster to copy band from
  * @param fromindex: index of band in source raster, 0-based
  * @param toindex: index of new band in destination raster, 0-based
+ *
  * @return The band index of the second raster where the new band is copied.
  */
 int32_t
@@ -6297,7 +6504,8 @@ rt_raster_copy_band(
 	rt_raster torast, rt_raster fromrast,
 	int fromindex, int toindex
 ) {
-	rt_band newband = NULL;
+	rt_band srcband = NULL;
+	rt_band dstband = NULL;
 
 	assert(NULL != torast);
 	assert(NULL != fromrast);
@@ -6332,10 +6540,13 @@ rt_raster_copy_band(
 	}
 
 	/* Get band from source raster */
-	newband = rt_raster_get_band(fromrast, fromindex);
+	srcband = rt_raster_get_band(fromrast, fromindex);
+
+	/* duplicate band */
+	dstband = rt_band_duplicate(srcband);
 
 	/* Add band to the second raster */
-	return rt_raster_add_band(torast, newband, toindex);
+	return rt_raster_add_band(torast, dstband, toindex);
 }
 
 /**
@@ -6387,7 +6598,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 		if (flag < 0) {
 			rterror("rt_raster_from_band: Unable to copy band\n");
 			rt_raster_destroy(rast);
-			return 0;
+			return NULL;
 		}
 
 		RASTER_DEBUGF(3, "rt_raster_from_band: band created at index %d",
@@ -6430,6 +6641,8 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
 
 	raster->bands[index] = band;
 	RASTER_DEBUGF(3, "rt_raster_replace_band: new band at %p", raster->bands[index]);
+
+	band->raster = raster;
 
 	return oldband;
 }

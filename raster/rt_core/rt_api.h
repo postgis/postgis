@@ -330,6 +330,7 @@ rt_band rt_band_new_inline(
  * @param width     : number of pixel columns
  * @param height    : number of pixel rows
  * @param pixtype   : pixel type for the band
+ * @param hasnodata : indicates if the band has nodata value
  * @param nodataval : the nodata value, will be appropriately
  *                    truncated to fit the pixtype size.
  * @param bandNum   : 0-based band number in the external file
@@ -348,6 +349,18 @@ rt_band rt_band_new_offline(
 	uint32_t hasnodata, double nodataval,
 	uint8_t bandNum, const char* path
 );
+
+/**
+ * Create a new band duplicated from source band.  Memory is allocated
+ * for band path (if band is offline) or band data (if band is online).
+ * The caller is responsible for freeing the memory when the returned
+ * rt_band is destroyed.
+ *
+ * @param : the band to duplicate
+ *
+ * @return an rt_band or NULL on failure
+ */
+rt_band rt_band_duplicate(rt_band band);
 
 /**
  * Return non-zero if the given band data is on
@@ -372,7 +385,6 @@ const char* rt_band_get_ext_path(rt_band band);
  */
 uint8_t rt_band_get_ext_band_num(rt_band band);
 
-
 /* Get pixeltype of this band */
 rt_pixtype rt_band_get_pixtype(rt_band band);
 
@@ -382,10 +394,23 @@ uint16_t rt_band_get_width(rt_band band);
 /* Get height of this band */
 uint16_t rt_band_get_height(rt_band band);
 
-/* Get pointer to inline raster band data
- * @@deprecate ?
- */
+/**
+	* Get pointer to raster band data
+	*
+	* @param band : the band who's data to get
+	*
+	* @return void pointer to band data
+	*/
 void* rt_band_get_data(rt_band band);
+
+/**
+	* Load offline band's data
+	*
+	* @param band : the band who's data to get
+	*
+	* @return 0 if success, non-zero if failure
+	*/
+int rt_band_load_offline_band(rt_band band);
 
 /**
  * Destroy a raster band
@@ -983,15 +1008,22 @@ int rt_raster_is_empty(rt_raster raster);
 int rt_raster_has_no_band(rt_raster raster, int nband);
 
 /**
- * Copy one band from one raster to another
+ * Copy one band from one raster to another.  Bands are duplicated from
+ * fromrast to torast using rt_band_duplicate.  The caller will need
+ * to ensure that the copied band's data or path remains allocated
+ * for the lifetime of the copied bands.
+ *
  * @param torast: raster to copy band to
  * @param fromrast: raster to copy band from
  * @param fromindex: index of band in source raster, 0-based
  * @param toindex: index of new band in destination raster, 0-based
+ *
  * @return The band index of the second raster where the new band is copied.
  */
-int32_t rt_raster_copy_band(rt_raster torast,
-        rt_raster fromrast, int fromindex, int toindex);
+int32_t rt_raster_copy_band(
+	rt_raster torast, rt_raster fromrast,
+	int fromindex, int toindex
+);
 
 /**
  * Construct a new rt_raster from an existing rt_raster and an array
@@ -1392,8 +1424,9 @@ struct rt_raster_t {
 };
 
 struct rt_extband_t {
-    uint8_t bandNum;
+    uint8_t bandNum; /* 0-based */
     char* path; /* externally owned ? */
+		void *mem; /* loaded external band data */
 };
 
 struct rt_band_t {
@@ -1406,6 +1439,8 @@ struct rt_band_t {
                            nodata values */
     double nodataval; /* int will be converted ... */
     int32_t ownsData; /* XXX mloskot: its behaviour needs to be documented */
+
+		rt_raster raster; /* reference to parent raster */
 
     union {
         void* mem; /* actual data, externally owned */

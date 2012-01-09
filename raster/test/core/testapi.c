@@ -971,10 +971,24 @@ static void testBandHasNoData(rt_band band)
     CHECK_EQUALS(flag, 1);
 }
 
-static void testRasterFromBand(rt_raster raster) {
+static void testRasterFromBand() {
 	uint32_t bandNums[] = {1,3};
 	int lenBandNums = 2;
+	rt_raster raster;
 	rt_raster rast;
+	rt_band band;
+	uint32_t xmax = 100;
+	uint32_t ymax = 100;
+	uint32_t x;
+
+	raster = rt_raster_new(xmax, ymax);
+	assert(raster);
+
+	for (x = 0; x < 5; x++) {
+		band = addBand(raster, PT_32BUI, 0, 0);
+		CHECK(band);
+		rt_band_set_nodata(band, 0);
+	}
 
 	rast = rt_raster_from_band(raster, bandNums, lenBandNums);
 	assert(rast);
@@ -983,7 +997,8 @@ static void testRasterFromBand(rt_raster raster) {
 	CHECK(!rt_raster_is_empty(rast));
 	CHECK(!rt_raster_has_no_band(rast, 1));
 
-	rt_raster_destroy(rast);
+	deepRelease(rast);
+	deepRelease(raster);
 }
 
 static void testBandStats() {
@@ -2217,6 +2232,41 @@ static void testFromTwoRasters() {
 	deepRelease(rast1);
 }
 
+static void testLoadOfflineBand() {
+	rt_raster rast;
+	rt_band band;
+	const int maxX = 10;
+	const int maxY = 10;
+	const char *path = "../loader/testraster.tif";
+	int rtn;
+	int x;
+	int y;
+	double val;
+
+	rast = rt_raster_new(maxX, maxY);
+	assert(rast);
+	rt_raster_set_offsets(rast, 80, 80);
+
+	band = rt_band_new_offline(maxX, maxY, PT_8BUI, 0, 0, 2, path);
+	assert(band);
+	rtn = rt_raster_add_band(rast, band, 0);
+	CHECK((rtn >= 0));
+
+	rtn = rt_band_load_offline_band(band);
+	CHECK((rtn == 0));
+	CHECK(band->data.offline.mem);
+
+	for (x = 0; x < maxX; x++) {
+		for (y = 0; y < maxY; y++) {
+			rtn = rt_band_get_pixel(band, x, y, &val);
+			CHECK((rtn == 0));
+			CHECK(FLT_EQ(val, 255));
+		}
+	}
+
+	deepRelease(rast);
+}
+
 int
 main()
 {
@@ -2615,7 +2665,7 @@ main()
     testBandHasNoData(band_64BF);
 
 		printf("Testing rt_raster_from_band\n");
-		testRasterFromBand(raster);
+		testRasterFromBand();
 		printf("Successfully tested rt_raster_from_band\n");
 
 		printf("Testing band stats\n");
@@ -2665,6 +2715,10 @@ main()
 		printf("Testing rt_raster_from_two_rasters\n");
 		testFromTwoRasters();
 		printf("Successfully tested rt_raster_from_two_rasters\n");
+
+		printf("Testing rt_raster_load_offline_band\n");
+		testLoadOfflineBand();
+		printf("Successfully tested rt_raster_load_offline_band\n");
 
     deepRelease(raster);
 
