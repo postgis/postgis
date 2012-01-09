@@ -98,3 +98,11 @@ int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom)
 	col = lwcollection_add_lwgeom(col, geom);
 	return LW_SUCCESS;
 }
+
+LWCOMPOUND *
+lwcompound_construct_empty(int srid, char hasz, char hasm)
+{
+        LWCOMPOUND *ret = (LWCOMPOUND*)lwcollection_construct_empty(COMPOUNDTYPE, srid, hasz, hasm);
+        return ret;
+}
+
