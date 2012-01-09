@@ -106,7 +106,7 @@ main (int argc, char **argv)
 			break;
 
 		case 'g':
-			config->geom = pgis_optarg;
+			config->geom = strdup(pgis_optarg);
 			break;
 
 		case 'k':
