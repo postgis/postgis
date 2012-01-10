@@ -1002,7 +1002,7 @@ int lwgeom_dimension(const LWGEOM *geom)
 	         lwtype_name(geom->type));
 
 	/* Empty? Zero. */
-	if( lwgeom_is_empty(geom) ) return 0;
+	/* if( lwgeom_is_empty(geom) ) return 0; */
 
 	switch (geom->type)
 	{
