@@ -913,6 +913,90 @@ Failed: 0
 	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis_topology;"</command>
 	</para>
   </sect1>
+  
+  <sect1 id="loading_extras_tiger_geocoder">
+  	<title>Installing Tiger Geocoder</title>
+  	
+	<para>The Tiger geocoder does not get installed / upgraded with the core PostGIS scripts because it is only of regional use.  In fact nothing located
+	in the extras folder is installed by default with the regular PostGIS install / upgrade.  Extras like Tiger geocoder may also not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/tiger_2010/README</filename> </para>
+	<para>If you are on Windows and you don't have tar installed, you can use <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> to unzip the PostGIS tarball.</para>
+	<sect2 id="install_tiger_geocoder">
+		<title>Tiger Geocode Enabling your PostGIS database</title>
+		<para>
+		  First install PostGIS using the prior instructions.
+		</para>
+	
+		<para>
+		  If you don't have an extras folder, download <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">http://www.postgis.org/download/postgis-&last_release_version;.tar.gz</ulink>
+		</para>
+	
+		<para>
+		  <command>tar xvfz postgis-&last_release_version;.tar.gz</command>
+		</para>
+	
+		<para>
+		  <comand>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</comand>
+		</para>
+	
+		<para>Edit the <filename>tiger_loader.sql</filename> to the paths of your executables server etc.</para>
+		<para>If you are installing Tiger geocoder for the first time edit either the <filename>create_geocode.bat</filename> script If you are on windows
+			or the <filename>create_geocode.sh</filename> if you are on Linux/Unix/Mac OSX with your PostgreSQL specific settings and run the corresponding script from the commandline. If you don't edit this file, it will just contain common case locations of items.  You can edit the generated script after the fact when you run the  <xref linkend="Loader_Generate_Script" />  command.
+		</para>
+		<para>Verify that you now have a <varname>tiger</varname> schema in your database and that it is part of your database search_path.  If it is not, add it with a command something along the line of: <programlisting>ALTER DATABASE geocoder SET search_path=public, tiger;</programlisting></para>
+		<para>The normalizing address functionality works more or less without any data except for tricky addresses.  Run this test and verify things look like this: 
+			<programlisting>SELECT pprint_addy(normalize_address('202 East Fremont Street, Las Vegas, Nevada 89101')) As pretty_address;
+pretty_address
+---------------------------------------
+202 E Fremont St, Las Vegas, NV 89101
+			</programlisting>
+		</para>
+	</sect2>
+	<sect2 id="upgrade_tiger_geocoder">
+		<title>Upgrading your Tiger Geocoder Install</title>
+		<para>
+		  If you have Tiger Geocoder packaged with 2.0 already installed, you can upgrade the functions at any time even from an interim tar ball if there are fixes you badly need.
+		</para>
+	
+		<para>
+		  If you don't have an extras folder, download <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">http://www.postgis.org/download/postgis-&last_release_version;.tar.gz</ulink>
+		</para>
+	
+		<para>
+		  <command>tar xvfz postgis-&last_release_version;.tar.gz</command>
+		</para>
+	
+		<para>
+		  <comand>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</comand>
+		</para>
+	
+		<para>Locate the  <filename>upgrade_geocoder.bat</filename> script If you are on windows
+			or the <filename>upgrade_geocoder.sh</filename> if you are on Linux/Unix/Mac OSX.  Edit the file to have your postgis database credientials and run then corresponding script from the commandline.
+		</para>
+	
+	</sect2>
+	<sect2 id="tiger_geocoder_loading_data">
+		<para>The instructions for loading data are available in a more detailed form  in the <filename>extras/tiger_geocoder/tiger_2010/README</filename>.  This just includes the general steps.</para>	
+		<para>The load process downloads data from the census website for the respective states requested, extracts the files, and then loads each state into its own separate
+		set of state tables.  Each state table inherits from the tables defined in <varname>tiger</varname> schema so that its sufficient to just query those tables to access all the data and drop a set of state tables at any time using the <xref linkend="Drop_State_Tables_Generate_Script" /> if you need to reload a state or just don't need a state anymore.</para>
+		<para>In order to be able to load data you'll need the following tools:</para>
+		<itemizedlist>
+			<listitem><para>A tool to unzip the zip files from census website.</para>
+			  <para>For Unix like systems: <varname>unzip</varname> executable which is usually already installed on most Unix like platforms.</para>
+			  <para>For Windows, 7-zip which is a free compress/uncompress tool you can download from <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> </para>
+			</listitem>
+			<listitem><filename>shp2pgsql</filename> commandline which is installed by default when you install PostGIS.</listitem>
+			<listiem><para><filename>wget</filename> which is a web grabber tool usually installed on most Unix/Linux systems.</para>
+				<para>If you are on windows, you can get pre-compiled binaries from <ulink url="http://gnuwin32.sourceforge.net/packages/wget.htm">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> 
+			</listiem>
+		</itemizedlist>
+		<para>To load data refer to <xref linkend="Loader_Generate_Script" /> to generate a data load script for your platform for the states you desire.  
+			Note that you can install these piecemeal. You don't have to load all the states you want all at once.  You can load them as you need them.</para>
+			
+		<para>After the states you desire have been loaded, make sure to run the:
+		<programlisting>SELECT install_missing_indexes();</programlisting> as described in  <xref linkend="Install_Missing_Indexes" />.</para>
+		<para>To test that things are working as they should, try to run a geocode on an address in your state using <xref linkend="Geocode" /> </para>
+	</sect2>
+  </sect1>
 
   <sect1 id="templatepostgis">
 	<title>Create a spatially-enabled database from a template</title>
