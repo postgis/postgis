@@ -4345,6 +4345,20 @@ CREATE OR REPLACE VIEW geometry_columns AS
     AND c.relnamespace = n.oid 
     AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char") AND NOT pg_is_other_temp_schema(c.relnamespace);
 
+-- TODO: support RETURNING and raise a WARNING
+CREATE OR REPLACE RULE geometry_columns_insert AS
+        ON INSERT TO geometry_columns
+        DO INSTEAD NOTHING;
+
+-- TODO: raise a WARNING
+CREATE OR REPLACE RULE geometry_columns_update AS
+        ON UPDATE TO geometry_columns
+        DO INSTEAD NOTHING;
+
+-- TODO: raise a WARNING
+CREATE OR REPLACE RULE geometry_columns_delete AS
+        ON DELETE TO geometry_columns
+        DO INSTEAD NOTHING;
 
 
 ---------------------------------------------------------------

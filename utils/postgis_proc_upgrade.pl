@@ -257,6 +257,17 @@ while(<INPUT>)
 		}
 	}
 
+	# Always output create ore replace rule 
+	if ( /^create or replace rule\s+(\S+)\s*/i )
+	{
+		print;
+		while(<INPUT>)
+		{
+			print;
+			last if /\;\s*$/;
+		}
+	}
+
 	# This code handles operator classes by creating them if we are doing a major upgrade
 	if ( /^create operator class\s+(\w+)\s*/i )
 	{
