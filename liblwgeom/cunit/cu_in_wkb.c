@@ -48,6 +48,17 @@ static int clean_wkb_in_suite(void)
 	return 0;
 }
 
+static void cu_wkb_malformed_in(char *hex)
+{
+	LWGEOM_PARSER_RESULT p;
+	int rv = 0;
+
+	rv = lwgeom_parse_wkt(&p, hex, 0);
+	CU_ASSERT( LW_FAILURE == rv );
+	CU_ASSERT( p.errcode );
+	lwgeom_parser_result_free(&p);
+}
+
 static void cu_wkb_in(char *wkt)
 {
 	LWGEOM_PARSER_RESULT pr;
@@ -185,6 +196,15 @@ static void test_wkb_in_multicurve(void) {}
 
 static void test_wkb_in_multisurface(void) {}
 
+static void test_wkb_in_malformed(void)
+{
+	/* See http://trac.osgeo.org/postgis/ticket/1445 */
+	cu_wkb_malformed_in("01060000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
+	cu_wkb_malformed_in("01050000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
+	cu_wkb_malformed_in("01040000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
+	cu_wkb_malformed_in("01030000400200000001040000400100000001010000400000000000000000000000000000000000000000000000000101000040000000000000F03F000000000000F03F000000000000F03F");
+}
+
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -204,6 +224,7 @@ CU_TestInfo wkb_in_tests[] =
 	PG_TEST(test_wkb_in_curvpolygon),
 	PG_TEST(test_wkb_in_multicurve),
 	PG_TEST(test_wkb_in_multisurface),
+	PG_TEST(test_wkb_in_malformed),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo wkb_in_suite = {"WKB In Suite",  init_wkb_in_suite,  clean_wkb_in_suite, wkb_in_tests};

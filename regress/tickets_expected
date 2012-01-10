@@ -161,3 +161,9 @@ ERROR:  Geometry type (Polygon) does not match column type (MultiPolygon)
 #1305.1|POINT(10 10)
 #1305.2|t
 #1305.3|t
+ERROR:  MultiPolygon cannot contain MultiPoint element
+ERROR:  MultiLineString cannot contain MultiPoint element
+ERROR:  MultiPoint cannot contain MultiPoint element
+ERROR:  CompoundCurve cannot contain MultiPoint element
+ERROR:  MultiCurve cannot contain MultiPoint element
+ERROR:  Invalid subtype (MultiPoint) for collection type (MultiSurface)

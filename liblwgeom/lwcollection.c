@@ -174,8 +174,33 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 
 	if ( col == NULL || geom == NULL ) return NULL;
 
-	if ( col->geoms == NULL && (col->ngeoms || col->maxgeoms) )
+	if ( col->geoms == NULL && (col->ngeoms || col->maxgeoms) ) {
 		lwerror("Collection is in inconsistent state. Null memory but non-zero collection counts.");
+		return NULL;
+	}
+
+	/* Check type compatibility */
+	if ( col->type < 7 ) {
+		if ( geom->type != col->type-3 ) {
+			lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
+			return NULL;
+		}
+	}
+	else if ( col->type == COMPOUNDTYPE ) {
+		/* Allow: linestring, circularstring */
+		if ( geom->type != LINETYPE && geom->type != CIRCSTRINGTYPE ) {
+			lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
+			return NULL;
+		}
+	}
+	else if ( col->type == MULTICURVETYPE ) {
+		/* Allow: linestring, circularstring, compoundcurve */
+		if ( geom->type != LINETYPE && geom->type != CIRCSTRINGTYPE && geom->type != COMPOUNDTYPE ) {
+			lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
+			return NULL;
+		}
+	}
+	/* TODO: I'm probably missing something else here... would be nice to have the +3 invariant always */
 
 	/* In case this is a truly empty, make some initial space  */
 	if ( col->geoms == NULL )
