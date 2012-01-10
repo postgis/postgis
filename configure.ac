@@ -950,22 +950,23 @@ fi dnl # }
 
 dnl Output the relevant files
 AC_OUTPUT([GNUmakefile 
-   extensions/postgis/Makefile
-   extensions/postgis/postgis.control  
-   extensions/postgis_topology/Makefile
-   extensions/postgis_topology/postgis_topology.control  
+   extensions/postgis/Makefile 
+   extensions/postgis/postgis.control 
+   extensions/postgis_topology/Makefile 
+   extensions/postgis_topology/postgis_topology.control 
    liblwgeom/Makefile 
    liblwgeom/cunit/Makefile 
-   liblwgeom/liblwgeom.h
+   liblwgeom/liblwgeom.h 
    libpgcommon/Makefile 
    libpgcommon/cunit/Makefile 
-   postgis/Makefile
+   postgis/Makefile 
    postgis/sqldefines.h 
-   loader/Makefile loader/cunit/Makefile
+   loader/Makefile 
+   loader/cunit/Makefile 
    topology/Makefile 
    regress/Makefile 
    doc/Makefile 
-   doc/Makefile.comments
+   doc/Makefile.comments 
    doc/html/image_src/Makefile 
    $RT_MAKEFILE_LIST])
     
