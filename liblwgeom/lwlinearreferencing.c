@@ -154,13 +154,29 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 	return lwmpoint;
 }
 
+static LWPOINT*
+lwpoint_locate_along(const LWPOINT *lwpoint, double m, double offset)
+{
+	LWGEOM *lwg = lwpoint_as_lwgeom(lwpoint);
+	double point_m = lwpoint_get_m(lwpoint);
+	if ( FP_EQUALS(m, point_m) )
+		return lwpoint_clone(lwpoint);
+	else
+		return lwpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
+}
+
 LWGEOM*
 lwgeom_locate_along(const LWGEOM *lwin, double m, double offset)
 {
 	if ( ! lwin ) return NULL;
+
+	if ( ! lwgeom_has_m(lwin) )
+		lwerror("Input geometry does not have a measure dimension");	
 	
 	switch (lwin->type)
 	{
+	case POINTTYPE:
+		return (LWGEOM*)lwpoint_locate_along((LWPOINT*)lwin, m, offset);
 	case LINETYPE:
 		return (LWGEOM*)lwline_locate_along((LWLINE*)lwin, m, offset);
 	case MULTILINETYPE:

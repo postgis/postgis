@@ -4512,27 +4512,17 @@ CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
 ---
 -- Linear referencing functions
 ---
-CREATE OR REPLACE FUNCTION ST_LocateBetween(geometry, float8, float8)
+CREATE OR REPLACE FUNCTION ST_LocateBetween(Geometry geometry, Measure1 float8, Measure2 float8, Offsets float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
-CREATE OR REPLACE FUNCTION ST_LocateAlong(geometry, float8)
+CREATE OR REPLACE FUNCTION ST_LocateAlong(Geometry geometry, Measure float8, Offsets float8 default 0.0)
 	RETURNS geometry
-	AS $$ SELECT ST_LocateBetween($1, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	AS 'MODULE_PATHNAME', 'ST_LocateAlong'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- LRS with offset parameter
-CREATE OR REPLACE FUNCTION ST_LocateBetween(geometry, float8, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
-	LANGUAGE 'C' IMMUTABLE STRICT;
 	
--- LRS with offset parameter
-CREATE OR REPLACE FUNCTION ST_LocateAlong(geometry, float8, float8)
-	RETURNS geometry
-	AS $$ SELECT ST_LocateBetween($1, $2, $2) $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
 ---------------------------------------------------------------
 -- END
 ---------------------------------------------------------------

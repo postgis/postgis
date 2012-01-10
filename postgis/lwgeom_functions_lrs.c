@@ -18,7 +18,6 @@
 
 
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
-Datum ST_AddMeasure(PG_FUNCTION_ARGS);
 
 typedef struct
 {
@@ -520,11 +519,11 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 
 
 /*
-* CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
-* RETURNS geometry
-* AS '$libdir/postgis-1.5', 'ST_AddMeasure'
-* LANGUAGE 'C' IMMUTABLE STRICT;
+* Add a measure dimension to a line, interpolating linearly from the
+* start value to the end value.
+* ST_AddMeasure(Geometry, StartMeasure, EndMeasure) returns Geometry
 */
+Datum ST_AddMeasure(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_AddMeasure);
 Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 {
@@ -554,7 +553,37 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 
 	gout = geometry_serialize(lwout);
-	lwgeom_release(lwout);
+	lwgeom_free(lwout);
+
+	PG_RETURN_POINTER(gout);
+}
+
+
+/*
+* Locate a point along a feature based on a measure value.
+* ST_LocateAlong(Geometry, Measure, [Offset]) returns Geometry
+*/
+Datum ST_LocateAlong(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_LocateAlong);
+Datum ST_LocateAlong(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gin = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gout;
+	LWGEOM *lwin = NULL, *lwout = NULL;
+	double measure = PG_GETARG_FLOAT8(1);
+	double offset = PG_GETARG_FLOAT8(2);;
+	
+	lwnotice("offset %g",offset);
+	lwin = lwgeom_from_gserialized(gin);
+	lwout = lwgeom_locate_along(lwin, measure, offset);
+	lwgeom_free(lwin);
+	PG_FREE_IF_COPY(gin, 0);
+	
+	if ( ! lwout )
+		PG_RETURN_NULL();
+	
+	gout = geometry_serialize(lwout);
+	lwgeom_free(lwout);
 
 	PG_RETURN_POINTER(gout);
 }
