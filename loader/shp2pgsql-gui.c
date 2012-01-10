@@ -33,6 +33,8 @@
 static void pgui_log_va(const char *fmt, va_list ap);
 static void pgui_seterr_va(const char *fmt, va_list ap);
 
+static void update_conn_ui_from_conn_config(void);
+
 /*
 ** Global variables for GUI only
 */
@@ -936,7 +938,11 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	{
 		pgui_seterr(_("Unable to connect to the database - please check your connection settings"));
 		pgui_raise_error_dialogue();
-	
+
+		/* Open the connections UI for the user */
+		update_conn_ui_from_conn_config();
+
+		gtk_widget_show_all(GTK_WIDGET(window_conn));
 		return;
 	}
 
@@ -1520,18 +1526,28 @@ update_conn_ui_from_conn_config(void)
 {
 	if (conn->username)
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_user), conn->username);
-	
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_user), "");
+		
 	if (conn->password)
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_pass), conn->password);
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_pass), "");
 	
 	if (conn->host)
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_host), conn->host);
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_host), "");
 	
 	if (conn->port)
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_port), conn->port);
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_port), "");
 	
 	if (conn->database)
 		gtk_entry_set_text(GTK_ENTRY(entry_pg_db), conn->database);
+	else
+		gtk_entry_set_text(GTK_ENTRY(entry_pg_db), "");
 
 	return;
 }
@@ -2319,7 +2335,7 @@ main(int argc, char *argv[])
 	pgui_create_about_dialog();
 	pgui_create_filechooser_dialog();
 	pgui_create_progress_dialog();
-		
+
 	/* start the main loop */
 	gtk_main();
 
