@@ -147,6 +147,12 @@ static void test_wkt_out_collection(void)
 	    cu_wkt("GEOMETRYCOLLECTION(MULTIPOLYGON(((100 100 2, 100 200 2, 200 200 2, 200 100 2, 100 100 2))),MULTIPOINT(.5 .5 .5,1 1 1),CURVEPOLYGON((.8 .8 .8,.8 .8 .8,.8 .8 .8)))",WKT_ISO),
 	    "GEOMETRYCOLLECTION Z (MULTIPOLYGON Z (((100 100 2,100 200 2,200 200 2,200 100 2,100 100 2))),MULTIPOINT Z (0.5 0.5 0.5,1 1 1),CURVEPOLYGON Z ((0.8 0.8 0.8,0.8 0.8 0.8,0.8 0.8 0.8)))"
 	);
+
+        /* See http://trac.osgeo.org/postgis/ticket/724 */
+	CU_ASSERT_STRING_EQUAL(
+            cu_wkt("GEOMETRYCOLLECTIONM(MULTIPOINTM(0 0 0), POINTM(1 1 1))", WKT_EXTENDED),
+            "GEOMETRYCOLLECTIONM(MULTIPOINTM(0 0 0),POINTM(1 1 1))"
+	);
 }
 
 static void test_wkt_out_circularstring(void)

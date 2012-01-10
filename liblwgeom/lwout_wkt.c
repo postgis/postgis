@@ -26,7 +26,11 @@ static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *s
 {
 
 	/* Extended WKT: POINTM(0 0 0) */
+#if 0
 	if ( (variant & WKT_EXTENDED) && ! (variant & WKT_IS_CHILD) && FLAGS_GET_M(geom->flags) && (!FLAGS_GET_Z(geom->flags)) )
+#else
+	if ( (variant & WKT_EXTENDED) && FLAGS_GET_M(geom->flags) && (!FLAGS_GET_Z(geom->flags)) )
+#endif
 	{
 		stringbuffer_append(sb, "M"); /* "M" */
 		return;
@@ -486,7 +490,7 @@ static void lwcollection_to_wkt_sb(const LWCOLLECTION *collection, stringbuffer_
 		return;
 	}
 	stringbuffer_append(sb, "(");
-	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are childre */
+	variant = variant | WKT_IS_CHILD; /* Inform the sub-geometries they are children */
 	for ( i = 0; i < collection->ngeoms; i++ )
 	{
 		if ( i > 0 )

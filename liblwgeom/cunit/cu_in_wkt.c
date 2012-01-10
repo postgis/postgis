@@ -236,7 +236,7 @@ static void test_wkt_in_circularstring(void)
 
 static void test_wkt_in_compoundcurve(void)
 {
-	s = "SRID=4326;COMPOUNDCURVEM(CIRCULARSTRING(0 0 2,1 1 2,1 0 2),(1 0 2,0 1 2))";
+	s = "SRID=4326;COMPOUNDCURVEM(CIRCULARSTRINGM(0 0 2,1 1 2,1 0 2),(1 0 2,0 1 2))";
 	r = cu_wkt_in(s, WKT_EXTENDED);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
