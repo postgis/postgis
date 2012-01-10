@@ -130,7 +130,7 @@ sql_minor_upgrade: sql_bits/postgis_upgrade_minor.sql
 	      cp -v $< sql/$(EXTENSION)--$(MINORVERSION).$$v--$(EXTVERSION).sql; \
 	    done; \
 	  fi; \
-	   fi
+	 fi
 
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql
