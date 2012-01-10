@@ -120,3 +120,31 @@ CREATE OR REPLACE VIEW raster_overviews AS
 		AND a.attname = rc.r_raster_column
 		AND s.consrc LIKE '%_overview_constraint(%'
 		AND NOT pg_is_other_temp_schema(c.relnamespace);
+
+--
+-- Add rules to catch INSERT, UPDATE and DELETE
+--
+
+CREATE OR REPLACE RULE raster_columns_insert AS
+	ON INSERT TO raster_columns
+	DO INSTEAD NOTHING;
+
+CREATE OR REPLACE RULE raster_columns_update AS
+	ON UPDATE TO raster_columns
+	DO INSTEAD NOTHING;
+
+CREATE OR REPLACE RULE raster_columns_delete AS
+	ON DELETE TO raster_columns
+	DO INSTEAD NOTHING;
+
+CREATE OR REPLACE RULE raster_overviews_insert AS
+	ON INSERT TO raster_overviews
+	DO INSTEAD NOTHING;
+
+CREATE OR REPLACE RULE raster_overviews_update AS
+	ON UPDATE TO raster_overviews
+	DO INSTEAD NOTHING;
+
+CREATE OR REPLACE RULE raster_overviews_delete AS
+	ON DELETE TO raster_overviews
+	DO INSTEAD NOTHING;

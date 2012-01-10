@@ -1318,7 +1318,7 @@ rt_band_load_offline_band(rt_band band) {
 
 	band->data.offline.mem = _band->data.mem;
 
-	rt_band_destroy(_band);
+	rtdealloc(_band); /* cannot use rt_band_destory */
 	rt_raster_destroy(_rast);
 
 	return 0;
