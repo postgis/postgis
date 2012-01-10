@@ -2273,6 +2273,7 @@ main(int argc, char *argv[])
 	/* Here we override any defaults for the GUI */
 	global_loader_config->createindex = 1;
 	global_loader_config->geo_col = strdup(GEOMETRY_DEFAULT);
+	global_loader_config->dump_format = 1;
 	
 	conn = malloc(sizeof(SHPCONNECTIONCONFIG));
 	memset(conn, 0, sizeof(SHPCONNECTIONCONFIG));
