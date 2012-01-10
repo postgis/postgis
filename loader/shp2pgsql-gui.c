@@ -920,6 +920,16 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	int ret, success, i = 0;
 	char *header, *footer, *record;
 	
+	/* Get the first row of the import list */
+	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list_store), &iter);
+	if (!is_valid)
+	{
+		pgui_seterr(_("ERROR: You haven't specified any files to import"));
+		pgui_raise_error_dialogue();
+
+		return;
+	}
+
 	/* Firstly make sure that we can connect to the database - if we can't then there isn't much
 	   point doing anything else... */
 	if (!connection_test())
@@ -930,9 +940,6 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		return;
 	}
 
-	/* Validation: we loop through each of the files in order to validate them as a separate pass */
-	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list_store), &iter);
-	
 	/* Let's open a single connection to the remote DB for the duration of the validation pass;
 	   note that we already know the connection string works, otherwise we would have bailed
 	   out earlier in the function */
@@ -942,6 +949,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	/* Setup the table/column type discovery query */
 	sql_form = "SELECT a.attnum, a.attname AS field, t.typname AS type, a.attlen AS length, a.atttypmod AS precision FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n WHERE c.relname = '%s' AND n.nspname = '%s' AND a.attnum > 0 AND a.attrelid = c.oid AND a.atttypid = t.oid AND c.relnamespace = n.oid ORDER BY a.attnum";
 	
+	/* Validation: we loop through each of the files in order to validate them as a separate pass */
 	while (is_valid)
 	{
 		/* Grab the SHPLOADERCONFIG for this row */
