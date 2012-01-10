@@ -91,9 +91,12 @@ topology/Makefile
 topology/test/load_topology-4326.sql
 topology/test/load_topology.sql
 topology/test/topo_predicates.sql
+topology/topology_drop_after.sql
+topology/topology_drop_before.sql
 topology/topology.sql
 topology/topology.sql.in
 topology/topology_upgrade_20_minor.sql
+topology/topology_upgrade.sql
 topology/uninstall_topology.sql
 authors.git
 libpgcommon/Makefile
