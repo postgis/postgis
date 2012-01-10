@@ -412,7 +412,7 @@ void* rt_band_get_data(rt_band band);
 	*
 	* @return 0 if success, non-zero if failure
 	*/
-int rt_band_load_offline_band(rt_band band);
+int rt_band_load_offline_data(rt_band band);
 
 /**
  * Destroy a raster band

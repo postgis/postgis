@@ -2254,7 +2254,7 @@ static void testLoadOfflineBand() {
 	rtn = rt_raster_add_band(rast, band, 0);
 	CHECK((rtn >= 0));
 
-	rtn = rt_band_load_offline_band(band);
+	rtn = rt_band_load_offline_data(band);
 	CHECK((rtn == 0));
 	CHECK(band->data.offline.mem);
 

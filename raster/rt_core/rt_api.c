@@ -1185,7 +1185,7 @@ rt_band_get_data(rt_band band) {
 		if (band->data.offline.mem != NULL)
 			return band->data.offline.mem;
 
-		state = rt_band_load_offline_band(band);
+		state = rt_band_load_offline_data(band);
 		if (state == 0)
 			return band->data.offline.mem;
 		else
@@ -1205,7 +1205,7 @@ rt_band_get_data(rt_band band) {
 	* @return 0 if success, non-zero if failure
 	*/
 int
-rt_band_load_offline_band(rt_band band) {
+rt_band_load_offline_data(rt_band band) {
 	GDALDatasetH hdsSrc = NULL;
 	int nband = 0;
 	VRTDatasetH hdsDst = NULL;
@@ -1221,48 +1221,53 @@ rt_band_load_offline_band(rt_band band) {
 	assert(band->raster != NULL);
 
 	if (!band->offline) {
-		rterror("rt_band_load_offline_band: Band is not offline");
+		rterror("rt_band_load_offline_data: Band is not offline");
 		return 1;
 	}
 	else if (!strlen(band->data.offline.path)) {
-		rterror("rt_band_load_offline_band: Offline band does not a have a specified file");
+		rterror("rt_band_load_offline_data: Offline band does not a have a specified file");
 		return 1;
 	}
 
 	GDALAllRegister();
 	hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
 	if (hdsSrc == NULL) {
-		rterror("rt_band_load_offline_band: Cannot open offline raster: %s", band->data.offline.path);
+		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
 		return 1;
 	}
 
 	/* # of bands */
 	nband = GDALGetRasterCount(hdsSrc);
 	if (!nband) {
-		rterror("rt_band_load_offline_band: No bands found in offline raster: %s", band->data.offline.path);
+		rterror("rt_band_load_offline_data: No bands found in offline raster: %s", band->data.offline.path);
 		GDALClose(hdsSrc);
 		return 1;
 	}
 	/* bandNum is 0-based */
 	else if (band->data.offline.bandNum + 1 > nband) {
-		rterror("rt_band_load_offline_band: Specified band %d not found in offline raster: %s", band->data.offline.bandNum, band->data.offline.path);
+		rterror("rt_band_load_offline_data: Specified band %d not found in offline raster: %s", band->data.offline.bandNum, band->data.offline.path);
 		GDALClose(hdsSrc);
 		return 1;
 	}
 
 	/* get raster's geotransform */
 	rt_raster_get_geotransform_matrix(band->raster, gt);
+	RASTER_DEBUGF(3, "Raster geotransform (%f, %f, %f, %f, %f, %f)",
+		gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
 	/* get offline raster's geotransform */
 	GDALGetGeoTransform(hdsSrc, ogt);
+	RASTER_DEBUGF(3, "Offline geotransform (%f, %f, %f, %f, %f, %f)",
+		ogt[0], ogt[1], ogt[2], ogt[3], ogt[4], ogt[5]);
 
 	/* get offsets */
 	rt_raster_geopoint_to_cell(
 		band->raster,
 		ogt[0], ogt[3],
 		&(offset[0]), &(offset[1]),
-		gt
+		NULL
 	);
+	RASTER_DEBUGF(4, "offsets: (%f, %f)", offset[0], offset[1]);
 
 	/* XXX: should there be a check for the spatial attributes between the offline raster file and that of the raster? */
 	
@@ -1299,13 +1304,13 @@ rt_band_load_offline_band(rt_band band) {
 	GDALClose(hdsSrc);
 
 	if (_rast == NULL) {
-		rterror("rt_band_load_offline_band: Cannot load data from offline raster: %s", band->data.offline.path);
+		rterror("rt_band_load_offline_data: Cannot load data from offline raster: %s", band->data.offline.path);
 		return 1;
 	}
 
 	_band = rt_raster_get_band(_rast, 0);
 	if (_band == NULL) {
-		rterror("rt_band_load_offline_band: Cannot load data from offline raster: %s", band->data.offline.path);
+		rterror("rt_band_load_offline_data: Cannot load data from offline raster: %s", band->data.offline.path);
 		rt_raster_destroy(_rast);
 		return 1;
 	}
@@ -2015,7 +2020,7 @@ rt_band_check_is_nodata(rt_band band)
     }
 
     if (band->offline && band->data.offline.mem == NULL) {
-			if (rt_band_load_offline_band(band)) {
+			if (rt_band_load_offline_data(band)) {
 				rterror("rt_band_check_is_nodata: Cannot load offline band's data");
 				return FALSE;
 			}
@@ -4737,7 +4742,7 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 	else
 		*yr = floor(*yr);
 
-	RASTER_DEBUGF(4, "GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
+	RASTER_DEBUGF(4, "Corrected GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
 		xw, yw, *xr, *yr);
 
 	if (init_igt) rtdealloc(_igt);
