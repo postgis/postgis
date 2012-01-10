@@ -133,6 +133,9 @@ doxygen: doxygen.cfg
 
 images: 
 	make -C html/image_src images
+
+images-clean:
+	make -C html/image_src images-clean
 	
 clean: 
 	rm -f html/*.html
@@ -140,7 +143,7 @@ clean:
 	make -C html/image_src clean
 	rm -f postgis-out.xml postgis_aggs_mm.xml
 
-maintainer-clean: clean
+maintainer-clean: clean images-clean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
 
 comments: postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql

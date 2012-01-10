@@ -161,7 +161,10 @@ generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
 
 # Clean target
 clean:
-	@rm -f $(OBJS)
-	@rm -f generator
-	@rm -f tmp[0-9].png
+	rm -f $(OBJS)
+	rm -f generator
+	rm -f tmp[0-9].png
+
+images-clean:
+	rm -f $(IMAGES) $(IMAGES_RESIZED)
 
