@@ -935,7 +935,7 @@ Failed: 0
 		</para>
 	
 		<para>
-		  <comand>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</comand>
+		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</command>
 		</para>
 	
 		<para>Edit the <filename>tiger_loader.sql</filename> to the paths of your executables server etc.</para>
@@ -966,7 +966,7 @@ pretty_address
 		</para>
 	
 		<para>
-		  <comand>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</comand>
+		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</command>
 		</para>
 	
 		<para>Locate the  <filename>upgrade_geocoder.bat</filename> script If you are on windows
