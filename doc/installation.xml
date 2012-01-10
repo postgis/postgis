@@ -915,13 +915,13 @@ Failed: 0
   </sect1>
   
   <sect1 id="loading_extras_tiger_geocoder">
-  	<title>Installing Tiger Geocoder</title>
+  	<title>Installing, Upgrading Tiger Geocoder and loading data</title>
   	
 	<para>The Tiger geocoder does not get installed / upgraded with the core PostGIS scripts because it is only of regional use.  In fact nothing located
 	in the extras folder is installed by default with the regular PostGIS install / upgrade.  Extras like Tiger geocoder may also not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/tiger_2010/README</filename> </para>
 	<para>If you are on Windows and you don't have tar installed, you can use <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> to unzip the PostGIS tarball.</para>
 	<sect2 id="install_tiger_geocoder">
-		<title>Tiger Geocode Enabling your PostGIS database</title>
+		<title>Tiger Geocoder Enabling your PostGIS database</title>
 		<para>
 		  First install PostGIS using the prior instructions.
 		</para>
@@ -986,7 +986,7 @@ pretty_address
 			</listitem>
 			<listitem><filename>shp2pgsql</filename> commandline which is installed by default when you install PostGIS.</listitem>
 			<listitem><para><filename>wget</filename> which is a web grabber tool usually installed on most Unix/Linux systems.</para>
-				<para>If you are on windows, you can get pre-compiled binaries from <ulink url="http://gnuwin32.sourceforge.net/packages/wget.htm">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> 
+				<para>If you are on windows, you can get pre-compiled binaries from <ulink url="http://gnuwin32.sourceforge.net/packages/wget.htm">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> </para>
 			</listitem>
 		</itemizedlist>
 		<para>To load data refer to <xref linkend="Loader_Generate_Script" /> to generate a data load script for your platform for the states you desire.  
