@@ -1,5 +1,19 @@
 EXTENSION    = postgis_topology
-EXTVERSION   = $(shell grep default_version $(EXTENSION).control | sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
+EXTVERSION    = @POSTGIS_LIB_VERSION@
+MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+
+MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
+PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
+                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        grep "[a-zA-Z]" | \
+                        sed "s/[0-9][a-zA-Z]\([0-9]*\)[a-zA-Z]*/\1/")
+MICRO_PREV    = $(shell if test "$(MICRO_NUMBER)x" != "x"; then expr $(MICRO_NUMBER) - 1; fi)
+PREREL_PREV   = $(shell if test "$(PREREL_NUMBER)x" != "x"; then expr $(PREREL_NUMBER) - 1; fi)
+
+PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
+                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        grep "[a-zA-Z]" | \
+                        sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 

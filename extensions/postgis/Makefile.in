@@ -1,6 +1,19 @@
-EXTENSION    = postgis
-EXTVERSION   = $(shell grep default_version $(EXTENSION).control | \
-               sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
+EXTENSION     = postgis
+EXTVERSION    = @POSTGIS_LIB_VERSION@
+MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+
+MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
+PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
+                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        grep "[a-zA-Z]" | \
+                        sed "s/[0-9][a-zA-Z]\([0-9]*\)[a-zA-Z]*/\1/")
+MICRO_PREV    = $(shell if test "$(MICRO_NUMBER)x" != "x"; then expr $(MICRO_NUMBER) - 1; fi)
+PREREL_PREV   = $(shell if test "$(PREREL_NUMBER)x" != "x"; then expr $(PREREL_NUMBER) - 1; fi)
+
+PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
+                        sed "s/[0-9]\.[0-9]\.\(.*\)/\1/" | \
+                        grep "[a-zA-Z]" | \
+                        sed "s/\([0-9][a-zA-Z]*\)[0-9]*/\1/")
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
@@ -15,7 +28,7 @@ EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
 ifeq ($(PG91),yes)
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	cat $^ > $@
-all: sql/$(EXTENSION)--$(EXTVERSION).sql   sql/$(EXTENSION)--2.0.0a12--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a13--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -71,15 +84,6 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql.in.c  sql_bits/postgis_upgrade_minor.sql 	sql_bits/rtpostgis_upgrade_20_minor.sql  ../../doc/raster_comments.sql  ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 
-sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
-	cp $< $@
-
-sql/$(EXTENSION)--2.0.0a12--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
-	cp $< $@
-
-sql/$(EXTENSION)--2.0.0a13--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
-	cp $< $@
-
 # sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 
 # 	sed -e 's/^[\t]*//' \
 # 		-e :a -e '$!N; s/,\n/,/; ta' \
@@ -114,6 +118,19 @@ sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
 		-e 's/(;/;/' \
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@
+
+sql_minor_upgrade: sql_bits/postgis_upgrade_minor.sql
+	if test "$(PREREL_NUMBER)x" != "x"; then \
+	 	  for v in {$(PREREL_PREV)..1}; do \
+	       cp -v $< sql/$(EXTENSION)--$(MINORVERSION).$(PREREL_PREFIX)$$v--$(EXTVERSION).sql; \
+	     done; \
+	else \
+	  if test $(MICRO_NUMBER) -gt 0; then \
+	    for v in {0..$(MICRO_PREV)}; do \
+	      cp -v $< sql/$(EXTENSION)--$(MINORVERSION).$$v--$(EXTVERSION).sql; \
+	    done; \
+	  fi; \
+	   fi
 
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql
