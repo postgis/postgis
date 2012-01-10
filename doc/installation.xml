@@ -975,6 +975,7 @@ pretty_address
 	
 	</sect2>
 	<sect2 id="tiger_geocoder_loading_data">
+		<title>Loading Tiger Data</title>
 		<para>The instructions for loading data are available in a more detailed form  in the <filename>extras/tiger_geocoder/tiger_2010/README</filename>.  This just includes the general steps.</para>	
 		<para>The load process downloads data from the census website for the respective states requested, extracts the files, and then loads each state into its own separate
 		set of state tables.  Each state table inherits from the tables defined in <varname>tiger</varname> schema so that its sufficient to just query those tables to access all the data and drop a set of state tables at any time using the <xref linkend="Drop_State_Tables_Generate_Script" /> if you need to reload a state or just don't need a state anymore.</para>
