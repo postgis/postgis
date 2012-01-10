@@ -979,8 +979,6 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 
 	
 	/* Once we've done the validation pass, now let's load the shapefile */
-	pg_connection = PQconnectdb(connection_string);
-	
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(list_store), &iter);
 	while (is_valid)
 	{
@@ -997,6 +995,9 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		import_running = TRUE;
 		success = FALSE;
 		
+		/* One connection per file, otherwise error handling becomes tricky... */
+		pg_connection = PQconnectdb(connection_string);
+
 		/* Disable the button to prevent multiple imports running at the same time */
 		gtk_widget_set_sensitive(widget, FALSE);
 
@@ -1188,9 +1189,9 @@ import_cleanup:
 		/* Import has definitely stopped running */
 		import_running = FALSE;
 
-		/* Make sure we abort any existing transaction */
-		if (!success)
-			pgui_exec("ABORT");
+		/* Close the existing connection */
+		PQfinish(pg_connection);
+		pg_connection = NULL;
 		
 		/* If we didn't finish inserting all of the items (and we expected to), an error occurred */
 		if ((state->config->opt != 'p' && i != ShpLoaderGetRecordCount(state)) || !ret)
@@ -1228,10 +1229,6 @@ import_cleanup:
 	/* Allow GTK events to get a look in */
 	while (gtk_events_pending())
 		gtk_main_iteration();
-
-	/* Disconnect from the database */
-	PQfinish(pg_connection);
-	pg_connection = NULL;
 
 	/* Tidy up */
 	free(connection_string);
