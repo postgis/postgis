@@ -322,4 +322,7 @@ int lwline_split_by_point_to(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to);
 /** Ensure the collection can hold at least up to ngeoms geometries */
 void lwcollection_reserve(LWCOLLECTION *col, int ngeoms);
 
+/** Check if subtype is allowed in collectiontype */
+extern int lwcollection_allows_subtype(int collectiontype, int subtype);
+
 #endif /* _LIBLWGEOM_INTERNAL_H */

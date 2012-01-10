@@ -180,27 +180,10 @@ LWCOLLECTION* lwcollection_add_lwgeom(LWCOLLECTION *col, const LWGEOM *geom)
 	}
 
 	/* Check type compatibility */
-	if ( col->type < 7 ) {
-		if ( geom->type != col->type-3 ) {
-			lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
-			return NULL;
-		}
+	if ( ! lwcollection_allows_subtype(col->type, geom->type) ) {
+		lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
+		return NULL;
 	}
-	else if ( col->type == COMPOUNDTYPE ) {
-		/* Allow: linestring, circularstring */
-		if ( geom->type != LINETYPE && geom->type != CIRCSTRINGTYPE ) {
-			lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
-			return NULL;
-		}
-	}
-	else if ( col->type == MULTICURVETYPE ) {
-		/* Allow: linestring, circularstring, compoundcurve */
-		if ( geom->type != LINETYPE && geom->type != CIRCSTRINGTYPE && geom->type != COMPOUNDTYPE ) {
-			lwerror("%s cannot contain %s element", lwtype_name(col->type), lwtype_name(geom->type));
-			return NULL;
-		}
-	}
-	/* TODO: I'm probably missing something else here... would be nice to have the +3 invariant always */
 
 	/* In case this is a truly empty, make some initial space  */
 	if ( col->geoms == NULL )
@@ -521,3 +504,40 @@ LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist)
 
 	return out;
 }
+
+int lwcollection_allows_subtype(int collectiontype, int subtype)
+{
+	if ( collectiontype == COLLECTIONTYPE )
+		return LW_TRUE;
+	if ( collectiontype == MULTIPOINTTYPE &&
+	        subtype == POINTTYPE )
+		return LW_TRUE;
+	if ( collectiontype == MULTILINETYPE &&
+	        subtype == LINETYPE )
+		return LW_TRUE;
+	if ( collectiontype == MULTIPOLYGONTYPE &&
+	        subtype == POLYGONTYPE )
+		return LW_TRUE;
+	if ( collectiontype == COMPOUNDTYPE &&
+	        (subtype == LINETYPE || subtype == CIRCSTRINGTYPE) )
+		return LW_TRUE;
+	if ( collectiontype == CURVEPOLYTYPE &&
+	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
+		return LW_TRUE;
+	if ( collectiontype == MULTICURVETYPE &&
+	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
+		return LW_TRUE;
+	if ( collectiontype == MULTISURFACETYPE &&
+	        (subtype == POLYGONTYPE || subtype == CURVEPOLYTYPE) )
+		return LW_TRUE;
+	if ( collectiontype == POLYHEDRALSURFACETYPE &&
+	        subtype == POLYGONTYPE )
+		return LW_TRUE;
+	if ( collectiontype == TINTYPE &&
+	        subtype == TRIANGLETYPE )
+		return LW_TRUE;
+
+	/* Must be a bad combination! */
+	return LW_FALSE;
+}
+

@@ -1038,42 +1038,6 @@ static LWCIRCSTRING* lwcircstring_from_gserialized_buffer(uint8_t *data_ptr, uin
 	return circstring;
 }
 
-static int lwcollection_from_gserialized_allowed_types(int collectiontype, int subtype)
-{
-	if ( collectiontype == COLLECTIONTYPE )
-		return LW_TRUE;
-	if ( collectiontype == MULTIPOINTTYPE &&
-	        subtype == POINTTYPE )
-		return LW_TRUE;
-	if ( collectiontype == MULTILINETYPE &&
-	        subtype == LINETYPE )
-		return LW_TRUE;
-	if ( collectiontype == MULTIPOLYGONTYPE &&
-	        subtype == POLYGONTYPE )
-		return LW_TRUE;
-	if ( collectiontype == COMPOUNDTYPE &&
-	        (subtype == LINETYPE || subtype == CIRCSTRINGTYPE) )
-		return LW_TRUE;
-	if ( collectiontype == CURVEPOLYTYPE &&
-	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
-		return LW_TRUE;
-	if ( collectiontype == MULTICURVETYPE &&
-	        (subtype == CIRCSTRINGTYPE || subtype == LINETYPE || subtype == COMPOUNDTYPE) )
-		return LW_TRUE;
-	if ( collectiontype == MULTISURFACETYPE &&
-	        (subtype == POLYGONTYPE || subtype == CURVEPOLYTYPE) )
-		return LW_TRUE;
-	if ( collectiontype == POLYHEDRALSURFACETYPE &&
-	        subtype == POLYGONTYPE )
-		return LW_TRUE;
-	if ( collectiontype == TINTYPE &&
-	        subtype == TRIANGLETYPE )
-		return LW_TRUE;
-
-	/* Must be a bad combination! */
-	return LW_FALSE;
-}
-
 static LWCOLLECTION* lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uint8_t g_flags, size_t *g_size)
 {
 	uint32_t type;
@@ -1110,7 +1074,7 @@ static LWCOLLECTION* lwcollection_from_gserialized_buffer(uint8_t *data_ptr, uin
 		uint32_t subtype = lw_get_uint32_t(data_ptr);
 		size_t subsize = 0;
 
-		if ( ! lwcollection_from_gserialized_allowed_types(type, subtype) )
+		if ( ! lwcollection_allows_subtype(type, subtype) )
 		{
 			lwerror("Invalid subtype (%s) for collection type (%s)", lwtype_name(subtype), lwtype_name(type));
 			lwfree(collection);

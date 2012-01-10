@@ -166,4 +166,4 @@ ERROR:  MultiLineString cannot contain MultiPoint element
 ERROR:  MultiPoint cannot contain MultiPoint element
 ERROR:  CompoundCurve cannot contain MultiPoint element
 ERROR:  MultiCurve cannot contain MultiPoint element
-ERROR:  Invalid subtype (MultiPoint) for collection type (MultiSurface)
+ERROR:  MultiSurface cannot contain MultiPoint element
