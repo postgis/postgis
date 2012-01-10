@@ -573,7 +573,6 @@ Datum ST_LocateAlong(PG_FUNCTION_ARGS)
 	double measure = PG_GETARG_FLOAT8(1);
 	double offset = PG_GETARG_FLOAT8(2);;
 	
-	lwnotice("offset %g",offset);
 	lwin = lwgeom_from_gserialized(gin);
 	lwout = lwgeom_locate_along(lwin, measure, offset);
 	lwgeom_free(lwin);

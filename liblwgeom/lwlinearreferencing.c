@@ -165,6 +165,28 @@ lwpoint_locate_along(const LWPOINT *lwpoint, double m, double offset)
 		return lwpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
 }
 
+static LWMPOINT*
+lwmpoint_locate_along(const LWMPOINT *lwin, double m, double offset)
+{
+	LWGEOM *lwg = lwmpoint_as_lwgeom(lwin);
+	LWMPOINT *lwout = NULL;
+	int i;
+	
+	/* Construct return */
+	lwout = lwmpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
+
+	for ( i = 0; i < lwin->ngeoms; i++ )
+	{
+		double point_m = lwpoint_get_m(lwin->geoms[i]);
+		if ( FP_EQUALS(m, point_m) )
+		{
+			lwmpoint_add_lwpoint(lwout, lwpoint_clone(lwin->geoms[i]));
+		}	
+	}
+
+	return lwout;
+}
+
 LWGEOM*
 lwgeom_locate_along(const LWGEOM *lwin, double m, double offset)
 {
@@ -177,6 +199,8 @@ lwgeom_locate_along(const LWGEOM *lwin, double m, double offset)
 	{
 	case POINTTYPE:
 		return (LWGEOM*)lwpoint_locate_along((LWPOINT*)lwin, m, offset);
+	case MULTIPOINTTYPE:
+		return (LWGEOM*)lwmpoint_locate_along((LWMPOINT*)lwin, m, offset);
 	case LINETYPE:
 		return (LWGEOM*)lwline_locate_along((LWLINE*)lwin, m, offset);
 	case MULTILINETYPE:
