@@ -46,8 +46,10 @@ raster_destroy(rt_raster raster) {
 	uint16_t nbands = rt_raster_get_num_bands(raster);
 	for (i = 0; i < nbands; i++) {
 		rt_band band = rt_raster_get_band(raster, i);
-		void *mem = rt_band_get_data(band);
-		if (mem) free(mem);
+		if (!rt_band_is_offline(band)) {
+     	void* mem = rt_band_get_data(band);
+       if (mem) rtdealloc(mem);
+		}
 		rt_band_destroy(band);
 	}
 	rt_raster_destroy(raster);
