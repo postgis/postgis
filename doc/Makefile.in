@@ -132,15 +132,15 @@ doxygen: doxygen.cfg
 	doxygen $<
 
 images: 
-	make -C html/image_src images
+	$(MAKE) -C html/image_src images
 
 images-clean:
-	make -C html/image_src images-clean
+	$(MAKE) -C html/image_src images-clean
 	
 clean: 
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
-	make -C html/image_src clean
+	$(MAKE) -C html/image_src clean
 	rm -f postgis-out.xml postgis_aggs_mm.xml
 
 maintainer-clean: clean images-clean
@@ -150,14 +150,14 @@ comments: postgis_comments.sql raster_comments.sql topology_comments.sql tiger_g
 cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html tiger_geocoder_cheatsheet.html
 
 comments-install: comments
-	make -f Makefile.comments install
+	$(MAKE) -f Makefile.comments install
 
 comments-uninstall:
-	make -f Makefile.comments uninstall
+	$(MAKE) -f Makefile.comments uninstall
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
-	@mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
-	@mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
+	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
+	mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
 	cp html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
 	cp ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 	cp man/pgsql2shp.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
