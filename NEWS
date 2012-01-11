@@ -80,7 +80,6 @@ PostGIS 2.0.0
   - ST_AsX3D (Regina Obe / Arrival 3D)
   - ST_OffsetCurve (Sandro Santilli, Rafal Magda)
   - ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality)
-  - ST_AsText support for higher dimensions (#287)
 
  * Enhancements *
 
@@ -104,9 +103,11 @@ PostGIS 2.0.0
     (Regina Obe, Leo Hsu / Paragon Corporation / 
     funding provided by Hunter Systems Group)
   - Overall Documentation proofreading and corrections. (Kasif Rasul)
+  - ST_AsText support for higher dimensions (#287)
   
  * Bug Fixes *
   - #1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)
+
 PostGIS 1.5.4
 2012/02/XX
 -- to be updated --
