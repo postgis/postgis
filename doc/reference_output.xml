@@ -16,11 +16,16 @@
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
+			  </funcprototype>
+			  <funcprototype>
+				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
 				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 			  </funcprototype>
 			  <funcprototype>
 				<funcdef>bytea <function>ST_AsBinary</function></funcdef>
-				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>geography </type> <parameter>g1</parameter></paramdef>
 				<paramdef><type>text </type><parameter>NDR_or_XDR</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
@@ -30,13 +35,13 @@
 			<title>Description</title>
 
 			<para>Returns the Well-Known Binary representation of the geometry.  There are 2 variants of the function.  The first
-			variant takes no endian encoding parameter and defaults to little endian.  The second variant takes a second argument
+			variant takes no endian encoding parameter and defaults to server machine endian.  The second variant takes a second argument
 			denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
 			<para>This is useful in binary cursors to pull data out of the
 			database without converting it to a string representation.</para>
 
 			<note>
-			  <para>The WKB spec does not include the SRID.  To get the OGC WKB with SRID format use ST_AsEWKB</para>
+			  <para>The WKB spec does not include the SRID.  To get the WKB with SRID format use ST_AsEWKB</para>
 			</note>
 			<note>
 			  <para>ST_AsBinary is the reverse of <xref linkend="ST_GeomFromWKB" /> for geometry.  Use <xref linkend="ST_GeomFromWKB" /> to convert to a postgis geometry from ST_AsBinary representation.</para>
@@ -48,12 +53,15 @@
 			</note>
 
 			<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+			<para>Enhanced: 2.0.0 support for higher coordinate dimensions was introduced.</para>
+			<para>Enhanced: 2.0.0 support for specifying endian with geography was introduced.</para>
 			<para>Availability: 1.5.0 geography support was introduced.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
 			<para>&curve_support;</para>
 			<para>&P_support;</para>
 			<para>&T_support;</para>
+			<para>&Z_support;</para>
 		  </refsection>
 
 
