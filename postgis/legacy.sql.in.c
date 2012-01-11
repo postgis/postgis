@@ -102,7 +102,7 @@ CREATE OR REPLACE FUNCTION SE_LocateAlong(geometry, float8)
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box2d(geometry)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2D'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 --- Deprecation in 1.5.0
@@ -120,13 +120,13 @@ CREATE OR REPLACE FUNCTION st_box(geometry)
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box2d(box3d)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME','BOX3D_to_BOX2DFLOAT4'
+	AS 'MODULE_PATHNAME','BOX3D_to_BOX2D'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_box3d(box2d)
 	RETURNS box3d
-	AS 'MODULE_PATHNAME','BOX2DFLOAT4_to_BOX3D'
+	AS 'MODULE_PATHNAME','BOX2D_to_BOX3D'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 --- Deprecation in 1.5.0
@@ -144,7 +144,7 @@ CREATE OR REPLACE FUNCTION st_text(geometry)
 --- Deprecation in 1.5.0
 CREATE OR REPLACE FUNCTION st_geometry(box2d)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME','BOX2DFLOAT4_to_LWGEOM'
+	AS 'MODULE_PATHNAME','BOX2D_to_LWGEOM'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 --- Deprecation in 1.5.0
@@ -823,7 +823,7 @@ CREATE OR REPLACE FUNCTION Envelope(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION Expand(box2d,float8)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_expand'
+	AS 'MODULE_PATHNAME', 'BOX2D_expand'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
@@ -993,7 +993,7 @@ CREATE OR REPLACE FUNCTION GeomUnion(geometry,geometry)
 -- Availability: 1.5.0  -- replaced with postgis_getbbox
 CREATE OR REPLACE FUNCTION getbbox(geometry)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2DFLOAT4'
+	AS 'MODULE_PATHNAME','LWGEOM_to_BOX2D'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
@@ -1050,7 +1050,7 @@ CREATE OR REPLACE FUNCTION locate_along_measure(geometry, float8)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION MakeBox2d(geometry, geometry)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_construct'
+	AS 'MODULE_PATHNAME', 'BOX2D_construct'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
@@ -1920,7 +1920,7 @@ CREATE OR REPLACE FUNCTION collect(geometry, geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION combine_bbox(box2d,geometry)
 	RETURNS box2d
-	AS 'MODULE_PATHNAME', 'BOX2DFLOAT4_combine'
+	AS 'MODULE_PATHNAME', 'BOX2D_combine'
 	LANGUAGE 'C' IMMUTABLE;
 	
 -- Deprecation in 1.2.3

@@ -218,15 +218,6 @@ typedef struct {
 
 typedef struct
 {
-	float xmin;
-	float ymin;
-	float xmax;
-	float ymax;
-}
-BOX2DFLOAT4;
-
-typedef struct
-{
 	double xmin, ymin, zmin;
 	double xmax, ymax, zmax;
 }
