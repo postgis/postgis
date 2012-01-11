@@ -58,3 +58,5 @@ check: libpgcommon.a
 $(SA_OBJS): %.o: %.c 
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+$(SA_OBJS): ../postgis_config.h
+
