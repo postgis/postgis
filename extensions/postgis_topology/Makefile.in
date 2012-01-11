@@ -25,7 +25,7 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a12--$(EXTVERSION).sql sql/$(EXTENSION)--2.0.0a13--$(EXTVERSION).sql
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
@@ -69,13 +69,22 @@ sql/topology_upgrade_minor.sql:  sql_bits/topology.sql
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 $< > $@
 
-sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/topology_comments.sql  ../postgis_extension_helper_uninstall.sql
-	cat $^ > $@
-
-sql/$(EXTENSION)--2.0.0a12--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql
-	cp $< $@
-sql/$(EXTENSION)--2.0.0a13--$(EXTVERSION).sql: sql/$(EXTENSION)--2.0.0a11--$(EXTVERSION).sql
-	cp $< $@
+sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
+	if test "$(PREREL_NUMBER)x" != "x"; then \
+	   v=$(PREREL_PREV); \
+	   while [[ $$v -ge 1 ]]; do \
+	       cat $< > sql/$(EXTENSION)--$(MINORVERSION).$(PREREL_PREFIX)$$v--$(EXTVERSION).sql; \
+	       v=$$(($$v-1)); \
+	     done; \
+	else \
+	  if test $(MICRO_NUMBER) -gt 0; then \
+	   v=0; \
+	   while [[ $$v -le $(MICRO_PREV) ]]; do \
+           cat $< > sql/$(EXTENSION)--$(MINORVERSION).$(PREREL_PREFIX)$$v--$(EXTVERSION).sql; \
+	       v=$$(($$v+1)); \
+	    done; \
+	  fi; \
+	 fi
 	
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql

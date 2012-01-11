@@ -22,7 +22,7 @@ PG_CONFIG    = pg_config
 
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
-EXTRA_CLEAN += sql/$(EXTENSION).sql ${SQL_BITS}
+EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
 
 ifeq ($(PG91),yes)
@@ -121,13 +121,17 @@ sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
 
 sql_minor_upgrade: sql_bits/postgis_upgrade_minor.sql
 	if test "$(PREREL_NUMBER)x" != "x"; then \
-	 	  for v in {$(PREREL_PREV)..1}; do \
+	   v=$(PREREL_PREV); \
+	   while [[ $$v -ge 1 ]]; do \
 	       cp -v $< sql/$(EXTENSION)--$(MINORVERSION).$(PREREL_PREFIX)$$v--$(EXTVERSION).sql; \
+	       v=$$(($$v-1)); \
 	     done; \
 	else \
 	  if test $(MICRO_NUMBER) -gt 0; then \
-	    for v in {0..$(MICRO_PREV)}; do \
+	   v=0; \
+	   while [[ $$v -le $(MICRO_PREV) ]]; do \
 	      cp -v $< sql/$(EXTENSION)--$(MINORVERSION).$$v--$(EXTVERSION).sql; \
+	       v=$$(($$v+1)); \
 	    done; \
 	  fi; \
 	 fi
