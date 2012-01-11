@@ -174,35 +174,6 @@ Datum geography_out(PG_FUNCTION_ARGS)
 
 
 /*
-** geography_as_text(*GSERIALIZED) returns text
-*/
-PG_FUNCTION_INFO_V1(geography_as_text);
-Datum geography_as_text(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *g = NULL;
-	LWGEOM *lwgeom = NULL;
-	char *wkt = NULL;
-	text *result = NULL;
-	size_t len = 0;
-
-	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	/* Convert to lwgeom so we can run the old functions */
-	lwgeom = lwgeom_from_gserialized(g);
-
-	/* Generate WKT */
-	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &len);
-
-	/* Copy into text obect */
-	result = cstring2text(wkt);
-	pfree(wkt);
-	lwgeom_free(lwgeom);
-
-	PG_RETURN_TEXT_P(result);
-}
-
-
-/*
 ** geography_as_gml(*GSERIALIZED) returns text
 */
 PG_FUNCTION_INFO_V1(geography_as_gml);

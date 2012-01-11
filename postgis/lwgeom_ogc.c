@@ -823,7 +823,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	size_t wkt_size;
 	text *result;
 
-	POSTGIS_DEBUG(2, "LWGEOM_asText called.");
+	POSTGIS_DEBUG(2, "Called.");
 
 	geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom = lwgeom_from_gserialized(geom);
@@ -831,6 +831,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	/* Write to WKT and free the geometry */
 	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &wkt_size);
 	lwgeom_free(lwgeom);
+	POSTGIS_DEBUGF(3, "WKT size = %d, WKT length = %d", wkt_size, strlen(wkt));
 
 	/* Write to text and free the WKT */
 	result = cstring2text(wkt);
@@ -840,6 +841,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_TEXT_P(result);
 }
+
 
 /** convert LWGEOM to wkb (in BINARY format) */
 PG_FUNCTION_INFO_V1(LWGEOM_asBinary);

@@ -84,15 +84,13 @@ CREATE CAST (bytea AS geography) WITH FUNCTION geography(bytea) AS IMPLICIT;
 -- Availability: 2.0.0
 CREATE CAST (geography AS bytea) WITH FUNCTION bytea(geography) AS IMPLICIT;
 
-
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AsText(geography)
-	RETURNS text
-	AS 'MODULE_PATHNAME','geography_as_text'
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asText'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_AsText(text)
 	RETURNS text AS
 	$$ SELECT ST_AsText($1::geometry);  $$
@@ -361,7 +359,6 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(geog geography,rel int4 DEFAULT 0,maxdecimal
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 	RETURNS text AS
 	$$ SELECT ST_AsSVG($1::geometry,0,15);  $$
@@ -379,7 +376,6 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4, text)
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
 -- Change 2.0.0 to use base function
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_AsGML(text)
 	RETURNS text AS
 	$$ SELECT _ST_AsGML(2,$1::geometry,15,0, NULL);  $$
@@ -497,7 +493,6 @@ CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Distance(text, text)
 	RETURNS float8 AS
 	$$ SELECT ST_Distance($1::geometry, $2::geometry);  $$
@@ -524,7 +519,6 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	RETURNS boolean AS
 	$$ SELECT ST_DWithin($1::geometry, $2::geometry, $3);  $$
@@ -538,7 +532,6 @@ CREATE OR REPLACE FUNCTION ST_Area(geog geography, use_spheroid boolean DEFAULT 
 	COST 100;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Area(text)
 	RETURNS float8 AS
 	$$ SELECT ST_Area($1::geometry);  $$
@@ -552,7 +545,6 @@ CREATE OR REPLACE FUNCTION ST_Length(geog geography, use_spheroid boolean DEFAUL
 	COST 100;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Length(text)
 	RETURNS float8 AS
 	$$ SELECT ST_Length($1::geometry);  $$
@@ -601,7 +593,6 @@ CREATE OR REPLACE FUNCTION ST_Covers(geography, geography)
 	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Covers(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_Covers($1::geometry, $2::geometry);  $$
@@ -615,7 +606,6 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(geography, geography)
 	LANGUAGE 'SQL' IMMUTABLE ;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_CoveredBy(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_CoveredBy($1::geometry, $2::geometry);  $$
@@ -628,7 +618,6 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
 	LANGUAGE 'SQL' IMMUTABLE ;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Intersects(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_Intersects($1::geometry, $2::geometry);  $$
@@ -653,7 +642,6 @@ CREATE OR REPLACE FUNCTION ST_Buffer(geography, float8)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Buffer(text, float8)
 	RETURNS geometry AS
 	$$ SELECT ST_Buffer($1::geometry, $2);  $$
@@ -666,7 +654,6 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
 CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 	RETURNS geometry AS
 	$$ SELECT ST_Intersection($1::geometry, $2::geometry);  $$
@@ -674,9 +661,9 @@ CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
-	RETURNS bytea AS
-	$$ SELECT ST_AsBinary($1::geometry);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','LWGEOM_asBinary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_AsBinary(geography,text)
@@ -684,7 +671,6 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(geography,text)
 	$$ SELECT ST_AsBinary($1::geometry, $2);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
-
 -----------------------------------------------------------------------------
 
 
