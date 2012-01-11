@@ -4329,21 +4329,35 @@ $$
 LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE VIEW geometry_columns AS 
- SELECT current_database()::varchar(256) AS f_table_catalog, 
+  SELECT current_database()::varchar(256) AS f_table_catalog, 
     n.nspname::varchar(256) AS f_table_schema, 
     c.relname::varchar(256) AS f_table_name, 
     a.attname::varchar(256) AS f_geometry_column, 
-    COALESCE(NULLIF(postgis_typmod_dims(a.atttypmod),2), postgis_constraint_dims(n.nspname, c.relname, a.attname), 2) AS coord_dimension, 
-    COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod),0), postgis_constraint_srid(n.nspname, c.relname, a.attname), 0) AS srid, 
-    -- force to be uppercase with no ZM so is backwards compatible with old geometry_columns
-    replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)::text), 'GEOMETRY'), postgis_constraint_type(n.nspname, c.relname, a.attname), 'GEOMETRY'), 'ZM', ''),'Z', '')::varchar(30) AS type
-   FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n
+    COALESCE(NULLIF(postgis_typmod_dims(a.atttypmod),2),
+             postgis_constraint_dims(n.nspname, c.relname, a.attname),
+             2) AS coord_dimension, 
+    COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod),0),
+             postgis_constraint_srid(n.nspname, c.relname, a.attname),
+             0) AS srid, 
+    -- force to be uppercase with no ZM so is backwards compatible
+    -- with old geometry_columns
+    replace(
+      replace(
+        COALESCE(
+          NULLIF(upper(postgis_typmod_type(a.atttypmod)::text), 'GEOMETRY'),
+          postgis_constraint_type(n.nspname, c.relname, a.attname),
+          'GEOMETRY'
+        ), 'ZM', ''
+      ), 'Z', ''
+    )::varchar(30) AS type
+  FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n
   WHERE t.typname = 'geometry'::name 
     AND a.attisdropped = false 
     AND a.atttypid = t.oid 
     AND a.attrelid = c.oid 
     AND c.relnamespace = n.oid 
-    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char") AND NOT pg_is_other_temp_schema(c.relnamespace);
+    AND (c.relkind = 'r'::"char" OR c.relkind = 'v'::"char")
+    AND NOT pg_is_other_temp_schema(c.relnamespace);
 
 -- TODO: support RETURNING and raise a WARNING
 CREATE OR REPLACE RULE geometry_columns_insert AS
