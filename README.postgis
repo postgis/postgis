@@ -95,6 +95,9 @@ option.
 If you want to compile PostGIS with Raster support, you must provide
 the --with-raster option.
 
+If you want to compile PostGIS with Topology support, you must provide
+the --with-topology option.
+
 See ./configure --help for more options.
 
 BUILD
@@ -213,40 +216,32 @@ PostgreSQL database itself has undergone a major update.
 For this purpose, PostGIS provides a utility script to restore a dump
 in "custom" format. The hard upgrade procedure is as follows:
 
-	# Create a "custom-format" dump of the database you want
+	# [1] Create a "custom-format" dump of the database you want
 	# to upgrade (let's call it "olddb")
-	$ pg_dump -Fc olddb olddb.dump
+	$ pg_dump -Fc -f olddb.dump olddb 
 
-	# Restore the dump while upgrading postgis into
-	# a new database. 
-        # Note: The new database does NOT have to exist.
-	# Let's call it "newdb"
-	$ sh utils/postgis_restore.pl postgis.sql newdb olddb.dump > restore.log
+	# [2] Do a fresh install of PostGIS in a new database
+	# (let's call it "newdb").
+	# Refer to CREATING NEW SPATIAL DATABASES for instructions
 
-	# Check that all restored dump objects really had to be 
-        # restored from dump and do not conflict with the 
-        # ones defined in postgis.sql
-	$ grep ^KEEPING restore.log | less
+	# [3] Restore the dump into your new database. 
+	$ perl utils/postgis_restore.pl -v olddb.dump \
+		2> restore.log | psql newdb 2> errors.txt
 
-	# If upgrading from PostgreSQL < 8.0 to >= 8.0 you will want to 
-	# drop the attrelid, varattnum and stats columns in the geometry_columns
-	# table, which are no-more needed. Keeping them won't hurt.
-	# !!! DROPPING THEM WHEN REALLY NEEDED WILL DO HARM !!!!
-	$ psql newdb -c "ALTER TABLE geometry_columns DROP attrelid"
-	$ psql newdb -c "ALTER TABLE geometry_columns DROP varattnum"
-	$ psql newdb -c "ALTER TABLE geometry_columns DROP stats"
+The spatial_ref_sys entries found in your dump will be restored, but
+they will not override existing ones in spatial_ref_sys.  This is to
+ensure that fixes in the official set will be properly propagated to
+restored databases. If for any reason you really want your own overrides
+of standard entries just don't load the spatial_ref_sys.sql file when
+creating the new db.
 
-	# The spatial_ref_sys table is restored from the dump, to 
-        # ensure your custom additions are kept, but the distributed 
-        # one might contain modification so you should backup your 
-        # entries, drop the table and source the new one.
-	# If you did make additions we assume you know how to backup them before
-	# upgrading the table. Replace it with the new like this:
-	$ psql newdb
-	newdb=> DELETE FROM spatial_ref_sys;
-	DROP
-	newdb=> \i spatial_ref_sys.sql
-
+If your database is really old or you know you've been using long
+deprecated functions in your views and functions, you might need
+to load <filename>legacy.sql</filename> before restoring the dump
+for all your functions and views etc. to properly come back.  Only do
+this if _really_ needed. Consider upgrading your views and functions
+before dumping instead, if possible.  The deprecated functions can be
+later removed by loading <filename>uninstall_legacy.sql</filename>.
 
 USAGE
 -----
