@@ -167,3 +167,5 @@ ERROR:  MultiPoint cannot contain MultiPoint element
 ERROR:  CompoundCurve cannot contain MultiPoint element
 ERROR:  MultiCurve cannot contain MultiPoint element
 ERROR:  MultiSurface cannot contain MultiPoint element
+#1453.1|t
+#1453.2|f

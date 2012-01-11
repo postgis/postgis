@@ -51,3 +51,4 @@ ST_ExteriorRing(empty) == empty|010200000000000000
 ST_InteriorRingN(empty, n) == NULL|
 ST_Area(empty) == 0|0
 ST_Length(empty) == 0|0
+~=|t

@@ -133,3 +133,9 @@ WITH inp AS (SELECT
 WITH inp AS (SELECT
  'LINESTRING EMPTY'::geometry as empty
  ) SELECT 'ST_Length(empty) == 0', ST_Length(empty) FROM inp;
+
+
+-- Operators
+
+-- same box, see http://trac.osgeo.org/postgis/ticket/1453
+SELECT '~=', 'POINT EMPTY'::geometry ~= 'POINT EMPTY'::geometry;

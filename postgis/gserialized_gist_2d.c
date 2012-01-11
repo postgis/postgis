@@ -238,6 +238,8 @@ static inline void box2df_validate(BOX2DF *b)
 
 static bool box2df_overlaps(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	if ( (a->xmin > b->xmax) || (b->xmin > a->xmax) ||
 	     (a->ymin > b->ymax) || (b->ymin > a->ymax) )
 	{
@@ -249,6 +251,8 @@ static bool box2df_overlaps(const BOX2DF *a, const BOX2DF *b)
 
 static bool box2df_contains(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	if ( (a->xmin > b->xmin) || (a->xmax < b->xmax) ||
 	     (a->ymin > b->ymin) || (a->ymax < b->ymax) )
 	{
@@ -260,65 +264,90 @@ static bool box2df_contains(const BOX2DF *a, const BOX2DF *b)
 
 static bool box2df_within(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	POSTGIS_DEBUG(5, "entered function");
 	return box2df_contains(b,a);
 }
 
 static bool box2df_equals(const BOX2DF *a, const BOX2DF *b)
 {
-	if ( (a->xmin != b->xmin) || (a->xmax != b->xmax) ||
-	     (a->ymin != b->ymin) || (a->ymax != b->ymax) )
-	{
+	if ( a &&  b ) {
+		if ( (a->xmin != b->xmin) || (a->xmax != b->xmax) ||
+		     (a->ymin != b->ymin) || (a->ymax != b->ymax) )
+		{
+			return FALSE;
+		}
+		return TRUE;
+	} else if ( a || b ) {
+		/* one empty, one not */
 		return FALSE;
+	} else {
+		/* both empty */
+		return TRUE;
 	}
-
-	return TRUE;
 }
 
 static bool box2df_overleft(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	/* a.xmax <= b.xmax */
 	return a->xmax <= b->xmax;
 }
 
 static bool box2df_left(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	/* a.xmax < b.xmin */
 	return a->xmax < b->xmin;
 }
 
 static bool box2df_right(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	/* a.xmin > b.xmax */
 	return a->xmin > b->xmax;
 }
 
 static bool box2df_overright(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	/* a.xmin >= b.xmin */
 	return a->xmin >= b->xmin;
 }
 
 static bool box2df_overbelow(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	/* a.ymax <= b.ymax */
 	return a->ymax <= b->ymax;
 }
 
 static bool box2df_below(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	/* a.ymax < b.ymin */
 	return a->ymax < b->ymin;
 }
 
 static bool box2df_above(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	/* a.ymin > b.ymax */
 	return a->ymin > b->ymax;
 }
 
 static bool box2df_overabove(const BOX2DF *a, const BOX2DF *b)
 {
+	if ( ! a || ! b ) return FALSE; /* TODO: might be smarter for EMPTY */
+
 	/* a.ymin >= b.ymin */
 	return a->ymin >= b->ymin;
 }
@@ -534,16 +563,15 @@ gserialized_datum_get_box2df_p(Datum gsdatum, BOX2DF *box2df)
 static int 
 gserialized_datum_predicate_2d(Datum gs1, Datum gs2, box2df_predicate predicate)
 {
-	BOX2DF b1, b2;
+	BOX2DF b1, b2, *br1=NULL, *br2=NULL;
 	POSTGIS_DEBUG(3, "entered function");
 
-	/* Must be able to build box for each argument (ie, not empty geometry)
-	   and overlap boxes to return true. */
-	if ( (gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) &&
-	     (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) &&
-	      predicate(&b1, &b2) )
+	if (gserialized_datum_get_box2df_p(gs1, &b1) == LW_SUCCESS) br1 = &b1;
+	if (gserialized_datum_get_box2df_p(gs2, &b2) == LW_SUCCESS) br2 = &b2;
+
+	if ( predicate(br1, br2) )
 	{
-		POSTGIS_DEBUGF(3, "got boxes %s and %s", box2df_to_string(&b1), box2df_to_string(&b2));
+		POSTGIS_DEBUGF(3, "got boxes %s and %s", br1 ? box2df_to_string(&b1) : "(null)", br2 ? box2df_to_string(&b2) : "(null)");
 		return LW_TRUE;
 	}
 	return LW_FALSE;
