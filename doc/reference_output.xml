@@ -96,7 +96,11 @@
 		  <!-- Optionally add a "See Also" section -->
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsEWKB" />, <xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromEWKB" /></para>
+			<para>
+<xref linkend="ST_GeomFromWKB" />
+<xref linkend="ST_AsEWKB" />,
+<xref linkend="ST_AsText" />,
+			</para>
 		  </refsection>
 	</refentry>
 	<refentry id="ST_AsEWKB">
