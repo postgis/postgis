@@ -111,24 +111,24 @@ doxygen: doxygen.cfg
 	doxygen $<
 
 images: 
-	make -C html/image_src images
+	$(MAKE) -C html/image_src images
 	
 clean:
-	make -C html/image_src clean
+	$(MAKE) -C html/image_src clean
 	@rm -f postgis-out.xml postgis_aggs_mm.xml
 
 maintainer-clean: clean
-	make -C html/image_src clean
+	$(MAKE) -C html/image_src clean
 	@rm -f html/*.html \
 		postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 
 comments: postgis_comments.sql
 
 comments-install: comments
-	make -f Makefile.comments install
+	$(MAKE) -f Makefile.comments install
 
 comments-uninstall:
-	make -f Makefile.comments uninstall
+	$(MAKE) -f Makefile.comments uninstall
 
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
 	@mkdir -p $(PGSQL_DOCDIR)/postgis
