@@ -337,12 +337,13 @@ int main( int argc, const char* argv[] )
 	int layerCount;
 	int styleNumber;
 	LAYERSTYLE *styles;
+	char *image_path = "../images/";
 
 	getStyles(&styles);
 
-	if ( argc != 2 )
+	if ( argc != 2 || strlen(argv[1]) < 3)
 	{
-		lwerror("You must specifiy a wkt filename to convert.\n");
+		lwerror("You must specify a wkt filename to convert, and it must be 3 or more characters long.\n");
 		return -1;
 	}
 
@@ -352,8 +353,8 @@ int main( int argc, const char* argv[] )
 		return -1;
 	}
 
-	filename = malloc( strlen(argv[1])+11 );
-	strncpy( filename, "../images/", 10 );
+	filename = malloc( strlen(argv[1]) + strlen(image_path) + 1 );
+	strcpy( filename, image_path );
 	strncat( filename, argv[1], strlen(argv[1])-3 );
 	strncat( filename, "png", 3 );
 

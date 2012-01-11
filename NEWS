@@ -15,6 +15,7 @@ PostGIS 1.5.4
    - #1344, allow exporting tables with invalid geometries (Sandro Santilli)
    - #1406, shp2pgsql crashes when loading into geography (Sandro Santilli)
    - Support builds with "gmake" (Greg Troxel)
+   - #1146, images generator crashes (bronaugh)
 
 
 PostGIS 1.5.3
