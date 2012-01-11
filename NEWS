@@ -44,6 +44,8 @@ PostGIS 2.0.0
   - #817 Renaming old 3D functions to the convention ST_3D (Nicklas Avén) 
   - #548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) 
     instead of null for single geometries (Sandro Santilli, Maxime van Noppen)
+  - #287, #288 ST_AsText and ST_AsBinary don't force 2d anymore, using SQL/MM
+    notation for higher dimensions
 
   * New Features *
   
@@ -103,7 +105,6 @@ PostGIS 2.0.0
     (Regina Obe, Leo Hsu / Paragon Corporation / 
     funding provided by Hunter Systems Group)
   - Overall Documentation proofreading and corrections. (Kasif Rasul)
-  - ST_AsText support for higher dimensions (#287)
   
  * Bug Fixes *
   - #1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)

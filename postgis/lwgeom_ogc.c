@@ -850,20 +850,11 @@ Datum LWGEOM_asBinary(PG_FUNCTION_ARGS)
 	uint8_t *wkb;
 	size_t wkb_size;
 	bytea *result;
-	/* By default we are currently emitting OGC WKB (2D) only */
-	uint8_t variant = WKB_SFSQL;
+	uint8_t variant = WKB_ISO;
 
 	/* Get a 2D version of the geometry */
 	geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom = lwgeom_from_gserialized(geom);
-
-	/* Get a 2D version of the geometry if necessary */
-	if ( lwgeom_ndims(lwgeom) > 2 )
-	{
-		LWGEOM *lwgeom2d = lwgeom_force_2d(lwgeom);
-		lwgeom_free(lwgeom);
-		lwgeom = lwgeom2d;
-	}
 
 	/* If user specified endianness, respect it */
 	if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
