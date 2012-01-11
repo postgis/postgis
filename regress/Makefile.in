@@ -22,8 +22,6 @@ PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
 
-#wkt \
-
 TESTS = \
 	loader/Point \
 	loader/PointM \
@@ -86,6 +84,8 @@ TESTS = \
 	dump \
 	dumppoints \
 	wmsservers_new \
+	wkt \
+	wkb \
 	tickets \
 	remove_repeated_points \
 	split \
