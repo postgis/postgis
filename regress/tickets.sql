@@ -507,6 +507,10 @@ SELECT '010C00004002000000010400004001000000010100004000000000000000000000000000
 SELECT '#1453.1', ST_OrderingEquals('POINT EMPTY', 'POINT EMPTY');
 SELECT '#1453.2', ST_OrderingEquals('POINT EMPTY', 'POINT Z EMPTY');
 
+-- #1454
+with inp as ( select 'MULTILINESTRING((0 0, 2 0))'::geometry as g )
+SELECT '#1454', st_orderingequals(g,g) from inp;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 

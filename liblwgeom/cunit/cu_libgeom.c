@@ -699,7 +699,6 @@ static void test_lwgeom_force_clockwise(void)
 static void test_lwgeom_is_empty(void)
 {
 	LWGEOM *geom;
-	char *in_ewkt, *out_ewkt;
 
 	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
 	CU_ASSERT( !lwgeom_is_empty(geom) );
@@ -735,6 +734,101 @@ static void test_lwgeom_is_empty(void)
 
 }
 
+/*
+ * Test lwgeom_same
+ */
+static void test_lwgeom_same(void)
+{
+	LWGEOM *geom, *geom2;
+
+	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_add_bbox(geom);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_add_bbox(geom);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("LINESTRING(0 0, 2 0)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_add_bbox(geom);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTILINESTRING((0 0, 2 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_add_bbox(geom);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_add_bbox(geom);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTIPOINT((0 0),(4 5))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_add_bbox(geom);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POINT EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_add_bbox(geom);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("LINESTRING EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_add_bbox(geom);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POLYGON EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTIPOINT EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTILINESTRING EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("MULTIPOLYGON EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT EMPTY, LINESTRING EMPTY, POLYGON EMPTY, MULTIPOINT EMPTY, MULTILINESTRING EMPTY, MULTIPOLYGON EMPTY, GEOMETRYCOLLECTION(MULTIPOLYGON EMPTY))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( lwgeom_same(geom, geom) );
+	lwgeom_free(geom);
+
+	geom = lwgeom_from_wkt("POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION EMPTY, POINT EMPTY, LINESTRING EMPTY, POLYGON EMPTY, MULTIPOINT EMPTY, MULTILINESTRING EMPTY, MULTIPOLYGON EMPTY, GEOMETRYCOLLECTION(MULTIPOLYGON EMPTY))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( ! lwgeom_same(geom, geom2) );
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
+
+	geom = lwgeom_from_wkt("POINT(0 0)", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("MULTIPOINT((0 0))", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( ! lwgeom_same(geom, geom2) );
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
+
+	geom = lwgeom_from_wkt("POINT EMPTY", LW_PARSER_CHECK_NONE);
+	geom2 = lwgeom_from_wkt("POINT Z EMPTY", LW_PARSER_CHECK_NONE);
+	CU_ASSERT( ! lwgeom_same(geom, geom2) );
+	lwgeom_free(geom);
+	lwgeom_free(geom2);
+
+}
+
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -758,6 +852,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_force_clockwise),
 	PG_TEST(test_lwgeom_calculate_gbox),
 	PG_TEST(test_lwgeom_is_empty),
+	PG_TEST(test_lwgeom_same),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};

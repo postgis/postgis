@@ -126,7 +126,7 @@ int gbox_same(const GBOX *g1, const GBOX *g2)
 		return LW_FALSE;
 
 	if ( g1->xmin != g2->xmin || g1->ymin != g2->ymin ||
-	     g1->xmax != g2->ymax || g1->ymax != g2->ymax ) return LW_FALSE;
+	     g1->xmax != g2->xmax || g1->ymax != g2->ymax ) return LW_FALSE;
 
 	if (FLAGS_GET_Z(g1->flags) && (g1->zmin != g2->zmin || g1->zmax != g2->zmax))
 		return LW_FALSE;
