@@ -39,7 +39,6 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS);
 Datum geography_as_gml(PG_FUNCTION_ARGS);
 Datum geography_as_kml(PG_FUNCTION_ARGS);
 Datum geography_as_svg(PG_FUNCTION_ARGS);
-Datum geography_as_binary(PG_FUNCTION_ARGS);
 Datum geography_from_binary(PG_FUNCTION_ARGS);
 Datum geography_from_geometry(PG_FUNCTION_ARGS);
 Datum geometry_from_geography(PG_FUNCTION_ARGS);
@@ -516,44 +515,6 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 	/* Clean up and return */
 	pfree(wkt);
 	PG_RETURN_DATUM(rv);
-}
-
-/*
-** geography_as_binary(*GSERIALIZED) returns bytea
-*/
-PG_FUNCTION_INFO_V1(geography_as_binary);
-Datum geography_as_binary(PG_FUNCTION_ARGS)
-{
-	LWGEOM *lwgeom = NULL;
-	uint8_t *wkb = NULL;
-	bytea *wkb_result;
-	size_t wkb_size = 0;
-	GSERIALIZED *g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-	/* Get our lwgeom form */
-	lwgeom = lwgeom_from_gserialized(g);
-
-	if ( gserialized_ndims(g) > 2 )
-	{
-		/* Strip out the higher dimensions */
-		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
-		lwgeom_free(lwgeom);
-		lwgeom = tmp;
-	}
-	
-	/* Create WKB */
-	wkb = lwgeom_to_wkb(lwgeom, WKB_SFSQL, &wkb_size);
-	
-	/* Copy to varlena pointer */
-	wkb_result = palloc(wkb_size + VARHDRSZ);
-	SET_VARSIZE(wkb_result, wkb_size + VARHDRSZ);
-	memcpy(VARDATA(wkb_result), wkb, wkb_size);
-
-	/* Clean up */
-	pfree(wkb);
-	lwgeom_free(lwgeom);
-
-	PG_RETURN_BYTEA_P(wkb_result);
 }
 
 /*

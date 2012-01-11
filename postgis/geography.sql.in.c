@@ -111,19 +111,6 @@ CREATE OR REPLACE FUNCTION ST_GeogFromText(text)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
-	RETURNS bytea
-	AS 'MODULE_PATHNAME','geography_as_binary'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-	
--- Availability: 1.5.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
--- TODO Remove in 2.0
-CREATE OR REPLACE FUNCTION ST_AsBinary(text)
-	RETURNS bytea AS
-	$$ SELECT ST_AsBinary($1::geometry);  $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
-
--- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeogFromWKB(bytea)
 	RETURNS geography
 	AS 'MODULE_PATHNAME','geography_from_binary'
@@ -684,6 +671,19 @@ CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 	RETURNS geometry AS
 	$$ SELECT ST_Intersection($1::geometry, $2::geometry);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
+	RETURNS bytea AS
+	$$ SELECT ST_AsBinary($1::geometry);  $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsBinary(geography,text)
+	RETURNS bytea AS
+	$$ SELECT ST_AsBinary($1::geometry, $2);  $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	
 
 -----------------------------------------------------------------------------
 
