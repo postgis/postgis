@@ -828,14 +828,6 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	lwgeom = lwgeom_from_gserialized(geom);
 
-	/* Get a 2D version of the geometry if necessary */
-	if ( lwgeom_ndims(lwgeom) > 2 )
-	{
-		LWGEOM *lwgeom2d = lwgeom_force_2d(lwgeom);
-		lwgeom_free(lwgeom);
-		lwgeom = lwgeom2d;
-	}
-
 	/* Write to WKT and free the geometry */
 	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &wkt_size);
 	lwgeom_free(lwgeom);
