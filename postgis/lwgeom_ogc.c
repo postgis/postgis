@@ -794,7 +794,7 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 	geom = (GSERIALIZED *)DatumGetPointer(DirectFunctionCall1(
 	                                        LWGEOMFromWKB, PG_GETARG_DATUM(0)));
 
-	if ( gserialized_get_srid(geom) != SRID_UNKNOWN || gserialized_has_z(geom) != 0 )
+	if ( gserialized_get_srid(geom) != SRID_UNKNOWN )
 	{
 		elog(WARNING, "OGC WKB expected, EWKB provided - use GeometryFromEWKB() for this");
 	}
