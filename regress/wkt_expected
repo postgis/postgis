@@ -1,47 +1,47 @@
-POINT EMPTY
+POINT EMPTY|POINT EMPTY|t
 ERROR:  parse error - invalid geometry
 HINT:  "POINT(EMPTY" <-- parse error at position 11 within geometry
-POINT(0 0)
+POINT(0 0)|POINT(0 0)|t
 ERROR:  parse error - invalid geometry
 HINT:  "POINT((" <-- parse error at position 7 within geometry
-MULTIPOINT EMPTY
+MULTIPOINT EMPTY|MULTIPOINT EMPTY|t
 ERROR:  parse error - invalid geometry
 HINT:  "MULTIPOINT(EMPTY" <-- parse error at position 16 within geometry
-MULTIPOINT(0 0,2 0)
-MULTIPOINT(0 0,2 0)
+MULTIPOINT(0 0, 2 0)|MULTIPOINT(0 0,2 0)|t
+MULTIPOINT((0 0), (2 0))|MULTIPOINT(0 0,2 0)|t
 ERROR:  parse error - invalid geometry
 HINT:  "MULTIPOINT((0 0), (2 0), EMPTY" <-- parse error at position 30 within geometry
-LINESTRING EMPTY
+LINESTRING EMPTY|LINESTRING EMPTY|t
 ERROR:  parse error - invalid geometry
 HINT:  "LINESTRING(EMPTY" <-- parse error at position 16 within geometry
-LINESTRING(0 0,1 1)
+LINESTRING(0 0, 1 1)|LINESTRING(0 0,1 1)|t
 ERROR:  parse error - invalid geometry
 HINT:  "LINESTRING((" <-- parse error at position 12 within geometry
 ERROR:  parse error - invalid geometry
 HINT:  "LINESTRING((" <-- parse error at position 12 within geometry
-MULTILINESTRING EMPTY
+MULTILINESTRING EMPTY|MULTILINESTRING EMPTY|t
 ERROR:  parse error - invalid geometry
 HINT:  "MULTILINESTRING(EMPTY" <-- parse error at position 21 within geometry
 ERROR:  parse error - invalid geometry
 HINT:  "MULTILINESTRING(0" <-- parse error at position 17 within geometry
-MULTILINESTRING((0 0,2 0))
-MULTILINESTRING((0 0,2 0),(1 1,2 2))
+MULTILINESTRING((0 0, 2 0))|MULTILINESTRING((0 0,2 0))|t
+MULTILINESTRING((0 0, 2 0), (1 1, 2 2))|MULTILINESTRING((0 0,2 0),(1 1,2 2))|t
 ERROR:  parse error - invalid geometry
 HINT:  "...ESTRING((0 0, 2 0), (1 1, 2 2), EMPTY" <-- parse error at position 45 within geometry
 ERROR:  parse error - invalid geometry
 HINT:  "...STRING((0 0, 2 0), (1 1, 2 2), (EMPTY" <-- parse error at position 46 within geometry
-POLYGON EMPTY
+POLYGON EMPTY|POLYGON EMPTY|t
 ERROR:  parse error - invalid geometry
 HINT:  "POLYGON(EMPTY" <-- parse error at position 13 within geometry
-POLYGON((0 0,1 0,1 1,0 1,0 0))
-POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2))
-MULTIPOLYGON EMPTY
+POLYGON((0 0,1 0,1 1,0 1,0 0))|POLYGON((0 0,1 0,1 1,0 1,0 0))|t
+POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2))|POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2))|t
+MULTIPOLYGON EMPTY|MULTIPOLYGON EMPTY|t
 ERROR:  parse error - invalid geometry
 HINT:  "MULTIPOLYGON(EMPTY" <-- parse error at position 18 within geometry
 ERROR:  parse error - invalid geometry
 HINT:  "MULTIPOLYGON((EMPTY" <-- parse error at position 19 within geometry
-MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2)))
-GEOMETRYCOLLECTION EMPTY
+MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2)))|MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2)))|t
+GEOMETRYCOLLECTION EMPTY|GEOMETRYCOLLECTION EMPTY|t
 ERROR:  parse error - invalid geometry
 HINT:  "GEOMETRYCOLLECTION(EMPTY" <-- parse error at position 24 within geometry
 ERROR:  parse error - invalid geometry

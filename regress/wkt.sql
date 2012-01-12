@@ -1,40 +1,168 @@
-select ST_astext('POINT EMPTY');
-select ST_astext('POINT(EMPTY)');
-select ST_astext('POINT(0 0)');
-select ST_astext('POINT((0 0))');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'POINT EMPTY'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'POINT(EMPTY)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'POINT(0 0)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'POINT((0 0))'
+::text as g ) as foo;
 
-select ST_astext('MULTIPOINT EMPTY');
-select ST_astext('MULTIPOINT(EMPTY)');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOINT EMPTY'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOINT(EMPTY)'
+::text as g ) as foo;
 -- This is supported for backward compatibility
-select ST_astext('MULTIPOINT(0 0, 2 0)');
-select ST_astext('MULTIPOINT((0 0), (2 0))');
-select ST_astext('MULTIPOINT((0 0), (2 0), EMPTY)');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOINT(0 0, 2 0)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOINT((0 0), (2 0))'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOINT((0 0), (2 0), EMPTY)'
+::text as g ) as foo;
 
-select ST_astext('LINESTRING EMPTY');
-select ST_astext('LINESTRING(EMPTY)');
-select ST_astext('LINESTRING(0 0, 1 1)');
-select ST_astext('LINESTRING((0 0, 1 1))');
-select ST_astext('LINESTRING((0 0), (1 1))');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'LINESTRING EMPTY'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'LINESTRING(EMPTY)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'LINESTRING(0 0, 1 1)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'LINESTRING((0 0, 1 1))'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'LINESTRING((0 0), (1 1))'
+::text as g ) as foo;
 
-select ST_astext('MULTILINESTRING EMPTY');
-select ST_astext('MULTILINESTRING(EMPTY)');
-select ST_astext('MULTILINESTRING(0 0, 2 0)');
-select ST_astext('MULTILINESTRING((0 0, 2 0))');
-select ST_astext('MULTILINESTRING((0 0, 2 0), (1 1, 2 2))');
-select ST_astext('MULTILINESTRING((0 0, 2 0), (1 1, 2 2), EMPTY)');
-select ST_astext('MULTILINESTRING((0 0, 2 0), (1 1, 2 2), (EMPTY))');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTILINESTRING EMPTY'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTILINESTRING(EMPTY)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTILINESTRING(0 0, 2 0)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTILINESTRING((0 0, 2 0))'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTILINESTRING((0 0, 2 0), (1 1, 2 2))'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTILINESTRING((0 0, 2 0), (1 1, 2 2), EMPTY)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTILINESTRING((0 0, 2 0), (1 1, 2 2), (EMPTY))'
+::text as g ) as foo;
 
-select ST_astext('POLYGON EMPTY');
-select ST_astext('POLYGON(EMPTY)');
-select ST_astext('POLYGON((0 0,1 0,1 1,0 1,0 0))');
-select ST_astext('POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2))');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'POLYGON EMPTY'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'POLYGON(EMPTY)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'POLYGON((0 0,1 0,1 1,0 1,0 0))'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'POLYGON((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2))'
+::text as g ) as foo;
 
-select ST_astext('MULTIPOLYGON EMPTY');
-select ST_astext('MULTIPOLYGON(EMPTY)');
-select ST_astext('MULTIPOLYGON((EMPTY))');
-select ST_astext('MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2)))');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOLYGON EMPTY'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOLYGON(EMPTY)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOLYGON((EMPTY))'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2)))'
+::text as g ) as foo;
 
-select ST_astext('GEOMETRYCOLLECTION EMPTY');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'GEOMETRYCOLLECTION EMPTY'
+::text as g ) as foo;
 -- This is supported for backward compatibility
-select ST_astext('GEOMETRYCOLLECTION(EMPTY)');
-select ST_astext('GEOMETRYCOLLECTION((EMPTY))');
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'GEOMETRYCOLLECTION(EMPTY)'
+::text as g ) as foo;
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'GEOMETRYCOLLECTION((EMPTY))'
+::text as g ) as foo;
