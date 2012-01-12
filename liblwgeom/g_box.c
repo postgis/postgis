@@ -577,8 +577,11 @@ void gbox_float_round(GBOX *gbox)
 	gbox->ymin = next_float_down(gbox->ymin);
 	gbox->ymax = next_float_up(gbox->ymax);
 
-	gbox->mmin = next_float_down(gbox->mmin);
-	gbox->mmax = next_float_up(gbox->mmax);
+	if ( FLAGS_GET_M(gbox->flags) )
+	{
+		gbox->mmin = next_float_down(gbox->mmin);
+		gbox->mmax = next_float_up(gbox->mmax);
+	}
 
 	if ( FLAGS_GET_Z(gbox->flags) )
 	{
