@@ -232,32 +232,55 @@ static void test_lwgeom_from_gserialized(void)
 
 	char ewkt[][512] =
 	{
+		"POINT EMPTY",
 		"POINT(0 0.2)",
+		"LINESTRING EMPTY",
 		"LINESTRING(-1 -1,-1 2.5,2 2,2 -1)",
+		"MULTIPOINT EMPTY",
 		"MULTIPOINT(0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9,0.9 0.9)",
+		"SRID=1;MULTILINESTRING EMPTY",
 		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
 		"SRID=1;MULTILINESTRING((-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1),(-1 -1,-1 2.5,2 2,2 -1))",
 		"POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
+		"POLYGON EMPTY",
 		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0))",
+		"SRID=4326;POLYGON EMPTY",
 		"SRID=4326;POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))",
 		"SRID=100000;POLYGON((-1 -1 3,-1 2.5 3,2 2 3,2 -1 3,-1 -1 3),(0 0 3,0 1 3,1 1 3,1 0 3,0 0 3),(-0.5 -0.5 3,-0.5 -0.4 3,-0.4 -0.4 3,-0.4 -0.5 3,-0.5 -0.5 3))",
 		"SRID=4326;MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)),((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5)))",
+		"SRID=4326;MULTIPOLYGON EMPTY",
 		"SRID=4326;GEOMETRYCOLLECTION(POINT(0 1),POLYGON((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0)),MULTIPOLYGON(((-1 -1,-1 2.5,2 2,2 -1,-1 -1),(0 0,0 1,1 1,1 0,0 0),(-0.5 -0.5,-0.5 -0.4,-0.4 -0.4,-0.4 -0.5,-0.5 -0.5))))",
+		"SRID=4326;GEOMETRYCOLLECTION EMPTY",
+		"SRID=4326;GEOMETRYCOLLECTION(POINT EMPTY, MULTIPOLYGON EMPTY)",
 		"MULTICURVE((5 5 1 3,3 5 2 2,3 3 3 1,0 3 1 1),CIRCULARSTRING(0 0 0 0,0.26794 1 3 -2,0.5857864 1.414213 1 2))",
 		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(-2 0,-1 -1,0 0,1 -1,2 0,0 2,-2 0),(-1 0,0 0.5,1 0,0 1,-1 0)),((7 8,10 10,6 14,4 11,7 8)))",
+		"MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING EMPTY))",
 	};
 
 	for ( i = 0; i < 13; i++ )
 	{
+		LWGEOM* geom2;
+
 		in_ewkt = ewkt[i];
 		geom = lwgeom_from_wkt(in_ewkt, LW_PARSER_CHECK_NONE);
+		lwgeom_add_bbox(geom);
+		if ( geom->bbox ) gbox_float_round(geom->bbox);
 		g = gserialized_from_lwgeom(geom, 0, 0);
-		lwgeom_free(geom);
-		geom = lwgeom_from_gserialized(g);
-		out_ewkt = lwgeom_to_ewkt(geom);
-		//printf("\n in = %s\nout = %s\n", in_ewkt, out_ewkt);
+
+		geom2 = lwgeom_from_gserialized(g);
+		out_ewkt = lwgeom_to_ewkt(geom2);
+
+		/* printf("\n in = %s\nout = %s\n", in_ewkt, out_ewkt); */
 		CU_ASSERT_STRING_EQUAL(in_ewkt, out_ewkt);
+
+		/* either both or none of the bboxes are null */
+		CU_ASSERT( (geom->bbox != NULL) || (geom2->bbox == NULL) );
+
+		/* either both are null or they are the same */
+		CU_ASSERT(geom->bbox == NULL || gbox_same(geom->bbox, geom2->bbox));
+
 		lwgeom_free(geom);
+		lwgeom_free(geom2);
 		lwfree(g);
 		lwfree(out_ewkt);
 	}

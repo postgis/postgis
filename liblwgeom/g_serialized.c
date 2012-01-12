@@ -175,6 +175,14 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 		{
 			int i = 1; /* Start past <pointtype><padding> */
 			double *dptr = (double*)(g->data);
+
+			/* Read the empty flag */
+			int *iptr = (int*)(g->data);
+			int isempty = (iptr[1] == 0);
+
+			/* EMPTY point has no box */
+			if ( isempty ) return LW_FAILURE;
+
 			gbox->xmin = gbox->xmax = dptr[i++];
 			gbox->ymin = gbox->ymax = dptr[i++];
 			if ( FLAGS_GET_Z(g->flags) )
