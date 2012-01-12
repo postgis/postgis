@@ -223,6 +223,25 @@ static void test_wkt_in_collection(void)
  	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	CU_ASSERT_STRING_EQUAL(r,s);
 	lwfree(r);
+
+	s = "GEOMETRYCOLLECTION Z (POINT Z (0 0 0))";
+	r = cu_wkt_in(s, WKT_ISO);
+ 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	s = "GEOMETRYCOLLECTION M (MULTILINESTRING M ((0 0 5,2 0 5),(1 1 5,2 2 5)))";
+	r = cu_wkt_in(s, WKT_ISO);
+ 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
+
+	/* See http://trac.osgeo.org/postgis/ticket/1455#comment:3 */
+	s = "GEOMETRYCOLLECTION Z (MULTILINESTRING Z ((0 0 5,2 0 5),(1 1 5,2 2 5)))";
+	r = cu_wkt_in(s, WKT_ISO);
+ 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
+	CU_ASSERT_STRING_EQUAL(r,s);
+	lwfree(r);
 }
 
 static void test_wkt_in_circularstring(void)
