@@ -740,24 +740,70 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 }
 
 LWCOLLECTION*
-lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, double to)
+lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, double to, double offset)
 {
+	LWCOLLECTION *out_col;
+	LWCOLLECTION *out_offset;
+	int i;
+	
 	if ( ! lwin )
 		lwerror("lwgeom_clip_to_ordinate_range: null input geometry!");
 		
 	switch ( lwin->type )
 	{
 		case LINETYPE:
-			return lwline_clip_to_ordinate_range((LWLINE*)lwin, ordinate, from, to);
+			out_col = lwline_clip_to_ordinate_range((LWLINE*)lwin, ordinate, from, to);
+			break;
 		case MULTILINETYPE:
-			return lwmline_clip_to_ordinate_range((LWMLINE*)lwin, ordinate, from, to);
+			out_col = lwmline_clip_to_ordinate_range((LWMLINE*)lwin, ordinate, from, to);
+			break;
 		case MULTIPOINTTYPE:
-			return lwmpoint_clip_to_ordinate_range((LWMPOINT*)lwin, ordinate, from, to);
+			out_col = lwmpoint_clip_to_ordinate_range((LWMPOINT*)lwin, ordinate, from, to);
+			break;
 		case POINTTYPE:
-			return lwpoint_clip_to_ordinate_range((LWPOINT*)lwin, ordinate, from, to);
+			out_col = lwpoint_clip_to_ordinate_range((LWPOINT*)lwin, ordinate, from, to);
+			break;
 		default:
 			lwerror("This function does not accept %s geometries.", lwtype_name(lwin->type));
+			return NULL;;
+	}
+	
+	/* Stop if result is NULL */
+	if ( out_col == NULL )
+		lwerror("lwgeom_clip_to_ordinate_range clipping routine returned NULL");
+	
+	/* Return if we aren't going to offset the result */
+	if ( FP_EQUALS(offset, 0.0) || lwgeom_is_empty(lwcollection_as_lwgeom(out_col)) )
+		return out_col;
+	
+	/* Construct a collection to hold our outputs. */
+	/* Things get ugly: GEOS offset drops Z's and M's so we have to drop ours */
+	out_offset = lwcollection_construct_empty(MULTILINETYPE, lwin->srid, 0, 0);
+	
+	/* Try and offset the linear portions of the return value */
+	for ( i = 0; i < out_col->ngeoms; i++ )
+	{
+		int type = out_col->geoms[i]->type;
+		if ( type == POINTTYPE )
+		{
+			lwnotice("lwgeom_clip_to_ordinate_range cannot offset a clipped point");
+			continue;
+		}
+		else if ( type == LINETYPE )
+		{
+			/* lwgeom_offsetcurve(line, offset, quadsegs, joinstyle (round), mitrelimit) */
+			LWGEOM *lwoff = lwgeom_offsetcurve(lwgeom_as_lwline(out_col->geoms[i]), offset, 8, 1, 5.0);
+			if ( ! lwoff )
+			{
+				lwerror("lwgeom_offsetcurve returned null");
+			}
+			lwcollection_add_lwgeom(out_offset, lwoff);
+		}
+		else 
+		{
+			lwerror("lwgeom_clip_to_ordinate_range found an unexpected type (%s) in the offset routine",lwtype_name(type));
+		}
 	}
 
-	return NULL;
+	return out_offset;
 }
