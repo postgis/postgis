@@ -32,7 +32,6 @@
 /* Prototypes */
 Datum LWGEOM_simplify2d(PG_FUNCTION_ARGS);
 Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS);
-Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS);
 
 double determineSide(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
 int isOnSegment(POINT2D *seg1, POINT2D *seg2, POINT2D *point);
@@ -667,50 +666,7 @@ Datum ST_LineCrossingDirection(PG_FUNCTION_ARGS)
 
 }
 
-PG_FUNCTION_INFO_V1(ST_LocateBetweenElevations);
-Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom_in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	double from = PG_GETARG_FLOAT8(1);
-	double to = PG_GETARG_FLOAT8(2);
-	LWCOLLECTION *geom_out = NULL;
-	LWGEOM *line_in = NULL;
-	char geomtype = gserialized_get_type(geom_in);
-	static int ordinate = 2; /* Z */
 
-	if ( ! ( geomtype == LINETYPE || geomtype == MULTILINETYPE ) )
-	{
-		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING as arguments.");
-		PG_RETURN_NULL();
-	}
-
-	line_in = lwgeom_from_gserialized(geom_in);
-
-	if ( ! FLAGS_GET_Z(line_in->flags) )
-	{
-		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING with Z values as arguments.");
-		PG_RETURN_NULL();
-	}
-
-	if ( geomtype == LINETYPE )
-	{
-		geom_out = lwline_clip_to_ordinate_range((LWLINE*)line_in, ordinate, from, to);
-	}
-	else if ( geomtype == MULTILINETYPE )
-	{
-		geom_out = lwmline_clip_to_ordinate_range((LWMLINE*)line_in, ordinate, from, to);
-	}
-	lwgeom_free(line_in);
-
-	if ( ! geom_out )
-	{
-		elog(ERROR,"The lwline_clip_to_ordinate_range returned null.");
-		PG_RETURN_NULL();
-	}
-
-	PG_FREE_IF_COPY(geom_in, 0);
-	PG_RETURN_POINTER(geometry_serialize((LWGEOM*)geom_out));
-}
 
 /***********************************************************************
  * --strk@keybit.net

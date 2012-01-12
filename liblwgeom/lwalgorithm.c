@@ -165,7 +165,7 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 **   LINE_MULTICROSS_END_SAME_FIRST_RIGHT = 3
 **
 */
-int lwline_crossing_direction(LWLINE *l1, LWLINE *l2)
+int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2)
 {
 	int i = 0, j = 0, rv = 0;
 	POINT2D p1, p2, q1, q2;

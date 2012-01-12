@@ -222,7 +222,7 @@ lwgeom_locate_along(const LWGEOM *lwin, double m, double offset)
 * @param ordinate number (1=x, 2=y, 3=z, 4=m)
 * @return d value at that ordinate
 */
-double lwpoint_get_ordinate(const POINT4D *p, int ordinate)
+double lwpoint_get_ordinate(const POINT4D *p, char ordinate)
 {
 	if ( ! p )
 	{
@@ -230,19 +230,22 @@ double lwpoint_get_ordinate(const POINT4D *p, int ordinate)
 		return 0.0;
 	}
 
-	if ( ordinate > 3 || ordinate < 0 )
+	if ( ! ( ordinate == 'X' || ordinate == 'Y' || ordinate == 'Z' || ordinate == 'M' ) )
 	{
-		lwerror("Cannot extract ordinate %d.", ordinate);
+		lwerror("Cannot extract %c ordinate.", ordinate);
 		return 0.0;
 	}
 
-	if ( ordinate == 3 )
-		return p->m;
-	if ( ordinate == 2 )
-		return p->z;
-	if ( ordinate == 1 )
+	if ( ordinate == 'X' )
+		return p->x;
+	if ( ordinate == 'Y' )
 		return p->y;
+	if ( ordinate == 'Z' )
+		return p->z;
+	if ( ordinate == 'M' )
+		return p->m;
 
+	/* X */
 	return p->x;
 
 }
@@ -251,7 +254,7 @@ double lwpoint_get_ordinate(const POINT4D *p, int ordinate)
 * Given a point, ordinate number and value, set that ordinate on the
 * point.
 */
-void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value)
+void lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 {
 	if ( ! p )
 	{
@@ -259,27 +262,27 @@ void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value)
 		return;
 	}
 
-	if ( ordinate > 3 || ordinate < 0 )
+	if ( ! ( ordinate == 'X' || ordinate == 'Y' || ordinate == 'Z' || ordinate == 'M' ) )
 	{
-		lwerror("Cannot extract ordinate %d.", ordinate);
+		lwerror("Cannot set %c ordinate.", ordinate);
 		return;
 	}
 
-	LWDEBUGF(4, "    setting ordinate %d to %g", ordinate, value);
+	LWDEBUGF(4, "    setting ordinate %c to %g", ordinate, value);
 
 	switch ( ordinate )
 	{
-	case 3:
-		p->m = value;
+	case 'X':
+		p->x = value;
 		return;
-	case 2:
-		p->z = value;
-		return;
-	case 1:
+	case 'Y':
 		p->y = value;
 		return;
-	case 0:
-		p->x = value;
+	case 'Z':
+		p->z = value;
+		return;
+	case 'M':
+		p->m = value;
 		return;
 	}
 }
@@ -289,21 +292,22 @@ void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value)
 * generate a new point that is proportionally between the input points,
 * using the values in the provided dimension as the scaling factors.
 */
-int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int ndims, int ordinate, double interpolation_value)
+int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz, int hasm, char ordinate, double interpolation_value)
 {
+	static char* dims = "XYZM";
 	double p1_value = lwpoint_get_ordinate(p1, ordinate);
 	double p2_value = lwpoint_get_ordinate(p2, ordinate);
 	double proportion;
 	int i = 0;
 
-	if ( ordinate < 0 || ordinate >= ndims )
+	if ( ! ( ordinate == 'X' || ordinate == 'Y' || ordinate == 'Z' || ordinate == 'M' ) )
 	{
-		lwerror("Ordinate (%d) is not within ndims (%d).", ordinate, ndims);
+		lwerror("Cannot set %c ordinate.", ordinate);
 		return 0;
 	}
 
 	if ( FP_MIN(p1_value, p2_value) > interpolation_value ||
-	        FP_MAX(p1_value, p2_value) < interpolation_value )
+	     FP_MAX(p1_value, p2_value) < interpolation_value )
 	{
 		lwerror("Cannot interpolate to a value (%g) not between the input points (%g, %g).", interpolation_value, p1_value, p2_value);
 		return 0;
@@ -311,14 +315,16 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int nd
 
 	proportion = fabs((interpolation_value - p1_value) / (p2_value - p1_value));
 
-	for ( i = 0; i < ndims; i++ )
+	for ( i = 0; i < 4; i++ )
 	{
 		double newordinate = 0.0;
-		p1_value = lwpoint_get_ordinate(p1, i);
-		p2_value = lwpoint_get_ordinate(p2, i);
+		if ( dims[i] == 'Z' && ! hasz ) continue;
+		if ( dims[i] == 'M' && ! hasm ) continue;
+		p1_value = lwpoint_get_ordinate(p1, dims[i]);
+		p2_value = lwpoint_get_ordinate(p2, dims[i]);
 		newordinate = p1_value + proportion * (p2_value - p1_value);
-		lwpoint_set_ordinate(p, i, newordinate);
-		LWDEBUGF(4, "   clip ordinate(%d) p1_value(%g) p2_value(%g) proportion(%g) newordinate(%g) ", i, p1_value, p2_value, proportion, newordinate );
+		lwpoint_set_ordinate(p, dims[i], newordinate);
+		LWDEBUGF(4, "   clip ordinate(%c) p1_value(%g) p2_value(%g) proportion(%g) newordinate(%g) ", dims[i], p1_value, p2_value, proportion, newordinate );
 	}
 
 	return 1;
@@ -327,7 +333,8 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int nd
 /**
 * Clip an input MULTILINESTRING between two values, on any ordinate input.
 */
-LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, double from, double to)
+LWCOLLECTION*
+lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from, double to)
 {
 	LWCOLLECTION *lwgeom_out = NULL;
 
@@ -344,8 +351,8 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 	else
 	{
 		LWCOLLECTION *col;
-		char hasz = FLAGS_GET_Z(mline->flags);
-		char hasm = FLAGS_GET_M(mline->flags);
+		char hasz = lwgeom_has_z(lwmline_as_lwgeom(mline));
+		char hasm = lwgeom_has_m(lwmline_as_lwgeom(mline));
 		int i, j;
 		char homogeneous = 1;
 		size_t geoms_size = 0;
@@ -407,7 +414,8 @@ LWCOLLECTION *lwmline_clip_to_ordinate_range(LWMLINE *mline, int ordinate, doubl
 * Take in a LINESTRING and return a MULTILINESTRING of those portions of the
 * LINESTRING between the from/to range for the specified ordinate (XYZM)
 */
-LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double from, double to)
+LWCOLLECTION*
+lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, double to)
 {
 
 	POINTARRAY *pa_in = NULL;
@@ -417,8 +425,8 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	int added_last_point = 0;
 	POINT4D *p = NULL, *q = NULL, *r = NULL;
 	double ordinate_value_p = 0.0, ordinate_value_q = 0.0;
-	char hasz = FLAGS_GET_Z(line->flags);
-	char hasm = FLAGS_GET_M(line->flags);
+	char hasz = lwgeom_has_z(lwline_as_lwgeom(line));
+	char hasm = lwgeom_has_m(lwline_as_lwgeom(line));
 	char dims = FLAGS_NDIMS(line->flags);
 
 	/* Null input, nothing we can do. */
@@ -436,11 +444,11 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 		to = t;
 	}
 
-	LWDEBUGF(4, "from = %g, to = %g, ordinate = %d", from, to, ordinate);
+	LWDEBUGF(4, "from = %g, to = %g, ordinate = %c", from, to, ordinate);
 	LWDEBUGF(4, "%s", lwgeom_to_ewkt((LWGEOM*)line));
 
 	/* Asking for an ordinate we don't have. Error. */
-	if ( ordinate >= dims )
+	if ( (ordinate == 'Z' && ! hasz) || (ordinate == 'M' && ! hasm) )
 	{
 		lwerror("Cannot clip on ordinate %d in a %d-d geometry.", ordinate, dims);
 		return NULL;
@@ -494,7 +502,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				{
 					double interpolation_value;
 					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
-					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
+					rv = lwpoint_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
 					rv = ptarray_append_point(dp, r, LW_FALSE);
 					LWDEBUGF(4, "[0] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
@@ -520,7 +528,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  to the point array at the range boundary. */
 				double interpolation_value;
 				(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
-				rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
+				rv = lwpoint_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
 				rv = ptarray_append_point(dp, r, LW_FALSE);
 				LWDEBUGF(4, " [1] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 			}
@@ -535,7 +543,7 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				{
 					double interpolation_value;
 					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
-					rv = lwpoint_interpolate(q, p, r, dims, ordinate, interpolation_value);
+					rv = lwpoint_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
 					rv = ptarray_append_point(dp, r, LW_FALSE);
 					LWDEBUGF(4, " [2] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
@@ -546,10 +554,10 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  so we need to add *two* interpolated points! */
 				dp = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate lower point. */
-				rv = lwpoint_interpolate(p, q, r, dims, ordinate, from);
+				rv = lwpoint_interpolate(p, q, r, hasz, hasm, ordinate, from);
 				ptarray_set_point4d(dp, 0, r);
 				/* Interpolate upper point. */
-				rv = lwpoint_interpolate(p, q, r, dims, ordinate, to);
+				rv = lwpoint_interpolate(p, q, r, hasz, hasm, ordinate, to);
 				ptarray_set_point4d(dp, 1, r);
 			}
 			else if ( i && ordinate_value_q > to && ordinate_value_p < from )
@@ -558,10 +566,10 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 				*  so we need to add *two* interpolated points! */
 				dp = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate upper point. */
-				rv = lwpoint_interpolate(p, q, r, dims, ordinate, to);
+				rv = lwpoint_interpolate(p, q, r, hasz, hasm, ordinate, to);
 				ptarray_set_point4d(dp, 0, r);
 				/* Interpolate lower point. */
-				rv = lwpoint_interpolate(p, q, r, dims, ordinate, from);
+				rv = lwpoint_interpolate(p, q, r, hasz, hasm, ordinate, from);
 				ptarray_set_point4d(dp, 1, r);
 			}
 			/* We have an extant point-array, save it out to a multi-line. */
@@ -628,4 +636,23 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 
 	return NULL;
 
+}
+
+LWCOLLECTION*
+lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, double to)
+{
+	if ( ! lwin )
+		lwerror("lwgeom_clip_to_ordinate_range: null input geometry!");
+		
+	switch ( lwin->type )
+	{
+		case LINETYPE:
+			return lwline_clip_to_ordinate_range((LWLINE*)lwin, ordinate, from, to);
+		case MULTILINETYPE:
+			return lwmline_clip_to_ordinate_range((LWMLINE*)lwin, ordinate, from, to);
+		default:
+			lwerror("This function only accepts LINESTRING or MULTILINESTRING as arguments.");
+	}
+
+	return NULL;
 }

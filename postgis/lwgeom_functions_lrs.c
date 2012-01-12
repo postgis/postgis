@@ -587,3 +587,72 @@ Datum ST_LocateAlong(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gout);
 }
 
+
+/*
+* Locate the portion of a line between the specified measures
+*/
+Datum ST_LocateBetween(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_LocateBetween);
+Datum ST_LocateBetween(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom_in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double from = PG_GETARG_FLOAT8(1);
+	double to = PG_GETARG_FLOAT8(2);
+	double offset = PG_GETARG_FLOAT8(3);
+	LWCOLLECTION *geom_out = NULL;
+	LWGEOM *line_in = NULL;
+	static char ordinate = 'M'; /* M */
+
+	if ( ! gserialized_has_m(geom_in) )
+	{
+		elog(ERROR,"This function only accepts geometries that have an M dimension.");
+		PG_RETURN_NULL();
+	}
+
+	line_in = lwgeom_from_gserialized(geom_in);
+	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to);	
+	lwgeom_free(line_in);
+	PG_FREE_IF_COPY(geom_in, 0);
+
+	if ( ! geom_out )
+	{
+		elog(ERROR,"lwline_clip_to_ordinate_range returned null");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(geometry_serialize((LWGEOM*)geom_out));
+}
+
+/*
+* Locate the portion of a line between the specified elevations
+*/
+Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_LocateBetweenElevations);
+Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom_in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double from = PG_GETARG_FLOAT8(1);
+	double to = PG_GETARG_FLOAT8(2);
+	LWCOLLECTION *geom_out = NULL;
+	LWGEOM *line_in = NULL;
+	static char ordinate = 'Z'; /* Z */
+
+	if ( ! gserialized_has_z(geom_in) )
+	{
+		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING with Z dimensions.");
+		PG_RETURN_NULL();
+	}
+
+	line_in = lwgeom_from_gserialized(geom_in);
+	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to);	
+	lwgeom_free(line_in);
+	PG_FREE_IF_COPY(geom_in, 0);
+
+	if ( ! geom_out )
+	{
+		elog(ERROR,"lwline_clip_to_ordinate_range returned null");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(geometry_serialize((LWGEOM*)geom_out));
+}

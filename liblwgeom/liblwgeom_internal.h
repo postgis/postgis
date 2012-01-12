@@ -210,13 +210,13 @@ int lw_segment_envelope_intersects(const POINT2D *p1, const POINT2D *p2, const P
 /*
 * Get/Set an enumeratoed ordinate. (x,y,z,m)
 */
-double lwpoint_get_ordinate(const POINT4D *p, int ordinate);
-void lwpoint_set_ordinate(POINT4D *p, int ordinate, double value);
+double lwpoint_get_ordinate(const POINT4D *p, char ordinate);
+void lwpoint_set_ordinate(POINT4D *p, char ordinate, double value);
 
 /* 
 * Generate an interpolated coordinate p given an interpolation value and ordinate to apply it to
 */
-int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int ndims, int ordinate, double interpolation_value);
+int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz, int hasm, char ordinate, double interpolation_value);
 
 /*
 * Geohash

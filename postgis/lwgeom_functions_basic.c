@@ -1033,7 +1033,7 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(LWGEOM_collect);
 Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *pglwgeom1, *pglwgeom2, *result;
+	GSERIALIZED *gser1, *gser2, *result;
 	LWGEOM *lwgeoms[2], *outlwg;
     uint32 type1, type2;
     uint8_t outtype;
@@ -1053,22 +1053,22 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(1))
 		PG_RETURN_DATUM(PG_GETARG_DATUM(0));
 
-	pglwgeom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	pglwgeom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	gser1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	gser2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(gserialized_get_type(pglwgeom1)), lwtype_name(gserialized_get_type(pglwgeom2)));
+	POSTGIS_DEBUGF(3, "LWGEOM_collect(%s, %s): call", lwtype_name(gserialized_get_type(gser1)), lwtype_name(gserialized_get_type(gser2)));
 
-	if ( FLAGS_GET_ZM(pglwgeom1->flags) != FLAGS_GET_ZM(pglwgeom2->flags) )
+	if ( FLAGS_GET_ZM(gser1->flags) != FLAGS_GET_ZM(gser2->flags) )
 	{
 		elog(ERROR,"Cannot ST_Collect geometries with differing dimensionality.");
 		PG_RETURN_NULL();
 	}
 
-	srid = gserialized_get_srid(pglwgeom1);
-	error_if_srid_mismatch(srid, gserialized_get_srid(pglwgeom2));
+	srid = gserialized_get_srid(gser1);
+	error_if_srid_mismatch(srid, gserialized_get_srid(gser2));
 
-	lwgeoms[0] = lwgeom_from_gserialized(pglwgeom1);
-	lwgeoms[1] = lwgeom_from_gserialized(pglwgeom2);
+	lwgeoms[0] = lwgeom_from_gserialized(gser1);
+	lwgeoms[1] = lwgeom_from_gserialized(gser2);
 
 	type1 = lwgeoms[0]->type;
 	type2 = lwgeoms[1]->type;
@@ -1092,8 +1092,8 @@ Datum LWGEOM_collect(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeoms[0]);
 	lwgeom_free(lwgeoms[1]);
 
-	PG_FREE_IF_COPY(pglwgeom1, 0);
-	PG_FREE_IF_COPY(pglwgeom2, 1);
+	PG_FREE_IF_COPY(gser1, 0);
+	PG_FREE_IF_COPY(gser2, 1);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1575,7 +1575,7 @@ Datum LWGEOM_expand(PG_FUNCTION_ARGS)
 
 	gbox_expand(&gbox, d);
 
-	pa = ptarray_construct_empty(FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags), 5);
+	pa = ptarray_construct_empty(lwgeom_has_z(lwgeom), lwgeom_has_m(lwgeom), 5);
 	
 	/* Assign coordinates to POINT2D array */
 	pt.x = gbox.xmin;

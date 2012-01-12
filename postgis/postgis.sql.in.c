@@ -2592,14 +2592,6 @@ CREATE OR REPLACE FUNCTION ST_LineCrossingDirection(geom1 geometry, geom2 geomet
 	$$ SELECT CASE WHEN NOT $1 && $2 THEN 0 ELSE _ST_LineCrossingDirection($1,$2) END $$
 	LANGUAGE 'sql' IMMUTABLE;
 
-
--- Only accepts LINESTRING as parameters.
--- Availability: 1.4.0
-CREATE OR REPLACE FUNCTION ST_LocateBetweenElevations(geometry, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'ST_LocateBetweenElevations'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Requires GEOS >= 3.0.0
 -- Availability: 1.3.3
 CREATE OR REPLACE FUNCTION ST_SimplifyPreserveTopology(geometry, float8)
@@ -4444,7 +4436,7 @@ CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 -- SQL-MM
 ---------------------------------------------------------------
 -- PostGIS equivalent function: ST_ndims(geometry)
-CREATE OR REPLACE FUNCTION ST_CoordDim(geometry)
+CREATE OR REPLACE FUNCTION ST_CoordDim(Geometry geometry)
 	RETURNS smallint
 	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
@@ -4472,25 +4464,25 @@ CREATE OR REPLACE FUNCTION ST_CurveToLine(geometry)
 	RETURNS geometry AS 'SELECT ST_CurveToLine($1, 32)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION ST_HasArc(geometry)
+CREATE OR REPLACE FUNCTION ST_HasArc(Geometry geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_has_arc'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION ST_LineToCurve(geometry)
+CREATE OR REPLACE FUNCTION ST_LineToCurve(Geometry geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_desegmentize'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION _ST_OrderingEquals(geometry, geometry)
+CREATE OR REPLACE FUNCTION _ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_same'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
 -- Availability: 1.3.0
-CREATE OR REPLACE FUNCTION ST_OrderingEquals(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_OrderingEquals(GeometryA geometry, GeometryB geometry)
 	RETURNS boolean
 	AS $$ 
 	SELECT $1 ~= $2 AND _ST_OrderingEquals($1, $2)
@@ -4501,13 +4493,13 @@ CREATE OR REPLACE FUNCTION ST_OrderingEquals(geometry, geometry)
 -- SQL/MM - SQL Functions on type ST_Point
 -------------------------------------------------------------------------------
 
--- PostGIS equivalent function: ST_MakePoint(float8,float8)
+-- PostGIS equivalent function: ST_MakePoint(XCoordinate float8,YCoordinate float8)
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 	
--- PostGIS equivalent function: ST_MakePolygon(geometry)
+-- PostGIS equivalent function: ST_MakePolygon(Geometry geometry)
 CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	RETURNS geometry
 	AS $$ 
@@ -4515,10 +4507,9 @@ CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	$$	
 	LANGUAGE 'SQL' IMMUTABLE STRICT; 
 	
--- PostGIS equivalent function: GeomFromWKB(bytea))
+-- PostGIS equivalent function: GeomFromWKB(WKB bytea))
 -- Note: Defaults to an SRID=-1, not 0 as per SQL/MM specs.
-
-CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
+CREATE OR REPLACE FUNCTION ST_WKBToSQL(WKB bytea)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_WKB'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
@@ -4526,15 +4517,25 @@ CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
 ---
 -- Linear referencing functions
 ---
-CREATE OR REPLACE FUNCTION ST_LocateBetween(Geometry geometry, Measure1 float8, Measure2 float8, Offsets float8 default 0.0)
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_LocateBetween(Geometry geometry, FromMeasure float8, ToMeasure float8, LeftRightOffset float8 default 0.0)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
+	AS 'MODULE_PATHNAME', 'ST_LocateBetween'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
-CREATE OR REPLACE FUNCTION ST_LocateAlong(Geometry geometry, Measure float8, Offsets float8 default 0.0)
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_LocateAlong(Geometry geometry, Measure float8, LeftRightOffset float8 default 0.0)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'ST_LocateAlong'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Only accepts LINESTRING as parameters.
+-- Availability: 1.4.0
+CREATE OR REPLACE FUNCTION ST_LocateBetweenElevations(Geometry geometry, FromElevation float8, ToElevation float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_LocateBetweenElevations'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 
 	
 ---------------------------------------------------------------
