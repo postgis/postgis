@@ -126,25 +126,6 @@ char* gserialized_to_string(const GSERIALIZED *g)
 	return lwgeom_to_wkt(lwgeom_from_gserialized(g), WKT_ISO, 12, 0);
 }
 
-/* TODO: expose to internal API ? */
-static void gbox_float_round(GBOX *gbox)
-{
-	gbox->xmin = next_float_down(gbox->xmin);
-	gbox->xmax = next_float_up(gbox->xmax);
-
-	gbox->ymin = next_float_down(gbox->ymin);
-	gbox->ymax = next_float_up(gbox->ymax);
-
-	gbox->mmin = next_float_down(gbox->mmin);
-	gbox->mmax = next_float_up(gbox->mmax);
-
-	if ( FLAGS_GET_Z(gbox->flags) )
-	{
-		gbox->zmin = next_float_down(gbox->zmin);
-		gbox->zmax = next_float_up(gbox->zmax);
-	}
-}
-
 int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 {
 

@@ -1548,6 +1548,14 @@ extern size_t gbox_serialized_size(uint8_t flags);
 extern int gbox_same(const GBOX *g1, const GBOX *g2);
 
 /**
+ * Round given GBOX to float boundaries
+ *
+ * This turns a GBOX into the version it would become
+ * after a serialize/deserialize round trip.
+ */
+extern void gbox_float_round(GBOX *gbox);
+
+/**
 * Utility function to get type number from string. For example, a string 'POINTZ' 
 * would return type of 1 and z of 1 and m of 0. Valid 
 */
