@@ -1283,9 +1283,9 @@ lw_dist2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B, DISTPTS *dl)
 	 * otherwise, we use comp.graphics.algorithms
 	 * Frequently Asked Questions method
 	 *
-	 *  (1)     	      AC dot AB
-	     *         r = ---------
-	     *               ||AB||^2
+	 *  (1)        AC dot AB
+	 *         r = ---------
+	 *              ||AB||^2
 	 *	r has the following meaning:
 	 *	r=0 P = A
 	 *	r=1 P = B
@@ -1316,7 +1316,7 @@ lw_dist2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B, DISTPTS *dl)
 	{
 		return lw_dist2d_pt_pt(p,A,dl);
 	}
-	if (r>1)	/*If the second vertex B is closest to the point p*/
+	if (r>=1)	/*If the second vertex B is closest or equal to the point p*/
 	{
 		return lw_dist2d_pt_pt(p,B,dl);
 	}

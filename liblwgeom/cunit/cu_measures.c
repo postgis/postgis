@@ -76,6 +76,27 @@ static void test_mindistance2d_tolerance(void)
 	** Geometry Collection Collection Multipoint vs Geometry Collection Collection Multipoint
 	*/
 	do_test_mindistance2d_tolerance("GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(0 0)))", "GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(MULTIPOINT(3 4)))", 5.0);
+
+	/*
+	** Linestring vs its start point 
+	*/
+	do_test_mindistance2d_tolerance("LINESTRING(-2 0, -0.2 0)", "POINT(-2 0)", 0);
+
+	/*
+	** Linestring vs its end point 
+	*/
+	do_test_mindistance2d_tolerance("LINESTRING(-0.2 0, -2 0)", "POINT(-2 0)", 0);
+
+	/*
+	** Linestring vs its start point (tricky number, see #1459)
+	*/
+	do_test_mindistance2d_tolerance("LINESTRING(-1e-8 0, -0.2 0)", "POINT(-1e-8 0)", 0);
+
+	/*
+	** Linestring vs its end point (tricky number, see #1459)
+	*/
+	do_test_mindistance2d_tolerance("LINESTRING(-0.2 0, -1e-8 0)", "POINT(-1e-8 0)", 0);
+
 }
 
 static void test_rect_tree_contains_point(void)
