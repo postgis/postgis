@@ -336,3 +336,21 @@ SELECT g,
 'GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,10 0,10 10,0 10,0 0),(2 2,2 5,5 5,5 2,2 2))),POINT(0 0),MULTILINESTRING((0 0, 2 0),(1 1, 2 2)))'
 ::text as g ) as foo;
 
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'GEOMETRYCOLLECTION Z (MULTIPOLYGON Z (((0 0 5,10 0 5,10 10 5,0 10 5,0 0 5),(2 2 5,2 5 5,5 5 5,5 2 5,2 2 5))),POINT Z (0 0 5),MULTILINESTRING Z ((0 0 5, 2 0 5),(1 1 5, 2 2 5)))'
+::text as g ) as foo;
+
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'GEOMETRYCOLLECTION M (MULTIPOLYGON M (((0 0 5,10 0 5,10 10 5,0 10 5,0 0 5),(2 2 5,2 5 5,5 5 5,5 2 5,2 2 5))),POINT M (0 0 5),MULTILINESTRING M ((0 0 5, 2 0 5),(1 1 5, 2 2 5)))'
+::text as g ) as foo;
+
+SELECT g,
+      ST_AsText(g::geometry),
+      ST_OrderingEquals(g::geometry, St_GeomFromText(ST_AsText(g::geometry))) FROM ( SELECT
+'GEOMETRYCOLLECTION ZM (MULTIPOLYGON ZM (((0 0 5 4,10 0 5 4,10 10 5 4,0 10 5 4,0 0 5 4),(2 2 5 4,2 5 5 4,5 5 5 4,5 2 5 4,2 2 5 4))),POINT ZM (0 0 5 4),MULTILINESTRING ZM ((0 0 5 4, 2 0 5 4),(1 1 5 4, 2 2 5 4)))'
+::text as g ) as foo;
+
