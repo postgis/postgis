@@ -123,4 +123,13 @@ Topology 't4' dropped
 #1302|F1
 #1302|E1|L0|R1
 #1302|E2|L0|R1
-Topology 'tt' dropped
+#1302|Topology 'tt' dropped
+#1383|t
+#1383|E1
+#1383|E2
+#1383|E3
+#1383|F1
+#1383|E1|L0|R1
+#1383|E2|L0|R1
+#1383|E3|L0|R1
+#1383|Topology 'tt' dropped

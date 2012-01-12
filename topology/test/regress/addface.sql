@@ -192,5 +192,23 @@ SELECT '#1302', 'F' || topology.addFace('tt', '0103000000010000000500000000917E9
 
 SELECT '#1302', 'E' || edge_id, 'L' || left_face, 'R' || right_face FROM tt.edge_data ORDER BY edge_id;
 
-SELECT topology.DropTopology('tt');
+SELECT '#1302', topology.DropTopology('tt');
+-- }
+
+--
+-- Test face ring with endpoint matching edge endpoint
+-- and tricky numbers (see #1383)
+-- {
+--
+SELECT '#1383', CreateTopology('tt') > 0;
+
+SELECT '#1383', 'E' || addEdge('tt', 'LINESTRING(-0.1 -10, -0.2 0)');
+SELECT '#1383', 'E' || addEdge('tt', 'LINESTRING(-0.2 0, -1e-8 0)');
+SELECT '#1383', 'E' || addEdge('tt', 'LINESTRING(-1e-8 0, 1 0, -0.1 -10)');
+
+SELECT '#1383', 'F' || addFace('tt', 'POLYGON((-1e-8 0, 1 0, -0.1 -10, -0.2 0, -0.2 0, -1e-8 0))');
+
+SELECT '#1383', 'E' || edge_id, 'L' || left_face, 'R' || right_face FROM tt.edge_data ORDER BY edge_id;
+
+SELECT '#1383', DropTopology('tt');
 -- }
