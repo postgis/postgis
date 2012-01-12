@@ -218,6 +218,27 @@ void lwpoint_set_ordinate(POINT4D *p, char ordinate, double value);
 */
 int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz, int hasm, char ordinate, double interpolation_value);
 
+
+/**
+* Clip a line based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+*/
+LWCOLLECTION *lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, double to);
+
+/**
+* Clip a multi-line based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+*/
+LWCOLLECTION *lwmline_clip_to_ordinate_range(const LWMLINE *mline, char ordinate, double from, double to);
+
+/**
+* Clip a multi-point based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+*/
+LWCOLLECTION *lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double from, double to);
+
+/**
+* Clip a point based on the from/to range of one of its ordinates. Use for m- and z- clipping 
+*/
+LWCOLLECTION *lwpoint_clip_to_ordinate_range(const LWPOINT *mpoint, char ordinate, double from, double to);
+
 /*
 * Geohash
 */

@@ -330,6 +330,107 @@ int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int ha
 	return 1;
 }
 
+
+/**
+* Clip an input POINT between two values, on any ordinate input.
+*/
+LWCOLLECTION*
+lwpoint_clip_to_ordinate_range(const LWPOINT *point, char ordinate, double from, double to)
+{
+	LWCOLLECTION *lwgeom_out = NULL;
+	char hasz, hasm;
+	POINT4D p4d;
+	double ordinate_value;
+
+	/* Nothing to do with NULL */
+	if ( ! point )
+		lwerror("Null input geometry.");
+
+	/* Ensure 'from' is less than 'to'. */
+	if ( to < from )
+	{
+		double t = from;
+		from = to;
+		to = t;
+	}
+
+	/* Read Z/M info */
+	hasz = lwgeom_has_z(lwpoint_as_lwgeom(point));
+	hasm = lwgeom_has_m(lwpoint_as_lwgeom(point));
+	
+	/* Prepare return object */
+	lwgeom_out = lwcollection_construct_empty(MULTIPOINTTYPE, point->srid, hasz, hasm);
+
+	/* Test if ordinate is in range */
+	lwpoint_getPoint4d_p(point, &p4d);	
+	ordinate_value = lwpoint_get_ordinate(&p4d, ordinate);
+	if ( from <= ordinate_value && to >= ordinate_value )
+	{
+		LWPOINT *lwp = lwpoint_clone(point);
+		lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(lwp));
+	}
+	
+	/* Set the bbox */
+	lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
+	lwgeom_add_bbox((LWGEOM*)lwgeom_out);
+
+	return lwgeom_out;
+}
+
+
+
+/**
+* Clip an input MULTIPOINT between two values, on any ordinate input.
+*/
+LWCOLLECTION*
+lwmpoint_clip_to_ordinate_range(const LWMPOINT *mpoint, char ordinate, double from, double to)
+{
+	LWCOLLECTION *lwgeom_out = NULL;
+	char hasz, hasm;
+	int i;
+
+	/* Nothing to do with NULL */
+	if ( ! mpoint )
+		lwerror("Null input geometry.");
+
+	/* Ensure 'from' is less than 'to'. */
+	if ( to < from )
+	{
+		double t = from;
+		from = to;
+		to = t;
+	}
+
+	/* Read Z/M info */
+	hasz = lwgeom_has_z(lwmpoint_as_lwgeom(mpoint));
+	hasm = lwgeom_has_m(lwmpoint_as_lwgeom(mpoint));
+	
+	/* Prepare return object */
+	lwgeom_out = lwcollection_construct_empty(MULTIPOINTTYPE, mpoint->srid, hasz, hasm);
+
+	/* For each point, is its ordinate value between from and to? */
+	for ( i = 0; i < mpoint->ngeoms; i ++ )
+	{
+		POINT4D p4d;
+		double ordinate_value;
+		
+		lwpoint_getPoint4d_p(mpoint->geoms[i], &p4d);
+		ordinate_value = lwpoint_get_ordinate(&p4d, ordinate);
+		
+		if ( from <= ordinate_value && to >= ordinate_value )
+		{
+			LWPOINT *lwp = lwpoint_clone(mpoint->geoms[i]);
+			lwcollection_add_lwgeom(lwgeom_out, lwpoint_as_lwgeom(lwp));
+		}
+	}
+	
+	/* Set the bbox */
+	lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
+	lwgeom_add_bbox((LWGEOM*)lwgeom_out);
+
+	return lwgeom_out;
+}
+
 /**
 * Clip an input MULTILINESTRING between two values, on any ordinate input.
 */
@@ -650,8 +751,12 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 			return lwline_clip_to_ordinate_range((LWLINE*)lwin, ordinate, from, to);
 		case MULTILINETYPE:
 			return lwmline_clip_to_ordinate_range((LWMLINE*)lwin, ordinate, from, to);
+		case MULTIPOINTTYPE:
+			return lwmpoint_clip_to_ordinate_range((LWMPOINT*)lwin, ordinate, from, to);
+		case POINTTYPE:
+			return lwpoint_clip_to_ordinate_range((LWPOINT*)lwin, ordinate, from, to);
 		default:
-			lwerror("This function only accepts LINESTRING or MULTILINESTRING as arguments.");
+			lwerror("This function does not accept %s geometries.", lwtype_name(lwin->type));
 	}
 
 	return NULL;
