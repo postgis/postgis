@@ -645,7 +645,7 @@ f
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />, <xref linkend="ST_Geometry_Same" />
+			<para><xref linkend="ST_Equals" />, <xref linkend="ST_OrderingEquals" />
 			<!--, <xref linkend="ST_Geometry_LT" />, <xref linkend="ST_Geometry_GT" /> --></para>
 		  </refsection>
 		</refentry>
