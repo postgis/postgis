@@ -543,7 +543,7 @@ CREATE OPERATOR CLASS gist_geometry_ops_2d
 	OPERATOR        3        &&  ,
 	OPERATOR        4        &>	 ,
 	OPERATOR        5        >>	 ,
---	OPERATOR        6        ~=	 ,
+	OPERATOR        6        ~=	 ,
 	OPERATOR        7        ~	 ,
 	OPERATOR        8        @	 ,
 	OPERATOR        9        &<| ,
