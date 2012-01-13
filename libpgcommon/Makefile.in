@@ -52,7 +52,7 @@ clean:
 distclean:
 
 check: libpgcommon.a
-	make -C cunit check
+	$(MAKE) -C cunit check
 
 # Command to build each of the .o files
 $(SA_OBJS): %.o: %.c 
