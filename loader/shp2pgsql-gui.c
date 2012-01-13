@@ -1954,7 +1954,7 @@ pgui_create_file_table(GtkWidget *frame_shape)
 	g_object_set(geom_column_renderer, "editable", TRUE, NULL);
 	column_indexes[GEOMETRY_COLUMN] = GEOMETRY_COLUMN;
 	g_signal_connect(G_OBJECT(geom_column_renderer), "edited", G_CALLBACK(pgui_action_handle_tree_edit), &column_indexes[GEOMETRY_COLUMN]);
-	geom_column = gtk_tree_view_column_new_with_attributes(_("Geometry Column"),
+	geom_column = gtk_tree_view_column_new_with_attributes(_("Geo Column"),
 	              geom_column_renderer,
 	              "text",
 	              GEOMETRY_COLUMN,
