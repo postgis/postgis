@@ -87,6 +87,7 @@ TESTS = \
 	wkt \
 	wkb \
 	tickets \
+	typmod \
 	remove_repeated_points \
 	split \
 	relate \
