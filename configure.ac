@@ -622,7 +622,7 @@ dnl ===========================================================================
 dnl Detect if json-c installed
 dnl ===========================================================================
 
-HAVE_JSON=No
+HAVE_JSON=no
 
 AC_ARG_WITH([jsondir],
 	[AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
@@ -648,16 +648,16 @@ fi
 dnl Check that we can find the json/json.h header file
 CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$JSON_CPPFLAGS"
-AC_CHECK_HEADER([json/json.h], [HAVE_JSON=Yes], [])	
+AC_CHECK_HEADER([json/json.h], [HAVE_JSON=yes], [])	
 CPPFLAGS="$CPPFLAGS_SAVE"
 
 dnl Ensure we can link against libjson
 LIBS_SAVE="$LIBS"
 LIBS="$JSON_LDFLAGS"
-AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=Yes], [], [])
+AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=yes], [], [])
 LIBS="$LIBS_SAVE"
 
-if test "$HAVE_JSON" = "Yes"; then
+if test "$HAVE_JSON" = "yes"; then
 	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
 fi
 
