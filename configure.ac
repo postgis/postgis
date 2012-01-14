@@ -103,7 +103,7 @@ case $host_os in
                  PWDREGRESS="pwd"
                  ;;
 esac
-AC_DEFINE_UNQUOTED([PWDREGRESS])
+AC_DEFINE_UNQUOTED([PWDREGRESS], [PWDREGRESS], [Define command to determine the current directory during regression])
 AC_SUBST([PWDREGRESS])
 
 
@@ -658,7 +658,7 @@ AC_CHECK_LIB([json], [json_object_get], [HAVE_JSON=Yes], [], [])
 LIBS="$LIBS_SAVE"
 
 if test "$HAVE_JSON" = "Yes"; then
-  AC_DEFINE([HAVE_LIBJSON],1)
+	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
 fi
 
 AC_SUBST([JSON_CPPFLAGS])
@@ -910,7 +910,9 @@ if test "x$RASTER" = "xraster"; then dnl # {
 	AC_MSG_RESULT([found])
 
 	dnl Check if the new polygonize function is present
-	AC_CHECK_LIB([gdal], [GDALFPolygonize], [AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1])], [AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [0])], []) 
+	AC_CHECK_LIB([gdal], [GDALFPolygonize],
+		[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1], [Define to 1 if GDALFPolygonize function is available])], 
+		[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [0], [Define to 1 if GDALFPolygonize function is available])]) 
 
     dnl Extract the linker and include flags 
     LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`

@@ -1,10 +1,35 @@
 /* postgis_config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if translation of program messages to the user's native
+   language is requested. */
+#undef ENABLE_NLS
+
+/* Define to 1 if GDALFPolygonize function is available */
+#undef GDALFPOLYGONIZE
+
+/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+#undef HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+#undef HAVE_CFPREFERENCESCOPYAPPVALUE
+
+/* Define if the GNU dcgettext() function is already present or preinstalled.
+   */
+#undef HAVE_DCGETTEXT
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* Defined if libiconv headers and library are present */
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#undef HAVE_GETTEXT
+
+/* Define if you have the iconv() function and it works. */
 #undef HAVE_ICONV
+
+/* Define to 1 if you have the `iconvctl' function. */
+#undef HAVE_ICONVCTL
 
 /* ieeefp.h header */
 #undef HAVE_IEEEFP_H
@@ -12,14 +37,14 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if the platform supports vasprintf */
-#undef HAVE_VASPRINTF
-
-/* Define to 1 if the platform supports asprintf */
-#undef HAVE_ASPRINTF
-
 /* Define to 1 if you have the `geos_c' library (-lgeos_c). */
 #undef HAVE_LIBGEOS_C
+
+/* Define to 1 if you have the `libiconvctl' function. */
+#undef HAVE_LIBICONVCTL
+
+/* Define to 1 if libjson is present */
+#undef HAVE_LIBJSON
 
 /* Define to 1 if you have the `pq' library (-lpq). */
 #undef HAVE_LIBPQ
@@ -27,8 +52,20 @@
 /* Define to 1 if you have the `proj' library (-lproj). */
 #undef HAVE_LIBPROJ
 
-/* Define to 1 if you have the `json-c' */
-#undef HAVE_LIBJSON
+/* Define to 1 if you have the `xml2' library (-lxml2). */
+#undef HAVE_LIBXML2
+
+/* Define to 1 if you have the <libxml/parser.h> header file. */
+#undef HAVE_LIBXML_PARSER_H
+
+/* Define to 1 if you have the <libxml/tree.h> header file. */
+#undef HAVE_LIBXML_TREE_H
+
+/* Define to 1 if you have the <libxml/xpathInternals.h> header file. */
+#undef HAVE_LIBXML_XPATHINTERNALS_H
+
+/* Define to 1 if you have the <libxml/xpath.h> header file. */
+#undef HAVE_LIBXML_XPATH_H
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -67,6 +104,9 @@
 /* PostGIS library debug level (0=disabled) */
 #undef POSTGIS_DEBUG_LEVEL
 
+/* GDAL library version */
+#undef POSTGIS_GDAL_VERSION
+
 /* GEOS library version */
 #undef POSTGIS_GEOS_VERSION
 
@@ -94,6 +134,30 @@
 /* PROJ library version */
 #undef POSTGIS_PROJ_VERSION
 
+/* PostGIS Raster build date */
+#undef POSTGIS_RASTER_BUILD_DATE
+
+/* PostGIS Raster library version */
+#undef POSTGIS_RASTER_LIB_VERSION
+
+/* PostGIS Raster major version */
+#undef POSTGIS_RASTER_MAJOR_VERSION
+
+/* PostGIS Raster micro version */
+#undef POSTGIS_RASTER_MICRO_VERSION
+
+/* PostGIS Raster minor version */
+#undef POSTGIS_RASTER_MINOR_VERSION
+
+/* PostGIS Raster scripts version */
+#undef POSTGIS_RASTER_SCRIPTS_VERSION
+
+/* PostGIS Raster version */
+#undef POSTGIS_RASTER_VERSION
+
+/* Define to 1 if a warning is outputted every time a double is truncated */
+#undef POSTGIS_RASTER_WARN_ON_TRUNCATION
+
 /* PostGIS scripts version */
 #undef POSTGIS_SCRIPTS_VERSION
 
@@ -102,6 +166,9 @@
 
 /* PostGIS version */
 #undef POSTGIS_VERSION
+
+/* Define command to determine the current directory during regression */
+#undef PWDREGRESS
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
