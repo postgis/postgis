@@ -919,7 +919,7 @@ if test "x$RASTER" = "xraster"; then dnl # {
 	dnl Check if the new polygonize function is present
 	AC_CHECK_LIB([gdal], [GDALFPolygonize],
 		[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1], [Define to 1 if GDALFPolygonize function is available])], 
-		[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [0], [Define to 1 if GDALFPolygonize function is available])]) 
+		[]) 
 
     dnl Extract the linker and include flags 
     LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`

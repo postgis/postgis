@@ -4907,7 +4907,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
     /**
      * We don't need a raster mask band. Each band has a nodata value.
      **/
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
     GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
 #else
     GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);

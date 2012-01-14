@@ -2425,7 +2425,7 @@ main()
 	*/
 
 
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
 		CHECK(FLT_EQ(gv[0].val, 1.8));
 #else
 		CHECK(FLT_EQ(gv[0].val, 2.0));
@@ -2436,7 +2436,7 @@ main()
 		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
 		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
 
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
 		CHECK(FLT_EQ(gv[2].val, 2.8));
 #else
 		CHECK(FLT_EQ(gv[2].val, 3.0));
@@ -2454,7 +2454,7 @@ main()
 
 
 		/* Second test: NODATA value = 1.8 */
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
 		rt = fillRasterToPolygonize(1, 1.8);
 #else
 		rt = fillRasterToPolygonize(1, 2.0);
@@ -2474,7 +2474,7 @@ main()
 		}
 	*/
 
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
 		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
 		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
 
@@ -2499,7 +2499,7 @@ main()
         deepRelease(rt);
 
 		/* Third test: NODATA value = 2.8 */
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
     	rt = fillRasterToPolygonize(1, 2.8);
 #else	
     	rt = fillRasterToPolygonize(1, 3.0);
@@ -2518,7 +2518,7 @@ main()
 		}
 	*/
 
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
     	CHECK(FLT_EQ(gv[0].val, 1.8));
 
 		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
@@ -2555,7 +2555,7 @@ main()
 		}
 		*/
 
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
     	CHECK(FLT_EQ(gv[0].val, 1.8));
 #else
     	CHECK(FLT_EQ(gv[0].val, 2.0));
@@ -2563,7 +2563,7 @@ main()
 
 	   	CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
 
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
     	CHECK(FLT_EQ(gv[1].val, 2.8));
 #else
     	CHECK(FLT_EQ(gv[1].val, 3.0));
@@ -2591,7 +2591,7 @@ main()
 		}
 	*/
 
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
     	CHECK(FLT_EQ(gv[0].val, 1.8));
 #else
     	CHECK(FLT_EQ(gv[0].val, 2.0));
@@ -2602,7 +2602,7 @@ main()
 		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
 		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
 
-#if GDALFPOLYGONIZE == 1
+#ifdef GDALFPOLYGONIZE
     	CHECK(FLT_EQ(gv[2].val, 2.8));
 #else
     	CHECK(FLT_EQ(gv[2].val, 3.0));
