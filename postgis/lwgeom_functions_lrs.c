@@ -16,8 +16,235 @@
 #include "lwgeom_pg.h"
 #include "math.h"
 
+/*
+* Add a measure dimension to a line, interpolating linearly from the
+* start value to the end value.
+* ST_AddMeasure(Geometry, StartMeasure, EndMeasure) returns Geometry
+*/
+Datum ST_AddMeasure(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_AddMeasure);
+Datum ST_AddMeasure(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gin = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gout;
+	double start_measure = PG_GETARG_FLOAT8(1);
+	double end_measure = PG_GETARG_FLOAT8(2);
+	LWGEOM *lwin, *lwout;
+	int type = gserialized_get_type(gin);
 
-Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
+	/* Raise an error if input is not a linestring or multilinestring */
+	if ( type != LINETYPE && type != MULTILINETYPE )
+	{
+		lwerror("Only LINESTRING and MULTILINESTRING are supported");
+		PG_RETURN_NULL();
+	}
+
+	lwin = lwgeom_from_gserialized(gin);
+	if ( type == LINETYPE )
+		lwout = (LWGEOM*)lwline_measured_from_lwline((LWLINE*)lwin, start_measure, end_measure);
+	else
+		lwout = (LWGEOM*)lwmline_measured_from_lwmline((LWMLINE*)lwin, start_measure, end_measure);
+
+	lwgeom_release(lwin);
+
+	if ( lwout == NULL )
+		PG_RETURN_NULL();
+
+	gout = geometry_serialize(lwout);
+	lwgeom_free(lwout);
+
+	PG_RETURN_POINTER(gout);
+}
+
+
+/*
+* Locate a point along a feature based on a measure value.
+* ST_LocateAlong(Geometry, Measure, [Offset]) returns Geometry
+*/
+Datum ST_LocateAlong(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_LocateAlong);
+Datum ST_LocateAlong(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gin = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gout;
+	LWGEOM *lwin = NULL, *lwout = NULL;
+	double measure = PG_GETARG_FLOAT8(1);
+	double offset = PG_GETARG_FLOAT8(2);;
+
+	lwin = lwgeom_from_gserialized(gin);
+	lwout = lwgeom_locate_along(lwin, measure, offset);
+	lwgeom_free(lwin);
+	PG_FREE_IF_COPY(gin, 0);
+
+	if ( ! lwout )
+		PG_RETURN_NULL();
+
+	gout = geometry_serialize(lwout);
+	lwgeom_free(lwout);
+
+	PG_RETURN_POINTER(gout);
+}
+
+
+/*
+* Locate the portion of a line between the specified measures
+*/
+Datum ST_LocateBetween(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_LocateBetween);
+Datum ST_LocateBetween(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom_in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double from = PG_GETARG_FLOAT8(1);
+	double to = PG_GETARG_FLOAT8(2);
+	double offset = PG_GETARG_FLOAT8(3);
+	LWCOLLECTION *geom_out = NULL;
+	LWGEOM *line_in = NULL;
+	static char ordinate = 'M'; /* M */
+
+	if ( ! gserialized_has_m(geom_in) )
+	{
+		elog(ERROR,"This function only accepts geometries that have an M dimension.");
+		PG_RETURN_NULL();
+	}
+
+	/* This should be a call to ST_LocateAlong! */
+	if ( to == from )
+	{
+		PG_RETURN_DATUM(DirectFunctionCall3(ST_LocateAlong, PG_GETARG_DATUM(0), PG_GETARG_DATUM(1), PG_GETARG_DATUM(3)));
+	}
+
+	line_in = lwgeom_from_gserialized(geom_in);
+	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to, offset);	
+	lwgeom_free(line_in);
+	PG_FREE_IF_COPY(geom_in, 0);
+
+	if ( ! geom_out )
+	{
+		elog(ERROR,"lwline_clip_to_ordinate_range returned null");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(geometry_serialize((LWGEOM*)geom_out));
+}
+
+/*
+* Locate the portion of a line between the specified elevations
+*/
+Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_LocateBetweenElevations);
+Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom_in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	double from = PG_GETARG_FLOAT8(1);
+	double to = PG_GETARG_FLOAT8(2);
+	LWCOLLECTION *geom_out = NULL;
+	LWGEOM *line_in = NULL;
+	static char ordinate = 'Z'; /* Z */
+	static double offset = 0.0;
+
+	if ( ! gserialized_has_z(geom_in) )
+	{
+		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING with Z dimensions.");
+		PG_RETURN_NULL();
+	}
+
+	line_in = lwgeom_from_gserialized(geom_in);
+	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to, offset);	
+	lwgeom_free(line_in);
+	PG_FREE_IF_COPY(geom_in, 0);
+
+	if ( ! geom_out )
+	{
+		elog(ERROR,"lwline_clip_to_ordinate_range returned null");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(geometry_serialize((LWGEOM*)geom_out));
+}
+
+
+Datum ST_InterpolatePoint(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(ST_InterpolatePoint);
+Datum ST_InterpolatePoint(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *gser_line = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *gser_point = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWGEOM *lwline;
+	LWPOINT *lwpoint;
+
+	if ( gserialized_get_type(gser_line) != LINETYPE )
+	{
+		elog(ERROR,"ST_InterpolatePoint: 1st argument isn't a line");
+		PG_RETURN_NULL();
+	}
+	if ( gserialized_get_type(gser_point) != POINTTYPE )
+	{
+		elog(ERROR,"ST_InterpolatePoint: 2st argument isn't a point");
+		PG_RETURN_NULL();
+	}
+	if ( gserialized_get_srid(gser_line) != gserialized_get_srid(gser_point) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
+	if ( ! gserialized_has_m(gser_line) )
+	{
+		elog(ERROR,"ST_InterpolatePoint only accepts geometries that have an M dimension");
+		PG_RETURN_NULL();
+	}
+	
+	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(gser_point));
+	lwline = lwgeom_from_gserialized(gser_line);
+	
+	PG_RETURN_FLOAT8(lwgeom_interpolate_point(lwline, lwpoint));
+}
+
+
+Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(LWGEOM_line_locate_point);
+Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+	LWLINE *lwline;
+	LWPOINT *lwpoint;
+	POINTARRAY *pa;
+	POINT4D p, p_proj;
+	double ret;
+
+	if ( gserialized_get_type(geom1) != LINETYPE )
+	{
+		elog(ERROR,"line_locate_point: 1st arg isnt a line");
+		PG_RETURN_NULL();
+	}
+	if ( gserialized_get_type(geom2) != POINTTYPE )
+	{
+		elog(ERROR,"line_locate_point: 2st arg isnt a point");
+		PG_RETURN_NULL();
+	}
+	if ( gserialized_get_srid(geom1) != gserialized_get_srid(geom2) )
+	{
+		elog(ERROR, "Operation on two geometries with different SRIDs");
+		PG_RETURN_NULL();
+	}
+
+	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(geom1));
+	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom2));
+
+	pa = lwline->points;
+	lwpoint_getPoint4d_p(lwpoint, &p);
+
+	ret = ptarray_locate_point(pa, &p, NULL, &p_proj);
+
+	PG_RETURN_FLOAT8(ret);
+}
+
+
+/***********************************************************************
+* LEGACY SUPPORT FOR locate_between_measures and locate_along_measure
+* Deprecated at PostGIS 2.0. To be removed.
+*/
+
 
 typedef struct
 {
@@ -459,6 +686,7 @@ lwgeom_locate_between_m(LWGEOM *lwin, double m0, double m1)
  * See ISO/IEC CD 13249-3:200x(E)
  *
  */
+Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(LWGEOM_locate_between_m);
 Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 {
@@ -470,6 +698,8 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	int hasz = gserialized_has_z(gin);
 	int hasm = gserialized_has_m(gin);
 	int type;
+
+	elog(NOTICE,"ST_Locate_Between_Measures and ST_Locate_Along_Measure are deprecated. Use ST_LocateAlong and ST_LocateBetween.");	
 
 	if ( end_measure < start_measure )
 	{
@@ -517,143 +747,3 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gout);
 }
 
-
-/*
-* Add a measure dimension to a line, interpolating linearly from the
-* start value to the end value.
-* ST_AddMeasure(Geometry, StartMeasure, EndMeasure) returns Geometry
-*/
-Datum ST_AddMeasure(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_AddMeasure);
-Datum ST_AddMeasure(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *gin = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED *gout;
-	double start_measure = PG_GETARG_FLOAT8(1);
-	double end_measure = PG_GETARG_FLOAT8(2);
-	LWGEOM *lwin, *lwout;
-	int type = gserialized_get_type(gin);
-
-	/* Raise an error if input is not a linestring or multilinestring */
-	if ( type != LINETYPE && type != MULTILINETYPE )
-	{
-		lwerror("Only LINESTRING and MULTILINESTRING are supported");
-		PG_RETURN_NULL();
-	}
-
-	lwin = lwgeom_from_gserialized(gin);
-	if ( type == LINETYPE )
-		lwout = (LWGEOM*)lwline_measured_from_lwline((LWLINE*)lwin, start_measure, end_measure);
-	else
-		lwout = (LWGEOM*)lwmline_measured_from_lwmline((LWMLINE*)lwin, start_measure, end_measure);
-
-	lwgeom_release(lwin);
-
-	if ( lwout == NULL )
-		PG_RETURN_NULL();
-
-	gout = geometry_serialize(lwout);
-	lwgeom_free(lwout);
-
-	PG_RETURN_POINTER(gout);
-}
-
-
-/*
-* Locate a point along a feature based on a measure value.
-* ST_LocateAlong(Geometry, Measure, [Offset]) returns Geometry
-*/
-Datum ST_LocateAlong(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_LocateAlong);
-Datum ST_LocateAlong(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *gin = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED *gout;
-	LWGEOM *lwin = NULL, *lwout = NULL;
-	double measure = PG_GETARG_FLOAT8(1);
-	double offset = PG_GETARG_FLOAT8(2);;
-	
-	lwin = lwgeom_from_gserialized(gin);
-	lwout = lwgeom_locate_along(lwin, measure, offset);
-	lwgeom_free(lwin);
-	PG_FREE_IF_COPY(gin, 0);
-	
-	if ( ! lwout )
-		PG_RETURN_NULL();
-	
-	gout = geometry_serialize(lwout);
-	lwgeom_free(lwout);
-
-	PG_RETURN_POINTER(gout);
-}
-
-
-/*
-* Locate the portion of a line between the specified measures
-*/
-Datum ST_LocateBetween(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_LocateBetween);
-Datum ST_LocateBetween(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom_in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	double from = PG_GETARG_FLOAT8(1);
-	double to = PG_GETARG_FLOAT8(2);
-	double offset = PG_GETARG_FLOAT8(3);
-	LWCOLLECTION *geom_out = NULL;
-	LWGEOM *line_in = NULL;
-	static char ordinate = 'M'; /* M */
-
-	if ( ! gserialized_has_m(geom_in) )
-	{
-		elog(ERROR,"This function only accepts geometries that have an M dimension.");
-		PG_RETURN_NULL();
-	}
-
-	line_in = lwgeom_from_gserialized(geom_in);
-	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to, offset);	
-	lwgeom_free(line_in);
-	PG_FREE_IF_COPY(geom_in, 0);
-	
-	if ( ! geom_out )
-	{
-		elog(ERROR,"lwline_clip_to_ordinate_range returned null");
-		PG_RETURN_NULL();
-	}
-
-	PG_RETURN_POINTER(geometry_serialize((LWGEOM*)geom_out));
-}
-
-/*
-* Locate the portion of a line between the specified elevations
-*/
-Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS);
-PG_FUNCTION_INFO_V1(ST_LocateBetweenElevations);
-Datum ST_LocateBetweenElevations(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom_in = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	double from = PG_GETARG_FLOAT8(1);
-	double to = PG_GETARG_FLOAT8(2);
-	LWCOLLECTION *geom_out = NULL;
-	LWGEOM *line_in = NULL;
-	static char ordinate = 'Z'; /* Z */
-	static double offset = 0.0;
-
-	if ( ! gserialized_has_z(geom_in) )
-	{
-		elog(ERROR,"This function only accepts LINESTRING or MULTILINESTRING with Z dimensions.");
-		PG_RETURN_NULL();
-	}
-
-	line_in = lwgeom_from_gserialized(geom_in);
-	geom_out = lwgeom_clip_to_ordinate_range(line_in,  ordinate, from, to, offset);	
-	lwgeom_free(line_in);
-	PG_FREE_IF_COPY(geom_in, 0);
-
-	if ( ! geom_out )
-	{
-		elog(ERROR,"lwline_clip_to_ordinate_range returned null");
-		PG_RETURN_NULL();
-	}
-
-	PG_RETURN_POINTER(geometry_serialize((LWGEOM*)geom_out));
-}

@@ -191,7 +191,7 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends)
 		getPoint4d_p(pa2, 0, &tmp2);
 
 		/* If the end point and start point are the same, then strip off the end point */
-		if (p4d_same(tmp1, tmp2)) 
+		if (p4d_same(&tmp1, &tmp2)) 
 		{
 			pa1->npoints--;
 		}
@@ -879,11 +879,11 @@ END:
  * the given segment to the reference input point.
  */
 void
-closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
+closest_point_on_segment(const POINT4D *p, const POINT4D *A, const POINT4D *B, POINT4D *ret)
 {
 	double r;
 
-	if (  ( A->x == B->x) && (A->y == B->y) )
+	if (  FP_EQUALS(A->x, B->x) && FP_EQUALS(A->y, B->y) )
 	{
 		*ret = *A;
 		return;
@@ -918,6 +918,8 @@ closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
 
 	ret->x = A->x + ( (B->x - A->x) * r );
 	ret->y = A->y + ( (B->y - A->y) * r );
+	ret->z = A->z + ( (B->z - A->z) * r );
+	ret->m = A->m + ( (B->m - A->m) * r );
 }
 
 /*
@@ -925,20 +927,26 @@ closest_point_on_segment(POINT2D *p, POINT2D *A, POINT2D *B, POINT2D *ret)
  * and, optionally, it's actual distance from the point array.
  */
 double
-ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
+ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistout, POINT4D *proj4d)
 {
 	double mindist=-1;
 	double tlen, plen;
 	int t, seg=-1;
-	POINT2D	start, end;
-	POINT2D proj;
+	POINT4D	start4d, end4d, projtmp;
+	POINT2D start, end, proj, p;
+
+	/* Initialize our 2D copy of the input parameter */
+	p.x = p4d->x;
+	p.y = p4d->y;
+	
+	if ( ! proj4d ) proj4d = &projtmp;
 
 	getPoint2d_p(pa, 0, &start);
 	for (t=1; t<pa->npoints; t++)
 	{
 		double dist;
 		getPoint2d_p(pa, t, &end);
-		dist = distance2d_pt_seg(p, &start, &end);
+		dist = distance2d_pt_seg(&p, &start, &end);
 
 		if (t==1 || dist < mindist )
 		{
@@ -964,24 +972,28 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p, double* mindistout)
 	 * If mindist is not 0 we need to project the
 	 * point on the closest segment.
 	 */
-	if ( mindist > 0 )
+	if ( FP_GT(mindist, 0.0) )
 	{
-		getPoint2d_p(pa, seg, &start);
-		getPoint2d_p(pa, seg+1, &end);
-		closest_point_on_segment(p, &start, &end, &proj);
+		getPoint4d_p(pa, seg, &start4d);
+		getPoint4d_p(pa, seg+1, &end4d);
+		closest_point_on_segment(p4d, &start4d, &end4d, proj4d);
 	}
 	else
 	{
-		proj = *p;
+		if ( proj4d)
+			*proj4d = *p4d;
 	}
+	
+	/* Copy 4D values into 2D holder */
+	proj.x = proj4d->x;
+	proj.y = proj4d->y;
 
 	LWDEBUGF(3, "Closest segment:%d, npoints:%d", seg, pa->npoints);
 
 	/* For robustness, force 1 when closest point == endpoint */
-	if ( seg >= (pa->npoints-2) &&
-		( proj.x == end.x) && (proj.y == end.y) )
+	if ( (seg >= (pa->npoints-2)) && p2d_same(&proj, &end) )
 	{
-		return 1;
+		return 1.0;
 	}
 
 	LWDEBUGF(3, "Closest point on segment: %g,%g", proj.x, proj.y);
@@ -1238,9 +1250,18 @@ ptarray_length(const POINTARRAY *pts)
 
 
 int
-p4d_same(POINT4D p1, POINT4D p2)
+p4d_same(const POINT4D *p1, const POINT4D *p2)
 {
-	if( FP_EQUALS(p1.x,p2.x) && FP_EQUALS(p1.y,p2.y) && FP_EQUALS(p1.z,p2.z) && FP_EQUALS(p1.m,p2.m) )
+	if( FP_EQUALS(p1->x,p2->x) && FP_EQUALS(p1->y,p2->y) && FP_EQUALS(p1->z,p2->z) && FP_EQUALS(p1->m,p2->m) )
+		return LW_TRUE;
+	else
+		return LW_FALSE;
+}
+
+int
+p2d_same(const POINT2D *p1, const POINT2D *p2)
+{
+	if( FP_EQUALS(p1->x,p2->x) && FP_EQUALS(p1->y,p2->y) )
 		return LW_TRUE;
 	else
 		return LW_FALSE;

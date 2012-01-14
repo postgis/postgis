@@ -160,7 +160,7 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
                          LWMLINE* v)
 {
 	double loc, dist;
-	POINT2D pt;
+	POINT4D pt, pt_projected;
 	POINTARRAY* pa1;
 	POINTARRAY* pa2;
 	double vstol; /* vertex snap tolerance */
@@ -176,8 +176,8 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	 *      -> Return 1
 	 */
 
-	getPoint2d_p(blade_in->point, 0, &pt);
-	loc = ptarray_locate_point(lwline_in->points, &pt, &dist);
+	getPoint4d_p(blade_in->point, 0, &pt);
+	loc = ptarray_locate_point(lwline_in->points, &pt, &dist, &pt_projected);
 
 	/* lwnotice("Location: %g -- Distance: %g", loc, dist); */
 

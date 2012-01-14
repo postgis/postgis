@@ -154,15 +154,17 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 	return lwmpoint;
 }
 
-static LWPOINT*
+static LWMPOINT*
 lwpoint_locate_along(const LWPOINT *lwpoint, double m, double offset)
 {
-	LWGEOM *lwg = lwpoint_as_lwgeom(lwpoint);
 	double point_m = lwpoint_get_m(lwpoint);
+	LWGEOM *lwg = lwpoint_as_lwgeom(lwpoint);
+	LWMPOINT *r = lwmpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
 	if ( FP_EQUALS(m, point_m) )
-		return lwpoint_clone(lwpoint);
-	else
-		return lwpoint_construct_empty(lwgeom_get_srid(lwg), lwgeom_has_z(lwg), lwgeom_has_m(lwg));
+	{
+		lwmpoint_add_lwpoint(r, lwpoint_clone(lwpoint));
+	}
+	return r;
 }
 
 static LWMPOINT*
@@ -806,4 +808,44 @@ lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, do
 	}
 
 	return out_offset;
+}
+
+LWCOLLECTION*
+lwgeom_locate_between(const LWGEOM *lwin, double from, double to, double offset)
+{
+	if ( ! lwgeom_has_m(lwin) )
+		lwerror("Input geometry does not have a measure dimension");	
+
+	return lwgeom_clip_to_ordinate_range(lwin, 'M', from, to, offset);
+}	
+
+double
+lwgeom_interpolate_point(const LWGEOM *lwin, const LWPOINT *lwpt)
+{
+	POINT4D p, p_proj;
+	double ret = 0.0;
+	
+	if ( ! lwin )
+		lwerror("lwgeom_interpolate_point: null input geometry!");
+
+	if ( ! lwgeom_has_m(lwin) )
+		lwerror("Input geometry does not have a measure dimension");	
+	
+	if ( lwgeom_is_empty(lwin) || lwpoint_is_empty(lwpt) )
+		lwerror("Input geometry is empty");	
+		
+	switch ( lwin->type )
+	{
+		case LINETYPE:
+		{
+			LWLINE *lwline = lwgeom_as_lwline(lwin);
+			lwpoint_getPoint4d_p(lwpt, &p);
+			ret = ptarray_locate_point(lwline->points, &p, NULL, &p_proj);
+			ret = p_proj.m;
+			break;
+		}
+		default:
+			lwerror("This function does not accept %s geometries.", lwtype_name(lwin->type));
+	}
+	return ret;
 }

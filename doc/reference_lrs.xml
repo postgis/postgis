@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sect1 id="Linear_Referencing">
 	  <title>Linear Referencing</title>
+	
 		<refentry id="ST_Line_Interpolate_Point">
 		  <refnamediv>
 			<refname>ST_Line_Interpolate_Point</refname>
@@ -263,9 +264,9 @@ WHERE n*100.00/length &lt; 1;
 		  </refsection>
 	</refentry>
 
-	<refentry id="ST_Locate_Along_Measure">
+	<refentry id="ST_LocateAlong">
 	  <refnamediv>
-		<refname>ST_Locate_Along_Measure</refname>
+		<refname>ST_LocateAlong</refname>
 
 		<refpurpose>Return a derived geometry collection value with elements
 			that match the specified measure. Polygonal elements are not
@@ -275,9 +276,10 @@ WHERE n*100.00/length &lt; 1;
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Locate_Along_Measure</function></funcdef>
+			<funcdef>geometry <function>ST_LocateAlong</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>a_measure</parameter></paramdef>
+			<paramdef choice='opt'><type>float </type> <parameter>offset</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -288,6 +290,11 @@ WHERE n*100.00/length &lt; 1;
 		<para>Return a derived geometry collection value with elements
 		that match the specified measure. Polygonal elements are not
 		supported.</para>
+		
+		<para>If an offset is provided, the resultant will be offset to the 
+		left or right of the input line by the specified number of units.
+		A positive offset will be to the left, and a negative one to the 
+		right.</para>
 
 		<para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text
 		for Continuation CD Editing Meeting</para>
@@ -301,22 +308,22 @@ WHERE n*100.00/length &lt; 1;
 
 	  <refsection>
 		<title>Examples</title>
-		<programlisting>SELECT ST_AsEWKT(the_geom)
+		<programlisting>SELECT ST_AsText(the_geom)
 		FROM
-		(SELECT ST_Locate_Along_Measure(
-			ST_GeomFromEWKT('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
+		(SELECT ST_LocateAlong(
+			ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
 		(1 2 3, 5 4 5))'),3) As the_geom) As foo;
 
 						 st_asewkt
 -----------------------------------------------------------
- GEOMETRYCOLLECTIONM(MULTIPOINT(1 2 3,9 4 3),POINT(1 2 3))
+ MULTIPOINT M (1 2 3)
 
 --Geometry collections are difficult animals so dump them
 --to make them more digestable
-SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
+SELECT ST_AsText((ST_Dump(the_geom)).geom)
 	FROM
-	(SELECT ST_Locate_Along_Measure(
-			ST_GeomFromEWKT('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
+	(SELECT ST_LocateAlong(
+			ST_GeomFromText('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
 	(1 2 3, 5 4 5))'),3) As the_geom) As foo;
 
    st_asewkt
@@ -331,13 +338,13 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Locate_Between_Measures" /></para>
+		<para><xref linkend="ST_Dump" />, <xref linkend="ST_LocateBetween" /></para>
 	  </refsection>
 	</refentry>
 
-	<refentry id="ST_Locate_Between_Measures">
+	<refentry id="ST_LocateBetween">
 	  <refnamediv>
-		<refname>ST_Locate_Between_Measures</refname>
+		<refname>ST_LocateBetween</refname>
 
 		<refpurpose>Return a derived geometry collection value with elements
 			that match the specified range of measures inclusively. Polygonal
@@ -347,10 +354,11 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Locate_Between_Measures</function></funcdef>
+			<funcdef>geometry <function>ST_LocateBetween</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>measure_start</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>measure_end</parameter></paramdef>
+			<paramdef choice='opt'><type>float </type> <parameter>offset</parameter></paramdef>
 		  </funcprototype>
 
 		</funcsynopsis>
@@ -374,35 +382,35 @@ SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_AsEWKT(the_geom)
+		<programlisting>SELECT ST_AsText(the_geom)
 		FROM
-		(SELECT ST_Locate_Between_Measures(
-			ST_GeomFromEWKT('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
+		(SELECT ST_LocateBetween(
+			ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),
 		(1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;
 
 							 st_asewkt
------------------------------------------------------------------
- GEOMETRYCOLLECTIONM(LINESTRING(1 2 3,3 4 2,9 4 3),POINT(1 2 3))
+------------------------------------------------------------------------
+ GEOMETRYCOLLECTION M (LINESTRING M (1 2 3,3 4 2,9 4 3),POINT M (1 2 3))
 
 --Geometry collections are difficult animals so dump them
 --to make them more digestable
-SELECT ST_AsEWKT((ST_Dump(the_geom)).geom)
+SELECT ST_AsText((ST_Dump(the_geom)).geom)
 		FROM
-		(SELECT ST_Locate_Between_Measures(
-			ST_GeomFromEWKT('MULTILINESTRINGM((1 2 3, 3 4 2, 9 4 3),
+		(SELECT ST_LocateBetween(
+			ST_GeomFromText('MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3),
 		(1 2 3, 5 4 5))'),1.5, 3) As the_geom) As foo;
 
 		   st_asewkt
 --------------------------------
- LINESTRINGM(1 2 3,3 4 2,9 4 3)
- POINTM(1 2 3)</programlisting>
+ LINESTRING M (1 2 3,3 4 2,9 4 3)
+ POINT M (1 2 3)</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Dump" />, <xref linkend="ST_Locate_Along_Measure" /></para>
+		<para><xref linkend="ST_Dump" />, <xref linkend="ST_LocateAlong" /></para>
 	  </refsection>
 	</refentry>
 
@@ -478,6 +486,53 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	</refentry>
 
 
+		<refentry id="ST_InterpolatePoint">
+		  <refnamediv>
+			<refname>ST_InterpolatePoint</refname>
+
+			<refpurpose>Return the value of the measure dimension of a geometry at the point closed to the provided point.</refpurpose>
+		  </refnamediv>
+
+		  <refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>float <function>ST_InterpolatePoint</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>line</parameter></paramdef>
+				<paramdef><type>geometry </type> <parameter>point</parameter></paramdef>
+			  </funcprototype>
+
+			</funcsynopsis>
+		  </refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			   <para>Return the value of the measure dimension of a geometry at the point closed to the provided point.</para>
+
+				<para>Availability: 2.0.0</para>
+
+			<para>&Z_support;</para>
+		  </refsection>
+
+		  <refsection>
+			<title>Examples</title>
+
+			<programlisting>SELECT ST_InterpolatePoint('LINESTRING M (0 0 0, 10 0 20)', 'POINT(5 5)');
+ st_interpolatepoint 
+ ---------------------
+			            10
+	</programlisting>
+		  </refsection>
+
+		  <refsection>
+			<title>See Also</title>
+
+			<para><xref linkend="ST_AddMeasure" /><xref linkend="ST_LocateAlong" /><xref linkend="ST_LocateBetween" /></para>
+		  </refsection>
+
+		</refentry>
+
+
 	<refentry id="ST_AddMeasure">
 	  <refnamediv>
 		<refname>ST_AddMeasure</refname>
@@ -510,25 +565,25 @@ LINESTRING(6.1 7.1 6,7 8 9)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_AsEWKT(ST_AddMeasure(
+		<programlisting>SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('LINESTRING(1 0, 2 0, 4 0)'),1,4)) As ewelev;
            ewelev             
 --------------------------------
  LINESTRINGM(1 0 1,2 0 2,4 0 4)
 
-SELECT ST_AsEWKT(ST_AddMeasure(
+SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('LINESTRING(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
                  ewelev                 
 ----------------------------------------
  LINESTRING(1 0 4 10,2 0 4 20,4 0 4 40)
 
-SELECT ST_AsEWKT(ST_AddMeasure(
+SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('LINESTRINGM(1 0 4, 2 0 4, 4 0 4)'),10,40)) As ewelev;
                  ewelev                 
 ----------------------------------------
  LINESTRINGM(1 0 10,2 0 20,4 0 40)
  
-SELECT ST_AsEWKT(ST_AddMeasure(
+SELECT ST_AsText(ST_AddMeasure(
 ST_GeomFromEWKT('MULTILINESTRINGM((1 0 4, 2 0 4, 4 0 4),(1 0 4, 2 0 4, 4 0 4))'),10,70)) As ewelev;
                              ewelev                              
 -----------------------------------------------------------------

@@ -4536,8 +4536,12 @@ CREATE OR REPLACE FUNCTION ST_LocateBetweenElevations(Geometry geometry, FromEle
 	AS 'MODULE_PATHNAME', 'ST_LocateBetweenElevations'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_InterpolatePoint(Line geometry, Point geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'ST_InterpolatePoint'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
-	
 ---------------------------------------------------------------
 -- END
 ---------------------------------------------------------------

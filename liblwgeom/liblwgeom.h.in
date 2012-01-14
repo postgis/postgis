@@ -1220,7 +1220,7 @@ extern int lwgeom_ndims(const LWGEOM *geom);
  * If not-null, the third argument will be set to the actual distance
  * of the point from the pointarray.
  */
-extern double ptarray_locate_point(POINTARRAY *, POINT2D *, double *);
+extern double ptarray_locate_point(const POINTARRAY *pa, const POINT4D *pt, double *dist, POINT4D *p_located);
 
 /**
 * Add a measure dimension to a line, interpolating linearly from the start 
@@ -1231,9 +1231,21 @@ extern LWMLINE* lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_s
 
 /**
 * Determine the location(s) along a measured line where m occurs and 
-* return as a multipoint. Offset to left (negative) or right (positive).
+* return as a multipoint. Offset to left (positive) or right (negative).
 */
 extern LWGEOM* lwgeom_locate_along(const LWGEOM *lwin, double m, double offset);
+
+/**
+* Determine the segments along a measured line that fall within the m-range
+* given. Return as a multiline or geometrycollection.
+* Offset to left (positive) or right (negative).
+*/
+extern LWCOLLECTION* lwgeom_locate_between(const LWGEOM *lwin, double from, double to, double offset);
+
+/**
+* Find the measure value at the location on the line closest to the point.
+*/
+extern double lwgeom_interpolate_point(const LWGEOM *lwin, const LWPOINT *lwpt);
 
 /*
  * Ensure every segment is at most 'dist' long.

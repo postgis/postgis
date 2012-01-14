@@ -64,29 +64,29 @@ static void test_ptarray_append_ptarray(void)
 
 static void test_ptarray_locate_point(void)
 {
-        LWLINE *line;
+	LWLINE *line;
 	double loc, dist;
-        POINT2D p;
+	POINT4D p, l;
 
-        line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 4)"));
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 4)"));
 
-	p = getPoint2d(line->points, 0);
-	loc = ptarray_locate_point(line->points, &p, &dist);
+	p = getPoint4d(line->points, 0);
+	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0);
 	CU_ASSERT_EQUAL(dist, 0.0);
 
-	p = getPoint2d(line->points, 1);
-	loc = ptarray_locate_point(line->points, &p, &dist);
+	p = getPoint4d(line->points, 1);
+	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 1);
 	CU_ASSERT_EQUAL(dist, 0.0);
 
 	p.x = 21; p.y = 4;
-	loc = ptarray_locate_point(line->points, &p, &dist);
+	loc = ptarray_locate_point(line->points, &p, &dist, NULL);
 	CU_ASSERT_EQUAL(loc, 1);
 	CU_ASSERT_EQUAL(dist, 1.0);
 
 	p.x = 0; p.y = 2;
-	loc = ptarray_locate_point(line->points, &p, &dist);
+	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0);
 	CU_ASSERT_EQUAL(dist, 1.0);
 
@@ -94,7 +94,7 @@ static void test_ptarray_locate_point(void)
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,20 0,40 0)"));
 
 	p.x = 20; p.y = 0;
-	loc = ptarray_locate_point(line->points, &p, &dist);
+	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0.5);
 	CU_ASSERT_EQUAL(dist, 0.0);
 
@@ -102,7 +102,7 @@ static void test_ptarray_locate_point(void)
 	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-40 0,0 0,20 0,40 0)"));
 
 	p.x = 20; p.y = 0;
-	loc = ptarray_locate_point(line->points, &p, &dist);
+	loc = ptarray_locate_point(line->points, &p, &dist, &l);
 	CU_ASSERT_EQUAL(loc, 0.75);
 	CU_ASSERT_EQUAL(dist, 0.0);
 
@@ -111,30 +111,30 @@ static void test_ptarray_locate_point(void)
 
 static void test_ptarray_isccw(void)
 {
-        LWLINE *line;
+	LWLINE *line;
 	LWPOLY* poly;
 	int ccw;
 
 	/* clockwise rectangle */
-        line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 10,10 10,10 0, 0 0)"));
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 10,10 10,10 0, 0 0)"));
 	ccw = ptarray_isccw(line->points);
 	CU_ASSERT_EQUAL(ccw, 0);
 	lwline_free(line);
 
 	/* clockwise triangle */
-        line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 4,20 3, 0 3)"));
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 4,20 3, 0 3)"));
 	ccw = ptarray_isccw(line->points);
 	CU_ASSERT_EQUAL(ccw, 0);
 	lwline_free(line);
 
 	/* counterclockwise triangle */
-        line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 3,20 4, 0 3)"));
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 3,20 3,20 4, 0 3)"));
 	ccw = ptarray_isccw(line->points);
 	CU_ASSERT_EQUAL(ccw, 1);
 	lwline_free(line);
 
 	/* counterclockwise narrow ring (see ticket #1302) */
-        line = lwgeom_as_lwline(lwgeom_from_hexwkb("01020000000500000000917E9BA468294100917E9B8AEA284137894120A4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA2841C976BE1FA4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841", LW_PARSER_CHECK_NONE));
+	line = lwgeom_as_lwline(lwgeom_from_hexwkb("01020000000500000000917E9BA468294100917E9B8AEA284137894120A4682941C976BE9F8AEA2841B39ABE1FA46829415ACCC29F8AEA2841C976BE1FA4682941C976BE9F8AEA284100917E9BA468294100917E9B8AEA2841", LW_PARSER_CHECK_NONE));
 	ccw = ptarray_isccw(line->points);
 	CU_ASSERT_EQUAL(ccw, 1);
 	lwline_free(line);

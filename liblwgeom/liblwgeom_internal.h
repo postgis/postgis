@@ -250,7 +250,8 @@ char *geohash_point(double longitude, double latitude, int precision);
 /*
 * Point comparisons
 */
-int p4d_same(POINT4D p1, POINT4D p2);
+int p4d_same(const POINT4D *p1, const POINT4D *p2);
+int p2d_same(const POINT2D *p1, const POINT2D *p2);
 
 /*
 * Area calculations
@@ -318,7 +319,7 @@ LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
  * Write into *ret the coordinates of the closest point on
  * segment A-B to the reference input point R
  */
-void closest_point_on_segment(POINT2D *R, POINT2D *A, POINT2D *B, POINT2D *ret);
+void closest_point_on_segment(const POINT4D *R, const POINT4D *A, const POINT4D *B, POINT4D *ret);
 
 /* 
 * Repeated points

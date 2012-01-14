@@ -1,5 +1,6 @@
 #2|POLYGON((1 1,1 2,2 2,3 2,3 1,2 1,1 1))
 #11|0
+NOTICE:  ST_Locate_Between_Measures and ST_Locate_Along_Measure are deprecated. Use ST_LocateAlong and ST_LocateBetween.
 #21|SRID=31293;POINTM(6220.13 5337367.145 4566)
 t
 ERROR:  AddGeometryColumn() - invalid SRID
@@ -16,6 +17,7 @@ ERROR:  lwgeom_longitude_shift: unsupported geom type: CircularString
 #83|MULTICURVE(CIRCULARSTRING(220268 150415,220227 150505,220227 150406))
 ERROR:  Unsupported geometry type: CircularString
 #112|GEOMETRYCOLLECTION(POINT(-10 50))
+NOTICE:  ST_Locate_Between_Measures and ST_Locate_Along_Measure are deprecated. Use ST_LocateAlong and ST_LocateBetween.
 ERROR:  Geometry argument does not have an 'M' ordinate
 #116|POLYGON EMPTY
 #122|CIRCULARSTRING(220268 150415,220227 150505,220227 150406)

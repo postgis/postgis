@@ -820,46 +820,6 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 
 }
 
-Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS);
-
-PG_FUNCTION_INFO_V1(LWGEOM_line_locate_point);
-Datum LWGEOM_line_locate_point(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	GSERIALIZED *geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-	LWLINE *lwline;
-	LWPOINT *lwpoint;
-	POINTARRAY *pa;
-	POINT2D p;
-	double ret;
-
-	if ( gserialized_get_type(geom1) != LINETYPE )
-	{
-		elog(ERROR,"line_locate_point: 1st arg isnt a line");
-		PG_RETURN_NULL();
-	}
-	if ( gserialized_get_type(geom2) != POINTTYPE )
-	{
-		elog(ERROR,"line_locate_point: 2st arg isnt a point");
-		PG_RETURN_NULL();
-	}
-	if ( gserialized_get_srid(geom1) != gserialized_get_srid(geom2) )
-	{
-		elog(ERROR, "Operation on two geometries with different SRIDs");
-		PG_RETURN_NULL();
-	}
-
-	lwline = lwgeom_as_lwline(lwgeom_from_gserialized(geom1));
-	lwpoint = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom2));
-
-	pa = lwline->points;
-	lwpoint_getPoint2d_p(lwpoint, &p);
-
-	ret = ptarray_locate_point(pa, &p, NULL);
-
-	PG_RETURN_FLOAT8(ret);
-}
-
 /*******************************************************************************
  * The following is based on the "Fast Winding Number Inclusion of a Point
  * in a Polygon" algorithm by Dan Sunday.
