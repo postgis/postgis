@@ -13,6 +13,8 @@
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
+
 #include "shp2pgsql-core.h"
 #include "../liblwgeom/liblwgeom.h" /* for SRID_UNKNOWN */
 
@@ -68,9 +70,9 @@ main (int argc, char **argv)
 	int c;
 	int ret, i;
 
-#ifdef USE_NLS
+#ifdef ENABLE_NLS
 	setlocale (LC_ALL, "");
-	bindtextdomain (PACKAGE, LOCALEDIR);
+	bindtextdomain (PACKAGE, PGSQL_LOCALEDIR);
 	textdomain (PACKAGE);
 #endif
 

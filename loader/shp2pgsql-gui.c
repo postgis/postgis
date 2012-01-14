@@ -14,6 +14,8 @@
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -2276,10 +2278,10 @@ main(int argc, char *argv[])
 {
 	int c;
 
-#ifdef USE_NLS
-    setlocale (LC_ALL, "");
-    bindtextdomain (PACKAGE, LOCALEDIR);
-    textdomain (PACKAGE);
+#ifdef ENABLE_NLS
+	setlocale (LC_ALL, "");
+	bindtextdomain (PACKAGE, PGSQL_LOCALEDIR);
+	textdomain (PACKAGE);
 #endif
 
 	/* Parse command line options and set configuration */

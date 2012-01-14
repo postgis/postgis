@@ -95,6 +95,9 @@
    */
 #undef LT_OBJDIR
 
+/* Location of PostgreSQL locale directory */
+#undef PGSQL_LOCALEDIR
+
 /* Enable caching of bounding box within geometries */
 #undef POSTGIS_AUTOCACHE_BBOX
 

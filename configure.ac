@@ -376,6 +376,10 @@ PGSQL_MANDIR=`$PGCONFIG --mandir`
 AC_SUBST([PGSQL_DOCDIR])
 AC_SUBST([PGSQL_MANDIR])
 
+dnl Extract the locale directory
+PGSQL_LOCALEDIR=`$PGCONFIG --localedir`
+AC_DEFINE_UNQUOTED([PGSQL_LOCALEDIR], ["$PGSQL_LOCALEDIR"], [Location of PostgreSQL locale directory])
+
 dnl Extract the executable directory
 PGSQL_BINDIR=`$PGCONFIG --bindir`
 

@@ -13,6 +13,8 @@
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
+
 #include "shp2pgsql-core.h"
 #include "../liblwgeom/liblwgeom.h" /* for lw_vasprintf */
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */

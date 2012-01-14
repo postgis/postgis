@@ -53,13 +53,7 @@ GTK_WIN32_RES = @GTK_WIN32_RES@
 # GetText includes and libraries
 GETTEXT_CFLAGS = @GETTEXT_CFLAGS@
 GETTEXT_LDFLAGS = @GETTEXT_LDFLAGS@ @LIBINTL@
-nls_build = @USE_NLS@
-ifdef nls_build
-	localedir = $(shell $(PG_CONFIG) --localedir)
-	CFLAGS += -DUSE_NLS
-	CFLAGS += -DLOCALEDIR=\"$(localedir)\"
-	LANGUAGES = fr
-endif
+LANGUAGES = fr
 
 # Built out CFLAGS with ICONV and GETTEXT
 CFLAGS += $(GETTEXT_CFLAGS) $(ICONV_CFLAGS)

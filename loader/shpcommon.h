@@ -13,6 +13,16 @@
 #ifndef SHPCOMMON_H
 #define SHPCOMMON_H
 
+/* For internationalization */
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#include <locale.h>
+#define _(String) gettext(String)
+#define PACKAGE "shp2pgsql"
+#else
+#define _(String) String
+#endif
+
 typedef struct shp_connection_state
 {
 	/* PgSQL username to log in with */
