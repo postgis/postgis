@@ -16,6 +16,8 @@
 #ifndef _LIBLWGEOM_INTERNAL_H
 #define _LIBLWGEOM_INTERNAL_H 1
 
+#include "../postgis_config.h"
+
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>

@@ -11,9 +11,7 @@
 # **********************************************************************
 
 CC = @CC@
-CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ \
-         @GEOS_CPPFLAGS@ -DPOSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@ \
-         @PROJ_CPPFLAGS@ -DPOSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
+CFLAGS = @CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@
 LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c @PROJ_LDFLAGS@ -lproj
 NUMERICFLAGS = @NUMERICFLAGS@
 top_builddir = @top_builddir@
