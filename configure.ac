@@ -539,23 +539,26 @@ GETTEXT_LDFLAGS=""
 
 AC_ARG_WITH([gettext], 
 	[AS_HELP_STRING([--with-gettext=PATH], [specify a path to non-default gettext installation])], 
-	[GETTEXT_PATH="$withval"], [GETTEXT_PATH=""])
+	[GETTEXT_PATH="$withval"], [GETTEXT_PATH="yes"])
 
 LDFLAGS_SAVE="$LDFLAGS"
 CFLAGS_SAVE="$CFLAGS"
 
-if test "x$GETTEXT_PATH" != "x"; then
-	AC_MSG_RESULT([checking user-specified gettext location: $GETTEXT_PATH])
-	GETTEXT_CFLAGS="-I$GETTEXT_PATH/include"
-	GETTEXT_LDFLAGS="-L$GETTEXT_PATH/lib"
-	LDFLAGS="$GETTEXT_LDFLAGS $LDFLAGS"
-	CFLAGS="$GETTEXT_CFLAGS $CFLAGS"
-fi
+if test "x$GETTEXT_PATH" != "xno"; then
+	dnl If user has specified a custom gettext installation path, use it.
+	if test "x$GETTEXT_PATH" != "xyes"; then
+		AC_MSG_RESULT([checking user-specified gettext location: $GETTEXT_PATH])
+		GETTEXT_CFLAGS="-I$GETTEXT_PATH/include"
+		GETTEXT_LDFLAGS="-L$GETTEXT_PATH/lib"
+		LDFLAGS="$GETTEXT_LDFLAGS $LDFLAGS"
+		CFLAGS="$GETTEXT_CFLAGS $CFLAGS"
+	fi
 
-AM_GNU_GETTEXT([external], [], [])
+	AM_GNU_GETTEXT([external], [], [])
 
-if test "x$LIBINTL" = "x"; then
-	USE_NLS=no
+	if test "x$LIBINTL" = "x"; then
+		USE_NLS=no
+	fi
 fi
 
 AC_SUBST([GETTEXT_CFLAGS])
