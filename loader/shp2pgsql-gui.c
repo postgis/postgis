@@ -1185,9 +1185,14 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 					goto import_cleanup;
 			}
 
+			/* Just in case index creation takes a long time, update the progress text */
 			if (state->config->createindex)
 			{
-				pgui_logf(_("Creating spatial index...\n"));
+				gtk_label_set_text(GTK_LABEL(label_progress), _("Creating spatial index..."));
+				
+				/* Allow GTK events to get a look in */
+				while (gtk_events_pending())
+					gtk_main_iteration();
 			}
 
 			/* Send the footer to the server */
