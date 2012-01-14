@@ -98,13 +98,12 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.2.2 or greater, but GEOS 3.3 is recommended.  Without GEOS 3.3,
+		  GEOS geometry library, version 3.2.2 or greater, but GEOS 3.3.2+ is recommended.  Without GEOS 3.3,
 			you will be missing some major enhancements with handling of topological exceptions and improvements to geometry validation and
-			making geometries valid such as ST_ValidDetail and ST_MakeValid.  GEOS is available for download from
+			making geometries valid such as ST_ValidDetail and ST_MakeValid.  GEOS 3.3.2+ is also required for topology support.  GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/
-		  </ulink>
-		  .
+		  </ulink> and 3.3+ is backward-compatible with older versions so fairly safe to upgrade.
 		</para>
 	  </listitem>
 	  <listitem>
@@ -124,8 +123,7 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	  
 	  <listitem>
 		<para>
-		  GDAL, version 1.6 or higher (1.8 or higher is preferable since some things will not work well with lower versions).  This is needed for raster support and will be required in final
-		  release of PostGIS 2.0.
+		  GDAL, version 1.6 or higher (1.9 or higher is preferable since some things will not work well with lower versions).  This is needed for raster support and will be required in final release of PostGIS 2.0.
 		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
 		</para>
 	  </listitem>
@@ -454,6 +452,17 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			<para>
 			  Compile with topology support.  This will build the topology.sql file.  There is no corresponding library
 			  as all logic needed for topology is in postgis-&last_release_version; library.
+			</para>
+		  </listitem>
+		</varlistentry>
+		<varlistentry>
+		  <term><command>--with-gettext=no</command></term>
+		  <listitem>
+			<para>
+			  By default PostGIS will try to detect gettext support and compile with it, however if you run into incompatibility issues that
+			  cause breakage of loader, you can disable it entirely with this command.  Refer to ticket <ulink url="http://trac.osgeo.org/postgis/ticket/748">http://trac.osgeo.org/postgis/ticket/748</ulink> for an example issue solved by configuring with this.
+			  NOTE: that you aren't missing much by turning this off.  This is used for international help/label support for the GUI loader which is not yet documented
+			  and still experimental.
 			</para>
 		  </listitem>
 		</varlistentry>
