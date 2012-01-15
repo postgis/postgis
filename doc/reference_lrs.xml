@@ -298,8 +298,9 @@ WHERE n*100.00/length &lt; 1;
 
 		<para>Semantic is specified by: ISO/IEC CD 13249-3:200x(E) - Text
 		for Continuation CD Editing Meeting</para>
-
-		<para>Availability: 1.1.0</para>
+		
+		<para>Availability: 1.1.0 - by old name ST_Locate_Along_Measure.</para>
+		<para>Changed: 2.0.0 in prior versions this used to be called ST_Locate_Along_Measure.  The old name has been deprecated but is still available.</para>
 		<note><para>Use this function only for geometries with an M component</para></note>
 
 		<para>&M_support;</para>
