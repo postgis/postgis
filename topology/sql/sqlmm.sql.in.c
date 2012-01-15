@@ -104,8 +104,10 @@ BEGIN
     FOR rec IN EXECUTE sql
     LOOP
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'rn:%, n:%, edg:%, cnt:%, min:%, reord:%',
          rec.rn, n, rec.edge_id, rec.cnt, rec.min, rec.reord;
+#endif
 
       retrec.sequence = n;
       retrec.edge = rec.edge_id;
@@ -281,7 +283,9 @@ BEGIN
   rec.geom = ST_LineMerge(ST_Collect(e1rec.geom, e2rec.geom));
   IF caseno = 1 THEN -- e1.end = e2.start
     IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'caseno=1: LineMerge did not maintain startpoint';
+#endif
       rec.geom = ST_Reverse(rec.geom);
     END IF;
     rec.end_node = e2rec.end_node;
@@ -289,7 +293,9 @@ BEGIN
     e2sign = 1;
   ELSIF caseno = 2 THEN -- e1.end = e2.end
     IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'caseno=2: LineMerge did not maintain startpoint';
+#endif
       rec.geom = ST_Reverse(rec.geom);
     END IF;
     rec.end_node = e2rec.start_node;
@@ -297,7 +303,9 @@ BEGIN
     e2sign = -1;
   ELSIF caseno = 3 THEN -- e1.start = e2.start
     IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
+#endif
       rec.geom = ST_Reverse(rec.geom);
     END IF;
     rec.start_node = e2rec.end_node;
@@ -305,7 +313,9 @@ BEGIN
     e2sign = -1;
   ELSIF caseno = 4 THEN -- e1.start = e2.end
     IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
+#endif
       rec.geom = ST_Reverse(rec.geom);
     END IF;
     rec.start_node = e2rec.start_node;
@@ -392,7 +402,9 @@ BEGIN
     || ' AND l.layer_id = r.layer_id AND abs(r.element_id) = '
     || e1id
   ;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'SQL: %', sql;
+#endif
   EXECUTE sql;
 
 
@@ -559,7 +571,9 @@ BEGIN
   rec.geom = ST_LineMerge(ST_Collect(e1rec.geom, e2rec.geom));
   IF caseno = 1 THEN -- e1.end = e2.start
     IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'caseno=1: LineMerge did not maintain startpoint';
+#endif
       rec.geom = ST_Reverse(rec.geom);
     END IF;
     rec.end_node = e2rec.end_node;
@@ -567,7 +581,9 @@ BEGIN
     e2sign = 1;
   ELSIF caseno = 2 THEN -- e1.end = e2.end
     IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'caseno=2: LineMerge did not maintain startpoint';
+#endif
       rec.geom = ST_Reverse(rec.geom);
     END IF;
     rec.end_node = e2rec.start_node;
@@ -575,7 +591,9 @@ BEGIN
     e2sign = -1;
   ELSIF caseno = 3 THEN -- e1.start = e2.start
     IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
+#endif
       rec.geom = ST_Reverse(rec.geom);
     END IF;
     rec.start_node = e2rec.end_node;
@@ -583,7 +601,9 @@ BEGIN
     e2sign = -1;
   ELSIF caseno = 4 THEN -- e1.start = e2.end
     IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
+#endif
       rec.geom = ST_Reverse(rec.geom);
     END IF;
     rec.start_node = e2rec.start_node;
@@ -728,7 +748,9 @@ BEGIN
       || 'WHERE l.level = 0 AND l.feature_type = 2 '
       || ' AND l.topology_id = ' || topoid
       || ' AND abs(r.element_id) = ' || e1id ;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Checking TopoGeometry definitions: %', sql;
+#endif
   FOR rec IN EXECUTE sql LOOP
     RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented dropping edge %',
             rec.topogeo_id, rec.layer_id,
@@ -753,7 +775,9 @@ BEGIN
     || abs(elink)
     || ' WHERE next_left_edge < 0 AND abs(next_left_edge) = '
     || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'next_left_edge update: %', sql;
+#endif
   EXECUTE sql;
 
   -- If the edge being removed links to self,
@@ -771,7 +795,9 @@ BEGIN
     || abs(elink)
     || ' WHERE next_left_edge > 0 AND abs(next_left_edge) = '
     || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'next_left_edge update: %', sql;
+#endif
   EXECUTE sql;
 
   -- }
@@ -787,7 +813,9 @@ BEGIN
     || abs(elink)
     || ' WHERE next_right_edge < 0 AND abs(next_right_edge) = '
     || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'next_right_edge update: %', sql;
+#endif
   EXECUTE sql;
 
   -- If the edge being removed links to self,
@@ -805,7 +833,9 @@ BEGIN
     || abs(elink)
     || ' WHERE next_right_edge > 0 AND abs(next_right_edge) = '
     || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'next_right_edge update: %', sql;
+#endif
   EXECUTE sql;
 
   -- }
@@ -847,7 +877,9 @@ BEGIN
         || 'group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
         || ' l.feature_column ) t WHERE NOT t.elems @> '
         || quote_literal(fidary);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'SQL: %', sql;
+#endif
       FOR rec IN EXECUTE sql LOOP
         RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
               rec.topogeo_id, rec.layer_id,
@@ -891,7 +923,9 @@ BEGIN
         || '.face WHERE face_id IN (' 
         || e1rec.left_face || ',' || e1rec.right_face 
         || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'SQL: %', sql;
+#endif
       EXECUTE sql;
 
     END IF; -- }
@@ -902,7 +936,9 @@ BEGIN
       || ' WHERE left_face IN ('
       || e1rec.left_face || ',' || e1rec.right_face 
       || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'left_face update: %', sql;
+#endif
     EXECUTE sql;
 
     -- Update right_face for all edges still referencing old faces
@@ -911,7 +947,9 @@ BEGIN
       || ' WHERE right_face IN ('
       || e1rec.left_face || ',' || e1rec.right_face 
       || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'right_face update: %', sql;
+#endif
     EXECUTE sql;
 
     -- Update containing_face for all nodes still referencing old faces
@@ -920,7 +958,9 @@ BEGIN
       || ' WHERE containing_face IN ('
       || e1rec.left_face || ',' || e1rec.right_face 
       || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Isolated nodes update: %', sql;
+#endif
     EXECUTE sql;
 
     -- NOT IN THE SPECS:
@@ -933,7 +973,9 @@ BEGIN
       || ' AND l.topology_id = ' || topoid
       || ' AND l.layer_id = r.layer_id AND abs(r.element_id) = '
       || e1rec.left_face;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'SQL: %', sql;
+#endif
     EXECUTE sql;
     sql := 'UPDATE ' || quote_ident(toponame)
       || '.relation r '
@@ -942,7 +984,9 @@ BEGIN
       || ' AND l.topology_id = ' || topoid
       || ' AND l.layer_id = r.layer_id AND r.element_id = '
       || e1rec.right_face;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'SQL: %', sql;
+#endif
     EXECUTE sql;
 
   END IF; -- } two faces healed...
@@ -950,7 +994,9 @@ BEGIN
   -- Delete the edge
   sql := 'DELETE FROM ' || quote_ident(toponame)
     || '.edge_data WHERE edge_id = ' || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Edge deletion: %', sql;
+#endif
   EXECUTE sql;
 
   -- Check if any of the edge nodes remains isolated, 
@@ -962,7 +1008,9 @@ BEGIN
     || e1rec.end_node || ') AND NOT EXISTS (SELECT edge_id FROM '
     || quote_ident(toponame)
     || '.edge_data WHERE start_node = n.node_id OR end_node = n.node_id)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Checking for nodes left isolated: %', sql;
+#endif
   EXECUTE sql;
 
   IF e1rec.right_face != e1rec.left_face THEN -- {
@@ -971,7 +1019,9 @@ BEGIN
     IF e1rec.left_face != 0 THEN
       sql := 'DELETE FROM ' || quote_ident(toponame)
         || '.face WHERE face_id = ' || e1rec.left_face; 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Left face deletion: %', sql;
+#endif
       EXECUTE sql;
     END IF;
 
@@ -980,7 +1030,9 @@ BEGIN
     THEN
       sql := 'DELETE FROM ' || quote_ident(toponame)
         || '.face WHERE face_id = ' || e1rec.right_face;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Right face deletion: %', sql;
+#endif
       EXECUTE sql;
     END IF;
 
@@ -1065,7 +1117,9 @@ BEGIN
       || 'WHERE l.level = 0 AND l.feature_type = 2 '
       || ' AND l.topology_id = ' || topoid
       || ' AND abs(r.element_id) = ' || e1id ;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Checking TopoGeometry definitions: %', sql;
+#endif
   FOR rec IN EXECUTE sql LOOP
     RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented dropping edge %',
             rec.topogeo_id, rec.layer_id,
@@ -1090,7 +1144,9 @@ BEGIN
     || abs(elink)
     || ' WHERE next_left_edge < 0 AND abs(next_left_edge) = '
     || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'next_left_edge update: %', sql;
+#endif
   EXECUTE sql;
 
   -- If the edge being removed links to self,
@@ -1108,7 +1164,9 @@ BEGIN
     || abs(elink)
     || ' WHERE next_left_edge > 0 AND abs(next_left_edge) = '
     || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'next_left_edge update: %', sql;
+#endif
   EXECUTE sql;
 
   -- }
@@ -1124,7 +1182,9 @@ BEGIN
     || abs(elink)
     || ' WHERE next_right_edge < 0 AND abs(next_right_edge) = '
     || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'next_right_edge update: %', sql;
+#endif
   EXECUTE sql;
 
   -- If the edge being removed links to self,
@@ -1142,7 +1202,9 @@ BEGIN
     || abs(elink)
     || ' WHERE next_right_edge > 0 AND abs(next_right_edge) = '
     || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'next_right_edge update: %', sql;
+#endif
   EXECUTE sql;
 
   -- }
@@ -1183,7 +1245,9 @@ BEGIN
         || 'group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
         || ' l.feature_column ) t WHERE NOT t.elems @> '
         || quote_literal(fidary);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'SQL: %', sql;
+#endif
       FOR rec IN EXECUTE sql LOOP
         RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
               rec.topogeo_id, rec.layer_id,
@@ -1217,7 +1281,9 @@ BEGIN
         || '.face WHERE face_id IN (' 
         || e1rec.left_face || ',' || e1rec.right_face 
         || ') ) WHERE face_id = ' || floodfaceid ;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'SQL: %', sql;
+#endif
       EXECUTE sql;
 
     END IF; -- }
@@ -1228,7 +1294,9 @@ BEGIN
       || ' WHERE left_face IN ('
       || e1rec.left_face || ',' || e1rec.right_face 
       || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'left_face update: %', sql;
+#endif
     EXECUTE sql;
 
     -- Update right_face for all edges still referencing old faces
@@ -1237,7 +1305,9 @@ BEGIN
       || ' WHERE right_face IN ('
       || e1rec.left_face || ',' || e1rec.right_face 
       || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'right_face update: %', sql;
+#endif
     EXECUTE sql;
 
     -- Update containing_face for all nodes still referencing old faces
@@ -1246,7 +1316,9 @@ BEGIN
       || ' WHERE containing_face IN ('
       || e1rec.left_face || ',' || e1rec.right_face 
       || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Isolated nodes update: %', sql;
+#endif
     EXECUTE sql;
 
     -- NOT IN THE SPECS:
@@ -1261,7 +1333,9 @@ BEGIN
       || e1rec.left_face || ',' || e1rec.right_face
       || ') AND abs(r.element_id) != '
       || floodfaceid; -- could be optimized..
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'SQL: %', sql;
+#endif
     EXECUTE sql;
 
   END IF; -- } two faces healed...
@@ -1269,7 +1343,9 @@ BEGIN
   -- Delete the edge
   sql := 'DELETE FROM ' || quote_ident(toponame)
     || '.edge_data WHERE edge_id = ' || e1id;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Edge deletion: %', sql;
+#endif
   EXECUTE sql;
 
   -- Check if any of the edge nodes remains isolated, 
@@ -1281,7 +1357,9 @@ BEGIN
     || e1rec.end_node || ') AND NOT EXISTS (SELECT edge_id FROM '
     || quote_ident(toponame)
     || '.edge_data WHERE start_node = n.node_id OR end_node = n.node_id)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Checking for nodes left isolated: %', sql;
+#endif
   EXECUTE sql;
 
   IF e1rec.right_face != e1rec.left_face THEN -- {
@@ -1291,7 +1369,9 @@ BEGIN
     THEN
       sql := 'DELETE FROM ' || quote_ident(toponame)
         || '.face WHERE face_id = ' || e1rec.left_face; 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Left face deletion: %', sql;
+#endif
       EXECUTE sql;
     END IF;
 
@@ -1300,7 +1380,9 @@ BEGIN
     THEN
       sql := 'DELETE FROM ' || quote_ident(toponame)
         || '.face WHERE face_id = ' || e1rec.right_face;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Right face deletion: %', sql;
+#endif
       EXECUTE sql;
     END IF;
 
@@ -2672,8 +2754,10 @@ BEGIN
     || ')'
   LOOP
     IF rec.containing_face IS NOT NULL THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG  'containing_face for node %:%',
         rec.node_id, rec.containing_face;
+#endif
       IF newedge.left_face IS NULL THEN
         newedge.left_face := rec.containing_face;
         newedge.right_face := rec.containing_face;
@@ -2778,7 +2862,9 @@ BEGIN
 
   -- Find links on start node -- {
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'My start-segment azimuth: %', span.myaz;
+#endif
 
   sql :=
     'SELECT edge_id, -1 AS end_node, start_node, left_face, right_face, '
@@ -2824,8 +2910,10 @@ BEGIN
         rec.edge_id;
     END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Edge % - az % (%) - fl:% fr:%',
       rec.edge_id, az, az - span.myaz, rec.left_face, rec.right_face;
+#endif
 
     az = az - span.myaz;
     IF az < 0 THEN
@@ -2866,7 +2954,9 @@ BEGIN
 
   END LOOP; -- incident edges }
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'span ROW_COUNT: %', i;
+#endif
   IF newedge.isclosed THEN
     IF i < 2 THEN span.was_isolated = true; END IF;
   ELSE
@@ -2882,18 +2972,26 @@ BEGIN
     newedge.prev_left_edge := -span.nextCCW;
   END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'edge:%', newedge.edge_id;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG ' left:%, next:%, prev:%',
     newedge.left_face, newedge.next_left_edge, newedge.prev_left_edge;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG ' right:%, next:%, prev:%',
     newedge.right_face, newedge.next_right_edge, newedge.prev_right_edge;
+#endif
 
   -- } start_node analysis
 
 
   -- Find links on end_node {
       
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'My end-segment azimuth: %', epan.myaz;
+#endif
 
   sql :=
     'SELECT edge_id, -1 as end_node, start_node, left_face, right_face, '
@@ -2935,7 +3033,9 @@ BEGIN
 
     END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Edge % - az % (%)', rec.edge_id, az, az - epan.myaz;
+#endif
 
     az := az - epan.myaz;
     IF az < 0 THEN
@@ -2976,7 +3076,9 @@ BEGIN
 
   END LOOP; -- incident edges }
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'epan ROW_COUNT: %', i;
+#endif
   IF newedge.isclosed THEN
     IF i < 2 THEN epan.was_isolated = true; END IF;
   ELSE
@@ -2994,11 +3096,17 @@ BEGIN
 
   -- } end_node analysis
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'edge:%', newedge.edge_id;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG ' left:%, next:%, prev:%',
     newedge.left_face, newedge.next_left_edge, newedge.prev_left_edge;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG ' right:%, next:%, prev:%',
     newedge.right_face, newedge.next_right_edge, newedge.prev_right_edge;
+#endif
 
   ----------------------------------------------------------------------
   --
@@ -3156,12 +3264,16 @@ BEGIN
     FROM paths p INNER JOIN faces f ON (p.path = f.path)
     ORDER BY p.right_side DESC
   LOOP -- {
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Adding % face', rec.side;
+#endif
     SELECT topology.AddFace(atopology, rec.geom, true) INTO newface;
     newfaces := array_append(newfaces, newface);
   END LOOP; --}
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Added faces: %', newfaces;
+#endif
 
   IF array_upper(newfaces, 1) > 2 THEN
     -- Sanity check..
@@ -3184,7 +3296,9 @@ BEGIN
     --RAISE DEBUG 'SQL: %', sql;
     FOR rec IN EXECUTE sql
     LOOP
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'TopoGeometry % in layer % contained the face being split (%) - updating to contain both new faces %', rec.topogeo_id, rec.layer_id, newedge.left_face, newfaces;
+#endif
 
       -- Add reference to the other face
       sql := 'INSERT INTO ' || quote_ident(atopology)
@@ -3329,8 +3443,10 @@ BEGIN
     || ')'
   LOOP
     IF rec.containing_face IS NOT NULL THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG  'containing_face for node %:%',
         rec.node_id, rec.containing_face;
+#endif
       IF newedge.left_face IS NULL THEN
         newedge.left_face := rec.containing_face;
         newedge.right_face := rec.containing_face;
@@ -3435,7 +3551,9 @@ BEGIN
 
   -- Find links on start node -- {
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'My start-segment azimuth: %', span.myaz;
+#endif
 
   sql :=
     'SELECT edge_id, -1 AS end_node, start_node, left_face, right_face, '
@@ -3481,8 +3599,10 @@ BEGIN
         rec.edge_id;
     END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Edge % - az % (%) - fl:% fr:%',
       rec.edge_id, az, az - span.myaz, rec.left_face, rec.right_face;
+#endif
 
     az = az - span.myaz;
     IF az < 0 THEN
@@ -3523,7 +3643,9 @@ BEGIN
 
   END LOOP; -- incident edges }
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'span ROW_COUNT: %', i;
+#endif
   IF newedge.isclosed THEN
     IF i < 2 THEN span.was_isolated = true; END IF;
   ELSE
@@ -3539,18 +3661,26 @@ BEGIN
     newedge.prev_left_edge := -span.nextCCW;
   END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'edge:%', newedge.edge_id;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG ' left:%, next:%, prev:%',
     newedge.left_face, newedge.next_left_edge, newedge.prev_left_edge;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG ' right:%, next:%, prev:%',
     newedge.right_face, newedge.next_right_edge, newedge.prev_right_edge;
+#endif
 
   -- } start_node analysis
 
 
   -- Find links on end_node {
       
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'My end-segment azimuth: %', epan.myaz;
+#endif
 
   sql :=
     'SELECT edge_id, -1 as end_node, start_node, left_face, right_face, '
@@ -3592,7 +3722,9 @@ BEGIN
 
     END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Edge % - az % (%)', rec.edge_id, az, az - epan.myaz;
+#endif
 
     az := az - epan.myaz;
     IF az < 0 THEN
@@ -3633,7 +3765,9 @@ BEGIN
 
   END LOOP; -- incident edges }
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'epan ROW_COUNT: %', i;
+#endif
   IF newedge.isclosed THEN
     IF i < 2 THEN epan.was_isolated = true; END IF;
   ELSE
@@ -3651,11 +3785,17 @@ BEGIN
 
   -- } end_node analysis
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'edge:%', newedge.edge_id;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG ' left:%, next:%, prev:%',
     newedge.left_face, newedge.next_left_edge, newedge.prev_left_edge;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG ' right:%, next:%, prev:%',
     newedge.right_face, newedge.next_right_edge, newedge.prev_right_edge;
+#endif
 
   ----------------------------------------------------------------------
   --
@@ -3806,7 +3946,9 @@ BEGIN
     --
     IF newedge.left_face != 0 THEN -- {
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
      RAISE DEBUG 'Checking face %', ST_AsText(rec.geom);
+#endif
 
      -- Skip this if our edge is on the right side
      IF ST_IsEmpty(ST_GeometryN(
@@ -3823,12 +3965,16 @@ BEGIN
 
     END IF; -- }
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Adding % face', ST_AsText(rec.geom);
+#endif
     SELECT topology.AddFace(atopology, rec.geom, true) INTO newface;
     newfaces := array_append(newfaces, newface);
 
   END LOOP; --}
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Added face: %', newface;
+#endif
 
   IF newedge.left_face != 0 THEN -- {
 
@@ -3845,7 +3991,9 @@ BEGIN
     --RAISE DEBUG 'SQL: %', sql;
     FOR rec IN EXECUTE sql
     LOOP
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'TopoGeometry % in layer % contained the face being split (%) - updating to contain also new face %', rec.topogeo_id, rec.layer_id, newedge.left_face, newface;
+#endif
 
       -- Add reference to the other face
       sql := 'INSERT INTO ' || quote_ident(atopology)
@@ -3976,7 +4124,9 @@ BEGIN
 
   END; -- }
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Noding input linework';
+#endif
 
   --
   -- Node input linework with itself
@@ -3990,7 +4140,9 @@ BEGIN
       WHERE ST_Dimension(geom) = 2
   ) as linework INTO STRICT nodededges;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Computed % noded edges', ST_NumGeometries(nodededges);
+#endif
 
   --
   -- Linemerge the resulting edges, to reduce the working set
@@ -3999,7 +4151,9 @@ BEGIN
   --
   SELECT ST_LineMerge(nodededges) INTO STRICT nodededges;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Merged edges: %', ST_NumGeometries(nodededges);
+#endif
 
 
   --
@@ -4014,7 +4168,9 @@ BEGIN
       WHERE ST_Dimension(geom) = 1
   ) as nodes INTO STRICT points;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Collected % input points', ST_NumGeometries(points);
+#endif
 
   --
   -- Further split edges by points
@@ -4029,8 +4185,10 @@ BEGIN
   END LOOP;
   SELECT ST_UnaryUnion(nodededges) INTO STRICT nodededges;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Noded edges became % after point-split',
     ST_NumGeometries(nodededges);
+#endif
 
   --
   -- Collect all nodes (from points and noded linework endpoints)
@@ -4049,7 +4207,9 @@ BEGIN
     SELECT ST_EndPoint(geom) FROM edges
   ) as endpoints INTO points;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Total nodes count: %', ST_NumGeometries(points);
+#endif
 
   --
   -- Add all nodes as isolated so that 

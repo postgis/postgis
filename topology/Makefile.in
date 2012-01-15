@@ -69,7 +69,7 @@ topology_upgrade.sql:  topology.sql
 topology_upgrade_20_minor.sql:  topology_drop_before.sql topology_upgrade.sql topology_drop_after.sql
 	cat $^ > $@
 
-topology.sql.in: sql/sqlmm.sql sql/populate.sql sql/polygonize.sql sql/gml.sql sql/query/getnodebypoint.sql sql/query/getedgebypoint.sql sql/query/getfacebypoint.sql sql/query/GetRingEdges.sql sql/manage/TopologySummary.sql sql/manage/CopyTopology.sql sql/manage/ManageHelper.sql sql/topoelement/topoelement_agg.sql sql/topogeometry/type.sql sql/topogeometry/totopogeom.sql sql/predicates.sql
+topology.sql.in: sql/sqlmm.sql.in.c sql/populate.sql.in.c sql/polygonize.sql.in.c sql/gml.sql.in.c sql/query/getnodebypoint.sql.in.c sql/query/getedgebypoint.sql.in.c sql/query/getfacebypoint.sql.in.c sql/query/GetRingEdges.sql.in.c sql/manage/TopologySummary.sql.in.c sql/manage/CopyTopology.sql.in.c sql/manage/ManageHelper.sql.in.c sql/topoelement/topoelement_agg.sql.in.c sql/topogeometry/type.sql.in.c sql/topogeometry/totopogeom.sql.in.c sql/predicates.sql.in.c
 
 uninstall_topology.sql: topology.sql ../utils/create_undef.pl 
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@

@@ -1879,41 +1879,41 @@ $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} DropTopology
 
-#include "sql/manage/TopologySummary.sql"
-#include "sql/manage/CopyTopology.sql"
+#include "sql/manage/TopologySummary.sql.in.c"
+#include "sql/manage/CopyTopology.sql.in.c"
 
 -- Spatial predicates
-#include "sql/predicates.sql"
+#include "sql/predicates.sql.in.c"
 
 --  Querying
-#include "sql/query/getnodebypoint.sql"
-#include "sql/query/getedgebypoint.sql"
-#include "sql/query/getfacebypoint.sql"
+#include "sql/query/getnodebypoint.sql.in.c"
+#include "sql/query/getedgebypoint.sql.in.c"
+#include "sql/query/getfacebypoint.sql.in.c"
 
 --  Populating
-#include "sql/populate.sql"
-#include "sql/polygonize.sql"
+#include "sql/populate.sql.in.c"
+#include "sql/polygonize.sql.in.c"
 
 --  TopoElement
-#include "sql/topoelement/topoelement_agg.sql"
+#include "sql/topoelement/topoelement_agg.sql.in.c"
 
 --  TopoGeometry
-#include "sql/topogeometry/type.sql"
-#include "sql/topogeometry/totopogeom.sql"
+#include "sql/topogeometry/type.sql.in.c"
+#include "sql/topogeometry/totopogeom.sql.in.c"
 
 --  GML
-#include "sql/gml.sql"
+#include "sql/gml.sql.in.c"
 
 --=}  POSTGIS-SPECIFIC block
 
 --  SQL/MM block
-#include "sql/sqlmm.sql"
+#include "sql/sqlmm.sql.in.c"
 
 -- The following file needs getfaceedges_returntype, defined in sqlmm.sql
-#include "sql/query/GetRingEdges.sql"
+#include "sql/query/GetRingEdges.sql.in.c"
 
 --general management --
-#include "sql/manage/ManageHelper.sql"
+#include "sql/manage/ManageHelper.sql.in.c"
 
 --COMMIT;
 -- Make sure topology is in database search path --

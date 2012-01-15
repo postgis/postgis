@@ -96,7 +96,9 @@ BEGIN
 
   IF setContainingFace THEN
     containing_face := topology.GetFaceByPoint(atopology, apoint, 0);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'containing face: %', containing_face;
+#endif
   ELSE
     containing_face := NULL;
   END IF;
@@ -245,7 +247,9 @@ BEGIN
 
 	  -- Reuse an EQUAL edge (be it closed or not)
 	  IF ST_RelateMatch(rec.im, '1FFF*FFF2') THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
 	      RAISE DEBUG 'Edge already known as %', rec.edge_id;
+#endif
 	      RETURN rec.edge_id;
 	  END IF;
 
@@ -471,8 +475,10 @@ BEGIN
       right_side = ST_Line_Locate_Point(bounds, p1) < 
                    ST_Line_Locate_Point(bounds, p2);
   
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Edge % (left:%, right:%) - ring : % - right_side : %',
         rec.edge_id, rec.left_face, rec.right_face, rrec.path, right_side;
+#endif
 
       IF right_side THEN
         right_edges := array_append(right_edges, rec.edge_id);
@@ -499,8 +505,12 @@ BEGIN
     RAISE EXCEPTION 'Found no edges on the polygon boundary';
   END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Left edges: %', left_edges;
+#endif
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Right edges: %', right_edges;
+#endif
 
   --
   -- Check that all edges found, taken togheter,
@@ -521,10 +531,14 @@ BEGIN
 
   IF faceid IS NOT NULL AND faceid != 0 THEN
     IF NOT force_new THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Face already known as %, not forcing a new face', faceid;
+#endif
       RETURN faceid;
     ELSE
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Face already known as %, forcing a new face', faceid;
+#endif
     END IF;
   END IF;
 
@@ -656,13 +670,17 @@ BEGIN
     || tolerance || ') ORDER BY ST_Distance('
     || quote_literal(apoint::text)
     || '::geometry, a.geom) LIMIT 1;';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
+#endif
   EXECUTE sql INTO id;
   IF id IS NOT NULL THEN
     RETURN id;
   END IF;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'No existing node within tolerance distance';
+#endif
 
   -- 2. Check if any existing edge falls within tolerance
   --    and if so split it by a point projected on it
@@ -673,14 +691,20 @@ BEGIN
     || tolerance || ') ORDER BY ST_Distance('
     || quote_literal(apoint::text)
     || '::geometry, a.geom) LIMIT 1;';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
+#endif
   EXECUTE sql INTO rec;
   IF rec IS NOT NULL THEN
     -- project point to line, split edge by point
     prj := ST_ClosestPoint(rec.geom, apoint);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Splitting edge % with closest point %', rec.edge_id, ST_AsText(prj);
+#endif
     IF NOT ST_Contains(rec.geom, prj) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG ' Snapping edge to contain closest point';
+#endif
       -- Snap the edge geometry to the projected point
       -- The tolerance is an arbitrary number.
       -- How much would be enough to ensure any projected point is within
@@ -690,7 +714,9 @@ BEGIN
     END IF;
     id := topology.ST_ModEdgeSplit(atopology, rec.edge_id, prj);
   ELSE
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'No existing edge within tolerance distance';
+#endif
     id := topology.ST_AddIsoNode(atopology, NULL, apoint);
   END IF;
 
@@ -728,7 +754,9 @@ BEGIN
 
   -- 1. Self-node
   noded := ST_UnaryUnion(aline);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Self-noded: %', ST_AsText(noded);
+#endif
 
   -- 2. Node to edges and nodes falling within tolerance distance
   sql := 'WITH nearby AS ( SELECT geom FROM ' 
@@ -740,15 +768,23 @@ BEGIN
     || '.edge WHERE ST_DWithin(geom,'
     || quote_literal(aline::text) || '::geometry,'
     || tolerance || ') ) SELECT st_collect(geom) FROM nearby;';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
+#endif
   EXECUTE sql INTO set1;
   IF set1 IS NOT NULL THEN
     snapped := ST_Snap(noded, set1, tolerance);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Snapped: %', ST_AsText(snapped);
+#endif
     noded := ST_Difference(snapped, set1);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Difference: %', ST_AsText(noded);
+#endif
     set2 := ST_Intersection(snapped, set1);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Intersection: %', ST_AsText(set2);
+#endif
     noded := ST_Union(noded, set2);
     -- TODO: linemerge ?
   END IF;
@@ -758,40 +794,58 @@ BEGIN
 
     -- TODO: skip point elements ?
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Adding edge %', ST_AsText(rec.geom);
+#endif
 
     start_node := topology.TopoGeo_AddPoint(atopology,
                                           ST_StartPoint(rec.geom),
                                           tolerance);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG ' Start Node: %', start_node;
+#endif
 
     end_node := topology.TopoGeo_AddPoint(atopology,
                                         ST_EndPoint(rec.geom),
                                         tolerance);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG ' End Node: %', end_node;
+#endif
 
     -- Added endpoints may have drifted due to tolerance, so
     -- we need to re-snap the edge to the new nodes before adding it
     sql := 'SELECT ST_Collect(geom) FROM ' || quote_ident(atopology)
       || '.node WHERE node_id IN (' || start_node || ',' || end_node || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG '%', sql;
+#endif
     EXECUTE sql INTO STRICT set2;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Endnodes: %', ST_AsText(set2);
+#endif
     snapped := ST_Snap(rec.geom, set2, tolerance);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Snapped edge: %', ST_AsText(snapped);
+#endif
 
     -- Check if the so-snapped edge _now_ exists
     sql := 'SELECT edge_id FROM ' || quote_ident(atopology)
       || '.edge_data WHERE ST_Equals(geom, ' || quote_literal(snapped::text)
       || '::geometry)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG '%', sql;
+#endif
     EXECUTE sql INTO id;
     IF id IS NULL THEN
       id := topology.ST_AddEdgeModFace(atopology, start_node, end_node,
                                        snapped);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'New edge id: %', id;
+#endif
     ELSE
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Old edge id: %', id;
+#endif
     END IF;
 
     RETURN NEXT id;
@@ -828,12 +882,16 @@ BEGIN
 
   -- 1. Extract boundary
   boundary := ST_Boundary(apoly);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Boundary: %', ST_AsText(boundary);
+#endif
 
   -- 2. Add boundaries as edges
   FOR rec IN SELECT (ST_Dump(boundary)).geom LOOP
     edges := array_cat(edges, array_agg(x)) FROM ( select topology.TopoGeo_addLinestring(atopology, rec.geom, tolerance) as x ) as foo;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'New edges: %', edges;
+#endif
   END LOOP;
 
   -- 3. Find faces covered by input polygon
@@ -842,12 +900,16 @@ BEGIN
     || '.face f WHERE f.mbr && '
     || quote_literal(apoly::text)
     || '::geometry';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
+#endif
   FOR rec IN EXECUTE sql LOOP
     -- check for actual containment
     fgeom := ST_PointOnSurface(ST_GetFaceGeometry(atopology, rec.face_id));
     IF NOT ST_Covers(apoly, fgeom) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Face % not covered by input polygon', rec.face_id;
+#endif
       CONTINUE;
     END IF;
     RETURN NEXT rec.face_id;
