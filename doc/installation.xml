@@ -528,6 +528,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		This requires xsltproc to build and will generate 4 files in doc folder <filename>topology_cheatsheet.html</filename>, <filename>tiger_geocoder_cheatsheet.html</filename>, 
 			<filename>raster_cheatsheet.html</filename>, <filename>postgis_cheatsheet.html</filename>
 	  </para>
+	  <para>You can download some pre-built ones available in html and pdf from <ulink url="http://www.postgis.us/study_guides">PostGIS / PostgreSQL Study Guides</ulink></para>
 
 	  <para>
 		<command>make cheatsheets</command>
