@@ -27,6 +27,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/legacy_query.sql regress/addnode.sql \
 	regress/addedge.sql regress/addface.sql \
 	regress/addface2.5d.sql \
+	regress/addtopogeometrycolumn.sql \
 	regress/polygonize.sql \
 	regress/st_addisoedge.sql \
 	regress/st_addisonode.sql \

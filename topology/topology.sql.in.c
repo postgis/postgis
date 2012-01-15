@@ -560,17 +560,6 @@ BEGIN
 		RAISE EXCEPTION 'Topology % does not exist', toponame;
 	END IF;
 
-	--
-	-- Get new layer id from sequence
-	--
-	FOR rec IN EXECUTE 'SELECT nextval(' ||
-		quote_literal(
-			quote_ident(toponame) || '.layer_id_seq'
-		) || ')'
-	LOOP
-		layer_id = rec.nextval;
-	END LOOP;
-
 	IF ltype = 'POINT' THEN
 		intltype = 1;
 	ELSIF ltype = 'LINE' THEN
@@ -582,6 +571,23 @@ BEGIN
 	ELSE
 		RAISE EXCEPTION 'Layer type must be one of POINT,LINE,POLYGON,COLLECTION';
 	END IF;
+
+	--
+	-- Add new TopoGeometry column in schema.table
+	--
+	EXECUTE 'ALTER TABLE ' || quote_ident(schema)
+		|| '.' || quote_ident(tbl) 
+		|| ' ADD COLUMN ' || quote_ident(col)
+		|| ' topology.TopoGeometry;';
+
+
+	--
+	-- Get new layer id from sequence
+	--
+	EXECUTE 'SELECT nextval(' ||
+		quote_literal(
+			quote_ident(toponame) || '.layer_id_seq'
+		) || ')' INTO STRICT layer_id;
 
 	--
 	-- See if child id exists and extract its level
@@ -625,14 +631,6 @@ BEGIN
 	--
 	EXECUTE 'CREATE SEQUENCE ' || quote_ident(toponame)
 		|| '.topogeo_s_' || layer_id;
-
-	--
-	-- Add new TopoGeometry column in schema.table
-	--
-	EXECUTE 'ALTER TABLE ' || quote_ident(schema)
-		|| '.' || quote_ident(tbl) 
-		|| ' ADD COLUMN ' || quote_ident(col)
-		|| ' topology.TopoGeometry;';
 
 	--
 	-- Add constraints on TopoGeom column

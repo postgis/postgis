@@ -1,0 +1,6 @@
+t
+ERROR:  relation "public.feature" does not exist
+ERROR:  Layer type must be one of POINT,LINE,POLYGON,COLLECTION
+good|1
+1|public|feature|tg|1|0|
+Topology 'tt' dropped
