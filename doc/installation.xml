@@ -538,23 +538,13 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <title>Building PostGIS Extensions and Deploying them</title>
 
 	  <para>
-		The PostGIS extensions which is usable for PostgreSQL 9.1+, is not yet integrated in the core make install script.
-		To build the extensions, first build PostGIS as usual using the prior section steps.
+		The PostGIS extensions which is usable for PostgreSQL 9.1+, should be automatically installed if you are built against
+		PostgreSQL 9.1+.
 	  </para>
-
-	  <para>
-		<command>cd extensions/postgis
-			make
-			make install
-			cd extensions/postgis_topology
-			make 
-			make install
-		</command>
-	  </para>
-
-	  <para>
-		If you want to install the extensions manually on a separate server different from your development,
-		you need to copy the following files from the extensions folder into the <filename>PostgreSQL / share / extension</filename> folder
+	  <para>The extension files will always be the same for the same version of PostGIS regardless of OS, so it is same as long as you
+	  have the PostGIS binaries already installed on your servers, to copy over the extension files. </para>
+		<para>If you want to install the extensions manually on a separate server different from your development,
+		You need to copy the following files from the extensions folder into the <filename>PostgreSQL / share / extension</filename> folder
 		of your PostgreSQL install as well as the needed binaries for regular PostGIS if you don't have them already on the server.
 	  </para>
 
@@ -572,6 +562,14 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		  </para>
 		</listitem>
 	 </itemizedlist>
+	 <para>Once you do that, you should see <varname>postgis</varname>, <varname>postgis_topology</varname> as available extensions in PgAdmin -> extensions.</para>
+	 <para>If you are using psql, you can verify that the extensions are installed by running this query:</para>
+	 <programlisting>SELECT name 
+FROM pg_available_extensions WHERE name LIKE 'postgis%' ;
+       name
+------------------
+ postgis
+ postgis_topology</programlisting>
 	</sect2>
 
 
