@@ -101,6 +101,7 @@ DROP FUNCTION IF EXISTS GeomFromWKB(bytea, int);
 DROP FUNCTION IF EXISTS GeometryN(geometry,integer);
 DROP FUNCTION IF EXISTS GeomUnion(geometry,geometry);
 DROP FUNCTION IF EXISTS getbbox(geometry);
+DROP FUNCTION IF EXISTS getsrid(geometry);
 DROP FUNCTION IF EXISTS Intersects(geometry,geometry);
 DROP FUNCTION IF EXISTS IsRing(geometry);
 DROP FUNCTION IF EXISTS IsSimple(geometry);

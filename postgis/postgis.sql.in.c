@@ -880,12 +880,6 @@ CREATE OR REPLACE FUNCTION postgis_dropbbox(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_dropBBOX'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION getsrid(geometry)
-	RETURNS int4
-	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION postgis_hasbbox(geometry)
 	RETURNS bool

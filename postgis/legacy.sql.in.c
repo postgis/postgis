@@ -20,6 +20,12 @@ CREATE OR REPLACE FUNCTION hasbbox(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasBBOX'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 	
+-- Availability: 1.2.2 -- never deprecated but don't think anyone uses it
+CREATE OR REPLACE FUNCTION getsrid(geometry)
+	RETURNS int4
+	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION GeometryFromText(text, int4)
 	RETURNS geometry
