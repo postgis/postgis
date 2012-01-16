@@ -510,6 +510,9 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	case TRIANGLETYPE:
 		return lwtriangle_same((LWTRIANGLE *)lwgeom1,
 		                       (LWTRIANGLE *)lwgeom2);
+	case CIRCSTRINGTYPE:
+		return lwcircstring_same((LWCIRCSTRING *)lwgeom1,
+					 (LWCIRCSTRING *)lwgeom2);
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:

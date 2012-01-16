@@ -281,3 +281,25 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
           encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
  'GEOMETRYCOLLECTION ZM EMPTY'
 ::text as g ) as foo;
+
+-- CIRCULARSTRING
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CIRCULARSTRING EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CIRCULARSTRING Z EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CIRCULARSTRING M EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CIRCULARSTRING ZM EMPTY'
+::text as g ) as foo;

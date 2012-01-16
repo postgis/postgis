@@ -1121,6 +1121,7 @@ char lwline_same(const LWLINE *p1, const LWLINE *p2);
 char lwpoly_same(const LWPOLY *p1, const LWPOLY *p2);
 char lwtriangle_same(const LWTRIANGLE *p1, const LWTRIANGLE *p2);
 char lwcollection_same(const LWCOLLECTION *p1, const LWCOLLECTION *p2);
+char lwcircstring_same(const LWCIRCSTRING *p1, const LWCIRCSTRING *p2);
 
 
 /**
