@@ -241,6 +241,8 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 	GEOSGeometry* polygons;
 	const GEOSGeometry *vgeoms[1];
 	int i,n;
+	int hasZ = FLAGS_GET_Z(lwpoly_in->flags);
+
 
 	/* Possible outcomes:
 	 *
@@ -287,12 +289,12 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 
 	/* debugging..
 		lwnotice("Bounds poly: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(g1_bounds, 0)));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(g1_bounds, hasZ)));
 		lwnotice("Line: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(g2, 0)));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(g2, hasZ)));
 
 		lwnotice("Noded bounds: %s",
-		               lwgeom_to_ewkt(GEOS2LWGEOM(vgeoms[0], 0)));
+		               lwgeom_to_ewkt(GEOS2LWGEOM(vgeoms[0], hasZ)));
 	*/
 
 	polygons = GEOSPolygonize(vgeoms, 1);
@@ -324,8 +326,8 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 	 * geometries and return the rest in a collection
 	 */
 	n = GEOSGetNumGeometries(polygons);
-	out = lwcollection_construct(COLLECTIONTYPE, lwpoly_in->srid,
-	                             NULL, 0, NULL);
+	out = lwcollection_construct_empty(COLLECTIONTYPE, lwpoly_in->srid,
+				     hasZ, 0);
 	/* Allocate space for all polys */
 	out->geoms = lwalloc(sizeof(LWGEOM*)*n);
 	assert(0 == out->ngeoms);
@@ -370,7 +372,7 @@ lwpoly_split_by_line(const LWPOLY* lwpoly_in, const LWLINE* blade_in)
 			continue;
 		}
 
-		out->geoms[out->ngeoms++] = GEOS2LWGEOM(p, FLAGS_GET_Z(lwpoly_in->flags));
+		out->geoms[out->ngeoms++] = GEOS2LWGEOM(p, hasZ);
 	}
 
 	GEOSGeom_destroy(g1);

@@ -521,6 +521,10 @@ SELECT '#1414', st_astext(st_force_3dz('CURVEPOLYGON EMPTY'));
 -- #1478
 SELECT '#1478', 'SRID=1;POINT EMPTY'::geometry::text::geometry;
 
+-- #745 
+SELECT '#745', ST_AsEWKT(ST_Split('POLYGON((-72 42 1,-70 43 1,-71 41 1,-72 42 1))',
+                                  'LINESTRING(-10 40 1,-9 41 1)'));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
