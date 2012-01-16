@@ -3229,8 +3229,10 @@ BEGIN
     RETURN newedge.edge_id;
   END IF;
 
-  RAISE NOTICE 'ST_AddEdgeNewFaces: edge % splitted face %',
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'ST_AddEdgeNewFaces: edge % splitted face %',
       newedge.edge_id, newedge.left_face;
+#endif
 
   -- Call topology.AddFace for every face containing the new edge
   -- 
@@ -3918,8 +3920,10 @@ BEGIN
     RETURN newedge.edge_id;
   END IF;
 
-  RAISE NOTICE 'ST_AddEdgeModFace: edge % splitted face %',
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'ST_AddEdgeModFace: edge % splitted face %',
       newedge.edge_id, newedge.left_face;
+#endif
 
   -- Call topology.AddFace for every face whose boundary contains the new edge
   --
