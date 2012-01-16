@@ -436,3 +436,25 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
  'TRIANGLE ZM EMPTY'
 ::text as g ) as foo;
 
+-- TIN
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'TIN EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'TIN Z EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'TIN M EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'TIN ZM EMPTY'
+::text as g ) as foo;
+
