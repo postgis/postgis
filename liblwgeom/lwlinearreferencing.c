@@ -294,7 +294,7 @@ void lwpoint_set_ordinate(POINT4D *p, char ordinate, double value)
 * generate a new point that is proportionally between the input points,
 * using the values in the provided dimension as the scaling factors.
 */
-int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz, int hasm, char ordinate, double interpolation_value)
+int point_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz, int hasm, char ordinate, double interpolation_value)
 {
 	static char* dims = "XYZM";
 	double p1_value = lwpoint_get_ordinate(p1, ordinate);
@@ -605,7 +605,7 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 				{
 					double interpolation_value;
 					(ordinate_value_q > to) ? (interpolation_value = to) : (interpolation_value = from);
-					rv = lwpoint_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
+					rv = point_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
 					rv = ptarray_append_point(dp, r, LW_FALSE);
 					LWDEBUGF(4, "[0] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
@@ -631,7 +631,7 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 				*  to the point array at the range boundary. */
 				double interpolation_value;
 				(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
-				rv = lwpoint_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
+				rv = point_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
 				rv = ptarray_append_point(dp, r, LW_FALSE);
 				LWDEBUGF(4, " [1] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 			}
@@ -646,7 +646,7 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 				{
 					double interpolation_value;
 					(ordinate_value_p > to) ? (interpolation_value = to) : (interpolation_value = from);
-					rv = lwpoint_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
+					rv = point_interpolate(q, p, r, hasz, hasm, ordinate, interpolation_value);
 					rv = ptarray_append_point(dp, r, LW_FALSE);
 					LWDEBUGF(4, " [2] interpolating between (%g, %g) with interpolation point (%g)", ordinate_value_q, ordinate_value_p, interpolation_value);
 				}
@@ -657,10 +657,10 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 				*  so we need to add *two* interpolated points! */
 				dp = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate lower point. */
-				rv = lwpoint_interpolate(p, q, r, hasz, hasm, ordinate, from);
+				rv = point_interpolate(p, q, r, hasz, hasm, ordinate, from);
 				ptarray_set_point4d(dp, 0, r);
 				/* Interpolate upper point. */
-				rv = lwpoint_interpolate(p, q, r, hasz, hasm, ordinate, to);
+				rv = point_interpolate(p, q, r, hasz, hasm, ordinate, to);
 				ptarray_set_point4d(dp, 1, r);
 			}
 			else if ( i && ordinate_value_q > to && ordinate_value_p < from )
@@ -669,10 +669,10 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 				*  so we need to add *two* interpolated points! */
 				dp = ptarray_construct(hasz, hasm, 2);
 				/* Interpolate upper point. */
-				rv = lwpoint_interpolate(p, q, r, hasz, hasm, ordinate, to);
+				rv = point_interpolate(p, q, r, hasz, hasm, ordinate, to);
 				ptarray_set_point4d(dp, 0, r);
 				/* Interpolate lower point. */
-				rv = lwpoint_interpolate(p, q, r, hasz, hasm, ordinate, from);
+				rv = point_interpolate(p, q, r, hasz, hasm, ordinate, from);
 				ptarray_set_point4d(dp, 1, r);
 			}
 			/* We have an extant point-array, save it out to a multi-line. */

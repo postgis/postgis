@@ -218,7 +218,7 @@ void lwpoint_set_ordinate(POINT4D *p, char ordinate, double value);
 /* 
 * Generate an interpolated coordinate p given an interpolation value and ordinate to apply it to
 */
-int lwpoint_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz, int hasm, char ordinate, double interpolation_value);
+int point_interpolate(const POINT4D *p1, const POINT4D *p2, POINT4D *p, int hasz, int hasm, char ordinate, double interpolation_value);
 
 
 /**

@@ -647,7 +647,7 @@ Suite: PostGIS Computational Geometry Suite
   Test: test_lwline_crossing_bugs ... passed
   Test: test_lwpoint_set_ordinate ... passed
   Test: test_lwpoint_get_ordinate ... passed
-  Test: test_lwpoint_interpolate ... passed
+  Test: test_point_interpolate ... passed
   Test: test_lwline_clip ... passed
   Test: test_lwline_clip_big ... passed
   Test: test_lwmline_clip ... passed

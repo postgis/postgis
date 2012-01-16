@@ -409,7 +409,7 @@ static void test_lwpoint_get_ordinate(void)
 
 }
 
-static void test_lwpoint_interpolate(void)
+static void test_point_interpolate(void)
 {
 	POINT4D p, q, r;
 	int rv = 0;
@@ -424,16 +424,16 @@ static void test_lwpoint_interpolate(void)
 	q.z = 40.0;
 	q.m = 50.0;
 
-	rv = lwpoint_interpolate(&p, &q, &r, 1, 1, 'Z', 35.0);
+	rv = point_interpolate(&p, &q, &r, 1, 1, 'Z', 35.0);
 	CU_ASSERT_EQUAL( r.x, 15.0);
 
-	rv = lwpoint_interpolate(&p, &q, &r, 1, 1, 'M', 41.0);
+	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 41.0);
 	CU_ASSERT_EQUAL( r.y, 21.0);
 
-	rv = lwpoint_interpolate(&p, &q, &r, 1, 1, 'M', 50.0);
+	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 50.0);
 	CU_ASSERT_EQUAL( r.y, 30.0);
 
-	rv = lwpoint_interpolate(&p, &q, &r, 1, 1, 'M', 40.0);
+	rv = point_interpolate(&p, &q, &r, 1, 1, 'M', 40.0);
 	CU_ASSERT_EQUAL( r.y, 20.0);
 
 }
@@ -890,7 +890,7 @@ CU_TestInfo algorithms_tests[] =
 	PG_TEST(test_lwline_crossing_bugs),
 	PG_TEST(test_lwpoint_set_ordinate),
 	PG_TEST(test_lwpoint_get_ordinate),
-	PG_TEST(test_lwpoint_interpolate),
+	PG_TEST(test_point_interpolate),
 	PG_TEST(test_lwline_clip),
 	PG_TEST(test_lwline_clip_big),
 	PG_TEST(test_lwmline_clip),
