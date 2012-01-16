@@ -172,3 +172,4 @@ ERROR:  MultiSurface cannot contain MultiPoint element
 #1453.1|t
 #1453.2|f
 #1454|t
+#1414|CURVEPOLYGON Z EMPTY

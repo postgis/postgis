@@ -511,6 +511,9 @@ SELECT '#1453.2', ST_OrderingEquals('POINT EMPTY', 'POINT Z EMPTY');
 with inp as ( select 'MULTILINESTRING((0 0, 2 0))'::geometry as g )
 SELECT '#1454', st_orderingequals(g,g) from inp;
 
+-- #1414
+SELECT '#1414', st_astext(st_force_3dz('CURVEPOLYGON EMPTY'));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
