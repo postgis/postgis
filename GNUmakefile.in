@@ -106,7 +106,7 @@ templategis-uninstall:
 	$(MAKE) -C extras/template_gis uninstall
 
 docs: 
-	$(MAKE) -C doc 
+	$(MAKE) -C doc html
 
 docs-clean:
 	$(MAKE) -C doc clean

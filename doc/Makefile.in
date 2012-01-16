@@ -98,6 +98,8 @@ chunked-html: postgis-out.xml images
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
+html: html/postgis.html
+
 html/postgis.html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/postgis.html \
