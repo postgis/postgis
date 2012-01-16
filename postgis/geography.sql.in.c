@@ -670,6 +670,12 @@ CREATE OR REPLACE FUNCTION ST_AsBinary(geography,text)
 	RETURNS bytea AS
 	$$ SELECT ST_AsBinary($1::geometry, $2);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 	
 -----------------------------------------------------------------------------
 
