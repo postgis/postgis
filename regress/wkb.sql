@@ -348,3 +348,47 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
  'CURVEPOLYGON ZM EMPTY'
 ::text as g ) as foo;
 
+-- MULTICURVE
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTICURVE EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTICURVE Z EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTICURVE M EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTICURVE ZM EMPTY'
+::text as g ) as foo;
+
+-- MULTISURFACE
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTISURFACE EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTISURFACE Z EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTISURFACE M EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTISURFACE ZM EMPTY'
+::text as g ) as foo;
+
