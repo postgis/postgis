@@ -505,6 +505,10 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 	LWTRIANGLE *tri = lwtriangle_construct_empty(s->srid, s->has_z, s->has_m);
 	POINTARRAY *pa = NULL;
 
+	/* Empty triangle? */
+	if( nrings == 0 )
+		return tri;
+
 	/* Should be only one ring. */
 	if ( nrings != 1 )
 		lwerror("Triangle has wrong number of rings: %d", nrings);
