@@ -374,10 +374,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		else
 			getPoint4d_p(ipa, ipa->npoints-1, &pt);
 
-		opa = pointArray_construct((uchar *)&pt,
-		                           TYPE_HASZ(line->type),
-		                           TYPE_HASM(line->type),
-		                           1);
+		opa = ptarray_construct(TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
+		setPoint4d(opa, 0, &pt);
 		point = lwpoint_construct(line->SRID, 0, opa);
 		srl = lwpoint_serialize(point);
 		/* We shouldn't need this, the memory context is getting freed on the next line.
@@ -410,10 +408,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 		{
 			double dseg = (distance - tlength) / slength;
 			interpolate_point4d(&p1, &p2, &pt, dseg);
-			opa = pointArray_construct((uchar *)&pt,
-			                           TYPE_HASZ(line->type),
-			                           TYPE_HASM(line->type),
-			                           1);
+			opa = ptarray_construct(TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
+			setPoint4d(opa, 0, &pt);
 			point = lwpoint_construct(line->SRID, 0, opa);
 			srl = lwpoint_serialize(point);
 			/* We shouldn't need this, the memory context is getting freed on the next line
@@ -426,10 +422,8 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	/* Return the last point on the line. This shouldn't happen, but
 	 * could if there's some floating point rounding errors. */
 	getPoint4d_p(ipa, ipa->npoints-1, &pt);
-	opa = pointArray_construct((uchar *)&pt,
-	                           TYPE_HASZ(line->type),
-	                           TYPE_HASM(line->type),
-	                           1);
+	opa = ptarray_construct(TYPE_HASZ(line->type), TYPE_HASM(line->type), 1);
+	setPoint4d(opa, 0, &pt);
 	point = lwpoint_construct(line->SRID, 0, opa);
 	srl = lwpoint_serialize(point);
 	/* We shouldn't need this, the memory context is getting freed on the next line
