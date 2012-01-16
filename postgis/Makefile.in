@@ -22,7 +22,7 @@ DATA=../spatial_ref_sys.sql
 SQL_OBJS=postgis.sql.in legacy.sql.in uninstall_legacy.sql.in legacy_compatibility_layer.sql.in 
 
 # PostgreSQL objects
-PG_OBJS=lwgeom_debug.o \
+PG_OBJS= \
 	postgis_module.o \
 	lwgeom_accum.o \
 	lwgeom_spheroid.o \

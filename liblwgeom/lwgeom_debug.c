@@ -10,7 +10,7 @@
  *
  **********************************************************************/
 
-#include "lwgeom_pg.h"
+#include "lwgeom_log.h"
 #include "liblwgeom.h"
 
 #include <stdio.h>
@@ -28,7 +28,7 @@ lwtype_zmflags(uint8_t flags)
 	if ( FLAGS_GET_BBOX(flags) ) tflags[flagno++] = 'B';
 	tflags[flagno] = '\0';
 
-	POSTGIS_DEBUGF(4, "Flags: %s - returning %p", flags, tflags);
+	LWDEBUGF(4, "Flags: %s - returning %p", flags, tflags);
 
 	return tflags;
 }
@@ -43,7 +43,7 @@ lwpoint_summary(LWPOINT *point, int offset)
 	char *pad="";
 	char *zmflags = lwtype_zmflags(point->flags);
 
-	result = palloc(128+offset);
+	result = (char *)lwalloc(128+offset);
 
 	sprintf(result, "%*.s%s[%s]\n",
 	        offset, pad, lwtype_name(point->type),
@@ -58,7 +58,7 @@ lwline_summary(LWLINE *line, int offset)
 	char *pad="";
 	char *zmflags = lwtype_zmflags(line->flags);
 
-	result = palloc(128+offset);
+	result = (char *)lwalloc(128+offset);
 
 	sprintf(result, "%*.s%s[%s] with %d points\n",
 	        offset, pad, lwtype_name(line->type),
@@ -78,9 +78,9 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	char *pad="";
 	char *zmflags = lwtype_zmflags(col->flags);
 
-	POSTGIS_DEBUG(2, "lwcollection_summary called");
+	LWDEBUG(2, "lwcollection_summary called");
 
-	result = (char *)palloc(size);
+	result = (char *)lwalloc(size);
 
 	sprintf(result, "%*.s%s[%s] with %d elements\n",
 	        offset, pad, lwtype_name(col->type),
@@ -93,13 +93,13 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 		size += strlen(tmp)+1;
 		result = lwrealloc(result, size);
 
-		POSTGIS_DEBUGF(4, "Reallocated %d bytes for result", size);
+		LWDEBUGF(4, "Reallocated %d bytes for result", size);
 
 		strcat(result, tmp);
 		lwfree(tmp);
 	}
 
-	POSTGIS_DEBUG(3, "lwcollection_summary returning");
+	LWDEBUG(3, "lwcollection_summary returning");
 
 	return result;
 }
@@ -114,9 +114,9 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	char *pad="";
 	char *zmflags = lwtype_zmflags(poly->flags);
 
-	POSTGIS_DEBUG(2, "lwpoly_summary called");
+	LWDEBUG(2, "lwpoly_summary called");
 
-	result = palloc(size);
+	result = (char *)lwalloc(size);
 
 	sprintf(result, "%*.s%s[%s] with %i rings\n",
 	        offset, pad, lwtype_name(poly->type),
@@ -130,7 +130,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 		strcat(result,tmp);
 	}
 
-	POSTGIS_DEBUG(3, "lwpoly_summary returning");
+	LWDEBUG(3, "lwpoly_summary returning");
 
 	return result;
 }
@@ -157,7 +157,7 @@ lwgeom_summary(const LWGEOM *lwgeom, int offset)
 	case COLLECTIONTYPE:
 		return lwcollection_summary((LWCOLLECTION *)lwgeom, offset);
 	default:
-		result = palloc(256);
+		result = (char *)lwalloc(256);
 		sprintf(result, "Object is of unknown type: %d",
 		        lwgeom->type);
 		return result;
