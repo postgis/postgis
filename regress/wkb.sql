@@ -326,3 +326,25 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
  'COMPOUNDCURVE ZM EMPTY'
 ::text as g ) as foo;
 
+-- CURVEPOLYGON
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CURVEPOLYGON EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CURVEPOLYGON Z EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CURVEPOLYGON M EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CURVEPOLYGON ZM EMPTY'
+::text as g ) as foo;
+

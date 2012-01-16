@@ -517,6 +517,7 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
 	case COMPOUNDTYPE:
+	case CURVEPOLYTYPE:
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:
 	case COLLECTIONTYPE:
