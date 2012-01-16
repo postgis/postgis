@@ -1934,7 +1934,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		{
 			if (state->pgis_major_version > 0)
 			{
-				sprintf(buf, "ST_asEWKB(ST_SetSRID(\"%s\"::geometry, -1), 'XDR')", state->geo_col_name);
+				sprintf(buf, "ST_asEWKB(ST_SetSRID(\"%s\"::geometry, 0), 'XDR')", state->geo_col_name);
 			}
 			else
 			{
@@ -1946,7 +1946,7 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		{
 			if (state->pgis_major_version > 0)
 			{
-				sprintf(buf, "ST_AsEWKB(ST_SetSRID(\"%s\"::geometry, -1), 'NDR') AS _geoX", state->geo_col_name);
+				sprintf(buf, "ST_AsEWKB(ST_SetSRID(\"%s\"::geometry, 0), 'NDR') AS _geoX", state->geo_col_name);
 			}
 			else
 			{
