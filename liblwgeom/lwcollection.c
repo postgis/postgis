@@ -39,6 +39,9 @@ lwcollection_construct(uint8_t type, int srid, GBOX *bbox,
 
 	LWDEBUGF(2, "lwcollection_construct called with %d, %d, %p, %d, %p.", type, srid, bbox, ngeoms, geoms);
 
+	if( ! lwtype_is_collection(type) )
+		lwerror("Non-collection type specified in collection constructor!");
+
 	hasz = 0;
 	hasm = 0;
 	if ( ngeoms > 0 )
