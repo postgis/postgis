@@ -759,14 +759,14 @@ BEGIN
 #endif
 
   -- 2. Node to edges and nodes falling within tolerance distance
-  sql := 'WITH nearby AS ( SELECT geom FROM ' 
+  sql := 'WITH line AS ( SELECT '
+    || quote_literal(aline::text)
+    || '::geometry as g ), nearby AS ( SELECT n.geom FROM ' 
     || quote_ident(atopology) 
-    || '.node WHERE ST_DWithin(geom,'
-    || quote_literal(aline::text) || '::geometry,'
-    || tolerance || ') UNION ALL SELECT geom FROM '
+    || '.node n, line l WHERE ST_DWithin(n.geom, l.g, '
+    || tolerance || ') UNION ALL SELECT e.geom FROM '
     || quote_ident(atopology) 
-    || '.edge WHERE ST_DWithin(geom,'
-    || quote_literal(aline::text) || '::geometry,'
+    || '.edge e, line l WHERE ST_DWithin(e.geom, l.g, '
     || tolerance || ') ) SELECT st_collect(geom) FROM nearby;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
