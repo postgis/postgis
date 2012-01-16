@@ -676,6 +676,13 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asEWKT'
 	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0 - this is just a hack to prevent unknown from causing ambiguous name because of geography
+CREATE OR REPLACE FUNCTION ST_AsEWKT(text)
+	RETURNS text AS
+	$$ SELECT ST_AsEWKT($1::geometry);  $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
 	
 -----------------------------------------------------------------------------
 
