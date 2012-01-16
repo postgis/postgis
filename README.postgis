@@ -59,6 +59,11 @@ for this to work.
 
     http://xmlsoft.org/
 
+* GNU gettext
+
+   The loader, and hence postgis, requires GNU gettext 0.14 or higher
+   (typically in libc on GNU/Linux, in which case 0.17 is required).
+
 If you want to compile PostGIS with raster support, you additionally 
 must have installed:
 

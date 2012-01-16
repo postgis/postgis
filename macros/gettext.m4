@@ -17,6 +17,10 @@ dnl Authors:
 dnl   Ulrich Drepper <drepper@cygnus.com>, 1995-2000.
 dnl   Bruno Haible <haible@clisp.cons.org>, 2000-2006.
 
+dnl Modified 20120114 to not insist on _nl_expand_alias, so that it
+dnl will find and accept gettext 0.14, because postgis does not
+dnl actually require any 0.17 features.
+
 dnl Macro to add for using GNU gettext.
 
 dnl Usage: AM_GNU_GETTEXT([INTLSYMBOL], [NEEDSYMBOL], [INTLDIR]).
@@ -187,10 +191,9 @@ extern int _nl_msg_cat_cntr;
 extern
 #ifdef __cplusplus
 "C"
-#endif
-const char *_nl_expand_alias (const char *);],
+#endif],
               [bindtextdomain ("", "");
-return * gettext ("")$gt_expression_test_code + _nl_msg_cat_cntr + *_nl_expand_alias ("")],
+return * gettext ("")$gt_expression_test_code + _nl_msg_cat_cntr],
               [eval "$gt_func_gnugettext_libintl=yes"],
               [eval "$gt_func_gnugettext_libintl=no"])
             dnl Now see whether libintl exists and depends on libiconv.
