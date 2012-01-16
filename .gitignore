@@ -21,6 +21,10 @@ doc/postgis-out.xml
 doc/raster_comments.sql
 doc/tiger_geocoder_comments.sql
 doc/topology_comments.sql
+extensions/postgis/Makefile
+extensions/postgis/postgis.control
+extensions/postgis_topology/Makefile
+extensions/postgis_topology/postgis_topology.control
 GNUmakefile
 liblwgeom/cunit/cu_tester
 liblwgeom/cunit/Makefile
