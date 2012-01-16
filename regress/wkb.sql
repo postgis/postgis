@@ -392,3 +392,25 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
  'MULTISURFACE ZM EMPTY'
 ::text as g ) as foo;
 
+-- POLYHEDRALSURFACE
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'POLYHEDRALSURFACE EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'POLYHEDRALSURFACE Z EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'POLYHEDRALSURFACE M EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'POLYHEDRALSURFACE ZM EMPTY'
+::text as g ) as foo;
+
