@@ -374,7 +374,9 @@ SELECT '#696',ST_Segmentize(ST_GeomFromEWKT('PolyhedralSurface( ((0 0 0, 0 0 1, 
 SELECT '#720', ST_AsText(ST_SnapTogrid(ST_Transform(ST_GeomFromText('MULTIPOINT(-10 40,-10 55,-10 70,5 40,5 55,5 70,20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)',4326), 3395), 0.01));
 
 -- #723 --
-SELECT '#723',ST_Intersection(a.geog, b.geog) As result FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);
+SELECT '#723',
+ ST_SnapToGrid( ST_Intersection(a.geog, b.geog)::geometry, 0.00001)
+FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);
 
 -- #729 --
 --SELECT '#729',ST_MakeLine(foo1.the_geom) As result FROM ((SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTIPOLYGON EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTILINESTRING EMPTY',4326) As the_geom ) ) As foo1;
