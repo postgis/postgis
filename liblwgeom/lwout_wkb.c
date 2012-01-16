@@ -287,7 +287,11 @@ static uint8_t* empty_to_wkb_buf(const LWGEOM *geom, uint8_t *buf, uint8_t varia
 	uint32_t wkb_type = lwgeom_wkb_type(geom, variant);
 
 	if ( geom->type == POINTTYPE )
-		wkb_type = WKB_MULTIPOINT_TYPE; /* Change POINT to MULTIPOINT */
+	{
+		/* Change POINT to MULTIPOINT */
+		wkb_type &= ~WKB_POINT_TYPE;     /* clear POINT flag */
+		wkb_type |= WKB_MULTIPOINT_TYPE; /* set MULTIPOINT flag */
+	}
 
 	/* Set the endian flag */
 	buf = endian_to_wkb_buf(buf, variant);

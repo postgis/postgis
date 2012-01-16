@@ -514,6 +514,9 @@ SELECT '#1454', st_orderingequals(g,g) from inp;
 -- #1414
 SELECT '#1414', st_astext(st_force_3dz('CURVEPOLYGON EMPTY'));
 
+-- #1478
+SELECT '#1478', 'SRID=1;POINT EMPTY'::geometry::text::geometry;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
