@@ -78,6 +78,9 @@ PG_CONFIG = @PGCONFIG@
 PGXS := @PGXS@
 include $(PGXS)
 
+# Set PERL _after_ the include of PGXS
+PERL=@PERL@
+
 # This is to workaround a bug in PGXS 8.4 win32 link line,
 # see http://trac.osgeo.org/postgis/ticket/1158#comment:57
 SHLIB_LINK := $(SHLIB_LINK_F) $(SHLIB_LINK)

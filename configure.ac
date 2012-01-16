@@ -106,6 +106,8 @@ esac
 AC_DEFINE_UNQUOTED([PWDREGRESS], [PWDREGRESS], [Define command to determine the current directory during regression])
 AC_SUBST([PWDREGRESS])
 
+AC_PATH_PROG([PERL], [perl], [])
+AC_SUBST([PERL])
 
 dnl ===========================================================================
 dnl Find components needed to build documentation
@@ -1004,6 +1006,7 @@ AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
+AC_MSG_RESULT([  perl:                 ${PERL}])
 if test "x$RASTER" = "xraster" -o "x$TOPOLOGY" = "xtopology"; then
     AC_MSG_RESULT([ -------------- Extensions -------------- ])
 if test "x$RASTER" = "xraster"; then
