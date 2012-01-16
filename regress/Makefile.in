@@ -91,6 +91,7 @@ TESTS = \
 	remove_repeated_points \
 	split \
 	relate \
+	bestsrid \
 	concave_hull
 
 # TESTS += wmsservers_old

@@ -13,6 +13,8 @@ INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32602, '+proj=utm +zone
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32702, '+proj=utm +zone=2 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 3395, '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
 
+INSERT INTO spatial_ref_sys (srid,proj4text) VALUES (32707,'+proj=utm +zone=7 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs ');
+
 
 -- #2 --
 SELECT '#2', ST_AsText(ST_Union(g)) FROM
@@ -255,6 +257,7 @@ BEGIN
     END IF;
 
     zone:=floor((ST_X(geomgeog)+180)/6)+1;
+    IF ( zone > 60 ) THEN zone := 60; END IF;
 
     RETURN zone+pref;
 END;
@@ -265,10 +268,11 @@ CREATE TABLE utm_dots ( the_geog geography, utm_srid integer);
 INSERT INTO utm_dots SELECT geography(ST_SetSRID(ST_Point(i*10,j*10),4326)) As the_geog, utmzone(ST_SetSRID(ST_Point(i*10,j*10),4326)) As utm_srid FROM generate_series(-17,17) As i CROSS JOIN generate_series(-8,8) As j;
 
 SELECT ST_AsText(the_geog) as the_pt, 
+       utm_srid,
        ST_Area(ST_Buffer(the_geog,10)) As the_area, 
        ST_Area(geography(ST_Transform(ST_Buffer(ST_Transform(geometry(the_geog),utm_srid),10),4326))) As geog_utm_area
 FROM utm_dots 
-WHERE ST_Area(ST_Buffer(the_geog,10)) NOT between 310 and 314
+WHERE ST_Area(ST_Buffer(the_geog,10)) NOT between 307 and 314
 LIMIT 10;
 
 SELECT '#304.a', Count(*) FROM utm_dots WHERE ST_DWithin(the_geog, 'POINT(0 0)'::geography, 3000000);
@@ -370,7 +374,7 @@ SELECT '#696',ST_Segmentize(ST_GeomFromEWKT('PolyhedralSurface( ((0 0 0, 0 0 1, 
 SELECT '#720', ST_AsText(ST_SnapTogrid(ST_Transform(ST_GeomFromText('MULTIPOINT(-10 40,-10 55,-10 70,5 40,5 55,5 70,20 40,20 55,20 70,35 40,35 55,35 70,50 40,50 55,50 70)',4326), 3395), 0.01));
 
 -- #723 --
-SELECT '#723',ST_Intersection(a.geog, b.geog) As result FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);	
+SELECT '#723',ST_Intersection(a.geog, b.geog) As result FROM (VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') ) ) As  a(geog) CROSS JOIN ( VALUES (ST_GeogFromText('SRID=4326;POINT(-11.1111111 40)') ), (ST_GeogFromText('SRID=4326;POINT(-11.1111111 55)') )) As b(geog);
 
 -- #729 --
 --SELECT '#729',ST_MakeLine(foo1.the_geom) As result FROM ((SELECT ST_GeomFromText('POINT EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTIPOINT EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTIPOLYGON EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('LINESTRING EMPTY',4326) As the_geom UNION ALL SELECT ST_GeomFromText('MULTILINESTRING EMPTY',4326) As the_geom ) ) As foo1;

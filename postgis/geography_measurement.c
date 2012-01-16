@@ -576,7 +576,8 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	{
 		/* Cheap hack to pick a zone. Average of the box center points. */
 		double dzone = (gbox1.xmin + gbox1.xmax + gbox2.xmin + gbox2.xmax) / 4.0;
-		int zone = floor(1.0 + ((dzone + 180.0) / 6.0));
+		int zone = floor((dzone + 180.0) / 6.0);
+		if ( zone > 59 ) zone = 59;
 
 		/* Are these data below the equator? UTM South. */
 		if ( gbox1.ymax < 0.0 && gbox2.ymax < 0.0 )
