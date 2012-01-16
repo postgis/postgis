@@ -124,7 +124,7 @@ BEGIN
         || quote_literal(atopology) || ', '
         || quote_literal(rec.geom::text) || '::geometry, ' || atolerance
         || ');';
-      RAISE DEBUG '%', sql;
+      --RAISE DEBUG '%', sql;
       EXECUTE sql;
     ELSIF ST_Dimension(rec.geom) = 1 THEN
       sql := 'INSERT INTO ' || quote_ident(atopology)
@@ -133,7 +133,7 @@ BEGIN
         || quote_literal(atopology) || ', '
         || quote_literal(rec.geom::text) || '::geometry, ' || atolerance
         || ');';
-      RAISE DEBUG '%', sql;
+      --RAISE DEBUG '%', sql;
       EXECUTE sql;
     ELSIF ST_Dimension(rec.geom) = 2 THEN
       sql := 'INSERT INTO ' || quote_ident(atopology)
@@ -142,7 +142,7 @@ BEGIN
         || quote_literal(atopology) || ', '
         || quote_literal(rec.geom::text) || '::geometry, ' || atolerance
         || ');';
-      RAISE DEBUG '%', sql;
+      --RAISE DEBUG '%', sql;
       EXECUTE sql;
     ELSE
       RAISE EXCEPTION 'Unexpected dimension % for component %', ST_Dimension(rec.geom), ST_AsText(rec.geom);
