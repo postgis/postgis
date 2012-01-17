@@ -34,6 +34,8 @@ export PGOPTIONS
 
 REGDIR=`dirname $0`
 REGDIR=`cd "${REGDIR}" && pwd`
+STAGED_INSTALL_DIR="${REGDIR}/00-regress-install"
+STAGED_SCRIPTS_DIR="${STAGED_INSTALL_DIR}/share/contrib/postgis"
 
 PSQL="psql"
 
@@ -47,6 +49,7 @@ VERBOSE=0
 OPT_CLEAN=no
 OPT_DROP=yes
 OPT_CREATE=yes
+OPT_UPGRADE=no
 OPT_WITH_TOPO=no
 OPT_WITH_RASTER=no
 
@@ -434,9 +437,9 @@ init_db_error ()
 		echo "-----------------------------------------------------------------------------"
 		tail -5 ${TMPDIR}/regress_log
 		echo "-----------------------------------------------------------------------------"
-  else
+	else
 	  echo " For details, check ${TMPDIR}/regress_log"
-  fi
+	fi
 	echo
 
 	if test x"$OPT_DROP" = "xyes" -a x"$OPT_CREATE" = "xyes"; then
@@ -485,6 +488,10 @@ while [ -n "$1" ]; do
 		OPT_CREATE=no
 		shift
 		continue
+	elif test "$1" = "--upgrade"; then
+		OPT_UPGRADE=yes
+		shift
+		continue
 	elif test "$1" = "--topology"; then
 		OPT_WITH_TOPO=yes
 		shift
@@ -507,6 +514,7 @@ if [ -z "$1" ]; then
 	echo "Options:" >&2
 	echo " -v           be verbose about failures" >&2
 	echo " --nocreate   do not create the regression database on start" >&2
+	echo " --upgrade    source the upgrade scripts on start" >&2
 	echo " --nodrop     do not drop the regression database on exit" >&2
 	echo " --raster     load also topology extension" >&2
 	echo " --topology   load also topology extension" >&2
@@ -536,23 +544,26 @@ if test -z "$db_exists"; then
 		# Count database objects before installing anything
 		object_count_pre=$(count_db_objects "counting object before postgis install")
 
-		${PSQL} ${_psql_opts} -Xf ${REGDIR}/00-regress-install/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module"
+		${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module"
 
 		if test x"$OPT_WITH_TOPO" = "xyes"; then
-			if test -e ${REGDIR}/../topology/topology.sql; then
+			SCRIPT=${STAGED_SCRIPTS_DIR}/topology.sql
+			if test -e ${SCRIPT}; then
 				echo "Adding topology support" 
 				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology module"
 			else
-				echo "Topology support skipped (topology.sql  not found)" 
+				echo "${SCRIPT} not found" >&2
+				exit 1
 			fi
 		fi
 		if test x"$OPT_WITH_RASTER" = "xyes"; then
-			SCRIPT=${REGDIR}/../raster/test/regress/rtpostgis.sql
+			SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis.sql
 			if test -e ${SCRIPT}; then
 				echo "Adding raster support"
 				${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster module"
 			else
-				echo "Raster support skipped (rtpostgis.sql  not found)" 
+				echo "${SCRIPT} not found" >&2
+				exit 1
 			fi
 		fi
 	else
@@ -570,6 +581,39 @@ else
 	else
 		echo "Using existing database ${DB}"
 	fi
+fi
+
+if test x"$OPT_UPGRADE" = "xyes"; then
+  SCRIPT=${STAGED_SCRIPTS_DIR}/postgis_upgrade_*_minor.sql
+  if test -e ${SCRIPT}; then
+    echo "Loading ${SCRIPT}"
+    ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core upgrade"
+  else
+    echo "${SCRIPT} not found" >&2
+      exit 1
+  fi
+
+  if test x"$OPT_WITH_TOPO" = "xyes"; then
+    SCRIPT=${STAGED_SCRIPTS_DIR}/topology_upgrade_*_minor.sql
+    if test -e ${SCRIPT}; then
+      echo "Loading ${SCRIPT}"
+      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology upgrade"
+    else
+      echo "${SCRIPT} not found" >&2
+        exit 1
+    fi
+  fi
+
+  if test x"$OPT_WITH_RASTER" = "xyes"; then
+    SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade_*_minor.sql
+    if test -e ${SCRIPT}; then
+      echo "Loading ${SCRIPT}"
+      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster upgrade"
+    else
+      echo "${SCRIPT} not found" >&2
+        exit 1
+    fi
+  fi
 fi
 
 libver=`${PSQL} -tAc "select postgis_lib_version()" "${DB}"`

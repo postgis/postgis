@@ -140,9 +140,8 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../../rt_pg/rtpostgis.sql > rtpostgis.sql
 
 
-check: rtpostgis.sql
-	$(MAKE) -C ../../../regress postgis.sql staged-install
-	$(MAKE) -C ../../rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+check: 
+	$(MAKE) -C ../../../regress staged-install
 	../../../regress/run_test $(RUNTESTFLAGS) --raster $(TESTS)
 
 #all: run_test

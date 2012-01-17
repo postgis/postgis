@@ -1,3 +1,18 @@
+# **********************************************************************
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# * 
+# * Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
+# * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
+# * Copyright (C) 2008-2009 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+PERL=@PERL@
 TMPDIR?=/tmp
 
 POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
@@ -129,14 +144,19 @@ endif
 
 all install uninstall distclean:
 
-postgis.sql: $(REGRESS_INSTALLDIR)/postgis.sql
+staged-install-topology:
+	@if test x"@TOPOLOGY@" != "x"; then \
+		$(MAKE) -C ../topology REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
+	fi
 
-$(REGRESS_INSTALLDIR)/postgis.sql: ../postgis/postgis.sql
-	mkdir -p $(REGRESS_INSTALLDIR)
-	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../postgis/postgis.sql > $@
+staged-install-raster:
+	@if test x"@RASTER@" != "x"; then \
+		$(MAKE) -C ../raster/rt_pg REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install; \
+	fi
 
-staged-install: postgis.sql
+staged-install: staged-install-raster staged-install-topology
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+	$(PERL) -pi -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
 test check: staged-install

@@ -61,5 +61,5 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/layertrigger.sql
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql
-	$(MAKE) -C ../../regress postgis.sql staged-install
+	$(MAKE) -C ../../regress staged-install
 	../../regress/run_test $(RUNTESTFLAGS) --topology $(TESTS)
