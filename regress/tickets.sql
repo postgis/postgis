@@ -527,6 +527,9 @@ SELECT '#1478', 'SRID=1;POINT EMPTY'::geometry::text::geometry;
 SELECT '#745', ST_AsEWKT(ST_Split('POLYGON((-72 42 1,-70 43 1,-71 41 1,-72 42 1))',
                                   'LINESTRING(-10 40 1,-9 41 1)'));
 
+-- #1450
+SELECT '#1450', GeometryType('POINT(0 0)'::geography), GeometryType('POLYGON EMPTY'::geography);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 

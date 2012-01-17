@@ -683,6 +683,12 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(text)
 	$$ SELECT ST_AsEWKT($1::geometry);  $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION GeometryType(geography)
+	RETURNS text
+	AS 'MODULE_PATHNAME', 'LWGEOM_getTYPE'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 	
 -----------------------------------------------------------------------------
 
