@@ -205,15 +205,16 @@ run_simple_test ()
 		> "${OUTFILE}"
 	rm ${TMPFILE}
 
-	if diff -u "${_expected}" "${OUTFILE}" > ${DIFFILE}; then
-		#SUCCESS=`expr $SUCCESS + 1`
-		rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
-		return 0
-	else
-		fail "${_msg}diff expected obtained" "${DIFFILE}"
+	for expfiles in "${_expected}*"; do
+		if diff -u "${_expected}" "${OUTFILE}" > ${DIFFILE}; then
+			#SUCCESS=`expr $SUCCESS + 1`
+			rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
+			return 0
+		fi
+	done
+	fail "${_msg}diff expected obtained" "${DIFFILE}"
 #		rm "${OUTFILE}" # diff is enough
-		return 1
-	fi
+	return 1
 }
 
 # Drop a table if exists
