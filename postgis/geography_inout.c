@@ -42,11 +42,13 @@ Datum geography_as_svg(PG_FUNCTION_ARGS);
 Datum geography_from_binary(PG_FUNCTION_ARGS);
 Datum geography_from_geometry(PG_FUNCTION_ARGS);
 Datum geometry_from_geography(PG_FUNCTION_ARGS);
+Datum geography_send(PG_FUNCTION_ARGS);
+Datum geography_recv(PG_FUNCTION_ARGS);
 
 /* Datum geography_gist_selectivity(PG_FUNCTION_ARGS); TBD */
 /* Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS); TBD */
-/* Datum geography_send(PG_FUNCTION_ARGS); TBD */
-/* Datum geography_recv(PG_FUNCTION_ARGS); TBD */
+
+GSERIALIZED* gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod);
 
 /**
 * The geography type only support POINT, LINESTRING, POLYGON, MULTI* variants
@@ -70,6 +72,48 @@ void geography_valid_type(uint8_t type)
 		            errmsg("Geography type does not support %s", lwtype_name(type) )));
 
 	}
+}
+
+GSERIALIZED* gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod)
+{
+	GSERIALIZED *g_ser = NULL;
+
+	/* Set geodetic flag */
+	lwgeom_set_geodetic(lwgeom, true);
+
+	/* Check that this is a type we can handle */
+	geography_valid_type(lwgeom->type);
+
+	/* Check that the coordinates are in range */
+	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
+	{
+		ereport(ERROR, (
+		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+		            errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
+	}
+
+	/* Force default SRID to the default */
+	if ( (int)lwgeom->srid <= 0 )
+		lwgeom->srid = SRID_DEFAULT;
+
+	/*
+	** Serialize our lwgeom and set the geodetic flag so subsequent
+	** functions do the right thing.
+	*/
+	g_ser = geography_serialize(lwgeom);
+
+	/* Check for typmod agreement */
+	if ( geog_typmod >= 0 )
+	{
+		postgis_valid_typmod(g_ser, geog_typmod);
+		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
+	}
+	else
+	{
+		POSTGIS_DEBUG(3, "typmod was -1");
+	}
+
+	return g_ser;
 }
 
 
@@ -114,42 +158,12 @@ Datum geography_in(PG_FUNCTION_ARGS)
 		lwgeom = lwg_parser_result.geom;
 	}
 
-	/* Set geodetic flag */
-	lwgeom_set_geodetic(lwgeom, true);
+	
+	g_ser = gserialized_geography_from_lwgeom(lwgeom, geog_typmod);
 
-	/* Check that this is a type we can handle */
-	geography_valid_type(lwgeom->type);
-
-	/* Check that the coordinates are in range */
-	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
-	{
-		ereport(ERROR, (
-		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
-	}
-
-	/* Force default SRID to the default */
-	if ( (int)lwgeom->srid <= 0 )
-		lwgeom->srid = SRID_DEFAULT;
-
-	/*
-	** Serialize our lwgeom and set the geodetic flag so subsequent
-	** functions do the right thing.
-	*/
-	g_ser = geography_serialize(lwgeom);
 	/* Clean up temporary object */
 	lwgeom_free(lwgeom);
-	
-	/* Check for typmod agreement */
-	if ( geog_typmod >= 0 )
-	{
-		postgis_valid_typmod(g_ser, geog_typmod);
-		POSTGIS_DEBUG(3, "typmod and geometry were consistent");
-	}
-	else
-	{
-		POSTGIS_DEBUG(3, "typmod was -1");
-	}
+
 
 	PG_RETURN_POINTER(g_ser);
 }
@@ -593,3 +607,50 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(ret);
 }
 
+PG_FUNCTION_INFO_V1(geography_recv);
+Datum geography_recv(PG_FUNCTION_ARGS)
+{
+	StringInfo buf = (StringInfo) PG_GETARG_POINTER(0);
+	int32 geog_typmod = -1;
+	LWGEOM *lwgeom = NULL;
+	GSERIALIZED *g_ser = NULL;
+
+	if ( (PG_NARGS()>2) && (!PG_ARGISNULL(2)) ) {
+		geog_typmod = PG_GETARG_INT32(2);
+	}
+
+	lwgeom = lwgeom_from_wkb((uint8_t*)buf->data, buf->len, LW_PARSER_CHECK_ALL);
+
+	g_ser = gserialized_geography_from_lwgeom(lwgeom, geog_typmod);
+
+	/* Clean up temporary object */
+	lwgeom_free(lwgeom);
+
+	/* Set cursor to the end of buffer (so the backend is happy) */
+	buf->cursor = buf->len;
+
+	PG_RETURN_POINTER(g_ser);
+}
+
+
+PG_FUNCTION_INFO_V1(geography_send);
+Datum geography_send(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom = NULL;
+	GSERIALIZED *g = NULL;
+	size_t size_result;
+	uint8_t *wkb;
+	bytea *result;
+
+	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	lwgeom = lwgeom_from_gserialized(g);
+	wkb = lwgeom_to_wkb(lwgeom, WKB_EXTENDED, &size_result);
+	lwgeom_free(lwgeom);
+
+	result = palloc(size_result + VARHDRSZ);
+	SET_VARSIZE(result, size_result + VARHDRSZ);
+	memcpy(VARDATA(result), wkb, size_result);
+	pfree(wkb);
+
+	PG_RETURN_POINTER(result);
+}

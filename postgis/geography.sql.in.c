@@ -37,6 +37,18 @@ CREATE OR REPLACE FUNCTION geography_out(geography)
 	AS 'MODULE_PATHNAME','geography_out'
 	LANGUAGE 'C' IMMUTABLE STRICT; 
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geography_recv(internal, oid, integer)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_recv'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION geography_send(geography)
+	RETURNS bytea
+	AS 'MODULE_PATHNAME','geography_send'
+	LANGUAGE 'C' IMMUTABLE STRICT; 
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_analyze(internal)
 	RETURNS bool
@@ -48,6 +60,8 @@ CREATE TYPE geography (
 	internallength = variable,
 	input = geography_in,
 	output = geography_out,
+	receive = geography_recv,
+	send = geography_send,
 	typmod_in = geography_typmod_in,
 	typmod_out = geography_typmod_out,
 	delimiter = ':',
