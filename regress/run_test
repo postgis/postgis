@@ -586,7 +586,7 @@ fi
 if test x"$OPT_UPGRADE" = "xyes"; then
   SCRIPT=${STAGED_SCRIPTS_DIR}/postgis_upgrade_*_minor.sql
   if test -e ${SCRIPT}; then
-    echo "Loading ${SCRIPT}"
+    echo "Upgrading core"
     ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core upgrade"
   else
     echo "${SCRIPT} not found" >&2
@@ -596,7 +596,7 @@ if test x"$OPT_UPGRADE" = "xyes"; then
   if test x"$OPT_WITH_TOPO" = "xyes"; then
     SCRIPT=${STAGED_SCRIPTS_DIR}/topology_upgrade_*_minor.sql
     if test -e ${SCRIPT}; then
-      echo "Loading ${SCRIPT}"
+      echo "Upgrading topology"
       ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology upgrade"
     else
       echo "${SCRIPT} not found" >&2
@@ -607,7 +607,7 @@ if test x"$OPT_UPGRADE" = "xyes"; then
   if test x"$OPT_WITH_RASTER" = "xyes"; then
     SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade_*_minor.sql
     if test -e ${SCRIPT}; then
-      echo "Loading ${SCRIPT}"
+      echo "Upgrading raster"
       ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster upgrade"
     else
       echo "${SCRIPT} not found" >&2
