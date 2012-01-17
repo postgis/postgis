@@ -60,6 +60,7 @@ TESTS = \
 	loader/ReprojectPts \
 	loader/ReprojectPtsGeog \
 	loader/Latin1 \
+	binary \
 	regress \
 	regress_index \
 	regress_index_nulls \
