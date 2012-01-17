@@ -142,7 +142,8 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 
 check: 
 	$(MAKE) -C ../../../regress staged-install
-	../../../regress/run_test $(RUNTESTFLAGS) --raster $(TESTS)
+	../../../regress/run_test --raster $(RUNTESTFLAGS) $(TESTS)
+	../../../regress/run_test --upgrade --raster $(RUNTESTFLAGS) $(TESTS)
 
 #all: run_test
 

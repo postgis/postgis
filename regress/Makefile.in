@@ -161,6 +161,7 @@ staged-install: staged-install-raster staged-install-topology
 
 test check: staged-install
 	./run_test $(RUNTESTFLAGS) $(TESTS)
+	./run_test --upgrade $(RUNTESTFLAGS) $(TESTS)
 
 garden:
 	createdb postgis_garden

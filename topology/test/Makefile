@@ -62,4 +62,5 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql
 	$(MAKE) -C ../../regress staged-install
-	../../regress/run_test $(RUNTESTFLAGS) --topology $(TESTS)
+	../../regress/run_test --topology $(RUNTESTFLAGS) $(TESTS)
+	../../regress/run_test --upgrade --topology $(RUNTESTFLAGS) $(TESTS)
