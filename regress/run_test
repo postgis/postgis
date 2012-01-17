@@ -185,19 +185,19 @@ run_simple_test ()
 	# Use intermediate file to prevent MingW buffering problems
 	${PSQL} -tXA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
 	cat ${TMPFILE} \
-		| grep -v "^$" \
-		| grep -v "^INSERT" \
-		| grep -v "^DELETE" \
-		| grep -v "^CONTEXT" \
-		| grep -v "^UPDATE" \
-		| grep -v "^DROP" \
-		| grep -v "^VACUUM" \
-		| grep -v "^ANALYZE" \
-		| grep -v "^CREATE" \
-		| grep -v "^SELECT" \
-		| grep -v "^SET" \
-		| grep -v "^LINE [0-9]" \
-		| grep -v "^  *^$" \
+		| grep --binary-files=text -v "^$" \
+		| grep --binary-files=text -v "^INSERT" \
+		| grep --binary-files=text -v "^DELETE" \
+		| grep --binary-files=text -v "^CONTEXT" \
+		| grep --binary-files=text -v "^UPDATE" \
+		| grep --binary-files=text -v "^DROP" \
+		| grep --binary-files=text -v "^VACUUM" \
+		| grep --binary-files=text -v "^ANALYZE" \
+		| grep --binary-files=text -v "^CREATE" \
+		| grep --binary-files=text -v "^SELECT" \
+		| grep --binary-files=text -v "^SET" \
+		| grep --binary-files=text -v "^LINE [0-9]" \
+		| grep --binary-files=text -v "^  *^$" \
 		| sed 's/Infinity/inf/g;s/Inf/inf/g;s/1\.#INF/inf/g' \
 		| sed 's/[eE]\([+-]\)0\{1,\}\([0-9]\{1,\}\)/e\1\2/g' \
 		| sed 's/Self-intersection .*/Self-intersection/' \
