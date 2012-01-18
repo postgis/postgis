@@ -830,9 +830,12 @@ echo "Run tests: $RUN"
 echo "Failed: $FAIL"
 
 if test x"$OPT_CLEAN" = "xyes"; then
-	rm -f "${TMPDIR}/dumper.*"
+	rm -f "${TMPDIR}"/dumper.*
 	rm -f "${TMPDIR}/loader.*"
 	rm -f "${TMPDIR}/regress_log"
+	rm -f "${TMPDIR}"/uninstall.*
+	rm -f "${TMPDIR}"/tmp/test_*
+	rmdir -p "${TMPDIR}/tmp/" 2> /dev/null
 	rmdir -p "${TMPDIR}" 2> /dev/null
 fi
 
