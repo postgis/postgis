@@ -1334,6 +1334,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	GBOX *box;
 	size_t querysize;
 	GEOM_STATS geomstats;
+	float reltuples;
 
 	if ( PG_NARGS() == 3 )
 	{
@@ -1428,11 +1429,27 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	/* Return the stats data */
 	if ( txnsp )
 	{
-		sprintf(query, "SELECT s.stanumbers1[5:8] FROM pg_statistic s, pg_class c, pg_attribute a, pg_namespace n WHERE c.relname = '%s' AND a.attrelid = c.oid AND a.attname = '%s' AND n.nspname = '%s' AND c.relnamespace = n.oid AND s.starelid=c.oid AND s.staattnum = a.attnum AND staattnum = attnum", tbl, col, nsp);
+	  sprintf(query, 
+	    "SELECT s.stanumbers1[5:8], c.reltuples FROM pg_class c"
+	    " LEFT OUTER JOIN pg_namespace n ON (n.oid = c.relnamespace)"
+	    " LEFT OUTER JOIN pg_attribute a ON (a.attrelid = c.oid )"
+	    " LEFT OUTER JOIN pg_statistic s ON (s.starelid = c.oid AND "
+	                                        "s.staattnum = a.attnum )"
+	    " WHERE c.relname = '%s' AND a.attname = '%s' "
+	    " AND n.nspname = '%s';",
+	    tbl, col, nsp);
 	}
 	else
 	{
-		sprintf(query, "SELECT s.stanumbers1[5:8] FROM pg_statistic s, pg_class c, pg_attribute a, pg_namespace n WHERE c.relname = '%s' AND a.attrelid = c.oid AND a.attname = '%s' AND n.nspname = current_schema() AND c.relnamespace = n.oid AND s.starelid=c.oid AND s.staattnum = a.attnum AND staattnum = attnum", tbl, col);
+	  sprintf(query, 
+	    "SELECT s.stanumbers1[5:8], c.reltuples FROM pg_class c"
+	    " LEFT OUTER JOIN pg_namespace n ON (n.oid = c.relnamespace)"
+	    " LEFT OUTER JOIN pg_attribute a ON (a.attrelid = c.oid )"
+	    " LEFT OUTER JOIN pg_statistic s ON (s.starelid = c.oid AND "
+	                                        "s.staattnum = a.attnum )"
+	    " WHERE c.relname = '%s' AND a.attname = '%s' "
+	    " AND n.nspname = current_schema();",
+	    tbl, col);
 	}
 
 	POSTGIS_DEBUGF(4, " query: %s", query);
@@ -1449,10 +1466,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, " %d stat rows", SPI_processed);
 
-		/* 
-		 * TODO: distinguish between empty and not analyzed ?
-		 */
-		elog(WARNING, "No stats for \"%s\".\"%s\".\"%s\" (empty or not analyzed)",
+		elog(ERROR, "Unexistent field \"%s\".\"%s\".\"%s\"",
 			( nsp ? nsp : "<current>" ), tbl, col);
 
 		SPI_finish();
@@ -1462,6 +1476,33 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	tuptable = SPI_tuptable;
 	tupdesc = SPI_tuptable->tupdesc;
 	tuple = tuptable->vals[0];
+
+	/* Check if the table has zero rows first */
+	reltuples = DatumGetFloat4(SPI_getbinval(tuple, tupdesc, 2, &isnull));
+	if (isnull)
+	{
+
+		POSTGIS_DEBUG(3, " reltuples is NULL");
+
+		elog(ERROR, "geometry_estimated_extent: null reltuples for table");
+
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+	if ( ! reltuples )
+	{
+		POSTGIS_DEBUG(3, "table has estimated zero rows");
+
+		/* 
+		 * TODO: distinguish between empty and not analyzed ?
+		 */
+		elog(NOTICE, "\"%s\".\"%s\".\"%s\" is empty or not analyzed",
+			( nsp ? nsp : "<current>" ), tbl, col);
+
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
 	array = DatumGetArrayTypeP(SPI_getbinval(tuple, tupdesc, 1, &isnull));
 	if (isnull)
 	{

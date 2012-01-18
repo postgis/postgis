@@ -437,7 +437,7 @@ SELECT '#1273', st_equals(p.g, postgis_addbbox(p.g)) from p;
 WITH p AS ( SELECT 'MULTIPOINT((832694.188 816254.625))'::geometry as g ) 
 SELECT '#1273.1', st_equals(p.g, postgis_dropbbox(p.g)) from p;
 
--- #877
+-- #877, #818
 create table t(g geometry);
 select '#877.1', st_estimated_extent('t','g');
 analyze t;
@@ -446,6 +446,8 @@ insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
 select '#877.3', st_estimated_extent('t','g');
 analyze t;
 select '#877.4', st_estimated_extent('t','g');
+truncate t;
+select '#818.1', st_estimated_extent('t','g');
 drop table t;
 
 -- #1320

@@ -206,6 +206,7 @@ run_simple_test ()
 		| grep --binary-files=text -v "^CREATE" \
 		| grep --binary-files=text -v "^SELECT" \
 		| grep --binary-files=text -v "^SET" \
+		| grep --binary-files=text -v "^TRUNCATE" \
 		| grep --binary-files=text -v "^LINE [0-9]" \
 		| grep --binary-files=text -v "^  *^$" \
 		| sed 's/Infinity/inf/g;s/Inf/inf/g;s/1\.#INF/inf/g' \
