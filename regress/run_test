@@ -43,7 +43,8 @@ if [ -z "$TMPDIR" ]; then
 	TMPDIR=/tmp/pgis_reg_$$
 fi
 
-mkdir -p ${TMPDIR}
+mkdir -p ${TMPDIR}/tmp
+chmod 777 ${TMPDIR}/tmp
 
 VERBOSE=0
 OPT_CLEAN=no
@@ -179,12 +180,11 @@ run_simple_test ()
 	show_progress
 
 	OUTFILE="${TMPDIR}/test_${RUN}_out"
-	TMPFILE="${TMPDIR}/test_${RUN}_tmp"
+	TMPFILE="${TMPDIR}/tmp/test_${RUN}_tmp"
 	DIFFILE="${TMPDIR}/test_${RUN}_diff"
 
 	# Use intermediate file to prevent MingW buffering problems
-	${PSQL} -tXA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
-	cat ${TMPFILE} \
+	${PSQL} -v "tmpfile='${TMPFILE}'" -tXA < "${_sql}" ${DB} 2>&1 \
 		| grep --binary-files=text -v "^$" \
 		| grep --binary-files=text -v "^INSERT" \
 		| grep --binary-files=text -v "^DELETE" \
@@ -203,7 +203,7 @@ run_simple_test ()
 		| sed 's/Self-intersection .*/Self-intersection/' \
 		| sed 's/^ROLLBACK/COMMIT/' \
 		> "${OUTFILE}"
-	rm ${TMPFILE}
+	rm -f ${TMPFILE} # should we keep this ?
 
 	for expfiles in "${_expected}*"; do
 		if diff -u "${_expected}" "${OUTFILE}" > ${DIFFILE}; then
