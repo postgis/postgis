@@ -2112,7 +2112,6 @@ Returns a text summary of the contents of the geometry.
                   </itemizedlist>
                 </para>
 
-		<para>&Z_support;</para>
 		<para>Availability: 1.2.2 - 2.0.0 added support for geography</para>
 
 	  </refsection>
