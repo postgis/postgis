@@ -2078,8 +2078,8 @@ SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));
 	  <refnamediv>
 		<refname>ST_Summary</refname>
 
-		<refpurpose>Returns a text summary of the contents of the
-		<varname>ST_Geometry</varname>.
+		<refpurpose>
+Returns a text summary of the contents of the geometry.
 		</refpurpose>
 	  </refnamediv>
 
@@ -2087,8 +2087,11 @@ SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>text <function>ST_Summary</function></funcdef>
-
 			<paramdef><type>geometry </type> <parameter>g</parameter></paramdef>
+		  </funcprototype>
+		  <funcprototype>
+			<funcdef>text <function>ST_Summary</function></funcdef>
+			<paramdef><type>geography </type> <parameter>g</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -2097,34 +2100,46 @@ SELECT ST_AsEWKT(ST_StartPoint('LINESTRING(0 1 1, 0 2 2)'::geometry));
 		<title>Description</title>
 
 		<para>Returns a text summary of the contents of the geometry.</para>
+
+		<para>
+                  Flags shown square brackets after the geometry type
+                  have the following meaning:
+                  <itemizedlist>
+                    <listitem><para>M: has M ordinate</para></listitem>
+                    <listitem><para>Z: has Z ordinate</para></listitem>
+                    <listitem><para>B: has a cached bounding box</para></listitem>
+                    <listitem><para>G: is geodetic (geography)</para></listitem>
+                  </itemizedlist>
+                </para>
+
 		<para>&Z_support;</para>
+		<para>Availability: 1.2.2 - 2.0.0 added support for geography</para>
 
 	  </refsection>
 
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) As good_line,
-	ST_Summary(ST_GeomFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) As bad_poly
---results
-	  good_line       |        bad_poly
-----------------------+-------------------------
-					  |
-Line[B] with 2 points : Polygon[B] with 1 rings
-					  :    ring 0 has 5 points
-					  :
+		<programlisting>
+=# SELECT ST_Summary(ST_GeomFromText('LINESTRING(0 0, 1 1)')) as geom,
+        ST_Summary(ST_GeogFromText('POLYGON((0 0, 1 1, 1 2, 1 1, 0 0))')) geog;
+            geom             |          geog    
+-----------------------------+--------------------------
+ LineString[B] with 2 points | Polygon[BG] with 1 rings
+                             :    ring 0 has 5 points
+                             :
+(1 row)
 
---3d polygon
-SELECT ST_Summary(ST_GeomFromEWKT('LINESTRING(0 0 1, 1 1 1)')) As good_line,
-	ST_Summary(ST_GeomFromEWKT('POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As poly
 
---results
-	  good_line       |        poly
-----------------------+-------------------------
-					  |
-Line[ZB] with 2 points : Polygon[ZB] with 1 rings
-					  :    ring 0 has 5 points
-					  :
+=# SELECT ST_Summary(ST_GeogFromText('LINESTRING(0 0 1, 1 1 1)')) As geog_line,
+        ST_Summary(ST_GeomFromText('POLYGON((0 0 1, 1 1 2, 1 2 3, 1 1 1, 0 0 1))')) As geom_poly;
+;
+           geog_line           |        geom_poly
+-------------------------------+--------------------------
+ LineString[ZBG] with 2 points | Polygon[ZB] with 1 rings
+                               :    ring 0 has 5 points
+                               :
+(1 row)
 
 </programlisting>
 	  </refsection>
@@ -2133,10 +2148,20 @@ Line[ZB] with 2 points : Polygon[ZB] with 1 rings
 		<title>See Also</title>
 
 		<para>
+<xref linkend="PostGIS_DropBBox" />,
+<xref linkend="PostGIS_AddBBox" />,
+<xref linkend="ST_Force_3DM" />,
+<xref linkend="ST_Force_3DZ" />,
+<xref linkend="ST_Force_2D" />,
+<xref linkend="geography" />
+		</para>
+
+		<para>
+<xref linkend="ST_IsValid" />,
 <xref linkend="ST_IsValid" />,
 <xref linkend="ST_IsValidReason" />,
 <xref linkend="ST_IsValidDetail" />
-</para>
+		</para>
 	  </refsection>
 	</refentry>
 

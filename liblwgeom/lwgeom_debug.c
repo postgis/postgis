@@ -17,15 +17,16 @@
 #include <string.h>
 
 /* Place to hold the ZM string used in other summaries */
-static char tflags[4];
+static char tflags[5];
 
 static char *
-lwtype_zmflags(uint8_t flags)
+lwtype_flagchars(uint8_t flags)
 {
 	int flagno = 0;
 	if ( FLAGS_GET_Z(flags) ) tflags[flagno++] = 'Z';
 	if ( FLAGS_GET_M(flags) ) tflags[flagno++] = 'M';
 	if ( FLAGS_GET_BBOX(flags) ) tflags[flagno++] = 'B';
+	if ( FLAGS_GET_GEODETIC(flags) ) tflags[flagno++] = 'G';
 	tflags[flagno] = '\0';
 
 	LWDEBUGF(4, "Flags: %s - returning %p", flags, tflags);
@@ -41,7 +42,7 @@ lwpoint_summary(LWPOINT *point, int offset)
 {
 	char *result;
 	char *pad="";
-	char *zmflags = lwtype_zmflags(point->flags);
+	char *zmflags = lwtype_flagchars(point->flags);
 
 	result = (char *)lwalloc(128+offset);
 
@@ -56,7 +57,7 @@ lwline_summary(LWLINE *line, int offset)
 {
 	char *result;
 	char *pad="";
-	char *zmflags = lwtype_zmflags(line->flags);
+	char *zmflags = lwtype_flagchars(line->flags);
 
 	result = (char *)lwalloc(128+offset);
 
@@ -76,7 +77,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	char *tmp;
 	int i;
 	char *pad="";
-	char *zmflags = lwtype_zmflags(col->flags);
+	char *zmflags = lwtype_flagchars(col->flags);
 
 	LWDEBUG(2, "lwcollection_summary called");
 
@@ -112,7 +113,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	char *result;
 	int i;
 	char *pad="";
-	char *zmflags = lwtype_zmflags(poly->flags);
+	char *zmflags = lwtype_flagchars(poly->flags);
 
 	LWDEBUG(2, "lwpoly_summary called");
 

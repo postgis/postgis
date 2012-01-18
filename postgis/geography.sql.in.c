@@ -703,6 +703,12 @@ CREATE OR REPLACE FUNCTION GeometryType(geography)
 	AS 'MODULE_PATHNAME', 'LWGEOM_getTYPE'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_Summary(geography)
+	RETURNS text
+	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 	
 -----------------------------------------------------------------------------
 
