@@ -257,15 +257,17 @@ static uint32 gserialized_typmod_in(ArrayType *arr, int is_geography)
 					TYPMOD_SET_SRID(typmod, srid);
 				}
 			}
+#if 0 /* keep the default instead */
 			else
 			{
 			    if ( is_geography )
 			    {
 					ereport(ERROR,
 					        (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-					         errmsg("Negative SRID is not for GEOGRAPHY")));			        
-		        }
+					         errmsg("UNKNOWN SRID is not for GEOGRAPHY")));			        
+		            }
 			}
+#endif /* keep the default for unknown */
 		}
 	}
 

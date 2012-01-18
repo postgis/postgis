@@ -530,6 +530,9 @@ SELECT '#745', ST_AsEWKT(ST_Split('POLYGON((-72 42 1,-70 43 1,-71 41 1,-72 42 1)
 -- #1450
 SELECT '#1450', GeometryType('POINT(0 0)'::geography), GeometryType('POLYGON EMPTY'::geography);
 
+-- #1482
+select '#1482', ST_Srid('POINT(0 0)'::geography(point, 0)::geometry);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
