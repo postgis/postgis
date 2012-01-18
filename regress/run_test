@@ -53,6 +53,7 @@ OPT_CREATE=yes
 OPT_UPGRADE=no
 OPT_WITH_TOPO=no
 OPT_WITH_RASTER=no
+OPT_EXPECT=no
 
 if echo '\c' | grep c >/dev/null 2>&1; then
 	ECHO_N='echo -n'
@@ -80,9 +81,16 @@ start_test ()
 }
 
 # Print a single dot
+echo_inline()
+{
+	msg="$1"
+	${ECHO_N} "${msg}${ECHO_C}"
+}
+
+# Print a single dot
 show_progress()
 {
-	${ECHO_N} ".${ECHO_C}"
+	echo_inline "."
 }
 
 #
@@ -172,9 +180,11 @@ run_simple_test ()
 		return 1
 	fi
 
-	if [ ! -r "$_expected" ]; then
-		fail "can't read $_expected"
-		return 1
+	if test x"$OPT_EXPECT" = "xno"; then
+		if [ ! -r "$_expected" ]; then
+			fail "can't read $_expected"
+			return 1
+		fi
 	fi
 
 	show_progress
@@ -205,15 +215,20 @@ run_simple_test ()
 		> "${OUTFILE}"
 	rm -f ${TMPFILE} # should we keep this ?
 
-	if diff -u "${_expected}" "${OUTFILE}" > ${DIFFILE}; then
-		#SUCCESS=`expr $SUCCESS + 1`
-		rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
-		return 0
+	if test x"$OPT_EXPECT" = "xyes"; then
+		echo_inline " expected"
+		cp "${OUTFILE}" "${_expected}"
 	else
-		fail "${_msg}diff expected obtained" "${DIFFILE}"
-		# rm "${OUTFILE}" # diff is enough
+		if diff -u "${_expected}" "${OUTFILE}" > ${DIFFILE}; then
+			#SUCCESS=`expr $SUCCESS + 1`
+			rm "${OUTFILE}" "${DIFFILE}" # we don't need these anymore
+			return 0
+		else
+			fail "${_msg}diff expected obtained" "${DIFFILE}"
+			# rm "${OUTFILE}" # diff is enough
+			return 1
+		fi
 	fi
-	return 1
 }
 
 # Drop a table if exists
@@ -488,6 +503,10 @@ while [ -n "$1" ]; do
 		OPT_CREATE=no
 		shift
 		continue
+	elif test "$1" = "--expect"; then
+		OPT_EXPECT=yes
+		shift
+		continue
 	elif test "$1" = "--upgrade"; then
 		OPT_UPGRADE=yes
 		shift
@@ -519,6 +538,7 @@ if [ -z "$1" ]; then
 	echo " --raster     load also topology extension" >&2
 	echo " --topology   load also topology extension" >&2
 	echo " --clean      cleanup test logs on exit" >&2
+	echo " --expect     save obtained output as expected" >&2
 	exit 1
 fi
 
