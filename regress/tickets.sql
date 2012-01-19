@@ -536,13 +536,20 @@ SELECT '#1450', GeometryType('POINT(0 0)'::geography), GeometryType('POLYGON EMP
 select '#1482', ST_Srid('POINT(0 0)'::geography(point, 0)::geometry);
 
 -- #852
-select '#852',
-  st_intersects('POINT(0.5 0.5000000000001)'::geometry, 'POLYGON((0 0, 10 10, 1 0, 0 0))'::geometry),
-  st_intersects('POINT(0.6 0.6000000000001)'::geometry, 'POLYGON((0 0, 10 10, 1 0, 0 0))'::geometry),
-  st_intersects('POINT(0.5 0.500000000001)'::geometry, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry),
-  st_intersects('POINT(0.6 0.600000000001)'::geometry, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry),
-  st_intersects('POINT(0.600000000001 0.600000000001)'::geometry, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry),
-  st_intersects('POINT(0.5 0.5)'::geometry, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry);
+CREATE TABLE cacheable (id int, g geometry);
+COPY cacheable FROM STDIN;
+1	POINT(0.5 0.5000000000001)
+2	POINT(0.5 0.5000000000001)
+\.
+select '#852.1', id, -- first run is not cached, consequent are cached
+  st_intersects(g, 'POLYGON((0 0, 10 10, 1 0, 0 0))'::geometry),
+  st_intersects(g, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry) from cacheable;
+UPDATE cacheable SET g = 'POINT(0.5 0.5)';
+-- New select, new cache
+select '#852.2', id, -- first run is not cached, consequent are cached
+  st_intersects(g, 'POLYGON((0 0, 10 10, 1 0, 0 0))'::geometry),
+  st_intersects(g, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry) from cacheable;
+DROP TABLE cacheable;
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
