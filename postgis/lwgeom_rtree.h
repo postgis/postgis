@@ -1,6 +1,8 @@
 #ifndef _LWGEOM_RTREE_H
 #define _LWGEOM_RTREE_H
 
+#include "liblwgeom.h"
+
 typedef struct
 {
 	double min;

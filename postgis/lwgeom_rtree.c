@@ -9,6 +9,8 @@
  *
  **********************************************************************/
 
+#include <assert.h>
+
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"         /* For FP comparators. */
@@ -488,8 +490,7 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, GSERIALIZED *serializedPoly, RTR
 
 	POSTGIS_DEBUGF(2, "retrieveCache called with %p %p %p", lwgeom, serializedPoly, currentCache);
 
-	/* Make sure this isn't someone else's cache object. */
-	if ( currentCache && currentCache->type != 1 ) currentCache = NULL;
+	assert ( ! currentCache || currentCache->type == 1 );
 
 	if (!currentCache)
 	{

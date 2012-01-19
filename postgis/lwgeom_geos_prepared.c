@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  *
+ * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
  * Copyright (C) 2008 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2007 Refractions Research Inc.
  *
@@ -11,7 +12,10 @@
  *
  **********************************************************************/
 
+#include <assert.h>
+
 #include "lwgeom_geos_prepared.h"
+#include "lwgeom_cache.h"
 
 /***********************************************************************
 **
@@ -273,13 +277,13 @@ PrepGeomCache*
 GetPrepGeomCache(FunctionCallInfoData *fcinfo, GSERIALIZED *pg_geom1, GSERIALIZED *pg_geom2)
 {
 	MemoryContext old_context;
-	PrepGeomCache* cache = fcinfo->flinfo->fn_extra;
+	GeomCache* supercache = GetGeomCache(fcinfo);
+	PrepGeomCache* cache = supercache->prep;
 	int copy_keys = 1;
 	size_t pg_geom1_size = 0;
 	size_t pg_geom2_size = 0;
 
-	/* Make sure this isn't someone else's cache object. */
-	if ( cache && cache->type != 2 ) cache = NULL;
+	assert ( ! cache || cache->type == 2 );
 
 	if (!PrepGeomHash)
 		CreatePrepGeomHash();
@@ -324,7 +328,7 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, GSERIALIZED *pg_geom1, GSERIALIZE
 		pghe.prepared_geom = 0;
 		AddPrepGeomHashEntry( pghe );
 
-		fcinfo->flinfo->fn_extra = cache;
+		supercache->prep = cache;
 
 		POSTGIS_DEBUGF(3, "GetPrepGeomCache: adding context to hash: %p", cache);
 	}
