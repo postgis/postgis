@@ -1363,7 +1363,8 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 		}
 
 		/* a point on the boundary of a ring is not contained. */
-		if (fabs(side) < 1e-12)
+		/* WAS: if (fabs(side) < 1e-12), see #852 */
+		if (side == 0.0)
 		{
 			if (isOnSegment(&seg1, &seg2, point) == 1)
 			{
@@ -1442,7 +1443,8 @@ int point_in_ring(POINTARRAY *pts, POINT2D *point)
 		}
 
 		/* a point on the boundary of a ring is not contained. */
-		if (fabs(side) < 1e-12)
+		/* WAS: if (fabs(side) < 1e-12), see #852 */
+		if (side == 0.0)
 		{
 			if (isOnSegment(&seg1, &seg2, point) == 1)
 			{

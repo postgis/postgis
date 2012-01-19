@@ -310,5 +310,21 @@ drop table t;
 -- #1344
 select '#1344', ST_AsEWKB(st_makeline(g)) FROM ( values ('POINT(0 0)'::geometry ) ) as foo(g);
 
+-- #852
+CREATE TABLE cacheable (id int, g geometry);
+COPY cacheable FROM STDIN;
+1	POINT(0.5 0.5000000000001)
+2	POINT(0.5 0.5000000000001)
+\.
+select '#852.1', id, -- first run is not cached, consequent are cached
+  st_intersects(g, 'POLYGON((0 0, 10 10, 1 0, 0 0))'::geometry),
+  st_intersects(g, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry) from cacheable;
+UPDATE cacheable SET g = 'POINT(0.5 0.5)';
+-- New select, new cache
+select '#852.2', id, -- first run is not cached, consequent are cached
+  st_intersects(g, 'POLYGON((0 0, 10 10, 1 0, 0 0))'::geometry),
+  st_intersects(g, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry) from cacheable;
+DROP TABLE cacheable;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
