@@ -161,7 +161,7 @@ staged-install: staged-install-raster staged-install-topology
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
 test check: staged-install
-	./run_test $(RUNTESTFLAGS) $(TESTS)
+	./run_test $(RUNTESTFLAGS) $(TESTS) && \
 	./run_test --upgrade $(RUNTESTFLAGS) $(TESTS)
 
 garden:
