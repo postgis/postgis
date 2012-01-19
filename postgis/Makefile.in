@@ -105,7 +105,7 @@ ifeq ($(REGRESS),1)
         bindir=/bin
         pkglibdir=/lib
         datadir=/share
-        MODULEDIR=contrib/postgis
+        datamoduledir=contrib/postgis
 endif
 
 # Make all PostGIS objects depend upon liblwgeom, so that if an underlying
