@@ -107,6 +107,9 @@ AC_DEFINE_UNQUOTED([PWDREGRESS], [PWDREGRESS], [Define command to determine the 
 AC_SUBST([PWDREGRESS])
 
 AC_PATH_PROG([PERL], [perl], [])
+if test "x$PERL" = "x"; then
+        AC_MSG_ERROR([Perl was not found. Building PostGIS requires Perl.])
+fi
 AC_SUBST([PERL])
 
 dnl ===========================================================================
