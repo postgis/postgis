@@ -51,4 +51,4 @@ COPY tm.geogs_in FROM :tmpfile WITH BINARY;
 SELECT 'geometry', count(*) FROM tm.geogs_in i, tm.geogs o WHERE i.id = o.id
  AND ST_OrderingEquals(i.g::geometry, o.g::geometry);
 
---DROP SCHEMA tm CASCADE;
+DROP SCHEMA tm CASCADE;
