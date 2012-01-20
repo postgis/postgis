@@ -278,16 +278,24 @@ VALUES (1,
 			<paramdef><type>boolean </type>
 			<parameter>regular_blocking</parameter></paramdef>
 			
-				<paramdef><type>boolean </type>
-			<parameter choice='opt'>num_bands=true</parameter></paramdef>
 			<paramdef><type>boolean </type>
-			<parameter choice='opt'>pixel_types=true</parameter></paramdef>
-			
+				<parameter choice='opt'>num_bands=true</parameter>
+			</paramdef>
 			<paramdef><type>boolean </type>
-			<parameter choice='opt'>nodata_values=true</parameter></paramdef>
+				<parameter choice='opt'>pixel_types=true</parameter>
+			</paramdef>
 			<paramdef><type>boolean </type>
-			<parameter choice='opt'>extent=true</parameter></paramdef>
+				<parameter choice='opt'>nodata_values=true</parameter>
+			</paramdef>
+			<paramdef><type>boolean </type>
+				<parameter choice='opt'>out_db=true</parameter>
+			</paramdef>
+			<paramdef><type>boolean </type>
+				<parameter choice='opt'>extent=true</parameter>
+			</paramdef>
 		  </funcprototype>
+		  
+		  rastschema name, rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT false, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true
 
 		  <funcprototype>
 			<funcdef>boolean <function>AddRasterConstraints</function></funcdef>
@@ -356,9 +364,14 @@ VALUES (1,
 			<parameter choice='opt'>pixel_types=true</parameter></paramdef>
 			
 			<paramdef><type>boolean </type>
-			<parameter choice='opt'>nodata_values=true</parameter></paramdef>
+				<parameter choice='opt'>nodata_values=true</parameter>
+			</paramdef>
 			<paramdef><type>boolean </type>
-			<parameter choice='opt'>extent=true</parameter></paramdef>
+				<parameter choice='opt'>out_db=true</parameter>
+			</paramdef>
+			<paramdef><type>boolean </type>
+				<parameter choice='opt'>extent=true</parameter>
+			</paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -488,6 +501,10 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 			
 			<paramdef><type>boolean </type>
 			<parameter choice='opt'>nodata_values=true</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+				<parameter choice='opt'>out_db=true</parameter>
+			</paramdef>
 			<paramdef><type>boolean </type>
 			<parameter choice='opt'>extent=true</parameter></paramdef>
 		  </funcprototype>
@@ -531,6 +548,11 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 			
 			<paramdef><type>boolean </type>
 			<parameter choice='opt'>nodata_values=true</parameter></paramdef>
+			
+			<paramdef><type>boolean </type>
+				<parameter choice='opt'>out_db=true</parameter>
+			</paramdef>
+			
 			<paramdef><type>boolean </type>
 			<parameter choice='opt'>extent=true</parameter></paramdef>
 		  </funcprototype>
