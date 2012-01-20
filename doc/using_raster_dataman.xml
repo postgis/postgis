@@ -703,7 +703,7 @@ return param_filepath
 $$ LANGUAGE plpythonu;]]></programlisting>
 <programlisting>--write out 5 images to the PostgreSQL server in varying sizes
 -- note the postgresql daemon account needs to have write access to folder
--- this echos bath the file names created;
+-- this echos back the file names created;
  SELECT write_file(ST_AsPNG(
 	ST_AsRaster(ST_Buffer(ST_Point(1,5),j*5, 'quad_segs=2'),150*j, 150*j, '8BUI',100)),
 	 'C:/temp/slices'|| j || '.png')
