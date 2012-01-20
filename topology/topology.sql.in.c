@@ -1167,112 +1167,98 @@ DECLARE
   rec RECORD;
   plyr RECORD;
   clyr RECORD;
-  query text;
-  ok BOOL;
   sql TEXT;
 BEGIN
-        -- Get topology name
-        SELECT name FROM topology.topology into toponame
-                WHERE id = topogeom.topology_id;
 
-	-- Get layer info
-	ok = false;
-	FOR rec IN EXECUTE 'SELECT * FROM topology.layer '
-		|| ' WHERE topology_id = ' || topogeom.topology_id
-		|| ' AND layer_id = ' || topogeom.layer_id
-	LOOP
-		ok = true;
-		plyr = rec;
-	END LOOP;
+  -- Get topology name
+  SELECT name FROM topology.topology
+	WHERE id = topogeom.topology_id
+  INTO toponame;
+  IF toponame IS NULL THEN
+    RAISE EXCEPTION 'Invalid TopoGeometry (unexistent topology id %)', topogeom.topology_id;
+  END IF;
 
-	IF NOT ok THEN
-		RAISE EXCEPTION 'Could not find TopoGeometry layer % in topology %', topogeom.layer_id, topogeom.topology_id;
-	END IF;
+  -- Get layer info
+  SELECT * FROM topology.layer
+    WHERE topology_id = topogeom.topology_id
+    AND layer_id = topogeom.layer_id
+    INTO plyr;
+  IF plyr IS NULL THEN
+    RAISE EXCEPTION 'Could not find TopoGeometry layer % in topology %', topogeom.layer_id, topogeom.topology_id;
+  END IF;
 
-	--
-	-- If this feature layer is on any level > 0 we will
-	-- compute the topological union of all child features
-	-- in fact recursing.
-	--
-	IF plyr.level > 0 THEN
+  --
+  -- If this feature layer is on any level > 0 we will
+  -- compute the topological union of all child features
+  -- in fact recursing.
+  --
+  IF plyr.level > 0 THEN -- {
 
-		-- Get child layer info
-		SELECT * INTO STRICT clyr FROM topology.layer
-			WHERE layer_id = plyr.child_id
-			AND topology_id = topogeom.topology_id;
+    -- Get child layer info
+    SELECT * FROM topology.layer WHERE layer_id = plyr.child_id
+      AND topology_id = topogeom.topology_id
+      INTO clyr;
+    IF clyr IS NULL THEN
+      RAISE EXCEPTION 'Invalid layer % in topology % (unexistent child layer %)', topogeom.layer_id, topogeom.topology_id, plyr.child_id;
+    END IF;
 
-		query = 'SELECT st_union(topology.Geometry('
-			|| quote_ident(clyr.feature_column)
-			|| ')) as geom FROM '
-			|| quote_ident(clyr.schema_name) || '.'
-			|| quote_ident(clyr.table_name)
-			|| ', ' || quote_ident(toponame) || '.relation pr'
-			|| ' WHERE '
-			|| ' pr.topogeo_id = ' || topogeom.id
-			|| ' AND '
-			|| ' pr.layer_id = ' || topogeom.layer_id
-			|| ' AND '
-			|| ' id('||quote_ident(clyr.feature_column)
-			|| ') = pr.element_id '
-			|| ' AND '
-			|| 'layer_id('||quote_ident(clyr.feature_column)
-			|| ') = pr.element_type ';
-		--RAISE DEBUG '%', query;
-		FOR rec IN EXECUTE query
-		LOOP
-			RETURN rec.geom;
-		END LOOP;
-			
-	END IF;
-	
+    sql := 'SELECT st_multi(st_union(topology.Geometry('
+      || quote_ident(clyr.feature_column)
+      || '))) as geom FROM '
+      || quote_ident(clyr.schema_name) || '.'
+      || quote_ident(clyr.table_name)
+      || ', ' || quote_ident(toponame) || '.relation pr'
+      || ' WHERE '
+      || ' pr.topogeo_id = ' || topogeom.id
+      || ' AND '
+      || ' pr.layer_id = ' || topogeom.layer_id
+      || ' AND '
+      || ' id('||quote_ident(clyr.feature_column)
+      || ') = pr.element_id '
+      || ' AND '
+      || 'layer_id('||quote_ident(clyr.feature_column)
+      || ') = pr.element_type ';
+    --RAISE DEBUG '%', query;
+    EXECUTE sql INTO geom;
+      
+  ELSIF topogeom.type = 3 THEN -- [multi]polygon -- }{
 
-  IF topogeom.type = 3 THEN -- [multi]polygon
-		FOR rec IN EXECUTE 'SELECT st_union('
-			|| 'topology.ST_GetFaceGeometry('
-			|| quote_literal(toponame) || ','
-			|| 'element_id)) as g FROM ' 
-			|| quote_ident(toponame)
-			|| '.relation WHERE topogeo_id = '
-			|| topogeom.id || ' AND layer_id = '
-			|| topogeom.layer_id || ' AND element_type = 3 '
-		LOOP
-			geom := rec.g;
-		END LOOP;
-		IF geom IS NULL THEN
-			geom := 'POLYGON EMPTY';
-		END IF;
+    sql := 'SELECT st_multi(st_union('
+      || 'topology.ST_GetFaceGeometry('
+      || quote_literal(toponame) || ','
+      || 'element_id))) as g FROM ' 
+      || quote_ident(toponame)
+      || '.relation WHERE topogeo_id = '
+      || topogeom.id || ' AND layer_id = '
+      || topogeom.layer_id || ' AND element_type = 3 ';
+    EXECUTE sql INTO geom;
 
-  ELSIF topogeom.type = 2 THEN -- [multi]line
-		FOR rec IN EXECUTE 'SELECT ST_LineMerge(ST_Collect(e.geom)) as g FROM '
-			|| quote_ident(toponame) || '.edge e, '
-			|| quote_ident(toponame) || '.relation r '
-			|| ' WHERE r.topogeo_id = ' || topogeom.id
-			|| ' AND r.layer_id = ' || topogeom.layer_id
-			|| ' AND r.element_type = 2 '
-			|| ' AND abs(r.element_id) = e.edge_id'
-		LOOP
-			geom := rec.g;
-		END LOOP;
-		IF geom IS NULL THEN
-			geom := 'LINESTRING EMPTY';
-		END IF;
-	
-  ELSIF topogeom.type = 1 THEN -- [multi]point
-		FOR rec IN EXECUTE 'SELECT st_union(n.geom) as g FROM '
-			|| quote_ident(toponame) || '.node n, '
-			|| quote_ident(toponame) || '.relation r '
-			|| ' WHERE r.topogeo_id = ' || topogeom.id
-			|| ' AND r.layer_id = ' || topogeom.layer_id
-			|| ' AND r.element_type = 1 '
-			|| ' AND r.element_id = n.node_id'
-		LOOP
-			geom := rec.g;
-		END LOOP;
-		IF geom IS NULL THEN
-			geom := 'POINT EMPTY';
-		END IF;
+  ELSIF topogeom.type = 2 THEN -- [multi]line -- }{
 
-  ELSIF topogeom.type = 4 THEN -- mixed collection
+    sql := 
+      'SELECT st_multi(ST_LineMerge(ST_Collect(e.geom))) as g FROM '
+      || quote_ident(toponame) || '.edge e, '
+      || quote_ident(toponame) || '.relation r '
+      || ' WHERE r.topogeo_id = ' || topogeom.id
+      || ' AND r.layer_id = ' || topogeom.layer_id
+      || ' AND r.element_type = 2 '
+      || ' AND abs(r.element_id) = e.edge_id';
+    EXECUTE sql INTO geom;
+  
+  ELSIF topogeom.type = 1 THEN -- [multi]point -- }{
+
+    sql :=
+      'SELECT st_multi(st_union(n.geom)) as g FROM '
+      || quote_ident(toponame) || '.node n, '
+      || quote_ident(toponame) || '.relation r '
+      || ' WHERE r.topogeo_id = ' || topogeom.id
+      || ' AND r.layer_id = ' || topogeom.layer_id
+      || ' AND r.element_type = 1 '
+      || ' AND r.element_id = n.node_id';
+    EXECUTE sql INTO geom;
+
+  ELSIF topogeom.type = 4 THEN -- mixed collection -- }{
+
     sql := 'WITH areas AS ( SELECT ST_Union('
       || 'topology.ST_GetFaceGeometry('
       || quote_literal(toponame) || ','
@@ -1297,18 +1283,28 @@ BEGIN
       || ' AND r.element_id = n.node_id ), '
       || ' un as ( SELECT g FROM areas UNION ALL SELECT g FROM lines '
       || '          UNION ALL SELECT g FROM points ) '
-      || 'SELECT ST_Collect(g) FROM un';
+      || 'SELECT ST_Multi(ST_Collect(g)) FROM un';
     EXECUTE sql INTO geom;
-    IF geom IS NULL THEN
+
+  ELSE -- }{
+
+    RAISE EXCEPTION 'Invalid TopoGeometries (unknown type %)', topogeom.type;
+
+  END IF; -- }
+
+  IF geom IS NULL THEN
+    IF topogeom.type = 3 THEN -- [multi]polygon
+      geom := 'MULTIPOLYGON EMPTY';
+    ELSIF topogeom.type = 2 THEN -- [multi]line
+      geom := 'MULTILINESTRING EMPTY';
+    ELSIF topogeom.type = 1 THEN -- [multi]point
+      geom := 'MULTIPOINT EMPTY';
+    ELSE
       geom := 'GEOMETRYCOLLECTION EMPTY';
     END IF;
-
-  ELSE
-    RAISE NOTICE 'Geometry from TopoGeometry does not support TopoGeometries of type % so far', topogeom.type;
-    geom := 'GEOMETRYCOLLECTION EMPTY';
   END IF;
 
-	RETURN geom;
+  RETURN geom;
 END
 $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
