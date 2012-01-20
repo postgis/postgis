@@ -10,6 +10,9 @@
  *
  **********************************************************************/
 
+#ifndef LWGEOM_GEOS_PREPARED_H_
+#define LWGEOM_GEOS_PREPARED_H_ 1
+
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
@@ -73,3 +76,4 @@ PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, PG_LWGEOM *pg_geom
 
 #endif /* PREPARED_GEOM */
 
+#endif /* LWGEOM_GEOS_PREPARED_H_ 1 */

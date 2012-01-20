@@ -10,6 +10,8 @@
  *
  **********************************************************************/
 
+#include <assert.h>
+
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "lwgeom_rtree.h"
@@ -494,8 +496,7 @@ RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, uchar *serializedPoly, RTREE_POL
 
 	LWDEBUGF(2, "retrieveCache called with %p %p %p", lwgeom, serializedPoly, currentCache);
 
-	/* Make sure this isn't someone else's cache object. */
-	if ( currentCache && currentCache->type != 1 ) currentCache = NULL;
+	assert ( ! currentCache || currentCache->type == 1 );
 
 	if (!currentCache)
 	{

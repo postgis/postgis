@@ -18,6 +18,7 @@ PostGIS 1.5.4
    - #1146, images generator crashes (bronaugh)
    - #1184, honour DESTDIR in documentation Makefile (Bryce L Nordgren)
    - #852, improve spatial predicates robustness (Sandro Santilli, Nicklas Avén)
+   - #547, ST_Contains memory problems (Sandro Santilli)
 
 PostGIS 1.5.3
 2011/06/25
