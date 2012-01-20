@@ -3208,22 +3208,23 @@ CREATE OR REPLACE FUNCTION ST_IsCollection(geometry)
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Deprecation in 1.2.3
+-- TODO: drop in 2.0.0 !
 CREATE OR REPLACE FUNCTION Equals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME','geomequals'
+	AS 'MODULE_PATHNAME','ST_Equals'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_Equals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME','geomequals'
+	AS 'MODULE_PATHNAME','ST_Equals'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
 -- Availability: 1.2.1
 CREATE OR REPLACE FUNCTION ST_Equals(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_Equals($1,$2)'
+	AS 'SELECT $1 ~= $2 AND _ST_Equals($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
 
 

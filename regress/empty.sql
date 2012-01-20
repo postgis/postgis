@@ -99,6 +99,10 @@ WITH inp AS (SELECT
  'POLYGON((0 0, 10 0, 5 5, 0 0))'::geometry as geometry
  ) SELECT 'ST_Disjoint(geometry, empty) == TRUE', ST_Disjoint(geometry, empty) FROM inp;
 WITH inp AS (SELECT
+ 'POLYGON EMPTY'::geometry as empty1,
+ 'POINT Z EMPTY'::geometry as empty2
+ ) SELECT 'ST_Equals(empty1, empty2) == TRUE', ST_Equals(empty1, empty2) FROM inp;
+WITH inp AS (SELECT
  'POLYGON EMPTY'::geometry as empty
  ) SELECT 'ST_IsSimple(empty) == TRUE', ST_IsSimple(empty) FROM inp;
 WITH inp AS (SELECT

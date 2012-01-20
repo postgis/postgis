@@ -65,7 +65,7 @@ Datum geomunion(PG_FUNCTION_ARGS);
 Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
-Datum geomequals(PG_FUNCTION_ARGS);
+Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
 Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
@@ -2959,8 +2959,8 @@ Datum relate_full(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(geomequals);
-Datum geomequals(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_Equals);
+Datum ST_Equals(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
@@ -2981,6 +2981,8 @@ Datum geomequals(PG_FUNCTION_ARGS)
 	/*
 	 * short-circuit: Loose test, if geom2 bounding box does not overlap
 	 * geom1 bounding box we can prematurely return FALSE.
+	 *
+	 * TODO: use gbox_same_2d instead (not available at time of writing)
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
 	     gserialized_get_gbox_p(geom2, &box2) )

@@ -40,6 +40,7 @@ ST_Intersects(geometry, empty) == FALSE|f
 ST_Intersects(empty, empty) == FALSE|f
 ST_Disjoint(empty, empty) == TRUE|t
 ST_Disjoint(geometry, empty) == TRUE|t
+ST_Equals(empty1, empty2) == TRUE|t
 ST_IsSimple(empty) == TRUE|t
 ST_IsValid(empty) == TRUE|t
 ST_NumGeometries(empty) == 0|0
