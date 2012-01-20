@@ -3,25 +3,17 @@ to allow postgis modules
 to be installed using standard PostgreSQL 9.1+
 CREATE EXTENSION syntax
 
-To use: first make install regular PostGIS
-then do the below for each extension
-
-make 
-make install 
-
-each
+To use: first make install regular PostGIS.
+These should automatically get installed in share/extension folder of
+PostGIS if you compiled against PostgreSQL 9.1
 
 Then in your PostgreSQL database run
-CREATE EXTENSION postgis_core;
-CREATE EXTENSION postgis_raster;
+CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;
 
-Known issue:
-To uninstall postgis_core you have to drop cascade the extension
-which is not ideal but working out the cast issues.
 
 The dependency logic should warn if you try
-to install postgis_raster without postgis_core, 
-but that seems to not be working right
-thought drop cascade extension postgis_core drops
-postgis_raster extension.
+to install postgis_topology without postgis
+or try to drop postgis without first droping postgis_topology.
+
+You will also not be able to drop any postgis functions installed by the extension.
