@@ -689,5 +689,34 @@ public class SaveQueryImage {
   }
 }]]></programlisting>
    		</sect2>
+   		
+   		<sect2 id="RT_PLPython">
+   			<title>Use PLPython to dump out images via SQL</title>
+   			<para>This is a plpython stored function that creates a file in the server directory for each record.</para>
+   			<programlisting>//plpython postgresql stored proc.  Requires you have plpython installed
+<![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, param_filepath text)
+RETURNS text
+AS $$
+f = open(param_filepath, 'wb+')
+f.write(param_bytes)
+return param_filepath
+$$ LANGUAGE plpythonu;]]></programlisting>
+<programlisting>--write out 5 images to the PostgreSQL server in varying sizes
+-- note the postgresql daemon account needs to have write access to folder
+-- this echos bath the file names created;
+ SELECT write_file(ST_AsPNG(
+	ST_AsRaster(ST_Buffer(ST_Point(1,5),j*5, 'quad_segs=2'),150*j, 150*j, '8BUI',100)),
+	 'C:/temp/slices'|| j || '.png')
+	 FROM generate_series(1,5) As j;
+	 
+     write_file
+---------------------
+ C:/temp/slices1.png
+ C:/temp/slices2.png
+ C:/temp/slices3.png
+ C:/temp/slices4.png
+ C:/temp/slices5.png	 
+</programlisting>
+   		</sect2>
    </sect1>
 </chapter>
