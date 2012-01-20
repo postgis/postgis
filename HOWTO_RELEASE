@@ -42,30 +42,25 @@ Release procedure
 3) Edit README.postgis and set release date and version.
 4) Add release notes in doc/release_notes.xml
 5) Commit all your changes
-6) Extensions -- change the 
-   a) extensions/postgis/postgis.control, extensions/postgis_topology/postgis_topology.control the the release number
-   b) change the extensions/postgis/Makefile (so all the versions for upgrade upgrade to new release)
-   c) change the extensions/postgis_topolog/Makefile (same change as b)
-   d) If you have 9.1+ run make on extensions/postgis, extensions/postgis_topology and verify things install
-7) Tag trunk:  
+6) Tag trunk:  
    svn copy http://svn.osgeo.org/postgis/trunk http://svn.osgeo.org/postgis/tags/x.x.x
-8) Checkout tag:
+7) Checkout tag:
    svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
-9) Update Version.config as specified in Versioning Scheme above.
-10) Commit your version number change to the tag.
-11) Run: sh make_dist.sh x.x.x
-12) Copy tarball to web site and edit downloads page
-13) Announce on e-mail 
+8) Update Version.config as specified in Versioning Scheme above.
+9) Commit your version number change to the tag.
+10) Run: sh make_dist.sh x.x.x
+11) Copy tarball to web site and edit downloads page
+12) Announce on e-mail 
     - postgis-users
     - postgis-devel
     - pgsql-announce
     - osgeo-discuss
-14) Update web sites
+13) Update web sites
     - PostGIS News
     - PostGIS doc release versioned doc - http://www.postgis.org/documentation/
      (or remind Chris Hodgson)
     - Freshmeat
     - Wikipedia
-15) Update Trac and make old Milestone as completed
+14) Update Trac and make old Milestone as completed
 
 
