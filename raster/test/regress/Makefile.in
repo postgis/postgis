@@ -123,7 +123,8 @@ TEST_SREL = \
 	$(NULL)
 	
 TEST_BUGS = \
-	bug_test_car5.sql
+	bug_test_car5.sql \
+	tickets.sql
 
 TESTS = $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
 		$(TEST_PROPS) $(TEST_BANDPROPS) \
