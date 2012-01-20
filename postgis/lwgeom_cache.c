@@ -26,5 +26,6 @@ GeomCache* GetGeomCache(FunctionCallInfoData *fcinfo)
 		cache->prep = 0;
 		cache->rtree = 0;
 	}
+	return cache;
 }
 
