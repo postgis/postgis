@@ -796,12 +796,12 @@ dnl ====================================
 dnl raster stuff
 dnl ====================================
 AC_ARG_WITH([raster],
-    [AS_HELP_STRING([--with-raster],
-                    [compile the raster extension (requires GDAL >= 1.6.0) @<:@default=no@:>@])],
-    [RASTER="raster"], [RASTER=""])
+    [AS_HELP_STRING([--without-raster],
+                    [Disable the raster extension])],
+    [RASTER="raster"], 
+    [RASTER=""])
 
-if test "x$RASTER" = "xraster"; then dnl # {
-    AC_MSG_RESULT([RASTER: Raster support requested])
+if test "x$with_raster" != "xno"; then dnl # {
 
     AC_CONFIG_HEADERS([raster/raster_config.h])
 
@@ -910,14 +910,14 @@ if test "x$RASTER" = "xraster"; then dnl # {
        dnl Ensure we are using minimum required version of GDAL
        if test ! "$GDAL_VERSION_NUMBER" -ge "$GDAL_MIN_VERSION_NUMBER" ; then
 	   	  AC_MSG_RESULT([not found])
-	   	  AC_MSG_ERROR([PostGIS requires GDAL >= $GDAL_MIN_VERSION])
+	   	  AC_MSG_ERROR([PostGIS raster requires GDAL >= $GDAL_MIN_VERSION. Use --without-raster to build without raster support.])
        fi
 
        AC_DEFINE_UNQUOTED([POSTGIS_GDAL_VERSION], [$POSTGIS_GDAL_VERSION], [GDAL library version])	
        AC_SUBST([POSTGIS_GDAL_VERSION])
 	else
 		AC_MSG_RESULT([not found])
-		AC_MSG_ERROR([gdal-config not found. Try --with-gdalconfig=<path to gdal-config>])
+		AC_MSG_ERROR([gdal-config not found. With --without-raster or try --with-gdalconfig=<path to gdal-config>])
 	fi
 	AC_MSG_RESULT([found])
 
@@ -958,6 +958,7 @@ if test "x$RASTER" = "xraster"; then dnl # {
                     raster/scripts/python/Makefile"
 
 else dnl # }{
+    AC_MSG_RESULT([RASTER: Raster support disabled])
     RT_MAKEFILE_LIST="raster/Makefile"
 fi dnl # }
 
