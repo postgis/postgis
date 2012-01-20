@@ -917,7 +917,7 @@ if test "x$with_raster" != "xno"; then dnl # {
        AC_SUBST([POSTGIS_GDAL_VERSION])
 	else
 		AC_MSG_RESULT([not found])
-		AC_MSG_ERROR([gdal-config not found. With --without-raster or try --with-gdalconfig=<path to gdal-config>])
+		AC_MSG_ERROR([gdal-config not found. Use --without-raster or try --with-gdalconfig=<path to gdal-config>])
 	fi
 	AC_MSG_RESULT([found])
 
