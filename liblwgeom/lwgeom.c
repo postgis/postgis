@@ -289,8 +289,6 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 	GBOX *box = NULL;
 	int type;
 
-	ogeoms = lwalloc(sizeof(LWGEOM*));
-
 	/*
 	** This funx is a no-op only if a bbox cache is already present
 	** in input.
@@ -302,8 +300,20 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 
 	type = lwgeom->type;
 
-	if ( MULTITYPE[type] )
+	if ( ! MULTITYPE[type] ) return lwgeom_clone(lwgeom);
+
+	if( lwgeom_is_empty(lwgeom) )
 	{
+		ogeom = (LWGEOM *)lwcollection_construct_empty(
+			MULTITYPE[type],
+			lwgeom->srid,
+			FLAGS_GET_Z(lwgeom->flags),
+			FLAGS_GET_M(lwgeom->flags)
+		);
+	}
+	else
+	{
+		ogeoms = lwalloc(sizeof(LWGEOM*));
 		ogeoms[0] = lwgeom_clone(lwgeom);
 
 		/* Sub-geometries are not allowed to have bboxes or SRIDs, move the bbox to the collection */
@@ -312,10 +322,6 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 		ogeoms[0]->srid = SRID_UNKNOWN;
 
 		ogeom = (LWGEOM *)lwcollection_construct(MULTITYPE[type], lwgeom->srid, box, 1, ogeoms);
-	}
-	else
-	{
-		return lwgeom_clone(lwgeom);
 	}
 
 	return ogeom;

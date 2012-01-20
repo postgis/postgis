@@ -551,6 +551,19 @@ select '#852.2', id, -- first run is not cached, consequent are cached
   st_intersects(g, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry) from cacheable;
 DROP TABLE cacheable;
 
+-- #1489
+with inp AS ( SELECT
+	st_multi('POINT EMPTY'::geometry) as mp,
+	st_multi('LINESTRING EMPTY'::geometry) as ml, 
+	st_multi('POLYGON EMPTY'::geometry) as ma,
+	st_multi('GEOMETRYCOLLECTION EMPTY'::geometry) as mm
+) select '#1489',
+	st_astext(mp), st_numgeometries(mp),
+	st_astext(ml), st_numgeometries(ml),
+	st_astext(ma), st_numgeometries(ma),
+	st_astext(mm), st_numgeometries(mm)
+FROM inp;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
