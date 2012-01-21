@@ -3,9 +3,25 @@ to allow postgis modules
 to be installed using standard PostgreSQL 9.1+
 CREATE EXTENSION syntax
 
-To use: first make install regular PostGIS.
+To use: first make install regular PostGIS.  Also make sure to make the comments
+if you are building from teh source repository
+since the extensions package the postgis function descriptions.
+make comments
+
+Makign the comments is not necessary if you are building 
+from the tar balls since the tar balls have 
+the various postgis_comments.sql, topology_comments.sql, 
+and raster_comments.sql already built.
+
+Then:
+cd extensions/postgis
+make install
+cd ..
+cd extensions/postgis_topology
+make install
+
 These should automatically get installed in share/extension folder of
-PostGIS if you compiled against PostgreSQL 9.1
+PostgreSQL 9.1.
 
 Then in your PostgreSQL database run
 CREATE EXTENSION postgis;
@@ -17,3 +33,10 @@ to install postgis_topology without postgis
 or try to drop postgis without first droping postgis_topology.
 
 You will also not be able to drop any postgis functions installed by the extension.
+If you want to manually install the extensions from one server to another
+, just copy over the
+
+extensions/postgis: postgis.control, sql/*
+extension/postgis_topoloyg postgis_topology.control,sql/* 
+
+files into your PostgreSQL/share/extension folder.

@@ -539,9 +539,24 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <title>Building PostGIS Extensions and Deploying them</title>
 
 	  <para>
-		The PostGIS extensions which is usable for PostgreSQL 9.1+, should be automatically installed if you are built against
-		PostgreSQL 9.1+.
+		The PostGIS extensions which is usable for PostgreSQL 9.1+, can be built by cding into the extension folders and doing a make install.
+		This will be an automated process in the future when PostGIS is compiled against a 9.1 build and fully integrated int ot he build process.
 	  </para>
+	  <para>If you are building from souce repository, you need to build the function descriptions first with:</para>
+	  <programlisting>make comments</programlisting>
+	  <para>Building the comments is not necessary if you are building from a tar ball since these are packaged pre-built with the tar ball already.</para>
+	  <para>Next build the extensions and install them.</para>
+	  <programlisting>cd extensions
+cd postgis
+make clean
+make 
+make install
+cd ..
+cd postgis_topology
+make clean
+make 
+make install
+	  </programlisting>
 	  <para>The extension files will always be the same for the same version of PostGIS regardless of OS, so it is same as long as you
 	  have the PostGIS binaries already installed on your servers, to copy over the extension files. </para>
 		<para>If you want to install the extensions manually on a separate server different from your development,
