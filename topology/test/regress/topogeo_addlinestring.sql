@@ -111,5 +111,14 @@ SELECT check_changes();
 SELECT 'contains', TopoGeo_addLineString('city_data', 'LINESTRING(14 34, 13 35, 10 35, 9 35, 7 36)') ORDER BY 2;
 SELECT check_changes();
 
+-- Crossing a node
+SELECT 'nodecross', TopoGeo_addLineString('city_data', 'LINESTRING(18 37, 22 37)') ORDER BY 2;
+SELECT check_changes();
+
+-- Existing isolated edge with 2 segments
+SELECT 'iso_ex_2segs', TopoGeo_addLineString('city_data', 'LINESTRING(37 20, 43 19, 41 16)');
+SELECT check_changes();
+
+
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');

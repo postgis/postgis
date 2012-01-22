@@ -84,12 +84,15 @@ crossover_again|46
 contains|25
 contains|47
 contains|48
-contains|49
 N|42||POINT(14 34)
 N|43||POINT(7 36)
-N|44||POINT(10 35)
-E|25|sn21|en44
 E|47|sn42|en22
 E|48|sn21|en43
-E|49|sn44|en22
+nodecross|49
+nodecross|50
+N|44||POINT(18 37)
+N|45||POINT(22 37)
+E|49|sn44|en4
+E|50|sn4|en45
+iso_ex_2segs|28
 Topology 'city_data' dropped

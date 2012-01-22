@@ -745,6 +745,8 @@ DECLARE
   start_node INTEGER;
   end_node INTEGER;
   id INTEGER; 
+  inodes GEOMETRY;
+  iedges GEOMETRY;
 BEGIN
 
   -- 0. Check arguments
@@ -758,36 +760,87 @@ BEGIN
   RAISE DEBUG 'Self-noded: %', ST_AsText(noded);
 #endif
 
-  -- 2. Node to edges and nodes falling within tolerance distance
+  -- 2. Node to edges falling within tolerance distance
   sql := 'WITH line AS ( SELECT '
-    || quote_literal(aline::text)
-    || '::geometry as g ), nearby AS ( SELECT n.geom FROM ' 
-    || quote_ident(atopology) 
-    || '.node n, line l WHERE ST_DWithin(n.geom, l.g, '
-    || tolerance || ') UNION ALL SELECT e.geom FROM '
+    || quote_literal(noded::text)
+    || '::geometry as g ), nearby AS ( SELECT e.geom FROM '
     || quote_ident(atopology) 
     || '.edge e, line l WHERE ST_DWithin(e.geom, l.g, '
     || tolerance || ') ) SELECT st_collect(geom) FROM nearby;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  EXECUTE sql INTO set1;
-  IF set1 IS NOT NULL THEN
-    snapped := ST_Snap(noded, set1, tolerance);
+  EXECUTE sql INTO iedges;
+  IF iedges IS NOT NULL THEN
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Intersecting edges: %', ST_AsText(iedges);
+#endif
+
+    snapped := ST_Snap(noded, iedges, tolerance);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Snapped: %', ST_AsText(snapped);
 #endif
-    noded := ST_Difference(snapped, set1);
+
+    noded := ST_Difference(snapped, iedges);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Difference: %', ST_AsText(noded);
 #endif
-    set2 := ST_Intersection(snapped, set1);
+
+    set1 := ST_Intersection(snapped, iedges);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Intersection: %', ST_AsText(set2);
+    RAISE DEBUG 'Intersection: %', ST_AsText(set1);
 #endif
+
+    set2 := ST_LineMerge(set1);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'LineMerged intersection: %', ST_AsText(set2);
+#endif
+
     noded := ST_Union(noded, set2);
-    -- TODO: linemerge ?
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Unioned: %', ST_AsText(noded);
+#endif
+
+--    -- Split by intersection points
+--    set2 := ST_CollectionExtract(set1, 1);
+--#ifdef POSTGIS_TOPOLOGY_DEBUG
+--    RAISE DEBUG 'Intersection points: %', ST_AsText(set2);
+--#endif
+--    FOR rec IN SELECT (ST_Dump(set2)).geom LOOP
+--      SELECT ST_Collect(geom) 
+--        FROM ST_Dump(ST_Split(noded, rec.geom))
+--        INTO STRICT noded;
+--    END LOOP;
+--#ifdef POSTGIS_TOPOLOGY_DEBUG
+--    RAISE DEBUG 'Split by edge intersections: %', ST_AsText(noded);
+--#endif
+
   END IF;
+
+  -- 2.1. Node with existing nodes within tolerance
+  sql := 'WITH line AS ( SELECT '
+    || quote_literal(noded::text)
+    || '::geometry as g ), nearby AS ( SELECT n.geom FROM '
+    || quote_ident(atopology) 
+    || '.node n, line l WHERE ST_DWithin(n.geom, l.g, '
+    || tolerance || ') ) SELECT (st_dump(st_unaryunion(st_collect(geom)))).geom FROM nearby;';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG '%', sql;
+#endif
+  FOR rec IN EXECUTE sql
+  LOOP
+      -- Use the node to split edges
+      SELECT ST_Collect(geom) 
+      FROM ST_Dump(ST_Split(noded, rec.geom))
+      INTO STRICT noded;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Split by %: %', ST_AsText(rec.geom), ST_AsText(noded);
+#endif
+  END LOOP;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Split: %', ST_AsText(noded);
+#endif
 
   -- 3. For each (now-noded) segment, insert an edge
   FOR rec IN SELECT (ST_Dump(noded)).geom LOOP
