@@ -63,7 +63,7 @@ SELECT 'invalid', TopoGeo_addLineString('city_data', 'POINT(36 26)');
 SELECT 'iso_uni', TopoGeo_addLineString('city_data', 'LINESTRING(36 26, 38 30)');
 SELECT check_changes();
 
--- Isolated point in face 5
+-- Isolated edge in face 5
 SELECT 'iso_f5', TopoGeo_addLineString('city_data', 'LINESTRING(37 20, 43 19, 41 16)');
 SELECT check_changes();
 
