@@ -253,7 +253,7 @@ ERROR:  value for domain topology.topoelementarray violates check constraint "di
                         <parameter>feature_type</parameter></paramdef>
                         
                         <paramdef><type>integer </type>
-                        <parameter>child_layar</parameter></paramdef>
+                        <parameter>child_layer</parameter></paramdef>
                     </funcprototype>
                 </funcsynopsis>
             </refsynopsisdiv>
