@@ -545,10 +545,10 @@ AS
 $$
 DECLARE
 	intltype integer;
-	level integer;
+	newlevel integer;
 	topoid integer;
 	rec RECORD;
-	layer_id integer;
+	newlayer_id integer;
 	query text;
 BEGIN
 
@@ -587,8 +587,8 @@ BEGIN
 	IF child IS NOT NULL THEN
 		SELECT level + 1 FROM topology.layer
 			WHERE layer_id = child
-			INTO level;
-		IF level IS NULL THEN
+			INTO newlevel;
+		IF newlevel IS NULL THEN
 			RAISE EXCEPTION 'Child layer % does not exist in topology "%"', child, toponame;
 		END IF;
 	END IF;
@@ -599,7 +599,7 @@ BEGIN
 	EXECUTE 'SELECT nextval(' ||
 		quote_literal(
 			quote_ident(toponame) || '.layer_id_seq'
-		) || ')' INTO STRICT layer_id;
+		) || ')' INTO STRICT newlayer_id;
 
 	EXECUTE 'INSERT INTO ' 
 		|| 'topology.layer(topology_id, '
@@ -607,7 +607,7 @@ BEGIN
 		|| 'table_name, feature_column, feature_type) '
 		|| 'VALUES ('
 		|| topoid || ','
-		|| layer_id || ',' || COALESCE(level, 0) || ','
+		|| newlayer_id || ',' || COALESCE(newlevel, 0) || ','
 		|| COALESCE(child::text, 'NULL') || ','
 		|| quote_literal(schema) || ','
 		|| quote_literal(tbl) || ','
@@ -619,7 +619,7 @@ BEGIN
 	-- Create a sequence for TopoGeometries in this new layer
 	--
 	EXECUTE 'CREATE SEQUENCE ' || quote_ident(toponame)
-		|| '.topogeo_s_' || layer_id;
+		|| '.topogeo_s_' || newlayer_id;
 
 	--
 	-- Add constraints on TopoGeom column
@@ -629,7 +629,7 @@ BEGIN
 		|| ' ADD CONSTRAINT check_topogeom CHECK ('
 		|| 'topology_id(' || quote_ident(col) || ') = ' || topoid
 		|| ' AND '
-		|| 'layer_id(' || quote_ident(col) || ') = ' || layer_id
+		|| 'layer_id(' || quote_ident(col) || ') = ' || newlayer_id
 		|| ' AND '
 		|| 'type(' || quote_ident(col) || ') = ' || intltype
 		|| ');';
@@ -680,16 +680,17 @@ BEGIN
 		|| ' AND snsp.nspname = ' || quote_literal(toponame)
 		|| ' AND sobj.relnamespace = snsp.oid ' 
 		|| ' AND sobj.relname = '
-		|| ' ''topogeo_s_' || layer_id || ''' ';
+		|| ' ''topogeo_s_' || newlayer_id || ''' ';
 
 	RAISE NOTICE '%', query;
 	EXECUTE query;
 #endif
 
-	RETURN layer_id;
+	RETURN newlayer_id;
 END;
 $$
 LANGUAGE 'plpgsql' VOLATILE;
+--}{ AddTopoGeometryColumn
 
 CREATE OR REPLACE FUNCTION topology.AddTopoGeometryColumn(varchar, varchar, varchar, varchar, varchar)
 	RETURNS integer
