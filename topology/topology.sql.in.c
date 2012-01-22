@@ -582,6 +582,18 @@ BEGIN
 
 
 	--
+	-- See if child id exists and extract its level
+	--
+	IF child IS NOT NULL THEN
+		SELECT level + 1 FROM topology.layer
+			WHERE layer_id = child
+			INTO level;
+		IF level IS NULL THEN
+			RAISE EXCEPTION 'Child layer % does not exist in topology "%"', child, toponame;
+		END IF;
+	END IF;
+
+	--
 	-- Get new layer id from sequence
 	--
 	EXECUTE 'SELECT nextval(' ||
@@ -589,41 +601,18 @@ BEGIN
 			quote_ident(toponame) || '.layer_id_seq'
 		) || ')' INTO STRICT layer_id;
 
-	--
-	-- See if child id exists and extract its level
-	--
-	IF child IS NULL THEN
-		EXECUTE 'INSERT INTO '
-			|| 'topology.layer(topology_id, '
-			|| 'layer_id, schema_name, '
-			|| 'table_name, feature_column, feature_type) '
-			|| 'VALUES ('
-			|| topoid || ','
-			|| layer_id || ',' 
-			|| quote_literal(schema) || ','
-			|| quote_literal(tbl) || ','
-			|| quote_literal(col) || ','
-			|| intltype || ');';
-	ELSE
-		FOR rec IN EXECUTE 'SELECT level FROM topology.layer'
-			|| ' WHERE layer_id = ' || child
-		LOOP
-			level = rec.level + 1;
-		END LOOP;
-
-		EXECUTE 'INSERT INTO ' 
-			|| 'topology.layer(topology_id, '
-			|| 'layer_id, level, child_id, schema_name, '
-			|| 'table_name, feature_column, feature_type) '
-			|| 'VALUES ('
-			|| topoid || ','
-			|| layer_id || ',' || level || ','
-			|| child || ','
-			|| quote_literal(schema) || ','
-			|| quote_literal(tbl) || ','
-			|| quote_literal(col) || ','
-			|| intltype || ');';
-	END IF;
+	EXECUTE 'INSERT INTO ' 
+		|| 'topology.layer(topology_id, '
+		|| 'layer_id, level, child_id, schema_name, '
+		|| 'table_name, feature_column, feature_type) '
+		|| 'VALUES ('
+		|| topoid || ','
+		|| layer_id || ',' || COALESCE(level, 0) || ','
+		|| COALESCE(child::text, 'NULL') || ','
+		|| quote_literal(schema) || ','
+		|| quote_literal(tbl) || ','
+		|| quote_literal(col) || ','
+		|| intltype || ');';
 
 
 	--

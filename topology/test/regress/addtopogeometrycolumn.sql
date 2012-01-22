@@ -5,6 +5,7 @@ select createtopology('tt') > 0;
 select addtopogeometrycolumn('tt','public','feature','tg','POINT'); -- fail
 create table feature(id integer);
 select addtopogeometrycolumn('tt','public','feature','tg','BOGUS'); -- fail
+select addtopogeometrycolumn('tt','public','feature','tg','POINT', 0); -- fail
 
 -- Expect first good call returning 1
 select 'good', addtopogeometrycolumn('tt','public','feature','tg','POINT');
