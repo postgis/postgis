@@ -1000,8 +1000,11 @@ AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])
 AC_MSG_RESULT([  GEOS version:         ${GEOS_FULL_VERSION}])
 if test "x$RASTER" = "xraster"; then
+    AC_MSG_RESULT([  Raster:               enabled])
     AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
     AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
+else
+    AC_MSG_RESULT([  Raster:               disabled])
 fi
 AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
 AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
