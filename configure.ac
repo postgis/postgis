@@ -774,19 +774,30 @@ SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDF
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
+
+AC_ARG_WITH([raster],
+    [AS_HELP_STRING([--without-raster],
+                    [Disable the raster extension])],
+    [], [])
+
+
 dnl ====================================
 dnl topology stuff
 dnl ====================================
 AC_ARG_WITH([topology],
-    [AS_HELP_STRING([--with-topology],
-                    [compile the topology extension @<:@default=no@:>@])],
-    [TOPOLOGY="topology"], [TOPOLOGY=""])
+    [AS_HELP_STRING([--without-topology],
+                    [Disable the topology extension])],
+    [], [])
 
-if test "x$TOPOLOGY" = "xtopology"; then
+if test "x$with_topology" != "xno"; then
+
+    TOPOLOGY="topology"
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
 	if test $GEOS_NUMERIC_VERSION -lt 332; then
-		AC_MSG_ERROR([Topology requires GEOS version >= 3.3.2])
+		AC_MSG_ERROR([Topology requires GEOS version >= 3.3.2. Use --without-topology or install a newer GEOS.])
 	fi
+else
+    AC_MSG_RESULT([TOPOLOGY: Topology support disabled])
 fi
 
 AC_SUBST([TOPOLOGY])
@@ -1012,6 +1023,8 @@ AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
 AC_MSG_RESULT([  Perl:                 ${PERL}])
+AC_MSG_RESULT()
+AC_MSG_RESULT([ --------------- Extensions --------------- ])
 if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  PostGIS Raster:       ${POSTGIS_RASTER_LIB_VERSION}])
 else
