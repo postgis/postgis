@@ -1000,11 +1000,8 @@ AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])
 AC_MSG_RESULT([  GEOS version:         ${GEOS_FULL_VERSION}])
 if test "x$RASTER" = "xraster"; then
-    AC_MSG_RESULT([  Raster:               enabled])
     AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
     AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
-else
-    AC_MSG_RESULT([  Raster:               disabled])
 fi
 AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
 AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
@@ -1013,15 +1010,17 @@ AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
 AC_MSG_RESULT([  Libxml2 version:      ${POSTGIS_LIBXML2_VERSION}])
 AC_MSG_RESULT([  JSON-C support:       ${HAVE_JSON}])
 AC_MSG_RESULT([  PostGIS debug level:  ${POSTGIS_DEBUG_LEVEL}])
-AC_MSG_RESULT([  perl:                 ${PERL}])
-if test "x$RASTER" = "xraster" -o "x$TOPOLOGY" = "xtopology"; then
-    AC_MSG_RESULT([ -------------- Extensions -------------- ])
+AC_MSG_RESULT([  Perl:                 ${PERL}])
 if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  PostGIS Raster:       ${POSTGIS_RASTER_LIB_VERSION}])
+else
+    AC_MSG_RESULT([  PostGIS Raster:       disabled])
+
 fi
 if test "x$TOPOLOGY" = "xtopology"; then
-    AC_MSG_RESULT([  PostGIS Topology])
-fi
+    AC_MSG_RESULT([  PostGIS Topology:     enabled])
+else
+    AC_MSG_RESULT([  PostGIS Topology:     disabled])
 fi
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])
