@@ -798,10 +798,11 @@ dnl ====================================
 AC_ARG_WITH([raster],
     [AS_HELP_STRING([--without-raster],
                     [Disable the raster extension])],
-    [RASTER="raster"], 
-    [RASTER=""])
+    [], [])
 
 if test "x$with_raster" != "xno"; then dnl # {
+
+    RASTER="raster"
 
     AC_CONFIG_HEADERS([raster/raster_config.h])
 
