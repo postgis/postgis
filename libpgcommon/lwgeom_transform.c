@@ -368,9 +368,17 @@ char* GetProj4StringSPI(int srid)
 		TupleDesc tupdesc = SPI_tuptable->tupdesc;
 		SPITupleTable *tuptable = SPI_tuptable;
 		HeapTuple tuple = tuptable->vals[0];
-
-		/* Make a projection object out of it */
-		strncpy(proj_str, SPI_getvalue(tuple, tupdesc, 1), maxproj4len - 1);
+		char *proj4text = SPI_getvalue(tuple, tupdesc, 1);
+		
+		if ( proj4text )
+		{
+			/* Make a projection object out of it */
+			strncpy(proj_str, proj4text, maxproj4len - 1);
+		}
+		else
+		{
+			proj_str[0] = '\0';
+		}
 	}
 	else
 	{
