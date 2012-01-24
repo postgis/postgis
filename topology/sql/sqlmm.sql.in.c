@@ -3166,21 +3166,6 @@ BEGIN
 
   ----------------------------------------------------------------------
   --
-  -- Polygonize the current edges (to see later if the addition
-  -- of the new one created another ring)
-  --
-  ----------------------------------------------------------------------
-
-  SELECT null::geometry as post, null::geometry as pre INTO fan;
-
-  EXECUTE
-    'SELECT ST_Polygonize(geom) FROM '
-    || quote_ident(atopology) || '.edge_data WHERE left_face = '
-    || newedge.left_face || ' OR right_face = ' || newedge.right_face
-    INTO STRICT fan.pre;
-
-  ----------------------------------------------------------------------
-  --
   -- Insert the new edge, and update all linking
   --
   ----------------------------------------------------------------------
@@ -3256,24 +3241,44 @@ BEGIN
 
   ----------------------------------------------------------------------
   --
-  -- Polygonize the new edges and see if the addition created a new ring
+  -- See if the addition splitted a face
   --
   ----------------------------------------------------------------------
 
-  EXECUTE 'SELECT ST_Polygonize(geom) FROM '
-    || quote_ident(atopology) || '.edge_data WHERE left_face = '
-    || newedge.left_face || ' OR right_face = ' || newedge.right_face
-    INTO STRICT fan.post;
+  SELECT null::geometry as post, null::geometry as pre, null::int[] as ring_left INTO fan;
 
-  IF ST_NumGeometries(fan.pre) = ST_NumGeometries(fan.post) THEN
-    -- No splits, all done
-    RETURN newedge.edge_id;
+  SELECT array_agg(edge)
+  FROM topology.getringedges(atopology, newedge.edge_id)
+  INTO STRICT fan.ring_left;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'l_ring: %', fan.ring_left;
+#endif
+
+  -- You can't get to the other side of an edge forming a ring 
+  IF fan.ring_left @> ARRAY[-newedge.edge_id] THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'no split';
+#endif
+    RETURN newedge.edge_id; -- no split !
   END IF;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'ST_AddEdgeNewFaces: edge % splitted face %',
       newedge.edge_id, newedge.left_face;
 #endif
+
+  --
+  -- Update the left_face/right_face for the edges binding
+  -- the split faces 
+  -- 
+  -- TODO: optimize this by following edge links!
+  --
+
+  EXECUTE 'SELECT ST_Polygonize(geom) FROM '
+    || quote_ident(atopology) || '.edge_data WHERE left_face = '
+    || newedge.left_face || ' OR right_face = ' || newedge.right_face
+    INTO STRICT fan.post;
 
   -- Call topology.AddFace for every face containing the new edge
   -- 
@@ -3857,21 +3862,6 @@ BEGIN
 
   ----------------------------------------------------------------------
   --
-  -- Polygonize the current edges (to see later if the addition
-  -- of the new one created another ring)
-  --
-  ----------------------------------------------------------------------
-
-  SELECT null::geometry as post, null::geometry as pre INTO fan;
-
-  EXECUTE
-    'SELECT ST_Polygonize(geom) FROM '
-    || quote_ident(atopology) || '.edge_data WHERE left_face = '
-    || newedge.left_face || ' OR right_face = ' || newedge.right_face
-    INTO STRICT fan.pre;
-
-  ----------------------------------------------------------------------
-  --
   -- Insert the new edge, and update all linking
   --
   ----------------------------------------------------------------------
@@ -3947,24 +3937,44 @@ BEGIN
 
   ----------------------------------------------------------------------
   --
-  -- Polygonize the new edges and see if the addition created a new ring
+  -- See if the addition splitted a face
   --
   ----------------------------------------------------------------------
 
-  EXECUTE 'SELECT ST_Polygonize(geom) FROM '
-    || quote_ident(atopology) || '.edge_data WHERE left_face = '
-    || newedge.left_face || ' OR right_face = ' || newedge.right_face
-    INTO STRICT fan.post;
+  SELECT null::geometry as post, null::geometry as pre, null::int[] as ring_left INTO fan;
 
-  IF ST_NumGeometries(fan.pre) = ST_NumGeometries(fan.post) THEN
-    -- No splits, all done
-    RETURN newedge.edge_id;
+  SELECT array_agg(edge)
+  FROM topology.getringedges(atopology, newedge.edge_id)
+  INTO STRICT fan.ring_left;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'l_ring: %', fan.ring_left;
+#endif
+
+  -- You can't get to the other side of an edge forming a ring 
+  IF fan.ring_left @> ARRAY[-newedge.edge_id] THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'no split';
+#endif
+    RETURN newedge.edge_id; -- no split !
   END IF;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'ST_AddEdgeModFace: edge % splitted face %',
       newedge.edge_id, newedge.left_face;
 #endif
+
+  --
+  -- Update the left_face/right_face for the edges binding
+  -- the face on the left of the newly added edge
+  -- 
+  -- TODO: optimize this by following edge links!
+  --
+
+  EXECUTE 'SELECT ST_Polygonize(geom) FROM '
+    || quote_ident(atopology) || '.edge_data WHERE left_face = '
+    || newedge.left_face || ' OR right_face = ' || newedge.right_face
+    INTO STRICT fan.post;
 
   -- Call topology.AddFace for every face whose boundary contains the new edge
   --
