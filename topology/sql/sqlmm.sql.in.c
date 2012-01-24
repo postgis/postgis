@@ -1943,29 +1943,52 @@ BEGIN
 
   --RAISE NOTICE 'EdgeId1 % EdgeId2 %', edgeid1, edgeid2;
 
+  --RAISE DEBUG 'oldedge.next_left_edge: %', oldedge.next_left_edge;
+  --RAISE DEBUG 'oldedge.next_right_edge: %', oldedge.next_right_edge;
+
   --
   -- Insert the two new edges
   --
   EXECUTE 'INSERT INTO ' || quote_ident(atopology)
     || '.edge VALUES('
-    ||edgeid1||','||oldedge.start_node
-    ||','||nodeid
-    ||','||edgeid2
-    ||','||oldedge.next_right_edge
-    ||','||oldedge.left_face
-    ||','||oldedge.right_face
-    ||','||quote_literal(edge1::text)
+    || edgeid1                                -- edge_id
+    || ',' || oldedge.start_node              -- start_node
+    || ',' || nodeid                          -- end_node
+    || ',' || edgeid2                         -- next_left_edge
+    || ',' || CASE                            -- next_right_edge
+               WHEN 
+                oldedge.next_right_edge = anedge
+               THEN edgeid1
+               WHEN
+                oldedge.next_right_edge = -anedge
+               THEN -edgeid2
+               ELSE oldedge.next_right_edge
+              END
+    || ',' || oldedge.left_face               -- left_face
+    || ',' || oldedge.right_face              -- right_face
+    || ',' || quote_literal(edge1::text)      -- geom
     ||')';
 
   EXECUTE 'INSERT INTO ' || quote_ident(atopology)
     || '.edge VALUES('
-    ||edgeid2||','||nodeid
-    ||','||oldedge.end_node
-    ||','||oldedge.next_left_edge
-    ||',-'||edgeid1
-    ||','||oldedge.left_face
-    ||','||oldedge.right_face
-    ||','||quote_literal(edge2::text)
+    || edgeid2                                -- edge_id
+    || ',' || nodeid                          -- start_node
+    || ',' || oldedge.end_node                -- end_node
+    || ',' || CASE                            -- next_left_edge
+               WHEN 
+                oldedge.next_left_edge =
+                -anedge
+               THEN -edgeid2
+               WHEN 
+                oldedge.next_left_edge =
+                anedge
+               THEN edgeid1
+               ELSE oldedge.next_left_edge
+              END
+    || ',' || -edgeid1                        -- next_right_edge
+    || ',' || oldedge.left_face               -- left_face
+    || ',' || oldedge.right_face              -- right_face
+    || ',' || quote_literal(edge2::text)      -- geom
     ||')';
 
   --
@@ -1977,26 +2000,34 @@ BEGIN
     || edgeid2
     || ','
     || ' abs_next_right_edge = ' || edgeid2
-    || ' WHERE next_right_edge = ' || anedge;
+    || ' WHERE next_right_edge = ' || anedge
+    || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
+    ;
   EXECUTE 'UPDATE ' || quote_ident(atopology)
     || '.edge_data SET next_right_edge = '
     || -edgeid1
     || ','
     || ' abs_next_right_edge = ' || edgeid1
-    || ' WHERE next_right_edge = ' || -anedge;
+    || ' WHERE next_right_edge = ' || -anedge
+    || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
+    ;
 
   EXECUTE 'UPDATE ' || quote_ident(atopology)
     || '.edge_data SET next_left_edge = '
     || edgeid1
     || ','
     || ' abs_next_left_edge = ' || edgeid1
-    || ' WHERE next_left_edge = ' || anedge;
+    || ' WHERE next_left_edge = ' || anedge
+    || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
+    ;
   EXECUTE 'UPDATE ' || quote_ident(atopology)
     || '.edge_data SET '
     || ' next_left_edge = ' || -edgeid2
     || ','
     || ' abs_next_left_edge = ' || edgeid2
-    || ' WHERE next_left_edge = ' || -anedge;
+    || ' WHERE next_left_edge = ' || -anedge
+    || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
+    ;
 
   -- Get topology id
         SELECT id FROM topology.topology into topoid
