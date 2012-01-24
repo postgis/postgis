@@ -504,6 +504,9 @@ dnl This is to guard against user error...
 GEOS_MAJOR_VERSION=`$GEOSCONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
 GEOS_MINOR_VERSION=`$GEOSCONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
 GEOS_PATCH_VERSION=`$GEOSCONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
+if test "x$GEOS_PATCH_VERSION" = "x"; then 
+	GEOS_PATCH_VERSION="0"; 
+fi
 GEOS_FULL_VERSION=`$GEOSCONFIG --version`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
 GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION$GEOS_PATCH_VERSION"
