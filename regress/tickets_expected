@@ -184,3 +184,4 @@ ERROR:  MultiSurface cannot contain MultiPoint element
 #852.2|1|t|t
 #852.2|2|t|t
 #1489|MULTIPOINT EMPTY|0|MULTILINESTRING EMPTY|0|MULTIPOLYGON EMPTY|0|GEOMETRYCOLLECTION EMPTY|0
+ERROR:  AddToPROJ4SRSCache: couldn't parse proj4 string: '': (null)
