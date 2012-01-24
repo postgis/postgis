@@ -62,8 +62,10 @@ BEGIN
     retrec.sequence := n;
     retrec.edge := curedge;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Edge:% left:% right:%',
       curedge, rec.next_left_edge, rec.next_right_edge;
+#endif
 
     RETURN NEXT retrec;
 
@@ -74,7 +76,9 @@ BEGIN
     END IF;
 
     IF nextedge = anedge THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG ' finish';
+#endif
       RETURN;
     END IF;
 
@@ -84,7 +88,9 @@ BEGIN
 
     curedge := nextedge;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG ' curedge:% anedge:%', curedge, anedge;
+#endif
 
     n := n + 1;
 
