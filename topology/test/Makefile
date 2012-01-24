@@ -38,6 +38,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/st_getfacegeometry.sql \
 	regress/st_getfaceedges.sql \
 	regress/st_modedgeheal.sql \
+	regress/st_modedgesplit.sql \
 	regress/st_newedgeheal.sql \
 	regress/st_remedgenewface.sql \
 	regress/st_remedgemodface.sql \

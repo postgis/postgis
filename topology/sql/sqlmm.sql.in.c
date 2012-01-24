@@ -2116,6 +2116,10 @@ BEGIN
      'SQL/MM Spatial exception - null argument';
   END IF;
 
+  -- Get topology id
+  SELECT id FROM topology.topology into topoid
+    WHERE name = atopology;
+
   --
   -- Check node existance
   -- 
@@ -2200,13 +2204,20 @@ BEGIN
     || 'next_left_edge, next_right_edge,'
     || 'left_face, right_face, geom) '
     || 'VALUES('
-    ||newedgeid||','||nodeid
-    ||','||oldedge.end_node
-    ||','||oldedge.next_left_edge
-    ||',-'||anedge
-    ||','||oldedge.left_face
-    ||','||oldedge.right_face
-    ||','||quote_literal(newedge2::text)
+    || newedgeid
+    || ',' || nodeid
+    || ',' || oldedge.end_node
+    || ',' || COALESCE(                      -- next_left_edge
+                NULLIF(
+                  oldedge.next_left_edge,
+                  -anedge
+                ),
+                -newedgeid
+              )
+    || ',' || -anedge                        -- next_right_edge
+    || ',' || oldedge.left_face              -- left_face
+    || ',' || oldedge.right_face             -- right_face
+    || ',' || quote_literal(newedge2::text)  -- geom
     ||')';
 
   --
@@ -2216,6 +2227,7 @@ BEGIN
     || ' SET geom = ' || quote_literal(newedge1::text)
     || ','
     || ' next_left_edge = ' || newedgeid
+    || ', abs_next_left_edge = ' || newedgeid
     || ','
     || ' end_node = ' || nodeid
     || ' WHERE edge_id = ' || anedge;
@@ -2230,18 +2242,16 @@ BEGIN
     || -newedgeid 
     || ','
     || ' abs_next_right_edge = ' || newedgeid
-    || ' WHERE next_right_edge = ' || -anedge;
+    || ' WHERE edge_id != ' || newedgeid
+    || ' AND next_right_edge = ' || -anedge;
 
   EXECUTE 'UPDATE ' || quote_ident(atopology)
     || '.edge_data SET '
     || ' next_left_edge = ' || -newedgeid
     || ','
     || ' abs_next_left_edge = ' || newedgeid
-    || ' WHERE next_left_edge = ' || -anedge;
-
-  -- Get topology id
-        SELECT id FROM topology.topology into topoid
-                WHERE name = atopology;
+    || ' WHERE edge_id != ' || newedgeid
+    || ' AND next_left_edge = ' || -anedge;
 
   --
   -- Update references in the Relation table.
