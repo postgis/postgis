@@ -64,7 +64,7 @@ static SHPObject *create_polygon(SHPDUMPERSTATE *state, LWPOLY *lwpolygon);
 static SHPObject *create_multipolygon(SHPDUMPERSTATE *state, LWMPOLY *lwmultipolygon);
 static SHPObject *create_linestring(SHPDUMPERSTATE *state, LWLINE *lwlinestring);
 static SHPObject *create_multilinestring(SHPDUMPERSTATE *state, LWMLINE *lwmultilinestring);
-static const char *nullDBFValue(char fieldType);
+static char *nullDBFValue(char fieldType);
 static int getMaxFieldSize(PGconn *conn, char *schema, char *table, char *fname);
 static int getTableInfo(SHPDUMPERSTATE *state);
 static int projFileCreate(SHPDUMPERSTATE *state);
@@ -74,7 +74,7 @@ static int projFileCreate(SHPDUMPERSTATE *state);
  * Might return untouched input or pointer to static private
  * buffer: use return value right away.
  */
-static const char * goodDBFValue(const char *in, char fieldType);
+static char * goodDBFValue(char *in, char fieldType);
 
 /** @brief Binary to hexewkb conversion function */
 char *convert_bytes_to_hex(uint8_t *ewkb, size_t size);
@@ -633,7 +633,7 @@ shapetypename(int num)
 
 
 /* This is taken and adapted from dbfopen.c of shapelib */
-static const char *
+static char *
 nullDBFValue(char fieldType)
 {
 	switch (fieldType)
@@ -662,8 +662,8 @@ nullDBFValue(char fieldType)
  * 		Might return untouched input or pointer to static private
  * 		buffer: use return value right away.
  */
-static const char *
-goodDBFValue(const char *in, char fieldType)
+static char *
+goodDBFValue(char *in, char fieldType)
 {
 	/*
 	 * We only work on FTLogical and FTDate.
@@ -2026,7 +2026,7 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 	char *hexewkb = NULL;
 	unsigned char *hexewkb_binary = NULL;
 	size_t hexewkb_len;
-	const char *val;
+	char *val;
 	SHPObject *obj = NULL;
 	LWGEOM *lwgeom;
 

@@ -34,6 +34,15 @@
  ******************************************************************************
  *
  * $Log: shpopen.c,v $
+ * Revision 1.70  2011-07-24 05:59:25  fwarmerdam
+ * minimize use of CPLError in favor of SAHooks.Error()
+ *
+ * Revision 1.69  2011-07-24 03:24:22  fwarmerdam
+ * fix memory leaks in error cases creating shapefiles (#2061)
+ *
+ * Revision 1.68  2010-08-27 23:42:52  fwarmerdam
+ * add SHPAPI_CALL attribute in code
+ *
  * Revision 1.67  2010-07-01 08:15:48  fwarmerdam
  * do not error out on an object with zero vertices
  *
@@ -257,7 +266,7 @@
 
 SHP_CVSID("$Id$")
 
-typedef unsigned char uint8_t;
+typedef unsigned char uchar;
 
 #if UINT_MAX == 65535
 typedef unsigned long	      int32;
@@ -295,13 +304,13 @@ static void	SwapWord( int length, void * wordP )
 
 {
     int		i;
-    uint8_t	temp;
+    uchar	temp;
 
     for( i=0; i < length/2; i++ )
     {
-	temp = ((uint8_t *) wordP)[i];
-	((uint8_t *)wordP)[i] = ((uint8_t *) wordP)[length-i-1];
-	((uint8_t *) wordP)[length-i-1] = temp;
+	temp = ((uchar *) wordP)[i];
+	((uchar *)wordP)[i] = ((uchar *) wordP)[length-i-1];
+	((uchar *) wordP)[length-i-1] = temp;
     }
 }
 
@@ -328,10 +337,10 @@ static void * SfRealloc( void * pMem, int nNewSize )
 /*	contents of the index (.shx) file.				*/
 /************************************************************************/
 
-void SHPWriteHeader( SHPHandle psSHP )
+void SHPAPI_CALL SHPWriteHeader( SHPHandle psSHP )
 
 {
-    uint8_t     	abyHeader[100];
+    uchar     	abyHeader[100];
     int		i;
     int32	i32;
     double	dValue;
@@ -477,10 +486,9 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
     char		*pszFullname, *pszBasename;
     SHPHandle		psSHP;
     
-    uint8_t		*pabyBuf;
+    uchar		*pabyBuf;
     int			i;
     double		dValue;
-    int                 recordsInSHP;
     
 /* -------------------------------------------------------------------- */
 /*      Ensure the access string is one of the legal ones.  We          */
@@ -497,7 +505,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
 /*	Establish the byte order on this machine.			*/
 /* -------------------------------------------------------------------- */
     i = 1;
-    if( *((uint8_t *) &i) == 1 )
+    if( *((uchar *) &i) == 1 )
         bBigEndian = FALSE;
     else
         bBigEndian = TRUE;
@@ -539,15 +547,11 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
     
     if( psSHP->fpSHP == NULL )
     {
-#ifdef USE_CPL
-        CPLError( CE_Failure, CPLE_OpenFailed, 
-                  "Unable to open %s.shp or %s.SHP.", 
+        char *pszMessage = (char *) malloc(strlen(pszBasename)*2+256);
+        sprintf( pszMessage, "Unable to open %s.shp or %s.SHP.", 
                   pszBasename, pszBasename );
-#endif
-        free( psSHP );
-        free( pszBasename );
-        free( pszFullname );
-        return( NULL );
+        psHooks->Error( pszMessage );
+        free( pszMessage );
     }
 
     sprintf( pszFullname, "%s.shx", pszBasename );
@@ -560,11 +564,12 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
     
     if( psSHP->fpSHX == NULL )
     {
-#ifdef USE_CPL
-        CPLError( CE_Failure, CPLE_OpenFailed, 
-                  "Unable to open %s.shx or %s.SHX.", 
+        char *pszMessage = (char *) malloc(strlen(pszBasename)*2+256);
+        sprintf( pszMessage, "Unable to open %s.shx or %s.SHX.", 
                   pszBasename, pszBasename );
-#endif
+        psHooks->Error( pszMessage );
+        free( pszMessage );
+
         psSHP->sHooks.FClose( psSHP->fpSHP );
         free( psSHP );
         free( pszBasename );
@@ -578,7 +583,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
 /* -------------------------------------------------------------------- */
 /*  Read the file size from the SHP file.				*/
 /* -------------------------------------------------------------------- */
-    pabyBuf = (uint8_t *) malloc(100);
+    pabyBuf = (uchar *) malloc(100);
     psSHP->sHooks.FRead( pabyBuf, 100, 1, psSHP->fpSHP );
 
     psSHP->nFileSize = ((unsigned int)pabyBuf[24] * 256 * 256 * 256
@@ -673,7 +678,7 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
         malloc(sizeof(unsigned int) * MAX(1,psSHP->nMaxRecords) );
     psSHP->panRecSize = (unsigned int *)
         malloc(sizeof(unsigned int) * MAX(1,psSHP->nMaxRecords) );
-    pabyBuf = (uint8_t *) malloc(8 * MAX(1,psSHP->nRecords) );
+    pabyBuf = (uchar *) malloc(8 * MAX(1,psSHP->nRecords) );
 
     if (psSHP->panRecOffset == NULL ||
         psSHP->panRecSize == NULL ||
@@ -695,15 +700,14 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
         return( NULL );
     }
 
-    recordsInSHP = (int) psSHP->sHooks.FRead( pabyBuf, 8, psSHP->nRecords, psSHP->fpSHX );
-    if( recordsInSHP 
+    if( (int) psSHP->sHooks.FRead( pabyBuf, 8, psSHP->nRecords, psSHP->fpSHX ) 
         != psSHP->nRecords )
     {
         char szError[200];
 
         sprintf( szError, 
-                 "Failed to read all values for %d records in .shx file, %d expected.",
-                 psSHP->nRecords, recordsInSHP );
+                 "Failed to read all values for %d records in .shx file.",
+                 psSHP->nRecords );
         psSHP->sHooks.Error( szError );
 
         /* SHX is short or unreadable for some reason. */
@@ -839,10 +843,10 @@ SHPHandle SHPAPI_CALL
 SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
 
 {
-    char	*pszBasename, *pszFullname;
+    char	*pszBasename = NULL, *pszFullname = NULL;
     int		i;
-    SAFile	fpSHP, fpSHX;
-    uint8_t     	abyHeader[100];
+    SAFile	fpSHP = NULL, fpSHX = NULL;
+    uchar     	abyHeader[100];
     int32	i32;
     double	dValue;
     
@@ -850,7 +854,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
 /*      Establish the byte order on this system.                        */
 /* -------------------------------------------------------------------- */
     i = 1;
-    if( *((uint8_t *) &i) == 1 )
+    if( *((uchar *) &i) == 1 )
         bBigEndian = FALSE;
     else
         bBigEndian = TRUE;
@@ -878,7 +882,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
     if( fpSHP == NULL )
     {
         psHooks->Error( "Failed to create file .shp file." );
-        return( NULL );
+        goto error;
     }
 
     sprintf( pszFullname, "%s.shx", pszBasename );
@@ -886,11 +890,11 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
     if( fpSHX == NULL )
     {
         psHooks->Error( "Failed to create file .shx file." );
-        return( NULL );
+        goto error;
     }
 
-    free( pszFullname );
-    free( pszBasename );
+    free( pszFullname ); pszFullname = NULL;
+    free( pszBasename ); pszBasename = NULL;
 
 /* -------------------------------------------------------------------- */
 /*      Prepare header block for .shp file.                             */
@@ -925,7 +929,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
     if( psHooks->FWrite( abyHeader, 100, 1, fpSHP ) != 1 )
     {
         psHooks->Error( "Failed to write .shp header." );
-        return NULL;
+        goto error;
     }
 
 /* -------------------------------------------------------------------- */
@@ -938,7 +942,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
     if( psHooks->FWrite( abyHeader, 100, 1, fpSHX ) != 1 )
     {
         psHooks->Error( "Failed to write .shx header." );
-        return NULL;
+        goto error;
     }
 
 /* -------------------------------------------------------------------- */
@@ -948,6 +952,13 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
     psHooks->FClose( fpSHX );
 
     return( SHPOpenLL( pszLayer, "r+b", psHooks ) );
+
+error:
+    if (pszFullname) free(pszFullname);
+    if (pszBasename) free(pszBasename);
+    if (fpSHP) psHooks->FClose( fpSHP );
+    if (fpSHX) psHooks->FClose( fpSHX );
+    return NULL;
 }
 
 /************************************************************************/
@@ -957,7 +968,7 @@ SHPCreateLL( const char * pszLayer, int nShapeType, SAHooks *psHooks )
 /*      indicated location in the record.                               */
 /************************************************************************/
 
-static void	_SHPSetBounds( uint8_t * pabyRec, SHPObject * psShape )
+static void	_SHPSetBounds( uchar * pabyRec, SHPObject * psShape )
 
 {
     ByteCopy( &(psShape->dfXMin), pabyRec +  0, 8 );
@@ -1158,7 +1169,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
 {
     unsigned int	       	nRecordOffset, nRecordSize=0;
     int i;
-    uint8_t	*pabyRec;
+    uchar	*pabyRec;
     int32	i32;
 
     psSHP->bUpdated = TRUE;
@@ -1197,7 +1208,7 @@ SHPWriteObject(SHPHandle psSHP, int nShapeId, SHPObject * psObject )
 /* -------------------------------------------------------------------- */
 /*      Initialize record.                                              */
 /* -------------------------------------------------------------------- */
-    pabyRec = (uint8_t *) malloc(psObject->nVertices * 4 * sizeof(double) 
+    pabyRec = (uchar *) malloc(psObject->nVertices * 4 * sizeof(double) 
                                + psObject->nParts * 8 + 128);
     
 /* -------------------------------------------------------------------- */
@@ -1565,7 +1576,7 @@ SHPReadObject( SHPHandle psSHP, int hEntity )
     nEntitySize = psSHP->panRecSize[hEntity]+8;
     if( nEntitySize > psSHP->nBufSize )
     {
-        psSHP->pabyRec = (uint8_t *) SfRealloc(psSHP->pabyRec,nEntitySize);
+        psSHP->pabyRec = (uchar *) SfRealloc(psSHP->pabyRec,nEntitySize);
         if (psSHP->pabyRec == NULL)
         {
             char szError[200];

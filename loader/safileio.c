@@ -76,18 +76,6 @@ SHP_CVSID("$Id: safileio.c,v 1.4 2008-01-16 20:05:14 bram Exp $");
 #   endif
 #endif
 
-/* Local Prototypes */
-SAFile SADFOpen( const char *pszFilename, const char *pszAccess );
-SAOffset SADFRead( void *p, SAOffset size, SAOffset nmemb, SAFile file );
-SAOffset SADFWrite( void *p, SAOffset size, SAOffset nmemb, SAFile file );
-SAOffset SADFSeek( SAFile file, SAOffset offset, int whence );
-SAOffset SADFTell( SAFile file );
-int SADFFlush( SAFile file );
-int SADFClose( SAFile file );
-int SADRemove( const char *filename );
-void SADError( const char *message );
-
-
 /************************************************************************/
 /*                              SADFOpen()                              */
 /************************************************************************/
