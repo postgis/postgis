@@ -308,7 +308,7 @@ select '#877.4', st_estimated_extent('t','g');
 drop table t;
 
 -- #1344
-select '#1344', ST_AsEWKB(st_makeline(g)) FROM ( values ('POINT(0 0)'::geometry ) ) as foo(g);
+select '#1344', octet_length(ST_AsEWKB(st_makeline(g))) FROM ( values ('POINT(0 0)'::geometry ) ) as foo(g);
 
 -- #852
 CREATE TABLE cacheable (id int, g geometry);
