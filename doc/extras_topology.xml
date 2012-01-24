@@ -2157,6 +2157,10 @@ Isolated nodes contained in the face will also be updated to have a correct
 containing_face field value.
                 </para>
 
+		<note><para>
+This function does not use nor set the next_left_edge and next_right_edge fields of the edge table.
+                </para></note>
+
                 <para>The target topology is assumed to be valid (containing no self-intersecting edges). An exception is raised if: The polygon boundary is not fully defined by existing edges or the polygon overlaps an existing face.</para>
 
                 <para>

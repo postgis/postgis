@@ -616,17 +616,6 @@ BEGIN
     || quote_literal(apoly::text)
     || ', geom)';
 
-  --
-  -- TODO:
-  -- Set next_left_face and next_right_face !
-  -- These are required by the model, but not really used
-  -- by this implementation...
-  -- NOTE: should probably be done when adding edges rather than
-  --       when registering faces
-  --
-  RAISE WARNING 'Not updating next_{left,right}_face fields of face boundary edges';
-
-
   RETURN faceid;
 	
 END
