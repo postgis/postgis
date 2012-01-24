@@ -569,6 +569,8 @@ insert into spatial_ref_sys (srid, proj4text) values (500001,NULL);
 insert into spatial_ref_sys (srid, proj4text) values (500002, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs');
 select '#1150', st_astext(st_transform('SRID=500002;POINT(0 0)',500001));
 
+-- #1038
+select '#1038', ST_AsSVG('POLYGON EMPTY'::geometry);
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

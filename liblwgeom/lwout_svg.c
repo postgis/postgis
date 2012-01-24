@@ -44,6 +44,14 @@ lwgeom_to_svg(const LWGEOM *geom, int precision, int relative)
 {
 	char *ret = NULL;
 	int type = geom->type;
+
+	/* Empty string for empties */
+	if( lwgeom_is_empty(geom) )
+	{
+		ret = lwalloc(1);
+		ret[0] = '\0';
+		return ret;
+	}
 	
 	switch (type)
 	{
