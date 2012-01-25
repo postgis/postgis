@@ -1,3 +1,205 @@
+2012-01-24 22:23  pramsey
+
+	* liblwgeom/lwout_svg.c, regress/tickets.sql,
+	  regress/tickets_expected: SVG empty geometries gives invalid
+	  memory alloc (#1038)
+
+2012-01-24 21:57  pramsey
+
+	* loader/dbfopen.c, loader/pgsql2shp-core.c, loader/safileio.c,
+	  loader/shapefil.h, loader/shp2pgsql-core.c, loader/shpopen.c:
+	  Update shplib to the latest release (1.3.0b3) and stitch in our
+	  special date and logical handling. (#393)
+
+2012-01-24 19:42  pramsey
+
+	* configure.ac: Double guard against geos versions of 3.4.dev form.
+	  (#1488)
+
+2012-01-24 18:04  strk
+
+	* doc/extras_topology.xml, topology/sql/populate.sql.in.c: Stop
+	  WARNING from AddFace about next_left_edge/next_right_edge
+
+2012-01-24 17:29  strk
+
+	* topology/sql/sqlmm.sql.in.c: Optimize ST_AddEdge*Face* detection
+	  of face split conditions (#1497)
+
+2012-01-24 17:29  strk
+
+	* topology/sql/query/GetRingEdges.sql.in.c: Protect DEBUG lines in
+	  compile-time conditional
+
+2012-01-24 17:20  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected: Test for #1150,
+	  null entry in spatial_ref_sys
+
+2012-01-24 14:03  strk
+
+	* topology/sql/sqlmm.sql.in.c, topology/test/Makefile,
+	  topology/test/regress/st_newedgessplit.sql,
+	  topology/test/regress/st_newedgessplit_expected: Fix linking bugs
+	  with ST_NewEdgesSplit function (#1496)
+	  
+	  Includes test coverage for this other function.
+
+2012-01-24 11:15  strk
+
+	* topology/sql/sqlmm.sql.in.c, topology/test/Makefile,
+	  topology/test/regress/st_modedgesplit.sql,
+	  topology/test/regress/st_modedgesplit_expected: Fix edge-linking
+	  in ST_ModEdgeSplit (#1496)
+	  
+	  Includes regression test. ST_NewEdgesSplit still needs testing.
+
+2012-01-24 00:09  pramsey
+
+	* libpgcommon/lwgeom_transform.c: Prevent people from inserting
+	  entries in spatial_ref_sys with no proj4text (#1150)
+
+2012-01-23 23:27  pramsey
+
+	* configure.ac: Make topology enabled the default
+
+2012-01-23 23:20  pramsey
+
+	* configure.ac: Allow raster to actually turn on by default
+
+2012-01-23 22:20  pramsey
+
+	* configure.ac: Move raster/topology status to the bottom of the
+	  report
+
+2012-01-23 22:18  pramsey
+
+	* configure.ac: Report on raster status whether enabled or not
+
+2012-01-23 21:42  pramsey
+
+	* Version.config: Push forward the trunk version to match release
+	  march
+
+2012-01-22 20:10  strk
+
+	* topology/topology.sql.in.c: Fix ambiguos references (with
+	  postgresql 9.x)
+
+2012-01-22 19:25  strk
+
+	* topology/test/regress/addtopogeometrycolumn.sql,
+	  topology/test/regress/addtopogeometrycolumn_expected,
+	  topology/topology.sql.in.c: AddTopoGeometryColumn: check child
+	  layer before incrementing sequence
+
+2012-01-22 19:13  strk
+
+	* doc/extras_topology.xml: typo
+
+2012-01-22 15:43  strk
+
+	* topology/sql/populate.sql.in.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected:
+	  TopoGeo_addLineString: fix node crossing, reduce edges creations
+
+2012-01-22 12:10  strk
+
+	* topology/test/regress/topogeo_addlinestring.sql: Comment typo
+
+2012-01-21 01:31  robe
+
+	* doc/installation.xml, extensions/README: update build extensions
+	  to include the make comments if building from source repo and
+	  also that it requires a separate compile step (until #1490)
+
+2012-01-20 23:41  pramsey
+
+	* configure.ac: Fix typo
+
+2012-01-20 23:05  pramsey
+
+	* configure.ac: Make raster on by default and --without-raster the
+	  configuration parameter to disable it.
+
+2012-01-20 18:14  robe
+
+	* doc/using_raster_dataman.xml: fix typo
+
+2012-01-20 18:14  robe
+
+	* doc/using_raster_dataman.xml: Add a plpython example for
+	  outputting raster images
+
+2012-01-20 14:47  strk
+
+	* topology/test/regress/createtopogeom_expected,
+	  topology/test/regress/legacy_query_expected,
+	  topology/test/regress/topo2.5d_expected,
+	  topology/test/regress/totopogeom_expected,
+	  topology/topology.sql.in.c: Have TopoGeometry::Geometry always
+	  return a MULTI* (#1462)
+
+2012-01-20 14:47  strk
+
+	* liblwgeom/lwgeom.c, regress/tickets.sql,
+	  regress/tickets_expected: Don't let ST_Multi create collections
+	  of a single EMPTY (#1489)
+
+2012-01-20 10:06  robe
+
+	* doc/reference_raster.xml: #1487: add out_db argument to
+	  AddRasterConstraints and DropRasterConstraints documentation so
+	  extensions can install again
+
+2012-01-20 10:02  strk
+
+	* regress/wkt.sql, regress/wkt_expected: Test new types in
+	  regress/wkt (#1476)
+
+2012-01-20 09:11  strk
+
+	* postgis/postgis.sql.in.c, raster/test/regress/Makefile.in,
+	  raster/test/regress/tickets.sql,
+	  raster/test/regress/tickets_expected: Exclude raster_columns from
+	  geometry_columns (#1122)
+	  
+	  Add regress test, with a newborn "tickets" testcase for raster
+
+2012-01-20 08:46  strk
+
+	* postgis/lwgeom_cache.c: Fix a missing return introduced with fix
+	  to #547
+
+2012-01-20 08:12  strk
+
+	* postgis/lwgeom_geos.c, postgis/postgis.sql.in.c,
+	  regress/empty.sql, regress/empty_expected: Change ST_Equals to
+	  use the ~= operator (#1453)
+	  
+	  Doing so it will consistently return TRUE for EMPTY-EMPTY, while
+	  previously _ST_Equals returned TRUE but ST_Equals returned FALSE.
+	  
+	  The commit also changes signature of the C function
+	  from 'geomequals' to 'ST_Equals' and marks an SQL 'Equals'
+	  signature as a candidate for dropping before 2.0.0 final
+
+2012-01-20 08:12  strk
+
+	* doc/reference_operator.xml: Revert "remove ~= from documentation
+	  -- we don't want people using this operator"
+	  
+	  This reverts r8799
+
+2012-01-20 07:10  robe
+
+	* extensions/README: readme was outdated.
+
+2012-01-20 05:08  pramsey
+
+	* ChangeLog, HOWTO_RELEASE: Update for alpha1?
+
 2012-01-20 00:11  pramsey
 
 	* liblwgeom/lwgeom_transform.c: Transforming from SRID 4267 to 4326
