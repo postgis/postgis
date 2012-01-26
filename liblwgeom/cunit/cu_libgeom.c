@@ -81,17 +81,37 @@ static void test_flags_macros(void)
 	CU_ASSERT_EQUAL(0, FLAGS_GET_BBOX(flags));
 	FLAGS_SET_BBOX(flags, 1);
 	CU_ASSERT_EQUAL(1, FLAGS_GET_BBOX(flags));
+	CU_ASSERT_EQUAL(0, FLAGS_GET_READONLY(flags));
+
+	FLAGS_SET_READONLY(flags, 1);
+	CU_ASSERT_EQUAL(1, FLAGS_GET_READONLY(flags));
+	FLAGS_SET_READONLY(flags, 0);
+	CU_ASSERT_EQUAL(0, FLAGS_GET_READONLY(flags));
 
 	CU_ASSERT_EQUAL(0, FLAGS_GET_GEODETIC(flags));
 	FLAGS_SET_GEODETIC(flags, 1);
 	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
 
-	flags = 0;
 	flags = gflags(1, 0, 1); /* z=1, m=0, geodetic=1 */
 
 	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
 	CU_ASSERT_EQUAL(1, FLAGS_GET_Z(flags));
 	CU_ASSERT_EQUAL(0, FLAGS_GET_M(flags));
+	CU_ASSERT_EQUAL(2, FLAGS_GET_ZM(flags));
+
+	flags = gflags(1, 1, 1); /* z=1, m=1, geodetic=1 */
+
+	CU_ASSERT_EQUAL(1, FLAGS_GET_GEODETIC(flags));
+	CU_ASSERT_EQUAL(1, FLAGS_GET_Z(flags));
+	CU_ASSERT_EQUAL(1, FLAGS_GET_M(flags));
+	CU_ASSERT_EQUAL(3, FLAGS_GET_ZM(flags));
+
+	flags = gflags(0, 1, 0); /* z=0, m=1, geodetic=0 */
+
+	CU_ASSERT_EQUAL(0, FLAGS_GET_GEODETIC(flags));
+	CU_ASSERT_EQUAL(0, FLAGS_GET_Z(flags));
+	CU_ASSERT_EQUAL(1, FLAGS_GET_M(flags));
+	CU_ASSERT_EQUAL(1, FLAGS_GET_ZM(flags));
 }
 
 static void test_serialized_srid(void)
