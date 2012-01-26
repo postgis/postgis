@@ -552,6 +552,10 @@ SHPOpenLL( const char * pszLayer, const char * pszAccess, SAHooks *psHooks )
                   pszBasename, pszBasename );
         psHooks->Error( pszMessage );
         free( pszMessage );
+        free( psSHP );
+        free( pszBasename );
+        free( pszFullname );
+        return( NULL );
     }
 
     sprintf( pszFullname, "%s.shx", pszBasename );
