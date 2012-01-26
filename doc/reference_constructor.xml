@@ -1226,25 +1226,25 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 		<refnamediv>
 		<refname>ST_MakeLine</refname>
 
-		<refpurpose>Creates a Linestring from point geometries.</refpurpose>
+		<refpurpose>Creates a Linestring from point or line geometries.</refpurpose>
 		</refnamediv>
 
 		<refsynopsisdiv>
 		<funcsynopsis>
 			<funcprototype>
 				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
-				<paramdef><type>geometry set</type> <parameter>pointfield</parameter></paramdef>
+				<paramdef><type>geometry set</type> <parameter>geoms</parameter></paramdef>
 			</funcprototype>
 
 			<funcprototype>
 				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
-				<paramdef><type>geometry</type> <parameter>point1</parameter></paramdef>
-				<paramdef><type>geometry</type> <parameter>point2</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>geom1</parameter></paramdef>
+				<paramdef><type>geometry</type> <parameter>geom2</parameter></paramdef>
 			</funcprototype>
 
 			<funcprototype>
 				<funcdef>geometry <function>ST_MakeLine</function></funcdef>
-				<paramdef><type>geometry[]</type> <parameter>point_array</parameter></paramdef>
+				<paramdef><type>geometry[]</type> <parameter>geoms_array</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 		</refsynopsisdiv>
@@ -1253,12 +1253,17 @@ BOX3D(-989502.1875 528439.5625 10,-987121.375 529933.1875 10)
 		<title>Description</title>
 
 		<para>ST_MakeLine comes in 3 forms: a spatial aggregate that takes
-			rows of point geometries and returns a line string, a function that takes an array of points, and a regular function that takes two point geometries. You
+			rows of point-or-line geometries and returns a line string, a function that takes an array of point-or-lines, and a regular function that takes two point-or-line geometries. You
 			might want to use a subselect to order points before feeding them
 			to  the aggregate version of this function.</para>
 
+		<para>
+			When adding line components a common node is removed from the output.
+		</para>
+
 		<para>&Z_support;</para>
 		<para>Availability: 1.4.0 -  ST_MakeLine(geomarray) was introduced. ST_MakeLine aggregate functions was enhanced to handle more points faster.</para>
+		<para>Availability: 2.0.0 -  Support for linestring input elements was introduced</para>
 		</refsection>
 
 		<refsection>
@@ -1319,6 +1324,9 @@ SELECT ST_AsEWKT(ST_MakeLine(ARRAY[ST_MakePoint(1,2,3),
 LINESTRING(1 2 3,3 4 5,6 6 6)
 			</programlisting>
 		</refsection>
+
+	<!-- TODO: add an example using lines -->
+
 		<refsection>
 			<title>See Also</title>
 			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_AsText" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_MakePoint" /></para>

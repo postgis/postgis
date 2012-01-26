@@ -1326,9 +1326,9 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	ArrayType *array;
 	int nelems;
 	GSERIALIZED *result=NULL;
-	LWPOINT **lwpoints;
+	LWGEOM **geoms;
 	LWGEOM *outlwg;
-	uint32 npoints;
+	uint32 ngeoms;
 	int i;
 	size_t offset;
 	int srid=SRID_UNKNOWN;
@@ -1367,13 +1367,13 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 
 	/*
 	 * Deserialize all point geometries in array into the
-	 * lwpoints pointers array.
+	 * geoms pointers array.
 	 * Count actual number of points.
 	 */
 
 	/* possibly more then required */
-	lwpoints = palloc(sizeof(LWGEOM *)*nelems);
-	npoints = 0;
+	geoms = palloc(sizeof(LWGEOM *)*nelems);
+	ngeoms = 0;
 	offset = 0;
 	bitmap = ARR_NULLBITMAP(array);
 	bitmask = 1;
@@ -1385,20 +1385,21 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 			GSERIALIZED *geom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
 			offset += INTALIGN(VARSIZE(geom));
 
-			if ( gserialized_get_type(geom) != POINTTYPE ) continue;
+			if ( gserialized_get_type(geom) != POINTTYPE && gserialized_get_type(geom) != LINETYPE ) continue;
 
-			lwpoints[npoints++] =
-			    lwgeom_as_lwpoint(lwgeom_from_gserialized(geom));
+			geoms[ngeoms++] =
+			    lwgeom_from_gserialized(geom);
 
 			/* Check SRID homogeneity */
-			if ( npoints == 1 )
+			if ( ngeoms == 1 )
 			{
 				/* Get first geometry SRID */
-				srid = lwpoints[npoints-1]->srid;
+				srid = geoms[ngeoms-1]->srid;
+				/* TODO: also get ZMflags */
 			}
 			else
 			{
-				if ( lwpoints[npoints-1]->srid != srid )
+				if ( geoms[ngeoms-1]->srid != srid )
 				{
 					elog(ERROR,
 					     "Operation on mixed SRID geometries");
@@ -1422,15 +1423,16 @@ Datum LWGEOM_makeline_garray(PG_FUNCTION_ARGS)
 	}
 
 	/* Return null on 0-points input array */
-	if ( npoints == 0 )
+	if ( ngeoms == 0 )
 	{
-		elog(NOTICE, "No points in input array");
+		/* TODO: should we return LINESTRING EMPTY here ? */
+		elog(NOTICE, "No points or linestrings in input array");
 		PG_RETURN_NULL();
 	}
 
-	POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: point elements: %d", npoints);
+	POSTGIS_DEBUGF(3, "LWGEOM_makeline_garray: elements: %d", ngeoms);
 
-	outlwg = (LWGEOM *)lwline_from_ptarray(srid, npoints, lwpoints);
+	outlwg = (LWGEOM *)lwline_from_lwgeom_array(srid, ngeoms, geoms);
 
 	result = geometry_serialize(outlwg);
 
@@ -1446,7 +1448,7 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *pglwg1, *pglwg2;
 	GSERIALIZED *result=NULL;
-	LWPOINT *lwpoints[2];
+	LWGEOM *lwgeoms[2];
 	LWLINE *outline;
 
 	POSTGIS_DEBUG(2, "LWGEOM_makeline called.");
@@ -1455,26 +1457,26 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 	pglwg1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	pglwg2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 
-	if ( gserialized_get_type(pglwg1) != POINTTYPE ||
-	     gserialized_get_type(pglwg2) != POINTTYPE )
+	if ( (gserialized_get_type(pglwg1) != POINTTYPE && gserialized_get_type(pglwg1) != LINETYPE) ||
+	     (gserialized_get_type(pglwg2) != POINTTYPE && gserialized_get_type(pglwg2) != LINETYPE) )
 	{
-		elog(ERROR, "Input geometries must be points");
+		elog(ERROR, "Input geometries must be points or lines");
 		PG_RETURN_NULL();
 	}
 
 	error_if_srid_mismatch(gserialized_get_srid(pglwg1), gserialized_get_srid(pglwg2));
 
-	lwpoints[0] = lwgeom_as_lwpoint(lwgeom_from_gserialized(pglwg1));
-	lwpoints[1] = lwgeom_as_lwpoint(lwgeom_from_gserialized(pglwg2));
+	lwgeoms[0] = lwgeom_from_gserialized(pglwg1);
+	lwgeoms[1] = lwgeom_from_gserialized(pglwg2);
 
-	outline = lwline_from_ptarray(lwpoints[0]->srid, 2, lwpoints);
+	outline = lwline_from_lwgeom_array(lwgeoms[0]->srid, 2, lwgeoms);
 
 	result = geometry_serialize((LWGEOM *)outline);
 
 	PG_FREE_IF_COPY(pglwg1, 0);
 	PG_FREE_IF_COPY(pglwg2, 1);
-	lwgeom_release((LWGEOM *)lwpoints[0]);
-	lwgeom_release((LWGEOM *)lwpoints[1]);
+	lwgeom_release((LWGEOM *)lwgeoms[0]);
+	lwgeom_release((LWGEOM *)lwgeoms[1]);
 
 	PG_RETURN_POINTER(result);
 }
