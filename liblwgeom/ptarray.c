@@ -185,7 +185,13 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 	
 	if ( ! npoints ) return LW_SUCCESS; /* nothing more to do */
 
-	if( pa1->flags != pa2->flags )
+	if( FLAGS_GET_READONLY(pa1->flags) )
+	{
+		lwerror("ptarray_append_ptarray: target pointarray is read-only");
+		return LW_FAILURE;
+	}
+
+	if( FLAGS_GET_ZM(pa1->flags) != FLAGS_GET_ZM(pa2->flags) )
 	{
 		lwerror("ptarray_append_ptarray: appending mixed dimensionality is not allowed");
 		return LW_FAILURE;

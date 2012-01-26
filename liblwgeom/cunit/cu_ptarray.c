@@ -145,6 +145,27 @@ static void test_ptarray_append_ptarray(void)
 	lwline_free(line2);
 	lwline_free(line1);
 
+	/* Appending a read-only pointarray is allowed */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 10, 10 0)"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(10 0,11 0)"));
+	FLAGS_SET_READONLY(line2->points->flags, 1);
+	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
+	CU_ASSERT(ret == LW_SUCCESS);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
+	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 10,10 0,11 0)");
+	lwfree(wkt);
+	lwline_free(line2);
+	lwline_free(line1);
+
+	/* Appending to a read-only pointarray is forbidden */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 10, 10 0)"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(10 0,11 0)"));
+	FLAGS_SET_READONLY(line1->points->flags, 1);
+	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
+	CU_ASSERT(ret == LW_FAILURE);
+	lwline_free(line2);
+	lwline_free(line1);
+
 }
 
 static void test_ptarray_locate_point(void)
