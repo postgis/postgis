@@ -67,7 +67,7 @@ public class LineString extends PointComposedGeom {
 
         boolean cutPoint = this.getLastPoint() == null
                 || this.getLastPoint().equals(other.getFirstPoint());
-        int count = points.length + points.length - (cutPoint ? 1 : 0);
+        int count = points.length + opoints.length - (cutPoint ? 1 : 0);
         Point[] p = new Point[count];
 
         // Maybe we should use System.arrayCopy here?
