@@ -142,6 +142,67 @@ lwline_same(const LWLINE *l1, const LWLINE *l2)
 }
 
 /*
+ * Construct a LWLINE from an array of point and line geometries
+ * LWLINE dimensions are large enough to host all input dimensions.
+ */
+LWLINE *
+lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms)
+{
+ 	int i;
+	int hasz = LW_FALSE;
+	int hasm = LW_FALSE;
+	POINTARRAY *pa;
+	LWLINE *line;
+	POINT4D pt;
+
+	/*
+	 * Find output dimensions, check integrity
+	 */
+	for (i=0; i<ngeoms; i++)
+	{
+		if ( FLAGS_GET_Z(geoms[i]->flags) ) hasz = LW_TRUE;
+		if ( FLAGS_GET_M(geoms[i]->flags) ) hasm = LW_TRUE;
+		if ( hasz && hasm ) break; /* Nothing more to learn! */
+	}
+
+	/* ngeoms should be a guess about how many points we have in input */
+	pa = ptarray_construct_empty(hasz, hasm, ngeoms);
+	
+	for ( i=0; i < ngeoms; i++ )
+	{
+		LWGEOM *g = geoms[i];
+
+		if ( lwgeom_is_empty(g) ) continue;
+
+		if ( g->type == POINTTYPE )
+		{
+			lwpoint_getPoint4d_p((LWPOINT*)g, &pt);
+			ptarray_append_point(pa, &pt, LW_TRUE);
+		}
+		else if ( g->type == LINETYPE )
+		{
+			ptarray_append_ptarray(pa, ((LWLINE*)g)->points, -1);
+		}
+		else
+		{
+			ptarray_free(pa);
+			lwerror("lwline_from_ptarray: invalid input type: %s", lwtype_name(g->type));
+			return NULL;
+		}
+	}
+
+	if ( pa->npoints > 0 )
+		line = lwline_construct(srid, NULL, pa);
+	else  {
+		/* Is this really any different from the above ? */
+		ptarray_free(pa);
+		line = lwline_construct_empty(srid, hasz, hasm);
+	}
+	
+	return line;
+}
+
+/*
  * Construct a LWLINE from an array of LWPOINTs
  * LWLINE dimensions are large enough to host all input dimensions.
  */

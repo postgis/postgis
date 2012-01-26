@@ -1185,7 +1185,8 @@ extern LWPOINT *lwpoint_make3dz(int srid, double x, double y, double z);
 extern LWPOINT *lwpoint_make3dm(int srid, double x, double y, double m);
 extern LWPOINT *lwpoint_make4d(int srid, double x, double y, double z, double m);
 extern LWPOINT *lwpoint_make(int srid, int hasz, int hasm, const POINT4D *p);
-extern LWLINE *lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points);
+extern LWLINE *lwline_from_lwgeom_array(int srid, uint32_t ngeoms, LWGEOM **geoms);
+extern LWLINE *lwline_from_ptarray(int srid, uint32_t npoints, LWPOINT **points); /* TODO: deprecate */
 extern LWLINE *lwline_from_lwmpoint(int srid, LWMPOINT *mpoint);
 extern LWLINE *lwline_addpoint(LWLINE *line, LWPOINT *point, uint32_t where);
 extern LWLINE *lwline_removepoint(LWLINE *line, uint32_t which);
