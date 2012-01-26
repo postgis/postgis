@@ -3976,6 +3976,10 @@ BEGIN
     || newedge.left_face || ' OR right_face = ' || newedge.right_face
     INTO STRICT fan.post;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'ST_Polygonize returned % faces', ST_NumGeometries(fan.post);
+#endif
+
   -- Call topology.AddFace for every face whose boundary contains the new edge
   --
   -- TODO: in presence of holes every hole would share a boundary
@@ -4002,7 +4006,7 @@ BEGIN
     IF newedge.left_face != 0 THEN -- {
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-     RAISE DEBUG 'Checking face %', ST_AsText(rec.geom);
+     RAISE DEBUG 'Checking face'; 
 #endif
 
      -- Skip this if our edge is on the right side
@@ -4021,7 +4025,7 @@ BEGIN
     END IF; -- }
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Adding % face', ST_AsText(rec.geom);
+    RAISE DEBUG 'Adding face'; 
 #endif
     SELECT topology.AddFace(atopology, rec.geom, true) INTO newface;
     newfaces := array_append(newfaces, newface);
@@ -4294,4 +4298,3 @@ LANGUAGE 'plpgsql' VOLATILE;
 --} ST_CreateTopoGeo
 
 --=}  SQL/MM block
-
