@@ -59,7 +59,84 @@ static void test_ptarray_append_point(void)
 
 static void test_ptarray_append_ptarray(void)
 {
-	/* TODO: add tests here ! */
+	LWLINE *line1, *line2;
+	int ret;
+	char *wkt;
+
+	/* Empty first line */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING EMPTY"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 10,5 5)"));
+	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
+	CU_ASSERT(ret == LW_SUCCESS);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
+	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,0 10,5 5)");
+	lwfree(wkt);
+	lwline_free(line2);
+	lwline_free(line1);
+
+	/* Empty second line */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0, 5 5, 6 3)"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING EMPTY"));
+	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
+	CU_ASSERT(ret == LW_SUCCESS);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
+	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,5 5,6 3)");
+	lwfree(wkt);
+	lwline_free(line2);
+	lwline_free(line1);
+
+	/* Both lines empty */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING EMPTY"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING EMPTY"));
+	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
+	CU_ASSERT(ret == LW_SUCCESS);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
+	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING EMPTY");
+	lwfree(wkt);
+	lwline_free(line2);
+	lwline_free(line1);
+
+	/* Sane sewing */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(10 4, 0 0,5 7)"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(5 7,12 43, 42 15)"));
+	ret = ptarray_append_ptarray(line1->points, line2->points, 0);
+	CU_ASSERT(ret == LW_SUCCESS);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
+	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(10 4,0 0,5 7,12 43,42 15)");
+	lwfree(wkt);
+	lwline_free(line2);
+	lwline_free(line1);
+
+	/* Untolerated sewing */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(10 4, 0 0,5 7)"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(5.5 7,12 43, 42 15)"));
+	ret = ptarray_append_ptarray(line1->points, line2->points, 0);
+	CU_ASSERT(ret == LW_FAILURE);
+	lwline_free(line2);
+	lwline_free(line1);
+
+	/* Tolerated sewing */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(10 4, 0 0,5 7)"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(5.5 7,12 43, 42 15)"));
+	ret = ptarray_append_ptarray(line1->points, line2->points, .7);
+	CU_ASSERT(ret == LW_SUCCESS);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
+	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(10 4,0 0,5 7,5.5 7,12 43,42 15)");
+	lwfree(wkt);
+	lwline_free(line2);
+	lwline_free(line1);
+
+	/* Check user input trust (creates non-simple line */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 10)"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 10)"));
+	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
+	CU_ASSERT(ret == LW_SUCCESS);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
+	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 0,0 10,0 0,0 10)");
+	lwfree(wkt);
+	lwline_free(line2);
+	lwline_free(line1);
+
 }
 
 static void test_ptarray_locate_point(void)

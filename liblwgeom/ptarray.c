@@ -167,8 +167,12 @@ ptarray_append_point(POINTARRAY *pa, const POINT4D *pt, int repeated_points)
 }
 
 int
-ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends)
+ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance)
 {
+	unsigned int poff = 0;
+	unsigned int npoints;
+	unsigned int ncap;
+	unsigned int ptsize;
 
 	/* Check for pathology */
 	if( ! pa1 || ! pa2 ) 
@@ -176,34 +180,54 @@ ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends)
 		lwerror("ptarray_append_ptarray: null input");
 		return LW_FAILURE;
 	}
+
+	npoints = pa2->npoints;
 	
+	if ( ! npoints ) return LW_SUCCESS; /* nothing more to do */
+
 	if( pa1->flags != pa2->flags )
 	{
 		lwerror("ptarray_append_ptarray: appending mixed dimensionality is not allowed");
 		return LW_FAILURE;
 	}
 
+	ptsize = ptarray_point_size(pa1);
+
 	/* Check for duplicate end point */
-	if ( splice_ends && pa1->npoints > 0 && pa2->npoints > 0 )
+	if ( pa1->npoints )
 	{
-		POINT4D tmp1, tmp2;
-		getPoint4d_p(pa1, pa1->npoints-1, &tmp1);
-		getPoint4d_p(pa2, 0, &tmp2);
+		POINT2D tmp1, tmp2;
+		getPoint2d_p(pa1, pa1->npoints-1, &tmp1);
+		getPoint2d_p(pa2, 0, &tmp2);
 
-		/* If the end point and start point are the same, then strip off the end point */
-		if (p4d_same(&tmp1, &tmp2)) 
-		{
-			pa1->npoints--;
+		/* If the end point and start point are the same, then don't copy start point */
+		if (p2d_same(&tmp1, &tmp2)) {
+			poff = 1;
+			--npoints;
 		}
-	}
-	
-	/* Check if we need extra space */
-	if ( pa1->maxpoints - pa1->npoints - pa2->npoints < 0 )
-	{
-		
+		else if ( gap_tolerance == 0 || ( gap_tolerance > 0 &&
+		           distance2d_pt_pt(&tmp1, &tmp2) > gap_tolerance ) ) 
+		{
+			lwerror("Second line start point too far from first line end point");
+			return LW_FAILURE;
+		} 
 	}
 
-	return 0;
+	/* Check if we need extra space */
+	ncap = pa1->npoints + npoints;
+	if ( pa1->maxpoints < ncap )
+	{
+		pa1->maxpoints = ncap > pa1->maxpoints*2 ?
+		                 ncap : pa1->maxpoints*2;
+		pa1->serialized_pointlist = lwrealloc(pa1->serialized_pointlist, ptsize * pa1->maxpoints);
+	}
+
+	memcpy(getPoint_internal(pa1, pa1->npoints),
+	       getPoint_internal(pa2, poff), ptsize * npoints);
+
+	pa1->npoints = ncap;
+
+	return LW_SUCCESS;
 }
 
 /*

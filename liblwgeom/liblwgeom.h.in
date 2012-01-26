@@ -793,11 +793,17 @@ extern POINTARRAY* ptarray_construct_empty(char hasz, char hasm, uint32_t maxpoi
 extern int ptarray_append_point(POINTARRAY *pa, const POINT4D *pt, int allow_duplicates);
 
 /**
-* Append a #POINTARRAY, pa2 to the end of an existing #POINTARRAY, pa1.
-* If splice_ends is LW_TRUE, then duplicate points and the end of pa1 and
-* start of pa2 will be removed.
-*/
-extern int ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, int splice_ends);
+ * Append a #POINTARRAY, pa2 to the end of an existing #POINTARRAY, pa1.
+ *
+ * If gap_tolerance is >= 0 then the end point of pa1 will be checked for
+ * being within gap_tolerance 2d distance from start point of pa2 or an
+ * error will be raised and LW_FAILURE returned.
+ * A gap_tolerance < 0 disables the check.
+ *
+ * If end point of pa1 and start point of pa2 are 2d-equal, then pa2 first
+ * point will not be appended.
+ */
+extern int ptarray_append_ptarray(POINTARRAY *pa1, POINTARRAY *pa2, double gap_tolerance);
 
 /**
 * Insert a point into an existing #POINTARRAY. Zero
