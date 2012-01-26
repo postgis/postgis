@@ -137,6 +137,14 @@ static void test_ptarray_append_ptarray(void)
 	lwline_free(line2);
 	lwline_free(line1);
 
+	/* Mixed dimensionality is not allowed */
+	line1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 10 0, 10 0 0)"));
+	line2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(10 0,11 0)"));
+	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
+	CU_ASSERT(ret == LW_FAILURE);
+	lwline_free(line2);
+	lwline_free(line1);
+
 }
 
 static void test_ptarray_locate_point(void)
