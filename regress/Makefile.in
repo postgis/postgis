@@ -99,7 +99,7 @@ TESTS = \
 	regress_management \
 	dump \
 	dumppoints \
-	wmsservers_new \
+	wmsservers \
 	wkt \
 	wkb \
 	tickets \
@@ -109,8 +109,6 @@ TESTS = \
 	relate \
 	bestsrid \
 	concave_hull
-
-# TESTS += wmsservers_old
 
 ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 32),1)
 	# GEOS-3.3 adds:
