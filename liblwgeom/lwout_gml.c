@@ -335,11 +335,11 @@ asgml2_poly_size(const LWPOLY *poly, const char *srs, int precision, const char 
 	size_t prefixlen = strlen(prefix);
 
 	size = sizeof("<polygon></polygon>") + prefixlen*2;
+	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 	if ( lwpoly_is_empty(poly) ) 
 		return size;
 	size += ( sizeof("<outerboundaryis><linearring><coordinates>/") + ( prefixlen*3) ) * 2;
 	size += ( sizeof("<innerboundaryis><linearring><coordinates>/") + ( prefixlen*2) ) * 2 * poly->nrings;
-	if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
 
 	for (i=0; i<poly->nrings; i++)
 		size += pointArray_GMLsize(poly->rings[i], precision);
