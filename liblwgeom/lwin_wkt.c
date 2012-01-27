@@ -578,14 +578,21 @@ LWGEOM* wkt_parser_curvepolygon_add_ring(LWGEOM *poly, LWGEOM *ring)
 	}
 	
 	/* Apply check for minimum number of points, if requested. */	
-	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) && 
-	    (lwgeom_count_vertices(ring) < 4) )
+	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_MINPOINTS) )
 	{
-		LWDEBUG(4,"number of points is incorrect");
-		lwgeom_free(ring);
-		lwgeom_free(poly);
-		SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
-		return NULL;
+		int vertices_needed = 3;
+
+		if ( ring->type == LINETYPE )
+			vertices_needed = 4;
+					
+		if (lwgeom_count_vertices(ring) < vertices_needed)
+		{
+			LWDEBUG(4,"number of points is incorrect");
+			lwgeom_free(ring);
+			lwgeom_free(poly);
+			SET_PARSER_ERROR(PARSER_ERROR_MOREPOINTS);
+			return NULL;
+		}		
 	}
 	
 	/* Apply check for not closed rings, if requested. */	

@@ -137,7 +137,9 @@
  * try to improve SHPAPI_CALL docs
  */
 
+#define _FILE_OFFSET_BITS 64
 #include <stdio.h>
+#include <sys/types.h>
 
 #ifdef USE_DBMALLOC
 #include <dbmalloc.h>

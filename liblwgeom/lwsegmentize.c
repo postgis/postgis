@@ -296,7 +296,7 @@ LWLINE *
 lwcompound_segmentize(const LWCOMPOUND *icompound, uint32_t perQuad)
 {
 	LWGEOM *geom;
-	POINTARRAY *ptarray = NULL;
+	POINTARRAY *ptarray = NULL, *ptarray_out = NULL;
 	LWLINE *tmp = NULL;
 	uint32_t i, j;
 	POINT4D p;
@@ -334,7 +334,9 @@ lwcompound_segmentize(const LWCOMPOUND *icompound, uint32_t perQuad)
 			return NULL;
 		}
 	}
-	return lwline_construct(icompound->srid, NULL, ptarray);
+	ptarray_out = ptarray_remove_repeated_points(ptarray);
+	ptarray_free(ptarray);
+	return lwline_construct(icompound->srid, NULL, ptarray_out);
 }
 
 LWPOLY *
@@ -695,8 +697,199 @@ append_segment(LWGEOM *geom, POINTARRAY *pts, int type, int srid)
 	return NULL;
 }
 
-LWGEOM *
+/**
+* Returns LW_TRUE if b is on the arc formed by a1/a2/a3, but not within
+* that portion already described by a1/a2/a3
+*/
+static int pt_continues_arc(const POINT4D *a1, const POINT4D *a2, const POINT4D *a3, const POINT4D *b)
+{
+	POINT4D center;
+	POINT4D *centerptr=&center;
+	double radius = lwcircle_center(a1, a2, a3, &center);
+
+	/* Co-linear a1/a2/a3 */
+	if ( radius < 0.0 )
+		return LW_FALSE;
+
+	/* Is the point b on the circle? */
+	if ( fabs(radius - distance2d_pt_pt((POINT2D*)b, (POINT2D*)centerptr)) < EPSILON_SQLMM ) 
+//	if ( FP_EQUALS(radius, distance2d_pt_pt((POINT2D*)b, (POINT2D*)centerptr)) )
+	{
+		int a2_side = signum(lw_segment_side((POINT2D*)a1, (POINT2D*)a3, (POINT2D*)a2));
+		int b_side = signum(lw_segment_side((POINT2D*)a1, (POINT2D*)a3, (POINT2D*)b));
+		
+		/* Is the point b on the same side of a1/a3 as the mid-point a2 is? */
+		/* If not, it's in the unbounded part of the circle, so it continues the arc, return true. */
+		if ( b_side != a2_side )
+			return LW_TRUE;
+	}
+	return LW_FALSE;
+}
+
+LWGEOM* pta_desegmentize2(POINTARRAY *points, int type, int srid);
+
+static LWGEOM*
+linestring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
+{
+	int i = 0, j = 0;
+	POINT4D p;
+	POINTARRAY *pao = ptarray_construct(ptarray_has_z(pa), ptarray_has_m(pa), end-start+2);
+	LWDEBUGF(4, "srid=%d, start=%d, end=%d", srid, start, end);
+	for( i = start; i < end + 2; i++ )
+	{
+		getPoint4d_p(pa, i, &p);
+		ptarray_set_point4d(pao, j++, &p);	
+	}
+	return lwline_as_lwgeom(lwline_construct(srid, NULL, pao));
+}
+
+static LWGEOM*
+circstring_from_pa(const POINTARRAY *pa, int srid, int start, int end)
+{
+	
+	POINT4D p0, p1, p2;
+	POINTARRAY *pao = ptarray_construct(ptarray_has_z(pa), ptarray_has_m(pa), 3);
+	LWDEBUGF(4, "srid=%d, start=%d, end=%d", srid, start, end);
+	getPoint4d_p(pa, start, &p0);
+	ptarray_set_point4d(pao, 0, &p0);	
+	getPoint4d_p(pa, (start+end)/2, &p1);
+	ptarray_set_point4d(pao, 1, &p1);	
+	getPoint4d_p(pa, end+1, &p2);
+	ptarray_set_point4d(pao, 2, &p2);	
+	return lwcircstring_as_lwgeom(lwcircstring_construct(srid, NULL, pao));
+}
+
+static LWGEOM*
+geom_from_pa(const POINTARRAY *pa, int srid, int is_arc, int start, int end)
+{
+	LWDEBUGF(4, "srid=%d, is_arc=%d, start=%d, end=%d", srid, is_arc, start, end);
+	if ( is_arc )
+		return circstring_from_pa(pa, srid, start, end);
+	else
+		return linestring_from_pa(pa, srid, start, end);
+}
+
+LWGEOM*
 pta_desegmentize(POINTARRAY *points, int type, int srid)
+{
+	int i = 0, j, k;
+	POINT4D a1, a2, a3, b;
+	char *edges_in_arcs;
+	int found_arc = LW_FALSE;
+	int current_arc = 1;
+	int num_edges;
+	int edge_type = -1;
+	int start, end;
+	LWCOLLECTION *outcol;
+
+	/* Die on null input */
+	if ( ! points )
+		lwerror("pta_desegmentize called with null pointarray");
+
+	/* Null on empty input? */
+	if ( points->npoints == 0 )
+		return NULL;
+	
+	/* We can't desegmentize anything shorter than four points */
+	if ( points->npoints < 4 )
+	{
+		/* Return a linestring here*/
+		lwerror("pta_desegmentize needs implementation for npoints < 4");
+	}
+	
+	/* Allocate our result array of vertices that are part of arcs */
+	num_edges = points->npoints - 1;
+	edges_in_arcs = lwalloc(num_edges);
+	memset(edges_in_arcs, 0, num_edges);
+	
+	/* We make a candidate arc of the first two edges, */
+	/* And then see if the next edge follows it */
+	while( i < num_edges-2 )
+	{
+		found_arc = LW_FALSE;
+		/* Make candidate arc */
+		getPoint4d_p(points, i  , &a1);
+		getPoint4d_p(points, i+1, &a2);
+		getPoint4d_p(points, i+2, &a3);
+		for( j = i+3; j < num_edges+1; j++ )
+		{
+			LWDEBUGF(4, "i=%d, j=%d", i, j);
+			getPoint4d_p(points, j, &b);
+			/* Does this point fall on our candidate arc? */
+			if ( pt_continues_arc(&a1, &a2, &a3, &b) )
+			{
+				/* Yes. Mark this edge and the two preceding it as arc components */
+				LWDEBUGF(4, "pt_continues_arc #%d", current_arc);
+				found_arc = LW_TRUE;
+				for ( k = j-1; k > j-4; k-- )
+					edges_in_arcs[k] = current_arc;
+			}
+			else
+			{
+				/* No. So we're done with this candidate arc */
+				LWDEBUG(4, "pt_continues_arc = false");
+				current_arc++;
+				break;
+			}
+		}
+		/* Jump past all the edges that were added to the arc */
+		if ( found_arc )
+		{
+			i = j-1;
+		}
+		else
+		{
+			/* Mark this edge as a linear edge */
+			edges_in_arcs[i] = 0;
+			i = i+1;
+		}
+	}
+	
+#if POSTGIS_DEBUG_LEVEL > 3
+	{
+		char *edgestr = lwalloc(num_edges+1);
+		for ( i = 0; i < num_edges; i++ )
+		{
+			if ( edges_in_arcs[i] )
+				edgestr[i] = 48 + edges_in_arcs[i];
+			else
+				edgestr[i] = '.';
+		}
+		edgestr[num_edges] = 0;
+		LWDEBUGF(3, "edge pattern %s", edgestr);
+		lwfree(edgestr);
+	}
+#endif
+
+	start = 0;
+	edge_type = edges_in_arcs[0];
+	outcol = lwcollection_construct_empty(COMPOUNDTYPE, srid, ptarray_has_z(points), ptarray_has_m(points));
+	for( i = 1; i < num_edges; i++ )
+	{
+		if( edge_type != edges_in_arcs[i] )
+		{
+			end = i - 1;
+			lwcollection_add_lwgeom(outcol, geom_from_pa(points, srid, edge_type, start, end));
+			start = i;
+			edge_type = edges_in_arcs[i];
+		}
+	}
+	/* Roll out last item */
+	end = num_edges - 1;
+	lwcollection_add_lwgeom(outcol, geom_from_pa(points, srid, edge_type, start, end));
+	
+	/* Strip down to singleton if only one entry */
+	if ( outcol->ngeoms == 1 )
+	{
+		LWGEOM *outgeom = outcol->geoms[0];
+		lwfree(outcol);
+		return outgeom;
+	}
+	return lwcollection_as_lwgeom(outcol);
+}
+
+LWGEOM *
+pta_desegmentize2(POINTARRAY *points, int type, int srid)
 {
 	int i, j, commit, isline, count;
 	double last_angle, last_length;
