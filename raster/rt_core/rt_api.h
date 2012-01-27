@@ -1490,6 +1490,7 @@ struct rt_histogram_t {
 struct rt_quantile_t {
 	double quantile;
 	double value;
+	uint32_t has_value;
 };
 
 /* listed-list structures for rt_band_get_quantiles_stream */

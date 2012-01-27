@@ -5333,7 +5333,9 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		covquant2 = SPI_palloc(sizeof(struct rt_quantile_t) * count);
 		for (i = 0; i < count; i++) {
 			covquant2[i].quantile = covquant[i].quantile;
-			covquant2[i].value = covquant[i].value;
+			covquant2[i].has_value = covquant[i].has_value;
+			if (covquant2[i].has_value)
+				covquant2[i].value = covquant[i].value;
 		}
 
 		if (NULL != covquant) pfree(covquant);
@@ -5392,7 +5394,10 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(covquant2[call_cntr].quantile);
-		values[1] = Float8GetDatum(covquant2[call_cntr].value);
+		if (covquant2[call_cntr].has_value)
+			values[1] = Float8GetDatum(covquant2[call_cntr].value);
+		else
+			nulls[1] = TRUE;
 
 		/* build a tuple */
 		tuple = heap_form_tuple(tupdesc, values, nulls);

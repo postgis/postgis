@@ -3020,7 +3020,7 @@ rt_band_get_quantiles_stream(rt_band band,
 		}
 		quicksort(quantiles, quantiles + quantiles_count - 1);
 
-		/* initialize rt_quantile */
+		/* initialize linked-list set */
 		*qlls_count = quantiles_count * 2;
 		RASTER_DEBUGF(4, "qlls_count = %d", *qlls_count);
 		*qlls = rtalloc(sizeof(struct quantile_llist) * *qlls_count);
@@ -3433,6 +3433,9 @@ rt_band_get_quantiles_stream(rt_band band,
 				}
 
 			}
+			else {
+				RASTER_DEBUGF(5, "skipping value at (x, y) = (%d, %d)", x, y);
+			}
 
 			z++;
 		}
@@ -3461,6 +3464,11 @@ rt_band_get_quantiles_stream(rt_band band,
 		RASTER_DEBUGF(5, "qll: (head, tail) = (%p, %p)", qll->head, qll->tail);
 
 		rtn[k].quantile = qll->quantile;
+		rtn[k].has_value = 0;
+
+		/* check that qll->head and qll->tail have value */
+		if (qll->head == NULL || qll->tail == NULL)
+			continue;
 
 		/* AL-GEQ */
 		if (qll->algeq)
@@ -3468,8 +3476,6 @@ rt_band_get_quantiles_stream(rt_band band,
 		/* AM-GT */
 		else
 			qle = qll->tail;
-
-		RASTER_DEBUGF(5, "qle: (value, count) = (%f, %d)", qle->value, qle->count);
 
 		exists = 0;
 		for (j = i + 1; j < *qlls_count; j++) {
@@ -3499,6 +3505,7 @@ rt_band_get_quantiles_stream(rt_band band,
 		else {
 			rtn[k].value = qle->value;
 		}
+		rtn[k].has_value = 1;
 		RASTER_DEBUGF(3, "(quantile, value) = (%f, %f)\n\n", rtn[k].quantile, rtn[k].value);
 
 		k++;
