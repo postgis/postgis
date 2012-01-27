@@ -115,7 +115,7 @@ SAOffset SADFWrite( void *p, SAOffset size, SAOffset nmemb, SAFile file )
 SAOffset SADFSeek( SAFile file, SAOffset offset, int whence )
 
 {
-    return (SAOffset) fseeko( (FILE *) file, (off_t) offset, whence );
+    return (SAOffset) fseek( (FILE *) file, (long) offset, whence );
 }
 
 /************************************************************************/
@@ -125,7 +125,7 @@ SAOffset SADFSeek( SAFile file, SAOffset offset, int whence )
 SAOffset SADFTell( SAFile file )
 
 {
-    return (SAOffset) ftello( (FILE *) file );
+    return (SAOffset) ftell( (FILE *) file );
 }
 
 /************************************************************************/
