@@ -1335,6 +1335,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	size_t querysize;
 	GEOM_STATS geomstats;
 	float reltuples;
+	Datum binval;
 
 	if ( PG_NARGS() == 3 )
 	{
@@ -1478,7 +1479,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	tuple = tuptable->vals[0];
 
 	/* Check if the table has zero rows first */
-	reltuples = DatumGetFloat4(SPI_getbinval(tuple, tupdesc, 2, &isnull));
+	binval = SPI_getbinval(tuple, tupdesc, 2, &isnull);
 	if (isnull)
 	{
 
@@ -1489,6 +1490,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 		SPI_finish();
 		PG_RETURN_NULL();
 	}
+	reltuples = DatumGetFloat4(binval);
 	if ( ! reltuples )
 	{
 		POSTGIS_DEBUG(3, "table has estimated zero rows");
@@ -1503,7 +1505,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	array = DatumGetArrayTypeP(SPI_getbinval(tuple, tupdesc, 1, &isnull));
+	binval = SPI_getbinval(tuple, tupdesc, 1, &isnull);
 	if (isnull)
 	{
 
@@ -1514,6 +1516,7 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 		SPI_finish();
 		PG_RETURN_NULL();
 	}
+	array = DatumGetArrayTypeP(binval);
 	if ( ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)) != 4 )
 	{
 		elog(ERROR, " corrupted histogram");
