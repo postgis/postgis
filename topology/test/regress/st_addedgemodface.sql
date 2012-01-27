@@ -342,7 +342,11 @@ SELECT 'T21', 'E'||edge_id, next_left_edge, next_right_edge,
 
 --
 -- Split a face containing an hole 
+-- Faces on both sides contain isolated nodes.
 --
+SELECT 'T22-', 'N' || topology.st_addisonode('city_data', 23, 'POINT(26 36)'), 23;
+SELECT 'T22-', 'N' || topology.st_addisonode('city_data', 23, 'POINT(26 34.5)'), 23;
+SELECT 'T22-', 'N' || topology.st_addisonode('city_data', 23, 'POINT(26 33)'), 23;
 INSERT INTO newedge SELECT 22, topology.st_addedgemodface('city_data',
   3, 3,  'LINESTRING(25 35, 27 35, 26 34, 25 35)');
 SELECT 'T22', 'E'||edge_id, next_left_edge, next_right_edge,
@@ -351,14 +355,14 @@ SELECT 'T22', 'E'||edge_id, next_left_edge, next_right_edge,
     SELECT edge_id FROM newedge WHERE id IN (22, 16)
     UNION VALUES (2),(3) )
   ORDER BY edge_id;
+SELECT 'T22', 'N' || node_id, containing_face FROM
+  city_data.node WHERE node_id IN ( 27, 28, 29 )
+  ORDER BY node_id;
 
 --
 -- Split a face containing an holes in both sides of the split
+-- Faces on both sides contain isolated nodes.
 --
--- Both split faces containing an isolated node.
-SELECT 'T23', 'N' || topology.st_addisonode('city_data', 28, 'POINT(27 33)'), 28;
-SELECT 'T23', 'N' || topology.st_addisonode('city_data', 28, 'POINT(25 38)'), 28;
-SELECT 'T23', 'N' || topology.st_addisonode('city_data', 2, 'POINT(21 36)'), 2;
 INSERT INTO newedge SELECT 23, topology.st_addedgemodface('city_data',
   2, 3,  'LINESTRING(25 30, 29 32, 29 37, 25 35)');
 SELECT 'T23', 'E'||edge_id, next_left_edge, next_right_edge,
