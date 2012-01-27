@@ -262,6 +262,19 @@ static void test_ptarray_desegmentize()
 {
 	LWGEOM *in, *out;
 	char *str;
+
+	/* It would be nice if this example returned two arcs (it's the intersection of two circles)
+	   but it looks like the intersection itself is too sloppy in generating the derived point
+	   to accurately reconstruct the circles.
+	in = lwgeom_from_text("POLYGON((0.5 0,0.471177920604846 -0.292635483024192,0.38581929876693 -0.574025148547634,0.247204418453818 -0.833355349529403,0.0606601717798223 -1.06066017177982,-5.44089437167602e-17 -1.11044268820754,-0.0606601717798188 -1.06066017177982,-0.247204418453816 -0.833355349529406,-0.385819298766929 -0.574025148547639,-0.471177920604845 -0.292635483024197,-0.5 -4.84663372329776e-15,-0.471177920604847 0.292635483024187,-0.385819298766932 0.57402514854763,-0.247204418453821 0.833355349529398,-0.0606601717798256 1.06066017177982,3.45538806345173e-16 1.11044268820754,0.0606601717798183 1.06066017177982,0.247204418453816 0.833355349529407,0.385819298766929 0.574025148547638,0.471177920604845 0.292635483024196,0.5 0))");
+	out = lwgeom_desegmentize(in);
+	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	printf("%s\n", str);
+	CU_ASSERT_STRING_EQUAL(str, "CIRCULARSTRING(-1 0,0 1,0 -1)");
+	lwgeom_free(in);
+	lwgeom_free(out);
+	lwfree(str);	
+	*/
 	
 	in = lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0, 0 -1)");
 	out = lwgeom_desegmentize(in);
