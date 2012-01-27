@@ -1479,10 +1479,23 @@ BEGIN
 	EXECUTE 'CREATE INDEX "face_check_bt" ON ' 
 	  || 'face_check (face_id);';
 
+	-- Scan the table looking for NULL geometries
+	FOR rec IN EXECUTE
+		'SELECT f1.face_id FROM '
+		|| 'face_check f1 WHERE f1.geom IS NULL'
+	LOOP
+		-- Face missing !
+		retrec.error := 'face has no rings';
+		retrec.id1 := rec.face_id;
+		retrec.id2 := NULL;
+		RETURN NEXT retrec;
+	END LOOP;
+
+
 	-- Scan the table looking for overlap or containment
 	-- TODO: also check for MBR consistency
 	FOR rec IN EXECUTE
-		'SELECT f1.face_id as id1, f2.face_id as id2, '
+		'SELECT f1.geom, f1.face_id as id1, f2.face_id as id2, '
 		|| ' ST_Relate(f1.geom, f2.geom) as im'
 		|| ' FROM '
 		|| 'face_check f1, '
