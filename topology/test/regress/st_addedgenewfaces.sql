@@ -375,6 +375,45 @@ SELECT 'T23', 'N' || node_id, containing_face FROM
   city_data.node WHERE node_id IN ( 27, 28, 29 )
   ORDER BY node_id;
 
+--
+-- Split a face containing an hole, this time with no ring continuity
+-- This version goes clockwise
+-- All involved faces contain isolated nodes
+--
+SELECT 'T24-', 'N' || st_addisonode('city_data', 39, 'POINT(19.5 37.5)'), 39; 
+SELECT 'T24-', 'N' || st_addisonode('city_data', 39, 'POINT(19 38)'), 39;
+SELECT 'T24-', 'N' || st_addisonode('city_data', 31, 'POINT(20.5 35)'), 31;
+SELECT 'T24-', 'N' || st_addisonode('city_data', 39, 'POINT(20.5 34)'), 39;
+SELECT 'T24-', 'N' || st_addisonode('city_data', 39, 'POINT(20.5 33)'), 39;
+
+INSERT INTO newedge SELECT 24, topology.st_addedgenewfaces('city_data',
+  30, 30,  'LINESTRING(19.5 37.5, 24.5 37.5, 19.5 32.5, 19.5 37.5)');
+SELECT 'T24', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN ( 
+    SELECT edge_id FROM newedge WHERE id IN (24, 23, 16)
+    UNION VALUES (2),(3) )
+  ORDER BY edge_id;
+SELECT 'T24', 'N' || node_id, containing_face FROM
+  city_data.node WHERE node_id IN ( 27, 30, 31, 32, 33, 34 )
+  ORDER BY node_id;
+
+--
+-- Split a face containing an hole, this time with no ring continuity
+-- This version goes counterclockwise
+-- All involved faces contain isolated nodes
+--
+INSERT INTO newedge SELECT 25, topology.st_addedgenewfaces('city_data',
+  31, 31,  'LINESTRING(19 38, 19 31, 26 38, 19 38)');
+SELECT 'T25', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN ( 
+    SELECT edge_id FROM newedge WHERE id IN (25, 24, 23, 16)
+    UNION VALUES (2),(3) )
+  ORDER BY edge_id;
+SELECT 'T25', 'N' || node_id, containing_face FROM
+  city_data.node WHERE node_id IN ( 27, 31, 32, 33, 34 )
+  ORDER BY node_id;
 
 ---------------------------------------------------------------------
 -- Check new relations and faces status
