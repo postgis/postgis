@@ -1538,38 +1538,26 @@ BEGIN
         --
         -- probably there is something so now check the exact test
         --    
-    sql := 'SELECT e.face_id FROM ('
-      || 'SELECT d.face_id,ST_BuildArea(ST_Union(geom)) as geom FROM ('
-      || 'SELECT b.edge_id as edge_id,b.left_face as face_id,b.geom as geom FROM '
-      || quote_ident(atopology) || '.edge_data as b,'
-      || '(SELECT a.face_id FROM '
-      || quote_ident(atopology) || '.face as a '
-      || 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
-      || ') as c '
-      || 'WHERE (b.left_face = c.face_id) '
-      || ' UNION ALL '
-      || 'SELECT b.edge_id as edge_id, b.right_face as face_id, b.geom as geom FROM '
-      || quote_ident(atopology) || '.edge_data as b,'
-      || '(SELECT a.face_id FROM '
-      || quote_ident(atopology) || '.face as a '
-      || 'WHERE ST_Intersects(a.mbr,' || quote_literal(apoint::text)||'::geometry)=true'
-      || ') as c '
-      || 'WHERE (b.right_face = c.face_id) '
-      || ') as d '
-      || 'GROUP BY face_id '
-      || ') as e '
-      || 'WHERE ST_Intersects(e.geom, ' || quote_literal(apoint::text)||'::geometry)=true;';
-
-        --raise notice ' ==> %',sql;
-        BEGIN
-            EXECUTE sql INTO STRICT containingface;
-                EXCEPTION
-                    WHEN NO_DATA_FOUND THEN
-                        containingface = 0;
-                    WHEN TOO_MANY_ROWS THEN
-                        RAISE EXCEPTION 'Two or more faces found';
-        END;
-    END IF;
+    sql := 'SELECT face_id FROM '
+      || quote_ident(atopology) || '.face WHERE face_id > 0 AND mbr && '
+      || quote_literal(apoint::text) || '::geometry AND ST_Contains(topology.ST_GetFaceGeometry('
+      || quote_literal(atopology) || ', face_id), '
+      || quote_literal(apoint::text) || '::geometry)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG ' ==> %',sql;
+#endif
+    BEGIN
+      EXECUTE sql INTO STRICT containingface;
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+          RAISE DEBUG 'No faces contain point';
+#endif
+          containingface = 0;
+        WHEN TOO_MANY_ROWS THEN
+          RAISE EXCEPTION 'Two or more faces found';
+    END;
+  END IF;
 
   --
   -- Verify that aface contains apoint
