@@ -4201,7 +4201,7 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 		<refentry id="RT_ST_Quantile">
 			<refnamediv>
 				<refname>ST_Quantile</refname>
-				<refpurpose>Compute quantiles in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</refpurpose>
+				<refpurpose>Compute quantiles for a raster or raster table coverage in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -4254,13 +4254,30 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>quantile</parameter></paramdef>
 				  </funcprototype>
+				  <!-- TABLE COVERAGE VERSIONS -->
+				  <!-- TODO: Add the rest and examples -->
+				  <funcprototype>
+					<funcdef>setof quantile <function>ST_Quantile</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
+				  </funcprototype>
+				  <funcprototype>
+					<funcdef>setof quantile <function>ST_Quantile</function></funcdef>
+					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+					<paramdef><type>double precision[] </type> <parameter>quantiles</parameter></paramdef>
+				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
 			<refsection>
 				<title>Description</title>
 				
-				<para>Compute quantiles in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</para> 
+				<para>Compute quantiles for a raster or raster table coverage in the context of the sample or population. Thus, a value could be examined to be at the raster's 25%, 50%, 75% percentile.</para> 
 				<note><para>If <varname>exclude_nodata_value</varname> is set to false, will also count pixels with no data.</para></note>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
