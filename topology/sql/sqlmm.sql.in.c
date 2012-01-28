@@ -2727,10 +2727,10 @@ BEGIN
   RAISE DEBUG 'Edge % splitted face %', anedge, oface;
 #endif
 
-  sql := 'WITH ids as ( select edge from unnest('
+  sql := 'WITH ids as ( select row_number() over () as seq, edge from unnest('
     || quote_literal(fan.newring_edges::text)
     || '::int[] ) u(edge) ), edges AS ( select CASE WHEN i.edge < 0 THEN ST_Reverse(e.geom) ELSE e.geom END as g FROM ids i left join '
-    || quote_ident(atopology) || '.edge_data e ON(e.edge_id = abs(i.edge)) ) SELECT ST_MakePolygon(ST_MakeLine(g.g)) FROM edges g;';
+    || quote_ident(atopology) || '.edge_data e ON(e.edge_id = abs(i.edge)) ORDER BY seq) SELECT ST_MakePolygon(ST_MakeLine(g.g)) FROM edges g;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
