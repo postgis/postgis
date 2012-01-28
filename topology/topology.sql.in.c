@@ -626,7 +626,7 @@ BEGIN
 	--
 	EXECUTE 'ALTER TABLE ' || quote_ident(schema)
 		|| '.' || quote_ident(tbl) 
-		|| ' ADD CONSTRAINT check_topogeom CHECK ('
+		|| ' ADD CONSTRAINT "check_topogeom' || col || '" CHECK ('
 		|| 'topology_id(' || quote_ident(col) || ') = ' || topoid
 		|| ' AND '
 		|| 'layer_id(' || quote_ident(col) || ') = ' || newlayer_id
