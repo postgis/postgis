@@ -3,7 +3,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net
 --
--- Copyright (C) 2010, 2011 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2010, 2011, 2012 Sandro Santilli <strk@keybit.net>
 -- Copyright (C) 2005 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -3465,94 +3465,33 @@ BEGIN
         || anode || ',' || anothernode || ')';
   END IF;
 
-  ----------------------------------------------------------------------
-  --
-  -- See if the addition splitted a face
-  --
-  ----------------------------------------------------------------------
-
-  SELECT null::geometry as post, null::geometry as pre, null::int[] as newring_edges INTO fan;
-
-  SELECT array_agg(edge)
-  FROM topology.getringedges(atopology, newedge.edge_id)
-  INTO STRICT fan.newring_edges;
+  --------------------------------------------
+  -- Check face splitting
+  --------------------------------------------
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'l_ring: %', fan.newring_edges;
+  RAISE DEBUG 'Checking right face';
 #endif
 
-  -- You can't get to the other side of an edge forming a ring 
-  IF fan.newring_edges @> ARRAY[-newedge.edge_id] THEN
+  SELECT topology._ST_AddFaceSplit(atopology, -newedge.edge_id, newedge.left_face, false)
+  INTO newface;
+
+  IF newface = 0 THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'no split';
+    RAISE DEBUG ' No split';
 #endif
-    RETURN newedge.edge_id; -- no split !
+    RETURN newedge.edge_id; 
   END IF;
 
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'ST_AddEdgeNewFaces: edge % splitted face %',
-      newedge.edge_id, newedge.left_face;
-#endif
-
-  --
-  -- Update the left_face/right_face for the edges binding
-  -- the split faces 
-  -- 
-  -- TODO: optimize this by following edge links!
-  --
-
-  EXECUTE 'SELECT ST_Polygonize(geom) FROM '
-    || quote_ident(atopology) || '.edge_data WHERE left_face = '
-    || newedge.left_face || ' OR right_face = ' || newedge.right_face
-    INTO STRICT fan.post;
-
-  -- Call topology.AddFace for every face containing the new edge
-  -- 
-  -- The ORDER serves predictability of which face is added first
-  -- See http://trac.osgeo.org/postgis/ticket/1205
-  --
-  p1 := ST_StartPoint(newedge.cleangeom);
-  p2 := ST_PointN(newedge.cleangeom, 2);
-  seg := ST_MakeLine(p1, p2);
-  -- The new rings might start on one of the new edge endpoints
-  -- we we sample two more inner points for the sake of computing
-  -- face side.
-  p1b := ST_Line_Interpolate_Point(seg, 0.1);
-  p2b := ST_Line_Interpolate_Point(seg, 0.9);
-  FOR rec IN
-    WITH faces AS ( SELECT * FROM ST_Dump(ST_ForceRHR(fan.post)) ),
-         rings AS ( SELECT path,
-                      ST_Boundary((ST_DumpRings(geom)).geom) as bnd
-                    FROM faces ),
-         paths AS ( SELECT path,
-                      ST_Line_Locate_Point(bnd, p1b) as pos1,
-                      ST_Line_Locate_Point(bnd, p2b) as pos2,
-                      ST_Line_Locate_Point(bnd, p1b) < 
-                      ST_Line_Locate_Point(bnd, p2b) as right_side
-                    FROM rings
-                    WHERE ST_Contains(bnd, seg) )
-    SELECT
-      CASE WHEN p.right_side THEN 'right' ELSE 'left' END as side,
-      p.pos1, p.pos2,
-      f.geom
-    FROM paths p INNER JOIN faces f ON (p.path = f.path)
-    ORDER BY p.right_side DESC
-  LOOP -- {
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Adding % face', rec.side;
-#endif
-    SELECT topology.AddFace(atopology, rec.geom, true) INTO newface;
-    newfaces := array_append(newfaces, newface);
-  END LOOP; --}
+  newfaces[1] := newface;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Added faces: %', newfaces;
+  RAISE DEBUG 'Checking left face';
 #endif
+  SELECT topology._ST_AddFaceSplit(atopology, newedge.edge_id, newedge.left_face, false)
+  INTO newface;
 
-  IF array_upper(newfaces, 1) > 2 THEN
-    -- Sanity check..
-    RAISE EXCEPTION 'More than 2 faces found to be formed by new edge';
-  END IF;
+  newfaces[2] := newface;
 
   IF newedge.left_face != 0 THEN -- {
 
