@@ -750,11 +750,11 @@ BEGIN
 #endif
 
   -- 2. Node to edges falling within tolerance distance
-  sql := 'WITH line AS ( SELECT '
-    || quote_literal(noded::text)
-    || '::geometry as g ), nearby AS ( SELECT e.geom FROM '
+  sql := 'WITH nearby AS ( SELECT e.geom FROM '
     || quote_ident(atopology) 
-    || '.edge e, line l WHERE ST_DWithin(e.geom, l.g, '
+    || '.edge e WHERE ST_DWithin(e.geom, '
+    || quote_literal(noded::text)
+    || '::geometry, '
     || tolerance || ') ) SELECT st_collect(geom) FROM nearby;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
@@ -791,28 +791,14 @@ BEGIN
     RAISE DEBUG 'Unioned: %', ST_AsText(noded);
 #endif
 
---    -- Split by intersection points
---    set2 := ST_CollectionExtract(set1, 1);
---#ifdef POSTGIS_TOPOLOGY_DEBUG
---    RAISE DEBUG 'Intersection points: %', ST_AsText(set2);
---#endif
---    FOR rec IN SELECT (ST_Dump(set2)).geom LOOP
---      SELECT ST_Collect(geom) 
---        FROM ST_Dump(ST_Split(noded, rec.geom))
---        INTO STRICT noded;
---    END LOOP;
---#ifdef POSTGIS_TOPOLOGY_DEBUG
---    RAISE DEBUG 'Split by edge intersections: %', ST_AsText(noded);
---#endif
-
   END IF;
 
   -- 2.1. Node with existing nodes within tolerance
-  sql := 'WITH line AS ( SELECT '
-    || quote_literal(noded::text)
-    || '::geometry as g ), nearby AS ( SELECT n.geom FROM '
+  sql := 'WITH nearby AS ( SELECT n.geom FROM '
     || quote_ident(atopology) 
-    || '.node n, line l WHERE ST_DWithin(n.geom, l.g, '
+    || '.node n WHERE ST_DWithin(n.geom, '
+    || quote_literal(noded::text)
+    || '::geometry, '
     || tolerance || ') ) SELECT (st_dump(st_unaryunion(st_collect(geom)))).geom FROM nearby;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
