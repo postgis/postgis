@@ -13,7 +13,7 @@
 --  
 -- 
 
-#define POSTGIS_TOPOLOGY_DEBUG 1
+/*#define POSTGIS_TOPOLOGY_DEBUG 1*/
 
 --={ ----------------------------------------------------------------
 --  SQL/MM block
@@ -2692,6 +2692,7 @@ DECLARE
   newface INTEGER;
   sql TEXT;
   isccw BOOLEAN;
+  ishole BOOLEAN;
 
 BEGIN
 
@@ -2796,7 +2797,7 @@ BEGIN
     || quote_literal(array( select +(x) from unnest(fan.newring_edges) u(x) )::text)
     || ')';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Updating forward edges';
+  RAISE DEBUG 'Updating forward edges in new ring';
 #endif
   EXECUTE sql;
 
@@ -2807,7 +2808,7 @@ BEGIN
     || quote_literal(array( select -(x) from unnest(fan.newring_edges) u(x) )::text)
     || ')';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Updating backward edges';
+  RAISE DEBUG 'Updating backward edges in new ring';
 #endif
   EXECUTE sql;
 
@@ -2816,82 +2817,46 @@ BEGIN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Updating rings in former shell';
 #endif
-    -- TODO: use a single query
-
-    -- Update edges having new face on the left
-    sql := 'UPDATE '
-      || quote_ident(atopology) || '.edge_data SET left_face = ' || newface
-      || ' WHERE left_face = ' || oface || ' AND NOT edge_id = ANY ('
-      || quote_literal(array( select abs(x) from unnest(fan.newring_edges) u(x) )::text)
-      || ') AND NOT ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Updating non-contained edges having new face on the left';
-#endif
-    EXECUTE sql;
-
-    -- Update edges having new face on the right
-    sql := 'UPDATE '
-      || quote_ident(atopology) || '.edge_data SET right_face = ' || newface
-      || ' WHERE right_face = ' || oface || ' AND NOT edge_id = ANY ('
-      || quote_literal(array( select abs(x) from unnest(fan.newring_edges) u(x) )::text)
-      || ') AND NOT ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Updating non-contained edges having new face on the right';
-#endif
-    EXECUTE sql;
-
-    -- Update isolated nodes in new new face 
-    sql := 'UPDATE '
-      || quote_ident(atopology) || '.node SET containing_face = ' || newface
-      || ' WHERE containing_face = ' || oface 
-      || ' AND NOT ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Updating non-contained isolated nodes';
-#endif
-    EXECUTE sql;
-
-  END IF; -- }
-
-  IF oface = 0 OR isccw THEN -- {
-
+    ishole := true;
+  ELSE
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Updating contained edges';
 #endif
-    -- TODO: use a single query
+    ishole := false;
+  END IF;
 
-    -- Update edges having new face on the left
-    sql := 'UPDATE '
-      || quote_ident(atopology) || '.edge_data SET left_face = ' || newface
-      || ' WHERE left_face = ' || oface || ' AND NOT edge_id = ANY ('
-      || quote_literal(array( select abs(x) from unnest(fan.newring_edges) u(x) )::text)
-      || ') AND ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+  -- Update edges having new face on the left
+  sql := 'UPDATE '
+    || quote_ident(atopology)
+    || '.edge_data SET left_face = CASE WHEN left_face = '
+    || oface || ' THEN ' || newface
+    || ' ELSE left_face END, right_face = CASE WHEN right_face = '
+    || oface || ' THEN ' || newface
+    || ' ELSE right_face END WHERE ( left_face = ' || oface
+    || ' OR right_face = ' || oface
+    || ') AND NOT edge_id = ANY ('
+    || quote_literal( array(
+        select abs(x) from unnest(fan.newring_edges) u(x)
+       )::text )
+    || ') AND ';
+  IF ishole THEN sql := sql || 'NOT '; END IF;
+  sql := sql || 'ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Updating contained edges having old face on the left';
+  RAISE DEBUG 'Updating edges binding old face';
 #endif
-    EXECUTE sql;
+  EXECUTE sql;
 
-    -- Update edges having new face on the right
-    sql := 'UPDATE '
-      || quote_ident(atopology) || '.edge_data SET right_face = ' || newface
-      || ' WHERE right_face = ' || oface || ' AND NOT edge_id = ANY ('
-      || quote_literal(array( select abs(x) from unnest(fan.newring_edges) u(x) )::text)
-      || ') AND ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+  -- Update isolated nodes in new new face 
+  sql := 'UPDATE '
+    || quote_ident(atopology) || '.node SET containing_face = ' || newface
+    || ' WHERE containing_face = ' || oface 
+    || ' AND ';
+  IF ishole THEN sql := sql || 'NOT '; END IF;
+  sql := sql || 'ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Updating contained edges having old face on the right';
+  RAISE DEBUG 'Updating isolated nodes in old face';
 #endif
-    EXECUTE sql;
-
-    -- Update isolated nodes in new new face 
-    sql := 'UPDATE '
-      || quote_ident(atopology) || '.node SET containing_face = ' || newface
-      || ' WHERE containing_face = ' || oface 
-      || ' AND ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Updating contained isolated nodes';
-#endif
-    EXECUTE sql;
-
-  END IF; -- }
+  EXECUTE sql;
 
   RETURN newface;
 
@@ -4404,4 +4369,3 @@ LANGUAGE 'plpgsql' VOLATILE;
 
 --=}  SQL/MM block
 
-#undef POSTGIS_TOPOLOGY_DEBUG
