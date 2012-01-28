@@ -415,6 +415,18 @@ SELECT 'T25', 'N' || node_id, containing_face FROM
   city_data.node WHERE node_id IN ( 27, 31, 32, 33, 34 )
   ORDER BY node_id;
 
+--
+-- Split a face closing a ring inside a face
+--
+INSERT INTO newedge SELECT 26, topology.st_addedgenewfaces('city_data',
+  5, 6,  'LINESTRING(36 38, 57 33)');
+SELECT 'T26', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN ( 
+    SELECT edge_id FROM newedge WHERE id IN (26, 17, 18)
+    UNION VALUES (4),(5) )
+  ORDER BY edge_id;
+
 ---------------------------------------------------------------------
 -- Check new relations and faces status
 ---------------------------------------------------------------------
