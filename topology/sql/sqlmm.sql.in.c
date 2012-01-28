@@ -13,6 +13,8 @@
 --  
 -- 
 
+#define POSTGIS_TOPOLOGY_DEBUG 1
+
 --={ ----------------------------------------------------------------
 --  SQL/MM block
 --
@@ -2662,6 +2664,242 @@ $$
 LANGUAGE 'plpgsql' VOLATILE;
 --} ST_ChangeEdgeGeom
 
+--
+-- _ST_AddFaceSplit
+--
+-- Add a split face by walking on the edge side.
+--
+-- @param atopology topology name
+-- @param anedge edge id and walking side (left:positive right:negative)
+-- @param oface the face in which the edge identifier is known to be
+-- @param mbr_only do not create a new face but update MBR of the current
+--
+-- The face on the left of the edge is created 
+--
+-- Return:
+--  NULL: if mbr_only was requested
+--     0: if the edge does not form a ring
+--  NULL: if it is impossible to create a face on the requested side
+--        ( new face on the side is the universe )
+--   >0 : id of newly added face
+--
+-- {
+CREATE OR REPLACE FUNCTION topology._ST_AddFaceSplit(atopology varchar, anedge integer, oface integer, mbr_only bool)
+  RETURNS INTEGER AS
+$$
+DECLARE
+  fan RECORD;
+  newface INTEGER;
+  sql TEXT;
+  isccw BOOLEAN;
+
+BEGIN
+
+  IF oface = 0 AND mbr_only THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Universal face has no MBR, doing nothing';
+#endif
+    RETURN NULL;
+  END IF;
+
+  SELECT null::int[] as newring_edges,
+         null::geometry as shell
+  INTO fan;
+
+  SELECT array_agg(edge)
+  FROM topology.getringedges(atopology, anedge)
+  INTO STRICT fan.newring_edges;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'ring: %', fan.newring_edges;
+#endif
+
+  -- You can't get to the other side of an edge forming a ring 
+  IF fan.newring_edges @> ARRAY[-anedge] THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'not a ring';
+#endif
+    RETURN 0;
+  END IF;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Edge % splitted face %', anedge, oface;
+#endif
+
+  sql := 'WITH ids as ( select edge from unnest('
+    || quote_literal(fan.newring_edges::text)
+    || '::int[] ) u(edge) ), edges AS ( select CASE WHEN i.edge < 0 THEN ST_Reverse(e.geom) ELSE e.geom END as g FROM ids i left join '
+    || quote_ident(atopology) || '.edge_data e ON(e.edge_id = abs(i.edge)) ) SELECT ST_MakePolygon(ST_MakeLine(g.g)) FROM edges g;';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG '%', sql;
+#endif
+  EXECUTE sql INTO fan.shell;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'got shell'; 
+#endif
+
+  isccw := NOT ST_OrderingEquals(fan.shell, ST_ForceRHR(fan.shell));
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'winding: %', CASE WHEN isccw THEN 'CCW' ELSE 'CW' END;
+#endif
+
+  IF oface = 0 THEN
+    IF NOT isccw THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Not considering CW ring in universe face';
+#endif
+      RETURN NULL;
+    END IF;
+  END IF;
+
+  IF mbr_only AND oface != 0 THEN
+    -- Update old face mbr (nothing to do if we're opening an hole)
+    IF isccw THEN -- {
+      sql := 'UPDATE '
+        || quote_ident(atopology) || '.face SET mbr = '
+        || quote_literal(ST_Envelope(fan.shell)::text)
+        || '::geometry WHERE face_id = ' || oface;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    	RAISE DEBUG 'Updating old face mbr'; 
+#endif
+    	EXECUTE sql;
+    END IF; -- }
+    RETURN NULL;
+  END IF;
+
+  IF oface != 0 AND NOT isccw THEN -- {
+    -- Face created an hole in an outer face
+    sql := 'INSERT INTO '
+      || quote_ident(atopology) || '.face(mbr) SELECT mbr FROM '
+      || quote_ident(atopology)
+      || '.face WHERE face_id = ' || oface
+      || ' RETURNING face_id';
+  ELSE
+    sql := 'INSERT INTO '
+      || quote_ident(atopology) || '.face(mbr) VALUES ('
+      || quote_literal(ST_Envelope(fan.shell)::text)
+      || '::geometry) RETURNING face_id';
+  END IF; -- }
+
+  -- Insert new face
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Inserting new face'; 
+#endif
+  EXECUTE sql INTO STRICT newface;
+
+  -- Update forward edges
+  sql := 'UPDATE '
+    || quote_ident(atopology) || '.edge_data SET left_face = ' || newface
+    || ' WHERE left_face = ' || oface || ' AND edge_id = ANY ('
+    || quote_literal(array( select +(x) from unnest(fan.newring_edges) u(x) )::text)
+    || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Updating forward edges';
+#endif
+  EXECUTE sql;
+
+  -- Update backward edges
+  sql := 'UPDATE '
+    || quote_ident(atopology) || '.edge_data SET right_face = ' || newface
+    || ' WHERE right_face = ' || oface || ' AND edge_id = ANY ('
+    || quote_literal(array( select -(x) from unnest(fan.newring_edges) u(x) )::text)
+    || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Updating backward edges';
+#endif
+  EXECUTE sql;
+
+  IF oface != 0 AND NOT isccw THEN -- {
+    -- face shrinked, must update all non-contained edges and nodes
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Updating rings in former shell';
+#endif
+    -- TODO: use a single query
+
+    -- Update edges having new face on the left
+    sql := 'UPDATE '
+      || quote_ident(atopology) || '.edge_data SET left_face = ' || newface
+      || ' WHERE left_face = ' || oface || ' AND NOT edge_id = ANY ('
+      || quote_literal(array( select abs(x) from unnest(fan.newring_edges) u(x) )::text)
+      || ') AND NOT ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Updating non-contained edges having new face on the left';
+#endif
+    EXECUTE sql;
+
+    -- Update edges having new face on the right
+    sql := 'UPDATE '
+      || quote_ident(atopology) || '.edge_data SET right_face = ' || newface
+      || ' WHERE right_face = ' || oface || ' AND NOT edge_id = ANY ('
+      || quote_literal(array( select abs(x) from unnest(fan.newring_edges) u(x) )::text)
+      || ') AND NOT ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Updating non-contained edges having new face on the right';
+#endif
+    EXECUTE sql;
+
+    -- Update isolated nodes in new new face 
+    sql := 'UPDATE '
+      || quote_ident(atopology) || '.node SET containing_face = ' || newface
+      || ' WHERE containing_face = ' || oface 
+      || ' AND NOT ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Updating non-contained isolated nodes';
+#endif
+    EXECUTE sql;
+
+  END IF; -- }
+
+  IF oface = 0 OR isccw THEN -- {
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Updating contained edges';
+#endif
+    -- TODO: use a single query
+
+    -- Update edges having new face on the left
+    sql := 'UPDATE '
+      || quote_ident(atopology) || '.edge_data SET left_face = ' || newface
+      || ' WHERE left_face = ' || oface || ' AND NOT edge_id = ANY ('
+      || quote_literal(array( select abs(x) from unnest(fan.newring_edges) u(x) )::text)
+      || ') AND ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Updating contained edges having old face on the left';
+#endif
+    EXECUTE sql;
+
+    -- Update edges having new face on the right
+    sql := 'UPDATE '
+      || quote_ident(atopology) || '.edge_data SET right_face = ' || newface
+      || ' WHERE right_face = ' || oface || ' AND NOT edge_id = ANY ('
+      || quote_literal(array( select abs(x) from unnest(fan.newring_edges) u(x) )::text)
+      || ') AND ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Updating contained edges having old face on the right';
+#endif
+    EXECUTE sql;
+
+    -- Update isolated nodes in new new face 
+    sql := 'UPDATE '
+      || quote_ident(atopology) || '.node SET containing_face = ' || newface
+      || ' WHERE containing_face = ' || oface 
+      || ' AND ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Updating contained isolated nodes';
+#endif
+    EXECUTE sql;
+
+  END IF; -- }
+
+  RETURN newface;
+
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--}
+
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
 -- X.3.12
@@ -3233,18 +3471,18 @@ BEGIN
   --
   ----------------------------------------------------------------------
 
-  SELECT null::geometry as post, null::geometry as pre, null::int[] as ring_left INTO fan;
+  SELECT null::geometry as post, null::geometry as pre, null::int[] as newring_edges INTO fan;
 
   SELECT array_agg(edge)
   FROM topology.getringedges(atopology, newedge.edge_id)
-  INTO STRICT fan.ring_left;
+  INTO STRICT fan.newring_edges;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'l_ring: %', fan.ring_left;
+  RAISE DEBUG 'l_ring: %', fan.newring_edges;
 #endif
 
   -- You can't get to the other side of an edge forming a ring 
-  IF fan.ring_left @> ARRAY[-newedge.edge_id] THEN
+  IF fan.newring_edges @> ARRAY[-newedge.edge_id] THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'no split';
 #endif
@@ -3923,105 +4161,45 @@ BEGIN
         || anode || ',' || anothernode || ')';
   END IF;
 
-  ----------------------------------------------------------------------
-  --
-  -- See if the addition splitted a face
-  --
-  ----------------------------------------------------------------------
-
-  SELECT null::geometry as post, null::geometry as pre, null::int[] as ring_left INTO fan;
-
-  SELECT array_agg(edge)
-  FROM topology.getringedges(atopology, newedge.edge_id)
-  INTO STRICT fan.ring_left;
+  --------------------------------------------
+  -- Check face splitting
+  --------------------------------------------
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'l_ring: %', fan.ring_left;
+  RAISE DEBUG 'Checking left face for a split';
 #endif
-
-  -- You can't get to the other side of an edge forming a ring 
-  IF fan.ring_left @> ARRAY[-newedge.edge_id] THEN
+  SELECT topology._ST_AddFaceSplit(atopology, newedge.edge_id, newedge.left_face, false)
+  INTO newface;
+  IF newface = 0 THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'no split';
+    RAISE DEBUG ' No split';
 #endif
-    RETURN newedge.edge_id; -- no split !
+    RETURN newedge.edge_id; 
   END IF;
 
+  IF newface IS NULL THEN -- must be forming a maximal ring in universal face
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'ST_AddEdgeModFace: edge % splitted face %',
-      newedge.edge_id, newedge.left_face;
+    RAISE DEBUG 'Checking right face';
 #endif
-
-  --
-  -- Update the left_face/right_face for the edges binding
-  -- the face on the left of the newly added edge
-  -- 
-  -- TODO: optimize this by following edge links!
-  --
-
-  EXECUTE 'SELECT ST_Polygonize(geom) FROM '
-    || quote_ident(atopology) || '.edge_data WHERE left_face = '
-    || newedge.left_face || ' OR right_face = ' || newedge.right_face
-    INTO STRICT fan.post;
-
+    SELECT topology._ST_AddFaceSplit(atopology, -newedge.edge_id, newedge.left_face, false)
+    INTO newface;
+  ELSE
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'ST_Polygonize returned % faces', ST_NumGeometries(fan.post);
+    RAISE DEBUG 'Updating right face mbr';
 #endif
+    PERFORM topology._ST_AddFaceSplit(atopology, -newedge.edge_id, newedge.left_face, true);
+  END IF;
 
-  -- Call topology.AddFace for every face whose boundary contains the new edge
-  --
-  -- TODO: in presence of holes every hole would share a boundary
-  --       with its shell, research on improving performance by avoiding
-  --       the multiple scans.
-  --
-  p1 = ST_StartPoint(newedge.cleangeom);
-  p2 = ST_PointN(newedge.cleangeom, 2);
-  FOR rec IN SELECT geom FROM ST_Dump(fan.post)
-             WHERE ST_Contains(
-                ST_Boundary(geom),
-                ST_MakeLine(p1, p2)
-                )
-  --
-  -- TODO: order so to have the face on the _right_ side created first,
-  --       see http://trac.osgeo.org/postgis/ticket/1205
-  --
-  LOOP -- {
-
-    -- NOTE: the only difference with ST_AddEdgeNewFace here is
-    --       that we want to retain the face on the right side of
-    --       the new edge 
-    --
-    IF newedge.left_face != 0 THEN -- {
-
+  IF newface IS NULL THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-     RAISE DEBUG 'Checking face'; 
+    RAISE DEBUG ' No split';
 #endif
+    RETURN newedge.edge_id; 
+  END IF;
 
-     -- Skip this if our edge is on the right side
-     IF ST_IsEmpty(ST_GeometryN(
-            ST_SharedPaths(ST_Boundary(ST_ForceRHR(rec.geom)),
-                           ST_MakeLine(p1, p2)), 2))
-     THEN
-          -- We keep this face, but update its MBR
-          sql := 'UPDATE ' || quote_ident(atopology)
-            || '.face set mbr = ' || quote_literal(ST_Envelope(rec.geom)::text)
-            || ' WHERE face_id = ' || newedge.left_face;
-          EXECUTE sql;
-          CONTINUE;
-     END IF;
-
-    END IF; -- }
-
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Adding face'; 
-#endif
-    SELECT topology.AddFace(atopology, rec.geom, true) INTO newface;
-    newfaces := array_append(newfaces, newface);
-
-  END LOOP; --}
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Added face: %', newface;
-#endif
+  --------------------------------------------
+  -- Update topogeometries, if needed
+  --------------------------------------------
 
   IF newedge.left_face != 0 THEN -- {
 
@@ -4286,3 +4464,5 @@ LANGUAGE 'plpgsql' VOLATILE;
 --} ST_CreateTopoGeo
 
 --=}  SQL/MM block
+
+#undef POSTGIS_TOPOLOGY_DEBUG
