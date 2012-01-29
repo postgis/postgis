@@ -5,9 +5,8 @@ The core team of PostGIS is:
  mcayland (Mark Cave-Ayland) <mark.cave-ayland@siriusit.co.uk> - psc, index support, PostgreSQL/PostGIS integration issues
  chodgson (Chris Hodgson) - psc, core website maintenance, postgis core bug fixes, build bot, osgeo incubation management
  pramsey (Paul Ramsey) <pramsey@cleverelephant.ca> - psc, chair, index, geodetic, infrastructure, shapefile gui loader
- robe (Regina Obe) <lr@pcorp.us> - psc, documentation, windows experimental and production builds, 
-   QA testing, plpgsql functions
- strk (Sandro Santilli) <strk@keybit.net> - GEOS integration, topology, raster
+ robe (Regina Obe) <lr@pcorp.us> - psc, documentation, windows experimental and production builds, QA testing, plpgsql functions
+ strk (Sandro Santilli) <strk@keybit.net> - psc, GEOS, topology, raster
  kneufeld (Kevin Neufeld) - prior psc, documentation, plpgsql functions, document and buildbot, website administration (past)
  colivier (Olivier Courtin) <olivier.courtin@camptocamp.com> - output functions, 3D support
  pracine (Pierre Racine) <Pierre.Racine@sbf.ulaval.ca> - raster
