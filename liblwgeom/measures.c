@@ -1312,17 +1312,25 @@ lw_dist2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B, DISTPTS *dl)
 		}
 	}
 
-	if (r<0)	/*If the first vertex A is closest to the point p*/
+	if (r<0)	/*If p projected on the line is outside point A*/
 	{
 		return lw_dist2d_pt_pt(p,A,dl);
 	}
-	if (r>=1)	/*If the second vertex B is closest or equal to the point p*/
+	if (r>=1)	/*If p projected on the line is outside point B or on point B*/
 	{
 		return lw_dist2d_pt_pt(p,B,dl);
 	}
-
-	/*else if the point p is closer to some point between a and b
-	then we find that point and send it to lw_dist2d_pt_pt*/
+	
+	/*If the point p is on the segment this is a more robust way to find out that*/
+	if (( ((A->y-p->y)*(B->x-A->x)==(A->x-p->x)*(B->y-A->y) ) ) && (dl->mode ==  DIST_MIN))
+	{
+		dl->distance = 0.0;
+		dl->p1 = *p;
+		dl->p2 = *p;
+	}
+	
+	/*If the projection of point p on the segment is between A and B
+	then we find that "point on segment" and send it to lw_dist2d_pt_pt*/
 	c.x=A->x + r * (B->x-A->x);
 	c.y=A->y + r * (B->y-A->y);
 

@@ -1,27 +1,4 @@
-select '113', ST_Area2d('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
 
-select '114', ST_Perimeter2d('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
-
-select '115', ST_3DPerimeter('MULTIPOLYGON( ((0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0)),( (0 0 0, 10 0 0, 10 10 0, 0 10 0, 0 0 0),(5 5 0, 7 5 0, 7 7  0, 5 7 0, 5 5 0) ) ,( (0 0 1, 10 0 1, 10 10 1, 0 10 1, 0 0 1),(5 5 1, 7 5 1, 7 7 1, 5 7 1, 5 5 1),(1 1 1,2 1 1, 2 2 1, 1 2 1, 1 1 1) ) )'::GEOMETRY) as value;
-
-
-select '116', ST_Length2d('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2) )'::GEOMETRY) as value;
-select '117', ST_3DLength('MULTILINESTRING((0 0, 1 1),(0 0, 1 1, 2 2) )'::GEOMETRY) as value;
-select '118', ST_3DLength('MULTILINESTRING((0 0 0, 1 1 1),(0 0 0, 1 1 1, 2 2 2) )'::GEOMETRY) as value;
-
-select '134', ST_Distance('POINT(1 2)', 'POINT(1 2)');
-select '135', ST_Distance('POINT(5 0)', 'POINT(10 12)');
-
-select '136', ST_Distance('POINT(0 0)', ST_Translate('POINT(0 0)', 5, 12, 0));
-
--- postgis-users/2006-May/012174.html
-select 'dist', ST_Distance(a,b), ST_Distance(b,a) from (
-	select 'POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'::geometry as a,
-		'POLYGON((11 0, 11 10, 20 10, 20 0, 11 0),
-			(15 5, 15 8, 17 8, 17 5, 15 5))'::geometry as b
-	) as foo;
-
--- Apply the same tests using the new function names.
 select '113', ST_area2d('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
 
 select '114', ST_perimeter2d('MULTIPOLYGON( ((0 0, 10 0, 10 10, 0 10, 0 0)),( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7 , 5 7, 5 5) ) ,( (0 0, 10 0, 10 10, 0 10, 0 0),(5 5, 7 5, 7 7, 5 7, 5 5),(1 1,2 1, 2 2, 1 2, 1 1) ) )'::GEOMETRY) as value;
@@ -46,6 +23,9 @@ select 'dist', ST_Distance(a,b), ST_Distance(b,a) from (
 			(15 5, 15 8, 17 8, 17 5, 15 5))'::geometry as b
 	) as foo;
 
+--#1502
+SELECT '#1502', ST_Dwithin(a,b,0.0)  from 
+(SELECT 'LINESTRING(-97364 -97364, 9736.4 9736.4)'::geometry a, 'POINT(0 0)'::geometry b ) foo;
 
 --st_shortestline
 
