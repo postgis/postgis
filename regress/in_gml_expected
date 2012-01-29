@@ -4,13 +4,13 @@ ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 point_1|POINT(1 2)
 ERROR:  invalid GML representation
-ERROR:  invalid GML representation
+point_3|POINT EMPTY
 point_4|SRID=4326;POINT(1 2)
 linestring_1|LINESTRING(1 2,3 4)
 ERROR:  invalid GML representation
 linestring_3|SRID=4326;LINESTRING(1 2,3 4)
 ERROR:  invalid GML representation
-ERROR:  invalid GML representation
+linestring_5|LINESTRING EMPTY
 linestring_6|LINESTRING(1 2,3 4)
 curve_1|LINESTRING(1 2,3 4)
 ERROR:  invalid GML representation
@@ -36,7 +36,7 @@ ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
-ERROR:  invalid GML representation
+polygon_9|POLYGON EMPTY
 polygon_10|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
 polygon_11|POLYGON((1 2,3 4,5 6,1 2),(7 8,9 10,11 12,7 8))
 polygon_12|POLYGON((1 2,3 4,5 6,1 2))
@@ -62,7 +62,7 @@ ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
 ERROR:  invalid GML representation
-ERROR:  invalid GML representation
+triangle_8|TRIANGLE EMPTY
 triangle_9|TRIANGLE((1 2,3 4,5 6,1 2))
 triangle_10|TRIANGLE((1 2,3 4,5 6,1 2))
 ERROR:  invalid GML representation
