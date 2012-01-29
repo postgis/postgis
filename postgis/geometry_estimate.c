@@ -565,7 +565,7 @@ estimate_selectivity(GBOX *box, GEOM_STATS *geomstats)
 	 * single sample feature would have contributed to
 	 * raise the search_box value by as many times as
 	 * many cells in the histogram are commonly overlapped
-	 * by both searc_box and feature. We should then
+	 * by both search_box and feature. We should then
 	 * divide our value by the number of cells in the virtual
 	 * 'intersection' between average feature cell occupation
 	 * and occupation of the search_box. This is as
