@@ -701,9 +701,12 @@ LWCOLLECTION *lwline_clip_to_ordinate_range(LWLINE *line, int ordinate, double f
 	lwfree(r);
 
 	if ( lwgeom_out->ngeoms > 0 )
-		return lwgeom_out;
+	{
+		lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
+		lwgeom_add_bbox((LWGEOM*)lwgeom_out);
+	}
 
-	return NULL;
+	return lwgeom_out;
 
 }
 
