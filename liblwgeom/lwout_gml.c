@@ -212,6 +212,10 @@ lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char* p
 {
 	int type = geom->type;
 
+	/* Return null for empty (#1377) */
+	if ( lwgeom_is_empty(geom) )
+		return NULL;
+
 	switch (type)
 	{
 	case POINTTYPE:
@@ -702,6 +706,10 @@ extern char *
 lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix)
 {
 	int type = geom->type;
+
+	/* Return null for empty (#1377) */
+	if ( lwgeom_is_empty(geom) )
+		return NULL;
 
 	switch (type)
 	{

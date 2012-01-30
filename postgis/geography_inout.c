@@ -279,6 +279,11 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);
 
+	/* Return null on null */
+	if ( ! gml ) 
+		PG_RETURN_NULL();
+
+	/* Turn string result into text for return */
 	result = cstring2text(gml);
 	lwfree(gml);
 

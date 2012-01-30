@@ -5,24 +5,24 @@ T2.1|SRID=4326;POLYGON EMPTY
 T2.2|SRID=4326;POLYGON EMPTY
 T2.3|SRID=4326;POLYGON EMPTY
 T2.4|4326|POLYGON
-T3.1|<gml:Point/>
-T3.2|<gml:LineString/>
-T3.3|<gml:Polygon/>
-T3.4|<gml:MultiPolygon/>
-T3.5|<gml:MultiLineString/>
-T3.6|<gml:MultiGeometry/>
-T3.7|<gml:Point/>
-T3.8|<gml:Curve/>
-T3.9|<gml:Polygon/>
-T3.10|<gml:MultiSurface/>
-T3.11|<gml:MultiCurve/>
-T3.12|<gml:MultiGeometry/>
-T3.13|<gml:Point/>
-T3.14|<gml:Curve/>
-T3.15|<gml:Polygon/>
-T3.16|<gml:MultiSurface/>
-T3.17|<gml:MultiCurve/>
-T3.18|<gml:MultiGeometry/>
+T3.1|
+T3.2|
+T3.3|
+T3.4|
+T3.5|
+T3.6|
+T3.7|
+T3.8|
+T3.9|
+T3.10|
+T3.11|
+T3.12|
+T3.13|
+T3.14|
+T3.15|
+T3.16|
+T3.17|
+T3.18|
 ST_Buffer(empty, tolerance) == empty|010300000000000000
 ST_Union(geometry, empty) == geometry|0103000000010000000400000000000000000000000000000000000000000000000000244000000000000000000000000000001440000000000000144000000000000000000000000000000000
 ST_Union(empty, empty) == empty|010300000000000000

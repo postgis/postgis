@@ -721,19 +721,6 @@ static void out_gml_test_geoms_prefix(void)
 	    "<custom:MultiGeometry><custom:geometryMember><custom:Point><custom:pos srsDimension=\"2\">0 1</custom:pos></custom:Point></custom:geometryMember><custom:geometryMember><custom:Curve><custom:segments><custom:LineStringSegment><custom:posList srsDimension=\"2\">2 3 4 5</custom:posList></custom:LineStringSegment></custom:segments></custom:Curve></custom:geometryMember></custom:MultiGeometry>",
 	    NULL, 0, 0, "custom:");
 
-
-	/* GML2 - Empty GeometryCollection */
-	do_gml2_test_prefix(
-	    "GEOMETRYCOLLECTION EMPTY",
-	    "<custom:MultiGeometry/>",
-	    NULL, 0, "custom:");
-
-	/* GML3 - Empty GeometryCollection */
-	do_gml3_test_prefix(
-	    "GEOMETRYCOLLECTION EMPTY",
-	    "<custom:MultiGeometry/>",
-	    NULL, 0, 0, "custom:");
-
 	/* GML2 - Nested GeometryCollection */
 	do_gml2_test_prefix(
 	    "GEOMETRYCOLLECTION(POINT(0 1),GEOMETRYCOLLECTION(LINESTRING(2 3,4 5)))",
@@ -853,19 +840,6 @@ static void out_gml_test_geoms_prefix(void)
 	do_gml3_test_prefix(
 	    "GEOMETRYCOLLECTION(POINT(0 1),LINESTRING(2 3,4 5))",
 	    "<MultiGeometry><geometryMember><Point><pos srsDimension=\"2\">0 1</pos></Point></geometryMember><geometryMember><Curve><segments><LineStringSegment><posList srsDimension=\"2\">2 3 4 5</posList></LineStringSegment></segments></Curve></geometryMember></MultiGeometry>",
-	    NULL, 0, 0, "");
-
-
-	/* GML2 - Empty GeometryCollection */
-	do_gml2_test_prefix(
-	    "GEOMETRYCOLLECTION EMPTY",
-	    "<MultiGeometry/>",
-	    NULL, 0, "");
-
-	/* GML3 - Empty GeometryCollection */
-	do_gml3_test_prefix(
-	    "GEOMETRYCOLLECTION EMPTY",
-	    "<MultiGeometry/>",
 	    NULL, 0, 0, "");
 
 	/* GML2 - Nested GeometryCollection */
@@ -1103,54 +1077,6 @@ static void out_gml3_extent(void)
 
 }
 
-
-static void out_gml_test_empty(void)
-{
-	/* POINT EMPTY, GML2 */
-	do_gml2_test("POINT EMPTY", "<gml:Point/>", NULL, 0);
-
-	/* POINT EMPTY, GML3 */
-	do_gml3_test("POINT EMPTY", "<gml:Point/>", NULL, 0, 0);
-
-	/* LINESTRING EMPTY, GML2 */
-	do_gml2_test("LINESTRING EMPTY", "<gml:LineString/>", NULL, 0);
-
-	/* LINESTRING EMPTY, GML3 */
-	do_gml3_test("LINESTRING EMPTY", "<gml:Curve/>", NULL, 0, 0);
-
-	/* POLYGON EMPTY, GML2 */
-	do_gml2_test("POLYGON EMPTY", "<gml:Polygon/>", NULL, 0);
-
-	/* POLYGON EMPTY, GML3 */
-	do_gml3_test("POLYGON EMPTY", "<gml:Polygon/>", NULL, 0, 0);
-
-	/* MULTIPOINT EMPTY, GML2 */
-	do_gml2_test("MULTIPOINT EMPTY", "<gml:MultiPoint/>", NULL, 0);
-
-	/* MULTIPOINT EMPTY, GML3 */
-	do_gml3_test("MULTIPOINT EMPTY", "<gml:MultiPoint/>", NULL, 0, 0);
-
-	/* MULTILINESTRING EMPTY, GML2 */
-	do_gml2_test("MULTILINESTRING EMPTY", "<gml:MultiLineString/>", NULL, 0);
-
-	/* MULTILINESTRING EMPTY, GML3 */
-	do_gml3_test("MULTILINESTRING EMPTY", "<gml:MultiCurve/>", NULL, 0, 0);
-
-	/* MULTIPOLYGON EMPTY, GML2 */
-	do_gml2_test("MULTIPOLYGON EMPTY", "<gml:MultiPolygon/>", NULL, 0);
-
-	/* MULTIPOLYGON EMPTY, GML3 */
-	do_gml3_test("MULTIPOLYGON EMPTY", "<gml:MultiSurface/>", NULL, 0, 0);
-
-	/* GEOMETRYCOLLECTION EMPTY, GML2 */
-	do_gml2_test("GEOMETRYCOLLECTION EMPTY", "<gml:MultiGeometry/>", NULL, 0);
-
-	/* GEOMETRYCOLLECTION EMPTY, GML3 */
-	do_gml3_test("GEOMETRYCOLLECTION EMPTY", "<gml:MultiGeometry/>", NULL, 0, 0);
-
-}
-
-
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1165,7 +1091,6 @@ CU_TestInfo out_gml_tests[] =
 	PG_TEST(out_gml_test_geoms_nodims),
 	PG_TEST(out_gml2_extent),
 	PG_TEST(out_gml3_extent),
-	PG_TEST(out_gml_test_empty),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo out_gml_suite = {"out_gml",  NULL,  NULL, out_gml_tests};

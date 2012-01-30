@@ -234,11 +234,11 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 
 	lwgeom = lwgeom_from_gserialized(geom);
 
-        if (version == 2 && lwopts & LW_GML_EXTENT)
+	if (version == 2 && lwopts & LW_GML_EXTENT)
 		gml = lwgeom_extent_to_gml2(lwgeom, srs, precision, prefix);
 	else if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
-        else if (version == 3 && lwopts & LW_GML_EXTENT)
+	else if (version == 3 && lwopts & LW_GML_EXTENT)
 		gml = lwgeom_extent_to_gml3(lwgeom, srs, precision, lwopts, prefix);
 	else if (version == 3) 
 		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix);
@@ -246,9 +246,12 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
 
+	/* Return null on null */
+	if ( ! gml )
+		PG_RETURN_NULL();
+
 	result = cstring2text(gml);
 	lwfree(gml);
-
 	PG_RETURN_TEXT_P(result);
 }
 

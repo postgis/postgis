@@ -1473,6 +1473,10 @@ static LWGEOM* parse_gml_tin(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
+	parse_gml_srs(xnode, &srs);
+	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
+		*root_srid = srs.srid;
+
 	geom = (LWGEOM *)lwcollection_construct_empty(TINTYPE, *root_srid, 1, 0);
 
 	if (xnode->children == NULL) 
@@ -1519,6 +1523,10 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
+	parse_gml_srs(xnode, &srs);
+	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
+		*root_srid = srs.srid;
+
 	geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOINTTYPE, *root_srid, 1, 0);
 
 	if (xnode->children == NULL) 
@@ -1550,6 +1558,10 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
+	parse_gml_srs(xnode, &srs);
+	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
+		*root_srid = srs.srid;
+
 	geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, *root_srid, 1, 0);
 
 	if (xnode->children == NULL) 
@@ -1580,6 +1592,10 @@ static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
+	parse_gml_srs(xnode, &srs);
+	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
+		*root_srid = srs.srid;
 
 	geom = (LWGEOM *)lwcollection_construct_empty(MULTILINETYPE, *root_srid, 1, 0);
 
@@ -1613,6 +1629,10 @@ static LWGEOM* parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
 
+	parse_gml_srs(xnode, &srs);
+	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
+		*root_srid = srs.srid;
+
 	geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, *root_srid, 1, 0);
 
 	if (xnode->children == NULL) 
@@ -1643,6 +1663,10 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
+	parse_gml_srs(xnode, &srs);
+	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
+		*root_srid = srs.srid;
 
 	geom = (LWGEOM *)lwcollection_construct_empty(MULTIPOLYGONTYPE, *root_srid, 1, 0);
 
@@ -1676,6 +1700,10 @@ static LWGEOM* parse_gml_psurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
+	parse_gml_srs(xnode, &srs);
+	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
+		*root_srid = srs.srid;
 
 	geom = (LWGEOM *)lwcollection_construct_empty(POLYHEDRALSURFACETYPE, *root_srid, 1, 0);
 
@@ -1720,6 +1748,10 @@ static LWGEOM* parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
+
+	parse_gml_srs(xnode, &srs);
+	if (*root_srid == SRID_UNKNOWN && srs.srid != SRID_UNKNOWN)
+		*root_srid = srs.srid;
 
 	geom = (LWGEOM *)lwcollection_construct_empty(COLLECTIONTYPE, *root_srid, 1, 0);
 

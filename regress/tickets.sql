@@ -330,6 +330,16 @@ SELECT '#677',round(ST_Distance_Spheroid(ST_GeomFromEWKT('MULTIPOLYGON(((-10 40,
 -- #680 --
 SELECT '#680', encode(ST_AsBinary(geography(foo1.the_geom)),'hex') As result FROM ((SELECT ST_SetSRID(ST_MakePointM(i,j,m),4326) As the_geom FROM generate_series(-10,50,10) As i CROSS JOIN generate_series(50,70, 20) AS j CROSS JOIN generate_series(1,2) As m ORDER BY i, j, i*j*m)) As foo1 LIMIT 1;
 
+-- #681 --
+SELECT '#681a', ST_AsGML(ST_GeomFromText('POINT EMPTY', 4326));
+SELECT '#681b', ST_AsGML(ST_GeomFromText('POLYGON EMPTY', 4326));
+SELECT '#681c', ST_AsGML(ST_GeomFromText('LINESTRING EMPTY', 4326));
+SELECT '#681d', ST_AsGML(ST_GeomFromText('MULTIPOINT EMPTY', 4326));
+SELECT '#681e', ST_AsGML(ST_GeomFromText('MULTILINESTRING EMPTY', 4326));
+SELECT '#681f', ST_AsGML(ST_GeomFromText('MULTIPOLYGON EMPTY', 4326));
+SELECT '#681g', ST_AsGML(ST_GeomFromText('GEOMETRYCOLLECTION EMPTY', 4326));
+
+
 -- #682 --
 SELECT '#682', ST_Buffer(ST_GeomFromText('POLYGON EMPTY',4326) , 0.5);
 
