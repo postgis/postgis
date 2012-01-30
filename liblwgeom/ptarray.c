@@ -428,7 +428,7 @@ ptarray_segmentize2d(const POINTARRAY *ipa, double dist)
 		}
 		else /* copy second point */
 		{
-			ptarray_append_point(opa, &p2, LW_FALSE);
+			ptarray_append_point(opa, &p2, (ipa->npoints==2)?LW_TRUE:LW_FALSE);
 			p1 = p2;
 			ipoff++;
 		}
