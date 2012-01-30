@@ -137,7 +137,9 @@
  * try to improve SHPAPI_CALL docs
  */
 
+#define _FILE_OFFSET_BITS 64
 #include <stdio.h>
+#include <sys/types.h>
 
 #ifdef USE_DBMALLOC
 #include <dbmalloc.h>
@@ -240,8 +242,14 @@ static char *cvsid_aw() { return( cvsid_aw() ? ((char *) NULL) : cpl_cvsid ); }
 /* -------------------------------------------------------------------- */
 typedef int *SAFile;
 
-#ifndef SAOffset
-typedef unsigned long SAOffset;
+#ifdef HAVE_SEEKO
+#	ifndef SAOffset
+	typedef off_t SAOffset;
+#	endif
+#else
+#	ifndef SAOffset
+	typedef unsigned long SAOffset;
+#	endif
 #endif
 
 typedef struct {

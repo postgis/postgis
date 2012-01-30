@@ -27,7 +27,6 @@
 #include "shpcommon.h"
 #include "getopt.h"
 
-
 #include "../liblwgeom/stringbuffer.h"
 
 #define RCSID "$Id$"

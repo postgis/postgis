@@ -18,10 +18,12 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <errno.h>
+#include <math.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <iconv.h>
 
+#include "../postgis_config.h"
 #include "libpq-fe.h"
 #include "shapefil.h"
 #include "shpcommon.h"

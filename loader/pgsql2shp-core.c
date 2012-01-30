@@ -23,17 +23,9 @@
 
 #include "pgsql2shp-core.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <math.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 /* Solaris9 does not provide stdint.h */
 /* #include <stdint.h> */
 #include <inttypes.h>
-#include <sys/types.h> /* for getpid() */
 
 #ifdef HAVE_UNISTD_H /* for getpid() and getopt */
 #include <unistd.h>
@@ -42,10 +34,6 @@
 #ifdef __CYGWIN__
 #include <sys/param.h>
 #endif
-
-#include "libpq-fe.h"
-#include "shapefil.h"
-#include "getopt.h"
 
 #include "../liblwgeom/liblwgeom.h" /* for LWGEOM struct and funx */
 #include "../liblwgeom/lwgeom_log.h" /* for LWDEBUG macros */
