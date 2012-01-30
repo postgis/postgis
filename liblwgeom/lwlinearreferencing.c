@@ -734,10 +734,9 @@ lwline_clip_to_ordinate_range(const LWLINE *line, char ordinate, double from, do
 	{
 		lwgeom_drop_bbox((LWGEOM*)lwgeom_out);
 		lwgeom_add_bbox((LWGEOM*)lwgeom_out);
-		return lwgeom_out;
 	}
 
-	return NULL;
+	return lwgeom_out;
 
 }
 
