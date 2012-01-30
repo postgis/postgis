@@ -31,12 +31,6 @@
 #include <string.h>
 #include <assert.h>
 
-/**
-** NOTE: Buffer-based GeomUnion has been disabled due to
-** limitations in the GEOS code (it would only work against polygons)
-** DONE: Implement cascaded GeomUnion and remove old buffer-based code.
-*/
-
 /*
 ** Prototypes for SQL-bound functions
 */
@@ -46,7 +40,6 @@ Datum disjoint(PG_FUNCTION_ARGS);
 Datum touches(PG_FUNCTION_ARGS);
 Datum intersects(PG_FUNCTION_ARGS);
 Datum crosses(PG_FUNCTION_ARGS);
-Datum within(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
 Datum containsproperly(PG_FUNCTION_ARGS);
 Datum covers(PG_FUNCTION_ARGS);
@@ -62,21 +55,20 @@ Datum difference(PG_FUNCTION_ARGS);
 Datum boundary(PG_FUNCTION_ARGS);
 Datum symdifference(PG_FUNCTION_ARGS);
 Datum geomunion(PG_FUNCTION_ARGS);
-Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum issimple(PG_FUNCTION_ARGS);
 Datum isring(PG_FUNCTION_ARGS);
-Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum pointonsurface(PG_FUNCTION_ARGS);
 Datum GEOSnoop(PG_FUNCTION_ARGS);
 Datum postgis_geos_version(PG_FUNCTION_ARGS);
 Datum centroid(PG_FUNCTION_ARGS);
 Datum polygonize_garray(PG_FUNCTION_ARGS);
-Datum LWGEOM_buildarea(PG_FUNCTION_ARGS); /* TODO: rename to match others
-*/
 Datum linemerge(PG_FUNCTION_ARGS);
 Datum coveredby(PG_FUNCTION_ARGS);
 Datum hausdorffdistance(PG_FUNCTION_ARGS);
 Datum hausdorffdistancedensify(PG_FUNCTION_ARGS);
+Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
+Datum ST_Equals(PG_FUNCTION_ARGS);
+Datum ST_BuildArea(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array_old(PG_FUNCTION_ARGS);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
@@ -1837,10 +1829,10 @@ Datum contains(PG_FUNCTION_ARGS)
 	** Do the test IFF BOUNDING BOX AVAILABLE.
 	*/
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( ( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
+		     ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ) )
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2187,127 +2179,12 @@ Datum covers(PG_FUNCTION_ARGS)
 }
 
 
-
+/**
+* ST_Within(A, B) => ST_Contains(B, A) so we just delegate this calculation to the 
+* Contains implementation.
 PG_FUNCTION_INFO_V1(within);
 Datum within(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *geom1;
-	GSERIALIZED *geom2;
-	GEOSGeometry *g1, *g2;
-	bool result;
-	GBOX box1, box2;
-	LWGEOM *lwgeom;
-	LWPOINT *point;
-	int type1, type2;
-	RTREE_POLY_CACHE *poly_cache;
-
-	geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
-
-	errorIfGeometryCollection(geom1,geom2);
-	error_if_srid_mismatch(gserialized_get_srid(geom1), gserialized_get_srid(geom2));
-
-	/* A.Within(Empty) == FALSE */
-	if ( gserialized_is_empty(geom1) || gserialized_is_empty(geom2) )
-		PG_RETURN_BOOL(false);
-
-	/*
-	 * short-circuit 1: if geom1 bounding box is not completely inside
-	 * geom2 bounding box we can prematurely return FALSE.
-	 * Do the test IFF BOUNDING BOX AVAILABLE.
-	 */
-	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
-	{
-		if ( ( box1.xmin < box2.xmin ) || ( box1.xmax > box2.xmax ) ||
-		        ( box1.ymin < box2.ymin ) || ( box1.ymax > box2.ymax ) )
-		{
-			PG_RETURN_BOOL(FALSE);
-		}
-	}
-	/*
-	 * short-circuit 2: if geom1 is a point and geom2 is a polygon
-	 * call the point-in-polygon function.
-	 */
-	type1 = gserialized_get_type(geom1);
-	type2 = gserialized_get_type(geom2);
-	if ((type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE) && type1 == POINTTYPE)
-	{
-		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
-
-		point = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom1));
-		lwgeom = lwgeom_from_gserialized(geom2);
-
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, geom2);
-
-		if ( poly_cache->ringIndices )
-		{
-			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
-		}
-		else if ( type2 == POLYGONTYPE )
-		{
-			result = point_in_polygon((LWPOLY*)lwgeom, point);
-		}
-		else if ( type2 == MULTIPOLYGONTYPE )
-		{
-			result = point_in_multipolygon((LWMPOLY*)lwgeom, point);
-		}
-		else
-		{
-			/* Gulp! Should not be here... */
-			elog(ERROR,"Type isn't poly or multipoly!");
-			PG_RETURN_NULL();
-		}
-
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
-		lwgeom_release((LWGEOM *)lwgeom);
-		lwgeom_release((LWGEOM *)point);
-		if ( result == 1 ) /* completely inside */
-		{
-			PG_RETURN_BOOL(TRUE);
-		}
-		else
-		{
-			PG_RETURN_BOOL(FALSE);
-		}
-	}
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
-
-	if ( 0 == g1 )   /* exception thrown at construction */
-	{
-		lwerror("First argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		PG_RETURN_NULL();
-	}
-
-	g2 = (GEOSGeometry *)POSTGIS2GEOS(geom2);
-	if ( 0 == g2 )   /* exception thrown at construction */
-	{
-		lwerror("Second argument geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
-		GEOSGeom_destroy(g1);
-		PG_RETURN_NULL();
-	}
-
-	result = GEOSWithin(g1,g2);
-
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g2);
-
-	if (result == 2)
-	{
-		lwerror("GEOSWithin: %s", lwgeom_geos_errmsg);
-		PG_RETURN_NULL(); /* never get here */
-	}
-
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
-
-	PG_RETURN_BOOL(result);
-}
-
+*/
 
 /*
  * Described at:
@@ -3336,8 +3213,8 @@ Datum linemerge(PG_FUNCTION_ARGS)
  * transforming the resulting collection into
  * a valid polygon Geometry.
  */
-PG_FUNCTION_INFO_V1(LWGEOM_buildarea);
-Datum LWGEOM_buildarea(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(ST_BuildArea);
+Datum ST_BuildArea(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *result;
 	GSERIALIZED *geom;

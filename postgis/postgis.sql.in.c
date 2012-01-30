@@ -1287,7 +1287,7 @@ CREATE OR REPLACE FUNCTION ST_MakePolygon(geometry)
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_BuildArea(geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_buildarea'
+	AS 'MODULE_PATHNAME', 'ST_BuildArea'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 
@@ -3085,20 +3085,6 @@ CREATE OR REPLACE FUNCTION ST_Crosses(geom1 geometry, geom2 geometry)
 	AS 'SELECT $1 && $2 AND _ST_Crosses($1,$2)'
 	LANGUAGE 'SQL' IMMUTABLE;
 
--- PostGIS equivalent function: within(geom1 geometry, geom2 geometry)
-CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'MODULE_PATHNAME','within'
-	LANGUAGE 'C' IMMUTABLE STRICT
-	COST 100;
-
--- Availability: 1.2.2
--- Inlines index magic
-CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
-	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_Within($1,$2)'
-	LANGUAGE 'SQL' IMMUTABLE;
-
 -- PostGIS equivalent function: contains(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION _ST_Contains(geom1 geometry, geom2 geometry)
 	RETURNS boolean
@@ -3160,6 +3146,19 @@ CREATE OR REPLACE FUNCTION _ST_Overlaps(geom1 geometry, geom2 geometry)
 	AS 'MODULE_PATHNAME','overlaps'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
+
+-- PostGIS equivalent function: within(geom1 geometry, geom2 geometry)
+CREATE OR REPLACE FUNCTION _ST_Within(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT _ST_Contains($2,$1)'
+	LANGUAGE 'SQL' IMMUTABLE;
+
+-- Availability: 1.2.2
+-- Inlines index magic
+CREATE OR REPLACE FUNCTION ST_Within(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'SELECT $1 && $2 AND _ST_Contains($2,$1)'
+	LANGUAGE 'SQL' IMMUTABLE;
 
 -- Availability: 1.2.2
 -- Inlines index magic
