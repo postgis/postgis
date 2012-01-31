@@ -775,7 +775,11 @@ check_curvepolygon_minpoints()
 	int num, mum, lum; /* subgeom, point counts */
 	int minpoints;
 	int count = 0; /* Running counter for compound curve */
-	num = tp->uu.nn.num;
+
+	if ( tp )
+		num = tp->uu.nn.num;
+	else	
+		return;
 
 	LWDEBUG(3, "check_curvepolygon_minpoints");
 
