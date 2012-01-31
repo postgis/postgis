@@ -1586,7 +1586,7 @@ Datum RASTER_getRotation(PG_FUNCTION_ARGS)
 
     rt_raster_destroy(raster);
 
-    if (xrot == yrot) {
+    if (FLT_EQ(xrot, yrot)) {
         PG_RETURN_FLOAT8(xrot);
     }
 
