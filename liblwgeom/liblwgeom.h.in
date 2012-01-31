@@ -1438,6 +1438,11 @@ extern GSERIALIZED* gserialized_copy(const GSERIALIZED *g);
 extern int lwgeom_check_geodetic(const LWGEOM *geom);
 
 /**
+* Check that coordinates of LWGEOM are all within the geodetic range.
+*/
+extern int lwgeom_nudge_geodetic(LWGEOM *geom);
+
+/**
 * Set the FLAGS geodetic bit on geometry an all sub-geometries and pointlists
 */
 extern void lwgeom_set_geodetic(LWGEOM *geom, int value);
