@@ -2097,105 +2097,107 @@ int ShpLoaderGenerateShapeRow(SHPDUMPERSTATE *state)
 			}
 			SHPDestroyObject(obj);
 		}
-
-		/* Get the value from the result set */
-		val = PQgetvalue(state->fetchres, state->curresrow, geocolnum);
-
-		if (!state->config->binary)
+		else
 		{
-			if (state->pgis_major_version > 0)
-			{
-				LWDEBUG(4, "PostGIS >= 1.0, non-binary cursor");
+			/* Get the value from the result set */
+			val = PQgetvalue(state->fetchres, state->curresrow, geocolnum);
 
-				/* Input is bytea encoded text field, so it must be unescaped and
-				then converted to hexewkb string */
-				hexewkb_binary = PQunescapeBytea((unsigned char *)val, &hexewkb_len);
-				hexewkb = convert_bytes_to_hex(hexewkb_binary, hexewkb_len);
+			if (!state->config->binary)
+			{
+				if (state->pgis_major_version > 0)
+				{
+					LWDEBUG(4, "PostGIS >= 1.0, non-binary cursor");
+
+					/* Input is bytea encoded text field, so it must be unescaped and
+					then converted to hexewkb string */
+					hexewkb_binary = PQunescapeBytea((unsigned char *)val, &hexewkb_len);
+					hexewkb = convert_bytes_to_hex(hexewkb_binary, hexewkb_len);
+				}
+				else
+				{
+					LWDEBUG(4, "PostGIS < 1.0, non-binary cursor");
+
+					/* Input is already hexewkb string, so we can just
+					copy directly to hexewkb */
+					hexewkb_len = PQgetlength(state->fetchres, state->curresrow, geocolnum);
+					hexewkb = malloc(hexewkb_len + 1);
+					strncpy(hexewkb, val, hexewkb_len + 1);
+				}
 			}
-			else
+			else /* binary */
 			{
-				LWDEBUG(4, "PostGIS < 1.0, non-binary cursor");
+				LWDEBUG(4, "PostGIS (any version) using binary cursor");
 
-				/* Input is already hexewkb string, so we can just
-				copy directly to hexewkb */
+				/* Input is binary field - must convert to hexewkb string */
 				hexewkb_len = PQgetlength(state->fetchres, state->curresrow, geocolnum);
-				hexewkb = malloc(hexewkb_len + 1);
-				strncpy(hexewkb, val, hexewkb_len + 1);
+				hexewkb = convert_bytes_to_hex((unsigned char *)val, hexewkb_len);
 			}
-		}
-		else /* binary */
-		{
-			LWDEBUG(4, "PostGIS (any version) using binary cursor");
 
-			/* Input is binary field - must convert to hexewkb string */
-			hexewkb_len = PQgetlength(state->fetchres, state->curresrow, geocolnum);
-			hexewkb = convert_bytes_to_hex((unsigned char *)val, hexewkb_len);
-		}
+			LWDEBUGF(4, "HexEWKB - length: %d  value: %s", strlen(hexewkb), hexewkb);
 
-		LWDEBUGF(4, "HexEWKB - length: %d  value: %s", strlen(hexewkb), hexewkb);
+			/* Deserialize the LWGEOM */
+			lwgeom = lwgeom_from_hexwkb(hexewkb, LW_PARSER_CHECK_NONE);
+			if (!lwgeom)
+			{
+				snprintf(state->message, SHPDUMPERMSGLEN, _("Error parsing HEXEWKB for record %d"), state->currow);
+				PQclear(state->fetchres);
+				return SHPDUMPERERR;
+			}
+	
+			/* Call the relevant method depending upon the geometry type */
+			LWDEBUGF(4, "geomtype: %s\n", lwtype_name(lwgeom->type));
+	
+			switch (lwgeom->type)
+			{
+			case POINTTYPE:
+				obj = create_point(state, lwgeom_as_lwpoint(lwgeom));
+				break;
+	
+			case MULTIPOINTTYPE:
+				obj = create_multipoint(state, lwgeom_as_lwmpoint(lwgeom));
+				break;
+	
+			case POLYGONTYPE:
+				obj = create_polygon(state, lwgeom_as_lwpoly(lwgeom));
+				break;
+	
+			case MULTIPOLYGONTYPE:
+				obj = create_multipolygon(state, lwgeom_as_lwmpoly(lwgeom));
+				break;
+	
+			case LINETYPE:
+				obj = create_linestring(state, lwgeom_as_lwline(lwgeom));
+				break;
+	
+			case MULTILINETYPE:
+				obj = create_multilinestring(state, lwgeom_as_lwmline(lwgeom));
+				break;
+	
+			default:
+				snprintf(state->message, SHPDUMPERMSGLEN, _("Unknown WKB type (%d) for record %d"), lwgeom->type, state->currow);
+				PQclear(state->fetchres);
+				SHPDestroyObject(obj);
+				return SHPDUMPERERR;
+			}
+	
+			/* Free both the original and geometries */
+			lwgeom_free(lwgeom);
 
-		/* Deserialize the LWGEOM */
-		lwgeom = lwgeom_from_hexwkb(hexewkb, LW_PARSER_CHECK_NONE);
-		if (!lwgeom)
-		{
-			snprintf(state->message, SHPDUMPERMSGLEN, _("Error parsing HEXEWKB for record %d"), state->currow);
-			PQclear(state->fetchres);
-			return SHPDUMPERERR;
-		}
-	
-		/* Call the relevant method depending upon the geometry type */
-		LWDEBUGF(4, "geomtype: %s\n", lwtype_name(lwgeom->type));
-	
-		switch (lwgeom->type)
-		{
-		case POINTTYPE:
-			obj = create_point(state, lwgeom_as_lwpoint(lwgeom));
-			break;
-	
-		case MULTIPOINTTYPE:
-			obj = create_multipoint(state, lwgeom_as_lwmpoint(lwgeom));
-			break;
-	
-		case POLYGONTYPE:
-			obj = create_polygon(state, lwgeom_as_lwpoly(lwgeom));
-			break;
-	
-		case MULTIPOLYGONTYPE:
-			obj = create_multipolygon(state, lwgeom_as_lwmpoly(lwgeom));
-			break;
-	
-		case LINETYPE:
-			obj = create_linestring(state, lwgeom_as_lwline(lwgeom));
-			break;
-	
-		case MULTILINETYPE:
-			obj = create_multilinestring(state, lwgeom_as_lwmline(lwgeom));
-			break;
-	
-		default:
-			snprintf(state->message, SHPDUMPERMSGLEN, _("Unknown WKB type (%d) for record %d"), lwgeom->type, state->currow);
-			PQclear(state->fetchres);
+			/* Write the shape out to the file */
+			if (SHPWriteObject(state->shp, -1, obj) == -1)
+			{
+				snprintf(state->message, SHPDUMPERMSGLEN, _("Error writing shape %d"), state->currow);
+				PQclear(state->fetchres);
+				SHPDestroyObject(obj);
+				return SHPDUMPERERR;
+			}
+
 			SHPDestroyObject(obj);
-			return SHPDUMPERERR;
+
+			/* Free the hexewkb (and temporary bytea unescaped string if used) */
+			if (hexewkb) free(hexewkb);
+			if (hexewkb_binary) PQfreemem(hexewkb_binary);
 		}
-	
-		/* Free both the original and geometries */
-		lwgeom_free(lwgeom);
-
-		/* Write the shape out to the file */
-		if (SHPWriteObject(state->shp, -1, obj) == -1)
-		{
-			snprintf(state->message, SHPDUMPERMSGLEN, _("Error writing shape %d"), state->currow);
-			PQclear(state->fetchres);
-			SHPDestroyObject(obj);
-			return SHPDUMPERERR;
-		}
-
-		SHPDestroyObject(obj);
-
-		/* Free the hexewkb (and temporary bytea unescaped string if used) */
-		if (hexewkb) free(hexewkb);
-		if (hexewkb_binary) PQfreemem(hexewkb_binary);
 	}
 
 	/* Increment ready for next time */
