@@ -852,7 +852,7 @@ lwgeom_buildarea(const LWGEOM *geom)
 
 	LWDEBUG(3, "buildarea called");
 
-	LWDEBUGF(3, "LWGEOM_buildarea got geom @ %p", geom);
+	LWDEBUGF(3, "ST_BuildArea got geom @ %p", geom);
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 

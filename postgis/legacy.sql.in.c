@@ -740,7 +740,7 @@ CREATE OR REPLACE FUNCTION buffer(geometry,float8)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION BuildArea(geometry)
 	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_buildarea'
+	AS 'MODULE_PATHNAME', 'ST_BuildArea'
 	LANGUAGE 'C' IMMUTABLE STRICT
 	COST 100;
 	
