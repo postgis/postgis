@@ -29,7 +29,7 @@
 
 #include "../liblwgeom/stringbuffer.h"
 
-#define RCSID "$Id$"
+#define S2P_RCSID "$Id$"
 
 
 /* Number of digits of precision in WKT produced. */

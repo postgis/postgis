@@ -29,7 +29,7 @@
 #include "shpcommon.h"
 #include "getopt.h"
 
-#define RCSID "$Id$"
+#define P2S_RCSID "$Id$"
 
 
 /*

@@ -2267,7 +2267,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 static void
 usage()
 {
-	printf("RCSID: %s RELEASE: %s\n", RCSID, POSTGIS_VERSION);
+	printf("RCSID: %s RELEASE: %s\n", S2P_RCSID, POSTGIS_VERSION);
 	printf("USAGE: shp2pgsql-gui [options]\n");
 	printf("OPTIONS:\n");
 	printf("  -U <username>\n");
