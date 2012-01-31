@@ -819,6 +819,8 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
     /* stuff done only on the first call of the function */
     if (SRF_IS_FIRSTCALL())
     {
+				int numbands;
+
         POSTGIS_RT_DEBUG(2, "RASTER_dumpAsWKTPolygons first call");
 
         /* create a function context for cross-call persistence */
@@ -846,6 +848,14 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
             nband = 1; /* By default, first band */
 
         POSTGIS_RT_DEBUGF(3, "band %d", nband);
+
+				numbands = rt_raster_get_num_bands(raster);
+				if (nband < 1 || nband > numbands) {
+					elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+					rt_raster_destroy(raster);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
 
         /* Polygonize raster */
 
