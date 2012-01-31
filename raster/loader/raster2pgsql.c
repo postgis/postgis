@@ -228,6 +228,7 @@ static char*
 trim(const char *input) {
 	char *rtn;
 	char *ptr;
+	uint32_t offset = 0;
 
 	if (!input)
 		return NULL;
@@ -240,15 +241,16 @@ trim(const char *input) {
 
 	/* trim right */
 	ptr = ((char *) input) + strlen(input);
-	while (isspace(*--ptr));
-	*(++ptr) = '\0';
+	while (isspace(*--ptr))
+		offset++;
 
-	rtn = rtalloc(sizeof(char) * (strlen(input) + 1));
+	rtn = rtalloc(sizeof(char) * (strlen(input) - offset + 1));
 	if (NULL == rtn) {
 		fprintf(stderr, _("Not enough memory\n"));
 		return NULL;
 	}
-	strcpy(rtn, input);
+	strncpy(rtn, input, strlen(input) - offset);
+	rtn[strlen(input) - offset] = '\0';
 
 	return rtn;
 }
@@ -257,6 +259,7 @@ static char*
 chartrim(const char *input, char *remove) {
 	char *rtn = NULL;
 	char *ptr = NULL;
+	uint32_t offset = 0;
 
 	if (!input)
 		return NULL;
@@ -269,15 +272,16 @@ chartrim(const char *input, char *remove) {
 
 	/* trim right */
 	ptr = ((char *) input) + strlen(input);
-	while (strchr(remove, *--ptr) != NULL);
-	*(++ptr) = '\0';
+	while (strchr(remove, *--ptr) != NULL)
+		offset++;
 
-	rtn = rtalloc(sizeof(char) * (strlen(input) + 1));
+	rtn = rtalloc(sizeof(char) * (strlen(input) - offset + 1));
 	if (NULL == rtn) {
 		fprintf(stderr, _("Not enough memory\n"));
 		return NULL;
 	}
-	strcpy(rtn, input);
+	strncpy(rtn, input, strlen(input) - offset);
+	rtn[strlen(input) - offset] = '\0';
 
 	return rtn;
 }
@@ -904,14 +908,21 @@ create_index(
 ) {
 	char *sql = NULL;
 	uint32_t len = 0;
+	char *_table = NULL;
+	char *_column = NULL;
 
 	assert(table != NULL);
 	assert(column != NULL);
 
+	_table = chartrim(table, "\"");
+	_column = chartrim(column, "\"");
+
 	/* create index */
-	len = strlen("CREATE INDEX ON  USING gist (st_convexhull());") + 1;
+	len = strlen("CREATE INDEX \"__gist\" ON  USING gist (st_convexhull());") + 1;
 	if (schema != NULL)
 		len += strlen(schema);
+	len += strlen(_table);
+	len += strlen(_column);
 	len += strlen(table);
 	len += strlen(column);
 	if (tablespace != NULL)
@@ -920,15 +931,21 @@ create_index(
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
 		fprintf(stderr, _("Could not allocate memory for CREATE INDEX statement\n"));
+		rtdealloc(_table);
+		rtdealloc(_column);
 		return 0;
 	}
-	sprintf(sql, "CREATE INDEX ON %s%s USING gist (st_convexhull(%s))%s%s;",
+	sprintf(sql, "CREATE INDEX \"%s_%s_gist\" ON %s%s USING gist (st_convexhull(%s))%s%s;",
+		_table,
+		_column,
 		(schema != NULL ? schema : ""),
 		table,
 		column,
 		(tablespace != NULL ? " TABLESPACE " : ""),
 		(tablespace != NULL ? tablespace : "")
 	);
+	rtdealloc(_table);
+	rtdealloc(_column);
 
 	append_sql_to_buffer(buffer, sql);
 	rtdealloc(sql);

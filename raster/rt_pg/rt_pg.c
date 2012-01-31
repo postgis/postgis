@@ -334,6 +334,7 @@ static char*
 rtpg_chartrim(const char *input, char *remove) {
 	char *rtn = NULL;
 	char *ptr = NULL;
+	uint32_t offset = 0;
 
 	if (!input)
 		return NULL;
@@ -346,15 +347,16 @@ rtpg_chartrim(const char *input, char *remove) {
 
 	/* trim right */
 	ptr = ((char *) input) + strlen(input);
-	while (strchr(remove, *--ptr) != NULL);
-	*(++ptr) = '\0';
+	while (strchr(remove, *--ptr) != NULL)
+		offset++;
 
-	rtn = palloc(sizeof(char) * (strlen(input) + 1));
+	rtn = palloc(sizeof(char) * (strlen(input) - offset + 1));
 	if (rtn == NULL) {
 		fprintf(stderr, "Not enough memory\n");
 		return NULL;
 	}
-	strcpy(rtn, input);
+	strncpy(rtn, input, strlen(input) - offset);
+	rtn[strlen(input) - offset] = '\0';
 
 	return rtn;
 }
@@ -448,6 +450,7 @@ static char*
 rtpg_trim(const char *input) {
 	char *rtn;
 	char *ptr;
+	uint32_t offset = 0;
 
 	if (!input)
 		return NULL;
@@ -460,15 +463,16 @@ rtpg_trim(const char *input) {
 
 	/* trim right */
 	ptr = ((char *) input) + strlen(input);
-	while (isspace(*--ptr));
-	*(++ptr) = '\0';
+	while (isspace(*--ptr))
+		offset++;
 
-	rtn = palloc(sizeof(char) * (strlen(input) + 1));
+	rtn = palloc(sizeof(char) * (strlen(input) - offset + 1));
 	if (rtn == NULL) {
 		fprintf(stderr, "Not enough memory\n");
 		return NULL;
 	}
-	strcpy(rtn, input);
+	strncpy(rtn, input, strlen(input) - offset);
+	rtn[strlen(input) - offset] = '\0';
 
 	return rtn;
 }
