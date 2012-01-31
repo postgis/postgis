@@ -1343,6 +1343,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	bool isnull;
 	BOX2DFLOAT4 *box;
 	size_t querysize;
+	Datum binval;
 
 	if ( PG_NARGS() == 3 )
 	{
@@ -1424,8 +1425,8 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	SPIcode = SPI_exec(query, 1);
 	if (SPIcode != SPI_OK_SELECT)
 	{
-		SPI_finish();
 		elog(ERROR, "LWGEOM_estimated_extent: couldn't execute permission check sql via SPI");
+		SPI_finish();
 		PG_RETURN_NULL();
 	}
 
@@ -1433,10 +1434,11 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	tupdesc = SPI_tuptable->tupdesc;
 	tuple = tuptable->vals[0];
 
-	if (!DatumGetBool(SPI_getbinval(tuple, tupdesc, 1, &isnull)))
+	binval = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+	if ( isnull || !DatumGetBool(binval) )
 	{
-		SPI_finish();
 		elog(ERROR, "LWGEOM_estimated_extent: permission denied for relation %s", tbl);
+		SPI_finish();
 		PG_RETURN_NULL();
 	}
 
@@ -1456,13 +1458,12 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	SPIcode = SPI_exec(query, 1);
 	if (SPIcode != SPI_OK_SELECT )
 	{
-		SPI_finish();
 		elog(ERROR,"LWGEOM_estimated_extent: couldnt execute sql via SPI");
+		SPI_finish();
 		PG_RETURN_NULL();
 	}
 	if (SPI_processed != 1)
 	{
-		SPI_finish();
 
 		POSTGIS_DEBUGF(3, " %d stat rows", SPI_processed);
 
@@ -1472,6 +1473,7 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 		elog(WARNING, "No stats for \"%s\".\"%s\".\"%s\" "
 			"(empty or not analyzed)",
 			( nsp ? nsp : "<current>" ), tbl, col);
+		SPI_finish();
 
 		PG_RETURN_NULL() ;
 	}
@@ -1479,17 +1481,18 @@ Datum LWGEOM_estimated_extent(PG_FUNCTION_ARGS)
 	tuptable = SPI_tuptable;
 	tupdesc = SPI_tuptable->tupdesc;
 	tuple = tuptable->vals[0];
-	array = DatumGetArrayTypeP(SPI_getbinval(tuple, tupdesc, 1, &isnull));
-	if (isnull)
+	binval = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+	if ( isnull )
 	{
-		SPI_finish();
 
 		POSTGIS_DEBUG(3, " stats are NULL");
 
 		elog(ERROR, "LWGEOM_estimated_extent: couldn't locate statistics for table");
+		SPI_finish();
 
 		PG_RETURN_NULL();
 	}
+	array = DatumGetArrayTypeP(binval);
 	if ( ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array)) != 4 )
 	{
 		elog(ERROR, " corrupted histogram");
