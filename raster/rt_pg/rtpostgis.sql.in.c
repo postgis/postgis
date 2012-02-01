@@ -2424,12 +2424,6 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
     AS 'MODULE_PATHNAME','RASTER_getPixelPolygon'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
--- TODO: deprecate
-CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, band integer, x integer, y integer)
-    RETURNS geometry AS
-    $$ SELECT st_pixelaspolygon($1, $3, $4); $$
-    LANGUAGE 'sql' IMMUTABLE STRICT;
-
 -----------------------------------------------------------------------
 -- ST_PixelAsPolygons
 -- Return all the pixels of a raster as a geomval record

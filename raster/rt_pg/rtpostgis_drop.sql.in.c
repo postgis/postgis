@@ -301,3 +301,6 @@ DROP FUNCTION IF EXISTS st_intersection(rast raster, geom geometry);
 
 -- function was renamed
 DROP FUNCTION IF EXISTS st_minpossibleval(text);
+
+-- function deprecated previously
+DROP FUNCTION IF EXISTS st_pixelaspolygon(raster, integer, integer, integer);
