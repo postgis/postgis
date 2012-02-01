@@ -2663,6 +2663,7 @@ double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 static int 
 ptarray_nudge_geodetic(POINTARRAY *pa)
 {
+
 	int i;
 	POINT4D p;
 	int altered = LW_FALSE;
@@ -2680,17 +2681,17 @@ ptarray_nudge_geodetic(POINTARRAY *pa)
 			p.x = -180.0;
 			altered = LW_TRUE;
 		}
-		else if ( p.x > 180.0 && (p.x - 180.0 < tolerance) )
+		if ( p.x > 180.0 && (p.x - 180.0 < tolerance) )
 		{
 			p.x = 180.0;
 			altered = LW_TRUE;
 		}
-		else if ( p.y < -90.0 && (-90.0 - p.y < tolerance) )
+		if ( p.y < -90.0 && (-90.0 - p.y < tolerance) )
 		{
 			p.y = -90.0;
 			altered = LW_TRUE;
 		}
-		else if ( p.y > 90.0 && (p.y - 90.0 < tolerance) )
+		if ( p.y > 90.0 && (p.y - 90.0 < tolerance) )
 		{
 			p.y = 90.0;
 			altered = LW_TRUE;
@@ -2737,7 +2738,8 @@ lwgeom_nudge_geodetic(LWGEOM *geom)
 		LWPOLY *poly = (LWPOLY*)geom;
 		for ( i = 0; i < poly->nrings; i++ )
 		{
-			rv = (rv == LW_TRUE ? rv : ptarray_nudge_geodetic(poly->rings[i]));
+			int n = ptarray_nudge_geodetic(poly->rings[i]);
+			rv = (rv == LW_TRUE ? rv : n);
 		}
 		return rv;
 	}
@@ -2751,7 +2753,8 @@ lwgeom_nudge_geodetic(LWGEOM *geom)
 
 		for ( i = 0; i < col->ngeoms; i++ )
 		{
-			rv = (rv == LW_TRUE ? rv : lwgeom_nudge_geodetic(col->geoms[i]));
+			int n = lwgeom_nudge_geodetic(col->geoms[i]);
+			rv = (rv == LW_TRUE ? rv : n);
 		}
 		return rv;
 	}
