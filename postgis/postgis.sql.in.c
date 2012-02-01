@@ -115,6 +115,33 @@ CREATE CAST (geometry AS geometry) WITH FUNCTION geometry(geometry, integer, boo
 
 -------------------------------------------------------------------
 --  BOX3D TYPE
+-- Point coordinate data access
+-------------------------------------------
+-- PostGIS equivalent function: X(geometry)
+CREATE OR REPLACE FUNCTION ST_X(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_x_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- PostGIS equivalent function: Y(geometry)
+CREATE OR REPLACE FUNCTION ST_Y(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_y_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_Z(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_z_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_M(geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','LWGEOM_m_point'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-------------------------------------------
 -------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION box3d_in(cstring)
@@ -679,15 +706,27 @@ CREATE OR REPLACE FUNCTION ST_Affine(geometry,float8,float8,float8,float8,float8
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_RotateZ(geometry,float8)
+CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8)
 	RETURNS geometry
 	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2), cos($2), 0,  0, 0, 1,  0, 0, 0)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8)
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8,float8,float8)
 	RETURNS geometry
-	AS 'SELECT ST_RotateZ($1, $2)'
+	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2),  cos($2), 0, 0, 0, 1,	$3 - cos($2) * $3 + sin($2) * $4, $4 - sin($2) * $3 - cos($2) * $4, 0)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_Rotate(geometry,float8,geometry)
+	RETURNS geometry
+	AS 'SELECT ST_Affine($1,  cos($2), -sin($2), 0,  sin($2),  cos($2), 0, 0, 0, 1, ST_X($3) - cos($2) * ST_X($3) + sin($2) * ST_Y($3), ST_Y($3) - sin($2) * ST_X($3) - cos($2) * ST_Y($3), 0)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+CREATE OR REPLACE FUNCTION ST_RotateZ(geometry,float8)
+	RETURNS geometry
+	AS 'SELECT ST_Rotate($1, $2)'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -3464,30 +3503,6 @@ CREATE OR REPLACE FUNCTION ST_PatchN(geometry, integer)
 	'
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
--- PostGIS equivalent function: X(geometry)
-CREATE OR REPLACE FUNCTION ST_X(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_x_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- PostGIS equivalent function: Y(geometry)
-CREATE OR REPLACE FUNCTION ST_Y(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_y_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_Z(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_z_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_M(geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME','LWGEOM_m_point'
-	LANGUAGE 'C' IMMUTABLE STRICT;
-
 -- PostGIS equivalent function of old StartPoint(geometry))
 CREATE OR REPLACE FUNCTION ST_StartPoint(geometry)
 	RETURNS geometry
@@ -4626,7 +4641,7 @@ $BODY$
 				-- Compute the midpoint
 				p1 = ST_line_interpolate_point(l1,0.5);
 				-- Rotate the line 90 degrees around the midpoint (perpendicular bisector)
-				l1 = ST_Translate(ST_Rotate(ST_Translate(l1,-ST_X(p1),-ST_Y(p1)),pi()/2),ST_X(p1),ST_Y(p1));
+				l1 = ST_Rotate(l1,pi()/2,p1);
 				--  Compute the azimuth of the bisector
 				a1 = ST_Azimuth(ST_PointN(l1,1),ST_PointN(l1,2));
 				--  Extend the line in each direction the new computed distance to insure they will intersect
@@ -4636,7 +4651,7 @@ $BODY$
 				-- Repeat for the line from the point to the other diameter point
 				l2 = ST_Makeline(ST_PointN(ring,idx2),ST_PointN(ring,k));
 				p2 = ST_Line_interpolate_point(l2,0.5);
-				l2 = ST_Translate(ST_Rotate(ST_Translate(l2,-ST_X(p2),-ST_Y(p2)),pi()/2),ST_X(p2),ST_Y(p2));
+				l2 = ST_Rotate(l2,pi()/2,p2);
 				a2 = ST_Azimuth(ST_PointN(l2,1),ST_PointN(l2,2));
 				l2 = ST_AddPoint(l2,ST_Makepoint(ST_X(ST_PointN(l2,2))+sin(a2)*dist,ST_Y(ST_PointN(l2,2))+cos(a2)*dist),-1);
 				l2 = ST_AddPoint(l2,ST_Makepoint(ST_X(ST_PointN(l2,1))-sin(a2)*dist,ST_Y(ST_PointN(l2,1))-cos(a2)*dist),0);

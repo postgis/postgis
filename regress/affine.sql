@@ -9,6 +9,12 @@ select 'ST_Scale', ST_asewkt(ST_Scale('POINT(1 1)'::geometry, 5, 5));
 select 'ST_Scale', ST_asewkt(ST_Scale('POINT(1 1)'::geometry, 3, 2));
 select 'ST_Scale', ST_asewkt(ST_Scale('POINT(10 20 -5)'::geometry, 4, 2, -8));
 
+-- ST_Rotate
+select 'ST_Rotate', ST_asewkt(ST_SnapToGrid(ST_Rotate('POINT(1 1)'::geometry, pi()/2, 10.0, 20.0), 0.1));
+select 'ST_Rotate', ST_asewkt(ST_SnapToGrid(ST_Rotate('POINT(1 1)'::geometry, -pi()/2, -1.0, 2.0), 0.1));
+select 'ST_Rotate', ST_asewkt(ST_SnapToGrid(ST_Rotate('POINT(1 1)'::geometry, pi()/2, 'POINT(10 10)'::geometry), 0.1));
+select 'ST_Rotate', ST_asewkt(ST_SnapToGrid(ST_Rotate('POINT(1 1)'::geometry, pi()/2, ST_Centroid('LINESTRING(0 0, 1 0)'::geometry)), 0.1));
+
 -- ST_RotateZ
 select 'ST_RotateZ', ST_asewkt(ST_SnapToGrid(ST_RotateZ('POINT(1 1)'::geometry, pi()), 0.1));
 select 'ST_RotateZ', ST_asewkt(ST_SnapToGrid(ST_RotateZ('POINT(1 1)'::geometry, pi()/2), 0.1));

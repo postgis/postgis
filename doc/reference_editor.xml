@@ -143,11 +143,11 @@ z' = z </programlisting> This method is a subcase of the 3D method
 		<title>Examples</title>
 
 		<programlisting>
---Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for doing ST_RotateZ();
+--Rotate a 3d line 180 degrees about the z axis.  Note this is long-hand for doing ST_Rotate();
  SELECT ST_AsEWKT(ST_Affine(the_geom,  cos(pi()), -sin(pi()), 0,  sin(pi()), cos(pi()), 0,  0, 0, 1,  0, 0, 0)) As using_affine,
-	 ST_AsEWKT(ST_RotateZ(the_geom, pi())) As using_rotatez
+	 ST_AsEWKT(ST_Rotate(the_geom, pi())) As using_rotate
 	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;
-		using_affine         |        using_rotatez
+        using_affine         |        using_rotate
 -----------------------------+-----------------------------
  LINESTRING(-1 -2 3,-1 -4 3) | LINESTRING(-1 -2 3,-1 -4 3)
 (1 row)
@@ -155,11 +155,10 @@ z' = z </programlisting> This method is a subcase of the 3D method
 --Rotate a 3d line 180 degrees in both the x and z axis
 SELECT ST_AsEWKT(ST_Affine(the_geom, cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), -sin(pi()), 0, sin(pi()), cos(pi()), 0, 0, 0))
 	FROM (SELECT ST_GeomFromEWKT('LINESTRING(1 2 3, 1 4 3)') As the_geom) As foo;
-		   st_asewkt
+           st_asewkt
 -------------------------------
  LINESTRING(-1 -2 -3,-1 -4 -3)
 (1 row)
-
 		</programlisting>
 	  </refsection>
 
@@ -825,7 +824,7 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 	  <refnamediv>
 		<refname>ST_Rotate</refname>
 
-		<refpurpose>This is a synonym for ST_RotateZ</refpurpose>
+		<refpurpose>Rotate a geometry rotRadians counter-clockwise about an origin.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -833,17 +832,35 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 		  <funcprototype>
 			<funcdef>geometry <function>ST_Rotate</function></funcdef>
 			<paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
-			<paramdef><type>float</type> <parameter>rotZRadians</parameter></paramdef>
+			<paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
 		  </funcprototype>
+
+		  <funcprototype>
+                        <funcdef>geometry <function>ST_Rotate</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>x0</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>y0</parameter></paramdef>
+                  </funcprototype>
+
+		  <funcprototype>
+                        <funcdef>geometry <function>ST_Rotate</function></funcdef>
+                        <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef>
+                        <paramdef><type>float</type> <parameter>rotRadians</parameter></paramdef>
+                        <paramdef><type>geometry</type> <parameter>pointOrigin</parameter></paramdef>
+                  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 
 	  <refsection>
 		<title>Description</title>
 
-		<para>This is a synonym for ST_RotateZ..  Rotates geometry rotZRadians about the Z-axis.</para>
+		<para>Rotates geometry rotRadians counter-clockwise about the origin. The rotation origin can be
+			specified either as a POINT geometry, or as x and y coordinates. If the origin is not
+			specified, the geometry is rotated about POINT(0 0).</para>
 
 		<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
+		<para>Enhanced: 2.0.0 additional parameters for specifying the origin of rotation were added.</para>
 		<para>Availability: 1.1.2. Name changed from Rotate to ST_Rotate in 1.2.2</para>
 	  	<para>&Z_support;</para>
 	  	<para>&curve_support;</para>
@@ -856,7 +873,29 @@ LINESTRING(1 2,1 10) | LINESTRING(1 10,1 2)
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting></programlisting>
+		<programlisting>
+--Rotate 180 degrees
+SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()));
+               st_asewkt
+---------------------------------------
+ LINESTRING(-50 -160,-50 -50,-100 -50)
+(1 row)
+
+--Rotate 30 degrees counter-clockwise at x=50, y=160
+SELECT ST_AsEWKT(ST_Rotate('LINESTRING (50 160, 50 50, 100 50)', pi()/6, 50, 160));
+                                 st_asewkt
+---------------------------------------------------------------------------
+ LINESTRING(50 160,105 64.7372055837117,148.301270189222 89.7372055837117)
+(1 row)
+
+--Rotate 60 degrees clockwise from centroid
+SELECT ST_AsEWKT(ST_Rotate(geom, -pi()/3, ST_Centroid(geom)))
+FROM (SELECT 'LINESTRING (50 160, 50 50, 100 50)'::geometry AS geom) AS foo;
+                           st_asewkt
+--------------------------------------------------------------
+ LINESTRING(116.4225 130.6721,21.1597 75.6721,46.1597 32.3708)
+(1 row)
+		</programlisting>
 	  </refsection>
 
 	  <!-- Optionally add a "See Also" section -->
@@ -998,6 +1037,7 @@ SELECT ST_AsEWKT(ST_RotateX(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), pi()/2)
 
 		<para>Rotate a geometry geomA - rotRadians about the Z axis.</para>
 
+		<note><para>This is a synonym for ST_Rotate</para></note>
 		<note><para><code>ST_RotateZ(geomA,  rotRadians)</code>
 			is short-hand for <code>SELECT ST_Affine(geomA,  cos(rotRadians), -sin(rotRadians), 0,  sin(rotRadians), cos(rotRadians), 0,  0, 0, 1,  0, 0, 0)</code>.</para></note>
 
