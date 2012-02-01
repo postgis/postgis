@@ -2527,7 +2527,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     rt_pixtype newpixeltype;
     int skipcomputation = 0;
     char strnewval[50];
-    int count = 0;
     int len = 0;
     int ret = -1;
     TupleDesc tupdesc;
@@ -2941,6 +2940,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
     for (x = 0; x < width; x++) {
         for(y = 0; y < height; y++) {
+            char *tmp;
             ret = rt_band_get_pixel(band, x, y, &r);
 
             /**
@@ -2949,11 +2949,16 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
              **/
             if (ret != -1 && FLT_NEQ(r, newnodatavalue)) {
                 if (skipcomputation == 0) {
-                    sprintf(strnewval, "%f", r);
 
                     if (initexpr != NULL) {
-												count = 0;
-                        newexpr = rtpg_strreplace(initexpr, "RAST", strnewval, &count);
+                        sprintf(strnewval, "%d", x+1);
+                        newexpr = rtpg_strreplace(initexpr, "RAST.X", strnewval, NULL);
+                        sprintf(strnewval, "%d", y+1);
+                        tmp = rtpg_strreplace(newexpr, "RAST.Y", strnewval, NULL);
+                        pfree(newexpr); newexpr=tmp;
+                        sprintf(strnewval, "%f", r);
+                        tmp = rtpg_strreplace(newexpr, "RAST", strnewval, NULL);
+                        pfree(newexpr); newexpr=tmp;
 
                         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: (%dx%d), "
                                 "r = %s, newexpr = %s",
