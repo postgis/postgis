@@ -24,7 +24,7 @@
 #include "liblwgeom_internal.h"         /* For FP comparators. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
-#include "../libpgcommon/lwgeom_transform.h"
+#include "lwgeom_transform.h"
 
 Datum geography_distance(PG_FUNCTION_ARGS);
 Datum geography_dwithin(PG_FUNCTION_ARGS);
