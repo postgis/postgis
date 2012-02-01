@@ -697,9 +697,64 @@ MULTILINESTRING((0 0, 1 1), (2 2, 3 3))
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Multi" />, <xref linkend="ST_Dump" /></para>
+			<para><xref linkend="ST_Multi" />, <xref linkend="ST_Dump" />, <xref linkend="ST_CollectionHomogenize" /></para>
 		</refsection>
 	</refentry>
+	
+		<refentry id="ST_CollectionHomogenize">
+			<refnamediv>
+				<refname>ST_CollectionHomogenize</refname>
+
+				<refpurpose>
+	Given a geometry collection, returns the "simplest" representation of the contents.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>geometry <function>ST_CollectionHomogenize</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>collection</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Given a geometry collection, returns the "simplest" representation of the contents.  Singletons will be returned as singletons.  Collections that are homogeneous will be returned as the appropriate multi-type.
+				</para>
+
+				<para>Availability: 2.0.0</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0))'));	
+
+	st_astext
+	------------
+	 POINT(0 0)
+	(1 row)
+
+  SELECT ST_AsText(ST_CollectionHomogenize('GEOMETRYCOLLECTION(POINT(0 0),POINT(1 1))'));	
+
+	st_astext
+	---------------------
+	 MULTIPOINT(0 0,1 1)
+	(1 row)
+
+				</programlisting>
+			</refsection>
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_Multi" />, <xref linkend="ST_CollectionExtract" /></para>
+			</refsection>
+		</refentry>	
 	
 	<refentry id="ST_Multi">
 		<refnamediv>
