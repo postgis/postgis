@@ -9652,3 +9652,50 @@ rt_raster_from_two_rasters(
 	*err = 1;
 	return raster;
 }
+
+
+LWPOLY*
+rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
+{
+    double scale_x, scale_y;
+    double skew_x, skew_y;
+    double ul_x, ul_y;
+    int srid;
+    POINTARRAY **points;
+    POINT4D p, p0;
+    LWPOLY *poly;
+
+    scale_x = rt_raster_get_x_scale(rast);
+    scale_y = rt_raster_get_y_scale(rast);
+    skew_x = rt_raster_get_x_skew(rast);
+    skew_y = rt_raster_get_y_skew(rast);
+    ul_x = rt_raster_get_x_offset(rast);
+    ul_y = rt_raster_get_y_offset(rast);
+    srid = rt_raster_get_srid(rast);
+
+    points = rtalloc(sizeof(POINTARRAY *)*1);
+    points[0] = ptarray_construct(0, 0, 5);
+
+    p0.x = scale_x * x + skew_x * y + ul_x;
+    p0.y = scale_y * y + skew_y * x + ul_y;
+    ptarray_set_point4d(points[0], 0, &p0);
+
+    p.x = p0.x + scale_x;
+    p.y = p0.y + skew_y;
+    ptarray_set_point4d(points[0], 1, &p);
+
+    p.x = p0.x + scale_x + skew_x;
+    p.y = p0.y + scale_y + skew_y;
+    ptarray_set_point4d(points[0], 2, &p);
+
+    p.x = p0.x + skew_x;
+    p.y = p0.y + scale_y;
+    ptarray_set_point4d(points[0], 3, &p);
+
+    /* close it */
+    ptarray_set_point4d(points[0], 4, &p0);
+
+    poly = lwpoly_construct(srid, NULL, 1, points);
+
+    return poly;
+}

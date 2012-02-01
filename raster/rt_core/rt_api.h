@@ -949,6 +949,22 @@ int rt_raster_geopoint_to_cell(rt_raster raster,
  */
 LWPOLY* rt_raster_get_convex_hull(rt_raster raster);
 
+/**
+ * Get a raster pixel as a polygon.
+ *
+ * The pixel shape is a 4 vertices (5 to be closed) single
+ * ring polygon bearing the raster's rotation
+ * and using projection coordinates
+ *
+ * @param raster : the raster to get pixel from
+ * @param x : the column number
+ * @param y : the row number
+ *
+ * @return the pixel polygon, or NULL on error.
+ *
+ */
+LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
+
 
 /**
  * Returns a set of "geomval" value, one for each group of pixel

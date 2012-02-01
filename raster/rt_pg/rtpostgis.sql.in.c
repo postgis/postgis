@@ -2419,54 +2419,16 @@ CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
     $$
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
+    RETURNS geometry 
+    AS 'MODULE_PATHNAME','RASTER_getPixelPolygon'
+    LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- TODO: deprecate
 CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, band integer, x integer, y integer)
     RETURNS geometry AS
-    $$
-    DECLARE
-        w int;
-        h int;
-        scale_x float8;
-        scale_y float8;
-        skew_x float8;
-        skew_y float8;
-        ul_x float8;
-        ul_y float8;
-				sr_id int;
-        x1 float8;
-        y1 float8;
-        x2 float8;
-        y2 float8;
-        x3 float8;
-        y3 float8;
-        x4 float8;
-        y4 float8;
-    BEGIN
-				SELECT scalex, scaley, skewx, skewy, upperleftx, upperlefty, srid INTO scale_x, scale_y, skew_x, skew_y, ul_x, ul_y, sr_id FROM ST_Metadata(rast);
-        x1 := scale_x * (x - 1) + skew_x * (y - 1) + ul_x;
-        y1 := scale_y * (y - 1) + skew_y * (x - 1) + ul_y;
-        x2 := x1 + scale_x;
-        y2 := y1 + skew_y;
-        x3 := x1 + scale_x + skew_x;
-        y3 := y1 + scale_y + skew_y;
-        x4 := x1 + skew_x;
-        y4 := y1 + scale_y;
-        RETURN st_setsrid(st_makepolygon(st_makeline(ARRAY[st_makepoint(x1, y1),
-                                                           st_makepoint(x2, y2),
-                                                           st_makepoint(x3, y3),
-                                                           st_makepoint(x4, y4),
-                                                           st_makepoint(x1, y1)]
-                                                    )
-                                        ),
-                          sr_id
-                         );
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
-    RETURNS geometry AS
-    $$ SELECT st_pixelaspolygon($1, 1, $2, $3) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
+    $$ SELECT st_pixelaspolygon($1, $3, $4); $$
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_PixelAsPolygons
