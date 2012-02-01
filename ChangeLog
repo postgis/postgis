@@ -1,3 +1,414 @@
+2012-02-01 17:28  robe
+
+	* extras/tiger_geocoder/tiger_2010/tables/census_tracts_tables.sql:
+	  #1494: build parent structures to support census tract reporting
+	  by geocoder.
+
+2012-02-01 15:28  dustymugs
+
+	* raster/rt_pg/rt_pg.c, raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/test/regress/rt_mapalgebraexpr_2raster.sql: Additional
+	  cleanup of a few functions using ST_PixelAsPolygon(raster, int,
+	  int, int). Also, made map algebra expression case-sensitive in
+	  2-raster ST_MapAlgebraExpr. Now, the keywords must be RAST1 and
+	  RAST2.
+
+2012-02-01 14:58  dustymugs
+
+	* raster/test/regress/rt_pixelvalue.sql: Refactored regression test
+	  for ST_PixelAsPolygon
+
+2012-02-01 14:32  dustymugs
+
+	* raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/rt_pg/rtpostgis_drop.sql.in.c: Deleted deprecated
+	  ST_PixelAsPolygon(raster, int, int, int) variant.
+
+2012-02-01 11:51  strk
+
+	* raster/test/regress/rt_mapalgebraexpr.sql: Make test more
+	  readable
+
+2012-02-01 11:39  strk
+
+	* raster/rt_pg/rt_pg.c, raster/test/regress/rt_mapalgebraexpr.sql,
+	  raster/test/regress/rt_mapalgebraexpr_expected: Keep initial
+	  value when an expression eveluates to null (#1523)
+
+2012-02-01 10:15  strk
+
+	* doc/reference_raster.xml, raster/rt_pg/rt_pg.c,
+	  raster/test/regress/rt_mapalgebraexpr.sql,
+	  raster/test/regress/rt_mapalgebraexpr_expected: Implement RAST.X
+	  and RAST.Y keyword substitution in ST_MapAlgebraExpr
+	  
+	  Includes regression test and documentation update. See #1519.
+
+2012-02-01 09:20  strk
+
+	* raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/rt_pg/rt_pg.c, raster/rt_pg/rtpostgis.sql.in.c: Implement
+	  ST_PixelAsPolygon in C, provide a core API entry for it
+	  
+	  The API entry point is expected to be useful for #1519
+
+2012-02-01 05:30  pramsey
+
+	* liblwgeom/lwgeodetic.c: Try again to fix #1292
+
+2012-02-01 02:14  pramsey
+
+	* spatial_ref_sys.sql: VACUUM cannot be executed from a function or
+	  multi-command string (#1517)
+
+2012-02-01 00:41  pramsey
+
+	* postgis/geography_measurement.c: Fix include to be pathless
+
+2012-01-31 23:36  pramsey
+
+	* spatial_ref_sys.sql: Update spatial_ref_sys to latest GDAL
+	  generated version (#1493)
+
+2012-01-31 22:33  pramsey
+
+	* postgis/lwgeom_functions_analytic.c: ST_Line_Interpolate_Point
+	  doesn't interpolate M-values (#639)
+
+2012-01-31 20:46  pramsey
+
+	* liblwgeom/lwgeodetic.c, loader/pgsql2shp-cli.c,
+	  loader/pgsql2shp-core.h, loader/shp2pgsql-cli.c,
+	  loader/shp2pgsql-core.h, loader/shp2pgsql-gui.c: Remove some
+	  compile warnings.
+
+2012-01-31 18:56  pramsey
+
+	* postgis/postgis.sql.in.c: Gah, someone else can do this...
+
+2012-01-31 18:24  pramsey
+
+	* doc/faq.xml: Really, I do know how to write XML.
+
+2012-01-31 18:19  pramsey
+
+	* liblwgeom/liblwgeom.h.in, liblwgeom/lwgeodetic.c,
+	  postgis/geography_inout.c: ST_SnapToGrid returns a value out of
+	  range (#1292)
+
+2012-01-31 18:12  pramsey
+
+	* liblwgeom/lwgeom_geos.c, postgis/legacy.sql.in.c: Rename
+	  ST_BuildArea backend function
+
+2012-01-31 18:10  pramsey
+
+	* doc/faq.xml: Fix missing tag
+
+2012-01-31 18:09  pramsey
+
+	* postgis/postgis.sql.in.c: Drop Equals(geom,geom) - deprecated in
+	  1.2.3 (#1486)
+
+2012-01-31 18:03  pramsey
+
+	* doc/faq.xml: FAQ about licensing (#1262)
+
+2012-01-31 17:44  dustymugs
+
+	* raster/loader/raster2pgsql.c, raster/rt_pg/rt_pg.c: Explicitly
+	  set spatial index name as PostgreSQL 8.4 requires an index name.
+	  Associated ticket is #1513. Also fixed string trim functions to
+	  prevent modification of passed string.
+
+2012-01-31 14:50  dustymugs
+
+	* raster/rt_pg/rt_pg.c: Fixed evaluation of two floating point
+	  numbers in RASTER_getRotation. Fixes one of the two regression
+	  failures described in #1501.
+
+2012-01-31 14:46  dustymugs
+
+	* raster/rt_pg/rt_pg.c: Added check of band # passed to
+	  ST_DumpAsPolygons. Fixes #1514.
+
+2012-01-31 05:50  pramsey
+
+	* loader/pgsql2shp-core.c: Pgsql2shp: Dumping: XWKB structure does
+	  not match expected size! (#1479)
+
+2012-01-30 21:52  pramsey
+
+	* liblwgeom/ptarray.c: ST_Segmentize returns invalid LINESTRING for
+	  zero-length input (#1304)
+
+2012-01-30 20:41  pramsey
+
+	* liblwgeom/lwlinearreferencing.c: ST_LocateBetweenElevations
+	  should return NULL and not fail if intersection is void (#1250)
+
+2012-01-30 20:17  pramsey
+
+	* postgis/lwgeom_geos.c, postgis/postgis.sql.in.c: ST_Within not
+	  using prepared geometries (#962)
+
+2012-01-30 02:47  pramsey
+
+	* loader/pgsql2shp-core.c, loader/pgsql2shp-core.h,
+	  loader/safileio.c, loader/shapefil.h, loader/shp2pgsql-core.h:
+	  (#393) shp2pgsql returns "fseek(-xxx) failed on DBF file." for
+	  large (>2GB) DBF files
+
+2012-01-30 00:37  pramsey
+
+	* liblwgeom/cunit/cu_out_gml.c, liblwgeom/lwout_gml.c,
+	  postgis/geography_inout.c, postgis/lwgeom_export.c,
+	  postgis/lwgeom_in_gml.c, regress/empty_expected,
+	  regress/tickets.sql, regress/tickets_expected: GML for empty
+	  geometries should be NULL (#1377)
+
+2012-01-29 23:30  nicklas
+
+	* liblwgeom/measures.c, regress/measures.sql,
+	  regress/measures_expected: Increase robustness in
+	  distance-calculations when point is on segment.
+
+2012-01-29 21:19  strk
+
+	* postgis/geometry_estimate.c: typo
+
+2012-01-29 19:57  pramsey
+
+	* postgis/lwgeom_in_gml.c, regress/in_gml_expected: Be more liberal
+	  in accepting "empty" tags in constructing geometries from GML
+	  (#1059)
+
+2012-01-29 14:44  strk
+
+	* CREDITS: Give me psc status
+
+2012-01-28 23:11  strk
+
+	* topology/sql/sqlmm.sql.in.c: Fix _ST_AddFaceSplit code against
+	  PostgreSQL 9.1
+
+2012-01-28 22:08  strk
+
+	* topology/sql/populate.sql.in.c: Don't put constant geometries in
+	  CTE, which confuses estimator
+
+2012-01-28 17:05  strk
+
+	* topology/sql/sqlmm.sql.in.c: Simplify code in _ST_AddFaceSplit,
+	  reduce edges table scans.
+	  
+	  Also set debugging off by default
+
+2012-01-28 16:20  strk
+
+	* topology/sql/sqlmm.sql.in.c: Switch ST_AddEdgeNewFaces from
+	  ST_Polygonize to _ST_AddSplitFace
+	  
+	  See ticket #1508
+
+2012-01-28 13:45  strk
+
+	* topology/sql/sqlmm.sql.in.c: Stop using ST_Polygonize from
+	  ST_AddEdgeModFace.
+	  
+	  This commit also estrapolates an internal _ST_AddSplitFace
+	  function
+	  for reuse by ST_AddEdgeModFaces
+
+2012-01-28 13:18  strk
+
+	* topology/topology.sql.in.c: Rename topogeometry column check to
+	  be more readable
+
+2012-01-28 10:42  strk
+
+	* topology/test/regress/st_addedgemodface.sql,
+	  topology/test/regress/st_addedgemodface_expected,
+	  topology/test/regress/st_addedgenewfaces.sql,
+	  topology/test/regress/st_addedgenewfaces_expected: New test for
+	  closing multi-edge ring in a face (ST_AddEdge*Face*)
+
+2012-01-28 07:44  strk
+
+	* topology/topology.sql.in.c: Allow multiple topogeometry columns
+	  in one table (again)
+	  
+	  Dunno why this piece was missing from previous commit, sorry
+
+2012-01-28 07:37  strk
+
+	* topology/test/regress/addtopogeometrycolumn.sql,
+	  topology/test/regress/addtopogeometrycolumn_expected: Allow
+	  multiple TopoGeometry column in the same table
+
+2012-01-28 00:23  robe
+
+	* doc/reference_raster.xml: add protos for ST_Quantile raster table
+	  coverage. Still some more to add as well as examples of usage
+
+2012-01-27 23:31  pramsey
+
+	* liblwgeom/lwout_gml.c: Fix one remaining crasher for
+	  ST_AsGML('SRID=4326;POLYGON EMPTY');
+
+2012-01-27 22:24  pramsey
+
+	* postgis/geometry_estimate.c: #1504 (Segfault running
+	  ST_EstimatedExtent())
+
+2012-01-27 21:05  dustymugs
+
+	* raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/rt_pg/rt_pg.c: Fixed segfault caused by an empty quantile
+	  linked list being used to get the quantile's value. Ticket is
+	  #1506.
+
+2012-01-27 20:55  pramsey
+
+	* liblwgeom/cunit/cu_ptarray.c, liblwgeom/lwsegmentize.c: Tighten
+	  up on-arc test a bit more.
+
+2012-01-27 20:14  strk
+
+	* topology/test/regress/legacy_invalid_expected,
+	  topology/topology.sql.in.c: Add "face has no rings" validity
+	  checking
+
+2012-01-27 18:57  pramsey
+
+	* loader/safileio.c, loader/shapefil.h: Revert accidental inclusion
+	  of shape file size patch in curve patch
+
+2012-01-27 18:54  pramsey
+
+	* install-sh, liblwgeom/cunit/cu_ptarray.c, liblwgeom/lwin_wkt.c,
+	  liblwgeom/lwsegmentize.c, loader/safileio.c, loader/shapefil.h,
+	  regress/sql-mm-curvepoly.sql, regress/sql-mm-curvepoly_expected,
+	  regress/tickets_expected: #920 (ST_LineToCurve generating invalid
+	  CURVEPOLYGON)
+
+2012-01-27 14:22  strk
+
+	* topology/test/regress/st_addedgemodface.sql,
+	  topology/test/regress/st_addedgemodface_expected,
+	  topology/test/regress/st_addedgenewfaces.sql,
+	  topology/test/regress/st_addedgenewfaces_expected: More test for
+	  face splitting and inside holes
+
+2012-01-27 11:36  strk
+
+	* topology/test/regress/st_addedgemodface.sql,
+	  topology/test/regress/st_addedgemodface_expected,
+	  topology/test/regress/st_addedgenewfaces.sql,
+	  topology/test/regress/st_addedgenewfaces_expected: More test for
+	  update of isolated nodes in split-faces.
+
+2012-01-27 11:05  strk
+
+	* topology/test/regress/st_addisonode.sql,
+	  topology/test/regress/st_addisonode_expected: Rewrite test for
+	  ST_AddIsoNode (see #1503)
+
+2012-01-27 11:05  strk
+
+	* topology/sql/sqlmm.sql.in.c: Simplify the code looking for face
+	  containment in ST_AddIsoNode
+	  
+	  Fixes bug #1503 for me, altough I didn't handle to produce a
+	  testcase for it.
+
+2012-01-27 08:18  strk
+
+	* topology/test/regress/st_addedgemodface.sql,
+	  topology/test/regress/st_addedgemodface_expected,
+	  topology/test/regress/st_addedgenewfaces.sql,
+	  topology/test/regress/st_addedgenewfaces_expected: Add test for
+	  update of isolated nodes in split-faces.
+	  
+	  Affects both ST_AddEdgeModFace and ST_AddEdgeNewFaces (both work)
+
+2012-01-26 20:25  pramsey
+
+	* regress/Makefile.in, regress/wmsservers.sql,
+	  regress/wmsservers_expected, regress/wmsservers_new.sql,
+	  regress/wmsservers_new_expected, regress/wmsservers_old.sql,
+	  regress/wmsservers_old_expected: Complete #737
+
+2012-01-26 20:19  pramsey
+
+	* configure.ac, postgis_config.h.in: Detect asprintf, vasprintf,
+	  fseeko
+
+2012-01-26 18:09  strk
+
+	* regress/regress_expected, regress/tickets_expected: Change
+	  expectations from tests involving ST_MakeLine
+
+2012-01-26 17:23  pramsey
+
+	* loader/shpopen.c: Clean up and exit when shp file missing
+
+2012-01-26 16:22  pramsey
+
+	* java/jdbc/src/org/postgis/LineString.java: Fix contact per a
+	  message on postgis-users from Markus Innerebner
+
+2012-01-26 13:00  strk
+
+	* doc/reference_constructor.xml, postgis/lwgeom_functions_basic.c,
+	  regress/ctors.sql, regress/ctors_expected: Add support for
+	  linestrings in ST_MakeLine (#1500)
+	  
+	  Affects both the aggregate and the 2-parameters function.
+	  Regression testing included.
+	  Documentation was updated, but lacks examples.
+
+2012-01-26 12:59  strk
+
+	* liblwgeom/liblwgeom.h.in, liblwgeom/lwline.c: Implement
+	  lwline_from_lwgeom_array (untested)
+
+2012-01-26 12:59  strk
+
+	* liblwgeom/cunit/cu_ptarray.c, liblwgeom/ptarray.c: Don't let
+	  ptarray_append_ptarray change read-only pointarrays
+
+2012-01-26 12:59  strk
+
+	* liblwgeom/cunit/cu_ptarray.c: Test that mixed dimensionality is
+	  not allowed by ptarray_append_ptarray
+
+2012-01-26 12:34  strk
+
+	* liblwgeom/cunit/cu_libgeom.c: Add more test for FLAGS_GET_ and
+	  FLAGS_SET_
+
+2012-01-26 09:16  strk
+
+	* liblwgeom/cunit/cu_ptarray.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/ptarray.c: Implement ptarray_append_ptarray, and change
+	  its signature
+	  
+	  This is propedeutic to ticket #1500
+
+2012-01-26 08:12  strk
+
+	* topology/sql/sqlmm.sql.in.c: Tweak debug messages not to clutter
+	  output
+
+2012-01-25 17:40  pramsey
+
+	* Version.config: Bump version string forward
+
+2012-01-25 17:38  pramsey
+
+	* ChangeLog, NEWS, README.postgis: Prep for alpha2
+
 2012-01-24 22:23  pramsey
 
 	* liblwgeom/lwout_svg.c, regress/tickets.sql,
