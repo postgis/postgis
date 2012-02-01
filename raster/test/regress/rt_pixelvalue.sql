@@ -65,12 +65,12 @@ SELECT 'test 2.2', id
     WHERE st_value(rast, 2, st_makepoint(st_upperleftx(rast), st_upperlefty(rast))) != b2val;
 
 -----------------------------------------------------------------------
--- Test 3 - st_pixelaspolygon(rast raster, band integer, x integer, y integer)
+-- Test 3 - st_pixelaspolygon(rast raster, x integer, y integer)
 -----------------------------------------------------------------------
 
 SELECT 'test 3.1', id
     FROM rt_band_properties_test
-    WHERE st_astext(st_pixelaspolygon(rast, 1, 1, 1)) != geomtxt;
+    WHERE st_astext(st_pixelaspolygon(rast, 1, 1)) != geomtxt;
 
 -----------------------------------------------------------------------
 -- Test 4 - st_setvalue(rast raster, band integer, x integer, y integer, val float8)
