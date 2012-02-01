@@ -74,6 +74,8 @@
 #define TRIANGLETYPE            14
 #define TINTYPE                 15
 
+#define NUMTYPES                16
+
 /**
 * Flags applied in EWKB to indicate Z/M dimensions and
 * presence/absence of SRID and bounding boxes
@@ -906,7 +908,6 @@ extern int lwcollection_ngeoms(const LWCOLLECTION *col);
 
 /* Given a generic geometry/collection, return the "simplest" form. */
 extern LWGEOM *lwgeom_homogenize(const LWGEOM *geom);
-extern LWGEOM *lwcollection_homogenize(const LWCOLLECTION *col);
 
 
 /******************************************************************
