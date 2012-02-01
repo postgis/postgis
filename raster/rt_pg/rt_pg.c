@@ -2847,7 +2847,13 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         tuptable = SPI_tuptable;
 
         tuple = tuptable->vals[0];
-        newval = atof(SPI_getvalue(tuple, tupdesc, 1));
+        newexpr = SPI_getvalue(tuple, tupdesc, 1);
+        if ( ! newexpr ) {
+            POSTGIS_RT_DEBUG(3, "Constant expression evaluated to NULL, keeping initvalue");
+            newval = newinitialvalue;
+        } else {
+            newval = atof(newexpr);
+        }
 
         SPI_freetuptable(tuptable);
 
@@ -2985,7 +2991,13 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
                         tuptable = SPI_tuptable;
 
                         tuple = tuptable->vals[0];
-                        newval = atof(SPI_getvalue(tuple, tupdesc, 1));
+                        tmp = SPI_getvalue(tuple, tupdesc, 1);
+                        if ( tmp ) {
+                            newval = atof(tmp);
+                        } else {
+                            POSTGIS_RT_DEBUGF(3, "Expression for pixel %d,%d (value %g) evaluated to NULL, skip setting", x+1,y+1,r);
+                            newval = newinitialvalue;
+                        }
 
                         SPI_freetuptable(tuptable);
 

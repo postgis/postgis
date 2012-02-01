@@ -29,3 +29,7 @@ FROM ST_TestRaster(0, 0, 10) rast,
      generate_series(6, 8) as x,
      generate_series(2, 4) as y
 ORDER BY x, y;
+
+-- Test evaluations to null (see #1523)
+SELECT 'T11.1', ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(rast, 1, NULL, 'g from (select NULL as g) as foo', 2), 1, 1) FROM ST_TestRaster(0, 0, 10) rast;
+SELECT 'T11.2', ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(rast, 1, NULL, 'g from (select RAST,NULL as g) as foo', 2), 1, 1) FROM ST_TestRaster(0, 0, 10) rast;
