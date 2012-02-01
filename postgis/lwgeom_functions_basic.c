@@ -2558,6 +2558,27 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(output);
 }
 
+PG_FUNCTION_INFO_V1(ST_CollectionHomogenize);
+Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *input = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *output;
+	LWGEOM *lwgeom = lwgeom_from_gserialized(input);
+	LWGEOM *lwoutput = NULL;
+
+	lwoutput = lwgeom_homogenize(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(input, 0);
+
+	if ( ! lwoutput )
+		PG_RETURN_NULL();
+
+	output = geometry_serialize(lwoutput);
+	lwgeom_free(lwoutput);
+
+	PG_RETURN_POINTER(output);
+}
+
 Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS);
 PG_FUNCTION_INFO_V1(ST_RemoveRepeatedPoints);
 Datum ST_RemoveRepeatedPoints(PG_FUNCTION_ARGS)

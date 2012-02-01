@@ -31,6 +31,7 @@ init_homogenizebuffer(HomogenizeBuffer *buffer)
 	}
 }
 
+/*
 static void
 free_homogenizebuffer(HomogenizeBuffer *buffer)
 {
@@ -43,6 +44,7 @@ free_homogenizebuffer(HomogenizeBuffer *buffer)
 		}
 	}
 }
+*/
 
 /*
 ** Given a generic collection, return the "simplest" form.

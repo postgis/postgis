@@ -1102,6 +1102,12 @@ CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)
 	AS 'MODULE_PATHNAME', 'ST_CollectionExtract'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION ST_CollectionHomogenize(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'ST_CollectionHomogenize'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Multi(geometry)
 	RETURNS geometry
