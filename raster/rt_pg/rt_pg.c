@@ -8832,7 +8832,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			*/
 			for (i = 0; i < spicount; i++) {
 				if (!PG_ARGISNULL(exprpos[i])) {
-					char *tmp = rtpg_strtoupper(text_to_cstring(PG_GETARG_TEXT_P(exprpos[i])));
+					char *tmp = text_to_cstring(PG_GETARG_TEXT_P(exprpos[i]));
 					POSTGIS_RT_DEBUGF(3, "raw expr #%d: %s", i, tmp);
 
 					len = 0;
