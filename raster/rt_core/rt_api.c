@@ -739,7 +739,7 @@ d_binary_to_hex(const uint8_t * const raw, uint32_t size, uint32_t *hexsize) {
     *hexsize = size * 2; /* hex is 2 times bytes */
     hex = (char*) rtalloc((*hexsize) + 1);
     if (!hex) {
-        rterror("d_binary_to_hex: Out of memory hexifying raw binary\n");
+        rterror("d_binary_to_hex: Out of memory hexifying raw binary");
         return NULL;
     }
     hex[*hexsize] = '\0'; /* Null-terminate */
@@ -1387,7 +1387,7 @@ setBits(char* ch, double val, int bits, int bitOffset) {
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
     if (ival != val) {
         rtwarn("Pixel value for %d-bits band got truncated"
-                " from %g to %hhu\n", bits, val, ival);
+                " from %g to %hhu", bits, val, ival);
     }
 #endif /* POSTGIS_RASTER_WARN_ON_TRUNCATION */
 
@@ -4842,7 +4842,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
     memdatasource = OGR_Dr_CreateDataSource(ogr_drv, "", NULL);
 
     if (NULL == memdatasource) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't create a OGR Datasource to store pols\n");
+        rterror("rt_raster_dump_as_wktpolygons: Couldn't create a OGR Datasource to store pols");
         GDALClose(memdataset);
         return 0;
     }
@@ -4851,7 +4851,7 @@ rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
      * Can MEM driver create new layers?
      **/
     if (!OGR_DS_TestCapability(memdatasource, ODsCCreateLayer)) {
-        rterror("rt_raster_dump_as_wktpolygons: MEM driver can't create new layers, aborting\n");
+        rterror("rt_raster_dump_as_wktpolygons: MEM driver can't create new layers, aborting");
         /* xxx jorgearevalo: what should we do now? */
         GDALClose(memdataset);
         OGRReleaseDataSource(memdatasource);
@@ -6600,7 +6600,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 	/* create new raster */
 	rast = rt_raster_new(raster->width, raster->height);
 	if (NULL == rast) {
-		rterror("rt_raster_from_band: Out of memory allocating new raster\n");
+		rterror("rt_raster_from_band: Out of memory allocating new raster");
 		return 0;
 	}
 
@@ -6620,7 +6620,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 		flag = rt_raster_copy_band(rast, raster, idx, i);
 
 		if (flag < 0) {
-			rterror("rt_raster_from_band: Unable to copy band\n");
+			rterror("rt_raster_from_band: Unable to copy band");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
@@ -6710,14 +6710,14 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 	/* load raster into a GDAL MEM raster */
 	src_ds = rt_raster_to_gdal_mem(raster, srs, NULL, 0, &src_drv);
 	if (NULL == src_ds) {
-		rterror("rt_raster_to_gdal: Unable to convert raster to GDAL MEM format\n");
+		rterror("rt_raster_to_gdal: Unable to convert raster to GDAL MEM format");
 		return 0;
 	}
 
 	/* load driver */
 	rtn_drv = GDALGetDriverByName(format);
 	if (NULL == rtn_drv) {
-		rterror("rt_raster_to_gdal: Unable to load the output GDAL driver\n");
+		rterror("rt_raster_to_gdal: Unable to load the output GDAL driver");
 		GDALClose(src_ds);
 		return 0;
 	}
@@ -6735,7 +6735,7 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 		NULL /* progress data */
 	);
 	if (NULL == rtn_ds) {
-		rterror("rt_raster_to_gdal: Unable to create the output GDAL dataset\n");
+		rterror("rt_raster_to_gdal: Unable to create the output GDAL dataset");
 		GDALClose(src_ds);
 		return 0;
 	}
@@ -6755,7 +6755,7 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 	rtn = VSIGetMemFileBuffer("/vsimem/out.dat", &rtn_lenvsi, TRUE);
 	RASTER_DEBUG(3, "rt_raster_to_gdal: Done copying GDAL memory file to buffer");
 	if (NULL == rtn) {
-		rterror("rt_raster_to_gdal: Unable to create the output GDAL raster\n");
+		rterror("rt_raster_to_gdal: Unable to create the output GDAL raster");
 		return 0;
 	}
 
@@ -6887,7 +6887,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		GDALRegister_MEM();
 	drv = GDALGetDriverByName("MEM");
 	if (NULL == drv) {
-		rterror("rt_raster_to_gdal_mem: Unable to load the MEM GDAL driver\n");
+		rterror("rt_raster_to_gdal_mem: Unable to load the MEM GDAL driver");
 		return 0;
 	}
 	*rtn_drv = drv;
@@ -6895,7 +6895,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	ds = GDALCreate(drv, "", rt_raster_get_width(raster),
 		rt_raster_get_height(raster), 0, GDT_Byte, NULL);
 	if (NULL == ds) {
-		rterror("rt_raster_to_gdal_mem: Could not create a GDALDataset to convert into\n");
+		rterror("rt_raster_to_gdal_mem: Could not create a GDALDataset to convert into");
 		return 0;
 	}
 
@@ -6903,7 +6903,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	rt_raster_get_geotransform_matrix(raster, gt);
 	cplerr = GDALSetGeoTransform(ds, gt);
 	if (cplerr != CE_None) {
-		rterror("rt_raster_to_gdal_mem: Unable to set geotransformation\n");
+		rterror("rt_raster_to_gdal_mem: Unable to set geotransformation");
 		GDALClose(ds);
 		return 0;
 	}
@@ -6912,7 +6912,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	if (NULL != srs && strlen(srs)) {
 		cplerr = GDALSetProjection(ds, srs);
 		if (cplerr != CE_None) {
-			rterror("rt_raster_to_gdal_mem: Unable to set projection\n");
+			rterror("rt_raster_to_gdal_mem: Unable to set projection");
 			GDALClose(ds);
 			return 0;
 		}
@@ -6924,7 +6924,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	if (NULL != bandNums && count > 0) {
 		for (i = 0; i < count; i++) {
 			if (bandNums[i] < 0 || bandNums[i] >= numBands) {
-				rterror("rt_raster_to_gdal_mem: The band index %d is invalid\n", bandNums[i]);
+				rterror("rt_raster_to_gdal_mem: The band index %d is invalid", bandNums[i]);
 				GDALClose(ds);
 				return 0;
 			}
@@ -6934,7 +6934,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		count = numBands;
 		bandNums = (uint32_t *) rtalloc(sizeof(uint32_t) * count);
 		if (NULL == bandNums) {
-			rterror("rt_raster_to_gdal_mem: Unable to allocate memory for band indices\n");
+			rterror("rt_raster_to_gdal_mem: Unable to allocate memory for band indices");
 			GDALClose(ds);
 			return 0;
 		}
@@ -6946,7 +6946,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	for (i = 0; i < count; i++) {
 		rtband = rt_raster_get_band(raster, bandNums[i]);
 		if (NULL == rtband) {
-			rterror("rt_raster_to_gdal_mem: Unable to get requested band index %d\n", bandNums[i]);
+			rterror("rt_raster_to_gdal_mem: Unable to get requested band index %d", bandNums[i]);
 			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			return 0;
@@ -6955,7 +6955,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		pt = rt_band_get_pixtype(rtband);
 		gdal_pt = rt_util_pixtype_to_gdal_datatype(pt);
 		if (gdal_pt == GDT_Unknown)
-			rtwarn("rt_raster_to_gdal_mem: Unknown pixel type for band\n");
+			rtwarn("rt_raster_to_gdal_mem: Unknown pixel type for band");
 
 		pVoid = rt_band_get_data(rtband);
 		RASTER_DEBUGF(4, "Band data is at pos %p", pVoid);
@@ -6981,7 +6981,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		rtdealloc(pszDataPointer);
 
 		if (GDALAddBand(ds, gdal_pt, apszOptions) == CE_Failure) {
-			rterror("rt_raster_to_gdal_mem: Could not add GDAL raster band\n");
+			rterror("rt_raster_to_gdal_mem: Could not add GDAL raster band");
 			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			return 0;
@@ -6989,7 +6989,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 
 		/* check band count */
 		if (GDALGetRasterCount(ds) != i + 1) {
-			rterror("rt_raster_to_gdal_mem: Error creating GDAL MEM raster band\n");
+			rterror("rt_raster_to_gdal_mem: Error creating GDAL MEM raster band");
 			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			return 0;
@@ -6999,7 +6999,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		band = NULL;
 		band = GDALGetRasterBand(ds, i + 1);
 		if (NULL == band) {
-			rterror("rt_raster_to_gdal_mem: Could not get GDAL band for additional processing\n");
+			rterror("rt_raster_to_gdal_mem: Could not get GDAL band for additional processing");
 			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			return 0;
@@ -7009,7 +7009,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
 			nodata = rt_band_get_nodata(rtband);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
-				rtwarn("rt_raster_to_gdal_mem: Could not set nodata value for band\n");
+				rtwarn("rt_raster_to_gdal_mem: Could not set nodata value for band");
 			RASTER_DEBUGF(3, "nodata value set to %f", GDALGetRasterNoDataValue(band, NULL));
 		}
 	}
@@ -7075,14 +7075,14 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	RASTER_DEBUG(3, "Creating new raster");
 	rast = rt_raster_new(width, height);
 	if (NULL == rast) {
-		rterror("rt_raster_from_gdal_dataset: Out of memory allocating new raster\n");
+		rterror("rt_raster_from_gdal_dataset: Out of memory allocating new raster");
 		return NULL;
 	}
 
 	/* get raster attributes */
 	cplerr = GDALGetGeoTransform(ds, gt);
 	if (cplerr != CE_None) {
-		rterror("rt_raster_from_gdal_dataset: Unable to get geotransformation\n");
+		rterror("rt_raster_from_gdal_dataset: Unable to get geotransformation");
 		rt_raster_destroy(rast);
 		return NULL;
 	}
@@ -7117,7 +7117,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		gdband = NULL;
 		gdband = GDALGetRasterBand(ds, i);
 		if (NULL == gdband) {
-			rterror("rt_raster_from_gdal_dataset: Unable to get GDAL band\n");
+			rterror("rt_raster_from_gdal_dataset: Unable to get GDAL band");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
@@ -7126,7 +7126,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		gdpixtype = GDALGetRasterDataType(gdband);
 		pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
 		if (pt == PT_END) {
-			rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band\n");
+			rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
@@ -7154,7 +7154,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 			hasnodata, nodataval, rt_raster_get_num_bands(rast)
 		);
 		if (idx < 0) {
-			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for raster band\n");
+			rterror("rt_raster_from_gdal_dataset: Could not allocate memory for raster band");
 			rt_raster_destroy(rast);
 			return NULL;
 		}
@@ -7235,7 +7235,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 					0, 0
 				);
 				if (cplerr != CE_None) {
-					rterror("rt_raster_from_gdal_dataset: Unable to get data from transformed raster\n");
+					rterror("rt_raster_from_gdal_dataset: Unable to get data from transformed raster");
 					rtdealloc(values);
 					rt_raster_destroy(rast);
 					return NULL;
@@ -7378,7 +7378,7 @@ rt_raster rt_raster_gdal_warp(
 	/* load raster into a GDAL MEM dataset */
 	src_ds = rt_raster_to_gdal_mem(raster, _src_srs, NULL, 0, &src_drv);
 	if (NULL == src_ds) {
-		rterror("rt_raster_gdal_warp: Unable to convert raster to GDAL MEM format\n");
+		rterror("rt_raster_gdal_warp: Unable to convert raster to GDAL MEM format");
 
 		CPLFree(_src_srs);
 		CPLFree(_dst_srs);
@@ -7390,7 +7390,7 @@ rt_raster rt_raster_gdal_warp(
 	/* set transform_opts */
 	transform_opts = (char **) rtalloc(sizeof(char *) * (transform_opts_len + 1));
 	if (NULL == transform_opts) {
-		rterror("rt_raster_gdal_warp: Unable to allocation memory for transform options\n");
+		rterror("rt_raster_gdal_warp: Unable to allocation memory for transform options");
 
 		GDALClose(src_ds);
 
@@ -7409,7 +7409,7 @@ rt_raster rt_raster_gdal_warp(
 				break;
 		}
 		if (NULL == transform_opts[i]) {
-			rterror("rt_raster_gdal_warp: Unable to allocation memory for transform options\n");
+			rterror("rt_raster_gdal_warp: Unable to allocation memory for transform options");
 
 			for (j = 0; j < i; j++) rtdealloc(transform_opts[j]);
 			rtdealloc(transform_opts);
@@ -7448,7 +7448,7 @@ rt_raster rt_raster_gdal_warp(
 	/* transformation object for building dst dataset */
 	transform_arg = GDALCreateGenImgProjTransformer2(src_ds, NULL, transform_opts);
 	if (NULL == transform_arg) {
-		rterror("rt_raster_gdal_warp: Unable to create GDAL transformation object for output dataset creation\n");
+		rterror("rt_raster_gdal_warp: Unable to create GDAL transformation object for output dataset creation");
 
 		GDALClose(src_ds);
 
@@ -7463,7 +7463,7 @@ rt_raster rt_raster_gdal_warp(
 		transform_arg, dst_gt, &_width, &_height, dst_extent, 0);
 	GDALDestroyGenImgProjTransformer(transform_arg);
 	if (cplerr != CE_None) {
-		rterror("rt_raster_gdal_warp: Unable to get GDAL suggested warp output for output dataset creation\n");
+		rterror("rt_raster_gdal_warp: Unable to get GDAL suggested warp output for output dataset creation");
 
 		GDALClose(src_ds);
 
@@ -7491,7 +7491,7 @@ rt_raster rt_raster_gdal_warp(
 		((NULL != ul_xw) && (NULL == ul_yw)) ||
 		((NULL == ul_xw) && (NULL != ul_yw))
 	) {
-		rterror("rt_raster_gdal_warp: Both X and Y upper-left corner values must be provided\n");
+		rterror("rt_raster_gdal_warp: Both X and Y upper-left corner values must be provided");
 
 		GDALClose(src_ds);
 
@@ -7512,7 +7512,7 @@ rt_raster rt_raster_gdal_warp(
 		((NULL != scale_x) || (NULL != scale_y)) &&
 		((NULL != width) || (NULL != height))
 	) {
-		rterror("rt_raster_gdal_warp: Scale X/Y and width/height are mutually exclusive.  Only provide one.\n");
+		rterror("rt_raster_gdal_warp: Scale X/Y and width/height are mutually exclusive.  Only provide one");
 
 		GDALClose(src_ds);
 
@@ -7546,7 +7546,7 @@ rt_raster rt_raster_gdal_warp(
 		((NULL != scale_x) && (NULL == scale_y)) ||
 		((NULL == scale_x) && (NULL != scale_y))
 	) {
-		rterror("rt_raster_gdal_warp: Both X and Y scale values must be provided for scale\n");
+		rterror("rt_raster_gdal_warp: Both X and Y scale values must be provided for scale");
 
 		GDALClose(src_ds);
 
@@ -7566,7 +7566,7 @@ rt_raster rt_raster_gdal_warp(
 			((NULL != grid_xw) && (NULL == grid_yw)) ||
 			((NULL == grid_xw) && (NULL != grid_yw))
 		) {
-			rterror("rt_raster_gdal_warp: Both X and Y alignment values must be provided\n");
+			rterror("rt_raster_gdal_warp: Both X and Y alignment values must be provided");
 
 			GDALClose(src_ds);
 
@@ -7685,7 +7685,7 @@ rt_raster rt_raster_gdal_warp(
 		_width, _height);
 
 	if (FLT_EQ(_width, 0.0) || FLT_EQ(_height, 0.0)) {
-		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero\n", _width, _height);
+		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero", _width, _height);
 
 		GDALClose(src_ds);
 
@@ -7700,7 +7700,7 @@ rt_raster rt_raster_gdal_warp(
 		GDALRegister_VRT();
 	dst_drv = GDALGetDriverByName("VRT");
 	if (NULL == dst_drv) {
-		rterror("rt_raster_gdal_warp: Unable to load the output GDAL VRT driver\n");
+		rterror("rt_raster_gdal_warp: Unable to load the output GDAL VRT driver");
 
 		GDALClose(src_ds);
 
@@ -7710,7 +7710,7 @@ rt_raster rt_raster_gdal_warp(
 	/* create dst dataset */
 	dst_ds = GDALCreate(dst_drv, "", _width, _height, 0, GDT_Byte, dst_options);
 	if (NULL == dst_ds) {
-		rterror("rt_raster_gdal_warp: Unable to create GDAL VRT dataset\n");
+		rterror("rt_raster_gdal_warp: Unable to create GDAL VRT dataset");
 
 		GDALClose(src_ds);
 
@@ -7725,7 +7725,7 @@ rt_raster rt_raster_gdal_warp(
 	for (i = 0; i < numBands; i++) {
 		rtband = rt_raster_get_band(raster, i);
 		if (NULL == rtband) {
-			rterror("rt_raster_gdal_warp: Unable to get band %d for adding to VRT dataset\n", i);
+			rterror("rt_raster_gdal_warp: Unable to get band %d for adding to VRT dataset", i);
 
 			GDALClose(dst_ds);
 			GDALClose(src_ds);
@@ -7739,11 +7739,11 @@ rt_raster rt_raster_gdal_warp(
 		pt = rt_band_get_pixtype(rtband);
 		gdal_pt = rt_util_pixtype_to_gdal_datatype(pt);
 		if (gdal_pt == GDT_Unknown)
-			rtwarn("rt_raster_gdal_warp: Unknown pixel type for band %d\n", i);
+			rtwarn("rt_raster_gdal_warp: Unknown pixel type for band %d", i);
 
 		cplerr = GDALAddBand(dst_ds, gdal_pt, NULL);
 		if (cplerr != CE_None) {
-			rterror("rt_raster_gdal_warp: Unable to add band to VRT dataset\n");
+			rterror("rt_raster_gdal_warp: Unable to add band to VRT dataset");
 
 			GDALClose(dst_ds);
 			GDALClose(src_ds);
@@ -7758,7 +7758,7 @@ rt_raster rt_raster_gdal_warp(
 		band = NULL;
 		band = GDALGetRasterBand(dst_ds, i + 1);
 		if (NULL == band) {
-			rterror("rt_raster_gdal_warp: Could not get GDAL band for additional processing\n");
+			rterror("rt_raster_gdal_warp: Could not get GDAL band for additional processing");
 
 			GDALClose(dst_ds);
 			GDALClose(src_ds);
@@ -7773,7 +7773,7 @@ rt_raster rt_raster_gdal_warp(
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
 			nodata = rt_band_get_nodata(rtband);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
-				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d\n", i);
+				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d", i);
 			RASTER_DEBUGF(3, "nodata value set to %f", GDALGetRasterNoDataValue(band, NULL));
 		}
 	}
@@ -7783,7 +7783,7 @@ rt_raster rt_raster_gdal_warp(
 	cplerr = GDALSetProjection(dst_ds, _dst_srs);
 	CPLFree(_dst_srs);
 	if (cplerr != CE_None) {
-		rterror("rt_raster_gdal_warp: Unable to set projection\n");
+		rterror("rt_raster_gdal_warp: Unable to set projection");
 
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
@@ -7797,7 +7797,7 @@ rt_raster rt_raster_gdal_warp(
 	/* set dst geotransform */
 	cplerr = GDALSetGeoTransform(dst_ds, dst_gt);
 	if (cplerr != CE_None) {
-		rterror("rt_raster_gdal_warp: Unable to set geotransform\n");
+		rterror("rt_raster_gdal_warp: Unable to set geotransform");
 
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
@@ -7811,7 +7811,7 @@ rt_raster rt_raster_gdal_warp(
 	/* create transformation object */
 	transform_arg = imgproj_arg = GDALCreateGenImgProjTransformer2(src_ds, dst_ds, transform_opts);
 	if (NULL == transform_arg) {
-		rterror("rt_raster_gdal_warp: Unable to create GDAL transformation object\n");
+		rterror("rt_raster_gdal_warp: Unable to create GDAL transformation object");
 
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
@@ -7830,7 +7830,7 @@ rt_raster rt_raster_gdal_warp(
 			imgproj_arg, max_err
 		);
 		if (NULL == transform_arg) {
-			rterror("rt_raster_gdal_warp: Unable to create GDAL approximate transformation object\n");
+			rterror("rt_raster_gdal_warp: Unable to create GDAL approximate transformation object");
 
 			GDALClose(dst_ds);
 			GDALClose(src_ds);
@@ -7848,7 +7848,7 @@ rt_raster rt_raster_gdal_warp(
 	/* warp options */
 	wopts = GDALCreateWarpOptions();
 	if (NULL == wopts) {
-		rterror("rt_raster_gdal_warp: Unable to create GDAL warp options object\n");
+		rterror("rt_raster_gdal_warp: Unable to create GDAL warp options object");
 
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
@@ -7891,7 +7891,7 @@ rt_raster rt_raster_gdal_warp(
 		NULL == wopts->padfSrcNoDataImag ||
 		NULL == wopts->padfDstNoDataImag
 	) {
-		rterror("rt_raster_gdal_warp: Out of memory allocating nodata mapping\n");
+		rterror("rt_raster_gdal_warp: Out of memory allocating nodata mapping");
 
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
@@ -7907,7 +7907,7 @@ rt_raster rt_raster_gdal_warp(
 	for (i = 0; i < numBands; i++) {
 		band = rt_raster_get_band(raster, i);
 		if (!band) {
-			rterror("rt_raster_gdal_warp: Unable to process bands for nodata values\n");
+			rterror("rt_raster_gdal_warp: Unable to process bands for nodata values");
 
 			GDALClose(dst_ds);
 			GDALClose(src_ds);
@@ -7945,7 +7945,7 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUG(3, "Warping raster");
 	cplerr = GDALInitializeWarpedVRT(dst_ds, wopts);
 	if (cplerr != CE_None) {
-		rterror("rt_raster_gdal_warp: Unable to warp raster\n");
+		rterror("rt_raster_gdal_warp: Unable to warp raster");
 
 		GDALClose(dst_ds);
 		GDALClose(src_ds);
@@ -7975,7 +7975,7 @@ rt_raster rt_raster_gdal_warp(
 	rtdealloc(transform_opts);
 
 	if (NULL == rast) {
-		rterror("rt_raster_gdal_warp: Unable to warp raster\n");
+		rterror("rt_raster_gdal_warp: Unable to warp raster");
 		return NULL;
 	}
 
@@ -8264,7 +8264,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			((NULL != grid_xw) && (NULL == grid_yw)) ||
 			((NULL == grid_xw) && (NULL != grid_yw))
 		) {
-			rterror("rt_raster_gdal_rasterize: Both X and Y alignment values must be provided\n");
+			rterror("rt_raster_gdal_rasterize: Both X and Y alignment values must be provided");
 
 			if (noband) {
 				rtdealloc(_pixtype);
@@ -8556,7 +8556,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	GDALClose(dst_ds);
 
 	if (NULL == rast) {
-		rterror("rt_raster_gdal_rasterize: Unable to rasterize geometry\n");
+		rterror("rt_raster_gdal_rasterize: Unable to rasterize geometry");
 		return NULL;
 	}
 
@@ -9118,7 +9118,7 @@ rt_raster_intersects(
 	/* load band of smaller raster */
 	bandS = rt_raster_get_band(rastS, nbandS);
 	if (NULL == bandS) {
-		rterror("rt_raster_intersects: Unable to get band %d of the first raster\n", nbandS);
+		rterror("rt_raster_intersects: Unable to get band %d of the first raster", nbandS);
 		*intersects = 0;
 		return 0;
 	}
@@ -9135,7 +9135,7 @@ rt_raster_intersects(
 	/* load band of larger raster */
 	bandL = rt_raster_get_band(rastL, nbandL);
 	if (NULL == bandL) {
-		rterror("rt_raster_intersects: Unable to get band %d of the first raster\n", nbandL);
+		rterror("rt_raster_intersects: Unable to get band %d of the first raster", nbandL);
 		*intersects = 0;
 		return 0;
 	}
