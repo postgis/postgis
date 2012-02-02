@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * PostGIS Raster loader
+ * PostGIS raster loader
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
  * Copyright 2001-2003 Refractions Research Inc.
@@ -36,8 +36,45 @@ void lwgeom_init_allocators(void) {
 	lwgeom_install_default_allocators();
 }
 
+static void
+loader_rt_error_handler(const char *fmt, va_list ap) {
+	static const char *label = "ERROR: ";
+	char newfmt[1024] = {0};
+	snprintf(newfmt, 1024, "%s%s\n", label, fmt);
+	newfmt[1023] = '\0';
+	vfprintf(stderr, newfmt, ap);
+	va_end(ap);
+}
+
+static void
+loader_rt_warning_handler(const char *fmt, va_list ap) {
+	static const char *label = "WARNING: ";
+	char newfmt[1024] = {0};
+	snprintf(newfmt, 1024, "%s%s\n", label, fmt);
+	newfmt[1023] = '\0';
+	vfprintf(stderr, newfmt, ap);
+	va_end(ap);
+}
+
+static void
+loader_rt_info_handler(const char *fmt, va_list ap) {
+	static const char *label = "INFO: ";
+	char newfmt[1024] = {0};
+	snprintf(newfmt, 1024, "%s%s\n", label, fmt);
+	newfmt[1023] = '\0';
+	vfprintf(stderr, newfmt, ap);
+	va_end(ap);
+}
+
 void rt_init_allocators(void) {
-	rt_install_default_allocators();
+	rt_set_handlers(
+		default_rt_allocator,
+		default_rt_reallocator,
+		default_rt_deallocator,
+		loader_rt_error_handler,
+		loader_rt_info_handler,
+		loader_rt_warning_handler
+	);
 }
 
 static void
@@ -123,7 +160,7 @@ strreplace(
 
 	length = strlen(str) + found * (newlen - oldlen);
 	if ((result = (char *) rtalloc(length + 1)) == NULL) {
-		fprintf(stderr, _("Not enough memory\n"));
+		rterror(_("strreplace: Not enough memory"));
 		found = -1;
 	}
 	else {
@@ -172,7 +209,7 @@ strsplit(const char *str, const char *delimiter, int *n) {
 	/* copy str to tmp as strtok will mangle the string */
 	tmp = rtalloc(sizeof(char) * (strlen(str) + 1));
 	if (NULL == tmp) {
-		fprintf(stderr, _("Not enough memory\n"));
+		rterror(_("strsplit: Not enough memory"));
 		return NULL;
 	}
 	strcpy(tmp, str);
@@ -181,12 +218,12 @@ strsplit(const char *str, const char *delimiter, int *n) {
 		*n = 1;
 		rtn = (char **) rtalloc(*n * sizeof(char *));
 		if (NULL == rtn) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("strsplit: Not enough memory"));
 			return NULL;
 		}
 		rtn[0] = (char *) rtalloc(sizeof(char) * (strlen(tmp) + 1));
 		if (NULL == rtn[0]) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("strsplit: Not enough memory"));
 			return NULL;
 		}
 		strcpy(rtn[0], tmp);
@@ -203,14 +240,14 @@ strsplit(const char *str, const char *delimiter, int *n) {
 			rtn = (char **) rtrealloc(rtn, (*n + 1) * sizeof(char *));
 		}
 		if (NULL == rtn) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("strsplit: Not enough memory"));
 			return NULL;
 		}
 
 		rtn[*n] = NULL;
 		rtn[*n] = (char *) rtalloc(sizeof(char) * (strlen(token) + 1));
 		if (NULL == rtn[*n]) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("strsplit: Not enough memory"));
 			return NULL;
 		}
 
@@ -246,7 +283,7 @@ trim(const char *input) {
 
 	rtn = rtalloc(sizeof(char) * (strlen(input) - offset + 1));
 	if (NULL == rtn) {
-		fprintf(stderr, _("Not enough memory\n"));
+		rterror(_("trim: Not enough memory"));
 		return NULL;
 	}
 	strncpy(rtn, input, strlen(input) - offset);
@@ -277,7 +314,7 @@ chartrim(const char *input, char *remove) {
 
 	rtn = rtalloc(sizeof(char) * (strlen(input) - offset + 1));
 	if (NULL == rtn) {
-		fprintf(stderr, _("Not enough memory\n"));
+		rterror(_("chartrim: Not enough memory"));
 		return NULL;
 	}
 	strncpy(rtn, input, strlen(input) - offset);
@@ -428,7 +465,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 	if (src->srs != NULL) {
 		dst->srs = rtalloc(sizeof(char) * (strlen(src->srs) + 1));
 		if (dst->srs == NULL) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("copy_rastinfo: Not enough memory"));
 			return 0;
 		}
 		strcpy(dst->srs, src->srs);
@@ -438,7 +475,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 	if (src->nband_count && src->nband != NULL) {
 		dst->nband = rtalloc(sizeof(int) * src->nband_count);
 		if (dst->nband == NULL) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("copy_rastinfo: Not enough memory"));
 			return 0;
 		}
 		memcpy(dst->nband, src->nband, sizeof(int) * src->nband_count);
@@ -446,7 +483,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 	if (src->gdalbandtype != NULL) {
 		dst->gdalbandtype = rtalloc(sizeof(GDALDataType) * src->nband_count);
 		if (dst->gdalbandtype == NULL) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("copy_rastinfo: Not enough memory"));
 			return 0;
 		}
 		memcpy(dst->gdalbandtype, src->gdalbandtype, sizeof(GDALDataType) * src->nband_count);
@@ -454,7 +491,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 	if (src->bandtype != NULL) {
 		dst->bandtype = rtalloc(sizeof(rt_pixtype) * src->nband_count);
 		if (dst->bandtype == NULL) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("copy_rastinfo: Not enough memory"));
 			return 0;
 		}
 		memcpy(dst->bandtype, src->bandtype, sizeof(rt_pixtype) * src->nband_count);
@@ -462,7 +499,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 	if (src->hasnodata != NULL) {
 		dst->hasnodata = rtalloc(sizeof(int) * src->nband_count);
 		if (dst->hasnodata == NULL) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("copy_rastinfo: Not enough memory"));
 			return 0;
 		}
 		memcpy(dst->hasnodata, src->hasnodata, sizeof(int) * src->nband_count);
@@ -470,7 +507,7 @@ copy_rastinfo(RASTERINFO *dst, RASTERINFO *src) {
 	if (src->nodataval != NULL) {
 		dst->nodataval = rtalloc(sizeof(double) * src->nband_count);
 		if (dst->nodataval == NULL) {
-			fprintf(stderr, _("Not enough memory\n"));
+			rterror(_("copy_rastinfo: Not enough memory"));
 			return 0;
 		}
 		memcpy(dst->nodataval, src->nodataval, sizeof(double) * src->nband_count);
@@ -491,7 +528,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 		!msg[0] &&
 		x->nband_count != ref->nband_count
 	) {
-		fprintf(stderr, _("WARNING: Different number of bands found in the set of rasters being converted to PostGIS Raster\n"));
+		rtwarn(_("Different number of bands found in the set of rasters being converted to PostGIS raster"));
 		msg[0]++;
 	}
 
@@ -499,7 +536,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	if (!msg[1]) {
 		for (i = 0; i < ref->nband_count; i++) {
 			if (x->bandtype[i] != ref->bandtype[i]) {
-				fprintf(stderr, _("WARNING: Different pixel types found for band %d in the set of rasters being converted to PostGIS Raster\n"), ref->nband[i]);
+				rtwarn(_("Different pixel types found for band %d in the set of rasters being converted to PostGIS raster"), ref->nband[i]);
 				msg[1]++;
 			}
 		}
@@ -509,7 +546,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	if (!msg[2]) {
 		for (i = 0; i < ref->nband_count; i++) {
 			if (x->hasnodata[i] != ref->hasnodata[i]) {
-				fprintf(stderr, _("WARNING: Different hasnodata flags found for band %d in the set of rasters being converted to PostGIS Raster\n"), ref->nband[i]);
+				rtwarn(_("Different hasnodata flags found for band %d in the set of rasters being converted to PostGIS raster"), ref->nband[i]);
 				msg[2]++;
 			}
 		}
@@ -520,7 +557,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 		for (i = 0; i < ref->nband_count; i++) {
 			if (!x->hasnodata[i] && !ref->hasnodata[i]) continue;
 			if (FLT_NEQ(x->hasnodata[i], ref->hasnodata[i])) {
-				fprintf(stderr, _("WARNING: Different NODATA values found for band %d in the set of rasters being converted to PostGIS Raster\n"), ref->nband[i]);
+				rtwarn(_("Different NODATA values found for band %d in the set of rasters being converted to PostGIS raster"), ref->nband[i]);
 				msg[3]++;
 			}
 		}
@@ -530,7 +567,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	if (!msg[4]) {
 		for (i = 0; i < 6; i++) {
 			if (FLT_NEQ(x->gt[i], ref->gt[i])) {
-				fprintf(stderr, _("WARNING: Different geotransform matrices found in the set of rasters being converted to PostGIS Raster\n"));
+				rtwarn(_("Different geotransform matrices found in the set of rasters being converted to PostGIS raster"));
 				msg[4]++;
 				break;
 			}
@@ -541,7 +578,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 	if (!msg[5]) {
 		for (i = 0; i < 2; i++) {
 			if (FLT_NEQ(x->tile_size[i], ref->tile_size[i])) {
-				fprintf(stderr, _("WARNING: Different tile sizes found in the set of rasters being converted to PostGIS Raster\n"));
+				rtwarn(_("Different tile sizes found in the set of rasters being converted to PostGIS raster"));
 				msg[5]++;
 				break;
 			}
@@ -665,14 +702,14 @@ append_stringbuffer(STRINGBUFFER *buffer, const char *str) {
 
 	buffer->line = rtrealloc(buffer->line, sizeof(char *) * buffer->length);
 	if (buffer->line == NULL) {
-		fprintf(stderr, _("Could not allocate memory for appending string to buffer\n"));
+		rterror(_("append_stringbuffer: Could not allocate memory for appending string to buffer"));
 		return 0;
 	}
 
 	buffer->line[buffer->length - 1] = NULL;
 	buffer->line[buffer->length - 1] = rtalloc(sizeof(char) * (strlen(str) + 1));
 	if (buffer->line[buffer->length - 1] == NULL) {
-		fprintf(stderr, _("Could not allocate memory for appending string to buffer\n"));
+		rterror(_("append_stringbuffer: Could not allocate memory for appending string to buffer"));
 		return 0;
 	}
 	strcpy(buffer->line[buffer->length - 1], str);
@@ -718,7 +755,7 @@ insert_records(
 
 			sql = rtalloc(sizeof(char) * len);
 			if (sql == NULL) {
-				fprintf(stderr, _("Could not allocate memory for COPY statement\n"));
+				rterror(_("insert_records: Could not allocate memory for COPY statement"));
 				return 0;
 			}
 			sprintf(sql, "%s%s%s",
@@ -756,7 +793,7 @@ insert_records(
 
 			sql = rtalloc(sizeof(char) * sqllen);
 			if (sql == NULL) {
-				fprintf(stderr, _("Could not allocate memory for INSERT statement\n"));
+				rterror(_("insert_records: Could not allocate memory for INSERT statement"));
 				return 0;
 			}
 			sprintf(sql, "INSERT INTO %s%s (%s%s) VALUES ('%s'::raster%s%s%s);",
@@ -792,7 +829,7 @@ drop_table(const char *schema, const char *table, STRINGBUFFER *buffer) {
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
-		fprintf(stderr, _("Could not allocate memory for DROP TABLE statement\n"));
+		rterror(_("drop_table: Could not allocate memory for DROP TABLE statement"));
 		return 0;
 	}
 	sprintf(sql, "DROP TABLE IF EXISTS %s%s;",
@@ -833,7 +870,7 @@ create_table(
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
-		fprintf(stderr, _("Could not allocate memory for CREATE TABLE statement\n"));
+		rterror(_("create_table: Could not allocate memory for CREATE TABLE statement"));
 		return 0;
 	}
 	sprintf(sql, "CREATE TABLE %s%s (\"rid\" serial PRIMARY KEY,%s raster%s)%s%s%s%s;",
@@ -875,7 +912,7 @@ copy_from(
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
-		fprintf(stderr, _("Could not allocate memory for COPY statement\n"));
+		rterror(_("copy_from: Could not allocate memory for COPY statement"));
 		return 0;
 	}
 	sprintf(sql, "COPY %s%s (%s%s) FROM stdin;",
@@ -930,7 +967,7 @@ create_index(
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
-		fprintf(stderr, _("Could not allocate memory for CREATE INDEX statement\n"));
+		rterror(_("create_index: Could not allocate memory for CREATE INDEX statement"));
 		rtdealloc(_table);
 		rtdealloc(_column);
 		return 0;
@@ -970,7 +1007,7 @@ analyze_table(
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
-		fprintf(stderr, _("Could not allocate memory for ANALYZE TABLE statement\n"));
+		rterror(_("analyze_table: Could not allocate memory for ANALYZE TABLE statement"));
 		return 0;
 	}
 	sprintf(sql, "ANALYZE %s%s;",
@@ -1001,7 +1038,7 @@ vacuum_table(
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
-		fprintf(stderr, _("Could not allocate memory for VACUUM statement\n"));
+		rterror(_("vacuum_table: Could not allocate memory for VACUUM statement"));
 		return 0;
 	}
 	sprintf(sql, "VACUUM ANALYZE %s%s;",
@@ -1047,7 +1084,7 @@ add_raster_constraints(
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
-		fprintf(stderr, _("Could not allocate memory for AddRasterConstraints statement\n"));
+		rterror(_("add_raster_constraints: Could not allocate memory for AddRasterConstraints statement"));
 		return 0;
 	}
 	sprintf(sql, "SELECT AddRasterConstraints('%s','%s','%s',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,%s,TRUE,TRUE,TRUE,TRUE,%s);",
@@ -1121,7 +1158,7 @@ add_overview_constraints(
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
-		fprintf(stderr, _("Could not allocate memory for AddOverviewConstraints statement\n"));
+		rterror(_("add_overview_constraints: Could not allocate memory for AddOverviewConstraints statement"));
 		return 0;
 	}
 	sprintf(sql, "SELECT AddOverviewConstraints('%s','%s','%s','%s','%s','%s',%d);",
@@ -1176,7 +1213,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 
 	hdsSrc = GDALOpenShared(config->rt_file[idx], GA_ReadOnly);
 	if (hdsSrc == NULL) {
-		fprintf(stderr, _("Could not open raster: %s\n"), config->rt_file[idx]);
+		rterror(_("build_overview: Could not open raster: %s"), config->rt_file[idx]);
 		return 0;
 	}
 
@@ -1184,7 +1221,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 	memcpy(gtOv, info->gt, sizeof(double) * 6);
 
 	if (ovx >= config->overview_count) {
-		fprintf(stderr, _("Invalid overview index: %d\n"), ovx);
+		rterror(_("build_overview: Invalid overview index: %d"), ovx);
 		return 0;
 	}
 	factor = config->overview[ovx];
@@ -1192,7 +1229,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 
 	/* factor must be within valid range */
 	if (factor < MINOVFACTOR || factor > MAXOVFACTOR) {
-		fprintf(stderr, _("Overview factor %d is not between %d and %d\n"), factor, MINOVFACTOR, MAXOVFACTOR);
+		rterror(_("build_overview: Overview factor %d is not between %d and %d"), factor, MINOVFACTOR, MAXOVFACTOR);
 		return 0;
 	}
 
@@ -1303,7 +1340,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 			/* convert VRT dataset to rt_raster */
 			rast = rt_raster_from_gdal_dataset(hdsDst);
 			if (rast == NULL) {
-				fprintf(stderr, _("Could not convert VRT dataset to rt_raster\n"));
+				rterror(_("build_overview: Could not convert VRT dataset to PostGIS raster"));
 				GDALClose(hdsDst);
 				return 0;
 			}
@@ -1314,6 +1351,12 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 			/* convert rt_raster to hexwkb */
 			hex = rt_raster_to_hexwkb(rast, &hexlen);
 			raster_destroy(rast);
+
+			if (hex == NULL) {
+				rterror(_("build_overview: Could not convert PostGIS raster to hex WKB"));
+				GDALClose(hdsDst);
+				return 0;
+			}
 
 			/* add hexwkb to tileset */
 			append_stringbuffer(tileset, hex);
@@ -1328,7 +1371,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 					(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
 					tileset, buffer
 				)) {
-					fprintf(stderr, _("Could not convert raster tiles into INSERT or COPY statements\n"));
+					rterror(_("build_overview: Could not convert raster tiles into INSERT or COPY statements"));
 					GDALClose(hdsSrc);
 					return 0;
 				}
@@ -1363,13 +1406,13 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 	hdsSrc = GDALOpenShared(config->rt_file[idx], GA_ReadOnly);
 	if (hdsSrc == NULL) {
-		fprintf(stderr, _("Could not open raster: %s\n"), config->rt_file[idx]);
+		rterror(_("convert_raster: Could not open raster: %s"), config->rt_file[idx]);
 		return 0;
 	}
 
 	nband = GDALGetRasterCount(hdsSrc);
 	if (!nband) {
-		fprintf(stderr, _("No bands found in raster: %s\n"), config->rt_file[idx]);
+		rterror(_("convert_raster: No bands found in raster: %s"), config->rt_file[idx]);
 		GDALClose(hdsSrc);
 		return 0;
 	}
@@ -1377,7 +1420,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	/* check that bands specified are available */
 	for (i = 0; i < config->nband_count; i++) {
 		if (config->nband[i] > nband) {
-			fprintf(stderr, _("Band %d not found in raster: %s\n"), config->nband[i], config->rt_file[idx]);
+			rterror(_("convert_raster: Band %d not found in raster: %s"), config->nband[i], config->rt_file[idx]);
 			GDALClose(hdsSrc);
 			return 0;
 		}
@@ -1388,7 +1431,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	if (pszProjectionRef != NULL && pszProjectionRef[0] != '\0') {
 		info->srs = rtalloc(sizeof(char) * (strlen(pszProjectionRef) + 1));
 		if (info->srs == NULL) {
-			fprintf(stderr, _("Could not allocate memory for storing SRS\n"));
+			rterror(_("convert_raster: Could not allocate memory for storing SRS"));
 			GDALClose(hdsSrc);
 			return 0;
 		}
@@ -1413,7 +1456,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 	/* record geotransform matrix */
 	if (GDALGetGeoTransform(hdsSrc, info->gt) != CE_None) {
-		fprintf(stderr, _("Using default geotransform matrix (0, 1, 0, 0, 0, -1) for raster: %s\n"), config->rt_file[idx]);
+		rtinfo(_("Using default geotransform matrix (0, 1, 0, 0, 0, -1) for raster: %s"), config->rt_file[idx]);
 		info->gt[0] = 0;
 		info->gt[1] = 1;
 		info->gt[2] = 0;
@@ -1429,7 +1472,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->nband_count = config->nband_count;
 		info->nband = rtalloc(sizeof(int) * info->nband_count);
 		if (info->nband == NULL) {
-			fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
+			rterror(_("convert_raster: Could not allocate memory for storing band indices"));
 			GDALClose(hdsSrc);
 			return 0;
 		}
@@ -1440,7 +1483,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->nband_count = nband;
 		info->nband = rtalloc(sizeof(int) * info->nband_count);
 		if (info->nband == NULL) {
-			fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
+			rterror(_("convert_raster: Could not allocate memory for storing band indices"));
 			GDALClose(hdsSrc);
 			return 0;
 		}
@@ -1451,25 +1494,25 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	/* initialize parameters dependent on nband */
 	info->gdalbandtype = rtalloc(sizeof(GDALDataType) * info->nband_count);
 	if (info->gdalbandtype == NULL) {
-		fprintf(stderr, _("Could not allocate memory for storing GDAL data type\n"));
+		rterror(_("convert_raster: Could not allocate memory for storing GDAL data type"));
 		GDALClose(hdsSrc);
 		return 0;
 	}
 	info->bandtype = rtalloc(sizeof(rt_pixtype) * info->nband_count);
 	if (info->bandtype == NULL) {
-		fprintf(stderr, _("Could not allocate memory for storing pixel type\n"));
+		rterror(_("convert_raster: Could not allocate memory for storing pixel type"));
 		GDALClose(hdsSrc);
 		return 0;
 	}
 	info->hasnodata = rtalloc(sizeof(int) * info->nband_count);
 	if (info->hasnodata == NULL) {
-		fprintf(stderr, _("Could not allocate memory for storing hasnodata flag\n"));
+		rterror(_("convert_raster: Could not allocate memory for storing hasnodata flag"));
 		GDALClose(hdsSrc);
 		return 0;
 	}
 	info->nodataval = rtalloc(sizeof(double) * info->nband_count);
 	if (info->nodataval == NULL) {
-		fprintf(stderr, _("Could not allocate memory for storing nodata value\n"));
+		rterror(_("convert_raster: Could not allocate memory for storing nodata value"));
 		GDALClose(hdsSrc);
 		return 0;
 	}
@@ -1510,7 +1553,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 		/* complex data type? */
 		if (GDALDataTypeIsComplex(info->gdalbandtype[i])) {
-			fprintf(stderr, _("The pixel type of band %d is a complex data type.  PostGIS Raster does not support complex data types\n"), i + 1);
+			rterror(_("convert_raster: The pixel type of band %d is a complex data type.  PostGIS raster does not support complex data types"), i + 1);
 			GDALClose(hdsSrc);
 			return 0;
 		}
@@ -1551,7 +1594,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* create raster object */
 				rast = rt_raster_new(info->tile_size[0], info->tile_size[1]);
 				if (rast == NULL) {
-					fprintf(stderr, _("Could not create raster\n"));
+					rterror(_("convert_raster: Could not create raster"));
 					return 0;
 				}
 
@@ -1569,14 +1612,14 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						config->rt_file[idx]
 					);
 					if (band == NULL) {
-						fprintf(stderr, _("Could not create offline band\n"));
+						rterror(_("convert_raster: Could not create offline band"));
 						raster_destroy(rast);
 						return 0;
 					}
 
 					/* add band to raster */
 					if (rt_raster_add_band(rast, band, rt_raster_get_num_bands(rast)) == -1) {
-						fprintf(stderr, _("Could not add offlineband to raster\n"));
+						rterror(_("convert_raster: Could not add offlineband to raster"));
 						rt_band_destroy(band);
 						raster_destroy(rast);
 						return 0;
@@ -1586,6 +1629,11 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* convert rt_raster to hexwkb */
 				hex = rt_raster_to_hexwkb(rast, &hexlen);
 				raster_destroy(rast);
+
+				if (hex == NULL) {
+					rterror(_("convert_raster: Could not convert PostGIS raster to hex WKB"));
+					return 0;
+				}
 
 				/* add hexwkb to tileset */
 				append_stringbuffer(tileset, hex);
@@ -1599,7 +1647,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
 						tileset, buffer
 					)) {
-						fprintf(stderr, _("Could not convert raster tiles into INSERT or COPY statements\n"));
+						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
 						return 0;
 					}
 
@@ -1653,7 +1701,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* convert VRT dataset to rt_raster */
 				rast = rt_raster_from_gdal_dataset(hdsDst);
 				if (rast == NULL) {
-					fprintf(stderr, _("Could not convert VRT dataset to PostGIS raster\n"));
+					rterror(_("convert_raster: Could not convert VRT dataset to PostGIS raster"));
 					GDALClose(hdsDst);
 					return 0;
 				}
@@ -1664,6 +1712,12 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* convert rt_raster to hexwkb */
 				hex = rt_raster_to_hexwkb(rast, &hexlen);
 				raster_destroy(rast);
+
+				if (hex == NULL) {
+					rterror(_("convert_raster: Could not convert PostGIS raster to hex WKB"));
+					GDALClose(hdsDst);
+					return 0;
+				}
 
 				/* add hexwkb to tileset */
 				append_stringbuffer(tileset, hex);
@@ -1678,7 +1732,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
 						tileset, buffer
 					)) {
-						fprintf(stderr, _("Could not convert raster tiles into INSERT or COPY statements\n"));
+						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
 						GDALClose(hdsSrc);
 						return 0;
 					}
@@ -1704,7 +1758,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 	if (config->transaction) {
 		if (!append_sql_to_buffer(buffer, "BEGIN;")) {
-			fprintf(stderr, _("Could not add BEGIN statement to string buffer\n"));
+			rterror(_("process_rasters: Could not add BEGIN statement to string buffer"));
 			return 0;
 		}
 	}
@@ -1712,14 +1766,14 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	/* drop table */
 	if (config->opt == 'd') {
 		if (!drop_table(config->schema, config->table, buffer)) {
-			fprintf(stderr, _("Could not add DROP TABLE statement to string buffer\n"));
+			rterror(_("process_rasters: Could not add DROP TABLE statement to string buffer"));
 			return 0;
 		}
 
 		if (config->overview_count) {
 			for (i = 0; i < config->overview_count; i++) {
 				if (!drop_table(config->schema, config->overview_table[i], buffer)) {
-					fprintf(stderr, _("Could not add an overview's DROP TABLE statement to string buffer\n"));
+					rterror(_("process_rasters: Could not add an overview's DROP TABLE statement to string buffer"));
 					return 0;
 				}
 			}
@@ -1734,7 +1788,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			config->tablespace, config->idx_tablespace,
 			buffer
 		)) {
-			fprintf(stderr, _("Could not add CREATE TABLE statement to string buffer\n"));
+			rterror(_("process_rasters: Could not add CREATE TABLE statement to string buffer"));
 			return 0;
 		}
 
@@ -1746,7 +1800,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					config->tablespace, config->idx_tablespace,
 					buffer
 				)) {
-					fprintf(stderr, _("Could not add an overview's CREATE TABLE statement to string buffer\n"));
+					rterror(_("process_rasters: Could not add an overview's CREATE TABLE statement to string buffer"));
 					return 0;
 				}
 			}
@@ -1776,7 +1830,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				(config->file_column ? config->rt_filename[i] : NULL),
 				buffer
 			)) {
-				fprintf(stderr, _("Could not add COPY statement to string buffer\n"));
+				rterror(_("process_rasters: Could not add COPY statement to string buffer"));
 				rtdealloc_rastinfo(&rastinfo);
 				rtdealloc_stringbuffer(&tileset, 0);
 				return 0;
@@ -1784,7 +1838,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 			/* convert raster */
 			if (!convert_raster(i, config, &rastinfo, &tileset, buffer)) {
-				fprintf(stderr, _("Could not process raster: %s\n"), config->rt_file[i]);
+				rterror(_("process_rasters: Could not process raster: %s"), config->rt_file[i]);
 				rtdealloc_rastinfo(&rastinfo);
 				rtdealloc_stringbuffer(&tileset, 0);
 				return 0;
@@ -1796,7 +1850,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				(config->file_column ? config->rt_filename[i] : NULL), config->copy_statements,
 				&tileset, buffer
 			)) {
-				fprintf(stderr, _("Could not convert raster tiles into INSERT or COPY statements\n"));
+				rterror(_("process_rasters: Could not convert raster tiles into INSERT or COPY statements"));
 				rtdealloc_rastinfo(&rastinfo);
 				rtdealloc_stringbuffer(&tileset, 0);
 				return 0;
@@ -1805,7 +1859,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			rtdealloc_stringbuffer(&tileset, 0);
 
 			if (config->copy_statements && !copy_from_end(buffer)) {
-				fprintf(stderr, _("Could not add COPY end statement to string buffer\n"));
+				rterror(_("process_rasters: Could not add COPY end statement to string buffer"));
 				rtdealloc_rastinfo(&rastinfo);
 				return 0;
 			}
@@ -1824,14 +1878,14 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 							(config->file_column ? config->rt_filename[i] : NULL),
 							buffer
 					)) {
-						fprintf(stderr, _("Could not add COPY statement to string buffer\n"));
+						rterror(_("process_rasters: Could not add COPY statement to string buffer"));
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
 						return 0;
 					}
 
 					if (!build_overview(i, config, &rastinfo, j, &tileset, buffer)) {
-						fprintf(stderr, _("Could not create overview of factor %d for raster %s\n"), config->overview[j], config->rt_file[i]);
+						rterror(_("process_rasters: Could not create overview of factor %d for raster %s"), config->overview[j], config->rt_file[i]);
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
 						return 0;
@@ -1842,7 +1896,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						(config->file_column ? config->rt_filename[i] : NULL), config->copy_statements,
 						&tileset, buffer
 					)) {
-						fprintf(stderr, _("Could not convert overview tiles into INSERT or COPY statements\n"));
+						rterror(_("process_rasters: Could not convert overview tiles into INSERT or COPY statements"));
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
 						return 0;
@@ -1855,7 +1909,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 					if (config->copy_statements) {
 						if (!copy_from_end(buffer)) {
-							fprintf(stderr, _("Could not add COPY end statement to string buffer\n"));
+							rterror(_("process_rasters: Could not add COPY end statement to string buffer"));
 							rtdealloc_rastinfo(&rastinfo);
 							return 0;
 						}
@@ -1885,7 +1939,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			config->idx_tablespace,
 			buffer
 		)) {
-			fprintf(stderr, _("Could not add CREATE INDEX statement to string buffer\n"));
+			rterror(_("process_rasters: Could not add CREATE INDEX statement to string buffer"));
 			return 0;
 		}
 
@@ -1895,7 +1949,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				config->schema, config->table,
 				buffer
 			)) {
-				fprintf(stderr, _("Could not add ANALYZE statement to string buffer\n"));
+				rterror(_("process_rasters: Could not add ANALYZE statement to string buffer"));
 				return 0;
 			}
 		}
@@ -1908,7 +1962,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					config->idx_tablespace,
 					buffer
 				)) {
-					fprintf(stderr, _("Could not add an overview's CREATE INDEX statement to string buffer\n"));
+					rterror(_("process_rasters: Could not add an overview's CREATE INDEX statement to string buffer"));
 					return 0;
 				}
 
@@ -1918,7 +1972,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						config->schema, config->overview_table[i],
 						buffer
 					)) {
-						fprintf(stderr, _("Could not add an overview's ANALYZE statement to string buffer\n"));
+						rterror(_("process_rasters: Could not add an overview's ANALYZE statement to string buffer"));
 						return 0;
 					}
 				}
@@ -1933,7 +1987,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			config->regular_blocking, config->max_extent,
 			buffer
 		)) {
-			fprintf(stderr, _("Could not add AddRasterConstraints statement to string buffer\n"));
+			rterror(_("process:rasters: Could not add AddRasterConstraints statement to string buffer"));
 			return 0;
 		}
 
@@ -1944,7 +1998,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					config->regular_blocking, config->max_extent,
 					buffer
 				)) {
-					fprintf(stderr, _("Could not add an overview's AddRasterConstraints statement to string buffer\n"));
+					rterror(_("process_rasters: Could not add an overview's AddRasterConstraints statement to string buffer"));
 					return 0;
 				}
 			}
@@ -1960,7 +2014,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				config->overview[i],
 				buffer
 			)) {
-				fprintf(stderr, _("Could not add an overview's AddOverviewConstraints statement to string buffer\n"));
+				rterror(_("process_rasters: Could not add an overview's AddOverviewConstraints statement to string buffer"));
 				return 0;
 			}
 		}
@@ -1968,7 +2022,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 	if (config->transaction) {
 		if (!append_sql_to_buffer(buffer, "END;")) {
-			fprintf(stderr, _("Could not add END statement to string buffer\n"));
+			rterror(_("process_rasters: Could not add END statement to string buffer"));
 			return 0;
 		}
 	}
@@ -1979,7 +2033,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			config->schema, config->table,
 			buffer
 		)) {
-			fprintf(stderr, _("Could not add VACUUM statement to string buffer\n"));
+			rterror(_("process_rasters: Could not add VACUUM statement to string buffer"));
 			return 0;
 		}
 
@@ -1989,7 +2043,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					config->schema, config->overview_table[i],
 					buffer
 				)) {
-					fprintf(stderr, _("Could not add an overview's VACUUM statement to string buffer\n"));
+					rterror(_("process_rasters: Could not add an overview's VACUUM statement to string buffer"));
 					return 0;
 				}
 			}
@@ -2026,7 +2080,7 @@ main(int argc, char **argv) {
 	/* initialize config */
 	config = rtalloc(sizeof(RTLOADERCFG));
 	if (config == NULL) {
-		fprintf(stderr, _("Could not allocate memory for loader configuration\n"));
+		rterror(_("Could not allocate memory for loader configuration"));
 		exit(1);
 	}
 	init_config(config);
@@ -2044,7 +2098,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-b") && i < argc - 1) {
 			elements = strsplit(argv[++i], ",", &n);
 			if (n < 1) {
-				fprintf(stderr, _("Could not process -b.\n"));
+				rterror(_("Could not process -b"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2063,7 +2117,7 @@ main(int argc, char **argv) {
 				minmax = strsplit(t, "-", &o);
 				if (o == 2) {
 					if (!array_range(atoi(minmax[0]), atoi(minmax[1]), 1, &range, &p)) {
-						fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
+						rterror(_("Could not allocate memory for storing band indices"));
 						for (l = 0; l < o; l++)
 							rtdealloc(minmax[l]);
 						rtdealloc(minmax);
@@ -2079,7 +2133,7 @@ main(int argc, char **argv) {
 					p = 1;
 					range = rtalloc(sizeof(int));
 					if (range == NULL) {
-						fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
+						rterror(_("Could not allocate memory for storing band indices"));
 						for (l = 0; l < o; l++)
 							rtdealloc(minmax[l]);
 						rtdealloc(minmax);
@@ -2097,7 +2151,7 @@ main(int argc, char **argv) {
 				config->nband_count += p;
 				config->nband = rtrealloc(config->nband, sizeof(int) * config->nband_count);
 				if (config->nband == NULL) {
-					fprintf(stderr, _("Could not allocate memory for storing band indices\n"));
+					rterror(_("Could not allocate memory for storing band indices"));
 					rtdealloc(range);
 					for (l = 0; l < o; l++)
 						rtdealloc(minmax[l]);
@@ -2128,7 +2182,7 @@ main(int argc, char **argv) {
 
 			for (j = 0; j < config->nband_count; j++) {
 				if (config->nband[j] < 1) {
-					fprintf(stderr, _("Band index %d must be greater than 0\n"), config->nband[j]);
+					rterror(_("Band index %d must be greater than 0"), config->nband[j]);
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -2138,7 +2192,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-t") && i < argc - 1) {
 			elements = strsplit(argv[++i], "x", &n);
 			if (n != 2) {
-				fprintf(stderr, _("Could not process -t.\n"));
+				rterror(_("Could not process -t"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2155,7 +2209,7 @@ main(int argc, char **argv) {
 
 			for (j = 0; j < 2; j++) {
 				if (config->tile_size[j] < 1) {
-					fprintf(stderr, _("Tile size must be greater than 0x0\n"));
+					rterror(_("Tile size must be greater than 0x0"));
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -2186,7 +2240,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-f") && i < argc - 1) {
 			config->raster_column = rtalloc(sizeof(char) * (strlen(argv[++i]) + 1));
 			if (config->raster_column == NULL) {
-				fprintf(stderr, _("Could not allocate memory for storing raster column name\n"));
+				rterror(_("Could not allocate memory for storing raster column name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2200,7 +2254,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-l") && i < argc - 1) {
 			elements = strsplit(argv[++i], ",", &n);
 			if (n < 1) {
-				fprintf(stderr, _("Could not process -l.\n"));
+				rterror(_("Could not process -l"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2208,7 +2262,7 @@ main(int argc, char **argv) {
 			config->overview_count = n;
 			config->overview = rtalloc(sizeof(int) * n);
 			if (config->overview == NULL) {
-				fprintf(stderr, _("Could not allocate memory for storing overview factors\n"));
+				rterror(_("Could not allocate memory for storing overview factors"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2224,7 +2278,7 @@ main(int argc, char **argv) {
 
 			for (j = 0; j < config->overview_count; j++) {
 				if (config->overview[j] < MINOVFACTOR || config->overview[j] > MAXOVFACTOR) {
-					fprintf(stderr, _("Overview factor %d is not between %d and %d\n"), config->overview[j], MINOVFACTOR, MAXOVFACTOR);
+					rterror(_("Overview factor %d is not between %d and %d"), config->overview[j], MINOVFACTOR, MAXOVFACTOR);
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -2258,7 +2312,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-T") && i < argc - 1) {
 			config->tablespace = rtalloc(sizeof(char) * (strlen(argv[++i]) + 1));
 			if (config->tablespace == NULL) {
-				fprintf(stderr, _("Could not allocate memory for storing tablespace of new table\n"));
+				rterror(_("Could not allocate memory for storing tablespace of new table"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2268,7 +2322,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-X") && i < argc - 1) {
 			config->idx_tablespace = rtalloc(sizeof(char) * (strlen(argv[++i]) + 1));
 			if (config->idx_tablespace == NULL) {
-				fprintf(stderr, _("Could not allocate memory for storing tablespace of new indices\n"));
+				rterror(_("Could not allocate memory for storing tablespace of new indices"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2302,12 +2356,12 @@ main(int argc, char **argv) {
 			uint32_t drv_count = 0;
 			rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
 			if (drv_set == NULL || !drv_count) {
-				fprintf(stderr, _("Could not get list of available GDAL raster formats\n"));
+				rterror(_("Could not get list of available GDAL raster formats"));
 			}
 			else {
-				fprintf(stderr, _("Available GDAL raster formats:\n"));
+				printf(_("Available GDAL raster formats:\n"));
 				for (j = 0; j < drv_count; j++) {
-					fprintf(stderr, _("  %s\n"), drv_set[j].long_name);
+					printf(_("  %s\n"), drv_set[j].long_name);
 
 					rtdealloc(drv_set[j].short_name);
 					rtdealloc(drv_set[j].long_name);
@@ -2329,14 +2383,14 @@ main(int argc, char **argv) {
 			config->rt_file_count++;
 			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
-				fprintf(stderr, _("Could not allocate memory for storing raster files\n"));
+				rterror(_("Could not allocate memory for storing raster files"));
 				rtdealloc_config(config);
 				exit(1);
 			}
 
 			config->rt_file[config->rt_file_count - 1] = rtalloc(sizeof(char) * (strlen(argv[i]) + 1));
 			if (config->rt_file[config->rt_file_count - 1] == NULL) {
-				fprintf(stderr, _("Could not allocate memory for storing raster filename\n"));
+				rterror(_("Could not allocate memory for storing raster filename"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2346,7 +2400,7 @@ main(int argc, char **argv) {
 
 	/* no files provided */
 	if (!config->rt_file_count) {
-		fprintf(stderr, _("No raster provided.\n"));
+		rterror(_("No raster provided"));
 		rtdealloc_config(config);
 		exit(1);
 	}
@@ -2363,7 +2417,7 @@ main(int argc, char **argv) {
 			if (ptr) {
 				config->schema = rtalloc(sizeof(char) * (strlen(config->rt_file[config->rt_file_count - 1]) + 1));
 				if (config->schema == NULL) {
-					fprintf(stderr, _("Could not allocate memory for storing schema name\n"));
+					rterror(_("Could not allocate memory for storing schema name"));
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -2371,7 +2425,7 @@ main(int argc, char **argv) {
 
 				config->table = rtalloc(sizeof(char) * strlen(config->rt_file[config->rt_file_count - 1]));
 				if (config->table == NULL) {
-					fprintf(stderr, _("Could not allocate memory for storing table name\n"));
+					rterror(_("Could not allocate memory for storing table name"));
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -2380,7 +2434,7 @@ main(int argc, char **argv) {
 			else {
 				config->table = rtalloc(sizeof(char) * strlen(config->rt_file[config->rt_file_count - 1]) + 1);
 				if (config->table == NULL) {
-					fprintf(stderr, _("Could not allocate memory for storing table name\n"));
+					rterror(_("Could not allocate memory for storing table name"));
 					rtdealloc_config(config);
 					exit(1);
 				}
@@ -2390,7 +2444,7 @@ main(int argc, char **argv) {
 			rtdealloc(config->rt_file[--(config->rt_file_count)]);
 			config->rt_file = (char **) rtrealloc(config->rt_file, sizeof(char *) * config->rt_file_count);
 			if (config->rt_file == NULL) {
-				fprintf(stderr, _("Could not reallocate the memory holding raster names\n"));
+				rterror(_("Could not reallocate the memory holding raster names"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2410,7 +2464,7 @@ main(int argc, char **argv) {
 		fp = fopen(config->rt_file[i], "rb");
 
 		if (fp == NULL) {
-			fprintf(stderr, _("Unable to read raster file: %s\n"), config->rt_file[i]);
+			rterror(_("Unable to read raster file: %s"), config->rt_file[i]);
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2422,7 +2476,7 @@ main(int argc, char **argv) {
 	/* process each file for just the filename */
 	config->rt_filename = (char **) rtalloc(sizeof(char *) * config->rt_file_count);
 	if (config->rt_filename == NULL) {
-		fprintf(stderr, _("Could not allocate memory for cleaned raster filenames\n"));
+		rterror(_("Could not allocate memory for cleaned raster filenames"));
 		rtdealloc_config(config);
 		exit(1);
 	}
@@ -2432,7 +2486,7 @@ main(int argc, char **argv) {
 
 		file = rtalloc(sizeof(char) * (strlen(config->rt_file[i]) + 1));
 		if (file == NULL) {
-			fprintf(stderr, _("Could not allocate memory for cleaned raster filename\n"));
+			rterror(_("Could not allocate memory for cleaned raster filename"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2447,7 +2501,7 @@ main(int argc, char **argv) {
 
 		config->rt_filename[i] = rtalloc(sizeof(char) * (strlen(ptr) + 1));
 		if (config->rt_filename[i] == NULL) {
-			fprintf(stderr, _("Could not allocate memory for cleaned raster filename\n"));
+			rterror(_("Could not allocate memory for cleaned raster filename"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2466,7 +2520,7 @@ main(int argc, char **argv) {
 
 		file = rtalloc(sizeof(char) * (strlen(config->rt_filename[0]) + 1));
 		if (file == NULL) {
-			fprintf(stderr, _("Could not allocate memory for proxy table name\n"));
+			rterror(_("Could not allocate memory for proxy table name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2481,7 +2535,7 @@ main(int argc, char **argv) {
 
 		config->table = rtalloc(sizeof(char) * (strlen(file) + 1));
 		if (config->table == NULL) {
-			fprintf(stderr, _("Could not allocate memory for proxy table name\n"));
+			rterror(_("Could not allocate memory for proxy table name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2493,7 +2547,7 @@ main(int argc, char **argv) {
 	if (config->raster_column == NULL) {
 		config->raster_column = rtalloc(sizeof(char) * (strlen("rast") + 1));
 		if (config->raster_column == NULL) {
-			fprintf(stderr, _("Could not allocate memory for default raster column name\n"));
+			rterror(_("Could not allocate memory for default raster column name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2526,7 +2580,7 @@ main(int argc, char **argv) {
 		char factor[4];
 		config->overview_table = rtalloc(sizeof(char *) * config->overview_count);
 		if (config->overview_table == NULL) {
-			fprintf(stderr, _("Could not allocate memory for overview table names\n"));
+			rterror(_("Could not allocate memory for overview table names"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2536,7 +2590,7 @@ main(int argc, char **argv) {
 
 			config->overview_table[i] = rtalloc(sizeof(char) * (strlen("o__") + strlen(factor) + strlen(config->table) + 1));
 			if (config->overview_table[i] == NULL) {
-				fprintf(stderr, _("Could not allocate memory for overview table name\n"));
+				rterror(_("Could not allocate memory for overview table name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2549,31 +2603,31 @@ main(int argc, char **argv) {
 	****************************************************************************/
 
 	if (config->schema != NULL && strlen(config->schema) > MAXNAMELEN) {
-		fprintf(stderr, _("The schema name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+		rtwarn(_("The schema name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
 			config->schema,
 			MAXNAMELEN
 		);
 	}
 	if (config->table != NULL && strlen(config->table) > MAXNAMELEN) {
-		fprintf(stderr, _("The table name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+		rtwarn(_("The table name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
 			config->table,
 			MAXNAMELEN
 		);
 	}
 	if (config->raster_column != NULL && strlen(config->raster_column) > MAXNAMELEN) {
-		fprintf(stderr, _("The column name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+		rtwarn(_("The column name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
 			config->raster_column,
 			MAXNAMELEN
 		);
 	}
 	if (config->tablespace != NULL && strlen(config->tablespace) > MAXNAMELEN) {
-		fprintf(stderr, _("The tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+		rtwarn(_("The tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
 			config->tablespace,
 			MAXNAMELEN
 		);
 	}
 	if (config->idx_tablespace != NULL && strlen(config->idx_tablespace) > MAXNAMELEN) {
-		fprintf(stderr, _("The index tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+		rtwarn(_("The index tablespace name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
 			config->idx_tablespace,
 			MAXNAMELEN
 		);
@@ -2581,7 +2635,7 @@ main(int argc, char **argv) {
 	if (config->overview_count) {
 		for (i = 0; i < config->overview_count; i++) {
 			if (strlen(config->overview_table[i]) > MAXNAMELEN) {
-				fprintf(stderr, _("The overview table name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d).\n"),
+				rtwarn(_("The overview table name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
 					config->overview_table[i],
 					MAXNAMELEN
 				);
@@ -2596,7 +2650,7 @@ main(int argc, char **argv) {
 	if (config->schema != NULL) {
 		tmp = rtalloc(sizeof(char) * (strlen(config->schema) + 4));
 		if (tmp == NULL) {
-			fprintf(stderr, _("Could not allocate memory for quoting schema name\n"));
+			rterror(_("Could not allocate memory for quoting schema name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2608,7 +2662,7 @@ main(int argc, char **argv) {
 	if (config->table != NULL) {
 		tmp = rtalloc(sizeof(char) * (strlen(config->table) + 3));
 		if (tmp == NULL) {
-			fprintf(stderr, _("Could not allocate memory for quoting table name\n"));
+			rterror(_("Could not allocate memory for quoting table name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2620,7 +2674,7 @@ main(int argc, char **argv) {
 	if (config->raster_column != NULL) {
 		tmp = rtalloc(sizeof(char) * (strlen(config->raster_column) + 3));
 		if (tmp == NULL) {
-			fprintf(stderr, _("Could not allocate memory for quoting raster column name\n"));
+			rterror(_("Could not allocate memory for quoting raster column name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2632,7 +2686,7 @@ main(int argc, char **argv) {
 	if (config->tablespace != NULL) {
 		tmp = rtalloc(sizeof(char) * (strlen(config->tablespace) + 3));
 		if (tmp == NULL) {
-			fprintf(stderr, _("Could not allocate memory for quoting tablespace name\n"));
+			rterror(_("Could not allocate memory for quoting tablespace name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2644,7 +2698,7 @@ main(int argc, char **argv) {
 	if (config->idx_tablespace != NULL) {
 		tmp = rtalloc(sizeof(char) * (strlen(config->idx_tablespace) + 3));
 		if (tmp == NULL) {
-			fprintf(stderr, _("Could not allocate memory for quoting index tablespace name\n"));
+			rterror(_("Could not allocate memory for quoting index tablespace name"));
 			rtdealloc_config(config);
 			exit(1);
 		}
@@ -2657,7 +2711,7 @@ main(int argc, char **argv) {
 		for (i = 0; i < config->overview_count; i++) {
 			tmp = rtalloc(sizeof(char) * (strlen(config->overview_table[i]) + 3));
 			if (tmp == NULL) {
-				fprintf(stderr, _("Could not allocate memory for quoting overview table name\n"));
+				rterror(_("Could not allocate memory for quoting overview table name"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2675,7 +2729,7 @@ main(int argc, char **argv) {
 	/* initialize string buffer */
 	buffer = rtalloc(sizeof(STRINGBUFFER));
 	if (buffer == NULL) {
-		fprintf(stderr, _("Could not allocate memory for output string buffer\n"));
+		rterror(_("Could not allocate memory for output string buffer"));
 		rtdealloc_config(config);
 		exit(1);
 	}
@@ -2683,7 +2737,7 @@ main(int argc, char **argv) {
 
 	/* pass off to processing function */
 	if (!process_rasters(config, buffer)) {
-		fprintf(stderr, _("Unable to process rasters\n"));
+		rterror(_("Unable to process rasters"));
 		rtdealloc_stringbuffer(buffer, 1);
 		rtdealloc_config(config);
 		exit(1);
