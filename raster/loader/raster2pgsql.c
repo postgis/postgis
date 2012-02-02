@@ -1176,7 +1176,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 
 	hdsSrc = GDALOpenShared(config->rt_file[idx], GA_ReadOnly);
 	if (hdsSrc == NULL) {
-		fprintf(stderr, _("Cannot open raster: %s\n"), config->rt_file[idx]);
+		fprintf(stderr, _("Could not open raster: %s\n"), config->rt_file[idx]);
 		return 0;
 	}
 
@@ -1302,6 +1302,11 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 
 			/* convert VRT dataset to rt_raster */
 			rast = rt_raster_from_gdal_dataset(hdsDst);
+			if (rast == NULL) {
+				fprintf(stderr, _("Could not convert VRT dataset to rt_raster\n"));
+				GDALClose(hdsDst);
+				return 0;
+			}
 
 			/* set srid if provided */
 			rt_raster_set_srid(rast, info->srid);
@@ -1323,7 +1328,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 					(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
 					tileset, buffer
 				)) {
-					fprintf(stderr, _("Cannot convert raster tiles into INSERT or COPY statements\n"));
+					fprintf(stderr, _("Could not convert raster tiles into INSERT or COPY statements\n"));
 					GDALClose(hdsSrc);
 					return 0;
 				}
@@ -1358,7 +1363,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 	hdsSrc = GDALOpenShared(config->rt_file[idx], GA_ReadOnly);
 	if (hdsSrc == NULL) {
-		fprintf(stderr, _("Cannot open raster: %s\n"), config->rt_file[idx]);
+		fprintf(stderr, _("Could not open raster: %s\n"), config->rt_file[idx]);
 		return 0;
 	}
 
@@ -1594,7 +1599,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
 						tileset, buffer
 					)) {
-						fprintf(stderr, _("Cannot convert raster tiles into INSERT or COPY statements\n"));
+						fprintf(stderr, _("Could not convert raster tiles into INSERT or COPY statements\n"));
 						return 0;
 					}
 
@@ -1647,6 +1652,11 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 				/* convert VRT dataset to rt_raster */
 				rast = rt_raster_from_gdal_dataset(hdsDst);
+				if (rast == NULL) {
+					fprintf(stderr, _("Could not convert VRT dataset to PostGIS raster\n"));
+					GDALClose(hdsDst);
+					return 0;
+				}
 
 				/* set srid if provided */
 				rt_raster_set_srid(rast, info->srid);
@@ -1668,7 +1678,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
 						tileset, buffer
 					)) {
-						fprintf(stderr, _("Cannot convert raster tiles into INSERT or COPY statements\n"));
+						fprintf(stderr, _("Could not convert raster tiles into INSERT or COPY statements\n"));
 						GDALClose(hdsSrc);
 						return 0;
 					}
@@ -1694,7 +1704,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 	if (config->transaction) {
 		if (!append_sql_to_buffer(buffer, "BEGIN;")) {
-			fprintf(stderr, _("Cannot add BEGIN statement to string buffer\n"));
+			fprintf(stderr, _("Could not add BEGIN statement to string buffer\n"));
 			return 0;
 		}
 	}
@@ -1702,14 +1712,14 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	/* drop table */
 	if (config->opt == 'd') {
 		if (!drop_table(config->schema, config->table, buffer)) {
-			fprintf(stderr, _("Cannot add DROP TABLE statement to string buffer\n"));
+			fprintf(stderr, _("Could not add DROP TABLE statement to string buffer\n"));
 			return 0;
 		}
 
 		if (config->overview_count) {
 			for (i = 0; i < config->overview_count; i++) {
 				if (!drop_table(config->schema, config->overview_table[i], buffer)) {
-					fprintf(stderr, _("Cannot add an overview's DROP TABLE statement to string buffer\n"));
+					fprintf(stderr, _("Could not add an overview's DROP TABLE statement to string buffer\n"));
 					return 0;
 				}
 			}
@@ -1724,7 +1734,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			config->tablespace, config->idx_tablespace,
 			buffer
 		)) {
-			fprintf(stderr, _("Cannot add CREATE TABLE statement to string buffer\n"));
+			fprintf(stderr, _("Could not add CREATE TABLE statement to string buffer\n"));
 			return 0;
 		}
 
@@ -1736,7 +1746,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					config->tablespace, config->idx_tablespace,
 					buffer
 				)) {
-					fprintf(stderr, _("Cannot add an overview's CREATE TABLE statement to string buffer\n"));
+					fprintf(stderr, _("Could not add an overview's CREATE TABLE statement to string buffer\n"));
 					return 0;
 				}
 			}
@@ -1766,7 +1776,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				(config->file_column ? config->rt_filename[i] : NULL),
 				buffer
 			)) {
-				fprintf(stderr, _("Cannot add COPY statement to string buffer\n"));
+				fprintf(stderr, _("Could not add COPY statement to string buffer\n"));
 				rtdealloc_rastinfo(&rastinfo);
 				rtdealloc_stringbuffer(&tileset, 0);
 				return 0;
@@ -1774,7 +1784,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 			/* convert raster */
 			if (!convert_raster(i, config, &rastinfo, &tileset, buffer)) {
-				fprintf(stderr, _("Cannot process raster %s\n"), config->rt_file[i]);
+				fprintf(stderr, _("Could not process raster: %s\n"), config->rt_file[i]);
 				rtdealloc_rastinfo(&rastinfo);
 				rtdealloc_stringbuffer(&tileset, 0);
 				return 0;
@@ -1786,7 +1796,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				(config->file_column ? config->rt_filename[i] : NULL), config->copy_statements,
 				&tileset, buffer
 			)) {
-				fprintf(stderr, _("Cannot convert raster tiles into INSERT or COPY statements\n"));
+				fprintf(stderr, _("Could not convert raster tiles into INSERT or COPY statements\n"));
 				rtdealloc_rastinfo(&rastinfo);
 				rtdealloc_stringbuffer(&tileset, 0);
 				return 0;
@@ -1795,7 +1805,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			rtdealloc_stringbuffer(&tileset, 0);
 
 			if (config->copy_statements && !copy_from_end(buffer)) {
-				fprintf(stderr, _("Cannot add COPY end statement to string buffer\n"));
+				fprintf(stderr, _("Could not add COPY end statement to string buffer\n"));
 				rtdealloc_rastinfo(&rastinfo);
 				return 0;
 			}
@@ -1814,14 +1824,14 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 							(config->file_column ? config->rt_filename[i] : NULL),
 							buffer
 					)) {
-						fprintf(stderr, _("Cannot add COPY statement to string buffer\n"));
+						fprintf(stderr, _("Could not add COPY statement to string buffer\n"));
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
 						return 0;
 					}
 
 					if (!build_overview(i, config, &rastinfo, j, &tileset, buffer)) {
-						fprintf(stderr, _("Cannot create overview of factor %d for raster %s\n"), config->overview[j], config->rt_file[i]);
+						fprintf(stderr, _("Could not create overview of factor %d for raster %s\n"), config->overview[j], config->rt_file[i]);
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
 						return 0;
@@ -1832,7 +1842,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						(config->file_column ? config->rt_filename[i] : NULL), config->copy_statements,
 						&tileset, buffer
 					)) {
-						fprintf(stderr, _("Cannot convert overview tiles into INSERT or COPY statements\n"));
+						fprintf(stderr, _("Could not convert overview tiles into INSERT or COPY statements\n"));
 						rtdealloc_rastinfo(&rastinfo);
 						rtdealloc_stringbuffer(&tileset, 0);
 						return 0;
@@ -1845,7 +1855,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 					if (config->copy_statements) {
 						if (!copy_from_end(buffer)) {
-							fprintf(stderr, _("Cannot add COPY end statement to string buffer\n"));
+							fprintf(stderr, _("Could not add COPY end statement to string buffer\n"));
 							rtdealloc_rastinfo(&rastinfo);
 							return 0;
 						}
@@ -1875,7 +1885,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			config->idx_tablespace,
 			buffer
 		)) {
-			fprintf(stderr, _("Cannot add CREATE INDEX statement to string buffer\n"));
+			fprintf(stderr, _("Could not add CREATE INDEX statement to string buffer\n"));
 			return 0;
 		}
 
@@ -1885,7 +1895,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				config->schema, config->table,
 				buffer
 			)) {
-				fprintf(stderr, _("Cannot add ANALYZE statement to string buffer\n"));
+				fprintf(stderr, _("Could not add ANALYZE statement to string buffer\n"));
 				return 0;
 			}
 		}
@@ -1898,7 +1908,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					config->idx_tablespace,
 					buffer
 				)) {
-					fprintf(stderr, _("Cannot add an overview's CREATE INDEX statement to string buffer\n"));
+					fprintf(stderr, _("Could not add an overview's CREATE INDEX statement to string buffer\n"));
 					return 0;
 				}
 
@@ -1908,7 +1918,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 						config->schema, config->overview_table[i],
 						buffer
 					)) {
-						fprintf(stderr, _("Cannot add an overview's ANALYZE statement to string buffer\n"));
+						fprintf(stderr, _("Could not add an overview's ANALYZE statement to string buffer\n"));
 						return 0;
 					}
 				}
@@ -1923,7 +1933,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			config->regular_blocking, config->max_extent,
 			buffer
 		)) {
-			fprintf(stderr, _("Cannot add AddRasterConstraints statement to string buffer\n"));
+			fprintf(stderr, _("Could not add AddRasterConstraints statement to string buffer\n"));
 			return 0;
 		}
 
@@ -1934,7 +1944,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					config->regular_blocking, config->max_extent,
 					buffer
 				)) {
-					fprintf(stderr, _("Cannot add an overview's AddRasterConstraints statement to string buffer\n"));
+					fprintf(stderr, _("Could not add an overview's AddRasterConstraints statement to string buffer\n"));
 					return 0;
 				}
 			}
@@ -1950,7 +1960,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 				config->overview[i],
 				buffer
 			)) {
-				fprintf(stderr, _("Cannot add an overview's AddOverviewConstraints statement to string buffer\n"));
+				fprintf(stderr, _("Could not add an overview's AddOverviewConstraints statement to string buffer\n"));
 				return 0;
 			}
 		}
@@ -1958,7 +1968,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 	if (config->transaction) {
 		if (!append_sql_to_buffer(buffer, "END;")) {
-			fprintf(stderr, _("Cannot add END statement to string buffer\n"));
+			fprintf(stderr, _("Could not add END statement to string buffer\n"));
 			return 0;
 		}
 	}
@@ -1969,7 +1979,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			config->schema, config->table,
 			buffer
 		)) {
-			fprintf(stderr, _("Cannot add VACUUM statement to string buffer\n"));
+			fprintf(stderr, _("Could not add VACUUM statement to string buffer\n"));
 			return 0;
 		}
 
@@ -1979,7 +1989,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 					config->schema, config->overview_table[i],
 					buffer
 				)) {
-					fprintf(stderr, _("Cannot add an overview's VACUUM statement to string buffer\n"));
+					fprintf(stderr, _("Could not add an overview's VACUUM statement to string buffer\n"));
 					return 0;
 				}
 			}
@@ -2034,7 +2044,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-b") && i < argc - 1) {
 			elements = strsplit(argv[++i], ",", &n);
 			if (n < 1) {
-				fprintf(stderr, _("Cannot process -b.\n"));
+				fprintf(stderr, _("Could not process -b.\n"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2128,7 +2138,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-t") && i < argc - 1) {
 			elements = strsplit(argv[++i], "x", &n);
 			if (n != 2) {
-				fprintf(stderr, _("Cannot process -t.\n"));
+				fprintf(stderr, _("Could not process -t.\n"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2190,7 +2200,7 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-l") && i < argc - 1) {
 			elements = strsplit(argv[++i], ",", &n);
 			if (n < 1) {
-				fprintf(stderr, _("Cannot process -l.\n"));
+				fprintf(stderr, _("Could not process -l.\n"));
 				rtdealloc_config(config);
 				exit(1);
 			}
@@ -2292,7 +2302,7 @@ main(int argc, char **argv) {
 			uint32_t drv_count = 0;
 			rt_gdaldriver drv_set = rt_raster_gdal_drivers(&drv_count, 0);
 			if (drv_set == NULL || !drv_count) {
-				fprintf(stderr, _("Cannot get list of available GDAL raster formats\n"));
+				fprintf(stderr, _("Could not get list of available GDAL raster formats\n"));
 			}
 			else {
 				fprintf(stderr, _("Available GDAL raster formats:\n"));
