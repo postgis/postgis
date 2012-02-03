@@ -119,7 +119,7 @@ sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@
 
-sql_minor_upgrade: sql_bits/postgis_upgrade_minor.sql
+sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
 	if test "$(PREREL_NUMBER)x" != "x"; then \
 	   v=$(PREREL_PREV); \
 	   while [[ $$v -ge 1 ]]; do \
