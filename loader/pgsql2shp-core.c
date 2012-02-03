@@ -1248,6 +1248,7 @@ ShpDumperCreate(SHPDUMPERCONFIG *config)
 	state->column_map_pgfieldnames = NULL;
 	state->column_map_dbffieldnames = NULL;
 	state->column_map_size = 0;
+	state->big_endian = is_bigendian();
 	
 	return state;
 }
@@ -1392,9 +1393,6 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 	}
 
 	PQclear(res);
-
-	/* Detect host endianness */
-	state->big_endian = is_bigendian();
 
 	free(connstring);
 
