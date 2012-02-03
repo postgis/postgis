@@ -1902,20 +1902,25 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 
 	for (i = 0; i < state->fieldcount; i++)
 	{
+		/* Comma-separated column names */
+		if (i > 0)
+			strcat(state->main_scan_query, ",");
+			
 		if (state->config->binary)
 			sprintf(buf, "\"%s\"::text", state->pgfieldnames[i]);
 		else
 			sprintf(buf, "\"%s\"", state->pgfieldnames[i]);
 
 		strcat(state->main_scan_query, buf);
-
-		/* Comma-separated column names */
-		strcat(state->main_scan_query, ",");
 	}
 
 	/* If we found a valid geometry/geography column then use it */
 	if (state->geo_col_name)
 	{
+		/* If this is the (only) column, no need for the initial comma */
+		if (state->fieldcount > 0)
+			strcat(state->main_scan_query, ",");
+		
 		if (state->big_endian)
 		{
 			if (state->pgis_major_version > 0)
