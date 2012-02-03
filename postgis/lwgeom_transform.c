@@ -22,6 +22,35 @@ Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
 
+static int
+GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)
+{
+	Proj4Cache *proj_cache = NULL;
+
+	/* Set the search path if we haven't already */
+	SetPROJ4LibPath();
+
+	/* get or initialize the cache for this round */
+	proj_cache = GetPROJ4Cache(fcinfo);
+	if ( !proj_cache )
+		return LW_FAILURE;
+
+	/* Add the output srid to the cache if it's not already there */
+	if (!IsInPROJ4Cache(proj_cache, srid1))
+		AddToPROJ4Cache(proj_cache, srid1, srid2);
+
+	/* Add the input srid to the cache if it's not already there */
+	if (!IsInPROJ4Cache(proj_cache, srid2))
+		AddToPROJ4Cache(proj_cache, srid2, srid1);
+
+	/* Get the projections */
+	*pj1 = GetProjectionFromPROJ4Cache(proj_cache, srid1);
+	*pj2 = GetProjectionFromPROJ4Cache(proj_cache, srid2);
+
+	return LW_TRUE;
+}
+
+
 /**
  * transform( GEOMETRY, INT (output srid) )
  * tmpPts - if there is a nadgrid error (-38), we re-try the transform
@@ -35,61 +64,42 @@ Datum transform(PG_FUNCTION_ARGS)
 	GSERIALIZED *result=NULL;
 	LWGEOM *lwgeom;
 	projPJ input_pj, output_pj;
-	int32 result_srid ;
+	int32 output_srid, input_srid;
 
-	Proj4Cache *proj_cache = NULL;
-
-
-	result_srid = PG_GETARG_INT32(1);
-	if (result_srid == SRID_UNKNOWN)
+	output_srid = PG_GETARG_INT32(1);
+	if (output_srid == SRID_UNKNOWN)
 	{
 		elog(ERROR,"%d is an invalid target SRID",SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
-	if (gserialized_get_srid(geom) == SRID_UNKNOWN)
+	input_srid = gserialized_get_srid(geom);
+	if ( input_srid == SRID_UNKNOWN )
 	{
 		PG_FREE_IF_COPY(geom, 0);
 		elog(ERROR,"Input geometry has unknown (%d) SRID",SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
-	/* Set the search path if we haven't already */
-	SetPROJ4LibPath();
-
 	/*
 	 * If input SRID and output SRID are equal, return geometry
 	 * without transform it
 	 */
-	if (gserialized_get_srid(geom) == result_srid)
-	{
-		pfree(geom);
+	if ( input_srid == output_srid )
 		PG_RETURN_POINTER(PG_GETARG_DATUM(0));
+
+	if ( GetProjectionsUsingFCInfo(fcinfo, input_srid, output_srid, &input_pj, &output_pj) == LW_FAILURE )
+	{
+		PG_FREE_IF_COPY(geom, 0);
+		elog(ERROR,"Failure reading projections from spatial_ref_sys.");
+		PG_RETURN_NULL();
 	}
-
-	/* get or initialize the cache for this round */
-	proj_cache = GetPROJ4Cache(fcinfo) ;
-
-	/* Add the output srid to the cache if it's not already there */
-	if (!IsInPROJ4Cache(proj_cache, result_srid))
-		AddToPROJ4Cache(proj_cache, result_srid, gserialized_get_srid(geom));
-
-	/* Get the output projection */
-	output_pj = GetProjectionFromPROJ4Cache(proj_cache, result_srid);
-
-	/* Add the input srid to the cache if it's not already there */
-	if (!IsInPROJ4Cache(proj_cache, gserialized_get_srid(geom)))
-		AddToPROJ4Cache(proj_cache, gserialized_get_srid(geom), result_srid);
-
-	/* Get the input projection	 */
-	input_pj = GetProjectionFromPROJ4Cache(proj_cache, gserialized_get_srid(geom));
-
-
+	
 	/* now we have a geometry, and input/output PJ structs. */
 	lwgeom = lwgeom_from_gserialized(geom);
 	lwgeom_transform(lwgeom, input_pj, output_pj);
-	lwgeom->srid = result_srid;
+	lwgeom->srid = output_srid;
 
 	/* Re-compute bbox if input had one (COMPUTE_BBOX TAINTING) */
 	if ( lwgeom->bbox )
@@ -104,7 +114,6 @@ Datum transform(PG_FUNCTION_ARGS)
 
 	PG_RETURN_POINTER(result); /* new geometry */
 }
-
 
 /**
  * Transform_geom( GEOMETRY, TEXT (input proj4), TEXT (output proj4),

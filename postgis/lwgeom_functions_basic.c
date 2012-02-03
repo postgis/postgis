@@ -92,6 +92,7 @@ Datum optimistic_overlap(PG_FUNCTION_ARGS);
 Datum ST_GeoHash(PG_FUNCTION_ARGS);
 Datum ST_MakeEnvelope(PG_FUNCTION_ARGS);
 Datum ST_CollectionExtract(PG_FUNCTION_ARGS);
+Datum ST_CollectionHomogenize(PG_FUNCTION_ARGS);
 Datum ST_IsCollection(PG_FUNCTION_ARGS);
 
 
