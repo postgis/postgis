@@ -3198,14 +3198,14 @@ CREATE OR REPLACE FUNCTION _st_intersection(
 		rtn := NULL;
 		CASE
 			WHEN _returnband = 'FIRST' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, 'RAST1', NULL, extenttype);
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', NULL, extenttype);
 			WHEN _returnband = 'SECOND' THEN
-				rtn := ST_MapAlgebraExpr(rast2, band2, rast1, band1, 'RAST1', NULL, extenttype);
+				rtn := ST_MapAlgebraExpr(rast2, band2, rast1, band1, '[rast1.val]', NULL, extenttype);
 			WHEN _returnband = 'OTHER' THEN
 				rtn := ST_MapAlgebraFct(rast1, band1, rast2, band2, otheruserfunc, NULL, extenttype);
 			ELSE -- BOTH
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, 'RAST1', NULL, extenttype);
-				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast2, band2, rast1, band1, 'RAST1', NULL, extenttype));
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', NULL, extenttype);
+				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast2, band2, rast1, band1, '[rast1.val]', NULL, extenttype));
 		END CASE;
 
 		RETURN rtn;
@@ -3322,20 +3322,20 @@ CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,  rast2 raster
         -- 		There we always set that to band 1 regardless of what band num is requested
         IF upper(p_expression) = 'LAST' THEN
             --RAISE NOTICE 'last asked for ';
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'RAST2'::text, NULL::text, 'UNION'::text, 'RAST2'::text, 'RAST1'::text, NULL::double precision);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, '[rast2.val]'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'FIRST' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'RAST1'::text, NULL::text, 'UNION'::text, 'RAST2'::text, 'RAST1'::text, NULL::double precision);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, '[rast1.val]'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'MIN' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'LEAST(RAST1, RAST2)'::text, NULL::text, 'UNION'::text, 'RAST2'::text, 'RAST1'::text, NULL::double precision);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'LEAST([rast1.val], [rast2.val])'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'MAX' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'GREATEST(RAST1, RAST2)'::text, NULL::text, 'UNION'::text, 'RAST2'::text, 'RAST1'::text, NULL::double precision);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'GREATEST([rast1.val], [rast2.val])'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'COUNT' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'RAST1 + 1'::text, NULL::text, 'UNION'::text, '1'::text, 'RAST1'::text, 0::double precision);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, '[rast1.val] + 1'::text, NULL::text, 'UNION'::text, '1'::text, '[rast1.val]'::text, 0::double precision);
         ELSIF upper(p_expression) = 'SUM' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'RAST1 + RAST2'::text, NULL::text, 'UNION'::text, 'RAST2'::text, 'RAST1'::text, NULL::double precision);
+            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, '[rast1.val] + [rast2.val]'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
         ELSIF upper(p_expression) = 'RANGE' THEN
         -- have no idea what this is 
-            t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, 'LEAST(RAST1, RAST2)'::text, NULL::text, 'UNION'::text, 'RAST2'::text, 'RAST1'::text, NULL::double precision);
+            t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, 'LEAST([rast1.val], [rast2.val])'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
             p_raster := _ST_MapAlgebra4UnionState(rast1, rast2, 'MAX'::text, NULL::text, NULL::text, NULL::double precision, NULL::text, NULL::text, NULL::text, NULL::double precision);
             RETURN ST_AddBand(p_raster, t_raster, 1, 2);
         ELSIF upper(p_expression) = 'MEAN' THEN
@@ -3343,7 +3343,7 @@ CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,  rast2 raster
         -- and p_raster is there to keep track of accumulated sum and final state function
         -- would then do a final map to divide them.  This one is currently broken because 
         	-- have not reworked it so it can do without a final function
-            t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, 'RAST1 + 1'::text, NULL::text, 'UNION'::text, '1'::text, 'RAST1'::text, 0::double precision);
+            t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, '[rast1.val] + 1'::text, NULL::text, 'UNION'::text, '1'::text, '[rast1.val]'::text, 0::double precision);
             p_raster := _ST_MapAlgebra4UnionState(rast1, rast2, 'SUM'::text, NULL::text, NULL::text, NULL::double precision, NULL::text, NULL::text, NULL::text, NULL::double precision);
             RETURN ST_AddBand(p_raster, t_raster, 1, 2);
         ELSE
@@ -3395,7 +3395,7 @@ CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionFinal1(rast raster)
     	-- NOTE: I have to sacrifice RANGE.  Sorry RANGE.  Any 2 banded raster is going to be treated
     	-- as a MEAN
         IF ST_NumBands(rast) = 2 THEN
-            RETURN ST_MapAlgebraExpr(rast, 1, rast, 2, 'CASE WHEN RAST2 > 0 THEN RAST1 / RAST2::float8 ELSE NULL END'::text, NULL::text, 'UNION'::text, NULL::text, NULL::text, NULL::double precision);
+            RETURN ST_MapAlgebraExpr(rast, 1, rast, 2, 'CASE WHEN [rast2.val] > 0 THEN [rast1.val] / [rast2.val]::float8 ELSE NULL END'::text, NULL::text, 'UNION'::text, NULL::text, NULL::text, NULL::double precision);
         ELSE
             RETURN rast;
         END IF;
@@ -3495,7 +3495,7 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 		sourceraster := ST_SetBandNodataValue(sourceraster, bandstart, newnodata);
 
 		-- Compute the first raster band
-		newrast := ST_MapAlgebraExpr(sourceraster, bandstart, geomrast, 1, 'RAST1', newpixtype, newextent);
+		newrast := ST_MapAlgebraExpr(sourceraster, bandstart, geomrast, 1, '[rast1.val]', newpixtype, newextent);
 
 		FOR bandi IN bandstart+1..bandend LOOP
 --RAISE NOTICE 'bandi=%', bandi;
@@ -3503,7 +3503,7 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 			newpixtype := ST_BandPixelType(rast, bandi);
 			newnodata := coalesce(nodata, ST_BandNodataValue(sourceraster, bandi), ST_MinPossibleValue(newpixtype));
 			sourceraster := ST_SetBandNodataValue(sourceraster, bandi, newnodata);
-			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(sourceraster, bandi, geomrast, 1, 'RAST1', newpixtype, newextent));
+			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(sourceraster, bandi, geomrast, 1, '[rast1.val]', newpixtype, newextent));
 		END LOOP;
 
 		RETURN newrast;

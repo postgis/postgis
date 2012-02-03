@@ -8390,6 +8390,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	double _rastoffset[2][4] = {{0.}};
 	int _haspixel[2] = {0};
 	double _pixel[2] = {0};
+	int _pos[2][2] = {{0}};
 	uint16_t _dim[2][2] = {{0}};
 
 	char *pixtypename = NULL;
@@ -8407,15 +8408,17 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	Oid calltype = InvalidOid;
 
-	int spicount = 3;
-	uint16_t exprpos[3] = {4, 7, 8};
+	const int spi_count = 3;
+	uint16_t spi_exprpos[3] = {4, 7, 8};
+	uint32_t spi_argcount[3] = {0};
 	char *expr = NULL;
 	char *sql = NULL;
-	SPIPlanPtr spiplan[3] = {NULL};
-	uint16_t spiempty = 0;
+	SPIPlanPtr spi_plan[3] = {NULL};
+	uint16_t spi_empty = 0;
 	Oid *argtype = NULL;
-	uint32_t argcount[3] = {0};
-	int argexists[3][2] = {{0}};
+	const int argkwcount = 8;
+	uint8_t argpos[3][8] = {{0}};
+	char *argkw[] = {"[rast1.x]", "[rast1.y]", "[rast1.val]", "[rast1]", "[rast2.x]", "[rast2.y]", "[rast2.val]", "[rast2]"};
 	Datum *values = NULL;
 	bool *nulls = NULL;
 	TupleDesc tupdesc;
@@ -8433,6 +8436,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	FunctionCallInfoData ufcinfo;
 	int ufcnullcount = 0;
 
+	int idx = 0;
 	uint32_t i = 0;
 	uint32_t j = 0;
 	uint32_t k = 0;
@@ -8820,44 +8824,46 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			}
 
 			/* reset hasargval */
-			memset(hasargval, 0, spicount);
+			memset(hasargval, 0, spi_count);
 
 			/*
 				process expressions
 
-				exprpos elements are:
-					4 - expression => spiplan[0]
-					7 - nodata1expr => spiplan[1]
-					8 - nodata2expr => spiplan[2]
+				spi_exprpos elements are:
+					4 - expression => spi_plan[0]
+					7 - nodata1expr => spi_plan[1]
+					8 - nodata2expr => spi_plan[2]
 			*/
-			for (i = 0; i < spicount; i++) {
-				if (!PG_ARGISNULL(exprpos[i])) {
-					char *tmp = text_to_cstring(PG_GETARG_TEXT_P(exprpos[i]));
-					POSTGIS_RT_DEBUGF(3, "raw expr #%d: %s", i, tmp);
+			for (i = 0; i < spi_count; i++) {
+				if (!PG_ARGISNULL(spi_exprpos[i])) {
+					char *tmp = NULL;
+					char place[5] = "$1";
+					expr = text_to_cstring(PG_GETARG_TEXT_P(spi_exprpos[i]));
+					POSTGIS_RT_DEBUGF(3, "raw expr #%d: %s", i, expr);
 
-					len = 0;
-					expr = rtpg_strreplace(tmp, "RAST1", "$1", &len);
-					pfree(tmp);
-					if (len) {
-						argcount[i]++;
-						argexists[i][0] = 1;
-					}
+					for (j = 0, k = 1; j < argkwcount; j++) {
+						/* attempt to replace keyword with placeholder */
+						len = 0;
+						tmp = rtpg_strreplace(expr, argkw[j], place, &len);
+						pfree(expr);
+						expr = tmp;
 
-					len = 0;
-					tmp = rtpg_strreplace(expr, "RAST2", (argexists[i][0] ? "$2" : "$1"), &len);
-					pfree(expr);
-					expr = tmp;
-					if (len) {
-						argcount[i]++;
-						argexists[i][1] = 1;
+						if (len) {
+							spi_argcount[i]++;
+							argpos[i][j] = k++;
+
+							sprintf(place, "$%d", k);
+						}
+						else
+							argpos[i][j] = 0;
 					}
 
 					len = strlen("SELECT (") + strlen(expr) + strlen(")::double precision");
 					sql = (char *) palloc(len + 1);
 					if (sql == NULL) {
-						elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for expression parameter %d", exprpos[i]);
+						elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for expression parameter %d", spi_exprpos[i]);
 
-						for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+						for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 						SPI_finish();
 
 						for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -8874,13 +8880,13 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					POSTGIS_RT_DEBUGF(3, "sql #%d: %s", i, sql);
 
 					/* create prepared plan */
-					if (argcount[i]) {
-						argtype = (Oid *) palloc(argcount[i] * sizeof(Oid));
+					if (spi_argcount[i]) {
+						argtype = (Oid *) palloc(spi_argcount[i] * sizeof(Oid));
 						if (argtype == NULL) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for prepared plan argtypes of expression parameter %d", exprpos[i]);
+							elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for prepared plan argtypes of expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
-							for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
 							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -8888,15 +8894,15 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 							PG_RETURN_NULL();
 						}
-						for (j = 0; j < argcount[i]; j++) argtype[j] = FLOAT8OID;
+						for (j = 0; j < spi_argcount[i]; j++) argtype[j] = FLOAT8OID;
 
-						spiplan[i] = SPI_prepare(sql, argcount[i], argtype);
-						if (spiplan[i] == NULL) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to create prepared plan of expression parameter %d", exprpos[i]);
+						spi_plan[i] = SPI_prepare(sql, spi_argcount[i], argtype);
+						if (spi_plan[i] == NULL) {
+							elog(ERROR, "RASTER_mapAlgebra2: Unable to create prepared plan of expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
 							pfree(argtype);
-							for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
 							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -8912,10 +8918,10 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					else {
 						err = SPI_execute(sql, TRUE, 0);
 						if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to evaluate expression parameter %d", exprpos[i]);
+							elog(ERROR, "RASTER_mapAlgebra2: Unable to evaluate expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
-							for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
 							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -8931,11 +8937,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 						datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
 						if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
-							elog(ERROR, "RASTER_mapAlgebra2: Unable to get result of expression parameter %d", exprpos[i]);
+							elog(ERROR, "RASTER_mapAlgebra2: Unable to get result of expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
 							if (SPI_tuptable) SPI_freetuptable(tuptable);
-							for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
 							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -8955,7 +8961,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					pfree(sql);
 				}
 				else
-					spiempty++;
+					spi_empty++;
 			}
 
 			/* nodatanodataval */
@@ -9030,7 +9036,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	/* if any expression present, run */
 	if ((
 		(calltype == TEXTOID) && (
-			(spiempty != spicount) || hasnodatanodataval
+			(spi_empty != spi_count) || hasnodatanodataval
 		)
 	) || (
 		(calltype == REGPROCEDUREOID) && (ufcnoid != InvalidOid)
@@ -9046,6 +9052,10 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					/* row/column */
 					_x = x - (int) _rastoffset[i][0];
 					_y = y - (int) _rastoffset[i][1];
+
+					/* store _x and _y in 1-based */
+					_pos[i][0] = _x + 1;
+					_pos[i][1] = _y + 1;
 
 					/* get pixel value */
 					if (_band[i] == NULL) {
@@ -9064,7 +9074,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							elog(ERROR, "RASTER_mapAlgebra2: Unable to get pixel of %s raster", (i < 1 ? "FIRST" : "SECOND"));
 
 							if (calltype == TEXTOID) {
-								for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+								for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 								SPI_finish();
 							}
 
@@ -9078,7 +9088,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							_haspixel[i] = 1;
 					}
 
-					POSTGIS_RT_DEBUGF(5, "r%d(%d, %d) = %d, %f",
+					POSTGIS_RT_DEBUGF(5, "pixel r%d(%d, %d) = %d, %f",
 						i,
 						_x,
 						_y,
@@ -9097,15 +9107,15 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						if (!_haspixel[0] && !_haspixel[1])
 							i = 3;
 						/* pixel0 && !pixel1 */
-						/* run spiplan[2] (nodata2expr) */
+						/* run spi_plan[2] (nodata2expr) */
 						else if (_haspixel[0] && !_haspixel[1])
 							i = 2;
 						/* !pixel0 && pixel1 */
-						/* run spiplan[1] (nodata1expr) */
+						/* run spi_plan[1] (nodata1expr) */
 						else if (!_haspixel[0] && _haspixel[1])
 							i = 1;
 						/* pixel0 && pixel1 */
-						/* run spiplan[0] (expression) */
+						/* run spi_plan[0] (expression) */
 						else
 							i = 0;
 
@@ -9122,16 +9132,18 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							pixel = argval[i];
 						}
 						/* prepared plan exists */
-						else if (spiplan[i] != NULL) {
-							POSTGIS_RT_DEBUGF(5, "Using prepared plan: %d", i);
+						else if (spi_plan[i] != NULL) {
+							POSTGIS_RT_DEBUGF(4, "Using prepared plan: %d", i);
+							values = NULL;
+							nulls = NULL;
 
 							/* expression has argument(s) */
-							if (argcount[i]) {
-								values = (Datum *) palloc(sizeof(Datum) * argcount[i]);
+							if (spi_argcount[i]) {
+								values = (Datum *) palloc(sizeof(Datum) * spi_argcount[i]);
 								if (values == NULL) {
 									elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for value parameters of prepared statement %d", i);
 
-									for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+									for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 									SPI_finish();
 
 									for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -9140,13 +9152,13 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 									PG_RETURN_NULL();
 								}
 
-								nulls = (bool *) palloc(sizeof(bool) * argcount[i]);
+								nulls = (bool *) palloc(sizeof(bool) * spi_argcount[i]);
 								if (nulls == NULL) {
 									elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for NULL parameters of prepared statement %d", i);
 
 									pfree(values);
 
-									for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+									for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 									SPI_finish();
 
 									for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -9154,43 +9166,55 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 									PG_RETURN_NULL();
 								}
-								memset(nulls, FALSE, argcount[i]);
+								memset(nulls, FALSE, spi_argcount[i]);
 
-								/* two arguments */
-								if (argcount[i] > 1) {
-									for (j = 0; j < argcount[i]; j++) {
-										if (_isempty[j] || !_haspixel[j])
-											nulls[j] = TRUE;
+								/* set values and nulls */
+								for (j = 0; j < argkwcount; j++) {
+									idx = argpos[i][j];
+									if (idx < 1) continue;
+									idx--; /* 1-based becomes 0-based */
+
+									if (strstr(argkw[j], "[rast1.x]") != NULL) {
+										values[idx] = _pos[0][0];
+									}
+									else if (strstr(argkw[j], "[rast1.y]") != NULL) {
+										values[idx] = _pos[0][1];
+									}
+									else if (
+										(strstr(argkw[j], "[rast1.val]") != NULL) ||
+										(strstr(argkw[j], "[rast1]") != NULL)
+									) {
+										if (_isempty[0] || !_haspixel[0])
+											nulls[idx] = TRUE;
 										else
-											values[j] = Float8GetDatum(_pixel[j]);
+											values[idx] = Float8GetDatum(_pixel[0]);
 									}
-								}
-								/* only one argument */
-								else {
-									if (argexists[i][0])
-										j = 0;
-									else
-										j = 1;
-
-									if (_isempty[j] || !_haspixel[j]) {
-										POSTGIS_RT_DEBUG(5, "using null");
-										nulls[0] = TRUE;
+									else if (strstr(argkw[j], "[rast2.x]") != NULL) {
+										values[idx] = _pos[1][0];
 									}
-									else {
-										POSTGIS_RT_DEBUGF(5, "using value %f", _pixel[j]);
-										values[0] = Float8GetDatum(_pixel[j]);
+									else if (strstr(argkw[j], "[rast2.y]") != NULL) {
+										values[idx] = _pos[1][1];
+									}
+									else if (
+										(strstr(argkw[j], "[rast2.val]") != NULL) ||
+										(strstr(argkw[j], "[rast2]") != NULL)
+									) {
+										if (_isempty[1] || !_haspixel[1])
+											nulls[idx] = TRUE;
+										else
+											values[idx] = Float8GetDatum(_pixel[1]);
 									}
 								}
 							}
 
 							/* run prepared plan */
-							err = SPI_execute_plan(spiplan[i], values, nulls, TRUE, 1);
+							err = SPI_execute_plan(spi_plan[i], values, nulls, TRUE, 1);
 							if (values != NULL) pfree(values);
 							if (nulls != NULL) pfree(nulls);
 							if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
 								elog(ERROR, "RASTER_mapAlgebra2: Unexpected error when running prepared statement %d", i);
 
-								for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+								for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 								SPI_finish();
 
 								for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -9209,7 +9233,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 								elog(ERROR, "RASTER_mapAlgebra2: Unable to get result of prepared statement %d", i);
 
 								if (SPI_tuptable) SPI_freetuptable(tuptable);
-								for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+								for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 								SPI_finish();
 
 								for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -9262,7 +9286,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						elog(ERROR, "RASTER_mapAlgebra2: Unable to set pixel value of output raster");
 
 						if (calltype == TEXTOID) {
-							for (k = 0; k < spicount; k++) SPI_freeplan(spiplan[k]);
+							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 						}
 
@@ -9281,8 +9305,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	/* CLEANUP */
 	if (calltype == TEXTOID) {
-		for (i = 0; i < spicount; i++) {
-			if (spiplan[i] != NULL) SPI_freeplan(spiplan[i]);
+		for (i = 0; i < spi_count; i++) {
+			if (spi_plan[i] != NULL) SPI_freeplan(spi_plan[i]);
 		}
 		SPI_finish();
 	}

@@ -90,7 +90,7 @@ CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, nodata 
         sourceraster := ST_SetBandNodataValue(sourceraster, bandstart, newnodata);
 
         -- Compute the first raster band
-        newrast := ST_MapAlgebraExpr(sourceraster, bandstart, geomrast, 1, 'rast1', newpixtype, newextent);
+        newrast := ST_MapAlgebraExpr(sourceraster, bandstart, geomrast, 1, '[rast1.val]', newpixtype, newextent);
         
         FOR bandi IN bandstart+1..bandend LOOP
 --RAISE NOTICE 'bandi=%', bandi;
@@ -98,7 +98,7 @@ CREATE OR REPLACE FUNCTION ST_Clip(rast raster, band int, geom geometry, nodata 
             newpixtype := ST_BandPixelType(rast, bandi);
             newnodata := coalesce(nodata, ST_BandNodataValue(sourceraster, bandi), ST_MinPossibleValue(newpixtype));
             sourceraster := ST_SetBandNodataValue(sourceraster, bandi, newnodata);
-            newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(sourceraster, bandi, geomrast, 1, 'rast1', newpixtype, newextent));
+            newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(sourceraster, bandi, geomrast, 1, '[rast1.val]', newpixtype, newextent));
         END LOOP;
         RETURN newrast;
     END;
