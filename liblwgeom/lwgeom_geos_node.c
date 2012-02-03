@@ -129,6 +129,13 @@ extern LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
 LWGEOM*
 lwgeom_node(const LWGEOM* lwgeom_in)
 {
+#if POSTGIS_GEOS_VERSION < 33
+	lwerror("The GEOS version this postgis binary "
+	        "was compiled against (%d) doesn't support "
+	        "'GEOSUnaryUnion' function (3.3.0+ required)",
+	        POSTGIS_GEOS_VERSION);
+	return NULL;
+#else /* POSTGIS_GEOS_VERSION >= 33 */
 	GEOSGeometry *g1, *gu, *gm;
 	LWGEOM *ep, *lines;
 	LWCOLLECTION *col, *tc;
@@ -248,5 +255,6 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 
 	lines->srid = lwgeom_in->srid;
 	return (LWGEOM*)lines;
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
 }
 
