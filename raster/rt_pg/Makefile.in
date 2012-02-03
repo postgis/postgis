@@ -96,9 +96,13 @@ $(SQL_OBJS): %.in: %.in.c
 $(SQL_OBJS): ../../postgis/sqldefines.h
 
 #remove all create object types since these can't be done cleanly in an upgrade
+
+# Use extended regular expressions, because | is not supported in
+# basic regular expressions.
+# Use -E, the traditional switch, because it is also supported by GNU sed.
 rtpostgis_upgrade.sql: rtpostgis.sql
-		 sed -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
-	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|OPERATOR\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
+		 sed -E -e '/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*;/d' \
+	 	 -e '/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER)/,/;/d' \
 	 	 $< > $@
 
 rtpostgis_upgrade_20_minor.sql: rtpostgis_drop.sql rtpostgis_upgrade_cleanup.sql rtpostgis_upgrade.sql 
