@@ -2797,7 +2797,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         POSTGIS_RT_DEBUGF(4, "RASTER_mapAlgebraExpr: New raster has %d bands",
                 rt_raster_get_num_bands(newrast));
 
-        rt_raster_copy_band(raster, newrast, nband - 1, 0);
+        rt_raster_copy_band(newrast, raster, nband - 1, 0);
 
         POSTGIS_RT_DEBUGF(4, "RASTER_mapAlgebraExpr: New raster now has %d bands",
                 rt_raster_get_num_bands(newrast));

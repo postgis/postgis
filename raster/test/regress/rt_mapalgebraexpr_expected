@@ -7,9 +7,7 @@ T2|t
 T3||19
 T4||2
 T5||2
-NOTICE:  rt_raster_copy_band: Second raster has no band
-NOTICE:  Could not find raster band of index 1 when getting pixel value. Returning NULL
-T6||
+T6||-1
 T7|100|
 T8|100|120
 T9|101|
