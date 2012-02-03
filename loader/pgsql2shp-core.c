@@ -1870,6 +1870,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 			snprintf(buf, 256, _("No geometry column found.\nThe DBF file will be created but not the shx or shp files.\n"));
 			strncat(state->message, buf, SHPDUMPERMSGLEN - strlen(state->message));
 
+			state->shp = NULL;
+			
 			ret = SHPDUMPERWARN;
 		}
 	}
