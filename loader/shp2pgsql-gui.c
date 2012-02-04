@@ -1800,27 +1800,7 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 	
 	gtk_widget_hide(dialog_folderchooser);
 	folder_path = gtk_file_chooser_get_current_folder(GTK_FILE_CHOOSER(dialog_folderchooser));
-		
-	/* Loop through each of the files and set the output filename to the path with the table name
-	   appended. We do this as a separate pass here in case we wish to do any validation in future. */
-	while (is_valid)
-	{
-		/* Grab the SHPDUMPERCONFIG for this row */
-		gtk_tree_model_get(GTK_TREE_MODEL(export_table_list_store), &iter, EXPORT_POINTER_COLUMN, &gptr, -1);
-		dumper_table_config = (SHPDUMPERCONFIG *)gptr;
-
-		orig_shapefile = dumper_table_config->shp_file;
-		output_shapefile = malloc(strlen(folder_path) + strlen(dumper_table_config->shp_file) + 2);
-		strcpy(output_shapefile, folder_path);
-		strcat(output_shapefile, G_DIR_SEPARATOR_S);
-		strcat(output_shapefile, dumper_table_config->shp_file);
-
-		dumper_table_config->shp_file = output_shapefile;
-		
-		/* Get next entry */
-		is_valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(export_table_list_store), &iter);
-	}
-		
+				
 	/* Now everything is set up, let's extract the tables */
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(export_table_list_store), &iter);
 	while (is_valid)
@@ -1856,6 +1836,15 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 			goto export_cleanup;
 		}
 
+		/* Save the original shapefile name, then create a temporary version containing the full path */
+		orig_shapefile = dumper_table_config->shp_file;
+		output_shapefile = malloc(strlen(folder_path) + strlen(dumper_table_config->shp_file) + 2);
+		strcpy(output_shapefile, folder_path);
+		strcat(output_shapefile, G_DIR_SEPARATOR_S);
+		strcat(output_shapefile, dumper_table_config->shp_file);
+
+		dumper_table_config->shp_file = output_shapefile;
+		
 		/* Display the progress dialog */
 		gtk_label_set_text(GTK_LABEL(label_progress), _("Initialising..."));
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0);
