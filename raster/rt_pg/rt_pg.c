@@ -2719,8 +2719,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         initexpr = (char *)palloc(len + 1);
 
         strncpy(initexpr, "SELECT ", strlen("SELECT "));
-        strncpy(initexpr + strlen("SELECT "), rtpg_strtoupper(expression),
-            strlen(expression));
+        strncpy(initexpr + strlen("SELECT "), expression, strlen(expression));
         initexpr[len] = '\0';
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression is %s", initexpr);
@@ -2789,7 +2788,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
      * Optimization: If expression resume to 'RAST' and hasnodataval is zero,
 		 * we can just return the band from the original raster
      **/
-    if (initexpr != NULL && !strcmp(initexpr, "SELECT RAST") && !hasnodataval) {
+    if (initexpr != NULL && ( !strcmp(initexpr, "SELECT [rast]") || !strcmp(initexpr, "SELECT [rast.val]") ) && !hasnodataval) {
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression resumes to RAST. "
                 "Returning raster with band %d from original raster", nband);
@@ -2822,9 +2821,9 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
     /**
      * Optimization: If expression resume to a constant (it does not contain
-     * RAST)
+     * [rast)
      **/
-    if (initexpr != NULL && strstr(initexpr, "RAST") == NULL) {
+    if (initexpr != NULL && strstr(initexpr, "[rast") == NULL) {
 
         SPI_connect();
 
@@ -2944,6 +2943,12 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Main computing loop (%d x %d)",
             width, height);
 
+    /* Convert [rast.val] to [rast] */
+    if (initexpr != NULL) {
+       newexpr = rtpg_strreplace(initexpr, "[rast.val]", "[rast]", NULL);
+       pfree(initexpr); initexpr=newexpr;
+    }
+
     for (x = 0; x < width; x++) {
         for(y = 0; y < height; y++) {
             char *tmp;
@@ -2957,13 +2962,14 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
                 if (skipcomputation == 0) {
 
                     if (initexpr != NULL) {
+
                         sprintf(strnewval, "%d", x+1);
-                        newexpr = rtpg_strreplace(initexpr, "RAST.X", strnewval, NULL);
+                        newexpr = rtpg_strreplace(initexpr, "[rast.x]", strnewval, NULL);
                         sprintf(strnewval, "%d", y+1);
-                        tmp = rtpg_strreplace(newexpr, "RAST.Y", strnewval, NULL);
+                        tmp = rtpg_strreplace(newexpr, "[rast.y]", strnewval, NULL);
                         pfree(newexpr); newexpr=tmp;
                         sprintf(strnewval, "%f", r);
-                        tmp = rtpg_strreplace(newexpr, "RAST", strnewval, NULL);
+                        tmp = rtpg_strreplace(newexpr, "[rast]", strnewval, NULL);
                         pfree(newexpr); newexpr=tmp;
 
                         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: (%dx%d), "
@@ -3020,6 +3026,8 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         }
     }
 
+   if (initexpr != NULL) pfree(initexpr);
+
     /* The newrast band has been modified */
 
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: raster modified, serializing it.");
@@ -3028,8 +3036,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     pgraster = rt_raster_serialize(newrast);
     if (NULL == pgraster) {
         /* Free memory allocated out of the current context */
-        if (initexpr)
-            pfree(initexpr);
         rt_raster_destroy(raster);
         rt_raster_destroy(newrast);
 
@@ -3039,10 +3045,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     SET_VARSIZE(pgraster, pgraster->size);
 
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: raster serialized");
-
-    /* Free memory */
-    if (initexpr)
-        pfree(initexpr);
 
     rt_raster_destroy(raster);
     rt_raster_destroy(newrast);
