@@ -29,6 +29,7 @@
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
 #include "lwgeom_export.h"   /* For export functions. */
+#include "lwgeom_transform.h"
 
 Datum geography_in(PG_FUNCTION_ARGS);
 Datum geography_out(PG_FUNCTION_ARGS);
@@ -161,7 +162,10 @@ Datum geography_in(PG_FUNCTION_ARGS)
 		lwgeom = lwg_parser_result.geom;
 	}
 
+	/* Error on any SRID != default */
+	srid_is_latlong(fcinfo, lwgeom->srid);
 	
+	/* Convert to gserialized */
 	g_ser = gserialized_geography_from_lwgeom(lwgeom, geog_typmod);
 
 	/* Clean up temporary object */
@@ -500,14 +504,25 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_from_text);
 Datum geography_from_text(PG_FUNCTION_ARGS)
 {
+	LWGEOM_PARSER_RESULT lwg_parser_result;
+	GSERIALIZED *g_ser = NULL;
 	text *wkt_text = PG_GETARG_TEXT_P(0);
+	
 	/* Extract the cstring from the varlena */
 	char *wkt = text2cstring(wkt_text);
-	/* Pass the cstring to the input parser, and magic occurs! */
-	Datum rv = DirectFunctionCall3(geography_in, PointerGetDatum(wkt), Int32GetDatum(0), Int32GetDatum(-1));
-	/* Clean up and return */
+
+	/* Pass the cstring to the input parser, and magic occurs! */	
+	if ( lwgeom_parse_wkt(&lwg_parser_result, wkt, LW_PARSER_CHECK_ALL) == LW_FAILURE )
+		PG_PARSER_ERROR(lwg_parser_result);
+
+	/* Clean up string */
 	pfree(wkt);
-	PG_RETURN_DATUM(rv);
+	g_ser = gserialized_geography_from_lwgeom(lwg_parser_result.geom, 0);
+
+	/* Clean up temporary object */
+	lwgeom_free(lwg_parser_result.geom);
+
+	PG_RETURN_POINTER(g_ser);
 }
 
 /*
@@ -516,25 +531,19 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_from_binary);
 Datum geography_from_binary(PG_FUNCTION_ARGS)
 {
-	char *wkb_cstring = NULL;
-	text *wkb_hex = NULL;
 	char *wkb_bytea = (char*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	char *hexarg = palloc(4 + VARHDRSZ);
-
-	/* Create our second argument to binary_encode */
-	SET_VARSIZE(hexarg, 4 + VARHDRSZ);
-	memcpy(VARDATA(hexarg), "hex", 4);
-
-	/* Convert the bytea into a hex representation cstring */
-	wkb_hex = (text*)DatumGetPointer(DirectFunctionCall2(binary_encode, PointerGetDatum(wkb_bytea), PointerGetDatum(hexarg)));
-	wkb_cstring = text2cstring(wkb_hex);
-	pfree(hexarg);
-
-	/* Pass the cstring to the input parser, and magic occurs! */
-	PG_RETURN_DATUM(DirectFunctionCall3(geography_in, PointerGetDatum(wkb_cstring), Int32GetDatum(0), Int32GetDatum(-1)));
+	GSERIALIZED *gser = NULL;
+	size_t wkb_size = VARSIZE(wkb_bytea);
+	uint8_t *wkb = (uint8_t*)VARDATA(wkb_bytea);
+	LWGEOM *lwgeom = lwgeom_from_wkb(wkb, wkb_size, LW_PARSER_CHECK_NONE);
+	
+	if ( ! lwgeom )
+		lwerror("Unable to parse WKB");
+ 		
+	gser = gserialized_geography_from_lwgeom(lwgeom, 0);
+	lwgeom_free(lwgeom);
+	PG_RETURN_POINTER(gser);
 }
-
-
 
 
 PG_FUNCTION_INFO_V1(geography_from_geometry);
@@ -555,12 +564,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	}
 
 	/* Error on any SRID != default */
-	if ( lwgeom->srid != SRID_DEFAULT )
-	{
-		ereport(ERROR, (
-		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Only SRID %d is currently supported in geography.", SRID_DEFAULT)));
-	}
+	srid_is_latlong(fcinfo, lwgeom->srid);
 
 	/* Check if the geography has valid coordinate range. */
 	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
@@ -631,6 +635,9 @@ Datum geography_recv(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = lwgeom_from_wkb((uint8_t*)buf->data, buf->len, LW_PARSER_CHECK_ALL);
+
+	/* Error on any SRID != default */
+	srid_is_latlong(fcinfo, lwgeom->srid);
 
 	g_ser = gserialized_geography_from_lwgeom(lwgeom, geog_typmod);
 

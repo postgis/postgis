@@ -16,7 +16,7 @@ gml_prefix_01|<Point srsName="EPSG:4326"><coordinates>1,2</coordinates></Point>
 gml_prefix_02|<Point srsName="EPSG:4326"><pos srsDimension="2">1 2</pos></Point>
 gml_prefix_03|<foo:Point srsName="EPSG:4326"><foo:coordinates>1,2</foo:coordinates></foo:Point>
 gml_prefix_04|<foo:Point srsName="EPSG:4326"><foo:pos srsDimension="2">1 2</foo:pos></foo:Point>
-ERROR:  Only SRID 4326 is currently supported in geography.
+ERROR:  GetProj4StringSPI: Cannot find SRID (10) in spatial_ref_sys
 kml_srid_02|<Point><coordinates>0,1</coordinates></Point>
 kml_empty_geom|
 kml_precision_01|<Point><coordinates>1,1</coordinates></Point>
@@ -26,7 +26,7 @@ ERROR:  Only KML 2 is supported
 ERROR:  Only KML 2 is supported
 kml_prefix_01|<Point><coordinates>1,2</coordinates></Point>
 kml_prefix_02|<kml:Point><kml:coordinates>1,2</kml:coordinates></kml:Point>
-ERROR:  Only SRID 4326 is currently supported in geography.
+ERROR:  Only lon/lat coordinate systems are supported in geography.
 svg_empty_geom|
 svg_option_01|M 1 -1 L 4 -4 5 -7
 svg_option_02|M 1 -1 l 3 -3 1 -3
@@ -44,8 +44,8 @@ geojson_crs_01|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4
 geojson_crs_02|{"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"coordinates":[1,1]}
 geojson_crs_03|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[1,1]}
 geojson_crs_04|{"type":"Point","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[1,1]}
-ERROR:  Only SRID 4326 is currently supported in geography.
-ERROR:  Only SRID 4326 is currently supported in geography.
+ERROR:  GetProj4StringSPI: Cannot find SRID (1) in spatial_ref_sys
+ERROR:  GetProj4StringSPI: Cannot find SRID (1) in spatial_ref_sys
 geojson_bbox_01|{"type":"LineString","coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_bbox_02|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_bbox_03|{"type":"LineString","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}

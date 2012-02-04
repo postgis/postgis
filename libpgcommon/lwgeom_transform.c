@@ -10,28 +10,30 @@
  *
  **********************************************************************/
 
+
+/* PostgreSQL headers */
 #include "postgres.h"
 #include "fmgr.h"
 #include "miscadmin.h"
+#include "utils/memutils.h"
+#include "executor/spi.h"
+#include "access/hash.h"
+#include "utils/hsearch.h"
 
+/* PostGIS headers */
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+#include "lwgeom_transform.h"
 
+/* C headers */
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
 
 
-#include "proj_api.h"
-#include "utils/memutils.h"
-#include "executor/spi.h"
-#include "access/hash.h"
-#include "utils/hsearch.h"
-#include "lwgeom_transform.h"
-
+/* Expose an internal Proj function */
 int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
-
 
 
 /* PROJ 4 lookup transaction cache methods */
@@ -95,7 +97,7 @@ static projPJ GetPJHashEntry(MemoryContext mcxt);
 static void DeletePJHashEntry(MemoryContext mcxt);
 
 /* Internal Cache API */
-static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfoData *fcinfo) ;
+static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo) ;
 static bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 static projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 static void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
@@ -626,13 +628,11 @@ void SetPROJ4LibPath(void)
 	}
 }
 
-
-
-Proj4Cache GetPROJ4Cache(FunctionCallInfoData *fcinfo) {
+Proj4Cache GetPROJ4Cache(FunctionCallInfo fcinfo) {
 	return (Proj4Cache)GetPROJ4SRSCache(fcinfo) ;
 }
 
-static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfoData *fcinfo)
+static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo)
 {
 	PROJ4PortalCache *PROJ4Cache ;
 
@@ -677,7 +677,77 @@ static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfoData *fcinfo)
 }
 
 
+int
+GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)
+{
+	Proj4Cache *proj_cache = NULL;
 
+	/* Set the search path if we haven't already */
+	SetPROJ4LibPath();
 
+	/* get or initialize the cache for this round */
+	proj_cache = GetPROJ4Cache(fcinfo);
+	if ( !proj_cache )
+		return LW_FAILURE;
+
+	/* Add the output srid to the cache if it's not already there */
+	if (!IsInPROJ4Cache(proj_cache, srid1))
+		AddToPROJ4Cache(proj_cache, srid1, srid2);
+
+	/* Add the input srid to the cache if it's not already there */
+	if (!IsInPROJ4Cache(proj_cache, srid2))
+		AddToPROJ4Cache(proj_cache, srid2, srid1);
+
+	/* Get the projections */
+	*pj1 = GetProjectionFromPROJ4Cache(proj_cache, srid1);
+	*pj2 = GetProjectionFromPROJ4Cache(proj_cache, srid2);
+
+	return LW_SUCCESS;
+}
+
+int 
+spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
+{
+	projPJ pj1;
+	projPJ pj2;
+	PJ *p;
+	
+	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
+		return LW_FAILURE;
+		
+	if ( ! pj_is_latlong(pj1) )
+		return LW_FAILURE;
+	
+	/* Get access to the proj internals */	
+	p = (PJ*)pj1;
+	
+	/* Initialize */
+	s->a = p->a;
+	s->e_sq = p->es;
+	s->b = s->a * sqrt(p->one_es);
+	s->f = (s->a - s->b) / s->a;
+	s->radius = (2.0 * s->a + s->b ) / 3.0;
+
+	return LW_SUCCESS;
+}
+
+void srid_is_latlong(FunctionCallInfo fcinfo, int srid)
+{
+	projPJ pj1;
+	projPJ pj2;
+
+	if ( srid == SRID_DEFAULT || srid == SRID_UNKNOWN )
+		return;
+
+	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
+		return;
+	
+	if ( pj_is_latlong(pj1) )
+		return;
+		
+	ereport(ERROR, (
+	            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+	            errmsg("Only lon/lat coordinate systems are supported in geography.")));
+}
 
 

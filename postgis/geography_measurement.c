@@ -24,7 +24,7 @@
 #include "liblwgeom_internal.h"         /* For FP comparators. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
-#include "lwgeom_transform.h"
+#include "lwgeom_transform.h" /* For SRID functions */
 
 Datum geography_distance(PG_FUNCTION_ARGS);
 Datum geography_dwithin(PG_FUNCTION_ARGS);
@@ -65,8 +65,8 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
-
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
 		s.a = s.b = s.radius;
@@ -129,7 +129,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(3);
 
 	/* Initialize spheroid */
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
 
 	/* Set to sphere if requested */
 	if ( ! use_spheroid )
@@ -222,7 +222,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(1);
 
 	/* Initialize spheroid */
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g), &s);
 
 	lwgeom = lwgeom_from_gserialized(g);
 
@@ -311,7 +311,7 @@ Datum geography_perimeter(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(1);
 
 	/* Initialize spheroid */
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g), &s);
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )
@@ -362,7 +362,7 @@ Datum geography_length(PG_FUNCTION_ARGS)
 	use_spheroid = PG_GETARG_BOOL(1);
 
 	/* Initialize spheroid */
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g), &s);
 
 	/* User requests spherical calculation, turn our spheroid into a sphere */
 	if ( ! use_spheroid )
@@ -647,7 +647,7 @@ Datum geography_project(PG_FUNCTION_ARGS)
 		azimuth = PG_GETARG_FLOAT8(2); /* Azimuth in Radians */
 
 	/* Initialize spheroid */
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g), &s);
 
 	/* Handle the zero distance case */
 	if( FP_EQUALS(distance, 0.0) )
@@ -717,7 +717,7 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 	}
 	
 	/* Initialize spheroid */
-	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
 
 	/* Calculate the direction */
 	azimuth = lwgeom_azumith_spheroid(lwgeom_as_lwpoint(lwgeom1), lwgeom_as_lwpoint(lwgeom2), &s);

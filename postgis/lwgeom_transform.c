@@ -12,7 +12,6 @@
 
 #include "postgres.h"
 #include "fmgr.h"
-#include "proj_api.h"
 
 #include "liblwgeom.h"
 #include "lwgeom_transform.h"
@@ -22,33 +21,6 @@ Datum transform(PG_FUNCTION_ARGS);
 Datum transform_geom(PG_FUNCTION_ARGS);
 Datum postgis_proj_version(PG_FUNCTION_ARGS);
 
-static int
-GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)
-{
-	Proj4Cache *proj_cache = NULL;
-
-	/* Set the search path if we haven't already */
-	SetPROJ4LibPath();
-
-	/* get or initialize the cache for this round */
-	proj_cache = GetPROJ4Cache(fcinfo);
-	if ( !proj_cache )
-		return LW_FAILURE;
-
-	/* Add the output srid to the cache if it's not already there */
-	if (!IsInPROJ4Cache(proj_cache, srid1))
-		AddToPROJ4Cache(proj_cache, srid1, srid2);
-
-	/* Add the input srid to the cache if it's not already there */
-	if (!IsInPROJ4Cache(proj_cache, srid2))
-		AddToPROJ4Cache(proj_cache, srid2, srid1);
-
-	/* Get the projections */
-	*pj1 = GetProjectionFromPROJ4Cache(proj_cache, srid1);
-	*pj2 = GetProjectionFromPROJ4Cache(proj_cache, srid2);
-
-	return LW_TRUE;
-}
 
 
 /**

@@ -23,12 +23,6 @@
 #define WGS84_MINOR_AXIS (WGS84_MAJOR_AXIS - WGS84_MAJOR_AXIS / WGS84_INVERSE_FLATTENING)
 #define WGS84_RADIUS ((2.0 * WGS84_MAJOR_AXIS + WGS84_MINOR_AXIS ) / 3.0)
 
-/* 
-** EPSG WGS84 geographics, OGC standard default SRS, better be in 
-** the SPATIAL_REF_SYS table!
-*/
-#define SRID_DEFAULT 4326
-
 /**********************************************************************
 **  Useful functions for all GSERIALIZED handlers. 
 **  TODO: Move to common.h in pgcommon
