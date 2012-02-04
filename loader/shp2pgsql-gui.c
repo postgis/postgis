@@ -107,6 +107,7 @@ static GtkWidget *checkbutton_loader_options_autoindex = NULL;
 static GtkWidget *checkbutton_loader_options_dbfonly = NULL;
 static GtkWidget *checkbutton_loader_options_dumpformat = NULL;
 static GtkWidget *checkbutton_loader_options_geography = NULL;
+static GtkWidget *checkbutton_loader_options_simplegeoms = NULL;
 
 /* Dumper options window */
 static GtkWidget *dialog_dumper_options = NULL;
@@ -538,7 +539,8 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 	gboolean dbfonly = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_dbfonly));
 	gboolean dumpformat = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_dumpformat));
 	gboolean geography = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_geography));
-
+	gboolean simplegeoms = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_simplegeoms));
+	
 	if (geography)
 	{
 		config->geography = 1;
@@ -602,6 +604,12 @@ update_loader_config_globals_from_options_ui(SHPLOADERCONFIG *config)
 	else
 		config->dump_format = 0;
 	
+	/* Simple geometries only */
+	if (simplegeoms)
+		config->simple_geometries = 1;
+	else
+		config->simple_geometries = 0;	
+	
 	return;
 }
 
@@ -616,6 +624,7 @@ update_options_ui_from_loader_config_globals(void)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_dbfonly), global_loader_config->readshape ? FALSE : TRUE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_dumpformat), global_loader_config->dump_format ? TRUE : FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_geography), global_loader_config->geography ? TRUE : FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton_loader_options_simplegeoms), global_loader_config->simple_geometries ? TRUE : FALSE);
 	
 	return;
 }
@@ -2689,6 +2698,12 @@ pgui_create_loader_options_dialog()
 	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 6, 7 );
 	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_geography);
 
+	pgui_create_options_dialog_add_label(table_options, _("Generate simple geometries instead of MULTI geometries"), 0.0, 7);
+	checkbutton_loader_options_simplegeoms = gtk_check_button_new();
+	align_options_center = gtk_alignment_new( 0.5, 0.5, 0.0, 1.0 );
+	gtk_table_attach_defaults(GTK_TABLE(table_options), align_options_center, 0, 1, 7, 8 );
+	gtk_container_add (GTK_CONTAINER (align_options_center), checkbutton_loader_options_simplegeoms);
+	
 	/* Catch the response from the dialog */
 	g_signal_connect(dialog_loader_options, "response", G_CALLBACK(pgui_action_loader_options_close), dialog_loader_options);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog_loader_options)->vbox), table_options, FALSE, FALSE, 0);
