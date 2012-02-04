@@ -2524,7 +2524,7 @@ pgui_create_about_dialog(void)
 	};
 
 	dialog_about = gtk_about_dialog_new();
-	gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(dialog_about), _("Shape to PostGIS"));
+	gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(dialog_about), _("PostGIS Shapefile Import/Export Manager"));
 	gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog_about), GUI_RCSID);
 	gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog_about), "http://postgis.org/");
 	gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(dialog_about), authors);
@@ -3263,7 +3263,7 @@ pgui_create_main_window(const SHPCONNECTIONCONFIG *conn)
 	/* Create the main top level window with a 10px border */
 	window_main = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window_main), 10);
-	gtk_window_set_title(GTK_WINDOW(window_main), _("Shape File to PostGIS Importer"));
+	gtk_window_set_title(GTK_WINDOW(window_main), _("PostGIS Shapefile Import/Export Manager"));
 	gtk_window_set_position(GTK_WINDOW(window_main), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_resizable(GTK_WINDOW(window_main), FALSE);
 	
