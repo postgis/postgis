@@ -1293,13 +1293,30 @@ static void
 pgui_action_open_file_dialog(GtkWidget *widget, gpointer data)
 {
 	SHPLOADERCONFIG *loader_file_config;
+	GSList *filename_list, *filename_item;
+	gchar *filename;
 	
 	/* Run the dialog */
 	if (gtk_dialog_run(GTK_DIALOG(dialog_filechooser)) == GTK_RESPONSE_ACCEPT)
 	{
-		/* Create the new file configuration based upon the filename and add it to the listview */
-		loader_file_config = create_new_file_config(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog_filechooser)));
-		add_loader_file_config_to_list(loader_file_config);
+		/* Create the new file configuration based upon the each filename and add it to the listview */
+		filename_list = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog_filechooser));
+		
+		filename_item = g_slist_nth(filename_list, 0);
+		while (filename_item)
+		{
+			/* Add the configuration */
+			filename = g_slist_nth_data(filename_item, 0);
+			
+			loader_file_config = create_new_file_config(filename);
+			add_loader_file_config_to_list(loader_file_config);
+			
+			/* Grab the next filename */
+			filename_item = g_slist_next(filename_item);
+		}
+		
+		/* Free the list */
+		g_slist_free(filename_list);
 	}
 	
 	gtk_widget_hide(dialog_filechooser);
@@ -2560,6 +2577,9 @@ pgui_create_filechooser_dialog(void)
 	gtk_file_filter_set_name(GTK_FILE_FILTER(file_filter_shape), _("DBF Files (*.dbf)"));
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog_filechooser), file_filter_shape);
 
+	/* Allow multiple files to be selected */
+	g_object_set(dialog_filechooser, "select-multiple", TRUE, NULL);
+	
 	return;
 }
 
