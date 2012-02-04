@@ -3198,14 +3198,14 @@ CREATE OR REPLACE FUNCTION _st_intersection(
 		rtn := NULL;
 		CASE
 			WHEN _returnband = 'FIRST' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', NULL, extenttype);
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), extenttype);
 			WHEN _returnband = 'SECOND' THEN
-				rtn := ST_MapAlgebraExpr(rast2, band2, rast1, band1, '[rast1.val]', NULL, extenttype);
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), extenttype);
 			WHEN _returnband = 'OTHER' THEN
 				rtn := ST_MapAlgebraFct(rast1, band1, rast2, band2, otheruserfunc, NULL, extenttype);
 			ELSE -- BOTH
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', NULL, extenttype);
-				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast2, band2, rast1, band1, '[rast1.val]', NULL, extenttype));
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), extenttype);
+				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), extenttype));
 		END CASE;
 
 		RETURN rtn;
