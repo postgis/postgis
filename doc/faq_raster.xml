@@ -230,6 +230,26 @@ END
       </answer>
     </qandaentry>
     
+    <qandaentry id="qa_raster_function_not_unique">
+      <question>
+        <para>I am getting error  ERROR:  function st_intersects(raster, unknown) is not unique or st_union(geometry,text) is not unique.  How do I fix?</para>
+      </question>
+
+      <answer>
+        <para>The function is not unique error happens if one of your arguments is a textual representation of a geometry instead of a geometry.  In these cases, PostgreSQL marks the textual representation as an unknown type, which means it can fall into the st_intersects(raster, geometry) or st_intersects(raster,raster) thus resulting in a non-unique case since both functions can in theory support your request.  To prevent this, you need to cast the geometry to a geometry.</para>
+        <para>For example if your code looks like this:</para>
+        <programlisting>SELECT rast
+ FROM my_raster
+   WHERE ST_Intersects(rast, 'SRID=4326;POINT(-10 10)');</programlisting>
+   		<para>Cast the textual geometry representation to a geometry by changing your code to this:</para>
+   		<programlisting>SELECT rast
+ FROM my_raster
+   WHERE ST_Intersects(rast, 'SRID=4326;POINT(-10 10)'::geometry);</programlisting>
+      </answer>
+    </qandaentry>
+    
+   
+    
     <qandaentry>
       <question>
         <para>How is PostGIS Raster different from Oracle GeoRaster (SDO_GEORASTER) and SDO_RASTER types?</para>
