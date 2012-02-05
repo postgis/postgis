@@ -1049,7 +1049,7 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 		if (state->config->encoding)
 		{
-			char *encoding_msg = _("Try \"LATIN1\" (Western European), or one of the values described at http://www.postgresql.org/docs/current/static/multibyte.html.");
+			char *encoding_msg = _("Try \"LATIN1\" (Western European), or one of the values described at http://www.gnu.org/software/libiconv/.");
 
 			int rv = utf8(state->config->encoding, name, &utf8str);
 
