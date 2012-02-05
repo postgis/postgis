@@ -2455,7 +2455,7 @@ pgui_validate_connection()
 {
 	int i;
 	
-	if (strlen(conn->port))
+	if (conn->port && strlen(conn->port))
 	{
 		for (i = 0; i < strlen(conn->port); i++)
 		{
