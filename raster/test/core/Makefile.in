@@ -30,11 +30,11 @@ CFLAGS = \
 	$(GEOS_CFLAGS)
 
 LDFLAGS = \
-	-lm \
 	$(RTCORE_LDFLAGS) \
 	$(LIBLWGEOM_LDFLAGS) \
-    $(LIBGDAL_LDFLAGS) \
-    $(GEOS_LDFLAGS)
+	$(LIBGDAL_LDFLAGS) \
+	$(GEOS_LDFLAGS) \
+	-lm \
        
 
 TESTS = testapi testwkb
