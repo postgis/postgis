@@ -2522,14 +2522,15 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     char *newexpr = NULL;
     char *initexpr = NULL;
     char *expression = NULL;
-		int hasnodataval = 0;
-		double nodataval = 0.;
+    int hasnodataval = 0;
+    double nodataval = 0.;
     rt_pixtype newpixeltype;
     int skipcomputation = 0;
     char strnewval[50];
     int len = 0;
     int ret = -1;
     TupleDesc tupdesc;
+    SPIPlanPtr spi_plan = NULL;
     SPITupleTable * tuptable = NULL;
     HeapTuple tuple;
     char * strFromText = NULL;
@@ -2824,8 +2825,12 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
      * [rast)
      **/
     if (initexpr != NULL && strstr(initexpr, "[rast") == NULL) {
-
-        SPI_connect();
+        ret = SPI_connect();
+        if (ret != SPI_OK_CONNECT) {
+            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to connect to the SPI manager."
+                " Aborting");
+            PG_RETURN_NULL();
+        };
 
         /* Execute the expresion into newval */
         ret = SPI_execute(initexpr, FALSE, 0);
