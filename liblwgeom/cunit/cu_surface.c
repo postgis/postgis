@@ -284,7 +284,6 @@ check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
 	CU_ASSERT(lwgeom_same(g1, g2));
 	lwgeom_free(g2);
 
-#if 0
 	tser = tgeom_serialize(tgeom);
 	tgeom2 = tgeom_deserialize(tser);
 	g2 = lwgeom_from_tgeom(tgeom2);
@@ -307,8 +306,6 @@ check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
 	lwfree(tser);
 	tgeom_free(tgeom2);
 	lwgeom_free(g2);
-#endif
-
 	tgeom_free(tgeom);
 	lwgeom_free(g1);
 }
@@ -514,6 +511,7 @@ psurface_tgeom(void)
 	/* 4D single face with two internal rings */
 	check_tgeom("POLYHEDRALSURFACE(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 2 3),(12 13 14 15,16 17 18 19,20 21 22 23,12 13 14 15),(16 17 18 19,20 21 22 23,24 25 26 27,16 17 18 19)))", POLYHEDRALSURFACETYPE, 0, 0);
 #endif
+
 
 }
 

@@ -379,7 +379,7 @@ tgeom_free(TGEOM *tgeom)
 		/* rings */
 		for (j=0 ; j < tgeom->faces[i]->nrings ; j++)
 			ptarray_free(tgeom->faces[i]->rings[j]);
-		if (tgeom->faces[i]->rings)
+		if (tgeom->faces[i]->nrings)
 			lwfree(tgeom->faces[i]->rings);
 
 		lwfree(tgeom->faces[i]);
@@ -599,8 +599,8 @@ tgeom_serialize_size(const TGEOM *tgeom)
 	int dims = FLAGS_NDIMS(tgeom->flags);
 
 	size = sizeof(uint8_t);					/* type */
-	size += sizeof(uint8_t);					/* flags */
-	size += sizeof(uint32_t);					/* srid */
+	size += sizeof(uint8_t);				/* flags */
+	size += sizeof(uint32_t);				/* srid */
 	if (tgeom->bbox) size += sizeof(BOX3D);			/* bbox */
 
 	size += sizeof(int);					/* nedges */
@@ -752,7 +752,6 @@ tgeom_serialize(const TGEOM *tgeom)
 	size_t size, retsize;
 	TSERIALIZED * t;
 	uint8_t *data;
-
 	size = tgeom_serialize_size(tgeom);
 	data = lwalloc(size);
 	tgeom_serialize_buf(tgeom, data, &retsize);
@@ -776,6 +775,7 @@ tgeom_serialize(const TGEOM *tgeom)
 
 	return t;
 }
+
 
 
 /*
