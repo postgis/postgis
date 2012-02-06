@@ -19,7 +19,7 @@
     </sect1info>
     <title>PostgreSQL PostGIS Geometry/Geography/Box Types</title>
 
-	<refentry id="box2d">
+	<refentry id="box2d_type">
       <refnamediv>
         <refname>box2d</refname>
         <refpurpose>A box composed of x min, ymin,  xmax, ymax.  Often used to return the 2d enclosing box of a geometry. </refpurpose>
@@ -30,7 +30,7 @@
         <para>box2d is a spatial data type used to represent the enclosing box of a geometry or set of geometries. ST_Extent in earlier versions prior to PostGIS 1.4 would return a box2d.</para>
       </refsection>
     </refentry>
-	<refentry id="box3d">
+	<refentry id="box3d_type">
       <refnamediv>
         <refname>box3d</refname>
         <refpurpose>A box composed of x min, ymin, zmin, xmax, ymax, zmax.  Often used to return the 3d extent of a geometry or collection of geometries. </refpurpose>
