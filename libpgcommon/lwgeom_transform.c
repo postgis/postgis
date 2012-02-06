@@ -710,6 +710,7 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 {
 	projPJ pj1;
 	projPJ pj2;
+	char *proj_str;
 	PJ *p;
 	
 	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
@@ -717,6 +718,11 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 		
 	if ( ! pj_is_latlong(pj1) )
 		return LW_FAILURE;
+	
+	/* Get the proj string 
+	proj_str = pj_get_def(pj1, 0);
+	POSTGIS_DEBUGF(4, "proj_str = %s", proj_str);
+	*/
 	
 	/* Get access to the proj internals */	
 	p = (PJ*)pj1;
