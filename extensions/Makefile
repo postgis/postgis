@@ -11,5 +11,5 @@ install:
 	$(MAKE) -C postgis_topology install
 
 check:
-	echo "Nothing to check"
+	@echo "Nothing to check"
 
