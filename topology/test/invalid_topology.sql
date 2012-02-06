@@ -23,6 +23,8 @@ INSERT INTO invalid_topology.face(face_id) VALUES(10); -- F10
 INSERT INTO invalid_topology.face(face_id) VALUES(11); -- F11
 -- Next face overlaps F2
 INSERT INTO invalid_topology.face(face_id) VALUES(12); -- F12
+-- Next face is here only to serve as a placeholder for broken edges
+INSERT INTO invalid_topology.face(face_id) VALUES(13); -- F13
 
 -- Insert nodes
 INSERT INTO invalid_topology.node(node_id,geom,containing_face)
@@ -143,6 +145,10 @@ INSERT INTO invalid_topology.edge VALUES(31, 3, 3, 31, -31, 11, 11,
 -- Next edge bounds face F12 as overlapping face F2
 INSERT INTO invalid_topology.edge VALUES(32, 4, 4, 31, -31, 12, 12,
   'LINESTRING(20 37, 20 42, 21 42, 21 37, 20 37)');
+
+-- Next edge is not valid 
+INSERT INTO invalid_topology.edge VALUES(33, 3, 3, 28, 28, 13, 13,
+  '01020000000100000000000000000039400000000000804140');
 
 -- Validate topology
 SELECT * from topology.validatetopology('invalid_topology');

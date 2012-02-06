@@ -169,7 +169,7 @@
 --    Also updates the Relation table
 --  
 --   ST_GetFaceGeometry
---  	Implemented using polygonize()
+--  	Implemented using ST_BuildArea()
 --  
 --   ST_RemEdgeNewFace
 --    Complete
@@ -1318,6 +1318,9 @@ DECLARE
 	rec RECORD;
 	rec2 RECORD;
 	i integer;
+	invalid_edges integer[];
+	invalid_faces integer[];
+	sql text;
 BEGIN
 
 	-- Check for coincident nodes
@@ -1347,25 +1350,60 @@ BEGIN
 		RETURN NEXT retrec;
 	END LOOP;
 
-	-- Check for non-simple edges
-	FOR rec IN EXECUTE 'SELECT e.edge_id as id1 FROM '
-		|| quote_ident(toponame) || '.edge e '
-		|| 'WHERE not ST_IsSimple(e.geom)'
+	-- Check for invalid or non-simple edges
+	FOR rec IN EXECUTE 'SELECT e.geom, e.edge_id as id1, e.left_face, e.right_face FROM '
+		|| quote_ident(toponame) || '.edge e ORDER BY edge_id'
 	LOOP
-		retrec.error = 'edge not simple';
-		retrec.id1 = rec.id1;
-		retrec.id2 = NULL;
-		RETURN NEXT retrec;
+
+		-- Any invalid edge becomes a cancer for higher level complexes
+		IF NOT ST_IsValid(rec.geom) THEN
+
+		  retrec.error = 'invalid edge';
+		  retrec.id1 = rec.id1;
+		  retrec.id2 = NULL;
+		  RETURN NEXT retrec;
+			invalid_edges := array_append(invalid_edges, rec.id1);
+
+      IF invalid_faces IS NULL OR NOT rec.left_face = ANY ( invalid_faces )
+			THEN
+				invalid_faces := array_append(invalid_faces, rec.left_face);
+			END IF;
+
+      IF rec.right_face != rec.left_face AND ( invalid_faces IS NULL OR
+						NOT rec.right_face = ANY ( invalid_faces ) )
+			THEN
+				invalid_faces := array_append(invalid_faces, rec.right_face);
+			END IF;
+
+      CONTINUE;
+
+		END IF;
+
+		IF NOT ST_IsSimple(rec.geom) THEN
+		  retrec.error = 'edge not simple';
+		  retrec.id1 = rec.id1;
+		  retrec.id2 = NULL;
+		  RETURN NEXT retrec;
+    END IF;
+
 	END LOOP;
 
 	-- Check for edge crossing
-	FOR rec IN EXECUTE 'SELECT e1.edge_id as id1, e2.edge_id as id2, '
+	sql := 'SELECT e1.edge_id as id1, e2.edge_id as id2, '
 		|| ' e1.geom as g1, e2.geom as g2, '
 		|| 'ST_Relate(e1.geom, e2.geom) as im FROM '
 		|| quote_ident(toponame) || '.edge e1, '
 		|| quote_ident(toponame) || '.edge e2 '
 		|| 'WHERE e1.edge_id < e2.edge_id '
-		|| 'AND e1.geom && e2.geom '
+		|| ' AND e1.geom && e2.geom ';
+	IF invalid_edges IS NOT NULL THEN
+		sql := sql || ' AND NOT e1.edge_id = ANY ('
+		           || quote_literal(invalid_edges) || ')'
+		           || ' AND NOT e2.edge_id = ANY ('
+		           || quote_literal(invalid_edges) || ')';
+	END IF;
+
+	FOR rec IN EXECUTE sql
 	LOOP
 	  IF ST_RelateMatch(rec.im, 'FF1F**1*2') THEN
 	    CONTINUE; -- no interior intersection
@@ -1423,6 +1461,7 @@ BEGIN
 	END LOOP;
 
 	-- Check for edge start_node geometry mis-match
+	-- TODO: move this in the first edge table scan 
 	FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
 		|| quote_ident(toponame) || '.edge e, '
 		|| quote_ident(toponame) || '.node n '
@@ -1436,6 +1475,7 @@ BEGIN
 	END LOOP;
 
 	-- Check for edge end_node geometry mis-match
+	-- TODO: move this in the first edge table scan 
 	FOR rec IN EXECUTE 'SELECT e.edge_id as id1, n.node_id as id2 FROM '
 		|| quote_ident(toponame) || '.edge e, '
 		|| quote_ident(toponame) || '.node n '
@@ -1466,10 +1506,15 @@ BEGIN
 	-- Now create a temporary table to construct all face geometries
 	-- for checking their consistency
 
-	EXECUTE 'CREATE TEMP TABLE face_check ON COMMIT DROP AS '
+	sql := 'CREATE TEMP TABLE face_check ON COMMIT DROP AS '
 	  || 'SELECT face_id, topology.ST_GetFaceGeometry('
 	  || quote_literal(toponame) || ', face_id) as geom, mbr FROM '
 	  || quote_ident(toponame) || '.face WHERE face_id > 0';
+	IF invalid_faces IS NOT NULL THEN
+		sql := sql || ' AND NOT face_id = ANY ('
+		           || quote_literal(invalid_faces) || ')';
+	END IF;
+	EXECUTE sql;
 
 	-- Build a gist index on geom
 	EXECUTE 'CREATE INDEX "face_check_gist" ON '
