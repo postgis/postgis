@@ -250,7 +250,193 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS)
  */
 PG_FUNCTION_INFO_V1(pgis_union_geometry_array);
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
+#if POSTGIS_GEOS_VERSION >= 33
 {
+	/*
+	** For GEOS >= 3.3, use the new UnaryUnion functionality to merge the
+	** terminal collection from the ST_Union aggregate 
+	*/
+	Datum datum;
+	ArrayType *array;
+
+	int is3d = LW_FALSE, gotsrid = LW_FALSE;
+	int nelems = 0, i = 0, geoms_size = 0, curgeom = 0;
+
+	GSERIALIZED *gser_out = NULL;
+
+	GEOSGeometry *g = NULL;
+	GEOSGeometry *g_union = NULL;
+	GEOSGeometry **geoms = NULL;
+
+	int srid = SRID_UNKNOWN;
+
+	size_t offset = 0;
+	bits8 *bitmap;
+	int bitmask;
+	int empty_type = 0;
+
+	datum = PG_GETARG_DATUM(0);
+
+	/* Null array, null geometry (should be empty?) */
+	if ( (Pointer *)datum == NULL ) PG_RETURN_NULL();
+
+	array = DatumGetArrayTypeP(datum);
+
+	/* How many things in our array? */
+	nelems = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+
+	/* PgSQL supplies a bitmap of which array entries are null */
+	bitmap = ARR_NULLBITMAP(array);
+
+	/* Empty array? Null return */
+	if ( nelems == 0 ) PG_RETURN_NULL();
+
+	/* One-element union is the element itself! */
+	if ( nelems == 1 )
+	{
+		/* If the element is a NULL then we need to handle it separately */
+		if (bitmap && (*bitmap & 1) == 0)
+			PG_RETURN_NULL();
+		else
+			PG_RETURN_POINTER((GSERIALIZED *)(ARR_DATA_PTR(array)));
+	}
+
+	/* Ok, we really need GEOS now ;) */
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	/*
+	** Collect the non-empty inputs and stuff them into a GEOS collection
+	*/
+	geoms_size = nelems;
+	geoms = palloc( sizeof(GEOSGeometry*) * geoms_size );
+
+	/*
+	** We need to convert the array of GSERIALIZED into a GEOS collection.
+	** First make an array of GEOS geometries.
+	*/
+	offset = 0;
+	bitmap = ARR_NULLBITMAP(array);
+	bitmask = 1;
+	for ( i = 0; i < nelems; i++ )
+	{
+		/* Only work on non-NULL entries in the array */
+		if ((bitmap && (*bitmap & bitmask) != 0) || !bitmap)
+		{
+			GSERIALIZED *gser_in = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
+
+			/* Check for SRID mismatch in array elements */
+			if ( gotsrid ) 
+			{
+				error_if_srid_mismatch(srid, gserialized_get_srid(gser_in));
+			}
+			else
+			{
+				/* Initialize SRID/dimensions info */
+				srid = gserialized_get_srid(gser_in);
+				is3d = gserialized_has_z(gser_in);
+				gotsrid = 1;
+			}
+
+			/* Don't include empties in the union */
+			if ( gserialized_is_empty(gser_in) )
+			{
+				int gser_type = gserialized_get_type(gser_in);
+				if (gser_type > empty_type)
+				{
+					empty_type = gser_type;
+				}
+			}
+			else
+			{
+				g = (GEOSGeometry *)POSTGIS2GEOS(gser_in);
+
+				/* Uh oh! Exception thrown at construction... */
+				if ( ! g )  
+				{
+					lwerror("One of the geometries in the set "
+					        "could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+					PG_RETURN_NULL();
+				}
+
+				/* Ensure we have enough space in our storage array */
+				if ( curgeom == geoms_size )
+				{
+					geoms_size *= 2;
+					geoms = repalloc( geoms, sizeof(GEOSGeometry*) * geoms_size );
+				}
+
+				offset += INTALIGN(VARSIZE(gser_in));			
+				geoms[curgeom] = g;
+				curgeom++;
+			}
+		}
+
+		/* Advance NULL bitmap */
+		if (bitmap)
+		{
+			bitmask <<= 1;
+			if (bitmask == 0x100)
+			{
+				bitmap++;
+				bitmask = 1;
+			}
+		}
+	}
+
+	/*
+	** Take our GEOS geometries and turn them into a GEOS collection,
+	** then pass that into cascaded union.
+	*/
+	if (curgeom > 0)
+	{
+		g = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, geoms, curgeom);
+		if ( ! g )
+		{
+			lwerror("Could not create GEOS COLLECTION from geometry array: %s", lwgeom_geos_errmsg);
+			PG_RETURN_NULL();
+		}
+
+		g_union = GEOSUnaryUnion(g);
+		GEOSGeom_destroy(g);
+		if ( ! g_union )
+		{
+			lwerror("GEOSUnaryUnion: %s",
+			        lwgeom_geos_errmsg);
+			PG_RETURN_NULL();
+		}
+
+		GEOSSetSRID(g_union, srid);
+		gser_out = GEOS2POSTGIS(g_union, is3d);
+		GEOSGeom_destroy(g_union);
+	}
+	/* No real geometries in our array, any empties? */
+	else
+	{
+		/* If it was only empties, we'll return the largest type number */
+		if ( empty_type > 0 )
+		{
+			PG_RETURN_POINTER(geometry_serialize(lwgeom_construct_empty(empty_type, srid, is3d, 0)));
+		}
+		/* Nothing but NULL, returns NULL */
+		else
+		{
+			PG_RETURN_NULL();
+		}
+	}
+
+	if ( ! gser_out )
+	{
+		/* Union returned a NULL geometry */
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_POINTER(gser_out);
+}
+
+#else
+{
+/* For GEOS < 3.3, use the old CascadedUnion function for polygons and
+   brute force two-by-two for other types. */
 	Datum datum;
 	ArrayType *array;
 	int is3d = 0;
@@ -564,6 +750,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(result);
 
 }
+#endif /* POSTGIS_GEOS_VERSION >= 33 */
 
 /**
  * @example ST_UnaryUnion {@link #geomunion} SELECT ST_UnaryUnion(
