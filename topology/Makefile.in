@@ -76,10 +76,8 @@ $(SQL_OBJS): %.in: %.in.c
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
 topology_upgrade.sql:  topology.sql
-	 sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
-	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
-	 	 $< > $@
-	 	 
+	$(PERL) -0777 -ne 's/^(CREATE|ALTER) (CAST|OPERATOR|TYPE|TABLE|SCHEMA|DOMAIN|TRIGGER).*?;//msg;print;' $< > $@
+
 topology_upgrade_20_minor.sql:  topology_drop_before.sql topology_upgrade.sql topology_drop_after.sql
 	cat $^ > $@
 
