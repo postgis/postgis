@@ -344,6 +344,7 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 				if (gser_type > empty_type)
 				{
 					empty_type = gser_type;
+					POSTGIS_DEBUGF(4, "empty_type = %d  gser_type = %d", empty_type, gser_type);
 				}
 			}
 			else
@@ -365,10 +366,10 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS)
 					geoms = repalloc( geoms, sizeof(GEOSGeometry*) * geoms_size );
 				}
 
-				offset += INTALIGN(VARSIZE(gser_in));			
 				geoms[curgeom] = g;
 				curgeom++;
 			}
+			offset += INTALIGN(VARSIZE(gser_in));			
 		}
 
 		/* Advance NULL bitmap */
