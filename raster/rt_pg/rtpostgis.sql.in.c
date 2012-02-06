@@ -2052,13 +2052,13 @@ CREATE OR REPLACE FUNCTION _st_hillshade4ma(matrix float[][], nodatamode text, v
         dz_dy := ((matrix[1][3] + 2.0 * matrix[2][3] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[2][1] + matrix[3][1])) / (8.0 * pheight);
         elevation_scale := args[6]::float;
         slope := atan(sqrt(elevation_scale * pow(dz_dx, 2.0) + pow(dz_dy, 2.0)));
-				-- handle special case of 0, 0
-				IF abs(dz_dy) = 0::float AND abs(dz_dy) = 0::float THEN
-					-- set to pi as that is the expected PostgreSQL answer in Linux
-					aspect := pi();
-				ELSE
-					aspect := atan2(dz_dy, -dz_dx);
-				END IF;
+        -- handle special case of 0, 0
+        IF abs(dz_dy) = 0::float AND abs(dz_dy) = 0::float THEN
+            -- set to pi as that is the expected PostgreSQL answer in Linux
+            aspect := pi();
+        ELSE
+            aspect := atan2(dz_dy, -dz_dx);
+        END IF;
         max_bright := args[5]::float;
 
         IF aspect < 0 THEN
