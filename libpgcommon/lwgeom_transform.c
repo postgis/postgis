@@ -605,6 +605,7 @@ static void DeleteFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid)
 void SetPROJ4LibPath(void)
 {
 	char *path;
+	char *share_path;
 	const char **proj_lib_path;
 
 	if (!IsPROJ4LibPathSet) {
@@ -614,11 +615,14 @@ void SetPROJ4LibPath(void)
 		 * directory in which to store the grid shift files
 		 */
 		proj_lib_path = palloc(sizeof(char *));
+
+		share_path = palloc(MAXPGPATH);
+		get_share_path(my_exec_path, share_path);
+
 		path = palloc(MAXPGPATH);
 		*proj_lib_path = path;
 
-		get_share_path(my_exec_path, path);
-		strncat(path, "/contrib/postgis/proj", MAXPGPATH - strlen(path) - 1);
+		snprintf(path, MAXPGPATH - 1, "%s/contrib/postgis-%s.%s/proj", share_path, POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION);		
 
 		/* Set the search path for PROJ.4 */
 		pj_set_searchpath(1, proj_lib_path);
@@ -710,7 +714,6 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 {
 	projPJ pj1;
 	projPJ pj2;
-	char *proj_str;
 	PJ *p;
 	
 	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
@@ -720,6 +723,7 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 		return LW_FAILURE;
 	
 	/* Get the proj string 
+	char *proj_str;
 	proj_str = pj_get_def(pj1, 0);
 	POSTGIS_DEBUGF(4, "proj_str = %s", proj_str);
 	*/
