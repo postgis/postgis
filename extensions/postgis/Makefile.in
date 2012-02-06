@@ -1,3 +1,5 @@
+include ../upgradeable_versions.mk
+
 EXTENSION     = postgis
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
@@ -28,6 +30,7 @@ EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 ifeq ($(PG91),yes)
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	cat $^ > $@
+	
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
@@ -36,9 +39,10 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/rtpostgis--unpackaged.sql sql_bits/postgis--unpackaged.sql
 	cat $^ > $@
 
+#strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql	
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
-	#cp $< $@
+
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/postgis.sql: ../../postgis/postgis.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g'  $< > $@
@@ -119,22 +123,10 @@ sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@
 
-sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
-	if test "$(PREREL_NUMBER)x" != "x"; then \
-	   v=$(PREREL_PREV); \
-	   while [[ $$v -ge 1 ]]; do \
-	       cp -v $< sql/$(EXTENSION)--$(MINORVERSION).$(PREREL_PREFIX)$$v--$(EXTVERSION).sql; \
-	       v=$$(($$v-1)); \
-	     done; \
-	else \
-	  if test $(MICRO_NUMBER) -gt 0; then \
-	   v=0; \
-	   while [[ $$v -le $(MICRO_PREV) ]]; do \
-	      cp -v $< sql/$(EXTENSION)--$(MINORVERSION).$$v--$(EXTVERSION).sql; \
-	       v=$$(($$v+1)); \
-	    done; \
-	  fi; \
-	 fi
+sql_minor_upgrade: sql_bits/postgis_upgrade_minor.sql sql_bits/postgis_raster_upgrade_minor.sql
+	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
+  	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
+	done
 
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql
