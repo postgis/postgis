@@ -8438,10 +8438,10 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	int hasnodatanodataval = 0;
 	double nodatanodataval = 0;
 
-	Oid ufcnoid = InvalidOid;
-	FmgrInfo uflinfo;
-	FunctionCallInfoData ufcinfo;
-	int ufcnullcount = 0;
+	Oid ufc_noid = InvalidOid;
+	FmgrInfo ufl_info;
+	FunctionCallInfoData ufc_info;
+	int ufc_nullcount = 0;
 
 	int idx = 0;
 	uint32_t i = 0;
@@ -8983,23 +8983,28 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		case REGPROCEDUREOID: {
 			POSTGIS_RT_DEBUG(3, "arg 4 is \"userfunction\"!");
 			if (!PG_ARGISNULL(4)) {
-				ufcnullcount = 0;
-				ufcnoid = PG_GETARG_OID(4);
+				ufc_nullcount = 0;
+				ufc_noid = PG_GETARG_OID(4);
 
 				/* get function info */
-				fmgr_info(ufcnoid, &uflinfo);
+				fmgr_info(ufc_noid, &ufl_info);
 
 				/* function cannot return set */
 				err = 0;
-				if (uflinfo.fn_retset) {
+				if (ufl_info.fn_retset) {
 					elog(ERROR, "RASTER_mapAlgebra2: Function provided must return double precision not resultset");
 					err = 1;
 				}
 				/* function should have correct # of args */
-				else if (uflinfo.fn_nargs != 3) {
-					elog(ERROR, "RASTER_mapAlgebra2: Function does not have three input parameters");
+				else if (ufl_info.fn_nargs < 3 || ufl_info.fn_nargs > 4) {
+					elog(ERROR, "RASTER_mapAlgebra2: Function provided must have three or four input parameters");
 					err = 1;
 				}
+
+				/*
+					TODO: consider adding checks of the userfunction parameters
+						should be able to use get_fn_expr_argtype() of fmgr.c
+				*/
 
 				if (err) {
 					for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
@@ -9008,25 +9013,29 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					PG_RETURN_NULL();
 				}
 
-				if (func_volatile(ufcnoid) == 'v') {
+				if (func_volatile(ufc_noid) == 'v') {
 					elog(NOTICE, "Function provided is VOLATILE. Unless required and for best performance, function should be IMMUTABLE or STABLE");
 				}
 
 				/* prep function call data */
 #if POSTGIS_PGSQL_VERSION <= 90
-				InitFunctionCallInfoData(ufcinfo, &uflinfo, 3, InvalidOid, NULL);
+				InitFunctionCallInfoData(ufc_info, &ufl_info, ufl_info.fn_nargs, InvalidOid, NULL);
 #else
-				InitFunctionCallInfoData(ufcinfo, &uflinfo, 3, InvalidOid, NULL, NULL);
+				InitFunctionCallInfoData(ufc_info, &ufl_info, ufl_info.fn_nargs, InvalidOid, NULL, NULL);
 #endif
-				memset(ufcinfo.argnull, FALSE, 3);
+				memset(ufc_info.argnull, FALSE, ufl_info.fn_nargs);
 
+				if (ufl_info.fn_nargs != 4)
+					k = 2;
+				else
+					k = 3;
 				if (!PG_ARGISNULL(7)) {
-				 ufcinfo.arg[2] = PG_GETARG_DATUM(7);
+					ufc_info.arg[k] = PG_GETARG_DATUM(7);
 				}
 				else {
-				 ufcinfo.arg[2] = (Datum) NULL;
-				 ufcinfo.argnull[2] = TRUE;
-				 ufcnullcount++;
+				 ufc_info.arg[k] = (Datum) NULL;
+				 ufc_info.argnull[k] = TRUE;
+				 ufc_nullcount++;
 				}
 			}
 			break;
@@ -9046,7 +9055,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			(spi_empty != spi_count) || hasnodatanodataval
 		)
 	) || (
-		(calltype == REGPROCEDUREOID) && (ufcnoid != InvalidOid)
+		(calltype == REGPROCEDUREOID) && (ufc_noid != InvalidOid)
 	)) {
 		for (x = 0; x < dim[0]; x++) {
 			for (y = 0; y < dim[1]; y++) {
@@ -9258,29 +9267,52 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						}
 					}	break;
 					case REGPROCEDUREOID: {
+						Datum d[4];
+						ArrayType *a;
+
 						/* build fcnarg */
 						for (i = 0; i < set_count; i++) {
-							ufcinfo.arg[i] = Float8GetDatum(_pixel[i]);
+							ufc_info.arg[i] = Float8GetDatum(_pixel[i]);
 
 							if (_haspixel[i]) {
-								ufcinfo.argnull[i] = FALSE;
-								ufcnullcount--;
+								ufc_info.argnull[i] = FALSE;
+								ufc_nullcount--;
 							}
 							else {
-								ufcinfo.argnull[i] = TRUE;
-				 				ufcnullcount++;
+								ufc_info.argnull[i] = TRUE;
+				 				ufc_nullcount++;
 							}
 						}
 
 						/* function is strict and null parameter is passed */
 						/* http://archives.postgresql.org/pgsql-general/2011-11/msg00424.php */
-						if (uflinfo.fn_strict && ufcnullcount)
+						if (ufl_info.fn_strict && ufc_nullcount)
 							break;
 
-						datum = FunctionCallInvoke(&ufcinfo);
+						/* 4 parameters, add position */
+						if (ufl_info.fn_nargs == 4) {
+							/* Datum of 4 element array */
+							/* array is (x1, y1, x2, y2) */
+							for (i = 0; i < set_count; i++) {
+								if (i < 1) {
+									d[0] = Int32GetDatum(_pos[i][0]);
+									d[1] = Int32GetDatum(_pos[i][1]);
+								}
+								else {
+									d[2] = Int32GetDatum(_pos[i][0]);
+									d[3] = Int32GetDatum(_pos[i][1]);
+								}
+							}
+
+							a = construct_array(d, 4, INT4OID, sizeof(int4), true, 'i');
+							ufc_info.arg[2] = PointerGetDatum(a);
+							ufc_info.argnull[2] = FALSE;
+						}
+
+						datum = FunctionCallInvoke(&ufc_info);
 
 						/* result is not null*/
-						if (!ufcinfo.isnull) {
+						if (!ufc_info.isnull) {
 							haspixel = 1;
 							pixel = DatumGetFloat8(datum);
 						}

@@ -55,6 +55,7 @@ DROP FUNCTION IF EXISTS make_test_raster(integer, integer, integer, double preci
 CREATE OR REPLACE FUNCTION raster_mapalgebra_intersection(
 	rast1 double precision,
 	rast2 double precision,
+	xy int[],
 	VARIADIC userargs text[]
 )
 	RETURNS double precision
@@ -142,7 +143,7 @@ CREATE OR REPLACE FUNCTION raster_mapalgebra_second(
 -- INTERSECTION
 INSERT INTO raster_mapalgebra_out
 	(SELECT r1.rid, r2.rid, 'INTERSECTION', st_mapalgebrafct(
-		r1.rast, r2.rast, 'raster_mapalgebra_intersection(double precision, double precision, text[])'::regprocedure, '32BF', 'INTERSECTION'
+		r1.rast, r2.rast, 'raster_mapalgebra_intersection(double precision, double precision, int[], text[])'::regprocedure, '32BF', 'INTERSECTION'
 	)
 	FROM raster_mapalgebra r1
 	JOIN raster_mapalgebra r2
@@ -151,7 +152,7 @@ INSERT INTO raster_mapalgebra_out
 		AND r2.rid BETWEEN 1 AND 9
 	) UNION ALL (
 	SELECT r1.rid, r2.rid, 'INTERSECTION', st_mapalgebrafct(
-		r1.rast, r2.rast, 'raster_mapalgebra_intersection(double precision, double precision, text[])'::regprocedure, '32BF', 'INTERSECTION'
+		r1.rast, r2.rast, 'raster_mapalgebra_intersection(double precision, double precision, int[], text[])'::regprocedure, '32BF', 'INTERSECTION'
 	)
 	FROM raster_mapalgebra r1
 	JOIN raster_mapalgebra r2
@@ -162,21 +163,21 @@ INSERT INTO raster_mapalgebra_out
 
 INSERT INTO raster_mapalgebra_out
 	SELECT NULL AS rid, rid, 'INTERSECTION', st_mapalgebrafct(
-		NULL::raster, rast, 'raster_mapalgebra_intersection(double precision, double precision, text[])'::regprocedure, '32BF', 'INTERSECTION'
+		NULL::raster, rast, 'raster_mapalgebra_intersection(double precision, double precision, int[], text[])'::regprocedure, '32BF', 'INTERSECTION'
 	)
 	FROM raster_mapalgebra
 ;
 
 INSERT INTO raster_mapalgebra_out
 	SELECT rid, NULL AS rid, 'INTERSECTION', st_mapalgebrafct(
-		rast, NULL::raster, 'raster_mapalgebra_intersection(double precision, double precision, text[])'::regprocedure, '32BF', 'INTERSECTION'
+		rast, NULL::raster, 'raster_mapalgebra_intersection(double precision, double precision, int[], text[])'::regprocedure, '32BF', 'INTERSECTION'
 	)
 	FROM raster_mapalgebra
 ;
 
 INSERT INTO raster_mapalgebra_out
 	SELECT NULL AS rid, NULL AS rid, 'INTERSECTION', st_mapalgebrafct(
-		NULL::raster, NULL::raster, 'raster_mapalgebra_intersection(double precision, double precision, text[])'::regprocedure, '32BF', 'INTERSECTION'
+		NULL::raster, NULL::raster, 'raster_mapalgebra_intersection(double precision, double precision, int[], text[])'::regprocedure, '32BF', 'INTERSECTION'
 	)
 ;
 
@@ -335,7 +336,7 @@ FROM (
 	FROM raster_mapalgebra_out
 ) AS r;
 
-DROP FUNCTION IF EXISTS raster_mapalgebra_intersection(double precision, double precision, VARIADIC text[]);
+DROP FUNCTION IF EXISTS raster_mapalgebra_intersection(double precision, double precision, int[], VARIADIC text[]);
 DROP FUNCTION IF EXISTS raster_mapalgebra_union(double precision, double precision, VARIADIC text[]);
 DROP FUNCTION IF EXISTS raster_mapalgebra_first(double precision, double precision, VARIADIC text[]);
 DROP FUNCTION IF EXISTS raster_mapalgebra_second(double precision, double precision, VARIADIC text[]);
