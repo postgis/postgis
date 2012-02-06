@@ -981,11 +981,17 @@ rt_band_new_inline(
 	band->width = width;
 	band->height = height;
 	band->hasnodata = hasnodata;
-	band->nodataval = nodataval;
 	band->data.mem = data;
 	band->ownsData = 0;
 	band->isnodata = FALSE;
 	band->raster = NULL;
+
+	/* properly set nodataval as it may need to be constrained to the data type */
+	if (hasnodata && rt_band_set_nodata(band, nodataval) < 0) {
+		rterror("rt_band_new_inline: Unable to set NODATA value");
+		rtdealloc(band);
+		return NULL;
+	}
 
 	return band;
 }
@@ -1035,9 +1041,15 @@ rt_band_new_offline(
 	band->width = width;
 	band->height = height;
 	band->hasnodata = hasnodata;
-	band->nodataval = nodataval;
 	band->isnodata = FALSE;
 	band->raster = NULL;
+
+	/* properly set nodataval as it may need to be constrained to the data type */
+	if (hasnodata && rt_band_set_nodata(band, nodataval) < 0) {
+		rterror("rt_band_new_offline: Unable to set NODATA value");
+		rtdealloc(band);
+		return NULL;
+	}
 
 	/* XXX QUESTION (jorgearevalo): What does exactly ownsData mean?? I think that
 	 * ownsData = 0 ==> the memory for band->data is externally owned
@@ -1628,7 +1640,7 @@ rt_band_set_pixel_line(
 
 	/* make sure len of values to copy don't exceed end of data */
 	if (len > (band->width * band->height) - offset) {
-		rterror("rt_band_set_pixel_line: Unable to apply pixel values as values length exceeds the ");
+		rterror("rt_band_set_pixel_line: Unable to apply pixels as values length exceeds end of data");
 		return 0;
 	}
 
