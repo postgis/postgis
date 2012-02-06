@@ -345,6 +345,13 @@ else
 	fi
 fi	
 
+EXTENSIONS=""
+if test $POSTGIS_PGSQL_VERSION -ge 91; then
+	AC_MSG_RESULT([enabling extensions for PostgreSQL 9.1...])
+	EXTENSIONS=extensions
+	AC_SUBST([EXTENSIONS])
+fi
+
 dnl Temporary hack until minimum PostgreSQL version is 9.0:
 dnl If PostgreSQL < 9.0 is detected, trigger the inclusion of the new versioned PGXS targets
 PGXSOVERRIDE=0
