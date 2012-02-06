@@ -9,3 +9,7 @@ clean:
 install:
 	$(MAKE) -C postgis install
 	$(MAKE) -C postgis_topology install
+
+check:
+	echo "Nothing to check"
+
