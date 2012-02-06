@@ -41,6 +41,9 @@ sql/$(EXTENSION).sql: sql_bits/topology.sql sql_bits/topology_comments.sql
 sql_bits/topology.sql: ../../topology/topology.sql
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 	
+../../doc/topology_comments.sql:
+	$(MAKE) -C ../../doc comments
+	
 sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 	cp $< $@
 	

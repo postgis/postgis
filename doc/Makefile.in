@@ -140,6 +140,7 @@ images-clean:
 	$(MAKE) -C html/image_src images-clean
 	
 clean: 
+	rm -f *.sql
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	$(MAKE) -C html/image_src clean
