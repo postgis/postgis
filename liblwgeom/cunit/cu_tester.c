@@ -32,6 +32,7 @@ extern CU_SuiteInfo split_suite;
 extern CU_SuiteInfo geodetic_suite;
 extern CU_SuiteInfo geos_suite;
 extern CU_SuiteInfo homogenize_suite;
+extern CU_SuiteInfo surface_suite;
 extern CU_SuiteInfo out_gml_suite;
 extern CU_SuiteInfo out_kml_suite;
 extern CU_SuiteInfo out_geojson_suite;
@@ -62,6 +63,7 @@ int main(int argc, char *argv[])
 		split_suite,
 		geodetic_suite,
 		geos_suite,
+		surface_suite,
 		homogenize_suite,
 		out_gml_suite,
 		out_kml_suite,
