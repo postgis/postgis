@@ -29,102 +29,97 @@ PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
 TEST_METADATA = \
-	check_raster_columns.sql \
-	check_raster_overviews.sql \
-	$(NULL)
+	check_raster_columns \
+	check_raster_overviews
 
 TEST_IO = \
-	rt_io.sql \
-	$(NULL)
+	rt_io
 
 TEST_FUNC = \
-	rt_bytea.sql \
-	box3d.sql \
-	rt_addband.sql \
-	rt_band.sql \
-	rt_asgdalraster.sql \
-	rt_astiff.sql \
-	rt_asjpeg.sql \
-	rt_aspng.sql \
-	rt_union.sql \
-	$(NULL)
+	rt_bytea \
+	box3d \
+	rt_addband \
+	rt_band \
+	rt_asgdalraster \
+	rt_astiff \
+	rt_asjpeg \
+	rt_aspng \
+	rt_union
 
 TEST_PROPS = \
-	create_rt_properties_test.sql \
-	rt_dimensions.sql \
-	rt_scale.sql \
-	rt_pixelsize.sql \
-	rt_upperleft.sql \
-	rt_rotation.sql \
-	rt_georeference.sql \
-	rt_set_properties.sql \
-	drop_rt_properties_test.sql \
-	create_rt_empty_raster_test.sql \
-	rt_isempty.sql \
-	rt_hasnoband.sql \
-	drop_rt_empty_raster_test.sql \
-	rt_metadata.sql \
-	$(NULL)
+	create_rt_properties_test \
+	rt_dimensions \
+	rt_scale \
+	rt_pixelsize \
+	rt_upperleft \
+	rt_rotation \
+	rt_georeference \
+	rt_set_properties \
+	drop_rt_properties_test \
+	create_rt_empty_raster_test \
+	rt_isempty \
+	rt_hasnoband \
+	drop_rt_empty_raster_test \
+	rt_metadata
 
 TEST_BANDPROPS = \
-	create_rt_band_properties_test.sql \
-	rt_band_properties.sql \
-	rt_set_band_properties.sql \
-	rt_summarystats.sql \
-	rt_count.sql \
-	rt_histogram.sql \
-	rt_quantile.sql \
-	rt_valuecount.sql \
-	rt_valuepercent.sql \
-	rt_bandmetadata.sql \
-	rt_pixelvalue.sql \
-	drop_rt_band_properties_test.sql \
-	$(NULL)
+	create_rt_band_properties_test \
+	rt_band_properties \
+	rt_set_band_properties \
+	rt_summarystats \
+	rt_count \
+	rt_histogram \
+	rt_quantile \
+	rt_valuecount \
+	rt_valuepercent \
+	rt_bandmetadata \
+	rt_pixelvalue \
+	drop_rt_band_properties_test
 
 TEST_UTILITY = \
-	rt_utility.sql \
-	create_rt_mapalgebra_test.sql \
-	rt_mapalgebraexpr.sql \
-	rt_mapalgebrafct.sql \
-	rt_mapalgebraexpr_2raster.sql \
-	rt_mapalgebrafct_2raster.sql \
-	drop_rt_mapalgebra_test.sql \
-	create_rt_mapalgebrafctngb_test.sql \
-	rt_mapalgebrafctngb.sql \
-	rt_mapalgebrafctngb_userfunc.sql \
-	drop_rt_mapalgebrafctngb_test.sql \
-	rt_reclass.sql \
-	rt_resample.sql \
-	rt_asraster.sql \
-	rt_intersection.sql \
-	$(NULL)
+	rt_utility \
+	create_rt_mapalgebra_test \
+	rt_mapalgebraexpr \
+	rt_mapalgebrafct \
+	rt_mapalgebraexpr_2raster \
+	rt_mapalgebrafct_2raster \
+	drop_rt_mapalgebra_test \
+	create_rt_mapalgebrafctngb_test \
+	rt_mapalgebrafctngb \
+	rt_mapalgebrafctngb_userfunc \
+	drop_rt_mapalgebrafctngb_test \
+	rt_reclass \
+	rt_resample \
+	rt_asraster \
+	rt_intersection
 
 TEST_GIST = \
-	create_rt_gist_test.sql \
-	rt_above.sql \
-	rt_below.sql \
-	rt_contained.sql \
-	rt_contain.sql \
-	rt_left.sql \
-	rt_overabove.sql \
-	rt_overbelow.sql \
-	rt_overlap.sql \
-	rt_overleft.sql \
-	rt_overright.sql \
-	rt_right.sql \
-	rt_same.sql \
-	drop_rt_gist_test.sql \
-	$(NULL)
+	create_rt_gist_test \
+	rt_above \
+	rt_below \
+	rt_contained \
+	rt_contain \
+	rt_left \
+	rt_overabove \
+	rt_overbelow \
+	rt_overlap \
+	rt_overleft \
+	rt_overright \
+	rt_right \
+	rt_same \
+	drop_rt_gist_test
 	
 TEST_SREL = \
-	rt_spatial_relationship.sql \
-	rt_intersects.sql \
-	rt_samealignment.sql \
-	$(NULL)
+	rt_spatial_relationship \
+	rt_intersects \
+	rt_samealignment
 	
 TEST_BUGS = \
-	bug_test_car5.sql \
-	tickets.sql
+	bug_test_car5 \
+	tickets
+
+TEST_LOADER = \
+	loader/basic
 
 TESTS = $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
 		$(TEST_PROPS) $(TEST_BANDPROPS) \
@@ -139,7 +134,6 @@ clean distclean:
 
 rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../../rt_pg/rtpostgis.sql > rtpostgis.sql
-
 
 check: 
 	$(MAKE) -C ../../../regress staged-install

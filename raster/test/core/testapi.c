@@ -2239,7 +2239,7 @@ static void testLoadOfflineBand() {
 	rt_band band;
 	const int maxX = 10;
 	const int maxY = 10;
-	const char *path = "../loader/testraster.tif";
+	const char *path = "../regress/loader/testraster.tif";
 	int rtn;
 	int x;
 	int y;
