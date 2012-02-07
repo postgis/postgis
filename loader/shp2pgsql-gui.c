@@ -1763,7 +1763,7 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 	char *output_shapefile, *orig_shapefile, *progress_text = NULL;
 	gchar *folder_path;
 	
-	int ret, success, i = 0;
+	int ret, success = FALSE, i = 0;
 	
 	/* Get the first row of the import list */
 	is_valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(export_table_list_store), &iter);
@@ -1827,15 +1827,6 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 		state = ShpDumperCreate(dumper_table_config);
 		state->config->conn = conn;
 		
-		ret = ShpDumperConnectDatabase(state);
-		if (ret != SHPDUMPEROK)
-		{
-			pgui_seterr("%s", state->message);
-			pgui_raise_error_dialogue();
-			
-			goto export_cleanup;
-		}
-
 		/* Save the original shapefile name, then create a temporary version containing the full path */
 		orig_shapefile = dumper_table_config->shp_file;
 		output_shapefile = malloc(strlen(folder_path) + strlen(dumper_table_config->shp_file) + 2);
@@ -1844,7 +1835,17 @@ pgui_action_export(GtkWidget *widget, gpointer data)
 		strcat(output_shapefile, dumper_table_config->shp_file);
 
 		dumper_table_config->shp_file = output_shapefile;
-		
+
+		/* Connect to the database */
+		ret = ShpDumperConnectDatabase(state);
+		if (ret != SHPDUMPEROK)
+		{
+			pgui_seterr("%s", state->message);
+			pgui_raise_error_dialogue();
+			
+			goto export_cleanup;
+		}
+	
 		/* Display the progress dialog */
 		gtk_label_set_text(GTK_LABEL(label_progress), _("Initialising..."));
 		gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), 0.0);
