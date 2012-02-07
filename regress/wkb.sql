@@ -281,6 +281,31 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
           encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
  'GEOMETRYCOLLECTION ZM EMPTY'
 ::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'GEOMETRYCOLLECTION ZM (POINT ZM (0 0 0 0),LINESTRING ZM (0 0 0 0,1 1 1 1))'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1))'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1),GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1)))'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1),POINT M EMPTY,GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1)))'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1),GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1),POINT M EMPTY,GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1))),POINT M EMPTY,GEOMETRYCOLLECTION M (POINT M (0 0 0),LINESTRING M (0 0 0,1 1 1)))'
+::text as g ) as foo;
 
 -- CIRCULARSTRING
 select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
@@ -302,6 +327,21 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
           st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
           encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
  'CIRCULARSTRING ZM EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CIRCULARSTRING (0 0,1 1, 2 0)'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CIRCULARSTRING M (0 0 1,1 1 1, 2 0 1)'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CIRCULARSTRING ZM (0 0 1 2,1 1 1 2, 2 0 1 2)'
 ::text as g ) as foo;
 
 -- COMPOUNDCURVE
@@ -325,6 +365,26 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
           encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
  'COMPOUNDCURVE ZM EMPTY'
 ::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'COMPOUNDCURVE (CIRCULARSTRING (0 0,1 1,2 0),LINESTRING(2 0,4 1))'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'COMPOUNDCURVE Z (CIRCULARSTRING Z (0 0 1,1 1 1,2 0 1),LINESTRING Z (2 0 0,4 1 1))'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'COMPOUNDCURVE M (CIRCULARSTRING M (0 0 1,1 1 1,2 0 1),LINESTRING M (2 0 0,4 1 1))'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'COMPOUNDCURVE ZM (CIRCULARSTRING ZM (0 0 1 2,1 1 1 2,2 0 1 2),LINESTRING ZM (2 0 0 0,4 1 1 1))'
+::text as g ) as foo;
 
 -- CURVEPOLYGON
 select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
@@ -346,6 +406,11 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
           st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
           encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
  'CURVEPOLYGON ZM EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'CURVEPOLYGON ZM (COMPOUNDCURVE ZM (CIRCULARSTRING ZM (0 0 1 2,1 1 1 2,2 0 1 2),LINESTRING(2 0 1 2,1 -1 1 1,0 0 1 2)))'
 ::text as g ) as foo;
 
 -- MULTICURVE
@@ -369,6 +434,11 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
           encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
  'MULTICURVE ZM EMPTY'
 ::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTICURVE ZM (COMPOUNDCURVE ZM (CIRCULARSTRING ZM (0 0 1 2,1 1 1 2,2 0 1 2),LINESTRING(2 0 1 2,1 -1 1 1,0 0 1 2)))'
+::text as g ) as foo;
 
 -- MULTISURFACE
 select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
@@ -390,6 +460,11 @@ select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
           st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
           encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
  'MULTISURFACE ZM EMPTY'
+::text as g ) as foo;
+select g, encode(st_asbinary(g::geometry, 'ndr'), 'hex'),
+          st_orderingequals(g::geometry, ST_GeomFromWKB(ST_AsBinary(g::geometry))),
+          encode(st_asbinary(g::geometry, 'xdr'), 'hex') FROM ( SELECT
+ 'MULTISURFACE ZM (CURVEPOLYGON ZM (COMPOUNDCURVE ZM (CIRCULARSTRING ZM (0 0 1 2,1 1 1 2,2 0 1 2),LINESTRING(2 0 1 2,1 -1 1 1,0 0 1 2))),POLYGON((10 10 10 10,10 12 10 10,12 12 10 10,12 10 10 10,10 10 10 10)))'
 ::text as g ) as foo;
 
 -- POLYHEDRALSURFACE
