@@ -32,8 +32,8 @@ if [ -d "$outdir" ]; then
 fi
 
 echo "Exporting tag $tag"
-#cvs export -r "$tag" -d "$outdir" postgis 
-svn export "http://svn.osgeo.org/postgis/$tag" "$outdir"
+svnurl="http://svn.osgeo.org/postgis/$tag"
+svn export $svnurl "$outdir"
 if [ $? -gt 0 ]; then
 	exit 1
 fi
@@ -48,6 +48,7 @@ rm -f "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 echo "Running autogen.sh; ./configure"
 owd="$PWD"
 cd "$outdir"
+perl utils/svn_repo_revision.pl $svnurl
 ./autogen.sh
 ./configure
 #make
