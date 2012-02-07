@@ -254,7 +254,7 @@
         
         <simplesect>
           <title>Bug fixes</title>
-          <para>http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=postgis+1.5.0&amp;order=priority</para>
+          <para><ulink url="http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.5.0&amp;order=priority">http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.5.0&amp;order=priority</ulink></para>
         </simplesect>
       </sect1>
       
@@ -320,7 +320,7 @@
         </simplesect>
         <simplesect>
           <title>Bug fixes</title>
-          <para>http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=postgis+1.4.0&amp;order=priority</para>
+          <para><ulink url="http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.4.0&amp;order=priority">http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.4.0&amp;order=priority</ulink></para>
         </simplesect>
       </sect1>
 
@@ -403,7 +403,7 @@
 
         <para>Added ST_Covers and ST_CoveredBy relational functions.
         Description and justification of these functions can be found at
-        http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html</para>
+        <ulink url="http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html">http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html</ulink></para>
 
         <para>Added ST_DWithin relational function.</para>
       </simplesect>
@@ -627,7 +627,7 @@
         GNU trove.</para>
 
         <para>Added EJB2 support generously donated by the "Geodetix s.r.l.
-        Company" http://www.geodetix.it/</para>
+        Company" <ulink url="http://www.geodetix.it/">http://www.geodetix.it/</ulink></para>
 
         <para>Added EJB3 tutorial / examples donated by Norman Barker
         &lt;nbarker@ittvis.com&gt;</para>

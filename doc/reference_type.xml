@@ -177,7 +177,7 @@
 		
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="PostGIS_GeographyFunctions" />,<xref linkend="PostGIS_Geography" /></para>
+			<para><xref linkend="PostGIS_GeographyFunctions" />, <xref linkend="PostGIS_Geography" /></para>
 		</refsection>
 	</refentry>
   </sect1>

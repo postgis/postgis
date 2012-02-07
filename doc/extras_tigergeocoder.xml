@@ -4,7 +4,7 @@
 	<title>Tiger Geocoder</title>
 	 <sect1info>
 		<abstract>
-			<para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/index.html">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.  In prior versions the TIGER files were
+			<para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.  In prior versions the TIGER files were
 			released in ASCII format.  The older geocoder used to work with that format is in <varname>extras/tiger_geocoder/tiger_2006andbefore</varname>. </para>
 			<para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. The latest version updated to use the TIGER 2010 census data is located in the <varname>extras/tiger_geocoder/tiger_2010</varname> folder.</para>
 			<para>Although it is designed specifically for the US, a lot of the concepts and functions are applicable and can be adapted to work with other country address and road networks.</para>
@@ -302,7 +302,7 @@ Total query runtime: 245 ms.
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="Normalize_Address" />,<xref linkend="Pprint_Addy" />,<xref linkend="ST_AsText"/>,<xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/></para>
+		<para><xref linkend="Normalize_Address" />, <xref linkend="Pprint_Addy" />, <xref linkend="ST_AsText"/>, <xref linkend="ST_SnapToGrid"/>, <xref linkend="ST_X"/>, <xref linkend="ST_Y"/></para>
 	  </refsection>
 	</refentry>
 	
@@ -367,7 +367,7 @@ Total query runtime: 245 ms.
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="Geocode" />,<xref linkend="Pprint_Addy" />,<xref linkend="ST_AsText"/></para>
+		<para><xref linkend="Geocode" />, <xref linkend="Pprint_Addy" />, <xref linkend="ST_AsText"/></para>
 	  </refsection>
 	</refentry>
 	

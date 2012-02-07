@@ -4,11 +4,11 @@
 
 	   <para>This module and associated pl/pgsql functions have been
 	  implemented to provide long locking support required by <ulink
-	  url="http://portal.opengeospatial.org/files/index.php?artifact_id=7176">Web Feature Service</ulink> specification.</para>
+          url="http://www.opengeospatial.org/standards/wfs">Web Feature Service</ulink> specification.</para>
 
 	  <note>
 		<para>Users must use <ulink
-		url="http://www.postgresql.org/docs/8.3/static/transaction-iso.html">serializable
+		url="http://www.postgresql.org/docs/current/static/transaction-iso.html">serializable
 		transaction level</ulink> otherwise locking mechanism would
 		break.</para>
 	  </note>

@@ -46,7 +46,7 @@
 
     <para>If your changes are more extensive, a Subversion patch is definitely
     preferred. This is a four step process on Unix (assuming you already have
-    <ulink url="http://subversion.tigris.org/">Subversion</ulink>
+    <ulink url="http://subversion.apache.org/">Subversion</ulink>
     installed):</para>
 
     <orderedlist>

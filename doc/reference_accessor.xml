@@ -1770,7 +1770,7 @@ GROUP BY gid, field1,field2;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_GeomFromEWKT" />,<xref linkend="ST_NumGeometries" /></para>
+		<para><xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_NumGeometries" /></para>
 	  </refsection>
 	</refentry>
 
@@ -2004,7 +2004,7 @@ POINT(3 2)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="spatial_ref_sys" />,<xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 

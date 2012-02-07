@@ -452,7 +452,7 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="RT_Raster_Columns"/>,<xref linkend="RT_ST_AddBand"/>, <xref linkend="RT_ST_MakeEmptyRaster"/>, <xref linkend="RT_DropRasterConstraints"/>, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_SRID" /></para>
+		<para><xref linkend="RT_Raster_Columns"/>, <xref linkend="RT_ST_AddBand"/>, <xref linkend="RT_ST_MakeEmptyRaster"/>, <xref linkend="RT_DropRasterConstraints"/>, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -717,7 +717,7 @@ postgis_raster_lib_version
 		<title>Description</title>
 
 		<para>Returns a list of raster formats short_name,long_name and creator options of each format supported by your lib gdal.  Use the short_name as input in the <varname>format</varname> parameter of <xref linkend="RT_ST_AsGDALRaster" />.
-		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted set of CreationOptionList/Option consisting of name and optional <varname>type</varname>,<varname>description</varname> and set of <varname>VALUE</varname> for each creator option for the specific driver.</para>
+		Options vary depending on what drivers your libgdal was compiled with. <varname>create_options</varname> returns an xml formatted set of CreationOptionList/Option consisting of name and optional <varname>type</varname>, <varname>description</varname> and set of <varname>VALUE</varname> for each creator option for the specific driver.</para>
 		
 		 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 	  </refsection>
@@ -1182,7 +1182,7 @@ SELECT ST_AsPNG(
             <!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="ST_Buffer" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />,<xref linkend="RT_ST_AsPNG" /> , <xref linkend="RT_ST_AsJPEG" />, <xref linkend="RT_ST_SRID" /></para>
+				<para><xref linkend="RT_ST_BandPixelType" />, <xref linkend="ST_Buffer" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />, <xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsJPEG" />, <xref linkend="RT_ST_SRID" /></para>
 			</refsection>
 		</refentry>
 		
@@ -2623,7 +2623,7 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref
+				<para><xref linkend="RT_ST_BandNoDataValue" />, <xref
                 linkend="RT_ST_NumBands" />, <xref
                 linkend="RT_ST_SetBandNoDataValue" />, <xref
                 linkend="RT_ST_SetBandIsNoData" /></para>
@@ -3370,7 +3370,7 @@ FROM dummy_rast WHERE rid = 1;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_GeoReference" />,<xref linkend="RT_ST_SetGeoReference" />, <xref linkend="RT_ST_SkewX" />, <xref linkend="RT_ST_SkewY" /></para>
+				<para><xref linkend="RT_ST_GeoReference" />, <xref linkend="RT_ST_SetGeoReference" />, <xref linkend="RT_ST_SkewX" />, <xref linkend="RT_ST_SkewY" /></para>
 			</refsection>
 		</refentry>
 		
@@ -3452,7 +3452,7 @@ WHERE rid = 2;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_UpperLeftX" />,<xref linkend="RT_ST_UpperLeftY" /></para>
+				<para><xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_UpperLeftY" /></para>
 			</refsection>
 		</refentry>
 		
@@ -3839,7 +3839,7 @@ WHERE rid = 2;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref linkend="RT_ST_NumBands" /></para>
+				<para><xref linkend="RT_ST_BandNoDataValue" />, <xref linkend="RT_ST_NumBands" /></para>
 			</refsection>
 		</refentry>
 
@@ -3947,7 +3947,7 @@ select st_bandisnodata(rast, 1) from dummy_rast where rid = 1; -- Expected true
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_BandNoDataValue" />,<xref
+				<para><xref linkend="RT_ST_BandNoDataValue" />, <xref
                 linkend="RT_ST_NumBands" />, <xref
                 linkend="RT_ST_SetBandNoDataValue"/>, <xref
                 linkend="RT_ST_BandIsNoData"/></para>
@@ -4391,7 +4391,7 @@ ORDER BY value, quantile,rid
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns <varname>summarystats</varname> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage..  If no band is specified <varname>nband</varname> defaults to 1. </para> 
+				<para>Returns <varname>summarystats</varname> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
 				<note><para>By default only considers pixel values no equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para>. By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</note>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
@@ -4859,7 +4859,7 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_Raster_Applications" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />,<xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsTIFF" /> </para>
+				<para><xref linkend="RT_Raster_Applications" />, <xref linkend="RT_ST_GDALDrivers" />, <xref linkend="RT_ST_AsGDALRaster" />, <xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsTIFF" /> </para>
 			</refsection>
 		</refentry>
 		
@@ -5204,7 +5204,7 @@ WHERE rid = 4) As foo;</programlisting>
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_AddBand" />,<xref linkend="RT_ST_Intersection" /></para>
+				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_Intersection" /></para>
 			</refsection>
 		</refentry>
 		
@@ -5347,7 +5347,7 @@ ORDER BY val;
 		  </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="geomval" />,<xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_Polygon" />, <xref linkend="RT_ST_ValueCount" /></para>
+			<para><xref linkend="geomval" />, <xref linkend="RT_ST_Value" />, <xref linkend="RT_ST_Polygon" />, <xref linkend="RT_ST_ValueCount" /></para>
 		  </refsection>
 		</refentry>
 		
@@ -5924,7 +5924,7 @@ WITH mygeoms
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_MapAlgebraExpr" />,<xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsRaster" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
+				<para><xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsRaster" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
 			</refsection>
 		</refentry>
 
@@ -6015,7 +6015,7 @@ WITH mygeoms
 
                 <para>The second argument to the <varname>userfunction</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct" /> call are passed through to the specified <varname>userfunction</varname>, and are contained in the <varname>args</varname> argument.</para>
 
-                <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/interactive/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
+                <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/static/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
 
                 <note><para>The <type>text[]</type> argument to the <varname>userfunction</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
 
@@ -6191,7 +6191,7 @@ WHERE rid=167;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>tworastuserfunc</varname> on the input raster <varname>rast1</varname>,<varname>rast2</varname> . If no <varname>band1</varname> or <varname>band2</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original rasters but will only have one band.</para>
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>tworastuserfunc</varname> on the input raster <varname>rast1</varname>, <varname>rast2</varname>. If no <varname>band1</varname> or <varname>band2</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original rasters but will only have one band.</para>
 
 				<para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype. If pixeltype is passed NULL or left out, then the new raster band will have the same pixeltype as the input <varname>rast1</varname> band.</para>
 
@@ -6202,7 +6202,7 @@ WHERE rid=167;
 
                 <para>The third argument to the <varname>tworastuserfunc</varname> is a <type>variadic text</type> array. All trailing text arguments to any <xref linkend="RT_ST_MapAlgebraFct2" /> call are passed through to the specified <varname>tworastuserfunc</varname>, and are contained in the <varname>userargs</varname> argument.</para>
 
-                <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/interactive/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
+                <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/static/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
 
                 <note><para>The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
 
@@ -6697,7 +6697,7 @@ UPDATE wind
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_AddBand" />,<xref linkend="RT_ST_Band" />, <xref linkend="RT_ST_BandPixelType" />,<xref linkend="RT_ST_MakeEmptyRaster" />,  <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" /></para>
+				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_Band" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_MakeEmptyRaster" />,  <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" /></para>
 			</refsection>
 		</refentry>
 		
@@ -7171,7 +7171,7 @@ NOTICE:  The two rasters provided have different SRIDs
 		  </refsection>	
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_Loading_Rasters" />,<xref linkend="RT_ST_MakeEmptyRaster" /></para>
+				<para><xref linkend="RT_Loading_Rasters" />, <xref linkend="RT_ST_MakeEmptyRaster" /></para>
 			</refsection>
 		</refentry>
 	</sect1>

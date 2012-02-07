@@ -218,7 +218,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	<para>
 	  Alternatively, checkout the source from the
-	  <ulink url="http://subversion.tigris.org/">
+	  <ulink url="http://subversion.apache.org/">
 		svn
 	  </ulink>
 	  repository
@@ -335,8 +335,8 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 			  <para>
 				This parameter is currently broken, as the package will only
 				install into the PostgreSQL installation directory. Visit
-				<ulink url="http://trac.osgeo.org/postgis/ticket/160">
-				  http://trac.osgeo.org/postgis/ticket/160
+				<ulink url="http://trac.osgeo.org/postgis/ticket/635">
+				  http://trac.osgeo.org/postgis/ticket/635
 				</ulink>
 				to track this bug.
 			  </para>
@@ -622,11 +622,7 @@ FROM pg_available_extensions WHERE name LIKE 'postgis%' ;
 		  configuration parameter <command>--with-pgconfig</command>. So make
 		  sure to modify your PATH to match the detected PostgreSQL installation
 		  during configuration or be prepared to deal with the impending
-		  headaches. Visit
-		  <ulink url="http://trac.osgeo.org/postgis/ticket/186">
-			http://trac.osgeo.org/postgis/ticket/186
-		  </ulink>
-		  to track this bug.
+		  headaches.
 		</para>
 	  </caution>
 

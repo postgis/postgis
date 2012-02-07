@@ -328,7 +328,7 @@ SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As bo
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Buffer" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_GeomFromEWKT" />,<xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Buffer" />, <xref linkend="ST_DWithin" />, <xref linkend="ST_GeomFromEWKT" />, <xref linkend="ST_GeomFromText" />, <xref linkend="ST_SRID" /></para>
 	  </refsection>
 	</refentry>
 

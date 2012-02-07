@@ -131,7 +131,7 @@ UPDATE sometable SET geog = ST_GeogFromText('SRID=4326;POINT(' || lon || ' ' || 
 		 </refsection>
 		  <refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_AsText" />,<xref linkend="ST_GeographyFromText" /></para>
+			<para><xref linkend="ST_AsText" />, <xref linkend="ST_GeographyFromText" /></para>
 		  </refsection>
 	</refentry>
 
@@ -625,7 +625,7 @@ LINESTRING(1 2,4 5,7 8)
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_AsText" />,<xref linkend="ST_AsGeoJSON" />, <xref linkend="installation_configuration" /></para>
+		<para><xref linkend="ST_AsText" />, <xref linkend="ST_AsGeoJSON" />, <xref linkend="installation_configuration" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -908,7 +908,7 @@ LINESTRING(1 2 3,4 5 6,7 8 9)
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Collect" />,<xref linkend="ST_MakeLine" /></para>
+		<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_Collect" />, <xref linkend="ST_MakeLine" /></para>
 	  </refsection>
 	</refentry>
 

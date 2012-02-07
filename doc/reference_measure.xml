@@ -93,7 +93,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		  <refsection>
 			<title>See Also</title>
 	
-			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_ClosestPoint"/>,<xref linkend="ST_3DDistance"/>,<xref linkend="ST_3DShortestLine"/></para>
+			<para><xref linkend="ST_AsEWKT" />, <xref linkend="ST_ClosestPoint"/>, <xref linkend="ST_3DDistance"/>, <xref linkend="ST_3DShortestLine"/></para>
 		  </refsection>
 	</refentry>
 	<refentry id="ST_3DDistance">
@@ -167,7 +167,7 @@ SELECT ST_3DDistance(poly, mline) As dist3d,
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>,<xref linkend="ST_3DClosestPoint"/>,<xref linkend="ST_3DDWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_3DShortestLine"/>,<xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_3DClosestPoint"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_3DShortestLine"/>, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -234,7 +234,7 @@ ST_DWithin(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_Distance"/>,<xref linkend="ST_DWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_Distance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -522,7 +522,7 @@ SELECT ST_3DMaxDistance(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>,<xref linkend="ST_3DDWithin"/>,<xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_3DDWithin"/>, <xref linkend="ST_3DMaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 	<refentry id="ST_3DShortestLine">
@@ -716,7 +716,7 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 		  </refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeographyFromText" />, <xref linkend="ST_SetSRID" />,<xref linkend="ST_Transform" /></para>
+			<para><xref linkend="ST_GeomFromText" />, <xref linkend="ST_GeographyFromText" />, <xref linkend="ST_SetSRID" />, <xref linkend="ST_Transform" /></para>
 		</refsection>
 	</refentry>
 
@@ -1200,7 +1200,7 @@ ST_Point      | t          | t              | f           | f
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_ContainsProperly" />, <xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Within"/></para>
+		<para><xref linkend="ST_Boundary" />, <xref linkend="ST_ContainsProperly" />, <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>, <xref linkend="ST_Within"/></para>
 	  </refsection>
  </refentry>
 
@@ -1299,7 +1299,7 @@ ST_Point      | t          | t              | f           | f
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_GeometryType" />, <xref linkend="ST_Boundary" />, <xref linkend="ST_Contains" />, <xref linkend="ST_Covers" />,<xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>,<xref linkend="ST_Relate" />,<xref linkend="ST_Within"/></para>
+		<para><xref linkend="ST_GeometryType" />, <xref linkend="ST_Boundary" />, <xref linkend="ST_Contains" />, <xref linkend="ST_Covers" />, <xref linkend="ST_CoveredBy" />, <xref linkend="ST_Equals"/>, <xref linkend="ST_Relate" />, <xref linkend="ST_Within"/></para>
 	  </refsection>
  </refentry>
 
@@ -2023,7 +2023,7 @@ FROM (SELECT
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_3DDistance"/>,<xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_MaxDistance" />, <xref linkend="ST_Transform" /></para>
+		<para><xref linkend="ST_3DDistance"/>, <xref linkend="ST_DWithin"/>, <xref linkend="ST_Distance_Sphere"/>, <xref linkend="ST_Distance_Spheroid"/>, <xref linkend="ST_MaxDistance" />, <xref linkend="ST_Transform" /></para>
 	  </refsection>
 	</refentry>
 
@@ -2563,7 +2563,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_CurveToLine" />,<xref linkend="ST_LineToCurve" /></para>
+		<para><xref linkend="ST_CurveToLine" />, <xref linkend="ST_LineToCurve" /></para>
 	  </refsection>
 	</refentry>
 
@@ -3694,7 +3694,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 			<para>Version 1: Takes geomA, geomB, intersectionMatrix and Returns 1 (TRUE) if this Geometry is spatially related to
 					anotherGeometry, by testing for intersections between the
 					Interior, Boundary and Exterior of the two geometries as specified
-					by the values in the <ulink url="http://docs.codehaus.org/display/GEOTDOC/Point+Set+Theory+and+the+DE-9IM+Matrix#PointSetTheoryandtheDE-9IMMatrix-9IntersectionMatrix">intersectionMatrixPattern</ulink>.</para>
+					by the values in the <ulink url="http://en.wikipedia.org/wiki/DE-9IM">DE-9IM matrix pattern</ulink>.</para>
 			
 			<para>This is especially useful for testing compound checks of intersection, crosses, etc in one step.</para>
 			<para>Do not call with a GeometryCollection as an argument</para>
@@ -4161,7 +4161,7 @@ SELECT ST_Buffer(ST_GeomFromText('POINT(50 50)'), 20) As smallc,
 
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Equals"/>,<xref linkend="ST_IsValid"/></para>
+		<para><xref linkend="ST_Contains"/>, <xref linkend="ST_Equals"/>, <xref linkend="ST_IsValid"/></para>
 	  </refsection>
 	</refentry>
 </sect1>

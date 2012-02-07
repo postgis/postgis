@@ -1504,7 +1504,7 @@ ERROR:  Two or more edges found</programlisting>
           <refsection>
             <title>See Also</title>
         
-            <para><xref linkend="AddEdge" />,<xref linkend="GetNodeByPoint" /></para>
+            <para><xref linkend="AddEdge" />, <xref linkend="GetNodeByPoint" /></para>
           </refsection>
         </refentry>
         
@@ -1555,7 +1555,7 @@ ERROR:  Two or more faces found</programlisting>
 		<!-- Optionally add a "See Also" section -->
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="AddFace" />,<xref linkend="GetNodeByPoint" />,<xref linkend="GetEdgeByPoint" /></para>
+			<para><xref linkend="AddFace" />, <xref linkend="GetNodeByPoint" />, <xref linkend="GetEdgeByPoint" /></para>
 		</refsection>
 	</refentry>
         
@@ -1696,7 +1696,7 @@ ERROR:  Two or more faces found</programlisting>
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>,<xref linkend="GetTopologyID"/></para>
+				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>, <xref linkend="GetTopologyID"/></para>
 			</refsection>
 		</refentry>
 		
@@ -2446,7 +2446,7 @@ When <varname>tolerance</varname> is given it will be used to snap the input geo
 			</refsection>
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="topoelement"/>,<xref linkend="topoelementarray"/></para>
+				<para><xref linkend="topoelement"/>, <xref linkend="topoelementarray"/></para>
 			</refsection>
           </refentry>
 	</sect1>
@@ -2498,7 +2498,7 @@ When <varname>tolerance</varname> is given it will be used to snap the input geo
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="GetTopoGeomElements"/>,<xref linkend="topoelementarray"/></para>
+				<para><xref linkend="GetTopoGeomElements"/>, <xref linkend="topoelementarray"/></para>
 			</refsection>
 		</refentry>
 	  	<refentry id="GetTopoGeomElements">
@@ -2544,7 +2544,7 @@ When <varname>tolerance</varname> is given it will be used to snap the input geo
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="GetTopoGeomElementArray"/>,<xref linkend="topoelement"/></para>
+				<para><xref linkend="GetTopoGeomElementArray"/>, <xref linkend="topoelement"/></para>
 			</refsection>
 		</refentry>
 	</sect1>

@@ -441,17 +441,15 @@ FROM (SELECT ST_Buffer(
 
 	  <refsection>
 		<title>Examples</title>
-		<para>Aggregate example</para>
-			<programlisting>Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
-SELECT stusps,
+		<para>Aggregate example (<ulink url="http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html">http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html</ulink>)</para>
+			<programlisting>SELECT stusps,
 	   ST_Multi(ST_Collect(f.the_geom)) as singlegeom
 	 FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom
 				FROM
 				somestatetable ) As f
 GROUP BY stusps</programlisting>
 		<para>Non-Aggregate example</para>
-			<programlisting>Thread ref: http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html
-SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
+			<programlisting>SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),
 	ST_GeomFromText('POINT(-2 3)') ));
 
 st_astext
@@ -2564,7 +2562,7 @@ GEOMETRYCOLLECTION(
         </refsection>
         <refsection>
         <title>See Also</title>
-        <para><xref linkend="ST_AsText" />,<xref linkend="ST_BuildArea" />, <xref linkend="ST_Dump" />,<xref linkend="ST_GeometryN" />,<xref linkend="ST_Union" /></para>
+        <para><xref linkend="ST_AsText" />, <xref linkend="ST_BuildArea" />, <xref linkend="ST_Dump" />, <xref linkend="ST_GeometryN" />, <xref linkend="ST_Union" /></para>
         </refsection>
     </refentry>
 
