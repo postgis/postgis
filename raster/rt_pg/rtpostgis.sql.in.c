@@ -3255,7 +3255,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 -----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION st_intersection(
-	rast1 raster, band1 int,
+	rast raster, band int,
 	geom geometry,
 	extenttype text DEFAULT 'INTERSECTION',
 	otheruserfunc regprocedure DEFAULT NULL
@@ -3277,7 +3277,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	$$ LANGUAGE 'plpgsql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_intersection(
-	rast1 raster, band1 int,
+	rast raster, band int,
 	geom geometry,
 	otheruserfunc regprocedure
 )
@@ -3286,7 +3286,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_intersection(
-	rast1 raster,
+	rast raster,
 	geom geometry,
 	extenttype text DEFAULT 'INTERSECTION',
 	otheruserfunc regprocedure DEFAULT NULL
@@ -3296,7 +3296,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_intersection(
-	rast1 raster,
+	rast raster,
 	geom geometry,
 	otheruserfunc regprocedure
 )
