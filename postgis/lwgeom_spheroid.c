@@ -326,7 +326,8 @@ Datum LWGEOM_length2d_ellipsoid(PG_FUNCTION_ARGS)
 	SPHEROID *sphere = (SPHEROID *) PG_GETARG_POINTER(1);
 	LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
 	double dist = lwgeom_length_spheroid(lwgeom, sphere);
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_FLOAT8(dist);
 }
 
@@ -357,6 +358,8 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 	}
 
 	length = lwgeom_length_spheroid(lwgeom, sphere);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(geom, 0);
 
 	/* Something went wrong... */
 	if ( length < 0.0 )
@@ -365,10 +368,7 @@ Datum LWGEOM_length_ellipsoid_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Clean up, but not all the way to the point arrays */
-	lwgeom_release(lwgeom);
-
-	PG_FREE_IF_COPY(geom, 0);
+	/* Clean up */
 	PG_RETURN_FLOAT8(length);
 }
 

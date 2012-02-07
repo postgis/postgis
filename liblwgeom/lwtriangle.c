@@ -55,6 +55,8 @@ lwtriangle_construct_empty(int srid, char hasz, char hasm)
 
 void lwtriangle_free(LWTRIANGLE  *triangle)
 {
+	if ( ! triangle ) return;
+	
 	if (triangle->bbox)
 		lwfree(triangle->bbox);
 		

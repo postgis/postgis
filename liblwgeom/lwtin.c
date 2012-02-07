@@ -27,7 +27,7 @@ LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj)
 void lwtin_free(LWTIN *tin)
 {
 	int i;
-
+	if ( ! tin ) return;
 	if ( tin->bbox )
 		lwfree(tin->bbox);
 

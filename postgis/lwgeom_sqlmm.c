@@ -78,8 +78,8 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 	ogeom = lwgeom_segmentize(igeom, perQuad);
 	if (ogeom == NULL) PG_RETURN_NULL();
 	ret = geometry_serialize(ogeom);
-	lwgeom_release(igeom);
-	lwgeom_release(ogeom);
+	lwgeom_free(igeom);
+	lwgeom_free(ogeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(ret);
 }
@@ -95,15 +95,14 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 
 	igeom = lwgeom_from_gserialized(geom);
 	ogeom = lwgeom_desegmentize(igeom);
-	if (ogeom == NULL)
-	{
-		lwgeom_release(igeom);
-		PG_RETURN_NULL();
-	}
-	ret = geometry_serialize(ogeom);
-	lwgeom_release(igeom);
-	lwgeom_release(ogeom);
+	lwgeom_free(igeom);
 	PG_FREE_IF_COPY(geom, 0);
+
+	if (ogeom == NULL)
+		PG_RETURN_NULL();
+
+	ret = geometry_serialize(ogeom);
+	lwgeom_free(ogeom);
 	PG_RETURN_POINTER(ret);
 }
 

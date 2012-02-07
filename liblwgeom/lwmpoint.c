@@ -59,6 +59,9 @@ lwmpoint_construct(int srid, const POINTARRAY *pa)
 void lwmpoint_free(LWMPOINT *mpt)
 {
 	int i;
+
+	if ( ! mpt ) return;
+	
 	if ( mpt->bbox )
 		lwfree(mpt->bbox);
 

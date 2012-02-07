@@ -84,6 +84,8 @@ lwcircstring_release(LWCIRCSTRING *lwcirc)
 
 void lwcircstring_free(LWCIRCSTRING *curve)
 {
+	if ( ! curve ) return;
+	
 	if ( curve->bbox )
 		lwfree(curve->bbox);
 	if ( curve->points )

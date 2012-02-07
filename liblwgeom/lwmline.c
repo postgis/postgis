@@ -99,6 +99,8 @@ lwmline_measured_from_lwmline(const LWMLINE *lwmline, double m_start, double m_e
 void lwmline_free(LWMLINE *mline)
 {
 	int i;
+	if ( ! mline ) return;
+	
 	if ( mline->bbox )
 		lwfree(mline->bbox);
 

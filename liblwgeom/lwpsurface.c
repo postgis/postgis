@@ -26,7 +26,7 @@ LWPSURFACE* lwpsurface_add_lwpoly(LWPSURFACE *mobj, const LWPOLY *obj)
 void lwpsurface_free(LWPSURFACE *psurf)
 {
 	int i;
-
+	if ( ! psurf ) return;
 	if ( psurf->bbox )
 		lwfree(psurf->bbox);
 

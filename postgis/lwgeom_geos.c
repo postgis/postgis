@@ -990,25 +990,23 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	}
 
 	g3 = (GEOSGeometry *)GEOSConvexHull(g1);
+	GEOSGeom_destroy(g1);
 
 	if (g3 == NULL)
 	{
-		GEOSGeom_destroy(g1);
 		lwerror("GEOSConvexHull: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
-
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
 	GEOSSetSRID(g3, srid);
 
 	lwout = GEOS2LWGEOM(g3, gserialized_has_z(geom1));
+	GEOSGeom_destroy(g3);
 
 	if (lwout == NULL)
 	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
 		elog(ERROR,"convexhull() failed to convert GEOS geometry to LWGEOM");
 		PG_RETURN_NULL(); /* never get here */
 	}
@@ -1022,18 +1020,13 @@ Datum convexhull(PG_FUNCTION_ARGS)
 	}
 
 	result = geometry_serialize(lwout);
+	lwgeom_free(lwout);
 
 	if (result == NULL)
 	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS convexhull() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); /* never get here */
 	}
-	lwgeom_release(lwout);
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
-
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_RETURN_POINTER(result);
@@ -1064,30 +1057,26 @@ Datum topologypreservesimplify(PG_FUNCTION_ARGS)
 	}
 
 	g3 = GEOSTopologyPreserveSimplify(g1,tolerance);
+	GEOSGeom_destroy(g1);
 
 	if (g3 == NULL)
 	{
-		GEOSGeom_destroy(g1);
 		lwerror("GEOSTopologyPreserveSimplify: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
-
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3));
 
 	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
 	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
+	GEOSGeom_destroy(g3);
 
 	if (result == NULL)
 	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS topologypreservesimplify() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); /* never get here */
 	}
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_RETURN_POINTER(result);
@@ -1259,8 +1248,8 @@ Datum buffer(PG_FUNCTION_ARGS)
 
 #if POSTGIS_GEOS_VERSION >= 32
 
-	g3 = GEOSBufferWithStyle(g1, size, quadsegs,
-	                         endCapStyle, joinStyle, mitreLimit);
+	g3 = GEOSBufferWithStyle(g1, size, quadsegs, endCapStyle, joinStyle, mitreLimit);
+	GEOSGeom_destroy(g1);
 
 #else /* POSTGIS_GEOS_VERSION < 32 */
 
@@ -1276,12 +1265,12 @@ Datum buffer(PG_FUNCTION_ARGS)
 	}
 
 	g3 = GEOSBuffer(g1,size,quadsegs);
+	GEOSGeom_destroy(g1);
 
 #endif /* POSTGIS_GEOS_VERSION < 32 */
 
 	if (g3 == NULL)
 	{
-		GEOSGeom_destroy(g1);
 		lwerror("GEOSBuffer: %s", lwgeom_geos_errmsg);
 		PG_RETURN_NULL(); /* never get here */
 	}
@@ -1291,19 +1280,15 @@ Datum buffer(PG_FUNCTION_ARGS)
 	GEOSSetSRID(g3, gserialized_get_srid(geom1));
 
 	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
+	GEOSGeom_destroy(g3);
 
 	if (result == NULL)
 	{
-		GEOSGeom_destroy(g1);
-		GEOSGeom_destroy(g3);
 		elog(ERROR,"GEOS buffer() threw an error (result postgis geometry formation)!");
 		PG_RETURN_NULL(); /* never get here */
 	}
-	GEOSGeom_destroy(g1);
-	GEOSGeom_destroy(g3);
 
 	PG_FREE_IF_COPY(geom1, 0);
-
 	PG_RETURN_POINTER(result);
 }
 
@@ -1714,20 +1699,20 @@ Datum isvalid(PG_FUNCTION_ARGS)
 		lwerror("unable to deserialize input");
 	}
 	g1 = LWGEOM2GEOS(lwgeom);
+	lwgeom_free(lwgeom);
+	
 	if ( ! g1 )
 	{
 		/* should we drop the following
 		 * notice now that we have ST_isValidReason ?
 		 */
 		lwnotice("%s", lwgeom_geos_errmsg);
-		lwgeom_release(lwgeom);
 		PG_RETURN_BOOL(FALSE);
 	}
-	lwgeom_release(lwgeom);
 
 	result = GEOSisValid(g1);
-
 	GEOSGeom_destroy(g1);
+
 	if (result == 2)
 	{
 		elog(ERROR,"GEOS isvalid() threw an error!");
@@ -1735,7 +1720,6 @@ Datum isvalid(PG_FUNCTION_ARGS)
 	}
 
 	PG_FREE_IF_COPY(geom1, 0);
-
 	PG_RETURN_BOOL(result);
 }
 
@@ -2059,10 +2043,10 @@ Datum contains(PG_FUNCTION_ARGS)
 			elog(ERROR,"Type isn't poly or multipoly!");
 			PG_RETURN_NULL();
 		}
+		lwgeom_free(lwgeom);
+		lwpoint_free(point);
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
-		lwgeom_release((LWGEOM *)lwgeom);
-		lwgeom_release((LWGEOM *)point);
 		if ( result == 1 ) /* completely inside */
 		{
 			PG_RETURN_BOOL(TRUE);
@@ -2294,10 +2278,10 @@ Datum covers(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
+		lwgeom_free(lwgeom);
+		lwpoint_free(point);
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
-		lwgeom_release((LWGEOM *)lwgeom);
-		lwgeom_release((LWGEOM *)point);
 		if ( result != -1 ) /* not outside */
 		{
 			PG_RETURN_BOOL(TRUE);
@@ -2451,10 +2435,10 @@ Datum coveredby(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
+		lwgeom_free(lwgeom);
+		lwpoint_free(point);
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
-		lwgeom_release((LWGEOM *)lwgeom);
-		lwgeom_release((LWGEOM *)point);
 		if ( result != -1 ) /* not outside */
 		{
 			PG_RETURN_BOOL(TRUE);
@@ -2528,7 +2512,7 @@ Datum crosses(PG_FUNCTION_ARGS)
 	 * Do the test IFF BOUNDING BOX AVAILABLE.
 	 */
 	if ( gserialized_get_gbox_p(geom1, &box1) &&
-	        gserialized_get_gbox_p(geom2, &box2) )
+	     gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if ( gbox_overlaps_2d(&box1, &box2) == LW_FALSE )
 		{
@@ -2658,10 +2642,10 @@ Datum intersects(PG_FUNCTION_ARGS)
 			PG_RETURN_NULL();
 		}
 
+		lwgeom_free(lwgeom);
+		lwpoint_free(point);
 		PG_FREE_IF_COPY(geom1, 0);
 		PG_FREE_IF_COPY(geom2, 1);
-		lwgeom_release((LWGEOM *)lwgeom);
-		lwgeom_release((LWGEOM *)point);
 		if ( result != -1 ) /* not outside */
 		{
 			PG_RETURN_BOOL(TRUE);
@@ -3193,6 +3177,7 @@ GEOS2POSTGIS(GEOSGeom geom, char want3d)
 	}
 
 	result = geometry_serialize(lwgeom);
+	lwgeom_free(lwgeom);
 
 	return result;
 }
@@ -3211,7 +3196,7 @@ POSTGIS2GEOS(GSERIALIZED *pglwgeom)
 		return NULL;
 	}
 	ret = LWGEOM2GEOS(lwgeom);
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
 	if ( ! ret )
 	{
 		/* lwerror("POSTGIS2GEOS conversion failed"); */
@@ -3411,17 +3396,15 @@ Datum ST_BuildArea(PG_FUNCTION_ARGS)
 	lwgeom_in = lwgeom_from_gserialized(geom);
 
 	lwgeom_out = lwgeom_buildarea(lwgeom_in);
+	lwgeom_free(lwgeom_in) ;
+	PG_FREE_IF_COPY(geom, 0);
+	
 	if ( ! lwgeom_out ) {
-		lwgeom_free(lwgeom_in) ;
-		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
 
 	result = geometry_serialize(lwgeom_out) ;
-
 	lwgeom_free(lwgeom_out) ;
-	lwgeom_free(lwgeom_in) ;
-	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
@@ -3450,18 +3433,17 @@ Datum ST_Snap(PG_FUNCTION_ARGS)
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
 	tolerance = PG_GETARG_FLOAT8(2);
 
-	lwgeom1 = lwgeom_from_gserialized(geom1) ;
-	lwgeom2 = lwgeom_from_gserialized(geom2) ;
+	lwgeom1 = lwgeom_from_gserialized(geom1);
+	lwgeom2 = lwgeom_from_gserialized(geom2);
 
 	lwresult = lwgeom_snap(lwgeom1, lwgeom2, tolerance);
-	result = geometry_serialize(lwresult);
-
 	lwgeom_free(lwgeom1);
 	lwgeom_free(lwgeom2);
-	lwgeom_free(lwresult);
-
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
+
+	result = geometry_serialize(lwresult);
+	lwgeom_free(lwresult);
 
 	PG_RETURN_POINTER(result);
 
@@ -3509,20 +3491,20 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 	error_if_srid_mismatch(lwgeom_in->srid, lwblade_in->srid);
 
 	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
+	lwgeom_free(lwgeom_in);
+	lwgeom_free(lwblade_in);
+	PG_FREE_IF_COPY(in, 0);
+	PG_FREE_IF_COPY(blade_in, 1);
+	
 	if ( ! lwgeom_out )
 	{
-		PG_FREE_IF_COPY(in, 0);
-		PG_FREE_IF_COPY(blade_in, 1);
 		PG_RETURN_NULL();
 	}
 
 	out = geometry_serialize(lwgeom_out);
-
-	PG_FREE_IF_COPY(in, 0);
-	PG_FREE_IF_COPY(blade_in, 1);
+	lwgeom_free(lwgeom_out);
 
 	PG_RETURN_POINTER(out);
-
 }
 
 /**********************************************************************
@@ -3561,16 +3543,18 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 	g2 = lwgeom_from_gserialized(geom2);
 
 	lwgeom_out = lwgeom_sharedpaths(g1, g2);
+	lwgeom_free(g1);
+	lwgeom_free(g2);
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
+
 	if ( ! lwgeom_out )
 	{
-		PG_FREE_IF_COPY(geom1, 0);
-		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_NULL();
 	}
 
 	out = geometry_serialize(lwgeom_out);
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
+	lwgeom_free(lwgeom_out);
 
 	PG_RETURN_POINTER(out);
 
@@ -3606,14 +3590,16 @@ Datum ST_Node(PG_FUNCTION_ARGS)
 	g1 = lwgeom_from_gserialized(geom1);
 
 	lwgeom_out = lwgeom_node(g1);
+	lwgeom_free(g1);
+	PG_FREE_IF_COPY(geom1, 0);
+
 	if ( ! lwgeom_out )
 	{
-		PG_FREE_IF_COPY(geom1, 0);
 		PG_RETURN_NULL();
 	}
 
 	out = geometry_serialize(lwgeom_out);
-	PG_FREE_IF_COPY(geom1, 0);
+	lwgeom_free(lwgeom_out);
 
 	PG_RETURN_POINTER(out);
 

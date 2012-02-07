@@ -84,22 +84,19 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 
 	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, FP_TOLERANCE);
 
+	/* Clean up */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if ( distance < 0.0 )
 	{
-		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_NULL();
 	}
 
-	/* Clean up, but not all the way to the point arrays */
-	lwgeom_release(lwgeom1);
-	lwgeom_release(lwgeom2);
-
-	PG_FREE_IF_COPY(g1, 0);
-	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_FLOAT8(distance);
-
 }
 
 /*
@@ -146,6 +143,12 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 
 	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
 
+	/* Clean up */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+
 	/* Something went wrong... should already be eloged, return FALSE */
 	if ( distance < 0.0 )
 	{
@@ -153,12 +156,6 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	/* Clean up, but not all the way to the point arrays */
-	lwgeom_release(lwgeom1);
-	lwgeom_release(lwgeom2);
-
-	PG_FREE_IF_COPY(g1, 0);
-	PG_FREE_IF_COPY(g2, 1);
 	PG_RETURN_BOOL(distance < tolerance);
 }
 
@@ -229,7 +226,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	/* EMPTY things have no area */
 	if ( lwgeom_is_empty(lwgeom) )
 	{
-		lwgeom_release(lwgeom);
+		lwgeom_free(lwgeom);
 		PG_RETURN_FLOAT8(0.0);
 	}
 	
@@ -259,6 +256,10 @@ Datum geography_area(PG_FUNCTION_ARGS)
 	else
 		area = lwgeom_area_sphere(lwgeom, &s);
 
+	/* Clean up */
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(g, 0);
+
 	/* Something went wrong... */
 	if ( area < 0.0 )
 	{
@@ -266,12 +267,7 @@ Datum geography_area(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	/* Clean up, but not all the way to the point arrays */
-	lwgeom_release(lwgeom);
-
-	PG_FREE_IF_COPY(g, 0);
 	PG_RETURN_FLOAT8(area);
-
 }
 
 /*
@@ -463,8 +459,8 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	/* EMPTY never intersects with another geometry */
 	if ( lwgeom_is_empty(lwgeom1) || lwgeom_is_empty(lwgeom2) )
 	{
-		lwgeom_release(lwgeom1);
-		lwgeom_release(lwgeom2);
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
 		PG_FREE_IF_COPY(g1, 0);
 		PG_FREE_IF_COPY(g2, 1);
 		PG_RETURN_BOOL(false);
@@ -473,12 +469,12 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 	/* Calculate answer */
 	result = lwgeom_covers_lwgeom_sphere(lwgeom1, lwgeom2);
 
-	/* Clean up, but not all the way to the point arrays */
-	lwgeom_release(lwgeom1);
-	lwgeom_release(lwgeom2);
-
+	/* Clean up */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
+
 	PG_RETURN_BOOL(result);
 }
 

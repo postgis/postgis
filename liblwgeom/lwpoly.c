@@ -79,6 +79,8 @@ void lwpoly_free(LWPOLY  *poly)
 {
 	int t;
 
+	if( ! poly ) return;
+
 	if ( poly->bbox )
 		lwfree(poly->bbox);
 

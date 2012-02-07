@@ -327,12 +327,16 @@ lwgeom_as_multi(const LWGEOM *lwgeom)
 	return ogeom;
 }
 
+
+/**
+* Free the containing LWGEOM and the associated BOX. Leave the underlying 
+* geoms/points/point objects intact. Useful for functions that are stripping
+* out subcomponents of complex objects, or building up new temporary objects
+* on top of subcomponents.
+*/
 void
 lwgeom_release(LWGEOM *lwgeom)
 {
-	uint32_t i;
-	LWCOLLECTION *col;
-
 	if ( ! lwgeom )
 		lwerror("lwgeom_release: someone called on 0x0");
 
@@ -342,24 +346,9 @@ lwgeom_release(LWGEOM *lwgeom)
 	if ( lwgeom->bbox )
 	{
 		LWDEBUGF(3, "lwgeom_release: releasing bbox. %p", lwgeom->bbox);
-
 		lwfree(lwgeom->bbox);
 	}
-
-	/* Collection */
-	if ( (col=lwgeom_as_lwcollection(lwgeom)) )
-	{
-		LWDEBUG(3, "lwgeom_release: Releasing collection.");
-
-		for (i=0; i<col->ngeoms; i++)
-		{
-			lwgeom_release(col->geoms[i]);
-		}
-		lwfree(lwgeom);
-	}
-
-	/* Single element */
-	else lwfree(lwgeom);
+	lwfree(lwgeom);
 
 }
 

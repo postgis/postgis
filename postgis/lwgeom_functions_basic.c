@@ -195,7 +195,7 @@ Datum LWGEOM_npoints(PG_FUNCTION_ARGS)
 	int npoints = 0;
 
 	npoints = lwgeom_count_vertices(lwgeom);
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(npoints);
@@ -210,7 +210,7 @@ Datum LWGEOM_nrings(PG_FUNCTION_ARGS)
 	int nrings = 0;
 
 	nrings = lwgeom_count_rings(lwgeom);
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_INT32(nrings);
@@ -407,7 +407,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	GSERIALIZED *result;
-	LWGEOM *lwgeoms[1];
+	LWGEOM **lwgeoms;
 	LWGEOM *lwgeom;
 	int srid;
 	GBOX *bbox;
@@ -442,6 +442,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 		bbox = lwgeom->bbox;
 		lwgeom->srid = SRID_UNKNOWN;
 		lwgeom->bbox = NULL;
+		lwgeoms = palloc(sizeof(LWGEOM*));
 		lwgeoms[0] = lwgeom;
 		lwgeom = (LWGEOM *)lwcollection_construct(COLLECTIONTYPE,
 		         srid, bbox, 1,
@@ -449,7 +450,7 @@ Datum LWGEOM_force_collection(PG_FUNCTION_ARGS)
 	}
 
 	result = geometry_serialize(lwgeom);
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
@@ -991,7 +992,7 @@ Datum LWGEOM_longitude_shift(PG_FUNCTION_ARGS)
 	ret = geometry_serialize(lwgeom);
 
 	/* Release deserialized geometry */
-	lwgeom_release(lwgeom);
+	lwgeom_free(lwgeom);
 
 	/* Release detoasted geometry */
 	pfree(geom);
@@ -1476,8 +1477,8 @@ Datum LWGEOM_makeline(PG_FUNCTION_ARGS)
 
 	PG_FREE_IF_COPY(pglwg1, 0);
 	PG_FREE_IF_COPY(pglwg2, 1);
-	lwgeom_release((LWGEOM *)lwgeoms[0]);
-	lwgeom_release((LWGEOM *)lwgeoms[1]);
+	lwgeom_free(lwgeoms[0]);
+	lwgeom_free(lwgeoms[1]);
 
 	PG_RETURN_POINTER(result);
 }
@@ -1530,14 +1531,16 @@ Datum LWGEOM_makepoly(PG_FUNCTION_ARGS)
 	}
 
 	outpoly = lwpoly_from_lwlines(shell, nholes, holes);
-
 	POSTGIS_DEBUGF(3, "%s", lwgeom_summary((LWGEOM*)outpoly, 0));
-
 	result = geometry_serialize((LWGEOM *)outpoly);
 
+	lwline_free((LWLINE*)shell);
 	PG_FREE_IF_COPY(pglwg1, 0);
-	lwgeom_release((LWGEOM *)shell);
-	for (i=0; i<nholes; i++) lwgeom_release((LWGEOM *)holes[i]);
+
+	for (i=0; i<nholes; i++) 
+	{
+		lwline_free((LWLINE*)holes[i]);
+	}
 
 	PG_RETURN_POINTER(result);
 }
@@ -1875,8 +1878,8 @@ Datum LWGEOM_noop(PG_FUNCTION_ARGS)
 
 	out = geometry_serialize(lwgeom);
 
+	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(in, 0);
-	lwgeom_release(lwgeom);
 
 	PG_RETURN_POINTER(out);
 }
@@ -2199,16 +2202,14 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 	}
 
 	outline = lwline_removepoint(line, which);
+	/* Release memory */
+	lwline_free(line);
+	PG_FREE_IF_COPY(pglwg1, 0);
 
 	result = geometry_serialize((LWGEOM *)outline);
-
-	/* Release memory */
-	PG_FREE_IF_COPY(pglwg1, 0);
-	lwgeom_release((LWGEOM *)line);
-	lwgeom_release((LWGEOM *)outline);
+	lwline_free(outline);
 
 	PG_RETURN_POINTER(result);
-
 }
 
 PG_FUNCTION_INFO_V1(LWGEOM_setpoint_linestring);
@@ -2239,7 +2240,7 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 	getPoint4d_p(lwpoint->point, 0, &newpoint);
-	lwgeom_release((LWGEOM *)lwpoint);
+	lwpoint_free(lwpoint);
 	PG_FREE_IF_COPY(pglwg2, 2);
 
 	lwg = lwgeom_from_gserialized(pglwg1);
@@ -2262,11 +2263,10 @@ Datum LWGEOM_setpoint_linestring(PG_FUNCTION_ARGS)
 	result = geometry_serialize((LWGEOM *)line);
 
 	/* Release memory */
+	lwline_free(line);
 	pfree(pglwg1); /* we forced copy, POINARRAY is released now */
-	lwgeom_release((LWGEOM *)line);
 
 	PG_RETURN_POINTER(result);
-
 }
 
 /* convert LWGEOM to ewkt (in TEXT format) */

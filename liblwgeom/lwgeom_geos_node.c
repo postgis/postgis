@@ -96,12 +96,11 @@ lwgeom_extract_unique_endpoints(const LWGEOM* lwg)
 	GEOSGeometry *gepu;
 	LWMPOINT *epall = lwgeom_extract_endpoints(lwg);
 	GEOSGeometry *gepall = LWGEOM2GEOS((LWGEOM*)epall);
+	lwmpoint_free(epall);
 	if ( ! gepall ) {
-		lwgeom_free((LWGEOM*)epall);
 		lwerror("LWGEOM2GEOS: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
-	lwgeom_free((LWGEOM*)epall);
 
 	/* UnaryUnion to remove duplicates */
 	/* TODO: do it all within pgis using indices */
@@ -251,7 +250,7 @@ lwgeom_node(const LWGEOM* lwgeom_in)
 	}
 
 	lwgeom_free(ep);
-	lwgeom_free((LWGEOM*)col);
+	lwcollection_free(col);
 
 	lines->srid = lwgeom_in->srid;
 	return (LWGEOM*)lines;

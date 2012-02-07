@@ -201,9 +201,7 @@ void freeTree(RTREE_NODE *root)
 	lwfree(root->interval);
 	if (root->segment)
 	{
-		lwfree(root->segment->points->serialized_pointlist);
-		lwfree(root->segment->points);
-		lwgeom_release((LWGEOM *)root->segment);
+		lwline_free(root->segment);
 	}
 	lwfree(root);
 }
@@ -346,7 +344,6 @@ PG_FUNCTION_INFO_V1(LWGEOM_polygon_index);
 Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *igeom, *result;
-	LWGEOM *geom;
 	LWPOLY *poly;
 	LWMLINE *mline;
 	RTREE_NODE *root;
@@ -360,14 +357,12 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 	result = NULL;
 	igeom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	yval = PG_GETARG_FLOAT8(1);
-	geom = lwgeom_from_gserialized(igeom);
-	if (geom->type != POLYGONTYPE)
+	if ( gserialized_get_type(igeom) != POLYGONTYPE )
 	{
-		lwgeom_release(geom);
 		PG_FREE_IF_COPY(igeom, 0);
 		PG_RETURN_NULL();
 	}
-	poly = (LWPOLY *)geom;
+	poly = lwgeom_as_lwpoly(lwgeom_from_gserialized(igeom));
 	root = createTree(poly->rings[0]);
 
 	mline = findLineSegments(root, yval);
@@ -387,9 +382,9 @@ Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
 
 	lwfree(root);
 
+	lwpoly_free(poly);
+	lwmline_free(mline);
 	PG_FREE_IF_COPY(igeom, 0);
-	lwgeom_release((LWGEOM *)poly);
-	lwgeom_release((LWGEOM *)mline);
 	PG_RETURN_POINTER(result);
 
 }

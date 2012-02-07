@@ -40,7 +40,7 @@ static void test_lwline_split_by_point_to(void)
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 1);
 	CU_ASSERT_EQUAL(coll->ngeoms, 0);
-	lwgeom_free((LWGEOM*)point);
+	lwpoint_free(point);
 
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
 		"POINT(10 0)",
@@ -48,7 +48,7 @@ static void test_lwline_split_by_point_to(void)
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 1);
 	CU_ASSERT_EQUAL(coll->ngeoms, 0);
-	lwgeom_free((LWGEOM*)point);
+	lwpoint_free(point);
 
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
 		"POINT(5 0)",
@@ -56,7 +56,7 @@ static void test_lwline_split_by_point_to(void)
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 0);
 	CU_ASSERT_EQUAL(coll->ngeoms, 0);
-	lwgeom_free((LWGEOM*)point);
+	lwpoint_free(point);
 
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
 		"POINT(5 5)",
@@ -64,7 +64,7 @@ static void test_lwline_split_by_point_to(void)
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 2);
 	CU_ASSERT_EQUAL(coll->ngeoms, 2);
-	lwgeom_free((LWGEOM*)point);
+	lwpoint_free(point);
 
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt(
 		"POINT(2 2)",
@@ -72,11 +72,10 @@ static void test_lwline_split_by_point_to(void)
 	ret = lwline_split_by_point_to(line, point, coll);
 	CU_ASSERT_EQUAL(ret, 2);
 	CU_ASSERT_EQUAL(coll->ngeoms, 4);
-	lwgeom_free((LWGEOM*)point);
+	lwpoint_free(point);
 
-	lwgeom_free((LWGEOM*)coll);
-
-	lwgeom_free((LWGEOM*)line);
+	lwcollection_free(coll);
+	lwline_free(line);
 
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
 }

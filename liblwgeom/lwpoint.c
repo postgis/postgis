@@ -179,6 +179,8 @@ lwpoint_make(int srid, int hasz, int hasm, const POINT4D *p)
 
 void lwpoint_free(LWPOINT *pt)
 {
+	if ( ! pt ) return;
+	
 	if ( pt->bbox )
 		lwfree(pt->bbox);
 	if ( pt->point )

@@ -61,6 +61,8 @@ lwline_construct_empty(int srid, char hasz, char hasm)
 
 void lwline_free (LWLINE  *line)
 {
+	if ( ! line ) return;
+	
 	if ( line->bbox )
 		lwfree(line->bbox);
 	if ( line->points )

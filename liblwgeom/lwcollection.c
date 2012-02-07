@@ -316,6 +316,8 @@ int lwcollection_ngeoms(const LWCOLLECTION *col)
 void lwcollection_free(LWCOLLECTION *col)
 {
 	int i;
+	if ( ! col ) return;
+	
 	if ( col->bbox )
 	{
 		lwfree(col->bbox);

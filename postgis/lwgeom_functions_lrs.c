@@ -45,7 +45,7 @@ Datum ST_AddMeasure(PG_FUNCTION_ARGS)
 	else
 		lwout = (LWGEOM*)lwmline_measured_from_lwmline((LWMLINE*)lwin, start_measure, end_measure);
 
-	lwgeom_release(lwin);
+	lwgeom_free(lwin);
 
 	if ( lwout == NULL )
 		PG_RETURN_NULL();
@@ -733,7 +733,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	lwout = lwgeom_locate_between_m(lwin,
 	                                start_measure, end_measure);
 
-	lwgeom_release(lwin);
+	lwgeom_free(lwin);
 
 	if ( lwout == NULL )
 	{
@@ -742,7 +742,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 	}
 
 	gout = geometry_serialize(lwout);
-	lwgeom_release(lwout);
+	lwgeom_free(lwout);
 
 	PG_RETURN_POINTER(gout);
 }
