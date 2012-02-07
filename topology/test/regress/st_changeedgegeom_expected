@@ -12,4 +12,5 @@ ERROR:  SQL/MM Spatial exception - non-existent edge 666
 ERROR:  SQL/MM Spatial exception - geometry crosses an edge
 Edge 5 changed
 Edge 5 changed
+Edge 26 changed
 Topology 'city_data' dropped

@@ -2605,14 +2605,18 @@ BEGIN
 
   --
   -- g) Check if curve crosses any node
-  -- _within_ used to let endpoints out
   -- 
-  FOR rec IN EXECUTE 'SELECT node_id FROM '
-    || quote_ident(atopology) || '.node
-    WHERE ST_Within(geom, ' || quote_literal(acurve::text) || '::geometry)'
+  FOR rec IN EXECUTE
+    'SELECT node_id, ST_Relate(geom, '
+    || quote_literal(acurve::text) || '::geometry, 2) as relate FROM '
+    || quote_ident(atopology)
+    || '.node WHERE geom && '
+    || quote_literal(acurve::text)
+    || '::geometry'
   LOOP
-    RAISE EXCEPTION
-    'SQL/MM Spatial exception - geometry crosses a node';
+    IF ST_RelateMatch(rec.relate, 'T********') THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - geometry crosses a node';
+    END IF;
   END LOOP;
 
   --
@@ -2656,6 +2660,13 @@ BEGIN
   EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
     || ' SET geom = ' || quote_literal(acurve::text) 
     || ' WHERE edge_id = ' || anedge;
+
+  --
+  -- TODO: Check if we need to update linking
+  -- We do if:
+  --   o edge is closed and we changed direction)
+  --   o edge moved to another face
+  -- 
 
   RETURN 'Edge ' || anedge || ' changed';
 
