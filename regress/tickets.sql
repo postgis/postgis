@@ -582,6 +582,10 @@ select '#1150', st_astext(st_transform('SRID=500002;POINT(0 0)',500001));
 -- #1038
 select '#1038', ST_AsSVG('POLYGON EMPTY'::geometry);
 
+-- #1042
+select '#1042',round((st_ymax(st_minimumboundingcircle('LINESTRING(-1 -1, 1 1)')) * st_xmax(st_minimumboundingcircle('LINESTRING(-1 -1, 1 1)')))::numeric,0);
+
+
 -- #1398
 select '#1398a', st_astext(st_snaptogrid(st_project('POINT(-120 45)'::geography, 100000, radians(45))::geometry,0.000001));
 select '#1398b', st_astext(st_snaptogrid(st_project('POINT(20 85)'::geography, 2000000, radians(0.1))::geometry,0.000001));
