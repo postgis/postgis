@@ -444,7 +444,7 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 		        tgeom->type, lwtype_name(tgeom->type));
 	}
 
-	if (lwgeom_is_empty(lwgeom)) return tgeom; /* empty is not a solid */
+	if (tgeom->nedges == 0) return tgeom; /* empty is not a solid */
 
 	for (solid=1, i=1 ; i <= tgeom->nedges ; i++)
 	{
@@ -889,7 +889,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 			loc  += 4;
 
 			/* pointarray */
-			result->faces[i]->rings[j] = ptarray_construct_reference_data(FLAGS_GET_Z(flags), FLAGS_GET_M(flags), npoints, loc);
+			result->faces[i]->rings[j] = ptarray_construct_copy_data(FLAGS_GET_Z(flags), FLAGS_GET_M(flags), npoints, loc);
 			
 			loc += sizeof(double)* FLAGS_NDIMS(flags) * npoints;
 		}
