@@ -444,7 +444,11 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 		        tgeom->type, lwtype_name(tgeom->type));
 	}
 
-	if (tgeom->nedges == 0) return tgeom; /* empty is not a solid */
+	if (tgeom->nedges == 0) {
+		FLAGS_SET_SOLID(tgeom->flags, 0);
+		FLAGS_SET_BBOX(tgeom->flags, 0);
+		return tgeom; 	/* empty is not a solid, neither need BBOX */
+	}
 
 	for (solid=1, i=1 ; i <= tgeom->nedges ; i++)
 	{
@@ -461,7 +465,31 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 			break;
 		}
 	}
-	FLAGS_SET_SOLID(tgeom->flags, solid);
+	if (solid) FLAGS_SET_SOLID(tgeom->flags, 1);
+	else FLAGS_SET_SOLID(tgeom->flags, 0);
+
+	/* compute bbox */
+	tgeom->bbox = lwalloc(sizeof(BOX3D));
+	for (i=1 ; i <= tgeom->nedges ; i++) {
+
+		if (tgeom->edges[i]->s->x < tgeom->bbox->xmin) tgeom->bbox->xmin = tgeom->edges[i]->s->x;
+		if (tgeom->edges[i]->e->x < tgeom->bbox->xmin) tgeom->bbox->xmin = tgeom->edges[i]->e->x;
+
+		if (tgeom->edges[i]->s->y < tgeom->bbox->ymin) tgeom->bbox->ymin = tgeom->edges[i]->s->y;
+		if (tgeom->edges[i]->e->y < tgeom->bbox->ymin) tgeom->bbox->ymin = tgeom->edges[i]->e->y;
+
+		if (tgeom->edges[i]->s->z < tgeom->bbox->zmin) tgeom->bbox->zmin = tgeom->edges[i]->s->z;
+		if (tgeom->edges[i]->e->z < tgeom->bbox->zmin) tgeom->bbox->zmin = tgeom->edges[i]->e->z;
+		
+		if (tgeom->edges[i]->s->x > tgeom->bbox->xmax) tgeom->bbox->xmax = tgeom->edges[i]->s->x;
+		if (tgeom->edges[i]->e->x > tgeom->bbox->xmax) tgeom->bbox->xmax = tgeom->edges[i]->e->x;
+
+		if (tgeom->edges[i]->s->y > tgeom->bbox->ymax) tgeom->bbox->ymax = tgeom->edges[i]->s->y;
+		if (tgeom->edges[i]->e->y > tgeom->bbox->ymax) tgeom->bbox->ymax = tgeom->edges[i]->e->y;
+
+		if (tgeom->edges[i]->s->z > tgeom->bbox->zmax) tgeom->bbox->zmax = tgeom->edges[i]->s->z;
+		if (tgeom->edges[i]->e->z > tgeom->bbox->zmax) tgeom->bbox->zmax = tgeom->edges[i]->e->z;
+	}
 
 	return tgeom;
 }
@@ -594,25 +622,25 @@ tgeom_serialize_size(const TGEOM *tgeom)
 	size_t size;
 	int dims = FLAGS_NDIMS(tgeom->flags);
 
-	size = sizeof(uint8_t);					/* type */
-	size += sizeof(uint8_t);				/* flags */
-	size += sizeof(uint32_t);				/* srid */
-	if (tgeom->bbox) size += sizeof(BOX3D);			/* bbox */
+	size = sizeof(uint8_t);						/* type */
+	size += sizeof(uint8_t);					/* flags */
+	size += sizeof(uint32_t);					/* srid */
+	if (tgeom->bbox) size += sizeof(double) * 6;			/* bbox */
 
-	size += sizeof(int);					/* nedges */
-	size += (sizeof(double) * dims * 2 + 4) * tgeom->nedges;/* edges */
+	size += sizeof(uint32_t);					/* nedges */
+	size += (sizeof(double) * dims * 2 + 4) * tgeom->nedges;	/* edges */
 
-	size += sizeof(int);					/* nfaces */
+	size += sizeof(uint32_t);					/* nfaces */
 	for (i=0 ; i < tgeom->nfaces ; i++)
 	{
-		size += sizeof(int);				/* nedges */
-		size += sizeof(int) * tgeom->faces[i]->nedges;	/* edges */
+		size += sizeof(uint32_t);				/* nedges */
+		size += sizeof(uint32_t) * tgeom->faces[i]->nedges;	/* edges */
 
-		size += sizeof(int);				/* nrings */
+		size += sizeof(uint32_t);				/* nrings */
 		for (j=0 ; j < tgeom->faces[i]->nrings ; j++)
 		{
-			size += sizeof(int);			/* npoints */
-			size += sizeof(double) * dims 	 	/* rings */
+			size += sizeof(uint32_t);			/* npoints */
+			size += sizeof(double) * dims 	 		/* rings */
 			        * tgeom->faces[i]->rings[j]->npoints;
 		}
 	}
@@ -654,15 +682,26 @@ tgeom_serialize_buf(const TGEOM *tgeom, uint8_t *buf, size_t *retsize)
 	/* Write in the bbox. */
 	if (tgeom->bbox)
 	{
-		memcpy(loc, tgeom->bbox, sizeof(BOX3D));
-		loc  += sizeof(BOX3D);
-		size += sizeof(BOX3D);
+		memcpy(loc, &tgeom->bbox->xmin, sizeof(double));
+		loc  += sizeof(double);
+		memcpy(loc, &tgeom->bbox->ymin, sizeof(double));
+		loc  += sizeof(double);
+		memcpy(loc, &tgeom->bbox->zmin, sizeof(double));
+		loc  += sizeof(double);
+		memcpy(loc, &tgeom->bbox->xmax, sizeof(double));
+		loc  += sizeof(double);
+		memcpy(loc, &tgeom->bbox->ymax, sizeof(double));
+		loc  += sizeof(double);
+		memcpy(loc, &tgeom->bbox->zmax, sizeof(double));
+		loc  += sizeof(double);
+
+		size += sizeof(double) * 6;
 	}
 
-	/* Write in the number of edges (0=> EMPTY) */
-	memcpy(loc, &tgeom->nedges, sizeof(int));
+	/* Write in the number of edges (0 means EMPTY) */
+	memcpy(loc, &tgeom->nedges, sizeof(uint32_t));
 	loc  += 4;
-	size +=4;
+	size += 4;
 
 	/* Edges */
 	for (i=1 ; i <= tgeom->nedges ; i++)
@@ -687,14 +726,14 @@ tgeom_serialize_buf(const TGEOM *tgeom, uint8_t *buf, size_t *retsize)
 			memcpy(loc, tgeom->edges[i]->e, dims * sizeof(double));
 			loc  += sizeof(double) * dims;
 		}
-		memcpy(loc, &tgeom->edges[i]->count, sizeof(int));
+		memcpy(loc, &tgeom->edges[i]->count, sizeof(uint32_t));
 		loc  += 4;
 
 		size += sizeof(double) * dims * 2 + 4;
 	}
 
 	/* Write in the number of faces */
-	memcpy(loc, &tgeom->nfaces, sizeof(int));
+	memcpy(loc, &tgeom->nfaces, sizeof(uint32_t));
 	loc  += 4;
 	size += 4;
 
@@ -702,25 +741,25 @@ tgeom_serialize_buf(const TGEOM *tgeom, uint8_t *buf, size_t *retsize)
 	for (i=0 ; i < tgeom->nfaces ; i++)
 	{
 		/* Write in the number of edges */
-		memcpy(loc, &tgeom->faces[i]->nedges, sizeof(int));
+		memcpy(loc, &tgeom->faces[i]->nedges, sizeof(uint32_t));
 		loc  += 4;
 		size += 4;
 
 		/* Write in the edges array */
 		memcpy(loc, tgeom->faces[i]->edges,
-		       sizeof(int) * tgeom->faces[i]->nedges);
+		       sizeof(uint32_t) * tgeom->faces[i]->nedges);
 		loc  += 4 * tgeom->faces[i]->nedges;
 		size += 4 * tgeom->faces[i]->nedges;
 
 		/* Write the number of rings */
-		memcpy(loc, &tgeom->faces[i]->nrings, sizeof(int));
+		memcpy(loc, &tgeom->faces[i]->nrings, sizeof(uint32_t));
 		loc  += 4;
 		size += 4;
 
 		for (j=0 ; j < tgeom->faces[i]->nrings ; j++)
 		{
 			/* Write the number of points */
-			memcpy(loc, &tgeom->faces[i]->rings[j]->npoints, sizeof(int));
+			memcpy(loc, &tgeom->faces[i]->rings[j]->npoints, sizeof(uint32_t));
 			loc  += 4;
 			size += 4;
 
@@ -764,9 +803,9 @@ tgeom_serialize(const TGEOM *tgeom)
 	t->data = data;
 
 	/*
-	     * We are aping PgSQL code here, PostGIS code should use
-	     * VARSIZE to set this for real.
-	     */
+         * We are aping PgSQL code here, PostGIS code should use
+         * VARSIZE to set this for real.
+         */
 	t->size = retsize << 2;
 
 	return t;
@@ -800,18 +839,27 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	/* srid */
 	result->srid = lw_get_int32_t(loc);
 	loc += 4;
-
 	/* bbox */
 	if (FLAGS_GET_BBOX(flags))
 	{
 		result->bbox = lwalloc(sizeof(BOX3D));
-		memcpy(result->bbox, loc, sizeof(BOX3D));
-		loc += sizeof(BOX3D);
+		memcpy(&(result->bbox->xmin), loc, sizeof(double));
+		loc += sizeof(double);
+		memcpy(&(result->bbox->ymin), loc, sizeof(double));
+		loc += sizeof(double);
+		memcpy(&(result->bbox->zmin), loc, sizeof(double));
+		loc += sizeof(double);
+		memcpy(&(result->bbox->xmax), loc, sizeof(double));
+		loc += sizeof(double);
+		memcpy(&(result->bbox->ymax), loc, sizeof(double));
+		loc += sizeof(double);
+		memcpy(&(result->bbox->zmax), loc, sizeof(double));
+		loc += sizeof(double);
 	}
 	else result->bbox = NULL;
 
-	/* edges number (0=> EMPTY) */
-	result->nedges = lw_get_int32_t(loc);
+	/* edges number (0 means EMPTY) */
+	result->nedges = lw_get_uint32_t(loc);
 	loc  += 4;
 
 	/* edges */
@@ -847,12 +895,12 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 			loc  += sizeof(double) * FLAGS_NDIMS(flags);
 		}
 
-		result->edges[i]->count = lw_get_int32_t(loc);
+		result->edges[i]->count = lw_get_uint32_t(loc);
 		loc  += 4;
 	}
 
 	/* faces number */
-	result->nfaces = lw_get_int32_t(loc);
+	result->nfaces = lw_get_uint32_t(loc);
 	loc  += 4;
 
 	/* faces */
@@ -862,7 +910,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 		result->faces[i] = lwalloc(sizeof(TFACE));
 
 		/* number of edges */
-		result->faces[i]->nedges = lw_get_int32_t(loc);
+		result->faces[i]->nedges = lw_get_uint32_t(loc);
 		loc  += 4;
 
 		/* edges array */
@@ -873,7 +921,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 		loc  += 4 * result->faces[i]->nedges;
 
 		/* number of rings */
-		result->faces[i]->nrings = lw_get_int32_t(loc);
+		result->faces[i]->nrings = lw_get_uint32_t(loc);
 		loc  += 4;
 
 		if (result->faces[i]->nrings)
@@ -885,7 +933,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 			int npoints;
 
 			/* number of points */
-			npoints = lw_get_int32_t(loc);
+			npoints = lw_get_uint32_t(loc);
 			loc  += 4;
 
 			/* pointarray */
