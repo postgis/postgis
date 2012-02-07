@@ -62,3 +62,31 @@ CREATE OR REPLACE FUNCTION raster_polynomial(pixel FLOAT, VARIADIC args TEXT[])
     END;
     $$
     LANGUAGE 'plpgsql' IMMUTABLE;
+
+ CREATE OR REPLACE FUNCTION raster_x_plus_arg(pixel FLOAT, pos INT[], VARIADIC args TEXT[])
+    RETURNS FLOAT AS
+    $$
+    DECLARE
+        x float := 0;
+    BEGIN
+        IF NOT args[1] IS NULL THEN
+            x := args[1]::float;
+        END IF;
+        RETURN pixel + pos[1] + x;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+ CREATE OR REPLACE FUNCTION raster_y_plus_arg(pixel FLOAT, pos INT[], VARIADIC args TEXT[])
+    RETURNS FLOAT AS
+    $$
+    DECLARE
+        x float := 0;
+    BEGIN
+        IF NOT args[1] IS NULL THEN
+            x := args[1]::float;
+        END IF;
+        RETURN pixel + pos[2] + x;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;

@@ -30,3 +30,6 @@ SELECT ST_Value(rast, 1, 1) * 21 + 14, ST_Value(ST_MapAlgebraFct(rast, 1, NULL, 
 
 -- Test null return from a user function = NODATA cell value
 SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraFct(rast, 1, NULL, 'raster_nullage(float, text[])'::regprocedure), 1, 1) FROM ST_TestRaster(0, 0, 100) AS rast;
+
+SELECT ST_Value(rast, 3, 8) + 13 + 3, ST_Value(ST_MapAlgebraFct(rast, 1, NULL, 'raster_x_plus_arg(float, int[], text[])'::regprocedure, '13'), 3, 8) FROM ST_TestRaster(0, 0, 100) AS rast;
+SELECT ST_Value(rast, 3, 8) + 13 + 8, ST_Value(ST_MapAlgebraFct(rast, 1, NULL, 'raster_y_plus_arg(float, int[], text[])'::regprocedure, '13'), 3, 8) FROM ST_TestRaster(0, 0, 100) AS rast;

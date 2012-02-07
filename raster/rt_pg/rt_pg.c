@@ -3187,6 +3187,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     FunctionCallInfoData cbdata;
     Datum tmpnewval;
     char * strFromText = NULL;
+    int k = 0;
 
     POSTGIS_RT_DEBUG(2, "RASTER_mapAlgebraFct: STARTING...");
 
@@ -3403,14 +3404,19 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
     /* function should have correct # of args */
-    else if (cbinfo.fn_nargs != 2) {
-        elog(ERROR, "RASTER_mapAlgebraFct: Function does not have two input parameters");
+    else if (cbinfo.fn_nargs < 2 || cbinfo.fn_nargs > 3) {
+        elog(ERROR, "RASTER_mapAlgebraFct: Function does not have two or three input parameters");
 
         rt_raster_destroy(raster);
         rt_raster_destroy(newrast);
 
         PG_RETURN_NULL();
     }
+
+    if (cbinfo.fn_nargs == 2)
+        k = 1;
+    else 
+        k = 2;
 
     if (func_volatile(oid) == 'v') {
         elog(NOTICE, "Function provided is VOLATILE. Unless required and for best performance, function should be IMMUTABLE or STABLE");
@@ -3422,7 +3428,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 #else
     InitFunctionCallInfoData(cbdata, &cbinfo, 2, InvalidOid, NULL, NULL);
 #endif
-    memset(cbdata.argnull, FALSE, 2);
+    memset(cbdata.argnull, FALSE, cbinfo.fn_nargs);
     
     /* check that the function isn't strict if the args are null. */
     if (PG_ARGISNULL(4)) {
@@ -3435,11 +3441,11 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
             PG_RETURN_NULL();
         }
 
-        cbdata.arg[1] = (Datum)NULL;
-        cbdata.argnull[1] = TRUE;
+        cbdata.arg[k] = (Datum)NULL;
+        cbdata.argnull[k] = TRUE;
     }
     else {
-        cbdata.arg[1] = PG_GETARG_DATUM(4);
+        cbdata.arg[k] = PG_GETARG_DATUM(4);
     }
 
     /**
@@ -3526,6 +3532,20 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
                 else {
                     cbdata.argnull[0] = FALSE;
                     cbdata.arg[0] = Float8GetDatum(r);
+                }
+
+                /* Add pixel positions if callback has proper # of args */
+                if (cbinfo.fn_nargs == 3) {
+                    Datum d[2];
+                    ArrayType *a;
+
+                    d[0] = Int32GetDatum(x+1);
+                    d[1] = Int32GetDatum(y+1);
+
+                    a = construct_array(d, 2, INT4OID, sizeof(int4), true, 'i');
+
+                    cbdata.argnull[1] = FALSE;
+                    cbdata.arg[1] = PointerGetDatum(a);
                 }
 
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: (%dx%d), r = %f",
