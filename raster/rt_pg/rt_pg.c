@@ -2526,14 +2526,26 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     double nodataval = 0.;
     rt_pixtype newpixeltype;
     int skipcomputation = 0;
-    char strnewval[50];
     int len = 0;
+    int argcount = 0;
+    Oid *argtype = NULL;
+    const int argkwcount = 3;
+    char *argkw[] = {"[rast]", "[rast.x]", "[rast.y]"};
+    uint8_t argpos[3] = {0};
+    char place[5];
+    int idx = 0;
     int ret = -1;
     TupleDesc tupdesc;
     SPIPlanPtr spi_plan = NULL;
     SPITupleTable * tuptable = NULL;
     HeapTuple tuple;
     char * strFromText = NULL;
+    Datum *values = NULL;
+    Datum datum = (Datum)NULL;
+    char *nulls = NULL;
+    bool isnull = FALSE;
+    int i = 0;
+    int j = 0;
 
     POSTGIS_RT_DEBUG(2, "RASTER_mapAlgebraExpr: Starting...");
 
@@ -2950,13 +2962,63 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
     /* Convert [rast.val] to [rast] */
     if (initexpr != NULL) {
-       newexpr = rtpg_strreplace(initexpr, "[rast.val]", "[rast]", NULL);
-       pfree(initexpr); initexpr=newexpr;
+        newexpr = rtpg_strreplace(initexpr, "[rast.val]", "[rast]", NULL);
+        pfree(initexpr); initexpr=newexpr;
+
+        sprintf(place,"$1");
+        for (i = 0, j = 1; i < argkwcount; i++) {
+            len = 0;
+            newexpr = rtpg_strreplace(initexpr, argkw[i], place, &len);
+            pfree(initexpr); initexpr=newexpr;
+            if (len > 0) {
+                argcount++;
+                argpos[i] = j++;
+
+                sprintf(place, "$%d", j);
+            }
+            else {
+                argpos[i] = 0;
+            }
+        }
+
+        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: initexpr = %s", initexpr);
+
+        /* Connect to SPI and prepare the expression */
+        ret = SPI_connect();
+        if (ret != SPI_OK_CONNECT) {
+            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to connect to the SPI manager."
+                " Aborting");
+
+            if (initexpr)
+                pfree(initexpr);
+            rt_raster_destroy(raster);
+            rt_raster_destroy(newrast);
+
+            PG_RETURN_NULL();
+        };
+
+        /* Type of all arguments is FLOAT8OID */
+        argtype = (Oid *) palloc(argcount * sizeof(Oid));
+        for (i = 0; i < argcount; i++) argtype[i] = FLOAT8OID;
+        spi_plan = SPI_prepare(initexpr, argcount, argtype);
+
+        if (spi_plan == NULL) {
+            elog(ERROR, "RASTER_mapAlgebraExpr: Could not prepare expression."
+                                    " Aborting");
+
+            rt_raster_destroy(raster);
+            rt_raster_destroy(newrast);
+
+            SPI_finish();
+
+            pfree(initexpr);
+
+            PG_RETURN_NULL();
+        }
     }
 
     for (x = 0; x < width; x++) {
         for(y = 0; y < height; y++) {
-            char *tmp;
             ret = rt_band_get_pixel(band, x, y, &r);
 
             /**
@@ -2965,35 +3027,68 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
              **/
             if (ret != -1 && FLT_NEQ(r, newnodatavalue)) {
                 if (skipcomputation == 0) {
-
                     if (initexpr != NULL) {
+                        /* define values */
+                        values = (Datum *) palloc(sizeof(Datum) * argcount);
+                        if (values == NULL) {
+                            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to allocate memory for value parameters of prepared statement");
 
-                        sprintf(strnewval, "%d", x+1);
-                        newexpr = rtpg_strreplace(initexpr, "[rast.x]", strnewval, NULL);
-                        sprintf(strnewval, "%d", y+1);
-                        tmp = rtpg_strreplace(newexpr, "[rast.y]", strnewval, NULL);
-                        pfree(newexpr); newexpr=tmp;
-                        sprintf(strnewval, "%f", r);
-                        tmp = rtpg_strreplace(newexpr, "[rast]", strnewval, NULL);
-                        pfree(newexpr); newexpr=tmp;
+                            SPI_finish();
 
-                        POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: (%dx%d), "
-                                "r = %s, newexpr = %s",
-                                x, y, strnewval, newexpr);
+                            rt_raster_destroy(raster);
+                            rt_raster_destroy(newrast);
 
-                        SPI_connect();
+                            PG_RETURN_NULL();
+                        }
 
-                        ret = SPI_execute(newexpr, FALSE, 0);
+                        /* define nulls */
+                        nulls = (char *)palloc(argcount);
+                        if (nulls == NULL) {
+                            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to allocate memory for null parameters of prepared statement");
 
+                            SPI_finish();
+
+                            rt_raster_destroy(raster);
+                            rt_raster_destroy(newrast);
+
+                            PG_RETURN_NULL();
+                        }
+                        memset(nulls, 'n', argcount);
+
+                        for (i = 0; i < argkwcount; i++) {
+                            idx = argpos[i];
+                            if (idx < 1) continue;
+                            idx--;
+
+                            if (strstr(argkw[i], "[rast.x]") != NULL) {
+                                /* x is 0 based index, but SQL expects 1 based index */
+                                values[idx] = Float8GetDatum((float)(x+1));
+                                nulls[idx] = ' ';
+                            }
+                            else if (strstr(argkw[i], "[rast.y]") != NULL) {
+                                /* y is 0 based index, but SQL expects 1 based index */
+                                values[idx] = Float8GetDatum((float)(y+1));
+                                nulls[idx] = ' ';
+                            }
+                            else if (strstr(argkw[i], "[rast]") != NULL) {
+                                values[idx] = Float8GetDatum(r);
+                                nulls[idx] = ' ';
+                            }
+
+                        }
+
+                        ret = SPI_execute_plan(spi_plan, values, nulls, FALSE, 0);
+                        pfree(values);
+                        pfree(nulls);
                         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL ||
                                 SPI_processed != 1) {
                             elog(ERROR, "RASTER_mapAlgebraExpr: Invalid construction"
                                     " for expression. Aborting");
 
-                            pfree(newexpr);
                             if (SPI_tuptable)
                                 SPI_freetuptable(tuptable);
 
+                            SPI_freeplan(spi_plan);
                             SPI_finish();
                             PG_RETURN_NULL();
                         }
@@ -3002,19 +3097,19 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
                         tuptable = SPI_tuptable;
 
                         tuple = tuptable->vals[0];
-                        tmp = SPI_getvalue(tuple, tupdesc, 1);
-                        if ( tmp ) {
-                            newval = atof(tmp);
-                        } else {
+                        datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+                        if ( SPI_result == SPI_ERROR_NOATTRIBUTE ) {
+                            POSTGIS_RT_DEBUGF(3, "Expression for pixel %d,%d (value %g) errored, skip setting", x+1,y+1,r);
+                            newval = newinitialvalue;
+                        }
+                        else if ( isnull ) {
                             POSTGIS_RT_DEBUGF(3, "Expression for pixel %d,%d (value %g) evaluated to NULL, skip setting", x+1,y+1,r);
                             newval = newinitialvalue;
+                        } else {
+                            newval = DatumGetFloat8(datum);
                         }
 
                         SPI_freetuptable(tuptable);
-
-                        SPI_finish();
-
-                        pfree(newexpr);
                     }
 
                     else
@@ -3031,7 +3126,16 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         }
     }
 
-   if (initexpr != NULL) pfree(initexpr);
+    if (initexpr != NULL) {
+        SPI_freeplan(spi_plan);
+        SPI_finish();
+
+        pfree(initexpr);
+    }
+    else {
+        POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: no SPI cleanup");
+    }
+
 
     /* The newrast band has been modified */
 
