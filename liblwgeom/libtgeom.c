@@ -3,7 +3,7 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2010 Olivier Courtin <olivier.courtin@oslandia.com>
+ * Copyright 2010-2012 Olivier Courtin <olivier.courtin@oslandia.com>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -149,8 +149,7 @@ tgeom_add_face_edge(TGEOM *tgeom, int face_id, POINT4D *s, POINT4D *e)
 	if (edge_id)
 	{
 		tgeom->edges[abs(edge_id)]->count++;
-		LWDEBUGF(3, "face [%i] Founded Edge: %i\n",
-		         face_id, edge_id);
+		LWDEBUGF(3, "face [%i] Founded Edge: %i\n", face_id, edge_id);
 	}
 	else
 	{
@@ -163,7 +162,7 @@ tgeom_add_face_edge(TGEOM *tgeom, int face_id, POINT4D *s, POINT4D *e)
 			tgeom->edges = (TEDGE**) lwalloc(sizeof(TEDGE*) * 4);
 			tgeom->maxedges = 4;
 		}
-		if (tgeom->maxedges >= (tgeom->nedges + 1))
+		if (tgeom->maxedges <= (tgeom->nedges + 1))
 		{
 			tgeom->edges = (TEDGE **) lwrealloc(tgeom->edges,
 			                         sizeof(TEDGE*) * tgeom->maxedges * 2);
@@ -188,15 +187,15 @@ tgeom_add_face_edge(TGEOM *tgeom, int face_id, POINT4D *s, POINT4D *e)
 		tgeom->faces[face_id]->edges = (int *) lwalloc(sizeof(int) * 4);
 		tgeom->faces[face_id]->maxedges = 4;
 	}
-	if (tgeom->faces[face_id]->maxedges == nedges)
+	if (tgeom->faces[face_id]->maxedges <= nedges +1)
 	{
 		tgeom->faces[face_id]->edges = (int *) lwrealloc(tgeom->faces[face_id]->edges,
 		                               sizeof(int) * tgeom->faces[face_id]->maxedges * 2);
 		tgeom->faces[face_id]->maxedges *= 2;
 	}
 
-	LWDEBUGF(3, "face [%i] add %i in edge array in %i pos\n",
-	         face_id, edge_id, tgeom->faces[face_id]->nedges);
+	LWDEBUGF(3, "face [%i] add %i in edge array in %i pos\n", face_id, edge_id, tgeom->faces[face_id]->nedges);
+
 
 	tgeom->faces[face_id]->edges[nedges]= edge_id;
 	tgeom->faces[face_id]->nedges++;
@@ -272,8 +271,7 @@ tgeom_add_polygon(TGEOM *tgeom, LWPOLY *poly)
 
 	/* clone internal rings */
 	for (i=0 ; i < tgeom->faces[tgeom->nfaces]->nrings ; i++)
-		tgeom->faces[tgeom->nfaces]->rings[i]
-		= ptarray_clone_deep(poly->rings[i+1]);
+		tgeom->faces[tgeom->nfaces]->rings[i] = ptarray_clone_deep(poly->rings[i+1]);
 
 	tgeom->nfaces++;
 
@@ -315,7 +313,7 @@ tgeom_add_triangle(TGEOM *tgeom, LWTRIANGLE *triangle)
 		tgeom->faces = lwalloc(sizeof(TFACE*) * 2);
 		tgeom->maxfaces = 2;
 	}
-	if ((tgeom->maxfaces - 1) == tgeom->nfaces)
+	if ((tgeom->maxfaces - 1) <= tgeom->nfaces)
 	{
 		tgeom->faces = lwrealloc(tgeom->faces,
 		                         sizeof(TFACE*) * tgeom->maxfaces * 2);
@@ -363,9 +361,9 @@ tgeom_free(TGEOM *tgeom)
 	/* edges */
 	for (i=1 ; i <= tgeom->nedges ; i++)
 	{
-		lwfree(tgeom->edges[i]->e);
-		lwfree(tgeom->edges[i]->s);
-		lwfree(tgeom->edges[i]);
+		if (tgeom->edges[i]->e) lwfree(tgeom->edges[i]->e);
+		if (tgeom->edges[i]->s) lwfree(tgeom->edges[i]->s);
+		if (tgeom->edges[i])    lwfree(tgeom->edges[i]);
 	}
 	if (tgeom->edges) lwfree(tgeom->edges);
 
@@ -384,7 +382,7 @@ tgeom_free(TGEOM *tgeom)
 
 		lwfree(tgeom->faces[i]);
 	}
-	if (tgeom->faces) lwfree(tgeom->faces);
+	if (tgeom->nfaces) lwfree(tgeom->faces);
 
 	lwfree(tgeom);
 }
@@ -419,7 +417,6 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 	if (lwgeom->srid < 1) tgeom->srid = SRID_UNKNOWN;
 	else tgeom->srid = lwgeom->srid;
 
-	if (lwgeom_is_empty(lwgeom)) return tgeom;
 
 	switch (lwgeom->type)
 	{
@@ -428,8 +425,7 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 		tin = (LWTIN *) lwgeom;
 
 		for (i=0 ; i < tin->ngeoms ; i++)
-			tgeom = tgeom_add_triangle(tgeom,
-			                           (LWTRIANGLE *) tin->geoms[i]);
+			tgeom = tgeom_add_triangle(tgeom, (LWTRIANGLE *) tin->geoms[i]);
 
 		break;
 
@@ -437,8 +433,7 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 		tgeom->type = POLYHEDRALSURFACETYPE;
 		psurf = (LWPSURFACE *) lwgeom;
 		for (i=0 ; i < psurf->ngeoms ; i++)
-			tgeom = tgeom_add_polygon(tgeom,
-			                          (LWPOLY *) psurf->geoms[i]);
+			tgeom = tgeom_add_polygon(tgeom, (LWPOLY *) psurf->geoms[i]);
 
 		break;
 
@@ -449,7 +444,7 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 		        tgeom->type, lwtype_name(tgeom->type));
 	}
 
-
+	if (lwgeom_is_empty(lwgeom)) return tgeom; /* empty is not a solid */
 
 	for (solid=1, i=1 ; i <= tgeom->nedges ; i++)
 	{
@@ -514,6 +509,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 			FLAGS_SET_Z(dims, hasz?1:0);
 			FLAGS_SET_M(dims, hasm?1:0);
 			dpa = ptarray_construct_empty(hasz, hasm, 4);
+			FLAGS_SET_READONLY(dpa->flags, 0);
 
 			for (j=0 ; j < tgeom->faces[i]->nedges ; j++)
 			{
@@ -569,7 +565,7 @@ lwgeom_from_tgeom(TGEOM *tgeom)
 			              * (tgeom->faces[i]->nrings + 1));
 			ppa[0] = dpa;
 			for (k=0; k < tgeom->faces[i]->nrings ; k++)
-				ppa[k+1] = tgeom->faces[i]->rings[k];
+				ppa[k+1] = ptarray_clone_deep(tgeom->faces[i]->rings[k]);
 
 			geom = (LWGEOM *) lwpsurface_add_lwpoly((LWPSURFACE *) geom,
 			                                        lwpoly_construct(tgeom->srid, NULL, k + 1, ppa));
@@ -1009,8 +1005,8 @@ printTGEOM(TGEOM *tgeom)
 	printf("TGEOM:\n");
 	printf(" - type %i, %s\n", tgeom->type, lwtype_name(tgeom->type));
 	printf(" - srid %i\n", tgeom->srid);
-	printf(" - nedges %i\n", tgeom->nedges);
-	printf(" - nfaces %i\n", tgeom->nfaces);
+	printf(" - nedges %i (max:%i)\n", tgeom->nedges, tgeom->maxedges);
+	printf(" - nfaces %i (max:%i)\n", tgeom->nfaces, tgeom->maxfaces);
 	printf("  => EDGES:\n");
 
 	for (i=1 ; i <= tgeom->nedges ; i++)
@@ -1112,7 +1108,7 @@ printTGEOM(TGEOM *tgeom)
 
 		for (j=0 ; j < tgeom->faces[i]->nrings ; j++)
 		{
-			printf("    - Ring[%i/%i]", j, tgeom->faces[i]->nrings);
+			printf("    - Ring[%i/%i]", j+1, tgeom->faces[i]->nrings);
 			printPA(tgeom->faces[i]->rings[j]);
 		}
 	}
