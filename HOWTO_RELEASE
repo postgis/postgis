@@ -47,7 +47,6 @@ Release procedure
 7) Checkout tag:
    svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
 8) Update Version.config as specified in Versioning Scheme above.
-8a) Ensure all the previous minor versions are listed in extension/upgradeable_versions.mk
 9) Commit your version number change to the tag.
 10) Run: sh make_dist.sh x.x.x
 11) Copy tarball to web site and edit downloads page
@@ -63,5 +62,8 @@ Release procedure
     - Freshmeat
     - Wikipedia
 14) Update Trac and make old Milestone as completed
+
+15) Push the revision number in trunk forward if necessary
+16) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
 
 
