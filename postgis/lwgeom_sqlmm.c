@@ -96,13 +96,16 @@ Datum LWGEOM_line_desegmentize(PG_FUNCTION_ARGS)
 	igeom = lwgeom_from_gserialized(geom);
 	ogeom = lwgeom_desegmentize(igeom);
 	lwgeom_free(igeom);
-	PG_FREE_IF_COPY(geom, 0);
 
 	if (ogeom == NULL)
+	{
+		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
+	}
 
 	ret = geometry_serialize(ogeom);
 	lwgeom_free(ogeom);
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(ret);
 }
 

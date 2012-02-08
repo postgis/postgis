@@ -3397,15 +3397,16 @@ Datum ST_BuildArea(PG_FUNCTION_ARGS)
 
 	lwgeom_out = lwgeom_buildarea(lwgeom_in);
 	lwgeom_free(lwgeom_in) ;
-	PG_FREE_IF_COPY(geom, 0);
 	
 	if ( ! lwgeom_out ) {
+		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL();
 	}
 
 	result = geometry_serialize(lwgeom_out) ;
 	lwgeom_free(lwgeom_out) ;
 
+	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
 }
 
@@ -3493,17 +3494,18 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
 	lwgeom_free(lwgeom_in);
 	lwgeom_free(lwblade_in);
-	PG_FREE_IF_COPY(blade_in, 1);
 	
 	if ( ! lwgeom_out )
 	{
 		PG_FREE_IF_COPY(in, 0); /* possibly referenced by lwgeom_out */
+		PG_FREE_IF_COPY(blade_in, 1);
 		PG_RETURN_NULL();
 	}
 
 	out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);
 	PG_FREE_IF_COPY(in, 0); /* possibly referenced by lwgeom_out */
+	PG_FREE_IF_COPY(blade_in, 1);
 
 	PG_RETURN_POINTER(out);
 }
@@ -3546,17 +3548,19 @@ Datum ST_SharedPaths(PG_FUNCTION_ARGS)
 	lwgeom_out = lwgeom_sharedpaths(g1, g2);
 	lwgeom_free(g1);
 	lwgeom_free(g2);
-	PG_FREE_IF_COPY(geom1, 0);
-	PG_FREE_IF_COPY(geom2, 1);
 
 	if ( ! lwgeom_out )
 	{
+		PG_FREE_IF_COPY(geom1, 0);
+		PG_FREE_IF_COPY(geom2, 1);
 		PG_RETURN_NULL();
 	}
 
 	out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);
 
+	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom2, 1);
 	PG_RETURN_POINTER(out);
 
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
@@ -3592,16 +3596,17 @@ Datum ST_Node(PG_FUNCTION_ARGS)
 
 	lwgeom_out = lwgeom_node(g1);
 	lwgeom_free(g1);
-	PG_FREE_IF_COPY(geom1, 0);
 
 	if ( ! lwgeom_out )
 	{
+		PG_FREE_IF_COPY(geom1, 0);
 		PG_RETURN_NULL();
 	}
 
 	out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);
 
+	PG_FREE_IF_COPY(geom1, 0);
 	PG_RETURN_POINTER(out);
 
 #endif /* POSTGIS_GEOS_VERSION >= 33 */

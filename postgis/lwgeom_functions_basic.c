@@ -2204,11 +2204,11 @@ Datum LWGEOM_removepoint(PG_FUNCTION_ARGS)
 	outline = lwline_removepoint(line, which);
 	/* Release memory */
 	lwline_free(line);
-	PG_FREE_IF_COPY(pglwg1, 0);
 
 	result = geometry_serialize((LWGEOM *)outline);
 	lwline_free(outline);
 
+	PG_FREE_IF_COPY(pglwg1, 0);
 	PG_RETURN_POINTER(result);
 }
 
