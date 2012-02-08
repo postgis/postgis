@@ -2572,10 +2572,12 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     rt_pixtype newpixeltype;
     int skipcomputation = 0;
     int len = 0;
-    int argcount = 0;
-    Oid *argtype = NULL;
     const int argkwcount = 3;
+    enum KEYWORDS { kVAL=0, kX=1, kY=2 };
     char *argkw[] = {"[rast]", "[rast.x]", "[rast.y]"};
+    Oid argkwtypes[] = { FLOAT8OID, INT4OID, INT4OID };
+    int argcount = 0;
+    Oid *argtype = 0;
     uint8_t argpos[3] = {0};
     char place[5];
     int idx = 0;
@@ -3005,17 +3007,19 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Main computing loop (%d x %d)",
             width, height);
 
-    /* Convert [rast.val] to [rast] */
     if (initexpr != NULL) {
+    	/* Convert [rast.val] to [rast] */
         newexpr = rtpg_strreplace(initexpr, "[rast.val]", "[rast]", NULL);
         pfree(initexpr); initexpr=newexpr;
 
+        argtype = (Oid*)palloc(sizeof(Oid)*3);
         sprintf(place,"$1");
         for (i = 0, j = 1; i < argkwcount; i++) {
             len = 0;
             newexpr = rtpg_strreplace(initexpr, argkw[i], place, &len);
             pfree(initexpr); initexpr=newexpr;
             if (len > 0) {
+                argtype[argcount] = argkwtypes[i];
                 argcount++;
                 argpos[i] = j++;
 
@@ -3043,9 +3047,8 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         };
 
         /* Type of all arguments is FLOAT8OID */
-        argtype = (Oid *) palloc(argcount * sizeof(Oid));
-        for (i = 0; i < argcount; i++) argtype[i] = FLOAT8OID;
         spi_plan = SPI_prepare(initexpr, argcount, argtype);
+        /* pfree(argtype); safe here ? */
 
         if (spi_plan == NULL) {
             elog(ERROR, "RASTER_mapAlgebraExpr: Could not prepare expression."
@@ -3105,17 +3108,17 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
                             if (idx < 1) continue;
                             idx--;
 
-                            if (strstr(argkw[i], "[rast.x]") != NULL) {
+                            if (i == kX ) {
                                 /* x is 0 based index, but SQL expects 1 based index */
-                                values[idx] = Float8GetDatum((float)(x+1));
+                                values[idx] = Int32GetDatum(x+1);
                                 nulls[idx] = ' ';
                             }
-                            else if (strstr(argkw[i], "[rast.y]") != NULL) {
+                            else if (i == kY) {
                                 /* y is 0 based index, but SQL expects 1 based index */
-                                values[idx] = Float8GetDatum((float)(y+1));
+                                values[idx] = Int32GetDatum(y+1);
                                 nulls[idx] = ' ';
                             }
-                            else if (strstr(argkw[i], "[rast]") != NULL) {
+                            else if (i == kVAL ) {
                                 values[idx] = Float8GetDatum(r);
                                 nulls[idx] = ' ';
                             }
