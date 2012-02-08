@@ -119,12 +119,16 @@ TEST_BUGS = \
 	tickets
 
 TEST_LOADER = \
-	loader/basic
+	loader/Basic \
+	loader/BasicCopy \
+	loader/Tiled10x10 \
+	loader/Tiled10x10Copy
 
 TESTS = $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
 		$(TEST_PROPS) $(TEST_BANDPROPS) \
 		$(TEST_UTILITY) $(TEST_GIST) $(TEST_SREL) \
-		$(TEST_BUGS)
+		$(TEST_BUGS) \
+		$(TEST_LOADER)
 
 all:
 	@echo "Use 'make check' to run all tests"

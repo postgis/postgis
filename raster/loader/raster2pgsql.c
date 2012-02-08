@@ -1671,6 +1671,12 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 					xtile * info->tile_size[0], ytile * info->tile_size[1],
 					&(gt[0]), &(gt[3])
 				);
+				/*
+				rtinfo(_("tile (%d, %d) gt = (%f, %f, %f, %f, %f, %f)"),
+					xtile, ytile,
+					gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]
+				);
+				*/
 
 				/* create VRT dataset */
 				hdsDst = VRTCreate(info->tile_size[0], info->tile_size[1]);
