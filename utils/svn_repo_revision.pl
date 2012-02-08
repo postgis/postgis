@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+$ENV{"LC_ALL"} = "C";
+
 use Cwd;
 my $cwd = &Cwd::cwd();
 
