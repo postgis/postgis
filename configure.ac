@@ -811,7 +811,7 @@ if test "x$with_topology" != "xno"; then
 
     TOPOLOGY="topology"
     AC_MSG_RESULT([TOPOLOGY: Topology support requested])
-	if test $GEOS_NUMERIC_VERSION -lt 332; then
+	if test "$GEOS_NUMERIC_VERSION" -lt 332; then
 		AC_MSG_ERROR([Topology requires GEOS version >= 3.3.2. Use --without-topology or install a newer GEOS.])
 	fi
 else
@@ -1062,14 +1062,14 @@ AC_MSG_RESULT([  dblatex:              ${DBLATEX}])
 AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
 AC_MSG_RESULT()
 
-if test $GEOS_NUMERIC_VERSION -lt 332; then
+if test "$GEOS_NUMERIC_VERSION" -lt 332; then
 AC_MSG_RESULT([ --------- GEOS VERSION NOTICE ------------ ])
 AC_MSG_RESULT([  You are building against GEOS ${GEOS_FULL_VERSION} ])
 AC_MSG_RESULT([  To take advantage of all the features of ])
 AC_MSG_RESULT([  PostGIS we recommend you build using ])
 AC_MSG_RESULT([  GEOS 3.3.2 or higher. You can download ])
-AC_MSG_RESULT([  the latest versions from )]
-AC_MSG_RESULT([  http://trac.osgeo.org/geos )]
+AC_MSG_RESULT([  the latest versions from ])
+AC_MSG_RESULT([  http://trac.osgeo.org/geos ])
 AC_MSG_RESULT()
 fi
 
