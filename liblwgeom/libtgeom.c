@@ -854,8 +854,8 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	/* srid */
 	result->srid = lw_get_int32_t(loc);
 	loc += 4;
-	/* bbox */
 
+	/* bbox */
 	if (FLAGS_GET_BBOX(flags))
 	{
 		result->bbox = lwalloc(sizeof(BOX3D));
@@ -932,7 +932,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 		/* edges array */
 		result->faces[i]->edges = lwalloc(sizeof(TEDGE*)
 		                                  * result->faces[i]->nedges);
-		memcpy(result->faces[i]->edges, loc, sizeof(TEDGE*)
+		memcpy(result->faces[i]->edges, loc, sizeof(int32_t)
 		       * result->faces[i]->nedges);
 		loc  += 4 * result->faces[i]->nedges;
 

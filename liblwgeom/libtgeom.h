@@ -38,11 +38,11 @@ typedef struct
 
 typedef struct
 {
-	int nedges;
-	int maxedges;
-	int *edges;		/* Array of edge index, a negative value
+	uint32_t nedges;
+	uint32_t maxedges;
+	int32_t *edges;		/* Array of edge index, a negative value
 				   means that the edge is reversed */
-	int nrings;
+	int32_t nrings;
 	POINTARRAY **rings;	/* Internal rings array */
 } TFACE;
 
@@ -52,11 +52,11 @@ typedef struct
 	uint8_t flags;		
 	uint32_t srid;		/* 0 == unknown */
 	BOX3D *bbox;		/* NULL == unneeded */
-	int nedges;
-	int maxedges;
+	uint32_t nedges;
+	uint32_t maxedges;
 	TEDGE **edges;
-	int nfaces;
-	int maxfaces;
+	uint32_t nfaces;
+	uint32_t maxfaces;
 	TFACE **faces;
 } TGEOM;
 
