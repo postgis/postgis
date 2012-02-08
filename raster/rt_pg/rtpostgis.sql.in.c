@@ -150,16 +150,13 @@ CREATE OR REPLACE FUNCTION st_pixelheight(raster)
     AS 'MODULE_PATHNAME', 'RASTER_getPixelHeight'
     LANGUAGE 'C' IMMUTABLE STRICT;
 
-CREATE TYPE geotransform AS (
-    imag double precision,
-    jmag double precision,
-    theta_i double precision,
-    theta_ij double precision,
-    xoffset double precision,
-    yoffset double precision);
-
-CREATE OR REPLACE FUNCTION st_geotransform(raster)
-    RETURNS geotransform
+CREATE OR REPLACE FUNCTION st_geotransform(raster,
+    OUT imag double precision,
+    OUT jmag double precision,
+    OUT theta_i double precision,
+    OUT theta_ij double precision,
+    OUT xoffset double precision,
+    OUT yoffset double precision)
     AS 'MODULE_PATHNAME', 'RASTER_getGeotransform'
     LANGUAGE 'C' IMMUTABLE;
 
@@ -2308,13 +2305,6 @@ CREATE OR REPLACE FUNCTION st_setgeotransform(rast raster,
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setGeotransform'
     LANGUAGE 'C' IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION st_setgeotransform(rast raster, gt geotransform)
-    RETURNS raster
-    AS $$ SELECT st_setgeotransform($1, ($2).imag, ($2).jmag, 
-                    ($2).theta_i, ($2).theta_ij,
-                    ($2).xoffset, ($2).yoffset) $$
-    LANGUAGE 'sql' VOLATILE;
 
 -----------------------------------------------------------------------
 -- Raster Editors ST_SetGeoreference()

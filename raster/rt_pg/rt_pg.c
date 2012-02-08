@@ -1607,32 +1607,34 @@ Datum RASTER_setGeotransform(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_getGeotransform);
 Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *rast ;
-    rt_raster raster ;
-    float8 imag, jmag, theta_i, theta_ij, xoffset, yoffset ;
-    TupleDesc result_tuple ; /* for returning a composite */
-    HeapTuple heap_tuple ;   /* instance of the tuple to return */
-    Oid result_oid ;   /* internal code for the specific return type */
-    TypeFuncClass return_type ; /* is the return type a composite? */
-    Datum return_values[6] ;
-    bool nulls[6] ;
+    rt_pgraster *pgraster = NULL;
+    rt_raster raster = NULL;
 
-    /* setup the return value infrastructure */
-    return_type = get_call_result_type(fcinfo, &result_oid, &result_tuple) ;
-    if (return_type != TYPEFUNC_COMPOSITE) {
-        rterror("RASTER_getGeotransform(): function returning record called in context that cannot accept type record") ;
-        PG_RETURN_NULL() ;
-    }
-    result_tuple = BlessTupleDesc(result_tuple) ;
+    double imag;
+    double jmag;
+    double theta_i;
+    double theta_ij;
+    double xoffset;
+    double yoffset;
+
+    TupleDesc result_tuple; /* for returning a composite */
+    bool *nulls = NULL;
+    int values_length = 6;
+    Datum values[values_length];
+    HeapTuple heap_tuple ;   /* instance of the tuple to return */
+    Datum result;
+
+    POSTGIS_RT_DEBUG(3, "RASTER_getGeotransform: Starting");
 
     /* get argument */
-    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-    rast = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0),
-            0, sizeof(struct rt_raster_serialized_t));
+    if (PG_ARGISNULL(0))
+        PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
-    raster = rt_raster_deserialize(rast, TRUE);
+    /* raster */
+    raster = rt_raster_deserialize(pgraster, TRUE);
     if (!raster) {
-        elog(ERROR, "RASTER_detGeotransform: Could not deserialize raster");
+        elog(ERROR, "RASTER_getGeotransform: Could not deserialize raster");
         PG_RETURN_NULL();
     }
 
@@ -1646,21 +1648,41 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
 
     rt_raster_destroy(raster);
 
+    /* setup the return value infrastructure */
+    if (get_call_result_type(fcinfo, NULL, &result_tuple) != TYPEFUNC_COMPOSITE) {
+        ereport(ERROR, (
+            errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+            errmsg("RASTER_getGeotransform(): function returning record called in context that cannot accept type record"
+            )
+        ));
+        PG_RETURN_NULL();
+    }
+
+    BlessTupleDesc(result_tuple);
+
+    /* get argument */
     /* prep the composite return value */
     /* construct datum array */
-    return_values[0] = Float8GetDatum(imag) ;
-    return_values[1] = Float8GetDatum(jmag) ;
-    return_values[2] = Float8GetDatum(theta_i) ;
-    return_values[3] = Float8GetDatum(theta_ij) ;
-    return_values[4] = Float8GetDatum(rt_raster_get_x_offset(raster)) ;
-    return_values[5] = Float8GetDatum(rt_raster_get_y_offset(raster)) ;
-    memset(nulls, FALSE, 6);
+    values[0] = Float8GetDatum(imag);
+    values[1] = Float8GetDatum(jmag);
+    values[2] = Float8GetDatum(theta_i);
+    values[3] = Float8GetDatum(theta_ij);
+    values[4] = Float8GetDatum(rt_raster_get_x_offset(raster));
+    values[5] = Float8GetDatum(rt_raster_get_y_offset(raster));
+
+    nulls = palloc(sizeof(bool) * values_length);
+    memset(nulls, FALSE, values_length);
 
     /* stick em on the heap */
-    heap_tuple = heap_form_tuple(result_tuple, return_values, nulls) ;
+    heap_tuple = heap_form_tuple(result_tuple, values, nulls);
 
-    /* return */
-    PG_RETURN_DATUM(HeapTupleGetDatum(heap_tuple)) ;
+    /* make the tuple into a datum */
+    result = HeapTupleGetDatum(heap_tuple);
+
+    /* clean up */
+    pfree(nulls);
+
+    PG_RETURN_DATUM(result);
 }
 
 
