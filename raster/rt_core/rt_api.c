@@ -4277,6 +4277,131 @@ rt_raster_get_y_offset(rt_raster raster) {
     return raster->ipY;
 }
 
+void
+rt_raster_get_phys_params(rt_raster rast,
+        double *i_mag, double *j_mag, double *theta_i, double *theta_ij)
+{
+    double o11, o12, o21, o22 ; /* geotransform coefficients */
+
+    if (rast == NULL) return ;
+    if ( (i_mag==NULL) || (j_mag==NULL) || (theta_i==NULL) || (theta_ij==NULL))
+        return ;
+
+    /* retrieve coefficients from raster */
+    o11 = rt_raster_get_x_scale(rast) ;
+    o12 = rt_raster_get_x_skew(rast) ;
+    o21 = rt_raster_get_y_skew(rast) ;
+    o22 = rt_raster_get_y_scale(rast) ;
+
+    rt_raster_calc_phys_params(o11, o12, o21, o22, i_mag, j_mag, theta_i, theta_ij);
+}
+
+void
+rt_raster_calc_phys_params(double xscale, double xskew, double yskew, double yscale,
+                           double *i_mag, double *j_mag, double *theta_i, double *theta_ij)
+
+{
+    double theta_test ;
+
+    if ( (i_mag==NULL) || (j_mag==NULL) || (theta_i==NULL) || (theta_ij==NULL))
+        return ;
+
+    /* pixel size in the i direction */
+    *i_mag = sqrt(xscale*xscale + yskew*yskew) ;
+
+    /* pixel size in the j direction */
+    *j_mag = sqrt(xskew*xskew + yscale*yscale) ;
+
+    /* Rotation
+     * ========
+     * Two steps:
+     * 1] calculate the magnitude of the angle between the x axis and
+     *     the i basis vector.
+     * 2] Calculate the sign of theta_i based on the angle between the y axis
+     *     and the i basis vector.
+     */
+    *theta_i = acos(xscale/(*i_mag)) ;  /* magnitude */
+    theta_test = acos(yskew/(*i_mag)) ; /* sign */
+    if (theta_test < M_PI_2){
+        *theta_i = -(*theta_i) ;
+    }
+
+
+    /* Angular separation of basis vectors
+     * ===================================
+     * Two steps:
+     * 1] calculate the magnitude of the angle between the j basis vector and
+     *     the i basis vector.
+     * 2] Calculate the sign of theta_ij based on the angle between the
+     *    perpendicular of the i basis vector and the j basis vector.
+     */
+    *theta_ij = acos(((xscale*xskew) + (yskew*yscale))/((*i_mag)*(*j_mag))) ;
+    theta_test = acos( ((-yskew*xskew)+(xscale*yscale)) /
+            ((*i_mag)*(*j_mag)));
+    if (theta_test > M_PI_2) {
+        *theta_ij = -(*theta_ij) ;
+    }
+}
+
+void
+rt_raster_set_phys_params(rt_raster rast,double i_mag, double j_mag, double theta_i, double theta_ij)
+{
+    double o11, o12, o21, o22 ; /* calculated geotransform coefficients */
+    int success ;
+
+    if (rast == NULL) return ;
+
+    success = rt_raster_calc_gt_coeff(i_mag, j_mag, theta_i, theta_ij,
+                            &o11, &o12, &o21, &o22) ;
+
+    if (success) {
+        rt_raster_set_scale(rast, o11, o22) ;
+        rt_raster_set_skews(rast, o12, o21) ;
+    }
+}
+
+int
+rt_raster_calc_gt_coeff(double i_mag, double j_mag, double theta_i, double theta_ij,
+                        double *xscale, double *xskew, double *yskew, double *yscale)
+{
+    double f ;        /* reflection flag 1.0 or -1.0 */
+    double k_i ;      /* shearing coefficient */
+    double s_i, s_j ; /* scaling coefficients */
+    double cos_theta_i, sin_theta_i ;
+
+    if ( (xscale==NULL) || (xskew==NULL) || (yskew==NULL) || (yscale==NULL)) {
+        return 0;
+    }
+
+    if ( (theta_ij == 0.0) || (theta_ij == M_PI)) {
+        return 0;
+    }
+
+    /* Reflection across the i axis */
+    f=1.0 ;
+    if (theta_ij < 0) {
+        f = -1.0;
+    }
+
+    /* scaling along i axis */
+    s_i = i_mag ;
+
+    /* shearing parallel to i axis */
+    k_i = tan(f*M_PI_2 - theta_ij) ;
+
+    /* scaling along j axis */
+    s_j = j_mag / (sqrt(k_i*k_i + 1)) ;
+
+    /* putting it altogether */
+    cos_theta_i = cos(theta_i) ;
+    sin_theta_i = sin(theta_i) ;
+    *xscale = s_i * cos_theta_i ;
+    *xskew  = k_i * s_j * f * cos_theta_i + s_j * f * sin_theta_i ;
+    *yskew  = -s_i * sin_theta_i ;
+    *yscale = -k_i * s_j * f * sin_theta_i + s_j * f * cos_theta_i ;
+    return 1;
+}
+
 int32_t
 rt_raster_get_srid(rt_raster raster) {
 

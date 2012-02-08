@@ -246,7 +246,7 @@ SELECT
   ) = 0
   FROM ST_TestRasterNgb(3, 3, 10) AS rast;
 
--- test st_stddev4ma, all different values
+-- test st_stddev4ma, values 1-9
 SELECT
   ST_Value(rast, 2, 2) = 5,
   round(ST_Value(

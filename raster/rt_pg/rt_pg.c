@@ -168,7 +168,7 @@ Datum RASTER_getXUpperLeft(PG_FUNCTION_ARGS);
 Datum RASTER_getYUpperLeft(PG_FUNCTION_ARGS);
 Datum RASTER_getPixelWidth(PG_FUNCTION_ARGS);
 Datum RASTER_getPixelHeight(PG_FUNCTION_ARGS);
-Datum RASTER_getRotation(PG_FUNCTION_ARGS);
+Datum RASTER_getGeotransform(PG_FUNCTION_ARGS);
 
 /* Set all the properties of a raster */
 Datum RASTER_setSRID(PG_FUNCTION_ARGS);
@@ -178,6 +178,7 @@ Datum RASTER_setSkew(PG_FUNCTION_ARGS);
 Datum RASTER_setSkewXY(PG_FUNCTION_ARGS);
 Datum RASTER_setUpperLeftXY(PG_FUNCTION_ARGS);
 Datum RASTER_setRotation(PG_FUNCTION_ARGS);
+Datum RASTER_setGeotransform(PG_FUNCTION_ARGS);
 
 /* Get all the properties of a raster band */
 Datum RASTER_getBandPixelType(PG_FUNCTION_ARGS);
@@ -921,7 +922,7 @@ Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
         POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
         nulls = palloc(sizeof(bool) * values_length);
-				memset(nulls, FALSE, values_length);
+        memset(nulls, FALSE, values_length);
 
         values[0] = CStringGetTextDatum(geomval2[call_cntr].geom);
         values[1] = Float8GetDatum(geomval2[call_cntr].val);
@@ -1553,52 +1554,115 @@ Datum RASTER_getPixelHeight(PG_FUNCTION_ARGS)
 }
 
 /**
- * Return the raster rotation. The raster rotation is calculated from
- * the scale and skew values stored in the georeference. If the scale
- * and skew values indicate that the raster is not uniformly rotated
- * (the pixels are diamond-shaped), this function will return NaN.
+ * Set the geotransform of the supplied raster. Returns the raster.
  */
-PG_FUNCTION_INFO_V1(RASTER_getRotation);
-Datum RASTER_getRotation(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_setGeotransform);
+Datum RASTER_setGeotransform(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster;
-    rt_raster raster;
-    double xscale, xskew, yscale, yskew, xrot, yrot;
+    rt_pgraster *pgraster ;
+    rt_raster raster ;
+    float8 imag, jmag, theta_i, theta_ij, xoffset, yoffset ;
 
-    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+    if (PG_ARGISNULL(0) || PG_ARGISNULL(1) || PG_ARGISNULL(2) ||
+            PG_ARGISNULL(3) || PG_ARGISNULL(4) ||
+            PG_ARGISNULL(5) || PG_ARGISNULL(6))
+        PG_RETURN_NULL();
+
+    /* get the inputs */
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0),
+                                 0, sizeof(struct rt_raster_serialized_t));
+    imag = PG_GETARG_FLOAT8(1) ;
+    jmag = PG_GETARG_FLOAT8(2) ;
+    theta_i = PG_GETARG_FLOAT8(3);
+    theta_ij = PG_GETARG_FLOAT8(4);
+    xoffset = PG_GETARG_FLOAT8(5);
+    yoffset = PG_GETARG_FLOAT8(6);
 
     raster = rt_raster_deserialize(pgraster, TRUE);
     if (!raster) {
-        elog(ERROR, "RASTER_getRotation: Could not deserialize raster");
+        elog(ERROR, "RASTER_setGeotransform: Could not deserialize raster");
         PG_RETURN_NULL();
     }
 
-    xscale = rt_raster_get_x_scale(raster);
-    yscale = rt_raster_get_y_scale(raster);
+    /* store the new geotransform */
+    rt_raster_set_phys_params(raster, imag,jmag,theta_i,theta_ij) ;
+    rt_raster_set_offsets(raster, xoffset, yoffset) ;
 
-    if (xscale == 0 || yscale == 0) {
-        rt_raster_destroy(raster);
+    /* prep the return value */
+    pgraster = rt_raster_serialize(raster);
+    if ( ! pgraster ) PG_RETURN_NULL();
 
-        /* cannot compute scale with a zero denominator */
-        elog(NOTICE, "RASTER_getRotation: Could not divide by zero scale; cannot determine raster rotation.");
-        PG_RETURN_FLOAT8(NAN);
-    }
-
-    xskew = rt_raster_get_x_skew(raster);
-    yskew = rt_raster_get_y_skew(raster);
-
-    xrot = atan(yskew/xscale);
-    yrot = atan(xskew/yscale);
+    SET_VARSIZE(pgraster, pgraster->size);
 
     rt_raster_destroy(raster);
 
-    if (FLT_EQ(xrot, yrot)) {
-        PG_RETURN_FLOAT8(xrot);
+    PG_RETURN_POINTER(pgraster);
+}
+
+
+/**
+ * Calculates the physically relevant parameters of the supplied raster's
+ * geotransform. Returns them as a set.
+ */
+PG_FUNCTION_INFO_V1(RASTER_getGeotransform);
+Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
+{
+    rt_pgraster *rast ;
+    rt_raster raster ;
+    float8 imag, jmag, theta_i, theta_ij, xoffset, yoffset ;
+    TupleDesc result_tuple ; /* for returning a composite */
+    HeapTuple heap_tuple ;   /* instance of the tuple to return */
+    Oid result_oid ;   /* internal code for the specific return type */
+    TypeFuncClass return_type ; /* is the return type a composite? */
+    Datum return_values[6] ;
+    bool nulls[6] ;
+
+    /* setup the return value infrastructure */
+    return_type = get_call_result_type(fcinfo, &result_oid, &result_tuple) ;
+    if (return_type != TYPEFUNC_COMPOSITE) {
+        rterror("RASTER_getGeotransform(): function returning record called in context that cannot accept type record") ;
+        PG_RETURN_NULL() ;
+    }
+    result_tuple = BlessTupleDesc(result_tuple) ;
+
+    /* get argument */
+    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    rast = (rt_pgraster *)PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0),
+            0, sizeof(struct rt_raster_serialized_t));
+
+    raster = rt_raster_deserialize(rast, TRUE);
+    if (!raster) {
+        elog(ERROR, "RASTER_detGeotransform: Could not deserialize raster");
+        PG_RETURN_NULL();
     }
 
-    PG_RETURN_FLOAT8(NAN);
+    /* do the calculation */
+    rt_raster_calc_phys_params(
+            rt_raster_get_x_scale(raster),
+            rt_raster_get_x_skew(raster),
+            rt_raster_get_y_skew(raster),
+            rt_raster_get_y_scale(raster),
+            &imag, &jmag, &theta_i, &theta_ij) ;
+
+    rt_raster_destroy(raster);
+
+    /* prep the composite return value */
+    /* construct datum array */
+    return_values[0] = Float8GetDatum(imag) ;
+    return_values[1] = Float8GetDatum(jmag) ;
+    return_values[2] = Float8GetDatum(theta_i) ;
+    return_values[3] = Float8GetDatum(theta_ij) ;
+    return_values[4] = Float8GetDatum(rt_raster_get_x_offset(raster)) ;
+    return_values[5] = Float8GetDatum(rt_raster_get_y_offset(raster)) ;
+    memset(nulls, FALSE, 6);
+
+    /* stick em on the heap */
+    heap_tuple = heap_form_tuple(result_tuple, return_values, nulls) ;
+
+    /* return */
+    PG_RETURN_DATUM(HeapTupleGetDatum(heap_tuple)) ;
 }
+
 
 /**
  * Set the rotation of the raster. This method will change the X Scale,
@@ -1617,18 +1681,10 @@ Datum RASTER_setRotation(PG_FUNCTION_ARGS)
     rt_pgraster *pgraster = NULL;
     rt_raster raster;
     double rotation = PG_GETARG_FLOAT8(1);
-    double xscale, yscale, xskew, yskew, psize;
+    double imag, jmag, theta_i, theta_ij;
 
-		if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-    /* no matter what, we don't rotate more than once around */
-    if (rotation < 0) {
-        rotation = (-2*M_PI) + fmod(rotation, (2*M_PI));
-    }
-    else {
-        rotation = fmod(rotation, (2 * M_PI));
-    }
+    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (! raster ) {
@@ -1636,20 +1692,9 @@ Datum RASTER_setRotation(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    xscale = rt_raster_get_x_scale(raster);
-    yskew = rt_raster_get_y_skew(raster);
-    psize = sqrt(xscale*xscale + yskew*yskew);
-    xscale = psize * cos(rotation);
-    yskew = psize * sin(rotation);
-    
-    yscale = rt_raster_get_y_scale(raster);
-    xskew = rt_raster_get_x_skew(raster);
-    psize = sqrt(yscale*yscale + xskew*xskew);
-    yscale = psize * cos(rotation);
-    xskew = psize * sin(rotation); 
-
-    rt_raster_set_scale(raster, xscale, yscale);
-    rt_raster_set_skews(raster, xskew, yskew);
+    /* preserve all defining characteristics of the grid except for rotation */
+    rt_raster_get_phys_params(raster, &imag, &jmag, &theta_i, &theta_ij);
+    rt_raster_set_phys_params(raster, imag, jmag, rotation, theta_ij);
 
     pgraster = rt_raster_serialize(raster);
     rt_raster_destroy(raster);
