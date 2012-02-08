@@ -3493,16 +3493,17 @@ Datum ST_Split(PG_FUNCTION_ARGS)
 	lwgeom_out = lwgeom_split(lwgeom_in, lwblade_in);
 	lwgeom_free(lwgeom_in);
 	lwgeom_free(lwblade_in);
-	PG_FREE_IF_COPY(in, 0);
 	PG_FREE_IF_COPY(blade_in, 1);
 	
 	if ( ! lwgeom_out )
 	{
+		PG_FREE_IF_COPY(in, 0); /* possibly referenced by lwgeom_out */
 		PG_RETURN_NULL();
 	}
 
 	out = geometry_serialize(lwgeom_out);
 	lwgeom_free(lwgeom_out);
+	PG_FREE_IF_COPY(in, 0); /* possibly referenced by lwgeom_out */
 
 	PG_RETURN_POINTER(out);
 }
