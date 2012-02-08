@@ -13,6 +13,9 @@ POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
 
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+
 XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
 
@@ -161,10 +164,10 @@ comments-uninstall:
 install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
 	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
 	mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
-	cp html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
-	cp ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
-	cp man/pgsql2shp.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
-	cp man/shp2pgsql.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
+	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
+	$(INSTALL_DATA) man/pgsql2shp.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
+	$(INSTALL_DATA) man/shp2pgsql.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
 
 uninstall:
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
