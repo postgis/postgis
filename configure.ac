@@ -674,6 +674,9 @@ LIBS="$LIBS_SAVE"
 
 if test "$HAVE_JSON" = "yes"; then
 	AC_DEFINE([HAVE_LIBJSON], 1, [Define to 1 if libjson is present])
+    if test "x$JSON_LDFLAGS" = "x"; then
+        JSON_LDFLAGS="-ljson"
+    fi
 fi
 
 AC_SUBST([JSON_CPPFLAGS])
