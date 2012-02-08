@@ -218,3 +218,22 @@ SELECT
     ), 3, 3, 2477
   ) AS rast;
 
+-- test st_distinct4ma, all one value
+SELECT
+  ST_Value(rast, 2, 2) = 10,
+  ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][], text, text[])'::regprocedure, '1', NULL), 2, 2
+  ) = 1 
+  FROM ST_TestRasterNgb(3, 3, 10) AS rast;
+
+-- test st_distinct4ma, three distinct values
+SELECT
+  ST_Value(rast, 2, 2) = 1,
+  ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][], text, text[])'::regprocedure, '1', NULL), 2, 2
+  ) = 3
+  FROM ST_SetValue(
+    ST_SetValue(
+      ST_TestRasterNgb(3, 3, 1), 1, 1, 5
+    ), 3, 3, 7
+  ) AS rast;

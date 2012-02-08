@@ -2075,6 +2075,18 @@ CREATE OR REPLACE FUNCTION st_hillshade(rast raster, band integer, pixeltype tex
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_hillshade4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text) $$
     LANGUAGE 'SQL' STABLE;
 
+CREATE OR REPLACE FUNCTION st_distinct4ma(matrix float[][], nodatamode TEXT, VARIADIC args TEXT[])
+    RETURNS float
+    AS
+    $$
+    DECLARE
+        _count integer;
+    BEGIN
+        RETURN (SELECT COUNT(DISTINCT unnest) FROM unnest(matrix));
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
 
 -----------------------------------------------------------------------
 -- Get information about the raster
