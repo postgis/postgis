@@ -5,7 +5,6 @@ my $debug = 0;
 my @files = ( 
 	"postgis.sql.in.c",
 	"geography.sql.in.c",
-	"sqlmm.sql.in.c",
 	"long_xact.sql.in.c" 
 	);
 
