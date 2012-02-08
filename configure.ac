@@ -82,6 +82,9 @@ dnl Search for OS-specific headers
 dnl
 AC_CHECK_HEADER([ieeefp.h], [HAVE_IEEEFP_H=1], [HAVE_IEEEFP_H=0])
 AC_DEFINE_UNQUOTED([HAVE_IEEEFP_H], [$HAVE_IEEEFP_H], [ieeefp.h header])
+AC_CHECK_HEADER([termios.h], [HAVE_TERMIOS_H=1], [HAVE_TERMIOS_H=0])
+AC_DEFINE_UNQUOTED([HAVE_TERMIOS_H], [$HAVE_TERMIOS_H], [termios.h header])
+
 
 dnl
 dnl Check for platform-specific functions
