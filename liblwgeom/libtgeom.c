@@ -472,22 +472,22 @@ tgeom_from_lwgeom(const LWGEOM *lwgeom)
 	tgeom->bbox = lwalloc(sizeof(BOX3D));
 	for (i=1 ; i <= tgeom->nedges ; i++) {
 
-		if (tgeom->edges[i]->s->x < tgeom->bbox->xmin) tgeom->bbox->xmin = tgeom->edges[i]->s->x;
+		if (i == 1 || tgeom->edges[i]->s->x < tgeom->bbox->xmin) tgeom->bbox->xmin = tgeom->edges[i]->s->x;
 		if (tgeom->edges[i]->e->x < tgeom->bbox->xmin) tgeom->bbox->xmin = tgeom->edges[i]->e->x;
 
-		if (tgeom->edges[i]->s->y < tgeom->bbox->ymin) tgeom->bbox->ymin = tgeom->edges[i]->s->y;
+		if (i == 1 || tgeom->edges[i]->s->y < tgeom->bbox->ymin) tgeom->bbox->ymin = tgeom->edges[i]->s->y;
 		if (tgeom->edges[i]->e->y < tgeom->bbox->ymin) tgeom->bbox->ymin = tgeom->edges[i]->e->y;
 
-		if (tgeom->edges[i]->s->z < tgeom->bbox->zmin) tgeom->bbox->zmin = tgeom->edges[i]->s->z;
+		if (i == 1 || tgeom->edges[i]->s->z < tgeom->bbox->zmin) tgeom->bbox->zmin = tgeom->edges[i]->s->z;
 		if (tgeom->edges[i]->e->z < tgeom->bbox->zmin) tgeom->bbox->zmin = tgeom->edges[i]->e->z;
 		
-		if (tgeom->edges[i]->s->x > tgeom->bbox->xmax) tgeom->bbox->xmax = tgeom->edges[i]->s->x;
+		if (i == 1 || tgeom->edges[i]->s->x > tgeom->bbox->xmax) tgeom->bbox->xmax = tgeom->edges[i]->s->x;
 		if (tgeom->edges[i]->e->x > tgeom->bbox->xmax) tgeom->bbox->xmax = tgeom->edges[i]->e->x;
 
-		if (tgeom->edges[i]->s->y > tgeom->bbox->ymax) tgeom->bbox->ymax = tgeom->edges[i]->s->y;
+		if (i == 1 || tgeom->edges[i]->s->y > tgeom->bbox->ymax) tgeom->bbox->ymax = tgeom->edges[i]->s->y;
 		if (tgeom->edges[i]->e->y > tgeom->bbox->ymax) tgeom->bbox->ymax = tgeom->edges[i]->e->y;
 
-		if (tgeom->edges[i]->s->z > tgeom->bbox->zmax) tgeom->bbox->zmax = tgeom->edges[i]->s->z;
+		if (i == 1 || tgeom->edges[i]->s->z > tgeom->bbox->zmax) tgeom->bbox->zmax = tgeom->edges[i]->s->z;
 		if (tgeom->edges[i]->e->z > tgeom->bbox->zmax) tgeom->bbox->zmax = tgeom->edges[i]->e->z;
 	}
 
@@ -625,7 +625,7 @@ tgeom_serialize_size(const TGEOM *tgeom)
 	size = sizeof(uint8_t);						/* type */
 	size += sizeof(uint8_t);					/* flags */
 	size += sizeof(uint32_t);					/* srid */
-	if (tgeom->bbox) size += sizeof(double) * 6;			/* bbox */
+	if (tgeom->bbox) size += sizeof(float) * 6;			/* bbox */
 
 	size += sizeof(uint32_t);					/* nedges */
 	size += (sizeof(double) * dims * 2 + 4) * tgeom->nedges;	/* edges */
@@ -657,6 +657,7 @@ static size_t
 tgeom_serialize_buf(const TGEOM *tgeom, uint8_t *buf, size_t *retsize)
 {
 	int i,j;
+	float f;
 	size_t size=0;
 	uint8_t *loc=buf;
 	int dims = FLAGS_NDIMS(tgeom->flags);
@@ -682,20 +683,31 @@ tgeom_serialize_buf(const TGEOM *tgeom, uint8_t *buf, size_t *retsize)
 	/* Write in the bbox. */
 	if (tgeom->bbox)
 	{
-		memcpy(loc, &tgeom->bbox->xmin, sizeof(double));
-		loc  += sizeof(double);
-		memcpy(loc, &tgeom->bbox->ymin, sizeof(double));
-		loc  += sizeof(double);
-		memcpy(loc, &tgeom->bbox->zmin, sizeof(double));
-		loc  += sizeof(double);
-		memcpy(loc, &tgeom->bbox->xmax, sizeof(double));
-		loc  += sizeof(double);
-		memcpy(loc, &tgeom->bbox->ymax, sizeof(double));
-		loc  += sizeof(double);
-		memcpy(loc, &tgeom->bbox->zmax, sizeof(double));
-		loc  += sizeof(double);
+		f = next_float_down(tgeom->bbox->xmin);
+        	memcpy(loc, &f, sizeof(float));
+        	loc += sizeof(float);
 
-		size += sizeof(double) * 6;
+		f = next_float_down(tgeom->bbox->ymin);
+        	memcpy(loc, &f, sizeof(float));
+        	loc += sizeof(float);
+
+		f = next_float_down(tgeom->bbox->zmin);
+        	memcpy(loc, &f, sizeof(float));
+        	loc += sizeof(float);
+
+		f = next_float_up(tgeom->bbox->xmax);
+        	memcpy(loc, &f, sizeof(float));
+        	loc += sizeof(float);
+
+		f = next_float_up(tgeom->bbox->ymax);
+        	memcpy(loc, &f, sizeof(float));
+        	loc += sizeof(float);
+
+		f = next_float_up(tgeom->bbox->zmax);
+        	memcpy(loc, &f, sizeof(float));
+        	loc += sizeof(float);
+
+		size += sizeof(float) * 6; 
 	}
 
 	/* Write in the number of edges (0 means EMPTY) */
@@ -843,18 +855,18 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	if (FLAGS_GET_BBOX(flags))
 	{
 		result->bbox = lwalloc(sizeof(BOX3D));
-		memcpy(&(result->bbox->xmin), loc, sizeof(double));
-		loc += sizeof(double);
-		memcpy(&(result->bbox->ymin), loc, sizeof(double));
-		loc += sizeof(double);
-		memcpy(&(result->bbox->zmin), loc, sizeof(double));
-		loc += sizeof(double);
-		memcpy(&(result->bbox->xmax), loc, sizeof(double));
-		loc += sizeof(double);
-		memcpy(&(result->bbox->ymax), loc, sizeof(double));
-		loc += sizeof(double);
-		memcpy(&(result->bbox->zmax), loc, sizeof(double));
-		loc += sizeof(double);
+		memcpy(&(result->bbox->xmin), loc, sizeof(float));
+		loc += sizeof(float);
+		memcpy(&(result->bbox->ymin), loc, sizeof(float));
+		loc += sizeof(float);
+		memcpy(&(result->bbox->zmin), loc, sizeof(float));
+		loc += sizeof(float);
+		memcpy(&(result->bbox->xmax), loc, sizeof(float));
+		loc += sizeof(float);
+		memcpy(&(result->bbox->ymax), loc, sizeof(float));
+		loc += sizeof(float);
+		memcpy(&(result->bbox->zmax), loc, sizeof(float));
+		loc += sizeof(float);
 	}
 	else result->bbox = NULL;
 
