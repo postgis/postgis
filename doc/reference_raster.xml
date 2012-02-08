@@ -5413,8 +5413,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the hypothetical illumination of a raster band using the azimuth, altitude, brightness, and elevation scale inputs. Utilizes map algebra and
-				applies the hill shade equation to neighboring pixels.</para>
+				<para>Returns the hypothetical illumination of a raster band using the azimuth, altitude, brightness, and elevation scale inputs. Utilizes map algebra and applies the hill shade equation to neighboring pixels.</para>
 				<para>The hill shade equation is: <programlisting>max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) )</programlisting>.</para>
 				<para>Availability: 2.0.0 </para>
 			
@@ -5425,10 +5424,142 @@ FROM dummy_rast;
 <programlisting>coming soon</programlisting>
 
 			</refsection>
-			<!-- Optionally add a "See Also" section -->
+
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_MapAlgebraFctNgb" /></para>
+                <para><xref linkend="RT_ST_Aspect" /></para>
+                <para><xref linkend="RT_ST_Slope" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_Aspect">
+			<refnamediv>
+				<refname>ST_Aspect</refname>
+				<refpurpose>Returns the surface aspect of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_Aspect</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the surface aspect of an elevation raster band. Utilizes map algebra and applies the aspect equation to neighboring pixels.</para>
+
+				<para>Given the following representation of a 3x3 neighborhood of pixels:</para>
+
+                <informaltable rowsep="1" frame="all">
+                <tgroup cols="3">
+                    <tbody>
+                      <row>
+                        <entry>A</entry>
+                        <entry>B</entry>
+                        <entry>C</entry>
+                      </row>
+                      <row>
+                        <entry>D</entry>
+                        <entry>E</entry>
+                        <entry>F</entry>
+                      </row>
+                      <row>
+                        <entry>G</entry>
+                        <entry>H</entry>
+                        <entry>I</entry>
+                      </row>
+                    </tbody>
+                </tgroup>
+                </informaltable>
+
+                <para>The equation for the pixel aspect of cell E is: atan2((((G + 2H + I) - (A + 2B + C))  / 8), -(((C + 2F + I) - (A + 2D + G)) / 8))</para>
+
+				<para>Availability: 2.0.0 </para>
+			
+			</refsection>
+				
+			<refsection>
+				<title>Examples - coming soon</title>				
+                <programlisting>coming soon</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_MapAlgebraFctNgb" /></para>
+                <para><xref linkend="RT_ST_Hillshade" /></para>
+                <para><xref linkend="RT_ST_Slope" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_Slope">
+			<refnamediv>
+				<refname>ST_Slope</refname>
+				<refpurpose>Returns the surface slope of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>raster <function>ST_Slope</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the surface slope of an elevation raster band. Utilizes map algebra and applies the slope equation to neighboring pixels.</para>
+
+				<para>Given the following representation of a 3x3 neighborhood of pixels:</para>
+
+                <informaltable rowsep="1" frame="all">
+                <tgroup cols="3">
+                    <tbody>
+                      <row>
+                        <entry>A</entry>
+                        <entry>B</entry>
+                        <entry>C</entry>
+                      </row>
+                      <row>
+                        <entry>D</entry>
+                        <entry>E</entry>
+                        <entry>F</entry>
+                      </row>
+                      <row>
+                        <entry>G</entry>
+                        <entry>H</entry>
+                        <entry>I</entry>
+                      </row>
+                    </tbody>
+                </tgroup>
+                </informaltable>
+
+                <para>The equation for the pixel slope of cell E is: atan(sqrt(((c + 2f + i) - (a + 2d + g) / 8)^2 + (((g + 2h + i) - (a + 2b + c)) / 8) ^ 2))</para>
+
+				<para>Availability: 2.0.0 </para>
+			
+			</refsection>
+				
+			<refsection>
+				<title>Examples - coming soon</title>				
+                <programlisting>coming soon</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_MapAlgebraFctNgb" /></para>
+                <para><xref linkend="RT_ST_Hillshade" /></para>
+                <para><xref linkend="RT_ST_Aspect" /></para>
 			</refsection>
 		</refentry>
 		
@@ -6772,6 +6903,436 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 				<para><xref linkend="RT_ST_Envelope" />, <xref linkend="RT_ST_ConvexHull" /></para>
 			</refsection>
 		</refentry>
+    </sect1>
+
+	<sect1 id="Raster_Processing_Builtin_Functions">
+	<title>Raster Processing Builtin Functions</title>
+        <refentry id="RT_ST_Min4ma">
+			<refnamediv>
+				<refname>ST_Min4ma</refname>
+				<refpurpose>Raster processing function that calculates the minimum pixel value in a neighborhood.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_Min4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+
+                <para>Calculate the minimum pixel value in a neighborhood of pixels.</para>
+			
+                <note>
+                    <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
+
+                <para>Availability: 2.0.0</para>
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_min4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid | st_value
+-----+----------
+   2 |      250
+(1 row)
+				</programlisting>
+			
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+                    <xref linkend="RT_ST_MapAlgebraFctNgb" />,
+                    <xref linkend="RT_ST_Max4ma" />,
+                    <xref linkend="RT_ST_Sum4ma" />,
+                    <xref linkend="RT_ST_Mean4ma" />,
+                    <xref linkend="RT_ST_Range4ma" />,
+                    <xref linkend="RT_ST_Distinct4ma" />
+                    <xref linkend="RT_ST_StdDev4ma" />
+                </para>
+			</refsection>
+		</refentry>
+
+        <refentry id="RT_ST_Max4ma">
+			<refnamediv>
+				<refname>ST_Max4ma</refname>
+				<refpurpose>Raster processing function that calculates the maximum pixel value in a neighborhood.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_Max4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+
+                <para>Calculate the maximum pixel value in a neighborhood of pixels.</para>
+			
+                <note>
+                    <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
+
+                <para>Availability: 2.0.0</para>
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_max4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid | st_value
+-----+----------
+   2 |      254
+(1 row)
+				</programlisting>
+			
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+                    <xref linkend="RT_ST_MapAlgebraFctNgb" />,
+                    <xref linkend="RT_ST_Min4ma" />,
+                    <xref linkend="RT_ST_Sum4ma" />,
+                    <xref linkend="RT_ST_Mean4ma" />,
+                    <xref linkend="RT_ST_Range4ma" />,
+                    <xref linkend="RT_ST_Distinct4ma" />
+                    <xref linkend="RT_ST_StdDev4ma" />
+                </para>
+			</refsection>
+		</refentry>
+
+        <refentry id="RT_ST_Sum4ma">
+			<refnamediv>
+				<refname>ST_Sum4ma</refname>
+				<refpurpose>Raster processing function that calculates the sum of all pixel values in a neighborhood.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_Sum4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+
+                <para>Calculate the sum of all pixel values in a neighborhood of pixels.</para>
+			
+                <note>
+                    <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
+
+                <para>Availability: 2.0.0</para>
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_sum4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid | st_value
+-----+----------
+   2 |     2279
+(1 row)
+				</programlisting>
+			
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+                    <xref linkend="RT_ST_MapAlgebraFctNgb" />,
+                    <xref linkend="RT_ST_Min4ma" />,
+                    <xref linkend="RT_ST_Max4ma" />,
+                    <xref linkend="RT_ST_Mean4ma" />,
+                    <xref linkend="RT_ST_Range4ma" />,
+                    <xref linkend="RT_ST_Distinct4ma" />
+                    <xref linkend="RT_ST_StdDev4ma" />
+                </para>
+			</refsection>
+		</refentry>
+
+        <refentry id="RT_ST_Mean4ma">
+			<refnamediv>
+				<refname>ST_Mean4ma</refname>
+				<refpurpose>Raster processing function that calculates the mean pixel value in a neighborhood.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_Mean4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+
+                <para>Calculate the mean pixel value in a neighborhood of pixels.</para>
+			
+                <note>
+                    <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
+
+                <para>Availability: 2.0.0</para>
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_mean4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid |     st_value
+-----+------------------
+   2 | 253.222229003906
+(1 row)
+				</programlisting>
+			
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+                    <xref linkend="RT_ST_MapAlgebraFctNgb" />,
+                    <xref linkend="RT_ST_Min4ma" />,
+                    <xref linkend="RT_ST_Max4ma" />,
+                    <xref linkend="RT_ST_Sum4ma" />,
+                    <xref linkend="RT_ST_Range4ma" />,
+                    <xref linkend="RT_ST_StdDev4ma" />
+                </para>
+			</refsection>
+		</refentry>
+
+        <refentry id="RT_ST_Range4ma">
+			<refnamediv>
+				<refname>ST_Range4ma</refname>
+				<refpurpose>Raster processing function that calculates the range of pixel values in a neighborhood.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_Range4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+
+                <para>Calculate the range of pixel values in a neighborhood of pixels.</para>
+			
+                <note>
+                    <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
+
+                <para>Availability: 2.0.0</para>
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_range4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid | st_value
+-----+----------
+   2 |        4
+(1 row)
+				</programlisting>
+			
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+                    <xref linkend="RT_ST_MapAlgebraFctNgb" />,
+                    <xref linkend="RT_ST_Min4ma" />,
+                    <xref linkend="RT_ST_Max4ma" />,
+                    <xref linkend="RT_ST_Sum4ma" />,
+                    <xref linkend="RT_ST_Mean4ma" />,
+                    <xref linkend="RT_ST_Distinct4ma" />
+                    <xref linkend="RT_ST_StdDev4ma" />
+                </para>
+			</refsection>
+		</refentry>
+        
+        <refentry id="RT_ST_Distinct4ma">
+			<refnamediv>
+				<refname>ST_Distinct4ma</refname>
+				<refpurpose>Raster processing function that calculates the number of unique pixel values in a neighborhood.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_Distinct4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+
+                <para>Calculate the number of unique pixel values in a neighborhood of pixels.</para>
+			
+                <note>
+                    <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
+
+                <para>Availability: 2.0.0</para>
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, NULL, 1, 1, 'st_distinct4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid | st_value
+-----+----------
+   2 |        3
+(1 row)
+				</programlisting>
+			
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+                    <xref linkend="RT_ST_MapAlgebraFctNgb" />,
+                    <xref linkend="RT_ST_Min4ma" />,
+                    <xref linkend="RT_ST_Max4ma" />,
+                    <xref linkend="RT_ST_Sum4ma" />,
+                    <xref linkend="RT_ST_Mean4ma" />,
+                    <xref linkend="RT_ST_Distinct4ma" />
+                    <xref linkend="RT_ST_StdDev4ma" />
+                </para>
+			</refsection>
+		</refentry>
+
+        <refentry id="RT_ST_StdDev4ma">
+			<refnamediv>
+				<refname>ST_StdDev4ma</refname>
+				<refpurpose>Raster processing function that calculates the standard deviation of pixel values in a neighborhood.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>float8 <function>ST_StdDev4ma</function></funcdef>
+					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
+                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+
+                <para>Calculate the standard deviation of pixel values in a neighborhood of pixels.</para>
+			
+                <note>
+                    <para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+                </note>
+
+                <para>Availability: 2.0.0</para>
+            </refsection>
+				
+				<refsection>
+					<title>Examples</title>
+				
+					<programlisting>SELECT 
+    rid,
+    st_value(
+        st_mapalgebrafctngb(rast, 1, '32BF', 1, 1, 'st_stddev4ma(float[][],text,text[])'::regprocedure, 'ignore', NULL), 2, 2
+    ) 
+FROM dummy_rast 
+WHERE rid = 2;
+ rid |     st_value
+-----+------------------
+   2 | 1.30170822143555
+(1 row)
+				</programlisting>
+			
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+                    <xref linkend="RT_ST_MapAlgebraFctNgb" />,
+                    <xref linkend="RT_ST_Min4ma" />,
+                    <xref linkend="RT_ST_Max4ma" />,
+                    <xref linkend="RT_ST_Sum4ma" />,
+                    <xref linkend="RT_ST_Mean4ma" />,
+                    <xref linkend="RT_ST_Distinct4ma" />
+                    <xref linkend="RT_ST_StdDev4ma" />
+                </para>
+			</refsection>
+		</refentry>
+        
 	</sect1>
 	
 	<sect1 id="RT_Operators">
