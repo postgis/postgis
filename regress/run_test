@@ -559,7 +559,7 @@ if test -z "$db_exists"; then
 		# ON_ERROR_STOP is used by psql to return non-0 on an error
 		_psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true"
 
-		createdb --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log
+		createdb --encoding=UTF-8 --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log
 		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
 
 		# Count database objects before installing anything
