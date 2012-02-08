@@ -2801,8 +2801,7 @@ rid | hb1 | hb2 | hb4 | numbands
 	    <refentry id="RT_ST_PixelAsPolygon">
 			<refnamediv>
 				<refname>ST_PixelAsPolygon</refname>
-				<refpurpose>Returns the geometry that bounds the pixel (for now a rectangle) for a particular band, row, column.  If no band
-					specified band num 1 is assumed.</refpurpose>
+				<refpurpose>Returns the geometry that bounds the pixel (for now a rectangle) for a particular row and column.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2813,21 +2812,13 @@ rid | hb1 | hb2 | hb4 | numbands
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
 				  </funcprototype>
-				  <funcprototype>
-					<funcdef>geometry <function>ST_PixelAsPolygon</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the geometry that bounds the pixel (for now a rectangle) for a particular band, row, column.  If no band
-					specified band num 1 is assumed.</para>
+				<para>Returns the geometry that bounds the pixel (for now a rectangle) for a particular row and column.</para>
 
 			</refsection>
 				
