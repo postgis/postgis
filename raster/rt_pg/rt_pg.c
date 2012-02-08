@@ -9093,25 +9093,43 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 							PG_RETURN_NULL();
 						}
-						for (j = 0; j < spi_argcount[i]; j++) argtype[j] = FLOAT8OID;
+
+						/* specify datatypes of parameters */
+						for (j = 0, k = 0; j < argkwcount; j++) {
+							if (argpos[i][j] < 1) continue;
+
+							/* positions are INT4 */
+							if (
+								(strstr(argkw[j], "[rast1.x]") != NULL) ||
+								(strstr(argkw[j], "[rast1.y]") != NULL) ||
+								(strstr(argkw[j], "[rast2.x]") != NULL) ||
+								(strstr(argkw[j], "[rast2.y]") != NULL)
+							) {
+								argtype[k] = INT4OID;
+							}
+							/* everything else is FLOAT8 */
+							else {
+								argtype[k] = FLOAT8OID;
+							}
+
+							k++;
+						}
 
 						spi_plan[i] = SPI_prepare(sql, spi_argcount[i], argtype);
+						pfree(argtype);
+
 						if (spi_plan[i] == NULL) {
 							elog(ERROR, "RASTER_mapAlgebra2: Unable to create prepared plan of expression parameter %d", spi_exprpos[i]);
 
 							pfree(sql);
-							pfree(argtype);
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
 							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
 							rt_raster_destroy(raster);
 
-
 							PG_RETURN_NULL();
 						}
-
-						pfree(argtype);
 					}
 					/* no args, just execute query */
 					else {
