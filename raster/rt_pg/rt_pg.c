@@ -3053,6 +3053,32 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: initexpr = %s", initexpr);
 
+        /* define values */
+        values = (Datum *) palloc(sizeof(Datum) * argcount);
+        if (values == NULL) {
+            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to allocate memory for value parameters of prepared statement");
+
+            SPI_finish();
+
+            rt_raster_destroy(raster);
+            rt_raster_destroy(newrast);
+
+            PG_RETURN_NULL();
+        }
+
+        /* define nulls */
+        nulls = (char *)palloc(argcount);
+        if (nulls == NULL) {
+            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to allocate memory for null parameters of prepared statement");
+
+            SPI_finish();
+
+            rt_raster_destroy(raster);
+            rt_raster_destroy(newrast);
+
+            PG_RETURN_NULL();
+        }
+
         /* Connect to SPI and prepare the expression */
         ret = SPI_connect();
         if (ret != SPI_OK_CONNECT) {
@@ -3096,31 +3122,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
             if (ret != -1 && FLT_NEQ(r, newnodatavalue)) {
                 if (skipcomputation == 0) {
                     if (initexpr != NULL) {
-                        /* define values */
-                        values = (Datum *) palloc(sizeof(Datum) * argcount);
-                        if (values == NULL) {
-                            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to allocate memory for value parameters of prepared statement");
-
-                            SPI_finish();
-
-                            rt_raster_destroy(raster);
-                            rt_raster_destroy(newrast);
-
-                            PG_RETURN_NULL();
-                        }
-
-                        /* define nulls */
-                        nulls = (char *)palloc(argcount);
-                        if (nulls == NULL) {
-                            elog(ERROR, "RASTER_mapAlgebraExpr: Unable to allocate memory for null parameters of prepared statement");
-
-                            SPI_finish();
-
-                            rt_raster_destroy(raster);
-                            rt_raster_destroy(newrast);
-
-                            PG_RETURN_NULL();
-                        }
+                        /* Reset the null arg flags. */
                         memset(nulls, 'n', argcount);
 
                         for (i = 0; i < argkwcount; i++) {
@@ -3146,18 +3148,21 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
                         }
 
                         ret = SPI_execute_plan(spi_plan, values, nulls, FALSE, 0);
-                        pfree(values);
-                        pfree(nulls);
                         if (ret != SPI_OK_SELECT || SPI_tuptable == NULL ||
                                 SPI_processed != 1) {
-                            elog(ERROR, "RASTER_mapAlgebraExpr: Invalid construction"
-                                    " for expression. Aborting");
+                            elog(ERROR, "RASTER_mapAlgebraExpr: Error executing prepared plan."
+                                    " Aborting");
 
                             if (SPI_tuptable)
                                 SPI_freetuptable(tuptable);
 
                             SPI_freeplan(spi_plan);
                             SPI_finish();
+
+                            pfree(values);
+                            pfree(nulls);
+                            pfree(initexpr);
+
                             PG_RETURN_NULL();
                         }
 
@@ -3198,6 +3203,8 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         SPI_freeplan(spi_plan);
         SPI_finish();
 
+        pfree(values);
+        pfree(nulls);
         pfree(initexpr);
     }
     else {
