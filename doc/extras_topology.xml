@@ -1762,7 +1762,11 @@ FROM topology.ST_GetFaceEdges('tt',1) As t(seq,edge)
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddFace"/>, <xref linkend="ST_GetFaceGeometry"/></para>
+				<para>
+<xref linkend="GetRingEdges"/>,
+<xref linkend="AddFace"/>,
+<xref linkend="ST_GetFaceGeometry"/>
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -1814,6 +1818,49 @@ SELECT ST_AsText(topology.ST_GetFaceGeometry('ma_topo', 1)) As facegeomwkt;
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="AddFace"/></para>
+			</refsection>
+		</refentry>
+
+		<refentry id="GetRingEdges">
+			<refnamediv>
+				<refname>GetRingEdges</refname>
+			
+				<refpurpose>
+Returns an ordered set of edges forming a ring with the given edge .
+				</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>getfaceedges_returntype <function>GetRingEdges</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>aring</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Returns an ordered set of edges forming a ring with the given edge.
+Each output consists of a sequence and a signed edge id.
+Sequence numbers start with value 1.
+A negative edge identifier means that the given edge is taken backward.
+You can pass a negative edge id to start walking backward.
+		</para>
+
+                
+                <!-- use this format if new function -->
+                <para>Availability: 2.0 </para>
+			</refsection>
+		
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_GetFaceEdges"/></para>
 			</refsection>
 		</refentry>
 		
