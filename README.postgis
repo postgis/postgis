@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 2.0.0alpha3 (YYYY/MM/DD)
+VERSION: 2.0.0alpha4 (YYYY/MM/DD)
 
 MORE INFORMATION: http://postgis.org
 
@@ -12,8 +12,10 @@ spatial functions for accessing and analyzing geographic data.
 Directory structure:
 
   ./            Build scripts and install directions.
-  ./liblwgeom   LWGEOM access library.
+  ./liblwgeom   LWGEOM geometry library.
   ./postgis     PostGIS library source code.
+  ./raster      PostGIS rasters support source code.
+  ./topology    PostGIS topology source code.
   ./java/ejb    EJB Java support
   ./java/jdbc   Extensions to the PostgreSQL JDBC drivers to support
                 the GIS objects. 
@@ -25,9 +27,10 @@ Directory structure:
                 Shape files.
   ./utils       Utility scripts for PostGIS (upgrade, profiling, ...)
   ./extras      Various pieces that didn't belong to mainstream
-	            (package management specfiles, WFS_locks, sample wkb parser)
-  ./regress     Regression tests
-	        
+	        (package management specfiles, WFS_locks, sample wkb parser)
+  ./regress     Online regression tests
+  ./extensions  Files to support the PostgreSQL 9.1+ "extensions" framework
+
 
 REQUIREMENTS
 ------------
