@@ -113,7 +113,7 @@ endif
 #
 # Also they are all dependent on postgis_config.h
 #
-$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../svnrevision.h
+$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h
 
 ../svnrevision.h:
 	$(MAKE) -C .. svnrevision.h
