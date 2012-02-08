@@ -284,6 +284,7 @@ check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
 	{
 		printf("\n[%s]\n, lwgeom_same II\n", ewkt);
 		printTGEOM(tgeom);
+		printTGEOM(tgeom2);
 		if (type == TINTYPE)
 		{
 			printLWTIN((LWTIN *)g1);
@@ -566,8 +567,8 @@ CU_TestInfo surface_tests[] =
 	PG_TEST(triangle_parse),
 	PG_TEST(tin_parse),
 	PG_TEST(polyhedralsurface_parse),
-//	PG_TEST(tin_tgeom),
-//	PG_TEST(psurface_tgeom),
+	PG_TEST(tin_tgeom),
+	PG_TEST(psurface_tgeom),
 	PG_TEST(surface_dimension),
 	PG_TEST(surface_perimeter),
 	CU_TEST_INFO_NULL
