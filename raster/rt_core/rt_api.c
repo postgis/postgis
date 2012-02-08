@@ -5652,8 +5652,8 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 
     /* Check that wkbsize is >= sizeof(rt_raster_serialized) */
     if (wkbsize < RT_WKB_HDR_SZ) {
-        rterror("rt_raster_from_wkb: wkb size < min size (%d)",
-                RT_WKB_HDR_SZ);
+        rterror("rt_raster_from_wkb: wkb size (%d)  < min size (%d)",
+                wkbsize, RT_WKB_HDR_SZ);
         return 0;
     }
     wkbend = wkb + wkbsize;
