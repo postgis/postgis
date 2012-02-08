@@ -34,7 +34,8 @@
 /**
 * PI
 */
-#define LW_PI 3.1415926535897932384626433832795
+#define PI 3.1415926535897932384626433832795
+
 
 /**
 * Floating point comparitors.
