@@ -8618,8 +8618,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	const int argkwcount = 8;
 	uint8_t argpos[3][8] = {{0}};
 	char *argkw[] = {"[rast1.x]", "[rast1.y]", "[rast1.val]", "[rast1]", "[rast2.x]", "[rast2.y]", "[rast2.val]", "[rast2]"};
-	Datum *values = NULL;
-	bool *nulls = NULL;
+	Datum values[8];
+	bool nulls[8];
 	TupleDesc tupdesc;
 	SPITupleTable *tuptable = NULL;
 	HeapTuple tuple;
@@ -9360,39 +9360,13 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						/* prepared plan exists */
 						else if (spi_plan[i] != NULL) {
 							POSTGIS_RT_DEBUGF(4, "Using prepared plan: %d", i);
-							values = NULL;
-							nulls = NULL;
 
 							/* expression has argument(s) */
 							if (spi_argcount[i]) {
-								values = (Datum *) palloc(sizeof(Datum) * spi_argcount[i]);
-								if (values == NULL) {
-									elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for value parameters of prepared statement %d", i);
-
-									for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
-									SPI_finish();
-
-									for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-									rt_raster_destroy(raster);
-
-									PG_RETURN_NULL();
-								}
-
-								nulls = (bool *) palloc(sizeof(bool) * spi_argcount[i]);
-								if (nulls == NULL) {
-									elog(ERROR, "RASTER_mapAlgebra2: Unable to allocate memory for NULL parameters of prepared statement %d", i);
-
-									pfree(values);
-
-									for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
-									SPI_finish();
-
-									for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
-									rt_raster_destroy(raster);
-
-									PG_RETURN_NULL();
-								}
-								memset(nulls, FALSE, spi_argcount[i]);
+								/* reset values to (Datum) NULL */
+								memset(values, (Datum) NULL, argkwcount);
+								/* reset nulls to FALSE */
+								memset(nulls, FALSE, argkwcount);
 
 								/* set values and nulls */
 								for (j = 0; j < argkwcount; j++) {
@@ -9435,8 +9409,6 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 							/* run prepared plan */
 							err = SPI_execute_plan(spi_plan[i], values, nulls, TRUE, 1);
-							if (values != NULL) pfree(values);
-							if (nulls != NULL) pfree(nulls);
 							if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
 								elog(ERROR, "RASTER_mapAlgebra2: Unexpected error when running prepared statement %d", i);
 
