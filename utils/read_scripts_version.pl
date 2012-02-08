@@ -1,37 +1,39 @@
 #!/usr/bin/perl
 
-my $debug = 0;
+$ENV{"LC_ALL"} = "C";
 
-my @files = ( 
-	"postgis.sql.in.c",
-	"geography.sql.in.c",
-	"long_xact.sql.in.c" 
-	);
-
+use Cwd;
+my $cwd = &Cwd::cwd();
+my $svn_exe = `which svn`;
 my $rev = 0;
 
-foreach $f (@files)
-{
-	my $file = "./postgis/$f";
-	if( -f $file )
-	{
-		my $r = 0;
-		open(F, $file);
-		while(<F>)
-		{
-			$r = $1 if /\$Id: \S+ (\d+) /;
-		}
-		print "$f got revision $r\n" if $debug && $r;
-  		$rev = $r if $r > $rev; 
-	}
-	else 
-	{
-		die "Could not open input file $f\n";
-	}
+# We have a repo and can read from it
+if ( $svn_exe && -d ".svn" ) {
+  my $svn_info;
+  $svn_info  = `svn info`;
+
+  if ( $svn_info =~ /Last Changed Rev: (\d+)/ ) {
+    $rev = $1;
+    open(OUT,">$cwd/svnrevision.h");
+    print OUT "#define SVNREV $rev\n";
+    close(OUT);
+  } 
+  else {
+    die "Unable to find revision in svn info\n";
+  }
+}
+# No repo, but there's a version file in the tarball
+elsif ( -f "svnrevision.h" ) {
+  my $svn_revision_file = `cat svnrevision.h`;
+  if ( $svn_revision_file =~ /SVNREV (\d+)/ ) {
+    $rev = $1;
+  }
+  else {
+    die "svnrevision.h has an unexpected format\n";
+  }
+}
+else {
+  die "Unable read svnrevision.h or svn repository metadata\n";
 }
 
-print "\nMaximum scripts revision: $rev\n\n" if $debug;
-
-print $rev if ! $debug;
-
-
+print $rev;
