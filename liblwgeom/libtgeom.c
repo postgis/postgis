@@ -661,9 +661,12 @@ tgeom_serialize_buf(const TGEOM *tgeom, uint8_t *buf, size_t *retsize)
 	size_t size=0;
 	uint8_t *loc=buf;
 	int dims = FLAGS_NDIMS(tgeom->flags);
+	uint8_t flags = tgeom->flags;
 
 	assert(tgeom);
 	assert(buf);
+
+	FLAGS_SET_BBOX(flags, tgeom->bbox?1:0);
 
 	/* Write in the type. */
 	memcpy(loc, &tgeom->type, sizeof(uint8_t));
@@ -671,7 +674,7 @@ tgeom_serialize_buf(const TGEOM *tgeom, uint8_t *buf, size_t *retsize)
 	size += 1;
 
 	/* Write in the flags. */
-	memcpy(loc, &tgeom->flags, sizeof(uint8_t));
+	memcpy(loc, &flags, sizeof(uint8_t));
 	loc  += 1;
 	size += 1;
 
@@ -852,6 +855,7 @@ tgeom_deserialize(TSERIALIZED *serialized_form)
 	result->srid = lw_get_int32_t(loc);
 	loc += 4;
 	/* bbox */
+
 	if (FLAGS_GET_BBOX(flags))
 	{
 		result->bbox = lwalloc(sizeof(BOX3D));
