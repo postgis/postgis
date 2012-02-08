@@ -237,3 +237,35 @@ SELECT
       ST_TestRasterNgb(3, 3, 1), 1, 1, 5
     ), 3, 3, 7
   ) AS rast;
+
+-- test st_stddev4ma, all one value
+SELECT
+  ST_Value(rast, 2, 2) = 10,
+  ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_stddev4ma(float[][], text, text[])'::regprocedure, '1', NULL), 2, 2
+  ) = 0
+  FROM ST_TestRasterNgb(3, 3, 10) AS rast;
+
+-- test st_stddev4ma, all different values
+SELECT
+  ST_Value(rast, 2, 2) = 5,
+  round(ST_Value(
+    ST_MapAlgebraFctNgb(rast, 1, NULL, 1, 1, 'st_stddev4ma(float[][], text, text[])'::regprocedure, '1', NULL), 2, 2
+  ) * 1000000) = 2738613
+  FROM ST_SetValue(
+    ST_SetValue(
+      ST_SetValue(
+        ST_SetValue(
+          ST_SetValue(
+            ST_SetValue(
+              ST_SetValue(
+                ST_SetValue(
+                  ST_TestRasterNgb(3, 3, 1), 2, 1, 2
+                ), 3, 1, 3
+              ), 1, 2, 4
+            ), 2, 2, 5
+          ), 3, 2, 6
+        ), 1, 3, 7
+      ), 2, 3, 8
+    ), 3, 3, 9
+  ) AS rast;

@@ -2076,16 +2076,14 @@ CREATE OR REPLACE FUNCTION st_hillshade(rast raster, band integer, pixeltype tex
     LANGUAGE 'SQL' STABLE;
 
 CREATE OR REPLACE FUNCTION st_distinct4ma(matrix float[][], nodatamode TEXT, VARIADIC args TEXT[])
-    RETURNS float
-    AS
-    $$
-    DECLARE
-        _count integer;
-    BEGIN
-        RETURN (SELECT COUNT(DISTINCT unnest) FROM unnest(matrix));
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE;
+    RETURNS float AS
+    $$ SELECT COUNT(DISTINCT unnest)::float FROM unnest($1) $$
+    LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_stddev4ma(matrix float[][], nodatamode TEXT, VARIADIC args TEXT[])
+    RETURNS float AS
+    $$ SELECT stddev(unnest) FROM unnest($1) $$
+    LANGUAGE 'sql' IMMUTABLE;
 
 
 -----------------------------------------------------------------------
