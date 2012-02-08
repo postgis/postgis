@@ -1050,7 +1050,7 @@ AC_MSG_RESULT([  Perl:                 ${PERL}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ --------------- Extensions --------------- ])
 if test "x$RASTER" = "xraster"; then
-    AC_MSG_RESULT([  PostGIS Raster:       ${POSTGIS_RASTER_LIB_VERSION}])
+    AC_MSG_RESULT([  PostGIS Raster:       enabled])
 else
     AC_MSG_RESULT([  PostGIS Raster:       disabled])
 
