@@ -567,7 +567,7 @@ CU_TestInfo surface_tests[] =
 	PG_TEST(tin_parse),
 	PG_TEST(polyhedralsurface_parse),
 //	PG_TEST(tin_tgeom),
-	PG_TEST(psurface_tgeom),
+//	PG_TEST(psurface_tgeom),
 	PG_TEST(surface_dimension),
 	PG_TEST(surface_perimeter),
 	CU_TEST_INFO_NULL
