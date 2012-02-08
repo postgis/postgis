@@ -2577,7 +2577,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     char *argkw[] = {"[rast]", "[rast.x]", "[rast.y]"};
     Oid argkwtypes[] = { FLOAT8OID, INT4OID, INT4OID };
     int argcount = 0;
-    Oid *argtype = 0;
+    Oid argtype[] = { FLOAT8OID, INT4OID, INT4OID };
     uint8_t argpos[3] = {0};
     char place[5];
     int idx = 0;
@@ -3012,7 +3012,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
         newexpr = rtpg_strreplace(initexpr, "[rast.val]", "[rast]", NULL);
         pfree(initexpr); initexpr=newexpr;
 
-        argtype = (Oid*)palloc(sizeof(Oid)*3);
         sprintf(place,"$1");
         for (i = 0, j = 1; i < argkwcount; i++) {
             len = 0;
@@ -3048,7 +3047,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
         /* Type of all arguments is FLOAT8OID */
         spi_plan = SPI_prepare(initexpr, argcount, argtype);
-        /* pfree(argtype); safe here ? */
 
         if (spi_plan == NULL) {
             elog(ERROR, "RASTER_mapAlgebraExpr: Could not prepare expression."
