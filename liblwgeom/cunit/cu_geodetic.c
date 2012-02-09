@@ -160,9 +160,9 @@ static void test_gserialized_get_gbox_geocentric(void)
 		gbox_geocentric_slow = LW_FALSE;
 		lwgeom_free(lwg);
 #if 0
-		printf("\nCALC: %s\n", gbox_to_string(gbox));
-		printf("GOOD: %s\n", gbox_to_string(gbox_slow));
-		printf("line %d: diff %.9g\n", i, fabs(gbox->xmin - gbox_slow->xmin)+fabs(gbox->ymin - gbox_slow->ymin)+fabs(gbox->zmin - gbox_slow->zmin));
+		printf("\nCALC: %s\n", gbox_to_string(&gbox));
+		printf("GOOD: %s\n", gbox_to_string(&gbox_slow));
+		printf("line %d: diff %.9g\n", i, fabs(gbox.xmin - gbox_slow.xmin)+fabs(gbox.ymin - gbox_slow.ymin)+fabs(gbox.zmin - gbox_slow.zmin));
 		printf("------------\n");
 #endif
 		CU_ASSERT_DOUBLE_EQUAL(gbox.xmin, gbox_slow.xmin, 0.000001);

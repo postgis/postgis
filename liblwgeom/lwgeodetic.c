@@ -958,7 +958,7 @@ int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 		LWDEBUG(4, "edge is antipodal. setting to maximum size box, and returning");
 		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
 		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
-		return LW_SUCCESS;
+		return LW_SUCCESS; 
 	}
 
 	/* Walk along the chord between start and end incrementally,
@@ -1033,10 +1033,15 @@ int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 	   set the box to contain the whole world and return */
 	if ( FP_EQUALS(distance, M_PI) )
 	{
-		LWDEBUG(4, "edge is antipodal. setting to maximum size box, and returning");
+		lwerror("Invalid geography. Antipodal edge (180 degrees long) detected: (%g %g,%g %g)",
+		        rad2deg(e->start.lon),rad2deg(e->start.lat),rad2deg(e->end.lon),rad2deg(e->end.lat) );
+		return LW_FAILURE;
+
+/*		LWDEBUG(4, "edge is antipodal. setting to maximum size box, and returning");
 		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
 		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
-		return LW_SUCCESS;
+		
+		return LW_SUCCESS; */
 	}
 
 	/* Calculate the difference in longitude between the two points. */
