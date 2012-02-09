@@ -2598,9 +2598,8 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     const int argkwcount = 3;
     enum KEYWORDS { kVAL=0, kX=1, kY=2 };
     char *argkw[] = {"[rast]", "[rast.x]", "[rast.y]"};
-    Oid argkwtypes[] = { FLOAT8OID, INT4OID, INT4OID };
     int argcount = 0;
-    Oid argtype[] = { FLOAT8OID, INT4OID, INT4OID };
+    Oid argtype[] = { FLOAT8OID, FLOAT8OID, FLOAT8OID };
     uint8_t argpos[3] = {0};
     char place[5];
     int idx = 0;
@@ -3041,7 +3040,6 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
             newexpr = rtpg_strreplace(initexpr, argkw[i], place, &len);
             pfree(initexpr); initexpr=newexpr;
             if (len > 0) {
-                argtype[argcount] = argkwtypes[i];
                 argcount++;
                 argpos[i] = j++;
 
@@ -3133,12 +3131,12 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
                             if (i == kX ) {
                                 /* x is 0 based index, but SQL expects 1 based index */
-                                values[idx] = Int32GetDatum(x+1);
+                                values[idx] = Float8GetDatum((float)(x+1));
                                 nulls[idx] = ' ';
                             }
                             else if (i == kY) {
                                 /* y is 0 based index, but SQL expects 1 based index */
-                                values[idx] = Int32GetDatum(y+1);
+                                values[idx] = Float8GetDatum((float)(y+1));
                                 nulls[idx] = ' ';
                             }
                             else if (i == kVAL ) {
