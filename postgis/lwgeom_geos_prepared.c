@@ -14,6 +14,7 @@
 
 #include <assert.h>
 
+#include "../postgis_config.h"
 #include "lwgeom_geos_prepared.h"
 #include "lwgeom_cache.h"
 

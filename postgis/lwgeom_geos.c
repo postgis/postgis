@@ -12,12 +12,23 @@
  *
  **********************************************************************/
 
+/* TODO: we probaby don't need _all_ these pgsql headers */
+#include "postgres.h"
+#include "fmgr.h"
+#include "miscadmin.h"
+#include "utils/array.h"
+#include "utils/builtins.h"
+#include "utils/hsearch.h"
+#include "utils/memutils.h"
+#include "executor/spi.h"
+#include "funcapi.h"
+
+#include "../postgis_config.h"
+#include "lwgeom_functions_analytic.h" /* for point_in_polygon */
+#include "lwgeom_cache.h"
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_rtree.h"
-#include "lwgeom_functions_analytic.h" /* for point_in_polygon */
-#include "funcapi.h"
-#include "lwgeom_cache.h"
 
 /*
 ** GEOS prepared geometry is only available from GEOS 3.1 onwards
@@ -30,6 +41,11 @@
 
 #include <string.h>
 #include <assert.h>
+
+#if POSTGIS_PROFILE > 0
+#warning POSTGIS_PROFILE enabled!
+#endif
+
 
 /*
 ** Prototypes for SQL-bound functions

@@ -13,27 +13,8 @@
 #ifndef LWGEOM_GEOS_H_
 #define LWGEOM_GEOS_H_ 1
 
-#include "postgres.h"
-#include "fmgr.h"
-#include "miscadmin.h"
-#include "utils/array.h"
-#include "utils/builtins.h"
-#include "utils/hsearch.h"
-#include "utils/memutils.h"
-#include "executor/spi.h"
-
-#include "../postgis_config.h"
-
-#include "lwgeom_pg.h"
-#include "liblwgeom.h"
-#include "../liblwgeom/liblwgeom.h"
-#include "../liblwgeom/lwgeom_geos.h"
-
-#include <string.h>
-
-#if POSTGIS_PROFILE > 0
-#warning POSTGIS_PROFILE enabled!
-#endif
+#include "../liblwgeom/lwgeom_geos.h" /* for GEOSGeom */
+#include "liblwgeom.h" /* for GSERIALIZED */
 
 /*
 ** Public prototypes for GEOS utility functions.

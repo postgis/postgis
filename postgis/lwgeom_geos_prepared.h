@@ -20,8 +20,6 @@
 #include "utils/memutils.h"
 #include "access/hash.h"
 
-#include "../postgis_config.h"
-
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "lwgeom_geos.h"

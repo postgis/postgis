@@ -24,7 +24,13 @@
  *
  **********************************************************************/
 
+#include "postgres.h"
+#include "fmgr.h"
+#include "funcapi.h"
+
+#include "../postgis_config.h"
 #include "lwgeom_geos.h"
+#include "lwgeom_pg.h"
 
 #include <string.h>
 #include <assert.h>
