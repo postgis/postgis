@@ -91,6 +91,8 @@ sql_bits/postgis_upgrade_minor.sql: ../../postgis/postgis_upgrade_20_minor.sql
 sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 	cp $< $@
 
+#postgis_raster_upgrade_minor.sql is the one that contains both postgis AND raster
+#TODO: come up with a better name
 sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql.in.c  sql_bits/postgis_upgrade_minor.sql 	sql_bits/rtpostgis_upgrade_20_minor.sql  ../../doc/raster_comments.sql  ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 
@@ -129,7 +131,7 @@ sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
 		-e 's/\\(;/;/' \
 		-e 's/;;/;/g' $< > $@
 
-sql_minor_upgrade: sql_bits/postgis_upgrade_minor.sql sql_bits/postgis_raster_upgrade_minor.sql
+sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
   	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
