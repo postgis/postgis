@@ -18,3 +18,4 @@
 -- during upgrade
 SELECT postgis_extension_remove_objects('postgis', 'FUNCTION');
 SELECT postgis_extension_remove_objects('postgis', 'AGGREGATE');
+SELECT postgis_extension_drop_if_exists('postgis', 'DROP VIEW raster_columns');
