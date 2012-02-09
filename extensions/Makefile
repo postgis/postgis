@@ -3,8 +3,8 @@ all:
 	$(MAKE) -C postgis_topology all
 
 clean distclean:
-	$(MAKE) -C postgis clean
-	$(MAKE) -C postgis_topology clean
+	$(MAKE) -C postgis $@
+	$(MAKE) -C postgis_topology $@
 
 install:
 	$(MAKE) -C postgis install
