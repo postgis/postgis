@@ -6918,7 +6918,7 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 				  <funcprototype>
 					<funcdef>float8 <function>ST_Min4ma</function></funcdef>
 					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
                     <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -6979,7 +6979,7 @@ WHERE rid = 2;
 				  <funcprototype>
 					<funcdef>float8 <function>ST_Max4ma</function></funcdef>
 					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
                     <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -7040,7 +7040,7 @@ WHERE rid = 2;
 				  <funcprototype>
 					<funcdef>float8 <function>ST_Sum4ma</function></funcdef>
 					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
                     <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -7101,7 +7101,7 @@ WHERE rid = 2;
 				  <funcprototype>
 					<funcdef>float8 <function>ST_Mean4ma</function></funcdef>
 					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
                     <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -7161,7 +7161,7 @@ WHERE rid = 2;
 				  <funcprototype>
 					<funcdef>float8 <function>ST_Range4ma</function></funcdef>
 					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
                     <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -7222,7 +7222,7 @@ WHERE rid = 2;
 				  <funcprototype>
 					<funcdef>float8 <function>ST_Distinct4ma</function></funcdef>
 					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text</type> <parameter>nodatamode</parameter></paramdef>
                     <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -7283,7 +7283,7 @@ WHERE rid = 2;
 				  <funcprototype>
 					<funcdef>float8 <function>ST_StdDev4ma</function></funcdef>
 					<paramdef><type>float8[][]</type> <parameter>matrix</parameter></paramdef>
-                    <paramdef><type>string</type> <parameter>nodatamode</parameter></paramdef>
+                    <paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
                     <paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
