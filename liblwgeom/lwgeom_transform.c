@@ -10,6 +10,7 @@
  *
  **********************************************************************/
 
+#include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_log.h"
 #include <string.h>

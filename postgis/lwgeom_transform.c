@@ -13,6 +13,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 
+#include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_transform.h"
 

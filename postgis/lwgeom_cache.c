@@ -13,6 +13,7 @@
 #include "postgres.h"
 #include "fmgr.h"
 
+#include "../postgis_config.h"
 #include "lwgeom_cache.h"
 
 GeomCache* GetGeomCache(FunctionCallInfoData *fcinfo)

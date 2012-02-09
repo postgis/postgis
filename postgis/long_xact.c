@@ -16,6 +16,7 @@
 #include "commands/trigger.h"   /* ... and triggers */
 #include "utils/lsyscache.h"	/* for get_namespace_name() */
 
+#include "../postgis_config.h"
 #include "lwgeom_pg.h"
 
 #define ABORT_ON_AUTH_FAILURE 1

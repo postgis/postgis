@@ -22,6 +22,7 @@
 #include "utils/lsyscache.h"
 #include "utils/syscache.h"
 
+#include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h" /* For index common functions */

@@ -1,6 +1,16 @@
-/***********************************************************
+/**********************************************************************
  *
- * $Id$
+ * PostGIS - Spatial Types for PostgreSQL
+ * http://postgis.refractions.net
+ *
+ * Copyright (C) 2010 Olivier Courtin <olivier.courtin@oslandia.com>
+ * Copyright (C) 2010 Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+ * Copyright (C) 2009-2011 Paul Ramsey <pramsey@cleverelephant.ca>
+ *
+ * This is free software; you can redistribute and/or modify it under
+ * the terms of the GNU General Public Licence. See the COPYING file.
+ *
+ **********************************************************************
  *
  * Comparision function for use in Binary Tree searches
  * (ORDER BY, GROUP BY, DISTINCT)
@@ -11,6 +21,7 @@
 #include "fmgr.h"
 #include "utils/geo_decls.h"
 
+#include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 

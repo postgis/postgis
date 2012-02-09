@@ -34,18 +34,18 @@
 **********************************************************************/
 
 
-#include "postgres.h"
-#include "lwgeom_pg.h"
-#include "liblwgeom.h"
-#include "lwgeom_transform.h"
-#include "executor/spi.h"
-
-
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
+#include "postgres.h"
+#include "executor/spi.h"
+
+#include "../postgis_config.h"
+#include "lwgeom_pg.h"
+#include "liblwgeom.h"
+#include "lwgeom_transform.h"
 
 
 Datum geom_from_gml(PG_FUNCTION_ARGS);

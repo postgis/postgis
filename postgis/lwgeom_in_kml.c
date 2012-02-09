@@ -27,13 +27,15 @@
 **********************************************************************/
 
 
+#include <libxml/tree.h>
+#include <libxml/parser.h>
+
 #include "postgres.h"
+
+#include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 
-
-#include <libxml/tree.h>
-#include <libxml/parser.h>
 
 
 /*

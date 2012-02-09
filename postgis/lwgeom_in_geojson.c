@@ -8,10 +8,13 @@
  *
  **********************************************************************/
 
+#include <assert.h>
+
 #include "postgres.h"
+
+#include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
-#include <assert.h>
 
 Datum geom_from_geojson(PG_FUNCTION_ARGS);
 

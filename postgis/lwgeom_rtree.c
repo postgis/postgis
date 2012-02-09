@@ -11,6 +11,7 @@
 
 #include <assert.h>
 
+#include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"         /* For FP comparators. */

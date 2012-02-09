@@ -15,9 +15,9 @@
 #include "utils/elog.h"
 #include "utils/guc.h"
 
+#include "../postgis_config.h"
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
-#include "../postgis_config.h"
 
 /*
  * This is required for builds against pgsql

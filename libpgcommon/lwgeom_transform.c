@@ -21,6 +21,7 @@
 #include "utils/hsearch.h"
 
 /* PostGIS headers */
+#include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 #include "lwgeom_transform.h"

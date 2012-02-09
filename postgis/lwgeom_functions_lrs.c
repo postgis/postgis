@@ -10,11 +10,14 @@
  *
  **********************************************************************/
 
+#include <math.h>
+
 #include "postgres.h"
 #include "fmgr.h"
+
+#include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
-#include "math.h"
 
 /*
 * Add a measure dimension to a line, interpolating linearly from the

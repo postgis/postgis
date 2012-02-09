@@ -46,6 +46,8 @@
 #include <executor/executor.h> /* for GetAttributeByName in RASTER_reclass */
 #include <funcapi.h>
 
+#include "../../postgis_config.h"
+
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h" /* for clamp_srid() */

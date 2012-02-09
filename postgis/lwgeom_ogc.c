@@ -24,6 +24,8 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 
+#include "../postgis_config.h"
+
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
