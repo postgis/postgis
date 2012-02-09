@@ -1033,7 +1033,7 @@ int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 	   set the box to contain the whole world and return */
 	if ( FP_EQUALS(distance, M_PI) )
 	{
-		lwerror("Invalid geography. Antipodal edge (180 degrees long) detected: (%g %g,%g %g)",
+		lwerror("Invalid geography. Antipodal (180 degrees long) edge (%g %g,%g %g) detected, add a point between to make two edges that span less than 180 degrees.",
 		        rad2deg(e->start.lon),rad2deg(e->start.lat),rad2deg(e->end.lon),rad2deg(e->end.lat) );
 		return LW_FAILURE;
 
