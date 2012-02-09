@@ -1569,8 +1569,7 @@ Datum RASTER_setGeotransform(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
 
     /* get the inputs */
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0),
-                                 0, sizeof(struct rt_raster_serialized_t));
+    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
     imag = PG_GETARG_FLOAT8(1) ;
     jmag = PG_GETARG_FLOAT8(2) ;
     theta_i = PG_GETARG_FLOAT8(3);
