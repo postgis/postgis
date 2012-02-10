@@ -2485,7 +2485,7 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer DEFAULT 
                 INTO var_w, var_h;
                 FOR var_x IN 1..var_w LOOP
                     FOR var_y IN 1..var_h LOOP
-                        SELECT ST_PixelAsPolygon(rast, band, var_x, var_y), ST_Value(rast, band, var_x, var_y), var_x, var_y INTO geom,val,x,y;
+                        SELECT ST_PixelAsPolygon(rast, var_x, var_y), ST_Value(rast, band, var_x, var_y), var_x, var_y INTO geom,val,x,y;
                         RETURN NEXT;
                     END LOOP;
                 END LOOP;
