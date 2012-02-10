@@ -21,6 +21,11 @@ all clean distclean install uninstall:
 		$(MAKE) -C "$${DIR}" $@; \
 	done
 
+distclean: distclean-local
+
+distclean-local:
+	rm -f Makefile
+
 
 check:
 	@echo "Nothing to check"
