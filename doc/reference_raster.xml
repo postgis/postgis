@@ -5053,7 +5053,7 @@ rid |        rastbox
 		<refentry id="RT_ST_Clip">
 			<refnamediv>
 				<refname>ST_Clip</refname>
-				<refpurpose>Returns a single band raster that is a band clipped by the input geometry.  If no band is specified band 1 is assumed. If trimraster setting is not specified, false is assumed meaning
+				<refpurpose>Returns the raster clipped by the input geometry.  If no band is specified all bands are returned. If trimraster setting is not specified, false is assumed meaning
 				the output raster has the same extent as the input raster.</refpurpose>
 			</refnamediv>
 		
@@ -5096,7 +5096,7 @@ rid |        rastbox
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a single band raster that is a band clipped by the input geometry <varname>geom</varname>.  If no band is specified band 1 is assumed. If trimraster setting is not specified, false is assumed meaning
+				<para>Returns a raster that is clipped by the input geometry <varname>geom</varname>.  If no band is specified all bands are returned. If trimraster setting is not specified, false is assumed meaning
 				the output raster has the same extent as the input raster.  If <varname>trimraster</varname> is set to true, the new raster has the same extent as the intersection of <varname>geom</varname>and <varname>rast</varname>.</para>
 				<para>Availability: 2.0.0 </para>
 				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
