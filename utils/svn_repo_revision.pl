@@ -12,11 +12,23 @@ my $target = "local";
 $target = $ARGV[0] if $ARGV[0];
 
 # Don't muck with things if you can't find svn
-exit(0) if ( ! $svn_exe );
+if ( ! $svn_exe ) {
+  if ( ! -f "svnrevision.h" ) {
+    die "Couldn't find svn exectable or svnrevision.h, cannot continue.\n";
+  }
+  else {
+    exit(0);
+  }
+};
 
 # Don't muck with thinks if you aren't in an svn repository
 if ( $target eq "local" && ! -d ".svn" ) {
-  exit(0);
+  if ( ! -f "svnrevision.h" ) {
+    die "Couldn't find or generate svnrevision.h, cannot continue.\n";
+  }
+  else {
+    exit(0);
+  }
 }
 
 # Read the svn revision number
