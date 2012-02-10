@@ -140,10 +140,18 @@
 #define TYPMOD_GET_NDIMS(typmod) (2+TYPMOD_GET_Z(typmod)+TYPMOD_GET_M(typmod))
 
 /**
-* Maximum allowed SRID value. 
-* Currently we are using 20 bits (1048575) of storage for SRID.
+* Maximum allowed SRID value in serialized geometry.
+* Currently we are using 21 bits (2097152) of storage for SRID.
 */
 #define SRID_MAXIMUM 999999
+
+/**
+ * Maximum valid SRID value for the user
+ * We reserve 1000 values for internal use
+ */
+#define SRID_USER_MAXIMUM 998999
+
+/** Unknown SRID value */
 #define SRID_UNKNOWN 0
 #define SRID_IS_UNKNOWN(x) ((int)x<=0)
 
