@@ -283,7 +283,7 @@ postgis# VACUUM ANALYZE;</programlisting>
       <programlisting>DATA "geom FROM (
   SELECT 
     table1.geom AS geom, 
-    table1.oid AS oid, 
+    table1.gid AS gid, 
     table2.data AS data 
   FROM table1 
   LEFT JOIN table2 
@@ -413,10 +413,10 @@ END</programlisting>
       <programlisting>LAYER 
   CONNECTIONTYPE postgis
   CONNECTION "user=theuser password=thepass dbname=thedb host=theserver" 
-  DATA "geom FROM (SELECT roads.oid AS oid, roads.geom AS geom, 
+  DATA "geom FROM (SELECT roads.gid AS gid, roads.geom AS geom, 
         road_names.name as name FROM roads LEFT JOIN road_names ON 
         roads.road_name_id = road_names.road_name_id) 
-        AS named_roads USING UNIQUE oid USING SRID=4326" 
+        AS named_roads USING UNIQUE gid USING SRID=4326" 
   MAXSCALE 20000 
   STATUS ON 
   TYPE ANNOTATION 
