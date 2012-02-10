@@ -1001,6 +1001,7 @@ fi dnl # }
 
 dnl Output the relevant files
 AC_OUTPUT([GNUmakefile 
+   extensions/Makefile
    extensions/postgis/Makefile 
    extensions/postgis/postgis.control 
    extensions/postgis_topology/Makefile 
