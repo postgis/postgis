@@ -283,7 +283,7 @@ postgis# VACUUM ANALYZE;</programlisting>
       <programlisting>DATA "the_geom FROM (
   SELECT 
     table1.the_geom AS the_geom, 
-    table1.oid AS oid, 
+    table1.gid AS gid, 
     table2.data AS data 
   FROM table1 
   LEFT JOIN table2 
