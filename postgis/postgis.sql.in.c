@@ -2302,10 +2302,6 @@ CREATE OR REPLACE FUNCTION postgis_lib_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE; -- a new lib will require a new session
 
-CREATE OR REPLACE FUNCTION postgis_svn_version() RETURNS text
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE;
-
 -- NOTE: starting at 1.1.0 this is the same of postgis_lib_version()
 CREATE OR REPLACE FUNCTION postgis_scripts_released() RETURNS text
 	AS 'MODULE_PATHNAME'
@@ -2359,7 +2355,6 @@ BEGIN
 	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
-	SELECT postgis_svn_version() INTO svnver;
 
 	fullver = 'POSTGIS="' || libver || '"';
 
@@ -2379,10 +2374,6 @@ BEGIN
 		fullver = fullver || ' LIBXML="' || libxmlver || '"';
 	END IF;
 	
-	IF  svnver IS NOT NULL THEN
-		fullver = fullver || ' SVN_REVISION=' || svnver;
-	END IF;
-
 	IF usestats THEN
 		fullver = fullver || ' USE_STATS';
 	END IF;

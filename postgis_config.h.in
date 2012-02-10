@@ -1,7 +1,5 @@
 /* postgis_config.h.in.  Generated from configure.ac by autoheader.  */
 
-#include "svnrevision.h"
-
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
