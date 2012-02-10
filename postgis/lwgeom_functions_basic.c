@@ -36,6 +36,7 @@ Datum postgis_autocache_bbox(PG_FUNCTION_ARGS);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS);
 Datum postgis_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_version(PG_FUNCTION_ARGS);
+Datum postgis_svn_version(PG_FUNCTION_ARGS);
 Datum postgis_libxml_version(PG_FUNCTION_ARGS);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS);
 Datum LWGEOM_length2d_linestring(PG_FUNCTION_ARGS);
@@ -145,6 +146,16 @@ Datum postgis_lib_version(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(result);
 }
 
+PG_FUNCTION_INFO_V1(postgis_svn_version);
+Datum postgis_svn_version(PG_FUNCTION_ARGS)
+{
+	text *result;
+	char ver[256];
+	snprintf(ver, 256, "%d", SVNREV);
+	result = cstring2text(ver);
+	PG_RETURN_TEXT_P(result);
+}
+
 PG_FUNCTION_INFO_V1(postgis_lib_build_date);
 Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
 {
@@ -156,8 +167,10 @@ Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_scripts_released);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 {
-	char *ver = POSTGIS_SCRIPTS_VERSION;
-	text *result = cstring2text(ver);
+	char ver[256];
+	text *result;
+	snprintf(ver, 256, "%s.%s r%d", POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION, SVNREV);
+	result = cstring2text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 

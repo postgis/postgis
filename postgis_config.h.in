@@ -1,5 +1,7 @@
 /* postgis_config.h.in.  Generated from configure.ac by autoheader.  */
 
+#include "svnrevision.h"
+
 /* Define to 1 if translation of program messages to the user's native
    language is requested. */
 #undef ENABLE_NLS
@@ -127,11 +129,11 @@
 /* PostGIS major version */
 #undef POSTGIS_MAJOR_VERSION
 
-/* PostGIS micro version */
-#undef POSTGIS_MICRO_VERSION
-
 /* PostGIS minor version */
 #undef POSTGIS_MINOR_VERSION
+
+/* PostGIS micro version */
+#undef POSTGIS_MICRO_VERSION
 
 /* PostgreSQL server version */
 #undef POSTGIS_PGSQL_VERSION
