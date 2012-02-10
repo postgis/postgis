@@ -76,7 +76,7 @@ sql/topology_upgrade_minor.sql:  sql_bits/topology.sql
 	
 sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
-  	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
+  	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
