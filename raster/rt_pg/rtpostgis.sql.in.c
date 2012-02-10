@@ -3469,7 +3469,7 @@ CREATE AGGREGATE ST_Union(raster, integer, text) (
 --
 -- rast   - raster to be clipped
 -- band   - limit the result to only one band
--- geom   - geometry defining the she to clip the raster
+-- geom   - geometry defining the shape to clip the raster
 -- nodata - define (if there is none defined) or replace the raster nodata value with this value
 -- trimraster - limit the extent of the result to the extent of the geometry
 -- Todo:
@@ -3489,7 +3489,7 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 		sourceraster raster := rast;
 		newrast raster;
 		geomrast raster;
-		numband int := ST_Numbands(rast);
+		numband int;
 		bandstart int;
 		bandend int;
 		newextent text;
@@ -3503,6 +3503,7 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 		IF geom IS NULL THEN
 			RETURN rast;
 		END IF;
+		numband := ST_Numbands(rast);
 		IF band IS NULL THEN
 			bandstart := 1;
 			bandend := numband;
@@ -3541,10 +3542,10 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE;
 
--- Variant defaulting to band 1
+-- Variant defaulting to all bands
 CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodata float8 DEFAULT NULL, trimraster boolean DEFAULT FALSE)
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, 1, $2, $3, $4) $$
+	$$ SELECT ST_Clip($1, NULL, $2, $3, $4) $$
 	LANGUAGE 'SQL' STABLE;
 
 -- Variant defaulting nodata to the one of the raster or the min possible value
@@ -3553,10 +3554,10 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, trimras
 	$$ SELECT ST_Clip($1, $2, $3, null, $4) $$
 	LANGUAGE 'SQL' STABLE;
 
--- Variant defaulting nodata to the one of the raster or the min possible value
+-- Variant defaulting nodata to the one of the raster or the min possible value and returning all bands
 CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, trimraster boolean)
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, 1, $2, null, $3) $$
+	$$ SELECT ST_Clip($1, NULL, $2, null, $3) $$
 	LANGUAGE 'SQL' STABLE;
 
 ------------------------------------------------------------------------------
