@@ -179,6 +179,12 @@ INSERT INTO street_type_lookup (name, abbrev, is_hw)
 SELECT name, abbrev, false
     FROM temp_types As t
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
+           
+-- new census loader
+\i census_loader.sql
+--create parent tables for census
+-- if they do not exist
+SELECT create_census_base_tables();
 -- System/General helper functions
 \i utility/utmzone.sql
 \i utility/cull_null.sql
