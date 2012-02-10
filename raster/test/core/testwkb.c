@@ -566,7 +566,7 @@ main()
     CHECK_EQUALS(rt_raster_get_y_offset(raster), 642930.0);
     CHECK_EQUALS(rt_raster_get_x_skew(raster), 0);
     CHECK_EQUALS(rt_raster_get_y_skew(raster), 0);
-    CHECK_EQUALS(rt_raster_get_srid(raster), -1);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 0);
     CHECK_EQUALS(rt_raster_get_width(raster), 3);
     CHECK_EQUALS(rt_raster_get_height(raster), 1);
     {
@@ -660,7 +660,7 @@ main()
     CHECK_EQUALS_DOUBLE(rt_raster_get_y_offset(raster), 5793244.00);
     CHECK_EQUALS_DOUBLE(rt_raster_get_x_skew(raster), 0.0);
     CHECK_EQUALS_DOUBLE(rt_raster_get_y_skew(raster), 0.0);
-    CHECK_EQUALS(rt_raster_get_srid(raster), -1);
+    CHECK_EQUALS(rt_raster_get_srid(raster), 0);
     CHECK_EQUALS(rt_raster_get_width(raster), 5);
     CHECK_EQUALS(rt_raster_get_height(raster), 5);
     {

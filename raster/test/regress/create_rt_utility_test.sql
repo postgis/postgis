@@ -7,6 +7,8 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 -----------------------------------------------------------------------
 
+SET client_min_messages TO warning;
+
 -----------------------------------------------------------------------
 --- Test of "Get" functions for properties of the raster.
 -----------------------------------------------------------------------

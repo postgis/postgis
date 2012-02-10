@@ -19,7 +19,7 @@ CREATE OR REPLACE FUNCTION ST_TestRasterNgb(h integer, w integer, val float8)
     $$
     DECLARE
     BEGIN
-        RETURN ST_AddBand(ST_MakeEmptyRaster(h, w, 0, 0, 1, 1, 0, 0, -1), '32BF', val, -1);
+        RETURN ST_AddBand(ST_MakeEmptyRaster(h, w, 0, 0, 1, 1, 0, 0, 0), '32BF', val, -1);
     END;
     $$
     LANGUAGE 'plpgsql';

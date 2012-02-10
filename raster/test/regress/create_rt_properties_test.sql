@@ -121,7 +121,7 @@ VALUES ( 2, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:0, width:1, height:1',
 
 INSERT INTO rt_properties_test 
 VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
-        -1, 1, 1, --- SRID, width, height
+         0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
@@ -142,7 +142,7 @@ VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
 ||
 '0000000000000000' -- skewY (float64 0)
 ||
-'FFFFFFFF' -- SRID (int32 -1)
+'00000000' -- SRID (int32 0)
 ||
 '0100' -- width (uint16 1)
 ||
@@ -152,7 +152,7 @@ VALUES ( 3, '1x1, ip:7.5,2.5 scale:5,5 skew:0,0, srid:-1, width:1, height:1',
 
 INSERT INTO rt_properties_test 
 VALUES ( 4, '1x1, ip:7.5,2.5 scale:5,5 skew:1,1, srid:-1, width:1, height:1',
-        -1, 1, 1, --- SRID, width, height
+         0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 1, 1, --- georeference
 (
 '01' -- little endian (uint8 ndr)
@@ -173,7 +173,7 @@ VALUES ( 4, '1x1, ip:7.5,2.5 scale:5,5 skew:1,1, srid:-1, width:1, height:1',
 ||
 '000000000000F03F' -- skewY (float64 1)
 ||
-'FFFFFFFF' -- SRID (int32 -1)
+'00000000' -- SRID (int32 0)
 ||
 '0100' -- width (uint16 1)
 ||
@@ -183,7 +183,7 @@ VALUES ( 4, '1x1, ip:7.5,2.5 scale:5,5 skew:1,1, srid:-1, width:1, height:1',
 
 INSERT INTO rt_properties_test 
 VALUES ( 5, '1x1, ip:7.5,2.5 scale:5,5 skew:3,7, srid:-1, width:1, height:1',
-        -1, 1, 1, --- SRID, width, height
+         0, 1, 1, --- SRID, width, height
          5, 5, 7.5, 2.5, 3, 7, --- georeference
 (
 '01' -- little endian (uint8 ndr)
@@ -204,7 +204,7 @@ VALUES ( 5, '1x1, ip:7.5,2.5 scale:5,5 skew:3,7, srid:-1, width:1, height:1',
 ||
 '0000000000001C40' -- skewY (float64 7)
 ||
-'FFFFFFFF' -- SRID (int32 -1)
+'00000000' -- SRID (int32 0)
 ||
 '0100' -- width (uint16 1)
 ||

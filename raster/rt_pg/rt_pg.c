@@ -49,8 +49,6 @@
 #include "../../postgis_config.h"
 
 #include "lwgeom_pg.h"
-#include "liblwgeom.h"
-#include "liblwgeom_internal.h" /* for clamp_srid() */
 #include "rt_pg.h"
 #include "pgsql_compat.h"
 

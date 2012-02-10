@@ -3,7 +3,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -18,7 +18,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -33,7 +33,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -48,7 +48,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -63,7 +63,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -78,7 +78,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -93,7 +93,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -108,7 +108,7 @@ SELECT round(value::numeric, 3), round(percent::numeric, 3) FROM ST_ValuePercent
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -123,7 +123,7 @@ SELECT round(ST_ValuePercent(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -138,7 +138,7 @@ SELECT round(ST_ValuePercent(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -153,7 +153,7 @@ SELECT round(ST_ValuePercent(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -168,7 +168,7 @@ SELECT round(ST_ValuePercent(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -183,7 +183,7 @@ SELECT round(ST_ValuePercent(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -198,7 +198,7 @@ SELECT round(ST_ValuePercent(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -218,7 +218,7 @@ CREATE TEMP TABLE test
 			ST_SetValue(
 				ST_SetValue(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 						, 1, '64BF', 0, 0
 					)
 					, 1, 1, 1, -10

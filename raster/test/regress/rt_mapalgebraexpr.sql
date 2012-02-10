@@ -2,10 +2,10 @@
 SELECT ST_MapAlgebraExpr(NULL, 1, NULL, '[rast] + 20', 2) IS NULL FROM ST_TestRaster(0, 0, -1) rast;
 
 -- Test empty raster
-SELECT 'T1', ST_IsEmpty(ST_MapAlgebraExpr(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, '[rast] + 20', 2));
+SELECT 'T1', ST_IsEmpty(ST_MapAlgebraExpr(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, 0), 1, NULL, '[rast] + 20', 2));
 
 -- Test hasnoband raster
-SELECT 'T2', ST_HasNoBand(ST_MapAlgebraExpr(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, '[rast] + 20', 2));
+SELECT 'T2', ST_HasNoBand(ST_MapAlgebraExpr(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, 0), 1, NULL, '[rast] + 20', 2));
 
 -- Test hasnodata value
 SELECT 'T3', ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(ST_SetBandNoDataValue(rast, NULL), 1, NULL, '[rast] + 20', 2), 1, 1) FROM ST_TestRaster(0, 0, -1) rast;

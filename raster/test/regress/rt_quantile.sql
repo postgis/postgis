@@ -6,7 +6,7 @@ FROM ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -25,7 +25,7 @@ FROM ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -44,7 +44,7 @@ FROM ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -63,7 +63,7 @@ FROM ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -82,7 +82,7 @@ FROM ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -101,7 +101,7 @@ FROM ST_Quantile(
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10
@@ -117,7 +117,7 @@ SELECT round(
 			ST_SetValue(
 				ST_SetValue(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 						, 1, '64BF', 0, 0
 					)
 					, 1, 1, 1, -10
@@ -135,7 +135,7 @@ SELECT round(
 			ST_SetValue(
 				ST_SetValue(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 						, 1, '64BF', 0, 0
 					)
 					, 1, 1, 1, -10
@@ -153,7 +153,7 @@ SELECT round(
 			ST_SetValue(
 				ST_SetValue(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 						, 1, '64BF', 0, 0
 					)
 					, 1, 1, 1, -10
@@ -171,7 +171,7 @@ SELECT round(
 			ST_SetValue(
 				ST_SetValue(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 						, 1, '64BF', 0, 0
 					)
 					, 1, 1, 1, -10
@@ -189,7 +189,7 @@ SELECT round(
 			ST_SetValue(
 				ST_SetValue(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 						, 1, '64BF', 0, 0
 					)
 					, 1, 1, 1, -10
@@ -211,7 +211,7 @@ CREATE TEMP TABLE test_quantile
 			ST_SetValue(
 				ST_SetValue(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,-1)
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 						, 1, '64BF', 0, 0
 					)
 					, 1, 1, 1, -10

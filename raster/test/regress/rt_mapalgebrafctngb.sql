@@ -3,10 +3,10 @@
 SELECT ST_MapAlgebraFctNgb(NULL, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL) IS NULL FROM ST_TestRasterNgb(0, 0, -1) rast;
 
 -- Test empty Raster. Should be true.
-SELECT ST_IsEmpty(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL));
+SELECT ST_IsEmpty(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, 0), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL));
 
 -- Test has no band raster. Should be true
-SELECT ST_HasNoBand(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL));
+SELECT ST_HasNoBand(ST_MapAlgebraFctNgb(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, 0), 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL));
 
 -- Test huge neighborhood. Original raster returned.
 SELECT

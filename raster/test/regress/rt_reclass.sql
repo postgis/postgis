@@ -8,7 +8,7 @@ FROM (
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0, -1),
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0, 0),
 					1, '32BUI', 0, 0
 				),
 				1, 1, 499
@@ -33,7 +33,7 @@ FROM (
 			ST_SetValue(
 				ST_AddBand(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0, -1),
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0, 0),
 						1, '8BUI', 0, 1
 					),
 					2, '32BUI', 0, 0
@@ -60,7 +60,7 @@ FROM (
 			ST_SetValue(
 				ST_AddBand(
 					ST_AddBand(
-						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0, -1),
+						ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0, 0),
 						1, '8BUI', 0, 1
 					),
 					2, '32BUI', 0, 0
@@ -82,7 +82,7 @@ FROM (
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0, -1),
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0, 0),
 					1, '8BUI', 0, 0
 				),
 				1, 1, 1, 255
@@ -101,7 +101,7 @@ FROM (
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, -1),
+					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, 0),
 					1, '32BF', 1, 0
 				),
 				1, 1, 1, 3.14159
@@ -120,7 +120,7 @@ FROM (
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, -1),
+					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, 0),
 					1, '32BF', 1, 0
 				),
 				1, 1, 1, 3.14159
@@ -139,7 +139,7 @@ FROM (
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, -1),
+					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, 0),
 					1, '32BF', 1, 0
 				),
 				1, 1, 1, 3.14159
@@ -158,7 +158,7 @@ FROM (
 		ST_SetValue(
 			ST_SetValue(
 				ST_AddBand(
-					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, -1),
+					ST_MakeEmptyRaster(100, 100, 10, 10, 2, 2, 0, 0, 0),
 					1, '32BF', 1, 0
 				),
 				1, 1, 1, 3.14159

@@ -3,12 +3,12 @@ SELECT ST_MapAlgebraFct(NULL, 1, NULL, 'raster_plus_twenty(float, text[])'::regp
 SELECT ST_MapAlgebraFct(NULL, 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure, NULL) IS NULL FROM ST_TestRaster(0, 0, -1) rast;
 
 -- Test empty raster
-SELECT ST_IsEmpty(ST_MapAlgebraFct(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure));
-SELECT ST_IsEmpty(ST_MapAlgebraFct(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure, NULL));
+SELECT ST_IsEmpty(ST_MapAlgebraFct(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, 0), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure));
+SELECT ST_IsEmpty(ST_MapAlgebraFct(ST_MakeEmptyRaster(0, 10, 0, 0, 1, 1, 1, 1, 0), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure, NULL));
 
 -- Test hasnoband raster
-SELECT ST_HasNoBand(ST_MapAlgebraFct(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure));
-SELECT ST_HasNoBand(ST_MapAlgebraFct(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, -1), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure, NULL));
+SELECT ST_HasNoBand(ST_MapAlgebraFct(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, 0), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure));
+SELECT ST_HasNoBand(ST_MapAlgebraFct(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 1, 1, 0), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure, NULL));
 
 -- Test hasnodata value
 SELECT ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraFct(ST_SetBandNoDataValue(rast, NULL), 1, NULL, 'raster_plus_twenty(float, text[])'::regprocedure), 1, 1) FROM ST_TestRaster(0, 0, -1) rast;

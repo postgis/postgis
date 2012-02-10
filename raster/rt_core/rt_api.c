@@ -4404,20 +4404,16 @@ rt_raster_calc_gt_coeff(double i_mag, double j_mag, double theta_i, double theta
 
 int32_t
 rt_raster_get_srid(rt_raster raster) {
+	assert(NULL != raster);
 
-
-    assert(NULL != raster);
-
-    return raster->srid;
+	return clamp_srid(raster->srid);
 }
 
 void
 rt_raster_set_srid(rt_raster raster, int32_t srid) {
+	assert(NULL != raster);
 
-
-    assert(NULL != raster);
-
-    raster->srid = srid;
+	raster->srid = clamp_srid(srid);
 }
 
 int
@@ -5220,7 +5216,7 @@ rt_raster_get_convex_hull(rt_raster raster) {
 						gt);
     ptarray_set_point4d(pts, 3, &p4d);
 
-    ret = lwpoly_construct(raster->srid, 0, 1, rings);
+    ret = lwpoly_construct(rt_raster_get_srid(raster), 0, 1, rings);
 
     return ret;
 }
@@ -5813,7 +5809,7 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
     rast->ipY = read_float64(&ptr, endian);
     rast->skewX = read_float64(&ptr, endian);
     rast->skewY = read_float64(&ptr, endian);
-    rast->srid = read_int32(&ptr, endian);
+		rt_raster_set_srid(rast, read_int32(&ptr, endian));
     rast->width = read_uint16(&ptr, endian);
     rast->height = read_uint16(&ptr, endian);
 
@@ -6727,6 +6723,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 	int i = 0;
 	int idx;
 	int32_t flag;
+	double gt[6] = {0.};
 
 	assert(NULL != raster);
 	assert(NULL != bandNums);
@@ -6742,12 +6739,9 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
 	}
 
 	/* copy raster attributes */
-	/* scale */
-	rt_raster_set_scale(rast, raster->scaleX, raster->scaleY);
-	/* offset */
-	rt_raster_set_offsets(rast, raster->ipX, raster->ipY);
-	/* skew */
-	rt_raster_set_skews(rast, raster->skewX, raster->skewY);
+	rt_raster_get_geotransform_matrix(raster, gt);
+	rt_raster_set_geotransform_matrix(rast, gt);
+
 	/* srid */
 	rt_raster_set_srid(rast, raster->srid);
 
@@ -9403,7 +9397,7 @@ rt_raster_same_alignment(
 
 	err = 0;
 	/* same srid */
-	if (rast1->srid != rast2->srid) {
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
 		RASTER_DEBUG(3, "The two rasters provided have different SRIDs");
 		err = 1;
 	}
@@ -9507,7 +9501,7 @@ rt_raster_from_two_rasters(
 	assert(NULL != rast2);
 
 	/* rasters must have same srid */
-	if (rast1->srid != rast2->srid) {
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
 		rterror("rt_raster_from_two_rasters: The two rasters provided do not have the same SRID");
 		*err = 0;
 		return NULL;
@@ -9573,7 +9567,7 @@ rt_raster_from_two_rasters(
 				*err = 0;
 				return NULL;
 			}
-			raster->srid = _rast[i]->srid;
+			rt_raster_set_srid(raster, _rast[i]->srid);
 			rt_raster_get_geotransform_matrix(_rast[i], gt);
 			rt_raster_set_geotransform_matrix(raster, gt);
 			break;
@@ -9637,7 +9631,7 @@ rt_raster_from_two_rasters(
 				*err = 0;
 				return NULL;
 			}
-			raster->srid = _rast[0]->srid;
+			rt_raster_set_srid(raster, _rast[0]->srid);
 			rt_raster_set_geotransform_matrix(raster, gt);
 			RASTER_DEBUGF(4, "gt = (%f, %f, %f, %f, %f, %f)",
 				gt[0],
@@ -9694,7 +9688,7 @@ rt_raster_from_two_rasters(
 					*err = 0;
 					return NULL;
 				}
-				raster->srid = _rast[0]->srid;
+				rt_raster_set_srid(raster, _rast[0]->srid);
 				rt_raster_set_scale(raster, 0, 0);
 
 				/* set offsets if provided */
@@ -9730,7 +9724,7 @@ rt_raster_from_two_rasters(
 				*err = 0;
 				return NULL;
 			}
-			raster->srid = _rast[0]->srid;
+			rt_raster_set_srid(raster, _rast[0]->srid);
 
 			/* get upper-left corner */
 			rt_raster_get_geotransform_matrix(_rast[0], gt);
