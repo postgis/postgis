@@ -51,6 +51,11 @@ Usage:	$me [-v] <dumpfile>
 
 my $DEBUG = 0;
 
+# NOTE: the SRID limits here are being discussed:
+# http://postgis.refractions.net/pipermail/postgis-devel/2012-February/018463.html
+my $SRID_MAXIMUM = 999999;
+my $SRID_USER_MAXIMUM = 998999; 
+
 if ( @ARGV && $ARGV[0] eq '-v' ) {
   $DEBUG = 1;
   shift(@ARGV);
@@ -208,12 +213,35 @@ while( my $l = <INPUT> ) {
       }
       if ( $subline =~ /CONSTRAINT enforce_srid_/i ) {
         $subline =~ s/\.srid\(/.st_srid(/;
-        $subline =~ s/\(-1\)/(0)/;
+        if ( $subline =~ /=\s\(?([-0-9][0-9]*)\)/ ) {
+          my $oldsrid = $1;
+          my $newsrid = clamp_srid($oldsrid);
+          $subline =~ s/=\s*(\(?)[-0-9][0-9]*/= $1$newsrid/;
+        } else {
+          print STDERR "WARNING: could not find SRID value in: $subline";
+        }
       }
       push(@sublines, $subline);
       last if $subline =~ /;[\t ]*$/;
     }
     print STDOUT @sublines;
+    next;
+  }
+
+  # Clamp SRIDS in spatial_ref_sys
+  elsif ( $l =~ /COPY spatial_ref_sys /)
+  {
+    print STDOUT $l;
+    while( my $subline = <INPUT>)
+    {
+      if ( $subline =~ /([0-9]*)\t/ ) {
+        my $oldsrid = $1;
+          my $newsrid = clamp_srid($oldsrid);
+          $subline =~ s/^[0-9]*\t/${newsrid}\t/;
+      }
+      print STDOUT $subline;
+      last if $subline =~ /^\.$/;
+    }
     next;
   }
 
@@ -251,7 +279,7 @@ print STDOUT "DROP TABLE _pgis_restore_spatial_ref_sys;\n";
 # but you'd still have your data
 print STDOUT "ALTER TABLE spatial_ref_sys ADD constraint " 
            . "spatial_ref_sys_srid_check check "
-           . "( srid > 0 and srid < 999000 ) ;\n";
+           . "( srid > 0 and srid < " . ($SRID_USER_MAXIMUM+1) ." ) ;\n";
 
 
 print STDERR "Done.\n";
@@ -331,6 +359,29 @@ canonicalize_typename
 	}
 
 	return $arg;
+}
+
+# Change SRID to be within allowed ranges
+sub
+clamp_srid
+{
+  my $oldsrid = shift;
+  my $newsrid = $oldsrid;
+
+  if ( $oldsrid < 0 ) {
+    $newsrid = 0;
+  } elsif ( $oldsrid > $SRID_MAXIMUM ) {
+    $newsrid = $SRID_USER_MAXIMUM + 1 +
+      # -1 is to reduce likelyhood of clashes 
+      # NOTE: must match core implementation (lwutil.c)
+      ( $oldsrid % ( $SRID_MAXIMUM - $SRID_USER_MAXIMUM - 1 ) );
+  }
+
+  if ( $oldsrid != $newsrid ) {
+    printf STDERR "  WARNING: SRID value $oldsrid converted to $newsrid\n";
+  }
+
+  return $newsrid;
 }
 
 

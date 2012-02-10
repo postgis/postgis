@@ -372,15 +372,20 @@ error_if_srid_mismatch(int srid1, int srid2)
 int
 clamp_srid(int srid)
 {
-	if ( srid <= 0 ) {
-		if ( srid != SRID_UNKNOWN ) {
-			lwnotice("SRID value %d converted to the officially unknown SRID value %d", srid, SRID_UNKNOWN);
-			srid = SRID_UNKNOWN;
+	int newsrid = srid;
+
+	if ( newsrid <= 0 ) {
+		if ( newsrid != SRID_UNKNOWN ) {
+			newsrid = SRID_UNKNOWN;
+			lwnotice("SRID value %d converted to the officially unknown SRID value %d", srid, newsrid);
 		}
 	} else if ( srid > SRID_MAXIMUM ) {
-		/* should this be a NOTICE instead ? */
-		lwerror("SRID value %d > SRID_MAXIMUM (%d)",srid,SRID_MAXIMUM);
+    newsrid = SRID_USER_MAXIMUM + 1 +
+      /* -1 is to reduce likelyhood of clashes */
+      /* NOTE: must match implementation in postgis_restore.pl */
+      ( srid % ( SRID_MAXIMUM - SRID_USER_MAXIMUM - 1 ) );
+		lwnotice("SRID value %d > SRID_MAXIMUM converted to %d", srid, newsrid);
 	}
 	
-	return srid;
+	return newsrid;
 }
