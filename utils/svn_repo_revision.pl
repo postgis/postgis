@@ -5,7 +5,11 @@ $ENV{"LC_ALL"} = "C";
 use Cwd;
 my $cwd = &Cwd::cwd();
 
-my $svn_exe = `which svnn`;
+# TODO: test on old systems, I think I saw some `which`
+#       implementations returning "nothing found" or something
+#       like that, making the later if ( ! $svn_exe ) always false
+#
+my $svn_exe = `which svn`;
 
 my $svn_revision = 0;
 my $defn_string = $defn_string_start . $svn_revision;
