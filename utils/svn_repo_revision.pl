@@ -5,26 +5,30 @@ $ENV{"LC_ALL"} = "C";
 use Cwd;
 my $cwd = &Cwd::cwd();
 
-my $svn_exe = `which svn`;
+my $svn_exe = `which svnn`;
 
-my $target = "local";
+my $svn_revision = 0;
+my $defn_string = $defn_string_start . $svn_revision;
+my $rev_file = "postgis_svn_revision.h";
 
 $target = $ARGV[0] if $ARGV[0];
 
 # Don't muck with things if you can't find svn
 if ( ! $svn_exe ) {
-  if ( ! -f "svnrevision.h" ) {
-    die "Couldn't find svn exectable or svnrevision.h, cannot continue.\n";
+  if ( ! -f $rev_file ) {
+    &write_defn(0);
+    exit(0);
   }
   else {
     exit(0);
   }
 };
 
-# Don't muck with thinks if you aren't in an svn repository
+# Don't muck with things if you aren't in an svn repository
 if ( $target eq "local" && ! -d ".svn" ) {
-  if ( ! -f "svnrevision.h" ) {
-    die "Couldn't find or generate svnrevision.h, cannot continue.\n";
+  if ( ! -f $rev_file ) {
+    &write_defn(0);
+    exit(0);
   }
   else {
     exit(0);
@@ -40,11 +44,22 @@ if ( $target eq "local" ) {
 }
 
 if ( $svn_info =~ /Last Changed Rev: (\d+)/ ) {
-  my $rev = $1;
-  open(OUT,">$cwd/svnrevision.h");
-  print OUT "#define SVNREV $rev\n";
-  close(OUT);
+  &write_defn($1);
 }
 else {
-  die "Unable to find revision in svn info\n";
+  if ( ! -f $rev_file ) {
+    &write_defn(0);
+    exit(0);
+  }
+  else {
+    exit(0);
+  }
+}
+
+sub write_defn {
+  my $rev = shift;
+  my $string = "#define POSTGIS_SVN_REVISION $rev\n";
+  open(OUT,">$rev_file");
+  print OUT $string;
+  close(OUT);
 }

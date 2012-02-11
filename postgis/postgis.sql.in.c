@@ -2315,6 +2315,10 @@ CREATE OR REPLACE FUNCTION postgis_geos_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION postgis_svn_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'C' IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION postgis_libxml_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE;
@@ -2355,6 +2359,7 @@ BEGIN
 	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
+	select postgis_svn_version() INTO svnver;
 
 	fullver = 'POSTGIS="' || libver || '"';
 
@@ -2372,6 +2377,10 @@ BEGIN
 
 	IF  libxmlver IS NOT NULL THEN
 		fullver = fullver || ' LIBXML="' || libxmlver || '"';
+	END IF;
+
+	IF  svnver IS NOT NULL THEN
+		fullver = fullver || ' SVN_REVISION=' || svnver;
 	END IF;
 	
 	IF usestats THEN

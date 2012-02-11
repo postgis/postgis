@@ -19,7 +19,7 @@ all install uninstall noop clean distclean check:
 		echo "PostGIS was built successfully. Ready to install."; \
 	fi
 
-all: 
+all: postgis_svn_revision.h
 
 install: all
 
@@ -177,6 +177,9 @@ authors.git: authors.svn
 
 svnrebase: authors.git
 	git svn rebase --authors-file authors.git
+
+postgis_svn_revision.h: .FORCE
+	$(PERL) utils/svn_repo_revision.pl
 
 .PHONY: utils liblwgeom ChangeLog.svn raster
 
