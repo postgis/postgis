@@ -47,7 +47,7 @@ UPDATE rt_properties_test
         ipy = round(st_upperlefty(rast)*1000000000000)
     WHERE id > 100;
 
-SELECT 'T4', id, scalex, scaley, skewx, skewy, st_rotation(rast)
+SELECT 'T4', id, scalex, scaley, abs(skewx), abs(skewy), st_rotation(rast)
     FROM rt_properties_test
     WHERE id > 100;
 
