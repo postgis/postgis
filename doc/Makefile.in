@@ -84,10 +84,10 @@ raster_comments.sql: ./xsl/raster_comments.sql.xsl postgis.xml postgis_aggs_mm.x
 raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl postgis.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/raster_cheatsheet.html.xsl postgis.xml > $@
 	
-topology_comments.sql: ./xsl/topology_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
+topology_comments.sql: ./xsl/topology_comments.sql.xsl postgis.xml extras_topology.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/topology_comments.sql.xsl postgis.xml > $@
 	
-topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl postgis.xml postgis_aggs_mm.xml
+topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl postgis.xml extras_topology.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/topology_cheatsheet.html.xsl postgis.xml > $@
 	
 tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
