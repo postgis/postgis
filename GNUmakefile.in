@@ -178,9 +178,7 @@ authors.git: authors.svn
 svnrebase: authors.git
 	git svn rebase --authors-file authors.git
 
-postgis_svn_revision.h: .FORCE
+postgis_svn_revision.h: 
 	$(PERL) utils/svn_repo_revision.pl
 
-.PHONY: utils liblwgeom ChangeLog.svn raster
-
-.FORCE:
+.PHONY: utils liblwgeom ChangeLog.svn raster postgis_svn_revision.h
