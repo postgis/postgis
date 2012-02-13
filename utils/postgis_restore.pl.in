@@ -53,8 +53,8 @@ my $DEBUG = 0;
 
 # NOTE: the SRID limits here are being discussed:
 # http://postgis.refractions.net/pipermail/postgis-devel/2012-February/018463.html
-my $SRID_MAXIMUM = 999999;
-my $SRID_USER_MAXIMUM = 998999; 
+my $SRID_MAXIMUM = @SRID_MAXIMUM@;
+my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@; 
 
 if ( @ARGV && $ARGV[0] eq '-v' ) {
   $DEBUG = 1;

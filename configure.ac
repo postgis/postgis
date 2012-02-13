@@ -831,6 +831,15 @@ fi
 
 AC_SUBST([TOPOLOGY])
 
+dnl ===========================================================================
+dnl SRID stuff
+dnl ===========================================================================
+
+SRID_MAX=999999
+SRID_USR_MAX=998999
+AC_SUBST([SRID_MAX])
+AC_SUBST([SRID_USR_MAX])
+
 
 dnl ====================================
 dnl raster stuff
@@ -1025,6 +1034,7 @@ AC_OUTPUT([GNUmakefile
    doc/Makefile 
    doc/Makefile.comments 
    doc/html/image_src/Makefile 
+   utils/Makefile 
    $RT_MAKEFILE_LIST])
     
 dnl ===========================================================================

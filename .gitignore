@@ -110,3 +110,4 @@ topology/uninstall_topology.sql
 authors.git
 libpgcommon/Makefile
 libpgcommon/cunit/Makefile
+utils/Makefile

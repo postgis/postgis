@@ -1,0 +1,42 @@
+# **********************************************************************
+# * $Id$
+# *
+# * PostGIS - Spatial Types for PostgreSQL
+# * http://postgis.refractions.net
+# *
+# * Copyright 2008 Mark Cave-Ayland
+# *
+# * This is free software; you can redistribute and/or modify it under
+# * the terms of the GNU General Public Licence. See the COPYING file.
+# *
+# **********************************************************************
+
+SCRIPTS = \
+	postgis_restore.pl \
+	create_undef.pl \
+	svn_repo_revision.pl \
+	postgis_proc_upgrade.pl \
+	profile_intersects.pl \
+	test_estimation.pl \
+	test_joinestimation.pl
+
+SRID_MAXIMUM = @SRID_MAX@
+SRID_USER_MAXIMUM = @SRID_USR_MAX@
+
+all: postgis_restore.pl
+	chmod +x $(SCRIPTS)
+
+postgis_restore.pl: postgis_restore.pl.in
+	sed 's,@SRID_MAXIMUM@,$(SRID_MAXIMUM),g;s,@SRID_USER_MAXIMUM@,$(SRID_USER_MAXIMUM),' $< >$@
+
+# We don't install utils (why?)
+install uninstall:
+
+clean:
+	rm -f postgis_restore.pl
+
+distclean: clean
+	rm -f Makefile
+
+# And there's nothing to check
+check:
