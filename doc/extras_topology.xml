@@ -1836,6 +1836,7 @@ Returns an ordered set of edges forming a ring with the given edge .
 					<funcdef>getfaceedges_returntype <function>GetRingEdges</function></funcdef>
 					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>aring</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>max_edges=null</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -1849,6 +1850,12 @@ Each output consists of a sequence and a signed edge id.
 Sequence numbers start with value 1.
 A negative edge identifier means that the given edge is taken backward.
 You can pass a negative edge id to start walking backward.
+		</para>
+
+                <para>
+If <varname>max_edges</varname> is not null no more than those records
+are returned by that function. This is meant to be a safety parameter
+when dealing with possibly invalid topologies.
 		</para>
 
                 
