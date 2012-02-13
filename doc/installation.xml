@@ -1200,37 +1200,29 @@ pretty_address
 	</listitem>
 	<listitem>
 	<para>
-		Some of the tables in your dump may be using an
-		out-of-range SRID value. SRID range goes from 0 to 999999.
-		In this case both your geometries and relative entries in
-		spatial_ref_sys will be converted to a SRID in the 
-		reserved range 999000..999999. Different source SRIDS may
-		end up mapping to the same target SRID in which case
-		all your spatial_ref_sys entries will fail to restore.
-		The postgis_restore.pl script will let you know about
-		all these conversions with WARNING messages on the standard
-		error stream.
-		Note that even successful conversion will need to be
-		post-processed to get data out of the reserved SRID range.
-		See next paragraph about that.
-		You may prevent all this noise by ensuring the SRID
-		of your tables is within the valid range _before_ dumping.
-	</para>
-	</listitem>
-	<listitem>
-	<para>
 		Some custom records of spatial_ref_sys in dump file have
 		an invalid SRID value. Valid SRID values are bigger than 0
-		and smaller than 999000. In this case your custom records
-		will be retained but the spatial_ref_sys table would loose
-		a check contraint guarding for that invariant to hold.
+		and smaller than 999000. Values in the 999000.999999 range
+    are reserved for internal use while values > 999999 can't
+    be used at all.
+    All your custom records with invalid SRIDs will be retained,
+    with those > 999999 moved into the reserved range, but the
+    spatial_ref_sys table would loose a check contraint guarding
+    for that invariant to hold and possibly also its primary key
+    ( when multiple invalid SRIDS get converted to the same reserved
+    SRID value ).
+  </para>
+
+  <para>
 		In order to fix this you should copy your custom SRS to
 		a SRID with a valid value (maybe in the 910000..910999
 		range), convert all your tables to the new srid (see
 		<xref linkend="UpdateGeometrySRID"/>), delete the invalid
-		entry from spatial_ref_sys and re-construct the check with:
+		entry from spatial_ref_sys and re-construct the check(s) with:
 
 		<programlisting>ALTER TABLE spatial_ref_sys ADD CONSTRAINT spatial_ref_sys_srid_check check (srid &gt; 0 AND srid &lt; 999000 );</programlisting>
+
+		<programlisting>ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid));</programlisting>
 	
 	</para>
 	</listitem>

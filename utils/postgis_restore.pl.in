@@ -131,6 +131,10 @@ if ( $hasTopology ) {
 # Drop the spatial_ref_sys_srid_check to allow for custom invalid SRIDs in the dump
 print STDOUT "ALTER TABLE spatial_ref_sys DROP constraint "
            . "spatial_ref_sys_srid_check;\n";
+# Drop the spatial_ref_sys primary key to allow for SRID conversions
+# which possibly end up taking the same spot
+print STDOUT "ALTER TABLE spatial_ref_sys DROP constraint "
+           . "spatial_ref_sys_pkey;\n";
 
 # Backup entries found in new spatial_ref_sys for later updating the
 print STDOUT "CREATE TEMP TABLE _pgis_restore_spatial_ref_sys AS "
@@ -280,6 +284,10 @@ print STDOUT "DROP TABLE _pgis_restore_spatial_ref_sys;\n";
 print STDOUT "ALTER TABLE spatial_ref_sys ADD constraint " 
            . "spatial_ref_sys_srid_check check "
            . "( srid > 0 and srid < " . ($SRID_USER_MAXIMUM+1) ." ) ;\n";
+# Try re-enforcing spatial_ref_sys primary key, would fail if impossible
+# but you'd still have your data
+print STDOUT "ALTER TABLE spatial_ref_sys ENABLE TRIGGER ALL;\n";
+print STDOUT "ALTER TABLE spatial_ref_sys ADD PRIMARY KEY(srid);\n";
 
 
 print STDERR "Done.\n";
