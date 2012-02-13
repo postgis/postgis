@@ -2476,20 +2476,24 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer DEFAULT 
         var_h integer;
         var_x integer;
         var_y integer;
+        value float8 := NULL;
+        hasband boolean := TRUE;
     BEGIN
-        IF rast IS NOT NULL THEN
+        IF rast IS NOT NULL AND NOT ST_IsEmpty(rast) THEN
             IF ST_HasNoBand(rast, band) THEN
-                RAISE NOTICE 'Raster do not have band %. Returning null', band;
-            ELSE
-                SELECT ST_Width(rast), ST_Height(rast)
-                INTO var_w, var_h;
-                FOR var_x IN 1..var_w LOOP
-                    FOR var_y IN 1..var_h LOOP
-                        SELECT ST_PixelAsPolygon(rast, var_x, var_y), ST_Value(rast, band, var_x, var_y), var_x, var_y INTO geom,val,x,y;
-                        RETURN NEXT;
-                    END LOOP;
-                END LOOP;
+                RAISE NOTICE 'Raster do not have band %. Returning null values', band;
+                hasband := false;
             END IF;
+            SELECT ST_Width(rast), ST_Height(rast) INTO var_w, var_h;
+            FOR var_x IN 1..var_w LOOP
+                FOR var_y IN 1..var_h LOOP
+                    IF hasband THEN
+                        value := ST_Value(rast, band, var_x, var_y);
+                    END IF;
+                    SELECT ST_PixelAsPolygon(rast, var_x, var_y), value, var_x, var_y INTO geom,val,x,y;
+                    RETURN NEXT;
+                END LOOP;
+            END LOOP;
         END IF;
         RETURN;
     END;
