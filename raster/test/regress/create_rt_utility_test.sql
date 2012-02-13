@@ -30,7 +30,7 @@ CREATE TABLE rt_utility_test (
 
 INSERT INTO rt_utility_test 
 VALUES ( 1, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:0,0 srid:9102707 width:1217 height:1156',
-        9102707, 1217, 1156, --- SRID, width, height
+        26919, 1217, 1156, --- SRID, width, height
         5, -5, 782325.5, 26744042.5, 0, 0, --- georeference
 (
 '01' -- little endian (uint8 ndr)
@@ -51,7 +51,7 @@ VALUES ( 1, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:0,0 srid:9102707 
 ||
 '0000000000000000' -- skewY (float64 0)
 ||
-'73E58A00' -- SRID (int32 9102707)
+'27690000' -- SRID (int32 26919 - UTM 19N)
 ||
 'C104' -- width (uint16 1217)
 ||
@@ -61,7 +61,7 @@ VALUES ( 1, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:0,0 srid:9102707 
 
 INSERT INTO rt_utility_test 
 VALUES ( 2, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:3,3 srid:9102707 width:1217 height:1156',
-        9102707, 1217, 1156, --- SRID, width, height
+        26919, 1217, 1156, --- SRID, width, height
         5, -5, 782325.5, 26744042.5, 3, 3, --- georeference
 (
 '01' -- little endian (uint8 ndr)
@@ -82,7 +82,7 @@ VALUES ( 2, '1217x1156, ip:782325.5,26744042.5 scale:5,-5 skew:3,3 srid:9102707 
 ||
 '0000000000000840' -- skewY (float64 3)
 ||
-'73E58A00' -- SRID (int32 9102707)
+'27690000' -- SRID (int32 26919 - UTM 19N)
 ||
 'C104' -- width (uint16 1217)
 ||
