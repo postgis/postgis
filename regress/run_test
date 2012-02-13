@@ -684,6 +684,9 @@ if test -z "$db_exists"; then
 				echo "${SCRIPT} not found" >&2
 				exit 1
 			fi
+			if test -e ${STAGED_SCRIPTS_DIR}/topology_comments.sql; then
+				${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/topology_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology comments"
+			fi
 		fi
 		if test x"$OPT_WITH_RASTER" = "xyes"; then
 			SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis.sql
