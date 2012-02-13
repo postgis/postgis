@@ -5,7 +5,7 @@
 #-----------------------------------------------------
 
 # todo: add all subdirs
-SUBDIRS = liblwgeom libpgcommon postgis regress @RASTER@ @TOPOLOGY@ loader utils @EXTENSIONS@  
+SUBDIRS = liblwgeom libpgcommon postgis regress @RASTER@ @TOPOLOGY@ loader utils @EXTENSIONS@
 
 PERL = @PERL@
 

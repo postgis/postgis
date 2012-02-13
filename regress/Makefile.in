@@ -155,6 +155,7 @@ staged-install-raster:
 
 staged-install: staged-install-raster staged-install-topology
 	$(MAKE) -C ../postgis REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
+	$(MAKE) -C ../ REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) comments-install
 	$(PERL) -pi.bak -e 's,\$$libdir,$(REGRESS_INSTALLDIR)/lib,g' $(REGRESS_INSTALLDIR)/share/contrib/postgis/*.sql
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 

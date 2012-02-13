@@ -133,6 +133,11 @@ if test "x$XSLTPROC" = "x"; then
 	AC_MSG_WARN([xsltproc is not installed so documentation cannot be built])
 fi
 
+AC_PATH_PROG([XMLLINT], [xmllint], [])
+if test "x$XMLLINT" = "x"; then
+	AC_MSG_WARN([xmllint is not installed so documentation cannot be checked])
+fi
+
 AC_PATH_PROG([DBLATEX], [dblatex], [])
 if test "x$DBLATEX" = "x"; then
 	AC_MSG_WARN([dblatex is not installed so PDF documentation cannot be built])

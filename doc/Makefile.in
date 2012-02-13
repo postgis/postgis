@@ -18,6 +18,7 @@ INSTALL_DATA=@INSTALL_DATA@
 
 XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
+XMLLINT=@XMLLINT@
 
 XSLTPROC_COMMONOPTS= \
 	--param section.autolabel 1 \
@@ -64,8 +65,12 @@ endif
 endif
 endif
 
+ifeq ($(XSLTPROC),)
+postgis_aggs_mm.xml: requirements_not_met_xsltproc
+else
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis.xml
 	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl postgis.xml > $@
+endif
 
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
 	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl postgis.xml > $@
@@ -151,28 +156,45 @@ clean:
 maintainer-clean: clean images-clean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
 
+ifeq ($(XSLTPROC),)
+comments: requirements_not_met_xsltproc
+else
 comments: postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
+endif
+
 cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html tiger_geocoder_cheatsheet.html
 
+ifeq ($(XSLTPROC),)
+comments-install: 
+else
 comments-install: comments
 	$(MAKE) -f Makefile.comments install
+endif
 
 comments-uninstall:
 	$(MAKE) -f Makefile.comments uninstall
 
-install: html/postgis.html man/shp2pgsql.1 man/pgsql2shp.1
-	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
+man-install: man/shp2pgsql.1 man/pgsql2shp.1
 	mkdir -p $(DESTDIR)$(PGSQL_MANDIR)/man1
-	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
-	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 	$(INSTALL_DATA) man/pgsql2shp.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
 	$(INSTALL_DATA) man/shp2pgsql.1 $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
 
-uninstall:
-	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
-	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
+man-uninstall:
 	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/shp2pgsql.1
 	rm -f $(DESTDIR)$(PGSQL_MANDIR)/man1/pgsql2shp.1
+
+docs-install: html/postgis.html
+	mkdir -p $(DESTDIR)$(PGSQL_DOCDIR)/postgis
+	$(INSTALL_DATA) html/postgis.html $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+	$(INSTALL_DATA) ../README.postgis $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
+
+docs-uninstall: 
+	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
+	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
+
+install: docs-install man-install comments-install
+
+uninstall: docs-uninstall man-uninstall comments-uninstall
 
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
@@ -184,18 +206,29 @@ endif
 
 
 
-ifeq ($(XSLTPROC),)
-check: requirements_not_met_xsltproc
+ifeq ($(XMLLINT),)
+check: requirements_not_met_xmllint
 else
 check:	postgis_aggs_mm.xml
-	xmllint --loaddtd --xinclude --valid postgis.xml > /dev/null
+	$(XMLLINT) --loaddtd --xinclude --valid postgis.xml > /dev/null
 endif
 
 
 requirements_not_met_xsltproc:
 	@echo
-	@echo "configure was unable to find 'xsltproc' which is required to build the documentation."
-	@echo "To build the documentation, install xsltproc and then re-run configure. Alternatively "
+	@echo "configure was unable to find 'xsltproc' which is required"
+	@echo "to build the documentation."
+	@echo "Install xsltproc and then re-run configure. Alternatively "
+	@echo "refer to online manual:"
+	@echo
+	@echo "  http://www.postgis.org/docs"
+	@echo
+
+requirements_not_met_xmllint:
+	@echo
+	@echo "configure was unable to find 'xmllint' which is required"
+	@echo "to test the documentation."
+	@echo "Install xmllint and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
 	@echo "  http://www.postgis.org/docs"
@@ -203,9 +236,11 @@ requirements_not_met_xsltproc:
 
 requirements_not_met_xslbase:
 	@echo
-	@echo "configure was unable to find the Docbook XSL stylesheet directory which is required to build the documentation."
-	@echo "To build the documentation, install the Docbook XSL stylesheets and/or re-run configure with the --with-xsldir option. Alternatively "
-	@echo "refer to online manual:"
+	@echo "configure was unable to find the Docbook XSL stylesheet directory"
+	@echo "which is required to build the documentation."
+	@echo "Install the Docbook XSL stylesheets and/or re-run configure "
+	@echo "with the --with-xsldir option."
+	@echo "Alternatively refer to online manual:"
 	@echo
 	@echo "  http://www.postgis.org/docs"
 	@echo
