@@ -192,7 +192,7 @@ BEGIN
 
   -- Construct the face geometry, then for each polygon:
   FOR rec IN SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR(
-    topology.ST_GetFaceGeometry(toponame, face_id)))).geom)).*
+    topology.ST_GetFaceGeometry(toponame, face_id)))).geom)).geom
   LOOP
 
       -- Contents of a directed face are the list of edges

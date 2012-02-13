@@ -401,7 +401,7 @@ BEGIN
     RAISE EXCEPTION 'Face geometry must be a polygon';
   END IF;
 
-  for rrec IN SELECT (ST_DumpRings(ST_ForceRHR(apoly))).*
+  for rrec IN SELECT (ST_DumpRings(ST_ForceRHR(apoly))).geom
   LOOP -- {
     --
     -- Find all bounds edges, forcing right-hand-rule

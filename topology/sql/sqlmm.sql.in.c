@@ -65,7 +65,7 @@ BEGIN
 
   -- Construct the face geometry, then for each ring of each polygon:
   sql := 'SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR('
-    || 'ST_BuildArea(ST_Collect(geom))))).geom)).* FROM '
+    || 'ST_BuildArea(ST_Collect(geom))))).geom)).geom FROM '
     || quote_ident(toponame) || '.edge_data WHERE left_face = '
     || face_id || ' OR right_face = ' || face_id;
   FOR rec IN EXECUTE sql 
