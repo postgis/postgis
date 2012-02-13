@@ -91,8 +91,7 @@ TEST_UTILITY = \
 	rt_reclass \
 	rt_resample \
 	rt_asraster \
-	rt_intersection \
-	rt_clip
+	rt_intersection
 
 TEST_GIST = \
 	create_rt_gist_test \
