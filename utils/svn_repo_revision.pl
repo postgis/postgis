@@ -112,8 +112,26 @@ sub read_rev_svn {
 
 sub write_defn {
   my $rev = shift;
+  my $oldrev = 0;
+
+  # Do not override the file if new detected
+  # revision isn't different from the existing one
+  if ( -f $rev_file ) {
+    open(IN, "<$rev_file");
+    my $oldrevline = <IN>;
+    if ( $oldrevline =~ /POSTGIS_SVN_REVISION (.*)/ ) {
+      $oldrev = $1;
+    }
+    close(IN);
+    if ( $rev == $oldrev ) {
+      print STDERR "Not updating existing rev file at $rev\n";
+      return;
+    }
+  }
+
   my $string = "#define POSTGIS_SVN_REVISION $rev\n";
   open(OUT,">$rev_file");
   print OUT $string;
   close(OUT);
+  print STDERR "Wrote rev file at $rev\n";
 }
