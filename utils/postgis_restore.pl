@@ -370,15 +370,15 @@ clamp_srid
 
   if ( $oldsrid < 0 ) {
     $newsrid = 0;
+    printf STDERR "  WARNING: SRID $oldsrid converted to $newsrid (official UNKNOWN)\n";
   } elsif ( $oldsrid > $SRID_MAXIMUM ) {
     $newsrid = $SRID_USER_MAXIMUM + 1 +
       # -1 is to reduce likelyhood of clashes 
       # NOTE: must match core implementation (lwutil.c)
       ( $oldsrid % ( $SRID_MAXIMUM - $SRID_USER_MAXIMUM - 1 ) );
-  }
-
-  if ( $oldsrid != $newsrid ) {
-    printf STDERR "  WARNING: SRID value $oldsrid converted to $newsrid\n";
+    printf STDERR "  WARNING: SRID $oldsrid converted to $newsrid (in reserved zone)\n";
+  } elsif ( $oldsrid > $SRID_USER_MAXIMUM ) {
+    printf STDERR "  WARNING: SRID $newsrid is in reserved zone\n";
   }
 
   return $newsrid;
