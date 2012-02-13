@@ -671,6 +671,9 @@ if test -z "$db_exists"; then
 		object_count_pre=$(count_db_objects "counting object before postgis install")
 
 		${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module"
+		if test -e ${STAGED_SCRIPTS_DIR}/postgis_comments.sql; then
+			${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core comments"
+		fi
 
 		if test x"$OPT_WITH_TOPO" = "xyes"; then
 			SCRIPT=${STAGED_SCRIPTS_DIR}/topology.sql
@@ -690,6 +693,9 @@ if test -z "$db_exists"; then
 			else
 				echo "${SCRIPT} not found" >&2
 				exit 1
+			fi
+			if test -e ${STAGED_SCRIPTS_DIR}/raster_comments.sql; then
+				${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/raster_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster comments"
 			fi
 		fi
 	else
