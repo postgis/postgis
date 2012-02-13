@@ -111,9 +111,10 @@ endif
 # Make all PostGIS objects depend upon liblwgeom, so that if an underlying
 # change is made, a PostGIS rebuild is triggered.
 #
-# Also they are all dependent on postgis_config.h
+# Also they are all dependent on postgis_config.h 
+# and thus postgis_svn_revision.h
 #
-$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h
+$(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_svn_revision.h
 
 ../svnrevision.h:
 	$(MAKE) -C .. svnrevision.h
