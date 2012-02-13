@@ -968,7 +968,7 @@ BEGIN
   RETURN ret;
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 --} GetTopologyName(topoid)
 
 --{
@@ -986,7 +986,7 @@ BEGIN
   RETURN ret;
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 --} GetTopologyId(toponame)
   
 
@@ -1033,7 +1033,7 @@ BEGIN
   RETURN tg_objs;
 END;
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION topology.GetTopoGeomElementArray(tg topology.TopoGeometry)
   RETURNS topology.TopoElementArray
@@ -1048,7 +1048,7 @@ BEGIN
   RETURN ret;
 END;
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 
 --} GetTopoGeomElementArray()
 
@@ -1119,7 +1119,7 @@ BEGIN
   RETURN;
 END;
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION topology.GetTopoGeomElements(tg topology.TopoGeometry)
   RETURNS SETOF topology.TopoElement
@@ -1138,7 +1138,7 @@ BEGIN
   RETURN;
 END;
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 
 --} GetTopoGeomElements()
 
