@@ -560,13 +560,13 @@ BEGIN
     RAISE EXCEPTION 'Topology % does not exist', toponame;
   END IF;
 
-  IF ltype = 'POINT' THEN
+  IF ltype ILIKE '%POINT%' OR ltype ILIKE 'PUNTAL' THEN
     intltype = 1;
-  ELSIF ltype = 'LINE' THEN
+  ELSIF ltype ILIKE '%LINE%' OR ltype ILIKE 'LINEAL' THEN
     intltype = 2;
-  ELSIF ltype = 'POLYGON' THEN
+  ELSIF ltype ILIKE '%POLYGON%' OR ltype ILIKE 'AREAL' THEN
     intltype = 3;
-  ELSIF ltype = 'COLLECTION' THEN
+  ELSIF ltype ILIKE '%COLLECTION%' OR ltype ILIKE 'GEOMETRY' THEN
     intltype = 4;
   ELSE
     RAISE EXCEPTION 'Layer type must be one of POINT,LINE,POLYGON,COLLECTION';
