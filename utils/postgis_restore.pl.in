@@ -212,7 +212,7 @@ while( my $l = <INPUT> ) {
         $subline =~ s/\.ndims\(/.st_ndims(/;
       }
       if ( $subline =~ /CONSTRAINT enforce_srid_/i ) {
-        $subline =~ s/\.srid\(/.st_srid(/;
+        $subline =~ s/\bsrid\(/st_srid(/;
         if ( $subline =~ /=\s\(?([-0-9][0-9]*)\)/ ) {
           my $oldsrid = $1;
           my $newsrid = clamp_srid($oldsrid);
