@@ -725,22 +725,6 @@ AC_SUBST([IGE_MAC_LIBS])
 
 
 dnl ===========================================================================
-dnl See if we have the requirements for building the extensions, namely
-dnl PostgreSQL 9.1 or better and the xlstproc tool for generating the commends
-dnl SQL file.
-dnl ===========================================================================
-
-EXTENSIONS=""
-if test $POSTGIS_PGSQL_VERSION -ge 91; then
-	if test ! "x$XSLTPROC" = "x"; then
-		AC_MSG_RESULT([enabling extensions for PostgreSQL 9.1...])
-		EXTENSIONS=extensions
-		AC_SUBST([EXTENSIONS])
-	fi
-fi
-
-
-dnl ===========================================================================
 dnl Allow the user to enable debugging with --enable-debug
 dnl
 dnl Currently we default to debug level 4. See DEBUG for more information. 
@@ -1012,8 +996,30 @@ else dnl # }{
     RT_MAKEFILE_LIST="raster/Makefile"
 fi dnl # }
 
+dnl ===========================================================================
+dnl See if we have the requirements for building the extensions, namely
+dnl PostgreSQL 9.1 or better and the xlstproc tool for generating the commends
+dnl SQL file.
+dnl ===========================================================================
 
+EXTENSIONS=""
+if test $POSTGIS_PGSQL_VERSION -ge 91; then
+	if test ! "x$XSLTPROC" = "x"; then
+		if test "x$RASTER" = "xraster"; then
+			if test "x$TOPOLOGY" = "xtopology"; then
+				AC_MSG_RESULT([enabling extensions for PostgreSQL 9.1...])
+				EXTENSIONS=extensions
+				AC_SUBST([EXTENSIONS])
+			fi
+		fi
+	fi
+fi
+
+
+dnl ===========================================================================
 dnl Output the relevant files
+dnl ===========================================================================
+
 AC_OUTPUT([GNUmakefile 
    extensions/Makefile
    extensions/postgis/Makefile 
