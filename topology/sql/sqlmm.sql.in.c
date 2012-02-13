@@ -141,7 +141,7 @@ EXCEPTION
     RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE;
+LANGUAGE 'plpgsql' STABLE;
 --} ST_GetFaceEdges
 
 --{
@@ -1452,7 +1452,7 @@ BEGIN
   RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent face.';
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE;
+LANGUAGE 'plpgsql' STABLE;
 --} ST_GetFaceGeometry
 
 
@@ -2834,7 +2834,7 @@ BEGIN
     RAISE DEBUG 'Updating contained edges';
 #endif
     ishole := false;
-  END IF;
+  END IF; -- }
 
   -- Update edges having new face on the left
   sql := 'UPDATE '

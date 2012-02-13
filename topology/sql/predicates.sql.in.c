@@ -448,7 +448,7 @@ BEGIN
   END IF;
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 --} intersects(TopoGeometry, TopoGeometry)
 
 --{
@@ -511,6 +511,6 @@ BEGIN
   RETURN TRUE;
 END
 $$
-LANGUAGE 'plpgsql' VOLATILE STRICT;
+LANGUAGE 'plpgsql' STABLE STRICT;
 --} equals(TopoGeometry, TopoGeometry)
 
