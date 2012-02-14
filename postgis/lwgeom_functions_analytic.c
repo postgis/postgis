@@ -1175,6 +1175,9 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 	getPoint2d_p(point->point, 0, &pt);
 	/* assume bbox short-circuit has already been attempted */
 
+	/* everything is outside of an empty polygon */
+	if ( polygon->nrings == 0 ) return -1;
+
 	ring = polygon->rings[0];
 	in_ring = point_in_ring(polygon->rings[0], &pt);
 	if ( in_ring == -1) /* outside the exterior ring */
@@ -1224,6 +1227,10 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 	{
 
 		LWPOLY *polygon = mpolygon->geoms[j];
+
+		/* everything is outside of an empty polygon */
+		if ( polygon->nrings == 0 ) continue;
+
 		ring = polygon->rings[0];
 		in_ring = point_in_ring(polygon->rings[0], &pt);
 		if ( in_ring == -1) /* outside the exterior ring */

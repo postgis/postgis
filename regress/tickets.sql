@@ -596,6 +596,13 @@ with inp as ( select
 ::geometry as g )
 select '#1543', st_astext(g), st_astext(st_buildarea(g)) from inp;
 
+-- #1578
+with inp as (
+ select ST_Collect('POLYGON EMPTY', 'POLYGON EMPTY') as mp,
+        'POINT(0 0)'::geometry as p
+)
+select '#1578', _st_within(p, mp), _st_intersects(p, mp) FROM inp;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
