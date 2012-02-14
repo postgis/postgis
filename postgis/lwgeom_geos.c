@@ -42,11 +42,6 @@
 #include <string.h>
 #include <assert.h>
 
-#if POSTGIS_PROFILE > 0
-#warning POSTGIS_PROFILE enabled!
-#endif
-
-
 /*
 ** Prototypes for SQL-bound functions
 */
