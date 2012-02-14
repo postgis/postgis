@@ -8443,6 +8443,9 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		if (ul_user) {
 			_width = (int) fmax((fabs(src_env.MaxX - src_env.MinX) + (_scale_x / 2.)) / _scale_x, 1);
 			_height = (int) fmax((fabs(src_env.MaxY - src_env.MinY) + (_scale_y / 2.)) / _scale_y, 1);
+
+			src_env.MaxX = src_env.MinX + (_width * _scale_x);
+			src_env.MinY = src_env.MaxY - (_height * _scale_y);
 		}
 
 		RASTER_DEBUGF(3, "shift is: %f, %f", grid_shift_xw, grid_shift_yw);
