@@ -297,6 +297,13 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 		break;
 	case LINETYPE:
 		lwl = (LWLINE *)lwgeom;
+		if ( lwl->points->npoints == 1 ) {
+			/* Duplicate point, to make geos-friendly */
+			lwl->points = ptarray_addPoint(lwl->points,
+		                           getPoint_internal(lwl->points, 0),
+		                           FLAGS_NDIMS(lwl->points->flags),
+		                           lwl->points->npoints);
+		}
 		sq = ptarray_to_GEOSCoordSeq(lwl->points);
 		g = GEOSGeom_createLineString(sq);
 		if ( ! g )
@@ -322,6 +329,7 @@ LWGEOM2GEOS(const LWGEOM *lwgeom)
 		else
 		{
 			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
+			/* TODO: check ring for being closed and fix if not */
 			shell = GEOSGeom_createLinearRing(sq);
 			if ( ! shell ) return NULL;
 			/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */

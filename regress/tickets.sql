@@ -590,6 +590,12 @@ select '#1042',round((st_ymax(st_minimumboundingcircle('LINESTRING(-1 -1, 1 1)')
 select '#1398a', st_astext(st_snaptogrid(st_project('POINT(-120 45)'::geography, 100000, radians(45))::geometry,0.000001));
 select '#1398b', st_astext(st_snaptogrid(st_project('POINT(20 85)'::geography, 2000000, radians(0.1))::geometry,0.000001));
 
+-- #1543
+with inp as ( select 
+'0105000000020000000102000000040000000000000000000000000000000000000000000000000024400000000000000000000000000000244000000000000024400000000000000000000000000000000001020000000100000000000000000000000000000000000000'
+::geometry as g )
+select '#1543', st_astext(g), st_astext(st_buildarea(g)) from inp;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
