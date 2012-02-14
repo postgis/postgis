@@ -718,5 +718,29 @@ $$ LANGUAGE plpythonu;]]></programlisting>
  C:/temp/slices5.png	 
 </programlisting>
    		</sect2>
+   		<sect2 id="RasterOutput_PSQL">
+   			<title>Outputting Rasters with PSQL</title>
+   			<para>Sadly PSQL doesn't have easy to use built-in functionality for outputting binaries.  This is a bit of a hack and based on one of the suggestions outlined in
+   				<ulink url="http://people.planetpostgresql.org/andrew/index.php?/archives/196-Clever-trick-challenge.html">Clever Trick Challenge -- Outputting bytea with psql</ulink> that piggy backs on PostgreSQL somewhat legacy large object support.  To use first launch your psql commandline connected to your database.
+   			</para>
+   			<para>Unlike the python approach, this approach creates the file on your local computer.</para>
+   			<screen>SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes
+ FROM 
+ ( VALUES (lo_create(0), 
+   ST_AsPNG( (SELECT rast FROM aerials.boston WHERE rid=1) ) 
+  ) ) As v(oid,png);
+-- you'll get an output something like --
+   oid   | num_bytes
+---------+-----------
+ 2630819 |     74860
+ 
+-- next note the oid and do this replacing the c:/test.png to file path location
+-- on your local computer
+ \lo_export 2630819 'C:/temp/aerial_samp.png'
+ 
+-- this deletes the file from large object storage on db
+SELECT lo_unlink(2630819);
+   			</screen>
+   		</sect2>
    </sect1>
 </chapter>
