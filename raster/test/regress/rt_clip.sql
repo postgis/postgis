@@ -1,4 +1,4 @@
-﻿SET client_min_messages TO warning;
+SET client_min_messages TO warning;
 
 DROP TABLE IF EXISTS raster_clip;
 CREATE TABLE raster_clip (
