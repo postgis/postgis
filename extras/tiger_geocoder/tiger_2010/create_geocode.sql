@@ -70,6 +70,7 @@ CREATE TYPE norm_addy AS (
 
 -- Reverse Geocode API, called by user
 \i geocode/reverse_geocode.sql
+\i geocode/census_tracts_functions.sql
 COMMIT;
 
 -- Tiger to PostGIS Topology

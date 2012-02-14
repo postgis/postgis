@@ -99,7 +99,8 @@ $$
 language 'plpgsql';
 ALTER FUNCTION create_census_base_tables() SET search_path=tiger,public;
 
-CREATE OR REPLACE FUNCTION loader_generate_census(param_states text[], os text)
+DROP FUNCTION IF EXISTS loader_generate_census(text[], text);
+CREATE OR REPLACE FUNCTION loader_generate_census_script(param_states text[], os text)
   RETURNS SETOF text AS
 $$
 SELECT create_census_base_tables();

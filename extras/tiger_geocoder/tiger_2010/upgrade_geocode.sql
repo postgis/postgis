@@ -222,6 +222,7 @@ SELECT create_census_base_tables();
 -- Reverse Geocode API, called by user
 \i geocode/geocode_intersection.sql
 \i geocode/reverse_geocode.sql
+\i geocode/census_tracts_functions.sql
 COMMIT;
 -- Tiger to PostGIS Topology
 -- only useable if you have topology installed
