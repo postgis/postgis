@@ -50,11 +50,20 @@ public class Point extends Geometry {
         return equals(other);
     }
 
+	public static boolean double_equals(double a, double b) {
+		if ( Double.isNaN(a) && Double.isNaN(b) ) {
+			return true;
+		}
+		else {
+			return (a == b);
+		}
+	}
+
     public final boolean equals(Point other) {
-        boolean xequals = x == other.x;
-        boolean yequals = y == other.y;
-        boolean zequals = ((dimension == 2) || (z == other.z));
-        boolean mequals = ((haveMeasure == false) || (m == other.m));
+        boolean xequals = double_equals(x, other.x);
+        boolean yequals = double_equals(y, other.y);
+        boolean zequals = ((dimension == 2) || double_equals(z, other.z));
+        boolean mequals = ((haveMeasure == false) || double_equals(m,other.m));
         boolean result = xequals && yequals && zequals && mequals;
         return result;
     }
