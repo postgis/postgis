@@ -3485,12 +3485,13 @@ CREATE AGGREGATE ST_Union(raster, integer, text) (
 -----------------------------------------------------------------------
 -- ST_Clip
 -----------------------------------------------------------------------
+-- Nodata as array series
 
-CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata float8 DEFAULT NULL, trimraster boolean DEFAULT FALSE)
+-- Major variant
+CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata float8[] DEFAULT NULL, trimraster boolean DEFAULT FALSE)
 	RETURNS raster
 	AS $$
 	DECLARE
-		sourceraster raster := rast;
 		newrast raster;
 		geomrast raster;
 		numband int;
@@ -3520,26 +3521,25 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 		END IF;
 
 		newpixtype := ST_BandPixelType(rast, bandstart);
-		newnodata := coalesce(nodata, ST_BandNodataValue(rast, bandstart), ST_MinPossibleValue(newpixtype));
+		newnodata := coalesce(nodata[1], ST_BandNodataValue(rast, bandstart), ST_MinPossibleValue(newpixtype));
 		newextent := CASE WHEN trimraster THEN 'INTERSECTION' ELSE 'FIRST' END;
 
 --RAISE NOTICE 'newextent=%', newextent;
 		-- Convert the geometry to a raster
 		geomrast := ST_AsRaster(geom, rast, ST_BandPixelType(rast, band), 1, newnodata);
 
-		-- Set the newnodata
-		sourceraster := ST_SetBandNodataValue(sourceraster, bandstart, newnodata);
-
 		-- Compute the first raster band
-		newrast := ST_MapAlgebraExpr(sourceraster, bandstart, geomrast, 1, '[rast1.val]', newpixtype, newextent);
+		newrast := ST_MapAlgebraExpr(rast, bandstart, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodata::text, newnodata::text, newnodata);
+		-- Set the newnodata
+		newrast := ST_SetBandNodataValue(newrast, bandstart, newnodata);
 
 		FOR bandi IN bandstart+1..bandend LOOP
 --RAISE NOTICE 'bandi=%', bandi;
 			-- for each band we must determine the nodata value
 			newpixtype := ST_BandPixelType(rast, bandi);
-			newnodata := coalesce(nodata, ST_BandNodataValue(sourceraster, bandi), ST_MinPossibleValue(newpixtype));
-			sourceraster := ST_SetBandNodataValue(sourceraster, bandi, newnodata);
-			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(sourceraster, bandi, geomrast, 1, '[rast1.val]', newpixtype, newextent));
+			newnodata := coalesce(nodata[bandi], nodata[array_upper(nodata, 1)], ST_BandNodataValue(rast, bandi), ST_MinPossibleValue(newpixtype));
+			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(rast, bandi, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodata::text, newnodata::text, newnodata));
+			newrast := ST_SetBandNodataValue(newrast, bandi, newnodata);
 		END LOOP;
 
 		RETURN newrast;
@@ -3547,21 +3547,33 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 	$$ LANGUAGE 'plpgsql' STABLE;
 
 -- Variant defaulting to all bands
-CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodata float8 DEFAULT NULL, trimraster boolean DEFAULT FALSE)
+CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodata float8[] DEFAULT NULL, trimraster boolean DEFAULT FALSE)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, NULL, $2, $3, $4) $$
+	LANGUAGE 'SQL' STABLE;
+
+-- Nodata values as integer series
+CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata float8 DEFAULT NULL, trimraster boolean DEFAULT FALSE)
+	RETURNS raster AS
+	$$ SELECT ST_Clip($1, $2, $3, ARRAY[$4], $5) $$
+	LANGUAGE 'SQL' STABLE;
+
+-- Variant defaulting to all bands
+CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodata float8, trimraster boolean DEFAULT FALSE)
+	RETURNS raster AS
+	$$ SELECT ST_Clip($1, NULL, $2, ARRAY[$3], $4) $$
 	LANGUAGE 'SQL' STABLE;
 
 -- Variant defaulting nodata to the one of the raster or the min possible value
 CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, trimraster boolean)
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, $2, $3, null, $4) $$
+	$$ SELECT ST_Clip($1, $2, $3, null::float8[], $4) $$
 	LANGUAGE 'SQL' STABLE;
 
 -- Variant defaulting nodata to the one of the raster or the min possible value and returning all bands
 CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, trimraster boolean)
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, NULL, $2, null, $3) $$
+	$$ SELECT ST_Clip($1, NULL, $2, null::float8[], $3) $$
 	LANGUAGE 'SQL' STABLE;
 
 ------------------------------------------------------------------------------

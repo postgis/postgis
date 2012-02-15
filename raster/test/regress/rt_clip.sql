@@ -82,14 +82,18 @@ FROM raster_clip, geom_clip;
 
 -- Test 2 with trimming, without defining a nodata value
 INSERT INTO raster_clip_out
-SELECT 2, rid, gid, ST_Clip(rast, geom, NULL, true)
+SELECT 2, rid, gid, ST_Clip(rast, geom, true)
 FROM raster_clip, geom_clip;
 
--- Test 3 with trimming, defining a nodata value (we must make ST_Clip to accept 
--- an array of nodata value before testing this)
---INSERT INTO raster_clip_out
---SELECT rid, gid, ST_Clip(rast, geom, 255, true)
---FROM raster_clip JOIN geom_clip;
+-- Test 3 with trimming, defining a nodata value
+INSERT INTO raster_clip_out
+SELECT 3, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253])
+FROM raster_clip, geom_clip;
+
+-- Test 4 with trimming, defining a nodata value
+INSERT INTO raster_clip_out
+SELECT 4, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253], true)
+FROM raster_clip, geom_clip;
 
 -- Display the metadata of the resulting rasters
 SELECT	tid,
@@ -118,15 +122,15 @@ FROM (
 ) AS r;
 
 -- Display the pixels and the values of the resulting rasters (raster 1)
-SELECT rid, gid, (gvxy).x, (gvxy).y, (gvxy).val, ST_AsText((gvxy).geom) geom
-FROM (SELECT rid, gid, ST_PixelAsPolygons(rast) gvxy
+SELECT tid, rid, gid, (gvxy).x, (gvxy).y, (gvxy).val, ST_AsText((gvxy).geom) geom
+FROM (SELECT tid, rid, gid, ST_PixelAsPolygons(rast) gvxy
       FROM raster_clip_out
       WHERE rid = 1
 ) foo;
 
 -- Display the pixels and the values of the resulting rasters (raster 2, 3 bands)
-SELECT rid, gid, band, (gvxy).x, (gvxy).y, (gvxy).val, ST_AsText((gvxy).geom) geom
-FROM (SELECT rid, gid, band, ST_PixelAsPolygons(rast, band) gvxy
+SELECT tid, rid, gid, band, (gvxy).x, (gvxy).y, (gvxy).val, ST_AsText((gvxy).geom) geom
+FROM (SELECT tid, rid, gid, band, ST_PixelAsPolygons(rast, band) gvxy
       FROM raster_clip_out, generate_series(1, 3) band
       WHERE rid = 2
 ) foo;

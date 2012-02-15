@@ -5063,7 +5063,24 @@ rid |        rastbox
 					<funcdef>raster <function>ST_Clip</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodata=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodata=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
+				  </funcprototype>
+				  
+				 <funcprototype>
+					<funcdef>raster <function>ST_Clip</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodata=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_Clip</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>nodata</parameter></paramdef>
 					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
 				  </funcprototype>
 				  
@@ -5096,8 +5113,9 @@ rid |        rastbox
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a raster that is clipped by the input geometry <varname>geom</varname>.  If no band is specified all bands are returned. If trimraster setting is not specified, false is assumed meaning
-				the output raster has the same extent as the input raster.  If <varname>trimraster</varname> is set to true, the new raster has the same extent as the intersection of <varname>geom</varname>and <varname>rast</varname>.</para>
+				<para>Returns a raster that is clipped by the input geometry <varname>geom</varname>.  If no band is specified all bands are returned.</para>
+				<para>An array of nodata values replacing the nodata values of the input raster can be provided, one for each band. Some variants also accept a single value. If none are provided and the input raster do not have a nodata value defined, nodata values of the resulting raster are set to ST_MinPossibleValue(ST_BandPixelType(rast, band)). When the number of nodata value in the array is smaller than the number of band, the last one in the array is used for the remaining bands. If the number of nodata value is greater than the number of band, the extra nodata values are ignored.</para>
+				<para>If trimraster setting is not specified, false is assumed meaning the output raster has the same extent as the input raster. If <varname>trimraster</varname> is set to true, the new raster has the same extent as the intersection of <varname>geom</varname>and <varname>rast</varname>.</para>
 				<para>Availability: 2.0.0 </para>
 				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
 			</refsection>
@@ -5152,46 +5170,6 @@ WHERE rid = 6) As foo;
 </tgroup>
 </informaltable>
 			</refsection>
-			
-	<refsection>
-				<title>Examples: Multi-band clipping</title>
-			
-<programlisting>-- Clip all bands of an aerial tile by a 20 meter buffer. 
-SELECT ST_AddBand(ST_Clip(rast, 1, clipper),
-	ARRAY[ ST_Clip(rast, 2, clipper),
-	      ST_Clip(rast, 3, clipper)	]
-	) FROM 
-	(SELECT rast, ST_Buffer(ST_Centroid(ST_Envelope(rast)),20) As clipper
-	FROM aerials.boston
-WHERE rid = 4) As foo;</programlisting>
-<informaltable>
-  <tgroup cols="2">
-	<tbody>
-	  <row>
-		<entry><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip01.png" />
-			  </imageobject>
-			  <caption><para>Full raster tile before clipping</para></caption>
-			</mediaobject>
-		  </informalfigure>
-		 </entry>
-	<entry><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip03.png" />
-			  </imageobject>
-			  <caption><para>After Clipping (Multi-band)</para></caption>
-			</mediaobject>
-		  </informalfigure>
-		 </entry>
-		</row>
-	</tbody>
-</tgroup>
-</informaltable>
-			</refsection>
-		
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
