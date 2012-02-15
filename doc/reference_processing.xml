@@ -47,10 +47,11 @@
 				<title>Description</title>
 
 				<para>Returns a geometry/geography that represents all points whose distance
-			from this Geometry/geography is less than or equal to distance. </para>
+			from this Geometry/geography is less than or equal to distance.</para>
 			<para>Geometry: Calculations
 			are in the Spatial Reference System of the geometry. Introduced in 1.5 support for
 			different end cap and mitre settings to control shape.</para>
+			<note><para>Negative radii: For polygons, a negative radius can be used, which will shrink the polygon rather than expanding it.</para></node>
 				<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
 					fits the bounding box of the geography object (favoring UTM, Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
 			<para><inlinegraphic fileref="images/warning.png" />
@@ -251,28 +252,6 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
 957.59057465 900808.759918696,235886.879896532 900838.049240578,235857.59057465
 900908.759918696,235886.879896532 900979.470596815,235957.59057465 901008.759918
 696,236028.301252769 900979.470596815,236057.59057465 900908.759918696))
-
---Buffer is often also used as a poor man's polygon fixer or a sometimes speedier unioner
---Sometimes able to fix invalid polygons - using below
--- using below on anything but a polygon will result in empty geometry
--- and for geometry collections kill anything in the collection that is not a polygon
---Poor man's bad poly fixer
-SELECT ST_IsValid(foo.invalidpoly)  as isvalid, ST_IsValid(ST_Buffer(foo.invalidpoly,0.0)) as bufferisvalid,
-ST_AsText(ST_Buffer(foo.invalidpoly,0.0)) As newpolytextrep
-FROM (SELECT ST_GeomFromText('POLYGON((-1 2, 3 4, 5 6, -1 2, 5 6, -1 2))') as invalidpoly) As foo
-NOTICE:  Self-intersection at or near point -1 2
-isvalid | bufferisvalid |        newpolytextrep
----------+---------------+------------------------------
-f       | t             | POLYGON((-1 2,5 6,3 4,-1 2))
-
---Poor man's polygon unioner
-SELECT ST_AsText(the_geom) as textorig, ST_AsText(ST_Buffer(foo.the_geom,0.0)) As textbuffer
-FROM (SELECT ST_Collect('POLYGON((-1 2, 3 4, 5 6, -1 2))', 'POLYGON((-1 2, 2 3, 5 6, -1 2))') As the_geom) as foo;
-				 textorig                          |            textbuffer
------------------------------------------------------------+--------------------
-MULTIPOLYGON(((-1 2,3 4,5 6,-1 2)),((-1 2,2 3,5 6,-1 2))) | POLYGON((-1 2,5 6,3 4,2 3,-1 2))
-
-
 		</programlisting>
 			  </refsection>
 
