@@ -60,17 +60,15 @@ sub read_rev_git {
   }
   chop($git_exe);
 
-  my $cmd  = "${git_exe} svn info";
+  my $cmd = "${git_exe} log --grep=git-svn -1 | grep git-svn | cut -d@ -f2 | cut -d' ' -f1";
   #print STDERR "cmd: ${cmd}\n";
-  my $svn_info  = `$cmd`;
-  #print STDERR "git_svn_info_output: [[[${svn_info}]]]\n";
+  my $rev  = `$cmd`;
 
-  my $rev;
-  if ( $svn_info =~ /Last Changed Rev: (\d+)/ ) {
-    $rev = $1;
-  } else {
-    print STDERR "Can't fetch SVN revision: no 'Loast Changed Rev' in `git svn info` output\n";
+  if ( ! $rev ) {
+    print STDERR "Can't fetch SVN revision from git log\n";
     $rev = 0;
+  } else {
+    chop($rev);
   }
 
   return $rev;
