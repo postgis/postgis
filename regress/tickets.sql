@@ -603,6 +603,11 @@ with inp as (
 )
 select '#1578', _st_within(p, mp), _st_intersects(p, mp) FROM inp;
 
+-- #1580
+select '#1580.1', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395));
+select '#1580.2', ST_Transform('SRID=4326;POINT(180 90)'::geometry, 3395); -- fails
+select '#1580.3', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 

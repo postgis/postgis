@@ -198,3 +198,6 @@ ERROR:  AddToPROJ4SRSCache: couldn't parse proj4 string: '': (null)
 #1398b|POINT(-160.137654 77.091608)
 #1543|MULTILINESTRING((0 0,10 0,10 10,0 0),(0 0))|POLYGON((0 0,10 10,10 0,0 0))
 #1578|f|f
+#1580.1|Point[B]
+ERROR:  transform: couldn't project point (180 90 0): tolerance condition error (-20)
+#1580.3|Point[B]

@@ -480,7 +480,6 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	MemoryContext PJMemoryContext;
 	projPJ projection = NULL;
 	char *proj_str;
-	int* pj_errno_ref;
 
 	/*
 	** Turn the SRID number into a proj4 string, by reading from spatial_ref_sys
@@ -493,13 +492,11 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	}
 
 	projection = lwproj_from_string(proj_str);
-
-	pj_errno_ref = pj_get_errno_ref();
-	if ( (projection == NULL) || (*pj_errno_ref))
+	if ( projection == NULL )
 	{
-		/* we need this for error reporting */
-		/*pfree(projection); */
-		elog(ERROR, "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s", proj_str, pj_strerrno(*pj_errno_ref));
+	  elog(ERROR,
+	    "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s",
+	    proj_str, pj_strerrno(*pj_get_errno_ref()));
 	}
 
 	/*
