@@ -295,8 +295,6 @@ VALUES (1,
 			</paramdef>
 		  </funcprototype>
 		  
-		  rastschema name, rasttable name, rastcolumn name, srid boolean DEFAULT true, scale_x boolean DEFAULT true, scale_y boolean DEFAULT true, blocksize_x boolean DEFAULT true, blocksize_y boolean DEFAULT true, same_alignment boolean DEFAULT true, regular_blocking boolean DEFAULT false, num_bands boolean DEFAULT true, pixel_types boolean DEFAULT true, nodata_values boolean DEFAULT true, out_db boolean DEFAULT true, extent boolean DEFAULT true
-
 		  <funcprototype>
 			<funcdef>boolean <function>AddRasterConstraints</function></funcdef>
 			<paramdef><type>name </type>
