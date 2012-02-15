@@ -679,7 +679,7 @@ postgis_raster_lib_build_date
 		<programlisting>SELECT PostGIS_Raster_Lib_Version();
 postgis_raster_lib_version
 -----------------------------
- 0.1.6d
+ 2.0.0
 </programlisting>
 	  </refsection>
 
