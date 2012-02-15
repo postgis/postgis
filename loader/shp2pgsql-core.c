@@ -762,6 +762,8 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->forceint4 = 0;
 	config->createindex = 0;
 	config->readshape = 1;
+	config->want_m = -1;
+	config->want_z = -1;
 	config->encoding = strdup(ENCODING_DEFAULT);
 	config->null_policy = POLICY_NULL_INSERT;
 	config->sr_id = SRID_UNKNOWN;
@@ -1004,6 +1006,14 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 
 			break;
 		}
+		
+		/* Force M-handling if configured to do so */
+		if (state->config->want_m != -1)
+			state->has_m = state->config->want_m;
+
+		/* Force Z-handling if configured to do so */
+		if (state->config->want_z != -1)
+			state->has_z = state->config->want_z;
 
 		/* If in simple geometry mode, alter names for CREATE TABLE by skipping MULTI */
 		if (state->config->simple_geometries)

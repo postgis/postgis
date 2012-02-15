@@ -45,6 +45,7 @@ usage()
 	printf(_( "  -i  Use int4 type for all integer dbf fields.\n" ));
 	printf(_( "  -I  Create a spatial index on the geocolumn.\n" ));
 	printf(_( "  -S  Generate simple geometries instead of MULTI geometries.\n" ));
+	printf(_( "  -t <dimensionality> Force geometry to be one of '2D', '3DZ', '3DM', or '4D'\n" ));
 	printf(_( "  -w  Output WKT instead of WKB.  Note that this can result in\n"
 	          "      coordinate drift.\n" ));
 	printf(_( "  -W <encoding> Specify the character encoding of Shape's\n"
@@ -88,7 +89,7 @@ main (int argc, char **argv)
 	set_loader_config_defaults(config);
 
 	/* Keep the flag list alphabetic so it's easy to see what's left. */
-	while ((c = pgis_getopt(argc, argv, "acdeg:iknps:wDGIN:ST:W:X:")) != EOF)
+	while ((c = pgis_getopt(argc, argv, "acdeg:iknps:t:wDGIN:ST:W:X:")) != EOF)
 	{
 		switch (c)
 		{
@@ -192,6 +193,27 @@ main (int argc, char **argv)
 			default:
 				fprintf(stderr, "Unsupported NULL geometry handling policy.\nValid policies: insert, skip, abort\n");
 				exit(1);
+			}
+			break;
+
+		case 't':
+			if ( strcasecmp(pgis_optarg,"2D") == 0 )
+			{
+				config->want_z = config->want_m = 0;
+			}
+			else if ( strcasecmp(pgis_optarg,"3DZ") == 0 )
+			{
+				config->want_z = 1; 
+				config->want_m = 0;
+			}
+			else if ( strcasecmp(pgis_optarg,"3DM") == 0 )
+			{
+				config->want_z = 0; 
+				config->want_m = 1;
+			}
+			else if ( strcasecmp(pgis_optarg,"4D") == 0 )
+			{
+				config->want_z = config->want_m = 1;
 			}
 			break;
 

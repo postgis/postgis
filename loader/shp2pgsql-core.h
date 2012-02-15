@@ -112,6 +112,10 @@ typedef struct shp_loader_config
 	/* 0 = load DBF file only, 1 = load everything */
 	int readshape;
 
+	/* 0 = load all coordinates, 1 = skip M dimension */
+	int want_m;
+	int want_z;
+
 	/* iconv encoding name */
 	char *encoding;
 
