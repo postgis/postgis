@@ -1,3 +1,577 @@
+2012-02-15 19:28  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9195] doc/reference_raster.xml,
+	  raster/rt_pg/rtpostgis.sql.in.c, raster/test/regress/rt_clip.sql,
+	  raster/test/regress/rt_clip_expected: Fix for #1576 & #1569.
+	  ST_Clip now works on multiband rasters and accept an array of
+	  nodata values.
+
+2012-02-15 15:59  Sandro Santilli <strk@keybit.net>
+
+	* [r9194] libpgcommon/lwgeom_transform.c, regress/tickets.sql,
+	  regress/tickets_expected: Do not take PROJ4 errno value as a sign
+	  of error (#1580)
+
+2012-02-15 11:00  Sandro Santilli <strk@keybit.net>
+
+	* [r9193] utils/svn_repo_revision.pl: dd support for fetching SVN
+	  revision from pure-git clones (#1579)
+
+2012-02-14 22:21  Regina Obe <lr@pcorp.us>
+
+	* [r9192] doc/using_raster_dataman.xml: Example of how to use only
+	  psql to output a raster image.
+
+2012-02-14 17:57  Sandro Santilli <strk@keybit.net>
+
+	* [r9191] postgis/lwgeom_functions_analytic.c, regress/tickets.sql,
+	  regress/tickets_expected: Fix crash with empty polygons in P-I-P
+	  tests (#1578)
+
+2012-02-14 17:54  Regina Obe <lr@pcorp.us>
+
+	* [r9190] doc/extras_tigergeocoder.xml: #1494: documentation of new
+	  census tract loader and get_tract functions.
+
+2012-02-14 17:53  Regina Obe <lr@pcorp.us>
+
+	* [r9189] extras/tiger_geocoder/tiger_2010/census_loader.sql,
+	  extras/tiger_geocoder/tiger_2010/create_geocode.sql,
+	  extras/tiger_geocoder/tiger_2010/geocode/census_tracts_functions.sql,
+	  extras/tiger_geocoder/tiger_2010/upgrade_geocode.sql: #1494: done
+	  with programming need to finish documenting and regress test.
+
+2012-02-14 17:47  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9188] raster/test/regress/Makefile.in,
+	  raster/test/regress/rt_clip.sql: Readded rt_clip regression test.
+
+2012-02-14 17:29  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9187] raster/rt_core/rt_api.c: Fixed handling of negative
+	  X-scale or positive Y-scale in rt_raster_gdal_rasterize(). Ticket
+	  is #1574.
+
+2012-02-14 17:15  Sandro Santilli <strk@keybit.net>
+
+	* [r9186] postgis/lwgeom_geos.c: We don't use a profiler anymore
+
+2012-02-14 17:00  David Zwarg <dzwarg@azavea.com>
+
+	* [r9185] raster/rt_pg/rt_pg.c: Reverting changes that optimize
+	  ST_MapAlgebraExpr. Re-advertise x and y parameters as int32.
+	  Reverts changes from r9137, closes #1557.
+
+2012-02-14 13:31  Sandro Santilli <strk@keybit.net>
+
+	* [r9184] liblwgeom/lwgeom_geos.c, regress/tickets.sql,
+	  regress/tickets_expected: Make one-point lines convertible to
+	  GEOS, see #1543
+
+2012-02-13 22:46  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9183] raster/test/regress/Makefile.in: Temporarily remove
+	  st_clip regress...
+
+2012-02-13 22:02  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9182] configure.ac: Configured without raster still tries to
+	  make raster/rt_pg/rtpostgis.sql (#1575) only try to build
+	  extensions if we have both raster and topology as well as pgsql
+	  9.1
+
+2012-02-13 21:58  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9181] raster/test/regress/Makefile.in,
+	  raster/test/regress/rt_clip.sql,
+	  raster/test/regress/rt_clip_expected: Closing ticket #597. Added
+	  regression tests for ST_Clip. More tests to come when fixing
+	  #1576.
+
+2012-02-13 21:25  Sandro Santilli <strk@keybit.net>
+
+	* [r9180] doc/Makefile.in: Encode dependency of topology comments
+	  and cheatsheet
+	  
+	  Same should be done for raster and tiger...
+
+2012-02-13 20:44  Sandro Santilli <strk@keybit.net>
+
+	* [r9179] doc/extras_topology.xml: Fix documentation of
+	  GetRingEdges
+
+2012-02-13 20:44  Sandro Santilli <strk@keybit.net>
+
+	* [r9178] regress/run_test: Install topology comments too, when
+	  regressing topology
+
+2012-02-13 20:44  Sandro Santilli <strk@keybit.net>
+
+	* [r9177] doc/Makefile.comments.in: Install topology_comments.sql
+	  as well
+
+2012-02-13 18:28  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9176] raster/rt_pg/rtpostgis.sql.in.c: Fix for ticket #1572.
+	  ST_PixelAsPolygons() return NULL values when the requested band
+	  or no band exist.
+
+2012-02-13 18:06  Sandro Santilli <strk@keybit.net>
+
+	* [r9175] doc/installation.xml, utils/postgis_restore.pl.in: Allow
+	  retaining all custom spatial_ref_sys entries, even clashing
+	  
+	  Update manual accordingly (hard upgrade procedure)
+
+2012-02-13 17:47  Sandro Santilli <strk@keybit.net>
+
+	* [r9174] utils/postgis_restore.pl.in: Fix regexp renaming srid
+	  enforcement check
+
+2012-02-13 17:01  Sandro Santilli <strk@keybit.net>
+
+	* [r9173] doc/installation.xml: Add a note about handling of
+	  out-of-range SRIDs on hard upgrade
+
+2012-02-13 16:29  Sandro Santilli <strk@keybit.net>
+
+	* [r9172] topology/test/regress/addtopogeometrycolumn.sql,
+	  topology/test/regress/addtopogeometrycolumn_expected,
+	  topology/topology.sql.in.c: Accept more feature type names from
+	  AddTopoGeometryColumn (#1470)
+	  
+	  With this commit you can pass return of ST_GeometryType or
+	  return GeometryType as input to the function.
+
+2012-02-13 16:11  Sandro Santilli <strk@keybit.net>
+
+	* [r9171] topology/sql/predicates.sql.in.c,
+	  topology/sql/sqlmm.sql.in.c: More VOLATILE -> STRICT (#955).
+	  Let's call it completed.
+
+2012-02-13 16:04  Sandro Santilli <strk@keybit.net>
+
+	* [r9170] topology/topology.sql.in.c: Some VOLATILE functions
+	  turned to STABLE (#955)
+	  
+	  A noticeable exception is the Geometry(TopoGeometry) cast which
+	  triggers a regression when made STABLE.
+
+2012-02-13 15:43  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9169] raster/test/regress/create_rt_band_properties_test.sql,
+	  raster/test/regress/create_rt_utility_test.sql,
+	  raster/test/regress/rt_spatial_relationship.sql: Fix regression
+	  broken by the limit imposed to SRID < 999999. Anyway the srid
+	  provided was not the right one. Changed from 4269 to 26919.
+
+2012-02-13 15:12  Regina Obe <lr@pcorp.us>
+
+	* [r9168] extras/tiger_geocoder/tiger_2010/census_loader.sql: #1494
+	  - ability to load census tract, block group, tabblock - boy did I
+	  screw this one. Should be all fixed now and tested (loading
+	  part), still need to write the function, but that's the easy part
+
+2012-02-13 14:48  Sandro Santilli <strk@keybit.net>
+
+	* [r9167] .gitignore, configure.ac, liblwgeom/liblwgeom.h.in,
+	  utils/Makefile, utils/Makefile.in, utils/postgis_restore.pl,
+	  utils/postgis_restore.pl.in: Move SRID max and user-max
+	  definitions to configure.ac
+	  
+	  This should help keeping postgis_restore.pl and core in sync
+	  wrt SRID ranges.
+
+2012-02-13 14:17  Sandro Santilli <strk@keybit.net>
+
+	* [r9166] utils/postgis_restore.pl: Refine user feedback about SRID
+	  conversion and reserved zones
+
+2012-02-13 11:25  Sandro Santilli <strk@keybit.net>
+
+	* [r9165] topology/sql/gml.sql.in.c,
+	  topology/sql/populate.sql.in.c, topology/sql/sqlmm.sql.in.c: Drop
+	  (SRF()).* constructs (#956)
+
+2012-02-13 10:58  Sandro Santilli <strk@keybit.net>
+
+	* [r9164] regress/run_test: Have regress install comments adn throw
+	  an error on failure (#1532)
+
+2012-02-13 10:58  Sandro Santilli <strk@keybit.net>
+
+	* [r9163] GNUmakefile.in, configure.ac, doc/Makefile.comments.in,
+	  doc/Makefile.in, regress/Makefile.in: Have staged-install install
+	  comments when possible (#1532)
+
+2012-02-13 10:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9162] regress/run_test: Report svn revision
+
+2012-02-13 10:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9161] postgis/Makefile.in: Encode postgis_svn_revision
+	  dependency
+
+2012-02-13 10:00  Sandro Santilli <strk@keybit.net>
+
+	* [r9160] GNUmakefile.in: Cleanup postgis_svn_revision.h makefile
+	  rule (PHONY)
+
+2012-02-13 09:58  Sandro Santilli <strk@keybit.net>
+
+	* [r9159] utils/svn_repo_revision.pl: Do not override
+	  postgis_svn_revision.h if revision didn't change
+
+2012-02-13 09:15  Sandro Santilli <strk@keybit.net>
+
+	* [r9158] utils/svn_repo_revision.pl: Add support for fetching SVN
+	  revision from local git-svn repository
+
+2012-02-11 21:17  Sandro Santilli <strk@keybit.net>
+
+	* [r9157] utils/svn_repo_revision.pl: It's "svn", not "svnn". And a
+	  TODO item...
+
+2012-02-11 16:08  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9156] raster/test/regress/rt_rotation.sql,
+	  raster/test/regress/rt_rotation_expected: Fix regression in OSX
+	  (-0 vs 0)
+
+2012-02-11 05:14  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9155] GNUmakefile.in, postgis/lwgeom_functions_basic.c,
+	  postgis/postgis.sql.in.c, postgis_config.h.in,
+	  utils/svn_repo_revision.pl: Report SVN revision in
+	  PostGIS_Full_Version (#1518)
+
+2012-02-10 23:33  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9154] raster/rt_core/rt_api.c, raster/rt_pg/rt_pg.c,
+	  raster/test/core/testwkb.c,
+	  raster/test/regress/bug_test_car5_expected,
+	  raster/test/regress/create_rt_mapalgebra_test.sql,
+	  raster/test/regress/create_rt_mapalgebrafctngb_test.sql,
+	  raster/test/regress/create_rt_properties_test.sql,
+	  raster/test/regress/create_rt_utility_test.sql,
+	  raster/test/regress/rt_addband.sql,
+	  raster/test/regress/rt_band.sql,
+	  raster/test/regress/rt_bytea_expected,
+	  raster/test/regress/rt_count.sql,
+	  raster/test/regress/rt_histogram.sql,
+	  raster/test/regress/rt_mapalgebraexpr.sql,
+	  raster/test/regress/rt_mapalgebrafct.sql,
+	  raster/test/regress/rt_mapalgebrafctngb.sql,
+	  raster/test/regress/rt_mapalgebrafctngb_expected,
+	  raster/test/regress/rt_metadata.sql,
+	  raster/test/regress/rt_metadata_expected,
+	  raster/test/regress/rt_quantile.sql,
+	  raster/test/regress/rt_reclass.sql,
+	  raster/test/regress/rt_summarystats.sql,
+	  raster/test/regress/rt_valuecount.sql,
+	  raster/test/regress/rt_valuepercent.sql: Added checks of SRID to
+	  make sure that SRIDs are within the permitted range. Ticket is
+	  #1568.
+
+2012-02-10 22:42  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9153] doc/reference_raster.xml: ST_Clip returns all bands when
+	  no band is specified.
+
+2012-02-10 22:36  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9152] raster/rt_pg/rtpostgis.sql.in.c: Fix for ticket #1569.
+	  ST_Clip variants defaulting to band 1 should default to NULL so
+	  that they return all bands.
+
+2012-02-10 20:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9151] GNUmakefile.in, postgis/lwgeom_functions_basic.c,
+	  postgis/postgis.sql.in.c, postgis_config.h.in,
+	  utils/read_scripts_version.pl: Back out SVN generation stuff.
+
+2012-02-10 19:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9150] utils/Makefile, utils/svn_repo_revision.pl: Try to fail
+	  better on SVN snatching...
+
+2012-02-10 19:49  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9149] postgis/lwgeom_functions_basic.c,
+	  postgis/postgis.sql.in.c, postgis_config.h.in: Report SVN
+	  revision in PostGIS_Full_Version (#1518)
+
+2012-02-10 18:46  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9148] raster/rt_pg/rtpostgis.sql.in.c: ST_PixelAsPolygon() does
+	  not have a band parameter anymore.
+
+2012-02-10 18:38  Regina Obe <lr@pcorp.us>
+
+	* [r9147] extras/tiger_geocoder/tiger_2010/census_loader.sql,
+	  extras/tiger_geocoder/tiger_2010/create_geocode.bat,
+	  extras/tiger_geocoder/tiger_2010/create_geocode.sh,
+	  extras/tiger_geocoder/tiger_2010/tables/census_tracts_tables.sql,
+	  extras/tiger_geocoder/tiger_2010/upgrade_geocode.sql: #1494: move
+	  parent table creation to a function so logic is in single place,
+	  add a new census_loader.sql script with census specific load
+	  logic, revise create and update scripts to load the new census
+	  logic and create tables if not present. Still need to test and
+	  write a function to return census info given a point before can
+	  mark this as done.
+
+2012-02-10 17:05  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9146] regress/Makefile.in: Have perl to backup the file before
+	  editing. 'make check' is failing on Windows 7 without that.
+	  
+	  See
+	  http://postgis.refractions.net/pipermail/postgis-devel/2012-February/018482.html
+
+2012-02-10 16:53  Sandro Santilli <strk@keybit.net>
+
+	* [r9145] liblwgeom/lwutil.c, utils/postgis_restore.pl: Clamp SRID
+	  valuesu > SRID_MAXIMUM to fall in the reserved range (#1505)
+	  
+	  The reserved range is SRID_USER_MAXIMUM+1 to SRID_MAXIMUM.
+	  Core takes care of typmod clamping, postgis_restore.pl takes care
+	  of clamping table definition and spatial_ref_sys entries.
+
+2012-02-10 16:53  Sandro Santilli <strk@keybit.net>
+
+	* [r9144] liblwgeom/liblwgeom.h.in: Add SRID_USER_MXIMUM define
+
+2012-02-10 16:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9143] doc/using_postgis_app.xml: Fix syntax error in MS example
+
+2012-02-10 09:19  Sandro Santilli <strk@keybit.net>
+
+	* [r9141] .gitignore, extensions/Makefile.in: Drop the
+	  now-generated Makefile on distclean, and ignore it
+
+2012-02-10 09:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9140] configure.ac, extensions/Makefile,
+	  extensions/Makefile.in: Fix builds --without-topology (#1565)
+
+2012-02-10 01:21  Regina Obe <lr@pcorp.us>
+
+	* [r9139] extensions/postgis_topology/Makefile.in: #1564 fix typo
+	  in cat call preventing other files from being concatenated
+
+2012-02-09 23:02  Regina Obe <lr@pcorp.us>
+
+	* [r9138] extensions/postgis/sql_bits/remove_from_extension.sql.in:
+	  #1563: remove raster_columns view from extension so it can be
+	  dropped without complaint.
+
+2012-02-09 20:12  David Zwarg <dzwarg@azavea.com>
+
+	* [r9137] raster/rt_pg/rt_pg.c: Performance improvement by keeping
+	  x and y pixel coordinates as floats.
+
+2012-02-09 19:19  Sandro Santilli <strk@keybit.net>
+
+	* [r9136] postgis/lwgeom_cache.c: Actually save Grand Unified Geom
+	  Cache rather than just building it
+	  
+	  Fixes #547
+
+2012-02-09 17:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9135] postgis/lwgeom_geos.c, postgis/lwgeom_geos.h,
+	  postgis/lwgeom_geos_clean.c, postgis/lwgeom_geos_prepared.c,
+	  postgis/lwgeom_geos_prepared.h,
+	  postgis/lwgeom_geos_relatematch.c: More postgis_config.h
+	  inclusion removal from headers
+
+2012-02-09 17:00  Sandro Santilli <strk@keybit.net>
+
+	* [r9134] liblwgeom/lwgeom_transform.c, libpgcommon/lwgeom_pg.h,
+	  libpgcommon/lwgeom_transform.c, postgis/geography_estimate.c,
+	  postgis/geometry_estimate.c, postgis/long_xact.c,
+	  postgis/lwgeom_accum.c, postgis/lwgeom_box.c,
+	  postgis/lwgeom_box3d.c, postgis/lwgeom_btree.c,
+	  postgis/lwgeom_cache.c, postgis/lwgeom_dump.c,
+	  postgis/lwgeom_export.c, postgis/lwgeom_functions_lrs.c,
+	  postgis/lwgeom_in_geojson.c, postgis/lwgeom_in_gml.c,
+	  postgis/lwgeom_in_kml.c, postgis/lwgeom_ogc.c,
+	  postgis/lwgeom_rtree.c, postgis/lwgeom_spheroid.c,
+	  postgis/lwgeom_sqlmm.c, postgis/lwgeom_transform.c,
+	  postgis/lwgeom_triggers.c, postgis/postgis_module.c,
+	  raster/rt_pg/rt_pg.c: Drop postgis_config.h include from
+	  lwgeom_pg.h header.
+	  
+	  Generally, package config files should _not_ be included
+	  by package headers. In this specific case the aim is overriding
+	  POSTGIS_DEBUG_LEVEL in implementation files for the sake of
+	  enabling debugging of a single file.
+	  
+	  Also part of this commit is addition of copyright header in
+	  two files which were missing it (used git history to figure
+	  assignments)
+
+2012-02-09 17:00  Sandro Santilli <strk@keybit.net>
+
+	* [r9133] libpgcommon/pgsql_compat.h, raster/rt_pg/pgsql_compat.h:
+	  Fix header guard of pgsql_compat.h and drop the duplicate
+
+2012-02-09 10:49  Regina Obe <lr@pcorp.us>
+
+	* [r9132] extensions/postgis/Makefile.in: Hmm double added a file
+	  -- #1563 which was causing the can't drop because postgis
+	  extension depends on it error
+
+2012-02-09 10:10  Sandro Santilli <strk@keybit.net>
+
+	* [r9131] extensions/Makefile: Forward distclean to extensions
+	  subdirs
+
+2012-02-09 02:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9130] doc/Makefile.in: Don't delete the comments.
+
+2012-02-09 01:54  Regina Obe <lr@pcorp.us>
+
+	* [r9129] doc/reference_raster.xml: #1562 replace string with text
+
+2012-02-09 00:42  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9128] liblwgeom/lwgeodetic.c: More verbose message, per
+	  DFuhriman
+
+2012-02-09 00:37  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9127] liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_geodetic_data.h, liblwgeom/lwgeodetic.c:
+	  Invalid geography polygons: BOOM! Could not generate outside
+	  point! (#1046)
+
+2012-02-09 00:27  David Zwarg <dzwarg@azavea.com>
+
+	* [r9126] raster/rt_pg/rt_pg.c: Fixed bug where PG_DETOAST_DATUM
+	  args were incorrect.
+
+2012-02-09 00:18  David Zwarg <dzwarg@azavea.com>
+
+	* [r9125] raster/rt_pg/rt_pg.c: Changed DATUM_SLICE to DATUM in
+	  setGeotransform.
+
+2012-02-08 23:59  David Zwarg <dzwarg@azavea.com>
+
+	* [r9124] doc/reference_raster.xml: Added documentation for raster
+	  processing builtin functions: st_min4ma, st_max4ma, st_mean4ma,
+	  st_sum4ma, st_range4ma, st_distinct4ma, st_stddev4ma.
+
+2012-02-08 23:01  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9123] utils/read_scripts_version.pl: Change from scripts-based
+	  script versions to repository based versions. Should also be more
+	  robust? ha ha ha. (#1282)
+
+2012-02-08 22:44  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9122] utils/read_scripts_version.pl: Make the scripts version
+	  get read again.
+
+2012-02-08 21:58  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9121] raster/test/core/Makefile.in: Fix to correct building of
+	  testapi in MinGW. Ticket is #1560.
+
+2012-02-08 21:31  David Zwarg <dzwarg@azavea.com>
+
+	* [r9120] raster/rt_pg/rt_pg.c: Do not allocate inside of 1 raster
+	  mapalgebra loop for datum values and nulls.
+
+2012-02-08 21:29  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9119] configure.ac: ./configure still display the old raster
+	  version number (#1599)
+
+2012-02-08 21:20  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9118] raster/rt_pg/rt_pg.c: Instead of dynamically allocating
+	  space for variables "values" and "nulls" with each pixel, just
+	  initialize both to the max possible # of elements. Done for
+	  2-raster ST_MapAlgebraExpr
+
+2012-02-08 21:08  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9117] doc/reference_raster.xml: Remove deleted function
+	  signature for ST_PixelAsPolygon. Ticket is #1529
+
+2012-02-08 21:08  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9116] configure.ac: test for termios.h in case we want to do
+	  password prompting in the future
+
+2012-02-08 21:04  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9115] raster/rt_pg/rt_pg.c: Values for [rast1.x], [rast1.y],
+	  [rast2.x] and [rast2.y] should be INT4 instead of FLOAT8. Ticket
+	  is #1557
+
+2012-02-08 21:03  David Zwarg <dzwarg@azavea.com>
+
+	* [r9114] raster/rt_pg/rt_pg.c, raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/test/regress/rt_rotation.sql,
+	  raster/test/regress/rt_rotation_expected: Removed geotransform
+	  type. Fixed rounding, so Hudson will be my friend in raster
+	  regression tests.
+
+2012-02-08 20:51  Sandro Santilli <strk@keybit.net>
+
+	* [r9113] raster/rt_pg/rt_pg.c: do not heap-allocate SPI arg types
+
+2012-02-08 20:33  Sandro Santilli <strk@keybit.net>
+
+	* [r9112] raster/rt_pg/rt_pg.c: ST_MapAlgebraExpr: advertise X and
+	  Y params as integers (#1557)
+	  
+	  Also stop doing 3 string matches per pixel for no reason
+
+2012-02-08 19:44  David Zwarg <dzwarg@azavea.com>
+
+	* [r9111] doc/reference_raster.xml: Added documentation for 1 and 2
+	  raster map algebra user callback function documentation for pixel
+	  position array parameter to userfunc. #1525
+
+2012-02-08 19:09  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9110] utils/svn_repo_revision.pl: Handle French svn?
+
+2012-02-08 19:04  David Zwarg <dzwarg@azavea.com>
+
+	* [r9109] raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/rt_pg/rt_pg.c, raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/test/regress/rt_mapalgebrafctngb_userfunc.sql,
+	  raster/test/regress/rt_rotation_expected: Added geotransform
+	  methods and correction to basis vectors during raster rotation.
+	  #1353
+
+2012-02-08 18:51  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9108] liblwgeom/liblwgeom.h.in, liblwgeom/liblwgeom_internal.h,
+	  libpgcommon/lwgeom_transform.c, postgis/geography.h: Stop relying
+	  on private projects.h PROJ header (#1541)
+
+2012-02-08 17:39  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9107] extensions/Makefile: Add missing target
+
+2012-02-08 17:36  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9105] HOWTO_RELEASE, Version.config,
+	  extensions/upgradeable_versions.mk: Push forward version numbers
+
+2012-02-08 17:33  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9102] ChangeLog, NEWS, README.postgis: Commit in preparation
+	  for 2.0.0alpha4
+
 2012-02-08 17:23  David Zwarg <dzwarg@azavea.com>
 
 	* [r9101] raster/rt_pg/rtpostgis.sql.in.c,
