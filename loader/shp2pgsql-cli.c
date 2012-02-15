@@ -54,8 +54,7 @@ main (int argc, char **argv)
 	SHPLOADERCONFIG *config;
 	SHPLOADERSTATE *state;
 	char *header, *footer, *record;
-	char c;
-	int ret, i;
+	int ret, c, i;
 
 
 	/* If no options are specified, display usage */
