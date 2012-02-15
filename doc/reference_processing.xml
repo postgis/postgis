@@ -51,7 +51,7 @@
 			<para>Geometry: Calculations
 			are in the Spatial Reference System of the geometry. Introduced in 1.5 support for
 			different end cap and mitre settings to control shape.</para>
-			<note><para>Negative radii: For polygons, a negative radius can be used, which will shrink the polygon rather than expanding it.</para></node>
+			<note><para>Negative radii: For polygons, a negative radius can be used, which will shrink the polygon rather than expanding it.</para></note>
 				<note><para>Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that
 					fits the bounding box of the geography object (favoring UTM, Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography.</para></note>
 			<para><inlinegraphic fileref="images/warning.png" />
