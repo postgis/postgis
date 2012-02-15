@@ -1804,6 +1804,21 @@ COMMIT;</programlisting>
       </listitem>
     </varlistentry>
 
+     <varlistentry>
+      <term>-t &lt;dimensionality&gt;</term>
+      <listitem>
+        <para>
+          Force the output geometry to have the specified dimensionality. Use the following 
+          strings to indicate the dimensionality: 2D, 3DZ, 3DM, 4D.
+        </para>
+        <para>
+	        If the input has fewer dimensions that specified, the output will have those dimensions filled
+	        in with zeroes. If the input has more dimensions that specified, the unwanted dimensions will
+	        be stripped.
+        </para>
+      </listitem>
+    </varlistentry>
+
     <varlistentry>
       <term>-w</term>
       <listitem>
