@@ -1096,7 +1096,7 @@ name is invalid then an error is thrown.
                 <para>If the new <varname>acurve</varname> is not simple, then an error is thrown.</para>
              
                 <!-- use this format if new function -->
-                <para>Availability: 1.x </para>
+                <para>Availability: 1.1.0</para>
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details X.3.6</para>
 			</refsection>
 		
@@ -1112,7 +1112,9 @@ name is invalid then an error is thrown.
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="AddEdge"/></para>
+				<para><xref linkend="ST_AddEdgeModFace"/></para>
+				<para><xref linkend="ST_RemEdgeModFace"/></para>
+				<para><xref linkend="ST_ModEdgeSplit"/></para>
 			</refsection>
 		</refentry>
 		
