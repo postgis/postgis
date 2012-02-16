@@ -54,7 +54,7 @@ VALUES (1,
             <refnamediv>
                 <refname>geomval</refname>
                 <refpurpose>A spatial datatype with two fields - geom (holding a geometry object) 
-                    and val (holding a double precision pixel value from a raster band)</refpurpose>
+                    and val (holding a double precision pixel value from a raster band).</refpurpose>
             </refnamediv>
             
             <refsection>
@@ -73,7 +73,7 @@ VALUES (1,
 		<refentry id="histogram">
 		  <refnamediv>
 			<refname>histogram</refname>
-			<refpurpose>A composite type used as record output of the ST_Histogram and ST_ApproxHistogram functions. </refpurpose>
+			<refpurpose>A composite type used as record output of the ST_Histogram and ST_ApproxHistogram functions.</refpurpose>
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
@@ -385,9 +385,9 @@ VALUES (1,
 		<para><varname>raster2pgsql</varname> loader uses this function to register raster tables</para>
 		<para>Valid constraint names to pass in: refer to <xref linkend="RT_Raster_Columns"/> for more details.</para>
 		<itemizedlist>
-			<listitem><varname>blocksize</varname> sets both x and y blocksize</listitem>
-			<listitem><varname>blocksize_x</varname> sets x blocksize (width in pixels of each tile)</listitem>
-			<listitem><varname>blocksize_y</varname> sets y blocksize (height in pixels of each tile)</listitem>
+			<listitem><varname>blocksize</varname> sets both X and Y blocksize</listitem>
+			<listitem><varname>blocksize_x</varname> sets X tile (width in pixels of each tile)</listitem>
+			<listitem><varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)</listitem>
 			<listitem><varname>extent</varname> computes extent of whole table and applys constraint all rasters must be withint that extent</listitem>
 
 			<listitem><varname>num_bands</varname> number of bands</listitem>
@@ -612,7 +612,7 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 	  <refnamediv>
 		<refname>PostGIS_Raster_Lib_Build_Date</refname>
 
-		<refpurpose>Reports full raster library build date</refpurpose>
+		<refpurpose>Reports full raster library build date.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -885,7 +885,7 @@ WHERE short_name = 'GTiff') As g;
   		<refentry id="RT_ST_AddBand">
 			<refnamediv>
 				<refname>ST_AddBand</refname>
-				<refpurpose>Returns a raster with the new band(s) of given type added with given initial value in the given index location.  If no index is specified, the band is added to the end.</refpurpose>
+				<refpurpose>Returns a raster with the new band(s) of given type added with given initial value in the given index location. If no index is specified, the band is added to the end.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1304,7 +1304,7 @@ WHERE rid=35;
   		<refentry id="RT_ST_MakeEmptyRaster">
 			<refnamediv>
 				<refname>ST_MakeEmptyRaster</refname>
-				<refpurpose>Returns an empty raster (having no bands) of given dimensions, with upperleft x y, pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid).  
+				<refpurpose>Returns an empty raster (having no bands) of given dimensions, with upperleft X and Y, pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid).  
 				If a raster is passed in, returns a new raster with same meta data properties.  If srid is left out, the spatial ref is set to unknown.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
@@ -1338,7 +1338,7 @@ WHERE rid=35;
 			</refsynopsisdiv>
 			<refsection>
 				<title>Description</title>
-				<para>Returns an empty raster (having no band) of given dimensions (width &amp; height) and georeferenced in spatial (or world) coordinates with upper left x (upperleftx), upper left y (upperlefty), 
+				<para>Returns an empty raster (having no band) of given dimensions (width &amp; height) and georeferenced in spatial (or world) coordinates with upper left X (upperleftx), upper left Y (upperlefty), 
 				pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid). 
 				The last version use a single parameter to specify the pixel size (pixelsize). 
 				In this case scalex and scaley are set to this parameter and skewx and skewy are set to 0. 
@@ -1447,7 +1447,7 @@ upperlefty + scaley*0.5</programlisting></para>
 		<refentry id="RT_ST_Height">
 			<refnamediv>
 				<refname>ST_Height</refname>
-				<refpurpose>Returns the height of the raster in pixels?</refpurpose>
+				<refpurpose>Returns the height of the raster in pixels.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1488,7 +1488,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_MetaData">
 			<refnamediv>
 				<refname>ST_MetaData</refname>
-				<refpurpose>Returns basic meta data about a raster object such as skew, rotation, upper,lower left etc.</refpurpose>
+				<refpurpose>Returns basic meta data about a raster object such as pixel size, rotation (skew), upper, lower left, etc.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1503,7 +1503,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns basic meta data about a raster object such as skew, rotation, upper,lower left etc. Columns returned
+				<para>Returns basic meta data about a raster object such as pixel size, rotation (skew), upper, lower left, etc. Columns returned:
 					upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands</para>
 			</refsection>
 				
@@ -1572,7 +1572,7 @@ rid | numbands
 		<refentry id="RT_ST_PixelHeight">
 			<refnamediv>
 				<refname>ST_PixelHeight</refname>
-				<refpurpose>Returns the pixel height in geometric units of the spatial reference system</refpurpose>
+				<refpurpose>Returns the pixel height in geometric units of the spatial reference system.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1597,10 +1597,10 @@ rid | numbands
 			
 				<programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As Pixheight,
  ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
-        ST_SkewY(rast)
+        ST_SkewY(rast) As skewy
 FROM dummy_rast;
 
- rastheight | pixheight | scalex | scaley | skewx | st_skewy
+ rastheight | pixheight | scalex | scaley | skewx | skewy
 ------------+-----------+--------+--------+-------+----------
          20 |         3 |      2 |      3 |     0 |        0
           5 |      0.05 |   0.05 |  -0.05 |     0 |        0
@@ -1613,11 +1613,11 @@ FROM dummy_rast;
 			
 				<programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As Pixheight,
  ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
-        ST_SkewY(rast)
+        ST_SkewY(rast) As skewy
 FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast
         FROM dummy_rast) As skewed;
 
-rastheight |     pixheight     | scalex | scaley | skewx | st_skewy
+rastheight |     pixheight     | scalex | scaley | skewx | skewy
 -----------+-------------------+--------+--------+-------+----------
         20 |  3.04138126514911 |      2 |      3 |   0.5 |      0.5
          5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5
@@ -1636,7 +1636,7 @@ rastheight |     pixheight     | scalex | scaley | skewx | st_skewy
 	<refentry id="RT_ST_PixelWidth">
 		<refnamediv>
 			<refname>ST_PixelWidth</refname>
-			<refpurpose>Returns the pixel width in geometric units of the spatial reference system</refpurpose>
+			<refpurpose>Returns the pixel width in geometric units of the spatial reference system.</refpurpose>
 		</refnamediv>
 	
 		<refsynopsisdiv>
@@ -1669,10 +1669,10 @@ rastheight |     pixheight     | scalex | scaley | skewx | st_skewy
 		
 			<programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As Pixwidth,
 	ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
-	ST_SkewY(rast)
+	ST_SkewY(rast) As skewy
 	FROM dummy_rast;
 	
-	rastwidth | pixwidth | scalex | scaley | skewx | st_skewy
+	rastwidth | pixwidth | scalex | scaley | skewx | skewy
 	-----------+----------+--------+--------+-------+----------
 	10 |        2 |      2 |      3 |     0 |        0
 	 5 |     0.05 |   0.05 |  -0.05 |     0 |        0
@@ -1685,11 +1685,11 @@ rastheight |     pixheight     | scalex | scaley | skewx | st_skewy
 		
 			<programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As Pixwidth,
 	ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
-	ST_SkewY(rast)
+	ST_SkewY(rast) As skewy
 	FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast
 	FROM dummy_rast) As skewed;
 	
-	rastwidth |     pixwidth      | scalex | scaley | skewx | st_skewy
+	rastwidth |     pixwidth      | scalex | scaley | skewx | skewy
 	-----------+-------------------+--------+--------+-------+----------
 	10 |  2.06155281280883 |      2 |      3 |   0.5 |      0.5
 	 5 | 0.502493781056044 |   0.05 |  -0.05 |   0.5 |      0.5
@@ -1707,7 +1707,7 @@ rastheight |     pixheight     | scalex | scaley | skewx | st_skewy
 		<refentry id="RT_ST_ScaleX">
 			<refnamediv>
 				<refname>ST_ScaleX</refname>
-				<refpurpose>Returns the x size of pixels in units of coordinate reference system?</refpurpose>
+				<refpurpose>Returns the X component of the pixel width in units of coordinate reference system.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1722,7 +1722,8 @@ rastheight |     pixheight     | scalex | scaley | skewx | st_skewy
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the x size of pixels in units of coordinate reference system?</para>
+				<para>Returns the X component of the pixel width in units of coordinate reference system. Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
+				for more details.</para>
 				<para>Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeX.</para>
 				</refsection>
 				
@@ -1750,7 +1751,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_ScaleY">
 			<refnamediv>
 				<refname>ST_ScaleY</refname>
-				<refpurpose>Returns the y size of pixels in units of coordinate reference system?</refpurpose>
+				<refpurpose>Returns the Y component of the pixel height in units of coordinate reference system.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1765,7 +1766,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the y size of pixels in units of coordinate reference system.  May be negative.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
+				<para>Returns the Y component of the pixel height in units of coordinate reference system.  May be negative.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
 				for more details.</para>
 				
 				<para>Changed: 2.0.0. In WKTRaster versions this was called ST_PixelSizeY.</para>
@@ -1795,8 +1796,8 @@ FROM dummy_rast;
 		<refentry id="RT_ST_Raster2WorldCoordX">
 			<refnamediv>
 				<refname>ST_Raster2WorldCoordX</refname>
-				<refpurpose>Returns the geometric x coordinate upper left of a raster, column and row. Numbering of columns
-					and rows starts at 1. </refpurpose>
+				<refpurpose>Returns the geometric X coordinate upper left of a raster, column and row. Numbering of columns
+					and rows starts at 1.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1818,14 +1819,14 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the upper left x coordinate of a raster column row in geometric units of the georeferenced raster.
+				<para>Returns the upper left X coordinate of a raster column row in geometric units of the georeferenced raster.
 					Numbering of columns and rows starts at 1 but if you pass in a negative number or number higher than number of
 						columns in raster, it will give you 
 					coordinates outside of the raster file to left or right with the assumption that the 
 					skew and pixel sizes are same as selected raster. </para>
-				<note><para>For non-skewed rasters, providing the x column is sufficient.  For skewed rasters,
-						the georeferenced coordinate is a function of the ST_ScaleX and SkewX and row and column.
-						An error will be raised if you give just the x column for a skewed raster.</para></note>
+				<note><para>For non-skewed rasters, providing the X column is sufficient.  For skewed rasters,
+						the georeferenced coordinate is a function of the ST_ScaleX and ST_SkewX and row and column.
+						An error will be raised if you give just the X column for a skewed raster.</para></note>
 				</refsection>
 				
 				<refsection>
@@ -1869,7 +1870,7 @@ FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 		<refentry id="RT_ST_Raster2WorldCoordY">
 			<refnamediv>
 				<refname>ST_Raster2WorldCoordY</refname>
-				<refpurpose>Returns the geometric y coordinate upper left corner of a raster, column and row. Numbering of columns
+				<refpurpose>Returns the geometric Y coordinate upper left corner of a raster, column and row. Numbering of columns
 					and rows starts at 1. </refpurpose>
 			</refnamediv>
 		
@@ -1892,13 +1893,13 @@ FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the upper left y coordinate of a raster column row in geometric units of the georeferenced raster.
+				<para>Returns the upper left Y coordinate of a raster column row in geometric units of the georeferenced raster.
 					Numbering of columns and rows starts at 1 but if you pass in a negative number or number higher than number of
 						columns/rows in raster, it will give you 
 					coordinates outside of the raster file to left or right with the assumption that the 
 					skew and pixel sizes are same as selected raster tile. </para>
-				<note><para>For non-skewed rasters, providing the y column is sufficient.  For skewed rasters,
-						the georeferenced coordinate is a function of the ST_ScaleY and SkewY and row and column.
+				<note><para>For non-skewed rasters, providing the y column is sufficient. For skewed rasters,
+						the georeferenced coordinate is a function of the ST_ScaleY and ST_SkewY and row and column.
 						An error will be raised if you give just the y row for a skewed raster.</para></note>
 				</refsection>
 				
@@ -1943,7 +1944,7 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
         <refentry id="RT_ST_Rotation">
             <refnamediv>
                 <refname>ST_Rotation</refname>
-                <refpurpose>Returns the rotation of the raster</refpurpose>
+                <refpurpose>Returns the rotation of the raster in radian.</refpurpose>
             </refnamediv>
 
             <refsynopsisdiv>
@@ -1958,7 +1959,7 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
             <refsection>
                 <title>Description</title>
                 
-                <para>Returns the uniform rotation of the raster. If a raster does not have uniform rotation, NaN is returned.
+                <para>Returns the uniform rotation of the raster in radian. If a raster does not have uniform rotation, NaN is returned.
                 Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink> for more details.</para>
             </refsection>
 
@@ -1984,7 +1985,7 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
 		<refentry id="RT_ST_SkewX">
 			<refnamediv>
 				<refname>ST_SkewX</refname>
-				<refpurpose>Returns the georeference X skew (or rotation parameter)</refpurpose>
+				<refpurpose>Returns the georeference X skew (or rotation parameter).</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2039,7 +2040,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_SkewY">
 			<refnamediv>
 				<refname>ST_SkewY</refname>
-				<refpurpose>Returns the georeference Y skew (or rotation parameter)</refpurpose>
+				<refpurpose>Returns the georeference Y skew (or rotation parameter).</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2135,7 +2136,7 @@ srid
 		<refentry id="RT_ST_UpperLeftX">
 			<refnamediv>
 				<refname>ST_UpperLeftX</refname>
-				<refpurpose>Returns the upper left x coordinate of raster in projected spatial ref.</refpurpose>
+				<refpurpose>Returns the upper left X coordinate of raster in projected spatial ref.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2150,7 +2151,7 @@ srid
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the upper left x coordinate of raster in projected spatial ref.</para>
+				<para>Returns the upper left X coordinate of raster in projected spatial ref.</para>
 				</refsection>
 				
 				<refsection>
@@ -2177,7 +2178,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_UpperLeftY">
 			<refnamediv>
 				<refname>ST_UpperLeftY</refname>
-				<refpurpose>Returns the upper left y coordinate of raster in projected spatial ref.</refpurpose>
+				<refpurpose>Returns the upper left Y coordinate of raster in projected spatial ref.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2192,7 +2193,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the upper left y coordinate of raster in projected spatial ref.</para>
+				<para>Returns the upper left Y coordinate of raster in projected spatial ref.</para>
 				</refsection>
 				
 				<refsection>
@@ -2219,7 +2220,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_Width">
 			<refnamediv>
 				<refname>ST_Width</refname>
-				<refpurpose>Returns the width of the raster in pixels?</refpurpose>
+				<refpurpose>Returns the width of the raster in pixels.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2234,7 +2235,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the width of the raster.</para>
+				<para>Returns the width of the raster in pixels.</para>
 				</refsection>
 				
 				<refsection>
@@ -2260,7 +2261,7 @@ rastwidth
 		<refentry id="RT_ST_World2RasterCoordX">
 			<refnamediv>
 				<refname>ST_World2RasterCoordX</refname>
-				<refpurpose>Returns the column in the raster of the point geometry (pt) or a x y world coordinate (xw, yw) represented
+				<refpurpose>Returns the column in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw) represented
 				in world spatial reference system of raster.</refpurpose>
 			</refnamediv>
 		
@@ -2290,7 +2291,7 @@ rastwidth
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the column in the raster of the point geometry (pt) or a x y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
+				<para>Returns the column in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
 					is not skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the raster.</para>
 			</refsection>
 				
@@ -2319,7 +2320,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_World2RasterCoordY">
 			<refnamediv>
 				<refname>ST_World2RasterCoordY</refname>
-				<refpurpose>Returns the row in the raster of the point geometry (pt) or a x y world coordinate (xw, yw) represented
+				<refpurpose>Returns the row in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw) represented
 				in world spatial reference system of raster.</refpurpose>
 			</refnamediv>
 		
@@ -2349,7 +2350,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the row in the raster of the point geometry (pt) or a x y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
+				<para>Returns the row in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
 					is not skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the raster.</para>
 			</refsection>
 				
@@ -3177,7 +3178,7 @@ UPDATE dummy_rast SET rast = ST_SetGeoReference(rast, '2 0 0 3 1.5 2','ESRI')
         <refentry id="RT_ST_SetRotation">
             <refnamediv>
                 <refname>ST_SetRotation</refname>
-                <refpurpose>Set the rotation of the raster.</refpurpose>
+                <refpurpose>Set the rotation of the raster in radian.</refpurpose>
             </refnamediv>
 
             <refsynopsisdiv>
@@ -3193,7 +3194,7 @@ UPDATE dummy_rast SET rast = ST_SetGeoReference(rast, '2 0 0 3 1.5 2','ESRI')
             <refsection>
                 <title>Description</title>
 
-                <para>Uniformly rotate the raster. Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink> for more details.</para>
+                <para>Uniformly rotate the raster. Rotation is in radian. Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink> for more details.</para>
             </refsection>
 
             <refsection>
@@ -3223,7 +3224,7 @@ FROM (
 		<refentry id="RT_ST_SetScale">
 			<refnamediv>
 				<refname>ST_SetScale</refname>
-				<refpurpose>Sets the x and y size of pixels in units of coordinate reference system. Number units/pixel width/height</refpurpose>
+				<refpurpose>Sets the X and Y size of pixels in units of coordinate reference system. Number units/pixel width/height.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3246,8 +3247,8 @@ FROM (
 			<refsection>
 				<title>Description</title>
 				
-				<para>Sets the x and y size of pixels in units of coordinate reference system. Number units/pixel width/height.  If
-				only one unit passed in, assumed x and y are the same number.</para>
+				<para>Sets the X and Y size of pixels in units of coordinate reference system. Number units/pixel width/height.  If
+				only one unit passed in, assumed X and Y are the same number.</para>
 				<para>Changed: 2.0.0 In WKTRaster versions this was called ST_SetPixelSize.  This was changed in 2.0.0.</para>
 				</refsection>
 				
@@ -3290,7 +3291,7 @@ WHERE rid = 2;
 		<refentry id="RT_ST_SetSkew">
 			<refnamediv>
 				<refname>ST_SetSkew</refname>
-				<refpurpose>Sets the georeference X and Y skew (or rotation parameter).  If only one is passed in sets x and y to same number.</refpurpose>
+				<refpurpose>Sets the georeference X and Y skew (or rotation parameter).  If only one is passed in sets X and Y to same number.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3312,7 +3313,7 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Sets the georeference X and Y skew (or rotation parameter).  If only one is passed in sets x and y to same number.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
+				<para>Sets the georeference X and Y skew (or rotation parameter).  If only one is passed in sets X and Y to same number.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
 				for more details.</para>
 				</refsection>
 				
@@ -3408,7 +3409,7 @@ FROM dummy_rast WHERE rid = 1;
 		<refentry id="RT_ST_SetUpperLeft">
 			<refnamediv>
 				<refname>ST_SetUpperLeft</refname>
-				<refpurpose>Sets the value of the upper left corner of the pixel to projected x,y coordinates</refpurpose>
+				<refpurpose>Sets the value of the upper left corner of the pixel to projected X and Y coordinates.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3425,7 +3426,7 @@ FROM dummy_rast WHERE rid = 1;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Set the value of the upper left corner of raster to the projected x coordinates</para>
+				<para>Set the value of the upper left corner of raster to the projected X coordinates</para>
 				</refsection>
 				
 				<refsection>
@@ -3448,7 +3449,7 @@ WHERE rid = 2;
 		<refentry id="RT_ST_Resample">
 			<refnamediv>
 				<refname>ST_Resample</refname>
-				<refpurpose>Warps a raster in a known spatial reference system using a specified resampling algorithm and set of raster attributes or reference raster.  If using a reference raster, the new raster will have the same srid, skew, scale and alignment.
+				<refpurpose>Warps a raster in a known spatial reference system using a specified resampling algorithm and set of raster attributes or reference raster.  If using a reference raster, the new raster will have the same srid, scale, skew and alignment.
 				    Uses NearestNeighbor if no algorithm is specified Options: NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline, Lanczos.</refpurpose>
 			</refnamediv>
 		
@@ -3566,7 +3567,7 @@ WHERE rid = 2;
 				<refname>ST_Rescale</refname>
 				<refpurpose>Rescales a raster that is in a known spatial ref and using specified algorithm.
 				    Uses NearestNeighbor if no algorithm is specified Options: NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline, Lanczos.
-				    the scalex, scaley, scalexy are the desired new ratio between pixel coordinates and geometry coordinates</refpurpose>
+				    the scalex, scaley, scalexy are the desired new ratio between pixel coordinates and geometry coordinates.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3599,7 +3600,7 @@ WHERE rid = 2;
 				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. NearestNeighbor is the fastest but worst interpoloation.
 				The <varname>scalex</varname>, <varname>scaley</varname> define the desired new ratio between geometry units and pixel units.</para>
 				<note><para>Note: This is different from <xref linkend="RT_ST_SetScale" /> in that ST_Rescale changes the underlying pixels of the raster using existing scale
-					and rescales it to the new input scales.  <xref linkend="RT_ST_SetScale" />, on the other hand, changes the metadata of the raster to correct an originally mis-specified scaling.</para></note> 
+					and rescales it to the new input scales. <xref linkend="RT_ST_SetScale" />, on the other hand, changes the metadata of the raster to correct an originally mis-specified scaling.</para></note> 
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 			</refsection>
 				
@@ -3771,7 +3772,7 @@ SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
 		<refentry id="RT_ST_SetBandNoDataValue">
 			<refnamediv>
 				<refname>ST_SetBandNoDataValue</refname>
-				<refpurpose>Sets the value for the given band that represents no data. Band 1 is assumed if no band is specified.  To mark a band as having no nodata value, set the nodata value = NULL</refpurpose>
+				<refpurpose>Sets the value for the given band that represents no data. Band 1 is assumed if no band is specified.  To mark a band as having no nodata value, set the nodata value = NULL.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -4934,7 +4935,7 @@ FROM dummy_rast WHERE rid=2;
 		<refentry id="RT_ST_AsTIFF">
 			<refnamediv>
 				<refname>ST_AsTIFF</refname>
-				<refpurpose>Return the raster tile selected bands as a single TIFF image (byte array).  If no band is specified, then will try to use all bands?.</refpurpose>
+				<refpurpose>Return the raster selected bands as a single TIFF image (byte array).  If no band is specified, then will try to use all bands.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -4976,7 +4977,7 @@ FROM dummy_rast WHERE rid=2;
                     <listitem>
                         <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
                     </listitem>
-                   <listitem><varname>compression</varname> Compression expression -- JPEG90 (or some other percent), LZW, JPEG, DEFLATE9.  </listitem>
+                   <listitem><varname>compression</varname> Compression expression -- JPEG90 (or some other percent), LZW, JPEG, DEFLATE9.</listitem>
                    <listitem><varname>options</varname> text Array of GDAL create options as defined for GTiff (look at create_options for GTiff of <xref linkend="RT_ST_GDALDrivers" />). or refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details. </listitem>
                    <listitem><varname>srid</varname> srid of spatial_ref_sys of the raster. This is used to populate the georeference information </listitem>
                 </itemizedlist>
@@ -5005,7 +5006,7 @@ FROM dummy_rast WHERE rid=2;
 		<refentry id="RT_Box3D">
 			<refnamediv>
 				<refname>Box3D</refname>
-				<refpurpose>Returns the box 3d representation of the enclosing box of the raster</refpurpose>
+				<refpurpose>Returns the box 3d representation of the enclosing box of the raster.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5644,7 +5645,7 @@ WHERE A.rid =2 ) As foo;
 		<refentry id="RT_ST_MapAlgebraExpr">
 			<refnamediv>
 				<refname>ST_MapAlgebraExpr</refname>
-				<refpurpose>1 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the input raster band and of pixeltype provided.  band 1 is assumed if no band is specified.</refpurpose>
+				<refpurpose>1 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the input raster band and of pixeltype provided.  Band 1 is assumed if no band is specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5784,7 +5785,7 @@ WHERE rid=167;
 		<refentry id="RT_ST_MapAlgebraExpr2">
 			<refnamediv>
 				<refname>ST_MapAlgebraExpr</refname>
-				<refpurpose>2 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the 2 input raster bands and of pixeltype provided.  band 1 of each raster is assumed if no band numbers are specified. The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the "extenttype" parameter. Values for "extenttype" can be: INTERSECTION, UNION, FIRST, SECOND</refpurpose>
+				<refpurpose>2 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the 2 input raster bands and of pixeltype provided.  band 1 of each raster is assumed if no band numbers are specified. The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the "extenttype" parameter. Values for "extenttype" can be: INTERSECTION, UNION, FIRST, SECOND.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -6257,7 +6258,7 @@ WHERE rid=167;
 		<refentry id="RT_ST_MapAlgebraFct2">
 			<refnamediv>
 				<refname>ST_MapAlgebraFct</refname>
-				<refpurpose>2 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the 2 input raster bands and of pixeltype prodived. Band 1 is assumed if no band is specified. Extent type defaults to INTERSECTION if not specified</refpurpose>
+				<refpurpose>2 band version - Creates a new one band raster formed by applying a valid PostgreSQL function on the 2 input raster bands and of pixeltype prodived. Band 1 is assumed if no band is specified. Extent type defaults to INTERSECTION if not specified.</refpurpose>
 			</refnamediv>
 
 			<refsynopsisdiv>
@@ -6563,7 +6564,7 @@ CREATE OR REPLACE FUNCTION rast_avg(matrix float[][], nodatamode text, variadic 
     $$
 LANGUAGE 'plpgsql' IMMUTABLE COST 1000;
     
--- now we apply to our raster averaging pixels within 2 pixels of each other in x and y direction --
+-- now we apply to our raster averaging pixels within 2 pixels of each other in X and Y direction --
 SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
 		'rast_avg(float[][], text, text[])'::regprocedure, 'NULL', NULL) As nn_with_border
 	FROM katrinas_rescaled 
@@ -6687,7 +6688,7 @@ POLYGON((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.85 5793
 			<refnamediv>
 				<refname>ST_Reclass</refname>
 				<refpurpose>Creates a new raster composed of band types reclassified from original.  The nband is the band to be changed.  If nband is not specified assumed to be 1.  All other bands are returned unchanged. 
-				    Use case: convert a 16BUI band to a 8 8BUI and so forth for simpler rendering as viewable formats.</refpurpose>
+				    Use case: convert a 16BUI band to a 8BUI and so forth for simpler rendering as viewable formats.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -6811,7 +6812,7 @@ UPDATE wind
 		<refentry id="RT_ST_Union">
 			<refnamediv>
 				<refname>ST_Union</refname>
-				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST, MAX, MIN </refpurpose>
+				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST, MAX, MIN.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -7566,7 +7567,7 @@ a_rid | b_rid | overleft
 			<title>Description</title>
 
 			<para>Returns true if the geometry intersects with the raster. Nodata values  are taken into account so that if the geometry intersects only with nodata  values, the function returns false. If no band is specified band 1 is assumed.</para>
-			<note><para>For the case of raster/geometry  and geometry/raster.  ST_Intersects(raster,nband,geometry) is done in raster space (e.g. the geometry is converted to a raster before tested), ST_Intersects(geometry, raster)is done in geometry space -- raster is converted to geometry before checked.  </para></note>
+			<note><para>For the case of raster/geometry  and geometry/raster.  ST_Intersects(raster,nband,geometry) is done in raster space (e.g. the geometry is converted to a raster before tested), ST_Intersects(geometry, raster)is done in geometry space -- raster is converted to geometry before checked.</para></note>
 			<note><para>This operand will make use of any indexes that may be available on the
 				geometries / rasters.</para></note>
 				
@@ -7601,7 +7602,7 @@ WHERE A.rid =2 ;
 		<refnamediv>
 			<refname>ST_SameAlignment</refname>
 
-			<refpurpose>Returns true if rasters have same skew,scale, spatial ref and false if they don't with notice detailing issue. </refpurpose>
+			<refpurpose>Returns true if rasters have same skew, scale, spatial ref and false if they don't with notice detailing issue.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -7675,7 +7676,7 @@ WHERE A.rid =2 ;
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns true if the raster have same skew scale etc.  Returns false if they don't and a NOTICE detailing the alignment issue.</para>
+			<para>Returns true if the raster have same skew scale etc. Returns false if they don't and a NOTICE detailing the alignment issue.</para>
 		
 			<para>Availability: 2.0.0</para>
 		  </refsection>
