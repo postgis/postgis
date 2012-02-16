@@ -1869,7 +1869,63 @@ when dealing with possibly invalid topologies.
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="ST_GetFaceEdges"/></para>
+				<para>
+<xref linkend="ST_GetFaceEdges"/>,
+<xref linkend="GetNodeEdges"/>
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="GetNodeEdges">
+			<refnamediv>
+				<refname>GetNodeEdges</refname>
+			
+				<refpurpose>
+Returns an ordered set of edges incident to the given node.
+				</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>getfaceedges_returntype <function>GetNodeEdges</function></funcdef>
+					<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>anode</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Returns an ordered set of edges incident to the given node.
+Each output consists of a sequence and a signed edge id.
+Sequence numbers start with value 1.
+A positive edge starts at the given node.
+A negative edge ends into the given node. 
+Closed edges will appear twice (with both signs).
+Order is clockwise starting from northbound.
+		</para>
+
+            <note>
+		<para>
+This function computes ordering rather than deriving from metadata
+and is thus usable to build edge ring linking.
+		</para>
+            </note>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.0 </para>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+<xref linkend="GetRingEdges"/>,
+<xref linkend="ST_Azimuth"/>
+				</para>
 			</refsection>
 		</refentry>
 		

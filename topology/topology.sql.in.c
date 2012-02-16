@@ -1954,8 +1954,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --  SQL/MM block
 #include "sql/sqlmm.sql.in.c"
 
--- The following file needs getfaceedges_returntype, defined in sqlmm.sql
+-- The following files needs getfaceedges_returntype, defined in sqlmm.sql
 #include "sql/query/GetRingEdges.sql.in.c"
+#include "sql/query/GetNodeEdges.sql.in.c"
 
 --general management --
 #include "sql/manage/ManageHelper.sql.in.c"
