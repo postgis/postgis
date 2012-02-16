@@ -710,8 +710,8 @@ GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ 
 int 
 spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 {
-	projPJ pj1;
-	projPJ pj2;
+	projPJ pj1, pj2;
+	double major_axis, minor_axis, eccentricity_squared;
 	
 	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
 		return LW_FAILURE;
@@ -723,7 +723,9 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 	/* For newer versions of Proj we can pull the spheroid paramaeters and initialize */
 	/* using them */
 	/* TODO actually implement this using the API function when it exists */
-	spheroid_init(s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);	
+	pj_get_spheroid_defn(pj1, &major_axis, &eccentricity_squared);
+	minor_axis = major_axis * sqrt(1-eccentricity_squared);
+	spheroid_init(s, major_axis, minor_axis);	
 #else
 	/* For old versions of Proj we cannot lookup the spheroid parameters from the API */
 	/* So we use the WGS84 parameters (boo!) */
