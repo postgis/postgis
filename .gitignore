@@ -2,6 +2,7 @@
 *.la
 .libs
 *.lo
+postgis_svn_revision.h
 aclocal.m4
 autom4te.cache/
 config.guess
