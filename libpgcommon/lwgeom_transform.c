@@ -722,7 +722,6 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 #if POSTGIS_PROJ_VERSION >= 48
 	/* For newer versions of Proj we can pull the spheroid paramaeters and initialize */
 	/* using them */
-	/* TODO actually implement this using the API function when it exists */
 	pj_get_spheroid_defn(pj1, &major_axis, &eccentricity_squared);
 	minor_axis = major_axis * sqrt(1-eccentricity_squared);
 	spheroid_init(s, major_axis, minor_axis);	
