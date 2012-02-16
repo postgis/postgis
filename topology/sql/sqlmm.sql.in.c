@@ -2685,7 +2685,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 -- @param oface the face in which the edge identifier is known to be
 -- @param mbr_only do not create a new face but update MBR of the current
 --
--- The face on the left of the edge is created 
+-- The created face, if any, will be at the left hand of the walking path
 --
 -- Return:
 --  NULL: if mbr_only was requested
