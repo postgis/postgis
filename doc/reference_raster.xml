@@ -5469,7 +5469,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_MapAlgebraFctNgb" /></para>
-                <para><xref linkend="RT_ST_Hillshade" /></para>
+                <para><xref linkend="RT_ST_HillShade" /></para>
                 <para><xref linkend="RT_ST_Slope" /></para>
 			</refsection>
 		</refentry>
@@ -5534,7 +5534,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_MapAlgebraFctNgb" /></para>
-                <para><xref linkend="RT_ST_Hillshade" /></para>
+                <para><xref linkend="RT_ST_HillShade" /></para>
                 <para><xref linkend="RT_ST_Aspect" /></para>
 			</refsection>
 		</refentry>
