@@ -70,8 +70,11 @@ SELECT topology.ST_ChangeEdgeGeom('city_data', 26,
 SELECT 'T8', topology.ST_ChangeEdgeGeom('city_data', 26,
  'LINESTRING(4 31, 4 30.4, 5 30.4, 4 31)');
 
+-- test changing winding of non-closed edge ring
+SELECT topology.ST_ChangeEdgeGeom('city_data', 13,
+ 'LINESTRING(21 6, 21 2, 6 2, 6 25, 50 25, 50 2, 35 2, 35 6)');
+
 -- TODO: test moving closed edge into another face
--- TODO: test changing winding of non-closed edge ring
 -- TODO: test face mbr update
 
 SELECT topology.DropTopology('city_data');
