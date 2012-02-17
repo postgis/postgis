@@ -393,7 +393,7 @@ VALUES (1,
 			<listitem><varname>num_bands</varname> number of bands</listitem>
 			<listitem><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</listitem>
 			<listitem><varname>regular_blocking</varname> apply informational flag to denote all tiles are regularly blocked</listitem>
-			<listitem><varname>same_alignment</varname> ensures they all have same alignment meanign any two tiles you compare will return true for Refer to <xref linkend="RT_ST_SameAlignment" /></listitem>
+			<listitem><varname>same_alignment</varname> ensures they all have same alignment meanign any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment" /></listitem>
 			<listitem><varname>srid</varname> ensures all have same srid</listitem>
 			<listitem>More -- any listed as inputs into the above functions</listitem>
 		</itemizedlist>
@@ -420,7 +420,7 @@ SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1,
 SELECT AddRasterConstraints('myrasters'::name, 'rast'::name);
 
 
--- verify it registered correctly in raster_columns --
+-- verify if registered correctly in the raster_columns view --
 SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types, nodata_values
 	FROM raster_columns
 	WHERE r_table_name = 'myrasters';
@@ -441,7 +441,7 @@ SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1,
 SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');
 -- get notice--
 NOTICE:  Adding regular blocking constraint
-INFO:  The regular_blocking constraint is just a flag indicating that the column "rast" is regularly blocked.  It is up to the end-user to ensure that the column is truely regularly blocked.
+INFO:  The regular_blocking constraint is just a flag indicating that the column "rast" is regularly blocked.  As no function exist yet to assert that a raster column is regularly blocked, it is up to the end-user to ensure that the column is truely regularly blocked.
 CONTEXT:  PL/pgSQL function "addrasterconstraints" line 85 at assignment
 NOTICE:  Adding blocksize-X constraint
 NOTICE:  Adding blocksize-Y constraint</programlisting>
@@ -950,7 +950,7 @@ WHERE rid = 1;
 					
 					<programlisting>-- Create an empty raster 100x100 units, with upper left  right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15)
 INSERT INTO dummy_rast(rid,rast)
-    VALUES(10, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(100,100,0,0,1,-1,0,0, -1), '1BB'), '4BUI') );
+    VALUES(10, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, 0), '1BB'), '4BUI') );
     
 -- output meta data of raster bands to verify all is right --
 SELECT  (bmd).*
@@ -970,7 +970,7 @@ FROM (SELECT ST_MetaData(rast) As rmd
 -- result --
  upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
 ------------+------------+-------+--------+------------+------------+-------+-------+------+----------
-          0 |          0 |   100 |    100 |          1 |         -1 |     0 |  0 |   -1 |        2
+          0 |          0 |   100 |    100 |      1 |     -1 |     0 |     0 |   0 |        2
 					</programlisting>
 			
 			</refsection>
@@ -1137,7 +1137,7 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
                 
                 <para>Converts a postgis geometry to a postgis raster.  This is particularly useful for rendering jpegs and pngs of geometries directly from the database when using in combination
                     with <xref linkend="RT_ST_AsPNG" /> and other <xref linkend="RT_ST_AsGDALRaster" /> family of functions.</para>
-                 <para>To create the postgis raster, the X and Y scale or the width and height of the new raster or a reference raster must be provided.</para>
+                 <para>The X and Y scale, the width and height of the new raster or a reference raster must be provided.</para>
                  <para>The output raster will be in the same coordinate system as the source geometry. The only exception is for ST_AsRaster variations with a raster input parameter. </para>
                  <para>The optional <varname>touched</varname> parameter defaults to false and maps to the GDAL ALL_TOUCHED rasterization option, which determines if pixels touched by lines or
                  polygons will be updated.  Not just those on the line render path, or whose center point is within the polygon.</para>
@@ -1304,8 +1304,8 @@ WHERE rid=35;
   		<refentry id="RT_ST_MakeEmptyRaster">
 			<refnamediv>
 				<refname>ST_MakeEmptyRaster</refname>
-				<refpurpose>Returns an empty raster (having no bands) of given dimensions, with upperleft X and Y, pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid).  
-				If a raster is passed in, returns a new raster with same meta data properties.  If srid is left out, the spatial ref is set to unknown.</refpurpose>
+				<refpurpose>Returns an empty raster (having no bands) of given dimensions (width &amp; height), upperleft X and Y, pixel size and rotation (scalex, scaley, skewx &amp; skewy) and reference system (srid).  
+				If a raster is passed in, returns a new raster with the same size, alignment and SRID.  If srid is left out, the spatial ref is set to unknown (0).</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
@@ -1339,11 +1339,11 @@ WHERE rid=35;
 			<refsection>
 				<title>Description</title>
 				<para>Returns an empty raster (having no band) of given dimensions (width &amp; height) and georeferenced in spatial (or world) coordinates with upper left X (upperleftx), upper left Y (upperlefty), 
-				pixel size expressed as scalex, scaley, skewx, skewy and reference system (srid). 
+				pixel size and rotation (scalex, scaley, skewx &amp; skewy) and reference system (srid). 
 				The last version use a single parameter to specify the pixel size (pixelsize). 
 				In this case scalex and scaley are set to this parameter and skewx and skewy are set to 0. 
 				If an existing raster is passed in, it returns a new raster with the same meta data settings (without the bands). </para>
-				<para>If no srid is specified it defaults to -1, though this may change to 0 in future. After you create an empty raster you probably want to add bands to it and maybe edit it. Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set pixel values.</para>
+				<para>If no srid is specified it defaults to 0. After you create an empty raster you probably want to add bands to it and maybe edit it. Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set initial pixel values.</para>
 				
 				</refsection>
 				
@@ -1515,9 +1515,9 @@ FROM dummy_rast;
 FROM dummy_rast) As foo;
 
  rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
- -----+------------+------------+-------+--------+-----------+-----------+-------+-------+------+----------
-   1 |        0.5 |        0.5 |    10 |     20 |          2 |          3 |		0 |     0 |    0 |        0
-   2 | 3427927.75 |    5793244 |     5 |      5 |       0.05 |      -0.05 |		0 |     0 |   -1 |        3
+ ----+------------+------------+-------+--------+--------+-----------+-------+-------+------+-------
+   1 |        0.5 |        0.5 |    10 |     20 |      2 |      3 |		0 |     0 |    0 |        0
+   2 | 3427927.75 |    5793244 |     5 |      5 |   0.05 |  -0.05 |		0 |     0 |    0 |        3
 				</programlisting>	
 			</refsection>
 		
@@ -1595,8 +1595,8 @@ rid | numbands
 			<refsection>
 				<title>Examples: Rasters with no skew</title>
 			
-				<programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As Pixheight,
- ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+				<programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,
+ ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
         ST_SkewY(rast) As skewy
 FROM dummy_rast;
 
@@ -1609,10 +1609,10 @@ FROM dummy_rast;
 		</refsection>
 		
 		<refsection>
-				<title>Examples: Rasters with skew</title>
+				<title>Examples: Rasters with skew different than 0</title>
 			
-				<programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As Pixheight,
- ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+				<programlisting>SELECT ST_Height(rast) As rastheight, ST_PixelHeight(rast) As pixheight,
+ ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
         ST_SkewY(rast) As skewy
 FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast
         FROM dummy_rast) As skewed;
@@ -1667,8 +1667,8 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
 		<refsection>
 			<title>Examples: Rasters with no skew</title>
 		
-			<programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As Pixwidth,
-	ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+			<programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,
+	ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
 	ST_SkewY(rast) As skewy
 	FROM dummy_rast;
 	
@@ -1681,12 +1681,12 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
 	</refsection>
 	
 	<refsection>
-			<title>Examples: Rasters with skew</title>
+			<title>Examples: Rasters with skew different than 0</title>
 		
-			<programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As Pixwidth,
-	ST_ScaleX(rast) As scalex,ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
+			<programlisting>SELECT ST_Width(rast) As rastwidth, ST_PixelWidth(rast) As pixwidth,
+	ST_ScaleX(rast) As scalex, ST_ScaleY(rast) As scaley, ST_SkewX(rast) As skewx,
 	ST_SkewY(rast) As skewy
-	FROM (SELECT ST_SetSKew(rast,0.5,0.5) As rast
+	FROM (SELECT ST_SetSkew(rast,0.5,0.5) As rast
 	FROM dummy_rast) As skewed;
 	
 	rastwidth |     pixwidth      | scalex | scaley | skewx | skewy
@@ -1847,10 +1847,10 @@ FROM dummy_rast;
 				
 					<programlisting>
 -- for fun lets skew it				
-SELECT rid, ST_Raster2WorldCoordX(rast,1,1) As x1coord, 
-	ST_Raster2WorldCoordX(rast,2,3) As x2coord,
+SELECT rid, ST_Raster2WorldCoordX(rast, 1, 1) As x1coord, 
+	ST_Raster2WorldCoordX(rast, 2, 3) As x2coord,
 	ST_ScaleX(rast) As pixelx
-FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
+FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
 
  rid |  x1coord   |  x2coord  | pixelx
 -----+------------+-----------+--------
@@ -1898,9 +1898,9 @@ FROM (SELECT rid, ST_SetSkew(rast,100.5,0) As rast FROM dummy_rast) As foo;
 						columns/rows in raster, it will give you 
 					coordinates outside of the raster file to left or right with the assumption that the 
 					skew and pixel sizes are same as selected raster tile. </para>
-				<note><para>For non-skewed rasters, providing the y column is sufficient. For skewed rasters,
+				<note><para>For non-skewed rasters, providing the Y column is sufficient. For skewed rasters,
 						the georeferenced coordinate is a function of the ST_ScaleY and ST_SkewY and row and column.
-						An error will be raised if you give just the y row for a skewed raster.</para></note>
+						An error will be raised if you give just the Y row for a skewed raster.</para></note>
 				</refsection>
 				
 				<refsection>
@@ -2900,7 +2900,7 @@ WHERE rid=2;
 -- get raster values at particular postgis geometry points
 -- the srid of your geometry should be same as for your raster
 SELECT rid, ST_Value(rast, foo.pt_geom) As b1pval, ST_Value(rast, 2, foo.pt_geom) As b2pval
-FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77,5793243.76),-1) As pt_geom) As foo
+FROM dummy_rast CROSS JOIN (SELECT ST_SetSRID(ST_Point(3427927.77, 5793243.76), 0) As pt_geom) As foo
 WHERE rid=2;
 
  rid | b1pval | b2pval
@@ -2914,8 +2914,8 @@ FROM sometable
 WHERE ST_Intersects(rast,sometable.geom);
 				</programlisting>				
 					<programlisting>
-SELECT rid, ST_Value(rast, 1,1,1) As b1pval, 
-    ST_Value(rast, 2,1,1) As b2pval, ST_Value(rast, 3,1,1) As b3pval
+SELECT rid, ST_Value(rast, 1, 1, 1) As b1pval, 
+    ST_Value(rast, 2, 1, 1) As b2pval, ST_Value(rast, 3, 1, 1) As b3pval
 FROM dummy_rast
 WHERE rid=2;
 
@@ -2929,7 +2929,7 @@ WHERE rid=2;
 SELECT x, y, ST_Value(rast, 1, x, y) As b1val, 
 	ST_Value(rast, 2, x, y) As b2val, ST_Value(rast, 3, x, y) As b3val
 FROM dummy_rast CROSS JOIN
-generate_series(1,1000) As x CROSS JOIN generate_series(1,1000) As y
+generate_series(1, 1000) As x CROSS JOIN generate_series(1, 1000) As y
 WHERE rid =  2 AND x &lt;= ST_Width(rast) AND y &lt;= ST_Height(rast);
 
  x | y | b1val | b2val | b3val
@@ -3256,7 +3256,7 @@ FROM (
 					<title>Examples</title>
 				
 					<programlisting>UPDATE dummy_rast 
-	SET rast = ST_SetScale(rast,1.5)
+	SET rast = ST_SetScale(rast, 1.5)
 WHERE rid = 2;
 
 SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box3D(rast) As newbox
@@ -3265,10 +3265,10 @@ WHERE rid = 2;
 
  pixx | pixy |                    newbox
 ------+------+----------------------------------------------
-  1.5 |  1.5 | BOX(3427927.75 5793244 0,3427935.25 5793251.5 0)
+  1.5 |  1.5 | BOX(3427927.75 5793244 0, 3427935.25 5793251.5 0)
 				</programlisting>
 				<programlisting>UPDATE dummy_rast 
-	SET rast = ST_SetScale(rast,1.5,0.55)
+	SET rast = ST_SetScale(rast, 1.5, 0.55)
 WHERE rid = 2;
 
 SELECT ST_ScaleX(rast) As pixx, ST_ScaleY(rast) As pixy, Box3D(rast) As newbox
@@ -3291,7 +3291,7 @@ WHERE rid = 2;
 		<refentry id="RT_ST_SetSkew">
 			<refnamediv>
 				<refname>ST_SetSkew</refname>
-				<refpurpose>Sets the georeference X and Y skew (or rotation parameter).  If only one is passed in sets X and Y to same number.</refpurpose>
+				<refpurpose>Sets the georeference X and Y skew (or rotation parameter).  If only one is passed in, sets X and Y to the same value.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3313,7 +3313,7 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Sets the georeference X and Y skew (or rotation parameter).  If only one is passed in sets X and Y to same number.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
+				<para>Sets the georeference X and Y skew (or rotation parameter).  If only one is passed in, sets X and Y to the same value.  Refer to <ulink url="http://en.wikipedia.org/wiki/World_file">World File</ulink>
 				for more details.</para>
 				</refsection>
 				
@@ -3597,7 +3597,7 @@ WHERE rid = 2;
 				
 				<para>Rescales a raster using specified pixel warping algorithm. 
 				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
-				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. NearestNeighbor is the fastest but worst interpoloation.
+				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. NearestNeighbor is the fastest but worst interpolation.
 				The <varname>scalex</varname>, <varname>scaley</varname> define the desired new ratio between geometry units and pixel units.</para>
 				<note><para>Note: This is different from <xref linkend="RT_ST_SetScale" /> in that ST_Rescale changes the underlying pixels of the raster using existing scale
 					and rescales it to the new input scales. <xref linkend="RT_ST_SetScale" />, on the other hand, changes the metadata of the raster to correct an originally mis-specified scaling.</para></note> 
@@ -3620,8 +3620,8 @@ SELECT ST_ScaleX(rast) As orig_scalex, ST_ScaleY(rast) As origi_scaley
  CREATE TABLE katrinas_rescaled(rid serial primary key, descrip text, rast raster);
 
  INSERT INTO katrinas_rescaled(descrip, rast)
- SELECT 'rescaled ' || round((1.0/i*100),2)::text || '%', ST_Rescale(rast,ST_ScaleX(rast)*i,ST_ScaleY(rast)*i)
- 	FROM katrina CROSS JOIN generate_series(6,8,2) As i;
+ SELECT 'rescaled ' || round((1.0/i*100), 2)::text || '%', ST_Rescale(rast, ST_ScaleX(rast)*i, ST_ScaleY(rast)*i)
+ 	FROM katrina CROSS JOIN generate_series(6, 8, 2) As i;
 					
 SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
 	FROM katrinas_rescaled;
@@ -4856,7 +4856,7 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 		<refentry id="RT_ST_AsPNG">
 			<refnamediv>
 				<refname>ST_AsPNG</refname>
-				<refpurpose>Return the raster tile selected bands as a single portable network graphics (PNG) image (byte array).  If 1,3, or 4 bands in raster and no bands are specified, then all bands are used.  If more 2 or more than 4 bands and no bands specified, then only band 1 is used.  Bands are mapped to RGB or RGBA space.</refpurpose>
+				<refpurpose>Return the raster tile selected bands as a single portable network graphics (PNG) image (byte array).  If 1, 3, or 4 bands in raster and no bands are specified, then all bands are used.  If more 2 or more than 4 bands and no bands specified, then only band 1 is used.  Bands are mapped to RGB or RGBA space.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5181,7 +5181,7 @@ WHERE rid = 6) As foo;
 				<refname>ST_ConvexHull</refname>
 				<refpurpose>Return the convex hull geometry of the raster including pixel values equal to BandNoDataValue. 
 				For regular shaped and non-skewed
-				rasters, this gives the same answer as ST_Envelope so only useful for irregularly shaped or skewed rasters.</refpurpose>
+				rasters, this gives the same result as ST_Envelope so only useful for irregularly shaped or skewed rasters.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5197,7 +5197,7 @@ WHERE rid = 6) As foo;
 				<title>Description</title>
 				
 				<para>Return the convex hull geometry of the raster including the NoDataBandValue band pixels. For regular shaped and non-skewed
-				rasters, this gives more or less the same answer as ST_Envelope 
+				rasters, this gives more or less the same result as ST_Envelope 
 				so only useful for irregularly shaped or skewed rasters.</para>
 				
 				<note><para>ST_Envelope floors the coordinates and hence add a little buffer around the raster so the answer is subtly 
@@ -5236,7 +5236,7 @@ FROM dummy_rast WHERE rid=1;
 -- note how the convex hull and envelope are now different
 SELECT ST_AsText(ST_ConvexHull(rast)) As convhull, 
 	ST_AsText(ST_Envelope(rast)) As env
-FROM (SELECT ST_SetRotation(rast,0.1,0.1) As rast 
+FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast 
 	FROM dummy_rast WHERE rid=1) As foo;
 	
                         convhull                        |                env
@@ -5370,7 +5370,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_HillShade">
 			<refnamediv>
 				<refname>ST_HillShade</refname>
-				<refpurpose>Returns the hypothetical illumination of a raster band using provided azimuth, altitude, brightness, and elevation scale inputs.  Useful for visualizing terrain.</refpurpose>
+				<refpurpose>Returns the hypothetical illumination of an elevation raster band using provided azimuth, altitude, brightness and elevation scale inputs.  Useful for visualizing terrain.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
@@ -5390,7 +5390,7 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the hypothetical illumination of a raster band using the azimuth, altitude, brightness, and elevation scale inputs. Utilizes map algebra and applies the hill shade equation to neighboring pixels.</para>
+				<para>Returns the hypothetical illumination of an elevation raster band using the azimuth, altitude, brightness, and elevation scale inputs. Utilizes map algebra and applies the hill shade equation to neighboring pixels.</para>
 				<para>The hill shade equation is: <programlisting>max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) )</programlisting>.</para>
 				<para>Availability: 2.0.0 </para>
 			
@@ -5543,8 +5543,8 @@ FROM dummy_rast;
 		<refentry id="RT_ST_Intersection">
 			<refnamediv>
 				<refname>ST_Intersection</refname>
-				<refpurpose>Returns a set of geometry-pixelvalue pairs resulting from intersection of a raster band with a geometry when operation is geometry,raster. 
-					If operationis raster,geometry then a raster is returned that is result of the input raser clipped by geometry. If
+				<refpurpose>Returns a set of geometry-pixelvalue pairs resulting from intersection of a raster band with a geometry when operation is geometry, raster. 
+					If operation is raster, geometry then a raster is returned that is result of the input raster clipped by geometry. If
 					no band number is specified, band 1 is assumed.</refpurpose>
 			</refnamediv>
 		
@@ -5785,7 +5785,7 @@ WHERE rid=167;
 		<refentry id="RT_ST_MapAlgebraExpr2">
 			<refnamediv>
 				<refname>ST_MapAlgebraExpr</refname>
-				<refpurpose>2 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the 2 input raster bands and of pixeltype provided.  band 1 of each raster is assumed if no band numbers are specified. The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the "extenttype" parameter. Values for "extenttype" can be: INTERSECTION, UNION, FIRST, SECOND.</refpurpose>
+				<refpurpose>2 raster band version: Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation on the two input raster bands and of pixeltype provided.  band 1 of each raster is assumed if no band numbers are specified. The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster and have its extent defined by the "extenttype" parameter. Values for "extenttype" can be: INTERSECTION, UNION, FIRST, SECOND.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5821,48 +5821,48 @@ WHERE rid=167;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation to the 2 bands defined by the <varname>expression</varname> on the 2 input raster bands <varname>rast1</varname>, (<varname>rast2</varname>). If no <varname>band1</varname>,  <varname>band2</varname> is specified band 1 is assumed. 
-				The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the <varname>extenttype</varname> parameter. Values for <varname>extenttype</varname>:</para>
+				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation to the two bands defined by the <varname>expression</varname> on the two input raster bands <varname>rast1</varname>, (<varname>rast2</varname>). If no <varname>band1</varname>,  <varname>band2</varname> is specified band 1 is assumed. 
+				The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the <varname>extenttype</varname> parameter.</para>
 				
 				<variablelist>
 					<varlistentry>
 						<term>expression</term>
-						<listitem><para>A PostgreSQL algebraic expression involving the 2 rasters and PostgreSQL defined functions/operators that will define the pixel value when pixels intersect. e.g. ((rast1 + rast2)/2.0)::integer</para></listitem>
+						<listitem><para>A PostgreSQL algebraic expression involving the two rasters and PostgreSQL defined functions/operators that will define the pixel value when pixels intersect. e.g. (([rast1] + [rast2])/2.0)::integer</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>pixeltype</term>
-						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend='RT_ST_BandPixelType' /> or left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the first raster.</para></listitem>
+						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend='RT_ST_BandPixelType' />, left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the first raster.</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>extenttype</term>
 						<listitem><para>Controls the extent of resulting raster</para>
 						 <orderedlist>
 							<listitem>
-								<para><varname>INTERSECTION</varname> The extent of the new raster is the intersection of the two rasters. This is the default.</para>
+								<para><varname>INTERSECTION</varname> - The extent of the new raster is the intersection of the two rasters. This is the default.</para>
 							</listitem>
 							<listitem>
-								<para><varname>UNION</varname> The extent of the new raster is the union of the two rasters.</para>
+								<para><varname>UNION</varname> - The extent of the new raster is the union of the two rasters.</para>
 							</listitem>
 							<listitem>
-								<para><varname>FIRST</varname> The extent of the new raster is the  same as the one of the first raster.</para>
+								<para><varname>FIRST</varname> - The extent of the new raster is the  same as the one of the first raster.</para>
 							</listitem>
 							<listitem>
-								<para><varname>SECOND</varname> The extent of the new raster is the  same as the one of the second raster.</para>
+								<para><varname>SECOND</varname> - The extent of the new raster is the  same as the one of the second raster.</para>
 							</listitem>
 						 </orderedlist>
 						</listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>nodata1expr</term>
-						<listitem><para>An algebraic expression involving <varname>rast2</varname> or a constant that defines what to return if pixel of <varname>rast1</varname> is missing pixel value but rast2 has pixel value. </para></listitem>
+						<listitem><para>An algebraic expression involving only <varname>rast2</varname> or a constant that defines what to return when pixels of <varname>rast1</varname> are nodata values and spatially corresponding rast2 pixels have values.</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>nodata2expr</term>
-						<listitem><para>An algebraic expression involving <varname>rast1</varname> or a constant that defines what to return if pixel of <varname>rast2</varname> is missing pixel value but rast1 has pixel value.</para></listitem>
+						<listitem><para>An algebraic expression involving only <varname>rast1</varname> or a constant that defines what to return when pixels of <varname>rast2</varname> are nodata values and spatially corresponding rast1 pixels have values.</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>nodatanodataval</term>
-						<listitem><para>A numeric constant to return for pixel value when both rast1 and rast2 are missing a pixel value (have no data for that pixel)</para></listitem>
+						<listitem><para>A numeric constant to return when spatially corresponding rast1 and rast2 pixels are both nodata values.</para></listitem>
 					</varlistentry>
 			
 				</variablelist>
@@ -5955,9 +5955,9 @@ WITH mygeoms
             ),
    -- define our canvas to be 1 to 1 pixel to geometry
    canvas
-    AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(200, 
+    AS (SELECT ST_AddBand(ST_MakeEmptyRaster(200, 
         200, 
-        ST_XMin(e)::integer, ST_YMax(e)::integer, 1,-1, 0, 0 ) , '8BUI'::text,0) As rast
+        ST_XMin(e)::integer, ST_YMax(e)::integer, 1, -1, 0, 0) , '8BUI'::text,0) As rast
         FROM (SELECT ST_Extent(geom) As e,
                     Max(ST_SRID(geom)) As srid 
                     from mygeoms 
@@ -6361,7 +6361,7 @@ WITH mygeoms
    canvas
     AS ( SELECT ST_AddBand(ST_MakeEmptyRaster(250, 
         250, 
-        ST_XMin(e)::integer, ST_YMax(e)::integer, 1,-1, 0, 0 ) , '8BUI'::text,0) As rast
+        ST_XMin(e)::integer, ST_YMax(e)::integer, 1, -1, 0, 0 ) , '8BUI'::text,0) As rast
         FROM (SELECT ST_Extent(geom) As e,
                     Max(ST_SRID(geom)) As srid 
                     from mygeoms 
@@ -6516,7 +6516,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 					<varlistentry>
 						<term>nodatamode</term>
 						<listitem><para>Defines what value to pass to the function for a neighborhood pixel that is nodata or NULL</para>
-							<para>'ignore': any NODATA values encountered in the neighborhood are ignored by the computation -- this flag must be sent to the user callback function, and the user function decides how to ignore it.</para>,
+							<para>'ignore': any NODATA values encountered in the neighborhood are ignored by the computation -- this flag must be sent to the user callback function, and the user function decides how to ignore it.</para>
 							<para>'NULL': any NODATA values encountered in the neighborhood will cause the resulting pixel to be NULL -- the user callback function is skipped in this case.</para>
 							<para>'value': any NODATA values encountered in the neighborhood are replaced by the reference pixel (the one in the center of the neighborhood). Note that if this value is NODATA, the behavior is the same as 'NULL' (for the affected neighborhood)</para>
 						</listitem>
@@ -7606,7 +7606,7 @@ WHERE A.rid =2 ;
 		  </refnamediv>
 
 		  <refsynopsisdiv>
-			<funcsynopsis>			  
+			<funcsynopsis>
 			  <funcprototype>
 				<funcdef>boolean <function>ST_SameAlignment</function></funcdef>
 				<paramdef>
