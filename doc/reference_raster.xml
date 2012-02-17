@@ -3249,6 +3249,9 @@ FROM (
 				
 				<para>Sets the X and Y size of pixels in units of coordinate reference system. Number units/pixel width/height.  If
 				only one unit passed in, assumed X and Y are the same number.</para>
+				
+				<note><para>ST_SetScale is different from <xref linkend="RT_ST_Rescale" /> in that ST_SetScale do not resample the raster to match the raster extent. It only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
+
 				<para>Changed: 2.0.0 In WKTRaster versions this was called ST_SetPixelSize.  This was changed in 2.0.0.</para>
 				</refsection>
 				
@@ -3565,9 +3568,8 @@ WHERE rid = 2;
 		<refentry id="RT_ST_Rescale">
 			<refnamediv>
 				<refname>ST_Rescale</refname>
-				<refpurpose>Rescales a raster that is in a known spatial ref and using specified algorithm.
-				    Uses NearestNeighbor if no algorithm is specified Options: NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline, Lanczos.
-				    the scalex, scaley, scalexy are the desired new ratio between pixel coordinates and geometry coordinates.</refpurpose>
+				<refpurpose>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos algorithm. The default is NearestNeighbor.
+				    </refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3595,18 +3597,30 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Rescales a raster using specified pixel warping algorithm. 
-				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
-				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. NearestNeighbor is the fastest but worst interpolation.
-				The <varname>scalex</varname>, <varname>scaley</varname> define the desired new ratio between geometry units and pixel units.</para>
-				<note><para>Note: This is different from <xref linkend="RT_ST_SetScale" /> in that ST_Rescale changes the underlying pixels of the raster using existing scale
-					and rescales it to the new input scales. <xref linkend="RT_ST_SetScale" />, on the other hand, changes the metadata of the raster to correct an originally mis-specified scaling.</para></note> 
+				<para>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
+				
+				<para><varname>scalex</varname> and <varname>scaley</varname> define the new pixel size. scaley must often be negative to get well oriented raster. When the new scalex is not a divisor of the raster width, the horizontal extent of the resulting raster is adjusted. The same rule applies to the vertical extent when the new scaley is not a divisor of the height of the raster.</para>
+				
+				<para>A maxerror percent of 0.125 if no maxerr is specified.</para>
+				
+				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
+
+				<note><para>ST_Rescale is different from <xref linkend="RT_ST_SetScale" /> in that ST_SetScale do not resample the raster to match the raster extent. ST_SetScale only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
+				
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 			</refsection>
 				
 			<refsection>
 					<title>Examples</title>
-					<para>Examples utilize the katrina raster loaded as a single tile described in 
+					<para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
+					
+					<programlisting>-- the original raster pixel size
+					SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0))
+					
+					-- the rescaled raster raster pixel size
+					SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))</programlisting>
+					
+					<para>This example utilize the katrina raster loaded as a single tile described in 
 			<ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</ulink></para>
 					<programlisting>-- My original raster that is in WGS 84 lon lat 1 pixel in x/y represents 0.029.. in long lat -
 SELECT ST_ScaleX(rast) As orig_scalex, ST_ScaleY(rast) As origi_scaley 
@@ -3666,8 +3680,7 @@ SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
 		<refentry id="RT_ST_Transform">
 			<refnamediv>
 				<refname>ST_Transform</refname>
-				<refpurpose>Reprojects a raster in a known spatial reference system to another known spatial reference system using specified resampling algorithm. 
-				    Uses NearestNeighbor if no algorithm is specified Options: NearestNeighbor, Bilinear, Cubic, CubicSpline, Lanczos.</refpurpose>
+				<refpurpose>Reprojects a raster in a known spatial reference system to another known spatial reference system using specified resampling algorithm. Options are NearestNeighbor, Bilinear, Cubic, CubicSpline, Lanczos defaulting to NearestNeighbor.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5623,11 +5636,11 @@ FROM dummy_rast;
 				
 				<para>In all variants, if no band number is specified band 1 is assumed.</para>        
 				
-				<para>To get more control on the resulting extent or on what to return when encountering a nodata value, use the two rasters version of <xref linkend="RT_ST_MapAlgebraExpr2" />.</para>
+				<note><para>To get more control on the resulting extent or on what to return when encountering a nodata value, use the two rasters version of <xref linkend="RT_ST_MapAlgebraExpr2" />.</para></note>
 				
-				<para>The variants returning a raster and taking a geometry are very similar to ST_Clip with the exception that ST_Clip() works on multiple band rasters and never returns a band corresponding to the rasterized geometry. ST_Intersection(raster, geometry) works only on one band and may return a band corresponding to the rasterized geometry (when 'BOTH' or 'SECOND' are passed as the returnband parameter).</para>
+				<note><para>The variants returning a raster and taking a geometry are very similar to ST_Clip with the exception that ST_Clip() works on multiple band rasters and never returns a band corresponding to the rasterized geometry. ST_Intersection(raster, geometry) works only on one band and may return a band corresponding to the rasterized geometry (when 'BOTH' or 'SECOND' are passed as the returnband parameter).</para></note>
 				
-				<para>ST_Intersection() Should be used in conjunction with ST_Intersects and an index on the raster column or the geometry column.</para>
+				<note><para>ST_Intersection() Should be used in conjunction with ST_Intersects and an index on the raster column or the geometry column.</para></note>
 
 				<para>Enhanced: 2.0.0 - Intersection in the raster world was introduced. In earlier pre-2.0.0 versions, only intersection performed in vector world were supported.</para>
 				</refsection>
