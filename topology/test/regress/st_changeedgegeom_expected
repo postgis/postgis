@@ -13,4 +13,12 @@ ERROR:  SQL/MM Spatial exception - geometry crosses an edge
 T2|Edge 5 changed
 T3|Edge 5 changed
 T4|Edge 26 changed
+ERROR:  Edge motion collision at POINT(9 35)
+T5|Edge 3 changed
+T6|Edge 3 changed
+ERROR:  Edge motion collision at POINT(20 37)
+T7|Edge 2 changed
+ERROR:  Edge motion collision at POINT(25 35)
+ERROR:  Edge twist at node POINT(4 31)
+T8|Edge 26 changed
 Topology 'city_data' dropped

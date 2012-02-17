@@ -2528,21 +2528,18 @@ LANGUAGE 'plpgsql' VOLATILE;
 --
 -- Not in the specs:
 -- * Raise an exception if given a non-existent edge
+-- * Raise an exception if movement is not topologically isomorphic
 --
--- TODO: allow changing geometry of a closed edge (#982)
--- 
+-- }{
 CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(atopology varchar, anedge integer, acurve geometry)
   RETURNS TEXT AS
 $$
 DECLARE
-  aface INTEGER;
-  face GEOMETRY;
-  snodegeom GEOMETRY;
-  enodegeom GEOMETRY;
-  count INTEGER;
   rec RECORD;
-  edgeid INTEGER;
   oldedge RECORD;
+  range GEOMETRY; -- movement range
+  sql TEXT;
+  iscw BOOLEAN;
 BEGIN
 
   --
@@ -2595,13 +2592,30 @@ BEGIN
       'SQL/MM Spatial exception - start node not geometry start point.';
   END IF;
 
-  --
-  -- f) Check EndPoint consistency
-  --
-  IF NOT ST_Equals(ST_EndPoint(acurve), ST_EndPoint(oldedge.geom)) THEN
-    RAISE EXCEPTION
-      'SQL/MM Spatial exception - end node not geometry end point.';
-  END IF;
+  IF oldedge.start_node = oldedge.end_node THEN -- {
+
+    -- Not in the specs:
+    -- if the edge is closed, check we didn't change winding !
+    --       (should be part of isomorphism checking)
+    range := ST_MakePolygon(oldedge.geom);
+    iscw := ST_OrderingEquals(range, ST_ForceRHR(range));
+    range := ST_MakePolygon(acurve);
+    IF iscw != ST_OrderingEquals(range, ST_ForceRHR(range)) THEN
+      RAISE EXCEPTION 'Edge twist at node %',
+        ST_AsText(ST_StartPoint(oldedge.geom));
+    END IF;
+
+  ELSE -- }{
+
+    --
+    -- f) Check EndPoint consistency
+    --
+    IF NOT ST_Equals(ST_EndPoint(acurve), ST_EndPoint(oldedge.geom)) THEN
+      RAISE EXCEPTION
+        'SQL/MM Spatial exception - end node not geometry end point.';
+    END IF;
+
+  END IF; -- }
 
   --
   -- g) Check if curve crosses any node
@@ -2622,13 +2636,13 @@ BEGIN
   --
   -- h) Check if this geometry has any interaction with any existing edge
   --
-  FOR rec IN EXECUTE 'SELECT edge_id, ST_Relate(geom,' 
+  sql := 'SELECT edge_id, ST_Relate(geom,' 
     || quote_literal(acurve::text)
     || '::geometry, 2) as im FROM '
     || quote_ident(atopology)
     || '.edge_data WHERE edge_id != ' || anedge || ' AND geom && '
-    || quote_literal(acurve::text) || '::geometry'
-  LOOP
+    || quote_literal(acurve::text) || '::geometry';
+  FOR rec IN EXECUTE sql LOOP -- {
 
     --RAISE DEBUG 'IM=%',rec.im;
 
@@ -2652,7 +2666,29 @@ BEGIN
         'SQL/MM Spatial exception - geometry crosses an edge';
     END IF;
 
-  END LOOP;
+  END LOOP; -- }
+
+  --
+  -- Not in the specs:
+  -- Check topological isomorphism 
+  --
+  range := ST_MakeLine(oldedge.geom, ST_Reverse(acurve));
+  RAISE DEBUG 'Made line: %', ST_AsText(range);
+  range := ST_MakePolygon(range);
+  RAISE DEBUG 'Made poly: %', ST_AsText(range);
+  range := ST_CollectionExtract(ST_MakeValid(range), 3);
+  RAISE DEBUG 'Range motion: %', ST_AsText(range);
+  sql := 'SELECT node_id, geom FROM '
+    || quote_ident(atopology)
+    || '.node WHERE ST_Contains('
+    || quote_literal(range::text)
+    || '::geometry, geom) LIMIT 1';
+  RAISE DEBUG '%', sql;
+  FOR rec IN EXECUTE sql LOOP -- {
+    RAISE EXCEPTION 'Edge motion collision at %', ST_AsText(rec.geom);
+  END LOOP; -- }
+
+  --RAISE EXCEPTION 'Not doing it';
 
   --
   -- Update edge geometry
@@ -2660,13 +2696,6 @@ BEGIN
   EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
     || ' SET geom = ' || quote_literal(acurve::text) 
     || ' WHERE edge_id = ' || anedge;
-
-  --
-  -- TODO: Check if we need to update linking
-  -- We do if:
-  --   o edge is closed and we changed direction)
-  --   o edge moved to another face
-  -- 
 
   RETURN 'Edge ' || anedge || ' changed';
 

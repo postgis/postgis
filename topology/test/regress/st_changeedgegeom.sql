@@ -37,6 +37,41 @@ SELECT 'T3', topology.ST_ChangeEdgeGeom('city_data', 5,
 SELECT 'T4', topology.ST_ChangeEdgeGeom('city_data', 26,
  'LINESTRING(4 31, 7 31, 4 34, 4 31)');
 
--- TODO: test reverse direction of closed edge
+-- Collisions on edge motion path is forbidden:
+-- get to include a whole isolated edge
+SELECT topology.ST_ChangeEdgeGeom('city_data', 26,
+ 'LINESTRING(4 31, 7 31, 15 34, 12 37.5, 4 34, 4 31)');
+
+-- This movement doesn't collide:
+SELECT 'T5', topology.ST_ChangeEdgeGeom('city_data', 3,
+ 'LINESTRING(25 30, 18 35, 18 39, 23 39, 23 36, 20 38, 19 37, 20 35, 25 35)');
+
+-- This movement doesn't collide either:
+SELECT 'T6', topology.ST_ChangeEdgeGeom('city_data', 3,
+ 'LINESTRING(25 30, 22 38, 25 35)');
+
+-- This movement gets to include an isolated node:
+SELECT topology.ST_ChangeEdgeGeom('city_data', 3,
+ 'LINESTRING(25 30, 18 35, 18 39, 23 39, 23 36, 20 35, 25 35)');
+
+-- This movement is legit
+SELECT 'T7', topology.ST_ChangeEdgeGeom('city_data', 2,
+ 'LINESTRING(25 30, 28 39, 16 39, 25 30)');
+
+-- This movement gets to exclude an isolated node:
+SELECT topology.ST_ChangeEdgeGeom('city_data', 2,
+ 'LINESTRING(25 30, 28 39, 20 39, 25 30)');
+
+-- Test changing winding direction of closed edge
+SELECT topology.ST_ChangeEdgeGeom('city_data', 26,
+ ST_Reverse('LINESTRING(4 31, 7 31, 4 34, 4 31)'));
+
+-- Maintain winding of closed edge 
+SELECT 'T8', topology.ST_ChangeEdgeGeom('city_data', 26,
+ 'LINESTRING(4 31, 4 30.4, 5 30.4, 4 31)');
+
+-- TODO: test moving closed edge into another face
+-- TODO: test changing winding of non-closed edge ring
+-- TODO: test face mbr update
 
 SELECT topology.DropTopology('city_data');
