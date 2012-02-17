@@ -112,3 +112,4 @@ authors.git
 libpgcommon/Makefile
 libpgcommon/cunit/Makefile
 utils/Makefile
+utils/postgis_restore.pl
