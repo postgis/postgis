@@ -2538,6 +2538,8 @@ DECLARE
   rec RECORD;
   oldedge RECORD;
   range GEOMETRY; -- movement range
+  tmp1 GEOMETRY;
+  tmp2 GEOMETRY;
   sql TEXT;
   iscw BOOLEAN;
 BEGIN
@@ -2672,12 +2674,28 @@ BEGIN
   -- Not in the specs:
   -- Check topological isomorphism 
   --
-  range := ST_MakeLine(oldedge.geom, ST_Reverse(acurve));
-  RAISE DEBUG 'Made line: %', ST_AsText(range);
-  range := ST_MakePolygon(range);
-  RAISE DEBUG 'Made poly: %', ST_AsText(range);
-  range := ST_CollectionExtract(ST_MakeValid(range), 3);
+  tmp1 := ST_MakeLine(ST_EndPoint(oldedge.geom), ST_StartPoint(oldedge.geom));
+  RAISE DEBUG 'end-to-start: %', ST_AsText(tmp1);
+
+  tmp2 := ST_MakeLine(oldedge.geom, tmp1);
+  IF ST_NumPoints(tmp2) < 4 THEN
+    tmp2 := ST_AddPoint(tmp2, ST_StartPoint(oldedge.geom));
+  END IF;
+  RAISE DEBUG 'Old-ring: %', ST_AsText(tmp2);
+  tmp2 := ST_CollectionExtract(ST_MakeValid(ST_MakePolygon(tmp2)), 3);
+  RAISE DEBUG 'Old-ring (poly): %', ST_AsText(tmp2);
+
+  range := ST_MakeLine(acurve, tmp1);
+  IF ST_NumPoints(range) < 4 THEN
+    range := ST_AddPoint(range, ST_StartPoint(oldedge.geom));
+  END IF;
+  RAISE DEBUG 'New-ring: %', ST_AsText(range);
+  range := ST_CollectionExtract(ST_MakeValid(ST_MakePolygon(range)), 3);
+  RAISE DEBUG 'New-ring (poly): %', ST_AsText(range);
+
+  range := ST_SymDifference(range, tmp2);
   RAISE DEBUG 'Range motion: %', ST_AsText(range);
+
   sql := 'SELECT node_id, geom FROM '
     || quote_ident(atopology)
     || '.node WHERE ST_Contains('

@@ -62,6 +62,10 @@ SELECT 'T7', topology.ST_ChangeEdgeGeom('city_data', 2,
 SELECT topology.ST_ChangeEdgeGeom('city_data', 2,
  'LINESTRING(25 30, 28 39, 20 39, 25 30)');
 
+-- This movement should be fine
+SELECT 'T7.1', topology.ST_ChangeEdgeGeom('city_data', 2,
+'LINESTRING(25 30, 28 39, 17 39, 25 30)');
+
 -- Test changing winding direction of closed edge
 SELECT topology.ST_ChangeEdgeGeom('city_data', 26,
  ST_Reverse('LINESTRING(4 31, 7 31, 4 34, 4 31)'));
@@ -73,6 +77,7 @@ SELECT 'T8', topology.ST_ChangeEdgeGeom('city_data', 26,
 -- test changing winding of non-closed edge ring
 SELECT topology.ST_ChangeEdgeGeom('city_data', 13,
  'LINESTRING(21 6, 21 2, 6 2, 6 25, 50 25, 50 2, 35 2, 35 6)');
+
 
 -- TODO: test moving closed edge into another face
 -- TODO: test face mbr update
