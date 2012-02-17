@@ -1399,11 +1399,11 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 	superuser (by marking the function as SECURITY DEFINER) and check permissions ourselves */
 	if ( txnsp )
 	{
-		sprintf(query, "SELECT has_table_privilege((SELECT usesysid FROM pg_user WHERE usename = session_user), '%s.%s', 'select')", nsp, tbl);
+		sprintf(query, "SELECT has_table_privilege((SELECT usesysid FROM pg_user WHERE usename = session_user), '\"%s\".\"%s\"', 'select')", nsp, tbl);
 	}
 	else
 	{
-		sprintf(query, "SELECT has_table_privilege((SELECT usesysid FROM pg_user WHERE usename = session_user), '%s', 'select')", tbl);
+		sprintf(query, "SELECT has_table_privilege((SELECT usesysid FROM pg_user WHERE usename = session_user), '\"%s\"', 'select')", tbl);
 	}
 
 	POSTGIS_DEBUGF(4, "permission check sql query is: %s", query);
