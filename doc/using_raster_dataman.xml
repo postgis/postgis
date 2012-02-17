@@ -505,6 +505,8 @@ Available GDAL raster formats:
    </sect1>
    <sect1 id="RT_Raster_Applications"> 
    		<title>Building Custom Applications with PostGIS Raster</title>
+   		<para>The fact that PostGIS raster provides you with SQL functions to render rasters in known image formats gives  you a lot of optoins for rendering them.
+   		For example you can use OpenOffice / LibreOffice for rendering as demonstrated in <ulink url="http://www.postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports.html">Rendering PostGIS Raster graphics with LibreOffice Base Reports</ulink>.  In addition you can use a wide variety of languages as demonstrated in this section.</para>
    		<sect2 id="RT_PHP_Output">
    			<title>PHP Example Outputting using ST_AsPNG in concert with other raster functions</title>
    			<para>In this section, we'll demonstrate how to use the PHP PostgreSQL driver and the <xref linkend="RT_ST_AsGDALRaster" /> family of functions to
