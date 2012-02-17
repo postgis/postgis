@@ -23,4 +23,8 @@ T7.1|Edge 2 changed
 ERROR:  Edge twist at node POINT(4 31)
 T8|Edge 26 changed
 ERROR:  Edge motion collision at POINT(9 6)
+T9|27
+ERROR:  Edge changed disposition around start node 20
+T10|28
+ERROR:  Edge changed disposition around start node 17
 Topology 'city_data' dropped

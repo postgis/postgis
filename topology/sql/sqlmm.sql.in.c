@@ -2520,6 +2520,42 @@ $$
 LANGUAGE 'plpgsql' VOLATILE;
 --} ST_AddIsoEdge
 
+-- Internal function used by ST_ChangeEdgeGeom to compare
+-- adjacent edges of an edge endpoint
+--
+-- @param anode the node to use edge end star of
+-- @param anedge the directed edge to get adjacents from
+--        if positive `anode' is assumed to be its start node
+--        if negative `anode' is assumed to be its end node
+--      
+-- {
+CREATE OR REPLACE FUNCTION topology._ST_AdjacentEdges(atopology varchar, anode integer, anedge integer)
+RETURNS integer[] AS
+$$
+DECLARE
+  ret integer[];
+BEGIN
+  WITH edgestar AS (
+    SELECT *, count(*) over () AS cnt
+    FROM GetNodeEdges(atopology, anode)
+  )
+  SELECT ARRAY[ (
+      SELECT p.edge AS prev FROM edgestar p
+      WHERE p.sequence = CASE WHEN m.sequence-1 < 1 THEN cnt
+                         ELSE m.sequence-1 END
+    ), (
+      SELECT p.edge AS prev FROM edgestar p                                           WHERE p.sequence = ((m.sequence)%cnt)+1
+    ) ]
+  FROM edgestar m
+  WHERE edge = anedge
+  INTO ret;
+
+  RETURN ret;
+END
+$$
+LANGUAGE 'plpgsql' STABLE;
+--}
+
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
 -- X.3.6
@@ -2540,6 +2576,8 @@ DECLARE
   range GEOMETRY; -- movement range
   tmp1 GEOMETRY;
   tmp2 GEOMETRY;
+  snode_info RECORD;
+  enode_info RECORD;
   sql TEXT;
   iscw BOOLEAN;
 BEGIN
@@ -2674,6 +2712,10 @@ BEGIN
   -- Not in the specs:
   -- Check topological isomorphism 
   --
+
+  -- Check that the "motion range" doesn't include any node 
+  --{
+
   tmp1 := ST_MakeLine(ST_EndPoint(oldedge.geom), ST_StartPoint(oldedge.geom));
   RAISE DEBUG 'end-to-start: %', ST_AsText(tmp1);
 
@@ -2706,7 +2748,25 @@ BEGIN
     RAISE EXCEPTION 'Edge motion collision at %', ST_AsText(rec.geom);
   END LOOP; -- }
 
-  --RAISE EXCEPTION 'Not doing it';
+  --} motion range checking end
+
+  -- 
+  -- Check edge adjacency before
+  --{
+
+  SELECT topology._ST_AdjacentEdges(
+      atopology, oldedge.start_node, anedge
+    ) as pre, NULL::integer[] as post
+  INTO STRICT snode_info;
+  RAISE DEBUG 'Bs:%', snode_info.pre;
+
+  SELECT topology._ST_AdjacentEdges(
+      atopology, oldedge.end_node, -anedge
+    ) as pre, NULL::integer[] as post
+  INTO STRICT enode_info;
+  RAISE DEBUG 'Be:%', enode_info.pre;
+
+  --}
 
   --
   -- Update edge geometry
@@ -2714,6 +2774,35 @@ BEGIN
   EXECUTE 'UPDATE ' || quote_ident(atopology) || '.edge_data '
     || ' SET geom = ' || quote_literal(acurve::text) 
     || ' WHERE edge_id = ' || anedge;
+
+  -- 
+  -- Check edge adjacency after
+  --{
+
+  snode_info.post := topology._ST_AdjacentEdges(
+      atopology, oldedge.start_node, anedge
+    );
+  RAISE DEBUG 'As:%', snode_info.post;
+
+  enode_info.post := topology._ST_AdjacentEdges(
+      atopology, oldedge.end_node, -anedge
+    );
+  RAISE DEBUG 'Ae:%', enode_info.post;
+
+  IF snode_info.pre != snode_info.post THEN
+    RAISE EXCEPTION 'Edge changed disposition around start node %',
+      oldedge.start_node;
+  END IF;
+
+  IF enode_info.pre != enode_info.post THEN
+    RAISE EXCEPTION 'Edge changed disposition around end node %',
+      oldedge.end_node;
+  END IF;
+
+  --}
+
+  --RAISE EXCEPTION 'Not doing it';
+
 
   RETURN 'Edge ' || anedge || ' changed';
 

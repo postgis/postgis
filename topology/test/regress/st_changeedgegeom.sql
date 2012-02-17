@@ -78,8 +78,18 @@ SELECT 'T8', topology.ST_ChangeEdgeGeom('city_data', 26,
 SELECT topology.ST_ChangeEdgeGeom('city_data', 13,
  'LINESTRING(21 6, 21 2, 6 2, 6 25, 50 25, 50 2, 35 2, 35 6)');
 
+-- test moving closed edge into another face
+SELECT 'T9', ST_AddEdgeModFace('city_data', 20, 20,
+ 'LINESTRING(4 31, 7 31, 4 34, 4 31)');
+SELECT ST_ChangeEdgeGeom('city_data', 26, -- should fail!
+ 'LINESTRING(4 31,5 31.5,4.6 32,4 31)');
 
--- TODO: test moving closed edge into another face
+-- TODO: test moving non-closed edge into another face
+SELECT 'T10', ST_AddEdgeModFace('city_data', 17, 18,
+ 'LINESTRING(21 22, 28 27, 35 22)');
+SELECT ST_ChangeEdgeGeom('city_data', 28, -- should fail!
+ 'LINESTRING(21 22, 28 18, 35 22)');
+
 -- TODO: test face mbr update
 
 SELECT topology.DropTopology('city_data');
