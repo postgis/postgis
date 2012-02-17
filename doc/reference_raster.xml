@@ -5543,9 +5543,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_Intersection">
 			<refnamediv>
 				<refname>ST_Intersection</refname>
-				<refpurpose>Returns a set of geometry-pixelvalue pairs resulting from intersection of a raster band with a geometry when operation is geometry, raster. 
-					If operation is raster, geometry then a raster is returned that is result of the input raster clipped by geometry. If
-					no band number is specified, band 1 is assumed.</refpurpose>
+				<refpurpose>Returns a raster or a set of geometry-pixelvalue pairs representing the shared portion of two rasters or the geometrical intersection of a vectorization of the raster and a geometry.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5561,24 +5559,7 @@ FROM dummy_rast;
 					<funcdef>raster <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
-					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_Intersection</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>regprocedure </type> <parameter>otheruserfunc</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_Intersection</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
-					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -5588,16 +5569,67 @@ FROM dummy_rast;
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>regprocedure </type> <parameter>otheruserfunc</parameter></paramdef>
 				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
+					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
+					<paramdef><type>regprocedure </type> <parameter>otheruserfunc</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>returnband</parameter></paramdef>
+					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
+				  </funcprototype>
+
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
 			<refsection>
 				<title>Description</title>
+				<para>Returns a raster or a set of geometry-pixelvalue pairs representing the shared portion of two rasters or the geometrical intersection of a vectorization of the raster and a geometry. The order in which the geometry or the raster are passed determine if the operation is performed in vector or raster world.</para>
 				
-				<para>Return the intersections of the geometry with the vectorized parts of 
-        the raster and the values associated with those parts, if really their intersection is not empty. If no band number is specified
-        band 1 is assumed.  If raster is first argument, then a raster is returned that represents that part of the input raster that intersects with the input geometry.</para>
-				<para>Enhanced: 2.0.0 - output as raster was introduced. In wktraster and earlier pre-2.0.0 releases only geometry-val options were supported.</para>
+				<para>The first variant, returning a setof geomval, works in vector world. The raster is first vectorized (using ST_DumpAsPolygon) into a set of geomval rows and those rows are then intersected with the geometry using the ST_Intersection(geometry, geometry) PostGIS function. Geometries intersecting only with a nodata value area of a raster returns an empty geometry. They are normally excluded from the results by the proper usage of ST_Intersect in the WHERE clause.</para>
+				
+				<para>You can access the geometry and the value parts of the resulting set of geomval by surrounding them with parenthesis and adding '.geom' or '.val' at the end of the expression. e.g. (ST_Intersection(rast, geom)).geom</para>
+				
+				<para>The other variants, returning a raster, works in raster world. They are using the two rasters version of ST_MapAlgebraExpr to perform the intersection. In the variants taking a geometry, the geometry is rasterized (using ST_AsRaster) before being passed to ST_MapAlgebraExpr.</para>
+				
+				<para>The extent of the resulting raster corresponds to the geometrical intersection of the two raster extents. The resulting raster includes the bands from the 'FIRST', 'SECOND' or 'BOTH' rasters following what is passed as the returnband parameter. Nodata value areas present in any band results in nodata value areas in every bands of the result. In other word, any pixel intersecting with a nodata value pixel in the other raster a nodata value pixel in the resulting band if it is returned.</para>
+				
+				<para>You can optionally produce a one band raster and control the values it contains by providing a custom function of type regprocedure accepting two double precision values. See <xref linkend="RT_ST_MapAlgebraFct2" /> for an example on how to do that.</para>
+				
+				<para>In all variants, if no band number is specified band 1 is assumed.</para>        
+				
+				<para>To get more control on the resulting extent or on what to return when encountering a nodata value, use the two rasters version of <xref linkend="RT_ST_MapAlgebraExpr2" />.</para>
+				
+				<para>The variants returning a raster and taking a geometry are very similar to ST_Clip with the exception that ST_Clip() works on multiple band rasters and never returns a band corresponding to the rasterized geometry. ST_Intersection(raster, geometry) works only on one band and may return a band corresponding to the rasterized geometry (when 'BOTH' or 'SECOND' are passed as the returnband parameter).</para>
+				
+				<para>ST_Intersection() Should be used in conjunction with ST_Intersects and an index on the raster column or the geometry column.</para>
+
+				<para>Enhanced: 2.0.0 - Intersection in the raster world was introduced. In earlier pre-2.0.0 versions, only intersection performed in vector world were supported.</para>
 				</refsection>
 				
 				<refsection>
@@ -5638,7 +5670,7 @@ WHERE A.rid =2 ) As foo;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="geomval" />, <xref linkend="RT_ST_Intersects" />, <xref linkend="ST_AsText" /></para>
+				<para><xref linkend="geomval" />, <xref linkend="RT_ST_Intersects" />, <xref linkend="RT_ST_MapAlgebraExpr2" />, <xref linkend="RT_ST_Clip" />, <xref linkend="ST_AsText" /></para>
 			</refsection>
 		</refentry>
 		

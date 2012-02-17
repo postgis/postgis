@@ -3204,10 +3204,9 @@ CREATE OR REPLACE FUNCTION st_intersection(geomin geometry, rast raster, band in
 -- ST_Intersection (2-raster in raster space)
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION _st_intersection(
+CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster, band1 int,
 	rast2 raster, band2 int,
-	extenttype text DEFAULT 'INTERSECTION',
 	returnband text DEFAULT 'BOTH',
 	otheruserfunc regprocedure DEFAULT NULL
 )
@@ -3233,14 +3232,14 @@ CREATE OR REPLACE FUNCTION _st_intersection(
 		rtn := NULL;
 		CASE
 			WHEN _returnband = 'FIRST' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), extenttype);
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), 'INTERSECTION');
 			WHEN _returnband = 'SECOND' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), extenttype);
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), 'INTERSECTION');
 			WHEN _returnband = 'OTHER' THEN
-				rtn := ST_MapAlgebraFct(rast1, band1, rast2, band2, otheruserfunc, NULL, extenttype);
+				rtn := ST_MapAlgebraFct(rast1, band1, rast2, band2, otheruserfunc, NULL, 'INTERSECTION');
 			ELSE -- BOTH
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), extenttype);
-				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), extenttype));
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), 'INTERSECTION');
+				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), 'INTERSECTION'));
 		END CASE;
 
 		RETURN rtn;
@@ -3250,20 +3249,10 @@ CREATE OR REPLACE FUNCTION _st_intersection(
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster, band1 int,
 	rast2 raster, band2 int,
-	returnband text DEFAULT 'BOTH',
-	otheruserfunc regprocedure DEFAULT NULL
-)
-	RETURNS raster AS
-	$$ SELECT _st_intersection($1, $2, $3, $4, 'INTERSECTION', $5, $6) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_intersection(
-	rast1 raster, band1 int,
-	rast2 raster, band2 int,
 	otheruserfunc regprocedure
 )
 	RETURNS raster AS
-	$$ SELECT _st_intersection($1, $2, $3, $4, 'INTERSECTION', 'OTHER', $5) $$
+	$$ SELECT st_intersection($1, $2, $3, $4, 'OTHER', $5) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_intersection(
@@ -3273,7 +3262,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	otheruserfunc regprocedure DEFAULT NULL
 )
 	RETURNS raster AS
-	$$ SELECT _st_intersection($1, 1, $2, 1, 'INTERSECTION', $3, $4) $$
+	$$ SELECT st_intersection($1, 1, $2, 1, $3, $4) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_intersection(
@@ -3282,7 +3271,7 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	otheruserfunc regprocedure
 )
 	RETURNS raster AS
-	$$ SELECT _st_intersection($1, 1, $2, 1, 'INTERSECTION', 'OTHER', $3) $$
+	$$ SELECT st_intersection($1, 1, $2, 1, 'OTHER', $3) $$
 	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
@@ -3292,7 +3281,6 @@ CREATE OR REPLACE FUNCTION st_intersection(
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast raster, band int,
 	geom geometry,
-	extenttype text DEFAULT 'INTERSECTION',
 	otheruserfunc regprocedure DEFAULT NULL
 )
 	RETURNS raster AS $$
@@ -3301,10 +3289,10 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	BEGIN
 		rtn := NULL;
 
-		IF $5 IS NULL THEN
-			rtn := _st_intersection($1, $2, ST_AsRaster($3, $1), 1, $4, 'FIRST');
+		IF $4 IS NULL THEN
+			rtn := st_intersection($1, $2, ST_AsRaster($3, $1), 1, 'FIRST');
 		ELSE
-			rtn := _st_intersection($1, $2, ST_AsRaster($3, $1), 1, $4, 'OTHER', $5);
+			rtn := st_intersection($1, $2, ST_AsRaster($3, $1), 1, 'OTHER', $4);
 		END IF;
 
 		RETURN rtn;
@@ -3312,31 +3300,12 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	$$ LANGUAGE 'plpgsql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_intersection(
-	rast raster, band int,
-	geom geometry,
-	otheruserfunc regprocedure
-)
-	RETURNS raster AS
-	$$ SELECT st_intersection($1, $2, $3, 'INTERSECTION', $4) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_intersection(
 	rast raster,
 	geom geometry,
-	extenttype text DEFAULT 'INTERSECTION',
 	otheruserfunc regprocedure DEFAULT NULL
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, 1, $2, $3, $4) $$
-	LANGUAGE 'sql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_intersection(
-	rast raster,
-	geom geometry,
-	otheruserfunc regprocedure
-)
-	RETURNS raster AS
-	$$ SELECT st_intersection($1, 1, $2, 'INTERSECTION', $3) $$
+	$$ SELECT st_intersection($1, 1, $2, $3) $$
 	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
