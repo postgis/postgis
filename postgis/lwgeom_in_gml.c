@@ -395,7 +395,7 @@ static void parse_gml_srs(xmlNodePtr xnode, gmlSrs *srs)
 
 	node = xnode;
 	srsname = gmlGetProp(node, (xmlChar *) "srsName");
-	printf("srsname %s\n",srsname);
+	/*printf("srsname %s\n",srsname);*/
 	if (!srsname)
 	{
 		if (node->parent == NULL)
