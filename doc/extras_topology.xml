@@ -1069,8 +1069,9 @@ name is invalid then an error is thrown.
 			<refnamediv>
 				<refname>ST_ChangeEdgeGeom</refname>
 			
-				<refpurpose>Changes the linestring that define the specified edge. Will raise an error if the start and end points are not the same as the original or the new linestring
-				crosses an existing edge (not at end points) or new linestring is not simple.</refpurpose>
+				<refpurpose>
+Changes the shape of an edge without affecting the topology structure.
+				</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1087,16 +1088,33 @@ name is invalid then an error is thrown.
 			<refsection>
                 <title>Description</title>
             
-                <para>Changes the linestring that defines the specified edge. Will raise an error if the start and end points are not the same as the original or the new linestring
-				crosses an existing edge (except at end points) or intersects another edge.</para>
-                <para>If any arguments are null, the given edge does not exist in the <varname>node</varname> table of the topology schema) ,
-                    the <varname>acurve</varname> is not a <varname>LINESTRING</varname>, the <varname>anode</varname> and <varname>anothernode</varname> are not the start 
-                    and endpoints of <varname>acurve</varname> then an error is thrown.</para>
+                <para>
+Changes the shape of an edge without affecting the topology structure.
+		</para>
+                <para>
+If any arguments are null, the given edge does not exist in
+the <varname>node</varname> table of the topology schema, the
+<varname>acurve</varname> is not a <varname>LINESTRING</varname>, the
+<varname>anode</varname> and <varname>anothernode</varname> are not the
+start and endpoints of <varname>acurve</varname> or the modification would
+change the underlying topology then an error is thrown.
+		</para>
                 <para>If the spatial reference system (srid) of the <varname>acurve</varname> geometry is not the same as the topology an exception is thrown.</para>
                 <para>If the new <varname>acurve</varname> is not simple, then an error is thrown.</para>
+
+                <para>
+If moving the edge from old to new position would hit an obstacle then
+an error is thrown.
+		</para>
              
                 <!-- use this format if new function -->
                 <para>Availability: 1.1.0</para>
+
+                <!-- use this format if not a new function but functionality enhanced -->
+                <para>
+	Enhanced: 2.0.0 adds topological consistency enforcement
+		</para>
+
                 <para>&sqlmm_compliant; SQL-MM: Topo-Geo and Topo-Net 3: Routine Details X.3.6</para>
 			</refsection>
 		
