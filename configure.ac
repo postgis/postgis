@@ -25,6 +25,8 @@ dnl
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_CXX
+AC_PATH_PROG([ANT], [ant], [])
+AC_SUBST([ANT])
 
 dnl
 dnl Define PIC flags in PICFLAGS (note: this variable is set as part of libtool initialisation above)
@@ -1041,6 +1043,7 @@ AC_OUTPUT([GNUmakefile
    doc/Makefile.comments 
    doc/html/image_src/Makefile 
    utils/Makefile 
+   java/jdbc/Makefile
    $RT_MAKEFILE_LIST])
     
 dnl ===========================================================================
