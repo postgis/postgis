@@ -87,6 +87,22 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or
 	  </xsl:choose>
 	</xsl:template>
 
+       <xsl:template name="escapesinglequotes">
+        <xsl:param name="arg1"/>
+        <xsl:variable name="apostrophe">'</xsl:variable>
+        <xsl:choose>
+         <!-- this string has at least on single quote -->
+         <xsl:when test="contains($arg1, $apostrophe)">
+         <xsl:if test="string-length(normalize-space(substring-before($arg1, $apostrophe))) > 0"><xsl:value-of select="substring-before($arg1, $apostrophe)" disable-output-escaping="yes"/>''</xsl:if>
+          <xsl:call-template name="escapesinglequotes">
+           <xsl:with-param name="arg1"><xsl:value-of select="substring-after($arg1, $apostrophe)" disable-output-escaping="yes"/></xsl:with-param>
+          </xsl:call-template>
+         </xsl:when>
+         <!-- no quotes found in string, just print it -->
+         <xsl:when test="string-length(normalize-space($arg1)) > 0"><xsl:value-of select="normalize-space($arg1)"/></xsl:when>
+        </xsl:choose>
+       </xsl:template>
+
 	<!--macro to pull out function parameter names so we can provide a pretty arg list prefix for each function -->
 	<xsl:template name="listparams">
 		<xsl:param name="func" />
@@ -94,9 +110,11 @@ COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,'geometry set') or
 			<xsl:if test="count(paramdef/parameter) &gt; 0">args: </xsl:if>
 			<xsl:for-each select="paramdef">
 				<xsl:choose>
-					<xsl:when test="count(parameter) &gt; 0"> 
-						<xsl:value-of select="parameter" />
-					</xsl:when>
+				<xsl:when test="count(parameter) &gt; 0"> 
+					<xsl:call-template name="escapesinglequotes">
+						<xsl:with-param name="arg1" select="parameter"/>
+					</xsl:call-template>
+				</xsl:when>
 				</xsl:choose>
 				<xsl:if test="position()&lt;last()"><xsl:text>, </xsl:text></xsl:if>
 			</xsl:for-each>
