@@ -2801,8 +2801,29 @@ BEGIN
 
   --}
 
-  --RAISE EXCEPTION 'Not doing it';
-
+  -- Update faces MBR of left and right faces
+  -- TODO: think about ways to optimize this part, like see if
+  --       the old edge geometry partecipated in the definition
+  --       of the current MBR (for shrinking) or the new edge MBR
+  --       would be larger than the old face MBR...
+  --
+  IF oldedge.left_face != 0 THEN
+    sql := 'UPDATE ' || quote_ident(atopology) || '.face '
+      || ' SET mbr = ' || quote_literal(
+        ST_Envelope(ST_GetFaceGeometry(atopology, oldedge.left_face))::text
+        )
+      || '::geometry WHERE face_id = ' || oldedge.left_face;
+    EXECUTE sql;
+  END IF;
+  IF oldedge.right_face != 0 AND oldedge.right_face != oldedge.left_face THEN
+    sql := 'UPDATE ' || quote_ident(atopology) || '.face '
+      || ' SET mbr = ' || quote_literal(
+        ST_Envelope(ST_GetFaceGeometry(atopology, oldedge.right_face))::text
+        )
+      || '::geometry WHERE face_id = ' || oldedge.right_face;
+    EXECUTE sql;
+  END IF;
+  
 
   RETURN 'Edge ' || anedge || ' changed';
 
