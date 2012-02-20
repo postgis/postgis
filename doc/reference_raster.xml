@@ -3452,8 +3452,7 @@ WHERE rid = 2;
 		<refentry id="RT_ST_Resample">
 			<refnamediv>
 				<refname>ST_Resample</refname>
-				<refpurpose>Warps a raster in a known spatial reference system using a specified resampling algorithm and set of raster attributes or reference raster.  If using a reference raster, the new raster will have the same srid, scale, skew and alignment.
-				    Uses NearestNeighbor if no algorithm is specified Options: NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline, Lanczos.</refpurpose>
+				<refpurpose>Resample a raster using a specified resampling algorithm, new dimensions, an arbitrary grid corner and a set of raster georeferencing attributes defined or borrowed from another raster. New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3509,10 +3508,14 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Warps a raster using specified pixel warping algorithm. 
-				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
-				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. NearestNeighbor is the fastest but worst interpoloation</para>
-				<note><para>Only works if rasters are in a known spatial reference system</para></note>
+				<para>Resample a raster using a specified resampling algorithm, new dimensions (width &amp; height), a grid corner (gridx &amp; gridy) and a set of raster georeferencing attributes (scalex, scaley, skewx &amp; skewy) defined or borrowed from another raster.</para>
+				
+				<para>New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor which is the fastest but produce the worst interpolation.</para>
+				
+				<para>A maxerror percent of 0.125 is used if no maxerr is specified.</para>
+				
+				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
+				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para></note>
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 			</refsection>
 				
@@ -3568,7 +3571,7 @@ WHERE rid = 2;
 		<refentry id="RT_ST_Rescale">
 			<refnamediv>
 				<refname>ST_Rescale</refname>
-				<refpurpose>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos algorithm. The default is NearestNeighbor.
+				<refpurpose>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor.
 				    </refpurpose>
 			</refnamediv>
 		
@@ -3597,13 +3600,15 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
+				<para>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
 				
 				<para><varname>scalex</varname> and <varname>scaley</varname> define the new pixel size. scaley must often be negative to get well oriented raster. When the new scalex is not a divisor of the raster width, the horizontal extent of the resulting raster is adjusted. The same rule applies to the vertical extent when the new scaley is not a divisor of the height of the raster.</para>
 				
 				<para>A maxerror percent of 0.125 if no maxerr is specified.</para>
 				
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
+				
+				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
 
 				<note><para>ST_Rescale is different from <xref linkend="RT_ST_SetScale" /> in that ST_SetScale do not resample the raster to match the raster extent. ST_SetScale only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
 				
@@ -5572,7 +5577,7 @@ FROM dummy_rast;
 					<funcdef>raster <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>regprocedure </type> <parameter>otheruserfunc</parameter></paramdef>
+					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -5580,7 +5585,7 @@ FROM dummy_rast;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>regprocedure </type> <parameter>otheruserfunc</parameter></paramdef>
+					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
