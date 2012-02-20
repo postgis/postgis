@@ -28,6 +28,7 @@ extensions/postgis/postgis.control
 extensions/postgis_topology/Makefile
 extensions/postgis_topology/postgis_topology.control
 GNUmakefile
+java/jdbc/Makefile
 liblwgeom/cunit/cu_tester
 liblwgeom/cunit/Makefile
 liblwgeom/liblwgeom.a
