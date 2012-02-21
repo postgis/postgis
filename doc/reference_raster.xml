@@ -1025,7 +1025,7 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
 					<paramdef><type>text[] </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef><type>double precision[] </type> <parameter>value</parameter></paramdef>
+					<paramdef><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
 					<paramdef><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
@@ -1128,7 +1128,22 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
 					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
-				 
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+				  				 
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
