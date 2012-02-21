@@ -589,6 +589,136 @@ count_db_objects ()
 	fi
 }
 
+# Prepare the database
+prepare_spatial ()
+{
+	echo "Creating spatial db ${DB} " 
+
+	# ON_ERROR_STOP is used by psql to return non-0 on an error
+	_psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true"
+
+	createdb --encoding=UTF-8 --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log
+	createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
+
+	# Count database objects before installing anything
+	object_count_pre=$(count_db_objects "counting object before postgis install")
+
+	${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module"
+	if test -e ${STAGED_SCRIPTS_DIR}/postgis_comments.sql; then
+		${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core comments"
+	fi
+
+	if test x"$OPT_WITH_TOPO" = "xyes"; then
+		SCRIPT=${STAGED_SCRIPTS_DIR}/topology.sql
+		if test -e ${SCRIPT}; then
+			echo "Adding topology support" 
+			${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology module"
+		else
+			echo "${SCRIPT} not found" >&2
+			exit 1
+		fi
+		if test -e ${STAGED_SCRIPTS_DIR}/topology_comments.sql; then
+			${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/topology_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology comments"
+		fi
+	fi
+	if test x"$OPT_WITH_RASTER" = "xyes"; then
+		SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis.sql
+		if test -e ${SCRIPT}; then
+			echo "Adding raster support"
+			${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster module"
+		else
+			echo "${SCRIPT} not found" >&2
+			exit 1
+		fi
+		if test -e ${STAGED_SCRIPTS_DIR}/raster_comments.sql; then
+			${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/raster_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster comments"
+		fi
+	fi
+}
+
+# Upgrade an existing database (soft upgrade)
+upgrade_spatial ()
+{
+  echo "Upgrading spatial db ${DB} " 
+
+  SCRIPT=${STAGED_SCRIPTS_DIR}/postgis_upgrade_*_minor.sql
+  if test -e ${SCRIPT}; then
+    echo "Upgrading core"
+    ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core upgrade"
+  else
+    echo "${SCRIPT} not found" >&2
+      exit 1
+  fi
+
+  if test x"$OPT_WITH_TOPO" = "xyes"; then
+    SCRIPT=${STAGED_SCRIPTS_DIR}/topology_upgrade_*_minor.sql
+    if test -e ${SCRIPT}; then
+      echo "Upgrading topology"
+      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology upgrade"
+    else
+      echo "${SCRIPT} not found" >&2
+        exit 1
+    fi
+  fi
+
+  if test x"$OPT_WITH_RASTER" = "xyes"; then
+    SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade_*_minor.sql
+    if test -e ${SCRIPT}; then
+      echo "Upgrading raster"
+      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster upgrade"
+    else
+      echo "${SCRIPT} not found" >&2
+        exit 1
+    fi
+  fi
+}
+
+# Uninstall an existing database
+uninstall_spatial()
+{
+
+  start_test "uninstall"
+  ok=yes
+
+  if test x"$OPT_WITH_TOPO" = "xyes"; then
+    ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/uninstall_topology.sql "${DB}" \
+           > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+    if [ $? -gt 0 ]; then # {
+      fail "uninstall_topology.sql failed" "${TMPDIR}/uninstall.err"
+      ok=no
+    fi # }
+    show_progress # on to raster uninstall
+  fi
+
+  if test x"$OPT_WITH_RASTER" = "xyes"; then
+    ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../raster/rt_pg/uninstall_rtpostgis.sql "${DB}" \
+           > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+    if [ $? -gt 0 ]; then # {
+      fail "uninstall_rtpostgis.sql failed" "${TMPDIR}/uninstall.err"
+      ok=no
+    fi # }
+    show_progress # on to postgis uninstall
+  fi
+
+  if test x"$ok" = "xyes"; then # {
+    ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../postgis/uninstall_postgis.sql "${DB}" \
+           > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+    if [ $? -gt 0 ]; then # {
+      fail "uninstall_postgis.sql failed" "${TMPDIR}/uninstall.err"
+    else # }{
+  
+      show_progress # on to objects count
+      object_count_post=$(count_db_objects "counting object after postgis uninstall")
+      if test ${object_count_pre} != ${object_count_post}; then # {
+            fail "Count of object before install (${object_count_pre}) != count after uninstall (${object_count_post})"
+      else
+            pass "(${object_count_pre})"
+      fi # }
+  
+    fi # }
+  fi # }
+}
+
 ###################################################
 # 
 # Parse command line opts
@@ -659,48 +789,7 @@ db_exists=`${PSQL} -l | grep -w ${DB}`
 if test -z "$db_exists"; then
 
 	if test x"$OPT_CREATE" = "xyes"; then
-		echo "Creating spatial db ${DB} " 
-
-		# ON_ERROR_STOP is used by psql to return non-0 on an error
-		_psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true"
-
-		createdb --encoding=UTF-8 --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log
-		createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
-
-		# Count database objects before installing anything
-		object_count_pre=$(count_db_objects "counting object before postgis install")
-
-		${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module"
-		if test -e ${STAGED_SCRIPTS_DIR}/postgis_comments.sql; then
-			${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core comments"
-		fi
-
-		if test x"$OPT_WITH_TOPO" = "xyes"; then
-			SCRIPT=${STAGED_SCRIPTS_DIR}/topology.sql
-			if test -e ${SCRIPT}; then
-				echo "Adding topology support" 
-				${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology module"
-			else
-				echo "${SCRIPT} not found" >&2
-				exit 1
-			fi
-			if test -e ${STAGED_SCRIPTS_DIR}/topology_comments.sql; then
-				${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/topology_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology comments"
-			fi
-		fi
-		if test x"$OPT_WITH_RASTER" = "xyes"; then
-			SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis.sql
-			if test -e ${SCRIPT}; then
-				echo "Adding raster support"
-				${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster module"
-			else
-				echo "${SCRIPT} not found" >&2
-				exit 1
-			fi
-			if test -e ${STAGED_SCRIPTS_DIR}/raster_comments.sql; then
-				${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/raster_comments.sql "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster comments"
-			fi
-		fi
+		prepare_spatial
 	else
 
 		echo "Database ${DB} does not exist" >&2
@@ -719,36 +808,7 @@ else
 fi
 
 if test x"$OPT_UPGRADE" = "xyes"; then
-  SCRIPT=${STAGED_SCRIPTS_DIR}/postgis_upgrade_*_minor.sql
-  if test -e ${SCRIPT}; then
-    echo "Upgrading core"
-    ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core upgrade"
-  else
-    echo "${SCRIPT} not found" >&2
-      exit 1
-  fi
-
-  if test x"$OPT_WITH_TOPO" = "xyes"; then
-    SCRIPT=${STAGED_SCRIPTS_DIR}/topology_upgrade_*_minor.sql
-    if test -e ${SCRIPT}; then
-      echo "Upgrading topology"
-      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology upgrade"
-    else
-      echo "${SCRIPT} not found" >&2
-        exit 1
-    fi
-  fi
-
-  if test x"$OPT_WITH_RASTER" = "xyes"; then
-    SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade_*_minor.sql
-    if test -e ${SCRIPT}; then
-      echo "Upgrading raster"
-      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster upgrade"
-    else
-      echo "${SCRIPT} not found" >&2
-        exit 1
-    fi
-  fi
+	upgrade_spatial
 fi
 
 libver=`${PSQL} -tAc "select postgis_lib_version()" "${DB}"`
@@ -895,48 +955,7 @@ done
 if test x"$OPT_DROP" = "xyes" \
      -a x"$object_count_pre" != "x"
 then # {
-
-  start_test "uninstall"
-  ok=yes
-
-  if test x"$OPT_WITH_TOPO" = "xyes"; then
-    ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/uninstall_topology.sql "${DB}" \
-           > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
-    if [ $? -gt 0 ]; then # {
-      fail "uninstall_topology.sql failed" "${TMPDIR}/uninstall.err"
-      ok=no
-    fi # }
-    show_progress # on to raster uninstall
-  fi
-
-  if test x"$OPT_WITH_RASTER" = "xyes"; then
-    ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../raster/rt_pg/uninstall_rtpostgis.sql "${DB}" \
-           > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
-    if [ $? -gt 0 ]; then # {
-      fail "uninstall_rtpostgis.sql failed" "${TMPDIR}/uninstall.err"
-      ok=no
-    fi # }
-    show_progress # on to postgis uninstall
-  fi
-
-  if test x"$ok" = "xyes"; then # {
-    ${PSQL} ${_psql_opts} -Xf ${REGDIR}/../postgis/uninstall_postgis.sql "${DB}" \
-           > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
-    if [ $? -gt 0 ]; then # {
-      fail "uninstall_postgis.sql failed" "${TMPDIR}/uninstall.err"
-    else # }{
-  
-      show_progress # on to objects count
-      object_count_post=$(count_db_objects "counting object after postgis uninstall")
-      if test ${object_count_pre} != ${object_count_post}; then # {
-            fail "Count of object before install (${object_count_pre}) != count after uninstall (${object_count_post})"
-      else
-            pass "(${object_count_pre})"
-      fi # }
-  
-    fi # }
-  fi # }
-
+    uninstall_spatial
 fi # }
 
 ###################################################
