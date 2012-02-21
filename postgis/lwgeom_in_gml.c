@@ -49,6 +49,7 @@
 
 
 Datum geom_from_gml(PG_FUNCTION_ARGS);
+static LWGEOM* lwgeom_from_gml(const char *wkt);
 static LWGEOM* parse_gml(xmlNodePtr xnode, bool *hasz, int *root_srid);
 
 typedef struct struct_gmlSrs
@@ -83,57 +84,23 @@ PG_FUNCTION_INFO_V1(geom_from_gml);
 Datum geom_from_gml(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom;
-	xmlDocPtr xmldoc;
 	text *xml_input;
 	LWGEOM *lwgeom;
-	int xml_size;
 	char *xml;
 	int root_srid=SRID_UNKNOWN;
-	bool hasz=true;
-	xmlNodePtr xmlroot=NULL;
 
 
 	/* Get the GML stream */
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	xml_input = PG_GETARG_TEXT_P(0);
 	xml = text2cstring(xml_input);
-	xml_size = VARSIZE(xml_input) - VARHDRSZ;
 
 	/* Zero for undefined */
 	root_srid = PG_GETARG_INT32(1);
 
-	/* Begin to Parse XML doc */
-	xmlInitParser();
-	xmldoc = xmlParseMemory(xml, xml_size);
-	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL)
-	{
-		xmlFreeDoc(xmldoc);
-		xmlCleanupParser();
-		gml_lwerror("invalid GML representation", 1);
-	}
-
-
-	lwgeom = parse_gml(xmlroot, &hasz, &root_srid);
-	lwgeom_add_bbox(lwgeom);
-	if ( root_srid != SRID_UNKNOWN ) 
+	lwgeom = lwgeom_from_gml(xml);
+	if ( root_srid != SRID_UNKNOWN )
 		lwgeom->srid = root_srid;
-
-	xmlFreeDoc(xmldoc);
-	xmlCleanupParser();
-
-	/* GML geometries could be either 2 or 3D and can be nested mixed.
-	 * Missing Z dimension is even tolerated inside some GML coords
-	 *
-	 * So we deal with 3D in all structures allocation, and flag hasz
-	 * to false if we met once a missing Z dimension
-	 * In this case, we force recursive 2D.
-	 */
-	if (!hasz)
-	{
-		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
-		lwgeom_free(lwgeom);
-		lwgeom = tmp;
-	}
 
 	geom = geometry_serialize(lwgeom);
 	lwgeom_free(lwgeom);
@@ -1780,6 +1747,59 @@ static LWGEOM* parse_gml_coll(xmlNodePtr xnode, bool *hasz, int *root_srid)
 	}
 
 	return geom;
+}
+
+/**
+ * Read GML
+ */
+static LWGEOM* lwgeom_from_gml(const char* xml)
+{
+	xmlDocPtr xmldoc;
+	xmlNodePtr xmlroot=NULL;
+	int xml_size = strlen(xml);
+	LWGEOM *lwgeom;
+	bool hasz=true;
+	int root_srid=SRID_UNKNOWN;
+
+	/* Begin to Parse XML doc */
+	xmlInitParser();
+	xmldoc = xmlParseMemory(xml, xml_size);
+	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL)
+	{
+		xmlFreeDoc(xmldoc);
+		xmlCleanupParser();
+		gml_lwerror("invalid GML representation", 1);
+	}
+
+
+	lwgeom = parse_gml(xmlroot, &hasz, &root_srid);
+
+	xmlFreeDoc(xmldoc);
+	xmlCleanupParser();
+	/* shouldn't we be releasing xmldoc too here ? */
+
+
+	if ( root_srid != SRID_UNKNOWN ) 
+		lwgeom->srid = root_srid;
+
+	/* Should we really do this here ? */
+	lwgeom_add_bbox(lwgeom);
+
+	/* GML geometries could be either 2 or 3D and can be nested mixed.
+	 * Missing Z dimension is even tolerated inside some GML coords
+	 *
+	 * So we deal with 3D in all structures allocation, and flag hasz
+	 * to false if we met once a missing Z dimension
+	 * In this case, we force recursive 2D.
+	 */
+	if (!hasz)
+	{
+		LWGEOM *tmp = lwgeom_force_2d(lwgeom);
+		lwgeom_free(lwgeom);
+		lwgeom = tmp;
+	}
+
+	return lwgeom;
 }
 
 
