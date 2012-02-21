@@ -88,3 +88,4 @@ WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
 #852.1|2|f|f
 #852.2|1|t|t
 #852.2|2|t|t
+#1595|SRID=32019;MULTILINESTRING((0 0,0 1))

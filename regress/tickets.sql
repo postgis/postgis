@@ -326,5 +326,9 @@ select '#852.2', id, -- first run is not cached, consequent are cached
   st_intersects(g, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry) from cacheable;
 DROP TABLE cacheable;
 
+-- #1595
+SELECT '#1595', 
+  ST_AsEWKT(ST_Line_Substring('SRID=32019;MULTILINESTRING((0 0,0 1))', 0, 1)); 
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

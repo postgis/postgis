@@ -1157,7 +1157,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 			/* Calculate proportions for this subline */
 			minprop = maxprop;
 			maxprop = sublength / length;
-			
+
 			/* This subline doesn't reach the lowest proportion requested 
 			   or is beyond the highest proporton */
 			if( from > maxprop || to < minprop )
@@ -1167,25 +1167,24 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 				subfrom = 0.0;
 			if( to >= maxprop )
 				subto = 1.0;
-				
+
 			if( from > minprop && from <= maxprop )
 				subfrom = (from - minprop) / (maxprop - minprop);
 
 			if( to < maxprop && to >= minprop )
 				subto = (to - minprop) / (maxprop - minprop);
 				
-			
 			opa = ptarray_substring(subline->points, subfrom, subto);
 			if( opa && opa->npoints > 0 )
 			{
 				if ( opa->npoints == 1 ) /* Point returned */
 				{
-					geoms[g] = (LWGEOM *)lwpoint_construct(iline->SRID, NULL, opa);
+					geoms[g] = (LWGEOM *)lwpoint_construct(-1, NULL, opa);
 					homogeneous = LW_FALSE;
 				}
 				else
 				{
-					geoms[g] = (LWGEOM *)lwline_construct(iline->SRID, NULL, opa);
+					geoms[g] = (LWGEOM *)lwline_construct(-1, NULL, opa);
 				}
 				g++;
 			}
@@ -1201,7 +1200,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
+		elog(ERROR,"line_substring: 1st arg isnt a line");
 		PG_RETURN_NULL();
 	}
 

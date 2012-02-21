@@ -6,6 +6,7 @@ PostGIS 1.5.4
  filed since the 1.5.3 release.
 
  - Bug Fixes
+   - #1585, fixed SRID redundancy in ST_Line_SubString (Sandro Santilli)
    - #1135, improve testsuite predictability (Andreas 'ads' Scherbaum)
    - #1028, ST_AsSVG kills whole postgres server when fails (Paul Ramsey)
    - #810, Increase accuracy of area calculation (Paul Ramsey)
