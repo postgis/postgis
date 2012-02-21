@@ -1871,6 +1871,7 @@ projPJ lwproj_from_string(const char* txt);
  * @param outpj the output (or destination) projection
  */
 int lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj) ;
+int ptarray_transform(POINTARRAY *geom, projPJ inpj, projPJ outpj) ;
 int point4d_transform(POINT4D *pt, projPJ srcpj, projPJ dstpj) ;
 
 

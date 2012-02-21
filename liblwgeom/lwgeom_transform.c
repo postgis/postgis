@@ -32,6 +32,26 @@ to_dec(POINT4D *pt)
 	pt->y *= 180.0/M_PI;
 }
 
+/**
+ * Transform given POINTARRAY
+ * from inpj projection to outpj projection
+ */
+int
+ptarray_transform(POINTARRAY *pa, projPJ inpj, projPJ outpj)
+{
+  int i;
+	POINT4D p;
+
+  for ( i = 0; i < pa->npoints; i++ )
+  {
+    getPoint4d_p(pa, i, &p);
+    if ( ! point4d_transform(&p, inpj, outpj) ) return LW_FAILURE;
+    ptarray_set_point4d(pa, i, &p);
+  }
+
+	return LW_SUCCESS;
+}
+
 
 /**
  * Transform given SERIALIZED geometry
@@ -40,16 +60,13 @@ to_dec(POINT4D *pt)
 int
 lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 {
-	int j, i;
-	int type = geom->type;
-	POINT4D p;
-	POINTARRAY *pa;
+	int i;
 
 	/* No points to transform in an empty! */
 	if ( lwgeom_is_empty(geom) )
 		return LW_SUCCESS;
 
-	switch(type)
+	switch(geom->type)
 	{
 		case POINTTYPE:
 		case LINETYPE:
@@ -57,27 +74,15 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 		case TRIANGLETYPE:
 		{
 			LWLINE *g = (LWLINE*)geom;
-			pa = g->points;
-			for ( i = 0; i < pa->npoints; i++ )
-			{
-				getPoint4d_p(pa, i, &p);
-				point4d_transform(&p, inpj, outpj);
-				ptarray_set_point4d(pa, i, &p);
-			}
+      if ( ! ptarray_transform(g->points, inpj, outpj) ) return LW_FAILURE;
 			break;
 		}
 		case POLYGONTYPE:
 		{
 			LWPOLY *g = (LWPOLY*)geom;
-			for ( j = 0; j < g->nrings; j++ )
+			for ( i = 0; i < g->nrings; i++ )
 			{
-				pa = g->rings[j];
-				for ( i = 0; i < pa->npoints; i++ )
-				{
-					getPoint4d_p(pa, i, &p);
-					point4d_transform(&p, inpj, outpj);
-					ptarray_set_point4d(pa, i, &p);
-				}
+        if ( ! ptarray_transform(g->rings[i], inpj, outpj) ) return LW_FAILURE;
 			}
 			break;
 		}
@@ -95,18 +100,18 @@ lwgeom_transform(LWGEOM *geom, projPJ inpj, projPJ outpj)
 			LWCOLLECTION *g = (LWCOLLECTION*)geom;
 			for ( i = 0; i < g->ngeoms; i++ )
 			{
-				lwgeom_transform(g->geoms[i], inpj, outpj);
+				if ( ! lwgeom_transform(g->geoms[i], inpj, outpj) ) return LW_FAILURE;
 			}
 			break;
 		}
 		default:
 		{
-			lwerror("lwgeom_transform: Cannot handle type '%s'", lwtype_name(type));
+			lwerror("lwgeom_transform: Cannot handle type '%s'",
+			          lwtype_name(geom->type));
 			return LW_FAILURE;
 		}
 	}
 	return LW_SUCCESS;
-
 }
 
 int
