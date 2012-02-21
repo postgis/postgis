@@ -1744,23 +1744,14 @@ COMMIT;</programlisting>
     </varlistentry>
 
     <varlistentry>
-      <term>-s &lt;SRID&gt;</term>
+      <term>-s [&lt;FROM_SRID%gt;:]&lt;SRID&gt;</term>
       <listitem>
         <para>
           Creates and populates the geometry tables with the specified SRID.
-        </para>
-      </listitem>
-    </varlistentry>
-
-    <varlistentry>
-      <term>-r &lt;SRID&gt;</term>
-      <listitem>
-        <para>
-          Specifies that the input shapefile uses the given SRID.  If -s is not
-          specified, this SRID will be used to populate the geometry table. If
-          -s is specified, the geometries will be reprojected to the SRID given
-          in the -s parameter.  If -G is specified, but -s is not, the geometries
-          will be reprojected to 4326.  This parameter cannot be used with -D.
+          Optionally specifies that the input shapefile uses the given
+          FROM_SRID, in which case the geometries will be reprojected to the
+          target SRID.
+	  FROM_SRID cannot be specified with -D.
         </para>
       </listitem>
     </varlistentry>
