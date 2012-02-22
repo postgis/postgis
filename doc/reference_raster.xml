@@ -5155,7 +5155,7 @@ rid |        rastbox
 			<refsection>
 				<title>Examples: 1 band clipping</title>				
 <programlisting>-- Clip the first band of an aerial tile by a 20 meter buffer.
-SELECT ST_Clip(rast, 
+SELECT ST_Clip(rast, 1,
 		ST_Buffer(ST_Centroid(ST_Envelope(rast)),20)
 	) from aerials.boston
 WHERE rid = 4;</programlisting>
@@ -5163,9 +5163,9 @@ WHERE rid = 4;</programlisting>
 <programlisting>-- Demonstrate effect of trimraster on final dimensions of raster
 -- Note how in trimmed final envelope is clipped to that of the clipper
 -- if trimraster = true
-SELECT ST_XMax(ST_Envelope(ST_Clip(rast,clipper,true))) As xmax_w_trim,
+SELECT ST_XMax(ST_Envelope(ST_Clip(rast,1,clipper,true))) As xmax_w_trim,
 	ST_XMax(clipper) As xmax_clipper,
-	ST_XMax(ST_Envelope(ST_Clip(rast,clipper,false))) As xmax_wo_trim,
+	ST_XMax(ST_Envelope(ST_Clip(rast,1,clipper,false))) As xmax_wo_trim,
 	ST_XMax(ST_Envelope(rast)) As xmax_rast_orig
 FROM (SELECT rast, ST_Buffer(ST_Centroid(ST_Envelope(rast)),6) As clipper
 	FROM aerials.boston
@@ -5192,6 +5192,43 @@ WHERE rid = 6) As foo;
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_clip02.png" />
+			  </imageobject>
+			  <caption><para>After Clipping</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
+			</refsection>
+			<refsection>
+				<title>Examples: Clip all bands</title>				
+<programlisting>-- Clip all bands of an aerial tile by a 20 meter buffer.
+-- Only difference is we don't specify a specific band to clip
+-- so all bands are clipped
+SELECT ST_Clip(rast,
+		ST_Buffer(ST_Centroid(ST_Envelope(rast)),20)
+	) from aerials.boston
+WHERE rid = 4;</programlisting>
+
+<informaltable>
+  <tgroup cols="2">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip01.png" />
+			  </imageobject>
+			  <caption><para>Full raster tile before clipping</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip03.png" />
 			  </imageobject>
 			  <caption><para>After Clipping</para></caption>
 			</mediaobject>
