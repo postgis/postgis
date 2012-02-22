@@ -3148,6 +3148,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 	{
 		PG_LWGEOM *geom = (PG_LWGEOM *)(ARR_DATA_PTR(array)+offset);
 		offset += INTALIGN(VARSIZE(geom));
+		if ( TYPE_HASZ(geom->type) ) is3d = 1;
 
 		vgeoms[i] = (GEOSGeometry *)POSTGIS2GEOS(geom);
 		if ( ! i )

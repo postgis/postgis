@@ -6,6 +6,7 @@ PostGIS 1.5.4
  filed since the 1.5.3 release.
 
  - Bug Fixes
+   - #1603, fix ST_Polygonie to retain Z (Sandro Santilli)
    - #1596, check SRID in UpdateGeometrySRID (Mike Toews, Sandro Santilli)
    - #1585, fixed SRID redundancy in ST_Line_SubString (Sandro Santilli)
    - #1135, improve testsuite predictability (Andreas 'ads' Scherbaum)

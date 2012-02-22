@@ -63,6 +63,7 @@ TESTS = \
 	kml \
 	in_gml \
 	in_kml \
+	polygonize \
 	regress_ogc \
 	regress_ogc_cover \
 	regress_ogc_prep \
