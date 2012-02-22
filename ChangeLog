@@ -1,3 +1,338 @@
+2012-02-22 19:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9263] liblwgeom/lwout_x3d.c, postgis/lwgeom_export.c,
+	  postgis/lwgeom_rtree.h, postgis/postgis.sql.in.c: Really remove
+	  the dos linefeeds this time (#1598)
+
+2012-02-22 19:08  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9262] liblwgeom/lwout_x3d.c, liblwgeom/measures.c,
+	  liblwgeom/measures.h, postgis/lwgeom_export.c,
+	  postgis/lwgeom_rtree.h, postgis/postgis.sql.in.c: Revert dos
+	  lineending commit that blew away those files...
+
+2012-02-22 19:01  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9261] liblwgeom/lwout_x3d.c, liblwgeom/measures.c,
+	  liblwgeom/measures.h, postgis/lwgeom_export.c,
+	  postgis/lwgeom_rtree.h, postgis/postgis.sql.in.c: Use consistent
+	  UNIX line endings (#1598) fix up those files that pass through
+	  the C preprocessor at least.
+
+2012-02-22 18:59  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9260] raster/test/regress/bug_test_car5_expected,
+	  raster/test/regress/rt_histogram_expected,
+	  raster/test/regress/rt_quantile_expected,
+	  raster/test/regress/rt_summarystats_expected,
+	  raster/test/regress/rt_valuecount_expected,
+	  regress/regress_expected, regress/run_test,
+	  regress/sql-mm-compoundcurve_expected,
+	  regress/sql-mm-curvepoly_expected, regress/tickets.sql,
+	  regress/tickets_expected, regress/wkt_expected: Switch to
+	  evaluating tests using psql with verbosity=terse
+
+2012-02-22 17:19  Sandro Santilli <strk@keybit.net>
+
+	* [r9258] postgis/lwgeom_geos.c, regress/polygonize.sql,
+	  regress/polygonize_expected: Fix ST_Polygonize aggregate to
+	  retain Z (#1602)
+
+2012-02-22 15:52  Sandro Santilli <strk@keybit.net>
+
+	* [r9257] LICENSE.TXT: Stay within 80 cols
+
+2012-02-22 15:33  Sandro Santilli <strk@keybit.net>
+
+	* [r9256] postgis/postgis.sql.in.c, postgis/sqldefines.h.in:
+	  Parametrize max user SRID in the SQL file too
+
+2012-02-22 12:49  Sandro Santilli <strk@keybit.net>
+
+	* [r9253] postgis/postgis.sql.in.c, regress/tickets.sql,
+	  regress/tickets_expected: Check SRID passed to
+	  UpdateGeometrySRID, patch by Mike Toews (#1596)
+	  
+	  Adds regression testing
+
+2012-02-22 12:48  Sandro Santilli <strk@keybit.net>
+
+	* [r9252] postgis/lwgeom_functions_analytic.c: Forward port fix to
+	  #1595, although there's no way to expose in 2.0
+
+2012-02-22 03:09  Regina Obe <lr@pcorp.us>
+
+	* [r9251] doc/reference_raster.xml: correct st_clip raster so
+	  eimage matches the code. the behavior changed butthe code was
+	  wrong (showing old behavior). Also put back the multiband case
+	  using new syntax which is probably more common usaage.
+
+2012-02-21 15:51  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9249] doc/reference_raster.xml: Added single quote around 8BUI
+	  since the XSL now escape them. See #1588.
+
+2012-02-21 15:47  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9248] doc/reference_raster.xml: Added one missign default value
+	  for the value parameter of ST_AsRaster and added one missing
+	  variant.
+
+2012-02-21 14:32  Sandro Santilli <strk@keybit.net>
+
+	* [r9247] liblwgeom/liblwgeom.h.in, liblwgeom/lwgeom_transform.c:
+	  Add a ptarray_transform function in liblwgeom API
+
+2012-02-21 13:54  Sandro Santilli <strk@keybit.net>
+
+	* [r9246] postgis/lwgeom_in_gml.c: Draft an lwgeom_from_gml
+	  function (#1591)
+	  
+	  Can't be moved all to liblwgeom due to use of spatial_ref_sys
+
+2012-02-21 11:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9245] loader/shp2pgsql-core.c: Print SRID in decimal form, not
+	  hex (#1593)
+
+2012-02-21 10:57  Sandro Santilli <strk@keybit.net>
+
+	* [r9244] doc/using_postgis_dataman.xml: Update documentation about
+	  shp2pgsql -s/-g flag (#1524)
+
+2012-02-21 09:43  Sandro Santilli <strk@keybit.net>
+
+	* [r9243] regress/run_test: Add an --extensions switch to run_test
+	  (#964)
+	  
+	  When passing that switch the install and uninstall of spatial db
+	  happens using the EXTENSION model. It's currently not run as part
+	  of "make check" because some tests fail due to use of ambiguos
+	  calls when both core and raster modules are installed (there's no
+	  way to separate them in the EXTENSION model).
+
+2012-02-21 09:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9242] regress/run_test: Put prepare/upgrade/uninstall
+	  operations in their own functions
+
+2012-02-20 20:09  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9241] doc/reference_raster.xml: More work on ST_Resample and
+	  ST_Intersection
+
+2012-02-20 14:32  Sandro Santilli <strk@keybit.net>
+
+	* [r9240] .gitignore: Ignore generated extensions and java files
+
+2012-02-20 13:28  Sandro Santilli <strk@keybit.net>
+
+	* [r9239] postgis/lwgeom_in_gml.c: Do not printf from potgis
+	  library. Possibly fixes #1570
+
+2012-02-20 13:18  Sandro Santilli <strk@keybit.net>
+
+	* [r9238] .gitignore: Ignore generated java/jdbc/Makefile
+
+2012-02-20 13:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9237] doc/xsl/raster_comments.sql.xsl: Escape single quotes in
+	  param list when generating raster comments
+	  
+	  Closes ticket #1588
+
+2012-02-20 12:52  Sandro Santilli <strk@keybit.net>
+
+	* [r9236] configure.ac, java/Makefile, java/jdbc/Makefile,
+	  java/jdbc/Makefile.in, java/jdbc/build.xml: Ant rules to excecute
+	  maven by Maria Arias de Reyna (#1437)
+	  
+	  Also simplify java Makefile to be simple proxies of ant
+
+2012-02-20 10:52  Sandro Santilli <strk@keybit.net>
+
+	* [r9235] topology/sql/sqlmm.sql.in.c,
+	  topology/test/regress/st_changeedgegeom.sql,
+	  topology/test/regress/st_changeedgegeom_expected: Update face MBR
+	  on edge change (#1587)
+
+2012-02-20 10:19  Sandro Santilli <strk@keybit.net>
+
+	* [r9234] doc/extras_topology.xml: Enhance documentation for
+	  ST_ChangeEdgeGeom
+
+2012-02-17 23:41  Regina Obe <lr@pcorp.us>
+
+	* [r9233] doc/using_raster_dataman.xml: Link to my office base
+	  article on how to display postgis rasters in base reports.
+
+2012-02-17 22:23  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9232] doc/reference_raster.xml: Rewrote the ST_Rescale
+	  documentation.
+
+2012-02-17 22:00  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9230] postgis/geometry_estimate.c: This works but it makes
+	  estimated extent case sensitive both ways (no weaseling out and
+	  giving upper case versions of lower case tables) (#1585)
+
+2012-02-17 20:52  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9229] doc/reference_raster.xml,
+	  raster/rt_pg/rtpostgis.sql.in.c: Ticket #1536. First revision of
+	  st_intersection(). Removal of the extent parameter and first
+	  documentation.
+
+2012-02-17 18:29  Sandro Santilli <strk@keybit.net>
+
+	* [r9228] topology/sql/sqlmm.sql.in.c,
+	  topology/test/regress/st_changeedgegeom.sql,
+	  topology/test/regress/st_changeedgegeom_expected: Check edge
+	  disposition around endnodes (#1571)
+	  
+	  Includes a couple new testcases, for closed and non-closed edges
+	  changing disposition around their end nodes.
+
+2012-02-17 18:28  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9227] doc/reference_raster.xml: Many more small typo fixes...
+
+2012-02-17 15:11  Sandro Santilli <strk@keybit.net>
+
+	* [r9226] topology/sql/sqlmm.sql.in.c,
+	  topology/test/regress/st_changeedgegeom.sql,
+	  topology/test/regress/st_changeedgegeom_expected: Rework edge
+	  motion range construction (#1571)
+	  
+	  Includes a new testcase which was failing before this change
+
+2012-02-17 14:03  Sandro Santilli <strk@keybit.net>
+
+	* [r9225] topology/test/regress/st_changeedgegeom.sql,
+	  topology/test/regress/st_changeedgegeom_expected: Add another
+	  test for ST_ChangeEdgeGeom
+
+2012-02-17 13:46  Sandro Santilli <strk@keybit.net>
+
+	* [r9224] topology/sql/sqlmm.sql.in.c,
+	  topology/test/regress/st_changeedgegeom.sql,
+	  topology/test/regress/st_changeedgegeom_expected: Handle some
+	  (not all) cases of non-isomorphic edge changes (#1571)
+	  
+	  The problem is much harder than it looks ...
+
+2012-02-17 08:39  Sandro Santilli <strk@keybit.net>
+
+	* [r9223] topology/test/regress/st_changeedgegeom.sql,
+	  topology/test/regress/st_changeedgegeom_expected: Add test
+	  numbers to ST_ChangeEdgeGeom regression cases
+
+2012-02-17 08:39  Sandro Santilli <strk@keybit.net>
+
+	* [r9222] .gitignore: Ignore utils/postgis_restore.pl (now
+	  generated)
+
+2012-02-16 17:45  Sandro Santilli <strk@keybit.net>
+
+	* [r9221] topology/sql/sqlmm.sql.in.c: Update comment, hopefully
+	  clearer now
+
+2012-02-16 15:49  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9220] doc/reference_raster.xml: Fixed a number of small
+	  problem. Capitalized x and y.
+
+2012-02-16 10:25  Sandro Santilli <strk@keybit.net>
+
+	* [r9219] doc/extras_topology.xml, topology/Makefile.in,
+	  topology/sql/query/GetNodeEdges.sql.in.c,
+	  topology/test/regress/getnodeedges.sql,
+	  topology/test/regress/getnodeedges_expected,
+	  topology/topology.sql.in.c: Add a topology.GetNodeEdges function
+	  
+	  This function is a fundamental topological primitive to do things
+	  like SQL-based poligonization.
+
+2012-02-16 08:49  Sandro Santilli <strk@keybit.net>
+
+	* [r9218] .gitignore: Ignore postgis_svn_revision.h
+
+2012-02-16 08:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9217] doc/extras_topology.xml: Set availability of
+	  ST_ChangeEdgeGeom
+
+2012-02-16 08:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9216] doc/reference_raster.xml: Fix cross reference
+
+2012-02-16 00:28  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9215] libpgcommon/lwgeom_transform.c: Remove now-obsolete TODO
+	  comment
+
+2012-02-16 00:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9214] libpgcommon/lwgeom_transform.c: Prepare for Proj4.8 with
+	  spheroid info handling
+
+2012-02-15 23:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9213] ., extensions, utils: Add generated files to svn:ignore
+
+2012-02-15 22:45  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9211] java/jdbc/src/org/postgis/Point.java: jdbc:
+	  org.postgis.Point.equals() is not reflexive (#1313)
+
+2012-02-15 22:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9209] doc/reference_processing.xml: Fix XML typo
+
+2012-02-15 22:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9208] doc/reference_processing.xml: Negative distance argument
+	  to ST_Buffer not documented (#1535)
+
+2012-02-15 21:56  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9205] doc/using_postgis_dataman.xml: shp2pgsql: a switch to
+	  drop M from 4d imports (#900)
+
+2012-02-15 21:37  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9204] loader/shp2pgsql-cli.c, loader/shp2pgsql-core.c,
+	  loader/shp2pgsql-core.h: shp2pgsql: a switch to drop M from 4d
+	  imports (#900)
+
+2012-02-15 21:23  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9203] doc/reference_raster.xml: Updated the version returned by
+	  the PostGIS_Raster_Lib_Version() example.
+
+2012-02-15 21:18  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9202] doc/reference_raster.xml: Removed some garbage.
+
+2012-02-15 21:12  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9201] extensions/upgradeable_versions.mk: Remove fugitive EOL
+	  white space
+
+2012-02-15 20:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9200] extensions/upgradeable_versions.mk: Add minor version
+	  upgradeable
+
+2012-02-15 20:57  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9198] Version.config: Push trunk version forward
+
+2012-02-15 20:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9196] ChangeLog, NEWS, README.postgis: Update meta for alpha5
+
 2012-02-15 19:28  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
 
 	* [r9195] doc/reference_raster.xml,
