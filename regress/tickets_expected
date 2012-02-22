@@ -201,3 +201,14 @@ ERROR:  AddToPROJ4SRSCache: couldn't parse proj4 string: '': (null)
 #1580.1|Point[B]
 ERROR:  transform: couldn't project point (180 90 0): tolerance condition error (-20)
 #1580.3|Point[B]
+#1596.1|public.road_pg.roads_geom SRID:3395 TYPE:POINT DIMS:2 
+ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
+PL/pgSQL function "updategeometrysrid" line 4 at SQL statement
+#1596.3|3395
+ERROR:  invalid SRID: 999000 not found in spatial_ref_sys
+PL/pgSQL function "updategeometrysrid" line 4 at SQL statement
+#1596.5|3395
+NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
+PL/pgSQL function "updategeometrysrid" line 4 at SQL statement
+#1596.6|public.road_pg.roads_geom SRID changed to 0
+#1596.7|0

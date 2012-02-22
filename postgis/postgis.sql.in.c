@@ -2102,7 +2102,7 @@ LANGUAGE 'sql' VOLATILE STRICT;
 -- Change SRID of all features in a spatially-enabled table
 --
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION UpdateGeometrySRID(catalogn_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid integer)
+CREATE OR REPLACE FUNCTION UpdateGeometrySRID(catalogn_name varchar,schema_name varchar,table_name varchar,column_name varchar,new_srid_in integer)
 	RETURNS text
 	AS
 $$
@@ -2111,6 +2111,8 @@ DECLARE
 	okay boolean;
 	cname varchar;
 	real_schema name;
+	unknown_srid integer;
+	new_srid integer := new_srid_in;
 
 BEGIN
 
@@ -2132,7 +2134,7 @@ BEGIN
 		SELECT INTO real_schema current_schema()::text;
 	END IF;
 
-	-- Find out if the column is in the geometry_columns table
+	-- Ensure that column_name is in geometry_columns
 	okay = false;
 	FOR myrec IN SELECT type, coord_dimension FROM geometry_columns WHERE f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
 		okay := true;
@@ -2140,6 +2142,20 @@ BEGIN
 	IF (NOT okay) THEN
 		RAISE EXCEPTION 'column not found in geometry_columns table';
 		RETURN false;
+	END IF;
+
+	-- Ensure that new_srid is valid
+	IF ( new_srid > 0 ) THEN
+		IF ( SELECT count(*) = 0 from spatial_ref_sys where srid = new_srid ) THEN
+			RAISE EXCEPTION 'invalid SRID: % not found in spatial_ref_sys', new_srid;
+			RETURN false;
+		END IF;
+	ELSE
+		unknown_srid := ST_SRID('POINT EMPTY'::geometry);
+		IF ( new_srid != unknown_srid ) THEN
+			new_srid := unknown_srid;
+			RAISE NOTICE 'SRID value % converted to the officially unknown SRID value %', new_srid_in, new_srid;
+		END IF;
 	END IF;
 
 	IF postgis_constraint_srid(schema_name, table_name, column_name) IS NOT NULL THEN 

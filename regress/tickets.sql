@@ -608,6 +608,20 @@ select '#1580.1', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395
 select '#1580.2', ST_Transform('SRID=4326;POINT(180 90)'::geometry, 3395); -- fails
 select '#1580.3', ST_Summary(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395));
 
+-- #1596 --
+CREATE TABLE road_pg (ID INTEGER, NAME VARCHAR(32));
+SELECT '#1596.1', AddGeometryColumn( 'road_pg','roads_geom', 3395, 'POINT', 2 );
+SELECT '#1596.2', UpdateGeometrySRID( 'road_pg','roads_geom', 330000);
+SELECT '#1596.3', srid FROM geometry_columns
+  WHERE f_table_name = 'road_pg' AND f_geometry_column = 'roads_geom';
+SELECT '#1596.4', UpdateGeometrySRID( 'road_pg','roads_geom', 999000);
+SELECT '#1596.5', srid FROM geometry_columns
+  WHERE f_table_name = 'road_pg' AND f_geometry_column = 'roads_geom';
+SELECT '#1596.6', UpdateGeometrySRID( 'road_pg','roads_geom', -1);
+SELECT '#1596.7', srid FROM geometry_columns
+  WHERE f_table_name = 'road_pg' AND f_geometry_column = 'roads_geom';
+DROP TABLE road_pg;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
 
