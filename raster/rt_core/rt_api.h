@@ -140,6 +140,8 @@ typedef struct rt_valuecount_t* rt_valuecount;
 typedef struct rt_gdaldriver_t* rt_gdaldriver;
 typedef struct rt_reclassexpr_t* rt_reclassexpr;
 
+typedef OGREnvelope rt_extent;
+
 /**
  * Enum definitions
  */
@@ -1437,6 +1439,31 @@ rt_util_gdal_convert_sr(const char *srs, int proj4);
 
 int
 rt_util_gdal_driver_registered(const char *drv);
+
+/*
+ * Compute skewed extent that covers unskewed extent. Computed extent may
+ * NOT be the MINIMUM extent but rather an extent guaranteed to cover
+ * the unskewed extent.
+ *
+ * @param extent: unskewed extent of type rt_extent
+ * @param skew: pointer to 2-element array (x, y) of skew
+ * @param scale: pointer to 2-element array (x, y) of scale
+ * @param tolerance: value between 0 and 1 where the smaller the tolerance
+ *                   results in an extent approaching the "minimum" skewed
+ *                   extent.  If value <= 0, tolerance = 0.1.
+ *                   If value > 1, tolerance = 1.
+ * @param skewedextent: pointer to rt_extent for skewed extent
+ *
+ * @return zero if error, non-zero if no error
+*/
+int
+rt_util_compute_skewed_extent(
+	rt_extent extent,
+	double *skew,
+	double *scale,
+	double tolerance,
+	rt_extent *skewedextent
+);
 
 /*
 	helper macros for consistent floating point equality checks

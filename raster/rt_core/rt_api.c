@@ -351,6 +351,291 @@ rt_util_gdal_driver_registered(const char *drv) {
 	return 0;
 }
 
+/*
+ * Compute skewed extent that covers unskewed extent. Computed extent may
+ * NOT be the MINIMUM extent but rather an extent guaranteed to cover
+ * the unskewed extent.
+ *
+ * @param extent: unskewed extent of type rt_extent
+ * @param skew: pointer to 2-element array (x, y) of skew
+ * @param scale: pointer to 2-element array (x, y) of scale
+ * @param tolerance: value between 0 and 1 where the smaller the tolerance
+ *                   results in an extent approaching the "minimum" skewed
+ *                   extent.  If value <= 0, tolerance = 0.1.
+ *                   If value > 1, tolerance = 1.
+ * @param skewedextent: pointer to rt_extent for skewed extent
+ *
+ * @return zero if error, non-zero if no error
+*/
+int
+rt_util_compute_skewed_extent(
+	rt_extent extent,
+	double *skew,
+	double *scale,
+	double tolerance,
+	rt_extent *skewedextent
+) {
+	uint32_t run = 0;
+	uint32_t max_run = 1;
+	double dbl_run = 0;
+
+	int rtn;
+	int covers = 0;
+	rt_raster raster;
+	double _gt[6] = {0};
+	double _igt[6] = {0};
+	int _d[2] = {1, -1};
+	int _dlast = 0;
+	int _dlastpos = 0;
+	double _w[2] = {0};
+	double _r[2] = {0};
+	double _xy[2] = {0};
+	int i;
+	int j;
+	int x;
+	int y;
+
+	if (skewedextent == NULL) {
+		rterror("rt_util_compute_skewed_extent: skewedextent cannot be NULL");
+		return 0;
+	}
+
+	if (
+		(tolerance < 0.) ||
+		FLT_EQ(tolerance, 0.)
+	) {
+		tolerance = 0.1;
+	}
+	else if (tolerance > 1.)
+		tolerance = 1;
+
+	dbl_run = tolerance;
+	while (dbl_run < 10) {
+		dbl_run *= 10.;
+		max_run *= 10;
+	}
+
+	/* skew not provided or skew is zero, return extent */
+	if (
+		(skew == NULL) || (
+			FLT_EQ(skew[0], 0) &&
+			FLT_EQ(skew[1], 0)
+		)
+	) {
+		skewedextent->MinX = extent.MinX;
+		skewedextent->MinY = extent.MinY;
+		skewedextent->MaxX = extent.MaxX;
+		skewedextent->MaxY = extent.MaxY;
+
+		return 1;
+	}
+
+	/* scale must be provided */
+	if (scale == NULL)
+		return 0;
+	for (i = 0; i < 2; i++) {
+		if (FLT_EQ(scale[i], 0)) {
+			rterror("rt_util_compute_skewed_extent: Scale cannot be zero");
+			return 0;
+		}
+
+		if (i < 1)
+			_gt[1] = fabs(scale[i] * tolerance);
+		else
+			_gt[5] = fabs(scale[i] * tolerance);
+	}
+	/* conform scale-y to be negative */
+	_gt[5] *= -1;
+
+	/* direction to shift upper-left corner */
+	if (skew[0] > 0.)
+		_d[0] = -1;
+	if (skew[1] < 0.)
+		_d[1] = 1;
+
+	/* geotransform */
+	_gt[0] = extent.MinX;
+	_gt[2] = skew[0] * tolerance;
+	_gt[3] = extent.MaxY;
+	_gt[4] = skew[1] * tolerance;
+
+	RASTER_DEBUGF(4, "Initial geotransform: %f, %f, %f, %f, %f, %f",
+		_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]
+	);
+	RASTER_DEBUGF(4, "Delta: %d, %d", _d[0], _d[1]);
+
+	/* simple raster */
+	if ((raster = rt_raster_new(1, 1)) == NULL) {
+		rterror("rt_util_compute_skewed_extent: Out of memory allocating extent raster");
+		return 0;
+	}
+	rt_raster_set_geotransform_matrix(raster, _gt);
+
+	/* shift along axis */
+	for (i = 0; i < 2; i++) {
+		covers = 0;
+		run = 0;
+
+		RASTER_DEBUGF(3, "Shifting along %s axis", i < 1 ? "X" : "Y");
+
+		do {
+
+			/* prevent possible infinite loop */
+			if (run > max_run) {
+				rterror("rt_util_compute_skewed_extent:Unable to compute skewed extent due to check preventing infinite loop");
+				rt_raster_destroy(raster);
+				return 0;
+			}
+
+			/* get inverse geotransform matrix */
+			if (!GDALInvGeoTransform(_gt, _igt)) {
+				rterror("rt_util_compute_skewed_extent: Unable to compute inverse geotransform matrix");
+				rt_raster_destroy(raster);
+				return 0;
+			}
+			RASTER_DEBUGF(4, "Inverse geotransform: %f, %f, %f, %f, %f, %f",
+				_igt[0], _igt[1], _igt[2], _igt[3], _igt[4], _igt[5]
+			);
+
+			/*
+				check the four corners that they are covered along the specific axis
+				pixel column should be >= 0
+			*/
+			for (j = 0; j < 4; j++) {
+				switch (j) {
+					/* upper-left */
+					case 0:
+						_xy[0] = extent.MinX;
+						_xy[1] = extent.MaxY;
+						break;
+					/* lower-left */
+					case 1:
+						_xy[0] = extent.MinX;
+						_xy[1] = extent.MinY;
+						break;
+					/* lower-right */
+					case 2:
+						_xy[0] = extent.MaxX;
+						_xy[1] = extent.MinY;
+						break;
+					/* upper-right */
+					case 3:
+						_xy[0] = extent.MaxX;
+						_xy[1] = extent.MaxY;
+						break;
+				}
+
+				rtn = rt_raster_geopoint_to_cell(
+					raster,
+					_xy[0], _xy[1],
+					&(_r[0]), &(_r[1]),
+					_igt
+				);
+				if (!rtn) {
+					rterror("rt_util_compute_skewed_extent: Unable to compute raster pixel for spatial coordinates");
+					rt_raster_destroy(raster);
+					return 0;
+				}
+
+				/* raster doesn't cover point */
+				if ((int) _r[i] < 0) {
+					RASTER_DEBUGF(4, "Point outside of skewed extent: %d", j);
+					covers = 0;
+
+					if (_dlastpos != j) {
+						_dlast = (int) _r[i];
+						_dlastpos = j;
+					}
+					else if ((int) _r[i] < _dlast) {
+						RASTER_DEBUG(4, "Point going in wrong direction.  Reversing direction");
+						_d[i] *= -1;
+						_dlastpos = -1;
+						run = 0;
+					}
+
+					break;
+				}
+
+				covers++;
+			}
+
+			if (!covers) {
+				x = 0;
+				y = 0;
+				if (i < 1)
+					x = _d[i] * fabs(_r[i]);
+				else
+					y = _d[i] * fabs(_r[i]);
+
+				rtn = rt_raster_cell_to_geopoint(
+					raster,
+					x, y,
+					&(_w[0]), &(_w[1]),
+					_gt
+				);
+				if (!rtn) {
+					rterror("rt_util_compute_skewed_extent: Unable to compute spatial coordinates for raster pixel");
+					rt_raster_destroy(raster);
+					return 0;
+				}
+
+				/* adjust ul */
+				if (i < 1)
+					_gt[0] = _w[i];
+				else
+					_gt[3] = _w[i];
+				rt_raster_set_geotransform_matrix(raster, _gt);
+				RASTER_DEBUGF(4, "Shifted geotransform: %f, %f, %f, %f, %f, %f",
+					_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]
+				);
+			}
+
+			run++;
+		}
+		while (!covers);
+	}
+
+	/* set skewed extent */
+	skewedextent->MinX = _gt[0];
+	skewedextent->MaxY = _gt[3];
+
+	/* lower-right */
+	rtn = rt_raster_geopoint_to_cell(
+		raster,
+		extent.MaxX, extent.MinY,
+		&(_r[0]), &(_r[1]),
+		_igt
+	);
+	if (!rtn) {
+		rterror("rt_util_compute_skewed_extent: Unable to compute raster pixel for spatial coordinates");
+		rt_raster_destroy(raster);
+		return 0;
+	}
+
+	rtn = rt_raster_cell_to_geopoint(
+		raster,
+		_r[0] + 1, _r[1] + 1,
+		&(_w[0]), &(_w[1]),
+		_gt
+	);
+	rt_raster_destroy(raster);
+	if (!rtn) {
+		rterror("rt_util_compute_skewed_extent: Unable to compute spatial coordinates for raster pixel");
+		return 0;
+	}
+
+	skewedextent->MaxX = _w[0];
+	skewedextent->MinY = _w[1];
+
+	RASTER_DEBUGF(4, "Suggested skewed extent: %f, %f, %f, %f",
+		skewedextent->MinX,
+		skewedextent->MaxY,
+		skewedextent->MaxX,
+		skewedextent->MinY
+	);
+
+	return 1;
+}
 
 /*- rt_context -------------------------------------------------------*/
 
@@ -7463,23 +7748,14 @@ rt_raster rt_raster_gdal_warp(
 	GDALDataType gdal_pt = GDT_Unknown;
 	double nodata = 0.0;
 
-	double dst_gt[6] = {0};
+	double _gt[6] = {0};
 	double dst_extent[4];
-	int _width = 0;
-	int _height = 0;
-	int ul_user = 0;
-	double min_x = 0;
-	double min_y = 0;
-	double max_x = 0;
-	double max_y = 0;
-	double pix_x = 0;
-	double pix_y = 0;
+	rt_extent extent;
 
-	double djunk = 0;
-	double grid_shift_xw = 0;
-	double grid_shift_yw = 0;
-	double grid_pix_x = 0;
-	double grid_pix_y = 0;
+	int _dim[2] = {0};
+	double _skew[2] = {0};
+	double _scale[2] = {0};
+	int ul_user = 0;
 
 	rt_raster rast = NULL;
 	int i = 0;
@@ -7591,7 +7867,7 @@ rt_raster rt_raster_gdal_warp(
 
 	/* get approximate output georeferenced bounds and resolution */
 	cplerr = GDALSuggestedWarpOutput2(src_ds, GDALGenImgProjTransform,
-		transform_arg, dst_gt, &_width, &_height, dst_extent, 0);
+		transform_arg, _gt, &(_dim[0]), &(_dim[1]), dst_extent, 0);
 	GDALDestroyGenImgProjTransformer(transform_arg);
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_warp: Unable to get GDAL suggested warp output for output dataset creation");
@@ -7604,39 +7880,29 @@ rt_raster rt_raster_gdal_warp(
 		return NULL;
 	}
 
+	/*
+		don't use suggested dimensions as use of suggested scales
+		on suggested extent will result in suggested dimensions
+	*/
+	_dim[0] = 0;
+	_dim[1] = 0;
+
 	RASTER_DEBUGF(3, "Suggested geotransform: %f, %f, %f, %f, %f, %f",
-		dst_gt[0], dst_gt[1], dst_gt[2], dst_gt[3], dst_gt[4], dst_gt[5]);
+		_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]);
 	RASTER_DEBUGF(3, "Suggested extent: %f, %f, %f, %f",
 		dst_extent[0], dst_extent[1], dst_extent[2], dst_extent[3]);
 
-	/* user-defined upper-left corner */
-	if (
-		NULL != ul_xw &&
-		NULL != ul_yw
-	) {
-		min_x = *ul_xw;
-		max_y = *ul_yw;
-		ul_user = 1;
-	}
-	else if (
-		((NULL != ul_xw) && (NULL == ul_yw)) ||
-		((NULL == ul_xw) && (NULL != ul_yw))
-	) {
-		rterror("rt_raster_gdal_warp: Both X and Y upper-left corner values must be provided");
+	/* store extent in easier to use object */
+	extent.MinX = dst_extent[0];
+	extent.MinY = dst_extent[1];
+	extent.MaxX = dst_extent[2];
+	extent.MaxY = dst_extent[3];
 
-		GDALClose(src_ds);
-
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
-		rtdealloc(transform_opts);
-
-		return NULL;
-	}
-
-	/* skew */
+	/* user-defined skew */
 	if (NULL != skew_x)
-		dst_gt[2] = *skew_x;
+		_skew[0] = *skew_x;
 	if (NULL != skew_y)
-		dst_gt[4] = *skew_y;
+		_skew[1] = *skew_y;
 
 	/* scale and width/height are mutually exclusive */
 	if (
@@ -7653,16 +7919,15 @@ rt_raster rt_raster_gdal_warp(
 		return NULL;
 	}
 
-	/* user-defined width/height */
+	/* user-defined width */
 	if ((NULL != width) && (*width > 0.)) {
-		_width = *width;
-		dst_gt[1] = (dst_extent[2] - dst_extent[0]) / ((double) _width);
-		pix_x = 0;
+		_dim[0] = *width;
+		_scale[0] = fabs((extent.MaxX - extent.MinX) / ((double) _dim[0]));
 	}
+	/* user-defined height */
 	if ((NULL != height) && (*height > 0.)) {
-		_height = *height;
-		dst_gt[5] = -1 * fabs((dst_extent[3] - dst_extent[1]) / ((double) _height));
-		pix_y = 0;
+		_dim[1] = *height;
+		_scale[1] = fabs((extent.MaxY - extent.MinY) / ((double) _dim[1]));
 	}
 
 	/* user-defined scale */
@@ -7670,8 +7935,8 @@ rt_raster rt_raster_gdal_warp(
 		((NULL != scale_x) && (FLT_NEQ(*scale_x, 0.0))) &&
 		((NULL != scale_y) && (FLT_NEQ(*scale_y, 0.0)))
 	) {
-		pix_x = fabs(*scale_x);
-		pix_y = fabs(*scale_y);
+		_scale[0] = fabs(*scale_x);
+		_scale[1] = fabs(*scale_y);
 	}
 	else if (
 		((NULL != scale_x) && (NULL == scale_y)) ||
@@ -7687,12 +7952,126 @@ rt_raster rt_raster_gdal_warp(
 		return NULL;
 	}
 
+	/* scale not defined, use suggested */
+	if (FLT_EQ(_scale[0], 0) && FLT_EQ(_scale[1], 0)) {
+		_scale[0] = fabs(_gt[1]);
+		_scale[1] = fabs(_gt[5]);
+	}
+
+	RASTER_DEBUGF(4, "Using scale: %f x %f", _scale[0], _scale[1]);
+
+	/* dimensions not defined, compute */
+	if (FLT_EQ(_dim[0], 0) && FLT_EQ(_dim[1], 0)) {
+		_dim[0] = (int) fmax((fabs(extent.MaxX - extent.MinX) + (_scale[0] / 2.)) / _scale[0], 1);
+		_dim[1] = (int) fmax((fabs(extent.MaxY - extent.MinY) + (_scale[1] / 2.)) / _scale[1], 1);
+	}
+
+	/* reprocess extent if skewed */
+	if (
+		FLT_NEQ(_skew[0], 0) ||
+		FLT_NEQ(_skew[1], 0)
+	) {
+		rt_extent skewedextent;
+
+		RASTER_DEBUG(3, "Computing skewed extent");
+
+		if (!rt_util_compute_skewed_extent(
+			extent,
+			_skew,
+			_scale,
+			0.01,
+			&skewedextent
+		)) {
+			rterror("rt_raster_gdal_warp: Could not compute skewed extent");
+
+			GDALClose(src_ds);
+
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+			rtdealloc(transform_opts);
+
+			return NULL;
+		}
+
+		RASTER_DEBUGF(3, "Suggested skewed extent: %f, %f, %f, %f",
+			skewedextent.MinX, skewedextent.MaxY, skewedextent.MaxX, skewedextent.MinY);
+
+		extent.MinX = skewedextent.MinX;
+		extent.MinY = skewedextent.MinY;
+		extent.MaxX = skewedextent.MaxX;
+		extent.MaxY = skewedextent.MaxY;
+	}
+
+	/* user-defined upper-left corner */
+	if (
+		NULL != ul_xw &&
+		NULL != ul_yw
+	) {
+		RASTER_DEBUG(3, "Setting upper-left corner of raster");
+
+		ul_user = 1;
+
+		/* set upper-left corner */
+		extent.MinX = *ul_xw;
+		extent.MaxY = *ul_yw;
+
+		/* adjust lower-right corner using dummy raster */
+		rast = rt_raster_new(1, 1);
+		if (rast == NULL) {
+			rterror("rt_raster_gdal_warp: Out of memory allocating temporary raster");
+
+			GDALClose(src_ds);
+
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+			rtdealloc(transform_opts);
+
+			return NULL;
+		}
+		rt_raster_set_offsets(rast, extent.MinX, extent.MaxY);
+		rt_raster_set_scale(rast, _scale[0], -1 * _scale[1]);
+		rt_raster_set_skews(rast, _skew[0], _skew[1]);
+
+		if (!rt_raster_cell_to_geopoint(
+			rast,
+			_dim[0], _dim[1],
+			&(extent.MaxX), &(extent.MinY),
+			NULL
+		)) {
+			rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
+
+			rt_raster_destroy(rast);
+			GDALClose(src_ds);
+
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+			rtdealloc(transform_opts);
+
+			return NULL;
+		}
+
+		rt_raster_destroy(rast);
+		rast = NULL;
+	}
+	else if (
+		((NULL != ul_xw) && (NULL == ul_yw)) ||
+		((NULL == ul_xw) && (NULL != ul_yw))
+	) {
+		rterror("rt_raster_gdal_warp: Both X and Y upper-left corner values must be provided");
+
+		GDALClose(src_ds);
+
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+		rtdealloc(transform_opts);
+
+		return NULL;
+	}
+
 	/* alignment only considered if upper-left corner not provided */
 	if (
 		!ul_user && (
 			(NULL != grid_xw) || (NULL != grid_yw)
 		)
 	) {
+		double _r[2] = {0};
+
 		if (
 			((NULL != grid_xw) && (NULL == grid_yw)) ||
 			((NULL == grid_xw) && (NULL != grid_yw))
@@ -7707,116 +8086,162 @@ rt_raster rt_raster_gdal_warp(
 			return NULL;
 		}
 
-		/* use scale for alignment */
-		if (FLT_NEQ(pix_x, 0.))
-			grid_pix_x = pix_x;
-		else
-			grid_pix_x = fabs(dst_gt[1]);
-		if (FLT_NEQ(pix_y, 0.))
-			grid_pix_y = pix_y;
-		else
-			grid_pix_y = fabs(dst_gt[5]);
+		RASTER_DEBUG(3, "Aligning raster to grid");
 
-		/* grid shift of upper left to match alignment grid */
-		grid_shift_xw = grid_pix_x * modf(fabs(*grid_xw - dst_gt[0]) / grid_pix_x, &djunk);
-		grid_shift_yw = grid_pix_y * modf(fabs(*grid_yw - dst_gt[3]) / grid_pix_y, &djunk);
+		do {
+			double _d[2] = {1, 1};
+			double _w[2] = {0};
 
-		/* shift along X axis for upper left */
-		if (FLT_NEQ(grid_shift_xw, 0.) && FLT_NEQ(grid_shift_xw, grid_pix_x)) {
-			min_x = dst_gt[0] - grid_shift_xw;
-			min_x = modf(fabs(*grid_xw - min_x) / grid_pix_x, &djunk);
-			if (FLT_NEQ(min_x, 0.) && FLT_NEQ(min_x, 1.))
-				grid_shift_xw = grid_pix_x - grid_shift_xw;
-			min_x = dst_gt[0] - grid_shift_xw;
+			/* raster is already aligned */
+			if (FLT_EQ(*grid_xw, extent.MinX) && FLT_EQ(*grid_yw, extent.MaxY)) {
+				RASTER_DEBUG(3, "Skipping raster alignment as it is already aligned to grid");
+				break;
+			}
 
-			ul_user = 1;
+			/* use temporary raster to get aligned upper-left */
+			rast = rt_raster_new(1, 1);
+			if (rast == NULL) {
+				rterror("rt_raster_gdal_warp: Out of memory allocating alignment raster");
+
+				GDALClose(src_ds);
+
+				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+				rtdealloc(transform_opts);
+
+				return NULL;
+			}
+
+			rt_raster_set_offsets(rast, *grid_xw, *grid_yw);
+			rt_raster_set_scale(rast, _scale[0], -1 * _scale[1]);
+			rt_raster_set_skews(rast, _skew[0], _skew[1]);
+
+			/* process upper-left corner */
+			if (!rt_raster_geopoint_to_cell(
+				rast,
+				extent.MinX, extent.MaxY,
+				&(_r[0]), &(_r[1]),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_warp: Unable to compute raster pixel for spatial coordinates");
+
+				rt_raster_destroy(rast);
+
+				GDALClose(src_ds);
+
+				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+				rtdealloc(transform_opts);
+
+				return NULL;
+			}
+
+			RASTER_DEBUGF(4, "Upper-left corner found at pixel: %f x %f", _r[0], _r[1]);
+
+			if (!rt_raster_cell_to_geopoint(
+				rast,
+				_r[0], _r[1],
+				&(extent.MinX), &(extent.MaxY),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
+
+				rt_raster_destroy(rast);
+
+				GDALClose(src_ds);
+
+				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+				rtdealloc(transform_opts);
+
+				return NULL;
+			}
+
+			/* process lower-right corner */
+			if (!rt_raster_geopoint_to_cell(
+				rast,
+				extent.MaxX, extent.MinY,
+				&(_r[0]), &(_r[1]),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_warp: Unable to compute raster pixel for spatial coordinates");
+
+				rt_raster_destroy(rast);
+
+				GDALClose(src_ds);
+
+				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+				rtdealloc(transform_opts);
+
+				return NULL;
+			}
+
+			/*
+				see if the pixel has same coordinates as MaxX/MinY
+				if same, no need to add adjustment
+			*/
+			_d[0] = 1;
+			_d[1] = 1;
+			if (rt_raster_cell_to_geopoint(
+				rast,
+				_r[0], _r[1],
+				&(_w[0]), &(_w[1]),
+				NULL
+			)) {
+				if (FLT_EQ(_w[0], extent.MaxX))
+					_d[0] = 0;
+				if (FLT_EQ(_w[1], extent.MinY))
+					_d[1] = 0;
+			}
+
+			if (!rt_raster_cell_to_geopoint(
+				rast,
+				_r[0] + _d[0], _r[1] + _d[1],
+				&(extent.MaxX), &(extent.MinY),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
+
+				rt_raster_destroy(rast);
+
+				GDALClose(src_ds);
+
+				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+				rtdealloc(transform_opts);
+
+				return NULL;
+			}
+
+			rt_raster_destroy(rast);
+			rast = NULL;
+
+			/* recompute scales if using user-specified dimensions */
+			if ((NULL != width) && (NULL != height)) {
+				_scale[0] = (fabs(extent.MaxX - extent.MinX) + ((double) _dim[0] / 2.)) / (double) _dim[0];
+				_scale[1] = (fabs(extent.MaxY - extent.MinY) + ((double) _dim[1] / 2.)) / (double) _dim[1];
+			}
+			/* recompute dimensions */
+			else {
+				_dim[0] = (int) fmax((fabs(extent.MaxX - extent.MinX) + (_scale[0] / 2.)) / _scale[0], 1);
+				_dim[1] = (int) fmax((fabs(extent.MaxY - extent.MinY) + (_scale[1] / 2.)) / _scale[1], 1);
+			}
+
 		}
-		else
-			min_x = dst_gt[0];
-
-		/* shift along Y axis for upper left */
-		if (FLT_NEQ(grid_shift_yw, 0.) && FLT_NEQ(grid_shift_yw, grid_pix_y)) {
-			max_y = dst_gt[3] + grid_shift_yw;
-			max_y = modf(fabs(*grid_yw - max_y) / grid_pix_y, &djunk);
-			if (FLT_NEQ(max_y, 0.) && FLT_NEQ(max_y, 1.))
-				grid_shift_yw = grid_pix_y - grid_shift_yw;
-			max_y = dst_gt[3] + grid_shift_yw;
-
-			ul_user = 1;
-		}
-		else
-			max_y = dst_gt[3];
-
-		/* adjust width and height to account new upper left */
-		if (ul_user) {
-			/* use suggested lower right corner */
-			max_x = dst_gt[0] + dst_gt[1] * _width;
-			min_y = dst_gt[3] + dst_gt[5] * _height;
-
-			/* user defined width */
-			if ((NULL != width) && (*width > 0.))
-				grid_pix_x = fabs((max_x - min_x) / ((double) _width));
-			else
-				_width = (int) ((max_x - min_x + (grid_pix_x / 2.)) / grid_pix_x);
-
-			/* user defined height  */
-			if ((NULL != height) && (*height > 0.))
-				grid_pix_y = fabs((max_y - min_y) / ((double) _height));
-			else
-				_height = (int) ((max_y - min_y + (grid_pix_y / 2.)) / grid_pix_y);
-
-			dst_gt[1] = grid_pix_x;
-			dst_gt[5] = -1 * grid_pix_y;
-			RASTER_DEBUGF(3, "new dimensions: %d x %d", _width, _height);
-		}
-
-		RASTER_DEBUGF(3, "shift is: %f, %f", grid_shift_xw, grid_shift_yw);
-		RASTER_DEBUGF(3, "new ul is: %f, %f", min_x, max_y);
+		while (0);
 	}
 
-	/* process user-defined scale */
-	if (
-		(FLT_NEQ(pix_x, 0.0)) ||
-		(FLT_NEQ(pix_y, 0.0))
-	) {
-		/* axis scale is zero, use suggested scale for axis */
-		if (FLT_EQ(pix_x, 0.0))
-			pix_x = fabs(dst_gt[1]);
-		if (FLT_EQ(pix_y, 0.0))
-			pix_y = fabs(dst_gt[5]);
-
-		/* upper-left corner not provided by user */
-		if (!ul_user) {
-			min_x = dst_gt[0];
-			max_y = dst_gt[3];
-		}
-
-		/* lower-right corner */
-		max_x = min_x + dst_gt[1] * _width;
-		min_y = max_y + dst_gt[5] * _height;
-
-		_width = (int) ((max_x - min_x + (pix_x / 2.)) / pix_x);
-		_height = (int) ((max_y - min_y + (pix_y / 2.)) / pix_y);
-		dst_gt[0] = min_x;
-		dst_gt[3] = max_y;
-		dst_gt[1] = pix_x;
-		dst_gt[5] = -1 * pix_y;
-
-		RASTER_DEBUGF(3, "new dimensions: %d x %d", _width, _height);
-	}
-	/* user-defined upper-left corner */
-	else if (ul_user) {
-		dst_gt[0] = min_x;
-		dst_gt[3] = max_y;
-	}
+	/* set geotransform */
+	_gt[0] = extent.MinX;
+	_gt[1] = _scale[0];
+	_gt[2] = _skew[0];
+	_gt[3] = extent.MaxY;
+	_gt[4] = _skew[1];
+	_gt[5] = -1 * _scale[1];
 
 	RASTER_DEBUGF(3, "Applied geotransform: %f, %f, %f, %f, %f, %f",
-		dst_gt[0], dst_gt[1], dst_gt[2], dst_gt[3], dst_gt[4], dst_gt[5]);
+		_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]);
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
-		_width, _height);
+		_dim[0], _dim[1]);
 
-	if (FLT_EQ(_width, 0.0) || FLT_EQ(_height, 0.0)) {
-		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero", _width, _height);
+	if (FLT_EQ(_dim[0], 0) || FLT_EQ(_dim[1], 0)) {
+		rterror("rt_raster_gdal_warp: The width (%f) or height (%f) of the warped raster is zero", _dim[0], _dim[1]);
 
 		GDALClose(src_ds);
 
@@ -7839,7 +8264,7 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* create dst dataset */
-	dst_ds = GDALCreate(dst_drv, "", _width, _height, 0, GDT_Byte, dst_options);
+	dst_ds = GDALCreate(dst_drv, "", _dim[0], _dim[1], 0, GDT_Byte, dst_options);
 	if (NULL == dst_ds) {
 		rterror("rt_raster_gdal_warp: Unable to create GDAL VRT dataset");
 
@@ -7926,7 +8351,7 @@ rt_raster rt_raster_gdal_warp(
 	}
 
 	/* set dst geotransform */
-	cplerr = GDALSetGeoTransform(dst_ds, dst_gt);
+	cplerr = GDALSetGeoTransform(dst_ds, _gt);
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_warp: Unable to set geotransform");
 
@@ -8166,12 +8591,9 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	uint8_t *_hasnodata = NULL;
 	double *_value = NULL;
 
-	double _scale_x = 0;
-	double _scale_y = 0;
-	int _width = 0;
-	int _height = 0;
-	double _skew_x = 0;
-	double _skew_y = 0;
+	int _dim[2] = {0};
+	double _scale[2] = {0};
+	double _skew[2] = {0};
 
 	OGRErr ogrerr;
 	OGRSpatialReferenceH src_sr = NULL;
@@ -8180,11 +8602,6 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	OGRwkbGeometryType wkbtype = wkbUnknown;
 
 	int ul_user = 0;
-	double djunk = 0;
-	double grid_shift_xw = 0;
-	double grid_shift_yw = 0;
-	double grid_min_x = 0;
-	double grid_max_y = 0;
 
 	CPLErr cplerr;
 	double dst_gt[6] = {0};
@@ -8273,6 +8690,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	RASTER_DEBUGF(3, "Suggested extent: %f, %f, %f, %f",
 		src_env.MinX, src_env.MaxY, src_env.MaxX, src_env.MinY);
 
+	/* user-defined skew */
+	if (NULL != skew_x)
+		_skew[0] = *skew_x;
+	if (NULL != skew_y)
+		_skew[1] = *skew_y;
+
 	/* user-defined scale */
 	if (
 		(NULL != scale_x) &&
@@ -8280,20 +8703,28 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		(FLT_NEQ(*scale_x, 0.0)) &&
 		(FLT_NEQ(*scale_y, 0.0))
 	) {
-		_scale_x = fabs(*scale_x);
-		_scale_y = fabs(*scale_y);
+		_scale[0] = fabs(*scale_x);
+		_scale[1] = fabs(*scale_y);
 	}
+	/* user-defined width/height */
 	else if (
 		(NULL != width) &&
 		(NULL != height) &&
 		(FLT_NEQ(*width, 0.0)) &&
 		(FLT_NEQ(*height, 0.0))
 	) {
-		_width = fabs(*width);
-		_height = fabs(*height);
+		_dim[0] = fabs(*width);
+		_dim[1] = fabs(*height);
 
-		_scale_x = (src_env.MaxX - src_env.MinX) / _width;
-		_scale_y = (src_env.MaxY - src_env.MinY) / _height;
+		if (FLT_NEQ(src_env.MaxX, src_env.MinX))
+			_scale[0] = fabs((src_env.MaxX - src_env.MinX) / _dim[0]);
+		else
+			_scale[0] = 1.;
+
+		if (FLT_NEQ(src_env.MaxY, src_env.MinY))
+			_scale[1] = fabs((src_env.MaxY - src_env.MinY) / _dim[1]);
+		else
+			_scale[1] = 1.;
 	}
 	else {
 		rterror("rt_raster_gdal_rasterize: Values must be provided for width and height or X and Y of scale");
@@ -8312,8 +8743,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		return NULL;
 	}
-	RASTER_DEBUGF(3, "scale (x, y) = %f, %f", _scale_x, _scale_y);
-	RASTER_DEBUGF(3, "dim (x, y) = %d, %d", _width, _height);
+	RASTER_DEBUGF(3, "scale (x, y) = %f, %f", _scale[0], -1 * _scale[1]);
+	RASTER_DEBUGF(3, "dim (x, y) = %d, %d", _dim[0], _dim[1]);
 
 	/*
 	 	if geometry is a point, a linestring or set of either and bounds not set,
@@ -8329,40 +8760,135 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			(wkbtype == wkbLineString) ||
 			(wkbtype == wkbMultiLineString)
 		) &&
-		FLT_EQ(_width, 0) &&
-		FLT_EQ(_height, 0)
+		FLT_EQ(_dim[0], 0) &&
+		FLT_EQ(_dim[1], 0)
 	) {
 
 #if POSTGIS_GDAL_VERSION > 18
 		RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale");
-		src_env.MinX -= (_scale_x / 2.);
-		src_env.MaxX += (_scale_x / 2.);
-		src_env.MinY -= (_scale_y / 2.);
-		src_env.MaxY += (_scale_y / 2.);
+		src_env.MinX -= (_scale[0] / 2.);
+		src_env.MaxX += (_scale[0] / 2.);
+		src_env.MinY -= (_scale[1] / 2.);
+		src_env.MaxY += (_scale[1] / 2.);
 #else
 		RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale");
-		src_env.MinX -= _scale_x;
-		src_env.MaxX += _scale_x;
-		src_env.MinY -= _scale_y;
-		src_env.MaxY += _scale_y;
+		src_env.MinX -= _scale[0];
+		src_env.MaxX += _scale[0];
+		src_env.MinY -= _scale[1];
+		src_env.MaxY += _scale[1];
 #endif
 
 	}
 
-	/* user-defined skew */
-	if (NULL != skew_x)
-		_skew_x = *skew_x;
-	if (NULL != skew_y)
-		_skew_y = *skew_y;
+	/* reprocess extent if skewed */
+	if (
+		FLT_NEQ(_skew[0], 0) ||
+		FLT_NEQ(_skew[1], 0)
+	) {
+		rt_extent skewedextent;
+
+		RASTER_DEBUG(3, "Computing skewed extent");
+
+		if (!rt_util_compute_skewed_extent(
+			src_env,
+			_skew,
+			_scale,
+			0.01,
+			&skewedextent
+		)) {
+			rterror("rt_raster_gdal_rasterize: Could not compute skewed extent");
+
+			if (noband) {
+				rtdealloc(_pixtype);
+				rtdealloc(_init);
+				rtdealloc(_nodata);
+				rtdealloc(_hasnodata);
+				rtdealloc(_value);
+			}
+
+			OGR_G_DestroyGeometry(src_geom);
+			OSRDestroySpatialReference(src_sr);
+			OGRCleanupAll();
+
+			return NULL;
+		}
+
+		RASTER_DEBUGF(3, "Suggested skewed extent: %f, %f, %f, %f",
+			skewedextent.MinX, skewedextent.MaxY, skewedextent.MaxX, skewedextent.MinY);
+
+		src_env.MinX = skewedextent.MinX;
+		src_env.MinY = skewedextent.MinY;
+		src_env.MaxX = skewedextent.MaxX;
+		src_env.MaxY = skewedextent.MaxY;
+	}
 
 	/* user-specified upper-left corner */
 	if (
 		NULL != ul_xw &&
 		NULL != ul_yw
 	) {
+		ul_user = 1;
+
+		/* raster dimensions */
+		if (!_dim[0])
+			_dim[0] = (int) fmax((fabs(src_env.MaxX - src_env.MinX) + (_scale[0] / 2.)) / _scale[0], 1);
+		if (!_dim[1])
+			_dim[1] = (int) fmax((fabs(src_env.MaxY - src_env.MinY) + (_scale[1] / 2.)) / _scale[1], 1);
+
+		/* set upper-left corner */
 		src_env.MinX = *ul_xw;
 		src_env.MaxY = *ul_yw;
-		ul_user = 1;
+
+		/* adjust lower-right corner using dummy raster */
+		rast = rt_raster_new(1, 1);
+		if (rast == NULL) {
+			rterror("rt_raster_gdal_rasterize: Out of memory allocating temporary raster");
+
+			if (noband) {
+				rtdealloc(_pixtype);
+				rtdealloc(_init);
+				rtdealloc(_nodata);
+				rtdealloc(_hasnodata);
+				rtdealloc(_value);
+			}
+
+			OGR_G_DestroyGeometry(src_geom);
+			OSRDestroySpatialReference(src_sr);
+			OGRCleanupAll();
+
+			return NULL;
+		}
+		rt_raster_set_offsets(rast, src_env.MinX, src_env.MaxY);
+		rt_raster_set_scale(rast, _scale[0], -1 * _scale[1]);
+		rt_raster_set_skews(rast, _skew[0], _skew[1]);
+
+		if (!rt_raster_cell_to_geopoint(
+			rast,
+			_dim[0], _dim[1],
+			&(src_env.MaxX), &(src_env.MinY),
+			NULL
+		)) {
+			rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
+
+			rt_raster_destroy(rast);
+
+			if (noband) {
+				rtdealloc(_pixtype);
+				rtdealloc(_init);
+				rtdealloc(_nodata);
+				rtdealloc(_hasnodata);
+				rtdealloc(_value);
+			}
+
+			OGR_G_DestroyGeometry(src_geom);
+			OSRDestroySpatialReference(src_sr);
+			OGRCleanupAll();
+
+			return NULL;
+		}
+
+		rt_raster_destroy(rast);
+		rast = NULL;
 	}
 	else if (
 		((NULL != ul_xw) && (NULL == ul_yw)) ||
@@ -8391,6 +8917,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			(NULL != grid_xw) || (NULL != grid_yw)
 		)
 	) {
+		double _r[2] = {0};
+
 		if (
 			((NULL != grid_xw) && (NULL == grid_yw)) ||
 			((NULL == grid_xw) && (NULL != grid_yw))
@@ -8412,75 +8940,280 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			return NULL;
 		}
 
-		/* grid shift of upper left to match alignment grid */
-		grid_shift_xw = _scale_x * modf(fabs(*grid_xw - src_env.MinX) / _scale_x, &djunk);
-		grid_shift_yw = _scale_y * modf(fabs(*grid_yw - src_env.MaxY) / _scale_y, &djunk);
+		do {
+			double _d[2] = {0};
+			double _w[2] = {0};
 
-		/* shift along X axis for upper left */
-		if (FLT_NEQ(grid_shift_xw, 0.) && FLT_NEQ(grid_shift_xw, _scale_x)) {
-			grid_min_x = src_env.MinX - grid_shift_xw;
-			grid_min_x = modf(fabs(*grid_xw - grid_min_x) / _scale_x, &djunk);
-			if (FLT_NEQ(grid_min_x, 0.) && FLT_NEQ(grid_min_x, 1.))
-				grid_shift_xw = _scale_x - grid_shift_xw;
-			grid_min_x = src_env.MinX - grid_shift_xw;
+			/* raster is already aligned */
+			if (FLT_EQ(*grid_xw, src_env.MinX) && FLT_EQ(*grid_yw, src_env.MaxY)) {
+				RASTER_DEBUG(3, "Skipping raster alignment as it is already aligned to grid");
+				break;
+			}
 
-			src_env.MinX = grid_min_x;
-			ul_user = 1;
+			/* use temporary raster to get aligned upper-left */
+			rast = rt_raster_new(1, 1);
+			if (rast == NULL) {
+				rterror("rt_raster_gdal_rasterize: Out of memory allocating alignment raster");
+
+				if (noband) {
+					rtdealloc(_pixtype);
+					rtdealloc(_init);
+					rtdealloc(_nodata);
+					rtdealloc(_hasnodata);
+					rtdealloc(_value);
+				}
+
+				OGR_G_DestroyGeometry(src_geom);
+				OSRDestroySpatialReference(src_sr);
+				OGRCleanupAll();
+
+				return NULL;
+			}
+
+			rt_raster_set_offsets(rast, *grid_xw, *grid_yw);
+			rt_raster_set_scale(rast, _scale[0], -1 * _scale[1]);
+			rt_raster_set_skews(rast, _skew[0], _skew[1]);
+
+			/* process upper-left corner */
+			if (!rt_raster_geopoint_to_cell(
+				rast,
+				src_env.MinX, src_env.MaxY,
+				&(_r[0]), &(_r[1]),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_rasterize: Unable to compute raster pixel for spatial coordinates");
+
+				rt_raster_destroy(rast);
+
+				if (noband) {
+					rtdealloc(_pixtype);
+					rtdealloc(_init);
+					rtdealloc(_nodata);
+					rtdealloc(_hasnodata);
+					rtdealloc(_value);
+				}
+
+				OGR_G_DestroyGeometry(src_geom);
+				OSRDestroySpatialReference(src_sr);
+				OGRCleanupAll();
+
+				return NULL;
+			}
+
+			if (!rt_raster_cell_to_geopoint(
+				rast,
+				_r[0], _r[1],
+				&(src_env.MinX), &(src_env.MaxY),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
+
+				rt_raster_destroy(rast);
+
+				if (noband) {
+					rtdealloc(_pixtype);
+					rtdealloc(_init);
+					rtdealloc(_nodata);
+					rtdealloc(_hasnodata);
+					rtdealloc(_value);
+				}
+
+				OGR_G_DestroyGeometry(src_geom);
+				OSRDestroySpatialReference(src_sr);
+				OGRCleanupAll();
+
+				return NULL;
+			}
+
+			/* process lower-right corner */
+			if (!rt_raster_geopoint_to_cell(
+				rast,
+				src_env.MaxX, src_env.MinY,
+				&(_r[0]), &(_r[1]),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_rasterize: Unable to compute raster pixel for spatial coordinates");
+
+				rt_raster_destroy(rast);
+
+				if (noband) {
+					rtdealloc(_pixtype);
+					rtdealloc(_init);
+					rtdealloc(_nodata);
+					rtdealloc(_hasnodata);
+					rtdealloc(_value);
+				}
+
+				OGR_G_DestroyGeometry(src_geom);
+				OSRDestroySpatialReference(src_sr);
+				OGRCleanupAll();
+
+				return NULL;
+			}
+
+			/*
+				see if the pixel has same coordinates as MaxX/MinY
+				if same, no need to add adjustment
+			*/
+			_d[0] = 1;
+			_d[1] = 1;
+			if (rt_raster_cell_to_geopoint(
+				rast,
+				_r[0], _r[1],
+				&(_w[0]), &(_w[1]),
+				NULL
+			)) {
+				if (FLT_EQ(_w[0], src_env.MaxX))
+					_d[0] = 0;
+				if (FLT_EQ(_w[1], src_env.MinY))
+					_d[1] = 0;
+			}
+
+			if (!rt_raster_cell_to_geopoint(
+				rast,
+				_r[0] + _d[0], _r[1] + _d[1],
+				&(src_env.MaxX), &(src_env.MinY),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
+
+				rt_raster_destroy(rast);
+
+				if (noband) {
+					rtdealloc(_pixtype);
+					rtdealloc(_init);
+					rtdealloc(_nodata);
+					rtdealloc(_hasnodata);
+					rtdealloc(_value);
+				}
+
+				OGR_G_DestroyGeometry(src_geom);
+				OSRDestroySpatialReference(src_sr);
+				OGRCleanupAll();
+
+				return NULL;
+			}
+
+			_dim[0] = (int) fmax((fabs(src_env.MaxX - src_env.MinX) + (_scale[0] / 2.)) / _scale[0], 1);
+			_dim[1] = (int) fmax((fabs(src_env.MaxY - src_env.MinY) + (_scale[1] / 2.)) / _scale[1], 1);
+
+			rt_raster_destroy(rast);
+			rast = NULL;
 		}
-
-		/* shift along Y axis for upper left */
-		if (FLT_NEQ(grid_shift_yw, 0.) && FLT_NEQ(grid_shift_yw, _scale_y)) {
-			grid_max_y = src_env.MaxY + grid_shift_yw;
-			grid_max_y = modf(fabs(*grid_yw - grid_max_y) / _scale_y, &djunk);
-			if (FLT_NEQ(grid_max_y, 0.) && FLT_NEQ(grid_max_y, 1.))
-				grid_shift_yw = _scale_y - fabs(grid_shift_yw);
-			grid_max_y = src_env.MaxY + grid_shift_yw;
-
-			src_env.MaxY = grid_max_y;
-			ul_user = 1;
-		}
-
-		if (ul_user) {
-			_width = (int) fmax((fabs(src_env.MaxX - src_env.MinX) + (_scale_x / 2.)) / _scale_x, 1);
-			_height = (int) fmax((fabs(src_env.MaxY - src_env.MinY) + (_scale_y / 2.)) / _scale_y, 1);
-
-			src_env.MaxX = src_env.MinX + (_width * _scale_x);
-			src_env.MinY = src_env.MaxY - (_height * _scale_y);
-		}
-
-		RASTER_DEBUGF(3, "shift is: %f, %f", grid_shift_xw, grid_shift_yw);
-		RASTER_DEBUGF(3, "new ul is: %f, %f", grid_min_x, grid_max_y);
+		while (0);
 	}
 
 	/* raster dimensions */
-	if (!_width)
-		_width = (int) fmax((fabs(src_env.MaxX - src_env.MinX) + (_scale_x / 2.)) / _scale_x, 1);
-	if (!_height)
-		_height = (int) fmax((fabs(src_env.MaxY - src_env.MinY) + (_scale_y / 2.)) / _scale_y, 1);
+	if (!_dim[0])
+		_dim[0] = (int) fmax((fabs(src_env.MaxX - src_env.MinX) + (_scale[0] / 2.)) / _scale[0], 1);
+	if (!_dim[1])
+		_dim[1] = (int) fmax((fabs(src_env.MaxY - src_env.MinY) + (_scale[1] / 2.)) / _scale[1], 1);
 
 	/* specify geotransform */
 	dst_gt[0] = src_env.MinX;
-	dst_gt[1] = _scale_x;
-	dst_gt[2] = _skew_x;
+	dst_gt[1] = _scale[0];
+	dst_gt[2] = _skew[0];
 	dst_gt[3] = src_env.MaxY;
-	dst_gt[4] = _skew_y;
-	dst_gt[5] = -1 * _scale_y;
+	dst_gt[4] = _skew[1];
+	dst_gt[5] = -1 * _scale[1];
 
-	/* user provided negative scale-x */
-	if (
-		(NULL != scale_x) &&
-		(*scale_x < 0.)
-	) {
-		dst_gt[0] = src_env.MaxX;
-		dst_gt[1] = *scale_x;
-	}
-	/* user provided positive scale-y */
-	if (
-		(NULL != scale_y) &&
-		(*scale_y > 0)
-	) {
-		dst_gt[3] = src_env.MinY;
-		dst_gt[5] = *scale_y;
+	/* scale-x is negative or scale-y is positive */
+	if ((
+		(NULL != scale_x) && (*scale_x < 0.)
+	) || (
+		(NULL != scale_y) && (*scale_y > 0)
+	)) {
+		double _w[2] = {0};
+
+		rast = rt_raster_new(1, 1);
+		if (rast == NULL) {
+			rterror("rt_raster_gdal_rasterize: Out of memory allocating temporary raster");
+
+			if (noband) {
+				rtdealloc(_pixtype);
+				rtdealloc(_init);
+				rtdealloc(_nodata);
+				rtdealloc(_hasnodata);
+				rtdealloc(_value);
+			}
+
+			OGR_G_DestroyGeometry(src_geom);
+			OSRDestroySpatialReference(src_sr);
+			OGRCleanupAll();
+
+			return NULL;
+		}
+		rt_raster_set_geotransform_matrix(rast, dst_gt);
+
+		/* negative scale-x */
+		if (
+			(NULL != scale_x) &&
+			(*scale_x < 0.)
+		) {
+			if (!rt_raster_cell_to_geopoint(
+				rast,
+				_dim[0], 0,
+				&(_w[0]), &(_w[1]),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
+
+				rt_raster_destroy(rast);
+
+				if (noband) {
+					rtdealloc(_pixtype);
+					rtdealloc(_init);
+					rtdealloc(_nodata);
+					rtdealloc(_hasnodata);
+					rtdealloc(_value);
+				}
+
+				OGR_G_DestroyGeometry(src_geom);
+				OSRDestroySpatialReference(src_sr);
+				OGRCleanupAll();
+
+				return NULL;
+			}
+
+			dst_gt[0] = _w[0];
+			dst_gt[1] = *scale_x;
+		}
+		/* positive scale-y */
+		if (
+			(NULL != scale_y) &&
+			(*scale_y > 0)
+		) {
+			if (!rt_raster_cell_to_geopoint(
+				rast,
+				0, _dim[1],
+				&(_w[0]), &(_w[1]),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
+
+				rt_raster_destroy(rast);
+
+				if (noband) {
+					rtdealloc(_pixtype);
+					rtdealloc(_init);
+					rtdealloc(_nodata);
+					rtdealloc(_hasnodata);
+					rtdealloc(_value);
+				}
+
+				OGR_G_DestroyGeometry(src_geom);
+				OSRDestroySpatialReference(src_sr);
+				OGRCleanupAll();
+
+				return NULL;
+			}
+
+			dst_gt[3] = _w[1];
+			dst_gt[5] = *scale_y;
+		}
+
+		rt_raster_destroy(rast);
+		rast = NULL;
 	}
 
 	RASTER_DEBUGF(3, "Applied extent: %f, %f, %f, %f",
@@ -8488,7 +9221,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	RASTER_DEBUGF(3, "Applied geotransform: %f, %f, %f, %f, %f, %f",
 		dst_gt[0], dst_gt[1], dst_gt[2], dst_gt[3], dst_gt[4], dst_gt[5]);
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
-		_width, _height);
+		_dim[0], _dim[1]);
 
 	/* load GDAL mem */
 	if (!rt_util_gdal_driver_registered("MEM"))
@@ -8512,7 +9245,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		return NULL;
 	}
 
-	dst_ds = GDALCreate(dst_drv, "", _width, _height, 0, GDT_Byte, NULL);
+	dst_ds = GDALCreate(dst_drv, "", _dim[0], _dim[1], 0, GDT_Byte, NULL);
 	if (NULL == dst_ds) {
 		rterror("rt_raster_gdal_rasterize: Could not create a GDALDataset to rasterize the geometry into");
 

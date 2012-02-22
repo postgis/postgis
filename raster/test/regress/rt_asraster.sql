@@ -479,15 +479,22 @@ SELECT
 	round(nodatavalue::numeric, 3) AS nodatavalue,
 	count > 0 AS count_check,
 	round(min::numeric, 3) AS min,
-	round(max::numeric, 3) AS max
+	round(max::numeric, 3) AS max,
+	same_alignment
 FROM (
 	SELECT
-		rid,
-		(ST_MetaData(rast)).*,
-		(ST_SummaryStats(rast)).*,
-		(ST_BandMetaData(rast)).*
-	FROM raster_asraster_dst
-	ORDER BY rid
+		d.rid,
+		(ST_MetaData(d.rast)).*,
+		(ST_SummaryStats(d.rast)).*,
+		(ST_BandMetaData(d.rast)).*,
+		CASE
+			WHEN d.rid LIKE '4.%'
+				THEN ST_SameAlignment(ST_Transform(d.rast, 992163), r.rast)
+			ELSE NULL
+		END AS same_alignment
+	FROM raster_asraster_dst d
+	CROSS JOIN raster_asraster_rast r
+	ORDER BY d.rid
 ) foo;
 
 DELETE FROM "spatial_ref_sys" WHERE srid = 992163;

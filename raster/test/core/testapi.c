@@ -1558,6 +1558,33 @@ static void testGDALWarp() {
 	deepRelease(raster);
 }
 
+static void testComputeSkewedExtent() {
+	int rtn;
+	OGREnvelope extent;
+	OGREnvelope skewedextent;
+	double skew[2] = {0.25, 0.25};
+	double scale[2] = {1, -1};
+
+	extent.MinX = 0;
+	extent.MaxY = 0;
+	extent.MaxX = 2;
+	extent.MinY = -2;
+
+	rtn = rt_util_compute_skewed_extent(
+		extent,
+		skew,
+		scale,
+		0,
+		&skewedextent
+	);
+
+	CHECK(rtn);
+	CHECK(FLT_EQ(skewedextent.MinX, -0.5));
+	CHECK(FLT_EQ(skewedextent.MaxY, 0));
+	CHECK(FLT_EQ(skewedextent.MaxX, 2.025));
+	CHECK(FLT_EQ(skewedextent.MinY, -2.025));
+}
+
 static void testGDALRasterize() {
 	rt_raster raster;
 	char srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
@@ -1597,16 +1624,15 @@ static void testGDALRasterize() {
 		NULL
 	);
 
-	rtdealloc(wkb);
-
 	CHECK(raster);
 	CHECK((rt_raster_get_width(raster) == 100));
 	CHECK((rt_raster_get_height(raster) == 100));
 	CHECK((rt_raster_get_num_bands(raster) != 0));
 	CHECK((rt_raster_get_x_offset(raster) == -500000));
 	CHECK((rt_raster_get_y_offset(raster) == 600000));
-
 	deepRelease(raster);
+
+	rtdealloc(wkb);
 }
 
 static void testIntersects() {
@@ -2697,6 +2723,10 @@ main()
 		printf("Testing rt_raster_from_gdal_dataset\n");
 		testGDALToRaster();
 		printf("Successfully tested rt_raster_from_gdal_dataset\n");
+
+		printf("Testing rt_util_compute_skewed_extent\n");
+		testComputeSkewedExtent();
+		printf("Successfully tested rt_util_compute_skewed_extent\n");
 
 		printf("Testing rt_raster_gdal_warp\n");
 		testGDALWarp();

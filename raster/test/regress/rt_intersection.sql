@@ -40,17 +40,17 @@ CREATE OR REPLACE FUNCTION make_test_raster(
 	$$ LANGUAGE 'plpgsql';
 -- no skew
 SELECT make_test_raster(0, 4, 4, -2, -2);
-SELECT make_test_raster(1, 2, 2, 0, 0, 0, 0, 2);
-SELECT make_test_raster(2, 2, 2, 1, -1, 0, 0, 3);
-SELECT make_test_raster(3, 2, 2, 1, 1, 0, 0, 4);
-SELECT make_test_raster(4, 2, 2, 2, 2, 0, 0, 5);
+SELECT make_test_raster(1, 2, 2,  0,  0, 0, 0, 2);
+SELECT make_test_raster(2, 2, 2,  1, -1, 0, 0, 3);
+SELECT make_test_raster(3, 2, 2,  1,  1, 0, 0, 4);
+SELECT make_test_raster(4, 2, 2,  2,  2, 0, 0, 5);
 
 -- skew
-SELECT make_test_raster(10, 4, 4, -2, -2, 1, -1);
-SELECT make_test_raster(11, 2, 2, 0, 0, 1, -1, 2);
-SELECT make_test_raster(12, 2, 2, 1, -1, 1, -1, 3);
-SELECT make_test_raster(13, 2, 2, 1, 1, 1, -1, 4);
-SELECT make_test_raster(14, 2, 2, 2, 2, 1, -1, 5);
+SELECT make_test_raster(10, 4, 4,    -2,   -2, 0.1, 0.1);
+SELECT make_test_raster(11, 4, 4,  -0.9, -0.9, 0.1, 0.1, 2);
+SELECT make_test_raster(12, 2, 2,  -1.9,   -1, 0.1, 0.1, 3);
+SELECT make_test_raster(13, 2, 2,     0, -1.8, 0.1, 0.1, 4);
+SELECT make_test_raster(14, 2, 2,     2,    2, 0.1, 0.1, 5);
 
 DROP FUNCTION make_test_raster(integer, integer, integer, double precision, double precision, double precision, double precision, double precision, double precision);
 
@@ -151,46 +151,6 @@ INSERT INTO raster_intersection_out
 		ON r1.rid != r2.rid
 	WHERE r1.rid = 10
 		AND r2.rid BETWEEN 11 AND 19)
-;
-
-INSERT INTO raster_intersection_out
-	(SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, ST_ConvexHull(r2.rast)
-	)
-	FROM raster_intersection r1
-	JOIN raster_intersection r2
-		ON r1.rid != r2.rid
-	WHERE r1.rid = 1
-		AND r2.rid BETWEEN 2 AND 9
-	) UNION ALL (
-	SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, ST_ConvexHull(r2.rast)
-	)
-	FROM raster_intersection r1
-	JOIN raster_intersection r2
-		ON r1.rid != r2.rid
-	WHERE r1.rid = 11
-		AND r2.rid BETWEEN 10 AND 19)
-;
-
-INSERT INTO raster_intersection_out
-	(SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, ST_ConvexHull(r2.rast), 'raster_intersection_other(double precision, double precision, text[])'::regprocedure
-	)
-	FROM raster_intersection r1
-	JOIN raster_intersection r2
-		ON r1.rid != r2.rid
-	WHERE r1.rid = 1
-		AND r2.rid BETWEEN 1 AND 9
-	) UNION ALL (
-	SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, ST_ConvexHull(r2.rast), 'raster_intersection_other(double precision, double precision, text[])'::regprocedure
-	)
-	FROM raster_intersection r1
-	JOIN raster_intersection r2
-		ON r1.rid != r2.rid
-	WHERE r1.rid = 11
-		AND r2.rid BETWEEN 10 AND 19)
 ;
 
 SELECT
