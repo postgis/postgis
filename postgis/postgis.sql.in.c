@@ -1479,7 +1479,7 @@ $$ LANGUAGE SQL  STRICT;
 -------------------------------------------------------------------
 CREATE TABLE spatial_ref_sys (
 	 srid integer not null primary key
-		check (srid > 0 and srid < 999000),
+		check (srid > 0 and srid <= SRID_USR_MAX),
 	 auth_name varchar(256),
 	 auth_srid integer,
 	 srtext varchar(2048),
@@ -1782,8 +1782,8 @@ BEGIN
 
 	-- Verify SRID
 	IF ( new_srid_in > 0 ) THEN
-		IF new_srid_in >= 999000 THEN
-			RAISE EXCEPTION 'AddGeometryColumn() - SRID must be < 999000';
+		IF new_srid_in > SRID_USR_MAX THEN
+			RAISE EXCEPTION 'AddGeometryColumn() - SRID must be <= %', SRID_USR_MAX;
 		END IF;
 		new_srid := new_srid_in;
 		SELECT SRID INTO sr FROM spatial_ref_sys WHERE SRID = new_srid;
