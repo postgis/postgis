@@ -85,20 +85,15 @@ BEGIN
 3.142
 SAVEPOINT
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-SQL function "st_quantile" statement 1
 ERROR:  RASTER_quantileCoverage: Could not get summary stats of coverage
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  relation "test_quantile1" does not exist
-QUERY:  SELECT "rast" FROM "test_quantile1" WHERE "rast" IS NOT NULL
-SQL function "st_quantile" statement 1
+ERROR:  relation "test_quantile1" does not exist at character 20
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  column "rast2" does not exist
-QUERY:  SELECT "rast2" FROM "test_quantile" WHERE "rast2" IS NOT NULL
-SQL function "st_quantile" statement 1
+ERROR:  column "rast2" does not exist at character 8
 COMMIT
 RELEASE
 SAVEPOINT

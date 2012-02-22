@@ -624,4 +624,3 @@ DROP TABLE road_pg;
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
-

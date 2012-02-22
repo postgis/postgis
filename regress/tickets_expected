@@ -23,7 +23,6 @@ ERROR:  Geometry argument does not have an 'M' ordinate
 #122|CIRCULARSTRING(220268 150415,220227 150505,220227 150406)
 #124a|COMPOUNDCURVE(CIRCULARSTRING(0 0,1 1,1 0),(1 0,30 5),CIRCULARSTRING(30 5,34 56,67 89))
 ERROR:  incontinuous compound curve
-HINT:  "...0 6),CIRCULARSTRING(30 5,34 56,67 89)" <-- parse error at position 85 within geometry
 #145a|0103000020E610000000000000
 #145b|0
 #146|0|t|GEOMETRYCOLLECTION(LINESTRING(0 0,-1 -1),MULTIPOINT(1 2,2 3))
@@ -172,12 +171,12 @@ ERROR:  Geometry type (Polygon) does not match column type (MultiPolygon)
 #1305.1|POINT(10 10)
 #1305.2|t
 #1305.3|t
-ERROR:  MultiPolygon cannot contain MultiPoint element
-ERROR:  MultiLineString cannot contain MultiPoint element
-ERROR:  MultiPoint cannot contain MultiPoint element
-ERROR:  CompoundCurve cannot contain MultiPoint element
-ERROR:  MultiCurve cannot contain MultiPoint element
-ERROR:  MultiSurface cannot contain MultiPoint element
+ERROR:  MultiPolygon cannot contain MultiPoint element at character 8
+ERROR:  MultiLineString cannot contain MultiPoint element at character 8
+ERROR:  MultiPoint cannot contain MultiPoint element at character 8
+ERROR:  CompoundCurve cannot contain MultiPoint element at character 8
+ERROR:  MultiCurve cannot contain MultiPoint element at character 8
+ERROR:  MultiSurface cannot contain MultiPoint element at character 8
 #1453.1|t
 #1453.2|f
 #1454|t
@@ -203,12 +202,9 @@ ERROR:  transform: couldn't project point (180 90 0): tolerance condition error 
 #1580.3|Point[B]
 #1596.1|public.road_pg.roads_geom SRID:3395 TYPE:POINT DIMS:2 
 ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
-PL/pgSQL function "updategeometrysrid" line 4 at SQL statement
 #1596.3|3395
 ERROR:  invalid SRID: 999000 not found in spatial_ref_sys
-PL/pgSQL function "updategeometrysrid" line 4 at SQL statement
 #1596.5|3395
 NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
-PL/pgSQL function "updategeometrysrid" line 4 at SQL statement
 #1596.6|public.road_pg.roads_geom SRID changed to 0
 #1596.7|0

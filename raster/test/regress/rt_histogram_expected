@@ -69,20 +69,15 @@ BEGIN
 -1.239|3.142|10|0.500
 SAVEPOINT
 NOTICE:  Invalid band index (must use 1-based). Returning NULL
-SQL function "st_histogram" statement 1
 ERROR:  RASTER_histogramCoverage: Could not get summary stats of coverage
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  relation "test1" does not exist
-QUERY:  SELECT "rast" FROM "test1" WHERE "rast" IS NOT NULL
-SQL function "st_histogram" statement 1
+ERROR:  relation "test1" does not exist at character 20
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  column "rast1" does not exist
-QUERY:  SELECT "rast1" FROM "test_histogram" WHERE "rast1" IS NOT NULL
-SQL function "st_histogram" statement 1
+ERROR:  column "rast1" does not exist at character 8
 COMMIT
 RELEASE
 COMMIT

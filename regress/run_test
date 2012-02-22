@@ -148,7 +148,7 @@ run_simple_sql ()
 	TMPFILE="${TMPDIR}/test_${RUN}_tmp"
 
 	# Dump output to a temp file.
-	${PSQL} -tXA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
+	${PSQL} -v "VERBOSITY=terse" -tXA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
 	# Check if psql errored out.
 	if [ $? -gt 0 ]; then
 		fail "Unable to run sql script $_sql" "${TMPFILE}"
@@ -199,7 +199,7 @@ run_simple_test ()
 	DIFFILE="${TMPDIR}/test_${RUN}_diff"
 
 	# Use intermediate file to prevent MingW buffering problems
-	${PSQL} -v "tmpfile='${TMPFILE}'" -tXA < "${_sql}" ${DB} 2>&1 \
+	${PSQL} -v "VERBOSITY=terse" -v "tmpfile='${TMPFILE}'" -tXA < "${_sql}" ${DB} 2>&1 \
 		| grep --binary-files=text -v "^$" \
 		| grep --binary-files=text -v "^INSERT" \
 		| grep --binary-files=text -v "^DELETE" \

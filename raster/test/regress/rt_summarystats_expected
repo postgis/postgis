@@ -16,13 +16,11 @@ NOTICE:  Invalid band index (must use 1-based). Returning NULL
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  relation "test1" does not exist
-QUERY:  SELECT "rast" FROM "test1" WHERE "rast" IS NOT NULL
+ERROR:  relation "test1" does not exist at character 20
 COMMIT
 RELEASE
 SAVEPOINT
-ERROR:  column "rast1" does not exist
-QUERY:  SELECT "rast1" FROM "test_summarystats" WHERE "rast1" IS NOT NULL
+ERROR:  column "rast1" does not exist at character 8
 COMMIT
 RELEASE
 COMMIT
