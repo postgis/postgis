@@ -794,12 +794,12 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 			{
 				if ( opa->npoints == 1 ) /* Point returned */
 				{
-					geoms[g] = (LWGEOM *)lwpoint_construct(iline->srid, NULL, opa);
+					geoms[g] = (LWGEOM *)lwpoint_construct(SRID_UNKNOWN, NULL, opa);
 					homogeneous = LW_FALSE;
 				}
 				else
 				{
-					geoms[g] = (LWGEOM *)lwline_construct(iline->srid, NULL, opa);
+					geoms[g] = (LWGEOM *)lwline_construct(SRID_UNKNOWN, NULL, opa);
 				}
 				g++;
 			}
@@ -815,7 +815,7 @@ Datum LWGEOM_line_substring(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
+		elog(ERROR,"line_substring: 1st arg isnt a line");
 		PG_RETURN_NULL();
 	}
 
