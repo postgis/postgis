@@ -6,3 +6,8 @@ SELECT 1, ST_AsText(ST_Polygonize(
   ),
   LINESTRING(1656309.68 4833337.07,1656318.45 4833344.45)
 )'::geometry));
+
+-- See ticket #1602
+SELECT 2, ST_AsEWKT(ST_Polygonize(
+'MULTILINESTRING((0 0 0, 0 10 0, 10 10 0),(10 10 0, 10 0 5, 0 0 0))'
+::geometry));

@@ -3288,6 +3288,7 @@ Datum polygonize_garray(PG_FUNCTION_ARGS)
 		GEOSGeometry* g;
 		GSERIALIZED *geom = (GSERIALIZED *)(ARR_DATA_PTR(array)+offset);
 		offset += INTALIGN(VARSIZE(geom));
+		if ( ! is3d ) is3d = gserialized_has_z(geom);
 
 		g = (GEOSGeometry *)POSTGIS2GEOS(geom);
 		if ( 0 == g )   /* exception thrown at construction */
