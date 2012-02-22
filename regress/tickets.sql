@@ -330,5 +330,13 @@ DROP TABLE cacheable;
 SELECT '#1595', 
   ST_AsEWKT(ST_Line_Substring('SRID=32019;MULTILINESTRING((0 0,0 1))', 0, 1)); 
 
+-- #1596 --
+CREATE TABLE road_pg (ID INTEGER, NAME VARCHAR(32));
+SELECT '#1596.1', AddGeometryColumn('road_pg','roads_geom', 4326, 'POINT', 2);
+SELECT '#1596.2', UpdateGeometrySRID('road_pg','roads_geom', 330000);
+SELECT '#1596.3', srid FROM geometry_columns
+  WHERE f_table_name = 'road_pg' AND f_geometry_column = 'roads_geom';
+DROP TABLE road_pg;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

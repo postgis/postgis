@@ -89,3 +89,7 @@ WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
 #852.2|1|t|t
 #852.2|2|t|t
 #1595|SRID=32019;MULTILINESTRING((0 0,0 1))
+#1596.1|public.road_pg.roads_geom SRID:4326 TYPE:POINT DIMS:2 
+ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
+PL/pgSQL function "updategeometrysrid" line 4 at SQL statement
+#1596.3|4326

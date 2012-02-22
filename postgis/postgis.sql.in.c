@@ -3220,7 +3220,7 @@ BEGIN
 		SELECT INTO real_schema current_schema()::text;
 	END IF;
 
-	-- Find out if the column is in the geometry_columns table
+	-- Ensure that column_name is in geometry_columns
 	okay = 'f';
 	FOR myrec IN SELECT * from geometry_columns where f_table_schema = text(real_schema) and f_table_name = table_name and f_geometry_column = column_name LOOP
 		okay := 't';
@@ -3228,6 +3228,14 @@ BEGIN
 	IF (okay <> 't') THEN
 		RAISE EXCEPTION 'column not found in geometry_columns table';
 		RETURN 'f';
+	END IF;
+
+	-- Ensure that new_srid is valid
+	IF ( new_srid != -1 ) THEN
+		IF ( SELECT count(*) = 0 from spatial_ref_sys where srid = new_srid ) THEN
+			RAISE EXCEPTION 'invalid SRID: % not found in spatial_ref_sys', new_srid;
+			RETURN false;
+		END IF;
 	END IF;
 
 	-- Update ref from geometry_columns table
