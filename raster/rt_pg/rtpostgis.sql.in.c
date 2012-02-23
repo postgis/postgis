@@ -2425,28 +2425,14 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, pt geometry, newvalue float8
 -----------------------------------------------------------------------
 
 CREATE TYPE geomval AS (
-    geom geometry,
-    val double precision
+	geom geometry,
+	val double precision
 );
-
-CREATE TYPE wktgeomval AS (
-    wktgeom text,
-    val double precision,
-    srid int
-);
-
-CREATE OR REPLACE FUNCTION _st_dumpaswktpolygons(rast raster, band integer)
-    RETURNS SETOF wktgeomval
-    AS 'MODULE_PATHNAME','RASTER_dumpAsWKTPolygons'
-    LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1)
-    RETURNS SETOF geomval AS
-    $$
-    SELECT st_geomfromtext(wktgeomval.wktgeom, wktgeomval.srid), wktgeomval.val
-    FROM _st_dumpaswktpolygons($1, $2) AS wktgeomval;
-    $$
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+	RETURNS SETOF geomval
+	AS 'MODULE_PATHNAME','RASTER_dumpAsPolygons'
+	LANGUAGE 'C' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
     RETURNS geometry AS

@@ -127,7 +127,7 @@ static char *rtpg_getSR(int srid);
  * - Use SRF funcapi, and storing the data at multi_call_memory_ctx (by pointing
  *   the data you want to keep with funcctx->user_fctx. funcctx is created by
  *   funcctx = SPI_FIRSTCALL_INIT()). Recommended way in functions returning rows,
- *   like RASTER_dumpAsWKTPolygons (see section 34.9.9 at
+ *   like RASTER_dumpAsPolygons (see section 34.9.9 at
  *   http://www.postgresql.org/docs/8.4/static/xfunc-c.html).
  *
  * But raster code follows the same philosophy than the rest of PostGIS: keep
@@ -153,7 +153,7 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS);
 
 /* Raster as geometry operations */
 Datum RASTER_convex_hull(PG_FUNCTION_ARGS);
-Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS);
+Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS);
 
 /* Get all the properties of a raster */
 Datum RASTER_getSRID(PG_FUNCTION_ARGS);
@@ -809,154 +809,149 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(RASTER_dumpAsWKTPolygons);
-Datum RASTER_dumpAsWKTPolygons(PG_FUNCTION_ARGS)
-{
-    rt_pgraster *pgraster = NULL;
-    rt_raster raster = NULL;
-    FuncCallContext *funcctx;
-    TupleDesc tupdesc;
-    int nband;
-    rt_geomval geomval;
-    rt_geomval geomval2;
-    int call_cntr;
-    int max_calls;
-    int nElements;
-    MemoryContext oldcontext;
+PG_FUNCTION_INFO_V1(RASTER_dumpAsPolygons);
+Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+	rt_geomval geomval;
+	rt_geomval geomval2;
+	int call_cntr;
+	int max_calls;
 
-    /* stuff done only on the first call of the function */
-    if (SRF_IS_FIRSTCALL())
-    {
-				int numbands;
+	/* stuff done only on the first call of the function */
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+		int numbands;
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		int nband;
+		int nElements;
 
-        POSTGIS_RT_DEBUG(2, "RASTER_dumpAsWKTPolygons first call");
+		POSTGIS_RT_DEBUG(2, "RASTER_dumpAsPolygons first call");
 
-        /* create a function context for cross-call persistence */
-        funcctx = SRF_FIRSTCALL_INIT();
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
 
-        /* switch to memory context appropriate for multiple function calls */
-        oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-        /* Get input arguments */
-        if (PG_ARGISNULL(0)) SRF_RETURN_DONE(funcctx);
-        pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-        raster = rt_raster_deserialize(pgraster, FALSE);
-        if ( ! raster )
-        {
-            ereport(ERROR,
-                    (errcode(ERRCODE_OUT_OF_MEMORY),
-                    errmsg("Could not deserialize raster")));
-            MemoryContextSwitchTo(oldcontext);
-            SRF_RETURN_DONE(funcctx);
-        }
+		/* Get input arguments */
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			ereport(ERROR, (
+				errcode(ERRCODE_OUT_OF_MEMORY),
+				errmsg("Could not deserialize raster")
+			));
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 
-        if (PG_NARGS() == 2)
-            nband = PG_GETARG_UINT32(1);
-        else
-            nband = 1; /* By default, first band */
+		if (PG_NARGS() == 2)
+			nband = PG_GETARG_UINT32(1);
+		else
+			nband = 1; /* By default, first band */
 
-        POSTGIS_RT_DEBUGF(3, "band %d", nband);
+		POSTGIS_RT_DEBUGF(3, "band %d", nband);
+		numbands = rt_raster_get_num_bands(raster);
 
-				numbands = rt_raster_get_num_bands(raster);
-				if (nband < 1 || nband > numbands) {
-					elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
-					rt_raster_destroy(raster);
-					MemoryContextSwitchTo(oldcontext);
-					SRF_RETURN_DONE(funcctx);
-				}
+		if (nband < 1 || nband > numbands) {
+			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 
-        /* Polygonize raster */
+		/* Polygonize raster */
 
-        /**
-         * Dump raster
-         */
-        geomval = rt_raster_dump_as_wktpolygons(raster, nband - 1, &nElements);
-				rt_raster_destroy(raster);
-        if (NULL == geomval)
-        {
-            ereport(ERROR,
-                    (errcode(ERRCODE_NO_DATA_FOUND),
-                    errmsg("Could not polygonize raster")));
-            rt_raster_destroy(raster);
-            MemoryContextSwitchTo(oldcontext);
-            SRF_RETURN_DONE(funcctx);
-        }
+		/**
+		 * Dump raster
+		 */
+		geomval = rt_raster_gdal_polygonize(raster, nband - 1, &nElements);
+		rt_raster_destroy(raster);
+		if (NULL == geomval) {
+			ereport(ERROR, (
+				errcode(ERRCODE_NO_DATA_FOUND),
+				errmsg("Could not polygonize raster")
+			));
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
 
-        POSTGIS_RT_DEBUGF(3, "raster dump, %d elements returned", nElements);
+		POSTGIS_RT_DEBUGF(3, "raster dump, %d elements returned", nElements);
 
-        /* Store needed information */
-        funcctx->user_fctx = geomval;
+		/* Store needed information */
+		funcctx->user_fctx = geomval;
 
-        /* total number of tuples to be returned */
-        funcctx->max_calls = nElements;
+		/* total number of tuples to be returned */
+		funcctx->max_calls = nElements;
 
-        /* Build a tuple descriptor for our result type */
-        if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)
-            ereport(ERROR,
-                    (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-                     errmsg("function returning record called in context "
-                            "that cannot accept type record")));
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg("function returning record called in context that cannot accept type record")
+			));
+		}
 
-        BlessTupleDesc(tupdesc);
-        funcctx->tuple_desc = tupdesc;
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
 
-        MemoryContextSwitchTo(oldcontext);
-    }
+		MemoryContextSwitchTo(oldcontext);
+	}
 
-    /* stuff done on every call of the function */
-    funcctx = SRF_PERCALL_SETUP();
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
 
-    call_cntr = funcctx->call_cntr;
-    max_calls = funcctx->max_calls;
-    tupdesc = funcctx->tuple_desc;
-    geomval2 = funcctx->user_fctx;
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	tupdesc = funcctx->tuple_desc;
+	geomval2 = funcctx->user_fctx;
 
-    if (call_cntr < max_calls)    /* do when there is more left to send */
-    {
-        bool *nulls = NULL;
-        int values_length = 3;
-        Datum values[values_length];
-        HeapTuple    tuple;
-        Datum        result;
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		bool *nulls = NULL;
+		int values_length = 2;
+		Datum values[values_length];
+		HeapTuple    tuple;
+		Datum        result;
 
-        POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
+		GSERIALIZED *gser = NULL;
+		size_t gser_size = 0;
 
-        nulls = palloc(sizeof(bool) * values_length);
-        memset(nulls, FALSE, values_length);
+		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
-        values[0] = CStringGetTextDatum(geomval2[call_cntr].geom);
-        values[1] = Float8GetDatum(geomval2[call_cntr].val);
-        values[2] = Int32GetDatum(geomval2[call_cntr].srid);
+		nulls = palloc(sizeof(bool) * values_length);
+		memset(nulls, FALSE, values_length);
 
-        POSTGIS_RT_DEBUGF(4, "Result %d, Polygon %s", call_cntr, geomval2[call_cntr].geom);
-        POSTGIS_RT_DEBUGF(4, "Result %d, val %f", call_cntr, geomval2[call_cntr].val);
-        POSTGIS_RT_DEBUGF(4, "Result %d, srid %d", call_cntr, geomval2[call_cntr].srid);
+		/* convert LWGEOM to GSERIALIZED */
+		gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(geomval2[call_cntr].geom), 0, &gser_size);
+		lwgeom_free(lwpoly_as_lwgeom(geomval2[call_cntr].geom));
 
-        /**
-         * Free resources.
-         */
-        pfree(geomval2[call_cntr].geom);
+		values[0] = PointerGetDatum(gser);
+		values[1] = Float8GetDatum(geomval2[call_cntr].val);
 
-        /* build a tuple */
-        tuple = heap_form_tuple(tupdesc, values, nulls);
+		/* build a tuple */
+		tuple = heap_form_tuple(tupdesc, values, nulls);
 
-        /* make the tuple into a datum */
-        result = HeapTupleGetDatum(tuple);
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
 
-        /* clean up (this is not really necessary) */
-        pfree(nulls);
+		/* clean up (this is not really necessary) */
+		pfree(nulls);
 
-
-        SRF_RETURN_NEXT(funcctx, result);
-    }
-    else    /* do when there is no more left */
-    {
-        pfree(geomval2);
-        SRF_RETURN_DONE(funcctx);
-    }
-
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		pfree(geomval2);
+		SRF_RETURN_DONE(funcctx);
+	}
 }
-
 
 /**
  * rt_MakeEmptyRaster( <width>, <height>, <ipx>, <ipy>,
@@ -1613,8 +1608,10 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
     double jmag;
     double theta_i;
     double theta_ij;
+		/*
     double xoffset;
     double yoffset;
+		*/
 
     TupleDesc result_tuple; /* for returning a composite */
     bool *nulls = NULL;
@@ -7168,7 +7165,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_asRaster);
 Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *pggeom = NULL;
+	GSERIALIZED *gser = NULL;
 
 	LWGEOM *geom = NULL;
 	rt_raster rast = NULL;
@@ -7242,8 +7239,8 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	if (PG_ARGISNULL(0)) 
 		PG_RETURN_NULL();
 
-	pggeom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	geom = lwgeom_from_gserialized(pggeom);
+	gser = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = lwgeom_from_gserialized(gser);
 
 	/* Get a 2D version of the geometry if necessary */
 	if (lwgeom_ndims(geom) > 2) {
@@ -7655,7 +7652,7 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	}
 
 	/* get geometry's srid */
-	srid = gserialized_get_srid(pggeom);
+	srid = gserialized_get_srid(gser);
 
 	POSTGIS_RT_DEBUGF(3, "RASTER_asRaster: srid = %d", srid);
 	if (clamp_srid(srid) != SRID_UNKNOWN) {
@@ -8447,7 +8444,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 				rtn = 0;
 				break;
 			}
-			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS((LWGEOM *) hull[i]);
+			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(hull[i]));
 			if (NULL == ghull[i]) {
 				for (j = 0; j < i; j++) {
 					GEOSGeom_destroy(ghull[j]);

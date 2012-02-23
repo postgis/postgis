@@ -310,3 +310,8 @@ DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, text, regprocedur
 DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, geometry, text, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, geometry, regprocedure);
+
+-- refactoring of functions
+DROP TYPE IF EXISTS wktgeomval;
+DROP FUNCTION IF EXISTS _st_dumpaswktpolygons(rast raster, band integer);
+

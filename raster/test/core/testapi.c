@@ -7,10 +7,15 @@
 #include "rt_api.h"
 #include "check.h"
 
-static rt_band addBand(rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval);
-static void deepRelease(rt_raster raster);
-static void testBand1BB(rt_band band);
-static rt_raster fillRasterToPolygonize(int hasnodata, double nodatavalue);
+static char *
+lwgeom_to_text(const LWGEOM *lwgeom) {
+	char *wkt;
+	size_t wkt_size;
+
+	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &wkt_size);
+
+	return wkt;
+}
 
 static rt_band
 addBand(rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval)
@@ -157,6 +162,259 @@ fillRasterToPolygonize(int hasnodata, double nodatavalue)
     */
 
     return raster;
+}
+
+static void testGDALPolygonize() {
+	int i;
+	rt_raster rt;
+	int nPols = 0;
+	rt_geomval gv = NULL;
+	char *wkt = NULL;
+
+	rt = fillRasterToPolygonize(1, -1.0);
+	CHECK(!rt_raster_has_no_band(rt, 0));
+
+	nPols = 0;
+	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+
+	/*
+	for (i = 0; i < nPols; i++) {
+		wkt = lwgeom_to_text((const LWGEOM *) gv[i].geom);
+		printf("(i, val, geom) = (%d, %f, '%s')\n", i, gv[i].val, wkt);
+		rtdealloc(wkt);
+	}
+	*/
+
+#ifdef GDALFPOLYGONIZE
+	CHECK(FLT_EQ(gv[0].val, 1.8));
+#else
+	CHECK(FLT_EQ(gv[0].val, 2.0));
+#endif
+
+	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
+	rtdealloc(wkt);
+
+	CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))"));
+	rtdealloc(wkt);
+
+#ifdef GDALFPOLYGONIZE
+	CHECK(FLT_EQ(gv[2].val, 2.8));
+#else
+	CHECK(FLT_EQ(gv[2].val, 3.0));
+#endif
+
+	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
+	CHECK(!strcmp(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
+	rtdealloc(wkt);
+
+	CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[3].geom);
+	CHECK(!strcmp(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+	rtdealloc(wkt);
+
+	for (i = 0; i < nPols; i++) lwgeom_free((LWGEOM *) gv[i].geom);
+	rtdealloc(gv);
+	deepRelease(rt);
+
+	/* Second test: NODATA value = 1.8 */
+#ifdef GDALFPOLYGONIZE
+	rt = fillRasterToPolygonize(1, 1.8);
+#else
+	rt = fillRasterToPolygonize(1, 2.0);
+#endif
+
+	/* We can check rt_raster_has_no_band here too */
+	CHECK(!rt_raster_has_no_band(rt, 0));
+
+	nPols = 0;
+	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+
+	/*
+	for (i = 0; i < nPols; i++) {
+		wkt = lwgeom_to_text((const LWGEOM *) gv[i].geom);
+		printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, wkt);
+		rtdealloc(wkt);
+	}
+	*/
+
+#ifdef GDALFPOLYGONIZE
+	CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))"));
+	rtdealloc(wkt);
+
+	CHECK(FLT_EQ(gv[2].val, 2.8));
+	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
+	CHECK(!strcmp(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
+	rtdealloc(wkt);
+
+	CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[3].geom);
+	CHECK(!strcmp(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+	rtdealloc(wkt);
+#else
+	CHECK_EQUALS_DOUBLE(gv[0].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))"));
+	rtdealloc(wkt);
+
+	CHECK(FLT_EQ(gv[1].val, 3.0));
+	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
+	CHECK(!strcmp(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
+	rtdealloc(wkt);
+
+	CHECK_EQUALS_DOUBLE(gv[2].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
+	CHECK(!strcmp(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+	rtdealloc(wkt);
+#endif
+
+	for (i = 0; i < nPols; i++) lwgeom_free((LWGEOM *) gv[i].geom);
+	rtdealloc(gv);
+	deepRelease(rt);
+
+	/* Third test: NODATA value = 2.8 */
+#ifdef GDALFPOLYGONIZE
+	rt = fillRasterToPolygonize(1, 2.8);
+#else	
+	rt = fillRasterToPolygonize(1, 3.0);
+#endif
+
+	/* We can check rt_raster_has_no_band here too */
+	CHECK(!rt_raster_has_no_band(rt, 0));
+
+	nPols = 0;
+	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+
+	/*
+	for (i = 0; i < nPols; i++) {
+		wkt = lwgeom_to_text((const LWGEOM *) gv[i].geom);
+		printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, wkt);
+		rtdealloc(wkt);
+	}
+	*/
+
+#ifdef GDALFPOLYGONIZE
+	CHECK(FLT_EQ(gv[0].val, 1.8));
+
+	CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[3].geom);
+	CHECK(!strcmp(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+	rtdealloc(wkt);
+#else
+	CHECK(FLT_EQ(gv[0].val, 2.0));
+
+	CHECK_EQUALS_DOUBLE(gv[2].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
+	CHECK(!strcmp(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+	rtdealloc(wkt);
+#endif
+
+	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
+	rtdealloc(wkt);
+
+	CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))"));
+	rtdealloc(wkt);
+
+	for (i = 0; i < nPols; i++) lwgeom_free((LWGEOM *) gv[i].geom);
+	rtdealloc(gv);
+	deepRelease(rt);
+
+	/* Fourth test: NODATA value = 0 */
+	rt = fillRasterToPolygonize(1, 0.0);
+	/* We can check rt_raster_has_no_band here too */
+	CHECK(!rt_raster_has_no_band(rt, 0));
+
+	nPols = 0;
+	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+	
+	/*
+	for (i = 0; i < nPols; i++) {
+		wkt = lwgeom_to_text((const LWGEOM *) gv[i].geom);
+		printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, wkt);
+		rtdealloc(wkt);
+	}
+	*/
+
+#ifdef GDALFPOLYGONIZE
+	CHECK(FLT_EQ(gv[0].val, 1.8));
+#else
+	CHECK(FLT_EQ(gv[0].val, 2.0));
+#endif
+
+	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
+	rtdealloc(wkt);
+
+#ifdef GDALFPOLYGONIZE
+	CHECK(FLT_EQ(gv[1].val, 2.8));
+#else
+	CHECK(FLT_EQ(gv[1].val, 3.0));
+#endif
+
+	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
+	CHECK(!strcmp(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
+	rtdealloc(wkt);
+
+	for (i = 0; i < nPols; i++) lwgeom_free((LWGEOM *) gv[i].geom);
+	rtdealloc(gv);
+	deepRelease(rt);
+
+	/* Last test: There is no NODATA value (all values are valid) */
+	rt = fillRasterToPolygonize(0, 0.0);
+	/* We can check rt_raster_has_no_band here too */
+	CHECK(!rt_raster_has_no_band(rt, 0));
+
+	nPols = 0;
+	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+
+	/*
+	for (i = 0; i < nPols; i++) {
+		wkt = lwgeom_to_text((const LWGEOM *) gv[i].geom);
+		printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, wkt);
+		rtdealloc(wkt);
+	}
+	*/
+
+#ifdef GDALFPOLYGONIZE
+	CHECK(FLT_EQ(gv[0].val, 1.8));
+#else
+	CHECK(FLT_EQ(gv[0].val, 2.0));
+#endif
+
+	wkt = lwgeom_to_text((const LWGEOM *) gv[0].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
+	rtdealloc(wkt);
+
+	CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[1].geom);
+	CHECK(!strcmp(wkt, "POLYGON((3 3,3 6,6 6,6 3,3 3))"));
+	rtdealloc(wkt);
+
+#ifdef GDALFPOLYGONIZE
+	CHECK(FLT_EQ(gv[2].val, 2.8));
+#else
+	CHECK(FLT_EQ(gv[2].val, 3.0));
+#endif
+
+	wkt = lwgeom_to_text((const LWGEOM *) gv[2].geom);
+	CHECK(!strcmp(wkt, "POLYGON((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
+	rtdealloc(wkt);
+
+	CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
+	wkt = lwgeom_to_text((const LWGEOM *) gv[3].geom);
+	CHECK(!strcmp(wkt, "POLYGON((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
+	rtdealloc(wkt);
+
+	for (i = 0; i < nPols; i++) lwgeom_free((LWGEOM *) gv[i].geom);
+	rtdealloc(gv);
+	deepRelease(rt);
 }
 
 static void testBand1BB(rt_band band)
@@ -2298,7 +2556,6 @@ static void testLoadOfflineBand() {
 int
 main()
 {
-	int i;
     rt_raster raster;
     rt_band band_1BB, band_2BUI, band_4BUI,
             band_8BSI, band_8BUI, band_16BSI, band_16BUI,
@@ -2431,219 +2688,9 @@ main()
         rt_raster_set_skews(raster, 0, 0);
     }
 
-    {   /* Check ST_AsPolygon */
-        printf("Testing polygonize function\n");
-
-		/* First test: NODATA value = -1 */
-        rt_raster rt = fillRasterToPolygonize(1, -1.0);
-
-		/* We can check rt_raster_has_no_band here too */
-		CHECK(!rt_raster_has_no_band(rt, 0));
-
-        int nPols = 0;
-
-        rt_geomval gv = (rt_geomval) rt_raster_dump_as_wktpolygons(rt, 0, &nPols);
-
-	/*
-		for (i = 0; i < nPols; i++) {
-			printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, gv[i].geom);
-		}
-	*/
-
-
-#ifdef GDALFPOLYGONIZE
-		CHECK(FLT_EQ(gv[0].val, 1.8));
-#else
-		CHECK(FLT_EQ(gv[0].val, 2.0));
-#endif
-
-		CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
-
-		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
-		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
-
-#ifdef GDALFPOLYGONIZE
-		CHECK(FLT_EQ(gv[2].val, 2.8));
-#else
-		CHECK(FLT_EQ(gv[2].val, 3.0));
-#endif
-
-		CHECK(!strcmp(gv[2].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
-
-		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
-		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
-
-
-	for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-	rtdealloc(gv);
-        deepRelease(rt);
-
-
-		/* Second test: NODATA value = 1.8 */
-#ifdef GDALFPOLYGONIZE
-		rt = fillRasterToPolygonize(1, 1.8);
-#else
-		rt = fillRasterToPolygonize(1, 2.0);
-#endif
-
-
-		/* We can check rt_raster_has_no_band here too */
-		CHECK(!rt_raster_has_no_band(rt, 0));
-
-    	nPols = 0;
-
-    	gv = (rt_geomval) rt_raster_dump_as_wktpolygons(rt, 0, &nPols);
-
-	/*
-		for (i = 0; i < nPols; i++) {
-			printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, gv[i].geom);
-		}
-	*/
-
-#ifdef GDALFPOLYGONIZE
-		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
-		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
-
-		CHECK(FLT_EQ(gv[2].val, 2.8));
-		CHECK(!strcmp(gv[2].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
-
-		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
-		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
-#else
-		CHECK_EQUALS_DOUBLE(gv[0].val, 0.0);
-		CHECK(!strcmp(gv[0].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
-
-		CHECK(FLT_EQ(gv[1].val, 3.0));
-    CHECK(!strcmp(gv[1].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
-
-		CHECK_EQUALS_DOUBLE(gv[2].val, 0.0);
-		CHECK(!strcmp(gv[2].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
-#endif
-
-	for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-	rtdealloc(gv);
-        deepRelease(rt);
-
-		/* Third test: NODATA value = 2.8 */
-#ifdef GDALFPOLYGONIZE
-    	rt = fillRasterToPolygonize(1, 2.8);
-#else	
-    	rt = fillRasterToPolygonize(1, 3.0);
-#endif
-
-		/* We can check rt_raster_has_no_band here too */
-		CHECK(!rt_raster_has_no_band(rt, 0));
-
-		nPols = 0;
-
-    	gv = (rt_geomval) rt_raster_dump_as_wktpolygons(rt, 0, &nPols);
-
-	/*
-		for (i = 0; i < nPols; i++) {
-			printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, gv[i].geom);
-		}
-	*/
-
-#ifdef GDALFPOLYGONIZE
-    	CHECK(FLT_EQ(gv[0].val, 1.8));
-
-		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
-		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
-#else
-   	CHECK(FLT_EQ(gv[0].val, 2.0));
-
-		CHECK_EQUALS_DOUBLE(gv[2].val, 0.0);
-		CHECK(!strcmp(gv[2].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
-#endif
-
-    CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
-
-		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
-		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
-
-	for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-	rtdealloc(gv);
-        deepRelease(rt);
-
-		/* Fourth test: NODATA value = 0 */
-    	rt = fillRasterToPolygonize(1, 0.0);
-
-        /* We can check rt_raster_has_no_band here too */
-		CHECK(!rt_raster_has_no_band(rt, 0));
-
-		nPols = 0;
-
-   		gv = (rt_geomval) rt_raster_dump_as_wktpolygons(rt, 0, &nPols);
-
-		/*
-		for (i = 0; i < nPols; i++) {
-			printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, gv[i].geom);
-		}
-		*/
-
-#ifdef GDALFPOLYGONIZE
-    	CHECK(FLT_EQ(gv[0].val, 1.8));
-#else
-    	CHECK(FLT_EQ(gv[0].val, 2.0));
-#endif
-
-	   	CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
-
-#ifdef GDALFPOLYGONIZE
-    	CHECK(FLT_EQ(gv[1].val, 2.8));
-#else
-    	CHECK(FLT_EQ(gv[1].val, 3.0));
-#endif
-
-	    CHECK(!strcmp(gv[1].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
-
-	for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-	rtdealloc(gv);
-        deepRelease(rt);
-
-    	/* Last test: There is no NODATA value (all values are valid) */
-    	rt = fillRasterToPolygonize(0, 0.0);
-
-		/* We can check rt_raster_has_no_band here too */
-		CHECK(!rt_raster_has_no_band(rt, 0));
-
-	    nPols = 0;
-
-    	gv = (rt_geomval) rt_raster_dump_as_wktpolygons(rt, 0, &nPols);
-
-	/*
-		for (i = 0; i < nPols; i++) {
-			printf("(i, val, geom) = (%d, %f, %s)\n", i, gv[i].val, gv[i].geom);
-		}
-	*/
-
-#ifdef GDALFPOLYGONIZE
-    	CHECK(FLT_EQ(gv[0].val, 1.8));
-#else
-    	CHECK(FLT_EQ(gv[0].val, 2.0));
-#endif
-
-   		CHECK(!strcmp(gv[0].geom, "POLYGON ((3 1,3 2,2 2,2 3,1 3,1 6,2 6,2 7,3 7,3 8,5 8,5 6,3 6,3 3,4 3,5 3,5 1,3 1))"));
-
-		CHECK_EQUALS_DOUBLE(gv[1].val, 0.0);
-		CHECK(!strcmp(gv[1].geom, "POLYGON ((3 3,3 6,6 6,6 3,3 3))"));
-
-#ifdef GDALFPOLYGONIZE
-    	CHECK(FLT_EQ(gv[2].val, 2.8));
-#else
-    	CHECK(FLT_EQ(gv[2].val, 3.0));
-#endif
-
-	    CHECK(!strcmp(gv[2].geom, "POLYGON ((5 1,5 3,6 3,6 6,5 6,5 8,6 8,6 7,7 7,7 6,8 6,8 3,7 3,7 2,6 2,6 1,5 1))"));
-
-		CHECK_EQUALS_DOUBLE(gv[3].val, 0.0);
-		CHECK(!strcmp(gv[3].geom, "POLYGON ((0 0,0 9,9 9,9 0,0 0),(6 7,6 8,3 8,3 7,2 7,2 6,1 6,1 3,2 3,2 2,3 2,3 1,6 1,6 2,7 2,7 3,8 3,8 6,7 6,7 7,6 7))"));
-
-	for (i = 0; i < nPols; i++) rtdealloc(gv[i].geom);
-	rtdealloc(gv);
-        deepRelease(rt);
-
-    }
+    printf("Testing rt_raster_gdal_polygonize\n");
+		testGDALPolygonize();
+		printf("Successfully tested rt_raster_gdal_polygonize\n");
 
     printf("Testing 1BB band\n");
     band_1BB = addBand(raster, PT_1BB, 0, 0);

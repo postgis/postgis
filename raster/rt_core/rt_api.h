@@ -1041,13 +1041,12 @@ LWPOLY* rt_raster_get_convex_hull(rt_raster raster);
  */
 LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
 
-
 /**
  * Returns a set of "geomval" value, one for each group of pixel
  * sharing the same value for the provided band.
  *
- * A "geomval " value is a complex type composed of a the wkt
- * representation of a geometry (one for each group of pixel sharing
+ * A "geomval" value is a complex type composed of a geometry 
+ * in LWPOLY representation (one for each group of pixel sharing
  * the same value) and the value associated with this geometry.
  *
  * @param raster: the raster to get info from.
@@ -1055,13 +1054,13 @@ LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
  *
  * @return A set of "geomval" values, one for each group of pixels
  * sharing the same value for the provided band. The returned values are
- * WKT geometries, not real PostGIS geometries (this may change in the
- * future, and the function returns real geometries)
+ * LWPOLY geometries.
  */
 rt_geomval
-rt_raster_dump_as_wktpolygons(rt_raster raster, int nband,
-        int * pnElements);
-
+rt_raster_gdal_polygonize(
+	rt_raster raster, int nband,
+	int * pnElements
+);
 
 /**
  * Return this raster in serialized form.
@@ -1568,12 +1567,10 @@ struct rt_band_t {
 
 };
 
-/* WKT string representing each polygon in WKT format accompanied by its
-corresponding value */
+/* polygon as LWPOLY with associated value */
 struct rt_geomval_t {
-    int srid;
-    double val;
-    char * geom;
+	LWPOLY *geom;
+	double val;
 };
 
 /* summary stats of specified band */

@@ -1266,6 +1266,7 @@ rt_band_new_inline(
 	band->width = width;
 	band->height = height;
 	band->hasnodata = hasnodata;
+	band->nodataval = 0;
 	band->data.mem = data;
 	band->ownsData = 0;
 	band->isnodata = FALSE;
@@ -1326,6 +1327,7 @@ rt_band_new_offline(
 	band->width = width;
 	band->height = height;
 	band->hasnodata = hasnodata;
+	band->nodataval = 0;
 	band->isnodata = FALSE;
 	band->raster = NULL;
 
@@ -5178,8 +5180,8 @@ rt_raster_geopoint_to_cell(rt_raster raster,
  * Returns a set of "geomval" value, one for each group of pixel
  * sharing the same value for the provided band.
  *
- * A "geomval " value is a complex type composed of a the wkt
- * representation of a geometry (one for each group of pixel sharing
+ * A "geomval" value is a complex type composed of a geometry 
+ * in LWPOLY representation (one for each group of pixel sharing
  * the same value) and the value associated with this geometry.
  *
  * @param raster: the raster to get info from.
@@ -5187,258 +5189,324 @@ rt_raster_geopoint_to_cell(rt_raster raster,
  *
  * @return A set of "geomval" values, one for each group of pixels
  * sharing the same value for the provided band. The returned values are
- * WKT geometries, not real PostGIS geometries (this may change in the
- * future, and the function returns real geometries)
+ * LWPOLY geometries.
  */
 rt_geomval
-rt_raster_dump_as_wktpolygons(rt_raster raster, int nband, int * pnElements)
-{
-    char * pszQuery;
-    long j;
-    OGRSFDriverH ogr_drv = NULL;
-    GDALDriverH gdal_drv = NULL;
-    GDALDatasetH memdataset = NULL;
-    GDALRasterBandH gdal_band = NULL;
-    OGRDataSourceH memdatasource = NULL;
-    rt_geomval pols = NULL;
-    OGRLayerH hLayer = NULL;
-    OGRFeatureH hFeature = NULL;
-    OGRGeometryH hGeom = NULL;
-    OGRFieldDefnH hFldDfn = NULL;
-    char * pszSrcText = NULL;
-    int nFeatureCount = 0;
-    rt_band band = NULL;
-    int iPixVal = -1;
-    double dValue = 0.0;
-    int iBandHasNodataValue = FALSE;
-    double dBandNoData = 0.0;
+rt_raster_gdal_polygonize(
+	rt_raster raster, int nband,
+	int *pnElements
+) {
+	CPLErr cplerr = CE_None;
+	char *pszQuery;
+	long j;
+	OGRSFDriverH ogr_drv = NULL;
+	GDALDriverH gdal_drv = NULL;
+	GDALDatasetH memdataset = NULL;
+	GDALRasterBandH gdal_band = NULL;
+	OGRDataSourceH memdatasource = NULL;
+	rt_geomval pols = NULL;
+	OGRLayerH hLayer = NULL;
+	OGRFeatureH hFeature = NULL;
+	OGRGeometryH hGeom = NULL;
+	OGRFieldDefnH hFldDfn = NULL;
+	unsigned char *wkb = NULL;
+	int wkbsize = 0;
+	LWGEOM *lwgeom = NULL;
+	int nFeatureCount = 0;
+	rt_band band = NULL;
+	int iPixVal = -1;
+	double dValue = 0.0;
+	int iBandHasNodataValue = FALSE;
+	double dBandNoData = 0.0;
 
-    uint32_t bandNums[1] = {nband};
+	/* for checking that a geometry is valid */
+	GEOSGeom ggeom = NULL;
+	int msgValid = 0;
+	int isValid;
+	LWGEOM *lwgeomValid = NULL;
 
-    /* Checkings */
+	uint32_t bandNums[1] = {nband};
 
+	/* checks */
+	assert(NULL != raster);
+	assert(nband >= 0 && nband < rt_raster_get_num_bands(raster));
 
-    assert(NULL != raster);
-    assert(nband >= 0 && nband < rt_raster_get_num_bands(raster));
+	RASTER_DEBUG(2, "In rt_raster_gdal_polygonize");
 
-    RASTER_DEBUG(2, "In rt_raster_dump_as_polygons");
+	/*******************************
+	 * Get band
+	 *******************************/
+	band = rt_raster_get_band(raster, nband);
+	if (NULL == band) {
+		rterror("rt_raster_gdal_polygonize: Error getting band %d from raster", nband);
+		return NULL;
+	}
 
-    /*******************************
-     * Get band
-     *******************************/
-    band = rt_raster_get_band(raster, nband);
-    if (NULL == band) {
-        rterror("rt_raster_dump_as_wktpolygons: Error getting band %d from raster", nband);
-        return 0;
-    }
+	iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
+	if (iBandHasNodataValue) dBandNoData = rt_band_get_nodata(band);
 
-    iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
-    if (iBandHasNodataValue) dBandNoData = rt_band_get_nodata(band);
+	/*****************************************************
+	 * Convert raster to GDAL MEM dataset
+	 *****************************************************/
+	memdataset = rt_raster_to_gdal_mem(raster, NULL, bandNums, 1, &gdal_drv);
+	if (NULL == memdataset) {
+		rterror("rt_raster_gdal_polygonize: Couldn't convert raster to GDAL MEM dataset");
+		return NULL;
+	}
 
-    /*****************************************************
-     * Convert raster to GDAL MEM dataset
-     *****************************************************/
-    memdataset = rt_raster_to_gdal_mem(raster, NULL, bandNums, 1, &gdal_drv);
-		if (NULL == memdataset) {
-				rterror("rt_raster_dump_as_wktpolygons: Couldn't convert raster to GDAL MEM dataset");
+	/*****************************
+	 * Register ogr mem driver
+	 *****************************/
+	OGRRegisterAll();
 
-				return 0;
-		}
+	RASTER_DEBUG(3, "creating OGR MEM vector");
 
-    /*****************************
-     * Register ogr mem driver
-     *****************************/
-    OGRRegisterAll();
+	/*****************************************************
+	 * Create an OGR in-memory vector for layers
+	 *****************************************************/
+	ogr_drv = OGRGetDriverByName("Memory");
+	memdatasource = OGR_Dr_CreateDataSource(ogr_drv, "", NULL);
+	if (NULL == memdatasource) {
+		rterror("rt_raster_gdal_polygonize: Couldn't create a OGR Datasource to store pols");
+		GDALClose(memdataset);
+		return NULL;
+	}
 
-    RASTER_DEBUG(3, "creating OGR MEM vector");
+	/* Can MEM driver create new layers? */
+	if (!OGR_DS_TestCapability(memdatasource, ODsCCreateLayer)) {
+		rterror("rt_raster_gdal_polygonize: MEM driver can't create new layers, aborting");
 
+		/* xxx jorgearevalo: what should we do now? */
+		GDALClose(memdataset);
+		OGRReleaseDataSource(memdatasource);
 
-    /*****************************************************
-     * Create an OGR in-memory vector for layers
-     *****************************************************/
-    ogr_drv = OGRGetDriverByName("Memory");
-    memdatasource = OGR_Dr_CreateDataSource(ogr_drv, "", NULL);
+		return NULL;
+	}
 
-    if (NULL == memdatasource) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't create a OGR Datasource to store pols");
-        GDALClose(memdataset);
-        return 0;
-    }
+	RASTER_DEBUG(3, "polygonizying GDAL MEM raster band");
 
-    /**
-     * Can MEM driver create new layers?
-     **/
-    if (!OGR_DS_TestCapability(memdatasource, ODsCCreateLayer)) {
-        rterror("rt_raster_dump_as_wktpolygons: MEM driver can't create new layers, aborting");
-        /* xxx jorgearevalo: what should we do now? */
-        GDALClose(memdataset);
-        OGRReleaseDataSource(memdatasource);
-        return 0;
-    }
+	/*****************************
+	 * Polygonize the raster band
+	 *****************************/
 
-    RASTER_DEBUG(3, "polygonizying GDAL MEM raster band");
+	/**
+	 * From GDALPolygonize function header: "Polygon features will be
+	 * created on the output layer, with polygon geometries representing
+	 * the polygons". So,the WKB geometry type should be "wkbPolygon"
+	 **/
+	hLayer = OGR_DS_CreateLayer(memdatasource, "PolygonizedLayer", NULL, wkbPolygon, NULL);
 
-    /*****************************
-     * Polygonize the raster band
-     *****************************/
+	if (NULL == hLayer) {
+		rterror("rt_raster_gdal_polygonize: Couldn't create layer to store polygons");
 
-    /**
-     * From GDALPolygonize function header: "Polygon features will be
-     * created on the output layer, with polygon geometries representing
-     * the polygons". So,the WKB geometry type should be "wkbPolygon"
-     **/
-    hLayer = OGR_DS_CreateLayer(memdatasource, "PolygonizedLayer", NULL,
-            wkbPolygon, NULL);
+		GDALClose(memdataset);
+		OGRReleaseDataSource(memdatasource);
 
-    if (NULL == hLayer) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't create layer to store polygons");
-        GDALClose(memdataset);
-        OGRReleaseDataSource(memdatasource);
-        return 0;
-    }
+		return NULL;
+	}
 
-    /**
-     * Create a new field in the layer, to store the px value
-     */
+	/**
+	 * Create a new field in the layer, to store the px value
+	 */
 
-    /* First, create a field definition to create the field */
-    hFldDfn = OGR_Fld_Create("PixelValue", OFTReal);
+	/* First, create a field definition to create the field */
+	hFldDfn = OGR_Fld_Create("PixelValue", OFTReal);
 
-    /* Second, create the field */
-    if (OGR_L_CreateField(hLayer, hFldDfn, TRUE) !=
-            OGRERR_NONE) {
-        rtwarn("Couldn't create a field in OGR Layer. The polygons generated won't be able to store the pixel value");
-        iPixVal = -1;
-    }
-    else {
-        /* Index to the new field created in the layer */
-        iPixVal = 0;
-    }
+	/* Second, create the field */
+	if (OGR_L_CreateField(hLayer, hFldDfn, TRUE) != OGRERR_NONE) {
+		rtwarn("Couldn't create a field in OGR Layer. The polygons generated won't be able to store the pixel value");
+		iPixVal = -1;
+	}
+	else {
+		/* Index to the new field created in the layer */
+		iPixVal = 0;
+	}
 
+	/* Get GDAL raster band */
+	gdal_band = GDALGetRasterBand(memdataset, 1);
+	if (NULL == gdal_band) {
+		rterror("rt_raster_gdal_polygonize: Couldn't get GDAL band to polygonize");
 
-    /* Get GDAL raster band */
-    gdal_band = GDALGetRasterBand(memdataset, 1);
-    if (NULL == gdal_band) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't get GDAL band to polygonize");
-        GDALClose(memdataset);
+		GDALClose(memdataset);
+		OGR_Fld_Destroy(hFldDfn);
+		OGR_DS_DeleteLayer(memdatasource, 0);
+		OGRReleaseDataSource(memdatasource);
+		
+		return NULL;
+	}
 
-        OGR_Fld_Destroy(hFldDfn);
-        OGR_DS_DeleteLayer(memdatasource, 0);
-        OGRReleaseDataSource(memdatasource);
-
-        return 0;
-    }
-
-    /**
-     * We don't need a raster mask band. Each band has a nodata value.
-     **/
+	/**
+	 * We don't need a raster mask band. Each band has a nodata value.
+	 **/
 #ifdef GDALFPOLYGONIZE
-    GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
+	cplerr = GDALFPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
 #else
-    GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
+	cplerr = GDALPolygonize(gdal_band, NULL, hLayer, iPixVal, NULL, NULL, NULL);
 #endif
 
-    /**
-     * Optimization: Apply a OGR SQL filter to the layer to select the
-     * features different from NODATA value.
-     *
-     * Thanks to David Zwarg.
-     **/
-    if (iBandHasNodataValue) {
-        pszQuery = (char *) rtalloc(50 * sizeof (char));
-        sprintf(pszQuery, "PixelValue != %f", dBandNoData );
-        OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
-        if (e != OGRERR_NONE) {
-                rtwarn("Error filtering NODATA values for band. All values"
-                        " will be treated as data values");
-        }
-    }
+	if (cplerr != CE_None) {
+		rterror("rt_raster_gdal_polygonize: Could not polygonize GDAL band");
 
-    else {
-        pszQuery = NULL;
-    }
+		GDALClose(memdataset);
+		OGR_Fld_Destroy(hFldDfn);
+		OGR_DS_DeleteLayer(memdatasource, 0);
+		OGRReleaseDataSource(memdatasource);
 
+		return NULL;
+	}
 
+	/**
+	 * Optimization: Apply a OGR SQL filter to the layer to select the
+	 * features different from NODATA value.
+	 *
+	 * Thanks to David Zwarg.
+	 **/
+	if (iBandHasNodataValue) {
+		pszQuery = (char *) rtalloc(50 * sizeof (char));
+		sprintf(pszQuery, "PixelValue != %f", dBandNoData );
+		OGRErr e = OGR_L_SetAttributeFilter(hLayer, pszQuery);
+		if (e != OGRERR_NONE) {
+			rtwarn("Error filtering NODATA values for band. All values will be treated as data values");
+		}
+	}
+	else {
+		pszQuery = NULL;
+	}
 
-    /*********************************************************************
-     * Transform OGR layers in WKT polygons
-     * XXX jorgearevalo: GDALPolygonize does not set the coordinate system
-     * on the output layer. Application code should do this when the layer
-     * is created, presumably matching the raster coordinate system.
-     * TODO: modify GDALPolygonize to directly emit polygons in WKT format?
-     *********************************************************************/
-    nFeatureCount = OGR_L_GetFeatureCount(hLayer, TRUE);
+	/*********************************************************************
+	 * Transform OGR layers to WKB polygons
+	 * XXX jorgearevalo: GDALPolygonize does not set the coordinate system
+	 * on the output layer. Application code should do this when the layer
+	 * is created, presumably matching the raster coordinate system.
+	 *********************************************************************/
+	nFeatureCount = OGR_L_GetFeatureCount(hLayer, TRUE);
 
-    /* Allocate memory for pols */
-    pols = (rt_geomval) rtalloc(nFeatureCount * sizeof (struct rt_geomval_t));
+	/* Allocate memory for pols */
+	pols = (rt_geomval) rtalloc(nFeatureCount * sizeof(struct rt_geomval_t));
 
-    if (NULL == pols) {
-        rterror("rt_raster_dump_as_wktpolygons: Couldn't allocate memory for "
-                "geomval structure");
-        GDALClose(memdataset);
+	if (NULL == pols) {
+		rterror("rt_raster_gdal_polygonize: Could not allocate memory for geomval set");
 
-        OGR_Fld_Destroy(hFldDfn);
-        OGR_DS_DeleteLayer(memdatasource, 0);
-				if (NULL != pszQuery) rtdealloc(pszQuery);
-        OGRReleaseDataSource(memdatasource);
+		GDALClose(memdataset);
+		OGR_Fld_Destroy(hFldDfn);
+		OGR_DS_DeleteLayer(memdatasource, 0);
+		if (NULL != pszQuery)
+			rtdealloc(pszQuery);
+		OGRReleaseDataSource(memdatasource);
 
-        return 0;
-    }
+		return NULL;
+	}
 
-    RASTER_DEBUGF(3, "storing polygons (%d)", nFeatureCount);
+	/* initialize GEOS */
+	initGEOS(lwnotice, lwgeom_geos_error);
 
-    if (pnElements)
-        *pnElements = 0;
+	RASTER_DEBUGF(3, "storing polygons (%d)", nFeatureCount);
 
-    /* Reset feature reading to start in the first feature */
-    OGR_L_ResetReading(hLayer);
+	if (pnElements)
+		*pnElements = 0;
 
-    for (j = 0; j < nFeatureCount; j++) {
+	/* Reset feature reading to start in the first feature */
+	OGR_L_ResetReading(hLayer);
 
-        hFeature = OGR_L_GetNextFeature(hLayer);
-        dValue = OGR_F_GetFieldAsDouble(hFeature, iPixVal);
+	for (j = 0; j < nFeatureCount; j++) {
+		hFeature = OGR_L_GetNextFeature(hLayer);
+		dValue = OGR_F_GetFieldAsDouble(hFeature, iPixVal);
 
-        hGeom = OGR_F_GetGeometryRef(hFeature);
-     	OGR_G_ExportToWkt(hGeom, &pszSrcText);
+		hGeom = OGR_F_GetGeometryRef(hFeature);
+		wkbsize = OGR_G_WkbSize(hGeom);
 
-      	pols[j].val = dValue;
-       	pols[j].srid = rt_raster_get_srid(raster);
-     	pols[j].geom = (char *) rtalloc((1 + strlen(pszSrcText))
-                    * sizeof (char));
-     	strcpy(pols[j].geom, pszSrcText);
+		/* allocate wkb buffer */
+		wkb = rtalloc(sizeof(unsigned char) * wkbsize);
+		if (wkb == NULL) {
+			rterror("rt_raster_gdal_polygonize: Could not allocate memory for WKB buffer");
 
-     	RASTER_DEBUGF(4, "Feature %d, Polygon: %s", j, pols[j].geom);
-     	RASTER_DEBUGF(4, "Feature %d, value: %f", j, pols[j].val);
-     	RASTER_DEBUGF(4, "Feature %d, srid: %d", j, pols[j].srid);
+			OGR_F_Destroy(hFeature);
+			GDALClose(memdataset);
+			OGR_Fld_Destroy(hFldDfn);
+			OGR_DS_DeleteLayer(memdatasource, 0);
+			if (NULL != pszQuery)
+				rtdealloc(pszQuery);
+			OGRReleaseDataSource(memdatasource);
 
-		/**
-         * We can't use deallocator from rt_context, because it comes from
-         * postgresql backend, that uses pfree. This function needs a
-         * postgresql memory context to work with, and the memory created
-         * for pszSrcText is created outside this context.
-         **/
-        /*rtdealloc(pszSrcText);*/
-        free(pszSrcText);
-        pszSrcText = NULL;
+			return NULL;
+		}
 
-        OGR_F_Destroy(hFeature);
-    }
+		/* export WKB with LSB byte order */
+		OGR_G_ExportToWkb(hGeom, wkbNDR, wkb);
 
-    if (pnElements)
-        *pnElements = nFeatureCount;
+		/* convert WKB to LWGEOM */
+		lwgeom = lwgeom_from_wkb(wkb, wkbsize, LW_PARSER_CHECK_NONE);
 
-    RASTER_DEBUG(3, "destroying GDAL MEM raster");
+		/* cleanup unnecessary stuff */
+		rtdealloc(wkb);
+		wkb = NULL;
+		wkbsize = 0;
 
-    GDALClose(memdataset);
+		OGR_F_Destroy(hFeature);
 
-    RASTER_DEBUG(3, "destroying OGR MEM vector");
+		/* specify SRID */
+		lwgeom_set_srid(lwgeom, rt_raster_get_srid(raster));
 
-    OGR_Fld_Destroy(hFldDfn);
-    OGR_DS_DeleteLayer(memdatasource, 0);
-		if (NULL != pszQuery) rtdealloc(pszQuery);
-    OGRReleaseDataSource(memdatasource);
+		/*
+			is geometry valid?
+			if not, try to make valid
+		*/
+		do {
+#if POSTGIS_GEOS_VERSION < 33
+			if (!msgValid) {
+				rtwarn("Skipping check for invalid geometry.  GEOS-3.3.0 or up is required to fix an invalid geometry");
+				msgValid = 1;
+			}
+			break;
+#endif
 
-    return pols;
+			ggeom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom);
+			if (ggeom == NULL) {
+				rtwarn("Cannot test geometry for validity");
+				break;
+			}
+
+			isValid = GEOSisValid(ggeom);
+
+			GEOSGeom_destroy(ggeom);
+			ggeom = NULL;
+
+			/* geometry is valid */
+			if (isValid)
+				break;
+
+			/* make geometry valid */
+			lwgeomValid = lwgeom_make_valid(lwgeom);
+			if (lwgeomValid == NULL) {
+				rtwarn("Cannot fix invalid geometry");
+				break;
+			}
+
+			lwgeom_free(lwgeom);
+			lwgeom = lwgeomValid;
+		}
+		while (0);
+
+		/* save lwgeom */
+		pols[j].geom = lwgeom_as_lwpoly(lwgeom);
+
+		/* set pixel value */
+		pols[j].val = dValue;
+	}
+
+	if (pnElements)
+		*pnElements = nFeatureCount;
+
+	RASTER_DEBUG(3, "destroying GDAL MEM raster");
+	GDALClose(memdataset);
+
+	RASTER_DEBUG(3, "destroying OGR MEM vector");
+	OGR_Fld_Destroy(hFldDfn);
+	OGR_DS_DeleteLayer(memdatasource, 0);
+	if (NULL != pszQuery) rtdealloc(pszQuery);
+	OGRReleaseDataSource(memdatasource);
+
+	return pols;
 }
 
 LWPOLY*
@@ -9886,7 +9954,7 @@ rt_raster_intersects(
 				rtn = 0;
 				break;
 			}
-			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS((LWGEOM *) hull[i]);
+			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(hull[i]));
 			if (NULL == ghull[i]) {
 				for (j = 0; j < i; j++) {
 					GEOSGeom_destroy(ghull[j]);
