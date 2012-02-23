@@ -618,9 +618,7 @@ static POINTARRAY* parse_gml_coordinates(xmlNodePtr xnode, bool *hasz)
 
 	xmlFree(gml_coord);
 
-	/* TODO: this makes no sense, we shouldn't have to clone. but we're seeing 
-	   memory problems when we don't. */
-	return ptarray_clone_deep(dpa);
+	return dpa; /* ptarray_clone_deep(dpa); */
 }
 
 
