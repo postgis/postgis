@@ -1007,6 +1007,86 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 				  <funcprototype>
 					<funcdef>raster <function>ST_AsRaster</function></funcdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+				  				 
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
@@ -1014,6 +1094,36 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+				  
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+					<paramdef><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_AsRaster</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
 					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
@@ -1034,129 +1144,33 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_AsRaster</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_AsRaster</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
-					<paramdef><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_AsRaster</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_AsRaster</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_AsRaster</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_AsRaster</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_AsRaster</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_AsRaster</function></funcdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-					<paramdef><type>text[] </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
-				  </funcprototype>
-				  				 
 				</funcsynopsis>
+
 			</refsynopsisdiv>
 		
             <refsection>
                 <title>Description</title>
                 
-                <para>Converts a postgis geometry to a postgis raster.  This is particularly useful for rendering jpegs and pngs of geometries directly from the database when using in combination
+                <para>Converts a postgis geometry to a postgis raster.</para>
+                
+                 <para>The many variants offers three groups of possibilities for producing a raster from a geometry aligned as you like. Each group allows producing a one band raster or a multiple bands raster. To produce a multiple bands raster, you must provide an array of pixel types (<varname>pixeltype[]</varname>), an array of initial values (<varname>value</varname>) and an array of nodata values (<varname>nodataval</varname>). If not provided pixeltyped defaults to 8BUI, values to 1 and nodataval to 0.</para>
+                 
+                 <para>The first group, composed of the two first variants, produce a raster having the same alignment (<varname>scalex</varname>, <varname>scaley</varname>, <varname>gridx</varname> and <varname>gridy</varname>), pixel type and nodata value as the provided reference raster. You can pass this raster by joining it from another table or by creating it with ST_CreateEmptyRaster and ST_AddBand.</para>
+                 
+                 <para>The second group, composed of four variants, let you fix the dimensions of the raster by providing the parameters of a pixel size (<varname>scalex</varname> &amp; <varname>scaley</varname> and <varname>skewx</varname> &amp; <varname>skewy</varname>). The <varname>width</varname> &amp; <varname>height</varname> of the resulting raster will be adjusted to fit the extent of the geometry.</para>
+                 
+                 <para>The third group, composed of four variants, let you fix the dimensions of the raster by providing the dimensions of the raster (<varname>width</varname> &amp; <varname>height</varname>). The parameters of the pixel size (<varname>scalex</varname> &amp; <varname>scaley</varname> and <varname>skewx</varname> &amp; <varname>skewy</varname>) of the resulting raster will be adjusted to fit the extent of the geometry.</para>
+                 
+                 <para>The two first variants of each of those two last groups let you specify the alignment with an arbitrary corner of the alignment grid (<varname>gridx</varname> &amp; <varname>gridy</varname>) and the two last variants takes the upper left corner (<varname>upperleftx</varname> &amp; <varname>upperlefty</varname>).</para>
+                
+                 <para>The output raster will be in the same coordinate system as the source geometry. The only exception is for variants with a reference raster. In this case the resulting raster will get the same SRID as the reference raster.</para>
+                 
+                 <para>The optional <varname>touched</varname> parameter defaults to false and maps to the GDAL ALL_TOUCHED rasterization option, which determines if pixels touched by lines or polygons will be updated.  Not just those on the line render path, or whose center point is within the polygon.</para>
+                 
+                 <para>This is particularly useful for rendering jpegs and pngs of geometries directly from the database when using in combination
                     with <xref linkend="RT_ST_AsPNG" /> and other <xref linkend="RT_ST_AsGDALRaster" /> family of functions.</para>
-                 <para>The X and Y scale, the width and height of the new raster or a reference raster must be provided.</para>
-                 <para>The output raster will be in the same coordinate system as the source geometry. The only exception is for ST_AsRaster variations with a raster input parameter. </para>
-                 <para>The optional <varname>touched</varname> parameter defaults to false and maps to the GDAL ALL_TOUCHED rasterization option, which determines if pixels touched by lines or
-                 polygons will be updated.  Not just those on the line render path, or whose center point is within the polygon.</para>
                  <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
+                 
                  <note><para>Not yet capable of rendering complex geometry types such as curves, TINS, and PolyhedralSurfaces, but should be
                  able too once GDAL can.</para></note>
             </refsection>
