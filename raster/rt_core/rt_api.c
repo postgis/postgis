@@ -5221,9 +5221,12 @@ rt_raster_gdal_polygonize(
 
 	/* for checking that a geometry is valid */
 	GEOSGeom ggeom = NULL;
-	int msgValid = 0;
 	int isValid;
 	LWGEOM *lwgeomValid = NULL;
+
+#if POSTGIS_GEOS_VERSION < 33
+	int msgValid = 0;
+#endif
 
 	uint32_t bandNums[1] = {nband};
 
@@ -8302,6 +8305,84 @@ rt_raster rt_raster_gdal_warp(
 	_gt[3] = extent.MaxY;
 	_gt[4] = _skew[1];
 	_gt[5] = -1 * _scale[1];
+
+	/* scale-x is negative or scale-y is positive */
+	if ((
+		(NULL != scale_x) && (*scale_x < 0.)
+	) || (
+		(NULL != scale_y) && (*scale_y > 0)
+	)) {
+		double _w[2] = {0};
+
+		rast = rt_raster_new(1, 1);
+		if (rast == NULL) {
+			rterror("rt_raster_gdal_warp: Out of memory allocating temporary raster");
+
+			GDALClose(src_ds);
+
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+			rtdealloc(transform_opts);
+
+			return NULL;
+		}
+		rt_raster_set_geotransform_matrix(rast, _gt);
+
+		/* negative scale-x */
+		if (
+			(NULL != scale_x) &&
+			(*scale_x < 0.)
+		) {
+			if (!rt_raster_cell_to_geopoint(
+				rast,
+				_dim[0], 0,
+				&(_w[0]), &(_w[1]),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
+
+				rt_raster_destroy(rast);
+
+				GDALClose(src_ds);
+
+				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+				rtdealloc(transform_opts);
+
+				return NULL;
+			}
+
+			_gt[0] = _w[0];
+			_gt[1] = *scale_x;
+		}
+		/* positive scale-y */
+		if (
+			(NULL != scale_y) &&
+			(*scale_y > 0)
+		) {
+			if (!rt_raster_cell_to_geopoint(
+				rast,
+				0, _dim[1],
+				&(_w[0]), &(_w[1]),
+				NULL
+			)) {
+				rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
+
+				rt_raster_destroy(rast);
+
+				GDALClose(src_ds);
+
+				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+				rtdealloc(transform_opts);
+
+				return NULL;
+			}
+
+			_gt[3] = _w[1];
+			_gt[5] = *scale_y;
+		}
+
+		rt_raster_destroy(rast);
+		rast = NULL;
+	}
 
 	RASTER_DEBUGF(3, "Applied geotransform: %f, %f, %f, %f, %f, %f",
 		_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]);
