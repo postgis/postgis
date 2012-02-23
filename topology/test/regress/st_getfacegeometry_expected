@@ -6,4 +6,5 @@ ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - invalid topology name
+ERROR:  SQL/MM Spatial exception - non-existent face.
 Topology 'tt' dropped

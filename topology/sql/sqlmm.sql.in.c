@@ -1408,6 +1408,7 @@ CREATE OR REPLACE FUNCTION topology.ST_GetFaceGeometry(toponame varchar, aface i
 $$
 DECLARE
   rec RECORD;
+  sql TEXT;
 BEGIN
 
   --
@@ -1426,30 +1427,38 @@ BEGIN
       'SQL/MM Spatial exception - universal face has no geometry';
   END IF;
 
-  --
-  -- Construct face 
-  -- 
   BEGIN
-    FOR rec IN EXECUTE 'SELECT ST_BuildArea(ST_Collect(geom)) FROM '
+
+    -- No such face
+    sql := 'SELECT NOT EXISTS (SELECT * from ' || quote_ident(toponame)
+      || '.face WHERE face_id = ' || aface
+      || ') as none';
+    EXECUTE sql INTO rec;
+    IF rec.none THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent face.';
+    END IF;
+
+    --
+    -- Construct face 
+    -- 
+    sql :=
+      'SELECT ST_BuildArea(ST_Collect(geom)) as geom FROM '
       || quote_ident(toponame)
-      || '.edge_data WHERE left_face = ' || aface || 
-      ' OR right_face = ' || aface 
+      || '.edge_data WHERE left_face = ' || aface
+      || ' OR right_face = ' || aface;
+    FOR rec IN EXECUTE sql
     LOOP
-      RETURN rec.st_buildarea;
+      RETURN rec.geom;
     END LOOP;
+
   EXCEPTION
     WHEN INVALID_SCHEMA_NAME THEN
       RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
     WHEN UNDEFINED_TABLE THEN
-      RAISE EXCEPTION 'corrupted topology "%" (missing edge_data table)',
-        toponame;
+      RAISE EXCEPTION 'corrupted topology "%"', toponame;
   END;
 
-
-  --
-  -- No face found
-  -- 
-  RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent face.';
+  RETURN NULL;
 END
 $$
 LANGUAGE 'plpgsql' STABLE;

@@ -41,4 +41,7 @@ SELECT topology.st_getfacegeometry('tt', null);
 SELECT topology.st_getfacegeometry('NonExistent', 1);
 SELECT topology.st_getfacegeometry('', 1);
 
+-- Non-existent face
+SELECT topology.st_getfacegeometry('tt', 666);
+
 SELECT topology.DropTopology('tt');
