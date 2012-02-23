@@ -44,7 +44,7 @@ STAGED_SCRIPTS_DIR="${STAGED_INSTALL_DIR}/share/contrib/postgis"
 PSQL="psql"
 
 if [ -z "$TMPDIR" ]; then
-	TMPDIR=/tmp/pgis_reg_$$
+	TMPDIR=/tmp/pgis_reg
 fi
 
 mkdir -p ${TMPDIR}/tmp
