@@ -199,9 +199,8 @@ run_simple_test ()
 	TMPFILE="${BETMPDIR}/test_${RUN}_tmp"
 	DIFFILE="${TMPDIR}/test_${RUN}_diff"
 
-	if [ ! -d "${BETMPDIR}" ]; then
-		mkdir ${BETMPDIR}
-	fi
+	mkdir -p "${BETMPDIR}"
+	chmod 777 "${BETMPDIR}"
 
 	# Use intermediate file to prevent MingW buffering problems
 	${PSQL} -v "VERBOSITY=terse" -v "tmpfile='${TMPFILE}'" -tXA < "${_sql}" ${DB} 2>&1 \
@@ -225,9 +224,7 @@ run_simple_test ()
 		| sed 's/^ROLLBACK/COMMIT/' \
 		> "${OUTFILE}"
 
-	if [ -d "${BETMPDIR}" ]; then
-		rm -rf "${BETMPDIR}" # should we keep these ?
-	fi
+	rm -rf "${BETMPDIR}" # should we keep these ?
 
 	if test x"$OPT_EXPECT" = "xyes"; then
 		echo_inline " expected"
