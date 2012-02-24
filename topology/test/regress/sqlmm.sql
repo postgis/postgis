@@ -4,7 +4,7 @@ set client_min_messages to WARNING;
 -- ST_InitTopoGeo
 -- 
 
-SELECT topology.ST_InitTopoGeo('sqlmm_topology');
+SELECT regexp_replace(ST_InitTopoGeo('sqlmm_topology'), 'id:[0-9]*', 'id:x');
 
 -------------------------------------------------------------
 -- ST_AddIsoNode (1)
