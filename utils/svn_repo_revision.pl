@@ -60,7 +60,7 @@ sub read_rev_git {
   }
   chop($git_exe);
 
-  my $cmd = "${git_exe} log --grep=git-svn -1 | grep git-svn | cut -d@ -f2 | cut -d' ' -f1";
+  my $cmd = "\"${git_exe}\" log --grep=git-svn -1 | grep git-svn | cut -d@ -f2 | cut -d' ' -f1";
   #print STDERR "cmd: ${cmd}\n";
   my $rev  = `$cmd`;
 
@@ -92,9 +92,9 @@ sub read_rev_svn {
 
   my $svn_info;
   if ( $target eq "local" ) {
-    $svn_info  = `${svn_exe} info`;
+    $svn_info  = `"${svn_exe}" info`;
   } else {
-    $svn_info  = `${svn_exe} info $target`;
+    $svn_info  = `"${svn_exe}" info $target`;
   }
 
   my $rev;
