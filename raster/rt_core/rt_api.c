@@ -8915,16 +8915,45 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 #if POSTGIS_GDAL_VERSION > 18
 		RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale");
-		src_env.MinX -= (_scale[0] / 2.);
-		src_env.MaxX += (_scale[0] / 2.);
-		src_env.MinY -= (_scale[1] / 2.);
-		src_env.MaxY += (_scale[1] / 2.);
+
+		if (
+			FLT_EQ((src_env.MaxX - src_env.MinX), 0) ||
+			(wkbtype == wkbMultiPoint) ||
+			(wkbtype == wkbMultiLineString)
+		) {
+			src_env.MinX -= (_scale[0] / 2.);
+			src_env.MaxX += (_scale[0] / 2.);
+		}
+
+		if (
+			FLT_EQ((src_env.MaxY - src_env.MinY), 0) ||
+			(wkbtype == wkbMultiPoint) ||
+			(wkbtype == wkbMultiLineString)
+		) {
+			src_env.MinY -= (_scale[1] / 2.);
+			src_env.MaxY += (_scale[1] / 2.);
+		}
+
 #else
 		RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale");
-		src_env.MinX -= _scale[0];
-		src_env.MaxX += _scale[0];
-		src_env.MinY -= _scale[1];
-		src_env.MaxY += _scale[1];
+
+		if (
+			FLT_EQ((src_env.MaxX - src_env.MinX), 0) ||
+			(wkbtype == wkbMultiPoint) ||
+			(wkbtype == wkbMultiLineString)
+		) {
+			src_env.MinX -= _scale[0];
+			src_env.MaxX += _scale[0];
+		}
+
+		if (
+			FLT_EQ((src_env.MaxY - src_env.MinY), 0) ||
+			(wkbtype == wkbMultiPoint) ||
+			(wkbtype == wkbMultiLineString)
+		) {
+			src_env.MinY -= _scale[1];
+			src_env.MaxY += _scale[1];
+		}
 #endif
 
 	}

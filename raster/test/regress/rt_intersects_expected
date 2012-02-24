@@ -188,7 +188,7 @@ NOTICE:  table "raster_intersects_geom" does not exist, skipping
 2.5|0|25|ST_LineString|f
 2.5|0|26|ST_LineString|t
 2.5|0|27|ST_LineString|t
-2.5|0|28|ST_LineString|t
+2.5|0|28|ST_LineString|f
 2.5|0|29|ST_LineString|f
 2.5|0|31|ST_Polygon|t
 2.5|0|32|ST_Polygon|t
@@ -217,10 +217,10 @@ NOTICE:  table "raster_intersects_geom" does not exist, skipping
 2.6|2|15|ST_MultiPoint|t
 2.6|2|21|ST_LineString|t
 2.6|2|22|ST_LineString|t
-2.6|2|23|ST_LineString|t
-2.6|2|24|ST_LineString|t
+2.6|2|23|ST_LineString|f
+2.6|2|24|ST_LineString|f
 2.6|2|25|ST_LineString|t
-2.6|2|26|ST_LineString|t
+2.6|2|26|ST_LineString|f
 2.6|2|27|ST_LineString|t
 2.6|2|28|ST_LineString|t
 2.6|2|29|ST_LineString|t
