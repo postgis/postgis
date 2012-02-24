@@ -24,7 +24,7 @@
 static void
 usage()
 {
-	printf(_("RELEASE: %s (%s)\n"), POSTGIS_VERSION, P2S_RCSID );
+	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
 	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
 	         "       pgsql2shp [<options>] <database> <query>\n"
 	         "\n"

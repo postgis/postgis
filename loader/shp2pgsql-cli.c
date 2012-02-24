@@ -21,7 +21,7 @@
 static void
 usage()
 {
-	printf(_( "RELEASE: %s (r%s)\n" ), POSTGIS_VERSION, S2P_RCSID);
+	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
 	printf(_( "USAGE: shp2pgsql [<options>] <shapefile> [[<schema>.]<table>]\n"
 	          "OPTIONS:\n" ));
 	printf(_( "  -s [<from>:]<srid> Set the SRID field. Defaults to %d.\n"

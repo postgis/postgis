@@ -2538,6 +2538,8 @@ pgui_create_about_dialog(void)
 		"Mark Leslie <mark.leslie@lisasoft.com>",
 		NULL
 	};
+	
+	
 
 	dialog_about = gtk_about_dialog_new();
 	gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(dialog_about), _("PostGIS Shapefile Import/Export Manager"));
@@ -2837,7 +2839,7 @@ pgui_create_tablechooser_dialog()
 	chooser_table_renderer = gtk_cell_renderer_text_new();
 	g_object_set(chooser_table_renderer, "editable", FALSE, NULL);
 	g_signal_connect(G_OBJECT(chooser_table_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), NULL);
-	chooser_table_column = gtk_tree_view_column_new_with_attributes("Table",
+	chooser_table_column = gtk_tree_view_column_new_with_attributes(_("Table"),
 	               chooser_table_renderer,
 	               "text",
 	               TABLECHOOSER_TABLE_COLUMN,
@@ -2948,7 +2950,7 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	g_object_set(import_table_renderer, "editable", TRUE, NULL);
 	column_indexes[IMPORT_TABLE_COLUMN] = IMPORT_TABLE_COLUMN;
 	g_signal_connect(G_OBJECT(import_table_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[IMPORT_TABLE_COLUMN]);
-	import_table_column = gtk_tree_view_column_new_with_attributes("Table",
+	import_table_column = gtk_tree_view_column_new_with_attributes(_("Table"),
 	               import_table_renderer,
 	               "text",
 	               IMPORT_TABLE_COLUMN,
@@ -3124,7 +3126,7 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 	g_object_set(export_table_renderer, "editable", FALSE, NULL);
 	column_indexes[EXPORT_TABLE_COLUMN] = EXPORT_TABLE_COLUMN;
 	g_signal_connect(G_OBJECT(export_table_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[EXPORT_TABLE_COLUMN]);
-	export_table_column = gtk_tree_view_column_new_with_attributes("Table",
+	export_table_column = gtk_tree_view_column_new_with_attributes(_("Table"),
 	               export_table_renderer,
 	               "text",
 	               EXPORT_TABLE_COLUMN,
@@ -3142,7 +3144,7 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 		     "has-entry", FALSE,
 	             "text-column", TABLECHOOSER_GEOCOL_COMBO_TEXT, 
 		     NULL);
-	export_geom_column = gtk_tree_view_column_new_with_attributes("Geo Column",
+	export_geom_column = gtk_tree_view_column_new_with_attributes(_("Geo Column"),
 	               export_geom_column_renderer,
 		       "model",
 		       EXPORT_GEOMETRY_LISTSTORE_COLUMN,
@@ -3158,7 +3160,7 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 	g_object_set(export_filename_renderer, "editable", TRUE, NULL);
 	column_indexes[EXPORT_FILENAME_COLUMN] = EXPORT_FILENAME_COLUMN;
 	g_signal_connect(G_OBJECT(export_filename_renderer), "edited", G_CALLBACK(pgui_action_handle_dumper_edit), &column_indexes[EXPORT_FILENAME_COLUMN]);
-	export_filename_column = gtk_tree_view_column_new_with_attributes("Filename",
+	export_filename_column = gtk_tree_view_column_new_with_attributes(_("Filename"),
 	               export_filename_renderer,
 	               "text",
 	               EXPORT_FILENAME_COLUMN,
