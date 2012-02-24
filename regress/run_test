@@ -199,6 +199,10 @@ run_simple_test ()
 	TMPFILE="${BETMPDIR}/test_${RUN}_tmp"
 	DIFFILE="${TMPDIR}/test_${RUN}_diff"
 
+	if [ ! -d "${BETMPDIR}" ]; then
+		mkdir ${BETMPDIR}
+	fi
+
 	# Use intermediate file to prevent MingW buffering problems
 	${PSQL} -v "VERBOSITY=terse" -v "tmpfile='${TMPFILE}'" -tXA < "${_sql}" ${DB} 2>&1 \
 		| grep --binary-files=text -v "^$" \
@@ -220,7 +224,10 @@ run_simple_test ()
 		| sed 's/Self-intersection .*/Self-intersection/' \
 		| sed 's/^ROLLBACK/COMMIT/' \
 		> "${OUTFILE}"
-	rm -rf "${BETMPDIR}" # should we keep these ?
+
+	if [ -d "${BETMPDIR}" ]; then
+		rm -rf "${BETMPDIR}" # should we keep these ?
+	fi
 
 	if test x"$OPT_EXPECT" = "xyes"; then
 		echo_inline " expected"
