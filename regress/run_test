@@ -195,7 +195,7 @@ run_simple_test ()
 	show_progress
 
 	OUTFILE="${TMPDIR}/test_${RUN}_out"
-	BETMPDIR="${TMPDIR}/tmp/"
+	BETMPDIR="${TMPDIR}/pgis_reg_tmp/"
 	TMPFILE="${BETMPDIR}/test_${RUN}_tmp"
 	DIFFILE="${TMPDIR}/test_${RUN}_diff"
 
@@ -220,8 +220,7 @@ run_simple_test ()
 		| sed 's/Self-intersection .*/Self-intersection/' \
 		| sed 's/^ROLLBACK/COMMIT/' \
 		> "${OUTFILE}"
-	rm -f "${BETMPDIR}/"* # should we keep these ?
-	rmdir "${BETMPDIR}" # should we keep this ?
+	rm -rf "${BETMPDIR}" # should we keep these ?
 
 	if test x"$OPT_EXPECT" = "xyes"; then
 		echo_inline " expected"
