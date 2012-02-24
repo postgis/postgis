@@ -1492,7 +1492,7 @@ BEGIN
   -- Check for faces w/out edges
   FOR rec IN EXECUTE 'SELECT face_id as id1 FROM '
     || quote_ident(toponame) || '.face '
-    || 'EXCEPT ( SELECT left_face FROM '
+    || 'WHERE face_id > 0 EXCEPT ( SELECT left_face FROM '
     || quote_ident(toponame) || '.edge '
     || ' UNION SELECT right_face FROM '
     || quote_ident(toponame) || '.edge '
