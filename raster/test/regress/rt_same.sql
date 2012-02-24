@@ -17,7 +17,7 @@ SELECT 'raster_same(X, query(1,1))' as op,
         max(a.x) as xmax,
         min(a.y) as ymin,
         max(a.y) as ymax,
-        st_extent(a.tile)
+        st_extent(a.tile::geometry)
 FROM rt_gist_grid_test a, rt_gist_query_test b
 WHERE b.x = 1 and b.y = 1
     AND raster_same(a.tile, b.tile);
@@ -28,7 +28,7 @@ SELECT 'raster_same(X, query(7,7))' as op,
         max(a.x) as xmax,
         min(a.y) as ymin,
         max(a.y) as ymax,
-        st_extent(a.tile)
+        st_extent(a.tile::geometry)
 FROM rt_gist_grid_test a, rt_gist_grid_test b
 WHERE b.x = 7 and b.y = 7
     AND raster_same(a.tile, b.tile);
@@ -43,7 +43,7 @@ SELECT 'X ~= query(1,1)' as op,
         max(a.x) as xmax,
         min(a.y) as ymin,
         max(a.y) as ymax,
-        st_extent(a.tile)
+        st_extent(a.tile::geometry)
 FROM rt_gist_grid_test a, rt_gist_query_test b
 WHERE b.x = 1 and b.y = 1
     AND a.tile ~= b.tile;
@@ -54,7 +54,7 @@ SELECT 'X ~= tile(7,7)' as op,
         max(a.x) as xmax,
         min(a.y) as ymin,
         max(a.y) as ymax,
-        st_extent(a.tile)
+        st_extent(a.tile::geometry)
 FROM rt_gist_grid_test a, rt_gist_grid_test b
 WHERE b.x = 7 and b.y = 7
     AND a.tile ~= b.tile;

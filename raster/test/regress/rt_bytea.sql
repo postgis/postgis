@@ -139,8 +139,6 @@ SELECT
 FROM rt_bytea_test
 WHERE
     encode(bytea(rast), 'hex') != encode(rast::bytea, 'hex')
-    OR
-    encode(bytea(rast), 'hex') != encode(rast, 'hex')
     ;
 
 -----------------------------------------------------------------------
@@ -153,8 +151,6 @@ SELECT
 FROM rt_bytea_test
 WHERE
     encode(bytea(rast), 'base64') != encode(rast::bytea, 'base64')
-    OR
-    encode(bytea(rast), 'base64') != encode(rast, 'base64')
     ;
 
 -----------------------------------------------------------------------
@@ -167,8 +163,6 @@ SELECT
 FROM rt_bytea_test
 WHERE
     encode(st_asbinary(rast), 'base64') != encode(rast::bytea, 'base64')
-    OR
-    encode(st_asbinary(rast), 'base64') != encode(rast, 'base64')
     ;
 
 -- Cleanup

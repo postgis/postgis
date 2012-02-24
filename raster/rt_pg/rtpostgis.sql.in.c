@@ -2781,13 +2781,13 @@ CREATE OR REPLACE FUNCTION bytea(raster)
 ------------------------------------------------------------------------------
 
 CREATE CAST (raster AS box3d)
-    WITH FUNCTION box3d(raster) AS IMPLICIT;
+    WITH FUNCTION box3d(raster) AS ASSIGNMENT;
 
 CREATE CAST (raster AS geometry)
-    WITH FUNCTION st_convexhull(raster) AS IMPLICIT;
+    WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
 
 CREATE CAST (raster AS bytea)
-    WITH FUNCTION bytea(raster) AS IMPLICIT;
+    WITH FUNCTION bytea(raster) AS ASSIGNMENT;
 
 ------------------------------------------------------------------------------
 --  GiST index OPERATOR support functions
@@ -2995,13 +2995,13 @@ CREATE OR REPLACE FUNCTION _st_intersects(rast raster, geom geometry, nband inte
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, geom geometry, nband integer DEFAULT NULL)
 	RETURNS boolean
-	AS $$ SELECT $1 && $2 AND _st_intersects($1, $2, $3) $$
+	AS $$ SELECT $1::geometry && $2 AND _st_intersects($1, $2, $3) $$
 	LANGUAGE 'SQL' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, nband integer, geom geometry)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND _st_intersects($1, $3, $2) $$
+	AS $$ SELECT $1::geometry && $3 AND _st_intersects($1, $3, $2) $$
 	LANGUAGE 'SQL' IMMUTABLE
 	COST 1000;
 
@@ -3143,7 +3143,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 -- This function can not be STRICT
 CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integer DEFAULT NULL)
 	RETURNS boolean AS
-	$$ SELECT $1 && $2 AND _st_intersects($1, $2, $3); $$
+	$$ SELECT $1 && $2::geometry AND _st_intersects($1, $2, $3); $$
 	LANGUAGE 'SQL' IMMUTABLE
 	COST 1000;
 

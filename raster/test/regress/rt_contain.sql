@@ -17,7 +17,7 @@ SELECT 'raster_contain(query(1,1), X)' as op,
         max(a.x) as xmax,
         min(a.y) as ymin,
         max(a.y) as ymax,
-        st_extent(a.tile)
+        st_extent(a.tile::geometry)
 FROM rt_gist_grid_test a, rt_gist_query_test b
 WHERE b.x = 1 and b.y = 1
     AND raster_contain(b.tile, a.tile);
@@ -32,7 +32,7 @@ SELECT 'query(1,1) ~ X' as op,
         max(a.x) as xmax,
         min(a.y) as ymin,
         max(a.y) as ymax,
-        st_extent(a.tile)
+        st_extent(a.tile::geometry)
 FROM rt_gist_grid_test a, rt_gist_query_test b
 WHERE b.x = 1 and b.y = 1
     AND b.tile ~ a.tile;

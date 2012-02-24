@@ -53,7 +53,7 @@ DROP OPERATOR IF EXISTS ~ (raster, raster);
 DROP FUNCTION IF EXISTS st_contain(raster, raster); **/
 
 -- drop st_bytea
-DROP CAST IF EXISTS (raster as bytea);
+DROP CAST IF EXISTS (raster AS bytea);
 DROP FUNCTION IF EXISTS st_bytea(raster);
 
 CREATE OR REPLACE FUNCTION bytea(raster)
@@ -61,40 +61,45 @@ CREATE OR REPLACE FUNCTION bytea(raster)
     AS 'MODULE_PATHNAME', 'RASTER_to_bytea'
     LANGUAGE 'C' IMMUTABLE STRICT;
 CREATE CAST (raster AS bytea)
-    WITH FUNCTION bytea(raster) AS IMPLICIT;
+    WITH FUNCTION bytea(raster) AS ASSIGNMENT;
 
 -- drop box2d
 DROP CAST IF EXISTS (raster AS box2d);
 DROP FUNCTION IF EXISTS box2d(raster);
 
--- create box3d cast if it does not exist --
+-- create box3d cast if it does not exist
+#if POSTGIS_PGSQL_VERSION >= 90
 -- If we are running 9.0+ we can use DO plpgsql to check
 -- and only create if not exists so no need to force a drop
 -- that way if people are using it, we will not mess them up
-#if POSTGIS_PGSQL_VERSION >= 90
 DO language 'plpgsql' $$DECLARE r record;
 BEGIN
-	IF NOT EXISTS(SELECT  cs.typname As source
+	IF NOT EXISTS(SELECT  cs.typname AS source
 		FROM pg_cast AS ca 
         	INNER JOIN pg_type AS cs ON ca.castsource = cs.oid
         	INNER JOIN pg_type AS ct ON ca.casttarget = ct.oid
         	WHERE cs.typname = 'raster' AND ct.typname = 'box3d') THEN
 		CREATE OR REPLACE FUNCTION box3d(raster)
 		RETURNS box3d
-		AS 'select box3d(st_convexhull($1))'
+		AS 'SELECT box3d(st_convexhull($1))'
 		LANGUAGE 'SQL' IMMUTABLE STRICT;
 		CREATE CAST (raster AS box3d)
-			WITH FUNCTION box3d(raster) AS IMPLICIT;
+			WITH FUNCTION box3d(raster) AS ASSIGNMENT;
     END IF;
 END$$;	
 #endif
--- if we are running 8.4 we need to use brute force
 #if POSTGIS_PGSQL_VERSION < 90
-DROP CAST IF EXISTS (raster as box3d);
+-- if we are running 8.4 we need to use brute force
+DROP CAST IF EXISTS (raster AS box3d);
 CREATE OR REPLACE FUNCTION box3d(raster)
     RETURNS box3d
-    AS 'select box3d(st_convexhull($1))'
+    AS 'SELECT box3d(st_convexhull($1))'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 CREATE CAST (raster AS box3d)
-    WITH FUNCTION box3d(raster) AS IMPLICIT;
+    WITH FUNCTION box3d(raster) AS ASSIGNMENT;
 #endif
+
+-- make geometry cast ASSIGNMENT
+DROP CAST IF EXISTS (raster AS geometry);
+CREATE CAST (raster AS geometry)
+	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
