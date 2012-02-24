@@ -225,20 +225,22 @@ rt_util_gdal_resample_alg(const char *algname) {
 GDALDataType
 rt_util_pixtype_to_gdal_datatype(rt_pixtype pt) {
 	switch (pt) {
-		case PT_1BB: case PT_2BUI: case PT_4BUI: case PT_8BSI: case PT_8BUI:
+		case PT_1BB:
+		case PT_2BUI:
+		case PT_4BUI:
+		case PT_8BUI:
 			return GDT_Byte;
-		case PT_16BSI: case PT_16BUI:
-			if (pt == PT_16BSI)
-				return GDT_Int16;
-			else
-				return GDT_UInt16;
-		case PT_32BSI: case PT_32BUI: case PT_32BF:
-			if (pt == PT_32BSI)
-				return GDT_Int32;
-			else if (pt == PT_32BUI)
-				return GDT_UInt32;
-			else
-				return GDT_Float32;
+		case PT_8BSI:
+		case PT_16BSI:
+			return GDT_Int16;
+		case PT_16BUI:
+			return GDT_UInt16;
+		case PT_32BSI:
+			return GDT_Int32;
+		case PT_32BUI:
+			return GDT_UInt32;
+		case PT_32BF:
+			return GDT_Float32;
 		case PT_64BF:
 			return GDT_Float64;
 		default:
@@ -7960,14 +7962,15 @@ rt_raster rt_raster_gdal_warp(
 
 	RASTER_DEBUGF(3, "Suggested geotransform: %f, %f, %f, %f, %f, %f",
 		_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]);
-	RASTER_DEBUGF(3, "Suggested extent: %f, %f, %f, %f",
-		dst_extent[0], dst_extent[1], dst_extent[2], dst_extent[3]);
 
 	/* store extent in easier to use object */
 	extent.MinX = dst_extent[0];
 	extent.MinY = dst_extent[1];
 	extent.MaxX = dst_extent[2];
 	extent.MaxY = dst_extent[3];
+
+	RASTER_DEBUGF(3, "Suggested extent: %f, %f, %f, %f",
+		extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
 
 	/* user-defined skew */
 	if (NULL != skew_x)
@@ -8386,6 +8389,8 @@ rt_raster rt_raster_gdal_warp(
 
 	RASTER_DEBUGF(3, "Applied geotransform: %f, %f, %f, %f, %f, %f",
 		_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]);
+	RASTER_DEBUGF(3, "Applied extent: %f, %f, %f, %f",
+		extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
 		_dim[0], _dim[1]);
 
@@ -9567,12 +9572,14 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 			/* nodata value */
 			if (_hasnodata[i]) {
+				RASTER_DEBUGF(4, "Setting NODATA value of band %d to %f", i, _nodata[i]);
 				cplerr = GDALSetRasterNoDataValue(dst_band, _nodata[i]);
 				if (cplerr != CE_None) {
 					rterror("rt_raster_gdal_rasterize: Unable to set nodata value");
 					banderr = 1;
 					break;
 				}
+				RASTER_DEBUGF(4, "NODATA value set to %f", GDALGetRasterNoDataValue(dst_band, NULL));
 			}
 
 			/* initial value */
