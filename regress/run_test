@@ -195,7 +195,8 @@ run_simple_test ()
 	show_progress
 
 	OUTFILE="${TMPDIR}/test_${RUN}_out"
-	TMPFILE="${TMPDIR}/tmp/test_${RUN}_tmp"
+	BETMPDIR="${TMPDIR}/tmp/"
+	TMPFILE="${BETMPDIR}/test_${RUN}_tmp"
 	DIFFILE="${TMPDIR}/test_${RUN}_diff"
 
 	# Use intermediate file to prevent MingW buffering problems
@@ -219,7 +220,8 @@ run_simple_test ()
 		| sed 's/Self-intersection .*/Self-intersection/' \
 		| sed 's/^ROLLBACK/COMMIT/' \
 		> "${OUTFILE}"
-	rm -f ${TMPFILE} # should we keep this ?
+	rm -f "${BETMPDIR}/"* # should we keep these ?
+	rmdir "${BETMPDIR}" # should we keep this ?
 
 	if test x"$OPT_EXPECT" = "xyes"; then
 		echo_inline " expected"
