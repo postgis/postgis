@@ -8914,15 +8914,28 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	) {
 
 #if POSTGIS_GDAL_VERSION > 18
-		RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale");
 
 		if (
 			FLT_EQ((src_env.MaxX - src_env.MinX), 0) ||
 			(wkbtype == wkbMultiPoint) ||
 			(wkbtype == wkbMultiLineString)
 		) {
-			src_env.MinX -= (_scale[0] / 2.);
-			src_env.MaxX += (_scale[0] / 2.);
+
+			/* check alignment flag: grid_xw */
+			if (
+				(NULL == ul_xw && NULL == ul_yw) &&
+				(NULL != grid_xw && NULL != grid_xw) &&
+				FLT_NEQ(*grid_xw, src_env.MinX)
+			) {
+				// do nothing
+				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
+			}
+			else {
+				RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on X-axis");
+				src_env.MinX -= (_scale[0] / 2.);
+				src_env.MaxX += (_scale[0] / 2.);
+			}
+
 		}
 
 		if (
@@ -8930,20 +8943,47 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			(wkbtype == wkbMultiPoint) ||
 			(wkbtype == wkbMultiLineString)
 		) {
-			src_env.MinY -= (_scale[1] / 2.);
-			src_env.MaxY += (_scale[1] / 2.);
+
+			/* check alignment flag: grid_yw */
+			if (
+				(NULL == ul_xw && NULL == ul_yw) &&
+				(NULL != grid_xw && NULL != grid_xw) &&
+				FLT_NEQ(*grid_yw, src_env.MaxY)
+			) {
+				// do nothing
+				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
+			}
+			else {
+				RASTER_DEBUG(3, "Adjusting extent for GDAL > 1.8 by half the scale on Y-axis");
+				src_env.MinY -= (_scale[1] / 2.);
+				src_env.MaxY += (_scale[1] / 2.);
+			}
+
 		}
 
 #else
-		RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale");
 
 		if (
 			FLT_EQ((src_env.MaxX - src_env.MinX), 0) ||
 			(wkbtype == wkbMultiPoint) ||
 			(wkbtype == wkbMultiLineString)
 		) {
-			src_env.MinX -= _scale[0];
-			src_env.MaxX += _scale[0];
+
+			/* check alignment flag: grid_xw */
+			if (
+				(NULL == ul_xw && NULL == ul_yw) &&
+				(NULL != grid_xw && NULL != grid_xw) &&
+				FLT_NEQ(*grid_xw, src_env.MinX)
+			) {
+				// do nothing
+				RASTER_DEBUG(3, "Skipping extent adjustment on X-axis due to upcoming alignment");
+			}
+			else {
+				RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on X-axis");
+				src_env.MinX -= _scale[0];
+				src_env.MaxX += _scale[0];
+			}
+
 		}
 
 		if (
@@ -8951,10 +8991,27 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			(wkbtype == wkbMultiPoint) ||
 			(wkbtype == wkbMultiLineString)
 		) {
-			src_env.MinY -= _scale[1];
-			src_env.MaxY += _scale[1];
+
+			/* check alignment flag: grid_yw */
+			if (
+				(NULL == ul_xw && NULL == ul_yw) &&
+				(NULL != grid_xw && NULL != grid_xw) &&
+				FLT_NEQ(*grid_yw, src_env.MaxY)
+			) {
+				// do nothing
+				RASTER_DEBUG(3, "Skipping extent adjustment on Y-axis due to upcoming alignment");
+			}
+			else {
+				RASTER_DEBUG(3, "Adjusting extent for GDAL <= 1.8 by the scale on Y-axis");
+				src_env.MinY -= _scale[1];
+				src_env.MaxY += _scale[1];
+			}
+
 		}
 #endif
+
+		RASTER_DEBUGF(3, "Adjusted extent: %f, %f, %f, %f",
+			src_env.MinX, src_env.MaxY, src_env.MaxX, src_env.MinY);
 
 	}
 
