@@ -372,7 +372,7 @@ char* GetProj4StringSPI(int srid)
 		SPITupleTable *tuptable = SPI_tuptable;
 		HeapTuple tuple = tuptable->vals[0];
 		char *proj4text = SPI_getvalue(tuple, tupdesc, 1);
-		
+
 		if ( proj4text )
 		{
 			/* Make a projection object out of it */
@@ -380,7 +380,8 @@ char* GetProj4StringSPI(int srid)
 		}
 		else
 		{
-			proj_str[0] = '\0';
+			pfree(proj_str);
+			return NULL;
 		}
 	}
 	else
@@ -479,7 +480,7 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 {
 	MemoryContext PJMemoryContext;
 	projPJ projection = NULL;
-	char *proj_str;
+	char *proj_str = NULL;
 
 	/*
 	** Turn the SRID number into a proj4 string, by reading from spatial_ref_sys
@@ -494,9 +495,9 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	projection = lwproj_from_string(proj_str);
 	if ( projection == NULL )
 	{
-	  elog(ERROR,
-	    "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s",
-	    proj_str, pj_strerrno(*pj_get_errno_ref()));
+		elog(ERROR,
+		    "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s",
+		    proj_str, pj_strerrno(*pj_get_errno_ref()));
 	}
 
 	/*
@@ -620,7 +621,7 @@ void SetPROJ4LibPath(void)
 		path = palloc(MAXPGPATH);
 		*proj_lib_path = path;
 
-		snprintf(path, MAXPGPATH - 1, "%s/contrib/postgis-%s.%s/proj", share_path, POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION);		
+		snprintf(path, MAXPGPATH - 1, "%s/contrib/postgis-%s.%s/proj", share_path, POSTGIS_MAJOR_VERSION, POSTGIS_MINOR_VERSION);
 
 		/* Set the search path for PROJ.4 */
 		pj_set_searchpath(1, proj_lib_path);
@@ -707,15 +708,15 @@ GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ 
 	return LW_SUCCESS;
 }
 
-int 
+int
 spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 {
 	projPJ pj1, pj2;
 	double major_axis, minor_axis, eccentricity_squared;
-	
+
 	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
 		return LW_FAILURE;
-		
+
 	if ( ! pj_is_latlong(pj1) )
 		return LW_FAILURE;
 
@@ -724,7 +725,7 @@ spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 	/* using them */
 	pj_get_spheroid_defn(pj1, &major_axis, &eccentricity_squared);
 	minor_axis = major_axis * sqrt(1-eccentricity_squared);
-	spheroid_init(s, major_axis, minor_axis);	
+	spheroid_init(s, major_axis, minor_axis);
 #else
 	/* For old versions of Proj we cannot lookup the spheroid parameters from the API */
 	/* So we use the WGS84 parameters (boo!) */
@@ -744,10 +745,10 @@ void srid_is_latlong(FunctionCallInfo fcinfo, int srid)
 
 	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
 		return;
-	
+
 	if ( pj_is_latlong(pj1) )
 		return;
-		
+
 	ereport(ERROR, (
 	            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
 	            errmsg("Only lon/lat coordinate systems are supported in geography.")));
