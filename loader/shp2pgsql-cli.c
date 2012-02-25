@@ -262,7 +262,7 @@ main (int argc, char **argv)
 		char *strptr = argv[pgis_optind];
 		char *chrptr = strchr(strptr, '.');
 
-		/* Schema qualified table name */
+		/* OK, this is a schema-qualified table name... */
 		if (chrptr)
 		{
 			if ( chrptr == strptr ) 
@@ -271,8 +271,8 @@ main (int argc, char **argv)
 				usage();
 				exit(0);
 			}
-			/* Null terminate the '.' */
-			*chrptr = 0;
+			/* Null terminate at the '.' */
+			*chrptr = '\0';
 			/* Copy in the parts */
 			config->schema = strdup(strptr);
 			config->table = strdup(chrptr+1);
