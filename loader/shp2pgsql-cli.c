@@ -259,23 +259,27 @@ main (int argc, char **argv)
 	/* Determine the table and schema names from the next argument */
 	if (pgis_optind < argc)
 	{
-		char *ptr;
-
-		ptr = strchr(argv[pgis_optind], '.');
+		char *strptr = argv[pgis_optind];
+		char *chrptr = strchr(strptr, '.');
 
 		/* Schema qualified table name */
-		if (ptr)
+		if (chrptr)
 		{
-			config->schema = malloc(strlen(argv[pgis_optind]) + 1);
-			snprintf(config->schema, ptr - argv[pgis_optind] + 1, "%s", argv[pgis_optind]);
-
-			config->table = malloc(strlen(argv[pgis_optind]));
-			snprintf(config->table, strlen(argv[pgis_optind]) - strlen(config->schema), "%s", ptr + 1);
+			if ( chrptr == strptr ) 
+			{
+				/* ".something" ??? */
+				usage();
+				exit(0);
+			}
+			/* Null terminate the '.' */
+			*chrptr = 0;
+			/* Copy in the parts */
+			config->schema = strdup(strptr);
+			config->table = strdup(chrptr+1);
 		}
 		else
 		{
-			config->table = malloc(strlen(argv[pgis_optind]) + 1);
-			strcpy(config->table, argv[pgis_optind]);
+			config->table = strdup(strptr);
 		}
 	}
 
