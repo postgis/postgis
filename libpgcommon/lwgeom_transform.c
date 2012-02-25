@@ -380,6 +380,7 @@ char* GetProj4StringSPI(int srid)
 		}
 		else
 		{
+			SPI_finish();
 			pfree(proj_str);
 			return NULL;
 		}
@@ -712,7 +713,9 @@ int
 spheroid_init_from_srid(FunctionCallInfo fcinfo, int srid, SPHEROID *s)
 {
 	projPJ pj1, pj2;
+#if POSTGIS_PROJ_VERSION >= 48
 	double major_axis, minor_axis, eccentricity_squared;
+#endif
 
 	if ( GetProjectionsUsingFCInfo(fcinfo, srid, srid, &pj1, &pj2) == LW_FAILURE)
 		return LW_FAILURE;
