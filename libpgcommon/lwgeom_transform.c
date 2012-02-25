@@ -380,9 +380,7 @@ char* GetProj4StringSPI(int srid)
 		}
 		else
 		{
-			SPI_finish();
-			pfree(proj_str);
-			return NULL;
+			proj_str[0] = 0;
 		}
 	}
 	else
@@ -496,9 +494,13 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	projection = lwproj_from_string(proj_str);
 	if ( projection == NULL )
 	{
+		char *pj_errstr = pj_strerrno(*pj_get_errno_ref());
+		if ( ! pj_errstr )
+			pj_errstr = "";
+		
 		elog(ERROR,
-		    "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s",
-		    proj_str, pj_strerrno(*pj_get_errno_ref()));
+		    "AddToPROJ4SRSCache: could not parse proj4 string '%s' %s",
+		    proj_str, pj_errstr);
 	}
 
 	/*

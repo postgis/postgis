@@ -190,7 +190,7 @@ ERROR:  MultiSurface cannot contain MultiPoint element at character 8
 #852.2|1|t|t
 #852.2|2|t|t
 #1489|MULTIPOINT EMPTY|0|MULTILINESTRING EMPTY|0|MULTIPOLYGON EMPTY|0|GEOMETRYCOLLECTION EMPTY|0
-ERROR:  GetProj4String returned NULL for SRID (500001)
+ERROR:  AddToPROJ4SRSCache: could not parse proj4 string '' 
 #1038|
 #1042|2
 #1398a|POINT(-119.093153 45.632669)
