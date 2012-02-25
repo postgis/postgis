@@ -202,7 +202,7 @@ run_simple_test ()
 	mkdir -p "${BETMPDIR}"
 	chmod 777 "${BETMPDIR}"
 
-	# Use intermediate file to prevent MingW buffering problems
+	# Use only one call to sed to work around MSYS buffering problem
 	${PSQL} -v "VERBOSITY=terse" -v "tmpfile='${TMPFILE}'" -tXA < "${_sql}" ${DB} 2>&1 \
 		| grep --binary-files=text -v "^$" \
 		| grep --binary-files=text -v "^INSERT" \
@@ -218,10 +218,10 @@ run_simple_test ()
 		| grep --binary-files=text -v "^TRUNCATE" \
 		| grep --binary-files=text -v "^LINE [0-9]" \
 		| grep --binary-files=text -v "^  *^$" \
-		| sed 's/Infinity/inf/g;s/Inf/inf/g;s/1\.#INF/inf/g' \
-		| sed 's/[eE]\([+-]\)0\{1,\}\([0-9]\{1,\}\)/e\1\2/g' \
-		| sed 's/Self-intersection .*/Self-intersection/' \
-		| sed 's/^ROLLBACK/COMMIT/' \
+		| sed -e 's/Infinity/inf/g' -e 's/Inf/inf/g' -e 's/1\.#INF/inf/g' \
+		      -e 's/[eE]\([+-]\)0\{1,\}\([0-9]\{1,\}\)/e\1\2/g' \
+		      -e 's/Self-intersection .*/Self-intersection/' \
+		      -e 's/^ROLLBACK/COMMIT/' \
 		> "${OUTFILE}"
 
 	rm -rf "${BETMPDIR}" # should we keep these ?
