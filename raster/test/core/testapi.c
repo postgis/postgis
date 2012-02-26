@@ -1641,6 +1641,30 @@ static void testRasterToGDAL() {
 	if (gdal) CPLFree(gdal);
 
 	deepRelease(raster);
+
+	raster = rt_raster_new(xmax, ymax);
+	assert(raster); /* or we're out of virtual memory */
+	band = addBand(raster, PT_8BSI, 0, 0);
+	CHECK(band);
+	rt_band_set_nodata(band, 0);
+
+	rt_raster_set_offsets(raster, -500000, 600000);
+	rt_raster_set_scale(raster, 1000, -1000);
+
+	for (x = 0; x < xmax; x++) {
+		for (y = 0; y < ymax; y++) {
+			rtn = rt_band_set_pixel(band, x, y, x);
+			CHECK((rtn != -1));
+		}
+	}
+
+	gdal = rt_raster_to_gdal(raster, srs, "PNG", NULL, &gdalSize);
+	/*printf("gdalSize: %d\n", (int) gdalSize);*/
+	CHECK(gdalSize);
+
+	if (gdal) CPLFree(gdal);
+
+	deepRelease(raster);
 }
 
 static void testValueCount() {
