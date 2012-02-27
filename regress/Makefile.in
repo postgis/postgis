@@ -74,6 +74,7 @@ TESTS = \
 	affine \
 	empty \
 	measures \
+	legacy \
 	long_xact \
 	ctors \
 	sql-mm-serialize \
