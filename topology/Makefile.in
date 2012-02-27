@@ -27,10 +27,14 @@ MODULEDIR=contrib/$(PGIS_MODULE_big)
 DATA_built=topology.sql topology_upgrade_20_minor.sql uninstall_topology.sql
 
 # SQL objects (files requiring C pre-processing)
-SQL_OBJS=topology.sql.in topology_drop_before.sql.in topology_drop_after.sql.in
+SQL_OBJS = \
+  topology.sql \
+  topology_upgrade.sql \
+  topology_drop_before.sql \
+  topology_drop_after.sql
 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS)
+EXTRA_CLEAN=$(SQL_OBJS) $(SQL_OBJS:.sql=.sql.in)
 
 # PGXS information
 PG_CONFIG = @PGCONFIG@ 
@@ -70,7 +74,7 @@ endif
 	sed 's,MODULE_PATHNAME,$$libdir/$*,g' $< >$@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
-$(SQL_OBJS): %.in: %.in.c
+%.in: %.in.c
 	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
 	
 #Generate upgrade script by stripping things that can't be reinstalled
