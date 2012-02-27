@@ -36,5 +36,5 @@ SELECT ST_transform(ST_GeomFromEWKT('SRID=0;POINT(0 0)'),100002);
 --- test #8: Transforming to same SRID
 SELECT 8,ST_AsEWKT(ST_transform(ST_GeomFromEWKT('SRID=100002;POINT(0 0)'),100002));
 
-DELETE FROM spatial_ref_sys WHERE srid >= 1000000;
+DELETE FROM spatial_ref_sys WHERE srid >= 100000;
 
