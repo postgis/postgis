@@ -1,5 +1,3 @@
--- setup the spatial_ref_sys table with the two projections
-DELETE FROM spatial_ref_sys;
 ---
 --- EPSG 4326 : WGS 84
 ---
