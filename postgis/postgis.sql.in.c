@@ -2361,6 +2361,9 @@ DECLARE
 	dbproc text;
 	relproc text;
 	fullver text;
+	rast_lib_ver text;
+	rast_scr_ver text;
+	topo_scr_ver text;
 BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
@@ -2377,8 +2380,37 @@ BEGIN
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
 	select postgis_svn_version() INTO svnver;
+	BEGIN
+		SELECT postgis_topology_scripts_installed() INTO topo_scr_ver;
+	EXCEPTION
+		WHEN undefined_function THEN
+			topo_scr_ver := NULL;
+			RAISE NOTICE 'Function postgis_topology_scripts_installed() not found. Is topology support enabled and topology.sql installed?';
+	END;
 
-	fullver = 'POSTGIS="' || libver || '"';
+	BEGIN
+		SELECT postgis_raster_scripts_installed() INTO rast_scr_ver;
+	EXCEPTION
+		WHEN undefined_function THEN
+			rast_scr_ver := NULL;
+			RAISE NOTICE 'Function postgis_raster_scripts_installed() not found. Is raster support enabled and topology.sql installed?';
+	END;
+
+	BEGIN
+		SELECT postgis_raster_lib_version() INTO rast_lib_ver;
+	EXCEPTION
+		WHEN undefined_function THEN
+			rast_lib_ver := NULL;
+			RAISE NOTICE 'Function postgis_raster_lib_version() not found. Is raster support enabled and topology.sql installed?';
+	END;
+
+	fullver = 'POSTGIS="' || libver;
+
+	IF  svnver IS NOT NULL THEN
+		fullver = fullver || ' r' || svnver;
+	END IF;
+
+	fullver = fullver || '"';
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';
@@ -2396,10 +2428,7 @@ BEGIN
 		fullver = fullver || ' LIBXML="' || libxmlver || '"';
 	END IF;
 
-	IF  svnver IS NOT NULL THEN
-		fullver = fullver || ' SVN_REVISION=' || svnver;
-	END IF;
-	
+	-- TODO: drop !
 	IF usestats THEN
 		fullver = fullver || ' USE_STATS';
 	END IF;
@@ -2408,7 +2437,19 @@ BEGIN
 	-- fullver = fullver || ' RELPROC="' || relproc || '"';
 
 	IF dbproc != relproc THEN
-		fullver = fullver || ' (procs from ' || dbproc || ' need upgrade)';
+		fullver = fullver || ' (core procs from "' || dbproc || '" need upgrade)';
+	END IF;
+
+	IF topo_scr_ver IS NOT NULL AND topo_scr_ver != relproc THEN
+		fullver = fullver || ' (topology procs from "' || topo_scr_ver || '" need upgrade)';
+	END IF;
+
+	IF rast_lib_ver IS NOT NULL AND rast_lib_ver != relproc THEN
+		fullver = fullver || ' (raster lib from "' || rast_lib_ver || '" need upgrade)';
+	END IF;
+
+	IF rast_scr_ver IS NOT NULL AND rast_scr_ver != relproc THEN
+		fullver = fullver || ' (raster procs from "' || rast_scr_ver || '" need upgrade)';
 	END IF;
 
 	RETURN fullver;
