@@ -497,7 +497,7 @@ run_raster_loader_and_check_output()
 		# Compare the output SQL file with the expected if there is one.
 		if [ -r $_expected_sql_file ]; then
 			show_progress
-			if diff "${TMPDIR}/loader.out" "$_expected_sql_file" > /dev/null; then
+			if diff -w "${TMPDIR}/loader.out" "$_expected_sql_file" > /dev/null; then
 				:
 			else
 				fail " $_description: actual SQL does not match expected.", \
