@@ -473,6 +473,16 @@ rt_util_compute_skewed_extent(
 	}
 	rt_raster_set_geotransform_matrix(raster, _gt);
 
+	/* get inverse geotransform matrix */
+	if (!GDALInvGeoTransform(_gt, _igt)) {
+		rterror("rt_util_compute_skewed_extent: Unable to compute inverse geotransform matrix");
+		rt_raster_destroy(raster);
+		return 0;
+	}
+	RASTER_DEBUGF(4, "Inverse geotransform: %f, %f, %f, %f, %f, %f",
+		_igt[0], _igt[1], _igt[2], _igt[3], _igt[4], _igt[5]
+	);
+
 	/* shift along axis */
 	for (i = 0; i < 2; i++) {
 		covers = 0;
@@ -488,16 +498,6 @@ rt_util_compute_skewed_extent(
 				rt_raster_destroy(raster);
 				return 0;
 			}
-
-			/* get inverse geotransform matrix */
-			if (!GDALInvGeoTransform(_gt, _igt)) {
-				rterror("rt_util_compute_skewed_extent: Unable to compute inverse geotransform matrix");
-				rt_raster_destroy(raster);
-				return 0;
-			}
-			RASTER_DEBUGF(4, "Inverse geotransform: %f, %f, %f, %f, %f, %f",
-				_igt[0], _igt[1], _igt[2], _igt[3], _igt[4], _igt[5]
-			);
 
 			/*
 				check the four corners that they are covered along the specific axis
@@ -538,6 +538,8 @@ rt_util_compute_skewed_extent(
 					rt_raster_destroy(raster);
 					return 0;
 				}
+
+				RASTER_DEBUGF(4, "Point %d at cell %d x %d", j, (int) _r[0], (int) _r[1]);
 
 				/* raster doesn't cover point */
 				if ((int) _r[i] < 0) {
@@ -590,6 +592,16 @@ rt_util_compute_skewed_extent(
 				RASTER_DEBUGF(4, "Shifted geotransform: %f, %f, %f, %f, %f, %f",
 					_gt[0], _gt[1], _gt[2], _gt[3], _gt[4], _gt[5]
 				);
+
+				/* get inverse geotransform matrix */
+				if (!GDALInvGeoTransform(_gt, _igt)) {
+					rterror("rt_util_compute_skewed_extent: Unable to compute inverse geotransform matrix");
+					rt_raster_destroy(raster);
+					return 0;
+				}
+				RASTER_DEBUGF(4, "Inverse geotransform: %f, %f, %f, %f, %f, %f",
+					_igt[0], _igt[1], _igt[2], _igt[3], _igt[4], _igt[5]
+				);
 			}
 
 			run++;
@@ -614,6 +626,8 @@ rt_util_compute_skewed_extent(
 		return 0;
 	}
 
+	RASTER_DEBUGF(4, "geopoint %f x %f at cell %d x %d", extent.MaxX, extent.MinY, (int) _r[0], (int) _r[1]);
+
 	rtn = rt_raster_cell_to_geopoint(
 		raster,
 		_r[0] + 1, _r[1] + 1,
@@ -631,9 +645,9 @@ rt_util_compute_skewed_extent(
 
 	RASTER_DEBUGF(4, "Suggested skewed extent: %f, %f, %f, %f",
 		skewedextent->MinX,
-		skewedextent->MaxY,
+		skewedextent->MinY,
 		skewedextent->MaxX,
-		skewedextent->MinY
+		skewedextent->MaxY
 	);
 
 	return 1;
@@ -7366,6 +7380,8 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 
 	int i;
 	int numBands;
+	uint32_t width = 0;
+	uint32_t height = 0;
 	rt_band rtband = NULL;
 	rt_pixtype pt = PT_END;
 
@@ -7381,8 +7397,13 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	}
 	*rtn_drv = drv;
 
-	ds = GDALCreate(drv, "", rt_raster_get_width(raster),
-		rt_raster_get_height(raster), 0, GDT_Byte, NULL);
+	width = rt_raster_get_width(raster);
+	height = rt_raster_get_height(raster);
+	ds = GDALCreate(
+		drv, "",
+		width, height,
+		0, GDT_Byte, NULL
+	);
 	if (NULL == ds) {
 		rterror("rt_raster_to_gdal_mem: Could not create a GDALDataset to convert into");
 		return 0;
@@ -7446,34 +7467,53 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		if (gdal_pt == GDT_Unknown)
 			rtwarn("rt_raster_to_gdal_mem: Unknown pixel type for band");
 
-		pVoid = rt_band_get_data(rtband);
-		RASTER_DEBUGF(4, "Band data is at pos %p", pVoid);
+		/*
+			For all pixel types other than PT_8BSI, set pointer to start of data
+		*/
+		if (pt != PT_8BSI) {
+			pVoid = rt_band_get_data(rtband);
+			RASTER_DEBUGF(4, "Band data is at pos %p", pVoid);
 
-		pszDataPointer = (char *) rtalloc(20 * sizeof (char));
-		sprintf(pszDataPointer, "%p", pVoid);
-		RASTER_DEBUGF(4, "rt_raster_to_gdal_mem: szDatapointer is %p",
-			pszDataPointer);
+			pszDataPointer = (char *) rtalloc(20 * sizeof (char));
+			sprintf(pszDataPointer, "%p", pVoid);
+			RASTER_DEBUGF(4, "rt_raster_to_gdal_mem: szDatapointer is %p",
+				pszDataPointer);
 
-		if (strnicmp(pszDataPointer, "0x", 2) == 0)
-			sprintf(szGDALOption, "DATAPOINTER=%s", pszDataPointer);
-		else
-			sprintf(szGDALOption, "DATAPOINTER=0x%s", pszDataPointer);
+			if (strnicmp(pszDataPointer, "0x", 2) == 0)
+				sprintf(szGDALOption, "DATAPOINTER=%s", pszDataPointer);
+			else
+				sprintf(szGDALOption, "DATAPOINTER=0x%s", pszDataPointer);
 
-		RASTER_DEBUG(3, "Storing info for GDAL MEM raster band");
+			RASTER_DEBUG(3, "Storing info for GDAL MEM raster band");
 
-		apszOptions[0] = szGDALOption;
-		apszOptions[1] = NULL; /* pixel offset, not needed */
-		apszOptions[2] = NULL; /* line offset, not needed */
-		apszOptions[3] = NULL;
+			apszOptions[0] = szGDALOption;
+			apszOptions[1] = NULL; /* pixel offset, not needed */
+			apszOptions[2] = NULL; /* line offset, not needed */
+			apszOptions[3] = NULL;
 
-		/* free */
-		rtdealloc(pszDataPointer);
+			/* free */
+			rtdealloc(pszDataPointer);
 
-		if (GDALAddBand(ds, gdal_pt, apszOptions) == CE_Failure) {
-			rterror("rt_raster_to_gdal_mem: Could not add GDAL raster band");
-			if (allocBandNums) rtdealloc(bandNums);
-			GDALClose(ds);
-			return 0;
+			/* add band */
+			if (GDALAddBand(ds, gdal_pt, apszOptions) == CE_Failure) {
+				rterror("rt_raster_to_gdal_mem: Could not add GDAL raster band");
+				if (allocBandNums) rtdealloc(bandNums);
+				GDALClose(ds);
+				return 0;
+			}
+		}
+		/*
+			PT_8BSI is special as GDAL has no equivalent pixel type.
+			Must convert 8BSI to 16BSI so create basic band
+		*/
+		else {
+			/* add band */
+			if (GDALAddBand(ds, gdal_pt, NULL) == CE_Failure) {
+				rterror("rt_raster_to_gdal_mem: Could not add GDAL raster band");
+				if (allocBandNums) rtdealloc(bandNums);
+				GDALClose(ds);
+				return 0;
+			}
 		}
 
 		/* check band count */
@@ -7484,7 +7524,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 			return 0;
 		}
 
-		/* get band to write data to */
+		/* get new band */
 		band = NULL;
 		band = GDALGetRasterBand(ds, i + 1);
 		if (NULL == band) {
@@ -7492,6 +7532,99 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 			if (allocBandNums) rtdealloc(bandNums);
 			GDALClose(ds);
 			return 0;
+		}
+
+		/* PT_8BSI requires manual setting of pixels */
+		if (pt == PT_8BSI) {
+			int nXBlocks, nYBlocks;
+			int nXBlockSize, nYBlockSize;
+			int iXBlock, iYBlock;
+			int nXValid, nYValid;
+			int iX, iY;
+			int iXMax, iYMax;
+
+			int x, y, z;
+			uint32_t valueslen = 0;
+			int16_t *values = NULL;
+			double value = 0.;
+
+			/* this makes use of GDAL's "natural" blocks */
+			GDALGetBlockSize(band, &nXBlockSize, &nYBlockSize);
+			nXBlocks = (width + nXBlockSize - 1) / nXBlockSize;
+			nYBlocks = (height + nYBlockSize - 1) / nYBlockSize;
+			RASTER_DEBUGF(4, "(nXBlockSize, nYBlockSize) = (%d, %d)", nXBlockSize, nYBlockSize);
+			RASTER_DEBUGF(4, "(nXBlocks, nYBlocks) = (%d, %d)", nXBlocks, nYBlocks);
+
+			/* length is for the desired pixel type */
+			valueslen = rt_pixtype_size(PT_16BSI) * nXBlockSize * nYBlockSize;
+			values = rtalloc(valueslen);
+			if (NULL == values) {
+				rterror("rt_raster_to_gdal_mem: Could not allocate memory for GDAL band pixel values");
+				if (allocBandNums) rtdealloc(bandNums);
+				GDALClose(ds);
+				return 0;
+			}
+
+			for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++) {
+				for (iXBlock = 0; iXBlock < nXBlocks; iXBlock++) {
+					memset(values, 0, valueslen);
+
+					x = iXBlock * nXBlockSize;
+					y = iYBlock * nYBlockSize;
+					RASTER_DEBUGF(4, "(iXBlock, iYBlock) = (%d, %d)", iXBlock, iYBlock);
+					RASTER_DEBUGF(4, "(x, y) = (%d, %d)", x, y);
+
+					/* valid block width */
+					if ((iXBlock + 1) * nXBlockSize > width)
+						nXValid = width - (iXBlock * nXBlockSize);
+					else
+						nXValid = nXBlockSize;
+
+					/* valid block height */
+					if ((iYBlock + 1) * nYBlockSize > height)
+						nYValid = height - (iYBlock * nYBlockSize);
+					else
+						nYValid = nYBlockSize;
+
+					RASTER_DEBUGF(4, "(nXValid, nYValid) = (%d, %d)", nXValid, nYValid);
+
+					/* convert 8BSI values to 16BSI */
+					z = 0;
+					iYMax = y + nYValid;
+					iXMax = x + nXValid;
+					for (iY = y; iY < iYMax; iY++)  {
+						for (iX = x; iX < iXMax; iX++)  {
+							if (rt_band_get_pixel(rtband, iX, iY, &value) != 0) {
+								rterror("rt_raster_to_gdal_mem: Could not get pixel value to convert from 8BSI to 16BSI");
+								rtdealloc(values);
+								if (allocBandNums) rtdealloc(bandNums);
+								GDALClose(ds);
+								return 0;
+							}
+
+							values[z++] = rt_util_clamp_to_16BSI(value);
+						}
+					}
+
+					/* burn values */
+					if (GDALRasterIO(
+						band, GF_Write,
+						x, y,
+						nXValid, nYValid,
+						values, nXValid, nYValid,
+						gdal_pt,
+						0, 0
+					) != CE_None) {
+						rterror("rt_raster_to_gdal_mem: Could not write converted 8BSI to 16BSI values to GDAL band");
+						rtdealloc(values);
+						if (allocBandNums) rtdealloc(bandNums);
+						GDALClose(ds);
+						return 0;
+					}
+				}
+			}
+
+			rtdealloc(values);
 		}
 
 		/* Add nodata value for band */
@@ -8842,7 +8975,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	OGR_G_GetEnvelope(src_geom, &src_env);
 
 	RASTER_DEBUGF(3, "Suggested extent: %f, %f, %f, %f",
-		src_env.MinX, src_env.MaxY, src_env.MaxX, src_env.MinY);
+		src_env.MinX, src_env.MinY, src_env.MaxX, src_env.MaxY);
 
 	/* user-defined skew */
 	if (NULL != skew_x)
@@ -9016,7 +9149,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 #endif
 
 		RASTER_DEBUGF(3, "Adjusted extent: %f, %f, %f, %f",
-			src_env.MinX, src_env.MaxY, src_env.MaxX, src_env.MinY);
+			src_env.MinX, src_env.MinY, src_env.MaxX, src_env.MaxY);
 
 	}
 
@@ -9054,7 +9187,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		}
 
 		RASTER_DEBUGF(3, "Suggested skewed extent: %f, %f, %f, %f",
-			skewedextent.MinX, skewedextent.MaxY, skewedextent.MaxX, skewedextent.MinY);
+			skewedextent.MinX, skewedextent.MinY, skewedextent.MaxX, skewedextent.MaxY);
 
 		src_env.MinX = skewedextent.MinX;
 		src_env.MinY = skewedextent.MinY;
@@ -9068,6 +9201,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		NULL != ul_yw
 	) {
 		ul_user = 1;
+
+		RASTER_DEBUGF(4, "Using user-specified upper-left corner: %f, %f", *ul_xw, *ul_yw);
 
 		/* raster dimensions */
 		if (!_dim[0])
@@ -9179,6 +9314,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 			return NULL;
 		}
+
+		RASTER_DEBUGF(4, "Aligning extent to user-specified grid: %f, %f", *grid_xw, *grid_yw);
 
 		do {
 			double _d[2] = {0};
@@ -9390,6 +9527,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			(NULL != scale_x) &&
 			(*scale_x < 0.)
 		) {
+			RASTER_DEBUG(3, "Processing negative scale-x");
 			if (!rt_raster_cell_to_geopoint(
 				rast,
 				_dim[0], 0,
@@ -9423,6 +9561,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			(NULL != scale_y) &&
 			(*scale_y > 0)
 		) {
+			RASTER_DEBUG(3, "Processing positive scale-y");
 			if (!rt_raster_cell_to_geopoint(
 				rast,
 				0, _dim[1],
@@ -9457,7 +9596,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	}
 
 	RASTER_DEBUGF(3, "Applied extent: %f, %f, %f, %f",
-		src_env.MinX, src_env.MaxY, src_env.MaxX, src_env.MinY);
+		src_env.MinX, src_env.MinY, src_env.MaxX, src_env.MaxY);
 	RASTER_DEBUGF(3, "Applied geotransform: %f, %f, %f, %f, %f, %f",
 		dst_gt[0], dst_gt[1], dst_gt[2], dst_gt[3], dst_gt[4], dst_gt[5]);
 	RASTER_DEBUGF(3, "Raster dimensions (width x height): %d x %d",
