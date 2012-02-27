@@ -1,11 +1,10 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 --
--- $Id$
 --
 -- PostGIS Raster - Raster Type for PostGIS
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
--- Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
+-- Copyright (c) 2009-2012 Sandro Santilli <strk@keybit.net>
 -- Copyright (c) 2009-2010 Pierre Racine <pierre.racine@sbf.ulaval.ca>
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
@@ -21,6 +20,8 @@
 -- WARNING: Any change in this file must be evaluated for compatibility.
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#include "../../postgis/sqldefines.h"
 
 SET client_min_messages TO warning;
 
@@ -60,6 +61,10 @@ CREATE OR REPLACE FUNCTION postgis_raster_lib_version()
     RETURNS text
     AS 'MODULE_PATHNAME', 'RASTER_lib_version'
     LANGUAGE 'C' IMMUTABLE; -- a new lib will require a new session
+
+CREATE OR REPLACE FUNCTION postgis_raster_scripts_installed() RETURNS text
+       AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
+       LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION postgis_raster_lib_build_date()
     RETURNS text
