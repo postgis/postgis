@@ -1844,8 +1844,8 @@ CREATE OR REPLACE FUNCTION touches(geometry,geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION within(geometry,geometry)
 	RETURNS boolean
-	AS 'MODULE_PATHNAME'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	AS 'SELECT ST_Within($1, $2)'
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION X(geometry)
