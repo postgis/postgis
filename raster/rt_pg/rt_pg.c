@@ -551,12 +551,14 @@ rtpg_getSR(int srid)
 PG_FUNCTION_INFO_V1(RASTER_lib_version);
 Datum RASTER_lib_version(PG_FUNCTION_ARGS)
 {
-    char *ver = POSTGIS_LIB_VERSION;
+    char ver[64];
     text *result;
-    result = palloc(VARHDRSZ  + strlen(ver));
-    SET_VARSIZE(result, VARHDRSZ + strlen(ver));
-    memcpy(VARDATA(result), ver, strlen(ver));
-    PG_RETURN_POINTER(result);
+
+    snprintf(ver, 64, "%s r%d", POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
+    ver[63] = '\0';
+
+    result = cstring2text(ver);
+    PG_RETURN_TEXT_P(result);
 }
 
 PG_FUNCTION_INFO_V1(RASTER_lib_build_date);
