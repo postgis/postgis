@@ -67,7 +67,7 @@ NOTICE:  No points or linestrings in input array
 #304.a|21
 #304.b|1
 #408|Too few points in geometry component[2310341.45565344 4836396.65124226]
-NOTICE:  Too few points in geometry component at or near point 2310341.4556534393 4836396.6512422552
+NOTICE:  Too few points in geometry component at or near point 0 0
 #408.1|f
 #408.2|Too few points in geometry component[0 0]
 NOTICE:  IllegalArgumentException: Invalid number of points in LinearRing found 2 - must be 0 or >= 4
