@@ -2318,7 +2318,8 @@ CREATE OR REPLACE FUNCTION postgis_lib_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE; -- a new lib will require a new session
 
--- NOTE: starting at 1.1.0 this is the same of postgis_lib_version()
+-- NOTE: from 1.1.0 to 1.5.x this was the same of postgis_lib_version()
+-- NOTE: from 2.0.0 up it includes postgis_svn_revision()
 CREATE OR REPLACE FUNCTION postgis_scripts_released() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE;

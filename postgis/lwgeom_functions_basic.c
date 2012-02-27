@@ -171,8 +171,13 @@ Datum postgis_lib_build_date(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(postgis_scripts_released);
 Datum postgis_scripts_released(PG_FUNCTION_ARGS)
 {
-	char *ver = POSTGIS_SCRIPTS_VERSION;
-	text *result = cstring2text(ver);
+	char ver[64];
+	text *result;
+
+	snprintf(ver, 64, "%s r%d", POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
+	ver[63] = '\0';
+
+	result = cstring2text(ver);
 	PG_RETURN_TEXT_P(result);
 }
 
