@@ -74,7 +74,7 @@ static void test_lwline_split_by_point_to(void)
 	CU_ASSERT_EQUAL(coll->ngeoms, 4);
 	lwpoint_free(point);
 
-	lwcollection_free(coll);
+	lwcollection_free((LWCOLLECTION*)coll);
 	lwline_free(line);
 
 #endif /* POSTGIS_GEOS_VERSION >= 33 */
