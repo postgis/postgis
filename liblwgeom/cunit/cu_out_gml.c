@@ -604,12 +604,12 @@ static void out_gml_test_geoms(void)
 	/* GML2 - PolyhedralSurface */
 	do_gml2_unsupported(
 	    "POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1)))",
-	    "lwgeom_to_gml2: 'PolyhedralSurface' geometry type not supported");
+	    "Cannot convert PolyhedralSurface to GML2. Try ST_AsGML(3, <geometry>) to generate GML3.");
 
 	/* GML2 - Tin */
 	do_gml2_unsupported(
 	    "TIN(((0 1,2 3,4 5,0 1)))",
-	    "lwgeom_to_gml2: 'Tin' geometry type not supported");
+	    "Cannot convert Tin to GML2. Try ST_AsGML(3, <geometry>) to generate GML3.");
 }
 
 static void out_gml_test_geoms_prefix(void)
