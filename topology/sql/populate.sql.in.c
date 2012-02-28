@@ -643,6 +643,7 @@ DECLARE
   sql text;
   prj GEOMETRY;
   snapedge GEOMETRY;
+  snaptol FLOAT8;
 BEGIN
 
   -- 0. Check arguments
@@ -694,11 +695,29 @@ BEGIN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG ' Snapping edge to contain closest point';
 #endif
-      -- Snap the edge geometry to the projected point
-      -- The tolerance is an arbitrary number.
-      -- How much would be enough to ensure any projected point is within
-      -- that distance ? ST_Distance() may very well return 0.
-      snapedge := ST_Snap(rec.geom, prj, 1e-12); -- arbitrarely low number
+      -- The tolerance must be big enough for snapping to happen
+      -- and small enough to snap only to the projected point.
+      -- Unfortunately ST_Distance returns 0 because it also uses
+      -- a projected point internally, so we need another way.
+      --
+      -- A pragmatic test conducted using algoritm shown here:
+      -- http://stackoverflow.com/questions/7408407/generate-next-largest-or-smallest-representable-floating-point-number-without-bi
+      -- showed the "tolerance" growing by an order of magnitude proportionally
+      -- with the order of magnitude of the input, starting with something like
+      -- 3.5527136788005009294e-15 for the starting value of 9.0
+      --
+      -- TODO: make this simpler
+      --
+      snaptol := 3.6 * power(10,  - ( 15 - log(10.0, coalesce(nullif(greatest(abs(ST_X(prj)), abs(ST_Y(prj)))::numeric, 0), 1)) ));
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Tolerance for snapping to point % = %', ST_AsText(prj), snaptol;
+#endif
+      snapedge := ST_Snap(rec.geom, prj, snaptol);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      IF NOT ST_Contains(snapedge, prj) THEN -- or if equal ?
+        RAISE WARNING 'Edge within % distance from node still does not contain the node after snapping to it with tolerance %', tolerance, snaptol;
+      END IF;
+#endif
       PERFORM ST_ChangeEdgeGeom(atopology, rec.edge_id, snapedge);
     END IF;
     id := topology.ST_ModEdgeSplit(atopology, rec.edge_id, prj);
