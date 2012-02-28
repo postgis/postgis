@@ -206,6 +206,24 @@ fi
 
 AC_SUBST([XSLBASE])
 
+dnl
+dnl Let's see if we can find mathml2.dtd
+dnl
+
+MATHML2_DTD="http://www.w3.org/Math/DTD/mathml2/mathml2.dtd"
+dnl TODO: get more paths to add here...
+SEARCHPATH="
+		/usr/share/xml/schema/w3c/mathml/dtd
+		"
+for p in ${SEARCHPATH}; do
+	if test -r "${p}"/mathml2.dtd; then
+		MATHML2_DTD="${p}/mathml2.dtd"
+		break
+	fi
+done
+
+AC_SUBST([MATHML2_DTD])
+
 dnl ===========================================================================
 dnl Detect CUnit if it is installed (used for unit testing)
 dnl
@@ -1090,6 +1108,7 @@ AC_MSG_RESULT([  xsltproc:             ${XSLTPROC}])
 AC_MSG_RESULT([  xsl style sheets:     ${XSLBASE}])
 AC_MSG_RESULT([  dblatex:              ${DBLATEX}])
 AC_MSG_RESULT([  convert:              ${IMAGEMAGICK}])
+AC_MSG_RESULT([  mathml2.dtd:          ${MATHML2_DTD}])
 AC_MSG_RESULT()
 
 if test "$GEOS_NUMERIC_VERSION" -lt 332; then

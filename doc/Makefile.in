@@ -12,6 +12,7 @@
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
 POSTGIS_MICRO_VERSION=@POSTGIS_MICRO_VERSION@
+MATHML2_DTD=@MATHML2_DTD@
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -65,41 +66,74 @@ endif
 endif
 endif
 
+XML_INPUTS = \
+	extras_historytable.xml \
+	extras_tigergeocoder.xml \
+	extras_topology.xml \
+	extras.xml \
+	faq_raster.xml \
+	faq.xml \
+	installation.xml \
+	introduction.xml \
+	performance_tips.xml \
+	postgis_aggs_mm.xml \
+	postgis-out.xml \
+	reference_accessor.xml \
+	reference_constructor.xml \
+	reference_editor.xml \
+	reference_exception.xml \
+	reference_lrs.xml \
+	reference_management.xml \
+	reference_measure.xml \
+	reference_misc.xml \
+	reference_operator.xml \
+	reference_output.xml \
+	reference_processing.xml \
+	reference_raster.xml \
+	reference_transaction.xml \
+	reference.xml \
+	release_notes.xml \
+	reporting.xml \
+	using_postgis_app.xml \
+	using_postgis_dataman.xml \
+	using_raster_dataman.xml 
+
+
 ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
-postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis.xml
-	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl postgis.xml > $@
+postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml Makefile
+	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
 endif
 
-postgis_comments.sql: ./xsl/postgis_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
-	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl postgis.xml > $@
+postgis_comments.sql: ./xsl/postgis_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl postgis-out.xml > $@
 	
-postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl postgis.xml postgis_aggs_mm.xml
-	$(XSLTPROC) ./xsl/postgis_cheatsheet.html.xsl postgis.xml > $@
+postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
 	
-raster_comments.sql: ./xsl/raster_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
-	$(XSLTPROC) ./xsl/raster_comments.sql.xsl postgis.xml > $@
+raster_comments.sql: ./xsl/raster_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/raster_comments.sql.xsl postgis-out.xml > $@
 	
-raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl postgis.xml postgis_aggs_mm.xml
-	$(XSLTPROC) ./xsl/raster_cheatsheet.html.xsl postgis.xml > $@
+raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
 	
-topology_comments.sql: ./xsl/topology_comments.sql.xsl postgis.xml extras_topology.xml postgis_aggs_mm.xml
-	$(XSLTPROC) ./xsl/topology_comments.sql.xsl postgis.xml > $@
+topology_comments.sql: ./xsl/topology_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/topology_comments.sql.xsl postgis-out.xml > $@
 	
-topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl postgis.xml extras_topology.xml postgis_aggs_mm.xml
-	$(XSLTPROC) ./xsl/topology_cheatsheet.html.xsl postgis.xml > $@
+topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
 	
-tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl postgis.xml postgis_aggs_mm.xml
-	$(XSLTPROC) ./xsl/tiger_geocoder_comments.sql.xsl postgis.xml > $@
+tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
 	
-tiger_geocoder_cheatsheet.html: ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis.xml postgis_aggs_mm.xml
-	$(XSLTPROC) ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis.xml > $@
+tiger_geocoder_cheatsheet.html: ./xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
 
-postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml using_raster_dataman.xml using_postgis_app.xml performance_tips.xml reference.xml reference_management.xml reference_constructor.xml reference_accessor.xml reference_editor.xml reference_output.xml reference_operator.xml reference_measure.xml reference_processing.xml reference_lrs.xml reference_transaction.xml reference_misc.xml reference_exception.xml extras.xml extras_topology.xml extras_tigergeocoder.xml extras_historytable.xml postgis_aggs_mm.xml reference_raster.xml faq_raster.xml reporting.xml release_notes.xml ../Version.config
-	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" > $@
+postgis-out.xml: postgis.xml Makefile
+	cat $< | sed -e "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" -e "s;@@MATHML_PATH@@;${MATHML2_DTD};g" > $@
 
-chunked-html: postgis-out.xml images
+chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/ \
 		--stringparam saxon.character.representation decimal \
@@ -108,14 +142,14 @@ chunked-html: postgis-out.xml images
 
 html: html/postgis.html
 
-html/postgis.html: postgis-out.xml
+html/postgis.html: postgis-out.xml Makefile images $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
 		--output html/postgis.html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: postgis-out.xml images
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: postgis-out.xml images $(XML_INPUTS)
 	if test x"$(DBLATEX)" = x; then \
 	   echo "Error: dblatex not found, can't build pdf"; \
 	   echo "       try installing dblatex and then re-run configure"; \
@@ -148,10 +182,10 @@ images-clean:
 	$(MAKE) -C html/image_src images-clean
 	
 clean: 
-	@rm -f html/*.html
-	@rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+	rm -f html/*.html
+	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	$(MAKE) -C html/image_src clean
-	@rm -f postgis-out.xml postgis_aggs_mm.xml
+	rm -f postgis-out.xml postgis_aggs_mm.xml
 
 maintainer-clean: clean images-clean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
@@ -199,9 +233,9 @@ uninstall: docs-uninstall man-uninstall comments-uninstall
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
 else
-garden:	postgis_aggs_mm.xml
-	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/postgis_gardentest.sql.xsl postgis.xml
-	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/raster_gardentest.sql.xsl postgis.xml
+garden:	xsl/postgis_gardentest.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) -o postgis_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/postgis_gardentest.sql.xsl postgis-out.xml
+	$(XSLTPROC) -o raster_gardentest_${POSTGIS_MAJOR_VERSION}${POSTGIS_MINOR_VERSION}.sql xsl/raster_gardentest.sql.xsl postgis-out.xml
 endif
 
 
@@ -209,8 +243,8 @@ endif
 ifeq ($(XMLLINT),)
 check: requirements_not_met_xmllint
 else
-check:	postgis_aggs_mm.xml
-	$(XMLLINT) --loaddtd --xinclude --valid postgis.xml > /dev/null
+check: $(XML_INPUTS)
+	$(XMLLINT) --loaddtd --xinclude --valid postgis-out.xml > /dev/null
 endif
 
 
