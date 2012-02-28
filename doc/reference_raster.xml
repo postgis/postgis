@@ -6940,21 +6940,21 @@ UPDATE wind
 				</funcsynopsis>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>geometry <function>ST_Union</function></funcdef>
+					<funcdef>raster <function>ST_Union</function></funcdef>
 					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band_num</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>geometry <function>ST_Union</function></funcdef>
+					<funcdef>raster <function>ST_Union</function></funcdef>
 					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text</type> <parameter>p_expression</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>geometry <function>ST_Union</function></funcdef>
+					<funcdef>raster <function>ST_Union</function></funcdef>
 					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer</type> <parameter>band_num</parameter></paramdef>
 					<paramdef><type>text</type> <parameter>p_expression</parameter></paramdef>
