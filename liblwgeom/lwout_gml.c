@@ -235,9 +235,14 @@ lwgeom_to_gml2(const LWGEOM *geom, const char *srs, int precision, const char* p
 	case COLLECTIONTYPE:
 		return asgml2_collection((LWCOLLECTION*)geom, srs, precision, prefix);
 
+	case TRIANGLETYPE:
+	case POLYHEDRALSURFACETYPE:
+	case TINTYPE:
+		lwerror("Cannot convert %s to GML2. Try ST_AsGML(3, <geometry>) to generate GML3.", lwtype_name(type));
+		return NULL;
+		
 	default:
-		lwerror("lwgeom_to_gml2: '%s' geometry type not supported",
-		        lwtype_name(type));
+		lwerror("lwgeom_to_gml2: '%s' geometry type not supported", lwtype_name(type));
 		return NULL;
 	}
 }
