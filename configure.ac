@@ -360,6 +360,10 @@ PGSQL_MINOR_VERSION=`$PGCONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f2 
 PGSQL_FULL_VERSION=`$PGCONFIG --version`
 POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
+PGSQL_PKGLIBDIR=`$PGCONFIG --pkglibdir`
+PGSQL_LIBDIR=`$PGCONFIG --libdir`
+PGSQL_SHAREDIR=`$PGCONFIG --sharedir`
+
 AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
 dnl Ensure that we are using PostgreSQL >= 8.3
 if test ! "$PGSQL_MAJOR_VERSION" -ge 8; then
@@ -440,6 +444,26 @@ LIBS="$LIBS_SAVE"
 
 AC_DEFINE_UNQUOTED([POSTGIS_PGSQL_VERSION], [$POSTGIS_PGSQL_VERSION], [PostgreSQL server version])	
 AC_SUBST([POSTGIS_PGSQL_VERSION])
+
+
+dnl ===========================================================================
+dnl Explain our prefix policy if necessary.
+dnl ===========================================================================
+
+if test "$prefix" != "NONE"; then
+  AC_MSG_RESULT([----------------------------------------------------------------------])
+  AC_MSG_RESULT([  You have set the --prefix to '$prefix'. Unfortunately the PostGIS   ])
+  AC_MSG_RESULT([  build system can only install into the directories used by the      ])
+  AC_MSG_RESULT([  PostgreSQL build you are compiling against, the one that supplied   ])
+  AC_MSG_RESULT([  the pg_config we detected: $PGCONFIG ])
+  AC_MSG_RESULT([  Based on that script we will be installing:   ])
+  AC_MSG_RESULT([    * postgis shared library in $PGSQL_LIBDIR ])
+  AC_MSG_RESULT([    * postgis SQL files in $PGSQL_SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION ])
+  AC_MSG_RESULT([    * postgis executables in $PGSQL_BINDIR ])
+  AC_MSG_RESULT([  Please try again without a --prefix, sorry. ])
+  AC_MSG_RESULT([----------------------------------------------------------------------])
+  AC_MSG_ERROR([])
+fi
 
 
 dnl ===========================================================================
