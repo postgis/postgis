@@ -2726,33 +2726,47 @@ BEGIN
   --{
 
   tmp1 := ST_MakeLine(ST_EndPoint(oldedge.geom), ST_StartPoint(oldedge.geom));
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'end-to-start: %', ST_AsText(tmp1);
+#endif
 
   tmp2 := ST_MakeLine(oldedge.geom, tmp1);
   IF ST_NumPoints(tmp2) < 4 THEN
     tmp2 := ST_AddPoint(tmp2, ST_StartPoint(oldedge.geom));
   END IF;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Old-ring: %', ST_AsText(tmp2);
+#endif
   tmp2 := ST_CollectionExtract(ST_MakeValid(ST_MakePolygon(tmp2)), 3);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Old-ring (poly): %', ST_AsText(tmp2);
+#endif
 
   range := ST_MakeLine(acurve, tmp1);
   IF ST_NumPoints(range) < 4 THEN
     range := ST_AddPoint(range, ST_StartPoint(oldedge.geom));
   END IF;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'New-ring: %', ST_AsText(range);
+#endif
   range := ST_CollectionExtract(ST_MakeValid(ST_MakePolygon(range)), 3);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'New-ring (poly): %', ST_AsText(range);
+#endif
 
   range := ST_SymDifference(range, tmp2);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Range motion: %', ST_AsText(range);
+#endif
 
   sql := 'SELECT node_id, geom FROM '
     || quote_ident(atopology)
     || '.node WHERE ST_Contains('
     || quote_literal(range::text)
     || '::geometry, geom) LIMIT 1';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
+#endif
   FOR rec IN EXECUTE sql LOOP -- {
     RAISE EXCEPTION 'Edge motion collision at %', ST_AsText(rec.geom);
   END LOOP; -- }
@@ -2767,13 +2781,17 @@ BEGIN
       atopology, oldedge.start_node, anedge
     ) as pre, NULL::integer[] as post
   INTO STRICT snode_info;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Bs:%', snode_info.pre;
+#endif
 
   SELECT topology._ST_AdjacentEdges(
       atopology, oldedge.end_node, -anedge
     ) as pre, NULL::integer[] as post
   INTO STRICT enode_info;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Be:%', enode_info.pre;
+#endif
 
   --}
 
@@ -2791,12 +2809,16 @@ BEGIN
   snode_info.post := topology._ST_AdjacentEdges(
       atopology, oldedge.start_node, anedge
     );
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'As:%', snode_info.post;
+#endif
 
   enode_info.post := topology._ST_AdjacentEdges(
       atopology, oldedge.end_node, -anedge
     );
+#ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Ae:%', enode_info.post;
+#endif
 
   IF snode_info.pre != snode_info.post THEN
     RAISE EXCEPTION 'Edge changed disposition around start node %',
