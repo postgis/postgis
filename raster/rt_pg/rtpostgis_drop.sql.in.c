@@ -5,8 +5,7 @@
 -- PostGIS Raster - Raster Type for PostGIS
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
--- Copyright (C) 2011 Regina Obe
---   <lr@pcorp.us>
+-- Copyright (C) 2011 Regina Obe <lr@pcorp.us>
 -- Copyright (C) 2011 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
@@ -311,6 +310,7 @@ DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, geometry, text, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, geometry, regprocedure);
 DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8, boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, int, geometry, float8[], boolean);
 
 -- refactoring of functions
 DROP FUNCTION IF EXISTS _st_dumpaswktpolygons(rast raster, band integer);
