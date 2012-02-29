@@ -1368,10 +1368,12 @@ WHERE rid=35;
 			<refsection>
 				<title>Description</title>
 				<para>Returns an empty raster (having no band) of given dimensions (width &amp; height) and georeferenced in spatial (or world) coordinates with upper left X (upperleftx), upper left Y (upperlefty), 
-				pixel size and rotation (scalex, scaley, skewx &amp; skewy) and reference system (srid). 
-				The last version use a single parameter to specify the pixel size (pixelsize). 
-				In this case scalex and scaley are set to this parameter and skewx and skewy are set to 0. 
-				If an existing raster is passed in, it returns a new raster with the same meta data settings (without the bands). </para>
+				pixel size and rotation (scalex, scaley, skewx &amp; skewy) and reference system (srid).</para>
+				
+				<para>The last version use a single parameter to specify the pixel size (pixelsize). scalex is set to this argument and scaley is set to the negative value of this argument. skewx and skewy are set to 0. </para>
+				
+				<para>If an existing raster is passed in, it returns a new raster with the same meta data settings (without the bands). </para>
+				
 				<para>If no srid is specified it defaults to 0. After you create an empty raster you probably want to add bands to it and maybe edit it. Refer to <xref linkend="RT_ST_AddBand" /> to define bands and <xref linkend="RT_ST_SetValue" /> to set initial pixel values.</para>
 				
 				</refsection>
