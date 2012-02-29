@@ -21,6 +21,14 @@ XSLTPROC=@XSLTPROC@
 XSLBASE=@XSLBASE@
 XMLLINT=@XMLLINT@
 
+# To allow network access use:
+#
+# make html XSLTPROCFLAGS=
+#
+ifeq ($(XSLTPROCFLAGS),)
+	XSLTPROCFLAGS=--nonet
+endif
+
 XSLTPROC_COMMONOPTS= \
 	--param section.autolabel 1 \
 	--param section.label.includes.component.label 1 \
