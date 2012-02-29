@@ -14,6 +14,7 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+/* #define POSTGIS_TOPOLOGY_DEBUG 1 */
 
 --{
 --
@@ -713,6 +714,17 @@ BEGIN
       RAISE DEBUG 'Tolerance for snapping to point % = %', ST_AsText(prj), snaptol;
 #endif
       snapedge := ST_Snap(rec.geom, prj, snaptol);
+
+      -- Snapping currently snaps the first point below tolerance
+      -- so may possibly move first point. See ticket #1631
+      IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(snapedge))
+      THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+        RAISE WARNING 'Snapping moved first edge vertex, fixing';
+#endif
+        snapedge := ST_MakeLine(ST_StartPoint(rec.geom), snapedge);
+      END IF;
+
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       IF NOT ST_Contains(snapedge, prj) THEN -- or if equal ?
         RAISE WARNING 'Edge within % distance from node still does not contain the node after snapping to it with tolerance %', tolerance, snaptol;

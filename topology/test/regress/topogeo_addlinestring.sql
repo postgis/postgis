@@ -126,6 +126,22 @@ SELECT check_changes();
 SELECT '#1613.2', TopoGeo_addLineString('city_data', 'LINESTRING(556250 144887, 556267 144887.07, 556310.04 144887)') ORDER BY 2;
 SELECT check_changes();
 
+-- See http://trac.osgeo.org/postgis/attachment/ticket/1631
+
+-- clean all up first
+DELETE FROM city_data.edge_data; 
+DELETE FROM city_data.node; 
+--DELETE FROM city_data.face; -- a bug forbids this (TODO: check what it is)
+
+SELECT '#1631.1', TopoGeo_addLineString('city_data',
+  'LINESTRING(556267.56295432 144887.06663814,556267.566 144888)'
+) ORDER BY 2;
+SELECT check_changes();
+SELECT '#1631.2', TopoGeo_addLineString('city_data',
+  'LINESTRING(556254.67 144886.62, 556267.66 144887.07)'
+) ORDER BY 2;
+SELECT check_changes();
+
 -- Cleanups
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
