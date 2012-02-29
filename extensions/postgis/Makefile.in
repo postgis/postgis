@@ -28,7 +28,7 @@ EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
 
 ifeq ($(PG91),yes)
-sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
+sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/mark_editable_objects.sql.in sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	cat $^ > $@
 	
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql_minor_upgrade
@@ -93,7 +93,7 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 
 #postgis_raster_upgrade_minor.sql is the one that contains both postgis AND raster
 #TODO: come up with a better name
-sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql.in.c  sql_bits/postgis_upgrade_minor.sql 	sql_bits/rtpostgis_upgrade_20_minor.sql  ../../doc/raster_comments.sql  ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
+sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql.in.c  sql_bits/postgis_upgrade_minor.sql 	sql_bits/rtpostgis_upgrade_20_minor.sql  sql_bits/mark_editable_objects.sql.in ../../doc/raster_comments.sql  ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 
 # sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 

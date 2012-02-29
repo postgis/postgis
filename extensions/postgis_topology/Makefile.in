@@ -32,7 +32,7 @@ all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERS
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
 	
-sql/$(EXTENSION).sql: sql_bits/topology.sql sql_bits/topology_comments.sql
+sql/$(EXTENSION).sql: sql_bits/topology.sql  sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql
 	cat $^ > $@
 	
 #strip BEGIN/COMMIT since these are not allowed in extensions
@@ -74,7 +74,7 @@ sql/topology_upgrade_minor.sql:  sql_bits/topology.sql
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 $< > $@
 	
-sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
+sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
   	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
