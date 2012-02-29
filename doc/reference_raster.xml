@@ -5635,7 +5635,7 @@ FROM dummy_rast;
 					<funcdef>raster <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-					<paramdef'><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
+					<paramdef><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
