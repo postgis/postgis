@@ -3155,7 +3155,6 @@ CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integ
 -----------------------------------------------------------------------
 -- ST_Intersection (geometry, raster in vector space)
 -----------------------------------------------------------------------
-
 CREATE OR REPLACE FUNCTION st_intersection(geomin geometry, rast raster, band integer DEFAULT 1)
 	RETURNS SETOF geomval AS $$
 	DECLARE
@@ -3191,46 +3190,54 @@ CREATE OR REPLACE FUNCTION st_intersection(geomin geometry, rast raster, band in
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION st_intersection(rast raster, band integer, geomin geometry)
+	RETURNS SETOF geomval AS
+	$$ SELECT st_intersection($3, $1, $2) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(rast raster, geomin geometry)
+	RETURNS SETOF geomval AS
+	$$ SELECT st_intersection($2, $1, 1) $$
+	LANGUAGE 'sql' STABLE;
+
 -----------------------------------------------------------------------
 -- ST_Intersection (2-raster in raster space)
 -----------------------------------------------------------------------
-
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster, band1 int,
 	rast2 raster, band2 int,
 	returnband text DEFAULT 'BOTH',
-	otheruserfunc regprocedure DEFAULT NULL
+	nodataval double precision[] DEFAULT NULL
 )
 	RETURNS raster
 	AS $$
 	DECLARE
 		rtn raster;
 		_returnband text;
+		newnodata1 float8;
+		newnodata2 float8;
 	BEGIN
-		-- returnband
+		newnodata1 := coalesce(nodataval[1], ST_BandNodataValue(rast1, band1), ST_MinPossibleValue(ST_BandPixelType(rast1, band1)));
+		newnodata2 := coalesce(nodataval[2], ST_BandNodataValue(rast2, band2), ST_MinPossibleValue(ST_BandPixelType(rast2, band2)));
+		
 		_returnband := upper(returnband);
-		IF _returnband NOT IN ('FIRST', 'SECOND', 'BOTH', 'OTHER') THEN
-			RAISE EXCEPTION 'Unknown value provided for returnband: %', returnband;
-			RETURN NULL;
-		END IF;
-
-		-- returnband is OTHER, otheruserfunc provided?
-		IF _returnband = 'OTHER' AND otheruserfunc IS NULL THEN
-			RAISE EXCEPTION 'Function must be provided for otheruserfunc if return band is OTHER';
-			RETURN NULL;
-		END IF;
 
 		rtn := NULL;
 		CASE
-			WHEN _returnband = 'FIRST' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), 'INTERSECTION');
-			WHEN _returnband = 'SECOND' THEN
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), 'INTERSECTION');
-			WHEN _returnband = 'OTHER' THEN
-				rtn := ST_MapAlgebraFct(rast1, band1, rast2, band2, otheruserfunc, NULL, 'INTERSECTION');
-			ELSE -- BOTH
-				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), 'INTERSECTION');
-				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), 'INTERSECTION'));
+			WHEN _returnband = 'BAND1' THEN
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), 'INTERSECTION', newnodata1::text, newnodata1::text, newnodata1);
+				rtn := ST_SetBandNodataValue(rtn, 1, newnodata1);
+			WHEN _returnband = 'BAND2' THEN
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), 'INTERSECTION', newnodata2::text, newnodata2::text, newnodata2);
+				rtn := ST_SetBandNodataValue(rtn, 1, newnodata2);
+			WHEN _returnband = 'BOTH' THEN
+				rtn := ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast1.val]', ST_BandPixelType(rast1, band1), 'INTERSECTION', newnodata1::text, newnodata1::text, newnodata1);
+				rtn := ST_SetBandNodataValue(rtn, 1, newnodata1);
+				rtn := ST_AddBand(rtn, ST_MapAlgebraExpr(rast1, band1, rast2, band2, '[rast2.val]', ST_BandPixelType(rast2, band2), 'INTERSECTION', newnodata2::text, newnodata2::text, newnodata2));
+				rtn := ST_SetBandNodataValue(rtn, 2, newnodata2);
+			ELSE
+				RAISE EXCEPTION 'Unknown value provided for returnband: %', returnband;
+				RETURN NULL;
 		END CASE;
 
 		RETURN rtn;
@@ -3240,17 +3247,37 @@ CREATE OR REPLACE FUNCTION st_intersection(
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster, band1 int,
 	rast2 raster, band2 int,
-	otheruserfunc regprocedure
+	returnband text,
+	nodataval double precision
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, $2, $3, $4, 'OTHER', $5) $$
+	$$ SELECT st_intersection($1, $2, $3, $4, $5, ARRAY[$6, $6]) $$
 	LANGUAGE 'sql' STABLE;
 
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster, band1 int,
+	rast2 raster, band2 int,
+	nodataval double precision[]
+)
+	RETURNS raster AS
+	$$ SELECT st_intersection($1, $2, $3, $4, 'BOTH', $5) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster, band1 int,
+	rast2 raster, band2 int,
+	nodataval double precision
+)
+	RETURNS raster AS
+	$$ SELECT st_intersection($1, $2, $3, $4, 'BOTH', ARRAY[$5, $5]) $$
+	LANGUAGE 'sql' STABLE;
+
+-- Variants without band number
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster,
 	rast2 raster,
 	returnband text DEFAULT 'BOTH',
-	otheruserfunc regprocedure DEFAULT NULL
+	nodataval double precision[] DEFAULT NULL
 )
 	RETURNS raster AS
 	$$ SELECT st_intersection($1, 1, $2, 1, $3, $4) $$
@@ -3259,44 +3286,29 @@ CREATE OR REPLACE FUNCTION st_intersection(
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster,
 	rast2 raster,
-	otheruserfunc regprocedure
+	returnband text,
+	nodataval double precision
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, 1, $2, 1, 'OTHER', $3) $$
+	$$ SELECT st_intersection($1, 1, $2, 1, $3, ARRAY[$4, $4]) $$
 	LANGUAGE 'sql' STABLE;
 
------------------------------------------------------------------------
--- ST_Intersection (raster, geometry in raster space)
------------------------------------------------------------------------
-
 CREATE OR REPLACE FUNCTION st_intersection(
-	rast raster, band int,
-	geom geometry,
-	otheruserfunc regprocedure DEFAULT NULL
-)
-	RETURNS raster AS $$
-	DECLARE
-		rtn raster;
-	BEGIN
-		rtn := NULL;
-
-		IF $4 IS NULL THEN
-			rtn := st_intersection($1, $2, ST_AsRaster($3, $1), 1, 'FIRST');
-		ELSE
-			rtn := st_intersection($1, $2, ST_AsRaster($3, $1), 1, 'OTHER', $4);
-		END IF;
-
-		RETURN rtn;
-	END;
-	$$ LANGUAGE 'plpgsql' STABLE;
-
-CREATE OR REPLACE FUNCTION st_intersection(
-	rast raster,
-	geom geometry,
-	otheruserfunc regprocedure DEFAULT NULL
+	rast1 raster,
+	rast2 raster,
+	nodataval double precision[]
 )
 	RETURNS raster AS
-	$$ SELECT st_intersection($1, 1, $2, $3) $$
+	$$ SELECT st_intersection($1, 1, $2, 1, 'BOTH', $3) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_intersection(
+	rast1 raster,
+	rast2 raster,
+	nodataval double precision
+)
+	RETURNS raster AS
+	$$ SELECT st_intersection($1, 1, $2, 1, 'BOTH', ARRAY[$3, $3]) $$
 	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
@@ -3428,27 +3440,21 @@ CREATE AGGREGATE ST_Union(raster, integer, text) (
 );
 
 -------------------------------------------------------------------
--- ST_Clip(rast raster, band int, geom geometry, nodata float8 DEFAULT null, trimraster boolean DEFAULT false)
+-- ST_Clip(rast raster, band int, geom geometry, nodata float8 DEFAULT null, crop boolean DEFAULT true)
 -- Clip the values of a raster to the shape of a polygon.
 --
 -- rast   - raster to be clipped
 -- band   - limit the result to only one band
 -- geom   - geometry defining the shape to clip the raster
 -- nodata - define (if there is none defined) or replace the raster nodata value with this value
--- trimraster - limit the extent of the result to the extent of the geometry
--- Todo:
--- test point
--- test line
--- test polygon smaller than pixel
--- test and optimize raster totally included in polygon
-
+-- crop   - limit the extent of the result to the extent of the geometry
 -----------------------------------------------------------------------
 -- ST_Clip
 -----------------------------------------------------------------------
--- Nodata as array series
+-- nodataval as array series
 
 -- Major variant
-CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata float8[] DEFAULT NULL, trimraster boolean DEFAULT FALSE)
+CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE)
 	RETURNS raster
 	AS $$
 	DECLARE
@@ -3458,7 +3464,7 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 		bandstart int;
 		bandend int;
 		newextent text;
-		newnodata float8;
+		newnodataval double precision;
 		newpixtype text;
 		bandi int;
 	BEGIN
@@ -3481,57 +3487,55 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata 
 		END IF;
 
 		newpixtype := ST_BandPixelType(rast, bandstart);
-		newnodata := coalesce(nodata[1], ST_BandNodataValue(rast, bandstart), ST_MinPossibleValue(newpixtype));
-		newextent := CASE WHEN trimraster THEN 'INTERSECTION' ELSE 'FIRST' END;
+		newnodataval := coalesce(nodataval[1], ST_BandNodataValue(rast, bandstart), ST_MinPossibleValue(newpixtype));
+		newextent := CASE WHEN crop THEN 'INTERSECTION' ELSE 'FIRST' END;
 
---RAISE NOTICE 'newextent=%', newextent;
 		-- Convert the geometry to a raster
-		geomrast := ST_AsRaster(geom, rast, ST_BandPixelType(rast, band), 1, newnodata);
+		geomrast := ST_AsRaster(geom, rast, ST_BandPixelType(rast, band), 1, newnodataval);
 
 		-- Compute the first raster band
-		newrast := ST_MapAlgebraExpr(rast, bandstart, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodata::text, newnodata::text, newnodata);
-		-- Set the newnodata
-		newrast := ST_SetBandNodataValue(newrast, bandstart, newnodata);
+		newrast := ST_MapAlgebraExpr(rast, bandstart, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodataval::text, newnodataval::text, newnodataval);
+		-- Set the newnodataval
+		newrast := ST_SetBandNodataValue(newrast, bandstart, newnodataval);
 
 		FOR bandi IN bandstart+1..bandend LOOP
---RAISE NOTICE 'bandi=%', bandi;
 			-- for each band we must determine the nodata value
 			newpixtype := ST_BandPixelType(rast, bandi);
-			newnodata := coalesce(nodata[bandi], nodata[array_upper(nodata, 1)], ST_BandNodataValue(rast, bandi), ST_MinPossibleValue(newpixtype));
-			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(rast, bandi, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodata::text, newnodata::text, newnodata));
-			newrast := ST_SetBandNodataValue(newrast, bandi, newnodata);
+			newnodataval := coalesce(nodataval[bandi], nodataval[array_upper(nodataval, 1)], ST_BandNodataValue(rast, bandi), ST_MinPossibleValue(newpixtype));
+			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(rast, bandi, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodataval::text, newnodataval::text, newnodataval));
+			newrast := ST_SetBandNodataValue(newrast, bandi, newnodataval);
 		END LOOP;
 
 		RETURN newrast;
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE;
 
--- Variant defaulting to all bands
-CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodata float8[] DEFAULT NULL, trimraster boolean DEFAULT FALSE)
-	RETURNS raster AS
-	$$ SELECT ST_Clip($1, NULL, $2, $3, $4) $$
-	LANGUAGE 'SQL' STABLE;
-
 -- Nodata values as integer series
-CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodata float8 DEFAULT NULL, trimraster boolean DEFAULT FALSE)
+CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodataval double precision, crop boolean DEFAULT TRUE)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, $2, $3, ARRAY[$4], $5) $$
 	LANGUAGE 'SQL' STABLE;
 
--- Variant defaulting to all bands
-CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodata float8, trimraster boolean DEFAULT FALSE)
-	RETURNS raster AS
-	$$ SELECT ST_Clip($1, NULL, $2, ARRAY[$3], $4) $$
-	LANGUAGE 'SQL' STABLE;
-
--- Variant defaulting nodata to the one of the raster or the min possible value
-CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, trimraster boolean)
+-- Variant defaulting nodataval to the one of the raster or the min possible value
+CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, crop boolean)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, $2, $3, null::float8[], $4) $$
 	LANGUAGE 'SQL' STABLE;
 
--- Variant defaulting nodata to the one of the raster or the min possible value and returning all bands
-CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, trimraster boolean)
+-- Variant defaulting to all bands
+CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE)
+	RETURNS raster AS
+	$$ SELECT ST_Clip($1, NULL, $2, $3, $4) $$
+	LANGUAGE 'SQL' STABLE;
+
+-- Variant defaulting to all bands
+CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodataval double precision, crop boolean DEFAULT TRUE)
+	RETURNS raster AS
+	$$ SELECT ST_Clip($1, NULL, $2, ARRAY[$3], $4) $$
+	LANGUAGE 'SQL' STABLE;
+
+-- Variant defaulting nodataval to the one of the raster or the min possible value and returning all bands
+CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, crop boolean)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, NULL, $2, null::float8[], $3) $$
 	LANGUAGE 'SQL' STABLE;

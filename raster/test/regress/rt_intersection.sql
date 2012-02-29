@@ -76,7 +76,7 @@ INSERT INTO raster_intersection_out
 
 INSERT INTO raster_intersection_out
 	(SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, r2.rast, 'FIRST'
+		r1.rast, r2.rast, 'BAND1'
 	)
 	FROM raster_intersection r1
 	JOIN raster_intersection r2
@@ -85,7 +85,7 @@ INSERT INTO raster_intersection_out
 		AND r2.rid BETWEEN 1 AND 9
 	) UNION ALL (
 	SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, r2.rast, 'FIRST'
+		r1.rast, r2.rast, 'BAND1'
 	)
 	FROM raster_intersection r1
 	JOIN raster_intersection r2
@@ -96,7 +96,7 @@ INSERT INTO raster_intersection_out
 
 INSERT INTO raster_intersection_out
 	(SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, r2.rast, 'SECOND'
+		r1.rast, r2.rast, 'BAND2'
 	)
 	FROM raster_intersection r1
 	JOIN raster_intersection r2
@@ -105,46 +105,7 @@ INSERT INTO raster_intersection_out
 		AND r2.rid BETWEEN 1 AND 9
 	) UNION ALL (
 	SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, r2.rast, 'SECOND'
-	)
-	FROM raster_intersection r1
-	JOIN raster_intersection r2
-		ON r1.rid != r2.rid
-	WHERE r1.rid = 10
-		AND r2.rid BETWEEN 11 AND 19)
-;
-
-CREATE OR REPLACE FUNCTION raster_intersection_other(
-	rast1 double precision,
-	rast2 double precision,
-	VARIADIC userargs text[]
-)
-	RETURNS double precision
-	AS $$
-	DECLARE
-	BEGIN
-		IF rast1 IS NOT NULL AND rast2 IS NOT NULL THEN
-			RETURN sqrt(power(rast1, 2) + power(rast2, 2));
-		ELSE
-			RETURN NULL;
-		END IF;
-
-		RETURN NULL;
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE;
-
-INSERT INTO raster_intersection_out
-	(SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, r2.rast, 'raster_intersection_other(double precision, double precision, text[])'::regprocedure
-	)
-	FROM raster_intersection r1
-	JOIN raster_intersection r2
-		ON r1.rid != r2.rid
-	WHERE r1.rid = 0
-		AND r2.rid BETWEEN 1 AND 9
-	) UNION ALL (
-	SELECT r1.rid, r2.rid, ST_Intersection(
-		r1.rast, r2.rast, 'raster_intersection_other(double precision, double precision, text[])'::regprocedure
+		r1.rast, r2.rast, 'BAND2'
 	)
 	FROM raster_intersection r1
 	JOIN raster_intersection r2
@@ -182,6 +143,11 @@ FROM (
 	FROM raster_intersection_out
 ) AS r;
 
+-- Display the pixels and the values of the resulting rasters
+SELECT rid1, rid2, band, (gvxy).x, (gvxy).y, (gvxy).val, ST_AsText((gvxy).geom) geom
+FROM (SELECT rid1, rid2, band, ST_PixelAsPolygons(rast, band) gvxy
+      FROM raster_intersection_out, generate_series(1, 2) band
+) foo;
+
 DROP TABLE IF EXISTS raster_intersection;
 DROP TABLE IF EXISTS raster_intersection_out;
-DROP FUNCTION raster_intersection_other(rast1 double precision, rast2 double precision, VARIADIC userargs text[])

@@ -5099,8 +5099,8 @@ rid |        rastbox
 		<refentry id="RT_ST_Clip">
 			<refnamediv>
 				<refname>ST_Clip</refname>
-				<refpurpose>Returns the raster clipped by the input geometry.  If no band is specified all bands are returned. If trimraster setting is not specified, false is assumed meaning
-				the output raster has the same extent as the input raster.</refpurpose>
+				<refpurpose>Returns the raster clipped by the input geometry.  If no band is specified all bands are returned. If <varname>crop</varname> is not specified, true is assumed meaning
+				the output raster is cropped.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5109,25 +5109,15 @@ rid |        rastbox
 					<funcdef>raster <function>ST_Clip</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodata=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				 <funcprototype>
-					<funcdef>raster <function>ST_Clip</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodata=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>crop=true</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>raster <function>ST_Clip</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>nodata</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
 				  </funcprototype>
 				  
 				 <funcprototype>
@@ -5135,23 +5125,7 @@ rid |        rastbox
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodata=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>trimraster=false</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_Clip</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>trimraster</parameter></paramdef>
-				  </funcprototype>
-				  
-				 <funcprototype>
-					<funcdef>raster <function>ST_Clip</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>trimraster</parameter></paramdef>
+					<paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5159,10 +5133,14 @@ rid |        rastbox
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a raster that is clipped by the input geometry <varname>geom</varname>.  If no band is specified all bands are returned.</para>
-				<para>An array of nodata values replacing the nodata values of the input raster can be provided, one for each band. Some variants also accept a single value. If none are provided and the input raster do not have a nodata value defined, nodata values of the resulting raster are set to ST_MinPossibleValue(ST_BandPixelType(rast, band)). When the number of nodata value in the array is smaller than the number of band, the last one in the array is used for the remaining bands. If the number of nodata value is greater than the number of band, the extra nodata values are ignored.</para>
-				<para>If trimraster setting is not specified, false is assumed meaning the output raster has the same extent as the input raster. If <varname>trimraster</varname> is set to true, the new raster has the same extent as the intersection of <varname>geom</varname>and <varname>rast</varname>.</para>
+				<para>Returns a raster that is clipped by the input geometry <varname>geom</varname>. If no band is specified all bands are returned.</para>
+				
+				<para>Rasters resulting from ST_Clip must have a nodata value assigned for areas clipped, one for each band. If none are provided and the input raster do not have a nodata value defined, nodata values of the resulting raster are set to ST_MinPossibleValue(ST_BandPixelType(rast, band)). When the number of nodata value in the array is smaller than the number of band, the last one in the array is used for the remaining bands. If the number of nodata value is greater than the number of band, the extra nodata values are ignored. All variants accepting an array of nodata values also accept a single value which will be assigned to each band.</para>        
+
+				<para>If <varname>crop</varname> is not specified, true is assumed meaning the output raster is cropped to the intersection of the <varname>geom</varname>and <varname>rast</varname> extents. If <varname>crop</varname> is set to false, the new raster gets the same extent as <varname>rast</varname>.</para>
+				
 				<para>Availability: 2.0.0 </para>
+				
 				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
 			</refsection>
 				
@@ -5174,12 +5152,12 @@ SELECT ST_Clip(rast, 1,
 	) from aerials.boston
 WHERE rid = 4;</programlisting>
 
-<programlisting>-- Demonstrate effect of trimraster on final dimensions of raster
--- Note how in trimmed final envelope is clipped to that of the clipper
--- if trimraster = true
-SELECT ST_XMax(ST_Envelope(ST_Clip(rast,1,clipper,true))) As xmax_w_trim,
+<programlisting>-- Demonstrate effect of crop on final dimensions of raster
+-- Note how final extent is clipped to that of the geometry
+-- if crop = true
+SELECT ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, true))) As xmax_w_trim,
 	ST_XMax(clipper) As xmax_clipper,
-	ST_XMax(ST_Envelope(ST_Clip(rast,1,clipper,false))) As xmax_wo_trim,
+	ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, false))) As xmax_wo_trim,
 	ST_XMax(ST_Envelope(rast)) As xmax_rast_orig
 FROM (SELECT rast, ST_Buffer(ST_Centroid(ST_Envelope(rast)),6) As clipper
 	FROM aerials.boston
@@ -5222,7 +5200,8 @@ WHERE rid = 6) As foo;
 -- Only difference is we don't specify a specific band to clip
 -- so all bands are clipped
 SELECT ST_Clip(rast,
-		ST_Buffer(ST_Centroid(ST_Envelope(rast)),20)
+	  ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20), 
+	  false
 	) from aerials.boston
 WHERE rid = 4;</programlisting>
 
@@ -5640,18 +5619,23 @@ FROM dummy_rast;
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band_num</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_Intersection</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+					<paramdef'><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
@@ -5659,14 +5643,7 @@ FROM dummy_rast;
 					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 					<paramdef choice='opt'><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
-				  </funcprototype>
-
-				  <funcprototype>
-					<funcdef>raster <function>ST_Intersection</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
-					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
@@ -5675,7 +5652,7 @@ FROM dummy_rast;
 					<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
-					<paramdef><type>regprocedure </type> <parameter>otheruserfunc</parameter></paramdef>
+					<paramdef><type>double precision[] </type> <parameter>nodataval</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
@@ -5684,8 +5661,8 @@ FROM dummy_rast;
 					<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>returnband</parameter></paramdef>
-					<paramdef choice='opt'><type>regprocedure </type> <parameter>otheruserfunc=NULL</parameter></paramdef>
+					<paramdef choice='opt'><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
+					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 
 				</funcsynopsis>
@@ -5693,27 +5670,27 @@ FROM dummy_rast;
 		
 			<refsection>
 				<title>Description</title>
-				<para>Returns a raster or a set of geometry-pixelvalue pairs representing the shared portion of two rasters or the geometrical intersection of a vectorization of the raster and a geometry. The order in which the geometry or the raster are passed determine if the operation is performed in vector or raster world.</para>
+				<para>Returns a raster or a set of geometry-pixelvalue pairs representing the shared portion of two rasters or the geometrical intersection of a vectorization of the raster and a geometry.</para>
 				
-				<para>The first variant, returning a setof geomval, works in vector world. The raster is first vectorized (using ST_DumpAsPolygon) into a set of geomval rows and those rows are then intersected with the geometry using the ST_Intersection(geometry, geometry) PostGIS function. Geometries intersecting only with a nodata value area of a raster returns an empty geometry. They are normally excluded from the results by the proper usage of ST_Intersect in the WHERE clause.</para>
+				<para>The first three variants, returning a setof geomval, works in vector space. The raster is first vectorized (using ST_DumpAsPolygon) into a set of geomval rows and those rows are then intersected with the geometry using the ST_Intersection(geometry, geometry) PostGIS function. Geometries intersecting only with a nodata value area of a raster returns an empty geometry. They are normally excluded from the results by the proper usage of ST_Intersect in the WHERE clause.</para>
 				
 				<para>You can access the geometry and the value parts of the resulting set of geomval by surrounding them with parenthesis and adding '.geom' or '.val' at the end of the expression. e.g. (ST_Intersection(rast, geom)).geom</para>
 				
-				<para>The other variants, returning a raster, works in raster world. They are using the two rasters version of ST_MapAlgebraExpr to perform the intersection. In the variants taking a geometry, the geometry is rasterized (using ST_AsRaster) before being passed to ST_MapAlgebraExpr.</para>
+				<para>The other variants, returning a raster, works in raster space. They are using the two rasters version of ST_MapAlgebraExpr to perform the intersection.</para>
 				
-				<para>The extent of the resulting raster corresponds to the geometrical intersection of the two raster extents. The resulting raster includes the bands from the 'FIRST', 'SECOND' or 'BOTH' rasters following what is passed as the returnband parameter. Nodata value areas present in any band results in nodata value areas in every bands of the result. In other word, any pixel intersecting with a nodata value pixel in the other raster a nodata value pixel in the resulting band if it is returned.</para>
+				<para>The extent of the resulting raster corresponds to the geometrical intersection of the two raster extents. The resulting raster includes 'BAND1', 'BAND2' or 'BOTH' bands, following what is passed as the <varname>returnband</varname> parameter. Nodata value areas present in any band results in nodata value areas in every bands of the result. In other words, any pixel intersecting with a nodata value pixel becomes a nodata value pixel in the result.</para>
 				
-				<para>You can optionally produce a one band raster and control the values it contains by providing a custom function of type regprocedure accepting two double precision values. See <xref linkend="RT_ST_MapAlgebraFct2" /> for an example on how to do that.</para>
+				<para>Rasters resulting from ST_Intersection must have a nodata value assigned for areas not intersecting. You can define or replace the nodata value for any resulting band by providing a <varname>nodataval[]</varname> array of one or two nodata values depending if you request 'BAND1', 'BAND2' or 'BOTH' bands. The first value in the array replace the nodata value in the first band and the second value replace the nodata value in the second band. If one input band do not have a nodata value defined and none are provided as an array, one is chosen using the ST_MinPossibleValue function. All variant accepting an array of nodata value can also accept a single value which will be assigned to each requested band.</para>        
 				
 				<para>In all variants, if no band number is specified band 1 is assumed.</para>        
 				
 				<note><para>To get more control on the resulting extent or on what to return when encountering a nodata value, use the two rasters version of <xref linkend="RT_ST_MapAlgebraExpr2" />.</para></note>
 				
-				<note><para>The variants returning a raster and taking a geometry are very similar to ST_Clip with the exception that ST_Clip() works on multiple band rasters and never returns a band corresponding to the rasterized geometry. ST_Intersection(raster, geometry) works only on one band and may return a band corresponding to the rasterized geometry (when 'BOTH' or 'SECOND' are passed as the returnband parameter).</para></note>
+				<note><para>To compute the intersection of a raster band with a geometry in raster space, use <xref linkend="RT_ST_Clip". ST_Clip works on multiple bands rasters and does not return a band corresponding to the rasterized geometry.</para></note>
 				
-				<note><para>ST_Intersection() Should be used in conjunction with ST_Intersects and an index on the raster column or the geometry column.</para></note>
+				<note><para>ST_Intersection should be used in conjunction with ST_Intersects and an index on the raster column and/or the geometry column.</para></note>
 
-				<para>Enhanced: 2.0.0 - Intersection in the raster world was introduced. In earlier pre-2.0.0 versions, only intersection performed in vector world were supported.</para>
+				<para>Enhanced: 2.0.0 - Intersection in the raster space was introduced. In earlier pre-2.0.0 versions, only intersection performed in vector space were supported.</para>
 				</refsection>
 				
 				<refsection>
@@ -6614,7 +6591,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 					</varlistentry>
 					<varlistentry>
 						<term>pixeltype</term>
-						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend='RT_ST_BandPixelType' /> or left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the <varname>rast</varname>. Results are truncated if they are larger than what is allowed for the pixeltype</para></listitem>
+						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend='RT_ST_BandPixelType' /> or left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the <varname>rast</varname>. Results are truncated if they are larger than what is allowed for the pixeltype.</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>ngbwidth</term>

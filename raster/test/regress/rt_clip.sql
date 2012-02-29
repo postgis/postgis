@@ -77,7 +77,7 @@ DROP FUNCTION make_test_raster(integer, integer, integer, double precision, doub
 
 -- Test 1 without trimming, without defining a nodata value
 INSERT INTO raster_clip_out
-SELECT 1, rid, gid, ST_Clip(rast, geom)
+SELECT 1, rid, gid, ST_Clip(rast, geom, false)
 FROM raster_clip, geom_clip;
 
 -- Test 2 with trimming, without defining a nodata value
@@ -85,9 +85,9 @@ INSERT INTO raster_clip_out
 SELECT 2, rid, gid, ST_Clip(rast, geom, true)
 FROM raster_clip, geom_clip;
 
--- Test 3 with trimming, defining a nodata value
+-- Test 3 without trimming, defining a nodata value
 INSERT INTO raster_clip_out
-SELECT 3, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253])
+SELECT 3, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253], false)
 FROM raster_clip, geom_clip;
 
 -- Test 4 with trimming, defining a nodata value
