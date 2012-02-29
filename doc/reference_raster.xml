@@ -5686,7 +5686,7 @@ FROM dummy_rast;
 				
 				<note><para>To get more control on the resulting extent or on what to return when encountering a nodata value, use the two rasters version of <xref linkend="RT_ST_MapAlgebraExpr2" />.</para></note>
 				
-				<note><para>To compute the intersection of a raster band with a geometry in raster space, use <xref linkend="RT_ST_Clip". ST_Clip works on multiple bands rasters and does not return a band corresponding to the rasterized geometry.</para></note>
+				<note><para>To compute the intersection of a raster band with a geometry in raster space, use <xref linkend="RT_ST_Clip" />. ST_Clip works on multiple bands rasters and does not return a band corresponding to the rasterized geometry.</para></note>
 				
 				<note><para>ST_Intersection should be used in conjunction with ST_Intersects and an index on the raster column and/or the geometry column.</para></note>
 
