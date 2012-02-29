@@ -2324,6 +2324,7 @@ CREATE OR REPLACE FUNCTION postgis_scripts_released() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE;
 
+-- Deprecation in 2.0.0 
 CREATE OR REPLACE FUNCTION postgis_uses_stats() RETURNS bool
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'C' IMMUTABLE;
@@ -2357,7 +2358,6 @@ DECLARE
 	geosver text;
 	gdalver text;
 	libxmlver text;
-	usestats bool;
 	dbproc text;
 	relproc text;
 	fullver text;
@@ -2376,7 +2376,6 @@ BEGIN
 			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
 	END;
 	SELECT postgis_libxml_version() INTO libxmlver;
-	SELECT postgis_uses_stats() INTO usestats;
 	SELECT postgis_scripts_installed() INTO dbproc;
 	SELECT postgis_scripts_released() INTO relproc;
 	select postgis_svn_version() INTO svnver;
@@ -2426,11 +2425,6 @@ BEGIN
 
 	IF  libxmlver IS NOT NULL THEN
 		fullver = fullver || ' LIBXML="' || libxmlver || '"';
-	END IF;
-
-	-- TODO: drop !
-	IF usestats THEN
-		fullver = fullver || ' USE_STATS';
 	END IF;
 
 	-- fullver = fullver || ' DBPROC="' || dbproc || '"';
