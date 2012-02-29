@@ -14,8 +14,6 @@ $target = $ARGV[0] if $ARGV[0];
 # Read the svn revision number
 my $svn_rev = &read_rev($target);
 
-# TODO: compare what's known already with what's to be written
-
 # Write it 
 &write_defn($svn_rev);
 
@@ -113,7 +111,7 @@ sub write_defn {
   my $oldrev = 0;
 
   # Do not override the file if new detected
-  # revision isn't different from the existing one
+  # revision isn't zero nor different from the existing one
   if ( -f $rev_file ) {
     open(IN, "<$rev_file");
     my $oldrevline = <IN>;
@@ -121,8 +119,8 @@ sub write_defn {
       $oldrev = $1;
     }
     close(IN);
-    if ( $rev == $oldrev ) {
-      print STDERR "Not updating existing rev file at $rev\n";
+    if ( $rev == 0 or $rev == $oldrev ) {
+      print STDERR "Not updating existing rev file at $oldrev\n";
       return;
     }
   }
