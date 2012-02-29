@@ -367,7 +367,8 @@ DROP TABLE my_schema.my_spatial_table;
 		<title>Description</title>
 
 		<para>Reports full postgis version and build configuration
-		infos.</para>
+		infos. Also informs about synchronization between
+		libraries and scripts suggesting upgrades as needed.</para>
 	  </refsection>
 
 	  <refsection>
@@ -383,11 +384,14 @@ DROP TABLE my_schema.my_spatial_table;
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="PostGIS_GEOS_Version" />, <xref
-		linkend="PostGIS_Lib_Version" />, <xref
-		linkend="PostGIS_LibXML_Version" />, <xref
-		linkend="PostGIS_PROJ_Version" />, <xref
-		linkend="PostGIS_Version" /></para>
+		<para>
+		<xref linkend="upgrading" />,
+		<xref linkend="PostGIS_GEOS_Version" />,
+		<xref linkend="PostGIS_Lib_Version" />,
+		<xref linkend="PostGIS_LibXML_Version" />,
+		<xref linkend="PostGIS_PROJ_Version" />,
+		<xref linkend="PostGIS_Version" />
+		</para>
 	  </refsection>
 	</refentry>
 
