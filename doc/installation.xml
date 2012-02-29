@@ -1080,12 +1080,30 @@ pretty_address
 
 	  <programlisting>psql -f postgis_upgrade_20_minor.sql -d your_spatial_database</programlisting>
 
+	  <para>
+		The same procedure applies to raster and
+		topology extensions, with upgrade files named
+		<filename>rtpostgis_upgrade*.sql</filename> and
+		<filename>topology_upgrade*.sql</filename> respectively.
+		If you need them:
+	  </para>
+
+	  <programlisting>psql -f rtpostgis_upgrade_20_minor.sql -d your_spatial_database</programlisting>
+	  <programlisting>psql -f topology_upgrade_20_minor.sql -d your_spatial_database</programlisting>
+
 	  <note>
 		<para>
 		  If you can't find the <filename>postgis_upgrade*.sql</filename> specific for upgrading your version you are using a version too early for
 		  a soft upgrade and need to do a HARD UPGRADE.
 		</para>
 	  </note>
+
+	  <para>
+		The <xref linkend="PostGIS_Full_Version" /> function
+		should inform you about the need to run this kind of
+		upgrade using a "procs need upgrade" message.
+	  </para>
+
 	</sect2>
 
 	<sect2 id="hard_upgrade">
