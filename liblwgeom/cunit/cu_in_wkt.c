@@ -22,7 +22,7 @@
 ** Globals used by tests
 */
 char *s;
-char *r;	
+char *r;
 
 /*
 ** The suite initialization function.
@@ -42,8 +42,8 @@ static int clean_wkt_in_suite(void)
 	return 0;
 }
 
-/* 
-* Return a char* that results from taking the input 
+/*
+* Return a char* that results from taking the input
 * WKT, creating an LWGEOM, then writing it back out
 * as an output WKT using the supplied variant.
 * If there is an error, return that.
@@ -53,7 +53,7 @@ static char* cu_wkt_in(char *wkt, uint8_t variant)
 	LWGEOM_PARSER_RESULT p;
 	int rv = 0;
 	char *s = 0;
-	
+
 	rv = lwgeom_parse_wkt(&p, wkt, 0);
 	if( p.errcode ) {
 		return strdup(p.message);
@@ -131,7 +131,7 @@ static void test_wkt_in_linestring(void)
 	CU_ASSERT_STRING_EQUAL(r,"can not mix dimensionality in a geometry");
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
-	
+
 }
 
 static void test_wkt_in_polygon(void)
@@ -155,7 +155,7 @@ static void test_wkt_in_polygon(void)
 
 static void test_wkt_in_multipoint(void)
 {
-	/**I'm remarking this out since it fails on windows because windows returns 
+	/**I'm remarking this out since it fails on windows because windows returns
 	 MULTIPOINT(-1 -2 -3,5.4 6.6 7.77,-5.4 -6.6 -7.77,1000000 1e-006 -1000000,-1.3e-006 -1.4e-005 0) **/
 	/** @todo TODO: Paul put back in if you care after you do replace mumbo jumbo to replace the extra 0s in Windows
 	*/
@@ -164,7 +164,7 @@ static void test_wkt_in_multipoint(void)
 	// CU_ASSERT_STRING_EQUAL(r,s);
 	// printf("\nIN:  %s\nOUT: %s\n",s,r);
 	// lwfree(r);
-	
+
 	s = "MULTIPOINT(0 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
 	CU_ASSERT_STRING_EQUAL(r,s);
@@ -185,7 +185,7 @@ static void test_wkt_in_multilinestring(void)
 	CU_ASSERT_STRING_EQUAL(r,s);
 	//printf("\nIN:  %s\nOUT: %s\n",s,r);
 	lwfree(r);
-	
+
 }
 
 static void test_wkt_in_multipolygon(void)
@@ -331,16 +331,17 @@ static void test_wkt_in_errlocation(void)
 	LWGEOM_PARSER_RESULT p;
 	int rv = 0;
 	char *wkt = 0;
-	
+
 	wkt = "LINESTRING((0 0 0,1 1)";
 	lwgeom_parser_result_init(&p);
 	rv = lwgeom_parse_wkt(&p, wkt, LW_PARSER_CHECK_ALL);
-	CU_ASSERT_EQUAL(12,p.errlocation);
-	lwgeom_parser_result_free(&p);
+	CU_ASSERT(fabs(12 - p.errlocation) < 1.5);
 
 //	printf("errlocation %d\n", p.errlocation);
 //	printf("message %s\n", p.message);
-	
+
+	lwgeom_parser_result_free(&p);
+
 }
 
 /*
