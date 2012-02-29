@@ -4,5 +4,4 @@ UPGRADEABLE_VERSIONS = \
 	2.0.0alpha3 \
 	2.0.0alpha4 \
 	2.0.0alpha5 \
-	2.0.0alpha6 \
-	2.0.0beta1
+	2.0.0alpha6 
