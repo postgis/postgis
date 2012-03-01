@@ -44,3 +44,20 @@ WITH op AS ( select rast AS rin,
   ST_MapAlgebraExpr(rast, 1, NULL, 'SELECT g from (select [rast],NULL::double precision as g) as foo', 2)
   AS rout FROM ST_TestRaster(0, 0, 10) rast )
 SELECT 'T11.2', ST_Value(rin, 1, 1), ST_Value(rout, 1, 1) FROM op;
+
+-- Test pracine's new bug #1638
+SELECT 'T12',
+  ST_Value(rast, 1, 2) = 1,
+  ST_Value(rast, 2, 1) = 2,
+  ST_Value(rast, 4, 3) = 4,
+  ST_Value(rast, 3, 4) = 3
+  FROM ST_MapAlgebraExpr(
+    ST_AddBand(
+      ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, 0.001, 0, 0, 4269), 
+      '8BUI'::text, 
+      1, 
+      0
+    ), 
+    '32BUI', 
+    '[rast.x]'
+  ) AS rast; 
