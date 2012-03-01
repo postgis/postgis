@@ -37,6 +37,9 @@ To generate the html files:
   xsltproc                  (http://xmlsoft.org/XSLT/xsltproc2.html)
   DocBook XSL scripts
 
+To generate the comments
+  MathML 3 DTD              (http://www.w3.org/Math/DTD/)
+
 To generate the images:
   ImageMagick               (http://www.imagemagick.org/script/index.php)
 
