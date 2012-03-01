@@ -57,6 +57,51 @@ static void test_ptarray_append_point(void)
 	lwline_free(line);
 }
 
+static void test_ptarray_insert_point(void)
+{
+	LWLINE *line;
+	char *wkt;
+	POINT4D p;
+
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING EMPTY"));
+	p.x = 1; 
+	p.y = 1;
+	ptarray_insert_point(line->points, &p, 0);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
+	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(1 1)");
+	lwfree(wkt);
+
+	p.x = 2; 
+	p.y = 20;
+	ptarray_insert_point(line->points, &p, 0);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
+	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(2 20,1 1)");
+	lwfree(wkt);
+
+	p.x = 3; 
+	p.y = 30;
+	ptarray_insert_point(line->points, &p, 1);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
+	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(2 20,3 30,1 1)");
+	lwfree(wkt);
+
+	p.x = 4; 
+	p.y = 40;
+	ptarray_insert_point(line->points, &p, 0);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
+	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(4 40,2 20,3 30,1 1)");
+	lwfree(wkt);
+
+	p.x = 5; 
+	p.y = 50;
+	ptarray_insert_point(line->points, &p, 4);
+	wkt = lwgeom_to_text(lwline_as_lwgeom(line));
+	CU_ASSERT_STRING_EQUAL(wkt,"LINESTRING(4 40,2 20,3 30,1 1,5 50)");
+	lwfree(wkt);
+
+	lwline_free(line);
+}
+
 static void test_ptarray_append_ptarray(void)
 {
 	LWLINE *line1, *line2;
@@ -329,6 +374,7 @@ CU_TestInfo ptarray_tests[] =
 	PG_TEST(test_ptarray_locate_point),
 	PG_TEST(test_ptarray_isccw),
 	PG_TEST(test_ptarray_desegmentize),
+	PG_TEST(test_ptarray_insert_point),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo ptarray_suite = {"ptarray", NULL, NULL, ptarray_tests };
