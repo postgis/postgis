@@ -33,11 +33,9 @@ Make targets are:
 Requirements
 ====================================================
 
-To generate the html files:
+To generate the html files and the comments:
   xsltproc                  (http://xmlsoft.org/XSLT/xsltproc2.html)
   DocBook XSL scripts
-
-To generate the comments
   MathML 3 DTD              (http://www.w3.org/Math/DTD/)
 
 To generate the images:
