@@ -131,7 +131,7 @@ SELECT check_changes();
 -- clean all up first
 DELETE FROM city_data.edge_data; 
 DELETE FROM city_data.node; 
---DELETE FROM city_data.face; -- a bug forbids this (TODO: check what it is)
+DELETE FROM city_data.face where face_id > 0; 
 
 SELECT '#1631.1', TopoGeo_addLineString('city_data',
   'LINESTRING(556267.56295432 144887.06663814,556267.566 144888)'
