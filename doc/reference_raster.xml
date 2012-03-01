@@ -1153,7 +1153,7 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
                 
                 <para>Converts a PostGIS geometry to a PostGIS raster. The many variants offers three groups of  possibilities for setting the alignment and pixelsize of the resulting raster.</para>
                  
-                 <para>The first group, composed of the two first variants, produce a raster having the same alignment (<varname>scalex</varname>, <varname>scaley</varname>, <varname>gridx</varname> and <varname>gridy</varname>), pixel type and nodata value as the provided reference raster. You can pass this reference raster by joining it from another table or by creating it with ST_CreateEmptyRaster and ST_AddBand.</para>
+                 <para>The first group, composed of the two first variants, produce a raster having the same alignment (<varname>scalex</varname>, <varname>scaley</varname>, <varname>gridx</varname> and <varname>gridy</varname>), pixel type and nodata value as the provided reference raster. You generally pass this reference raster by joining the table containing the geometry with the table containing the reference raster.</para>
                  
                  <para>The second group, composed of four variants, let you set the dimensions of the raster by providing the parameters of a pixel size (<varname>scalex</varname> &amp; <varname>scaley</varname> and <varname>skewx</varname> &amp; <varname>skewy</varname>). The <varname>width</varname> &amp; <varname>height</varname> of the resulting raster will be adjusted to fit the extent of the geometry. In most cases, you must cast integer <varname>scalex</varname> &amp; <varname>scaley</varname> arguments to double precision so that PostgreSQL choose the right variant.</para>
                  
@@ -2831,7 +2831,7 @@ rid | hb1 | hb2 | hb4 | numbands
 	    <refentry id="RT_ST_PixelAsPolygon">
 			<refnamediv>
 				<refname>ST_PixelAsPolygon</refname>
-				<refpurpose>Returns the geometry that bounds the pixel (for now a rectangle) for a particular row and column.</refpurpose>
+				<refpurpose>Returns the geometry that bounds the pixel for a particular row and column.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2848,7 +2848,7 @@ rid | hb1 | hb2 | hb4 | numbands
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the geometry that bounds the pixel (for now a rectangle) for a particular row and column.</para>
+				<para>Returns the geometry that bounds the pixel for a particular row and column.</para>
 
 			</refsection>
 				
@@ -2877,6 +2877,59 @@ WHERE rid=2;
 			</refsection>
 		</refentry>
 	    
+	    <refentry id="RT_ST_PixelAsPolygons">
+			<refnamediv>
+				<refname>ST_PixelAsPolygons</refname>
+				<refpurpose>Returns the geometry that bounds every pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the geometry that bounds every pixel of a raster band along with the value (double precision), the X and the Y raster coordinates (integers) of each pixel.</para>
+
+			</refsection>
+				
+			<refsection>
+					<title>Examples</title>
+					<programlisting>
+-- get raster pixel polygon
+SELECT (gv).x, (gv).y, (gv).val, ST_AsText((gv).geom) geom
+FROM (SELECT ST_PixelAsPolygons(
+                 ST_SetValue(ST_SetValue(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 0.001, -0.001, 0.001, 0.001, 4269), 
+                                                    '8BUI'::text, 1, 0), 
+                                         2, 2, 10), 
+                             1, 1, NULL)
+) gv 
+) foo;
+
+ x | y | val |                geom
+---+---+-----------------------------------------------------------------------------
+ 1 | 1 |     | POLYGON((0 0,0.001 0.001,0.002 0,0.001 -0.001,0 0))
+ 1 | 2 |   1 | POLYGON((0.001 -0.001,0.002 0,0.003 -0.001,0.002 -0.002,0.001 -0.001))
+ 2 | 1 |   1 | POLYGON((0.001 0.001,0.002 0.002,0.003 0.001,0.002 0,0.001 0.001))
+ 2 | 2 |  10 | POLYGON((0.002 0,0.003 0.001,0.004 0,0.003 -0.001,0.002 0))
+  </programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_DumpAsPolygons" />, <xref linkend="RT_ST_PixelAsPolygon" />,
+							 <xref linkend="ST_AsText" />
+				</para>
+			</refsection>
+		</refentry>
+
 	    <refentry id="RT_ST_Value">
 			<refnamediv>
 				<refname>ST_Value</refname>
@@ -3543,7 +3596,7 @@ WHERE rid = 2;
 				
 				<para>New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor which is the fastest but produce the worst interpolation.</para>
 				
-				<para>A maxerror percent of 0.125 is used if no maxerr is specified.</para>
+				<para>A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.</para>
 				
 				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para></note>
@@ -3633,9 +3686,11 @@ WHERE rid = 2;
 				
 				<para>Resample a raster by adjusting only its scale (or pixel size). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
 				
-				<para><varname>scalex</varname> and <varname>scaley</varname> define the new pixel size. scaley must often be negative to get well oriented raster. When the new scalex is not a divisor of the raster width, the horizontal extent of the resulting raster is adjusted. The same rule applies to the vertical extent when the new scaley is not a divisor of the height of the raster.</para>
+				<para><varname>scalex</varname> and <varname>scaley</varname> define the new pixel size. scaley must often be negative to get well oriented raster.</para>
 				
-				<para>A maxerror percent of 0.125 if no maxerr is specified.</para>
+				<para>When the new scalex or scaley is not a divisor of the raster width or height, the extent of the resulting raster is expanded to encompass the extent of the provided raster.</para>
+				
+				<para>A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.</para>
 				
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
 				
@@ -3651,10 +3706,10 @@ WHERE rid = 2;
 					<para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
 					
 					<programlisting>-- the original raster pixel size
-					SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0))
+SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0))
 					
-					-- the rescaled raster raster pixel size
-					SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))</programlisting>
+-- the rescaled raster raster pixel size
+SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))</programlisting>
 					
 					<para>This example utilize the katrina raster loaded as a single tile described in 
 			<ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</ulink></para>
@@ -3710,6 +3765,158 @@ SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
 			<refsection>
 				<title>See Also</title>
 				<para><xref linkend="RT_ST_SetScale" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_Resample" />, <xref linkend="RT_ST_Transform" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_Reskew">
+			<refnamediv>
+				<refname>ST_Reskew</refname>
+				<refpurpose>Resample a raster by adjusting only its skew (or rotation parameters). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor.
+				    </refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>raster <function>ST_Reskew</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>skewxy</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>raster <function>ST_Reskew</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>skewx</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>skewy</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
+					
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				
+				<para>Resample a raster by adjusting only its skew (or rotation parameters). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
+				
+				<para><varname>skewx</varname> and <varname>skewy</varname> define the new skew.</para>
+				
+				<para>The extent of the new raster will encompass the extent of the provided raster.</para>	
+				
+				<para>A maxerror percent of 0.125 if no <varname>maxerr</varname> is specified.</para>
+				
+				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
+
+				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
+				
+				<note><para>ST_Reskew is different from <xref linkend="RT_ST_SetSkew" /> in that ST_SetSkew do not resample the raster to match the raster extent. ST_SetSkew only changes the metadata (or georeference) of the raster to correct an originally mis-specified skew. ST_Reskew results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetSkew do not modify the width, nor the height of the raster.</para></note>
+				
+				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+			</refsection>
+				
+			<refsection>
+					<title>Examples</title>
+					<para>A simple example reskewing a raster from a skew of 0.0 to a skew of 0.0015.</para>
+					
+					<programlisting>-- the original raster pixel size
+SELECT ST_Rotation(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0))
+					
+-- the rescaled raster raster pixel size
+SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))
+                    </programlisting>
+					
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Resample" />, <xref linkend="RT_ST_Rescale" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SetRotation" />, <xref linkend="RT_ST_SkewX" />, <xref linkend="RT_ST_SkewY" />, <xref linkend="RT_ST_Transform" /></para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_SnapToGrid">
+			<refnamediv>
+				<refname>ST_SnapToGrid</refname>
+				<refpurpose>Resample a raster by snapping it to a grid. New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor.
+				    </refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>raster <function>ST_SnapToGrid</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>scalex=DEFAULT 0</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>scaley=DEFAULT 0</parameter></paramdef>
+					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>raster <function>ST_SnapToGrid</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
+					
+					<funcprototype>
+						<funcdef>raster <function>ST_SnapToGrid</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>scalexy</parameter></paramdef>
+						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					</funcprototype>
+					
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				
+				<para>Resample a raster by snapping it to a grid defined by an arbitrary pixel corner (gridx &amp; gridy) and optionally a pixel size (scalex &amp; scaley). New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation.</para>
+				
+				<para><varname>gridx</varname> and <varname>gridy</varname> define any arbitrary pixel corner of the new grid. This is not necessarily the upper left corner of the new raster and it does not have to be inside or on the edge of the new raster extent.</para>
+				
+				<para>You can optionnal define the pixel size of the new grid with <varname>scalex</varname> and <varname>scaley</varname>.</para>	
+				<para>The extent of the new raster will encompass the extent of the provided raster.</para>	
+				
+				<para>A maxerror percent of 0.125 if no <varname>maxerr</varname> is specified.</para>
+				
+				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
+
+				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
+				
+				<note><para>Use <xref linkend="RT_ST_Resample" /> if you need more control over the grid parameters.</para></note>
+				
+				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+			</refsection>
+				
+			<refsection>
+					<title>Examples</title>
+					<para>A simple example snapping a raster to a slightly different grid.</para>
+					
+					<programlisting>-- the original raster pixel size
+SELECT ST_UpperLeftX(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0))
+					
+-- the rescaled raster raster pixel size
+SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0002, 0.0002))
+                    </programlisting>
+					
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_Resample" />, <xref linkend="RT_ST_Rescale" />, <xref linkend="RT_ST_UpperLeftX" />, <xref linkend="RT_ST_UpperLeftY" /></para>
 			</refsection>
 		</refentry>
 		
@@ -4430,8 +4637,11 @@ ORDER BY value, quantile,rid
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns <varname>summarystats</varname> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1. </para> 
-				<note><para>By default only considers pixel values no equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para>. By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</note>
+				<para>Returns <varname>summarystats</varname> consisting of count, sum, mean, stddev, min, max for a given raster band of a raster or raster coverage.  If no band is specified <varname>nband</varname> defaults to 1.</para>
+
+				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value. Set <varname>exclude_nodata_value</varname> to false to get count of all pixels.</para></note>
+				
+				<note><para>By default will sample all pixels. To get faster response, set <varname>sample_percent</varname> to lower than 1</para></note>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
 				
