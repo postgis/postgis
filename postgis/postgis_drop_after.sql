@@ -136,3 +136,4 @@ DROP FUNCTION IF EXISTS st_geometry_cmp(geometry, geometry);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);
 
 DROP FUNCTION IF EXISTS ST_AsBinary(text); -- deprecated in 2.0
+DROP FUNCTION IF EXISTS postgis_uses_stats(); -- deprecated in 2.0
