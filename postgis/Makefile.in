@@ -123,10 +123,9 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 %.sql: %.sql.in
 	sed 's,MODULE_PATHNAME,$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
 
-postgis_upgrade_20_minor.sql.in: postgis_drop_before.sql.in.c postgis.sql
+postgis_upgrade_20_minor.sql.in: postgis_drop_before.sql.in.c postgis.sql postgis_drop.sql.in.c
 	cat $^ > $@
-postgis_upgrade_20_minor.sql: ../utils/postgis_proc_upgrade.pl
-postgis_upgrade_20_minor.sql: postgis_upgrade_20_minor.sql.in
+postgis_upgrade_20_minor.sql: postgis_upgrade_20_minor.sql.in ../utils/postgis_proc_upgrade.pl 
 	$(PERL) ../utils/postgis_proc_upgrade.pl $< 2.0 > $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
@@ -134,7 +133,7 @@ $(SQL_OBJS): %.in: %.in.c
 	$(CPP) -traditional-cpp -I../libpgcommon $< | grep -v '^#' > $@
 
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
-$(SQL_OBJS): ../postgis_config.h
+$(SQL_OBJS): ../postgis_config.h ../postgis_svn_revision.h
 
 postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c postgis_drop.sql.in.c
 

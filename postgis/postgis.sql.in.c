@@ -4986,5 +4986,3 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 	LANGUAGE 'sql' IMMUTABLE;
 
 COMMIT;
-
-#include "postgis_drop.sql.in.c"
