@@ -451,20 +451,15 @@ dnl Explain our prefix policy if necessary.
 dnl ===========================================================================
 
 if test "$prefix" != "NONE"; then
-  AC_MSG_RESULT([----------------------------------------------------------------------])
-  AC_MSG_RESULT([  You have set the --prefix to '$prefix'. Unfortunately the PostGIS   ])
-  AC_MSG_RESULT([  build system can only install into the directories used by the      ])
-  AC_MSG_RESULT([  PostgreSQL build you are compiling against, the one that supplied   ])
-  AC_MSG_RESULT([  the pg_config we detected: $PGCONFIG ])
-  AC_MSG_RESULT([  Based on that script we will be installing:   ])
+  AC_MSG_RESULT([------------------------------------------------------------------------])
+  AC_MSG_RESULT([  WARNING: You have set the --prefix to '$prefix'. But we mostly    ])
+  AC_MSG_RESULT([  ignore the --prefix. For your info, using the values determined from ])
+  AC_MSG_RESULT([  $PGCONFIG we will be installing:   ])
   AC_MSG_RESULT([    * postgis shared library in $PGSQL_LIBDIR ])
   AC_MSG_RESULT([    * postgis SQL files in $PGSQL_SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION ])
   AC_MSG_RESULT([    * postgis executables in $PGSQL_BINDIR ])
-  AC_MSG_RESULT([  Please try again without a --prefix, sorry. ])
-  AC_MSG_RESULT([----------------------------------------------------------------------])
-  AC_MSG_ERROR([])
+  AC_MSG_RESULT([------------------------------------------------------------------------])
 fi
-
 
 dnl ===========================================================================
 dnl Detect libxml2 if it is installed
