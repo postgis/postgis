@@ -2795,11 +2795,12 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     /* Construct expression for raster values */
     if (!PG_ARGISNULL(3)) {
         expression = text_to_cstring(PG_GETARG_TEXT_P(3));
-        len = strlen("SELECT ") + strlen(expression);
+        len = strlen("SELECT (") + strlen(expression) + strlen(")::double precision");
         initexpr = (char *)palloc(len + 1);
 
-        strncpy(initexpr, "SELECT ", strlen("SELECT "));
-        strncpy(initexpr + strlen("SELECT "), expression, strlen(expression));
+        strncpy(initexpr, "SELECT (", strlen("SELECT ("));
+        strncpy(initexpr + strlen("SELECT ("), expression, strlen(expression));
+				strncpy(initexpr + strlen("SELECT (") + strlen(expression), ")::double precision", strlen(")::double precision"));
         initexpr[len] = '\0';
 
         POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraExpr: Expression is %s", initexpr);
