@@ -37,10 +37,10 @@ FROM ST_TestRaster(0, 0, 10) rast;
 
 -- Test evaluations to null (see #1523)
 WITH op AS ( select rast AS rin,
-  ST_MapAlgebraExpr(rast, 1, NULL, 'g from (select NULL as g) as foo', 2)
+  ST_MapAlgebraExpr(rast, 1, NULL, 'SELECT g from (select NULL::double precision as g) as foo', 2)
   AS rout FROM ST_TestRaster(0, 0, 10) rast )
 SELECT 'T11.1', ST_Value(rin, 1, 1), ST_Value(rout, 1, 1) FROM op;
 WITH op AS ( select rast AS rin,
-  ST_MapAlgebraExpr(rast, 1, NULL, 'g from (select [rast],NULL as g) as foo', 2)
+  ST_MapAlgebraExpr(rast, 1, NULL, 'SELECT g from (select [rast],NULL::double precision as g) as foo', 2)
   AS rout FROM ST_TestRaster(0, 0, 10) rast )
 SELECT 'T11.2', ST_Value(rin, 1, 1), ST_Value(rout, 1, 1) FROM op;
