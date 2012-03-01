@@ -125,12 +125,12 @@ ptarray_insert_point(POINTARRAY *pa, const POINT4D *p, int where)
 		LWDEBUGF(5,"copying %d bytes to start vertex %d from start vertex %d", copy_size, where+1, where);
 	}
 	
+	/* We have one more point */
+	++pa->npoints;
+	
 	/* Copy the new point into the gap */
 	ptarray_set_point4d(pa, where, p);
 	LWDEBUGF(5,"copying new point to start vertex %d", point_size, where);
-	
-	/* We have one more point */
-	pa->npoints++;
 	
 	return LW_SUCCESS;
 }

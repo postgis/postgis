@@ -17,6 +17,7 @@
 #include <float.h>
 #include <stdio.h>
 #include <errno.h>
+#include <assert.h>
 
 /*
  * Lower this to reduce integrity checks
@@ -457,6 +458,7 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 void
 ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d)
 {
+	assert(n >= 0 && n < pa->npoints);
 	uint8_t *ptr=getPoint_internal(pa, n);
 	switch ( FLAGS_GET_ZM(pa->flags) )
 	{

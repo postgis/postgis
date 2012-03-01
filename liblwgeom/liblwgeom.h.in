@@ -770,6 +770,7 @@ extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
  * dimension, the appropriate ordinate values
  * will be extracted from it
  *
+ * N must be a valid point index 
  */
 extern void ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d);
 
