@@ -244,7 +244,7 @@ while( my $l = <INPUT> ) {
           $subline =~ s/^[0-9]*\t/${newsrid}\t/;
       }
       print STDOUT $subline;
-      last if $subline =~ /^\.$/;
+      last if $subline =~ /^\\.$/;
     }
     next;
   }
