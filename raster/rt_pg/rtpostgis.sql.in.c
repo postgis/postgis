@@ -2454,7 +2454,7 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
 
 -----------------------------------------------------------------------
 -- ST_PixelAsPolygons
--- Return all the pixels of a raster as a geomval record
+-- Return all the pixels of a raster as a geom, val, x, y record
 -- Should be called like this:
 -- SELECT (gv).geom, (gv).val FROM (SELECT ST_PixelAsPolygons(rast) gv FROM mytable) foo
 -----------------------------------------------------------------------
@@ -2797,7 +2797,7 @@ CREATE CAST (raster AS bytea)
 ------------------------------------------------------------------------------
 --  GiST index OPERATOR support functions
 ------------------------------------------------------------------------------
-
+-- raster/raster functions
 CREATE OR REPLACE FUNCTION raster_overleft(raster, raster)
     RETURNS bool
     AS 'select $1::geometry &< $2::geometry'
@@ -2858,10 +2858,32 @@ CREATE OR REPLACE FUNCTION raster_overlap(raster, raster)
     AS 'select $1::geometry && $2::geometry'
     LANGUAGE 'SQL' IMMUTABLE STRICT;
 
+-- raster/geometry functions
+CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
+    RETURNS bool
+    AS 'select $1::geometry ~ $2'
+    LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
+    RETURNS bool
+    AS 'select $1::geometry && $2'
+    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    
+-- geometry/raster functions
+CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
+    RETURNS bool
+    AS 'select $1 ~ $2::geometry'
+    LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
+    RETURNS bool
+    AS 'select $1 && $2::geometry'
+    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    
 ------------------------------------------------------------------------------
 --  GiST index OPERATORs
 ------------------------------------------------------------------------------
-
+-- raster/raster operators
 CREATE OPERATOR << (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_left,
     COMMUTATOR = '>>',
@@ -2931,6 +2953,32 @@ CREATE OPERATOR @ (
 CREATE OPERATOR ~ (
     LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_contain,
     COMMUTATOR = '@',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+
+-- raster/geometry operators
+CREATE OPERATOR ~ (
+    LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_contain,
+    COMMUTATOR = '@',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+    
+CREATE OPERATOR && (
+    LEFTARG = raster, RIGHTARG = geometry, PROCEDURE = raster_geometry_overlap,
+    COMMUTATOR = '&&',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+
+-- geometry/raster operators
+CREATE OPERATOR ~ (
+    LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_contain,
+    COMMUTATOR = '@',
+    RESTRICT = contsel, JOIN = contjoinsel
+    );
+    
+CREATE OPERATOR && (
+    LEFTARG = geometry, RIGHTARG = raster, PROCEDURE = geometry_raster_overlap,
+    COMMUTATOR = '&&',
     RESTRICT = contsel, JOIN = contjoinsel
     );
 
