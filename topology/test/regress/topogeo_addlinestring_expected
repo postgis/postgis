@@ -121,4 +121,17 @@ E|55|sn51|en54
 E|56|sn54|en52
 E|57|sn53|en54
 E|58|sn54|en55
+#1641.1|59
+N|56||POINT(-0.2 0.4)
+N|57||POINT(0.2 0.4)
+E|59|sn56|en57
+#1641.2|61
+#1641.2|62
+N|58||POINT(0 0.2)
+N|59||POINT(0 0.4)
+N|60||POINT(0 0.4)
+E|59|sn56|en59
+E|60|sn59|en57
+E|61|sn58|en59
+E|62|sn59|en60
 Topology 'city_data' dropped
