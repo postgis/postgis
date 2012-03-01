@@ -4,7 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
- * Copyright (C) 2011 Regents of the University of California
+ * Copyright (C) 2011-2012 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
@@ -140,7 +140,16 @@ typedef struct rt_valuecount_t* rt_valuecount;
 typedef struct rt_gdaldriver_t* rt_gdaldriver;
 typedef struct rt_reclassexpr_t* rt_reclassexpr;
 
-typedef OGREnvelope rt_extent;
+/* envelope information */
+typedef struct {
+	double MinX;
+	double MaxX;
+	double MinY;
+	double MaxY;
+
+	double UpperLeftX;
+	double UpperLeftY;
+} rt_envelope;
 
 /**
  * Enum definitions
@@ -1026,6 +1035,42 @@ int rt_raster_geopoint_to_cell(rt_raster raster,
 LWPOLY* rt_raster_get_convex_hull(rt_raster raster);
 
 /**
+ * Get raster's envelope.
+ *
+ * The envelope is the minimum bounding rectangle of the raster
+ *
+ * @param raster: the raster to get envelope of
+ * @param env: pointer to rt_envelope
+ *
+ * @return 0 on error, 1 on success
+ */
+int rt_raster_get_envelope(
+	rt_raster raster,
+	rt_envelope *env
+);
+
+/*
+ * Compute skewed extent that covers unskewed extent.
+ *
+ * @param envelope: unskewed extent of type rt_envelope
+ * @param skew: pointer to 2-element array (x, y) of skew
+ * @param scale: pointer to 2-element array (x, y) of scale
+ * @param tolerance: value between 0 and 1 where the smaller the tolerance
+ *                   results in an extent approaching the "minimum" skewed
+ *                   extent.  If value <= 0, tolerance = 0.1.
+ *                   If value > 1, tolerance = 1.
+ *
+ * @return skewed raster who's extent covers unskewed extent, NULL on error
+ */
+rt_raster
+rt_raster_compute_skewed_raster(
+	rt_envelope extent,
+	double *skew,
+	double *scale,
+	double tolerance
+);
+
+/**
  * Get a raster pixel as a polygon.
  *
  * The pixel shape is a 4 vertices (5 to be closed) single
@@ -1439,29 +1484,21 @@ rt_util_gdal_convert_sr(const char *srs, int proj4);
 int
 rt_util_gdal_driver_registered(const char *drv);
 
-/*
- * Compute skewed extent that covers unskewed extent. Computed extent may
- * NOT be the MINIMUM extent but rather an extent guaranteed to cover
- * the unskewed extent.
- *
- * @param extent: unskewed extent of type rt_extent
- * @param skew: pointer to 2-element array (x, y) of skew
- * @param scale: pointer to 2-element array (x, y) of scale
- * @param tolerance: value between 0 and 1 where the smaller the tolerance
- *                   results in an extent approaching the "minimum" skewed
- *                   extent.  If value <= 0, tolerance = 0.1.
- *                   If value > 1, tolerance = 1.
- * @param skewedextent: pointer to rt_extent for skewed extent
- *
- * @return zero if error, non-zero if no error
-*/
-int
-rt_util_compute_skewed_extent(
-	rt_extent extent,
-	double *skew,
-	double *scale,
-	double tolerance,
-	rt_extent *skewedextent
+void
+rt_util_from_ogr_envelope(
+	OGREnvelope	env,
+	rt_envelope *ext
+);
+
+void
+rt_util_to_ogr_envelope(
+	rt_envelope ext,
+	OGREnvelope	*env
+);
+
+LWPOLY *
+rt_util_envelope_to_lwpoly(
+	rt_envelope ext
 );
 
 /*

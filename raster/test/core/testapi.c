@@ -1886,9 +1886,8 @@ static void testGDALWarp() {
 }
 
 static void testComputeSkewedExtent() {
-	int rtn;
-	OGREnvelope extent;
-	OGREnvelope skewedextent;
+	rt_envelope extent;
+	rt_raster rast;
 	double skew[2] = {0.25, 0.25};
 	double scale[2] = {1, -1};
 
@@ -1896,20 +1895,23 @@ static void testComputeSkewedExtent() {
 	extent.MaxY = 0;
 	extent.MaxX = 2;
 	extent.MinY = -2;
+	extent.UpperLeftX = extent.MinX;
+	extent.UpperLeftY = extent.MaxY;
 
-	rtn = rt_util_compute_skewed_extent(
+	rast = rt_raster_compute_skewed_raster(
 		extent,
 		skew,
 		scale,
-		0,
-		&skewedextent
+		0
 	);
 
-	CHECK(rtn);
-	CHECK(FLT_EQ(skewedextent.MinX, -0.5));
-	CHECK(FLT_EQ(skewedextent.MaxY, 0));
-	CHECK(FLT_EQ(skewedextent.MaxX, 2.025));
-	CHECK(FLT_EQ(skewedextent.MinY, -2.025));
+	CHECK(rast);
+	CHECK((rt_raster_get_width(rast) == 2));
+	CHECK((rt_raster_get_height(rast) == 3));
+	CHECK(FLT_EQ(rt_raster_get_x_offset(rast), -0.5));
+	CHECK(FLT_EQ(rt_raster_get_y_offset(rast), 0));
+
+	deepRelease(rast);
 }
 
 static void testGDALRasterize() {
