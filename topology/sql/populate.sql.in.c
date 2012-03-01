@@ -16,6 +16,30 @@
 
 /* #define POSTGIS_TOPOLOGY_DEBUG 1 */
 
+-- {
+--  Compute the max size of the double-precision floating point grid
+--  cell required to cover the given geometry
+--
+--
+-- A pragmatic test conducted using algoritm shown here:
+-- http://stackoverflow.com/questions/7408407/generate-next-largest-or-smallest-representable-floating-point-number-without-bi
+-- showed the "tolerance" growing by an order of magnitude proportionally
+-- with the order of magnitude of the input, starting with something like
+-- 3.5527136788005009294e-15 for the starting value of 9.0
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology._st_mintolerance(ageom Geometry)
+  RETURNS float8
+AS $$
+    SELECT 3.6 * power(10,  - ( 15 - log(coalesce(
+      nullif(
+        greatest(abs(ST_xmin($1)), abs(ST_ymin($1)),
+                 abs(ST_xmax($1)), abs(ST_ymax($1))),
+        0),
+      1)) ));
+$$ LANGUAGE 'SQL' IMMUTABLE STRICT;
+-- }
+
 --{
 --
 -- AddNode(atopology, point, allowEdgeSplitting, setContainingFace)
@@ -700,16 +724,7 @@ BEGIN
       -- and small enough to snap only to the projected point.
       -- Unfortunately ST_Distance returns 0 because it also uses
       -- a projected point internally, so we need another way.
-      --
-      -- A pragmatic test conducted using algoritm shown here:
-      -- http://stackoverflow.com/questions/7408407/generate-next-largest-or-smallest-representable-floating-point-number-without-bi
-      -- showed the "tolerance" growing by an order of magnitude proportionally
-      -- with the order of magnitude of the input, starting with something like
-      -- 3.5527136788005009294e-15 for the starting value of 9.0
-      --
-      -- TODO: make this simpler
-      --
-      snaptol := 3.6 * power(10,  - ( 15 - log(10.0, coalesce(nullif(greatest(abs(ST_X(prj)), abs(ST_Y(prj)))::numeric, 0), 1)) ));
+      snaptol := topology._st_mintolerance(prj);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Tolerance for snapping to point % = %', ST_AsText(prj), snaptol;
 #endif
