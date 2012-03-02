@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <math.h> /* for fabs */
-#include <float.h> /* for FLT_EPSILON and DBL_EPSILON */
 
 #include "rt_api.h"
 #include "check.h"
@@ -59,36 +57,11 @@ fillRasterToPolygonize(int hasnodata, double nodatavalue)
 {
     /* Create raster */
 
-    /* First test raster */
-    /*
-    uint16_t width = 2;
-    uint16_t height = 2;
-    */
-
-    /* Second test raster */
     uint16_t width = 9;
     uint16_t height = 9;
 
-    /* Third test raster */
-    /*
-    uint16_t width = 5;
-    uint16_t height = 5;
-    */
-
     rt_raster raster = rt_raster_new(width, height);
 
-    /* Fill raster. Option 1: simple raster */
-    /*
-    rt_band band = addBand(raster, PT_32BSI, 0, 0);
-
-    rt_band_set_pixel(band, 0, 0, 1);
-    rt_band_set_pixel(band, 0, 1, 1);
-    rt_band_set_pixel(band, 1, 0, 1);
-    rt_band_set_pixel(band, 1, 1, 1);
-    */
-
-
-    /* Fill raster. Option 2: 9x9, 1 band */
     rt_band band = addBand(raster, PT_32BF, hasnodata, nodatavalue);
 
     {
@@ -98,7 +71,6 @@ fillRasterToPolygonize(int hasnodata, double nodatavalue)
                 rt_band_set_pixel(band, x, y, 0.0);
     }
     
-    /**/
     rt_band_set_pixel(band, 3, 1, 1.8);
     rt_band_set_pixel(band, 4, 1, 1.8);
     rt_band_set_pixel(band, 5, 1, 2.8);
@@ -127,39 +99,6 @@ fillRasterToPolygonize(int hasnodata, double nodatavalue)
     rt_band_set_pixel(band, 3, 7, 1.8);
     rt_band_set_pixel(band, 4, 7, 1.8);
     rt_band_set_pixel(band, 5, 7, 2.8);
-
-
-
-    /* Fill raster. Option 3: 5x5, 1 band */
-    /*
-    rt_band band = addBand(raster, PT_8BUI, 1, 255);
-
-    rt_band_set_pixel(band, 0, 0, 253);
-    rt_band_set_pixel(band, 1, 0, 254);
-    rt_band_set_pixel(band, 2, 0, 253);
-    rt_band_set_pixel(band, 3, 0, 254);
-    rt_band_set_pixel(band, 4, 0, 254);
-    rt_band_set_pixel(band, 0, 1, 253);
-    rt_band_set_pixel(band, 1, 1, 254);
-    rt_band_set_pixel(band, 2, 1, 254);
-    rt_band_set_pixel(band, 3, 1, 253);
-    rt_band_set_pixel(band, 4, 1, 249);
-    rt_band_set_pixel(band, 0, 2, 250);
-    rt_band_set_pixel(band, 1, 2, 254);
-    rt_band_set_pixel(band, 2, 2, 254);
-    rt_band_set_pixel(band, 3, 2, 252);
-    rt_band_set_pixel(band, 4, 2, 249);
-    rt_band_set_pixel(band, 0, 3, 251);
-    rt_band_set_pixel(band, 1, 3, 253);
-    rt_band_set_pixel(band, 2, 3, 254);
-    rt_band_set_pixel(band, 3, 3, 254);
-    rt_band_set_pixel(band, 4, 3, 253);
-    rt_band_set_pixel(band, 0, 4, 252);
-    rt_band_set_pixel(band, 1, 4, 250);
-    rt_band_set_pixel(band, 2, 4, 254);
-    rt_band_set_pixel(band, 3, 4, 254);
-    rt_band_set_pixel(band, 4, 4, 254);
-    */
 
     return raster;
 }

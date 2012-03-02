@@ -1804,145 +1804,145 @@ rt_band_set_pixel_line(
  *   1 on truncation/clamping/converting.
  */
 int
-rt_band_set_pixel(rt_band band, uint16_t x, uint16_t y,
-        double val) {
-    rt_pixtype pixtype = PT_END;
-    unsigned char* data = NULL;
-    uint32_t offset = 0;
+rt_band_set_pixel(
+	rt_band band,
+	uint16_t x, uint16_t y,
+	double val
+) {
+	rt_pixtype pixtype = PT_END;
+	unsigned char* data = NULL;
+	uint32_t offset = 0;
+	int rtn = 0;
 
-    int32_t checkvalint = 0;
-    uint32_t checkvaluint = 0;
-    float checkvalfloat = 0;
-    double checkvaldouble = 0;
+	int32_t checkvalint = 0;
+	uint32_t checkvaluint = 0;
+	float checkvalfloat = 0;
+	double checkvaldouble = 0;
+	double checkval = 0;
 
-    double checkval = 0;
+	assert(NULL != band);
 
+	if (band->offline) {
+		rterror("rt_band_set_pixel not implemented yet for OFFDB bands");
+		return -1;
+	}
 
+	pixtype = band->pixtype;
 
-    assert(NULL != band);
+	if (x >= band->width || y >= band->height) {
+		rterror("rt_band_set_pixel: Coordinates out of range");
+		return -1;
+	}
 
-    if (band->offline) {
-        rterror("rt_band_set_pixel not implemented yet for OFFDB bands");
-        return -1;
-    }
-
-    pixtype = band->pixtype;
-
-    if (x >= band->width || y >= band->height) {
-        rterror("rt_band_set_pixel: Coordinates out of range");
-        return -1;
-    }
-
-    data = rt_band_get_data(band);
-    offset = x + (y * band->width);
-
-    switch (pixtype) {
-        case PT_1BB:
-        {
-            data[offset] = rt_util_clamp_to_1BB(val);
-            checkvalint = data[offset];
-            break;
-        }
-        case PT_2BUI:
-        {
-            data[offset] = rt_util_clamp_to_2BUI(val);
-            checkvalint = data[offset];
-            break;
-        }
-        case PT_4BUI:
-        {
-            data[offset] = rt_util_clamp_to_4BUI(val);
-            checkvalint = data[offset];
-            break;
-        }
-        case PT_8BSI:
-        {
-            data[offset] = rt_util_clamp_to_8BSI(val);
-            checkvalint = (int8_t) data[offset];
-            break;
-        }
-        case PT_8BUI:
-        {
-            data[offset] = rt_util_clamp_to_8BUI(val);
-            checkvalint = data[offset];
-            break;
-        }
-        case PT_16BSI:
-        {
-            int16_t *ptr = (int16_t*) data; /* we assume correct alignment */
-            ptr[offset] = rt_util_clamp_to_16BSI(val);
-            checkvalint = (int16_t) ptr[offset];
-            break;
-        }
-        case PT_16BUI:
-        {
-            uint16_t *ptr = (uint16_t*) data; /* we assume correct alignment */
-            ptr[offset] = rt_util_clamp_to_16BUI(val);
-            checkvalint = ptr[offset];
-            break;
-        }
-        case PT_32BSI:
-        {
-            int32_t *ptr = (int32_t*) data; /* we assume correct alignment */
-            ptr[offset] = rt_util_clamp_to_32BSI(val);
-            checkvalint = (int32_t) ptr[offset];
-            break;
-        }
-        case PT_32BUI:
-        {
-            uint32_t *ptr = (uint32_t*) data; /* we assume correct alignment */
-            ptr[offset] = rt_util_clamp_to_32BUI(val);
-            checkvaluint = ptr[offset];
-            break;
-        }
-        case PT_32BF:
-        {
-            float *ptr = (float*) data; /* we assume correct alignment */
-            ptr[offset] = rt_util_clamp_to_32F(val);
-            checkvalfloat = ptr[offset];
-            break;
-        }
-        case PT_64BF:
-        {
-            double *ptr = (double*) data; /* we assume correct alignment */
-            ptr[offset] = val;
-            checkvaldouble = ptr[offset];
-            break;
-        }
-        default:
-        {
-            rterror("rt_band_set_pixel: Unknown pixeltype %d", pixtype);
-            return -1;
-        }
-    }
-
-    /* If the stored value is different from no data, reset the isnodata flag */
-    if (FLT_NEQ(checkval, band->nodataval)) {
-        band->isnodata = FALSE;
-    }
-
-    /*
-     * If the pixel was a nodata value, now the band may be NODATA band)
-     * TODO: NO, THAT'S TOO SLOW!!!
-     */
-
-    /*
-    else {
-        rt_band_check_is_nodata(band);
-    }
-    */
-
-    /* Overflow checking */
-    if (rt_util_dbl_trunc_warning(
-			val,
-			checkvalint, checkvaluint,
-			checkvalfloat, checkvaldouble,
-			pixtype
-		)) {
-			return 1;
+	/* check that clamped value isn't clamped NODATA */
+	if (band->hasnodata && pixtype != PT_64BF) {
+		double newval;
+		if (rt_band_corrected_clamped_value(band, val, &newval) == 1) {
+#if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
+			rtwarn("Value for pixel %d x %d has been corrected as clamped value becomes NODATA", x, y);
+#endif
+			val = newval;
+			rtn = 1;
 		}
+	}
 
-    return 0;
+	data = rt_band_get_data(band);
+	offset = x + (y * band->width);
+
+	switch (pixtype) {
+		case PT_1BB: {
+			data[offset] = rt_util_clamp_to_1BB(val);
+			checkvalint = data[offset];
+			break;
+		}
+		case PT_2BUI: {
+			data[offset] = rt_util_clamp_to_2BUI(val);
+			checkvalint = data[offset];
+			break;
+		}
+		case PT_4BUI: {
+			data[offset] = rt_util_clamp_to_4BUI(val);
+			checkvalint = data[offset];
+			break;
+		}
+		case PT_8BSI: {
+			data[offset] = rt_util_clamp_to_8BSI(val);
+			checkvalint = (int8_t) data[offset];
+			break;
+		}
+		case PT_8BUI: {
+			data[offset] = rt_util_clamp_to_8BUI(val);
+			checkvalint = data[offset];
+			break;
+		}
+		case PT_16BSI: {
+			int16_t *ptr = (int16_t*) data; /* we assume correct alignment */
+			ptr[offset] = rt_util_clamp_to_16BSI(val);
+			checkvalint = (int16_t) ptr[offset];
+			break;
+		}
+		case PT_16BUI: {
+			uint16_t *ptr = (uint16_t*) data; /* we assume correct alignment */
+			ptr[offset] = rt_util_clamp_to_16BUI(val);
+			checkvalint = ptr[offset];
+			break;
+		}
+		case PT_32BSI: {
+			int32_t *ptr = (int32_t*) data; /* we assume correct alignment */
+			ptr[offset] = rt_util_clamp_to_32BSI(val);
+			checkvalint = (int32_t) ptr[offset];
+			break;
+		}
+		case PT_32BUI: {
+			uint32_t *ptr = (uint32_t*) data; /* we assume correct alignment */
+			ptr[offset] = rt_util_clamp_to_32BUI(val);
+			checkvaluint = ptr[offset];
+			break;
+		}
+		case PT_32BF: {
+			float *ptr = (float*) data; /* we assume correct alignment */
+			ptr[offset] = rt_util_clamp_to_32F(val);
+			checkvalfloat = ptr[offset];
+			break;
+		}
+		case PT_64BF: {
+			double *ptr = (double*) data; /* we assume correct alignment */
+			ptr[offset] = val;
+			checkvaldouble = ptr[offset];
+			break;
+		}
+		default: {
+			rterror("rt_band_set_pixel: Unknown pixeltype %d", pixtype);
+			return -1;
+		}
+	}
+
+	/* If the stored value is different from no data, reset the isnodata flag */
+	if (FLT_NEQ(checkval, band->nodataval)) {
+		band->isnodata = FALSE;
+	}
+
+	/*
+	 * If the pixel was a nodata value, now the band may be NODATA band)
+	 * TODO: NO, THAT'S TOO SLOW!!!
+	 */
+	/*
+	else {
+		rt_band_check_is_nodata(band);
+	}
+	*/
+
+	/* Overflow checking */
+	if (rt_util_dbl_trunc_warning(
+		val,
+		checkvalint, checkvaluint,
+		checkvalfloat, checkvaldouble,
+		pixtype
+	)) {
+		return 1;
+	}
+
+	return rtn;
 }
 
 /**
@@ -2137,6 +2137,174 @@ rt_band_check_is_nodata(rt_band band)
 
     band->isnodata = TRUE;
     return TRUE;
+}
+
+/**
+ * Compare clamped value to band's clamped NODATA value.  If unclamped
+ * value is exactly unclamped NODATA value, function returns -1.
+ *
+ * @param band: the band whose NODATA value will be used for comparison
+ * @param val: the value to compare to the NODATA value
+ *
+ * @return 1 if clamped value is clamped NODATA
+ *         0 if clamped value is NOT clamped NODATA
+ *         -1 otherwise
+ */
+int
+rt_band_clamped_value_is_nodata(rt_band band, double val) {
+
+	assert(NULL != band);
+
+	/* no NODATA, so no need to test */
+	if (!band->hasnodata)
+		return -1;
+
+	/* value is exactly NODATA */
+	if (FLT_EQ(val, band->nodataval))
+		return -1;
+
+	switch (band->pixtype) {
+		case PT_1BB:
+			if (rt_util_clamp_to_1BB(val) == rt_util_clamp_to_1BB(band->nodataval))
+				return 1;
+			break;
+		case PT_2BUI:
+			if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(band->nodataval))
+				return 1;
+			break;
+		case PT_4BUI:
+			if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(band->nodataval))
+				return 1;
+			break;
+		case PT_8BSI:
+			if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(band->nodataval))
+				return 1;
+			break;
+		case PT_8BUI:
+			if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(band->nodataval))
+				return 1;
+			break;
+		case PT_16BSI:
+			if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(band->nodataval))
+				return 1;
+			break;
+		case PT_16BUI:
+			if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(band->nodataval))
+				return 1;
+			break;
+		case PT_32BSI:
+			if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(band->nodataval))
+				return 1;
+			break;
+		case PT_32BUI:
+			if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(band->nodataval))
+				return 1;
+			break;
+		case PT_32BF:
+			if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(band->nodataval)))
+				return 1;
+			break;
+		case PT_64BF:
+			break;
+		default:
+			rterror("rt_band_clamped_value_is_nodata: Unknown pixeltype %d", band->pixtype);
+			return -1;
+	}
+
+	return 0;
+}
+
+/**
+ * Correct value when clamped value is clamped NODATA value.  Correction
+ * does NOT occur if unclamped value is exactly unclamped NODATA value.
+ * 
+ * @param band: the band whose NODATA value will be used for comparison
+ * @param val: the value to compare to the NODATA value and correct
+ * @param newval: pointer to corrected value
+ *
+ * @return 0 on error, 1 if corrected, -1 otherwise
+ */
+int
+rt_band_corrected_clamped_value(rt_band band, double val, double *newval) {
+	double minval = 0.;
+
+	assert(NULL != band);
+
+	/* check that value needs correcting */
+	if (rt_band_clamped_value_is_nodata(band, val) != 1) {
+		*newval = val;
+		return -1;
+	}
+
+	minval = rt_pixtype_get_min_value(band->pixtype);
+	*newval = val;
+
+	switch (band->pixtype) {
+		case PT_1BB:
+			*newval = !band->nodataval;
+			break;
+		case PT_2BUI:
+			if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(minval))
+				(*newval)++;
+			else
+				(*newval)--;
+			break;
+		case PT_4BUI:
+			if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(minval))
+				(*newval)++;
+			else
+				(*newval)--;
+			break;
+		case PT_8BSI:
+			if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(minval))
+				(*newval)++;
+			else
+				(*newval)--;
+			break;
+		case PT_8BUI:
+			if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(minval))
+				(*newval)++;
+			else
+				(*newval)--;
+			break;
+		case PT_16BSI:
+			if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(minval))
+				(*newval)++;
+			else
+				(*newval)--;
+			break;
+		case PT_16BUI:
+			if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(minval))
+				(*newval)++;
+			else
+				(*newval)--;
+			break;
+		case PT_32BSI:
+			if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(minval))
+				(*newval)++;
+			else
+				(*newval)--;
+			break;
+		case PT_32BUI:
+			if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(minval))
+				(*newval)++;
+			else
+				(*newval)--;
+			break;
+		case PT_32BF:
+			if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(minval)))
+				*newval += FLT_EPSILON;
+			else
+				*newval -= FLT_EPSILON;
+			break;
+		case PT_64BF:
+			break;
+		default:
+			rterror("rt_band_alternative_clamped_value: Unknown pixeltype %d", band->pixtype);
+			return 0;
+	}
+
+	return 1;
 }
 
 /**

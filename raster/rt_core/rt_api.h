@@ -92,8 +92,9 @@
 
 #include <stdlib.h> /* For size_t, srand and rand */
 #include <stdint.h> /* For C99 int types */
-#include <float.h> /* for FLT_EPSILON and float type limits */
+#include <float.h> /* for FLT_EPSILON, DBL_EPSILON and float type limits */
 #include <limits.h> /* for integer type limits */
+#include <math.h>
 
 #include "lwgeom_geos.h"
 #include "liblwgeom.h"
@@ -551,6 +552,30 @@ int rt_band_is_nodata(rt_band band);
  */
 int rt_band_check_is_nodata(rt_band band);
 
+/**
+ * Compare clamped value to band's clamped NODATA value
+ *
+ * @param band: the band whose NODATA value will be used for comparison
+ * @param val: the value to compare to the NODATA value
+ *
+ * @return 1 if clamped value is clamped NODATA
+ *         0 if clamped value is NOT clamped NODATA
+ *         -1 otherwise
+ */
+int rt_band_clamped_value_is_nodata(rt_band band, double val);
+
+/**
+ * Correct value when clamped value is clamped NODATA value.  Correction
+ * does NOT occur if unclamped value is exactly unclamped NODATA value.
+ * 
+ * @param band: the band whose NODATA value will be used for comparison
+ * @param val: the value to compare to the NODATA value and correct
+ * @param newval: pointer to corrected value
+ *
+ * @return 0 on error, 1 if corrected, -1 otherwise
+ */
+int
+rt_band_corrected_clamped_value(rt_band band, double val, double *newval);
 
 /**
  * Compute summary statistics for a band
