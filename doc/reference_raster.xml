@@ -3706,60 +3706,19 @@ WHERE rid = 2;
 					<para>A simple example rescaling a raster from a pixel size of 0.001 degree to a pixel size of 0.0015 degree.</para>
 					
 					<programlisting>-- the original raster pixel size
-SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0))
-					
--- the rescaled raster raster pixel size
-SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015))</programlisting>
-					
-					<para>This example utilize the katrina raster loaded as a single tile described in 
-			<ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html">http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html</ulink></para>
-					<programlisting>-- My original raster that is in WGS 84 lon lat 1 pixel in x/y represents 0.029.. in long lat -
-SELECT ST_ScaleX(rast) As orig_scalex, ST_ScaleY(rast) As origi_scaley 
- FROM katrina;
-					
-	orig_scalex     |    origi_scaley
---------------------+---------------------
- 0.0293255131964809 | -0.0293255131964809
- 
- --I create a table of 2 rasters one 25% of original and one 75% of original
- CREATE TABLE katrinas_rescaled(rid serial primary key, descrip text, rast raster);
+SELECT ST_PixelWidth(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0)) width
 
- INSERT INTO katrinas_rescaled(descrip, rast)
- SELECT 'rescaled ' || round((1.0/i*100), 2)::text || '%', ST_Rescale(rast, ST_ScaleX(rast)*i, ST_ScaleY(rast)*i)
- 	FROM katrina CROSS JOIN generate_series(6, 8, 2) As i;
-					
-SELECT descrip, ST_ScaleX(rast) As newsx, ST_ScaleY(rast) As newsy
-	FROM katrinas_rescaled;
-	
-    descrip     |       newsx       |       newsy
-----------------+-------------------+--------------------
- rescaled 16.67% | 0.175953079178886 | -0.175953079178886
- rescaled 12.50% | 0.234604105571848 | -0.234604105571848
-					</programlisting>
-				<informaltable>
-					<tgroup cols="2">
-						<tbody>
-							<row>
-								<entry><informalfigure>
-									<mediaobject>
-										<imageobject>
-											<imagedata fileref="images/st_rescale01.png" />
-										</imageobject>
-										<caption><para>at 16.67% size of original</para></caption>
-									</mediaobject>
-								</informalfigure></entry>
-								<entry><informalfigure>
-									<mediaobject>
-										<imageobject>
-											<imagedata fileref="images/st_rescale02.png" />
-										</imageobject>
-										<caption><para>at 12.50% size of original</para></caption>
-									</mediaobject>
-								</informalfigure></entry>
-							</row>
-						</tbody>
-					</tgroup>
-				</informaltable>
+   width
+----------
+0.001
+
+-- the rescaled raster raster pixel size
+SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001, -0.001, 0, 0, 4269), '8BUI'::text, 1, 0), 0.0015)) width
+
+   width
+----------
+0.0015
+</programlisting>				
 			</refsection>
 
 			<refsection>
