@@ -21,4 +21,4 @@ SELECT postgis_extension_remove_objects('postgis', 'AGGREGATE');
 SELECT postgis_extension_drop_if_exists('postgis', 'DROP VIEW raster_columns');
 SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE wktgeomval');
 SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE _wktgeomval');
-SELECT postgis_extension_drop_if_exists('postgis', 'DROP VIEW _raster_columns');
+SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE _raster_columns');
