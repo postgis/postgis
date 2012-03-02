@@ -3618,32 +3618,6 @@ WHERE rid = 2;
 ------------+-------------
         200 |         100				
 </programlisting>
-<informaltable>
-	<tgroup cols="2">
-		<tbody>
-			<row>
-			<entry><informalfigure>
-				<mediaobject>
-				  <imageobject>
-					<imagedata fileref="images/st_resample01.png" />
-				  </imageobject>
-				  <caption><para>original mass state plane meters (orig)</para></caption>
-				</mediaobject>
-			  </informalfigure>
-			 </entry>
-			<entry><informalfigure>
-				<mediaobject>
-				  <imageobject>
-					<imagedata fileref="images/st_resample02.png" />
-				  </imageobject>
-				  <caption><para>resampled from 200x200 to 100x100</para></caption>
-				</mediaobject>
-			  </informalfigure>
-			 </entry>
-			</row>
-		</tbody>
-	</tgroup>
-</informaltable>
 			</refsection>
 
 			<refsection>
