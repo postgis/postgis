@@ -309,8 +309,12 @@ DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, text, regprocedur
 DROP FUNCTION IF EXISTS st_intersection(raster, int, geometry, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, geometry, text, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, geometry, regprocedure);
+DROP FUNCTION IF EXISTS st_clip(raster, integer, geometry, boolean);
 DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8, boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, geometry, boolean);
 DROP FUNCTION IF EXISTS st_clip(raster, int, geometry, float8, boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8[], boolean);
+DROP FUNCTION IF EXISTS st_clip(raster, integer, geometry, float8[], boolean);
 
 -- refactoring of functions
 DROP FUNCTION IF EXISTS _st_dumpaswktpolygons(rast raster, band integer);
