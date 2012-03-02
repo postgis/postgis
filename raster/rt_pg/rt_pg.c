@@ -493,7 +493,7 @@ rtpg_getSR(int srid)
 	char *tmp = NULL;
 	char *srs = NULL;
 
-	len = sizeof(char) * (strlen("SELECT CASE WHEN length(proj4text) > 0 THEN proj4text ELSE srtext END FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
+	len = sizeof(char) * (strlen("SELECT CASE WHEN upper(auth_name) = 'EPSG' AND length(auth_srid::text) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(proj4text) > 0 THEN proj4text ELSE srtext END FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
 	sql = (char *) palloc(len);
 	if (NULL == sql) {
 		elog(ERROR, "rtpg_getSR: Unable to allocate memory for sql\n");
@@ -508,7 +508,7 @@ rtpg_getSR(int srid)
 	}
 
 	/* execute query */
-	snprintf(sql, len, "SELECT CASE WHEN length(proj4text) > 0 THEN proj4text ELSE srtext END FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
+	snprintf(sql, len, "SELECT CASE WHEN upper(auth_name) = 'EPSG' AND length(auth_srid::text) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(proj4text) > 0 THEN proj4text ELSE srtext END FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
 	spi_result = SPI_execute(sql, TRUE, 0);
 	SPI_pfree(sql);
 	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
