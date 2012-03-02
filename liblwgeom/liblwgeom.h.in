@@ -250,6 +250,7 @@ typedef struct
 {
 	double xmin, ymin, zmin;
 	double xmax, ymax, zmax;
+	int32_t srid;
 }
 BOX3D;
 

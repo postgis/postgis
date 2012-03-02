@@ -50,6 +50,7 @@ BOX3D* box3d_from_gbox(const GBOX *gbox)
 		b->zmin = b->zmax = 0.0;
 	}
 
+	b->srid = SRID_UNKNOWN;
  	return b;	
 }
 

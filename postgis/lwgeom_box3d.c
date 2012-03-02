@@ -101,6 +101,7 @@ Datum BOX3D_in(PG_FUNCTION_ARGS)
 		box->zmin = box->zmax;
 		box->zmax = tmp;
 	}
+	box->srid = SRID_UNKNOWN;
 	PG_RETURN_POINTER(box);
 }
 
@@ -242,6 +243,7 @@ Datum BOX3D_to_LWGEOM(PG_FUNCTION_ARGS)
 		
 	}
 
+	gserialized_set_srid(result, box->srid);
 	PG_RETURN_POINTER(result);
 }
 
@@ -291,7 +293,9 @@ Datum LWGEOM_to_BOX3D(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 		
 	result = box3d_from_gbox(&gbox);
+	result->srid = lwgeom->srid;
 
+	lwgeom_free(lwgeom);
 	PG_RETURN_POINTER(result);
 }
 
@@ -350,6 +354,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom = NULL;
 	BOX3D *result = NULL;
 	GBOX gbox;
+	int32_t srid;
 	int rv;
 
 	/* Can't do anything with null inputs */
@@ -364,9 +369,10 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(result);
 	}
 
-	/* Deserialize geometry and *calculate( the box */
-	/* We can't use the cached box because it's fload, we *must* calculate */
+	/* Deserialize geometry and *calculate* the box */
+	/* We can't use the cached box because it's float, we *must* calculate */
 	lwgeom = lwgeom_from_gserialized(geom);
+	srid = lwgeom->srid;
 	rv = lwgeom_calculate_gbox(lwgeom, &gbox);
 	lwgeom_free(lwgeom);
 
@@ -387,6 +393,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	{
 		PG_FREE_IF_COPY(geom, 1);
 		result = box3d_from_gbox(&gbox);
+		result->srid = srid;
 		PG_RETURN_POINTER(result);
 	}
 
@@ -397,6 +404,7 @@ Datum BOX3D_combine(PG_FUNCTION_ARGS)
 	result->xmin = Min(box->xmin, gbox.xmin);
 	result->ymin = Min(box->ymin, gbox.ymin);
 	result->zmin = Min(box->zmin, gbox.zmin);
+	result->srid = srid;
 
 	PG_FREE_IF_COPY(geom, 1);
 	PG_RETURN_POINTER(result);
@@ -433,6 +441,8 @@ Datum BOX3D_construct(PG_FUNCTION_ARGS)
 	result->xmin = minp.x;
 	result->ymin = minp.y;
 	result->zmin = minp.z;
+
+	result->srid = minpoint->srid;
 
 	PG_RETURN_POINTER(result);
 }

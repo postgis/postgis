@@ -156,7 +156,7 @@ CREATE OR REPLACE FUNCTION box3d_out(box3d)
 
 CREATE TYPE box3d (
 	alignment = double,
-	internallength = 48,
+	internallength = 52,
 	input = box3d_in,
 	output = box3d_out
 );
