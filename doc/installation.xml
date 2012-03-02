@@ -8,7 +8,8 @@
 
   <sect1>
 	<title>Short Version</title>
-	<note><para>The raster support is currently optional, but in final release it will be required.</para></note>
+	<note><para>The raster support is currently optional, but installed by default. For installing using the PostgreSQL 9.1+ extensions model it is required.
+	Please refer to <xref linkend="make_install_postgis_extensions" /> if you are using PostgreSQL 9.1+.</para></note>
 	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_release_version; folder
 		of your PostgreSQL install</para>
 	<para>The <varname>postgis_comments.sql</varname>, <varname>raster_comments.sql</varname>, <varname>topology_comments.sql</varname>
@@ -544,8 +545,9 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  </para>
 	  <para>If you are building from souce repository, you need to build the function descriptions first with:</para>
 	  <programlisting>make comments</programlisting>
-	  <para>Building the comments is not necessary if you are building from a tar ball since these are packaged pre-built with the tar ball already.</para>
-	  <para>Next build the extensions and install them.</para>
+	  <para>Building the comments is not necessary if you are building from a release tar ball since these are packaged pre-built with the tar ball already.</para>
+	  <para>If you are building against PostgreSQL 9.1, the extensions should automatically build as part of the make install process.  You can if needed build from the extensions
+	  folders or copy files if you need them on a differnt server. </para>
 	  <programlisting>cd extensions
 cd postgis
 make clean
@@ -580,12 +582,20 @@ make install
 	 </itemizedlist>
 	 <para>Once you do that, you should see <varname>postgis</varname>, <varname>postgis_topology</varname> as available extensions in PgAdmin -> extensions.</para>
 	 <para>If you are using psql, you can verify that the extensions are installed by running this query:</para>
-	 <programlisting>SELECT name 
+	 <programlisting>SELECT name, default_version,installed_version 
 FROM pg_available_extensions WHERE name LIKE 'postgis%' ;
-       name
-------------------
- postgis
- postgis_topology</programlisting>
+      name       | default_version | installed_version
+-----------------+-----------------+-------------------
+postgis          | &last_release_version;     | &last_release_version;
+postgis_topology | &last_release_version;      | </programlisting>
+
+<para>If you have the extension installed in the you are querying, you'll see mention in the <varname>installed_version</varname> column.  
+If you get no records back, it means you don't have postgis extensions installed on the server at all.  PgAdmin III 1.4+ will also provide this information
+in the <varname>extensions</varname> section of the database browser tree and will even allow upgrade by right-clicking.</para>
+
+<para>If you have the extensions available, you can install postgis extension in your database of choice by either using pgAdmin extension interface or running these sql commands:</para>
+<programlisting>CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_topology;</programlisting>
 	</sect2>
 
 
@@ -1072,6 +1082,12 @@ pretty_address
 	<sect2 id="soft_upgrade">
 	  <title>Soft upgrade</title>
 
+	  <para>If you installed your database using extensions, you'll need to upgrade using the extension model as well.  If you installed using the old sql script way,
+	  then you should upgrade using the sql script way. Please refer to the appropriate.</para>
+	  
+	  <sect3 id="soft_upgrade_sql_script"><title>Soft Upgrade Pre 9.1+ or without extensions</title>
+	  <para>This section applies only to those who installed PostGIS not using extensions.  If you have extensions and try to upgrade with this approach you'll get messages like:</para>
+	  <programlisting>can't drop ... because postgis extension depends on it</programlisting>
 	  <para>
 		After compiling you should find several <filename>postgis_upgrade*.sql</filename> files.  Install the one
 		for your version of PostGIS.  For example <filename>postgis_upgrade_13_to_15.sql</filename> should be used if you are upgrading 
@@ -1103,6 +1119,19 @@ pretty_address
 		should inform you about the need to run this kind of
 		upgrade using a "procs need upgrade" message.
 	  </para>
+	  </sect3>
+	  
+	<sect3 id="soft_upgrade_extensions"><title>Soft Upgrade 9.1+ using extensions</title>
+		<para>If you originally installed PostGIS with extensions, then you need to upgrade using extensions as well.  Doing a minor upgrade with extensions, is fairly painless.</para>
+		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;";
+ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
+		<para>If you get an error notice something like:</para>
+			<programlisting>No migration path defined for ... to &last_release_version;</programlisting>
+		<para>Then you'll need to backup your database, create a fresh one as defined in <xref linkend="create_new_db_extensions" /> and then restore your backup ontop of this new database.
+		You might get a message that <code>postgis extension</code> already installed which you can safely ignore.</para>
+		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
+		picks up the newest latest version during restore. .</para></note>
+	</sect3>
 
 	</sect2>
 
