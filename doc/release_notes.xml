@@ -56,7 +56,7 @@
         </simplesect>
         <simplesect>
           <title>New Features</title>
-          <para>KNN Gist index based centroid (&lt;-&gt;) and box (&lt;#&gt;) distance operators (Paul Ramsey / funded by Vizzuality)</para> 
+          <para><ulink url='http://blog.opengeo.org/2011/09/28/indexed-nearest-neighbour-search-in-postgis/'>KNN Gist index based centroid (&lt;-&gt;) and box (&lt;#&gt;) distance operators (Paul Ramsey / funded by Vizzuality)</ulink></para> 
           <para>Support for TIN and PolyHedralSurface and enhancement of many functions to support 3D (Olivier Courtin / Oslandia)</para>
           <para>Raster support integrated and documented
           		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park)
@@ -79,7 +79,7 @@
           <para>ST_UnaryUnion (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_AsX3D (Regina Obe / Arrival 3D funding)</para>
           <para>ST_OffsetCurve (Sandro Santilli, Rafal Magda)</para>
-          <para>ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality funding)</para>
+          <para><ulink url='http://blog.opengeo.org/2011/11/21/st_geomfromgeojson/'>ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality funding)</ulink></para>
         </simplesect>
         <simplesect>
         	<title>Enhancements</title>
@@ -102,7 +102,7 @@
         	<title>Bug Fixes</title>
         	<para>#1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)</para>
         </simplesect>
-
+        <para>We also thank <ulink url="http://blog.opengeo.org/2012/02/01/it-goes-up-to-2-0/">U.S Department of State Human Information Unit (HIU)</ulink> for general monetary support to get PostGIS 2.0 out the door.</para>
       </sect1>
      
       <sect1>
