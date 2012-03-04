@@ -418,6 +418,15 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		</varlistentry>
 		
 		<varlistentry>
+		  <term><command>--with-libiconv=DIR</command></term>
+		  <listitem>
+			<para>
+			  Directory where iconv is installed.
+			</para>
+		  </listitem>
+		</varlistentry>
+		
+		<varlistentry>
 		  <term><command>--with-jsondir=DIR</command></term>
 		  <listitem>
 			<para>
