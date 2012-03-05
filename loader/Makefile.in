@@ -27,6 +27,7 @@ top_builddir = @top_builddir@
 SHELL = @SHELL@
 INSTALL = $(SHELL) ../install-sh
 LIBTOOL = @LIBTOOL@
+LIBTOOL_LINK_COMMANDS = -static
 
 # Filenames with extension as determined by the OS
 PGSQL2SHP-CLI=pgsql2shp@EXESUFFIX@
@@ -70,6 +71,9 @@ endif
 # We test this variable later to see if we're building the GUI
 gtk_build = @GTK_BUILD@
 
+# Common object files
+LOADER_OBJS = shpopen.o dbfopen.o getopt.o shpcommon.o safileio.o
+
 # The real parts of the Makefile
 all: $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) @GTK_BUILD@
 
@@ -92,17 +96,24 @@ pgsql2shp-core.o: pgsql2shp-core.c pgsql2shp-core.h shpcommon.h
 pgsql2shp-cli.o: pgsql2shp-cli.c pgsql2shp-core.h shpcommon.h
 	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
-$(PGSQL2SHP-CLI): shpopen.o dbfopen.o getopt.o pgsql2shp-core.o shpcommon.o pgsql2shp-cli.o safileio.o $(LIBLWGEOM) 
-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@
+$(PGSQL2SHP-CLI): $(LOADER_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM) 
+	$(LIBTOOL) --mode=link \
+	  $(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@ \
+	  $(LIBTOOL_LINK_COMMANDS)
 
-$(SHP2PGSQL-CLI): shpopen.o dbfopen.o getopt.o shp2pgsql-core.o shpcommon.o shp2pgsql-cli.o safileio.o $(LIBLWGEOM) 
-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ -o $@ $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS)
+$(SHP2PGSQL-CLI): $(LOADER_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
+	$(LIBTOOL) --mode=link \
+	  $(CC) $(CFLAGS) $^ -o $@ $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS) \
+	  $(LIBTOOL_LINK_COMMANDS)
 
 shp2pgsql-gui.o: shp2pgsql-gui.c shp2pgsql-core.h shpcommon.h
 	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c shp2pgsql-gui.c
 
-$(SHP2PGSQL-GUI): shpopen.o dbfopen.o shp2pgsql-core.o shpcommon.o shp2pgsql-gui.o getopt.o safileio.o pgsql2shp-core.o $(LIBLWGEOM) $(GTK_WIN32_RES)
-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS)
+$(SHP2PGSQL-GUI): $(LOADER_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core.o $(LIBLWGEOM) $(GTK_WIN32_RES)
+	$(LIBTOOL) --mode=link \
+	  $(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ \
+	  $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) \
+	  $(LIBTOOL_LINK_COMMANDS)
 
 installdir:
 	@mkdir -p $(DESTDIR)$(bindir)
