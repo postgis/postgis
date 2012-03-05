@@ -1477,8 +1477,8 @@ $$
 DECLARE
   rec RECORD;
   nodeid integer;
-    sql text;
-    containingface integer;
+  sql text;
+  containingface integer;
 BEGIN
 
   --
@@ -1505,9 +1505,7 @@ BEGIN
   --
   FOR rec IN EXECUTE 'SELECT node_id FROM '
     || quote_ident(atopology) || '.node ' ||
-    'WHERE geom && ' || quote_literal(apoint::text) || '::geometry'
-    ||' AND ST_X(geom) = ST_X('||quote_literal(apoint::text)||'::geometry)'
-    ||' AND ST_Y(geom) = ST_Y('||quote_literal(apoint::text)||'::geometry)'
+    'WHERE ST_Equals(geom, ' || quote_literal(apoint::text) || '::geometry)'
   LOOP
     RAISE EXCEPTION
      'SQL/MM Spatial exception - coincident node';
@@ -1519,8 +1517,7 @@ BEGIN
   --
   FOR rec IN EXECUTE 'SELECT edge_id FROM '
     || quote_ident(atopology) || '.edge ' 
-    || 'WHERE (geom && ' || quote_literal(apoint::text) ||'::geometry) '
-    || ' AND ST_Intersects(geom, ' || quote_literal(apoint::text)
+    || 'WHERE ST_Intersects(geom, ' || quote_literal(apoint::text)
     || '::geometry)'
   LOOP
     RAISE EXCEPTION
@@ -1532,78 +1529,63 @@ BEGIN
   --
   -- first test is to check if there is inside an mbr (more fast)
   --
-      sql := 'SELECT a.face_id FROM ' 
+  sql := 'SELECT f.face_id FROM ' 
         || quote_ident(atopology) 
-        || '.face as a WHERE '
-        || '(a.mbr && ' || quote_literal(apoint::text)||'::geometry) '
-        || 'LIMIT 1;';
---raise notice ' ==>%',sql;
-  BEGIN
-    EXECUTE sql INTO STRICT containingface;
-    EXCEPTION
-      WHEN NO_DATA_FOUND THEN
+        || '.face f WHERE f.face_id > 0 AND f.mbr && '
+        || quote_literal(apoint::text)
+        || '::geometry AND ST_Contains(topology.ST_GetFaceGeometry('
+        || quote_literal(atopology) 
+        || ', f.face_id), '
+        || quote_literal(apoint::text)
+        || '::geometry)';
+  IF aface IS NOT NULL AND aface != 0 THEN
+    sql := sql || ' AND f.face_id = ' || aface;
+  END IF;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG '%', sql;
+#endif
+  EXECUTE sql INTO containingface;
+
+  -- If aface was specified, check that it was correct
+  IF aface IS NOT NULL THEN -- {
+    IF aface = 0 THEN -- {
+      IF containingface IS NOT NULL THEN -- {
+        RAISE EXCEPTION
+          'SQL/MM Spatial exception - within face % (not universe)',
+          containingface;
+      ELSE -- }{
         containingface := 0;
-  END;
-
-  IF containingface > 0 THEN
-        --
-        -- probably there is something so now check the exact test
-        --    
-    sql := 'SELECT face_id FROM '
-      || quote_ident(atopology) || '.face WHERE face_id > 0 AND mbr && '
-      || quote_literal(apoint::text) || '::geometry AND ST_Contains(topology.ST_GetFaceGeometry('
-      || quote_literal(atopology) || ', face_id), '
-      || quote_literal(apoint::text) || '::geometry)';
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG ' ==> %',sql;
-#endif
-    BEGIN
-      EXECUTE sql INTO STRICT containingface;
-      EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-          RAISE DEBUG 'No faces contain point';
-#endif
-          containingface = 0;
-        WHEN TOO_MANY_ROWS THEN
-          RAISE EXCEPTION 'Two or more faces found';
-    END;
-  END IF;
-
-  --
-  -- Verify that aface contains apoint
-  --
-    IF aface IS NOT NULL THEN
-      -- if aface is 0 (UniverseFace) no check is done
-        IF (aface <> containingface) THEN
-            RAISE EXCEPTION
-                'SQL/MM Spatial exception - not within face';
-    END IF;
-  END IF;
-    -- passing last IF mean the containingface is the right value to use.
-
-  --
-  -- Get new node id from sequence
-  --
-  FOR rec IN EXECUTE 'SELECT nextval(''' ||
-    atopology || '.node_node_id_seq'')'
-  LOOP
-    nodeid = rec.nextval;
-  END LOOP;
+      END IF; -- }
+    ELSE -- }{ -- aface != 0
+      IF containingface IS NULL OR containingface != aface THEN -- {
+        RAISE EXCEPTION 'SQL/MM Spatial exception - not within face';
+      END IF; -- }
+    END IF; -- }
+  ELSE -- }{ -- aface is null
+    containingface := COALESCE(containingface, 0);
+  END IF; -- }
 
   --
   -- Insert the new row
   --
-  sql := 'INSERT INTO ' || quote_ident(atopology)
-      || '.node(node_id, geom, containing_face) 
-      VALUES('||nodeid||','||quote_literal(apoint::text)||
-      ','||containingface||')';
-  --raise notice 'insert: %',sql;
+  sql := 'INSERT INTO '
+      || quote_ident(atopology)
+      || '.node(node_id, geom, containing_face) SELECT nextval('
+      || quote_literal( quote_ident(atopology) || '.node_node_id_seq' )
+      || '),'
+      ||quote_literal(apoint::text)
+      || '::geometry,' || containingface
+      || ' RETURNING node_id';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG '%', sql;
+#endif
 
-  EXECUTE sql;
+  EXECUTE sql INTO nodeid;
 
   RETURN nodeid;
 EXCEPTION
+  -- TODO: avoid the EXCEPTION handling here ?
   WHEN INVALID_SCHEMA_NAME THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
 END
