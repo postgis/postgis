@@ -161,19 +161,19 @@ SELECT '#1641.2', TopoGeo_addLineString('city_data',
 SELECT check_changes();
 
 -- Fails w/out tolerance as of 2.0.0
---FAILS---- clean all up first
---FAILS--DELETE FROM city_data.edge_data; 
---FAILS--DELETE FROM city_data.node; 
---FAILS--DELETE FROM city_data.face where face_id > 0; 
---FAILS--
---FAILS--SELECT '#1641.3', TopoGeo_addLineString('city_data',
---FAILS--  'LINESTRING(-0.223586 0.474301, 0.142550 0.406124)' 
---FAILS--) ORDER BY 2;
---FAILS--SELECT check_changes();
---FAILS--SELECT '#1641.4', TopoGeo_addLineString('city_data',
---FAILS--  'LINESTRING(0.095989 0.113619, -0.064646 0.470149)'
---FAILS--) ORDER BY 2;
---FAILS--SELECT check_changes();
+-- clean all up first
+--DELETE FROM city_data.edge_data; 
+--DELETE FROM city_data.node; 
+--DELETE FROM city_data.face where face_id > 0; 
+--
+--SELECT '#1641.3', TopoGeo_addLineString('city_data',
+--  'LINESTRING(-0.223586 0.474301, 0.142550 0.406124)' 
+--) ORDER BY 2;
+--SELECT check_changes();
+--SELECT '#1641.4', TopoGeo_addLineString('city_data',
+--  'LINESTRING(0.095989 0.113619, -0.064646 0.470149)'
+--) ORDER BY 2;
+--SELECT check_changes();
 
 -- Cleanups
 DROP FUNCTION check_changes();

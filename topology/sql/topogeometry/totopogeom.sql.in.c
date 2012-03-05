@@ -28,6 +28,7 @@ DECLARE
   elems topology.TopoElementArray = '{{0,0}}';
   sql TEXT;
   typ TEXT;
+  tolerance FLOAT8;
 BEGIN
 
   -- Get topology information
@@ -40,6 +41,9 @@ BEGIN
       RAISE EXCEPTION 'No topology with name "%" in topology.topology',
         atopology;
   END;
+
+  -- Get tolerance, if 0 was given
+  tolerance := COALESCE( NULLIF(tolerance, 0), topology._st_mintolerance(atopology, ageom) );
 
   -- Get layer information
   BEGIN
@@ -122,7 +126,7 @@ BEGIN
         || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
         || id(tg) || ', ' || alayer || ', 1, topogeo_addPoint('
         || quote_literal(atopology) || ', '
-        || quote_literal(rec.geom::text) || '::geometry, ' || atolerance
+        || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
         || ');';
       --RAISE DEBUG '%', sql;
       EXECUTE sql;
@@ -131,7 +135,7 @@ BEGIN
         || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
         || id(tg) || ', ' || alayer || ', 2, topogeo_addLineString('
         || quote_literal(atopology) || ', '
-        || quote_literal(rec.geom::text) || '::geometry, ' || atolerance
+        || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
         || ');';
       --RAISE DEBUG '%', sql;
       EXECUTE sql;
@@ -140,7 +144,7 @@ BEGIN
         || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
         || id(tg) || ', ' || alayer || ', 3, topogeo_addPolygon('
         || quote_literal(atopology) || ', '
-        || quote_literal(rec.geom::text) || '::geometry, ' || atolerance
+        || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
         || ');';
       --RAISE DEBUG '%', sql;
       EXECUTE sql;

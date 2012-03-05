@@ -3,7 +3,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net
 --
--- Copyright (C) 2010, 2011 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2010-2012 Sandro Santilli <strk@keybit.net>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -37,6 +37,21 @@ AS $$
                  abs(ST_xmax($1)), abs(ST_ymax($1))),
         0),
       1)) ));
+$$ LANGUAGE 'SQL' IMMUTABLE STRICT;
+-- }
+
+-- {
+-- Get tolerance for a given topology
+-- and if zero the min for a given topology
+-- }{
+CREATE OR REPLACE FUNCTION topology._st_mintolerance(atopology varchar, ageom Geometry)
+  RETURNS float8
+AS $$
+  SELECT COALESCE(
+    NULLIF(precision, 0),
+    topology._st_mintolerance($2))
+  FROM topology.topology
+  WHERE name = $1;
 $$ LANGUAGE 'SQL' IMMUTABLE STRICT;
 -- }
 
@@ -669,6 +684,7 @@ DECLARE
   prj GEOMETRY;
   snapedge GEOMETRY;
   snaptol FLOAT8;
+  tol FLOAT8;
 BEGIN
 
   -- 0. Check arguments
@@ -676,13 +692,16 @@ BEGIN
     RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPoint, expected POINT', geometrytype(apoint);
   END IF;
 
+  -- Get tolerance, if 0 was given
+  tol := COALESCE( NULLIF(tolerance, 0), topology._st_mintolerance(atopology, apoint) );
+
   -- 1. Check if any existing node falls within tolerance
   --    and if so pick the closest
   sql := 'SELECT a.node_id FROM ' 
     || quote_ident(atopology) 
     || '.node as a WHERE ST_DWithin(a.geom,'
     || quote_literal(apoint::text) || '::geometry,'
-    || tolerance || ') ORDER BY ST_Distance('
+    || tol || ') ORDER BY ST_Distance('
     || quote_literal(apoint::text)
     || '::geometry, a.geom) LIMIT 1;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -703,7 +722,7 @@ BEGIN
     || quote_ident(atopology) 
     || '.edge as a WHERE ST_DWithin(a.geom,'
     || quote_literal(apoint::text) || '::geometry,'
-    || tolerance || ') ORDER BY ST_Distance('
+    || tol || ') ORDER BY ST_Distance('
     || quote_literal(apoint::text)
     || '::geometry, a.geom) LIMIT 1;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
@@ -742,7 +761,7 @@ BEGIN
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       IF NOT ST_Contains(snapedge, prj) THEN -- or if equal ?
-        RAISE WARNING 'Edge within % distance from node still does not contain the node after snapping to it with tolerance %', tolerance, snaptol;
+        RAISE WARNING 'Edge within % distance from node still does not contain the node after snapping to it with tolerance %', tol, snaptol;
       END IF;
 #endif
       PERFORM ST_ChangeEdgeGeom(atopology, rec.edge_id, snapedge);
@@ -782,6 +801,7 @@ DECLARE
   id INTEGER; 
   inodes GEOMETRY;
   iedges GEOMETRY;
+  tol float8;
 BEGIN
 
   -- 0. Check arguments
@@ -789,19 +809,22 @@ BEGIN
     RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddLinestring, expected LINESTRING', geometrytype(aline);
   END IF;
 
+  -- Get tolerance, if 0 was given
+  tol := COALESCE( NULLIF(tolerance, 0), topology._st_mintolerance(atopology, aline) );
+
   -- 1. Self-node
   noded := ST_UnaryUnion(aline);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Self-noded: %', ST_AsText(noded);
 #endif
 
-  -- 2. Node to edges falling within tolerance distance
+  -- 2. Node to edges falling within tol distance
   sql := 'WITH nearby AS ( SELECT e.geom FROM '
     || quote_ident(atopology) 
     || '.edge e WHERE ST_DWithin(e.geom, '
     || quote_literal(noded::text)
     || '::geometry, '
-    || tolerance || ') ) SELECT st_collect(geom) FROM nearby;';
+    || tol || ') ) SELECT st_collect(geom) FROM nearby;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
@@ -812,7 +835,7 @@ BEGIN
     RAISE DEBUG 'Intersecting edges: %', ST_AsText(iedges);
 #endif
 
-    snapped := ST_Snap(noded, iedges, tolerance);
+    snapped := ST_Snap(noded, iedges, tol);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Snapped: %', ST_AsText(snapped);
 #endif
@@ -839,13 +862,13 @@ BEGIN
 
   END IF;
 
-  -- 2.1. Node with existing nodes within tolerance
+  -- 2.1. Node with existing nodes within tol
   sql := 'WITH nearby AS ( SELECT n.geom FROM '
     || quote_ident(atopology) 
     || '.node n WHERE ST_DWithin(n.geom, '
     || quote_literal(noded::text)
     || '::geometry, '
-    || tolerance || ') ) SELECT (st_dump(st_unaryunion(st_collect(geom)))).geom FROM nearby;';
+    || tol || ') ) SELECT (st_dump(st_unaryunion(st_collect(geom)))).geom FROM nearby;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
@@ -874,19 +897,19 @@ BEGIN
 
     start_node := topology.TopoGeo_AddPoint(atopology,
                                           ST_StartPoint(rec.geom),
-                                          tolerance);
+                                          tol);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG ' Start Node: %', start_node;
 #endif
 
     end_node := topology.TopoGeo_AddPoint(atopology,
                                         ST_EndPoint(rec.geom),
-                                        tolerance);
+                                        tol);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG ' End Node: %', end_node;
 #endif
 
-    -- Added endpoints may have drifted due to tolerance, so
+    -- Added endpoints may have drifted due to tol, so
     -- we need to re-snap the edge to the new nodes before adding it
     sql := 'SELECT ST_Collect(geom) FROM ' || quote_ident(atopology)
       || '.node WHERE node_id IN (' || start_node || ',' || end_node || ')';
@@ -897,7 +920,7 @@ BEGIN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Endnodes: %', ST_AsText(set2);
 #endif
-    snapped := ST_Snap(rec.geom, set2, tolerance);
+    snapped := ST_Snap(rec.geom, set2, tol);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Snapped edge: %', ST_AsText(snapped);
 #endif
@@ -947,12 +970,16 @@ DECLARE
   rec RECORD;
   edges INTEGER[];
   sql TEXT;
+  tol FLOAT8;
 BEGIN
 
   -- 0. Check arguments
   IF geometrytype(apoly) != 'POLYGON' THEN
     RAISE EXCEPTION 'Invalid geometry type (%) passed to TopoGeo_AddPolygon, expected POLYGON', geometrytype(apoly);
   END IF;
+
+  -- Get tolerance, if 0 was given
+  tol := COALESCE( NULLIF(tolerance, 0), topology._st_mintolerance(atopology, apoly) );
 
   -- 1. Extract boundary
   boundary := ST_Boundary(apoly);
@@ -962,7 +989,7 @@ BEGIN
 
   -- 2. Add boundaries as edges
   FOR rec IN SELECT (ST_Dump(boundary)).geom LOOP
-    edges := array_cat(edges, array_agg(x)) FROM ( select topology.TopoGeo_addLinestring(atopology, rec.geom, tolerance) as x ) as foo;
+    edges := array_cat(edges, array_agg(x)) FROM ( select topology.TopoGeo_addLinestring(atopology, rec.geom, tol) as x ) as foo;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'New edges: %', edges;
 #endif
