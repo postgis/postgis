@@ -43,6 +43,7 @@ $$ LANGUAGE 'SQL' IMMUTABLE STRICT;
 -- {
 -- Get tolerance for a given topology
 -- and if zero the min for a given topology
+--
 -- }{
 CREATE OR REPLACE FUNCTION topology._st_mintolerance(atopology varchar, ageom Geometry)
   RETURNS float8
@@ -52,7 +53,7 @@ AS $$
     topology._st_mintolerance($2))
   FROM topology.topology
   WHERE name = $1;
-$$ LANGUAGE 'SQL' IMMUTABLE STRICT;
+$$ LANGUAGE 'SQL' STABLE STRICT;
 -- }
 
 --{
