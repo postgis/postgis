@@ -1819,7 +1819,57 @@ ERROR:  Two or more faces found</programlisting>
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>, <xref linkend="GetTopologyName"/></para>
+				<para>
+	<xref linkend="CreateTopology"/>,
+	<xref linkend="DropTopology"/>,
+	<xref linkend="GetTopologyName"/>,
+	<xref linkend="GetTopologySRID"/>
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="GetTopologySRID">
+			<refnamediv>
+				<refname>GetTopologySRID</refname>
+			
+				<refpurpose>Returns the SRID of a topology in the topology.topology table given the name of the topology.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>integer <function>GetTopologyID</function></funcdef>
+					<paramdef><type>varchar</type> <parameter>toponame</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns the spatial reference id of a topology in the topology.topology table given the name of the topology.</para>
+              <!-- use this format if new function -->
+                <para>Availability: 2.0.0</para>
+			</refsection>
+		
+		
+			<refsection>
+				<title>Examples</title>
+				<programlisting>SELECT topology.GetTopologySRID('ma_topo') As SRID;
+ SRID
+-------
+  4326</programlisting>
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para>
+	<xref linkend="CreateTopology"/>,
+	<xref linkend="DropTopology"/>,
+	<xref linkend="GetTopologyName"/>,
+	<xref linkend="GetTopologyID"/>
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -1859,7 +1909,12 @@ ERROR:  Two or more faces found</programlisting>
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="CreateTopology"/>, <xref linkend="DropTopology"/>, <xref linkend="GetTopologyID"/></para>
+				<para>
+	<xref linkend="CreateTopology"/>,
+	<xref linkend="DropTopology"/>,
+	<xref linkend="GetTopologyID"/>,
+	<xref linkend="GetTopologySRID"/>
+				</para>
 			</refsection>
 		</refentry>
 		

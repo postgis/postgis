@@ -53,6 +53,7 @@
 --    topology.topology table
 --
 -- FUNCTION GetTopologyId(name)
+-- FUNCTION GetTopologySRID(name)
 -- FUNCTION GetTopologyName(id)
 --    Return info about a Topology
 --
@@ -956,6 +957,8 @@ $$ LANGUAGE 'sql' VOLATILE STRICT;
 --{
 -- GetTopologyName(topology_id)
 --
+-- TODO: rewrite in SQL ?
+--
 CREATE OR REPLACE FUNCTION topology.GetTopologyName(topoid integer)
   RETURNS varchar
 AS
@@ -974,6 +977,8 @@ LANGUAGE 'plpgsql' STABLE STRICT;
 --{
 -- GetTopologyId(toponame)
 --
+-- TODO: rewrite in SQL ?
+--
 CREATE OR REPLACE FUNCTION topology.GetTopologyId(toponame varchar)
   RETURNS integer
 AS
@@ -988,6 +993,16 @@ END
 $$
 LANGUAGE 'plpgsql' STABLE STRICT;
 --} GetTopologyId(toponame)
+
+--{
+-- GetTopologySRID(toponame)
+--
+CREATE OR REPLACE FUNCTION topology.GetTopologySRID(toponame varchar)
+  RETURNS integer
+AS $$
+  SELECT SRID FROM topology.topology WHERE name = $1;
+$$ LANGUAGE 'sql' STABLE STRICT;
+--} GetTopologySRID(toponame)
   
 
 
