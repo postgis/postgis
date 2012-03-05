@@ -72,7 +72,7 @@ endif
 gtk_build = @GTK_BUILD@
 
 # Common object files
-LOADER_OBJS = shpopen.o dbfopen.o getopt.o shpcommon.o safileio.o
+SHPLIB_OBJS = shpopen.o dbfopen.o getopt.o shpcommon.o safileio.o
 
 # The real parts of the Makefile
 all: $(SHP2PGSQL-CLI) $(PGSQL2SHP-CLI) @GTK_BUILD@
@@ -96,12 +96,12 @@ pgsql2shp-core.o: pgsql2shp-core.c pgsql2shp-core.h shpcommon.h
 pgsql2shp-cli.o: pgsql2shp-cli.c pgsql2shp-core.h shpcommon.h
 	$(CC) $(CFLAGS) $(PGSQL_FE_CPPFLAGS) -c $<
 
-$(PGSQL2SHP-CLI): $(LOADER_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM) 
+$(PGSQL2SHP-CLI): $(SHPLIB_OBJS) pgsql2shp-core.o pgsql2shp-cli.o $(LIBLWGEOM) 
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CFLAGS) $^ $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) -o $@ \
 	  $(LIBTOOL_LINK_COMMANDS)
 
-$(SHP2PGSQL-CLI): $(LOADER_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
+$(SHP2PGSQL-CLI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM) 
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CFLAGS) $^ -o $@ $(GETTEXT_LDFLAGS) $(ICONV_LDFLAGS) \
 	  $(LIBTOOL_LINK_COMMANDS)
@@ -109,7 +109,7 @@ $(SHP2PGSQL-CLI): $(LOADER_OBJS) shp2pgsql-core.o shp2pgsql-cli.o $(LIBLWGEOM)
 shp2pgsql-gui.o: shp2pgsql-gui.c shp2pgsql-core.h shpcommon.h
 	$(CC) $(CFLAGS) $(GTK_CFLAGS) $(PGSQL_FE_CPPFLAGS) -o $@ -c shp2pgsql-gui.c
 
-$(SHP2PGSQL-GUI): $(LOADER_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core.o $(LIBLWGEOM) $(GTK_WIN32_RES)
+$(SHP2PGSQL-GUI): $(SHPLIB_OBJS) shp2pgsql-core.o shp2pgsql-gui.o pgsql2shp-core.o $(LIBLWGEOM) $(GTK_WIN32_RES)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CFLAGS) $(GTK_WIN32_FLAGS) $^ -o $@ \
 	  $(GTK_LIBS) $(ICONV_LDFLAGS) $(PGSQL_FE_LDFLAGS) $(GETTEXT_LDFLAGS) \
