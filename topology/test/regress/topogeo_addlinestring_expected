@@ -149,4 +149,12 @@ N|65|0|POINT(0 0)
 #1650.3|66
 N|66||POINT(10 0)
 E|66|sn65|en66
+#1654.1|N|67
+N|67|0|POINT(0 0)
+#1654.2|67
+#1654.2|68
+N|68||POINT(-10 1)
+N|69||POINT(10 1)
+E|67|sn68|en67
+E|68|sn67|en69
 Topology 'city_data' dropped

@@ -189,6 +189,19 @@ SELECT '#1650.3', TopoGeo_addLineString('city_data',
 , 2) ORDER BY 2;
 SELECT check_changes();
 
+-- Test snapping of line over a node( http://trac.osgeo.org/postgis/ticket/??? )
+
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
+DELETE FROM city_data.face where face_id > 0; 
+
+SELECT '#1654.1', 'N', ST_AddIsoNode('city_data', 0, 'POINT(0 0)');
+SELECT check_changes();
+SELECT '#1654.2', TopoGeo_addLineString('city_data',
+  'LINESTRING(-10 1, 10 1)'
+, 2);
+SELECT check_changes();
+
+
 -- Cleanups
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');

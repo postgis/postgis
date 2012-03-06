@@ -10,6 +10,7 @@ PostGIS 2.0.0beta1
    Andrea Peri - Lots of testing on topology, checking for correctness
    Andreas Forø Tollefsen - raster testing
    Chris English - topology stress testing loader functions
+   Salvatore Larosa - Lots of topology testing 
    Brian Hamlin - Benchmarking 
    	(also experimental experimental branches 
    		before they are folded into core)

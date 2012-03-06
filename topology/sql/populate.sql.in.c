@@ -838,7 +838,7 @@ BEGIN
 
     snapped := ST_Snap(noded, iedges, tol);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Snapped: %', ST_AsText(snapped);
+    RAISE DEBUG 'Snapped to edges: %', ST_AsText(snapped);
 #endif
 
     noded := ST_Difference(snapped, iedges);
@@ -864,28 +864,44 @@ BEGIN
   END IF;
 
   -- 2.1. Node with existing nodes within tol
+  -- TODO: check if we should be only considering _isolated_ nodes!
   sql := 'WITH nearby AS ( SELECT n.geom FROM '
     || quote_ident(atopology) 
     || '.node n WHERE ST_DWithin(n.geom, '
     || quote_literal(noded::text)
     || '::geometry, '
-    || tol || ') ) SELECT (st_dump(st_unaryunion(st_collect(geom)))).geom FROM nearby;';
+    || tol || ') ) SELECT st_collect(geom) FROM nearby;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  FOR rec IN EXECUTE sql
-  LOOP
-      -- Use the node to split edges
-      SELECT ST_Collect(geom) 
-      FROM ST_Dump(ST_Split(noded, rec.geom))
-      INTO STRICT noded;
+  EXECUTE sql INTO inodes;
+
+  IF inodes IS NOT NULL THEN -- {
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'Split by %: %', ST_AsText(rec.geom), ST_AsText(noded);
+    RAISE DEBUG 'Intersecting nodes: %', ST_AsText(inodes);
 #endif
-  END LOOP;
+
+    -- TODO: consider snapping once against all elements
+    ---      (rather than once with edges and once with nodes)
+    noded := ST_Snap(noded, inodes, tol);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Split: %', ST_AsText(noded);
+    RAISE DEBUG 'Snapped to nodes: %', ST_AsText(noded);
 #endif
+
+    FOR rec IN SELECT (ST_Dump(inodes)).*
+    LOOP
+        -- Use the node to split edges
+        SELECT ST_Collect(geom) 
+        FROM ST_Dump(ST_Split(noded, rec.geom))
+        INTO STRICT noded;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+        RAISE DEBUG 'Split by %: %', ST_AsText(rec.geom), ST_AsText(noded);
+#endif
+    END LOOP;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Split: %', ST_AsText(noded);
+#endif
+  END IF; -- }
 
   -- 3. For each (now-noded) segment, insert an edge
   FOR rec IN SELECT (ST_Dump(noded)).geom LOOP
