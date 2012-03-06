@@ -2,12 +2,9 @@ $Id$
 
 == Simple Projects ==
 
-* ST_CleanGeometry(geometry)
-  Attempt to make invalid geometry valid
 * ST_AverageDistance(g1 geometry, g2 geometry, nsamples integer) returns double
   Sum of minimum distances at regular intervals up two geometries, 
   divided by the number of samples.  
-* ST_GeomFromGeoJSON(string) returns geometry. Ingests JSON geometry parts only.
 * ST_LatitudeFromText(string) returns float, 
   LongitudeFromText(string) returns float 
   for things like 132W 23' 23", or 45N 23.41232', or 123.14123W, etc, etc, etc.
@@ -15,11 +12,7 @@ $Id$
   Format string could use DD DD.DD MM MM.MM SS SSSS.SSS style 
   tokens and allow anything else (E, W, ", ', degree sign) 
   to be interleaved within.
-* ST_DumpPoints(g1 geometry) returns setof geometry_dump 
-  Similar in concept to ST_Dump and ST_DumpRings will output a 
-  geometry_dump array for any geometry where each geometry is a point 
-  and path info to denote the locaiton/subgeometry it is located in.
-  (C-version TODO)
+* Port ST_DumpPoints(geometry) to C
 
 == Larger projects ==
 
@@ -54,32 +47,9 @@ the TOAST tables, for yet more performance pain.
 The solution is to cut up the large features into smaller features. 
 Some standard utilities for doing so are required.
 
--- Topology --
-
-Expand on the existing topology experiment, in particular buiding topologies
-from existing POLYGON and MULTIPOLYGON "coverages" (simple feature collections
-that have an expectation of no overlaps or gaps).
-
--- GEOMETRY_COLUMNS --
-
-Add the maintenance of GEOMETRY_COLUMNS to the "ANALYZE" operation, so that
-an ANALYZE automatically removes orphaned rows from GEOMETRY_COLUMNS and
-adds entries for new rows.
-
--- typmod support --
-
-Allow geometry(srid, type) constructors to automatically fill out GEOMETRY_COLUMNS and constraints.
-
 -- Estimated Extent --
 
 Fast extent estimation based on reading the head of the R-Tree.
-
--- Nearest Neighbor --
-
-Fast nearest neighbor searching based on traversing the R-Tree.
-See,
-  http://citeseer.ist.psu.edu/roussopoulos95nearest.html
-  http://citeseer.ist.psu.edu/91356.html
 
 -- Heat Map / Clustering --
 
@@ -89,16 +59,3 @@ Given a set of points, generate a heat map output. Or, given a set of points, ge
 
 A new object type to hold point cloud information in chunks < page size, filter functions to extract subsets of points from those types based on LIDAR-specific requests ("only return type 1"), and union functions to build complete sets from subsets.  Index bindings (likely 3d) for searching.  Potentially processing functions to extract surfaces or derived products like contours.
 
-== Breaking Changes ==
-
-* Consume and emit ISO standard WKT and WKB for extended dimensionality.
-  Deprecate "EWKT" concept. Consuming is non-breaking change, emitting is 
-  breaking change.
-  WKT example: POINT Z (0 0 0), POINT M (0 0 0), POINT ZM (0 0 0 0)
-  WKB uses different numbering for Z/M variants than EWKB does
-* Convert the "default SRID" from -1 to 0
-* Convert the LWGEOM struct(s) to have enough padding that the coordinates
-  are double-aligned and can be accessed directly as doubles on all
-  architectures
-* Support all typologies of EMPTY (POINT EMPTY, LINESTRING EMPTY) instead
-  of just using GEOMETRYCOLLECTION EMPTY all the time.
