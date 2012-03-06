@@ -29,6 +29,9 @@ SOVER = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@.@POSTGIS_MICRO_VERSION@
 YACC=@YACC@
 LEX=@LEX@
 
+%c: %l
+	@echo "WARNING: Lexer not generated. Run 'make parse' to manually build lexer/parser."
+
 # Standalone LWGEOM objects
 SA_OBJS = \
 	stringbuffer.o \
