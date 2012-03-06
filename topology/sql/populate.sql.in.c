@@ -935,7 +935,7 @@ BEGIN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Edge collapsed';
 #endif
-      RETURN;
+      CONTINUE;
     END IF;
 
     -- Check if the so-snapped edge _now_ exists

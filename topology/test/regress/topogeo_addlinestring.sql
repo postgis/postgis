@@ -184,6 +184,11 @@ SELECT '#1650.2' || TopoGeo_addLineString('city_data',
 , 2)::text;
 SELECT check_changes();
 
+SELECT '#1650.3', TopoGeo_addLineString('city_data',
+  'LINESTRING(-1 0, 10 0)'
+, 2) ORDER BY 2;
+SELECT check_changes();
+
 -- Cleanups
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');
