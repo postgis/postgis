@@ -925,6 +925,18 @@ BEGIN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Snapped edge: %', ST_AsText(snapped);
 #endif
+    snapped := ST_CollectionExtract(ST_MakeValid(snapped), 2);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Cleaned edge: %', ST_AsText(snapped);
+#endif
+
+    -- Check if the so-snapped edge collapsed (see #1650)
+    IF ST_IsEmpty(snapped) THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'Edge collapsed';
+#endif
+      RETURN;
+    END IF;
 
     -- Check if the so-snapped edge _now_ exists
     sql := 'SELECT edge_id FROM ' || quote_ident(atopology)
