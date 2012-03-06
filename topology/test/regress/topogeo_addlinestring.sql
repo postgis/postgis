@@ -160,20 +160,20 @@ SELECT '#1641.2', TopoGeo_addLineString('city_data',
 ) ORDER BY 2;
 SELECT check_changes();
 
--- Fails w/out tolerance as of 2.0.0
+-- Now w/out explicit tolerance (will use local min)
 -- clean all up first
---DELETE FROM city_data.edge_data; 
---DELETE FROM city_data.node; 
---DELETE FROM city_data.face where face_id > 0; 
---
---SELECT '#1641.3', TopoGeo_addLineString('city_data',
---  'LINESTRING(-0.223586 0.474301, 0.142550 0.406124)' 
---) ORDER BY 2;
---SELECT check_changes();
---SELECT '#1641.4', TopoGeo_addLineString('city_data',
---  'LINESTRING(0.095989 0.113619, -0.064646 0.470149)'
---) ORDER BY 2;
---SELECT check_changes();
+DELETE FROM city_data.edge_data; 
+DELETE FROM city_data.node; 
+DELETE FROM city_data.face where face_id > 0; 
+
+SELECT '#1641.3', TopoGeo_addLineString('city_data',
+  'LINESTRING(-0.223586 0.474301, 0.142550 0.406124)' 
+) ORDER BY 2;
+SELECT check_changes();
+SELECT '#1641.4', TopoGeo_addLineString('city_data',
+  'LINESTRING(0.095989 0.113619, -0.064646 0.470149)'
+) ORDER BY 2;
+SELECT check_changes();
 
 -- Cleanups
 DROP FUNCTION check_changes();
