@@ -8,25 +8,22 @@ can convert to chunked html, single-file html and pdf.
 
 Make targets are:
 
-  make                      # defaults to creating  
-                            #   - the images used in the generated documentation
-                            #   - the documentation as a single html file
-                            #   - a sql script used to apply COMMENTS for every PostGIS function
+  make                      # same as "make comments"
+  make install              # same as "make comments-install"
+  make uninstall            # same as "make comments-uninstall"
   
-  make html/postgis.html    # generates a single-file html file called html/postgis.html
+  make html                 # generates a single-file html file called html/postgis.html
   make chunked-html         # generates a separate html file for every chapter or section break
   make pdf                  # generates a single pdf file with the PostGIS version as a filename
   make images               # generates all the images used in the html and pdf targets
   make comments             # generates a sql script that add COMMENTs for every function (derived from the documentation)
   make doxygen              # generates the developer's documentation using Doxygen
-  
-  make install              # copies PostGIS' utility (ie. shp2pgsql) man pages to the PostgreSQL's doc directory
-  make uninstall            # removes PostGIS' utility man pages
+
   make comments-install     # copies the postgis-comments.sql script to the PostgreSQL's contrib directory
   make comments-uninstall   # removes the postgis-comments.sql script from the contrib directory
   
-  make clean                # removes any generated files (except images and html files)
-  make maintainer-clean     # clears out the generated images and html files
+  make clean                # removes generated files except comments
+  make maintainer-clean     # removes all generated files (including comments)
 
 
 ====================================================

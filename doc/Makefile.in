@@ -235,9 +235,9 @@ docs-uninstall:
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/postgis.html
 	rm -f $(DESTDIR)$(PGSQL_DOCDIR)/postgis/README.postgis
 
-install: docs-install man-install comments-install
+install: comments-install
 
-uninstall: docs-uninstall man-uninstall comments-uninstall
+uninstall: comments-uninstall
 
 ifeq ($(XSLTPROC),)
 garden: requirements_not_met_xsltproc
