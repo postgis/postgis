@@ -43,7 +43,7 @@ BEGIN
   END;
 
   -- Get tolerance, if 0 was given
-  tolerance := COALESCE( NULLIF(tolerance, 0), topology._st_mintolerance(atopology, ageom) );
+  tolerance := COALESCE( NULLIF(atolerance, 0), topology._st_mintolerance(atopology, ageom) );
 
   -- Get layer information
   BEGIN

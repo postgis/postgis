@@ -95,6 +95,42 @@ SELECT ST_AsText(toTopoGeom('POLYGON EMPTY', 'tt', 4)::geometry);
 SELECT ST_AsText(toTopoGeom('MULTIPOLYGON EMPTY', 'tt', 4)::geometry);
 SELECT ST_AsText(toTopoGeom('GEOMETRYCOLLECTION EMPTY', 'tt', 5)::geometry);
 
+-- Test with tolerance (expect to snap to POINT(-100 -100)
+with inp as ( select
+'GEOMETRYCOLLECTION(
+ POINT(-100 -100.5),
+ LINESTRING(-100 -90,-90 -90.5),
+ POLYGON((-100 -80,-89.5 -80,-95 -70,-100 -80),(-98 -78,-92 -78,-95 -72.5,-98 -78))
+)'
+ ::geometry as g),
+tg as ( select totopogeom(g, 'tt', 5, 1) as g from inp )
+select 'tolerance_1', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
+
+-- Test with tolerance specified in topology record
+UPDATE topology.topology SET precision=1 WHERE name = 'tt';
+with inp as ( select
+'GEOMETRYCOLLECTION(
+ POINT(-100 -100.5),
+ LINESTRING(-100 -90,-90 -90.5),
+ POLYGON((-100 -80,-89.5 -80,-95 -70,-100 -80),(-98 -78,-92 -78,-95 -72.5,-98 -78))
+)'
+ ::geometry as g),
+tg as ( select totopogeom(g, 'tt', 5) as g from inp )
+select 'tolerance_topo_1', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
+
+-- Test without tolerance (expect to remain POINT(-100 -100.5)
+UPDATE topology.topology SET precision=0 WHERE name = 'tt';
+with inp as ( select
+'GEOMETRYCOLLECTION(
+ POINT(-100 -100.5),
+ LINESTRING(-100 -90,-90 -90.5),
+ POLYGON((-100 -80,-89.5 -80,-95 -70,-100 -80),(-98 -78,-92 -78,-95 -72.5,-98 -78))
+)'
+ ::geometry as g),
+tg as ( select totopogeom(g, 'tt', 5) as g from inp )
+select 'tolerance_0', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
+
+
 DROP TABLE tt.f_coll;
 DROP TABLE tt.f_areal;
 DROP TABLE tt.f_lineal;
