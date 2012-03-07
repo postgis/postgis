@@ -685,6 +685,7 @@ dnl Detect if json-c installed
 dnl ===========================================================================
 
 HAVE_JSON=no
+AC_SUBST([HAVE_JSON])
 
 AC_ARG_WITH([jsondir],
 	[AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
