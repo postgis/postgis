@@ -46,7 +46,7 @@ lwpoint_summary(LWPOINT *point, int offset)
 
 	result = (char *)lwalloc(128+offset);
 
-	sprintf(result, "%*.s%s[%s]\n",
+	sprintf(result, "%*.s%s[%s]",
 	        offset, pad, lwtype_name(point->type),
 	        zmflags);
 	return result;
@@ -61,7 +61,7 @@ lwline_summary(LWLINE *line, int offset)
 
 	result = (char *)lwalloc(128+offset);
 
-	sprintf(result, "%*.s%s[%s] with %d points\n",
+	sprintf(result, "%*.s%s[%s] with %d points",
 	        offset, pad, lwtype_name(line->type),
 	        zmflags,
 	        line->points->npoints);
@@ -76,6 +76,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 	char *result;
 	char *tmp;
 	int i;
+	static char *nl = "\n";
 	char *pad="";
 	char *zmflags = lwtype_flagchars(col->flags);
 
@@ -95,6 +96,7 @@ lwcollection_summary(LWCOLLECTION *col, int offset)
 		result = lwrealloc(result, size);
 
 		LWDEBUGF(4, "Reallocated %d bytes for result", size);
+		if ( i > 0 ) strcat(result,nl);
 
 		strcat(result, tmp);
 		lwfree(tmp);
@@ -113,6 +115,7 @@ lwpoly_summary(LWPOLY *poly, int offset)
 	char *result;
 	int i;
 	char *pad="";
+	static char *nl = "\n";
 	char *zmflags = lwtype_flagchars(poly->flags);
 
 	LWDEBUG(2, "lwpoly_summary called");
@@ -126,8 +129,9 @@ lwpoly_summary(LWPOLY *poly, int offset)
 
 	for (i=0; i<poly->nrings; i++)
 	{
-		sprintf(tmp,"%s   ring %i has %i points\n",
+		sprintf(tmp,"%s   ring %i has %i points",
 		        pad, i, poly->rings[i]->npoints);
+		if ( i > 0 ) strcat(result,nl);
 		strcat(result,tmp);
 	}
 
