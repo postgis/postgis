@@ -8,10 +8,6 @@ $Id$
 * ST_LatitudeFromText(string) returns float, 
   LongitudeFromText(string) returns float 
   for things like 132W 23' 23", or 45N 23.41232', or 123.14123W, etc, etc, etc.
-* ST_AsLatLonText(<point>, [formatstring]) returns string.  
-  Format string could use DD DD.DD MM MM.MM SS SSSS.SSS style 
-  tokens and allow anything else (E, W, ", ', degree sign) 
-  to be interleaved within.
 * Port ST_DumpPoints(geometry) to C
 
 == Larger projects ==
