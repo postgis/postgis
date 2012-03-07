@@ -103,7 +103,7 @@ dnl for in-place regression tests
 dnl 
 case $host_os in
          *mingw*)
-                 PWDREGRESS="bash -c \"pwd -W\""
+                 PWDREGRESS="bash -c 'pwd -W'"
                  ;;
          *)
                  PWDREGRESS="pwd"
