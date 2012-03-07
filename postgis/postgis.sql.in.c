@@ -2359,10 +2359,12 @@ DECLARE
 	rast_lib_ver text;
 	rast_scr_ver text;
 	topo_scr_ver text;
+	json_lib_ver text;
 BEGIN
 	SELECT postgis_lib_version() INTO libver;
 	SELECT postgis_proj_version() INTO projver;
 	SELECT postgis_geos_version() INTO geosver;
+	SELECT postgis_libjson_version() INTO json_lib_ver;
 	BEGIN
 		SELECT postgis_gdal_version() INTO gdalver;
 	EXCEPTION
@@ -2420,6 +2422,10 @@ BEGIN
 
 	IF  libxmlver IS NOT NULL THEN
 		fullver = fullver || ' LIBXML="' || libxmlver || '"';
+	END IF;
+
+	IF json_lib_ver IS NOT NULL THEN
+		fullver = fullver || ' LIBJSON="' || json_lib_ver || '"';
 	END IF;
 
 	-- fullver = fullver || ' DBPROC="' || dbproc || '"';
@@ -3373,6 +3379,12 @@ CREATE OR REPLACE FUNCTION ST_GeomFromKML(text)
 CREATE OR REPLACE FUNCTION ST_GeomFromGeoJson(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','geom_from_geojson'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+-- Availability: 2.0.0
+CREATE OR REPLACE FUNCTION postgis_libjson_version()
+	RETURNS text
+	AS 'MODULE_PATHNAME','postgis_libjson_version'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------

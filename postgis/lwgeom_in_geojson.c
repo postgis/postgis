@@ -463,6 +463,18 @@ parse_geojson(json_object *geojson, bool *hasz,  int *root_srid)
 }
 #endif /* HAVE_LIBJSON  */
 
+PG_FUNCTION_INFO_V1(postgis_libjson_version);
+Datum postgis_libjson_version(PG_FUNCTION_ARGS)
+{
+#ifndef HAVE_LIBJSON
+	PG_RETURN_NULL();
+#else /* HAVE_LIBJSON  */
+	const char *ver = "UNKNOWN";
+	text *result = cstring2text(ver);
+	PG_RETURN_POINTER(result);
+#endif
+}
+
 PG_FUNCTION_INFO_V1(geom_from_geojson);
 Datum geom_from_geojson(PG_FUNCTION_ARGS)
 {
