@@ -611,6 +611,10 @@ Datum geography_project(PG_FUNCTION_ARGS)
 	SPHEROID s;
 	uint32_t type;
 
+	/* Return NULL on NULL distance or geography */
+	if ( PG_ARGISNULL(0) || PG_ARGISNULL(1) )
+		PG_RETURN_NULL();
+	
 	/* Get our geometry object loaded into memory. */
 	g = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	
@@ -622,10 +626,6 @@ Datum geography_project(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
     }
 
-	/* Return NULL on NULL distance */
-	if ( PG_ARGISNULL(1) )
-		PG_RETURN_NULL();
-	
 	distance = PG_GETARG_FLOAT8(1); /* Distance in Meters */
 	lwgeom = lwgeom_from_gserialized(g);
 
