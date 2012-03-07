@@ -35,27 +35,28 @@ Directory structure:
 REQUIREMENTS
 ------------
 
-PostGIS is compatible with PostgreSQL 8.3 and above.
+PostGIS is compatible with PostgreSQL 8.4 and above.
 
 You *must* have the full PostgreSQL - including server headers - installed
 for this to work. 
 
-* PROJ4 SUPPORT (Required, Version 4.5.0 or better): 
+* PROJ4 SUPPORT (Required, Version 4.6.0 or higher): 
 
   The Proj4 reprojection library is required if you want to use the 
   transform() function to reproject features within the database.
 
     http://trac.osgeo.org/proj/
 
-* SPATIAL PREDICATE / GEOS SUPPORT (Required, Version 3.1.1 or better):
+* SPATIAL PREDICATE / GEOS SUPPORT (Required, Version 3.2.2 or higher):
 
   The GEOS library provides support for exact topological tests
   such as Touches(), Contains(), Disjoint() and spatial operations
-  such as Intersection(), Union() and Buffer().  
+  such as Intersection(), Union() and Buffer(). GEOS 3.3.2 or higher
+  is recomended. 
 
     http://trac.osgeo.org/geos/
 
-* XML SUPPORT (Required): 
+* XML SUPPORT (Required, Version 2.5.0 or higher): 
 
   The LibXML2 library is required to use the ST_GeomFromGML() and 
   ST_GeomFromKML() functionality.
@@ -66,6 +67,16 @@ for this to work.
 
    The loader, and hence postgis, requires GNU gettext 0.14 or higher
    (typically in libc on GNU/Linux, in which case 0.17 is required).
+
+If you want to compile PostGIS with GeoJSON support, you additionally 
+must have installed:
+
+* JSON-C (Version 0.9 or higher)
+
+  JSON-C is currently used to import GeoJSON via the function
+  ST_GeomFromGeoJson. JSON-C is available for download from
+
+    http://oss.metaparadigm.com/json-c/.
 
 If you want to compile PostGIS with raster support, you additionally 
 must have installed:
