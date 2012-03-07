@@ -320,13 +320,13 @@ rt_util_gdal_convert_sr(const char *srs, int proj4) {
 			OSRExportToWkt(hsrs, &rtn);
 	}
 	else {
-		rterror("rt_util_gdal_convert_sr: Could not process the provided srs:%s", srs);
+		rterror("rt_util_gdal_convert_sr: Could not process the provided srs: %s", srs);
 		return NULL;
 	}
 
 	OSRDestroySpatialReference(hsrs);
 	if (rtn == NULL) {
-		rterror("rt_util_gdal_convert_sr: Could not process the provided srs:%s", srs);
+		rterror("rt_util_gdal_convert_sr: Could not process the provided srs: %s", srs);
 		return NULL;
 	}
 
@@ -9345,7 +9345,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	if (NULL != srs && strlen(srs)) {
 		src_sr = OSRNewSpatialReference(NULL);
 		if (OSRSetFromUserInput(src_sr, srs) != OGRERR_NONE) {
-			rterror("rt_raster_gdal_rasterize: Unable to create OSR spatial reference");
+			rterror("rt_raster_gdal_rasterize: Unable to create OSR spatial reference using the provided srs: %s", srs);
 
 			if (noband) {
 				rtdealloc(_pixtype);
