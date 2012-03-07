@@ -911,21 +911,6 @@ if test "x$with_raster" != "xno"; then dnl # {
     AC_SUBST([POSTGIS_RASTER_BUILD_DATE])
     AC_SUBST([POSTGIS_RASTER_SCRIPTS_VERSION])
 
-    dnl ================================================
-    dnl Vars needed for raster extension
-    dnl ================================================
-    POSTGIS_SRCDIR=`$PWDREGRESS`
-    LIBLWGEOM_CFLAGS="-I${POSTGIS_SRCDIR}/liblwgeom"
-    LIBLWGEOM_LDFLAGS="${POSTGIS_SRCDIR}/liblwgeom/.libs/liblwgeom.a"
-    LIBPGCOMMON_CFLAGS="-I${POSTGIS_SRCDIR}/libpgcommon"
-    LIBPGCOMMON_LDFLAGS="${POSTGIS_SRCDIR}/libpgcommon/libpgcommon.a"
-
-    AC_SUBST([POSTGIS_SRCDIR])
-    AC_SUBST([LIBLWGEOM_CFLAGS])
-    AC_SUBST([LIBLWGEOM_LDFLAGS])
-    AC_SUBST([LIBPGCOMMON_CFLAGS])
-    AC_SUBST([LIBPGCOMMON_LDFLAGS])
-
     dnl ===========================================================================
     dnl Allow output of double truncation warnings with --with-raster-dblwarning
     dnl ===========================================================================

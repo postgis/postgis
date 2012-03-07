@@ -11,7 +11,7 @@
 #
 #############################################################################
 
-POSTGIS_SRC=@POSTGIS_SRCDIR@
+POSTGIS_SRC=../../..
 
 # MingW hack: rather than use PGSQL_BINDIR directly, we change
 # to the directory and then use "pwd" to return the path. This
@@ -158,8 +158,7 @@ check:
 #	$(RM) run_test
 #	$(RM) testgdalraster
 
-testgdalraster: testgdalraster.in Makefile
-	sed -e "s#@POSTGIS_SRC@#$(POSTGIS_SRC)#" $< > $@
+testgdalraster:
 	chmod +x $@
 	chmod +x ../../scripts/python/rtgdalraster.py
 	./testgdalraster

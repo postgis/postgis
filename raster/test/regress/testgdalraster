@@ -1,6 +1,6 @@
 #!/bin/bash
 
-POSTGIS_SRC=@POSTGIS_SRC@
+POSTGIS_SRC=../../..
 RTGDAL=${POSTGIS_SRC}/raster/scripts/python/rtgdalraster.py
 DB=postgis_reg
 DBENABLERS="${POSTGIS_SRC}/postgis/postgis.sql ../../rt_pg/rtpostgis.sql"
