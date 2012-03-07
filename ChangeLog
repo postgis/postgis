@@ -1,3 +1,409 @@
+2012-03-07 20:47  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9424] configure.ac, regress/Makefile.in: Fix need to hack
+	  regress source path
+
+2012-03-07 20:38  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9423] configure.ac, raster/loader/Makefile.in,
+	  raster/rt_core/Makefile.in, raster/rt_pg/Makefile.in,
+	  raster/test/core/Makefile.in, raster/test/regress/Makefile.in,
+	  raster/test/regress/testgdalraster,
+	  raster/test/regress/testgdalraster.in: Remove reliance on `pwd`
+	  for raster build and test.
+
+2012-03-07 19:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9422] configure.ac: Replace " with ' in mingw pwd call
+
+2012-03-07 19:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9421] configure.ac: MinGW configure for regression dir
+
+2012-03-07 17:40  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9420] liblwgeom/lwgeom_debug.c: ST_Summary output contains a
+	  spurious "+" sign (#1663)
+
+2012-03-07 11:39  Sandro Santilli <strk@keybit.net>
+
+	* [r9419] configure.ac, regress/Makefile.in: Actually run GeoJSON
+	  input tests when libjson is available
+
+2012-03-07 11:18  Sandro Santilli <strk@keybit.net>
+
+	* [r9418] postgis/lwgeom_in_geojson.c, postgis/postgis.sql.in.c:
+	  Report libjson availability from postgis_full_version (#1660)
+	  
+	  This commit adds a postgis_libjson_version() although the library
+	  doesn't give any version information. We just return NULL if not
+	  using the library and "UNKNOWN" otherwise.
+
+2012-03-07 10:55  Sandro Santilli <strk@keybit.net>
+
+	* [r9417] README.postgis: Add note about installing json-c library
+	  on apt-based systems
+
+2012-03-07 09:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9416] README.postgis: Update REQUIREMENTS section, add JSON-C
+	  (#1660)
+
+2012-03-07 08:17  Sandro Santilli <strk@keybit.net>
+
+	* [r9415] TODO: I didn't realize we had ST_AsLatLonText already :)
+
+2012-03-07 05:31  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9414] postgis/geography_measurement.c: Crash in ST_Project on
+	  NULL input (#1658)
+
+2012-03-07 04:28  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9413] raster/rt_core/rt_api.c: Slightly more verbose error
+	  message for when rt_raster_gdal_rasterize() is unable to have an
+	  OSR object project a provided srs text.
+
+2012-03-06 21:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9412] TODO: Update TODO list dropping done items
+
+2012-03-06 18:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9411] liblwgeom/Makefile.in: Work around default rule for lexer
+	  generation. (#1644)
+
+2012-03-06 16:19  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9410] loader/Makefile.in: I'm not sure this "fix" was actually
+	  a fix so I'm removing it.
+
+2012-03-06 16:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9409] NEWS, topology/sql/populate.sql.in.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Snap new
+	  lines over existing nodes (#1654)
+	  
+	  Also add Salvatore to the list of testing heroes :)
+
+2012-03-06 13:44  Sandro Santilli <strk@keybit.net>
+
+	* [r9408] topology/sql/populate.sql.in.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Don't let a
+	  single collapse hide _all_ edges (#1650)
+
+2012-03-06 13:21  Sandro Santilli <strk@keybit.net>
+
+	* [r9407] topology/sql/populate.sql.in.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Skip
+	  collapsed edges after snapping (#1650)
+
+2012-03-06 13:20  Sandro Santilli <strk@keybit.net>
+
+	* [r9406] topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Uncomment
+	  new tests for #1641
+
+2012-03-06 09:45  Sandro Santilli <strk@keybit.net>
+
+	* [r9405] doc/Makefile.in, doc/README: Have "make install" only
+	  install what "make" built (#1652)
+	  
+	  Also updates the README to be in sync with Makefile.in
+
+2012-03-06 09:05  Sandro Santilli <strk@keybit.net>
+
+	* [r9404] topology/sql/topogeometry/totopogeom.sql.in.c,
+	  topology/test/regress/totopogeom.sql,
+	  topology/test/regress/totopogeom_expected: Fix toTopoGeom to
+	  actualy _use_ to given tolerance (#1647)
+
+2012-03-05 23:09  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9403] loader/Makefile.in: Rename LOADER_OBJS to the more direct
+	  SHPLIB_OBJS
+
+2012-03-05 22:54  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9402] liblwgeom/cunit/Makefile.in: Defines are picked up from
+	  ../../postgis_config.h via ../liblwgeom_internal.h
+
+2012-03-05 22:51  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9401] loader/Makefile.in: Add static link directive to libtool
+	  (#1644) allows build on Debian Wheezy
+
+2012-03-05 16:45  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9400] authors.svn: Update kneufeld contact info
+
+2012-03-05 12:24  Sandro Santilli <strk@keybit.net>
+
+	* [r9399] doc/extras_topology.xml, topology/topology.sql.in.c: Add
+	  GetTopologySRID (#1182)
+
+2012-03-05 12:14  Sandro Santilli <strk@keybit.net>
+
+	* [r9398] topology/sql/sqlmm.sql.in.c: Optimize ST_AddIsoNode
+	  (#983)
+
+2012-03-05 11:33  Sandro Santilli <strk@keybit.net>
+
+	* [r9397] doc/extras_topology.xml: Move topology reference entries
+	  from "processing" to "constructors"
+
+2012-03-05 11:05  Sandro Santilli <strk@keybit.net>
+
+	* [r9396] topology/sql/populate.sql.in.c: _ST_MinTolerance isn't
+	  IMMUTABLE, due to db lookup...
+
+2012-03-05 10:49  Sandro Santilli <strk@keybit.net>
+
+	* [r9395] topology/sql/populate.sql.in.c,
+	  topology/sql/topogeometry/totopogeom.sql.in.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Handle 0
+	  tolerance by using topology.precision or min float one
+	  
+	  This handling fixes the #1641 case w/out passing an explicit
+	  tolerance and makes a step toward #785.
+
+2012-03-05 08:28  Sandro Santilli <strk@keybit.net>
+
+	* [r9394] utils/postgis_restore.pl.in: Fix typos (FUNCION), drop
+	  duplicate entries
+
+2012-03-04 22:35  Regina Obe <lr@pcorp.us>
+
+	* [r9393] doc/installation.xml: put in libiconv path specification
+	  if it needs to be done. For some reason my mingw64 can't find it
+	  unless its explicitly set.
+
+2012-03-03 22:59  Regina Obe <lr@pcorp.us>
+
+	* [r9392] doc/release_notes.xml: Link postgis raster contributors
+	  to raster funding page.
+
+2012-03-03 22:56  Regina Obe <lr@pcorp.us>
+
+	* [r9391] doc/introduction.xml, doc/release_notes.xml: add in
+	  missing credits and link to Paul's credit description blog pages.
+
+2012-03-02 23:35  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9390] liblwgeom/g_box.c, liblwgeom/liblwgeom.h.in,
+	  postgis/lwgeom_box3d.c, postgis/postgis.sql.in.c: Add an SRID to
+	  box3d to allow lossless casts.
+
+2012-03-02 20:53  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9389] utils/postgis_restore.pl.in: Finish fix for ticket #1635.
+	  Added operator function to skip when restoring.
+
+2012-03-02 20:17  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9388] doc/reference_raster.xml: Fix for ticket #1589. Removed
+	  misleading example.
+
+2012-03-02 20:14  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9387] doc/reference_raster.xml: Fix for ticket #1589. Removed
+	  misleading example.
+
+2012-03-02 19:00  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9386] raster/rt_pg/rt_pg.c: Fixed problem with passing PROJ.4
+	  text to GDAL which may result in SRS WKT that is NOT what is
+	  desired. Now preferentially use EPSG:SRID if available. Ticket is
+	  #1618.
+
+2012-03-02 15:02  Regina Obe <lr@pcorp.us>
+
+	* [r9385] extensions/postgis/sql_bits/remove_from_extension.sql.in:
+	  #1630 and drop type raster_columns. Good grief how many hidden
+	  objects are there.
+
+2012-03-02 14:36  Regina Obe <lr@pcorp.us>
+
+	* [r9384] raster/rt_pg/rtpostgis_drop.sql.in.c: #1630 Add missing
+	  permutations of st_clip that exist in older versions so
+	  trimraster can be renamed to crop
+
+2012-03-02 14:11  Regina Obe <lr@pcorp.us>
+
+	* [r9383] extensions/postgis/sql_bits/remove_from_extension.sql.in:
+	  oops type in last commit.
+
+2012-03-02 14:05  Regina Obe <lr@pcorp.us>
+
+	* [r9382] extensions/postgis/sql_bits/remove_from_extension.sql.in:
+	  #1630 -- this has got to be a bug in the PostgreSQL extensions
+	  model that I have to drop dependent types of views and types from
+	  extension when drop view and type. Will confirm later.
+
+2012-03-02 13:15  Regina Obe <lr@pcorp.us>
+
+	* [r9381] doc/installation.xml: Add section about soft upgrade with
+	  extensions.
+
+2012-03-02 01:15  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9380] raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/rt_pg/rt_pg.c, raster/test/core/testapi.c: Add handling of
+	  when clamped pixel values is equal to the band's clamped NODATA
+	  value. Ticket is #1139.
+
+2012-03-01 22:25  David Zwarg <dzwarg@azavea.com>
+
+	* [r9379] raster/test/regress/rt_mapalgebraexpr.sql,
+	  raster/test/regress/rt_mapalgebraexpr_expected: Added regression
+	  test for error case reported in #1638.
+
+2012-03-01 22:17  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9378] raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/test/core/testapi.c,
+	  raster/test/regress/rt_asraster_expected,
+	  raster/test/regress/rt_clip_expected,
+	  raster/test/regress/rt_intersects_expected,
+	  raster/test/regress/rt_resample_expected: Refactored how skewed
+	  rasters are computed as the extents were not correct. Rewrote
+	  parts of rt_raster_gdal_warp and rt_raster_gdal_rasterize.
+	  Related ticket is #1615.
+
+2012-03-01 21:05  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9377] doc/reference_raster.xml: Fix for #1589 and #1633.
+
+2012-03-01 20:32  Sandro Santilli <strk@keybit.net>
+
+	* [r9376] extensions/postgis/Makefile.in:
+	  postgis_drop_before.sql.in.c => postgis_drop_before.sql
+
+2012-03-01 19:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9375] configure.ac: Make --prefix note a warning rather than a
+	  failure. (#1628)
+
+2012-03-01 19:09  Sandro Santilli <strk@keybit.net>
+
+	* [r9374] topology/sql/populate.sql.in.c: Add an internal
+	  topology._st_mintolerance funtion
+	  
+	  This function computes the minimum tolerance for a given
+	  geometry.
+	  It works by computing the smallest floating point difference that
+	  could be expressed on any vertex of the geometry.
+	  
+	  Currently it's only used to workaround the ST_DWithin/ST_Within
+	  inconsistency (#1625) but could probably be used everytime 0 is
+	  passed as a tolerance, possibly fixing #1641 as well.
+
+2012-03-01 16:47  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9373] raster/test/regress/rt_mapalgebraexpr.sql: Update
+	  regression tests for 1-raster ST_MapAlgebraExpr due to commit
+	  r9371
+
+2012-03-01 16:47  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9372] raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/test/regress/rt_contain.sql,
+	  raster/test/regress/rt_contain_expected,
+	  raster/test/regress/rt_overlap.sql,
+	  raster/test/regress/rt_overlap_expected: Fix for ticket #1635.
+	  Added explicit ~ and && operators on raster and geometry.
+
+2012-03-01 15:59  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9371] raster/rt_pg/rt_pg.c: Forced casting of output from
+	  1-raster ST_MapAlgebraExpr. Ticket is #1639.
+
+2012-03-01 15:51  Sandro Santilli <strk@keybit.net>
+
+	* [r9370] doc/README: MathML DTDs are also needed for the HTML
+
+2012-03-01 15:51  Sandro Santilli <strk@keybit.net>
+
+	* [r9369] doc/README: added MathML 3 DTD to requirements in doc
+
+2012-03-01 15:14  Sandro Santilli <strk@keybit.net>
+
+	* [r9368] topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Add a test
+	  for #1641 using a tolerance (1e-16 is good enough)
+
+2012-03-01 15:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9367] topology/test/regress/topogeo_addlinestring.sql: Add test
+	  for #1641 (disabled as it would fail)
+
+2012-03-01 15:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9366] topology/test/regress/topogeo_addlinestring.sql: Cleanup
+	  the face table as well (you just can't drop the universe)
+
+2012-03-01 12:50  Sandro Santilli <strk@keybit.net>
+
+	* [r9365] utils/postgis_restore.pl.in: Add more items in the skip
+	  list (#1640)
+
+2012-03-01 12:25  Sandro Santilli <strk@keybit.net>
+
+	* [r9364] liblwgeom/cunit/cu_ptarray.c: Add tests for
+	  ptarray_insert_point (see #1640)
+
+2012-03-01 12:25  Sandro Santilli <strk@keybit.net>
+
+	* [r9363] liblwgeom/liblwgeom.h.in, liblwgeom/lwgeom_api.c,
+	  liblwgeom/ptarray.c: Check args passed to ptarray_set_point4d
+
+2012-03-01 11:58  Sandro Santilli <strk@keybit.net>
+
+	* [r9362] doc/reference_management.xml: Drop reference to
+	  postgis_uses_stats (#1632)
+
+2012-03-01 09:16  Sandro Santilli <strk@keybit.net>
+
+	* [r9361] utils/postgis_restore.pl.in: Properly exit the loop
+	  parsing spatial_ref_sys population (#1640)
+
+2012-03-01 08:54  Sandro Santilli <strk@keybit.net>
+
+	* [r9360] postgis/postgis.sql.in.c, postgis/postgis_drop_after.sql:
+	  Drop postgis_uses_stats (#1632)
+
+2012-03-01 08:26  Sandro Santilli <strk@keybit.net>
+
+	* [r9359] postgis/Makefile.in, postgis/postgis_drop.sql.in.c,
+	  postgis/postgis_drop_after.sql, postgis/postgis_drop_before.sql,
+	  postgis/postgis_drop_before.sql.in.c: Rename drop files to be
+	  hopefully clearer, add copyright headers
+
+2012-03-01 08:26  Sandro Santilli <strk@keybit.net>
+
+	* [r9358] postgis/Makefile.in, postgis/postgis.sql.in.c: Stop
+	  including drop calls from main postgis.sql file
+	  
+	  Upgrade file is still generated with the drop file included
+
+2012-02-29 18:58  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9357] liblwgeom/cunit/cu_in_wkt.c: make parse location error
+	  test a little more lenient
+
+2012-02-29 18:19  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9354] Version.config, extensions/upgradeable_versions.mk:
+	  Update for post-Beta1
+
+2012-02-29 18:18  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9353] ChangeLog, NEWS, README.postgis: Update for beta1
+
 2012-02-29 15:59  Sandro Santilli <strk@keybit.net>
 
 	* [r9352] topology/sql/populate.sql.in.c,
@@ -21935,7 +22341,7 @@
 	  unused function. Rename lwgeom_is_collection to
 	  lwtype_is_collection.
 
-2010-11-01 21:03  Kevin Neufeld <kneufeld@refractions.net>
+2010-11-01 21:03  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r6165] doc/postgis.xml, doc/using_postgis_dataman.xml: try an
 	  experiment to fix Docbook and MathML compatibility issues.
@@ -22099,20 +22505,20 @@
 	* [r6144] doc/reference_raster.xml: Try to clarify use of
 	  ST_MakeEmptyRaster to address #651
 
-2010-10-27 18:01  Kevin Neufeld <kneufeld@refractions.net>
+2010-10-27 18:01  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r6143] doc/html/image_src/st_isvalid09.wkt,
 	  doc/using_postgis_dataman.xml: updated reference to appropriate
 	  image in the discussion on geometry validity
 
-2010-10-27 17:27  Kevin Neufeld <kneufeld@refractions.net>
+2010-10-27 17:27  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r6142] doc/html/image_src/Makefile.in,
 	  doc/html/image_src/st_isvalid09.wkt,
 	  doc/using_postgis_dataman.xml: added an example for ST_IsValid
 	  that shows a valid multipolygon that touches at a point.
 
-2010-10-27 17:09  Kevin Neufeld <kneufeld@refractions.net>
+2010-10-27 17:09  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r6141] doc/reference_measure.xml: remove <remark> TODO tag in
 	  doc.
@@ -25019,7 +25425,7 @@
 	  ST_SetPoint, ST_Ad
 	  dPoint, ST_RemovePoint.
 
-2010-03-08 16:37  Kevin Neufeld <kneufeld@refractions.net>
+2010-03-08 16:37  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r5380] doc/using_postgis_dataman.xml: updated broken link to
 	  utmzone PostGIS plpgsql helper function.
@@ -25623,7 +26029,7 @@
 	  (single-point) as points in ST_MakeValid. Add testcase for it
 	  [RT-SIGTA]
 
-2010-02-16 23:27  Kevin Neufeld <kneufeld@refractions.net>
+2010-02-16 23:27  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r5257] doc/reference_editor.xml: removed sfs_compliant note for
 	  ST_Transform
@@ -26203,7 +26609,7 @@
 	  calculation. Should make st_dwithin faster, avoiding geodetic
 	  calculations for points that are clearly within tolerance.
 
-2010-01-11 17:31  Kevin Neufeld <kneufeld@refractions.net>
+2010-01-11 17:31  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r5113] doc/html/image_src/Makefile.in: added missing liblwgeom
 	  target needed to build the documentation images
@@ -26762,12 +27168,12 @@
 	  valgrind to ensure that we don't leak memory on larger
 	  shapefiles.
 
-2009-12-09 17:33  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-09 17:33  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4995] doc/using_postgis_dataman.xml: added identifier to
 	  shp2pgsql usage section
 
-2009-12-09 17:12  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-09 17:12  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4994] doc/using_postgis_dataman.xml: updated "Using the Loader"
 	  to demonstrate the use of the available options
@@ -26794,23 +27200,23 @@
 	  instead of refid for link in what's new -- so operators show the
 	  operator symbol instead of underlying function name
 
-2009-12-03 20:42  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-03 20:42  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4987] spatial_ref_sys.sql: removed VACUUM
 	  made into a single transaction block
 
-2009-12-03 18:51  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-03 18:51  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4986] doc/using_postgis_dataman.xml: removed url that is
 	  probably the cause in breaking docbook
 
-2009-12-03 18:43  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-03 18:43  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4985] doc/using_postgis_dataman.xml: a couple typos in the
 	  DE-9IM explanation
 	  added further reading references.
 
-2009-12-03 16:23  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-03 16:23  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4984] doc/using_postgis_dataman.xml: fixed a typo and added a
 	  few cross links
@@ -26829,22 +27235,22 @@
 	* [r4982] doc/reference_output.xml: fill in missing curve support
 	  flags for outputs
 
-2009-12-03 06:14  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-03 06:14  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4981] doc/using_postgis_dataman.xml: added a few reference
 	  cross links
 
-2009-12-02 23:41  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-02 23:41  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4980] doc/using_postgis_dataman.xml: removed borders around the
 	  tables in the geometry compliancy section
 
-2009-12-02 23:25  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-02 23:25  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4979] doc/html/style.css, doc/using_postgis_dataman.xml: added
 	  some thoughts on DE-9IM
 
-2009-12-02 23:23  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-02 23:23  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4978] doc/html/image_src/Makefile.in: added target to resize
 	  certain images
@@ -26860,7 +27266,7 @@
 	  browsers perhaps its just IE7 that's behind the times. Use cutesy
 	  unicode dingbats for now -- alos put in item list legend.
 
-2009-12-02 21:02  Kevin Neufeld <kneufeld@refractions.net>
+2009-12-02 21:02  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4975] doc/html/image_src/Makefile.in,
 	  doc/html/image_src/de9im01.wkt, doc/html/image_src/de9im02.wkt,
@@ -27040,7 +27446,7 @@
 	* [r4938] postgis/geography.sql.in.c: Rename ST_PointOutside to
 	  _ST_PointOutside (#325)
 
-2009-11-30 16:40  Kevin Neufeld <kneufeld@refractions.net>
+2009-11-30 16:40  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4937] postgis/postgis.sql.in.c: renamed ST_DumpPoints to
 	  _ST_DumpPoints
@@ -27132,7 +27538,7 @@
 	  liblwgeom/cunit/cu_geodetic_data.h: Add newlines at file ends to
 	  silence warnings
 
-2009-11-27 17:06  Kevin Neufeld <kneufeld@refractions.net>
+2009-11-27 17:06  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4912] doc/reference_processing.xml,
 	  doc/using_postgis_dataman.xml: Fixed a few typos and missing
@@ -27247,12 +27653,12 @@
 	  regress/measures_expected: Merge Nicklas Aven's distance spike
 	  into trunk. (#63, #231)
 
-2009-11-24 22:10  Kevin Neufeld <kneufeld@refractions.net>
+2009-11-24 22:10  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4892] doc/reference_processing.xml: added refentry section for
 	  ST_DumpPoints()
 
-2009-11-24 21:46  Kevin Neufeld <kneufeld@refractions.net>
+2009-11-24 21:46  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4891] doc/html/image_src/Makefile.in,
 	  doc/html/image_src/st_dumppoints01.wkt,
@@ -27339,7 +27745,7 @@
 	  Fix graxing case and improve co-linear handling with help from
 	  Nicklas Aven (#314)
 
-2009-11-20 18:05  Kevin Neufeld <kneufeld@refractions.net>
+2009-11-20 18:05  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4871] doc/Makefile.in: added missing dependency of
 	  postgis_aggs_mm for the comments
@@ -27394,12 +27800,12 @@
 	* [r4854] doc/reference_editor.xml: Put constants reference in the
 	  example, so people see it (nobody reads documentation) (#218)
 
-2009-11-18 17:28  Kevin Neufeld <kneufeld@refractions.net>
+2009-11-18 17:28  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4853] doc/Makefile.in: Ok, well that didn't work. Reverting
 	  changes.
 
-2009-11-18 17:19  Kevin Neufeld <kneufeld@refractions.net>
+2009-11-18 17:19  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4852] doc/Makefile.in: simplified postgis-out.xml target. The
 	  sed replacement should only happen on the postgis.xml file as the
@@ -27497,7 +27903,7 @@
 	  POSTGIS_SCRIPTS_VERSION reflect the maximum SVN version of the
 	  SQL input files. (#242)
 
-2009-11-16 19:47  Kevin Neufeld <kneufeld@refractions.net>
+2009-11-16 19:47  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4836] postgis/postgis.sql.in.c, regress/Makefile.in,
 	  regress/dumppoints.sql, regress/dumppoints_expected: Ticket #76.
@@ -28567,7 +28973,7 @@
 	  liblwgeom/libgeom.h, liblwgeom/lwgeodetic.c: New point-outside
 	  routine, and allow distances against empty geometries.
 
-2009-10-05 21:15  Kevin Neufeld <kneufeld@refractions.net>
+2009-10-05 21:15  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4597] doc/reference.xml: updated ST_IsValid's reference to the
 	  OGC specs.
@@ -29152,7 +29558,7 @@
 	* [r4496] liblwgeom/liblwgeom.h: Add FP_EQUALS and bracket
 	  arguments for a little extra safety
 
-2009-09-14 17:01  Kevin Neufeld <kneufeld@refractions.net>
+2009-09-14 17:01  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4495] postgis/postgis.sql.in.c: fix for
 	  POPULATE_GEOMETRY_COLUMNS - remove hard-coded "public" schema
@@ -29228,7 +29634,7 @@
 	  doc/reference.xml: revise example so scales well on 200 x 200
 	  grid
 
-2009-09-11 03:19  Kevin Neufeld <kneufeld@refractions.net>
+2009-09-11 03:19  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4477] doc/html/image_src/generator.c,
 	  doc/html/image_src/styles.c: added a few comments to aid in image
@@ -29312,12 +29718,12 @@
 	  doc/html/image_src/st_symdifference02.wkt, doc/reference.xml: add
 	  figures for st_symdifference and slight update on st_convexhull
 
-2009-09-04 18:43  Kevin Neufeld <kneufeld@refractions.net>
+2009-09-04 18:43  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4443] doc/Makefile.in: added images as a requirement to the
 	  chunked-html target
 
-2009-09-04 18:24  Kevin Neufeld <kneufeld@refractions.net>
+2009-09-04 18:24  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4442] doc/Makefile.in, doc/html/image_src/generator.c: made the
 	  'images' a requirement for pdf generation
@@ -29369,13 +29775,13 @@
 	* [r4430] doc/reference.xml: improve on st_buildarea code
 	  formatting
 
-2009-08-28 15:37  Kevin Neufeld <kneufeld@refractions.net>
+2009-08-28 15:37  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4429] doc/html/image_src/st_buildarea02.wkt: Changing
 	  MULTIPOLYGON into several POLYGONs so the image generating WKT
 	  parser doesn't fail.
 
-2009-08-28 15:16  Kevin Neufeld <kneufeld@refractions.net>
+2009-08-28 15:16  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4428] doc/README: added a small How To section, referencing the
 	  wiki on how to generate images used in the documentation.
@@ -29643,7 +30049,7 @@
 	* [r4255] doc/reference.xml: update st_pointn to note it supports
 	  circular strings and curves
 
-2009-07-03 04:57  Kevin Neufeld <kneufeld@refractions.net>
+2009-07-03 04:57  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4254] doc/html/images/st_centroid01.png,
 	  doc/html/images/st_centroid02.png,
@@ -29677,7 +30083,7 @@
 	  documentation since these are now generated automatically using
 	  ImageMagick.
 
-2009-07-03 04:56  Kevin Neufeld <kneufeld@refractions.net>
+2009-07-03 04:56  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4253] doc/Makefile.in, doc/README: updated the doc's README
 	  file
@@ -30119,37 +30525,37 @@
 
 	* [r4130] configure.ac: remove warnings from autoconf process
 
-2009-05-29 18:10  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-29 18:10  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4113] doc/reference.xml: small typo in
 	  Populate_Geometry_Columns doc
 
-2009-05-27 17:14  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-27 17:14  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4111] doc, doc/html/style.css, doc/installation.xml,
 	  doc/xmlformat.conf: performed an overhaul of the installation
 	  guide ... hopefully it's easier to follow.
 
-2009-05-26 18:35  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-26 18:35  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4110] doc/Makefile.in: updated the comments-install make target
 
-2009-05-26 18:28  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-26 18:28  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4109] doc/installation.xml: added version numbers to the
 	  requirements section in the installation doc.
 
-2009-05-26 18:27  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-26 18:27  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4108] configure.ac: added dblatex and convert to the status
 	  lines at the end of configure
 
-2009-05-26 18:10  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-26 18:10  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4107] doc/Makefile.in: added postgis_aggs_mm.xml to the 'make
 	  clean' target
 
-2009-05-26 18:00  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-26 18:00  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4106] GNUmakefile, configure.ac, doc/Makefile.in: added
 	  postgis_comments.sql as a target to the main makefile
@@ -30193,7 +30599,7 @@
 	  doc/html/image_src/st_within01.wkt: Add st_within example to
 	  makefile and translate example so in viewable region.
 
-2009-05-25 20:26  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-25 20:26  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4099] GNUmakefile: added a status line to the main makefile
 	  that indicates if PostGIS was built successfully.
@@ -30203,27 +30609,27 @@
 	* [r4098] doc/reference.xml: update to include behavior for 3D and
 	  also note this seems to go beyond what the spec defines.
 
-2009-05-22 23:22  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-22 23:22  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4097] doc/installation.xml: use a docbook variable instead
 
-2009-05-22 23:19  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-22 23:19  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4096] doc/Makefile.in, doc/installation.xml,
 	  doc/installation.xml.in: didn't need the c preprocessor after all
 
-2009-05-22 22:14  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-22 22:14  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4095] doc/installation.xml.in: Added a Short Version section.
 	  Updated requirements.
 
-2009-05-22 22:07  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-22 22:07  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4094] doc/Makefile.in, doc/installation.xml,
 	  doc/installation.xml.in: formatted installation.xml in
 	  preparation for editing
 
-2009-05-22 21:32  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-22 21:32  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4093] doc/xmlformat.conf: added the xmlformatter conf file for
 	  pretty printing the documentation's xml files
@@ -30243,7 +30649,7 @@
 	  was wrong. Also embellish by showing a multicurve and flag as
 	  working for multicurves
 
-2009-05-19 20:49  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-19 20:49  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4089] doc/html/image_src/Makefile.in,
 	  doc/html/image_src/st_contains01.wkt,
@@ -30259,7 +30665,7 @@
 	* [r4085] doc/reference.xml: Example exploding a compoundcurve,
 	  also reference to ST_GeometryN since they serve similar purposes
 
-2009-05-14 23:42  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-14 23:42  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4081] configure.ac, doc/Makefile.in,
 	  doc/html/image_src/Makefile.in, doc/html/image_src/generator.c,
@@ -30317,7 +30723,7 @@
 	  causing two comments to be nested and hence generating a compiler
 	  warning.
 
-2009-05-06 23:32  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-06 23:32  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4076] doc/html/image_src/generator.c,
 	  doc/html/image_src/st_centroid02.wkt,
@@ -30342,7 +30748,7 @@
 	  carriage returns
 	  - convert to unix
 
-2009-05-06 23:20  Kevin Neufeld <kneufeld@refractions.net>
+2009-05-06 23:20  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4075] configure.ac, doc/Makefile.in,
 	  doc/html/image_src/Makefile.in, doc/html/image_src/generator.c,
@@ -30474,25 +30880,25 @@
 	* [r4047] liblwgeom/lwcollection.c: experiment with making our
 	  inline comments more doxygen friendly
 
-2009-04-30 22:26  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-30 22:26  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4045] doc/doxygen.cfg.in: updated several Doxygen parameters
 
-2009-04-30 21:38  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-30 21:38  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4044] doc/doxygen.cfg.in: removed full path names from config
 	  file
 
-2009-04-30 20:19  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-30 20:19  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4043] doc/Makefile.in, doc/doxygen.cfg.in: add make target to
 	  build Doxygen
 
-2009-04-30 19:41  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-30 19:41  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4042] doc/doxygen.cfg.in: added a Doxygen configuration file
 
-2009-04-29 19:22  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-29 19:22  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4040] regress/run_test: dropping a table that's not there
 	  causes an ERROR in the logs
@@ -30508,7 +30914,7 @@
 	  wrong option value in ST_AsGML for CRS, and outdated example
 	  output (still for ST_AsGML).
 
-2009-04-28 17:04  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-28 17:04  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4038] java/jdbc/build.xml,
 	  java/jdbc/src/org/postgis/Geometry.java,
@@ -30521,15 +30927,15 @@
 	* [r4034] loader/pgsql2shp.c: change error about unknown spatial
 	  ref to a warning.
 
-2009-04-27 19:46  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-27 19:46  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4030] doc/template.xml: test commit
 
-2009-04-27 19:24  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-27 19:24  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4029] doc/postgis.xml: test commit
 
-2009-04-27 19:07  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-27 19:07  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4026] doc/faq.xml: Test commit to test autobuild
 
@@ -30541,7 +30947,7 @@
 	  and functions not supported in 1.3.5 since it curve crashes 1.3.5
 	  thus making it not comparable.
 
-2009-04-26 05:37  Kevin Neufeld <kneufeld@refractions.net>
+2009-04-26 05:37  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r4023] doc/reference.xml: small typo fix
 
@@ -30783,7 +31189,7 @@
 
 	* [r3916] NEWS: Update release notes more
 
-2009-03-20 16:48  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-20 16:48  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3915] doc/reference.xml: updated the operator notes in
 	  reference.xml to reflect the fact that they do indeed use
@@ -30805,13 +31211,13 @@
 	* [r3910] postgis/lwgeom_gml.c: Fix GML multi size computation. Cf
 	  issue #141
 
-2009-03-20 05:43  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-20 05:43  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3906] doc/reference.xml, postgis/postgis.sql.in.c: a small typo
 	  patch from mloskot, renaming a few "geometry_column" to
 	  "geometry_columns"
 
-2009-03-20 05:32  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-20 05:32  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3905] configure.ac, doc/Makefile.in, doc/postgis.xml,
 	  doc/reference.xml, doc/reference_new.xml, doc/reference_old.xml:
@@ -30830,7 +31236,7 @@
 	* [r3901] autogen.sh, configure.ac: Make autogen.sh a little more
 	  tolerant of missing / re-named autotools.
 
-2009-03-19 17:28  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-19 17:28  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3900] doc/reference_new.xml: updated ST_Relate docs - changed
 	  3rd parameter to be more clear
@@ -30972,31 +31378,31 @@
 	  121: update tiger_geocoder to run in PostgreSQL 8.3 - apply patch
 	  from cdwinslow
 
-2009-03-11 05:31  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-11 05:31  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3854] doc/reference.xml, doc/reference_new.xml: updated SQL/MM
 	  specs in ST_PointFromWKB
 
-2009-03-11 05:13  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-11 05:13  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3853] doc/reference.xml, doc/reference_new.xml: moved over
 	  ST_LineFromWKB
 
-2009-03-11 05:11  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-11 05:11  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3852] doc/reference.xml: added missing linkend
 
-2009-03-11 05:09  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-11 05:09  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3851] doc/reference_new.xml: updated doc descriptions and
 	  linkends.
 
-2009-03-11 04:56  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-11 04:56  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3850] doc/reference.xml, doc/reference_new.xml: moved over
 	  ST_PointFromWKB
 
-2009-03-11 04:35  Kevin Neufeld <kneufeld@refractions.net>
+2009-03-11 04:35  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3849] doc/reference.xml, doc/reference_new.xml: moved over
 	  ST_GeomFromWKB
@@ -31418,12 +31824,12 @@
 	* [r3675] utils/postgis_restore.pl: Fix case sensitive in AGGREGATE
 	  reading.
 
-2009-02-05 20:01  Kevin Neufeld <kneufeld@refractions.net>
+2009-02-05 20:01  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3647] doc/reference_new.xml: Updated ST_DumpRings description
 	  and example.
 
-2009-02-04 18:13  Kevin Neufeld <kneufeld@refractions.net>
+2009-02-04 18:13  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3641] doc/reference_new.xml: Added example to ST_PointN
 
@@ -31649,7 +32055,7 @@
 	  lwgeom/postgis.sql.in.c: Small changes in createrelplace syntax,
 	  comments, function rename recommendation.
 
-2009-01-23 22:05  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-23 22:05  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3567] doc/reference_new.xml: small wording fix for
 	  DropGeometryColumn
@@ -31673,7 +32079,7 @@
 	  doc/xsl/postgis_gardentest.sql.xsl: Filter out Operators section
 	  from xsl transforms
 
-2009-01-22 19:25  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-22 19:25  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3563] doc/reference.xml, doc/reference_new.xml: moved over the
 	  remaining operands from reference.xml to reference_new.xml in the
@@ -31690,12 +32096,12 @@
 	* [r3561] loader/dbfopen.c: Fix DBFReadDeleted logic -- should
 	  return 1 if record is deleted and 0 if it is not deleted
 
-2009-01-22 18:02  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-22 18:02  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3558] doc/reference.xml, doc/reference_new.xml: moved over |>>
 	  from reference.xml to reference_new.xml in the documentation
 
-2009-01-22 17:46  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-22 17:46  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3557] doc/reference.xml, doc/reference_new.xml: moved over <<,
 	  <<|, and >> from reference.xml to reference_new.xml in the
@@ -31727,22 +32133,22 @@
 	  name, so it won't collide, ... needs testing on PgSQL < 8.3
 	  still.
 
-2009-01-22 01:16  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-22 01:16  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3551] doc/reference.xml, doc/reference_new.xml: moved over |&>
 	  from reference.xml to reference_new.xml in the documentation
 
-2009-01-22 00:44  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-22 00:44  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3550] doc/reference.xml, doc/reference_new.xml: moved over &>|
 	  from reference.xml to reference_new.xml in the documentation
 
-2009-01-22 00:16  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-22 00:16  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3549] doc/reference.xml, doc/reference_new.xml: moved over &>
 	  from reference.xml to reference_new.xml in the documentation
 
-2009-01-21 23:26  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-21 23:26  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3548] doc/reference.xml, doc/reference_new.xml: moved over &&,
 	  &<, and = from reference.xml to reference_new.xml in the
@@ -31788,7 +32194,7 @@
 	* [r3540] loader/shp2pgsql-gui.c: Protect the filename setting a
 	  little bit more in case it's NULL.
 
-2009-01-20 00:50  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-20 00:50  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3539] doc/reference_new.xml: Fixed accidental broken build in
 	  docs from Rev3536.
@@ -32046,7 +32452,7 @@
 	* [r3499] doc/xsl/postgis_gardentest.sql.xsl: Finish off adding
 	  multi garden geometries
 
-2009-01-07 18:25  Kevin Neufeld <kneufeld@refractions.net>
+2009-01-07 18:25  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3498] doc/reference_new.xml: updated documention on
 	  addgeometrycolumn, clarifying the errors thrown.
@@ -32302,7 +32708,7 @@
 	  liblwgeom/lwmline.c, liblwgeom/lwmpoint.c, liblwgeom/lwmpoly.c:
 	  Add in lwfree_* deep memory clean-up routines for multi-objects.
 
-2008-12-19 18:51  Kevin Neufeld <kneufeld@refractions.net>
+2008-12-19 18:51  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3453] doc/html/images/st_issimple01.png,
 	  doc/html/images/st_issimple02.png,
@@ -32492,19 +32898,19 @@
 	  liblwgeom/lwalgorithm.h: First cut of line crossing function, and
 	  associated cunit tests.
 
-2008-12-16 21:21  Kevin Neufeld <kneufeld@refractions.net>
+2008-12-16 21:21  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3423] lwgeom/lwpostgis.sql.in.c: fixed bug in
 	  probe_geometry_columns where an srid of -1 is not properly
 	  detected. (last time :))
 
-2008-12-16 21:11  Kevin Neufeld <kneufeld@refractions.net>
+2008-12-16 21:11  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3422] lwgeom/lwpostgis.sql.in.c: fixed bug in
 	  probe_geometry_columns where an srid of -1 is not properly
 	  detected.
 
-2008-12-16 21:07  Kevin Neufeld <kneufeld@refractions.net>
+2008-12-16 21:07  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3421] lwgeom/lwpostgis.sql.in.c: fixed bug in
 	  probe_geometry_columns where an srid of -1 is not properly
@@ -32676,7 +33082,7 @@
 	  thingy and also update postgis_gardentest to generate garden test
 	  for all unary postgis functions and aggregates
 
-2008-12-11 17:18  Kevin Neufeld <kneufeld@refractions.net>
+2008-12-11 17:18  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3379] lwgeom/lwgeom_geos.c: added a HINT to the ERROR message
 	  in errorIfGeometryCollection indicating the geometry that is in
@@ -33266,7 +33672,7 @@
 	  ST_LineToCurve and ST_CurveToLine, update template to include
 	  note about Circular String support in prep for new index section
 
-2008-11-03 17:00  Kevin Neufeld <kneufeld@refractions.net>
+2008-11-03 17:00  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3226] lwgeom/lwgeom_functions_analytic.c: updated url in
 	  comments to the documentation on the implemented point-in-polygon
@@ -33420,12 +33826,12 @@
 	* [r3200] doc/reference.xml, doc/reference_new.xml: Move over
 	  ST_Line_Interpolate_Point
 
-2008-10-27 16:13  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 16:13  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3199] doc/reference.xml, doc/reference_new.xml: changed linkend
 	  to match case in ST_Length2d to ST_Length2D
 
-2008-10-27 16:05  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 16:05  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3198] doc/reference_new.xml: attempt to fix broken linkend by
 	  replacing it with an xref in reference_new.xml
@@ -33436,57 +33842,57 @@
 	  doc/template.xml: Move over sql mm compliance for ST_Disjoint and
 	  get rid of annoying carriage return in template.xml
 
-2008-10-27 15:49  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 15:49  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3196] lwgeom/lwpostgis.sql.in.c: added availability to
 	  Populate_Geometry_Columns
 
-2008-10-27 15:48  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 15:48  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3195] doc/reference_new.xml: fixed typo in broken link to
 	  ST_Distance_Spheroid
 
-2008-10-27 15:33  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 15:33  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3194] doc/reference_new.xml: fixed typo in ST_Length3d_Spheriod
 	  xref to ST_Length_Spheroid
 
-2008-10-27 15:29  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 15:29  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3193] doc/reference_new.xml: fixed typo in missing constraint
 	  linkend: ST_InteriorRings to ST_NumInteriorRings
 
-2008-10-27 15:26  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 15:26  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3192] doc/reference_new.xml: typo in xref link
 
-2008-10-27 15:25  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 15:25  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3191] doc/reference_new.xml: added id for missing constraint
 	  linkend: PostGIS_Scripts_Released
 
-2008-10-27 15:21  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 15:21  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3190] doc/reference.xml: added id for missing constraint
 	  linkend: line_substring
 
-2008-10-27 15:15  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 15:15  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3189] doc/reference.xml: added id for constraint linkend:
 	  length2d
 
-2008-10-27 06:49  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 06:49  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3188] lwgeom/lwpostgis.sql.in.c: fixed bug in
 	  lwpostgis.sql.in.c in POPULATE_GEOMETRY_COLUMNS when detecting
 	  SRIDs of -1.
 
-2008-10-27 06:29  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 06:29  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3187] doc/reference_new.xml: updated description for
 	  Populate_Geometry_Columns
 
-2008-10-27 06:13  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-27 06:13  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3186] doc/reference_new.xml, lwgeom/lwpostgis.sql.in.c: added
 	  plpgsql function Probe_Geometry_Columns to lwpostgis.sql.in.c and
@@ -33559,12 +33965,12 @@
 	* [r3161] doc/reference.xml, doc/reference_new.xml: Move over
 	  perimeter and max distance
 
-2008-10-21 04:54  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-21 04:54  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3159] doc/reference_new.xml: moved ST_ForceRHR into the correct
 	  category
 
-2008-10-21 04:41  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-21 04:41  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3158] doc/reference.xml, doc/reference_new.xml: moved over
 	  ST_ForceRHR
@@ -33650,7 +34056,7 @@
 	* [r3131] doc/reference.xml, doc/reference_new.xml: move over
 	  ST_Shift_Longitude, ST_Difference, ST_SymDifference
 
-2008-10-16 22:13  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-16 22:13  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3130] doc/template.xml: reverting accidental commit to
 	  template.xml
@@ -33665,7 +34071,7 @@
 	* [r3126] doc/reference.xml, doc/reference_new.xml: Move over
 	  ST_ExteriorRing, ST_NumInteriorRings, ST_NumInteriorRing
 
-2008-10-16 18:12  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-16 18:12  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3125] configure.ac, doc/Makefile.in: added dblatex as a
 	  dependency for building PDF's
@@ -33735,7 +34141,7 @@
 	* [r3110] doc/reference.xml, doc/reference_new.xml: Move over
 	  ST_Segmentize and ST_LineMerge
 
-2008-10-14 23:08  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-14 23:08  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3109] doc/Makefile.in: moved cleanup of the pdf to the
 	  maintainer-clean target
@@ -33892,12 +34298,12 @@
 	  large-arc case. Fix for issue 58, includes regression test for
 	  the case.
 
-2008-10-08 05:48  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-08 05:48  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3077] doc/reference.xml: fixed several broken or redirected
 	  external URLs.
 
-2008-10-08 05:45  Kevin Neufeld <kneufeld@refractions.net>
+2008-10-08 05:45  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3076] doc/introduction.xml, doc/reference.xml,
 	  doc/reporting.xml, doc/template.xml, doc/using_postgis.xml: fixed
@@ -34095,7 +34501,7 @@
 	* [r3031] lwgeom/lwgeom_functions_lrs.c: Fix for
 	  locate_along_measure returning invalid values (GBT#21)
 
-2008-09-30 04:06  Kevin Neufeld <kneufeld@refractions.net>
+2008-09-30 04:06  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3030] doc/Makefile.in, doc/postgis.xml,
 	  doc/xsl/postgis_aggs_mm.xml.xsl: added a new aggregate and sql_mm
@@ -34198,7 +34604,7 @@
 	  info (hmm this is a guess - couldn't find a good example in SVN
 	  to go by). Also comment on what xsl is doing.
 
-2008-09-26 02:50  Kevin Neufeld <kneufeld@refractions.net>
+2008-09-26 02:50  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r3013] doc/Makefile.in: updated "make clean" directive to
 	  include the newly generated PDFs
@@ -34350,13 +34756,13 @@
 	  which checks should be enforced, much like has already been done
 	  for the parsing from WKB/WKT to LWGEOM.
 
-2008-09-18 04:34  Kevin Neufeld <kneufeld@refractions.net>
+2008-09-18 04:34  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2982] doc/reference_new.xml: commit to test autobuild process
 	  and svn hooks
 	  - removed extra tabs from preformatted text blocks
 
-2008-09-18 04:22  Kevin Neufeld <kneufeld@refractions.net>
+2008-09-18 04:22  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2981] doc/installation.xml: commit to test autobuild process
 	  and svn hooks
@@ -34395,7 +34801,7 @@
 	* [r2974] doc/using_postgis.xml: Beef up spatial reference section.
 	  Still needs work.
 
-2008-09-17 03:54  Kevin Neufeld <kneufeld@refractions.net>
+2008-09-17 03:54  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2973] doc/reference.xml: added an id to ST_Buffer to provide an
 	  end link for cross references.
@@ -34447,7 +34853,7 @@
 	* [r2963] doc/using_postgis.xml: Fix url link to proj to point to
 	  osgeo
 
-2008-09-13 05:41  Kevin Neufeld <kneufeld@refractions.net>
+2008-09-13 05:41  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2962] doc/reference.xml, doc/reference_new.xml: Moved over
 	  ST_IsRing to new PostGIS reference.
@@ -34613,12 +35019,12 @@
 	  remotesensing. Move around instructions putting geos and proj
 	  compilation steps at the end per Mark's request
 
-2008-08-27 04:34  Kevin Neufeld <kneufeld@refractions.net>
+2008-08-27 04:34  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2931] doc/reference.xml, doc/reference_new.xml: moved
 	  ST_IsClosed to the new documentation template.
 
-2008-08-24 04:54  Kevin Neufeld <kneufeld@refractions.net>
+2008-08-24 04:54  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2930] doc/reference.xml, doc/reference_new.xml: moved
 	  ST_StartPoint and ST_EndPoint to new reference_new.xml
@@ -34742,7 +35148,7 @@
 	* [r2907] doc/reference_new.xml: Provide example for geojson
 	  (excerpts from postgis newsgroup thread)
 
-2008-08-01 15:12  Kevin Neufeld <kneufeld@refractions.net>
+2008-08-01 15:12  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2906] doc/html/images/st_crosses-math.gif,
 	  doc/html/images/st_touches-math.gif, doc/reference_new.xml:
@@ -34751,12 +35157,12 @@
 	  work well for both IE and Firefox. The next best thing to do is
 	  to get MathML markup working.
 
-2008-08-01 04:42  Kevin Neufeld <kneufeld@refractions.net>
+2008-08-01 04:42  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2905] doc/reference_new.xml: small grammar correction in
 	  ST_Touches
 
-2008-08-01 04:26  Kevin Neufeld <kneufeld@refractions.net>
+2008-08-01 04:26  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2904] doc/html/image_src/st_touches01.svg,
 	  doc/html/image_src/st_touches02.svg,
@@ -34788,17 +35194,17 @@
 	* [r2901] doc/reference.xml: Put in Availability 1.3.4 for
 	  ST_AsGeoJSON
 
-2008-07-31 06:33  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-31 06:33  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2899] doc/reference_new.xml: fixed small typo in ST_Touches
 	  mathematical expression
 
-2008-07-31 06:29  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-31 06:29  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2898] doc/reference.xml, doc/reference_new.xml: Moved over
 	  ST_Touches to new PostGIS reference. Examples forthcoming.
 
-2008-07-31 04:57  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-31 04:57  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2897] doc/html/images/st_crosses-math.gif, doc/html/style.css,
 	  doc/reference_new.xml: replaced the mathematical gif expression
@@ -34841,12 +35247,12 @@
 	  from reference.xml already accounted for in reference_new.xml,
 	  move over ST_Length, ST_Perimeter
 
-2008-07-29 05:43  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-29 05:43  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2890] doc/reference.xml, doc/reference_new.xml: moved over
 	  st_pointonsurface and provided examples.
 
-2008-07-29 05:11  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-29 05:11  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2889] doc/html/image_src, doc/html/image_src/st_centroid01.svg,
 	  doc/html/image_src/st_centroid02.svg,
@@ -34866,7 +35272,7 @@
 	* [r2888] doc/reference_new.xml: minor formatting changes, note
 	  about ST_NumPOints being an alias for ST_NPoints moving forward.
 
-2008-07-28 19:05  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-28 19:05  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2887] doc/reference.xml, doc/reference_new.xml: fixed some
 	  minor xrefences in the documentation so the autobuild doesn't
@@ -34907,18 +35313,18 @@
 	  added in 4.4.9, however we version detect on major.minor rather
 	  than major.minor.release)
 
-2008-07-24 05:55  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-24 05:55  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2881] doc/Makefile.in, doc/reference.xml,
 	  doc/reference_new.xml: Moved several version functions to the new
 	  PostGIS reference.
 
-2008-07-23 17:13  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-23 17:13  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2880] doc/reference.xml, doc/reference_new.xml: added some
 	  xreferences so the autobuild process does not throw errors.
 
-2008-07-23 16:40  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-23 16:40  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2879] doc/installation.xml, doc/postgis.xml: changed
 	  @@LAST_RELEASE_VERSION@@ with a DocBook variable so the correct
@@ -34996,18 +35402,18 @@
 	  compute_geometry_stats() (Fixes GBT#43). Thanks to Landon Fuller
 	  for the bug report and fix.
 
-2008-07-16 06:42  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-16 06:42  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2863] doc/reference.xml, doc/reference_new.xml: moved
 	  ST_Envelope, complete with examples.
 
-2008-07-16 05:10  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-16 05:10  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2862] doc/reference_new.xml: updated the st_crosses method:
 	  made the geometry parameters lowercase and made a few changes to
 	  content.
 
-2008-07-16 05:03  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-16 05:03  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2861] doc/html/images/st_crosses-math.gif,
 	  doc/html/images/st_crosses01.gif,
@@ -35018,17 +35424,17 @@
 	  new reference_new.xml file, complete with images.
 	  Updated css to use fixed-width fonts for programlistings.
 
-2008-07-16 04:55  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-16 04:55  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2860] doc/using_postgis.xml: fixed small typo
 
-2008-07-16 04:54  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-16 04:54  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2859] doc/template.xml: Apparently, the <inlinegraphic> will
 	  become deprecated in a future version of DocBook. Now replaced
 	  with <inlinemediaobject>.
 
-2008-07-15 21:20  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-15 21:20  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2858] doc/reference.xml, doc/reference_new.xml: fixed a small
 	  typo so the autobuild process will still work.
@@ -35054,7 +35460,7 @@
 	* [r2854] doc/reference.xml, doc/reference_new.xml: Move
 	  ST_Intersection, ST_Disjoint provide examples for both.
 
-2008-07-15 15:33  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-15 15:33  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2853] doc/Makefile.in: applied patch from Mark to fix the
 	  if/then/else so the Makefile can run on older systems (ie. FC3)
@@ -35069,7 +35475,7 @@
 	  ST_MakeLine from reference.xml to reference_new.xml and add an
 	  additional example to ST_MakeLine
 
-2008-07-15 06:57  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-15 06:57  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2850] doc/Makefile.in, doc/html/images,
 	  doc/html/images/caution.png, doc/html/images/check.png,
@@ -35180,11 +35586,11 @@
 	* [r2833] doc/using_postgis.xml: Added brief descriptions to the
 	  SQL-MM curve types.
 
-2008-07-08 05:15  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-08 05:15  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2832] doc/Makefile.in: modified toc top generation level param
 
-2008-07-08 05:09  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-08 05:09  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2831] doc/Makefile.in, doc/faq.xml, doc/installation.xml,
 	  doc/introduction.xml, doc/long_xact.xml,
@@ -35193,7 +35599,7 @@
 	  split postgis.xml into manageable chunks, broken at chapter
 	  divisions.
 
-2008-07-08 03:12  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-08 03:12  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2830] doc/postgis.xml: updated tips section to reference ST_*
 	  function names
@@ -35215,7 +35621,7 @@
 	  of PostgreSQL since we don't have our costs right - the planner
 	  may choose to process in order of conditions
 
-2008-07-06 01:47  Kevin Neufeld <kneufeld@refractions.net>
+2008-07-06 01:47  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2826] doc/postgis.xml: fixed typo in a WKT example.
 
@@ -35307,7 +35713,7 @@
 	* [r2814] doc/postgis.xml: Flesh out definition of ST_Collect and
 	  how to use it.
 
-2008-06-26 02:40  Kevin Neufeld <kneufeld@refractions.net>
+2008-06-26 02:40  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2812] lwgeom/lwpostgis.sql.in.c: ST_SnapToGrid SQL functions
 	  were referencing the deprecated SnapToGrid instead of their ST_..
@@ -36703,7 +37109,7 @@
 	  * extras/template_gis/Makefile: have 'install' also install
 	  manuals.
 
-2007-01-03 17:28  Kevin Neufeld <kneufeld@refractions.net>
+2007-01-03 17:28  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2567] regress/regress_index_nulls_expected: initial load
 
@@ -36742,19 +37148,19 @@
 	  about adding regression tests
 	  (plus some ChangeLog formatting)
 
-2006-12-20 18:47  Kevin Neufeld <kneufeld@refractions.net>
+2006-12-20 18:47  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2560] ChangeLog: Added fix to permit gist indexes to have more
 	  than 459 null geometries in a table
 
-2006-12-20 18:44  Kevin Neufeld <kneufeld@refractions.net>
+2006-12-20 18:44  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2559] regress/Makefile, regress/regress_index_nulls.sql,
 	  regress/regress_lots_of_nulls.sql: Added test to fix that
 	  permitted gist indexes to have more than 459 null geometries in a
 	  table
 
-2006-12-20 18:43  Kevin Neufeld <kneufeld@refractions.net>
+2006-12-20 18:43  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2558] lwgeom/lwgeom_gist.c: Added fix to permit gist indexes to
 	  have more than 459 null geometries in a table
@@ -36841,18 +37247,18 @@
 	* [r2538] ChangeLog: Added the previous changes for the curved
 	  geometry support.
 
-2006-12-05 19:22  Kevin Neufeld <kneufeld@refractions.net>
+2006-12-05 19:22  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2537] ChangeLog: Added SQL/MM wrappers to existing PostGIS
 	  functions
 
-2006-12-05 19:07  Kevin Neufeld <kneufeld@refractions.net>
+2006-12-05 19:07  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2536] lwgeom/Makefile, lwgeom/sqlmm.sql.in: added a subset
 	  (only those implemented by ArcSDE) of the SQL/MM function
 	  prototypes and appended the file to lwpostgis.sql
 
-2006-12-05 19:05  Kevin Neufeld <kneufeld@refractions.net>
+2006-12-05 19:05  Kevin Neufeld <kneufeld.ca@gmail.com>
 
 	* [r2535] lwgeom/long_xact.sql, lwgeom/long_xact.sql.in,
 	  lwgeom/lwpostgis.sql.in, lwgeom/sqldefines.h: Moved common sql
