@@ -78,6 +78,10 @@ must have installed:
 
     http://oss.metaparadigm.com/json-c/.
 
+  You can get it installed in apt-based systems using:
+
+    apt-get install libjson0-dev
+
 If you want to compile PostGIS with raster support, you additionally 
 must have installed:
 
