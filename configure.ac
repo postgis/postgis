@@ -103,14 +103,13 @@ dnl for in-place regression tests
 dnl 
 case $host_os in
          *mingw*)
-                 PWDREGRESS="bash -c 'pwd -W'"
+                 MINGWBUILD=1
                  ;;
          *)
-                 PWDREGRESS="pwd"
+                 MINGWBUILD=0
                  ;;
 esac
-AC_DEFINE_UNQUOTED([PWDREGRESS], [PWDREGRESS], [Define command to determine the current directory during regression])
-AC_SUBST([PWDREGRESS])
+AC_SUBST([MINGWBUILD])
 
 AC_PATH_PROG([PERL], [perl], [])
 if test "x$PERL" = "x"; then
