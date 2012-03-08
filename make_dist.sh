@@ -38,11 +38,9 @@ if [ $? -gt 0 ]; then
 	exit 1
 fi
 
-# remove .cvsignore, make_dist.sh and HOWTO_RELEASE
-echo "Removing .cvsignore and make_dist.sh files"
-find "$outdir" -name .cvsignore -exec rm {} \;
-find "$outdir" -name .gitignore -exec rm {} \;
-rm -f "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
+echo "Removing ignore files, make_dist.sh and HOWTO_RELEASE"
+find "$outdir" -name .\*ignore -exec rm -v {} \;
+rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 
 # generating configure script and configuring
 echo "Running autogen.sh; ./configure"
