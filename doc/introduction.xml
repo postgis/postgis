@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<chapter id="postgis_introduction">
   <title>Introduction</title>
 
   <para>PostGIS was developed by Refractions Research Inc, as a spatial
