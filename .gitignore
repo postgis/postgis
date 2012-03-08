@@ -13,7 +13,7 @@ configure
 de9i*.png
 doc/html/image_src/generator
 doc/html/image_src/Makefile
-doc/html/postgis.html
+doc/html/*.html
 doc/Makefile
 doc/Makefile.comments
 doc/postgis_aggs_mm.xml
