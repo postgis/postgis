@@ -6106,7 +6106,8 @@ WHERE rid=167;
 				</variablelist>
         
                  <para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If pixeltype is passed NULL or no pixel type specified, then the new raster band will have the same pixeltype as the input <varname>rast1</varname> band.</para>
-                 <para>Use the term <varname>rast1</varname>  <varname>rast2</varname> to refer to the pixel value of the original raster bands.</para>
+                 <para>Use the term <varname>[rast1.val]</varname>  <varname>[rast2.val]</varname> to refer to the pixel value of the original raster bands and
+                 	<varname>[rast1.x]</varname>, <varname>[rast1.y]</varname> etc. to refer to the column / row positions of the pixels.</para>
               
 			
                  <para>Availability: 2.0.0 </para>
@@ -6141,9 +6142,9 @@ FROM ref;
 
 --map them -
 SELECT  ST_MapAlgebraExpr(
-		area.rast, bub.rast, 'rast2', '8BUI', 'INTERSECTION', 'rast2', 'rast1') As interrast,
+		area.rast, bub.rast, '[rast2.val]', '8BUI', 'INTERSECTION', '[rast2.val]', '[rast1.val]') As interrast,
 		ST_MapAlgebraExpr(
-			area.rast, bub.rast, 'rast2', '8BUI', 'UNION', 'rast2', 'rast1') As unionrast
+			area.rast, bub.rast, '[rast2.val]', '8BUI', 'UNION', '[rast2.val]', '[rast1.val]') As unionrast
 FROM 
   (SELECT rast FROM fun_shapes WHERE
  fun_name = 'area') As area
@@ -6178,7 +6179,7 @@ FROM fun_shapes WHERE
 </tgroup>
 </informaltable>
 			</refsection>
-			<refsection>
+		<refsection>
 				<title>Example: Overlaying rasters on a canvas as separate bands</title>
 				<programlisting>
 -- we use ST_AsPNG to render the image so all single band ones look grey --
@@ -6202,7 +6203,7 @@ WITH mygeoms
                     ) As foo
             ),
    rbands AS (SELECT ARRAY(SELECT ST_MapAlgebraExpr(canvas.rast, ST_AsRaster(m.geom, canvas.rast, '8BUI', 100),
-                 'rast2', '8BUI', 'FIRST', 'rast2', 'rast1') As rast
+                 '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') As rast
                 FROM mygeoms AS m CROSS JOIN canvas
                 ORDER BY m.bnum) As rasts
                 )
@@ -6258,6 +6259,43 @@ WITH mygeoms
 </tgroup>
 </informaltable>
 			</refsection>
+			<refsection>
+				<title>Example: Overlay 3 meter boundary of select parcels over an aerial imagery</title>
+				<programlisting>-- Create new 3 band raster composed of first 2 clipped bands, and overlay of 3rd band with our geometry
+SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2]), ST_MapAlgebraExpr(clipped, ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
+	 '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') )
+FROM (
+-- We use ST_Clip to clip to within 50 meters bounding box bounding the parcels
+SELECT ST_Clip(rast,ST_Expand(geom,50) ) As clipped ,geom
+FROM
+-- select all tiles that intersect our geometry and union them
+(SELECT ST_AddBand(NULL, ARRAY[ST_Union(rast,1),ST_Union(rast,2),ST_Union(rast,3)] ) As rast,g.geom
+-- we are using our level 2 overview because the main one would be huge
+	FROM aerials.o_2_boston AS r INNER JOIN
+-- union our parcels of interest so they form a single geometry we can later intersect with
+		(SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom FROM landparcels WHERE pid IN('0303890000', '0303900000') ) As g
+		ON ST_Intersects(rast::geometry, ST_Expand(g.geom,50))
+	GROUP BY g.geom
+) As foo) As foofoo;</programlisting>
+            
+<informaltable>
+  <tgroup cols="1">
+	<tbody>
+	  <row>
+		<entry><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_mapalgebraexpr2_08.png" />
+			  </imageobject>
+			  <caption><para>The blue lines are the boundaries of select parcels</para></caption>
+			</mediaobject>
+		  </informalfigure>
+		 </entry>
+	</row>
+	</tbody>
+  </tgroup>
+</informaltable>
+</refsection>
 
 			<refsection>
 				<title>See Also</title>
