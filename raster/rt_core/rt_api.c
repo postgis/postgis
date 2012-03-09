@@ -10258,13 +10258,13 @@ int rt_raster_intersects_algorithm(
 
 	enum line_points {X1, Y1, X2, Y2};
 	enum point {pX, pY};
-	double line1[4];
-	double line2[4];
-	double P[2];
-	double Qw[2];
-	double Qr[2];
-	double gt1[6] = {0.0};
-	double gt2[6] = {0.0};
+	double line1[4] = {0.};
+	double line2[4] = {0.};
+	double P[2] = {0.};
+	double Qw[2] = {0.};
+	double Qr[2] = {0.};
+	double gt1[6] = {0.};
+	double gt2[6] = {0.};
 	double igt1[6] = {0};
 	double igt2[6] = {0};
 	double d;
