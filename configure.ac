@@ -503,11 +503,13 @@ CPPFLAGS_SAVE="$CPPFLAGS"
 CPPFLAGS="$XML2_CPPFLAGS"
 AC_CHECK_HEADERS([libxml/tree.h libxml/parser.h libxml/xpath.h libxml/xpathInternals.h],
 		 [], [AC_MSG_ERROR([could not find headers include related to libxml2])])
+CPPFLAGS="$CPPFLAGS_SAVE"
 
 dnl Ensure we can link against libxml2
 LIBS_SAVE="$LIBS"
 LIBS="$XML2_LDFLAGS"
 AC_CHECK_LIB([xml2], [xmlInitParser], [], [AC_MSG_ERROR([could not find libxml2])], [])
+LIBS="$LIBS_SAVE"
 
 AC_DEFINE_UNQUOTED([POSTGIS_LIBXML2_VERSION], ["$POSTGIS_LIBXML2_VERSION"], [PostGIS libxml2 version])
 AC_SUBST([POSTGIS_LIBXML2_VERSION])
@@ -866,157 +868,198 @@ AC_SUBST([SRID_USR_MAX])
 dnl ====================================
 dnl raster stuff
 dnl ====================================
-AC_ARG_WITH([raster],
-    [AS_HELP_STRING([--without-raster],
-                    [Disable the raster extension])],
-    [], [])
+AC_ARG_WITH(
+	[raster],	[
+		AS_HELP_STRING([--without-raster],
+		[Disable the raster extension])
+	],
+	[], []
+)
 
 if test "x$with_raster" != "xno"; then dnl # {
+	RASTER="raster"
+	AC_MSG_RESULT([RASTER: Raster support requested])
 
-    RASTER="raster"
+	AC_CONFIG_HEADERS([raster/raster_config.h]) 
 
-    AC_CONFIG_HEADERS([raster/raster_config.h])
+	dnl
+	dnl Raster Version Information imported from raster/Version.config
+	dnl
+	POSTGIS_RASTER_MAJOR_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+	POSTGIS_RASTER_MINOR_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+	POSTGIS_RASTER_MICRO_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
 
-    dnl
-    dnl Raster Version Information imported from raster/Version.config 
-    dnl
-    POSTGIS_RASTER_MAJOR_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MAJOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-    POSTGIS_RASTER_MINOR_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MINOR_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
-    POSTGIS_RASTER_MICRO_VERSION=`cat raster/Version.config | grep POSTGIS_RASTER_MICRO_VERSION | sed 's/[[^=]]*=\([[0-9]]\)/\1/g'`
+	AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MAJOR_VERSION], ["$POSTGIS_RASTER_MAJOR_VERSION"], [PostGIS Raster major version])
+	AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MINOR_VERSION], ["$POSTGIS_RASTER_MINOR_VERSION"], [PostGIS Raster minor version])
+	AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MICRO_VERSION], ["$POSTGIS_RASTER_MICRO_VERSION"], [PostGIS Raster micro version])
 
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MAJOR_VERSION], ["$POSTGIS_RASTER_MAJOR_VERSION"], [PostGIS Raster major version])
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MINOR_VERSION], ["$POSTGIS_RASTER_MINOR_VERSION"], [PostGIS Raster minor version])
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_MICRO_VERSION], ["$POSTGIS_RASTER_MICRO_VERSION"], [PostGIS Raster micro version])
+	AC_SUBST([POSTGIS_RASTER_MAJOR_VERSION])
+	AC_SUBST([POSTGIS_RASTER_MINOR_VERSION])
+	AC_SUBST([POSTGIS_RASTER_MICRO_VERSION])
 
-    AC_SUBST([POSTGIS_RASTER_MAJOR_VERSION])
-    AC_SUBST([POSTGIS_RASTER_MINOR_VERSION])
-    AC_SUBST([POSTGIS_RASTER_MICRO_VERSION])
+	dnl ==============================
+	dnl Define raster version macros
+	dnl ==============================
+	POSTGIS_RASTER_VERSION="$POSTGIS_RASTER_MAJOR_VERSION.$POSTGIS_RASTER_MINOR_VERSION"
+	POSTGIS_RASTER_LIB_VERSION="$POSTGIS_RASTER_MAJOR_VERSION.$POSTGIS_RASTER_MINOR_VERSION.$POSTGIS_RASTER_MICRO_VERSION"
+	POSTGIS_RASTER_BUILD_DATE=`date -u "+%Y-%m-%d %H:%M:%S"`
+	POSTGIS_RASTER_SCRIPTS_VERSION="$POSTGIS_RASTER_LIB_VERSION"
 
-    dnl ==============================
-    dnl Define raster version macros
-    dnl ==============================
-    POSTGIS_RASTER_VERSION="$POSTGIS_RASTER_MAJOR_VERSION.$POSTGIS_RASTER_MINOR_VERSION"
-    POSTGIS_RASTER_LIB_VERSION="$POSTGIS_RASTER_MAJOR_VERSION.$POSTGIS_RASTER_MINOR_VERSION.$POSTGIS_RASTER_MICRO_VERSION"
-    POSTGIS_RASTER_BUILD_DATE=`date -u "+%Y-%m-%d %H:%M:%S"`
-    POSTGIS_RASTER_SCRIPTS_VERSION="$POSTGIS_RASTER_LIB_VERSION"
+	AC_DEFINE_UNQUOTED([POSTGIS_RASTER_VERSION], ["$POSTGIS_RASTER_VERSION"], [PostGIS Raster version])
+	AC_DEFINE_UNQUOTED([POSTGIS_RASTER_LIB_VERSION], ["$POSTGIS_RASTER_LIB_VERSION"], [PostGIS Raster library version])
+	AC_DEFINE_UNQUOTED([POSTGIS_RASTER_BUILD_DATE], ["$POSTGIS_RASTER_BUILD_DATE"], [PostGIS Raster build date])
+	AC_DEFINE_UNQUOTED([POSTGIS_RASTER_SCRIPTS_VERSION], ["$POSTGIS_RASTER_SCRIPTS_VERSION"], [PostGIS Raster scripts version])
 
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_VERSION], ["$POSTGIS_RASTER_VERSION"], [PostGIS Raster version])
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_LIB_VERSION], ["$POSTGIS_RASTER_LIB_VERSION"], [PostGIS Raster library version])
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_BUILD_DATE], ["$POSTGIS_RASTER_BUILD_DATE"], [PostGIS Raster build date])
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_SCRIPTS_VERSION], ["$POSTGIS_RASTER_SCRIPTS_VERSION"], [PostGIS Raster scripts version])
+	AC_SUBST([POSTGIS_RASTER_VERSION])
+	AC_SUBST([POSTGIS_RASTER_LIB_VERSION])
+	AC_SUBST([POSTGIS_RASTER_BUILD_DATE])
+	AC_SUBST([POSTGIS_RASTER_SCRIPTS_VERSION])
 
-    AC_SUBST([POSTGIS_RASTER_VERSION])
-    AC_SUBST([POSTGIS_RASTER_LIB_VERSION])
-    AC_SUBST([POSTGIS_RASTER_BUILD_DATE])
-    AC_SUBST([POSTGIS_RASTER_SCRIPTS_VERSION])
+	dnl ===========================================================================
+	dnl Allow output of double truncation warnings with --with-raster-dblwarning
+	dnl ===========================================================================
+	AC_ARG_WITH(
+		[raster-dblwarning],
+		AC_HELP_STRING([--with-raster-dblwarning], [output double truncation warnings.  Only used with --with-raster]),
+		[POSTGIS_RASTER_WARN_ON_TRUNCATION=1],
+		[POSTGIS_RASTER_WARN_ON_TRUNCATION=0]
+	)
 
-    dnl ===========================================================================
-    dnl Allow output of double truncation warnings with --with-raster-dblwarning
-    dnl ===========================================================================
+	AC_DEFINE_UNQUOTED(
+		[POSTGIS_RASTER_WARN_ON_TRUNCATION],
+		[$POSTGIS_RASTER_WARN_ON_TRUNCATION],
+		[Define to 1 if a warning is outputted every time a double is truncated]
+	)
 
-    AC_ARG_WITH([raster-dblwarning], AC_HELP_STRING([--with-raster-dblwarning], [output double truncation warnings.  Only used with --with-raster]), 
-        [POSTGIS_RASTER_WARN_ON_TRUNCATION=1], [POSTGIS_RASTER_WARN_ON_TRUNCATION=0]) 
-
-    AC_DEFINE_UNQUOTED([POSTGIS_RASTER_WARN_ON_TRUNCATION], [$POSTGIS_RASTER_WARN_ON_TRUNCATION], [Define to 1 if a warning is outputted every time a double is truncated])
-
-    dnl ========================================================================
-    dnl Determine GDAL Support
-    dnl
-    dnl TODO: Now, --with-gdalconfig can have only 1 value: path to gdal-config. It
-    dnl could be useful to allow path to GDAL tree, because the cflags and the
-    dnl libs can be obtained from GDAL tree too, apart from gdal-config
-    dnl How to get cflags and libs from GDAL tree?
-    dnl
-    dnl LIBGDAL_CFLAGS="-I$with_gdal/port -I$with_gdal/ogr -I$with_gdal/alg -I$with_gdal/gcore -I$with_gdal/frmts "
-    dnl LIBGDAL_LDFLAGS="-L${with_gdal}/.libs -lgdal -L${with_gdal}/ -lgdal"
-    dnl ========================================================================
-    dnl not used right now
-    USE_GDAL_SOURCE_TREE="no"
-    LIBGDAL_CFLAGS=""
-    LIBGDAL_LDFLAGS=""
+	dnl ========================================================================
+	dnl Determine GDAL Support
+	dnl
+	dnl TODO: Now, --with-gdalconfig can have only 1 value: path to gdal-config. It
+	dnl could be useful to allow path to GDAL tree, because the cflags and the
+	dnl libs can be obtained from GDAL tree too, apart from gdal-config
+	dnl How to get cflags and libs from GDAL tree?
+	dnl
+	dnl LIBGDAL_CFLAGS="-I$with_gdal/port -I$with_gdal/ogr -I$with_gdal/alg -I$with_gdal/gcore -I$with_gdal/frmts "
+	dnl LIBGDAL_LDFLAGS="-L${with_gdal}/.libs -lgdal -L${with_gdal}/ -lgdal"
+	dnl ========================================================================
+	dnl not used right now
+	USE_GDAL_SOURCE_TREE="no"
+	LIBGDAL_CFLAGS=""
+	LIBGDAL_LDFLAGS=""
 
 	dnl GDAL version constants, update here
 	GDAL_MIN_VERSION=1.6.0
 	GDAL_MIN_VERSION_NUMBER=160 dnl TODO: Use GDAL version calculation MAJOR*1000+MINOR*100+REV*10+BUILD
 
-    AC_ARG_WITH([gdalconfig],
+	AC_ARG_WITH(
+		[gdalconfig],
 		AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path).  Only used with --with-raster]),
-        	[GDAL_CONFIG="$withval"], [GDAL_CONFIG=""])
+		[GDAL_CONFIG="$withval"],
+		[GDAL_CONFIG=""]
+	)
 
-    AC_MSG_CHECKING([for GDAL >= $GDAL_MIN_VERSION])
-    if test "x$GDAL_CONFIG" = "x"; then
-	   	dnl If GDAL_CONFIG path not provided, try to find it
-        GDAL_CONFIG_TMP=`which gdal-config`
-        if test "`basename xx/${GDAL_CONFIG_TMP}`" = "gdal-config" ; then
-            GDAL_CONFIG=${GDAL_CONFIG_TMP}
-        fi
-    fi
+	AC_MSG_CHECKING([for GDAL >= $GDAL_MIN_VERSION])
+	if test "x$GDAL_CONFIG" = "x"; then
+		dnl If GDAL_CONFIG path not provided, try to find it
+		GDAL_CONFIG_TMP=`which gdal-config`
+		if test "`basename xx/${GDAL_CONFIG_TMP}`" = "gdal-config" ; then
+			GDAL_CONFIG=${GDAL_CONFIG_TMP}
+		fi
+	fi
 
-    if test -x "$GDAL_CONFIG"; then
-       dnl Extract the version information from gdal-config
-       dnl Note: we extract the major & minor separately, ensure they are numeric,
-       dnl and then combine to give the final version.
-       dnl This is to guard against user error...
-       GDAL_MAJOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
-       GDAL_MINOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
-       GDAL_PATCH_VERSION=`$GDAL_CONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
-       GDAL_FULL_VERSION=`$GDAL_CONFIG --version`
-       POSTGIS_GDAL_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION"
-       GDAL_VERSION_NUMBER="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION$GDAL_PATCH_VERSION"
+	if test -x "$GDAL_CONFIG"; then dnl # {
+		dnl Extract the version information from gdal-config
+		dnl Note: we extract the major & minor separately, ensure they are numeric,
+		dnl and then combine to give the final version.
+		dnl This is to guard against user error...
+		GDAL_MAJOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f1 | sed 's/[[^0-9]]//g'`
+		GDAL_MINOR_VERSION=`$GDAL_CONFIG --version | cut -d. -f2 | sed 's/[[^0-9]]//g'`
+		GDAL_PATCH_VERSION=`$GDAL_CONFIG --version | cut -d. -f3 | sed 's/[[^0-9]]//g'`
+		GDAL_FULL_VERSION=`$GDAL_CONFIG --version`
+		POSTGIS_GDAL_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION"
+		GDAL_VERSION_NUMBER="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION$GDAL_PATCH_VERSION"
 
-       dnl Ensure we are using minimum required version of GDAL
-       if test ! "$GDAL_VERSION_NUMBER" -ge "$GDAL_MIN_VERSION_NUMBER" ; then
-	   	  AC_MSG_RESULT([not found])
-	   	  AC_MSG_ERROR([PostGIS raster requires GDAL >= $GDAL_MIN_VERSION. Use --without-raster to build without raster support.])
-       fi
+		dnl Ensure we are using minimum required version of GDAL
+		if test ! "$GDAL_VERSION_NUMBER" -ge "$GDAL_MIN_VERSION_NUMBER" ; then
+			AC_MSG_RESULT([not found])
+			AC_MSG_ERROR([PostGIS raster requires GDAL >= $GDAL_MIN_VERSION. Use --without-raster to build without raster support.])
+		fi
 
-       AC_DEFINE_UNQUOTED([POSTGIS_GDAL_VERSION], [$POSTGIS_GDAL_VERSION], [GDAL library version])	
-       AC_SUBST([POSTGIS_GDAL_VERSION])
-	else
+		AC_MSG_RESULT([found])
+
+		AC_DEFINE_UNQUOTED([POSTGIS_GDAL_VERSION], [$POSTGIS_GDAL_VERSION], [GDAL library version])	
+		AC_SUBST([POSTGIS_GDAL_VERSION])
+
+		dnl Extract the linker and include flags 
+		LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
+		LIBGDAL_CFLAGS=`$GDAL_CONFIG --cflags`
+
+		CPPFLAGS_SAVE="$CPPFLAGS"
+		CPPFLAGS=""
+		CFLAGS_SAVE="$CFLAGS"
+		CFLAGS="$LIBGDAL_CFLAGS"
+		LIBS_SAVE="$LIBS"
+		LIBS="$LIBGDAL_LDFLAGS"
+
+		dnl Check headers file
+		AC_CHECK_HEADERS(
+			[gdal.h ogr_api.h cpl_conv.h],
+			[],
+			[AC_MSG_ERROR([could not find headers include related to gdal])]
+		)
+
+		dnl Ensure we can link against gdal
+		AC_CHECK_LIB([gdal], [GDALAllRegister], [], [AC_MSG_ERROR([could not find gdal])], [])
+
+		LIBS="$LIBGDAL_LDFLAGS"
+
+		dnl Check if the new polygonize function is present
+		AC_CHECK_LIB(
+			[gdal],
+			[GDALFPolygonize],
+			[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1], [Define to 1 if GDALFPolygonize function is available])],
+			[]
+		)
+
+		CPPFLAGS="$CPPFLAGS_SAVE"
+		CFLAGS="$CFLAGS_SAVE"
+		LIBS="$LIBS_SAVE"
+
+		AC_SUBST([LIBGDAL_CFLAGS])
+		AC_SUBST([LIBGDAL_LDFLAGS])
+
+		AC_SUBST([GDALFPOLYGONIZE])
+	else dnl # } {
 		AC_MSG_RESULT([not found])
 		AC_MSG_ERROR([gdal-config not found. Use --without-raster or try --with-gdalconfig=<path to gdal-config>])
-	fi
-	AC_MSG_RESULT([found])
+	fi dnl # }
 
-	dnl Check if the new polygonize function is present
-	AC_CHECK_LIB([gdal], [GDALFPolygonize],
-		[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1], [Define to 1 if GDALFPolygonize function is available])], 
-		[]) 
+	dnl Define raster objects, for makefiles
+	RT_CORE_LIB=corelib
+	RT_PG_LIB=pglib
+	RT_LOADER=rtloader
+	RT_POSTGIS_SQL=rtpostgis.sql
 
-    dnl Extract the linker and include flags 
-    LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
-    LIBGDAL_CFLAGS=`$GDAL_CONFIG --cflags`
+	AC_SUBST([RASTER])
+	AC_SUBST([RT_CORE_LIB])
+	AC_SUBST([RT_PG_LIB])
+	AC_SUBST([RT_LOADER])
+	AC_SUBST([RT_POSTGIS_SQL])
 
-    AC_SUBST([LIBGDAL_CFLAGS])
-    AC_SUBST([LIBGDAL_LDFLAGS])
-	AC_SUBST([GDALFPOLYGONIZE])
+	RT_MAKEFILE_LIST="
+		raster/Makefile \
+		raster/rt_core/Makefile \
+		raster/rt_pg/Makefile \
+		raster/loader/Makefile \
+		raster/test/Makefile \
+		raster/test/core/Makefile \
+		raster/test/regress/Makefile \
+		raster/scripts/Makefile \
+		raster/scripts/python/Makefile"
 
-    dnl Define raster objects, for makefiles
-    RT_CORE_LIB=corelib
-    RT_PG_LIB=pglib
-    RT_LOADER=rtloader
-    RT_POSTGIS_SQL=rtpostgis.sql
-
-    AC_SUBST([RASTER])
-    AC_SUBST([RT_CORE_LIB])
-    AC_SUBST([RT_PG_LIB])
-    AC_SUBST([RT_LOADER])
-    AC_SUBST([RT_POSTGIS_SQL])
-
-    RT_MAKEFILE_LIST="
-                    raster/Makefile \
-                    raster/rt_core/Makefile \ 
-                    raster/rt_pg/Makefile \ 
-                    raster/loader/Makefile \ 
-                    raster/test/Makefile \
-                    raster/test/core/Makefile \ 
-                    raster/test/regress/Makefile \
-                    raster/scripts/Makefile \
-                    raster/scripts/python/Makefile"
-
-else dnl # }{
-    AC_MSG_RESULT([RASTER: Raster support disabled])
-    RT_MAKEFILE_LIST="raster/Makefile"
+else dnl # } {
+	AC_MSG_RESULT([RASTER: Raster support disabled])
+	RT_MAKEFILE_LIST="raster/Makefile"
 fi dnl # }
 
 dnl ===========================================================================
