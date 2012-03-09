@@ -207,11 +207,10 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 	/* Print to our buffer */
 	len = vsnprintf(s->str_end, maxlen, fmt, ap);
 
-	/* Propogate any printing errors upwards (check errno for info) */
-	if ( len < 0 ) return len;
-
-	/* We didn't have enough space! Expand the buffer. */
-	if ( len >= maxlen )
+	/* We didn't have enough space! */
+	/* Either Unix vsnprint returned write length larger than our buffer */
+	/*     or Windows vsnprintf returned an error code. */
+	if ( (len >= maxlen) || (len < 0) )
 	{
 		stringbuffer_makeroom(s, len + 1);
 		maxlen = (s->capacity - (s->str_end - s->str_start));
