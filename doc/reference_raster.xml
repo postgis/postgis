@@ -6260,7 +6260,7 @@ WITH mygeoms
 </informaltable>
 			</refsection>
 			<refsection>
-				<title>Example: Overlay 3 meter boundary of select parcels over an aerial imagery</title>
+				<title>Example: Overlay 2 meter boundary of select parcels over an aerial imagery</title>
 				<programlisting>-- Create new 3 band raster composed of first 2 clipped bands, and overlay of 3rd band with our geometry
 SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2]), ST_MapAlgebraExpr(clipped, ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
 	 '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') )
