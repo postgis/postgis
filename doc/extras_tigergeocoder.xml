@@ -48,7 +48,7 @@ until release.
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>text <function>Drop_Indexes_Generate_Script</function></funcdef>
-				<paramdef><type choice='opt'>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
+				<paramdef choice='opt'><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -125,7 +125,7 @@ DROP INDEX tiger_data.idx_tiger_data_ma_county_snd_name;
 		  <funcprototype>
 			<funcdef>text <function>Drop_State_Tables_Generate_Script</function></funcdef>
 				<paramdef><type>text </type> <parameter>address</parameter></paramdef>
-				<paramdef><type choice='opt'>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
+				<paramdef choice='opt'><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -181,8 +181,8 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 		  <funcprototype>
 			<funcdef>setof record <function>geocode</function></funcdef>
 			<paramdef><type>varchar </type> <parameter>address</parameter></paramdef>
-			<paramdef><type choice='opt'>integer </type> <parameter>max_results=10</parameter></paramdef>
-			<paramdef><type choice='opt'>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
+			<paramdef choice='opt'><type>integer </type> <parameter>max_results=10</parameter></paramdef>
+			<paramdef choice='opt'><type>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
 			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
@@ -190,8 +190,8 @@ DROP TABLE tiger_data.pa_zip_state_loc;
 		  <funcprototype>
 			<funcdef>setof record <function>geocode</function></funcdef>
 			<paramdef><type>norm_addy </type> <parameter>in_addy</parameter></paramdef>
-			<paramdef><type choice='opt'>integer </type> <parameter>max_results=10</parameter></paramdef>
-			<paramdef><type choice='opt'>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
+			<paramdef choice='opt'><type>integer </type> <parameter>max_results=10</parameter></paramdef>
+			<paramdef choice='opt'><type>geometry </type> <parameter>restrict_region=NULL</parameter></paramdef>
 			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
@@ -327,9 +327,9 @@ Total query runtime: 245 ms.
 			<paramdef><type>text </type> <parameter> roadway1</parameter></paramdef>
 			<paramdef><type>text </type> <parameter> roadway2</parameter></paramdef>
 			<paramdef><type>text </type> <parameter> in_state</parameter></paramdef>
-			<paramdef><type choice='opt'>text </type> <parameter> in_city</parameter></paramdef>
-			<paramdef><type choice='opt'>text </type> <parameter> in_zip</parameter></paramdef>
-			<paramdef><type choice='opt'>integer </type> <parameter>max_results=10</parameter></paramdef>
+			<paramdef choice='opt'><type>text </type> <parameter> in_city</parameter></paramdef>
+			<paramdef choice='opt'><type>text </type> <parameter> in_zip</parameter></paramdef>
+			<paramdef choice='opt'><type>integer </type> <parameter>max_results=10</parameter></paramdef>
 			<paramdef><type>norm_addy </type> <parameter>OUT addy</parameter></paramdef>
 			<paramdef><type>geometry </type> <parameter>OUT geomout</parameter></paramdef>
 			<paramdef><type>integer </type> <parameter>OUT rating</parameter></paramdef>
@@ -389,7 +389,7 @@ Total query runtime: 245 ms.
 		  <funcprototype>
 			<funcdef>text <function>get_tract</function></funcdef>
 			<paramdef><type>geometry </type> <parameter> loc_geom</parameter></paramdef>
-			<paramdef><type choice='opt'>text </type> <parameter> output_field='name'</parameter></paramdef>
+			<paramdef choice='opt'><type>text </type> <parameter> output_field='name'</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
