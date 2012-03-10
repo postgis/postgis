@@ -1580,14 +1580,14 @@ SELECT ST_AsEWKT(ST_SnapToGrid(ST_GeomFromEWKT('LINESTRING(-1.1115678 2.123 3 2.
 				  	<spanspec namest="column1" nameend="column2" spanname="span-horiz" align="center" />
 					<tbody>
 					  <row>
-						<entry spanname="span-horiz"><informalfigure>
+						<entry spanname="span-horiz"><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_snap01.png" />
 							  </imageobject>
 							  <caption><para>A multipolygon shown with a linestring (before any snapping)</para></caption>
 							</mediaobject>
-						  </informalfigure>
+						  </informalfigure></para>
 					   </entry>
 					  </row>
 					  <row>
