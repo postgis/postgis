@@ -64,39 +64,6 @@ garden:
 	@echo '------------------------------------------------------'
 	$(MAKE) -C regress garden
 
-#test-clean:
-#	$(MAKE) -C regress clean
-
-#liblwgeom:
-#	$(MAKE) -C liblwgeom 
-#
-#liblwgeom-clean:
-#	$(MAKE) -C liblwgeom clean
-
-#postgis: liblwgeom
-#	$(MAKE) -C postgis 
-#
-#postgis-clean:
-#	$(MAKE) -C postgis clean
-#
-#postgis-install:
-#	$(MAKE) -C postgis install
-#
-#postgis-uninstall:
-#	$(MAKE) -C postgis uninstall
-
-#loaderdumper:
-#	$(MAKE) -C loader
-#
-#loaderdumper-clean:
-#	$(MAKE) -C loader clean
-#
-#loaderdumper-install:
-#	$(MAKE) -C loader install
-#
-#loaderdumper-uninstall:
-#	$(MAKE) -C loader uninstall
-
 templategis:
 	$(MAKE) -C extras/template_gis
 
@@ -144,21 +111,6 @@ config.status: configure
 
 ChangeLog.svn:
 	svn2cl --authors=authors.svn -i -o ChangeLog.svn
-
-#raster:
-#	$(MAKE) -C raster all
-#
-#raster-clean:
-#	$(MAKE) -C raster clean
-#    
-#raster-distclean:
-#	$(MAKE) -C raster distclean
-#
-#raster-install:
-#	$(MAKE) -C raster install
-#    
-#raster-check:
-#	$(MAKE) -C raster check
 
 raster-post-install-check:
 	$(MAKE) -C raster post-install-check
