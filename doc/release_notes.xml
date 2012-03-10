@@ -72,7 +72,7 @@
           <para>ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_GeometryN and ST_NumGeometries support for non-collections (Sandro Santilli)</para>
-          <para>ST_IssCollection (Sandro Santilli, Maxime van Noppen)</para>
+          <para>ST_IsCollection (Sandro Santilli, Maxime van Noppen)</para>
           <para>ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_Snap (Sandro Santilli)</para>
           <para>ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)</para>
