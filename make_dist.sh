@@ -46,9 +46,13 @@ rm -fv "$outdir"/make_dist.sh "$outdir"/HOWTO_RELEASE
 echo "Running autogen.sh; ./configure"
 owd="$PWD"
 cd "$outdir"
-perl utils/svn_repo_revision.pl $svnurl
 ./autogen.sh
 ./configure
+# generating postgis_svn_revision.h for >= 2.0.0 tags 
+if test -f utils/svn_repo_revision.pl; then 
+	echo "Generating postgis_svn_revision.h"
+	perl utils/svn_repo_revision.pl $svnurl
+fi
 #make
 cd "$owd"
 
