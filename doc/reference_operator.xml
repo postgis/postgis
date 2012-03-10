@@ -1129,7 +1129,9 @@ ORDER BY d limit 10;]]>
  18472.5531479404 | ALQ    | 002
 (10 rows)
 </programlisting>
+<para>
 Then the KNN raw answer:
+</para>
 <programlisting><![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr 
 FROM va2005 
 ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>
@@ -1148,9 +1150,13 @@ ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>
  26764.2555463114 | ALQ    | 125
 (10 rows)
 </programlisting>
+<para>
 Note the misordering in the actual distances and the different entries that actually show up in the top 10.
+</para>
 
+<para>
 Finally the hybrid:
+</para>
 <programlisting><![CDATA[WITH index_query AS (
   SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,edabbr, vaabbr
   	FROM va2005
