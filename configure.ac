@@ -917,8 +917,7 @@ if test "x$with_raster" != "xno"; then
 	AC_DEFINE_UNQUOTED(
 		[POSTGIS_RASTER_WARN_ON_TRUNCATION],
 		[$POSTGIS_RASTER_WARN_ON_TRUNCATION],
-		[Define to 1 if a warning is outputted every time a double is truncated]
-	)
+		[Define to 1 if a warning is outputted every time a double is truncated])
 
 	dnl ========================================================================
 	dnl Determine GDAL Support
@@ -993,8 +992,7 @@ if test "x$with_raster" != "xno"; then
 		AC_CHECK_HEADERS(
 			[gdal.h ogr_api.h cpl_conv.h],
 			[],
-			[AC_MSG_ERROR([could not find headers include related to gdal])]
-		)
+			[AC_MSG_ERROR([could not find headers include related to gdal])])
 
 		dnl Ensure we can link against gdal
 		AC_CHECK_LIB([gdal], [GDALAllRegister], [], [AC_MSG_ERROR([could not find gdal])], [])
@@ -1006,8 +1004,7 @@ if test "x$with_raster" != "xno"; then
 			[gdal],
 			[GDALFPolygonize],
 			[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1], [Define to 1 if GDALFPolygonize function is available])],
-			[]
-		)
+			[])
 
 		CPPFLAGS="$CPPFLAGS_SAVE"
 		CFLAGS="$CFLAGS_SAVE"
