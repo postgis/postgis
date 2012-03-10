@@ -1685,6 +1685,7 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
 			<para>Returns the width of a pixel in geometric units of the spatial reference system. In the common case where 
 			there is no skew, the pixel width is just the scale ratio between geometric coordinates and raster pixels.</para>
 			<para>The following diagram demonstrates the relationship:</para>
+			<para>
 			<informalfigure>
 				<mediaobject>
 					<imageobject>
@@ -1693,6 +1694,7 @@ rastheight |     pixheight     | scalex | scaley | skewx | skewy
 					<caption><para>Pixel Width: Pixel size in the i direction</para><para>Pixel Height: Pixel size in the j direction</para></caption>
 				</mediaobject>
 			</informalfigure>
+			</para>
 		</refsection>
 		
 		<refsection>
@@ -3915,32 +3917,32 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
   <tgroup cols="3">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/rt_st_transform01.png" />
 			  </imageobject>
 			  <caption><para>original mass state plane meters (mass_stm)</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/rt_st_transform02.png" />
 			  </imageobject>
 			  <caption><para>After transform to wgs 84 long lat (wgs_84)</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/rt_st_transform03.png" />
 			  </imageobject>
 			  <caption><para>After transform to wgs 84 long lat with bilinear algorithm instead of NN default (wgs_84_bilin)</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 		</row>
 	</tbody>
@@ -5316,23 +5318,23 @@ WHERE rid = 6) As foo;
   <tgroup cols="2">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_clip01.png" />
 			  </imageobject>
 			  <caption><para>Full raster tile before clipping</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_clip02.png" />
 			  </imageobject>
 			  <caption><para>After Clipping</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 		</row>
 	</tbody>
@@ -5354,23 +5356,23 @@ WHERE rid = 4;</programlisting>
   <tgroup cols="2">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_clip01.png" />
 			  </imageobject>
 			  <caption><para>Full raster tile before clipping</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_clip03.png" />
 			  </imageobject>
 			  <caption><para>After Clipping</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 		</row>
 	</tbody>
@@ -5975,23 +5977,23 @@ FROM dummy_rast WHERE rid = 2;
   <tgroup cols="2">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr01.png" />
 			  </imageobject>
 			  <caption><para>original (column rast-view)</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr02.png" />
 			  </imageobject>
 			  <caption><para>rast_view_ma</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 		</row>
 	</tbody>
@@ -6156,23 +6158,23 @@ FROM fun_shapes WHERE
   <tgroup cols="2">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr2_01.png" />
 			  </imageobject>
 			  <caption><para>mapalgebra intersection</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr2_02.png" />
 			  </imageobject>
 			  <caption><para>map algebra union</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 		</row>
 	</tbody>
@@ -6215,44 +6217,44 @@ WITH mygeoms
   <tgroup cols="2">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr2_04.png" />
 			  </imageobject>
 			  <caption><para>rast1</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr2_05.png" />
 			  </imageobject>
 			  <caption><para>rast2</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 	</row>
 	<row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr2_06.png" />
 			  </imageobject>
 			  <caption><para>rast3</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 		 
-		 <entry><informalfigure>
+		 <entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr2_07.png" />
 			  </imageobject>
 			  <caption><para>final_rast</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 	</row>
 	</tbody>
@@ -6282,14 +6284,14 @@ FROM
   <tgroup cols="1">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebraexpr2_08.png" />
 			  </imageobject>
 			  <caption><para>The blue lines are the boundaries of select parcels</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 	</row>
 	</tbody>
@@ -6478,22 +6480,22 @@ FROM dummy_rast WHERE rid = 2;
 					<tgroup cols="2">
 						<tbody>
 							<row>
-								<entry><informalfigure>
+								<entry><para><informalfigure>
 									<mediaobject>
 										<imageobject>
 											<imagedata fileref="images/st_mapalgebraexpr01.png" />
 										</imageobject>
 										<caption><para>original (column rast-view)</para></caption>
 									</mediaobject>
-								</informalfigure></entry>
-								<entry><informalfigure>
+								</informalfigure></para></entry>
+								<entry><para><informalfigure>
 									<mediaobject>
 										<imageobject>
 											<imagedata fileref="images/st_mapalgebraexpr02.png" />
 										</imageobject>
 										<caption><para>rast_view_ma</para></caption>
 									</mediaobject>
-								</informalfigure></entry>
+								</informalfigure></para></entry>
 							</row>
 						</tbody>
 					</tgroup>
@@ -6664,14 +6666,14 @@ SELECT ST_AddBand(ST_AddBand(rasts[1], rasts[2]),rasts[3]), 4, 'map bands overla
   <tgroup cols="1">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_mapalgebrafct2_01.png" />
 			  </imageobject>
 			    <caption><para>map bands overlay (canvas) (R: small road, G: circle, B: big road)</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 		 </row>
 		 </tbody>
@@ -6712,6 +6714,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
                 FROM map_shapes As m1
                 	WHERE m1.descrip = 'map bands overlay fct union (canvas)'; 
 </programlisting>
+	<para>
 	<informalfigure>
 	<mediaobject>
 	  <imageobject>
@@ -6720,6 +6723,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 	  <caption><para>user defined with extra args and different bands from same raster</para></caption>
 	</mediaobject>
 	</informalfigure>
+	</para>
 		
 			</refsection>
 
@@ -6851,22 +6855,22 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
 		<tgroup cols="2">
 			<tbody>
 				<row>
-					<entry><informalfigure>
+					<entry><para><informalfigure>
 						<mediaobject>
 							<imageobject>
 								<imagedata fileref="images/st_mapalgebrafctngb01.png" />
 							</imageobject>
 							<caption><para>First band of our raster</para></caption>
 						</mediaobject>
-					</informalfigure></entry>
-					<entry><informalfigure>
+					</informalfigure></para></entry>
+					<entry><para><informalfigure>
 						<mediaobject>
 							<imageobject>
 								<imagedata fileref="images/st_mapalgebrafctngb02.png" />
 							</imageobject>
 							<caption><para>new raster after averaging pixels withing 4x4 pixels of each other</para></caption>
 						</mediaobject>
-					</informalfigure></entry>
+					</informalfigure></para></entry>
 				</row>
 			</tbody>
 		</tgroup>
