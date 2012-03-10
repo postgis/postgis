@@ -1284,32 +1284,32 @@ WHERE rid=2;
   <tgroup cols="3">
 	<tbody>
 	  <row>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_band01.png" />
 			  </imageobject>
 			  <caption><para>original (column rast)</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_band02.png" />
 			  </imageobject>
 			  <caption><para>dupe_band</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
-		<entry><informalfigure>
+		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
 				<imagedata fileref="images/st_band03.png" />
 			  </imageobject>
 			  <caption><para>sing_band</para></caption>
 			</mediaobject>
-		  </informalfigure>
+		  </informalfigure></para>
 		 </entry>
 		</row>
 	</tbody>
