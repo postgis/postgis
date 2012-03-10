@@ -33,7 +33,7 @@ clean-local:
 # TODO: drop 'test' target..
 test: check
 
-check: all
+check: all docs-check
 
 distclean: clean distclean-local
 
@@ -81,6 +81,9 @@ docs:
 
 docs-clean:
 	$(MAKE) -C doc clean
+
+docs-check:
+	$(MAKE) -C doc check
 
 comments:
 	$(MAKE) -C doc comments
