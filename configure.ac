@@ -869,10 +869,8 @@ dnl ====================================
 dnl raster stuff
 dnl ====================================
 AC_ARG_WITH(
-	[raster],	[
-		AS_HELP_STRING([--without-raster],
-		[Disable the raster extension])
-	],
+	[raster],
+	AC_HELP_STRING([--without-raster], [Disable the raster extension]),
 	[], []
 )
 
