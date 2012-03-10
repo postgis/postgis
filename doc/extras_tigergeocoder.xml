@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
   <sect1 id="Tiger_Geocoder">
-	<title>Tiger Geocoder</title>
 	 <sect1info>
 		<abstract>
 			<para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.  In prior versions the TIGER files were
@@ -34,6 +33,7 @@ until release.
 			</para>
 		</abstract>
      </sect1info>
+	<title>Tiger Geocoder</title>
      
      <para>There is another geocoder for PostGIS gaining in popularity and more suitable for international use.  It is called <ulink url="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</ulink>
      and uses OpenStreetMap gazeteer formatted data.  It requires osm2pgsql for loading the data, PostgreSQL 8.4+ and PostGIS 1.5+ to function.  It is packaged as a webservice interface and seems designed to be called as a webservice.
