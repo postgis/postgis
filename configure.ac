@@ -827,13 +827,6 @@ SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDF
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
-
-AC_ARG_WITH([raster],
-    [AS_HELP_STRING([--without-raster],
-                    [Disable the raster extension])],
-    [], [])
-
-
 dnl ====================================
 dnl topology stuff
 dnl ====================================
@@ -871,8 +864,7 @@ dnl ====================================
 AC_ARG_WITH(
 	[raster],
 	AC_HELP_STRING([--without-raster], [Disable the raster extension]),
-	[], []
-)
+	[], [])
 
 if test "x$with_raster" != "xno"; then
 	RASTER="raster"
@@ -920,8 +912,7 @@ if test "x$with_raster" != "xno"; then
 		[raster-dblwarning],
 		AC_HELP_STRING([--with-raster-dblwarning], [output double truncation warnings.  Only used with --with-raster]),
 		[POSTGIS_RASTER_WARN_ON_TRUNCATION=1],
-		[POSTGIS_RASTER_WARN_ON_TRUNCATION=0]
-	)
+		[POSTGIS_RASTER_WARN_ON_TRUNCATION=0])
 
 	AC_DEFINE_UNQUOTED(
 		[POSTGIS_RASTER_WARN_ON_TRUNCATION],
@@ -953,8 +944,7 @@ if test "x$with_raster" != "xno"; then
 		[gdalconfig],
 		AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path).  Only used with --with-raster]),
 		[GDAL_CONFIG="$withval"],
-		[GDAL_CONFIG=""]
-	)
+		[GDAL_CONFIG=""])
 
 	AC_MSG_CHECKING([for GDAL >= $GDAL_MIN_VERSION])
 	if test "x$GDAL_CONFIG" = "x"; then
