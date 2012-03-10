@@ -3300,7 +3300,7 @@ FROM (
             <!-- Optionally add a "See Also" section -->
             <refsection>
                 <title>See Also</title>
-                <para><xref linkend="RT_ST_Rotation" />, <xref linkend="RT_ST_ScaleX" />, <xref linked="RT_ST_ScaleY" />, <xref linkend="RT_ST_SkewX" />, <xref linked="RT_ST_SkewY" /></para>
+                <para><xref linkend="RT_ST_Rotation" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_SkewX" />, <xref linkend="RT_ST_SkewY" /></para>
             </refsection>
         </refentry>
 
