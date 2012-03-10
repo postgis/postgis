@@ -2157,14 +2157,14 @@ MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),
 		  <tgroup cols="1">
 			<tbody>
 			  <row>
-				<entry><informalfigure>
+				<entry><para><informalfigure>
 					<mediaobject>
 					  <imageobject>
 						<imagedata fileref="images/st_sharedpaths01.png" />
 					  </imageobject>
 					  <caption><para>A multilinestring and a linestring</para></caption>
 					</mediaobject>
-				  </informalfigure>
+				  </informalfigure></para>
 			   </entry>
 			  </row>
 			  <row>
