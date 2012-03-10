@@ -876,7 +876,7 @@ AC_ARG_WITH(
 	[], []
 )
 
-if test "x$with_raster" != "xno"; then dnl # {
+if test "x$with_raster" != "xno"; then
 	RASTER="raster"
 	AC_MSG_RESULT([RASTER: Raster support requested])
 
@@ -967,7 +967,7 @@ if test "x$with_raster" != "xno"; then dnl # {
 		fi
 	fi
 
-	if test -x "$GDAL_CONFIG"; then dnl # {
+	if test -x "$GDAL_CONFIG"; then
 		dnl Extract the version information from gdal-config
 		dnl Note: we extract the major & minor separately, ensure they are numeric,
 		dnl and then combine to give the final version.
@@ -1029,10 +1029,10 @@ if test "x$with_raster" != "xno"; then dnl # {
 		AC_SUBST([LIBGDAL_LDFLAGS])
 
 		AC_SUBST([GDALFPOLYGONIZE])
-	else dnl # } {
+	else
 		AC_MSG_RESULT([not found])
 		AC_MSG_ERROR([gdal-config not found. Use --without-raster or try --with-gdalconfig=<path to gdal-config>])
-	fi dnl # }
+	fi
 
 	dnl Define raster objects, for makefiles
 	RT_CORE_LIB=corelib
@@ -1057,10 +1057,10 @@ if test "x$with_raster" != "xno"; then dnl # {
 		raster/scripts/Makefile \
 		raster/scripts/python/Makefile"
 
-else dnl # } {
+else
 	AC_MSG_RESULT([RASTER: Raster support disabled])
 	RT_MAKEFILE_LIST="raster/Makefile"
-fi dnl # }
+fi
 
 dnl ===========================================================================
 dnl See if we have the requirements for building the extensions, namely
