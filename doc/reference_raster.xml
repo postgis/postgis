@@ -385,17 +385,17 @@ VALUES (1,
 		<para><varname>raster2pgsql</varname> loader uses this function to register raster tables</para>
 		<para>Valid constraint names to pass in: refer to <xref linkend="RT_Raster_Columns"/> for more details.</para>
 		<itemizedlist>
-			<listitem><varname>blocksize</varname> sets both X and Y blocksize</listitem>
-			<listitem><varname>blocksize_x</varname> sets X tile (width in pixels of each tile)</listitem>
-			<listitem><varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)</listitem>
-			<listitem><varname>extent</varname> computes extent of whole table and applys constraint all rasters must be withint that extent</listitem>
+			<listitem><para><varname>blocksize</varname> sets both X and Y blocksize</para></listitem>
+			<listitem><para><varname>blocksize_x</varname> sets X tile (width in pixels of each tile)</para></listitem>
+			<listitem><para><varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)</para></listitem>
+			<listitem><para><varname>extent</varname> computes extent of whole table and applys constraint all rasters must be withint that extent</para></listitem>
 
-			<listitem><varname>num_bands</varname> number of bands</listitem>
-			<listitem><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</listitem>
-			<listitem><varname>regular_blocking</varname> apply informational flag to denote all tiles are regularly blocked</listitem>
-			<listitem><varname>same_alignment</varname> ensures they all have same alignment meanign any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment" /></listitem>
-			<listitem><varname>srid</varname> ensures all have same srid</listitem>
-			<listitem>More -- any listed as inputs into the above functions</listitem>
+			<listitem><para><varname>num_bands</varname> number of bands</para></listitem>
+			<listitem><para><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</para></listitem>
+			<listitem><para><varname>regular_blocking</varname> apply informational flag to denote all tiles are regularly blocked</para></listitem>
+			<listitem><para><varname>same_alignment</varname> ensures they all have same alignment meanign any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment" /></para></listitem>
+			<listitem><para><varname>srid</varname> ensures all have same srid</para></listitem>
+			<listitem><para>More -- any listed as inputs into the above functions</para></listitem>
 		</itemizedlist>
 		<note>
 			<para>This function infers the constraints from the data already present in the table.  As such for it to work, you must create the raster column first
