@@ -902,6 +902,7 @@ Existing edges and faces may be split by the boundary of the new polygon.
 		
 			<refsection>
 				<title>Examples</title>
+				<para/>
 				 <!-- TODO -->
 			</refsection>
 		
@@ -948,6 +949,7 @@ Existing edges and faces may be split by the boundary of the new polygon.
 		
 			<refsection>
 				<title>Examples</title>
+				<para/>
 				 <!-- TODO -->
 			</refsection>
 		
@@ -1003,6 +1005,7 @@ Updates all existing joined edges and relationships accordingly.
 		
 			<refsection>
 				<title>Examples</title>
+				<para/>
 				<!--TODO: Need examples -->
 			</refsection>
 		
@@ -1059,6 +1062,7 @@ Updates all existing joined edges and relationships accordingly.
 		
 			<refsection>
 				<title>Examples</title>
+				<para/>
 				<!--TODO: Need examples -->
 			</refsection>
 		
@@ -1130,6 +1134,7 @@ name is invalid then an error is thrown.
 		
 			<refsection>
 				<title>Examples</title>
+				<para/>
 				<!--TODO: Need examples -->
 			</refsection>
 		
@@ -1197,6 +1202,7 @@ name is invalid then an error is thrown.
 		
 			<refsection>
 				<title>Examples</title>
+				<para/>
 				<!--TODO: Need examples -->
 			</refsection>
 		
@@ -1687,6 +1693,7 @@ ERROR:  Two or more edges found</programlisting>
 			</funcsynopsis>
 		</refsynopsisdiv>
 		<refsection>
+                <title>Description</title>
 			<para>Retrieve the id of a face that intersects a Point.</para>
 			<para>The function returns an integer (id-face) given a topology, a POINT and a tolerance. If tolerance = 0 then the point has to intersect the face.</para>
 			<para>If the point is the location of a node, then an exception is thrown. To avoid this run the GetNodeByPoint function.</para>
@@ -2682,6 +2689,7 @@ When <varname>tolerance</varname> is given it will be used to snap the input geo
 		
 			<refsection>
 				<title>Examples</title>
+				<para/>
 				<!-- TODO: -->
 			</refsection>
 		
@@ -2728,6 +2736,7 @@ When <varname>tolerance</varname> is given it will be used to snap the input geo
 		
 			<refsection>
 				<title>Examples</title>
+				<para/>
 				<!-- TODO: -->
 			</refsection>
 		
