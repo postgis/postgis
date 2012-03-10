@@ -19,6 +19,7 @@
 			<para>Andrea Peri - Lots of testing on topology, checking for correctness</para>
 			<para>Andreas Forø Tollefsen - raster testing</para>
 			<para>Chris English - topology stress testing loader functions</para>
+			<para>Salvatore Larosa - topology robustness testing</para>
 			<para>Brian Hamlin - Benchmarking 
 				(also experimental experimental branches 
 					before they are folded into core)
