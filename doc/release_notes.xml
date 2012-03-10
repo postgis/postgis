@@ -102,7 +102,11 @@
         	<title>Bug Fixes</title>
         	<para>#1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)</para>
         </simplesect>
-        <para>We also thank <ulink url="http://blog.opengeo.org/2012/02/01/it-goes-up-to-2-0/">U.S Department of State Human Information Unit (HIU)</ulink> for general monetary support to get PostGIS 2.0 out the door.</para>
+        <simplesect>
+        	<title>Release specific credits</title>
+        <para>We thank <ulink url="http://blog.opengeo.org/2012/02/01/it-goes-up-to-2-0/">U.S Department of State Human Information Unit (HIU)</ulink> and <ulink url="http://blog.cartodb.com/post/17318840209/postgis-core-committer-sandro-santilli-joins-cartodb">Vizzuality</ulink> for general monetary support to get PostGIS 2.0 out the door.</para>
+		<!-- TODO: expand this list -->
+	</simplesect>
       </sect1>
      
       <sect1>
