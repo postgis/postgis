@@ -278,20 +278,20 @@ VALUES (1,
 			<paramdef><type>boolean </type>
 			<parameter>regular_blocking</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>num_bands=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>num_bands=true</parameter>
 			</paramdef>
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>pixel_types=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>pixel_types=true</parameter>
 			</paramdef>
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>nodata_values=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>nodata_values=true</parameter>
 			</paramdef>
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>out_db=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>out_db=true</parameter>
 			</paramdef>
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>extent=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>extent=true</parameter>
 			</paramdef>
 		  </funcprototype>
 		  
@@ -335,40 +335,40 @@ VALUES (1,
 			<paramdef><type>name </type>
 			<parameter>rastcolumn</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>srid=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>srid=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>scale_x=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>scale_x=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>scale_y=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>scale_y=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>blocksize_x=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>blocksize_x=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>blocksize_y=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>blocksize_y=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>same_alignment=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>same_alignment=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>regular_blocking=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>regular_blocking=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>num_bands=true</parameter></paramdef>
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>pixel_types=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>num_bands=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>pixel_types=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>nodata_values=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>nodata_values=true</parameter>
 			</paramdef>
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>out_db=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>out_db=true</parameter>
 			</paramdef>
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>extent=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>extent=true</parameter>
 			</paramdef>
 		  </funcprototype>
 		</funcsynopsis>
@@ -492,19 +492,19 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 			<paramdef><type>boolean </type>
 			<parameter>regular_blocking</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>num_bands=true</parameter></paramdef>
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>pixel_types=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>num_bands=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>pixel_types=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>nodata_values=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>nodata_values=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>out_db=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>out_db=true</parameter>
 			</paramdef>
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>extent=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>extent=true</parameter></paramdef>
 		  </funcprototype>
 		  
 		  <funcprototype>
@@ -518,41 +518,41 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 			<paramdef><type>name </type>
 			<parameter>rastcolumn</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>srid=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>srid=true</parameter></paramdef>
 
 			<paramdef><type>boolean </type>
 			<parameter>scale_x=true</parameter></paramdef>
 
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>scale_y=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>scale_y=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>blocksize_x=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>blocksize_x=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>blocksize_y=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>blocksize_y=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>same_alignment=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>same_alignment=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>regular_blocking=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>regular_blocking=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>num_bands=true</parameter></paramdef>
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>pixel_types=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>num_bands=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>pixel_types=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>nodata_values=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>nodata_values=true</parameter></paramdef>
 			
-			<paramdef><type>boolean </type>
-				<parameter choice='opt'>out_db=true</parameter>
+			<paramdef choice='opt'><type>boolean </type>
+				<parameter>out_db=true</parameter>
 			</paramdef>
 			
-			<paramdef><type>boolean </type>
-			<parameter choice='opt'>extent=true</parameter></paramdef>
+			<paramdef choice='opt'><type>boolean </type>
+			<parameter>extent=true</parameter></paramdef>
 		  </funcprototype>
 		  
 		  <funcprototype>
