@@ -137,7 +137,9 @@
                 <varlistentry>
                     <term>-t TILE_SIZE</term>
                     <listitem>
+			<para>
                         Cut raster into tiles to be inserted one per table row.  <varname>TILE_SIZE</varname> is expressed as WIDTHxHEIGHT.
+			</para>
                     </listitem>
                 </varlistentry>
                 
@@ -247,8 +249,8 @@
         </varlistentry>
     </variablelist>  
     <para>An example session using the loader to create an input file and uploading it chunked in 100x100 tiles might look like this:</para>
-    <para><note>You can leave the schema name out e.g <varname>demelevation</varname> instead of <varname>public.demelevation</varname> and
-    the raster table will be created in the default schema of the database or user</note></para>
+    <note><para>You can leave the schema name out e.g <varname>demelevation</varname> instead of <varname>public.demelevation</varname> and
+    the raster table will be created in the default schema of the database or user</para></note>
     <programlisting>raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation > elev.sql
 psql -d gisdb -f elev.sql</programlisting>
         
@@ -382,7 +384,7 @@ Available GDAL raster formats:
     			<programlisting>CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist( ST_ConvexHull(rast) );</programlisting>
     			<para>Note the use of <xref linkend="RT_ST_ConvexHull" /> since most raster operators are based on the convex hull of the rasters.</para>
     			<note><para>Pre-2.0 versions of PostGIS raster were based on the envelop rather than the convex hull.  For teh spatial idnexes to work properly you'll need to drop those and replace with convex hull based index.</para></note></listitem>
-    		<listitem>Apply raster constraints using <xref linkend="RT_AddRasterConstraints" /></listitem>
+    		<listitem><para>Apply raster constraints using <xref linkend="RT_AddRasterConstraints" /></para></listitem>
     	</orderedlist>
     </sect2>
   </sect1>
@@ -460,8 +462,8 @@ Available GDAL raster formats:
         	<note><para>The information in <varname>raster_overviews</varname> does not duplicate the information in <varname>raster_columns</varname>.  If you need the information about an overview table present in <varname>raster_columns</varname> you can join the <varname>raster_overviews</varname> and <varname>raster_columns</varname> together to get the full set of information you need.</para> </note>
         	<para>Two main reasons for overviews are:</para>
         	 <orderedlist>
-        		<listitem>Low resolution representation of the core tables commonly used for fast mapping zoom-out.</listitem>
-        		<listitem>Computations are generally faster to do on them than their higher resolution parents because there are fewer records and each pixel covers more territory.  Though the computations are not as accurate as the high-res tables they support, they can be sufficient in many rule-of-thumb computations.</listitem>
+        		<listitem><para>Low resolution representation of the core tables commonly used for fast mapping zoom-out.</para></listitem>
+        		<listitem><para>Computations are generally faster to do on them than their higher resolution parents because there are fewer records and each pixel covers more territory.  Though the computations are not as accurate as the high-res tables they support, they can be sufficient in many rule-of-thumb computations.</para></listitem>
         	</orderedlist>
         	
         	<para>The <varname>raster_overviews</varname> catalog contains the following columns of information.</para>
