@@ -1023,7 +1023,7 @@ pretty_address
 			  <para>For Unix like systems: <varname>unzip</varname> executable which is usually already installed on most Unix like platforms.</para>
 			  <para>For Windows, 7-zip which is a free compress/uncompress tool you can download from <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> </para>
 			</listitem>
-			<listitem><filename>shp2pgsql</filename> commandline which is installed by default when you install PostGIS.</listitem>
+			<listitem><para><filename>shp2pgsql</filename> commandline which is installed by default when you install PostGIS.</para></listitem>
 			<listitem><para><filename>wget</filename> which is a web grabber tool usually installed on most Unix/Linux systems.</para>
 				<para>If you are on windows, you can get pre-compiled binaries from <ulink url="http://gnuwin32.sourceforge.net/packages/wget.htm">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> </para>
 			</listitem>
