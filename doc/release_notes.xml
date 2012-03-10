@@ -16,17 +16,19 @@
 			<para>Below are those who have been most valiant, provided very detailed
 			and thorough bug reports,
 			and detailed analysis.</para>
-			<para>Andrea Peri - Lots of testing on topology, checking for correctness</para>
-			<para>Andreas Forø Tollefsen - raster testing</para>
-			<para>Chris English - topology stress testing loader functions</para>
-			<para>Salvatore Larosa - topology robustness testing</para>
-			<para>Brian Hamlin - Benchmarking 
+<simplelist>
+			<member>Andrea Peri - Lots of testing on topology, checking for correctness</member>
+			<member>Andreas Forø Tollefsen - raster testing</member>
+			<member>Chris English - topology stress testing loader functions</member>
+			<member>Salvatore Larosa - topology robustness testing</member>
+			<member>Brian Hamlin - Benchmarking 
 				(also experimental experimental branches 
 					before they are folded into core)
 				, general testing of various pieces 
-			   including Tiger and Topology. Testing on various server VMs</para>
-			<para>Mike Pease -  Tiger geocoder testing - very detailed reports of issues</para>
-			<para>Tom van Tilburg - raster testing</para>
+			   including Tiger and Topology. Testing on various server VMs</member>
+			<member>Mike Pease -  Tiger geocoder testing - very detailed reports of issues</member>
+			<member>Tom van Tilburg - raster testing</member>
+</simplelist>
         </simplesect>
         <simplesect>
         	<title>Important / Breaking Changes</title>
