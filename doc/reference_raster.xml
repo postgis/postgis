@@ -2949,7 +2949,7 @@ FROM (SELECT ST_PixelAsPolygons(
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef><type choice='opt'>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
@@ -3546,7 +3546,7 @@ WHERE rid = 2;
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-						<paramdef><type choice='opt'>integer </type> <parameter>srid=same_as_rast</parameter></paramdef>
+						<paramdef choice='opt'><type>integer </type> <parameter>srid=same_as_rast</parameter></paramdef>
 						<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
 						<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
 						<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
