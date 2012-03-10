@@ -210,6 +210,7 @@ Norman Vine,
 Rafal Magda,
 Ralph Mason,
 Richard Greenwood,
+Silvio Grosso,
 Steffen Macke,
 Stephen Frost,
 Tom van Tilburg,
@@ -224,35 +225,38 @@ Vincent Picavet
 		<listitem>
 		  <para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project</para>
 		  <para>In alphabetical order:
-Arrival 3D
-AusVet
-Azavea
-Cadcorp
-CampToCamp
-City of Boston (DND)
-Clever Elephant Solutions
-Cooperativa Alveo
-Deimos Space
-Faunalia
-Geographic Data BC
-Hunter Systems Group
-Lidwala Consulting Engineers
-LisaSoft
-Logical Tracking &amp; Tracing International AG
-Michigan Tech Research Institute
-OpenGeo
-OSGeo
-Oslandia
-Paragon Corporation
-R3 GIS
-Refractions Research
-Regione Toscana-SIGTA
-Safe Software
-Sirius Corporation plc
-Stadt Uster,UC Davis Center for Vectorborne Diseases
-University of Laval
-U.S Department of State (HIU)
-Vizzuality
+Arrival 3D,
+Associazione Italiana per l'Informazione Geografica Libera (GFOSS.it),
+AusVet,
+Azavea,
+Cadcorp,
+CampToCamp,
+City of Boston (DND),
+Clever Elephant Solutions,
+Cooperativa Alveo,
+Deimos Space,
+Faunalia,
+Geographic Data BC,
+Hunter Systems Group,
+Lidwala Consulting Engineers,
+LisaSoft,
+Logical Tracking &amp; Tracing International AG,
+Michigan Tech Research Institute,
+Norwegian Forest and Landscape Institute,
+OpenGeo,
+OSGeo,
+Oslandia,
+Paragon Corporation,
+R3 GIS,,
+Refractions Research,
+Regione Toscana-SIGTA,
+Safe Software,
+Sirius Corporation plc,
+Stadt Uster,
+UC Davis Center for Vectorborne Diseases,
+University of Laval,
+U.S Department of State (HIU),
+Vizzuality,
 Zonar Systems
 		  </para>
 		</listitem>
