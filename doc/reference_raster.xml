@@ -4292,7 +4292,7 @@ rid | exclude_nodata | include_nodata
 				<title>Description</title>
 				
 				<para>Returns set of <varname>histogram</varname> records consisting of min,max, count, percent for a given raster band for each bin. If no band is specified <varname>nband</varname> defaults to 1. </para> 
-				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels</para>.</note>
+				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels.</para></note>
 				
 				<variablelist>
                     <varlistentry>
@@ -4626,7 +4626,10 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Count" />,  <para><xref linkend="summarystats" /></para></para>
+				<para>
+<xref linkend="RT_ST_Count" />,
+<xref linkend="summarystats" />
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -4923,10 +4926,20 @@ FROM dummy_rast WHERE rid=1;
 				<para>Returns the raster tile in the designated format. Arguments are itemized below:</para>
                 <itemizedlist>
                     <listitem>
+			<para>
                        <varname>format</varname> format to output.  This is dependent on the drivers compiled in your libgdal library.  Generally available are 'JPEG', 'GTIff', 'PNG'. Use <xref linkend="RT_ST_GDALDrivers" /> to get a list of formats supported by your library.
+			</para>
                     </listitem>
-                   <listitem><varname>options</varname> text array of GDAL options. Valid options are dependent on the format. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.</listitem>
-                   <listitem><varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to embed in the image</listitem>
+                   <listitem>
+			<para>
+			<varname>options</varname> text array of GDAL options. Valid options are dependent on the format. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
+			</para>
+                   </listitem>
+                   <listitem>
+			<para>
+			<varname>srs</varname> The proj4text or srtext (from spatial_ref_sys) to embed in the image
+			</para>
+                   </listitem>
                 </itemizedlist>
                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 			</refsection>
@@ -5011,13 +5024,32 @@ FROM dummy_rast WHERE rid=2;
 				<para>Returns the selected bands of the raster as a single  Joint Photographic Exports Group Image (JPEG).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. If no band is specified and 1 or more than 3 bands, then only the first band is used.  If 3 bands then all 3 bands are used.  There are many variants of the function with many options. These are itemized below:</para>
                 <itemizedlist>
                     <listitem>
+                      <para>
                        <varname>nband</varname> is for single band exports.
+                      </para>
                     </listitem>
                     <listitem>
+                      <para>
                         <varname>nbands</varname> is an array of bands to export (note that max is 3 for JPEG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
+                      </para>
                     </listitem>
-                   <listitem><varname>quality</varname> number from 0 to 100.  The higher the number the crisper the image.</listitem>
-                   <listitem><varname>options</varname> text Array of GDAL options as defined for JPEG (look at create_options for JPEG <xref linkend="RT_ST_GDALDrivers" />). For JPEG valid ones are <varname>PROGRESSIVE</varname> ON or OFF and <varname>QUALITY</varname> a range from 0 to 100 and default to 75. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
+                   <listitem>
+                      <para>
+                        <varname>quality</varname> number from 0 to 100.  The higher the number the crisper the image.
+                      </para>
+                   </listitem>
+                   <listitem>
+                      <para>
+                        <varname>options</varname> text Array
+                        of GDAL options as defined for JPEG
+                        (look at create_options for JPEG <xref
+                        linkend="RT_ST_GDALDrivers" />). For JPEG
+                        valid ones are <varname>PROGRESSIVE</varname>
+                        ON or OFF and <varname>QUALITY</varname> a range
+                        from 0 to 100 and default to 75. Refer to <ulink
+                        url="http://www.gdal.org/frmt_various.html">GDAL
+                        Raster format options</ulink> for more details.
+                      </para>
                    </listitem>
                 </itemizedlist>
                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
@@ -5093,14 +5125,33 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 				<para>Returns the selected bands of the raster as a single Portable Network Graphics Image (PNG).  Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. If no band is specified, then the first 3 bands are exported.  There are many variants of the function with many options. If no <varname>srid</varname> is specified then then srid of the raster is used.  These are itemized below:</para>
                 <itemizedlist>
                     <listitem>
+                      <para>
                        <varname>nband</varname> is for single band exports.
+                      </para>
                     </listitem>
                     <listitem>
+                      <para>
                         <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
+                      </para>
                     </listitem>
-                   <listitem><varname>compression</varname> number from 1 to 9.  The higher the number the greater the compression.</listitem>
-                   <listitem><varname>options</varname> text Array of GDAL options as defined for PNG (look at create_options for PNG of <xref linkend="RT_ST_GDALDrivers" />). For PNG valid one is only ZLEVEL (amount of time to spend on compression -- default 6) e.g. ARRAY['ZLEVEL=9']. 
-                    WORLDFILE is not allowed since the function would have to output two outputs. Refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
+                   <listitem>
+                      <para>
+                        <varname>compression</varname> number from 1 to 9.  The higher the number the greater the compression.
+                      </para>
+                   </listitem>
+                   <listitem>
+                      <para>
+                        <varname>options</varname> text Array of GDAL
+                        options as defined for PNG (look at create_options
+                        for PNG of <xref linkend="RT_ST_GDALDrivers"
+                        />). For PNG valid one is only ZLEVEL (amount
+                        of time to spend on compression -- default 6)
+                        e.g. ARRAY['ZLEVEL=9'].
+                        WORLDFILE is not allowed since the function
+                        would have to output two outputs. Refer to <ulink
+                        url="http://www.gdal.org/frmt_various.html">GDAL
+                        Raster format options</ulink> for more details.
+                      </para>
                    </listitem>
                 </itemizedlist>
                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
@@ -5169,11 +5220,25 @@ FROM dummy_rast WHERE rid=2;
 				<para>Returns the selected bands of the raster as a single Tagged Image File Format (TIFF). If no band is specified, will try to use all bands. This is a wrapper around <xref linkend="RT_ST_AsGDALRaster" />. Use <xref linkend="RT_ST_AsGDALRaster" /> if you need to export as less common raster types. There are many variants of the function with many options.  If no spatial reference SRS text is present, the spatial reference of the raster is used. These are itemized below:</para>
                 <itemizedlist>
                     <listitem>
+                      <para>
                         <varname>nbands</varname> is an array of bands to export (note that max is 3 for PNG) and the order of the bands is RGB. e.g ARRAY[3,2,1] means map band 3 to Red, band 2 to green and band 1 to blue
+                      </para>
                     </listitem>
-                   <listitem><varname>compression</varname> Compression expression -- JPEG90 (or some other percent), LZW, JPEG, DEFLATE9.</listitem>
-                   <listitem><varname>options</varname> text Array of GDAL create options as defined for GTiff (look at create_options for GTiff of <xref linkend="RT_ST_GDALDrivers" />). or refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details. </listitem>
-                   <listitem><varname>srid</varname> srid of spatial_ref_sys of the raster. This is used to populate the georeference information </listitem>
+                   <listitem>
+                      <para>
+<varname>compression</varname> Compression expression -- JPEG90 (or some other percent), LZW, JPEG, DEFLATE9.
+                      </para>
+                   </listitem>
+                   <listitem>
+                      <para>
+<varname>options</varname> text Array of GDAL create options as defined for GTiff (look at create_options for GTiff of <xref linkend="RT_ST_GDALDrivers" />). or refer to <ulink url="http://www.gdal.org/frmt_various.html">GDAL Raster format options</ulink> for more details.
+                      </para>
+                   </listitem>
+                   <listitem>
+                      <para>
+<varname>srid</varname> srid of spatial_ref_sys of the raster. This is used to populate the georeference information
+                      </para>
+                   </listitem>
                 </itemizedlist>
                 <para>Availability: 2.0.0 - requires GDAL &gt;= 1.6.0. </para>
 			</refsection>
