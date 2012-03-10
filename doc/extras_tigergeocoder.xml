@@ -29,8 +29,10 @@ until release.
 			<para>The geocoder should be simple for anyone familiar with PostGIS to install and use, and should be easily installable and usable on all platforms supported by PostGIS.</para>
 			<para>It should be robust enough to function properly despite formatting and spelling errors.</para>
 			<para>It should be extensible enough to be used with future data updates, or alternate data sources with a minimum of coding changes.</para>
-		</abstract>
+			<para>
 		<note><para>The <varname>tiger</varname> schema must be added to the database search path for the functions to work properly.</para></note>
+			</para>
+		</abstract>
      </sect1info>
      
      <para>There is another geocoder for PostGIS gaining in popularity and more suitable for international use.  It is called <ulink url="http://wiki.openstreetmap.org/wiki/Nominatim">Nominatim</ulink>
