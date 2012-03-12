@@ -622,5 +622,11 @@ SELECT '#1596.7', srid FROM geometry_columns
   WHERE f_table_name = 'road_pg' AND f_geometry_column = 'roads_geom';
 DROP TABLE road_pg;
 
+-- #1596
+WITH inp AS ( SELECT
+ 'POLYGON((-176 -22,-176 -21,-175 -21,-175 -22,-176 -22))'::geography as a,
+ 'POINT(-176 -22)'::geography as p
+) SELECT '#1596', ST_Summary(ST_Intersection(a,p)) FROM inp;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

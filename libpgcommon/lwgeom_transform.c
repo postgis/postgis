@@ -417,16 +417,16 @@ static char* GetProj4String(int srid)
 	else
 	{
 		char *proj_str = palloc(maxproj4len);
-		int id = abs(srid);
+		int id = srid;
 		/* UTM North */
 		if ( id >= SRID_NORTH_UTM_START && id <= SRID_NORTH_UTM_END )
 		{
-			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_NORTH_UTM_START);
+			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_NORTH_UTM_START + 1);
 		}
 		/* UTM South */
 		else if ( id >= SRID_SOUTH_UTM_START && id <= SRID_SOUTH_UTM_END )
 		{
-			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_SOUTH_UTM_START);
+			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_SOUTH_UTM_START + 1);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
 		else if ( id == SRID_SOUTH_LAMBERT )
