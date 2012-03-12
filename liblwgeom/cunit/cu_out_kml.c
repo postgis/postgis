@@ -77,6 +77,12 @@ static void do_kml_test_prefix(char * in, char * out, int precision, const char 
 
 static void out_kml_test_precision(void)
 {
+	/* huge data */
+	do_kml_test(
+	    "POINT(1E300 -1E300)",
+	    "<Point><coordinates>1e+300,-1e+300</coordinates></Point>",
+	    0);
+
 	/* 0 precision, i.e a round */
 	do_kml_test(
 	    "POINT(1.1111111111111 1.1111111111111)",
@@ -94,12 +100,6 @@ static void out_kml_test_precision(void)
 	    "POINT(1.2345678901234 1.2345678901234)",
 	    "<Point><coordinates>1.23456789,1.23456789</coordinates></Point>",
 	    8);
-
-	/* huge data */
-	do_kml_test(
-	    "POINT(1E300 -1E300)",
-	    "<Point><coordinates>1e+300,-1e+300</coordinates></Point>",
-	    0);
 }
 
 

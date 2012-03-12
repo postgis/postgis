@@ -28,7 +28,7 @@ lwgeom_geos_error(const char *fmt, ...)
 	va_start(ap, fmt);
 
 	/* Call the supplied function */
-	if ( LWGEOM_GEOS_ERRMSG_MAXSIZE-1 < vsnprintf(lwgeom_geos_errmsg, LWGEOM_GEOS_ERRMSG_MAXSIZE-1, fmt, ap) )
+	if ( LWGEOM_GEOS_ERRMSG_MAXSIZE-1 < lw_vsnprintf(lwgeom_geos_errmsg, LWGEOM_GEOS_ERRMSG_MAXSIZE-1, fmt, ap) )
 	{
 		lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE-1] = '\0';
 	}

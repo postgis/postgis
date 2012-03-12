@@ -32,6 +32,25 @@
 
 
 /**
+* SNPRINTF Compatibility Functions
+*/
+#if HAVE_STDARG_H
+#include <stdarg.h>
+#if !HAVE_VSNPRINTF
+int rpl_vsnprintf(char *, size_t, const char *, va_list);
+#endif
+#if !HAVE_SNPRINTF
+int rpl_snprintf(char *, size_t, const char *, ...);
+#endif
+#if !HAVE_VASPRINTF
+int rpl_vasprintf(char **, const char *, va_list);
+#endif
+#if !HAVE_ASPRINTF
+int rpl_asprintf(char **, const char *, ...);
+#endif
+#endif	/* HAVE_STDARG_H */
+
+/**
 * PI
 */
 #define PI 3.1415926535897932384626433832795

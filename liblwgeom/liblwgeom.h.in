@@ -227,7 +227,19 @@ void default_freeor(void *ptr);
 void default_errorreporter(const char *fmt, va_list ap);
 void default_noticereporter(const char *fmt, va_list ap);
 
-extern int lw_vasprintf (char **result, const char *format, va_list args);
+extern int lw_vasprintf(char **result, const char *format, va_list ap);
+extern int lw_vsnprintf(char *s, size_t n, const char *format, va_list ap);
+
+extern int lw_snprintf
+#if __STDC__
+(char *s, size_t n, const char *format, ...);
+#else
+(result, n, va_alist);
+char *result;
+size_t n;
+va_dcl
+#endif
+
 extern int lw_asprintf
 #if __STDC__
 (char **result, const char *format, ...);
@@ -236,6 +248,7 @@ extern int lw_asprintf
 char **result;
 va_dcl
 #endif
+
 
 
 /******************************************************************/
