@@ -131,4 +131,4 @@ CU_TestInfo misc_tests[] =
 	PG_TEST(test_misc_wkb),
 	CU_TEST_INFO_NULL
 };
-CU_SuiteInfo misc_suite = {"Misc Suite", NULL, NULL, misc_tests };
+CU_SuiteInfo misc_suite = {"misc", NULL, NULL, misc_tests };
