@@ -2148,7 +2148,6 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(
 	band int[],
 	OUT bandnum int,
 	OUT pixeltype text,
-	OUT hasnodata boolean,
 	OUT nodatavalue double precision,
 	OUT isoutdb boolean,
 	OUT path text
@@ -2160,12 +2159,11 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(
 	rast raster,
 	band int DEFAULT 1,
 	OUT pixeltype text,
-	OUT hasnodata boolean,
 	OUT nodatavalue double precision,
 	OUT isoutdb boolean,
 	OUT path text
 )
-	AS $$ SELECT pixeltype, hasnodata, nodatavalue, isoutdb, path FROM st_bandmetadata($1, ARRAY[$2]::int[]) LIMIT 1 $$
+	AS $$ SELECT pixeltype, nodatavalue, isoutdb, path FROM st_bandmetadata($1, ARRAY[$2]::int[]) LIMIT 1 $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
@@ -3097,7 +3095,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 	BEGIN
 		convexhull := ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
-			SELECT bmd.hasnodata INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
+			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
 		END IF;
 
 		IF ST_Intersects(geom, convexhull) IS NOT TRUE THEN
@@ -4163,7 +4161,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_nodata_values(rastschema name
 
 CREATE OR REPLACE FUNCTION _raster_constraint_nodata_values(rast raster)
 	RETURNS double precision[] AS
-	$$ SELECT array_agg(CASE WHEN hasnodata IS TRUE THEN nodatavalue ELSE NULL END)::double precision[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
+	$$ SELECT array_agg(nodatavalue)::double precision[] FROM st_bandmetadata($1, ARRAY[]::int[]); $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _add_raster_constraint_nodata_values(rastschema name, rasttable name, rastcolumn name)

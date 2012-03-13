@@ -35,7 +35,15 @@ CREATE OR REPLACE FUNCTION make_test_raster(
 
 SELECT
 	pixeltype,
-	hasnodata,
+	round(nodatavalue::numeric, 3),
+	isoutdb,
+	path
+FROM ST_BandMetaData(
+	ST_SetBandNoDataValue(make_test_raster(10, 10, 0, 0, 0, 0), NULL)
+);
+
+SELECT
+	pixeltype,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path
@@ -45,7 +53,6 @@ FROM ST_BandMetaData(
 
 SELECT
 	pixeltype,
-	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path
@@ -56,7 +63,6 @@ FROM ST_BandMetaData(
 
 SELECT
 	pixeltype,
-	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path
@@ -67,7 +73,6 @@ FROM ST_BandMetaData(
 
 SELECT
 	pixeltype,
-	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path
@@ -78,7 +83,6 @@ FROM ST_BandMetaData(
 
 SELECT
 	pixeltype,
-	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path
@@ -90,7 +94,6 @@ FROM ST_BandMetaData(
 SELECT
 	bandnum
 	pixeltype,
-	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path
@@ -102,7 +105,6 @@ FROM ST_BandMetaData(
 SELECT
 	bandnum
 	pixeltype,
-	hasnodata,
 	round(nodatavalue::numeric, 3),
 	isoutdb,
 	path

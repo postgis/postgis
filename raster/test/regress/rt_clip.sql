@@ -110,7 +110,6 @@ SELECT	tid,
 	srid,
 	numbands,
 	pixeltype,
-	hasnodata,
 	round(nodatavalue::numeric, 3) AS nodatavalue
 FROM (
 	SELECT  tid,

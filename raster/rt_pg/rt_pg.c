@@ -8113,7 +8113,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	struct bandmetadata *bmd2 = NULL;
 
 	bool *nulls = NULL;
-	int values_length = 6;
+	int values_length = 5;
 	Datum values[values_length];
 	HeapTuple tuple;
 	Datum result;
@@ -8323,13 +8323,17 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 		values[0] = UInt32GetDatum(bmd2[call_cntr].bandnum);
 		values[1] = CStringGetTextDatum(bmd2[call_cntr].pixeltype);
-		values[2] = BoolGetDatum(bmd2[call_cntr].hasnodata);
-		values[3] = Float8GetDatum(bmd2[call_cntr].nodataval);
-		values[4] = BoolGetDatum(bmd2[call_cntr].isoutdb);
-		if (bmd2[call_cntr].bandpath && strlen(bmd2[call_cntr].bandpath))
-			values[5] = CStringGetTextDatum(bmd2[call_cntr].bandpath);
+
+		if (bmd2[call_cntr].hasnodata)
+			values[2] = Float8GetDatum(bmd2[call_cntr].nodataval);
 		else
-			nulls[5] = TRUE;
+			nulls[2] = TRUE;
+
+		values[3] = BoolGetDatum(bmd2[call_cntr].isoutdb);
+		if (bmd2[call_cntr].bandpath && strlen(bmd2[call_cntr].bandpath))
+			values[4] = CStringGetTextDatum(bmd2[call_cntr].bandpath);
+		else
+			nulls[4] = TRUE;
 
 		/* build a tuple */
 		tuple = heap_form_tuple(tupdesc, values, nulls);

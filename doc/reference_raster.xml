@@ -957,10 +957,10 @@ SELECT  (bmd).*
 FROM (SELECT ST_BandMetaData(rast,generate_series(1,2)) As bmd 
     FROM dummy_rast WHERE rid = 10) AS foo;
  --result --   
- pixeltype | hasnodata      | nodatavalue | isoutdb | path
+ pixeltype | nodatavalue | isoutdb | path
 -----------+----------------+-------------+---------+------
- 1BB       | f              |           0 | f       |
- 4BUI      | f              |           0 | f       |
+ 1BB       |             | f       |
+ 4BUI      |             | f       |
  
  
 -- output meta data of raster -
@@ -2477,11 +2477,16 @@ t          |
 				<title>Description</title>
 				
 				<para>Returns basic meta data about a raster band. Columns returned
-					 pixeltype | hasnodata | nodatavalue | isoutdb | path.
+					 pixeltype | nodatavalue | isoutdb | path.
 				</para>
 				<note>
                                   <para>
 					If raster contains no bands then an error is thrown.
+                                  </para>
+				</note>
+				<note>
+                                  <para>
+					If band has no NODATA value, nodatavalue will be NULL.
                                   </para>
 				</note>
 			</refsection>
@@ -2493,9 +2498,9 @@ t          |
  FROM (SELECT rid, ST_BandMetaData(rast,1) As md
 FROM dummy_rast WHERE rid=2) As foo;
 
- rid | pixeltype | hasnodata | nodatavalue | isoutdb | path
+ rid | pixeltype | nodatavalue | isoutdb | path
 -----+-----------+----------------+-------------+---------+------
-   2 | 8BUI      | t              |           0 | f       |
+   2 | 8BUI      |           0 | f       |
 				</programlisting>	
 			</refsection>
 		

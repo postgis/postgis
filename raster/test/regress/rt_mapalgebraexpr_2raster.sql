@@ -253,7 +253,6 @@ SELECT
 	srid,
 	numbands,
 	pixeltype,
-	hasnodata,
 	round(nodatavalue::numeric, 3) AS nodatavalue,
 	round(firstvalue::numeric, 3) AS firstvalue,
 	round(lastvalue::numeric, 3) AS lastvalue
