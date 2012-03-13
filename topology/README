@@ -11,7 +11,7 @@ You need xfig (http://epb.lbl.gov/xfig/).
 All routines, types and other management objects are stored in the
 "topology" SCHEMA.
 
-Comments welcome --strk(2011-10-04);
+Comments welcome --strk(2012-03-13);
 
 =Requirements
 
@@ -43,9 +43,14 @@ To enable topology support:
 	
 To uninstall:
 
-	psql -c 'drop schema topology cascade'
+	$ psql -c 'drop schema topology cascade'
 
-Upgrading currently requires uninstall.
+To upgrade between minor releases:
+
+	$ psql -f topology_upgrade_<version>_minor.sql <your_postgis_enabled_db>
+
+Major releases upgrades should follow the "HARD UPGRADE" procedure
+described in main postgis manual.
 
 =Usage
 
