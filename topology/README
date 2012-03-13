@@ -170,13 +170,26 @@ For Hierarchical TopoGeometry objects this would be:
 
 	{{child_layer_id, topogeoemtry_id}, ...}
 
+==Converting Geometry to TopoGeometry while populating the topology
+
+You can import a Geometry into an existing topology and at the same
+time get its topological definition (its TopoGeometry equivalent)
+using the toTopoGeom function:
+
+    topology.toTopoGeom(
+
+        geometry, -- the simple geometry
+
+        topology_name,
+
+        layer_id -- as returned by AddTopoGeometryColumn
+    );
+
 ==Getting simple Geometry values from TopoGeometry objects
 
-You currently need to explicit call the TopoGeometry=>Geometry
-cast function. This will probably be made implicit when the
-code is more tested:
-
-	SELECT topology.Geometry(TopoGeometry);
+TopoGeometry to Geometry casting is implicit, so any function accepting
+a Geometry would transparently also accept a TopoGeometry. Some functions
+may be optimized for TopoGeometry.
 
 =Issues
 
