@@ -334,3 +334,8 @@ PostGIS Raster support
 
 See README.raster to know how to enable raster support on a spatially enabled
 database.
+
+PostGIS Topology support
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+See topology/README for more informations about topology support.
