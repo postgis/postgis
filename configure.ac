@@ -14,6 +14,7 @@ AC_INIT()
 AC_CONFIG_HEADERS([postgis_config.h])
 AC_CONFIG_MACRO_DIR([macros])
 
+
 dnl Invoke libtool: we do this as it is the easiest way to find the PIC
 dnl flags required to build liblwgeom
 AC_PROG_LIBTOOL
@@ -26,35 +27,6 @@ AC_PROG_CPP
 AC_PROG_CXX
 AC_PATH_PROG([ANT], [ant], [])
 AC_SUBST([ANT])
-
-dnl
-dnl Types
-dnl
-AC_TYPE_LONG_LONG_INT
-AC_TYPE_LONG_DOUBLE
-AC_TYPE_UNSIGNED_LONG_LONG_INT
-AC_TYPE_INTMAX_T 
-AC_TYPE_UINTMAX_T
-AC_TYPE_UINTPTR_T 
-
-dnl
-dnl Functions
-dnl
-HW_FUNC_VA_COPY
-HW_FUNC___VA_COPY
-HW_FUNC_VSNPRINTF
-HW_FUNC_SNPRINTF
-HW_FUNC_VASPRINTF
-HW_FUNC_ASPRINTF
-AC_FUNC_FSEEKO
-
-dnl
-dnl Check for platform-specific functions
-dnl
-dnl AC_CHECK_FUNC(vasprintf, [HAVE_VASPRINTF=1], [HAVE_VASPRINTF=0])
-dnl AC_DEFINE([HAVE_VASPRINTF])
-dnl AC_CHECK_FUNC(asprintf, [HAVE_ASPRINTF=1], [HAVE_ASPRINTF=0])
-dnl AC_DEFINE([HAVE_ASPRINTF])
 
 dnl
 dnl Define PIC flags in PICFLAGS (note: this variable is set as part of libtool initialisation above)
@@ -101,6 +73,7 @@ AC_SUBST([POSTGIS_MICRO_VERSION])
 dnl
 dnl Search for flex/bison to build the parser
 dnl
+
 AC_PROG_LEX
 AC_PROG_YACC
 AC_SUBST([LEX])
@@ -113,6 +86,16 @@ AC_CHECK_HEADER([ieeefp.h], [HAVE_IEEEFP_H=1], [HAVE_IEEEFP_H=0])
 AC_DEFINE_UNQUOTED([HAVE_IEEEFP_H], [$HAVE_IEEEFP_H], [ieeefp.h header])
 AC_CHECK_HEADER([termios.h], [HAVE_TERMIOS_H=1], [HAVE_TERMIOS_H=0])
 AC_DEFINE_UNQUOTED([HAVE_TERMIOS_H], [$HAVE_TERMIOS_H], [termios.h header])
+
+
+dnl
+dnl Check for platform-specific functions
+dnl
+AC_CHECK_FUNC(vasprintf, [HAVE_VASPRINTF=1], [HAVE_VASPRINTF=0])
+AC_DEFINE([HAVE_VASPRINTF])
+AC_CHECK_FUNC(asprintf, [HAVE_ASPRINTF=1], [HAVE_ASPRINTF=0])
+AC_DEFINE([HAVE_ASPRINTF])
+AC_FUNC_FSEEKO()
 
 dnl 
 dnl MingW requires use of pwd -W to give proper Windows (not MingW) paths 

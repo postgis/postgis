@@ -201,10 +201,15 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 	int len = 0; /* Length of the output */
 	va_list ap2;
 
-	/* Print to our buffer, using a copy of the variadic arguments, in case we need to print twice*/
+	/* Make a copy of the variadic arguments, in case we need to print twice */
+	/* Print to our buffer */
 	va_copy(ap2, ap);
-	len = lw_vsnprintf(s->str_end, maxlen, fmt, ap2);
+	len = vsnprintf(s->str_end, maxlen, fmt, ap2);
 	va_end(ap2);
+
+	/* Propogate errors up */
+	if ( len < 0 ) 
+		return len;
 
 	/* We didn't have enough space! */
 	/* Either Unix vsnprint returned write length larger than our buffer */
@@ -215,7 +220,7 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 		maxlen = (s->capacity - (s->str_end - s->str_start));
 
 		/* Try to print a second time */
-		len = lw_vsnprintf(s->str_end, maxlen, fmt, ap);
+		len = vsnprintf(s->str_end, maxlen, fmt, ap);
 
 		/* Printing error? Error! */
 		if ( len < 0 ) return len;

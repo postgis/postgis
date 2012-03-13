@@ -17,34 +17,14 @@
    the CoreFoundation framework. */
 #undef HAVE_CFPREFERENCESCOPYAPPVALUE
 
+/* Define if the GNU dcgettext() function is already present or preinstalled.
+   */
+#undef HAVE_DCGETTEXT
+
 /* Define for some functions we are interested in */
-#undef HAVE_FSEEKO
-#undef HAVE_VSNPRINTF
-#undef HAVE_SNPRINTF
 #undef HAVE_VASPRINTF
 #undef HAVE_ASPRINTF
-#undef HAVE_STDARG_H
-#undef HAVE_STDDEF_H
-#undef HAVE_STDINT_H
-#undef HAVE_STDLIB_H
-#undef HAVE_INTTYPES_H
-#undef HAVE_LOCALE_H
-#undef HAVE_LOCALECONV
-#undef HAVE_LCONV_DECIMAL_POINT
-#undef HAVE_LCONV_THOUSANDS_SEP
-#undef HAVE_LONG_DOUBLE
-#undef HAVE_LONG_LONG_INT
-#undef HAVE_UNSIGNED_LONG_LONG_INT
-#undef HAVE_INTMAX_T
-#undef HAVE_UINTMAX_T
-#undef HAVE_UINTPTR_T
-#undef HAVE_PTRDIFF_T
-#undef HAVE_VA_COPY
-#undef HAVE___VA_COPY
-
-/* Define if the GNU dcgettext() function is already present or
-   preinstalled. */
-#undef HAVE_DCGETTEXT
+#undef HAVE_FSEEKO
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H

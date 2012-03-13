@@ -68,7 +68,6 @@ SA_OBJS = \
 	lwsegmentize.o \
 	lwlinearreferencing.o \
 	lwprint.o \
-	snprintf.o \
 	vsprintf.o \
 	g_box.o \
 	g_serialized.o \
@@ -87,8 +86,6 @@ SA_OBJS = \
 	lwgeom_geos_node.o \
 	lwgeom_geos_split.o \
 	lwgeom_transform.o
-
-
 
 NM_OBJS = \
 	lwspheroid.o 

@@ -10194,7 +10194,7 @@ rt_pg_error(const char *fmt, va_list ap)
 
     char errmsg[ERRMSG_MAXLEN+1];
 
-    lw_vsnprintf (errmsg, ERRMSG_MAXLEN, fmt, ap);
+    vsnprintf (errmsg, ERRMSG_MAXLEN, fmt, ap);
 
     errmsg[ERRMSG_MAXLEN]='\0';
     ereport(ERROR, (errmsg_internal("%s", errmsg)));
