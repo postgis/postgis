@@ -2421,22 +2421,25 @@ main(int argc, char **argv) {
 
 			/* schema.table */
 			if (ptr) {
-				config->schema = rtalloc(sizeof(char) * (strlen(config->rt_file[config->rt_file_count - 1]) + 1));
+				config->schema = rtalloc(sizeof(char) * (ptr - config->rt_file[config->rt_file_count - 1] + 1));
 				if (config->schema == NULL) {
 					rterror(_("Could not allocate memory for storing schema name"));
 					rtdealloc_config(config);
 					exit(1);
 				}
 				snprintf(config->schema, ptr - config->rt_file[config->rt_file_count - 1] + 1, "%s", config->rt_file[config->rt_file_count - 1]);
+				config->schema[ptr - config->rt_file[config->rt_file_count - 1]] = '\0';
 
-				config->table = rtalloc(sizeof(char) * strlen(config->rt_file[config->rt_file_count - 1]));
+				config->table = rtalloc(sizeof(char) * (strlen(config->rt_file[config->rt_file_count - 1]) - strlen(config->schema) + 1));
 				if (config->table == NULL) {
 					rterror(_("Could not allocate memory for storing table name"));
 					rtdealloc_config(config);
 					exit(1);
 				}
 				snprintf(config->table, strlen(config->rt_file[config->rt_file_count - 1]) - strlen(config->schema), "%s", ptr + 1);
+				config->table[strlen(config->rt_file[config->rt_file_count - 1]) - strlen(config->schema)] = '\0';
 			}
+			/* table */
 			else {
 				config->table = rtalloc(sizeof(char) * strlen(config->rt_file[config->rt_file_count - 1]) + 1);
 				if (config->table == NULL) {
