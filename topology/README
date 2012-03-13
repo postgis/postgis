@@ -230,17 +230,3 @@ In addition to the constraints defined in SQL/MM specification,
 this implementation adds constraints to enforce Node and Edge
 geometry types to be 'POINT' and 'LINESTRING' respectively.
 
-===SRID constraint
-
-One of the things that the ValidateTopology is required to
-check is SRID consistency: all geometry value must be in
-the same SRID. I avoided that check as any SRID mismatch
-would be cought by spatial predicates and will result
-in an exception being thrown.
-
-We might add the check as a constraint on the topology tables
-instead, possibly dropping the SRID after checking it. This
-would reduce database, while topology SRID could be re-attached
-to any output geometry reading it from the topology.topology
-metadata table.
-
