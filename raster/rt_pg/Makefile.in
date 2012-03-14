@@ -92,7 +92,7 @@ $(SQL_OBJS): %.in: %.in.c
 	$(CPP) -I../../postgis/ -I../../ -traditional-cpp $< | grep -v '^#' > $@
 
 # SQL objects deps here
-$(SQL_OBJS): ../../postgis/sqldefines.h
+$(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
 
 #remove all create object types since these can't be done cleanly in an upgrade
 rtpostgis_upgrade.sql: rtpostgis.sql
