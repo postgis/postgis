@@ -6376,10 +6376,10 @@ FROM prunion;</programlisting>
   </tgroup>
 </informaltable>
 </refsection>
-
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsRaster" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" /></para>
+				<para><xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_AsPNG" />, <xref linkend="RT_ST_AsRaster" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_GeoReference" />,  <xref linkend="RT_ST_Value" />
+				, <xref linkend="RT_ST_Union" />,  <xref linkend="ST_Union" /></para>
 			</refsection>
 		</refentry>
 
@@ -7212,6 +7212,9 @@ UPDATE wind
 				
 				<note><para>There are several other variants of this function not installed by default in PostGIS 2.0.0 -- these can be found in the raster/scripts/plpgsql/st_union.sql file of postgis source code.</para>
 				</note>
+				<note><para>The ST_Union function in 2.0.0 is currently implemented predominantly in plpgsql.  Because of the memory copying needed to copy between the C and plpgsql layer, this function is much much slower than it needs to be.
+				Future 2.0 releases will have this function implemented in C, so you should witness significant improvements in speed when that happens.  As a general rule of thumb you want to minimize the size of the rasters, that ST_Union works with.
+				One approach is to clip first and then union the clipped versions.  Refer to select parcels example in  <xref linkend="RT_ST_MapAlgebraExpr2" />.  That example if unioning is done before clipping takes about 4 times longer. With the higher res imagery the timing the ratio between is even higher.</para></note>
 				<para>Availability: 2.0.0 </para>
 			</refsection>
 				
@@ -7235,7 +7238,7 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Envelope" />, <xref linkend="RT_ST_ConvexHull" /></para>
+				<para><xref linkend="RT_ST_Envelope" />, <xref linkend="RT_ST_ConvexHull" />, , <xref linkend="RT_ST_MapAlgebraExpr2" /></para>
 			</refsection>
 		</refentry>
     </sect1>
