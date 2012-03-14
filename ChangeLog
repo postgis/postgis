@@ -1,3 +1,396 @@
+2012-03-14 15:50  Sandro Santilli <strk@keybit.net>
+
+	* [r9494] raster/rt_pg/Makefile.in: Encode dependency of raster
+	  _scripts_ to postgis_svn_revision.h
+
+2012-03-14 15:46  Sandro Santilli <strk@keybit.net>
+
+	* [r9493] raster/rt_pg/Makefile.in: Encode postgis_svn_revision.h
+	  dependency for raster lib
+
+2012-03-14 15:40  Sandro Santilli <strk@keybit.net>
+
+	* [r9492] topology/Makefile.in: Make sure to rebuild topology.sql
+	  on postgis_svn_revision.h change
+
+2012-03-14 15:32  Sandro Santilli <strk@keybit.net>
+
+	* [r9491] postgis/postgis.sql.in.c: Add a TOPOLOGY and a RASTER
+	  label in postgis_full_version() output
+	  
+	  This is to know if they are available
+
+2012-03-14 13:13  Sandro Santilli <strk@keybit.net>
+
+	* [r9490] postgis/lwgeom_inout.c: Simplify ST_AsLatLonText code and
+	  possily fix #1657
+	  
+	  The possible bug was a call to pg_do_encoding_conversion w/out
+	  a defined string size argument.
+
+2012-03-14 12:15  Sandro Santilli <strk@keybit.net>
+
+	* [r9489] postgis/lwgeom_inout.c: Use existing text2cstring and
+	  cstring2text wheel
+
+2012-03-13 18:06  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9488] raster/loader/raster2pgsql.c: Explicitly set NULL
+	  character to snprintf outputs as Windows does not do so
+	  automatically. Ticket is #1682.
+
+2012-03-13 17:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9487] liblwgeom/cunit/Makefile.in,
+	  liblwgeom/cunit/cu_stringbuffer.c, liblwgeom/cunit/cu_tester.c:
+	  Add simple tests to stringbuffer class (#1668)
+	  
+	  Hopefully these fail on windows so it's easier to test.
+	  It may take a memory debugger to really see the failure.
+
+2012-03-13 17:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9486] liblwgeom/cunit/cu_misc.c: Rename misc testsuite to
+	  "misc"
+
+2012-03-13 16:23  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9485] configure.ac, liblwgeom/Makefile.in,
+	  liblwgeom/cunit/cu_out_kml.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/liblwgeom_internal.h, liblwgeom/lwgeom_geos.c,
+	  liblwgeom/snprintf.c, liblwgeom/stringbuffer.c,
+	  liblwgeom/vsprintf.c, libpgcommon/lwgeom_pg.c,
+	  macros/snprintf.m4, postgis_config.h.in, raster/rt_pg/rt_pg.c:
+	  Roll back changes for autodetecting C99 vsnprintf (#1688)
+
+2012-03-13 16:13  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9484] doc/reference_raster.xml, raster/rt_pg/rt_pg.c,
+	  raster/rt_pg/rtpostgis.sql.in.c,
+	  raster/test/regress/rt_asraster.sql,
+	  raster/test/regress/rt_asraster_expected,
+	  raster/test/regress/rt_bandmetadata.sql,
+	  raster/test/regress/rt_bandmetadata_expected,
+	  raster/test/regress/rt_clip.sql,
+	  raster/test/regress/rt_clip_expected,
+	  raster/test/regress/rt_intersection.sql,
+	  raster/test/regress/rt_intersection_expected,
+	  raster/test/regress/rt_mapalgebraexpr_2raster.sql,
+	  raster/test/regress/rt_mapalgebraexpr_2raster_expected,
+	  raster/test/regress/rt_mapalgebrafct_2raster.sql,
+	  raster/test/regress/rt_mapalgebrafct_2raster_expected: Removed
+	  "hasnodata" column output of ST_BandMetaData as per #1681. If a
+	  band does NOT have a NODATA value, the "nodatavalue" column will
+	  be NULL.
+
+2012-03-13 09:18  Sandro Santilli <strk@keybit.net>
+
+	* [r9483] topology/README: Add upgrade instructions
+
+2012-03-13 09:17  Sandro Santilli <strk@keybit.net>
+
+	* [r9482] topology/README: Drop SRID constraint issue (not an issue
+	  anymore with typmod)
+
+2012-03-13 09:17  Sandro Santilli <strk@keybit.net>
+
+	* [r9481] topology/README: Add note about toTopoGeom
+
+2012-03-13 08:33  Sandro Santilli <strk@keybit.net>
+
+	* [r9480] README.postgis: Set Version to match Version.config
+	  (HOWTO_RELEASE file mentions you need to edit it anyway)
+
+2012-03-13 08:30  Sandro Santilli <strk@keybit.net>
+
+	* [r9479] README.postgis: Add note about topology/README
+
+2012-03-13 08:18  Sandro Santilli <strk@keybit.net>
+
+	* [r9478] README.postgis: Update README.postgis (#1670)
+	  
+	  - Use consistent formatting in reStructuredText; see
+	  formatted result with rst2pdf or rst2html, or if you don't
+	  want to install docutils, you can copy/paste the text to
+	  http://www.tele3.cz/jbar/rest/rest.html
+	  - Wrap lines to 80 columns, trim trailing whitespace, replace
+	  tabs
+	  with space chars
+	  - Fix typos, and use consistent case and punctuation
+	  - Alphabetize the directory structure
+	  - Add ./libpgcommon to directory structure, and attempt to
+	  describe it
+	  - Arrange style of REQUIREMENTS section a bit more consistent
+	  across components: removing repetition, stating what is required
+	  or optional, etc.
+	  - When referencing PostGIS SQL functions, use the "ST_" prefix,
+	  where applicable
+	  - Mention that both Raster and Topology extensions are built by
+	  default, add notes how build without them
+	  
+	  Patch by Mike Toews
+
+2012-03-12 21:27  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9477] configure.ac, liblwgeom/Makefile.in,
+	  liblwgeom/cunit/cu_out_kml.c, liblwgeom/liblwgeom.h.in,
+	  liblwgeom/liblwgeom_internal.h, liblwgeom/lwgeom_geos.c,
+	  liblwgeom/snprintf.c, liblwgeom/stringbuffer.c,
+	  liblwgeom/vsprintf.c, libpgcommon/lwgeom_pg.c,
+	  macros/snprintf.m4, postgis/compat.h, postgis_config.h.in,
+	  raster/rt_pg/rt_pg.c: Complete alternate implementation of
+	  vsnprintf, vasprintf for non-C99 systems. (#1668)
+
+2012-03-12 17:45  Sandro Santilli <strk@keybit.net>
+
+	* [r9476] libpgcommon/lwgeom_transform.c, regress/tickets.sql,
+	  regress/tickets_expected: Fix UTM zone reserved SRID
+	  interpretation (#1680)
+
+2012-03-10 14:33  Sandro Santilli <strk@keybit.net>
+
+	* [r9475] GNUmakefile.in: Check docs as part of "make check"
+	  
+	  Adds "xmllint" to the requirements for running "make check"
+
+2012-03-10 14:28  Sandro Santilli <strk@keybit.net>
+
+	* [r9474] doc/release_notes.xml: Introduce use of <simplelist>. I
+	  think we should use it more..
+
+2012-03-10 14:28  Sandro Santilli <strk@keybit.net>
+
+	* [r9473] doc/release_notes.xml: typo
+
+2012-03-10 14:27  Sandro Santilli <strk@keybit.net>
+
+	* [r9472] GNUmakefile.in: Drop commented out lines
+
+2012-03-10 14:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9471] doc/release_notes.xml: Add credits to Salvatore
+
+2012-03-10 14:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9470] doc/release_notes.xml: No <para> allowed after
+	  <simplesect> in <sect1> (xmllint) -- add Vizzuality credit
+
+2012-03-10 14:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9469] doc/extras_tigergeocoder.xml: <sect1info> goes before
+	  <title>
+
+2012-03-10 14:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9468] doc/extras_tigergeocoder.xml: <note> cannot be direct
+	  child of <abstract> (xmllint)
+
+2012-03-10 14:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9467] doc/extras_tigergeocoder.xml: choice is a <paramdef>
+	  attribute, not <type>'s
+
+2012-03-10 14:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9466] doc/extras_tigergeocoder.xml: <abstract> can't contain
+	  <note> (xmllint)
+
+2012-03-10 13:44  Sandro Santilli <strk@keybit.net>
+
+	* [r9465] doc/extras_topology.xml: Use empty params as
+	  placeholders, add missing refsection title (xmllint)
+
+2012-03-10 13:44  Sandro Santilli <strk@keybit.net>
+
+	* [r9464] doc/reference_raster.xml: More <para> wrapping (xmllint)
+
+2012-03-10 13:44  Sandro Santilli <strk@keybit.net>
+
+	* [r9463] doc/reference_raster.xml: wrap more <informalfigure>
+	  content in <para> (xmllint)
+
+2012-03-10 13:43  Sandro Santilli <strk@keybit.net>
+
+	* [r9462] doc/reference_raster.xml: choice is a <paramdef>
+	  attribute, not <type>'s
+
+2012-03-10 13:43  Sandro Santilli <strk@keybit.net>
+
+	* [r9461] doc/reference_raster.xml: wrap <informalfigure> content
+	  in <para> (xmllint)
+
+2012-03-10 13:43  Sandro Santilli <strk@keybit.net>
+
+	* [r9460] doc/reference_raster.xml: wrap <listitem> content in
+	  <para> (xmllint)
+
+2012-03-10 13:43  Sandro Santilli <strk@keybit.net>
+
+	* [r9459] doc/reference_raster.xml: choice belongs to <paramdef>,
+	  not <parameter> (xmllint)
+
+2012-03-10 13:43  Sandro Santilli <strk@keybit.net>
+
+	* [r9458] doc/reference_raster.xml: <sect1info> goes before <title>
+
+2012-03-10 13:43  Sandro Santilli <strk@keybit.net>
+
+	* [r9457] doc/reference_processing.xml: <informalfigure> goes in
+	  <para> (xmllint)
+
+2012-03-10 13:42  Sandro Santilli <strk@keybit.net>
+
+	* [r9456] doc/reference_operator.xml: Use <para> as appropriate
+	  (xmllint)
+
+2012-03-10 13:42  Sandro Santilli <strk@keybit.net>
+
+	* [r9455] doc/reference_editor.xml: <informalfigure> must be in
+	  <para> (xmllint)
+
+2012-03-10 13:42  Sandro Santilli <strk@keybit.net>
+
+	* [r9454] doc/reference_constructor.xml: Put semicolon where it
+	  belongs (xmllint)
+
+2012-03-10 13:42  Sandro Santilli <strk@keybit.net>
+
+	* [r9453] doc/using_raster_dataman.xml: Use <para> elements
+	  according to the DTD (xmllint)
+
+2012-03-10 13:42  Sandro Santilli <strk@keybit.net>
+
+	* [r9452] doc/faq.xml: <strong> to <emphasis> (xmllint)
+
+2012-03-10 13:00  Sandro Santilli <strk@keybit.net>
+
+	* [r9451] doc/installation.xml: <filename> is not a valid child of
+	  <listitem>, <para> is (xmllint)
+
+2012-03-10 12:51  Sandro Santilli <strk@keybit.net>
+
+	* [r9450] doc/xsl/postgis_aggs_mm.xml.xsl: More linked -> linkend
+	  typos
+
+2012-03-10 12:10  Sandro Santilli <strk@keybit.net>
+
+	* [r9449] doc/xsl/postgis_aggs_mm.xml.xsl: Fix xref (thanks make
+	  check)
+
+2012-03-10 12:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9448] doc/reference_raster.xml, doc/release_notes.xml: linked
+	  -> linkend (thanks make check)
+
+2012-03-10 11:38  Sandro Santilli <strk@keybit.net>
+
+	* [r9447] doc/introduction.xml: Add credit to Avencia (#1671)
+
+2012-03-10 11:31  Sandro Santilli <strk@keybit.net>
+
+	* [r9446] doc/introduction.xml: More credits
+
+2012-03-10 11:26  Sandro Santilli <strk@keybit.net>
+
+	* [r9445] doc/introduction.xml: Add postgis topology signers to
+	  credits section (#1601)
+	  
+	  I also formatted the names to be one-per-line. Output won't care
+	  but it's easier to sort alphabetically ...
+
+2012-03-10 10:34  Sandro Santilli <strk@keybit.net>
+
+	* [r9444] CREDITS: Substitute CREDITS content with pointers to
+	  manual (#1601)
+
+2012-03-10 10:27  Sandro Santilli <strk@keybit.net>
+
+	* [r9443] make_dist.sh: Be quiet when postgis_svn_revision.h isn't
+	  needed (#1666)
+
+2012-03-10 00:40  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9442] configure.ac: Cleanup for testing GDAL include files
+
+2012-03-10 00:30  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9441] configure.ac: This should do it. Debugging Hudson is
+	  fun... like entertaining a grumpy old man.
+
+2012-03-10 00:24  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9440] configure.ac: Removed multiple AC_ARG_WITH calls for
+	  raster
+
+2012-03-10 00:19  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9439] configure.ac: Another attempt to fix hudson...
+
+2012-03-10 00:05  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9438] configure.ac: Comment cleanup as hudson isn't happy.
+
+2012-03-09 23:57  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9437] configure.ac: Fixed GDAL configuration as hudson wasn't
+	  getting GDALFPolygonize. This may be the cause for Windows not
+	  detecting GDALFPolygonize either.
+
+2012-03-09 19:00  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9436] raster/loader/Makefile.in, raster/loader/raster2pgsql.h,
+	  raster/rt_core/rt_api.c: Initialize variables that may cause
+	  compile-time warnings in rt_api.c. Added additional NLS items to
+	  raster2pgsql.
+
+2012-03-09 17:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9435] liblwgeom/stringbuffer.c: Work around difference between
+	  behavior of MS snprintf and C99 snprintf. (#1668)
+
+2012-03-09 14:59  Regina Obe <lr@pcorp.us>
+
+	* [r9434] doc/reference_raster.xml: minor correction in title of
+	  example
+
+2012-03-09 14:20  Regina Obe <lr@pcorp.us>
+
+	* [r9433] doc/html/images/st_mapalgebraexpr2_08.png,
+	  doc/reference_raster.xml: Fix mapalgebra2 syntax
+
+2012-03-08 10:58  Sandro Santilli <strk@keybit.net>
+
+	* [r9432] .gitignore: Ignore all html files under doc/html/ (also
+	  chunked)
+
+2012-03-08 10:58  Sandro Santilli <strk@keybit.net>
+
+	* [r9431] doc/introduction.xml: Give introduction chapter an id.
+	  
+	  This should give it a nice URL online so we can point to credits
+	  from the CREDITS file (#1601)
+
+2012-03-08 10:36  Sandro Santilli <strk@keybit.net>
+
+	* [r9430] make_dist.sh: Remove .svnignore files (#1665)
+
+2012-03-08 10:36  Sandro Santilli <strk@keybit.net>
+
+	* [r9429] doc/html/.cvsignore, extras/ogc_test_suite/.cvsignore,
+	  extras/wkb_reader/.cvsignore, java/jdbc/.cvsignore,
+	  loader/.cvsignore, postgis/.cvsignore, topology/.cvsignore,
+	  topology/ER/.cvsignore, topology/test/.cvsignore: Drop .cvsignore
+	  files
+
+2012-03-07 20:51  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9427] Version.config, extensions/upgradeable_versions.mk:
+	  Update trunk versions for next cycle
+
+2012-03-07 20:50  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9425] ChangeLog, NEWS, README.postgis: Update for beta2 release
+
 2012-03-07 20:47  Paul Ramsey <pramsey@cleverelephant.ca>
 
 	* [r9424] configure.ac, regress/Makefile.in: Fix need to hack
