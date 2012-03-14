@@ -85,7 +85,7 @@ endif
 
 
 # Objects dependencies
-$(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h
+$(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h ../../postgis_svn_revision.h
 
 # Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
 $(SQL_OBJS): %.in: %.in.c
