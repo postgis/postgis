@@ -943,16 +943,10 @@ if test "x$with_raster" != "xno"; then
 		[gdalconfig],
 		AC_HELP_STRING([--with-gdalconfig=@<:@ARG@:>@],[specify location of gdal-config (ARG=path).  Only used with --with-raster]),
 		[GDAL_CONFIG="$withval"],
-		[GDAL_CONFIG=""])
+		[AC_PATH_PROG([GDAL_CONFIG], [gdal-config], [])]
+  )
 
 	AC_MSG_CHECKING([for GDAL >= $GDAL_MIN_VERSION])
-	if test "x$GDAL_CONFIG" = "x"; then
-		dnl If GDAL_CONFIG path not provided, try to find it
-		GDAL_CONFIG_TMP=`which gdal-config`
-		if test "`basename xx/${GDAL_CONFIG_TMP}`" = "gdal-config" ; then
-			GDAL_CONFIG=${GDAL_CONFIG_TMP}
-		fi
-	fi
 
 	if test -x "$GDAL_CONFIG"; then
 		dnl Extract the version information from gdal-config
