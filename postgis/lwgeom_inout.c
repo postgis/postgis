@@ -182,10 +182,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 
 	if (format_text != NULL)
 	{
-		str_size = VARSIZE(format_text)-VARHDRSZ; /* actual letters */
-		format_str = palloc( str_size+1); /* +1 for null term */
-		memcpy(format_str, VARDATA(format_text), str_size );
-		format_str[str_size] = 0; /* null term */
+		format_str = text2cstring(format_text);
 
 		/* The input string supposedly will be in the database encoding, so convert to UTF-8. */
 		format_str_utf8 = (char *)pg_do_encoding_conversion((uint8_t *)format_str, str_size, GetDatabaseEncoding(), PG_UTF8);
@@ -198,10 +195,7 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	formatted_str = (char *)pg_do_encoding_conversion((uint8_t *)formatted_str_utf8, strlen(formatted_str_utf8), PG_UTF8, GetDatabaseEncoding());
 
 	/* Convert to the postgres output string type. */
-	str_size = strlen(formatted_str) + VARHDRSZ;
-	formatted_text = palloc(str_size);
-	memcpy(VARDATA(formatted_text), formatted_str, str_size - VARHDRSZ);
-	SET_VARSIZE(formatted_text, str_size);
+	formatted_text = cstring2text(formatted_str);
 
 	/* clean up */
 	if (format_str != NULL) pfree(format_str);
