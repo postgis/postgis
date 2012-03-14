@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <assert.h>
 
 #include "access/gist.h"
 #include "access/itup.h"
@@ -163,13 +164,10 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 
 	LWGEOM *lwgeom;
 	char *format_str = NULL;
-	char *format_str_utf8 = NULL;
 
-	size_t str_size;
-
-	char * formatted_str_utf8;
 	char * formatted_str;
-	char * formatted_text;
+	text * formatted_text;
+	char * tmp;
 
 	/* Only supports points. */
 	uint8_t geom_type = gserialized_get_type(pg_lwgeom);
@@ -180,31 +178,42 @@ Datum LWGEOM_to_latlon(PG_FUNCTION_ARGS)
 	/* Convert to LWGEOM type */
 	lwgeom = lwgeom_from_gserialized(pg_lwgeom);
 
-	if (format_text != NULL)
-	{
-		format_str = text2cstring(format_text);
+  if (format_text == NULL) {
+    lwerror("ST_AsLatLonText: invalid format string (null");
+    PG_RETURN_NULL();
+  }
 
-		/* The input string supposedly will be in the database encoding, so convert to UTF-8. */
-		format_str_utf8 = (char *)pg_do_encoding_conversion((uint8_t *)format_str, str_size, GetDatabaseEncoding(), PG_UTF8);
-	}
+	format_str = text2cstring(format_text);
+  assert(format_str != NULL);
+
+  /* The input string supposedly will be in the database encoding,
+     so convert to UTF-8. */
+  tmp = (char *)pg_do_encoding_conversion(
+    (uint8_t *)format_str, strlen(format_str), GetDatabaseEncoding(), PG_UTF8);
+  assert(tmp != NULL);
+  if ( tmp != format_str ) {
+    pfree(format_str);
+    format_str = tmp;
+  }
 
 	/* Produce the formatted string. */
-	formatted_str_utf8 = lwpoint_to_latlon((LWPOINT *)lwgeom, format_str_utf8);
+	formatted_str = lwpoint_to_latlon((LWPOINT *)lwgeom, format_str);
+  assert(formatted_str != NULL);
+  pfree(format_str);
 
-	/* Convert the formatted string from UTF-8 back to database encoding. */
-	formatted_str = (char *)pg_do_encoding_conversion((uint8_t *)formatted_str_utf8, strlen(formatted_str_utf8), PG_UTF8, GetDatabaseEncoding());
+  /* Convert the formatted string from UTF-8 back to database encoding. */
+  tmp = (char *)pg_do_encoding_conversion(
+    (uint8_t *)formatted_str, strlen(formatted_str),
+    PG_UTF8, GetDatabaseEncoding());
+  assert(tmp != NULL);
+  if ( tmp != formatted_str) {
+    pfree(formatted_str);
+    formatted_str = tmp;
+  }
 
 	/* Convert to the postgres output string type. */
 	formatted_text = cstring2text(formatted_str);
-
-	/* clean up */
-	if (format_str != NULL) pfree(format_str);
-	/* If no encoding conversion happened, format_str_utf8 is just pointing at the same memory as format_str, so don't free it twice. */
-	if ((format_str_utf8 != NULL) && (format_str_utf8 != format_str)) pfree(format_str_utf8);
-
-	if (formatted_str != NULL) pfree(formatted_str);
-	/* Again, don't free memory twice. */
-	if ((formatted_str_utf8 != NULL) && (formatted_str_utf8 != formatted_str)) pfree(formatted_str_utf8);
+  pfree(formatted_str);
 
 	PG_RETURN_POINTER(formatted_text);
 }
