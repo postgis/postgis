@@ -989,14 +989,14 @@ if test "x$with_raster" != "xno"; then
 			[AC_MSG_ERROR([could not find headers include related to gdal])])
 
 		dnl Ensure we can link against gdal
-		AC_CHECK_LIB([gdal], [GDALAllRegister], [], [AC_MSG_ERROR([could not find gdal])], [])
+		AC_SEARCH_LIBS([GDALAllRegister], [gdal], [], [AC_MSG_ERROR([could not find gdal])], [])
 
 		LIBS="$LIBGDAL_LDFLAGS"
 
 		dnl Check if the new polygonize function is present
-		AC_CHECK_LIB(
-			[gdal],
+		AC_SEARCH_LIBS(
 			[GDALFPolygonize],
+			[gdal],
 			[AC_DEFINE_UNQUOTED([GDALFPOLYGONIZE], [1], [Define to 1 if GDALFPolygonize function is available])],
 			[])
 
