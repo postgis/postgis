@@ -2435,12 +2435,18 @@ BEGIN
 		fullver = fullver || ' (core procs from "' || dbproc || '" need upgrade)';
 	END IF;
 
-	IF topo_scr_ver IS NOT NULL AND topo_scr_ver != relproc THEN
-		fullver = fullver || ' (topology procs from "' || topo_scr_ver || '" need upgrade)';
+	IF topo_scr_ver IS NOT NULL THEN
+		fullver = fullver || ' TOPOLOGY';
+		IF topo_scr_ver != relproc THEN
+			fullver = fullver || ' (topology procs from "' || topo_scr_ver || '" need upgrade)';
+		END IF;
 	END IF;
 
-	IF rast_lib_ver IS NOT NULL AND rast_lib_ver != relproc THEN
-		fullver = fullver || ' (raster lib from "' || rast_lib_ver || '" need upgrade)';
+	IF rast_lib_ver IS NOT NULL THEN
+		fullver = fullver || ' RASTER';
+		IF rast_lib_ver != relproc THEN
+			fullver = fullver || ' (raster lib from "' || rast_lib_ver || '" need upgrade)';
+		END IF;
 	END IF;
 
 	IF rast_scr_ver IS NOT NULL AND rast_scr_ver != relproc THEN
