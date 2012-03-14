@@ -1,12 +1,18 @@
 #############################################################################
 # $Id$
 #
+# Copyright (c) 2012 Regents of the University of California
+#   <bkpark@ucdavis.edu>
 # Copyright (c) 2009 Sandro Santilli <strk@keybit.net>
 #
 # This is free software; you can redistribute and/or modify it under
 # the terms of the GNU General Public Licence. See the COPYING file.
 #
 #############################################################################
+
+# Filenames with extension as determined by the OS
+TESTAPI=testapi@EXESUFFIX@
+TESTWKB=testwkb@EXESUFFIX@
 
 RT_CORE=../../rt_core
 
@@ -37,26 +43,30 @@ LDFLAGS = \
 	$(GEOS_LDFLAGS) \
 	-lm \
        
+all: $(TESTAPI) $(TESTWKB)
 
-TESTS = testapi testwkb
-
-all: $(TESTS)
-
-check: $(RT_CORE)/librtcore.a $(TESTS)
+check: $(RT_CORE)/librtcore.a $(TESTAPI) $(TESTWKB)
 	./testapi
 	./testwkb
 
-testapi: $(RT_CORE)/librtcore.a testapi.c
-	$(CC) $(CFLAGS) -o testapi testapi.c $(LDFLAGS) 
+testapi.o: testapi.c
+	$(CC) $(CFLAGS) -c $<
 
-testwkb: $(RT_CORE)/librtcore.a testwkb.c
-	$(CC) $(CFLAGS) -o testwkb testwkb.c $(LDFLAGS) 
+$(TESTAPI): testapi.o $(RT_CORE)/librtcore.a
+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
+
+testwkb.o: testwkb.c
+	$(CC) $(CFLAGS) -c $<
+
+$(TESTWKB): testwkb.o $(RT_CORE)/librtcore.a
+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 $(RT_CORE)/librtcore.a:
 	$(MAKE) -C ../../rt_core
 
 clean:
-	$(RM) $(TESTS)
+	rm -rf .libs
+	$(RM) *.o $(TESTAPI) $(TESTWKB)
 
 distclean: clean
 	$(RM) Makefile
