@@ -6334,21 +6334,29 @@ WITH mygeoms
 			<refsection>
 				<title>Example: Overlay 2 meter boundary of select parcels over an aerial imagery</title>
 				<programlisting>-- Create new 3 band raster composed of first 2 clipped bands, and overlay of 3rd band with our geometry
-SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2]), ST_MapAlgebraExpr(clipped, ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
-	 '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') )
-FROM (
--- We use ST_Clip to clip to within 50 meters bounding box bounding the parcels
-SELECT ST_Clip(rast,ST_Expand(geom,50) ) As clipped ,geom
-FROM
--- select all tiles that intersect our geometry and union them
-(SELECT ST_AddBand(NULL, ARRAY[ST_Union(rast,1),ST_Union(rast,2),ST_Union(rast,3)] ) As rast,g.geom
--- we are using our level 2 overview because the main one would be huge
+-- This query took 3.6 seconds on PostGIS windows 64-bit install
+WITH pr AS
+-- Note the order of operation: we clip all the rasters to dimensions of our region
+(SELECT ST_Clip(rast,ST_Expand(geom,50) ) As rast, g.geom
 	FROM aerials.o_2_boston AS r INNER JOIN
 -- union our parcels of interest so they form a single geometry we can later intersect with
-		(SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom FROM landparcels WHERE pid IN('0303890000', '0303900000') ) As g
+		(SELECT ST_Union(ST_Transform(the_geom,26986)) AS geom 
+		  FROM landparcels WHERE pid IN('0303890000', '0303900000')) As g
 		ON ST_Intersects(rast::geometry, ST_Expand(g.geom,50))
-	GROUP BY g.geom
-) As foo) As foofoo;</programlisting>
+),
+-- we then union the raster shards together
+-- ST_Union on raster is kinda of slow but much faster the smaller you can get the rasters
+-- therefore we want to clip first and then union
+prunion AS
+(SELECT ST_AddBand(NULL, ARRAY[ST_Union(rast,1),ST_Union(rast,2),ST_Union(rast,3)] ) As clipped,geom
+FROM pr
+GROUP BY geom)
+-- return our final raster which is the unioned shard with 
+-- with the overlay of our parcel boundaries
+SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2])
+	, ST_MapAlgebraExpr(clipped, ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
+	 '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') ) As rast
+FROM prunion;</programlisting>
             
 <informaltable>
   <tgroup cols="1">
