@@ -697,15 +697,18 @@ if test ! "x$JSONDIR" = "x"; then
 	if test "x$JSONDIR" = "xyes"; then
 		AC_MSG_ERROR([you must specify a parameter to --with-jsondir, e.g. --with-jsondir=/path/to])
 	else
-		if test -d "$JSONDIR"; then
-			AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
-
-			dnl Add the include directory to JSON_CPPFLAGS
-			JSON_CPPFLAGS="-I$JSONDIR/include"
-			JSON_LDFLAGS="-L$JSONDIR/lib -ljson"
-		else
-			AC_MSG_ERROR([the --with-jsondir directory "$JSONDIR" cannot be found])
+		dnl We need (libjson.so OR libjson.a) AND json/json.h
+		if test ! -e "${JSONDIR}/lib/libjson.so" -a \
+		        ! -e "${JSONDIR}/lib/libjson.a" -o \
+		        ! -e "${JSONDIR}/include/json/json.h"
+		then
+			AC_MSG_ERROR([Cannot find json dev files in "$JSONDIR"])
 		fi
+		AC_MSG_RESULT([Using user-specified json-c directory: $JSONDIR])
+
+		dnl Add the include directory to JSON_CPPFLAGS
+		JSON_CPPFLAGS="-I$JSONDIR/include"
+		JSON_LDFLAGS="-L$JSONDIR/lib -ljson"
 	fi
 fi
 
