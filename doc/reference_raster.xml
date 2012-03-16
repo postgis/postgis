@@ -4602,6 +4602,41 @@ FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats
 			</refsection>
 			
 			<refsection>
+				<title>Example: Summarize pixels that intersect buildings of interest</title>
+				<para>This example took 340ms on PostGIS windows 64-bit with all of Boston Buildings
+and aerial Tiles (tiles each 150x150 pixels ~ 134,000 tiles), ~102,000 building records</para>
+				<programlisting>WITH 
+-- our features of interest
+   feat AS (SELECT gid As building_id, geom_26986 As geom FROM buildings AS b 
+    WHERE gid IN(100, 103,150)
+   ),
+-- clip band 2 of raster tiles to boundaries of builds
+-- then get stats for these clipped regions
+   b_stats AS
+	(SELECT  building_id, (stats).*
+FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,geom,2)) As stats
+    FROM aerials.boston
+		INNER JOIN feat
+	ON ST_Intersects(feat.geom,rast) 
+ ) As foo
+ )
+-- finally summarize stats
+SELECT building_id, SUM(count) As num_pixels
+  , MIN(min) As min_pval
+  ,  MAX(max) As max_pval
+  , SUM(mean*count)/SUM(count) As avg_pval
+	FROM b_stats
+ WHERE count > 0
+	GROUP BY building_id
+	ORDER BY building_id;
+ building_id | num_pixels | min_pval | max_pval |     avg_pval
+-------------+------------+----------+----------+------------------
+         100 |       1087 |        0 |      252 | 57.5501379944802
+         103 |        655 |        4 |      176 | 65.3145038167939
+         150 |        894 |        0 |      252 | 185.530201342282</programlisting>
+			</refsection>
+			
+			<refsection>
 				<title>Example: Raster coverage</title>
 				<programlisting>
 -- stats for each band --
@@ -4633,7 +4668,7 @@ FROM (SELECT band, ST_SummaryStats('o_4_boston','rast', band,true,0.25) As stats
 				<title>See Also</title>
 				<para>
 <xref linkend="RT_ST_Count" />,
-<xref linkend="summarystats" />
+<xref linkend="summarystats" />, <xref linkend="RT_ST_Clip" />
 				</para>
 			</refsection>
 		</refentry>
