@@ -3324,7 +3324,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a, ST_GeomFromTex
 -------------+-------------+----------------+--------------
  f           | t           | t              | f
 
- -- a 2-dimensional bent hot dog (aka puffered line string) that intersects a circle,
+ -- a 2-dimensional bent hot dog (aka buffered line string) that intersects a circle,
  --	but is not fully contained by the circle is defined as overlapping since they are of the same dimension,
 --	but it does not cross, because the intersection of the 2 is of the same dimension
 --	as the maximum dimension of the 2
