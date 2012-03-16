@@ -107,7 +107,8 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	text *input_proj4_text;
 	text *output_proj4_text;
 	int32 result_srid ;
-	int* pj_errno_ref;
+	char *pj_errstr;
+
 
 
 	result_srid = PG_GETARG_INT32(3);
@@ -121,7 +122,7 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 	if (gserialized_get_srid(geom) == SRID_UNKNOWN)
 	{
 		pfree(geom);
-		elog(ERROR,"tranform: source SRID = %d",SRID_UNKNOWN);
+		elog(ERROR,"transform_geom: source SRID = %d",SRID_UNKNOWN);
 		PG_RETURN_NULL();
 	}
 
@@ -138,30 +139,38 @@ Datum transform_geom(PG_FUNCTION_ARGS)
 
 	/* make input and output projection objects */
 	input_pj = lwproj_from_string(input_proj4);
-
-	pj_errno_ref = pj_get_errno_ref();
-	if ( (input_pj == NULL) || (*pj_errno_ref))
+	if ( input_pj == NULL )
 	{
+		pj_errstr = pj_strerrno(*pj_get_errno_ref());
+		if ( ! pj_errstr ) pj_errstr = "";
+
 		/* we need this for error reporting */
 		/* pfree(input_proj4); */
-
 		pfree(output_proj4);
 		pfree(geom);
-		elog(ERROR, "transform: couldn't parse proj4 input string: '%s': %s", input_proj4, pj_strerrno(*pj_errno_ref));
+		
+		elog(ERROR,
+		    "transform_geom: could not parse proj4 string '%s' %s",
+		    input_proj4, pj_errstr);
 		PG_RETURN_NULL();
 	}
 	pfree(input_proj4);
 
 	output_pj = lwproj_from_string(output_proj4);
 
-	pj_errno_ref = pj_get_errno_ref();
-	if ((output_pj == NULL)|| (*pj_errno_ref))
+	if ( output_pj == NULL )
 	{
+		pj_errstr = pj_strerrno(*pj_get_errno_ref());
+		if ( ! pj_errstr ) pj_errstr = "";
+
 		/* we need this for error reporting */
 		/* pfree(output_proj4); */
 		pj_free(input_pj);
 		pfree(geom);
-		elog(ERROR, "transform: couldn't parse proj4 output string: '%s': %s", output_proj4, pj_strerrno(*pj_errno_ref));
+
+		elog(ERROR,
+			"transform_geom: couldn't parse proj4 output string: '%s': %s",
+			output_proj4, pj_errstr);
 		PG_RETURN_NULL();
 	}
 	pfree(output_proj4);
