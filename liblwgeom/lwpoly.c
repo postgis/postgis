@@ -358,7 +358,7 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 		/* One point implies an error in the ptarray_simplify */
 		if ( opts->npoints < 2 )
 		{
-			lwnotice("ptarray_simplify returned a <2 pts array");
+			LWDEBUG(2, "ptarray_simplify returned a <2 pts array");
 			ptarray_free(opts);
 			continue;
 		}
