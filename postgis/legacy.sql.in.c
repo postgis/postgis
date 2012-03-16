@@ -1,8 +1,8 @@
 -- $Id$
 -- Legacy functions without chip functions --
--- This is the full list including the legacy_compatibility_layer.sql (minimal)
+-- This is the full list including the legacy_minimal.sql (minimal)
 -- so no need to install both legacy and the minimal 
-#include "legacy_compatibility_layer.sql.in.c"
+#include "legacy_minimal.sql.in.c"
 --- start functions that in theory should never have been used or internal like stuff deprecated
 
 -- these were superceded by PostGIS_AddBBOX , PostGIS_DropBBOX, PostGIS_HasBBOX in 1.5 --
