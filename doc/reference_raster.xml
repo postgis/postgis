@@ -5447,6 +5447,41 @@ WHERE rid = 6) As foo;
 </informaltable>
 			</refsection>
 			<refsection>
+				<title>Examples: 1 band clipping with no crop and add back other bands unchanged</title>				
+<programlisting>-- Same example as before, but we need to set crop to false to be able to use ST_AddBand
+-- because ST_AddBand requires all bands be the same Width and height
+SELECT ST_AddBand(ST_Clip(rast, 1,
+		ST_Buffer(ST_Centroid(ST_Envelope(rast)),20),false
+	), ARRAY[ST_Band(rast,2),ST_Band(rast,3)] ) from aerials.boston
+WHERE rid = 6;</programlisting>
+<informaltable>
+  <tgroup cols="2">
+	<tbody>
+	  <row>
+		<entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip04.png" />
+			  </imageobject>
+			  <caption><para>Full raster tile before clipping</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		<entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_clip05.png" />
+			  </imageobject>
+			  <caption><para>After Clipping - surreal</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
+			</refsection>
+			<refsection>
 				<title>Examples: Clip all bands</title>				
 <programlisting>-- Clip all bands of an aerial tile by a 20 meter buffer.
 -- Only difference is we don't specify a specific band to clip
