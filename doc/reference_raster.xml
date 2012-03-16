@@ -4603,7 +4603,7 @@ FROM (SELECT rid, band, ST_SummaryStats(rast, band) As stats
 			
 			<refsection>
 				<title>Example: Summarize pixels that intersect buildings of interest</title>
-				<para>This example took 340ms on PostGIS windows 64-bit with all of Boston Buildings
+				<para>This example took 574ms on PostGIS windows 64-bit with all of Boston Buildings
 and aerial Tiles (tiles each 150x150 pixels ~ 134,000 tiles), ~102,000 building records</para>
 				<programlisting>WITH 
 -- our features of interest
@@ -4614,7 +4614,7 @@ and aerial Tiles (tiles each 150x150 pixels ~ 134,000 tiles), ~102,000 building 
 -- then get stats for these clipped regions
    b_stats AS
 	(SELECT  building_id, (stats).*
-FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,geom),2) As stats
+FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,2,geom)) As stats
     FROM aerials.boston
 		INNER JOIN feat
 	ON ST_Intersects(feat.geom,rast) 
