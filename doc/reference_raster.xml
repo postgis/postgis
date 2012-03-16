@@ -6423,8 +6423,9 @@ FROM pr
 GROUP BY geom)
 -- return our final raster which is the unioned shard with 
 -- with the overlay of our parcel boundaries
+-- add first 2 bands, then mapalgebra of 3rd band + geometry
 SELECT ST_AddBand(ST_Band(clipped,ARRAY[1,2])
-	, ST_MapAlgebraExpr(clipped, ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
+	, ST_MapAlgebraExpr(ST_Band(clipped,3), ST_AsRaster(ST_Buffer(ST_Boundary(geom),2),clipped, '8BUI',250),
 	 '[rast2.val]', '8BUI', 'FIRST', '[rast2.val]', '[rast1.val]') ) As rast
 FROM prunion;</programlisting>
             
