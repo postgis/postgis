@@ -1,5 +1,9 @@
--- $Id: legacy.sql.in.c 7548 2011-07-02 08:58:38Z robe $
--- Legacy functions without chip functions --
+-- $Id$
+-- Bare minimum Legacy functions --
+-- This file that contains what we have determined are
+-- the most common functions used by older apps
+-- You should be able to get by with just to support
+-- older versions of mapserver, geoserver, qgis, gdal, openjump etc.
 #include "sqldefines.h"
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsBinary(geometry)

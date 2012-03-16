@@ -1,5 +1,7 @@
 -- $Id$
 -- Legacy functions without chip functions --
+-- This is the full list including the legacy_compatibility_layer.sql (minimal)
+-- so no need to install both legacy and the minimal 
 #include "legacy_compatibility_layer.sql.in.c"
 --- start functions that in theory should never have been used or internal like stuff deprecated
 
