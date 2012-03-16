@@ -4614,7 +4614,7 @@ and aerial Tiles (tiles each 150x150 pixels ~ 134,000 tiles), ~102,000 building 
 -- then get stats for these clipped regions
    b_stats AS
 	(SELECT  building_id, (stats).*
-FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,geom,2)) As stats
+FROM (SELECT building_id, ST_SummaryStats(ST_Clip(rast,geom),2) As stats
     FROM aerials.boston
 		INNER JOIN feat
 	ON ST_Intersects(feat.geom,rast) 
@@ -4631,9 +4631,9 @@ SELECT building_id, SUM(count) As num_pixels
 	ORDER BY building_id;
  building_id | num_pixels | min_pval | max_pval |     avg_pval
 -------------+------------+----------+----------+------------------
-         100 |       1087 |        0 |      252 | 57.5501379944802
-         103 |        655 |        4 |      176 | 65.3145038167939
-         150 |        894 |        0 |      252 | 185.530201342282</programlisting>
+         100 |       1090 |        1 |      255 | 61.0697247706422
+         103 |        655 |        7 |      182 | 70.5038167938931
+         150 |        895 |        2 |      252 | 185.642458100559</programlisting>
 			</refsection>
 			
 			<refsection>
