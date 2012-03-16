@@ -262,6 +262,17 @@ Zonar Systems
 		  </para>
 		</listitem>
 	  </varlistentry>
+	  
+	   <varlistentry>
+		<term>Crowd Funding Campaigns</term>
+
+		<listitem>
+		  <para>Crowd funding campaigns are cmapaigns we run to get badly wanted features funded.  Each pledge chips in a small amount say $100 - $250 each and with enough people/organizations contributing, we have the funds to pay for the work that will help many.  If you have an idea for a campaign for a feature you want that you think many others will want, please post to the <ulink url="http://www.postgis.org/mailman/listinfo/postgis-users">PostGIS newsgroup</ulink> your thoughts. </para>
+		  <para>PostGIS 2.0.0 was the first release we tried this strategy. We used <ulink url="http://www.pledgebank.com">PledgeBank</ulink> and we got two successful campaigns out of it.</para>
+		  <para><ulink url="http://www.pledgebank.com/postgistopology"><emphasis role='bold'>postgistopology</emphasis></ulink> - 10 plus sponsors each contributed $250 USD to build toTopoGeometry function and beef up topology support in 2.0.0. It happened.</para>
+		 <para><ulink url="http://www.pledgebank.com/postgis64windows"><emphasis role='bold'>postgis64windows</emphasis></ulink> - 20 someodd sponsors each contributed $100 USD to pay for the work needed to work out PostGIS 64-bit on windows issues. It happened.  We now have a 64-bit beta release for PostGIS 2.0.0 and a final one planned for release that will be available on PostgreSQL stack builder.</para>
+		</listitem>
+	  </varlistentry>
 
 	  <varlistentry>
 		<term>Important Support Libraries</term>
