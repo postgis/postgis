@@ -473,7 +473,7 @@ lwcollection_grid(LWCOLLECTION *coll, gridspec *grid)
 		if ( g ) geoms[ngeoms++] = g;
 	}
 
-	if ( ! ngeoms ) return lwcollection_construct_empty(COLLECTIONTYPE, coll->srid, 0, 0);
+	if ( ! ngeoms ) return lwcollection_construct_empty(coll->type, coll->srid, 0, 0);
 
 	return lwcollection_construct(coll->type, coll->srid,
 	                              NULL, ngeoms, geoms);

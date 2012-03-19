@@ -628,5 +628,8 @@ WITH inp AS ( SELECT
  'POINT(-176 -22)'::geography as p
 ) SELECT '#1596', ST_Summary(ST_Intersection(a,p)) FROM inp;
 
+-- #1695
+SELECT '#1695', ST_AsEWKT(ST_SnapToGrid('MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))'::geometry, 20));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

@@ -209,3 +209,4 @@ NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
 #1596.6|public.road_pg.roads_geom SRID changed to 0
 #1596.7|0
 #1596|Point[BG]
+#1695|MULTIPOLYGON EMPTY
