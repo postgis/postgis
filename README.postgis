@@ -80,12 +80,9 @@ this to work.
 
 * GDAL (Optional, Version 1.6.0 or higher)
 
-  GDAL is required if you want to compile PostGIS with raster support.
-
-    http://www.gdal.org/
-
-See README.raster for further information on how to compile PostGIS with
-Raster support.
+  GDAL (http://gdal.org) is *required* if you want to compile PostGIS 
+  with raster support.  To compile without raster support you 
+  must ``./configure --without-raster``
 
 
 CONFIGURATION
@@ -110,6 +107,10 @@ If GEOS has been installed but cannot be found, configure will complain and
 refuse to proceed. You can specify an alternative ``geos-config`` file using
 the ``--with-geosconfig=/path/to/geos-config`` option.
 
+If GDAL cannot be found, configure will complain and refuse to proceed.
+You can either procede without raster support using ``--without-raster``
+or use ``--with-gdalconfig=/path/to/gdal-config`` option.
+
 By default, both Topology and Raster extensions are enabled in ``./configure``.
 
 If you want to compile PostGIS *without* Raster support, you must provide the
@@ -129,8 +130,6 @@ and utilities, as postgres run::
 
   make
 
-See README.raster to know how to build PostGIS Raster extension.
-
 
 TESTING
 -------
@@ -145,8 +144,6 @@ then drop the test database.
 Final lines of output contain a summary of test results: run, succeeded,
 failed. If you have any failure please file a bug report using the online bug
 tracker: http://trac.osgeo.org/postgis/report/3
-
-See README.raster to know how to test PostGIS raster extension.
 
 
 INSTALLATION
@@ -167,8 +164,6 @@ Installation paths will typically be derived by ``pg_config``:
 Where `[prefix]` above is extracted from ``pg_config --configure``.
 
 You can change them using ``./configure`` switches. See CONFIGURATION section.
-
-See README.raster to know how to install PostGIS Raster extension.
 
 
 CREATING NEW SPATIAL DATABASES
@@ -191,6 +186,15 @@ So, as postgres run::
   psql -f postgis/postgis.sql -d <your_database>
 
 Your database should now be spatially enabled.
+
+
+ADDING RASTER SUPPORT TO A SPATIAL DATABASE
+-------------------------------------------
+
+To enable raster support you must first load the ``postgis.sql`` file.
+You can then load the ``rtpostgis.sql`` file.
+
+  psql -f postgis/rtpostgis.sql -d <your_database>
 
 
 UPGRADING EXISTING SPATIAL DATABASES
@@ -244,7 +248,7 @@ For this purpose, PostGIS provides a utility script to restore a dump in
 
   # [3] Restore the dump into your new database.
   $ perl utils/postgis_restore.pl -v olddb.dump \
-      2> restore.log | psql newdb 2> errors.txt
+      2> restore.log | psql newdb 2> errors.log
 
 The ``spatial_ref_sys`` entries found in your dump will be restored, but they
 will not override existing ones in ``spatial_ref_sys``.  This is to ensure that
@@ -303,9 +307,9 @@ with an SRID::
   SELECT AddGeometryColumn('db', 'geotest', 'geopoint', 1, 'POINT', 2);
 
   INSERT INTO geotest (id, name, geopoint)
-    VALUES (1, 'Olympia', GeometryFromText('POINT(-122.90 46.97)', 1));
+    VALUES (1, 'Olympia', ST_GeomFromText('POINT(-122.90 46.97)', 1));
   INSERT INTO geotest (id, name, geopoint)
-    VALUES (2, 'Renton', GeometryFromText('POINT(-122.22 47.50)', 1));
+    VALUES (2, 'Renton', ST_GeomFromText('POINT(-122.22 47.50)', 1));
 
   SELECT name, AsText(geopoint) FROM geotest;
 
@@ -329,11 +333,6 @@ Always run the ``VACUUM ANALYZE <tablename>`` on your tables after creating an
 index. This gathers statistics which the query planner uses to optimize index
 usage.
 
-PostGIS Raster support
-~~~~~~~~~~~~~~~~~~~~~~
-
-See README.raster to know how to enable raster support on a spatially enabled
-database.
 
 PostGIS Topology support
 ~~~~~~~~~~~~~~~~~~~~~~~~
