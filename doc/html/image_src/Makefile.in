@@ -165,6 +165,9 @@ clean:
 	rm -f generator
 	rm -f tmp[0-9].png
 
+distclean: clean
+	@rm -f Makefile
+
 images-clean:
 	rm -f $(IMAGES) $(IMAGES_RESIZED)
 

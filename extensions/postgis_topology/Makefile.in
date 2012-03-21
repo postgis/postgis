@@ -83,5 +83,8 @@ DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 endif
 
+distclean:
+	@rm Makefile
+
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)

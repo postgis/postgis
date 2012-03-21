@@ -23,4 +23,6 @@ clean:
 	$(MAKE) -C regress $@
 
 distclean: clean
-	$(RM) Makefile
+	$(MAKE) -C core $@
+	$(MAKE) -C regress $@
+	@rm -f Makefile

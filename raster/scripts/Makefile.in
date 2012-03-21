@@ -33,4 +33,4 @@ clean:
 distclean: clean
 #	$(MAKE) -C plpgsql $@
 	$(MAKE) -C python $@
-	$(RM) -f Makefile
+	@rm -f Makefile

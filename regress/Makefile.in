@@ -147,7 +147,10 @@ ifeq ($(HAVE_JSON),yes)
 		in_geojson 
 endif
 
-all install uninstall distclean:
+all install uninstall:
+
+distclean: clean
+	@rm Makefile
 
 staged-install-topology:
 	@if test x"@TOPOLOGY@" != "x"; then \

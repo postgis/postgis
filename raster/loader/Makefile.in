@@ -87,8 +87,8 @@ $(RT_CORE)/librtcore.a:
 	$(MAKE) -C ../rt_core
 
 clean:
-	rm -rf .libs
-	$(RM) *.o $(RASTER2PGSQL)
+	@rm -rf .libs
+	@rm -f *.o $(RASTER2PGSQL)
 
 distclean: clean
-	$(RM) Makefile
+	@rm -f Makefile

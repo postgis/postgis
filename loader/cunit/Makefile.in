@@ -85,6 +85,9 @@ clean:
 	@rm -f $(OBJS)
 	@rm -f cu_tester.exe
 
+distclean: clean
+	@rm -f Makefile
+
 # Requirements message
 requirements_not_met_cunit:
 	@echo

@@ -66,7 +66,7 @@ $(RT_CORE)/librtcore.a:
 
 clean:
 	rm -rf .libs
-	$(RM) *.o $(TESTAPI) $(TESTWKB)
+	@rm -f *.o $(TESTAPI) $(TESTWKB)
 
 distclean: clean
-	$(RM) Makefile
+	@rm -f Makefile

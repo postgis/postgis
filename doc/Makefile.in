@@ -191,10 +191,14 @@ images-clean:
 	$(MAKE) -C html/image_src images-clean
 	
 clean: 
-	rm -f html/*.html
-	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+	@rm -f html/*.html
+	@rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	$(MAKE) -C html/image_src clean
-	rm -f postgis-out.xml postgis_aggs_mm.xml
+	@rm -f postgis-out.xml postgis_aggs_mm.xml
+
+distclean: clean
+	$(MAKE) -C html/image_src distclean
+	@rm -f Makefile
 
 maintainer-clean: clean images-clean
 	rm -f postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql

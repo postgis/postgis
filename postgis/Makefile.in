@@ -143,3 +143,6 @@ uninstall_postgis.sql: postgis.sql ../utils/create_undef.pl
 
 uninstall_legacy.sql: legacy.sql ../utils/create_undef.pl 
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
+
+distclean:
+	@rm Makefile

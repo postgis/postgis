@@ -39,6 +39,7 @@ distclean: clean distclean-local
 
 distclean-local: clean
 	rm -Rf autom4te.cache
+	rm -f GNUmakefile
 	rm -f config.log config.cache config.status 
 	rm -f postgis_config.h
 

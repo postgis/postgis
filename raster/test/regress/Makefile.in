@@ -134,8 +134,11 @@ TESTS = $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
 all:
 	@echo "Use 'make check' to run all tests"
 
-clean distclean:
-	$(RM) rtpostgis.sql
+distclean: clean
+	@rm -f Makefile
+
+clean:
+	$(RM) -f rtpostgis.sql
 
 rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../../rt_pg/rtpostgis.sql > rtpostgis.sql

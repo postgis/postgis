@@ -134,6 +134,7 @@ clean:
 distclean: clean
 	$(MAKE) -C cunit distclean
 	rm -f liblwgeom.h Makefile
+	rm -f Makefile
 
 check: liblwgeom.la
 	$(MAKE) -C cunit check
