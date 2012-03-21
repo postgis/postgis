@@ -141,8 +141,8 @@ DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql
 endif
 
-distclean:
-	@rm Makefile
+distclean: clean
+	rm -f Makefile
 
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)

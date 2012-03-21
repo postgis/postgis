@@ -24,7 +24,7 @@ uninstall:
 #	$(RM) $(DESTDIR)$(PGSQL_BINDIR)/$(RASTER2PGSQL)
 
 clean:
-	@rm -f *.o
+	rm -f *.o
 
 distclean: clean
-	@rm -f Makefile
+	rm -f Makefile

@@ -93,5 +93,5 @@ uninstall_topology.sql: topology.sql ../utils/create_undef.pl
 check: topology.sql
 	$(MAKE) -C test $@
 
-distclean:
-	@rm Makefile
+distclean: clean
+	rm -f Makefile

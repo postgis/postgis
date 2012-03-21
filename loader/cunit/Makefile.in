@@ -82,11 +82,11 @@ $(OBJS): %.o: %.c
 
 # Clean target
 clean:
-	@rm -f $(OBJS)
-	@rm -f cu_tester.exe
+	rm -f $(OBJS)
+	rm -f cu_tester.exe
 
 distclean: clean
-	@rm -f Makefile
+	rm -f Makefile
 
 # Requirements message
 requirements_not_met_cunit:

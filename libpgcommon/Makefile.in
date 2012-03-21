@@ -44,13 +44,13 @@ maintainer-clean: clean
 
 clean: 
 	$(MAKE) -C cunit clean
-	@rm -f $(SA_OBJS) 
-	@rm -f $(NM_OBJS) 
-	@rm -f libpgcommon.a 
+	rm -f $(SA_OBJS) 
+	rm -f $(NM_OBJS) 
+	rm -f libpgcommon.a 
 
 distclean: clean
 	$(MAKE) -C cunit distclean
-	@rm -f Makefile
+	rm -f Makefile
 
 check: libpgcommon.a
 	$(MAKE) -C cunit check

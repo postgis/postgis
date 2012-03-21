@@ -48,7 +48,7 @@ distclean: clean
 	$(MAKE) -C loader $@
 	$(MAKE) -C test $@
 	$(MAKE) -C scripts $@
-	@rm -f raster_config.h Makefile
+	rm -f raster_config.h Makefile
 
 core-check:
 	$(MAKE) -C test $@

@@ -135,7 +135,7 @@ all:
 	@echo "Use 'make check' to run all tests"
 
 distclean: clean
-	@rm -f Makefile
+	rm -f Makefile
 
 clean:
 	$(RM) -f rtpostgis.sql

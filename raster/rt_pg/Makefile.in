@@ -105,4 +105,4 @@ uninstall_rtpostgis.sql: rtpostgis.sql ../../utils/create_undef.pl
 	$(PERL) ../../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 
 distclean: clean
-	$(RM) Makefile
+	rm -f Makefile

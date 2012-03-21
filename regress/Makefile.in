@@ -150,7 +150,7 @@ endif
 all install uninstall:
 
 distclean: clean
-	@rm Makefile
+	rm Makefile
 
 staged-install-topology:
 	@if test x"@TOPOLOGY@" != "x"; then \

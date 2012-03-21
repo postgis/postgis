@@ -28,11 +28,11 @@ RT_HEADERS=rt_api.h
 all: $(RT_LIB)
 
 clean:
-	@rm -f $(RT_OBJS)
-	@rm -f $(RT_LIB)
+	rm -f $(RT_OBJS)
+	rm -f $(RT_LIB)
 
 distclean: clean
-	@rm -f Makefile
+	rm -f Makefile
 
 librtcore.a: $(RT_OBJS) $(RT_HEADERS)
 	$(AR) $(RT_LIB) $(RT_OBJS)
