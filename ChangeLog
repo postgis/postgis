@@ -1,3 +1,118 @@
+2012-03-19 20:40  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9517] README.postgis, README.raster: README.raster needs
+	  updating or removal (#1649)
+
+2012-03-19 12:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9516] postgis/lwgeom_functions_analytic.c, regress/tickets.sql,
+	  regress/tickets_expected: ST_SnapToGrid: retain type on empty
+	  return (#1695)
+
+2012-03-16 19:13  Sandro Santilli <strk@keybit.net>
+
+	* [r9515] doc/reference_measure.xml: Fix typo puffered -> buffered
+
+2012-03-16 19:11  Sandro Santilli <strk@keybit.net>
+
+	* [r9514] liblwgeom/lwpoly.c: Be quieter on polygon ring collapse
+	  (in ST_Simplify)
+
+2012-03-16 15:03  Regina Obe <lr@pcorp.us>
+
+	* [r9513] doc/html/images/st_mapalgebraexpr2_08.png,
+	  doc/reference_raster.xml: fix typo in example was adding band 1
+	  twice
+
+2012-03-16 12:58  Regina Obe <lr@pcorp.us>
+
+	* [r9512] doc/html/images/st_clip04.png,
+	  doc/html/images/st_clip05.png, doc/reference_raster.xml: surreal
+	  clipping
+
+2012-03-16 12:47  Regina Obe <lr@pcorp.us>
+
+	* [r9511] doc/reference_raster.xml: slightly more efficient (and
+	  hmm my last timing was with 2 buildings instead of 3)
+
+2012-03-16 12:40  Regina Obe <lr@pcorp.us>
+
+	* [r9510] doc/reference_raster.xml: minor adjustment to example
+
+2012-03-16 12:25  Regina Obe <lr@pcorp.us>
+
+	* [r9509] doc/reference_raster.xml: Provide summarizing summary
+	  stats example using intersection of geometry. Pretty fast.
+
+2012-03-16 12:15  Sandro Santilli <strk@keybit.net>
+
+	* [r9508] .gitignore, postgis/Makefile.in, postgis/legacy.sql.in.c,
+	  postgis/legacy_compatibility_layer.sql.in.c,
+	  postgis/legacy_minimal.sql.in.c: Rename
+	  legacy_compatibility_layer.sql to legacy_minimal.sql
+	  
+	  As per
+	  http://postgis.refractions.net/pipermail/postgis-devel/2012-March/019663.html
+
+2012-03-16 11:58  Sandro Santilli <strk@keybit.net>
+
+	* [r9507] postgis/lwgeom_transform.c: Do not take PROJ4 errno value
+	  as a sign of error (#1580, #1690)
+	  
+	  Dejavu...
+
+2012-03-16 08:48  Regina Obe <lr@pcorp.us>
+
+	* [r9506] postgis/legacy.sql.in.c,
+	  postgis/legacy_compatibility_layer.sql.in.c: Add more descriptive
+	  notes detailing difference between files
+
+2012-03-16 08:27  Regina Obe <lr@pcorp.us>
+
+	* [r9505] doc/introduction.xml: fix spelling typos
+
+2012-03-16 06:59  Regina Obe <lr@pcorp.us>
+
+	* [r9504] doc/introduction.xml: Put in a section for crowd sourcing
+	  campaigns
+
+2012-03-15 09:54  Sandro Santilli <strk@keybit.net>
+
+	* [r9503] configure.ac: Bail out if user specified json dir isn't
+	  correct (#1688)
+
+2012-03-14 21:45  Regina Obe <lr@pcorp.us>
+
+	* [r9502] doc/reference_raster.xml: put note about slowness of
+	  raster st_union and promise it will be better in later versions
+
+2012-03-14 21:35  Regina Obe <lr@pcorp.us>
+
+	* [r9501] doc/reference_raster.xml: change example to be more
+	  efficient (prior version was taking 9-10 seconds this much
+	  improved one takes 3.5 seconds)
+
+2012-03-14 20:26  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9500] raster/test/core/Makefile.in: Updated to have C API tests
+	  use libtool
+
+2012-03-14 19:05  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9499] configure.ac: Use AC_SEARCH_LIBS instead of AC_CHECK_LIB
+	  for checking GDAL libraries
+
+2012-03-14 16:35  Sandro Santilli <strk@keybit.net>
+
+	* [r9498] configure.ac: Don't re-implement AC_PATH_PROG for
+	  gdal-config
+
+2012-03-14 16:02  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9495] ChangeLog, NEWS, README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Prepare for 2.0.0beta3
+	  release
+
 2012-03-14 15:50  Sandro Santilli <strk@keybit.net>
 
 	* [r9494] raster/rt_pg/Makefile.in: Encode dependency of raster
