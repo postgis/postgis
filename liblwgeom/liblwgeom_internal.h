@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  *
- * Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2011-2012 Sandro Santilli <strk@keybit.net>
  * Copyright (C) 2011 Paul Ramsey <pramsey@cleverelephant.ca>
  * Copyright (C) 2007-2008 Mark Cave-Ayland
  * Copyright (C) 2001-2006 Refractions Research Inc.
@@ -171,7 +171,11 @@ extern int32_t lw_get_int32_t(const uint8_t *loc);
 /*
 * DP simplification
 */
-POINTARRAY* ptarray_simplify(POINTARRAY *inpts, double epsilon);
+
+/**
+ * @param minpts minimun number of points to retain, if possible.
+ */
+POINTARRAY* ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts);
 LWLINE* lwline_simplify(const LWLINE *iline, double dist);
 LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist);
 LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist);

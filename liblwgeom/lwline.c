@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  *
+ * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
  * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
@@ -479,7 +480,7 @@ LWLINE* lwline_simplify(const LWLINE *iline, double dist)
 	if( lwline_is_empty(iline) )
 		return lwline_clone(iline);
 		
-	oline = lwline_construct(iline->srid, NULL, ptarray_simplify(iline->points, dist));
+	oline = lwline_construct(iline->srid, NULL, ptarray_simplify(iline->points, dist, 2));
 	oline->type = iline->type;
 	return oline;
 }

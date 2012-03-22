@@ -2,7 +2,9 @@
  *
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
- * Copyright 2001-2006 Refractions Research Inc.
+ *
+ * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
+ * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -1174,7 +1176,7 @@ ptarray_dp_findsplit(POINTARRAY *pts, int p1, int p2, int *split, double *dist)
 }
 
 POINTARRAY *
-ptarray_simplify(POINTARRAY *inpts, double epsilon)
+ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts)
 {
 	int *stack;			/* recursion stack */
 	int sp=-1;			/* recursion stack pointer */
@@ -1189,7 +1191,8 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon)
 	p1 = 0;
 	stack[++sp] = inpts->npoints-1;
 
-	LWDEBUGF(2, "Input has %d pts and %d dims", inpts->npoints, inpts->flags);
+	LWDEBUGF(2, "Input has %d pts and %d dims", inpts->npoints,
+	                                            FLAGS_NDIMS(inpts->flags));
 
 	/* Allocate output POINTARRAY, and add first point. */
 	outpts = ptarray_construct_empty(FLAGS_GET_Z(inpts->flags), FLAGS_GET_M(inpts->flags), inpts->npoints);
@@ -1205,8 +1208,9 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon)
 
 		LWDEBUGF(3, "Farthest point from P%d-P%d is P%d (dist. %g)", p1, stack[sp], split, dist);
 
-		if (dist > epsilon)
+		if (dist > epsilon || ( outpts->npoints+sp+1 < minpts && dist > 0 ) )
 		{
+			LWDEBUGF(4, "Added P%d to stack (outpts:%d, minpts:%d)", split, sp, minsplits);
 			stack[++sp] = split;
 		}
 		else

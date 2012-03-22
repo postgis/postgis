@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  *
+ * Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
  * Copyright (C) 2001-2006 Refractions Research Inc.
  *
  * This is free software; you can redistribute and/or modify it under
@@ -353,23 +354,14 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 
 	for (i = 0; i < ipoly->nrings; i++)
 	{
-		POINTARRAY *opts = ptarray_simplify(ipoly->rings[i], dist);
-
-		/* One point implies an error in the ptarray_simplify */
-		if ( i && ( opts->npoints < 2 ) )
-		{
-			LWDEBUG(2, "ptarray_simplify returned a <2 pts array");
-			ptarray_free(opts);
-			continue;
-		}
+		POINTARRAY *opts = ptarray_simplify(ipoly->rings[i], dist, 3);
 
 		/* Less points than are needed to form a closed ring, we can't use this */
-		if ( i && ( opts->npoints < 4 ) )
+		if ( i && opts->npoints < 4 )
 		{
-			LWDEBUGF(3, "ring%d skipped (<4 pts)", i);
+			LWDEBUGF(3, "ring%d skipped (% pts)", i, opts->npoints);
 			ptarray_free(opts);
-			if ( i ) continue;
-			else break;
+			continue;
 		}
 
 		LWDEBUGF(3, "ring%d simplified from %d to %d points", i, ipoly->rings[i]->npoints, opts->npoints);
@@ -377,6 +369,13 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 		/* Add ring to simplified polygon */
 		if( lwpoly_add_ring(opoly, opts) == LW_FAILURE )
 			return NULL;
+
+    /* Don't scan holes if shell is collapsed */
+		if (  !i && opts->npoints < 4 )
+		{
+		  LWDEBUG(3, "nothing more to do for collapsed shell");
+			break;
+		}
 	}
 
 	LWDEBUGF(3, "simplified polygon with %d rings", ipoly->nrings);
