@@ -814,7 +814,7 @@ In this example we define a column using typmod and another using constraints.</
 SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
 <para>If we run in psql</para>
 <programlisting>\d pois_ny;</programlisting>
-<para>We observe they are defined differently -- one is typmod, one is constraint
+<para>We observe they are defined differently -- one is typmod, one is constraint</para>
 <screen>                                  Table "public.pois_ny"
   Column   |         Type          |                       Modifiers
 
