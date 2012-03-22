@@ -739,15 +739,16 @@ SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programli
 		<title>Manually Registering Geometry Columns in geometry_columns</title>
 		<para>The AddGeometryColumn() approach creates a geometry column and also registers the new
 		column in the geometry_columns table.  If your software utilizes geometry_columns, then
-		any geometry columns you need to query by must be registered in this view.  Two of the cases
-		where you want a geometry column to be registered in geometry_columns, but you can't use
-		AddGeometryColumn, is in the case of SQL Views and bulk inserts.  For these cases, you must register the column in the
-		geometry_columns manually.  Note in PostGIS 2.0+ if your column is typmod based, the creation process would register it correctly, so no need to do anything.
-		Though running this will not cause any harm if you are not sure.
-		Below is a simple script to do that.</para>
+		any geometry columns you need to query by must be registered in this view.  
+		Starting with PoastGIS 2.0, geometry_columns is no longer editable and all geometry columns are autoregistered.</para>
+		<para>However they may be registered as a generic geometry column if the column was not defined as a specific type during creation.</para>
+		
+		<para>Two of the cases
+		where this may happen, but you can't use
+		AddGeometryColumn, is in the case of SQL Views and bulk inserts.  For these cases, you can correct the registration in the geometry_columns table
+		by constraining the column.  Note in PostGIS 2.0+ if your column is typmod based, the creation process would register it correctly, so no need to do anything.</para>
 
-		<programlisting>
---Lets say you have a view created like this
+		<programlisting>--Lets say you have a view created like this
 CREATE VIEW  public.vwmytablemercator AS
 	SELECT gid, ST_Transform(geom,3395) As geom, f_name
 	FROM public.mytable;
@@ -764,12 +765,8 @@ CREATE VIEW  public.vwmytablemercator AS
 DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
 	SELECT gid, ST_Transform(geom,3395)::geometry(Polygon, 3395) As geom, f_name
-	FROM public.mytable;
-
-		</programlisting>
-
-		<programlisting>
---Lets say you created a derivative table by doing a bulk insert
+	FROM public.mytable;</programlisting>
+		<programlisting>--Lets say you created a derivative table by doing a bulk insert
 SELECT poi.gid, poi.geom, citybounds.city_name
 INTO myschema.my_special_pois
 FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);
@@ -791,9 +788,79 @@ CREATE INDEX my_special_pois_geom_gist_nd
 -- For PostGIS prior to 2.0, this technique can also be used to register views
 SELECT populate_geometry_columns('myschema.my_special_pois'::regclass); 
 
-		</programlisting>
+--If you are using PostGIS 2.0 and for whatever reason, you
+-- you need the old constraint based definition behavior 
+-- (such as case of inherited tables where all children do not have the same type and srid)
+-- set new optional  use_typmod argument to false
+SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false); </programlisting>
 
-	</sect2>
+<para>Although the old-constraint based method is still supported, a constraint-based geomentry column used directly
+in a view, will not register correctly in geometry_columns, as will a typmod one. 
+In this example we define a column using typmod and another using constraints.</para>
+<programlisting>CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY
+   , poi_name text, cat varchar(20)
+   , geom geometry(POINT,4326) );
+SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);</programlisting>
+<para>If we run in psql</para>
+<programlisting>\d pois_ny;</programlisting>
+<para>We observe they are defined differently -- one is typmod, one is constraint
+<screen>                                  Table "public.pois_ny"
+  Column   |         Type          |                       Modifiers
+
+-----------+-----------------------+------------------------------------------------------
+ gid       | integer               | not null default nextval('pois_ny_gid_seq'::regclass)
+ poi_name  | text                  |
+ cat       | character varying(20) |
+ geom      | geometry(Point,4326)  |
+ geom_2160 | geometry              |
+Indexes:
+    "pois_ny_pkey" PRIMARY KEY, btree (gid)
+Check constraints:
+    "enforce_dims_geom_2160" CHECK (st_ndims(geom_2160) = 2)
+    "enforce_geotype_geom_2160" CHECK (geometrytype(geom_2160) = 'POINT'::text 
+        OR geom_2160 IS NULL)
+    "enforce_srid_geom_2160" CHECK (st_srid(geom_2160) = 2160)</screen>
+<para>In geometry_columns, they both register correctly</para>
+<programlisting>SELECT f_table_name, f_geometry_column, srid, type 
+	FROM geometry_columns 
+	WHERE f_table_name = 'pois_ny';</programlisting>
+<screen>f_table_name | f_geometry_column | srid | type
+-------------+-------------------+------+-------
+pois_ny      | geom              | 4326 | POINT
+pois_ny      | geom_2160         | 2160 | POINT</screen>
+<para>However -- if we were to create a view like this</para>
+<programlisting>CREATE VIEW vw_pois_ny_parks AS 
+SELECT * 
+  FROM pois_ny 
+  WHERE cat='park';
+  
+SELECT f_table_name, f_geometry_column, srid, type 
+	FROM geometry_columns 
+	WHERE f_table_name = 'vw_pois_ny_parks';</programlisting> 
+<para>The typmod based geom view column registers correctly,
+but the constraint based one does not.</para>
+<screen>   f_table_name   | f_geometry_column | srid |   type
+------------------+-------------------+------+----------
+ vw_pois_ny_parks | geom              | 4326 | POINT
+ vw_pois_ny_parks | geom_2160         |    0 | GEOMETRY</screen>
+ 
+<para>This may change in future versions of PostGIS, but for now
+To force the constraint based view column to register correctly, we need to do this:</para>
+<programlisting>DROP VIEW vw_pois_ny_parks;
+CREATE VIEW vw_pois_ny_parks AS 
+SELECT gid, poi_name, cat
+  , geom
+  , geom_2160::geometry(POINT,2160) As geom_2160 
+  FROM pois_ny 
+  WHERE cat='park';
+SELECT f_table_name, f_geometry_column, srid, type 
+	FROM geometry_columns 
+	WHERE f_table_name = 'vw_pois_ny_parks';</programlisting>
+<screen>   f_table_name   | f_geometry_column | srid | type
+------------------+-------------------+------+-------
+ vw_pois_ny_parks | geom              | 4326 | POINT
+ vw_pois_ny_parks | geom_2160         | 2160 | POINT</screen>
+ </sect2>
 
 	<sect2 id="OGC_Validity">
 	  <title>Ensuring OpenGIS compliancy of geometries</title>
