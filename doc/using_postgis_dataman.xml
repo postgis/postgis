@@ -595,22 +595,25 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	</sect2>
 
 	<sect2 id="geometry_columns">
-	  <title>The GEOMETRY_COLUMNS Table</title>
+	  <title>The GEOMETRY_COLUMNS VIEW</title>
 
-	  <para>The <varname>GEOMETRY_COLUMNS</varname> table definition is as
-	  follows:</para>
+	  <para>In versions of PostGIS prior to 2.0.0, geometry_columns was a table that could be directly edited, and sometimes got out of synch with the actual definition of the geometry columns.
+	  In PostGIS 2.0.0, <varname>GEOMETRY_COLUMNS</varname> became a view with the same front-facing structure as prior versions, but not reading from database system catalogs
+	  It's structure is as follows:</para>
 
-	  <programlisting>CREATE TABLE geometry_columns (
-  f_table_catalog    VARRCHAR(256) NOT NULL,
-  f_table_schema     VARCHAR(256) NOT NULL,
-  f_table_name        VARCHAR(256) NOT NULL,
-  f_geometry_column  VARCHAR(256) NOT NULL,
-  coord_dimension    INTEGER NOT NULL,
-  srid               INTEGER NOT NULL,
-  type               VARCHAR(30) NOT NULL
-)</programlisting>
+	  <programlisting>\d geometry_columns</programlisting>
+<screen>             View "public.geometry_columns"
+      Column       |          Type          | Modifiers
+-------------------+------------------------+-----------
+ f_table_catalog   | character varying(256) |
+ f_table_schema    | character varying(256) |
+ f_table_name      | character varying(256) |
+ f_geometry_column | character varying(256) |
+ coord_dimension   | integer                |
+ srid              | integer                |
+ type              | character varying(30)  |</screen>
 
-	  <para>The columns are as follows:</para>
+	  <para>The column meanings have not changed from prior versions and are:</para>
 
 	  <variablelist>
 		<varlistentry>
@@ -677,19 +680,27 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	<sect2 id="Create_Spatial_Table">
 	  <title>Creating a Spatial Table</title>
 
-	  <para>Creating a table with spatial data is done in two stages:</para>
+	  <para>Creating a table with spatial data, can be done in one step. As shown in the following example
+	  which creates a roads table with a 2D linestring geometry column in WGS84 long lat</para>
+	  <programlisting>CREATE TABLE ROADS ( ID int4
+	  	, ROAD_NAME varchar(25), geom geometry(LINESTRING,4326) );</programlisting>
+	  	
+	  <para>We can add additional columns using standard ALTER TABLE command as we do in this next example where we add a 3-D linestring.</para>
+	  <programlisting>ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);</programlisting>
+	  
+	  <para>For backwards compability, you can still create a spatial table in two stages using the management functions.</para>
 
 	  <itemizedlist>
 		<listitem>
 		  <para>Create a normal non-spatial table.</para>
 
-		  <para>For example: <command>CREATE TABLE ROADS_GEOM ( ID int4, NAME
+		  <para>For example: <command>CREATE TABLE ROADS ( ID int4, ROAD_NAME
 		  varchar(25) )</command></para>
 		</listitem>
 
 		<listitem>
 		  <para>Add a spatial column to the table using the OpenGIS
-		  "AddGeometryColumn" function.</para>
+		  "AddGeometryColumn" function. Refer to <xref linkend="AddGeometryColumn" /> for more details.</para>
 
 		  <para>The syntax is: <programlisting>AddGeometryColumn(
   &lt;schema_name&gt;,
@@ -707,9 +718,9 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 )</programlisting></para>
 
 		  <para>Example1: <command>SELECT AddGeometryColumn('public',
-		  'roads_geom', 'geom', 423, 'LINESTRING', 2)</command></para>
+		  'roads', 'geom', 423, 'LINESTRING', 2)</command></para>
 
-		  <para>Example2: <command>SELECT AddGeometryColumn( 'roads_geom',
+		  <para>Example2: <command>SELECT AddGeometryColumn( 'roads',
 		  'geom', 423, 'LINESTRING', 2)</command></para>
 		</listitem>
 	  </itemizedlist>
@@ -726,13 +737,13 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 SELECT AddGeometryColumn('parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );</programlisting>
 
 	  <para>Here is another example, using the generic "geometry" type and the
-	  undefined SRID value of -1:</para>
+	  undefined SRID value of 0:</para>
 
 	  <programlisting>CREATE TABLE roads (
   road_id INTEGER,
   road_name VARCHAR
 );
-SELECT AddGeometryColumn( 'roads', 'roads_geom', -1, 'GEOMETRY', 3 );</programlisting>
+SELECT AddGeometryColumn( 'roads', 'roads_geom', 0, 'GEOMETRY', 3 );</programlisting>
 	</sect2>
 
 	<sect2 id="Manual_Register_Spatial_Column">
