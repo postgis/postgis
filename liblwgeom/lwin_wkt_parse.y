@@ -319,7 +319,10 @@ polygon :
 		{ $$ = wkt_parser_polygon_finalize(NULL, NULL); WKT_ERROR(); } ;
 
 polygon_untagged : 
-	LBRACKET_TOK ring_list RBRACKET_TOK { $$ = $2; } ;
+	LBRACKET_TOK ring_list RBRACKET_TOK 
+		{ $$ = $2; } |
+	EMPTY_TOK
+		{ $$ = wkt_parser_polygon_finalize(NULL, NULL); WKT_ERROR(); };
 
 patch : 
 	LBRACKET_TOK patchring_list RBRACKET_TOK { $$ = $2; } ;
@@ -454,7 +457,9 @@ linestring :
 
 linestring_untagged :
 	LBRACKET_TOK ptarray RBRACKET_TOK 
-		{ $$ = wkt_parser_linestring_new($2, NULL); WKT_ERROR(); } ;
+		{ $$ = wkt_parser_linestring_new($2, NULL); WKT_ERROR(); } |
+	EMPTY_TOK
+		{ $$ = wkt_parser_linestring_new(NULL, NULL); WKT_ERROR(); };
 
 triangle_list :
 	triangle_list COMMA_TOK triangle_untagged 
@@ -496,7 +501,9 @@ point_untagged :
 	coordinate 
 		{ $$ = wkt_parser_point_new(wkt_parser_ptarray_new($1),NULL); WKT_ERROR(); } |
 	LBRACKET_TOK coordinate RBRACKET_TOK
-		{ $$ = wkt_parser_point_new(wkt_parser_ptarray_new($2),NULL); WKT_ERROR(); } ;
+		{ $$ = wkt_parser_point_new(wkt_parser_ptarray_new($2),NULL); WKT_ERROR(); } |
+	EMPTY_TOK
+		{ $$ = wkt_parser_point_new(NULL, NULL); WKT_ERROR(); };
 
 point : 
 	POINT_TOK LBRACKET_TOK ptarray RBRACKET_TOK 

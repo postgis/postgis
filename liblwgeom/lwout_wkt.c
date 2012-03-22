@@ -54,7 +54,7 @@ static void dimension_qualifiers_to_wkt_sb(const LWGEOM *geom, stringbuffer_t *s
 */
 static void empty_to_wkt_sb(stringbuffer_t *sb)
 {
-	if ( stringbuffer_lastchar(sb) != ' ' ) /* "EMPTY" */
+	if ( ! strchr(" ,(", stringbuffer_lastchar(sb)) ) /* "EMPTY" */
 	{ 
 		stringbuffer_append(sb, " "); 
 	}
