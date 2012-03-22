@@ -356,7 +356,7 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 		POINTARRAY *opts = ptarray_simplify(ipoly->rings[i], dist);
 
 		/* One point implies an error in the ptarray_simplify */
-		if ( opts->npoints < 2 )
+		if ( i && ( opts->npoints < 2 ) )
 		{
 			LWDEBUG(2, "ptarray_simplify returned a <2 pts array");
 			ptarray_free(opts);
@@ -364,7 +364,7 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 		}
 
 		/* Less points than are needed to form a closed ring, we can't use this */
-		if ( opts->npoints < 4 )
+		if ( i && ( opts->npoints < 4 ) )
 		{
 			LWDEBUGF(3, "ring%d skipped (<4 pts)", i);
 			ptarray_free(opts);
