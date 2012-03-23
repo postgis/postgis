@@ -126,6 +126,9 @@ SELECT check_changes();
 SELECT '#1613.2', TopoGeo_addLineString('city_data', 'LINESTRING(556250 144887, 556267 144887.07, 556310.04 144887)') ORDER BY 2;
 SELECT check_changes();
 
+-- Consistency check
+SELECT * FROM ValidateTopology('city_data');
+
 -- See http://trac.osgeo.org/postgis/ticket/1631
 
 -- clean all up first
@@ -141,6 +144,9 @@ SELECT '#1631.2', TopoGeo_addLineString('city_data',
   'LINESTRING(556254.67 144886.62, 556267.66 144887.07)'
 ) ORDER BY 2;
 SELECT check_changes();
+
+-- Consistency check
+SELECT * FROM ValidateTopology('city_data');
 
 -- See http://trac.osgeo.org/postgis/ticket/1641
 
@@ -159,6 +165,9 @@ SELECT '#1641.2', TopoGeo_addLineString('city_data',
 ) ORDER BY 2;
 SELECT check_changes();
 
+-- Consistency check
+SELECT * FROM ValidateTopology('city_data');
+
 -- Now w/out explicit tolerance (will use local min)
 -- clean all up first
 DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
@@ -172,6 +181,9 @@ SELECT '#1641.4', TopoGeo_addLineString('city_data',
   'LINESTRING(0.095989 0.113619, -0.064646 0.470149)'
 ) ORDER BY 2;
 SELECT check_changes();
+
+-- Consistency check
+SELECT * FROM ValidateTopology('city_data');
 
 -- See http://trac.osgeo.org/postgis/ticket/1650
 
@@ -189,7 +201,11 @@ SELECT '#1650.3', TopoGeo_addLineString('city_data',
 , 2) ORDER BY 2;
 SELECT check_changes();
 
--- Test snapping of line over a node( http://trac.osgeo.org/postgis/ticket/1654 )
+-- Consistency check
+SELECT * FROM ValidateTopology('city_data');
+
+-- Test snapping of line over a node
+-- See http://trac.osgeo.org/postgis/ticket/1654 
 
 DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
 DELETE FROM city_data.face where face_id > 0; 
@@ -201,7 +217,11 @@ SELECT '#1654.2', TopoGeo_addLineString('city_data',
 , 2) ORDER BY 2;
 SELECT check_changes();
 
--- Test snapping of new edge endpoints ( http://trac.osgeo.org/postgis/ticket/1706 )
+-- Consistency check
+SELECT * FROM ValidateTopology('city_data');
+
+-- Test snapping of new edge endpoints 
+-- See http://trac.osgeo.org/postgis/ticket/1706 
 
 DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
 DELETE FROM city_data.face where face_id > 0; 
@@ -215,6 +235,8 @@ SELECT '#1706.2', 'E*', TopoGeo_addLineString('city_data',
 , 4) ORDER BY 3;
 SELECT check_changes();
 
+-- Consistency check
+SELECT * FROM ValidateTopology('city_data');
 
 -- Cleanups
 DROP FUNCTION check_changes();
