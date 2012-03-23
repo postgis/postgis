@@ -2534,6 +2534,9 @@ static int lwcollection_check_geodetic(const LWCOLLECTION *col)
 
 int lwgeom_check_geodetic(const LWGEOM *geom)
 {
+	if ( lwgeom_is_empty(geom) ) 
+		return LW_TRUE;
+		
 	switch (geom->type)
 	{
 	case POINTTYPE:
