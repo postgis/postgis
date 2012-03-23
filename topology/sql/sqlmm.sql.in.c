@@ -1922,6 +1922,10 @@ BEGIN
     edgeid2 = rec.nextval;
   END LOOP;
 
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG ' inserting new edges % and % split from %', edgeid1, edgeid2, anedge;
+#endif
+
   --RAISE NOTICE 'EdgeId1 % EdgeId2 %', edgeid1, edgeid2;
 
   --RAISE DEBUG 'oldedge.next_left_edge: %', oldedge.next_left_edge;
@@ -2206,6 +2210,10 @@ BEGIN
   LOOP
     newedgeid = rec.nextval;
   END LOOP;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG ' inserting new edge % split from %', newedgeid, anedge;
+#endif
 
   --
   -- Insert the new edge
