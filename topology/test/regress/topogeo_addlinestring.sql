@@ -189,7 +189,7 @@ SELECT '#1650.3', TopoGeo_addLineString('city_data',
 , 2) ORDER BY 2;
 SELECT check_changes();
 
--- Test snapping of line over a node( http://trac.osgeo.org/postgis/ticket/??? )
+-- Test snapping of line over a node( http://trac.osgeo.org/postgis/ticket/1654 )
 
 DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
 DELETE FROM city_data.face where face_id > 0; 
