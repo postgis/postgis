@@ -920,6 +920,13 @@ Failed: 0
 	<para>
 	  <command>psql -d [yourdatabase] -f topology/topology_comments.sql</command>
 	</para>
+	
+	<para>If you plan to restore an old backup from prior versions in this new db, run:</para>
+	<para><command>psql -d [yourdatabase] -f legacy.sql</command></para>
+	<note><para>There is an alternative <filename>legacy_minimal.sql</filename> you can run instead which will install barebones needed to recover tables and work with apps like MapServer
+	and GeoServer. If you have views that use things like distance / length etc, you'll need the full blown <filename>legacy.sql</filename></para></note>
+	
+	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
   </sect1>
   
   <sect1 id="create_new_db_extensions">
@@ -950,6 +957,11 @@ Failed: 0
 	<para>
 	  <command>psql -d [yourdatabase] -c "CREATE EXTENSION postgis_topology;"</command>
 	</para>
+	
+	<para>If you plan to restore an old backup from prior versions in this new db, run:</para>
+	<para><command>psql -d [yourdatabase] -f legacy.sql</command></para>
+	
+	<para>You can later run <filename>uninstall_legacy.sql</filename> to get rid of the deprecated functions after you are done with restoring and cleanup.</para>
   </sect1>
   
   <sect1 id="loading_extras_tiger_geocoder">
@@ -1136,7 +1148,7 @@ pretty_address
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
 			<programlisting>No migration path defined for ... to &last_release_version;</programlisting>
-		<para>Then you'll need to backup your database, create a fresh one as defined in <xref linkend="create_new_db_extensions" /> and then restore your backup ontop of this new database.
+		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup ontop of this new database.
 		You might get a message that <code>postgis extension</code> already installed which you can safely ignore.</para>
 		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
 		picks up the newest latest version during restore. .</para></note>
@@ -1193,7 +1205,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlis
 	  <para>
 		Do a fresh install of PostGIS in a new database -- we'll
 		refer to this database as <varname>newdb</varname>.
-		Please refer to <xref linkend="create_new_db" /> for
+		Please refer to <xref linkend="create_new_db" /> and <xref linkend="create_new_db_extensions" /> for
 		instructions on how to do this.
 	  </para>
 
