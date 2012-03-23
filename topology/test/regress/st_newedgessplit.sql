@@ -90,6 +90,36 @@ SELECT check_changes();
 SELECT 'closed', ST_NewEdgesSplit('city_data', 1, 'POINT(3 38)');
 SELECT check_changes();
 
+-- Robustness of edge splitting (#1711)
+
+-- clean all up first
+DELETE FROM city_data.edge_data; 
+DELETE FROM city_data.node; 
+DELETE FROM city_data.face where face_id > 0; 
+
+CREATE TEMP TABLE t AS
+SELECT
+'01020000000400000000000000000034400000000000002440000000000000244000000000000024400000000000002240000000000000284000000000000024400000000000003440'
+::geometry as line, 
+'010100000000000000000022400000000000002840'
+::geometry as point,
+null::int as edge_id,
+null::int as node_id
+;
+
+UPDATE t SET edge_id = AddEdge('city_data', line);
+UPDATE t SET node_id = ST_NewEdgesSplit('city_data', t.edge_id, t.point);
+SELECT 'robust.1', 'E'||edge_id, 'N'||node_id FROM t;
+SELECT check_changes();
+SELECT 'robust.2',
+ ST_Equals(t.point, ST_EndPoint(e1.geom)),
+ ST_Equals(t.point, ST_StartPoint(e2.geom))
+FROM t, city_data.edge e1, city_data.edge e2, city_data.node n
+WHERE n.node_id = t.node_id
+ AND e1.end_node = n.node_id
+ AND e2.start_node = n.node_id;
+
+DROP TABLE t;
 
 
 DROP FUNCTION check_changes();
