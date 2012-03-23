@@ -792,6 +792,7 @@ CREATE OR REPLACE FUNCTION topology.TopoGeo_addLinestring(atopology varchar, ali
 $$
 DECLARE
   rec RECORD;
+  rec2 RECORD;
   sql TEXT;
   set1 GEOMETRY;
   set2 GEOMETRY;
@@ -926,25 +927,28 @@ BEGIN
     RAISE DEBUG ' End Node: %', end_node;
 #endif
 
-    -- Added endpoints may have drifted due to tol, so
+    -- Added endpoints may have drifted due to tolerance, so
     -- we need to re-snap the edge to the new nodes before adding it
-    sql := 'SELECT ST_Collect(geom) FROM ' || quote_ident(atopology)
-      || '.node WHERE node_id IN (' || start_node || ',' || end_node || ')';
+    sql := 'SELECT n1.geom as sn, n2.geom as en FROM ' || quote_ident(atopology)
+      || '.node n1, ' || quote_ident(atopology)
+      || '.node n2 WHERE n1.node_id = '
+      || start_node || ' AND n2.node_id = ' || end_node;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG '%', sql;
 #endif
-    EXECUTE sql INTO STRICT set2;
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Endnodes: %', ST_AsText(set2);
-#endif
-    snapped := ST_Snap(rec.geom, set2, tol);
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Snapped edge: %', ST_AsText(snapped);
-#endif
+
+    EXECUTE sql INTO STRICT rec2;
+
+    snapped := ST_SetPoint(
+                 ST_SetPoint(rec.geom, ST_NPoints(rec.geom)-1, rec2.en),
+                 0, rec2.sn);
+
+    /* We might have introduced an invalidity (TODO: check this out) */
     snapped := ST_CollectionExtract(ST_MakeValid(snapped), 2);
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Cleaned edge: %', ST_AsText(snapped);
 #endif
+
 
     -- Check if the so-snapped edge collapsed (see #1650)
     IF ST_IsEmpty(snapped) THEN

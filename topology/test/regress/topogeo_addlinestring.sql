@@ -198,7 +198,21 @@ SELECT '#1654.1', 'N', ST_AddIsoNode('city_data', 0, 'POINT(0 0)');
 SELECT check_changes();
 SELECT '#1654.2', TopoGeo_addLineString('city_data',
   'LINESTRING(-10 1, 10 1)'
-, 2);
+, 2) ORDER BY 2;
+SELECT check_changes();
+
+-- Test snapping of new edge endpoints ( http://trac.osgeo.org/postgis/ticket/1706 )
+
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
+DELETE FROM city_data.face where face_id > 0; 
+
+SELECT '#1706.1', 'E', TopoGeo_AddLineString('city_data',
+ 'LINESTRING(20 10, 10 10, 9 12, 10 20)');
+SELECT check_changes();
+
+SELECT '#1706.2', 'E*', TopoGeo_addLineString('city_data',
+ 'LINESTRING(10 0, 10 10, 15 10, 20 10)'
+, 4) ORDER BY 3;
 SELECT check_changes();
 
 
