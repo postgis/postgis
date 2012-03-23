@@ -1210,7 +1210,7 @@ ptarray_simplify(POINTARRAY *inpts, double epsilon, unsigned int minpts)
 
 		if (dist > epsilon || ( outpts->npoints+sp+1 < minpts && dist > 0 ) )
 		{
-			LWDEBUGF(4, "Added P%d to stack (outpts:%d, minpts:%d)", split, sp, minsplits);
+			LWDEBUGF(4, "Added P%d to stack (outpts:%d)", split, sp);
 			stack[++sp] = split;
 		}
 		else
