@@ -190,6 +190,7 @@ typedef struct shp_loader_state
 
 	/* Flag for whether the geometry has Z coordinates or not. */
 	int has_z;
+
 	/* Flag for whether the geometry has M coordinates or not. */
 	int has_m;
 

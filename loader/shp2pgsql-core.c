@@ -796,6 +796,7 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 
 	state->from_srid = config->shp_sr_id;
 	state->to_srid = config->sr_id;
+
 	/* If only one has a valid SRID, use it for both. */
 	if (state->to_srid == SRID_UNKNOWN)
 	{
@@ -808,6 +809,7 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 			state->to_srid = state->from_srid;
 		}
 	}
+
 	if (state->from_srid == SRID_UNKNOWN)
 	{
 		state->from_srid = state->to_srid;
@@ -815,6 +817,7 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 
 	/* If the geo col name is not set, use one of the defaults. */
 	state->geo_col = config->geo_col;
+
 	if (!state->geo_col)
 	{
 		state->geo_col = strdup(config->geography ? GEOGRAPHY_DEFAULT : GEOMETRY_DEFAULT);
@@ -1311,10 +1314,12 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		if (state->config->readshape == 1 && state->config->geography)
 		{
 			char *dimschar;
-			if ( state->pgdims == 4 )
+
+			if (state->pgdims == 4)
 				dimschar = "ZM";
 			else
 				dimschar = "";
+
 			if (state->to_srid != SRID_UNKNOWN && state->to_srid != 4326)
 			{
 				snprintf(state->message, SHPLOADERMSGLEN, _("Invalid SRID for geography type: %d"), state->to_srid);
@@ -1323,8 +1328,8 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			}
 			stringbuffer_aprintf(sb, ",\n\"%s\" geography(%s%s,%d)", state->geo_col, state->pgtype, dimschar, 4326);
 		}
-
 		stringbuffer_aprintf(sb, ")");
+
 		/* Tablespace is optional. */
 		if (state->config->tablespace != NULL)
 		{
@@ -1344,12 +1349,14 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 		 *       A patch has apparently been submitted to PostgreSQL to enable this syntax, see this thread:
 		 *           http://archives.postgresql.org/pgsql-hackers/2011-01/msg01405.php */
 		stringbuffer_aprintf(sb, "ALTER TABLE ");
+
 		/* Schema is optional, include if present. */
 		if (state->config->schema)
 		{
 			stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
 		}
 		stringbuffer_aprintf(sb, "\"%s\" ADD PRIMARY KEY (gid);\n", state->config->table);
+
 		/* Tablespace is optional for the index. */
 		if (state->config->idxtablespace != NULL)
 		{
@@ -1358,6 +1365,7 @@ ShpLoaderGetSQLHeader(SHPLOADERSTATE *state, char **strheader)
 			{
 				stringbuffer_aprintf(sb, "\"%s\".",state->config->schema);
 			}
+
 			/* WARNING: We're assuming the default "table_pkey" name for the primary
 			 *          key index.  PostgreSQL may use "table_pkey1" or similar in the
 			 *          case of a name conflict, so you may need to edit the produced
