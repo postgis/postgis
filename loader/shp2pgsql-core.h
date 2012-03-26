@@ -197,9 +197,6 @@ typedef struct shp_loader_state
 	/* Number of dimensions to output */
 	int pgdims;
 
-	/* 0 = simple geometry, 1 = multi geometry */
-	int istypeM;
-
 	/* Last (error) message */
 	char message[SHPLOADERMSGLEN];
 

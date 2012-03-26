@@ -931,7 +931,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			state->has_m = 1;
 			state->pgtype = "POINTM";
 			state->pgdims = 3;
-			state->istypeM = 1;
 			break;
 
 		case SHPT_ARCM:
@@ -940,7 +939,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			state->has_m = 1;
 			state->pgtype = "MULTILINESTRINGM";
 			state->pgdims = 3;
-			state->istypeM = 1;
 			break;
 
 		case SHPT_POLYGONM:
@@ -949,7 +947,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			state->has_m = 1;
 			state->pgtype = "MULTIPOLYGONM";
 			state->pgdims = 3;
-			state->istypeM = 1;
 			break;
 
 		case SHPT_MULTIPOINTM:
@@ -958,7 +955,6 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			state->has_m = 1;
 			state->pgtype = "MULTIPOINTM";
 			state->pgdims = 3;
-			state->istypeM = 1;
 			break;
 
 		case SHPT_POINTZ:
