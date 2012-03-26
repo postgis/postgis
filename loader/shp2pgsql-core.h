@@ -40,6 +40,12 @@
 #define POLICY_NULL_INSERT 	0x1
 #define POLICY_NULL_SKIP	0x2
 
+/* Forced dimensionality constants */
+#define FORCE_OUTPUT_DISABLE	0x0
+#define FORCE_OUTPUT_2D		0x1
+#define FORCE_OUTPUT_3DZ	0x2
+#define FORCE_OUTPUT_3DM	0x3
+#define FORCE_OUTPUT_4D		0x4
 
 /* Error message handling */
 #define SHPLOADERMSGLEN		1024
@@ -112,9 +118,8 @@ typedef struct shp_loader_config
 	/* 0 = load DBF file only, 1 = load everything */
 	int readshape;
 
-	/* 0 = load all coordinates, 1 = skip M dimension */
-	int want_m;
-	int want_z;
+	/* Override the output geometry type (a FORCE_OUTPUT_* constant) */
+	int force_output;
 
 	/* iconv encoding name */
 	char *encoding;
@@ -188,10 +193,10 @@ typedef struct shp_loader_state
 	/* String containing the PostGIS geometry type, e.g. POINT, POLYGON etc. */
 	char *pgtype;
 
-	/* Flag for whether the geometry has Z coordinates or not. */
+	/* Flag for whether the output geometry has Z coordinates or not. */
 	int has_z;
 
-	/* Flag for whether the geometry has M coordinates or not. */
+	/* Flag for whether the output geometry has M coordinates or not. */
 	int has_m;
 
 	/* Number of dimensions to output */

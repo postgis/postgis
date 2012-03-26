@@ -197,23 +197,26 @@ main (int argc, char **argv)
 			break;
 
 		case 't':
-			if ( strcasecmp(pgis_optarg,"2D") == 0 )
+			if (strcasecmp(pgis_optarg, "2D") == 0)
 			{
-				config->want_z = config->want_m = 0;
+				config->force_output = FORCE_OUTPUT_2D;
 			}
-			else if ( strcasecmp(pgis_optarg,"3DZ") == 0 )
+			else if (strcasecmp(pgis_optarg, "3DZ") == 0 )
 			{
-				config->want_z = 1; 
-				config->want_m = 0;
+				config->force_output = FORCE_OUTPUT_3DZ;
 			}
-			else if ( strcasecmp(pgis_optarg,"3DM") == 0 )
+			else if (strcasecmp(pgis_optarg, "3DM") == 0 )
 			{
-				config->want_z = 0; 
-				config->want_m = 1;
+				config->force_output = FORCE_OUTPUT_3DM;
 			}
-			else if ( strcasecmp(pgis_optarg,"4D") == 0 )
+			else if (strcasecmp(pgis_optarg, "4D") == 0 )
 			{
-				config->want_z = config->want_m = 1;
+				config->force_output = FORCE_OUTPUT_4D;
+			}
+			else
+			{
+				fprintf(stderr, "Unsupported output type: %s\nValid output types are 2D, 3DZ, 3DM and 4D\n", pgis_optarg);
+				exit(1);
 			}
 			break;
 

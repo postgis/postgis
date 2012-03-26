@@ -762,8 +762,7 @@ set_loader_config_defaults(SHPLOADERCONFIG *config)
 	config->forceint4 = 0;
 	config->createindex = 0;
 	config->readshape = 1;
-	config->want_m = -1;
-	config->want_z = -1;
+	config->force_output = FORCE_OUTPUT_DISABLE;
 	config->encoding = strdup(ENCODING_DEFAULT);
 	config->null_policy = POLICY_NULL_INSERT;
 	config->sr_id = SRID_UNKNOWN;
@@ -1006,13 +1005,36 @@ ShpLoaderOpenShape(SHPLOADERSTATE *state)
 			break;
 		}
 		
-		/* Force M-handling if configured to do so */
-		if (state->config->want_m != -1)
-			state->has_m = state->config->want_m;
+		/* Force Z/M-handling if configured to do so */
+		switch(state->config->force_output)
+		{
+		case FORCE_OUTPUT_2D:
+			state->has_z = 0;
+			state->has_m = 0;
+			state->pgdims = 2;
+			break;
 
-		/* Force Z-handling if configured to do so */
-		if (state->config->want_z != -1)
-			state->has_z = state->config->want_z;
+		case FORCE_OUTPUT_3DZ:
+			state->has_z = 1;
+			state->has_m = 0;
+			state->pgdims = 3;
+			break;
+
+		case FORCE_OUTPUT_3DM:
+			state->has_z = 0;
+			state->has_m = 1;
+			state->pgdims = 3;
+			break;
+
+		case FORCE_OUTPUT_4D:
+			state->has_z = 1;
+			state->has_m = 1;
+			state->pgdims = 4;
+			break;
+		default:
+			/* Simply use the auto-detected values above */
+			break;
+		}
 
 		/* If in simple geometry mode, alter names for CREATE TABLE by skipping MULTI */
 		if (state->config->simple_geometries)
