@@ -2598,7 +2598,8 @@ When <varname>tolerance</varname> is given it will be used to snap the input geo
 				<title>Examples</title>
 				<para>This is a full self-contained workflow</para>
 				<programlisting> -- do this if you don't have a topology setup already
-SELECT topology.CreateTopology('topo_boston_test', 2249, 0.25);
+-- creates topology not allowing any tolerance
+SELECT topology.CreateTopology('topo_boston_test', 2249);
 -- create a new table
 CREATE TABLE nei_topo(gid serial primary key, nei varchar(30));
 --add a topogeometry column to it
@@ -2610,17 +2611,18 @@ new_layer_id
 --use new layer id in populating the new topogeometry column
 -- we add the topogeoms to the new layer with 0 tolerance
 INSERT INTO nei_topo(nei, topo)
-SELECT nei,  topology.toTopoGeom(geom, 'topo_boston_test', 1,0)
-FROM neighborhoods;
+SELECT nei,  topology.toTopoGeom(geom, 'topo_boston_test', 1)
+FROM neighborhoods
+WHERE gid BETWEEN 1 and 15;
 
 --use to verify what has happened --
 SELECT * FROM 
     topology.TopologySummary('topo_boston_test'); 
     
 -- summary--
-Topology topo_boston_test (4), SRID 2249, precision 0.25
-48 nodes, 67 edges, 28 faces, 14 topogeoms in 1 layers
-Layer 1, type Polygonal (3), 14 topogeoms
+Topology topo_boston_test (5), SRID 2249, precision 0
+61 nodes, 87 edges, 35 faces, 15 topogeoms in 1 layers
+Layer 1, type Polygonal (3), 15 topogeoms
  Deploy: public.nei_topo.topo</programlisting>
 			</refsection>
 
