@@ -2594,17 +2594,41 @@ When <varname>tolerance</varname> is given it will be used to snap the input geo
                 <!-- use this format if new function -->
                 <para>Availability: 2.0</para>
 			</refsection>
-		
-		
-			<!-- Optionally add an "Examples" section -->
+			<refsection>
+				<title>Examples</title>
+				<para>This is a full self-contained workflow</para>
+				<programlisting> -- do this if you don't have a topology setup already
+SELECT topology.CreateTopology('topo_boston_test', 2249, 0.25);
+-- create a new table
+CREATE TABLE nei_topo(gid serial primary key, nei varchar(30));
+--add a topogeometry column to it
+SELECT topology.AddTopoGeometryColumn('topo_boston_test', 'public', 'nei_topo', 'topo', 'MULTIPOLYGON') As new_layer_id;
+new_layer_id
+-----------
+1
+
+--use new layer id in populating the new topogeometry column
+-- we add the topogeoms to the new layer with 0 tolerance
+INSERT INTO nei_topo(nei, topo)
+SELECT nei,  topology.toTopoGeom(geom, 'topo_boston_test', 1,0)
+FROM neighborhoods;
+
+--use to verify what has happened --
+SELECT * FROM 
+    topology.TopologySummary('topo_boston_test'); 
+    
+-- summary--
+Topology topo_boston_test (4), SRID 2249, precision 0.25
+48 nodes, 67 edges, 28 faces, 14 topogeoms in 1 layers
+Layer 1, type Polygonal (3), 14 topogeoms
+ Deploy: public.nei_topo.topo</programlisting>
+			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para>
-<xref linkend="CreateTopoGeom" />,
-<xref linkend="AddTopoGeometryColumn"/>
-				</para>
+				<para> <xref linkend="CreateTopology" />,<xref linkend="AddTopoGeometryColumn"/>,
+<xref linkend="CreateTopoGeom" />, <xref linkend="TopologySummary" /></para>
 			</refsection>
 		</refentry>
 		
