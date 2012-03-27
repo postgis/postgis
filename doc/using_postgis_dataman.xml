@@ -598,8 +598,8 @@ The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik 
 	  <title>The GEOMETRY_COLUMNS VIEW</title>
 
 	  <para>In versions of PostGIS prior to 2.0.0, geometry_columns was a table that could be directly edited, and sometimes got out of synch with the actual definition of the geometry columns.
-	  In PostGIS 2.0.0, <varname>GEOMETRY_COLUMNS</varname> became a view with the same front-facing structure as prior versions, but not reading from database system catalogs
-	  It's structure is as follows:</para>
+	  In PostGIS 2.0.0, <varname>GEOMETRY_COLUMNS</varname> became a view with the same front-facing structure as prior versions, but reading from database system catalogs
+	  Its structure is as follows:</para>
 
 	  <programlisting>\d geometry_columns</programlisting>
 <screen>             View "public.geometry_columns"
