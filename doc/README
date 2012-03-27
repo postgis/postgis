@@ -1,56 +1,81 @@
-====================================================
+PostGIS Documentation
+=====================
+
 Overview
-====================================================
+--------
 
-PostGIS documentation is written in docbook xml.  The input file is postgis.xml, 
-which in turn includes all the individual chapter xml files.  From that file we 
-can convert to chunked html, single-file html and pdf.
+PostGIS documentation is written in DocBook XML. The input file is
+``postgis.xml``, which in turn includes all the individual chapter XML files.
+From that file we can publish several formats, including HTML and PDF.
 
-Make targets are:
+Make targets
+------------
 
-  make                      # same as "make comments"
-  make install              # same as "make comments-install"
-  make uninstall            # same as "make comments-uninstall"
-  
-  make html                 # generates a single-file html file called html/postgis.html
-  make chunked-html         # generates a separate html file for every chapter or section break
-  make pdf                  # generates a single pdf file with the PostGIS version as a filename
-  make images               # generates all the images used in the html and pdf targets
-  make comments             # generates a sql script that add COMMENTs for every function (derived from the documentation)
-  make doxygen              # generates the developer's documentation using Doxygen
+``make``
+  same as ``make comments``
 
-  make comments-install     # copies the postgis-comments.sql script to the PostgreSQL's contrib directory
-  make comments-uninstall   # removes the postgis-comments.sql script from the contrib directory
-  
-  make clean                # removes generated files except comments
-  make maintainer-clean     # removes all generated files (including comments)
+``make install``
+  same as ``make comments-install``
+
+``make uninstall``
+  same as ``make comments-uninstall``
+
+``make html``
+  generates a single-file ``html/postgis.html``
+
+``make chunked-html``
+  generates a separate html file for every chapter or section break
+
+``make pdf``
+  generates a single PDF file with the PostGIS version as a filename
+
+``make images``
+  generates all the images used in the HTML and PDF targets
+
+``make comments``
+  generates an SQL script that add COMMENTs for every function (derived from
+  the documentation)
+
+``make doxygen``
+  generates the developer's documentation using Doxygen
+
+``make comments-install``
+  copies the ``postgis-comments.sql`` script to the PostgreSQL ``contrib``
+  directory
+
+``make comments-uninstall``
+  removes the ``postgis-comments.sql`` script from the ``contrib`` directory
+
+``make clean``
+  removes generated files except comments
+
+``make maintainer-clean``
+  removes all generated files (including comments)
 
 
-====================================================
 Requirements
-====================================================
+------------
 
 To generate the html files and the comments:
-  xsltproc                  (http://xmlsoft.org/XSLT/xsltproc2.html)
-  DocBook XSL scripts
-  MathML 3 DTD              (http://www.w3.org/Math/DTD/)
+ * xsltproc - http://xmlsoft.org/xslt/xsltproc2.html
+ * DocBook XSL stylesheets
+ * MathML 3 DTD - http://www.w3.org/Math/DTD/
 
 To generate the images:
-  ImageMagick               (http://www.imagemagick.org/script/index.php)
+ * ImageMagick - http://www.imagemagick.org/
 
-To generate a pdf:
-  dblatex                   (http://dblatex.sourceforge.net)
+To generate a PDF:
+ * dblatex - http://dblatex.sourceforge.net
 
 To generate the developer's documentation:
-  doxygen                   (http://www.stack.nl/~dimitri/doxygen)
+ * Doxygen - http://www.stack.nl/~dimitri/doxygen/
+ * Graphviz - http://www.graphviz.org/
 
+How to
+------
 
-====================================================
-How To
-====================================================
+To generate images used in the documentation, follow these instructions on the
+PostGIS wiki: http://trac.osgeo.org/postgis/wiki/DevWikiDocNewFeature
 
-To generate images used in the documentation, follow these instructions on the PostGIS wiki:
-	http://trac.osgeo.org/postgis/wiki/DevWikiDocNewFeature
-	
-To run garden tests against functions, follow these instructions on the PostGIS dev wiki:
-	http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
+To run garden tests against functions, follow these instructions on the PostGIS
+dev wiki: http://trac.osgeo.org/postgis/wiki/DevWikiGardenTest
