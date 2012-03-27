@@ -31,13 +31,13 @@ ifeq ($(PG91),yes)
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/mark_editable_objects.sql.in sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	cat $^ > $@
 	
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
 
-sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/rtpostgis--unpackaged.sql sql_bits/postgis--unpackaged.sql
-	cat $^ > $@
+sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
+	cp $< $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql	
@@ -109,28 +109,32 @@ sql_bits/rtpostgis-filtered.sql:  ../../raster/rt_pg/rtpostgis.sql
 		-e 's/^[\t]*//' \
 		$< > $@
 
-sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql
-		sed \
-		-e 's/^[\t]*//' \
-		-e '$!N; s/(\n/(/g' \
-		-e '/^CREATE \(OR REPLACE FUNCTION\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
-		-e 's/OR REPLACE//g' \
-		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
-		-e 's/DEFAULT [^()]\+//g' \
-		-e 's/\(BEFORE\|AS\|RETURNS\)\(.*\)/;/' \
-		-e 's/(;/;/' \
-		-e 's/\\(;/;/' \
-		-e 's/;;/;/g' $< > $@
+## we are going to hard code for now using sql script to generate unpackage script
+# sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql
+# 		sed \
+# 		-e 's/^[\t]*//' \
+# 		-e '$!N; s/(\n/(/g' \
+# 		-e '/^CREATE \(OR REPLACE FUNCTION\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
+# 		-e 's/OR REPLACE//g' \
+# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
+# 		-e 's/DEFAULT [^()]\+//g' \
+# 		-e 's/\(BEFORE\|AS\|RETURNS\)\(.*\)/;/' \
+# 		-e 's/(;/;/' \
+# 		-e 's/\\(;/;/' \
+# 		-e 's/;;/;/g' $< > $@
 
-sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
-	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
-		-e 's/OR REPLACE//g' \
-		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
-		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
-		-e 's/\(BEFORE\|AS\|RETURNS\)\(.*\)/;/' \
-		-e 's/(;/;/' \
-		-e 's/\\(;/;/' \
-		-e 's/;;/;/g' $< > $@
+# sql_bits/postgis--unpackaged.sql:   ../../postgis/postgis.sql
+# 	sed -e '/^CREATE \(OR REPLACE\|TRIGGER\|TYPE\|TABLE\|VIEW\)/!d;' \
+# 		-e 's/OR REPLACE//g' \
+# 		-e 's/CREATE\(.*\)/ALTER EXTENSION $(EXTENSION) ADD\1;/' \
+# 		-e 's/DEFAULT [\.0-9a-zA-Z]\+//g' \
+# 		-e 's/\(BEFORE\|AS\|RETURNS\)\(.*\)/;/' \
+# 		-e 's/(;/;/' \
+# 		-e 's/\\(;/;/' \
+# 		-e 's/;;/;/g' $< > $@
+
+
+sql/postgis--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
 
 sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
@@ -138,7 +142,7 @@ sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
 	done
 
 DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
-EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql
+EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/postgis--unpackaged--$(EXTVERSION).sql
 endif
 
 distclean: clean
