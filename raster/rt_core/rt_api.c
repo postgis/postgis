@@ -2489,8 +2489,10 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 				rtn != -1 && (
 					!exclude_nodata_value || (
 						exclude_nodata_value &&
-						(hasnodata != FALSE) &&
-						FLT_NEQ(value, nodata)
+						(hasnodata != FALSE) && (
+							FLT_NEQ(value, nodata) &&
+							(rt_band_clamped_value_is_nodata(band, value) != 1)
+						)
 					)
 				)
 			) {
@@ -3387,8 +3389,10 @@ rt_band_get_quantiles_stream(rt_band band,
 				status != -1 && (
 					!exclude_nodata_value || (
 						exclude_nodata_value &&
-						(hasnodata != FALSE) &&
-						FLT_NEQ(value, nodata)
+						(hasnodata != FALSE) && (
+							FLT_NEQ(value, nodata) &&
+							(rt_band_clamped_value_is_nodata(band, value) != 1)
+						)
 					)
 				)
 			) {
@@ -3976,8 +3980,10 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 			if (
 				!exclude_nodata_value || (
 					exclude_nodata_value &&
-					(hasnodata != FALSE) &&
-					FLT_NEQ(pxlval, nodata)
+					(hasnodata != FALSE) && (
+						FLT_NEQ(pxlval, nodata) &&
+						(rt_band_clamped_value_is_nodata(band, pxlval) != 1)
+					)
 				)
 			) {
 				total++;
@@ -4245,7 +4251,7 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 				do_nv = 0;
 
 				/* no data*/
-				if (src_hasnodata && hasnodata && ov == src_nodataval) {
+				if (src_hasnodata && hasnodata && FLT_EQ(ov, src_nodataval)) {
 					do_nv = 1;
 					break;
 				}

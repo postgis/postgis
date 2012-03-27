@@ -520,7 +520,7 @@ int rt_band_set_pixel(rt_band band,
 /**
  * Get pixel value
  *
- * @param band : the band to set nodata value to
+ * @param band : the band to get pixel value from
  * @param x : x ordinate (0-based)
  * @param y : x ordinate (0-based)
  * @param *result: result if there is a value

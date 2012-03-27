@@ -719,7 +719,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 
 	/* Free raster objects used */
 	rt_raster_destroy(raster);
-	rtdealloc(wkb);
+	pfree(wkb);
 
 	PG_RETURN_POINTER(result);
 }
@@ -763,7 +763,7 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 
 	/* Free raster objects used */
 	rt_raster_destroy(raster);
-	rtdealloc(wkb);
+	pfree(wkb);
 
 	PG_RETURN_POINTER(result);
 }
