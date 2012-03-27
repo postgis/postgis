@@ -189,11 +189,11 @@
 -- Let people decide about that
 -- DROP SCHEMA topology CASCADE;
 
+CREATE SCHEMA topology;
+
 -- Doing everything outside of a transaction helps
 -- upgrading in the best case.
--- BEGIN;
-
-CREATE SCHEMA topology;
+BEGIN;
 
 --={ ----------------------------------------------------------------
 --  POSTGIS-SPECIFIC block
@@ -1982,6 +1982,7 @@ CREATE OR REPLACE FUNCTION postgis_topology_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
 	LANGUAGE 'sql' IMMUTABLE;
 
---COMMIT;
 -- Make sure topology is in database search path --
 SELECT topology.AddToSearchPath('topology');
+
+COMMIT;
