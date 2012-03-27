@@ -42,4 +42,7 @@ SELECT origin,caseno,
        (st_isvaliddetail(orig)).valid
   FROM clean_cases;
 
+
+SELECT '#1719.1', ST_AsEWKT(ST_MakeValid('POINT(0 0)'));
+
 DROP TABLE clean_cases;
