@@ -568,8 +568,8 @@ make clean
 make 
 make install
 	  </programlisting>
-	  <para>The extension files will always be the same for the same version of PostGIS regardless of OS, so it is same as long as you
-	  have the PostGIS binaries already installed on your servers, to copy over the extension files. </para>
+	  <para>The extension files will always be the same for the same version of PostGIS regardless of OS, so it is fine to copy over the extension files from one OS to another as long as you
+	  have the PostGIS binaries already installed on your servers. </para>
 		<para>If you want to install the extensions manually on a separate server different from your development,
 		You need to copy the following files from the extensions folder into the <filename>PostgreSQL / share / extension</filename> folder
 		of your PostgreSQL install as well as the needed binaries for regular PostGIS if you don't have them already on the server.
@@ -585,7 +585,7 @@ make install
 		<listitem>
 		  <para>
 			All the files in the /sql folder of each extension.  Note that these need to be copied to the root of the PostgreSQL share/extension folder
-			<filename>extensions/postgis/sql/*.sql</filename>, <filename>extensions/postgis_topology/sql/*</filename>
+			<filename>extensions/postgis/sql/*.sql</filename>, <filename>extensions/postgis_topology/sql/*.sql</filename>
 		  </para>
 		</listitem>
 	 </itemizedlist>
@@ -598,13 +598,20 @@ FROM pg_available_extensions WHERE name LIKE 'postgis%' ;
 postgis          | &last_release_version;     | &last_release_version;
 postgis_topology | &last_release_version;      | </programlisting>
 
-<para>If you have the extension installed in the you are querying, you'll see mention in the <varname>installed_version</varname> column.  
-If you get no records back, it means you don't have postgis extensions installed on the server at all.  PgAdmin III 1.4+ will also provide this information
-in the <varname>extensions</varname> section of the database browser tree and will even allow upgrade by right-clicking.</para>
+<para>If you have the extension installed in the database you are querying, you'll see mention in the <varname>installed_version</varname> column.  
+If you get no records back, it means you don't have postgis extensions installed on the server at all.  PgAdmin III 1.14+ will also provide this information
+in the <varname>extensions</varname> section of the database browser tree and will even allow upgrade or uninstall by right-clicking.</para>
 
 <para>If you have the extensions available, you can install postgis extension in your database of choice by either using pgAdmin extension interface or running these sql commands:</para>
 <programlisting>CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;</programlisting>
+
+<para>If you installed &last_release_version;, without using our wonderful extension system, you can change it to be extension based by first upgrading to the latest micro version running the upgrade scripts: <filename>postgis_upgrade_20_minor.sql</filename>,<filename>raster_upgrade_20_minor.sql</filename>,<filename>topology_upgrade_20_minor.sql</filename>.</para>
+<para>If you installed postgis without raster support, you'll need to install raster support first (using the full <filename>rtpostgis.sql</filename></para>
+<para>Then you can run teh below commands to package the functions in their respective extension.</para>
+<programlisting>CREATE EXTENSION postgis FROM unpackaged;
+CREATE EXTENSION postgis_topology FROM unpackaged;</programlisting>
+
 	</sect2>
 
 
