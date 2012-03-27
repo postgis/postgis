@@ -588,6 +588,8 @@ count_db_objects ()
 		select count(*) from pg_aggregate union all
 		select count(*) from pg_operator union all
 		select count(*) from pg_opclass union all
+		select count(*) from pg_namespace
+			where nspname NOT LIKE 'pg_%' union all
 		select count(*) from pg_opfamily ) 
 		select sum(count) from counts;" "${DB}"
 	if [ $? -gt 0 ]; then

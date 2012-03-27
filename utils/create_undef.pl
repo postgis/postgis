@@ -42,6 +42,7 @@ my @ops = ();
 my @opcs = ();
 my @views = ();
 my @tables = ();
+my @schemas = ();
 
 my $version = $ARGV[1];
 
@@ -92,6 +93,9 @@ while( my $line = <INPUT>)
 	}
 	elsif ($line =~ /^create table \s*([\w\.]+)/i) {
 		push (@tables, $1);
+	}
+	elsif ($line =~ /^create schema \s*([\w\.]+)/i) {
+		push (@schemas, $1);
 	}
 	elsif ( $line =~ /^create operator class (\w+)/i ) {
 		my $opcname = $1;
@@ -263,6 +267,13 @@ foreach my $fn (@type_funcs)
 		die "Couldn't parse line: $fn\n";
 	}
 }
+
+print "-- Drop all schemas.\n";
+foreach my $schema (@schemas)
+{
+	print "DROP SCHEMA $schema;\n";
+}
+
 
 print "\n";
 
