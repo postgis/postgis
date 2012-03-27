@@ -12,7 +12,6 @@
 
 	<!-- We deal only with the reference chapter -->
         <xsl:template match="/">
-set search_path=topology,public,pg_catalog;
                 <xsl:apply-templates select="/book/chapter[@id='Topology']" />
         </xsl:template>
 
@@ -34,17 +33,17 @@ set search_path=topology,public,pg_catalog;
 		<xsl:choose>
 <!-- If this is a postgis type grab the ref entry summary and refname to make type comment -->
 <xsl:when test="parent::sect1[contains(@id,'Types')]">
-	COMMENT ON TYPE <xsl:value-of select="refnamediv/refname" /> IS 'postgis type: <xsl:value-of select='$comment' />';
+COMMENT ON TYPE topology.<xsl:value-of select="refnamediv/refname" /> IS 'postgis type: <xsl:value-of select='$comment' />';
 </xsl:when>
 <xsl:when test="parent::sect1[contains(@id,'Domain')]">
-	COMMENT ON DOMAIN <xsl:value-of select="refnamediv/refname" /> IS 'postgis domain: <xsl:value-of select='$comment' />';
+COMMENT ON DOMAIN topology.<xsl:value-of select="refnamediv/refname" /> IS 'postgis domain: <xsl:value-of select='$comment' />';
 </xsl:when>
 		</xsl:choose>
 <!-- For each function prototype generate the DDL comment statement
 	If its input is a geometry set - we know it is an aggregate function rather than a regular function 
 	Do not output OUT params since they define output rather than act as input and do not put a comma after argument just before an OUT parameter -->
 		<xsl:for-each select="refsynopsisdiv/funcsynopsis/funcprototype">
-COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,' set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text> </xsl:text> <xsl:value-of select="funcdef/function" />(<xsl:for-each select="paramdef"><xsl:choose><xsl:when test="count(parameter) &gt; 0"> 
+COMMENT ON <xsl:choose><xsl:when test="contains(paramdef/type,' set')">AGGREGATE</xsl:when><xsl:otherwise>FUNCTION</xsl:otherwise></xsl:choose><xsl:text></xsl:text> topology.<xsl:value-of select="funcdef/function" />(<xsl:for-each select="paramdef"><xsl:choose><xsl:when test="count(parameter) &gt; 0"> 
 <xsl:choose><xsl:when test="contains(parameter,'OUT')"></xsl:when><xsl:when test="contains(type,'topoelement set')">topoelement</xsl:when><xsl:otherwise><xsl:value-of select="type" /></xsl:otherwise></xsl:choose><xsl:if test="position()&lt;last() and not(contains(parameter,'OUT')) and not(contains(following-sibling::paramdef[1],'OUT'))"><xsl:text>, </xsl:text></xsl:if></xsl:when>
 </xsl:choose></xsl:for-each>) IS '<xsl:call-template name="listparams"><xsl:with-param name="func" select="." /></xsl:call-template> <xsl:value-of select='$comment' />';
 			</xsl:for-each>
