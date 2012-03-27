@@ -148,7 +148,7 @@ close( INPUT );
 print "-- Drop all views.\n";
 foreach my $view (@views)
 {
-	print "DROP VIEW $view;\n";
+	print "DROP VIEW IF EXISTS $view;\n";
 }
 
 print "-- Drop all tables.\n";
@@ -166,11 +166,11 @@ foreach my $agg (@aggs)
 {
 	if ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*.*basetype = ([\w\.]+)/ism )
 	{
-		print "DROP AGGREGATE $1 ($2);\n";
+		print "DROP AGGREGATE IF EXISTS $1 ($2);\n";
 	}
 	elsif ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*([\w,\.\s]+)\s*\)/ism )
 	{
-		print "DROP AGGREGATE $1 ($2);\n";
+		print "DROP AGGREGATE IF EXISTS $1 ($2);\n";
 	}
 	else 
 	{
