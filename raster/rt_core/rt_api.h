@@ -1507,6 +1507,9 @@ char*
 rt_util_gdal_convert_sr(const char *srs, int proj4);
 
 int
+rt_util_gdal_supported_sr(const char *srs);
+
+int
 rt_util_gdal_driver_registered(const char *drv);
 
 void

@@ -484,6 +484,7 @@ rtpg_trim(const char *input) {
 static char*
 rtpg_getSR(int srid)
 {
+	int i = 0;
 	int len = 0;
 	char *sql = NULL;
 	int spi_result;
@@ -493,7 +494,7 @@ rtpg_getSR(int srid)
 	char *tmp = NULL;
 	char *srs = NULL;
 
-	len = sizeof(char) * (strlen("SELECT CASE WHEN upper(auth_name) = 'EPSG' AND length(auth_srid::text) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(proj4text) > 0 THEN proj4text ELSE srtext END FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
+	len = sizeof(char) * (strlen("SELECT CASE WHEN upper(auth_name) = 'EPSG' AND length(auth_srid::text) > 0 THEN upper(auth_name) || ':' || auth_srid ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
 	sql = (char *) palloc(len);
 	if (NULL == sql) {
 		elog(ERROR, "rtpg_getSR: Unable to allocate memory for sql\n");
@@ -508,7 +509,7 @@ rtpg_getSR(int srid)
 	}
 
 	/* execute query */
-	snprintf(sql, len, "SELECT CASE WHEN upper(auth_name) = 'EPSG' AND length(auth_srid::text) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(proj4text) > 0 THEN proj4text ELSE srtext END FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
+	snprintf(sql, len, "SELECT CASE WHEN upper(auth_name) = 'EPSG' AND length(auth_srid::text) > 0 THEN upper(auth_name) || ':' || auth_srid ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
 	spi_result = SPI_execute(sql, TRUE, 0);
 	SPI_pfree(sql);
 	if (spi_result != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
@@ -520,30 +521,53 @@ rtpg_getSR(int srid)
 
 	tupdesc = SPI_tuptable->tupdesc;
 	tuptable = SPI_tuptable;
-	tuple = tuptable->vals[0];
 
-	tmp = SPI_getvalue(tuple, tupdesc, 1);
-	if (NULL == tmp || !strlen(tmp)) {
-		elog(ERROR, "rtpg_getSR: Cannot find SRID (%d) in spatial_ref_sys", srid);
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
-		SPI_finish();
-		return NULL;
-	}
+	/* which tuple to use? */
+	for (i = 0; i < 3; i++) {
+		tuple = tuptable->vals[i];
 
-	len = strlen(tmp) + 1;
-	srs = SPI_palloc(sizeof(char) * len);
-	if (NULL == srs) {
-		elog(ERROR, "rtpg_getSR: Unable to allocate memory for srtext\n");
+		tmp = SPI_getvalue(tuple, tupdesc, 1);
+		if (NULL == tmp || !strlen(tmp)) {
+			elog(ERROR, "rtpg_getSR: Cannot find SRID (%d) in spatial_ref_sys", srid);
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			SPI_finish();
+			return NULL;
+		}
+
+		/* value AND GDAL supports this SR */
+		if (
+			strlen(tmp) &&
+			rt_util_gdal_supported_sr(tmp)
+		) {
+			len = strlen(tmp) + 1;
+			srs = SPI_palloc(sizeof(char) * len);
+			if (NULL == srs) {
+				elog(ERROR, "rtpg_getSR: Unable to allocate memory for spatial reference text\n");
+				pfree(tmp);
+				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				SPI_finish();
+				return NULL;
+			}
+			strncpy(srs, tmp, len);
+			pfree(tmp);
+
+			break;
+		}
+
 		pfree(tmp);
-		if (SPI_tuptable) SPI_freetuptable(tuptable);
-		SPI_finish();
-		return NULL;
+		continue;
 	}
-	strncpy(srs, tmp, len);
-	pfree(tmp);
 
 	if (SPI_tuptable) SPI_freetuptable(tuptable);
 	SPI_finish();
+
+	/* unable to get SR info */
+	if (srs == NULL) {
+		elog(ERROR, "rtpg_getSR: Unable to find a viable spatial reference for SRID (%d)", srid);
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+		SPI_finish();
+		return NULL;
+	}
 
 	return srs;
 }

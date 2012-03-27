@@ -334,6 +334,21 @@ rt_util_gdal_convert_sr(const char *srs, int proj4) {
 }
 
 int
+rt_util_gdal_supported_sr(const char *srs) {
+	OGRSpatialReferenceH hsrs;
+	OGRErr rtn = OGRERR_NONE;
+
+	hsrs = OSRNewSpatialReference(NULL);
+	rtn = OSRSetFromUserInput(hsrs, srs);
+	OSRDestroySpatialReference(hsrs);
+
+	if (rtn == OGRERR_NONE)
+		return 1;
+	else
+		return 0;
+}
+
+int
 rt_util_gdal_driver_registered(const char *drv) {
 	int count = GDALGetDriverCount();
 	int i = 0;
