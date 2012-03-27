@@ -29,25 +29,23 @@ usage()
 	         "       pgsql2shp [<options>] <database> <query>\n"
 	         "\n"
 	         "OPTIONS:\n" ));
-	printf(_("  -f <filename>  Use this option to specify the name of the file\n" 
-	         "     to create.\n" ));
-	printf(_("  -h <host>  Allows you to specify connection to a database on a\n" 
+	printf(_("  -f <filename>  Use this option to specify the name of the file to create.\n" ));
+	printf(_("  -h <host>  Allows you to specify connection to a database on a\n"
 	         "     machine other than the default.\n" ));
 	printf(_("  -p <port>  Allows you to specify a database port other than the default.\n" ));
 	printf(_("  -P <password>  Connect to the database with the specified password.\n" ));
 	printf(_("  -u <user>  Connect to the database as the specified user.\n" ));
 	printf(_("  -g <geometry_column> Specify the geometry column to be exported.\n" ));
 	printf(_("  -b Use a binary cursor.\n" ));
-	printf(_("  -r Raw mode. Do not assume table has been created by \n" 
-	         "     the loader. This would not unescape attribute names\n" 
-	         "     and will not skip the 'gid' attribute.\n" ));
-	printf(_("  -k Keep postgresql identifiers case.\n" ));
-	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column names\n"
-	         "     to 10 character DBF column names. The content of the file is one or more lines\n"
-	         "     of two names separated by white space and no trailing or leading space:\n"
-	         "     COLUMNNAME DBFFIELD1\n"
-	         "     AVERYLONGCOLUMNNAME DBFFIELD2\n"
-	         "     etc.\n" ));
+	printf(_("  -r Raw mode. Do not assume table has been created by the loader. This would\n"
+	         "     not unescape attribute names and will not skip the 'gid' attribute.\n" ));
+	printf(_("  -k Keep PostgreSQL identifiers case.\n" ));
+	printf(_("  -m <filename>  Specify a file containing a set of mappings of (long) column\n"
+	         "     names to 10 character DBF column names. The content of the file is one or\n"
+	         "     more lines of two names separated by white space and no trailing or\n"
+	         "     leading space. For example:\n"
+	         "         COLUMNNAME DBFFIELD1\n"
+	         "         AVERYLONGCOLUMNNAME DBFFIELD2\n" ));
 	printf(_("  -? Display this help screen.\n\n" ));
 }
 
