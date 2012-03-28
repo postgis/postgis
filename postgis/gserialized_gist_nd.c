@@ -107,6 +107,23 @@ static inline void gidx_validate(GIDX *b)
 	return;
 }
 
+/* An "unknown" GIDX is used to represent the bounds of an EMPTY
+   geometry or other-wise unindexable geometry (like one with NaN
+   or Inf bounds) */
+static inline bool gidx_is_unknown(const GIDX *a)
+{
+	size_t size = VARSIZE(a) - VARHDRSZ;
+	/* "unknown" gidx objects have a too-small size of one float */
+	if ( size <= 0.0 )
+		return TRUE;
+	return FALSE;
+}
+
+static inline void gidx_set_unknown(GIDX *a)
+{
+	SET_VARSIZE(a, VARHDRSZ);
+}
+
 /* Enlarge b_union to contain b_new. If b_new contains more
    dimensions than b_union, expand b_union to contain those dimensions. */
 static void gidx_merge(GIDX **b_union, GIDX *b_new)
@@ -115,6 +132,17 @@ static void gidx_merge(GIDX **b_union, GIDX *b_new)
 	Assert(b_union);
 	Assert(*b_union);
 	Assert(b_new);
+
+	/* Can't merge an unknown into any thing */
+	if( gidx_is_unknown(b_new) )
+		return;
+		
+	/* Merge of unknown and known is known */
+	if( gidx_is_unknown(*b_union) )
+	{
+		*b_union = b_new;
+		return;
+	}
 
 	dims_union = GIDX_NDIMS(*b_union);
 	dims_new = GIDX_NDIMS(b_new);
@@ -146,9 +174,9 @@ static float gidx_volume(GIDX *a)
 {
 	float result;
 	int i;
-	if ( a == NULL )
+	if ( a == NULL || gidx_is_unknown(a) )
 	{
-		/*		elog(ERROR, "gidx_volume received a null argument"); */
+		/* elog(ERROR, "gidx_volume received a null argument"); */
 		return 0.0;
 	}
 	result = GIDX_GET_MAX(a,0) - GIDX_GET_MIN(a,0);
@@ -160,7 +188,7 @@ static float gidx_volume(GIDX *a)
 
 /* Ensure the first argument has the higher dimensionality. */
 static void gidx_dimensionality_check(GIDX **a, GIDX **b)
-{
+{		
 	if ( GIDX_NDIMS(*a) < GIDX_NDIMS(*b) )
 	{
 		GIDX *tmp = *b;
@@ -183,10 +211,16 @@ static float gidx_union_volume(GIDX *a, GIDX *b)
 		elog(ERROR, "gidx_union_volume received two null arguments");
 		return 0.0;
 	}
-	if ( a == NULL )
+
+	if ( gidx_is_unknown(a) && gidx_is_unknown(b) )
+	{
+		return 0.0;
+	}
+		
+	if ( a == NULL || gidx_is_unknown(a) )
 		return gidx_volume(b);
 
-	if ( b == NULL )
+	if ( b == NULL || gidx_is_unknown(b) )
 		return gidx_volume(a);
 
 	/* Ensure 'a' has the most dimensions. */
@@ -229,6 +263,11 @@ static float gidx_inter_volume(GIDX *a, GIDX *b)
 		return 0.0;
 	}
 
+	if ( gidx_is_unknown(a) || gidx_is_unknown(b) )
+	{
+		return 0.0;
+	}
+		
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
 
@@ -260,7 +299,11 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 	int i;
 	int ndims_b;
 	POSTGIS_DEBUG(5, "entered function");
+	
 	if ( (a == NULL) || (b == NULL) ) return FALSE;
+
+	if ( gidx_is_unknown(a) || gidx_is_unknown(b) )
+		return FALSE;
 
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
@@ -299,6 +342,9 @@ static bool gidx_contains(GIDX *a, GIDX *b)
 	POSTGIS_DEBUG(5, "entered function");
 
 	if ( (a == NULL) || (b == NULL) ) return FALSE;
+
+	if ( gidx_is_unknown(a) || gidx_is_unknown(b) )
+		return FALSE;
 
 	dims_a = GIDX_NDIMS(a);
 	dims_b = GIDX_NDIMS(b);
@@ -343,6 +389,12 @@ static bool gidx_equals(GIDX *a, GIDX *b)
 
 	if ( (a == NULL) && (b == NULL) ) return TRUE;
 	if ( (a == NULL) || (b == NULL) ) return FALSE;
+
+	if ( gidx_is_unknown(a) && gidx_is_unknown(b) )
+		return TRUE;
+
+	if ( gidx_is_unknown(a) || gidx_is_unknown(b) )
+		return FALSE;
 
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
@@ -482,9 +534,8 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 	char gidxmem[GIDX_MAX_SIZE];
 	GIDX *bbox_out = (GIDX*)gidxmem;
 	int result = LW_SUCCESS;
-
 	int i;
-
+	
 	POSTGIS_DEBUG(4, "[GIST] 'compress' function called");
 
 	/*
@@ -516,22 +567,33 @@ Datum gserialized_gist_compress(PG_FUNCTION_ARGS)
 	/* Extract our index key from the GiST entry. */
 	result = gserialized_datum_get_gidx_p(entry_in->key, bbox_out);
 
-	/* Is the bounding box valid (non-empty, non-infinite)? If not, return input uncompressed. */
+	/* Is the bounding box valid (non-empty, non-infinite) ?
+	 * If not, use the "unknown" GIDX. */
 	if ( result == LW_FAILURE )
 	{
 		POSTGIS_DEBUG(4, "[GIST] empty geometry!");
-		PG_RETURN_POINTER(entry_in);
+		gidx_set_unknown(bbox_out);
+		gistentryinit(*entry_out, PointerGetDatum(gidx_copy(bbox_out)),
+		              entry_in->rel, entry_in->page,
+		              entry_in->offset, FALSE);
+		PG_RETURN_POINTER(entry_out);
 	}
 
 	POSTGIS_DEBUGF(4, "[GIST] got entry_in->key: %s", gidx_to_string(bbox_out));
 
-	/* Check all the dimensions for finite values */
+	/* Check all the dimensions for finite values.
+	 * If not, use the "unknown" GIDX as a key */
 	for ( i = 0; i < GIDX_NDIMS(bbox_out); i++ )
 	{
-		if ( ! finite(GIDX_GET_MAX(bbox_out, i)) || ! finite(GIDX_GET_MIN(bbox_out, i)) )
+		if ( ! finite(GIDX_GET_MAX(bbox_out, i))
+		     || ! finite(GIDX_GET_MIN(bbox_out, i)) )
 		{
-			POSTGIS_DEBUG(4, "[GIST] infinite geometry!");
-			PG_RETURN_POINTER(entry_in);
+			gidx_set_unknown(bbox_out);
+			gistentryinit(*entry_out, 
+			              PointerGetDatum(gidx_copy(bbox_out)),
+			              entry_in->rel, entry_in->page,
+			              entry_in->offset, FALSE);
+			PG_RETURN_POINTER(entry_out);
 		}
 	}
 
