@@ -1,3 +1,4 @@
+\set VERBOSITY terse
 --
 -- Regression tests that were filed as cases in bug tickets,
 -- referenced by bug number for historical interest.
