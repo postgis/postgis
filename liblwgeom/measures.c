@@ -1567,11 +1567,12 @@ lwgeom_polygon_area(LWPOLY *poly)
 		getPoint2d_p(ring, 0, &p1);
 		o.x = p1.x;	
 		o.y = p1.y;	
-		for (j=0; j<ring->npoints-1; j++)
+		p1.x=0.0;
+		p1.y=0.0;		
+		
+		for (j=1; j<ring->npoints; j++)
 		{
-			getPoint2d_p(ring, j+1, &p2);
-			p1.x -= o.x;
-			p1.y -= o.y;
+			getPoint2d_p(ring, j, &p2);
 			p2.x -= o.x;
 			p2.y -= o.y;
 			ringarea += ( p1.x * p2.y ) - ( p1.y * p2.x );
