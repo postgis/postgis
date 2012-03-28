@@ -339,5 +339,13 @@ SELECT '#1596.3', srid FROM geometry_columns
   WHERE f_table_name = 'road_pg' AND f_geometry_column = 'roads_geom';
 DROP TABLE road_pg;
 
+-- #1697 --
+CREATE TABLE eg(g geography);
+CREATE INDEX egi on eg using gist (g);
+INSERT INTO eg (g) select 'POINT EMPTY'::geography
+ from generate_series(1,1024);
+SELECT '#1697.1', count(*) FROM eg WHERE g && 'POINT(0 0)'::geography;
+DROP TABLE eg;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

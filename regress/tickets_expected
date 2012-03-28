@@ -91,3 +91,4 @@ WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
 #1596.1|public.road_pg.roads_geom SRID:4326 TYPE:POINT DIMS:2 
 ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
 #1596.3|4326
+#1697.1|0
