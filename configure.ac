@@ -1052,13 +1052,15 @@ dnl ===========================================================================
 
 EXTENSIONS=""
 if test $POSTGIS_PGSQL_VERSION -ge 91; then
-	if test ! "x$XSLTPROC" = "x"; then
+	if test \
+          "x$XSLTPROC" != "x" -o \
+          -e doc/postgis_comments.sql -a \
+          -e doc/raster_comments.sql;
+  then
 		if test "x$RASTER" = "xraster"; then
-			if test "x$TOPOLOGY" = "xtopology"; then
 				AC_MSG_RESULT([enabling extensions for PostgreSQL 9.1...])
 				EXTENSIONS=extensions
 				AC_SUBST([EXTENSIONS])
-			fi
 		fi
 	fi
 fi
