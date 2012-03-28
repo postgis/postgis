@@ -631,5 +631,18 @@ WITH inp AS ( SELECT
 -- #1695
 SELECT '#1695', ST_AsEWKT(ST_SnapToGrid('MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0)))'::geometry, 20));
 
+-- #1697 --
+CREATE TABLE eg(g geography, gm geometry);
+CREATE INDEX egi on eg using gist (g);
+CREATE INDEX egind on eg using gist (gm gist_geometry_ops_nd);
+INSERT INTO eg (g, gm)
+ select 'POINT EMPTY'::geography,
+        'POINT EMPTY'::geometry
+ from generate_series(1,1024);
+SELECT '#1697.1', count(*) FROM eg WHERE g && 'POINT(0 0)'::geography;
+SELECT '#1697.2', count(*) FROM eg WHERE gm && 'POINT(0 0)'::geometry;
+SELECT '#1697.3', count(*) FROM eg WHERE gm ~= 'POINT EMPTY'::geometry;
+DROP TABLE eg;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

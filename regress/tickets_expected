@@ -210,3 +210,6 @@ NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
 #1596.7|0
 #1596|Point[BG]
 #1695|MULTIPOLYGON EMPTY
+#1697.1|0
+#1697.2|0
+#1697.3|1024
