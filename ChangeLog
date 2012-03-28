@@ -1,3 +1,324 @@
+2012-03-28 14:02  Sandro Santilli <strk@keybit.net>
+
+	* [r9570] utils/create_undef.pl: Strip schemas from search_path as
+	  part of uninstall procedures
+
+2012-03-28 12:40  Sandro Santilli <strk@keybit.net>
+
+	* [r9569] configure.ac: Reduce extensions requirements (#1724)
+	  
+	  Build extensions even w/out topology, and even w/out xsltproc if
+	  comments are already built.
+
+2012-03-28 11:36  Sandro Santilli <strk@keybit.net>
+
+	* [r9568] topology/test/Makefile,
+	  topology/test/regress/gettopogeomelements.sql,
+	  topology/test/regress/gettopogeomelements_expected,
+	  topology/topology.sql.in.c: Fix GetGopoGeomElementArray code
+	  (#1730)
+	  
+	  Includes regression testing for both GetGopoGeomElements
+	  and GetGopoGeomElementArray
+
+2012-03-28 09:19  Sandro Santilli <strk@keybit.net>
+
+	* [r9567] regress/tickets.sql, regress/tickets_expected: Add
+	  regression test for GiST index crash on empty (#1697)
+	  
+	  Also tests you can query all empty items from an index
+
+2012-03-28 08:22  Sandro Santilli <strk@keybit.net>
+
+	* [r9563] postgis/gserialized_gist_nd.c: Fix crash in n-dimensional
+	  GiST index on EMPTY geoms (#1697)
+	  
+	  This is Paul's patch with the unrelated btree changes removed and
+	  the memset removed too.
+
+2012-03-27 23:39  Regina Obe <lr@pcorp.us>
+
+	* [r9562] doc/installation.xml: detail how to use create extension
+	  .. from unpackaged
+
+2012-03-27 23:17  Regina Obe <lr@pcorp.us>
+
+	* [r9561] extensions/make_unpackaged.sql,
+	  extensions/postgis/Makefile.in,
+	  extensions/postgis/sql_bits/postgis--unpackaged.sql.in,
+	  extensions/postgis_topology/Makefile.in,
+	  extensions/postgis_topology/sql_bits/topology--unpackaged.sql.in:
+	  #1727 this will make statements like CREATE EXTENSION postgis
+	  FROM unpackaged; CREATE EXTENSION postgis_topology FROM
+	  unpackaged; work. It's sadly static at the moment.
+
+2012-03-27 22:05  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9560] raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/rt_pg/rt_pg.c: Added robustness checking that GDAL
+	  supports spatial reference text from
+	  spatial_ref_sys table
+
+2012-03-27 19:25  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9559] raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/rt_pg/rt_pg.c: Merge branch 'master' into HEAD
+
+2012-03-27 18:14  Sandro Santilli <strk@keybit.net>
+
+	* [r9558] regress/run_test, utils/create_undef.pl: Have uninstall
+	  scripts drop created schemas, regress test it
+
+2012-03-27 17:30  Sandro Santilli <strk@keybit.net>
+
+	* [r9557] topology/topology.sql.in.c: Wrap most topology.sql into a
+	  transaction
+	  
+	  CREATE SCHEMA is left out because uninstall_topology isn't
+	  getting
+	  rid of it (to be fixed later)
+
+2012-03-27 17:06  Sandro Santilli <strk@keybit.net>
+
+	* [r9556] doc/xsl/topology_comments.sql.xsl: Do not mess with
+	  search_path when installing comments (#1723)
+
+2012-03-27 14:47  Sandro Santilli <strk@keybit.net>
+
+	* [r9555] extensions/README: Update extensions/README (#1720)
+	  
+	  - reStructuredText Markup, 80 column text
+	  - Rewrite several paragraphs
+	  - Add requirements section
+	  - Make it clear that --with-raster is required, and that postgis
+	  also
+	  includes the raster support
+	  
+	  Patch by Mike Toews
+
+2012-03-27 14:32  Sandro Santilli <strk@keybit.net>
+
+	* [r9554] postgis/lwgeom_geos_clean.c, regress/clean.sql,
+	  regress/clean_expected: Accept POINT types in ST_MakeValid
+	  (#1719)
+
+2012-03-27 10:51  Sandro Santilli <strk@keybit.net>
+
+	* [r9553] loader/pgsql2shp-cli.c: 80 cols wrap for pgsql2shp help
+	  screen (#1722)
+	  
+	  Patch by Mike Toews
+
+2012-03-27 09:56  Sandro Santilli <strk@keybit.net>
+
+	* [r9552] doc/README: Update doc/README (#1721)
+	  
+	  - reStructuredText Markup, 80 column text limit
+	  - Structure the make targets using definition lists
+	  - It turns out that graphviz is required for make doxygen
+	  
+	  Patch by Mike Toews
+
+2012-03-27 07:01  Sandro Santilli <strk@keybit.net>
+
+	* [r9551] java/pljava/README.txt, java/pljava/build.xml,
+	  java/pljava/functions.sql, java/pljava/install.sh,
+	  java/pljava/postgis_pljava.jar,
+	  java/pljava/src/org/postgis/pljava/Aggregates.java,
+	  java/pljava/src/org/postgis/pljava/HelloWorld.java,
+	  java/pljava/src/org/postgis/pljava/PLJGeometry.java,
+	  java/pljava/src/org/postgis/pljava/PLJtsParser.java,
+	  java/pljava/src/org/postgis/pljava/PLJtsWriter.java,
+	  java/pljava/update.sh: Drop pljava (#1411)
+
+2012-03-27 02:08  Regina Obe <lr@pcorp.us>
+
+	* [r9550] utils/create_undef.pl: #1693, #1704 - twofer - change
+	  DROP AGGREGATE and DROP VIEW to be DROP .. IF EXISTS
+
+2012-03-27 01:16  Regina Obe <lr@pcorp.us>
+
+	* [r9549] doc/using_postgis_dataman.xml: minor typo correction
+
+2012-03-26 16:23  Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+
+	* [r9548] loader/shp2pgsql-cli.c, loader/shp2pgsql-core.c,
+	  loader/shp2pgsql-core.h: Rework code from r9204 (bug #900:
+	  shp2pgsql: a switch to drop M from 4d imports) to fix bug #1710:
+	  shp2pgsql -t option is not working properly.
+	  
+	  The original implementation set the has_z/has_m flags directly
+	  based upon the -t parameter; however this lost the information
+	  as to how many dimensions were specified. Resolve this by
+	  specifying a new force_output configuration variable and setting
+	  it to an enumerated constant, so that we can then implement a
+	  simple switch() to set both the output dimension and output
+	  flags correctly.
+
+2012-03-26 16:23  Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+
+	* [r9547] loader/shp2pgsql-core.c, loader/shp2pgsql-core.h: Remove
+	  istypeM state variable from loader as it isn't used anymore.
+
+2012-03-26 16:23  Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+
+	* [r9546] loader/shp2pgsql-core.c, loader/shp2pgsql-core.h: Improve
+	  readability in the loader by fixing various whitespace issues.
+
+2012-03-26 13:18  Regina Obe <lr@pcorp.us>
+
+	* [r9545] doc/extras_topology.xml: change example for totopogeom
+
+2012-03-26 13:17  Sandro Santilli <strk@keybit.net>
+
+	* [r9544] MIGRATION: Wrap within 80 cols
+
+2012-03-26 12:26  Regina Obe <lr@pcorp.us>
+
+	* [r9543] doc/extras_topology.xml: Add an example for toTopoGeom
+
+2012-03-23 23:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9542] CREDITS, MIGRATION: Updates for 2.0
+
+2012-03-23 23:00  Sandro Santilli <strk@keybit.net>
+
+	* [r9541] topology/test/regress/topogeo_addlinestring.sql: Add
+	  topology validity checking (extra paranoia)
+
+2012-03-23 22:54  Sandro Santilli <strk@keybit.net>
+
+	* [r9540] topology/sql/populate.sql.in.c,
+	  topology/test/regress/topogeo_addlinestring.sql,
+	  topology/test/regress/topogeo_addlinestring_expected: Do not
+	  abuse ST_Snap for tweaking edge endpoints (#1706)
+
+2012-03-23 22:23  Sandro Santilli <strk@keybit.net>
+
+	* [r9539] topology/sql/sqlmm.sql.in.c,
+	  topology/test/regress/st_modedgesplit.sql,
+	  topology/test/regress/st_modedgesplit_expected,
+	  topology/test/regress/st_newedgessplit.sql,
+	  topology/test/regress/st_newedgessplit_expected: Enhance edge
+	  splitting robustness (#1711)
+
+2012-03-23 21:07  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9538] liblwgeom/lwgeodetic.c: Skip over geodetic check for
+	  empty geometries.
+
+2012-03-23 19:14  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9537] liblwgeom/ptarray.c: Allow build to work under DEBUG=5
+
+2012-03-23 17:08  Sandro Santilli <strk@keybit.net>
+
+	* [r9536] topology/sql/sqlmm.sql.in.c: Add debugging lines to sqlmm
+	  edge splitting functions
+
+2012-03-23 15:11  Sandro Santilli <strk@keybit.net>
+
+	* [r9535] topology/test/regress/topogeo_addlinestring.sql: Add
+	  missing ticket reference to it's regression test
+
+2012-03-23 13:16  Pierre Racine <Pierre.Racine@sbf.ulaval.ca>
+
+	* [r9534] doc/html/style.css: Made the red color for parameters a
+	  bit darker...
+
+2012-03-23 13:09  Regina Obe <lr@pcorp.us>
+
+	* [r9533] doc/installation.xml: flesh out upgrade a bit.
+
+2012-03-23 07:54  Regina Obe <lr@pcorp.us>
+
+	* [r9532] doc/html/style.css: make variables names red to stand out
+	  better
+
+2012-03-22 17:24  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9531] regress/wkt_expected: Update regression to handle new
+	  collection(empty) possibilities
+
+2012-03-22 16:55  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9530] liblwgeom/lwin_wkt_parse.c, liblwgeom/lwin_wkt_parse.y,
+	  liblwgeom/lwout_wkt.c: Parse error on WKT for multi with empty
+	  elements (#1703)
+
+2012-03-22 15:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9529] regress/simplify.sql, regress/simplify_expected: Add
+	  collapsed polygon case to ST_Simplify test (#1698)
+
+2012-03-22 15:07  Sandro Santilli <strk@keybit.net>
+
+	* [r9528] liblwgeom/liblwgeom_internal.h, liblwgeom/lwline.c,
+	  liblwgeom/lwpoly.c, liblwgeom/ptarray.c, regress/simplify.sql:
+	  Add a ptarray_simplify parameter to preserve min vertices (#1698)
+	  
+	  A polygon ring collapsed to a segment is still better handled by
+	  mapnik than the same ring collapsed to a single point. This
+	  commit
+	  retains at least 3 vertices for polygons.
+
+2012-03-22 15:06  Sandro Santilli <strk@keybit.net>
+
+	* [r9527] liblwgeom/lwpoly.c: Do not drop collapsed polygon shells
+	  (#1698)
+
+2012-03-22 13:33  Regina Obe <lr@pcorp.us>
+
+	* [r9526] doc/using_postgis_dataman.xml: missing para tag
+
+2012-03-22 13:29  Regina Obe <lr@pcorp.us>
+
+	* [r9525] doc/using_postgis_dataman.xml: explain geometry_columns
+	  is now a view and that spatial tables can be created in 1 step.
+
+2012-03-22 13:02  Regina Obe <lr@pcorp.us>
+
+	* [r9524] doc/using_postgis_dataman.xml: more expounding on typmod
+	  vs. constraint based geometry columns
+
+2012-03-21 21:36  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9523] doc/Makefile.in, doc/html/image_src/Makefile.in,
+	  extensions/postgis/Makefile.in,
+	  extensions/postgis_topology/Makefile.in, libpgcommon/Makefile.in,
+	  libpgcommon/cunit/Makefile.in, loader/Makefile.in,
+	  loader/cunit/Makefile.in, postgis/Makefile.in,
+	  raster/Makefile.in, raster/loader/Makefile.in,
+	  raster/rt_core/Makefile.in, raster/rt_pg/Makefile.in,
+	  raster/scripts/Makefile.in, raster/scripts/python/Makefile.in,
+	  raster/test/Makefile.in, raster/test/core/Makefile.in,
+	  raster/test/regress/Makefile.in, regress/Makefile.in,
+	  topology/Makefile.in: Change @rm to rm for visibility
+
+2012-03-21 20:32  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9522] GNUmakefile.in, doc/Makefile.in,
+	  doc/html/image_src/Makefile.in, extensions/postgis/Makefile.in,
+	  extensions/postgis_topology/Makefile.in, liblwgeom/Makefile.in,
+	  libpgcommon/Makefile.in, libpgcommon/cunit/Makefile.in,
+	  loader/Makefile.in, loader/cunit/Makefile.in,
+	  postgis/Makefile.in, raster/Makefile.in,
+	  raster/loader/Makefile.in, raster/rt_core/Makefile.in,
+	  raster/scripts/Makefile.in, raster/scripts/python/Makefile.in,
+	  raster/test/Makefile.in, raster/test/core/Makefile.in,
+	  raster/test/regress/Makefile.in, regress/Makefile.in,
+	  topology/Makefile.in: Make distclean should remove all the
+	  Makefile's generated by ./configure
+
+2012-03-21 20:03  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9519] ChangeLog, NEWS, README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Bump versions for beta4
+
+2012-03-21 18:22  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9518] postgis: Ignore some files
+
 2012-03-19 20:40  Paul Ramsey <pramsey@cleverelephant.ca>
 
 	* [r9517] README.postgis, README.raster: README.raster needs

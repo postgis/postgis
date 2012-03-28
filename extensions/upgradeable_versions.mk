@@ -8,4 +8,5 @@ UPGRADEABLE_VERSIONS = \
 	2.0.0beta1 \
 	2.0.0beta2 \
 	2.0.0beta3 \
-	2.0.0beta4
+	2.0.0beta4 \
+	2.0.0rc1 
