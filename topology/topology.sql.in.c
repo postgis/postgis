@@ -1025,11 +1025,15 @@ BEGIN
 
   query = 'SELECT * FROM topology.GetTopoGeomElements('
     || quote_literal(toponame) || ','
-    || quote_literal(layerid) || ','
+    || quote_literal(layer_id) || ','
     || quote_literal(tgid)
     || ') as obj ORDER BY obj';
 
-  RAISE NOTICE 'Query: %', query;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Query: %', query;
+#endif
+
+  -- TODO: why not using array_agg here ?
 
   i = 1;
   FOR rec IN EXECUTE query

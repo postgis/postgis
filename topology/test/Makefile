@@ -60,6 +60,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/getedgebypoint.sql \
 	regress/getfacebypoint.sql \
 	regress/getringedges.sql \
+	regress/gettopogeomelements.sql \
 	regress/layertrigger.sql
 
 check: topo_predicates.sql load_topology.sql load_topology-4326.sql
