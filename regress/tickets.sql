@@ -644,5 +644,15 @@ SELECT '#1697.2', count(*) FROM eg WHERE gm && 'POINT(0 0)'::geometry;
 SELECT '#1697.3', count(*) FROM eg WHERE gm ~= 'POINT EMPTY'::geometry;
 DROP TABLE eg;
 
+-- #1734 --
+create table eg (g geography);
+create index egi on eg using gist (g);
+INSERT INTO eg(g) VALUES (NULL);
+INSERT INTO eg (g) VALUES ('POINT(0 0)'::geography);
+INSERT INTO eg (g) select 'POINT(0 0)'::geography
+       FROM generate_series(1,1024);
+SELECT '#1734.1', count(*) FROM eg;
+DROP table eg;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
