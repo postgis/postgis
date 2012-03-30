@@ -825,6 +825,11 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 		else
 		{
 			tmp = GEOSSymDifference(shp, extring);
+			if ( tmp == NULL ) /* exception */
+			{
+				lwerror("GEOSSymDifference threw an exception: %s", lwgeom_geos_errmsg);
+				return NULL;
+			}
 			LWDEBUGF(3, "GEOSpolygonize: SymDifference(%s, %s):%s",
 			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0)),
 			               lwgeom_to_ewkt(GEOS2LWGEOM(extring, 0)),

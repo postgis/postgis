@@ -23,6 +23,7 @@ CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
 # ADD YOUR NEW TEST FILE HERE (1/1)
 OBJS=	\
 	cu_algorithm.o \
+	cu_clean.o \
 	cu_print.o \
 	cu_misc.o \
 	cu_ptarray.o \
