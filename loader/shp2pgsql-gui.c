@@ -1302,6 +1302,9 @@ pgui_action_open_file_dialog(GtkWidget *widget, gpointer data)
 	SHPLOADERCONFIG *loader_file_config;
 	GSList *filename_list, *filename_item;
 	gchar *filename;
+
+	/* Make sure we deselect any files from the last time */
+	gtk_file_chooser_unselect_all(GTK_FILE_CHOOSER(dialog_filechooser));
 	
 	/* Run the dialog */
 	if (gtk_dialog_run(GTK_DIALOG(dialog_filechooser)) == GTK_RESPONSE_ACCEPT)
