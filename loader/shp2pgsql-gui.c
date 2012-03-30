@@ -37,6 +37,13 @@ static void pgui_seterr_va(const char *fmt, va_list ap);
 
 static void update_conn_ui_from_conn_config(void);
 
+/* If GTK+ version is < 2.14.0, define gtk_dialog_get_content_area() */
+#if !GTK_CHECK_VERSION(2, 14, 0)
+	#if !defined(gtk_dialog_get_content_area)
+		#define gtk_dialog_get_content_area(dialog) GTK_DIALOG(dialog)->vbox
+	#endif
+#endif
+
 /*
 ** Global variables for GUI only
 */
