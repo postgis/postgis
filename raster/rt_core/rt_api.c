@@ -5442,11 +5442,13 @@ rt_raster_gdal_polygonize(
 		*/
 		do {
 #if POSTGIS_GEOS_VERSION < 33
-/*			if (!msgValid) { 
-				rtwarn("Skipping check for invalid geometry.  GEOS-3.3.0 or up is required to fix an invalid geometry"); 
-				msgValid = 1; 
-			} 
-			break; */
+/*
+			if (!msgValid) {
+				rtwarn("Skipping check for invalid geometry.  GEOS-3.3.0 or up is required to fix an invalid geometry");
+				msgValid = 1;
+			}
+*/
+			break;
 #endif
 
 			ggeom = (GEOSGeometry *) LWGEOM2GEOS(lwgeom);
