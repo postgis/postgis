@@ -1,3 +1,59 @@
+2012-03-31 16:26  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9585] raster/rt_core/rt_api.c: Minor tweak to message regarding
+	  GEOS < 3.3
+
+2012-03-30 22:40  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9584] raster/rt_core/rt_api.c: Comment out noise in the GEOS
+	  3.2 case. (#1740)
+
+2012-03-30 14:17  Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+
+	* [r9583] loader/shp2pgsql-gui.c: Make sure that we clear any
+	  previously selected files when (re)opening the import file
+	  selector in the shapefile GUI.
+
+2012-03-30 14:17  Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>
+
+	* [r9582] loader/shp2pgsql-gui.c: Fix #1741: Build error
+	  --with-gui, gtk problem.
+	  
+	  Older versions of GTK (< 2.14.0) don't have
+	  gtk_dialog_get_content_area(). Work
+	  around this by providing a compatibility #define for these older
+	  GTK versions.
+
+2012-03-30 08:36  Sandro Santilli <strk@keybit.net>
+
+	* [r9581] liblwgeom/cunit/Makefile.in, liblwgeom/cunit/cu_clean.c,
+	  liblwgeom/cunit/cu_tester.c, liblwgeom/lwgeom_geos.c: Have
+	  BuildArea catch exception from GEOSSymDifference (#1738)
+
+2012-03-29 21:52  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9578] spatial_ref_sys.sql: wrong proj4text in spatial_ref_sys
+	  for SRID 31300 and 31370 (#1389)
+
+2012-03-29 12:37  Sandro Santilli <strk@keybit.net>
+
+	* [r9577] postgis/gserialized_gist_nd.c, regress/tickets.sql,
+	  regress/tickets_expected: Fix crash on NULL item in ND index
+	  (#1734)
+	  
+	  Add regression testing for the case
+
+2012-03-28 23:12  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9575] utils/Makefile.in: make install doesn't install
+	  postgis_restore.pl (#1732)
+
+2012-03-28 22:59  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9572] ChangeLog, NEWS, README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Bump versions for 2.0.0rc1
+	  release
+
 2012-03-28 14:02  Sandro Santilli <strk@keybit.net>
 
 	* [r9570] utils/create_undef.pl: Strip schemas from search_path as
