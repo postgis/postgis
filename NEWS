@@ -1,5 +1,5 @@
-PostGIS 2.0.0rc2
-2012/04/01
+PostGIS 2.0.0
+2012/04/03
    
 * Important / Breaking Changes  *
 
@@ -28,22 +28,20 @@ PostGIS 2.0.0rc2
 * New Features *
   
   - KNN Gist index based centroid (<->) and box (<#>) distance 
-  	operators (Paul Ramsey / funded by Vizzuality)
+    operators (Paul Ramsey / funded by Vizzuality)
   - Support for TIN and PolyHedralSurface (Olivier Courtin / Oslandia)
   - Raster support integrated and documented
     (Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli,
     Regina Obe, David Zwarg)
     (Company developer and funding: University Laval, Deimos Space, CadCorp,
     Michigan Tech Research Institute, Paragon Corporation, Azavea)
-  - Making spatial indexes 3D/4D aware
-    (Paul Ramsey / OpenGeo, Mark Cave-Ayland / Sirius)
+  - N-Dimensional spatial indexes (Paul Ramsey / OpenGeo)
   - Topology support improved, documented, testing, bug fixes 
     (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri,
      Jose Carlos Martinez Llari)
-  - 3D relationship support functions (Nicklas Avén)
+  - 3D relationship support functions (Nicklas Aven)
     ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, 
-    ST_3DShortestLine and more ..
-  - N-Dimensional spatial indexes (Paul Ramsey / OpenGeo)
+    ST_3DShortestLine
   - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_Node (Sandro Santilli)
   - ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)
@@ -77,39 +75,33 @@ PostGIS 2.0.0rc2
   - Shp-pgsql GUI - support exporting multiple tablee. (Mark Cave-Ayland)  
   - Extras - upgraded tiger_geocoder from using old TIGER format 
     to use new TIGER shp and file structure format (Stephen Frost)
-  - Extras - revised tiger_geocoder to work with 
-    TIGER census 2010 data and 
-    addition of reverse geocoder function, various acurracy enhancements,
-    limit result count,
-    include in Official documentation. 
+  - Enhancements and documentation of TIGER geocoder
     (Regina Obe, Leo Hsu / Paragon Corporation / 
     funding provided by Hunter Systems Group)
-  - Overall Documentation proofreading and corrections. (Kasif Rasul)
-  
-* Bug Fixes *
-  - #1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)
+  - Documentation proofreading and corrections. (Kasif Rasul)
 
+* All Fixes and Enhancements *
+
+  - http://j.mp/postgis20
+  
 * Acknowledgements *
 
-   We are most indebted to the numerous members in the PostGIS community 
-   who were brave enough to TEST out the new features in this release.  
-   No major release can be successful without lots of testing. 
-   Below is an incomplete list of some of the many folks who helped
-   us get to this release.
+  We are most indebted to the numerous members in the PostGIS community 
+  who were brave enough to TEST out the new features in this release.  
+  No major release can be successful without lots of testing. 
+  Below is an incomplete list of some of the many folks who helped
+  us get to this release.
 
-   Andrea Peri - Lots of testing on topology, checking for correctness
-   Andreas Forø Tollefsen - raster testing
-   Chris English - topology stress testing loader functions
-   Salvatore Larosa - Lots of topology testing 
-   Brian Hamlin - Benchmarking, general testing all components
-   Mike Pease -  Tiger geocoder testing, very detailed reports of issues
-   Tom van Tilburg - raster testing
+  - Andrea Peri - Lots of testing on topology, checking for correctness
+  - Andreas Forø Tollefsen - raster testing
+  - Chris English - topology stress testing loader functions
+  - Salvatore Larosa - Lots of topology testing 
+  - Brian Hamlin - Benchmarking, general testing all components
+  - Mike Pease -  Tiger geocoder testing, very detailed reports of issues
+  - Tom van Tilburg - raster testing
 
 
-PostGIS 1.5.4
-2012/02/XX
--- to be updated --
-  
+
 PostGIS 1.5.3
 2011/06/25
 
