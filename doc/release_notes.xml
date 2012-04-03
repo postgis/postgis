@@ -4,7 +4,7 @@
     <subtitle>Release Notes</subtitle>
       <sect1>
         <title>Release 2.0.0</title>
-        <para>Release date: 2012/03/DD</para>
+        <para>Release date: 2012/04/03</para>
         <para>This is a major release.  A hard upgrade is required.  Yes this means a full dump reload and some special preparations if you are using obsolete functions. Refer
         to <xref linkend="hard_upgrade" /> for details on upgrading.
         Refer to <xref linkend="NewFunctions_2_0" /> for more details and changed/new functions.</para>
