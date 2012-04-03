@@ -29,6 +29,8 @@ PostGIS 2.0.0
   
   - KNN Gist index based centroid (<->) and box (<#>) distance 
     operators (Paul Ramsey / funded by Vizzuality)
+  - PostgreSQL 9.1+ "extension" support (Regina Obe)
+  - Typmod support for geometry (Paul Ramsey)
   - Support for TIN and PolyHedralSurface (Olivier Courtin / Oslandia)
   - Raster support integrated and documented
     (Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli,
