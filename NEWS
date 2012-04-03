@@ -1,36 +1,31 @@
 PostGIS 2.0.0rc2
 2012/04/01
    
-  * Important / Breaking Changes  *
+* Important / Breaking Changes  *
 
-  - #722, #302 Most deprecated functions removed (over 250 functions) 
-    (Regina Obe / Paragon Corporation, Paul Ramsey / OpenGeo)
-    (most deprecated in 1.2) removed non-ST variants buffer, 
-    length, intersects (and internal functions renamed) etc. 
-    If you have been using these - CHANGE your apps or suffer the consequences.
-    If you don't see a function documented -- it ain't supported.
-    Some constraints in older tables were built with deprecated functions.
-    If you restore you may need to rebuild these 
-    with populate_geometry_columns().
-  - #944 geometry_columns is now a view instead of a table 
-    (Paul Ramsey, Regina Obe)
-    for tables created the old way reads (srid, type, dims) constraints
-    for geometry columns created with type modifiers 
-    reads rom column definition
-  - #1081, #1082, #1084, #1088 - Mangement functions support typmod 
-    geometry column creation functions now default to typmod creation
-    (Regina Obe)
-  - #1083 probe_geometry_columns(), rename_geometry_table_constraints(),
-    fix_geometry_columns(); removed
-    - now obsolete with geometry_column view
-    (Regina Obe)
-  - #817 Renaming old 3D functions to the convention ST_3D (Nicklas Avén) 
-  - #548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) 
-    instead of null for single geometries (Sandro Santilli, Maxime van Noppen)
-  - #287, #288 ST_AsText and ST_AsBinary don't force 2d anymore, using SQL/MM
-    notation for higher dimensions
+  - Upgrading to PostGIS 2.0 REQUIRES a dump and restore. See the
+    "Hard Upgrade" section of the documentation.
+  - Functions deprecated during the 1.X series (mostly non-ST variants)
+    have been removed. Update your application to the new signatures.
+    If you cannot update your application, see the legacy.sql file
+    to enable the old signatures.
+  - GEOMETRY_COLUMNS is now a view, not a table. Code that manually
+    updates the table must be changed to either use the management
+    functions (eg AddGeometryColumn) or the new geometry typmod options
+    (eg CREATE TABLE t (g GEOMETRY(Polgyon, 4326)))
+  - ST_AsBinary and ST_AsText now return 3D/4D results in ISO SQL/MM
+    format when called on 3D/4D features.
+  - The "unknonwn SRID" is now 0, not -1. 
+    (eg ST_SRID(ST_GeomFromText('POINT(0 0)')) returns 0)
+  - ST_NumGeometries returns 1 for singletons. ST_GeometryN returns the 
+    the geometry for singletons.
+  - probe_geometry_columns(), rename_geometry_table_constraints(),
+    fix_geometry_columns(), have been removed since GEOMETRY_COLUMNS
+    is now a view.
+  - 3D analysis functions are now named with "3D" as a prefix 
+    instead of a suffix (eg ST_Length3D has become ST_3DLength)
 
-  * New Features *
+* New Features *
   
   - KNN Gist index based centroid (<->) and box (<#>) distance 
   	operators (Paul Ramsey / funded by Vizzuality)
@@ -68,7 +63,7 @@ PostGIS 2.0.0rc2
   - ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality)
   - ST_AsBinary byte endian support for geography
 
- * Enhancements *
+* Enhancements *
 
   - Made loader tolerant of truncated multibyte values found
     in some free worldwide shapefiles (Sandro Santilli)
@@ -91,10 +86,10 @@ PostGIS 2.0.0rc2
     funding provided by Hunter Systems Group)
   - Overall Documentation proofreading and corrections. (Kasif Rasul)
   
- * Bug Fixes *
+* Bug Fixes *
   - #1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)
 
- * Acknowledgements *
+* Acknowledgements *
 
    We are most indebted to the numerous members in the PostGIS community 
    who were brave enough to TEST out the new features in this release.  
