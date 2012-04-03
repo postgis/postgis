@@ -1,3 +1,60 @@
+2012-04-03 18:46  Bborie Park <bkpark at ucdavis.edu>
+
+	* [r9601] raster/rt_pg/rt_pg.c: Fix error message
+
+2012-04-03 18:29  Sandro Santilli <strk@keybit.net>
+
+	* [r9600] NEWS: Use full URL to trac query
+
+2012-04-03 18:24  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9599] NEWS: Add extensions
+
+2012-04-03 18:21  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9598] NEWS: Convert text to UTF8
+
+2012-04-03 18:10  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9597] NEWS: Final answer?
+
+2012-04-03 17:46  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9596] NEWS: rewrite breaking section
+
+2012-04-03 17:34  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9595] NEWS: More minor edits
+
+2012-04-03 17:27  Sandro Santilli <strk@keybit.net>
+
+	* [r9594] NEWS: Add ST_Node item
+
+2012-04-03 17:25  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9593] NEWS: Minor reorg of NEWS, more to come
+
+2012-04-03 12:05  Sandro Santilli <strk@keybit.net>
+
+	* [r9592] postgis/postgis.sql.in.c: Write CREATE TYPE as expected
+	  by postgis_proc_upgrade.pl (#1746)
+	  
+	  The script expects CREATE TYPE to spawn multimultiple lines ...
+
+2012-04-03 12:05  Sandro Santilli <strk@keybit.net>
+
+	* [r9591] doc/reference_processing.xml: Add note about input noding
+	  for ST_Polygonize and ST_BuildArea
+
+2012-04-01 20:19  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9590] ChangeLog: Update changelog on trunk
+
+2012-04-01 20:16  Paul Ramsey <pramsey@cleverelephant.ca>
+
+	* [r9586] NEWS, README.postgis, Version.config,
+	  extensions/upgradeable_versions.mk: Version bumps for RC2
+
 2012-03-31 16:26  Bborie Park <bkpark at ucdavis.edu>
 
 	* [r9585] raster/rt_core/rt_api.c: Minor tweak to message regarding
