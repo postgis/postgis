@@ -50,6 +50,7 @@ PostGIS 2.0.0rc2
     ST_3DShortestLine and more ..
   - N-Dimensional spatial indexes (Paul Ramsey / OpenGeo)
   - ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)
+  - ST_Node (Sandro Santilli)
   - ST_isValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)
   - ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)
