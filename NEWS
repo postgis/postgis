@@ -21,7 +21,7 @@ PostGIS 2.0.0rc2
     geometry column creation functions now default to typmod creation
     (Regina Obe)
   - #1083 probe_geometry_columns(), rename_geometry_table_constraints(),
-        fix_geometry_columns(); removed
+    fix_geometry_columns(); removed
     - now obsolete with geometry_column view
     (Regina Obe)
   - #817 Renaming old 3D functions to the convention ST_3D (Nicklas Avén) 
@@ -40,11 +40,11 @@ PostGIS 2.0.0rc2
     Regina Obe, David Zwarg)
     (Company developer and funding: University Laval, Deimos Space, CadCorp,
     Michigan Tech Research Institute, Paragon Corporation, Azavea)
-  - Making spatial indexes 3D aware
-    in progress (Paul Ramsey / OpenGeo, Mark Cave-Ayland / Sirius)
+  - Making spatial indexes 3D/4D aware
+    (Paul Ramsey / OpenGeo, Mark Cave-Ayland / Sirius)
   - Topology support improved, documented, testing, bug fixes 
-    (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri
-    	, Jose Carlos Martinez Llari)
+    (Sandro Santilli / Faunalia for RT-SIGTA, Regina Obe, Andrea Peri,
+     Jose Carlos Martinez Llari)
   - 3D relationship support functions (Nicklas Avén)
     ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, 
     ST_3DShortestLine and more ..
@@ -77,9 +77,9 @@ PostGIS 2.0.0rc2
     Reproject support for both geometry and geography during import
     (Jeff Adams / Azavea, Mark Cave-Ayland)
   - pgsql2shp conversion from predefined list 
-  (Loic Dachary / Mark Cave-Ayland)  
-  - Shp-pgsql GUI loader - support loading multiple 
-    files at a time. (Mark Leslie)  
+    (Loic Dachary / Mark Cave-Ayland)  
+  - Shp-pgsql GUI - support loading multiple files. (Mark Leslie)  
+  - Shp-pgsql GUI - support exporting multiple tablee. (Mark Cave-Ayland)  
   - Extras - upgraded tiger_geocoder from using old TIGER format 
     to use new TIGER shp and file structure format (Stephen Frost)
   - Extras - revised tiger_geocoder to work with 
