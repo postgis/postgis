@@ -96,7 +96,7 @@ CREATE TYPE geometry (
 	typmod_in = geometry_typmod_in,
 	typmod_out = geometry_typmod_out,
 	delimiter = ':',
-    alignment = double,
+	alignment = double,
 	analyze = geometry_analyze,
 	storage = main
 );
@@ -1351,7 +1351,10 @@ CREATE OR REPLACE FUNCTION ST_LineMerge(geometry)
 	COST 100;
 
 
-CREATE TYPE geometry_dump AS (path integer[], geom geometry);
+CREATE TYPE geometry_dump AS (
+	path integer[],
+	geom geometry
+);
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Dump(geometry)
@@ -2717,7 +2720,11 @@ CREATE OR REPLACE FUNCTION ST_IsValidReason(geometry)
 	COST 100;
 
 -- Availability: 2.0.0
-CREATE TYPE valid_detail AS (valid bool, reason varchar, location geometry);
+CREATE TYPE valid_detail AS (
+	valid bool,
+	reason varchar,
+	location geometry
+);
 
 -- Requires GEOS >= 3.3.0
 -- Availability: 2.0.0
