@@ -2329,7 +2329,7 @@ Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS)
 
     raster = rt_raster_deserialize(pgraster, FALSE);
     if (!raster) {
-        elog(ERROR, "RASTER_getPixelValue: Could not deserialize raster");
+        elog(ERROR, "RASTER_getPixelPolygon: Could not deserialize raster");
         PG_RETURN_NULL();
     }
 
