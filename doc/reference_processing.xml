@@ -288,6 +288,11 @@ POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235
 			form polygons NULL is returned.  The inputs can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections.
 			</para>
 			<para>This function will assume all inner geometries represent holes</para>
+
+			<note>
+				<para>Input linework must be correctly noded for this function to work properly</para>
+			</note>
+
 			<para>Availability: 1.1.0 - requires GEOS &gt;= 2.1.0.</para>
 		  </refsection>
 
@@ -353,6 +358,7 @@ FROM (SELECT ST_Buffer(
 			<title>See Also</title>
 
 			<para>
+			<xref linkend="ST_Node" />,
 			<xref linkend="ST_BdPolyFromText" />,
 			<xref linkend="ST_BdMPolyFromText" />wrappers to
 			this function with standard OGC interface</para>
@@ -1753,6 +1759,11 @@ POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 9
 				<para>Geometry Collections are often difficult to deal with with third party tools, so use ST_Polygonize in conjunction with  <xref linkend="ST_Dump" /> to dump the polygons
 				out into individual polygons.</para>
 			</note>
+
+			<note>
+				<para>Input linework must be correctly noded for this function to work properly</para>
+			</note>
+
 			<para>Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0.</para>
 		</refsection>
 
@@ -1788,7 +1799,10 @@ geomtextrep
 
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Dump" /></para>
+			<para>
+			<xref linkend="ST_Node" />,
+			<xref linkend="ST_Dump" />
+			</para>
 		</refsection>
 	</refentry>
 	
