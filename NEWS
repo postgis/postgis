@@ -1,23 +1,5 @@
 PostGIS 2.0.0rc2
 2012/04/01
- * Testers our unsung heroes *
- 	We are most indebted to the numerous members in the PostGIS community 
- 	who were brave enough to test out the new features in this release.  
- 	No major release can be successful without these folk. 
- 	Below are those who have been most valiant, provided very detailed
- 	and thorough bug reports,
- 	and detailed analysis.
-   Andrea Peri - Lots of testing on topology, checking for correctness
-   Andreas Forø Tollefsen - raster testing
-   Chris English - topology stress testing loader functions
-   Salvatore Larosa - Lots of topology testing 
-   Brian Hamlin - Benchmarking 
-   	(also experimental experimental branches 
-   		before they are folded into core)
-   	, general testing of various pieces 
-   including Tiger and Topology. Testing on various server VMs
-   Mike Pease -  Tiger geocoder testing - very detailed reports of issues
-   Tom van Tilburg - raster testing
    
   * Important / Breaking Changes  *
 
@@ -110,6 +92,23 @@ PostGIS 2.0.0rc2
   
  * Bug Fixes *
   - #1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)
+
+ * Acknowledgements *
+
+   We are most indebted to the numerous members in the PostGIS community 
+   who were brave enough to TEST out the new features in this release.  
+   No major release can be successful without lots of testing. 
+   Below is an incomplete list of some of the many folks who helped
+   us get to this release.
+
+   Andrea Peri - Lots of testing on topology, checking for correctness
+   Andreas Forø Tollefsen - raster testing
+   Chris English - topology stress testing loader functions
+   Salvatore Larosa - Lots of topology testing 
+   Brian Hamlin - Benchmarking, general testing all components
+   Mike Pease -  Tiger geocoder testing, very detailed reports of issues
+   Tom van Tilburg - raster testing
+
 
 PostGIS 1.5.4
 2012/02/XX
