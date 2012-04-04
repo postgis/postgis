@@ -2182,6 +2182,10 @@ and is thus usable to build edge ring linking.
                 <para>Register all faces that can be built out a topology edge primitives.</para>
                 <para>The target topology is assumed to contain no self-intersecting edges.</para>
                 <note><para>Already known faces are recognized, so it is safe to call Polygonize multiple times on the same topology.</para></note>
+		<note><para>
+This function does not use nor set the next_left_edge and next_right_edge fields of the edge table.
+                </para></note>
+
                 
                 <!-- use this format if new function -->
                 <para>Availability: 2.0.0</para>
