@@ -22,20 +22,20 @@
 --
 -- }{
 CREATE OR REPLACE FUNCTION topology.polygonize(toponame varchar)
-	RETURNS text
+  RETURNS text
 AS
 $$
 DECLARE
   sql text;
-	rec RECORD;
+  rec RECORD;
   faces int;
 BEGIN
 
-	sql := 'SELECT (st_dump(st_polygonize(geom))).geom from '
+  sql := 'SELECT (st_dump(st_polygonize(geom))).geom from '
          || quote_ident(toponame) || '.edge_data';
 
   faces = 0;
-	FOR rec in EXECUTE sql LOOP
+  FOR rec in EXECUTE sql LOOP
     BEGIN
       PERFORM topology.AddFace(toponame, rec.geom);
       faces = faces + 1;
@@ -43,7 +43,7 @@ BEGIN
       WHEN OTHERS THEN
         RAISE WARNING 'Error registering face % (%)', rec.geom, SQLERRM;
     END;
-	END LOOP;
+  END LOOP;
   RETURN faces || ' faces registered';
 END
 $$
