@@ -68,7 +68,7 @@ static void test_wkt_in_point(void)
 {
 	s = "POINT(1e700 0)";
 	r = cu_wkt_in(s, WKT_SFSQL);
-	CU_ASSERT_STRING_EQUAL(r,"POINT(inf 0)");
+	CU_TEST ( ! strcmp(r, "POINT(inf 0)") || ! strcmp(r, "POINT(1.#INF 0)") );
 	lwfree(r);
 
 	s = "POINT(0 0)";
