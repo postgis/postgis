@@ -517,7 +517,7 @@ Datum geography_from_text(PG_FUNCTION_ARGS)
 
 	/* Clean up string */
 	pfree(wkt);
-	g_ser = gserialized_geography_from_lwgeom(lwg_parser_result.geom, 0);
+	g_ser = gserialized_geography_from_lwgeom(lwg_parser_result.geom, -1);
 
 	/* Clean up temporary object */
 	lwgeom_free(lwg_parser_result.geom);
