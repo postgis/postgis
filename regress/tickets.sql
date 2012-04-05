@@ -654,5 +654,8 @@ INSERT INTO eg (g) select 'POINT(0 0)'::geography
 SELECT '#1734.1', count(*) FROM eg;
 DROP table eg;
 
+-- #1755 --
+select '#1755', st_geographyFromText('SRID=4326;Point(85 35 0)');
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
