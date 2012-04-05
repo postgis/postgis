@@ -19,7 +19,6 @@ Directory structure::
   ./java/ejb    EJB Java support
   ./java/jdbc   Extensions to the PostgreSQL JDBC drivers to support
                 the GIS objects
-  ./java/pljava PostgreSQL PL/Java spatial object support
   ./liblwgeom   LWGEOM geometry library
   ./libpgcommon PostGIS library to bridge LWGEOM to PostgreSQL
   ./loader      A program to convert ESRI Shape files into SQL text suitable
