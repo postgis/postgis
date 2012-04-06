@@ -14,6 +14,7 @@
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
 	<xsl:variable name='output_purpose'>true</xsl:variable>
+	<xsl:variable name='linkstub'>http://www.postgis.org/documentation/manual-svn/</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Raster Cheat Sheet</title>
 	<style type="text/css">
@@ -121,7 +122,8 @@ code {font-size: 8pt}
 				<xsl:text><![CDATA[</th></tr>]]></xsl:text>
 			<xsl:for-each select="refentry">
 				<!-- add row for each function and alternate colors of rows -->
-		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td colspan='2'><span class='func'>]]><xsl:value-of select="refnamediv/refname" /><![CDATA[</span>]]><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if> 
+				<!-- , hyperlink to online manual -->
+		 		<![CDATA[<tr]]> class="<xsl:choose><xsl:when test="position() mod 2 = 0">evenrow</xsl:when><xsl:otherwise>oddrow</xsl:otherwise></xsl:choose>" <![CDATA[><td colspan='2'><span class='func'>]]><xsl:text><![CDATA[<a href="]]></xsl:text><xsl:value-of select="$linkstub" /><xsl:value-of select="@id" />.html<xsl:text><![CDATA[" target="_blank">]]></xsl:text><xsl:value-of select="refnamediv/refname" /><xsl:text><![CDATA[</a>]]></xsl:text><![CDATA[</span>]]><xsl:if test="contains(.,$new_tag)"><![CDATA[<sup>1</sup> ]]></xsl:if> 
 		 		<!-- enhanced tag -->
 		 		<xsl:if test="contains(.,$enhanced_tag)"><![CDATA[<sup>2</sup> ]]></xsl:if>
 		 		<xsl:if test="contains(.,'implements the SQL/MM')"><![CDATA[<sup>mm</sup> ]]></xsl:if>
