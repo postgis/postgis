@@ -3009,10 +3009,10 @@ CAST('SPHEROID["GRS_1980",6378137,298.257222101]' As spheroid) As sph_m)  as foo
 			taking the elevation into account. This is just an alias
 			for ST_Length_Spheroid. </para>
 
-		<note><para>Will return 0 for anything that is not a MULTILINESTRING or LINESTRING</para></note>
+		<note><para>Changed: 2.0.0 In prior versions this used to return 0 for anything that is not a MULTILINESTRING or LINESTRING and in 2.0.0 on returns the perimeter of if given a polgon.</para></note>
 		<note><para>This function is just an alias for ST_Length_Spheroid. </para></note>
 		<para>&Z_support;</para>
-		<para>Changed: 2.0.0 In prior versions this used to be called ST_Length_Spheroid3D</para>
+		<para>Changed: 2.0.0 In prior versions this used to be called ST_Length3d_Spheroid</para>
 	  </refsection>
 
 
