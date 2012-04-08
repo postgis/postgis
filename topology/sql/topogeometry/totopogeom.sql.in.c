@@ -124,7 +124,7 @@ BEGIN
     ELSIF ST_Dimension(rec.geom) = 0 THEN
       sql := 'INSERT INTO ' || quote_ident(atopology)
         || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
-        || id(tg) || ', ' || alayer || ', 1, topogeo_addPoint('
+        || id(tg) || ', ' || alayer || ', 1, topology.topogeo_addPoint('
         || quote_literal(atopology) || ', '
         || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
         || ');';
@@ -133,7 +133,7 @@ BEGIN
     ELSIF ST_Dimension(rec.geom) = 1 THEN
       sql := 'INSERT INTO ' || quote_ident(atopology)
         || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
-        || id(tg) || ', ' || alayer || ', 2, topogeo_addLineString('
+        || id(tg) || ', ' || alayer || ', 2, topology.topogeo_addLineString('
         || quote_literal(atopology) || ', '
         || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
         || ');';
@@ -142,7 +142,7 @@ BEGIN
     ELSIF ST_Dimension(rec.geom) = 2 THEN
       sql := 'INSERT INTO ' || quote_ident(atopology)
         || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
-        || id(tg) || ', ' || alayer || ', 3, topogeo_addPolygon('
+        || id(tg) || ', ' || alayer || ', 3, topology.topogeo_addPolygon('
         || quote_literal(atopology) || ', '
         || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
         || ');';
