@@ -323,6 +323,37 @@ chartrim(const char *input, char *remove) {
 	return rtn;
 }
 
+static int
+isSubDataset(const char *fn) {
+	char *ptr;
+
+	if (fn == NULL)
+		return 0;
+
+	/* find colon */
+	ptr = strchr(fn, ':');
+	if (ptr == NULL)
+		return 0;
+
+	/* substring search */
+	/* NetCDF */
+	ptr = strstr(fn, "NETCDF:");
+	if (ptr - fn == 0)
+		return 2;
+
+	/* HDF4 */
+	ptr = strstr(fn, "HDF4");
+	if (ptr - fn == 0)
+		return 3;
+
+	/* HDF5 */
+	ptr = strstr(fn, "HDF5:");
+	if (ptr - fn == 0)
+		return 4;
+
+	return 1;
+}
+
 static void
 usage() {
 	printf(_("RELEASE: %s GDAL_VERSION=%d (r%d)\n"), POSTGIS_LIB_VERSION, POSTGIS_GDAL_VERSION, POSTGIS_SVN_REVISION);
@@ -2410,8 +2441,11 @@ main(int argc, char **argv) {
 		rtdealloc_config(config);
 		exit(1);
 	}
-	/* at least two files, see if last is table */
-	else if (config->rt_file_count > 1) {
+	/*
+		at least two files, see if last is table
+		subdataset check (NetCDF, HDF4, HDF5, etc)
+	*/
+	else if (config->rt_file_count > 1 && !isSubDataset(config->rt_file[config->rt_file_count - 1])) {
 		fp = fopen(config->rt_file[config->rt_file_count - 1], "rb");
 
 		/* unable to access file, assume table */
@@ -2470,6 +2504,10 @@ main(int argc, char **argv) {
 
 	/* check that all files are touchable */
 	for (i = 0; i < config->rt_file_count; i++) {
+		/* subdatasets are not tested, let GDAL deal with it */
+		if (isSubDataset(config->rt_file[i]))
+			continue;
+
 		fp = fopen(config->rt_file[i], "rb");
 
 		if (fp == NULL) {
