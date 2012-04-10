@@ -1724,7 +1724,13 @@ ShpLoaderGenerateSQLRowStatement(SHPLOADERSTATE *state, int item, char **strreco
 				/* Close the ST_Transform if reprojecting. */
 				if (state->to_srid != state->from_srid)
 				{
-					stringbuffer_aprintf(sb, ", %d)", state->to_srid);
+					/* We need to add an explicit cast to geography/geometry to ensure that
+					   PostgreSQL doesn't get confused with the ST_Transform() raster
+					   function. */
+					if (state->config->geography)
+						stringbuffer_aprintf(sb, ", %d)::geography", state->to_srid);
+					else
+						stringbuffer_aprintf(sb, "::geometry, %d)", state->to_srid);
 				}
 			}
 
