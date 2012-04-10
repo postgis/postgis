@@ -1904,13 +1904,9 @@ BEGIN
   --
   -- Compute new edges
   --
-  nodepos = ST_Line_locate_point(oldedge.geom, apoint);
-
-  edge1 = ST_Line_substring(oldedge.geom, 0, nodepos);
-  edge1 = ST_SetPoint(edge1, ST_NPoints(edge1)-1, apoint);
-
-  edge2 = ST_Line_substring(oldedge.geom, nodepos, 1);
-  edge2 = ST_SetPoint(edge2, 0, apoint);
+  edge2 := ST_Split(oldedge.geom, apoint);
+  edge1 := ST_GeometryN(edge2, 1);
+  edge2 := ST_GeometryN(edge2, 2);
 
   --
   -- Get ids for the new edges 
@@ -2201,13 +2197,9 @@ BEGIN
   --
   -- Compute new edge
   --
-  nodepos = ST_Line_Locate_Point(oldedge.geom, apoint);
-
-  newedge1 = ST_Line_Substring(oldedge.geom, 0, nodepos);
-  newedge1 = ST_SetPoint(newedge1, ST_NPoints(newedge1)-1, apoint);
-
-  newedge2 = ST_Line_Substring(oldedge.geom, nodepos, 1);
-  newedge2 = ST_SetPoint(newedge2, 0, apoint);
+  newedge2 := ST_Split(oldedge.geom, apoint);
+  newedge1 := ST_GeometryN(newedge2, 1);
+  newedge2 := ST_GeometryN(newedge2, 2);
 
   --
   -- Get ids for the new edge
