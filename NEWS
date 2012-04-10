@@ -3,10 +3,10 @@ PostGIS 2.0.1
 
 * Bug Fixes *
 
-  - 
-
-
-
+  - #1759, loading transformed shapefiles in raster enabled db.
+  - #1761, handling of subdatasets in NetCDF, HDF4 and HDF5.
+  - #1763, fully qualify calls to topology functions.
+  - #1755, ST_GeographyFromText support for higher dimensions.
 
 PostGIS 2.0.0
 2012/04/03
