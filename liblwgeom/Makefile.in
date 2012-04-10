@@ -157,3 +157,5 @@ parser:
 #	$(LEX) -i $<
 
 
+liblwgeom.h: liblwgeom.h.in
+	cd .. && ./config.status
