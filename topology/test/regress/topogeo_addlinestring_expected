@@ -43,7 +43,7 @@ E|33|sn32|en19
 E|34|sn31|en32
 E|35|sn32|en33
 snap|36
-snap|38
+snap|39
 snap|40
 N|34||POINT(18 22)
 N|35||POINT(22.4 22)
@@ -53,12 +53,12 @@ E|7|sn17|en35
 E|19|sn14|en36
 E|36|sn34|en17
 E|37|sn35|en18
-E|38|sn17|en35
-E|39|sn36|en17
-E|40|sn35|en36
+E|38|sn36|en17
+E|39|sn35|en36
+E|40|sn17|en35
 snap_again|7
 snap_again|36
-snap_again|40
+snap_again|39
 crossover|43
 crossover|45
 crossover|46
@@ -85,10 +85,10 @@ crossover_again|47
 contains|25
 contains|48
 contains|49
-N|42||POINT(14 34)
-N|43||POINT(7 36)
-E|48|sn42|en22
-E|49|sn21|en43
+N|42||POINT(7 36)
+N|43||POINT(14 34)
+E|48|sn21|en42
+E|49|sn43|en22
 nodecross|50
 nodecross|51
 N|44||POINT(18 37)
@@ -169,4 +169,9 @@ N|73||POINT(9 12)
 E|70|sn70|en73
 E|71|sn73|en71
 E|72|sn72|en73
+#1714.1|N|74
+N|74||POINT(10 0)
+#1714.2|E*|73
+N|75||POINT(0 20)
+E|73|sn74|en75
 Topology 'city_data' dropped

@@ -238,6 +238,23 @@ SELECT check_changes();
 -- Consistency check
 SELECT * FROM ValidateTopology('city_data');
 
+-- Test noding after snap 
+-- See http://trac.osgeo.org/postgis/ticket/1714 
+
+DELETE FROM city_data.edge_data; DELETE FROM city_data.node; 
+DELETE FROM city_data.face where face_id > 0; 
+
+SELECT '#1714.1', 'N', AddNode('city_data', 'POINT(10 0)');
+SELECT check_changes();
+
+SELECT '#1714.2', 'E*', TopoGeo_addLineString('city_data',
+ 'LINESTRING(10 0, 0 20, 0 0, 10 0)'
+, 12) ORDER BY 3;
+SELECT check_changes();
+
+-- Consistency check
+SELECT * FROM ValidateTopology('city_data');
+
 -- Cleanups
 DROP FUNCTION check_changes();
 SELECT DropTopology('city_data');

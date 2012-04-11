@@ -31,8 +31,8 @@ split|13
 N|26||POINT(28 18)
 E|30|sn14|en26
 E|31|sn26|en18
-E|32|sn17|en26
-E|33|sn26|en13
+E|32|sn26|en13
+E|33|sn17|en26
 F|14
 F|15
 ex_hole|3

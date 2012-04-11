@@ -902,6 +902,14 @@ BEGIN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Split: %', ST_AsText(noded);
 #endif
+
+    -- re-node to account for ST_Snap introduced self-intersections
+    -- See http://trac.osgeo.org/postgis/ticket/1714
+    -- TODO: consider running UnaryUnion once after all noding 
+    noded := ST_UnaryUnion(noded);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Self-unioned again: %', ST_AsText(noded);
+#endif
   END IF; -- }
 
   -- 3. For each (now-noded) segment, insert an edge
