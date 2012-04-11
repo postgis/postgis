@@ -860,35 +860,38 @@ BEGIN
     -- joined faces. In such case there would be no way to adapt
     -- the definition in case of healing, so we'd have to bail out
     --
-    -- We do this only when no universal face is involved
-    -- (no surface can be defined by universal face)
+    -- TODO: use an internal function and share with ST_RemEdgeNewFace
+    --
     -- 
-    IF e1rec.left_face != 0 AND e1rec.right_face != 0
-    THEN -- {
-      fidary = ARRAY[e1rec.left_face, e1rec.right_face];
-      sql := 'SELECT t.* from ('
-        || 'SELECT r.topogeo_id, r.layer_id'
-        || ', l.schema_name, l.table_name, l.feature_column'
-        || ', array_agg(r.element_id) as elems '
-        || 'FROM topology.layer l INNER JOIN '
-        || quote_ident(toponame)
-        || '.relation r ON (l.layer_id = r.layer_id) '
-        || 'WHERE l.level = 0 AND l.feature_type = 3 '
-        || ' AND l.topology_id = ' || topoid
-        || ' AND r.element_id IN (' || e1rec.left_face || ',' || e1rec.right_face || ') '
-        || 'group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
-        || ' l.feature_column ) t WHERE NOT t.elems @> '
-        || quote_literal(fidary);
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'SQL: %', sql;
-#endif
-      FOR rec IN EXECUTE sql LOOP
-        RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
-              rec.topogeo_id, rec.layer_id,
-              rec.schema_name, rec.table_name, rec.feature_column,
-              e1rec.right_face, e1rec.left_face;
-      END LOOP;
+    fidary = ARRAY[e1rec.left_face, e1rec.right_face];
+    sql := 'SELECT t.* from ('
+      || 'SELECT r.topogeo_id, r.layer_id'
+      || ', l.schema_name, l.table_name, l.feature_column'
+      || ', array_agg(r.element_id) as elems '
+      || 'FROM topology.layer l INNER JOIN '
+      || quote_ident(toponame)
+      || '.relation r ON (l.layer_id = r.layer_id) '
+      || 'WHERE l.level = 0 AND l.feature_type = 3 '
+      || ' AND l.topology_id = ' || topoid
+      || ' AND r.element_id = ANY (' || quote_literal(fidary)
+      || ') group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
+      || ' l.feature_column ) t';
+
+    -- No surface can be defined by universal face 
+    IF e1rec.left_face != 0 AND e1rec.right_face != 0 THEN -- {
+      sql := sql || ' WHERE NOT t.elems @> ' || quote_literal(fidary);
     END IF; -- }
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'SQL: %', sql;
+#endif
+
+    FOR rec IN EXECUTE sql LOOP
+      RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
+            rec.topogeo_id, rec.layer_id,
+            rec.schema_name, rec.table_name, rec.feature_column,
+            e1rec.right_face, e1rec.left_face;
+    END LOOP;
 
     IF e1rec.left_face = 0 OR e1rec.right_face = 0 THEN -- {
 
@@ -1228,35 +1231,37 @@ BEGIN
     -- joined faces. In such case there would be no way to adapt
     -- the definition in case of healing, so we'd have to bail out
     --
-    -- We do this only when no universal face is involved
-    -- (no surface can be defined by universal face)
-    -- 
-    IF e1rec.left_face != 0 AND e1rec.right_face != 0
-    THEN -- {
-      fidary = ARRAY[e1rec.left_face, e1rec.right_face];
-      sql := 'SELECT t.* from ('
-        || 'SELECT r.topogeo_id, r.layer_id'
-        || ', l.schema_name, l.table_name, l.feature_column'
-        || ', array_agg(r.element_id) as elems '
-        || 'FROM topology.layer l INNER JOIN '
-        || quote_ident(toponame)
-        || '.relation r ON (l.layer_id = r.layer_id) '
-        || 'WHERE l.level = 0 AND l.feature_type = 3 '
-        || ' AND l.topology_id = ' || topoid
-        || ' AND r.element_id IN (' || e1rec.left_face || ',' || e1rec.right_face || ') '
-        || 'group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
-        || ' l.feature_column ) t WHERE NOT t.elems @> '
-        || quote_literal(fidary);
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'SQL: %', sql;
-#endif
-      FOR rec IN EXECUTE sql LOOP
-        RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
-              rec.topogeo_id, rec.layer_id,
-              rec.schema_name, rec.table_name, rec.feature_column,
-              e1rec.right_face, e1rec.left_face;
-      END LOOP;
+    -- TODO: use an internal function and share with ST_RemEdgeNewFace
+    --
+    fidary = ARRAY[e1rec.left_face, e1rec.right_face];
+    sql := 'SELECT t.* from ('
+      || 'SELECT r.topogeo_id, r.layer_id'
+      || ', l.schema_name, l.table_name, l.feature_column'
+      || ', array_agg(r.element_id) as elems '
+      || 'FROM topology.layer l INNER JOIN '
+      || quote_ident(toponame)
+      || '.relation r ON (l.layer_id = r.layer_id) '
+      || 'WHERE l.level = 0 AND l.feature_type = 3 '
+      || ' AND l.topology_id = ' || topoid
+      || ' AND r.element_id = ANY (' || quote_literal(fidary) 
+      || ') group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
+      || ' l.feature_column ) t';
+
+    -- No surface can be defined by universal face 
+    IF NOT 0 = ANY ( fidary ) THEN -- {
+      sql := sql || ' WHERE NOT t.elems @> ' || quote_literal(fidary);
     END IF; -- }
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'SQL: %', sql;
+#endif
+
+    FOR rec IN EXECUTE sql LOOP
+      RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
+            rec.topogeo_id, rec.layer_id,
+            rec.schema_name, rec.table_name, rec.feature_column,
+            e1rec.right_face, e1rec.left_face;
+    END LOOP;
 
     IF e1rec.left_face = 0 OR e1rec.right_face = 0 THEN -- {
 

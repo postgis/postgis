@@ -203,6 +203,8 @@ ERROR:  TopoGeom 2 in layer 1 (features.land_parcels.feature) cannot be represen
 RM(11)|relations_before:|18
 RM(11)|8
 RM(11)|relations_after:|17
+ERROR:  TopoGeom 3 in layer 1 (features.land_parcels.feature) cannot be represented healing faces 8 and 0
+ERROR:  TopoGeom 3 in layer 1 (features.land_parcels.feature) cannot be represented healing faces 0 and 8
 RM(11)|P1|t
 RM(11)|P2|t
 RM(11)|P3|t

@@ -390,6 +390,12 @@ SELECT '*RN(17)', topology.ST_RemEdgeNewFace('city_data', 17);
 SELECT 'RN(11)', 'relations_before:', count(*) FROM city_data.relation;
 SELECT 'RN(11)', topology.ST_RemEdgeNewFace('city_data', 11);
 SELECT 'RN(11)', 'relations_after:', count(*) FROM city_data.relation;
+
+-- Land parcel P3 is now defined by face 10, so we can't drop
+-- any edge which would destroy that face.
+SELECT '*RM(8)', topology.ST_RemEdgeModFace('city_data', 8); -- face_right=10
+SELECT '*RM(15)', topology.ST_RemEdgeModFace('city_data', 15); -- face_left=10
+
 -- Check that no land_parcel objects had topology changed
 SELECT 'RN(11)', feature_name, 
  ST_Equals( ST_Multi(feature::geometry), ST_Multi(the_geom) ) as unchanged
