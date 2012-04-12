@@ -6,6 +6,7 @@ PostGIS 1.5.4
  filed since the 1.5.3 release.
 
  - Bug Fixes
+   - #1772, fix ST_Line_Locate_Point with collapsed input (Sandro Santilli)
    - #1697, fix crash with EMPTY entries in GiST index (Paul Ramsey)
    - #1602, fix ST_Polygonize to retain Z (Sandro Santilli)
    - #1596, check SRID in UpdateGeometrySRID (Mike Toews, Sandro Santilli)
