@@ -7,7 +7,7 @@ PostGIS 2.0.1
   - #1714, more robust handling of high topology tolerance.
   - #1759, loading transformed shapefiles in raster enabled db.
   - #1761, handling of subdatasets in NetCDF, HDF4 and HDF5.
-  - #1763, fully qualify calls to topology functions.
+  - #1763, topology.toTopoGeom use with custom search_path.
   - #1755, ST_GeographyFromText support for higher dimensions.
 
 PostGIS 2.0.0
