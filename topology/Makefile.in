@@ -26,7 +26,10 @@ MODULEDIR=contrib/$(PGIS_MODULE_big)
 # Files to be copied to the contrib/ directory
 DATA_built=topology.sql topology_upgrade_20_minor.sql uninstall_topology.sql
 
-# SQL objects (files requiring C pre-processing)
+# SQL preprocessor
+SQLPP = @SQLPP@
+
+# SQL objects (files requiring pre-processing)
 SQL_OBJS = \
   topology.sql \
   topology_upgrade.sql \
@@ -73,9 +76,9 @@ endif
 %.sql: %.sql.in
 	sed 's,MODULE_PATHNAME,$$libdir/$*,g' $< >$@
 
-# Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
+# Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
 %.in: %.in.c
-	$(CPP) -traditional-cpp $< | grep -v '^#' > $@
+	$(SQLPP) $< | grep -v '^#' > $@
 	
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains

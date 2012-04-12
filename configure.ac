@@ -29,6 +29,22 @@ AC_PATH_PROG([ANT], [ant], [])
 AC_SUBST([ANT])
 
 dnl
+dnl SQL Preprocessor
+dnl
+AC_PATH_PROG([CPPBIN], [cpp], [])
+if test "x$CPPBIN" != "x"; then
+  SQLPP="${CPPBIN} -traditional-cpp -P"
+else
+  AC_PATH_PROG([GPP], [gpp_], [])
+  if test "x$GPP" != "x"; then
+    SQLPP="${GPP} -C -s \'" dnl Use better string support
+  else
+    SQLPP="${CPP} -traditional-cpp"
+  fi
+fi
+AC_SUBST([SQLPP])
+
+dnl
 dnl Define PIC flags in PICFLAGS (note: this variable is set as part of libtool initialisation above)
 dnl
 PICFLAGS="$lt_prog_compiler_pic"
@@ -1104,6 +1120,7 @@ AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Compiler Info ------------- ])
 AC_MSG_RESULT([  C compiler:           ${CC} ${CFLAGS}])
 AC_MSG_RESULT([  C++ compiler:         ${CXX} ${CXXFLAGS}])
+AC_MSG_RESULT([  SQL preprocessor:     ${SQLPP}])
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------------- Dependencies -------------- ])
 AC_MSG_RESULT([  GEOS config:          ${GEOSCONFIG}])

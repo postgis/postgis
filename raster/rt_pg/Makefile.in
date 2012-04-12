@@ -17,7 +17,10 @@ MODULEDIR=contrib/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 DATA_built=rtpostgis.sql rtpostgis_upgrade_20_minor.sql uninstall_rtpostgis.sql rtpostgis_legacy.sql
 DATA=
 
-# SQL objects (files requiring C pre-processing)
+# SQL preprocessor
+SQLPP = @SQLPP@
+
+# SQL objects (files requiring pre-processing)
 SQL_OBJS=rtpostgis.sql.in rtpostgis_drop.sql.in rtpostgis_upgrade_cleanup.sql.in rtpostgis_legacy.sql.in
 
 # Objects to build using PGXS
@@ -87,9 +90,9 @@ endif
 # Objects dependencies
 $(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h ../../postgis_svn_revision.h
 
-# Generate any .sql.in files from .sql.in.c files by running them through the C pre-processor 
+# Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
 $(SQL_OBJS): %.in: %.in.c
-	$(CPP) -I../../postgis/ -I../../ -traditional-cpp $< | grep -v '^#' > $@
+	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' > $@
 
 # SQL objects deps here
 $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
