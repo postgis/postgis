@@ -198,13 +198,23 @@ while( my $l = <INPUT> ) {
 
   # Rewrite spatial table constraints
   #
-  # Example:
+  # Example 1:
   # CREATE TABLE geos_in (
   #     id integer NOT NULL,
   #     g public.geometry,
   #     CONSTRAINT enforce_dims_g CHECK ((public.st_ndims(g) = 2)),
   #     CONSTRAINT enforce_geotype_g CHECK (((public.geometrytype(g) = 'MULTILINESTRING'::text) OR (g IS NULL))),
   #     CONSTRAINT enforce_srid_g CHECK ((public.st_srid(g) = (-1)))
+  # );
+  #
+  # Example 2:
+  # CREATE TABLE boszip (
+  #     gid integer NOT NULL,
+  #     zip5 character(5),
+  #     the_geom geometry,
+  #     CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)),
+  #     CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
+  #     CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 2249))
   # );
   # 
   elsif ( $l =~ /CREATE TABLE *([^ ,]*)/)
@@ -213,7 +223,7 @@ while( my $l = <INPUT> ) {
     while( my $subline = <INPUT>)
     {
       if ( $subline =~ /CONSTRAINT enforce_dims_/i ) {
-        $subline =~ s/\.ndims\(/.st_ndims(/;
+        $subline =~ s/\bndims\(/st_ndims(/;
       }
       if ( $subline =~ /CONSTRAINT enforce_srid_/i ) {
         $subline =~ s/\bsrid\(/st_srid(/;
