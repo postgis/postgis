@@ -777,6 +777,10 @@ ptarray_locate_point(POINTARRAY *pa, POINT2D *p)
 
 	LWDEBUGF(3, "tlen %g", tlen);
 
+	/* Location of any point on a zero-length line is 0 */
+	/* See http://trac.osgeo.org/postgis/ticket/1772#comment:2 */
+	if ( tlen == 0 ) return 0;
+
 	plen=0;
 	getPoint2d_p(pa, 0, &start);
 	for (t=0; t<seg; t++, start=end)

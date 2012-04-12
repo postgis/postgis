@@ -45,11 +45,13 @@ select 'LINEPZM_6', asewkt(locate_along_measure('LINESTRING(0 0 0 0, 1 1 1 1, 2 
 
 --- line_locate_point
 
-SELECT 'line_locate_point', line_locate_point('LINESTRING(709243.393033887 163969.752725768,708943.240904444 163974.593889146,708675.634380651 163981.832927298)', 'POINT(705780 15883)');
+SELECT 'line_locate_point_1', line_locate_point('LINESTRING(709243.393033887 163969.752725768,708943.240904444 163974.593889146,708675.634380651 163981.832927298)', 'POINT(705780 15883)');
 
 --- postgis-users/2006-January/010613.html
-select 'line_locate_point', line_locate_point(geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), geomfromtext('POINT(-1953720.034 471081.649)', 6269));
-select 'line_locate_point', line_locate_point(geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), geomfromtext('POINT(-1953743.873 471070.784)', 6269));
+select 'line_locate_point_2', line_locate_point(geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), geomfromtext('POINT(-1953720.034 471081.649)', 6269));
+select 'line_locate_point_3', line_locate_point(geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), geomfromtext('POINT(-1953743.873 471070.784)', 6269));
+--- http://trac.osgeo.org/postgis/ticket/1772#comment:2
+select 'line_locate_point_4', line_locate_point('LINESTRING(0 1, 0 1, 0 1)', 'POINT(0 1)');
 
 --- line_substring / line_interpolate_point
 
@@ -102,11 +104,13 @@ select 'LINEZM_6', ST_asewkt(ST_locate_between_measures('LINESTRING(0 10 10 40, 
 
 --- line_locate_point
 
-SELECT 'line_locate_point', ST_line_locate_point('LINESTRING(709243.393033887 163969.752725768,708943.240904444 163974.593889146,708675.634380651 163981.832927298)', 'POINT(705780 15883)');
+SELECT 'st_line_locate_point_1', ST_line_locate_point('LINESTRING(709243.393033887 163969.752725768,708943.240904444 163974.593889146,708675.634380651 163981.832927298)', 'POINT(705780 15883)');
 
 --- postgis-users/2006-January/010613.html
-select 'line_locate_point', ST_line_locate_point(ST_geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), ST_geomfromtext('POINT(-1953720.034 471081.649)', 6269));
-select 'line_locate_point', ST_line_locate_point(ST_geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), ST_geomfromtext('POINT(-1953743.873 471070.784)', 6269));
+select 'st_line_locate_point_2', ST_line_locate_point(ST_geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), ST_geomfromtext('POINT(-1953720.034 471081.649)', 6269));
+select 'st_line_locate_point_3', ST_line_locate_point(ST_geomfromtext('LINESTRING(-1953743.873 471070.784,-1953735.105 471075.419,-1953720.034 471081.649)', 6269), ST_geomfromtext('POINT(-1953743.873 471070.784)', 6269));
+--- http://trac.osgeo.org/postgis/ticket/1772#comment:2
+select 'st_line_locate_point_4', line_locate_point('LINESTRING(0 1, 0 1, 0 1)', 'POINT(0 1)');
 
 --- line_substring / line_interpolate_point
 
