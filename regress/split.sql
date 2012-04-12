@@ -63,3 +63,10 @@ select '60', st_asewkt(ST_Split('SRID=12;GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0, 
 
 -- Split 3d line by 2d line 
 select '70', st_asewkt(ST_Split('SRID=11;LINESTRING(1691983.26 4874594.81 312.24, 1691984.86 4874593.69 312.24, 1691979.54 4874586.09 312.24, 1691978.03 4874587.16 298.36)', 'SRID=11;LINESTRING(1691978.0 4874589.0,1691982.0 4874588.53, 1691982.0 4874591.0)'));
+
+-- Split collapsed line by point
+-- See http://trac.osgeo.org/postgis/ticket/1772
+select '80', st_asewkt(ST_Split('LINESTRING(0 1, 0 1, 0 1)', 'POINT(0 1)'));
+select '81', st_asewkt(ST_Split('LINESTRING(0 1, 0 1)', 'POINT(0 1)'));
+
+-- TODO: split line by collapsed line 
