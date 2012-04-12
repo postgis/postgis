@@ -130,6 +130,13 @@ with inp as ( select
 tg as ( select totopogeom(g, 'tt', 5) as g from inp )
 select 'tolerance_0', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
 
+-- Test usage with custom search_path (#1763)
+set search_path to "public";
+with inp as ( select 'POINT(-100 -100.5)'::geometry as g),
+tg as ( select topology.totopogeom(g, 'tt', 1) as g from inp )
+select 'custom_search_path', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
+reset search_path;
+
 
 DROP TABLE tt.f_coll;
 DROP TABLE tt.f_areal;
