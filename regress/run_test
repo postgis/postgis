@@ -210,6 +210,7 @@ run_simple_test ()
 		| grep --binary-files=text -v "^CONTEXT" \
 		| grep --binary-files=text -v "^UPDATE" \
 		| grep --binary-files=text -v "^DROP" \
+		| grep --binary-files=text -v "^RESET" \
 		| grep --binary-files=text -v "^VACUUM" \
 		| grep --binary-files=text -v "^ANALYZE" \
 		| grep --binary-files=text -v "^CREATE" \
