@@ -33,4 +33,6 @@ T10|28
 ERROR:  Edge changed disposition around start node 17
 T11|Edge 16 changed
 T11F|t
+T12.1|23
+ERROR:  Edge motion collision at POINT(49 10)
 Topology 'city_data' dropped

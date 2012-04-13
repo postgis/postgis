@@ -117,6 +117,10 @@ SELECT 'T11F',
   FROM city_data.face f, city_data.edge e
   WHERE e.edge_id = 16 AND f.face_id = e.left_face;
 
+-- See http://trac.osgeo.org/postgis/ticket/1775
+SELECT 'T12.1', ST_AddIsoNode('city_data', 8, 'POINT(49 10)');
+SELECT 'T12', ST_ChangeEdgeGeom('city_data', 16, 'LINESTRING(47 6, 47 14)');
+
 -- TODO: test changing some clockwise closed edges..
 
 SELECT topology.DropTopology('city_data');
