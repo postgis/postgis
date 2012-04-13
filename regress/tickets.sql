@@ -657,5 +657,13 @@ DROP table eg;
 -- #1755 --
 select '#1755', st_geographyFromText('SRID=4326;Point(85 35 0)');
 
+-- #1776 --
+with inp as ( SELECT 
+ 'POLYGON EMPTY'::geometry as A,
+ 'POLYGON((0 0, 10 0, 10 10, 0 0))'::geometry as B )
+SELECT '#1776',
+ ST_AsText(ST_SymDifference(A,B)), ST_AsText(ST_SymDifference(B, A))
+FROM inp;
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

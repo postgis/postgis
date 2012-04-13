@@ -583,9 +583,9 @@ lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2)
 	if ( lwgeom_is_empty(geom2) )
 		return lwgeom_clone(geom1);
 
-	/* Empty.DymDifference(B) == Empty */
+	/* Empty.DymDifference(B) == B */
 	if ( lwgeom_is_empty(geom1) )
-		return lwgeom_clone(geom1);
+		return lwgeom_clone(geom2);
 
 	/* ensure srids are identical */
 	srid = (int)(geom1->srid);
