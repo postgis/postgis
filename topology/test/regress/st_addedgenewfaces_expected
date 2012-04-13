@@ -12,9 +12,9 @@ ERROR:  SQL/MM Spatial exception - non-existent node
 ERROR:  SQL/MM Spatial exception - curve not simple
 ERROR:  Invalid edge (no two distinct vertices exist)
 ERROR:  Invalid edge (no two distinct vertices exist)
-ERROR:  SQL/MM Spatial exception - coincident edge
-ERROR:  SQL/MM Spatial exception - geometry crosses an edge
-ERROR:  SQL/MM Spatial exception - geometry crosses an edge
+ERROR:  SQL/MM Spatial exception - coincident edge 8
+ERROR:  SQL/MM Spatial exception - geometry crosses edge 5
+ERROR:  SQL/MM Spatial exception - geometry crosses edge 4
 ERROR:  Spatial exception - geometry intersects edge 4
 L1
 L2

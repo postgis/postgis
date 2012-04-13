@@ -2695,7 +2695,7 @@ BEGIN
 
     IF ST_RelateMatch(rec.im, '1FFF*FFF2') THEN
       RAISE EXCEPTION
-        'SQL/MM Spatial exception - coincident edge';
+        'SQL/MM Spatial exception - coincident edge %', rec.edge_id;
     END IF;
 
     -- NOT IN THE SPECS: geometry touches an edge
@@ -2706,7 +2706,7 @@ BEGIN
 
     IF ST_RelateMatch(rec.im, 'T********') THEN
       RAISE EXCEPTION
-        'SQL/MM Spatial exception - geometry crosses an edge';
+        'SQL/MM Spatial exception - geometry crosses edge %', rec.edge_id;
     END IF;
 
   END LOOP; -- }
@@ -3258,7 +3258,7 @@ BEGIN
 
     IF ST_RelateMatch(rec.im, '1FFF*FFF2') THEN
       RAISE EXCEPTION
-        'SQL/MM Spatial exception - coincident edge';
+        'SQL/MM Spatial exception - coincident edge %', rec.edge_id;
     END IF;
 
     -- NOT IN THE SPECS: geometry touches an edge
@@ -3269,7 +3269,7 @@ BEGIN
 
     IF ST_RelateMatch(rec.im, 'T********') THEN
       RAISE EXCEPTION
-        'SQL/MM Spatial exception - geometry crosses an edge';
+        'SQL/MM Spatial exception - geometry crosses edge %', rec.edge_id;
     END IF;
 
   END LOOP;
@@ -3893,7 +3893,7 @@ BEGIN
 
     IF ST_RelateMatch(rec.im, '1FFF*FFF2') THEN
       RAISE EXCEPTION
-        'SQL/MM Spatial exception - coincident edge';
+        'SQL/MM Spatial exception - coincident edge %', rec.edge_id;
     END IF;
 
     -- NOT IN THE SPECS: geometry touches an edge
@@ -3904,7 +3904,7 @@ BEGIN
 
     IF ST_RelateMatch(rec.im, 'T********') THEN
       RAISE EXCEPTION
-        'SQL/MM Spatial exception - geometry crosses an edge';
+        'SQL/MM Spatial exception - geometry crosses edge %', rec.edge_id;
     END IF;
 
   END LOOP;

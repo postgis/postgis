@@ -11,6 +11,10 @@ PostGIS 2.0.1
   - #1763, topology.toTopoGeom use with custom search_path.
   - #1755, ST_GeographyFromText support for higher dimensions.
 
+* Enhancements *
+
+  - More detailed exception message from topology editing functions.
+
 PostGIS 2.0.0
 2012/04/03
    
