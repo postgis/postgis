@@ -3120,7 +3120,7 @@ pgui_create_export_table_table(GtkWidget *export_list_frame)
 
 	/* Schema Field */
 	export_schema_renderer = gtk_cell_renderer_text_new();
-	g_object_set(export_schema_renderer, "editable", TRUE, NULL);
+	g_object_set(export_schema_renderer, "editable", FALSE, NULL);
 	column_indexes[EXPORT_SCHEMA_COLUMN] = EXPORT_SCHEMA_COLUMN;
 	g_signal_connect(G_OBJECT(import_schema_renderer), "edited", G_CALLBACK(pgui_action_handle_loader_edit), &column_indexes[EXPORT_SCHEMA_COLUMN]);
 	export_schema_column = gtk_tree_view_column_new_with_attributes(_("Schema"),
