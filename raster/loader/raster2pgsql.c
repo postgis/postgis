@@ -594,14 +594,37 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 		}
 	}
 
-	/* geotransform */
+	/* alignment */
 	if (!msg[4]) {
-		for (i = 0; i < 6; i++) {
-			if (FLT_NEQ(x->gt[i], ref->gt[i])) {
-				rtwarn(_("Different geotransform matrices found in the set of rasters being converted to PostGIS raster"));
-				msg[4]++;
-				break;
-			}
+		rt_raster rx = NULL;
+		rt_raster rref = NULL;
+		int err;
+		int aligned;
+
+		if (
+			(rx = rt_raster_new(1, 1)) == NULL ||
+			(rref = rt_raster_new(1, 1)) == NULL
+		) {
+			rterror(_("diff_rastinfo: Could not allocate memory for raster alignment test"));
+			if (rx != NULL) rt_raster_destroy(rx);
+			if (rref != NULL) rt_raster_destroy(rref);
+			return;
+		}
+
+		rt_raster_set_geotransform_matrix(rx, x->gt);
+		rt_raster_set_geotransform_matrix(rref, ref->gt);
+
+		err = rt_raster_same_alignment(rx, rref, &aligned);
+		rt_raster_destroy(rx);
+		rt_raster_destroy(rref);
+		if (!err) {
+			rterror(_("diff_rastinfo: Could not run raster alignment test"));
+			return;
+		}
+
+		if (!aligned) {
+			rtwarn(_("Raster with different alignment found in the set of rasters being converted to PostGIS raster"));
+			msg[4]++;
 		}
 	}
 
