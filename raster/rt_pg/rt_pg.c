@@ -521,12 +521,11 @@ rtpg_getSR(int srid)
 
 	tupdesc = SPI_tuptable->tupdesc;
 	tuptable = SPI_tuptable;
+	tuple = tuptable->vals[0];
 
 	/* which tuple to use? */
-	for (i = 0; i < 3; i++) {
-		tuple = tuptable->vals[i];
-
-		tmp = SPI_getvalue(tuple, tupdesc, 1);
+	for (i = 1; i < 4; i++) {
+		tmp = SPI_getvalue(tuple, tupdesc, i);
 		if (NULL == tmp || !strlen(tmp)) {
 			elog(ERROR, "rtpg_getSR: Cannot find SRID (%d) in spatial_ref_sys", srid);
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
