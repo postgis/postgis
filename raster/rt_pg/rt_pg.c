@@ -526,12 +526,14 @@ rtpg_getSR(int srid)
 	/* which column to use? */
 	for (i = 1; i < 4; i++) {
 		tmp = SPI_getvalue(tuple, tupdesc, i);
-		if (NULL == tmp || !strlen(tmp)) {
+		if (NULL == tmp) {
 			elog(ERROR, "rtpg_getSR: Cannot find SRID (%d) in spatial_ref_sys", srid);
 			if (SPI_tuptable) SPI_freetuptable(tuptable);
 			SPI_finish();
 			return NULL;
 		}
+
+		POSTGIS_RT_DEBUGF(4, "Value for column %d is %s", i, tmp);
 
 		/* value AND GDAL supports this SR */
 		if (
