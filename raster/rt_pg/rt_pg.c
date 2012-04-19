@@ -523,7 +523,7 @@ rtpg_getSR(int srid)
 	tuptable = SPI_tuptable;
 	tuple = tuptable->vals[0];
 
-	/* which tuple to use? */
+	/* which column to use? */
 	for (i = 1; i < 4; i++) {
 		tmp = SPI_getvalue(tuple, tupdesc, i);
 		if (NULL == tmp || !strlen(tmp)) {
