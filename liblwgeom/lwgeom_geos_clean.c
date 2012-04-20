@@ -888,7 +888,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	GEOSGeometry* geosout;
 	LWGEOM *lwgeom_out;
 
-	is3d = FLAGS_GET_Z(lwgeom_in->type);
+	is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
 	/*
 	 * Step 1 : try to convert to GEOS, if impossible, clean that up first
