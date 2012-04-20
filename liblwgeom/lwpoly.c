@@ -473,3 +473,31 @@ lwpoly_perimeter_2d(const LWPOLY *poly)
 
 	return result;
 }
+
+int
+lwpoly_is_closed(const LWPOLY *poly)
+{
+	int i = 0;
+	
+	if ( poly->nrings == 0 ) 
+		return LW_TRUE;
+		
+	for ( i = 0; i < poly->nrings; i++ )
+	{
+		if (FLAGS_GET_Z(poly->flags))
+		{
+			if ( ! ptarray_isclosed3d(poly->rings[i]) )
+				return LW_FALSE;
+		}
+		else
+		{	
+			if ( ! ptarray_isclosed2d(poly->rings[i]) )
+				return LW_FALSE;
+		}
+	}
+	
+	return LW_TRUE;
+}
+
+
+

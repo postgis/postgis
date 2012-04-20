@@ -1084,11 +1084,6 @@ extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwtriangle_reverse(LWTRIANGLE *triangle);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
-extern int lwline_is_closed(const LWLINE *line);
-extern int lwcircstring_is_closed(const LWCIRCSTRING *curve);
-extern int lwcompound_is_closed(const LWCOMPOUND *curve);
-extern int lwpsurface_is_closed(const LWPSURFACE *psurface);
-extern int lwtin_is_closed(const LWTIN *tin);
 
 /**
 * Ensure the outer ring is clockwise oriented and all inner rings 

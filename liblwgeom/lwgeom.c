@@ -788,6 +788,8 @@ lwgeom_is_closed(const LWGEOM *geom)
 	{
 	case LINETYPE:
 		return lwline_is_closed((LWLINE*)geom);
+	case POLYGONTYPE:
+		return lwpoly_is_closed((LWPOLY*)geom);
 	case CIRCSTRINGTYPE:
 		return lwcircstring_is_closed((LWCIRCSTRING*)geom);
 	case COMPOUNDTYPE:

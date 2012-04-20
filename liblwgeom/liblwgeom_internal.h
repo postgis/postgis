@@ -335,6 +335,16 @@ LWGEOM* lwline_remove_repeated_points(LWLINE *in);
 LWGEOM* lwcollection_remove_repeated_points(LWCOLLECTION *in);
 LWGEOM* lwpoly_remove_repeated_points(LWPOLY *in);
 
+/*
+* Closure test
+*/
+int lwline_is_closed(const LWLINE *line);
+int lwpoly_is_closed(const LWPOLY *poly);
+int lwcircstring_is_closed(const LWCIRCSTRING *curve);
+int lwcompound_is_closed(const LWCOMPOUND *curve);
+int lwpsurface_is_closed(const LWPSURFACE *psurface);
+int lwtin_is_closed(const LWTIN *tin);
+
 
 /*
  * Split a line by a point and push components to the provided multiline.
