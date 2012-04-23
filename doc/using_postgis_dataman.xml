@@ -2231,7 +2231,7 @@ WHERE
 	  </listitem>
 	</itemizedlist>
 
-	<sect2>
+	<sect2 id="gist_indexes">
 	  <title>GiST Indexes</title>
 
 	  <para>GiST stands for "Generalized Search Tree" and is a generic form of
@@ -2248,6 +2248,8 @@ WHERE
 	  follows:</para>
 
 	  <para><programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] ); </programlisting></para>
+	  <para>The above syntax will always build a 2D-index.  To get the an n-dimensional index supported in PostGIS 2.0+ for the geometry type, you can create one using this syntax</para>
+	  <programlisting>CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] gist_geometry_ops_nd);</programlisting>
 
 	  <para>Building a spatial index is a computationally intensive exercise:
 	  on tables of around 1 million rows, on a 300MHz Solaris machine, we have
