@@ -724,7 +724,7 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 		<refnamediv>
 		  <refname>ST_Azimuth</refname>
 
-		  <refpurpose>Returns the angle in radians from the horizontal of the vector defined by pointA and pointB. Angle is computed clockwise from down-to-up: on the clock: 12=0; 3=PI/2; 6=PI; 9=3PI/4.</refpurpose>
+		  <refpurpose>Returns the angle in radians from the horizontal of the vector defined by pointA and pointB. Angle is computed clockwise from down-to-up: on the clock: 12=0; 3=PI/2; 6=PI; 9=3PI/2.</refpurpose>
 		</refnamediv>
 		<refsynopsisdiv>
 		  <funcsynopsis>
@@ -745,7 +745,7 @@ SELECT ST_Area(the_geog)/POWER(0.3048,2) As sqft_spheroid,  ST_Area(the_geog,fal
 
 			<para>Returns the azimuth of the segment defined by the given
 			Point geometries, or NULL if the two points are coincident. Return
-			value is in radians. Angle is computed clockwise from down-to-up: on the clock: 12=0; 3=PI/2; 6=PI; 9=3PI/4 </para>
+			value is in radians. Angle is computed clockwise from down-to-up: on the clock: 12=0; 3=PI/2; 6=PI; 9=3PI/2 </para>
 
 			<para>The Azimuth is mathematical concept defined as the angle, in this case measured in radian, between a reference plane
 				and a point. </para>
