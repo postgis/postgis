@@ -1385,7 +1385,7 @@ DECLARE
   
 BEGIN
   
-  RAISE DEBUG '%,%', cur_path, ST_GeometryType(the_geom);
+  -- RAISE DEBUG '%,%', cur_path, ST_GeometryType(the_geom);
 
   -- Special case collections : iterate and return the DumpPoints of the geometries
 
