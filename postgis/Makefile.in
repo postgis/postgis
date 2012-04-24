@@ -119,8 +119,14 @@ endif
 #
 $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postgis_config.h ../postgis_svn_revision.h
 
-../svnrevision.h:
-	$(MAKE) -C .. svnrevision.h
+../postgis_svn_revision.h:
+	$(MAKE) -C .. postgis_svn_revision.h
+
+../liblwgeom/.libs/liblwgeom.a:
+	make -C ../liblwgeom liblwgeom.la
+
+../libpgcommon/libpgcommon.a:
+	make -C ../libpgcommon libpgcommon.a
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
