@@ -114,6 +114,12 @@ install-liblwgeom: liblwgeom.la
 uninstall-liblwgeom: 
 	$(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/liblwgeom.la"
 
+# Make all objects depend upon postgis_config.h and postgis_svn_revision.h
+$(LT_OBJS): ../postgis_config.h ../postgis_svn_revision.h
+
+../postgis_svn_revision.h:
+	$(MAKE) -C .. postgis_svn_revision.h
+
 #liblwgeom.a: $(SA_OBJS) $(NM_OBJS) $(SA_HEADERS)
 #ar rs liblwgeom.a $(SA_OBJS) $(NM_OBJS) 
 
