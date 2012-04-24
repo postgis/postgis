@@ -713,10 +713,13 @@ if test ! "x$JSONDIR" = "x"; then
 	if test "x$JSONDIR" = "xyes"; then
 		AC_MSG_ERROR([you must specify a parameter to --with-jsondir, e.g. --with-jsondir=/path/to])
 	else
-		dnl We need (libjson.so OR libjson.a) AND json/json.h
-		if test ! -e "${JSONDIR}/lib/libjson.so" -a \
-		        ! -e "${JSONDIR}/lib/libjson.a" -o \
-		        ! -e "${JSONDIR}/include/json/json.h"
+		dnl We need (libjson.so OR libjson.a OR libjson.dll) AND json/json.h
+		if test ! -e "${JSONDIR}/include/json/json.h" -o \
+		        ! \( -e "${JSONDIR}/lib/libjson.so" -o \
+		            -e "${JSONDIR}/lib/libjson.dll" -o \
+		            -e "${JSONDIR}/lib/libjson.dylib" -o \
+		            -e "${JSONDIR}/bin/libjson.dll" -o \
+		            -e "${JSONDIR}/lib/libjson.a" \) 
 		then
 			AC_MSG_ERROR([Cannot find json dev files in "$JSONDIR"])
 		fi
