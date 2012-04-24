@@ -203,20 +203,14 @@ run_simple_test ()
 	chmod 777 "${BETMPDIR}"
 
 	# Use only one call to sed to work around MSYS buffering problem
-	${PSQL} -v "VERBOSITY=terse" -v "tmpfile='${TMPFILE}'" -tXA < "${_sql}" ${DB} 2>&1 \
+	# and use fewer calls to grep for the same problem. MSYS only accepts
+	# about 16 redirects before hanging.
+	${PSQL} -v "VERBOSITY=terse" -v "tmpfile='${TMPFILE}'" -f "${_sql}" -tXA -d ${DB} 2>&1 \
 		| grep --binary-files=text -v "^$" \
-		| grep --binary-files=text -v "^INSERT" \
-		| grep --binary-files=text -v "^DELETE" \
-		| grep --binary-files=text -v "^CONTEXT" \
-		| grep --binary-files=text -v "^UPDATE" \
-		| grep --binary-files=text -v "^DROP" \
-		| grep --binary-files=text -v "^RESET" \
-		| grep --binary-files=text -v "^VACUUM" \
-		| grep --binary-files=text -v "^ANALYZE" \
-		| grep --binary-files=text -v "^CREATE" \
-		| grep --binary-files=text -v "^SELECT" \
-		| grep --binary-files=text -v "^SET" \
-		| grep --binary-files=text -v "^TRUNCATE" \
+		| grep --binary-files=text -v "^\(INSERT\|DELETE\|UPDATE\|SELECT\)" \
+		| grep --binary-files=text -v "^\(CONTEXT\|RESET\|ANALYZE\)" \
+		| grep --binary-files=text -v "^\(DROP\|CREATE\|VACUUM\)" \
+		| grep --binary-files=text -v "^\(SET\|TRUNCATE\)" \
 		| grep --binary-files=text -v "^LINE [0-9]" \
 		| grep --binary-files=text -v "^  *^$" \
 		| sed -e 's/Infinity/inf/g' -e 's/Inf/inf/g' -e 's/1\.#INF/inf/g' \
