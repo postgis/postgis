@@ -205,7 +205,7 @@ run_simple_test ()
 	# Use only one call to sed to work around MSYS buffering problem
 	# and use fewer calls to grep for the same problem. MSYS only accepts
 	# about 16 redirects before hanging.
-	${PSQL} -v "VERBOSITY=terse" -v "tmpfile='${TMPFILE}'" -f "${_sql}" -tXA -d ${DB} 2>&1 \
+	${PSQL} -v "VERBOSITY=terse" -v "tmpfile='${TMPFILE}'" -tXA ${DB} < "${_sql}" 2>&1 \
 		| grep --binary-files=text -v "^$" \
 		| grep --binary-files=text -v "^\(INSERT\|DELETE\|UPDATE\|SELECT\)" \
 		| grep --binary-files=text -v "^\(CONTEXT\|RESET\|ANALYZE\)" \
