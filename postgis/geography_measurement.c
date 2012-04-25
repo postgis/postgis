@@ -167,7 +167,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 	lwgeom_release(lwgeom1);
 	lwgeom_release(lwgeom2);
 
-	PG_RETURN_BOOL(distance < tolerance);
+	PG_RETURN_BOOL(distance <= tolerance);
 
 }
 
