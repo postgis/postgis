@@ -114,44 +114,34 @@ BEGIN
         'Unexpected feature dimension %', ST_Dimension(ageom);
   END IF;
 
-  -- Now that we have a topogeometry, we loop over components 
+  -- Now that we have a topogeometry, we loop over distinct components 
   -- and add them to the definition of it. We add them as soon
   -- as possible so that each element can further edit the
   -- definition by splitting
-  FOR rec IN SELECT (ST_Dump(ageom)).geom LOOP
-    IF ST_IsEmpty(rec.geom) THEN
-      RAISE DEBUG 'Skipped empty component';
-    ELSIF ST_Dimension(rec.geom) = 0 THEN
-      sql := 'INSERT INTO ' || quote_ident(atopology)
-        || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
-        || id(tg) || ', ' || alayer || ', 1, topology.topogeo_addPoint('
-        || quote_literal(atopology) || ', '
-        || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
-        || ');';
-      --RAISE DEBUG '%', sql;
-      EXECUTE sql;
-    ELSIF ST_Dimension(rec.geom) = 1 THEN
-      sql := 'INSERT INTO ' || quote_ident(atopology)
-        || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
-        || id(tg) || ', ' || alayer || ', 2, topology.topogeo_addLineString('
-        || quote_literal(atopology) || ', '
-        || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
-        || ');';
-      --RAISE DEBUG '%', sql;
-      EXECUTE sql;
-    ELSIF ST_Dimension(rec.geom) = 2 THEN
-      sql := 'INSERT INTO ' || quote_ident(atopology)
-        || '.relation(topogeo_id, layer_id, element_type, element_id) SELECT '
-        || id(tg) || ', ' || alayer || ', 3, topology.topogeo_addPolygon('
-        || quote_literal(atopology) || ', '
-        || quote_literal(rec.geom::text) || '::geometry, ' || tolerance
-        || ');';
-      --RAISE DEBUG '%', sql;
-      EXECUTE sql;
-    ELSE
-      RAISE EXCEPTION 'Unexpected dimension % for component %', ST_Dimension(rec.geom), ST_AsText(rec.geom);
-    END IF;
-
+  FOR rec IN SELECT DISTINCT id(tg), alayer as lyr,
+    CASE WHEN ST_Dimension(geom) = 0 THEN 1
+         WHEN ST_Dimension(geom) = 1 THEN 2
+         WHEN ST_Dimension(geom) = 2 THEN 3
+    END as type,
+    CASE WHEN ST_Dimension(geom) = 0 THEN
+           topology.topogeo_addPoint(atopology, geom, tolerance)
+         WHEN ST_Dimension(geom) = 1 THEN
+           topology.topogeo_addLineString(atopology, geom, tolerance)
+         WHEN ST_Dimension(geom) = 2 THEN
+           topology.topogeo_addPolygon(atopology, geom, tolerance)
+    END as primitive
+    FROM (SELECT (ST_Dump(ageom)).geom) as f
+    WHERE NOT ST_IsEmpty(geom)
+  LOOP
+    -- TODO: consider use a single INSERT statement for the whole thing
+    sql := 'INSERT INTO ' || quote_ident(atopology)
+        || '.relation(topogeo_id, layer_id, element_type, element_id) VALUES ('
+        || rec.id || ',' || rec.lyr || ',' || rec.type
+        || ',' || rec.primitive || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG '%', sql;
+#endif
+    EXECUTE sql;
   END LOOP;
 
   RETURN tg;

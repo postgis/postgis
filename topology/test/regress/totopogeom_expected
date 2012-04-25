@@ -33,4 +33,7 @@ tolerance_1|0.5
 tolerance_topo_1|0.5
 tolerance_0|0
 custom_search_path|0
+#1790.1|0|0
+#1790.2|0|0
+#1790.3|0|0
 Topology 'tt' dropped

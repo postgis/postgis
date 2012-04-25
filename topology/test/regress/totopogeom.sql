@@ -137,6 +137,33 @@ tg as ( select topology.totopogeom(g, 'tt', 1) as g from inp )
 select 'custom_search_path', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
 reset search_path;
 
+-- http://trac.osgeo.org/postgis/ticket/1790
+UPDATE topology.topology SET precision=0 WHERE name = 'tt';
+with inp as ( select
+'GEOMETRYCOLLECTION(
+ POINT(200 200),
+ POINT(200 200)
+)'
+ ::geometry as g),
+tg as ( select totopogeom(g, 'tt', 5) as g from inp )
+select '#1790.1', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDistance(tg.g::geometry, inp.g) FROM inp, tg;
+with inp as ( select
+'GEOMETRYCOLLECTION(
+ LINESTRING(300 300, 310 300),
+ LINESTRING(300 300, 310 300)
+)'
+ ::geometry as g),
+tg as ( select totopogeom(g, 'tt', 5) as g from inp )
+select '#1790.2', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDistance(tg.g::geometry, inp.g) FROM inp, tg;
+with inp as ( select
+'GEOMETRYCOLLECTION(
+ POLYGON((400 400, 450 450, 500 400, 400 400)),
+ POLYGON((400 400, 450 450, 500 400, 400 400))
+)'
+ ::geometry as g),
+tg as ( select totopogeom(g, 'tt', 5) as g from inp )
+select '#1790.3', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDistance(tg.g::geometry, inp.g) FROM inp, tg;
+
 
 DROP TABLE tt.f_coll;
 DROP TABLE tt.f_areal;

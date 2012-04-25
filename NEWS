@@ -13,6 +13,7 @@ PostGIS 2.0.1
   - #1763, topology.toTopoGeom use with custom search_path.
   - #1755, ST_GeographyFromText support for higher dimensions.
   - #1782, fix spatial reference string handling in raster.
+  - #1790, fix toTopoGeom handling of duplicated primitives.
 
 * Enhancements *
 
