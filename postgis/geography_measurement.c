@@ -156,7 +156,7 @@ Datum geography_dwithin(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	PG_RETURN_BOOL(distance < tolerance);
+	PG_RETURN_BOOL(distance <= tolerance);
 }
 
 
