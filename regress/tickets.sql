@@ -135,7 +135,7 @@ SELECT '#179a', ST_MakeLine_GArray(ARRAY[NULL,NULL,NULL,NULL]);
 SELECT '#179b', ST_MakeLine(ARRAY[NULL,NULL,NULL,NULL]);
 
 -- #183 --
-SELECT '#183', ST_AsText(ST_LineToCurve(ST_LineMerge(ST_Collect(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(0 0, 1 1, 1 0)')),ST_GeomFromEWKT('LINESTRING(1 0, 0 1)') ))));
+SELECT '#183', ST_AsText(ST_SnapToGrid(ST_LineToCurve(ST_LineMerge(ST_Collect(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(0 0, 1 1, 1 0)')),ST_GeomFromEWKT('LINESTRING(1 0, 0 1)') ))),0.0001));
 
 -- #210 --
 SELECT '#210a', ST_Union(ARRAY[NULL,NULL,NULL,NULL]) ;
