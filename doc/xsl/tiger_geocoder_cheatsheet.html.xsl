@@ -22,8 +22,8 @@ body {
 	font-family: Arial, sans-serif;
 	font-size: 8.5pt;
 }
-@media print {#content_functions_left a ,#content_functions_right a, a:hover, a:focus, a:active{text-decoration: none;color:black} }
-@media screen {#content_functions_left a ,#content_functions_right a, a:hover, a:focus, a:active{text-decoration: underline} }
+@media print { a , a:hover, a:focus, a:active{text-decoration: none;color:black} }
+@media screen { a , a:hover, a:focus, a:active{text-decoration: underline} }
 .comment {font-size:x-small;color:green;font-family:"courier new"}
 .notes {font-size:x-small;color:#dd1111;font-weight:500;font-family:verdana}
 .example_heading {
