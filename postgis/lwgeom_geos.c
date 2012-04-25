@@ -2851,6 +2851,7 @@ GEOS2LWGEOM(const GEOSGeometry *geom, char want3d)
 			{
 				g = GEOSGetGeometryN(geom, i);
 				geoms[i] = GEOS2LWGEOM(g, want3d);
+				geoms[i]->SRID = -1;
 			}
 		}
 		return (LWGEOM *)lwcollection_construct(type,
