@@ -492,9 +492,11 @@ AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid)
 	pj_errno_ref = pj_get_errno_ref();
 	if ( (projection == NULL) || (*pj_errno_ref))
 	{
-		/* we need this for error reporting */
-		/*pfree(projection); */
-		elog(ERROR, "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s", proj_str, pj_strerrno(*pj_errno_ref));
+		char *pj_errstr = "";
+		if ( pj_strerrno(*pj_errno_ref) )
+			pj_errstr = pj_strerrno(*pj_errno_ref);
+			
+		elog(ERROR, "AddToPROJ4SRSCache: couldn't parse proj4 string: '%s': %s", proj_str, pj_errstr);
 	}
 
 	/*
