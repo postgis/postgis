@@ -350,6 +350,8 @@ DROP TABLE eg;
 -- #1170 --
 SELECT '#1170', ST_Intersection( ST_GeogFromText( 'POINT(0 90)'), ST_GeogFromText( 'POINT(0 90)' ) );
 
+-- #1264 --
+SELECT '#1264', ST_DWithin('POLYGON((-10 -10, -10 10, 10 10, 10 -10, -10 -10))'::geography, 'POINT(0 0)'::geography, 0);
 
 -- Clean up
 DELETE FROM spatial_ref_sys;
