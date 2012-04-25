@@ -3028,7 +3028,7 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 		break;
 
 	default:
-		lwerror("Unknown geometry type: %d", type);
+		lwerror("Unknown geometry type: %s", lwgeom_typename(type));
 
 		return NULL;
 	}

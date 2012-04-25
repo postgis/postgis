@@ -2576,6 +2576,6 @@ lwgeom_nudge_geodetic(LWGEOM *geom)
 		return rv;
 	}
 
-	lwerror("unsupported type (%d) passed to lwgeom_nudge_geodetic", type);
+	lwerror("Unsupported type (%s) passed to lwgeom_nudge_geodetic", lwgeom_typename(type));
 	return rv;
 }
