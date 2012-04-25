@@ -1666,6 +1666,9 @@ compute_serialized_box3d(uchar *srl)
 	int sub_size;
 	char nboxes=0;
 
+	/* Initialize the box */
+	memset(&b1, 0, sizeof(BOX3D));
+
 	LWDEBUGF(2, "compute_serialized_box3d called on type %d", type);
 
 	loc += 1; /* Move past the 'type' byte. */
