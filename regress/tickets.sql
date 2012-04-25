@@ -585,6 +585,8 @@ select '#1038', ST_AsSVG('POLYGON EMPTY'::geometry);
 -- #1042
 select '#1042',round((st_ymax(st_minimumboundingcircle('LINESTRING(-1 -1, 1 1)')) * st_xmax(st_minimumboundingcircle('LINESTRING(-1 -1, 1 1)')))::numeric,0);
 
+-- #1170 --
+SELECT '#1170', ST_Intersection( ST_GeogFromText( 'POINT(0 90)'), ST_GeogFromText( 'POINT(0 90)' ) );
 
 -- #1398
 select '#1398a', st_astext(st_snaptogrid(st_project('POINT(-120 45)'::geography, 100000, radians(45))::geometry,0.000001));
