@@ -2473,3 +2473,109 @@ double lwgeom_length_spheroid(const LWGEOM *geom, const SPHEROID *s)
 	lwerror("unsupported type passed to lwgeom_length_sphere");
 	return 0.0;
 }
+
+/**
+* When features are snapped or sometimes they are just this way, they are very close to 
+* the geodetic bounds but slightly over. This routine nudges those points, and only
+* those points, back over to the bounds.
+* http://trac.osgeo.org/postgis/ticket/1292
+*/
+static int 
+ptarray_nudge_geodetic(POINTARRAY *pa)
+{
+
+	int i;
+	POINT4D p;
+	int altered = LW_FALSE;
+	int rv = LW_FALSE;
+	static double tolerance = 1e-10;
+
+	if ( ! pa )
+		lwerror("ptarray_nudge_geodetic called with null input");
+
+	for(i = 0; i < pa->npoints; i++ )
+	{
+		getPoint4d_p(pa, i, &p);
+		if ( p.x < -180.0 && (-180.0 - p.x < tolerance) )
+		{
+			p.x = -180.0;
+			altered = LW_TRUE;
+		}
+		if ( p.x > 180.0 && (p.x - 180.0 < tolerance) )
+		{
+			p.x = 180.0;
+			altered = LW_TRUE;
+		}
+		if ( p.y < -90.0 && (-90.0 - p.y < tolerance) )
+		{
+			p.y = -90.0;
+			altered = LW_TRUE;
+		}
+		if ( p.y > 90.0 && (p.y - 90.0 < tolerance) )
+		{
+			p.y = 90.0;
+			altered = LW_TRUE;
+		}
+		if ( altered == LW_TRUE )
+		{
+			setPoint4d(pa, i, &p);
+			altered = LW_FALSE;
+			rv = LW_TRUE;
+		}
+	}
+	return rv;
+}
+
+/**
+* When features are snapped or sometimes they are just this way, they are very close to 
+* the geodetic bounds but slightly over. This routine nudges those points, and only
+* those points, back over to the bounds.
+* http://trac.osgeo.org/postgis/ticket/1292
+*/
+int 
+lwgeom_nudge_geodetic(LWGEOM *geom)
+{
+	int type;
+	int i = 0;
+	int rv = LW_FALSE;
+
+	assert(geom);
+
+	/* No points in nothing */
+	if ( lwgeom_is_empty(geom) )
+		return LW_FALSE;
+
+	type = TYPE_GETTYPE(geom->type);
+
+	if ( type == POINTTYPE )
+		return ptarray_nudge_geodetic(((LWPOINT*)geom)->point);
+
+	if ( type == LINETYPE )
+		return ptarray_nudge_geodetic(((LWLINE*)geom)->points);
+
+	if ( type == POLYGONTYPE )
+	{
+		LWPOLY *poly = (LWPOLY*)geom;
+		for ( i = 0; i < poly->nrings; i++ )
+		{
+			int n = ptarray_nudge_geodetic(poly->rings[i]);
+			rv = (rv == LW_TRUE ? rv : n);
+		}
+		return rv;
+	}
+
+	if ( lwgeom_is_collection(type) )
+	{
+		LWCOLLECTION *col = (LWCOLLECTION*)geom;
+
+		for ( i = 0; i < col->ngeoms; i++ )
+		{
+			int n = lwgeom_nudge_geodetic(col->geoms[i]);
+			rv = (rv == LW_TRUE ? rv : n);
+		}
+		return rv;
+	}
+
+	lwerror("unsupported type (%d) passed to lwgeom_nudge_geodetic", type);
+	return rv;
+}

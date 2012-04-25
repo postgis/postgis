@@ -361,6 +361,11 @@ extern GSERIALIZED* gserialized_copy(const GSERIALIZED *g);
 extern int lwgeom_check_geodetic(const LWGEOM *geom);
 
 /**
+* Push coordinates into geodetic range.
+*/
+extern int lwgeom_nudge_geodetic(LWGEOM *geom);
+
+/**
 * Calculate the geodetic bounding box for an LWGEOM. Z/M coordinates are 
 * ignored for this calculation. Pass in non-null, geodetic bounding box for function
 * to fill out. LWGEOM must have been built from a GSERIALIZED to provide

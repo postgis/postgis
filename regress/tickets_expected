@@ -92,3 +92,4 @@ WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
 ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
 #1596.3|4326
 #1697.1|0
+#1170|0101000020E610000001000000000044C00000000000805640

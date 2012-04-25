@@ -945,9 +945,12 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	/* Check if the geography has valid coordinate range. */
 	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
 	{
-		ereport(ERROR, (
-		            errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-		            errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
+		if ( (! lwgeom_nudge_geodetic(lwgeom)) || lwgeom_check_geodetic(lwgeom) == LW_FALSE )
+		{
+			ereport(ERROR, (
+			        errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+			        errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
+		}
 	}
 
 	PG_RETURN_POINTER(g_ser);

@@ -347,5 +347,9 @@ INSERT INTO eg (g) select 'POINT EMPTY'::geography
 SELECT '#1697.1', count(*) FROM eg WHERE g && 'POINT(0 0)'::geography;
 DROP TABLE eg;
 
+-- #1170 --
+SELECT '#1170', ST_Intersection( ST_GeogFromText( 'POINT(0 90)'), ST_GeogFromText( 'POINT(0 90)' ) );
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
