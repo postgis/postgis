@@ -1772,7 +1772,7 @@ BEGIN
 
 
 	-- Verify dimension
-	IF ( (new_dim >4) OR (new_dim <0) ) THEN
+	IF ( (new_dim >4) OR (new_dim <2) ) THEN
 		RAISE EXCEPTION 'invalid dimension';
 		RETURN 'fail';
 	END IF;
