@@ -3,7 +3,7 @@ PostGIS 2.0.1
 
 * Bug Fixes *
 
-  - #1625, fix false edge-node crossing report in ValidateTopology.
+  - #1789, fix false edge-node crossing report in ValidateTopology.
   - #1791, fix ST_Azimuth with very close but distinct points.
   - #1775, ST_ChangeEdgeGeom collision detection with 2-vertex target.
   - #1776, fix ST_SymDifference(empty, geom) to return geom.
