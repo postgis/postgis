@@ -670,5 +670,12 @@ SELECT '#1776',
  ST_AsText(ST_SymDifference(A,B)), ST_AsText(ST_SymDifference(B, A))
 FROM inp;
 
+-- #1791 --
+with inp as ( SELECT
+ '010100000000000000004065C0041AD965BE5554C0'::geometry as a,
+ '010100000001000000004065C0041AD965BE5554C0'::geometry as b
+) SELECT '#1791', round(ST_Azimuth(a,b)*10)/10 from inp;
+
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

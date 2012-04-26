@@ -2376,7 +2376,7 @@ Datum LWGEOM_azimuth(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(geom, 1);
 
 	/* Standard return value for equality case */
-	if ( FP_EQUALS(p1.x, p2.x) && FP_EQUALS(p1.y, p2.y) )
+	if ( (p1.x == p2.x) && (p1.y == p2.y) )
 	{
 		PG_RETURN_NULL();
 	}
