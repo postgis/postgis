@@ -16,6 +16,7 @@ PostGIS 2.0.1
   - #1755, ST_GeographyFromText support for higher dimensions.
   - #1782, fix spatial reference string handling in raster.
   - #1790, fix toTopoGeom handling of duplicated primitives.
+  - #1694, fix building with clang.
 
 * Enhancements *
 
