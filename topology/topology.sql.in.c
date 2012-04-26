@@ -1347,7 +1347,7 @@ BEGIN
     || quote_ident(toponame) || '.node a, '
     || quote_ident(toponame) || '.node b '
     || 'WHERE a.node_id < b.node_id '
-    || ' AND ST_DWithin(a.geom, b.geom, 0)'
+    || ' AND ST_DWithin(a.geom, b.geom, 0)' -- NOTE: see #1625 and #1789
   LOOP
     retrec.error = 'coincident nodes';
     retrec.id1 = rec.id1;
@@ -1362,7 +1362,7 @@ BEGIN
     || quote_ident(toponame) || '.edge e '
     || 'WHERE e.start_node != n.node_id '
     || 'AND e.end_node != n.node_id '
-    || 'AND ST_DWithin(n.geom, e.geom, 0)'
+    || 'AND ST_Within(n.geom, e.geom)'
   LOOP
     retrec.error = 'edge crosses node';
     retrec.id1 = rec.id1;
