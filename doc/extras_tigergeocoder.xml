@@ -126,7 +126,7 @@ DROP INDEX tiger_data.idx_tiger_data_ma_county_snd_name;
 		<funcsynopsis>
 		  <funcprototype>
 			<funcdef>text <function>Drop_State_Tables_Generate_Script</function></funcdef>
-				<paramdef><type>text </type> <parameter>address</parameter></paramdef>
+				<paramdef><type>text </type> <parameter>param_state</parameter></paramdef>
 				<paramdef choice='opt'><type>text </type> <parameter>param_schema=tiger_data</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
