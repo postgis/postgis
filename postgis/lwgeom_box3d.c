@@ -121,7 +121,7 @@ Datum BOX3D_out(PG_FUNCTION_ARGS)
 	if (bbox == NULL)
 	{
 		result = palloc(5);
-		strcat(result,"NULL");
+		strcpy(result, "NULL");
 		PG_RETURN_CSTRING(result);
 	}
 
@@ -184,6 +184,8 @@ Datum BOX3D_extent_to_BOX3D(PG_FUNCTION_ARGS)
 	out->xmax = in->xmax;
 	out->ymin = in->ymin;
 	out->ymax = in->ymax;
+	out->zmin = in->zmin;
+	out->zmax = in->zmax;
 
 	PG_RETURN_POINTER(out);
 }
