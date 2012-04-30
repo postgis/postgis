@@ -586,7 +586,7 @@ select '#1038', ST_AsSVG('POLYGON EMPTY'::geometry);
 select '#1042',round((st_ymax(st_minimumboundingcircle('LINESTRING(-1 -1, 1 1)')) * st_xmax(st_minimumboundingcircle('LINESTRING(-1 -1, 1 1)')))::numeric,0);
 
 -- #1170 --
-SELECT '#1170', ST_Intersection( ST_GeogFromText( 'POINT(0 90)'), ST_GeogFromText( 'POINT(0 90)' ) );
+SELECT '#1170', ST_Y(ST_Intersection( ST_GeogFromText( 'POINT(0 90)'), ST_GeogFromText( 'POINT(0 90)' ))::geometry);
 
 -- #1264 --
 SELECT '#1264', ST_DWithin('POLYGON((-10 -10, -10 10, 10 10, 10 -10, -10 -10))'::geography, 'POINT(0 0)'::geography, 0);
