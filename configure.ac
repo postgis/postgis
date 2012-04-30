@@ -89,14 +89,13 @@ dnl for in-place regression tests
 dnl 
 case $host_os in
          *mingw*)
-                 PWDREGRESS="pwd -W"
+                 MINGWBUILD=1
                  ;;
          *)
-                 PWDREGRESS="pwd"
+                 MINGWBUILD=0
                  ;;
 esac
-AC_DEFINE_UNQUOTED([PWDREGRESS])
-AC_SUBST([PWDREGRESS])
+AC_SUBST([MINGWBUILD])
 
 
 dnl ===========================================================================
