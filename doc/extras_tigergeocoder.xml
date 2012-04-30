@@ -354,15 +354,15 @@ Total query runtime: 245 ms.
 
 	  <refsection>
 		<title>Examples: Basic</title>
-		<para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of MA state Tiger data loaded.</para>
-		<para>Currently a bit slow (3000 ms)</para>
+		<para>The below examples timings are on a 3.0 GHZ single processor Windows 7 machine with 2GB ram running PostgreSQL 9.0/PostGIS 1.5 loaded with all of MA state Tiger data loaded. Currently a bit slow (3000 ms)</para>
+		<para>Testing on Windows 2003 64-bit 8GB on PostGIS 2.0 PostgreSQL 64-bit Tiger 2011 data loaded -- (41ms)</para>
 		<programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating 
 			FROM geocode_intersection( 'Haverford St','Germania St', 'MA', 'Boston', '02130',1); 
            pprint_addy            |         st_astext          | rating
 ----------------------------------+----------------------------+--------
 98 Haverford St, Boston, MA 02130 | POINT(-71.101375 42.31376) |      0
 </programlisting>
-		<para>Even if zip is not passed in the geocoder can guess (took about 3500 ms)</para>
+		<para>Even if zip is not passed in the geocoder can guess (took about 3500 ms on the windows 7 box), on the windows 2003 64-bit 741 ms</para>
 		<programlisting>SELECT pprint_addy(addy), st_astext(geomout),rating 
 				FROM geocode_intersection('Weld', 'School', 'MA', 'Boston');
           pprint_addy          |        st_astext         | rating
