@@ -8,3 +8,4 @@ INSERT INTO test_pt(geom) VALUES(ST_GeomFromEWKT('SRID=4326;POINTM(1 2 3)'));
 SELECT populate_geometry_columns('test_pt'::regclass);
 SELECT 'The result: ' || DropGeometryTable('test_pt');
 SELECT 'Unexistant: ' || DropGeometryTable('unexistent'); -- see ticket #861
+DELETE FROM spatial_ref_sys WHERE srid = 4326;
