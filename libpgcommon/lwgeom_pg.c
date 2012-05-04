@@ -17,6 +17,7 @@
 #include <postgres.h>
 #include <fmgr.h>
 #include <executor/spi.h>
+#include <miscadmin.h>
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
@@ -116,6 +117,8 @@ pg_alloc(size_t size)
 {
 	void * result;
 
+	CHECK_FOR_INTERRUPTS(); /* give interrupter a chance */
+
 	POSTGIS_DEBUGF(5, "  pg_alloc(%d) called", (int)size);
 
 	result = palloc(size);
@@ -134,6 +137,8 @@ void *
 pg_realloc(void *mem, size_t size)
 {
 	void * result;
+
+	CHECK_FOR_INTERRUPTS(); /* give interrupter a chance */
 
 	POSTGIS_DEBUGF(5, "  pg_realloc(%p, %d) called", mem, (int)size);
 
