@@ -677,5 +677,8 @@ with inp as ( SELECT
 ) SELECT '#1791', round(ST_Azimuth(a,b)*10)/10 from inp;
 
 
+-- #1799 --
+SELECT '#1799', ST_Segmentize('LINESTRING(0 0, 10 0)'::geometry, 0);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

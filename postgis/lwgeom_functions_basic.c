@@ -1824,6 +1824,13 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 		PG_RETURN_POINTER(ingeom);
 	}
 
+	if ( dist <= 0 ) {
+		/* Protect from knowingly infinite loops, see #1799 */
+		/* Note that we'll end out of memory anyway for other small distances */
+		elog(ERROR, "ST_Segmentize: invalid max_distance %g (must be >= 0)", dist);
+		PG_RETURN_NULL();
+	}
+
 	inlwgeom = lwgeom_from_gserialized(ingeom);
 	outlwgeom = lwgeom_segmentize2d(inlwgeom, dist);
 
