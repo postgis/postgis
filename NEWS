@@ -10,7 +10,7 @@ PostGIS 1.5.4
    - #621, Problem finding intersections with geography (Paul Ramsey)
    - #627, PostGIS/PostgreSQL process die on invalid geometry (Paul Ramsey)
    - #810, Increase accuracy of area calculation (Paul Ramsey)
-   - #852, improve spatial predicates robustness (Sandro Santilli, Nicklas Avén)
+   - #852, improve spatial predicates robustness (Sandro Santilli, Nicklas AvÃ©n)
    - #877, ST_Estimated_Extent returns NULL on empty tables (Sandro Santilli)
    - #1028, ST_AsSVG kills whole postgres server when fails (Paul Ramsey)
    - #1056, Fix boxes of arcs and circle stroking code (Paul Ramsey)
@@ -46,7 +46,7 @@ PostGIS 1.5.3
    	 (Sandro Santilli, reported by Birgit Laggner)
    - #940, support for PostgreSQL 9.1 beta 1 
      (Regina Obe, Paul Ramsey, patch submitted by stl)
-   - #845, ST_Intersects precision error (Sandro Santilli, Nicklas Avén)
+   - #845, ST_Intersects precision error (Sandro Santilli, Nicklas AvÃ©n)
      Reported by cdestigter
    - #884, Unstable results with ST_Within, ST_Intersects (Chris Hodgson)
    - #779, shp2pgsql -S option seems to fail on points (Jeff Adams)
@@ -61,7 +61,7 @@ PostGIS 1.5.3
    - #573 ST_Union fails on a group of linestrings 
    	 Not a PostGIS bug, fixed in GEOS 3.3.0
    - #457 ST_CollectionExtract returns non-requested type
-    (Nicklas Avén, Paul Ramsey)
+    (Nicklas AvÃ©n, Paul Ramsey)
    - #441 ST_AsGeoJson Bbox on GeometryCollection error (Olivier Courtin)
    - #411 Ability to backup invalid geometries (Sando Santilli)
      Reported by Regione Toscana
@@ -81,7 +81,7 @@ PostGIS 1.5.2
    - Loader: fix handling of empty (0-verticed) geometries in shapefiles.
      (Sandro Santilli)
    - #536, Geography ST_Intersects, ST_Covers, ST_CoveredBy and
-     Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Avén)
+     Geometry ST_Equals not using spatial index (Regina Obe, Nicklas AvÃ©n)
    - #573, Improvement to ST_Contains geography
    - Loader: Add support for command-q shutdown in Mac GTK build (Paul Ramsey)
    - #393, Loader: Add temporary patch for large DBF files 
@@ -162,9 +162,9 @@ PostGIS 1.5.0
   - Added Hausdorff distance calculations (#209) (Vincent Picavet)
   - Added parameters argument to ST_Buffer operation to support one-sided 
     buffering and other buffering styles (Sandro Santilli)
-  - Performance improvements to ST_Distance (Nicklas Avén)
+  - Performance improvements to ST_Distance (Nicklas AvÃ©n)
   - Addition of other Distance related visualization and analysis 
-    functions (Nicklas Avén)
+    functions (Nicklas AvÃ©n)
     - ST_ClosestPoint
     - ST_DFullyWithin
     - ST_LongestLine
@@ -284,7 +284,7 @@ PostGIS 1.3.6
 	(Mark Cave-Ayland, Mark Leslie)
   - Enhancement Trac#34 - pgsql2shp now creates .prj files where applicable (Regina Obe)
   - Fix Trac#88 -  Windows Vista pgsql2shp memory bug (Regina Obe)
-  - Fix Trac#146 - for distance calculation on collections (Nicklas Avén, Paul Ramsey)
+  - Fix Trac#146 - for distance calculation on collections (Nicklas AvÃ©n, Paul Ramsey)
   - Fix Trac#116 - crashers for rare EWKB cases (Paul Ramsey)
   - Fix to address an SRID of -1 in probe_geometry_columns (Kevin Neufeld)
   - Fix Trac#99 shp2pgsql logical error when importing DBF-only (Regina Obe)
