@@ -2746,6 +2746,13 @@ Datum LWGEOM_segmentize2d(PG_FUNCTION_ARGS)
 	ingeom = (PG_LWGEOM *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	dist = PG_GETARG_FLOAT8(1);
 
+	if ( dist <= 0 ) {
+		/* Protect from knowingly infinite loops, see #1799 */
+		/* Note that we'll end out of memory anyway for other small distances */
+		elog(ERROR, "ST_Segmentize: invalid max_distance %g (must be >= 0)", dist);
+		PG_RETURN_NULL();
+	}
+
 	/* Avoid deserialize/serialize steps */
 	if ( (TYPE_GETTYPE(ingeom->type) == POINTTYPE) ||
 	        (TYPE_GETTYPE(ingeom->type) == MULTIPOINTTYPE) )

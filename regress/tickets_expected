@@ -95,3 +95,4 @@ ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
 #1170|90
 #1252|MULTIPOLYGON(((0 0,1 1,1 0,0 0)),((4 4,4 5,5 5,4 4)))
 #1264|t
+ERROR:  ST_Segmentize: invalid max_distance 0 (must be >= 0)

@@ -30,6 +30,7 @@ PostGIS 1.5.4
    - #1602, fix ST_Polygonize to retain Z (Sandro Santilli)
    - #1697, fix crash with EMPTY entries in GiST index (Paul Ramsey)
    - #1772, fix ST_Line_Locate_Point with collapsed input (Sandro Santilli)
+   - #1799, Protect ST_Segmentize from max_length=0  (Sandro Santilli)
    - Alter parameter order in 900913 (Paul Ramsey)
    - Support builds with "gmake" (Greg Troxel)
 

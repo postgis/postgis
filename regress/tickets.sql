@@ -356,5 +356,8 @@ SELECT '#1252', st_astext(st_union(geom)) from ( select (st_dump('SRID=4326;MULT
 -- #1264 --
 SELECT '#1264', ST_DWithin('POLYGON((-10 -10, -10 10, 10 10, 10 -10, -10 -10))'::geography, 'POINT(0 0)'::geography, 0);
 
+-- #1799 --
+SELECT '#1799', ST_Segmentize('LINESTRING(0 0, 10 0)'::geometry, 0);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
