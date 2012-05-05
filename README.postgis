@@ -148,7 +148,7 @@ tracker: http://trac.osgeo.org/postgis/report/3
 INSTALLATION
 ------------
 
-To install PostGIS library and utilities, as postgres run::
+To install PostGIS library and utilities, as root run::
 
   make install
 
