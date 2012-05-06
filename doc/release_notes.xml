@@ -2,6 +2,43 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+
+      <sect1>
+        <title>Release 1.5.4</title>
+        <para>Release date: 2011/05/06</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.3 release.</para>
+        <simplesect>
+         <title>Bug Fixes</title>
+         <para>#547, ST_Contains memory problems (Sandro Santilli)</para>
+         <para>#621, Problem finding intersections with geography (Paul Ramsey)</para>
+         <para>#627, PostGIS/PostgreSQL process die on invalid geometry (Paul Ramsey)</para>
+         <para>#810, Increase accuracy of area calculation (Paul Ramsey)</para>
+         <para>#852, improve spatial predicates robustness (Sandro Santilli, Nicklas Avén)</para>
+         <para>#877, ST_Estimated_Extent returns NULL on empty tables (Sandro Santilli)</para>
+         <para>#1028, ST_AsSVG kills whole postgres server when fails (Paul Ramsey)</para>
+         <para>#1056, Fix boxes of arcs and circle stroking code (Paul Ramsey)</para>
+         <para>#1135, improve testsuite predictability (Andreas 'ads' Scherbaum)</para>
+         <para>#1146, images generator crashes (bronaugh)</para>
+         <para>#1170, North Pole intersection fails (Paul Ramsey)</para>
+         <para>#1179, ST_AsText crash with bad value (kjurka)</para>
+         <para>#1184, honour DESTDIR in documentation Makefile (Bryce L Nordgren)</para>
+         <para>#1227, server crash on invalid GML </para>
+         <para>#1252, SRID appearing in WKT (Paul Ramsey)</para>
+         <para>#1264, st_dwithin(g, g, 0) doesn't work (Paul Ramsey)</para>
+         <para>#1344, allow exporting tables with invalid geometries (Sandro Santilli)</para>
+         <para>#1389, wrong proj4text for SRID 31300 and 31370 (Paul Ramsey)</para>
+         <para>#1406, shp2pgsql crashes when loading into geography (Sandro Santilli)</para>
+         <para>#1595, fixed SRID redundancy in ST_Line_SubString (Sandro Santilli)</para>
+         <para>#1596, check SRID in UpdateGeometrySRID (Mike Toews, Sandro Santilli)</para>
+         <para>#1602, fix ST_Polygonize to retain Z (Sandro Santilli)</para>
+         <para>#1697, fix crash with EMPTY entries in GiST index (Paul Ramsey)</para>
+         <para>#1772, fix ST_Line_Locate_Point with collapsed input (Sandro Santilli)</para>
+         <para>#1799, Protect ST_Segmentize from max_length=0  (Sandro Santilli)</para>
+         <para>Alter parameter order in 900913 (Paul Ramsey)</para>
+         <para>Support builds with "gmake" (Greg Troxel)</para>
+        </simplesect>
+      </sect1>
+      
       <sect1>
         <title>Release 1.5.3</title>
         <para>Release date: 2011/06/25</para>

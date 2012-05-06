@@ -1,7 +1,7 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 ~~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-VERSION: 1.5.4 (2011/xx/xx)
+VERSION: 1.5.4 (2011/05/06)
 
 MORE INFORMATION: http://postgis.refractions.net
 
@@ -89,7 +89,7 @@ BUILD
 -----
 
 PostGIS uses the GNU make (aka gmake) for building. 
-To build PostGIS library and utilities, as postgres run:
+To build PostGIS library and utilities, run:
 
   make
 
@@ -97,7 +97,7 @@ TESTING
 -------
 
 You want to run regress tests before installation.
-To do so, as postgres run:  
+To do so, run:  
 
 	make check
 
@@ -113,7 +113,7 @@ http://trac.osgeo.org/postgis/report/3.
 INSTALLATION
 ------------
 
-To install PostGIS library and utilities, as postgres run:
+To install PostGIS library and utilities, as root run:
 
   make install
 

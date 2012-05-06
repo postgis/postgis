@@ -1,3 +1,441 @@
+2012-05-04 08:29  strk
+
+	* .gitignore: Copy .gitignore file from trunk
+
+2012-05-04 08:08  strk
+
+	* NEWS: Convert NEWS to UTF8 (#1801)
+
+2012-05-04 08:02  strk
+
+	* NEWS, postgis/lwgeom_functions_basic.c, regress/tickets.sql,
+	  regress/tickets_expected: Protect ST_Segmentize from max_length=0
+	  (#1799)
+
+2012-05-01 17:05  pramsey
+
+	* regress/Makefile.in, regress/regress_management.sql:
+	  populate_geometry_columns using deprecated functions (#1121)
+
+2012-05-01 02:01  robe
+
+	* postgis/postgis.sql.in.c, regress/regress_management.sql,
+	  regress/regress_management_expected: #1121
+	  populate_geometry_columns using deprecated function (also fixed
+	  some others and changed dropgeometrycolumns to have an IF EXISTS
+
+2012-04-30 21:04  pramsey
+
+	* postgis/lwgeom_box3d.c: ST_Extent when cast to box3d flipflops
+	  (#1334)
+
+2012-04-30 17:26  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected: Restrict the test
+	  coverage of the polar intersection slightly
+
+2012-04-30 17:11  pramsey
+
+	* regress/run_test: make check under mingw doesn't work (#1794)
+
+2012-04-30 16:56  pramsey
+
+	* configure.ac, regress/Makefile.in: make check under mingw doesn't
+	  work (#1794)
+
+2012-04-26 15:03  pramsey
+
+	* NEWS: Update news with latest run of ticket closures
+
+2012-04-25 20:03  pramsey
+
+	* postgis/postgis.sql.in.c: AddGeometryColumns allow dims = 0
+	  (#1573)
+
+2012-04-25 19:54  pramsey
+
+	* liblwgeom/lwgeodetic.c, postgis/lwgeom_geos.c: Return type name
+	  strings, not numbers. (#1645)
+
+2012-04-25 19:39  pramsey
+
+	* liblwgeom/lwgeom_api.c: ST_Extent when cast to box3d flipflops
+	  (#1334)
+
+2012-04-25 19:26  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected: precision error in
+	  COMPOUNDCURVE test (32bit, 1.5) (#1731)
+
+2012-04-25 19:16  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected: SRID appearing in
+	  ST_AsText for particular multipolygon (#1252)
+
+2012-04-25 19:13  pramsey
+
+	* postgis/lwgeom_geos.c: SRID appearing in ST_AsText for particular
+	  multipolygon (#1252)
+
+2012-04-25 19:05  pramsey
+
+	* postgis/lwgeom_transform.c: Avoid passing a null string into
+	  printf() (Windows unhappy) on PJ error lookup (#1150)
+
+2012-04-25 18:46  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected: st_dwithin(geog,
+	  geog, 0) doesn't work (#1264)
+
+2012-04-25 18:45  pramsey
+
+	* postgis/geography_measurement.c: st_dwithin(geog, geog, 0)
+	  doesn't work (#1264)
+
+2012-04-25 17:52  pramsey
+
+	* liblwgeom/libgeom.h, liblwgeom/lwgeodetic.c,
+	  postgis/geography_inout.c, regress/tickets.sql,
+	  regress/tickets_expected: North Pole Intersection fails with
+	  "Coordinate values out of range" (#1170)
+
+2012-04-12 08:19  strk
+
+	* NEWS: Add missing NEWS entry for #1389 bugfix
+
+2012-04-12 07:45  strk
+
+	* NEWS: Add note about the ST_Line_Interpolate_Point fix
+
+2012-04-12 07:44  strk
+
+	* liblwgeom/ptarray.c, regress/regress_lrs.sql,
+	  regress/regress_lrs_expected: Fix NaN from ptarray_locate_point
+	  with zero-length lines (#1772)
+
+2012-03-29 21:54  pramsey
+
+	* spatial_ref_sys.sql: wrong proj4text in spatial_ref_sys for SRID
+	  31300 and 31370 (#1389)
+
+2012-03-28 17:25  nicklas
+
+	* liblwgeom/measures.c: Fixing #1728 in 1.5 branch
+
+2012-03-28 08:53  strk
+
+	* regress/tickets.sql, regress/tickets_expected: Add regression
+	  test for GiST index crash on empty #1726
+
+2012-03-28 08:46  strk
+
+	* regress/tickets.sql, regress/tickets_expected: Be terse about
+	  errors (#1729)
+
+2012-03-28 08:36  strk
+
+	* NEWS, postgis/geography_gist.c: Fix crash in n-dimensional GiST
+	  index on EMPTY geoms (#1697)
+	  
+	  This is Paul's patch with the unrelated btree changes removed and
+	  the memset removed too.
+
+2012-02-23 10:32  strk
+
+	* utils/postgis_restore.pl: Change script mode (+x)
+
+2012-02-23 10:32  strk
+
+	* NEWS, liblwgeom/measures.c: Fix compiler warning, possibly
+	  speedup area computation (#1603)
+
+2012-02-22 17:20  strk
+
+	* NEWS, postgis/lwgeom_geos.c, regress/Makefile.in,
+	  regress/polygonize.sql, regress/polygonize_expected: Fix
+	  ST_Polygonize aggregate to retain Z (#1602)
+
+2012-02-22 13:02  strk
+
+	* NEWS: Add UpdateGeometrySRID item
+
+2012-02-22 13:01  strk
+
+	* postgis/postgis.sql.in.c, regress/tickets.sql,
+	  regress/tickets_expected: Check SRID in UpdateGeometrySRID
+	  (#1506)
+
+2012-02-21 16:51  strk
+
+	* NEWS, postgis/lwgeom_functions_analytic.c, regress/tickets.sql,
+	  regress/tickets_expected: Fix SRID redundancy in
+	  ST_Line_Substring output (#1595)
+
+2012-02-17 22:02  pramsey
+
+	* postgis/lwgeom_estimate.c: ST_Estimated_Extent() does not handle
+	  table name with upper case (#1585)
+
+2012-02-15 22:46  pramsey
+
+	* java/jdbc/src/org/postgis/Point.java: jdbc:
+	  org.postgis.Point.equals() is not reflexive (#1313)
+
+2012-02-15 22:34  pramsey
+
+	* doc/reference_processing.xml: Fix XML typo
+
+2012-02-15 22:27  pramsey
+
+	* doc/reference_processing.xml: Negative distance argument to
+	  ST_Buffer not documented (#1535)
+
+2012-02-15 22:06  pramsey
+
+	* loader/shp2pgsql-cli.c, loader/shp2pgsql-gui.c: shp2pgsql uses
+	  the wrong return type for pgis_getopt (#663)
+
+2012-02-10 16:17  pramsey
+
+	* doc/using_postgis_app.xml: Fix syntax error in MS example
+
+2012-02-05 00:35  mcayland
+
+	* loader/shp2pgsql-core.c: Change encoding reference URL to that
+	  used for libiconv rather than PostgreSQL since that's what we are
+	  using to do the encoding conversion (as per #1303).
+
+2012-02-01 00:01  pramsey
+
+	* spatial_ref_sys.sql: wrong proj4text in spatial_ref_sys for SRID
+	  31300 and 31370 (#1389)
+
+2012-01-31 22:08  pramsey
+
+	* postgis/lwgeom_estimate.c: OSX regression on fix for #877
+
+2012-01-31 20:35  pramsey
+
+	* liblwgeom/lwgparse.c: st_force_3dz('CURVEPOLYGON EMPTY') kills
+	  the backend (#1437)
+
+2012-01-30 20:52  pramsey
+
+	* liblwgeom/lwalgorithm.c: ST_LocateBetweenElevations should return
+	  NULL and not fail if intersection is void (#1250)
+
+2012-01-26 16:22  pramsey
+
+	* java/jdbc/src/org/postgis/LineString.java: Fix concat per a
+	  message on postgis-users from Markus Innerebner
+
+2012-01-24 20:08  chodgson
+
+	* regress/tickets.sql, regress/tickets_expected: altered ticket
+	  test #1344 to match the version in trunk, which is compatible
+	  with more versions of postgresql
+
+2012-01-24 00:02  pramsey
+
+	* postgis/lwgeom_transform.c: Prevent people from inserting entries
+	  in spatial_ref_sys with no proj4text (#1150) This prevents a
+	  crash when the proj4text is NULL. When it is an empty string,
+	  things still seem to work (no crash).
+
+2012-01-20 08:42  strk
+
+	* NEWS, postgis/Makefile.in, postgis/lwgeom_cache.c,
+	  postgis/lwgeom_cache.h, postgis/lwgeom_geos.c,
+	  postgis/lwgeom_geos_prepared.c, postgis/lwgeom_geos_prepared.h,
+	  postgis/lwgeom_rtree.c: Backport fix to ST_Contains memory issues
+	  (#547)
+
+2012-01-19 09:56  strk
+
+	* NEWS, postgis/lwgeom_functions_analytic.c, regress/tickets.sql,
+	  regress/tickets_expected: Backport fix for #852
+
+2012-01-16 19:46  pramsey
+
+	* postgis/lwgeom_functions_analytic.c: ST_Line_Interpolate_Point
+	  does not handle M value (#1120)
+
+2012-01-11 08:49  strk
+
+	* NEWS, doc/Makefile.in: Backport: honour DESTDIR in documentation
+	  Makefile (#1184)
+	  Patch by Bryce L Nordgren.
+
+2012-01-11 08:45  strk
+
+	* NEWS, doc/html/image_src/generator.c: Backport fix for #1146:
+	  images generator crashes
+
+2012-01-11 08:36  strk
+
+	* NEWS: Note the last commit in the NEWS file
+
+2012-01-11 08:34  strk
+
+	* doc/Makefile.in: Use $(MAKE) to invoke whatever make was used by
+	  builder
+
+2012-01-09 10:17  strk
+
+	* NEWS, loader/shp2pgsql-cli.c: Fix shp2pgsql crash when loading
+	  into geography (#1406)
+
+2011-12-21 13:04  robe
+
+	* doc/reference_lrs.xml: #1242 write this off as a documentation
+	  bug. I don't have 1.5.1 anymore to confirm ST_Line_Locate_Point
+	  ever worked with multilinestrings and doesn't work on my 1.5.3
+	  install
+
+2011-12-16 14:56  strk
+
+	* NEWS, postgis/lwgeom_inout.c, regress/tickets.sql,
+	  regress/tickets_expected: Allow exporting tables with invalid
+	  geometries (#1344)
+
+2011-12-08 22:19  pramsey
+
+	* postgis/lwgeom_geos.c: Guard GEOS from NaN coordinate values.
+	  (#627)
+
+2011-12-08 13:34  strk
+
+	* doc/reference_misc.xml: Add a note about ST_Estimated_Extent on
+	  empty or non-analyzed tables (#877)
+
+2011-12-08 11:25  strk
+
+	* NEWS, postgis/lwgeom_estimate.c, regress/tickets.sql,
+	  regress/tickets_expected: Have ST_Estimated_Extent return NULL
+	  when no stats are found for a table.
+	  
+	  No stats means empty table or no run of analyze. Warn about that.
+	  These Fixes bug #877. Includes regress test.
+
+2011-12-08 11:24  strk
+
+	* regress/run_test: Hush VACUUM and ANALYZE feedbacks while running
+	  tests
+
+2011-12-01 13:13  robe
+
+	* doc/using_postgis_dataman.xml: #1337 clarify what sql is good for
+	  and get rid of some other obsolete syntax
+
+2011-11-26 10:41  strk
+
+	* NEWS: Update the NEWS file looking at SCM logs (review welcome).
+	  
+	  This is to make 1.5.4 release process easier...
+
+2011-11-26 06:05  pramsey
+
+	* postgis/lwgeom_svg.c: ST_AsSVG kills whole postgres server when
+	  fails (#1028)
+
+2011-10-31 22:56  pramsey
+
+	* liblwgeom/measures.c: Increase accuracy of area calculation
+	  (#810)
+
+2011-10-31 22:54  pramsey
+
+	* regress/loader/Arc-wkb.sql, regress/loader/Arc-wkt.sql,
+	  regress/loader/Point-wkb.sql, regress/loader/Point-wkt.sql,
+	  regress/loader/PointM-wkb.expected,
+	  regress/loader/PointM-wkb.sql, regress/loader/PointM-wkt.sql,
+	  regress/loader/PointZ-wkb.expected,
+	  regress/loader/PointZ-wkb.sql, regress/loader/PointZ-wkt.sql: Fix
+	  regression problems related to ordering
+
+2011-10-27 15:07  strk
+
+	* postgis/lwgeom_functions_basic.c, regress/Makefile.in,
+	  regress/summary.sql, regress/summary_expected: Add regress test
+	  for ST_Summary, leave a note about ticket #648
+
+2011-10-13 17:54  pramsey
+
+	* regress/run_test: Actually, we use bash code, not sh code.
+
+2011-10-12 11:28  robe
+
+	* doc/using_postgis_dataman.xml: partial apply of #1241 patch
+
+2011-09-05 23:50  pramsey
+
+	* liblwgeom/lwgparse.c: st_astext crash with bad value (#1179) from
+	  kjurka
+
+2011-09-04 02:51  robe
+
+	* doc/html/images/ccbysa.png, doc/postgis.xml: Add creative commons
+
+2011-08-16 12:52  robe
+
+	* doc/reference_operator.xml: #1160 documentation clarification
+	  behavior
+
+2011-07-27 19:22  robe
+
+	* doc/reference_constructor.xml: backport ST_MakeLine 9.0+ example
+	  that demonstrates guaranteed way of ensuring order of points
+
+2011-07-20 19:50  strk
+
+	* NEWS, regress/loader/Arc-wkb.sql, regress/loader/Arc-wkt.sql,
+	  regress/loader/Point-wkb.sql, regress/loader/Point-wkt.sql,
+	  regress/loader/PointM-wkb.expected,
+	  regress/loader/PointM-wkb.sql, regress/loader/PointM-wkt.sql,
+	  regress/loader/PointZ-wkb.expected,
+	  regress/loader/PointZ-wkb.sql, regress/loader/PointZ-wkt.sql:
+	  #1135, improve testsuite predictability (Andreas 'ads' Scherbaum)
+
+2011-06-29 23:13  pramsey
+
+	* spatial_ref_sys.sql: Alter parameter order in 900913 (magic!)
+
+2011-06-28 14:29  robe
+
+	* HOWTO_RELEASE: ditto backport update documentation on website
+
+2011-06-27 18:45  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected: Wrap circstring
+	  tests into a snapper.
+
+2011-06-27 18:38  pramsey
+
+	* liblwgeom/lwutil.c: Back out type name change as it might regress
+	  too many things.
+
+2011-06-27 18:33  pramsey
+
+	* postgis/lwgeom_functions_analytic.c: Allow curves to be snapped
+
+2011-06-27 18:03  pramsey
+
+	* liblwgeom/lwutil.c: Fix type name for CompoundCurve
+
+2011-06-25 16:39  pramsey
+
+	* NEWS, README.postgis, Version.config: Update version numbers for
+	  next release cycle
+
+2011-06-25 16:27  pramsey
+
+	* NEWS, README.postgis, doc/release_notes.xml: Update release date
+	  for 1.5.3
+
+2011-06-25 16:24  pramsey
+
+	* ChangeLog: Changelog as of 1.5.3
+
 2011-06-24 03:51  pramsey
 
 	* liblwgeom/liblwgeom.h, liblwgeom/lwcircstring.c,
