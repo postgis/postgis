@@ -17,6 +17,7 @@
          <para>#877, ST_Estimated_Extent returns NULL on empty tables (Sandro Santilli)</para>
          <para>#1028, ST_AsSVG kills whole postgres server when fails (Paul Ramsey)</para>
          <para>#1056, Fix boxes of arcs and circle stroking code (Paul Ramsey)</para>
+         <para>#1121, populate_geometry_columns using deprecated functions (Regin Obe, Paul Ramsey)</para>
          <para>#1135, improve testsuite predictability (Andreas 'ads' Scherbaum)</para>
          <para>#1146, images generator crashes (bronaugh)</para>
          <para>#1170, North Pole intersection fails (Paul Ramsey)</para>

@@ -23,6 +23,8 @@ PostGIS 1.5.4
    - #877, ST_Estimated_Extent returns NULL on empty tables (Sandro Santilli)
    - #1028, ST_AsSVG kills whole postgres server when fails (Paul Ramsey)
    - #1056, Fix boxes of arcs and circle stroking code (Paul Ramsey)
+   - #1121, populate_geometry_columns using deprecated functions (Regin Obe
+     , Paul Ramsey)
    - #1135, improve testsuite predictability (Andreas 'ads' Scherbaum)
    - #1146, images generator crashes (bronaugh)
    - #1170, North Pole intersection fails (Paul Ramsey)
