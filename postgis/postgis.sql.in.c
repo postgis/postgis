@@ -2400,7 +2400,7 @@ BEGIN
 	EXCEPTION
 		WHEN undefined_function THEN
 			rast_lib_ver := NULL;
-			RAISE NOTICE 'Function postgis_raster_lib_version() not found. Is raster support enabled and topology.sql installed?';
+			RAISE NOTICE 'Function postgis_raster_lib_version() not found. Is raster support enabled and rtpostgis.sql installed?';
 	END;
 
 	fullver = 'POSTGIS="' || libver;
