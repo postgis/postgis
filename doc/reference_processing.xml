@@ -359,6 +359,7 @@ FROM (SELECT ST_Buffer(
 
 			<para>
 			<xref linkend="ST_Node" />,
+			<xref linkend="ST_MakePolygon" />,
 			<xref linkend="ST_BdPolyFromText" />,
 			<xref linkend="ST_BdMPolyFromText" />wrappers to
 			this function with standard OGC interface</para>

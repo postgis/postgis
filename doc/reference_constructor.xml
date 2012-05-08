@@ -1501,7 +1501,14 @@ FROM
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Accum" />, <xref linkend="ST_AddPoint" />, <xref linkend="ST_GeometryType" />, <xref linkend="ST_IsClosed" />, <xref linkend="ST_LineMerge" /></para>
+			<para>
+				<xref linkend="ST_Accum" />,
+				<xref linkend="ST_AddPoint" />,
+				<xref linkend="ST_GeometryType" />,
+				<xref linkend="ST_IsClosed" />,
+				<xref linkend="ST_LineMerge" />,
+				<xref linkend="ST_BuildArea" />
+			</para>
 		</refsection>
 	</refentry>
 
