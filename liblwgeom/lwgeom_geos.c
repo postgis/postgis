@@ -721,6 +721,15 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 	return result;
 }
 
+static int
+compare_by_numpoints(const void* g1, const void* g2)
+{
+  int n1 = GEOSGetNumCoordinates(*(const GEOSGeometry**)g1);
+  int n2 = GEOSGetNumCoordinates(*(const GEOSGeometry**)g2);
+  if ( n1 < n2 ) return -1;
+  if ( n1 > n2 ) return 1;
+  return 0;
+}
 
 GEOSGeometry*
 LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
@@ -730,6 +739,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	GEOSGeometry const *vgeoms[1];
 	uint32_t i, ngeoms;
 	int srid = GEOSGetSRID(geom_in);
+	const GEOSGeometry ** geoms;
 
 	vgeoms[0] = geom_in;
 	geos_result = GEOSPolygonize(vgeoms, 1);
@@ -788,30 +798,27 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 	 * Iteratively invoke symdifference on outer rings
 	 * as suggested by Carl Anderson:
 	 * postgis-devel/2005-December/001805.html
+	 *
+	 * Order by number of points, to speed things up.
+	 * See http://trac.osgeo.org/postgis/ticket/1806
 	 */
+	geoms = lwalloc(sizeof(GEOSGeometry*)*ngeoms);
+	for (i=0; i<ngeoms; ++i)
+		geoms[i] = GEOSGetGeometryN(geos_result, i);
+	qsort(geoms, ngeoms, sizeof(GEOSGeometry*), compare_by_numpoints);
+
 	shp = NULL;
 	for (i=0; i<ngeoms; ++i)
 	{
 		GEOSGeom extring;
-		GEOSCoordSeq sq;
-
-		/*
-		 * Construct a Polygon from geometry i exterior ring
-		 * We don't use GEOSGeom_clone on the ExteriorRing
-		 * due to a bug in CAPI contained in GEOS 2.2 branch
-		 * failing to properly return a LinearRing from
-		 * a LinearRing clone.
-		 */
-		sq=GEOSCoordSeq_clone(GEOSGeom_getCoordSeq(
-		                          GEOSGetExteriorRing(GEOSGetGeometryN( geos_result, i))
-		                      ));
 		extring = GEOSGeom_createPolygon(
-		              GEOSGeom_createLinearRing(sq),
+		              GEOSGeom_clone(GEOSGetExteriorRing(geoms[i])),
 		              NULL, 0
 		          );
 
 		if ( extring == NULL ) /* exception */
 		{
+			lwfree(geoms);
 			lwerror("GEOSCreatePolygon threw an exception");
 			return 0;
 		}
@@ -827,6 +834,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 			tmp = GEOSSymDifference(shp, extring);
 			if ( tmp == NULL ) /* exception */
 			{
+				lwfree(geoms);
 				lwerror("GEOSSymDifference threw an exception: %s", lwgeom_geos_errmsg);
 				return NULL;
 			}
@@ -841,6 +849,7 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 		}
 	}
 
+	lwfree(geoms);
 	GEOSGeom_destroy(geos_result);
 
 	GEOSSetSRID(shp, srid);
