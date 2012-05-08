@@ -37,7 +37,9 @@ PG	5	SRID=4;MULTILINESTRING((5 3 0, 7 4 5, 9 5 3, 11 6 4, 13 7 9, 5 3 0),(14 14 
 --
 
 SELECT origin,caseno,
-       st_asewkt(st_makevalid(orig)) = st_asewkt(valid),
+       st_equals(st_collectionextract(st_makevalid(orig),1), st_collectionextract(valid,1)) AND
+       st_equals(st_collectionextract(st_makevalid(orig),2), st_collectionextract(valid,2)) AND
+       st_equals(st_collectionextract(st_makevalid(orig),3), st_collectionextract(valid,3)), 
        st_isvalid(st_makevalid(orig)), -- paranoia
        (st_isvaliddetail(orig)).valid
   FROM clean_cases;
