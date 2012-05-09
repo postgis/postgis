@@ -721,140 +721,209 @@ lwgeom_union(const LWGEOM *geom1, const LWGEOM *geom2)
 	return result;
 }
 
-static int
-compare_by_numpoints(const void* g1, const void* g2)
+/* ------------ BuildArea stuff ---------------------------------------------------------------------{ */
+
+typedef struct Face_t {
+  const GEOSGeometry* geom;
+  GEOSGeometry* env;
+  double envarea;
+  struct Face_t* parent; /* if this face is an hole of another one, or NULL */
+} Face;
+
+static Face* newFace(const GEOSGeometry* g);
+static void delFace(Face* f);
+static unsigned int countParens(const Face* f);
+static void findFaceHoles(Face** faces, int nfaces);
+
+static Face*
+newFace(const GEOSGeometry* g)
 {
-  int n1 = GEOSGetNumCoordinates(*(const GEOSGeometry**)g1);
-  int n2 = GEOSGetNumCoordinates(*(const GEOSGeometry**)g2);
-  if ( n1 < n2 ) return -1;
-  if ( n1 > n2 ) return 1;
+  Face* f = lwalloc(sizeof(Face));
+  f->geom = g;
+  f->env = GEOSEnvelope(f->geom);
+  GEOSArea(f->env, &f->envarea);
+  f->parent = NULL;
+  /* lwnotice("Built Face with area %g and %d holes", f->envarea, GEOSGetNumInteriorRings(f->geom)); */
+  return f;
+}
+
+static unsigned int
+countParens(const Face* f)
+{
+  unsigned int pcount = 0;
+  while ( f->parent ) {
+    ++pcount;
+    f = f->parent;
+  }
+  return pcount;
+}
+
+/* Destroy the face and release memory associated with it */
+static void
+delFace(Face* f)
+{
+  GEOSGeom_destroy(f->env);
+  lwfree(f);
+}
+
+
+static int
+compare_by_envarea(const void* g1, const void* g2)
+{
+  Face* f1 = *(Face**)g1;
+  Face* f2 = *(Face**)g2;
+  double n1 = f1->envarea;
+  double n2 = f2->envarea;
+
+  if ( n1 < n2 ) return 1;
+  if ( n1 > n2 ) return -1;
   return 0;
+}
+
+/* Find holes of each face */
+static void
+findFaceHoles(Face** faces, int nfaces)
+{
+  int i, j, h;
+
+  /* We sort by envelope area so that we know holes are only
+   * after their shells */
+  qsort(faces, nfaces, sizeof(Face*), compare_by_envarea);
+  for (i=0; i<nfaces; ++i) {
+    Face* f = faces[i];
+    int nholes = GEOSGetNumInteriorRings(f->geom);
+    LWDEBUGF(2, "Scanning face %d with env area %g and %d holes", i, f->envarea, nholes);
+    for (h=0; h<nholes; ++h) {
+      const GEOSGeometry *hole = GEOSGetInteriorRingN(f->geom, h);
+      LWDEBUGF(2, "Looking for hole %d/%d of face %d among %d other faces", h+1, nholes, i, nfaces-i-1);
+      for (j=i+1; j<nfaces; ++j) {
+        Face* f2 = faces[j];
+        if ( f2->parent ) continue; /* hole already assigned */
+        /* TODO: short circuit: check envelopes ? */
+        const GEOSGeometry *f2er = GEOSGetExteriorRing(f2->geom); /* TODO: cache this ? */
+        if ( GEOSEquals(f2er, hole) ) {
+          LWDEBUGF(2, "Hole %d/%d of face %d is face %d", h+1, nholes, i, j);
+          f2->parent = f;
+          break;
+        }
+      }
+    }
+  }
+}
+
+static GEOSGeometry*
+collectFacesWithEvenParens(Face** faces, int nfaces)
+{
+  GEOSGeometry **geoms = lwalloc(sizeof(GEOSGeometry*)*nfaces);
+  GEOSGeometry *ret;
+  unsigned int ngeoms = 0;
+  int i;
+
+  for (i=0; i<nfaces; ++i) {
+    Face *f = faces[i];
+    if ( countParens(f) % 2 ) continue; /* we skip odd parents geoms */
+    geoms[ngeoms++] = GEOSGeom_clone(f->geom);
+  }
+
+  ret = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, ngeoms);
+  lwfree(geoms);
+  return ret;
 }
 
 GEOSGeometry*
 LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 {
-	GEOSGeometry *tmp;
-	GEOSGeometry *geos_result, *shp;
-	GEOSGeometry const *vgeoms[1];
-	uint32_t i, ngeoms;
-	int srid = GEOSGetSRID(geom_in);
-	const GEOSGeometry ** geoms;
+  GEOSGeometry *tmp;
+  GEOSGeometry *geos_result, *shp;
+  GEOSGeometry const *vgeoms[1];
+  uint32_t i, ngeoms;
+  int srid = GEOSGetSRID(geom_in);
+  Face ** geoms;
 
-	vgeoms[0] = geom_in;
-	geos_result = GEOSPolygonize(vgeoms, 1);
+  vgeoms[0] = geom_in;
+  geos_result = GEOSPolygonize(vgeoms, 1);
 
-	LWDEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
+  LWDEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
 
-	/* Null return from GEOSpolygonize (an exception) */
-	if ( ! geos_result ) return 0;
+  /* Null return from GEOSpolygonize (an exception) */
+  if ( ! geos_result ) return 0;
 
-	/*
-	 * We should now have a collection
-	 */
+  /*
+   * We should now have a collection
+   */
 #if PARANOIA_LEVEL > 0
-	if ( GEOSGeometryTypeId(geos_result) != COLLECTIONTYPE )
-	{
-		GEOSGeom_destroy(geos_result);
-		lwerror("Unexpected return from GEOSpolygonize");
-		return 0;
-	}
+  if ( GEOSGeometryTypeId(geos_result) != COLLECTIONTYPE )
+  {
+    GEOSGeom_destroy(geos_result);
+    lwerror("Unexpected return from GEOSpolygonize");
+    return 0;
+  }
 #endif
 
-	ngeoms = GEOSGetNumGeometries(geos_result);
+  ngeoms = GEOSGetNumGeometries(geos_result);
 
-	LWDEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
-	LWDEBUGF(3, "GEOSpolygonize: polygonized:%s",
-	               lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0)));
+  LWDEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
+  LWDEBUGF(3, "GEOSpolygonize: polygonized:%s",
+              lwgeom_to_ewkt(GEOS2LWGEOM(geos_result, 0)));
 
-	/*
-	 * No geometries in collection, early out
-	 */
-	if ( ngeoms == 0 )
-	{
-		GEOSSetSRID(geos_result, srid);
-		return geos_result;
-	}
+  /*
+   * No geometries in collection, early out
+   */
+  if ( ngeoms == 0 )
+  {
+    GEOSSetSRID(geos_result, srid);
+    return geos_result;
+  }
 
-	/*
-	 * Return first geometry if we only have one in collection,
-	 * to avoid the unnecessary Geometry clone below.
-	 */
-	if ( ngeoms == 1 )
-	{
-		tmp = (GEOSGeometry *)GEOSGetGeometryN(geos_result, 0);
-		if ( ! tmp )
-		{
-			GEOSGeom_destroy(geos_result);
-			return 0; /* exception */
-		}
-		shp = GEOSGeom_clone(tmp);
-		GEOSGeom_destroy(geos_result); /* only safe after the clone above */
-		GEOSSetSRID(shp, srid);
-		return shp;
-	}
+  /*
+   * Return first geometry if we only have one in collection,
+   * to avoid the unnecessary Geometry clone below.
+   */
+  if ( ngeoms == 1 )
+  {
+    tmp = (GEOSGeometry *)GEOSGetGeometryN(geos_result, 0);
+    if ( ! tmp )
+    {
+      GEOSGeom_destroy(geos_result);
+      return 0; /* exception */
+    }
+    shp = GEOSGeom_clone(tmp);
+    GEOSGeom_destroy(geos_result); /* only safe after the clone above */
+    GEOSSetSRID(shp, srid);
+    return shp;
+  }
 
-	/*
-	 * Iteratively invoke symdifference on outer rings
-	 * as suggested by Carl Anderson:
-	 * postgis-devel/2005-December/001805.html
-	 *
-	 * Order by number of points, to speed things up.
-	 * See http://trac.osgeo.org/postgis/ticket/1806
-	 */
-	geoms = lwalloc(sizeof(GEOSGeometry*)*ngeoms);
-	for (i=0; i<ngeoms; ++i)
-		geoms[i] = GEOSGetGeometryN(geos_result, i);
-	qsort(geoms, ngeoms, sizeof(GEOSGeometry*), compare_by_numpoints);
+  LWDEBUGF(2, "Polygonize returned %d geoms", ngeoms);
 
-	shp = NULL;
-	for (i=0; i<ngeoms; ++i)
-	{
-		GEOSGeom extring;
-		extring = GEOSGeom_createPolygon(
-		              GEOSGeom_clone(GEOSGetExteriorRing(geoms[i])),
-		              NULL, 0
-		          );
+  /*
+   * Iteratively invoke symdifference on outer rings
+   * as suggested by Carl Anderson:
+   * postgis-devel/2005-December/001805.html
+   *
+   * Order by number of points, to speed things up.
+   * See http://trac.osgeo.org/postgis/ticket/1806
+   */
+  geoms = lwalloc(sizeof(Face**)*ngeoms);
+  for (i=0; i<ngeoms; ++i)
+    geoms[i] = newFace(GEOSGetGeometryN(geos_result, i));
 
-		if ( extring == NULL ) /* exception */
-		{
-			lwfree(geoms);
-			lwerror("GEOSCreatePolygon threw an exception");
-			return 0;
-		}
+  findFaceHoles(geoms, ngeoms);
 
-		if ( shp == NULL )
-		{
-			shp = extring;
-			LWDEBUGF(3, "GEOSpolygonize: shp:%s",
-			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0)));
-		}
-		else
-		{
-			tmp = GEOSSymDifference(shp, extring);
-			if ( tmp == NULL ) /* exception */
-			{
-				lwfree(geoms);
-				lwerror("GEOSSymDifference threw an exception: %s", lwgeom_geos_errmsg);
-				return NULL;
-			}
-			LWDEBUGF(3, "GEOSpolygonize: SymDifference(%s, %s):%s",
-			               lwgeom_to_ewkt(GEOS2LWGEOM(shp, 0)),
-			               lwgeom_to_ewkt(GEOS2LWGEOM(extring, 0)),
-			               lwgeom_to_ewkt(GEOS2LWGEOM(tmp, 0))
-			              );
-			GEOSGeom_destroy(shp);
-			GEOSGeom_destroy(extring);
-			shp = tmp;
-		}
-	}
+  tmp = collectFacesWithEvenParens(geoms, ngeoms);
 
-	lwfree(geoms);
-	GEOSGeom_destroy(geos_result);
+  for (i=0; i<ngeoms; ++i) delFace(geoms[i]);
+  lwfree(geoms);
 
-	GEOSSetSRID(shp, srid);
+  /* geos_result was needed by faces */
+  GEOSGeom_destroy(geos_result);
 
-	return shp;
+  shp = GEOSUnionCascaded(tmp);
+  GEOSGeom_destroy(tmp);
+
+
+  GEOSSetSRID(shp, srid);
+
+  return shp;
 }
 
 LWGEOM*
@@ -915,6 +984,8 @@ lwgeom_buildarea(const LWGEOM *geom)
 
 	return geom_out;
 }
+
+/* ------------ end of BuildArea stuff ---------------------------------------------------------------------} */
 
 LWGEOM*
 lwgeom_geos_noop(const LWGEOM* geom_in)

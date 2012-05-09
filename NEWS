@@ -17,12 +17,13 @@ PostGIS 2.0.1
   - #1789, fix false edge-node crossing report in ValidateTopology.
   - #1790, fix toTopoGeom handling of duplicated primitives.
   - #1791, fix ST_Azimuth with very close but distinct points.
-  - #1802, improved function interruptibility.
 
 * Enhancements *
 
   - More detailed exception message from topology editing functions.
   - #1786, improved build dependencies 
+  - #1802, improved function interruptibility.
+  - #1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.
 
 PostGIS 2.0.0
 2012/04/03
