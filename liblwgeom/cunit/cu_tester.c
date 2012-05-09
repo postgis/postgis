@@ -19,6 +19,7 @@
 /* ADD YOUR SUITE HERE (1 of 2) */
 extern CU_SuiteInfo print_suite;
 extern CU_SuiteInfo algorithms_suite;
+extern CU_SuiteInfo buildarea_suite;
 extern CU_SuiteInfo clean_suite;
 extern CU_SuiteInfo misc_suite;
 extern CU_SuiteInfo ptarray_suite;
@@ -55,6 +56,7 @@ int main(int argc, char *argv[])
 		misc_suite,
 		ptarray_suite,
 		algorithms_suite,
+		buildarea_suite,
 		clean_suite,
 		measures_suite,
 		node_suite,
