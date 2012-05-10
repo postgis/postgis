@@ -17,6 +17,8 @@
 
 #include <stdlib.h>
 
+#undef LWGEOM_PROFILE_BUILDAREA
+
 #define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
 char lwgeom_geos_errmsg[LWGEOM_GEOS_ERRMSG_MAXSIZE];
 
@@ -799,8 +801,12 @@ findFaceHoles(Face** faces, int nfaces)
       for (j=i+1; j<nfaces; ++j) {
         Face* f2 = faces[j];
         if ( f2->parent ) continue; /* hole already assigned */
-        /* TODO: short circuit: check envelopes ? */
-        const GEOSGeometry *f2er = GEOSGetExteriorRing(f2->geom); /* TODO: cache this ? */
+        const GEOSGeometry *f2er = GEOSGetExteriorRing(f2->geom); 
+        /* TODO: can be optimized as the ring would have the
+         *       same vertices, possibly in different order.
+         *       maybe comparing number of points could already be
+         *       useful.
+         */
         if ( GEOSEquals(f2er, hole) ) {
           LWDEBUGF(2, "Hole %d/%d of face %d is face %d", h+1, nholes, i, j);
           f2->parent = f;
@@ -812,7 +818,7 @@ findFaceHoles(Face** faces, int nfaces)
 }
 
 static GEOSGeometry*
-collectFacesWithEvenParens(Face** faces, int nfaces)
+collectFacesWithEvenAncestors(Face** faces, int nfaces)
 {
   GEOSGeometry **geoms = lwalloc(sizeof(GEOSGeometry*)*nfaces);
   GEOSGeometry *ret;
@@ -841,6 +847,9 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
   Face ** geoms;
 
   vgeoms[0] = geom_in;
+#ifdef LWGEOM_PROFILE_BUILDAREA
+  lwnotice("Polygonizing");
+#endif
   geos_result = GEOSPolygonize(vgeoms, 1);
 
   LWDEBUGF(3, "GEOSpolygonize returned @ %p", geos_result);
@@ -861,6 +870,10 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 #endif
 
   ngeoms = GEOSGetNumGeometries(geos_result);
+#ifdef LWGEOM_PROFILE_BUILDAREA
+  lwnotice("Num geometries from polygonizer: %d", ngeoms);
+#endif
+
 
   LWDEBUGF(3, "GEOSpolygonize: ngeoms in polygonize output: %d", ngeoms);
   LWDEBUGF(3, "GEOSpolygonize: polygonized:%s",
@@ -896,30 +909,81 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
   LWDEBUGF(2, "Polygonize returned %d geoms", ngeoms);
 
   /*
-   * Iteratively invoke symdifference on outer rings
-   * as suggested by Carl Anderson:
-   * postgis-devel/2005-December/001805.html
+   * Polygonizer returns a polygon for each face in the built topology.
    *
-   * Order by number of points, to speed things up.
+   * This means that for any face with holes we'll have other faces
+   * representing each hole. We can imagine a parent-child relationship
+   * between these faces.
+   *
+   * In order to maximize the number of visible rings in output we
+   * only use those faces which have an even number of parents.
+   *
+   * Example:
+   *
+   *   +---------------+
+   *   |     L0        |  L0 has no parents 
+   *   |  +---------+  |
+   *   |  |   L1    |  |  L1 is an hole of L0
+   *   |  |  +---+  |  |
+   *   |  |  |L2 |  |  |  L2 is an hole of L1 (which is an hole of L0)
+   *   |  |  |   |  |  |
+   *   |  |  +---+  |  |
+   *   |  +---------+  |
+   *   |               |
+   *   +---------------+
+   * 
    * See http://trac.osgeo.org/postgis/ticket/1806
+   *
    */
+
+#ifdef LWGEOM_PROFILE_BUILDAREA
+  lwnotice("Preparing face structures");
+#endif
+
+  /* Prepare face structures for later analysis */
   geoms = lwalloc(sizeof(Face**)*ngeoms);
   for (i=0; i<ngeoms; ++i)
     geoms[i] = newFace(GEOSGetGeometryN(geos_result, i));
 
+#ifdef LWGEOM_PROFILE_BUILDAREA
+  lwnotice("Finding face holes");
+#endif
+
+  /* Find faces representing other faces holes */
   findFaceHoles(geoms, ngeoms);
 
-  tmp = collectFacesWithEvenParens(geoms, ngeoms);
+#ifdef LWGEOM_PROFILE_BUILDAREA
+  lwnotice("Colletting even ancestor faces");
+#endif
 
+  /* Build a MultiPolygon composed only by faces with an
+   * even number of ancestors */
+  tmp = collectFacesWithEvenAncestors(geoms, ngeoms);
+
+#ifdef LWGEOM_PROFILE_BUILDAREA
+  lwnotice("Cleaning up");
+#endif
+
+  /* Cleanup face structures */
   for (i=0; i<ngeoms; ++i) delFace(geoms[i]);
   lwfree(geoms);
 
-  /* geos_result was needed by faces */
+  /* Faces referenced memory owned by geos_result.
+   * It is safe to destroy geos_result after deleting them. */
   GEOSGeom_destroy(geos_result);
 
-  shp = GEOSUnionCascaded(tmp);
-  GEOSGeom_destroy(tmp);
+#ifdef LWGEOM_PROFILE_BUILDAREA
+  lwnotice("Self-unioning");
+#endif
 
+  /* Run a single overlay operation to dissolve shared edges */
+  shp = GEOSUnionCascaded(tmp);
+
+#ifdef LWGEOM_PROFILE_BUILDAREA
+  lwnotice("Final cleanup");
+#endif
+
+  GEOSGeom_destroy(tmp);
 
   GEOSSetSRID(shp, srid);
 

@@ -45,6 +45,7 @@
 #include <assert.h>
 
 /* #define POSTGIS_DEBUG_LEVEL 4 */
+#undef LWGEOM_PROFILE_MAKEVALID
 
 
 /*
@@ -409,6 +410,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 
 	/* Use noded boundaries as initial "cut" edges */
 
+#ifdef LWGEOM_PROFILE_MAKEVALID
+  lwnotice("ST_MakeValid: noding lines");
+#endif
+
 
 	geos_cut_edges = LWGEOM_GEOS_nodeLines(geos_bound);
 	if ( NULL == geos_cut_edges )
@@ -424,6 +429,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		GEOSGeometry* pi;
 		GEOSGeometry* po;
 
+#ifdef LWGEOM_PROFILE_MAKEVALID
+    lwnotice("ST_MakeValid: extracting unique points from bounds");
+#endif
+
 		pi = GEOSGeom_extractUniquePoints(geos_bound);
 		if ( NULL == pi )
 		{
@@ -436,6 +445,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		LWDEBUGF(3,
 		               "Boundaries input points %s",
 		               lwgeom_to_ewkt(GEOS2LWGEOM(pi, 0)));
+
+#ifdef LWGEOM_PROFILE_MAKEVALID
+    lwnotice("ST_MakeValid: extracting unique points from cut_edges");
+#endif
 
 		po = GEOSGeom_extractUniquePoints(geos_cut_edges);
 		if ( NULL == po )
@@ -451,6 +464,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		               "Boundaries output points %s",
 		               lwgeom_to_ewkt(GEOS2LWGEOM(po, 0)));
 
+#ifdef LWGEOM_PROFILE_MAKEVALID
+    lwnotice("ST_MakeValid: find collapse points");
+#endif
+
 		collapse_points = GEOSDifference(pi, po);
 		if ( NULL == collapse_points )
 		{
@@ -464,6 +481,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		LWDEBUGF(3,
 		               "Collapse points: %s",
 		               lwgeom_to_ewkt(GEOS2LWGEOM(collapse_points, 0)));
+
+#ifdef LWGEOM_PROFILE_MAKEVALID
+    lwnotice("ST_MakeValid: cleanup(1)");
+#endif
 
 		GEOSGeom_destroy(pi);
 		GEOSGeom_destroy(po);
@@ -483,7 +504,6 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		return NULL;
 	}
 
-
 	/*
 	 * See if an area can be build with the remaining edges
 	 * and if it can, symdifference with the original area.
@@ -496,6 +516,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		GEOSGeometry* new_area_bound=0;
 		GEOSGeometry* symdif=0;
 		GEOSGeometry* new_cut_edges=0;
+
+#ifdef LWGEOM_PROFILE_MAKEVALID
+    lwnotice("ST_MakeValid: building area from %d edges", GEOSGetNumGeometries(geos_cut_edges)); 
+#endif
 
 		/*
 		 * ASSUMPTION: cut_edges should already be fully noded
@@ -522,6 +546,9 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		 * We succeeded in building a ring !
 		 */
 
+#ifdef LWGEOM_PROFILE_MAKEVALID
+    lwnotice("ST_MakeValid: ring built with %d cut edges, saving boundaries", GEOSGetNumGeometries(geos_cut_edges)); 
+#endif
 
 		/*
 		 * Save the new ring boundaries first (to compute
@@ -539,6 +566,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			GEOSGeom_destroy(geos_area);
 			return NULL;
 		}
+
+#ifdef LWGEOM_PROFILE_MAKEVALID
+    lwnotice("ST_MakeValid: running SymDifference with new area"); 
+#endif
 
 		/*
 		 * Now symdif new and old area
@@ -566,7 +597,14 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		 * ASSUMPTION: only the previous cut-edges can be
 		 *             left, so we don't need to reconsider
 		 *             the whole original boundaries
+		 *
+		 * NOTE: this is an expensive operation. 
+		 *
 		 */
+
+#ifdef LWGEOM_PROFILE_MAKEVALID
+    lwnotice("ST_MakeValid: computing new cut_edges (GEOSDifference)"); 
+#endif
 
 		new_cut_edges = GEOSDifference(geos_cut_edges, new_area_bound);
 		GEOSGeom_destroy(new_area_bound);
@@ -582,6 +620,10 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		GEOSGeom_destroy(geos_cut_edges);
 		geos_cut_edges = new_cut_edges;
 	}
+
+#ifdef LWGEOM_PROFILE_MAKEVALID
+  lwnotice("ST_MakeValid: final checks");
+#endif
 
 	if ( ! GEOSisEmpty(geos_area) )
 	{
