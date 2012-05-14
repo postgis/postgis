@@ -1365,7 +1365,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 			/* create VRT dataset */
 			hdsDst = VRTCreate(tile_size[0], tile_size[1]);
 			/*
-   		GDALSetDescription(hdsDst, fn);
+			GDALSetDescription(hdsDst, fn);
 			*/
 			GDALSetProjection(hdsDst, info->srs);
 			GDALSetGeoTransform(hdsDst, gt);
@@ -1718,6 +1718,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		/* each tile is a VRT with constraints set for just the data required for the tile */
 		for (ytile = 0; ytile < ntiles[1]; ytile++) {
 			for (xtile = 0; xtile < ntiles[0]; xtile++) {
+				/*
+				char fn[100];
+				sprintf(fn, "/tmp/tile%d.vrt", (ytile * ntiles[0]) + xtile);
+				*/
 
 				/* compute tile's upper-left corner */
 				GDALApplyGeoTransform(
@@ -1734,6 +1738,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 				/* create VRT dataset */
 				hdsDst = VRTCreate(info->tile_size[0], info->tile_size[1]);
+				/*
+  	 		GDALSetDescription(hdsDst, fn);
+				*/
 				GDALSetProjection(hdsDst, info->srs);
 				GDALSetGeoTransform(hdsDst, gt);
 
