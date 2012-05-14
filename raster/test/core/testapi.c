@@ -2563,6 +2563,33 @@ static void testLoadOfflineBand() {
 	deepRelease(rast);
 }
 
+static void testCellGeoPoint() {
+	rt_raster raster;
+	int rtn;
+	double xr, yr;
+	double xw, yw;
+	double gt[6] = {-128.604911499087763, 0.002424431085498, 0, 53.626968388905752, 0, -0.002424431085498};
+
+	raster = rt_raster_new(1, 1);
+	assert(raster); /* or we're out of virtual memory */
+	rt_raster_set_srid(raster, 4326);
+	rt_raster_set_geotransform_matrix(raster, gt);
+
+	xr = 0;
+	yr = 0;
+	rtn = rt_raster_cell_to_geopoint(raster, xr, yr, &xw, &yw, NULL);
+	CHECK((rtn != 0));
+	CHECK(FLT_EQ(xw, gt[0]));
+	CHECK(FLT_EQ(yw, gt[3]));
+
+	rtn = rt_raster_geopoint_to_cell(raster, xw, yw, &xr, &yr, NULL);
+	CHECK((rtn != 0));
+	CHECK(FLT_EQ(xr, 0));
+	CHECK(FLT_EQ(yr, 0));
+
+	deepRelease(raster);
+}
+
 int
 main()
 {
@@ -2819,6 +2846,10 @@ main()
 
 		printf("Testing rt_raster_load_offline_band... ");
 		testLoadOfflineBand();
+		printf("OK\n");
+
+		printf("Testing cell <-> geopoint... ");
+		testCellGeoPoint();
 		printf("OK\n");
 
     deepRelease(raster);

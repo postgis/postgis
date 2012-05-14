@@ -499,7 +499,7 @@ double rt_band_get_nodata(rt_band band);
  */
 int rt_band_set_pixel_line(
 	rt_band band,
-	uint16_t x, uint16_t y,
+	int x, int y,
 	void *vals, uint16_t len
 );
 
@@ -514,8 +514,11 @@ int rt_band_set_pixel_line(
  * @return 0 on success, -1 on error (value out of valid range),
  *   1 on truncation/clamping/converting.
  */
-int rt_band_set_pixel(rt_band band,
-                      uint16_t x, uint16_t y, double val);
+int rt_band_set_pixel(
+	rt_band band,
+	int x, int y,
+	double val
+);
 
 /**
  * Get pixel value
@@ -527,9 +530,11 @@ int rt_band_set_pixel(rt_band band,
  *
  * @return 0 on success, -1 on error (value out of valid range).
  */
-int rt_band_get_pixel(rt_band band,
-                         uint16_t x, uint16_t y, double *result );
-
+int rt_band_get_pixel(
+	rt_band band,
+	int x, int y,
+	double *result
+);
 
 /**
  * Returns the minimal possible value for the band according to the pixel type.
