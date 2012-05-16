@@ -249,6 +249,12 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS);
 /* get raster band's meta data */
 Datum RASTER_bandmetadata(PG_FUNCTION_ARGS);
 
+/* convert pixel/line to spatial coordinates */
+Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS);
+
+/* convert spatial coordinates to pixel/line*/
+Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS);
+
 /* determine if two rasters intersect */
 Datum RASTER_intersects(PG_FUNCTION_ARGS);
 
@@ -8377,6 +8383,194 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		pfree(bmd2);
 		SRF_RETURN_DONE(funcctx);
 	}
+}
+
+PG_FUNCTION_INFO_V1(RASTER_rasterToWorldCoord);
+Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	int i = 0;
+	int cr[2] = {0};
+	bool skewed[2] = {false, false};
+	double cw[2] = {0};
+
+	TupleDesc tupdesc;
+	int values_length = 2;
+	Datum values[values_length];
+	bool nulls[values_length];
+	HeapTuple tuple;
+	Datum result;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_rasterToWorldCoord: Starting");
+
+	/* pgraster is null, return null */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+
+	/* raster */
+	raster = rt_raster_deserialize(pgraster, TRUE);
+	if (!raster) {
+		elog(ERROR, "RASTER_rasterToWorldCoord: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	/* raster skewed? */
+	skewed[0] = FLT_NEQ(rt_raster_get_x_skew(raster), 0) ? true : false;
+	skewed[1] = FLT_NEQ(rt_raster_get_y_skew(raster), 0) ? true : false;
+
+	/* column and row */
+	for (i = 1; i <= 2; i++) {
+		if (PG_ARGISNULL(i)) {
+			/* if skewed on same axis, parameter is required */
+			if (skewed[i - 1]) {
+				elog(NOTICE, "Pixel row and column required for computing longitude and latitude of a rotated raster");
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+
+			continue;
+		}
+
+		cr[i - 1] = PG_GETARG_INT32(i);
+	}
+
+	/* user-provided value is 1-based but needs to be 0-based */
+	if (rt_raster_cell_to_geopoint(
+		raster,
+		(double) cr[0] - 1, (double) cr[1] - 1,
+		&(cw[0]), &(cw[1]),
+		NULL
+	) == 0) {
+		elog(ERROR, "RASTER_rasterToWorldCoord: Could not compute longitude and latitude from pixel row and column");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+	rt_raster_destroy(raster);
+
+	/* Build a tuple descriptor for our result type */
+	if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+		ereport(ERROR, (
+			errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+			errmsg(
+				"function returning record called in context "
+				"that cannot accept type record"
+			)
+		));
+	}
+
+	BlessTupleDesc(tupdesc);
+
+	values[0] = Float8GetDatum(cw[0]);
+	values[1] = Float8GetDatum(cw[1]);
+
+	memset(nulls, FALSE, values_length);
+
+	/* build a tuple */
+	tuple = heap_form_tuple(tupdesc, values, nulls);
+
+	/* make the tuple into a datum */
+	result = HeapTupleGetDatum(tuple);
+
+	PG_RETURN_DATUM(result);
+}
+
+PG_FUNCTION_INFO_V1(RASTER_worldToRasterCoord);
+Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	int i = 0;
+	double cw[2] = {0};
+	double _cr[2] = {0};
+	int cr[2] = {0};
+	bool skewed = false;
+
+	TupleDesc tupdesc;
+	int values_length = 2;
+	Datum values[values_length];
+	bool nulls[values_length];
+	HeapTuple tuple;
+	Datum result;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_worldToRasterCoord: Starting");
+
+	/* pgraster is null, return null */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+
+	/* raster */
+	raster = rt_raster_deserialize(pgraster, TRUE);
+	if (!raster) {
+		elog(ERROR, "RASTER_worldToRasterCoord: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	/* raster skewed? */
+	skewed = FLT_NEQ(rt_raster_get_x_skew(raster), 0) ? true : false;
+	if (!skewed)
+		skewed = FLT_NEQ(rt_raster_get_y_skew(raster), 0) ? true : false;
+
+	/* longitude and latitude */
+	for (i = 1; i <= 2; i++) {
+		if (PG_ARGISNULL(i)) {
+			/* if skewed, parameter is required */
+			if (skewed) {
+				elog(NOTICE, "Latitude and longitude required for computing pixel row and column of a rotated raster");
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+
+			continue;
+		}
+
+		cw[i - 1] = PG_GETARG_FLOAT8(i);
+	}
+
+	/* return pixel row and column values are 0-based */
+	if (rt_raster_geopoint_to_cell(
+		raster,
+		cw[0], cw[1],
+		&(_cr[0]), &(_cr[1]),
+		NULL
+	) == 0) {
+		elog(ERROR, "RASTER_worldToRasterCoord: Could not compute pixel row and column from longitude and latitude");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+	rt_raster_destroy(raster);
+
+	/* force to integer and add one to make 1-based */
+	cr[0] = ((int) _cr[0]) + 1;
+	cr[1] = ((int) _cr[1]) + 1;
+
+	/* Build a tuple descriptor for our result type */
+	if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+		ereport(ERROR, (
+			errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+			errmsg(
+				"function returning record called in context "
+				"that cannot accept type record"
+			)
+		));
+	}
+
+	BlessTupleDesc(tupdesc);
+
+	values[0] = Int32GetDatum(cr[0]);
+	values[1] = Int32GetDatum(cr[1]);
+
+	memset(nulls, FALSE, values_length);
+
+	/* build a tuple */
+	tuple = heap_form_tuple(tupdesc, values, nulls);
+
+	/* make the tuple into a datum */
+	result = HeapTupleGetDatum(tuple);
+
+	PG_RETURN_DATUM(result);
 }
 
 /**
