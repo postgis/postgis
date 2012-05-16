@@ -8425,7 +8425,8 @@ Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS)
 		if (PG_ARGISNULL(i)) {
 			/* if skewed on same axis, parameter is required */
 			if (skewed[i - 1]) {
-				elog(NOTICE, "Pixel row and column required for computing longitude and latitude of a rotated raster");
+				/* in 2.0, error is ERROR. for 2.1 must change to NOTICE */
+				elog(ERROR, "RASTER_rasterToWorldCoord: Pixel row and column required for computing longitude and latitude of a rotated raster");
 				rt_raster_destroy(raster);
 				PG_RETURN_NULL();
 			}
@@ -8518,7 +8519,8 @@ Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS)
 		if (PG_ARGISNULL(i)) {
 			/* if skewed, parameter is required */
 			if (skewed) {
-				elog(NOTICE, "Latitude and longitude required for computing pixel row and column of a rotated raster");
+				/* in 2.0, error is ERROR. for 2.1 must change to NOTICE */
+				elog(ERROR, "RASTER_worldToRasterCoord: Latitude and longitude required for computing pixel row and column of a rotated raster");
 				rt_raster_destroy(raster);
 				PG_RETURN_NULL();
 			}

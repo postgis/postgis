@@ -222,7 +222,7 @@ SELECT 'test 9.1', id, name
     
 SELECT 'test 9.2', id, name
     FROM rt_utility_test
-    WHERE st_raster2worldcoordy(rast, width, height)::numeric != (skewy * (width - 1) + scaley * (height - 1) + ipy)::numeric;
+    WHERE round(st_raster2worldcoordy(rast, width, height)::numeric, 10) != round((skewy * (width - 1) + scaley * (height - 1) + ipy)::numeric, 10);
 
 -----------------------------------------------------------------------
 -- Test 10 - st_raster2worldcoordy(rast raster, yr int) 

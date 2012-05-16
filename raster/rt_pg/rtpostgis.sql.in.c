@@ -2493,6 +2493,19 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer DEFAULT 
 -- Raster Utility Functions
 -----------------------------------------------------------------------
 
+-----------------------------------------------------------------------
+-- ST_World2RasterCoord
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_world2rastercoord(
+	rast raster,
+	longitude double precision DEFAULT NULL, latitude double precision DEFAULT NULL,
+	OUT columnx integer,
+	OUT rowy integer
+)
+	AS 'MODULE_PATHNAME', 'RASTER_worldToRasterCoord'
+	LANGUAGE 'c' IMMUTABLE;
+
 ---------------------------------------------------------------------------------
 -- ST_World2RasterCoordX(rast raster, xw float8, yw float8)
 -- Returns the column number of the pixel covering the provided X and Y world
@@ -2500,26 +2513,9 @@ CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer DEFAULT 
 -- This function works even if the world coordinates are outside the raster extent.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8, yw float8)
-    RETURNS int AS
-    $$
-    DECLARE
-        a float8 := 0.0;
-        b float8 := 0.0;
-        c float8 := 0.0;
-        d float8 := 0.0;
-        e float8 := 0.0;
-        f float8 := 0.0;
-        xr numeric := 0.0;
-    BEGIN
-				SELECT scalex, skewx, upperleftx, skewy, scaley, upperlefty INTO a, b, c, d, e, f FROM ST_Metadata(rast);
-        IF ( b * d - a * e = 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
-        END IF;
-        xr := (b * (yw - f) - e * (xw - c)) / (b * d - a * e);
-        RETURN floor(xr) + 1;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS int
+	AS $$ SELECT columnx FROM _st_world2rastercoord($1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_World2RasterCoordX(rast raster, xw float8)
@@ -2530,29 +2526,9 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8, yw floa
 -- also provide a Y.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8)
-    RETURNS int AS
-    $$
-    DECLARE
-        a float8 := 0.0;
-        b float8 := 0.0;
-        c float8 := 0.0;
-        d float8 := 0.0;
-        e float8 := 0.0;
-        f float8 := 0.0;
-        xr numeric := 0.0;
-    BEGIN
- 				SELECT scalex, skewx, upperleftx, skewy, scaley, upperlefty INTO a, b, c, d, e, f FROM ST_Metadata(rast);
-        IF ( b * d - a * e = 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
-        END IF;
-        IF ( b != 0 OR d != 0) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with rotation providing x only. A y must also be provided';
-        END IF;
-        xr := (e * (xw - c)) / (a * e);
-        RETURN floor(xr) + 1;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS int
+	AS $$ SELECT columnx FROM _st_world2rastercoord($1, $2, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_World2RasterCoordX(rast raster, pt geometry)
@@ -2560,17 +2536,19 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8)
 -- This function works even if the point is outside the raster extent.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, pt geometry)
-    RETURNS int AS
-    $$
-    DECLARE
-    BEGIN
-        IF ( st_geometrytype(pt) != 'ST_Point' ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
-        END IF;
-        RETURN st_world2rastercoordx($1, st_x(pt), st_y(pt));
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS int AS
+	$$
+	DECLARE
+		xr integer;
+	BEGIN
+		IF ( st_geometrytype(pt) != 'ST_Point' ) THEN
+			RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
+		END IF;
+		SELECT columnx INTO xr FROM _st_world2rastercoord($1, st_x(pt), st_y(pt));
+		RETURN xr;
+	END;
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_World2RasterCoordY(rast raster, xw float8, yw float8)
@@ -2579,26 +2557,9 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, pt geometry)
 -- This function works even if the world coordinates are outside the raster extent.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, xw float8, yw float8)
-    RETURNS int AS
-    $$
-    DECLARE
-        a float8 := 0.0;
-        b float8 := 0.0;
-        c float8 := 0.0;
-        d float8 := 0.0;
-        e float8 := 0.0;
-        f float8 := 0.0;
-        yr numeric := 0.0;
-    BEGIN
- 				SELECT scalex, skewx, upperleftx, skewy, scaley, upperlefty INTO a, b, c, d, e, f FROM ST_Metadata(rast);
-        IF ( b * d - a * e = 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
-        END IF;
-        yr := (a * (yw - f) + d * (c - xw)) / (a * e - b * d);
-        RETURN floor(yr) + 1;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS int
+	AS $$ SELECT rowy FROM _st_world2rastercoord($1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_World2RasterCoordY(rast raster, yw float8)
@@ -2609,29 +2570,9 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, xw float8, yw floa
 -- also provide an X.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, yw float8)
-    RETURNS int AS
-    $$
-    DECLARE
-        a float8 := 0.0;
-        b float8 := 0.0;
-        c float8 := 0.0;
-        d float8 := 0.0;
-        e float8 := 0.0;
-        f float8 := 0.0;
-        yr numeric := 0.0;
-    BEGIN
- 				SELECT scalex, skewx, upperleftx, skewy, scaley, upperlefty INTO a, b, c, d, e, f FROM ST_Metadata(rast);
-        IF ( b * d - a * e = 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with scale equal to 0';
-        END IF;
-        IF ( b != 0 OR d != 0) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate on a raster with rotation providing y only. A x must also be provided';
-        END IF;
-        yr := (a * (yw - f)) / (a * e);
-        RETURN floor(yr) + 1;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS int
+	AS $$ SELECT rowy FROM _st_world2rastercoord($1, NULL, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_World2RasterCoordY(rast raster, pt geometry)
@@ -2639,17 +2580,32 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, yw float8)
 -- This function works even if the point is outside the raster extent.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, pt geometry)
-    RETURNS int AS
-    $$
-    DECLARE
-    BEGIN
-        IF ( st_geometrytype(pt) != 'ST_Point' ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
-        END IF;
-        RETURN st_world2rastercoordy($1, st_x(pt), st_y(pt));
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS int AS
+	$$
+	DECLARE
+		yr integer;
+	BEGIN
+		IF ( st_geometrytype(pt) != 'ST_Point' ) THEN
+			RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
+		END IF;
+		SELECT rowy INTO yr FROM _st_world2rastercoord($1, st_x(pt), st_y(pt));
+		RETURN yr;
+	END;
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+---------------------------------------------------------------------------------
+-- ST_Raster2WorldCoord
+---------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_raster2worldcoord(
+	rast raster,
+	columnx integer DEFAULT NULL, rowy integer DEFAULT NULL,
+	OUT longitude double precision,
+	OUT latitude double precision
+)
+	AS 'MODULE_PATHNAME', 'RASTER_rasterToWorldCoord'
+	LANGUAGE 'c' IMMUTABLE;
 
 ---------------------------------------------------------------------------------
 -- ST_Raster2WorldCoordX(rast raster, xr int, yr int)
@@ -2659,20 +2615,9 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, pt geometry)
 -- below the raster width and height.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int, yr int)
-    RETURNS float8 AS
-    $$
-    DECLARE
-        a float8 := 0.0;
-        b float8 := 0.0;
-        c float8 := 0.0;
-        xw numeric := 0.0;
-    BEGIN
-				SELECT scalex, skewx, upperleftx INTO a, b, c FROM ST_Metadata(rast);
-        xw := (a::numeric * (xr::numeric - 1.0) + b::numeric * (yr::numeric - 1.0) + c::numeric)::numeric;
-        RETURN xw;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS float8
+	AS $$ SELECT longitude FROM _st_raster2worldcoord($1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_Raster2WorldCoordX(rast raster, xr int)
@@ -2684,23 +2629,9 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int, yr int)
 -- also provide a Y.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int)
-    RETURNS float8 AS
-    $$
-    DECLARE
-        a float8 := 0.0;
-        b float8 := 0.0;
-        c float8 := 0.0;
-        xw numeric := 0.0;
-    BEGIN
-				SELECT scalex, skewx, upperleftx INTO a, b, c FROM ST_Metadata(rast);
-        IF ( b != 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinates on a raster with rotation providing X only. A Y coordinate must also be provided';
-        END IF;
-        xw := (a::numeric * (xr::numeric - 1.0) + c::numeric)::numeric;
-        RETURN xw;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS float8
+	AS $$ SELECT longitude FROM _st_raster2worldcoord($1, $2, NULL) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_Raster2WorldCoordY(rast raster, xr int, yr int)
@@ -2710,20 +2641,9 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int)
 -- below the raster width and height.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, xr int, yr int)
-    RETURNS float8 AS
-    $$
-    DECLARE
-        d float8 := 0.0;
-        e float8 := 0.0;
-        f float8 := 0.0;
-        yw numeric := 0.0;
-    BEGIN
-				SELECT skewy, scaley, upperlefty INTO d, e, f FROM ST_Metadata(rast);
-        yw := (d::numeric * (xr::numeric - 1.0) + e::numeric * (yr::numeric - 1.0) + f::numeric)::numeric;
-        RETURN yw;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS float8
+	AS $$ SELECT latitude FROM _st_raster2worldcoord($1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_Raster2WorldCoordY(rast raster, yr int)
@@ -2735,23 +2655,9 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, xr int, yr int)
 -- also provide an X.
 ---------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, yr int)
-    RETURNS float8 AS
-    $$
-    DECLARE
-        d float8 := 0.0;
-        e float8 := 0.0;
-        f float8 := 0.0;
-        yw numeric := 0.0;
-    BEGIN
-				SELECT skewy, scaley, upperlefty INTO d, e, f FROM ST_Metadata(rast);
-        IF ( d != 0 ) THEN
-            RAISE EXCEPTION 'Attempting to compute raster coordinates on a raster with rotation providing Y only. An X coordinate must also be provided';
-        END IF;
-        yw := (e::numeric * (yr::numeric - 1.0) + f::numeric)::numeric;
-        RETURN yw;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS float8
+	AS $$ SELECT latitude FROM _st_raster2worldcoord($1, NULL, $2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_MinPossibleValue(pixeltype text)

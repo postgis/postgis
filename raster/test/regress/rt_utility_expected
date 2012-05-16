@@ -1,7 +1,7 @@
-ERROR:  Attempting to compute raster coordinate on a raster with rotation providing x only. A y must also be provided
-ERROR:  Attempting to compute raster coordinate on a raster with rotation providing y only. A x must also be provided
-ERROR:  Attempting to compute raster coordinates on a raster with rotation providing X only. A Y coordinate must also be provided
-ERROR:  Attempting to compute raster coordinates on a raster with rotation providing Y only. An X coordinate must also be provided
+ERROR:  RASTER_worldToRasterCoord: Latitude and longitude required for computing pixel row and column of a rotated raster
+ERROR:  RASTER_worldToRasterCoord: Latitude and longitude required for computing pixel row and column of a rotated raster
+ERROR:  RASTER_rasterToWorldCoord: Pixel row and column required for computing longitude and latitude of a rotated raster
+ERROR:  RASTER_rasterToWorldCoord: Pixel row and column required for computing longitude and latitude of a rotated raster
 test 11.1|t
 test 11.2|t
 test 11.3|t
