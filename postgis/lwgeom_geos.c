@@ -3009,7 +3009,7 @@ Datum relate_full(PG_FUNCTION_ARGS)
 	}
 
 	result = cstring2text(relate_str);
-	free(relate_str);
+	GEOSFree(relate_str);
 
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
