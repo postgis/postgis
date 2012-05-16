@@ -15,7 +15,7 @@
 #include "executor/spi.h"       /* this is what you need to work with SPI */
 #include "commands/trigger.h"   /* ... and triggers */
 #include "utils/lsyscache.h"	/* for get_namespace_name() */
-
+#include "utils/rel.h"
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 

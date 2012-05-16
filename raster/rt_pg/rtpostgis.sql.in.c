@@ -34,12 +34,12 @@ BEGIN;
 CREATE OR REPLACE FUNCTION raster_in(cstring)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_in'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_out(raster)
     RETURNS cstring
     AS 'MODULE_PATHNAME','RASTER_out'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE TYPE raster (
     alignment = double,
@@ -60,7 +60,7 @@ CREATE TYPE raster (
 CREATE OR REPLACE FUNCTION postgis_raster_lib_version()
     RETURNS text
     AS 'MODULE_PATHNAME', 'RASTER_lib_version'
-    LANGUAGE 'C' IMMUTABLE; -- a new lib will require a new session
+    LANGUAGE 'c' IMMUTABLE; -- a new lib will require a new session
 
 CREATE OR REPLACE FUNCTION postgis_raster_scripts_installed() RETURNS text
        AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
@@ -69,12 +69,12 @@ CREATE OR REPLACE FUNCTION postgis_raster_scripts_installed() RETURNS text
 CREATE OR REPLACE FUNCTION postgis_raster_lib_build_date()
     RETURNS text
     AS 'MODULE_PATHNAME', 'RASTER_lib_build_date'
-    LANGUAGE 'C' IMMUTABLE; -- a new lib will require a new session
+    LANGUAGE 'c' IMMUTABLE; -- a new lib will require a new session
 
 CREATE OR REPLACE FUNCTION postgis_gdal_version()
     RETURNS text
     AS 'MODULE_PATHNAME', 'RASTER_gdal_version'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Raster Accessors
@@ -83,77 +83,77 @@ CREATE OR REPLACE FUNCTION postgis_gdal_version()
 CREATE OR REPLACE FUNCTION st_convexhull(raster)
     RETURNS geometry
     AS 'MODULE_PATHNAME','RASTER_convex_hull'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION box3d(raster)
     RETURNS box3d
     AS 'select box3d(st_convexhull($1))'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_envelope(raster)
     RETURNS geometry
     AS 'select st_envelope(st_convexhull($1))'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_height(raster)
     RETURNS integer
     AS 'MODULE_PATHNAME','RASTER_getHeight'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_numbands(raster)
     RETURNS integer
     AS 'MODULE_PATHNAME','RASTER_getNumBands'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_scalex(raster)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getXScale'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_scaley(raster)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getYScale'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_skewx(raster)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getXSkew'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_skewy(raster)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getYSkew'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_srid(raster)
     RETURNS integer
     AS 'MODULE_PATHNAME','RASTER_getSRID'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_upperleftx(raster)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getXUpperLeft'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_upperlefty(raster)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getYUpperLeft'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_width(raster)
     RETURNS integer
     AS 'MODULE_PATHNAME','RASTER_getWidth'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_pixelwidth(raster)
     RETURNS float8
     AS 'MODULE_PATHNAME', 'RASTER_getPixelWidth'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_pixelheight(raster)
     RETURNS float8
     AS 'MODULE_PATHNAME', 'RASTER_getPixelHeight'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_geotransform(raster,
     OUT imag double precision,
@@ -163,7 +163,7 @@ CREATE OR REPLACE FUNCTION st_geotransform(raster,
     OUT xoffset double precision,
     OUT yoffset double precision)
     AS 'MODULE_PATHNAME', 'RASTER_getGeotransform'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_rotation(raster)
     RETURNS float8
@@ -184,7 +184,7 @@ CREATE OR REPLACE FUNCTION st_metadata(
 	OUT numbands int
 )
 	AS 'MODULE_PATHNAME', 'RASTER_metadata'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Constructors ST_MakeEmptyRaster and ST_AddBand
@@ -192,12 +192,12 @@ CREATE OR REPLACE FUNCTION st_metadata(
 CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8, srid int4 DEFAULT 0)
     RETURNS RASTER
     AS 'MODULE_PATHNAME', 'RASTER_makeEmpty'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, pixelsize float8)
     RETURNS raster
     AS $$ SELECT st_makeemptyraster($1, $2, $3, $4, $5, -($5), 0, 0, ST_SRID('POINT(0 0)'::geometry)) $$
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
     RETURNS raster
@@ -222,19 +222,19 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
 CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text, initialvalue float8 DEFAULT 0., nodataval float8 DEFAULT NULL)
     RETURNS RASTER
     AS 'MODULE_PATHNAME', 'RASTER_addband'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 -- This function can not be STRICT, because nodataval can be NULL indicating that no nodata value should be set
 CREATE OR REPLACE FUNCTION st_addband(rast raster, pixeltype text, initialvalue float8 DEFAULT 0., nodataval float8 DEFAULT NULL)
     RETURNS raster
     AS 'select st_addband($1, NULL, $2, $3, $4)'
-    LANGUAGE 'SQL' IMMUTABLE;
+    LANGUAGE 'sql' IMMUTABLE;
 
 -- This function can not be STRICT, because torastindex can not be determined (could be st_numbands(raster) though)
 CREATE OR REPLACE FUNCTION st_addband(torast raster, fromrast raster, fromband int DEFAULT 1, torastindex int DEFAULT NULL)
     RETURNS RASTER
     AS 'MODULE_PATHNAME', 'RASTER_copyband'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
     
 -- Variant that adds multiple raster bands in one array call --
 -- If null is passed in for the torast, then array of rasts is accumulated.
@@ -264,17 +264,17 @@ $$ LANGUAGE 'plpgsql';
 CREATE OR REPLACE FUNCTION st_band(rast raster, nbands int[] DEFAULT ARRAY[1])
 	RETURNS RASTER
 	AS 'MODULE_PATHNAME', 'RASTER_band'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_band(rast raster, nband int)
 	RETURNS RASTER
 	AS $$ SELECT st_band($1, ARRAY[$2]) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_band(rast raster, nbands text, delimiter char DEFAULT ',')
 	RETURNS RASTER
 	AS $$ SELECT st_band($1, regexp_split_to_array(regexp_replace($2, '[[:space:]]', '', 'g'), $3)::int[]) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_SummaryStats and ST_ApproxSummaryStats
@@ -291,72 +291,72 @@ CREATE TYPE summarystats AS (
 CREATE OR REPLACE FUNCTION _st_summarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS summarystats
 	AS 'MODULE_PATHNAME','RASTER_summaryStats'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, 1) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rast raster, exclude_nodata_value boolean)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, 1, $2, 1) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, nband int, sample_percent double precision)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, TRUE, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, 1, $2, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rast raster, sample_percent double precision)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, 1, TRUE, $2) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS summarystats
 	AS 'MODULE_PATHNAME','RASTER_summaryStatsCoverage'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, $4, 1) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_summarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, 1, $3, 1) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, $4, $5) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, nband integer, sample_percent double precision)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, $3, TRUE, $4) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, 1, $3, 0.1) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxsummarystats(rastertable text, rastercolumn text, sample_percent double precision)
 	RETURNS summarystats
 	AS $$ SELECT _st_summarystats($1, $2, 1, TRUE, $3) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Count and ST_ApproxCount
@@ -380,32 +380,32 @@ CREATE OR REPLACE FUNCTION _st_count(rast raster, nband int DEFAULT 1, exclude_n
 CREATE OR REPLACE FUNCTION st_count(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, $3, 1) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_count(rast raster, exclude_nodata_value boolean)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, 1, $2, 1) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rast raster, nband int, sample_percent double precision)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, TRUE, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rast raster, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, 1, $2, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rast raster, sample_percent double precision)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, 1, TRUE, $2) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1)
 	RETURNS bigint
@@ -475,32 +475,32 @@ CREATE OR REPLACE FUNCTION _st_count(rastertable text, rastercolumn text, nband 
 CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, $3, $4, 1) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_count(rastertable text, rastercolumn text, exclude_nodata_value boolean)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, 1, $3, 1) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, $3, $4, $5) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, nband int, sample_percent double precision)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, $3, TRUE, $4) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, exclude_nodata_value boolean, sample_percent double precision DEFAULT 0.1)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, 1, $3, $4) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_approxcount(rastertable text, rastercolumn text, sample_percent double precision)
 	RETURNS bigint
 	AS $$ SELECT _st_count($1, $2, 1, TRUE, $3) $$
-	LANGUAGE 'SQL' STABLE STRICT;
+	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Histogram and ST_ApproxHistogram
@@ -523,7 +523,7 @@ CREATE OR REPLACE FUNCTION _st_histogram(
 )
 	RETURNS SETOF histogram
 	AS 'MODULE_PATHNAME','RASTER_histogram'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE;
 
 -- Cannot be strict as "width" can be NULL
 CREATE OR REPLACE FUNCTION st_histogram(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
@@ -596,7 +596,7 @@ CREATE OR REPLACE FUNCTION _st_histogram(
 )
 	RETURNS SETOF histogram
 	AS 'MODULE_PATHNAME','RASTER_histogramCoverage'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_histogram(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, bins int DEFAULT 0, width double precision[] DEFAULT NULL, right boolean DEFAULT FALSE)
 	RETURNS SETOF histogram
@@ -670,7 +670,7 @@ CREATE TYPE quantile AS (
 CREATE OR REPLACE FUNCTION _st_quantile(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
 	AS 'MODULE_PATHNAME','RASTER_quantile'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE;
 
 -- Cannot be strict as "quantiles" can be NULL
 CREATE OR REPLACE FUNCTION st_quantile(rast raster, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, quantiles double precision[] DEFAULT NULL)
@@ -762,7 +762,7 @@ CREATE OR REPLACE FUNCTION st_approxquantile(rast raster, quantile double precis
 CREATE OR REPLACE FUNCTION _st_quantile(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, sample_percent double precision DEFAULT 1, quantiles double precision[] DEFAULT NULL)
 	RETURNS SETOF quantile
 	AS 'MODULE_PATHNAME','RASTER_quantileCoverage'
-	LANGUAGE 'C' STABLE;
+	LANGUAGE 'c' STABLE;
 
 -- Cannot be strict as "quantiles" can be NULL
 CREATE OR REPLACE FUNCTION st_quantile(rastertable text, rastercolumn text, nband int DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, quantiles double precision[] DEFAULT NULL)
@@ -865,7 +865,7 @@ CREATE TYPE valuecount AS (
 CREATE OR REPLACE FUNCTION _st_valuecount(rast raster, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
 	RETURNS SETOF valuecount
 	AS 'MODULE_PATHNAME', 'RASTER_valueCount'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_valuecount(
 	rast raster, nband integer DEFAULT 1,
@@ -942,7 +942,7 @@ CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalue double preci
 CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
 	RETURNS SETOF valuecount
 	AS 'MODULE_PATHNAME', 'RASTER_valueCountCoverage'
-	LANGUAGE 'C' STABLE;
+	LANGUAGE 'c' STABLE;
 
 CREATE OR REPLACE FUNCTION st_valuecount(
 	rastertable text, rastercolumn text,
@@ -1031,7 +1031,7 @@ CREATE TYPE reclassarg AS (
 CREATE OR REPLACE FUNCTION _st_reclass(rast raster, VARIADIC reclassargset reclassarg[])
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_reclass'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_reclass(rast raster, VARIADIC reclassargset reclassarg[])
 	RETURNS raster
@@ -1056,12 +1056,12 @@ CREATE OR REPLACE FUNCTION st_reclass(rast raster, VARIADIC reclassargset reclas
 CREATE OR REPLACE FUNCTION st_reclass(rast raster, nband int, reclassexpr text, pixeltype text, nodataval double precision DEFAULT NULL)
 	RETURNS raster
 	AS $$ SELECT st_reclass($1, ROW($2, $3, $4, $5)) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_reclass(rast raster, reclassexpr text, pixeltype text)
 	RETURNS raster
 	AS $$ SELECT st_reclass($1, ROW(1, $2, $3, NULL)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_AsGDALRaster and supporting functions
@@ -1070,13 +1070,13 @@ CREATE OR REPLACE FUNCTION st_reclass(rast raster, reclassexpr text, pixeltype t
 CREATE OR REPLACE FUNCTION st_gdaldrivers(OUT idx int, OUT short_name text, OUT long_name text, OUT create_options text)
   RETURNS SETOF record
 	AS 'MODULE_PATHNAME', 'RASTER_getGDALDrivers'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Cannot be strict as "options" and "srid" can be NULL
 CREATE OR REPLACE FUNCTION st_asgdalraster(rast raster, format text, options text[] DEFAULT NULL, srid integer DEFAULT NULL)
 	RETURNS bytea
 	AS 'MODULE_PATHNAME', 'RASTER_asGDALRaster'
-	LANGUAGE 'C' IMMUTABLE;
+	LANGUAGE 'c' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_AsTIFF
@@ -1111,7 +1111,7 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, options text[] DEFAULT NULL, s
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], options text[] DEFAULT NULL, srid integer DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_astiff(st_band($1, $2), $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE;
 
 -- Cannot be strict as "srid" can be NULL
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srid integer DEFAULT NULL)
@@ -1198,7 +1198,7 @@ CREATE OR REPLACE FUNCTION st_astiff(rast raster, compression text, srid integer
 CREATE OR REPLACE FUNCTION st_astiff(rast raster, nbands int[], compression text, srid integer DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_astiff(st_band($1, $2), $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_AsJPEG
@@ -1238,7 +1238,7 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, options text[] DEFAULT NULL)
 CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_asjpeg(st_band($1, $2), $3) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], quality int)
 	RETURNS bytea
@@ -1267,12 +1267,12 @@ CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nbands int[], quality int)
 CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_asjpeg(st_band($1, $2), $3) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_asjpeg(rast raster, nband int, quality int)
 	RETURNS bytea
 	AS $$ SELECT st_asjpeg($1, ARRAY[$2], $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_AsPNG
@@ -1314,7 +1314,7 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, options text[] DEFAULT NULL)
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_aspng(st_band($1, $2), $3) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], compression int)
 	RETURNS bytea
@@ -1342,12 +1342,12 @@ CREATE OR REPLACE FUNCTION st_aspng(rast raster, nbands int[], compression int)
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, options text[] DEFAULT NULL)
 	RETURNS bytea
 	AS $$ SELECT st_aspng(st_band($1, $2), $3) $$
-	LANGUAGE 'SQL' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_aspng(rast raster, nband int, compression int)
 	RETURNS bytea
 	AS $$ SELECT st_aspng($1, ARRAY[$2], $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_AsRaster
@@ -1367,7 +1367,7 @@ CREATE OR REPLACE FUNCTION _st_asraster(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_asRaster'
-	LANGUAGE 'C' STABLE;
+	LANGUAGE 'c' STABLE;
 
 CREATE OR REPLACE FUNCTION st_asraster(
 	geom geometry,
@@ -1546,7 +1546,7 @@ CREATE OR REPLACE FUNCTION _st_resample(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_resample'
-	LANGUAGE 'C' STABLE;
+	LANGUAGE 'c' STABLE;
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
@@ -1703,7 +1703,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, band integer, pixeltyp
         expression text, nodataval double precision DEFAULT NULL)
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_mapAlgebraExpr'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 -- This function can not be STRICT, because nodataval can be NULL
 -- or pixeltype can not be determined (could be st_bandpixeltype(raster, band) though)
@@ -1718,7 +1718,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         pixeltype text, onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_mapAlgebraFct'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 -- Variant 1: missing user args
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
@@ -1781,7 +1781,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2'
-	LANGUAGE 'C' STABLE;
+	LANGUAGE 'c' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 	rast1 raster,
@@ -1793,7 +1793,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(
 )
 	RETURNS raster
 	AS $$ SELECT st_mapalgebraexpr($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
-	LANGUAGE 'SQL' STABLE;
+	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	rast1 raster, band1 integer,
@@ -1804,7 +1804,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_mapAlgebra2'
-	LANGUAGE 'C' STABLE;
+	LANGUAGE 'c' STABLE;
 
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 	rast1 raster,
@@ -1815,7 +1815,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(
 )
 	RETURNS raster
 	AS $$ SELECT st_mapalgebrafct($1, 1, $2, 1, $3, $4, $5, VARIADIC $6) $$
-	LANGUAGE 'SQL' STABLE;
+	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
 -- Neighborhood single raster map algebra
@@ -1832,7 +1832,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafctngb(
 )
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_mapAlgebraFctNgb'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Neighborhood MapAlgebra processing functions.
@@ -2006,7 +2006,7 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(matrix float[][], nodatamode text, varia
 CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer, pixeltype text)
     RETURNS RASTER
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_slope4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
-    LANGUAGE 'SQL' STABLE;
+    LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION _st_aspect4ma(matrix float[][], nodatamode text, variadic args text[])
     RETURNS float
@@ -2040,7 +2040,7 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(matrix float[][], nodatamode text, vari
 CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text)
     RETURNS RASTER
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_aspect4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
-    LANGUAGE 'SQL' STABLE;
+    LANGUAGE 'sql' STABLE;
 
 
 CREATE OR REPLACE FUNCTION _st_hillshade4ma(matrix float[][], nodatamode text, variadic args text[])
@@ -2088,7 +2088,7 @@ CREATE OR REPLACE FUNCTION _st_hillshade4ma(matrix float[][], nodatamode text, v
 CREATE OR REPLACE FUNCTION st_hillshade(rast raster, band integer, pixeltype text, azimuth float, altitude float, max_bright float DEFAULT 255.0, elevation_scale float DEFAULT 1.0)
     RETURNS RASTER
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_hillshade4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text) $$
-    LANGUAGE 'SQL' STABLE;
+    LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_distinct4ma(matrix float[][], nodatamode TEXT, VARIADIC args TEXT[])
     RETURNS float AS
@@ -2107,12 +2107,12 @@ CREATE OR REPLACE FUNCTION st_stddev4ma(matrix float[][], nodatamode TEXT, VARIA
 CREATE OR REPLACE FUNCTION st_isempty(rast raster)
     RETURNS boolean
     AS 'MODULE_PATHNAME', 'RASTER_isEmpty'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_hasnoband(rast raster, nband int DEFAULT 1)
     RETURNS boolean
     AS 'MODULE_PATHNAME', 'RASTER_hasNoBand'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Band Accessors
@@ -2121,12 +2121,12 @@ CREATE OR REPLACE FUNCTION st_hasnoband(rast raster, nband int DEFAULT 1)
 CREATE OR REPLACE FUNCTION st_bandnodatavalue(rast raster, band integer DEFAULT 1)
     RETURNS double precision
     AS 'MODULE_PATHNAME','RASTER_getBandNoDataValue'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, band integer DEFAULT 1, forceChecking boolean DEFAULT FALSE)
     RETURNS boolean
     AS 'MODULE_PATHNAME', 'RASTER_bandIsNoData'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, forceChecking boolean)
     RETURNS boolean
@@ -2136,12 +2136,12 @@ CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, forceChecking boolean)
 CREATE OR REPLACE FUNCTION st_bandpath(rast raster, band integer DEFAULT 1)
     RETURNS text
     AS 'MODULE_PATHNAME','RASTER_getBandPath'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_bandpixeltype(rast raster, band integer DEFAULT 1)
     RETURNS text
     AS 'MODULE_PATHNAME','RASTER_getBandPixelTypeName'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_bandmetadata(
 	rast raster,
@@ -2153,7 +2153,7 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(
 	OUT path text
 )
 	AS 'MODULE_PATHNAME','RASTER_bandmetadata'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_bandmetadata(
 	rast raster,
@@ -2173,7 +2173,7 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(
 CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y integer, hasnodata boolean DEFAULT TRUE)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getPixelValue'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, hasnodata boolean DEFAULT TRUE)
     RETURNS float8
@@ -2266,37 +2266,37 @@ CREATE OR REPLACE FUNCTION st_georeference(rast raster, format text DEFAULT 'GDA
 CREATE OR REPLACE FUNCTION st_setscale(rast raster, scale float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setScale'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_setscale(rast raster, scalex float8, scaley float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setScaleXY'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_setskew(rast raster, skew float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setSkew'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_setskew(rast raster, skewx float8, skewy float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setSkewXY'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_setsrid(rast raster, srid integer)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setSRID'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_setupperleft(rast raster, upperleftx float8, upperlefty float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setUpperLeftXY'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_setrotation(rast raster, rotation float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setRotation'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_setgeotransform(rast raster,
     imag double precision, 
@@ -2307,7 +2307,7 @@ CREATE OR REPLACE FUNCTION st_setgeotransform(rast raster,
     yoffset double precision)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setGeotransform'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Raster Editors ST_SetGeoreference()
@@ -2364,7 +2364,7 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
 CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer, nodatavalue float8, forceChecking boolean DEFAULT FALSE)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setBandNoDataValue'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 -- This function can not be STRICT, because nodatavalue can be NULL indicating that no nodata value should be set
 CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8)
@@ -2375,7 +2375,7 @@ CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8
 CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer DEFAULT 1)
     RETURNS raster
     AS 'MODULE_PATHNAME', 'RASTER_setBandIsNoData'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Pixel Editors
@@ -2385,7 +2385,7 @@ CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer DEFAULT 
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, x integer, y integer, newvalue float8)
     RETURNS raster
     AS 'MODULE_PATHNAME','RASTER_setPixelValue'
-    LANGUAGE 'C' IMMUTABLE;
+    LANGUAGE 'c' IMMUTABLE;
 
 -- This function can not be STRICT, because newvalue can be NULL for nodata
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, x integer, y integer, newvalue float8)
@@ -2435,7 +2435,7 @@ CREATE TYPE geomval AS (
 CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1)
 	RETURNS SETOF geomval
 	AS 'MODULE_PATHNAME','RASTER_dumpAsPolygons'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
     RETURNS geometry AS
@@ -2443,12 +2443,12 @@ CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
     SELECT st_union(f.geom) AS singlegeom
     FROM (SELECT (st_dumpaspolygons($1, $2)).geom AS geom) AS f;
     $$
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
     RETURNS geometry 
     AS 'MODULE_PATHNAME','RASTER_getPixelPolygon'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_PixelAsPolygons
@@ -2763,7 +2763,7 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, yr int)
 CREATE OR REPLACE FUNCTION st_minpossiblevalue(pixeltype text)
 	RETURNS double precision
 	AS 'MODULE_PATHNAME', 'RASTER_minPossibleValue'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Outputs
@@ -2772,12 +2772,12 @@ CREATE OR REPLACE FUNCTION st_minpossiblevalue(pixeltype text)
 CREATE OR REPLACE FUNCTION st_asbinary(raster)
     RETURNS bytea
     AS 'MODULE_PATHNAME', 'RASTER_to_binary'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION bytea(raster)
     RETURNS bytea
     AS 'MODULE_PATHNAME', 'RASTER_to_bytea'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------------
 --  Casts
@@ -2799,84 +2799,84 @@ CREATE CAST (raster AS bytea)
 CREATE OR REPLACE FUNCTION raster_overleft(raster, raster)
     RETURNS bool
     AS 'select $1::geometry &< $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_overright(raster, raster)
     RETURNS bool
     AS 'select $1::geometry &> $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_left(raster, raster)
     RETURNS bool
     AS 'select $1::geometry << $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_right(raster, raster)
     RETURNS bool
     AS 'select $1::geometry >> $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_overabove(raster, raster)
     RETURNS bool
     AS 'select $1::geometry |&> $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_overbelow(raster, raster)
     RETURNS bool
     AS 'select $1::geometry &<| $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_above(raster, raster)
     RETURNS bool
     AS 'select $1::geometry |>> $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_below(raster, raster)
     RETURNS bool
     AS 'select $1::geometry <<| $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_same(raster, raster)
     RETURNS bool
     AS 'select $1::geometry ~= $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_contained(raster, raster)
     RETURNS bool
     AS 'select $1::geometry @ $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_contain(raster, raster)
     RETURNS bool
     AS 'select $1::geometry ~ $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_overlap(raster, raster)
     RETURNS bool
     AS 'select $1::geometry && $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- raster/geometry functions
 CREATE OR REPLACE FUNCTION raster_geometry_contain(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry ~ $2'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION raster_geometry_overlap(raster, geometry)
     RETURNS bool
     AS 'select $1::geometry && $2'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
     
 -- geometry/raster functions
 CREATE OR REPLACE FUNCTION geometry_raster_contain(geometry, raster)
     RETURNS bool
     AS 'select $1 ~ $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_raster_overlap(geometry, raster)
     RETURNS bool
     AS 'select $1 && $2::geometry'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
     
 ------------------------------------------------------------------------------
 --  GiST index OPERATORs
@@ -2986,7 +2986,7 @@ CREATE OPERATOR && (
 CREATE OR REPLACE FUNCTION st_samealignment(rast1 raster, rast2 raster)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_sameAlignment'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_samealignment(
 	ulx1 double precision, uly1 double precision, scalex1 double precision, scaley1 double precision, skewx1 double precision, skewy1 double precision,
@@ -2994,24 +2994,24 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 )
 	RETURNS boolean
 	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION _st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_intersects'
-	LANGUAGE 'C' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
 	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN TRUE ELSE _st_intersects($1, $2, $3, $4) END $$
-	LANGUAGE 'SQL' IMMUTABLE
+	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, rast2 raster)
 	RETURNS boolean
 	AS $$ SELECT $1 && $2 AND _st_intersects($1, 1, $2, 1) $$
-	LANGUAGE 'SQL' IMMUTABLE
+	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 -----------------------------------------------------------------------
@@ -3047,13 +3047,13 @@ CREATE OR REPLACE FUNCTION _st_intersects(rast raster, geom geometry, nband inte
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, geom geometry, nband integer DEFAULT NULL)
 	RETURNS boolean
 	AS $$ SELECT $1::geometry && $2 AND _st_intersects($1, $2, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE
+	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_intersects(rast raster, nband integer, geom geometry)
 	RETURNS boolean
 	AS $$ SELECT $1::geometry && $3 AND _st_intersects($1, $3, $2) $$
-	LANGUAGE 'SQL' IMMUTABLE
+	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 -----------------------------------------------------------------------
@@ -3195,7 +3195,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integer DEFAULT NULL)
 	RETURNS boolean AS
 	$$ SELECT $1 && $2::geometry AND _st_intersects($1, $2, $3); $$
-	LANGUAGE 'SQL' IMMUTABLE
+	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 -----------------------------------------------------------------------
@@ -3416,28 +3416,28 @@ CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,rast2 raster,b
     RETURNS raster
     AS $$
         SELECT _ST_MapAlgebra4UnionState($1, ST_Band($2,$3), $4, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
-    $$ LANGUAGE 'SQL';
+    $$ LANGUAGE 'sql';
 
 -- State function when there is no expressions but allows specifying band
 CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,rast2 raster, bandnum integer)
     RETURNS raster
     AS $$
         SELECT _ST_MapAlgebra4UnionState($1,ST_Band($2,$3), 'LAST', NULL, NULL, NULL, NULL, NULL, NULL, NULL)
-    $$ LANGUAGE 'SQL';
+    $$ LANGUAGE 'sql';
     
 -- State function when there is no expressions and assumes band 1
 CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,rast2 raster)
     RETURNS raster
     AS $$
         SELECT _ST_MapAlgebra4UnionState($1,$2, 'LAST', NULL, NULL, NULL, NULL, NULL, NULL, NULL)
-    $$ LANGUAGE 'SQL';
+    $$ LANGUAGE 'sql';
     
 -- State function when there isan expressions and assumes band 1
 CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,rast2 raster, p_expression text)
     RETURNS raster
     AS $$
         SELECT _ST_MapAlgebra4UnionState($1,$2, $3, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
-    $$ LANGUAGE 'SQL';
+    $$ LANGUAGE 'sql';
     
 -- Final function with only the primary expression
 CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionFinal1(rast raster)
@@ -3560,31 +3560,31 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodatav
 CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodataval double precision, crop boolean DEFAULT TRUE)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, $2, $3, ARRAY[$4], $5) $$
-	LANGUAGE 'SQL' STABLE;
+	LANGUAGE 'sql' STABLE;
 
 -- Variant defaulting nodataval to the one of the raster or the min possible value
 CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, crop boolean)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, $2, $3, null::float8[], $4) $$
-	LANGUAGE 'SQL' STABLE;
+	LANGUAGE 'sql' STABLE;
 
 -- Variant defaulting to all bands
 CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, NULL, $2, $3, $4) $$
-	LANGUAGE 'SQL' STABLE;
+	LANGUAGE 'sql' STABLE;
 
 -- Variant defaulting to all bands
 CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodataval double precision, crop boolean DEFAULT TRUE)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, NULL, $2, ARRAY[$3], $4) $$
-	LANGUAGE 'SQL' STABLE;
+	LANGUAGE 'sql' STABLE;
 
 -- Variant defaulting nodataval to the one of the raster or the min possible value and returning all bands
 CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, crop boolean)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, NULL, $2, null::float8[], $3) $$
-	LANGUAGE 'SQL' STABLE;
+	LANGUAGE 'sql' STABLE;
 
 ------------------------------------------------------------------------------
 -- raster constraint functions

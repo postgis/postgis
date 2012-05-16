@@ -187,7 +187,7 @@ CREATE OR REPLACE FUNCTION CheckAuth(text, text)
 	RETURNS INT
 	AS
 	$$ SELECT CheckAuth('', $1, $2) $$
-	LANGUAGE 'SQL';
+	LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION CheckAuthTrigger()
 	RETURNS trigger AS 

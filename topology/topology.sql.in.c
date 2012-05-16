@@ -1870,19 +1870,19 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 CREATE OR REPLACE FUNCTION topology.CreateTopology(toponame varchar, srid integer, prec float8)
 RETURNS integer AS
 ' SELECT topology.CreateTopology($1, $2, $3, false);'
-LANGUAGE 'SQL' VOLATILE STRICT;
+LANGUAGE 'sql' VOLATILE STRICT;
 
 --  CreateTopology(name, SRID) -- precision = 0
 CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar, integer)
 RETURNS integer AS
 ' SELECT topology.CreateTopology($1, $2, 0); '
-LANGUAGE 'SQL' VOLATILE STRICT;
+LANGUAGE 'sql' VOLATILE STRICT;
 
 --  CreateTopology(name) -- srid = unknown, precision = 0
 CREATE OR REPLACE FUNCTION topology.CreateTopology(varchar)
 RETURNS integer AS
 $$ SELECT topology.CreateTopology($1, ST_SRID('POINT EMPTY'::geometry), 0); $$
-LANGUAGE 'SQL' VOLATILE STRICT;
+LANGUAGE 'sql' VOLATILE STRICT;
 
 --} CreateTopology
 

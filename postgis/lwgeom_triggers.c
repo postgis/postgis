@@ -16,6 +16,7 @@
 
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
+#include "utils/rel.h"
 
 Datum cache_bbox(PG_FUNCTION_ARGS);
 

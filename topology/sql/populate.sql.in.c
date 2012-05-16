@@ -37,7 +37,7 @@ AS $$
                  abs(ST_xmax($1)), abs(ST_ymax($1))),
         0),
       1)) ));
-$$ LANGUAGE 'SQL' IMMUTABLE STRICT;
+$$ LANGUAGE 'sql' IMMUTABLE STRICT;
 -- }
 
 -- {
@@ -53,7 +53,7 @@ AS $$
     topology._st_mintolerance($2))
   FROM topology.topology
   WHERE name = $1;
-$$ LANGUAGE 'SQL' STABLE STRICT;
+$$ LANGUAGE 'sql' STABLE STRICT;
 -- }
 
 --{

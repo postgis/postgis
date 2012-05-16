@@ -59,7 +59,7 @@ DROP FUNCTION IF EXISTS st_bytea(raster);
 CREATE OR REPLACE FUNCTION bytea(raster)
     RETURNS bytea
     AS 'MODULE_PATHNAME', 'RASTER_to_bytea'
-    LANGUAGE 'C' IMMUTABLE STRICT;
+    LANGUAGE 'c' IMMUTABLE STRICT;
 CREATE CAST (raster AS bytea)
     WITH FUNCTION bytea(raster) AS ASSIGNMENT;
 
@@ -82,7 +82,7 @@ BEGIN
 		CREATE OR REPLACE FUNCTION box3d(raster)
 		RETURNS box3d
 		AS 'SELECT box3d(st_convexhull($1))'
-		LANGUAGE 'SQL' IMMUTABLE STRICT;
+		LANGUAGE 'sql' IMMUTABLE STRICT;
 		CREATE CAST (raster AS box3d)
 			WITH FUNCTION box3d(raster) AS ASSIGNMENT;
     END IF;
@@ -94,7 +94,7 @@ DROP CAST IF EXISTS (raster AS box3d);
 CREATE OR REPLACE FUNCTION box3d(raster)
     RETURNS box3d
     AS 'SELECT box3d(st_convexhull($1))'
-    LANGUAGE 'SQL' IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 CREATE CAST (raster AS box3d)
     WITH FUNCTION box3d(raster) AS ASSIGNMENT;
 #endif

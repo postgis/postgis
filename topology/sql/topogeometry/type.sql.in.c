@@ -31,7 +31,7 @@ $$
 		ELSE 'UNEXPECTED'
 		END;
 $$
-LANGUAGE 'SQL' STABLE STRICT;
+LANGUAGE 'sql' STABLE STRICT;
 -- }
 
 -- {
@@ -55,5 +55,5 @@ $$
 		ELSE 'ST_Unexpected'
 		END;
 $$
-LANGUAGE 'SQL' STABLE STRICT;
+LANGUAGE 'sql' STABLE STRICT;
 -- }

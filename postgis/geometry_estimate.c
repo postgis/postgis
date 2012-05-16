@@ -21,6 +21,7 @@
 #include "utils/array.h"
 #include "utils/lsyscache.h"
 #include "utils/syscache.h"
+#include "utils/rel.h"
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
