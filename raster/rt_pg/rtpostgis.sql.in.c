@@ -1711,7 +1711,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebraexpr(rast raster, pixeltype text, expres
         nodataval double precision DEFAULT NULL)
     RETURNS raster
     AS $$ SELECT st_mapalgebraexpr($1, 1, $2, $3, $4) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -- All arguments supplied, use the C implementation.
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
@@ -1725,48 +1725,48 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         pixeltype text, onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, $2, $3, $4, NULL) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -- Variant 2: missing pixeltype; default to pixeltype of rast
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, $2, NULL, $3, VARIADIC $4) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -- Variant 3: missing pixeltype and user args; default to pixeltype of rast
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, band integer,
         onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, $2, NULL, $3, NULL) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -- Variant 4: missing band; default to band 1
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
         onerastuserfunc regprocedure, variadic args text[])
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, 1, $2, $3, VARIADIC $4) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -- Variant 5: missing band and user args; default to band 1
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, pixeltype text,
         onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, 1, $2, $3, NULL) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -- Variant 6: missing band, and pixeltype; default to band 1, pixeltype of rast.
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure,
         variadic args text[])
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, 1, NULL, $2, VARIADIC $3) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -- Variant 7: missing band, pixeltype, and user args; default to band 1, pixeltype of rast.
 CREATE OR REPLACE FUNCTION st_mapalgebrafct(rast raster, onerastuserfunc regprocedure)
     RETURNS raster
     AS $$ SELECT st_mapalgebrafct($1, 1, NULL, $2, NULL) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -----------------------------------------------------------------------
 -- Two Raster ST_MapAlgebra
@@ -2131,7 +2131,7 @@ CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, band integer DEFAULT 1, 
 CREATE OR REPLACE FUNCTION st_bandisnodata(rast raster, forceChecking boolean)
     RETURNS boolean
     AS $$ SELECT st_bandisnodata($1, 1, $2) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_bandpath(rast raster, band integer DEFAULT 1)
     RETURNS text
@@ -2178,7 +2178,7 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y inte
 CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, hasnodata boolean DEFAULT TRUE)
     RETURNS float8
     AS $$ SELECT st_value($1, 1, $2, $3, $4) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, hasnodata boolean DEFAULT TRUE)
     RETURNS float8 AS
@@ -2206,7 +2206,7 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, hasn
 CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, hasnodata boolean DEFAULT TRUE)
     RETURNS float8
     AS $$ SELECT st_value($1, 1, $2, $3) $$
-    LANGUAGE SQL IMMUTABLE STRICT;
+    LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Accessors ST_Georeference()
@@ -2370,7 +2370,7 @@ CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, band integer, noda
 CREATE OR REPLACE FUNCTION st_setbandnodatavalue(rast raster, nodatavalue float8)
     RETURNS raster
     AS $$ SELECT st_setbandnodatavalue($1, 1, $2, FALSE) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer DEFAULT 1)
     RETURNS raster
@@ -2391,7 +2391,7 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, x integer, y i
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, x integer, y integer, newvalue float8)
     RETURNS raster
     AS $$ SELECT st_setvalue($1, 1, $2, $3, $4) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -- This function can not be STRICT, because newvalue can be NULL for nodata
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, pt geometry, newvalue float8)
@@ -2421,7 +2421,7 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, pt geometry, n
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, pt geometry, newvalue float8)
     RETURNS raster
     AS $$ SELECT st_setvalue($1, 1, $2, $3) $$
-    LANGUAGE SQL;
+    LANGUAGE 'sql';
 
 -----------------------------------------------------------------------
 -- Raster Processing Functions
