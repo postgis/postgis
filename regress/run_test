@@ -668,7 +668,11 @@ create_spatial ()
 {
 	echo "Creating spatial db ${DB} " 
 
-	createdb --encoding=UTF-8 --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log
+	createdb --encoding=UTF-8 --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log 2>&1 
+	if [ $? -gt 0 ]; then # {
+		fail "createdb failed" "${TMPDIR}/regress_log"
+		exit 1
+	fi # }
 	createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
 
 	# Count database objects before installing anything
