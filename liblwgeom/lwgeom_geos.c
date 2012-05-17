@@ -417,6 +417,46 @@ lwgeom_geos_version()
 }
 
 LWGEOM *
+lwgeom_normalize(const LWGEOM *geom1)
+{
+	LWGEOM *result ;
+	GEOSGeometry *g1;
+	int is3d ;
+	int srid ;
+
+	srid = (int)(geom1->srid);
+	is3d = FLAGS_GET_Z(geom1->flags);
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	g1 = LWGEOM2GEOS(geom1);
+	if ( 0 == g1 )   /* exception thrown at construction */
+	{
+		lwerror("First argument geometry could not be converted to GEOS.");
+		return NULL ;
+	}
+
+	if ( -1 == GEOSNormalize(g1) )
+	{
+	  lwerror("Error in GEOSNormalize: %s", lwgeom_geos_errmsg);
+		return NULL; /* never get here */
+	}
+
+	GEOSSetSRID(g1, srid); /* needed ? */
+	result = GEOS2LWGEOM(g1, is3d);
+	GEOSGeom_destroy(g1);
+
+	if (result == NULL)
+	{
+	  lwerror("Error performing intersection: GEOS2LWGEOM: %s",
+	                lwgeom_geos_errmsg);
+		return NULL ; /* never get here */
+	}
+
+	return result ;
+}
+
+LWGEOM *
 lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2)
 {
 	LWGEOM *result ;

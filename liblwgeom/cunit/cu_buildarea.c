@@ -22,15 +22,22 @@
  */
 #define check_geom_equal(gobt, gexp) do { \
 	char *obt, *exp; \
-	if ( ! lwgeom_same((gobt), (gexp)) ) { \
- 		obt = lwgeom_to_wkt((gobt), WKT_ISO, 8, NULL); \
- 		exp = lwgeom_to_wkt((gexp), WKT_ISO, 8, NULL); \
+	LWGEOM *ngobt, *ngexp; \
+	ngobt = lwgeom_normalize(gobt); \
+	ngexp = lwgeom_normalize(gexp); \
+	if ( ! lwgeom_same((ngobt), (ngexp)) ) { \
+ 		obt = lwgeom_to_wkt((ngobt), WKT_ISO, 8, NULL); \
+ 		exp = lwgeom_to_wkt((ngexp), WKT_ISO, 8, NULL); \
 		printf(" Failure at %s:%d\n", __FILE__, __LINE__); \
 		printf(" Exp: %s\n", exp); \
 		printf(" Obt: %s\n", obt); \
 		free(obt); free(exp); \
+    lwgeom_free(ngobt); lwgeom_free(ngexp); \
 		CU_ASSERT(0); \
-	} else CU_ASSERT(1); \
+	} else { \
+    lwgeom_free(ngobt); lwgeom_free(ngexp); \
+    CU_ASSERT(1); \
+  } \
 } while (0)
 
 /*

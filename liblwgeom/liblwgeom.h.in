@@ -1808,6 +1808,7 @@ const char* lwgeom_geos_version(void);
 /** Convert an LWGEOM to a GEOS Geometry and convert back -- for debug only */
 LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
 
+LWGEOM *lwgeom_normalize(const LWGEOM *geom);
 LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
