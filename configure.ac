@@ -1077,7 +1077,7 @@ if test $POSTGIS_PGSQL_VERSION -ge 91; then
           -e doc/raster_comments.sql;
   then
 		if test "x$RASTER" = "xraster"; then
-				AC_MSG_RESULT([enabling extensions for PostgreSQL 9.1...])
+				AC_MSG_RESULT([enabling PostgreSQL extension support...])
 				EXTENSIONS=extensions
 				AC_SUBST([EXTENSIONS])
 		fi
