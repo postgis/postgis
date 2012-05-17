@@ -290,10 +290,10 @@ GetPrepGeomCache(FunctionCallInfoData *fcinfo, GSERIALIZED *pg_geom1, GSERIALIZE
 		CreatePrepGeomHash();
 
 	if ( pg_geom1 )
-		pg_geom1_size = VARSIZE(pg_geom1) + VARHDRSZ;
+		pg_geom1_size = VARSIZE(pg_geom1);
 
 	if ( pg_geom2 )
-		pg_geom2_size = VARSIZE(pg_geom2) + VARHDRSZ;
+		pg_geom2_size = VARSIZE(pg_geom2);
 
 	if ( cache == NULL)
 	{
