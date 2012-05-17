@@ -19,6 +19,7 @@ PostGIS 2.0.1
   - #1791, fix ST_Azimuth with very close but distinct points.
   - #1819, fix floating point issues with ST_World2RasterCoord and
     ST_Raster2WorldCoord variants.
+  - #1825, fix prepared geometry cache lookup
 
 * Enhancements *
 
