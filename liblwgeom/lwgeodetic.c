@@ -1536,7 +1536,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	distance = MAXFLOAT;
 
 	/* Empty point arrays? Return negative */
-	if ( pa1->npoints == 0 || pa1->npoints == 0 )
+	if ( pa1->npoints == 0 || pa2->npoints == 0 )
 		return -1.0;
 
 	/* Handle point/point case here */
