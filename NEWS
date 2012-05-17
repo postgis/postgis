@@ -26,7 +26,7 @@ PostGIS 2.0.1
   - #1786, improved build dependencies 
   - #1802, improved function interruptibility.
   - #1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.
-  - Add lwgeom_normalize in LIBLWGEOM 
+  - #1812, Add lwgeom_normalize in LIBLWGEOM for more stable testing.
 
 PostGIS 2.0.0
 2012/04/03
