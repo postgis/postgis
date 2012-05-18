@@ -20,6 +20,7 @@ PostGIS 2.0.1
   - #1819, fix floating point issues with ST_World2RasterCoord and
     ST_Raster2WorldCoord variants.
   - #1825, fix prepared geometry cache lookup
+  - #1829, fix uninitialized read in GeoJSON parser
 
 * Enhancements *
 
