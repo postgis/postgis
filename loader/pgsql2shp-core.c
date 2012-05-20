@@ -1482,7 +1482,8 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		        "pg_attribute a, pg_class c WHERE "
 		        "a.attrelid = c.oid and a.attnum > 0 AND "
 		        "a.atttypid != 0 AND "
-		        "c.relname = '%s'", state->table);
+		        "c.relname = '%s' AND "
+		        "pg_catalog.pg_table_is_visible(c.oid)", state->table);
 	}
 
 	LWDEBUGF(3, "query is: %s\n", query);
