@@ -23,6 +23,7 @@ PostGIS 2.0.1
     ST_Raster2WorldCoord variants.
   - #1825, fix prepared geometry cache lookup
   - #1829, fix uninitialized read in GeoJSON parser
+  - #1830, fix dumper against PgSQL 9.2 (dfuhry)
 
 * Enhancements *
 
