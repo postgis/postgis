@@ -3,6 +3,7 @@ PostGIS 2.0.1
 
 * Bug Fixes *
 
+  - #1264, fix st_dwithin(geog, geog, 0). 
   - #1694, fix building with clang.
   - #1708, improve restore of PosgreSQL 9.1 backups.
   - #1714, more robust handling of high topology tolerance.
@@ -17,6 +18,7 @@ PostGIS 2.0.1
   - #1789, fix false edge-node crossing report in ValidateTopology.
   - #1790, fix toTopoGeom handling of duplicated primitives.
   - #1791, fix ST_Azimuth with very close but distinct points.
+  - #1805, put back the 900913 SRID entry.
   - #1819, fix floating point issues with ST_World2RasterCoord and
     ST_Raster2WorldCoord variants.
   - #1825, fix prepared geometry cache lookup
