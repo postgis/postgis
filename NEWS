@@ -5,11 +5,12 @@ PostGIS 1.5.5
  filed since the 1.5.4 release.
 
  - Bug Fixes
+   - #1825, containsproperly fix in prepared geometry.
 
 
 
 PostGIS 1.5.4
-2011/05/06
+2012/05/06
 
  This is a bug fix release, addressing issues that have been
  filed since the 1.5.3 release.
