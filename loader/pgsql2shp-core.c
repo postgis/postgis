@@ -1350,6 +1350,18 @@ ShpDumperConnectDatabase(SHPDUMPERSTATE *state)
 
 	PQclear(res);
 
+	/* Set bytea_output format to escape, required for PgSQL 9.2+ (dfuhry) */
+	res = PQexec(state->conn, "SET bytea_output='escape'");
+	if (PQresultStatus(res) != PGRES_COMMAND_OK)
+	{
+		snprintf(state->message, SHPDUMPERMSGLEN, _("Error setting bytea_output to 'escape': %s"), PQresultErrorMessage(res));
+		PQclear(res);
+		free(connstring);
+		return SHPDUMPERERR;
+	}
+
+	PQclear(res);
+
 	/* Find the OID for the geometry type */
 	res = PQexec(state->conn, "SELECT oid FROM pg_type WHERE typname = 'geometry'");
 	if (PQresultStatus(res) != PGRES_TUPLES_OK)
