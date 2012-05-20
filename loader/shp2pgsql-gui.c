@@ -2544,7 +2544,7 @@ pgui_create_about_dialog(void)
 	const char *authors[] =
 	{
 		"Paul Ramsey <pramsey@opengeo.org>",
-		"Mark Cave-Ayland <mark.cave-ayland@siriusit.co.uk>",
+		"Mark Cave-Ayland <mark.cave-ayland@ilande.co.uk>",
 		"Mark Leslie <mark.leslie@lisasoft.com>",
 		NULL
 	};
@@ -2553,7 +2553,7 @@ pgui_create_about_dialog(void)
 
 	dialog_about = gtk_about_dialog_new();
 	gtk_about_dialog_set_name(GTK_ABOUT_DIALOG(dialog_about), _("PostGIS Shapefile Import/Export Manager"));
-	gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog_about), GUI_RCSID);
+	gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(dialog_about), POSTGIS_LIB_VERSION);
 	gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog_about), "http://postgis.org/");
 	gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(dialog_about), authors);
 }
