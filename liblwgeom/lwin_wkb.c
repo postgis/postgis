@@ -202,6 +202,18 @@ static void lwtype_from_wkb_state(wkb_parse_state *s, uint32_t wkb_type)
 		case WKB_TRIANGLE_TYPE:
 			s->lwtype = TRIANGLETYPE;
 			break;
+		
+		/* PostGIS 1.5 emits 13, 14 for CurvePolygon, MultiCurve */
+		/* These numbers aren't SQL/MM (numbers currently only */
+		/* go up to 12. We can handle the old data here (for now??) */
+		/* converting them into the lwtypes that are intended. */
+		case WKB_CURVE_TYPE:
+			s->lwtype = CURVEPOLYTYPE;
+			break;
+		case WKB_SURFACE_TYPE:
+			s->lwtype = MULTICURVETYPE;
+			break;
+		
 		default: /* Error! */
 			lwerror("Unknown WKB type (%d)! Full WKB type number was (%d).", wkb_simple_type, wkb_type);
 			break;	
