@@ -1352,7 +1352,7 @@ extern char* lwgeom_extent_to_gml2(const LWGEOM *geom, const char *srs, int prec
  * @param opts output options bitfield, see LW_GML macros for meaning
  */
 extern char* lwgeom_extent_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix);
-extern char* lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix);
+extern char* lwgeom_to_gml3(const LWGEOM *geom, const char *srs, int precision, int opts, const char *prefix, const char *id);
 extern char* lwgeom_to_kml2(const LWGEOM *geom, int precision, const char *prefix);
 extern char* lwgeom_to_geojson(const LWGEOM *geo, char *srs, int precision, int has_bbox);
 extern char* lwgeom_to_svg(const LWGEOM *geom, int precision, int relative);

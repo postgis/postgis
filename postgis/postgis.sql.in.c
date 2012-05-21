@@ -3413,8 +3413,8 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(geom geometry,rel int4 DEFAULT 0,maxdecimald
 -----------------------------------------------------------------------
 -- GML OUTPUT
 -----------------------------------------------------------------------
--- _ST_AsGML(version, geom, precision, option, prefix)
-CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text)
+-- _ST_AsGML(version, geom, precision, option, prefix, id)
+CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text, text)
 	RETURNS TEXT
 	AS 'MODULE_PATHNAME','LWGEOM_asGML'
 	LANGUAGE 'c' IMMUTABLE;
@@ -3427,9 +3427,9 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text)
 -- ST_AsGML (geom, precision, option) / version=2
 -- Availability: 1.4.0
 -- Changed: 2.0.0 to have default args
-CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
+CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT)
 	RETURNS TEXT
-	AS $$ SELECT _ST_AsGML(2, $1, $2, $3, null); $$
+	AS $$ SELECT _ST_AsGML(2, $1, $2, $3, null, null); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- ST_AsGML(version, geom, precision, option)
@@ -3437,9 +3437,11 @@ CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT
 -- ST_AsGML(version, geom, precision, option, prefix)
 -- Availability: 2.0.0
 -- Changed: 2.0.0 to use default and named args
-CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT null)
+-- ST_AsGML(version, geom, precision, option, prefix, id)
+-- Availability: 2.0.1
+CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT null, id text DEFAULT null)
 	RETURNS TEXT
-	AS $$ SELECT _ST_AsGML($1, $2, $3, $4,$5); $$
+	AS $$ SELECT _ST_AsGML($1, $2, $3, $4, $5, $6); $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------

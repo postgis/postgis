@@ -211,9 +211,10 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int option=0;
 	int lwopts = LW_GML_IS_DIMS;
 	static const char *default_prefix = "gml:";
-	char *prefixbuf;
-	const char* prefix = default_prefix;
-	text *prefix_text;
+	char *prefix_buf, *id_buf;
+	const char *prefix = default_prefix;
+	text *prefix_text, *id_text;
+	const char *id;
 
 
 	/* Get the version */
@@ -256,13 +257,30 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 		else
 		{
 			/* +2 is one for the ':' and one for term null */
-			prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
-			memcpy(prefixbuf, VARDATA(prefix_text),
+			prefix_buf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
+			memcpy(prefix_buf, VARDATA(prefix_text),
 			       VARSIZE(prefix_text)-VARHDRSZ);
 			/* add colon and null terminate */
-			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
-			prefix = prefixbuf;
+			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
+			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefix = prefix_buf;
+		}
+	}
+
+	/* retrieve id */
+	if (PG_NARGS() >5 && !PG_ARGISNULL(5))
+	{
+		prefix_text = PG_GETARG_TEXT_P(5);
+		if ( VARSIZE(id_text)-VARHDRSZ == 0 )
+		{
+			id = "";
+		}
+		else
+		{
+			id_buf = palloc(VARSIZE(id_text)-VARHDRSZ+1);
+			memcpy(id_buf, VARDATA(id_text), VARSIZE(id_text)-VARHDRSZ);
+			prefix_buf[VARSIZE(id_text)-VARHDRSZ+1] = '\0';
+			id = id_buf;
 		}
 	}
 
@@ -281,7 +299,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (version == 2)
 		gml = lwgeom_to_gml2(lwgeom, srs, precision, prefix);
 	else
-		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix);
+		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, id);
 
     lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(g, 1);

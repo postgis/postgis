@@ -173,9 +173,10 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	int lwopts = LW_GML_IS_DIMS;
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	static const char* default_prefix = "gml:"; /* default prefix */
-	char *prefixbuf;
 	const char* prefix = default_prefix;
-	text *prefix_text;
+	const char* gml_id;
+	char *prefix_buf, *gml_id_buf;
+	text *prefix_text, *gml_id_text;
 
 	/* Get the version */
 	version = PG_GETARG_INT32(0);
@@ -213,13 +214,29 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 		else
 		{
 			/* +2 is one for the ':' and one for term null */
-			prefixbuf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
-			memcpy(prefixbuf, VARDATA(prefix_text),
+			prefix_buf = palloc(VARSIZE(prefix_text)-VARHDRSZ+2);
+			memcpy(prefix_buf, VARDATA(prefix_text),
 			       VARSIZE(prefix_text)-VARHDRSZ);
 			/* add colon and null terminate */
-			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
-			prefixbuf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
-			prefix = prefixbuf;
+			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ] = ':';
+			prefix_buf[VARSIZE(prefix_text)-VARHDRSZ+1] = '\0';
+			prefix = prefix_buf;
+		}
+	}
+
+	if (PG_NARGS() >5 && !PG_ARGISNULL(5))
+	{
+		gml_id_text = PG_GETARG_TEXT_P(5);
+		if ( VARSIZE(gml_id_text)-VARHDRSZ == 0 )
+		{
+			gml_id = "";
+		}
+		else
+		{
+			gml_id_buf = palloc(VARSIZE(gml_id_text)-VARHDRSZ+1);
+			memcpy(gml_id_buf, VARDATA(gml_id_text), VARSIZE(gml_id_text)-VARHDRSZ);
+			gml_id_buf[VARSIZE(gml_id_text)-VARHDRSZ+1] = '\0';
+			gml_id = gml_id_buf;
 		}
 	}
 
@@ -242,7 +259,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	else if (version == 3 && lwopts & LW_GML_EXTENT)
 		gml = lwgeom_extent_to_gml3(lwgeom, srs, precision, lwopts, prefix);
 	else if (version == 3) 
-		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix);
+		gml = lwgeom_to_gml3(lwgeom, srs, precision, lwopts, prefix, gml_id);
 
 	lwgeom_free(lwgeom);
 	PG_FREE_IF_COPY(geom, 1);
