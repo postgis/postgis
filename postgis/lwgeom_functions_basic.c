@@ -2558,13 +2558,12 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 		/* Non-collections of the matching type go back */
 		if(lwgeom_type == type)
 		{
-			lwgeom_free(lwgeom);
-			PG_RETURN_POINTER(input);
+			lwcol = lwgeom_as_multi(lwgeom);
 		}
 		/* Others go back as EMPTY */
 		else
 		{
-			lwcol = lwgeom_construct_empty(type, lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags));
+			lwcol = lwgeom_as_multi(lwgeom_construct_empty(type, lwgeom->srid, FLAGS_GET_Z(lwgeom->flags), FLAGS_GET_M(lwgeom->flags)));
 		}
 	}
 	else
@@ -2572,13 +2571,6 @@ Datum ST_CollectionExtract(PG_FUNCTION_ARGS)
 		lwcol = lwcollection_as_lwgeom(lwcollection_extract((LWCOLLECTION*)lwgeom, type));
 	}
 
-#if 0
-	if (lwgeom_is_empty(lwcollection_as_lwgeom(lwcol)))
-	{
-		lwgeom_free(lwgeom);
-		PG_RETURN_NULL();
-	}
-#endif
 	output = geometry_serialize((LWGEOM*)lwcol);
 	lwgeom_free(lwgeom);
 	lwgeom_free(lwcol);
