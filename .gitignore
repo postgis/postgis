@@ -123,7 +123,6 @@ topology/topology.sql.in
 topology/topology_upgrade_20_minor.sql
 topology/topology_upgrade.sql
 topology/uninstall_topology.sql
-authors.git
 libpgcommon/Makefile
 libpgcommon/cunit/Makefile
 utils/Makefile
