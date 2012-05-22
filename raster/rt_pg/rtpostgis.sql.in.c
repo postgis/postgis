@@ -2507,6 +2507,21 @@ CREATE OR REPLACE FUNCTION _st_world2rastercoord(
 	LANGUAGE 'c' IMMUTABLE;
 
 ---------------------------------------------------------------------------------
+-- ST_World2RasterCoord(rast raster, longitude float8, latitude float8)
+-- Returns the pixel column and row covering the provided X and Y world
+-- coordinates.
+-- This function works even if the world coordinates are outside the raster extent.
+---------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_world2rastercoord(
+	rast raster,
+	longitude double precision, latitude double precision,
+	OUT columnx integer,
+	OUT rowy integer
+)
+	AS $$ SELECT columnx, rowy FROM _st_world2rastercoord($1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+---------------------------------------------------------------------------------
 -- ST_World2RasterCoordX(rast raster, xw float8, yw float8)
 -- Returns the column number of the pixel covering the provided X and Y world
 -- coordinates.
@@ -2606,6 +2621,22 @@ CREATE OR REPLACE FUNCTION _st_raster2worldcoord(
 )
 	AS 'MODULE_PATHNAME', 'RASTER_rasterToWorldCoord'
 	LANGUAGE 'c' IMMUTABLE;
+
+---------------------------------------------------------------------------------
+-- ST_Raster2WorldCoordX(rast raster, xr int, yr int)
+-- Returns the longitude and latitude of the upper left corner of the pixel
+-- located at the provided pixel column and row.
+-- This function works even if the provided raster column and row are beyond or
+-- below the raster width and height.
+---------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_raster2worldcoord(
+	rast raster,
+	columnx integer, rowy integer,
+	OUT longitude double precision,
+	OUT latitude double precision
+)
+	AS $$ SELECT longitude, latitude FROM _st_raster2worldcoord($1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
 -- ST_Raster2WorldCoordX(rast raster, xr int, yr int)
