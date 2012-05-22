@@ -2420,6 +2420,13 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(3))
 		exclude_nodata_value = PG_GETARG_BOOL(3);
 
+	/* SRIDs of raster and geometry must match  */
+	if (gserialized_get_srid(geom) != rt_raster_get_srid(raster)) {
+		elog(NOTICE, "SRIDs of geometry and raster do not match");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
 	/* get band */
 	band = rt_raster_get_band(raster, bandindex - 1);
 	if (!band) {

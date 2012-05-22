@@ -3520,7 +3520,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision
-	AS $$ SELECT st_nearestvalue($1, $2, st_makepoint(st_raster2worldcoordx($1, $3, $4), st_raster2worldcoordy($1, $3, $4)), $5) $$
+	AS $$ SELECT st_nearestvalue($1, $2, st_setsrid(st_makepoint(st_raster2worldcoordx($1, $3, $4), st_raster2worldcoordy($1, $3, $4)), st_srid($1)), $5) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_nearestvalue(
@@ -3529,7 +3529,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision
-	AS $$ SELECT st_nearestvalue($1, 1, st_makepoint(st_raster2worldcoordx($1, $2, $3), st_raster2worldcoordy($1, $2, $3)), $4) $$
+	AS $$ SELECT st_nearestvalue($1, 1, st_setsrid(st_makepoint(st_raster2worldcoordx($1, $2, $3), st_raster2worldcoordy($1, $2, $3)), st_srid($1)), $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
