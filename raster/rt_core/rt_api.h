@@ -308,6 +308,29 @@ rt_pixtype rt_pixtype_index_from_name(const char* pixname);
  */
 double rt_pixtype_get_min_value(rt_pixtype pixtype);
 
+/*- rt_pixel ----------------------------------------------------------*/
+
+/*
+ * Convert an array of rt_pixel objects to two 2D arrays of value and NODATA
+ *
+ * @param npixel: array of rt_pixel objects
+ * @param count: number of elements in npixel
+ * @param x: the column of the center pixel (0-based)
+ * @param y: the line of the center pixel (0-based)
+ * @param distance: the number of pixels around the center pixel
+ * @param value: pointer to pointer for 2D value array
+ * @param nodata: pointer to pointer for 2D NODATA array
+ *
+ * @return 0 on error, otherwise the X/Y axis length of value and NODATA 
+ */
+int rt_pixel_set_to_array(
+	rt_pixel npixel, int count,
+	int x, int y,
+	uint16_t distance,
+	double ***value,
+	int ***nodata
+);
+
 /*- rt_band ----------------------------------------------------------*/
 
 /**
@@ -1663,6 +1686,8 @@ struct rt_band_t {
 struct rt_pixel_t {
 	int x; /* column */
 	int y; /* line */
+
+	uint8_t nodata;
 	double value;
 };
 

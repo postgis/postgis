@@ -2598,6 +2598,10 @@ static void testNearestPixel() {
 	const int maxY = 10;
 	rt_pixel npixels = NULL;
 
+	int length;
+	double **value;
+	int **nodata;
+
 	rast = rt_raster_new(maxX, maxY);
 	assert(rast);
 
@@ -2734,6 +2738,24 @@ static void testNearestPixel() {
 		&npixels
 	);
 	CHECK((rtn == 2));
+
+	length = rt_pixel_set_to_array(
+		npixels, rtn,
+		-1, 1, 
+		1,
+		&value,
+		&nodata
+	);
+	CHECK((length == 3));
+
+	for (x = 0; x < length; x++) {
+		rtdealloc(nodata[x]);
+		rtdealloc(value[x]);
+	}
+
+	rtdealloc(nodata);
+	rtdealloc(value);
+
 	if (rtn)
 		rtdealloc(npixels);
 

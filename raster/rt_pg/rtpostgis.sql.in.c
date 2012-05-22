@@ -3540,11 +3540,9 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster, band integer,
 	ix integer, iy integer,
 	distance integer,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT x integer, OUT y integer,
-	OUT val double precision
+	exclude_nodata_value boolean DEFAULT TRUE
 )
-	RETURNS SETOF record
+	RETURNS double precision[][]
 	AS 'MODULE_PATHNAME', 'RASTER_neighborhood'
 	LANGUAGE 'C' IMMUTABLE STRICT;
 
@@ -3552,27 +3550,24 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster,
 	ix integer, iy integer,
 	distance integer,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT x integer, OUT y integer,
-	OUT val double precision
+	exclude_nodata_value boolean DEFAULT TRUE
 )
-	RETURNS SETOF record
-	AS $$ SELECT x, y, val FROM st_neighborhood($1, 1, $2, $3, $4, $5) $$
+	RETURNS double precision[][]
+	AS $$ SELECT st_neighborhood($1, 1, $2, $3, $4, $5) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster, band integer,
 	pt geometry,
 	distance integer,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT x integer, OUT y integer,
-	OUT val double precision
+	exclude_nodata_value boolean DEFAULT TRUE
 )
-	RETURNS SETOF record
+	RETURNS double precision[][]
 	AS $$
 	DECLARE
 		wx int;
 		wy int;
+		rtn double precision[][];
 	BEGIN
 		IF (st_geometrytype($3) != 'ST_Point') THEN
 			RAISE EXCEPTION 'Attempting to get the neighbor of a pixel with a non-point geometry';
@@ -3580,15 +3575,14 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 		wx := st_x($3);
 		wy := st_y($3);
 
-		RETURN QUERY
-			SELECT x, y, val
-			FROM st_neighborhood(
-				$1, $2,
-				st_world2rastercoordx(rast, wx, wy),
-				st_world2rastercoordy(rast, wx, wy),
-				$4,
-				$5
-			);
+		SELECT st_neighborhood(
+			$1, $2,
+			st_world2rastercoordx(rast, wx, wy),
+			st_world2rastercoordy(rast, wx, wy),
+			$4,
+			$5
+		) INTO rtn;
+		RETURN rtn;
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
@@ -3596,12 +3590,10 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster,
 	pt geometry,
 	distance integer,
-	exclude_nodata_value boolean DEFAULT TRUE,
-	OUT x integer, OUT y integer,
-	OUT val double precision
+	exclude_nodata_value boolean DEFAULT TRUE
 )
-	RETURNS SETOF record
-	AS $$ SELECT x, y, val FROM st_neighborhood($1, 1, $2, $3, $4) $$
+	RETURNS double precision[][]
+	AS $$ SELECT st_neighborhood($1, 1, $2, $3, $4) $$
 	LANGUAGE 'SQL' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------------
