@@ -992,7 +992,7 @@ Failed: 0
 		</para>
 	
 		<para>
-		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</command>
+		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011</command>
 		</para>
 	
 		<para>Edit the <filename>tiger_loader.sql</filename> to the paths of your executables server etc.</para>
@@ -1011,7 +1011,7 @@ pretty_address
 	<sect2 id="upgrade_tiger_geocoder">
 		<title>Upgrading your Tiger Geocoder Install</title>
 		<para>
-		  If you have Tiger Geocoder packaged with 2.0 already installed, you can upgrade the functions at any time even from an interim tar ball if there are fixes you badly need.
+		  If you have Tiger Geocoder packaged with 2.0+ already installed, you can upgrade the functions at any time even from an interim tar ball if there are fixes you badly need.
 		</para>
 	
 		<para>
@@ -1023,18 +1023,27 @@ pretty_address
 		</para>
 	
 		<para>
-		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2010</command>
+		  <command>cd postgis-&last_release_version;/extras/tiger_geocoder/tiger_2011</command>
 		</para>
 	
 		<para>Locate the  <filename>upgrade_geocoder.bat</filename> script If you are on windows
 			or the <filename>upgrade_geocoder.sh</filename> if you are on Linux/Unix/Mac OSX.  Edit the file to have your postgis database credientials and run then corresponding script from the commandline.
 		</para>
-	
+		<para>Next drop all nation tables and load up the new ones. Generate a drop script with this SQL statement as detailed in <xref linkend="Drop_Nation_Tables_Generate_Script" /></para>
+			<programlisting>SELECT drop_nation_tables_generate_script();</programlisting>
+		<para>Run the generated drop SQL statements.</para>
+		<para>Generate a nation load script with this SELECT statement as detailed in <xref linkend="Loader_Generate_Nation_Script" /></para>
+		<para><emphasis role='bold'>For windows</emphasis></para>
+		<programlisting>SELECT loader_generate_nation_script('windows'); </programlisting>
+		<para><emphasis role='bold'>For unix/linux</emphasis></para>
+		<programlisting>SELECT loader_generate_nation_script('sh');</programlisting>
+		<para>Refer to <xref linkend="tiger_geocoder_loading_data" /> for instructions on how to run the generate script. This only needs to be done once.</para>
+		<note><para>You can have a mix of 2010/2011 state tables and can upgrade each state separately.  Before you upgrade a state to 2011, you first need to drop the 2010 tables for that state using <xref linkend="Drop_State_Tables_Generate_Script" />.</para></note>
 	</sect2>
 	<sect2 id="tiger_geocoder_loading_data">
 		<title>Loading Tiger Data</title>
-		<para>The instructions for loading data are available in a more detailed form  in the <filename>extras/tiger_geocoder/tiger_2010/README</filename>.  This just includes the general steps.</para>	
-		<para>The load process downloads data from the census website for the respective states requested, extracts the files, and then loads each state into its own separate
+		<para>The instructions for loading data are available in a more detailed form  in the <filename>extras/tiger_geocoder/tiger_2011/README</filename>.  This just includes the general steps.</para>	
+		<para>The load process downloads data from the census website for the respective nation files, states requested, extracts the files, and then loads each state into its own separate
 		set of state tables.  Each state table inherits from the tables defined in <varname>tiger</varname> schema so that its sufficient to just query those tables to access all the data and drop a set of state tables at any time using the <xref linkend="Drop_State_Tables_Generate_Script" /> if you need to reload a state or just don't need a state anymore.</para>
 		<para>In order to be able to load data you'll need the following tools:</para>
 		<itemizedlist>
@@ -1047,6 +1056,8 @@ pretty_address
 				<para>If you are on windows, you can get pre-compiled binaries from <ulink url="http://gnuwin32.sourceforge.net/packages/wget.htm">http://gnuwin32.sourceforge.net/packages/wget.htm</ulink> </para>
 			</listitem>
 		</itemizedlist>
+		<para>If you are upgrading from tiger_2010, you'll need to first generate and run <xref linkend="Drop_Nation_Tables_Generate_Script" />. Before you load any state data, you need to load the nation wide data which you do with  <xref linkend="Loader_Generate_Nation_Script" />. Which will
+		generate a loader script for you. </para>
 		<para>To load data refer to <xref linkend="Loader_Generate_Script" /> to generate a data load script for your platform for the states you desire.  
 			Note that you can install these piecemeal. You don't have to load all the states you want all at once.  You can load them as you need them.</para>
 			
