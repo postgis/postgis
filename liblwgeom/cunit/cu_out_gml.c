@@ -59,7 +59,7 @@ static void do_gml3_test_opts(char * in, char * out, char * srs, int precision, 
 	char *h;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:");
+	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:", "");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -78,7 +78,7 @@ static void do_gml3_test(char * in, char * out, char * srs, int precision, int i
 	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:");
+	h = lwgeom_to_gml3(g, srs, precision, opts, "gml:", "");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -98,7 +98,7 @@ static void do_gml3_test_prefix(char * in, char * out, char * srs, int precision
 	if ( is_geodetic ) opts |= LW_GML_IS_DEGREE;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, opts, prefix);
+	h = lwgeom_to_gml3(g, srs, precision, opts, prefix, "");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -119,7 +119,7 @@ static void do_gml3_test_nodims(char * in, char * out, char * srs, int precision
 	if ( is_dims ) opts |= LW_GML_IS_DIMS;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, srs, precision, opts, prefix);
+	h = lwgeom_to_gml3(g, srs, precision, opts, prefix, "");
 
 	if (strcmp(h, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nTheo: %s\n", in, h, out);
@@ -155,7 +155,7 @@ static void do_gml3_unsupported(char * in, char * out)
 	int opts = LW_GML_IS_DIMS;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_to_gml3(g, NULL, 0, opts, "");
+	h = lwgeom_to_gml3(g, NULL, 0, opts, "", "");
 
 	if (strcmp(cu_error_msg, out))
 		fprintf(stderr, "\nGML 3 - In:   %s\nOut:  %s\nTheo: %s\n",

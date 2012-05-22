@@ -211,10 +211,11 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int option=0;
 	int lwopts = LW_GML_IS_DIMS;
 	static const char *default_prefix = "gml:";
-	char *prefix_buf, *id_buf;
 	const char *prefix = default_prefix;
-	text *prefix_text, *id_text;
-	const char *id;
+	char *prefix_buf = "";
+	text *prefix_text, *id_text = NULL;
+	const char *id="";
+	char *id_buf;
 
 
 	/* Get the version */

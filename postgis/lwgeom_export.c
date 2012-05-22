@@ -174,7 +174,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	int precision = OUT_MAX_DOUBLE_PRECISION;
 	static const char* default_prefix = "gml:"; /* default prefix */
 	const char* prefix = default_prefix;
-	const char* gml_id;
+	const char* gml_id = "";
 	char *prefix_buf, *gml_id_buf;
 	text *prefix_text, *gml_id_text;
 
