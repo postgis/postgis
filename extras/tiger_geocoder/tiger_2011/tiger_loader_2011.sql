@@ -45,12 +45,13 @@ $$
   
 -- Helper function that generates script to drop all nation tables (county, state) in a particular schema 
 -- This is useful for loading 2011 because state and county tables aren't broken out into separate state files
-CREATE OR REPLACE FUNCTION drop_national_tables_generate_script(param_schema text DEFAULT 'tiger_data')
+DROP FUNCTION IF EXISTS drop_national_tables_generate_script(text);
+CREATE OR REPLACE FUNCTION drop_nation_tables_generate_script(param_schema text DEFAULT 'tiger_data')
   RETURNS text AS
 $$
 SELECT array_to_string(array_agg('DROP TABLE ' || quote_ident(table_schema) || '.' || quote_ident(table_name) || ';'),E'\n')
 	FROM (SELECT * FROM information_schema.tables
-	WHERE table_schema = $1 AND (table_name ~ '^[a-z]{2}\_county' or table_name ~ '^[a-z]{2}\_state' or table_name = 'state_all' or table_name LIKE 'county_all%') ORDER BY table_name) AS foo; 
+	WHERE table_schema = $1 AND (table_name ~ E'^[a-z]{2}\_county' or table_name ~ E'^[a-z]{2}\_state' or table_name = 'state_all' or table_name LIKE 'county_all%') ORDER BY table_name) AS foo; 
 ;
 $$
   LANGUAGE sql VOLATILE;
