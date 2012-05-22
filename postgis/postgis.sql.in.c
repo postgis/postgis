@@ -3427,7 +3427,7 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geometry, int4, int4, text, text)
 -- ST_AsGML (geom, precision, option) / version=2
 -- Availability: 1.4.0
 -- Changed: 2.0.0 to have default args
-CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT)
+CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS TEXT
 	AS $$ SELECT _ST_AsGML(2, $1, $2, $3, null, null); $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
@@ -3438,7 +3438,7 @@ CREATE OR REPLACE FUNCTION ST_AsGML(geom geometry, maxdecimaldigits int4 DEFAULT
 -- Availability: 2.0.0
 -- Changed: 2.0.0 to use default and named args
 -- ST_AsGML(version, geom, precision, option, prefix, id)
--- Availability: 2.0.1
+-- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geom geometry, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT null, id text DEFAULT null)
 	RETURNS TEXT
 	AS $$ SELECT _ST_AsGML($1, $2, $3, $4, $5, $6); $$

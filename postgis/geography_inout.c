@@ -214,7 +214,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	const char *prefix = default_prefix;
 	char *prefix_buf = "";
 	text *prefix_text, *id_text = NULL;
-	const char *id="";
+	const char *id=NULL;
 	char *id_buf;
 
 
