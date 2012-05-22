@@ -267,17 +267,15 @@ static float gidx_union_volume(GIDX *a, GIDX *b)
 		return 0.0;
 	}
 
-	if ( gidx_is_unknown(a) && gidx_is_unknown(b) )
-	{
-		return 0.0;
-	}
-		
 	if ( a == NULL || gidx_is_unknown(a) )
 		return gidx_volume(b);
 
 	if ( b == NULL || gidx_is_unknown(b) )
 		return gidx_volume(a);
 
+	if ( gidx_is_unknown(a) && gidx_is_unknown(b) )
+		return 0.0;
+		
 	/* Ensure 'a' has the most dimensions. */
 	gidx_dimensionality_check(&a, &b);
 
@@ -472,8 +470,9 @@ static bool gidx_overlaps(GIDX *a, GIDX *b)
 	int ndims_b;
 	POSTGIS_DEBUG(5, "entered function");
 	
-	if ( (a == NULL) || (b == NULL) ) return FALSE;
-
+	if ( (a == NULL) || (b == NULL) ) 
+		return FALSE;
+		
 	if ( gidx_is_unknown(a) || gidx_is_unknown(b) )
 		return FALSE;
 
