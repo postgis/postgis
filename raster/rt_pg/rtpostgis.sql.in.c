@@ -3492,6 +3492,118 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, crop boolean)
 	$$ SELECT ST_Clip($1, NULL, $2, null::float8[], $3) $$
 	LANGUAGE 'sql' STABLE;
 
+-----------------------------------------------------------------------
+-- ST_NearestValue
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_nearestvalue(
+	rast raster, band integer,
+	pt geometry,
+	exclude_nodata_value boolean DEFAULT TRUE
+)
+	RETURNS double precision
+	AS 'MODULE_PATHNAME', 'RASTER_nearestValue'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_nearestvalue(
+	rast raster,
+	pt geometry,
+	exclude_nodata_value boolean DEFAULT TRUE
+)
+	RETURNS double precision
+	AS $$ SELECT st_nearestvalue($1, 1, $2, $3) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_nearestvalue(
+	rast raster, band integer,
+	x integer, y integer,
+	exclude_nodata_value boolean DEFAULT TRUE
+)
+	RETURNS double precision
+	AS $$ SELECT st_nearestvalue($1, $2, st_makepoint(st_raster2worldcoordx($1, $3, $4), st_raster2worldcoordy($1, $3, $4)), $5) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_nearestvalue(
+	rast raster,
+	x integer, y integer,
+	exclude_nodata_value boolean DEFAULT TRUE
+)
+	RETURNS double precision
+	AS $$ SELECT st_nearestvalue($1, 1, st_makepoint(st_raster2worldcoordx($1, $2, $3), st_raster2worldcoordy($1, $2, $3)), $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_Neighborhood
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_neighborhood(
+	rast raster, band integer,
+	ix integer, iy integer,
+	distance integer,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT x integer, OUT y integer,
+	OUT val double precision
+)
+	RETURNS SETOF record
+	AS 'MODULE_PATHNAME', 'RASTER_neighborhood'
+	LANGUAGE 'C' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_neighborhood(
+	rast raster,
+	ix integer, iy integer,
+	distance integer,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT x integer, OUT y integer,
+	OUT val double precision
+)
+	RETURNS SETOF record
+	AS $$ SELECT x, y, val FROM st_neighborhood($1, 1, $2, $3, $4, $5) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_neighborhood(
+	rast raster, band integer,
+	pt geometry,
+	distance integer,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT x integer, OUT y integer,
+	OUT val double precision
+)
+	RETURNS SETOF record
+	AS $$
+	DECLARE
+		wx int;
+		wy int;
+	BEGIN
+		IF (st_geometrytype($3) != 'ST_Point') THEN
+			RAISE EXCEPTION 'Attempting to get the neighbor of a pixel with a non-point geometry';
+		END IF;
+		wx := st_x($3);
+		wy := st_y($3);
+
+		RETURN QUERY
+			SELECT x, y, val
+			FROM st_neighborhood(
+				$1, $2,
+				st_world2rastercoordx(rast, wx, wy),
+				st_world2rastercoordy(rast, wx, wy),
+				$4,
+				$5
+			);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_neighborhood(
+	rast raster,
+	pt geometry,
+	distance integer,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT x integer, OUT y integer,
+	OUT val double precision
+)
+	RETURNS SETOF record
+	AS $$ SELECT x, y, val FROM st_neighborhood($1, 1, $2, $3, $4) $$
+	LANGUAGE 'SQL' IMMUTABLE STRICT;
+
 ------------------------------------------------------------------------------
 -- raster constraint functions
 -------------------------------------------------------------------------------

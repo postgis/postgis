@@ -1225,9 +1225,8 @@ static void testBandStats() {
 
 	raster = rt_raster_new(xmax, ymax);
 	assert(raster);
-	band = addBand(raster, PT_32BUI, 0, 0);
+	band = addBand(raster, PT_32BUI, 1, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
@@ -2590,6 +2589,193 @@ static void testCellGeoPoint() {
 	deepRelease(raster);
 }
 
+static void testNearestPixel() {
+	rt_raster rast;
+	rt_band band;
+	uint32_t x, y;
+	int rtn;
+	const int maxX = 10;
+	const int maxY = 10;
+	rt_pixel npixels = NULL;
+
+	rast = rt_raster_new(maxX, maxY);
+	assert(rast);
+
+	band = addBand(rast, PT_32BUI, 1, 0);
+	CHECK(band);
+
+	for (x = 0; x < maxX; x++) {
+		for (y = 0; y < maxY; y++) {
+			rtn = rt_band_set_pixel(band, x, y, 1);
+			CHECK((rtn != -1));
+		}
+	}
+
+	rt_band_set_pixel(band, 0, 0, 0);
+	rt_band_set_pixel(band, 3, 0, 0);
+	rt_band_set_pixel(band, 6, 0, 0);
+	rt_band_set_pixel(band, 9, 0, 0);
+	rt_band_set_pixel(band, 1, 2, 0);
+	rt_band_set_pixel(band, 4, 2, 0);
+	rt_band_set_pixel(band, 7, 2, 0);
+	rt_band_set_pixel(band, 2, 4, 0);
+	rt_band_set_pixel(band, 5, 4, 0);
+	rt_band_set_pixel(band, 8, 4, 0);
+	rt_band_set_pixel(band, 0, 6, 0);
+	rt_band_set_pixel(band, 3, 6, 0);
+	rt_band_set_pixel(band, 6, 6, 0);
+	rt_band_set_pixel(band, 9, 6, 0);
+	rt_band_set_pixel(band, 1, 8, 0);
+	rt_band_set_pixel(band, 4, 8, 0);
+	rt_band_set_pixel(band, 7, 8, 0);
+
+	/* 0,0 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		0, 0,
+		0,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 3));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* 1,1 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		1, 1,
+		0,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 6));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* 4,4 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		4, 4,
+		0,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 7));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* 4,4 distance 2 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		4, 4,
+		2,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 19));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* 10,10 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		10, 10,
+		0,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 1));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* 11,11 distance 1 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		11, 11,
+		1,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 0));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* -1,-1 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		-1, -1,
+		0,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 3));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* -1,-1 distance 1 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		-1, -1,
+		1,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 0));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* -1,1 distance 1 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		-1, 1,
+		1,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 2));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* -2,2 distance 1 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		-2, 2,
+		1,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 0));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* -10,2 distance 3 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		-10, 2,
+		3,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 0));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* -10,2 distance 3 include NODATA */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		-10, 2,
+		3,
+		0,
+		&npixels
+	);
+	CHECK((rtn == 48));
+	if (rtn)
+		rtdealloc(npixels);
+
+	deepRelease(rast);
+}
+
 int
 main()
 {
@@ -2850,6 +3036,10 @@ main()
 
 		printf("Testing cell <-> geopoint... ");
 		testCellGeoPoint();
+		printf("OK\n");
+
+		printf("Testing rt_band_get_nearest_pixel... ");
+		testNearestPixel();
 		printf("OK\n");
 
     deepRelease(raster);

@@ -202,6 +202,12 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
 /* Get pixel geographical shape */
 Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS);
 
+/* Get nearest value to a point */
+Datum RASTER_nearestValue(PG_FUNCTION_ARGS);
+
+/* Get the neighborhood around a pixel */
+Datum RASTER_neighborhood(PG_FUNCTION_ARGS);
+
 /* Raster and band creation */
 Datum RASTER_makeEmpty(PG_FUNCTION_ARGS);
 Datum RASTER_addband(PG_FUNCTION_ARGS);
@@ -2357,6 +2363,368 @@ Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS)
     lwfree(poly);
 
     PG_RETURN_POINTER(gser);
+}
+
+/**
+ * Return nearest value to a point
+ */
+PG_FUNCTION_INFO_V1(RASTER_nearestValue);
+Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	int bandindex = 1;
+	int num_bands = 0;
+	GSERIALIZED *geom;
+	bool exclude_nodata_value = TRUE;
+	LWGEOM *lwgeom;
+	LWPOINT *point = NULL;
+	POINT2D p;
+
+	double x;
+	double y;
+	int count;
+	rt_pixel npixels = NULL;
+	double value = 0;
+	int hasvalue = 0;
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		elog(ERROR, "RASTER_nearestValue: Could not deserialize raster");
+		PG_RETURN_NULL();
+	}
+
+	/* band index is 1-based */
+	if (!PG_ARGISNULL(1))
+		bandindex = PG_GETARG_INT32(1);
+	num_bands = rt_raster_get_num_bands(raster);
+	if (bandindex < 1 || bandindex > num_bands) {
+		elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	/* point */
+	geom = (GSERIALIZED *) PG_DETOAST_DATUM(PG_GETARG_DATUM(2));
+	if (gserialized_get_type(geom) != POINTTYPE) {
+		elog(NOTICE, "Geometry provided must be a point");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	/* exclude_nodata_value flag */
+	if (!PG_ARGISNULL(3))
+		exclude_nodata_value = PG_GETARG_BOOL(3);
+
+	/* get band */
+	band = rt_raster_get_band(raster, bandindex - 1);
+	if (!band) {
+		elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	/* process geometry */
+	lwgeom = lwgeom_from_gserialized(geom);
+
+	if (lwgeom_is_empty(lwgeom)) {
+		elog(NOTICE, "Geometry provided cannot be empty");
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	point = lwgeom_as_lwpoint(lwgeom);
+	getPoint2d_p(point->point, 0, &p);
+
+	if (!rt_raster_geopoint_to_cell(
+		raster,
+		p.x, p.y,
+		&x, &y,
+		NULL
+	)) {
+		elog(ERROR, "RASTER_nearestValue: Unable to compute pixel coordinates from spatial coordinates");
+		rt_raster_destroy(raster);
+		lwgeom_free(lwgeom);
+		PG_RETURN_NULL();
+	}
+
+	/* get value at point */
+	if (
+		(x >= 0 && x < rt_raster_get_width(raster)) &&
+		(y >= 0 && y < rt_raster_get_height(raster))
+	) {
+		if (rt_band_get_pixel(band, x, y, &value) < 0) {
+			elog(ERROR, "RASTER_nearestValue: Unable to get pixel value for band at index %d", bandindex);
+			rt_raster_destroy(raster);
+			lwgeom_free(lwgeom);
+			PG_RETURN_NULL();
+		}
+
+		/* value at point, return value */
+		if (
+			!exclude_nodata_value || (
+				exclude_nodata_value &&
+				rt_band_get_hasnodata_flag(band) && (
+					FLT_NEQ(value, rt_band_get_nodata(band)) &&
+					(rt_band_clamped_value_is_nodata(band, value) != 1)
+				)
+			)
+		) {
+			rt_raster_destroy(raster);
+			lwgeom_free(lwgeom);
+
+			PG_RETURN_FLOAT8(value);
+		}
+	}
+
+	/* get neighborhood */
+	count = rt_band_get_nearest_pixel(
+		band,
+		x, y,
+		0,
+		exclude_nodata_value,
+		&npixels
+	);
+	rt_band_destroy(band);
+	/* error or no neighbors */
+	if (count < 1) {
+		/* error */
+		if (count < 0)
+			elog(NOTICE, "Unable to get the nearest value for band at index %d", bandindex);
+		/* no nearest pixel */
+		else
+			elog(NOTICE, "No nearest value found for band at index %d", bandindex);
+
+		lwgeom_free(lwgeom);
+		rt_raster_destroy(raster);
+		PG_RETURN_NULL();
+	}
+
+	/* more than one nearest value, see which one is closest */
+	if (count > 1) {
+		int i = 0;
+		LWPOLY *poly = NULL;
+		double lastdist = -1;
+		double dist;
+
+		for (i = 0; i < count; i++) {
+			/* convex-hull of pixel */
+			poly = rt_raster_pixel_as_polygon(raster, npixels[i].x, npixels[i].y);
+			if (!poly) {
+				elog(ERROR, "RASTER_nearestValue: Unable to get polygon of neighboring pixel");
+				lwgeom_free(lwgeom);
+				rt_raster_destroy(raster);
+				PG_RETURN_NULL();
+			}
+
+			/* distance between convex-hull and point */
+			dist = lwgeom_mindistance2d(lwpoly_as_lwgeom(poly), lwgeom);
+			if (lastdist < 0 || dist < lastdist) {
+				value = npixels[i].value;
+				hasvalue = 1;
+			}
+			lastdist = dist;
+
+			lwpoly_free(poly);
+		}
+	}
+	else {
+		value = npixels[0].value;
+		hasvalue = 1;
+	}
+
+	pfree(npixels);
+	lwgeom_free(lwgeom);
+	rt_raster_destroy(raster);
+
+	if (hasvalue)
+		PG_RETURN_FLOAT8(value);
+	else
+		PG_RETURN_NULL();
+}
+
+/**
+ * Return the neighborhood around a pixel
+ */
+PG_FUNCTION_INFO_V1(RASTER_neighborhood);
+Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+
+	int call_cntr;
+	int max_calls;
+
+	rt_pixel npixel1 = NULL;
+	rt_pixel npixel2 = NULL;
+
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int bandindex = 1;
+		int num_bands = 0;
+		int x = 0;
+		int y = 0;
+		int distance = 0;
+		bool exclude_nodata_value = TRUE;
+
+		int count;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/* pgraster is null, return nothing */
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			elog(ERROR, "RASTER_neighborhood: Could not deserialize raster");
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* band index is 1-based */
+		if (!PG_ARGISNULL(1))
+			bandindex = PG_GETARG_INT32(1);
+		num_bands = rt_raster_get_num_bands(raster);
+		if (bandindex < 1 || bandindex > num_bands) {
+			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* pixel column, 1-based */
+		x = PG_GETARG_INT32(2);
+
+		/* pixel row, 1-based */
+		y = PG_GETARG_INT32(3);
+
+		/* distance */
+		distance = PG_GETARG_INT32(4);
+		if (distance < 1) {
+			elog(NOTICE, "Invalid value for distance (must be greater than zero). Returning NULL");
+			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* exclude_nodata_value flag */
+		if (!PG_ARGISNULL(5))
+			exclude_nodata_value = PG_GETARG_BOOL(5);
+
+		/* get band */
+		band = rt_raster_get_band(raster, bandindex - 1);
+		if (!band) {
+			elog(NOTICE, "Could not find band at index %d. Returning NULL", bandindex);
+			rt_raster_destroy(raster);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* get neighborhood */
+		count = rt_band_get_nearest_pixel(
+			band,
+			x - 1, y - 1,
+			(uint16_t) distance,
+			exclude_nodata_value,
+			&npixel1
+		);
+		rt_band_destroy(band);
+		rt_raster_destroy(raster);
+		/* error or no neighbors */
+		if (count < 1) {
+			/* error */
+			if (count < 0)
+				elog(NOTICE, "Unable to get the pixel's neighborhood for band at index %d", bandindex);
+			/* no neighbors */
+			else
+				elog(NOTICE, "Pixel has no neighbors for band at distance %d", distance);
+				
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* Store needed information */
+		funcctx->user_fctx = npixel1;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = count;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	tupdesc = funcctx->tuple_desc;
+	npixel2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		int values_length = 3;
+		Datum values[values_length];
+		bool *nulls = NULL;
+		HeapTuple tuple;
+		Datum result;
+
+		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
+
+		nulls = palloc(sizeof(bool) * values_length);
+		memset(nulls, FALSE, values_length);
+
+		/* x,y are 0-based, make 1-based for end users */
+		values[0] = Int64GetDatum(npixel2[call_cntr].x + 1);
+		values[1] = Int64GetDatum(npixel2[call_cntr].y + 1);
+		values[2] = Float8GetDatum(npixel2[call_cntr].value);
+
+		/* build a tuple */
+		tuple = heap_form_tuple(tupdesc, values, nulls);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		/* clean up */
+		pfree(nulls);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		pfree(npixel2);
+		SRF_RETURN_DONE(funcctx);
+	}
+
 }
 
 /**

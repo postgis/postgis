@@ -133,6 +133,7 @@
  */
 typedef struct rt_raster_t* rt_raster;
 typedef struct rt_band_t* rt_band;
+typedef struct rt_pixel_t* rt_pixel;
 typedef struct rt_geomval_t* rt_geomval;
 typedef struct rt_bandstats_t* rt_bandstats;
 typedef struct rt_histogram_t* rt_histogram;
@@ -534,6 +535,28 @@ int rt_band_get_pixel(
 	rt_band band,
 	int x, int y,
 	double *result
+);
+
+/**
+ * Get nearest pixel(s) with value (not NODATA) to specified pixel
+ *
+ * @param band: the band to get nearest pixel(s) from
+ * @param x: the column of the pixel (0-based)
+ * @param y: the line of the pixel (0-based)
+ * @param distance: the number of pixels around the specified pixel
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
+ * to check for pixels with value
+ * @param npixels: return set of rt_pixel object or NULL
+ *
+ * @return -1 on error, otherwise the number of rt_pixel objects
+ * in npixels
+ */
+int rt_band_get_nearest_pixel(
+	rt_band band,
+	int x, int y,
+	uint16_t distance,
+	int exclude_nodata_value,
+	rt_pixel *npixels
 );
 
 /**
@@ -1635,6 +1658,12 @@ struct rt_band_t {
         struct rt_extband_t offline;
     } data;
 
+};
+
+struct rt_pixel_t {
+	int x; /* column */
+	int y; /* line */
+	double value;
 };
 
 /* polygon as LWPOLY with associated value */

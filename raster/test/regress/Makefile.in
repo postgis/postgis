@@ -74,7 +74,9 @@ TEST_BANDPROPS = \
 	rt_valuepercent \
 	rt_bandmetadata \
 	rt_pixelvalue \
-	drop_rt_band_properties_test
+	drop_rt_band_properties_test \
+	rt_neighborhood \
+	rt_nearestvalue
 
 TEST_UTILITY = \
 	rt_utility \
