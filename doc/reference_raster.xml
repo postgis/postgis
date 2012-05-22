@@ -1896,7 +1896,7 @@ FROM (
 				<para>
 					<xref linkend="RT_ST_Raster2WorldCoordX" />, 
 					<xref linkend="RT_ST_Raster2WorldCoordY" />, 
-					<xref linkend="RT_ST_SetSkew" />, 
+					<xref linkend="RT_ST_SetSkew" />
 				</para>
 			</refsection>
 		</refentry>
@@ -2485,7 +2485,11 @@ FROM dummy_rast;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SRID" /></para>
+				<para>
+					<xref linkend="RT_ST_Raster2WorldCoordX" />, 
+					<xref linkend="RT_ST_Raster2WorldCoordY" />, 
+					<xref linkend="RT_ST_SRID" />
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -3402,6 +3406,14 @@ FROM (
 
 			</refsection>
 
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_Neighborhood" />, 
+					<xref linkend="RT_ST_Value" />
+				</para>
+			</refsection>
+
 		</refentry>
 
 		<refentry id="RT_ST_Neighborhood">
@@ -3572,6 +3584,20 @@ FROM (
  {{1,0,1},{1,1,1},{0,1,1}}
 				</programlisting>
 
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_NearestValue" />, 
+					<xref linkend="RT_ST_Min4ma" />, 
+					<xref linkend="RT_ST_Max4ma" />, 
+					<xref linkend="RT_ST_Sum4ma" />, 
+					<xref linkend="RT_ST_Mean4ma" />, 
+					<xref linkend="RT_ST_Range4ma" />, 
+					<xref linkend="RT_ST_Distinct4ma" />, 
+					<xref linkend="RT_ST_StdDev4ma" />
+				</para>
 			</refsection>
 
 		</refentry>
