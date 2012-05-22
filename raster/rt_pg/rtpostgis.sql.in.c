@@ -2522,6 +2522,31 @@ CREATE OR REPLACE FUNCTION st_world2rastercoord(
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
+-- ST_World2RasterCoordX(rast raster, pt geometry)
+-- Returns the pixel column and row covering the provided point geometry. 
+-- This function works even if the point is outside the raster extent.
+---------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_world2rastercoord(
+	rast raster, pt geometry,
+	OUT columnx integer,
+	OUT rowy integer
+)
+	AS
+	$$
+	DECLARE
+		rx integer;
+		ry integer;
+	BEGIN
+		IF (st_geometrytype(pt) != 'ST_Point') THEN
+			RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
+		END IF;
+		SELECT rc.columnx AS x, rc.rowy AS y INTO columnx, rowy FROM _st_world2rastercoord($1, st_x(pt), st_y(pt)) AS rc;
+		RETURN;
+	END;
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+---------------------------------------------------------------------------------
 -- ST_World2RasterCoordX(rast raster, xw float8, yw float8)
 -- Returns the column number of the pixel covering the provided X and Y world
 -- coordinates.

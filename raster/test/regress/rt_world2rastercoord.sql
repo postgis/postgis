@@ -66,4 +66,119 @@ SELECT
 	(ST_World2RasterCoord(rast, 2, 2)).*
 FROM raster_world2raster;
 
+SELECT
+	rid,
+	(ST_World2RasterCoord(rast, ST_MakePoint(-2, -2))).*
+FROM raster_world2raster;
+SELECT
+	rid,
+	(ST_World2RasterCoord(rast, ST_MakePoint(0, 0))).*
+FROM raster_world2raster;
+SELECT
+	rid,
+	(ST_World2RasterCoord(rast, ST_MakePoint(1, -1))).*
+FROM raster_world2raster;
+SELECT
+	rid,
+	(ST_World2RasterCoord(rast, ST_MakePoint(1, 1))).*
+FROM raster_world2raster;
+SELECT
+	rid,
+	(ST_World2RasterCoord(rast, ST_MakePoint(2, 2))).*
+FROM raster_world2raster;
+
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, -2, -2)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, 0, 0)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, 1, -1)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, 1, 1)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, 2, 2)
+FROM raster_world2raster;
+
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, ST_MakePoint(-2, -2))
+FROM raster_world2raster;
+
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, -2)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, 0)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, 1)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, 1)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, 2)
+FROM raster_world2raster;
+
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, -2, -2)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, 0, 0)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, 1, -1)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, 1, 1)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, 2, 2)
+FROM raster_world2raster;
+
+SELECT
+	rid,
+	ST_World2RasterCoordX(rast, ST_MakePoint(-2, -2))
+FROM raster_world2raster;
+
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, -2)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, 0)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, 1)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, 1)
+FROM raster_world2raster;
+SELECT
+	rid,
+	ST_World2RasterCoordY(rast, 2)
+FROM raster_world2raster;
+
 DROP TABLE raster_world2raster;
