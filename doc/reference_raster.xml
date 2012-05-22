@@ -3320,6 +3320,7 @@ WHERE
 				<title>Description</title>
 				<para>
 					Returns the nearest non-<varname>NODATA</varname> value of a given band in a given columnx, rowy pixel or at a specific geometric point.  If the columnx, rowy pixel or the pixel at the specified geometric point is <varname>NODATA</varname>, the function will find the nearest pixel to the columnx, rowy pixel or geometric point whose value is not <varname>NODATA</varname>.
+				</para>
 				<para>
 					Band numbers start at 1 and <varname>bandnum</varname> is assumed to be 1 if not specified. If <varname>exclude_nodata_value</varname> is set to false, then all pixels include <varname>nodata</varname> pixels are considered to intersect and return value. If <varname>exclude_nodata_value</varname> is not passed in then reads it from metadata of raster.
 				</para>
@@ -3455,6 +3456,7 @@ FROM (
 				<title>Description</title>
 				<para>
 					Returns a 2-D double precision array of the non-<varname>NODATA</varname> values around a given band's pixel specified by either a columnx and rowy or a geometric point expressed in the same spatial reference coordinate system as the raster.  The <varname>distance</varname> parameter defines the number of pixels around the specified pixel, e.g. I want all values within 3 pixel distance around my pixel of interest.  The center value of the 2-D array will be the value at the pixel specified by the columnx and rowy or the geometric point.
+				</para>
 				<para>
 					Band numbers start at 1 and <varname>bandnum</varname> is assumed to be 1 if not specified. If <varname>exclude_nodata_value</varname> is set to false, then all pixels include <varname>nodata</varname> pixels are considered to intersect and return value. If <varname>exclude_nodata_value</varname> is not passed in then reads it from metadata of raster.
 				</para>
