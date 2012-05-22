@@ -3534,7 +3534,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 )
 	RETURNS double precision
 	AS 'MODULE_PATHNAME', 'RASTER_nearestValue'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_nearestvalue(
 	rast raster,
@@ -3543,7 +3543,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 )
 	RETURNS double precision
 	AS $$ SELECT st_nearestvalue($1, 1, $2, $3) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_nearestvalue(
 	rast raster, band integer,
@@ -3552,7 +3552,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 )
 	RETURNS double precision
 	AS $$ SELECT st_nearestvalue($1, $2, st_setsrid(st_makepoint(st_raster2worldcoordx($1, $3, $4), st_raster2worldcoordy($1, $3, $4)), st_srid($1)), $5) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_nearestvalue(
 	rast raster,
@@ -3561,7 +3561,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 )
 	RETURNS double precision
 	AS $$ SELECT st_nearestvalue($1, 1, st_setsrid(st_makepoint(st_raster2worldcoordx($1, $2, $3), st_raster2worldcoordy($1, $2, $3)), st_srid($1)), $4) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Neighborhood
@@ -3575,7 +3575,7 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 )
 	RETURNS double precision[][]
 	AS 'MODULE_PATHNAME', 'RASTER_neighborhood'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster,
@@ -3585,7 +3585,7 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 )
 	RETURNS double precision[][]
 	AS $$ SELECT st_neighborhood($1, 1, $2, $3, $4, $5) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster, band integer,
@@ -3625,7 +3625,7 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 )
 	RETURNS double precision[][]
 	AS $$ SELECT st_neighborhood($1, 1, $2, $3, $4) $$
-	LANGUAGE 'SQL' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------------
 -- raster constraint functions
