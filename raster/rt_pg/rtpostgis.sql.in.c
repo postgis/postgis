@@ -3572,7 +3572,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 
 CREATE OR REPLACE FUNCTION st_nearestvalue(
 	rast raster, band integer,
-	x integer, y integer,
+	columnx integer, rowy integer,
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision
@@ -3581,7 +3581,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 
 CREATE OR REPLACE FUNCTION st_nearestvalue(
 	rast raster,
-	x integer, y integer,
+	columnx integer, rowy integer,
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision
@@ -3594,7 +3594,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 
 CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster, band integer,
-	ix integer, iy integer,
+	columnx integer, rowy integer,
 	distance integer,
 	exclude_nodata_value boolean DEFAULT TRUE
 )
@@ -3604,7 +3604,7 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 
 CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster,
-	ix integer, iy integer,
+	columnx integer, rowy integer,
 	distance integer,
 	exclude_nodata_value boolean DEFAULT TRUE
 )

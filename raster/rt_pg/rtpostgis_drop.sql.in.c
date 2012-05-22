@@ -320,7 +320,9 @@ DROP FUNCTION IF EXISTS st_clip(raster, integer, geometry, float8[], boolean);
 DROP FUNCTION IF EXISTS _st_dumpaswktpolygons(raster, integer);
 DROP TYPE IF EXISTS wktgeomval;
 
--- refactored functions
+-- function parameter names changed
+DROP FUNCTION IF EXISTS st_nearestvalue(raster, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_nearestvalue(raster, integer, integer, boolean);
 DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, integer, integer, integer, boolean);
 DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, integer, integer, boolean);
 DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, geometry, integer, boolean);
