@@ -2246,7 +2246,6 @@ int rt_band_get_nearest_pixel(
 	int *_inc = NULL;
 	double pixval = 0;
 	double minval = 0;
-	int err;
 	uint32_t count = 0;
 
 	assert(NULL != band);
