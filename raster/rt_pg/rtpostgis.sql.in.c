@@ -9,7 +9,7 @@
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
 -- Copyright (c) 2010 David Zwarg <dzwarg@azavea.com>
--- Copyright (C) 2011 Regents of the University of California
+-- Copyright (C) 2011-2012 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
 -- This is free software; you can redistribute and/or modify it under
