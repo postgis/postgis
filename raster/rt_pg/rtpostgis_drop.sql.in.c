@@ -6,7 +6,7 @@
 -- http://trac.osgeo.org/postgis/wiki/WKTRaster
 --
 -- Copyright (C) 2011 Regina Obe <lr@pcorp.us>
--- Copyright (C) 2011 Regents of the University of California
+-- Copyright (C) 2011-2012 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -317,6 +317,11 @@ DROP FUNCTION IF EXISTS st_clip(raster, geometry, float8[], boolean);
 DROP FUNCTION IF EXISTS st_clip(raster, integer, geometry, float8[], boolean);
 
 -- refactoring of functions
-DROP FUNCTION IF EXISTS _st_dumpaswktpolygons(rast raster, band integer);
+DROP FUNCTION IF EXISTS _st_dumpaswktpolygons(raster, integer);
 DROP TYPE IF EXISTS wktgeomval;
 
+-- refactored functions
+DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, geometry, integer, boolean);
+DROP FUNCTION IF EXISTS st_neighborhood(raster, geometry, integer, boolean);
