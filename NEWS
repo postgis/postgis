@@ -12,20 +12,6 @@ PostGIS 2.1.0
 
 * Fixes *
 
-PostGIS 2.0.1
-2012/MM/DD
-* Fixes *
-  - #1468 shp2pgsql-gui table column schema get shifted
-  - #1694 Build with clang (Sandro Santilli)
-  - #1781 raster2pgsql unable to handle HDF files
-   (Bborie Park / UC Davis)
-  - #1759 shp2pgsql doesn't -r doesn't work if you have raster loaded
-   Mark Cave-Ayland
-  - #1805 900913 srid put back (was accidentally take out in 2.0.0)
-   Paul Ramsey
-  - #1820 compilation on 9.2beta1 (Regina Obe)
-  - Numerous fixes to topology (Sandro Santilli)
-  
 PostGIS 2.0.0
 2012/04/03
    
