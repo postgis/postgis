@@ -601,13 +601,13 @@ CREATE OR REPLACE FUNCTION AsEWKT(geometry)
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsGML(geometry)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, 15, 0, null)'
+	AS 'SELECT _ST_AsGML(2, $1, 15, 0, null, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 	
 -- Deprecation in 1.2.3
 CREATE OR REPLACE FUNCTION AsGML(geometry, int4)
 	RETURNS TEXT
-	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null)'
+	AS 'SELECT _ST_AsGML(2, $1, $2, 0, null, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 	
 -- AsKML(geom, precision) / version=2
