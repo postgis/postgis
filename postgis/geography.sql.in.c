@@ -382,8 +382,8 @@ CREATE OR REPLACE FUNCTION ST_AsSVG(text)
 -- GML OUTPUT
 --
 
--- _ST_AsGML(version, geography, precision, option)
-CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4, text)
+-- _ST_AsGML(version, geography, precision, option, prefix, id)
+CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4, text, text)
 	RETURNS text
 	AS 'MODULE_PATHNAME','geography_as_gml'
 	LANGUAGE 'c' IMMUTABLE;
@@ -392,7 +392,7 @@ CREATE OR REPLACE FUNCTION _ST_AsGML(int4, geography, int4, int4, text)
 -- Change 2.0.0 to use base function
 CREATE OR REPLACE FUNCTION ST_AsGML(text)
 	RETURNS text AS
-	$$ SELECT _ST_AsGML(2,$1::geometry,15,0, NULL);  $$
+	$$ SELECT _ST_AsGML(2,$1::geometry,15,0, NULL, NULL);  $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- ST_AsGML (geography, precision, option) / version=2
@@ -400,14 +400,16 @@ CREATE OR REPLACE FUNCTION ST_AsGML(text)
 -- Changed: 2.0.0 to use default args
 CREATE OR REPLACE FUNCTION ST_AsGML(geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0)
 	RETURNS text
-	AS 'SELECT _ST_AsGML(2, $1, $2, $3, null)'
+	AS 'SELECT _ST_AsGML(2, $1, $2, $3, null, null)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- ST_AsGML(version, geography, precision, option, prefix)
 -- Changed: 2.0.0 to use default args and allow named args
-CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT NULL)
+-- Changed: 2.1.0 enhance to allow id value
+-- Availability: 1.5.0
+CREATE OR REPLACE FUNCTION ST_AsGML(version int4, geog geography, maxdecimaldigits int4 DEFAULT 15, options int4 DEFAULT 0, nprefix text DEFAULT NULL, id text DEFAULT NULL)
 	RETURNS text
-	AS $$ SELECT _ST_AsGML($1, $2, $3, $4, $5);$$
+	AS $$ SELECT _ST_AsGML($1, $2, $3, $4, $5, $6);$$
 	LANGUAGE 'sql' IMMUTABLE;
 
 --
