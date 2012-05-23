@@ -26,6 +26,7 @@ PostGIS 2.0.1
   - #1825, fix prepared geometry cache lookup
   - #1829, fix uninitialized read in GeoJSON parser
   - #1830, fix dumper against PgSQL 9.2 (dfuhry)?
+  - #1839, handling of subdatasets in GeoTIFF in raster2pgsql.
 
 * Enhancements *
 
