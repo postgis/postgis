@@ -351,6 +351,11 @@ isSubDataset(const char *fn) {
 	if (ptr - fn == 0)
 		return 4;
 
+	/* GeoTIFF */
+	ptr = strstr(fn, "GTIFF");
+	if (ptr - fn == 0)
+		return 5;
+
 	return 1;
 }
 
