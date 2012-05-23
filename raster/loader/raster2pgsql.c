@@ -323,42 +323,6 @@ chartrim(const char *input, char *remove) {
 	return rtn;
 }
 
-static int
-isSubDataset(const char *fn) {
-	char *ptr;
-
-	if (fn == NULL)
-		return 0;
-
-	/* find colon */
-	ptr = strchr(fn, ':');
-	if (ptr == NULL)
-		return 0;
-
-	/* substring search */
-	/* NetCDF */
-	ptr = strstr(fn, "NETCDF:");
-	if (ptr - fn == 0)
-		return 2;
-
-	/* HDF4 */
-	ptr = strstr(fn, "HDF4");
-	if (ptr - fn == 0)
-		return 3;
-
-	/* HDF5 */
-	ptr = strstr(fn, "HDF5:");
-	if (ptr - fn == 0)
-		return 4;
-
-	/* GeoTIFF */
-	ptr = strstr(fn, "GTIFF");
-	if (ptr - fn == 0)
-		return 5;
-
-	return 1;
-}
-
 static void
 usage() {
 	printf(_("RELEASE: %s GDAL_VERSION=%d (r%d)\n"), POSTGIS_LIB_VERSION, POSTGIS_GDAL_VERSION, POSTGIS_SVN_REVISION);
@@ -1881,9 +1845,6 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 		RASTERINFO refinfo;
 		init_rastinfo(&refinfo);
 
-		/* register GDAL drivers */
-		GDALAllRegister();
-
 		/* process each raster */
 		for (i = 0; i < config->rt_file_count; i++) {
 			RASTERINFO rastinfo;
@@ -2131,7 +2092,7 @@ main(int argc, char **argv) {
 	int j = 0;
 	char **elements = NULL;
 	int n = 0;
-	FILE *fp = NULL;
+	GDALDriverH *drv = NULL;
 	char *tmp = NULL;
 
 #ifdef USE_NLS
@@ -2467,6 +2428,9 @@ main(int argc, char **argv) {
 		}
 	}
 
+	/* register GDAL drivers */
+	GDALAllRegister();
+
 	/* no files provided */
 	if (!config->rt_file_count) {
 		rterror(_("No raster provided"));
@@ -2475,13 +2439,12 @@ main(int argc, char **argv) {
 	}
 	/*
 		at least two files, see if last is table
-		subdataset check (NetCDF, HDF4, HDF5, etc)
+		last isn't recognized by GDAL
 	*/
-	else if (config->rt_file_count > 1 && !isSubDataset(config->rt_file[config->rt_file_count - 1])) {
-		fp = fopen(config->rt_file[config->rt_file_count - 1], "rb");
+	else if (config->rt_file_count > 1) {
+		drv = GDALIdentifyDriver(config->rt_file[config->rt_file_count - 1], NULL);
 
-		/* unable to access file, assume table */
-		if (fp == NULL) {
+		if (drv == NULL) {
 			char *ptr;
 			ptr = strchr(config->rt_file[config->rt_file_count - 1], '.');
 
@@ -2524,32 +2487,21 @@ main(int argc, char **argv) {
 				exit(1);
 			}
 		}
-		else {
-			fclose(fp);
-			fp = NULL;
-		}
 	}
 
 	/****************************************************************************
 	* validate raster files
 	****************************************************************************/
 
-	/* check that all files are touchable */
+	/* check that GDAL recognizes all files */
 	for (i = 0; i < config->rt_file_count; i++) {
-		/* subdatasets are not tested, let GDAL deal with it */
-		if (isSubDataset(config->rt_file[i]))
-			continue;
+		drv = GDALIdentifyDriver(config->rt_file[i], NULL);
 
-		fp = fopen(config->rt_file[i], "rb");
-
-		if (fp == NULL) {
+		if (drv == NULL) {
 			rterror(_("Unable to read raster file: %s"), config->rt_file[i]);
 			rtdealloc_config(config);
 			exit(1);
 		}
-
-		fclose(fp);
-		fp = NULL;
 	}
 
 	/* process each file for just the filename */
