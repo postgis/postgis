@@ -415,7 +415,7 @@ VALUES (1,
 
 		<programlisting>CREATE TABLE myrasters(rid SERIAL primary key, rast raster);
 INSERT INTO myrasters(rast)
-SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI', -129, NULL);
+SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
 
 SELECT AddRasterConstraints('myrasters'::name, 'rast'::name);
 
@@ -436,7 +436,7 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 
 		<programlisting>CREATE TABLE public.myrasters2(rid SERIAL primary key, rast raster);
 INSERT INTO myrasters2(rast)
-SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI', -129, NULL);
+SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
 
 SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');
 -- get notice--
@@ -944,13 +944,13 @@ WHERE short_name = 'GTiff') As g;
 				
 					<programlisting>-- Add another band of type 8 bit unsigned integer with pixels initialized to 200
 UPDATE dummy_rast
-    SET rast = ST_AddBand(rast,'8BUI',200)  
+    SET rast = ST_AddBand(rast,'8BUI'::text,200)  
 WHERE rid = 1;
 					</programlisting>
 					
 					<programlisting>-- Create an empty raster 100x100 units, with upper left  right at 0, add 2 bands (band 1 is 0/1 boolean bit switch, band2 allows values 0-15)
 INSERT INTO dummy_rast(rid,rast)
-    VALUES(10, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, 0), '1BB'), '4BUI') );
+    VALUES(10, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 1, -1, 0, 0, 0), '1BB'::text), '4BUI'::text) );
     
 -- output meta data of raster bands to verify all is right --
 SELECT  (bmd).*
