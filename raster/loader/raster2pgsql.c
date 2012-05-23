@@ -1595,13 +1595,10 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		info->tile_size[1] = config->tile_size[1];
 
 	/* number of tiles */
-	if (
-		info->tile_size[0] != info->dim[0] &&
-		info->tile_size[1] != info->dim[1]
-	) {
+	if (info->tile_size[0] != info->dim[0])
 		ntiles[0] = (info->dim[0] + info->tile_size[0]  - 1) / info->tile_size[0];
+	if (info->tile_size[1] != info->dim[1]) 
 		ntiles[1] = (info->dim[1] + info->tile_size[1]  - 1) / info->tile_size[1];
-	}
 
 	/* go through bands for attributes */
 	for (i = 0; i < info->nband_count; i++) {
