@@ -2092,7 +2092,7 @@ main(int argc, char **argv) {
 	int j = 0;
 	char **elements = NULL;
 	int n = 0;
-	GDALDriverH *drv = NULL;
+	GDALDriverH drv = NULL;
 	char *tmp = NULL;
 
 #ifdef USE_NLS
