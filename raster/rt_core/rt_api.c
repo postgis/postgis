@@ -1522,7 +1522,8 @@ rt_band_load_offline_data(rt_band band) {
 	_rast = rt_raster_from_gdal_dataset(hdsDst);
 
 	GDALClose(hdsDst);
-	GDALClose(hdsSrc);
+	/* XXX: need to find a way to clean up the GDALOpenShared datasets at end of transaction */
+	/* GDALClose(hdsSrc); */
 
 	if (_rast == NULL) {
 		rterror("rt_band_load_offline_data: Cannot load data from offline raster: %s", band->data.offline.path);
@@ -2466,45 +2467,38 @@ rt_band_get_min_value(rt_band band) {
 
 
 int
-rt_band_check_is_nodata(rt_band band)
-{
-    int i, j;
-    double pxValue = band->nodataval;
+rt_band_check_is_nodata(rt_band band) {
+	int i, j, err;
+	double pxValue;
 
+	assert(NULL != band);
 
+	/* Check if band has nodata value */
+	if (!band->hasnodata) {
+		RASTER_DEBUG(3, "Band has no NODATA value");
+		band->isnodata = FALSE;
+		return FALSE;
+	}
 
-    assert(NULL != band);
+	pxValue = band->nodataval;
 
-    /* Check if band has nodata value */
-    if (!band->hasnodata)
-    {
-        RASTER_DEBUG(3, "Unknown nodata value for band");
-        band->isnodata = FALSE;
-        return FALSE;
-    }
-
-    if (band->offline && band->data.offline.mem == NULL) {
-			if (rt_band_load_offline_data(band)) {
-				rterror("rt_band_check_is_nodata: Cannot load offline band's data");
+	/* Check all pixels */
+	for (i = 0; i < band->width; i++) {
+		for (j = 0; j < band->height; j++) {
+			err = rt_band_get_pixel(band, i, j, &pxValue);
+			if (err != 0) {
+				rterror("rt_band_check_is_nodata: Cannot get band pixel");
 				return FALSE;
 			}
-    }
+			else if (FLT_NEQ(pxValue, band->nodataval)) {
+				band->isnodata = FALSE;
+				return FALSE;
+			}
+		}
+	}
 
-    /* Check all pixels */
-    for(i = 0; i < band->width; i++)
-    {
-        for(j = 0; j < band->height; j++)
-        {
-            rt_band_get_pixel(band, i, j, &pxValue);
-            if (FLT_NEQ(pxValue, band->nodataval)) {
-                band->isnodata = FALSE;
-                return FALSE;
-            }
-        }
-    }
-
-    band->isnodata = TRUE;
-    return TRUE;
+	band->isnodata = TRUE;
+	return TRUE;
 }
 
 /**
