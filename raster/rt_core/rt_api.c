@@ -9749,7 +9749,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		}
 
 		OSRDestroySpatialReference(src_sr);
-		OGRCleanupAll();
+		/* OGRCleanupAll(); */
 
 		return NULL;
 	}
@@ -9805,7 +9805,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
-		OGRCleanupAll();
+		/* OGRCleanupAll(); */
 
 		return NULL;
 	}
@@ -9891,7 +9891,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
-			OGRCleanupAll();
+			/* OGRCleanupAll(); */
 
 			return NULL;
 		}
@@ -9922,7 +9922,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
-			OGRCleanupAll();
+			/* OGRCleanupAll(); */
 
 			return NULL;
 		}
@@ -10034,7 +10034,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
-			OGRCleanupAll();
+			/* OGRCleanupAll(); */
 
 			return NULL;
 		}
@@ -10069,7 +10069,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
-		OGRCleanupAll();
+		/* OGRCleanupAll(); */
 
 		return NULL;
 	}
@@ -10117,7 +10117,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
-		OGRCleanupAll();
+		/* OGRCleanupAll(); */
 
 		return NULL;
 	}
@@ -10147,7 +10147,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
-			OGRCleanupAll();
+			/* OGRCleanupAll(); */
 
 			return NULL;
 		}
@@ -10189,7 +10189,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 				OGR_G_DestroyGeometry(src_geom);
 				OSRDestroySpatialReference(src_sr);
-				OGRCleanupAll();
+				/* OGRCleanupAll(); */
 
 				return NULL;
 			}
@@ -10214,7 +10214,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 				OGR_G_DestroyGeometry(src_geom);
 				OSRDestroySpatialReference(src_sr);
-				OGRCleanupAll();
+				/* OGRCleanupAll(); */
 
 				return NULL;
 			}
@@ -10249,7 +10249,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 						OGR_G_DestroyGeometry(src_geom);
 						OSRDestroySpatialReference(src_sr);
-						OGRCleanupAll();
+						/* OGRCleanupAll(); */
 
 						return NULL;
 					}
@@ -10286,7 +10286,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 						OGR_G_DestroyGeometry(src_geom);
 						OSRDestroySpatialReference(src_sr);
-						OGRCleanupAll();
+						/* OGRCleanupAll(); */
 
 						return NULL;
 					}
@@ -10344,7 +10344,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 				OGR_G_DestroyGeometry(src_geom);
 				OSRDestroySpatialReference(src_sr);
-				OGRCleanupAll();
+				/* OGRCleanupAll(); */
 
 				return NULL;
 			}
@@ -10383,7 +10383,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 				OGR_G_DestroyGeometry(src_geom);
 				OSRDestroySpatialReference(src_sr);
-				OGRCleanupAll();
+				/* OGRCleanupAll(); */
 
 				return NULL;
 			}
@@ -10422,7 +10422,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
-		OGRCleanupAll();
+		/* OGRCleanupAll(); */
 
 		return NULL;
 	}
@@ -10441,7 +10441,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
-		OGRCleanupAll();
+		/* OGRCleanupAll(); */
 
 		return NULL;
 	}
@@ -10461,7 +10461,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
-		OGRCleanupAll();
+		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
 
@@ -10484,7 +10484,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
-			OGRCleanupAll();
+			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
 
@@ -10545,7 +10545,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
-			OGRCleanupAll();
+			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
 
@@ -10580,7 +10580,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
-		OGRCleanupAll();
+		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
 
@@ -10602,7 +10602,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 	OGR_G_DestroyGeometry(src_geom);
 	OSRDestroySpatialReference(src_sr);
-	OGRCleanupAll();
+	/* OGRCleanupAll(); */
 
 	GDALClose(_ds);
 
