@@ -1777,23 +1777,19 @@ Datum isvalidreason(PG_FUNCTION_ARGS)
 	{
 		reason_str = GEOSisValidReason(g1);
 		GEOSGeom_destroy((GEOSGeometry *)g1);
+		if (reason_str == NULL)
+		{
+			elog(ERROR,"GEOSisValidReason() threw an error: %s", lwgeom_geos_errmsg);
+			PG_RETURN_NULL(); /* never get here */
+		}
+		result = cstring2text(reason_str);
+		GEOSFree(reason_str);
 	}
 	else
 	{
-		/* we don't use pstrdup here as we free later */
-		reason_str = strdup(lwgeom_geos_errmsg);
+		result = cstring2text(lwgeom_geos_errmsg);
 	}
 
-
-	if (reason_str == NULL)
-	{
-		elog(ERROR,"GEOS isvalidreason() threw an error!");
-		PG_RETURN_NULL(); /* never get here */
-	}
-	
-	result = cstring2text(reason_str);
-	/* No pfree because GEOS did a standard malloc on the reason_str */
-	free(reason_str);
 
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(result);
