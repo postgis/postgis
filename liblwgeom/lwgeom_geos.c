@@ -1018,6 +1018,11 @@ LWGEOM_GEOS_buildArea(const GEOSGeometry* geom_in)
 
   /* Run a single overlay operation to dissolve shared edges */
   shp = GEOSUnionCascaded(tmp);
+  if ( ! shp )
+  {
+    GEOSGeom_destroy(tmp);
+    return 0; /* exception */
+  }
 
 #ifdef LWGEOM_PROFILE_BUILDAREA
   lwnotice("Final cleanup");
