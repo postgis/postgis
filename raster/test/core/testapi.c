@@ -1597,6 +1597,9 @@ static void testRasterToGDAL() {
 		}
 	}
 
+	/* add check that band isn't NODATA */
+	CHECK((rt_band_check_is_nodata(band) == FALSE));
+
 	gdal = rt_raster_to_gdal(raster, srs, "PNG", NULL, &gdalSize);
 	/*printf("gdalSize: %d\n", (int) gdalSize);*/
 	CHECK(gdalSize);
@@ -2559,6 +2562,11 @@ static void testLoadOfflineBand() {
 			CHECK(FLT_EQ(val, 255));
 		}
 	}
+
+	/* test rt_band_check_is_nodata */
+	rtdealloc(band->data.offline.mem);
+	band->data.offline.mem = NULL;
+	CHECK((rt_band_check_is_nodata(band) == FALSE));
 
 	deepRelease(rast);
 }
