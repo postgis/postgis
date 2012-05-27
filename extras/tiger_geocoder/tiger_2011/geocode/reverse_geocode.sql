@@ -25,7 +25,7 @@ DECLARE
   var_place varchar;
   var_county varchar;
   var_stmt text;
-  var_debug boolean = false;
+  var_debug boolean =  get_geocode_setting('debug_reverse_geocode')::boolean;
   var_zip varchar := NULL;
   var_primary_fullname varchar := '';
 BEGIN

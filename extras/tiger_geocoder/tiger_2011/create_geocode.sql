@@ -18,6 +18,7 @@
 \i utility/set_search_path.sql;
 SELECT tiger.SetSearchPathForInstall('tiger');
 \i tables/lookup_tables_2011.sql
+\i geocode_settings.sql
 --SET search_path TO tiger,public;
 BEGIN;
 -- Type used to pass around a normalized address between functions

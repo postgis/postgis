@@ -19,6 +19,8 @@
 -- the below call will put tiger schema in front so all objects in this script
 -- will get created in search path
 SELECT tiger.SetSearchPathForInstall('tiger');
+--this is used currently for debugging
+\i geocode_settings.sql
 --this will fail if the column already exists which is fine
 ALTER TABLE state_lookup ADD COLUMN statefp char(2);
 UPDATE state_lookup SET statefp = lpad(st_code::text,2,'0') WHERE statefp IS NULL;
@@ -40,7 +42,7 @@ DROP FUNCTION IF EXISTS interpolate_from_address(integer, character varying, cha
 DROP FUNCTION IF EXISTS interpolate_from_address(integer, integer, integer, geometry); /**don't need this since got collapes into varchar version **/
 
 -- this will fail if already exists, that is fine.  can't use IF NOT EXISTS until 9.1
-
+SELECT tiger.SetSearchPathForInstall('tiger');
 CREATE TABLE addrfeat
 (
   gid serial not null primary key,
@@ -223,7 +225,8 @@ INSERT INTO street_type_lookup (name, abbrev, is_hw)
 SELECT name, abbrev, false
     FROM temp_types As t
            WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
-           
+ 
+SELECT tiger.SetSearchPathForInstall('tiger');
 -- new census loader
 \i census_loader.sql
 --create parent tables for census

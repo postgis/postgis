@@ -20,7 +20,7 @@ DECLARE
     var_sql text := '';
     var_zip varchar(5)[];
     in_statefp varchar(2) ; 
-    var_debug boolean := false;
+    var_debug boolean := get_geocode_setting('debug_geocode_intersection')::boolean;
     results record;
 BEGIN
     IF COALESCE(roadway1,'') = '' OR COALESCE(roadway2,'') = '' THEN

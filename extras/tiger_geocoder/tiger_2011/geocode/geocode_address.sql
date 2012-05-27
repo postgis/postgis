@@ -9,7 +9,7 @@ DECLARE
   stmt VARCHAR;
   in_statefp VARCHAR;
   exact_street boolean := false;
-  var_debug boolean := false;
+  var_debug boolean := get_geocode_setting('debug_geocode_address')::boolean;
   var_sql text := '';
   var_n integer := 0;
   var_restrict_geom geometry := NULL;

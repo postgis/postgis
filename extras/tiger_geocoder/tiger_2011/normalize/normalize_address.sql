@@ -56,7 +56,7 @@ CREATE OR REPLACE FUNCTION normalize_address(in_rawinput character varying)
   RETURNS norm_addy AS
 $$
 DECLARE
-  debug_flag boolean := false;
+  debug_flag boolean := get_geocode_setting('debug_normalize_address')::boolean;
   result norm_addy;
   addressString VARCHAR;
   zipString VARCHAR;
