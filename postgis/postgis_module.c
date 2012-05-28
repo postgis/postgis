@@ -14,15 +14,21 @@
 #include "fmgr.h"
 #include "utils/elog.h"
 #include "utils/guc.h"
+#include "libpq/pqsignal.h"
 
 #include "../postgis_config.h"
+
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
+#include "geos_c.h"
 
 /*
  * This is required for builds against pgsql
  */
 PG_MODULE_MAGIC;
+
+static pqsigfunc coreIntHandler = 0;
+static void handleInterrupt(int sig);
 
 /*
  * Module load callback
@@ -31,6 +37,9 @@ void _PG_init(void);
 void
 _PG_init(void)
 {
+
+  coreIntHandler = pqsignal(SIGINT, handleInterrupt); 
+
 #if 0
   /* Define custom GUC variables. */
   DefineCustomIntVariable(
@@ -81,4 +90,18 @@ _PG_fini(void)
 }
 
 
+static void
+handleInterrupt(int sig)
+{
+  printf("Interrupt requested\n"); fflush(stdout);
 
+#if POSTGIS_GEOS_VERSION >= 34 
+  GEOS_interruptRequest();
+#endif
+
+  /* TODO: request interruption of liblwgeom as well ? */
+
+  if ( coreIntHandler ) {
+    (*coreIntHandler)(sig);
+  }
+}
