@@ -46,20 +46,12 @@ BEGIN
         IF colincx <= (h - 1) * rowincy THEN
             RAISE EXCEPTION 'Column increment (now %) must be greater than the number of index on one column (now % pixel x % = %)...', colincx, h - 1, rowincy, (h - 1) * rowincy;
         END IF;
-        FOR x IN 1..w LOOP
-            FOR y IN 1..h LOOP
-                newraster := ST_SetValue(newraster, x, y, abs(x - xdir) * colincx + abs(y - (h ^ ((abs(x - xdir + 1) % 2) | rsflag # ydflag))::int) * rowincy + newstartvalue);
-            END LOOP;
-        END LOOP;
+        newraster = ST_SetBandNodataValue(ST_MapAlgebraExpr(newraster, pixeltype, 'abs([rast.x] - ' || xdir::text || ') * ' || colincx::text || ' + abs([rast.y] - (' || h::text || ' ^ ((abs([rast.x] - ' || xdir::text || ' + 1) % 2) | ' || rsflag::text || ' # ' || ydflag::text || '))::int) * ' || rowincy::text || ' + ' || newstartvalue::text), ST_BandNodataValue(newraster));
     ELSE
         IF rowincx <= (w - 1) * colincy THEN
             RAISE EXCEPTION 'Row increment (now %) must be greater than the number of index on one row (now % pixel x % = %)...', rowincx, w - 1, colincy, (w - 1) * colincy;
         END IF;
-        FOR x IN 1..w LOOP
-            FOR y IN 1..h LOOP
-                newraster := ST_SetValue(newraster, x, y, abs(x - (w ^ ((abs(y - ydir + 1) % 2) | rsflag # xdflag))::int) * colincy + abs(y - ydir) * rowincx + newstartvalue);
-            END LOOP;
-        END LOOP;
+        newraster = ST_SetBandNodataValue(ST_MapAlgebraExpr(newraster, pixeltype, 'abs([rast.x] - (' || w::text || ' ^ ((abs([rast.y] - ' || ydir::text || ' + 1) % 2) | ' || rsflag::text || ' # ' || xdflag::text || '))::int) * ' || colincy::text || ' + abs([rast.y] - ' || ydir::text || ') * ' || rowincx::text || ' + ' || newstartvalue::text), ST_BandNodataValue(newraster));
     END IF;    
     RETURN newraster;
 END;
