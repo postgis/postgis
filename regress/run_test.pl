@@ -35,7 +35,7 @@ $DB = "postgis_reg";
 $REGDIR = abs_path(dirname($0));
 $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
 $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
-$RASTER2PGSQL = $REGDIR . "/../../loader/raster2pgsql";
+$RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
 
 
 ##################################################################
@@ -112,7 +112,7 @@ foreach my $exec ( ("psql", "createdb", "createlang", "dropdb") )
 
 foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 {
-	print "Checking for $exec ... ";
+	printf "Checking for %s ... ", basename($exec);
 	if ( -x $exec )
 	{
 		print "found\n";
@@ -125,6 +125,19 @@ foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 	
 }
 
+if ( $OPT_WITH_RASTER )
+{
+	print "Checking for raster2pgsql ... ";
+	if ( -x $RASTER2PGSQL )
+	{
+		print "found\n";
+	}
+	else
+	{
+		print "failed\n";
+		die "Unable to find raster2pgsql executable.\n";
+	}
+}
 
 ##################################################################
 # Set up the temporary directory
@@ -237,6 +250,9 @@ foreach $TEST (@ARGV)
 
 	start_test($TEST);
 
+	# Check for a "-pre.pl" file in case there are setup commands 
+    eval_file("${TEST}-pre.pl");
+
 	# Check for a "-pre.sql" file in case there is setup SQL needed before
 	# the test can be run.
 	if ( -r "${TEST}-pre.sql" )
@@ -278,6 +294,10 @@ foreach $TEST (@ARGV)
 			print " ... but cleanup sql failed!";
 		}
 	}
+	
+	# Check for a "-post.pl" file in case there are teardown commands 
+    eval_file("${TEST}-post.pl");
+	
 }
 
 
@@ -461,6 +481,19 @@ sub sql
 	my $result = `psql -tXA -d $DB -c "$sql"`;
 	$result =~ s/\n$//;
 	$result;
+}
+
+sub eval_file
+{
+    my $file = shift;
+    my $pl;
+    if ( -r $file )
+    {
+        open(PL, $file);
+        $pl = <PL>;
+        close(PL);
+        eval($pl);
+    }
 }
 
 ##################################################################
@@ -878,7 +911,7 @@ sub run_raster_loader_test
 		$custom_opts = join(" ", @opts);
 	}
 
-	my $tblname="loadedshp";
+	my $tblname="loadedrast";
 
 	# If we have some expected files to compare with, run in geography mode.
 	if ( ! run_raster_loader_and_check_output("test", $tblname, "${TEST}.sql.expected", "${TEST}.select.expected", $custom_opts, "true") )

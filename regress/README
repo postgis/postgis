@@ -1,3 +1,25 @@
+Requirements for run_test.pl
+----------------------------
+
+run_test.pl requires the following Perl modules to be installed
+
+ Text::Diff;
+ File::Which;
+ File::Basename;
+ File::Temp 'tempdir';
+ File::Copy;
+ File::Path 'make_path';
+ File::Path 'remove_tree';
+ Cwd 'abs_path';
+ Getopt::Long;
+
+Most distributions of Perl will have everything except Text::Diff and File::Which.
+To install them from the command-line, as root run
+
+ cpan Text::Diff
+ cpan File::Which
+
+
 How to add a regression test
 ----------------------------
 
