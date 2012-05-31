@@ -1,9 +1,8 @@
 #!/usr/bin/perl
 
-use Text::Diff;
 use File::Basename;
 use File::Temp 'tempdir';
-use File::Which;
+#use File::Which;
 use File::Copy;
 use File::Path 'make_path';
 use File::Path 'remove_tree';
@@ -95,20 +94,20 @@ $OBJ_COUNT_POST = 0;
 
 print "PATH is $PATH\n";
 
-foreach my $exec ( ("psql", "createdb", "createlang", "dropdb") )
-{
-	my $execdir = which( $exec );
-	print "Checking for $exec ... ";
-	if ( $execdir )
-	{
-		print "found $execdir\n";
-	}
-	else
-	{
-		print "failed\n";
-		die "Unable to find $exec executable. Please ensure it is on your PATH.\n";
-	}
-}
+#foreach my $exec ( ("psql", "createdb", "createlang", "dropdb") )
+#{
+#	my $execdir = which( $exec );
+#	print "Checking for $exec ... ";
+#	if ( $execdir )
+#	{
+#		print "found $execdir\n";
+#	}
+#	else
+#	{
+#		print "failed\n";
+#		die "Unable to find $exec executable. Please ensure it is on your PATH.\n";
+#	}
+#}
 
 foreach my $exec ( ($SHP2PGSQL, $PGSQL2SHP) )
 {
@@ -577,7 +576,7 @@ sub run_simple_test
 	}
 	else
 	{
-		my $diff = diff($expected, $outfile, {STYLE=>"Unified"});
+		my $diff = diff($expected, $outfile);
 		if ( $diff )
 		{
 			open(FILE, ">$diffile");
@@ -646,7 +645,7 @@ sub run_loader_and_check_output
 		if ( -r $expected_sql_file )
 		{
 			show_progress();
-			my $diff = diff($outfile, $expected_sql_file, {STYLE=>"Unified"});
+			my $diff = diff($expected_sql_file, $outfile);
 			if ( $diff )
 			{
 				fail(" $description: actual SQL does not match expected.", "$outfile");
@@ -711,7 +710,7 @@ sub run_dumper_and_check_output
 		if ( -r $expected_shp_file )
 		{
 			show_progress();
-			my $diff = diff( "$TMPDIR/dumper.shp", $expected_shp_file, {STYLE=>"Unified"});
+			my $diff = diff($expected_shp_file,  "$TMPDIR/dumper.shp");
 			if ( $diff )
 			{
 #				ls -lL "${TMPDIR}"/dumper.shp "$_expected_shp_file" > "${TMPDIR}"/dumper.diff
@@ -774,7 +773,7 @@ sub run_raster_loader_and_check_output
 	    if ( -r $expected_sql_file )
 	    {
 	        show_progress();
-			my $diff = diff($outfile, $expected_sql_file, {STYLE=>"Unified"});
+			my $diff = diff($expected_sql_file, $outfile);
 			if ( $diff )
 			{
 				fail(" $description: actual SQL does not match expected.", "$outfile");
@@ -1167,3 +1166,28 @@ sub uninstall_spatial
 	return 0;
 }  
 
+sub diff
+{
+	my ($obtained_file, $expected_file) = @_;
+	my $diffstr = '';
+
+	open(OBT, $obtained_file) || die "Cannot open $obtained_file\n";
+	open(EXP, $expected_file) || die "Cannot open $expected_file\n";
+	$lineno=0;
+	while (!eof(OBT) or !eof(EXP)) {
+		# TODO: check for premature end of one or the other ?
+		$obtline=<OBT>;
+		$expline=<EXP>;
+		chop($obtline); chop($expline);
+		++$lineno;
+		if ( $obtline ne $expline ) {
+			my $diffln .= "$lineno.OBT: $obtline\n";
+			$diffln .= "$lineno.EXP: $expline\n";
+			$diffstr .= $diffln;
+		}
+	}
+	close(OBT);
+	close(EXP);
+	return $diffstr;
+	#return `diff -u $expectedfile $obtainedfile`
+}
