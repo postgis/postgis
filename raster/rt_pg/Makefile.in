@@ -84,7 +84,7 @@ endif
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
-	sed 's,MODULE_PATHNAME,$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@,g' $< >$@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" $< > $@
 
 
 # Objects dependencies
