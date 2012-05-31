@@ -765,7 +765,7 @@ rt_band rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
  *
  * @return an rt_raster or 0 if out of memory
  */
-rt_raster rt_raster_new(uint16_t width, uint16_t height);
+rt_raster rt_raster_new(uint32_t width, uint32_t height);
 
 /**
  * Construct an rt_raster from a binary WKB representation
