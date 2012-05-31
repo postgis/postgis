@@ -12,6 +12,7 @@
 #############################################################################
 
 POSTGIS_SRC=../../..
+PERL=@PERL@
 
 # MingW hack: rather than use PGSQL_BINDIR directly, we change
 # to the directory and then use "pwd" to return the path. This
@@ -145,7 +146,8 @@ clean:
 	$(RM) -f rtpostgis.sql
 
 rtpostgis.sql: ../../rt_pg/rtpostgis.sql
-	sed 's,$$libdir,$(REGRESS_INSTALLDIR)/lib,g' ../../rt_pg/rtpostgis.sql > rtpostgis.sql
+	$(PERL) -lpe "s'\\\$$libdir'$(REGRESS_INSTALLDIR)/lib'g" $< > $@
+
 
 check: 
 	$(MAKE) -C ../../../regress staged-install
