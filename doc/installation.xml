@@ -124,7 +124,7 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	  
 	  <listitem>
 		<para>
-		  GDAL, version 1.6 or higher (1.9 or higher is preferable since some things will not work well with lower versions).  This is needed for raster support and will be required in final release of PostGIS 2.0.
+		  GDAL, version 1.8 or higher (1.9 or higher is strongly recommended since some things will not work well or behavior differently with lower versions).  This is required for raster support.
 		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
 		</para>
 	  </listitem>
