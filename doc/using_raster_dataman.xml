@@ -387,7 +387,7 @@ Available GDAL raster formats:
     		<listitem><para>Once you are done populating your table initially, you'll want to create a spatial index on the raster column with something like:</para>
     			<programlisting>CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist( ST_ConvexHull(rast) );</programlisting>
     			<para>Note the use of <xref linkend="RT_ST_ConvexHull" /> since most raster operators are based on the convex hull of the rasters.</para>
-    			<note><para>Pre-2.0 versions of PostGIS raster were based on the envelop rather than the convex hull.  For teh spatial idnexes to work properly you'll need to drop those and replace with convex hull based index.</para></note></listitem>
+    			<note><para>Pre-2.0 versions of PostGIS raster were based on the envelop rather than the convex hull.  For the spatial indexes to work properly you'll need to drop those and replace with convex hull based index.</para></note></listitem>
     		<listitem><para>Apply raster constraints using <xref linkend="RT_AddRasterConstraints" /></para></listitem>
     	</orderedlist>
     </sect2>
