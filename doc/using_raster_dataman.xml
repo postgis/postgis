@@ -123,7 +123,7 @@
                     <term>-s &lt;SRID&gt;</term>
                     <listitem>
                         <para>
-                            Assign output raster with specified SRID.
+                            Assign output raster with specified SRID.  If not provided or is zero, raster's metadata will be checked to determine an appropriate SRID.
                         </para>
                     </listitem>
                 </varlistentry>
