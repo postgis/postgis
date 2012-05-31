@@ -74,7 +74,7 @@ endif
 # Unfortunately we have to copy this from the PGXS Makefile as it only gets picked up
 # if MODULE_big is defined
 %.sql: %.sql.in
-	sed 's,MODULE_PATHNAME,$$libdir/$*,g' $< >$@
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/$*'g" $< > $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
 %.in: %.in.c
