@@ -475,7 +475,7 @@ false
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="Set_Geocode_Setting" />></para>
+		<para><xref linkend="Set_Geocode_Setting" /></para>
 	  </refsection>
 	</refentry>
 	
@@ -1287,7 +1287,7 @@ true</programlisting>
 	  <!-- Optionally add a "See Also" section -->
 	  <refsection>
 		<title>See Also</title>
-		<para><xref linkend="Get_Geocode_Setting" />></para>
+		<para><xref linkend="Get_Geocode_Setting" /></para>
 	  </refsection>
 	</refentry>
   </sect1>
