@@ -4,8 +4,7 @@ use File::Basename;
 use File::Temp 'tempdir';
 #use File::Which;
 use File::Copy;
-use File::Path 'make_path';
-use File::Path 'remove_tree';
+use File::Path;
 use Cwd 'abs_path';
 use Getopt::Long;
 
@@ -324,7 +323,7 @@ print "Failed: $FAIL\n";
 
 if ( $OPT_CLEAN )
 {
-	remove_tree($TMPDIR);
+	rmtree($TMPDIR);
 }
 
 if ( ! ($OPT_NODROP || $OPT_NOCREATE) )
@@ -528,7 +527,7 @@ sub run_simple_test
 	my $tmpfile = sprintf("%s/test_%s_tmp", $betmpdir, $RUN);
 	my $diffile = sprintf("%s/test_%s_diff", $TMPDIR, $RUN);
 
-	make_path($betmpdir);
+	mkpath($betmpdir);
 
 	my $cmd = "psql -v \"VERBOSITY=terse\" -v \"tmpfile='$tmpfile'\" -tXA $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
@@ -1173,13 +1172,14 @@ sub diff
 
 	open(OBT, $obtained_file) || die "Cannot open $obtained_file\n";
 	open(EXP, $expected_file) || die "Cannot open $expected_file\n";
-	$lineno=0;
+	my $lineno=0;
 	while (!eof(OBT) or !eof(EXP)) {
 		# TODO: check for premature end of one or the other ?
-		$obtline=<OBT>;
-		$expline=<EXP>;
-		chop($obtline); chop($expline);
-		++$lineno;
+		my $obtline=<OBT>;
+		my $expline=<EXP>;
+		$obtline =~ s/(\r\n|\n)$//;
+		$expline =~ s/(\r\n|\n)$//;
+		$lineno++;
 		if ( $obtline ne $expline ) {
 			my $diffln .= "$lineno.OBT: $obtline\n";
 			$diffln .= "$lineno.EXP: $expline\n";
