@@ -151,21 +151,8 @@ rtpostgis.sql: ../../rt_pg/rtpostgis.sql
 
 check: 
 	$(MAKE) -C ../../../regress staged-install
-	../../../regress/run_test --raster $(RUNTESTFLAGS) $(TESTS)
-	../../../regress/run_test --upgrade --raster $(RUNTESTFLAGS) $(TESTS)
-
-#all: run_test
-
-#run_test: run_test.in Makefile
-#	sed -e "s#@POSTGIS_SRC@#$(POSTGIS_SRC)#" $< > $@
-#	chmod +x $@
-
-#post-install-check check: run_test
-#	./run_test $(TESTS)
-
-#clean:
-#	$(RM) run_test
-#	$(RM) testgdalraster
+	$(PERL) ../../../regress/run_test.pl --raster $(RUNTESTFLAGS) $(TESTS)
+	$(PERL) ../../../regress/run_test.pl --upgrade --raster $(RUNTESTFLAGS) $(TESTS)
 
 testgdalraster:
 	chmod +x $@

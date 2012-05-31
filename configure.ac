@@ -1105,6 +1105,7 @@ AC_OUTPUT([GNUmakefile
    loader/Makefile 
    loader/cunit/Makefile 
    topology/Makefile 
+   topology/test/Makefile 
    regress/Makefile 
    doc/Makefile 
    doc/Makefile.comments 

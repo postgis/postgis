@@ -169,8 +169,8 @@ staged-install: staged-install-raster staged-install-topology
 	#$(MAKE) -C ../loader REGRESS=1 DESTDIR=$(REGRESS_INSTALLDIR) install
 
 test check: staged-install
-	./run_test $(RUNTESTFLAGS) $(TESTS) && \
-	./run_test --upgrade $(RUNTESTFLAGS) $(TESTS)
+	$(PERL) run_test.pl $(RUNTESTFLAGS) $(TESTS) && \
+	$(PERL) run_test.pl --upgrade $(RUNTESTFLAGS) $(TESTS)
 
 garden:
 	createdb postgis_garden

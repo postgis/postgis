@@ -10,7 +10,7 @@ use Getopt::Long;
 
 
 ##################################################################
-# Usage ./run_test <testname> [<testname>]
+# Usage ./run_test.pl <testname> [<testname>]
 #
 #  Create the spatial database 'postgis_reg' (or whatever $DB 
 #  is set to) if it doesn't already exist.
@@ -1172,13 +1172,13 @@ sub diff
 
 	open(OBT, $obtained_file) || die "Cannot open $obtained_file\n";
 	open(EXP, $expected_file) || die "Cannot open $expected_file\n";
-	my $lineno=0;
+	my $lineno = 0;
 	while (!eof(OBT) or !eof(EXP)) {
 		# TODO: check for premature end of one or the other ?
 		my $obtline=<OBT>;
 		my $expline=<EXP>;
-		$obtline =~ s/(\r\n|\n)$//;
-		$expline =~ s/(\r\n|\n)$//;
+		$obtline =~ s/\r?\n$//; # Strip line endings
+		$expline =~ s/\r?\n$//; # Strip line endings
 		$lineno++;
 		if ( $obtline ne $expline ) {
 			my $diffln .= "$lineno.OBT: $obtline\n";
@@ -1189,5 +1189,4 @@ sub diff
 	close(OBT);
 	close(EXP);
 	return $diffstr;
-	#return `diff -u $expectedfile $obtainedfile`
 }
