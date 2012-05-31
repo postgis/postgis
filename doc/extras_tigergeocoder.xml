@@ -426,6 +426,59 @@ Total query runtime: 245 ms.
 	  </refsection>
 	</refentry>
 	
+	<refentry id="Get_Geocode_Setting">
+	  <refnamediv>
+		<refname>Get_Geocode_Setting</refname>
+
+		<refpurpose>Returns value of specific setting stored in tiger.geocode_settings table.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>Get_Geocode_Setting</function></funcdef>
+			<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Returns value of specific setting stored in tiger.geocode_settings table.  Settings allow you to toggle debugging of functions.  Later plans will be to control rating with settings. Current list of settings are as follows:</para>
+		<screen> name       | category |        short_desc                                                           
+----------------------------+----------+----------------------------------------------------------------------------------
+ debug_geocode_address      | debug    | outputs debug information in notice log such as queries 
+                                       |  when geocode_addresss is called if true
+ debug_geocode_intersection | debug    | outputs debug information in notice log such as queries 
+                                       |  when geocode_intersection is called if true
+ debug_normalize_address    | debug    | outputs debug information in notice log such as queries 
+                                       |  and intermediate expressions when normalize_address is called if true
+ debug_reverse_geocode      | debug    | if true, outputs debug information in notice log 
+                                         such as queries and intermediate expressions when reverse_geocode		
+		</screen>
+
+		<para>Availability: 2.1.0</para>
+		
+	  </refsection>
+
+
+	  <refsection>
+		<title>Example return debugging setting</title>
+		<programlisting>SELECT get_geocode_setting('debug_geocode_address) As result;
+result
+---------
+false
+		</programlisting>	
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Set_Geocode_Setting" />></para>
+	  </refsection>
+	</refentry>
+	
 	<refentry id="Get_Tract">
 	  <refnamediv>
 		<refname>Get_Tract</refname>
@@ -1194,4 +1247,47 @@ SELECT * FROM
         <para><xref linkend="CreateTopology" />, <xref linkend="CreateTopoGeom" />, <xref linkend="TopologySummary" />, <xref linkend="ValidateTopology" /></para>
       </refsection>
    </refentry>
+   
+   	<refentry id="Set_Geocode_Setting">
+	  <refnamediv>
+		<refname>Set_Geocode_Setting</refname>
+
+		<refpurpose>Sets a setting that affects behavior of geocoder functions.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>text <function>Set_Geocode_Setting</function></funcdef>
+			<paramdef><type>text </type> <parameter> setting_name</parameter></paramdef>
+			<paramdef><type>text </type> <parameter> setting_value</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>Sets value of specific setting stored in <varname>tiger.geocode_settings</varname> table.  Settings allow you to toggle debugging of functions.  Later plans will be to control rating with settings. Current list of settings are listed in <xref linkend="Get_Geocode_Setting" />.</para>
+
+		<para>Availability: 2.1.0</para>
+		
+	  </refsection>
+
+
+	  <refsection>
+		<title>Example return debugging setting</title>
+		<para>If you run <xref linkend="Geocode" /> when this function is true, the NOTICE log will output timing and queries.</para>
+		<programlisting>SELECT set_geocode_setting('debug_geocode_address', 'true') As result;
+result
+---------
+true</programlisting>	
+	  </refsection>
+
+	  <!-- Optionally add a "See Also" section -->
+	  <refsection>
+		<title>See Also</title>
+		<para><xref linkend="Get_Geocode_Setting" />></para>
+	  </refsection>
+	</refentry>
   </sect1>

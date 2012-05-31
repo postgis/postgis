@@ -22,6 +22,7 @@ BEGIN
 	var_temp := tiger.SetSearchPathForInstall('tiger'); /** set setach path to have tiger in front **/
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'geocode_settings')  THEN
 		CREATE TABLE geocode_settings(name text primary key, setting text, unit text, category text, short_desc text);
+		GRANT SELECT ON geocode_settings TO public;
 	END IF;
 	--add missing settings
 	INSERT INTO geocode_settings(name,setting,unit,category,short_desc)
