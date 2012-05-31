@@ -1069,9 +1069,7 @@ rt_band_new_inline(
 		return NULL;
 	}
 
-	RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s",
-		band, rt_pixtype_name(pixtype)
-	);
+	RASTER_DEBUGF(3, "Created rt_band @ %p with pixtype %s", band, rt_pixtype_name(pixtype));
 
 	band->pixtype = pixtype;
 	band->offline = 0;
@@ -1083,6 +1081,8 @@ rt_band_new_inline(
 	band->ownsData = 0;
 	band->isnodata = FALSE;
 	band->raster = NULL;
+
+	RASTER_DEBUGF(3, "Created rt_band with dimensions %d x %d", band->width, band->height);
 
 	/* properly set nodataval as it may need to be constrained to the data type */
 	if (hasnodata && rt_band_set_nodata(band, nodataval) < 0) {
@@ -1733,7 +1733,7 @@ rt_band_set_pixel_line(
 		x < 0 || x >= band->width ||
 		y < 0 || y >= band->height
 	) {
-		rterror("rt_band_set_pixel_line: Coordinates out of range");
+		rterror("rt_band_set_pixel_line: Coordinates out of range (%d, %d) vs (%d, %d)", x, y, band->width, band->height);
 		return 0;
 	}
 
@@ -4409,36 +4409,37 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 /*- rt_raster --------------------------------------------------------*/
 
 rt_raster
-rt_raster_new(uint16_t width, uint16_t height) {
-    rt_raster ret = NULL;
+rt_raster_new(uint32_t width, uint32_t height) {
+	rt_raster ret = NULL;
 
+	ret = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
+	if (!ret) {
+		rterror("rt_raster_new: Out of virtual memory creating an rt_raster");
+		return NULL;
+	}
 
+	RASTER_DEBUGF(3, "Created rt_raster @ %p", ret);
 
-    ret = (rt_raster) rtalloc(sizeof (struct rt_raster_t));
-    if (!ret) {
-        rterror("rt_raster_new: Out of virtual memory creating an rt_raster");
-        return 0;
-    }
+	assert(NULL != ret);
 
-    RASTER_DEBUGF(3, "Created rt_raster @ %p", ret);
+	if (width > 65535 || height > 65535) {
+		rterror("rt_raster_new: Dimensions requested exceed the maximum (65535 x 65535) permitted for a raster");
+		return NULL;
+	}
 
-    assert(NULL != ret);
+	ret->width = width;
+	ret->height = height;
+	ret->scaleX = 1;
+	ret->scaleY = 1;
+	ret->ipX = 0.0;
+	ret->ipY = 0.0;
+	ret->skewX = 0.0;
+	ret->skewY = 0.0;
+	ret->srid = SRID_UNKNOWN;
 
-    ret->width = width;
-
-    ret->height = height;
-    ret->scaleX = 1;
-    ret->scaleY = 1;
-    ret->ipX = 0.0;
-    ret->ipY = 0.0;
-    ret->skewX = 0.0;
-    ret->skewY = 0.0;
-    ret->srid = SRID_UNKNOWN;
-
-    ret->numBands = 0;
-    ret->bands = 0;
-
-    return ret;
+	ret->numBands = 0;
+	ret->bands = 0; 
+	return ret;
 }
 
 void
@@ -8143,6 +8144,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		rterror("rt_raster_from_gdal_dataset: Out of memory allocating new raster");
 		return NULL;
 	}
+	RASTER_DEBUGF(3, "Created raster dimensions (width x height): %d x %d", rast->width, rast->height);
 
 	/* get raster attributes */
 	cplerr = GDALGetGeoTransform(ds, gt);
@@ -8224,6 +8226,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 			return NULL;
 		}
 		band = rt_raster_get_band(rast, idx);
+		RASTER_DEBUGF(3, "Created band of dimension (width x height): %d x %d", band->width, band->height);
 
 		/* this makes use of GDAL's "natural" blocks */
 		GDALGetBlockSize(gdband, &nXBlockSize, &nYBlockSize);
