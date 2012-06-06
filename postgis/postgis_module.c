@@ -3,6 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  *
+ * Copyright (C) 2012  Sandro Santilli <strk@keybit.net>
  * Copyright (C) 2011  OpenGeo.org 
  *
  * This is free software; you can redistribute and/or modify it under
@@ -16,13 +17,35 @@
 #include "utils/guc.h"
 
 #include "../postgis_config.h"
+
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
+
+/* Uncommenting next line will enable interruptibility
+ * of GEOS implemented calls (for GEOS version >= 3.4.0)
+ * See https://trac.osgeo.org/postgis/ticket/1802
+ */
+/*#define POSTGIS_ENABLE_GEOS_INTERRUPTIBILITY*/
+
+#if POSTGIS_GEOS_VERSION < 34
+# undef POSTGIS_ENABLE_GEOS_INTERRUPTIBILITY
+#endif
+
+#ifdef POSTGIS_ENABLE_GEOS_INTERRUPTIBILITY
+# include "libpq/pqsignal.h"
+# include "geos_c.h"
+#endif
+
 
 /*
  * This is required for builds against pgsql
  */
 PG_MODULE_MAGIC;
+
+#ifdef POSTGIS_ENABLE_GEOS_INTERRUPTIBILITY
+static pqsigfunc coreIntHandler = 0;
+static void handleInterrupt(int sig);
+#endif
 
 /*
  * Module load callback
@@ -31,6 +54,11 @@ void _PG_init(void);
 void
 _PG_init(void)
 {
+
+#ifdef POSTGIS_ENABLE_GEOS_INTERRUPTIBILITY
+  coreIntHandler = pqsignal(SIGINT, handleInterrupt); 
+#endif
+
 #if 0
   /* Define custom GUC variables. */
   DefineCustomIntVariable(
@@ -81,4 +109,18 @@ _PG_fini(void)
 }
 
 
+#ifdef POSTGIS_ENABLE_GEOS_INTERRUPTIBILITY
+static void
+handleInterrupt(int sig)
+{
+#if POSTGIS_GEOS_VERSION >= 34 
+  GEOS_interruptRequest();
+#endif
 
+  /* TODO: request interruption of liblwgeom as well ? */
+
+  if ( coreIntHandler ) {
+    (*coreIntHandler)(sig);
+  }
+}
+#endif /* defined POSTGIS_ENABLE_GEOS_INTERRUPTIBILITY */
