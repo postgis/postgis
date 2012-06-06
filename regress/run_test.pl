@@ -7,6 +7,7 @@ use File::Copy;
 use File::Path;
 use Cwd 'abs_path';
 use Getopt::Long;
+use strict;
 
 
 ##################################################################
@@ -29,11 +30,11 @@ if ( @ARGV < 1 )
 # Global configuration items
 ##################################################################
 
-$DB = "postgis_reg";
-$REGDIR = abs_path(dirname($0));
-$SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
-$PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
-$RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
+my $DB = "postgis_reg";
+my $REGDIR = abs_path(dirname($0));
+my $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
+my $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
+my $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
 
 
 ##################################################################
@@ -68,24 +69,24 @@ GetOptions (
 # Save original locale to set back
 ##################################################################
 
-$ORIG_LC_ALL = $ENV{"LC_ALL"};
-$ORIG_LANG = $ENV{"LANG"};
+my $ORIG_LC_ALL = $ENV{"LC_ALL"};
+my $ORIG_LANG = $ENV{"LANG"};
 $ENV{"LC_ALL"} = "C";
 $ENV{"LANG"} = "C";
 
 # Add locale info to the psql options
-$PGOPTIONS = $ENV{"PGOPTIONS"} . " -c lc_messages=C";
+my $PGOPTIONS = $ENV{"PGOPTIONS"} . " -c lc_messages=C";
 $ENV{"PGOPTIONS"} = $PGOPTIONS;
 
 # Bring the path info in
-$PATH = $ENV{"PATH"};
+my $PATH = $ENV{"PATH"}; # this is useless
 
 # Calculate the regression directory locations
-$STAGED_INSTALL_DIR = $REGDIR . "/00-regress-install";
-$STAGED_SCRIPTS_DIR = $STAGED_INSTALL_DIR . "/share/contrib/postgis";
+my $STAGED_INSTALL_DIR = $REGDIR . "/00-regress-install";
+my $STAGED_SCRIPTS_DIR = $STAGED_INSTALL_DIR . "/share/contrib/postgis";
 
-$OBJ_COUNT_PRE = 0;
-$OBJ_COUNT_POST = 0;
+my $OBJ_COUNT_PRE = 0;
+my $OBJ_COUNT_POST = 0;
 
 ##################################################################
 # Check that we have the executables we need
@@ -141,6 +142,7 @@ if ( $OPT_WITH_RASTER )
 # Set up the temporary directory
 ##################################################################
 
+my $TMPDIR;
 if ( -d "/tmp/" && -w "/tmp/" )
 {
 	$TMPDIR = "/tmp/pgis_reg";
@@ -230,10 +232,10 @@ print "  GDAL: $gdalver\n" if $gdalver;
 ##################################################################
 # Set up some global variables
 ##################################################################
-$RUN = 0;
-$FAIL = 0;
-$SKIP = 0;
-$TEST = "";
+my $RUN = 0;
+my $FAIL = 0;
+my $SKIP = 0;
+my $TEST = "";
 
 ##################################################################
 # Run the tests
@@ -620,7 +622,7 @@ sub run_loader_and_check_output
 	my $loader_options = shift;
 	my $run_always = shift;
 
-	my $cmd, $rv;
+	my ( $cmd, $rv );
 	my $outfile = "${TMPDIR}/loader.out";
 	my $errfile = "${TMPDIR}/loader.err";
 	
@@ -691,7 +693,7 @@ sub run_dumper_and_check_output
 	my $expected_shp_file = shift;
 	my $run_always = shift;
 
-	my $cmd, $rv;
+	my ($cmd, $rv);
 	my $errfile = "${TMPDIR}/dumper.err";
 	
 	if ( $run_always || -r $expected_shp_file ) 
@@ -751,7 +753,7 @@ sub run_raster_loader_and_check_output
 	# ON_ERROR_STOP is used by psql to return non-0 on an error
 	my $psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true";
 
-	my $cmd, $rv;
+	my ($cmd, $rv);
 	my $outfile = "${TMPDIR}/loader.out";
 	my $errfile = "${TMPDIR}/loader.err";
 
@@ -949,7 +951,7 @@ sub count_db_objects
 ##################################################################
 sub create_spatial 
 {
-	my $cmd, $rv;
+	my ($cmd, $rv);
 	print "Creating database '$DB' \n";
 
 	$cmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
@@ -1113,7 +1115,7 @@ sub drop_spatial_extensions
     # ON_ERROR_STOP is used by psql to return non-0 on an error
     my $psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true";
     my $ok = 1; 
-    my $cmd, $rv;
+    my ($cmd, $rv);
     
     if ( $OPT_WITH_TOPO )
     {
