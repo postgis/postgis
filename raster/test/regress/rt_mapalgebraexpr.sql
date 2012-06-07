@@ -24,7 +24,7 @@ SELECT 'T9', ST_Value(rast, 1, 1), ST_Value(ST_MapAlgebraExpr(rast, 1, '2BUI', '
 
 -- Test '[rast.x]', '[rast.y]' and '[rast.val]' substitutions expression
 SELECT 'T10.'||x||'.'||y, ST_Value(rast, x, y),
-  ST_Value(ST_MapAlgebraExpr(rast, 1, NULL, 'round([rast]*[rast.x]/[rast.y]+[rast.val])'), x, y)
+  ST_Value(ST_MapAlgebraExpr(rast, 1, NULL, 'ceil([rast]*[rast.x]/[rast.y]+[rast.val])'), x, y)
 FROM ST_TestRaster(0, 0, 10) rast,
      generate_series(6, 8) as x,
      generate_series(2, 4) as y
