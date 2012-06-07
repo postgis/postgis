@@ -530,6 +530,7 @@ sub run_simple_test
 	my $diffile = sprintf("%s/test_%s_diff", $TMPDIR, $RUN);
 
 	mkpath($betmpdir);
+	chmod 0777, $betmpdir;
 
 	my $cmd = "psql -v \"VERBOSITY=terse\" -v \"tmpfile='$tmpfile'\" -tXA $DB < $sql > $outfile 2>&1";
 	my $rv = system($cmd);
