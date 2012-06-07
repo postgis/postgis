@@ -30,6 +30,15 @@ PG_MODULE_MAGIC;
 static pqsigfunc coreIntHandler = 0;
 static void handleInterrupt(int sig);
 
+#ifdef WIN32
+#if POSTGIS_GEOS_VERSION >= 34 
+static void geosInterruptCallback() {
+  if (UNBLOCKED_SIGNAL_QUEUE()) 
+    pgwin32_dispatch_queued_signals(); 
+}
+#endif
+#endif
+
 /*
  * Module load callback
  */
@@ -39,6 +48,12 @@ _PG_init(void)
 {
 
   coreIntHandler = pqsignal(SIGINT, handleInterrupt); 
+
+#ifdef WIN32
+#if POSTGIS_GEOS_VERSION >= 34 
+  GEOS_interruptRegisterCallback();
+#endif
+#endif
 
 #if 0
   /* Define custom GUC variables. */
