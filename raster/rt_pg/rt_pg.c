@@ -10874,21 +10874,6 @@ rt_pg_notice(const char *fmt, va_list ap)
 }
 
 
-#if 0 /* defined by libpgcommon { */
-/* This is needed by liblwgeom */
-void
-lwgeom_init_allocators(void)
-{
-    /* liblwgeom callback - install PostgreSQL handlers */
-    lwalloc_var = rt_pg_alloc;
-    lwrealloc_var = rt_pg_realloc;
-    lwfree_var = rt_pg_free;
-    lwerror_var = rt_pg_error;
-    lwnotice_var = rt_pg_notice;
-}
-#endif /* defined by libpgcommon } */
-
-
 void
 rt_init_allocators(void)
 {
