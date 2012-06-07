@@ -235,7 +235,7 @@ print "  GDAL: $gdalver\n" if $gdalver;
 my $RUN = 0;
 my $FAIL = 0;
 my $SKIP = 0;
-my $TEST = "";
+our $TEST = "";
 
 ##################################################################
 # Run the tests
