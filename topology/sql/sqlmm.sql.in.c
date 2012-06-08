@@ -3131,10 +3131,12 @@ BEGIN
     anode = anothernode as isclosed, -- convenience
     false as start_node_isolated, -- convenience
     false as end_node_isolated, -- convenience
+    NULL::geometry as start_node_geom, -- convenience
+    NULL::geometry as end_node_geom, -- convenience
     ST_RemoveRepeatedPoints(acurve) as cleangeom -- convenience
   INTO newedge;
 
-  -- Compute azimut of first edge end on start node
+  -- Compute azimuth of first edge end on start node
   SELECT null::int AS nextCW, null::int AS nextCCW,
          null::float8 AS minaz, null::float8 AS maxaz,
          false AS was_isolated,
@@ -3163,13 +3165,9 @@ BEGIN
   -- and get face information (if any)
   --
   i := 0;
-  FOR rec IN EXECUTE 'SELECT node_id, '
-    || ' CASE WHEN node_id = ' || anode
-    || ' THEN 1 WHEN node_id = ' || anothernode
-    || ' THEN 0 END AS start, containing_face, geom FROM '
+  FOR rec IN EXECUTE 'SELECT node_id, containing_face, geom FROM '
     || quote_ident(atopology)
-    || '.node '
-    || ' WHERE node_id IN ( '
+    || '.node WHERE node_id IN ( '
     || anode || ',' || anothernode
     || ')'
   LOOP
@@ -3189,34 +3187,36 @@ BEGIN
       END IF;
     END IF;
 
-    IF rec.start THEN
-      IF NOT Equals(rec.geom, ST_StartPoint(acurve))
-      THEN
-        RAISE EXCEPTION
-          'SQL/MM Spatial exception - start node not geometry start point.';
-      END IF;
-    ELSE
-      IF NOT Equals(rec.geom, ST_EndPoint(acurve))
-      THEN
-        RAISE EXCEPTION
-          'SQL/MM Spatial exception - end node not geometry end point.';
-      END IF;
+    IF rec.node_id = anode THEN
+      newedge.start_node_geom = rec.geom;
+    END IF;
+
+    IF rec.node_id = anothernode THEN
+      newedge.end_node_geom = rec.geom;
     END IF;
 
     i := i + 1;
   END LOOP;
 
-  IF NOT newedge.isclosed THEN
-    IF i < 2 THEN
+  IF newedge.start_node_geom IS NULL
+  THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
+  ELSIF NOT Equals(newedge.start_node_geom, ST_StartPoint(acurve))
+  THEN
     RAISE EXCEPTION
-     'SQL/MM Spatial exception - non-existent node';
-    END IF;
-  ELSE
-    IF i < 1 THEN
-    RAISE EXCEPTION
-     'SQL/MM Spatial exception - non-existent node';
-    END IF;
+      'SQL/MM Spatial exception - start node not geometry start point.';
   END IF;
+
+  IF newedge.end_node_geom IS NULL
+  THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
+  ELSIF NOT Equals(newedge.end_node_geom, ST_EndPoint(acurve))
+  THEN
+    RAISE EXCEPTION
+      'SQL/MM Spatial exception - end node not geometry end point.';
+  END IF;
+
+  RAISE DEBUG 'All Checked !';
 
   --
   -- Check if this geometry crosses any node
@@ -3762,6 +3762,8 @@ BEGIN
     anode = anothernode as isclosed, -- convenience
     false as start_node_isolated, -- convenience
     false as end_node_isolated, -- convenience
+    NULL::geometry as start_node_geom, -- convenience
+    NULL::geometry as end_node_geom, -- convenience
     ST_RemoveRepeatedPoints(acurve) as cleangeom -- convenience
   INTO newedge;
 
@@ -3794,13 +3796,9 @@ BEGIN
   -- and get face information (if any)
   --
   i := 0;
-  FOR rec IN EXECUTE 'SELECT node_id, '
-    || ' CASE WHEN node_id = ' || anode
-    || ' THEN 1 WHEN node_id = ' || anothernode
-    || ' THEN 0 END AS start, containing_face, geom FROM '
+  FOR rec IN EXECUTE 'SELECT node_id, containing_face, geom FROM '
     || quote_ident(atopology)
-    || '.node '
-    || ' WHERE node_id IN ( '
+    || '.node WHERE node_id IN ( '
     || anode || ',' || anothernode
     || ')'
   LOOP
@@ -3820,33 +3818,33 @@ BEGIN
       END IF;
     END IF;
 
-    IF rec.start THEN
-      IF NOT Equals(rec.geom, ST_StartPoint(acurve))
-      THEN
-        RAISE EXCEPTION
-          'SQL/MM Spatial exception - start node not geometry start point.';
-      END IF;
-    ELSE
-      IF NOT Equals(rec.geom, ST_EndPoint(acurve))
-      THEN
-        RAISE EXCEPTION
-          'SQL/MM Spatial exception - end node not geometry end point.';
-      END IF;
+    IF rec.node_id = anode THEN
+      newedge.start_node_geom = rec.geom;
+    END IF;
+
+    IF rec.node_id = anothernode THEN
+      newedge.end_node_geom = rec.geom;
     END IF;
 
     i := i + 1;
   END LOOP;
 
-  IF NOT newedge.isclosed THEN
-    IF i < 2 THEN
+  IF newedge.start_node_geom IS NULL
+  THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
+  ELSIF NOT Equals(newedge.start_node_geom, ST_StartPoint(acurve))
+  THEN
     RAISE EXCEPTION
-     'SQL/MM Spatial exception - non-existent node';
-    END IF;
-  ELSE
-    IF i < 1 THEN
+      'SQL/MM Spatial exception - start node not geometry start point.';
+  END IF;
+
+  IF newedge.end_node_geom IS NULL
+  THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - non-existent node';
+  ELSIF NOT Equals(newedge.end_node_geom, ST_EndPoint(acurve))
+  THEN
     RAISE EXCEPTION
-     'SQL/MM Spatial exception - non-existent node';
-    END IF;
+      'SQL/MM Spatial exception - end node not geometry end point.';
   END IF;
 
   --

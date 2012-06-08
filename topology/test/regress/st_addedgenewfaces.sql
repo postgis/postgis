@@ -7,6 +7,9 @@ SELECT topology.ST_AddEdgeNewFaces('city_data', 7, 6,
  'LINESTRING(36 38,57 33)');
 SELECT topology.ST_AddEdgeNewFaces('city_data', 5, 7,
  'LINESTRING(36 38,57 33)');
+-- See http://trac.osgeo.org/postgis/ticket/1857
+SELECT topology.ST_AddEdgeModFace('city_data', 5, 5,
+ 'LINESTRING(36 38,57 33)');
 
 -- Crosses a node
 SELECT topology.ST_AddEdgeNewFaces('city_data', 5, 6,
