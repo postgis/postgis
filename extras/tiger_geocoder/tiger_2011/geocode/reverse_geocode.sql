@@ -26,6 +26,7 @@ DECLARE
   var_county varchar;
   var_stmt text;
   var_debug boolean =  get_geocode_setting('debug_reverse_geocode')::boolean;
+  var_rating_highway integer = COALESCE(get_geocode_setting('reverse_geocode_numbered_roads')::integer,0);/**0 no preference, 1 prefer highway number, 2 prefer local name **/
   var_zip varchar := NULL;
   var_primary_fullname varchar := '';
 BEGIN
@@ -133,13 +134,17 @@ BEGIN
 					LEFT JOIN (SELECT featnames.* FROM featnames 
 			    WHERE featnames.statefp = ' || quote_literal(var_state) ||'   ) AS n ON (n.statefp =  e.statefp AND n.tlid = e.tlid) 
 				ORDER BY dist LIMIT 50 ) As foo 
-				ORDER BY foo.tlid, foo.side, foo.fullname ASC NULLS LAST, dist LIMIT 50) As f ORDER BY f.dist ';
+				ORDER BY foo.tlid, foo.side, ';
+				
+	    -- for numbered street/road use var_rating_highway to determine whether to prefer numbered or not (0 no pref, 1 prefer numbered, 2 prefer named)
+		var_stmt := var_stmt || ' CASE $1 WHEN 0 THEN 0  WHEN 1 THEN CASE WHEN foo.fullname ~ ''[0-9]+'' THEN 0 ELSE 1 END ELSE CASE WHEN foo.fullname > '''' AND NOT (foo.fullname ~ ''[0-9]+'') THEN 0 ELSE 1 END END ';
+		var_stmt := var_stmt || ',  foo.fullname ASC NULLS LAST, dist LIMIT 50) As f ORDER BY CASE WHEN f.dist < 20 THEN 1 ELSE f.dist END, CASE WHEN fullname > '''' THEN 0 ELSE 1 END '; --don't bother penalizing for distance if less than 20 meters
 				
 	IF var_debug = true THEN
-	    RAISE NOTICE 'Statement 1: %', var_stmt;
+	    RAISE NOTICE 'Statement 1: %', replace(var_stmt, '$1', var_rating_highway::text);
 	END IF;
 
-    FOR var_redge IN EXECUTE var_stmt LOOP
+    FOR var_redge IN EXECUTE var_stmt USING var_rating_highway LOOP
         IF var_debug THEN
             RAISE NOTICE 'Start Get matching edges loop: %,%', var_primary_line, clock_timestamp();
         END IF;
