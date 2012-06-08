@@ -102,16 +102,6 @@ main (int argc, char **argv)
 
 		case 'D':
 			config->dump_format = 1;
-			if (!config->usetransaction)
-			{
-				fprintf(stderr, "Cannot use both -D and -e.\n");
-				exit(1);
-			}
-			if (config->shp_sr_id != SRID_UNKNOWN)
-			{
-				fprintf(stderr, "Cannot use both -D and -r.\n");
-				exit(1);
-			}
 			break;
 
 		case 'G':
@@ -126,27 +116,22 @@ main (int argc, char **argv)
 			if (pgis_optarg)
 			{
 				char *ptr = strchr(pgis_optarg, ':');
-				if ( ptr )
+				if (ptr)
 				{
-					if (config->dump_format)
-					{
-						fprintf(stderr, "Cannot use both -D and -r.\n");
-						exit(1);
-					}
 					*ptr++ = '\0';
-					sscanf(pgis_optarg, "%d", &(config->shp_sr_id));
-					if ( ! *ptr ) { printf("No ptr?\n"); usage(); exit(1); }
-					sscanf(ptr, "%d", &(config->sr_id));
+					sscanf(pgis_optarg, "%d", &config->shp_sr_id);
+					sscanf(ptr, "%d", &config->sr_id);
 				}
 				else
 				{
-					sscanf(pgis_optarg, "%d", &(config->sr_id));
+					/* Only TO_SRID specified */
+					sscanf(pgis_optarg, "%d", &config->sr_id);
 				}
 			}
 			else
 			{
-				/* With -s, user must specify SRID or FROM_SRID:TO_SRID */
-				usage();
+				/* With -s, user must specify TO_SRID or FROM_SRID:TO_SRID */
+				fprintf(stderr, "The -s parameter must be specified in the form [FROM_SRID:]TO_SRID\n");
 				exit(1);
 			}
 			break;
@@ -230,11 +215,6 @@ main (int argc, char **argv)
 
 		case 'e':
 			config->usetransaction = 0;
-			if (config->dump_format)
-			{
-				fprintf(stderr, "Cannot use both -D and -e.\n");
-				exit(1);
-			}
 			break;
 
 		case '?':
@@ -245,6 +225,19 @@ main (int argc, char **argv)
 			usage();
 			exit(0);
 		}
+	}
+
+	/* Once we have parsed the arguments, make sure certain combinations are valid */
+	if (config->dump_format && !config->usetransaction)
+	{
+		fprintf(stderr, "Invalid argument combination - cannot use both -D and -e\n");
+		exit(1);
+	}
+
+	if (config->dump_format && config->shp_sr_id != SRID_UNKNOWN)
+	{
+		fprintf(stderr, "Invalid argument combination - cannot use -D with -s FROM_SRID:TO_SRID\n");
+		exit(1);
 	}
 
 	/* Determine the shapefile name from the next argument, if no shape file, exit. */
