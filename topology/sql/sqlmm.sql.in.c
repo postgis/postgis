@@ -3084,11 +3084,6 @@ DECLARE
   sql TEXT;
   newfaces INTEGER[];
   newface INTEGER;
-  p1 GEOMETRY;
-  p2 GEOMETRY;
-  seg GEOMETRY;
-  p1b GEOMETRY;
-  p2b GEOMETRY;
 BEGIN
 
   --
@@ -3720,10 +3715,6 @@ DECLARE
   sql TEXT;
   newfaces INTEGER[];
   newface INTEGER;
-  do_add BOOLEAN;
-  bounds GEOMETRY;
-  p1 GEOMETRY;
-  p2 GEOMETRY;
 BEGIN
 
   --
