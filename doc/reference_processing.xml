@@ -72,7 +72,7 @@ The optional third parameter (currently only applies to geometry) can either spe
 <para>'join=round|mitre|bevel' : join style (defaults to "round", needs GEOS-3.2 or higher for a different value). 'miter' is also accepted as a synonym for 'mitre'.</para>
 </listitem>
 <listitem>
-<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.</para>
+<para>'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'.</para>
 </listitem>
 </itemizedlist>
 				</para>
