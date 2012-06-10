@@ -1172,7 +1172,7 @@ delete one of the them and modify the other to take the space of both.
                 <para>
 Removes an edge and, if the removed edge separated two faces,
 delete one of the them and modify the other to take the space of both.
-Preferencially keeps the face on the right, to be symmetric with
+Preferentially keeps the face on the right, to be symmetric with 
 ST_AddEdgeModFace also keeping it.
 Returns the id of the face remaining in place of the removed edge.
 		            </para>

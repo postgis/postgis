@@ -7,7 +7,7 @@
   functions to the raster objects which are not of use to a general
   user.</para>
   <para><varname>raster</varname> is a new PostGIS type for storing and analyzing raster data. </para>
-  <para>For loading rasters from raster files please refere to <xref linkend="RT_Loading_Rasters" /></para>  
+  <para>For loading rasters from raster files please refer to <xref linkend="RT_Loading_Rasters" /></para>  
    
     <para>For the examples in this reference we will be using a raster table of dummy rasters - Formed with the following code </para>
 <programlisting>CREATE TABLE dummy_rast(rid integer, rast raster);
@@ -388,12 +388,12 @@ VALUES (1,
 			<listitem><para><varname>blocksize</varname> sets both X and Y blocksize</para></listitem>
 			<listitem><para><varname>blocksize_x</varname> sets X tile (width in pixels of each tile)</para></listitem>
 			<listitem><para><varname>blocksize_y</varname> sets Y tile (height in pixels of each tile)</para></listitem>
-			<listitem><para><varname>extent</varname> computes extent of whole table and applys constraint all rasters must be withint that extent</para></listitem>
+			<listitem><para><varname>extent</varname> computes extent of whole table and applys constraint all rasters must be within that extent</para></listitem>
 
 			<listitem><para><varname>num_bands</varname> number of bands</para></listitem>
 			<listitem><para><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</para></listitem>
 			<listitem><para><varname>regular_blocking</varname> apply informational flag to denote all tiles are regularly blocked</para></listitem>
-			<listitem><para><varname>same_alignment</varname> ensures they all have same alignment meanign any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment" /></para></listitem>
+			<listitem><para><varname>same_alignment</varname> ensures they all have same alignment meaning any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment" /></para></listitem>
 			<listitem><para><varname>srid</varname> ensures all have same srid</para></listitem>
 			<listitem><para>More -- any listed as inputs into the above functions</para></listitem>
 		</itemizedlist>
@@ -415,7 +415,7 @@ VALUES (1,
 
 		<programlisting>CREATE TABLE myrasters(rid SERIAL primary key, rast raster);
 INSERT INTO myrasters(rast)
-SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI', -129, NULL);
+SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
 
 SELECT AddRasterConstraints('myrasters'::name, 'rast'::name);
 
@@ -436,12 +436,12 @@ SELECT srid, scale_x, scale_y, blocksize_x, blocksize_y, num_bands, pixel_types,
 
 		<programlisting>CREATE TABLE public.myrasters2(rid SERIAL primary key, rast raster);
 INSERT INTO myrasters2(rast)
-SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI', -129, NULL);
+SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1, '8BSI'::text, -129, NULL);
 
 SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');
 -- get notice--
 NOTICE:  Adding regular blocking constraint
-INFO:  The regular_blocking constraint is just a flag indicating that the column "rast" is regularly blocked.  As no function exist yet to assert that a raster column is regularly blocked, it is up to the end-user to ensure that the column is truely regularly blocked.
+INFO:  The regular_blocking constraint is just a flag indicating that the column "rast" is regularly blocked.  As no function exist yet to assert that a raster column is regularly blocked, it is up to the end-user to ensure that the column is truly regularly blocked.
 CONTEXT:  PL/pgSQL function "addrasterconstraints" line 85 at assignment
 NOTICE:  Adding blocksize-X constraint
 NOTICE:  Adding blocksize-Y constraint</programlisting>
@@ -578,7 +578,7 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 		<para>Drops PostGIS raster constraints that refer to a raster table column that were added by <xref linkend="RT_AddRasterConstraints" />. Useful if you need to load more data or update your raster column data.
 		You do not need to do this if you want to get rid of a raster table or a raster column. </para>
 		<para>To drop a raster table use the standard <programlisting>DROP TABLE mytable</programlisting></para>
-		<para>To drop justa  araster column and leave the rest of the table, use standard SQL <programlisting>ALTER TABLE mytable DROP COLUMN rast</programlisting></para>
+		<para>To drop just a raster column and leave the rest of the table, use standard SQL <programlisting>ALTER TABLE mytable DROP COLUMN rast</programlisting></para>
 		<para>the table will disappear from the <varname>raster_columns</varname> catalog if the column or table is dropped.  However if only the constraints are dropped, the
 		raster column will still be listed in the <varname>raster_columns</varname> catalog, but there will be no other information about it aside from the column name and table.</para>
 		<para>Availability: 2.0.0</para>
@@ -1620,7 +1620,7 @@ rid | numbands
 				
 				<para>Returns the height of a pixel in geometric units of the spatial reference system. In the common case where 
 				there is no skew, the pixel height is just the scale ratio between geometric coordinates and raster pixels.</para>
-				<para>Refer to <xref linkend="RT_ST_PixelWidth" /> for a diagramatic visualization of the relationship. </para>
+				<para>Refer to <xref linkend="RT_ST_PixelWidth" /> for a diagrammatic visualization of the relationship. </para>
 			</refsection>
 			
 			<refsection>
@@ -2346,7 +2346,9 @@ FROM dummy_rast;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SRID" /></para>
+				<para><xref linkend="RT_ST_Raster2WorldCoordX" />, 
+				<xref linkend="RT_ST_Raster2WorldCoordY" />, 
+				<xref linkend="RT_ST_SRID" /></para>
 			</refsection>
 		</refentry>
 		
@@ -7299,7 +7301,7 @@ FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;</programli
 			
 			<refsection>
 				<title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
-				<programlisting>-- this creates a muli band raster collecting all the tiles that intersect a line
+				<programlisting>-- this creates a multi band raster collecting all the tiles that intersect a line
 SELECT ST_AddBand(NULL,ARRAY[ST_Union(rast,1), ST_Union(rast,2), ST_Union(rast,3) ])
 FROM aerials.boston
 WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );</programlisting>

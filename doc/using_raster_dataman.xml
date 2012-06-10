@@ -81,7 +81,7 @@
         </varlistentry>
      
 		<varlistentry>
-			<term>Raster processing: Applying contraints for proper registering in raster catalogs</term>
+			<term>Raster processing: Applying constraints for proper registering in raster catalogs</term>
 			<listitem>
 				<para>
 					<variablelist>

@@ -2243,7 +2243,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 
 		<note>
 		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
-			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text representation, since that will not auto-cast.</para>
 		</note>
 
 		<para>&Z_support;</para>
@@ -2311,7 +2311,7 @@ st_xmax
 
 		<note>
 		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
-			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text representation, since that will not auto-cast.</para>
 		</note>
 
 		<para>&Z_support;</para>
@@ -2435,7 +2435,7 @@ SELECT ST_Y(ST_Centroid(ST_GeomFromEWKT('LINESTRING(1 2 3 4, 1 1 1 1)')));
 
 		<note>
 		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
-			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text representation, since that will not auto-cast.</para>
 		</note>
 
 		<para>&Z_support;</para>
@@ -2503,7 +2503,7 @@ st_ymax
 
 		<note>
 		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
-			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text representation, since that will not auto-cast.</para>
 		</note>
 
 		<para>&Z_support;</para>
@@ -2620,7 +2620,7 @@ st_ymin
 
 		<note>
 		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
-			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text representation, since that will not auto-cast.</para>
 		</note>
 
 		<para>&Z_support;</para>
@@ -2748,7 +2748,7 @@ SELECT ST_Zmflag(ST_GeomFromEWKT('POINT(1 2 3 4)'));
 
 		<note>
 		  <para>Although this function is only defined for box3d, it will work for box2d and geometry because of the auto-casting behavior
-			defined for geometries and box2d.  However you can not feed it a geometry or box2d text represenation, since that will not auto-cast.</para>
+			defined for geometries and box2d.  However you can not feed it a geometry or box2d text representation, since that will not auto-cast.</para>
 		</note>
 
 		<para>&Z_support;</para>

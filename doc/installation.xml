@@ -549,14 +549,13 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <title>Building PostGIS Extensions and Deploying them</title>
 
 	  <para>
-		The PostGIS extensions which is usable for PostgreSQL 9.1+, can be built by cding into the extension folders and doing a make install.
-		This will be an automated process in the future when PostGIS is compiled against a 9.1 build and fully integrated int ot he build process.
+		The PostGIS extensions are built and installed automatically if you are using PostgreSQL 9.1+. 
 	  </para>
-	  <para>If you are building from souce repository, you need to build the function descriptions first with:</para>
+	  <para>If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:</para>
 	  <programlisting>make comments</programlisting>
 	  <para>Building the comments is not necessary if you are building from a release tar ball since these are packaged pre-built with the tar ball already.</para>
 	  <para>If you are building against PostgreSQL 9.1, the extensions should automatically build as part of the make install process.  You can if needed build from the extensions
-	  folders or copy files if you need them on a differnt server. </para>
+	  folders or copy files if you need them on a different server. </para>
 	  <programlisting>cd extensions
 cd postgis
 make clean
@@ -1155,7 +1154,7 @@ pretty_address
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
 			<programlisting>No migration path defined for ... to &last_release_version;</programlisting>
-		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup ontop of this new database.
+		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup on top of this new database.
 		You might get a message that <code>postgis extension</code> already installed which you can safely ignore.</para>
 		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
 		picks up the newest latest version during restore. .</para></note>
@@ -1282,7 +1281,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlis
     be used at all.
     All your custom records with invalid SRIDs will be retained,
     with those > 999999 moved into the reserved range, but the
-    spatial_ref_sys table would loose a check contraint guarding
+    spatial_ref_sys table would loose a check constraint guarding
     for that invariant to hold and possibly also its primary key
     ( when multiple invalid SRIDS get converted to the same reserved
     SRID value ).
