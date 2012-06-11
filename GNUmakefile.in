@@ -21,6 +21,10 @@ all install uninstall noop clean distclean check:
 
 all: postgis_svn_revision.h
 
+ifneq ($(XSLTPROC),)
+all: comments
+endif
+
 install: all comments-install
 
 uninstall: docs-uninstall comments-uninstall
