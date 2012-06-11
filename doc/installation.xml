@@ -605,6 +605,11 @@ in the <varname>extensions</varname> section of the database browser tree and wi
 <programlisting>CREATE EXTENSION postgis;
 CREATE EXTENSION postgis_topology;</programlisting>
 
+<warning><para>Extension tables <varname>spatial_ref_sys</varname>, <varname>layer</varname>, <varname>topology</varname> can not be explicitly backed up.  They can only 
+be backed up when the respective <varname>postgis</varname> or <varname>postgis_topology</varname> extension is backed up, which only seems to happen when you backup the whole database. 
+As of PostGIS 2.0.1, only srid records not packaged with PostGIS are backed up when the database is backed up so don't go around changing srids we package and expect your changes to be there. Put in a ticket if you find an issue.  The structures of extension tables are never backed up since they are created with <code>CREATE EXTENSION</code>
+and assumed to be the same for a given version of an extension. These behaviors are built into the current PostgreSQL extension model, so nothing we can do about it.</para></warning>
+
 <para>If you installed &last_release_version;, without using our wonderful extension system, you can change it to be extension based by first upgrading to the latest micro version running the upgrade scripts: <filename>postgis_upgrade_20_minor.sql</filename>,<filename>raster_upgrade_20_minor.sql</filename>,<filename>topology_upgrade_20_minor.sql</filename>.</para>
 <para>If you installed postgis without raster support, you'll need to install raster support first (using the full <filename>rtpostgis.sql</filename></para>
 <para>Then you can run teh below commands to package the functions in their respective extension.</para>
