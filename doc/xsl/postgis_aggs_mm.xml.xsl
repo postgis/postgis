@@ -439,6 +439,70 @@
 
 		<sect1 id="NewFunctions">
 			<title>New, Enhanced or changed PostGIS Functions</title>
+				<sect2 id="NewFunctions_2_1">
+				<title>PostGIS Functions new, behavior changed, or enhanced in 2.1</title>
+				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
+				
+				<note><para>More Topology performance Improvements.  Please refer to <xref linkend="Topology" /> for more details.</para></note>
+				<note><para>Bug fixes to <xref linkend="RT_reference" /> for more details of the raster functions available. </para></note>
+				<note><para>Tiger Geocoder upgraded to work with TIGER 2011 census data and now included in the core PostGIS documentation.  <varname>geocode_settings</varname> added for debugging and tweaking rating preferences, loader made less greedy
+				ow only downloads tables to be loaded.</para>
+					Please refer to <xref linkend="Tiger_Geocoder" /> for more details.</para></note>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="refnamediv/refname"/>
+						<xsl:variable name='comment'>
+							<xsl:value-of select="normalize-space(translate(translate(refnamediv/refpurpose,'&#x0d;&#x0a;', ' '), '&#09;', ' '))"/>
+						</xsl:variable>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+
+
+				<!-- For each section if there is note about availability in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Availability: 2.1')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /><xsl:text> </xsl:text> <xsl:value-of select="$comment" /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
+				
+				<para>The functions given below are PostGIS functions that are enhanced in PostGIS 2.1.</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry   -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="@id"/>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+				<!-- For each section if there is note about enhanced in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Enhanced: 2.1')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>				
+			</sect2>
+		
 			<sect2 id="NewFunctions_2_0">
 				<title>PostGIS Functions new, behavior changed, or enhanced in 2.0</title>
 				<para>The functions given below are PostGIS functions that were added, enhanced, or have <xref linkend="NewFunctions_2_0_Changed" /> breaking changes in 2.0 releases.</para>
