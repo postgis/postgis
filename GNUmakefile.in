@@ -21,7 +21,7 @@ all install uninstall noop clean distclean check:
 
 all: postgis_svn_revision.h
 
-install: all
+install: all comments-install
 
 uninstall: docs-uninstall comments-uninstall
 
