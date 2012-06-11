@@ -327,3 +327,9 @@ DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, integer, integer, integ
 DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, integer, integer, boolean);
 DROP FUNCTION IF EXISTS st_neighborhood(raster, integer, geometry, integer, boolean);
 DROP FUNCTION IF EXISTS st_neighborhood(raster, geometry, integer, boolean);
+
+-- variants of st_intersection with regprocedure no longer exist
+DROP FUNCTION IF EXISTS st_intersection(raster, integer, raster, integer, text, regprocedure);
+DROP FUNCTION IF EXISTS st_intersection(raster, integer, raster, integer, regprocedure);
+DROP FUNCTION IF EXISTS st_intersection(raster, raster, text, regprocedure);
+DROP FUNCTION IF EXISTS st_intersection(raster, raster, regprocedure);
