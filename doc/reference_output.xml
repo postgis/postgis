@@ -450,7 +450,7 @@ namespace prefix or no prefix (if empty). If null or omitted 'gml' prefix is use
 		  <para>Availability: 1.5.0 geography support was introduced.</para>
 		  <para>Enhanced: 2.0.0 prefix support was introduced. Option 4 for GML3 was introduced to allow using LineString instead of Curve tag for lines. GML3 Support for Polyhedral surfaces and TINS was introduced. Option 32 was introduced to output the box.</para>
 		  <para>Changed: 2.0.0 use default named args</para>
-		  <para>Availability: 2.1.0 id support was introduced, for GML 3.</para>
+		  <para>Enhanced: 2.1.0 id support was introduced, for GML 3.</para>
 		 
 		<note><para>Only version 3+ of ST_AsGML supports Polyhedral Surfaces and TINS.</para></note>
 		<para>&Z_support;</para>

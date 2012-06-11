@@ -3328,6 +3328,7 @@ WHERE
 				<para>
 					Band numbers start at 1 and <varname>bandnum</varname> is assumed to be 1 if not specified. If <varname>exclude_nodata_value</varname> is set to false, then all pixels include <varname>nodata</varname> pixels are considered to intersect and return value. If <varname>exclude_nodata_value</varname> is not passed in then reads it from metadata of raster.
 				</para>
+				<para>Availability: 2.1.0</para>
 				<note>
 					<para>
 						ST_NearestValue is a drop-in replacement for ST_Value.
