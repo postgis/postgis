@@ -446,7 +446,7 @@
 				<note><para>More Topology performance Improvements.  Please refer to <xref linkend="Topology" /> for more details.</para></note>
 				<note><para>Bug fixes to <xref linkend="RT_reference" /> for more details of the raster functions available. </para></note>
 				<note><para>Tiger Geocoder upgraded to work with TIGER 2011 census data and now included in the core PostGIS documentation.  <varname>geocode_settings</varname> added for debugging and tweaking rating preferences, loader made less greedy
-				ow only downloads tables to be loaded.</para>
+				ow only downloads tables to be loaded.
 					Please refer to <xref linkend="Tiger_Geocoder" /> for more details.</para></note>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
