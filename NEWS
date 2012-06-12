@@ -26,7 +26,8 @@ PostGIS 2.0.1
   - #1813, Only show readable relations in metadata tables. 
   - #1819, fix floating point issues with ST_World2RasterCoord and
            ST_Raster2WorldCoord variants.
-  - #1820  compilation on 9.2beta1
+  - #1820  compilation on 9.2beta1.
+  - #1822, topology load on PostgreSQL 9.2beta1.
   - #1825, fix prepared geometry cache lookup
   - #1829, fix uninitialized read in GeoJSON parser
   - #1830, fix dumper against PgSQL 9.2 (dfuhry)?

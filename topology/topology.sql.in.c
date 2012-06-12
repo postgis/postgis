@@ -189,6 +189,9 @@
 -- Let people decide about that
 -- DROP SCHEMA topology CASCADE;
 
+#include "../postgis/sqldefines.h"
+
+
 CREATE SCHEMA topology;
 
 -- Doing everything outside of a transaction helps
@@ -1985,8 +1988,6 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 
 --general management --
 #include "sql/manage/ManageHelper.sql.in.c"
-
-#include "../postgis/sqldefines.h"
 
 CREATE OR REPLACE FUNCTION postgis_topology_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
