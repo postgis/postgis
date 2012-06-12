@@ -51,7 +51,7 @@ _PG_init(void)
 
 #ifdef WIN32
 #if POSTGIS_GEOS_VERSION >= 34 
-  GEOS_interruptRegisterCallback();
+  GEOS_interruptRegisterCallback(geosInterruptCallback);
 #endif
 #endif
 
