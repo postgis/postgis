@@ -68,10 +68,12 @@ Datum ST_MakeValid(PG_FUNCTION_ARGS)
 	switch ( lwgeom_in->type )
 	{
 	case POINTTYPE:
+	case MULTIPOINTTYPE:
 	case LINETYPE:
 	case POLYGONTYPE:
 	case MULTILINETYPE:
 	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
 		break;
 
 	default:

@@ -1579,9 +1579,11 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
     geometry without loosing any of the input vertices. 
     Already-valid geometries are returned w/out further intervention.
     </para>
-    
+
     <para>
-    Supported inputs are: LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS.
+    Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS,
+    MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS and GEOMETRYCOLLECTIONS
+    containing any mix of them.
     </para>
     
     <para>
@@ -1594,7 +1596,7 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
     Single polygons may become multi-geometries in case of self-intersections.
     </para>
     
-    <para>Availability: 2.0.0, requires GEOS-3.3.0 or higher.</para>
+    <para>Availability: 2.0.0, requires GEOS-3.3.0 or higher. 2.1.0 added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
     
     <para>&Z_support;</para>
     
