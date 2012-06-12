@@ -166,7 +166,8 @@ CREATE OR REPLACE VIEW geography_columns AS
         AND a.atttypid = t.oid
         AND a.attrelid = c.oid
         AND c.relnamespace = n.oid
-        AND NOT pg_is_other_temp_schema(c.relnamespace);
+        AND NOT pg_is_other_temp_schema(c.relnamespace)
+        AND has_table_privilege( c.oid, 'SELECT'::text );
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography(geometry)
