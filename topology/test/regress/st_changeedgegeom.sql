@@ -17,6 +17,14 @@ SELECT topology.ST_ChangeEdgeGeom('city_data', 25,
 SELECT topology.ST_ChangeEdgeGeom('city_data', 3,
   'LINESTRING(25 30, 20 36, 20 38, 25 35)');
 
+-- Non-simple edge
+SELECT topology.ST_ChangeEdgeGeom('city_data', 1,
+  'LINESTRING(8 30, 9 30, 8 30)');
+
+-- Dimensionally collapsed edge (#1774)
+SELECT topology.ST_ChangeEdgeGeom('city_data', 1,
+  'LINESTRING(8 30, 8 30, 8 30)');
+
 -- Non-existent edge (#979)
 SELECT topology.ST_ChangeEdgeGeom('city_data', 666,
   'LINESTRING(25 30, 20 36, 20 38, 25 35)');
