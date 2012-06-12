@@ -215,6 +215,12 @@ cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.
 
 ifeq ($(XSLTPROC),)
 comments-install: 
+	if test -e postgis_comments.sql  -a \
+	        -e raster_comments.sql   -a \
+	        -e topology_comments.sql -a \
+	        -e tiger_geocoder_comments.sql; then \
+	  $(MAKE) -f Makefile.comments install; \
+	fi
 else
 comments-install: comments
 	$(MAKE) -f Makefile.comments install
