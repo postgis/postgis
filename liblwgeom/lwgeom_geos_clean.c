@@ -613,6 +613,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 			/* cleanup and throw */
 			GEOSGeom_destroy(geos_cut_edges);
 			GEOSGeom_destroy(geos_area);
+			/* TODO: Shouldn't this be an lwerror ? */
 			lwnotice("GEOSDifference() threw an error: %s",
 			         lwgeom_geos_errmsg);
 			return NULL;
@@ -664,6 +665,7 @@ LWGEOM_GEOS_makeValidPolygon(const GEOSGeometry* gin)
 		if ( ! gout )   /* an exception again */
 		{
 			/* cleanup and throw */
+			/* TODO: Shouldn't this be an lwerror ? */
 			lwnotice("GEOSGeom_createCollection() threw an error: %s",
 			         lwgeom_geos_errmsg);
 			/* TODO: cleanup! */
@@ -792,6 +794,58 @@ LWGEOM_GEOS_makeValidMultiLine(const GEOSGeometry* gin)
 	return gout;
 }
 
+static GEOSGeometry* LWGEOM_GEOS_makeValid(const GEOSGeometry*);
+
+/*
+ * We expect initGEOS being called already.
+ * Will return NULL on error (expect error handler being called by then)
+ */
+static GEOSGeometry*
+LWGEOM_GEOS_makeValidCollection(const GEOSGeometry* gin)
+{
+	int nvgeoms;
+	GEOSGeometry **vgeoms;
+	GEOSGeom gout;
+	unsigned int i;
+
+	nvgeoms = GEOSGetNumGeometries(gin);
+	if ( nvgeoms == -1 ) {
+		lwerror("GEOSGetNumGeometries: %s", lwgeom_geos_errmsg);
+		return 0;
+	}
+
+	vgeoms = lwalloc( sizeof(GEOSGeometry*) * nvgeoms );
+	if ( ! vgeoms ) {
+		lwerror("LWGEOM_GEOS_makeValidCollection: out of memory");
+		return 0;
+	}
+
+	for ( i=0; i<nvgeoms; ++i ) {
+		vgeoms[i] = LWGEOM_GEOS_makeValid( GEOSGetGeometryN(gin, i) );
+		if ( ! vgeoms[i] ) {
+			while (i--) GEOSGeom_destroy(vgeoms[i]);
+			lwfree(vgeoms);
+			/* we expect lwerror being called already by makeValid */
+			return NULL;
+		}
+	}
+
+	/* Collect areas and lines (if any line) */
+	gout = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, vgeoms, nvgeoms);
+	lwfree(vgeoms);
+	if ( ! gout )   /* an exception again */
+	{
+		/* cleanup and throw */
+		for ( i=0; i<nvgeoms; ++i ) GEOSGeom_destroy(vgeoms[i]);
+		lwerror("GEOSGeom_createCollection() threw an error: %s",
+		         lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	return gout;
+
+}
+
 
 static GEOSGeometry*
 LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
@@ -864,6 +918,18 @@ LWGEOM_GEOS_makeValid(const GEOSGeometry* gin)
 	case GEOS_MULTIPOLYGON:
 	{
 		gout = LWGEOM_GEOS_makeValidPolygon(gin);
+		if ( ! gout )  /* an exception or something */
+		{
+			/* cleanup and throw */
+			lwerror("%s", lwgeom_geos_errmsg);
+			return NULL;
+		}
+		break; /* we've done */
+	}
+
+	case GEOS_GEOMETRYCOLLECTION:
+	{
+		gout = LWGEOM_GEOS_makeValidCollection(gin);
 		if ( ! gout )  /* an exception or something */
 		{
 			/* cleanup and throw */

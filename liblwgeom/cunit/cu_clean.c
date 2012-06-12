@@ -21,6 +21,7 @@ static void test_lwgeom_make_valid(void)
 #if POSTGIS_GEOS_VERSION >= 33
 	LWGEOM *gin, *gout;
 	int ret;
+	char *ewkt;
 
 	/* Because i don't trust that much prior tests...  ;) */
 	cu_error_msg_reset();
@@ -38,6 +39,24 @@ static void test_lwgeom_make_valid(void)
 	 *       to the excepion:
 	 * See http://trac.osgeo.org/postgis/ticket/1735
 	 */
+
+	lwgeom_free(gout);
+	lwgeom_free(gin);
+
+
+	gin = lwgeom_from_wkt(
+"GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))",
+		LW_PARSER_CHECK_NONE);
+	CU_ASSERT(gin);
+
+	gout = lwgeom_make_valid(gin);
+	CU_ASSERT(gout);
+
+	ewkt = lwgeom_to_ewkt(gout);
+	printf("c = %s\n", ewkt);
+	CU_ASSERT_STRING_EQUAL(ewkt,
+"GEOMETRYCOLLECTION(POINT(0 0),MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))),LINESTRING(10 0,10 10))");
+	lwfree(ewkt);
 
 	lwgeom_free(gout);
 	lwgeom_free(gin);
