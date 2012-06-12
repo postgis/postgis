@@ -15,6 +15,7 @@ PostGIS 2.0.1
   - #1766, don't let ST_RemEdge* destroy peripheral TopoGeometry objects.
   - #1775, ST_ChangeEdgeGeom collision detection with 2-vertex target.
   - #1776, fix ST_SymDifference(empty, geom) to return geom.
+  - #1779, install SQL comment files.
   - #1782, fix spatial reference string handling in raster.
   - #1789, fix false edge-node crossing report in ValidateTopology.
   - #1790, fix toTopoGeom handling of duplicated primitives.
