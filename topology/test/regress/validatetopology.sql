@@ -16,6 +16,9 @@ COPY t.edge_data (edge_id, start_node, end_node, next_left_edge, abs_next_left_e
 \.
 SELECT '#1789', * FROM ValidateTopology('t') UNION 
 SELECT '#1789', '---', null, null ORDER BY 1,2,3,4;
-select null from ( select topology.DropTopology('t') ) as dt;
 
+SELECT '#1797', (ValidateTopology('t')).* UNION 
+SELECT '#1797', '---', null, null ORDER BY 1,2,3,4;
+
+select null from ( select topology.DropTopology('t') ) as dt;
 
