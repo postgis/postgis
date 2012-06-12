@@ -23,6 +23,7 @@ PostGIS 2.0.1
   - #1791, fix ST_Azimuth with very close but distinct points.
   - #1797, fix (ValidateTopology(xxx)).* syntax calls.
   - #1805, put back the 900913 SRID entry.
+  - #1813, Only show readable relations in metadata tables. 
   - #1819, fix floating point issues with ST_World2RasterCoord and
            ST_Raster2WorldCoord variants.
   - #1820  compilation on 9.2beta1
