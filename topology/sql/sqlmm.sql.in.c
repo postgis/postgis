@@ -2547,7 +2547,7 @@ BEGIN
       WHERE p.sequence = CASE WHEN m.sequence-1 < 1 THEN cnt
                          ELSE m.sequence-1 END
     ), (
-      SELECT p.edge AS prev FROM edgestar p                                           WHERE p.sequence = ((m.sequence)%cnt)+1
+      SELECT p.edge AS prev FROM edgestar p WHERE p.sequence = ((m.sequence)%cnt)+1
     ) ]
   FROM edgestar m
   WHERE edge = anedge
@@ -2642,7 +2642,12 @@ BEGIN
     --       (should be part of isomorphism checking)
     range := ST_MakePolygon(oldedge.geom);
     iscw := ST_OrderingEquals(range, ST_ForceRHR(range));
+
+    IF ST_NumPoints(ST_RemoveRepeatedPoints(acurve)) < 3 THEN
+      RAISE EXCEPTION 'Invalid edge (no two distinct vertices exist)';
+    END IF;
     range := ST_MakePolygon(acurve);
+
     IF iscw != ST_OrderingEquals(range, ST_ForceRHR(range)) THEN
       RAISE EXCEPTION 'Edge twist at node %',
         ST_AsText(ST_StartPoint(oldedge.geom));
