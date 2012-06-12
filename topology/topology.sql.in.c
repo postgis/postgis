@@ -1617,6 +1617,8 @@ BEGIN
   END LOOP;
 #endif
 
+  DROP TABLE face_check;
+
   RETURN;
 END
 $$
