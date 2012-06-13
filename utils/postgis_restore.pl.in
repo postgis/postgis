@@ -141,9 +141,16 @@ print STDOUT "CREATE TEMP TABLE _pgis_restore_spatial_ref_sys AS "
             ."SELECT * FROM spatial_ref_sys;\n";
 print STDOUT "DELETE FROM spatial_ref_sys;\n";
 
+my $inCopy;
 while( my $l = <INPUT> ) {
+  if ( $l =~ /^COPY .+ FROM stdin;$/ ) {
+    $inCopy = 1;
+  }
+  elsif ( $inCopy && $l =~ /^\\\.$/ ) {
+    $inCopy = 0;
+  }
 
-  next if $l =~ /^ *--/;
+  next if !$inCopy && $l =~ /^ *--/;
 
   if ( $l =~ /^SET search_path/ ) {
     $l =~ s/; *$/, public;/; 
