@@ -74,6 +74,7 @@ $$ LANGUAGE 'plpgsql';
 -- Invalid calls
 SELECT 'invalid', TopoGeo_addPolygon('city_data', 'MULTILINESTRING((36 26, 38 30))');
 SELECT 'invalid', TopoGeo_addPolygon('city_data', 'POINT(36 26)');
+SELECT 'invalid', TopoGeo_addPolygon('invalid', 'POLYGON((36 26, 40 24, 40 30, 36 26))');
 
 -- Isolated face in universal face
 SELECT 'iso_uni', TopoGeo_addPolygon('city_data', 'POLYGON((36 26, 38 30, 43 26, 36 26))');

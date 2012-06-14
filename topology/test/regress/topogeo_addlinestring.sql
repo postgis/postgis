@@ -58,6 +58,7 @@ $$ LANGUAGE 'plpgsql';
 -- Invalid calls
 SELECT 'invalid', TopoGeo_addLineString('city_data', 'MULTILINESTRING((36 26, 38 30))');
 SELECT 'invalid', TopoGeo_addLineString('city_data', 'POINT(36 26)');
+SELECT 'invalid', TopoGeo_addLineString('invalid', 'LINESTRING(36 26, 0 0)');
 
 -- Isolated edge in universal face
 SELECT 'iso_uni', TopoGeo_addLineString('city_data', 'LINESTRING(36 26, 38 30)');
