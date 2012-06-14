@@ -42,18 +42,27 @@ $$ LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- {
 -- Get tolerance for a given topology
--- and if zero the min for a given topology
+-- and if zero the minimum for the given geometry
 --
 -- }{
 CREATE OR REPLACE FUNCTION topology._st_mintolerance(atopology varchar, ageom Geometry)
   RETURNS float8
 AS $$
+DECLARE
+  ret FLOAT8;
+BEGIN
   SELECT COALESCE(
     NULLIF(precision, 0),
     topology._st_mintolerance($2))
   FROM topology.topology
-  WHERE name = $1;
-$$ LANGUAGE 'sql' STABLE STRICT;
+  WHERE name = $1 INTO ret;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION
+      'No topology with name "%" in topology.topology', atopology;
+  END IF;
+  return ret;
+END;
+$$ LANGUAGE 'plpgsql' STABLE STRICT;
 -- }
 
 --{

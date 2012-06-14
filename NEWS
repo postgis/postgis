@@ -37,6 +37,7 @@ PostGIS 2.0.1
   - #1857, fix failure to detect endpoint mismatch in ST_AddEdge*Face* 
   - #1865, data loss in postgis_restore.pl when data rows have leading
            dashes.
+  - #1867, catch invalid topology name passed to topogeo_add*
 
 * Enhancements *
 
