@@ -96,7 +96,8 @@ SELECT 4, rid, gid, ST_Clip(rast, geom, ARRAY[255, 254, 253], true)
 FROM raster_clip, geom_clip;
 
 -- Display the metadata of the resulting rasters
-SELECT	tid,
+SELECT
+	tid,
 	rid,
 	gid,
 	round(upperleftx::numeric, 3) AS upperleftx,
@@ -121,20 +122,35 @@ FROM (
 ) AS r;
 
 -- Display the pixels and the values of the resulting rasters (raster 1)
-SELECT tid, rid, gid, (gvxy).x, (gvxy).y, (gvxy).val, ST_AsText((gvxy).geom) geom
+SELECT
+	tid,
+	rid,
+	gid,
+	(gvxy).x,
+	(gvxy).y,
+	(gvxy).val,
+	ST_AsText((gvxy).geom) geom
 FROM (SELECT tid, rid, gid, ST_PixelAsPolygons(rast) gvxy
       FROM raster_clip_out
       WHERE rid = 1
 ) foo
-ORDER BY 1, 2, 3, 4, 5;
+ORDER BY 1, 2, 3, 4, 5, 7;
 
 -- Display the pixels and the values of the resulting rasters (raster 2, 3 bands)
-SELECT tid, rid, gid, band, (gvxy).x, (gvxy).y, (gvxy).val, ST_AsText((gvxy).geom) geom
+SELECT
+	tid,
+	rid,
+	gid,
+	band,
+	(gvxy).x,
+	(gvxy).y,
+	(gvxy).val,
+	ST_AsText((gvxy).geom) geom
 FROM (SELECT tid, rid, gid, band, ST_PixelAsPolygons(rast, band) gvxy
       FROM raster_clip_out, generate_series(1, 3) band
       WHERE rid = 2
 ) foo
-ORDER BY 1, 2, 3, 4, 5;
+ORDER BY 1, 2, 3, 4, 5, 6, 8;
 
 DROP TABLE IF EXISTS geom_clip;
 DROP TABLE IF EXISTS raster_clip;
