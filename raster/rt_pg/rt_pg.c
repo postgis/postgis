@@ -506,7 +506,23 @@ rtpg_getSR(int srid)
 	char *tmp = NULL;
 	char *srs = NULL;
 
-	len = sizeof(char) * (strlen("SELECT CASE WHEN upper(auth_name) = 'EPSG' AND length(auth_srid::text) > 0 THEN upper(auth_name) || ':' || auth_srid ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
+/*
+SELECT
+	CASE
+		WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0
+			THEN upper(auth_name) || ':' || auth_srid
+		WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0
+			THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')
+		ELSE ''
+	END,
+	proj4text,
+	srtext
+FROM spatial_ref_sys
+WHERE srid = X
+LIMIT 1
+*/
+
+	len = sizeof(char) * (strlen("SELECT CASE WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0 THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '') ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid =  LIMIT 1") + MAX_INT_CHARLEN + 1);
 	sql = (char *) palloc(len);
 	if (NULL == sql) {
 		elog(ERROR, "rtpg_getSR: Unable to allocate memory for sql\n");
@@ -521,7 +537,7 @@ rtpg_getSR(int srid)
 	}
 
 	/* execute query */
-	snprintf(sql, len, "SELECT CASE WHEN upper(auth_name) = 'EPSG' AND length(auth_srid::text) > 0 THEN upper(auth_name) || ':' || auth_srid ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
+	snprintf(sql, len, "SELECT CASE WHEN (upper(auth_name) = 'EPSG' OR upper(auth_name) = 'EPSGA') AND length(COALESCE(auth_srid::text, '')) > 0 THEN upper(auth_name) || ':' || auth_srid WHEN length(COALESCE(auth_name, '') || COALESCE(auth_srid::text, '')) > 0 THEN COALESCE(auth_name, '') || COALESCE(auth_srid::text, '') ELSE '' END, proj4text, srtext FROM spatial_ref_sys WHERE srid = %d LIMIT 1", srid);
 	POSTGIS_RT_DEBUGF(4, "SRS query: %s", sql);
 	spi_result = SPI_execute(sql, TRUE, 0);
 	SPI_pfree(sql);
