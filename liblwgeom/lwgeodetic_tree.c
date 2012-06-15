@@ -5,6 +5,7 @@
 
 /* Internal prototype */
 static CIRC_NODE* circ_nodes_merge(CIRC_NODE** nodes, int num_nodes);
+static double circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, double threshold, double* min_dist, double* max_dist, GEOGRAPHIC_POINT* closest1, GEOGRAPHIC_POINT* closest2);
 
 
 /**
@@ -310,7 +311,7 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	* If the stabline doesn't cross within the radius of a node, there's no 
 	* way it can cross.
 	*/
-	circ_tree_print(node, 0);
+//	circ_tree_print(node, 0);
 	d = edge_distance_to_point(&stab_edge, &(node->center), &closest);
 	LWDEBUGF(4, "edge_distance_to_point %g", d);
 	if ( FP_LTEQ(d, node->radius) )
@@ -379,17 +380,31 @@ circ_node_max_distance(const CIRC_NODE *n1, const CIRC_NODE *n2)
 {
 	return sphere_distance(&(n1->center), &(n2->center)) + n1->radius + n2->radius;
 }
- 
-double 
-circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, double threshold, double* min_dist, double* max_dist)
+
+double
+circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID* spheroid, double threshold)
+{
+	double min_dist = MAXFLOAT;
+	double max_dist = MAXFLOAT;
+	GEOGRAPHIC_POINT closest1, closest2;
+	double distance1, distance2;
+
+	distance1 = circ_tree_distance_tree_internal(n1, n2, threshold, &min_dist, &max_dist, &closest1, &closest2);
+	distance2 = spheroid_distance(&closest1, &closest2, spheroid);
+
+	return distance2;
+}
+
+static double 
+circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, double threshold, double* min_dist, double* max_dist, GEOGRAPHIC_POINT* closest1, GEOGRAPHIC_POINT* closest2)
 {	
 	double max;
 	double d, d_min;
 	int i;
 	
 	LWDEBUGF(4, "entered, min_dist %.8g max_dist %.8g", *min_dist, *max_dist);
-	circ_tree_print(n1, 0);
-	circ_tree_print(n2, 0);
+//	circ_tree_print(n1, 0);
+//	circ_tree_print(n2, 0);
 	
 	/* Short circuit if we've already hit the minimum */
 	if( FP_LT(*min_dist, threshold) )
@@ -414,29 +429,43 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, double thresho
 		if( circ_node_is_leaf(n2) )
 		{
 			double d;
+			GEOGRAPHIC_POINT close1, close2;
 			LWDEBUGF(4, "testing pair [%d], [%d]", n1->edge_num, n2->edge_num);		
 			/* One of the nodes is a point */
 			if ( n1->p1 == n1->p2 || n2->p1 == n2->p2 )
 			{
 				GEOGRAPHIC_EDGE e;
-				GEOGRAPHIC_POINT gp;
-				if ( n1->p1 == n1->p2 )
+				GEOGRAPHIC_POINT gp1, gp2;
+
+				/* Both nodes are points! */
+				if ( n1->p1 == n1->p2 && n2->p1 == n2->p2 )
 				{
-					geographic_point_init(n1->p1->x, n1->p1->y, &gp);
+					geographic_point_init(n1->p1->x, n1->p1->y, &gp1);
+					geographic_point_init(n2->p1->x, n2->p1->y, &gp2);
+					close1 = gp1; close2 = gp2;
+					d = sphere_distance(&gp1, &gp2);
+				}				
+				/* Node 1 is a point */
+				else if ( n1->p1 == n1->p2 )
+				{
+					geographic_point_init(n1->p1->x, n1->p1->y, &gp1);
 					geographic_point_init(n2->p1->x, n2->p1->y, &(e.start));
 					geographic_point_init(n2->p2->x, n2->p2->y, &(e.end));
-					
+					close1 = gp1;
+					d = edge_distance_to_point(&e, &gp1, &close2);
 				}
+				/* Node 2 is a point */
 				else
 				{
-					geographic_point_init(n2->p1->x, n2->p1->y, &gp);
+					geographic_point_init(n2->p1->x, n2->p1->y, &gp1);
 					geographic_point_init(n1->p1->x, n1->p1->y, &(e.start));
 					geographic_point_init(n1->p2->x, n1->p2->y, &(e.end));
+					close1 = gp1;
+					d = edge_distance_to_point(&e, &gp1, &close2);
 				}
-				d = edge_distance_to_point(&e, &gp, NULL);
 				LWDEBUGF(4, "  got distance %g", d);		
 			}
-			/* Both nodes have area */
+			/* Both nodes are edges */
 			else
 			{
 				GEOGRAPHIC_EDGE e1, e2;
@@ -444,10 +473,14 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, double thresho
 				geographic_point_init(n1->p2->x, n1->p2->y, &(e1.end));
 				geographic_point_init(n2->p1->x, n2->p1->y, &(e2.start));
 				geographic_point_init(n2->p2->x, n2->p2->y, &(e2.end));
-				d = edge_distance_to_edge(&e1, &e2, NULL, NULL);
+				d = edge_distance_to_edge(&e1, &e2, &close1, &close2);
 			}
 			if ( d < *min_dist )
+			{
 				*min_dist = d;
+				*closest1 = close1;
+				*closest2 = close2;
+			}
 			return d;
 		}
 		else
@@ -455,7 +488,7 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, double thresho
 			d_min = MAXFLOAT;
 			for ( i = 0; i < n2->num_nodes; i++ )
 			{
-				d = circ_tree_distance_tree(n1, n2->nodes[i], threshold, min_dist, max_dist);
+				d = circ_tree_distance_tree_internal(n1, n2->nodes[i], threshold, min_dist, max_dist, closest1, closest2);
 				d_min = FP_MIN(d_min, d);
 			}
 			return d_min;
@@ -466,7 +499,7 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, double thresho
 		d_min = MAXFLOAT;
 		for ( i = 0; i < n1->num_nodes; i++ )
 		{
-			d = circ_tree_distance_tree(n2, n1->nodes[i], threshold, min_dist, max_dist);
+			d = circ_tree_distance_tree_internal(n2, n1->nodes[i], threshold, min_dist, max_dist, closest1, closest2);
 			d_min = FP_MIN(d_min, d);
 		}
 		return d_min;

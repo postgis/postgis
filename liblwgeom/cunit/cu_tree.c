@@ -110,7 +110,6 @@ static void test_tree_circ_distance(void)
 	CIRC_NODE *cline, *cpoint;
 	SPHEROID s;
 	double distance_tree, distance_geom;
-	double mind = MAXFLOAT, maxd = MAXFLOAT;
 	double threshold = 0.0;
 	
 	spheroid_init(&s, 1.0, 1.0);
@@ -119,7 +118,7 @@ static void test_tree_circ_distance(void)
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(-2 0)", LW_PARSER_CHECK_NONE));
 	cline = circ_tree_new(line->points);
 	cpoint = circ_tree_new(point->point);
-	distance_tree = circ_tree_distance_tree(cpoint, cline, threshold, &mind, &maxd);
+	distance_tree = circ_tree_distance_tree(cpoint, cline, &s, threshold);
 	distance_geom = lwgeom_distance_spheroid((LWGEOM*)line, (LWGEOM*)point, &s, threshold);
 	circ_tree_free(cline);
 	circ_tree_free(cpoint);
@@ -131,7 +130,7 @@ static void test_tree_circ_distance(void)
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(2 2)", LW_PARSER_CHECK_NONE));
 	cline = circ_tree_new(line->points);
 	cpoint = circ_tree_new(point->point);
-	distance_tree = circ_tree_distance_tree(cpoint, cline, threshold, &mind, &maxd);
+	distance_tree = circ_tree_distance_tree(cpoint, cline, &s, threshold);
 	distance_geom = lwgeom_distance_spheroid((LWGEOM*)line, (LWGEOM*)point, &s, threshold);
 	circ_tree_free(cline);
 	circ_tree_free(cpoint);
@@ -143,7 +142,7 @@ static void test_tree_circ_distance(void)
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(1 1)", LW_PARSER_CHECK_NONE));
 	cline = circ_tree_new(line->points);
 	cpoint = circ_tree_new(point->point);
-	distance_tree = circ_tree_distance_tree(cpoint, cline, threshold, &mind, &maxd);
+	distance_tree = circ_tree_distance_tree(cpoint, cline, &s, threshold);
 	distance_geom = lwgeom_distance_spheroid((LWGEOM*)line, (LWGEOM*)point, &s, threshold);
 	circ_tree_free(cline);
 	circ_tree_free(cpoint);
@@ -155,7 +154,7 @@ static void test_tree_circ_distance(void)
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(1 0.5)", LW_PARSER_CHECK_NONE));
 	cline = circ_tree_new(line->points);
 	cpoint = circ_tree_new(point->point);
-	distance_tree = circ_tree_distance_tree(cpoint, cline, threshold, &mind, &maxd);
+	distance_tree = circ_tree_distance_tree(cpoint, cline, &s, threshold);
 	distance_geom = lwgeom_distance_spheroid((LWGEOM*)line, (LWGEOM*)point, &s, threshold);
 //	printf("distance_tree %g\n", distance_tree);
 //	printf("distance_geom %g\n", distance_geom);
