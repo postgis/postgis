@@ -26,4 +26,4 @@ GEOSGeometry * POSTGIS2GEOS(GSERIALIZED *g);
 
 void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2);
 
-#endif /* LWGEOM_GEOS_H_ 1 */
+#endif /* LWGEOM_GEOS_H_ */

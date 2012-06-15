@@ -912,7 +912,7 @@ int point_in_ring_rtree(RTREE_NODE *root, POINT2D *point)
 
 	POSTGIS_DEBUG(2, "point_in_ring called.");
 
-	lines = findLineSegments(root, point->y);
+	lines = RTreeFindLineSegments(root, point->y);
 	if (!lines)
 		return -1;
 

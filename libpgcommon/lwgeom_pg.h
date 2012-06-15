@@ -154,4 +154,4 @@ Datum LWGEOM_getBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_addBBOX(PG_FUNCTION_ARGS);
 Datum LWGEOM_dropBBOX(PG_FUNCTION_ARGS);
 
-#endif /* !defined _LWGEOM_PG_H 1 */
+#endif /* !defined _LWGEOM_PG_H */

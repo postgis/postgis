@@ -25,19 +25,11 @@
 
 #include "../postgis_config.h"
 #include "lwgeom_functions_analytic.h" /* for point_in_polygon */
-#include "lwgeom_cache.h"
 #include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_rtree.h"
-
-/*
-** GEOS prepared geometry is only available from GEOS 3.1 onwards
-*/
-#define PREPARED_GEOM
-
-#ifdef PREPARED_GEOM
 #include "lwgeom_geos_prepared.h" 
-#endif
+
 
 #include <string.h>
 #include <assert.h>
@@ -86,26 +78,6 @@ Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 /*
 ** Prototypes end
 */
-
-static RTREE_POLY_CACHE *
-GetRtreeCache(FunctionCallInfoData *fcinfo, LWGEOM *lwgeom, GSERIALIZED *poly)
-{
-	MemoryContext old_context;
-	GeomCache* supercache = GetGeomCache(fcinfo);
-	RTREE_POLY_CACHE *poly_cache = supercache->rtree;
-
-	/*
-	 * Switch the context to the function-scope context,
-	 * retrieve the appropriate cache object, cache it for
-	 * future use, then switch back to the local context.
-	 */
-	old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-	poly_cache = retrieveCache(lwgeom, poly, poly_cache);
-	supercache->rtree = poly_cache;
-	MemoryContextSwitchTo(old_context);
-
-	return poly_cache;
-}
 
 
 PG_FUNCTION_INFO_V1(postgis_geos_version);
@@ -1985,9 +1957,7 @@ Datum contains(PG_FUNCTION_ARGS)
 	LWPOINT *point;
 	RTREE_POLY_CACHE *poly_cache;
 	bool result;
-#ifdef PREPARED_GEOM
 	PrepGeomCache *prep_cache;
-#endif
 
 	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2030,9 +2000,9 @@ Datum contains(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
 
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, geom1);
+		poly_cache = GetRtreeCache(fcinfo, geom1);
 
-		if ( poly_cache->ringIndices )
+		if ( poly_cache && poly_cache->ringIndices )
 		{
 			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
@@ -2070,7 +2040,6 @@ Datum contains(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-#ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
@@ -2086,7 +2055,6 @@ Datum contains(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 	}
 	else
-#endif
 	{
 		g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
 		if ( 0 == g1 )   /* exception thrown at construction */
@@ -2127,9 +2095,7 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 	GSERIALIZED *				geom2;
 	bool 					result;
 	GBOX 			box1, box2;
-#ifdef PREPARED_GEOM
 	PrepGeomCache *	prep_cache;
-#endif
 
 	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2156,7 +2122,6 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-#ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
@@ -2171,7 +2136,6 @@ Datum containsproperly(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g);
 	}
 	else
-#endif
 	{
 		GEOSGeometry *g2;
 		GEOSGeometry *g1;
@@ -2221,9 +2185,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	LWGEOM *lwgeom;
 	LWPOINT *point;
 	RTREE_POLY_CACHE *poly_cache;
-#ifdef PREPARED_GEOM
 	PrepGeomCache *prep_cache;
-#endif
 
 	geom1 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2244,7 +2206,7 @@ Datum covers(PG_FUNCTION_ARGS)
 	        gserialized_get_gbox_p(geom2, &box2) )
 	{
 		if (( box2.xmin < box1.xmin ) || ( box2.xmax > box1.xmax ) ||
-		        ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
+		    ( box2.ymin < box1.ymin ) || ( box2.ymax > box1.ymax ))
 		{
 			PG_RETURN_BOOL(FALSE);
 		}
@@ -2264,9 +2226,9 @@ Datum covers(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
 
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, geom1);
+		poly_cache = GetRtreeCache(fcinfo, geom1);
 
-		if ( poly_cache->ringIndices )
+		if ( poly_cache && poly_cache->ringIndices )
 		{
 			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
@@ -2305,7 +2267,6 @@ Datum covers(PG_FUNCTION_ARGS)
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-#ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, 0 );
 
 	if ( prep_cache && prep_cache->prepared_geom && prep_cache->argnum == 1 )
@@ -2320,7 +2281,6 @@ Datum covers(PG_FUNCTION_ARGS)
 		GEOSGeom_destroy(g1);
 	}
 	else
-#endif
 	{
 		GEOSGeometry *g1;
 		GEOSGeometry *g2;
@@ -2421,9 +2381,9 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		point = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom1));
 		lwgeom = lwgeom_from_gserialized(geom2);
 
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, geom2);
+		poly_cache = GetRtreeCache(fcinfo, geom2);
 
-		if ( poly_cache->ringIndices )
+		if ( poly_cache && poly_cache->ringIndices )
 		{
 			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
@@ -2574,9 +2534,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	LWPOINT *point;
 	LWGEOM *lwgeom;
 	RTREE_POLY_CACHE *poly_cache;
-#ifdef PREPARED_GEOM
 	PrepGeomCache *prep_cache;
-#endif
 
 	geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	geom2 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
@@ -2609,7 +2567,7 @@ Datum intersects(PG_FUNCTION_ARGS)
 	type1 = gserialized_get_type(geom1);
 	type2 = gserialized_get_type(geom2);
 	if ( (type1 == POINTTYPE && (type2 == POLYGONTYPE || type2 == MULTIPOLYGONTYPE)) ||
-	        (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
+	     (type2 == POINTTYPE && (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE)))
 	{
 		POSTGIS_DEBUG(3, "Point in Polygon test requested...short-circuiting.");
 
@@ -2628,9 +2586,9 @@ Datum intersects(PG_FUNCTION_ARGS)
 			polytype = type1;
 		}
 
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, serialized_poly);
+		poly_cache = GetRtreeCache(fcinfo, serialized_poly);
 
-		if ( poly_cache->ringIndices )
+		if ( poly_cache && poly_cache->ringIndices )
 		{
 			result = point_in_multipolygon_rtree(poly_cache->ringIndices, poly_cache->polyCount, poly_cache->ringCounts, point);
 		}
@@ -2664,7 +2622,6 @@ Datum intersects(PG_FUNCTION_ARGS)
 	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
-#ifdef PREPARED_GEOM
 	prep_cache = GetPrepGeomCache( fcinfo, geom1, geom2 );
 
 	if ( prep_cache && prep_cache->prepared_geom )
@@ -2693,7 +2650,6 @@ Datum intersects(PG_FUNCTION_ARGS)
 		}
 	}
 	else
-#endif
 	{
 		GEOSGeometry *g1;
 		GEOSGeometry *g2;

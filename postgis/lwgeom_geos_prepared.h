@@ -33,7 +33,6 @@
 ** while Contains only requires that the containing argument be checked.
 ** Both the Geometry and the PreparedGeometry have to be cached,
 ** because the PreparedGeometry contains a reference to the geometry.
-*/
 typedef struct
 {
 	char                          type;
@@ -47,6 +46,15 @@ typedef struct
 	MemoryContext                 context;
 }
 PrepGeomCache;
+*/
+
+typedef struct
+{
+	int                           argnum;
+	const GEOSPreparedGeometry    *prepared_geom;
+	const GEOSGeometry            *geom;
+}
+PrepGeomCache;
 
 /*
 ** Get the current cache, given the input geometries.
@@ -58,4 +66,4 @@ PrepGeomCache;
 */
 PrepGeomCache *GetPrepGeomCache(FunctionCallInfoData *fcinfo, GSERIALIZED *pg_geom1, GSERIALIZED *pg_geom2);
 
-#endif /* LWGEOM_GEOS_PREPARED_H_ 1 */
+#endif /* LWGEOM_GEOS_PREPARED_H_ */

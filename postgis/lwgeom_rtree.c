@@ -15,99 +15,144 @@
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"         /* For FP comparators. */
+#include "lwgeom_cache.h"
 #include "lwgeom_rtree.h"
 
 
-Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS);
-
+/* Prototypes */
+static void RTreeFree(RTREE_NODE* root);
 
 /**
- * Creates an rtree given a pointer to the point array.
- * Must copy the point array.
- */
-RTREE_NODE *createTree(POINTARRAY *pointArray)
+* Allocate a fresh clean RTREE_POLY_CACHE
+*/
+static RTREE_POLY_CACHE* 
+RTreeCacheCreate()
 {
-	RTREE_NODE *root;
-	RTREE_NODE** nodes = lwalloc(sizeof(RTREE_NODE*) * pointArray->npoints);
-	int i, nodeCount;
-	int childNodes, parentNodes;
-
-	POSTGIS_DEBUGF(2, "createTree called with pointarray %p", pointArray);
-
-	nodeCount = pointArray->npoints - 1;
-
-	POSTGIS_DEBUGF(3, "Total leaf nodes: %d", nodeCount);
-
-	/*
-	 * Create a leaf node for every line segment.
-	 */
-	for (i = 0; i < nodeCount; i++)
-	{
-		nodes[i] = createLeafNode(pointArray, i);
-	}
-
-	/*
-	 * Next we group nodes by pairs.  If there's an odd number of nodes,
-	 * we bring the last node up a level as is.	 Continue until we have
-	 * a single top node.
-	 */
-	childNodes = nodeCount;
-	parentNodes = nodeCount / 2;
-	while (parentNodes > 0)
-	{
-		POSTGIS_DEBUGF(3, "Merging %d children into %d parents.", childNodes, parentNodes);
-
-		i = 0;
-		while (i < parentNodes)
-		{
-			nodes[i] = createInteriorNode(nodes[i*2], nodes[i*2+1]);
-			i++;
-		}
-		/*
-		 * Check for an odd numbered final node.
-		 */
-		if (parentNodes * 2 < childNodes)
-		{
-			POSTGIS_DEBUGF(3, "Shuffling child %d to parent %d", childNodes - 1, i);
-
-			nodes[i] = nodes[childNodes - 1];
-			parentNodes++;
-		}
-		childNodes = parentNodes;
-		parentNodes = parentNodes / 2;
-	}
-
-	root = nodes[0];
-	lwfree(nodes);
-	POSTGIS_DEBUGF(3, "createTree returning %p", root);
-
-	return root;
+	RTREE_POLY_CACHE* result;
+	result = lwalloc(sizeof(RTREE_POLY_CACHE));
+	memset(result, 0, sizeof(RTREE_POLY_CACHE));
+	return result;
 }
 
 /**
- * Creates an interior node given the children.
- */
-RTREE_NODE *createInteriorNode(RTREE_NODE *left, RTREE_NODE *right)
+* Recursively frees the child nodes, the interval and the line before
+* freeing the root node.
+*/
+static void 
+RTreeFree(RTREE_NODE* root)
+{
+	POSTGIS_DEBUGF(2, "RTreeFree called for %p", root);
+
+	if (root->leftNode)
+		RTreeFree(root->leftNode);
+	if (root->rightNode)
+		RTreeFree(root->rightNode);
+	lwfree(root->interval);
+	if (root->segment)
+	{
+		lwline_free(root->segment);
+	}
+	lwfree(root);
+}
+
+/**
+* Free the cache object and all the sub-objects properly.
+*/
+static void 
+RTreeCacheClear(RTREE_POLY_CACHE* cache)
+{
+	int g, r, i;
+	POSTGIS_DEBUGF(2, "RTreeCacheClear called for %p", cache);
+	i = 0;
+	for (g = 0; g < cache->polyCount; g++)
+	{
+		for (r = 0; r < cache->ringCounts[g]; r++)
+		{
+			RTreeFree(cache->ringIndices[i]);
+			i++;
+		}
+	}
+	lwfree(cache->ringIndices);
+	lwfree(cache->ringCounts);
+	cache->ringIndices = 0;
+	cache->ringCounts = 0;
+	cache->polyCount = 0;
+}
+
+
+/**
+ * Returns 1 if min < value <= max, 0 otherwise. 
+*/
+static uint32 
+IntervalIsContained(RTREE_INTERVAL* interval, double value)
+{
+	return FP_CONTAINS_INCL(interval->min, value, interval->max) ? 1 : 0;
+}
+
+/**
+* Creates an interval with the total extents of the two given intervals.
+*/
+static RTREE_INTERVAL* 
+RTreeMergeIntervals(RTREE_INTERVAL *inter1, RTREE_INTERVAL *inter2)
+{
+	RTREE_INTERVAL *interval;
+
+	POSTGIS_DEBUGF(2, "RTreeMergeIntervals called with %p, %p", inter1, inter2);
+
+	interval = lwalloc(sizeof(RTREE_INTERVAL));
+	interval->max = FP_MAX(inter1->max, inter2->max);
+	interval->min = FP_MIN(inter1->min, inter2->min);
+
+	POSTGIS_DEBUGF(3, "interval min = %8.3f, max = %8.3f", interval->min, interval->max);
+
+	return interval;
+}
+
+/**
+* Creates an interval given the min and max values, in arbitrary order.
+*/
+static RTREE_INTERVAL*
+RTreeCreateInterval(double value1, double value2)
+{
+	RTREE_INTERVAL *interval;
+
+	POSTGIS_DEBUGF(2, "RTreeCreateInterval called with %8.3f, %8.3f", value1, value2);
+
+	interval = lwalloc(sizeof(RTREE_INTERVAL));
+	interval->max = FP_MAX(value1, value2);
+	interval->min = FP_MIN(value1, value2);
+
+	POSTGIS_DEBUGF(3, "interval min = %8.3f, max = %8.3f", interval->min, interval->max);
+
+	return interval;
+}
+
+/**
+* Creates an interior node given the children.
+*/
+static RTREE_NODE* 
+RTreeCreateInteriorNode(RTREE_NODE* left, RTREE_NODE* right)
 {
 	RTREE_NODE *parent;
 
-	POSTGIS_DEBUGF(2, "createInteriorNode called for children %p, %p", left, right);
+	POSTGIS_DEBUGF(2, "RTreeCreateInteriorNode called for children %p, %p", left, right);
 
 	parent = lwalloc(sizeof(RTREE_NODE));
 	parent->leftNode = left;
 	parent->rightNode = right;
-	parent->interval = mergeIntervals(left->interval, right->interval);
+	parent->interval = RTreeMergeIntervals(left->interval, right->interval);
 	parent->segment = NULL;
 
-	POSTGIS_DEBUGF(3, "createInteriorNode returning %p", parent);
+	POSTGIS_DEBUGF(3, "RTreeCreateInteriorNode returning %p", parent);
 
 	return parent;
 }
 
 /**
- * Creates a leaf node given the pointer to the start point of the segment.
- */
-RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
+* Creates a leaf node given the pointer to the start point of the segment.
+*/
+static RTREE_NODE* 
+RTreeCreateLeafNode(POINTARRAY* pa, int startPoint)
 {
 	RTREE_NODE *parent;
 	LWLINE *line;
@@ -116,11 +161,11 @@ RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
 	POINT4D tmp;
 	POINTARRAY *npa;
 
-	POSTGIS_DEBUGF(2, "createLeafNode called for point %d of %p", startPoint, pa);
+	POSTGIS_DEBUGF(2, "RTreeCreateLeafNode called for point %d of %p", startPoint, pa);
 
 	if (pa->npoints < startPoint + 2)
 	{
-		lwerror("createLeafNode: npoints = %d, startPoint = %d", pa->npoints, startPoint);
+		lwerror("RTreeCreateLeafNode: npoints = %d, startPoint = %d", pa->npoints, startPoint);
 	}
 
 	/*
@@ -141,179 +186,92 @@ RTREE_NODE *createLeafNode(POINTARRAY *pa, int startPoint)
 	line = lwline_construct(SRID_UNKNOWN, NULL, npa);
 	
 	parent = lwalloc(sizeof(RTREE_NODE));
-	parent->interval = createInterval(value1, value2);
+	parent->interval = RTreeCreateInterval(value1, value2);
 	parent->segment = line;
 	parent->leftNode = NULL;
 	parent->rightNode = NULL;
 
-	POSTGIS_DEBUGF(3, "createLeafNode returning %p", parent);
+	POSTGIS_DEBUGF(3, "RTreeCreateLeafNode returning %p", parent);
 
 	return parent;
 }
 
 /**
- * Creates an interval with the total extents of the two given intervals.
- */
-INTERVAL *mergeIntervals(INTERVAL *inter1, INTERVAL *inter2)
+* Creates an rtree given a pointer to the point array.
+* Must copy the point array.
+*/
+static RTREE_NODE* 
+RTreeCreate(POINTARRAY* pointArray)
 {
-	INTERVAL *interval;
+	RTREE_NODE* root;
+	RTREE_NODE** nodes = lwalloc(pointArray->npoints * sizeof(RTREE_NODE*));
+	int i, nodeCount;
+	int childNodes, parentNodes;
 
-	POSTGIS_DEBUGF(2, "mergeIntervals called with %p, %p", inter1, inter2);
+	POSTGIS_DEBUGF(2, "RTreeCreate called with pointarray %p", pointArray);
 
-	interval = lwalloc(sizeof(INTERVAL));
-	interval->max = FP_MAX(inter1->max, inter2->max);
-	interval->min = FP_MIN(inter1->min, inter2->min);
+	nodeCount = pointArray->npoints - 1;
 
-	POSTGIS_DEBUGF(3, "interval min = %8.3f, max = %8.3f", interval->min, interval->max);
+	POSTGIS_DEBUGF(3, "Total leaf nodes: %d", nodeCount);
 
-	return interval;
-}
-
-/**
- * Creates an interval given the min and max values, in arbitrary order.
- */
-INTERVAL *createInterval(double value1, double value2)
-{
-	INTERVAL *interval;
-
-	POSTGIS_DEBUGF(2, "createInterval called with %8.3f, %8.3f", value1, value2);
-
-	interval = lwalloc(sizeof(INTERVAL));
-	interval->max = FP_MAX(value1, value2);
-	interval->min = FP_MIN(value1, value2);
-
-	POSTGIS_DEBUGF(3, "interval min = %8.3f, max = %8.3f", interval->min, interval->max);
-
-	return interval;
-}
-
-/**
- * Recursively frees the child nodes, the interval and the line before
- * freeing the root node.
- */
-void freeTree(RTREE_NODE *root)
-{
-	POSTGIS_DEBUGF(2, "freeTree called for %p", root);
-
-	if (root->leftNode)
-		freeTree(root->leftNode);
-	if (root->rightNode)
-		freeTree(root->rightNode);
-	lwfree(root->interval);
-	if (root->segment)
+	/*
+	 * Create a leaf node for every line segment.
+	 */
+	for (i = 0; i < nodeCount; i++)
 	{
-		lwline_free(root->segment);
-	}
-	lwfree(root);
-}
-
-
-/**
- * Free the cache object and all the sub-objects properly.
- */
-void clearCache(RTREE_POLY_CACHE *cache)
-{
-	int g, r, i;
-	POSTGIS_DEBUGF(2, "clearCache called for %p", cache);
-        i = 0;
-        for (g = 0; g < cache->polyCount; g++)
-        {
-	        for (r = 0; r < cache->ringCounts[g]; r++)
-	        {
-		        freeTree(cache->ringIndices[i]);
-                        i++;
-                }
-	}
-	lwfree(cache->ringIndices);
-        lwfree(cache->ringCounts);
-	lwfree(cache->poly);
-	cache->poly = 0;
-	cache->ringIndices = 0;
-	cache->ringCounts = 0;
-	cache->polyCount = 0;
-}
-
-
-/**
- * Retrieves a collection of line segments given the root and crossing value.
- * The collection is a multilinestring consisting of two point lines
- * representing the segments of the ring that may be crossed by the
- * horizontal projection line at the given y value.
- */
-LWMLINE *findLineSegments(RTREE_NODE *root, double value)
-{
-	LWMLINE *tmp, *result;
-	LWGEOM **lwgeoms;
-
-	POSTGIS_DEBUGF(2, "findLineSegments called for tree %p and value %8.3f", root, value);
-
-	result = NULL;
-
-	if (!isContained(root->interval, value))
-	{
-		POSTGIS_DEBUGF(3, "findLineSegments %p: not contained.", root);
-
-		return NULL;
+		nodes[i] = RTreeCreateLeafNode(pointArray, i);
 	}
 
-	/* If there is a segment defined for this node, include it. */
-	if (root->segment)
+	/*
+	 * Next we group nodes by pairs.  If there's an odd number of nodes,
+	 * we bring the last node up a level as is.	 Continue until we have
+	 * a single top node.
+	 */
+	childNodes = nodeCount;
+	parentNodes = nodeCount / 2;
+	while (parentNodes > 0)
 	{
-		POSTGIS_DEBUGF(3, "findLineSegments %p: adding segment %p %d.", root, root->segment, root->segment->type);
+		POSTGIS_DEBUGF(3, "Merging %d children into %d parents.", childNodes, parentNodes);
 
-		lwgeoms = lwalloc(sizeof(LWGEOM *));
-		lwgeoms[0] = (LWGEOM *)root->segment;
-
-		POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, root->segment->type, FLAGS_GET_Z(root->segment->flags));
-
-		result = (LWMLINE *)lwcollection_construct(MULTILINETYPE, SRID_UNKNOWN, NULL, 1, lwgeoms);
-	}
-
-	/* If there is a left child node, recursively include its results. */
-	if (root->leftNode)
-	{
-		POSTGIS_DEBUGF(3, "findLineSegments %p: recursing left.", root);
-
-		tmp = findLineSegments(root->leftNode, value);
-		if (tmp)
+		i = 0;
+		while (i < parentNodes)
 		{
-			POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, FLAGS_GET_Z(tmp->flags));
-
-			if (result)
-				result = mergeMultiLines(result, tmp);
-			else
-				result = tmp;
+			nodes[i] = RTreeCreateInteriorNode(nodes[i*2], nodes[i*2+1]);
+			i++;
 		}
-	}
-
-	/* Same for any right child. */
-	if (root->rightNode)
-	{
-		POSTGIS_DEBUGF(3, "findLineSegments %p: recursing right.", root);
-
-		tmp = findLineSegments(root->rightNode, value);
-		if (tmp)
+		/*
+		 * Check for an odd numbered final node.
+		 */
+		if (parentNodes * 2 < childNodes)
 		{
-			POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, FLAGS_GET_Z(tmp->flags));
+			POSTGIS_DEBUGF(3, "Shuffling child %d to parent %d", childNodes - 1, i);
 
-			if (result)
-				result = mergeMultiLines(result, tmp);
-			else
-				result = tmp;
+			nodes[i] = nodes[childNodes - 1];
+			parentNodes++;
 		}
+		childNodes = parentNodes;
+		parentNodes = parentNodes / 2;
 	}
 
-	return result;
+	root = nodes[0];
+	lwfree(nodes);
+	POSTGIS_DEBUGF(3, "RTreeCreate returning %p", root);
+
+	return root;
 }
 
-/** Merges two multilinestrings into a single multilinestring. */
-LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
+
+/** 
+* Merges two multilinestrings into a single multilinestring. 
+*/
+static LWMLINE* 
+RTreeMergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 {
 	LWGEOM **geoms;
 	LWCOLLECTION *col;
 	int i, j, ngeoms;
 
-	POSTGIS_DEBUGF(2, "mergeMultiLines called on %p, %d, %d; %p, %d, %d", line1, line1->ngeoms, line1->type, line2, line2->ngeoms, line2->type);
+	POSTGIS_DEBUGF(2, "RTreeMergeMultiLines called on %p, %d, %d; %p, %d, %d", line1, line1->ngeoms, line1->type, line2, line2->ngeoms, line2->type);
 
 	ngeoms = line1->ngeoms + line2->ngeoms;
 	geoms = lwalloc(sizeof(LWGEOM *) * ngeoms);
@@ -329,101 +287,43 @@ LWMLINE *mergeMultiLines(LWMLINE *line1, LWMLINE *line2)
 	}
 	col = lwcollection_construct(MULTILINETYPE, SRID_UNKNOWN, NULL, ngeoms, geoms);
 
-	POSTGIS_DEBUGF(3, "mergeMultiLines returning %p, %d, %d", col, col->ngeoms, col->type);
+	POSTGIS_DEBUGF(3, "RTreeMergeMultiLines returning %p, %d, %d", col, col->ngeoms, col->type);
 
 	return (LWMLINE *)col;
 }
 
+
 /**
- * Returns 1 if min < value <= max, 0 otherwise. */
-uint32 isContained(INTERVAL *interval, double value)
+* Callback function sent into the GetGeomCache generic caching system. Given a
+* LWGEOM* this function builds and stores an RTREE_POLY_CACHE into the provided
+* GeomCache object.
+*/
+static int 
+RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 {
-	return FP_CONTAINS_INCL(interval->min, value, interval->max) ? 1 : 0;
-}
-
-PG_FUNCTION_INFO_V1(LWGEOM_polygon_index);
-Datum LWGEOM_polygon_index(PG_FUNCTION_ARGS)
-{
-	GSERIALIZED *igeom, *result;
-	LWPOLY *poly;
-	LWMLINE *mline;
-	RTREE_NODE *root;
-	double yval;
-#if POSTGIS_DEBUG_LEVEL >= 3
-	int i = 0;
-#endif
-
-	POSTGIS_DEBUG(2, "polygon_index called.");
-
-	result = NULL;
-	igeom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	yval = PG_GETARG_FLOAT8(1);
-	if ( gserialized_get_type(igeom) != POLYGONTYPE )
-	{
-		PG_FREE_IF_COPY(igeom, 0);
-		PG_RETURN_NULL();
-	}
-	poly = lwgeom_as_lwpoly(lwgeom_from_gserialized(igeom));
-	root = createTree(poly->rings[0]);
-
-	mline = findLineSegments(root, yval);
-
-#if POSTGIS_DEBUG_LEVEL >= 3
-	POSTGIS_DEBUGF(3, "mline returned %p %d", mline, mline->type);
-	for (i = 0; i < mline->ngeoms; i++)
-	{
-		POSTGIS_DEBUGF(3, "geom[%d] %p %d", i, mline->geoms[i], mline->geoms[i]->type);
-	}
-#endif
-
-	if (mline)
-		result = geometry_serialize((LWGEOM *)mline);
-
-	POSTGIS_DEBUGF(3, "returning result %p", result);
-
-	lwfree(root);
-
-	lwpoly_free(poly);
-	lwmline_free(mline);
-	PG_FREE_IF_COPY(igeom, 0);
-	PG_RETURN_POINTER(result);
-
-}
-
-RTREE_POLY_CACHE * createCache()
-{
-	RTREE_POLY_CACHE *result;
-	result = lwalloc(sizeof(RTREE_POLY_CACHE));
-	result->polyCount = 0;
-	result->ringCounts = 0;
-	result->ringIndices = 0;
-	result->poly = 0;
-	result->type = 1;
-	return result;
-}
-
-void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, GSERIALIZED *serializedPoly)
-{
-	int i, p, r, length;
+	int i, p, r;
 	LWMPOLY *mpoly;
 	LWPOLY *poly;
 	int nrings;
-
-	POSTGIS_DEBUGF(2, "populateCache called with cache %p geom %p", currentCache, lwgeom);
-
+	RTREE_POLY_CACHE* currentCache;
+	
+	if ( ! cache )
+		return LW_FAILURE;
+	
 	if (lwgeom->type == MULTIPOLYGONTYPE)
 	{
-		POSTGIS_DEBUG(2, "populateCache MULTIPOLYGON");
+		POSTGIS_DEBUG(2, "RTreeBuilder MULTIPOLYGON");
 		mpoly = (LWMPOLY *)lwgeom;
 		nrings = 0;
 		/*
 		** Count the total number of rings.
 		*/
+		currentCache = RTreeCacheCreate();
 		currentCache->polyCount = mpoly->ngeoms;
 		currentCache->ringCounts = lwalloc(sizeof(int) * mpoly->ngeoms);
 		for ( i = 0; i < mpoly->ngeoms; i++ )
 		{
-                        currentCache->ringCounts[i] = mpoly->geoms[i]->nrings;
+			currentCache->ringCounts[i] = mpoly->geoms[i]->nrings;
 			nrings += mpoly->geoms[i]->nrings;
 		}
 		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * nrings);
@@ -436,15 +336,17 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, GSERIALIZED *
 		{
 			for ( r = 0; r < mpoly->geoms[p]->nrings; r++ )
 			{
-				currentCache->ringIndices[i] = createTree(mpoly->geoms[p]->rings[r]);
+				currentCache->ringIndices[i] = RTreeCreate(mpoly->geoms[p]->rings[r]);
 				i++;
 			}
 		}
+		cache->index = (void*)currentCache;
 	}
 	else if ( lwgeom->type == POLYGONTYPE )
 	{
-		POSTGIS_DEBUG(2, "populateCache POLYGON");
+		POSTGIS_DEBUG(2, "RTreeBuilder POLYGON");
 		poly = (LWPOLY *)lwgeom;
+		currentCache = RTreeCacheCreate();
 		currentCache->polyCount = 1;
 		currentCache->ringCounts = lwalloc(sizeof(int));
 		currentCache->ringCounts[0] = poly->nrings;
@@ -454,70 +356,122 @@ void populateCache(RTREE_POLY_CACHE *currentCache, LWGEOM *lwgeom, GSERIALIZED *
 		currentCache->ringIndices = lwalloc(sizeof(RTREE_NODE *) * poly->nrings);
 		for ( i = 0; i < poly->nrings; i++ )
 		{
-			currentCache->ringIndices[i] = createTree(poly->rings[i]);
+			currentCache->ringIndices[i] = RTreeCreate(poly->rings[i]);
 		}
+		cache->index = (void*)currentCache;
 	}
 	else
 	{
 		/* Uh oh, shouldn't be here. */
-		return;
+		lwerror("RTreeBuilder got asked to build index on non-polygon");
+		return LW_FAILURE;
 	}
-
-	/*
-	** Copy the serialized form of the polygon into the cache so
-	** we can test for equality against subsequent polygons.
-	*/
-	length = VARSIZE(serializedPoly);
-	currentCache->poly = lwalloc(length);
-	memcpy(currentCache->poly, serializedPoly, length);
-	POSTGIS_DEBUGF(3, "populateCache returning %p", currentCache);
+	return LW_SUCCESS;	
 }
 
 /**
- * Creates a new cachable index if needed, or returns the current cache if
- * it is applicable to the current polygon.
- * The memory context must be changed to function scope before calling this
- * method.	The method will allocate memory for the cache it creates,
- * as well as freeing the memory of any cache that is no longer applicable.
- */
-RTREE_POLY_CACHE *retrieveCache(LWGEOM *lwgeom, GSERIALIZED *serializedPoly, RTREE_POLY_CACHE *currentCache)
+* Callback function sent into the GetGeomCache generic caching system. On a 
+* cache miss, this function clears the cached index object.
+*/
+static int
+RTreeFreer(GeomCache* cache)
 {
-	int length;
-
-	POSTGIS_DEBUGF(2, "retrieveCache called with %p %p %p", lwgeom, serializedPoly, currentCache);
-
-	assert ( ! currentCache || currentCache->type == 1 );
-
-	if (!currentCache)
+	if ( ! cache )
+		return LW_FAILURE;
+	
+	if ( cache->index )
 	{
-		POSTGIS_DEBUG(3, "No existing cache, create one.");
-		return createCache();
+		RTREE_POLY_CACHE* currentCache = (RTREE_POLY_CACHE*)(cache->index);
+		RTreeCacheClear(currentCache);
+		lwfree(currentCache);
+		cache->index = 0;
 	}
-	if (!(currentCache->poly))
-	{
-		POSTGIS_DEBUG(3, "Cache contains no polygon, populating it.");
-		populateCache(currentCache, lwgeom, serializedPoly);
-		return currentCache;
-	}
-
-	length = VARSIZE(serializedPoly);
-
-	if (VARSIZE(currentCache->poly) != length)
-	{
-		POSTGIS_DEBUG(3, "Polygon size mismatch, creating new cache.");
-		clearCache(currentCache);
-		return currentCache;
-	}
-	if ( memcmp(serializedPoly, currentCache->poly, length) )
-	{
-		POSTGIS_DEBUG(3, "Polygon mismatch, creating new cache.");
-		clearCache(currentCache);
-		return currentCache;
-	}
-
-	POSTGIS_DEBUGF(3, "Polygon match, retaining current cache, %p.",
-	                  currentCache);
-
-	return currentCache;
+	return LW_SUCCESS;
 }
+
+RTREE_POLY_CACHE*
+GetRtreeCache(FunctionCallInfoData* fcinfo, GSERIALIZED* g1)
+{
+	int argnum = 0;
+	RTREE_POLY_CACHE* index = NULL;
+
+	index = (RTREE_POLY_CACHE*)GetGeomIndex(fcinfo, RTREE_CACHE_ENTRY, RTreeBuilder, RTreeFreer, g1, 0, &argnum);
+
+	return index;
+}
+
+
+/**
+* Retrieves a collection of line segments given the root and crossing value.
+* The collection is a multilinestring consisting of two point lines
+* representing the segments of the ring that may be crossed by the
+* horizontal projection line at the given y value.
+*/
+LWMLINE *RTreeFindLineSegments(RTREE_NODE *root, double value)
+{
+	LWMLINE *tmp, *result;
+	LWGEOM **lwgeoms;
+
+	POSTGIS_DEBUGF(2, "RTreeFindLineSegments called for tree %p and value %8.3f", root, value);
+
+	result = NULL;
+
+	if (!IntervalIsContained(root->interval, value))
+	{
+		POSTGIS_DEBUGF(3, "RTreeFindLineSegments %p: not contained.", root);
+
+		return NULL;
+	}
+
+	/* If there is a segment defined for this node, include it. */
+	if (root->segment)
+	{
+		POSTGIS_DEBUGF(3, "RTreeFindLineSegments %p: adding segment %p %d.", root, root->segment, root->segment->type);
+
+		lwgeoms = lwalloc(sizeof(LWGEOM *));
+		lwgeoms[0] = (LWGEOM *)root->segment;
+
+		POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", root->segment, root->segment->type, FLAGS_GET_Z(root->segment->flags));
+
+		result = (LWMLINE *)lwcollection_construct(MULTILINETYPE, SRID_UNKNOWN, NULL, 1, lwgeoms);
+	}
+
+	/* If there is a left child node, recursively include its results. */
+	if (root->leftNode)
+	{
+		POSTGIS_DEBUGF(3, "RTreeFindLineSegments %p: recursing left.", root);
+
+		tmp = RTreeFindLineSegments(root->leftNode, value);
+		if (tmp)
+		{
+			POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, FLAGS_GET_Z(tmp->flags));
+
+			if (result)
+				result = RTreeMergeMultiLines(result, tmp);
+			else
+				result = tmp;
+		}
+	}
+
+	/* Same for any right child. */
+	if (root->rightNode)
+	{
+		POSTGIS_DEBUGF(3, "RTreeFindLineSegments %p: recursing right.", root);
+
+		tmp = RTreeFindLineSegments(root->rightNode, value);
+		if (tmp)
+		{
+			POSTGIS_DEBUGF(3, "Found geom %p, type %d, dim %d", tmp, tmp->type, FLAGS_GET_Z(tmp->flags));
+
+			if (result)
+				result = RTreeMergeMultiLines(result, tmp);
+			else
+				result = tmp;
+		}
+	}
+
+	return result;
+}
+
+
 

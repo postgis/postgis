@@ -24,6 +24,7 @@
 #include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
+#include "lwgeom_cache.h"
 #include "lwgeom_transform.h"
 
 /* C headers */
@@ -37,9 +38,6 @@
 int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int point_offset, double *x, double *y, double *z );
 
 
-/* PROJ 4 lookup transaction cache methods */
-#define PROJ4_CACHE_ITEMS	8
-
 /*
  * PROJ 4 backend hash table initial hash size
  * (since 16 is the default portal hash table size, and we would
@@ -48,25 +46,6 @@ int pj_transform_nodatum(projPJ srcdefn, projPJ dstdefn, long point_count, int p
  */
 #define PROJ4_BACKEND_HASH_SIZE	32
 
-
-/* An entry in the PROJ4 SRS cache */
-typedef struct struct_PROJ4SRSCacheItem
-{
-	int srid;
-	projPJ projection;
-	MemoryContext projection_mcxt;
-}
-PROJ4SRSCacheItem;
-
-/** The portal cache: it's contents and cache context
- */
-typedef struct struct_PROJ4PortalCache
-{
-	PROJ4SRSCacheItem PROJ4SRSCache[PROJ4_CACHE_ITEMS];
-	int PROJ4SRSCacheCount;
-	MemoryContext PROJ4SRSCacheContext;
-}
-PROJ4PortalCache;
 
 /**
  * Backend projPJ hash table
@@ -98,7 +77,7 @@ static projPJ GetPJHashEntry(MemoryContext mcxt);
 static void DeletePJHashEntry(MemoryContext mcxt);
 
 /* Internal Cache API */
-static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo) ;
+/* static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo) ; */
 static bool IsInPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 static projPJ GetProjectionFromPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid);
 static void AddToPROJ4SRSCache(PROJ4PortalCache *PROJ4Cache, int srid, int other_srid);
@@ -635,12 +614,13 @@ void SetPROJ4LibPath(void)
 }
 
 Proj4Cache GetPROJ4Cache(FunctionCallInfo fcinfo) {
-	return (Proj4Cache)GetPROJ4SRSCache(fcinfo) ;
+	return (Proj4Cache)GetPROJ4SRSCache(fcinfo);
 }
 
+#if 0
 static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo)
 {
-	PROJ4PortalCache *PROJ4Cache ;
+	PROJ4PortalCache *PROJ4Cache = (GetGeomCache(fcinfo))->proj;
 
 	/*
 	 * If we have not already created PROJ4 cache for this portal
@@ -681,7 +661,7 @@ static PROJ4PortalCache *GetPROJ4SRSCache(FunctionCallInfo fcinfo)
 
 	return PROJ4Cache ;
 }
-
+#endif
 
 int
 GetProjectionsUsingFCInfo(FunctionCallInfo fcinfo, int srid1, int srid2, projPJ *pj1, projPJ *pj2)

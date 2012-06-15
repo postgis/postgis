@@ -36,7 +36,6 @@ PG_OBJS= \
 	lwgeom_btree.o \
 	lwgeom_box.o \
 	lwgeom_box3d.o \
-	lwgeom_cache.o \
 	lwgeom_geos.o \
 	lwgeom_geos_prepared.o \
 	lwgeom_geos_clean.o \

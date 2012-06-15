@@ -23,12 +23,14 @@ LEX=@LEX@
 SA_OBJS = \
 	gserialized_gist.o \
 	lwgeom_transform.o \
+	lwgeom_cache.o \
 	lwgeom_pg.o
 
 
 SA_HEADERS = \
 	lwgeom_pg.h \
 	lwgeom_transform.h \
+	lwgeom_cache.h \
 	gserialized_gist.h \
 	pgsql_compat.h
 

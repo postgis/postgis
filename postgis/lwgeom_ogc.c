@@ -833,7 +833,7 @@ Datum LWGEOM_asText(PG_FUNCTION_ARGS)
 	/* Write to WKT and free the geometry */
 	wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, &wkt_size);
 	lwgeom_free(lwgeom);
-	POSTGIS_DEBUGF(3, "WKT size = %d, WKT length = %d", wkt_size, strlen(wkt));
+	POSTGIS_DEBUGF(3, "WKT size = %u, WKT length = %u", (unsigned int)wkt_size, (unsigned int)strlen(wkt));
 
 	/* Write to text and free the WKT */
 	result = cstring2text(wkt);

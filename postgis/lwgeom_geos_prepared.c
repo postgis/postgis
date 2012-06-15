@@ -266,191 +266,149 @@ DeletePrepGeomHashEntry(MemoryContext mcxt)
 		elog(ERROR, "DeletePrepGeomHashEntry: There was an error removing the geometry object from this MemoryContext (%p)", (void *)mcxt);
 }
 
-/*
-** GetPrepGeomCache
-**
-** Pull the current prepared geometry from the cache or make
-** one if there is not one available. Only prepare geometry
-** if we are seeing a key for the second time. That way rapidly
-** cycling keys don't cause too much preparing.
+/**
+* Given a generic GeomCache, and a geometry to prepare,
+* prepare a PrepGeomCache and stick it into the GeomCache->index
+* slot. The PrepGeomCache includes the original GEOS geometry,
+* and the GEOS prepared geometry, and a pointer to the 
+* MemoryContext where the callback functions are registered. 
+* 
+* This function is passed into the generic GetGeomCache function
+* so that it can build an appropriate indexed structure in the case
+* of a cache hit when there is no indexed structure yet 
+* available to return.
 */
-PrepGeomCache*
-GetPrepGeomCache(FunctionCallInfoData *fcinfo, GSERIALIZED *pg_geom1, GSERIALIZED *pg_geom2)
+static int
+PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 {
-	MemoryContext old_context;
-	GeomCache* supercache = GetGeomCache(fcinfo);
-	PrepGeomCache* cache = supercache->prep;
-	int copy_keys = 1;
-	size_t pg_geom1_size = 0;
-	size_t pg_geom2_size = 0;
-
-	assert ( ! cache || cache->type == 2 );
-
+	PrepGeomCache* prepcache;
+	PrepGeomHashEntry* pghe;
+	
+	/*
+	* First time through? allocate the global hash.
+	*/
 	if (!PrepGeomHash)
 		CreatePrepGeomHash();
 
-	if ( pg_geom1 )
-		pg_geom1_size = VARSIZE(pg_geom1);
-
-	if ( pg_geom2 )
-		pg_geom2_size = VARSIZE(pg_geom2);
-
-	if ( cache == NULL)
+	/*
+	* No callback entry for this statement context yet? Set it up
+	*/
+	if ( ! cache->context_callback )
 	{
-		/*
-		** Cache requested, but the cache isn't set up yet.
-		** Set it up, but don't prepare the geometry yet.
-		** That way if the next call is a cache miss we haven't
-		** wasted time preparing a geometry we don't need.
-		*/
 		PrepGeomHashEntry pghe;
-
-		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		cache = palloc(sizeof(PrepGeomCache));
-		MemoryContextSwitchTo(old_context);
-
-		cache->type = 2;
-		cache->prepared_geom = 0;
-		cache->geom = 0;
-		cache->argnum = 0;
-		cache->pg_geom1 = 0;
-		cache->pg_geom2 = 0;
-		cache->pg_geom1_size = 0;
-		cache->pg_geom2_size = 0;
-		cache->context = MemoryContextCreate(T_AllocSetContext, 8192,
-		                                     &PreparedCacheContextMethods,
-		                                     fcinfo->flinfo->fn_mcxt,
-		                                     "PostGIS Prepared Geometry Context");
-
-		POSTGIS_DEBUGF(3, "GetPrepGeomCache: creating cache: %p", cache);
-
-		pghe.context = cache->context;
+		cache->context_callback = MemoryContextCreate(T_AllocSetContext, 8192,
+		                             &PreparedCacheContextMethods,
+		                             cache->context_statement,
+		                             "PostGIS Prepared Geometry Context");
+		pghe.context = cache->context_callback;
 		pghe.geom = 0;
 		pghe.prepared_geom = 0;
-		AddPrepGeomHashEntry( pghe );
-
-		supercache->prep = cache;
-
-		POSTGIS_DEBUGF(3, "GetPrepGeomCache: adding context to hash: %p", cache);
+		AddPrepGeomHashEntry( pghe );		
 	}
-	else if ( pg_geom1 &&
-	          cache->argnum != 2 &&
-	          cache->pg_geom1_size == pg_geom1_size &&
-	          memcmp(cache->pg_geom1, pg_geom1, pg_geom1_size) == 0)
+	
+	/* 
+	* Hum, we shouldn't be asked to build a new cache on top of 
+	* an existing one. Error.
+	*/
+	if ( cache->index )
 	{
-		if ( !cache->prepared_geom )
-		{
-			/*
-			** Cache hit, but we haven't prepared our geometry yet.
-			** Prepare it.
-			*/
-			PrepGeomHashEntry* pghe;
-
-			cache->geom = POSTGIS2GEOS( pg_geom1 );
-			cache->prepared_geom = GEOSPrepare( cache->geom );
-			cache->argnum = 1;
-			POSTGIS_DEBUG(3, "GetPrepGeomCache: preparing obj in argument 1");
-
-			pghe = GetPrepGeomHashEntry(cache->context);
-			pghe->geom = cache->geom;
-			pghe->prepared_geom = cache->prepared_geom;
-			POSTGIS_DEBUG(3, "GetPrepGeomCache: storing references to prepared obj in argument 1");
-		}
-		else
-		{
-			/*
-			** Cache hit, and we're good to go. Do nothing.
-			*/
-			POSTGIS_DEBUG(3, "GetPrepGeomCache: cache hit, argument 1");
-		}
-		/* We don't need new keys until we have a cache miss */
-		copy_keys = 0;
+		lwerror("PrepGeomCacheBuilder asked to build new prepcache where one already exists.");
+		return LW_FAILURE;
 	}
-	else if ( pg_geom2 &&
-	          cache->argnum != 1 &&
-	          cache->pg_geom2_size == pg_geom2_size &&
-	          memcmp(cache->pg_geom2, pg_geom2, pg_geom2_size) == 0)
+	
+	/* 
+	* Allocate a new index structure 
+	*/
+	cache->index = MemoryContextAlloc(cache->context_statement, sizeof(PrepGeomCache));
+	memset(cache->index, 0, sizeof(PrepGeomCache));
+	prepcache = (PrepGeomCache*)(cache->index);
+	
+	prepcache->geom = LWGEOM2GEOS( lwgeom );
+	if ( ! prepcache->geom ) return LW_FAILURE;
+	prepcache->prepared_geom = GEOSPrepare( prepcache->geom );
+	if ( ! prepcache->prepared_geom ) return LW_FAILURE;
+	prepcache->argnum = cache->argnum;
+	
+	/*
+	* In order to find the objects we need to destroy, we keep
+	* extra references in a global hash object.
+	*/
+	pghe = GetPrepGeomHashEntry(cache->context_callback);
+	if ( ! pghe )
 	{
-		if ( !cache->prepared_geom )
-		{
-			/*
-			** Cache hit on arg2, but we haven't prepared our geometry yet.
-			** Prepare it.
-			*/
-			PrepGeomHashEntry* pghe;
-
-			cache->geom = POSTGIS2GEOS( pg_geom2 );
-			cache->prepared_geom = GEOSPrepare( cache->geom );
-			cache->argnum = 2;
-			POSTGIS_DEBUG(3, "GetPrepGeomCache: preparing obj in argument 2");
-
-			pghe = GetPrepGeomHashEntry(cache->context);
-			pghe->geom = cache->geom;
-			pghe->prepared_geom = cache->prepared_geom;
-			POSTGIS_DEBUG(3, "GetPrepGeomCache: storing references to prepared obj in argument 2");
-		}
-		else
-		{
-			/*
-			** Cache hit, and we're good to go. Do nothing.
-			*/
-			POSTGIS_DEBUG(3, "GetPrepGeomCache: cache hit, argument 2");
-		}
-		/* We don't need new keys until we have a cache miss */
-		copy_keys = 0;
+		lwerror("PrepGeomCacheBuilder failed to find hash entry for context %p", cache->context_callback);
+		return LW_FAILURE;
 	}
-	else if ( cache->prepared_geom )
+	
+	pghe->geom = prepcache->geom;
+	pghe->prepared_geom = prepcache->prepared_geom;
+
+	return LW_SUCCESS;
+}
+
+/**
+* This function is passed into the generic GetGeomCache function
+* in the case of a cache miss, so that it can free the particular 
+* indexed structure being managed.
+*
+* In the case of prepared geometry, we want to leave the actual
+* PrepGeomCache allocated and in place, but ensure that the
+* GEOS Geometry and PreparedGeometry are freed so we don't leak
+* memory as we transition from cache hit to miss to hit, etc.
+*/
+static int
+PrepGeomCacheCleaner(GeomCache *cache)
+{
+	PrepGeomHashEntry* pghe = 0;
+	PrepGeomCache* prepcache = (PrepGeomCache*)(cache->index);
+
+	if ( ! prepcache )
+		return LW_FAILURE;
+
+	/* 
+	* Clear out the references to the soon-to-be-freed GEOS objects 
+	* from the callback hash entry
+	*/
+	pghe = GetPrepGeomHashEntry(cache->context_callback);
+	if ( ! pghe )
 	{
-		/*
-		** No cache hits, so this must be a miss.
-		** Destroy the GEOS objects, empty the cache.
-		*/
-		PrepGeomHashEntry* pghe;
-
-		pghe = GetPrepGeomHashEntry(cache->context);
-		pghe->geom = 0;
-		pghe->prepared_geom = 0;
-
-		POSTGIS_DEBUGF(3, "GetPrepGeomCache: cache miss, argument %d", cache->argnum);
-		GEOSPreparedGeom_destroy( cache->prepared_geom );
-		GEOSGeom_destroy( (GEOSGeometry *)cache->geom );
-
-		cache->prepared_geom = 0;
-		cache->geom = 0;
-		cache->argnum = 0;
-
+		lwerror("PrepGeomCacheCleaner failed to find hash entry for context %p", cache->context_callback);
+		return LW_FAILURE;
 	}
+	pghe->geom = 0;
+	pghe->prepared_geom = 0;
 
-	if ( copy_keys && pg_geom1 )
-	{
-		/*
-		** If this is a new key (cache miss) we flip into the function
-		** manager memory context and make a copy. We can't just store a pointer
-		** because this copy will be pfree'd at the end of this function
-		** call.
-		*/
-		POSTGIS_DEBUG(3, "GetPrepGeomCache: copying pg_geom1 into cache");
-		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		if ( cache->pg_geom1 )
-			pfree(cache->pg_geom1);
-		cache->pg_geom1 = palloc(pg_geom1_size);
-		MemoryContextSwitchTo(old_context);
-		memcpy(cache->pg_geom1, pg_geom1, pg_geom1_size);
-		cache->pg_geom1_size = pg_geom1_size;
-	}
-	if ( copy_keys && pg_geom2 )
-	{
-		POSTGIS_DEBUG(3, "GetPrepGeomCache: copying pg_geom2 into cache");
-		old_context = MemoryContextSwitchTo(fcinfo->flinfo->fn_mcxt);
-		if ( cache->pg_geom2 )
-			pfree(cache->pg_geom2);
-		cache->pg_geom2 = palloc(pg_geom2_size);
-		MemoryContextSwitchTo(old_context);
-		memcpy(cache->pg_geom2, pg_geom2, pg_geom2_size);
-		cache->pg_geom2_size = pg_geom2_size;
-	}
+	/* 
+	* Free the GEOS objects and free the index tree
+	*/
+	POSTGIS_DEBUGF(3, "PrepGeomCacheFreeer: freeing %p argnum %d", prepcache, prepcache->argnum);
+	GEOSPreparedGeom_destroy( prepcache->prepared_geom );
+	GEOSGeom_destroy( (GEOSGeometry *)prepcache->geom );
+	pfree(cache->index);
+	cache->index = 0;
+	
+	return LW_SUCCESS;
+}
 
-	return cache;
+/**
+* Given a couple potential geometries and a function
+* call context, return a prepared structure for one
+* of them, if such a structure doesn't already exist.
+* If it doesn't exist, and there is a cache hit,
+* ensure that the structure is built for next time.
+* Most of the work is done by the GetGeomCache generic
+* function, but we pass in call-backs to handle building
+* and freeing the GEOS PreparedGeometry structures
+* we need for this particular caching strategy.
+*/
+PrepGeomCache*
+GetPrepGeomCache(FunctionCallInfoData* fcinfo, GSERIALIZED* g1, GSERIALIZED* g2)
+{
+	int argnum = 0;
+	PrepGeomCache* prepcache = NULL;
 
+	prepcache = (PrepGeomCache*)GetGeomIndex(fcinfo, PREP_CACHE_ENTRY, PrepGeomCacheBuilder, PrepGeomCacheCleaner, g1, g2, &argnum);
+
+	return prepcache;
 }
 
