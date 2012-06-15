@@ -10,6 +10,7 @@
  *
  **********************************************************************/
 
+#include "liblwgeom_internal.h"
 #include "lwgeodetic.h"
 #include "lwgeom_log.h"
 

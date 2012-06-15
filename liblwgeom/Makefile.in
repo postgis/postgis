@@ -73,6 +73,7 @@ SA_OBJS = \
 	g_serialized.o \
 	g_util.o \
 	lwgeodetic.o \
+	lwgeodetic_tree.o \
 	lwtree.o \
 	libtgeom.o \
 	lwout_gml.o \

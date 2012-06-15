@@ -1,7 +1,5 @@
 #include "liblwgeom_internal.h"
 
-
-
 /*
 * Coordinate object to hold information about last coordinate temporarily.
 * We need to know how many dimensions there are at any given time.

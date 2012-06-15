@@ -878,6 +878,24 @@ static void test_isclosed(void)
 	lwgeom_free(geom);
 }
 
+
+void test_geohash_point_as_int(void)
+{
+	unsigned int gh;
+	POINT2D p;
+	
+	p.x = 50; p.y = 35;
+	gh = geohash_point_as_int(&p);
+	CU_ASSERT_EQUAL(gh, 3440103613);
+	p.x = 140; p.y = 45;
+	gh = geohash_point_as_int(&p);
+	CU_ASSERT_EQUAL(gh, 3982480893);
+	p.x = 140; p.y = 55;
+	gh = geohash_point_as_int(&p);
+	CU_ASSERT_EQUAL(gh, 4166944232);	
+}
+
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -897,6 +915,7 @@ CU_TestInfo algorithms_tests[] =
 	PG_TEST(test_geohash_point),
 	PG_TEST(test_geohash_precision),
 	PG_TEST(test_geohash),
+	PG_TEST(test_geohash_point_as_int),
 	PG_TEST(test_isclosed),
 	CU_TEST_INFO_NULL
 };

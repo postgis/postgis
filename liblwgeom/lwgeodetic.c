@@ -10,6 +10,7 @@
  *
  **********************************************************************/
 
+#include "liblwgeom_internal.h"
 #include "lwgeodetic.h"
 #include "lwgeom_log.h"
 
@@ -223,8 +224,6 @@ static int gbox_check_poles(GBOX *gbox)
 	return rv;
 }
 
-
-
 /**
 * Convert spherical coordinates to cartesion coordinates on unit sphere
 */
@@ -267,7 +266,7 @@ static void cross_product(const POINT3D *a, const POINT3D *b, POINT3D *n)
 /**
 * Calculate the sum of two vectors
 */
-static void vector_sum(const POINT3D *a, const POINT3D *b, POINT3D *n)
+void vector_sum(const POINT3D *a, const POINT3D *b, POINT3D *n)
 {
 	n->x = a->x + b->x;
 	n->y = a->y + b->y;
@@ -300,7 +299,7 @@ static void vector_scale(POINT3D *n, double scale)
 /**
 * Normalize to a unit vector.
 */
-static void normalize(POINT3D *p)
+void normalize(POINT3D *p)
 {
 	double d = sqrt(p->x*p->x + p->y*p->y + p->z*p->z);
 	if (FP_IS_ZERO(d))
@@ -596,23 +595,27 @@ double sphere_distance_cartesian(const POINT3D *s, const POINT3D *e)
 /**
 * Given two points on a unit sphere, calculate the direction from s to e.
 */
-static double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, double d)
+double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, double d)
 {
 	double heading = 0.0;
-
+	double f;
+	
+	/* Starting from the poles? Special case. */
 	if ( FP_IS_ZERO(cos(s->lat)) )
 		return (s->lat > 0.0) ? M_PI : 0.0;
 
-	if ( sin(e->lon - s->lon) < 0.0 )
-	{
-		heading = acos((sin(e->lat) - sin(s->lat) * cos(d)) / (sin(d) * cos(s->lat)));
-	}
+	f = (sin(e->lat) - sin(s->lat) * cos(d)) / (sin(d) * cos(s->lat));
+	if ( FP_EQUALS(f, 1.0) )
+		heading = 0.0;
 	else
-	{
-		heading = -1.0 * acos((sin(e->lat) - sin(s->lat) * cos(d)) / (sin(d) * cos(s->lat)));
-	}
+		heading = acos(f);
+
+	if ( sin(e->lon - s->lon) < 0.0 )
+		heading = -1 * heading;
+
 	return heading;
 }
+
 
 /**
 * Computes the spherical excess of a spherical triangle defined by
@@ -911,6 +914,7 @@ double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e
 	return d;
 }
 
+
 /**
 * Given a starting location r, a distance and an azimuth
 * to the new point, compute the location of the projected point on the unit sphere.
@@ -919,13 +923,18 @@ int sphere_project(const GEOGRAPHIC_POINT *r, double distance, double azimuth, G
 {
 	double d = distance;
 	double lat1 = r->lat;
-	double a = cos(lat1) * cos(d) - sin(lat1) * sin(d) * cos(azimuth);
-	double b = signum(d) * sin(azimuth);
-	n->lat = asin(sin(lat1) * cos(d) +
-	              cos(lat1) * sin(d) * cos(azimuth));
-	n->lon = atan(b/a) + r->lon;
+	double lon1 = r->lon;
+	double lat2, lon2;
+
+	lat2 = asin(sin(lat1)*cos(d) + cos(lat1)*sin(d)*cos(azimuth));
+	lon2 = lon1 + atan2(sin(azimuth)*sin(d)*cos(lat1), cos(d)-sin(lat1)*sin(lat2));
+	n->lat = lat2;
+	n->lon = lon2;
+
 	return LW_SUCCESS;
 }
+
+
 
 
 int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)

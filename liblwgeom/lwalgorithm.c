@@ -346,6 +346,61 @@ char *geohash_point(double longitude, double latitude, int precision)
 	return geohash;
 }
 
+
+/*
+** Calculate the geohash, iterating downwards and gaining precision.
+** From geohash-native.c, (c) 2008 David Troy <dave@roundhousetech.com>
+** Released under the MIT License.
+*/
+unsigned int geohash_point_as_int(POINT2D *pt)
+{
+	int is_even=1;
+	double lat[2], lon[2], mid;
+	int bit=32;
+	unsigned int ch = 0;
+
+	double longitude = pt->x;
+	double latitude = pt->y;
+
+	lat[0] = -90.0;
+	lat[1] = 90.0;
+	lon[0] = -180.0;
+	lon[1] = 180.0;
+
+	while (--bit >= 0)
+	{
+		if (is_even)
+		{
+			mid = (lon[0] + lon[1]) / 2;
+			if (longitude > mid)
+			{
+				ch |= 0x0001 << bit;
+				lon[0] = mid;
+			}
+			else
+			{
+				lon[1] = mid;
+			}
+		}
+		else
+		{
+			mid = (lat[0] + lat[1]) / 2;
+			if (latitude > mid)
+			{
+				ch |= 0x0001 << bit;
+				lat[0] = mid;
+			}
+			else
+			{
+				lat[1] = mid;
+			}
+		}
+
+		is_even = !is_even;
+	}
+	return ch;
+}
+
 int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds)
 {
 	double minx, miny, maxx, maxy;

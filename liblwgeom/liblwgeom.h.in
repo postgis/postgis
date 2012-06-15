@@ -1295,6 +1295,7 @@ extern LWCOLLECTION *lwcollection_segmentize2d(LWCOLLECTION *coll, double dist);
 * Calculate the GeoHash (http://geohash.org) string for a geometry. Caller must free.
 */
 char *lwgeom_geohash(const LWGEOM *lwgeom, int precision);
+unsigned int geohash_point_as_int(POINT2D *pt);
 
 
 /**

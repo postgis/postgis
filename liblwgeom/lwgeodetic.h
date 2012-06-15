@@ -9,7 +9,8 @@
  *
  **********************************************************************/
 
-#include "liblwgeom_internal.h"
+#ifndef _LWGEODETIC_H
+#define _LWGEODETIC_H 1
 
 /* For NAN */
 #define _GNU_SOURCE
@@ -29,7 +30,7 @@ extern int gbox_geocentric_slow;
 typedef struct
 {
 	double lon;
-	double lat; 
+	double lat;
 } GEOGRAPHIC_POINT;
 
 /**
@@ -97,6 +98,9 @@ int crosses_dateline(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e);
 void point_shift(GEOGRAPHIC_POINT *p, double shift);
 double longitude_radians_normalize(double lon);
 double latitude_radians_normalize(double lat);
+void vector_sum(const POINT3D *a, const POINT3D *b, POINT3D *n);
+void normalize(POINT3D *p);
+double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, double d);
 
 /*
 ** Prototypes for spheroid functions.
@@ -104,3 +108,5 @@ double latitude_radians_normalize(double lat);
 double spheroid_distance(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const SPHEROID *spheroid);
 double spheroid_direction(const GEOGRAPHIC_POINT *r, const GEOGRAPHIC_POINT *s, const SPHEROID *spheroid);
 int spheroid_project(const GEOGRAPHIC_POINT *r, const SPHEROID *spheroid, double distance, double azimuth, GEOGRAPHIC_POINT *g);
+
+#endif /* _LWGEODETIC_H */

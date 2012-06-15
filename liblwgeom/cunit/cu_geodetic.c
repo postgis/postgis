@@ -15,6 +15,7 @@
 #include <string.h>
 #include "CUnit/Basic.h"
 
+#include "liblwgeom_internal.h"
 #include "lwgeodetic.h"
 #include "cu_tester.h"
 
@@ -66,6 +67,87 @@ static void test_signum(void)
 	CU_ASSERT_EQUAL(signum(5.0),1);
 }
 
+
+static void test_sphere_direction(void)
+{
+	GEOGRAPHIC_POINT s, e;
+	double dir, dist;
+
+	geographic_point_init(0, 0, &s);
+	geographic_point_init(1, 0, &e);
+	dist = sphere_distance(&s, &e);
+	dir = sphere_direction(&s, &e, dist);
+	CU_ASSERT_DOUBLE_EQUAL(dir, M_PI / 2.0, 0.0001);
+
+	geographic_point_init(0, 0, &s);
+	geographic_point_init(0, 1, &e);
+	dist = sphere_distance(&s, &e);
+	dir = sphere_direction(&s, &e, dist);
+	CU_ASSERT_DOUBLE_EQUAL(dir, 0.0, 0.0001);
+	
+}
+
+static void test_sphere_project(void)
+{
+	GEOGRAPHIC_POINT s, e;
+	double dir1, dist1, dir2, dist2;
+
+	dir1 = M_PI/2;
+	dist1 = 0.1;
+	
+	geographic_point_init(0, 0, &s);  
+	sphere_project(&s, dist1, dir1, &e);
+	
+	dist2 = sphere_distance(&s, &e);
+	dir2 = sphere_direction(&s, &e, dist1);
+
+	CU_ASSERT_DOUBLE_EQUAL(dist1, dist2, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(dir1, dir2, 0.0001);	
+	
+	dist1 = sphere_distance(&e, &s);
+	dir1 = sphere_direction(&e, &s, dist1);
+	sphere_project(&e, dist1, dir1, &s);
+	
+	CU_ASSERT_DOUBLE_EQUAL(s.lon, 0.0, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(s.lat, 0.0, 0.0001);	
+
+	geographic_point_init(0, 0.2, &e);  
+	geographic_point_init(0, 0.4, &s);  
+	dist1 = sphere_distance(&s, &e);
+	dir1 = sphere_direction(&e, &s, dist1);
+	CU_ASSERT_DOUBLE_EQUAL(dir1, 0.0, 0.0001);	
+
+	geographic_point_init(0, 1, &s);  
+	geographic_point_init(0, 2, &e);  
+	dist2 = sphere_distance(&s, &e);
+	dir2 = sphere_direction(&s, &e, dist2);
+	CU_ASSERT_DOUBLE_EQUAL(dir2, 0.0, 0.0001);	
+	
+	geographic_point_init(1, 1, &e);  
+	dist2 = sphere_distance(&s, &e);
+	dir2 = sphere_direction(&s, &e, dist2);
+	CU_ASSERT_DOUBLE_EQUAL(dir2, 1.57064, 0.0001);	
+
+	geographic_point_init(0, 0, &e);  
+	dist2 = sphere_distance(&s, &e);
+	dir2 = sphere_direction(&s, &e, dist2);
+	CU_ASSERT_DOUBLE_EQUAL(dir2, 3.14159, 0.0001);	
+
+	geographic_point_init(-1, 1, &e);  
+	dist2 = sphere_distance(&s, &e);
+	dir2 = sphere_direction(&s, &e, dist2);
+	CU_ASSERT_DOUBLE_EQUAL(dir2, -1.57064, 0.0001);	
+
+	geographic_point_init(1, 2, &e);  
+	dist2 = sphere_distance(&s, &e);
+	dir2 = sphere_direction(&s, &e, dist2);
+	CU_ASSERT_DOUBLE_EQUAL(dir2, 0.785017, 0.0001);	
+
+	geographic_point_init(-1, 0, &e);  
+	dist2 = sphere_distance(&s, &e);
+	dir2 = sphere_direction(&s, &e, dist2);
+	CU_ASSERT_DOUBLE_EQUAL(dir2, -2.35612, 0.0001);	
+}
 
 static void test_gbox_from_spherical_coordinates(void)
 {
@@ -959,6 +1041,8 @@ static void test_spheroid_area(void)
 */
 CU_TestInfo geodetic_tests[] =
 {
+	PG_TEST(test_sphere_direction),
+	PG_TEST(test_sphere_project),
 	PG_TEST(test_signum),
 	PG_TEST(test_gbox_from_spherical_coordinates),
 	PG_TEST(test_gserialized_get_gbox_geocentric),
