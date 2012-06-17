@@ -38,6 +38,7 @@ PostGIS 2.0.1
   - #1865, data loss in postgis_restore.pl when data rows have leading
            dashes.
   - #1867, catch invalid topology name passed to topogeo_add*
+  - #1872, fix ST_ApproxSummarystats to prevent division by zero
 
 * Enhancements *
 
