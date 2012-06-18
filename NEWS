@@ -19,7 +19,10 @@ PostGIS 2.1.0
 
   - #1839, handling of subdatasets in GeoTIFF in raster2pgsql.
   - #1840, fix logic of when to compute # of tiles in raster2pgsql.
-  - #1872, fix ST_ApproxSummarystats to prevent division by zero.
+  - #1870, align the docs and actual behavior of raster's ST_Intersects
+  - #1872, fix ST_ApproxSummarystats to prevent division by zero
+  - #1875, ST_SummaryStats returns NULL for all parameters except count
+	         when count is zero
 
 PostGIS 2.0.1
 2012/06/DD
@@ -62,7 +65,10 @@ PostGIS 2.0.1
   - #1865, data loss in postgis_restore.pl when data rows have leading
            dashes.
   - #1867, catch invalid topology name passed to topogeo_add*
+  - #1870, align the docs and actual behavior of raster's ST_Intersects
   - #1872, fix ST_ApproxSummarystats to prevent division by zero
+  - #1875, ST_SummaryStats returns NULL for all parameters except count
+	         when count is zero
 
 * Enhancements *
 
