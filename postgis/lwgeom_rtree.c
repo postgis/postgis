@@ -305,10 +305,17 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 	LWMPOLY *mpoly;
 	LWPOLY *poly;
 	int nrings;
+	RTreeGeomCache* rtree_cache = (RTreeGeomCache*)cache;
 	RTREE_POLY_CACHE* currentCache;
 	
 	if ( ! cache )
 		return LW_FAILURE;
+
+	if ( rtree_cache->index )
+	{
+		lwerror("RTreeBuilder asked to build index where one already exists.");
+		return LW_FAILURE;
+	}
 	
 	if (lwgeom->type == MULTIPOLYGONTYPE)
 	{
@@ -340,7 +347,7 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 				i++;
 			}
 		}
-		cache->index = (void*)currentCache;
+		rtree_cache->index = currentCache;
 	}
 	else if ( lwgeom->type == POLYGONTYPE )
 	{
@@ -358,7 +365,7 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 		{
 			currentCache->ringIndices[i] = RTreeCreate(poly->rings[i]);
 		}
-		cache->index = (void*)currentCache;
+		rtree_cache->index = currentCache;
 	}
 	else
 	{
@@ -376,26 +383,45 @@ RTreeBuilder(const LWGEOM* lwgeom, GeomCache* cache)
 static int
 RTreeFreer(GeomCache* cache)
 {
+	RTreeGeomCache* rtree_cache = (RTreeGeomCache*)cache;
+	
 	if ( ! cache )
 		return LW_FAILURE;
 	
-	if ( cache->index )
+	if ( rtree_cache->index )
 	{
-		RTREE_POLY_CACHE* currentCache = (RTREE_POLY_CACHE*)(cache->index);
-		RTreeCacheClear(currentCache);
-		lwfree(currentCache);
-		cache->index = 0;
+		RTreeCacheClear(rtree_cache->index);
+		lwfree(rtree_cache->index);
+		rtree_cache->index = 0;
+		rtree_cache->argnum = 0;
 	}
 	return LW_SUCCESS;
 }
 
+static GeomCache*
+RTreeAllocator(void)
+{
+	RTreeGeomCache* cache = palloc(sizeof(RTreeGeomCache));
+	memset(cache, 0, sizeof(RTreeGeomCache));
+	return (GeomCache*)cache;
+}
+
+static GeomCacheMethods RTreeCacheMethods =
+{
+	RTREE_CACHE_ENTRY,
+	RTreeBuilder,
+	RTreeFreer,
+	RTreeAllocator
+};
+
 RTREE_POLY_CACHE*
 GetRtreeCache(FunctionCallInfoData* fcinfo, GSERIALIZED* g1)
 {
-	int argnum = 0;
+	RTreeGeomCache* cache = (RTreeGeomCache*)GetGeomCache2(fcinfo, &RTreeCacheMethods, g1, NULL);
 	RTREE_POLY_CACHE* index = NULL;
 
-	index = (RTREE_POLY_CACHE*)GetGeomIndex(fcinfo, RTREE_CACHE_ENTRY, RTreeBuilder, RTreeFreer, g1, 0, &argnum);
+	if ( cache )
+		index = cache->index;
 
 	return index;
 }

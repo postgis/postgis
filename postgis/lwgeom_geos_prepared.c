@@ -281,7 +281,7 @@ DeletePrepGeomHashEntry(MemoryContext mcxt)
 static int
 PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 {
-	PrepGeomCache* prepcache;
+	PrepGeomCache* prepcache = (PrepGeomCache*)cache;
 	PrepGeomHashEntry* pghe;
 	
 	/*
@@ -293,14 +293,14 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	/*
 	* No callback entry for this statement context yet? Set it up
 	*/
-	if ( ! cache->context_callback )
+	if ( ! prepcache->context_callback )
 	{
 		PrepGeomHashEntry pghe;
-		cache->context_callback = MemoryContextCreate(T_AllocSetContext, 8192,
+		prepcache->context_callback = MemoryContextCreate(T_AllocSetContext, 8192,
 		                             &PreparedCacheContextMethods,
-		                             cache->context_statement,
+		                             prepcache->context_statement,
 		                             "PostGIS Prepared Geometry Context");
-		pghe.context = cache->context_callback;
+		pghe.context = prepcache->context_callback;
 		pghe.geom = 0;
 		pghe.prepared_geom = 0;
 		AddPrepGeomHashEntry( pghe );		
@@ -310,18 +310,11 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	* Hum, we shouldn't be asked to build a new cache on top of 
 	* an existing one. Error.
 	*/
-	if ( cache->index )
+	if ( prepcache->argnum || prepcache->geom || prepcache->prepared_geom )
 	{
 		lwerror("PrepGeomCacheBuilder asked to build new prepcache where one already exists.");
 		return LW_FAILURE;
 	}
-	
-	/* 
-	* Allocate a new index structure 
-	*/
-	cache->index = MemoryContextAlloc(cache->context_statement, sizeof(PrepGeomCache));
-	memset(cache->index, 0, sizeof(PrepGeomCache));
-	prepcache = (PrepGeomCache*)(cache->index);
 	
 	prepcache->geom = LWGEOM2GEOS( lwgeom );
 	if ( ! prepcache->geom ) return LW_FAILURE;
@@ -333,10 +326,10 @@ PrepGeomCacheBuilder(const LWGEOM *lwgeom, GeomCache *cache)
 	* In order to find the objects we need to destroy, we keep
 	* extra references in a global hash object.
 	*/
-	pghe = GetPrepGeomHashEntry(cache->context_callback);
+	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
 	if ( ! pghe )
 	{
-		lwerror("PrepGeomCacheBuilder failed to find hash entry for context %p", cache->context_callback);
+		lwerror("PrepGeomCacheBuilder failed to find hash entry for context %p", prepcache->context_callback);
 		return LW_FAILURE;
 	}
 	
@@ -360,7 +353,7 @@ static int
 PrepGeomCacheCleaner(GeomCache *cache)
 {
 	PrepGeomHashEntry* pghe = 0;
-	PrepGeomCache* prepcache = (PrepGeomCache*)(cache->index);
+	PrepGeomCache* prepcache = (PrepGeomCache*)cache;
 
 	if ( ! prepcache )
 		return LW_FAILURE;
@@ -369,10 +362,10 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	* Clear out the references to the soon-to-be-freed GEOS objects 
 	* from the callback hash entry
 	*/
-	pghe = GetPrepGeomHashEntry(cache->context_callback);
+	pghe = GetPrepGeomHashEntry(prepcache->context_callback);
 	if ( ! pghe )
 	{
-		lwerror("PrepGeomCacheCleaner failed to find hash entry for context %p", cache->context_callback);
+		lwerror("PrepGeomCacheCleaner failed to find hash entry for context %p", prepcache->context_callback);
 		return LW_FAILURE;
 	}
 	pghe->geom = 0;
@@ -384,11 +377,31 @@ PrepGeomCacheCleaner(GeomCache *cache)
 	POSTGIS_DEBUGF(3, "PrepGeomCacheFreeer: freeing %p argnum %d", prepcache, prepcache->argnum);
 	GEOSPreparedGeom_destroy( prepcache->prepared_geom );
 	GEOSGeom_destroy( (GEOSGeometry *)prepcache->geom );
-	pfree(cache->index);
-	cache->index = 0;
+	prepcache->argnum = 0;
+	prepcache->prepared_geom = 0;
+	prepcache->geom	= 0;
 	
 	return LW_SUCCESS;
 }
+
+static GeomCache*
+PrepGeomCacheAllocator()
+{
+	PrepGeomCache* prepcache = palloc(sizeof(PrepGeomCache));
+	memset(prepcache, 0, sizeof(PrepGeomCache));
+	prepcache->context_statement = CurrentMemoryContext;
+	prepcache->type = PREP_CACHE_ENTRY;
+	return (GeomCache*)prepcache;
+}
+
+static GeomCacheMethods PrepGeomCacheMethods =
+{
+	PREP_CACHE_ENTRY,
+	PrepGeomCacheBuilder,
+	PrepGeomCacheCleaner,
+	PrepGeomCacheAllocator
+};
+
 
 /**
 * Given a couple potential geometries and a function
@@ -404,11 +417,6 @@ PrepGeomCacheCleaner(GeomCache *cache)
 PrepGeomCache*
 GetPrepGeomCache(FunctionCallInfoData* fcinfo, GSERIALIZED* g1, GSERIALIZED* g2)
 {
-	int argnum = 0;
-	PrepGeomCache* prepcache = NULL;
-
-	prepcache = (PrepGeomCache*)GetGeomIndex(fcinfo, PREP_CACHE_ENTRY, PrepGeomCacheBuilder, PrepGeomCacheCleaner, g1, g2, &argnum);
-
-	return prepcache;
+	return (PrepGeomCache*)GetGeomCache2(fcinfo, &PrepGeomCacheMethods, g1, g2);
 }
 

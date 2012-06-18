@@ -47,7 +47,7 @@ typedef struct
 }
 PrepGeomCache;
 */
-
+/*
 typedef struct
 {
 	int                           argnum;
@@ -55,6 +55,20 @@ typedef struct
 	const GEOSGeometry            *geom;
 }
 PrepGeomCache;
+*/
+typedef struct {
+	int                         type;       // <GeomCache>
+	GSERIALIZED*                geom1;      // 
+	GSERIALIZED*                geom2;      // 
+	size_t                      geom1_size; // 
+	size_t                      geom2_size; // 
+	int32                       argnum;     // </GeomCache>
+	MemoryContext               context_statement;
+	MemoryContext               context_callback;
+	const GEOSPreparedGeometry* prepared_geom;
+	const GEOSGeometry*         geom;
+} PrepGeomCache;
+
 
 /*
 ** Get the current cache, given the input geometries.

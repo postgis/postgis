@@ -28,6 +28,7 @@
 #define RTREE_CACHE_ENTRY 2
 #define CIRC_CACHE_ENTRY 3
 #define RECT_CACHE_ENTRY 4
+
 #define NUM_CACHE_ENTRIES 5
 
 
@@ -38,16 +39,23 @@
 * argument the tree is built for.
 */
 typedef struct {
-	int            type;
-	GSERIALIZED*   geom1;
-	GSERIALIZED*   geom2;
-	size_t         geom1_size;
-	size_t         geom2_size;
-	int32          argnum;
-	MemoryContext  context_statement;
-	MemoryContext  context_callback;
-	void*          index;
+	int                         type;
+	GSERIALIZED*                geom1;
+	GSERIALIZED*                geom2;
+	size_t                      geom1_size;
+	size_t                      geom2_size;
+	int32                       argnum; 
 } GeomCache;
+
+typedef struct {
+	int                         type;       // <GeomCache>
+	GSERIALIZED*                geom1;      // 
+	GSERIALIZED*                geom2;      // 
+	size_t                      geom1_size; // 
+	size_t                      geom2_size; // 
+	int32                       argnum;     // </GeomCache>
+	CIRC_NODE*                  index;
+} CircTreeGeomCache;
 
 
 /* An entry in the PROJ4 SRS cache */
@@ -81,21 +89,33 @@ PROJ4PortalCache;
 * geometry and return a tree structure for fast edge
 * access.
 */
+#if 0
 typedef int (*GeomIndexBuilder)(const LWGEOM* lwgeom, GeomCache* cache);
 typedef int (*GeomIndexFreer)(GeomCache* cache);
+typedef GeomCache* (*GeomCacheAllocator)(void);
+#endif
+
+typedef struct 
+{
+	int entry_number;
+	int (*GeomIndexBuilder)(const LWGEOM* lwgeom, GeomCache* cache);
+	int (*GeomIndexFreer)(GeomCache* cache);
+	GeomCache* (*GeomCacheAllocator)(void);
+} GeomCacheMethods;
 
 /* 
 * Cache retrieval functions
 */
-PROJ4PortalCache* GetPROJ4SRSCache(FunctionCallInfoData *fcinfo);
-GeomCache*        GetGeomCache(FunctionCallInfoData *fcinfo, int cache_entry);
-CIRC_NODE*        GetCircTree(FunctionCallInfoData* fcinfo, GSERIALIZED* g1, GSERIALIZED* g2, int* argnum_of_cache);
+PROJ4PortalCache*  GetPROJ4SRSCache(FunctionCallInfoData *fcinfo);
+GeomCache*         GetGeomCache2(FunctionCallInfoData *fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2);
+CIRC_NODE*         GetCircTree(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, int* argnum_of_cache);
+CircTreeGeomCache* GetCircTreeGeomCache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2);
 
 /* 
 * Given candidate geometries, a builer function and an entry type, cache and/or return an
 * appropriate tree.
 */
-void* GetGeomIndex(FunctionCallInfoData* fcinfo, int cache_entry, GeomIndexBuilder index_build, GeomIndexFreer tree_free, const GSERIALIZED* g1, const GSERIALIZED* g2, int* argnum);
+//void* GetGeomIndex(FunctionCallInfoData* fcinfo, int cache_entry, GeomIndexBuilder index_build, GeomIndexFreer tree_free, const GSERIALIZED* g1, const GSERIALIZED* g2, int* argnum);
 
 
 #endif /* LWGEOM_CACHE_H_ */
