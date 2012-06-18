@@ -3,6 +3,59 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
       <sect1>
+		<title>Release 2.0.1</title>
+		<para>Release date: 2012/06/xx</para>
+		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.0 release.</para>
+		<simplesect>
+			 <title>Bug Fixes</title>
+			 <para>#1264, fix st_dwithin(geog, geog, 0). </para>
+			 <para>#1468  shp2pgsql-gui table column schema get shifted</para>
+			 <para>#1694, fix building with clang. (vince)</para>
+			 <para>#1708, improve restore of pre-PostGIS 2.0 backups.</para>
+			 <para>#1714, more robust handling of high topology tolerance.</para>
+			 <para>#1755, ST_GeographyFromText support for higher dimensions.</para>
+			 <para>#1759, loading transformed shapefiles in raster enabled db.</para>
+			 <para>#1761, handling of subdatasets in NetCDF, HDF4 and HDF5 in raster2pgsql.</para>
+			 <para>#1763, topology.toTopoGeom use with custom search_path.</para>
+			 <para>#1766, don't let ST_RemEdge* destroy peripheral TopoGeometry objects.</para>
+			 <para>#1774, Clearer error on setting an edge geometry to an invalid one.</para>
+			 <para>#1775, ST_ChangeEdgeGeom collision detection with 2-vertex target.</para>
+			 <para>#1776, fix ST_SymDifference(empty, geom) to return geom.</para>
+			 <para>#1779, install SQL comment files.</para>
+			 <para>#1782, fix spatial reference string handling in raster.</para>
+			 <para>#1789, fix false edge-node crossing report in ValidateTopology.</para>
+			 <para>#1790, fix toTopoGeom handling of duplicated primitives.</para>
+			 <para>#1791, fix ST_Azimuth with very close but distinct points.</para>
+			 <para>#1797, fix (ValidateTopology(xxx)).* syntax calls.</para>
+			 <para>#1805, put back the 900913 SRID entry.</para>
+			 <para>#1813, Only show readable relations in metadata tables.</para> 
+			 <para>#1819, fix floating point issues with ST_World2RasterCoord and
+					   ST_Raster2WorldCoord variants.</para>
+			 <para>#1820  compilation on 9.2beta1.</para>
+			 <para>#1822, topology load on PostgreSQL 9.2beta1.</para>
+			 <para>#1825, fix prepared geometry cache lookup</para>
+			 <para>#1829, fix uninitialized read in GeoJSON parser</para>
+			 <para>#1834, revise postgis extension to only backup 
+					   user specified spatial_ref_sys</para>
+			 <para>#1839, handling of subdatasets in GeoTIFF in raster2pgsql.</para>
+			 <para>#1840, fix logic of when to compute # of tiles in raster2pgsql.</para>
+			 <para>#1851, fix spatial_ref_system parameters for EPSG:3844</para>
+			 <para>#1857, fix failure to detect endpoint mismatch in ST_AddEdge*Face*</para> 
+			 <para>#1865, data loss in postgis_restore.pl when data rows have leading
+					   dashes.</para>
+			 <para>#1867, catch invalid topology name passed to topogeo_add*</para>
+			 <para>#1872, fix ST_ApproxSummarystats to prevent division by zero</para>
+		</simplesect>
+		<simplesect>
+			 <title>Enhancements</title>
+				<para>More detailed exception message from topology editing functions.</para>
+				<para>#1786, improved build dependencies</para> 
+				<para>#1802, improved function interruptibility.</para>
+				<para>#1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.</para>
+				<para>#1812, Add lwgeom_normalize in LIBLWGEOM for more stable testing.</para>
+		</simplesect>
+	</sect1>
+      <sect1>
         <title>Release 2.0.0</title>
         <para>Release date: 2012/04/03</para>
         <para>This is a major release.  A hard upgrade is required.  Yes this means a full dump reload and some special preparations if you are using obsolete functions. Refer
