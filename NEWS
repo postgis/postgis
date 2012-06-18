@@ -16,6 +16,57 @@ PostGIS 2.1.0
   - #1839, handling of subdatasets in GeoTIFF in raster2pgsql.
   - #1840, fix logic of when to compute # of tiles in raster2pgsql.
 
+PostGIS 2.0.1
+2012/06/DD
+
+* Bug Fixes *
+
+  - #1264, fix st_dwithin(geog, geog, 0). 
+  - #1468  shp2pgsql-gui table column schema get shifted
+  - #1694, fix building with clang. (vince)
+  - #1708, improve restore of pre-PostGIS 2.0 backups.
+  - #1714, more robust handling of high topology tolerance.
+  - #1755, ST_GeographyFromText support for higher dimensions.
+  - #1759, loading transformed shapefiles in raster enabled db.
+  - #1761, handling of subdatasets in NetCDF, HDF4 and HDF5 in raster2pgsql.
+  - #1763, topology.toTopoGeom use with custom search_path.
+  - #1766, don't let ST_RemEdge* destroy peripheral TopoGeometry objects.
+  - #1774, Clearer error on setting an edge geometry to an invalid one.
+  - #1775, ST_ChangeEdgeGeom collision detection with 2-vertex target.
+  - #1776, fix ST_SymDifference(empty, geom) to return geom.
+  - #1779, install SQL comment files.
+  - #1782, fix spatial reference string handling in raster.
+  - #1789, fix false edge-node crossing report in ValidateTopology.
+  - #1790, fix toTopoGeom handling of duplicated primitives.
+  - #1791, fix ST_Azimuth with very close but distinct points.
+  - #1797, fix (ValidateTopology(xxx)).* syntax calls.
+  - #1805, put back the 900913 SRID entry.
+  - #1813, Only show readable relations in metadata tables. 
+  - #1819, fix floating point issues with ST_World2RasterCoord and
+           ST_Raster2WorldCoord variants.
+  - #1820  compilation on 9.2beta1.
+  - #1822, topology load on PostgreSQL 9.2beta1.
+  - #1825, fix prepared geometry cache lookup
+  - #1829, fix uninitialized read in GeoJSON parser
+  - #1834, revise postgis extension to only backup 
+           user specified spatial_ref_sys
+  - #1839, handling of subdatasets in GeoTIFF in raster2pgsql.
+  - #1840, fix logic of when to compute # of tiles in raster2pgsql.
+  - #1851, fix spatial_ref_system parameters for EPSG:3844
+  - #1857, fix failure to detect endpoint mismatch in ST_AddEdge*Face* 
+  - #1865, data loss in postgis_restore.pl when data rows have leading
+           dashes.
+  - #1867, catch invalid topology name passed to topogeo_add*
+  - #1872, fix ST_ApproxSummarystats to prevent division by zero
+
+* Enhancements *
+
+  - More detailed exception message from topology editing functions.
+  - #1786, improved build dependencies 
+  - #1802, improved function interruptibility.
+  - #1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.
+  - #1812, Add lwgeom_normalize in LIBLWGEOM for more stable testing.
+  
 PostGIS 2.0.0
 2012/04/03
    
