@@ -9309,10 +9309,6 @@ Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS)
 	PG_RETURN_DATUM(result);
 }
 
-/*
-	TODO: continue working on adding PG_FREE_IF_COPY from HERE
-*/
-
 /**
  * See if two rasters intersect
  */
@@ -9320,7 +9316,8 @@ PG_FUNCTION_INFO_V1(RASTER_intersects);
 Datum RASTER_intersects(PG_FUNCTION_ARGS)
 {
 	const int set_count = 2;
-	rt_pgraster *pgrast;
+	rt_pgraster *pgrast[2];
+	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
 	uint32_t bandindex[2] = {0};
 	uint32_t hasbandindex[2] = {0};
@@ -9338,17 +9335,25 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 	for (i = 0, j = 0; i < set_count; i++) {
 		/* pgrast is null, return null */
 		if (PG_ARGISNULL(j)) {
-			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+			for (k = 0; k < i; k++) {
+				rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			PG_RETURN_NULL();
 		}
-		pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(j));
+		pgrast[i] = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(j));
+		pgrastpos[i] = j;
 		j++;
 
 		/* raster */
-		rast[i] = rt_raster_deserialize(pgrast, FALSE);
+		rast[i] = rt_raster_deserialize(pgrast[i], FALSE);
 		if (!rast[i]) {
 			elog(ERROR, "RASTER_intersects: Could not deserialize the %s raster", i < 1 ? "first" : "second");
-			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+			for (k = 0; k <= i; k++) {
+				if (k < i)
+					rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			PG_RETURN_NULL();
 		}
 
@@ -9356,7 +9361,11 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 		numBands = rt_raster_get_num_bands(rast[i]);
 		if (numBands < 1) {
 			elog(NOTICE, "The %s raster provided has no bands", i < 1 ? "first" : "second");
-			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+			if (i > 0) i++;
+			for (k = 0; k < i; k++) {
+				rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			PG_RETURN_NULL();
 		}
 
@@ -9365,7 +9374,11 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 			bandindex[i] = PG_GETARG_INT32(j);
 			if (bandindex[i] < 1 || bandindex[i] > numBands) {
 				elog(NOTICE, "Invalid band index (must use 1-based) for the %s raster. Returning NULL", i < 1 ? "first" : "second");
-				for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+				if (i > 0) i++;
+				for (k = 0; k < i; k++) {
+					rt_raster_destroy(rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				}
 				PG_RETURN_NULL();
 			}
 			hasbandindex[i] = 1;
@@ -9383,14 +9396,20 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 		(!hasbandindex[0] && hasbandindex[1])
 	) {
 		elog(NOTICE, "Missing band index.  Band indices must be provided for both rasters if any one is provided");
-		for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+		for (k = 0; k < set_count; k++) {
+			rt_raster_destroy(rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		PG_RETURN_NULL();
 	}
 
 	/* SRID must match */
 	if (rt_raster_get_srid(rast[0]) != rt_raster_get_srid(rast[1])) {
 		elog(ERROR, "The two rasters provided have different SRIDs");
-		for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
+		for (k = 0; k < set_count; k++) {
+			rt_raster_destroy(rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		PG_RETURN_NULL();
 	}
 
@@ -9431,12 +9450,18 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 
 		if (rtn != 2) {
 			if (rtn != 1) {
-				for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
+				for (k = 0; k < set_count; k++) {
+					rt_raster_destroy(rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				}
 				PG_RETURN_BOOL(0);
 			}
 			/* band isn't specified */
 			else if (!hasbandindex[0]) {
-				for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
+				for (k = 0; k < set_count; k++) {
+					rt_raster_destroy(rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				}
 				PG_RETURN_BOOL(1);
 			}
 		}
@@ -9448,7 +9473,10 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
 		&intersects
 	);
-	for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
+	for (k = 0; k < set_count; k++) {
+		rt_raster_destroy(rast[k]);
+		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+	}
 
 	if (!rtn) {
 		elog(ERROR, "RASTER_intersects: Unable to test for intersection on the two rasters");
@@ -9465,7 +9493,8 @@ PG_FUNCTION_INFO_V1(RASTER_sameAlignment);
 Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 {
 	const int set_count = 2;
-	rt_pgraster *pgrast;
+	rt_pgraster *pgrast[2];
+	int pgrastpos[2] = {-1, -1};
 	rt_raster rast[2] = {NULL};
 
 	uint32_t i;
@@ -9478,17 +9507,25 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 	for (i = 0, j = 0; i < set_count; i++) {
 		/* pgrast is null, return null */
 		if (PG_ARGISNULL(j)) {
-			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+			for (k = 0; k < i; k++) {
+				rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			PG_RETURN_NULL();
 		}
-		pgrast = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(j), 0, sizeof(struct rt_raster_serialized_t));
+		pgrast[i] = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(j), 0, sizeof(struct rt_raster_serialized_t));
+		pgrastpos[i] = j;
 		j++;
 
 		/* raster */
-		rast[i] = rt_raster_deserialize(pgrast, TRUE);
+		rast[i] = rt_raster_deserialize(pgrast[i], TRUE);
 		if (!rast[i]) {
 			elog(ERROR, "RASTER_sameAlignment: Could not deserialize the %s raster", i < 1 ? "first" : "second");
-			for (k = 0; k < i; k++) rt_raster_destroy(rast[k]);
+			for (k = 0; k <= i; k++) {
+				if (k < i)
+					rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			PG_RETURN_NULL();
 		}
 	}
@@ -9519,7 +9556,10 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 	}
 
 	if (err) {
-		for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
+		for (k = 0; k < set_count; k++) {
+			rt_raster_destroy(rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		PG_RETURN_BOOL(0);
 	}
 
@@ -9528,7 +9568,10 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 		rast[1],
 		&aligned
 	);
-	for (k = 0; k < set_count; k++) rt_raster_destroy(rast[k]);
+	for (k = 0; k < set_count; k++) {
+		rt_raster_destroy(rast[k]);
+		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+	}
 
 	if (!rtn) {
 		elog(ERROR, "RASTER_sameAlignment: Unable to test for alignment on the two rasters");
@@ -9538,6 +9581,10 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(aligned);
 }
 
+/*
+	TODO: continue working on adding PG_FREE_IF_COPY from HERE
+*/
+
 /**
  * Two raster MapAlgebra
  */
@@ -9545,7 +9592,9 @@ PG_FUNCTION_INFO_V1(RASTER_mapAlgebra2);
 Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 {
 	const int set_count = 2;
-	rt_pgraster *pgrast;
+	rt_pgraster *pgrast[2];
+	int pgrastpos[2] = {-1, -1};
+	rt_pgraster *pgrtn;
 	rt_raster rast[2] = {NULL};
 	int _isempty[2] = {0};
 	uint32_t bandindex[2] = {0};
@@ -9619,15 +9668,18 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	for (i = 0, j = 0; i < set_count; i++) {
 		if (!PG_ARGISNULL(j)) {
-			pgrast = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(j));
+			pgrast[i] = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(j));
+			pgrastpos[i] = j;
 			j++;
 
 			/* raster */
-			rast[i] = rt_raster_deserialize(pgrast, FALSE);
+			rast[i] = rt_raster_deserialize(pgrast[i], FALSE);
 			if (!rast[i]) {
 				elog(ERROR, "RASTER_mapAlgebra2: Could not deserialize the %s raster", i < 1 ? "first" : "second");
-				for (k = 0; k < i; k++) {
-					if (rast[k] != NULL) rt_raster_destroy(rast[k]);
+				for (k = 0; k <= i; k++) {
+					if (k < i && rast[k] != NULL)
+						rt_raster_destroy(rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 				}
 				PG_RETURN_NULL();
 			}
@@ -9652,6 +9704,9 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	/* both rasters are NULL */
 	if (rast[0] == NULL && rast[1] == NULL) {
 		elog(NOTICE, "The two rasters provided are NULL.  Returning NULL");
+		for (k = 0; k < set_count; k++) {
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		PG_RETURN_NULL();
 	}
 
@@ -9662,19 +9717,22 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		raster = rt_raster_new(0, 0);
 		if (raster == NULL) {
 			elog(ERROR, "RASTER_mapAlgebra2: Unable to create empty raster");
-			for (k = 0; k < i; k++) {
-				if (rast[k] != NULL) rt_raster_destroy(rast[k]);
+			for (k = 0; k < set_count; k++) {
+				if (rast[k] != NULL)
+					rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 			}
 			PG_RETURN_NULL();
 		}
 		rt_raster_set_scale(raster, 0, 0);
 
-		pgrast = rt_raster_serialize(raster);
+		pgrtn = rt_raster_serialize(raster);
 		rt_raster_destroy(raster);
-		if (!pgrast) PG_RETURN_NULL();
+		if (!pgrtn)
+			PG_RETURN_NULL();
 
-		SET_VARSIZE(pgrast, pgrast->size);
-		PG_RETURN_POINTER(pgrast);
+		SET_VARSIZE(pgrtn, pgrtn->size);
+		PG_RETURN_POINTER(pgrtn);
 	}
 
 	/* replace the empty or NULL raster with one matching the other */
@@ -9709,6 +9767,9 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		if (_rast[i] == NULL) {
 			elog(ERROR, "RASTER_mapAlgebra2: Unable to create nodata raster");
 			rt_raster_destroy(_rast[j]);
+			for (k = 0; k < set_count; k++)	{
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			PG_RETURN_NULL();
 		}
 		rt_raster_set_srid(_rast[i], rt_raster_get_srid(_rast[j]));
@@ -9729,19 +9790,31 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	/* SRID must match */
 	if (rt_raster_get_srid(_rast[0]) != rt_raster_get_srid(_rast[1])) {
 		elog(NOTICE, "The two rasters provided have different SRIDs.  Returning NULL");
-		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		for (k = 0; k < set_count; k++) {
+			if (_rast[k] != NULL)
+				rt_raster_destroy(_rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		PG_RETURN_NULL();
 	}
 
 	/* same alignment */
 	if (!rt_raster_same_alignment(_rast[0], _rast[1], &aligned)) {
 		elog(ERROR, "RASTER_mapAlgebra2: Unable to test for alignment on the two rasters");
-		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		for (k = 0; k < set_count; k++) {
+			if (_rast[k] != NULL)
+				rt_raster_destroy(_rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		PG_RETURN_NULL();
 	}
 	if (!aligned) {
 		elog(NOTICE, "The two rasters provided do not have the same alignment.  Returning NULL");
-		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		for (k = 0; k < set_count; k++) {
+			if (_rast[k] != NULL)
+				rt_raster_destroy(_rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		PG_RETURN_NULL();
 	}
 
@@ -9752,7 +9825,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		pixtype = rt_pixtype_index_from_name(pixtypename);
 		if (pixtype == PT_END ) {
 			elog(ERROR, "RASTER_mapAlgebra2: Invalid pixel type: %s", pixtypename);
-			for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+			for (k = 0; k < set_count; k++) {
+				if (_rast[k] != NULL)
+					rt_raster_destroy(_rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			PG_RETURN_NULL();
 		}
 	}
@@ -9772,7 +9849,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	);
 	if (!err) {
 		elog(ERROR, "RASTER_mapAlgebra2: Unable to get output raster of correct extent");
-		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		for (k = 0; k < set_count; k++) {
+			if (_rast[k] != NULL)
+				rt_raster_destroy(_rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		PG_RETURN_NULL();
 	}
 
@@ -9802,7 +9883,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				)
 			) {
 				elog(NOTICE, "The %s raster is NULL.  Returning NULL", (i != 1 ? "FIRST" : "SECOND"));
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				for (k = 0; k < set_count; k++) {
+					if (_rast[k] != NULL)
+						rt_raster_destroy(_rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				}
 				rt_raster_destroy(raster);
 				PG_RETURN_NULL();
 			}
@@ -9813,14 +9898,18 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					(i != 1 ? "FIRST" : "SECOND"), bandindex[i]
 				);
 
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				for (k = 0; k < set_count; k++) {
+					if (_rast[k] != NULL)
+						rt_raster_destroy(_rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				}
 
-				pgrast = rt_raster_serialize(raster);
+				pgrtn = rt_raster_serialize(raster);
 				rt_raster_destroy(raster);
-				if (!pgrast) PG_RETURN_NULL();
+				if (!pgrtn) PG_RETURN_NULL();
 
-				SET_VARSIZE(pgrast, pgrast->size);
-				PG_RETURN_POINTER(pgrast);
+				SET_VARSIZE(pgrtn, pgrtn->size);
+				PG_RETURN_POINTER(pgrtn);
 			}
 			break;
 		case ET_UNION:
@@ -9840,21 +9929,30 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					raster = rt_raster_new(0, 0);
 					if (raster == NULL) {
 						elog(ERROR, "RASTER_mapAlgebra2: Unable to create no band raster");
-						for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+						for (k = 0; k < set_count; k++) {
+							if (_rast[k] != NULL)
+								rt_raster_destroy(_rast[k]);
+							PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+						}
 						PG_RETURN_NULL();
 					}
+
 					rt_raster_set_scale(raster, 0, 0);
 					rt_raster_set_srid(raster, rt_raster_get_srid(_rast[0]));
 				}
 
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				for (k = 0; k < set_count; k++) {
+					if (_rast[k] != NULL)
+						rt_raster_destroy(_rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				}
 
-				pgrast = rt_raster_serialize(raster);
+				pgrtn = rt_raster_serialize(raster);
 				rt_raster_destroy(raster);
-				if (!pgrast) PG_RETURN_NULL();
+				if (!pgrtn) PG_RETURN_NULL();
 
-				SET_VARSIZE(pgrast, pgrast->size);
-				PG_RETURN_POINTER(pgrast);
+				SET_VARSIZE(pgrtn, pgrtn->size);
+				PG_RETURN_POINTER(pgrtn);
 			}
 			break;
 	}
@@ -9866,14 +9964,18 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	) {
 		elog(NOTICE, "The two rasters provided do not have the respectively specified band indices.  Returning no band raster of correct extent");
 
-		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		for (k = 0; k < set_count; k++) {
+			if (_rast[k] != NULL)
+				rt_raster_destroy(_rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 
-		pgrast = rt_raster_serialize(raster);
+		pgrtn = rt_raster_serialize(raster);
 		rt_raster_destroy(raster);
-		if (!pgrast) PG_RETURN_NULL();
+		if (!pgrtn) PG_RETURN_NULL();
 
-		SET_VARSIZE(pgrast, pgrast->size);
-		PG_RETURN_POINTER(pgrast);
+		SET_VARSIZE(pgrtn, pgrtn->size);
+		PG_RETURN_POINTER(pgrtn);
 	}
 
 	/* get bands */
@@ -9891,7 +9993,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				bandindex[i],
 				(i < 1 ? "FIRST" : "SECOND")
 			);
-			for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+			for (k = 0; k < set_count; k++) {
+				if (_rast[k] != NULL)
+					rt_raster_destroy(_rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
 		}
@@ -9932,7 +10038,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		0
 	) < 0) {
 		elog(ERROR, "RASTER_mapAlgebra2: Unable to add new band to output raster");
-		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		for (k = 0; k < set_count; k++) {
+			if (_rast[k] != NULL)
+				rt_raster_destroy(_rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
 	}
@@ -9941,7 +10051,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	band = rt_raster_get_band(raster, 0);
 	if (band == NULL) {
 		elog(ERROR, "RASTER_mapAlgebra2: Unable to get newly added band of output raster");
-		for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+		for (k = 0; k < set_count; k++) {
+			if (_rast[k] != NULL)
+				rt_raster_destroy(_rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
 	}
@@ -9985,7 +10099,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			/* connect SPI */
 			if (SPI_connect() != SPI_OK_CONNECT) {
 				elog(ERROR, "RASTER_mapAlgebra2: Unable to connect to the SPI manager");
-				for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+				for (k = 0; k < set_count; k++) {
+					if (_rast[k] != NULL)
+						rt_raster_destroy(_rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				}
 				rt_raster_destroy(raster);
 				PG_RETURN_NULL();
 			}
@@ -10033,7 +10151,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 						SPI_finish();
 
-						for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+						for (k = 0; k < set_count; k++) {
+							if (_rast[k] != NULL)
+								rt_raster_destroy(_rast[k]);
+							PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+						}
 						rt_raster_destroy(raster);
 
 						PG_RETURN_NULL();
@@ -10056,7 +10178,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
-							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+							for (k = 0; k < set_count; k++) {
+								if (_rast[k] != NULL)
+									rt_raster_destroy(_rast[k]);
+								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+							}
 							rt_raster_destroy(raster);
 
 							PG_RETURN_NULL();
@@ -10093,7 +10219,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
-							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+							for (k = 0; k < set_count; k++) {
+								if (_rast[k] != NULL)
+									rt_raster_destroy(_rast[k]);
+								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+							}
 							rt_raster_destroy(raster);
 
 							PG_RETURN_NULL();
@@ -10109,7 +10239,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
-							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+							for (k = 0; k < set_count; k++) {
+								if (_rast[k] != NULL)
+									rt_raster_destroy(_rast[k]);
+								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+							}
 							rt_raster_destroy(raster);
 
 							PG_RETURN_NULL();
@@ -10129,7 +10263,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 							SPI_finish();
 
-							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+							for (k = 0; k < set_count; k++) {
+								if (_rast[k] != NULL)
+									rt_raster_destroy(_rast[k]);
+								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+							}
 							rt_raster_destroy(raster);
 
 							PG_RETURN_NULL();
@@ -10185,7 +10323,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				*/
 
 				if (err) {
-					for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+					for (k = 0; k < set_count; k++) {
+						if (_rast[k] != NULL)
+							rt_raster_destroy(_rast[k]);
+						PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+					}
 					rt_raster_destroy(raster);
 
 					PG_RETURN_NULL();
@@ -10220,7 +10362,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		}
 		default:
 			elog(ERROR, "RASTER_mapAlgebra2: Invalid data type for expression or userfunction");
-			for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+			for (k = 0; k < set_count; k++) {
+				if (_rast[k] != NULL)
+					rt_raster_destroy(_rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
 			break;
@@ -10272,7 +10418,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 								SPI_finish();
 							}
 
-							for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+							for (k = 0; k < set_count; k++) {
+								if (_rast[k] != NULL)
+									rt_raster_destroy(_rast[k]);
+								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+							}
 							rt_raster_destroy(raster);
 
 							PG_RETURN_NULL();
@@ -10383,7 +10533,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 								for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 								SPI_finish();
 
-								for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+								for (k = 0; k < set_count; k++) {
+									if (_rast[k] != NULL)
+										rt_raster_destroy(_rast[k]);
+									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+								}
 								rt_raster_destroy(raster);
 
 								PG_RETURN_NULL();
@@ -10402,7 +10556,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 								for (k = 0; k < spi_count; k++) SPI_freeplan(spi_plan[k]);
 								SPI_finish();
 
-								for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+								for (k = 0; k < set_count; k++) {
+									if (_rast[k] != NULL)
+										rt_raster_destroy(_rast[k]);
+									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+								}
 								rt_raster_destroy(raster);
 
 								PG_RETURN_NULL();
@@ -10479,7 +10637,11 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							SPI_finish();
 						}
 
-						for (k = 0; k < set_count; k++) rt_raster_destroy(_rast[k]);
+						for (k = 0; k < set_count; k++) {
+							if (_rast[k] != NULL)
+								rt_raster_destroy(_rast[k]);
+							PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+						}
 						rt_raster_destroy(raster);
 
 						PG_RETURN_NULL();
@@ -10501,17 +10663,19 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	}
 
 	for (k = 0; k < set_count; k++) {
-		if (_rast[k] != NULL) rt_raster_destroy(_rast[k]);
+		if (_rast[k] != NULL)
+			rt_raster_destroy(_rast[k]);
+		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	pgrast = rt_raster_serialize(raster);
+	pgrtn = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
-	if (!pgrast) PG_RETURN_NULL();
+	if (!pgrtn) PG_RETURN_NULL();
 
 	POSTGIS_RT_DEBUG(3, "Finished RASTER_mapAlgebra2");
 
-	SET_VARSIZE(pgrast, pgrast->size);
-	PG_RETURN_POINTER(pgrast);
+	SET_VARSIZE(pgrtn, pgrtn->size);
+	PG_RETURN_POINTER(pgrtn);
 }
 
 /**
@@ -10521,6 +10685,7 @@ PG_FUNCTION_INFO_V1(RASTER_mapAlgebraFctNgb);
 Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster = NULL;
+    rt_pgraster *pgrtn = NULL;
     rt_raster raster = NULL;
     rt_raster newrast = NULL;
     rt_band band = NULL;
@@ -10566,6 +10731,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     if (NULL == raster)
     {
  		elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not deserialize raster");
+		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();    
     }
 
@@ -10595,6 +10761,8 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     if ( NULL == newrast ) {
         elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not create a new raster. "
             "Returning NULL");
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
         PG_RETURN_NULL();
     }
 
@@ -10621,18 +10789,18 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     { 
         elog(NOTICE, "Raster is empty. Returning an empty raster");
         rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
 
-        pgraster = rt_raster_serialize(newrast);
-        if (NULL == pgraster) {
+        pgrtn = rt_raster_serialize(newrast);
+        rt_raster_destroy(newrast);
+        if (NULL == pgrtn) {
             elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
                 "Returning NULL");
             PG_RETURN_NULL();
         }
 
-        SET_VARSIZE(pgraster, pgraster->size);
-        rt_raster_destroy(newrast);
-
-        PG_RETURN_POINTER(pgraster);
+        SET_VARSIZE(pgrtn, pgrtn->size);
+        PG_RETURN_POINTER(pgrtn);
     }
 
     POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: Getting raster band %d...", nband);
@@ -10645,18 +10813,18 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(NOTICE, "Raster does not have the required band. Returning a raster "
             "without a band");
         rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
 
-        pgraster = rt_raster_serialize(newrast);
-        if (NULL == pgraster) {
+        pgrtn = rt_raster_serialize(newrast);
+        rt_raster_destroy(newrast);
+        if (NULL == pgrtn) {
             elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
                 "Returning NULL");
             PG_RETURN_NULL();
         }
 
-        SET_VARSIZE(pgraster, pgraster->size);
-        rt_raster_destroy(newrast);
-
-        PG_RETURN_POINTER(pgraster);
+        SET_VARSIZE(pgrtn, pgrtn->size);
+        PG_RETURN_POINTER(pgrtn);
     }
 
     /* Get the raster band */
@@ -10665,19 +10833,18 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(NOTICE, "Could not get the required band. Returning a raster "
             "without a band");
         rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
 
-        pgraster = rt_raster_serialize(newrast);
-        if (NULL == pgraster) {
+        pgrtn = rt_raster_serialize(newrast);
+        rt_raster_destroy(newrast);
+        if (NULL == pgrtn) {
             elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
                 "Returning NULL");
             PG_RETURN_NULL();
         }
 
-        SET_VARSIZE(pgraster, pgraster->size);
-
-        rt_raster_destroy(newrast);
-
-        PG_RETURN_POINTER(pgraster);
+        SET_VARSIZE(pgrtn, pgrtn->size);
+        PG_RETURN_POINTER(pgrtn);
     }
 
     /*
@@ -10724,6 +10891,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(ERROR, "RASTER_mapAlgebraFctNgb: Invalid pixeltype. Returning NULL");
 
         rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
         rt_raster_destroy(newrast);
 
         PG_RETURN_NULL();
@@ -10737,6 +10905,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(ERROR, "RASTER_mapAlgebraFctNgb: Required function is missing. Returning NULL");
 
         rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
         rt_raster_destroy(newrast);
 
         PG_RETURN_NULL();
@@ -10747,6 +10916,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(ERROR, "RASTER_mapAlgebraFctNgb: Got invalid function object id. Returning NULL");
 
         rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
         rt_raster_destroy(newrast);
 
         PG_RETURN_NULL();
@@ -10759,6 +10929,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(ERROR, "RASTER_mapAlgebraFctNgb: Function provided must return double precision not resultset. Returning NULL");
 
         rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
         rt_raster_destroy(newrast);
 
         PG_RETURN_NULL();
@@ -10768,6 +10939,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(ERROR, "RASTER_mapAlgebraFctNgb: Function does not have three input parameters. Returning NULL");
 
         rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
         rt_raster_destroy(newrast);
 
         PG_RETURN_NULL();
@@ -10791,6 +10963,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
             elog(ERROR, "RASTER_mapAlgebraFctNgb: Strict callback functions cannot have null parameters. Returning NULL");
 
             rt_raster_destroy(raster);
+            PG_FREE_IF_COPY(pgraster, 0);
             rt_raster_destroy(newrast);
 
             PG_RETURN_NULL();
@@ -10816,21 +10989,20 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         rt_raster_generate_new_band(newrast, newpixeltype,
                 newinitialvalue, TRUE, newnodatavalue, 0);
 
+        rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+
         /* Serialize created raster */
-        pgraster = rt_raster_serialize(newrast);
-        if (NULL == pgraster) {
+        pgrtn = rt_raster_serialize(newrast);
+        rt_raster_destroy(newrast);
+        if (NULL == pgrtn) {
             elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
                 "Returning NULL");
             PG_RETURN_NULL();
         }
 
-        SET_VARSIZE(pgraster, pgraster->size);
-
-        /* Free memory */
-        rt_raster_destroy(raster);
-        rt_raster_destroy(newrast);
-        
-        PG_RETURN_POINTER(pgraster);               
+        SET_VARSIZE(pgrtn, pgrtn->size);
+        PG_RETURN_POINTER(pgrtn);               
     }
 
 
@@ -10847,21 +11019,21 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(NOTICE, "Could not modify band for new raster. Returning new "
             "raster with the original band");
 
+        rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+
         /* Serialize created raster */
-        pgraster = rt_raster_serialize(newrast);
-        if (NULL == pgraster) {
+        pgrtn = rt_raster_serialize(newrast);
+        rt_raster_destroy(newrast);
+        if (NULL == pgrtn) {
             elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
                 "Returning NULL");
 
             PG_RETURN_NULL();
         }
 
-        SET_VARSIZE(pgraster, pgraster->size);
-
-        rt_raster_destroy(raster);
-        rt_raster_destroy(newrast);
-
-        PG_RETURN_POINTER(pgraster);      
+        SET_VARSIZE(pgrtn, pgrtn->size);
+        PG_RETURN_POINTER(pgrtn);      
     }
 
     /* Get the width of the neighborhood */
@@ -10869,21 +11041,21 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(NOTICE, "Neighborhood width is NULL or <= 0. Returning new "
             "raster with the original band");
 
+        rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+
         /* Serialize created raster */
-        pgraster = rt_raster_serialize(newrast);
-        if (NULL == pgraster) {
+        pgrtn = rt_raster_serialize(newrast);
+        rt_raster_destroy(newrast);
+        if (NULL == pgrtn) {
             elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
                 "Returning NULL");
 
             PG_RETURN_NULL();
         }
 
-        SET_VARSIZE(pgraster, pgraster->size);
-
-        rt_raster_destroy(raster);
-        rt_raster_destroy(newrast);
-
-        PG_RETURN_POINTER(pgraster);      
+        SET_VARSIZE(pgrtn, pgrtn->size);
+        PG_RETURN_POINTER(pgrtn);      
     }
 
     ngbwidth = PG_GETARG_INT32(3);
@@ -10894,21 +11066,21 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
         elog(NOTICE, "Neighborhood height is NULL or <= 0. Returning new "
             "raster with the original band");
 
+        rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+
         /* Serialize created raster */
-        pgraster = rt_raster_serialize(newrast);
-        if (NULL == pgraster) {
+        pgrtn = rt_raster_serialize(newrast);
+        rt_raster_destroy(newrast);
+        if (NULL == pgrtn) {
             elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
                 "Returning NULL");
 
             PG_RETURN_NULL();
         }
 
-        SET_VARSIZE(pgraster, pgraster->size);
-
-        rt_raster_destroy(raster);
-        rt_raster_destroy(newrast);
-
-        PG_RETURN_POINTER(pgraster);      
+        SET_VARSIZE(pgrtn, pgrtn->size);
+        PG_RETURN_POINTER(pgrtn);      
     }
 
     ngbheight = PG_GETARG_INT32(4);
@@ -10946,21 +11118,21 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
             pfree(txtCallbackParam);
             pfree(strFromText);
 
+            rt_raster_destroy(raster);
+            PG_FREE_IF_COPY(pgraster, 0);
+
             /* Serialize created raster */
-            pgraster = rt_raster_serialize(newrast);
-            if (NULL == pgraster) {
+            pgrtn = rt_raster_serialize(newrast);
+            rt_raster_destroy(newrast);
+            if (NULL == pgrtn) {
                 elog(ERROR, "RASTER_mapAlgebraFctNgb: Could not serialize raster. "
                     "Returning NULL");
 
                 PG_RETURN_NULL();
             }
 
-            SET_VARSIZE(pgraster, pgraster->size);
-
-            rt_raster_destroy(raster);
-            rt_raster_destroy(newrast);
-
-            PG_RETURN_POINTER(pgraster);      
+            SET_VARSIZE(pgrtn, pgrtn->size);
+            PG_RETURN_POINTER(pgrtn);      
         }
     }
     else if (strcmp(strFromText, "NULL") == 0) {
@@ -11081,29 +11253,28 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     pfree(strFromText);
     pfree(txtCallbackParam);
     
+    rt_raster_destroy(raster);
+    PG_FREE_IF_COPY(pgraster, 0);
+
     /* The newrast band has been modified */
 
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: raster modified, serializing it.");
     /* Serialize created raster */
 
-    pgraster = rt_raster_serialize(newrast);
-    if (NULL == pgraster) {
+    pgrtn = rt_raster_serialize(newrast);
+    rt_raster_destroy(newrast);
+    if (NULL == pgrtn) {
         rt_raster_destroy(raster);
         rt_raster_destroy(newrast);
 
         PG_RETURN_NULL();
     }
 
-    SET_VARSIZE(pgraster, pgraster->size);    
-
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: raster serialized");
-
-    rt_raster_destroy(raster);
-    rt_raster_destroy(newrast);
-
     POSTGIS_RT_DEBUG(4, "RASTER_mapAlgebraFctNgb: returning raster");
     
-    PG_RETURN_POINTER(pgraster);
+    SET_VARSIZE(pgrtn, pgrtn->size);    
+    PG_RETURN_POINTER(pgrtn);
 }
 
 /* ---------------------------------------------------------------- */
