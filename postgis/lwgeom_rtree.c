@@ -417,7 +417,7 @@ static GeomCacheMethods RTreeCacheMethods =
 RTREE_POLY_CACHE*
 GetRtreeCache(FunctionCallInfoData* fcinfo, GSERIALIZED* g1)
 {
-	RTreeGeomCache* cache = (RTreeGeomCache*)GetGeomCache2(fcinfo, &RTreeCacheMethods, g1, NULL);
+	RTreeGeomCache* cache = (RTreeGeomCache*)GetGeomCache(fcinfo, &RTreeCacheMethods, g1, NULL);
 	RTREE_POLY_CACHE* index = NULL;
 
 	if ( cache )

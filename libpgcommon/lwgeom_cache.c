@@ -119,47 +119,8 @@ GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
 * GeomCache entry from the generic cache if one exists.
 * If it doesn't exist, make a new empty one and return it.
 */
-#if 0
 GeomCache*            
-GetGeomCache(FunctionCallInfoData* fcinfo, int cache_entry)
-{
-	GeomCache* cache;
-	GenericCacheCollection* generic_cache = GetGenericCacheCollection(fcinfo);
-	
-	if ( (cache_entry) < 0 || (cache_entry >= NUM_CACHE_ENTRIES) )
-		return NULL;
-	
-	cache = (GeomCache*)(generic_cache->entry[cache_entry]);
-	
-	if ( ! cache )
-	{
-		/* Allocate in the upper context */
-		cache = MemoryContextAlloc(FIContext(fcinfo), sizeof(GeomCache));
-		/* Zero everything out */
-		memset(cache, 0, sizeof(GeomCache));
-		/* Set the cache type */
-		cache->type = cache_entry;
-		cache->context_statement = FIContext(fcinfo);
-
-		/* Store the pointer in GenericCache */
-		generic_cache->entry[cache_entry] = (GenericCache*)cache;
-		
-	}
-
-	/* The cache object type should always equal the entry type */
-	if ( cache->type != cache_entry )
-	{
-		lwerror("cache type does not equal expected entry type");
-		return NULL;
-	}
-		
-	return cache;
-}
-#endif
-
-
-GeomCache*            
-GetGeomCache2(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2)
+GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2)
 {
 	GeomCache* cache;
 	int cache_hit = 0;
@@ -263,109 +224,6 @@ GetGeomCache2(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_method
 }
 
 
-
-/**
-* Get an appropriate tree from the cache, based on the entry number
-* and the geometry values. Checks for a cache, checks for cache hits, 
-* returns a built tree if one exists. 
-*/
-#if 0
-void* 
-GetGeomIndex(FunctionCallInfoData* fcinfo, int cache_entry, GeomIndexBuilder index_build, GeomIndexFreer index_free, const GSERIALIZED* geom1, const GSERIALIZED* geom2, int* argnum)
-{
-	int cache_hit = 0;
-	MemoryContext old_context;
-	GeomCache* cache = GetGeomCache(fcinfo, cache_entry);
-	const GSERIALIZED *geom;
-
-	/* Initialize output of argnum */
-	if ( argnum )
-		*argnum = cache_hit;
-
-	/* Cache hit on the first argument */
-	if ( geom1 &&
-	     cache->argnum != 2 &&
-	     cache->geom1_size == VARSIZE(geom1) &&
-	     memcmp(cache->geom1, geom1, cache->geom1_size) == 0 )
-	{
-		cache_hit = 1;
-		geom = geom1;
-
-	}
-	/* Cache hit on second argument */
-	else if ( geom2 &&
-	          cache->argnum != 1 &&
-	          cache->geom2_size == VARSIZE(geom2) &&
-	          memcmp(cache->geom2, geom2, cache->geom2_size) == 0 )
-	{
-		cache_hit = 2;
-		geom = geom2;
-	}
-	/* No cache hit. If we have a tree, free it. */
-	else
-	{
-		cache_hit = 0;
-		if ( cache->index )
-		{
-			index_free(cache);
-			cache->index = NULL;
-		}
-	}
-
-	/* Cache hit, but no tree built yet, build it! */
-	if ( cache_hit && ! cache->index )
-	{
-		LWGEOM *lwgeom = lwgeom_from_gserialized(geom);
-		int rv;
-
-		/* Can't build a tree on a NULL or empty */
-		if ( (!lwgeom) || lwgeom_is_empty(lwgeom) )
-			return NULL;
-
-		cache->argnum = cache_hit;
-		old_context = MemoryContextSwitchTo(FIContext(fcinfo));
-		rv = index_build(lwgeom, cache);
-		MemoryContextSwitchTo(old_context);
-
-		/* Something went awry in the tree build phase */
-		if ( ! rv )
-		{
-			cache->argnum = 0;
-			return NULL;
-		}
-
-	}
-
-	/* We have a hit and a calculated tree, we're done */
-	if ( cache_hit && (cache_hit == cache->argnum) && cache->index )
-	{
-		if ( argnum )
-			*argnum = cache_hit;
-		return cache->index;
-	}
-
-	/* Argument one didn't match, so copy the new value in. */
-	if ( geom1 && cache_hit != 1 )
-	{
-		if ( cache->geom1 ) pfree(cache->geom1);
-		cache->geom1_size = VARSIZE(geom1);
-		cache->geom1 = MemoryContextAlloc(FIContext(fcinfo), cache->geom1_size);
-		memcpy(cache->geom1, geom1, cache->geom1_size);
-	}
-	/* Argument two didn't match, so copy the new value in. */
-	if ( geom2 && cache_hit != 2 )
-	{
-		if ( cache->geom2 ) pfree(cache->geom2);
-		cache->geom2_size = VARSIZE(geom2);
-		cache->geom2 = MemoryContextAlloc(FIContext(fcinfo), cache->geom2_size);
-		memcpy(cache->geom2, geom2, cache->geom2_size);
-	}
-
-	return NULL;
-}
-
-#endif
-
 /**
 * Builder, freeer and public accessor for cached CIRC_NODE trees
 */
@@ -419,7 +277,7 @@ static GeomCacheMethods CircTreeCacheMethods =
 CIRC_NODE* 
 GetCircTree(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, int* argnum_of_cache)
 {
-	CircTreeGeomCache* cache = (CircTreeGeomCache*)GetGeomCache2(fcinfo, &CircTreeCacheMethods, g1, g2);
+	CircTreeGeomCache* cache = (CircTreeGeomCache*)GetGeomCache(fcinfo, &CircTreeCacheMethods, g1, g2);
 
 	if ( ! cache )
 		return NULL;
@@ -433,7 +291,7 @@ GetCircTree(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZ
 CircTreeGeomCache* 
 GetCircTreeGeomCache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2)
 {
-	return (CircTreeGeomCache*)GetGeomCache2(fcinfo, &CircTreeCacheMethods, g1, g2);
+	return (CircTreeGeomCache*)GetGeomCache(fcinfo, &CircTreeCacheMethods, g1, g2);
 }
 
 

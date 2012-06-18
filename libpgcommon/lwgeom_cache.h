@@ -17,7 +17,7 @@
 #include "fmgr.h"
 
 #include "liblwgeom_internal.h"
-#include "lwgeodetic.h";
+#include "lwgeodetic.h"
 #include "lwgeodetic_tree.h"
 
 #include "lwgeom_pg.h"
@@ -33,10 +33,10 @@
 
 
 /* 
-* For the geometry-with-tree case, we need space for
-* the serialized geometries and their sizes, so we can
-* test for cache hits/misses. The argnum tells us which
-* argument the tree is built for.
+* A generic GeomCache just needs space for the cache type,
+* the cache keys (GSERIALIZED geometries), the key sizes, 
+* and the argument number the cached index/tree is going
+* to refer to.
 */
 typedef struct {
 	int                         type;
@@ -47,6 +47,13 @@ typedef struct {
 	int32                       argnum; 
 } GeomCache;
 
+/*
+* Specific tree types include all the generic slots and 
+* their own slots for their trees. We put the implementation
+* for the CircTreeGeomCache here because we can't shove
+* the PgSQL specific bits of the code (fcinfo) back into
+* liblwgeom, where most of the circtree logic lives.
+*/
 typedef struct {
 	int                         type;       // <GeomCache>
 	GSERIALIZED*                geom1;      // 
@@ -57,6 +64,20 @@ typedef struct {
 	CIRC_NODE*                  index;
 } CircTreeGeomCache;
 
+/*
+* Other specific geometry cache types are the 
+* RTreeGeomCache - lwgeom_rtree.h
+* PrepGeomCache - lwgeom_geos_prepared.h
+*/
+
+/* 
+* Proj4 caching has it's own mechanism, but is 
+* integrated into the generic caching system because
+* some geography functions make cached SRID lookup
+* calls and also CircTree accelerated calls, so 
+* there needs to be a management object on 
+* fcinfo->flinfo->fn_extra to avoid collisions.
+*/
 
 /* An entry in the PROJ4 SRS cache */
 typedef struct struct_PROJ4SRSCacheItem
@@ -84,38 +105,26 @@ typedef struct struct_PROJ4PortalCache
 }
 PROJ4PortalCache;
 
-/*
-* Generic signature for function to take a serialized 
-* geometry and return a tree structure for fast edge
-* access.
+/**
+* Generic signature for functions to manage a geometry
+* cache structure.  
 */
-#if 0
-typedef int (*GeomIndexBuilder)(const LWGEOM* lwgeom, GeomCache* cache);
-typedef int (*GeomIndexFreer)(GeomCache* cache);
-typedef GeomCache* (*GeomCacheAllocator)(void);
-#endif
-
 typedef struct 
 {
-	int entry_number;
-	int (*GeomIndexBuilder)(const LWGEOM* lwgeom, GeomCache* cache);
-	int (*GeomIndexFreer)(GeomCache* cache);
-	GeomCache* (*GeomCacheAllocator)(void);
+	int entry_number; /* What kind of structure is this? */
+	int (*GeomIndexBuilder)(const LWGEOM* lwgeom, GeomCache* cache); /* Build an index/tree and add it to your cache */
+	int (*GeomIndexFreer)(GeomCache* cache); /* Free the index/tree in your cache */
+	GeomCache* (*GeomCacheAllocator)(void); /* Allocate the kind of cache object you use (GeomCache+some extra space) */
 } GeomCacheMethods;
 
 /* 
 * Cache retrieval functions
 */
 PROJ4PortalCache*  GetPROJ4SRSCache(FunctionCallInfoData *fcinfo);
-GeomCache*         GetGeomCache2(FunctionCallInfoData *fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2);
+GeomCache*         GetGeomCache(FunctionCallInfoData *fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2);
 CIRC_NODE*         GetCircTree(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, int* argnum_of_cache);
 CircTreeGeomCache* GetCircTreeGeomCache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2);
 
-/* 
-* Given candidate geometries, a builer function and an entry type, cache and/or return an
-* appropriate tree.
-*/
-//void* GetGeomIndex(FunctionCallInfoData* fcinfo, int cache_entry, GeomIndexBuilder index_build, GeomIndexFreer tree_free, const GSERIALIZED* g1, const GSERIALIZED* g2, int* argnum);
 
 
 #endif /* LWGEOM_CACHE_H_ */
