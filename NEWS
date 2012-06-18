@@ -40,6 +40,8 @@ PostGIS 2.0.1
            dashes.
   - #1867, catch invalid topology name passed to topogeo_add*
   - #1872, fix ST_ApproxSummarystats to prevent division by zero
+  - #1875, ST_SummaryStats returns NULL for all parameters except count
+	         when count is zero
 
 * Enhancements *
 
