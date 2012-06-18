@@ -9689,7 +9689,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				for (k = 0; k <= i; k++) {
 					if (k < i && rast[k] != NULL)
 						rt_raster_destroy(rast[k]);
-					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+					if (pgrastpos[k] != -1)
+						PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 				}
 				PG_RETURN_NULL();
 			}
@@ -9715,7 +9716,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	if (rast[0] == NULL && rast[1] == NULL) {
 		elog(NOTICE, "The two rasters provided are NULL.  Returning NULL");
 		for (k = 0; k < set_count; k++) {
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			if (pgrastpos[k] != -1)
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 		}
 		PG_RETURN_NULL();
 	}
@@ -9730,7 +9732,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			for (k = 0; k < set_count; k++) {
 				if (rast[k] != NULL)
 					rt_raster_destroy(rast[k]);
-				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				if (pgrastpos[k] != -1)
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 			}
 			PG_RETURN_NULL();
 		}
@@ -9778,7 +9781,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			elog(ERROR, "RASTER_mapAlgebra2: Unable to create nodata raster");
 			rt_raster_destroy(_rast[j]);
 			for (k = 0; k < set_count; k++)	{
-				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				if (pgrastpos[k] != -1)
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 			}
 			PG_RETURN_NULL();
 		}
@@ -9803,7 +9807,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			if (pgrastpos[k] != -1)
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 		}
 		PG_RETURN_NULL();
 	}
@@ -9814,7 +9819,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			if (pgrastpos[k] != -1)
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 		}
 		PG_RETURN_NULL();
 	}
@@ -9823,7 +9829,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			if (pgrastpos[k] != -1)
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 		}
 		PG_RETURN_NULL();
 	}
@@ -9838,7 +9845,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			for (k = 0; k < set_count; k++) {
 				if (_rast[k] != NULL)
 					rt_raster_destroy(_rast[k]);
-				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				if (pgrastpos[k] != -1)
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 			}
 			PG_RETURN_NULL();
 		}
@@ -9862,7 +9870,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			if (pgrastpos[k] != -1)
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 		}
 		PG_RETURN_NULL();
 	}
@@ -9896,7 +9905,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				for (k = 0; k < set_count; k++) {
 					if (_rast[k] != NULL)
 						rt_raster_destroy(_rast[k]);
-					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+					if (pgrastpos[k] != -1)
+						PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 				}
 				rt_raster_destroy(raster);
 				PG_RETURN_NULL();
@@ -9911,7 +9921,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				for (k = 0; k < set_count; k++) {
 					if (_rast[k] != NULL)
 						rt_raster_destroy(_rast[k]);
-					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+					if (pgrastpos[k] != -1)
+						PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 				}
 
 				pgrtn = rt_raster_serialize(raster);
@@ -9942,7 +9953,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						for (k = 0; k < set_count; k++) {
 							if (_rast[k] != NULL)
 								rt_raster_destroy(_rast[k]);
-							PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+							if (pgrastpos[k] != -1)
+								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 						}
 						PG_RETURN_NULL();
 					}
@@ -9954,7 +9966,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				for (k = 0; k < set_count; k++) {
 					if (_rast[k] != NULL)
 						rt_raster_destroy(_rast[k]);
-					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+					if (pgrastpos[k] != -1)
+						PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 				}
 
 				pgrtn = rt_raster_serialize(raster);
@@ -9977,7 +9990,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			if (pgrastpos[k] != -1)
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 		}
 
 		pgrtn = rt_raster_serialize(raster);
@@ -10006,7 +10020,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			for (k = 0; k < set_count; k++) {
 				if (_rast[k] != NULL)
 					rt_raster_destroy(_rast[k]);
-				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				if (pgrastpos[k] != -1)
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 			}
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
@@ -10051,7 +10066,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			if (pgrastpos[k] != -1)
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 		}
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
@@ -10064,7 +10080,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
 				rt_raster_destroy(_rast[k]);
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			if (pgrastpos[k] != -1)
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 		}
 		rt_raster_destroy(raster);
 		PG_RETURN_NULL();
@@ -10112,7 +10129,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				for (k = 0; k < set_count; k++) {
 					if (_rast[k] != NULL)
 						rt_raster_destroy(_rast[k]);
-					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+					if (pgrastpos[k] != -1)
+						PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 				}
 				rt_raster_destroy(raster);
 				PG_RETURN_NULL();
@@ -10164,7 +10182,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						for (k = 0; k < set_count; k++) {
 							if (_rast[k] != NULL)
 								rt_raster_destroy(_rast[k]);
-							PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+							if (pgrastpos[k] != -1)
+								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 						}
 						rt_raster_destroy(raster);
 
@@ -10191,7 +10210,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < set_count; k++) {
 								if (_rast[k] != NULL)
 									rt_raster_destroy(_rast[k]);
-								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+								if (pgrastpos[k] != -1)
+									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 							}
 							rt_raster_destroy(raster);
 
@@ -10232,7 +10252,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < set_count; k++) {
 								if (_rast[k] != NULL)
 									rt_raster_destroy(_rast[k]);
-								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+								if (pgrastpos[k] != -1)
+									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 							}
 							rt_raster_destroy(raster);
 
@@ -10252,7 +10273,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < set_count; k++) {
 								if (_rast[k] != NULL)
 									rt_raster_destroy(_rast[k]);
-								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+								if (pgrastpos[k] != -1)
+									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 							}
 							rt_raster_destroy(raster);
 
@@ -10276,7 +10298,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < set_count; k++) {
 								if (_rast[k] != NULL)
 									rt_raster_destroy(_rast[k]);
-								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+								if (pgrastpos[k] != -1)
+									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 							}
 							rt_raster_destroy(raster);
 
@@ -10336,7 +10359,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 					for (k = 0; k < set_count; k++) {
 						if (_rast[k] != NULL)
 							rt_raster_destroy(_rast[k]);
-						PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+						if (pgrastpos[k] != -1)
+							PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 					}
 					rt_raster_destroy(raster);
 
@@ -10375,7 +10399,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			for (k = 0; k < set_count; k++) {
 				if (_rast[k] != NULL)
 					rt_raster_destroy(_rast[k]);
-				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				if (pgrastpos[k] != -1)
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 			}
 			rt_raster_destroy(raster);
 			PG_RETURN_NULL();
@@ -10431,7 +10456,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							for (k = 0; k < set_count; k++) {
 								if (_rast[k] != NULL)
 									rt_raster_destroy(_rast[k]);
-								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+								if (pgrastpos[k] != -1)
+									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 							}
 							rt_raster_destroy(raster);
 
@@ -10546,7 +10572,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 								for (k = 0; k < set_count; k++) {
 									if (_rast[k] != NULL)
 										rt_raster_destroy(_rast[k]);
-									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+									if (pgrastpos[k] != -1)
+										PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 								}
 								rt_raster_destroy(raster);
 
@@ -10569,7 +10596,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 								for (k = 0; k < set_count; k++) {
 									if (_rast[k] != NULL)
 										rt_raster_destroy(_rast[k]);
-									PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+									if (pgrastpos[k] != -1)
+										PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 								}
 								rt_raster_destroy(raster);
 
@@ -10650,7 +10678,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						for (k = 0; k < set_count; k++) {
 							if (_rast[k] != NULL)
 								rt_raster_destroy(_rast[k]);
-							PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+							if (pgrastpos[k] != -1)
+								PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 						}
 						rt_raster_destroy(raster);
 
@@ -10675,7 +10704,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	for (k = 0; k < set_count; k++) {
 		if (_rast[k] != NULL)
 			rt_raster_destroy(_rast[k]);
-		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		if (pgrastpos[k] != -1)
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
 	pgrtn = rt_raster_serialize(raster);

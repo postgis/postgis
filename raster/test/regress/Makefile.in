@@ -44,8 +44,7 @@ TEST_FUNC = \
 	rt_asgdalraster \
 	rt_astiff \
 	rt_asjpeg \
-	rt_aspng \
-	rt_union
+	rt_aspng
 
 TEST_PROPS = \
 	create_rt_properties_test \
@@ -97,7 +96,8 @@ TEST_UTILITY = \
 	rt_resample \
 	rt_asraster \
 	rt_intersection \
-	rt_clip
+	rt_clip \
+	rt_union
 
 TEST_GIST = \
 	create_rt_gist_test \
