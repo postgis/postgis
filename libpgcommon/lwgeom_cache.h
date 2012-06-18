@@ -17,9 +17,7 @@
 #include "fmgr.h"
 
 #include "liblwgeom_internal.h"
-#include "lwgeodetic.h"
 #include "lwgeodetic_tree.h"
-
 #include "lwgeom_pg.h"
 
 
@@ -46,23 +44,6 @@ typedef struct {
 	size_t                      geom2_size;
 	int32                       argnum; 
 } GeomCache;
-
-/*
-* Specific tree types include all the generic slots and 
-* their own slots for their trees. We put the implementation
-* for the CircTreeGeomCache here because we can't shove
-* the PgSQL specific bits of the code (fcinfo) back into
-* liblwgeom, where most of the circtree logic lives.
-*/
-typedef struct {
-	int                         type;       // <GeomCache>
-	GSERIALIZED*                geom1;      // 
-	GSERIALIZED*                geom2;      // 
-	size_t                      geom1_size; // 
-	size_t                      geom2_size; // 
-	int32                       argnum;     // </GeomCache>
-	CIRC_NODE*                  index;
-} CircTreeGeomCache;
 
 /*
 * Other specific geometry cache types are the 
@@ -122,9 +103,5 @@ typedef struct
 */
 PROJ4PortalCache*  GetPROJ4SRSCache(FunctionCallInfoData *fcinfo);
 GeomCache*         GetGeomCache(FunctionCallInfoData *fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2);
-CIRC_NODE*         GetCircTree(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, int* argnum_of_cache);
-CircTreeGeomCache* GetCircTreeGeomCache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2);
-
-
 
 #endif /* LWGEOM_CACHE_H_ */
