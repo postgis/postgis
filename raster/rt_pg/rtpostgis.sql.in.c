@@ -2916,7 +2916,7 @@ CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, nband1 integer, rast2 ras
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, rast2 raster)
 	RETURNS boolean
-	AS $$ SELECT $1 && $2 AND _st_intersects($1, 1, $2, 1) $$
+	AS $$ SELECT st_intersects($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
