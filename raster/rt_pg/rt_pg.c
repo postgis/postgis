@@ -3855,9 +3855,9 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	rt_bandstats stats = NULL;
 
 	TupleDesc tupdesc;
-	bool *nulls = NULL;
 	int values_length = 6;
 	Datum values[values_length];
+	bool nulls[values_length];
 	HeapTuple tuple;
 	Datum result;
 
@@ -3929,15 +3929,23 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 
 	BlessTupleDesc(tupdesc);
 
-	nulls = palloc(sizeof(bool) * values_length);
 	memset(nulls, FALSE, values_length);
 
 	values[0] = Int64GetDatum(stats->count);
-	values[1] = Float8GetDatum(stats->sum);
-	values[2] = Float8GetDatum(stats->mean);
-	values[3] = Float8GetDatum(stats->stddev);
-	values[4] = Float8GetDatum(stats->min);
-	values[5] = Float8GetDatum(stats->max);
+	if (stats->count > 0) {
+		values[1] = Float8GetDatum(stats->sum);
+		values[2] = Float8GetDatum(stats->mean);
+		values[3] = Float8GetDatum(stats->stddev);
+		values[4] = Float8GetDatum(stats->min);
+		values[5] = Float8GetDatum(stats->max);
+	}
+	else {
+		nulls[1] = TRUE;
+		nulls[2] = TRUE;
+		nulls[3] = TRUE;
+		nulls[4] = TRUE;
+		nulls[5] = TRUE;
+	}
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -3946,7 +3954,6 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(tuple);
 
 	/* clean up */
-	pfree(nulls);
 	pfree(stats);
 
 	PG_RETURN_DATUM(result);
@@ -3986,9 +3993,9 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	rt_bandstats stats = NULL;
 	rt_bandstats rtn = NULL;
 
-	bool *nulls = NULL;
-	Datum values[6];
 	int values_length = 6;
+	Datum values[values_length];
+	bool nulls[values_length];
 	Datum result;
 
 	/* tablename is null, return null */
@@ -4220,15 +4227,23 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 	BlessTupleDesc(tupdesc);
 
-	nulls = palloc(sizeof(bool) * values_length);
 	memset(nulls, FALSE, values_length);
 
 	values[0] = Int64GetDatum(rtn->count);
-	values[1] = Float8GetDatum(rtn->sum);
-	values[2] = Float8GetDatum(rtn->mean);
-	values[3] = Float8GetDatum(rtn->stddev);
-	values[4] = Float8GetDatum(rtn->min);
-	values[5] = Float8GetDatum(rtn->max);
+	if (rtn->count > 0) {
+		values[1] = Float8GetDatum(rtn->sum);
+		values[2] = Float8GetDatum(rtn->mean);
+		values[3] = Float8GetDatum(rtn->stddev);
+		values[4] = Float8GetDatum(rtn->min);
+		values[5] = Float8GetDatum(rtn->max);
+	}
+	else {
+		nulls[1] = TRUE;
+		nulls[2] = TRUE;
+		nulls[3] = TRUE;
+		nulls[4] = TRUE;
+		nulls[5] = TRUE;
+	}
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -4237,7 +4252,6 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 	result = HeapTupleGetDatum(tuple);
 
 	/* clean up */
-	pfree(nulls);
 	pfree(rtn);
 
 	PG_RETURN_DATUM(result);
