@@ -8394,85 +8394,111 @@ a_rid | b_rid | overleft
 		<refnamediv>
 			<refname>ST_Intersects</refname>
 
-			<refpurpose>If band numbers are omitted only considers convex hull of raster. Returns true only if rast pixel in a band with non-nodata band value intersects
-				with a geometry/raster. </refpurpose>
+			<refpurpose>Return true if the raster spatially intersects a separate raster or geometry. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
 			<funcsynopsis>			  
+
 			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rast</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>integer </type>
-				  <parameter>band</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>geometry </type>
-				  <parameter>geommin</parameter>
-				</paramdef>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rasta</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbanda</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastb</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandb</parameter>
+					</paramdef>
 			  </funcprototype>
-			    
-			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>geometry </type>
-				  <parameter>geommin</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rast</parameter>
-				</paramdef>
-				<paramdef choice='opt'>
-				  <type>integer </type>
-				  <parameter>nband=NULL</parameter>
-				</paramdef>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rasta</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastb</parameter>
+					</paramdef>
 			  </funcprototype>
-			  
-			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rasta</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rastb</parameter>
-				</paramdef>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+					  <type>raster </type>
+					  <parameter>rast</parameter>
+					</paramdef>
+					<paramdef>
+					  <type>integer </type>
+					  <parameter>nband</parameter>
+					</paramdef>
+					<paramdef>
+					  <type>geometry </type>
+					  <parameter>geommin</parameter>
+					</paramdef>
+			  </funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+					  <type>raster </type>
+					  <parameter>rast</parameter>
+					</paramdef>
+					<paramdef>
+					  <type>geometry </type>
+					  <parameter>geommin</parameter>
+					</paramdef>
+					<paramdef choice='opt'>
+					  <type>integer </type>
+					  <parameter>nband=NULL</parameter>
+					</paramdef>
 			  </funcprototype>
 
 			  <funcprototype>
-				<funcdef>boolean <function>ST_Intersects</function></funcdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rasta</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>integer </type>
-				  <parameter>nbanda</parameter>
-				</paramdef>
-				<paramdef>
-				  <type>raster </type>
-				  <parameter>rastb</parameter>
-				</paramdef>
-				<paramdef choice='opt'>
-				  <type>integer </type>
-				  <parameter>nbandb=1</parameter>
-				</paramdef>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+					  <type>geometry </type>
+					  <parameter>geommin</parameter>
+					</paramdef>
+					<paramdef>
+					  <type>raster </type>
+					  <parameter>rast</parameter>
+					</paramdef>
+					<paramdef choice='opt'>
+					  <type>integer </type>
+					  <parameter>nband=NULL</parameter>
+					</paramdef>
 			  </funcprototype>
+
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns true if the geometry intersects with the raster. Nodata values  are taken into account so that if the geometry intersects only with nodata  values, the function returns false. If no band is specified band 1 is assumed.</para>
-			<note><para>For the case of raster/geometry  and geometry/raster.  ST_Intersects(raster,nband,geometry) is done in raster space (e.g. the geometry is converted to a raster before tested), ST_Intersects(geometry, raster)is done in geometry space -- raster is converted to geometry before checked.</para></note>
-			<note><para>This operand will make use of any indexes that may be available on the
-				geometries / rasters.</para></note>
+			<para>
+				Return true if the raster spatially intersects a separate raster or geometry. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</para>
+			<note>
+				<para>
+					Depending on the order that the raster and geometry is passed to ST_Intersects(), the test will operate in either raster-space or geometry-space.  If ST_Intersects(raster, ....), the test is in raster-space (the geometry is converted to a raster).  If ST_Intersects(geometry, ...), the test is in geometry-space (the raster is converted to a set of pixel polygons).
+				</para>
+			</note>
+			<note>
+				<para>
+					This operand will make use of any indexes that may be available on the geometries / rasters.
+				</para>
+			</note>
 				
 			<para>Enhanced: 2.0.0 support raster/raster intersects was introduced.</para>
 		  </refsection>
