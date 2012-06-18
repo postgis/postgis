@@ -101,7 +101,32 @@ static void test_tree_circ_pip(void)
 	/* Clean and do new shape */
 	circ_tree_free(c);
 	lwline_free(g);
+
 }
+
+static void test_tree_circ_pip2(void)
+{
+	LWGEOM* g;
+	LWPOLY* p;
+	int rv_classic, rv_tree, on_boundary;
+	POINT2D pt, pt_outside;
+	GBOX gbox;
+	CIRC_NODE *c;
+	
+	g = lwgeom_from_wkt("POLYGON((0 0,0 1,1 1,1 0,0 0))", LW_PARSER_CHECK_NONE);
+	p = lwgeom_as_lwpoly(g);
+
+	pt.x = 0.2;
+	pt.y = 0.1;
+	lwgeom_calculate_gbox_geodetic(g, &gbox);
+	gbox_pt_outside(&gbox, &pt_outside);
+	c = circ_tree_new(p->rings[0]);
+	circ_tree_print(c, 0);
+	rv_classic = lwpoly_covers_point2d(p, &pt);
+	rv_tree = circ_tree_contains_point(c, &pt, &pt_outside, &on_boundary);
+	CU_ASSERT_EQUAL(rv_tree, rv_classic);
+}
+
 
 static void test_tree_circ_distance(void)
 {
@@ -174,6 +199,7 @@ CU_TestInfo tree_tests[] =
 {
 	PG_TEST(test_tree_circ_create),
 	PG_TEST(test_tree_circ_pip),
+	PG_TEST(test_tree_circ_pip2),
 	PG_TEST(test_tree_circ_distance),
 	CU_TEST_INFO_NULL
 };

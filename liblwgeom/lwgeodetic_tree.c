@@ -313,26 +313,26 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	*/
 //	circ_tree_print(node, 0);
 	d = edge_distance_to_point(&stab_edge, &(node->center), &closest);
-	LWDEBUGF(4, "edge_distance_to_point %g", d);
+	LWDEBUGF(4, "edge_distance_to_point=%g, node_radius=%g", d, node->radius);
 	if ( FP_LTEQ(d, node->radius) )
 	{
-		LWDEBUG(3,"entering this branch");
+		LWDEBUGF(3,"entering this branch (%p)", node);
 		
 		/* Return the crossing number of this leaf */
 		if ( circ_node_is_leaf(node) )
 		{
-			LWDEBUG(4, "leaf node calculation");
+			LWDEBUGF(4, "leaf node calculation (edge %d)", node->edge_num);
 			geographic_point_init(node->p1->x, node->p1->y, &(edge.start));
 			geographic_point_init(node->p2->x, node->p2->y, &(edge.end));
 			if ( edge_intersection(&stab_edge, &edge, &crossing) )
 			{
-				LWDEBUG(4,"got stab line edge_intersection!");
+				LWDEBUG(4," got stab line edge_intersection with this edge!");
 				/* To avoid double counting crossings-at-a-vertex, */
 				/* always ignore crossings at "lower" ends of edges*/
-				if ( (FP_EQUALS(crossing.lat, edge.start.lat) && (edge.start.lat <= edge.end.lat)) ||
-				     (FP_EQUALS(crossing.lat, edge.end.lat) && (edge.end.lat <= edge.start.lat)) )
+				if ( (FP_EQUALS(crossing.lon, edge.start.lon) && FP_EQUALS(crossing.lat, edge.start.lat) && (edge.start.lat <= edge.end.lat)) ||
+				     (FP_EQUALS(crossing.lon, edge.end.lon) && FP_EQUALS(crossing.lat, edge.end.lat) && (edge.end.lat <= edge.start.lat)) )
 				{
-					LWDEBUG(4,"  rejecting stab line on 'lower' vertex");
+					LWDEBUG(4,"  rejecting stab line intersection on 'lower' end point vertex");
 					return 0;
 				}
 				else
@@ -348,7 +348,8 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 			c = 0;
 			for ( i = 0; i < node->num_nodes; i++ )
 			{
-				LWDEBUGF(3,"calling circ_tree_contains_point on child %d!", i);
+				LWDEBUG(3,"internal node calculation");
+				LWDEBUGF(3," calling circ_tree_contains_point on child %d!", i);
 				c += circ_tree_contains_point(node->nodes[i], pt, pt_outside, on_boundary);
 			}
 			return c;
@@ -356,7 +357,7 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	}
 	else
 	{
-		LWDEBUG(3,"skipping this branch");
+		LWDEBUGF(3,"skipping this branch (%p)", node);
 	}
 	
 	return 0;
