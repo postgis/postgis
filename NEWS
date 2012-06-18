@@ -5,12 +5,15 @@ PostGIS 2.1.0
 
   - ST_NearestValue, ST_Neighborhood (Bborie Park / UC Davis)
   - ST_Raster2WorldCoord, ST_World2RasterCoord (Bborie Park / UC Davis)
-  - Tiger Geocoder - Tiger 2011 loader (Regina Obe / Paragon Corporation) 
+  - #1643, Tiger Geocoder - Tiger 2011 loader (Regina Obe / Paragon Corporation) 
     Funded by Hunter Systems Group
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
 
 * Enhancements *
+  - #823, tiger geocoder: Make loader_generate_script download portion less greedy
+  - #1719, Add support for Point and GeometryCollection ST_MakeValid inputs
   - #1802, improved function interruptibility.
+  - #1856, tiger geocoder: reverse geocoder rating setting for prefer numbered highway name
 
 * Fixes *
 

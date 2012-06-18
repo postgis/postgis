@@ -1596,7 +1596,9 @@ SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4,
     Single polygons may become multi-geometries in case of self-intersections.
     </para>
     
-    <para>Availability: 2.0.0, requires GEOS-3.3.0 or higher. 2.1.0 added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
+    <para>Availability: 2.0.0, requires GEOS-3.3.0</para>
+    <para>Enahnced: 2.0.1, speed improvements requires GEOS-3.3.4</para>
+    <para>Enhanced: 2.1.0 added support for GEOMETRYCOLLECTION and MULTIPOINT.</para>
     
     <para>&Z_support;</para>
     
