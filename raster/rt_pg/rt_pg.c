@@ -9753,10 +9753,12 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		(rast[0] == NULL || _isempty[0]) ||
 		(rast[1] == NULL || _isempty[1])
 	) {
+		/* first raster is empty */
 		if (rast[0] == NULL || _isempty[0]) {
 			i = 0;
 			j = 1;
 		}
+		/* second raster is empty */
 		else {
 			i = 1;
 			j = 0;
