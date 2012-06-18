@@ -2683,8 +2683,11 @@ rt_band_corrected_clamped_value(rt_band band, double val, double *newval) {
  * @return the summary statistics for a band
  */
 rt_bandstats
-rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
-	int inc_vals, uint64_t *cK, double *cM, double *cQ) {
+rt_band_get_summary_stats(
+	rt_band band,
+	int exclude_nodata_value, double sample, int inc_vals,
+	uint64_t *cK, double *cM, double *cQ
+) {
 	uint8_t *data = NULL;
 	uint32_t x = 0;
 	uint32_t y = 0;
@@ -2720,6 +2723,28 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 #endif
 
 	assert(NULL != band);
+
+	/* band is empty (width < 1 || height < 1) */
+	if (band->width < 1 || band->height < 1) {
+		stats = (rt_bandstats) rtalloc(sizeof(struct rt_bandstats_t));
+		if (NULL == stats) {
+			rterror("rt_band_get_summary_stats: Unable to allocate memory for stats");
+			return NULL;
+		}
+
+		rtwarn("Band is empty as width and/or height is 0");
+
+		stats->sample = 1;
+		stats->sorted = 0;
+		stats->values = NULL;
+		stats->count = 0;
+		stats->min = stats->max = 0;
+		stats->sum = 0;
+		stats->mean = 0;
+		stats->stddev = -1;
+
+		return stats;
+	}
 
 	data = rt_band_get_data(band);
 	if (data == NULL) {
@@ -2794,6 +2819,8 @@ rt_band_get_summary_stats(rt_band band, int exclude_nodata_value, double sample,
 	else {
 		sample_size = round((band->width * band->height) * sample);
 		sample_per = round(sample_size / band->width);
+		if (sample_per < 1)
+			sample_per = 1;
 		sample_int = round(band->height / sample_per);
 		srand(time(NULL));
 	}

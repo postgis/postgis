@@ -101,6 +101,22 @@ SELECT round(mean::numeric, 3), round(stddev::numeric, 3) FROM ST_SummaryStats(
 	)
 	, 2
 );
+SELECT ST_ApproxSummaryStats(
+	ST_Clip(
+		ST_AddBand(
+			ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 0, 0, 0)
+			, '16BSI'::text, 0, 0
+		)
+		, ST_MakeEnvelope(0, 0, 10, 5, 0)
+	)
+	, 1, true, 0.1
+);
+SELECT ST_SummaryStats(
+	ST_AddBand(
+		ST_MakeEmptyRaster(10, 0, 0, 0, 1, -1, 0, 0, 0)
+		, '8BUI'::text, 1, 0
+	)
+);
 BEGIN;
 CREATE TEMP TABLE test_summarystats
 	ON COMMIT DROP AS
