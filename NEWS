@@ -10,6 +10,7 @@ PostGIS 2.1.0
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
 
 * Enhancements *
+  - #1802, improved function interruptibility.
 
 * Fixes *
 
@@ -63,7 +64,6 @@ PostGIS 2.0.1
 
   - More detailed exception message from topology editing functions.
   - #1786, improved build dependencies 
-  - #1802, improved function interruptibility.
   - #1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.
   - #1812, Add lwgeom_normalize in LIBLWGEOM for more stable testing.
   

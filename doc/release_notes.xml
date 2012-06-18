@@ -50,7 +50,6 @@
 			 <title>Enhancements</title>
 				<para>More detailed exception message from topology editing functions.</para>
 				<para>#1786, improved build dependencies</para> 
-				<para>#1802, improved function interruptibility.</para>
 				<para>#1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.</para>
 				<para>#1812, Add lwgeom_normalize in LIBLWGEOM for more stable testing.</para>
 		</simplesect>
