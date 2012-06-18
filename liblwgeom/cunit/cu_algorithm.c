@@ -879,20 +879,20 @@ static void test_isclosed(void)
 }
 
 
-void test_geohash_point_as_int(void)
+static void test_geohash_point_as_int(void)
 {
 	unsigned int gh;
 	POINT2D p;
 	
 	p.x = 50; p.y = 35;
 	gh = geohash_point_as_int(&p);
-	CU_ASSERT_EQUAL(gh, 3440103613);
+	CU_ASSERT_EQUAL(gh, (unsigned int)3440103613);
 	p.x = 140; p.y = 45;
 	gh = geohash_point_as_int(&p);
-	CU_ASSERT_EQUAL(gh, 3982480893);
+	CU_ASSERT_EQUAL(gh, (unsigned int)3982480893);
 	p.x = 140; p.y = 55;
 	gh = geohash_point_as_int(&p);
-	CU_ASSERT_EQUAL(gh, 4166944232);	
+	CU_ASSERT_EQUAL(gh, (unsigned int)4166944232);	
 }
 
 
