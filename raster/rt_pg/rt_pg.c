@@ -9581,10 +9581,6 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 	PG_RETURN_BOOL(aligned);
 }
 
-/*
-	TODO: continue working on adding PG_FREE_IF_COPY from HERE
-*/
-
 /**
  * Two raster MapAlgebra
  */
