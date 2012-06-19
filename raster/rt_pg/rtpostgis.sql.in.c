@@ -2943,8 +2943,13 @@ CREATE OPERATOR && (
     );
 
 -----------------------------------------------------------------------
--- Raster/Raster Spatial Relationship
+-- Raster/(Raster|Geometry) Spatial Relationship
 -----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+-- ST_SameAlignment
+-----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION st_samealignment(rast1 raster, rast2 raster)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'RASTER_sameAlignment'
@@ -2957,6 +2962,10 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 	RETURNS boolean
 	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_Intersects(raster, raster)
+-----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION _st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
@@ -2977,7 +2986,7 @@ CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, rast2 raster)
 	COST 1000;
 
 -----------------------------------------------------------------------
--- Raster/Geometry Spatial Relationship
+-- ST_Intersects(raster, geometry) in raster-space
 -----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION _st_intersects(rast raster, geom geometry, nband integer DEFAULT NULL)
@@ -3019,11 +3028,9 @@ CREATE OR REPLACE FUNCTION st_intersects(rast raster, nband integer, geom geomet
 	COST 1000;
 
 -----------------------------------------------------------------------
--- _st_intersects(geom geometry, rast raster, nband integer)
--- If band is provided, check for the presence of withvalue pixels in the area
--- shared by the raster and the geometry. If only nodata value pixels are found, the
--- geometry does not intersect with the raster.
+-- ST_Intersects(geometry, raster) in geometry-space
 -----------------------------------------------------------------------
+
 -- This function can not be STRICT
 CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband integer DEFAULT NULL)
 	RETURNS boolean AS $$
@@ -3161,7 +3168,7 @@ CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integ
 	COST 1000;
 
 -----------------------------------------------------------------------
--- ST_Intersection (geometry, raster in vector space)
+-- ST_Intersection(geometry, raster) in geometry-space
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_intersection(geomin geometry, rast raster, band integer DEFAULT 1)
 	RETURNS SETOF geomval AS $$
@@ -3209,7 +3216,7 @@ CREATE OR REPLACE FUNCTION st_intersection(rast raster, geomin geometry)
 	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
--- ST_Intersection (2-raster in raster space)
+-- ST_Intersection(raster, raster)
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_intersection(
 	rast1 raster, band1 int,
