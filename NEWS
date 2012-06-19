@@ -41,6 +41,8 @@ PostGIS 2.0.1
   - #1867, catch invalid topology name passed to topogeo_add*
   - #1870, align the docs and actual behavior of raster's ST_Intersects
   - #1872, fix ST_ApproxSummarystats to prevent division by zero
+  - #1873, fix ptarray_locate_point to return interpolated Z/M values for
+           on-the-line case
   - #1875, ST_SummaryStats returns NULL for all parameters except count
 	         when count is zero
 
