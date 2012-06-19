@@ -2963,6 +2963,44 @@ CREATE OR REPLACE FUNCTION st_samealignment(
 	AS $$ SELECT st_samealignment(st_makeemptyraster(1, 1, $1, $2, $3, $4, $5, $6), st_makeemptyraster(1, 1, $7, $8, $9, $10, $11, $12)) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+CREATE TYPE agg_samealignment AS (
+	refraster raster,
+	aligned boolean
+);
+
+CREATE OR REPLACE FUNCTION _st_samealignment_transfn(agg agg_samealignment, rast raster)
+	RETURNS agg_samealignment AS $$
+	DECLARE
+		m record;
+		aligned boolean;
+	BEGIN
+		IF agg IS NULL THEN
+			m := ST_Metadata(rast);
+			agg.refraster := ST_MakeEmptyRaster(1, 1, m.upperleftx, m.upperlefty, m.scalex, m.scaley, m.skewx, m.skewy, m.srid);
+			agg.aligned := TRUE;
+		ELSE
+			aligned := ST_SameAlignment(agg.refraster, rast);
+			IF aligned IS FALSE THEN
+				agg.aligned := FALSE;
+			END IF;
+		END IF;
+		RETURN agg;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION _st_samealignment_finalfn(agg agg_samealignment)
+	RETURNS boolean AS $$
+	BEGIN
+		RETURN agg.aligned;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE AGGREGATE st_samealignment(raster) (
+	SFUNC = _st_samealignment_transfn,
+	STYPE = agg_samealignment,
+	FINALFUNC = _st_samealignment_finalfn
+);
+
 -----------------------------------------------------------------------
 -- ST_Intersects(raster, raster)
 -----------------------------------------------------------------------

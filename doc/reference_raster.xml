@@ -8599,15 +8599,31 @@ WHERE A.rid =2 ;
 				  <parameter>skewy2</parameter>
 				</paramdef>
 			  </funcprototype>
+
+			  <funcprototype>
+					<funcdef>boolean <function>ST_SameAlignment</function></funcdef>
+					<paramdef>
+						<type>raster set </type>
+						<parameter>rastfield</parameter>
+					</paramdef>
+			  </funcprototype>
+
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns true if the raster have same skew scale etc. Returns false if they don't and a NOTICE detailing the alignment issue.</para>
+			<para>
+				Non-Aggregate version (Variants 1 and 2): Returns true if the two rasters (either provided directly or made using the values for upperleft, scale, skew and srid) have the same scale, skew, srid and at least one of any of the four corners of any pixel of one raster falls on any corner of the grid of the other raster. Returns false if they don't and a NOTICE detailing the alignment issue.
+			</para>
 		
+			<para>
+				Aggregate version (Variant 3): From a set of rasters, returns true if all rasters in the set are aligned. The ST_SameAlignment() function is an "aggregate" function in the terminology of PostgreSQL. That means that it operates on rows of data, in the same way the SUM() and AVG() functions do.
+			</para>
+
 			<para>Availability: 2.0.0</para>
+			<para>Enhanced: 2.1.0 addition of Aggegrate variant</para>
 		  </refsection>
 
 		  <refsection>

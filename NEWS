@@ -14,6 +14,7 @@ PostGIS 2.1.0
   - #1719, Add support for Point and GeometryCollection ST_MakeValid inputs
   - #1802, improved function interruptibility.
   - #1856, tiger geocoder: reverse geocoder rating setting for prefer numbered highway name
+  - #1661, Add aggregate variant of ST_SameAlignment
 
 * Fixes *
 
