@@ -24,10 +24,13 @@
 #include "liblwgeom_internal.h"         /* For FP comparators. */
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "geography.h"	     /* For utility functions. */
+#include "geography_measurement_trees.h" /* For circ_tree caching */
 #include "lwgeom_transform.h" /* For SRID functions */
 
 Datum geography_distance(PG_FUNCTION_ARGS);
+Datum geography_distance_cached(PG_FUNCTION_ARGS);
 Datum geography_dwithin(PG_FUNCTION_ARGS);
+Datum geography_dwithin_cached(PG_FUNCTION_ARGS);
 Datum geography_area(PG_FUNCTION_ARGS);
 Datum geography_length(PG_FUNCTION_ARGS);
 Datum geography_expand(PG_FUNCTION_ARGS);
@@ -98,6 +101,141 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(distance);
 }
+
+
+/*
+** geography_distance_cached(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** returns double distance in meters
+*/
+PG_FUNCTION_INFO_V1(geography_distance_cached);
+Datum geography_distance_cached(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED* g1 = NULL;
+	GSERIALIZED* g2 = NULL;
+	double distance;
+	double tolerance;
+	bool use_spheroid;
+	SPHEROID s;
+
+	/* Get our geometry objects loaded into memory. */
+	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Read our tolerance value. */
+	tolerance = PG_GETARG_FLOAT8(2);
+
+	/* Read our calculation type. */
+	use_spheroid = PG_GETARG_BOOL(3);
+
+	/* Initialize spheroid */
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+	
+	/* Set to sphere if requested */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	/* Return NULL on empty arguments. */
+	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
+		PG_RETURN_NULL();
+	}
+	
+	/* Do the brute force calculation if the cached calculation doesn't tick over */
+	if ( LW_FAILURE == geography_distance_cache(fcinfo, g1, g2, &s, &distance) )
+	{
+		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
+		LWGEOM* lwgeom2 = lwgeom_from_gserialized(g2);
+		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, FP_TOLERANCE);
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
+	}
+
+	/* Clean up */
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+
+	/* Something went wrong, negative return... should already be eloged, return NULL */
+	if ( distance < 0.0 )
+		PG_RETURN_NULL();
+
+	PG_RETURN_FLOAT8(distance);
+}
+
+
+/*
+** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** returns double distance in meters
+*/
+PG_FUNCTION_INFO_V1(geography_dwithin_cached);
+Datum geography_dwithin_cached(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom1 = NULL;
+	LWGEOM *lwgeom2 = NULL;
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	double tolerance;
+	double distance;
+	bool use_spheroid;
+	SPHEROID s;
+	int dwithin = LW_FALSE;
+
+	/* Get our geometry objects loaded into memory. */
+	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Read our tolerance value. */
+	tolerance = PG_GETARG_FLOAT8(2);
+
+	/* Read our calculation type. */
+	use_spheroid = PG_GETARG_BOOL(3);
+
+	/* Initialize spheroid */
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+
+	/* Set to sphere if requested */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	/* Return FALSE on empty arguments. */
+	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+
+	/* Do the brute force calculation if the cached calculation doesn't tick over */
+	if ( LW_FAILURE == geography_dwithin_cache(fcinfo, g1, g2, &s, tolerance, &dwithin) )
+	{
+		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
+		LWGEOM* lwgeom2 = lwgeom_from_gserialized(g2);
+		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
+		dwithin = (distance <= tolerance);
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwgeom2);
+	}
+
+	/* Clean up */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	PG_FREE_IF_COPY(g1, 0);
+	PG_FREE_IF_COPY(g2, 1);
+
+	/* Something went wrong... should already be eloged, return FALSE */
+	if ( distance < 0.0 )
+	{
+		elog(ERROR, "lwgeom_distance_spheroid returned negative!");
+		PG_RETURN_BOOL(FALSE);
+	}
+
+	PG_RETURN_BOOL(dwithin);
+}
+
 
 /*
 ** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)

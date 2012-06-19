@@ -1084,6 +1084,7 @@ extern void lwpoly_reverse(LWPOLY *poly);
 extern void lwtriangle_reverse(LWTRIANGLE *triangle);
 extern char* lwgeom_summary(const LWGEOM *lwgeom, int offset);
 extern char* lwpoint_to_latlon(const LWPOINT *p, const char *format);
+extern int lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt);
 
 /**
 * Ensure the outer ring is clockwise oriented and all inner rings 

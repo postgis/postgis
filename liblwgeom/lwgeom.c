@@ -1524,7 +1524,7 @@ lwgeom_affine(LWGEOM *geom, const AFFINE *affine)
 
 }
 
-LWGEOM *
+LWGEOM*
 lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 {
 	switch(type) 
@@ -1554,4 +1554,33 @@ lwgeom_construct_empty(uint8_t type, int srid, char hasz, char hasm)
 	}
 }
 
+int
+lwgeom_startpoint(const LWGEOM* lwgeom, POINT4D* pt)
+{
+	if ( ! lwgeom )
+		return LW_FAILURE;
+		
+	switch( lwgeom->type ) 
+	{
+		case POINTTYPE:
+			return ptarray_startpoint(((LWPOINT*)lwgeom)->point, pt);
+		case TRIANGLETYPE:
+		case CIRCSTRINGTYPE:
+		case LINETYPE:
+			return ptarray_startpoint(((LWLINE*)lwgeom)->points, pt);
+		case POLYGONTYPE:
+			return lwpoly_startpoint((LWPOLY*)lwgeom, pt);
+		case CURVEPOLYTYPE:
+		case COMPOUNDTYPE:
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			return lwcollection_startpoint((LWCOLLECTION*)lwgeom, pt);
+		default:
+			lwerror("int: unsupported geometry type: %s",
+		        	lwtype_name(lwgeom->type));
+			return LW_FAILURE;
+	}
+}
 

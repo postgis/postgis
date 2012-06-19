@@ -499,5 +499,11 @@ lwpoly_is_closed(const LWPOLY *poly)
 	return LW_TRUE;
 }
 
-
+int 
+lwpoly_startpoint(const LWPOLY* poly, POINT4D* pt)
+{
+	if ( poly->nrings < 1 )
+		return LW_FAILURE;
+	return ptarray_startpoint(poly->rings[0], pt);
+}
 

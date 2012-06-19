@@ -321,6 +321,13 @@ LWPOLY *lwpoly_clone_deep(const LWPOLY *lwgeom);
 LWCOLLECTION *lwcollection_clone_deep(const LWCOLLECTION *lwgeom);
 
 /*
+* Startpoint
+*/
+int lwpoly_startpoint(const LWPOLY* lwpoly, POINT4D* pt);
+int ptarray_startpoint(const POINTARRAY* pa, POINT4D* pt);
+int lwcollection_startpoint(const LWCOLLECTION* col, POINT4D* pt);
+
+/*
  * Write into *ret the coordinates of the closest point on
  * segment A-B to the reference input point R
  */

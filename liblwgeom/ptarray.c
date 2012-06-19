@@ -1404,3 +1404,9 @@ ptarray_affine(POINTARRAY *pa, const AFFINE *a)
 	LWDEBUG(3, "lwgeom_affine_ptarray end");
 
 }
+
+int
+ptarray_startpoint(const POINTARRAY* pa, POINT4D* pt)
+{
+	return getPoint4d_p(pa, 0, pt);
+}

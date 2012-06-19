@@ -541,6 +541,44 @@ CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	$$ SELECT ST_DWithin($1::geometry, $2::geometry, $3);  $$
 	LANGUAGE 'sql' IMMUTABLE;
 
+
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- TEMPORARY TESTING FUNCTIONS FOR CACHED IMPLEMENTATIONS OF GEOGRAPHY
+-- DISTANCE AND DWITHIN
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+CREATE OR REPLACE FUNCTION _ST_DistanceCached(geography, geography, float8, boolean)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','geography_distance_cached'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 100;
+	
+CREATE OR REPLACE FUNCTION ST_DistanceCached(geography, geography, boolean)
+	RETURNS float8
+	AS 'SELECT _ST_DistanceCached($1, $2, 0.0, $3)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION ST_DistanceCached(geography, geography)
+	RETURNS float8
+	AS 'SELECT _ST_DistanceCached($1, $2, 0.0, true)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+	
+CREATE OR REPLACE FUNCTION _ST_DWithinCached(geography, geography, float8, boolean)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','geography_dwithin_cached'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_DWithinCached(geography, geography, float8)
+	RETURNS boolean
+	AS 'SELECT $1 && _ST_Expand($2,$3) AND $2 && _ST_Expand($1,$3) AND _ST_DWithinCached($1, $2, $3, true)'
+	LANGUAGE 'sql' IMMUTABLE;
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+
+
+
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Area(geog geography, use_spheroid boolean DEFAULT true)
 	RETURNS float8

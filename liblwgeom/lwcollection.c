@@ -546,3 +546,11 @@ int lwcollection_allows_subtype(int collectiontype, int subtype)
 	return LW_FALSE;
 }
 
+int
+lwcollection_startpoint(const LWCOLLECTION* col, POINT4D* pt)
+{
+	if ( col->ngeoms < 1 )
+		return LW_FAILURE;
+		
+	return lwgeom_startpoint(col->geoms[0], pt);
+}
