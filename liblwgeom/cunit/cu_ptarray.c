@@ -258,6 +258,16 @@ static void test_ptarray_locate_point(void)
 	CU_ASSERT_EQUAL(dist, 0.0);
 
 	lwline_free(line);
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING M (0 0 0, 10 0 20)"));
+
+	p.x = 5; p.y = 0;
+	loc = ptarray_locate_point(line->points, &p, &dist, &l);
+	CU_ASSERT_EQUAL(loc, 0.5);
+	CU_ASSERT_EQUAL(dist, 0.0);
+	CU_ASSERT_EQUAL(l.m, 10.0);	
+
+	lwline_free(line);
+
 }
 
 static void test_ptarray_isccw(void)

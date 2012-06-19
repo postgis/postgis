@@ -1001,20 +1001,12 @@ ptarray_locate_point(const POINTARRAY *pa, const POINT4D *p4d, double *mindistou
 	LWDEBUGF(3, "mindist: %g", mindist);
 
 	/*
-	 * If mindist is not 0 we need to project the
+	 * We need to project the
 	 * point on the closest segment.
 	 */
-	if ( FP_GT(mindist, 0.0) )
-	{
-		getPoint4d_p(pa, seg, &start4d);
-		getPoint4d_p(pa, seg+1, &end4d);
-		closest_point_on_segment(p4d, &start4d, &end4d, proj4d);
-	}
-	else
-	{
-		if ( proj4d)
-			*proj4d = *p4d;
-	}
+	getPoint4d_p(pa, seg, &start4d);
+	getPoint4d_p(pa, seg+1, &end4d);
+	closest_point_on_segment(p4d, &start4d, &end4d, proj4d);
 	
 	/* Copy 4D values into 2D holder */
 	proj.x = proj4d->x;
