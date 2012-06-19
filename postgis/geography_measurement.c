@@ -158,7 +158,10 @@ Datum geography_distance_cached(PG_FUNCTION_ARGS)
 
 	/* Something went wrong, negative return... should already be eloged, return NULL */
 	if ( distance < 0.0 )
+	{
+		elog(ERROR, "distance returned negative!");
 		PG_RETURN_NULL();
+	}
 
 	PG_RETURN_FLOAT8(distance);
 }
@@ -171,8 +174,6 @@ Datum geography_distance_cached(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_dwithin_cached);
 Datum geography_dwithin_cached(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom1 = NULL;
-	LWGEOM *lwgeom2 = NULL;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	double tolerance;
@@ -206,32 +207,23 @@ Datum geography_dwithin_cached(PG_FUNCTION_ARGS)
 		PG_RETURN_BOOL(FALSE);
 	}
 
-	lwgeom1 = lwgeom_from_gserialized(g1);
-	lwgeom2 = lwgeom_from_gserialized(g2);
-
 	/* Do the brute force calculation if the cached calculation doesn't tick over */
 	if ( LW_FAILURE == geography_dwithin_cache(fcinfo, g1, g2, &s, tolerance, &dwithin) )
 	{
 		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
 		LWGEOM* lwgeom2 = lwgeom_from_gserialized(g2);
 		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
+		/* Something went wrong... */
+		if ( distance < 0.0 )
+			elog(ERROR, "lwgeom_distance_spheroid returned negative!");
 		dwithin = (distance <= tolerance);
 		lwgeom_free(lwgeom1);
 		lwgeom_free(lwgeom2);
 	}
 
 	/* Clean up */
-	lwgeom_free(lwgeom1);
-	lwgeom_free(lwgeom2);
 	PG_FREE_IF_COPY(g1, 0);
 	PG_FREE_IF_COPY(g2, 1);
-
-	/* Something went wrong... should already be eloged, return FALSE */
-	if ( distance < 0.0 )
-	{
-		elog(ERROR, "lwgeom_distance_spheroid returned negative!");
-		PG_RETURN_BOOL(FALSE);
-	}
 
 	PG_RETURN_BOOL(dwithin);
 }
