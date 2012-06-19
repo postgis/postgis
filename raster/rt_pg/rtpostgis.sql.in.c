@@ -2975,13 +2975,20 @@ CREATE OR REPLACE FUNCTION _st_samealignment_transfn(agg agg_samealignment, rast
 		aligned boolean;
 	BEGIN
 		IF agg IS NULL THEN
-			m := ST_Metadata(rast);
-			agg.refraster := ST_MakeEmptyRaster(1, 1, m.upperleftx, m.upperlefty, m.scalex, m.scaley, m.skewx, m.skewy, m.srid);
-			agg.aligned := TRUE;
+			agg.refraster := NULL;
+			agg.aligned := NULL;
+		END IF;
+
+		IF rast IS NULL THEN
+			agg.aligned := NULL;
 		ELSE
-			aligned := ST_SameAlignment(agg.refraster, rast);
-			IF aligned IS FALSE THEN
-				agg.aligned := FALSE;
+			IF agg.refraster IS NULL THEN
+				m := ST_Metadata(rast);
+				agg.refraster := ST_MakeEmptyRaster(1, 1, m.upperleftx, m.upperlefty, m.scalex, m.scaley, m.skewx, m.skewy, m.srid);
+				agg.aligned := TRUE;
+			ELSE IF agg.aligned IS TRUE THEN
+					agg.aligned := ST_SameAlignment(agg.refraster, rast);
+				END IF;
 			END IF;
 		END IF;
 		RETURN agg;
@@ -2989,11 +2996,9 @@ CREATE OR REPLACE FUNCTION _st_samealignment_transfn(agg agg_samealignment, rast
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION _st_samealignment_finalfn(agg agg_samealignment)
-	RETURNS boolean AS $$
-	BEGIN
-		RETURN agg.aligned;
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+	RETURNS boolean
+	AS $$ SELECT $1.aligned $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE AGGREGATE st_samealignment(raster) (
 	SFUNC = _st_samealignment_transfn,

@@ -14,3 +14,13 @@ f
 t
 NOTICE:  The two rasters provided have different skews on the Y axis
 f
+NOTICE:  table "raster_alignment_test" does not exist, skipping
+t
+f
+NOTICE:  The two rasters provided have different skews on the X axis
+f
+NOTICE:  The two rasters provided have different skews on the X axis
+f
+NOTICE:  The two rasters provided have different skews on the Y axis
+f
+f

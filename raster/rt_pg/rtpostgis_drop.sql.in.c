@@ -32,6 +32,8 @@ DROP AGGREGATE IF EXISTS ST_Union(raster, text);
 DROP AGGREGATE IF EXISTS ST_Union(raster, integer);
 DROP AGGREGATE IF EXISTS ST_Union(raster);
 
+DROP AGGREGATE IF EXISTS st_samealignment(raster);
+
 DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, sample_percent double precision) ;
 DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean) ;
 DROP FUNCTION IF EXISTS st_summarystats(rast raster, exclude_nodata_value boolean) ;
