@@ -133,9 +133,16 @@ CircTreePIP(const CircTreeGeomCache* tree_cache, const GSERIALIZED* g, const LWG
 int
 geography_distance_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHEROID* s, double* distance)
 {
-	CircTreeGeomCache* tree_cache = GetCircTreeGeomCache(fcinfo, g1, g2);
+	CircTreeGeomCache* tree_cache = NULL;
 	
 	Assert(distance);
+	
+	/* Two points? Get outa here... */
+	if ( gserialized_get_type(g1) == POINT && gserialized_get_type(g2) == POINT )
+		return LW_FAILURE;
+
+	/* Fetch/build our cache, if appropriate, etc... */
+	tree_cache = GetCircTreeGeomCache(fcinfo, g1, g2);
 	
 	if ( tree_cache && tree_cache->argnum && tree_cache->index ) 
 	{
@@ -181,10 +188,17 @@ geography_distance_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, co
 int
 geography_dwithin_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHEROID* s, double tolerance, int* dwithin)
 {
-	CircTreeGeomCache* tree_cache = GetCircTreeGeomCache(fcinfo, g1, g2);
+	CircTreeGeomCache* tree_cache = NULL;
 	double distance;
-	
+		
 	Assert(dwithin);
+	
+	/* Two points? Get outa here... */
+	if ( gserialized_get_type(g1) == POINT && gserialized_get_type(g2) == POINT )
+		return LW_FAILURE;
+	
+	/* Fetch/build our cache, if appropriate, etc... */
+	tree_cache = GetCircTreeGeomCache(fcinfo, g1, g2);
 	
 	if ( tree_cache && tree_cache->argnum && tree_cache->index ) 
 	{
