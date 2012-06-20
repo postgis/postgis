@@ -138,7 +138,7 @@ geography_distance_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, co
 	Assert(distance);
 	
 	/* Two points? Get outa here... */
-	if ( gserialized_get_type(g1) == POINT && gserialized_get_type(g2) == POINT )
+	if ( (gserialized_get_type(g1) == POINTTYPE) && (gserialized_get_type(g2) == POINTTYPE) )
 		return LW_FAILURE;
 
 	/* Fetch/build our cache, if appropriate, etc... */
@@ -194,7 +194,7 @@ geography_dwithin_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, con
 	Assert(dwithin);
 	
 	/* Two points? Get outa here... */
-	if ( gserialized_get_type(g1) == POINT && gserialized_get_type(g2) == POINT )
+	if ( (gserialized_get_type(g1) == POINTTYPE) && (gserialized_get_type(g2) == POINTTYPE) )
 		return LW_FAILURE;
 	
 	/* Fetch/build our cache, if appropriate, etc... */
