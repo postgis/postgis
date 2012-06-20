@@ -318,6 +318,33 @@ test_lwgeom_segmentize2d(void)
 	lwgeom_free(lineout);
 }
 
+static void
+test_lwgeom_locate_along(void)
+{
+	LWGEOM *geom = NULL;
+	LWGEOM *out = NULL;
+	double measure = 105.0;
+	char *str;
+	
+	/* ST_Locatealong(ST_GeomFromText('MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))'), 105) */
+	geom = lwgeom_from_wkt("MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_locate_along(geom, measure, 0.0);
+	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	lwgeom_free(geom);
+	lwgeom_free(out);
+	CU_ASSERT_STRING_EQUAL("MULTIPOINT M (55.226131 55.226131 105)", str);
+	lwfree(str);
+	
+	/* ST_Locatealong(ST_GeomFromText('MULTILINESTRING M ((1 2 3, 5 4 5), (50 50 1, 60 60 200))'), 105) */
+	geom = lwgeom_from_wkt("MULTILINESTRING M ((1 2 3, 3 4 2, 9 4 3), (1 2 3, 5 4 5), (50 50 1, 60 60 200))", LW_PARSER_CHECK_NONE);
+	out = lwgeom_locate_along(geom, measure, 0.0);
+	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
+	lwgeom_free(geom);
+	lwgeom_free(out);
+	CU_ASSERT_STRING_EQUAL("MULTIPOINT M (55.226131 55.226131 105)", str);
+	lwfree(str);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -327,6 +354,7 @@ CU_TestInfo measures_tests[] =
 	PG_TEST(test_rect_tree_contains_point),
 	PG_TEST(test_rect_tree_intersects_tree),
 	PG_TEST(test_lwgeom_segmentize2d),
+	PG_TEST(test_lwgeom_locate_along),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo measures_suite = {"PostGIS Measures Suite",  NULL,  NULL, measures_tests};
