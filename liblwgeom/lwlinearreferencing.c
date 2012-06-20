@@ -140,11 +140,11 @@ lwmline_locate_along(const LWMLINE *lwmline, double m, double offset)
 	for ( i = 0; i < lwmline->ngeoms; i++ )
 	{
 		LWMPOINT *along = lwline_locate_along(lwmline->geoms[i], m, offset);
-		if ( along != NULL ) 
+		if ( along && ! lwgeom_is_empty((LWGEOM*)along) ) 
 		{
 			for ( j = 0; j < along->ngeoms; j++ ) 
 			{
-				lwmpoint_add_lwpoint(lwmpoint, along->geoms[i]);
+				lwmpoint_add_lwpoint(lwmpoint, along->geoms[j]);
 			}
 			/* Free the containing geometry, but leave the sub-geometries around */
 			if ( along->bbox ) lwfree(along->bbox);
