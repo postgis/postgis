@@ -627,11 +627,11 @@ Datum RASTER_gdal_version(PG_FUNCTION_ARGS)
 	/* add indicator if GDAL isn't configured right */
 	if (!rt_util_gdal_configured()) {
 		char *rtn = NULL;
-		rtn = palloc(strlen(ver) + strlen(" MISSING GDAL DATA") + 1);
+		rtn = palloc(strlen(ver) + strlen(" GDAL_DATA not found") + 1);
 		if (!rtn)
 			result = cstring2text(ver);
 		else {
-			sprintf(rtn, "%s MISSING GDAL DATA", ver);
+			sprintf(rtn, "%s GDAL_DATA not found", ver);
 			result = cstring2text(rtn);
 			pfree(rtn);
 		}
