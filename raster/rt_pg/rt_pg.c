@@ -628,7 +628,23 @@ PG_FUNCTION_INFO_V1(RASTER_gdal_version);
 Datum RASTER_gdal_version(PG_FUNCTION_ARGS)
 {
 	const char *ver = rt_util_gdal_version("--version");
-	text *result = cstring2text(ver);
+	text *result;
+
+	/* add indicator if GDAL isn't configured right */
+	if (!rt_util_gdal_configured()) {
+		char *rtn = NULL;
+		rtn = palloc(strlen(ver) + strlen(" MISSING GDAL DATA") + 1);
+		if (!rtn)
+			result = cstring2text(ver);
+		else {
+			sprintf(rtn, "%s MISSING GDAL DATA", ver);
+			result = cstring2text(rtn);
+			pfree(rtn);
+		}
+	}
+	else
+		result = cstring2text(ver);
+
 	PG_RETURN_POINTER(result);
 }
 

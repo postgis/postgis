@@ -307,6 +307,9 @@ rt_util_extent_type(const char *name) {
 		return ET_INTERSECTION;
 }
 
+/*
+	convert the spatial reference string from a GDAL recognized format to either WKT or Proj4
+*/
 char*
 rt_util_gdal_convert_sr(const char *srs, int proj4) {
 	OGRSpatialReferenceH hsrs;
@@ -333,6 +336,9 @@ rt_util_gdal_convert_sr(const char *srs, int proj4) {
 	return rtn;
 }
 
+/*
+	is the spatial reference string supported by GDAL
+*/
 int
 rt_util_gdal_supported_sr(const char *srs) {
 	OGRSpatialReferenceH hsrs;
@@ -348,6 +354,29 @@ rt_util_gdal_supported_sr(const char *srs) {
 		return 0;
 }
 
+/*
+	is GDAL configured correctly?
+*/
+int rt_util_gdal_configured(void) {
+
+	/* set of EPSG codes */
+	if (!rt_util_gdal_supported_sr("EPSG:4326"))
+		return 0;
+	if (!rt_util_gdal_supported_sr("EPSG:4269"))
+		return 0;
+	if (!rt_util_gdal_supported_sr("EPSG:4267"))
+		return 0;
+	if (!rt_util_gdal_supported_sr("EPSG:3310"))
+		return 0;
+	if (!rt_util_gdal_supported_sr("EPSG:2163"))
+		return 0;
+
+	return 1;
+}
+
+/*
+	is the driver registered?
+*/
 int
 rt_util_gdal_driver_registered(const char *drv) {
 	int count = GDALGetDriverCount();

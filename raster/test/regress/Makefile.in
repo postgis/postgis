@@ -29,6 +29,9 @@ REGRESS_INSTALLDIR=$(POSTGIS_SRC)/regress/00-regress-install
 PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
+TEST_FIRST = \
+	check_gdal
+
 TEST_METADATA = \
 	check_raster_columns \
 	check_raster_overviews
@@ -130,7 +133,7 @@ TEST_LOADER = \
 	loader/Tiled10x10 \
 	loader/Tiled10x10Copy
 
-TESTS = $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
+TESTS = $(TEST_FIRST) $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
 		$(TEST_PROPS) $(TEST_BANDPROPS) \
 		$(TEST_UTILITY) $(TEST_GIST) $(TEST_SREL) \
 		$(TEST_BUGS) \
