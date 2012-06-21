@@ -2952,7 +2952,7 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	                "text",
 	                IMPORT_SCHEMA_COLUMN,
 	                NULL);
-	g_object_set(import_schema_column, "resizable", TRUE, "expand", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
+	g_object_set(import_schema_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_schema_column);
 
 	/* Table Field */
@@ -2965,7 +2965,7 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	               "text",
 	               IMPORT_TABLE_COLUMN,
 	               NULL);
-	g_object_set(import_table_column, "resizable", TRUE, "expand", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
+	g_object_set(import_table_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_table_column);
 
 	/* Geo column field */
@@ -2978,7 +2978,7 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	              "text",
 	              IMPORT_GEOMETRY_COLUMN,
 	              NULL);
-	g_object_set(import_geom_column, "resizable", TRUE, "expand", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
+	g_object_set(import_geom_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_geom_column);
 
 	/* SRID Field */
@@ -2991,7 +2991,7 @@ pgui_create_import_file_table(GtkWidget *import_list_frame)
 	              "text",
 	              IMPORT_SRID_COLUMN,
 	              NULL);
-	g_object_set(import_srid_column, "resizable", TRUE, "expand", TRUE, "sizing", GTK_TREE_VIEW_COLUMN_AUTOSIZE, NULL);
+	g_object_set(import_srid_column, "resizable", TRUE, "expand", TRUE, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(import_tree), import_srid_column);
 
 	/* Mode Combo Field */
