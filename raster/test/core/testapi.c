@@ -103,6 +103,13 @@ fillRasterToPolygonize(int hasnodata, double nodatavalue)
     return raster;
 }
 
+static void testGDALConfigured() {
+	int rtn;
+	
+	rtn = rt_util_gdal_configured();
+	CHECK((rtn != 0));
+}
+
 static void testGDALPolygonize() {
 	int i;
 	rt_raster rt;
@@ -2732,6 +2739,10 @@ main()
 
         rt_raster_set_skews(raster, 0, 0);
     }
+
+		printf("Testing rt_util_gdal_configured... ");
+		testGDALConfigured();
+		printf("OK\n");
 
     printf("Testing rt_raster_gdal_polygonize... ");
 		testGDALPolygonize();

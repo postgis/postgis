@@ -1508,12 +1508,27 @@ rt_util_gdal_version(const char *request);
 rt_extenttype
 rt_util_extent_type(const char *name);
 
+/*
+	convert the spatial reference string from a GDAL recognized format to either WKT or Proj4
+*/
 char*
 rt_util_gdal_convert_sr(const char *srs, int proj4);
 
+/*
+	is the spatial reference string supported by GDAL
+*/
 int
 rt_util_gdal_supported_sr(const char *srs);
 
+/*
+	is GDAL configured correctly?
+*/
+int
+rt_util_gdal_configured(void);
+
+/*
+	is the driver registered?
+*/
 int
 rt_util_gdal_driver_registered(const char *drv);
 
