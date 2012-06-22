@@ -122,9 +122,9 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
  * for all PG versions
  */
 PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
-Datum geometry_gist_joinsel(PG_FUNCTION_ARGS)
+Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 {
-	POSTGIS_DEBUGF(2, "geometry_gist_joinsel called (returning %f)",
+	POSTGIS_DEBUGF(2, "geometry_gist_joinsel_2d called (returning %f)",
 	               DEFAULT_GEOMETRY_JOINSEL);
 
 	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
