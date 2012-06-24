@@ -49,7 +49,10 @@
 			              on-the-line case</para>
 			 <para>#1875, ST_SummaryStats returns NULL for all parameters except count 
 			              when count is zero </para>
-
+			 <para>#1881, shp2pgsql-gui -- editing a field sometimes triggers 
+			 			  removing row</para>
+           	 <para>#1883, Geocoder install fails trying to run 
+           create_census_base_tables() (Brian Panulla)</para>
 		</simplesect>
 		<simplesect>
 			 <title>Enhancements</title>
