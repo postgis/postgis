@@ -26,7 +26,7 @@ PostGIS 2.1.0
 	         when count is zero
 
 PostGIS 2.0.1
-2012/06/DD
+2012/06/22
 
 * Bug Fixes *
 
@@ -68,8 +68,14 @@ PostGIS 2.0.1
   - #1867, catch invalid topology name passed to topogeo_add*
   - #1870, align the docs and actual behavior of raster's ST_Intersects
   - #1872, fix ST_ApproxSummarystats to prevent division by zero
+  - #1873, fix ptarray_locate_point to return interpolated Z/M values for
+           on-the-line case
   - #1875, ST_SummaryStats returns NULL for all parameters except count
 	         when count is zero
+  - #1881, shp2pgsql-gui -- editing a field sometimes triggers 
+           removing row
+  - #1883, Geocoder install fails trying to run 
+           create_census_base_tables() (Brian Panulla)
 
 * Enhancements *
 

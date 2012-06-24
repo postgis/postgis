@@ -2,9 +2,9 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
-	  <sect1>
+    <sect1>
 		<title>Release 2.0.1</title>
-		<para>Release date: 2012/06/xx</para>
+		<para>Release date: 2012/06/22</para>
 		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.0 release.</para>
 		<simplesect>
 			 <title>Bug Fixes</title>
@@ -45,6 +45,14 @@
 					   dashes.</para>
 			 <para>#1867, catch invalid topology name passed to topogeo_add*</para>
 			 <para>#1872, fix ST_ApproxSummarystats to prevent division by zero</para>
+			 <para>#1873, fix ptarray_locate_point to return interpolated Z/M values for 
+			              on-the-line case</para>
+			 <para>#1875, ST_SummaryStats returns NULL for all parameters except count 
+			              when count is zero </para>
+			 <para>#1881, shp2pgsql-gui -- editing a field sometimes triggers 
+			 			  removing row</para>
+           	 <para>#1883, Geocoder install fails trying to run 
+           create_census_base_tables() (Brian Panulla)</para>
 		</simplesect>
 		<simplesect>
 			 <title>Enhancements</title>
