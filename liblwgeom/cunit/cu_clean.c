@@ -15,11 +15,34 @@
 
 #include "liblwgeom.h"
 #include "liblwgeom_internal.h"
-
+/*
+ * TODO: change lwgeom_same to lwgeom_equals
+ * (requires porting predicates to liblwgeom)
+ */
+#define check_geom_equal(gobt, gexp) do { \
+	char *obt, *exp; \
+	LWGEOM *ngobt, *ngexp; \
+	ngobt = lwgeom_normalize(gobt); \
+	ngexp = lwgeom_normalize(gexp); \
+	if ( ! lwgeom_same((ngobt), (ngexp)) ) { \
+ 		obt = lwgeom_to_wkt((ngobt), WKT_ISO, 8, NULL); \
+ 		exp = lwgeom_to_wkt((ngexp), WKT_ISO, 8, NULL); \
+		printf(" Failure at %s:%d\n", __FILE__, __LINE__); \
+		printf(" Exp: %s\n", exp); \
+		printf(" Obt: %s\n", obt); \
+		free(obt); free(exp); \
+    lwgeom_free(ngobt); lwgeom_free(ngexp); \
+		CU_ASSERT(0); \
+	} else { \
+    lwgeom_free(ngobt); lwgeom_free(ngexp); \
+    CU_ASSERT(1); \
+  } \
+} while (0)
+	
 static void test_lwgeom_make_valid(void)
 {
 #if POSTGIS_GEOS_VERSION >= 33
-	LWGEOM *gin, *gout;
+	LWGEOM *gin, *gout, *gexp;
 	char *ewkt;
 
 	/* Because i don't trust that much prior tests...  ;) */
@@ -54,12 +77,21 @@ static void test_lwgeom_make_valid(void)
 
 	ewkt = lwgeom_to_ewkt(gout);
 	/* printf("c = %s\n", ewkt); */
-	CU_ASSERT_STRING_EQUAL(ewkt,
-"GEOMETRYCOLLECTION(POINT(0 0),MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))),LINESTRING(10 0,10 10))");
+	/*
+	 TODO: This doesn't work on windows returns in different order. 
+	 strk figure out why. For now will replace with normalized version
+	*/
+/*	CU_ASSERT_STRING_EQUAL(ewkt,
+"GEOMETRYCOLLECTION(POINT(0 0),MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))),LINESTRING(10 0,10 10))");*/
+	gexp = lwgeom_from_wkt(
+"GEOMETRYCOLLECTION(POINT(0 0),MULTIPOLYGON(((5 5,0 0,0 10,5 5)),((5 5,10 10,10 0,5 5))),LINESTRING(10 0,10 10))",
+		LW_PARSER_CHECK_NONE);
+	check_geom_equal(gout, gexp);
 	lwfree(ewkt);
 
 	lwgeom_free(gout);
 	lwgeom_free(gin);
+	lwgeom_free(gexp);
 
 	/* Test multipoint */
 
