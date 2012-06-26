@@ -61,6 +61,7 @@
 			 			  removing row</para>
            	 <para>#1883, Geocoder install fails trying to run 
            create_census_base_tables() (Brian Panulla)</para>
+           <para>#1870, ST_Intersects doc and behaviour are out of synch</para>
 		</simplesect>
 		<simplesect>
 			 <title>Enhancements</title>
