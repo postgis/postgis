@@ -2474,6 +2474,78 @@ int rt_band_get_nearest_pixel(
 	return count;
 }
 
+/**
+ * Search band for pixel(s) with search values
+ *
+ * @param band: the band to query for minimum and maximum pixel values
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
+ * @param search_values: array of values to count
+ * @param search_values_count: the number of search values
+ *
+ * @return -1 on error, otherwise number of pixels
+ */
+int
+rt_band_get_pixel_of_value(
+	rt_band band, int exclude_nodata_value,
+	double *searchset, int searchcount,
+	rt_pixel *pixels
+) {
+	int x;
+	int y;
+	int i;
+	double pixval;
+	int err;
+	int count = 0;
+
+	rt_pixel pixel = NULL;
+
+	assert(NULL != band);
+	assert(NULL != pixels);
+
+	for (x = 0; x < band->width; x++) {
+		for (y = 0; y < band->height; y++) {
+			err = rt_band_get_pixel(band, x, y, &pixval);
+			if (err != 0) {
+				rterror("rt_band_get_pixel_of_value: Cannot get band pixel");
+				return -1;
+			}
+			else if (
+				exclude_nodata_value &&
+				(band->hasnodata != FALSE) && (
+					FLT_EQ(pixval, band->nodataval) ||
+					rt_band_clamped_value_is_nodata(band, pixval) == 1
+				)
+			) {
+				continue;
+			}
+
+			for (i = 0; i < searchcount; i++) {
+				if (FLT_NEQ(pixval, searchset[i]))
+					continue;
+
+				/* match found */
+				count++;
+				if (*pixels == NULL)
+					*pixels = (rt_pixel) rtalloc(sizeof(struct rt_pixel_t) * count);
+				else
+					*pixels = (rt_pixel) rtrealloc(*pixels, sizeof(struct rt_pixel_t) * count);
+				if (*pixels == NULL) {
+					rterror("rt_band_get_pixel_of_value: Unable to allocate memory for pixel(s)");
+					return -1;
+				}
+
+				pixel = &((*pixels)[count - 1]);
+				pixel->x = x;
+				pixel->y = y;
+				pixel->nodata = 0;
+				pixel->value = pixval;
+			}
+		}
+	}
+
+	return count;
+}
+
 double
 rt_band_get_nodata(rt_band band) {
 
@@ -2717,7 +2789,6 @@ rt_band_get_summary_stats(
 	int exclude_nodata_value, double sample, int inc_vals,
 	uint64_t *cK, double *cM, double *cQ
 ) {
-	uint8_t *data = NULL;
 	uint32_t x = 0;
 	uint32_t y = 0;
 	uint32_t z = 0;
@@ -2773,12 +2844,6 @@ rt_band_get_summary_stats(
 		stats->stddev = -1;
 
 		return stats;
-	}
-
-	data = rt_band_get_data(band);
-	if (data == NULL) {
-		rterror("rt_band_get_summary_stats: Cannot get band data");
-		return NULL;
 	}
 
 	hasnodata = rt_band_get_hasnodata_flag(band);

@@ -2209,6 +2209,58 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, hasnodata boolean 
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_PixelOfValue()
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_pixelofvalue(
+	rast raster,
+	nband integer,
+	search double precision[],
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT val double precision,
+	OUT x integer,
+	OUT y integer
+)
+	RETURNS SETOF record
+	AS 'MODULE_PATHNAME', 'RASTER_pixelOfValue'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_pixelofvalue(
+	rast raster,
+	search double precision[],
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT val double precision,
+	OUT x integer,
+	OUT y integer
+)
+	RETURNS SETOF record
+	AS $$ SELECT val, x, y FROM st_pixelofvalue($1, 1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_pixelofvalue(
+	rast raster,
+	nband integer,
+	search double precision,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT x integer,
+	OUT y integer
+)
+	RETURNS SETOF record
+	AS $$ SELECT x, y FROM st_pixelofvalue($1, $2, ARRAY[$3], $4) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_pixelofvalue(
+	rast raster,
+	search double precision,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT x integer,
+	OUT y integer
+)
+	RETURNS SETOF record
+	AS $$ SELECT x, y FROM st_pixelofvalue($1, 1, ARRAY[$2], $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- Raster Accessors ST_Georeference()
 -----------------------------------------------------------------------
 

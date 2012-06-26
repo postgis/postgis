@@ -583,6 +583,22 @@ int rt_band_get_nearest_pixel(
 );
 
 /**
+ * Search band for pixel(s) with search values
+ *
+ * @param band: the band to query for minimum and maximum pixel values
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
+ * @param search_values: array of values to count
+ * @param search_values_count: the number of search values
+ *
+ * @return -1 on error, otherwise number of pixels
+ */
+int rt_band_get_pixel_of_value(
+	rt_band band, int exclude_nodata_value,
+	double *searchset, int searchcount,
+	rt_pixel *pixels
+);
+
+/**
  * Returns the minimal possible value for the band according to the pixel type.
  * @param band: the band to get info from
  * @return the minimal possible value for the band.

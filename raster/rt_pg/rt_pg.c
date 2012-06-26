@@ -202,6 +202,9 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
 /* Get pixel geographical shape */
 Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS);
 
+/* Get pixels of value */
+Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS);
+
 /* Get nearest value to a point */
 Datum RASTER_nearestValue(PG_FUNCTION_ARGS);
 
@@ -2495,6 +2498,241 @@ Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS)
     pfree(poly);
 
     PG_RETURN_POINTER(gser);
+}
+
+/**
+ * Get pixels of value
+ */
+PG_FUNCTION_INFO_V1(RASTER_pixelOfValue);
+Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+
+	rt_pixel pixels = NULL;
+	rt_pixel pixels2 = NULL;
+	int count = 0;
+	int i = 0;
+	int n = 0;
+	int call_cntr;
+	int max_calls;
+
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int nband = 1;
+		int num_bands = 0;
+		double *search = NULL;
+		int nsearch = 0;
+		double val;
+		bool exclude_nodata_value = TRUE;
+
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+		int16 typlen;
+		bool typbyval;
+		char typalign;
+		int ndims = 1;
+		int *dims;
+		int *lbs;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			elog(ERROR, "RASTER_pixelOfValue: Could not deserialize raster");
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* num_bands */
+		num_bands = rt_raster_get_num_bands(raster);
+		if (num_bands < 1) {
+			elog(NOTICE, "Raster provided has no bands");
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* band index is 1-based */
+		if (!PG_ARGISNULL(1))
+			nband = PG_GETARG_INT32(1);
+		if (nband < 1 || nband > num_bands) {
+			elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* search values */
+		array = PG_GETARG_ARRAYTYPE_P(2);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case FLOAT4OID:
+			case FLOAT8OID:
+				break;
+			default:
+				elog(ERROR, "RASTER_pixelOfValue: Invalid data type for pixel values");
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+				break;
+		}
+
+		ndims = ARR_NDIM(array);
+		dims = ARR_DIMS(array);
+		lbs = ARR_LBOUND(array);
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+			&nulls, &n);
+
+		search = palloc(sizeof(double) * n);
+		for (i = 0, nsearch = 0; i < n; i++) {
+			if (nulls[i]) continue;
+
+			switch (etype) {
+				case FLOAT4OID:
+					val = (double) DatumGetFloat4(e[i]);
+					break;
+				case FLOAT8OID:
+					val = (double) DatumGetFloat8(e[i]);
+					break;
+			}
+
+			search[nsearch] = val;
+			POSTGIS_RT_DEBUGF(3, "search[%d] = %d", nsearch, search[nsearch]);
+			nsearch++;
+		}
+
+		/* not searching for anything */
+		if (nsearch < 1) {
+			elog(NOTICE, "No search values provided. Returning NULL");
+			pfree(search);
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		else if (nsearch < n)
+			search = repalloc(search, sizeof(double) * nsearch);
+
+		/* exclude_nodata_value flag */
+		if (!PG_ARGISNULL(3))
+			exclude_nodata_value = PG_GETARG_BOOL(3);
+
+		/* get band */
+		band = rt_raster_get_band(raster, nband - 1);
+		if (!band) {
+			elog(NOTICE, "Could not find band at index %d. Returning NULL", nband);
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* get pixels of values */
+		count = rt_band_get_pixel_of_value(
+			band, exclude_nodata_value,
+			search, nsearch,
+			&pixels
+		);
+		pfree(search);
+		rt_band_destroy(band);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		if (count < 1) {
+			/* error */
+			if (count < 0)
+				elog(NOTICE, "Unable to get the pixels of search values for band at index %d", nband);
+			/* no nearest pixel */
+			else
+				elog(NOTICE, "No pixels of search values found for band at index %d", nband);
+
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* Store needed information */
+		funcctx->user_fctx = pixels;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = count;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	tupdesc = funcctx->tuple_desc;
+	pixels2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		int values_length = 3;
+		Datum values[values_length];
+		bool nulls[values_length];
+		HeapTuple tuple;
+		Datum result;
+
+		memset(nulls, FALSE, values_length);
+
+		/* 0-based to 1-based */
+		pixels2[call_cntr].x += 1;
+		pixels2[call_cntr].y += 1;
+
+		values[0] = Float8GetDatum(pixels2[call_cntr].value);
+		values[1] = Int64GetDatum(pixels2[call_cntr].x);
+		values[2] = Int64GetDatum(pixels2[call_cntr].y);
+
+		/* build a tuple */
+		tuple = heap_form_tuple(tupdesc, values, nulls);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	else {
+		pfree(pixels2);
+		SRF_RETURN_DONE(funcctx);
+	}
 }
 
 /**

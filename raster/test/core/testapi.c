@@ -2813,6 +2813,87 @@ static void testNearestPixel() {
 	deepRelease(rast);
 }
 
+static void testPixelOfValue() {
+	rt_raster rast;
+	rt_band band;
+	uint32_t x, y;
+	int rtn;
+	const int maxX = 10;
+	const int maxY = 10;
+	rt_pixel pixels = NULL;
+
+	double search0[1] = {0};
+	double search1[1] = {1};
+	double search2[2] = {3, 5};
+
+	rast = rt_raster_new(maxX, maxY);
+	assert(rast);
+
+	band = addBand(rast, PT_32BUI, 1, 0);
+	CHECK(band);
+
+	for (x = 0; x < maxX; x++) {
+		for (y = 0; y < maxY; y++) {
+			rtn = rt_band_set_pixel(band, x, y, 1);
+			CHECK((rtn != -1));
+		}
+	}
+
+	rt_band_set_pixel(band, 0, 0, 0);
+	rt_band_set_pixel(band, 3, 0, 0);
+	rt_band_set_pixel(band, 6, 0, 0);
+	rt_band_set_pixel(band, 9, 0, 0);
+	rt_band_set_pixel(band, 1, 2, 0);
+	rt_band_set_pixel(band, 4, 2, 0);
+	rt_band_set_pixel(band, 7, 2, 0);
+	rt_band_set_pixel(band, 2, 4, 0);
+	rt_band_set_pixel(band, 5, 4, 0);
+	rt_band_set_pixel(band, 8, 4, 0);
+	rt_band_set_pixel(band, 0, 6, 0);
+	rt_band_set_pixel(band, 3, 6, 0);
+	rt_band_set_pixel(band, 6, 6, 0);
+	rt_band_set_pixel(band, 9, 6, 0);
+	rt_band_set_pixel(band, 1, 8, 0);
+	rt_band_set_pixel(band, 4, 8, 0);
+	rt_band_set_pixel(band, 7, 8, 0);
+
+	pixels = NULL;
+	rtn = rt_band_get_pixel_of_value(
+		band, TRUE,
+		search1, 1,
+		&pixels
+	);
+	CHECK((rtn == 83));
+	if (rtn)
+		rtdealloc(pixels);
+
+	pixels = NULL;
+	rtn = rt_band_get_pixel_of_value(
+		band, FALSE,
+		search0, 1,
+		&pixels
+	);
+	CHECK((rtn == 17));
+	if (rtn)
+		rtdealloc(pixels);
+
+	rt_band_set_pixel(band, 4, 2, 3);
+	rt_band_set_pixel(band, 7, 2, 5);
+	rt_band_set_pixel(band, 1, 8, 3);
+
+	pixels = NULL;
+	rtn = rt_band_get_pixel_of_value(
+		band, TRUE,
+		search2, 2,
+		&pixels
+	);
+	CHECK((rtn == 3));
+	if (rtn)
+		rtdealloc(pixels);
+
+	deepRelease(rast);
+}
+
 int
 main()
 {
@@ -3081,6 +3162,10 @@ main()
 
 		printf("Testing rt_band_get_nearest_pixel... ");
 		testNearestPixel();
+		printf("OK\n");
+
+		printf("Testing rt_band_get_pixel_of_value... ");
+		testPixelOfValue();
 		printf("OK\n");
 
     deepRelease(raster);

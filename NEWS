@@ -8,6 +8,7 @@ PostGIS 2.1.0
   - #1643, Tiger Geocoder - Tiger 2011 loader (Regina Obe / Paragon Corporation) 
     Funded by Hunter Systems Group
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
+  - ST_PixelOfValue (Bborie Park / UC Davis)
 
 * Enhancements *
   - #823, tiger geocoder: Make loader_generate_script download portion less greedy
