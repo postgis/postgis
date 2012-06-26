@@ -11321,12 +11321,8 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 
     pgrtn = rt_raster_serialize(newrast);
     rt_raster_destroy(newrast);
-    if (NULL == pgrtn) {
-        rt_raster_destroy(raster);
-        rt_raster_destroy(newrast);
-
+    if (NULL == pgrtn)
         PG_RETURN_NULL();
-    }
 
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: raster serialized");
     POSTGIS_RT_DEBUG(4, "RASTER_mapAlgebraFctNgb: returning raster");
