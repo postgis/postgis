@@ -2,6 +2,14 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
+       <sect1>
+		<title>Release 2.0.2</title>
+		<para>Release date: 2012/MM/DD</para>
+		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.1 release.</para>
+		<simplesect>
+		 <title>Bug Fixes</title>
+		</simplesect>
+	  </sect1>
       <sect1>
 		<title>Release 2.0.1</title>
 		<para>Release date: 2012/06/22</para>
