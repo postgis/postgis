@@ -1002,9 +1002,9 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		bool *nulls = NULL;
 		int values_length = 2;
 		Datum values[values_length];
+		bool nulls[values_length];
 		HeapTuple    tuple;
 		Datum        result;
 
@@ -1013,7 +1013,6 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
-		nulls = palloc(sizeof(bool) * values_length);
 		memset(nulls, FALSE, values_length);
 
 		/* convert LWGEOM to GSERIALIZED */
@@ -1028,9 +1027,6 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
-
-		/* clean up (this is not really necessary) */
-		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -1752,9 +1748,9 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
 		*/
 
     TupleDesc result_tuple; /* for returning a composite */
-    bool *nulls = NULL;
     int values_length = 6;
     Datum values[values_length];
+    bool nulls[values_length];
     HeapTuple heap_tuple ;   /* instance of the tuple to return */
     Datum result;
 
@@ -1806,7 +1802,6 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
     values[4] = Float8GetDatum(rt_raster_get_x_offset(raster));
     values[5] = Float8GetDatum(rt_raster_get_y_offset(raster));
 
-    nulls = palloc(sizeof(bool) * values_length);
     memset(nulls, FALSE, values_length);
 
     /* stick em on the heap */
@@ -1814,9 +1809,6 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
 
     /* make the tuple into a datum */
     result = HeapTupleGetDatum(heap_tuple);
-
-    /* clean up */
-    pfree(nulls);
 
     PG_RETURN_DATUM(result);
 }
@@ -5374,13 +5366,12 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 	if (call_cntr < max_calls) {
 		int values_length = 4;
 		Datum values[values_length];
-		bool *nulls = NULL;
+		bool nulls[values_length];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		nulls = palloc(sizeof(bool) * values_length);
 		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(hist2[call_cntr].min);
@@ -5393,9 +5384,6 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
-
-		/* clean up */
-		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -5916,13 +5904,12 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 	if (call_cntr < max_calls) {
 		int values_length = 4;
 		Datum values[values_length];
-		bool *nulls = NULL;
+		bool nulls[values_length];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		nulls = palloc(sizeof(bool) * values_length);
 		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(covhist2[call_cntr].min);
@@ -5935,9 +5922,6 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
-
-		/* clean up */
-		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -6180,13 +6164,12 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 	if (call_cntr < max_calls) {
 		int values_length = 2;
 		Datum values[values_length];
-		bool *nulls = NULL;
+		bool nulls[values_length];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		nulls = palloc(sizeof(bool) * values_length);
 		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(quant2[call_cntr].quantile);
@@ -6197,9 +6180,6 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
-
-		/* clean up */
-		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -6620,13 +6600,12 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 	if (call_cntr < max_calls) {
 		int values_length = 2;
 		Datum values[values_length];
-		bool *nulls = NULL;
+		bool nulls[values_length];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		nulls = palloc(sizeof(bool) * values_length);
 		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(covquant2[call_cntr].quantile);
@@ -6640,9 +6619,6 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
-
-		/* clean up */
-		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -6846,13 +6822,12 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 	if (call_cntr < max_calls) {
 		int values_length = 3;
 		Datum values[values_length];
-		bool *nulls = NULL;
+		bool nulls[values_length];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		nulls = palloc(sizeof(bool) * values_length);
 		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(vcnts2[call_cntr].value);
@@ -6864,9 +6839,6 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
-
-		/* clean up */
-		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -7289,13 +7261,12 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 	if (call_cntr < max_calls) {
 		int values_length = 3;
 		Datum values[values_length];
-		bool *nulls = NULL;
+		bool nulls[values_length];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		nulls = palloc(sizeof(bool) * values_length);
 		memset(nulls, FALSE, values_length);
 
 		values[0] = Float8GetDatum(covvcnts2[call_cntr].value);
@@ -7307,9 +7278,6 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 
 		/* make the tuple into a datum */
 		result = HeapTupleGetDatum(tuple);
-
-		/* clean up */
-		pfree(nulls);
 
 		SRF_RETURN_NEXT(funcctx, result);
 	}
@@ -8126,13 +8094,12 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 	if (call_cntr < max_calls) {
 		int values_length = 4;
 		Datum values[values_length];
-		bool *nulls;
+		bool nulls[values_length];
 		HeapTuple tuple;
 		Datum result;
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		nulls = palloc(sizeof(bool) * values_length);
 		memset(nulls, FALSE, values_length);
 
 		values[0] = Int32GetDatum(drv_set2[call_cntr].idx);
@@ -8152,8 +8119,6 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 		result = HeapTupleGetDatum(tuple);
 
 		/* clean up */
-		pfree(nulls);
-
 		pfree(drv_set2[call_cntr].short_name);
 		pfree(drv_set2[call_cntr].long_name);
 		pfree(drv_set2[call_cntr].create_options);
@@ -9025,9 +8990,9 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	uint32_t height;
 
 	TupleDesc tupdesc;
-	bool *nulls = NULL;
 	int values_length = 10;
 	Datum values[values_length];
+	bool nulls[values_length];
 	HeapTuple tuple;
 	Datum result;
 
@@ -9095,7 +9060,6 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	values[8] = Int32GetDatum(srid);
 	values[9] = UInt32GetDatum(numBands);
 
-	nulls = palloc(sizeof(bool) * values_length);
 	memset(nulls, FALSE, values_length);
 
 	/* build a tuple */
@@ -9103,9 +9067,6 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 
 	/* make the tuple into a datum */
 	result = HeapTupleGetDatum(tuple);
-
-	/* clean up */
-	pfree(nulls);
 
 	PG_RETURN_DATUM(result);
 }
@@ -9132,9 +9093,6 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 	struct bandmetadata *bmd = NULL;
 	struct bandmetadata *bmd2 = NULL;
 
-	bool *nulls = NULL;
-	int values_length = 5;
-	Datum values[values_length];
 	HeapTuple tuple;
 	Datum result;
 
@@ -9344,7 +9302,10 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 	/* do when there is more left to send */
 	if (call_cntr < max_calls) {
-		nulls = palloc(sizeof(bool) * values_length);
+		int values_length = 5;
+		Datum values[values_length];
+		bool nulls[values_length];
+
 		memset(nulls, FALSE, values_length);
 
 		values[0] = UInt32GetDatum(bmd2[call_cntr].bandnum);
@@ -9368,7 +9329,6 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		result = HeapTupleGetDatum(tuple);
 
 		/* clean up */
-		pfree(nulls);
 		pfree(bmd2[call_cntr].pixeltype);
 		if (bmd2[call_cntr].bandpath) pfree(bmd2[call_cntr].bandpath);
 
@@ -9899,8 +9859,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	const int argkwcount = 8;
 	uint8_t argpos[3][8] = {{0}};
 	char *argkw[] = {"[rast1.x]", "[rast1.y]", "[rast1.val]", "[rast1]", "[rast2.x]", "[rast2.y]", "[rast2.val]", "[rast2]"};
-	Datum values[8];
-	bool nulls[8];
+	Datum values[argkwcount];
+	bool nulls[argkwcount];
 	TupleDesc tupdesc;
 	SPITupleTable *tuptable = NULL;
 	HeapTuple tuple;
