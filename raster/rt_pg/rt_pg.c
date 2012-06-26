@@ -2710,8 +2710,8 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 		pixels2[call_cntr].y += 1;
 
 		values[0] = Float8GetDatum(pixels2[call_cntr].value);
-		values[1] = Int64GetDatum(pixels2[call_cntr].x);
-		values[2] = Int64GetDatum(pixels2[call_cntr].y);
+		values[1] = Int32GetDatum(pixels2[call_cntr].x);
+		values[2] = Int32GetDatum(pixels2[call_cntr].y);
 
 		/* build a tuple */
 		tuple = heap_form_tuple(tupdesc, values, nulls);
