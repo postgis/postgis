@@ -3,7 +3,7 @@ PostGIS 2.0.2
 
 * Bug Fixes *
 
-  - 
+  - #1891, use LDFLAGS environment when building liblwgeom
 
 
 PostGIS 2.0.1
