@@ -3,7 +3,7 @@
  * PostGIS - Spatial Types for PostgreSQL
  * http://postgis.refractions.net
  *
- * Copyright 2011 Sandro Santilli <strk@keybit.net>
+ * Copyright 2011-2012 Sandro Santilli <strk@keybit.net>
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -1298,4 +1298,50 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 	return lwgeom_result;
 	
 #endif /* POSTGIS_GEOS_VERSION < 32 */
+}
+
+LWGEOM*
+lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int edgeOnly)
+{
+#if POSTGIS_GEOS_VERSION < 34
+	lwerror("lwgeom_delaunay_triangulation: GEOS 3.4 or higher required");
+#else
+	GEOSGeometry *g1, *g3;
+	LWGEOM *lwgeom_result;
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	g1 = (GEOSGeometry *)LWGEOM2GEOS(lwgeom_in);
+	if ( ! g1 ) 
+	{
+		lwerror("lwgeom_delaunay_triangulation: Geometry could not be converted to GEOS: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	g3 = GEOSDelaunayTriangulation(g1, tolerance, edgeOnly);
+
+	/* Don't need input geometry anymore */
+	GEOSGeom_destroy(g1);
+
+	if (g3 == NULL)
+	{
+		lwerror("GEOSDelaunayTriangulation: %s", lwgeom_geos_errmsg);
+		return NULL;
+	}
+
+	/* LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3)); */
+
+	GEOSSetSRID(g3, lwgeom_get_srid(lwgeom_in));
+	lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwgeom_in));
+	GEOSGeom_destroy(g3);
+
+	if (lwgeom_result == NULL)
+	{
+		lwerror("lwgeom_delaunay_triangulation: GEOS2LWGEOM returned null");
+		return NULL;
+	}
+
+	return lwgeom_result;
+	
+#endif /* POSTGIS_GEOS_VERSION < 34 */
 }

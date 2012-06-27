@@ -1915,5 +1915,16 @@ LWGEOM* lwgeom_split(const LWGEOM* lwgeom_in, const LWGEOM* blade_in);
  */
 LWGEOM* lwgeom_node(const LWGEOM* lwgeom_in);
 
+/**
+ * Take vertices of a geometry and build a delaunay
+ * triangulation on them.
+ *
+ * @param geom the input geometry
+ * @param tolerance an optional snapping tolerance for improved tolerance
+ * @param edgeOnly if non-zero the result will be a MULTILINESTRING,
+ *                 otherwise it'll be a COLLECTION of polygons.
+ */
+LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *geom, double tolerance, int edgeOnly);
+
 #endif /* !defined _LIBLWGEOM_H  */
 
