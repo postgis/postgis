@@ -72,6 +72,7 @@ Datum hausdorffdistancedensify(PG_FUNCTION_ARGS);
 Datum ST_UnaryUnion(PG_FUNCTION_ARGS);
 Datum ST_Equals(PG_FUNCTION_ARGS);
 Datum ST_BuildArea(PG_FUNCTION_ARGS);
+Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS);
 
 Datum pgis_union_geometry_array(PG_FUNCTION_ARGS);
 
@@ -3360,6 +3361,39 @@ Datum ST_BuildArea(PG_FUNCTION_ARGS)
 	lwgeom_in = lwgeom_from_gserialized(geom);
 
 	lwgeom_out = lwgeom_buildarea(lwgeom_in);
+	lwgeom_free(lwgeom_in) ;
+	
+	if ( ! lwgeom_out ) {
+		PG_FREE_IF_COPY(geom, 0);
+		PG_RETURN_NULL();
+	}
+
+	result = geometry_serialize(lwgeom_out) ;
+	lwgeom_free(lwgeom_out) ;
+
+	PG_FREE_IF_COPY(geom, 0);
+	PG_RETURN_POINTER(result);
+}
+
+/*
+ * Take the vertices of a geometry and builds
+ * Delaunay triangles around them.
+ */
+PG_FUNCTION_INFO_V1(ST_DelaunayTriangles);
+Datum ST_DelaunayTriangles(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *result;
+	GSERIALIZED *geom;
+	LWGEOM *lwgeom_in, *lwgeom_out;
+	double	tolerance = 0.0;
+	int flags = 0;
+
+	geom = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	tolerance = PG_GETARG_FLOAT8(1);
+	flags = PG_GETARG_INT32(2);
+
+	lwgeom_in = lwgeom_from_gserialized(geom);
+	lwgeom_out = lwgeom_delaunay_triangulation(lwgeom_in, tolerance, flags);
 	lwgeom_free(lwgeom_in) ;
 	
 	if ( ! lwgeom_out ) {

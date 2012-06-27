@@ -140,6 +140,13 @@ ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 33),1)
 		relate_bnr
 endif
 
+ifeq ($(shell expr $(POSTGIS_GEOS_VERSION) ">=" 34),1)
+	# GEOS-3.4 adds:
+	# ST_DelaunayTriangles
+	TESTS += \
+		delaunaytriangles
+endif
+
 ifeq ($(HAVE_JSON),yes)
 	# JSON-C adds:
 	# ST_GeomFromGeoJSON()

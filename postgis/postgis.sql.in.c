@@ -2965,6 +2965,30 @@ CREATE OR REPLACE FUNCTION ST_Node(g geometry)
        LANGUAGE 'c' IMMUTABLE STRICT
        COST 100;
 
+--------------------------------------------------------------------------------
+-- ST_DelaunayTriangles
+--------------------------------------------------------------------------------
+
+-- ST_DelaunayTriangles(g1 geometry, tolerance float8, flags int4)
+--
+-- Builds Delaunay triangulation out of geometry vertices.
+--
+-- Returns a collection of triangular polygons with flags=0
+-- or a multilinestring with flags=1
+--
+-- If a tolerance is given it will be used to snap the input points
+-- each-other.
+-- 
+--
+-- Availability: 2.1.0
+-- Requires GEOS >= 3.4.0
+--
+CREATE OR REPLACE FUNCTION ST_DelaunayTriangles(g1 geometry, tolerance float8 DEFAULT 0.0, flags int4 DEFAULT 0)
+       RETURNS geometry
+       AS 'MODULE_PATHNAME', 'ST_DelaunayTriangles'
+       LANGUAGE 'c' IMMUTABLE STRICT
+       COST 100;
+
 
 --------------------------------------------------------------------------------
 -- Aggregates and their supporting functions

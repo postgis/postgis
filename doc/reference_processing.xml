@@ -870,6 +870,50 @@ st_astext
 	  </refsection>
 	</refentry>
 
+	<refentry id="ST_DelaunayTriangles">
+		<refnamediv>
+			<refname>ST_DelaunayTriangles</refname>
+
+			<refpurpose>
+Return a Delaunay triangulation around the given input points.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+			  <funcprototype>
+				<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef>
+				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
+				<paramdef><type>float </type> <parameter>tolerance</parameter></paramdef>
+				<paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>
+			  </funcprototype>
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		  <refsection>
+			<title>Description</title>
+
+			<para>
+Return a <ulink
+url="http://en.wikipedia.org/wiki/Delaunay_triangulation">Delaunay
+triangulation</ulink> around the vertices of the input geometry.
+Output is a COLLECTION of polygons (for flags=0) or a MULTILINESTRING
+(for flags=1).  The tolerance, if any, is used to snap input vertices
+togheter.
+			</para>
+
+			<para>Availability: 2.1.0 - requires GEOS &gt;= 3.4.0.</para>
+
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+<xref linkend="ST_Dump" />
+			</para>
+		</refsection>
+	</refentry>
+
 	<refentry id="ST_Difference">
 	  <refnamediv>
 		<refname>ST_Difference</refname>
