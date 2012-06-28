@@ -1,0 +1,50 @@
+$Id$
+
+This is the TODO list for PostGIS Raster.  Items in this TODO file should be
+kept brief and to the point.  TODO items should only be those items that have yet to be ticketed in PostGIS trac and lack specifics.
+
+== Simple Projects ==
+
+-- C version of ST_Intersects() in vector-space --
+
+A C version of this function should be faster than the current plpgsql
+version.
+
+== Larger Projects ==
+
+-- Spatial Relationships functions --
+
+In addition to the ST_Intersects() function, the following functions should be
+implemented.
+
+  - ST_Contains
+  - ST_ContainsProperly
+  - ST_Covers
+  - ST_CoveredBy
+  - ST_Crosses
+  - ST_Disjoint
+  - ST_DFullyWithin
+  - ST_DWithin
+  - ST_Within
+  - ST_Overlaps
+  - ST_Touches
+  - ST_Within
+  - ST_Equals (?)
+  - ST_Relate (?)
+  - ST_RelateMatch (?)
+
+Like the ST_Intersects() function and its variants, these functions will need
+to support both raster/raster and raster/geometry.  It may be easier for these
+functions to be done in vector-space where the rasters' bands are converted to
+pixels and then spatially tested.  This should permit the quick delivery of
+useful functions though it may not be the fastest solution.
+
+-- n-raster Iterator --
+
+To properly handle aggregate and n-raster mapalgebra operations (mapalgebra,
+union, etc), a generic iterator function is needed.  This also pushes the
+core mapalgebra functionality down to rt_core instead of rt_pg.
+
+-- aggregate Stats functions --
+
+Instead of stats functions using tablename, columnname for a coverage, it should be using aggregate functions.  This change isn't too significant for most of the stats functions.  BUT, the histogram and quantile functions will need to be rewritten to use 1-pass algorithms that do not require prior knowledge of the size of the incoming stream.  The current coverage quantile function is a 1-pass algorithm but requires prior knowledge of the size of the stream.
