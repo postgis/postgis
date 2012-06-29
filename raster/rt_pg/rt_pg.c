@@ -4506,7 +4506,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
                     d[0] = Int32GetDatum(x+1);
                     d[1] = Int32GetDatum(y+1);
 
-                    a = construct_array(d, 2, INT4OID, sizeof(int4), true, 'i');
+                    a = construct_array(d, 2, INT4OID, sizeof(int32), true, 'i');
 
                     cbdata.argnull[1] = FALSE;
                     cbdata.arg[1] = PointerGetDatum(a);
@@ -10866,7 +10866,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 								}
 							}
 
-							a = construct_array(d, 4, INT4OID, sizeof(int4), true, 'i');
+							a = construct_array(d, 4, INT4OID, sizeof(int32), true, 'i');
 							ufc_info.arg[2] = PointerGetDatum(a);
 							ufc_info.argnull[2] = FALSE;
 						}
