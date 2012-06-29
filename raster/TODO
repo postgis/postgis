@@ -55,3 +55,13 @@ need to be rewritten to use 1-pass algorithms that do not require prior
 knowledge of the size of the incoming stream.  The current coverage quantile
 function is a 1-pass algorithm but requires prior knowledge of the size of
 the stream.
+
+-- neighborhood tile support --
+
+When processing a tile's pixel in a neighborhood calculation, there needs to
+be a way to get the neighboring tiles so as to provide the neighboring pixels
+of the pixel being processed.  This is a difficult question because rasters
+are passed to functions with no information about context.  Simply passing
+a tablename and raster column is inappropriate as the table and raster column
+could be more complex, such as when a table contains daily observations of a
+temperature surface.
