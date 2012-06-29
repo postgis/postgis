@@ -46,16 +46,6 @@ To properly handle aggregate and n-raster mapalgebra operations (mapalgebra,
 union, etc), a generic iterator function is needed.  This also pushes the
 core mapalgebra functionality down to rt_core instead of rt_pg.
 
--- aggregate Stats functions --
-
-Instead of stats functions using tablename, columnname for a coverage, it
-should be using aggregate functions.  This change isn't too significant for
-most of the stats functions.  BUT, the histogram and quantile functions will
-need to be rewritten to use 1-pass algorithms that do not require prior
-knowledge of the size of the incoming stream.  The current coverage quantile
-function is a 1-pass algorithm but requires prior knowledge of the size of
-the stream.
-
 -- neighborhood tile support --
 
 When processing a tile's pixel in a neighborhood calculation, there needs to
