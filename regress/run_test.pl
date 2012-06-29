@@ -143,7 +143,11 @@ if ( $OPT_WITH_RASTER )
 ##################################################################
 
 my $TMPDIR;
-if ( -d "/tmp/" && -w "/tmp/" )
+if ( $ENV{'PGIS_REG_TMPDIR'} )
+{
+	$TMPDIR = $ENV{'PGIS_REG_TMPDIR'};
+}
+elsif ( -d "/tmp/" && -w "/tmp/" )
 {
 	$TMPDIR = "/tmp/pgis_reg";
 }

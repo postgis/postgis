@@ -43,12 +43,12 @@ STAGED_SCRIPTS_DIR="${STAGED_INSTALL_DIR}/share/contrib/postgis"
 
 PSQL="psql"
 
-if [ -z "$TMPDIR" ]; then
-	TMPDIR=/tmp/pgis_reg
+if [ -z "$PGIS_REG_TMPDIR" ]; then
+	PGIS_REG_TMPDIR=/tmp/pgis_reg
 fi
 
-mkdir -p ${TMPDIR}/tmp
-chmod 777 ${TMPDIR}/tmp
+mkdir -p ${PGIS_REG_TMPDIR}/tmp
+chmod 777 ${PGIS_REG_TMPDIR}/tmp
 
 VERBOSE=0
 OPT_CLEAN=no
@@ -145,7 +145,7 @@ run_simple_sql ()
 		return 1
 	fi
 
-	TMPFILE="${TMPDIR}/test_${RUN}_tmp"
+	TMPFILE="${PGIS_REG_TMPDIR}/test_${RUN}_tmp"
 
 	# Dump output to a temp file.
 	${PSQL} -v "VERBOSITY=terse" -tXA < "${_sql}" ${DB} > ${TMPFILE} 2>&1
@@ -194,13 +194,13 @@ run_simple_test ()
 
 	show_progress
 
-	OUTFILE="${TMPDIR}/test_${RUN}_out"
-	BETMPDIR="${TMPDIR}/pgis_reg_tmp/"
-	TMPFILE="${BETMPDIR}/test_${RUN}_tmp"
-	DIFFILE="${TMPDIR}/test_${RUN}_diff"
+	OUTFILE="${PGIS_REG_TMPDIR}/test_${RUN}_out"
+	BEPGIS_REG_TMPDIR="${PGIS_REG_TMPDIR}/pgis_reg_tmp/"
+	TMPFILE="${BEPGIS_REG_TMPDIR}/test_${RUN}_tmp"
+	DIFFILE="${PGIS_REG_TMPDIR}/test_${RUN}_diff"
 
-	mkdir -p "${BETMPDIR}"
-	chmod 777 "${BETMPDIR}"
+	mkdir -p "${BEPGIS_REG_TMPDIR}"
+	chmod 777 "${BEPGIS_REG_TMPDIR}"
 
 	# Use only one call to sed to work around MSYS buffering problem
 	# and use fewer calls to grep for the same problem. MSYS only accepts
@@ -219,7 +219,7 @@ run_simple_test ()
 		      -e 's/^ROLLBACK/COMMIT/' \
 		> "${OUTFILE}"
 
-	rm -rf "${BETMPDIR}" # should we keep these ?
+	rm -rf "${BEPGIS_REG_TMPDIR}" # should we keep these ?
 
 	if test x"$OPT_EXPECT" = "xyes"; then
 		echo_inline " expected"
@@ -241,7 +241,7 @@ run_simple_test ()
 drop_table_if_exists()
 {
 	tblname="$1"
-	${PSQL} -c "DROP TABLE IF EXISTS ${tblname}" "${DB}" >> ${TMPDIR}/regress_log 2>&1
+	${PSQL} -c "DROP TABLE IF EXISTS ${tblname}" "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1
 }
 
 #
@@ -276,30 +276,30 @@ run_loader_and_check_output()
 		show_progress
 		# Produce the output SQL file.
 		${SHP2PGSQL} $_loader_options -g the_geom ${TEST}.shp $_tblname \
-			> ${TMPDIR}/loader.out \
-			2> ${TMPDIR}/loader.err
+			> ${PGIS_REG_TMPDIR}/loader.out \
+			2> ${PGIS_REG_TMPDIR}/loader.err
 
 		if [ $? -gt 0 ]; then
-			fail " $_description: running shp2pgsql" "${TMPDIR}/loader.err"
+			fail " $_description: running shp2pgsql" "${PGIS_REG_TMPDIR}/loader.err"
 			return 1
 		fi
 
 		# Compare the output SQL file with the expected if there is one.
 		if [ -r $_expected_sql_file ]; then
 			show_progress
-			if diff "${TMPDIR}/loader.out" "$_expected_sql_file" > /dev/null; then
+			if diff "${PGIS_REG_TMPDIR}/loader.out" "$_expected_sql_file" > /dev/null; then
 				:
 			else
 				fail " $_description: actual SQL does not match expected.", \
-					"${TMPDIR}/loader.out"
+					"${PGIS_REG_TMPDIR}/loader.out"
 			fi
 		fi
 
 		# Run the loader SQL script.
 		show_progress
-		${PSQL} ${_psql_opts} -f ${TMPDIR}/loader.out "${DB}" > ${TMPDIR}/loader.err 2>&1
+		${PSQL} ${_psql_opts} -f ${PGIS_REG_TMPDIR}/loader.out "${DB}" > ${PGIS_REG_TMPDIR}/loader.err 2>&1
 		if [ $? -gt 0 ]; then
-			fail " $_description: running shp2pgsql output" "${TMPDIR}/loader.err"
+			fail " $_description: running shp2pgsql output" "${PGIS_REG_TMPDIR}/loader.err"
 			return 1
 		fi
 
@@ -337,20 +337,20 @@ run_dumper_and_check_output()
 
 	if [ -n "$_run_always" -o -r "$_expected_shp_file" ]; then
 		show_progress
-		${PGSQL2SHP} -f ${TMPDIR}/dumper ${DB} "${_tblname}" > "${TMPDIR}/dumper.err" 2>&1
+		${PGSQL2SHP} -f ${PGIS_REG_TMPDIR}/dumper ${DB} "${_tblname}" > "${PGIS_REG_TMPDIR}/dumper.err" 2>&1
 		if [ $? -gt 0 ]; then
-			fail "$_description: dumping loaded table" "${TMPDIR}/dumper.err"
+			fail "$_description: dumping loaded table" "${PGIS_REG_TMPDIR}/dumper.err"
 			return 1
 		fi
 
 		# Compare with expected output if there is any.
 		if [ -r $_expected_shp_file ]; then
 			show_progress
-			if diff "${TMPDIR}"/dumper.shp "$_expected_shp_file" > /dev/null; then
+			if diff "${PGIS_REG_TMPDIR}"/dumper.shp "$_expected_shp_file" > /dev/null; then
 				:
 			else
-				ls -lL "${TMPDIR}"/dumper.shp "$_expected_shp_file" > "${TMPDIR}"/dumper.diff
-				fail "$_description: dumping loaded table" "${TMPDIR}/dumper.diff"
+				ls -lL "${PGIS_REG_TMPDIR}"/dumper.shp "$_expected_shp_file" > "${PGIS_REG_TMPDIR}"/dumper.diff
+				fail "$_description: dumping loaded table" "${PGIS_REG_TMPDIR}/dumper.diff"
 				return 1
 			fi
 		fi
@@ -383,7 +383,7 @@ run_loader_test ()
 	else
 		return 1
 	fi
-	drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+	drop_table_if_exists "${tblname}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1
 
 	# If we have some expected files to compare with, run in geography mode.
 	if run_loader_and_check_output "geog test" "${tblname}" "${TEST}-G.sql.expected" "${TEST}-G.select.expected" \
@@ -398,7 +398,7 @@ run_loader_test ()
 	else
 		return 1
 	fi
-	drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+	drop_table_if_exists "${tblname}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1
 
 	# Always run in wkb ("normal") mode, even if there are no expected files to compare with.
 	if run_loader_and_check_output "wkb test" "${tblname}" "${TEST}.sql.expected" "${TEST}.select.expected" \
@@ -413,7 +413,7 @@ run_loader_test ()
 	else
 		return 1
 	fi
-	drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+	drop_table_if_exists "${tblname}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1
 
 	# Some custom parameters can be incompatible with -D.
 	if [ -z "$_custom_opts" ]; then
@@ -424,7 +424,7 @@ run_loader_test ()
 		else
 			return 1
 		fi
-		drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+		drop_table_if_exists "${tblname}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1
 
 		# If we have some expected files to compare with, run in wkt dump mode.
 		if run_loader_and_check_output "geog dump test" "${tblname}" "${TEST}-GD.sql.expected" \
@@ -433,7 +433,7 @@ run_loader_test ()
 		else
 			return 1
 		fi
-		drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+		drop_table_if_exists "${tblname}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1
 
 		# If we have some expected files to compare with, run in wkb dump mode.
 		if run_loader_and_check_output "wkb dump test" "${tblname}" "${TEST}-D.sql.expected" \
@@ -442,7 +442,7 @@ run_loader_test ()
 		else
 			return 1
 		fi
-		drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+		drop_table_if_exists "${tblname}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1
 	fi
 
 	return 0
@@ -481,30 +481,30 @@ run_raster_loader_and_check_output()
 
 		# Produce the output SQL file.
 		${RASTER2PGSQL} $_loader_options -C -f the_rast ${TEST}.tif $_tblname \
-			> ${TMPDIR}/loader.out \
-			2> ${TMPDIR}/loader.err
+			> ${PGIS_REG_TMPDIR}/loader.out \
+			2> ${PGIS_REG_TMPDIR}/loader.err
 
 		if [ $? -gt 0 ]; then
-			fail " $_description: running raster2pgsql" "${TMPDIR}/loader.err"
+			fail " $_description: running raster2pgsql" "${PGIS_REG_TMPDIR}/loader.err"
 			return 1
 		fi
 
 		# Compare the output SQL file with the expected if there is one.
 		if [ -r $_expected_sql_file ]; then
 			show_progress
-			if diff -w "${TMPDIR}/loader.out" "$_expected_sql_file" > /dev/null; then
+			if diff -w "${PGIS_REG_TMPDIR}/loader.out" "$_expected_sql_file" > /dev/null; then
 				:
 			else
 				fail " $_description: actual SQL does not match expected.", \
-					"${TMPDIR}/loader.out"
+					"${PGIS_REG_TMPDIR}/loader.out"
 			fi
 		fi
 
 		# Run the loader SQL script.
 		show_progress
-		${PSQL} ${_psql_opts} -f ${TMPDIR}/loader.out "${DB}" > ${TMPDIR}/loader.err 2>&1
+		${PSQL} ${_psql_opts} -f ${PGIS_REG_TMPDIR}/loader.out "${DB}" > ${PGIS_REG_TMPDIR}/loader.err 2>&1
 		if [ $? -gt 0 ]; then
-			fail " $_description: running raster2pgsql output" "${TMPDIR}/loader.err"
+			fail " $_description: running raster2pgsql output" "${PGIS_REG_TMPDIR}/loader.err"
 			return 1
 		fi
 
@@ -544,7 +544,7 @@ run_raster_loader_test ()
 	else
 		return 1
 	fi
-	drop_table_if_exists "${tblname}" >> ${TMPDIR}/regress_log 2>&1
+	drop_table_if_exists "${tblname}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1
 
 	return 0
 }
@@ -555,12 +555,12 @@ init_db_error ()
 	echo
 	echo " Something went wrong during db initialization ($1)." 
 	if test "$VERBOSE" -eq "1"; then
-	  echo " Last 5 lines of ${TMPDIR}/regress_log follow:"
+	  echo " Last 5 lines of ${PGIS_REG_TMPDIR}/regress_log follow:"
 		echo "-----------------------------------------------------------------------------"
-		tail -5 ${TMPDIR}/regress_log
+		tail -5 ${PGIS_REG_TMPDIR}/regress_log
 		echo "-----------------------------------------------------------------------------"
 	else
-	  echo " For details, check ${TMPDIR}/regress_log"
+	  echo " For details, check ${PGIS_REG_TMPDIR}/regress_log"
 	fi
 	echo
 
@@ -601,13 +601,13 @@ prepare_spatial_extensions ()
 	_psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true"
 
 	${PSQL} ${_psql_opts} -c "CREATE EXTENSION postgis" "${DB}" \
-    >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core extension"
+    >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "core extension"
 
   # NOTE: "postgis" extension includes raster...
 
 	if test x"$OPT_WITH_TOPO" = "xyes"; then # {
     ${PSQL} ${_psql_opts} -c "CREATE EXTENSION postgis_topology" "${DB}" \
-      >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology extension"
+      >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "topology extension"
 	fi # }
 
 }
@@ -621,11 +621,11 @@ prepare_spatial ()
 	_psql_opts="--no-psqlrc --variable ON_ERROR_STOP=true"
 
 	${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis.sql "${DB}" \
-    >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core module"
+    >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "core module"
 
 	if test -e ${STAGED_SCRIPTS_DIR}/postgis_comments.sql; then # {
 		${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/postgis_comments.sql \
-      "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core comments"
+      "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "core comments"
 	fi # }
 
 	if test x"$OPT_WITH_TOPO" = "xyes"; then # {
@@ -633,14 +633,14 @@ prepare_spatial ()
 		if test -e ${SCRIPT}; then
 			echo "Adding topology support" 
 			${PSQL} ${_psql_opts} -Xf ${REGDIR}/../topology/topology.sql "${DB}" \
-        >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology module"
+        >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "topology module"
 		else
 			echo "${SCRIPT} not found" >&2
 			exit 1
 		fi
 		if test -e ${STAGED_SCRIPTS_DIR}/topology_comments.sql; then
 			${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/topology_comments.sql \
-        "${DB}" >> ${TMPDIR}/regress_log 2>&1 || \
+        "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || \
         init_db_error "topology comments"
 		fi
 	fi # }
@@ -650,14 +650,14 @@ prepare_spatial ()
 		if test -e ${SCRIPT}; then
 			echo "Adding raster support"
 			${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" \
-        >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster module"
+        >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "raster module"
 		else
 			echo "${SCRIPT} not found" >&2
 			exit 1
 		fi
 		if test -e ${STAGED_SCRIPTS_DIR}/raster_comments.sql; then
 			${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/raster_comments.sql \
-        "${DB}" >> ${TMPDIR}/regress_log 2>&1 || \
+        "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || \
         init_db_error "raster comments"
 		fi
 	fi # }
@@ -668,12 +668,12 @@ create_spatial ()
 {
 	echo "Creating spatial db ${DB} " 
 
-	createdb --encoding=UTF-8 --template=template0 --lc-collate="C" "${DB}" > ${TMPDIR}/regress_log 2>&1 
+	createdb --encoding=UTF-8 --template=template0 --lc-collate="C" "${DB}" > ${PGIS_REG_TMPDIR}/regress_log 2>&1 
 	if [ $? -gt 0 ]; then # {
-		fail "createdb failed" "${TMPDIR}/regress_log"
+		fail "createdb failed" "${PGIS_REG_TMPDIR}/regress_log"
 		exit 1
 	fi # }
-	createlang plpgsql "${DB}" >> ${TMPDIR}/regress_log
+	createlang plpgsql "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log
 
 	# Count database objects before installing anything
 	object_count_pre=$(count_db_objects "counting object before postgis install")
@@ -693,7 +693,7 @@ upgrade_spatial ()
   SCRIPT=${STAGED_SCRIPTS_DIR}/postgis_upgrade_*_minor.sql
   if test -e ${SCRIPT}; then
     echo "Upgrading core"
-    ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "core upgrade"
+    ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "core upgrade"
   else
     echo "${SCRIPT} not found" >&2
       exit 1
@@ -703,7 +703,7 @@ upgrade_spatial ()
     SCRIPT=${STAGED_SCRIPTS_DIR}/topology_upgrade_*_minor.sql
     if test -e ${SCRIPT}; then
       echo "Upgrading topology"
-      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "topology upgrade"
+      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "topology upgrade"
     else
       echo "${SCRIPT} not found" >&2
         exit 1
@@ -714,7 +714,7 @@ upgrade_spatial ()
     SCRIPT=${STAGED_SCRIPTS_DIR}/rtpostgis_upgrade_*_minor.sql
     if test -e ${SCRIPT}; then
       echo "Upgrading raster"
-      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${TMPDIR}/regress_log 2>&1 || init_db_error "raster upgrade"
+      ${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "raster upgrade"
     else
       echo "${SCRIPT} not found" >&2
         exit 1
@@ -731,18 +731,18 @@ drop_spatial_extensions()
 
   if test x"$OPT_WITH_TOPO" = "xyes"; then
     ${PSQL} ${_psql_opts} -c "DROP EXTENSION postgis_topology;" \
-      "${DB}" > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+      "${DB}" > ${PGIS_REG_TMPDIR}/uninstall.log 2> ${PGIS_REG_TMPDIR}/uninstall.err
     if [ $? -gt 0 ]; then # {
-      fail "DROP EXTENSION postgis_topology failed" "${TMPDIR}/uninstall.err"
+      fail "DROP EXTENSION postgis_topology failed" "${PGIS_REG_TMPDIR}/uninstall.err"
       ok=no
     fi # }
     show_progress # on to core uninstall
   fi
 
   ${PSQL} ${_psql_opts} -c "DROP EXTENSION postgis;" \
-    "${DB}" > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+    "${DB}" > ${PGIS_REG_TMPDIR}/uninstall.log 2> ${PGIS_REG_TMPDIR}/uninstall.err
   if [ $? -gt 0 ]; then # {
-    fail "DROP EXTENSION postgis failed" "${TMPDIR}/uninstall.err"
+    fail "DROP EXTENSION postgis failed" "${PGIS_REG_TMPDIR}/uninstall.err"
   fi # }
 
   test x"$ok" = "xyes"
@@ -757,9 +757,9 @@ drop_spatial()
 
   if test x"$OPT_WITH_TOPO" = "xyes"; then
     ${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/uninstall_topology.sql \
-      "${DB}" > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+      "${DB}" > ${PGIS_REG_TMPDIR}/uninstall.log 2> ${PGIS_REG_TMPDIR}/uninstall.err
     if [ $? -gt 0 ]; then # {
-      fail "uninstall_topology.sql failed" "${TMPDIR}/uninstall.err"
+      fail "uninstall_topology.sql failed" "${PGIS_REG_TMPDIR}/uninstall.err"
       ok=no
     fi # }
     show_progress # on to raster uninstall
@@ -767,18 +767,18 @@ drop_spatial()
 
   if test x"$OPT_WITH_RASTER" = "xyes"; then
     ${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/uninstall_rtpostgis.sql \
-      "${DB}" > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+      "${DB}" > ${PGIS_REG_TMPDIR}/uninstall.log 2> ${PGIS_REG_TMPDIR}/uninstall.err
     if [ $? -gt 0 ]; then # {
-      fail "uninstall_rtpostgis.sql failed" "${TMPDIR}/uninstall.err"
+      fail "uninstall_rtpostgis.sql failed" "${PGIS_REG_TMPDIR}/uninstall.err"
       ok=no
     fi # }
     show_progress # on to postgis uninstall
   fi
 
   ${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/uninstall_postgis.sql \
-    "${DB}" > ${TMPDIR}/uninstall.log 2> ${TMPDIR}/uninstall.err
+    "${DB}" > ${PGIS_REG_TMPDIR}/uninstall.log 2> ${PGIS_REG_TMPDIR}/uninstall.err
   if [ $? -gt 0 ]; then # {
-    fail "uninstall_postgis.sql failed" "${TMPDIR}/uninstall.err"
+    fail "uninstall_postgis.sql failed" "${PGIS_REG_TMPDIR}/uninstall.err"
   fi # }
 
   test x"$ok" = "xyes"
@@ -911,7 +911,7 @@ if [ -z "$libver" ]; then
 	echo
 	echo " Something went wrong (no postgis installed in ${DB})." 
 	if [ -z "$db_exists" ]; then
-		echo " For details, check ${TMPDIR}/regress_log"
+		echo " For details, check ${PGIS_REG_TMPDIR}/regress_log"
 	fi
 	echo
 	exit 1
@@ -932,7 +932,7 @@ svnrev=`${PSQL} -tAc "select postgis_svn_version()" "${DB}"`
 libbuilddate=`${PSQL} -tAc "select postgis_lib_build_date()" "${DB}"`
 pgsqlver=`${PSQL} -tAc "select version()" "${DB}"`
 
-echo "TMPDIR is ${TMPDIR}"
+echo "PGIS_REG_TMPDIR is ${PGIS_REG_TMPDIR}"
 echo "PATH is ${PATH}"
 
 echo
@@ -1064,13 +1064,13 @@ echo "Run tests: $RUN"
 echo "Failed: $FAIL"
 
 if test x"$OPT_CLEAN" = "xyes"; then
-	rm -f "${TMPDIR}"/dumper.*
-	rm -f "${TMPDIR}/loader.*"
-	rm -f "${TMPDIR}/regress_log"
-	rm -f "${TMPDIR}"/uninstall.*
-	rm -f "${TMPDIR}"/tmp/test_*
-	rmdir -p "${TMPDIR}/tmp/" 2> /dev/null
-	rmdir -p "${TMPDIR}" 2> /dev/null
+	rm -f "${PGIS_REG_TMPDIR}"/dumper.*
+	rm -f "${PGIS_REG_TMPDIR}/loader.*"
+	rm -f "${PGIS_REG_TMPDIR}/regress_log"
+	rm -f "${PGIS_REG_TMPDIR}"/uninstall.*
+	rm -f "${PGIS_REG_TMPDIR}"/tmp/test_*
+	rmdir -p "${PGIS_REG_TMPDIR}/tmp/" 2> /dev/null
+	rmdir -p "${PGIS_REG_TMPDIR}" 2> /dev/null
 fi
 
 if test x"$OPT_DROP" = "xyes" -a x"$OPT_CREATE" = "xyes"; then
