@@ -1,7 +1,8 @@
 $Id$
 
 This is the TODO list for PostGIS Raster.  Items in this TODO file should be
-kept brief and to the point.  TODO items should only be those items that have yet to be ticketed in PostGIS trac and lack specifics.
+kept brief and to the point.  TODO items should only be those items that have
+yet to be ticketed in PostGIS trac and lack specifics.
 
 == Simple Projects ==
 
@@ -47,4 +48,10 @@ core mapalgebra functionality down to rt_core instead of rt_pg.
 
 -- aggregate Stats functions --
 
-Instead of stats functions using tablename, columnname for a coverage, it should be using aggregate functions.  This change isn't too significant for most of the stats functions.  BUT, the histogram and quantile functions will need to be rewritten to use 1-pass algorithms that do not require prior knowledge of the size of the incoming stream.  The current coverage quantile function is a 1-pass algorithm but requires prior knowledge of the size of the stream.
+Instead of stats functions using tablename, columnname for a coverage, it
+should be using aggregate functions.  This change isn't too significant for
+most of the stats functions.  BUT, the histogram and quantile functions will
+need to be rewritten to use 1-pass algorithms that do not require prior
+knowledge of the size of the incoming stream.  The current coverage quantile
+function is a 1-pass algorithm but requires prior knowledge of the size of
+the stream.
