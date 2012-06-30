@@ -117,7 +117,8 @@ GetPROJ4SRSCache(FunctionCallInfoData* fcinfo)
 /**
 * Get an appropriate (based on the entry type number) 
 * GeomCache entry from the generic cache if one exists.
-* If it doesn't exist, make a new empty one and return it.
+* Returns a cache pointer if there is a cache hit and we have an
+* index built and ready to use. Returns NULL otherwise.
 */
 GeomCache*            
 GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods, const GSERIALIZED* g1, const GSERIALIZED* g2)
@@ -152,7 +153,7 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 	     memcmp(cache->geom1, g1, cache->geom1_size) == 0 )
 	{
 		cache_hit = 1;
-		geom = g1;
+		geom = cache->geom1;
 
 	}
 	/* Cache hit on second argument */
@@ -162,7 +163,7 @@ GetGeomCache(FunctionCallInfoData* fcinfo, const GeomCacheMethods* cache_methods
 	          memcmp(cache->geom2, g2, cache->geom2_size) == 0 )
 	{
 		cache_hit = 2;
-		geom = g2;
+		geom = cache->geom2;
 	}
 	/* No cache hit. If we have a tree, free it. */
 	else
