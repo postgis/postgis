@@ -389,8 +389,9 @@ circ_tree_distance_tree(const CIRC_NODE* n1, const CIRC_NODE* n2, const SPHEROID
 	double max_dist = MAXFLOAT;
 	GEOGRAPHIC_POINT closest1, closest2;
 	double distance1, distance2;
-
-	distance1 = circ_tree_distance_tree_internal(n1, n2, threshold, &min_dist, &max_dist, &closest1, &closest2);
+	double threshold_radians = threshold / spheroid->radius;
+	
+	distance1 = circ_tree_distance_tree_internal(n1, n2, threshold_radians, &min_dist, &max_dist, &closest1, &closest2);
 	distance2 = spheroid_distance(&closest1, &closest2, spheroid);
 
 	return distance2;
