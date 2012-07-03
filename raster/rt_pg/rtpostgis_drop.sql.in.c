@@ -341,3 +341,7 @@ DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer, boolean);
 DROP FUNCTION IF EXISTS st_value(raster, integer, integer, boolean);
 DROP FUNCTION IF EXISTS st_value(raster, integer, geometry, boolean);
 DROP FUNCTION IF EXISTS st_value(raster, geometry, boolean);
+
+-- function deprecated
+DROP FUNCTION IF EXISTS st_pixelaspolygons(raster, integer);
+

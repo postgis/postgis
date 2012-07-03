@@ -3,7 +3,7 @@
 #
 # Copyright (c) 2009 Sandro Santilli <strk@keybit.net>, Pierre Racine <pierre.racine@sbf.ulaval.ca>
 # Copyright (c) 2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
-# Copyright (c) 2011 Regents of the University of California
+# Copyright (c) 2011-2012 Regents of the University of California
 #   <bkpark@ucdavis.edu>
 #
 # This is free software; you can redistribute and/or modify it under
@@ -82,7 +82,8 @@ TEST_BANDPROPS = \
 	drop_rt_band_properties_test \
 	rt_neighborhood \
 	rt_nearestvalue \
-	rt_pixelofvalue
+	rt_pixelofvalue \
+	rt_pixelaspolygons.sql
 
 TEST_UTILITY = \
 	rt_utility \

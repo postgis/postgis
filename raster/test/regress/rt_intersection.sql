@@ -160,7 +160,7 @@ FROM (
 	FROM raster_intersection_out
 	CROSS JOIN generate_series(1, 2) band
 ) foo
-ORDER BY 1, 2, 3, 4, 5, 7;
+ORDER BY 1, 2, 3, 4, 5, 6, 7;
 
 DROP TABLE IF EXISTS raster_intersection;
 DROP TABLE IF EXISTS raster_intersection_out;

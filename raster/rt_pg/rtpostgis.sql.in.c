@@ -2521,13 +2521,14 @@ CREATE OR REPLACE FUNCTION _st_pixelaspolygons(
 CREATE OR REPLACE FUNCTION st_pixelaspolygons(
 	rast raster,
 	band integer DEFAULT 1,
+	exclude_nodata_value boolean DEFAULT TRUE,
 	OUT geom geometry,
 	OUT val double precision,
 	OUT x int,
 	OUT y int
 )
 	RETURNS SETOF record
-	AS $$ SELECT geom, val, x, y FROM _st_pixelaspolygons($1, $2, NULL, NULL, TRUE) $$
+	AS $$ SELECT geom, val, x, y FROM _st_pixelaspolygons($1, $2, NULL, NULL, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------

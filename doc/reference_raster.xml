@@ -3039,6 +3039,7 @@ WHERE rid=2;
 					<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
+					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
