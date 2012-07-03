@@ -335,3 +335,9 @@ DROP FUNCTION IF EXISTS st_intersection(raster, integer, raster, integer, text, 
 DROP FUNCTION IF EXISTS st_intersection(raster, integer, raster, integer, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, raster, text, regprocedure);
 DROP FUNCTION IF EXISTS st_intersection(raster, raster, regprocedure);
+
+-- parameter name change
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, integer, integer, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, integer, geometry, boolean);
+DROP FUNCTION IF EXISTS st_value(raster, geometry, boolean);

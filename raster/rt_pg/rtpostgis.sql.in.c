@@ -2170,17 +2170,17 @@ CREATE OR REPLACE FUNCTION st_bandmetadata(
 -- Raster Pixel Accessors
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y integer, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, x integer, y integer, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
     AS 'MODULE_PATHNAME','RASTER_getPixelValue'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_value(rast raster, x integer, y integer, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
     AS $$ SELECT st_value($1, 1, $2, $3, $4) $$
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8 AS
     $$
     DECLARE
@@ -2203,7 +2203,7 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, hasn
     $$
     LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, hasnodata boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_value(rast raster, pt geometry, exclude_nodata_value boolean DEFAULT TRUE)
     RETURNS float8
     AS $$ SELECT st_value($1, 1, $2, $3) $$
     LANGUAGE 'sql' IMMUTABLE STRICT;
