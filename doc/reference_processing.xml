@@ -905,6 +905,54 @@ togheter.
 			<para>Availability: 2.1.0 - requires GEOS &gt;= 3.4.0.</para>
 
 		</refsection>
+			  <refsection>
+		<title>Examples</title>
+			<informaltable>
+				  <tgroup cols="2">
+					<tbody>
+					  <row>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_delaunaytriangles03.png" />
+							  </imageobject>
+							  <caption><para>ST_DelaunayTriangles of 2 polygons overlaid with delaunay triangle polygons</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+-- geometries overlaid multilinestring triangles
+SELECT 
+	ST_DelaunayTriangles(
+		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		)) 
+	 As  dtriag;
+				</programlisting>
+						  </para></entry>
+						<entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_delaunaytriangles02.png" />
+							  </imageobject>
+							  <caption><para>-- geometries overlaid with multilinestring representation of delaunay triangles</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>
+SELECT 
+	ST_DelaunayTriangles(
+		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		),0.001,1) 
+	 As  dtriag;
+				</programlisting>
+						</para></entry>
+					  </row>
+		</tbody>
+	</tgroup>
+</informaltable>
+	  </refsection>
 
 		<refsection>
 			<title>See Also</title>
