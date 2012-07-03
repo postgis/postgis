@@ -2981,7 +2981,7 @@ rid | hb1 | hb2 | hb4 | numbands
 	    <refentry id="RT_ST_PixelAsPolygon">
 			<refnamediv>
 				<refname>ST_PixelAsPolygon</refname>
-				<refpurpose>Returns the geometry that bounds the pixel for a particular row and column.</refpurpose>
+				<refpurpose>Returns the polygon geometry that bounds the pixel for a particular row and column.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2998,7 +2998,7 @@ rid | hb1 | hb2 | hb4 | numbands
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the geometry that bounds the pixel for a particular row and column.</para>
+				<para>Returns the polygon geometry that bounds the pixel for a particular row and column.</para>
 
 			</refsection>
 				
@@ -3030,7 +3030,7 @@ WHERE rid=2;
 	    <refentry id="RT_ST_PixelAsPolygons">
 			<refnamediv>
 				<refname>ST_PixelAsPolygons</refname>
-				<refpurpose>Returns the geometry that bounds every pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.</refpurpose>
+				<refpurpose>Returns the polygon geometry that bounds every pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -3046,12 +3046,12 @@ WHERE rid=2;
 		
 			<refsection>
 				<title>Description</title>
-				
-				<para>Returns the geometry that bounds every pixel of a raster band along with the value (double precision), the X and the Y raster coordinates (integers) of each pixel.</para>
+		
+				<para>Returns the polygon geometry that bounds every pixel of a raster band along with the value (double precision), the X and the Y raster coordinates (integers) of each pixel.</para>
 
 				<note>
 					<para>
-						ST_PixelAsPolygons returns one geometry for every pixel.  This is different than ST_DumpAsPolygons where each geometry represents one or more pixels with the same pixel value.
+						ST_PixelAsPolygons returns one polygon geometry for every pixel.  This is different than ST_DumpAsPolygons where each geometry represents one or more pixels with the same pixel value.
 					</para>
 				</note>
 
@@ -3081,10 +3081,192 @@ FROM (SELECT ST_PixelAsPolygons(
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_DumpAsPolygons" />, <xref linkend="RT_ST_PixelAsPolygon" />,
-							 <xref linkend="ST_AsText" />
+				<para>
+					<xref linkend="RT_ST_DumpAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPolygon" />, 
+					<xref linkend="ST_AsText" />
 				</para>
 			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_PixelAsPoint">
+			<refnamediv>
+				<refname>ST_PixelAsPoint</refname>
+				<refpurpose>
+					Returns a point geometry of the pixel's upper-left corner.
+				</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>geometry <function>ST_PixelAsPoint</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>Returns a point geometry of the pixel's upper-left corner.</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- needs an example
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_DumpAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPolygon" />, 
+					<xref linkend="RT_ST_PixelAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPoints" />, 
+					<xref linkend="RT_ST_PixelAsCentroid" />, 
+					<xref linkend="RT_ST_PixelAsCentroids" />
+				</para>
+			</refsection>
+
+		</refentry>
+
+		<refentry id="RT_ST_PixelAsPoints">
+			<refnamediv>
+				<refname>ST_PixelAsPoints</refname>
+				<refpurpose>
+					Returns a point geometry for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The coordinates of the point geometry are of the pixel's upper-left corner.
+				</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>geometry <function>ST_PixelAsPoints</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
+						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					Returns a point geometry for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The coordinates of the point geometry are of the pixel's upper-left corner.
+				</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- needs an example
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_DumpAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPolygon" />, 
+					<xref linkend="RT_ST_PixelAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPoint" />, 
+					<xref linkend="RT_ST_PixelAsCentroid" />, 
+					<xref linkend="RT_ST_PixelAsCentroids" />
+				</para>
+			</refsection>
+
+		</refentry>
+
+		<refentry id="RT_ST_PixelAsCentroid">
+			<refnamediv>
+				<refname>ST_PixelAsCentroid</refname>
+				<refpurpose>
+					Returns the centroid (point geometry) of the area represented by a pixel.
+				</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>geometry <function>ST_PixelAsCentroid</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>Returns the centroid (point geometry) of the area represented by a pixel.</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- needs an example
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_DumpAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPolygon" />, 
+					<xref linkend="RT_ST_PixelAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPoint" />, 
+					<xref linkend="RT_ST_PixelAsPoints" />, 
+					<xref linkend="RT_ST_PixelAsCentroids" />
+				</para>
+			</refsection>
+
+		</refentry>
+
+		<refentry id="RT_ST_PixelAsCentroids">
+			<refnamediv>
+				<refname>ST_PixelAsCentroids</refname>
+				<refpurpose>
+					Returns the centroid (point geometry) for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The point geometry is the centroid of the area represented by a pixel.
+				</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>geometry <function>ST_PixelAsCentroids</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
+						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					Returns the centroid (point geometry) for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The point geometry is the centroid of the area represented by a pixel.
+				</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- needs an example
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_DumpAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPolygon" />, 
+					<xref linkend="RT_ST_PixelAsPolygons" />, 
+					<xref linkend="RT_ST_PixelAsPoint" />, 
+					<xref linkend="RT_ST_PixelAsPoints" />, 
+					<xref linkend="RT_ST_PixelAsCentroid" />
+				</para>
+			</refsection>
+
 		</refentry>
 
 	    <refentry id="RT_ST_Value">

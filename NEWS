@@ -5,6 +5,8 @@ PostGIS 2.1.0
 
   - ST_DelaunayTriangles (Sandro Santilli / Vizzuality)
   - ST_NearestValue, ST_Neighborhood (Bborie Park / UC Davis)
+	- ST_PixelAsPoint, ST_PixelAsPoints (Bborie Park / UC Davis)
+	- ST_PixelAsCentroid, ST_PixelAsCentroids (Bborie Park / UC Davis)
   - ST_Raster2WorldCoord, ST_World2RasterCoord (Bborie Park / UC Davis)
   - #1643, Tiger Geocoder - Tiger 2011 loader (Regina Obe / Paragon Corporation) 
     Funded by Hunter Systems Group
