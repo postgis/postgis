@@ -83,7 +83,9 @@ TEST_BANDPROPS = \
 	rt_neighborhood \
 	rt_nearestvalue \
 	rt_pixelofvalue \
-	rt_pixelaspolygons.sql
+	rt_pixelaspolygons \
+	rt_pixelaspoints \
+	rt_pixelascentroids
 
 TEST_UTILITY = \
 	rt_utility \

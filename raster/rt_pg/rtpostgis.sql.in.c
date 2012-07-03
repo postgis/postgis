@@ -2532,12 +2532,64 @@ CREATE OR REPLACE FUNCTION st_pixelaspolygons(
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
--- ST_PixelAsPolygons
+-- ST_PixelAsPolygon
 -----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
 	RETURNS geometry
 	AS $$ SELECT geom FROM _st_pixelaspolygons($1, NULL, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_PixelAsPoints
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_pixelaspoints(
+	rast raster,
+	band integer DEFAULT 1,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT geom geometry,
+	OUT val double precision,
+	OUT x int,
+	OUT y int
+)
+	RETURNS SETOF record
+	AS $$ SELECT ST_PointN(ST_ExteriorRing(geom), 1), val, x, y FROM _st_pixelaspolygons($1, $2, NULL, NULL, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_PixelAsPoint
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_pixelaspoint(rast raster, x integer, y integer)
+	RETURNS geometry
+	AS $$ SELECT ST_PointN(ST_ExteriorRing(geom), 1) FROM _st_pixelaspolygons($1, NULL, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_PixelAsCentroids
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_pixelascentroids(
+	rast raster,
+	band integer DEFAULT 1,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT geom geometry,
+	OUT val double precision,
+	OUT x int,
+	OUT y int
+)
+	RETURNS SETOF record
+	AS $$ SELECT ST_Centroid(geom), val, x, y FROM _st_pixelaspolygons($1, $2, NULL, NULL, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_PixelAsCentroid
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_pixelascentroid(rast raster, x integer, y integer)
+	RETURNS geometry
+	AS $$ SELECT ST_Centroid(geom) FROM _st_pixelaspolygons($1, NULL, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
