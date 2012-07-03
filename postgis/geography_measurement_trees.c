@@ -76,8 +76,8 @@ GetCircTreeGeomCache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const 
 	return (CircTreeGeomCache*)GetGeomCache(fcinfo, &CircTreeCacheMethods, g1, g2);
 }
 
-static int
-CircTreePIP(const CircTreeGeomCache* tree_cache, const GSERIALIZED* g, const LWGEOM* lwgeom)
+int
+CircTreePIP(const CIRC_NODE* tree, const GSERIALIZED* g, const LWGEOM* lwgeom)
 {
 	int tree_type = gserialized_get_type(g);
 	GBOX gbox;
@@ -120,7 +120,7 @@ CircTreePIP(const CircTreeGeomCache* tree_cache, const GSERIALIZED* g, const LWG
 			/* Calculate a definitive outside point */
 			gbox_pt_outside(&gbox, &pt_outside);
 			/* Test the candidate point for strict containment */
-			return circ_tree_contains_point(tree_cache->index, &pt_inside, &pt_outside, NULL);
+			return circ_tree_contains_point(tree, &pt_inside, &pt_outside, NULL);
 		}
 		
 	}
@@ -164,7 +164,7 @@ geography_distance_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, co
 		else
 			lwerror("geography_distance_cache failed! This will never happen!");
 
-		if ( LW_TRUE == CircTreePIP(tree_cache, g, lwgeom) )
+		if ( LW_TRUE == CircTreePIP(tree_cache->index, g, lwgeom) )
 		{
 			*distance = 0.0;
 			lwgeom_free(lwgeom);
@@ -220,7 +220,7 @@ geography_dwithin_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, con
 		else
 			lwerror("geography_dwithin_cache failed! This will never happen!");
 
-		if ( LW_TRUE == CircTreePIP(tree_cache, g, lwgeom) )
+		if ( LW_TRUE == CircTreePIP(tree_cache->index, g, lwgeom) )
 		{
 			*dwithin = LW_TRUE;
 			lwgeom_free(lwgeom);

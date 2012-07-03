@@ -29,6 +29,7 @@
 
 Datum geography_distance(PG_FUNCTION_ARGS);
 Datum geography_distance_cached(PG_FUNCTION_ARGS);
+Datum geography_distance_tree(PG_FUNCTION_ARGS);
 Datum geography_dwithin(PG_FUNCTION_ARGS);
 Datum geography_dwithin_cached(PG_FUNCTION_ARGS);
 Datum geography_area(PG_FUNCTION_ARGS);
@@ -227,6 +228,73 @@ Datum geography_dwithin_cached(PG_FUNCTION_ARGS)
 
 	PG_RETURN_BOOL(dwithin);
 }
+
+
+/*
+** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** returns double distance in meters
+*/
+PG_FUNCTION_INFO_V1(geography_distance_tree);
+Datum geography_distance_tree(PG_FUNCTION_ARGS)
+{
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	double tolerance;
+	double distance;
+	bool use_spheroid;
+	SPHEROID s;
+	CIRC_NODE* circ_tree1 = NULL;
+	CIRC_NODE* circ_tree2 = NULL;
+	LWGEOM* lwgeom1 = NULL;
+	LWGEOM* lwgeom2 = NULL;
+	
+
+	/* Get our geometry objects loaded into memory. */
+	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Read our tolerance value. */
+	tolerance = PG_GETARG_FLOAT8(2);
+
+	/* Read our calculation type. */
+	use_spheroid = PG_GETARG_BOOL(3);
+
+	/* Initialize spheroid */
+	spheroid_init_from_srid(fcinfo, gserialized_get_srid(g1), &s);
+
+	/* Set to sphere if requested */
+	if ( ! use_spheroid )
+		s.a = s.b = s.radius;
+
+	/* Return FALSE on empty arguments. */
+	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
+		PG_RETURN_FLOAT8(0.0);
+	}
+
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+	circ_tree1 = lwgeom_calculate_circ_tree(lwgeom1);
+	circ_tree2 = lwgeom_calculate_circ_tree(lwgeom2);
+	
+	if ( CircTreePIP(circ_tree1, g1, lwgeom2) || CircTreePIP(circ_tree2, g2, lwgeom1) )
+	{
+		PG_RETURN_BOOL(FALSE);
+	}
+	
+	/* Calculate tree/tree distance */
+	distance = circ_tree_distance_tree(circ_tree1, circ_tree2, &s, tolerance);
+	circ_tree_free(circ_tree1);
+	circ_tree_free(circ_tree2);
+	
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	
+	PG_RETURN_FLOAT8(distance);
+}
+
 
 
 /*

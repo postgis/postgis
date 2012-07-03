@@ -558,6 +558,17 @@ CREATE OR REPLACE FUNCTION ST_DistanceCached(geography, geography, boolean)
 	AS 'SELECT _ST_DistanceCached($1, $2, 0.0, $3)'
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION _ST_DistanceTree(geography, geography, float8, boolean)
+	RETURNS float8
+	AS 'MODULE_PATHNAME','geography_distance_tree'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION ST_DistanceTree(geography, geography)
+	RETURNS float8
+	AS 'SELECT _ST_DistanceTree($1, $2, 0.0, true)'
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
 CREATE OR REPLACE FUNCTION ST_DistanceCached(geography, geography)
 	RETURNS float8
 	AS 'SELECT _ST_DistanceCached($1, $2, 0.0, true)'
