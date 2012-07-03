@@ -3049,6 +3049,12 @@ WHERE rid=2;
 				
 				<para>Returns the geometry that bounds every pixel of a raster band along with the value (double precision), the X and the Y raster coordinates (integers) of each pixel.</para>
 
+				<note>
+					<para>
+						ST_PixelAsPolygons returns one geometry for every pixel.  This is different than ST_DumpAsPolygons where each geometry represents one or more pixels with the same pixel value.
+					</para>
+				</note>
+
 			</refsection>
 				
 			<refsection>
@@ -6244,6 +6250,11 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
 				<para>Availability: Requires GDAL 1.7 or higher.</para>
 				<note><para>If there is a no data value set for a band, pixels with that value will not be returned.</para></note>
 				<note><para>If you only care about count of pixels with a given value in a raster, it is faster to use <xref linkend="RT_ST_ValueCount" />.</para></note>
+				<note>
+					<para>
+						This is different than ST_PixelAsPolygons where one geometry is returned for each pixel regardless of pixel value.
+					</para>
+				</note>
 		  </refsection>
 	
 		  <refsection>
