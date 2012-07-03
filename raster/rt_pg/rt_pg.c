@@ -2583,31 +2583,39 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 			SRF_RETURN_DONE(funcctx);
 		}
 
+		/* raster empty, return */
+		if (rt_raster_is_empty(raster)) {
+			elog(NOTICE, "Raster is empty. Returning NULL");
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
 		/* band specified, load band and info */
 		if (!noband) {
-			POSTGIS_RT_DEBUGF(3, "band %d", nband);
-			numbands = rt_raster_get_num_bands(raster);
+			do {
+				numbands = rt_raster_get_num_bands(raster);
+				POSTGIS_RT_DEBUGF(3, "band %d", nband);
+				POSTGIS_RT_DEBUGF(3, "# of bands %d", numbands);
 
-			if (nband < 1 || nband > numbands) {
-				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
-				rt_raster_destroy(raster);
-				PG_FREE_IF_COPY(pgraster, 0);
-				MemoryContextSwitchTo(oldcontext);
-				SRF_RETURN_DONE(funcctx);
+				if (nband < 1 || nband > numbands) {
+					elog(NOTICE, "Invalid band index (must use 1-based). Returning pixel values will be NULL");
+					noband = TRUE;
+					break;
+				}
+
+				band = rt_raster_get_band(raster, nband - 1);
+				if (!band) {
+					elog(NOTICE, "Could not find band at index %d. Returning pixel values will be NULL", nband);
+					noband = TRUE;
+					break;
+				}
+
+				hasnodata = rt_band_get_hasnodata_flag(band);
+				if (hasnodata)
+					nodataval = rt_band_get_nodata(band);
 			}
-
-			band = rt_raster_get_band(raster, nband - 1);
-			if (!band) {
-				elog(NOTICE, "Could not find band at index %d. Returning NULL", nband);
-				rt_raster_destroy(raster);
-				PG_FREE_IF_COPY(pgraster, 0);
-				MemoryContextSwitchTo(oldcontext);
-				SRF_RETURN_DONE(funcctx);
-			}
-
-			hasnodata = rt_band_get_hasnodata_flag(band);
-			if (hasnodata)
-				nodataval = rt_band_get_nodata(band);
+			while (0);
 		}
 
 		/* set bounds if columnx, rowy not set */
@@ -2619,6 +2627,8 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 			bounds[2] = 1;
 			bounds[3] = rt_raster_get_height(raster);
 		}
+		POSTGIS_RT_DEBUGF(3, "bounds (min x, max x, min y, max y) = (%d, %d, %d, %d)", 
+			bounds[0], bounds[1], bounds[2], bounds[3]);
 
 		/* rowy */
 		pixcount = 0;
@@ -2740,8 +2750,8 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		int values_length = 4;
 		Datum values[values_length];
 		bool nulls[values_length];
-		HeapTuple    tuple;
-		Datum        result;
+		HeapTuple tuple;
+		Datum result;
 
 		GSERIALIZED *gser = NULL;
 		size_t gser_size = 0;
@@ -2897,7 +2907,7 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 			}
 
 			search[nsearch] = val;
-			POSTGIS_RT_DEBUGF(3, "search[%d] = %d", nsearch, search[nsearch]);
+			POSTGIS_RT_DEBUGF(3, "search[%d] = %f", nsearch, search[nsearch]);
 			nsearch++;
 		}
 
