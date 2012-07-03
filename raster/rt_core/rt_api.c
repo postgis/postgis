@@ -2325,6 +2325,10 @@ int rt_band_get_nearest_pixel(
 		}
 	}
 
+	/* no NODATA, exclude is FALSE */
+	if (!band->hasnodata)
+		exclude_nodata_value = FALSE;
+
 	/* determine the maximum distance to prevent an infinite loop */
 	if (!distance) {
 		int a, b;
@@ -2501,6 +2505,9 @@ rt_band_get_pixel_of_value(
 
 	assert(NULL != band);
 	assert(NULL != pixels);
+
+	if (!band->hasnodata)
+		exclude_nodata_value = FALSE;
 
 	for (x = 0; x < band->width; x++) {
 		for (y = 0; y < band->height; y++) {
@@ -5706,7 +5713,10 @@ rt_raster_gdal_polygonize(
 
 	if (exclude_nodata_value) {
 		iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
-		if (iBandHasNodataValue) dBandNoData = rt_band_get_nodata(band);
+		if (iBandHasNodataValue)
+			dBandNoData = rt_band_get_nodata(band);
+		else
+			exclude_nodata_value = FALSE;
 	}
 
 	/*****************************************************

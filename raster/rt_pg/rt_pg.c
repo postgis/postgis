@@ -2557,8 +2557,12 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 				}
 
 				hasnodata = rt_band_get_hasnodata_flag(band);
-				if (hasnodata)
+				if (hasnodata) {
 					nodataval = rt_band_get_nodata(band);
+					POSTGIS_RT_DEBUGF(4, "(hasnodata, nodataval) = (%d, %f)", hasnodata, nodataval);
+				}
+				else
+					exclude_nodata_value = FALSE;
 			}
 			while (0);
 		}
@@ -2613,8 +2617,10 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 				}
 				pix[pixcount].geom = (LWGEOM *) poly;
+				/*
 				POSTGIS_RT_DEBUGF(4, "poly @ %p", poly);
 				POSTGIS_RT_DEBUGF(4, "geom @ %p", pix[pixcount].geom);
+				*/
 
 				/* x, y */
 				pix[pixcount].x = x;
@@ -2638,7 +2644,8 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 					}
 
 					if (
-						!exclude_nodata_value || (
+						!exclude_nodata_value ||
+						!hasnodata || (
 							exclude_nodata_value &&
 							(hasnodata != FALSE) && (
 								FLT_NEQ(pix[pixcount].value, nodataval) &&
@@ -2648,11 +2655,13 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 					) {
 						pix[pixcount].nodata = 0;
 					}
-					else
+					else {
 						pix[pixcount].nodata = 1;
+					}
 				}
-				else
+				else {
 					pix[pixcount].nodata = 1;
+				}
 
 				pixcount++;
 			}
@@ -3089,7 +3098,8 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 
 		/* value at point, return value */
 		if (
-			!exclude_nodata_value || (
+			!exclude_nodata_value || 
+			!rt_band_get_hasnodata_flag(band) || (
 				exclude_nodata_value &&
 				rt_band_get_hasnodata_flag(band) && (
 					FLT_NEQ(value, rt_band_get_nodata(band)) &&
@@ -3324,7 +3334,8 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 
 	/* add pixel to neighborhood */
 	if (
-		!exclude_nodata_value || (
+		!exclude_nodata_value || 
+		!rt_band_get_hasnodata_flag(band) || (
 			exclude_nodata_value &&
 			(rt_band_get_hasnodata_flag(band) != FALSE) && (
 				FLT_NEQ(pixval, rt_band_get_nodata(band)) &&
