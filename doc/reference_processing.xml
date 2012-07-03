@@ -910,13 +910,27 @@ togheter.
 			<informaltable>
 				  <tgroup cols="2">
 					<tbody>
+					 <row><entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_delaunaytriangles01.png" />
+							  </imageobject>
+							  <caption><para>ST_DelaunayTriangles of 2 polygons  delaunay triangle polygons</para></caption>
+							</mediaobject>
+						  </informalfigure></para>
+<programlisting>-- our original geometry --
+	ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
+			50 60, 125 100, 175 150))'),
+		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
+		)</programlisting></entry>
+				      </row>
 					  <row>
 						<entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_delaunaytriangles03.png" />
 							  </imageobject>
-							  <caption><para>ST_DelaunayTriangles of 2 polygons overlaid with delaunay triangle polygons</para></caption>
+							  <caption><para>ST_DelaunayTriangles of 2 polygons  delaunay triangle polygons each triangle themed in different color</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -929,8 +943,8 @@ SELECT
 		)) 
 	 As  dtriag;
 				</programlisting>
-						  </para></entry>
-						<entry><para><informalfigure>
+						  </para></entry></row>
+				<row><entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_delaunaytriangles02.png" />
@@ -938,15 +952,13 @@ SELECT
 							  <caption><para>-- geometries overlaid with multilinestring representation of delaunay triangles</para></caption>
 							</mediaobject>
 						  </informalfigure>
-				<programlisting>
-SELECT 
+				<programlisting>SELECT 
 	ST_DelaunayTriangles(
 		ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, 
 			50 60, 125 100, 175 150))'),
 		ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)
 		),0.001,1) 
-	 As  dtriag;
-				</programlisting>
+	 As  dtriag;</programlisting>
 						</para></entry>
 					  </row>
 		</tbody>
