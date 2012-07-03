@@ -1856,7 +1856,7 @@ FROM dummy_rast;
 				<title>Examples</title>
 				
 					<programlisting>
--- non-skewed raster providing column is sufficient					
+-- non-skewed raster
 SELECT
 	rid,
 	(ST_Raster2WorldCoord(rast,1, 1)).*,
@@ -1870,7 +1870,7 @@ FROM dummy_rast
 				</programlisting>
 				
 					<programlisting>
--- for fun lets skew it				
+-- skewed raster
 SELECT
 	rid,
 	(ST_Raster2WorldCoord(rast, 1, 1)).*,
