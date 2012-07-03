@@ -2198,7 +2198,7 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, excl
                         band,
                         st_world2rastercoordx(rast, x, y),
                         st_world2rastercoordy(rast, x, y),
-                        hasnodata);
+                        exclude_nodata_value);
     END;
     $$
     LANGUAGE 'plpgsql' IMMUTABLE STRICT;
@@ -2484,7 +2484,7 @@ CREATE TYPE geomval AS (
 	val double precision
 );
 
-CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1)
+CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS SETOF geomval
 	AS 'MODULE_PATHNAME','RASTER_dumpAsPolygons'
 	LANGUAGE 'c' IMMUTABLE STRICT;
@@ -2497,49 +2497,47 @@ CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
     $$
     LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
-    RETURNS geometry 
-    AS 'MODULE_PATHNAME','RASTER_getPixelPolygon'
-    LANGUAGE 'c' IMMUTABLE STRICT;
-
 -----------------------------------------------------------------------
 -- ST_PixelAsPolygons
 -- Return all the pixels of a raster as a geom, val, x, y record
 -- Should be called like this:
 -- SELECT (gv).geom, (gv).val FROM (SELECT ST_PixelAsPolygons(rast) gv FROM mytable) foo
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ST_PixelAsPolygons(rast raster, band integer DEFAULT 1, OUT geom geometry, OUT val double precision, OUT x int, OUT y int)
-    RETURNS SETOF record AS
-    $$
-    DECLARE
-        rast alias for $1;
-        var_w integer;
-        var_h integer;
-        var_x integer;
-        var_y integer;
-        value float8 := NULL;
-        hasband boolean := TRUE;
-    BEGIN
-        IF rast IS NOT NULL AND NOT ST_IsEmpty(rast) THEN
-            IF ST_HasNoBand(rast, band) THEN
-                RAISE NOTICE 'Raster do not have band %. Returning null values', band;
-                hasband := false;
-            END IF;
-            SELECT ST_Width(rast), ST_Height(rast) INTO var_w, var_h;
-            FOR var_x IN 1..var_w LOOP
-                FOR var_y IN 1..var_h LOOP
-                    IF hasband THEN
-                        value := ST_Value(rast, band, var_x, var_y);
-                    END IF;
-                    SELECT ST_PixelAsPolygon(rast, var_x, var_y), value, var_x, var_y INTO geom,val,x,y;
-                    RETURN NEXT;
-                END LOOP;
-            END LOOP;
-        END IF;
-        RETURN;
-    END;
-    $$
-    LANGUAGE 'plpgsql';
+CREATE OR REPLACE FUNCTION _st_pixelaspolygons(
+	rast raster,
+	band integer DEFAULT 1,
+	columnx integer DEFAULT NULL,
+	rowy integer DEFAULT NULL,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	OUT geom geometry,
+	OUT val double precision,
+	OUT x integer,
+	OUT y integer
+)
+	RETURNS SETOF record
+	AS 'MODULE_PATHNAME', 'RASTER_getPixelPolygons'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_pixelaspolygons(
+	rast raster,
+	band integer DEFAULT 1,
+	OUT geom geometry,
+	OUT val double precision,
+	OUT x int,
+	OUT y int
+)
+	RETURNS SETOF record
+	AS $$ SELECT geom, val, x, y FROM _st_pixelaspolygons($1, $2, NULL, NULL, TRUE) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
+-- ST_PixelAsPolygons
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_pixelaspolygon(rast raster, x integer, y integer)
+	RETURNS geometry
+	AS $$ SELECT geom FROM _st_pixelaspolygons($1, NULL, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Utility Functions

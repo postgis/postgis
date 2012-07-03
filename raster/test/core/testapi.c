@@ -121,7 +121,7 @@ static void testGDALPolygonize() {
 	CHECK(!rt_raster_has_no_band(rt, 0));
 
 	nPols = 0;
-	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 
 	/*
 	for (i = 0; i < nPols; i++) {
@@ -176,7 +176,7 @@ static void testGDALPolygonize() {
 	CHECK(!rt_raster_has_no_band(rt, 0));
 
 	nPols = 0;
-	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 
 	/*
 	for (i = 0; i < nPols; i++) {
@@ -233,7 +233,7 @@ static void testGDALPolygonize() {
 	CHECK(!rt_raster_has_no_band(rt, 0));
 
 	nPols = 0;
-	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 
 	/*
 	for (i = 0; i < nPols; i++) {
@@ -278,7 +278,7 @@ static void testGDALPolygonize() {
 	CHECK(!rt_raster_has_no_band(rt, 0));
 
 	nPols = 0;
-	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 	
 	/*
 	for (i = 0; i < nPols; i++) {
@@ -318,7 +318,7 @@ static void testGDALPolygonize() {
 	CHECK(!rt_raster_has_no_band(rt, 0));
 
 	nPols = 0;
-	gv = rt_raster_gdal_polygonize(rt, 0, &nPols);
+	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
 
 	/*
 	for (i = 0; i < nPols; i++) {
@@ -1703,7 +1703,7 @@ static void testGDALToRaster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, 0, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv);
 	CHECK(gddrv);
 	CHECK(gdds);
 	CHECK((GDALGetRasterXSize(gdds) == xmax));
@@ -1746,7 +1746,7 @@ static void testGDALToRaster() {
 		}
 	}
 
-	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, 0, &gddrv);
+	gdds = rt_raster_to_gdal_mem(raster, NULL, NULL, NULL, 0, &gddrv);
 	CHECK(gddrv);
 	CHECK(gdds);
 	CHECK((GDALGetRasterXSize(gdds) == xmax));

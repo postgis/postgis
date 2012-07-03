@@ -1188,6 +1188,8 @@ LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
  *
  * @param raster: the raster to get info from.
  * @param nband: the band to polygonize. 0-based
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
+ * to check for pixels with value
  *
  * @return A set of "geomval" values, one for each group of pixels
  * sharing the same value for the provided band. The returned values are
@@ -1196,6 +1198,7 @@ LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
 rt_geomval
 rt_raster_gdal_polygonize(
 	rt_raster raster, int nband,
+	int exclude_nodata_value,
 	int * pnElements
 );
 
@@ -1313,14 +1316,23 @@ rt_gdaldriver rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc);
  * @param raster : raster to convert to GDAL MEM
  * @param srs : the raster's coordinate system in OGC WKT
  * @param bandNums : array of band numbers to extract from raster
- *                   and include in the GDAL dataset (0 based)
- * @param count : number of elements in bandNums
+ *   and include in the GDAL dataset (0 based)
+ * @param excludeNodataValues: array of zero, nonzero where if non-zero,
+ *   ignore nodata values for the band
+ * to check for pixels with value
+ * @param count : number of elements in bandNums and exclude_nodata_values
  * @param rtn_drv : is set to the GDAL driver object
  *
  * @return GDAL dataset using GDAL MEM driver
  */
-GDALDatasetH rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
-	uint32_t *bandNums, int count, GDALDriverH *rtn_drv);
+GDALDatasetH rt_raster_to_gdal_mem(
+	rt_raster raster,
+	const char *srs,
+	uint32_t *bandNums,
+	int *excludeNodataValues,
+	int count,
+	GDALDriverH *rtn_drv
+);
 
 /**
  * Return a raster from a GDAL dataset
@@ -1720,6 +1732,8 @@ struct rt_pixel_t {
 
 	uint8_t nodata;
 	double value;
+
+	LWGEOM *geom;
 };
 
 /* polygon as LWPOLY with associated value */

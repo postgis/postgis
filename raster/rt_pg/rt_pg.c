@@ -201,6 +201,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
 
 /* Get pixel geographical shape */
 Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS);
+Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS);
 
 /* Get pixels of value */
 Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS);
@@ -910,6 +911,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		rt_pgraster *pgraster = NULL;
 		rt_raster raster = NULL;
 		int nband;
+		bool exclude_nodata_value = TRUE;
 		int nElements;
 
 		POSTGIS_RT_DEBUG(2, "RASTER_dumpAsPolygons first call");
@@ -937,7 +939,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 			SRF_RETURN_DONE(funcctx);
 		}
 
-		if (PG_NARGS() == 2)
+		if (!PG_ARGISNULL(1))
 			nband = PG_GETARG_UINT32(1);
 		else
 			nband = 1; /* By default, first band */
@@ -953,12 +955,15 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 			SRF_RETURN_DONE(funcctx);
 		}
 
+		if (!PG_ARGISNULL(2))
+			exclude_nodata_value = PG_GETARG_BOOL(2);
+
 		/* Polygonize raster */
 
 		/**
 		 * Dump raster
 		 */
-		geomval = rt_raster_gdal_polygonize(raster, nband - 1, &nElements);
+		geomval = rt_raster_gdal_polygonize(raster, nband - 1, exclude_nodata_value, &nElements);
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		if (NULL == geomval) {
@@ -2490,6 +2495,286 @@ Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS)
     pfree(poly);
 
     PG_RETURN_POINTER(gser);
+}
+
+/**
+ * Return the geographical shape of all pixels
+ */
+PG_FUNCTION_INFO_V1(RASTER_getPixelPolygons);
+Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+	rt_pixel pix = NULL;
+	rt_pixel pix2;
+	int call_cntr;
+	int max_calls;
+	int i = 0;
+
+	/* stuff done only on the first call of the function */
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int hasnodata = FALSE;
+		double nodataval = 0;
+		int nband = 1;
+		int numbands;
+		bool noband = FALSE;
+		bool exclude_nodata_value = TRUE;
+		bool nocolumnx = FALSE;
+		bool norowy = FALSE;
+		int x = 0;
+		int y = 0;
+		int bounds[4] = {0};
+		int pixcount = 0;
+
+		LWPOLY *poly;
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		/* band */
+		if (PG_ARGISNULL(1))
+			noband = TRUE;
+		else {
+			nband = PG_GETARG_INT32(1);
+			noband = FALSE;
+		}
+
+		/* column */
+		if (PG_ARGISNULL(2))
+			nocolumnx = TRUE;
+		else {
+			bounds[0] = PG_GETARG_INT32(2);
+			bounds[1] = bounds[0];
+		}
+
+		/* row */
+		if (PG_ARGISNULL(3))
+			norowy = TRUE;
+		else {
+			bounds[2] = PG_GETARG_INT32(3);
+			bounds[3] = bounds[2];
+		}
+
+		/* exclude NODATA */
+		if (!PG_ARGISNULL(4))
+			exclude_nodata_value = PG_GETARG_BOOL(4);
+
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			PG_FREE_IF_COPY(pgraster, 0);
+			ereport(ERROR, (
+				errcode(ERRCODE_OUT_OF_MEMORY),
+				errmsg("Could not deserialize raster")
+			));
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* band specified, load band and info */
+		if (!noband) {
+			POSTGIS_RT_DEBUGF(3, "band %d", nband);
+			numbands = rt_raster_get_num_bands(raster);
+
+			if (nband < 1 || nband > numbands) {
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			band = rt_raster_get_band(raster, nband - 1);
+			if (!band) {
+				elog(NOTICE, "Could not find band at index %d. Returning NULL", nband);
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			hasnodata = rt_band_get_hasnodata_flag(band);
+			if (hasnodata)
+				nodataval = rt_band_get_nodata(band);
+		}
+
+		/* set bounds if columnx, rowy not set */
+		if (nocolumnx) {
+			bounds[0] = 1;
+			bounds[1] = rt_raster_get_width(raster);
+		}
+		if (norowy) {
+			bounds[2] = 1;
+			bounds[3] = rt_raster_get_height(raster);
+		}
+
+		/* rowy */
+		pixcount = 0;
+		for (y = bounds[2]; y <= bounds[3]; y++) {
+			/* columnx */
+			for (x = bounds[0]; x <= bounds[1]; x++) {
+				/* geometry */
+				poly = rt_raster_pixel_as_polygon(raster, x - 1, y - 1);
+				if (!poly) {
+					elog(ERROR, "RASTER_getPixelPolygons: Could not get pixel polygon");
+
+					for (i = 0; i < pixcount; i++)
+						lwgeom_free(pix[i].geom);
+					if (pixcount) pfree(pix);
+
+					if (!noband) rt_band_destroy(band);
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				if (!pixcount)
+					pix = palloc(sizeof(struct rt_pixel_t) * (pixcount + 1));
+				else
+					pix = repalloc(pix, sizeof(struct rt_pixel_t) * (pixcount + 1));
+				if (pix == NULL) {
+					elog(ERROR, "RASTER_getPixelPolygons: Could not allocate memory for storing pixel polygons");
+
+					lwpoly_free(poly);
+					if (!noband) rt_band_destroy(band);
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
+				pix[pixcount].geom = (LWGEOM *) poly;
+				POSTGIS_RT_DEBUGF(4, "poly @ %p", poly);
+				POSTGIS_RT_DEBUGF(4, "geom @ %p", pix[pixcount].geom);
+
+				/* x, y */
+				pix[pixcount].x = x;
+				pix[pixcount].y = y;
+
+				/* value, NODATA flag */
+				if (!noband) {
+					if (rt_band_get_pixel(band, x - 1, y - 1, &(pix[pixcount].value)) != 0) {
+						elog(ERROR, "RASTER_getPixelPolygons: Could not get pixel value");
+
+						for (i = 0; i < pixcount; i++)
+							lwgeom_free(pix[i].geom);
+						if (pixcount) pfree(pix);
+
+						if (!noband) rt_band_destroy(band);
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 0);
+
+						MemoryContextSwitchTo(oldcontext);
+						SRF_RETURN_DONE(funcctx);
+					}
+
+					if (
+						!exclude_nodata_value || (
+							exclude_nodata_value &&
+							(hasnodata != FALSE) && (
+								FLT_NEQ(pix[pixcount].value, nodataval) &&
+								(rt_band_clamped_value_is_nodata(band, pix[pixcount].value) != 1)
+							)
+						)
+					) {
+						pix[pixcount].nodata = 0;
+					}
+					else
+						pix[pixcount].nodata = 1;
+				}
+				else
+					pix[pixcount].nodata = 1;
+
+				pixcount++;
+			}
+		}
+
+		if (!noband) rt_band_destroy(band);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+
+		/* Store needed information */
+		funcctx->user_fctx = pix;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = pixcount;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg("function returning record called in context that cannot accept type record")
+			));
+		}
+
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	tupdesc = funcctx->tuple_desc;
+	pix2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		int values_length = 4;
+		Datum values[values_length];
+		bool nulls[values_length];
+		HeapTuple    tuple;
+		Datum        result;
+
+		GSERIALIZED *gser = NULL;
+		size_t gser_size = 0;
+
+		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
+
+		memset(nulls, FALSE, values_length);
+
+		/* convert LWGEOM to GSERIALIZED */
+		gser = gserialized_from_lwgeom(pix2[call_cntr].geom, 0, &gser_size);
+		lwgeom_free(pix2[call_cntr].geom);
+
+		values[0] = PointerGetDatum(gser);
+		if (pix2[call_cntr].nodata)
+			nulls[1] = TRUE;
+		else
+			values[1] = Float8GetDatum(pix2[call_cntr].value);
+		values[2] = Int32GetDatum(pix2[call_cntr].x);
+		values[3] = Int32GetDatum(pix2[call_cntr].y);
+
+		/* build a tuple */
+		tuple = heap_form_tuple(tupdesc, values, nulls);
+
+		/* make the tuple into a datum */
+		result = HeapTupleGetDatum(tuple);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		pfree(pix2);
+		SRF_RETURN_DONE(funcctx);
+	}
 }
 
 /**

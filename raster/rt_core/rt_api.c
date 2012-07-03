@@ -5641,6 +5641,8 @@ rt_raster_geopoint_to_cell(rt_raster raster,
  *
  * @param raster: the raster to get info from.
  * @param nband: the band to polygonize. 0-based
+ * @param exclude_nodata_value: if non-zero, ignore nodata values
+ * to check for pixels with value
  *
  * @return A set of "geomval" values, one for each group of pixels
  * sharing the same value for the provided band. The returned values are
@@ -5649,6 +5651,7 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 rt_geomval
 rt_raster_gdal_polygonize(
 	rt_raster raster, int nband,
+	int exclude_nodata_value,
 	int *pnElements
 ) {
 	CPLErr cplerr = CE_None;
@@ -5684,6 +5687,7 @@ rt_raster_gdal_polygonize(
 #endif
 
 	uint32_t bandNums[1] = {nband};
+	int excludeNodataValues[1] = {exclude_nodata_value};
 
 	/* checks */
 	assert(NULL != raster);
@@ -5700,13 +5704,15 @@ rt_raster_gdal_polygonize(
 		return NULL;
 	}
 
-	iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
-	if (iBandHasNodataValue) dBandNoData = rt_band_get_nodata(band);
+	if (exclude_nodata_value) {
+		iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
+		if (iBandHasNodataValue) dBandNoData = rt_band_get_nodata(band);
+	}
 
 	/*****************************************************
 	 * Convert raster to GDAL MEM dataset
 	 *****************************************************/
-	memdataset = rt_raster_to_gdal_mem(raster, NULL, bandNums, 1, &gdal_drv);
+	memdataset = rt_raster_to_gdal_mem(raster, NULL, bandNums, excludeNodataValues, 1, &gdal_drv);
 	if (NULL == memdataset) {
 		rterror("rt_raster_gdal_polygonize: Couldn't convert raster to GDAL MEM dataset");
 		return NULL;
@@ -8118,7 +8124,7 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 	RASTER_DEBUGF(3, "rt_raster_to_gdal: output format is %s", format);
 
 	/* load raster into a GDAL MEM raster */
-	src_ds = rt_raster_to_gdal_mem(raster, srs, NULL, 0, &src_drv);
+	src_ds = rt_raster_to_gdal_mem(raster, srs, NULL, NULL, 0, &src_drv);
 	if (NULL == src_ds) {
 		rterror("rt_raster_to_gdal: Unable to convert raster to GDAL MEM format");
 		return 0;
@@ -8263,15 +8269,23 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
  * @param raster : raster to convert to GDAL MEM
  * @param srs : the raster's coordinate system in OGC WKT
  * @param bandNums : array of band numbers to extract from raster
- *                   and include in the GDAL dataset (0 based)
+ *   and include in the GDAL dataset (0 based)
+ * @param excludeNodataValues: array of zero, nonzero where if non-zero,
+ *   ignore nodata values for the band
  * @param count : number of elements in bandNums
  * @param rtn_drv : is set to the GDAL driver object
  *
  * @return GDAL dataset using GDAL MEM driver
  */
 GDALDatasetH
-rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
-	uint32_t *bandNums, int count, GDALDriverH *rtn_drv) {
+rt_raster_to_gdal_mem(
+	rt_raster raster,
+	const char *srs,
+	uint32_t *bandNums,
+	int *excludeNodataValues,
+	int count,
+	GDALDriverH *rtn_drv
+) {
 	GDALDriverH drv = NULL;
 	GDALDatasetH ds = NULL;
 	double gt[6] = {0.0};
@@ -8284,6 +8298,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	char *apszOptions[4];
 	double nodata = 0.0;
 	int allocBandNums = 0;
+	int allocNodataValues = 0;
 
 	int i;
 	int numBands;
@@ -8359,12 +8374,25 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		for (i = 0; i < count; i++) bandNums[i] = i;
 	}
 
+	/* process exclude_nodata_values */
+	if (NULL == excludeNodataValues) {
+		excludeNodataValues = (int *) rtalloc(sizeof(int) * count);
+		if (NULL == excludeNodataValues) {
+			rterror("rt_raster_to_gdal_mem: Unable to allocate memory for NODATA flags");
+			GDALClose(ds);
+			return 0;
+		}
+		allocNodataValues = 1;
+		for (i = 0; i < count; i++) excludeNodataValues[i] = 1;
+	}
+
 	/* add band(s) */
 	for (i = 0; i < count; i++) {
 		rtband = rt_raster_get_band(raster, bandNums[i]);
 		if (NULL == rtband) {
 			rterror("rt_raster_to_gdal_mem: Unable to get requested band index %d", bandNums[i]);
 			if (allocBandNums) rtdealloc(bandNums);
+			if (allocNodataValues) rtdealloc(excludeNodataValues);
 			GDALClose(ds);
 			return 0;
 		}
@@ -8418,6 +8446,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 			if (GDALAddBand(ds, gdal_pt, NULL) == CE_Failure) {
 				rterror("rt_raster_to_gdal_mem: Could not add GDAL raster band");
 				if (allocBandNums) rtdealloc(bandNums);
+				if (allocNodataValues) rtdealloc(excludeNodataValues);
 				GDALClose(ds);
 				return 0;
 			}
@@ -8427,6 +8456,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		if (GDALGetRasterCount(ds) != i + 1) {
 			rterror("rt_raster_to_gdal_mem: Error creating GDAL MEM raster band");
 			if (allocBandNums) rtdealloc(bandNums);
+			if (allocNodataValues) rtdealloc(excludeNodataValues);
 			GDALClose(ds);
 			return 0;
 		}
@@ -8437,6 +8467,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		if (NULL == band) {
 			rterror("rt_raster_to_gdal_mem: Could not get GDAL band for additional processing");
 			if (allocBandNums) rtdealloc(bandNums);
+			if (allocNodataValues) rtdealloc(excludeNodataValues);
 			GDALClose(ds);
 			return 0;
 		}
@@ -8468,6 +8499,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 			if (NULL == values) {
 				rterror("rt_raster_to_gdal_mem: Could not allocate memory for GDAL band pixel values");
 				if (allocBandNums) rtdealloc(bandNums);
+				if (allocNodataValues) rtdealloc(excludeNodataValues);
 				GDALClose(ds);
 				return 0;
 			}
@@ -8505,6 +8537,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 								rterror("rt_raster_to_gdal_mem: Could not get pixel value to convert from 8BSI to 16BSI");
 								rtdealloc(values);
 								if (allocBandNums) rtdealloc(bandNums);
+								if (allocNodataValues) rtdealloc(excludeNodataValues);
 								GDALClose(ds);
 								return 0;
 							}
@@ -8525,6 +8558,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 						rterror("rt_raster_to_gdal_mem: Could not write converted 8BSI to 16BSI values to GDAL band");
 						rtdealloc(values);
 						if (allocBandNums) rtdealloc(bandNums);
+						if (allocNodataValues) rtdealloc(excludeNodataValues);
 						GDALClose(ds);
 						return 0;
 					}
@@ -8535,7 +8569,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		}
 
 		/* Add nodata value for band */
-		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
+		if (rt_band_get_hasnodata_flag(rtband) != FALSE && excludeNodataValues[i]) {
 			nodata = rt_band_get_nodata(rtband);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_to_gdal_mem: Could not set nodata value for band");
@@ -8547,6 +8581,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 	GDALFlushCache(ds);
 
 	if (allocBandNums) rtdealloc(bandNums);
+	if (allocNodataValues) rtdealloc(excludeNodataValues);
 
 	return ds;
 }
@@ -8898,7 +8933,7 @@ rt_raster rt_raster_gdal_warp(
 		_dst_srs = rt_util_gdal_convert_sr(dst_srs, 0);
 
 	/* load raster into a GDAL MEM dataset */
-	src_ds = rt_raster_to_gdal_mem(raster, _src_srs, NULL, 0, &src_drv);
+	src_ds = rt_raster_to_gdal_mem(raster, _src_srs, NULL, NULL, 0, &src_drv);
 	if (NULL == src_ds) {
 		rterror("rt_raster_gdal_warp: Unable to convert raster to GDAL MEM format");
 

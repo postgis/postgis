@@ -6225,6 +6225,7 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
 				<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef>
 				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 				<paramdef choice='opt'><type>integer </type> <parameter>band_num=1</parameter></paramdef>
+				<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>

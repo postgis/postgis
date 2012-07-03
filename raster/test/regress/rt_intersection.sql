@@ -143,10 +143,24 @@ FROM (
 ) AS r;
 
 -- Display the pixels and the values of the resulting rasters
-SELECT rid1, rid2, band, (gvxy).x, (gvxy).y, (gvxy).val, ST_AsText((gvxy).geom) geom
-FROM (SELECT rid1, rid2, band, ST_PixelAsPolygons(rast, band) gvxy
-      FROM raster_intersection_out, generate_series(1, 2) band
-) foo;
+SELECT
+	rid1,
+	rid2,
+	band,
+	(gvxy).x,
+	(gvxy).y,
+	(gvxy).val,
+	ST_AsText((gvxy).geom) geom
+FROM (
+	SELECT
+		rid1,
+		rid2,
+		band,
+		ST_PixelAsPolygons(rast, band) gvxy
+	FROM raster_intersection_out
+	CROSS JOIN generate_series(1, 2) band
+) foo
+ORDER BY 1, 2, 3, 4, 5, 7;
 
 DROP TABLE IF EXISTS raster_intersection;
 DROP TABLE IF EXISTS raster_intersection_out;
