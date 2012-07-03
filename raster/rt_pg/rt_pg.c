@@ -200,7 +200,6 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
 Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
 
 /* Get pixel geographical shape */
-Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS);
 Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS);
 
 /* Get pixels of value */
@@ -2440,61 +2439,6 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
-}
-
-/**
- * Return the geographical shape of a single pixel.
- * Pixel location is specified by 
- * X,Y coordinates (X <= RT_Width(raster) and Y <= RT_Height(raster)).
- *
- */
-PG_FUNCTION_INFO_V1(RASTER_getPixelPolygon);
-Datum RASTER_getPixelPolygon(PG_FUNCTION_ARGS)
-{
-    rt_pgraster *pgraster = NULL;
-    rt_raster raster = NULL;
-    LWPOLY *poly;
-    int32_t x = 0;
-    int32_t y = 0;
-    GSERIALIZED* gser = NULL;
-
-
-    /* Deserialize raster */
-    pgraster = (rt_pgraster *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-
-    x = PG_GETARG_INT32(1);
-
-    y = PG_GETARG_INT32(2);
-
-    POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
-
-    raster = rt_raster_deserialize(pgraster, FALSE);
-    if (!raster) {
-        elog(ERROR, "RASTER_getPixelPolygon: Could not deserialize raster");
-        PG_FREE_IF_COPY(pgraster, 0);
-        PG_RETURN_NULL();
-    }
-
-    /* Fetch pixel shape */
-    poly = rt_raster_pixel_as_polygon(raster, x - 1, y - 1);
-    if (!poly) {
-        elog(ERROR, "RASTER_getPixelPolygon: could not get raster's pixel polygon");
-        rt_raster_destroy(raster);
-        PG_FREE_IF_COPY(pgraster, 0);
-        PG_RETURN_NULL();
-    }
-
-    {
-        size_t gser_size;
-        gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(poly), 0, &gser_size);
-        SET_VARSIZE(gser, gser_size);
-    }
-
-    rt_raster_destroy(raster);
-    PG_FREE_IF_COPY(pgraster, 0);
-    pfree(poly);
-
-    PG_RETURN_POINTER(gser);
 }
 
 /**
