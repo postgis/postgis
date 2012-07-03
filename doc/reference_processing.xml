@@ -908,14 +908,14 @@ togheter.
 			  <refsection>
 		<title>Examples</title>
 			<informaltable>
-				  <tgroup cols="2">
+				  <tgroup cols="1">
 					<tbody>
 					 <row><entry><para><informalfigure>
 							<mediaobject>
 							  <imageobject>
 								<imagedata fileref="images/st_delaunaytriangles01.png" />
 							  </imageobject>
-							  <caption><para>ST_DelaunayTriangles of 2 polygons  delaunay triangle polygons</para></caption>
+							  <caption><para>Original polygons</para></caption>
 							</mediaobject>
 						  </informalfigure></para>
 <programlisting>-- our original geometry --
@@ -930,7 +930,7 @@ togheter.
 							  <imageobject>
 								<imagedata fileref="images/st_delaunaytriangles03.png" />
 							  </imageobject>
-							  <caption><para>ST_DelaunayTriangles of 2 polygons  delaunay triangle polygons each triangle themed in different color</para></caption>
+							  <caption><para>ST_DelaunayTriangles of 2 polygons: delaunay triangle polygons each triangle themed in different color</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>
@@ -949,7 +949,7 @@ SELECT
 							  <imageobject>
 								<imagedata fileref="images/st_delaunaytriangles02.png" />
 							  </imageobject>
-							  <caption><para>-- geometries overlaid with multilinestring representation of delaunay triangles</para></caption>
+							  <caption><para>-- delaunay triangles as multilinestring</para></caption>
 							</mediaobject>
 						  </informalfigure>
 				<programlisting>SELECT 
