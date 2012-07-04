@@ -19,6 +19,21 @@ SELECT round(value::numeric, 3), count FROM ST_ValueCount(
 			ST_SetValue(
 				ST_AddBand(
 					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
+					, 1, '64BF', 0, NULL
+				)
+				, 1, 1, 1, -10
+			)
+			, 1, 5, 4, 0
+		)
+		, 1, 5, 5, 3.14159
+	)
+, 1, TRUE, ARRAY[]::double precision[], 0);
+SELECT round(value::numeric, 3), count FROM ST_ValueCount(
+	ST_SetValue(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
 					, 1, '64BF', 0, 0
 				)
 				, 1, 1, 1, -10

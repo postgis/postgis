@@ -51,6 +51,9 @@ SELECT
 	ST_NearestValue(rast, 1, 1, 1)
 FROM raster_nearestvalue;
 SELECT
+	ST_NearestValue(ST_SetBandNoDataValue(rast, NULL), 1, 1, 1)
+FROM raster_nearestvalue;
+SELECT
 	ST_NearestValue(rast, 1, 2, 2)
 FROM raster_nearestvalue;
 SELECT

@@ -21,6 +21,29 @@ FROM ST_SummaryStats(
 	)
 	, TRUE
 );
+SELECT
+	count,
+	round(sum::numeric, 3),
+	round(mean::numeric, 3),
+	round(stddev::numeric, 3),
+	round(min::numeric, 3),
+	round(max::numeric, 3)
+FROM ST_SummaryStats(
+	ST_SetValue(
+		ST_SetValue(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(10, 10, 10, 10, 2, 2, 0, 0,0)
+					, 1, '64BF', 0, NULL
+				)
+				, 1, 1, 1, -10
+			)
+			, 1, 5, 4, 0
+		)
+		, 1, 5, 5, 3.14159
+	)
+	, TRUE
+);
 SELECT count FROM ST_SummaryStats(
 	ST_SetValue(
 		ST_SetValue(

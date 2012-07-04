@@ -44,6 +44,14 @@ SELECT
 	(pix).y,
 	(pix).val,
 	ST_AsText((pix).geom)
+FROM (SELECT ST_PixelAsPolygons(ST_SetBandNoDataValue(rast, NULL)) AS pix FROM raster_pixelaspolygons) foo
+ORDER BY 1, 2, 4;
+
+SELECT
+	(pix).x,
+	(pix).y,
+	(pix).val,
+	ST_AsText((pix).geom)
 FROM (SELECT ST_PixelAsPolygons(rast, NULL) AS pix FROM raster_pixelaspolygons) foo
 ORDER BY 1, 2, 4;
 

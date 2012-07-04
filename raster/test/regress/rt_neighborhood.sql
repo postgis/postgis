@@ -41,6 +41,9 @@ SELECT
 	ST_Neighborhood(rast, 1, 1, 1, 1)
 FROM raster_neighborhood;
 SELECT 
+	ST_Neighborhood(ST_SetBandNoDataValue(rast, NULL), 1, 1, 1, 1)
+FROM raster_neighborhood;
+SELECT 
 	ST_Neighborhood(rast, 1, 2, 2, 1)
 FROM raster_neighborhood;
 SELECT 
