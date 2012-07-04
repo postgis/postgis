@@ -1064,7 +1064,7 @@ rt_pixtype_get_min_value(rt_pixtype pixtype) {
 		}
 		default: {
 			rterror("rt_pixtype_get_min_value: Unknown pixeltype %d", pixtype);
-			return (double) CHAR_MIN;
+			return (double) rt_util_clamp_to_8BUI((double) CHAR_MIN);
 		}
 	}
 }
