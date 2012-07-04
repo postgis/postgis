@@ -1928,11 +1928,11 @@ ShpDumperOpenTable(SHPDUMPERSTATE *state)
 		{
 			if (state->pgis_major_version > 0)
 			{
-				sprintf(buf, "ST_asEWKB(ST_SetSRID(\"%s\"::geometry, 0), 'XDR')", state->geo_col_name);
+				sprintf(buf, "ST_asEWKB(ST_SetSRID(\"%s\"::geometry, 0), 'XDR') AS _geoX", state->geo_col_name);
 			}
 			else
 			{
-				sprintf(buf, "asbinary(\"%s\"::geometry, 'XDR')",
+				sprintf(buf, "asbinary(\"%s\"::geometry, 'XDR') AS _geoX",
 					state->geo_col_name);
 			}
 		}
