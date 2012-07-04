@@ -102,6 +102,68 @@ circ_node_compare(const void* v1, const void* v2)
 	return 0;
 }
 
+/**
+* Given the centers of two circles, and the offset distance we want to put the new center between them
+* (calculated as the distance implied by the radii of the inputs and the distance between the centers)
+* figure out where the new center point is, by getting the direction from c1 to c2 and projecting
+* from c1 in that direction by the offset distance.
+*/
+static int
+circ_center_spherical(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, double distance, double offset, GEOGRAPHIC_POINT* center)
+{
+	/* Direction from c1 to c2 */
+	double dir = sphere_direction(c1, c2, distance);
+	LWDEBUGF(4,"dir is %g", dir);
+
+	/* Catch sphere_direction when it barfs */
+	if ( isnan(dir) )
+		return LW_FAILURE;
+	
+	/* Center of new circle is projection from start point, using offset distance*/
+	sphere_project(c1, offset, dir, center);
+
+	return LW_SUCCESS;	
+}
+
+/**
+* Where the circ_center_spherical() function fails, we need a fall-back. The failures 
+* happen in short arcs, where the spherical distance between two points is practically
+* the same as the straight-line distance, so our fallback will be to use the straight-line
+* between the two to calculate the new projected center. For proportions far from 0.5
+* this will be increasingly more incorrect.
+*/
+static int
+circ_center_cartesian(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, double distance, double offset, GEOGRAPHIC_POINT* center)
+{
+	POINT3D p1, p2;
+	POINT3D p1p2, pc;
+	double proportion = offset/distance;
+	
+	geog2cart(c1, &p1);
+	geog2cart(c2, &p2);
+	
+	/* Difference between p2 and p1 */
+	p1p2.x = p2.x - p1.x;
+	p1p2.y = p2.y - p1.y;
+	p1p2.z = p2.z - p1.z;
+
+	/* Scale difference to proportion */
+	p1p2.x *= proportion;
+	p1p2.y *= proportion;
+	p1p2.z *= proportion;
+	
+	/* Add difference to p1 to get approximate center point */
+	pc.x = p1.x + p1p2.x;
+	pc.y = p1.y + p1p2.y;
+	pc.z = p1.z + p1p2.z;
+	normalize(&pc);
+	
+	/* Convert center point to geographics */
+	cart2geog(&pc, center);
+	
+	return LW_SUCCESS;
+}
+
 
 /**
 * Create a new internal node, calculating the new measure range for the node,
@@ -111,9 +173,9 @@ static CIRC_NODE*
 circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 {
 	CIRC_NODE *node = NULL;
-	GEOGRAPHIC_POINT new_center;
+	GEOGRAPHIC_POINT new_center, c1;
 	double new_radius;
-	double offset1, dir1, dist, D, r1, ri;
+	double offset1, dist, D, r1, ri;
 	int i;
 
 	LWDEBUGF(4, "called with %d nodes", num_nodes);
@@ -129,9 +191,10 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 	/* Merge each remaining circle into the new circle */
 	for ( i = 1; i < num_nodes; i++ )
 	{
-		GEOGRAPHIC_POINT c1 = new_center; 
-		dist = sphere_distance(&c1, &(c[i]->center));
+		c1 = new_center; 
 		r1 = new_radius;
+		
+		dist = sphere_distance(&c1, &(c[i]->center));
 		ri = c[i]->radius;
 
 		LWDEBUGF(4, "distance between new (%g %g) and %i (%g %g) is %g", c1.lon, c1.lat, i, c[i]->center.lon, c[i]->center.lat, dist);
@@ -164,15 +227,17 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 			offset1 = ri + (D - (2.0*r1 + 2.0*ri)) / 2.0;
 			LWDEBUGF(4,"offset1 is %g", offset1);
 			
-			/* Direction from cn1 to cn2 */
-			dir1 = sphere_direction(&c1, &(c[i]->center), dist);
-			LWDEBUGF(4,"dir1 is %g", dir1);
-			
-			/* Center of new circle */
-			sphere_project(&c1, offset1, dir1, &new_center);
+			/* Sometimes the sphere_direction function fails... this causes the center calculation */
+			/* to fail too. In that case, we're going to fall back ot a cartesian calculation, which */
+			/* is less exact, so we also have to pad the radius by (hack alert) an arbitrary amount */
+			/* which is hopefully always big enough to contain the input edges */
+			if ( circ_center_spherical(&c1, &(c[i]->center), dist, offset1, &new_center) == LW_FAILURE )
+			{
+				circ_center_cartesian(&c1, &(c[i]->center), dist, offset1, &new_center);
+				new_radius *= 1.1;
+			}
 		}
-		LWDEBUGF(4, "new center is (%g %g) new radius is %g", new_center.lon, new_center.lat, new_radius);
-		
+		LWDEBUGF(4, "new center is (%g %g) new radius is %g", new_center.lon, new_center.lat, new_radius);	
 	}
 	
 	node = lwalloc(sizeof(CIRC_NODE));
@@ -312,6 +377,8 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	* way it can cross.
 	*/
 //	circ_tree_print(node, 0);
+		
+	LWDEBUGF(4, "working on node %p, edge_num %d, radius %g, center POINT(%g %g)", node, node->edge_num, node->radius, rad2deg(node->center.lon), rad2deg(node->center.lat));
 	d = edge_distance_to_point(&stab_edge, &(node->center), &closest);
 	LWDEBUGF(4, "edge_distance_to_point=%g, node_radius=%g", d, node->radius);
 	if ( FP_LTEQ(d, node->radius) )
