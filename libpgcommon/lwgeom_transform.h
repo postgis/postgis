@@ -70,5 +70,12 @@ void srid_is_latlong(FunctionCallInfo fcinfo, int srid);
 /** PolarSteregraphic South, equivalent to EPSG:3031 */
 #define SRID_SOUTH_STEREO    999162
 
+/** Gnomic zones start (6 latitude bands x up to 20 latitude bands) */
+#define SRID_GNOMIC_START 999163
+
+/** Gnomic zones end (6 latitude bands x up to 20 latitude bands) */
+#define SRID_GNOMIC_END 999283
+
+
 /** @} */
 

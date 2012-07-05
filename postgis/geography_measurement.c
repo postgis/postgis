@@ -696,6 +696,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	int type1, type2;
 	int empty1 = LW_FALSE;
 	int empty2 = LW_FALSE;
+	double ycenter, xcenter, xwidth, ywidth;
 
 	Datum d1 = PG_GETARG_DATUM(0);
 	Datum d2 = PG_GETARG_DATUM(1);
@@ -747,6 +748,11 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	if ( empty2 )
 		gbox2 = gbox1;
 
+	ycenter = (gbox1.ymin + gbox1.ymax + gbox2.ymin + gbox2.ymax) / 4.0;
+	xcenter = (gbox1.xmin + gbox1.xmax + gbox2.xmin + gbox2.xmax) / 4.0;
+
+	xwidth = fabs(FP_MAX(gbox1.xmax, gbox2.xmax) - FP_MIN(gbox1.xmin, gbox2.xmin));
+	ywidth = fabs(FP_MAX(gbox1.ymax, gbox2.ymax) - FP_MIN(gbox1.ymin, gbox2.ymin));
 
 	/* Are these data arctic? Lambert Azimuthal Equal Area North. */
 	if ( gbox1.ymin > 65.0 && gbox2.ymin > 65.0 )
@@ -766,7 +772,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	** far as a half zone past a zone boundary.
 	** Note we have no handling for the date line in here.
 	*/
-	if ( fabs(FP_MAX(gbox1.xmax, gbox2.xmax) - FP_MIN(gbox1.xmin, gbox2.xmin)) < 6.0 )
+	if ( xwidth < 6.0 )
 	{
 		/* Cheap hack to pick a zone. Average of the box center points. */
 		double dzone = (gbox1.xmin + gbox1.xmax + gbox2.xmin + gbox2.xmax) / 4.0;
@@ -782,6 +788,40 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		else
 		{
 			PG_RETURN_INT32( SRID_NORTH_UTM_START + zone );
+		}
+	}
+
+	/*
+	** Can we fit into a custom Gnomic area? (30 degrees high, variable width) 
+	** We will allow overlap into adjoining areas, but use a slightly narrower test (25) to try
+	** and lower the worst case.
+	** Again, we are hoping the dateline doesn't trip us up much
+	*/
+	if ( ywidth < 25.0 )
+	{
+		int xzone = -1;
+		int yzone = 3 + floor(ycenter / 30.0); /* (range of 0-5) */
+		
+		/* Equatorial band, 12 zones, 30 degrees wide */
+		if ( (yzone == 2 || yzone == 3) && xwidth < 30.0 )
+		{
+			xzone = 6 + floor(xcenter / 30.0);
+		}
+		/* Temperate band, 8 zones, 45 degrees wide */
+		else if ( (yzone == 1 || yzone == 4) && xwidth < 45.0 )
+		{
+			xzone = 4 + floor(xcenter / 45.0);
+		}
+		/* Arctic band, 4 zones, 90 degrees wide */
+		else if ( (yzone == 0 || yzone == 5) && xwidth < 90.0 )
+		{
+			xzone = 2 + floor(xcenter / 90.0);
+		}
+		
+		/* Did we fit into an appropriate xzone? */
+		if ( xzone != -1 )
+		{
+			PG_RETURN_INT32(SRID_GNOMIC_START + 20 * yzone + xzone);
 		}
 	}
 
