@@ -77,52 +77,63 @@ GetCircTreeGeomCache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const 
 }
 
 int
-CircTreePIP(const CIRC_NODE* tree, const GSERIALIZED* g, const LWGEOM* lwgeom)
+CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const LWGEOM* lwgeom2)
 {
-	int tree_type = gserialized_get_type(g);
-	GBOX gbox;
-	GEOGRAPHIC_POINT gp;
-	POINT3D gp3;
-	POINT4D pt;
+	int tree1_type = gserialized_get_type(g1);
+	GBOX gbox1;
+	GEOGRAPHIC_POINT in_gpoint;
+	POINT3D in_point3d;
+	POINT4D in_point;
 	
-	if ( tree_type == POLYGONTYPE || tree_type == MULTIPOLYGONTYPE )
+	/* If the tree'ed argument is a polygon, do the P-i-P using the tree-based P-i-P */
+	if ( tree1_type == POLYGONTYPE || tree1_type == MULTIPOLYGONTYPE )
 	{
 		/* Need a gbox to calculate an outside point */
-		if ( LW_FAILURE == gserialized_get_gbox_p(g, &gbox) )
+		if ( LW_FAILURE == gserialized_get_gbox_p(g1, &gbox1) )
 		{
-			LWGEOM* lwgeom_cached = lwgeom_from_gserialized(g);
-			lwgeom_calculate_gbox_geodetic(lwgeom_cached, &gbox);
-			lwgeom_free(lwgeom_cached);
+			LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
+			lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1);
+			lwgeom_free(lwgeom1);
 		}
 		
 		/* Need one point from the candidate geometry */
-		if ( LW_FAILURE == lwgeom_startpoint(lwgeom, &pt) )
+		if ( LW_FAILURE == lwgeom_startpoint(lwgeom2, &in_point) )
 		{
-			lwerror("CircTreePIP unable to generate start point for lwgeom %p", lwgeom);
+			lwerror("CircTreePIP unable to generate start point for lwgeom %p", lwgeom2);
 			return LW_FALSE;
 		}
 	
 		/* Flip the candidate point into geographics */
-		geographic_point_init(pt.x, pt.y, &gp);
-		geog2cart(&gp, &gp3);
+		geographic_point_init(in_point.x, in_point.y, &in_gpoint);
+		geog2cart(&in_gpoint, &in_point3d);
 		
 		/* If the candidate isn't in the tree box, it's not in the tree area */
-		if ( ! gbox_contains_point3d(&gbox, &gp3) )
+		if ( ! gbox_contains_point3d(&gbox1, &in_point3d) )
 		{
 			return LW_FALSE;
 		}
 		/* The candidate point is in the box, so it *might* be inside the tree */
 		else
 		{
-			POINT2D pt_outside; /* latlon */
-			POINT2D pt_inside;
-			pt_inside.x = pt.x; pt_inside.y = pt.y;
+			POINT2D pt2d_outside; /* latlon */
+			POINT2D pt2d_inside;
+			pt2d_inside.x = in_point.x; 
+			pt2d_inside.y = in_point.y;
 			/* Calculate a definitive outside point */
-			gbox_pt_outside(&gbox, &pt_outside);
+			gbox_pt_outside(&gbox1, &pt2d_outside);
 			/* Test the candidate point for strict containment */
-			return circ_tree_contains_point(tree, &pt_inside, &pt_outside, NULL);
+			return circ_tree_contains_point(tree1, &pt2d_inside, &pt2d_outside, NULL);
 		}
-		
+	}
+	/* If the un-tree'd argument is a polygon and the tree'd argument isn't, we need to do a */
+	/* standard P-i-P on the un-tree'd side. */
+	else if ( lwgeom2->type == POLYGONTYPE || lwgeom2->type == MULTIPOLYGONTYPE )
+	{
+		int result;
+		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
+		result = lwgeom_covers_lwgeom_sphere(lwgeom2, lwgeom1);
+		lwfree(lwgeom1);
+		return result;
 	}
 	else
 	{

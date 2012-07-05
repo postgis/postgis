@@ -148,7 +148,7 @@ Datum geography_distance_cached(PG_FUNCTION_ARGS)
 	{
 		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
 		LWGEOM* lwgeom2 = lwgeom_from_gserialized(g2);
-		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, FP_TOLERANCE);
+		distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, tolerance);
 		lwgeom_free(lwgeom1);
 		lwgeom_free(lwgeom2);
 	}
@@ -281,7 +281,7 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 	
 	if ( CircTreePIP(circ_tree1, g1, lwgeom2) || CircTreePIP(circ_tree2, g2, lwgeom1) )
 	{
-		PG_RETURN_BOOL(FALSE);
+		PG_RETURN_FLOAT8(0.0);
 	}
 	
 	/* Calculate tree/tree distance */

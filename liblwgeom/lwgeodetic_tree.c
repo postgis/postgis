@@ -113,6 +113,9 @@ circ_center_spherical(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 {
 	/* Direction from c1 to c2 */
 	double dir = sphere_direction(c1, c2, distance);
+
+	LWDEBUGF(4,"calculating spherical center", dir);
+
 	LWDEBUGF(4,"dir is %g", dir);
 
 	/* Catch sphere_direction when it barfs */
@@ -138,6 +141,8 @@ circ_center_cartesian(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 	POINT3D p1, p2;
 	POINT3D p1p2, pc;
 	double proportion = offset/distance;
+	
+	LWDEBUG(4,"calculating cartesian center");
 	
 	geog2cart(c1, &p1);
 	geog2cart(c2, &p2);
