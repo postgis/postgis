@@ -92,33 +92,32 @@ void gbox_expand(GBOX *g, double d)
 
 int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout)
 {
-	if ( (g1 == NULL) && (g2 == NULL) )
+	if ( ( ! g1 ) && ( ! g2 ) )
 		return LW_FALSE;
 
-	if  (g1 == NULL)
+	if  ( ! g1 )
 	{
 		memcpy(gout, g2, sizeof(GBOX));
 		return LW_TRUE;
 	}
-	if (g2 == NULL)
+	if ( ! g2 )
 	{
 		memcpy(gout, g1, sizeof(GBOX));
 		return LW_TRUE;
 	}
+	
+	gout->flags = g1->flags;
 
-	if (g1->xmin < g2->xmin) gout->xmin = g1->xmin;
-	else gout->xmin = g2->xmin;
+	gout->xmin = FP_MIN(g1->xmin, g2->xmin);
+	gout->xmax = FP_MAX(g1->xmax, g2->xmax);
 
-	if (g1->ymin < g2->ymin) gout->ymin = g1->ymin;
-	else gout->ymin = g2->ymin;
+	gout->ymin = FP_MIN(g1->ymin, g2->ymin);
+	gout->ymax = FP_MAX(g1->ymax, g2->ymax);
+	
+	gout->zmin = FP_MIN(g1->zmin, g2->zmin);
+	gout->zmax = FP_MAX(g1->zmax, g2->zmax);
 
-	if (g1->xmax > g2->xmax) gout->xmax = g1->xmax;
-	else gout->xmax = g2->xmax;
-
-	if (g1->ymax > g2->ymax) gout->ymax = g1->ymax;
-	else gout->ymax = g2->ymax;
-
-	return LW_TRUE;    
+	return LW_TRUE;
 }
 
 int gbox_same(const GBOX *g1, const GBOX *g2)

@@ -353,16 +353,16 @@ int lwpsurface_is_closed(const LWPSURFACE *psurface);
 int lwtin_is_closed(const LWTIN *tin);
 
 
-/*
- * Split a line by a point and push components to the provided multiline.
- * If the point doesn't split the line, push nothing to the container.
- * Returns 0 if the point is off the line.
- * Returns 1 if the point is on the line boundary (endpoints).
- * Return 2 if the point is on the interior of the line (only case in which
- * a split happens).
- *
- * NOTE: the components pushed to the output vector have their SRID stripped 
- */
+/**
+* Split a line by a point and push components to the provided multiline.
+* If the point doesn't split the line, push nothing to the container.
+* Returns 0 if the point is off the line.
+* Returns 1 if the point is on the line boundary (endpoints).
+* Return 2 if the point is on the interior of the line (only case in which
+* a split happens).
+*
+* NOTE: the components pushed to the output vector have their SRID stripped 
+*/
 int lwline_split_by_point_to(const LWLINE* ln, const LWPOINT* pt, LWMLINE* to);
 
 /** Ensure the collection can hold at least up to ngeoms geometries */
@@ -370,5 +370,11 @@ void lwcollection_reserve(LWCOLLECTION *col, int ngeoms);
 
 /** Check if subtype is allowed in collectiontype */
 extern int lwcollection_allows_subtype(int collectiontype, int subtype);
+
+/** GBOX utility functions to figure out coverage/location on the globe */
+double gbox_angular_height(const GBOX* gbox);
+double gbox_angular_width(const GBOX* gbox);
+int gbox_centroid(const GBOX* gbox, POINT2D* out);
+
 
 #endif /* _LIBLWGEOM_INTERNAL_H */

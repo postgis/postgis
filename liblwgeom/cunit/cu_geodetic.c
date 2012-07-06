@@ -980,7 +980,7 @@ static void test_spheroid_area(void)
 	SPHEROID s;
 
 	/* Init to WGS84 */
-	spheroid_init(&s, 6378137.0, 6356752.314245179498);
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
 
 	gbox.flags = gflags(0, 0, 1);
 
@@ -1035,6 +1035,49 @@ static void test_spheroid_area(void)
 	lwgeom_free(lwg);
 }
 
+static void test_gbox_utils(void)
+{
+	LWGEOM *lwg;
+	GBOX gbox;
+	double a1, a2;
+	SPHEROID s;
+	POINT2D pt;
+
+	/* Init to WGS84 */
+	spheroid_init(&s, WGS84_MAJOR_AXIS, WGS84_MINOR_AXIS);
+
+	gbox.flags = gflags(0, 0, 1);
+	
+	/* One-degree square by equator */
+	lwg = lwgeom_from_wkt("POLYGON((1 20,1 21,2 21,2 20,1 20))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	a1 = gbox_angular_width(&gbox);
+	a2 = gbox_angular_height(&gbox);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 0.0177951, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(a2, 0.017764, 0.0000001);
+	lwgeom_free(lwg);
+
+	/* One-degree square *across* dateline */
+	lwg = lwgeom_from_wkt("POLYGON((179.5 2,179.5 1,-179.5 1,-179.5 2,179.5 2))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	a1 = gbox_angular_width(&gbox);
+	a2 = gbox_angular_height(&gbox);
+	//printf("a1=%g a2=%g\n", a1, a2);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 0.0174613, 0.0000001);
+	CU_ASSERT_DOUBLE_EQUAL(a2, 0.0174553, 0.0000001);
+	lwgeom_free(lwg);
+	
+	/* One-degree square *across* dateline */
+	lwg = lwgeom_from_wkt("POLYGON((178.5 2,178.5 1,-179.5 1,-179.5 2,178.5 2))", LW_PARSER_CHECK_NONE);
+	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
+	gbox_centroid(&gbox, &pt);
+	//printf("POINT(%g %g)\n", pt.x, pt.y);
+	CU_ASSERT_DOUBLE_EQUAL(pt.x, 179.5, 0.0001);
+	CU_ASSERT_DOUBLE_EQUAL(pt.y, 1.50024, 0.0001);
+	lwgeom_free(lwg);
+	
+}
+
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -1057,6 +1100,7 @@ CU_TestInfo geodetic_tests[] =
 	PG_TEST(test_spheroid_area),
 	PG_TEST(test_lwpoly_covers_point2d),
 	PG_TEST(test_ptarray_point_in_ring),
+	PG_TEST(test_gbox_utils),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo geodetic_suite = {"Geodetic Suite",  NULL,  NULL, geodetic_tests};

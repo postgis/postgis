@@ -687,16 +687,14 @@ Datum geography_covers(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(geography_bestsrid);
 Datum geography_bestsrid(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwgeom1 = NULL;
-	LWGEOM *lwgeom2 = NULL;
-	GBOX gbox1;
-	GBOX gbox2;
+	GBOX gbox, gbox1, gbox2;
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
 	int type1, type2;
 	int empty1 = LW_FALSE;
 	int empty2 = LW_FALSE;
-	double ycenter, xcenter, xwidth, ywidth;
+	double xwidth, ywidth;
+	POINT2D center;
 
 	Datum d1 = PG_GETARG_DATUM(0);
 	Datum d2 = PG_GETARG_DATUM(1);
@@ -707,26 +705,23 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	gbox1.flags = g1->flags;
 	/* Read our types */
 	type1 = gserialized_get_type(g1);
-	/* Construct our working geometries */
-	lwgeom1 = lwgeom_from_gserialized(g1);
 	/* Calculate if the geometry is empty. */
-	empty1 = lwgeom_is_empty(lwgeom1);
-	/* Calculate a naive cartesian bounds for the objects */
-	if ( ! empty1 && lwgeom_calculate_gbox_cartesian(lwgeom1, &gbox1) == LW_FAILURE )
-		elog(ERROR, "Error in geography_bestsrid calling lwgeom_calculate_gbox(lwgeom1, &gbox1)");
-
+	empty1 = gserialized_is_empty(g1);
+	/* Calculate a geocentric bounds for the objects */
+	if ( ! empty1 && gserialized_get_gbox_p(g1, &gbox1) == LW_FAILURE )
+		elog(ERROR, "Error in geography_bestsrid calling gserialized_get_gbox_p(g1, &gbox1)");
+	
 	POSTGIS_DEBUGF(4, "calculated gbox = %s", gbox_to_string(&gbox1));
 
-	/* If we have a unique second argument, fill in all the necessarily variables. */
+	/* If we have a unique second argument, fill in all the necessary variables. */
 	if ( d1 != d2 )
 	{
 		g2 = (GSERIALIZED*)PG_DETOAST_DATUM(d2);
 		type2 = gserialized_get_type(g2);
 		gbox2.flags = g2->flags;
-		lwgeom2 = lwgeom_from_gserialized(g2);
-		empty2 = lwgeom_is_empty(lwgeom2);
-		if ( ! empty2 && lwgeom_calculate_gbox_cartesian(lwgeom2, &gbox2) == LW_FAILURE )
-			elog(ERROR, "Error in geography_bestsrid calling lwgeom_calculate_gbox(lwgeom2, &gbox2)");
+		empty2 = gserialized_is_empty(g2);
+		if ( ! empty1 && gserialized_get_gbox_p(g2, &gbox2) == LW_FAILURE )
+			elog(ERROR, "Error in geography_bestsrid calling gserialized_get_gbox_p(g2, &gbox2)");
 	}
 	/*
 	** If no unique second argument, copying the box for the first
@@ -734,34 +729,39 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	*/
 	else
 	{
-		gbox2 = gbox1;
+		gbox = gbox2 = gbox1;
 	}
 
 	/* Both empty? We don't have an answer. */
 	if ( empty1 && empty2 )
 		PG_RETURN_NULL();
 
-	/* One empty? We can use the other argument values as infill. */
+	/* One empty? We can use the other argument values as infill. Otherwise merge the boxen */
 	if ( empty1 )
-		gbox1 = gbox2;
+		gbox = gbox2;
+	else if ( empty2 )
+		gbox = gbox1;
+	else
+		gbox_union(&gbox1, &gbox2, &gbox);
 
-	if ( empty2 )
-		gbox2 = gbox1;
+	gbox_centroid(&gbox, &center);
 
-	ycenter = (gbox1.ymin + gbox1.ymax + gbox2.ymin + gbox2.ymax) / 4.0;
-	xcenter = (gbox1.xmin + gbox1.xmax + gbox2.xmin + gbox2.xmax) / 4.0;
+	/* Width and height in degrees */
+	xwidth = 180.0 * gbox_angular_width(&gbox)  / M_PI;
+	ywidth = 180.0 * gbox_angular_height(&gbox) / M_PI;
 
-	xwidth = fabs(FP_MAX(gbox1.xmax, gbox2.xmax) - FP_MIN(gbox1.xmin, gbox2.xmin));
-	ywidth = fabs(FP_MAX(gbox1.ymax, gbox2.ymax) - FP_MIN(gbox1.ymin, gbox2.ymin));
+	POSTGIS_DEBUGF(2, "xwidth %g", xwidth);
+	POSTGIS_DEBUGF(2, "ywidth %g", ywidth);
+	POSTGIS_DEBUGF(2, "center POINT(%g %g)", center.x, center.y);
 
 	/* Are these data arctic? Lambert Azimuthal Equal Area North. */
-	if ( gbox1.ymin > 65.0 && gbox2.ymin > 65.0 )
+	if ( center.y > 70.0 && ywidth < 45.0 )
 	{
 		PG_RETURN_INT32(SRID_NORTH_LAMBERT);
 	}
 
 	/* Are these data antarctic? Lambert Azimuthal Equal Area South. */
-	if ( gbox1.ymin < -65.0 && gbox2.ymin < -65.0 )
+	if ( center.y < -70.0 && ywidth < 45.0 )
 	{
 		PG_RETURN_INT32(SRID_SOUTH_LAMBERT); 
 	}
@@ -774,13 +774,12 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	*/
 	if ( xwidth < 6.0 )
 	{
-		/* Cheap hack to pick a zone. Average of the box center points. */
-		double dzone = (gbox1.xmin + gbox1.xmax + gbox2.xmin + gbox2.xmax) / 4.0;
-		int zone = floor((dzone + 180.0) / 6.0);
+		int zone = floor((center.x + 180.0) / 6.0);
+		
 		if ( zone > 59 ) zone = 59;
 
 		/* Are these data below the equator? UTM South. */
-		if ( gbox1.ymax < 0.0 && gbox2.ymax < 0.0 )
+		if ( center.y < 0.0 )
 		{
 			PG_RETURN_INT32( SRID_SOUTH_UTM_START + zone );
 		}
@@ -800,22 +799,22 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	if ( ywidth < 25.0 )
 	{
 		int xzone = -1;
-		int yzone = 3 + floor(ycenter / 30.0); /* (range of 0-5) */
+		int yzone = 3 + floor(center.y / 30.0); /* (range of 0-5) */
 		
 		/* Equatorial band, 12 zones, 30 degrees wide */
 		if ( (yzone == 2 || yzone == 3) && xwidth < 30.0 )
 		{
-			xzone = 6 + floor(xcenter / 30.0);
+			xzone = 6 + floor(center.x / 30.0);
 		}
 		/* Temperate band, 8 zones, 45 degrees wide */
 		else if ( (yzone == 1 || yzone == 4) && xwidth < 45.0 )
 		{
-			xzone = 4 + floor(xcenter / 45.0);
+			xzone = 4 + floor(center.x / 45.0);
 		}
 		/* Arctic band, 4 zones, 90 degrees wide */
 		else if ( (yzone == 0 || yzone == 5) && xwidth < 90.0 )
 		{
-			xzone = 2 + floor(xcenter / 90.0);
+			xzone = 2 + floor(center.x / 90.0);
 		}
 		
 		/* Did we fit into an appropriate xzone? */

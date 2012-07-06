@@ -156,6 +156,126 @@ void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g)
 	g->lon = longitude_radians_normalize(deg2rad(lon));
 }
 
+/** Returns the angular height (latitudinal span) of the box in radians */
+double 
+gbox_angular_height(const GBOX* gbox)
+{
+	double d[6];
+	int i;
+	double zmin = MAXFLOAT;
+	double zmax = -1 * MAXFLOAT;
+	POINT3D pt;
+	
+	/* Take a copy of the box corners so we can treat them as a list */
+	/* Elements are xmin, xmax, ymin, ymax, zmin, zmax */
+	memcpy(d, &(gbox->xmin), 6*sizeof(double));
+	
+	/* Generate all 8 corner vectors of the box */
+	for ( i = 0; i < 8; i++ )
+	{
+		pt.x = d[i / 4];
+		pt.y = d[2 + (i % 4) / 2];
+		pt.z = d[4 + (i % 2)];
+		normalize(&pt);
+		if ( pt.z < zmin ) zmin = pt.z;
+		if ( pt.z > zmax ) zmax = pt.z;
+	}
+	return asin(zmax) - asin(zmin);
+}
+
+/** Returns the angular width (longitudinal span) of the box in radians */
+double 
+gbox_angular_width(const GBOX* gbox)
+{
+	double d[6];
+	int i, j;
+	POINT3D pt[3];
+	double maxangle;
+	double magnitude;
+
+	/* Take a copy of the box corners so we can treat them as a list */
+	/* Elements are xmin, xmax, ymin, ymax, zmin, zmax */
+	memcpy(d, &(gbox->xmin), 6*sizeof(double));
+
+	/* Start with the bottom corner */
+	pt[0].x = gbox->xmin;
+	pt[0].y = gbox->ymin;
+	magnitude = sqrt(pt[0].x*pt[0].x + pt[0].y*pt[0].y);
+	pt[0].x /= magnitude;
+	pt[0].y /= magnitude;
+
+	/* Generate all 8 corner vectors of the box */
+	/* Find the vector furthest from our seed vector */
+	for ( j = 0; j < 2; j++ )
+	{
+		maxangle = -1 * MAXFLOAT;
+		for ( i = 0; i < 4; i++ )
+		{
+			double angle, dotprod;
+			POINT3D pt_n;
+		
+			pt_n.x = d[i / 2];
+			pt_n.y = d[2 + (i % 2)];
+			magnitude = sqrt(pt_n.x*pt_n.x + pt_n.y*pt_n.y);
+			pt_n.x /= magnitude;
+			pt_n.y /= magnitude;
+
+			dotprod = pt_n.x*pt[j].x + pt_n.y*pt[j].y;
+			angle = acos(dotprod > 1.0 ? 1.0 : dotprod);
+			if ( angle > maxangle )
+			{
+				pt[j+1] = pt_n;
+				maxangle = angle;
+			}
+		}
+	}
+	
+	/* Return the distance between the two furthest vectors */
+	return maxangle;
+}
+
+/** Computes the average(ish) center of the box and returns success. */
+int
+gbox_centroid(const GBOX* gbox, POINT2D* out)
+{
+	double d[6];
+	GEOGRAPHIC_POINT g;
+	POINT3D pt;
+	int i;
+
+	/* Take a copy of the box corners so we can treat them as a list */
+	/* Elements are xmin, xmax, ymin, ymax, zmin, zmax */
+	memcpy(d, &(gbox->xmin), 6*sizeof(double));
+	
+	/* Zero out our return vector */
+	pt.x = pt.y = pt.z = 0.0;
+
+	for ( i = 0; i < 8; i++ )
+	{
+		POINT3D pt_n;
+	
+		pt_n.x = d[i / 4];
+		pt_n.y = d[2 + ((i % 4) / 2)];
+		pt_n.z = d[4 + (i % 2)];
+		normalize(&pt_n);
+	
+		pt.x += pt_n.x;
+		pt.y += pt_n.y;
+		pt.z += pt_n.z;		
+	}
+	
+	pt.x /= 8.0;
+	pt.y /= 8.0;
+	pt.z /= 8.0;
+	normalize(&pt);
+
+	cart2geog(&pt, &g);
+	out->x = longitude_degrees_normalize(rad2deg(g.lon));
+	out->y = latitude_degrees_normalize(rad2deg(g.lat));
+	
+	return LW_SUCCESS;
+}
+
 /**
 * Check to see if this geocentric gbox is wrapped around a pole.
 * Only makes sense if this gbox originated from a polygon, as it's assuming
