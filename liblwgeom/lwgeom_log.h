@@ -22,6 +22,10 @@
 
 #include <stdarg.h>
 
+#ifdef _MSC_VER
+#define __func__ __FUNCTION__
+#endif
+
 /*
  * Debug macros
  */

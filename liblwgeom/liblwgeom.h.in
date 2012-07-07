@@ -1,5 +1,5 @@
 /**********************************************************************
- * $Id$
+ * $Id: liblwgeom.h.in 9650 2012-04-20 03:23:47Z pramsey $
  *
  * PostGIS - Spatial Types for PostgreSQL
  *
@@ -229,7 +229,7 @@ void default_noticereporter(const char *fmt, va_list ap);
 
 extern int lw_vasprintf (char **result, const char *format, va_list args);
 extern int lw_asprintf
-#if __STDC__
+#if defined(__STDC__) || defined(_MSC_VER)
 (char **result, const char *format, ...);
 #else
 (result, va_alist);
@@ -1810,7 +1810,6 @@ const char* lwgeom_geos_version(void);
 /** Convert an LWGEOM to a GEOS Geometry and convert back -- for debug only */
 LWGEOM* lwgeom_geos_noop(const LWGEOM *geom) ;
 
-LWGEOM *lwgeom_normalize(const LWGEOM *geom);
 LWGEOM *lwgeom_intersection(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_difference(const LWGEOM *geom1, const LWGEOM *geom2);
 LWGEOM *lwgeom_symdifference(const LWGEOM* geom1, const LWGEOM* geom2);
