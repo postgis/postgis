@@ -1,5 +1,9 @@
-configure_file(liblwgeom.h.in ${CMAKE_CURRENT_SOURCE_DIR}/liblwgeom.h)
+configure_file(liblwgeom.h.in ${CMAKE_CURRENT_BINARY_DIR}/liblwgeom.h)
+set_property(GLOBAL PROPERTY
+  LIBLWGEOM_INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+# TODO
 set(HEADERS)
 
 add_library(liblwgeom OBJECT

@@ -140,8 +140,8 @@ endif()
 
 ################################################################################
 # Generate config header
-configure_file("postgis_config.h.cmake" "${PostGIS_SOURCE_DIR}/postgis_config.h")
-include_directories(${PostGIS_SOURCE_DIR})
+configure_file("postgis_config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/postgis_config.h")
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ################################################################################
 # Version and build date information
@@ -181,8 +181,12 @@ set(SRID_MAX 999999)
 set(SRID_USR_MAX 998999)
 
 ################################################################################
+# Configure all subdirectories with any build targets
 add_subdirectory(liblwgeom)
 add_subdirectory(libpgcommon)
+
+get_property(LIBLWGEOM_INCLUDE_DIRS GLOBAL PROPERTY LIBLWGEOM_INCLUDE_DIRS)
+include_directories(${LIBLWGEOM_INCLUDE_DIRS})
 
 ################################################################################
 # Install
@@ -190,6 +194,9 @@ add_subdirectory(libpgcommon)
 ################################################################################
 # Configuration summary
 message(STATUS)
+postgis_report_value(POSTGIS_VERSION)
+postgis_report_value(POSTGIS_LIB_VERSION)
+postgis_report_value(POSTGIS_SCRIPTS_VERSION)
 postgis_report_value(POSTGIS_WITH_TOPOLOGY)
 postgis_report_value(POSTGIS_WITH_RASTER)
 postgis_report_value(POSTGIS_PGSQL_VERSION)
