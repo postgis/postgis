@@ -139,11 +139,6 @@ if(POSTGIS_WITH_RASTER)
 endif()
 
 ################################################################################
-# Generate config header
-configure_file("postgis_config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/postgis_config.h")
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-################################################################################
 # Version and build date information
 
 # Extract version details from Version.config
@@ -173,7 +168,7 @@ if (WIN32)
     unset(_BUILD_DATE)
     unset(_BUILD_TIME)
 elseif(UNIX)
-    exec_program(date ARGS -u "+%Y-%m-%d %H:%M:%S"
+    exec_program(date ARGS -u "\"+%Y-%m-%d %H:%M:%S\""
         OUTPUT_VARIABLE POSTGIS_BUILD_DATE)
 endif()
 
@@ -181,6 +176,11 @@ endif()
 # Predefined constants
 set(SRID_MAX 999999)
 set(SRID_USR_MAX 998999)
+
+################################################################################
+# Generate config header
+configure_file("postgis_config.h.cmake" "${CMAKE_CURRENT_BINARY_DIR}/postgis_config.h")
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ################################################################################
 # Configure all subdirectories with any build targets
@@ -203,7 +203,8 @@ message(STATUS)
 postgis_report_value(POSTGIS_VERSION)
 postgis_report_value(POSTGIS_LIB_VERSION)
 postgis_report_value(POSTGIS_SCRIPTS_VERSION)
+postgis_report_value(POSTGIS_BUILD_DATE)
 postgis_report_value(POSTGIS_WITH_TOPOLOGY)
 postgis_report_value(POSTGIS_WITH_RASTER)
-postgis_report_value(POSTGIS_PGSQL_VERSION)
 postgis_report_value(POSTGIS_WITH_TOPOLOGY)
+postgis_report_value(POSTGIS_PGSQL_VERSION)
