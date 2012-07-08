@@ -185,10 +185,14 @@ set(SRID_USR_MAX 998999)
 ################################################################################
 # Configure all subdirectories with any build targets
 add_subdirectory(liblwgeom)
-add_subdirectory(libpgcommon)
 
 get_property(LIBLWGEOM_INCLUDE_DIRS GLOBAL PROPERTY LIBLWGEOM_INCLUDE_DIRS)
 include_directories(${LIBLWGEOM_INCLUDE_DIRS})
+
+add_subdirectory(libpgcommon)
+
+get_property(LIBPGCOMMON_INCLUDE_DIRS GLOBAL PROPERTY LIBPGCOMMON_INCLUDE_DIRS)
+include_directories(${LIBPGCOMMON_INCLUDE_DIRS})
 
 ################################################################################
 # Install
