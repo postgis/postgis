@@ -4,13 +4,14 @@ set_property(GLOBAL PROPERTY LIBPGCOMMON_INCLUDE_DIRS
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(HEADERS
-  lwgeom_pg.h
-	lwgeom_transform.h
+  common.h
   gserialized_gist.h
+  lwgeom_cache.h
+  lwgeom_pg.h
+  lwgeom_transform.h
   pgsql_compat.h)
-    
-add_library(libpgcommon
-  OBJECT
+
+add_library(libpgcommon OBJECT
   gserialized_gist.c
   lwgeom_transform.c
   lwgeom_pg.c

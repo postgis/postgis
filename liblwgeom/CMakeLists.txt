@@ -4,8 +4,19 @@ set_property(GLOBAL PROPERTY LIBLWGEOM_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-# TODO
-set(HEADERS)
+set(HEADERS
+  liblwgeom_internal.h
+  libtgeom.h
+  lwgeodetic.h
+  lwgeodetic_tree.h
+  lwgeom_geos.h
+  lwgeom_log.h
+  lwin_wkt.h
+  lwin_wkt_parse.h
+  lwtree.h
+  measures3d.h
+  measures.h
+  stringbuffer.h)
 
 add_library(liblwgeom OBJECT
   stringbuffer.c
@@ -44,7 +55,7 @@ add_library(liblwgeom OBJECT
 	lwprint.c
 	vsprintf.c
 	g_box.c
-	g_serialized.c
+  g_serialized.c
 	g_util.c
 	lwgeodetic.c
 	lwtree.c
