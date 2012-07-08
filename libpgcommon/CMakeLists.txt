@@ -1,3 +1,8 @@
+set_property(GLOBAL PROPERTY LIBPGCOMMON_INCLUDE_DIRS
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 set(HEADERS
   lwgeom_pg.h
 	lwgeom_transform.h
