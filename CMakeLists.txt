@@ -184,6 +184,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ################################################################################
 # Configure all subdirectories with any build targets
+### Object libraries
 add_subdirectory(liblwgeom)
 
 get_property(LIBLWGEOM_INCLUDE_DIRS GLOBAL PROPERTY LIBLWGEOM_INCLUDE_DIRS)
@@ -193,6 +194,9 @@ add_subdirectory(libpgcommon)
 
 get_property(LIBPGCOMMON_INCLUDE_DIRS GLOBAL PROPERTY LIBPGCOMMON_INCLUDE_DIRS)
 include_directories(${LIBPGCOMMON_INCLUDE_DIRS})
+
+### Shared libraries
+add_subdirectory(postgis)
 
 ################################################################################
 # Install
