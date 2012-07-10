@@ -123,9 +123,7 @@ circ_center_spherical(const GEOGRAPHIC_POINT* c1, const GEOGRAPHIC_POINT* c2, do
 		return LW_FAILURE;
 	
 	/* Center of new circle is projection from start point, using offset distance*/
-	sphere_project(c1, offset, dir, center);
-
-	return LW_SUCCESS;	
+	return sphere_project(c1, offset, dir, center);
 }
 
 /**
@@ -183,7 +181,7 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 	double offset1, dist, D, r1, ri;
 	int i;
 
-	LWDEBUGF(4, "called with %d nodes", num_nodes);
+	LWDEBUGF(3, "called with %d nodes", num_nodes);
 
 	/* Can't do anything w/ empty input */
 	if ( num_nodes < 1 )
@@ -202,9 +200,9 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 		dist = sphere_distance(&c1, &(c[i]->center));
 		ri = c[i]->radius;
 
-		LWDEBUGF(4, "distance between new (%g %g) and %i (%g %g) is %g", c1.lon, c1.lat, i, c[i]->center.lon, c[i]->center.lat, dist);
+		LWDEBUGF(3, "distance between new (%g %g) and %i (%g %g) is %g", c1.lon, c1.lat, i, c[i]->center.lon, c[i]->center.lat, dist);
 		
-		if ( dist < fabs(r1 - ri) )
+		if ( FP_EQUALS(dist, 0) || dist <= fabs(r1 - ri) )
 		{
 			/* new contains next */
 			if ( r1 > ri )
@@ -242,7 +240,7 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 				new_radius *= 1.1;
 			}
 		}
-		LWDEBUGF(4, "new center is (%g %g) new radius is %g", new_center.lon, new_center.lat, new_radius);	
+		LWDEBUGF(3, "new center is (%g %g) new radius is %g", new_center.lon, new_center.lat, new_radius);	
 	}
 	
 	node = lwalloc(sizeof(CIRC_NODE));
@@ -294,7 +292,7 @@ circ_tree_new(const POINTARRAY* pa)
 	for ( i = 0; i < num_edges; i++ )
 	{
 		node = circ_node_leaf_new(pa, i);
-		LWDEBUGF(3,"making new leaf node %d", i);
+		LWDEBUGF(4,"making new leaf node %d", i);
 		if ( node ) /* Not zero length? */
 			nodes[j++] = node;
 	}
@@ -341,7 +339,7 @@ circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 			CIRC_NODE **inodes = lwalloc(sizeof(CIRC_NODE*)*node_size);
 			inodes[0] = nodes[node_size*j];
 			inodes[1] = nodes[node_size*j + 1];
-			LWDEBUGF(3,"merging nodes %d and %d", node_size*j, node_size*j + 1);			
+			LWDEBUGF(5,"merging nodes %d and %d", node_size*j, node_size*j + 1);			
 			nodes[j++] = circ_node_internal_new(inodes, node_size);
 		}
 		/* Odd number of children, just copy the last node up a level */
@@ -375,7 +373,7 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	geographic_point_init(pt->x, pt->y, &(stab_edge.start));
 	geographic_point_init(pt_outside->x, pt_outside->y, &(stab_edge.end));
 	
-	LWDEBUG(4, "entered");
+	LWDEBUG(3, "entered");
 	
 	/* 
 	* If the stabline doesn't cross within the radius of a node, there's no 
@@ -383,9 +381,9 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	*/
 //	circ_tree_print(node, 0);
 		
-	LWDEBUGF(4, "working on node %p, edge_num %d, radius %g, center POINT(%g %g)", node, node->edge_num, node->radius, rad2deg(node->center.lon), rad2deg(node->center.lat));
+	LWDEBUGF(3, "working on node %p, edge_num %d, radius %g, center POINT(%g %g)", node, node->edge_num, node->radius, rad2deg(node->center.lon), rad2deg(node->center.lat));
 	d = edge_distance_to_point(&stab_edge, &(node->center), &closest);
-	LWDEBUGF(4, "edge_distance_to_point=%g, node_radius=%g", d, node->radius);
+	LWDEBUGF(3, "edge_distance_to_point=%g, node_radius=%g", d, node->radius);
 	if ( FP_LTEQ(d, node->radius) )
 	{
 		LWDEBUGF(3,"entering this branch (%p)", node);
@@ -393,23 +391,23 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 		/* Return the crossing number of this leaf */
 		if ( circ_node_is_leaf(node) )
 		{
-			LWDEBUGF(4, "leaf node calculation (edge %d)", node->edge_num);
+			LWDEBUGF(3, "leaf node calculation (edge %d)", node->edge_num);
 			geographic_point_init(node->p1->x, node->p1->y, &(edge.start));
 			geographic_point_init(node->p2->x, node->p2->y, &(edge.end));
 			if ( edge_intersection(&stab_edge, &edge, &crossing) )
 			{
-				LWDEBUG(4," got stab line edge_intersection with this edge!");
+				LWDEBUG(3," got stab line edge_intersection with this edge!");
 				/* To avoid double counting crossings-at-a-vertex, */
 				/* always ignore crossings at "lower" ends of edges*/
 				if ( (FP_EQUALS(crossing.lon, edge.start.lon) && FP_EQUALS(crossing.lat, edge.start.lat) && (edge.start.lat <= edge.end.lat)) ||
 				     (FP_EQUALS(crossing.lon, edge.end.lon) && FP_EQUALS(crossing.lat, edge.end.lat) && (edge.end.lat <= edge.start.lat)) )
 				{
-					LWDEBUG(4,"  rejecting stab line intersection on 'lower' end point vertex");
+					LWDEBUG(3,"  rejecting stab line intersection on 'lower' end point vertex");
 					return 0;
 				}
 				else
 				{
-					LWDEBUG(4,"  accepting stab line intersection");
+					LWDEBUG(3,"  accepting stab line intersection");
 					return 1;
 				}
 			}

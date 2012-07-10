@@ -13,7 +13,10 @@
 #define _LWGEODETIC_H 1
 
 /* For NAN */
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
+
 #include <math.h>
 
 #ifndef NAN
