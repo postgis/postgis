@@ -30,9 +30,11 @@ ifeq ($(PG91),yes)
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
+	mkdir -p sql
 	cp $< $@
 	
 sql/$(EXTENSION).sql: sql_bits/topology.sql  sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql
+	mkdir -p sql
 	cat $^ > $@
 	
 #strip BEGIN/COMMIT since these are not allowed in extensions
@@ -64,6 +66,7 @@ sql_bits/topology_comments.sql: ../../doc/topology_comments.sql
 #hardcode for now using 
 #the extensions/make_unpackaged.sql script form an install
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/topology--unpackaged.sql.in
+	mkdir -p sql
 	cp $< $@
 
 #upgrade script should have everything but table, schema, type creation/alter
