@@ -51,6 +51,8 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	p2 = (POINT2D*)getPoint_internal(pa, i+1);
 	geographic_point_init(p1->x, p1->y, &g1);
 	geographic_point_init(p2->x, p2->y, &g2);
+
+	LWDEBUGF(3,"edge #%d (%g %g, %g %g)", i, p1->x, p1->y, p2->x, p2->y);
 	
 	diameter = sphere_distance(&g1, &g2);
 
@@ -71,6 +73,8 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 	cart2geog(&c, &gc);
 	node->center = gc;
 	node->radius = diameter / 2.0;
+
+	LWDEBUGF(3,"edge #%d CENTER(%g %g) RADIUS=%g", i, gc.lon, gc.lat, node->radius);
 
 	/* Leaf has no children */
 	node->num_nodes = 0;
@@ -181,7 +185,7 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 	double offset1, dist, D, r1, ri;
 	int i;
 
-	LWDEBUGF(3, "called with %d nodes", num_nodes);
+	LWDEBUGF(3, "called with %d nodes --", num_nodes);
 
 	/* Can't do anything w/ empty input */
 	if ( num_nodes < 1 )
@@ -202,33 +206,42 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 
 		LWDEBUGF(3, "distance between new (%g %g) and %i (%g %g) is %g", c1.lon, c1.lat, i, c[i]->center.lon, c[i]->center.lat, dist);
 		
-		if ( FP_EQUALS(dist, 0) || dist <= fabs(r1 - ri) )
+		if ( FP_EQUALS(dist, 0) )
+		{
+			LWDEBUG(3, "  distance between centers is zero");
+			new_radius = r1 + 2*dist;
+			new_center = c1;
+		}
+		else if ( dist < fabs(r1 - ri) )
 		{
 			/* new contains next */
 			if ( r1 > ri )
 			{
+				LWDEBUG(3, "  c1 contains ci");
 				new_center = c1;
 				new_radius = r1;
 			}
 			/* next contains new */
 			else
 			{
+				LWDEBUG(3, "  ci contains c1");
 				new_center = c[i]->center;
 				new_radius = ri;
 			}
 		}
 		else
 		{	
+			LWDEBUG(3, "  calculating new center");
 			/* New circle diameter */
 			D = dist + r1 + ri;
-			LWDEBUGF(4,"D is %g", D);
+			LWDEBUGF(3,"    D is %g", D);
 			
 			/* New radius */
 			new_radius = D / 2.0;
 			
 			/* Distance from cn1 center to the new center */
 			offset1 = ri + (D - (2.0*r1 + 2.0*ri)) / 2.0;
-			LWDEBUGF(4,"offset1 is %g", offset1);
+			LWDEBUGF(3,"    offset1 is %g", offset1);
 			
 			/* Sometimes the sphere_direction function fails... this causes the center calculation */
 			/* to fail too. In that case, we're going to fall back ot a cartesian calculation, which */
@@ -240,7 +253,7 @@ circ_node_internal_new(CIRC_NODE** c, int num_nodes)
 				new_radius *= 1.1;
 			}
 		}
-		LWDEBUGF(3, "new center is (%g %g) new radius is %g", new_center.lon, new_center.lat, new_radius);	
+		LWDEBUGF(3, " new center is (%g %g) new radius is %g", new_center.lon, new_center.lat, new_radius);	
 	}
 	
 	node = lwalloc(sizeof(CIRC_NODE));
@@ -292,7 +305,6 @@ circ_tree_new(const POINTARRAY* pa)
 	for ( i = 0; i < num_edges; i++ )
 	{
 		node = circ_node_leaf_new(pa, i);
-		LWDEBUGF(4,"making new leaf node %d", i);
 		if ( node ) /* Not zero length? */
 			nodes[j++] = node;
 	}
@@ -339,7 +351,7 @@ circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 			CIRC_NODE **inodes = lwalloc(sizeof(CIRC_NODE*)*node_size);
 			inodes[0] = nodes[node_size*j];
 			inodes[1] = nodes[node_size*j + 1];
-			LWDEBUGF(5,"merging nodes %d and %d", node_size*j, node_size*j + 1);			
+			LWDEBUGF(3,"merging nodes %d and %d", node_size*j, node_size*j + 1);			
 			nodes[j++] = circ_node_internal_new(inodes, node_size);
 		}
 		/* Odd number of children, just copy the last node up a level */

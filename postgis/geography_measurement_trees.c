@@ -94,8 +94,8 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const LWGEOM* lwgeom2
 		/* Need a gbox to calculate an outside point */
 		if ( LW_FAILURE == gserialized_get_gbox_p(g1, &gbox1) )
 		{
-			POSTGIS_DEBUG(3, "unable to read gbox from gserialized, calculating from scratch");
 			LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
+			POSTGIS_DEBUG(3, "unable to read gbox from gserialized, calculating from scratch");
 			lwgeom_calculate_gbox_geodetic(lwgeom1, &gbox1);
 			lwgeom_free(lwgeom1);
 		}
@@ -127,6 +127,7 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const LWGEOM* lwgeom2
 			pt2d_inside.y = in_point.y;
 			/* Calculate a definitive outside point */
 			gbox_pt_outside(&gbox1, &pt2d_outside);
+			POSTGIS_DEBUGF(3, "p2d_inside=POINT(%g %g) p2d_outside=POINT(%g %g)", pt2d_inside.x, pt2d_inside.y, pt2d_outside.x, pt2d_outside.y);
 			/* Test the candidate point for strict containment */
 			POSTGIS_DEBUG(3, "calling circ_tree_contains_point for PiP test");
 			return circ_tree_contains_point(tree1, &pt2d_inside, &pt2d_outside, NULL);

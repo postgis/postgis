@@ -1053,17 +1053,25 @@ int sphere_project(const GEOGRAPHIC_POINT *r, double distance, double azimuth, G
 	double lat2, lon2;
 
 	lat2 = asin(sin(lat1)*cos(d) + cos(lat1)*sin(d)*cos(azimuth));
-	lon2 = lon1 + atan2(sin(azimuth)*sin(d)*cos(lat1), cos(d)-sin(lat1)*sin(lat2));
-	n->lat = lat2;
-	n->lon = lon2;
 
+	/* If we're going straight up or straight down, we don't need to calculate the longitude */
+	if ( FP_EQUALS(azimuth, M_PI) || FP_EQUALS(azimuth, 0.0) )
+	{
+		lon2 = r->lon;
+	}
+	else
+	{
+		lon2 = lon1 + atan2(sin(azimuth)*sin(d)*cos(lat1), cos(d)-sin(lat1)*sin(lat2));
+	}
+	
 	if ( isnan(lat2) || isnan(lon2) )
 		return LW_FAILURE;
 
+	n->lat = lat2;
+	n->lon = lon2;
+
 	return LW_SUCCESS;
 }
-
-
 
 
 int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
