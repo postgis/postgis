@@ -1055,6 +1055,7 @@ int sphere_project(const GEOGRAPHIC_POINT *r, double distance, double azimuth, G
 	lat2 = asin(sin(lat1)*cos(d) + cos(lat1)*sin(d)*cos(azimuth));
 
 	/* If we're going straight up or straight down, we don't need to calculate the longitude */
+	/* TODO: this isn't quite true, what if we're going over the pole? */
 	if ( FP_EQUALS(azimuth, M_PI) || FP_EQUALS(azimuth, 0.0) )
 	{
 		lon2 = r->lon;
