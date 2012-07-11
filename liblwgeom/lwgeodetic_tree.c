@@ -334,6 +334,8 @@ static CIRC_NODE*
 circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 {
 	int num_children, num_parents, j;
+	/* This assumption is actually hard coded into the algorithm below */
+	/* Quite a few changes needed to increase node size */
 	static int node_size = 2;
 
 	num_children = num_nodes;
