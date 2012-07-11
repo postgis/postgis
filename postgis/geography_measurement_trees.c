@@ -76,7 +76,7 @@ GetCircTreeGeomCache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, const 
 	return (CircTreeGeomCache*)GetGeomCache(fcinfo, &CircTreeCacheMethods, g1, g2);
 }
 
-int
+static int
 CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const LWGEOM* lwgeom2)
 {
 	int tree1_type = gserialized_get_type(g1);
@@ -262,4 +262,35 @@ geography_dwithin_cache(FunctionCallInfoData* fcinfo, const GSERIALIZED* g1, con
 		return LW_FAILURE;
 	}
 
+}
+
+
+int
+geography_tree_distance(const GSERIALIZED* g1, const GSERIALIZED* g2, const SPHEROID* s, double tolerance, double* distance)
+{
+	CIRC_NODE* circ_tree1 = NULL;
+	CIRC_NODE* circ_tree2 = NULL;
+	LWGEOM* lwgeom1 = NULL;
+	LWGEOM* lwgeom2 = NULL;
+	
+	lwgeom1 = lwgeom_from_gserialized(g1);
+	lwgeom2 = lwgeom_from_gserialized(g2);
+	circ_tree1 = lwgeom_calculate_circ_tree(lwgeom1);
+	circ_tree2 = lwgeom_calculate_circ_tree(lwgeom2);
+	
+	if ( CircTreePIP(circ_tree1, g1, lwgeom2) || CircTreePIP(circ_tree2, g2, lwgeom1) )
+	{
+		*distance = 0.0;
+	}
+	else 
+	{
+		/* Calculate tree/tree distance */
+		*distance = circ_tree_distance_tree(circ_tree1, circ_tree2, s, tolerance);
+	}
+	
+	circ_tree_free(circ_tree1);
+	circ_tree_free(circ_tree2);
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	return LW_SUCCESS;
 }
