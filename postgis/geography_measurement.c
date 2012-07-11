@@ -28,10 +28,10 @@
 #include "lwgeom_transform.h" /* For SRID functions */
 
 Datum geography_distance(PG_FUNCTION_ARGS);
-Datum geography_distance_cached(PG_FUNCTION_ARGS);
+Datum geography_distance_uncached(PG_FUNCTION_ARGS);
 Datum geography_distance_tree(PG_FUNCTION_ARGS);
 Datum geography_dwithin(PG_FUNCTION_ARGS);
-Datum geography_dwithin_cached(PG_FUNCTION_ARGS);
+Datum geography_dwithin_uncached(PG_FUNCTION_ARGS);
 Datum geography_area(PG_FUNCTION_ARGS);
 Datum geography_length(PG_FUNCTION_ARGS);
 Datum geography_expand(PG_FUNCTION_ARGS);
@@ -43,11 +43,11 @@ Datum geography_project(PG_FUNCTION_ARGS);
 Datum geography_azimuth(PG_FUNCTION_ARGS);
 
 /*
-** geography_distance(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** geography_distance_uncached(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
 ** returns double distance in meters
 */
-PG_FUNCTION_INFO_V1(geography_distance);
-Datum geography_distance(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geography_distance_uncached);
+Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;
@@ -105,11 +105,11 @@ Datum geography_distance(PG_FUNCTION_ARGS)
 
 
 /*
-** geography_distance_cached(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** geography_distance(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
 ** returns double distance in meters
 */
-PG_FUNCTION_INFO_V1(geography_distance_cached);
-Datum geography_distance_cached(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geography_distance);
+Datum geography_distance(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED* g1 = NULL;
 	GSERIALIZED* g2 = NULL;
@@ -172,8 +172,8 @@ Datum geography_distance_cached(PG_FUNCTION_ARGS)
 ** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
 ** returns double distance in meters
 */
-PG_FUNCTION_INFO_V1(geography_dwithin_cached);
-Datum geography_dwithin_cached(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geography_dwithin);
+Datum geography_dwithin(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *g1 = NULL;
 	GSERIALIZED *g2 = NULL;
@@ -231,7 +231,7 @@ Datum geography_dwithin_cached(PG_FUNCTION_ARGS)
 
 
 /*
-** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** geography_distance_tree(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
 ** returns double distance in meters
 */
 PG_FUNCTION_INFO_V1(geography_distance_tree);
@@ -243,15 +243,18 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 	double distance;
 	bool use_spheroid;
 	SPHEROID s;
-	CIRC_NODE* circ_tree1 = NULL;
-	CIRC_NODE* circ_tree2 = NULL;
-	LWGEOM* lwgeom1 = NULL;
-	LWGEOM* lwgeom2 = NULL;
-	
 
 	/* Get our geometry objects loaded into memory. */
 	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 	g2 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+	/* Return FALSE on empty arguments. */
+	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
+	{
+		PG_FREE_IF_COPY(g1, 0);
+		PG_FREE_IF_COPY(g2, 1);
+		PG_RETURN_FLOAT8(0.0);
+	}
 
 	/* Read our tolerance value. */
 	tolerance = PG_GETARG_FLOAT8(2);
@@ -266,31 +269,11 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 	if ( ! use_spheroid )
 		s.a = s.b = s.radius;
 
-	/* Return FALSE on empty arguments. */
-	if ( gserialized_is_empty(g1) || gserialized_is_empty(g2) )
+	if  ( geography_tree_distance(g1, g2, &s, tolerance, &distance) == LW_FAILURE )
 	{
-		PG_FREE_IF_COPY(g1, 0);
-		PG_FREE_IF_COPY(g2, 1);
-		PG_RETURN_FLOAT8(0.0);
+		elog(ERROR, "geography_distance_tree failed!");
+		PG_RETURN_NULL();
 	}
-
-	lwgeom1 = lwgeom_from_gserialized(g1);
-	lwgeom2 = lwgeom_from_gserialized(g2);
-	circ_tree1 = lwgeom_calculate_circ_tree(lwgeom1);
-	circ_tree2 = lwgeom_calculate_circ_tree(lwgeom2);
-	
-	if ( CircTreePIP(circ_tree1, g1, lwgeom2) || CircTreePIP(circ_tree2, g2, lwgeom1) )
-	{
-		PG_RETURN_FLOAT8(0.0);
-	}
-	
-	/* Calculate tree/tree distance */
-	distance = circ_tree_distance_tree(circ_tree1, circ_tree2, &s, tolerance);
-	circ_tree_free(circ_tree1);
-	circ_tree_free(circ_tree2);
-	
-	lwgeom_free(lwgeom1);
-	lwgeom_free(lwgeom2);
 	
 	PG_RETURN_FLOAT8(distance);
 }
@@ -298,11 +281,11 @@ Datum geography_distance_tree(PG_FUNCTION_ARGS)
 
 
 /*
-** geography_dwithin(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
+** geography_dwithin_uncached(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
 ** returns double distance in meters
 */
-PG_FUNCTION_INFO_V1(geography_dwithin);
-Datum geography_dwithin(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geography_dwithin_uncached);
+Datum geography_dwithin_uncached(PG_FUNCTION_ARGS)
 {
 	LWGEOM *lwgeom1 = NULL;
 	LWGEOM *lwgeom2 = NULL;

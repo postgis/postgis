@@ -219,6 +219,7 @@ gbox_angular_width(const GBOX* gbox)
 			magnitude = sqrt(pt_n.x*pt_n.x + pt_n.y*pt_n.y);
 			pt_n.x /= magnitude;
 			pt_n.y /= magnitude;
+			pt_n.z = 0.0;
 
 			dotprod = pt_n.x*pt[j].x + pt_n.y*pt[j].y;
 			angle = acos(dotprod > 1.0 ? 1.0 : dotprod);
@@ -1052,14 +1053,26 @@ int sphere_project(const GEOGRAPHIC_POINT *r, double distance, double azimuth, G
 	double lat2, lon2;
 
 	lat2 = asin(sin(lat1)*cos(d) + cos(lat1)*sin(d)*cos(azimuth));
-	lon2 = lon1 + atan2(sin(azimuth)*sin(d)*cos(lat1), cos(d)-sin(lat1)*sin(lat2));
+
+	/* If we're going straight up or straight down, we don't need to calculate the longitude */
+	/* TODO: this isn't quite true, what if we're going over the pole? */
+	if ( FP_EQUALS(azimuth, M_PI) || FP_EQUALS(azimuth, 0.0) )
+	{
+		lon2 = r->lon;
+	}
+	else
+	{
+		lon2 = lon1 + atan2(sin(azimuth)*sin(d)*cos(lat1), cos(d)-sin(lat1)*sin(lat2));
+	}
+	
+	if ( isnan(lat2) || isnan(lon2) )
+		return LW_FAILURE;
+
 	n->lat = lat2;
 	n->lon = lon2;
 
 	return LW_SUCCESS;
 }
-
-
 
 
 int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)

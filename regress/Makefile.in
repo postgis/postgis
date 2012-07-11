@@ -92,6 +92,7 @@ TESTS = \
 	polyhedralsurface \
 	polygonize \
 	postgis_type_name \
+	geography \
 	out_geometry \
 	out_geography \
 	in_gml \

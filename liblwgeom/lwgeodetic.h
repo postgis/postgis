@@ -14,12 +14,20 @@
 
 /* For NAN */
 #ifdef __GNUC__
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
 #endif
+#endif
+
 #ifdef _MSC_VER
 #define _USE_MATH_DEFINES
 #endif
+
 #include <math.h>
+
+#ifndef NAN
+#define NAN 0.0/0.0
+#endif
 
 #ifndef NAN
 #ifdef _MSC_VER
