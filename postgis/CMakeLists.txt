@@ -1,8 +1,8 @@
-#configure_file(postgis.sql.in.c ${CMAKE_CURRENT_BINARY_DIR}/liblwgeom.h)
-#set_property(GLOBAL PROPERTY POSTGIS_INCLUDE_DIRS
-#  ${CMAKE_CURRENT_BINARY_DIR}
-#  ${CMAKE_CURRENT_SOURCE_DIR})
-#include_directories(${CMAKE_CURRENT_BINARY_DIR})
+configure_file(sqldefines.h.in ${CMAKE_CURRENT_BINARY_DIR}/sqldefines.h)
+set_property(GLOBAL PROPERTY POSTGIS_INCLUDE_DIRS
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(HEADERS
   geography.h
@@ -53,3 +53,17 @@ add_library(postgis SHARED
 target_link_libraries(postgis
   $<TARGET_OBJECTS:libpgcommon>
   $<TARGET_OBJECTS:liblwgeom>)
+
+add_custom_command(OUTPUT postgis.sql.in
+  COMMAND
+  "${CMAKE_C_COMPILER}" -E -P -w ${CMAKE_CURRENT_SOURCE_DIR}/postgis.sql.in.c -o postgis.sql.in -I${CMAKE_CURRENT_BINARY_DIR} -I${CMAKE_SOURCE_DIR}/libpgcommon
+  MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/postgis.sql.in.c
+  COMMENT "Preprocessing postgis.sql.in file"
+  VERBATIM
+)
+add_custom_target(PreprocessSQL
+  ALL
+  DEPENDS postgis.sql.in
+  COMMENT "Preprocessing SQL files"
+  VERBATIM
+  SOURCES postgis.sql.in.c)
