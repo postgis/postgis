@@ -2389,7 +2389,7 @@ main(int argc, char **argv) {
 				rterror(_("Could not get list of available GDAL raster formats"));
 			}
 			else {
-				printf(_("Available GDAL raster formats:\n"));
+				printf(_("Supported GDAL raster formats:\n"));
 				for (j = 0; j < drv_count; j++) {
 					printf(_("  %s\n"), drv_set[j].long_name);
 
