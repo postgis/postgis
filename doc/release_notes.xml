@@ -2,7 +2,18 @@
 <appendix id="release_notes">
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
-
+      <sect1>
+        <title>Release 1.5.5</title>
+        <para>Release date: 2012/06/xx</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.4 release.</para>
+        <simplesect>
+         <title>Bug Fixes</title>
+         <para>#1825, containsproperly fix in prepared geometry.</para>
+         <para>#1903, Crash when inserting ~280 GEOGRAPHY POINTs (and NULLs) 
+     into a GIST indexed table</para>
+        
+        </simplesect>
+      </sect1>
       <sect1>
         <title>Release 1.5.4</title>
         <para>Release date: 2012/05/06</para>

@@ -1,12 +1,13 @@
 PostGIS 1.5.5
-2011/xx/xx
+2011/07/xx
 
  This is a bug fix release, addressing issues that have been
  filed since the 1.5.4 release.
 
  - Bug Fixes
    - #1825, containsproperly fix in prepared geometry.
-
+   - #1903, Crash when inserting ~280 GEOGRAPHY POINTs (and NULLs) 
+     into a GIST indexed table
 
 
 PostGIS 1.5.4
@@ -202,6 +203,34 @@ PostGIS 1.5.0
     http://trac.osgeo.org/postgis/query?status=closed&milestone=PostGIS+1.5.0
 
 
+PostGIS 1.4.2
+2010/03/11
+
+ - This is a bug fix release, addressing issues that have been
+   filed since the 1.4.1 release.
+
+ - Bug fixes
+   - #327, fix up the uninstall functions
+     (Paul Ramsey)
+   - #333, remove unnecessary VACUUM from install file
+     (Kevin Neufeld)
+   - #355, build improvements for shp2pgsql-gui
+     (Paul Ramsey)
+   - #387, add towgs84 arguments for SRID 28992
+     (Paul Ramsey)
+   - #409, fix ST_AsSVG with empty geometrycollection input
+     (Olivier Courtin)
+   - #410, update embedded bbox when applying ST_SetPoint, ST_AddPoint
+     ST_RemovePoint to a linestring
+     (Paul Ramsey)
+   - #411, allow dumping tables with invalid geometries
+     (Sandro Santilli - work done for Regione Toscana-SIGTA)
+   - #421, fix computed string length in ST_AsGML()
+     (Olivier Courtin)
+   - #441, fix GML generation with heterogeneous collections
+     (Olivier Courtin)
+
+
 PostGIS 1.4.1
 2009/11/28
 
@@ -219,9 +248,8 @@ PostGIS 1.4.1
    - #272, ST_LineCrossingDirection should be negatively symmetric
    - #316, parsing problem for invalid higher dimensional geometries
 
-
 PostGIS 1.4.0
-2009/06/XX
+2009/07/24
 
  - API Stability
    - As of the 1.4 release series, the public API of PostGIS will not
