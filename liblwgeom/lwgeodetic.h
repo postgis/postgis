@@ -102,6 +102,8 @@ void point_shift(GEOGRAPHIC_POINT *p, double shift);
 double longitude_radians_normalize(double lon);
 double latitude_radians_normalize(double lat);
 void vector_sum(const POINT3D *a, const POINT3D *b, POINT3D *n);
+double vector_angle(const POINT3D* v1, const POINT3D* v2);
+void vector_rotate(const POINT3D* v1, const POINT3D* v2, double angle, POINT3D* n);
 void normalize(POINT3D *p);
 double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, double d);
 

@@ -4,6 +4,8 @@
 
 #include "lwgeodetic.h"
 
+#define CIRC_NODE_SIZE 8
+
 /**
 * Note that p1 and p2 are pointers into an independent POINTARRAY, do not free them.
 */

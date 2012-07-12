@@ -25,10 +25,20 @@ static void test_tree_circ_create(void)
 {
 	LWLINE *g;
 	CIRC_NODE *c;
+	/* Line with 4 edges */
 	g = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(0 88,0 89,0 90,180 89,180 88)", LW_PARSER_CHECK_NONE));
 	c = circ_tree_new(g->points);
-//	circ_tree_print(c, 0);
-	CU_ASSERT(c->num_nodes == 2);
+	//circ_tree_print(c, 0);
+
+	if ( CIRC_NODE_SIZE > 4 )
+	{
+		CU_ASSERT(c->num_nodes == 4);
+	}
+	else
+	{
+		CU_ASSERT(c->num_nodes  == ( 4 % CIRC_NODE_SIZE ? 1 : 0 ) + 4 / CIRC_NODE_SIZE);
+	}
+		
 	circ_tree_free(c);
 	lwline_free(g);
 }

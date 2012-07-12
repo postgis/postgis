@@ -1078,6 +1078,64 @@ static void test_gbox_utils(void)
 	
 }
 
+static void test_vector_angle(void)
+{
+	POINT3D p1, p2;
+	double angle;
+	
+	memset(&p1, 0, sizeof(POINT3D));
+	memset(&p2, 0, sizeof(POINT3D));
+	
+	p1.x = 1.0;
+	p2.y = 1.0;
+	angle = vector_angle(&p1, &p2);
+	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI/2, 0.00001);
+
+	p1.x = p2.y = 0.0;
+	p1.y = 1.0;
+	p2.x = 1.0;
+	angle = vector_angle(&p1, &p2);
+	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI/2, 0.00001);
+
+	p2.y = p2.x = 1.0;
+	normalize(&p2);
+	angle = vector_angle(&p1, &p2);
+	CU_ASSERT_DOUBLE_EQUAL(angle, M_PI/4, 0.00001);
+
+	p2.x = p2.y = p2.z = 1.0;
+	normalize(&p2);
+	angle = vector_angle(&p1, &p2);
+	CU_ASSERT_DOUBLE_EQUAL(angle, 0.955317, 0.00001);	
+	//printf ("angle = %g\n\n", angle);
+}
+
+static void test_vector_rotate(void)
+{
+	POINT3D p1, p2, n;
+	double angle;
+	
+	memset(&p1, 0, sizeof(POINT3D));
+	memset(&p2, 0, sizeof(POINT3D));
+	memset(&n, 0, sizeof(POINT3D));
+	
+	p1.x = 1.0;
+	p2.y = 1.0;
+	angle = M_PI/4;
+	vector_rotate(&p1, &p2, angle, &n);
+	//printf("%g %g %g\n\n", n.x, n.y, n.z);
+	CU_ASSERT_DOUBLE_EQUAL(n.x, 0.707107, 0.00001);	
+
+	angle = 2*M_PI/400000000;
+	vector_rotate(&p1, &p2, angle, &n);
+	//printf("%.21g %.21g %.21g\n\n", n.x, n.y, n.z);
+	CU_ASSERT_DOUBLE_EQUAL(n.x, 0.999999999999999888978, 0.0000000000000001);	
+	CU_ASSERT_DOUBLE_EQUAL(n.y, 1.57079632679489654446e-08, 0.0000000000000001);	
+
+	angle = 0;
+	vector_rotate(&p1, &p2, angle, &n);
+	//printf("%.16g %.16g %.16g\n\n", n.x, n.y, n.z);
+	CU_ASSERT_DOUBLE_EQUAL(n.x, 1.0, 0.00000001);	
+}
 
 /*
 ** Used by test harness to register the tests in this file.
@@ -1101,6 +1159,8 @@ CU_TestInfo geodetic_tests[] =
 	PG_TEST(test_lwpoly_covers_point2d),
 	PG_TEST(test_ptarray_point_in_ring),
 	PG_TEST(test_gbox_utils),
+	PG_TEST(test_vector_angle),
+	PG_TEST(test_vector_rotate),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo geodetic_suite = {"Geodetic Suite",  NULL,  NULL, geodetic_tests};

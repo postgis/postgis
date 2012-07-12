@@ -333,42 +333,47 @@ circ_nodes_sort(CIRC_NODE** nodes, int num_nodes)
 static CIRC_NODE*
 circ_nodes_merge(CIRC_NODE** nodes, int num_nodes)
 {
-	int num_children, num_parents, j;
-	/* This assumption is actually hard coded into the algorithm below */
-	/* Quite a few changes needed to increase node size */
-	static int node_size = 2;
+	CIRC_NODE **inodes = NULL;
+	int num_children = num_nodes;
+	int inode_num = 0;
+	int num_parents = 0;
+	int j;
 
-	num_children = num_nodes;
-	num_parents = num_children / 2;
-	while ( num_parents > 0 )
+	while( num_children > 1 )
 	{
-		j = 0;
-		while ( j < num_parents )
+		for ( j = 0; j < num_children; j++ )
 		{
-			/*
-			* Each new parent includes pointers to the children, so even though
-			* we are over-writing their place in the list, we still have references
-			* to them via the tree.
-			*/
-			CIRC_NODE **inodes = lwalloc(sizeof(CIRC_NODE*)*node_size);
-			inodes[0] = nodes[node_size*j];
-			inodes[1] = nodes[node_size*j + 1];
-			LWDEBUGF(3,"merging nodes %d and %d", node_size*j, node_size*j + 1);			
-			nodes[j++] = circ_node_internal_new(inodes, node_size);
-		}
-		/* Odd number of children, just copy the last node up a level */
-		if ( num_children % 2 )
-		{
-			nodes[j] = nodes[num_children - 1];
-			num_parents++;
-		}
-		num_children = num_parents;
-		num_parents = num_children / 2;
-	}
+			inode_num = (j % CIRC_NODE_SIZE);
+			if ( inode_num == 0 )
+				inodes = lwalloc(sizeof(CIRC_NODE*)*CIRC_NODE_SIZE);
 
+			inodes[inode_num] = nodes[j];
+			
+			if ( inode_num == CIRC_NODE_SIZE-1 )
+				nodes[num_parents++] = circ_node_internal_new(inodes, CIRC_NODE_SIZE);
+		}
+		
+		/* Clean up any remaining nodes... */
+		if ( inode_num == 0 )
+		{
+			/* Promote solo nodes without merging */
+			nodes[num_parents++] = inodes[0];
+			lwfree(inodes);
+		}
+		else if ( inode_num < CIRC_NODE_SIZE-1 )
+		{
+			/* Merge spare nodes */
+			nodes[num_parents++] = circ_node_internal_new(inodes, inode_num+1);
+		}
+		
+		num_children = num_parents;	
+		num_parents = 0;
+	}
+	
 	/* Return a reference to the head of the tree */
 	return nodes[0];
 }
+
 
 /**
 * Walk the tree and count intersections between the stab line and the edges.

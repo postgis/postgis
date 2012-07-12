@@ -417,6 +417,70 @@ static void vector_scale(POINT3D *n, double scale)
 	return;
 }
 
+static inline double vector_magnitude(const POINT3D* v)
+{
+	return sqrt(v->x*v->x + v->y*v->y + v->z*v->z);
+}
+
+/**
+* Angle between two unit vectors
+*/
+double vector_angle(const POINT3D* v1, const POINT3D* v2)
+{
+	POINT3D v3, normal;
+	double angle, x, y;
+
+	cross_product(v1, v2, &normal);
+	normalize(&normal);
+	cross_product(&normal, v1, &v3);
+	
+	x = dot_product(v1, v2);
+	y = dot_product(v2, &v3);
+	
+	angle = atan2(y, x);
+	return angle;
+}
+
+void vector_rotate(const POINT3D* v1, const POINT3D* v2, double angle, POINT3D* n)
+{
+	POINT3D u;
+	double cos_a = cos(angle);
+	double sin_a = sin(angle);
+	double uxuy, uyuz, uxuz;
+	double ux2, uy2, uz2;
+	double rxx, rxy, rxz, ryx, ryy, ryz, rzx, rzy, rzz;
+	
+	/* Need a unit vector normal to rotate around */
+	cross_product(v1, v2, &u);
+	normalize(&u);
+	
+	uxuy = u.x * u.y;
+	uxuz = u.x * u.z;
+	uyuz = u.y * u.z;
+	
+	ux2 = u.x * u.x;
+	uy2 = u.y * u.y;
+	uz2 = u.z * u.z;
+	
+	rxx = cos_a + ux2 * (1 - cos_a);
+	rxy = uxuy * (1 - cos_a) - u.z * sin_a;
+	rxz = uxuz * (1 - cos_a) + u.y * sin_a;
+	
+	ryx = uxuy * (1 - cos_a) + u.z * sin_a;
+	ryy = cos_a + uy2 * (1 - cos_a);
+	ryz = uyuz * (1 - cos_a) - u.x * sin_a;
+	
+	rzx = uxuz * (1 - cos_a) - u.y * sin_a;
+	rzy = uyuz * (1 - cos_a) + u.x * sin_a;
+	rzz = cos_a + uz2 * (1 - cos_a);
+
+	n->x = rxx * v1->x + rxy * v1->y + rxz * v1->z;
+	n->y = ryx * v1->x + ryy * v1->y + ryz * v1->z;
+	n->z = rzx * v1->x + rzy * v1->y + rzz * v1->z;
+
+	normalize(n);
+}
+
 /**
 * Normalize to a unit vector.
 */
