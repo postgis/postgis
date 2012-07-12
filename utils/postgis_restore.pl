@@ -643,9 +643,20 @@ close(OUTPUT);
 print "Producing ascii dump $dumpascii\n"; 
 open( INPUT, "pg_restore -L $dumplist $dump |") || die "Can't run pg_restore\n";
 open( OUTPUT, ">$dumpascii") || die "Can't write to $dumpascii\n";
+
+my $inCopy;
 while( my $line = <INPUT> )
 {
-	next if $line =~ /^ *--/;
+	if ( $line =~ /^COPY .+ FROM stdin;$/ )
+	{
+		$inCopy = 1;
+	}
+	elsif ( $inCopy && $line =~ /^\\\.$/ )
+	{
+		$inCopy = 0;
+	}
+
+	next if !$inCopy && $line =~ /^ *--/;
 
 	if ( $line =~ /^SET search_path/ )
 	{

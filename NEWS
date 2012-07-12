@@ -6,7 +6,8 @@ PostGIS 1.5.5
 
  - Bug Fixes
    - #1825, containsproperly fix in prepared geometry.
-   - #1832, Crash when updating GIST index on geography column
+   - #1832, crash when updating GIST index on geography column
+   - #1865, don't strip comments COPY data from dumps on restore
 
 
 PostGIS 1.5.4
