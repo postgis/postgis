@@ -6,8 +6,7 @@ PostGIS 1.5.5
 
  - Bug Fixes
    - #1825, containsproperly fix in prepared geometry.
-   - #1903, Crash when inserting ~280 GEOGRAPHY POINTs (and NULLs) 
-     into a GIST indexed table
+   - #1832, Crash when updating GIST index on geography column
 
 
 PostGIS 1.5.4

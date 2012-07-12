@@ -9,8 +9,7 @@
         <simplesect>
          <title>Bug Fixes</title>
          <para>#1825, containsproperly fix in prepared geometry.</para>
-         <para>#1903, Crash when inserting ~280 GEOGRAPHY POINTs (and NULLs) 
-     into a GIST indexed table</para>
+         <para>#1832, Crash when updating GIST index on geography column</para>
         
         </simplesect>
       </sect1>
