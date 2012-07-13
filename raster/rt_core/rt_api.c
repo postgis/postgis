@@ -12090,6 +12090,8 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 			/*
 				lwgeom_as_multi() only does a shallow clone internally
 				so input and output geometries may share memory
+				hence the deep clone of the output geometry for returning
+				is the only way to guarentee the memory isn't shared
 			*/
 			mpoly = lwgeom_as_multi(tmp);
 			tmp2 = lwgeom_clone_deep(mpoly);
