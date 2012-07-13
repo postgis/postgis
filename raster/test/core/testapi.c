@@ -2894,6 +2894,53 @@ static void testPixelOfValue() {
 	deepRelease(rast);
 }
 
+static void testPixelAsPolygon() {
+	rt_raster rast;
+	rt_band band;
+	uint32_t x, y;
+	int rtn;
+	const int maxX = 10;
+	const int maxY = 10;
+	LWPOLY *poly = NULL;
+
+	rast = rt_raster_new(maxX, maxY);
+	assert(rast);
+
+	band = addBand(rast, PT_32BUI, 1, 0);
+	CHECK(band);
+
+	for (x = 0; x < maxX; x++) {
+		for (y = 0; y < maxY; y++) {
+			rtn = rt_band_set_pixel(band, x, y, 1);
+			CHECK((rtn != -1));
+		}
+	}
+
+	rt_band_set_pixel(band, 0, 0, 0);
+	rt_band_set_pixel(band, 3, 0, 0);
+	rt_band_set_pixel(band, 6, 0, 0);
+	rt_band_set_pixel(band, 9, 0, 0);
+	rt_band_set_pixel(band, 1, 2, 0);
+	rt_band_set_pixel(band, 4, 2, 0);
+	rt_band_set_pixel(band, 7, 2, 0);
+	rt_band_set_pixel(band, 2, 4, 0);
+	rt_band_set_pixel(band, 5, 4, 0);
+	rt_band_set_pixel(band, 8, 4, 0);
+	rt_band_set_pixel(band, 0, 6, 0);
+	rt_band_set_pixel(band, 3, 6, 0);
+	rt_band_set_pixel(band, 6, 6, 0);
+	rt_band_set_pixel(band, 9, 6, 0);
+	rt_band_set_pixel(band, 1, 8, 0);
+	rt_band_set_pixel(band, 4, 8, 0);
+	rt_band_set_pixel(band, 7, 8, 0);
+
+	poly = rt_raster_pixel_as_polygon(rast, 1, 1);
+	CHECK((poly != NULL));
+	lwpoly_free(poly);
+
+	deepRelease(rast);
+}
+
 static void testRasterSurface() {
 	rt_raster rast;
 	rt_band band;
@@ -2920,33 +2967,33 @@ static void testRasterSurface() {
 
 	mpoly = rt_raster_surface(rast, 0);
 	CHECK((mpoly != NULL));
-	wkt = lwgeom_to_wkt((const LWGEOM *) lwmpoly_as_lwgeom(mpoly), WKT_ISO, DBL_DIG, NULL);
-	RASTER_DEBUGF(4, "wkt = %s", wkt);
+	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((0 0,1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,5 -5,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1,0 0)))"));
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
+	mpoly = NULL;
 
 	/* 0,0 NODATA */
 	rt_band_set_pixel(band, 0, 0, 0);
 
 	mpoly = rt_raster_surface(rast, 0);
 	CHECK((mpoly != NULL));
-	wkt = lwgeom_to_wkt((const LWGEOM *) lwmpoly_as_lwgeom(mpoly), WKT_ISO, DBL_DIG, NULL);
-	RASTER_DEBUGF(4, "wkt = %s", wkt);
+	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,5 -5,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1,1 -1,1 0)))"));
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
+	mpoly = NULL;
 
 	/* plus 1,1 NODATA */
 	rt_band_set_pixel(band, 1, 1, 0);
 
 	mpoly = rt_raster_surface(rast, 0);
 	CHECK((mpoly != NULL));
-	wkt = lwgeom_to_wkt((const LWGEOM *) lwmpoly_as_lwgeom(mpoly), WKT_ISO, DBL_DIG, NULL);
-	RASTER_DEBUGF(4, "wkt = %s", wkt);
+	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,5 -5,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1,1 -1,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1)))"));
 	rtdealloc(wkt);
 	lwmpoly_free(mpoly);
+	mpoly = NULL;
 
 	deepRelease(rast);
 }
@@ -3223,6 +3270,10 @@ main()
 
 		printf("Testing rt_band_get_pixel_of_value... ");
 		testPixelOfValue();
+		printf("OK\n");
+
+		printf("Testing rt_raster_pixel_as_polygon... ");
+		testPixelAsPolygon();
 		printf("OK\n");
 
 		printf("Testing rt_raster_surface... ");

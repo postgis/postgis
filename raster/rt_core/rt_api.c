@@ -12074,35 +12074,43 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 	if (mpoly != NULL) {
 		/* convert to multi */
 		if (!lwgeom_is_collection(mpoly)) {
+			LWGEOM *tmp2 = NULL;
 			tmp = mpoly;
 
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
-				char *wkt = NULL;
-				wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
 				RASTER_DEBUGF(4, "before multi = %s", wkt);
 				rtdealloc(wkt);
 			}
 #endif
 
-			mpoly = lwgeom_clone_deep(lwgeom_as_multi(tmp));
+			RASTER_DEBUGF(4, "mpoly @ %p", mpoly);
+
+			/*
+				lwgeom_as_multi() only does a shallow clone internally
+				so input and output geometries may share memory
+			*/
+			mpoly = lwgeom_as_multi(tmp);
+			tmp2 = lwgeom_clone_deep(mpoly);
 			lwgeom_free(tmp);
+			lwgeom_free(mpoly);
+			mpoly = tmp2;
+
+			RASTER_DEBUGF(4, "mpoly @ %p", mpoly);
 
 #if POSTGIS_DEBUG_LEVEL > 3
 			{
-				char *wkt = NULL;
-				wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
 				RASTER_DEBUGF(4, "after multi = %s", wkt);
 				rtdealloc(wkt);
 			}
 #endif
-
 		}
 
 #if POSTGIS_DEBUG_LEVEL > 3
 		{
-			char *wkt = NULL;
-			wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+			char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
 			RASTER_DEBUGF(4, "returning geometry = %s", wkt);
 			rtdealloc(wkt);
 		}
