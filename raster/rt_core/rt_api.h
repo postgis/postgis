@@ -610,13 +610,6 @@ double rt_band_get_min_value(rt_band band);
  * @param band: the band to get info from
  * @return TRUE if the band is only nodata values, FALSE otherwise
  */
-int rt_band_is_nodata(rt_band band);
-
-/**
- * Returns TRUE if the band is only nodata values
- * @param band: the band to get info from
- * @return TRUE if the band is only nodata values, FALSE otherwise
- */
 int rt_band_check_is_nodata(rt_band band);
 
 /**
@@ -1177,6 +1170,19 @@ rt_raster_compute_skewed_raster(
  *
  */
 LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
+
+/**
+ * Get a raster as a surface (multipolygon).  If a band is specified,
+ * those pixels with value (not NODATA) contribute to the area
+ * of the output multipolygon.
+ *
+ * @param raster: the raster to convert to a multipolygon
+ * @param nband : the 0-based band of raster rast to use
+ *   if value is less than zero, bands are ignored.
+ *
+ * @return the raster surface or NULL on error
+ */
+LWMPOLY* rt_raster_surface(rt_raster raster, int nband);
 
 /**
  * Returns a set of "geomval" value, one for each group of pixel

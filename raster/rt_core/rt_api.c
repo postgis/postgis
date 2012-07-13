@@ -2585,7 +2585,6 @@ rt_band_get_min_value(rt_band band) {
 	return rt_pixtype_get_min_value(band->pixtype);
 }
 
-
 int
 rt_band_check_is_nodata(rt_band band) {
 	int i, j, err;
@@ -11879,7 +11878,20 @@ rt_raster_from_two_rasters(
 	return raster;
 }
 
-
+/**
+ * Get a raster pixel as a polygon.
+ *
+ * The pixel shape is a 4 vertices (5 to be closed) single
+ * ring polygon bearing the raster's rotation
+ * and using projection coordinates
+ *
+ * @param raster : the raster to get pixel from
+ * @param x : the column number
+ * @param y : the row number
+ *
+ * @return the pixel polygon, or NULL on error.
+ *
+ */
 LWPOLY*
 rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
 {
@@ -11890,6 +11902,8 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
     POINTARRAY **points;
     POINT4D p, p0;
     LWPOLY *poly;
+
+		assert(rast != NULL);
 
     scale_x = rt_raster_get_x_scale(rast);
     scale_y = rt_raster_get_y_scale(rast);
@@ -11924,4 +11938,178 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
     poly = lwpoly_construct(srid, NULL, 1, points);
 
     return poly;
+}
+
+/**
+ * Get a raster as a surface (multipolygon).  If a band is specified,
+ * those pixels with value (not NODATA) contribute to the area
+ * of the output multipolygon.
+ *
+ * @param raster: the raster to convert to a multipolygon
+ * @param nband : the 0-based band of raster rast to use
+ *   if value is less than zero, bands are ignored.
+ *
+ * @return the raster surface or NULL on error
+ */
+LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
+	rt_band band = NULL;
+	LWGEOM *mpoly = NULL;
+	LWGEOM *tmp = NULL;
+	LWGEOM *poly = NULL;
+	uint16_t width = 0;
+	uint16_t height = 0;
+	int x = 0;
+	int y = 0;
+	int err = 0;
+	double val = 0;
+	double nodata = 0;
+
+	/* raster is empty, return NULL */
+	if (rt_raster_is_empty(raster))
+		return NULL;
+
+	/* if nband < 0, return the convex hull as a multipolygon */
+	if (nband < 0) {
+		return lwgeom_as_lwmpoly(
+			lwgeom_as_multi(
+				lwpoly_as_lwgeom(
+					rt_raster_get_convex_hull(raster)
+				)
+			)
+		);
+	}
+	/* check that nband is valid */
+	else if (nband >= rt_raster_get_num_bands(raster)) {
+		rterror("rt_raster_surface: The band index %d is invalid", nband);
+		return NULL;
+	}
+
+	/* get band */
+	band = rt_raster_get_band(raster, nband);
+	if (band == NULL) {
+		rterror("rt_raster_surface: Error getting band %d from raster", nband);
+		return NULL;
+	}
+
+	/* band is NODATA or does not have a NODATA flag, return convex hull */
+	if (
+		rt_band_get_isnodata_flag(band) || 
+		!rt_band_get_hasnodata_flag(band)
+	) {
+		return lwgeom_as_lwmpoly(
+			lwgeom_as_multi(
+				lwpoly_as_lwgeom(
+					rt_raster_get_convex_hull(raster)
+				)
+			)
+		);
+	}
+
+	/* NODATA value */
+	nodata = rt_band_get_nodata(band);
+
+	/* process each pixel of band */
+	width = rt_raster_get_width(raster);
+	height = rt_raster_get_height(raster);
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			err = rt_band_get_pixel(band, x, y, &val);
+			if (err != 0) {
+				rterror("rt_raster_surface: Unable to get pixel value");
+				return NULL;
+			}
+
+			/* val is NODATA, skip */
+			if (
+				FLT_EQ(val, nodata) ||
+				rt_band_clamped_value_is_nodata(band, val) != 0
+			) {
+				continue;
+			}
+
+			/* convert pixel to polygon */
+			poly = lwpoly_as_lwgeom(rt_raster_pixel_as_polygon(raster, x, y));
+			if (poly == NULL) {
+				rterror("rt_raster_surface: Unable to create polygon of pixel");
+				if (mpoly != NULL) lwgeom_free(mpoly);
+				return NULL;
+			}
+
+			/* union polygon */
+			if (mpoly == NULL)
+				mpoly = poly;
+			else {
+				tmp = mpoly;
+				mpoly = lwgeom_union(tmp, poly);
+
+#if POSTGIS_DEBUG_LEVEL > 3
+				{
+					char *wkt = NULL;
+					
+					wkt = lwgeom_to_wkt(poly, WKT_ISO, DBL_DIG, NULL);
+					RASTER_DEBUGF(4, "poly = %s", wkt);
+					rtdealloc(wkt);
+
+					wkt = lwgeom_to_wkt(tmp, WKT_ISO, DBL_DIG, NULL);
+					RASTER_DEBUGF(4, "tmp = %s", wkt);
+					rtdealloc(wkt);
+
+					wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+					RASTER_DEBUGF(4, "mpoly = %s", wkt);
+					rtdealloc(wkt);
+				}
+#endif
+
+				lwgeom_free(tmp);
+				lwgeom_free(poly);
+
+				if (mpoly == NULL) {
+					rterror("rt_raster_surface: Unable to union pixel polygons");
+					return NULL;
+				}
+			}
+		}
+	}
+
+	if (mpoly != NULL) {
+		/* convert to multi */
+		if (!lwgeom_is_collection(mpoly)) {
+			tmp = mpoly;
+
+#if POSTGIS_DEBUG_LEVEL > 3
+			{
+				char *wkt = NULL;
+				wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+				RASTER_DEBUGF(4, "before multi = %s", wkt);
+				rtdealloc(wkt);
+			}
+#endif
+
+			mpoly = lwgeom_clone_deep(lwgeom_as_multi(tmp));
+			lwgeom_free(tmp);
+
+#if POSTGIS_DEBUG_LEVEL > 3
+			{
+				char *wkt = NULL;
+				wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+				RASTER_DEBUGF(4, "after multi = %s", wkt);
+				rtdealloc(wkt);
+			}
+#endif
+
+		}
+
+#if POSTGIS_DEBUG_LEVEL > 3
+		{
+			char *wkt = NULL;
+			wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+			RASTER_DEBUGF(4, "returning geometry = %s", wkt);
+			rtdealloc(wkt);
+		}
+#endif
+
+		return lwgeom_as_lwmpoly(mpoly);
+	}
+
+	return NULL;
 }

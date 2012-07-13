@@ -2894,6 +2894,63 @@ static void testPixelOfValue() {
 	deepRelease(rast);
 }
 
+static void testRasterSurface() {
+	rt_raster rast;
+	rt_band band;
+	const int maxX = 5;
+	const int maxY = 5;
+	int x, y;
+	char *wkt = NULL;
+	LWMPOLY *mpoly = NULL;
+
+	rast = rt_raster_new(maxX, maxY);
+	assert(rast);
+
+	rt_raster_set_offsets(rast, 0, 0);
+	rt_raster_set_scale(rast, 1, -1);
+
+	band = addBand(rast, PT_32BUI, 1, 0);
+	CHECK(band);
+
+	for (y = 0; y < maxY; y++) {
+		for (x = 0; x < maxX; x++) {
+			rt_band_set_pixel(band, x, y, 1);
+		}
+	}
+
+	mpoly = rt_raster_surface(rast, 0);
+	CHECK((mpoly != NULL));
+	wkt = lwgeom_to_wkt((const LWGEOM *) lwmpoly_as_lwgeom(mpoly), WKT_ISO, DBL_DIG, NULL);
+	RASTER_DEBUGF(4, "wkt = %s", wkt);
+	CHECK(!strcmp(wkt, "MULTIPOLYGON(((0 0,1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,5 -5,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1,0 0)))"));
+	rtdealloc(wkt);
+	lwmpoly_free(mpoly);
+
+	/* 0,0 NODATA */
+	rt_band_set_pixel(band, 0, 0, 0);
+
+	mpoly = rt_raster_surface(rast, 0);
+	CHECK((mpoly != NULL));
+	wkt = lwgeom_to_wkt((const LWGEOM *) lwmpoly_as_lwgeom(mpoly), WKT_ISO, DBL_DIG, NULL);
+	RASTER_DEBUGF(4, "wkt = %s", wkt);
+	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,5 -5,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1,1 -1,1 0)))"));
+	rtdealloc(wkt);
+	lwmpoly_free(mpoly);
+
+	/* plus 1,1 NODATA */
+	rt_band_set_pixel(band, 1, 1, 0);
+
+	mpoly = rt_raster_surface(rast, 0);
+	CHECK((mpoly != NULL));
+	wkt = lwgeom_to_wkt((const LWGEOM *) lwmpoly_as_lwgeom(mpoly), WKT_ISO, DBL_DIG, NULL);
+	RASTER_DEBUGF(4, "wkt = %s", wkt);
+	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,5 -5,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1,1 -1,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1)))"));
+	rtdealloc(wkt);
+	lwmpoly_free(mpoly);
+
+	deepRelease(rast);
+}
+
 int
 main()
 {
@@ -3166,6 +3223,10 @@ main()
 
 		printf("Testing rt_band_get_pixel_of_value... ");
 		testPixelOfValue();
+		printf("OK\n");
+
+		printf("Testing rt_raster_surface... ");
+		testRasterSurface();
 		printf("OK\n");
 
     deepRelease(raster);
