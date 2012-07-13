@@ -85,7 +85,8 @@ TEST_BANDPROPS = \
 	rt_pixelofvalue \
 	rt_pixelaspolygons \
 	rt_pixelaspoints \
-	rt_pixelascentroids
+	rt_pixelascentroids \
+	rt_bandsurface
 
 TEST_UTILITY = \
 	rt_utility \

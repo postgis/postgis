@@ -2593,6 +2593,15 @@ CREATE OR REPLACE FUNCTION st_pixelascentroid(rast raster, x integer, y integer)
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_BandSurface
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_bandsurface(rast raster, nband integer DEFAULT 1)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','RASTER_getBandSurface'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- Raster Utility Functions
 -----------------------------------------------------------------------
 

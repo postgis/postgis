@@ -202,6 +202,9 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
 /* Get pixel geographical shape */
 Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS);
 
+/* Get raster band's surface */
+Datum RASTER_getBandSurface(PG_FUNCTION_ARGS);
+
 /* Get pixels of value */
 Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS);
 
@@ -2739,6 +2742,66 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		pfree(pix2);
 		SRF_RETURN_DONE(funcctx);
 	}
+}
+
+/**
+ * Get raster band's surface
+ */
+PG_FUNCTION_INFO_V1(RASTER_getBandSurface);
+Datum RASTER_getBandSurface(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	int num_bands = 0;
+	int nband = 1;
+	LWMPOLY *surface = NULL;
+	GSERIALIZED *rtn = NULL;
+
+	/* raster */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		elog(ERROR, "RASTER_getBandSurface: Could not deserialize raster");
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* num_bands */
+	num_bands = rt_raster_get_num_bands(raster);
+	if (num_bands < 1) {
+		elog(NOTICE, "Raster provided has no bands");
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* band index is 1-based */
+	if (!PG_ARGISNULL(1))
+		nband = PG_GETARG_INT32(1);
+	if (nband < 1 || nband > num_bands) {
+		elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* get band surface */
+	surface = rt_raster_surface(raster, nband - 1);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+
+	if (surface == NULL) {
+		elog(ERROR, "RASTER_getBandSurface: Could not get raster band's surface");
+		PG_RETURN_NULL();
+	}
+
+	rtn = geometry_serialize(lwmpoly_as_lwgeom(surface));
+	lwmpoly_free(surface);
+
+	PG_RETURN_POINTER(rtn);
 }
 
 /**
