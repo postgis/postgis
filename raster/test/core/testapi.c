@@ -2995,6 +2995,53 @@ static void testRasterSurface() {
 	lwmpoly_free(mpoly);
 	mpoly = NULL;
 
+	/* plus 2,2 NODATA */
+	rt_band_set_pixel(band, 2, 2, 0);
+
+	mpoly = rt_raster_surface(rast, 0);
+	CHECK((mpoly != NULL));
+	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
+	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,5 -5,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1,1 -1,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2)))"));
+	rtdealloc(wkt);
+	lwmpoly_free(mpoly);
+	mpoly = NULL;
+
+	/* plus 3,3 NODATA */
+	rt_band_set_pixel(band, 3, 3, 0);
+
+	mpoly = rt_raster_surface(rast, 0);
+	CHECK((mpoly != NULL));
+	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
+	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,5 -5,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1,1 -1,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1),(2 -2,2 -3,3 -3,3 -2,2 -2),(3 -3,3 -4,4 -4,4 -3,3 -3)))"));
+	rtdealloc(wkt);
+	lwmpoly_free(mpoly);
+	mpoly = NULL;
+
+	/* plus 4,4 NODATA */
+	rt_band_set_pixel(band, 4, 4, 0);
+
+	mpoly = rt_raster_surface(rast, 0);
+	CHECK((mpoly != NULL));
+	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
+	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,2 0,3 0,4 0,5 0,5 -1,5 -2,5 -3,5 -4,4 -4,4 -3,3 -3,3 -2,2 -2,2 -1,1 -1,1 0)),((0 -1,1 -1,1 -2,2 -2,2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,2 -5,1 -5,0 -5,0 -4,0 -3,0 -2,0 -1)))"));
+	rtdealloc(wkt);
+	lwmpoly_free(mpoly);
+	mpoly = NULL;
+
+	/* a whole lot more NODATA */
+	rt_band_set_pixel(band, 4, 0, 0);
+	rt_band_set_pixel(band, 3, 1, 0);
+	rt_band_set_pixel(band, 1, 3, 0);
+	rt_band_set_pixel(band, 0, 4, 0);
+
+	mpoly = rt_raster_surface(rast, 0);
+	CHECK((mpoly != NULL));
+	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
+	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,2 0,3 0,4 0,4 -1,3 -1,3 -2,2 -2,2 -1,1 -1,1 0)),((0 -1,1 -1,1 -2,2 -2,2 -3,1 -3,1 -4,0 -4,0 -3,0 -2,0 -1)),((4 -1,5 -1,5 -2,5 -3,5 -4,4 -4,4 -3,3 -3,3 -2,4 -2,4 -1)),((2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,2 -5,1 -5,1 -4,2 -4,2 -3)))"));
+	rtdealloc(wkt);
+	lwmpoly_free(mpoly);
+	mpoly = NULL;
+
 	deepRelease(rast);
 }
 
