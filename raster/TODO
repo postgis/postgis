@@ -6,11 +6,6 @@ yet to be ticketed in PostGIS trac and lack specifics.
 
 == Simple Projects ==
 
--- C version of ST_Intersects() in vector-space --
-
-A C version of this function should be faster than the current plpgsql
-version.
-
 == Larger Projects ==
 
 -- Spatial Relationships functions --
