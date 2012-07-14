@@ -10,21 +10,9 @@ yet to be ticketed in PostGIS trac and lack specifics.
 
 -- Spatial Relationships functions --
 
-In addition to the ST_Intersects() function, the following functions should be
-implemented.
+In addition to the existing or ticketed spatial relationship functions, it may
+be worth implementing the following functions.
 
-  - ST_Contains
-  - ST_ContainsProperly
-  - ST_Covers
-  - ST_CoveredBy
-  - ST_Crosses
-  - ST_Disjoint
-  - ST_DFullyWithin
-  - ST_DWithin
-  - ST_Within
-  - ST_Overlaps
-  - ST_Touches
-  - ST_Within
   - ST_Equals (?)
   - ST_Relate (?)
   - ST_RelateMatch (?)
