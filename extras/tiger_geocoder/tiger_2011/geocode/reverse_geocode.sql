@@ -1,7 +1,7 @@
 --$Id$
  /*** 
  * 
- * Copyright (C) 2011 Regina Obe and Leo Hsu (Paragon Corporation)
+ * Copyright (C) 2011-2012 Regina Obe and Leo Hsu (Paragon Corporation)
  **/
 -- This function given a point try to determine the approximate street address (norm_addy form)
 -- and array of cross streets, as well as interpolated points along the streets
@@ -10,7 +10,7 @@
 
 CREATE OR REPLACE FUNCTION reverse_geocode(IN pt geometry, IN include_strnum_range boolean DEFAULT false, OUT intpt geometry[], OUT addy norm_addy[], OUT street character varying[])
   RETURNS record AS
-$$
+$BODY$
 DECLARE
   var_redge RECORD;
   var_state text := NULL;
@@ -138,7 +138,7 @@ BEGIN
 				
 	    -- for numbered street/road use var_rating_highway to determine whether to prefer numbered or not (0 no pref, 1 prefer numbered, 2 prefer named)
 		var_stmt := var_stmt || ' CASE $1 WHEN 0 THEN 0  WHEN 1 THEN CASE WHEN foo.fullname ~ ''[0-9]+'' THEN 0 ELSE 1 END ELSE CASE WHEN foo.fullname > '''' AND NOT (foo.fullname ~ ''[0-9]+'') THEN 0 ELSE 1 END END ';
-		var_stmt := var_stmt || ',  foo.fullname ASC NULLS LAST, dist LIMIT 50) As f ORDER BY CASE WHEN f.dist < 20 THEN 1 ELSE f.dist END, CASE WHEN fullname > '''' THEN 0 ELSE 1 END '; --don't bother penalizing for distance if less than 20 meters
+		var_stmt := var_stmt || ',  foo.fullname ASC NULLS LAST, dist LIMIT 50) As f ORDER BY f.dist, CASE WHEN fullname > '''' THEN 0 ELSE 1 END '; --don't bother penalizing for distance if less than 20 meters
 				
 	IF var_debug = true THEN
 	    RAISE NOTICE 'Statement 1: %', replace(var_stmt, '$1', var_rating_highway::text);
@@ -192,36 +192,52 @@ BEGIN
             -- consider this a potential address
             IF (var_redge.dist < var_primary_dist*1.1 OR var_redge.dist < 20)   THEN
                  -- We only consider this a possible address if it is really close to our point
-                
                  intpt := array_append(intpt,var_redge.center_pt); 
-                 addy := array_append(addy, var_addy);
                 -- note that ramps don't have names or addresses but they connect at the edge of a range
                 -- so for ramps the address of connecting is still useful
-            
-                -- Determine city if zip is different from previous
-            
+                IF var_debug THEN
+                    RAISE NOTICE 'Current addresses: %, last added, %, street: %, %', addy, var_addy, var_addy.streetname, clock_timestamp();
+                END IF;
+                 addy := array_append(addy, var_addy);
+
+                -- Use current values streetname for previous value if previous value has no streetname
+				IF var_addy.streetname > '' AND array_upper(addy,1) > 1 AND COALESCE(addy[array_upper(addy,1) - 1].streetname, '') = ''  THEN
+					-- the match is probably an offshoot of some sort
+					-- replace prior entry with streetname of new if prior had no streetname
+					var_addy_alt := addy[array_upper(addy,1)- 1];
+					IF var_debug THEN
+						RAISE NOTICE 'Replacing answer : %, %', addy[array_upper(addy,1) - 1], clock_timestamp();
+					END IF;
+					var_addy_alt.streetname := var_addy.streetname;
+					var_addy_alt.streettypeabbrev := var_addy.streettypeabbrev;
+					addy[array_upper(addy,1) - 1 ] := var_addy_alt; 
+					IF var_debug THEN
+						RAISE NOTICE 'Replaced with : %, %', var_addy_alt, clock_timestamp();
+					END IF;
+					END IF;
+					IF var_debug THEN
+					RAISE NOTICE 'End Get matching edges loop: %', clock_timestamp();
+					RAISE NOTICE 'Final addresses: %, %', addy, clock_timestamp();
+				END IF;
+
             END IF;
         END IF;
+     
     END LOOP;
  
     -- not matching roads or streets, just return basic info
     IF NOT FOUND THEN
         addy := array_append(addy,var_addy);
-    END IF;
-    
-    IF var_addy.streetname > '' AND addy[1].streetname IS NULL THEN
-        --there were no intersecting addresses with names, just pick the best candidate - the match is proably an offshoot of some sort
-        var_addy_alt := addy[1];
-        var_addy_alt.streetname := var_addy.streetname;
-        var_addy_alt.streettypeabbrev := var_addy.streettypeabbrev;
-        addy[1] := var_addy_alt; 
+        IF var_debug THEN
+            RAISE NOTICE 'No address found: adding: % street: %, %', addy, var_addy, var_addy.streetname, clock_timestamp();
+        END IF;
     END IF;
     IF var_debug THEN
-		RAISE NOTICE 'End Get matching edges loop: %', clock_timestamp();
-	END IF;
-	
-	RETURN;   
+        RAISE NOTICE 'current array count : %, %', array_upper(addy,1), clock_timestamp();
+    END IF;
+
+    RETURN;   
 END;
-$$
+$BODY$
   LANGUAGE plpgsql STABLE
   COST 1000;
