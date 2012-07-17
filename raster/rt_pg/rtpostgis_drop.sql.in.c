@@ -345,3 +345,5 @@ DROP FUNCTION IF EXISTS st_value(raster, geometry, boolean);
 -- function deprecated
 DROP FUNCTION IF EXISTS st_pixelaspolygons(raster, integer);
 
+-- function deprecated
+DROP FUNCTION IF EXISTS st_bandsurface(raster, integer);
