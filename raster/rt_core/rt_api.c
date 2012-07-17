@@ -5701,7 +5701,9 @@ rt_raster_gdal_polygonize(
 	LWGEOM *lwgeomValid = NULL;
 
 #if POSTGIS_GEOS_VERSION < 33
+/*
 	int msgValid = 0;
+*/
 #endif
 
 	uint32_t bandNums[1] = {nband};
@@ -11955,14 +11957,13 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 	rt_band band = NULL;
 	LWGEOM *mpoly = NULL;
 	LWGEOM *tmp = NULL;
-	LWGEOM *poly = NULL;
-	uint16_t width = 0;
-	uint16_t height = 0;
-	int x = 0;
-	int y = 0;
-	int err = 0;
-	double val = 0;
-	double nodata = 0;
+	rt_geomval gv = NULL;
+	int gvcount = 0;
+	GEOSGeometry *gc = NULL;
+	GEOSGeometry *gunion = NULL;
+	GEOSGeometry **geoms = NULL;
+	int geomscount = 0;
+	int i = 0;
 
 	/* raster is empty, return NULL */
 	if (rt_raster_is_empty(raster))
@@ -12005,71 +12006,117 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 		);
 	}
 
-	/* NODATA value */
-	nodata = rt_band_get_nodata(band);
+	/* initialize GEOS */
+	initGEOS(lwnotice, lwgeom_geos_error);
 
-	/* process each pixel of band */
-	width = rt_raster_get_width(raster);
-	height = rt_raster_get_height(raster);
-	for (y = 0; y < height; y++) {
-		for (x = 0; x < width; x++) {
-			err = rt_band_get_pixel(band, x, y, &val);
-			if (err != 0) {
-				rterror("rt_raster_surface: Unable to get pixel value");
-				return NULL;
-			}
-
-			/* val is NODATA, skip */
-			if (
-				FLT_EQ(val, nodata) ||
-				rt_band_clamped_value_is_nodata(band, val) != 0
-			) {
-				continue;
-			}
-
-			/* convert pixel to polygon */
-			poly = lwpoly_as_lwgeom(rt_raster_pixel_as_polygon(raster, x, y));
-			if (poly == NULL) {
-				rterror("rt_raster_surface: Unable to create polygon of pixel");
-				if (mpoly != NULL) lwgeom_free(mpoly);
-				return NULL;
-			}
-
-			/* union polygon */
-			if (mpoly == NULL)
-				mpoly = poly;
-			else {
-				tmp = mpoly;
-				mpoly = lwgeom_union(tmp, poly);
-
+	/* use gdal polygonize */
+	gv = rt_raster_gdal_polygonize(raster, nband, 1, &gvcount);
+	/* no polygons returned */
+	if (gvcount < 1) {
+		RASTER_DEBUG(3, "All pixels of band are NODATA.  Returning NULL");
+		return NULL;
+	}
+	/* more than 1 polygon */
+	else if (gvcount > 1) {
+		/* convert LWPOLY to GEOSGeometry */
+		geomscount = gvcount;
+		geoms = rtalloc(sizeof(GEOSGeometry *) * geomscount);
+		if (geoms == NULL) {
+			rterror("rt_raster_surface: Unable to allocate memory for pixel polygons as GEOSGeometry");
+			for (i = 0; i < gvcount; i++) lwpoly_free(gv[i].geom);
+			rtdealloc(gv);
+			return NULL;
+		}
+		for (i = 0; i < gvcount; i++) {
 #if POSTGIS_DEBUG_LEVEL > 3
-				{
-					char *wkt = NULL;
-					
-					wkt = lwgeom_to_wkt(poly, WKT_ISO, DBL_DIG, NULL);
-					RASTER_DEBUGF(4, "poly = %s", wkt);
-					rtdealloc(wkt);
-
-					wkt = lwgeom_to_wkt(tmp, WKT_ISO, DBL_DIG, NULL);
-					RASTER_DEBUGF(4, "tmp = %s", wkt);
-					rtdealloc(wkt);
-
-					wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
-					RASTER_DEBUGF(4, "mpoly = %s", wkt);
-					rtdealloc(wkt);
-				}
+			{
+				char *wkt = lwgeom_to_wkt(lwpoly_as_lwgeom(gv[i].geom), WKT_ISO, DBL_DIG, NULL);
+				RASTER_DEBUGF(4, "geom %d = %s", i, wkt);
+				rtdealloc(wkt);
+			}
 #endif
 
-				lwgeom_free(tmp);
-				lwgeom_free(poly);
-
-				if (mpoly == NULL) {
-					rterror("rt_raster_surface: Unable to union pixel polygons");
-					return NULL;
-				}
-			}
+			geoms[i] = LWGEOM2GEOS(lwpoly_as_lwgeom(gv[i].geom));
+			lwpoly_free(gv[i].geom);
 		}
+		rtdealloc(gv);
+
+		/* create geometry collection */
+#if POSTGIS_GEOS_VERSION >= 33
+		gc = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, geoms, geomscount);
+#else
+		gc = GEOSGeom_createCollection(GEOS_MULTIPOLYGON, geoms, geomscount);
+#endif
+
+		if (gc == NULL) {
+#if POSTGIS_GEOS_VERSION >= 33
+			rterror("rt_raster_surface: Unable to create GEOS GEOMETRYCOLLECTION from set of pixel polygons");
+#else
+			rterror("rt_raster_surface: Unable to create GEOS MULTIPOLYGON from set of pixel polygons");
+#endif
+
+			for (i = 0; i < geomscount; i++)
+				GEOSGeom_destroy(geoms[i]);
+			rtdealloc(geoms);
+			return NULL;
+		}
+
+		/* run the union */
+#if POSTGIS_GEOS_VERSION >= 33
+		gunion = GEOSUnaryUnion(gc);
+#else
+		gunion = GEOSUnionCascaded(gc);
+#endif
+		GEOSGeom_destroy(gc);
+		rtdealloc(geoms);
+
+		if (gunion == NULL) {
+#if POSTGIS_GEOS_VERSION >= 33
+			rterror("rt_raster_surface: Unable to union the pixel polygons using GEOSUnaryUnion()");
+#else
+			rterror("rt_raster_surface: Unable to union the pixel polygons using GEOSUnionCascaded()");
+#endif
+			return NULL;
+		}
+
+		/* convert union result from GEOSGeometry to LWGEOM */
+		mpoly = GEOS2LWGEOM(gunion, 0);
+
+		/*
+			is geometry valid?
+			if not, try to make valid
+		*/
+		do {
+			LWGEOM *mpolyValid = NULL;
+
+#if POSTGIS_GEOS_VERSION < 33
+			break;
+#endif
+
+			if (GEOSisValid(gunion))
+				break;
+
+			/* make geometry valid */
+			mpolyValid = lwgeom_make_valid(mpoly);
+			if (mpolyValid == NULL) {
+				rtwarn("Cannot fix invalid geometry");
+				break;
+			}
+
+			lwgeom_free(mpoly);
+			mpoly = mpolyValid;
+		}
+		while (0);
+
+		GEOSGeom_destroy(gunion);
 	}
+	else {
+		mpoly = lwpoly_as_lwgeom(gv[i].geom);
+		rtdealloc(gv);
+	}
+
+	/* specify SRID */
+	lwgeom_set_srid(mpoly, rt_raster_get_srid(raster));
 
 	if (mpoly != NULL) {
 		/* convert to multi */

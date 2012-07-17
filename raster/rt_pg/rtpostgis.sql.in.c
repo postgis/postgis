@@ -2484,18 +2484,21 @@ CREATE TYPE geomval AS (
 	val double precision
 );
 
+-----------------------------------------------------------------------
+-- ST_DumpAsPolygons
+-----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE)
 	RETURNS SETOF geomval
 	AS 'MODULE_PATHNAME','RASTER_dumpAsPolygons'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-----------------------------------------------------------------------
+-- ST_Polygon
+-----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
-    RETURNS geometry AS
-    $$
-    SELECT st_union(f.geom) AS singlegeom
-    FROM (SELECT (st_dumpaspolygons($1, $2)).geom AS geom) AS f;
-    $$
-    LANGUAGE 'sql' IMMUTABLE STRICT;
+	RETURNS geometry AS
+	AS 'MODULE_PATHNAME','RASTER_getPolygon'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_PixelAsPolygons
@@ -2591,15 +2594,6 @@ CREATE OR REPLACE FUNCTION st_pixelascentroid(rast raster, x integer, y integer)
 	RETURNS geometry
 	AS $$ SELECT ST_Centroid(geom) FROM _st_pixelaspolygons($1, NULL, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
-
------------------------------------------------------------------------
--- ST_BandSurface
------------------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION st_bandsurface(rast raster, nband integer DEFAULT 1)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME','RASTER_getBandSurface'
-	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- Raster Utility Functions
@@ -3205,8 +3199,8 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 			RETURN TRUE;
 		END IF;
 
-		-- get band surface
-		surface := ST_BandSurface(rast, nband);
+		-- get band polygon
+		surface := ST_Polygon(rast, nband);
 
 		IF surface IS NOT NULL THEN
 			RETURN ST_Intersects(geom, surface);

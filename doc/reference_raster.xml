@@ -2974,92 +2974,6 @@ rid | hb1 | hb2 | hb4 | numbands
 			</refsection>
 		</refentry>
 
-		<refentry id="RT_ST_BandSurface">
-			<refnamediv>
-				<refname>ST_BandSurface</refname>
-				<refpurpose>
-					Returns the surface (multipolygon) of the area represented by a raster's band.
-				</refpurpose>
-			</refnamediv>
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-						<funcdef>geometry <function>ST_BandSurface</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-				<title>Description</title>
-				<para>
-					Returns the surface (multipolygon) of the area represented by a raster's band.  The area represented by a raster's band is built using those pixels whose values are not NODATA.
-				</para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-				<programlisting>
-SELECT
-	ST_AsText(ST_BandSurface(rast))
-FROM (
-	SELECT
-		ST_SetValue(
-			ST_SetValue(
-				ST_SetValue(
-					ST_SetValue(
-						ST_SetValue(
-							ST_SetValue(
-								ST_SetValue(
-									ST_SetValue(
-										ST_SetValue(
-											ST_AddBand(
-												ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0),
-												1, '32BUI', 1, 0
-											),
-											1, 1, 1, 0
-										),
-										1, 2, 2, 0
-									),
-									1, 3, 3, 0
-								),
-								1, 4, 4, 0
-							),
-							1, 5, 5, 0
-						),
-						1, 5, 1, 0
-					),
-					1, 4, 2, 0
-				),
-				1, 2, 4, 0
-			),
-			1, 1, 5, 0
-		) AS rast
-	FROM raster_surface
-) foo;
-
-                                                                                                                      st_astext                                                                                                                       
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- MULTIPOLYGON(((1 0,2 0,3 0,4 0,4 -1,3 -1,3 -2,2 -2,2 -1,1 -1,1 0)),((0 -1,1 -1,1 -2,2 -2,2 -3,1 -3,1 -4,0 -4,0 -3,0 -2,0 -1)),((4 -1,5 -1,5 -2,5 -3,5 -4,4 -4,4 -3,3 -3,3 -2,4 -2,4 -1)),((2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,2 -5,1 -5,1 -4,2 -4,2 -3)))
-				</programlisting>
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_DumpAsPolygons" />, 
-					<xref linkend="RT_ST_PixelAsPolygon" />, 
-					<xref linkend="RT_ST_PixelAsPolygons" />, 
-					<xref linkend="RT_ST_PixelAsPoint" />, 
-					<xref linkend="RT_ST_PixelAsPoints" />, 
-					<xref linkend="RT_ST_PixelAsCentroid" />, 
-					<xref linkend="RT_ST_PixelAsCentroids" />
-				</para>
-			</refsection>
-
-		</refentry>
-
 	</sect1>
 	
 	<sect1 id="Raster_Pixel_Accessors">
@@ -3109,7 +3023,6 @@ WHERE rid=2;
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_BandSurface" />, 
 					<xref linkend="RT_ST_DumpAsPolygons" />, 
 					<xref linkend="RT_ST_PixelAsPolygons" />, 
 					<xref linkend="RT_ST_PixelAsPoint" />, 
@@ -3178,7 +3091,6 @@ FROM (SELECT ST_PixelAsPolygons(
 				<title>See Also</title>
 				<para>
 					<xref linkend="RT_ST_DumpAsPolygons" />, 
-					<xref linkend="RT_ST_BandSurface" />, 
 					<xref linkend="RT_ST_PixelAsPolygon" />, 
 					<xref linkend="RT_ST_PixelAsPoint" />, 
 					<xref linkend="RT_ST_PixelAsPoints" />, 
@@ -3227,8 +3139,7 @@ FROM (SELECT ST_PixelAsPolygons(
 					<xref linkend="RT_ST_PixelAsPolygons" />, 
 					<xref linkend="RT_ST_PixelAsPoints" />, 
 					<xref linkend="RT_ST_PixelAsCentroid" />, 
-					<xref linkend="RT_ST_PixelAsCentroids" />, 
-					<xref linkend="RT_ST_BandSurface" />
+					<xref linkend="RT_ST_PixelAsCentroids" />
 				</para>
 			</refsection>
 
@@ -3274,8 +3185,7 @@ FROM (SELECT ST_PixelAsPolygons(
 					<xref linkend="RT_ST_PixelAsPolygons" />, 
 					<xref linkend="RT_ST_PixelAsPoint" />, 
 					<xref linkend="RT_ST_PixelAsCentroid" />, 
-					<xref linkend="RT_ST_PixelAsCentroids" />, 
-					<xref linkend="RT_ST_BandSurface" />
+					<xref linkend="RT_ST_PixelAsCentroids" />
 				</para>
 			</refsection>
 
@@ -3319,8 +3229,7 @@ FROM (SELECT ST_PixelAsPolygons(
 					<xref linkend="RT_ST_PixelAsPolygons" />, 
 					<xref linkend="RT_ST_PixelAsPoint" />, 
 					<xref linkend="RT_ST_PixelAsPoints" />, 
-					<xref linkend="RT_ST_PixelAsCentroids" />, 
-					<xref linkend="RT_ST_BandSurface" />
+					<xref linkend="RT_ST_PixelAsCentroids" />
 				</para>
 			</refsection>
 
@@ -3366,8 +3275,7 @@ FROM (SELECT ST_PixelAsPolygons(
 					<xref linkend="RT_ST_PixelAsPolygons" />, 
 					<xref linkend="RT_ST_PixelAsPoint" />, 
 					<xref linkend="RT_ST_PixelAsPoints" />, 
-					<xref linkend="RT_ST_PixelAsCentroid" />, 
-					<xref linkend="RT_ST_BandSurface" />
+					<xref linkend="RT_ST_PixelAsCentroid" />
 				</para>
 			</refsection>
 

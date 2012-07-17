@@ -202,8 +202,8 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
 /* Get pixel geographical shape */
 Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS);
 
-/* Get raster band's surface */
-Datum RASTER_getBandSurface(PG_FUNCTION_ARGS);
+/* Get raster band's polygon */
+Datum RASTER_getPolygon(PG_FUNCTION_ARGS);
 
 /* Get pixels of value */
 Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS);
@@ -2745,10 +2745,10 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 }
 
 /**
- * Get raster band's surface
+ * Get raster band's polygon
  */
-PG_FUNCTION_INFO_V1(RASTER_getBandSurface);
-Datum RASTER_getBandSurface(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_getPolygon);
+Datum RASTER_getPolygon(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgraster = NULL;
 	rt_raster raster = NULL;
@@ -2764,7 +2764,7 @@ Datum RASTER_getBandSurface(PG_FUNCTION_ARGS)
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
-		elog(ERROR, "RASTER_getBandSurface: Could not deserialize raster");
+		elog(ERROR, "RASTER_getPolygon: Could not deserialize raster");
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
@@ -2794,7 +2794,7 @@ Datum RASTER_getBandSurface(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(pgraster, 0);
 
 	if (surface == NULL) {
-		elog(ERROR, "RASTER_getBandSurface: Could not get raster band's surface");
+		elog(ERROR, "RASTER_getPolygon: Could not get raster band's surface");
 		PG_RETURN_NULL();
 	}
 
