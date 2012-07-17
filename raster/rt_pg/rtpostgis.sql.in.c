@@ -2496,7 +2496,7 @@ CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1
 -- ST_Polygon
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)
-	RETURNS geometry AS
+	RETURNS geometry
 	AS 'MODULE_PATHNAME','RASTER_getPolygon'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
