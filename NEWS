@@ -16,6 +16,7 @@ PostGIS 2.1.0
 * Enhancements *
   - #823, tiger geocoder: Make loader_generate_script download portion less greedy
   - #1719, Add support for Point and GeometryCollection ST_MakeValid inputs
+  - #1796, Big performance boost for distance calculations in geography
   - #1802, improved function interruptibility.
   - #1856, tiger geocoder: reverse geocoder rating setting for prefer numbered highway name
   - #1661, Add aggregate variant of ST_SameAlignment
