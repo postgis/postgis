@@ -2754,6 +2754,7 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS)
 	rt_raster raster = NULL;
 	int num_bands = 0;
 	int nband = 1;
+	int err;
 	LWMPOLY *surface = NULL;
 	GSERIALIZED *rtn = NULL;
 
@@ -2789,12 +2790,16 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS)
 	}
 
 	/* get band surface */
-	surface = rt_raster_surface(raster, nband - 1);
+	surface = rt_raster_surface(raster, nband - 1, &err);
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 
-	if (surface == NULL) {
+	if (!err) {
 		elog(ERROR, "RASTER_getPolygon: Could not get raster band's surface");
+		PG_RETURN_NULL();
+	}
+	else if (surface == NULL) {
+		elog(NOTICE, "Raster is empty or all pixels of band are NODATA. Returning NULL");
 		PG_RETURN_NULL();
 	}
 

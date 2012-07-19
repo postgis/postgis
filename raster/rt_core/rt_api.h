@@ -1177,12 +1177,13 @@ LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
  * of the output multipolygon.
  *
  * @param raster: the raster to convert to a multipolygon
- * @param nband : the 0-based band of raster rast to use
+ * @param nband: the 0-based band of raster rast to use
  *   if value is less than zero, bands are ignored.
+ * @param err: if 0, error occurred
  *
- * @return the raster surface or NULL on error
+ * @return the raster surface or NULL
  */
-LWMPOLY* rt_raster_surface(rt_raster raster, int nband);
+LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *err);
 
 /**
  * Returns a set of "geomval" value, one for each group of pixel
@@ -1447,6 +1448,28 @@ int rt_raster_intersects(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *intersects
+);
+
+/**
+ * Return zero if error occurred in function.
+ * Parameter overlaps returns non-zero if two rasters overlap
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param overlaps : non-zero value if the two rasters' bands overlaps
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_overlaps(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *overlaps
 );
 
 /*

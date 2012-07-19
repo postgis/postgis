@@ -11456,6 +11456,110 @@ rt_raster_intersects(
 	return 1;
 }
 
+/**
+ * Return zero if error occurred in function.
+ * Parameter overlaps returns non-zero if two rasters overlap
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param overlaps : non-zero value if the two rasters' bands overlaps
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_overlaps(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *overlaps
+) {
+	LWMPOLY *surface1 = NULL;
+	LWMPOLY *surface2 = NULL;
+	GEOSGeometry *geom1 = NULL;
+	GEOSGeometry *geom2 = NULL;
+	int rtn = 0;
+
+	RASTER_DEBUG(3, "Starting");
+
+	assert(NULL != rast1);
+	assert(NULL != rast2);
+
+	if (nband1 < 0 && nband2 < 0) {
+		nband1 = -1;
+		nband2 = -1;
+	}
+	else {
+		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
+		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
+	}
+
+	/* initialize to zero, two rasters do not overlap */
+	*overlaps = 0;
+
+	/* same srid */
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+		rterror("rt_raster_overlaps: The two rasters provided have different SRIDs");
+		return 0;
+	}
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	/* get LWMPOLY of each band */
+	surface1 = rt_raster_surface(rast1, nband1, &rtn);
+	if (!rtn) {
+		rterror("rt_raster_overlaps: Unable to get surface of the specified band from the first raster");
+		return 0;
+	}
+	surface2 = rt_raster_surface(rast2, nband2, &rtn);
+	if (!rtn) {
+		rterror("rt_raster_overlaps: Unable to get surface of the specified band from the second raster");
+		lwmpoly_free(surface1);
+		return 0;
+	}
+
+	/* either surface is NULL, does not overlap */
+	if (surface1 == NULL || surface2 == NULL) {
+		if (surface1 != NULL) lwmpoly_free(surface1);
+		if (surface2 != NULL) lwmpoly_free(surface2);
+		return 1;
+	}
+
+	/* convert LWMPOLY to GEOSGeometry */
+	geom1 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface1));
+	lwmpoly_free(surface1);
+	if (geom1 == NULL) {
+		rterror("rt_raster_overlaps: Unable to convert surface of the specified band from the first raster to a GEOSGeometry");
+		lwmpoly_free(surface2);
+		return 0;
+	}
+
+	geom2 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface2));
+	lwmpoly_free(surface2);
+	if (geom2 == NULL) {
+		rterror("rt_raster_overlaps: Unable to convert surface of the specified band from the second raster to a GEOSGeometry");
+		return 0;
+	}
+
+	rtn = GEOSOverlaps(geom1, geom2);
+	GEOSGeom_destroy(geom1);
+	GEOSGeom_destroy(geom2);
+
+	if (rtn != 2) {
+		RASTER_DEBUGF(4, "the two rasters do %soverlap", rtn != 1 ? "NOT " : "");
+		if (rtn != 0)
+			*overlaps = 1;
+		return 1;
+	}
+	else
+		rterror("rt_raster_overlaps: Unable to run overlap test using GEOSOverlaps()");
+
+	return 0;
+}
+
 /*
  * Return zero if error occurred in function.
  * Paramter aligned returns non-zero if two rasters are aligned
@@ -11938,15 +12042,17 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
  * of the output multipolygon.
  *
  * @param raster: the raster to convert to a multipolygon
- * @param nband : the 0-based band of raster rast to use
+ * @param nband: the 0-based band of raster rast to use
  *   if value is less than zero, bands are ignored.
+ * @param err: if 0, error occurred
  *
- * @return the raster surface or NULL on error
+ * @return the raster surface or NULL
  */
-LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
+LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *err) {
 	rt_band band = NULL;
 	LWGEOM *mpoly = NULL;
 	LWGEOM *tmp = NULL;
+	LWGEOM *clone = NULL;
 	rt_geomval gv = NULL;
 	int gvcount = 0;
 	GEOSGeometry *gc = NULL;
@@ -11955,23 +12061,33 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 	int geomscount = 0;
 	int i = 0;
 
+	/* initialize to 1, no error occurred */
+	*err = 1;
+
 	/* raster is empty, return NULL */
 	if (rt_raster_is_empty(raster))
 		return NULL;
 
 	/* if nband < 0, return the convex hull as a multipolygon */
 	if (nband < 0) {
-		return lwgeom_as_lwmpoly(
-			lwgeom_as_multi(
-				lwpoly_as_lwgeom(
-					rt_raster_get_convex_hull(raster)
-				)
-			)
-		);
+		/*
+			lwgeom_as_multi() only does a shallow clone internally
+			so input and output geometries may share memory
+			hence the deep clone of the output geometry for returning
+			is the only way to guarentee the memory isn't shared
+		*/
+		tmp = lwpoly_as_lwgeom(rt_raster_get_convex_hull(raster));
+		mpoly = lwgeom_as_multi(tmp);
+		clone = lwgeom_clone_deep(mpoly);
+		lwgeom_free(tmp);
+		lwgeom_free(mpoly);
+
+		return lwgeom_as_lwmpoly(clone);
 	}
 	/* check that nband is valid */
 	else if (nband >= rt_raster_get_num_bands(raster)) {
 		rterror("rt_raster_surface: The band index %d is invalid", nband);
+		*err = 0;
 		return NULL;
 	}
 
@@ -11979,6 +12095,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 	band = rt_raster_get_band(raster, nband);
 	if (band == NULL) {
 		rterror("rt_raster_surface: Error getting band %d from raster", nband);
+		*err = 0;
 		return NULL;
 	}
 
@@ -11987,13 +12104,19 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 		rt_band_get_isnodata_flag(band) || 
 		!rt_band_get_hasnodata_flag(band)
 	) {
-		return lwgeom_as_lwmpoly(
-			lwgeom_as_multi(
-				lwpoly_as_lwgeom(
-					rt_raster_get_convex_hull(raster)
-				)
-			)
-		);
+		/*
+			lwgeom_as_multi() only does a shallow clone internally
+			so input and output geometries may share memory
+			hence the deep clone of the output geometry for returning
+			is the only way to guarentee the memory isn't shared
+		*/
+		tmp = lwpoly_as_lwgeom(rt_raster_get_convex_hull(raster));
+		mpoly = lwgeom_as_multi(tmp);
+		clone = lwgeom_clone_deep(mpoly);
+		lwgeom_free(tmp);
+		lwgeom_free(mpoly);
+
+		return lwgeom_as_lwmpoly(clone);
 	}
 
 	/* initialize GEOS */
@@ -12004,6 +12127,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 	/* no polygons returned */
 	if (gvcount < 1) {
 		RASTER_DEBUG(3, "All pixels of band are NODATA.  Returning NULL");
+		if (gv != NULL) rtdealloc(gv);
 		return NULL;
 	}
 	/* more than 1 polygon */
@@ -12015,6 +12139,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 			rterror("rt_raster_surface: Unable to allocate memory for pixel polygons as GEOSGeometry");
 			for (i = 0; i < gvcount; i++) lwpoly_free(gv[i].geom);
 			rtdealloc(gv);
+			*err = 0;
 			return NULL;
 		}
 		for (i = 0; i < gvcount; i++) {
@@ -12048,6 +12173,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 			for (i = 0; i < geomscount; i++)
 				GEOSGeom_destroy(geoms[i]);
 			rtdealloc(geoms);
+			*err = 0;
 			return NULL;
 		}
 
@@ -12066,6 +12192,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 #else
 			rterror("rt_raster_surface: Unable to union the pixel polygons using GEOSUnionCascaded()");
 #endif
+			*err = 0;
 			return NULL;
 		}
 
@@ -12111,7 +12238,6 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 	if (mpoly != NULL) {
 		/* convert to multi */
 		if (!lwgeom_is_collection(mpoly)) {
-			LWGEOM *tmp2 = NULL;
 			tmp = mpoly;
 
 #if POSTGIS_DEBUG_LEVEL > 3
@@ -12131,10 +12257,10 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband) {
 				is the only way to guarentee the memory isn't shared
 			*/
 			mpoly = lwgeom_as_multi(tmp);
-			tmp2 = lwgeom_clone_deep(mpoly);
+			clone = lwgeom_clone_deep(mpoly);
 			lwgeom_free(tmp);
 			lwgeom_free(mpoly);
-			mpoly = tmp2;
+			mpoly = clone;
 
 			RASTER_DEBUGF(4, "mpoly @ %p", mpoly);
 

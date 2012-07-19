@@ -2375,6 +2375,477 @@ static void testIntersects() {
 	deepRelease(rast1);
 }
 
+static void testOverlaps() {
+	rt_raster rast1;
+	rt_raster rast2;
+	rt_band band1;
+	rt_band band2;
+	double nodata;
+	int rtn;
+	int overlaps;
+
+	/*
+		rast1
+
+		(-1, -1)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(1, 1)
+	*/
+	rast1 = rt_raster_new(2, 2);
+	assert(rast1);
+	rt_raster_set_offsets(rast1, -1, -1);
+
+	band1 = addBand(rast1, PT_8BUI, 1, 0);
+	CHECK(band1);
+	rt_band_set_nodata(band1, 0);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+
+	nodata = rt_band_get_nodata(band1);
+	CHECK_EQUALS(nodata, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast1, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(2, 2)
+	*/
+	rast2 = rt_raster_new(2, 2);
+	assert(rast2);
+
+	band2 = addBand(rast2, PT_8BUI, 1, 0);
+	CHECK(band2);
+	rt_band_set_nodata(band2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+
+	nodata = rt_band_get_nodata(band2);
+	CHECK_EQUALS(nodata, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps == 1));
+
+	rtn = rt_raster_overlaps(
+		rast1, -1,
+		rast2, -1,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps == 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|0|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(2, 2)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|1|0|
+						+-+-+
+						|1|1|
+						+-+-+
+								(2, 2)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps == 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|0|0|
+						+-+-+
+						|0|1|
+						+-+-+
+								(2, 2)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+
+						|0|0|
+						+-+-+
+						|0|0|
+						+-+-+
+								(2, 2)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	/*
+		rast2
+
+		(2, 0)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(4, 2)
+	*/
+	rt_raster_set_offsets(rast2, 2, 0);
+
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	/*
+		rast2
+
+		(0.1, 0.1)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(0.9, 0.9)
+	*/
+	rt_raster_set_offsets(rast2, 0.1, 0.1);
+	rt_raster_set_scale(rast2, 0.4, 0.4);
+
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	/*
+		rast2
+
+		(-0.1, 0.1)
+						+-+-+
+						|1|1|
+						+-+-+
+						|1|1|
+						+-+-+
+								(0.9, 0.9)
+	*/
+	rt_raster_set_offsets(rast2, -0.1, 0.1);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	deepRelease(rast2);
+
+	/*
+		rast2
+
+		(0, 0)
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+									(3, 3)
+	*/
+	rast2 = rt_raster_new(3, 3);
+	assert(rast2);
+
+	band2 = addBand(rast2, PT_8BUI, 1, 0);
+	CHECK(band2);
+	rt_band_set_nodata(band2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+
+	nodata = rt_band_get_nodata(band2);
+	CHECK_EQUALS(nodata, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps == 1));
+
+	/*
+		rast2
+
+		(-2, -2)
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+						|1|1|1|
+						+-+-+-+
+									(1, 1)
+	*/
+	rt_raster_set_offsets(rast2, -2, -2);
+
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	/*
+		rast2
+
+		(-2, -2)
+						+-+-+-+
+						|0|1|1|
+						+-+-+-+
+						|1|0|1|
+						+-+-+-+
+						|1|1|0|
+						+-+-+-+
+									(1, 1)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps == 1));
+
+	/*
+		rast2
+
+		(-2, -2)
+						+-+-+-+
+						|0|1|1|
+						+-+-+-+
+						|1|0|0|
+						+-+-+-+
+						|1|0|0|
+						+-+-+-+
+									(1, 1)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	/*
+		rast2
+
+		(-2, -2)
+						+-+-+-+
+						|0|1|0|
+						+-+-+-+
+						|1|0|0|
+						+-+-+-+
+						|0|0|0|
+						+-+-+-+
+									(1, 1)
+	*/
+	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps != 1));
+
+	deepRelease(rast2);
+
+	/* skew tests */
+	/* rast2 (skewed by -0.5, 0.5) */
+	rast2 = rt_raster_new(3, 3);
+	assert(rast2);
+	rt_raster_set_skews(rast2, -0.5, 0.5);
+
+	band2 = addBand(rast2, PT_8BUI, 1, 0);
+	CHECK(band2);
+	rt_band_set_nodata(band2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps == 1));
+
+	/* rast2 (skewed by -1, 1) */
+	rt_raster_set_skews(rast2, -1, 1);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps == 1));
+
+	/* rast2 (skewed by 1, -1) */
+	rt_raster_set_skews(rast2, 1, -1);
+
+	rtn = rt_raster_overlaps(
+		rast1, 0,
+		rast2, 0,
+		&overlaps
+	);
+	CHECK((rtn != 0));
+	CHECK((overlaps == 1));
+
+	deepRelease(rast2);
+	deepRelease(rast1);
+}
+
 static void testAlignment() {
 	rt_raster rast1;
 	rt_raster rast2;
@@ -2949,6 +3420,7 @@ static void testRasterSurface() {
 	int x, y;
 	char *wkt = NULL;
 	LWMPOLY *mpoly = NULL;
+	int err;
 
 	rast = rt_raster_new(maxX, maxY);
 	assert(rast);
@@ -2965,7 +3437,8 @@ static void testRasterSurface() {
 		}
 	}
 
-	mpoly = rt_raster_surface(rast, 0);
+	mpoly = rt_raster_surface(rast, 0, &err);
+	CHECK(err);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((0 0,0 -5,5 -5,5 0,0 0)))"));
@@ -2976,7 +3449,8 @@ static void testRasterSurface() {
 	/* 0,0 NODATA */
 	rt_band_set_pixel(band, 0, 0, 0);
 
-	mpoly = rt_raster_surface(rast, 0);
+	mpoly = rt_raster_surface(rast, 0, &err);
+	CHECK(err);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0)))"));
@@ -2987,7 +3461,8 @@ static void testRasterSurface() {
 	/* plus 1,1 NODATA */
 	rt_band_set_pixel(band, 1, 1, 0);
 
-	mpoly = rt_raster_surface(rast, 0);
+	mpoly = rt_raster_surface(rast, 0, &err);
+	CHECK(err);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1)))"));
@@ -2998,7 +3473,8 @@ static void testRasterSurface() {
 	/* plus 2,2 NODATA */
 	rt_band_set_pixel(band, 2, 2, 0);
 
-	mpoly = rt_raster_surface(rast, 0);
+	mpoly = rt_raster_surface(rast, 0, &err);
+	CHECK(err);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 #if POSTGIS_GEOS_VERSION >= 33
@@ -3013,7 +3489,8 @@ static void testRasterSurface() {
 	/* plus 3,3 NODATA */
 	rt_band_set_pixel(band, 3, 3, 0);
 
-	mpoly = rt_raster_surface(rast, 0);
+	mpoly = rt_raster_surface(rast, 0, &err);
+	CHECK(err);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 #if POSTGIS_GEOS_VERSION >= 33
@@ -3028,7 +3505,8 @@ static void testRasterSurface() {
 	/* plus 4,4 NODATA */
 	rt_band_set_pixel(band, 4, 4, 0);
 
-	mpoly = rt_raster_surface(rast, 0);
+	mpoly = rt_raster_surface(rast, 0, &err);
+	CHECK(err);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((4 -4,4 -5,0 -5,0 -1,1 -1,1 -2,2 -2,2 -3,3 -3,3 -4,4 -4)),((1 -1,1 0,5 0,5 -4,4 -4,4 -3,3 -3,3 -2,2 -2,2 -1,1 -1)))"));
@@ -3042,7 +3520,8 @@ static void testRasterSurface() {
 	rt_band_set_pixel(band, 1, 3, 0);
 	rt_band_set_pixel(band, 0, 4, 0);
 
-	mpoly = rt_raster_surface(rast, 0);
+	mpoly = rt_raster_surface(rast, 0, &err);
+	CHECK(err);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 -4,2 -4,2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,1 -5,1 -4)),((1 -4,0 -4,0 -1,1 -1,1 -2,2 -2,2 -3,1 -3,1 -4)),((3 -2,4 -2,4 -1,5 -1,5 -4,4 -4,4 -3,3 -3,3 -2)),((3 -2,2 -2,2 -1,1 -1,1 0,4 0,4 -1,3 -1,3 -2)))"));
@@ -3301,6 +3780,10 @@ main()
 
 		printf("Testing rt_raster_intersects... ");
 		testIntersects();
+		printf("OK\n");
+
+		printf("Testing rt_raster_overlaps... ");
+		testOverlaps();
 		printf("OK\n");
 
 		printf("Testing rt_raster_same_alignment... ");
