@@ -5964,6 +5964,8 @@ rt_raster_gdal_polygonize(
 			if (isValid)
 				break;
 
+			RASTER_DEBUG(3, "fixing invalid geometry");
+
 			/* make geometry valid */
 			lwgeomValid = lwgeom_make_valid(lwgeom);
 			if (lwgeomValid == NULL) {
@@ -5978,6 +5980,14 @@ rt_raster_gdal_polygonize(
 
 		/* save lwgeom */
 		pols[j].geom = lwgeom_as_lwpoly(lwgeom);
+
+#if POSTGIS_DEBUG_LEVEL > 3
+		{
+			char *wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, NULL);
+			RASTER_DEBUGF(4, "geom = %s", wkt);
+			rtdealloc(wkt);
+		}
+#endif
 
 		/* set pixel value */
 		pols[j].val = dValue;
@@ -11531,40 +11541,36 @@ int rt_raster_geos_spatial_relationship(
 		return 0;
 	}
 
+	flag = 0;
 	switch (testtype) {
 		case GSR_OVERLAPS:
 			rtn = GEOSOverlaps(geom1, geom2);
-			if (rtn == 2) {
-				rterror("rt_raster_geos_spatial_relationship: Unable to run overlap test using GEOSOverlaps()");
-				flag = 0;
-			}
-			else {
-				RASTER_DEBUGF(4, "the two rasters do %soverlap", rtn != 1 ? "NOT " : "");
-				if (rtn != 0)
-					*testresult = 1;
-				flag = 1;
-			}
 			break;
 		case GSR_TOUCHES:
 			rtn = GEOSTouches(geom1, geom2);
-			if (rtn == 2) {
-				rterror("rt_raster_geos_spatial_relationship: Unable to run touch test using GEOSTouches()");
-				flag = 0;
-			}
-			else {
-				RASTER_DEBUGF(4, "the two rasters do %touch", rtn != 1 ? "NOT " : "");
-				if (rtn != 0)
-					*testresult = 1;
-				flag = 1;
-			}
 			break;
 		default:
 			rterror("rt_raster_geos_spatial_relationship: Unknown or unsupported GEOS spatial relationship test");
-			flag = 0;
+			flag = -1;
 			break;
 	}
 	GEOSGeom_destroy(geom1);
 	GEOSGeom_destroy(geom2);
+
+	/* something happened in the spatial relationship test */
+	if (rtn == 2) {
+		rterror("rt_raster_geos_spatial_relationship: Unable to run the appropriate GEOS spatial relationship test");
+		flag = 0;
+	}
+	/* spatial relationship test ran fine */
+	else if (flag >= 0) {
+		if (rtn != 0)
+			*testresult = 1;
+		flag = 1;
+	}
+	/* flag < 0 for when testtype is unknown */
+	else
+		flag = 0;
 
 	return flag;
 }
@@ -12299,8 +12305,16 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *err) {
 		GEOSGeom_destroy(gunion);
 	}
 	else {
-		mpoly = lwpoly_as_lwgeom(gv[i].geom);
+		mpoly = lwpoly_as_lwgeom(gv[0].geom);
 		rtdealloc(gv);
+
+#if POSTGIS_DEBUG_LEVEL > 3
+			{
+				char *wkt = lwgeom_to_wkt(mpoly, WKT_ISO, DBL_DIG, NULL);
+				RASTER_DEBUGF(4, "geom 0 = %s", wkt);
+				rtdealloc(wkt);
+			}
+#endif
 	}
 
 	/* specify SRID */
