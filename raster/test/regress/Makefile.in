@@ -124,9 +124,9 @@ TEST_GIST = \
 	drop_rt_gist_test
 	
 TEST_SREL = \
-	rt_spatial_relationship \
 	rt_intersects \
 	rt_overlaps \
+	rt_touches \
 	rt_samealignment
 	
 TEST_BUGS = \

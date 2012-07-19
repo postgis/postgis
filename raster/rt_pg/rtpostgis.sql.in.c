@@ -3325,6 +3325,112 @@ CREATE OR REPLACE FUNCTION st_overlaps(geom geometry, rast raster, nband integer
 	COST 1000;
 
 -----------------------------------------------------------------------
+-- ST_Touches(raster, raster)
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_touches(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'RASTER_touches'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_touches(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
+	RETURNS boolean
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_touches(st_convexhull($1), st_convexhull($3)) ELSE _st_touches($1, $2, $3, $4) END $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_touches(rast1 raster, rast2 raster)
+	RETURNS boolean
+	AS $$ SELECT st_touches($1, NULL::integer, $2, NULL::integer) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
+-- ST_Touches(raster, geometry) in raster-space
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_touches(rast raster, geom geometry, nband integer DEFAULT NULL)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		gr raster;
+		scale double precision;
+	BEGIN
+		IF ST_Touches(geom, ST_ConvexHull(rast)) IS NOT TRUE THEN
+			RETURN FALSE;
+		ELSEIF nband IS NULL THEN
+			RETURN TRUE;
+		END IF;
+
+		-- scale is set to 1/100th of raster for granularity
+		SELECT least(scalex, scaley) / 100. INTO scale FROM ST_Metadata(rast);
+		gr := _st_asraster(geom, scale, scale);
+		IF gr IS NULL THEN
+			RAISE EXCEPTION 'Unable to convert geometry to a raster';
+			RETURN FALSE;
+		END IF;
+
+		RETURN ST_Touches(rast, nband, gr, 1);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_touches(rast raster, geom geometry, nband integer DEFAULT NULL)
+	RETURNS boolean
+	AS $$ SELECT $1::geometry && $2 AND _st_touches($1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_touches(rast raster, nband integer, geom geometry)
+	RETURNS boolean
+	AS $$ SELECT $1::geometry && $3 AND _st_touches($1, $3, $2) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
+-- ST_Touches(geometry, raster) in geometry-space
+-----------------------------------------------------------------------
+
+-- This function can not be STRICT
+CREATE OR REPLACE FUNCTION _st_touches(geom geometry, rast raster, nband integer DEFAULT NULL)
+	RETURNS boolean AS $$
+	DECLARE
+		convexhull geometry;
+		hasnodata boolean := TRUE;
+		surface geometry;
+	BEGIN
+		convexhull := ST_ConvexHull(rast);
+		IF nband IS NOT NULL THEN
+			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
+		END IF;
+
+		IF ST_Touches(geom, convexhull) IS NOT TRUE THEN
+			RETURN FALSE;
+		ELSEIF nband IS NULL OR hasnodata IS FALSE THEN
+			RETURN TRUE;
+		END IF;
+
+		-- get band polygon
+		surface := ST_Polygon(rast, nband);
+
+		IF surface IS NOT NULL THEN
+			RETURN ST_Touches(geom, surface);
+		END IF;
+
+		RETURN FALSE;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE
+	COST 1000;
+
+-- This function can not be STRICT
+CREATE OR REPLACE FUNCTION st_touches(geom geometry, rast raster, nband integer DEFAULT NULL)
+	RETURNS boolean AS
+	$$ SELECT $1 && $2::geometry AND _st_touches($1, $2, $3); $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
 -- ST_Intersection(geometry, raster) in geometry-space
 -----------------------------------------------------------------------
 
