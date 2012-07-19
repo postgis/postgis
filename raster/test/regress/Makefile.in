@@ -126,6 +126,7 @@ TEST_GIST = \
 TEST_SREL = \
 	rt_spatial_relationship \
 	rt_intersects \
+	rt_overlaps \
 	rt_samealignment
 	
 TEST_BUGS = \
