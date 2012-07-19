@@ -179,6 +179,11 @@ typedef enum {
 	ET_SECOND
 } rt_extenttype;
 
+typedef enum {
+	GSR_OVERLAPS = 0,
+	GSR_TOUCHES
+} rt_geos_spatial_test;
+
 /**
 * Global functions for memory/logging handlers.
 */
@@ -1470,6 +1475,28 @@ int rt_raster_overlaps(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *overlaps
+);
+
+/**
+ * Return zero if error occurred in function.
+ * Parameter touches returns non-zero if two rasters touch
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param touches : non-zero value if the two rasters' bands touch
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_touches(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *touches
 );
 
 /*

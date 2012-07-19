@@ -11456,6 +11456,119 @@ rt_raster_intersects(
 	return 1;
 }
 
+static
+int rt_raster_geos_spatial_relationship(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	rt_geos_spatial_test testtype,
+	int *testresult
+) {
+	LWMPOLY *surface1 = NULL;
+	LWMPOLY *surface2 = NULL;
+	GEOSGeometry *geom1 = NULL;
+	GEOSGeometry *geom2 = NULL;
+	int rtn = 0;
+	int flag = 0;
+
+	RASTER_DEBUG(3, "Starting");
+
+	assert(NULL != rast1);
+	assert(NULL != rast2);
+
+	if (nband1 < 0 && nband2 < 0) {
+		nband1 = -1;
+		nband2 = -1;
+	}
+	else {
+		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
+		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
+	}
+
+	/* initialize to zero, false result of spatial relationship test */
+	*testresult = 0;
+
+	/* same srid */
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+		rterror("rt_raster_geos_spatial_relationship: The two rasters provided have different SRIDs");
+		return 0;
+	}
+
+	initGEOS(lwnotice, lwgeom_geos_error);
+
+	/* get LWMPOLY of each band */
+	surface1 = rt_raster_surface(rast1, nband1, &rtn);
+	if (!rtn) {
+		rterror("rt_raster_geos_spatial_relationship: Unable to get surface of the specified band from the first raster");
+		return 0;
+	}
+	surface2 = rt_raster_surface(rast2, nband2, &rtn);
+	if (!rtn) {
+		rterror("rt_raster_geos_spatial_relationship: Unable to get surface of the specified band from the second raster");
+		lwmpoly_free(surface1);
+		return 0;
+	}
+
+	/* either surface is NULL, spatial relationship test is false */
+	if (surface1 == NULL || surface2 == NULL) {
+		if (surface1 != NULL) lwmpoly_free(surface1);
+		if (surface2 != NULL) lwmpoly_free(surface2);
+		return 1;
+	}
+
+	/* convert LWMPOLY to GEOSGeometry */
+	geom1 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface1));
+	lwmpoly_free(surface1);
+	if (geom1 == NULL) {
+		rterror("rt_raster_geos_spatial_relationship: Unable to convert surface of the specified band from the first raster to a GEOSGeometry");
+		lwmpoly_free(surface2);
+		return 0;
+	}
+
+	geom2 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface2));
+	lwmpoly_free(surface2);
+	if (geom2 == NULL) {
+		rterror("rt_raster_geos_spatial_relationship: Unable to convert surface of the specified band from the second raster to a GEOSGeometry");
+		return 0;
+	}
+
+	switch (testtype) {
+		case GSR_OVERLAPS:
+			rtn = GEOSOverlaps(geom1, geom2);
+			if (rtn == 2) {
+				rterror("rt_raster_geos_spatial_relationship: Unable to run overlap test using GEOSOverlaps()");
+				flag = 0;
+			}
+			else {
+				RASTER_DEBUGF(4, "the two rasters do %soverlap", rtn != 1 ? "NOT " : "");
+				if (rtn != 0)
+					*testresult = 1;
+				flag = 1;
+			}
+			break;
+		case GSR_TOUCHES:
+			rtn = GEOSTouches(geom1, geom2);
+			if (rtn == 2) {
+				rterror("rt_raster_geos_spatial_relationship: Unable to run touch test using GEOSTouches()");
+				flag = 0;
+			}
+			else {
+				RASTER_DEBUGF(4, "the two rasters do %touch", rtn != 1 ? "NOT " : "");
+				if (rtn != 0)
+					*testresult = 1;
+				flag = 1;
+			}
+			break;
+		default:
+			rterror("rt_raster_geos_spatial_relationship: Unknown or unsupported GEOS spatial relationship test");
+			flag = 0;
+			break;
+	}
+	GEOSGeom_destroy(geom1);
+	GEOSGeom_destroy(geom2);
+
+	return flag;
+}
+
 /**
  * Return zero if error occurred in function.
  * Parameter overlaps returns non-zero if two rasters overlap
@@ -11477,87 +11590,45 @@ int rt_raster_overlaps(
 	rt_raster rast2, int nband2,
 	int *overlaps
 ) {
-	LWMPOLY *surface1 = NULL;
-	LWMPOLY *surface2 = NULL;
-	GEOSGeometry *geom1 = NULL;
-	GEOSGeometry *geom2 = NULL;
-	int rtn = 0;
-
 	RASTER_DEBUG(3, "Starting");
 
-	assert(NULL != rast1);
-	assert(NULL != rast2);
+	return rt_raster_geos_spatial_relationship(
+		rast1, nband1,
+		rast2, nband2,
+		GSR_OVERLAPS,
+		overlaps
+	);
+}
 
-	if (nband1 < 0 && nband2 < 0) {
-		nband1 = -1;
-		nband2 = -1;
-	}
-	else {
-		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
-		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
-	}
+/**
+ * Return zero if error occurred in function.
+ * Parameter touches returns non-zero if two rasters touch
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param touches : non-zero value if the two rasters' bands touch
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_touches(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *touches
+) {
+	RASTER_DEBUG(3, "Starting");
 
-	/* initialize to zero, two rasters do not overlap */
-	*overlaps = 0;
-
-	/* same srid */
-	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
-		rterror("rt_raster_overlaps: The two rasters provided have different SRIDs");
-		return 0;
-	}
-
-	initGEOS(lwnotice, lwgeom_geos_error);
-
-	/* get LWMPOLY of each band */
-	surface1 = rt_raster_surface(rast1, nband1, &rtn);
-	if (!rtn) {
-		rterror("rt_raster_overlaps: Unable to get surface of the specified band from the first raster");
-		return 0;
-	}
-	surface2 = rt_raster_surface(rast2, nband2, &rtn);
-	if (!rtn) {
-		rterror("rt_raster_overlaps: Unable to get surface of the specified band from the second raster");
-		lwmpoly_free(surface1);
-		return 0;
-	}
-
-	/* either surface is NULL, does not overlap */
-	if (surface1 == NULL || surface2 == NULL) {
-		if (surface1 != NULL) lwmpoly_free(surface1);
-		if (surface2 != NULL) lwmpoly_free(surface2);
-		return 1;
-	}
-
-	/* convert LWMPOLY to GEOSGeometry */
-	geom1 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface1));
-	lwmpoly_free(surface1);
-	if (geom1 == NULL) {
-		rterror("rt_raster_overlaps: Unable to convert surface of the specified band from the first raster to a GEOSGeometry");
-		lwmpoly_free(surface2);
-		return 0;
-	}
-
-	geom2 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface2));
-	lwmpoly_free(surface2);
-	if (geom2 == NULL) {
-		rterror("rt_raster_overlaps: Unable to convert surface of the specified band from the second raster to a GEOSGeometry");
-		return 0;
-	}
-
-	rtn = GEOSOverlaps(geom1, geom2);
-	GEOSGeom_destroy(geom1);
-	GEOSGeom_destroy(geom2);
-
-	if (rtn != 2) {
-		RASTER_DEBUGF(4, "the two rasters do %soverlap", rtn != 1 ? "NOT " : "");
-		if (rtn != 0)
-			*overlaps = 1;
-		return 1;
-	}
-	else
-		rterror("rt_raster_overlaps: Unable to run overlap test using GEOSOverlaps()");
-
-	return 0;
+	return rt_raster_geos_spatial_relationship(
+		rast1, nband1,
+		rast2, nband2,
+		GSR_TOUCHES,
+		touches
+	);
 }
 
 /*
