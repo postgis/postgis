@@ -9,7 +9,7 @@ PostGIS 2.1.0
   - ST_PixelAsCentroid, ST_PixelAsCentroids (Bborie Park / UC Davis)
   - ST_Raster2WorldCoord, ST_World2RasterCoord (Bborie Park / UC Davis)
   - Additional raster/raster and raster/geometry spatial relationship
-    functions (ST_Overlaps) (Bborie Park / UC Davis)
+    functions (ST_Overlaps, ST_Touches) (Bborie Park / UC Davis)
   - #1643, Tiger Geocoder - Tiger 2011 loader (Regina Obe / Paragon Corporation) 
     Funded by Hunter Systems Group
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
