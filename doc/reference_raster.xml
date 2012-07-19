@@ -8863,9 +8863,141 @@ WHERE A.rid =2 ;
 		  </refsection>	
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Intersection" /></para>
+				<para>
+					<xref linkend="RT_ST_Overlaps" />
+				</para>
 			</refsection>
 		</refentry>
+
+	<refentry id="RT_ST_Overlaps">
+		<refnamediv>
+			<refname>ST_Overlaps</refname>
+			<refpurpose>
+				Return true if the raster spatially overlaps a separate raster or geometry. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rasta</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbanda</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastb</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandb</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rasta</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastb</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rast</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nband</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>geommin</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rast</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>geommin</parameter>
+					</paramdef>
+					<paramdef choice='opt'>
+						<type>integer </type>
+						<parameter>nband=NULL</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>geommin</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rast</parameter>
+					</paramdef>
+					<paramdef choice='opt'>
+						<type>integer </type>
+						<parameter>nband=NULL</parameter>
+					</paramdef>
+				</funcprototype>
+
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Return true if the raster spatially overlaps a separate raster or geometry. This means that the raster/raster or raster/geometry combinations intersect but one does not completely contain the other. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</para>
+
+			<note>
+				<para>
+					Depending on the order that the raster and geometry is passed to ST_Overlaps(), the test will operate in either raster-space or geometry-space.  If ST_Overlaps(raster, ....), the test is in raster-space (the geometry is converted to a raster).  If ST_Overlaps(geometry, ...), the test is in geometry-space (the raster is converted to a set of pixel polygons).
+				</para>
+			</note>
+
+			<note>
+				<para>
+					This operand will make use of any indexes that may be available on the geometries / rasters.
+				</para>
+			</note>
+				
+			<para>Availability: 2.1.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>
+-- needs an example
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="RT_ST_Intersects" />
+			</para>
+		</refsection>
+	</refentry>
 		
 	<refentry id="RT_ST_SameAlignment">
 		<refnamediv>
