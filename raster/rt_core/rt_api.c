@@ -5918,6 +5918,15 @@ rt_raster_gdal_polygonize(
 			return NULL;
 		}
 
+#if POSTGIS_DEBUG_LEVEL > 3
+		{
+			char *wkt = NULL;
+			OGR_G_ExportToWkt(hGeom, &wkt);
+			RASTER_DEBUGF(4, "GDAL wkt = %s", wkt);
+			CPLFree(wkt);
+		}
+#endif
+
 		/* export WKB with LSB byte order */
 		OGR_G_ExportToWkb(hGeom, wkbNDR, wkb);
 
@@ -5984,7 +5993,7 @@ rt_raster_gdal_polygonize(
 #if POSTGIS_DEBUG_LEVEL > 3
 		{
 			char *wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, NULL);
-			RASTER_DEBUGF(4, "geom = %s", wkt);
+			RASTER_DEBUGF(4, "LWGEOM wkt = %s", wkt);
 			rtdealloc(wkt);
 		}
 #endif
