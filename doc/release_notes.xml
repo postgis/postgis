@@ -10,6 +10,7 @@
          <title>Bug Fixes</title>
          <para>#1825, containsproperly fix in prepared geometry.</para>
          <para>#1832, Crash when updating GIST index on geography column</para>
+         <para>#1865, don't strip comments COPY data from dumps on restore</para>
         
         </simplesect>
       </sect1>

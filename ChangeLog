@@ -1,3 +1,63 @@
+2012-07-12 18:12  pramsey
+
+	* regress/regress_index_nulls.sql,
+	  regress/regress_index_nulls_expected: dd in regression test for
+	  nulls and empties in geography indexes (#1904)
+
+2012-07-12 13:34  strk
+
+	* NEWS, utils/postgis_restore.pl: Don't strip comment lines in the
+	  middle of COPY commands (#1865)
+	  
+	  Thanks J Smith <dark.panda@gmail.com>
+
+2012-07-12 12:54  robe
+
+	* NEWS, doc/release_notes.xml: change number (had duplicate ticket
+	  in there before)
+
+2012-07-12 12:43  robe
+
+	* NEWS, doc/release_notes.xml: update to reflect changes in 1.5.5
+	  and prior 1.4* releases
+
+2012-05-22 09:05  pramsey
+
+	* postgis/geography_gist.c: Crash when updating GIST index on
+	  geography column (#1832) <raduilie>
+
+2012-05-20 07:47  pramsey
+
+	* NEWS: Fix release date (too) and add a bug fix note
+
+2012-05-17 13:40  pramsey
+
+	* postgis/lwgeom_geos_prepared.c: containsproperly: Conditional
+	  jump or move depends on uninitialised value (#1825)
+
+2012-05-17 11:55  pramsey
+
+	* liblwgeom/lwgeodetic.c: Error in empty short circuit (#1828)
+
+2012-05-07 11:52  robe
+
+	* doc/release_notes.xml: Correct the release date. I really hope we
+	  didn't move backward in time; I'm not ready for that.
+
+2012-05-07 11:45  robe
+
+	* NEWS, doc/release_notes.xml: missing ticket item
+
+2012-05-06 10:32  pramsey
+
+	* NEWS, README.postgis, Version.config: Push forward versions for
+	  1.5.5 development
+
+2012-05-06 10:29  pramsey
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml: Updates
+	  for 1.5.4
+
 2012-05-04 08:29  strk
 
 	* .gitignore: Copy .gitignore file from trunk
