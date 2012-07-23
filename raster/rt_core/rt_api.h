@@ -181,7 +181,8 @@ typedef enum {
 
 typedef enum {
 	GSR_OVERLAPS = 0,
-	GSR_TOUCHES
+	GSR_TOUCHES,
+	GSR_CONTAINS
 } rt_geos_spatial_test;
 
 /**
@@ -1475,6 +1476,28 @@ int rt_raster_overlaps(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *overlaps
+);
+
+/**
+ * Return zero if error occurred in function.
+ * Parameter contains returns non-zero if rast1 contains rast2
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param touches : non-zero value if rast1 contains rast2
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_contains(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *contains
 );
 
 /**

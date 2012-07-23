@@ -11556,6 +11556,9 @@ int rt_raster_geos_spatial_relationship(
 		case GSR_TOUCHES:
 			rtn = GEOSTouches(geom1, geom2);
 			break;
+		case GSR_CONTAINS:
+			rtn = GEOSContains(geom1, geom2);
+			break;
 		default:
 			rterror("rt_raster_geos_spatial_relationship: Unknown or unsupported GEOS spatial relationship test");
 			flag = -1;
@@ -11641,6 +11644,37 @@ int rt_raster_touches(
 		rast2, nband2,
 		GSR_TOUCHES,
 		touches
+	);
+}
+
+/**
+ * Return zero if error occurred in function.
+ * Parameter contains returns non-zero if rast1 contains rast2
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param touches : non-zero value if rast1 contains rast2
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_contains(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *contains
+) {
+	RASTER_DEBUG(3, "Starting");
+
+	return rt_raster_geos_spatial_relationship(
+		rast1, nband1,
+		rast2, nband2,
+		GSR_CONTAINS,
+		contains
 	);
 }
 
