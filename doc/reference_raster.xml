@@ -4798,7 +4798,7 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 			<refsection>
 				<title>Description</title>
 				
-				<para>Sets the value that represents no data for the band.  Band 1 is assumed if not specified. This will effect <xref linkend="RT_ST_Polygon" /> and <xref linkend="RT_ST_ConvexHull" /> results.</para>
+				<para>Sets the value that represents no data for the band.  Band 1 is assumed if not specified. This will affect results from <xref linkend="RT_ST_Polygon" />, <xref linkend="RT_ST_DumpAsPolygons" />, and the ST_PixelAs...() functions.</para>
 				</refsection>
 				
 				<refsection>
@@ -7865,8 +7865,8 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
 		  <refsection>
 			<title>Description</title>
 				<para>Availability: 0.1.6 Requires GDAL 1.7 or higher.</para>
-				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based)</para>
-				<para>Changed: 2.1.0 In prior versions would sometimes return a polygon, changed to always return multipolygon</para>
+				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based) and the returning multipolygon is ensured to be valid.</para>
+				<para>Changed: 2.1.0 In prior versions would sometimes return a polygon, changed to always return multipolygon.</para>
 		  </refsection>
 	
 		  <refsection>
@@ -8834,7 +8834,7 @@ a_rid | b_rid | overleft
 
 			<warning>
 				<para>
-					Changed: In 2.1.0, the behavior of the ST_Intersects(raster, geometry) variants changed to match that of ST_Intersects(geometry, raster).
+					Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants changed to match that of ST_Intersects(geometry, raster).
 				</para>
 			</warning>
 
