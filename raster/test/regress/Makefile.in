@@ -127,6 +127,7 @@ TEST_SREL = \
 	rt_intersects \
 	rt_overlaps \
 	rt_touches \
+	rt_contains \
 	rt_samealignment
 	
 TEST_BUGS = \
