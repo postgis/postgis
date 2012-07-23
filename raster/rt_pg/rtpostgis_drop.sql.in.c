@@ -349,7 +349,7 @@ DROP FUNCTION IF EXISTS st_pixelaspolygons(raster, integer);
 -- function deprecated
 DROP FUNCTION IF EXISTS st_bandsurface(raster, integer);
 
--- function no longer exists
+-- function no longer exist or refactored
 DROP FUNCTION IF EXISTS st_intersects(raster, integer, geometry);
 DROP FUNCTION IF EXISTS st_intersects(raster, geometry, integer);
 DROP FUNCTION IF EXISTS st_intersects(geometry, raster, integer);
