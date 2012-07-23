@@ -8736,19 +8736,19 @@ a_rid | b_rid | overleft
 					<funcdef>boolean <function>ST_Intersects</function></funcdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rasta</parameter>
+						<parameter>rastA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>integer </type>
-						<parameter>nbanda</parameter>
+						<parameter>nbandA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rastb</parameter>
+						<parameter>rastB</parameter>
 					</paramdef>
 					<paramdef>
 						<type>integer </type>
-						<parameter>nbandb</parameter>
+						<parameter>nbandB</parameter>
 					</paramdef>
 			  </funcprototype>
 
@@ -8756,11 +8756,11 @@ a_rid | b_rid | overleft
 					<funcdef>boolean <function>ST_Intersects</function></funcdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rasta</parameter>
+						<parameter>rastA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rastb</parameter>
+						<parameter>rastB</parameter>
 					</paramdef>
 			  </funcprototype>
 
@@ -8821,19 +8821,19 @@ a_rid | b_rid | overleft
 					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rasta</parameter>
+						<parameter>rastA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>integer </type>
-						<parameter>nbanda</parameter>
+						<parameter>nbandA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rastb</parameter>
+						<parameter>rastB</parameter>
 					</paramdef>
 					<paramdef>
 						<type>integer </type>
-						<parameter>nbandb</parameter>
+						<parameter>nbandB</parameter>
 					</paramdef>
 				</funcprototype>
 
@@ -8841,11 +8841,11 @@ a_rid | b_rid | overleft
 					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rasta</parameter>
+						<parameter>rastA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rastb</parameter>
+						<parameter>rastB</parameter>
 					</paramdef>
 				</funcprototype>
 
@@ -8897,19 +8897,19 @@ a_rid | b_rid | overleft
 					<funcdef>boolean <function>ST_Touches</function></funcdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rasta</parameter>
+						<parameter>rastA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>integer </type>
-						<parameter>nbanda</parameter>
+						<parameter>nbandA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rastb</parameter>
+						<parameter>rastB</parameter>
 					</paramdef>
 					<paramdef>
 						<type>integer </type>
-						<parameter>nbandb</parameter>
+						<parameter>nbandB</parameter>
 					</paramdef>
 				</funcprototype>
 
@@ -8917,11 +8917,11 @@ a_rid | b_rid | overleft
 					<funcdef>boolean <function>ST_Touches</function></funcdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rasta</parameter>
+						<parameter>rastA</parameter>
 					</paramdef>
 					<paramdef>
 						<type>raster </type>
-						<parameter>rastb</parameter>
+						<parameter>rastB</parameter>
 					</paramdef>
 				</funcprototype>
 
@@ -8933,6 +8933,82 @@ a_rid | b_rid | overleft
 
 			<para>
 				Return true if raster rastA spatially touches raster rastB. This means that rastA and rastB have at least one point in common but their interiors do not intersect. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</para>
+
+			<note>
+				<para>
+					This operand will make use of any indexes that may be available on the rasters.
+				</para>
+			</note>
+				
+			<para>Availability: 2.1.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>
+-- needs an example
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="RT_ST_Intersects" />
+			</para>
+		</refsection>
+	</refentry>
+
+	<refentry id="RT_ST_Contains">
+		<refnamediv>
+			<refname>ST_Contains</refname>
+			<refpurpose>
+				Return true if no points of raster rastB lie in the exterior of raster rastA and at least one point of the interior of rastB lies in the interior of rastA. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Contains</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandB</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Contains</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+				</funcprototype>
+
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Raster rastA contains rastB if and only if no points of rastB lie in the exterior of rastA and at least one point of the interior of rastB lies in the interior of rastA. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
 			</para>
 
 			<note>
