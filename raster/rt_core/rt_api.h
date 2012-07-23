@@ -187,7 +187,8 @@ typedef enum {
 	GSR_TOUCHES,
 	GSR_CONTAINS,
 	GSR_CONTAINSPROPERLY,
-	GSR_COVERS
+	GSR_COVERS,
+	GSR_COVEREDBY
 } rt_geos_spatial_test;
 
 /**
@@ -1495,7 +1496,7 @@ int rt_raster_overlaps(
  * @param nband2 : the 0-based band of raster rast2 to use
  *   if value is less than zero, bands are ignored
  *   if nband2 gte zero, nband1 must be gte zero
- * @param touches : non-zero value if rast1 contains rast2
+ * @param contains : non-zero value if rast1 contains rast2
  *
  * @return if zero, an error occurred in function
  */
@@ -1517,7 +1518,7 @@ int rt_raster_contains(
  * @param nband2 : the 0-based band of raster rast2 to use
  *   if value is less than zero, bands are ignored
  *   if nband2 gte zero, nband1 must be gte zero
- * @param touches : non-zero value if rast1 contains properly rast2
+ * @param contains : non-zero value if rast1 contains properly rast2
  *
  * @return if zero, an error occurred in function
  */
@@ -1561,7 +1562,7 @@ int rt_raster_touches(
  * @param nband2 : the 0-based band of raster rast2 to use
  *   if value is less than zero, bands are ignored
  *   if nband2 gte zero, nband1 must be gte zero
- * @param touches : non-zero value if rast1 covers rast2
+ * @param covers : non-zero value if rast1 covers rast2
  *
  * @return if zero, an error occurred in function
  */
@@ -1569,6 +1570,28 @@ int rt_raster_covers(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *covers
+);
+
+/**
+ * Return zero if error occurred in function.
+ * Parameter contains returns non-zero if rast1 is covered by rast2
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param coveredby : non-zero value if rast1 is covered by rast2
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_coveredby(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	int *coveredby
 );
 
 /*
