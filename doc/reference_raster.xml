@@ -8726,7 +8726,7 @@ a_rid | b_rid | overleft
 		<refnamediv>
 			<refname>ST_Intersects</refname>
 
-			<refpurpose>Return true if the raster spatially intersects a separate raster or geometry. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.</refpurpose>
+			<refpurpose>Return true if raster rastA spatially intersects raster rastB. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -8764,54 +8764,6 @@ a_rid | b_rid | overleft
 					</paramdef>
 			  </funcprototype>
 
-				<funcprototype>
-					<funcdef>boolean <function>ST_Intersects</function></funcdef>
-					<paramdef>
-					  <type>raster </type>
-					  <parameter>rast</parameter>
-					</paramdef>
-					<paramdef>
-					  <type>integer </type>
-					  <parameter>nband</parameter>
-					</paramdef>
-					<paramdef>
-					  <type>geometry </type>
-					  <parameter>geommin</parameter>
-					</paramdef>
-			  </funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Intersects</function></funcdef>
-					<paramdef>
-					  <type>raster </type>
-					  <parameter>rast</parameter>
-					</paramdef>
-					<paramdef>
-					  <type>geometry </type>
-					  <parameter>geommin</parameter>
-					</paramdef>
-					<paramdef choice='opt'>
-					  <type>integer </type>
-					  <parameter>nband=NULL</parameter>
-					</paramdef>
-			  </funcprototype>
-
-			  <funcprototype>
-					<funcdef>boolean <function>ST_Intersects</function></funcdef>
-					<paramdef>
-					  <type>geometry </type>
-					  <parameter>geommin</parameter>
-					</paramdef>
-					<paramdef>
-					  <type>raster </type>
-					  <parameter>rast</parameter>
-					</paramdef>
-					<paramdef choice='opt'>
-					  <type>integer </type>
-					  <parameter>nband=NULL</parameter>
-					</paramdef>
-			  </funcprototype>
-
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
@@ -8819,39 +8771,33 @@ a_rid | b_rid | overleft
 			<title>Description</title>
 
 			<para>
-				Return true if the raster spatially intersects a separate raster or geometry. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+				Return true if raster rastA spatially intersects raster rastB. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
 			</para>
+
 			<note>
 				<para>
-					Depending on the order that the raster and geometry is passed to ST_Intersects(), the test will operate in either raster-space or geometry-space.  If ST_Intersects(raster, ....), the test is in raster-space (the geometry is converted to a raster).  If ST_Intersects(geometry, ...), the test is in geometry-space (the raster is converted to a set of pixel polygons).
-				</para>
-			</note>
-			<note>
-				<para>
-					This operand will make use of any indexes that may be available on the geometries / rasters.
+					This operand will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
 				
-			<para>Enhanced: 2.0.0 support raster/raster intersects was introduced.</para>
+			<para>
+				Enhanced: 2.0.0 support raster/raster intersects was introduced.
+			</para>
+
+			<warning>
+				<para>
+					Changed: The ST_Intersects(raster, geometry) and ST_Intersects(geometry, raster) variants present before PostGIS 2.1.0 have been removed.  Use ST_Intersects(ST_Polygon(raster), geometry) instead.
+				</para>
+			</warning>
+
 		  </refsection>
 
 		  <refsection>
 			<title>Examples</title>
 
-			<programlisting>SELECT A.rid, g.gid , ST_Intersects(A.rast, g.geom) As inter
-FROM dummy_rast AS A CROSS JOIN 
-	(VALUES (1, ST_Point(3427928, 5793243.85) ) ,
-		(2, ST_GeomFromText('LINESTRING(3427927.85 5793243.75,3427927.8 5793243.75,3427927.8 5793243.8)') ),
-		(3, ST_GeomFromText('LINESTRING(1 2, 3 4)') )
-		) As g(gid,geom)
-WHERE A.rid =2 ;
-
- rid | gid | inter
------+-----+-------
-   2 |   1 | t
-   2 |   2 | t
-   2 |   3 | f
-</programlisting>
+			<programlisting>
+-- needs a new example
+			</programlisting>
 		  </refsection>	
 			<refsection>
 				<title>See Also</title>
@@ -8865,7 +8811,7 @@ WHERE A.rid =2 ;
 		<refnamediv>
 			<refname>ST_Overlaps</refname>
 			<refpurpose>
-				Return true if the raster spatially overlaps a separate raster or geometry. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+				Return true if raster rastA spatially overlaps raster rastB. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
 			</refpurpose>
 		</refnamediv>
 
@@ -8903,54 +8849,6 @@ WHERE A.rid =2 ;
 					</paramdef>
 				</funcprototype>
 
-				<funcprototype>
-					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rast</parameter>
-					</paramdef>
-					<paramdef>
-						<type>integer </type>
-						<parameter>nband</parameter>
-					</paramdef>
-					<paramdef>
-						<type>geometry </type>
-						<parameter>geommin</parameter>
-					</paramdef>
-				</funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rast</parameter>
-					</paramdef>
-					<paramdef>
-						<type>geometry </type>
-						<parameter>geommin</parameter>
-					</paramdef>
-					<paramdef choice='opt'>
-						<type>integer </type>
-						<parameter>nband=NULL</parameter>
-					</paramdef>
-				</funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
-					<paramdef>
-						<type>geometry </type>
-						<parameter>geommin</parameter>
-					</paramdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rast</parameter>
-					</paramdef>
-					<paramdef choice='opt'>
-						<type>integer </type>
-						<parameter>nband=NULL</parameter>
-					</paramdef>
-				</funcprototype>
-
 			</funcsynopsis>
 		</refsynopsisdiv>
 
@@ -8958,12 +8856,12 @@ WHERE A.rid =2 ;
 			<title>Description</title>
 
 			<para>
-				Return true if the raster spatially overlaps a separate raster or geometry. This means that the raster/raster or raster/geometry combinations intersect but one does not completely contain the other. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+				Return true if raster rastA spatially overlaps raster rastB. This means that rastA and rastB intersect but one does not completely contain the other. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
 			</para>
 
 			<note>
 				<para>
-					This operand will make use of any indexes that may be available on the geometries / rasters.
+					This operand will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
 				
@@ -8989,7 +8887,7 @@ WHERE A.rid =2 ;
 		<refnamediv>
 			<refname>ST_Touches</refname>
 			<refpurpose>
-				Return true if the raster spatially touch a separate raster or geometry. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+				Return true if raster rastA spatially touch raster rastB. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
 			</refpurpose>
 		</refnamediv>
 
@@ -9027,54 +8925,6 @@ WHERE A.rid =2 ;
 					</paramdef>
 				</funcprototype>
 
-				<funcprototype>
-					<funcdef>boolean <function>ST_Touches</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rast</parameter>
-					</paramdef>
-					<paramdef>
-						<type>integer </type>
-						<parameter>nband</parameter>
-					</paramdef>
-					<paramdef>
-						<type>geometry </type>
-						<parameter>geommin</parameter>
-					</paramdef>
-				</funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Touches</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rast</parameter>
-					</paramdef>
-					<paramdef>
-						<type>geometry </type>
-						<parameter>geommin</parameter>
-					</paramdef>
-					<paramdef choice='opt'>
-						<type>integer </type>
-						<parameter>nband=NULL</parameter>
-					</paramdef>
-				</funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Touches</function></funcdef>
-					<paramdef>
-						<type>geometry </type>
-						<parameter>geommin</parameter>
-					</paramdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rast</parameter>
-					</paramdef>
-					<paramdef choice='opt'>
-						<type>integer </type>
-						<parameter>nband=NULL</parameter>
-					</paramdef>
-				</funcprototype>
-
 			</funcsynopsis>
 		</refsynopsisdiv>
 
@@ -9082,12 +8932,12 @@ WHERE A.rid =2 ;
 			<title>Description</title>
 
 			<para>
-				Return true if the raster spatially touches a separate raster or geometry. This means that the raster/raster or raster/geometry combinations have at least one point in common but their interiors do not intersect. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+				Return true if raster rastA spatially touches raster rastB. This means that rastA and rastB have at least one point in common but their interiors do not intersect. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
 			</para>
 
 			<note>
 				<para>
-					This operand will make use of any indexes that may be available on the geometries / rasters.
+					This operand will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
 				

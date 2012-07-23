@@ -292,6 +292,7 @@ CREATE OR REPLACE FUNCTION _drop_st_samealignment()
 	$$ LANGUAGE 'plpgsql' VOLATILE;
 SELECT _drop_st_samealignment();
 DROP FUNCTION _drop_st_samealignment();
+
 DROP FUNCTION IF EXISTS _st_intersects(raster, integer, raster, integer);
 DROP FUNCTION IF EXISTS st_intersects(raster, integer, raster, integer);
 DROP FUNCTION IF EXISTS st_intersects(raster, raster);
@@ -348,8 +349,30 @@ DROP FUNCTION IF EXISTS st_pixelaspolygons(raster, integer);
 -- function deprecated
 DROP FUNCTION IF EXISTS st_bandsurface(raster, integer);
 
--- function deprecated
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_intersects(raster, integer, geometry);
+DROP FUNCTION IF EXISTS st_intersects(raster, geometry, integer);
+DROP FUNCTION IF EXISTS st_intersects(geometry, raster, integer);
+DROP FUNCTION IF EXISTS _st_intersects(raster, geometry, integer);
+DROP FUNCTION IF EXISTS _st_intersects(geometry, raster, integer);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_overlaps(geometry, raster, integer);
+DROP FUNCTION IF EXISTS st_overlaps(raster, integer, geometry);
+DROP FUNCTION IF EXISTS st_overlaps(raster, geometry, integer);
+DROP FUNCTION IF EXISTS _st_overlaps(raster, geometry, integer);
 DROP FUNCTION IF EXISTS _st_overlaps(geometry, raster, integer);
 
--- function deprecated
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_touches(geometry, raster, integer);
+DROP FUNCTION IF EXISTS st_touches(raster, geometry, integer);
+DROP FUNCTION IF EXISTS st_touches(raster, integer, geometry);
 DROP FUNCTION IF EXISTS _st_touches(geometry, raster, integer);
+DROP FUNCTION IF EXISTS _st_touches(raster, geometry, integer);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_contains(raster, geometry, integer);
+DROP FUNCTION IF EXISTS st_contains(raster, integer, geometry);
+DROP FUNCTION IF EXISTS st_contains(geometry, raster, integer);
+DROP FUNCTION IF EXISTS _st_contains(raster, geometry, integer);
+DROP FUNCTION IF EXISTS _st_contains(geometry, raster, integer);
