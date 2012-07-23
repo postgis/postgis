@@ -3135,6 +3135,162 @@ CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, rast2 raster)
 	COST 1000;
 
 -----------------------------------------------------------------------
+-- ST_Intersects(geometry, raster)
+-----------------------------------------------------------------------
+
+-- This function can not be STRICT
+CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband integer DEFAULT NULL)
+	RETURNS boolean AS $$
+	DECLARE
+		hasnodata boolean := TRUE;
+		nodata float8 := 0.0;
+		convexhull geometry;
+		geomintersect geometry;
+		x1w double precision := 0.0;
+		x2w double precision := 0.0;
+		y1w double precision := 0.0;
+		y2w double precision := 0.0;
+		x1 integer := 0;
+		x2 integer := 0;
+		x3 integer := 0;
+		x4 integer := 0;
+		y1 integer := 0;
+		y2 integer := 0;
+		y3 integer := 0;
+		y4 integer := 0;
+		x integer := 0;
+		y integer := 0;
+		xinc integer := 0;
+		yinc integer := 0;
+		pixelval double precision;
+		bintersect boolean := FALSE;
+		gtype text;
+		scale float8;
+		w int;
+		h int;
+	BEGIN
+		convexhull := ST_ConvexHull(rast);
+		IF nband IS NOT NULL THEN
+			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
+		END IF;
+
+		IF ST_Intersects(geom, convexhull) IS NOT TRUE THEN
+			RETURN FALSE;
+		ELSEIF nband IS NULL OR hasnodata IS FALSE THEN
+			RETURN TRUE;
+		END IF;
+
+		-- Get the intersection between with the geometry.
+		-- We will search for withvalue pixel only in this area.
+		geomintersect := st_intersection(geom, convexhull);
+
+--RAISE NOTICE 'geomintersect=%', st_astext(geomintersect);
+
+		-- If the intersection is empty, return false
+		IF st_isempty(geomintersect) THEN
+			RETURN FALSE;
+		END IF;
+
+		-- We create a minimalistic buffer around the intersection in order to scan every pixels
+		-- that would touch the edge or intersect with the geometry
+		SELECT sqrt(scalex * scalex + skewy * skewy), width, height INTO scale, w, h FROM ST_Metadata(rast);
+		IF scale != 0 THEN
+			geomintersect := st_buffer(geomintersect, scale / 1000000);
+		END IF;
+
+--RAISE NOTICE 'geomintersect2=%', st_astext(geomintersect);
+
+		-- Find the world coordinates of the bounding box of the intersecting area
+		x1w := st_xmin(geomintersect);
+		y1w := st_ymin(geomintersect);
+		x2w := st_xmax(geomintersect);
+		y2w := st_ymax(geomintersect);
+		nodata := st_bandnodatavalue(rast, nband);
+
+--RAISE NOTICE 'x1w=%, y1w=%, x2w=%, y2w=%', x1w, y1w, x2w, y2w;
+
+		-- Convert world coordinates to raster coordinates
+		x1 := st_world2rastercoordx(rast, x1w, y1w);
+		y1 := st_world2rastercoordy(rast, x1w, y1w);
+		x2 := st_world2rastercoordx(rast, x2w, y1w);
+		y2 := st_world2rastercoordy(rast, x2w, y1w);
+		x3 := st_world2rastercoordx(rast, x1w, y2w);
+		y3 := st_world2rastercoordy(rast, x1w, y2w);
+		x4 := st_world2rastercoordx(rast, x2w, y2w);
+		y4 := st_world2rastercoordy(rast, x2w, y2w);
+
+--RAISE NOTICE 'x1=%, y1=%, x2=%, y2=%, x3=%, y3=%, x4=%, y4=%', x1, y1, x2, y2, x3, y3, x4, y4;
+
+		-- Order the raster coordinates for the upcoming FOR loop.
+		x1 := int4smaller(int4smaller(int4smaller(x1, x2), x3), x4);
+		y1 := int4smaller(int4smaller(int4smaller(y1, y2), y3), y4);
+		x2 := int4larger(int4larger(int4larger(x1, x2), x3), x4);
+		y2 := int4larger(int4larger(int4larger(y1, y2), y3), y4);
+
+		-- Make sure the range is not lower than 1.
+		-- This can happen when world coordinate are exactly on the left border
+		-- of the raster and that they do not span on more than one pixel.
+		x1 := int4smaller(int4larger(x1, 1), w);
+		y1 := int4smaller(int4larger(y1, 1), h);
+
+		-- Also make sure the range does not exceed the width and height of the raster.
+		-- This can happen when world coordinate are exactly on the lower right border
+		-- of the raster.
+		x2 := int4smaller(x2, w);
+		y2 := int4smaller(y2, h);
+
+--RAISE NOTICE 'x1=%, y1=%, x2=%, y2=%', x1, y1, x2, y2;
+
+		-- Search exhaustively for withvalue pixel on a moving 3x3 grid
+		-- (very often more efficient than searching on a mere 1x1 grid)
+		FOR xinc in 0..2 LOOP
+			FOR yinc in 0..2 LOOP
+				FOR x IN x1+xinc..x2 BY 3 LOOP
+					FOR y IN y1+yinc..y2 BY 3 LOOP
+						-- Check first if the pixel intersects with the geometry. Often many won't.
+						bintersect := NOT st_isempty(st_intersection(st_pixelaspolygon(rast, x, y), geom));
+
+						IF bintersect THEN
+							-- If the pixel really intersects, check its value. Return TRUE if with value.
+							pixelval := st_value(rast, nband, x, y);
+							IF pixelval != nodata THEN
+								RETURN TRUE;
+							END IF;
+						END IF;
+					END LOOP;
+				END LOOP;
+			END LOOP;
+		END LOOP;
+
+		RETURN FALSE;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE
+	COST 1000;
+
+-- This function can not be STRICT
+CREATE OR REPLACE FUNCTION st_intersects(geom geometry, rast raster, nband integer DEFAULT NULL)
+	RETURNS boolean AS
+	$$ SELECT $1 && $2::geometry AND _st_intersects($1, $2, $3); $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
+-- ST_Intersects(raster, geometry)
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_intersects(rast raster, geom geometry, nband integer DEFAULT NULL)
+	RETURNS boolean
+	AS $$ SELECT $1::geometry && $2 AND _st_intersects($2, $1, $3) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_intersects(rast raster, nband integer, geom geometry)
+	RETURNS boolean
+	AS $$ SELECT $1::geometry && $3 AND _st_intersects($3, $1, $2) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
 -- ST_Overlaps(raster, raster)
 -----------------------------------------------------------------------
 
@@ -3197,6 +3353,28 @@ CREATE OR REPLACE FUNCTION st_contains(rast1 raster, nband1 integer, rast2 raste
 CREATE OR REPLACE FUNCTION st_contains(rast1 raster, rast2 raster)
 	RETURNS boolean
 	AS $$ SELECT st_contains($1, NULL::integer, $2, NULL::integer) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
+-- ST_Within(raster, raster)
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_within(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
+	RETURNS boolean
+	AS $$ SELECT _st_contains($3, $4, $1, $2) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_within(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
+	RETURNS boolean
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_within(st_convexhull($1), st_convexhull($3)) ELSE _st_contains($3, $4, $1, $2) END $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_within(rast1 raster, rast2 raster)
+	RETURNS boolean
+	AS $$ SELECT st_within($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 

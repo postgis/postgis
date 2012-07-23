@@ -8764,6 +8764,54 @@ a_rid | b_rid | overleft
 					</paramdef>
 			  </funcprototype>
 
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+					  <type>raster </type>
+					  <parameter>rast</parameter>
+					</paramdef>
+					<paramdef>
+					  <type>integer </type>
+					  <parameter>nband</parameter>
+					</paramdef>
+					<paramdef>
+					  <type>geometry </type>
+					  <parameter>geommin</parameter>
+					</paramdef>
+			  </funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+					  <type>raster </type>
+					  <parameter>rast</parameter>
+					</paramdef>
+					<paramdef>
+					  <type>geometry </type>
+					  <parameter>geommin</parameter>
+					</paramdef>
+					<paramdef choice='opt'>
+					  <type>integer </type>
+					  <parameter>nband=NULL</parameter>
+					</paramdef>
+			  </funcprototype>
+
+			  <funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+					  <type>geometry </type>
+					  <parameter>geommin</parameter>
+					</paramdef>
+					<paramdef>
+					  <type>raster </type>
+					  <parameter>rast</parameter>
+					</paramdef>
+					<paramdef choice='opt'>
+					  <type>integer </type>
+					  <parameter>nband=NULL</parameter>
+					</paramdef>
+			  </funcprototype>
+
 			</funcsynopsis>
 		  </refsynopsisdiv>
 
@@ -8786,7 +8834,7 @@ a_rid | b_rid | overleft
 
 			<warning>
 				<para>
-					Changed: The ST_Intersects(raster, geometry) and ST_Intersects(geometry, raster) variants present before PostGIS 2.1.0 have been removed.  Use ST_Intersects(ST_Polygon(raster), geometry) instead.
+					Changed: In 2.1.0, the behavior of the ST_Intersects(raster, geometry) variants changed to match that of ST_Intersects(geometry, raster).
 				</para>
 			</warning>
 
@@ -8862,6 +8910,12 @@ a_rid | b_rid | overleft
 			<note>
 				<para>
 					This operand will make use of any indexes that may be available on the rasters.
+				</para>
+			</note>
+
+			<note>
+				<para>
+					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Overlaps(ST_Polygon(raster), geometry).
 				</para>
 			</note>
 				
@@ -8940,7 +8994,13 @@ a_rid | b_rid | overleft
 					This operand will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
-				
+
+			<note>
+				<para>
+					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Touches(ST_Polygon(raster), geometry).
+				</para>
+			</note>
+
 			<para>Availability: 2.1.0</para>
 		</refsection>
 
@@ -9016,7 +9076,13 @@ a_rid | b_rid | overleft
 					This operand will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
-				
+
+			<note>
+				<para>
+					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Contains(ST_Polygon(raster), geometry) or ST_Contains(geometry, ST_Polygon(raster)).
+				</para>
+			</note>
+
 			<para>Availability: 2.1.0</para>
 		</refsection>
 
