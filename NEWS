@@ -3,9 +3,8 @@ PostGIS 2.1.0
 
 * Important / Breaking Changes  *
 
-  - ST_Intersects(raster, geometry) and ST_Intersects(geometry, raster)
-    has been removed.  Use ST_Intersects(ST_Polygon(raster), geometry)
-    instead.
+  - ST_Intersects(raster, geometry) behaves in the same manner as
+    ST_Intersects(geometry, raster).
 
 * New Features *
 
@@ -15,7 +14,7 @@ PostGIS 2.1.0
   - ST_PixelAsCentroid, ST_PixelAsCentroids (Bborie Park / UC Davis)
   - ST_Raster2WorldCoord, ST_World2RasterCoord (Bborie Park / UC Davis)
   - Additional raster/raster spatial relationship functions
-    (ST_Overlaps, ST_Touches, ST_Contains)
+    (ST_Overlaps, ST_Touches, ST_Contains, ST_Within)
     (Bborie Park / UC Davis)
   - #1643, Tiger Geocoder - Tiger 2011 loader (Regina Obe / Paragon Corporation) 
     Funded by Hunter Systems Group
