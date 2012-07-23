@@ -129,6 +129,7 @@ TEST_SREL = \
 	rt_touches \
 	rt_contains \
 	rt_containsproperly \
+	rt_covers \
 	rt_within \
 	rt_samealignment
 	

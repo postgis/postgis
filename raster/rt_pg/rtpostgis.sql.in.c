@@ -3379,6 +3379,28 @@ CREATE OR REPLACE FUNCTION st_containsproperly(rast1 raster, rast2 raster)
 	COST 1000;
 
 -----------------------------------------------------------------------
+-- ST_Covers(raster, raster)
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_covers(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'RASTER_covers'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_covers(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
+	RETURNS boolean
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_covers(st_convexhull($1), st_convexhull($3)) ELSE _st_covers($1, $2, $3, $4) END $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_covers(rast1 raster, rast2 raster)
+	RETURNS boolean
+	AS $$ SELECT st_covers($1, NULL::integer, $2, NULL::integer) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
 -- ST_Within(raster, raster)
 -----------------------------------------------------------------------
 
