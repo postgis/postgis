@@ -5700,12 +5700,6 @@ rt_raster_gdal_polygonize(
 	int isValid;
 	LWGEOM *lwgeomValid = NULL;
 
-#if POSTGIS_GEOS_VERSION < 33
-/*
-	int msgValid = 0;
-*/
-#endif
-
 	uint32_t bandNums[1] = {nband};
 	int excludeNodataValues[1] = {exclude_nodata_value};
 
@@ -5918,20 +5912,22 @@ rt_raster_gdal_polygonize(
 			return NULL;
 		}
 
+		/* export WKB with LSB byte order */
+		OGR_G_ExportToWkb(hGeom, wkbNDR, wkb);
+
+		/* convert WKB to LWGEOM */
+		lwgeom = lwgeom_from_wkb(wkb, wkbsize, LW_PARSER_CHECK_NONE);
+
 #if POSTGIS_DEBUG_LEVEL > 3
 		{
 			char *wkt = NULL;
 			OGR_G_ExportToWkt(hGeom, &wkt);
 			RASTER_DEBUGF(4, "GDAL wkt = %s", wkt);
 			CPLFree(wkt);
+
+			d_print_binary_hex("GDAL wkb", wkb, wkbsize);
 		}
 #endif
-
-		/* export WKB with LSB byte order */
-		OGR_G_ExportToWkb(hGeom, wkbNDR, wkb);
-
-		/* convert WKB to LWGEOM */
-		lwgeom = lwgeom_from_wkb(wkb, wkbsize, LW_PARSER_CHECK_NONE);
 
 		/* cleanup unnecessary stuff */
 		rtdealloc(wkb);
@@ -5949,12 +5945,7 @@ rt_raster_gdal_polygonize(
 		*/
 		do {
 #if POSTGIS_GEOS_VERSION < 33
-/*
-			if (!msgValid) {
-				rtwarn("Skipping check for invalid geometry.  GEOS-3.3.0 or up is required to fix an invalid geometry");
-				msgValid = 1;
-			}
-*/
+			/* nothing can be done if the geometry was invalid if GEOS < 3.3 */
 			break;
 #endif
 
@@ -5995,6 +5986,13 @@ rt_raster_gdal_polygonize(
 			char *wkt = lwgeom_to_wkt(lwgeom, WKT_ISO, DBL_DIG, NULL);
 			RASTER_DEBUGF(4, "LWGEOM wkt = %s", wkt);
 			rtdealloc(wkt);
+
+			size_t lwwkbsize = 0;
+			uint8_t *lwwkb = lwgeom_to_wkb(lwgeom, WKB_ISO | WKB_NDR, &lwwkbsize);
+			if (lwwkbsize) {
+				d_print_binary_hex("LWGEOM wkb", lwwkb, lwwkbsize);
+				rtdealloc(lwwkb);
+			}
 		}
 #endif
 
