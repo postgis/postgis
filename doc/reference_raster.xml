@@ -8963,12 +8963,6 @@ WHERE A.rid =2 ;
 
 			<note>
 				<para>
-					Depending on the order that the raster and geometry is passed to ST_Overlaps(), the test will operate in either raster-space or geometry-space.  If ST_Overlaps(raster, ....), the test is in raster-space (the geometry is converted to a raster).  If ST_Overlaps(geometry, ...), the test is in geometry-space (the raster is converted to a set of pixel polygons).
-				</para>
-			</note>
-
-			<note>
-				<para>
 					This operand will make use of any indexes that may be available on the geometries / rasters.
 				</para>
 			</note>

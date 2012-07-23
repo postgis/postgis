@@ -3241,7 +3241,7 @@ CREATE OR REPLACE FUNCTION st_overlaps(rast1 raster, rast2 raster)
 	COST 1000;
 
 -----------------------------------------------------------------------
--- ST_Overlaps(raster, geometry) in raster-space
+-- ST_Overlaps(raster, geometry)
 -----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION _st_overlaps(rast raster, geom geometry, nband integer DEFAULT NULL)
@@ -3283,44 +3283,13 @@ CREATE OR REPLACE FUNCTION st_overlaps(rast raster, nband integer, geom geometry
 	COST 1000;
 
 -----------------------------------------------------------------------
--- ST_Overlaps(geometry, raster) in geometry-space
+-- ST_Overlaps(geometry, raster)
 -----------------------------------------------------------------------
-
--- This function can not be STRICT
-CREATE OR REPLACE FUNCTION _st_overlaps(geom geometry, rast raster, nband integer DEFAULT NULL)
-	RETURNS boolean AS $$
-	DECLARE
-		convexhull geometry;
-		hasnodata boolean := TRUE;
-		surface geometry;
-	BEGIN
-		convexhull := ST_ConvexHull(rast);
-		IF nband IS NOT NULL THEN
-			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
-		END IF;
-
-		IF ST_Overlaps(geom, convexhull) IS NOT TRUE THEN
-			RETURN FALSE;
-		ELSEIF nband IS NULL OR hasnodata IS FALSE THEN
-			RETURN TRUE;
-		END IF;
-
-		-- get band polygon
-		surface := ST_Polygon(rast, nband);
-
-		IF surface IS NOT NULL THEN
-			RETURN ST_Overlaps(geom, surface);
-		END IF;
-
-		RETURN FALSE;
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE
-	COST 1000;
 
 -- This function can not be STRICT
 CREATE OR REPLACE FUNCTION st_overlaps(geom geometry, rast raster, nband integer DEFAULT NULL)
 	RETURNS boolean AS
-	$$ SELECT $1 && $2::geometry AND _st_overlaps($1, $2, $3); $$
+	$$ SELECT $1 && $2::geometry AND _st_overlaps($2, $1, $3); $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 

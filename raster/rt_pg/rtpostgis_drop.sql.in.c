@@ -347,3 +347,6 @@ DROP FUNCTION IF EXISTS st_pixelaspolygons(raster, integer);
 
 -- function deprecated
 DROP FUNCTION IF EXISTS st_bandsurface(raster, integer);
+
+-- function deprecated
+DROP FUNCTION IF EXISTS _st_overlaps(geometry, raster, integer);
