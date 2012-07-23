@@ -130,6 +130,7 @@ TEST_SREL = \
 	rt_contains \
 	rt_containsproperly \
 	rt_covers \
+	rt_coveredby \
 	rt_within \
 	rt_samealignment
 	
