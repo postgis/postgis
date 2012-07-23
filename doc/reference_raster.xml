@@ -9108,6 +9108,93 @@ a_rid | b_rid | overleft
 		</refsection>
 	</refentry>
 
+	<refentry id="RT_ST_ContainsProperly">
+		<refnamediv>
+			<refname>ST_ContainsProperly</refname>
+			<refpurpose>
+				Return true if rastB intersects the interior of rastA but not the boundary or exterior of rastA. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_ContainsProperly</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandB</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_ContainsProperly</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+				</funcprototype>
+
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Raster rastA contains properly rastB if rastB intersects the interior of rastA but not the boundary or exterior of rastA. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</para>
+
+			<para>
+				Raster rastA does not contain properly itself but does contain itself.
+			</para>
+
+			<note>
+				<para>
+					This operand will make use of any indexes that may be available on the rasters.
+				</para>
+			</note>
+
+			<note>
+				<para>
+					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_ContainsProperly(ST_Polygon(raster), geometry) or ST_ContainsProperly(geometry, ST_Polygon(raster)).
+				</para>
+			</note>
+
+			<para>Availability: 2.1.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>
+-- needs an example
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="RT_ST_Intersects" />, 
+				<xref linkend="RT_ST_Contains" />
+			</para>
+		</refsection>
+	</refentry>
+
 	<refentry id="RT_ST_Within">
 		<refnamediv>
 			<refname>ST_Within</refname>

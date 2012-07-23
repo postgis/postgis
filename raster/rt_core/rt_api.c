@@ -11683,7 +11683,7 @@ int rt_raster_contains(
 
 /**
  * Return zero if error occurred in function.
- * Parameter contains returns non-zero if rast1 properly contains rast2
+ * Parameter contains returns non-zero if rast1 contains properly rast2
  *
  * @param rast1 : the first raster whose band will be tested
  * @param nband1 : the 0-based band of raster rast1 to use
@@ -11693,7 +11693,7 @@ int rt_raster_contains(
  * @param nband2 : the 0-based band of raster rast2 to use
  *   if value is less than zero, bands are ignored
  *   if nband2 gte zero, nband1 must be gte zero
- * @param touches : non-zero value if rast1 properly contains rast2
+ * @param touches : non-zero value if rast1 contains properly rast2
  *
  * @return if zero, an error occurred in function
  */
