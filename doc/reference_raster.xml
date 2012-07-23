@@ -8726,7 +8726,7 @@ a_rid | b_rid | overleft
 		<refnamediv>
 			<refname>ST_Intersects</refname>
 
-			<refpurpose>Return true if raster rastA spatially intersects raster rastB.
+			<refpurpose>Return true if raster rastA spatially intersects raster rastB.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
