@@ -8722,302 +8722,6 @@ a_rid | b_rid | overleft
 	
 	<sect1 id="Raster_Relationships">
 		<title>Raster and Raster Band Spatial Relationships</title>
-		<refentry id="RT_ST_Intersects">
-		<refnamediv>
-			<refname>ST_Intersects</refname>
-
-			<refpurpose>Return true if raster rastA spatially intersects raster rastB.</refpurpose>
-		  </refnamediv>
-
-		  <refsynopsisdiv>
-			<funcsynopsis>			  
-
-			  <funcprototype>
-					<funcdef>boolean <function>ST_Intersects</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>integer </type>
-						<parameter>nbandA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastB</parameter>
-					</paramdef>
-					<paramdef>
-						<type>integer </type>
-						<parameter>nbandB</parameter>
-					</paramdef>
-			  </funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Intersects</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastB</parameter>
-					</paramdef>
-			  </funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Intersects</function></funcdef>
-					<paramdef>
-					  <type>raster </type>
-					  <parameter>rast</parameter>
-					</paramdef>
-					<paramdef>
-					  <type>integer </type>
-					  <parameter>nband</parameter>
-					</paramdef>
-					<paramdef>
-					  <type>geometry </type>
-					  <parameter>geommin</parameter>
-					</paramdef>
-			  </funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Intersects</function></funcdef>
-					<paramdef>
-					  <type>raster </type>
-					  <parameter>rast</parameter>
-					</paramdef>
-					<paramdef>
-					  <type>geometry </type>
-					  <parameter>geommin</parameter>
-					</paramdef>
-					<paramdef choice='opt'>
-					  <type>integer </type>
-					  <parameter>nband=NULL</parameter>
-					</paramdef>
-			  </funcprototype>
-
-			  <funcprototype>
-					<funcdef>boolean <function>ST_Intersects</function></funcdef>
-					<paramdef>
-					  <type>geometry </type>
-					  <parameter>geommin</parameter>
-					</paramdef>
-					<paramdef>
-					  <type>raster </type>
-					  <parameter>rast</parameter>
-					</paramdef>
-					<paramdef choice='opt'>
-					  <type>integer </type>
-					  <parameter>nband=NULL</parameter>
-					</paramdef>
-			  </funcprototype>
-
-			</funcsynopsis>
-		  </refsynopsisdiv>
-
-		  <refsection>
-			<title>Description</title>
-
-			<para>
-				Return true if raster rastA spatially intersects raster rastB. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
-			</para>
-
-			<note>
-				<para>
-					This operand will make use of any indexes that may be available on the rasters.
-				</para>
-			</note>
-				
-			<para>
-				Enhanced: 2.0.0 support raster/raster intersects was introduced.
-			</para>
-
-			<warning>
-				<para>
-					Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants changed to match that of ST_Intersects(geometry, raster).
-				</para>
-			</warning>
-
-		  </refsection>
-
-		  <refsection>
-			<title>Examples</title>
-
-			<programlisting>
--- needs a new example
-			</programlisting>
-		  </refsection>	
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_Intersection" />
-				</para>
-			</refsection>
-		</refentry>
-
-	<refentry id="RT_ST_Overlaps">
-		<refnamediv>
-			<refname>ST_Overlaps</refname>
-			<refpurpose>
-				Return true if raster rastA and rastB intersect but one does not completely contain the other.
-			</refpurpose>
-		</refnamediv>
-
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>integer </type>
-						<parameter>nbandA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastB</parameter>
-					</paramdef>
-					<paramdef>
-						<type>integer </type>
-						<parameter>nbandB</parameter>
-					</paramdef>
-				</funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastB</parameter>
-					</paramdef>
-				</funcprototype>
-
-			</funcsynopsis>
-		</refsynopsisdiv>
-
-		<refsection>
-			<title>Description</title>
-
-			<para>
-				Return true if raster rastA spatially overlaps raster rastB. This means that rastA and rastB intersect but one does not completely contain the other. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
-			</para>
-
-			<note>
-				<para>
-					This operand will make use of any indexes that may be available on the rasters.
-				</para>
-			</note>
-
-			<note>
-				<para>
-					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Overlaps(ST_Polygon(raster), geometry).
-				</para>
-			</note>
-				
-			<para>Availability: 2.1.0</para>
-		</refsection>
-
-		<refsection>
-			<title>Examples</title>
-
-			<programlisting>
--- needs an example
-			</programlisting>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para>
-				<xref linkend="RT_ST_Intersects" />
-			</para>
-		</refsection>
-	</refentry>
-
-	<refentry id="RT_ST_Touches">
-		<refnamediv>
-			<refname>ST_Touches</refname>
-			<refpurpose>
-				Return true if raster rastA and rastB have at least one point in common but their interiors do not intersect.
-			</refpurpose>
-		</refnamediv>
-
-		<refsynopsisdiv>
-			<funcsynopsis>
-				<funcprototype>
-					<funcdef>boolean <function>ST_Touches</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>integer </type>
-						<parameter>nbandA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastB</parameter>
-					</paramdef>
-					<paramdef>
-						<type>integer </type>
-						<parameter>nbandB</parameter>
-					</paramdef>
-				</funcprototype>
-
-				<funcprototype>
-					<funcdef>boolean <function>ST_Touches</function></funcdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastA</parameter>
-					</paramdef>
-					<paramdef>
-						<type>raster </type>
-						<parameter>rastB</parameter>
-					</paramdef>
-				</funcprototype>
-
-			</funcsynopsis>
-		</refsynopsisdiv>
-
-		<refsection>
-			<title>Description</title>
-
-			<para>
-				Return true if raster rastA spatially touches raster rastB. This means that rastA and rastB have at least one point in common but their interiors do not intersect. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
-			</para>
-
-			<note>
-				<para>
-					This operand will make use of any indexes that may be available on the rasters.
-				</para>
-			</note>
-
-			<note>
-				<para>
-					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Touches(ST_Polygon(raster), geometry).
-				</para>
-			</note>
-
-			<para>Availability: 2.1.0</para>
-		</refsection>
-
-		<refsection>
-			<title>Examples</title>
-
-			<programlisting>
--- needs an example
-			</programlisting>
-		</refsection>
-		<refsection>
-			<title>See Also</title>
-			<para>
-				<xref linkend="RT_ST_Intersects" />
-			</para>
-		</refsection>
-	</refentry>
 
 	<refentry id="RT_ST_Contains">
 		<refnamediv>
@@ -9073,7 +8777,7 @@ a_rid | b_rid | overleft
 
 			<note>
 				<para>
-					This operand will make use of any indexes that may be available on the rasters.
+					This function will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
 
@@ -9166,7 +8870,7 @@ a_rid | b_rid | overleft
 
 			<note>
 				<para>
-					This operand will make use of any indexes that may be available on the rasters.
+					This function will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
 
@@ -9249,7 +8953,7 @@ a_rid | b_rid | overleft
 
 			<note>
 				<para>
-					This operand will make use of any indexes that may be available on the rasters.
+					This function will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
 
@@ -9332,7 +9036,7 @@ a_rid | b_rid | overleft
 
 			<note>
 				<para>
-					This operand will make use of any indexes that may be available on the rasters.
+					This function will make use of any indexes that may be available on the rasters.
 				</para>
 			</note>
 
@@ -9357,6 +9061,384 @@ a_rid | b_rid | overleft
 			<para>
 				<xref linkend="RT_ST_Intersects" />, 
 				<xref linkend="RT_ST_Covers" />
+			</para>
+		</refsection>
+	</refentry>
+
+	<refentry id="RT_ST_Disjoint">
+		<refnamediv>
+			<refname>ST_Disjoint</refname>
+			<refpurpose>
+				Return true if raster rastA does not spatially intersect rastB.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Disjoint</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandB</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Disjoint</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+				</funcprototype>
+
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Raster rastA and rastB are disjointed if they do not share any space together. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</para>
+
+			<note>
+				<para>
+					This function does NOT use any indexes.
+				</para>
+			</note>
+
+			<note>
+				<para>
+					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Disjoint(ST_Polygon(raster), geometry).
+				</para>
+			</note>
+
+			<para>Availability: 2.1.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>
+-- needs an example
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="RT_ST_Intersects" />
+			</para>
+		</refsection>
+	</refentry>
+
+	<refentry id="RT_ST_Intersects">
+		<refnamediv>
+			<refname>ST_Intersects</refname>
+			<refpurpose>Return true if raster rastA spatially intersects raster rastB.</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandB</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rast</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nband</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>geommin</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rast</parameter>
+					</paramdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>geommin</parameter>
+					</paramdef>
+					<paramdef choice='opt'>
+						<type>integer </type>
+						<parameter>nband=NULL</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Intersects</function></funcdef>
+					<paramdef>
+						<type>geometry </type>
+						<parameter>geommin</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rast</parameter>
+					</paramdef>
+					<paramdef choice='opt'>
+						<type>integer </type>
+						<parameter>nband=NULL</parameter>
+					</paramdef>
+				</funcprototype>
+
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Return true if raster rastA spatially intersects raster rastB. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</para>
+
+			<note>
+				<para>
+					This function will make use of any indexes that may be available on the rasters.
+				</para>
+			</note>
+
+			<para>
+				Enhanced: 2.0.0 support raster/raster intersects was introduced.
+			</para>
+
+			<warning>
+				<para>
+					Changed: 2.1.0 The behavior of the ST_Intersects(raster, geometry) variants changed to match that of ST_Intersects(geometry, raster).
+				</para>
+			</warning>
+
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+			<programlisting>
+-- needs a new example
+			</programlisting>
+		</refsection>
+
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="RT_ST_Intersection" />, 
+				<xref linkend="RT_ST_Disjoint" />
+			</para>
+		</refsection>
+	</refentry>
+
+	<refentry id="RT_ST_Overlaps">
+		<refnamediv>
+			<refname>ST_Overlaps</refname>
+			<refpurpose>
+				Return true if raster rastA and rastB intersect but one does not completely contain the other.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandB</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Overlaps</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+				</funcprototype>
+
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Return true if raster rastA spatially overlaps raster rastB. This means that rastA and rastB intersect but one does not completely contain the other. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</para>
+
+			<note>
+				<para>
+					This function will make use of any indexes that may be available on the rasters.
+				</para>
+			</note>
+
+			<note>
+				<para>
+					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Overlaps(ST_Polygon(raster), geometry).
+				</para>
+			</note>
+				
+			<para>Availability: 2.1.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>
+-- needs an example
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="RT_ST_Intersects" />
+			</para>
+		</refsection>
+	</refentry>
+
+	<refentry id="RT_ST_Touches">
+		<refnamediv>
+			<refname>ST_Touches</refname>
+			<refpurpose>
+				Return true if raster rastA and rastB have at least one point in common but their interiors do not intersect.
+			</refpurpose>
+		</refnamediv>
+
+		<refsynopsisdiv>
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>boolean <function>ST_Touches</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+					<paramdef>
+						<type>integer </type>
+						<parameter>nbandB</parameter>
+					</paramdef>
+				</funcprototype>
+
+				<funcprototype>
+					<funcdef>boolean <function>ST_Touches</function></funcdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastA</parameter>
+					</paramdef>
+					<paramdef>
+						<type>raster </type>
+						<parameter>rastB</parameter>
+					</paramdef>
+				</funcprototype>
+
+			</funcsynopsis>
+		</refsynopsisdiv>
+
+		<refsection>
+			<title>Description</title>
+
+			<para>
+				Return true if raster rastA spatially touches raster rastB. This means that rastA and rastB have at least one point in common but their interiors do not intersect. If the band number is not provided (or set to NULL), only the convex hull of the raster is considered in the test. If the band number is provided, only those pixels with value (not NODATA) are considered in the test.
+			</para>
+
+			<note>
+				<para>
+					This function will make use of any indexes that may be available on the rasters.
+				</para>
+			</note>
+
+			<note>
+				<para>
+					To test the spatial relationship of a raster and a geometry, use ST_Polygon on the raster, e.g. ST_Touches(ST_Polygon(raster), geometry).
+				</para>
+			</note>
+
+			<para>Availability: 2.1.0</para>
+		</refsection>
+
+		<refsection>
+			<title>Examples</title>
+
+			<programlisting>
+-- needs an example
+			</programlisting>
+		</refsection>
+		<refsection>
+			<title>See Also</title>
+			<para>
+				<xref linkend="RT_ST_Intersects" />
 			</para>
 		</refsection>
 	</refentry>

@@ -3124,7 +3124,7 @@ CREATE OR REPLACE FUNCTION _st_intersects(rast1 raster, nband1 integer, rast2 ra
 
 CREATE OR REPLACE FUNCTION st_intersects(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_intersects(st_convexhull($1), st_convexhull($3)) ELSE _st_intersects($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_intersects(st_convexhull($1), st_convexhull($3)) ELSE _st_intersects($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -3302,7 +3302,7 @@ CREATE OR REPLACE FUNCTION _st_overlaps(rast1 raster, nband1 integer, rast2 rast
 
 CREATE OR REPLACE FUNCTION st_overlaps(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_overlaps(st_convexhull($1), st_convexhull($3)) ELSE _st_overlaps($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_overlaps(st_convexhull($1), st_convexhull($3)) ELSE _st_overlaps($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -3324,7 +3324,7 @@ CREATE OR REPLACE FUNCTION _st_touches(rast1 raster, nband1 integer, rast2 raste
 
 CREATE OR REPLACE FUNCTION st_touches(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_touches(st_convexhull($1), st_convexhull($3)) ELSE _st_touches($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_touches(st_convexhull($1), st_convexhull($3)) ELSE _st_touches($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -3346,7 +3346,7 @@ CREATE OR REPLACE FUNCTION _st_contains(rast1 raster, nband1 integer, rast2 rast
 
 CREATE OR REPLACE FUNCTION st_contains(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_contains(st_convexhull($1), st_convexhull($3)) ELSE _st_contains($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_contains(st_convexhull($1), st_convexhull($3)) ELSE _st_contains($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -3368,7 +3368,7 @@ CREATE OR REPLACE FUNCTION _st_containsproperly(rast1 raster, nband1 integer, ra
 
 CREATE OR REPLACE FUNCTION st_containsproperly(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_containsproperly(st_convexhull($1), st_convexhull($3)) ELSE _st_containsproperly($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_containsproperly(st_convexhull($1), st_convexhull($3)) ELSE _st_containsproperly($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -3390,7 +3390,7 @@ CREATE OR REPLACE FUNCTION _st_covers(rast1 raster, nband1 integer, rast2 raster
 
 CREATE OR REPLACE FUNCTION st_covers(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_covers(st_convexhull($1), st_convexhull($3)) ELSE _st_covers($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_covers(st_convexhull($1), st_convexhull($3)) ELSE _st_covers($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -3412,7 +3412,7 @@ CREATE OR REPLACE FUNCTION _st_coveredby(rast1 raster, nband1 integer, rast2 ras
 
 CREATE OR REPLACE FUNCTION st_coveredby(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_coveredby(st_convexhull($1), st_convexhull($3)) ELSE _st_coveredby($1, $2, $3, $4) END $$
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_coveredby(st_convexhull($1), st_convexhull($3)) ELSE _st_coveredby($1, $2, $3, $4) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
@@ -3434,13 +3434,29 @@ CREATE OR REPLACE FUNCTION _st_within(rast1 raster, nband1 integer, rast2 raster
 
 CREATE OR REPLACE FUNCTION st_within(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
 	RETURNS boolean
-	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_within(st_convexhull($1), st_convexhull($3)) ELSE _st_contains($3, $4, $1, $2) END $$
+	AS $$ SELECT $1 && $3 AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_within(st_convexhull($1), st_convexhull($3)) ELSE _st_contains($3, $4, $1, $2) END $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 
 CREATE OR REPLACE FUNCTION st_within(rast1 raster, rast2 raster)
 	RETURNS boolean
 	AS $$ SELECT st_within($1, NULL::integer, $2, NULL::integer) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
+-- ST_Disjoint(raster, raster)
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_disjoint(rast1 raster, nband1 integer, rast2 raster, nband2 integer)
+	RETURNS boolean
+	AS $$ SELECT CASE WHEN $2 IS NULL OR $4 IS NULL THEN st_disjoint(st_convexhull($1), st_convexhull($3)) ELSE NOT _st_intersects($1, $2, $3, $4) END $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_disjoint(rast1 raster, rast2 raster)
+	RETURNS boolean
+	AS $$ SELECT st_disjoint($1, NULL::integer, $2, NULL::integer) $$
 	LANGUAGE 'sql' IMMUTABLE
 	COST 1000;
 

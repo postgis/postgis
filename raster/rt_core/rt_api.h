@@ -181,6 +181,11 @@ typedef enum {
 
 /**
  * GEOS spatial relationship tests available
+ *
+ * GEOS tests not available are:
+ *   intersects
+ *   crosses
+ *   disjoint
  */
 typedef enum {
 	GSR_OVERLAPS = 0,
