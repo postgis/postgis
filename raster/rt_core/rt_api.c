@@ -1069,6 +1069,71 @@ rt_pixtype_get_min_value(rt_pixtype pixtype) {
 	}
 }
 
+/**
+ * Returns 1 if clamped values are equal, 0 if not equal, -1 if error
+ *
+ * @param pixtype: the pixel type to clamp the provided values
+ * @param val: value to compare to reference value
+ * @param refval: reference value to be compared with
+ *
+ * @return 1 if clamped values are equal, 0 if not equal, -1 if error
+ */
+int rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double refval) {
+	int rtn = 0;
+
+	switch (pixtype) {
+		case PT_1BB:
+			if (rt_util_clamp_to_1BB(val) == rt_util_clamp_to_1BB(refval))
+				rtn = 1;
+			break;
+		case PT_2BUI:
+			if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(refval))
+				rtn = 1;
+			break;
+		case PT_4BUI:
+			if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(refval))
+				rtn = 1;
+			break;
+		case PT_8BSI:
+			if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(refval))
+				rtn = 1;
+			break;
+		case PT_8BUI:
+			if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(refval))
+				rtn = 1;
+			break;
+		case PT_16BSI:
+			if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(refval))
+				rtn = 1;
+			break;
+		case PT_16BUI:
+			if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(refval))
+				rtn = 1;
+			break;
+		case PT_32BSI:
+			if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(refval))
+				rtn = 1;
+			break;
+		case PT_32BUI:
+			if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(refval))
+				rtn = 1;
+			break;
+		case PT_32BF:
+			if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(refval)))
+				rtn = 1;
+			break;
+		case PT_64BF:
+			if (FLT_EQ(val, refval))
+				rtn = 1;
+			break;
+		default:
+			rterror("rt_pixtype_compare_clamped_values: Unknown pixeltype %d", pixtype);
+			rtn = -1;
+	}
+
+	return rtn;
+}
+
 /*- rt_pixel ----------------------------------------------------------*/
 
 /*
@@ -2641,63 +2706,21 @@ rt_band_clamped_value_is_nodata(rt_band band, double val) {
 		return -1;
 
 	/* value is exactly NODATA */
-	if (FLT_EQ(val, band->nodataval))
+	if (FLT_EQ(val, band->nodataval)) {
 		return -1;
-
-	switch (band->pixtype) {
-		case PT_1BB:
-			if (rt_util_clamp_to_1BB(val) == rt_util_clamp_to_1BB(band->nodataval))
-				return 1;
-			break;
-		case PT_2BUI:
-			if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(band->nodataval))
-				return 1;
-			break;
-		case PT_4BUI:
-			if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(band->nodataval))
-				return 1;
-			break;
-		case PT_8BSI:
-			if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(band->nodataval))
-				return 1;
-			break;
-		case PT_8BUI:
-			if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(band->nodataval))
-				return 1;
-			break;
-		case PT_16BSI:
-			if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(band->nodataval))
-				return 1;
-			break;
-		case PT_16BUI:
-			if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(band->nodataval))
-				return 1;
-			break;
-		case PT_32BSI:
-			if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(band->nodataval))
-				return 1;
-			break;
-		case PT_32BUI:
-			if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(band->nodataval))
-				return 1;
-			break;
-		case PT_32BF:
-			if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(band->nodataval)))
-				return 1;
-			break;
-		case PT_64BF:
-			break;
-		default:
-			rterror("rt_band_clamped_value_is_nodata: Unknown pixeltype %d", band->pixtype);
-			return -1;
 	}
 
-	return 0;
+	return rt_pixtype_compare_clamped_values(
+		band->pixtype,
+		val,
+		band->nodataval
+	);
 }
 
 /**
- * Correct value when clamped value is clamped NODATA value.  Correction
- * does NOT occur if unclamped value is exactly unclamped NODATA value.
+ * Correct value when clamped value is equal to clamped NODATA value.
+ * Correction does NOT occur if unclamped value is exactly unclamped
+ * NODATA value.
  * 
  * @param band: the band whose NODATA value will be used for comparison
  * @param val: the value to compare to the NODATA value and correct

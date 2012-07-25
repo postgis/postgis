@@ -325,6 +325,17 @@ rt_pixtype rt_pixtype_index_from_name(const char* pixname);
  */
 double rt_pixtype_get_min_value(rt_pixtype pixtype);
 
+/**
+ * Returns 1 if clamped values are equal, 0 if not equal, -1 if error
+ *
+ * @param pixtype: the pixel type to clamp the provided values
+ * @param val: value to compare to reference value
+ * @param refval: reference value to be compared with
+ *
+ * @return 1 if clamped values are equal, 0 if not equal, -1 if error
+ */
+int rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double refval);
+
 /*- rt_pixel ----------------------------------------------------------*/
 
 /*
@@ -637,13 +648,14 @@ int rt_band_check_is_nodata(rt_band band);
  *
  * @return 1 if clamped value is clamped NODATA
  *         0 if clamped value is NOT clamped NODATA
- *         -1 otherwise
+ *         -1 if error
  */
 int rt_band_clamped_value_is_nodata(rt_band band, double val);
 
 /**
- * Correct value when clamped value is clamped NODATA value.  Correction
- * does NOT occur if unclamped value is exactly unclamped NODATA value.
+ * Correct value when clamped value is equal to clamped NODATA value.
+ * Correction does NOT occur if unclamped value is exactly unclamped
+ * NODATA value.
  * 
  * @param band: the band whose NODATA value will be used for comparison
  * @param val: the value to compare to the NODATA value and correct
