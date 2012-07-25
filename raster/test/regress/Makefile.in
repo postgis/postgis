@@ -134,6 +134,7 @@ TEST_SREL = \
 	rt_within \
 	rt_disjoint \
 	rt_dwithin \
+	rt_dfullywithin \
 	rt_samealignment
 	
 TEST_BUGS = \

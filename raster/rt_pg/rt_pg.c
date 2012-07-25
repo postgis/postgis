@@ -291,6 +291,9 @@ Datum RASTER_coveredby(PG_FUNCTION_ARGS);
 /* determine if the two rasters are within the specified distance of each other */
 Datum RASTER_dwithin(PG_FUNCTION_ARGS);
 
+/* determine if the two rasters are fully within the specified distance of each other */
+Datum RASTER_dfullywithin(PG_FUNCTION_ARGS);
+
 /* determine if two rasters are aligned */
 Datum RASTER_sameAlignment(PG_FUNCTION_ARGS);
 
@@ -10845,6 +10848,147 @@ Datum RASTER_dwithin(PG_FUNCTION_ARGS)
 
 	if (!rtn) {
 		elog(ERROR, "RASTER_dwithin: Unable to test that the two rasters are within the specified distance of each other");
+		PG_RETURN_NULL();
+	}
+
+	PG_RETURN_BOOL(result);
+}
+
+/**
+ * See if the two rasters are fully within the specified distance of each other
+ */
+PG_FUNCTION_INFO_V1(RASTER_dfullywithin);
+Datum RASTER_dfullywithin(PG_FUNCTION_ARGS)
+{
+	const int set_count = 2;
+	rt_pgraster *pgrast[2];
+	int pgrastpos[2] = {-1, -1};
+	rt_raster rast[2] = {NULL};
+	uint32_t bandindex[2] = {0};
+	uint32_t hasbandindex[2] = {0};
+	double distance = 0;
+
+	uint32_t i;
+	uint32_t j;
+	uint32_t k;
+	uint32_t numBands;
+	int rtn;
+	int result;
+
+	for (i = 0, j = 0; i < set_count; i++) {
+		/* pgrast is null, return null */
+		if (PG_ARGISNULL(j)) {
+			for (k = 0; k < i; k++) {
+				rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
+			PG_RETURN_NULL();
+		}
+		pgrast[i] = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(j));
+		pgrastpos[i] = j;
+		j++;
+
+		/* raster */
+		rast[i] = rt_raster_deserialize(pgrast[i], FALSE);
+		if (!rast[i]) {
+			elog(ERROR, "RASTER_dfullywithin: Could not deserialize the %s raster", i < 1 ? "first" : "second");
+			for (k = 0; k <= i; k++) {
+				if (k < i)
+					rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
+			PG_RETURN_NULL();
+		}
+
+		/* numbands */
+		numBands = rt_raster_get_num_bands(rast[i]);
+		if (numBands < 1) {
+			elog(NOTICE, "The %s raster provided has no bands", i < 1 ? "first" : "second");
+			if (i > 0) i++;
+			for (k = 0; k < i; k++) {
+				rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
+			PG_RETURN_NULL();
+		}
+
+		/* band index */
+		if (!PG_ARGISNULL(j)) {
+			bandindex[i] = PG_GETARG_INT32(j);
+			if (bandindex[i] < 1 || bandindex[i] > numBands) {
+				elog(NOTICE, "Invalid band index (must use 1-based) for the %s raster. Returning NULL", i < 1 ? "first" : "second");
+				if (i > 0) i++;
+				for (k = 0; k < i; k++) {
+					rt_raster_destroy(rast[k]);
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+				}
+				PG_RETURN_NULL();
+			}
+			hasbandindex[i] = 1;
+		}
+		else
+			hasbandindex[i] = 0;
+		POSTGIS_RT_DEBUGF(4, "hasbandindex[%d] = %d", i, hasbandindex[i]);
+		POSTGIS_RT_DEBUGF(4, "bandindex[%d] = %d", i, bandindex[i]);
+		j++;
+	}
+
+	/* distance */
+	if (PG_ARGISNULL(4)) {
+		elog(NOTICE, "Distance cannot be NULL.  Returning NULL");
+		for (k = 0; k < set_count; k++) {
+			rt_raster_destroy(rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
+		PG_RETURN_NULL();
+	}
+
+	distance = PG_GETARG_FLOAT8(4);
+	if (distance < 0) {
+		elog(NOTICE, "Distance cannot be less than zero.  Returning NULL");
+		for (k = 0; k < set_count; k++) {
+			rt_raster_destroy(rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
+		PG_RETURN_NULL();
+	}
+
+	/* hasbandindex must be balanced */
+	if (
+		(hasbandindex[0] && !hasbandindex[1]) ||
+		(!hasbandindex[0] && hasbandindex[1])
+	) {
+		elog(NOTICE, "Missing band index.  Band indices must be provided for both rasters if any one is provided");
+		for (k = 0; k < set_count; k++) {
+			rt_raster_destroy(rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
+		PG_RETURN_NULL();
+	}
+
+	/* SRID must match */
+	if (rt_raster_get_srid(rast[0]) != rt_raster_get_srid(rast[1])) {
+		elog(ERROR, "The two rasters provided have different SRIDs");
+		for (k = 0; k < set_count; k++) {
+			rt_raster_destroy(rast[k]);
+			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+		}
+		PG_RETURN_NULL();
+	}
+
+	rtn = rt_raster_fully_within_distance(
+		rast[0], (hasbandindex[0] ? bandindex[0] - 1 : -1),
+		rast[1], (hasbandindex[1] ? bandindex[1] - 1 : -1),
+		distance,
+		&result
+	);
+	for (k = 0; k < set_count; k++) {
+		rt_raster_destroy(rast[k]);
+		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+	}
+
+	if (!rtn) {
+		elog(ERROR, "RASTER_dfullywithin: Unable to test that the two rasters are fully within the specified distance of each other");
 		PG_RETURN_NULL();
 	}
 
