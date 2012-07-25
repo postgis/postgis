@@ -11,19 +11,6 @@
 --- Test of "Set" functions for properties of a raster band.
 -----------------------------------------------------------------------
 
------------------------------------------------------------------------
--- $Id$
---
--- Copyright (c) 2009 Pierre Racine <pierre.racine@sbf.ulaval.ca>
---
--- This is free software; you can redistribute and/or modify it under
--- the terms of the GNU General Public Licence. See the COPYING file.
------------------------------------------------------------------------
-
------------------------------------------------------------------------
---- Test of "Get" functions for properties of the raster.
------------------------------------------------------------------------
-
 CREATE TABLE rt_band_properties_test (
     id numeric,
     description text,
