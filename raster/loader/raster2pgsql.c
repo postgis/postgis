@@ -896,15 +896,15 @@ create_table(
 		rterror(_("create_table: Could not allocate memory for CREATE TABLE statement"));
 		return 0;
 	}
-	sprintf(sql, "CREATE TABLE %s%s (\"rid\" serial PRIMARY KEY,%s raster%s)%s%s%s%s;",
+	sprintf(sql, "CREATE TABLE %s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s)%s%s;",
 		(schema != NULL ? schema : ""),
 		table,
+		(idx_tablespace != NULL ? " USING INDEX TABLESPACE " : ""),
+		(idx_tablespace != NULL ? idx_tablespace : ""),
 		column,
 		(file_column ? ",\"filename\" text" : ""),
 		(tablespace != NULL ? " TABLESPACE " : ""),
-		(tablespace != NULL ? tablespace : ""),
-		(idx_tablespace != NULL ? " USING INDEX TABLESPACE " : ""),
-		(idx_tablespace != NULL ? idx_tablespace : "")
+		(tablespace != NULL ? tablespace : "")
 	);
 
 	append_sql_to_buffer(buffer, sql);
