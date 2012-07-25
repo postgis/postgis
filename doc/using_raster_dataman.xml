@@ -45,7 +45,7 @@
         </varlistentry>
         
         <varlistentry>
-          <term>(c|a|d) These are mutually exclusive options:</term>
+          <term>(c|a|d|p) These are mutually exclusive options:</term>
           <listitem>
             <para>
               <variablelist>
@@ -72,6 +72,15 @@
                   <listitem>
                     <para>
                       Drop table, create new one and populate it with raster(s)
+                    </para>
+                  </listitem>
+                </varlistentry>
+    
+                <varlistentry>
+                  <term>-p</term>
+                  <listitem>
+                    <para>
+                      Prepare mode, only create the table.
                     </para>
                   </listitem>
                 </varlistentry>
@@ -157,12 +166,22 @@
                 
                 <varlistentry>
                     <term>-l <varname>OVERVIEW_FACTOR</varname></term>
-                    <listitem><para> -l <varname>overview factor</varname> Create overview of the raster.  For more than
+										<listitem><para>Create overview of the raster.  For more than
      one factor, separate with comma(,).  Overview table name follows
      the pattern o_<varname>overview factor</varname>_<varname>table</varname>.  Created overview is
      stored in the database and is not affected by -R. Note that your generated sql file will contain both the main table and overview tables.</para>
                     </listitem>
                 </varlistentry>
+
+								<varlistentry>
+									<term>-N <varname>NODATA</varname></term>
+									<listitem>
+										<para>
+											NODATA value to use on bands without a NODATA value.
+										</para>
+									</listitem>
+								</varlistentry>
+
               </variablelist>
             </para>
           </listitem>
@@ -223,6 +242,17 @@
                     </para>
                   </listitem>
                 </varlistentry>
+                
+                <varlistentry>
+                  <term>-X <varname>tablespace</varname></term>
+                  <listitem>
+                    <para>
+                      Specify the tablespace for the table's new index.
+     This applies to the primary key and the spatial index if the
+     -I flag is used.
+                    </para>
+                  </listitem>
+								</varlistentry>
                 
                <varlistentry>
                   <term>-Y</term>
