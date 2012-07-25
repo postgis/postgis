@@ -37,7 +37,8 @@ PostGIS 2.1.0
   - #1870, align the docs and actual behavior of raster's ST_Intersects
   - #1872, fix ST_ApproxSummarystats to prevent division by zero
   - #1875, ST_SummaryStats returns NULL for all parameters except count
-	         when count is zero
+           when count is zero
+  - #1932, fix raster2pgsql of syntax for index tablespaces
 
 PostGIS 2.0.1
 2012/06/22
