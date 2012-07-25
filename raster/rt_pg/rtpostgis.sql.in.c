@@ -3445,6 +3445,28 @@ CREATE OR REPLACE FUNCTION st_within(rast1 raster, rast2 raster)
 	COST 1000;
 
 -----------------------------------------------------------------------
+-- ST_DWithin(raster, raster)
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_dwithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME', 'RASTER_dwithin'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_dwithin(rast1 raster, nband1 integer, rast2 raster, nband2 integer, distance double precision)
+	RETURNS boolean
+	AS $$ SELECT $1 && ST_Expand(ST_ConvexHull($3), $5) AND $3 && ST_Expand(ST_ConvexHull($1), $5) AND CASE WHEN $2 IS NULL OR $4 IS NULL THEN _st_dwithin(st_convexhull($1), st_convexhull($3), $5) ELSE _st_dwithin($1, $2, $3, $4, $5) END $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+CREATE OR REPLACE FUNCTION st_dwithin(rast1 raster, rast2 raster, distance double precision)
+	RETURNS boolean
+	AS $$ SELECT st_dwithin($1, NULL::integer, $2, NULL::integer, $3) $$
+	LANGUAGE 'sql' IMMUTABLE
+	COST 1000;
+
+-----------------------------------------------------------------------
 -- ST_Disjoint(raster, raster)
 -----------------------------------------------------------------------
 

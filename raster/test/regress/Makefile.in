@@ -133,6 +133,7 @@ TEST_SREL = \
 	rt_coveredby \
 	rt_within \
 	rt_disjoint \
+	rt_dwithin \
 	rt_samealignment
 	
 TEST_BUGS = \

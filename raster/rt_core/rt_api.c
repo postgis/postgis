@@ -11862,6 +11862,8 @@ int rt_raster_within_distance(
 	lwgeom_free(surface1);
 	lwgeom_free(surface2);
 
+	RASTER_DEBUGF(3, "(mindist, distance) = (%f, %f)", mindist, distance);
+
 	/* if distance >= mindist, true */
 	if (FLT_EQ(mindist, distance) || distance > mindist)
 		*dwithin = 1;
