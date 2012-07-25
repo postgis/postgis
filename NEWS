@@ -5,6 +5,7 @@ PostGIS 2.0.2
 
   - #1891, Use LDFLAGS environment when building liblwgeom
   - #1900, Fix pgsql2shp for big-endian systems 
+  - #1932, Fix raster2pgsql for invalid syntax for setting index tablespace
 
 PostGIS 2.0.1
 2012/06/22
