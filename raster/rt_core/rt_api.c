@@ -11780,6 +11780,95 @@ int rt_raster_coveredby(
 	);
 }
 
+/**
+ * Return zero if error occurred in function.
+ * Parameter contains returns non-zero if rast1 is within a distance of rast2
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param dwithin : non-zero value if rast1 is within a distance of rast2
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_within_distance(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	double distance,
+	int *dwithin
+) {
+	LWGEOM *surface1 = NULL;
+	LWGEOM *surface2 = NULL;
+	double mindist = 0;
+	int rtn = 0;
+
+	RASTER_DEBUG(3, "Starting");
+
+	assert(NULL != rast1);
+	assert(NULL != rast2);
+
+	if (nband1 < 0 && nband2 < 0) {
+		nband1 = -1;
+		nband2 = -1;
+	}
+	else {
+		assert(nband1 >= 0 && nband1 < rt_raster_get_num_bands(rast1));
+		assert(nband2 >= 0 && nband2 < rt_raster_get_num_bands(rast2));
+	}
+
+	/* initialize to zero, false result */
+	*dwithin = 0;
+
+	/* same srid */
+	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
+		rterror("rt_raster_distance_within: The two rasters provided have different SRIDs");
+		return 0;
+	}
+
+	/* distance cannot be less than zero */
+	if (distance < 0) {
+		rterror("rt_raster_distance_within: Distance cannot be less than zero");
+		return 0;
+	}
+
+	/* get LWMPOLY of each band */
+	surface1 = lwmpoly_as_lwgeom(rt_raster_surface(rast1, nband1, &rtn));
+	if (!rtn) {
+		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the first raster");
+		return 0;
+	}
+	surface2 = lwmpoly_as_lwgeom(rt_raster_surface(rast2, nband2, &rtn));
+	if (!rtn) {
+		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the second raster");
+		lwgeom_free(surface1);
+		return 0;
+	}
+
+	/* either surface is NULL, test is false */
+	if (surface1 == NULL || surface2 == NULL) {
+		if (surface1 != NULL) lwgeom_free(surface1);
+		if (surface2 != NULL) lwgeom_free(surface2);
+		return 1;
+	}
+
+	/* get the min distance between the two surfaces */
+	mindist = lwgeom_mindistance2d_tolerance(surface1, surface2, distance);
+
+	lwgeom_free(surface1);
+	lwgeom_free(surface2);
+
+	/* if distance >= mindist, true */
+	if (FLT_EQ(mindist, distance) || distance > mindist)
+		*dwithin = 1;
+
+	return 1;
+}
+
 /*
  * Return zero if error occurred in function.
  * Paramter aligned returns non-zero if two rasters are aligned

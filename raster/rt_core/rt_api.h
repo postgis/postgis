@@ -1599,6 +1599,29 @@ int rt_raster_coveredby(
 	int *coveredby
 );
 
+/**
+ * Return zero if error occurred in function.
+ * Parameter contains returns non-zero if rast1 is within a distance of rast2
+ *
+ * @param rast1 : the first raster whose band will be tested
+ * @param nband1 : the 0-based band of raster rast1 to use
+ *   if value is less than zero, bands are ignored.
+ *   if nband1 gte zero, nband2 must be gte zero
+ * @param rast2 : the second raster whose band will be tested
+ * @param nband2 : the 0-based band of raster rast2 to use
+ *   if value is less than zero, bands are ignored
+ *   if nband2 gte zero, nband1 must be gte zero
+ * @param dwithin : non-zero value if rast1 is within a distance of rast2
+ *
+ * @return if zero, an error occurred in function
+ */
+int rt_raster_within_distance(
+	rt_raster rast1, int nband1,
+	rt_raster rast2, int nband2,
+	double distance,
+	int *dwithin
+);
+
 /*
  * Return zero if error occurred in function.
  * Paramter aligned returns non-zero if two rasters are aligned
