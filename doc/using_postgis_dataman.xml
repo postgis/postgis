@@ -769,7 +769,7 @@ CREATE VIEW  public.vwmytablemercator AS
 --
 DROP VIEW public.vwmytablemercator;
 CREATE VIEW  public.vwmytablemercator AS
-	SELECT gid, ST_Transform(geom,3395)::geometry(3395) As geom, f_name
+	SELECT gid, ST_Transform(geom,3395)::geometry(Geometry, 3395) As geom, f_name
 	FROM public.mytable;
 	
 -- If you know the geometry type for sure is a 2D POLYGON then you could do
