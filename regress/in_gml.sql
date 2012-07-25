@@ -326,7 +326,11 @@ SELECT 'mpoint_6', ST_AsEWKT(ST_GeomFromGML(' <!-- --> <gml:MultiPoint> <!-- -->
 -- Mixed srsName
 SELECT 'mpoint_7', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint srsName="EPSG:27582"><gml:pointMember><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMember><gml:pointMember><gml:Point srsName="EPSG:27562"><gml:coordinates>400000,5000000</gml:coordinates></gml:Point></gml:pointMember></gml:MultiPoint>'));
 
+-- 1 point in pointMembers
+SELECT 'mpoint_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMembers><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point></gml:pointMembers></gml:MultiPoint>'));
 
+-- 2 points in pointMembers
+SELECT 'mpoint_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMembers><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point><gml:Point><gml:coordinates>3,4</gml:coordinates></gml:Point></gml:pointMembers></gml:MultiPoint>'));
 
 
 --
