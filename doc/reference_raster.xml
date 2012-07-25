@@ -3127,7 +3127,11 @@ FROM (SELECT ST_PixelAsPolygons(
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
--- needs an example
+SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
+
+   st_astext    
+----------------
+ POINT(0.5 0.5)
 				</programlisting>
 			</refsection>
 
@@ -3173,7 +3177,35 @@ FROM (SELECT ST_PixelAsPolygons(
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
--- needs an example
+SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;
+
+ x | y | val |          st_astext           
+---+---+-----+------------------------------
+ 1 | 1 | 253 | POINT(3427927.75 5793244)
+ 2 | 1 | 254 | POINT(3427927.8 5793244)
+ 3 | 1 | 253 | POINT(3427927.85 5793244)
+ 4 | 1 | 254 | POINT(3427927.9 5793244)
+ 5 | 1 | 254 | POINT(3427927.95 5793244)
+ 1 | 2 | 253 | POINT(3427927.75 5793243.95)
+ 2 | 2 | 254 | POINT(3427927.8 5793243.95)
+ 3 | 2 | 254 | POINT(3427927.85 5793243.95)
+ 4 | 2 | 253 | POINT(3427927.9 5793243.95)
+ 5 | 2 | 249 | POINT(3427927.95 5793243.95)
+ 1 | 3 | 250 | POINT(3427927.75 5793243.9)
+ 2 | 3 | 254 | POINT(3427927.8 5793243.9)
+ 3 | 3 | 254 | POINT(3427927.85 5793243.9)
+ 4 | 3 | 252 | POINT(3427927.9 5793243.9)
+ 5 | 3 | 249 | POINT(3427927.95 5793243.9)
+ 1 | 4 | 251 | POINT(3427927.75 5793243.85)
+ 2 | 4 | 253 | POINT(3427927.8 5793243.85)
+ 3 | 4 | 254 | POINT(3427927.85 5793243.85)
+ 4 | 4 | 254 | POINT(3427927.9 5793243.85)
+ 5 | 4 | 253 | POINT(3427927.95 5793243.85)
+ 1 | 5 | 252 | POINT(3427927.75 5793243.8)
+ 2 | 5 | 250 | POINT(3427927.8 5793243.8)
+ 3 | 5 | 254 | POINT(3427927.85 5793243.8)
+ 4 | 5 | 254 | POINT(3427927.9 5793243.8)
+ 5 | 5 | 254 | POINT(3427927.95 5793243.8)
 				</programlisting>
 			</refsection>
 
@@ -3217,7 +3249,11 @@ FROM (SELECT ST_PixelAsPolygons(
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
--- needs an example
+SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
+
+  st_astext   
+--------------
+ POINT(1.5 2)
 				</programlisting>
 			</refsection>
 
@@ -3263,7 +3299,34 @@ FROM (SELECT ST_PixelAsPolygons(
 			<refsection>
 				<title>Examples</title>
 				<programlisting>
--- needs an example
+SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsCentroids(rast, 1)).* FROM dummy_rast WHERE rid = 2) foo;
+ x | y | val |           st_astext            
+---+---+-----+--------------------------------
+ 1 | 1 | 253 | POINT(3427927.775 5793243.975)
+ 2 | 1 | 254 | POINT(3427927.825 5793243.975)
+ 3 | 1 | 253 | POINT(3427927.875 5793243.975)
+ 4 | 1 | 254 | POINT(3427927.925 5793243.975)
+ 5 | 1 | 254 | POINT(3427927.975 5793243.975)
+ 1 | 2 | 253 | POINT(3427927.775 5793243.925)
+ 2 | 2 | 254 | POINT(3427927.825 5793243.925)
+ 3 | 2 | 254 | POINT(3427927.875 5793243.925)
+ 4 | 2 | 253 | POINT(3427927.925 5793243.925)
+ 5 | 2 | 249 | POINT(3427927.975 5793243.925)
+ 1 | 3 | 250 | POINT(3427927.775 5793243.875)
+ 2 | 3 | 254 | POINT(3427927.825 5793243.875)
+ 3 | 3 | 254 | POINT(3427927.875 5793243.875)
+ 4 | 3 | 252 | POINT(3427927.925 5793243.875)
+ 5 | 3 | 249 | POINT(3427927.975 5793243.875)
+ 1 | 4 | 251 | POINT(3427927.775 5793243.825)
+ 2 | 4 | 253 | POINT(3427927.825 5793243.825)
+ 3 | 4 | 254 | POINT(3427927.875 5793243.825)
+ 4 | 4 | 254 | POINT(3427927.925 5793243.825)
+ 5 | 4 | 253 | POINT(3427927.975 5793243.825)
+ 1 | 5 | 252 | POINT(3427927.775 5793243.775)
+ 2 | 5 | 250 | POINT(3427927.825 5793243.775)
+ 3 | 5 | 254 | POINT(3427927.875 5793243.775)
+ 4 | 5 | 254 | POINT(3427927.925 5793243.775)
+ 5 | 5 | 254 | POINT(3427927.975 5793243.775)
 				</programlisting>
 			</refsection>
 
@@ -8800,7 +8863,23 @@ a_rid | b_rid | overleft
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+-- specified band numbers
+SELECT r1.rid, r2.rid, ST_Contains(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;
+
+NOTICE:  The first raster provided has no bands
+ rid | rid | st_contains 
+-----+-----+-------------
+   1 |   1 | 
+   1 |   2 | f
+			</programlisting>
+
+			<programlisting>
+-- no band numbers specified
+SELECT r1.rid, r2.rid, ST_Contains(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 1;
+ rid | rid | st_contains 
+-----+-----+-------------
+   1 |   1 | t
+   1 |   2 | f
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -8887,7 +8966,12 @@ a_rid | b_rid | overleft
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+SELECT r1.rid, r2.rid, ST_ContainsProperly(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_containsproperly 
+-----+-----+---------------------
+   2 |   1 | f
+   2 |   2 | f
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -8970,7 +9054,12 @@ a_rid | b_rid | overleft
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+SELECT r1.rid, r2.rid, ST_Covers(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_covers 
+-----+-----+-----------
+   2 |   1 | f
+   2 |   2 | t
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -9053,7 +9142,12 @@ a_rid | b_rid | overleft
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+SELECT r1.rid, r2.rid, ST_CoveredBy(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_coveredby 
+-----+-----+--------------
+   2 |   1 | f
+   2 |   2 | t
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -9136,8 +9230,26 @@ a_rid | b_rid | overleft
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+-- rid = 1 has no bands, hence the NOTICE and the NULL value for st_disjoint
+SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+NOTICE:  The second raster provided has no bands
+ rid | rid | st_disjoint 
+-----+-----+-------------
+   2 |   1 | 
+   2 |   2 | f
 			</programlisting>
+
+			<programlisting>
+-- this time, without specifying band numbers
+SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_disjoint 
+-----+-----+-------------
+   2 |   1 | t
+   2 |   2 | f
+			</programlisting>
+
 		</refsection>
 		<refsection>
 			<title>See Also</title>
@@ -9266,7 +9378,12 @@ a_rid | b_rid | overleft
 		<refsection>
 			<title>Examples</title>
 			<programlisting>
--- needs a new example
+-- different bands of same raster
+SELECT ST_Intersects(rast, 2, rast, 3) FROM dummy_rast WHERE rid = 2;
+
+ st_intersects 
+---------------
+ t
 			</programlisting>
 		</refsection>
 
@@ -9350,7 +9467,12 @@ a_rid | b_rid | overleft
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+-- comparing different bands of same raster
+SELECT ST_Overlaps(rast, 1, rast, 2) FROM dummy_rast WHERE rid = 2;
+
+ st_overlaps 
+-------------
+ f
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -9432,7 +9554,12 @@ a_rid | b_rid | overleft
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+SELECT r1.rid, r2.rid, ST_Touches(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_touches 
+-----+-----+------------
+   2 |   1 | f
+   2 |   2 | f
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -9651,7 +9778,12 @@ NOTICE:  The two rasters provided have different SRIDs
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+SELECT r1.rid, r2.rid, ST_Within(r1.rast, 1, r2.rast, 1) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_within 
+-----+-----+-----------
+   2 |   1 | f
+   2 |   2 | t
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -9748,7 +9880,12 @@ NOTICE:  The two rasters provided have different SRIDs
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+SELECT r1.rid, r2.rid, ST_DWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_dwithin 
+-----+-----+------------
+   2 |   1 | f
+   2 |   2 | t
 			</programlisting>
 		</refsection>
 		<refsection>
@@ -9843,7 +9980,12 @@ NOTICE:  The two rasters provided have different SRIDs
 			<title>Examples</title>
 
 			<programlisting>
--- needs an example
+SELECT r1.rid, r2.rid, ST_DFullyWithin(r1.rast, 1, r2.rast, 1, 3.14) FROM dummy_rast r1 CROSS JOIN dummy_rast r2 WHERE r1.rid = 2;
+
+ rid | rid | st_dfullywithin 
+-----+-----+-----------------
+   2 |   1 | f
+   2 |   2 | t
 			</programlisting>
 		</refsection>
 		<refsection>
