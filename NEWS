@@ -15,7 +15,7 @@ PostGIS 2.1.0
   - ST_Raster2WorldCoord, ST_World2RasterCoord (Bborie Park / UC Davis)
   - Additional raster/raster spatial relationship functions
     (ST_Contains, ST_ContainsProperly, ST_Covers, ST_CoveredBy, ST_Disjoint,
-    ST_Overlaps, ST_Touches, ST_Within)
+    ST_Overlaps, ST_Touches, ST_Within, ST_DWithin)
     (Bborie Park / UC Davis)
   - #1643, Tiger Geocoder - Tiger 2011 loader (Regina Obe / Paragon Corporation) 
     Funded by Hunter Systems Group
