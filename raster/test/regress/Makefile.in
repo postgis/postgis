@@ -50,7 +50,6 @@ TEST_FUNC = \
 	rt_aspng
 
 TEST_PROPS = \
-	create_rt_properties_test \
 	rt_dimensions \
 	rt_scale \
 	rt_pixelsize \
@@ -58,17 +57,13 @@ TEST_PROPS = \
 	rt_rotation \
 	rt_georeference \
 	rt_set_properties \
-	drop_rt_properties_test \
-	create_rt_empty_raster_test \
 	rt_isempty \
 	rt_hasnoband \
-	drop_rt_empty_raster_test \
 	rt_metadata \
 	rt_raster2worldcoord \
 	rt_world2rastercoord
 
 TEST_BANDPROPS = \
-	create_rt_band_properties_test \
 	rt_band_properties \
 	rt_set_band_properties \
 	rt_summarystats \
@@ -79,7 +74,6 @@ TEST_BANDPROPS = \
 	rt_valuepercent \
 	rt_bandmetadata \
 	rt_pixelvalue \
-	drop_rt_band_properties_test \
 	rt_neighborhood \
 	rt_nearestvalue \
 	rt_pixelofvalue \
@@ -90,16 +84,12 @@ TEST_BANDPROPS = \
 
 TEST_UTILITY = \
 	rt_utility \
-	create_rt_mapalgebra_test \
 	rt_mapalgebraexpr \
 	rt_mapalgebrafct \
 	rt_mapalgebraexpr_2raster \
 	rt_mapalgebrafct_2raster \
-	drop_rt_mapalgebra_test \
-	create_rt_mapalgebrafctngb_test \
 	rt_mapalgebrafctngb \
 	rt_mapalgebrafctngb_userfunc \
-	drop_rt_mapalgebrafctngb_test \
 	rt_reclass \
 	rt_resample \
 	rt_asraster \
@@ -108,7 +98,6 @@ TEST_UTILITY = \
 	rt_union
 
 TEST_GIST = \
-	create_rt_gist_test \
 	rt_above \
 	rt_below \
 	rt_contained \
@@ -120,9 +109,8 @@ TEST_GIST = \
 	rt_overleft \
 	rt_overright \
 	rt_right \
-	rt_same \
-	drop_rt_gist_test
-	
+	rt_same 
+
 TEST_SREL = \
 	rt_intersects \
 	rt_overlaps \

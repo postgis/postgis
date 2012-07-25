@@ -1,3 +1,29 @@
+--
+-- A user callback function that nullifies all cells in the resulting raster.
+--
+CREATE OR REPLACE FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADIC args text[])
+    RETURNS float AS
+    $$
+    BEGIN
+        RETURN NULL;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+
+--
+--Test rasters
+--
+CREATE OR REPLACE FUNCTION ST_TestRasterNgb(h integer, w integer, val float8) 
+    RETURNS raster AS 
+    $$
+    DECLARE
+    BEGIN
+        RETURN ST_AddBand(ST_MakeEmptyRaster(h, w, 0, 0, 1, 1, 0, 0, 0), '32BF', val, -1);
+    END;
+    $$
+    LANGUAGE 'plpgsql';
+
 -- Tests
 -- Test NULL Raster. Should be true.
 SELECT ST_MapAlgebraFctNgb(NULL, 1, NULL, 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, 'NULL', NULL) IS NULL FROM ST_TestRasterNgb(0, 0, -1) rast;
@@ -231,3 +257,6 @@ SELECT
     ST_MapAlgebraFctNgb(rast, 1, '8BUI', 1, 1, 'ST_Sum4ma(float[][], text, text[])'::regprocedure, '120', NULL), 2, 2
   ) = 200
 FROM ST_SetValue(ST_SetBandNoDataValue(ST_TestRasterNgb(3, 3, 10), 0), 2, 2, 0) AS rast;
+
+DROP FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADIC args text[]);
+DROP FUNCTION ST_TestRasterNgb(h integer, w integer, val float8);

@@ -7,7 +7,17 @@
 -- the terms of the GNU General Public Licence. See the COPYING file.
 -----------------------------------------------------------------------
 
+CREATE TABLE empty_raster_test (
+	rid numeric,
+	rast raster
+);
+
+INSERT INTO empty_raster_test
+VALUES (1, ST_MakeEmptyRaster( 100, 100, 0.0005, 0.0005, 1, 1, 0, 0, 4326) );
+
 -------------------------------------------------------------------
 -- st_hasnodata
 -----------------------------------------------------------------------
 select st_hasnoband(rast) from empty_raster_test;
+
+DROP TABLE empty_raster_test;

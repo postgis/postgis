@@ -1,3 +1,29 @@
+--
+-- A user callback function that nullifies all cells in the resulting raster.
+--
+CREATE OR REPLACE FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADIC args text[])
+    RETURNS float AS
+    $$
+    BEGIN
+        RETURN NULL;
+    END;
+    $$
+    LANGUAGE 'plpgsql' IMMUTABLE;
+
+
+--
+--Test rasters
+--
+CREATE OR REPLACE FUNCTION ST_TestRasterNgb(h integer, w integer, val float8) 
+    RETURNS raster AS 
+    $$
+    DECLARE
+    BEGIN
+        RETURN ST_AddBand(ST_MakeEmptyRaster(h, w, 0, 0, 1, 1, 0, 0, 0), '32BF', val, -1);
+    END;
+    $$
+    LANGUAGE 'plpgsql';
+
 -- test st_max4ma, uniform values
 SELECT
   ST_Value(rast, 2, 2) = 1,
@@ -269,3 +295,6 @@ SELECT
       ), 2, 3, 8
     ), 3, 3, 9
   ) AS rast;
+
+DROP FUNCTION ST_Nullage(matrix float[][], nodatamode text, VARIADIC args text[]);
+DROP FUNCTION ST_TestRasterNgb(h integer, w integer, val float8);
