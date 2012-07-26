@@ -332,6 +332,9 @@ SELECT 'mpoint_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMembers><
 -- 2 points in pointMembers
 SELECT 'mpoint_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMembers><gml:Point><gml:coordinates>1,2</gml:coordinates></gml:Point><gml:Point><gml:coordinates>3,4</gml:coordinates></gml:Point></gml:pointMembers></gml:MultiPoint>'));
 
+-- Empty pointMembers
+SELECT 'mpoint_10', ST_AsEWKT(ST_GeomFromGML('<gml:MultiPoint><gml:pointMembers></gml:pointMembers></gml:MultiPoint>'));
+
 
 --
 -- MultiLineString
@@ -361,8 +364,6 @@ SELECT 'mline_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString><gml:lineString
 SELECT 'mline_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiLineString srsName="EPSG:27582"><gml:lineStringMember><gml:LineString><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString srsName="EPSG:27562"><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString>'));
 
 
-
-
 --
 -- MultiCurve
 --
@@ -390,6 +391,13 @@ SELECT 'mcurve_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMember><g
 -- Mixed srsName
 SELECT 'mcurve_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve srsName="EPSG:27582"><gml:curveMember><gml:Curve><gml:segments><gml:LineStringSegment><gml:coordinates>1,2 3,4</gml:coordinates></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:Curve srsName="EPSG:27562"><gml:segments><gml:LineStringSegment><gml:coordinates>400000,5000000 400010,5000010</gml:coordinates></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember></gml:MultiCurve>'));
 
+-- 1 curve in curveMembers
+SELECT 'mcurve_10', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMembers><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMembers></gml:MultiCurve>'));
+
+-- 2 curves in curveMembers
+SELECT 'mcurve_11', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMembers><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>1 2 3 4</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve><gml:Curve><gml:segments><gml:LineStringSegment><gml:posList>5 6 7 8</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMembers></gml:MultiCurve>'));
+
+SELECT 'mcurve_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiCurve><gml:curveMembers></gml:curveMembers></gml:MultiCurve>'));
 
 
 --
