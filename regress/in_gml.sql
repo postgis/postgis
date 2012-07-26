@@ -458,6 +458,14 @@ SELECT 'msurface_8', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMem
 -- Mixed srsName
 SELECT 'msurface_9', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface srsName="EPSG:27582"><gml:surfaceMember><gml:Polygon><gml:exterior><gml:LinearRing><gml:coordinates>1,2 3,4 5,6 1,2</gml:coordinates></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMember><gml:surfaceMember><gml:Polygon srsName="EPSG:27562"><gml:exterior><gml:LinearRing><gml:coordinates>400000,5000000 400010,5000010 400020,5000020 400000,5000000</gml:coordinates></gml:LinearRing></gml:exterior><gml:interior><gml:LinearRing><gml:coordinates>400100,5000100 400110,5000110 400120,5000120 400100,5000100</gml:coordinates></gml:LinearRing></gml:interior></gml:Polygon></gml:surfaceMember></gml:MultiSurface>'));
 
+-- 1 surface in surfaceMembers
+SELECT 'msurface_10', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMembers><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMembers></gml:MultiSurface>'));
+
+-- 2 surfaces in surfaceMembers
+SELECT 'msurface_11', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMembers><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>1 2 3 4 5 6 1 2</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon><gml:Polygon><gml:exterior><gml:LinearRing><gml:posList>7 8 9 10 11 12 7 8</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon></gml:surfaceMembers></gml:MultiSurface>'));
+
+-- Empty surfaceMembers
+SELECT 'msurface_12', ST_AsEWKT(ST_GeomFromGML('<gml:MultiSurface><gml:surfaceMembers></gml:surfaceMembers></gml:MultiSurface>'));
 
 
 --
