@@ -541,6 +541,12 @@ double rt_band_get_nodata(rt_band band);
  * values in vals are expected to be of the band's pixel type
  * as this function uses memcpy.
  *
+ * It is important to be careful when using this function as
+ * the number of values being set may exceed a pixel "row".
+ * Remember that the band values are stored in a stream (1-D array)
+ * regardless of what the raster's width and height might be.
+ * So, setting a number of values may cross multiple pixel "rows".
+ *
  * @param band : the band to set value to
  * @param x : X coordinate (0-based)
  * @param y : Y coordinate (0-based)
