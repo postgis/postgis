@@ -265,7 +265,7 @@ CREATE OR REPLACE FUNCTION st_addband(
 	torastindex int DEFAULT NULL
 )
 	RETURNS raster
-	AS 'MODULE_PATHNAME', 'RASTER_copyband'
+	AS 'MODULE_PATHNAME', 'RASTER_copyBand'
 	LANGUAGE 'c' IMMUTABLE; 
 
 -- Variant that adds multiple raster bands in one array call --

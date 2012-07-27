@@ -81,12 +81,13 @@
 210000.464564365
 1234.46456436475
 NOTICE:  rt_raster_copy_band: Second raster has no band
-NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
+NOTICE:  RASTER_copyBand: Could not add band to raster. Returning original raster.
 1234.5678
 NOTICE:  rt_raster_copy_band: Second raster has no band
-NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
+NOTICE:  RASTER_copyBand: Could not add band to raster. Returning original raster.
 1234.5678
 NOTICE:  rt_raster_copy_band: Second raster has no band
-NOTICE:  RASTER_copyband: Could not add band to raster. Returning original raster.
+NOTICE:  RASTER_copyBand: Could not add band to raster. Returning original raster.
 1234.5678
+1234.567|255
 90
