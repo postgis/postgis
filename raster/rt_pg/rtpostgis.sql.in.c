@@ -187,7 +187,7 @@ CREATE OR REPLACE FUNCTION st_metadata(
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
--- Constructors ST_MakeEmptyRaster and ST_AddBand
+-- Constructor ST_MakeEmptyRaster
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_makeemptyraster(width int, height int, upperleftx float8, upperlefty float8, scalex float8, scaley float8, skewx float8, skewy float8, srid int4 DEFAULT 0)
     RETURNS RASTER
@@ -218,27 +218,59 @@ CREATE OR REPLACE FUNCTION st_makeemptyraster(rast raster)
 		END;
     $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
--- This function can not be STRICT, because nodataval can be NULL indicating that no nodata value should be set
-CREATE OR REPLACE FUNCTION st_addband(rast raster, index int, pixeltype text, initialvalue float8 DEFAULT 0., nodataval float8 DEFAULT NULL)
-    RETURNS RASTER
-    AS 'MODULE_PATHNAME', 'RASTER_addband'
-    LANGUAGE 'c' IMMUTABLE;
+-----------------------------------------------------------------------
+-- Constructor ST_AddBand
+-----------------------------------------------------------------------
+
+CREATE TYPE addbandarg AS (
+	index int,
+	pixeltype text,
+	initialvalue float8,
+	nodataval float8
+);
+
+CREATE OR REPLACE FUNCTION st_addband(rast raster, addbandargset addbandarg[])
+	RETURNS RASTER
+	AS 'MODULE_PATHNAME', 'RASTER_addBand'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- This function can not be STRICT, because nodataval can be NULL indicating that no nodata value should be set
-CREATE OR REPLACE FUNCTION st_addband(rast raster, pixeltype text, initialvalue float8 DEFAULT 0., nodataval float8 DEFAULT NULL)
-    RETURNS raster
-    AS 'select st_addband($1, NULL, $2, $3, $4)'
-    LANGUAGE 'sql' IMMUTABLE;
+CREATE OR REPLACE FUNCTION st_addband(
+	rast raster,
+	index int,
+	pixeltype text,
+	initialvalue float8 DEFAULT 0.,
+	nodataval float8 DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT st_addband($1, ARRAY[ROW($2, $3, $4, $5)]::addbandarg[]) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+-- This function can not be STRICT, because nodataval can be NULL indicating that no nodata value should be set
+CREATE OR REPLACE FUNCTION st_addband(
+	rast raster,
+	pixeltype text,
+	initialvalue float8 DEFAULT 0.,
+	nodataval float8 DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT st_addband($1, ARRAY[ROW(NULL, $2, $3, $4)]::addbandarg[]) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -- This function can not be STRICT, because torastindex can not be determined (could be st_numbands(raster) though)
-CREATE OR REPLACE FUNCTION st_addband(torast raster, fromrast raster, fromband int DEFAULT 1, torastindex int DEFAULT NULL)
-    RETURNS RASTER
-    AS 'MODULE_PATHNAME', 'RASTER_copyband'
-    LANGUAGE 'c' IMMUTABLE;
-    
+CREATE OR REPLACE FUNCTION st_addband(
+	torast raster,
+	fromrast raster,
+	fromband int DEFAULT 1,
+	torastindex int DEFAULT NULL
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_copyband'
+	LANGUAGE 'c' IMMUTABLE; 
+
 -- Variant that adds multiple raster bands in one array call --
 -- If null is passed in for the torast, then array of rasts is accumulated.
-CREATE OR REPLACE FUNCTION ST_AddBand(torast raster, fromrasts raster[], fromband integer DEFAULT 1)
+CREATE OR REPLACE FUNCTION st_addband(torast raster, fromrasts raster[], fromband integer DEFAULT 1)
     RETURNS raster
     AS $$
 	DECLARE var_result raster := torast;
