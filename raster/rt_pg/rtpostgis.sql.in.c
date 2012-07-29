@@ -1114,17 +1114,19 @@ CREATE OR REPLACE FUNCTION st_approxquantile(rastertable text, rastercolumn text
 -----------------------------------------------------------------------
 -- ST_ValueCount and ST_ValuePercent
 -----------------------------------------------------------------------
-CREATE TYPE valuecount AS (
-	value double precision,
-	count integer,
-	percent double precision
-);
 
 -- None of the "valuecount" functions with "searchvalues" can be strict as "searchvalues" and "roundto" can be NULL
 -- Allowing "searchvalues" to be NULL instructs the function to count all values
 
-CREATE OR REPLACE FUNCTION _st_valuecount(rast raster, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
-	RETURNS SETOF valuecount
+CREATE OR REPLACE FUNCTION _st_valuecount(
+	rast raster, nband integer DEFAULT 1,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	searchvalues double precision[] DEFAULT NULL,
+	roundto double precision DEFAULT 0,
+	OUT value double precision,
+	OUT count integer,
+	OUT percent double precision
+)
 	AS 'MODULE_PATHNAME', 'RASTER_valueCount'
 	LANGUAGE 'c' IMMUTABLE;
 
@@ -1200,8 +1202,17 @@ CREATE OR REPLACE FUNCTION st_valuepercent(rast raster, searchvalue double preci
 	AS $$ SELECT (_st_valuecount($1, 1, TRUE, ARRAY[$2]::double precision[], $3)).percent $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
-CREATE OR REPLACE FUNCTION _st_valuecount(rastertable text, rastercolumn text, nband integer DEFAULT 1, exclude_nodata_value boolean DEFAULT TRUE, searchvalues double precision[] DEFAULT NULL, roundto double precision DEFAULT 0)
-	RETURNS SETOF valuecount
+CREATE OR REPLACE FUNCTION _st_valuecount(
+	rastertable text,
+	rastercolumn text,
+	nband integer DEFAULT 1,
+	exclude_nodata_value boolean DEFAULT TRUE,
+	searchvalues double precision[] DEFAULT NULL,
+	roundto double precision DEFAULT 0,
+	OUT value double precision,
+	OUT count integer,
+	OUT percent double precision
+)
 	AS 'MODULE_PATHNAME', 'RASTER_valueCountCoverage'
 	LANGUAGE 'c' STABLE;
 

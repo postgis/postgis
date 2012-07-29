@@ -214,6 +214,7 @@ DROP TYPE IF EXISTS bandmetadata;
 DROP TYPE IF EXISTS geomvalxy;
 DROP TYPE IF EXISTS summarystats;
 DROP TYPE IF EXISTS quantile;
+DROP TYPE IF EXISTS valuecount;
 
 -- raster_columns and raster_overviews tables are deprecated
 DROP FUNCTION IF EXISTS _rename_raster_tables();
