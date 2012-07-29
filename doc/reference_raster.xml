@@ -142,40 +142,6 @@ VALUES (1,
 			</refsection>
 		</refentry>
 
-		<refentry id="histogram">
-		  <refnamediv>
-			<refname>histogram</refname>
-			<refpurpose>A composite type used as record output of the ST_Histogram and ST_ApproxHistogram functions.</refpurpose>
-		  </refnamediv>
-		  <refsection>
-			<title>Description</title>
-			<para>A composite type used as record outputs of the <xref linkend="RT_ST_Histogram" /> <varname>ST_ApproxHistogram</varname> functions. Note that depending on <varname>exclude_nodata_value</varname> of function, may or may not contain nodata pixels.</para>
-			<para>Each histogram record in results corresponds to a bin for a selected raster band.</para>
-			<variablelist>
-			    <varlistentry>
-			        <term><parameter>min </parameter><type>double precision</type></term>
-			        <listitem><para>minimum pixel value in this bin</para></listitem>
-			    </varlistentry>
-			    <varlistentry>
-			        <term><parameter>max </parameter><type>double precision</type></term>
-			        <listitem><para>Maximum pixel value in this bin.</para></listitem>
-			    </varlistentry>
-			    	<varlistentry>
-			        <term><parameter>count </parameter><type>integer</type></term>
-			        <listitem><para>count of pixels in this bin.</para></listitem>
-			    </varlistentry>
-			    	<varlistentry>
-			        <term><parameter>percent </parameter><type>double precision</type></term>
-			        <listitem><para>Percent of pixels of the overall population in this bin.</para></listitem>
-			    </varlistentry>
-			</variablelist>
-		  </refsection>
-		   <refsection>
-                <title>See Also</title>
-                <para><xref linkend="RT_ST_Histogram" /></para>
-           </refsection>
-		</refentry>
-		
 		<refentry id="raster">
             <refnamediv>
                 <refname>raster</refname>
@@ -5165,13 +5131,13 @@ rid | exclude_nodata | include_nodata
 		<refentry id="RT_ST_Histogram">
 			<refnamediv>
 				<refname>ST_Histogram</refname>
-				<refpurpose>Returns a set of histogram summarizing a raster or raster coverage data distribution separate bin ranges. Number of bins are autocomputed if not specified.</refpurpose>
+				<refpurpose>Returns a set of record summarizing a raster or raster coverage data distribution separate bin ranges. Number of bins are autocomputed if not specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
@@ -5181,7 +5147,7 @@ rid | exclude_nodata | include_nodata
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
@@ -5190,7 +5156,7 @@ rid | exclude_nodata | include_nodata
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
@@ -5199,7 +5165,7 @@ rid | exclude_nodata | include_nodata
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
@@ -5207,7 +5173,7 @@ rid | exclude_nodata | include_nodata
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
@@ -5216,7 +5182,7 @@ rid | exclude_nodata | include_nodata
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
@@ -5226,7 +5192,7 @@ rid | exclude_nodata | include_nodata
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
@@ -5237,7 +5203,7 @@ rid | exclude_nodata | include_nodata
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>SETOF histogram <function>ST_Histogram</function></funcdef>
+					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
@@ -5251,7 +5217,7 @@ rid | exclude_nodata | include_nodata
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns set of <varname>histogram</varname> records consisting of min,max, count, percent for a given raster band for each bin. If no band is specified <varname>nband</varname> defaults to 1. </para> 
+				<para>Returns set of records consisting of min, max, count, percent for a given raster band for each bin. If no band is specified <varname>nband</varname> defaults to 1. </para> 
 				<note><para>By default only considers pixel values not equal to the <varname>nodata</varname> value . Set <varname>exclude_nodata_value</varname> to false to get count all pixels.</para></note>
 				
 				<variablelist>
@@ -5335,7 +5301,10 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="histogram" />, <xref linkend="RT_ST_Count" />, <xref linkend="RT_ST_SummaryStats" /></para>
+				<para>
+					<xref linkend="RT_ST_Count" />, 
+					<xref linkend="RT_ST_SummaryStats" />
+				</para>
 			</refsection>
 		</refentry>
 		

@@ -213,6 +213,7 @@ DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster,integer);
 DROP TYPE IF EXISTS bandmetadata;
 DROP TYPE IF EXISTS geomvalxy;
 DROP TYPE IF EXISTS summarystats;
+DROP TYPE IF EXISTS histogram;
 DROP TYPE IF EXISTS quantile;
 DROP TYPE IF EXISTS valuecount;
 
