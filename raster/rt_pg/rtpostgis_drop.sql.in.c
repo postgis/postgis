@@ -212,6 +212,7 @@ DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster,integer);
 -- no longer needed functions changed to use out parameters
 DROP TYPE IF EXISTS bandmetadata;
 DROP TYPE IF EXISTS geomvalxy;
+DROP TYPE IF EXISTS summarystats;
 
 -- raster_columns and raster_overviews tables are deprecated
 DROP FUNCTION IF EXISTS _rename_raster_tables();
