@@ -5348,19 +5348,19 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>SETOF quantile <function>ST_Quantile</function></funcdef>
+					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
 					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>SETOF quantile <function>ST_Quantile</function></funcdef>
+					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision[] </type> <parameter>quantiles</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>SETOF quantile <function>ST_Quantile</function></funcdef>
+					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>double precision[] </type> <parameter>quantiles</parameter></paramdef>
@@ -5398,7 +5398,7 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 				  <!-- TABLE COVERAGE VERSIONS -->
 				  <!-- TODO: Add the rest and examples -->
 				  <funcprototype>
-					<funcdef>setof quantile <function>ST_Quantile</function></funcdef>
+					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
@@ -5406,7 +5406,7 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 					<paramdef choice='opt'><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>setof quantile <function>ST_Quantile</function></funcdef>
+					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
