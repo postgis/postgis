@@ -27,7 +27,7 @@ DROP FUNCTION make_test_raster();
 
 CREATE OR REPLACE FUNCTION temp_geos_version()
 	RETURNS float
-	AS $$ SELECT ((regexp_matches(split_part(postgis_geos_version(), '-', 1), '^([[:digit:]]+\.[[:digit:]]+)')))[1]::float $$
+	AS $$ SELECT ((regexp_matches(split_part(postgis_geos_version(), '-', 1), E'^([[:digit:]]+\.[[:digit:]]+)')))[1]::float $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 SELECT
