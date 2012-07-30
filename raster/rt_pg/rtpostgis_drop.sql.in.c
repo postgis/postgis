@@ -34,27 +34,6 @@ DROP AGGREGATE IF EXISTS ST_Union(raster);
 
 DROP AGGREGATE IF EXISTS st_samealignment(raster);
 
-DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, nband integer, exclude_nodata_value boolean, sample_percent double precision) ;
-DROP FUNCTION IF EXISTS st_summarystats(rastertable text, rastercolumn text, exclude_nodata_value boolean) ;
-DROP FUNCTION IF EXISTS st_summarystats(rast raster, exclude_nodata_value boolean) ;
-DROP FUNCTION IF EXISTS st_summarystats(rast raster, nband integer, exclude_nodata_value boolean) ;
-
-DROP FUNCTION IF EXISTS _st_summarystats(raster, integer, exclude_nodata_value boolean , double precision, bigint, double precision, double precision);
-DROP FUNCTION IF EXISTS _st_summarystats(rast raster, nband integer, exclude_nodata_value boolean, sample_percent double precision) ;
-
---return types changed evidentally. Dropping first allows us to recreate cleanly --
-DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, double precision, double precision);
-DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, boolean, double precision[], double precision);
-DROP FUNCTION IF EXISTS st_valuecount(text, text, double precision[], double precision);
-DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, double precision[], double precision);
-DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, boolean, double precision, double precision);
-DROP FUNCTION IF EXISTS st_valuecount(text, text, double precision, double precision);
-DROP FUNCTION IF EXISTS st_valuecount(raster, integer, boolean, double precision[], double precision);
-DROP FUNCTION IF EXISTS st_valuecount(raster, integer, double precision[], double precision);
-DROP FUNCTION IF EXISTS st_valuecount(raster, double precision[], double precision);
-DROP FUNCTION IF EXISTS _st_valuecount(text, text, integer, boolean, double precision[], double precision);
-DROP FUNCTION IF EXISTS _st_valuecount(raster, integer, boolean, double precision[], double precision);
-
 DROP FUNCTION IF EXISTS ST_Intersects(raster,boolean,geometry);
 DROP FUNCTION IF EXISTS ST_Intersects(geometry,raster,boolean);
 DROP FUNCTION IF EXISTS ST_Intersects(raster,geometry);
@@ -209,13 +188,84 @@ DROP FUNCTION IF EXISTS st_bandmetadata(raster, VARIADIC int[]);
 DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster); 
 DROP FUNCTION IF EXISTS ST_PixelAsPolygons(raster,integer);
 
+-- remove TYPE summarystats
+DROP FUNCTION IF EXISTS st_summarystats(raster,int, boolean);
+DROP FUNCTION IF EXISTS st_summarystats(raster, boolean);
+DROP FUNCTION IF EXISTS st_approxsummarystats(raster,int, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(raster,int, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(raster, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(raster, double precision);
+DROP FUNCTION IF EXISTS st_summarystats(text, text,integer, boolean);
+DROP FUNCTION IF EXISTS st_summarystats(text, text, boolean);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text,integer, boolean, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text,integer, double precision);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, boolean);
+DROP FUNCTION IF EXISTS st_approxsummarystats(text, text, double precision);
+DROP FUNCTION IF EXISTS _st_summarystats(raster,int, boolean, double precision);
+DROP FUNCTION IF EXISTS _st_summarystats(text, text,integer, boolean, double precision);
+DROP TYPE IF EXISTS summarystats;
+
+-- remove TYPE quantile
+DROP FUNCTION IF EXISTS st_quantile(raster, int, boolean, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(raster, int, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(raster, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(raster, int, boolean, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(raster, int, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(raster, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(raster, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(text, text, int, boolean, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(text, text, int, double precision[]);
+DROP FUNCTION IF EXISTS st_quantile(text, text, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(text, text, int, boolean, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(text, text, int, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(text, text, double precision, double precision[]);
+DROP FUNCTION IF EXISTS st_approxquantile(text, text, double precision[]);
+DROP FUNCTION IF EXISTS _st_quantile(raster, int, boolean, double precision, double precision[]);
+DROP FUNCTION IF EXISTS _st_quantile(text, text, int, boolean, double precision, double precision[]);
+DROP TYPE IF EXISTS quantile;
+
+-- remove TYPE valuecount
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, integer, boolean, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(text, text, double precision, double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, integer, double precision[], double precision);
+DROP FUNCTION IF EXISTS st_valuecount(raster, double precision[], double precision);
+DROP FUNCTION IF EXISTS _st_valuecount(text, text, integer, boolean, double precision[], double precision);
+DROP FUNCTION IF EXISTS _st_valuecount(raster, integer, boolean, double precision[], double precision);
+DROP TYPE IF EXISTS valuecount;
+
+-- remove TYPE histogram
+DROP FUNCTION IF EXISTS st_histogram(raster, int, boolean, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(raster, int, boolean, int, boolean);
+DROP FUNCTION IF EXISTS st_histogram(raster, int, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(raster, int, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram( raster, int, boolean, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, int, boolean, double precision, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, int, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, int, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(raster, int, double precision, int, boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, boolean, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, boolean, int, boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_histogram(text, text, int, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram( text, text, int, boolean, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, boolean, double precision, int, boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, double precision);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision, int, double precision[], boolean);
+DROP FUNCTION IF EXISTS st_approxhistogram(text, text, int, double precision, int, boolean);
+DROP FUNCTION IF EXISTS _st_histogram( raster, int, boolean, double precision, int, double precision[], boolean, double precision, double precision);
+DROP FUNCTION IF EXISTS _st_histogram( text, text, int, boolean, double precision, int, double precision[], boolean);
+DROP TYPE IF EXISTS histogram;
+
 -- no longer needed functions changed to use out parameters
 DROP TYPE IF EXISTS bandmetadata;
 DROP TYPE IF EXISTS geomvalxy;
-DROP TYPE IF EXISTS summarystats;
-DROP TYPE IF EXISTS histogram;
-DROP TYPE IF EXISTS quantile;
-DROP TYPE IF EXISTS valuecount;
 
 -- raster_columns and raster_overviews tables are deprecated
 DROP FUNCTION IF EXISTS _rename_raster_tables();
