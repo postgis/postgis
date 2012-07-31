@@ -2484,7 +2484,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 
 	ArrayType *array;
 	Oid etype;
-	Datum *e;
+	Datum *elements;
 	bool *nulls;
 	int16 typlen;
 	bool typbyval;
@@ -2492,13 +2492,22 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	int ndims = 1;
 	int *dims;
 	int *lbs;
-
-	HeapTupleHeader tup;
-	bool isnull;
-	Datum tupv;
+	int num = 0;
 
 	int ul[2] = {0};
-	double **vals = NULL;
+	struct pixelvalue {
+		int x;
+		int y;
+
+		bool noset;
+		bool nodata;
+		double value;
+	};
+	struct pixelvalue *pixval = NULL;
+	int numpixval = 0;
+	int dimpixval[2] = {1, 1};
+	int dimnoset[2] = {1, 1};
+	double nodataval = 0;
 
 	int i = 0;
 	int j = 0;
@@ -2556,6 +2565,9 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 			rt_raster_destroy(raster);
 			PG_RETURN_POINTER(pgraster);
 		}
+
+		/* force 0-based from 1-based */
+		ul[j] -= 1;
 	}
 
 	/* new value set */
@@ -2586,18 +2598,135 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	lbs = ARR_LBOUND(array);
 	POSTGIS_RT_DEBUGF(4, "ndims = %d", ndims);
 
-	if (ndims != 2) {
-		elog(ERROR, "RASTER_setPixelValuesArray: Array for new values must be of 2 dimensions");
+	if (ndims < 1 || ndims > 2) {
+		elog(NOTICE, "New values array must be of 1 or 2 dimensions.  Returning original raster");
 		rt_raster_destroy(raster);
 		PG_RETURN_POINTER(pgraster);
 	}
-	POSTGIS_RT_DEBUGF(4, "dims = (%d, %d)", dims[0], dims[1]);
+	/* outer element, then inner element */
+	/* i = 0, y */
+	/* i = 1, x */
+	if (ndims != 2)
+		dimpixval[1] = dims[0];
+	else {
+		dimpixval[0] = dims[0];
+		dimpixval[1] = dims[1];
+	}
+	POSTGIS_RT_DEBUGF(4, "dimpixval = (%d, %d)", dimpixval[0], dimpixval[1]);
 
-	/* HOW DO I HANDLE MULTIDIMENSIONAL ARRAYS???? */
-	{
-		Datum *elements;
-		bool *nulls;
-		int num;
+	deconstruct_array(
+		array,
+		etype,
+		typlen, typbyval, typalign,
+		&elements, &nulls, &num
+	);
+
+	/* # of elements doesn't match dims */
+	if (num < 1 || num != (dimpixval[0] * dimpixval[1])) {
+		elog(ERROR, "RASTER_setPixelValuesArray: Could not deconstruct new values array");
+		if (num) {
+			pfree(elements);
+			pfree(nulls);
+		}
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* allocate memory for pixval */
+	numpixval = num;
+	pixval = palloc(sizeof(struct pixelvalue) * numpixval);
+	if (pixval == NULL) {
+		elog(ERROR, "RASTER_setPixelValuesArray: Unable to allocate memory for new pixel values");
+		pfree(elements);
+		pfree(nulls);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* load new values into pixval */
+	i = 0;
+	for (y = 0; y < dimpixval[0]; y++) {
+		for (x = 0; x < dimpixval[1]; x++) {
+			/* 0-based */
+			pixval[i].x = ul[0] + x;
+			pixval[i].y = ul[1] + y;
+
+			pixval[i].noset = FALSE;
+			pixval[i].nodata = FALSE;
+			pixval[i].value = 0;
+
+			if (nulls[i])
+				pixval[i].nodata = TRUE;
+			else {
+				switch (etype) {
+					case FLOAT4OID:
+						pixval[i].value = DatumGetFloat4(elements[i]);
+						break;
+					case FLOAT8OID:
+						pixval[i].value = DatumGetFloat8(elements[i]);
+						break;
+					default:
+						elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for new values");
+
+						pfree(elements);
+						pfree(nulls);
+						pfree(pixval);
+
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 0);
+						PG_RETURN_NULL();
+						break;
+				}
+			}
+
+			i++;
+		}
+	}
+
+	pfree(elements);
+	pfree(nulls);
+
+	/* now load noset flags */
+	if (!PG_ARGISNULL(5)) {
+		array = PG_GETARG_ARRAYTYPE_P(5);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case BOOLOID:
+				break;
+			default:
+				elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for noset flags");
+				pfree(pixval);
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				PG_RETURN_NULL();
+				break;
+		}
+
+		ndims = ARR_NDIM(array);
+		dims = ARR_DIMS(array);
+		lbs = ARR_LBOUND(array);
+		POSTGIS_RT_DEBUGF(4, "ndims = %d", ndims);
+
+		if (ndims < 1 || ndims > 2) {
+			elog(NOTICE, "Noset flags array must be of 1 or 2 dimensions.  Returning original raster");
+			pfree(pixval);
+			rt_raster_destroy(raster);
+			PG_RETURN_POINTER(pgraster);
+		}
+		/* outer element, then inner element */
+		/* i = 0, y */
+		/* i = 1, x */
+		if (ndims != 2)
+			dimnoset[1] = dims[0];
+		else {
+			dimnoset[0] = dims[0];
+			dimnoset[1] = dims[1];
+		}
+		POSTGIS_RT_DEBUGF(4, "dimnoset = (%d, %d)", dimnoset[0], dimnoset[1]);
 
 		deconstruct_array(
 			array,
@@ -2606,11 +2735,112 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 			&elements, &nulls, &num
 		);
 
-		POSTGIS_RT_DEBUGF(4, "num = %d", num);
+		/* # of elements doesn't match dims */
+		if (num < 1 || num != (dimnoset[0] * dimnoset[1])) {
+			elog(ERROR, "RASTER_setPixelValuesArray: Could not deconstruct noset flags array");
+			pfree(pixval);
+			if (num) {
+				pfree(elements);
+				pfree(nulls);
+			}
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		i = 0;
+		j = 0;
+		for (y = 0; y < dimnoset[0]; y++) {
+			if (y >= dimpixval[0]) break;
+
+			for (x = 0; x < dimnoset[1]; x++) {
+				/* fast forward noset elements */
+				if (x >= dimpixval[1]) {
+					i += (dimnoset[1] - dimpixval[1]);
+					break;
+				}
+
+				if (!nulls[i] && DatumGetBool(elements[i]))
+					pixval[j].noset = TRUE;
+
+				i++;
+				j++;
+			}
+
+			/* fast forward pixval */
+			if (x < dimpixval[1])
+				j += (dimpixval[1] - dimnoset[1]);
+		}
+
+		pfree(elements);
+		pfree(nulls);
 	}
 
+#if POSTGIS_DEBUG_LEVEL > 0
+	for (i = 0; i < numpixval; i++) {
+		POSTGIS_RT_DEBUGF(4, "pixval[%d](x, y, noset, nodata, value) = (%d, %d, %d, %d, %f)",
+			i,
+			pixval[i].x,
+			pixval[i].y,
+			pixval[i].noset,
+			pixval[i].nodata,
+			pixval[i].value
+		);
+	}
+#endif
 
-	PG_RETURN_NULL();
+	/* get band */
+	band = rt_raster_get_band(raster, nband - 1);
+	if (!band) {
+		elog(NOTICE, "Could not find band at index %d. Returning original raster", nband);
+		pfree(pixval);
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
+	}
+
+	/* get band nodata info */
+	/* has NODATA, use NODATA */
+	if (rt_band_get_hasnodata_flag(band))
+		nodataval = rt_band_get_nodata(band);
+	/* no NODATA, use min possible value */
+	else
+		nodataval = rt_band_get_min_value(band);
+
+	/* set pixels */
+	for (i = 0; i < numpixval; i++) {
+		/* noset = true, skip */
+		if (pixval[i].noset)
+			continue;
+
+		/* if pixel is outside bounds, skip */
+		if (
+			(pixval[i].x < 0 || pixval[i].x >= width) ||
+			(pixval[i].y < 0 || pixval[i].y >= height)
+		) {
+			elog(NOTICE, "Cannot set value for pixel (%d, %d) outside raster bounds: %d x %d",
+				pixval[i].x + 1, pixval[i].y + 1,
+				width, height
+			);
+			continue;
+		}
+
+		if (pixval[i].nodata)
+			rt_band_set_pixel(band, pixval[i].x, pixval[i].y, nodataval);
+		else
+			rt_band_set_pixel(band, pixval[i].x, pixval[i].y, pixval[i].value);
+	}
+
+	pfree(pixval);
+
+	/* serialize new raster */
+	pgrtn = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+	if (!pgrtn)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrtn, pgrtn->size);
+	PG_RETURN_POINTER(pgrtn);
 }
 
 /**

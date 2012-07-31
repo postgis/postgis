@@ -2927,17 +2927,6 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesArray'
 	LANGUAGE 'c' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_setvalues(
-	rast raster,
-	nband integer,
-	x integer, y integer,
-	newvalueset double precision[],
-	noset boolean[] DEFAULT NULL
-)
-	RETURNS raster
-	AS $$ SELECT st_setvalues($1, $2, $3, $4, ARRAY[$5]::double precision[][], ARRAY[$6]::boolean[][]) $$
-	LANGUAGE 'sql' IMMUTABLE;
-
 -----------------------------------------------------------------------
 -- Raster Processing Functions
 -----------------------------------------------------------------------
