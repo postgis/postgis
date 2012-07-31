@@ -4004,6 +4004,345 @@ GROUP BY (foo.geomval).val;
 			</refsection>
 		</refentry>
 
+		<refentry id="RT_ST_SetValues">
+			<refnamediv>
+				<refname>ST_SetValues</refname>
+				<refpurpose>Returns modified raster resulting from setting the values of a given band.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>raster <function>ST_SetValues</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+						<paramdef><type>double precision[][] </type> <parameter>newvalueset</parameter></paramdef>
+						<paramdef><type>boolean[][] </type> <parameter>noset=NULL</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
+					</funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_SetValues</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					Returns modified raster resulting from setting specified pixels to new value(s) for the designated band.
+				</para>
+
+				<para>
+					For variant 1, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates and the dimensions of the <varname>newvalueset</varname> array. <varname>noset</varname> can be used to prevent pixels with values present in <varname>newvalueset</varname> from being set (due to PostgreSQL not permitting ragged/jagged arrays). If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 1.
+				</para>
+
+				<para>
+					For variant 2, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates, <varname>width</varname> and <varname>height</varname>. If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 2.
+				</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 1</title>
+
+				<programlisting>
+/*
+The ST_SetValues() does the following...
+
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 1 | 1 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |    =>    | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+*/
+SELECT
+	(poly).x,
+	(poly).y,
+	(poly).val
+FROM (
+SELECT
+	ST_PixelAsPolygons(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+				1, '8BUI', 1, 0
+			),
+			1, 2, 2, ARRAY[[9, 9], [9, 9]]::double precision[][]
+		)
+	) AS poly
+) foo
+ORDER BY 1, 2;
+
+ x | y | val 
+---+---+-----
+ 1 | 1 |   1
+ 1 | 2 |   1
+ 1 | 3 |   1
+ 2 | 1 |   1
+ 2 | 2 |   9
+ 2 | 3 |   9
+ 3 | 1 |   1
+ 3 | 2 |   9
+ 3 | 3 |   9
+				</programlisting>
+
+				<programlisting>
+/*
+The ST_SetValues() does the following...
+
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 9 | 9 | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |    =>    | 9 |   | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 9 | 9 | 9 |
++ - + - + - +          + - + - + - +
+*/
+SELECT
+	(poly).x,
+	(poly).y,
+	(poly).val
+FROM (
+SELECT
+	ST_PixelAsPolygons(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+				1, '8BUI', 1, 0
+			),
+			1, 1, 1, ARRAY[[9, 9, 9], [9, NULL, 9], [9, 9, 9]]::double precision[][]
+		)
+	) AS poly
+) foo
+ORDER BY 1, 2;
+
+ x | y | val 
+---+---+-----
+ 1 | 1 |   9
+ 1 | 2 |   9
+ 1 | 3 |   9
+ 2 | 1 |   9
+ 2 | 2 |    
+ 2 | 3 |   9
+ 3 | 1 |   9
+ 3 | 2 |   9
+ 3 | 3 |   9
+				</programlisting>
+
+				<programlisting>
+/*
+The ST_SetValues() does the following...
+
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 9 | 9 | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |    =>    | 1 |   | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 9 | 9 | 9 |
++ - + - + - +          + - + - + - +
+*/
+SELECT
+	(poly).x,
+	(poly).y,
+	(poly).val
+FROM (
+SELECT
+	ST_PixelAsPolygons(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+				1, '8BUI', 1, 0
+			),
+			1, 1, 1,
+				ARRAY[[9, 9, 9], [9, NULL, 9], [9, 9, 9]]::double precision[][],
+				ARRAY[[false], [true]]::boolean[][]
+		)
+	) AS poly
+) foo
+ORDER BY 1, 2;
+
+ x | y | val 
+---+---+-----
+ 1 | 1 |   9
+ 1 | 2 |   1
+ 1 | 3 |   9
+ 2 | 1 |   9
+ 2 | 2 |    
+ 2 | 3 |   9
+ 3 | 1 |   9
+ 3 | 2 |   9
+ 3 | 3 |   9
+				</programlisting>
+
+				<programlisting>
+/*
+The ST_SetValues() does the following...
+
++ - + - + - +          + - + - + - +
+|   | 1 | 1 |          |   | 9 | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |    =>    | 1 |   | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 9 | 9 | 9 |
++ - + - + - +          + - + - + - +
+*/
+SELECT
+	(poly).x,
+	(poly).y,
+	(poly).val
+FROM (
+SELECT
+	ST_PixelAsPolygons(
+		ST_SetValues(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+					1, '8BUI', 1, 0
+				),
+				1, 1, 1, NULL
+			),
+			1, 1, 1,
+				ARRAY[[9, 9, 9], [9, NULL, 9], [9, 9, 9]]::double precision[][],
+				ARRAY[[false], [true]]::boolean[][],
+				TRUE
+		)
+	) AS poly
+) foo
+ORDER BY 1, 2;
+
+ x | y | val 
+---+---+-----
+ 1 | 1 |   
+ 1 | 2 |   1
+ 1 | 3 |   9
+ 2 | 1 |   9
+ 2 | 2 |    
+ 2 | 3 |   9
+ 3 | 1 |   9
+ 3 | 2 |   9
+ 3 | 3 |   9
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 2</title>
+
+				<programlisting>
+/*
+The ST_SetValues() does the following...
+
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 1 | 1 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |    =>    | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+*/
+SELECT
+	(poly).x,
+	(poly).y,
+	(poly).val
+FROM (
+SELECT
+	ST_PixelAsPolygons(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+				1, '8BUI', 1, 0
+			),
+			1, 2, 2, 2, 2, 9
+		)
+	) AS poly
+) foo
+ORDER BY 1, 2;
+
+ x | y | val 
+---+---+-----
+ 1 | 1 |   1
+ 1 | 2 |   1
+ 1 | 3 |   1
+ 2 | 1 |   1
+ 2 | 2 |   9
+ 2 | 3 |   9
+ 3 | 1 |   1
+ 3 | 2 |   9
+ 3 | 3 |   9
+				</programlisting>
+
+				<programlisting>
+/*
+The ST_SetValues() does the following...
+
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 1 | 1 |
++ - + - + - +          + - + - + - +
+| 1 |   | 1 |    =>    | 1 |   | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+*/
+SELECT
+	(poly).x,
+	(poly).y,
+	(poly).val
+FROM (
+SELECT
+	ST_PixelAsPolygons(
+		ST_SetValues(
+			ST_SetValue(
+				ST_AddBand(
+					ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+					1, '8BUI', 1, 0
+				),
+				1, 2, 2, NULL
+			),
+			1, 2, 2, 2, 2, 9, TRUE
+		)
+	) AS poly
+) foo
+ORDER BY 1, 2;
+
+ x | y | val 
+---+---+-----
+ 1 | 1 |   1
+ 1 | 2 |   1
+ 1 | 3 |   1
+ 2 | 1 |   1
+ 2 | 2 |    
+ 2 | 3 |   9
+ 3 | 1 |   1
+ 3 | 2 |   9
+ 3 | 3 |   9
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_Value" />, 
+					<xref linkend="RT_ST_SetValue" />, 
+					<xref linkend="RT_ST_PixelAsPolygons" />
+				</para>
+			</refsection>
+		</refentry>
+
 		<refentry id="RT_ST_PixelOfValue">
 			<refnamediv>
 				<refname>ST_PixelOfValue</refname>

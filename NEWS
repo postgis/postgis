@@ -17,6 +17,8 @@ PostGIS 2.1.0
     (ST_Contains, ST_ContainsProperly, ST_Covers, ST_CoveredBy, ST_Disjoint,
     ST_Overlaps, ST_Touches, ST_Within, ST_DWithin, ST_DFullyWithin)
     (Bborie Park / UC Davis)
+  - Added array variants of ST_SetValues() to set many pixel values of a band
+    in one call (Bborie Park / UC Davis)
   - #1643, Tiger Geocoder - Tiger 2011 loader (Regina Obe / Paragon Corporation) 
     Funded by Hunter Systems Group
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)

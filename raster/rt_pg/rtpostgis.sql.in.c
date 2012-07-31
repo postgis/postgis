@@ -2917,8 +2917,7 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, pt geometry, newvalue float8
 -- ST_SetValues (set one or more pixels to a one or more values)
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_setvalues(
-	rast raster,
-	nband integer,
+	rast raster, nband integer,
 	x integer, y integer,
 	newvalueset double precision[][],
 	noset boolean[][] DEFAULT NULL,
@@ -2930,8 +2929,7 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 
 -- cannot be STRICT as newvalue can be NULL
 CREATE OR REPLACE FUNCTION st_setvalues(
-	rast raster,
-	nband integer,
+	rast raster, nband integer,
 	x integer, y integer,
 	width integer, height integer,
 	newvalue double precision,

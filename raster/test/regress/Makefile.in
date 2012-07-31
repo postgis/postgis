@@ -43,11 +43,7 @@ TEST_FUNC = \
 	rt_bytea \
 	box3d \
 	rt_addband \
-	rt_band \
-	rt_asgdalraster \
-	rt_astiff \
-	rt_asjpeg \
-	rt_aspng
+	rt_band
 
 TEST_PROPS = \
 	rt_dimensions \
@@ -66,6 +62,7 @@ TEST_PROPS = \
 TEST_BANDPROPS = \
 	rt_band_properties \
 	rt_set_band_properties \
+	rt_setvalues_array \
 	rt_summarystats \
 	rt_count \
 	rt_histogram \
@@ -84,6 +81,10 @@ TEST_BANDPROPS = \
 
 TEST_UTILITY = \
 	rt_utility \
+	rt_asgdalraster \
+	rt_astiff \
+	rt_asjpeg \
+	rt_aspng \
 	rt_mapalgebraexpr \
 	rt_mapalgebrafct \
 	rt_mapalgebraexpr_2raster \
@@ -135,9 +136,9 @@ TEST_LOADER = \
 	loader/Tiled10x10 \
 	loader/Tiled10x10Copy
 
-TESTS = $(TEST_FIRST) $(TEST_METADATA) $(TEST_IO) $(TEST_FUNC) \
-		$(TEST_PROPS) $(TEST_BANDPROPS) \
-		$(TEST_UTILITY) $(TEST_GIST) $(TEST_SREL) \
+TESTS = $(TEST_FIRST) $(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
+		$(TEST_PROPS) $(TEST_GIST) $(TEST_BANDPROPS) \
+		$(TEST_UTILITY) $(TEST_SREL) \
 		$(TEST_BUGS) \
 		$(TEST_LOADER)
 
