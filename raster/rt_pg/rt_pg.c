@@ -2507,7 +2507,12 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	int numpixval = 0;
 	int dimpixval[2] = {1, 1};
 	int dimnoset[2] = {1, 1};
+	int hasnodata = FALSE;
 	double nodataval = 0;
+	bool keepnodata = FALSE;
+
+	int rtn = 0;
+	double val = 0;
 
 	int i = 0;
 	int j = 0;
@@ -2789,6 +2794,10 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	}
 #endif
 
+	/* keepnodata flag */
+	if (!PG_ARGISNULL(6))
+		keepnodata = PG_GETARG_BOOL(6);
+
 	/* get band */
 	band = rt_raster_get_band(raster, nband - 1);
 	if (!band) {
@@ -2800,7 +2809,8 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 
 	/* get band nodata info */
 	/* has NODATA, use NODATA */
-	if (rt_band_get_hasnodata_flag(band))
+	hasnodata = rt_band_get_hasnodata_flag(band);
+	if (hasnodata)
 		nodataval = rt_band_get_nodata(band);
 	/* no NODATA, use min possible value */
 	else
@@ -2822,6 +2832,26 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				width, height
 			);
 			continue;
+		}
+
+		/* if hasnodata = TRUE and keepnodata = TRUE, inspect pixel value */
+		if (hasnodata && keepnodata) {
+			rtn = rt_band_get_pixel(band, pixval[i].x, pixval[i].y, &val);
+			if (rtn != 0) {
+				elog(ERROR, "Cannot get value of pixel.  Returning NULL");
+				pfree(pixval);
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				PG_RETURN_NULL();
+			}
+
+			/* pixel value = NODATA, skip */
+			if (
+				FLT_EQ(val, nodataval) ||
+				rt_band_clamped_value_is_nodata(band, val) == 1
+			) {
+				continue;
+			}
 		}
 
 		if (pixval[i].nodata)

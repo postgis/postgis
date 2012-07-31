@@ -2921,11 +2921,33 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	nband integer,
 	x integer, y integer,
 	newvalueset double precision[][],
-	noset boolean[][] DEFAULT NULL
+	noset boolean[][] DEFAULT NULL,
+	keepnodata boolean DEFAULT FALSE
 )
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesArray'
 	LANGUAGE 'c' IMMUTABLE;
+
+-- cannot be STRICT as newvalue can be NULL
+CREATE OR REPLACE FUNCTION st_setvalues(
+	rast raster,
+	nband integer,
+	x integer, y integer,
+	width integer, height integer,
+	newvalue double precision,
+	keepnodata boolean DEFAULT FALSE
+)
+	RETURNS raster AS
+	$$
+	BEGIN
+		IF width <= 0 OR height <= 0 THEN
+			RAISE EXCEPTION 'Values for width and height must be greater than zero';
+			RETURN NULL;
+		END IF;
+		RETURN st_setvalues($1, $2, $3, $4, array_fill(newvalue::double precision, ARRAY[height, width]::int[]), NULL, $8);
+	END;
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Raster Processing Functions
