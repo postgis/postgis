@@ -2867,6 +2867,10 @@ CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer DEFAULT 
 -- Raster Pixel Editors
 -----------------------------------------------------------------------
 
+-----------------------------------------------------------------------
+-- ST_SetValue (set one or more pixels to a single value)
+-----------------------------------------------------------------------
+
 -- This function can not be STRICT, because newvalue can be NULL for nodata
 CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, x integer, y integer, newvalue float8)
     RETURNS raster
@@ -2908,6 +2912,31 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, pt geometry, newvalue float8
     RETURNS raster
     AS $$ SELECT st_setvalue($1, 1, $2, $3) $$
     LANGUAGE 'sql';
+
+-----------------------------------------------------------------------
+-- ST_SetValues (set one or more pixels to a one or more values)
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_setvalues(
+	rast raster,
+	nband integer,
+	x integer, y integer,
+	newvalueset double precision[][],
+	noset boolean[][] DEFAULT NULL
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesArray'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_setvalues(
+	rast raster,
+	nband integer,
+	x integer, y integer,
+	newvalueset double precision[],
+	noset boolean[] DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT st_setvalues($1, $2, $3, $4, ARRAY[$5]::double precision[][], ARRAY[$6]::boolean[][]) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Raster Processing Functions

@@ -196,8 +196,9 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS);
 /* Get pixel value */
 Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
 
-/* Set pixel value */
+/* Set pixel value(s) */
 Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
+Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS);
 
 /* Get pixel geographical shape */
 Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS);
@@ -2405,14 +2406,14 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 
 	/* Validate pixel coordinates are not null */
 	if (PG_ARGISNULL(2)) {
-		elog(NOTICE, "X coordinate can not be NULL when getting pixel value. Value not set. Returning original raster");
+		elog(NOTICE, "X coordinate can not be NULL when setting pixel value. Value not set. Returning original raster");
 		skipset = TRUE;
 	}
 	else
 		x = PG_GETARG_INT32(2);
 
 	if (PG_ARGISNULL(3)) {
-		elog(NOTICE, "Y coordinate can not be NULL when getting pixel value. Value not set. Returning original raster");
+		elog(NOTICE, "Y coordinate can not be NULL when setting pixel value. Value not set. Returning original raster");
 		skipset = TRUE;
 	}
 	else
@@ -2466,6 +2467,150 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
+}
+
+PG_FUNCTION_INFO_V1(RASTER_setPixelValuesArray);
+Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_pgraster *pgrtn = NULL;
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	int numbands = 0;
+
+	int nband = 0;
+	int width = 0;
+	int height = 0;
+
+	ArrayType *array;
+	Oid etype;
+	Datum *e;
+	bool *nulls;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
+	int ndims = 1;
+	int *dims;
+	int *lbs;
+
+	HeapTupleHeader tup;
+	bool isnull;
+	Datum tupv;
+
+	int ul[2] = {0};
+	double **vals = NULL;
+
+	int i = 0;
+	int j = 0;
+	int x = 0;
+	int y = 0;
+
+	/* pgraster is null, return null */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* raster */
+	raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!raster) {
+		elog(ERROR, "RASTER_setPixelValuesArray: Could not deserialize raster");
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* raster attributes */
+	numbands = rt_raster_get_num_bands(raster);
+	width = rt_raster_get_width(raster);
+	height = rt_raster_get_height(raster);
+
+	/* nband */
+	if (PG_ARGISNULL(1)) {
+		elog(NOTICE, "Band index cannot be NULL.  Value must be 1-based.  Returning original raster");
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
+	}
+
+	nband = PG_GETARG_INT32(1);
+	if (nband < 1 || nband > numbands) {
+		elog(NOTICE, "Band index is invalid.  Value must be 1-based.  Returning original raster");
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
+	}
+
+	/* x, y */
+	for (i = 2, j = 0; i < 4; i++, j++) {
+		if (PG_ARGISNULL(i)) {
+			elog(NOTICE, "%s cannot be NULL.  Value must be 1-based.  Returning original raster", j < 1 ? "X" : "Y");
+			rt_raster_destroy(raster);
+			PG_RETURN_POINTER(pgraster);
+		}
+
+		ul[j] = PG_GETARG_INT32(i);
+		if (
+			(ul[j] < 1) || (
+				(j < 1 && ul[j] > width) ||
+				(j > 0 && ul[j] > height)
+			)
+		) {
+			elog(NOTICE, "%s is invalid.  Value must be 1-based.  Returning original raster", j < 1 ? "X" : "Y");
+			rt_raster_destroy(raster);
+			PG_RETURN_POINTER(pgraster);
+		}
+	}
+
+	/* new value set */
+	if (PG_ARGISNULL(4)) {
+		elog(NOTICE, "No values to set.  Returning original raster");
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
+	}
+
+	array = PG_GETARG_ARRAYTYPE_P(4);
+	etype = ARR_ELEMTYPE(array);
+	get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+	switch (etype) {
+		case FLOAT4OID:
+		case FLOAT8OID:
+			break;
+		default:
+			elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for new values");
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+			break;
+	}
+
+	ndims = ARR_NDIM(array);
+	dims = ARR_DIMS(array);
+	lbs = ARR_LBOUND(array);
+	POSTGIS_RT_DEBUGF(4, "ndims = %d", ndims);
+
+	if (ndims != 2) {
+		elog(ERROR, "RASTER_setPixelValuesArray: Array for new values must be of 2 dimensions");
+		rt_raster_destroy(raster);
+		PG_RETURN_POINTER(pgraster);
+	}
+	POSTGIS_RT_DEBUGF(4, "dims = (%d, %d)", dims[0], dims[1]);
+
+	/* HOW DO I HANDLE MULTIDIMENSIONAL ARRAYS???? */
+	{
+		Datum *elements;
+		bool *nulls;
+		int num;
+
+		deconstruct_array(
+			array,
+			etype,
+			typlen, typbyval, typalign,
+			&elements, &nulls, &num
+		);
+
+		POSTGIS_RT_DEBUGF(4, "num = %d", num);
+	}
+
+
+	PG_RETURN_NULL();
 }
 
 /**
