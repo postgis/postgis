@@ -214,8 +214,9 @@ BEGIN
 					IF var_debug THEN
 						RAISE NOTICE 'Replaced with : %, %', var_addy_alt, clock_timestamp();
 					END IF;
-					END IF;
-					IF var_debug THEN
+				END IF;
+				
+				IF var_debug THEN
 					RAISE NOTICE 'End Get matching edges loop: %', clock_timestamp();
 					RAISE NOTICE 'Final addresses: %, %', addy, clock_timestamp();
 				END IF;
@@ -229,7 +230,7 @@ BEGIN
     IF NOT FOUND THEN
         addy := array_append(addy,var_addy);
         IF var_debug THEN
-            RAISE NOTICE 'No address found: adding: % street: %, %', addy, var_addy, var_addy.streetname, clock_timestamp();
+            RAISE NOTICE 'No address found: adding: % street: %, %', var_addy, var_addy.streetname, clock_timestamp();
         END IF;
     END IF;
     IF var_debug THEN
