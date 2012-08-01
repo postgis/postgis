@@ -430,3 +430,6 @@ DROP FUNCTION IF EXISTS st_contains(raster, integer, geometry);
 DROP FUNCTION IF EXISTS st_contains(geometry, raster, integer);
 DROP FUNCTION IF EXISTS _st_contains(raster, geometry, integer);
 DROP FUNCTION IF EXISTS _st_contains(geometry, raster, integer);
+
+-- function signature changed
+DROP FUNCTION IF EXISTS st_addband(raster, raster[], integer);

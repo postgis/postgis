@@ -136,6 +136,21 @@ static char *rtpg_getSR(int srid);
  * TODO: In case of functions returning NULL, we should free the memory too.
  *****************************************************************************/
 
+/******************************************************************************
+ * Notes for use of PG_DETOAST_DATUM, PG_DETOAST_DATUM_SLICE
+ * and PG_DETOAST_DATUM_COPY
+ *
+ * When getting raster (not band) metadata, use PG_DETOAST_DATUM_SLICE()
+ *   PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0,
+ *     sizeof(struct rt_raster_serialized_t))
+ *
+ * When setting raster or band metadata, use PG_DETOAST_DATUM()
+ *   PG_DETOAST_DATUM(PG_GETARG_DATUM(0))
+ *
+ * When setting band pixel values, use PG_DETOAST_DATUM_COPY()
+ *
+ *****************************************************************************/
+
 /* Prototypes */
 
 /* Utility functions */
@@ -219,6 +234,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS);
 Datum RASTER_makeEmpty(PG_FUNCTION_ARGS);
 Datum RASTER_addBand(PG_FUNCTION_ARGS);
 Datum RASTER_copyBand(PG_FUNCTION_ARGS);
+Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS);
 
 /* Raster analysis */
 Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS);
@@ -4164,6 +4180,236 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
+}
+
+/**
+ * Add bands from array of rasters to a destination raster
+ */
+PG_FUNCTION_INFO_V1(RASTER_addBandRasterArray);
+Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_pgraster *pgsrc = NULL;
+	rt_pgraster *pgrtn = NULL;
+
+	rt_raster raster = NULL;
+	rt_raster src = NULL;
+
+	int srcnband = 1;
+	bool appendband = FALSE;
+	int dstnband = 1;
+	int srcnumbands = 0;
+	int dstnumbands = 0;
+
+	ArrayType *array;
+	Oid etype;
+	Datum *e;
+	bool *nulls;
+	int16 typlen;
+	bool typbyval;
+	char typalign;
+	int ndims = 1;
+	int *dims;
+	int *lbs;
+	int n = 0;
+
+	int rtn = 0;
+	int i = 0;
+
+	/* destination raster */
+	if (!PG_ARGISNULL(0)) {
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+
+		/* raster */
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			elog(ERROR, "RASTER_addBandRasterArray: Could not deserialize destination raster");
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		POSTGIS_RT_DEBUG(4, "destination raster isn't NULL");
+	}
+
+	/* source rasters' band index, 1-based */
+	if (!PG_ARGISNULL(2))
+		srcnband = PG_GETARG_INT32(2);
+	if (srcnband < 1) {
+		elog(NOTICE, "Invalid band index for source rasters (must be 1-based).  Returning original raster");
+		if (raster != NULL) {
+			rt_raster_destroy(raster);
+			PG_RETURN_POINTER(pgraster);
+		}
+		else
+			PG_RETURN_NULL();
+	}
+	POSTGIS_RT_DEBUGF(4, "srcnband = %d", srcnband);
+
+	/* destination raster's band index, 1-based */
+	if (!PG_ARGISNULL(3)) {
+		dstnband = PG_GETARG_INT32(3);
+		appendband = FALSE;
+
+		if (dstnband < 1) {
+			elog(NOTICE, "Invalid band index for destination raster (must be 1-based).  Returning original raster");
+			if (raster != NULL) {
+				rt_raster_destroy(raster);
+				PG_RETURN_POINTER(pgraster);
+			}
+			else
+				PG_RETURN_NULL();
+		}
+	}
+	else
+		appendband = TRUE;
+
+	/* additional processing of dstnband */
+	if (raster != NULL) {
+		dstnumbands = rt_raster_get_num_bands(raster);
+
+		if (dstnumbands < 1) {
+			appendband = TRUE;
+			dstnband = 1;
+		}
+		else if (appendband)
+			dstnband = dstnumbands + 1;
+		else if (dstnband > dstnumbands) {
+			elog(NOTICE, "Band index provided for destination raster is greater than the number of bands in the raster.  Bands will be appended");
+			appendband = TRUE;
+			dstnband = dstnumbands + 1;
+		}
+	}
+	POSTGIS_RT_DEBUGF(4, "appendband = %d", appendband);
+	POSTGIS_RT_DEBUGF(4, "dstnband = %d", dstnband);
+
+	/* process set of source rasters */
+	POSTGIS_RT_DEBUG(3, "Processing array of source rasters");
+	array = PG_GETARG_ARRAYTYPE_P(1);
+	etype = ARR_ELEMTYPE(array);
+	get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+	ndims = ARR_NDIM(array);
+	dims = ARR_DIMS(array);
+	lbs = ARR_LBOUND(array);
+
+	deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
+		&nulls, &n);
+
+	/* quick check that the source band number is valid for all rasters */
+	for (i = 0; i < n; i++) {
+		if (nulls[i]) continue;
+		src = NULL;
+
+		pgsrc =	(rt_pgraster *) PG_DETOAST_DATUM_SLICE(e[i], 0, sizeof(struct rt_raster_serialized_t));
+		src = rt_raster_deserialize(pgsrc, TRUE);
+		if (src == NULL) {
+			elog(ERROR, "RASTER_addBandRasterArray: Could not deserialize source raster at index %d", i + 1);
+			pfree(nulls);
+			pfree(e);
+			if (raster != NULL) {
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+			}
+			PG_RETURN_NULL();
+		}
+
+		srcnumbands = rt_raster_get_num_bands(src);
+		rt_raster_destroy(src);
+		POSTGIS_RT_DEBUGF(4, "source raster %d has %d bands", i + 1, srcnumbands);
+
+		/* band index isn't valid */
+		if (srcnband > srcnumbands) {
+			elog(NOTICE, "Invalid band index for source raster at index %d.  Returning original raster", i + 1);
+			pfree(nulls);
+			pfree(e);
+			if (raster != NULL) {
+				rt_raster_destroy(raster);
+				PG_RETURN_POINTER(pgraster);
+			}
+			else
+				PG_RETURN_NULL();
+		}
+	}
+
+	/* decrement srcnband and dstnband by 1, now 0-based */
+	srcnband--;
+	dstnband--;
+	POSTGIS_RT_DEBUGF(4, "0-based nband (src, dst) = (%d, %d)", srcnband, dstnband);
+
+	/* still here, time to copy bands */
+	for (i = 0; i < n; i++) {
+		if (nulls[i]) continue;
+		src = NULL;
+
+		pgsrc =	(rt_pgraster *) PG_DETOAST_DATUM(e[i]);
+		src = rt_raster_deserialize(pgsrc, FALSE);
+		if (src == NULL) {
+			elog(ERROR, "RASTER_addBandRasterArray: Could not deserialize source raster at index %d", i + 1);
+			pfree(nulls);
+			pfree(e);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		/* destination raster is empty, new raster */
+		if (raster == NULL) {
+			uint32_t srcnbands[1] = {srcnband};
+
+			POSTGIS_RT_DEBUG(4, "empty destination raster, using rt_raster_from_band");
+
+			raster = rt_raster_from_band(src, srcnbands, 1);
+			rt_raster_destroy(src);
+			if (raster == NULL) {
+				elog(ERROR, "RASTER_addBandRasterArray: Could not create raster from source raster at index %d", i + 1);
+				pfree(nulls);
+				pfree(e);
+				if (pgraster != NULL)
+					PG_FREE_IF_COPY(pgraster, 0);
+				PG_RETURN_NULL();
+			}
+		}
+		/* copy band */
+		else {
+			rtn = rt_raster_copy_band(
+				raster, src,
+				srcnband, dstnband
+			);
+			rt_raster_destroy(src);
+
+			if (rtn == -1 || rt_raster_get_num_bands(raster) == dstnumbands) {
+				elog(NOTICE, "Could not add band from source raster at index %d to destination raster.  Returning original raster", i + 1);
+				rt_raster_destroy(raster);
+				pfree(nulls);
+				pfree(e);
+				if (pgraster != NULL) {
+					PG_FREE_IF_COPY(pgraster, 0);
+					PG_RETURN_DATUM(PG_GETARG_DATUM(0));
+				}
+				else
+					PG_RETURN_NULL();
+			}
+		}
+
+		dstnband++;
+		dstnumbands++;
+	}
+
+	if (raster != NULL) {
+		pgrtn = rt_raster_serialize(raster);
+		rt_raster_destroy(raster);
+		if (pgraster != NULL)
+			PG_FREE_IF_COPY(pgraster, 0);
+		if (!pgrtn)
+			PG_RETURN_NULL();
+
+		SET_VARSIZE(pgrtn, pgrtn->size);
+		PG_RETURN_POINTER(pgrtn);
+	}
+
+	PG_RETURN_NULL();
 }
 
 /**
@@ -13170,9 +13416,9 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     if (strcmp(strFromText, "VALUE") == 0)
         valuereplace = true;
     else if (strcmp(strFromText, "IGNORE") != 0 && strcmp(strFromText, "NULL") != 0) {
-        // if the text is not "IGNORE" or "NULL", it may be a numerical value
+        /* if the text is not "IGNORE" or "NULL", it may be a numerical value */
         if (sscanf(strFromText, "%d", &intReplace) <= 0 && sscanf(strFromText, "%f", &fltReplace) <= 0) {
-            // the value is NOT an integer NOR a floating point
+            /* the value is NOT an integer NOR a floating point */
             elog(NOTICE, "Neighborhood NODATA mode is not recognized. Must be one of 'value', 'ignore', "
                 "'NULL', or a numeric value. Returning new raster with the original band");
 

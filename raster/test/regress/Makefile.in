@@ -39,7 +39,7 @@ TEST_METADATA = \
 TEST_IO = \
 	rt_io
 
-TEST_FUNC = \
+TEST_BASIC_FUNC = \
 	rt_bytea \
 	box3d \
 	rt_addband \

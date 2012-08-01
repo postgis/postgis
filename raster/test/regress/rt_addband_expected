@@ -90,4 +90,21 @@ NOTICE:  rt_raster_copy_band: Second raster has no band
 NOTICE:  RASTER_copyBand: Could not add band to raster. Returning original raster.
 1234.5678
 1234.567|255
+1|4BUI|0|f|
+2|8BUI|0|f|
+3|16BUI|0|f|
+4|32BUI|0|f|
+5|64BF|0|f|
+1|2BUI|0|f|
+2|4BUI|0|f|
+3|8BUI|0|f|
+4|16BUI|0|f|
+5|32BUI|0|f|
+6|64BF|0|f|
+1|4BUI|0|f|
+2|8BUI|0|f|
+3|16BUI|0|f|
+4|32BUI|0|f|
+5|64BF|0|f|
+6|2BUI|0|f|
 90

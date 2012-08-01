@@ -268,27 +268,14 @@ CREATE OR REPLACE FUNCTION st_addband(
 	AS 'MODULE_PATHNAME', 'RASTER_copyBand'
 	LANGUAGE 'c' IMMUTABLE; 
 
--- Variant that adds multiple raster bands in one array call --
--- If null is passed in for the torast, then array of rasts is accumulated.
-CREATE OR REPLACE FUNCTION st_addband(torast raster, fromrasts raster[], fromband integer DEFAULT 1)
-    RETURNS raster
-    AS $$
-	DECLARE var_result raster := torast;
-		var_num integer := array_upper(fromrasts,1);
-		var_i integer := 1; 
-	BEGIN 
-		IF torast IS NULL AND var_num > 0 THEN
-			var_result := ST_Band(fromrasts[1],fromband); 
-			var_i := 2;
-		END IF;
-		WHILE var_i <= var_num LOOP
-			var_result := ST_AddBand(var_result, fromrasts[var_i], 1);
-			var_i := var_i + 1;
-		END LOOP;
-		
-		RETURN var_result;
-	END;
-$$ LANGUAGE 'plpgsql';
+CREATE OR REPLACE FUNCTION st_addband(
+	torast raster,
+	fromrasts raster[], fromband integer DEFAULT 1,
+	torastindex int DEFAULT NULL
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_addBandRasterArray'
+	LANGUAGE 'c' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Constructor ST_Band

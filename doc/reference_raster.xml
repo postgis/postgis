@@ -934,6 +934,7 @@ WHERE short_name = 'GTiff') As g;
 						<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
 						<paramdef><type>raster[] </type> <parameter>fromrasts</parameter></paramdef>
 						<paramdef choice='opt'><type>integer </type> <parameter>fromband=1</parameter></paramdef>
+						<paramdef choice='opt'><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef>
 					</funcprototype>
 
 				</funcsynopsis>

@@ -127,5 +127,46 @@ FROM (
 		) AS rast
 ) foo;
 
+SELECT * FROM ST_BandMetadata(
+	ST_AddBand(
+		NULL::raster,
+		ARRAY[
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '4BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '64BF', 1, 0)
+		]::raster[]
+	), ARRAY[]::int[]
+);
+
+SELECT * FROM ST_BandMetadata(
+	ST_AddBand(
+		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '2BUI', 1, 0),
+		ARRAY[
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '4BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '64BF', 1, 0)
+		]::raster[]
+	), ARRAY[]::int[]
+);
+
+SELECT * FROM ST_BandMetadata(
+	ST_AddBand(
+		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '2BUI', 1, 0),
+		ARRAY[
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '4BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BUI', 1, 0),
+			ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '64BF', 1, 0)
+		]::raster[],
+		1,
+		1
+	), ARRAY[]::int[]
+);
+
 -- raster array version test
 SELECT (ST_DumpAsPolygons(newrast,3)).val As b3val FROM (SELECT ST_AddBand(NULL, array_agg(rast)) AS newrast FROM (SELECT ST_AsRaster(ST_Buffer(ST_Point(10,10), 34),200,200, '8BUI',i*30) As rast FROM generate_series(1,3) As i ) As foo ) As foofoo;
