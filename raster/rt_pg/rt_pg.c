@@ -138,17 +138,28 @@ static char *rtpg_getSR(int srid);
 
 /******************************************************************************
  * Notes for use of PG_DETOAST_DATUM, PG_DETOAST_DATUM_SLICE
- * and PG_DETOAST_DATUM_COPY
+ *   and PG_DETOAST_DATUM_COPY
  *
- * When getting raster (not band) metadata, use PG_DETOAST_DATUM_SLICE()
- *   PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0,
+ * When getting raster (not band) metadata, use PG_DETOAST_DATUM_SLICE().
+ *   Example: PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0,
  *     sizeof(struct rt_raster_serialized_t))
  *
- * When setting raster or band metadata, use PG_DETOAST_DATUM()
- *   PG_DETOAST_DATUM(PG_GETARG_DATUM(0))
+ * When setting raster or band metadata, use PG_DETOAST_DATUM().
+ *   Example: PG_DETOAST_DATUM(PG_GETARG_DATUM(0))
  *
- * When setting band pixel values, use PG_DETOAST_DATUM_COPY()
+ * When setting band pixel values, use PG_DETOAST_DATUM_COPY().  This is
+ *   because band data (not metadata) is just a pointer to the correct
+ *   memory location in the datum.  What is returned from PG_DETOAST_DATUM()
+ *   may or may not be a copy of the input datum.  From the comments in
+ *   postgresql/src/include/fmgr.h...
  *
+ *     pg_detoast_datum() gives you either the input datum (if not toasted)
+ *     or a detoasted copy allocated with palloc().
+ *
+ *   Example: PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0))
+ *
+ * If in doubt, use PG_DETOAST_DATUM_COPY() as that guarantees that the input
+ *   datum is copied for use.
  *****************************************************************************/
 
 /* Prototypes */
