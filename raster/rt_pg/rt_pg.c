@@ -137,24 +137,45 @@ static char *rtpg_getSR(int srid);
  *****************************************************************************/
 
 /******************************************************************************
- * Notes for use of PG_DETOAST_DATUM, PG_DETOAST_DATUM_SLICE
- *   and PG_DETOAST_DATUM_COPY
+ * Notes for use of PG_DETOAST_DATUM(), PG_DETOAST_DATUM_SLICE()
+ *   and PG_DETOAST_DATUM_COPY()
  *
- * When getting raster (not band) metadata, use PG_DETOAST_DATUM_SLICE().
+ * When ONLY getting raster (not band) metadata, use PG_DETOAST_DATUM_SLICE()
+ *   as it is generally quicker to get only the chunk of memory that contains
+ *   the raster metadata.
+ *
  *   Example: PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0,
  *     sizeof(struct rt_raster_serialized_t))
  *
- * When setting raster or band metadata, use PG_DETOAST_DATUM().
+ * When ONLY setting raster or band(s) metadata, use PG_DETOAST_DATUM() as
+ *   rt_raster_deserialize() allocates local memory for the raster and
+ *   band(s) metadata.
+ *
  *   Example: PG_DETOAST_DATUM(PG_GETARG_DATUM(0))
  *
  * When setting band pixel values, use PG_DETOAST_DATUM_COPY().  This is
  *   because band data (not metadata) is just a pointer to the correct
- *   memory location in the datum.  What is returned from PG_DETOAST_DATUM()
- *   may or may not be a copy of the input datum.  From the comments in
- *   postgresql/src/include/fmgr.h...
+ *   memory location in the detoasted datum.  What is returned from
+ *   PG_DETOAST_DATUM() may or may not be a copy of the input datum.
+ *
+ *   From the comments in postgresql/src/include/fmgr.h...
  *
  *     pg_detoast_datum() gives you either the input datum (if not toasted)
  *     or a detoasted copy allocated with palloc().
+ *
+ *   From the mouth of Tom Lane...
+ *   http://archives.postgresql.org/pgsql-hackers/2002-01/msg01289.php
+ *
+ *     PG_DETOAST_DATUM_COPY guarantees to give you a copy, even if the
+ *     original wasn't toasted.  This allows you to scribble on the input,
+ *     in case that happens to be a useful way of forming your result.
+ *     Without a forced copy, a routine for a pass-by-ref datatype must
+ *     NEVER, EVER scribble on its input ... because very possibly it'd
+ *     be scribbling on a valid tuple in a disk buffer, or a valid entry
+ *     in the syscache.
+ *
+ *   The key detail above is that the raster datatype is a varlena, a
+ *     passed by reference datatype.
  *
  *   Example: PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0))
  *
