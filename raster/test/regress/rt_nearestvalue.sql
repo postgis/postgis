@@ -11,15 +11,19 @@ CREATE OR REPLACE FUNCTION make_test_raster()
 		x int;
 		y int;
 		rast raster;
+		valset double precision[][];
 	BEGIN
 		rast := ST_MakeEmptyRaster(width, height, 0, 0, 1, -1, 0, 0, 0);
 		rast := ST_AddBand(rast, 1, '8BUI', 1, 0);
 
+
+		valset := array_fill(0., ARRAY[height, width]);
 		FOR y IN 1..height LOOP
 			FOR x IN 1..width LOOP
-				rast := ST_SetValue(rast, x, y, 2 * x + (1/3) * y);
+				valset[y][x] := 2 * x + (1/3) * y;
 			END LOOP;
 		END LOOP;
+		rast := ST_SetValues(rast, 1, 1, 1, valset);
 
 		rast := ST_SetValue(rast, 1, 1, 0);
 		rast := ST_SetValue(rast, 4, 1, 0);
