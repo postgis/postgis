@@ -147,13 +147,13 @@ static char *rtpg_getSR(int srid);
  *   Example: PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0,
  *     sizeof(struct rt_raster_serialized_t))
  *
- * When ONLY setting raster or band(s) metadata, use PG_DETOAST_DATUM() as
- *   rt_raster_deserialize() allocates local memory for the raster and
- *   band(s) metadata.
+ * When ONLY setting raster or band(s) metadata OR reading band data, use
+ *   PG_DETOAST_DATUM() as rt_raster_deserialize() allocates local memory
+ *   for the raster and band(s) metadata.
  *
  *   Example: PG_DETOAST_DATUM(PG_GETARG_DATUM(0))
  *
- * When setting band pixel values, use PG_DETOAST_DATUM_COPY().  This is
+ * When SETTING band pixel values, use PG_DETOAST_DATUM_COPY().  This is
  *   because band data (not metadata) is just a pointer to the correct
  *   memory location in the detoasted datum.  What is returned from
  *   PG_DETOAST_DATUM() may or may not be a copy of the input datum.
@@ -2470,12 +2470,12 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
 	/* Deserialize raster */
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
 		elog(ERROR, "RASTER_setPixelValue: Could not deserialize raster");
-		PG_FREE_IF_COPY(pgraster, 0);
+		pfree(pgraster);
 		PG_RETURN_NULL();
 	}
 
@@ -2486,6 +2486,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 			elog(NOTICE, "Could not find raster band of index %d when setting "
 				"pixel value. Value not set. Returning original raster",
 				bandindex);
+			PG_RETURN_POINTER(pgraster);
 		}
 		else {
 			/* Set the pixel value */
@@ -2494,6 +2495,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 					elog(NOTICE, "Raster do not have a nodata value defined. "
 						"Set band nodata value first. Nodata value not set. "
 						"Returning original raster");
+					PG_RETURN_POINTER(pgraster);
 				}
 				else {
 					pixvalue = rt_band_get_nodata(band);
@@ -2570,7 +2572,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	/* pgraster is null, return null */
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
 
 	/* raster */
 	raster = rt_raster_deserialize(pgraster, FALSE);
@@ -2641,7 +2643,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		default:
 			elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for new values");
 			rt_raster_destroy(raster);
-			PG_FREE_IF_COPY(pgraster, 0);
+			pfree(pgraster);
 			PG_RETURN_NULL();
 			break;
 	}
@@ -2682,7 +2684,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 			pfree(nulls);
 		}
 		rt_raster_destroy(raster);
-		PG_FREE_IF_COPY(pgraster, 0);
+		pfree(pgraster);
 		PG_RETURN_NULL();
 	}
 
@@ -2694,7 +2696,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		pfree(elements);
 		pfree(nulls);
 		rt_raster_destroy(raster);
-		PG_FREE_IF_COPY(pgraster, 0);
+		pfree(pgraster);
 		PG_RETURN_NULL();
 	}
 
@@ -2728,7 +2730,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 						pfree(pixval);
 
 						rt_raster_destroy(raster);
-						PG_FREE_IF_COPY(pgraster, 0);
+						pfree(pgraster);
 						PG_RETURN_NULL();
 						break;
 				}
@@ -2754,7 +2756,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for noset flags");
 				pfree(pixval);
 				rt_raster_destroy(raster);
-				PG_FREE_IF_COPY(pgraster, 0);
+				pfree(pgraster);
 				PG_RETURN_NULL();
 				break;
 		}
@@ -2797,7 +2799,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				pfree(nulls);
 			}
 			rt_raster_destroy(raster);
-			PG_FREE_IF_COPY(pgraster, 0);
+			pfree(pgraster);
 			PG_RETURN_NULL();
 		}
 
@@ -2889,7 +2891,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				elog(ERROR, "Cannot get value of pixel.  Returning NULL");
 				pfree(pixval);
 				rt_raster_destroy(raster);
-				PG_FREE_IF_COPY(pgraster, 0);
+				pfree(pgraster);
 				PG_RETURN_NULL();
 			}
 
@@ -2913,7 +2915,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	/* serialize new raster */
 	pgrtn = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
-	PG_FREE_IF_COPY(pgraster, 0);
+	pfree(pgraster);
 	if (!pgrtn)
 		PG_RETURN_NULL();
 
@@ -4250,7 +4252,7 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 
 	/* destination raster */
 	if (!PG_ARGISNULL(0)) {
-		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
 		/* raster */
 		raster = rt_raster_deserialize(pgraster, FALSE);
@@ -4416,10 +4418,8 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 				rt_raster_destroy(raster);
 				pfree(nulls);
 				pfree(e);
-				if (pgraster != NULL) {
-					PG_FREE_IF_COPY(pgraster, 0);
-					PG_RETURN_DATUM(PG_GETARG_DATUM(0));
-				}
+				if (pgraster != NULL)
+					PG_RETURN_POINTER(pgraster);
 				else
 					PG_RETURN_NULL();
 			}
@@ -8951,6 +8951,9 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 
 			PG_RETURN_NULL();
 		}
+
+		/* old band is in the variable band */
+		rt_band_destroy(band);
 
 		/* free exprset */
 		for (k = 0; k < j; k++) pfree(exprset[k]);
