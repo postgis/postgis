@@ -4036,6 +4036,17 @@ GROUP BY (foo.geomval).val;
 						<paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
 					</funcprototype>
 
+				  <funcprototype>
+						<funcdef>raster <function>ST_SetValues</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
+					</funcprototype>
+
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -4051,6 +4062,10 @@ GROUP BY (foo.geomval).val;
 
 				<para>
 					For variant 2, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates, <varname>width</varname> and <varname>height</varname>. If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 2.
+				</para>
+
+				<para>
+					Variant 3 is the same as Variant 2 with the exception that it assumes that the first band's pixels of <varname>rast</varname> will be set.
 				</para>
 
 			</refsection>

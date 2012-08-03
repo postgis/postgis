@@ -2929,7 +2929,27 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 			RAISE EXCEPTION 'Values for width and height must be greater than zero';
 			RETURN NULL;
 		END IF;
-		RETURN st_setvalues($1, $2, $3, $4, array_fill(newvalue::double precision, ARRAY[height, width]::int[]), NULL, $8);
+		RETURN st_setvalues($1, $2, $3, $4, array_fill($7, ARRAY[$6, $5]::int[]), NULL, $8);
+	END;
+	$$
+	LANGUAGE 'plpgsql' IMMUTABLE;
+
+-- cannot be STRICT as newvalue can be NULL
+CREATE OR REPLACE FUNCTION st_setvalues(
+	rast raster,
+	x integer, y integer,
+	width integer, height integer,
+	newvalue double precision,
+	keepnodata boolean DEFAULT FALSE
+)
+	RETURNS raster AS
+	$$
+	BEGIN
+		IF width <= 0 OR height <= 0 THEN
+			RAISE EXCEPTION 'Values for width and height must be greater than zero';
+			RETURN NULL;
+		END IF;
+		RETURN st_setvalues($1, 1, $2, $3, array_fill($6, ARRAY[$5, $4]::int[]), NULL, $7);
 	END;
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE;
