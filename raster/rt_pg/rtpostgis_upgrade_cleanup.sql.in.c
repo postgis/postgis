@@ -103,3 +103,19 @@ CREATE CAST (raster AS box3d)
 DROP CAST IF EXISTS (raster AS geometry);
 CREATE CAST (raster AS geometry)
 	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
+
+-- new TYPE
+DROP TYPE IF EXISTS addbandarg CASCADE;
+CREATE TYPE addbandarg AS (
+	index int,
+	pixeltype text,
+	initialvalue float8,
+	nodataval float8
+);
+
+-- new TYPE
+DROP TYPE IF EXISTS agg_samealignment CASCADE;
+CREATE TYPE agg_samealignment AS (
+	refraster raster,
+	aligned boolean
+);
