@@ -968,7 +968,7 @@ if test "x$with_raster" != "xno"; then
 		[AC_PATH_PROG([GDAL_CONFIG], [gdal-config], [])]
   )
 
-	AC_MSG_CHECKING([for GDAL >= $GDAL_MIN_VERSION])
+	AC_MSG_CHECKING([GDAL version])
 
 	if test -x "$GDAL_CONFIG"; then
 		dnl Extract the version information from gdal-config
@@ -982,16 +982,24 @@ if test "x$with_raster" != "xno"; then
 		POSTGIS_GDAL_VERSION="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION"
 		GDAL_VERSION_NUMBER="$GDAL_MAJOR_VERSION$GDAL_MINOR_VERSION$GDAL_PATCH_VERSION"
 
+		AC_MSG_RESULT([$GDAL_FULL_VERSION])
+
 		dnl Ensure we are using minimum required version of GDAL
 		if test ! "$GDAL_VERSION_NUMBER" -ge "$GDAL_MIN_VERSION_NUMBER" ; then
-			AC_MSG_RESULT([not found])
 			AC_MSG_ERROR([PostGIS raster requires GDAL >= $GDAL_MIN_VERSION. Use --without-raster to build without raster support.])
 		fi
 
-		AC_MSG_RESULT([found])
-
 		AC_DEFINE_UNQUOTED([POSTGIS_GDAL_VERSION], [$POSTGIS_GDAL_VERSION], [GDAL library version])	
 		AC_SUBST([POSTGIS_GDAL_VERSION])
+
+		dnl Check that OGR is enabled
+		AC_MSG_CHECKING([for OGR enabled])
+		OGR_ENABLED=`$GDAL_CONFIG --ogr-enabled`
+		if test "x$OGR_ENABLED" != "xyes"; then
+			AC_MSG_RESULT([$OGR_ENABLED])
+			AC_MSG_ERROR([PostGIS raster requires OGR to be enabled in GDAL. Use --without-raster to build without raster support.])
+		fi
+		AC_MSG_RESULT([$OGR_ENABLED])
 
 		dnl Extract the linker and include flags 
 		LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
@@ -1015,6 +1023,11 @@ if test "x$with_raster" != "xno"; then
 
 		LIBS="$LIBGDAL_LDFLAGS"
 
+		dnl Ensure we can link against ogr
+		AC_SEARCH_LIBS([OGRRegisterAll], [gdal], [], [AC_MSG_ERROR([could not find gdal])], [])
+
+		LIBS="$LIBGDAL_LDFLAGS"
+
 		dnl Check if the new polygonize function is present
 		AC_SEARCH_LIBS(
 			[GDALFPolygonize],
@@ -1030,6 +1043,7 @@ if test "x$with_raster" != "xno"; then
 		AC_SUBST([LIBGDAL_LDFLAGS])
 
 		AC_SUBST([GDALFPOLYGONIZE])
+
 	else
 		AC_MSG_RESULT([not found])
 		AC_MSG_ERROR([gdal-config not found. Use --without-raster or try --with-gdalconfig=<path to gdal-config>])
