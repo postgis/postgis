@@ -375,6 +375,20 @@ int rt_util_gdal_configured(void) {
 }
 
 /*
+	register all GDAL drivers
+*/
+void
+rt_util_gdal_register_all(void) {
+	static int registered = 0;
+
+	if (registered)
+		return;
+
+	GDALAllRegister();
+	registered = 1;
+}
+
+/*
 	is the driver registered?
 */
 int
@@ -1554,7 +1568,7 @@ rt_band_load_offline_data(rt_band band) {
 		return 1;
 	}
 
-	GDALAllRegister();
+	rt_util_gdal_register_all();
 	hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
 	if (hdsSrc == NULL) {
 		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
@@ -8184,7 +8198,7 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 	assert(NULL != raster);
 
 	/* any supported format is possible */
-	GDALAllRegister();
+	rt_util_gdal_register_all();
 	RASTER_DEBUG(3, "rt_raster_to_gdal: loaded all supported GDAL formats");
 
 	/* output format not specified */
@@ -8270,7 +8284,7 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 	int i;
 	uint32_t j;
 
-	GDALAllRegister();
+	rt_util_gdal_register_all();
 	count = GDALGetDriverCount();
 	rtn = (rt_gdaldriver) rtalloc(count * sizeof(struct rt_gdaldriver_t));
 	if (NULL == rtn) {
