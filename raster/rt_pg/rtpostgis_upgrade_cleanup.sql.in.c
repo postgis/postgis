@@ -104,18 +104,82 @@ DROP CAST IF EXISTS (raster AS geometry);
 CREATE CAST (raster AS geometry)
 	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
 
--- new TYPE
-DROP TYPE IF EXISTS addbandarg CASCADE;
-CREATE TYPE addbandarg AS (
-	index int,
-	pixeltype text,
-	initialvalue float8,
-	nodataval float8
+-- new TYPEs
+DROP FUNCTION IF EXISTS _checktype_drop_create(name, name[], name[]);
+CREATE OR REPLACE FUNCTION _checktype_drop_create(
+	reftype name,
+	refatt name[],
+	refatttype name[]
+)
+	RETURNS void AS $$
+	DECLARE
+		att name[];
+		atttype name[];
+
+		dodrop boolean DEFAULT FALSE;
+		docreate boolean DEFAULT FALSE;
+
+		cnt int;
+		i int;
+		found boolean;
+		typeargtext text DEFAULT '';
+	BEGIN
+		cnt := array_length(refatt, 1);
+		EXECUTE 'SELECT array_agg(a.attname), array_agg(att.typname) ' ||
+			'FROM pg_type t ' ||
+			'JOIN pg_class c ' ||
+				'ON t.typrelid = c.oid ' ||
+			'JOIN pg_attribute a ' ||
+				'ON a.attrelid = c.oid ' ||
+			'JOIN pg_type att ' ||
+				'ON a.atttypid = att.oid ' ||
+			'WHERE t.typname = ' || quote_literal(reftype)
+			INTO att, atttype;
+
+		-- check specifics of TYPE
+		IF att IS NOT NULL THEN
+			FOR i in 1..cnt LOOP
+				SELECT refatt[i] = ANY(att) INTO found;
+
+				IF NOT found THEN
+					docreate := TRUE;
+					EXIT;
+				END IF;
+
+				IF refatttype[i] != atttype[i] THEN
+					dodrop := TRUE;
+					docreate := TRUE;
+				END IF;
+			END LOOP;
+		ELSE
+			docreate := TRUE;
+		END IF;
+
+		IF dodrop THEN
+			EXECUTE 'DROP TYPE IF EXISTS ' || reftype || ' CASCADE';
+		END IF;
+
+		IF docreate THEN
+			FOR i in 1..cnt LOOP
+				typeargtext := typeargtext || quote_ident(refatt[i]) || ' ' || refatttype[i];
+				IF i < cnt THEN
+					typeargtext := typeargtext || ',';
+				END IF;
+			END LOOP;
+			EXECUTE 'CREATE TYPE ' || quote_ident(reftype) || ' AS (' || typeargtext || ')';
+		END IF;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE;
+
+SELECT _checktype_drop_create(
+	'addbandarg',
+	ARRAY['index', 'pixeltype', 'initialvalue', 'nodataval']::name[],
+	ARRAY['int4', 'text', 'float8', 'float8']::name[]
+);
+SELECT _checktype_drop_create(
+	'agg_samealignment',
+	ARRAY['refraster', 'aligned']::name[],
+	ARRAY['raster', 'bool']::name[]
 );
 
--- new TYPE
-DROP TYPE IF EXISTS agg_samealignment CASCADE;
-CREATE TYPE agg_samealignment AS (
-	refraster raster,
-	aligned boolean
-);
+DROP FUNCTION _checktype_drop_create(name, name[], name[]);
