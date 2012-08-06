@@ -1119,7 +1119,23 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 				<para>&T_support;</para>
 				<para>&Z_support;</para>
 		</refsection>
-
+		<refsection><title>Classic Explode a Table of LineStrings into nodes</title>
+			<programlisting>SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode
+FROM (SELECT 1 As edge_id
+	, ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS dp
+     UNION ALL
+     SELECT 2 As edge_id
+	, ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS dp
+   ) As foo;
+ edge_id | index |    wktnode
+---------+-------+--------------
+       1 |     1 | POINT(1 2)
+       1 |     2 | POINT(3 4)
+       1 |     3 | POINT(10 10)
+       2 |     1 | POINT(3 5)
+       2 |     2 | POINT(5 6)
+       2 |     3 | POINT(9 10)</programlisting>
+		</refsection>
 		<refsection>
 			<title>Standard Geometry Examples</title>
 
