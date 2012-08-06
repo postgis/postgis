@@ -104,10 +104,13 @@ DROP CAST IF EXISTS (raster AS geometry);
 CREATE CAST (raster AS geometry)
 	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
 
+-- cleanup poorly thought up experiments
+DROP TYPE IF EXISTS old_addbandarg CASCADE;
+DROP TYPE IF EXISTS old_agg_samealignment CASCADE;
+
 -- new TYPE
-ALTER TYPE addbandarg RENAME TO old_addbandarg;
-DROP FUNCTION IF EXISTS st_addband(raster, old_addbandarg[]);
-DROP TYPE IF EXISTS old_addbandarg;
+DROP FUNCTION IF EXISTS st_addband(raster, addbandarg[]);
+DROP TYPE IF EXISTS addbandarg;
 CREATE TYPE addbandarg AS (
 	index int,
 	pixeltype text,
@@ -116,11 +119,10 @@ CREATE TYPE addbandarg AS (
 );
 
 -- new TYPE
-ALTER TYPE agg_samealignment RENAME TO old_agg_samealignment;
 DROP AGGREGATE IF EXISTS st_samealignment(raster);
-DROP FUNCTION IF EXISTS _st_samealignment_transfn(old_agg_samealignment, raster);
-DROP FUNCTION IF EXISTS _st_samealignment_finalfn(old_agg_samealignment);
-DROP TYPE IF EXISTS old_agg_samealignment;
+DROP FUNCTION IF EXISTS _st_samealignment_transfn(agg_samealignment, raster);
+DROP FUNCTION IF EXISTS _st_samealignment_finalfn(agg_samealignment);
+DROP TYPE IF EXISTS agg_samealignment;
 CREATE TYPE agg_samealignment AS (
 	refraster raster,
 	aligned boolean
