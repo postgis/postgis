@@ -23,3 +23,8 @@ SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE wktgeomval');
 SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE _wktgeomval');
 SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE raster_columns');
 SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE _raster_columns');
+-- these got changed to out paramters in 2.1
+SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE summarystats');
+SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE quantile');
+SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE valuecount');
+SELECT postgis_extension_drop_if_exists('postgis', 'DROP TYPE histogram');
