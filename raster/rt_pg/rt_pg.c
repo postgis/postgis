@@ -4329,48 +4329,12 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 		&nulls, &n);
 
-	/* quick check that the source band number is valid for all rasters */
-	for (i = 0; i < n; i++) {
-		if (nulls[i]) continue;
-		src = NULL;
-
-		pgsrc =	(rt_pgraster *) PG_DETOAST_DATUM_SLICE(e[i], 0, sizeof(struct rt_raster_serialized_t));
-		src = rt_raster_deserialize(pgsrc, TRUE);
-		if (src == NULL) {
-			elog(ERROR, "RASTER_addBandRasterArray: Could not deserialize source raster at index %d", i + 1);
-			pfree(nulls);
-			pfree(e);
-			if (raster != NULL) {
-				rt_raster_destroy(raster);
-				PG_FREE_IF_COPY(pgraster, 0);
-			}
-			PG_RETURN_NULL();
-		}
-
-		srcnumbands = rt_raster_get_num_bands(src);
-		rt_raster_destroy(src);
-		POSTGIS_RT_DEBUGF(4, "source raster %d has %d bands", i + 1, srcnumbands);
-
-		/* band index isn't valid */
-		if (srcnband > srcnumbands) {
-			elog(NOTICE, "Invalid band index for source raster at index %d.  Returning original raster", i + 1);
-			pfree(nulls);
-			pfree(e);
-			if (raster != NULL) {
-				rt_raster_destroy(raster);
-				PG_RETURN_POINTER(pgraster);
-			}
-			else
-				PG_RETURN_NULL();
-		}
-	}
-
 	/* decrement srcnband and dstnband by 1, now 0-based */
 	srcnband--;
 	dstnband--;
 	POSTGIS_RT_DEBUGF(4, "0-based nband (src, dst) = (%d, %d)", srcnband, dstnband);
 
-	/* still here, time to copy bands */
+	/* time to copy bands */
 	for (i = 0; i < n; i++) {
 		if (nulls[i]) continue;
 		src = NULL;
@@ -4386,6 +4350,23 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 			if (pgraster != NULL)
 				PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
+		}
+
+		srcnumbands = rt_raster_get_num_bands(src);
+		POSTGIS_RT_DEBUGF(4, "source raster %d has %d bands", i + 1, srcnumbands);
+
+		/* band index isn't valid */
+		if (srcnband > srcnumbands - 1) {
+			elog(NOTICE, "Invalid band index for source raster at index %d.  Returning original raster", i + 1);
+			pfree(nulls);
+			pfree(e);
+			rt_raster_destroy(src);
+			if (raster != NULL) {
+				rt_raster_destroy(raster);
+				PG_RETURN_POINTER(pgraster);
+			}
+			else
+				PG_RETURN_NULL();
 		}
 
 		/* destination raster is empty, new raster */
