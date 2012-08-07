@@ -67,13 +67,12 @@ CREATE CAST (raster AS bytea)
 DROP CAST IF EXISTS (raster AS box2d);
 DROP FUNCTION IF EXISTS box2d(raster);
 
--- create box3d cast if it does not exist
-#if POSTGIS_PGSQL_VERSION >= 90
 -- If we are running 9.0+ we can use DO plpgsql to check
 -- and only create if not exists so no need to force a drop
 -- that way if people are using it, we will not mess them up
-DO language 'plpgsql' $$DECLARE r record;
+DO language 'plpgsql' $$
 BEGIN
+	-- create raster box3d cast if it does not exist
 	IF NOT EXISTS(SELECT  cs.typname AS source
 		FROM pg_cast AS ca 
         	INNER JOIN pg_type AS cs ON ca.castsource = cs.oid
@@ -86,44 +85,31 @@ BEGIN
 		CREATE CAST (raster AS box3d)
 			WITH FUNCTION box3d(raster) AS ASSIGNMENT;
     END IF;
+    
+    -- create addbandarg type if it does not exist
+	IF NOT EXISTS(SELECT typname
+		FROM pg_type 
+        	WHERE typname = 'addbandarg') THEN
+		CREATE TYPE addbandarg AS (
+			index int,
+			pixeltype text,
+			initialvalue float8,
+			nodataval float8
+		);
+    END IF;
+    
+    -- create agg_samealignment type if it does not exist
+	IF NOT EXISTS(SELECT typname 
+		FROM pg_type 
+        	WHERE typname = 'agg_samealignment') THEN
+			CREATE TYPE agg_samealignment AS (
+				refraster raster,
+				aligned boolean
+			);
+    END IF;
 END$$;	
-#endif
-#if POSTGIS_PGSQL_VERSION < 90
--- if we are running 8.4 we need to use brute force
-DROP CAST IF EXISTS (raster AS box3d);
-CREATE OR REPLACE FUNCTION box3d(raster)
-    RETURNS box3d
-    AS 'SELECT box3d(st_convexhull($1))'
-    LANGUAGE 'sql' IMMUTABLE STRICT;
-CREATE CAST (raster AS box3d)
-    WITH FUNCTION box3d(raster) AS ASSIGNMENT;
-#endif
 
 -- make geometry cast ASSIGNMENT
 DROP CAST IF EXISTS (raster AS geometry);
 CREATE CAST (raster AS geometry)
 	WITH FUNCTION st_convexhull(raster) AS ASSIGNMENT;
-
--- cleanup poorly thought up experiments
-DROP TYPE IF EXISTS old_addbandarg CASCADE;
-DROP TYPE IF EXISTS old_agg_samealignment CASCADE;
-
--- new TYPE
-DROP FUNCTION IF EXISTS st_addband(raster, addbandarg[]);
-DROP TYPE IF EXISTS addbandarg;
-CREATE TYPE addbandarg AS (
-	index int,
-	pixeltype text,
-	initialvalue float8,
-	nodataval float8
-);
-
--- new TYPE
-DROP AGGREGATE IF EXISTS st_samealignment(raster);
-DROP FUNCTION IF EXISTS _st_samealignment_transfn(agg_samealignment, raster);
-DROP FUNCTION IF EXISTS _st_samealignment_finalfn(agg_samealignment);
-DROP TYPE IF EXISTS agg_samealignment;
-CREATE TYPE agg_samealignment AS (
-	refraster raster,
-	aligned boolean
-);
