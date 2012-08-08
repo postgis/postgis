@@ -31,13 +31,17 @@ ifeq ($(PG91),yes)
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/mark_editable_objects.sql.in sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
 	cat $^ > $@
 	
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)Next.sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	cp $< $@
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
 	cp $< $@
+	
+#this is a cludge to allow upgrading from same SVN to same SVN
+sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)Next.sql: sql_bits/postgis_raster_upgrade_minor.sql
+sql/$(EXTENSION)--$(EXTVERSION)Next--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql	
