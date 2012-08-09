@@ -27,7 +27,7 @@ EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
 
 
 ifeq ($(PG91),yes)
-all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
+all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	mkdir -p sql
@@ -35,6 +35,12 @@ sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
 	
 sql/$(EXTENSION).sql: sql_bits/topology.sql  sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql
 	mkdir -p sql
+	cat $^ > $@
+	
+#this is a cludge to allow upgrading from same SVN to same SVN
+sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
+	cat $^ > $@
+sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 	
 #strip BEGIN/COMMIT since these are not allowed in extensions
