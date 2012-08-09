@@ -41,7 +41,9 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sq
 	
 #this is a cludge to allow upgrading from same SVN to same SVN
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: sql_bits/postgis_raster_upgrade_minor.sql
+	cp $< $@
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql_bits/postgis_raster_upgrade_minor.sql
+	cp $< $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
 sql_bits/spatial_ref_sys.sql: ../../spatial_ref_sys.sql	
