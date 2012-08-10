@@ -52,7 +52,7 @@ void srid_is_latlong(FunctionCallInfo fcinfo, int srid);
 /**  End of UTM North zone, equivalent to EPSG:32660 */
 #define SRID_NORTH_UTM_END   999060
 
-/** Lambert Azimuthal Equal Area North Pole, equivalent to EPSG:3574 */
+/** Lambert Azimuthal Equal Area (LAEA) North Pole, equivalent to EPSG:3574 */
 #define SRID_NORTH_LAMBERT   999061
 
 /** PolarSteregraphic North, equivalent to EPSG:3995 */
@@ -64,17 +64,17 @@ void srid_is_latlong(FunctionCallInfo fcinfo, int srid);
 /**  Start of UTM South zone, equivalent to EPSG:32760 */
 #define SRID_SOUTH_UTM_END   999160
 
-/** Lambert Azimuthal Equal Area South Pole, equivalent to EPSG:3409 */
+/** Lambert Azimuthal Equal Area (LAEA) South Pole, equivalent to EPSG:3409 */
 #define SRID_SOUTH_LAMBERT   999161
 
 /** PolarSteregraphic South, equivalent to EPSG:3031 */
 #define SRID_SOUTH_STEREO    999162
 
-/** Gnomic zones start (6 latitude bands x up to 20 latitude bands) */
-#define SRID_GNOMIC_START 999163
+/** LAEA zones start (6 latitude bands x up to 20 longitude bands) */
+#define SRID_LAEA_START 999163
 
-/** Gnomic zones end (6 latitude bands x up to 20 latitude bands) */
-#define SRID_GNOMIC_END 999283
+/** LAEA zones end (6 latitude bands x up to 20 longitude bands) */
+#define SRID_LAEA_END 999283
 
 
 /** @} */

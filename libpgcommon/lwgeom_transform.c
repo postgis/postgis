@@ -407,14 +407,18 @@ static char* GetProj4String(int srid)
 		{
 			snprintf(proj_str, maxproj4len, "+proj=utm +zone=%d +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs", id - SRID_SOUTH_UTM_START + 1);
 		}
-		/* Gnomic zones (about 30x30, larger in higher latitudes) */
-		else if ( id >= SRID_GNOMIC_START && id <= SRID_GNOMIC_END )
+		/* Lambert zones (about 30x30, larger in higher latitudes) */
+		/* There are three latitude zones, divided at -90,-60,-30,0,30,60,90. */
+		/* In yzones 2,3 (equator) zones, the longitudinal zones are divided every 30 degrees (12 of them) */
+		/* In yzones 1,4 (temperate) zones, the longitudinal zones are every 45 degrees (8 of them) */
+		/* In yzones 0,5 (polar) zones, the longitudinal zones are ever 90 degrees (4 of them) */
+		else if ( id >= SRID_LAEA_START && id <= SRID_LAEA_END )
 		{
-			int zone = id - SRID_GNOMIC_START;
+			int zone = id - SRID_LAEA_START;
 			int xzone = zone % 20;
 			int yzone = zone / 20;
 			double lat_0 = 30.0 * (yzone - 3) + 15.0;
-			double lon_0;
+			double lon_0 = 0.0;
 			
 			/* The number of xzones is variable depending on yzone */
 			if  ( yzone == 2 || yzone == 3 )
@@ -426,7 +430,7 @@ static char* GetProj4String(int srid)
 			else
 				lwerror("Unknown yzone encountered!");
 			
-			snprintf(proj_str, maxproj4len, "+proj=gnom +ellps=WGS84 +datum=WGS84 +lat_0=%g +lon_0=%g +units=m +no_defs", lat_0, lon_0);
+			snprintf(proj_str, maxproj4len, "+proj=laea +ellps=WGS84 +datum=WGS84 +lat_0=%g +lon_0=%g +units=m +no_defs", lat_0, lon_0);
 		}
 		/* Lambert Azimuthal Equal Area South Pole */
 		else if ( id == SRID_SOUTH_LAMBERT )

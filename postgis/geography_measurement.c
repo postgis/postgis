@@ -774,9 +774,9 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 	}
 
 	/*
-	** Can we fit into a custom Gnomic area? (30 degrees high, variable width) 
+	** Can we fit into a custom LAEA area? (30 degrees high, variable width) 
 	** We will allow overlap into adjoining areas, but use a slightly narrower test (25) to try
-	** and lower the worst case.
+	** and minimize the worst case.
 	** Again, we are hoping the dateline doesn't trip us up much
 	*/
 	if ( ywidth < 25.0 )
@@ -803,7 +803,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS)
 		/* Did we fit into an appropriate xzone? */
 		if ( xzone != -1 )
 		{
-			PG_RETURN_INT32(SRID_GNOMIC_START + 20 * yzone + xzone);
+			PG_RETURN_INT32(SRID_LAEA_START + 20 * yzone + xzone);
 		}
 	}
 
