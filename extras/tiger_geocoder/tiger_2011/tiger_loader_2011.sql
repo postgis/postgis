@@ -364,9 +364,10 @@ LANGUAGE 'plpgsql' VOLATILE;
 CREATE OR REPLACE FUNCTION loader_load_staged_data(param_staging_table text, param_target_table text) 
 RETURNS integer AS
 $$
+-- exclude this set list of columns if no exclusion list is specified 
    SELECT  loader_load_staged_data($1, $2,(SELECT COALESCE(columns_exclude,ARRAY['gid', 'geoid','cpi','suffix1ce', 'statefp00', 'statefp10', 'countyfp00','countyfp10'
-   ,'tractce00','tractce10', 'blkgrpce00', 'blkgrpce10', 'blockce00', 'blockce10', 
-       'cousubfp00', 'submcdfp00', 'conctyfp00', 'placefp00', 'aiannhfp00', 'aiannhce00', 
+   ,'tractce00','tractce10', 'blkgrpce00', 'blkgrpce10', 'blockce00', 'blockce10', 'suffix1ce'
+      , 'cousubfp00', 'submcdfp00', 'conctyfp00', 'placefp00', 'aiannhfp00', 'aiannhce00', 
        'comptyp00', 'trsubfp00', 'trsubce00', 'anrcfp00', 'elsdlea00', 'scsdlea00', 
        'unsdlea00', 'uace00', 'cd108fp', 'sldust00', 'sldlst00', 'vtdst00', 'zcta5ce00', 
        'tazce00', 'ugace00', 'puma5ce00','vtdst10','tazce10','uace10','puma5ce10','tazce', 'uace', 'vtdst', 'zcta5ce', 'zcta5ce10', 'puma5ce']) FROM loader_lookuptables WHERE $2 LIKE '%' || lookup_name))
