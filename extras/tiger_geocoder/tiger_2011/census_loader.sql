@@ -53,8 +53,8 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	  countyfp varchar(3),
 	  tractce varchar(6),
 	  blockce varchar(4),
-	  tabblock_id varchar(15) PRIMARY KEY,
-	  name varchar(10),
+	  tabblock_id varchar(16) PRIMARY KEY,
+	  name varchar(20),
 	  mtfcc varchar(5),
 	  ur varchar(1),
 	  uace varchar(5),
@@ -93,9 +93,14 @@ IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_sche
 	);
 	COMMENT ON TABLE tiger.bg IS 'block groups';
 	RETURN 'Done creating census tract base tables - $Id$';
-ELSE 
-	RETURN 'Tables already present';
 END IF;
+
+IF EXISTS(SELECT * FROM information_schema.columns WHERE table_schema = 'tiger' AND column_name = 'tabblock_id' AND table_name = 'tabblock' AND character_maximum_length < 16)  THEN -- size of name and tabblock_id fields need to be increased
+    ALTER TABLE tiger.tabblock ALTER COLUMN name TYPE varchar(20);
+    ALTER TABLE tiger.tabblock ALTER COLUMN tabblock_id TYPE varchar(16);
+    RAISE NOTICE 'Size of tabblock_id and name are being incrreased';
+END IF;
+RETURN 'Tables already present';
 END
 $$
 language 'plpgsql';
