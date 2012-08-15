@@ -183,6 +183,19 @@ static void test_tree_circ_distance(void)
 	
 	spheroid_init(&s, 1.0, 1.0);
 
+	/* Ticket #1951 */
+	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(0 0, 0 0)", LW_PARSER_CHECK_NONE));
+	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(0.1 0.1)", LW_PARSER_CHECK_NONE));
+	cline = circ_tree_new(line->points);
+	cpoint = circ_tree_new(point->point);
+	distance_tree = circ_tree_distance_tree(cpoint, cline, &s, threshold);
+	distance_geom = lwgeom_distance_spheroid((LWGEOM*)line, (LWGEOM*)point, &s, threshold);
+	circ_tree_free(cline);
+	circ_tree_free(cpoint);
+	lwline_free(line);
+	lwpoint_free(point);
+	CU_ASSERT_DOUBLE_EQUAL(distance_geom, distance_geom, 0.0001);
+
 	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(-1 -1,0 -1,1 -1,1 0,1 1,0 0,-1 1,-1 0,-1 -1)", LW_PARSER_CHECK_NONE));
 	point = lwgeom_as_lwpoint(lwgeom_from_wkt("POINT(-2 0)", LW_PARSER_CHECK_NONE));
 	cline = circ_tree_new(line->points);

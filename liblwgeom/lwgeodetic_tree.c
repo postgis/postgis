@@ -85,6 +85,22 @@ circ_node_leaf_new(const POINTARRAY* pa, int i)
 }
 
 /**
+* Return a point node (zero radius, referencing one point)
+*/
+static CIRC_NODE* 
+circ_node_leaf_point_new(const POINTARRAY* pa)
+{
+	CIRC_NODE* tree = lwalloc(sizeof(CIRC_NODE));
+	tree->p1 = tree->p2 = (POINT2D*)getPoint_internal(pa, 0);
+	geographic_point_init(tree->p1->x, tree->p1->y, &(tree->center));
+	tree->radius = 0.0;
+	tree->nodes = NULL;
+	tree->num_nodes = 0;
+	tree->edge_num = 0;
+	return tree;
+}
+
+/**
 * Comparing on geohash ensures that nearby nodes will be close 
 * to each other in the list.
 */  
@@ -287,16 +303,7 @@ circ_tree_new(const POINTARRAY* pa)
 		
 	/* Special handling for a single point */
 	if ( pa->npoints == 1 )
-	{
-		tree = lwalloc(sizeof(CIRC_NODE));
-		tree->p1 = tree->p2 = (POINT2D*)getPoint_internal(pa, 0);
-		geographic_point_init(tree->p1->x, tree->p1->y, &(tree->center));
-		tree->radius = 0.0;
-		tree->nodes = NULL;
-		tree->num_nodes = 0;
-		tree->edge_num = 0;
-		return tree;
-	}	
+		return circ_node_leaf_point_new(pa);
 		
 	/* First create a flat list of nodes, one per edge. */
 	num_edges = pa->npoints - 1;
@@ -308,6 +315,10 @@ circ_tree_new(const POINTARRAY* pa)
 		if ( node ) /* Not zero length? */
 			nodes[j++] = node;
 	}
+	
+	/* Special case: only zero-length edges. Make a point node. */
+	if ( j == 0 )
+		return circ_node_leaf_point_new(pa);
 
 	/* Merge the node list pairwise up into a tree */
 	tree = circ_nodes_merge(nodes, j);
