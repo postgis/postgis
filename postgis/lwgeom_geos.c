@@ -1626,7 +1626,7 @@ Datum contains(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
 
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, geom1);
+		poly_cache = GetRtreeCache(fcinfo, lwgeom, SERIALIZED_FORM(geom1));
 
 		if ( poly_cache->ringIndices )
 		{
@@ -1817,7 +1817,7 @@ Datum covers(PG_FUNCTION_ARGS)
 
 		POSTGIS_DEBUGF(3, "Precall point_in_multipolygon_rtree %p, %p", lwgeom, point);
 
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, geom1);
+		poly_cache = GetRtreeCache(fcinfo, lwgeom, SERIALIZED_FORM(geom1));
 
 		if ( poly_cache->ringIndices )
 		{
@@ -1940,7 +1940,7 @@ Datum within(PG_FUNCTION_ARGS)
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, geom1);
+		poly_cache = GetRtreeCache(fcinfo, lwgeom, SERIALIZED_FORM(geom1));
 
 		if ( poly_cache->ringIndices )
 		{
@@ -2063,7 +2063,7 @@ Datum coveredby(PG_FUNCTION_ARGS)
 		point = lwpoint_deserialize(SERIALIZED_FORM(geom1));
 		lwgeom = lwgeom_deserialize(SERIALIZED_FORM(geom2));
 
-		poly_cache = GetRtreeCache(fcinfo, lwgeom, geom1);
+		poly_cache = GetRtreeCache(fcinfo, lwgeom, SERIALIZED_FORM(geom1));
 
 		if ( poly_cache->ringIndices )
 		{
