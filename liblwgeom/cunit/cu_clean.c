@@ -20,6 +20,7 @@ static void test_lwgeom_make_valid(void)
 {
 #if POSTGIS_GEOS_VERSION >= 33
 	LWGEOM *gin, *gout;
+	char *wkt;
 	int ret;
 
 	/* Because i don't trust that much prior tests...  ;) */
@@ -35,9 +36,25 @@ static void test_lwgeom_make_valid(void)
 	/* We're really only interested in avoiding a crash in here.
 	 * See http://trac.osgeo.org/postgis/ticket/1738
 	 * TODO: enhance the test if we find a workaround 
-	 *       to the excepion:
+	 *       to the exception:
 	 * See http://trac.osgeo.org/postgis/ticket/1735
 	 */
+
+	lwgeom_free(gout);
+	lwgeom_free(gin);
+
+
+	/* Test for trac.osgeo.org/postgis/ticket/1953 */
+	gin = lwgeom_from_wkt(
+		"POLYGON((1 1, 2 1, 2 2, 1 2))",
+		LW_PARSER_CHECK_NONE);
+	CU_ASSERT(gin);
+
+	gout = lwgeom_make_valid(gin);
+
+	wkt = lwgeom_to_wkt(gout, WKT_ISO, 8, NULL);
+	CU_ASSERT(!strcmp(wkt, "POLYGON((1 1,2 1,2 2,1 2,1 1))"));
+	lwfree(wkt);
 
 	lwgeom_free(gout);
 	lwgeom_free(gin);
