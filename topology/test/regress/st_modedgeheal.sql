@@ -115,6 +115,51 @@ SELECT topology.DropTopology('t');
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 
+-- Test edges sharing both endpoints
+-- See http://trac.osgeo.org/postgis/ticket/1955
+
+SELECT '#1955', topology.CreateTopology('t') > 1;
+
+SELECT '#1955.1', 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 10 0, 10 10)');        -- 1
+SELECT '#1955.1', 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 0 10, 10 10)'); ;      -- 2
+
+SELECT '#1955.1', count(node_id), 'start nodes' as label FROM t.node GROUP BY label; 
+
+-- Deletes second node. Not very predictable which one is removed
+SELECT '#1955.1', 'H:1,2', 'N' || topology.ST_ModEdgeHeal('t', 1, 2), 'deleted';
+
+SELECT '#1955.1', count(node_id), 'nodes left' as label FROM t.node GROUP BY label; 
+
+SELECT '#1955.2', 'E'||topology.AddEdge('t', 'LINESTRING(50 0, 60 0, 60 10)');        -- 3
+SELECT '#1955.2', 'E'||topology.AddEdge('t', 'LINESTRING(50 0, 50 10, 60 10)'); ;     -- 4
+SELECT '#1955.2', 'E'||topology.AddEdge('t', 'LINESTRING(60 10, 70 10)'); ;           -- 5
+
+SELECT '#1955.2', count(node_id), 'start nodes' as label FROM t.node GROUP BY label; 
+
+-- Only the start node can be deleted (50 0) because the other is shared by
+-- another edge 
+SELECT '#1955.2', 'H:3,4', 'N' || topology.ST_ModEdgeHeal('t', 3, 4), 'deleted';
+
+SELECT '#1955.2', count(node_id), 'nodes left' as label FROM t.node GROUP BY label; 
+
+SELECT '#1955.3', 'E'||topology.AddEdge('t', 'LINESTRING(80 0, 90 0, 90 10)');        -- 6
+SELECT '#1955.3', 'E'||topology.AddEdge('t', 'LINESTRING(80 0, 80 10, 90 10)'); ;     -- 7
+SELECT '#1955.3', 'E'||topology.AddEdge('t', 'LINESTRING(70 10, 80 0)'); ;            -- 8
+
+SELECT '#1955.3', count(node_id), 'start nodes' as label FROM t.node GROUP BY label; 
+
+-- Only the end node can be deleted (90 10) because the other is shared by
+-- another edge 
+SELECT '#1955.3', 'H:6,7', 'N' || topology.ST_ModEdgeHeal('t', 6, 7), 'deleted';
+
+SELECT '#1955.3', count(node_id), 'nodes left' as label FROM t.node GROUP BY label; 
+
+SELECT '#1955', topology.DropTopology('t');
+
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
 -- TODO: test registered but unexistent topology
 -- TODO: test registered but corrupted topology
 --       (missing node, edge, relation...)

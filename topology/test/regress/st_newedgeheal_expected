@@ -9,7 +9,7 @@ ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - non-connected edges
-ERROR:  SQL/MM Spatial exception - other edges connected (ie: 19)
+ERROR:  SQL/MM Spatial exception - other edges connected (19,20)
 ERROR:  Edge 2 is closed, cannot heal to edge 3
 ERROR:  Edge 2 is closed, cannot heal to edge 3
 ERROR:  Cannot heal edge 25 with itself, try with another
@@ -120,3 +120,22 @@ ERROR:  SQL/MM Spatial exception - non-connected edges
 2|5
 3|-5
 Topology 't' dropped
+#1955|t
+#1955.1|E1
+#1955.1|E2
+#1955.1|2|start nodes
+#1955.1|H:1,2|E3|created
+#1955.1|1|nodes left
+#1955.2|E4
+#1955.2|E5
+#1955.2|E6
+#1955.2|4|start nodes
+#1955.2|H:4,5|E7|created
+#1955.2|3|nodes left
+#1955.3|E8
+#1955.3|E9
+#1955.3|E10
+#1955.3|5|start nodes
+#1955.3|H:8,9|E11|created
+#1955.3|4|nodes left
+#1955|Topology 't' dropped

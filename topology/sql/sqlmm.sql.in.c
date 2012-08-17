@@ -166,6 +166,7 @@ DECLARE
   e2rec RECORD;
   rec RECORD;
   newedgeid int;
+  connectededges int[];
   commonnode int;
   caseno int;
   topoid int;
@@ -228,31 +229,56 @@ BEGIN
   END IF;
 
   -- Find common node
+
   IF e1rec.end_node = e2rec.start_node THEN
     commonnode = e1rec.end_node;
     caseno = 1;
   ELSIF e1rec.end_node = e2rec.end_node THEN
     commonnode = e1rec.end_node;
     caseno = 2;
-  ELSIF e1rec.start_node = e2rec.start_node THEN
-    commonnode = e1rec.start_node;
-    caseno = 3;
-  ELSIF e1rec.start_node = e2rec.end_node THEN
-    commonnode = e1rec.start_node;
-    caseno = 4;
-  ELSE
-    RAISE EXCEPTION 'SQL/MM Spatial exception - non-connected edges';
   END IF;
 
   -- Check if any other edge is connected to the common node
-  FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
-    || '.edge_data WHERE ( edge_id != ' || e1id
-    || ' AND edge_id != ' || e2id || ') AND ( start_node = '
-    || commonnode || ' OR end_node = ' || commonnode || ' )'
-  LOOP
-    RAISE EXCEPTION
-      'SQL/MM Spatial exception - other edges connected (ie: %)', rec.edge_id;
-  END LOOP;
+  IF commonnode IS NOT NULL THEN
+    FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE ( edge_id != ' || e1id
+      || ' AND edge_id != ' || e2id || ') AND ( start_node = '
+      || commonnode || ' OR end_node = ' || commonnode || ' )'
+    LOOP
+      commonnode := NULL;
+      connectededges = connectededges || rec.edge_id;
+    END LOOP;
+  END IF;
+
+  IF commonnode IS NULL THEN
+    IF e1rec.start_node = e2rec.start_node THEN
+      commonnode = e1rec.start_node;
+      caseno = 3;
+    ELSIF e1rec.start_node = e2rec.end_node THEN
+      commonnode = e1rec.start_node;
+      caseno = 4;
+    END IF;
+
+    -- Check if any other edge is connected to the common node
+    IF commonnode IS NOT NULL THEN
+      FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
+        || '.edge_data WHERE ( edge_id != ' || e1id
+        || ' AND edge_id != ' || e2id || ') AND ( start_node = '
+        || commonnode || ' OR end_node = ' || commonnode || ' )'
+      LOOP
+        commonnode := NULL;
+        connectededges = connectededges || rec.edge_id;
+      END LOOP;
+    END IF;
+  END IF;
+
+  IF commonnode IS NULL THEN
+    IF connectededges IS NOT NULL THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - other edges connected (%)', array_to_string(connectededges, ',');
+    ELSE
+      RAISE EXCEPTION 'SQL/MM Spatial exception - non-connected edges';
+    END IF;
+  END IF;
 
   -- NOT IN THE SPECS:
   -- check if any topo_geom is defined only by one of the
@@ -454,6 +480,7 @@ DECLARE
   e1rec RECORD;
   e2rec RECORD;
   rec RECORD;
+  connectededges int[];
   commonnode int;
   caseno int;
   topoid int;
@@ -516,31 +543,56 @@ BEGIN
   END IF;
 
   -- Find common node
+
   IF e1rec.end_node = e2rec.start_node THEN
     commonnode = e1rec.end_node;
     caseno = 1;
   ELSIF e1rec.end_node = e2rec.end_node THEN
     commonnode = e1rec.end_node;
     caseno = 2;
-  ELSIF e1rec.start_node = e2rec.start_node THEN
-    commonnode = e1rec.start_node;
-    caseno = 3;
-  ELSIF e1rec.start_node = e2rec.end_node THEN
-    commonnode = e1rec.start_node;
-    caseno = 4;
-  ELSE
-    RAISE EXCEPTION 'SQL/MM Spatial exception - non-connected edges';
   END IF;
 
   -- Check if any other edge is connected to the common node
-  FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
-    || '.edge_data WHERE ( edge_id != ' || e1id
-    || ' AND edge_id != ' || e2id || ') AND ( start_node = '
-    || commonnode || ' OR end_node = ' || commonnode || ' )'
-  LOOP
-    RAISE EXCEPTION
-      'SQL/MM Spatial exception - other edges connected (ie: %)', rec.edge_id;
-  END LOOP;
+  IF commonnode IS NOT NULL THEN
+    FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
+      || '.edge_data WHERE ( edge_id != ' || e1id
+      || ' AND edge_id != ' || e2id || ') AND ( start_node = '
+      || commonnode || ' OR end_node = ' || commonnode || ' )'
+    LOOP
+      commonnode := NULL;
+      connectededges = connectededges || rec.edge_id;
+    END LOOP;
+  END IF;
+
+  IF commonnode IS NULL THEN
+    IF e1rec.start_node = e2rec.start_node THEN
+      commonnode = e1rec.start_node;
+      caseno = 3;
+    ELSIF e1rec.start_node = e2rec.end_node THEN
+      commonnode = e1rec.start_node;
+      caseno = 4;
+    END IF;
+
+    -- Check if any other edge is connected to the common node
+    IF commonnode IS NOT NULL THEN
+      FOR rec IN EXECUTE 'SELECT edge_id FROM ' || quote_ident(toponame)
+        || '.edge_data WHERE ( edge_id != ' || e1id
+        || ' AND edge_id != ' || e2id || ') AND ( start_node = '
+        || commonnode || ' OR end_node = ' || commonnode || ' )'
+      LOOP
+        commonnode := NULL;
+        connectededges = connectededges || rec.edge_id;
+      END LOOP;
+    END IF;
+  END IF;
+
+  IF commonnode IS NULL THEN
+    IF connectededges IS NOT NULL THEN
+      RAISE EXCEPTION 'SQL/MM Spatial exception - other edges connected (%)', array_to_string(connectededges, ',');
+    ELSE
+      RAISE EXCEPTION 'SQL/MM Spatial exception - non-connected edges';
+    END IF;
+  END IF;
 
   -- NOT IN THE SPECS:
   -- check if any topo_geom is defined only by one of the
