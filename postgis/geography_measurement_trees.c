@@ -139,9 +139,20 @@ CircTreePIP(const CIRC_NODE* tree1, const GSERIALIZED* g1, const LWGEOM* lwgeom2
 	{
 		int result;
 		LWGEOM* lwgeom1 = lwgeom_from_gserialized(g1);
+		LWGEOM* lwpoint;
+		POINT4D p4d;
 		POSTGIS_DEBUG(3, "tree1 not polygonal, but lwgeom2 is, calculating using lwgeom_covers_lwgeom_sphere");
-		result = lwgeom_covers_lwgeom_sphere(lwgeom2, lwgeom1);
-		lwfree(lwgeom1);
+		
+		if ( LW_FAILURE == lwgeom_startpoint(lwgeom1, &p4d) )
+		{
+			lwgeom_free(lwgeom1);
+			lwerror("CircTreePIP unable to get lwgeom_startpoint");
+			return LW_FALSE;
+		}  
+		lwpoint = lwpoint_as_lwgeom(lwpoint_make(lwgeom_get_srid(lwgeom1), lwgeom_has_z(lwgeom1), lwgeom_has_m(lwgeom1), &p4d));
+		result = lwgeom_covers_lwgeom_sphere(lwgeom2, lwpoint);
+		lwgeom_free(lwgeom1);
+		lwgeom_free(lwpoint);
 		return result;
 	}
 	else
