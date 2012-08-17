@@ -115,6 +115,49 @@ SELECT topology.DropTopology('t');
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 
+SELECT '#1955', topology.CreateTopology('t') > 1;
+
+SELECT '#1955.1', 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 10 0, 10 10)');        -- 1
+SELECT '#1955.1', 'E'||topology.AddEdge('t', 'LINESTRING(0 0, 0 10, 10 10)'); ;      -- 2
+
+SELECT '#1955.1', count(node_id), 'start nodes' as label FROM t.node GROUP BY label; 
+
+-- Deletes second node. Not very predictable which one is removed
+SELECT '#1955.1', 'H:1,2', 'E' || topology.ST_NewEdgeHeal('t', 1, 2), 'created';
+
+SELECT '#1955.1', count(node_id), 'nodes left' as label FROM t.node GROUP BY label; 
+
+SELECT '#1955.2', 'E'||topology.AddEdge('t', 'LINESTRING(50 0, 60 0, 60 10)');        -- 4
+SELECT '#1955.2', 'E'||topology.AddEdge('t', 'LINESTRING(50 0, 50 10, 60 10)'); ;     -- 5
+SELECT '#1955.2', 'E'||topology.AddEdge('t', 'LINESTRING(60 10, 70 10)'); ;           -- 6
+
+SELECT '#1955.2', count(node_id), 'start nodes' as label FROM t.node GROUP BY label; 
+
+-- Only the start node can be deleted (50 0) because the other is shared by
+-- another edge 
+SELECT '#1955.2', 'H:4,5', 'E' || topology.ST_NewEdgeHeal('t', 4, 5), 'created';
+
+SELECT '#1955.2', count(node_id), 'nodes left' as label FROM t.node GROUP BY label; 
+
+SELECT '#1955.3', 'E'||topology.AddEdge('t', 'LINESTRING(80 0, 90 0, 90 10)');        -- 8
+SELECT '#1955.3', 'E'||topology.AddEdge('t', 'LINESTRING(80 0, 80 10, 90 10)'); ;     -- 9
+SELECT '#1955.3', 'E'||topology.AddEdge('t', 'LINESTRING(70 10, 80 0)'); ;            -- 10
+
+SELECT '#1955.3', count(node_id), 'start nodes' as label FROM t.node GROUP BY label; 
+
+-- Only the end node can be deleted (90 10) because the other is shared by
+-- another edge 
+SELECT '#1955.3', 'H:8,9', 'E' || topology.ST_NewEdgeHeal('t', 8, 9), 'created';
+
+SELECT '#1955.3', count(node_id), 'nodes left' as label FROM t.node GROUP BY label; 
+
+SELECT '#1955', topology.DropTopology('t');
+
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
+
 -- TODO: test registered but unexistent topology
 -- TODO: test registered but corrupted topology
 --       (missing node, edge, relation...)
