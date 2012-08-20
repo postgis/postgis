@@ -10,7 +10,7 @@
 	<title>Short Version</title>
 	<note><para>The raster support is currently optional, but installed by default. For installing using the PostgreSQL 9.1+ extensions model it is required.
 	Please refer to <xref linkend="make_install_postgis_extensions" /> if you are using PostgreSQL 9.1+.</para></note>
-	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_release_version; folder
+	<para>All the .sql files once installed will be installed in <code>share/contrib/postgis-&last_minor_version;</code> folder
 		of your PostgreSQL install</para>
 	<para>The <varname>postgis_comments.sql</varname>, <varname>raster_comments.sql</varname>, <varname>topology_comments.sql</varname>
 		generate quick help tips for each function that can be accessed via pgAdmin III or psql. In psql with a command of the form e.g.<varname>\dd ST_SetPoint</varname></para>
@@ -223,7 +223,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		svn
 	  </ulink>
 	  repository
-	  <ulink url="http://svn.osgeo.org/postgis/branches/">
+	  <ulink url="http://svn.osgeo.org/postgis/branches/&last_minor_version;">
 		http://svn.osgeo.org/postgis/branches/&last_minor_version;
 	  </ulink>
 	  .
@@ -249,7 +249,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  </para>
 	  <para>This section includes general compilation instructions, if you are compiling for Windows etc
 	  	or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile/install guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
-	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink></para>
+	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink>.</para>
 	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="http://www.postgis.org/download/windows/">PostGIS Windows download site</ulink>
 	  We also have <ulink url="http://www.postgis.org/download/windows/experimental.php">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
 	  use these to experiment with the in progress releases of PostGIS</para>
