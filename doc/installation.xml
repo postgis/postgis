@@ -99,12 +99,12 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 
 	  <listitem>
 		<para>
-		  GEOS geometry library, version 3.2.2 or greater, but GEOS 3.3.2+ is recommended.  Without GEOS 3.3,
-			you will be missing some major enhancements with handling of topological exceptions and improvements to geometry validation and
+		  GEOS geometry library, version 3.3 or greater, but GEOS 3.4+ is recommended to take full advantage of all the new functions and features.  Without GEOS 3.4,
+			you will be missing some major enhancements such as ST_Triangles and long-running function interruption, and improvements to geometry validation and
 			making geometries valid such as ST_ValidDetail and ST_MakeValid.  GEOS 3.3.2+ is also required for topology support.  GEOS is available for download from
 		  <ulink url="http://trac.osgeo.org/geos/">
 			http://trac.osgeo.org/geos/
-		  </ulink> and 3.3+ is backward-compatible with older versions so fairly safe to upgrade.
+		  </ulink> and 3.4+ is backward-compatible with older versions so fairly safe to upgrade.
 		</para>
 	  </listitem>
 	  <listitem>
@@ -137,7 +137,7 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	<itemizedlist>
 	  <listitem>
 		<para>
-		  GTK (requires GTK+2.0) to compile the shp2pgsql-gui shape file loader.
+		  GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader.
 		  <ulink url="http://www.gtk.org/">
 			http://www.gtk.org/
 		  </ulink>
@@ -248,7 +248,8 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		bleeding edge versions or you are a package maintainer.
 	  </para>
 	  <para>This section includes general compilation instructions, if you are compiling for Windows etc
-	  	or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile/install guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
+	  	or another OS, you may find additional more detailed help at <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiInstall">PostGIS User contributed compile guides</ulink> and <ulink url="http://trac.osgeo.org/postgis/wiki/DevWikiMain">PostGIS Dev Wiki</ulink>.</para>
+	  <para>Pre-Built Packages for various OS are listed in <ulink url="http://trac.osgeo.org/postgis/wiki/UsersWikiPackages">PostGIS Pre-built Packages</ulink></para>
 	  <para>If you are a windows user, you can get stable builds via Stackbuilder or <ulink url="http://www.postgis.org/download/windows/">PostGIS Windows download site</ulink>
 	  We also have <ulink url="http://www.postgis.org/download/windows/experimental.php">very bleeding-edge windows experimental builds</ulink> that are built usually once or twice a week or whenever anything exciting happens.  You can
 	  use these to experiment with the in progress releases of PostGIS</para>
