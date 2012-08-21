@@ -532,7 +532,7 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 		{
 			double d;
 			GEOGRAPHIC_POINT close1, close2;
-			LWDEBUGF(4, "testing pair [%d], [%d]", n1->edge_num, n2->edge_num);		
+			LWDEBUGF(4, "testing leaf pair [%d], [%d]", n1->edge_num, n2->edge_num);		
 			/* One of the nodes is a point */
 			if ( n1->p1 == n1->p2 || n2->p1 == n2->p2 )
 			{
@@ -571,11 +571,21 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 			else
 			{
 				GEOGRAPHIC_EDGE e1, e2;
+				GEOGRAPHIC_POINT g1;
 				geographic_point_init(n1->p1->x, n1->p1->y, &(e1.start));
 				geographic_point_init(n1->p2->x, n1->p2->y, &(e1.end));
 				geographic_point_init(n2->p1->x, n2->p1->y, &(e2.start));
 				geographic_point_init(n2->p2->x, n2->p2->y, &(e2.end));
-				d = edge_distance_to_edge(&e1, &e2, &close1, &close2);
+				if ( edge_intersection(&e1, &e2, &g1) )
+				{
+					d = 0.0;
+					close1 = close2 = g1;
+				}
+				else
+				{
+					d = edge_distance_to_edge(&e1, &e2, &close1, &close2);
+				}
+				LWDEBUGF(4, "edge_distance_to_edge returned %g", d);		
 			}
 			if ( d < *min_dist )
 			{
