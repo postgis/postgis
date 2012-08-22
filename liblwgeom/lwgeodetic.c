@@ -1064,6 +1064,11 @@ double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *
 	return d_nearest;
 }
 
+/**
+* Calculate the distance between two edges.
+* IMPORTANT: this test does not check for edge intersection!!! (distance == 0) 
+* You have to check for intersection before calling this function.
+*/
 double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2)
 {
 	double d;
@@ -1572,6 +1577,172 @@ void gbox_pt_outside(const GBOX *gbox, POINT2D *pt_outside)
 	return;
 }
 
+
+/**
+* Create a new point array with no segment longer than the input segment length (expressed in radians!)
+* @param pa_in - input point array pointer
+* @param max_seg_length - maximum output segment length in radians
+*/
+static POINTARRAY* 
+ptarray_segmentize_sphere(const POINTARRAY *pa_in, double max_seg_length)
+{
+	POINTARRAY *pa_out;
+	int hasz = ptarray_has_z(pa_in);
+	int hasm = ptarray_has_m(pa_in);
+	int pa_in_offset = 0; /* input point offset */
+	POINT4D p1, p2, p;
+	POINT3D q1, q2, q, qn;
+	GEOGRAPHIC_POINT g1, g2, g;
+	double d;
+	
+	/* Just crap out on crazy input */
+	if ( ! pa_in )
+		lwerror("ptarray_segmentize_sphere: null input pointarray");
+	if ( max_seg_length <= 0.0 )	
+		lwerror("ptarray_segmentize_sphere: maximum segment length must be positive");
+
+	/* Empty starting array */
+	pa_out = ptarray_construct_empty(hasz, hasm, pa_in->npoints);
+
+	/* Add first point */
+	getPoint4d_p(pa_in, pa_in_offset, &p1);
+	ptarray_append_point(pa_out, &p1, LW_FALSE);
+	geographic_point_init(p1.x, p1.y, &g1);
+	pa_in_offset++;
+	
+	while ( pa_in_offset < pa_in->npoints )
+	{
+		getPoint4d_p(pa_in, pa_in_offset, &p2);
+		geographic_point_init(p2.x, p2.y, &g2);
+		
+		/* Skip duplicate points (except in case of 2-point lines!) */
+		if ( (pa_in->npoints > 2) && p4d_same(&p1, &p2) )
+			continue;
+
+		/* How long is this edge? */
+		d = sphere_distance(&g1, &g2);
+		
+		/* We need to segmentize this edge */
+		if ( d > max_seg_length )
+		{
+			int nsegs = 1 + d / max_seg_length;
+			int i;
+			double dx, dy, dz, dzz = 0, dmm = 0;
+			
+			geog2cart(&g1, &q1);
+			geog2cart(&g2, &q2);
+			
+			dx = (q2.x - q1.x) / nsegs;
+			dy = (q2.y - q1.y) / nsegs;
+			dz = (q2.z - q1.z) / nsegs;
+			
+			/* The independent Z/M values on the ptarray */
+			if ( hasz ) dzz = (p2.z - p1.z) / nsegs;
+			if ( hasm ) dmm = (p2.m - p1.m) / nsegs;
+			
+			q = q1;
+			p = p1;
+			
+			for ( i = 0; i < nsegs - 1; i++ )
+			{
+				/* Move one increment forwards */
+				q.x += dx; q.y += dy; q.z += dz;
+				qn = q;
+				normalize(&qn);
+				
+				/* Back to spherical coordinates */
+				cart2geog(&qn, &g);
+				/* Back to lon/lat */
+				p.x = rad2deg(g.lon);
+				p.y = rad2deg(g.lat);
+				if ( hasz )
+					p.z += dzz;
+				if ( hasm )
+					p.m += dmm;
+				ptarray_append_point(pa_out, &p, LW_FALSE);
+			}
+			
+			ptarray_append_point(pa_out, &p2, LW_FALSE);
+		}
+		/* This edge is already short enough */
+		else
+		{
+			ptarray_append_point(pa_out, &p2, (pa_in->npoints==2)?LW_TRUE:LW_FALSE);
+		}
+
+		/* Move one offset forward */
+		p1 = p2;
+		g1 = g2;
+		pa_in_offset++;
+	}
+	
+	return pa_out;	
+}
+
+/**
+* Create a new, densified geometry where no segment is longer than max_seg_length.
+* Input geometry is not altered, output geometry must be freed by caller.
+* @param lwg_in = input geometry
+* @param max_seg_length = maximum segment length in radians
+*/
+LWGEOM* 
+lwgeom_segmentize_sphere(const LWGEOM *lwg_in, double max_seg_length)
+{
+	POINTARRAY *pa_out;
+	LWLINE *lwline;
+	LWPOLY *lwpoly_in, *lwpoly_out;
+	LWCOLLECTION *lwcol_in, *lwcol_out;
+	int i;
+	
+	/* Reflect NULL */
+	if ( ! lwg_in )
+		return NULL;
+		
+	/* Clone empty */
+	if ( lwgeom_is_empty(lwg_in) )
+		return lwgeom_clone(lwg_in);
+	
+	switch (lwg_in->type)
+	{
+	case MULTIPOINTTYPE:
+	case POINTTYPE:
+		return lwgeom_clone_deep(lwg_in);
+		break;
+	case LINETYPE:
+		lwline = lwgeom_as_lwline(lwg_in);
+		pa_out = ptarray_segmentize_sphere(lwline->points, max_seg_length);
+		return lwline_as_lwgeom(lwline_construct(lwg_in->srid, NULL, pa_out));
+		break;
+	case POLYGONTYPE:
+		lwpoly_in = lwgeom_as_lwpoly(lwg_in);
+		lwpoly_out = lwpoly_construct_empty(lwg_in->srid, lwgeom_has_z(lwg_in), lwgeom_has_m(lwg_in));
+		for ( i = 0; i < lwpoly_in->nrings; i++ )
+		{
+			pa_out = ptarray_segmentize_sphere(lwpoly_in->rings[i], max_seg_length);
+			lwpoly_add_ring(lwpoly_out, pa_out);
+		}
+		return lwpoly_as_lwgeom(lwpoly_out);
+		break;
+	case MULTILINETYPE:
+	case MULTIPOLYGONTYPE:
+	case COLLECTIONTYPE:
+		lwcol_in = lwgeom_as_lwcollection(lwg_in);
+		lwcol_out = lwcollection_construct_empty(lwg_in->type, lwg_in->srid, lwgeom_has_z(lwg_in), lwgeom_has_m(lwg_in));
+		for ( i = 0; i < lwcol_in->ngeoms; i++ )
+		{
+			lwcollection_add_lwgeom(lwcol_out, lwgeom_segmentize_sphere(lwcol_in->geoms[i], max_seg_length));
+		}
+		return lwcollection_as_lwgeom(lwcol_out);
+		break;
+	default:
+		lwerror("lwgeom_segmentize_sphere: unsupported input geometry type: %d - %s",
+		        lwg_in->type, lwtype_name(lwg_in->type));
+		break;
+	}
+	
+	lwerror("lwgeom_segmentize_sphere got to the end of the function, should not happen");
+	return NULL;
+}
 
 
 /**
@@ -2337,7 +2508,7 @@ int lwgeom_covers_lwgeom_sphere(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 	if ( ! ( (type1 == POLYGONTYPE || type1 == MULTIPOLYGONTYPE || type1 == COLLECTIONTYPE) &&
 	         (type2 == POINTTYPE || type2 == MULTIPOINTTYPE || type2 == COLLECTIONTYPE) ) )
 	{
-		lwerror("lwgeom_covers_lwgeom_sphere: only POLYGON and POINT types are currently supported");
+		lwerror("lwgeom_covers_lwgeom_sphere: only POLYGON covers POINT tests are currently supported");
 		return LW_FALSE;
 	}
 

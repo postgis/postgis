@@ -41,6 +41,7 @@ Datum geography_bestsrid(PG_FUNCTION_ARGS);
 Datum geography_perimeter(PG_FUNCTION_ARGS);
 Datum geography_project(PG_FUNCTION_ARGS);
 Datum geography_azimuth(PG_FUNCTION_ARGS);
+Datum geography_segmentize(PG_FUNCTION_ARGS);
 
 /*
 ** geography_distance_uncached(GSERIALIZED *g1, GSERIALIZED *g2, double tolerance, boolean use_spheroid)
@@ -952,6 +953,48 @@ Datum geography_azimuth(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_FLOAT8(azimuth);
+}
+
+
+
+/*
+** geography_segmentize(GSERIALIZED *g1, double max_seg_length)
+** returns densified geometry with no segment longer than max
+*/
+PG_FUNCTION_INFO_V1(geography_segmentize);
+Datum geography_segmentize(PG_FUNCTION_ARGS)
+{
+	LWGEOM *lwgeom1 = NULL;
+	LWGEOM *lwgeom2 = NULL;
+	GSERIALIZED *g1 = NULL;
+	GSERIALIZED *g2 = NULL;
+	double max_seg_length;
+	uint32_t type1;
+
+	/* Get our geometry object loaded into memory. */
+	g1 = (GSERIALIZED*)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+    type1 = gserialized_get_type(g1);
+
+	/* Convert max_seg_length from metric units to radians */
+	max_seg_length = PG_GETARG_FLOAT8(1) / WGS84_RADIUS;
+
+	/* We can't densify points or points, reflect them back */
+    if ( type1 == POINTTYPE || type1 == MULTIPOINTTYPE || gserialized_is_empty(g1) )
+		PG_RETURN_POINTER(g1);
+
+	/* Deserialize */
+	lwgeom1 = lwgeom_from_gserialized(g1);
+
+	/* Calculate the densified geometry */
+	lwgeom2 = lwgeom_segmentize_sphere(lwgeom1, max_seg_length);
+	g2 = geography_serialize(lwgeom2);
+	
+	/* Clean up */
+	lwgeom_free(lwgeom1);
+	lwgeom_free(lwgeom2);
+	PG_FREE_IF_COPY(g1, 0);
+
+	PG_RETURN_POINTER(g2);
 }
 
 

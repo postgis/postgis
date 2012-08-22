@@ -8,6 +8,7 @@ PostGIS 2.1.0
 
 * New Features *
 
+  - ST_Segmentize(geography) (Paul Ramsey / OpenGeo)
   - ST_DelaunayTriangles (Sandro Santilli / Vizzuality)
   - ST_NearestValue, ST_Neighborhood (Bborie Park / UC Davis)
   - ST_PixelAsPoint, ST_PixelAsPoints (Bborie Park / UC Davis)

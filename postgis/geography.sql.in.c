@@ -683,6 +683,13 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(text, text)
 	$$ SELECT ST_CoveredBy($1::geometry, $2::geometry);  $$
 	LANGUAGE 'sql' IMMUTABLE ;
 
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_Segmentize(geog geography, max_segment_length float8)
+	RETURNS geography
+	AS 'MODULE_PATHNAME','geography_segmentize'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 100;
+
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
 	RETURNS boolean

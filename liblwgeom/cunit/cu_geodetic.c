@@ -1137,6 +1137,26 @@ static void test_vector_rotate(void)
 	CU_ASSERT_DOUBLE_EQUAL(n.x, 1.0, 0.00000001);	
 }
 
+static void test_lwgeom_segmentize_sphere(void)
+{
+	LWGEOM *lwg1, *lwg2;
+	LWLINE *lwl;
+	double max = 100000.0 / WGS84_RADIUS;
+	//char *wkt;
+
+	/* Simple case */
+	lwg1 = lwgeom_from_wkt("LINESTRING(0 20, 5 20)", LW_PARSER_CHECK_NONE);
+	lwg2 = lwgeom_segmentize_sphere(lwg1, max);
+	lwl = (LWLINE*)lwg2;
+	//wkt = lwgeom_to_ewkt(lwg2);
+	CU_ASSERT_EQUAL(lwl->points->npoints, 7);
+	lwgeom_free(lwg1);
+	lwgeom_free(lwg2);
+	//lwfree(wkt);
+	
+	return;
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -1161,6 +1181,7 @@ CU_TestInfo geodetic_tests[] =
 	PG_TEST(test_gbox_utils),
 	PG_TEST(test_vector_angle),
 	PG_TEST(test_vector_rotate),
+	PG_TEST(test_lwgeom_segmentize_sphere),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo geodetic_suite = {"Geodetic Suite",  NULL,  NULL, geodetic_tests};
