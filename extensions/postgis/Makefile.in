@@ -83,7 +83,7 @@ sql_bits/rtpostgis_upgrade_20_minor.sql: ../../raster/rt_pg/rtpostgis_upgrade_20
 # 	 	 $< > $@
 #don't drop casts just yet since we don't have provision to remove from extension yet
 #need to also drop temeporary functions from extenions since it gets auto-added
-sql_bits/postgis_upgrade_minor.sql: ../../postgis/postgis_upgrade_20_minor.sql 
+sql_bits/postgis_upgrade_20_21.sql: ../../postgis/postgis_upgrade_20_21.sql 
 		 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' \
 		 -e '/^\(DROP\|CREATE\) \(CAST\).*;/d' \
 		 -e '/^\(DROP\|CREATE\) \(CAST\)/,/\;/d' \
@@ -100,7 +100,7 @@ sql_bits/raster_comments.sql: ../../doc/raster_comments.sql
 #postgis_raster_upgrade_minor.sql is the one that contains both postgis AND raster
 #TODO: come up with a better name
 #TODO: what about postgis_drop_after.sql ? where does it fit ??
-sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql sql_bits/postgis_upgrade_minor.sql sql_bits/rtpostgis_upgrade_20_minor.sql sql_bits/mark_editable_objects.sql.in ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
+sql_bits/postgis_raster_upgrade_minor.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in ../../postgis/postgis_drop_before.sql sql_bits/postgis_upgrade_20_21.sql sql_bits/rtpostgis_upgrade_20_minor.sql sql_bits/mark_editable_objects.sql.in ../../doc/raster_comments.sql ../../doc/postgis_comments.sql ../postgis_extension_helper_uninstall.sql
 	cat $^ > $@
 
 # sql_bits/rtpostgis--unpackaged.sql:  ../../raster/rt_pg/rtpostgis.sql	 
