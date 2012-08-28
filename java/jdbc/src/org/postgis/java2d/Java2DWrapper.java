@@ -30,7 +30,9 @@ import org.postgresql.PGConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Java2DWrapper
@@ -132,7 +134,6 @@ public class Java2DWrapper extends Driver {
      * 
      * @return the drivers major version number
      */
-
     public int getMajorVersion() {
         return super.getMajorVersion();
     }
@@ -151,5 +152,9 @@ public class Java2DWrapper extends Driver {
      */
     public static String getVersion() {
         return "Java2DWrapper " + REVISION + ", wrapping " + Driver.getVersion();
+    }
+
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
