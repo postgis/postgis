@@ -26,6 +26,7 @@ package org.postgis;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -317,5 +318,9 @@ public class DriverWrapper extends Driver {
             PGConnection pgconn = (PGConnection) conn;
             pgconn.addDataType("geometry", org.postgis.PGgeometryLW.class);
         }
+    }
+
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
