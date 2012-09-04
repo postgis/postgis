@@ -237,7 +237,7 @@ addDropShadow(int layerNumber)
 	char str[512];
 	sprintf(
 	    str,
-	    "convert tmp%d.png -gravity center \\( +clone -background navy -shadow 100x3+4+4 \\) +swap -background none -flatten tmp%d.png",
+	    "convert tmp%d.png -gravity center ( +clone -background navy -shadow 100x3+4+4 ) +swap -background none -flatten tmp%d.png",
 	    layerNumber, layerNumber);
 	LWDEBUGF(4, "%s", str);
 	system(str);
@@ -256,7 +256,7 @@ addHighlight(int layerNumber)
 	char str[512];
 	sprintf(
 	    str,
-	    "convert tmp%d.png \\( +clone -channel A -separate +channel -negate -background black -virtual-pixel background -blur 0x3 -shade 120x55 -contrast-stretch 0%% +sigmoidal-contrast 7x50%% -fill grey50 -colorize 10%% +clone +swap -compose overlay -composite \\) -compose In -composite tmp%d.png",
+	    "convert tmp%d.png ( +clone -channel A -separate +channel -negate -background black -virtual-pixel background -blur 0x3 -shade 120x55 -contrast-stretch 0%% +sigmoidal-contrast 7x50%% -fill grey50 -colorize 10%% +clone +swap -compose overlay -composite ) -compose In -composite tmp%d.png",
 	    layerNumber, layerNumber);
 	LWDEBUGF(4, "%s", str);
 	system(str);
