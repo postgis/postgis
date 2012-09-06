@@ -2983,22 +2983,29 @@ LWGEOM2GEOS(LWGEOM *lwgeom)
 
 	case POLYGONTYPE:
 		lwpoly = (LWPOLY *)lwgeom;
-		sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
-		shell = GEOSGeom_createLinearRing(sq);
-		if ( ! shell ) return NULL;
-		/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */
-		ngeoms = lwpoly->nrings-1;
-		geoms = malloc(sizeof(GEOSGeom)*ngeoms);
-		for (i=1; i<lwpoly->nrings; ++i)
+		if ( lwpoly->nrings > 0 )
 		{
-			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
-			geoms[i-1] = GEOSGeom_createLinearRing(sq);
-			if ( ! geoms[i-1] ) return NULL;
-			/*lwerror("LWGEOM2GEOS: exception during polygon hole conversion"); */
+			sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[0]);
+			shell = GEOSGeom_createLinearRing(sq);
+			if ( ! shell ) return NULL;
+			/*lwerror("LWGEOM2GEOS: exception during polygon shell conversion"); */
+			ngeoms = lwpoly->nrings-1;
+			geoms = malloc(sizeof(GEOSGeom)*ngeoms);
+			for (i=1; i<lwpoly->nrings; ++i)
+			{
+				sq = ptarray_to_GEOSCoordSeq(lwpoly->rings[i]);
+				geoms[i-1] = GEOSGeom_createLinearRing(sq);
+				if ( ! geoms[i-1] ) return NULL;
+				/*lwerror("LWGEOM2GEOS: exception during polygon hole conversion"); */
+			}
+			g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
+			if ( ! g ) return NULL;
+			free(geoms);
 		}
-		g = GEOSGeom_createPolygon(shell, geoms, ngeoms);
-		if ( ! g ) return NULL;
-		free(geoms);
+		else
+		{
+			g = GEOSGeom_createCollection(GEOS_GEOMETRYCOLLECTION, NULL, 0);
+		}		
 		break;
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:

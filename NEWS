@@ -6,6 +6,7 @@ PostGIS 1.5.6
  - Bug Fixes
    - #547, ST_Contains memory problems, the remake 
    - #1957, ST_Distance to a one-point LineString returns NULL
+   - #1953, Segfault on GEOS calls with empty polygon
 
 
 PostGIS 1.5.5
