@@ -5,7 +5,7 @@ YYYY/MM/DD
    filed since the 1.4.2 release.
 
  - Bug fixes
-
+   - #1953, Segfault on GEOS calls with empty polygon
 
 
 
