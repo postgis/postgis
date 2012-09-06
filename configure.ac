@@ -380,15 +380,9 @@ PGSQL_LIBDIR=`$PGCONFIG --libdir`
 PGSQL_SHAREDIR=`$PGCONFIG --sharedir`
 
 AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
-dnl Ensure that we are using PostgreSQL >= 8.3
-if test ! "$PGSQL_MAJOR_VERSION" -ge 8; then
-	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 8.3])
-else
-	if test "$PGSQL_MAJOR_VERSION" -eq 8; then
-		if test ! "$PGSQL_MINOR_VERSION" -ge 3; then
-			AC_MSG_ERROR([PostGIS requires PostgreSQL >= 8.3])
-		fi	
-	fi
+dnl Ensure that we are using PostgreSQL >= 9.0
+if test ! "$PGSQL_MAJOR_VERSION" -ge 9; then
+	AC_MSG_ERROR([PostGIS requires PostgreSQL >= 9.0])
 fi	
 
 dnl Temporary hack until minimum PostgreSQL version is 9.0:
