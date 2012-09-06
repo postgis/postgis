@@ -5,6 +5,7 @@ PostGIS 1.5.6
 
  - Bug Fixes
    - #547, ST_Contains memory problems, the remake 
+   - #1957, ST_Distance to a one-point LineString returns NULL
 
 
 PostGIS 1.5.5

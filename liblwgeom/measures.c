@@ -657,7 +657,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
  * Returns minimum distance between point and pointarray
  */
 int
-lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
+lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa, DISTPTS *dl)
 {
 	int t;
 	POINT2D	start, end;
@@ -666,6 +666,8 @@ lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
 	LWDEBUG(2, "lw_dist2d_pt_ptarray is called");
 
 	getPoint2d_p(pa, 0, &start);
+	
+	if ( !lw_dist2d_pt_pt(p, &start, dl) ) return LW_FALSE;
 
 	for (t=1; t<pa->npoints; t++)
 	{
