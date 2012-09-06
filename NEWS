@@ -46,6 +46,7 @@ PostGIS 2.1.0
   - #1932, fix raster2pgsql of syntax for index tablespaces
   - #1939, remove custom data types: summarystats, histogram, quantile, valuecount
   - #1951, remove crash on zero-length linestrings
+  - #1981, cleanup of unused variables causing warnings with gcc 4.6+
 
 PostGIS 2.0.1
 2012/06/22
