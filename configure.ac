@@ -569,10 +569,10 @@ GEOS_FULL_VERSION=`$GEOSCONFIG --version`
 POSTGIS_GEOS_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION"
 GEOS_NUMERIC_VERSION="$GEOS_MAJOR_VERSION$GEOS_MINOR_VERSION$GEOS_PATCH_VERSION"
 
-dnl Ensure that we are using GEOS >= 3.1.0
+dnl Ensure that we are using GEOS >= 3.3.0
 AC_MSG_RESULT([checking GEOS version... $GEOS_FULL_VERSION])
-if test ! "$GEOS_NUMERIC_VERSION" -ge 311; then
-	AC_MSG_ERROR([PostGIS requires GEOS >= 3.1.1])
+if test ! "$GEOS_NUMERIC_VERSION" -ge 330; then
+	AC_MSG_ERROR([PostGIS requires GEOS >= 3.3.0])
 fi
 
 dnl Extract the linker and include flags 

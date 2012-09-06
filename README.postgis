@@ -46,12 +46,11 @@ this to work.
 
     http://trac.osgeo.org/proj/
 
-* GEOS (Required, Version 3.2.2 or higher):
+* GEOS (Required, Version 3.3.0 or higher):
 
   The GEOS library provides support for exact topological tests such as
   ST_Touches(), ST_Contains(), ST_Disjoint() and spatial operations such as
-  ST_Intersection(), ST_Union() and ST_Buffer(). GEOS 3.3.2 or higher is
-  recommended.
+  ST_Intersection(), ST_Union() and ST_Buffer(). GEOS 3.4+ is recommended.
 
     http://trac.osgeo.org/geos/
 
