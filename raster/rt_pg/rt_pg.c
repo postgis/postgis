@@ -2541,7 +2541,6 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	char typalign;
 	int ndims = 1;
 	int *dims;
-	int *lbs;
 	int num = 0;
 
 	int ul[2] = {0};
@@ -2650,7 +2649,6 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 
 	ndims = ARR_NDIM(array);
 	dims = ARR_DIMS(array);
-	lbs = ARR_LBOUND(array);
 	POSTGIS_RT_DEBUGF(4, "ndims = %d", ndims);
 
 	if (ndims < 1 || ndims > 2) {
@@ -2763,7 +2761,6 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 
 		ndims = ARR_NDIM(array);
 		dims = ARR_DIMS(array);
-		lbs = ARR_LBOUND(array);
 		POSTGIS_RT_DEBUGF(4, "ndims = %d", ndims);
 
 		if (ndims < 1 || ndims > 2) {
@@ -3325,9 +3322,6 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 		int16 typlen;
 		bool typbyval;
 		char typalign;
-		int ndims = 1;
-		int *dims;
-		int *lbs;
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
@@ -3386,10 +3380,6 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 				SRF_RETURN_DONE(funcctx);
 				break;
 		}
-
-		ndims = ARR_NDIM(array);
-		dims = ARR_DIMS(array);
-		lbs = ARR_LBOUND(array);
 
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 			&nulls, &n);
@@ -4020,9 +4010,6 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 	int16 typlen;
 	bool typbyval;
 	char typalign;
-	int ndims = 1;
-	int *dims;
-	int *lbs;
 	int n = 0;
 
 	HeapTupleHeader tup;
@@ -4049,10 +4036,6 @@ Datum RASTER_addBand(PG_FUNCTION_ARGS)
 	array = PG_GETARG_ARRAYTYPE_P(1);
 	etype = ARR_ELEMTYPE(array);
 	get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
-
-	ndims = ARR_NDIM(array);
-	dims = ARR_DIMS(array);
-	lbs = ARR_LBOUND(array);
 
 	deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 		&nulls, &n);
@@ -4242,9 +4225,6 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	int16 typlen;
 	bool typbyval;
 	char typalign;
-	int ndims = 1;
-	int *dims;
-	int *lbs;
 	int n = 0;
 
 	int rtn = 0;
@@ -4321,10 +4301,6 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	array = PG_GETARG_ARRAYTYPE_P(1);
 	etype = ARR_ELEMTYPE(array);
 	get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
-
-	ndims = ARR_NDIM(array);
-	dims = ARR_DIMS(array);
-	lbs = ARR_LBOUND(array);
 
 	deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 		&nulls, &n);
@@ -5701,9 +5677,6 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 	int16 typlen;
 	bool typbyval;
 	char typalign;
-	int ndims = 1;
-	int *dims;
-	int *lbs;
 
 	uint32_t numBands;
 	uint32_t *bandNums;
@@ -5748,10 +5721,6 @@ Datum RASTER_band(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 				break;
 		}
-
-		ndims = ARR_NDIM(array);
-		dims = ARR_DIMS(array);
-		lbs = ARR_LBOUND(array);
 
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 			&nulls, &n);
@@ -6285,9 +6254,6 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 		int16 typlen;
 		bool typbyval;
 		char typalign;
-		int ndims = 1;
-		int *dims;
-		int *lbs;
 
 		POSTGIS_RT_DEBUG(3, "RASTER_histogram: Starting");
 
@@ -6368,10 +6334,6 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
-
-			ndims = ARR_NDIM(array);
-			dims = ARR_DIMS(array);
-			lbs = ARR_LBOUND(array);
 
 			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 				&nulls, &n);
@@ -6586,9 +6548,6 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 		int16 typlen;
 		bool typbyval;
 		char typalign;
-		int ndims = 1;
-		int *dims;
-		int *lbs;
 
 		POSTGIS_RT_DEBUG(3, "RASTER_histogramCoverage: first call of function");
 
@@ -6672,10 +6631,6 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
-
-			ndims = ARR_NDIM(array);
-			dims = ARR_DIMS(array);
-			lbs = ARR_LBOUND(array);
 
 			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 				&nulls, &n);
@@ -7101,9 +7056,6 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 		int16 typlen;
 		bool typbyval;
 		char typalign;
-		int ndims = 1;
-		int *dims;
-		int *lbs;
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
@@ -7176,10 +7128,6 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
-
-			ndims = ARR_NDIM(array);
-			dims = ARR_DIMS(array);
-			lbs = ARR_LBOUND(array);
 
 			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 				&nulls, &n);
@@ -7378,9 +7326,6 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 		int16 typlen;
 		bool typbyval;
 		char typalign;
-		int ndims = 1;
-		int *dims;
-		int *lbs;
 
 		POSTGIS_RT_DEBUG(3, "RASTER_quantileCoverage: first call of function");
 
@@ -7458,10 +7403,6 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
-
-			ndims = ARR_NDIM(array);
-			dims = ARR_DIMS(array);
-			lbs = ARR_LBOUND(array);
 
 			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 				&nulls, &n);
@@ -7794,9 +7735,6 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 		int16 typlen;
 		bool typbyval;
 		char typalign;
-		int ndims = 1;
-		int *dims;
-		int *lbs;
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
@@ -7853,10 +7791,6 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
-
-			ndims = ARR_NDIM(array);
-			dims = ARR_DIMS(array);
-			lbs = ARR_LBOUND(array);
 
 			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 				&nulls, &n);
@@ -8033,9 +7967,6 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 		int16 typlen;
 		bool typbyval;
 		char typalign;
-		int ndims = 1;
-		int *dims;
-		int *lbs;
 
 		/* create a function context for cross-call persistence */
 		funcctx = SRF_FIRSTCALL_INIT();
@@ -8097,10 +8028,6 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 					SRF_RETURN_DONE(funcctx);
 					break;
 			}
-
-			ndims = ARR_NDIM(array);
-			dims = ARR_DIMS(array);
-			lbs = ARR_LBOUND(array);
 
 			deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 				&nulls, &n);
@@ -8434,9 +8361,6 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	int16 typlen;
 	bool typbyval;
 	char typalign;
-	int ndims = 1;
-	int *dims;
-	int *lbs;
 	int n = 0;
 
 	int i = 0;
@@ -8493,10 +8417,6 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	array = PG_GETARG_ARRAYTYPE_P(1);
 	etype = ARR_ELEMTYPE(array);
 	get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
-
-	ndims = ARR_NDIM(array);
-	dims = ARR_DIMS(array);
-	lbs = ARR_LBOUND(array);
 
 	deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 		&nulls, &n);
@@ -8977,9 +8897,6 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 	int16 typlen;
 	bool typbyval;
 	char typalign;
-	int ndims = 1;
-	int *dims;
-	int *lbs;
 	int n = 0;
 	int i = 0;
 	int j = 0;
@@ -9033,10 +8950,6 @@ Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 				break;
 		}
-
-		ndims = ARR_NDIM(array);
-		dims = ARR_DIMS(array);
-		lbs = ARR_LBOUND(array);
 
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 			&nulls, &n);
@@ -9293,9 +9206,6 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 	int16 typlen;
 	bool typbyval;
 	char typalign;
-	int ndims = 1;
-	int *dims;
-	int *lbs;
 	int n = 0;
 	int i = 0;
 	int j = 0;
@@ -9399,10 +9309,6 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				break;
 		}
 
-		ndims = ARR_NDIM(array);
-		dims = ARR_DIMS(array);
-		lbs = ARR_LBOUND(array);
-
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 			&nulls, &n);
 
@@ -9485,10 +9391,6 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				break;
 		}
 
-		ndims = ARR_NDIM(array);
-		dims = ARR_DIMS(array);
-		lbs = ARR_LBOUND(array);
-
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 			&nulls, &n);
 
@@ -9552,10 +9454,6 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 				PG_RETURN_NULL();
 				break;
 		}
-
-		ndims = ARR_NDIM(array);
-		dims = ARR_DIMS(array);
-		lbs = ARR_LBOUND(array);
 
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 			&nulls, &n);
@@ -10240,9 +10138,6 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		int16 typlen;
 		bool typbyval;
 		char typalign;
-		int ndims = 1;
-		int *dims;
-		int *lbs;
 		int i = 0;
 		int j = 0;
 		int n = 0;
@@ -10303,10 +10198,6 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 				SRF_RETURN_DONE(funcctx);
 				break;
 		}
-
-		ndims = ARR_NDIM(array);
-		dims = ARR_DIMS(array);
-		lbs = ARR_LBOUND(array);
 
 		deconstruct_array(array, etype, typlen, typbyval, typalign, &e,
 			&nulls, &n);
