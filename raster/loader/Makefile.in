@@ -10,10 +10,9 @@
 #
 #############################################################################
 
-# Set CFLAGS afer PGXS, otherwise it will get overwritten with the PGXS
+# Set CFLAGS after PGXS, otherwise it will get overwritten with the PGXS
 # version which is not what we want. 
 CC=@CC@
-CFLAGS=@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 top_builddir = @top_builddir@
 SHELL = @SHELL@
 INSTALL = $(SHELL) ../../install-sh
@@ -31,7 +30,6 @@ LIBLWGEOM_LDFLAGS=../../liblwgeom/liblwgeom.la
 LIBLWGEOM_CFLAGS=-I../../liblwgeom
 LIBGDAL_CFLAGS=@LIBGDAL_CFLAGS@
 LIBGDAL_LDFLAGS=@LIBGDAL_LDFLAGS@
-PROJ_CFLAGS=@PROJ_CPPFLAGS@
 GEOS_CFLAGS=@GEOS_CPPFLAGS@
 GEOS_LDFLAGS=@GEOS_LDFLAGS@ -lgeos_c
 
@@ -50,7 +48,6 @@ CFLAGS = \
 	@CFLAGS@ @PICFLAGS@ @WARNFLAGS@ \
 	$(RTCORE_CFLAGS) \
 	$(LIBLWGEOM_CFLAGS) \
-	$(PROJ_CFLAGS) \
 	$(LIBGDAL_CFLAGS) \
 	$(GEOS_CFLAGS) \
 	$(GETTEXT_CFLAGS) \
@@ -58,7 +55,6 @@ CFLAGS = \
 
 LDFLAGS = \
 	@LDFLAGS@ \
-	$(RTCORE_LDFLAGS) \
 	$(LIBLWGEOM_LDFLAGS) \
 	$(LIBGDAL_LDFLAGS) \
 	$(GEOS_LDFLAGS) \
@@ -71,7 +67,7 @@ all: $(RASTER2PGSQL)
 raster2pgsql.o: raster2pgsql.c
 	$(CC) $(CFLAGS) -c $<
 
-$(RASTER2PGSQL): raster2pgsql.o $(RT_CORE)/librtcore.a
+$(RASTER2PGSQL): $(RT_CORE)/librtcore.a raster2pgsql.o
 	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 installdir:
