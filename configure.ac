@@ -677,9 +677,9 @@ CPPFLAGS="$CPPFLAGS_SAVE"
 AC_SUBST([PROJ_CPPFLAGS])
 AC_SUBST([PROJ_LDFLAGS])
 
-dnl Ensure that we are using PROJ >= 4.5.0 (requires pj_set_searchpath) 
-if test ! "$POSTGIS_PROJ_VERSION" -ge 45; then
-	AC_MSG_ERROR([PostGIS requires PROJ >= 4.5.0])
+dnl Ensure that we are using PROJ >= 4.6.0 (requires pj_set_searchpath) 
+if test ! "$POSTGIS_PROJ_VERSION" -ge 46; then
+	AC_MSG_ERROR([PostGIS requires PROJ >= 4.6.0])
 fi
 
 dnl Ensure we can link against libproj
