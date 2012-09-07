@@ -178,7 +178,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 		is_circle = LW_TRUE;
 	
 	/* Negative radius signals straight line, p1/p2/p3 are colinear */
-	if ( radius < 0.0 || p2_side == 0 )
+	if ( (radius < 0.0 || p2_side == 0) && ! is_circle )
 	    return NULL;
 		
 	/* The side of the p1/p3 line that p2 falls on dictates the sweep  
