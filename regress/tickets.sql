@@ -717,6 +717,8 @@ select st_astext(st_geomfromgml(
     </gml:interior>
     </gml:Polygon>'));
 
+-- #1978 --
+SELECT '#1978', round(ST_Length(ST_GeomFromText('CIRCULARSTRING(0 0,1 0,0 0)',0))::numeric,4);
 
 -- Clean up
 DELETE FROM spatial_ref_sys;

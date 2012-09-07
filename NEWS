@@ -10,6 +10,7 @@ PostGIS 2.0.2
   - #1936, ST_GeomFromGML on CurvePolygon causes server crash
   - #1955, ST_ModEdgeHeal and ST_NewEdgeHeal for doubly connected edges
   - #1957, ST_Distance to a one-point LineString returns NULL
+  - #1978, wrong answer when calculating length of a closed circular arc (circle)
   - #1981, Remove unused but set variables as found with gcc 4.6+
 
 PostGIS 2.0.1
