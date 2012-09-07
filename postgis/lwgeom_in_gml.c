@@ -1147,8 +1147,8 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		/* Polygon/exterior        -> GML 3.1.1 */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if  (strcmp((char *) xa->name, "outerBoundaryIs") &&
-		        strcmp((char *) xa->name, "exterior")) continue;
+		if (strcmp((char *) xa->name, "outerBoundaryIs") &&
+		    strcmp((char *) xa->name, "exterior")) continue;
 
 		for (xb = xa->children ; xb != NULL ; xb = xb->next)
 		{
@@ -1166,8 +1166,13 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 
 			if (srs.reverse_axis) ppa[0] = ptarray_flip_coordinates(ppa[0]);
 		}
+
 	}
 
+	/* Found an <exterior> or <outerBoundaryIs> but no rings?!? We're outa here! */
+	if ( ! ppa )
+		gml_lwerror("invalid GML representation", 43);	
+	
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{
 		/* Polygon/innerBoundaryIs -> GML 2.1.2 */

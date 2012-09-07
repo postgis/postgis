@@ -221,3 +221,4 @@ NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
 #1791|4.7
 ERROR:  ST_Segmentize: invalid max_distance 0 (must be >= 0)
 #1957|1
+ERROR:  invalid GML representation

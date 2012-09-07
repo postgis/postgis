@@ -7,6 +7,7 @@ PostGIS 2.0.2
   - #1891, Use LDFLAGS environment when building liblwgeom
   - #1900, Fix pgsql2shp for big-endian systems 
   - #1932, Fix raster2pgsql for invalid syntax for setting index tablespace
+  - #1936, ST_GeomFromGML on CurvePolygon causes server crash
   - #1955, ST_ModEdgeHeal and ST_NewEdgeHeal for doubly connected edges
   - #1957, ST_Distance to a one-point LineString returns NULL
   - #1981, Remove unused but set variables as found with gcc 4.6+
@@ -63,6 +64,7 @@ PostGIS 2.0.1
   - #1883, Geocoder install fails trying to run 
            create_census_base_tables() (Brian Panulla)
   - #1870, ST_Intersects doc and behaviour are out of synch
+  - #1936, ST_GeomFromGML on CurveString GML crashes server
 
 * Enhancements *
 
