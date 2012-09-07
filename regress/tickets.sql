@@ -680,5 +680,8 @@ with inp as ( SELECT
 -- #1799 --
 SELECT '#1799', ST_Segmentize('LINESTRING(0 0, 10 0)'::geometry, 0);
 
+-- #1957 --
+SELECT '#1957', ST_Distance(ST_Makeline(ARRAY['POINT(1 0)'::geometry]), 'POINT(0 0)'::geometry);
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
