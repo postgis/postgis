@@ -44,6 +44,7 @@ PostGIS 2.1.0
   - #1875, ST_SummaryStats returns NULL for all parameters except count
            when count is zero
   - #1932, fix raster2pgsql of syntax for index tablespaces
+  - #1936, ST_GeomFromGML on CurvePolygon causes server crash
   - #1939, remove custom data types: summarystats, histogram, quantile, valuecount
   - #1951, remove crash on zero-length linestrings
   - #1957, ST_Distance to a one-point LineString returns NULL 

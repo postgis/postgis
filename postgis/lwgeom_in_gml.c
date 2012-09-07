@@ -1168,6 +1168,10 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		}
 	}
 
+	/* Found an <exterior> or <outerBoundaryIs> but no rings?!? We're outa here! */
+	if ( ! ppa )
+		gml_lwerror("invalid GML representation", 43);	
+
 	for (ring=1, xa = xnode->children ; xa != NULL ; xa = xa->next)
 	{
 		/* Polygon/innerBoundaryIs -> GML 2.1.2 */

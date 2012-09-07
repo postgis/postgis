@@ -680,6 +680,40 @@ with inp as ( SELECT
 -- #1799 --
 SELECT '#1799', ST_Segmentize('LINESTRING(0 0, 10 0)'::geometry, 0);
 
+-- #1936 --
+select st_astext(st_geomfromgml(
+    '<gml:Polygon xmlns:gml="http://www.opengis.net/gml/3.2" 
+    gml:id="HPA.15449990010" srsName="urn:ogc:def:crs:EPSG::4326" 
+    srsDimension="2">
+    <gml:exterior>
+    <gml:Ring>
+    <gml:curveMember>
+    <gml:LineString gml:id="HPA.15449990010.1">
+    <gml:posList>711540.35 1070163.61 711523.82 1070166.54 711521.30 1070164.14 711519.52 1070162.44 711518.57 1070164.62 712154.47 1070824.94</gml:posList>
+    </gml:LineString>
+    </gml:curveMember>
+    <gml:curveMember>
+    <gml:Curve gml:id="HPA.15449990010.2">
+    <gml:segments><gml:ArcString>
+    <gml:posList>712154.47 1070824.94 712154.98 1070826.04 712154.41 1070827.22</gml:posList>
+    </gml:ArcString>
+    </gml:segments>
+    </gml:Curve>
+    </gml:curveMember>
+    <gml:curveMember>
+    <gml:LineString gml:id="HPA.15449990010.3">
+    <gml:posList>712154.41 1070827.22 712160.31 1070837.07 712160.92 1070835.36 712207.89 1071007.95</gml:posList>
+    </gml:LineString>
+    </gml:curveMember>
+    <gml:curveMember>
+    <gml:Curve gml:id="HPA.15449990010.4"><gml:segments><gml:ArcString><gml:posList>712207.89 1071007.95 712207.48 1071005.59 712208.38 1071001.28</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:LineString gml:id="HPA.15449990010.5"><gml:posList>712208.38 1071001.28 712228.74 1070949.67 712233.98 1070936.15 712124.93 1070788.72</gml:posList></gml:LineString></gml:curveMember><gml:curveMember><gml:Curve gml:id="HPA.15449990010.6"><gml:segments><gml:ArcString><gml:posList>712124.93 1070788.72 712124.28 1070785.87 712124.63 1070783.38</gml:posList></gml:ArcString></gml:segments></gml:Curve></gml:curveMember><gml:curveMember><gml:LineString gml:id="HPA.15449990010.7"><gml:posList>712124.63 1070783.38 712141.04 1070764.12 712146.60 1070757.01 711540.35 1070163.61</gml:posList></gml:LineString></gml:curveMember></gml:Ring></gml:exterior>
+    <gml:interior>
+    <gml:LinearRing>
+    <gml:posList>713061.62 1070354.46 713053.59 1070335.12 713049.58 1070315.92 713049.65 1070298.33 713061.62 1070354.46</gml:posList>
+    </gml:LinearRing>
+    </gml:interior>
+    </gml:Polygon>'));
+
 -- #1957 --
 SELECT '#1957', ST_Distance(ST_Makeline(ARRAY['POINT(1 0)'::geometry]), 'POINT(0 0)'::geometry);
 
