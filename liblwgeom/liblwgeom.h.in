@@ -1378,6 +1378,12 @@ extern double lwgeom_distance_spheroid(const LWGEOM *lwgeom1, const LWGEOM *lwge
 extern LWPOINT* lwgeom_project_spheroid(const LWPOINT *r, const SPHEROID *spheroid, double distance, double azimuth);
 
 /**
+* Derive a new geometry with vertices added to ensure no vertex is more 
+* than max_seg_length (in radians) from any other vertex.
+*/
+extern LWGEOM* lwgeom_segmentize_sphere(const LWGEOM *lwg_in, double max_seg_length);
+
+/**
 * Calculate the bearing between two points on a spheroid.
 */
 extern double lwgeom_azumith_spheroid(const LWPOINT *r, const LWPOINT *s, const SPHEROID *spheroid);
