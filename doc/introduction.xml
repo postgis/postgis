@@ -37,17 +37,9 @@
 	  </varlistentry>
 	 
 	  <varlistentry>
-		<term>Chris Hodgson</term>
-
-		<listitem>
-		  <para>General development, site and buildbot maintenance, OSGeo incubation management</para>
-		</listitem>
-	  </varlistentry>
-	 
-	  <varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
-		  <para>Documentation, general user support on PostGIS newsgroup, windows production and experimental builds, 
+		  <para>Buildbot Maintenance, windows production and experimental builds, Documentation, general user support on PostGIS newsgroup,  
 		  X3D support, Tiger Geocoder Support, management functions,  and 
 		  smoke testing new functionality or major code changes.</para>
 		</listitem>
@@ -75,6 +67,12 @@
 	<title>Contributors Past and Present</title>
 
 	<variablelist>
+	  <varlistentry>
+		<term>Chris Hodgson</term>
+		<listitem>
+		  <para>Prior PSC Member. General development, site and buildbot maintenance, OSGeo incubation management</para>
+		</listitem>
+	  </varlistentry>
 	  <varlistentry>
 		<term>Kevin Neufeld</term>
 		<listitem>
