@@ -1010,15 +1010,15 @@ if test "x$with_raster" != "xno"; then
 		AC_CHECK_HEADERS(
 			[gdal.h ogr_api.h cpl_conv.h],
 			[],
-			[AC_MSG_ERROR([could not find headers include related to gdal])])
+			[AC_MSG_ERROR([could not find GDAL headers])])
 
 		dnl Ensure we can link against gdal
-		AC_SEARCH_LIBS([GDALAllRegister], [gdal], [], [AC_MSG_ERROR([could not find gdal])], [])
+		AC_SEARCH_LIBS([GDALAllRegister], [gdal], [], [AC_MSG_ERROR([could not find GDAL])], [])
 
 		LIBS="$LIBGDAL_LDFLAGS"
 
 		dnl Ensure we can link against ogr
-		AC_SEARCH_LIBS([OGRRegisterAll], [gdal], [], [AC_MSG_ERROR([could not find gdal])], [])
+		AC_SEARCH_LIBS([OGRRegisterAll], [gdal], [], [AC_MSG_ERROR([could not find OGR])], [])
 
 		LIBS="$LIBGDAL_LDFLAGS"
 
