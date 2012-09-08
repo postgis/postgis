@@ -4024,6 +4024,17 @@ GROUP BY (foo.geomval).val;
 						<paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
 					</funcprototype>
 
+					<funcprototype>
+						<funcdef>raster <function>ST_SetValues</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+						<paramdef><type>double precision[][] </type> <parameter>newvalueset</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>nosetvalue</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
+					</funcprototype>
+
 				  <funcprototype>
 						<funcdef>raster <function>ST_SetValues</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
@@ -4057,15 +4068,19 @@ GROUP BY (foo.geomval).val;
 				</para>
 
 				<para>
-					For variant 1, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates and the dimensions of the <varname>newvalueset</varname> array. <varname>noset</varname> can be used to prevent pixels with values present in <varname>newvalueset</varname> from being set (due to PostgreSQL not permitting ragged/jagged arrays). If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 1.
+					For Variant 1, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates and the dimensions of the <varname>newvalueset</varname> array. <varname>noset</varname> can be used to prevent pixels with values present in <varname>newvalueset</varname> from being set (due to PostgreSQL not permitting ragged/jagged arrays). If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 1.
 				</para>
 
 				<para>
-					For variant 2, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates, <varname>width</varname> and <varname>height</varname>. If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 2.
+					Variant 2 is like Variant 1 but with a simple double precision <varname>nosetvalue</varname> instead of a boolean <varname>noset</varname> array. Elements in <varname>newvalueset</varname> with the <varname>nosetvalue</varname> value with be skipped.  See example Variant 2.
 				</para>
 
 				<para>
-					Variant 3 is the same as Variant 2 with the exception that it assumes that the first band's pixels of <varname>rast</varname> will be set.
+					For Variant 3, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates, <varname>width</varname> and <varname>height</varname>. If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 3.
+				</para>
+
+				<para>
+					Variant 4 is the same as Variant 3 with the exception that it assumes that the first band's pixels of <varname>rast</varname> will be set.
 				</para>
 
 			</refsection>
@@ -4257,6 +4272,99 @@ ORDER BY 1, 2;
 
 			<refsection>
 				<title>Examples: Variant 2</title>
+
+				<programlisting>
+/*
+The ST_SetValues() does the following...
+
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 1 | 1 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |    =>    | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+*/
+SELECT
+	(poly).x,
+	(poly).y,
+	(poly).val
+FROM (
+SELECT
+	ST_PixelAsPolygons(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+				1, '8BUI', 1, 0
+			),
+			1, 1, 1, ARRAY[[-1, -1, -1], [-1, 9, 9], [-1, 9, 9]]::double precision[][], -1
+		)
+	) AS poly
+) foo
+ORDER BY 1, 2;
+
+ x | y | val 
+---+---+-----
+ 1 | 1 |   1
+ 1 | 2 |   1
+ 1 | 3 |   1
+ 2 | 1 |   1
+ 2 | 2 |   9
+ 2 | 3 |   9
+ 3 | 1 |   1
+ 3 | 2 |   9
+ 3 | 3 |   9
+				</programlisting>
+
+				<programlisting>
+/*
+This example is like the previous one.  Instead of nosetvalue = -1, nosetvalue = NULL
+
+The ST_SetValues() does the following...
+
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 1 | 1 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |    =>    | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+| 1 | 1 | 1 |          | 1 | 9 | 9 |
++ - + - + - +          + - + - + - +
+*/
+SELECT
+	(poly).x,
+	(poly).y,
+	(poly).val
+FROM (
+SELECT
+	ST_PixelAsPolygons(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0),
+				1, '8BUI', 1, 0
+			),
+			1, 1, 1, ARRAY[[NULL, NULL, NULL], [NULL, 9, 9], [NULL, 9, 9]]::double precision[][], NULL::double precision
+		)
+	) AS poly
+) foo
+ORDER BY 1, 2;
+
+ x | y | val 
+---+---+-----
+ 1 | 1 |   1
+ 1 | 2 |   1
+ 1 | 3 |   1
+ 2 | 1 |   1
+ 2 | 2 |   9
+ 2 | 3 |   9
+ 3 | 1 |   1
+ 3 | 2 |   9
+ 3 | 3 |   9
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 3</title>
 
 				<programlisting>
 /*
