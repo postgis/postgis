@@ -2903,6 +2903,19 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, pt geometry, newvalue float8
 -----------------------------------------------------------------------
 -- ST_SetValues (set one or more pixels to a one or more values)
 -----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_setvalues(
+	rast raster, nband integer,
+	x integer, y integer,
+	newvalueset double precision[][],
+	noset boolean[][] DEFAULT NULL,
+	hasnosetvalue boolean DEFAULT FALSE,
+	nosetvalue double precision DEFAULT NULL,
+	keepnodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesArray'
+	LANGUAGE 'c' IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION st_setvalues(
 	rast raster, nband integer,
 	x integer, y integer,
@@ -2911,8 +2924,19 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	keepnodata boolean DEFAULT FALSE
 )
 	RETURNS raster
-	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesArray'
-	LANGUAGE 'c' IMMUTABLE;
+	AS $$ SELECT _st_setvalues($1, $2, $3, $4, $5, $6, FALSE, NULL, $7) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_setvalues(
+	rast raster, nband integer,
+	x integer, y integer,
+	newvalueset double precision[][],
+	nosetvalue double precision,
+	keepnodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$ SELECT _st_setvalues($1, $2, $3, $4, $5, NULL, TRUE, $6, $7) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -- cannot be STRICT as newvalue can be NULL
 CREATE OR REPLACE FUNCTION st_setvalues(
@@ -2929,7 +2953,7 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 			RAISE EXCEPTION 'Values for width and height must be greater than zero';
 			RETURN NULL;
 		END IF;
-		RETURN st_setvalues($1, $2, $3, $4, array_fill($7, ARRAY[$6, $5]::int[]), NULL, $8);
+		RETURN _st_setvalues($1, $2, $3, $4, array_fill($7, ARRAY[$6, $5]::int[]), NULL, FALSE, NULL, $8);
 	END;
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE;
@@ -2949,7 +2973,7 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 			RAISE EXCEPTION 'Values for width and height must be greater than zero';
 			RETURN NULL;
 		END IF;
-		RETURN st_setvalues($1, 1, $2, $3, array_fill($6, ARRAY[$5, $4]::int[]), NULL, $7);
+		RETURN _st_setvalues($1, 1, $2, $3, array_fill($6, ARRAY[$5, $4]::int[]), NULL, FALSE, NULL, $7);
 	END;
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE;

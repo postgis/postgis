@@ -182,6 +182,36 @@ INSERT INTO raster_setvalues_out VALUES (
 	FROM raster_setvalues_rast
 ));
 
+INSERT INTO raster_setvalues_out VALUES (
+	31, (
+	SELECT ST_SetValues(
+		rast, 1, 1, 1,
+		ARRAY[-1, 31, -1]::double precision[],
+		-1::double precision
+	)
+	FROM raster_setvalues_rast
+));
+
+INSERT INTO raster_setvalues_out VALUES (
+	32, (
+	SELECT ST_SetValues(
+		rast, 1, 1, 1,
+		ARRAY[[-1, 32, -1], [32, -1, 32]]::double precision[],
+		-1::double precision
+	)
+	FROM raster_setvalues_rast
+));
+
+INSERT INTO raster_setvalues_out VALUES (
+	33, (
+	SELECT ST_SetValues(
+		rast, 1, 1, 1,
+		ARRAY[[NULL, 33, NULL], [33, NULL, 33]]::double precision[],
+		NULL::double precision
+	)
+	FROM raster_setvalues_rast
+));
+
 SELECT
 	rid,
 	(poly).x,

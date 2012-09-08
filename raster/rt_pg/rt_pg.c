@@ -2559,6 +2559,9 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	int hasnodata = FALSE;
 	double nodataval = 0;
 	bool keepnodata = FALSE;
+	bool hasnosetval = FALSE;
+	bool nosetvalisnull = FALSE;
+	double nosetval = 0;
 
 	int rtn = 0;
 	double val = 0;
@@ -2827,6 +2830,14 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		pfree(elements);
 		pfree(nulls);
 	}
+	/* hasnosetvalue and nosetvalue */
+	else if (!PG_ARGISNULL(6) & PG_GETARG_BOOL(6)) {
+		hasnosetval = TRUE;
+		if (PG_ARGISNULL(7))
+			nosetvalisnull = TRUE;
+		else
+			nosetval = PG_GETARG_FLOAT8(7);
+	}
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	for (i = 0; i < numpixval; i++) {
@@ -2842,8 +2853,8 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 #endif
 
 	/* keepnodata flag */
-	if (!PG_ARGISNULL(6))
-		keepnodata = PG_GETARG_BOOL(6);
+	if (!PG_ARGISNULL(8))
+		keepnodata = PG_GETARG_BOOL(8);
 
 	/* get band */
 	band = rt_raster_get_band(raster, nband - 1);
@@ -2868,6 +2879,15 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		/* noset = true, skip */
 		if (pixval[i].noset)
 			continue;
+		/* check against nosetval */
+		else if (hasnosetval) {
+			/* pixel = NULL AND nosetval = NULL */
+			if (pixval[i].nodata && nosetvalisnull)
+				continue;
+			/* pixel value = nosetval */
+			else if (!pixval[i].nodata && !nosetvalisnull && FLT_EQ(pixval[i].value, nosetval))
+				continue;
+		}
 
 		/* if pixel is outside bounds, skip */
 		if (
