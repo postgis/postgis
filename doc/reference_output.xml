@@ -56,6 +56,8 @@
 			<para>Enhanced: 2.0.0 support for higher coordinate dimensions was introduced.</para>
 			<para>Enhanced: 2.0.0 support for specifying endian with geography was introduced.</para>
 			<para>Availability: 1.5.0 geography support was introduced.</para>
+			<para>Changed: 2.0.0 Inputs to this function can not be unknown -- must be geometry.  Constructs such as <code>ST_AsBinary('POINT(1 2)')</code> are no longer valid and you will get an <code>n st_asbinary(unknown)  is not unique error</code>.  Code like that
+			needs to be changed to <code>ST_AsBinary('POINT(1 2)'::geometry);</code>.  If that is not possible, then install <filename>legacy.sql</filename>.</para>
 			<para>&sfs_compliant; s2.1.1.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.37</para>
 			<para>&curve_support;</para>
