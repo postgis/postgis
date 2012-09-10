@@ -1,4 +1,4 @@
-﻿---------------------------------------------------------------------
+---------------------------------------------------------------------
 -- ST_SummaryStatsAgg AGGREGATE
 -- Compute summary statistics for an aggregation of raster.
 --
@@ -38,7 +38,7 @@ CREATE OR REPLACE FUNCTION raster_summarystatsstate(ss summarystats, rast raster
                     newstats.max)::summarystats;
         ELSE
             ret := (ss.count + newstats.count, 
-                    ss.sum + newstats.sum,
+                    COALESCE(ss.sum,0) + COALESCE(newstats.sum, 0),
                     null,
                     null,
                     least(ss.min, newstats.min), 
@@ -66,7 +66,7 @@ CREATE OR REPLACE FUNCTION raster_summarystatsfinal(ss summarystats)
     BEGIN
         ret := (($1).count,
                 ($1).sum,
-                ($1).sum / ($1).count,
+                CASE WHEN ($1).count = 0 THEN null ELSE ($1).sum / ($1).count END,
                 null,
                 ($1).min,
                 ($1).max
