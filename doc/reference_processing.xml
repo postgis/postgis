@@ -903,10 +903,11 @@ togheter.
 			</para>
 
 			<para>Availability: 2.1.0 - requires GEOS &gt;= 3.4.0.</para>
+			<para>&Z_support;</para>
 
 		</refsection>
 			  <refsection>
-		<title>Examples</title>
+		<title>2D Examples</title>
 			<informaltable>
 				  <tgroup cols="1">
 					<tbody>
@@ -960,16 +961,59 @@ SELECT
 		),0.001,1) 
 	 As  dtriag;</programlisting>
 						</para></entry>
-					  </row>
+				</row>
+				<row><entry><para><informalfigure>
+							<mediaobject>
+							  <imageobject>
+								<imagedata fileref="images/st_delaunaytriangles04.png" />
+							  </imageobject>
+							  <caption><para>-- delaunay triangles of 45 points as 55 triangle polygons</para></caption>
+							</mediaobject>
+						  </informalfigure>
+				<programlisting>-- this produces a table of 42 points that form an L shape
+SELECT (ST_DumpPoints(ST_GeomFromText(
+'MULTIPOINT(14 14,34 14,54 14,74 14,94 14,114 14,134 14,
+150 14,154 14,154 6,134 6,114 6,94 6,74 6,54 6,34 6,
+14 6,10 6,8 6,7 7,6 8,6 10,6 30,6 50,6 70,6 90,6 110,6 130,
+6 150,6 170,6 190,6 194,14 194,14 174,14 154,14 134,14 114,
+14 94,14 74,14 54,14 34,14 14)'))).geom 
+	INTO TABLE l_shape;
+-- output as individual polygon triangles
+SELECT ST_AsText((ST_Dump(geom)).geom) As wkt
+FROM ( SELECT ST_DelaunayTriangles(ST_Collect(geom)) As geom
+FROM l_shape) As foo;
+
+---wkt ---
+POLYGON((6 194,6 190,14 194,6 194))
+POLYGON((14 194,6 190,14 174,14 194))
+POLYGON((14 194,14 174,154 14,14 194))
+POLYGON((154 14,14 174,14 154,154 14))
+POLYGON((154 14,14 154,150 14,154 14))
+POLYGON((154 14,150 14,154 6,154 14))
+:
+:
+</programlisting>
+						</para></entry>
+			 </row>	
+
 		</tbody>
 	</tgroup>
 </informaltable>
 	  </refsection>
+	  <refsection>
+			<title>3D Examples</title>
+			<programlisting>-- 3D multipoint --
+SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(
+'MULTIPOINT Z(14 14 10,
+150 14 100,34 6 25, 20 10 150)'))) As wkt;
 
+-----wkt----
+GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))
+ ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))</programlisting>
+		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para>
-<xref linkend="ST_Dump" />
+			<para><xref linkend="ST_ConcaveHull" />, <xref linkend="ST_Dump" />
 			</para>
 		</refsection>
 	</refentry>
