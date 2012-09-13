@@ -214,7 +214,7 @@ instead.
 		update_geometry_stats() and resulting extent will be exact.</para>
 
     <para>Availability: 1.0.0</para>
-    <para>NOTE: this function was renamed from "ST_Estimated_Extent" in 2.1.0</para>
+    <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent.</para>
 
 		<para>&curve_support;</para>
 	  </refsection>
