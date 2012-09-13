@@ -6,6 +6,10 @@ PostGIS 2.1.0
   - ST_Intersects(raster, geometry) behaves in the same manner as
     ST_Intersects(geometry, raster).
 
+* Deprecated signatures
+
+  - ST_Estimated_Extent renamed to ST_EstimatedExtent
+
 * New Features *
 
   - ST_Segmentize(geography) (Paul Ramsey / OpenGeo)

@@ -166,7 +166,7 @@ all_em|grabone   | grab_rest
 
 	<refentry id="ST_Estimated_Extent">
 	  <refnamediv>
-		<refname>ST_Estimated_Extent</refname>
+		<refname>ST_EstimatedExtent</refname>
 
 		<refpurpose>Return the 'estimated' extent of the given spatial table.
 			The estimated is taken from the geometry column's statistics. The
@@ -176,14 +176,14 @@ all_em|grabone   | grab_rest
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>box2d <function>ST_Estimated_Extent</function></funcdef>
+			<funcdef>box2d <function>ST_EstimatedExtent</function></funcdef>
 			<paramdef><type>text </type> <parameter>schema_name</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
 		  </funcprototype>
 
 		  <funcprototype>
-			<funcdef>box2d <function>ST_Estimated_Extent</function></funcdef>
+			<funcdef>box2d <function>ST_EstimatedExtent</function></funcdef>
 			<paramdef><type>text </type> <parameter>table_name</parameter></paramdef>
 			<paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef>
 		  </funcprototype>
@@ -213,7 +213,8 @@ instead.
 		<para>For PostgreSQL&lt;8.0.0 statistics are gathered by
 		update_geometry_stats() and resulting extent will be exact.</para>
 
-                <para>Availability: 1.0.0</para>
+    <para>Availability: 1.0.0</para>
+    <para>NOTE: this function was renamed from "ST_Estimated_Extent" in 2.1.0</para>
 
 		<para>&curve_support;</para>
 	  </refsection>
@@ -222,11 +223,11 @@ instead.
 	  <refsection>
 		<title>Examples</title>
 
-		<programlisting>SELECT ST_Estimated_extent('ny', 'edges', 'the_geom');
+		<programlisting>SELECT ST_EstimatedExtent('ny', 'edges', 'the_geom');
 --result--
 BOX(-8877653 4912316,-8010225.5 5589284)
 
-SELECT ST_Estimated_Extent('feature_poly', 'the_geom');
+SELECT ST_EstimatedExtent('feature_poly', 'the_geom');
 --result--
 BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 		</programlisting>

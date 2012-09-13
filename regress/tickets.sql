@@ -449,15 +449,17 @@ SELECT '#1273.1', st_equals(p.g, postgis_dropbbox(p.g)) from p;
 
 -- #877, #818
 create table t(g geometry);
-select '#877.1', st_estimated_extent('t','g');
+select '#877.1', ST_EstimatedExtent('t','g');
 analyze t;
-select '#877.2', st_estimated_extent('public', 't','g');
+select '#877.2', ST_EstimatedExtent('public', 't','g');
+select '#877.2.deprecated', ST_Estimated_Extent('public', 't','g');
 insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
-select '#877.3', st_estimated_extent('t','g');
+select '#877.3', ST_EstimatedExtent('t','g');
 analyze t;
-select '#877.4', st_estimated_extent('t','g');
+select '#877.4', ST_EstimatedExtent('t','g');
 truncate t;
-select '#818.1', st_estimated_extent('t','g');
+select '#818.1', ST_EstimatedExtent('t','g');
+select '#818.1.deprecated', ST_Estimated_Extent('t','g');
 drop table t;
 
 -- #1320

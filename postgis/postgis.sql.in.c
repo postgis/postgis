@@ -851,7 +851,13 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 -- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
 -- Availability: 1.2.2
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
@@ -859,7 +865,13 @@ CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
 -- ESTIMATED_EXTENT( <table name>, <column name> )
 -----------------------------------------------------------------------
 -- Availability: 1.2.2
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
+	'MODULE_PATHNAME', 'geometry_estimated_extent'
+	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'geometry_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
