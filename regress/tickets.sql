@@ -672,6 +672,9 @@ SELECT '#1776',
  ST_AsText(ST_SymDifference(A,B)), ST_AsText(ST_SymDifference(B, A))
 FROM inp;
 
+-- #1780 --
+SELECT '#1780',ST_GeoHash('POINT(4 4)'::geometry) = ST_GeoHash('POINT(4 4)'::geography);
+
 -- #1791 --
 with inp as ( SELECT
  '010100000000000000004065C0041AD965BE5554C0'::geometry as a,

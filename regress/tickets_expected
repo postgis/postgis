@@ -222,6 +222,7 @@ NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
 #1734.1|1026
 #1755|01010000A0E6100000000000000040554000000000008041400000000000000000
 #1776|POLYGON((0 0,10 0,10 10,0 0))|POLYGON((0 0,10 0,10 10,0 0))
+#1780|t
 #1791|4.7
 ERROR:  ST_Segmentize: invalid max_distance 0 (must be >= 0)
 ERROR:  invalid GML representation
