@@ -774,6 +774,12 @@ CREATE OR REPLACE FUNCTION ST_Summary(geography)
 	AS 'MODULE_PATHNAME', 'LWGEOM_summary'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_GeoHash(geog geography, maxchars int4 DEFAULT 0)
+	RETURNS TEXT
+	AS 'MODULE_PATHNAME', 'ST_GeoHash'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 	
 -----------------------------------------------------------------------------
 

@@ -496,7 +496,7 @@ char *lwgeom_geohash(const LWGEOM *lwgeom, int precision)
 	gbox_init(&gbox);
 	gbox_init(&gbox_bounds);
 
-	result = lwgeom_calculate_gbox(lwgeom, &gbox);	
+	result = lwgeom_calculate_gbox_cartesian(lwgeom, &gbox);	
 	if ( result == LW_FAILURE ) return NULL;
 
 	/* Return error if we are being fed something outside our working bounds */

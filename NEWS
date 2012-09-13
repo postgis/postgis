@@ -35,6 +35,7 @@ PostGIS 2.1.0
   - #1856, tiger geocoder: reverse geocoder rating setting for prefer numbered highway name
   - #1938, Refactor basic ST_AddBand to add multiple new bands in one call
   - #1978, wrong answer when calculating length of a closed circular arc (circle)
+  - #1780, support ST_GeoHash for geography
 
 * Fixes *
 

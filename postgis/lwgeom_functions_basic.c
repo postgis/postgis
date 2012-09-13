@@ -2504,9 +2504,8 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 
 	GSERIALIZED *geom = NULL;
 	int precision = 0;
-	int len = 0;
 	char *geohash = NULL;
-	char *result = NULL;
+	text *result = NULL;
 
 	if ( PG_ARGISNULL(0) )
 	{
@@ -2525,13 +2524,10 @@ Datum ST_GeoHash(PG_FUNCTION_ARGS)
 	if ( ! geohash )
 		PG_RETURN_NULL();
 
-	len = strlen(geohash) + VARHDRSZ;
-	result = palloc(len);
-	SET_VARSIZE(result, len);
-	memcpy(VARDATA(result), geohash, len-VARHDRSZ);
+	result = cstring2text(geohash);
 	pfree(geohash);
-	PG_RETURN_POINTER(result);
-
+	
+	PG_RETURN_TEXT_P(result);
 }
 
 PG_FUNCTION_INFO_V1(ST_CollectionExtract);
