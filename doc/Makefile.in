@@ -1,13 +1,26 @@
 #
+# PostGIS - Spatial Types for PostgreSQL
+# http://www.postgis.net
+#
+# This is free software; you can redistribute and/or modify it under
+# the terms of the GNU General Public Licence. See the COPYING file.
+#
 # PostGIS documentation build Makefile
 #
-# Written by Mark Cave-Ayland
+# Copyright 2003-2012 Sandro Santilli <strk@keybit.net>
+# Copyright 2004-2012 Paul Ramsey <pramsey@cleverelephant.ca>
+# Copyright 2009-2011 Regina Obe <lr@pcorp.us>
+# Copyright 2008-2010 Mark Cave-Ayland
+# Copyright 2008-2010 Kevin Neufeld <kneufeld.ca@gmail.com>
+# Copyright 2009-2010 Olivier Courtin <olivier.courtin@camptocamp.com>
+# Copyright 2005-2006 Markus Schaber <markus@schabi.de>
 #
 # NOTE: We don't use a standard PGXS Makefile here since the DOCS target
 # only allows files to be stored within contrib/ and we currently
 # store documentation under contrib/postgis due to the possibility
 # that we could produce a large number of files (think chunked HTML)
 #
+
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
