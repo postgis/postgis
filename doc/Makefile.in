@@ -89,7 +89,7 @@ endif
 endif
 endif
 
-XML_INPUTS = \
+XML_SOURCES = \
 	extras_historytable.xml \
 	extras_tigergeocoder.xml \
 	extras_topology.xml \
@@ -99,8 +99,7 @@ XML_INPUTS = \
 	installation.xml \
 	introduction.xml \
 	performance_tips.xml \
-	postgis_aggs_mm.xml \
-	postgis-out.xml \
+  postgis.xml \
 	reference_accessor.xml \
 	reference_constructor.xml \
 	reference_editor.xml \
@@ -121,6 +120,11 @@ XML_INPUTS = \
 	using_postgis_dataman.xml \
 	using_raster_dataman.xml 
 
+XML_GENERATED_SOURCES = \
+	postgis_aggs_mm.xml \
+	postgis-out.xml \
+
+XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
 
 ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
@@ -209,7 +213,7 @@ clean:
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
 	$(MAKE) -C html/image_src clean
-	rm -f postgis-out.xml postgis_aggs_mm.xml
+	rm -f $(XML_GENERATED_SOURCES)
 
 distclean: clean
 	$(MAKE) -C html/image_src distclean
