@@ -500,42 +500,35 @@
 								</xsl:for-each>
 							</xsl:for-each>
 					</xsl:for-each>
-				</itemizedlist>				
+				</itemizedlist>	
+				
+				<para>The functions given below are PostGIS functions that have possibly breaking changes in PostGIS 2.1.  If you use any of these, you may need to check your existing code.</para>
+				<itemizedlist>
+				<!-- Pull out the purpose section for each ref entry   -->
+					<xsl:for-each select='//refentry'>
+						<xsl:sort select="@id"/>
+						<xsl:variable name="refid">
+							<xsl:value-of select="@id" />
+						</xsl:variable>
+						
+						<xsl:variable name="refname">
+							<xsl:value-of select="refnamediv/refname" />
+						</xsl:variable>
+				<!-- For each section if there is note about enhanced in this version -->
+							<xsl:for-each select="refsection">
+								<xsl:for-each select="para | */para">
+									<xsl:choose>
+										<xsl:when test="contains(.,'Changed: 2.1')">
+											<listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
+										</xsl:when>
+									</xsl:choose>
+								</xsl:for-each>
+							</xsl:for-each>
+					</xsl:for-each>
+				</itemizedlist>
 				
 			
 			</sect2>
-			
-			<sect2 id="NewFunctions_2_1_Changed">
-			       <title>PostGIS Functions changed behavior in 2.1</title>
-			       <para>The functions given below are PostGIS functions that have changed behavior in PostGIS 2.1 and may require application changes.</para>
-                    <note><para>If you are using a function that you don't see documented,
-                        it's probably deprecated, about to be deprecated, or internal and should be avoided.  If you have applications or tools
-                        that rely on deprecated functions, please refer to <link linkend="legacy_faq" /> for more details.</para></note>
-
-                    <itemizedlist>
-                    <!-- Pull out the purpose section for each ref entry   -->
-                        <xsl:for-each select='//refentry'>
-                            <xsl:sort select="@id"/>
-                            <xsl:variable name="refid">
-                                <xsl:value-of select="@id" />
-                            </xsl:variable>
-                            
-                            <xsl:variable name="refname">
-                                <xsl:value-of select="refnamediv/refname" />
-                            </xsl:variable>
-                    <!-- For each section if there is note about enhanced in this version -->
-                                <xsl:for-each select="refsection">
-                                    <xsl:for-each select="para | */para">
-                                        <xsl:choose>
-                                            <xsl:when test="contains(.,'Changed: 2.0')">
-                                                <listitem><simpara><link linkend="{$refid}"><xsl:value-of select="$refname" /></link> - <xsl:value-of select="." /></simpara></listitem>
-                                            </xsl:when>
-                                        </xsl:choose>
-                                    </xsl:for-each>
-                                </xsl:for-each>
-                        </xsl:for-each>
-                    </itemizedlist>
-             </sect2>
 		
 			<sect2 id="NewFunctions_2_0">
 				<title>PostGIS Functions new, behavior changed, or enhanced in 2.0</title>
