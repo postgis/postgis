@@ -119,9 +119,9 @@
         </simplesect>
         <simplesect>
           <title>New Features</title>
-          <para><ulink url='http://blog.opengeo.org/2011/09/28/indexed-nearest-neighbour-search-in-postgis/'>KNN Gist index based centroid (&lt;-&gt;) and box (&lt;#&gt;) distance operators (Paul Ramsey / funded by Vizzuality)</ulink></para> 
+          <para><ulink url="http://blog.opengeo.org/2011/09/28/indexed-nearest-neighbour-search-in-postgis/">KNN Gist index based centroid (&lt;-&gt;) and box (&lt;#&gt;) distance operators (Paul Ramsey / funded by Vizzuality)</ulink></para> 
           <para>Support for TIN and PolyHedralSurface and enhancement of many functions to support 3D (Olivier Courtin / Oslandia)</para>
-          <para><ulink url='http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding'>Raster support integrated and documented</ulink>
+          <para><ulink url="http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding">Raster support integrated and documented</ulink>
           		(Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park)
           		(Company developer and funding: University Laval, Deimos Space, CadCorp,  Michigan Tech Research Institute, Azavea, Paragon Corporation, UC Davis Center for Vectorborne Diseases)</para>
           <para>Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)</para>
@@ -142,7 +142,7 @@
           <para>ST_UnaryUnion (Sandro Santilli / Faunalia for RT-SIGTA)</para>
           <para>ST_AsX3D (Regina Obe / Arrival 3D funding)</para>
           <para>ST_OffsetCurve (Sandro Santilli, Rafal Magda)</para>
-          <para><ulink url='http://blog.opengeo.org/2011/11/21/st_geomfromgeojson/'>ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality funding)</ulink></para>
+          <para><ulink url="http://blog.opengeo.org/2011/11/21/st_geomfromgeojson/">ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality funding)</ulink></para>
         </simplesect>
         <simplesect>
         	<title>Enhancements</title>

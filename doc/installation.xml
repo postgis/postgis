@@ -1037,9 +1037,9 @@ pretty_address
 			<programlisting>SELECT drop_nation_tables_generate_script();</programlisting>
 		<para>Run the generated drop SQL statements.</para>
 		<para>Generate a nation load script with this SELECT statement as detailed in <xref linkend="Loader_Generate_Nation_Script" /></para>
-		<para><emphasis role='bold'>For windows</emphasis></para>
+		<para><emphasis role="bold">For windows</emphasis></para>
 		<programlisting>SELECT loader_generate_nation_script('windows'); </programlisting>
-		<para><emphasis role='bold'>For unix/linux</emphasis></para>
+		<para><emphasis role="bold">For unix/linux</emphasis></para>
 		<programlisting>SELECT loader_generate_nation_script('sh');</programlisting>
 		<para>Refer to <xref linkend="tiger_geocoder_loading_data" /> for instructions on how to run the generate script. This only needs to be done once.</para>
 		<note><para>You can have a mix of 2010/2011 state tables and can upgrade each state separately.  Before you upgrade a state to 2011, you first need to drop the 2010 tables for that state using <xref linkend="Drop_State_Tables_Generate_Script" />.</para></note>

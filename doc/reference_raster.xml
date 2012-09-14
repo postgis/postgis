@@ -7604,7 +7604,7 @@ WHERE rid=167;
 					</varlistentry>
 					<varlistentry>
 						<term>pixeltype</term>
-						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend='RT_ST_BandPixelType' />, left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the first raster.</para></listitem>
+						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend="RT_ST_BandPixelType" />, left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the first raster.</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>extenttype</term>
@@ -8320,7 +8320,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 					</varlistentry>
 					<varlistentry>
 						<term>pixeltype</term>
-						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend='RT_ST_BandPixelType' /> or left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the <varname>rast</varname>. Results are truncated if they are larger than what is allowed for the pixeltype.</para></listitem>
+						<listitem><para>The resulting pixel type of the output raster.  Must be one listed in <xref linkend="RT_ST_BandPixelType" /> or left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the <varname>rast</varname>. Results are truncated if they are larger than what is allowed for the pixeltype.</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>ngbwidth</term>
