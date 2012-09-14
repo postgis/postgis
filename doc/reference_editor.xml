@@ -1246,6 +1246,8 @@ SELECT ST_AsEWKT(ST_Scale(ST_GeomFromEWKT('LINESTRING(1 2 3, 1 1 1)'), 0.5, 0.75
 			only. For geometry, length units are in units of spatial reference.  For geography, units are in meters.</para>
 			<para>Availability: 1.2.2</para>
 			<para>Enhanced: 2.1.0 support for geography was introduced.</para>
+			<para>Changed: 2.1.0 As a result of the introduction of geography support: The construct <code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5);</code> will result in ambiguous function error.  You need to have properly typed object e.g. a geometry/geography column, use ST_GeomFromText, ST_GeogFromText or
+				<code>SELECT ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry,0.5);</code></para>
 			<note><para>This will only increase segments.  It will not lengthen segments shorter than
 			max length</para></note>
 		</refsection>
