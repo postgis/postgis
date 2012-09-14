@@ -262,28 +262,28 @@ CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGeoJSON</function></funcdef>
 				<paramdef><type>integer </type> <parameter>gj_version</parameter></paramdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -371,14 +371,14 @@ st_asgeojson
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 -->
 
@@ -386,20 +386,20 @@ st_asgeojson
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
-				<paramdef choice='opt'><type>text </type> <parameter>nprefix=null</parameter></paramdef>
-				<paramdef choice='opt'><type>text </type> <parameter>id=null</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
 			</funcprototype>
 
 			<funcprototype>
 				<funcdef>text <function>ST_AsGML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
-				<paramdef choice='opt'><type>text </type> <parameter>nprefix=null</parameter></paramdef>
-				<paramdef choice='opt'><type>text </type> <parameter>id=null</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>nprefix=null</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>id=null</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -625,27 +625,27 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 			</funcprototype>
 			
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>text </type> <parameter>nprefix=NULL</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsKML</function></funcdef>
 				<paramdef><type>integer </type> <parameter>version</parameter></paramdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>text </type> <parameter>nprefix=NULL</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>text </type> <parameter>nprefix=NULL</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -713,14 +713,14 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 			<funcprototype>
 				<funcdef>text <function>ST_AsSVG</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>rel=0</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>rel=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 			</funcprototype>
 			<funcprototype>
 				<funcdef>text <function>ST_AsSVG</function></funcdef>
 				<paramdef><type>geography </type> <parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>rel=0</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>rel=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -766,8 +766,8 @@ SELECT ST_AsGML(3, ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 
 	         <funcprototype>
 				<funcdef>text <function>ST_AsX3D</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>options=0</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxdecimaldigits=15</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>options=0</parameter></paramdef>
 			</funcprototype>
 	    </funcsynopsis>
 	  </refsynopsisdiv>
@@ -939,7 +939,7 @@ x3dfrag
 			<funcprototype>
 				<funcdef>text <function>ST_GeoHash</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>maxchars=full_precision_of_point</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>maxchars=full_precision_of_point</parameter></paramdef>
 			</funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>

@@ -30,7 +30,7 @@
 
 			<paramdef><type>integer </type>
 			<parameter>dimension</parameter></paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
 
@@ -54,7 +54,7 @@
 
 			<paramdef><type>integer </type>
 			<parameter>dimension</parameter></paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
 
@@ -82,7 +82,7 @@
 			<paramdef><type>integer </type>
 			<parameter>dimension</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>use_typmod=true</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>

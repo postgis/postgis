@@ -643,7 +643,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 			<funcprototype>
 			  <funcdef>float <function>ST_Area</function></funcdef>
 				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
@@ -2681,7 +2681,7 @@ t
 			<funcprototype>
 			  <funcdef>float <function>ST_Length</function></funcdef>
 				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>
@@ -3370,7 +3370,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 			<funcprototype>
 			  <funcdef>float <function>ST_Perimeter</function></funcdef>
 				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
-				<paramdef choice='opt'><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type><parameter>use_spheroid=true</parameter></paramdef>
 			</funcprototype>
 		  </funcsynopsis>
 		</refsynopsisdiv>

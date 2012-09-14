@@ -277,19 +277,19 @@ VALUES (1,
 			<paramdef><type>boolean </type>
 			<parameter>regular_blocking</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>num_bands=true</parameter>
 			</paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>pixel_types=true</parameter>
 			</paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>nodata_values=true</parameter>
 			</paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>out_db=true</parameter>
 			</paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>extent=true</parameter>
 			</paramdef>
 		  </funcprototype>
@@ -334,39 +334,39 @@ VALUES (1,
 			<paramdef><type>name </type>
 			<parameter>rastcolumn</parameter></paramdef>
 
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>srid=true</parameter></paramdef>
 
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>scale_x=true</parameter></paramdef>
 
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>scale_y=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>blocksize_x=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>blocksize_y=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>same_alignment=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>regular_blocking=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>num_bands=true</parameter></paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>pixel_types=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>nodata_values=true</parameter>
 			</paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>out_db=true</parameter>
 			</paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>extent=true</parameter>
 			</paramdef>
 		  </funcprototype>
@@ -491,18 +491,18 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 			<paramdef><type>boolean </type>
 			<parameter>regular_blocking</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>num_bands=true</parameter></paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>pixel_types=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>nodata_values=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>out_db=true</parameter>
 			</paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>extent=true</parameter></paramdef>
 		  </funcprototype>
 		  
@@ -517,40 +517,40 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 			<paramdef><type>name </type>
 			<parameter>rastcolumn</parameter></paramdef>
 
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>srid=true</parameter></paramdef>
 
 			<paramdef><type>boolean </type>
 			<parameter>scale_x=true</parameter></paramdef>
 
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>scale_y=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>blocksize_x=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>blocksize_y=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>same_alignment=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>regular_blocking=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>num_bands=true</parameter></paramdef>
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>pixel_types=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>nodata_values=true</parameter></paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 				<parameter>out_db=true</parameter>
 			</paramdef>
 			
-			<paramdef choice='opt'><type>boolean </type>
+			<paramdef choice="opt"><type>boolean </type>
 			<parameter>extent=true</parameter></paramdef>
 		  </funcprototype>
 		  
@@ -905,8 +905,8 @@ WHERE short_name = 'GTiff') As g;
 
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>initialvalue=0</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>initialvalue=0</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -915,8 +915,8 @@ WHERE short_name = 'GTiff') As g;
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>index</parameter></paramdef>
 						<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>initialvalue=0</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>initialvalue=0</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -924,8 +924,8 @@ WHERE short_name = 'GTiff') As g;
 
 						<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
 						<paramdef><type>raster </type> <parameter>fromrast</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>fromband=1</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>fromband=1</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -933,8 +933,8 @@ WHERE short_name = 'GTiff') As g;
 
 						<paramdef><type>raster </type> <parameter>torast</parameter></paramdef>
 						<paramdef><type>raster[] </type> <parameter>fromrasts</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>fromband=1</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>fromband=1</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>torastindex=at_end</parameter></paramdef>
 					</funcprototype>
 
 				</funcsynopsis>
@@ -1063,19 +1063,19 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>raster <function>ST_AsRaster</function></funcdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1086,11 +1086,11 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1098,14 +1098,14 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
@@ -1114,13 +1114,13 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
@@ -1129,13 +1129,13 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
 					<paramdef><type>text[] </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  				 
 				  <funcprototype>
@@ -1146,11 +1146,11 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1158,14 +1158,14 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
 					<paramdef><type>text[] </type> <parameter>pixeltype=ARRAY['8BUI']</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
@@ -1174,13 +1174,13 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>value=1</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>value=1</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1191,11 +1191,11 @@ SELECT mouse, ST_AddBand(NULL, array_agg(rast ORDER BY test_type), 1 ) As rast
 					<paramdef><type>text[] </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>double precision[] </type> <parameter>value=ARRAY[1]</parameter></paramdef>
 					<paramdef><type>double precision[] </type> <parameter>nodataval=ARRAY[0]</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>touched=false</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>upperleftx=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>upperlefty=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>touched=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				</funcsynopsis>
@@ -1278,14 +1278,14 @@ SELECT ST_AsPNG(
 				   <funcprototype>
 					<funcdef>raster <function>ST_Band</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer[] </type> <parameter>nbands = ARRAY[1]</parameter></paramdef>
+					<paramdef choice="opt"><type>integer[] </type> <parameter>nbands = ARRAY[1]</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>raster <function>ST_Band</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>nbands</parameter></paramdef>
-					<paramdef choice='opt'><type>character </type> <parameter>delimiter=,</parameter></paramdef>
+					<paramdef choice="opt"><type>character </type> <parameter>delimiter=,</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1406,7 +1406,7 @@ WHERE rid=35;
 					<paramdef><type>float8 </type> <parameter>scaley</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>skewx</parameter></paramdef>
 					<paramdef><type>float8 </type> <parameter>skewy</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>srid=unknown</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>srid=unknown</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -1479,7 +1479,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 				  <funcprototype>
 					<funcdef>text <function>ST_GeoReference</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>format=GDAL</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>format=GDAL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2665,7 +2665,7 @@ t          |
 				  <funcprototype>
 					<funcdef>record <function>ST_BandMetaData</function></funcdef>
 					<paramdef><type>raster </type><parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type><parameter>bandnum=1</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type><parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2719,7 +2719,7 @@ FROM dummy_rast WHERE rid=2) As foo;
 				  <funcprototype>
 					<funcdef>double precision <function>ST_BandNoDataValue</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2764,12 +2764,12 @@ WHERE rid = 2;
 					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>forceChecking=true</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>forceChecking=true</parameter></paramdef>
 				  </funcprototype>
                  <funcprototype>
 					<funcdef>boolean <function>ST_BandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>forceChecking=true</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>forceChecking=true</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2875,7 +2875,7 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 				  <funcprototype>
 					<funcdef>text <function>ST_BandPath</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -2911,7 +2911,7 @@ select st_bandisnodata(rast, 2) from dummy_rast where rid = 1; -- Expected false
 				  <funcprototype>
 					<funcdef>text <function>ST_BandPixelType</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>bandnum=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3100,8 +3100,8 @@ WHERE rid=2;
 				  <funcprototype>
 					<funcdef>setof record <function>ST_PixelAsPolygons</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3215,8 +3215,8 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 					<funcprototype>
 						<funcdef>geometry <function>ST_PixelAsPoints</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3337,8 +3337,8 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 					<funcprototype>
 						<funcdef>geometry <function>ST_PixelAsCentroids</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3410,21 +3410,21 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsCentroids(rast, 1)).* 
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				 <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Value</function></funcdef>
@@ -3432,7 +3432,7 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsCentroids(rast, 1)).* 
 					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3609,14 +3609,14 @@ WHERE
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
 						<funcdef>double precision <function>ST_NearestValue</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
 				  <funcprototype>
@@ -3625,7 +3625,7 @@ WHERE
 						<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -3633,7 +3633,7 @@ WHERE
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -3752,7 +3752,7 @@ FROM (
 						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>distance</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -3761,7 +3761,7 @@ FROM (
 						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>distance</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -3770,7 +3770,7 @@ FROM (
 						<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>distance</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -3778,7 +3778,7 @@ FROM (
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>distance</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -4616,7 +4616,7 @@ FROM (
 					<funcdef>raster <function>ST_SetGeoReference</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>georefcoords</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>format=GDAL</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>format=GDAL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -4937,36 +4937,36 @@ WHERE rid = 2;
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>srid=same_as_rast</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>srid=same_as_rast</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 					
 					<funcprototype>
 						<funcdef>raster <function>ST_Resample</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef choice='opt'><type>integer </type> <parameter>srid=NULL</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>scalex=0</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>scaley=0</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>srid=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scalex=0</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scaley=0</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>skewy=0</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 					
 					<funcprototype>
 						<funcdef>raster <function>ST_Resample</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>usescale=true</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>usescale=true</parameter></paramdef>
 					</funcprototype>
 					
 					<funcprototype>
@@ -4974,8 +4974,8 @@ WHERE rid = 2;
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>raster </type> <parameter>ref</parameter></paramdef>
 						<paramdef><type>boolean </type> <parameter>usescale</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5030,8 +5030,8 @@ WHERE rid = 2;
 						<funcdef>raster <function>ST_Rescale</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>scalexy</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 					
 					<funcprototype>
@@ -5039,8 +5039,8 @@ WHERE rid = 2;
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 					
 				</funcsynopsis>
@@ -5105,8 +5105,8 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
 						<funcdef>raster <function>ST_Reskew</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>skewxy</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 					
 					<funcprototype>
@@ -5114,8 +5114,8 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>skewx</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>skewy</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 					
 				</funcsynopsis>
@@ -5174,10 +5174,10 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>scalex=DEFAULT 0</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>scaley=DEFAULT 0</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scalex=DEFAULT 0</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scaley=DEFAULT 0</parameter></paramdef>
 					</funcprototype>
 					
 					<funcprototype>
@@ -5187,8 +5187,8 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 						<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 					
 					<funcprototype>
@@ -5197,8 +5197,8 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 						<paramdef><type>double precision </type> <parameter>gridx</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>gridy</parameter></paramdef>
 						<paramdef><type>double precision </type> <parameter>scalexy</parameter></paramdef>
-						<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
-						<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbour</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 					</funcprototype>
 					
 				</funcsynopsis>
@@ -5258,18 +5258,18 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>raster <function>ST_Transform</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>scalex</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>scaley</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>scaley</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5368,7 +5368,7 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>nodatavalue</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>forcechecking=false</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>forcechecking=false</parameter></paramdef>
 				  </funcprototype>
 
 				</funcsynopsis>
@@ -5428,7 +5428,7 @@ WHERE rid = 2;
 				 <funcprototype>
 					<funcdef>integer <function>ST_SetBandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5658,21 +5658,21 @@ rid | exclude_nodata | include_nodata
 					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>bins=autocomputed</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>bins=autocomputed</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>right=false</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>right=false</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_Histogram</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>bins</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision[] </type> <parameter>width=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>right=false</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>right=false</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5782,9 +5782,9 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
@@ -5806,7 +5806,7 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 					<funcdef>double precision <function>ST_Quantile</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>boolean </type> <parameter>exclude_nodata_value</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>quantile=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>quantile=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>double precision <function>ST_Quantile</function></funcdef>
@@ -5833,9 +5833,9 @@ FROM (SELECT rid, ST_Histogram(rast, 2,6,ARRAY[0.5,1,4,100,5]) As stats
 					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
 					<paramdef><type>text </type> <parameter>rastertable</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>rastercolumn</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>quantiles=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>SETOF record <function>ST_Quantile</function></funcdef>
@@ -6340,8 +6340,8 @@ FROM dummy_rast WHERE rid=1;
 					<funcdef>bytea <function>ST_AsGDALRaster</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>format</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>srid=sameassource</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>srid=sameassource</parameter></paramdef>
 				  </funcprototype>
 				  
 				</funcsynopsis>
@@ -6416,7 +6416,7 @@ FROM dummy_rast WHERE rid=2;
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
@@ -6428,13 +6428,13 @@ FROM dummy_rast WHERE rid=2;
 					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsJPEG</function></funcdef>
@@ -6517,7 +6517,7 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
@@ -6529,7 +6529,7 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
@@ -6541,7 +6541,7 @@ SELECT ST_AsJPEG(rast,ARRAY[2,1,3],ARRAY['QUALITY=90','PROGRESSIVE=ON']) As rast
 					<funcdef>bytea <function>ST_AsPNG</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer[] </type> <parameter>nbands</parameter></paramdef>
-					<paramdef choice='opt'><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text[] </type> <parameter>options=NULL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -6748,8 +6748,8 @@ rid |        rastbox
 					<funcdef>raster <function>ST_Clip</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>boolean </type> <parameter>crop=true</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>crop=true</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -7007,8 +7007,8 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
 			  <funcprototype>
 				<funcdef>setof geomval <function>ST_DumpAsPolygons</function></funcdef>
 				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>band_num=1</parameter></paramdef>
-				<paramdef choice='opt'><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>band_num=1</parameter></paramdef>
+				<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=TRUE</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -7124,8 +7124,8 @@ FROM dummy_rast;
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>azimuth</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>altitude</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>elevation_scale=1</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>elevation_scale=1</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7295,7 +7295,7 @@ FROM dummy_rast;
 					<funcdef>setof geomval <function>ST_Intersection</function></funcdef>
 					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice='opt'><type>integer </type> <parameter>band_num=1</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>band_num=1</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -7322,8 +7322,8 @@ FROM dummy_rast;
 					<funcdef>raster <function>ST_Intersection</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 
 				  <funcprototype>
@@ -7341,8 +7341,8 @@ FROM dummy_rast;
 					<paramdef><type>integer </type> <parameter>band_num1</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band_num2</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>returnband='BOTH'</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 
 				</funcsynopsis>
@@ -7429,7 +7429,7 @@ WHERE A.rid =2 ) As foo;
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -7437,7 +7437,7 @@ WHERE A.rid =2 ) As foo;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7568,11 +7568,11 @@ WHERE rid=167;
 					<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>pixeltype=same_as_rast1_band</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>pixeltype=same_as_rast1_band</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -7582,11 +7582,11 @@ WHERE rid=167;
 					<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band2</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>pixeltype=same_as_rast1_band</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>pixeltype=same_as_rast1_band</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -8088,8 +8088,8 @@ WHERE rid=167;
 						<paramdef><type>raster</type> <parameter>rast1</parameter></paramdef>
 						<paramdef><type>raster</type> <parameter>rast2</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>tworastuserfunc</parameter></paramdef>
-						<paramdef choice='opt'><type>text</type> <parameter>pixeltype=same_as_rast1</parameter></paramdef>
-						<paramdef choice='opt'><type>text</type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+						<paramdef choice="opt"><type>text</type> <parameter>pixeltype=same_as_rast1</parameter></paramdef>
+						<paramdef choice="opt"><type>text</type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
 					</funcprototype>				
 				
@@ -8100,8 +8100,8 @@ WHERE rid=167;
 						<paramdef><type>raster</type> <parameter>rast2</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>band2</parameter></paramdef>
 						<paramdef><type>regprocedure</type> <parameter>tworastuserfunc</parameter></paramdef>
-						<paramdef choice='opt'><type>text</type> <parameter>pixeltype=same_as_rast1</parameter></paramdef>
-						<paramdef choice='opt'><type>text</type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+						<paramdef choice="opt"><type>text</type> <parameter>pixeltype=same_as_rast1</parameter></paramdef>
+						<paramdef choice="opt"><type>text</type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
 						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
 					</funcprototype>	
 				</funcsynopsis>
@@ -8439,7 +8439,7 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
 			  <funcprototype>
 				<funcdef>geometry <function>ST_Polygon</function></funcdef>
 				<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				<paramdef choice='opt'><type>integer </type> <parameter>band_num=1</parameter></paramdef>
+				<paramdef choice="opt"><type>integer </type> <parameter>band_num=1</parameter></paramdef>
 			  </funcprototype>
 			</funcsynopsis>
 		  </refsynopsisdiv>
@@ -8513,7 +8513,7 @@ MULTIPOLYGON(((3427928 5793243.85,3427928 5793243.8,3427928 5793243.75,3427927.8
 					<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>reclassexpr</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef choice='opt'><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
@@ -9844,7 +9844,7 @@ SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JO
 						<type>geometry </type>
 						<parameter>geommin</parameter>
 					</paramdef>
-					<paramdef choice='opt'>
+					<paramdef choice="opt">
 						<type>integer </type>
 						<parameter>nband=NULL</parameter>
 					</paramdef>
@@ -9860,7 +9860,7 @@ SELECT r1.rid, r2.rid, ST_Disjoint(r1.rast, r2.rast) FROM dummy_rast r1 CROSS JO
 						<type>raster </type>
 						<parameter>rast</parameter>
 					</paramdef>
-					<paramdef choice='opt'>
+					<paramdef choice="opt">
 						<type>integer </type>
 						<parameter>nband=NULL</parameter>
 					</paramdef>

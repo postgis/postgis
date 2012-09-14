@@ -279,7 +279,7 @@ WHERE n*100.00/length &lt; 1;
 			<funcdef>geometry <function>ST_LocateAlong</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>ageom_with_measure</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>a_measure</parameter></paramdef>
-			<paramdef choice='opt'><type>float </type> <parameter>offset</parameter></paramdef>
+			<paramdef choice="opt"><type>float </type> <parameter>offset</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
@@ -359,7 +359,7 @@ SELECT ST_AsText((ST_Dump(the_geom)).geom)
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>measure_start</parameter></paramdef>
 			<paramdef><type>float </type> <parameter>measure_end</parameter></paramdef>
-			<paramdef choice='opt'><type>float </type> <parameter>offset</parameter></paramdef>
+			<paramdef choice="opt"><type>float </type> <parameter>offset</parameter></paramdef>
 		  </funcprototype>
 
 		</funcsynopsis>

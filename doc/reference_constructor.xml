@@ -1350,7 +1350,7 @@ LINESTRING(1 2 3,3 4 5,6 6 6)
 			<paramdef><type>double precision</type> <parameter>ymin</parameter></paramdef>
 			<paramdef><type>double precision</type> <parameter>xmax</parameter></paramdef>
 			<paramdef><type>double precision</type> <parameter>ymax</parameter></paramdef>
-			<paramdef choice='opt'><type>integer </type> <parameter>srid=unknown</parameter></paramdef>
+			<paramdef choice="opt"><type>integer </type> <parameter>srid=unknown</parameter></paramdef>
 		  </funcprototype>
 		 </funcsynopsis>
 		</refsynopsisdiv>

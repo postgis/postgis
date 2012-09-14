@@ -2211,8 +2211,8 @@ This function does not use nor set the next_left_edge and next_right_edge fields
 						<funcdef>integer <function>AddNode</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>apoint</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>allowEdgeSplitting=false</parameter></paramdef>
-						<paramdef choice='opt'><type>boolean </type> <parameter>computeContainingFace=false</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>allowEdgeSplitting=false</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>computeContainingFace=false</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
