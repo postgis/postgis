@@ -56,7 +56,8 @@
 
      <!-- Loading Maven dependencies -->
      <mkdir dir="lib"/>
-     <get src="http://www.apache.org/dist/maven/binaries/maven-ant-tasks-2.1.3.jar" dest="lib/maven-ant-tasks-2.1.3.jar"/>
+     <get src="http://www.apache.org/dist/maven/ant-tasks/2.1.3/binaries/maven-ant-tasks-2.1.3.jar"
+          dest="lib/maven-ant-tasks-2.1.3.jar"/>
 
      <path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar" />
      <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
