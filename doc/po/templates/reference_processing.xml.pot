@@ -1,0 +1,3079 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_processing.xml:3
+#, no-c-format
+msgid "Geometry Processing"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:6
+#, no-c-format
+msgid "ST_Buffer"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:8
+#, no-c-format
+msgid "(T) For geometry: Returns a geometry that represents all points whose distance from this Geometry is less than or equal to distance. Calculations are in the Spatial Reference System of this Geometry. For geography: Uses a planar transform wrapper. Introduced in 1.5 support for different end cap and mitre settings to control shape. buffer_style options: quad_segs=#,endcap=round|flat|square,join=round|mitre|bevel,mitre_limit=#.#"
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_processing.xml:16
+#, no-c-format
+msgid "<funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>integer </type> <parameter>num_seg_quarter_circle</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Buffer</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> <parameter>radius_of_buffer</parameter></paramdef> <paramdef><type>text </type> <parameter>buffer_style_parameters</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geography <function>ST_Buffer</function></funcdef> <paramdef><type>geography </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> <parameter>radius_of_buffer_in_meters</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:47 reference_processing.xml:221 reference_processing.xml:307 reference_processing.xml:373 reference_processing.xml:522 reference_processing.xml:590 reference_processing.xml:638 reference_processing.xml:736 reference_processing.xml:816 reference_processing.xml:874 reference_processing.xml:942 reference_processing.xml:989 reference_processing.xml:1041 reference_processing.xml:1093 reference_processing.xml:1133 reference_processing.xml:1192 reference_processing.xml:1239 reference_processing.xml:1298 reference_processing.xml:1350 reference_processing.xml:1404 reference_processing.xml:1557 reference_processing.xml:1593 reference_processing.xml:1670 reference_processing.xml:1720 reference_processing.xml:1766 reference_processing.xml:1808 reference_processing.xml:1919 reference_processing.xml:2012 reference_processing.xml:2081
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:49
+#, no-c-format
+msgid "Returns a geometry/geography that represents all points whose distance from this Geometry/geography is less than or equal to distance."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:51
+#, no-c-format
+msgid "Geometry: Calculations are in the Spatial Reference System of the geometry. Introduced in 1.5 support for different end cap and mitre settings to control shape."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:54
+#, no-c-format
+msgid "Negative radii: For polygons, a negative radius can be used, which will shrink the polygon rather than expanding it."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:55
+#, no-c-format
+msgid "Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that fits the bounding box of the geography object (favoring UTM, Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then buffers in that planar spatial ref and retransforms back to WGS84 geography."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:57
+#, no-c-format
+msgid "For geography this may not behave as expected if object is sufficiently large that it falls between two UTM zones or crosses the dateline"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:59
+#, no-c-format
+msgid "Availability: 1.5 - ST_Buffer was enhanced to support different endcaps and join types. These are useful for example to convert road linestrings into polygon roads with flat or square edges instead of rounded edges. Thin wrapper for geography was added. - requires GEOS &gt;= 3.2 to take advantage of advanced geometry functionality."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:62
+#, no-c-format
+msgid "The optional third parameter (currently only applies to geometry) can either specify number of segments used to approximate a quarter circle (integer case, defaults to 8) or a list of blank-separated key=value pairs (string case) to tweak operations as follows:"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:66 reference_processing.xml:1427
+#, no-c-format
+msgid "'quad_segs=#' : number of segments used to approximate a quarter circle (defaults to 8)."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:69
+#, no-c-format
+msgid "'endcap=round|flat|square' : endcap style (defaults to \"round\", needs GEOS-3.2 or higher for a different value). 'butt' is also accepted as a synonym for 'flat'."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:72
+#, no-c-format
+msgid "'join=round|mitre|bevel' : join style (defaults to \"round\", needs GEOS-3.2 or higher for a different value). 'miter' is also accepted as a synonym for 'mitre'."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:75
+#, no-c-format
+msgid "'mitre_limit=#.#' : mitre ratio limit (only affects mitered join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:80
+#, no-c-format
+msgid "Units of radius are measured in units of the spatial reference system."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:81
+#, no-c-format
+msgid "The inputs can be POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:82
+#, no-c-format
+msgid "This function ignores the third dimension (z) and will always give a 2-d buffer even when presented with a 3d-geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:84 reference_processing.xml:1444 reference_processing.xml:1732 reference_processing.xml:1775 reference_processing.xml:2032
+#, no-c-format
+msgid "Performed by the GEOS module."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:85 reference_processing.xml:541 reference_processing.xml:747 reference_processing.xml:1063 reference_processing.xml:1930 reference_processing.xml:2041
+#, no-c-format
+msgid "&sfs_compliant; s2.1.1.3"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:86
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.17"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:88
+#, no-c-format
+msgid "People often make the mistake of using this function to try to do radius searches. Creating a buffer to to a radius search is slow and pointless. Use <xref linkend=\"ST_DWithin\"/> instead."
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:93 reference_processing.xml:238 reference_processing.xml:343 reference_processing.xml:411 reference_processing.xml:547 reference_processing.xml:604 reference_processing.xml:754 reference_processing.xml:957 reference_processing.xml:1067 reference_processing.xml:1104 reference_processing.xml:1208 reference_processing.xml:1256 reference_processing.xml:1367 reference_processing.xml:1453 reference_processing.xml:1690 reference_processing.xml:1737 reference_processing.xml:1781 reference_processing.xml:1823 reference_processing.xml:1938 reference_processing.xml:2048
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:104
+#, no-c-format
+msgid "quad_segs=8 (default)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:107
+#, no-c-format
+msgid ""
+      "SELECT ST_Buffer(\n"
+      " ST_GeomFromText('POINT(100 90)'),\n"
+      " 50, 'quad_segs=8');"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:115
+#, no-c-format
+msgid "quad_segs=2 (lame)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:118
+#, no-c-format
+msgid ""
+      "SELECT ST_Buffer(\n"
+      " ST_GeomFromText('POINT(100 90)'),\n"
+      " 50, 'quad_segs=2');"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:127
+#, no-c-format
+msgid "endcap=round join=round (default)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:130
+#, no-c-format
+msgid ""
+      "SELECT ST_Buffer(\n"
+      " ST_GeomFromText(\n"
+      "  'LINESTRING(50 50,150 150,150 50)'\n"
+      " ), 10, 'endcap=round join=round');"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:138
+#, no-c-format
+msgid "endcap=square"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:141
+#, no-c-format
+msgid ""
+      "SELECT ST_Buffer(\n"
+      " ST_GeomFromText(\n"
+      "  'LINESTRING(50 50,150 150,150 50)'\n"
+      " ), 10, 'endcap=square join=round');"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:149
+#, no-c-format
+msgid "endcap=flat"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:152
+#, no-c-format
+msgid ""
+      "SELECT ST_Buffer(\n"
+      " ST_GeomFromText(\n"
+      "  'LINESTRING(50 50,150 150,150 50)'\n"
+      " ), 10, 'endcap=flat join=round');"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:161
+#, no-c-format
+msgid "join=bevel"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:164
+#, no-c-format
+msgid ""
+      "SELECT ST_Buffer(\n"
+      " ST_GeomFromText(\n"
+      "  'LINESTRING(50 50,150 150,150 50)'\n"
+      " ), 10, 'join=bevel');"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:172
+#, no-c-format
+msgid "join=mitre mitre_limit=5.0 (default mitre limit)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:175
+#, no-c-format
+msgid ""
+      "SELECT ST_Buffer(\n"
+      " ST_GeomFromText(\n"
+      "  'LINESTRING(50 50,150 150,150 50)'\n"
+      " ), 10, 'join=mitre mitre_limit=5.0');"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:183
+#, no-c-format
+msgid "join=mitre mitre_limit=1"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:186
+#, no-c-format
+msgid ""
+      "SELECT ST_Buffer(\n"
+      " ST_GeomFromText(\n"
+      "  'LINESTRING(50 50,150 150,150 50)'\n"
+      " ), 10, 'join=mitre mitre_limit=1.0');"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:193
+#, no-c-format
+msgid ""
+      "--A buffered point approximates a circle\n"
+      "-- A buffered point forcing approximation of (see diagram)\n"
+      "-- 2 points per circle is poly with 8 sides (see diagram)\n"
+      "SELECT ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50)) As promisingcircle_pcount,\n"
+      "ST_NPoints(ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50, 2)) As lamecircle_pcount;\n"
+      "\n"
+      "promisingcircle_pcount | lamecircle_pcount\n"
+      "------------------------+-------------------\n"
+      "                         33 |                9\n"
+      "\n"
+      "--A lighter but lamer circle\n"
+      "-- only 2 points per quarter circle is an octagon\n"
+      "--Below is a 100 meter octagon\n"
+      "-- Note coordinates are in NAD 83 long lat which we transform\n"
+      "to Mass state plane meter and then buffer to get measurements in meters;\n"
+      "SELECT ST_AsText(ST_Buffer(\n"
+      "ST_Transform(\n"
+      "ST_SetSRID(ST_MakePoint(-71.063526, 42.35785),4269), 26986)\n"
+      ",100,2)) As octagon;\n"
+      "----------------------\n"
+      "POLYGON((236057.59057465 900908.759918696,236028.301252769 900838.049240578,235\n"
+      "957.59057465 900808.759918696,235886.879896532 900838.049240578,235857.59057465\n"
+      "900908.759918696,235886.879896532 900979.470596815,235957.59057465 901008.759918\n"
+      "696,236028.301252769 900979.470596815,236057.59057465 900908.759918696))"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:197 reference_processing.xml:272 reference_processing.xml:350 reference_processing.xml:500 reference_processing.xml:563 reference_processing.xml:611 reference_processing.xml:711 reference_processing.xml:794 reference_processing.xml:853 reference_processing.xml:920 reference_processing.xml:964 reference_processing.xml:1071 reference_processing.xml:1111 reference_processing.xml:1165 reference_processing.xml:1215 reference_processing.xml:1269 reference_processing.xml:1322 reference_processing.xml:1373 reference_processing.xml:1535 reference_processing.xml:1571 reference_processing.xml:1641 reference_processing.xml:1697 reference_processing.xml:1742 reference_processing.xml:1786 reference_processing.xml:1894 reference_processing.xml:1979 reference_processing.xml:2055 reference_processing.xml:2109
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:199
+#, no-c-format
+msgid ", <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_Transform\"/>, <xref linkend=\"ST_Union\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:205
+#, no-c-format
+msgid "ST_BuildArea"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:207
+#, no-c-format
+msgid "Creates an areal geometry formed by the constituent linework of given geometry"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:213
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_BuildArea</function></funcdef> <paramdef><type>geometry </type> <parameter>A</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:223
+#, no-c-format
+msgid "Creates an areal geometry formed by the constituent linework of given geometry. The return type can be a Polygon or MultiPolygon, depending on input. If the input lineworks do not form polygons NULL is returned. The inputs can be LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS, and GeometryCollections."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:228
+#, no-c-format
+msgid "This function will assume all inner geometries represent holes"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:231 reference_processing.xml:1310
+#, no-c-format
+msgid "Input linework must be correctly noded for this function to work properly"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:234
+#, no-c-format
+msgid "Availability: 1.1.0 - requires GEOS &gt;= 2.1.0."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:248
+#, no-c-format
+msgid "This will create a donut"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:251
+#, no-c-format
+msgid ""
+      "SELECT ST_BuildArea(ST_Collect(smallc,bigc))\n"
+      "FROM (SELECT\n"
+      "        ST_Buffer(\n"
+      "          ST_GeomFromText('POINT(100 90)'), 25) As smallc,\n"
+      "        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As bigc) As foo;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:260
+#, no-c-format
+msgid "This will create a gaping hole inside the circle with prongs sticking out"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:263
+#, no-c-format
+msgid ""
+      "SELECT ST_BuildArea(ST_Collect(line,circle))\n"
+      "FROM (SELECT\n"
+      "        ST_Buffer(\n"
+      "                ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)),\n"
+      "                                5)  As line,\n"
+      "        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
+      "\n"
+      "--this creates the same gaping hole\n"
+      "--but using linestrings instead of polygons\n"
+      "SELECT ST_BuildArea(\n"
+      "        ST_Collect(ST_ExteriorRing(line),ST_ExteriorRing(circle))\n"
+      "        )\n"
+      "FROM (SELECT ST_Buffer(\n"
+      "        ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190))\n"
+      "                ,5)  As line,\n"
+      "        ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:274
+#, no-c-format
+msgid ", <xref linkend=\"ST_MakePolygon\"/>, <xref linkend=\"ST_BdPolyFromText\"/>, <xref linkend=\"ST_BdMPolyFromText\"/>wrappers to this function with standard OGC interface"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:284
+#, no-c-format
+msgid "ST_Collect"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:285
+#, no-c-format
+msgid "Return a specified ST_Geometry value from a collection of other geometries."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_processing.xml:289
+#, no-c-format
+msgid "<funcprototype> <funcdef>geometry <function>ST_Collect</function></funcdef> <paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Collect</function></funcdef> <paramdef><type>geometry</type> <parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Collect</function></funcdef> <paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:308
+#, no-c-format
+msgid "Output type can be a MULTI* or a GEOMETRYCOLLECTION. Comes in 2 variants. Variant 1 collects 2 geometries. Variant 2 is an aggregate function that takes a set of geometries and collects them into a single ST_Geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:312
+#, no-c-format
+msgid "Aggregate version: This function returns a GEOMETRYCOLLECTION or a MULTI object from a set of geometries. The ST_Collect() function is an \"aggregate\" function in the terminology of PostgreSQL. That means that it operates on rows of data, in the same way the SUM() and AVG() functions do. For example, \"SELECT ST_Collect(GEOM) FROM GEOMTABLE GROUP BY ATTRCOLUMN\" will return a separate GEOMETRYCOLLECTION for each distinct value of ATTRCOLUMN."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:320
+#, no-c-format
+msgid "Non-Aggregate version: This function returns a geometry being a collection of two input geometries. Output type can be a MULTI* or a GEOMETRYCOLLECTION."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:324
+#, no-c-format
+msgid "ST_Collect and ST_Union are often interchangeable. ST_Collect is in general orders of magnitude faster than ST_Union because it does not try to dissolve boundaries or validate that a constructed MultiPolgon doesn't have overlapping regions. It merely rolls up single geometries into MULTI and MULTI or mixed geometry types into Geometry Collections. Unfortunately geometry collections are not well-supported by GIS tools. To prevent ST_Collect from returning a Geometry Collection when collecting MULTI geometries, one can use the below trick that utilizes <xref linkend=\"ST_Dump\"/> to expand the MULTIs out to singles and then regroup them."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:335
+#, no-c-format
+msgid "Availability: 1.4.0 - ST_Collect(geomarray) was introduced. ST_Collect was enhanced to handle more geometries faster."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:336 reference_processing.xml:543 reference_processing.xml:598 reference_processing.xml:650 reference_processing.xml:840 reference_processing.xml:894 reference_processing.xml:952 reference_processing.xml:992 reference_processing.xml:1098 reference_processing.xml:1160 reference_processing.xml:1203 reference_processing.xml:1357 reference_processing.xml:1567 reference_processing.xml:1682 reference_processing.xml:2101
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:337
+#, no-c-format
+msgid "&curve_support; This method supports Circular Strings and Curves, but will never return a MULTICURVE or MULTI as one would expect and PostGIS does not currently support those."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:344
+#, no-c-format
+msgid "Aggregate example (<ulink url=\"http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html\">http://postgis.refractions.net/pipermail/postgis-users/2008-June/020331.html</ulink>)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:345
+#, no-c-format
+msgid ""
+      "SELECT stusps,\n"
+      "           ST_Multi(ST_Collect(f.the_geom)) as singlegeom\n"
+      "         FROM (SELECT stusps, (ST_Dump(the_geom)).geom As the_geom\n"
+      "                                FROM\n"
+      "                                somestatetable ) As f\n"
+      "GROUP BY stusps"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:346 reference_processing.xml:2051
+#, no-c-format
+msgid "Non-Aggregate example"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:347
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
+      "        ST_GeomFromText('POINT(-2 3)') ));\n"
+      "\n"
+      "st_astext\n"
+      "----------\n"
+      "MULTIPOINT(1 2,-2 3)\n"
+      "\n"
+      "--Collect 2 d points\n"
+      "SELECT ST_AsText(ST_Collect(ST_GeomFromText('POINT(1 2)'),\n"
+      "                ST_GeomFromText('POINT(1 2)') ) );\n"
+      "\n"
+      "st_astext\n"
+      "----------\n"
+      "MULTIPOINT(1 2,1 2)\n"
+      "\n"
+      "--Collect 3d points\n"
+      "SELECT ST_AsEWKT(ST_Collect(ST_GeomFromEWKT('POINT(1 2 3)'),\n"
+      "                ST_GeomFromEWKT('POINT(1 2 4)') ) );\n"
+      "\n"
+      "                st_asewkt\n"
+      "-------------------------\n"
+      " MULTIPOINT(1 2 3,1 2 4)\n"
+      "\n"
+      " --Example with curves\n"
+      "SELECT ST_AsText(ST_Collect(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),\n"
+      "ST_GeomFromText('CIRCULARSTRING(220227 150406,2220227 150407,220227 150406)')));\n"
+      "                                                                                                                                st_astext\n"
+      "------------------------------------------------------------------------------------\n"
+      " GEOMETRYCOLLECTION(CIRCULARSTRING(220268 150415,220227 150505,220227 150406),\n"
+      " CIRCULARSTRING(220227 150406,2220227 150407,220227 150406))\n"
+      "\n"
+      "--New ST_Collect array construct\n"
+      "SELECT ST_Collect(ARRAY(SELECT the_geom FROM sometable));\n"
+      "\n"
+      "SELECT ST_AsText(ST_Collect(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
+      "                        ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktcollect;\n"
+      "\n"
+      "--wkt collect --\n"
+      "MULTILINESTRING((1 2,3 4),(3 4,4 5))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:351
+#, no-c-format
+msgid ", <xref linkend=\"ST_Union\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:356
+#, no-c-format
+msgid "ST_ConcaveHull"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:357
+#, no-c-format
+msgid "The concave hull of a geometry represents a possibly concave geometry that encloses all geometries within the set. You can think of it as shrink wrapping."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:363
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_ConcaveHull</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>float </type> <parameter>target_percent</parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter>allow_holes=false</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:374
+#, no-c-format
+msgid "The concave hull of a geometry represents a possibly concave geometry that encloses all geometries within the set. Defaults to false for allowing polygons with holes. The result is never higher than a single polygon."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:378
+#, no-c-format
+msgid "The target_percent is the target percent of area of convex hull the PostGIS solution will try to approach before giving up or exiting. One can think of the concave hull as the geometry you get by vacuum sealing a set of geometries. The target_percent of 1 will give you the same answer as the convex hull. A target_percent between 0 and 0.99 will give you something that should have a smaller area than the convex hull. This is different from a convex hull which is more like wrapping a rubber band around the set of geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:383
+#, no-c-format
+msgid "It is usually used with MULTI and Geometry Collections. Although it is not an aggregate - you can use it in conjunction with ST_Collect or ST_Union to get the concave hull of a set of points/linestring/polygons ST_ConcaveHull(ST_Collect(somepointfield), 0.80)."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:388
+#, no-c-format
+msgid "It is much slower to compute than convex hull but encloses the geometry better and is also useful for image recognition."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:391 reference_processing.xml:539 reference_processing.xml:743 reference_processing.xml:1059 reference_processing.xml:1926
+#, no-c-format
+msgid "Performed by the GEOS module"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:392
+#, no-c-format
+msgid "Note - If you are using with points, linestrings, or geometry collections use ST_Collect. If you are using with polygons, use ST_Union since it may fail with invalid geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:395
+#, no-c-format
+msgid "Note - The smaller you make the target percent, the longer it takes to process the concave hull and more likely to run into topological exceptions. Also the more floating points and number of points you accrue. First try a 0.99 which does a first hop, is usually very fast, sometimes as fast as computing the convex hull, and usually gives much better than 99% of shrink since it almost always overshoots. Second hope of 0.98 it slower, others get slower usually quadratically. To reduce precision and float points, use <xref linkend=\"ST_SimplifyPreserveTopology\"/> or <xref linkend=\"ST_SnapToGrid\"/> after ST_ConcaveHull. ST_SnapToGrid is a bit faster, but could result in invalid geometries where as ST_SimplifyPreserveTopology almost always preserves the validity of the geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:400
+#, no-c-format
+msgid "More real world examples and brief explanation of the technique are shown <ulink url=\"http://www.bostongis.com/postgis_concavehull.snippet\">http://www.bostongis.com/postgis_concavehull.snippet</ulink>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:403
+#, no-c-format
+msgid "Also check out Simon Greener's article on demonstrating ConcaveHull introduced in Oracle 11G R2. <ulink url=\"http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2\">http://www.spatialdbadvisor.com/oracle_spatial_tips_tricks/172/concave-hull-geometries-in-oracle-11gr2</ulink>. The solution we get at 0.75 target percent of convex hull is similar to the shape Simon gets with Oracle SDO_CONCAVEHULL_BOUNDARY."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:407 reference_processing.xml:994 reference_processing.xml:1565 reference_processing.xml:1819
+#, no-c-format
+msgid "Availability: 2.0.0"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:412
+#, no-c-format
+msgid ""
+      "--Get estimate of infected area based on point observations\n"
+      "SELECT d.disease_type,\n"
+      "        ST_ConcaveHull(ST_Collect(d.pnt_geom), 0.99) As geom\n"
+      "        FROM disease_obs As d\n"
+      "        GROUP BY d.disease_type;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:422
+#, no-c-format
+msgid "ST_ConcaveHull of 2 polygons encased in target 100% shrink concave hull"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:425
+#, no-c-format
+msgid ""
+      "-- geometries overlaid with concavehull \n"
+      "-- at target 100% shrink (this is the same as convex hull - since no shrink)\n"
+      "SELECT \n"
+      "        ST_ConcaveHull(\n"
+      "                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
+      "                        50 60, 125 100, 175 150))'),\n"
+      "                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
+      "                ), 1)  \n"
+      "         As convexhull;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:432
+#, no-c-format
+msgid "-- geometries overlaid with concavehull at target 90% of convex hull area"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:436
+#, no-c-format
+msgid ""
+      "-- geometries overlaid with concavehull at target 90% shrink\n"
+      "SELECT \n"
+      "        ST_ConcaveHull(\n"
+      "                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
+      "                        50 60, 125 100, 175 150))'),\n"
+      "                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
+      "                ), 0.9)  \n"
+      "         As target_90;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:445
+#, no-c-format
+msgid "L Shape points overlaid with convex hull"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:448
+#, no-c-format
+msgid ""
+      "-- this produces a table of 42 points that form an L shape\n"
+      "SELECT (ST_DumpPoints(ST_GeomFromText(\n"
+      "'MULTIPOINT(14 14,34 14,54 14,74 14,94 14,114 14,134 14,\n"
+      "150 14,154 14,154 6,134 6,114 6,94 6,74 6,54 6,34 6,\n"
+      "14 6,10 6,8 6,7 7,6 8,6 10,6 30,6 50,6 70,6 90,6 110,6 130,\n"
+      "6 150,6 170,6 190,6 194,14 194,14 174,14 154,14 134,14 114,\n"
+      "14 94,14 74,14 54,14 34,14 14)'))).geom \n"
+      "        INTO TABLE l_shape;\n"
+      "\n"
+      "SELECT ST_ConvexHull(ST_Collect(geom))\n"
+      "FROM l_shape;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:455
+#, no-c-format
+msgid "ST_ConcaveHull of L points at target 99% of convex hull"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:458
+#, no-c-format
+msgid ""
+      "SELECT ST_ConcaveHull(ST_Collect(geom), 0.99)\n"
+      "        FROM l_shape;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:467
+#, no-c-format
+msgid "Concave Hull of L points at target 80% convex hull area"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:470
+#, no-c-format
+msgid ""
+      "-- Concave Hull L shape points\n"
+      "        -- at target 80% of convexhull\n"
+      "        SELECT ST_ConcaveHull(ST_Collect(geom), 0.80)\n"
+      "        FROM l_shape;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:479
+#, no-c-format
+msgid "multilinestring overlaid with Convex hull"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:487
+#, no-c-format
+msgid "multilinestring with overlaid with Concave hull of linestrings at 99% target -- first hop"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:491
+#, no-c-format
+msgid ""
+      "SELECT ST_ConcaveHull(ST_GeomFromText('MULTILINESTRING((106 164,30 112,74 70,82 112,130 94,\n"
+      "        130 62,122 40,156 32,162 76,172 88),\n"
+      "(132 178,134 148,128 136,96 128,132 108,150 130,\n"
+      "170 142,174 110,156 96,158 90,158 88),\n"
+      "(22 64,66 28,94 38,94 68,114 76,112 30,\n"
+      "132 10,168 18,178 34,186 52,184 74,190 100,\n"
+      "190 122,182 148,178 170,176 184,156 164,146 178,\n"
+      "132 186,92 182,56 158,36 150,62 150,76 128,88 118))'),0.99)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:501
+#, no-c-format
+msgid ", <xref linkend=\"ST_ConvexHull\"/>, <xref linkend=\"ST_SimplifyPreserveTopology\"/>, <xref linkend=\"ST_SnapToGrid\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:507
+#, no-c-format
+msgid "ST_ConvexHull"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:508
+#, no-c-format
+msgid "<refpurpose>The convex hull of a geometry represents the minimum convex geometry that encloses all geometries within the set.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:514
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_ConvexHull</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:523
+#, no-c-format
+msgid "<para>The convex hull of a geometry represents the minimum convex geometry that encloses all geometries within the set.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:526
+#, no-c-format
+msgid "One can think of the convex hull as the geometry you get by wrapping an elastic band around a set of geometries. This is different from a concave hull which is analogous to shrink-wrapping your geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:530
+#, no-c-format
+msgid "It is usually used with MULTI and Geometry Collections. Although it is not an aggregate - you can use it in conjunction with ST_Collect to get the convex hull of a set of points. ST_ConvexHull(ST_Collect(somepointfield))."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:535
+#, no-c-format
+msgid "It is often used to determine an affected area based on a set of point observations."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:542
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.16"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:548
+#, no-c-format
+msgid ""
+      "--Get estimate of infected area based on point observations\n"
+      "SELECT d.disease_type,\n"
+      "        ST_ConvexHull(ST_Collect(d.the_geom)) As the_geom\n"
+      "        FROM disease_obs As d\n"
+      "        GROUP BY d.disease_type;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:556
+#, no-c-format
+msgid "Convex Hull of a MultiLinestring and a MultiPoint seen together with the MultiLinestring and MultiPoint"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:559
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_ConvexHull(\n"
+      "        ST_Collect(\n"
+      "                ST_GeomFromText('MULTILINESTRING((100 190,10 8),(150 10, 20 30))'),\n"
+      "                        ST_GeomFromText('MULTIPOINT(50 5, 150 30, 50 10, 10 10)')\n"
+      "                        )) );\n"
+      "---st_astext--\n"
+      "POLYGON((50 5,10 8,10 10,100 190,150 30,150 10,50 5))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:564
+#, no-c-format
+msgid ", <xref linkend=\"ST_ConcaveHull\"/>, <xref linkend=\"ST_MinimumBoundingCircle\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:570
+#, no-c-format
+msgid "ST_CurveToLine"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:572
+#, no-c-format
+msgid "Converts a CIRCULARSTRING/CURVEDPOLYGON to a LINESTRING/POLYGON"
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_processing.xml:576
+#, no-c-format
+msgid "<funcprototype> <funcdef>geometry <function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_CurveToLine</function></funcdef> <paramdef><type>geometry</type> <parameter>curveGeom</parameter></paramdef> <paramdef><type>integer</type> <parameter>segments_per_qtr_circle</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:592
+#, no-c-format
+msgid "Converst a CIRCULAR STRING to regular LINESTRING or CURVEPOLYGON to POLYGON. Useful for outputting to devices that can't support CIRCULARSTRING geometry types"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:593
+#, no-c-format
+msgid "Converts a given geometry to a linear geometry. Each curved geometry or segment is converted into a linear approximation using the default value of 32 segments per quarter circle"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:595 reference_processing.xml:1097
+#, no-c-format
+msgid "Availability: 1.2.2?"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:596
+#, no-c-format
+msgid "&sfs_compliant;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:597
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 7.1.7"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:599 reference_processing.xml:837 reference_processing.xml:891 reference_processing.xml:991 reference_processing.xml:1099
+#, no-c-format
+msgid "&curve_support;"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:606
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)')));\n"
+      "\n"
+      "--Result --\n"
+      " LINESTRING(220268 150415,220269.95064912 150416.539364228,220271.823415575 150418.17258804,220273.613787707 150419.895736857,\n"
+      " 220275.317452352 150421.704659462,220276.930305234 150423.594998003,220278.448460847 150425.562198489,\n"
+      " 220279.868261823 150427.60152176,220281.186287736 150429.708054909,220282.399363347 150431.876723113,\n"
+      " 220283.50456625 150434.10230186,220284.499233914 150436.379429536,220285.380970099 150438.702620341,220286.147650624 150441.066277505,\n"
+      " 220286.797428488 150443.464706771,220287.328738321 150445.892130112,220287.740300149 150448.342699654,\n"
+      " 220288.031122486 150450.810511759,220288.200504713 150453.289621251,220288.248038775 150455.77405574,\n"
+      " 220288.173610157 150458.257830005,220287.977398166 150460.734960415,220287.659875492 150463.199479347,\n"
+      " 220287.221807076 150465.64544956,220286.664248262 150468.066978495,220285.988542259 150470.458232479,220285.196316903 150472.81345077,\n"
+      " 220284.289480732 150475.126959442,220283.270218395 150477.39318505,220282.140985384 150479.606668057,\n"
+      " 220280.90450212 150481.762075989,220279.5637474 150483.85421628,220278.12195122 150485.87804878,\n"
+      " 220276.582586992 150487.828697901,220274.949363179 150489.701464356,220273.226214362 150491.491836488,\n"
+      " 220271.417291757 150493.195501133,220269.526953216 150494.808354014,220267.559752731 150496.326509628,\n"
+      " 220265.520429459 150497.746310603,220263.41389631 150499.064336517,220261.245228106 150500.277412127,\n"
+      " 220259.019649359 150501.38261503,220256.742521683 150502.377282695,220254.419330878 150503.259018879,\n"
+      " 220252.055673714 150504.025699404,220249.657244448 150504.675477269,220247.229821107 150505.206787101,\n"
+      " 220244.779251566 150505.61834893,220242.311439461 150505.909171266,220239.832329968 150506.078553494,\n"
+      " 220237.347895479 150506.126087555,220234.864121215 150506.051658938,220232.386990804 150505.855446946,\n"
+      " 220229.922471872 150505.537924272,220227.47650166 150505.099855856,220225.054972724 150504.542297043,\n"
+      " 220222.663718741 150503.86659104,220220.308500449 150503.074365683,\n"
+      " 220217.994991777 150502.167529512,220215.72876617 150501.148267175,\n"
+      " 220213.515283163 150500.019034164,220211.35987523 150498.7825509,\n"
+      " 220209.267734939 150497.441796181,220207.243902439 150496,\n"
+      " 220205.293253319 150494.460635772,220203.420486864 150492.82741196,220201.630114732 150491.104263143,\n"
+      " 220199.926450087 150489.295340538,220198.313597205 150487.405001997,220196.795441592 150485.437801511,\n"
+      " 220195.375640616 150483.39847824,220194.057614703 150481.291945091,220192.844539092 150479.123276887,220191.739336189 150476.89769814,\n"
+      " 220190.744668525 150474.620570464,220189.86293234 150472.297379659,220189.096251815 150469.933722495,\n"
+      " 220188.446473951 150467.535293229,220187.915164118 150465.107869888,220187.50360229 150462.657300346,\n"
+      " 220187.212779953 150460.189488241,220187.043397726 150457.710378749,220186.995863664 150455.22594426,\n"
+      " 220187.070292282 150452.742169995,220187.266504273 150450.265039585,220187.584026947 150447.800520653,\n"
+      " 220188.022095363 150445.35455044,220188.579654177 150442.933021505,220189.25536018 150440.541767521,\n"
+      " 220190.047585536 150438.18654923,220190.954421707 150435.873040558,220191.973684044 150433.60681495,\n"
+      " 220193.102917055 150431.393331943,220194.339400319 150429.237924011,220195.680155039 150427.14578372,220197.12195122 150425.12195122,\n"
+      " 220198.661315447 150423.171302099,220200.29453926 150421.298535644,220202.017688077 150419.508163512,220203.826610682 150417.804498867,\n"
+      " 220205.716949223 150416.191645986,220207.684149708 150414.673490372,220209.72347298 150413.253689397,220211.830006129 150411.935663483,\n"
+      " 220213.998674333 150410.722587873,220216.22425308 150409.61738497,220218.501380756 150408.622717305,220220.824571561 150407.740981121,\n"
+      " 220223.188228725 150406.974300596,220225.586657991 150406.324522731,220227 150406)\n"
+      "\n"
+      "--3d example\n"
+      "SELECT ST_AsEWKT(ST_CurveToLine(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 2,220227 150406 3)')));\n"
+      "Output\n"
+      "------\n"
+      " LINESTRING(220268 150415 1,220269.95064912 150416.539364228 1.0181172856673,\n"
+      " 220271.823415575 150418.17258804 1.03623457133459,220273.613787707 150419.895736857 1.05435185700189,....AD INFINITUM ....\n"
+      "        220225.586657991 150406.324522731 1.32611114201132,220227 150406 3)\n"
+      "\n"
+      "--use only 2 segments to approximate quarter circle\n"
+      "SELECT ST_AsText(ST_CurveToLine(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'),2));\n"
+      "st_astext\n"
+      "------------------------------\n"
+      " LINESTRING(220268 150415,220287.740300149 150448.342699654,220278.12195122 150485.87804878,\n"
+      " 220244.779251566 150505.61834893,220207.243902439 150496,220187.50360229 150462.657300346,\n"
+      " 220197.12195122 150425.12195122,220227 150406)"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:619
+#, no-c-format
+msgid "ST_DelaunayTriangles"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:621
+#, no-c-format
+msgid "Return a Delaunay triangulation around the given input points."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:628
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_DelaunayTriangles</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float </type> <parameter>tolerance</parameter></paramdef> <paramdef><type>int4 </type> <parameter>flags</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:640
+#, no-c-format
+msgid "Return a <ulink url=\"http://en.wikipedia.org/wiki/Delaunay_triangulation\">Delaunay triangulation</ulink> around the vertices of the input geometry. Output is a COLLECTION of polygons (for flags=0) or a MULTILINESTRING (for flags=1). The tolerance, if any, is used to snap input vertices togheter."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:649
+#, no-c-format
+msgid "Availability: 2.1.0 - requires GEOS &gt;= 3.4.0."
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:654
+#, no-c-format
+msgid "2D Examples"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:663
+#, no-c-format
+msgid "Original polygons"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:666
+#, no-c-format
+msgid ""
+      "-- our original geometry --\n"
+      "        ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
+      "                        50 60, 125 100, 175 150))'),\n"
+      "                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
+      "                )"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:674
+#, no-c-format
+msgid "ST_DelaunayTriangles of 2 polygons: delaunay triangle polygons each triangle themed in different color"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:677
+#, no-c-format
+msgid ""
+      "-- geometries overlaid multilinestring triangles\n"
+      "SELECT \n"
+      "        ST_DelaunayTriangles(\n"
+      "                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
+      "                        50 60, 125 100, 175 150))'),\n"
+      "                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
+      "                )) \n"
+      "         As  dtriag;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:684
+#, no-c-format
+msgid "-- delaunay triangles as multilinestring"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:687
+#, no-c-format
+msgid ""
+      "SELECT \n"
+      "        ST_DelaunayTriangles(\n"
+      "                ST_Union(ST_GeomFromText('POLYGON((175 150, 20 40, \n"
+      "                        50 60, 125 100, 175 150))'),\n"
+      "                ST_Buffer(ST_GeomFromText('POINT(110 170)'), 20)\n"
+      "                ),0.001,1) \n"
+      "         As  dtriag;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:695
+#, no-c-format
+msgid "-- delaunay triangles of 45 points as 55 triangle polygons"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:698
+#, no-c-format
+msgid ""
+      "-- this produces a table of 42 points that form an L shape\n"
+      "SELECT (ST_DumpPoints(ST_GeomFromText(\n"
+      "'MULTIPOINT(14 14,34 14,54 14,74 14,94 14,114 14,134 14,\n"
+      "150 14,154 14,154 6,134 6,114 6,94 6,74 6,54 6,34 6,\n"
+      "14 6,10 6,8 6,7 7,6 8,6 10,6 30,6 50,6 70,6 90,6 110,6 130,\n"
+      "6 150,6 170,6 190,6 194,14 194,14 174,14 154,14 134,14 114,\n"
+      "14 94,14 74,14 54,14 34,14 14)'))).geom \n"
+      "        INTO TABLE l_shape;\n"
+      "-- output as individual polygon triangles\n"
+      "SELECT ST_AsText((ST_Dump(geom)).geom) As wkt\n"
+      "FROM ( SELECT ST_DelaunayTriangles(ST_Collect(geom)) As geom\n"
+      "FROM l_shape) As foo;\n"
+      "\n"
+      "---wkt ---\n"
+      "POLYGON((6 194,6 190,14 194,6 194))\n"
+      "POLYGON((14 194,6 190,14 174,14 194))\n"
+      "POLYGON((14 194,14 174,154 14,14 194))\n"
+      "POLYGON((154 14,14 174,14 154,154 14))\n"
+      "POLYGON((154 14,14 154,150 14,154 14))\n"
+      "POLYGON((154 14,150 14,154 6,154 14))\n"
+      ":\n"
+      ":"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:707
+#, no-c-format
+msgid "3D Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:708
+#, no-c-format
+msgid ""
+      "-- 3D multipoint --\n"
+      "SELECT ST_AsText(ST_DelaunayTriangles(ST_GeomFromText(\n"
+      "'MULTIPOINT Z(14 14 10,\n"
+      "150 14 100,34 6 25, 20 10 150)'))) As wkt;\n"
+      "\n"
+      "-----wkt----\n"
+      "GEOMETRYCOLLECTION Z (POLYGON Z ((14 14 10,20 10 150,34 6 25,14 14 10))\n"
+      " ,POLYGON Z ((14 14 10,34 6 25,150 14 100,14 14 10)))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:712 reference_processing.xml:1323
+#, no-c-format
+msgid ", <xref linkend=\"ST_Dump\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:719
+#, no-c-format
+msgid "ST_Difference"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:721
+#, no-c-format
+msgid "Returns a geometry that represents that part of geometry A that does not intersect with geometry B."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:727
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_Difference</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:738
+#, no-c-format
+msgid "Returns a geometry that represents that part of geometry A that does not intersect with geometry B. One can think of this as GeometryA - ST_Intersection(A,B). If A is completely contained in B then an empty geometry collection is returned."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:741
+#, no-c-format
+msgid "Note - order matters. B - A will always return a portion of B"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:745 reference_processing.xml:1928
+#, no-c-format
+msgid "Do not call with a GeometryCollection as an argument"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:748
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.20"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:749 reference_processing.xml:1932
+#, no-c-format
+msgid "&Z_support; However it seems to only consider x y when doing the difference and tacks back on the Z-Index"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:766
+#, no-c-format
+msgid "The original linestrings shown together."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:778
+#, no-c-format
+msgid "The difference of the two linestrings"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:787
+#, no-c-format
+msgid ""
+      "--Safe for 2d. This is same geometries as what is shown for st_symdifference\n"
+      "SELECT ST_AsText(\n"
+      "        ST_Difference(\n"
+      "                        ST_GeomFromText('LINESTRING(50 100, 50 200)'),\n"
+      "                        ST_GeomFromText('LINESTRING(50 50, 50 150)')\n"
+      "                )\n"
+      "        );\n"
+      "\n"
+      "st_astext\n"
+      "---------\n"
+      "LINESTRING(50 150,50 200)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:789
+#, no-c-format
+msgid ""
+      "--When used in 3d doesn't quite do the right thing\n"
+      "SELECT ST_AsEWKT(ST_Difference(ST_GeomFromEWKT('MULTIPOINT(-118.58 38.38 5,-118.60 38.329 6,-118.614 38.281 7)'), ST_GeomFromEWKT('POINT(-118.614 38.281 5)')));\n"
+      "st_asewkt\n"
+      "---------\n"
+      "MULTIPOINT(-118.6 38.329 6,-118.58 38.38 5)"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:802
+#, no-c-format
+msgid "ST_Dump"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:803
+#, no-c-format
+msgid "Returns a set of geometry_dump (geom,path) rows, that make up a geometry g1."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:808
+#, no-c-format
+msgid "<funcdef>geometry_dump[] <function>ST_Dump</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:817
+#, no-c-format
+msgid "This is a set-returning function (SRF). It returns a set of geometry_dump rows, formed by a geometry (geom) and an array of integers (path). When the input geometry is a simple type (POINT,LINESTRING,POLYGON) a single record will be returned with an empty path array and the input geometry as geom. When the input geometry is a collection or multi it will return a record for each of the collection components, and the path will express the position of the component inside the collection."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:826
+#, no-c-format
+msgid "ST_Dump is useful for expanding geometries. It is the reverse of a GROUP BY in that it creates new rows. For example it can be use to expand MULTIPOLYGONS into POLYGONS."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:830 reference_processing.xml:889
+#, no-c-format
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:831
+#, no-c-format
+msgid "Availability: PostGIS 1.0.0RC1. Requires PostgreSQL 7.3 or higher."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:833
+#, no-c-format
+msgid "Prior to 1.3.4, this function crashes if used with geometries that contain CURVES. This is fixed in 1.3.4+"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:838 reference_processing.xml:892 reference_processing.xml:995 reference_processing.xml:1566 reference_processing.xml:1684
+#, no-c-format
+msgid "&P_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:839 reference_processing.xml:893 reference_processing.xml:996 reference_processing.xml:1685
+#, no-c-format
+msgid "&T_support;"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:844
+#, no-c-format
+msgid "Standard Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:845
+#, no-c-format
+msgid ""
+      "SELECT sometable.field1, sometable.field1,\n"
+      "      (ST_Dump(sometable.the_geom)).geom AS the_geom\n"
+      "FROM sometable;\n"
+      "\n"
+      "-- Break a compound curve into its constituent linestrings and circularstrings\n"
+      "SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)\n"
+      "  FROM ( SELECT (ST_Dump(p_geom)).geom AS geom\n"
+      "         FROM (SELECT ST_GeomFromEWKT('COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))') AS p_geom) AS b\n"
+      "        ) AS a;\n"
+      "          st_asewkt          | st_hasarc\n"
+      "-----------------------------+----------\n"
+      " CIRCULARSTRING(0 0,1 1,1 0) | t\n"
+      " LINESTRING(1 0,0 1)         | f\n"
+      "(2 rows)"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:847 reference_processing.xml:914
+#, no-c-format
+msgid "Polyhedral Surfaces, TIN and Triangle Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:848
+#, no-c-format
+msgid ""
+      "-- Polyhedral surface example\n"
+      "-- Break a Polyhedral surface into its faces\n"
+      "SELECT (a.p_geom).path[1] As path, ST_AsEWKT((a.p_geom).geom) As geom_ewkt\n"
+      "  FROM (SELECT ST_Dump(ST_GeomFromEWKT('POLYHEDRALSURFACE( \n"
+      "((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),  \n"
+      "((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)),  ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),  \n"
+      "((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),  ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) \n"
+      ")') ) AS p_geom )  AS a;\n"
+      "\n"
+      " path |                geom_ewkt\n"
+      "------+------------------------------------------\n"
+      "    1 | POLYGON((0 0 0,0 0 1,0 1 1,0 1 0,0 0 0))\n"
+      "    2 | POLYGON((0 0 0,0 1 0,1 1 0,1 0 0,0 0 0))\n"
+      "    3 | POLYGON((0 0 0,1 0 0,1 0 1,0 0 1,0 0 0))\n"
+      "    4 | POLYGON((1 1 0,1 1 1,1 0 1,1 0 0,1 1 0))\n"
+      "    5 | POLYGON((0 1 0,0 1 1,1 1 1,1 1 0,0 1 0))\n"
+      "    6 | POLYGON((0 0 1,1 0 1,1 1 1,0 1 1,0 0 1))"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:850
+#, no-c-format
+msgid ""
+      "-- TIN --                \n"
+      "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+      "  FROM\n"
+      "    (SELECT \n"
+      "       ST_Dump( ST_GeomFromEWKT('TIN (((\n"
+      "                0 0 0, \n"
+      "                0 0 1, \n"
+      "                0 1 0, \n"
+      "                0 0 0\n"
+      "            )), ((\n"
+      "                0 0 0, \n"
+      "                0 1 0, \n"
+      "                1 1 0, \n"
+      "                0 0 0\n"
+      "            ))\n"
+      "            )') ) AS gdump\n"
+      "    ) AS g;\n"
+      "-- result --\n"
+      " path |                 wkt\n"
+      "------+-------------------------------------\n"
+      " {1}  | TRIANGLE((0 0 0,0 0 1,0 1 0,0 0 0))\n"
+      " {2}  | TRIANGLE((0 0 0,0 1 0,1 1 0,0 0 0))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:854
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_Collect\"/>, <xref linkend=\"ST_GeometryN\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:860
+#, no-c-format
+msgid "ST_DumpPoints"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:861
+#, no-c-format
+msgid "Returns a set of geometry_dump (geom,path) rows of all points that make up a geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:866
+#, no-c-format
+msgid "<funcdef>geometry_dump[]<function>ST_DumpPoints</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:875
+#, no-c-format
+msgid "This set-returning function (SRF) returns a set of <varname>geometry_dump</varname> rows formed by a geometry (<varname>geom</varname>) and an array of integers (<varname>path</varname>)."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:878
+#, no-c-format
+msgid "The <parameter>geom</parameter> component of <varname>geometry_dump</varname> are all the <varname>POINT</varname>s that make up the supplied geometry"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:881
+#, no-c-format
+msgid "The <parameter>path</parameter> component of <varname>geometry_dump</varname> (an <varname>integer[]</varname>) is an index reference enumerating the <varname>POINT</varname>s of the supplied geometry. For example, if a <varname>LINESTRING</varname> is supplied, a path of <varname>{i}</varname> is returned where <varname>i</varname> is the <varname>nth</varname> coordinate in the <varname>LINESTRING</varname>. If a <varname>POLYGON</varname> is supplied, a path of <varname>{i,j}</varname> is returned where <varname>i</varname> is the ring number (1 is outer; inner rings follow) and <varname>j</varname> enumerates the <varname>POINT</varname>s (again 1-based index)."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:890
+#, no-c-format
+msgid "Availability: 1.5.0"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:897
+#, no-c-format
+msgid "Classic Explode a Table of LineStrings into nodes"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:898
+#, no-c-format
+msgid ""
+      "SELECT edge_id, (dp).path[1] As index, ST_AsText((dp).geom) As wktnode\n"
+      "FROM (SELECT 1 As edge_id\n"
+      "        , ST_DumpPoints(ST_GeomFromText('LINESTRING(1 2, 3 4, 10 10)')) AS dp\n"
+      "     UNION ALL\n"
+      "     SELECT 2 As edge_id\n"
+      "        , ST_DumpPoints(ST_GeomFromText('LINESTRING(3 5, 5 6, 9 10)')) AS dp\n"
+      "   ) As foo;\n"
+      " edge_id | index |    wktnode\n"
+      "---------+-------+--------------\n"
+      "       1 |     1 | POINT(1 2)\n"
+      "       1 |     2 | POINT(3 4)\n"
+      "       1 |     3 | POINT(10 10)\n"
+      "       2 |     1 | POINT(3 5)\n"
+      "       2 |     2 | POINT(5 6)\n"
+      "       2 |     3 | POINT(9 10)"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:901
+#, no-c-format
+msgid "Standard Geometry Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:911
+#, no-c-format
+msgid ""
+      "SELECT path, ST_AsText(geom) \n"
+      "FROM (\n"
+      "  SELECT (ST_DumpPoints(g.geom)).* \n"
+      "  FROM\n"
+      "    (SELECT \n"
+      "       'GEOMETRYCOLLECTION(\n"
+      "          POINT ( 0 1 ), \n"
+      "          LINESTRING ( 0 3, 3 4 ),\n"
+      "          POLYGON (( 2 0, 2 3, 0 2, 2 0 )),\n"
+      "          POLYGON (( 3 0, 3 3, 6 3, 6 0, 3 0 ), \n"
+      "                   ( 5 1, 4 2, 5 2, 5 1 )),\n"
+      "          MULTIPOLYGON (\n"
+      "                  (( 0 5, 0 8, 4 8, 4 5, 0 5 ), \n"
+      "                   ( 1 6, 3 6, 2 7, 1 6 )), \n"
+      "                  (( 5 4, 5 8, 6 7, 5 4 ))\n"
+      "          )\n"
+      "        )'::geometry AS geom\n"
+      "    ) AS g\n"
+      "  ) j;\n"
+      "  \n"
+      "   path    | st_astext  \n"
+      "-----------+------------\n"
+      " {1,1}     | POINT(0 1)\n"
+      " {2,1}     | POINT(0 3)\n"
+      " {2,2}     | POINT(3 4)\n"
+      " {3,1,1}   | POINT(2 0)\n"
+      " {3,1,2}   | POINT(2 3)\n"
+      " {3,1,3}   | POINT(0 2)\n"
+      " {3,1,4}   | POINT(2 0)\n"
+      " {4,1,1}   | POINT(3 0)\n"
+      " {4,1,2}   | POINT(3 3)\n"
+      " {4,1,3}   | POINT(6 3)\n"
+      " {4,1,4}   | POINT(6 0)\n"
+      " {4,1,5}   | POINT(3 0)\n"
+      " {4,2,1}   | POINT(5 1)\n"
+      " {4,2,2}   | POINT(4 2)\n"
+      " {4,2,3}   | POINT(5 2)\n"
+      " {4,2,4}   | POINT(5 1)\n"
+      " {5,1,1,1} | POINT(0 5)\n"
+      " {5,1,1,2} | POINT(0 8)\n"
+      " {5,1,1,3} | POINT(4 8)\n"
+      " {5,1,1,4} | POINT(4 5)\n"
+      " {5,1,1,5} | POINT(0 5)\n"
+      " {5,1,2,1} | POINT(1 6)\n"
+      " {5,1,2,2} | POINT(3 6)\n"
+      " {5,1,2,3} | POINT(2 7)\n"
+      " {5,1,2,4} | POINT(1 6)\n"
+      " {5,2,1,1} | POINT(5 4)\n"
+      " {5,2,1,2} | POINT(5 8)\n"
+      " {5,2,1,3} | POINT(6 7)\n"
+      " {5,2,1,4} | POINT(5 4)\n"
+      "(29 rows)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:915
+#, no-c-format
+msgid ""
+      "-- Polyhedral surface cube --                \n"
+      "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+      "  FROM\n"
+      "    (SELECT \n"
+      "       ST_DumpPoints(ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), \n"
+      "((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), \n"
+      "((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), \n"
+      "((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )') ) AS gdump\n"
+      "    ) AS g;\n"
+      "-- result --\n"
+      "  path   |     wkt\n"
+      "---------+--------------\n"
+      " {1,1,1} | POINT(0 0 0)\n"
+      " {1,1,2} | POINT(0 0 1)\n"
+      " {1,1,3} | POINT(0 1 1)\n"
+      " {1,1,4} | POINT(0 1 0)\n"
+      " {1,1,5} | POINT(0 0 0)\n"
+      " {2,1,1} | POINT(0 0 0)\n"
+      " {2,1,2} | POINT(0 1 0)\n"
+      " {2,1,3} | POINT(1 1 0)\n"
+      " {2,1,4} | POINT(1 0 0)\n"
+      " {2,1,5} | POINT(0 0 0)\n"
+      " {3,1,1} | POINT(0 0 0)\n"
+      " {3,1,2} | POINT(1 0 0)\n"
+      " {3,1,3} | POINT(1 0 1)\n"
+      " {3,1,4} | POINT(0 0 1)\n"
+      " {3,1,5} | POINT(0 0 0)\n"
+      " {4,1,1} | POINT(1 1 0)\n"
+      " {4,1,2} | POINT(1 1 1)\n"
+      " {4,1,3} | POINT(1 0 1)\n"
+      " {4,1,4} | POINT(1 0 0)\n"
+      " {4,1,5} | POINT(1 1 0)\n"
+      " {5,1,1} | POINT(0 1 0)\n"
+      " {5,1,2} | POINT(0 1 1)\n"
+      " {5,1,3} | POINT(1 1 1)\n"
+      " {5,1,4} | POINT(1 1 0)\n"
+      " {5,1,5} | POINT(0 1 0)\n"
+      " {6,1,1} | POINT(0 0 1)\n"
+      " {6,1,2} | POINT(1 0 1)\n"
+      " {6,1,3} | POINT(1 1 1)\n"
+      " {6,1,4} | POINT(0 1 1)\n"
+      " {6,1,5} | POINT(0 0 1)\n"
+      "(30 rows)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:916
+#, no-c-format
+msgid ""
+      "-- Triangle --                \n"
+      "SELECT (g.gdump).path, ST_AsText((g.gdump).geom) as wkt\n"
+      "  FROM\n"
+      "    (SELECT \n"
+      "       ST_DumpPoints( ST_GeomFromEWKT('TRIANGLE ((\n"
+      "                0 0, \n"
+      "                0 9, \n"
+      "                9 0, \n"
+      "                0 0\n"
+      "            ))') ) AS gdump\n"
+      "    ) AS g;\n"
+      "-- result --\n"
+      " path |    wkt\n"
+      "------+------------\n"
+      " {1}  | POINT(0 0)\n"
+      " {2}  | POINT(0 9)\n"
+      " {3}  | POINT(9 0)\n"
+      " {4}  | POINT(0 0)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:917
+#, no-c-format
+msgid ""
+      "-- TIN --                \n"
+      "SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt\n"
+      "  FROM\n"
+      "    (SELECT \n"
+      "       ST_DumpPoints( ST_GeomFromEWKT('TIN (((\n"
+      "                0 0 0, \n"
+      "                0 0 1, \n"
+      "                0 1 0, \n"
+      "                0 0 0\n"
+      "            )), ((\n"
+      "                0 0 0, \n"
+      "                0 1 0, \n"
+      "                1 1 0, \n"
+      "                0 0 0\n"
+      "            ))\n"
+      "            )') ) AS gdump\n"
+      "    ) AS g;\n"
+      "-- result --\n"
+      "  path   |     wkt\n"
+      "---------+--------------\n"
+      " {1,1,1} | POINT(0 0 0)\n"
+      " {1,1,2} | POINT(0 0 1)\n"
+      " {1,1,3} | POINT(0 1 0)\n"
+      " {1,1,4} | POINT(0 0 0)\n"
+      " {2,1,1} | POINT(0 0 0)\n"
+      " {2,1,2} | POINT(0 1 0)\n"
+      " {2,1,3} | POINT(1 1 0)\n"
+      " {2,1,4} | POINT(0 0 0)\n"
+      "(8 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:921
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_DumpRings\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:926
+#, no-c-format
+msgid "ST_DumpRings"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:928
+#, no-c-format
+msgid "Returns a set of <varname>geometry_dump</varname> rows, representing the exterior and interior rings of a polygon."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:934
+#, no-c-format
+msgid "<funcdef>geometry_dump[] <function>ST_DumpRings</function></funcdef> <paramdef><type>geometry </type> <parameter>a_polygon</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:944
+#, no-c-format
+msgid "This is a set-returning function (SRF). It returns a set of <varname>geometry_dump</varname> rows, defined as an <varname>integer[]</varname> and a <varname>geometry</varname>, aliased \"path\" and \"geom\" respectively. The \"path\" field holds the polygon ring index containing a single integer: 0 for the shell, >0 for holes. The \"geom\" field contains the corresponding ring as a polygon."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:950
+#, no-c-format
+msgid "Availability: PostGIS 1.1.3. Requires PostgreSQL 7.3 or higher."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:951
+#, no-c-format
+msgid "This only works for POLYGON geometries. It will not work for MULTIPOLYGONS"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:959
+#, no-c-format
+msgid ""
+      "SELECT sometable.field1, sometable.field1,\n"
+      "          (ST_DumpRings(sometable.the_geom)).geom As the_geom\n"
+      "FROM sometableOfpolys;\n"
+      "\n"
+      "SELECT ST_AsEWKT(geom) As the_geom, path\n"
+      "        FROM ST_DumpRings(\n"
+      "                ST_GeomFromEWKT('POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,-8148941 5132466 1,-8148924 5132394 1,\n"
+      "                -8148903 5132210 1,-8148930 5131967 1,-8148992 5131978 1,-8149237 5132093 1,-8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,\n"
+      "                -8150305 5132788 1,-8149064 5133092 1),\n"
+      "                (-8149362 5132394 1,-8149446 5132501 1,-8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))')\n"
+      "                )  as foo;\n"
+      " path |                                            the_geom\n"
+      "----------------------------------------------------------------------------------------------------------------\n"
+      "  {0} | POLYGON((-8149064 5133092 1,-8149064 5132986 1,-8148996 5132839 1,-8148972 5132767 1,-8148958 5132508 1,\n"
+      "          |          -8148941 5132466 1,-8148924 5132394 1,\n"
+      "          |          -8148903 5132210 1,-8148930 5131967 1,\n"
+      "          |          -8148992 5131978 1,-8149237 5132093 1,\n"
+      "          |          -8149404 5132211 1,-8149647 5132310 1,-8149757 5132394 1,-8150305 5132788 1,-8149064 5133092 1))\n"
+      "  {1} | POLYGON((-8149362 5132394 1,-8149446 5132501 1,\n"
+      "          |          -8149548 5132597 1,-8149695 5132675 1,-8149362 5132394 1))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:966
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Geometry_DumpFunctions\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_ExteriorRing\"/>, <xref linkend=\"ST_InteriorRingN\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:972
+#, no-c-format
+msgid "ST_FlipCoordinates"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:973
+#, no-c-format
+msgid "Returns a version of the given geometry with X and Y axis flipped. Useful for people who have built latitude/longitude features and need to fix them."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:981
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_FlipCoordinates</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:990
+#, no-c-format
+msgid "Returns a version of the given geometry with X and Y axis flipped."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:993
+#, no-c-format
+msgid "&M_support;"
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:1000
+#, no-c-format
+msgid "Example"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1001
+#, no-c-format
+msgid ""
+      "<![CDATA[\n"
+      "SELECT ST_AsEWKT(ST_FlipCoordinates(GeomFromEWKT('POINT(1 2)')));\n"
+      " st_asewkt  \n"
+      "------------\n"
+      "POINT(2 1)\n"
+      "                 ]]>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1008
+#, no-c-format
+msgid "ST_Intersection"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1010
+#, no-c-format
+msgid "(T) Returns a geometry that represents the shared portion of geomA and geomB. The geography implementation does a transform to geometry to do the intersection and then transform back to WGS84."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_processing.xml:1015
+#, no-c-format
+msgid "<funcprototype> <funcdef>geometry <function>ST_Intersection</function></funcdef> <paramdef> <type>geometry</type> <parameter>geomA</parameter> </paramdef> <paramdef> <type>geometry</type> <parameter>geomB</parameter> </paramdef> </funcprototype> <funcprototype> <funcdef>geography <function>ST_Intersection</function></funcdef> <paramdef> <type>geography</type> <parameter>geogA</parameter> </paramdef> <paramdef> <type>geography</type> <parameter>geogB</parameter> </paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1042
+#, no-c-format
+msgid "Returns a geometry that represents the point set intersection of the Geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1045
+#, no-c-format
+msgid "In other words - that portion of geometry A and geometry B that is shared between the two geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1048
+#, no-c-format
+msgid "If the geometries do not share any space (are disjoint), then an empty geometry collection is returned."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1050
+#, no-c-format
+msgid "ST_Intersection in conjunction with ST_Intersects is very useful for clipping geometries such as in bounding box, buffer, region queries where you only want to return that portion of a geometry that sits in a country or region of interest."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1053
+#, no-c-format
+msgid "Geography: For geography this is really a thin wrapper around the geometry implementation. It first determines the best SRID that fits the bounding box of the 2 geography objects (if geography objects are within one half zone UTM but not same UTM will pick one of those) (favoring UTM or Lambert Azimuthal Equal Area (LAEA) north/south pole, and falling back on mercator in worst case scenario) and then intersection in that best fit planar spatial ref and retransforms back to WGS84 geography."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1056
+#, no-c-format
+msgid "Do not call with a <varname>GEOMETRYCOLLECTION</varname> as an argument"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1061
+#, no-c-format
+msgid "Availability: 1.5 support for geography data type was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1064
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.18"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1068
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 2 0, 0 2 )'::geometry));\n"
+      " st_astext\n"
+      "---------------\n"
+      "GEOMETRYCOLLECTION EMPTY\n"
+      "(1 row)\n"
+      "SELECT ST_AsText(ST_Intersection('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry));\n"
+      " st_astext\n"
+      "---------------\n"
+      "POINT(0 0)\n"
+      "(1 row)\n"
+      "\n"
+      "---Clip all lines (trails) by country (here we assume country geom are POLYGON or MULTIPOLYGONS)\n"
+      "-- NOTE: we are only keeping intersections that result in a LINESTRING or MULTILINESTRING because we don't\n"
+      "-- care about trails that just share a point\n"
+      "-- the dump is needed to expand a geometry collection into individual single MULT* parts\n"
+      "-- the below is fairly generic and will work for polys, etc. by just changing the where clause\n"
+      "SELECT clipped.gid, clipped.f_name, clipped_geom\n"
+      "FROM (SELECT trails.gid, trails.f_name, (ST_Dump(ST_Intersection(country.the_geom, trails.the_geom))).geom As clipped_geom\n"
+      "FROM country\n"
+      "        INNER JOIN trails\n"
+      "        ON ST_Intersects(country.the_geom, trails.the_geom))  As clipped\n"
+      "        WHERE ST_Dimension(clipped.clipped_geom) = 1 ;\n"
+      "\n"
+      "--For polys e.g. polygon landmarks, you can also use the sometimes faster hack that buffering anything by 0.0\n"
+      "-- except a polygon results in an empty geometry collection\n"
+      "--(so a geometry collection containing polys, lines and points)\n"
+      "-- buffered by 0.0 would only leave the polygons and dissolve the collection shell\n"
+      "SELECT poly.gid,  ST_Multi(ST_Buffer(\n"
+      "                                ST_Intersection(country.the_geom, poly.the_geom),\n"
+      "                                0.0)\n"
+      "                                ) As clipped_geom\n"
+      "FROM country\n"
+      "        INNER JOIN poly\n"
+      "        ON ST_Intersects(country.the_geom, poly.the_geom)\n"
+      "        WHERE Not ST_IsEmpty(ST_Buffer(ST_Intersection(country.the_geom, poly.the_geom),0.0));"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1072
+#, no-c-format
+msgid ", <xref linkend=\"ST_Dimension\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_SymDifference\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Multi\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1078
+#, no-c-format
+msgid "ST_LineToCurve"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1080
+#, no-c-format
+msgid "Converts a LINESTRING/POLYGON to a CIRCULARSTRING, CURVED POLYGON"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1085
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_LineToCurve</function></funcdef> <paramdef><type>geometry </type> <parameter>geomANoncircular</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1095
+#, no-c-format
+msgid "Converts plain LINESTRING/POLYGONS to CIRCULAR STRINGs and Curved Polygons. Note much fewer points are needed to describe the curved equivalent."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1106
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_LineToCurve(foo.the_geom)) As curvedastext,ST_AsText(foo.the_geom) As non_curvedastext\n"
+      "        FROM (SELECT ST_Buffer('POINT(1 3)'::geometry, 3) As the_geom) As foo;\n"
+      "\n"
+      "curvedatext                                                            non_curvedastext\n"
+      "--------------------------------------------------------------------|-----------------------------------------------------------------\n"
+      "CURVEPOLYGON(CIRCULARSTRING(4 3,3.12132034355964 0.878679656440359, | POLYGON((4 3,3.94235584120969 2.41472903395162,3.77163859753386 1.85194970290473,\n"
+      "1 0,-1.12132034355965 5.12132034355963,4 3))                        |  3.49440883690764 1.33328930094119,3.12132034355964 0.878679656440359,\n"
+      "                                                                    |  2.66671069905881 0.505591163092366,2.14805029709527 0.228361402466141,\n"
+      "                                                                    |  1.58527096604839 0.0576441587903094,1 0,\n"
+      "                                                                    |  0.414729033951621 0.0576441587903077,-0.148050297095264 0.228361402466137,\n"
+      "                                                                    |  -0.666710699058802 0.505591163092361,-1.12132034355964 0.878679656440353,\n"
+      "                                                                    |  -1.49440883690763 1.33328930094119,-1.77163859753386 1.85194970290472\n"
+      "                                                                    |  --ETC-- ,3.94235584120969 3.58527096604839,4 3))\n"
+      "--3D example\n"
+      "SELECT ST_AsEWKT(ST_LineToCurve(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 8, 5 6 4, 7 8 4, 9 10 4)')));\n"
+      "\n"
+      "                         st_asewkt\n"
+      "------------------------------------\n"
+      " CIRCULARSTRING(1 2 3,5 6 4,9 10 4)"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1119
+#, no-c-format
+msgid "ST_MakeValid"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1120
+#, no-c-format
+msgid "Attempts to make an invalid geometry valid w/out loosing vertices."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1125
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_MakeValid</function></funcdef> <paramdef><type>geometry</type> <parameter>input</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1134
+#, no-c-format
+msgid "The function attempts to create a valid representation of a given invalid geometry without loosing any of the input vertices. Already-valid geometries are returned w/out further intervention."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1140
+#, no-c-format
+msgid "Supported inputs are: POINTS, MULTIPOINTS, LINESTRINGS, MULTILINESTRINGS, POLYGONS, MULTIPOLYGONS and GEOMETRYCOLLECTIONS containing any mix of them."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1146
+#, no-c-format
+msgid "In case of full or partial dimensional collapses, the output geometry may be a collection of lower-to-equal dimension geometries or a geometry of lower dimension."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1152
+#, no-c-format
+msgid "Single polygons may become multi-geometries in case of self-intersections."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1156
+#, no-c-format
+msgid "Availability: 2.0.0, requires GEOS-3.3.0"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1157
+#, no-c-format
+msgid "Enahnced: 2.0.1, speed improvements requires GEOS-3.3.4"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1158
+#, no-c-format
+msgid "Enhanced: 2.1.0 added support for GEOMETRYCOLLECTION and MULTIPOINT."
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1175
+#, no-c-format
+msgid "ST_MemUnion"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1177
+#, no-c-format
+msgid "Same as ST_Union, only memory-friendly (uses less memory and more processor time)."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1183
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_MemUnion</function></funcdef> <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1194
+#, no-c-format
+msgid "Some useful description here."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1198
+#, no-c-format
+msgid "Same as ST_Union, only memory-friendly (uses less memory and more processor time). This aggregate function works by unioning the geometries one at a time to previous result as opposed to ST_Union aggregate which first creates an array and then unions"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1210
+#, no-c-format
+msgid "See ST_Union"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1223
+#, no-c-format
+msgid "ST_MinimumBoundingCircle"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1224
+#, no-c-format
+msgid "Returns the smallest circle polygon that can fully contain a geometry. Default uses 48 segments per quarter circle."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1230
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_MinimumBoundingCircle</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef choice=\"opt\"><type>integer </type> <parameter>num_segs_per_qt_circ=48</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1240
+#, no-c-format
+msgid "Returns the smallest circle polygon that can fully contain a geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1241
+#, no-c-format
+msgid "The circle is approximated by a polygon with a default of 48 segments per quarter circle. This number can be increased with little performance penalty to obtain a more accurate result."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1243
+#, no-c-format
+msgid "It is often used with MULTI and Geometry Collections. Although it is not an aggregate - you can use it in conjunction with ST_Collect to get the minimum bounding circle of a set of geometries. ST_MinimumBoundingCircle(ST_Collect(somepointfield))."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1248
+#, no-c-format
+msgid "The ratio of the area of a polygon divided by the area of its Minimum Bounding Circle is often referred to as the Roeck test."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1250
+#, no-c-format
+msgid "Availability: 1.4.0 - requires GEOS"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1257
+#, no-c-format
+msgid ""
+      "SELECT d.disease_type,\n"
+      "        ST_MinimumBoundingCircle(ST_Collect(d.the_geom)) As the_geom\n"
+      "        FROM disease_obs As d\n"
+      "        GROUP BY d.disease_type;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1263
+#, no-c-format
+msgid "Minimum bounding circle of a point and linestring. Using 8 segs to approximate a quarter circle"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1266
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_MinimumBoundingCircle(\n"
+      "                ST_Collect(\n"
+      "                        ST_GeomFromEWKT('LINESTRING(55 75,125 150)'),\n"
+      "                                ST_Point(20, 80)), 8\n"
+      "                                )) As wktmbc;\n"
+      "wktmbc\n"
+      "-----------\n"
+      "POLYGON((135.59714732062 115,134.384753327498 102.690357210921,130.79416296937 90.8537670908995,124.963360620072 79.9451031602111,117.116420743937 70.3835792560632,107.554896839789 62.5366393799277,96.6462329091006 56.70583703063,84.8096427890789 53.115246672502,72.5000000000001 51.9028526793802,60.1903572109213 53.1152466725019,48.3537670908996 56.7058370306299,37.4451031602112 62.5366393799276,27.8835792560632 70.383579256063,20.0366393799278 79.9451031602109,14.20583703063 90.8537670908993,10.615246672502 102.690357210921,9.40285267938019 115,10.6152466725019 127.309642789079,14.2058370306299 139.1462329091,20.0366393799275 150.054896839789,27.883579256063 159.616420743937,\n"
+      "37.4451031602108 167.463360620072,48.3537670908992 173.29416296937,60.190357210921 176.884753327498,\n"
+      "72.4999999999998 178.09714732062,84.8096427890786 176.884753327498,96.6462329091003 173.29416296937,107.554896839789 167.463360620072,\n"
+      "117.116420743937 159.616420743937,124.963360620072 150.054896839789,130.79416296937 139.146232909101,134.384753327498 127.309642789079,135.59714732062 115))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1270
+#, no-c-format
+msgid ", <xref linkend=\"ST_ConvexHull\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1276
+#, no-c-format
+msgid "ST_Polygonize"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1278
+#, no-c-format
+msgid "Aggregate. Creates a GeometryCollection containing possible polygons formed from the constituent linework of a set of geometries."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_processing.xml:1284
+#, no-c-format
+msgid "<funcprototype> <funcdef>geometry <function>ST_Polygonize</function></funcdef> <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Polygonize</function></funcdef> <paramdef><type>geometry[]</type> <parameter>geom_array</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1300
+#, no-c-format
+msgid "Creates a GeometryCollection containing possible polygons formed from the constituent linework of a set of geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1305
+#, no-c-format
+msgid "Geometry Collections are often difficult to deal with with third party tools, so use ST_Polygonize in conjunction with <xref linkend=\"ST_Dump\"/> to dump the polygons out into individual polygons."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1313
+#, no-c-format
+msgid "Availability: 1.0.0RC1 - requires GEOS &gt;= 2.1.0."
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:1317
+#, no-c-format
+msgid "Examples: Polygonizing single linestrings"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1318
+#, no-c-format
+msgid ""
+      "SELECT ST_AsEWKT(ST_Polygonize(the_geom_4269)) As geomtextrep\n"
+      "FROM (SELECT the_geom_4269 FROM ma.suffolk_edges ORDER BY tlid LIMIT 45) As foo;\n"
+      "\n"
+      "geomtextrep\n"
+      "-------------------------------------\n"
+      " SRID=4269;GEOMETRYCOLLECTION(POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,-71.040878 42.285678)),\n"
+      " POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358,-71.171794 42.354971,-71.170511 42.354855,\n"
+      " -71.17112 42.354238,-71.17166 42.353675)))\n"
+      "(1 row)\n"
+      "\n"
+      "--Use ST_Dump to dump out the polygonize geoms into individual polygons\n"
+      "SELECT ST_AsEWKT((ST_Dump(foofoo.polycoll)).geom) As geomtextrep\n"
+      "FROM (SELECT ST_Polygonize(the_geom_4269) As polycoll\n"
+      "        FROM (SELECT the_geom_4269 FROM ma.suffolk_edges\n"
+      "                ORDER BY tlid LIMIT 45) As foo) As foofoo;\n"
+      "\n"
+      "geomtextrep\n"
+      "------------------------\n"
+      " SRID=4269;POLYGON((-71.040878 42.285678,-71.040943 42.2856,-71.04096 42.285752,\n"
+      "-71.040878 42.285678))\n"
+      " SRID=4269;POLYGON((-71.17166 42.353675,-71.172026 42.354044,-71.17239 42.354358\n"
+      ",-71.171794 42.354971,-71.170511 42.354855,-71.17112 42.354238,-71.17166 42.353675))\n"
+      "(2 rows)"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1332
+#, no-c-format
+msgid "ST_Node"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1334
+#, no-c-format
+msgid "Node a set of linestrings."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1341
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_Node</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1352
+#, no-c-format
+msgid "Fully node a set of linestrings using the least possible number of nodes while preserving all of the input ones."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1359 reference_processing.xml:2103
+#, no-c-format
+msgid "Availability: 2.0.0 - requires GEOS &gt;= 3.3.0."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1361
+#, no-c-format
+msgid "Due to a bug in GEOS up to 3.3.1 this function fails to node self-intersecting lines. This is fixed with GEOS 3.3.2 or higher."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1368
+#, no-c-format
+msgid ""
+      "SELECT ST_AsEWKT(\n"
+      "                ST_Node('LINESTRINGZ(0 0 0, 10 10 10, 0 10 5, 10 0 3)'::geometry)\n"
+      "        ) As  output;\n"
+      "output\n"
+      "-----------\n"
+      "MULTILINESTRING((0 0 0,5 5 4.5),(5 5 4.5,10 10 10,0 10 5,5 5 4.5),(5 5 4.5,10 0 3))"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1383
+#, no-c-format
+msgid "ST_OffsetCurve"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1385
+#, no-c-format
+msgid "Return an offset line at a given distance and side from an input line. Useful for computing parallel lines about a center line"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1393
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_OffsetCurve</function></funcdef> <paramdef><type>geometry </type> <parameter>line</parameter></paramdef> <paramdef><type>float </type> <parameter>signed_distance</parameter></paramdef> <paramdef choice=\"opt\"><type>text </type> <parameter>style_parameters=''</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1406
+#, no-c-format
+msgid "Return an offset line at a given distance and side from an input line. All points of the returned geometries are not further than the given distance from the input geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1412
+#, no-c-format
+msgid "For positive distance the offset will be at the left side of the input line and retain the same direction. For a negative distance it'll be at the right side and in the opposite direction."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1418
+#, no-c-format
+msgid "Availability: 2.0 - requires GEOS &gt;= 3.2, improved with GEOS &gt;= 3.3"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1422
+#, no-c-format
+msgid "The optional third parameter allows specifying a list of blank-separated key=value pairs to tweak operations as follows:"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1430
+#, no-c-format
+msgid "'join=round|mitre|bevel' : join style (defaults to \"round\"). 'miter' is also accepted as a synonym for 'mitre'."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1433
+#, no-c-format
+msgid "'mitre_limit=#.#' : mitre ratio limit (only affects mitred join style). 'miter_limit' is also accepted as a synonym for 'mitre_limit'."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1438
+#, no-c-format
+msgid "Units of distance are measured in units of the spatial reference system."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1442
+#, no-c-format
+msgid "The inputs can only be LINESTRINGS."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1446
+#, no-c-format
+msgid "This function ignores the third dimension (z) and will always give a 2-d result even when presented with a 3d-geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1454
+#, no-c-format
+msgid "Compute an open buffer around roads"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1455
+#, no-c-format
+msgid ""
+      "SELECT ST_Union(\n"
+      " ST_OffsetCurve(f.the_geom,  f.width/2, 'quad_segs=4 join=round'),\n"
+      " ST_OffsetCurve(f.the_geom, -f.width/2, 'quad_segs=4 join=round')\n"
+      ") as track\n"
+      "FROM someroadstable;"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1465
+#, no-c-format
+msgid "15, 'quad_segs=4 join=round' original line and its offset 15 units."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1469
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
+      "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+      "        44 16,24 16,20 16,18 16,17 17,\n"
+      "        16 18,16 20,16 40,16 60,16 80,16 100,\n"
+      "        16 120,16 140,16 160,16 180,16 195)'),\n"
+      "        15, 'quad_segs=4 join=round'));\n"
+      "--output --\n"
+      "LINESTRING(164 1,18 1,12.2597485145237 2.1418070123307,\n"
+      "        7.39339828220179 5.39339828220179,\n"
+      "        5.39339828220179 7.39339828220179,\n"
+      "        2.14180701233067 12.2597485145237,1 18,1 195)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1476
+#, no-c-format
+msgid "-15, 'quad_segs=4 join=round' original line and its offset -15 units"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1480
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_OffsetCurve(geom,\n"
+      "        -15, 'quad_segs=4 join=round')) As notsocurvy\n"
+      "        FROM ST_GeomFromText(\n"
+      "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+      "        44 16,24 16,20 16,18 16,17 17,\n"
+      "        16 18,16 20,16 40,16 60,16 80,16 100,\n"
+      "        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
+      "-- notsocurvy --\n"
+      "LINESTRING(31 195,31 31,164 31)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1489
+#, no-c-format
+msgid "double-offset to get more curvy, note the first reverses direction, so -30 + 15 = -15"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1492
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_OffsetCurve(ST_OffsetCurve(geom,\n"
+      "        -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')) As morecurvy\n"
+      "        FROM ST_GeomFromText(\n"
+      "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+      "        44 16,24 16,20 16,18 16,17 17,\n"
+      "        16 18,16 20,16 40,16 60,16 80,16 100,\n"
+      "        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
+      "-- morecurvy --\n"
+      "LINESTRING(164 31,46 31,40.2597485145236 32.1418070123307,\n"
+      "35.3933982822018 35.3933982822018,\n"
+      "32.1418070123307 40.2597485145237,31 46,31 195)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1499
+#, no-c-format
+msgid "double-offset to get more curvy,combined with regular offset 15 to get parallel lines. Overlaid with original."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1502
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_Collect(\n"
+      "        ST_OffsetCurve(geom, 15, 'quad_segs=4 join=round'), \n"
+      "        ST_OffsetCurve(ST_OffsetCurve(geom,\n"
+      "        -30, 'quad_segs=4 join=round'), -15, 'quad_segs=4 join=round')\n"
+      "        )\n"
+      ") As parallel_curves\n"
+      "        FROM ST_GeomFromText(\n"
+      "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+      "        44 16,24 16,20 16,18 16,17 17,\n"
+      "        16 18,16 20,16 40,16 60,16 80,16 100,\n"
+      "        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
+      "-- parallel curves  --\n"
+      "MULTILINESTRING((164 1,18 1,12.2597485145237 2.1418070123307,\n"
+      "7.39339828220179 5.39339828220179,5.39339828220179 7.39339828220179,\n"
+      "2.14180701233067 12.2597485145237,1 18,1 195),\n"
+      "(164 31,46 31,40.2597485145236 32.1418070123307,35.3933982822018 35.3933982822018,\n"
+      "32.1418070123307 40.2597485145237,31 46,31 195))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1511
+#, no-c-format
+msgid "15, 'quad_segs=4 join=bevel' shown with original line"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1514
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_OffsetCurve(ST_GeomFromText(\n"
+      "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+      "        44 16,24 16,20 16,18 16,17 17,\n"
+      "        16 18,16 20,16 40,16 60,16 80,16 100,\n"
+      "        16 120,16 140,16 160,16 180,16 195)'), \n"
+      "                15, 'quad_segs=4 join=bevel'));\n"
+      "-- output --\n"
+      "LINESTRING(164 1,18 1,7.39339828220179 5.39339828220179,\n"
+      "        5.39339828220179 7.39339828220179,1 18,1 195)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1522
+#, no-c-format
+msgid "15,-15 collected, join=mitre mitre_limit=2.1"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1525
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_Collect(\n"
+      "        ST_OffsetCurve(geom, 15, 'quad_segs=4 join=mitre mitre_limit=2.2'),\n"
+      "        ST_OffsetCurve(geom, -15, 'quad_segs=4 join=mitre mitre_limit=2.2')\n"
+      "        ) )\n"
+      "        FROM ST_GeomFromText(\n"
+      "'LINESTRING(164 16,144 16,124 16,104 16,84 16,64 16,\n"
+      "        44 16,24 16,20 16,18 16,17 17,\n"
+      "        16 18,16 20,16 40,16 60,16 80,16 100,\n"
+      "        16 120,16 140,16 160,16 180,16 195)') As geom;\n"
+      "-- output --\n"
+      "MULTILINESTRING((164 1,11.7867965644036 1,1 11.7867965644036,1 195),\n"
+      "        (31 195,31 31,164 31))"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1542
+#, no-c-format
+msgid "ST_RemoveRepeatedPoints"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1543
+#, no-c-format
+msgid "Returns a version of the given geometry with duplicated points removed."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1549
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_RemoveRepeatedPoints</function></funcdef> <paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1558
+#, no-c-format
+msgid "Returns a version of the given geometry with duplicated points removed. Will actually do something only with (multi)lines, (multi)polygons and multipoints but you can safely call it with any kind of geometry. Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function."
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1578
+#, no-c-format
+msgid "ST_SharedPaths"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1579
+#, no-c-format
+msgid "Returns a collection containing paths shared by the two input linestrings/multilinestrings."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1584
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_SharedPaths</function></funcdef> <paramdef><type>geometry</type> <parameter>lineal1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>lineal2</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1594
+#, no-c-format
+msgid "Returns a collection containing paths shared by the two input geometries. Those going in the same direction are in the first element of the collection, those going in the opposite direction are in the second element. The paths themselves are given in the direction of the first geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1599
+#, no-c-format
+msgid "Availability: 2.0.0 requires GEOS &gt;= 3.3.0."
+msgstr ""
+
+#. Tag: title
+#: reference_processing.xml:1602
+#, no-c-format
+msgid "Examples: Finding shared paths"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1612
+#, no-c-format
+msgid "A multilinestring and a linestring"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1623
+#, no-c-format
+msgid "The shared path of multilinestring and linestring overlaid with original geometries."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1626
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(\n"
+      "  ST_SharedPaths(\n"
+      "    ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),\n"
+      "            (51 150,101 150,76 175,51 150))'),\n"
+      "         ST_GeomFromText('LINESTRING(151 100,126 156.25,126 125,90 161, 76 175)')\n"
+      "         )\n"
+      "  ) As wkt\n"
+      "\n"
+      "                                wkt\n"
+      "-------------------------------------------------------------\n"
+      "GEOMETRYCOLLECTION(MULTILINESTRING((126 156.25,126 125),\n"
+      " (101 150,90 161),(90 161,76 175)),MULTILINESTRING EMPTY)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1632
+#, no-c-format
+msgid ""
+      "-- same example but linestring orientation flipped\n"
+      "SELECT ST_AsText(\n"
+      "  ST_SharedPaths(\n"
+      "   ST_GeomFromText('LINESTRING(76 175,90 161,126 125,126 156.25,151 100)'),\n"
+      "   ST_GeomFromText('MULTILINESTRING((26 125,26 200,126 200,126 125,26 125),\n"
+      "            (51 150,101 150,76 175,51 150))')\n"
+      "         )\n"
+      "  ) As wkt\n"
+      "\n"
+      "                                wkt\n"
+      "-------------------------------------------------------------\n"
+      "GEOMETRYCOLLECTION(MULTILINESTRING EMPTY,\n"
+      "MULTILINESTRING((76 175,90 161),(90 161,101 150),(126 125,126 156.25)))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1642
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_NumGeometries\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1652
+#, no-c-format
+msgid "ST_Shift_Longitude"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1654
+#, no-c-format
+msgid "<refpurpose>Reads every point/vertex in every component of every feature in a geometry, and if the longitude coordinate is &lt;0, adds 360 to it. The result would be a 0-360 version of the data to be plotted in a 180 centric map</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1662
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_Shift_Longitude</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1672
+#, no-c-format
+msgid "<para>Reads every point/vertex in every component of every feature in a geometry, and if the longitude coordinate is &lt;0, adds 360 to it. The result would be a 0-360 version of the data to be plotted in a 180 centric map</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1676
+#, no-c-format
+msgid "This is only useful for data in long lat e.g. 4326 (WGS 84 long lat)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1678
+#, no-c-format
+msgid "Pre-1.3.4 bug prevented this from working for MULTIPOINT. 1.3.4+ works with MULTIPOINT as well."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1683
+#, no-c-format
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces and TIN was introduced."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1692
+#, no-c-format
+msgid ""
+      "--3d points\n"
+      "SELECT ST_AsEWKT(ST_Shift_Longitude(ST_GeomFromEWKT('SRID=4326;POINT(-118.58 38.38 10)'))) As geomA,\n"
+      "        ST_AsEWKT(ST_Shift_Longitude(ST_GeomFromEWKT('SRID=4326;POINT(241.42 38.38 10)'))) As geomb\n"
+      "geomA                                                          geomB\n"
+      "----------                                                  -----------\n"
+      "SRID=4326;POINT(241.42 38.38 10) SRID=4326;POINT(-118.58 38.38 10)\n"
+      "\n"
+      "--regular line string\n"
+      "SELECT ST_AsText(ST_Shift_Longitude(ST_GeomFromText('LINESTRING(-118.58 38.38, -118.20 38.45)')))\n"
+      "\n"
+      "st_astext\n"
+      "----------\n"
+      "LINESTRING(241.42 38.38,241.8 38.45)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1698
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_AsEWKT\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1704
+#, no-c-format
+msgid "ST_Simplify"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1705
+#, no-c-format
+msgid "Returns a \"simplified\" version of the given geometry using the Douglas-Peucker algorithm."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1711
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_Simplify</function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1721
+#, no-c-format
+msgid "Returns a \"simplified\" version of the given geometry using the Douglas-Peucker algorithm. Will actually do something only with (multi)lines and (multi)polygons but you can safely call it with any kind of geometry. Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1728
+#, no-c-format
+msgid "Note that returned geometry might loose its simplicity (see <xref linkend=\"ST_IsSimple\"/>)"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1730
+#, no-c-format
+msgid "Note topology may not be preserved and may result in invalid geometries. Use (see <xref linkend=\"ST_SimplifyPreserveTopology\"/>) to preserve topology."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1733
+#, no-c-format
+msgid "Availability: 1.2.2"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1738
+#, no-c-format
+msgid "A circle simplified too much becomes a triangle, medium an octagon,"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1739
+#, no-c-format
+msgid ""
+      "SELECT ST_Npoints(the_geom) As np_before, ST_NPoints(ST_Simplify(the_geom,0.1)) As np01_notbadcircle, ST_NPoints(ST_Simplify(the_geom,0.5)) As np05_notquitecircle,\n"
+      "ST_NPoints(ST_Simplify(the_geom,1)) As np1_octagon, ST_NPoints(ST_Simplify(the_geom,10)) As np10_triangle,\n"
+      "(ST_Simplify(the_geom,100) is null) As  np100_geometrygoesaway\n"
+      "FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;\n"
+      "-result\n"
+      " np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_triangle | np100_geometrygoesaway\n"
+      "-----------+-------------------+---------------------+-------------+---------------+------------------------\n"
+      "                49 |                33 |                  17 |           9 |             4 | t"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1743
+#, no-c-format
+msgid ", <xref linkend=\"ST_SimplifyPreserveTopology\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1749
+#, no-c-format
+msgid "ST_SimplifyPreserveTopology"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1750
+#, no-c-format
+msgid "Returns a \"simplified\" version of the given geometry using the Douglas-Peucker algorithm. Will avoid creating derived geometries (polygons in particular) that are invalid."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1757
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_SimplifyPreserveTopology</function></funcdef> <paramdef><type>geometry</type> <parameter>geomA</parameter></paramdef> <paramdef><type>float</type> <parameter>tolerance</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1767
+#, no-c-format
+msgid "Returns a \"simplified\" version of the given geometry using the Douglas-Peucker algorithm. Will avoid creating derived geometries (polygons in particular) that are invalid. Will actually do something only with (multi)lines and (multi)polygons but you can safely call it with any kind of geometry. Since simplification occurs on a object-by-object basis you can also feed a GeometryCollection to this function."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1776
+#, no-c-format
+msgid "Requires GEOS 3.0.0+"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1777
+#, no-c-format
+msgid "Availability: 1.3.3"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1782
+#, no-c-format
+msgid "Same example as Simplify, but we see Preserve Topology prevents oversimplification. The circle can at most become a square."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1783
+#, no-c-format
+msgid ""
+      "SELECT ST_Npoints(the_geom) As np_before, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.1)) As np01_notbadcircle, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,0.5)) As np05_notquitecircle,\n"
+      "ST_NPoints(ST_SimplifyPreserveTopology(the_geom,1)) As np1_octagon, ST_NPoints(ST_SimplifyPreserveTopology(the_geom,10)) As np10_square,\n"
+      "ST_NPoints(ST_SimplifyPreserveTopology(the_geom,100)) As  np100_stillsquare\n"
+      "FROM (SELECT ST_Buffer('POINT(1 3)', 10,12) As the_geom) As foo;\n"
+      "\n"
+      "--result--\n"
+      " np_before | np01_notbadcircle | np05_notquitecircle | np1_octagon | np10_square | np100_stillsquare\n"
+      "-----------+-------------------+---------------------+-------------+---------------+-------------------\n"
+      "                49 |                33 |                  17 |           9 |             5 |                 5"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1793
+#, no-c-format
+msgid "ST_Split"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1794
+#, no-c-format
+msgid "Returns a collection of geometries resulting by splitting a geometry."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1799
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_Split</function></funcdef> <paramdef><type>geometry</type> <parameter>input</parameter></paramdef> <paramdef><type>geometry</type> <parameter>blade</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1809
+#, no-c-format
+msgid "The function supports splitting a line by point, a line by line, a polygon by line. The returned geometry is always a collection."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1813
+#, no-c-format
+msgid "Think of this function as the opposite of ST_Union. Theoretically applying ST_Union to the elements of the returned collection should always yield the original geometry."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1824
+#, no-c-format
+msgid "Polygon Cut by Line"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1836 reference_processing.xml:1870
+#, no-c-format
+msgid "Before Split"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1848 reference_processing.xml:1882
+#, no-c-format
+msgid "After split"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1857
+#, no-c-format
+msgid ""
+      "-- this creates a geometry collection consisting of the 2 halves of the polygon\n"
+      "-- this is similar to the example we demonstrated in ST_BuildArea\n"
+      "SELECT ST_Split(circle, line)\n"
+      "FROM (SELECT \n"
+      "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,\n"
+      "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
+      "    \n"
+      "-- result --\n"
+      " GEOMETRYCOLLECTION(POLYGON((150 90,149.039264020162 80.2454838991936,146.193976625564 70.8658283817455,..), POLYGON(..)))\n"
+      " \n"
+      "-- To convert to individual polygons, you can use ST_Dump or ST_GeometryN\n"
+      "SELECT ST_AsText((ST_Dump(ST_Split(circle, line))).geom) As wkt\n"
+      "FROM (SELECT \n"
+      "    ST_MakeLine(ST_MakePoint(10, 10),ST_MakePoint(190, 190)) As line,\n"
+      "    ST_Buffer(ST_GeomFromText('POINT(100 90)'), 50) As circle) As foo;\n"
+      "    \n"
+      "-- result --\n"
+      "wkt\n"
+      "---------------\n"
+      "POLYGON((150 90,149.039264020162 80.2454838991936,..))\n"
+      "POLYGON((60.1371179574584 60.1371179574584,58.4265193848728 62.2214883490198,53.8060233744357 ..))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1858
+#, no-c-format
+msgid "Multilinestring Cut by point"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1891
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_Split(mline, pt)) As wktcut\n"
+      "        FROM (SELECT \n"
+      "    ST_GeomFromText('MULTILINESTRING((10 10, 190 190), (15 15, 30 30, 100 90))') As mline,\n"
+      "    ST_Point(30,30) As pt) As foo;\n"
+      "    \n"
+      "wktcut\n"
+      "------\n"
+      "GEOMETRYCOLLECTION(\n"
+      "    LINESTRING(10 10,30 30),\n"
+      "    LINESTRING(30 30,190 190),\n"
+      "    LINESTRING(15 15,30 30),\n"
+      "    LINESTRING(30 30,100 90)\n"
+      ")"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1895
+#, no-c-format
+msgid ", <xref linkend=\"ST_BuildArea\"/>, <xref linkend=\"ST_Dump\"/>, <xref linkend=\"ST_GeometryN\"/>, <xref linkend=\"ST_Union\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1901
+#, no-c-format
+msgid "ST_SymDifference"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1903
+#, no-c-format
+msgid "Returns a geometry that represents the portions of A and B that do not intersect. It is called a symmetric difference because ST_SymDifference(A,B) = ST_SymDifference(B,A)."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:1910
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_SymDifference</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef> <paramdef><type>geometry </type> <parameter>geomB</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1921
+#, no-c-format
+msgid "Returns a geometry that represents the portions of A and B that do not intersect. It is called a symmetric difference because ST_SymDifference(A,B) = ST_SymDifference(B,A). One can think of this as ST_Union(geomA,geomB) - ST_Intersection(A,B)."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1931
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.21"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1951
+#, no-c-format
+msgid "The original linestrings shown together"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1963
+#, no-c-format
+msgid "The symmetric difference of the two linestrings"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1972
+#, no-c-format
+msgid ""
+      "--Safe for 2d - symmetric difference of 2 linestrings\n"
+      "SELECT ST_AsText(\n"
+      "        ST_SymDifference(\n"
+      "                ST_GeomFromText('LINESTRING(50 100, 50 200)'),\n"
+      "                ST_GeomFromText('LINESTRING(50 50, 50 150)')\n"
+      "        )\n"
+      ");\n"
+      "\n"
+      "st_astext\n"
+      "---------\n"
+      "MULTILINESTRING((50 150,50 200),(50 50,50 100))"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:1974
+#, no-c-format
+msgid ""
+      "--When used in 3d doesn't quite do the right thing\n"
+      "SELECT ST_AsEWKT(ST_SymDifference(ST_GeomFromEWKT('LINESTRING(1 2 1, 1 4 2)'),\n"
+      "        ST_GeomFromEWKT('LINESTRING(1 1 3, 1 3 4)')))\n"
+      "\n"
+      "st_astext\n"
+      "------------\n"
+      "MULTILINESTRING((1 3 2.75,1 4 2),(1 1 3,1 2 2.25))"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:1981
+#, no-c-format
+msgid ", <xref linkend=\"ST_Intersection\"/>, <xref linkend=\"ST_Union\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:1988
+#, no-c-format
+msgid "ST_Union"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:1989
+#, no-c-format
+msgid "Returns a geometry that represents the point set union of the Geometries."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_processing.xml:1994
+#, no-c-format
+msgid "<funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> <paramdef><type>geometry set</type> <parameter>g1field</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> <paramdef><type>geometry</type> <parameter>g1</parameter></paramdef> <paramdef><type>geometry</type> <parameter>g2</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>geometry <function>ST_Union</function></funcdef> <paramdef><type>geometry[]</type> <parameter>g1_array</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2013
+#, no-c-format
+msgid "Output type can be a MULTI*, single geometry, or Geometry Collection. Comes in 2 variants. Variant 1 unions 2 geometries resulting in a new geometry with no intersecting regions. Variant 2 is an aggregate function that takes a set of geometries and unions them into a single ST_Geometry resulting in no intersecting regions."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2017
+#, no-c-format
+msgid "Aggregate version: This function returns a MULTI geometry or NON-MULTI geometry from a set of geometries. The ST_Union() function is an \"aggregate\" function in the terminology of PostgreSQL. That means that it operates on rows of data, in the same way the SUM() and AVG() functions do."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2023
+#, no-c-format
+msgid "Non-Aggregate version: This function returns a geometry being a union of two input geometries. Output type can be a MULTI*, NON-MULTI or GEOMETRYCOLLECTION."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2027
+#, no-c-format
+msgid "ST_Collect and ST_Union are often interchangeable. ST_Union is in general orders of magnitude slower than ST_Collect because it tries to dissolve boundaries and reorder geometries to ensure that a constructed Multi* doesn't have intersecting regions."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2033
+#, no-c-format
+msgid "NOTE: this function was formerly called GeomUnion(), which was renamed from \"Union\" because UNION is an SQL reserved word."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2036
+#, no-c-format
+msgid "Availability: 1.4.0 - ST_Union was enhanced. ST_Union(geomarray) was introduced and also faster aggregate collection in PostgreSQL. If you are using GEOS 3.1.0+ ST_Union will use the faster Cascaded Union algorithm described in <ulink url=\"http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html\">http://blog.cleverelephant.ca/2009/01/must-faster-unions-in-postgis-14.html</ulink>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2042
+#, no-c-format
+msgid "Aggregate version is not explicitly defined in OGC SPEC."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2043
+#, no-c-format
+msgid "&sqlmm_compliant; SQL-MM 3: 5.1.19 the z-index (elevation) when polygons are involved."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2049
+#, no-c-format
+msgid "Aggregate example"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:2050
+#, no-c-format
+msgid ""
+      "SELECT stusps,\n"
+      "           ST_Multi(ST_Union(f.the_geom)) as singlegeom\n"
+      "         FROM sometable As f\n"
+      "GROUP BY stusps"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_processing.xml:2052
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),\n"
+      "        ST_GeomFromText('POINT(-2 3)') ) )\n"
+      "\n"
+      "st_astext\n"
+      "----------\n"
+      "MULTIPOINT(-2 3,1 2)\n"
+      "\n"
+      "\n"
+      "SELECT ST_AsText(ST_Union(ST_GeomFromText('POINT(1 2)'),\n"
+      "                ST_GeomFromText('POINT(1 2)') ) );\n"
+      "st_astext\n"
+      "----------\n"
+      "POINT(1 2)\n"
+      "\n"
+      "--3d example - sort of supports 3d (and with mixed dimensions!)\n"
+      "SELECT ST_AsEWKT(st_union(the_geom))\n"
+      "FROM\n"
+      "(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2,-7.1 4.2,-7.1 4.3,\n"
+      "-7 4.2))') as the_geom\n"
+      "UNION ALL\n"
+      "SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom\n"
+      "UNION ALL\n"
+      "        SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom\n"
+      "UNION ALL\n"
+      "SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as foo;\n"
+      "\n"
+      "st_asewkt\n"
+      "---------\n"
+      "GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 5,-7.1 4.2 5,-7.1 4.3 5,-7 4.2 5)));\n"
+      "\n"
+      "--3d example not mixing dimensions\n"
+      "SELECT ST_AsEWKT(st_union(the_geom))\n"
+      "FROM\n"
+      "(SELECT ST_GeomFromEWKT('POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,\n"
+      "-7 4.2 2))') as the_geom\n"
+      "UNION ALL\n"
+      "SELECT ST_GeomFromEWKT('POINT(5 5 5)') as the_geom\n"
+      "UNION ALL\n"
+      "        SELECT ST_GeomFromEWKT('POINT(-2 3 1)') as the_geom\n"
+      "UNION ALL\n"
+      "SELECT ST_GeomFromEWKT('LINESTRING(5 5 5, 10 10 10)') as the_geom ) as foo;\n"
+      "\n"
+      "st_asewkt\n"
+      "---------\n"
+      "GEOMETRYCOLLECTION(POINT(-2 3 1),LINESTRING(5 5 5,10 10 10),POLYGON((-7 4.2 2,-7.1 4.2 3,-7.1 4.3 2,-7 4.2 2)))\n"
+      "\n"
+      "--Examples using new Array construct\n"
+      "SELECT ST_Union(ARRAY(SELECT the_geom FROM sometable));\n"
+      "\n"
+      "SELECT ST_AsText(ST_Union(ARRAY[ST_GeomFromText('LINESTRING(1 2, 3 4)'),\n"
+      "                        ST_GeomFromText('LINESTRING(3 4, 4 5)')])) As wktunion;\n"
+      "\n"
+      "--wktunion---\n"
+      "MULTILINESTRING((3 4,4 5),(1 2,3 4))"
+msgstr ""
+
+#. Tag: refname
+#: reference_processing.xml:2065
+#, no-c-format
+msgid "ST_UnaryUnion"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_processing.xml:2067
+#, no-c-format
+msgid "Like ST_Union, but working at the geometry component level."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_processing.xml:2072
+#, no-c-format
+msgid "<funcdef>geometry <function>ST_UnaryUnion</function></funcdef> <paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2083
+#, no-c-format
+msgid "Unlike ST_Union, ST_UnaryUnion does dissolve boundaries between components of a multipolygon (invalid) and does perform union between the components of a geometrycollection. Each components of the input geometry is assumed to be valid, so you won't get a valid multipolygon out of a bow-tie polygon (invalid)."
+msgstr ""
+
+#. Tag: para
+#: reference_processing.xml:2093
+#, no-c-format
+msgid "You may use this function to node a set of linestrings. You may mix ST_UnaryUnion with ST_Collect to fine-tune how many geometries at once you want to dissolve to be nice on both memory size and CPU time, finding the balance between ST_Union and ST_MemUnion."
+msgstr ""
+

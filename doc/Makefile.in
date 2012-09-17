@@ -21,6 +21,7 @@
 # that we could produce a large number of files (think chunked HTML)
 #
 
+translations = it_IT pt_BR 
 
 POSTGIS_MAJOR_VERSION=@POSTGIS_MAJOR_VERSION@
 POSTGIS_MINOR_VERSION=@POSTGIS_MINOR_VERSION@
@@ -67,6 +68,12 @@ DBLATEX=@DBLATEX@
 
 # Imagemagick's convert utility program for generated images used in the documentation
 IMAGEMAGICK=@IMAGEMAGICK@
+
+# Gettext for translated documentation
+MSGMERGE=msgmerge
+
+# XML gettext tools
+XML2POT=xml2pot
 
 # Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
@@ -127,6 +134,26 @@ XML_GENERATED_SOURCES = \
 
 XML_INPUTS = $(XML_SOURCES) $(XML_GENERATED_SOURCES)
 
+XML_INPUTS_POT = $(XML_SOURCES:%.xml=po/templates/%.xml.pot)
+
+$(XML_INPUTS_POT): po/templates/%.xml.pot: %.xml
+	$(XML2POT) $< > $@
+
+# Creates or updates translation files
+update-po: $(XML_INPUTS_POT)
+	@for lang in $(translations); do \
+    echo "Creating po files for language $$lang..." ; \
+    for pot in $(XML_INPUTS_POT); do \
+      mkdir -p po/$$lang; \
+      po=po/$$lang/`basename $$pot .pot`.po; \
+      if test -f $$po; then \
+        $(MSGMERGE) --update $$po $$pot; \
+      else \
+        cp $$pot $$po; \
+      fi; \
+    done; \
+  done
+
 ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
@@ -169,16 +196,22 @@ chunked-html: postgis-out.xml Makefile images $(XML_INPUTS)
 		$(CHUNK_HTML_DOCBOOK_XSL) \
 		$<
 
-html: html/postgis.html
+html: html/postgis$(DOCSUFFIX).html
 
-html/postgis.html: postgis-out.xml Makefile images $(XML_INPUTS)
+html-localized:
+	@for lang in $(translations); do \
+    echo "Creating html for language $$lang..."; \
+    $(MAKE) -C po/$$lang local-html; \
+  done
+
+html/postgis$(DOCSUFFIX).html: postgis-out.xml Makefile images $(XML_INPUTS)
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
-		--output html/postgis.html \
+		--output html/postgis$(DOCSUFFIX).html \
 		$(HTML_DOCBOOK_XSL) \
 		$<
 
 
-postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf: postgis-out.xml images $(XML_INPUTS)
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf: postgis-out.xml images $(XML_INPUTS)
 	if test x"$(DBLATEX)" = x; then \
 	   echo "Error: dblatex not found, can't build pdf"; \
 	   echo "       try installing dblatex and then re-run configure"; \
@@ -196,7 +229,7 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf $<; \
 	fi
 
-pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
 
 doxygen.cfg: doxygen.cfg.in
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@

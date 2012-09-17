@@ -1,0 +1,3084 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: using_postgis_dataman.xml:3
+#, no-c-format
+msgid "Using PostGIS: Data Management and Queries"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:6
+#, no-c-format
+msgid "GIS Objects"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:8
+#, no-c-format
+msgid "The GIS objects supported by PostGIS are a superset of the \"Simple Features\" defined by the OpenGIS Consortium (OGC). As of version 0.9, PostGIS supports all the objects and functions specified in the OGC \"Simple Features for SQL\" specification."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:13
+#, no-c-format
+msgid "PostGIS extends the standard with support for 3DZ,3DM and 4D coordinates."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:17
+#, no-c-format
+msgid "OpenGIS WKB and WKT"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:19
+#, no-c-format
+msgid "The OpenGIS specification defines two standard ways of expressing spatial objects: the Well-Known Text (WKT) form and the Well-Known Binary (WKB) form. Both WKT and WKB include information about the type of the object and the coordinates which form the object."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:24
+#, no-c-format
+msgid "Examples of the text representations (WKT) of the spatial objects of the features are as follows:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:29
+#, no-c-format
+msgid "POINT(0 0)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:33
+#, no-c-format
+msgid "LINESTRING(0 0,1 1,1 2)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:37
+#, no-c-format
+msgid "POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:41
+#, no-c-format
+msgid "MULTIPOINT(0 0,1 2)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:45
+#, no-c-format
+msgid "MULTILINESTRING((0 0,1 1,1 2),(2 3,3 2,5 4))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:49
+#, no-c-format
+msgid "MULTIPOLYGON(((0 0,4 0,4 4,0 4,0 0),(1 1,2 1,2 2,1 2,1 1)), ((-1 -1,-1 -2,-2 -2,-2 -1,-1 -1)))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:54
+#, no-c-format
+msgid "GEOMETRYCOLLECTION(POINT(2 3),LINESTRING(2 3,3 4))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:58
+#, no-c-format
+msgid "The OpenGIS specification also requires that the internal storage format of spatial objects include a spatial referencing system identifier (SRID). The SRID is required when creating spatial objects for insertion into the database."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:63 using_postgis_dataman.xml:151
+#, no-c-format
+msgid "Input/Output of these formats are available using the following interfaces:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:66
+#, no-c-format
+msgid ""
+      "bytea WKB = ST_AsBinary(geometry);\n"
+      "text WKT = ST_AsText(geometry);\n"
+      "geometry = ST_GeomFromWKB(bytea WKB, SRID);\n"
+      "geometry = ST_GeometryFromText(text WKT, SRID);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:68
+#, no-c-format
+msgid "For example, a valid insert statement to create and insert an OGC spatial object would be:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:71
+#, no-c-format
+msgid ""
+      "INSERT INTO geotable ( the_geom, the_name )\n"
+      "  VALUES ( ST_GeomFromText('POINT(-126.4 45.32)', 312), 'A Place');"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:75
+#, no-c-format
+msgid "PostGIS EWKB, EWKT and Canonical Forms"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:77
+#, no-c-format
+msgid "OGC formats only support 2d geometries, and the associated SRID is *never* embedded in the input/output representations."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:80
+#, no-c-format
+msgid "PostGIS extended formats are currently superset of OGC one (every valid WKB/WKT is a valid EWKB/EWKT) but this might vary in the future, specifically if OGC comes out with a new format conflicting with our extensions. Thus you SHOULD NOT rely on this feature!"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:85
+#, no-c-format
+msgid "PostGIS EWKB/EWKT add 3dm,3dz,4d coordinates support and embedded SRID information."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:88
+#, no-c-format
+msgid "Examples of the text representations (EWKT) of the extended spatial objects of the features are as follows. The * ones are new in this version of PostGIS:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:93
+#, no-c-format
+msgid "POINT(0 0 0) -- XYZ"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:97
+#, no-c-format
+msgid "SRID=32632;POINT(0 0) -- XY with SRID"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:101
+#, no-c-format
+msgid "POINTM(0 0 0) -- XYM"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:105
+#, no-c-format
+msgid "POINT(0 0 0 0) -- XYZM"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:109
+#, no-c-format
+msgid "SRID=4326;MULTIPOINTM(0 0 0,1 2 1) -- XYM with SRID"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:113
+#, no-c-format
+msgid "MULTILINESTRING((0 0 0,1 1 0,1 2 1),(2 3 1,3 2 1,5 4 1))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:118
+#, no-c-format
+msgid "POLYGON((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:123
+#, no-c-format
+msgid "MULTIPOLYGON(((0 0 0,4 0 0,4 4 0,0 4 0,0 0 0),(1 1 0,2 1 0,2 2 0,1 2 0,1 1 0)),((-1 -1 0,-1 -2 0,-2 -2 0,-2 -1 0,-1 -1 0)))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:128
+#, no-c-format
+msgid "GEOMETRYCOLLECTIONM( POINTM(2 3 9), LINESTRINGM(2 3 4, 3 4 5) )"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:132
+#, no-c-format
+msgid "MULTICURVE( (0 0, 5 5), CIRCULARSTRING(4 0, 4 4, 8 4) )"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:136
+#, no-c-format
+msgid "POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)), ((0 0 0, 1 0 0, 1 0 1, 0 0 1, 0 0 0)), ((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)), ((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)), ((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)) )"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:142
+#, no-c-format
+msgid "TRIANGLE ((0 0, 0 9, 9 0, 0 0))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:146
+#, no-c-format
+msgid "TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:154
+#, no-c-format
+msgid ""
+      "bytea EWKB = ST_AsEWKB(geometry);\n"
+      "text EWKT = ST_AsEWKT(geometry);\n"
+      "geometry = ST_GeomFromEWKB(bytea EWKB);\n"
+      "geometry = ST_GeomFromEWKT(text EWKT);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:156
+#, no-c-format
+msgid "For example, a valid insert statement to create and insert a PostGIS spatial object would be:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:159
+#, no-c-format
+msgid ""
+      "INSERT INTO geotable ( the_geom, the_name )\n"
+      "  VALUES ( ST_GeomFromEWKT('SRID=312;POINTM(-126.4 45.32 15)'), 'A Place' )"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:161
+#, no-c-format
+msgid "The \"canonical forms\" of a PostgreSQL type are the representations you get with a simple query (without any function call) and the one which is guaranteed to be accepted with a simple insert, update or copy. For the postgis 'geometry' type these are:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:164
+#, no-c-format
+msgid ""
+      "- Output\n"
+      "  - binary: EWKB\n"
+      "        ascii: HEXEWKB (EWKB in hex form)\n"
+      "- Input\n"
+      "  - binary: EWKB\n"
+      "        ascii: HEXEWKB|EWKT"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:166
+#, no-c-format
+msgid "For example this statement reads EWKT and returns HEXEWKB in the process of canonical ascii input/output:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:169
+#, no-c-format
+msgid ""
+      "=# SELECT 'SRID=4;POINT(0 0)'::geometry;\n"
+      "\n"
+      "geometry\n"
+      "----------------------------------------------------\n"
+      "01010000200400000000000000000000000000000000000000\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:172
+#, no-c-format
+msgid "SQL-MM Part 3"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:174
+#, no-c-format
+msgid "The SQL Multimedia Applications Spatial specification extends the simple features for SQL spec by defining a number of circularly interpolated curves."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:178
+#, no-c-format
+msgid "The SQL-MM definitions include 3dm, 3dz and 4d coordinates, but do not allow the embedding of SRID information."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:181
+#, no-c-format
+msgid "The well-known text extensions are not yet fully supported. Examples of some simple curved geometries are shown below:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:186
+#, no-c-format
+msgid "CIRCULARSTRING(0 0, 1 1, 1 0)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:187
+#, no-c-format
+msgid "CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:188
+#, no-c-format
+msgid "The CIRCULARSTRING is the basic curve type, similar to a LINESTRING in the linear world. A single segment required three points, the start and end points (first and third) and any other point on the arc. The exception to this is for a closed circle, where the start and end points are the same. In this case the second point MUST be the center of the arc, ie the opposite side of the circle. To chain arcs together, the last point of the previous arc becomes the first point of the next arc, just like in LINESTRING. This means that a valid circular string must have an odd number of points greated than 1."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:201
+#, no-c-format
+msgid "COMPOUNDCURVE(CIRCULARSTRING(0 0, 1 1, 1 0),(1 0, 0 1))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:202
+#, no-c-format
+msgid "A compound curve is a single, continuous curve that has both curved (circular) segments and linear segments. That means that in addition to having well-formed components, the end point of every component (except the last) must be coincident with the start point of the following component."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:210
+#, no-c-format
+msgid "CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:212
+#, no-c-format
+msgid "Example compound curve in a curve polygon: CURVEPOLYGON(COMPOUNDCURVE(CIRCULARSTRING(0 0,2 0, 2 1, 2 3, 4 3),(4 3, 4 5, 1 4, 0 0)), CIRCULARSTRING(1.7 1, 1.4 0.4, 1.6 0.4, 1.6 0.5, 1.7 1) )"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:216
+#, no-c-format
+msgid "A CURVEPOLYGON is just like a polygon, with an outer ring and zero or more inner rings. The difference is that a ring can take the form of a circular string, linear string or compound string."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:220
+#, no-c-format
+msgid "As of PostGIS 1.4 PostGIS supports compound curves in a curve polygon."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:224
+#, no-c-format
+msgid "MULTICURVE((0 0, 5 5),CIRCULARSTRING(4 0, 4 4, 8 4))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:225
+#, no-c-format
+msgid "The MULTICURVE is a collection of curves, which can include linear strings, circular strings or compound strings."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:230
+#, no-c-format
+msgid "MULTISURFACE(CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1)),((10 10, 14 12, 11 10, 10 10),(11 11, 11.5 11, 11 11.5, 11 11)))"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:233
+#, no-c-format
+msgid "This is a collection of surfaces, which can be (linear) polygons or curve polygons."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:239
+#, no-c-format
+msgid "PostGIS prior to 1.4 does not support compound curves in a curve polygon, but PostGIS 1.4 and above do support the use of Compound Curves in a Curve Polygon."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:245
+#, no-c-format
+msgid "All floating point comparisons within the SQL-MM implementation are performed to a specified tolerance, currently 1E-8."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:251
+#, no-c-format
+msgid "PostGIS Geography Type"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:253
+#, no-c-format
+msgid "The geography type provides native support for spatial features represented on \"geographic\" coordinates (sometimes called \"geodetic\" coordinates, or \"lat/lon\", or \"lon/lat\"). Geographic coordinates are spherical coordinates expressed in angular units (degrees)."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:255
+#, no-c-format
+msgid "The basis for the PostGIS geometry type is a plane. The shortest path between two points on the plane is a straight line. That means calculations on geometries (areas, distances, lengths, intersections, etc) can be calculated using cartesian mathematics and straight line vectors."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:257
+#, no-c-format
+msgid "The basis for the PostGIS geographic type is a sphere. The shortest path between two points on the sphere is a great circle arc. That means that calculations on geographies (areas, distances, lengths, intersections, etc) must be calculated on the sphere, using more complicated mathematics. For more accurate measurements, the calculations must take the actual spheroidal shape of the world into account, and the mathematics becomes very complicated indeed."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:259
+#, no-c-format
+msgid "Because the underlying mathematics is much more complicated, there are fewer functions defined for the geography type than for the geometry type. Over time, as new algorithms are added, the capabilities of the geography type will expand."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:262
+#, no-c-format
+msgid "One restriction is that it only supports WGS 84 long lat (SRID:4326). It uses a new data type called geography. None of the GEOS functions support this new type. As a workaround one can convert back and forth between geometry and geography types."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:266
+#, no-c-format
+msgid "The new geography type uses the PostgreSQL 8.3+ typmod definition format so that a table with a geography field can be added in a single step. All the standard OGC formats except for curves are supported."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:270
+#, no-c-format
+msgid "Geography Basics"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:271
+#, no-c-format
+msgid "The geography type only supports the simplest of simple features. Standard geometry type data will autocast to geography if it is of SRID 4326. You can also use the EWKT and EWKB conventions to insert data."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:276
+#, no-c-format
+msgid "POINT: Creating a table with 2d point geometry:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:277
+#, no-c-format
+msgid "CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINT,4326) );"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:278
+#, no-c-format
+msgid "Creating a table with z coordinate point"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:279
+#, no-c-format
+msgid "CREATE TABLE testgeog(gid serial PRIMARY KEY, the_geog geography(POINTZ,4326) );"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:282
+#, no-c-format
+msgid "LINESTRING"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:285
+#, no-c-format
+msgid "POLYGON"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:288
+#, no-c-format
+msgid "MULTIPOINT"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:291
+#, no-c-format
+msgid "MULTILINESTRING"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:294
+#, no-c-format
+msgid "MULTIPOLYGON"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:297
+#, no-c-format
+msgid "GEOMETRYCOLLECTION"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:301
+#, no-c-format
+msgid "The new geography fields don't get registered in the <varname>geometry_columns</varname>. They get registered in a new view called geography_columns which is a view against the system catalogs so is always automatically kept up to date without need for an AddGeom... like function."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:305
+#, no-c-format
+msgid "Now, check the \"geography_columns\" view and see that your table is listed."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:307
+#, no-c-format
+msgid "You can create a new table with a GEOGRAPHY column using the CREATE TABLE syntax. Unlike GEOMETRY, there is no need to run a separate AddGeometryColumns() process to register the column in metadata."
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:311
+#, no-c-format
+msgid ""
+      "CREATE TABLE global_points ( \n"
+      "    id SERIAL PRIMARY KEY,\n"
+      "    name VARCHAR(64),\n"
+      "    location GEOGRAPHY(POINT,4326)\n"
+      "  );"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:314
+#, no-c-format
+msgid "Note that the location column has type GEOGRAPHY and that geography type supports two optional modifier: a type modifier that restricts the kind of shapes and dimensions allowed in the column; an SRID modifier that restricts the coordinate reference identifier to a particular number."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:315
+#, no-c-format
+msgid "Allowable values for the type modifier are: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON. The modifier also supports dimensionality restrictions through suffixes: Z, M and ZM. So, for example a modifier of 'LINESTRINGM' would only allow line strings with three dimensions in, and would treat the third dimension as a measure. Similarly, 'POINTZM' would expect four dimensional data."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:317
+#, no-c-format
+msgid "The SRID modifier is currently of limited use: only 4326 (WGS84) is allowed as a value. If you do not specify an SRID, the a value 0 (undefined spheroid) will be used, and all calculations will proceed using WGS84 anyways."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:318
+#, no-c-format
+msgid "In the future, alternate SRIDs will allow calculations on spheroids other than WGS84."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:319
+#, no-c-format
+msgid "Once you have created your table, you can see it in the GEOGRAPHY_COLUMNS table:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:320
+#, no-c-format
+msgid ""
+      "-- See the contents of the metadata view\n"
+      "SELECT * FROM geography_columns;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:322
+#, no-c-format
+msgid "You can insert data into the table the same as you would if it was using a GEOMETRY column:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:324
+#, no-c-format
+msgid ""
+      "-- Add some data into the test table\n"
+      "INSERT INTO global_points (name, location) VALUES ('Town', ST_GeographyFromText('SRID=4326;POINT(-110 30)') );\n"
+      "INSERT INTO global_points (name, location) VALUES ('Forest', ST_GeographyFromText('SRID=4326;POINT(-109 29)') );\n"
+      "INSERT INTO global_points (name, location) VALUES ('London', ST_GeographyFromText('SRID=4326;POINT(0 49)') );"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:326
+#, no-c-format
+msgid "Creating an index works the same as GEOMETRY. PostGIS will note that the column type is GEOGRAPHY and create an appropriate sphere-based index instead of the usual planar index used for GEOMETRY."
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:329
+#, no-c-format
+msgid ""
+      "-- Index the test table with a spherical index\n"
+      "  CREATE INDEX global_points_gix ON global_points USING GIST ( location );"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:332
+#, no-c-format
+msgid "Query and measurement functions use units of meters. So distance parameters should be expressed in meters, and return values should be expected in meters (or square meters for areas)."
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:334
+#, no-c-format
+msgid ""
+      "-- Show a distance query and note, London is outside the 1000km tolerance\n"
+      "  SELECT name FROM global_points WHERE ST_DWithin(location, ST_GeographyFromText('SRID=4326;POINT(-110 29)'), 1000000);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:337
+#, no-c-format
+msgid "You can see the power of GEOGRAPHY in action by calculating the how close a plane flying from Seattle to London (LINESTRING(-122.33 47.606, 0.0 51.5)) comes to Reykjavik (POINT(-21.96 64.15))."
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:339
+#, no-c-format
+msgid ""
+      "-- Distance calculation using GEOGRAPHY (122.2km)\n"
+      "  SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geography, 'POINT(-21.96 64.15)':: geography);"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:342
+#, no-c-format
+msgid ""
+      "-- Distance calculation using GEOMETRY (13.3 \"degrees\")\n"
+      "  SELECT ST_Distance('LINESTRING(-122.33 47.606, 0.0 51.5)'::geometry, 'POINT(-21.96 64.15)':: geometry);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:345
+#, no-c-format
+msgid "The GEOGRAPHY type calculates the true shortest distance over the sphere between Reykjavik and the great circle flight path between Seattle and London."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:347
+#, no-c-format
+msgid "<ulink url=\"http://gc.kls2.com/cgi-bin/gc?PATH=SEA-LHR\">Great Circle mapper</ulink> The GEOMETRY type calculates a meaningless cartesian distance between Reykjavik and the straight line path from Seattle to London plotted on a flat map of the world. The nominal units of the result might be called \"degrees\", but the result doesn't correspond to any true angular difference between the points, so even calling them \"degrees\" is inaccurate."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:351
+#, no-c-format
+msgid "When to use Geography Data type over Geometry data type"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:352
+#, no-c-format
+msgid "The new GEOGRAPHY type allows you to store data in longitude/latitude coordinates, but at a cost: there are fewer functions defined on GEOGRAPHY than there are on GEOMETRY; those functions that are defined take more CPU time to execute."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:353
+#, no-c-format
+msgid "The type you choose should be conditioned on the expected working area of the application you are building. Will your data span the globe or a large continental area, or is it local to a state, county or municipality?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:355
+#, no-c-format
+msgid "If your data is contained in a small area, you might find that choosing an appropriate projection and using GEOMETRY is the best solution, in terms of performance and functionality available."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:356
+#, no-c-format
+msgid "If your data is global or covers a continental region, you may find that GEOGRAPHY allows you to build a system without having to worry about projection details. You store your data in longitude/latitude, and use the functions that have been defined on GEOGRAPHY."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:358
+#, no-c-format
+msgid "If you don't understand projections, and you don't want to learn about them, and you're prepared to accept the limitations in functionality available in GEOGRAPHY, then it might be easier for you to use GEOGRAPHY than GEOMETRY. Simply load your data up as longitude/latitude and go from there."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:361
+#, no-c-format
+msgid "Refer to <xref linkend=\"PostGIS_TypeFunctionMatrix\"/> for compare between what is supported for Geography vs. Geometry. For a brief listing and description of Geography functions, refer to <xref linkend=\"PostGIS_GeographyFunctions\"/>"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:367
+#, no-c-format
+msgid "Geography Advanced FAQ"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:371
+#, no-c-format
+msgid "Do you calculate on the sphere or the spheroid?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:375
+#, no-c-format
+msgid "By default, all distance and area calculations are done on the spheroid. You should find that the results of calculations in local areas match up will with local planar results in good local projections. Over larger areas, the spheroidal calculations will be more accurate than any calculation done on a projected plane."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:378
+#, no-c-format
+msgid "All the geography functions have the option of using a sphere calculation, by setting a final boolean parameter to 'FALSE'. This will somewhat speed up calculations, particularly for cases where the geometries are very simple."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:384
+#, no-c-format
+msgid "What about the date-line and the poles?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:388
+#, no-c-format
+msgid "All the calculations have no conception of date-line or poles, the coordinates are spherical (longitude/latitude) so a shape that crosses the dateline is, from a calculation point of view, no different from any other shape."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:396
+#, no-c-format
+msgid "What is the longest arc you can process?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:400
+#, no-c-format
+msgid "We use great circle arcs as the \"interpolation line\" between two points. That means any two points are actually joined up two ways, depending on which direction you travel along the great circle. All our code assumes that the points are joined by the *shorter* of the two paths along the great circle. As a consequence, shapes that have arcs of more than 180 degrees will not be correctly modelled."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:407
+#, no-c-format
+msgid "Why is it so slow to calculate the area of Europe / Russia / insert big geographic region here ?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:411
+#, no-c-format
+msgid "Because the polygon is so darned huge! Big areas are bad for two reasons: their bounds are huge, so the index tends to pull the feature no matter what query you run; the number of vertices is huge, and tests (distance, containment) have to traverse the vertex list at least once and sometimes N times (with N being the number of vertices in the other candidate feature)."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:416
+#, no-c-format
+msgid "As with GEOMETRY, we recommend that when you have very large polygons, but are doing queries in small areas, you \"denormalize\" your geometric data into smaller chunks so that the index can effectively subquery parts of the object and so queries don't have to pull out the whole object every time. Just because you *can* store all of Europe in one polygon doesn't mean you *should*."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:425
+#, no-c-format
+msgid "Using OpenGIS Standards"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:427
+#, no-c-format
+msgid "The OpenGIS \"Simple Features Specification for SQL\" defines standard GIS object types, the functions required to manipulate them, and a set of meta-data tables. In order to ensure that meta-data remain consistent, operations such as creating and removing a spatial column are carried out through special procedures defined by OpenGIS."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:433
+#, no-c-format
+msgid "There are two OpenGIS meta-data tables: <varname>SPATIAL_REF_SYS</varname> and <varname>GEOMETRY_COLUMNS</varname>. The <varname>SPATIAL_REF_SYS</varname> table holds the numeric IDs and textual descriptions of coordinate systems used in the spatial database."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:440
+#, no-c-format
+msgid "The SPATIAL_REF_SYS Table and Spatial Reference Systems"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:442
+#, no-c-format
+msgid "The spatial_ref_sys table is a PostGIS included and OGC compliant database table that lists over 3000 known <ulink url=\"http://www.sharpgis.net/post/2007/05/Spatial-references2c-coordinate-systems2c-projections2c-datums2c-ellipsoids-e28093-confusing.aspx\">spatial reference systems</ulink> and details needed to transform/reproject between them."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:446
+#, no-c-format
+msgid "Although the PostGIS spatial_ref_sys table contains over 3000 of the more commonly used spatial reference system definitions that can be handled by the proj library, it does not contain all known to man and you can even define your own custom projection if you are familiar with proj4 constructs. Keep in mind that most spatial reference systems are regional and have no meaning when used outside of the bounds they were intended for."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:449
+#, no-c-format
+msgid "An excellent resource for finding spatial reference systems not defined in the core set is <ulink url=\"http://spatialreference.org/\">http://spatialreference.org/</ulink>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:451
+#, no-c-format
+msgid "Some of the more commonly used spatial reference systems are: <ulink url=\"http://spatialreference.org/ref/epsg/4326/\">4326 - WGS 84 Long Lat</ulink>, <ulink url=\"http://spatialreference.org/ref/epsg/4269/\">4269 - NAD 83 Long Lat</ulink>, <ulink url=\"http://spatialreference.org/ref/epsg/3395/\">3395 - WGS 84 World Mercator</ulink>, <ulink url=\"http://spatialreference.org/ref/epsg/2163/\">2163 - US National Atlas Equal Area</ulink>, Spatial reference systems for each NAD 83, WGS 84 UTM zone - UTM zones are one of the most ideal for measurement, but only cover 6-degree regions."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:457
+#, no-c-format
+msgid "Various US state plane spatial reference systems (meter or feet based) - usually one or 2 exists per US state. Most of the meter ones are in the core set, but many of the feet based ones or ESRI created ones you will need to pull from <ulink url=\"http://spatialreference.org\">spatialreference.org</ulink>."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:461
+#, no-c-format
+msgid "For details on determining which UTM zone to use for your area of interest, check out the <ulink url=\"http://trac.osgeo.org/postgis/wiki/UsersWikiplpgsqlfunctionsDistance\">utmzone PostGIS plpgsql helper function</ulink>."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:465
+#, no-c-format
+msgid "The <varname>SPATIAL_REF_SYS</varname> table definition is as follows:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:468
+#, no-c-format
+msgid ""
+      "CREATE TABLE spatial_ref_sys (\n"
+      "  srid       INTEGER NOT NULL PRIMARY KEY,\n"
+      "  auth_name  VARCHAR(256),\n"
+      "  auth_srid  INTEGER,\n"
+      "  srtext     VARCHAR(2048),\n"
+      "  proj4text  VARCHAR(2048)\n"
+      ")"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:470
+#, no-c-format
+msgid "The <varname>SPATIAL_REF_SYS</varname> columns are as follows:"
+msgstr ""
+
+#. Tag: ulink
+#: using_postgis_dataman.xml:475
+#, no-c-format
+msgid "<ulink url=\"http://en.wikipedia.org/wiki/SRID\">SRID</ulink>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:478
+#, no-c-format
+msgid "An integer value that uniquely identifies the Spatial Referencing System (SRS) within the database."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:484
+#, no-c-format
+msgid "AUTH_NAME"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:487
+#, no-c-format
+msgid "The name of the standard or standards body that is being cited for this reference system. For example, \"EPSG\" would be a valid <varname>AUTH_NAME</varname>."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:494
+#, no-c-format
+msgid "AUTH_SRID"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:497
+#, no-c-format
+msgid "The ID of the Spatial Reference System as defined by the Authority cited in the <varname>AUTH_NAME</varname>. In the case of EPSG, this is where the EPSG projection code would go."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:504
+#, no-c-format
+msgid "SRTEXT"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:507
+#, no-c-format
+msgid "The Well-Known Text representation of the Spatial Reference System. An example of a WKT SRS representation is:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:510
+#, no-c-format
+msgid ""
+      "PROJCS[\"NAD83 / UTM Zone 10N\",\n"
+      "  GEOGCS[\"NAD83\",\n"
+      "        DATUM[\"North_American_Datum_1983\",\n"
+      "          SPHEROID[\"GRS 1980\",6378137,298.257222101]\n"
+      "        ],\n"
+      "        PRIMEM[\"Greenwich\",0],\n"
+      "        UNIT[\"degree\",0.0174532925199433]\n"
+      "  ],\n"
+      "  PROJECTION[\"Transverse_Mercator\"],\n"
+      "  PARAMETER[\"latitude_of_origin\",0],\n"
+      "  PARAMETER[\"central_meridian\",-123],\n"
+      "  PARAMETER[\"scale_factor\",0.9996],\n"
+      "  PARAMETER[\"false_easting\",500000],\n"
+      "  PARAMETER[\"false_northing\",0],\n"
+      "  UNIT[\"metre\",1]\n"
+      "]"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:512
+#, no-c-format
+msgid "For a listing of EPSG projection codes and their corresponding WKT representations, see <ulink url=\"http://www.opengeospatial.org/\">http://www.opengeospatial.org/</ulink>. For a discussion of WKT in general, see the OpenGIS \"Coordinate Transformation Services Implementation Specification\" at <ulink url=\"http://www.opengeospatial.org/standards\">http://www.opengeospatial.org/standards</ulink>. For information on the European Petroleum Survey Group (EPSG) and their database of spatial reference systems, see <ulink url=\"http://www.epsg.org/\">http://www.epsg.org</ulink>."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:525
+#, no-c-format
+msgid "PROJ4TEXT"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:528
+#, no-c-format
+msgid "PostGIS uses the Proj4 library to provide coordinate transformation capabilities. The <varname>PROJ4TEXT</varname> column contains the Proj4 coordinate definition string for a particular SRID. For example:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:533
+#, no-c-format
+msgid "+proj=utm +zone=10 +ellps=clrk66 +datum=NAD27 +units=m"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:535
+#, no-c-format
+msgid "For more information about, see the Proj4 web site at <ulink url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>. The <filename>spatial_ref_sys.sql</filename> file contains both <varname>SRTEXT</varname> and <varname>PROJ4TEXT</varname> definitions for all EPSG projections."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:546
+#, no-c-format
+msgid "The GEOMETRY_COLUMNS VIEW"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:548
+#, no-c-format
+msgid "In versions of PostGIS prior to 2.0.0, geometry_columns was a table that could be directly edited, and sometimes got out of synch with the actual definition of the geometry columns. In PostGIS 2.0.0, <varname>GEOMETRY_COLUMNS</varname> became a view with the same front-facing structure as prior versions, but reading from database system catalogs Its structure is as follows:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:552
+#, no-c-format
+msgid "\\d geometry_columns"
+msgstr ""
+
+#. Tag: screen
+#: using_postgis_dataman.xml:553
+#, no-c-format
+msgid ""
+      "View \"public.geometry_columns\"\n"
+      "      Column       |          Type          | Modifiers\n"
+      "-------------------+------------------------+-----------\n"
+      " f_table_catalog   | character varying(256) |\n"
+      " f_table_schema    | character varying(256) |\n"
+      " f_table_name      | character varying(256) |\n"
+      " f_geometry_column | character varying(256) |\n"
+      " coord_dimension   | integer                |\n"
+      " srid              | integer                |\n"
+      " type              | character varying(30)  |"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:555
+#, no-c-format
+msgid "The column meanings have not changed from prior versions and are:"
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:559
+#, no-c-format
+msgid "F_TABLE_CATALOG, F_TABLE_SCHEMA, F_TABLE_NAME"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:562
+#, no-c-format
+msgid "The fully qualified name of the feature table containing the geometry column. Note that the terms \"catalog\" and \"schema\" are Oracle-ish. There is not PostgreSQL analogue of \"catalog\" so that column is left blank -- for \"schema\" the PostgreSQL schema name is used (<varname>public</varname> is the default)."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:571
+#, no-c-format
+msgid "F_GEOMETRY_COLUMN"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:574
+#, no-c-format
+msgid "The name of the geometry column in the feature table."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:579
+#, no-c-format
+msgid "COORD_DIMENSION"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:582
+#, no-c-format
+msgid "The spatial dimension (2, 3 or 4 dimensional) of the column."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:588
+#, no-c-format
+msgid "<term>SRID</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:591
+#, no-c-format
+msgid "The ID of the spatial reference system used for the coordinate geometry in this table. It is a foreign key reference to the <varname>SPATIAL_REF_SYS</varname>."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:598
+#, no-c-format
+msgid "TYPE"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:601
+#, no-c-format
+msgid "The type of the spatial object. To restrict the spatial column to a single type, use one of: POINT, LINESTRING, POLYGON, MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, GEOMETRYCOLLECTION or corresponding XYM versions POINTM, LINESTRINGM, POLYGONM, MULTIPOINTM, MULTILINESTRINGM, MULTIPOLYGONM, GEOMETRYCOLLECTIONM. For heterogeneous (mixed-type) collections, you can use \"GEOMETRY\" as the type."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:610
+#, no-c-format
+msgid "This attribute is (probably) not part of the OpenGIS specification, but is required for ensuring type homogeneity."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:620
+#, no-c-format
+msgid "Creating a Spatial Table"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:622
+#, no-c-format
+msgid "Creating a table with spatial data, can be done in one step. As shown in the following example which creates a roads table with a 2D linestring geometry column in WGS84 long lat"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:624
+#, no-c-format
+msgid ""
+      "CREATE TABLE ROADS ( ID int4\n"
+      "                  , ROAD_NAME varchar(25), geom geometry(LINESTRING,4326) );"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:626
+#, no-c-format
+msgid "We can add additional columns using standard ALTER TABLE command as we do in this next example where we add a 3-D linestring."
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:627
+#, no-c-format
+msgid "ALTER TABLE roads ADD COLUMN geom2 geometry(LINESTRINGZ,4326);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:629
+#, no-c-format
+msgid "For backwards compability, you can still create a spatial table in two stages using the management functions."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:633
+#, no-c-format
+msgid "Create a normal non-spatial table."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:635
+#, no-c-format
+msgid "For example: <command>CREATE TABLE ROADS ( ID int4, ROAD_NAME varchar(25) )</command>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:640
+#, no-c-format
+msgid "Add a spatial column to the table using the OpenGIS \"AddGeometryColumn\" function. Refer to <xref linkend=\"AddGeometryColumn\"/> for more details."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:643
+#, no-c-format
+msgid ""
+      "The syntax is: <programlisting>AddGeometryColumn(\n"
+      "  &lt;schema_name&gt;,\n"
+      "  &lt;table_name&gt;,\n"
+      "  &lt;column_name&gt;,\n"
+      "  &lt;srid&gt;,\n"
+      "  &lt;type&gt;,\n"
+      "  &lt;dimension&gt;\n"
+      ")</programlisting> Or, using current schema:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:643
+#, no-c-format
+msgid ""
+      "AddGeometryColumn(\n"
+      "  &lt;table_name&gt;,\n"
+      "  &lt;column_name&gt;,\n"
+      "  &lt;srid&gt;,\n"
+      "  &lt;type&gt;,\n"
+      "  &lt;dimension&gt;\n"
+      ")"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:645
+#, no-c-format
+msgid "Example1: <command>SELECT AddGeometryColumn('public', 'roads', 'geom', 423, 'LINESTRING', 2)</command>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:648
+#, no-c-format
+msgid "Example2: <command>SELECT AddGeometryColumn( 'roads', 'geom', 423, 'LINESTRING', 2)</command>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:653
+#, no-c-format
+msgid "Here is an example of SQL used to create a table and add a spatial column (assuming that an SRID of 128 exists already):"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:656
+#, no-c-format
+msgid ""
+      "CREATE TABLE parks (\n"
+      "  park_id    INTEGER,\n"
+      "  park_name  VARCHAR,\n"
+      "  park_date  DATE,\n"
+      "  park_type  VARCHAR\n"
+      ");\n"
+      "SELECT AddGeometryColumn('parks', 'park_geom', 128, 'MULTIPOLYGON', 2 );"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:658
+#, no-c-format
+msgid "Here is another example, using the generic \"geometry\" type and the undefined SRID value of 0:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:661
+#, no-c-format
+msgid ""
+      "CREATE TABLE roads (\n"
+      "  road_id INTEGER,\n"
+      "  road_name VARCHAR\n"
+      ");\n"
+      "SELECT AddGeometryColumn( 'roads', 'roads_geom', 0, 'GEOMETRY', 3 );"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:665
+#, no-c-format
+msgid "Manually Registering Geometry Columns in geometry_columns"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:666
+#, no-c-format
+msgid "The AddGeometryColumn() approach creates a geometry column and also registers the new column in the geometry_columns table. If your software utilizes geometry_columns, then any geometry columns you need to query by must be registered in this view. Starting with PoastGIS 2.0, geometry_columns is no longer editable and all geometry columns are autoregistered."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:670
+#, no-c-format
+msgid "However they may be registered as a generic geometry column if the column was not defined as a specific type during creation."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:672
+#, no-c-format
+msgid "Two of the cases where this may happen, but you can't use AddGeometryColumn, is in the case of SQL Views and bulk inserts. For these cases, you can correct the registration in the geometry_columns table by constraining the column. Note in PostGIS 2.0+ if your column is typmod based, the creation process would register it correctly, so no need to do anything."
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:677
+#, no-c-format
+msgid ""
+      "--Lets say you have a view created like this\n"
+      "CREATE VIEW  public.vwmytablemercator AS\n"
+      "        SELECT gid, ST_Transform(geom,3395) As geom, f_name\n"
+      "        FROM public.mytable;\n"
+      "        \n"
+      "-- For it to register correctly in PostGIS 2.0+ \n"
+      "-- You need to cast the geometry\n"
+      "--\n"
+      "DROP VIEW public.vwmytablemercator;\n"
+      "CREATE VIEW  public.vwmytablemercator AS\n"
+      "        SELECT gid, ST_Transform(geom,3395)::geometry(Geometry, 3395) As geom, f_name\n"
+      "        FROM public.mytable;\n"
+      "        \n"
+      "-- If you know the geometry type for sure is a 2D POLYGON then you could do\n"
+      "DROP VIEW public.vwmytablemercator;\n"
+      "CREATE VIEW  public.vwmytablemercator AS\n"
+      "        SELECT gid, ST_Transform(geom,3395)::geometry(Polygon, 3395) As geom, f_name\n"
+      "        FROM public.mytable;"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:678
+#, no-c-format
+msgid ""
+      "--Lets say you created a derivative table by doing a bulk insert\n"
+      "SELECT poi.gid, poi.geom, citybounds.city_name\n"
+      "INTO myschema.my_special_pois\n"
+      "FROM poi INNER JOIN citybounds ON ST_Intersects(citybounds.geom, poi.geom);\n"
+      "\n"
+      "--Create 2d index on new table\n"
+      "CREATE INDEX idx_myschema_myspecialpois_geom_gist\n"
+      "  ON myschema.my_special_pois USING gist(geom);\n"
+      "  \n"
+      "-- If your points are 3D points or 3M points, \n"
+      "-- then you might want to create an nd index instead of a 2d index\n"
+      "-- like so\n"
+      "CREATE INDEX my_special_pois_geom_gist_nd \n"
+      "        ON my_special_pois USING gist(geom gist_geometry_ops_nd);\n"
+      "\n"
+      "--To manually register this new table's geometry column in geometry_columns\n"
+      "-- Note that this approach will work for both PostGIS 2.0+ and PostGIS 1.4+\n"
+      "-- For PostGIS 2.0 it will also change the underlying structure of the table to\n"
+      "-- to make the column typmod based.\n"
+      "-- For PostGIS prior to 2.0, this technique can also be used to register views\n"
+      "SELECT populate_geometry_columns('myschema.my_special_pois'::regclass); \n"
+      "\n"
+      "--If you are using PostGIS 2.0 and for whatever reason, you\n"
+      "-- you need the old constraint based definition behavior \n"
+      "-- (such as case of inherited tables where all children do not have the same type and srid)\n"
+      "-- set new optional  use_typmod argument to false\n"
+      "SELECT populate_geometry_columns('myschema.my_special_pois'::regclass, false);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:680
+#, no-c-format
+msgid "Although the old-constraint based method is still supported, a constraint-based geomentry column used directly in a view, will not register correctly in geometry_columns, as will a typmod one. In this example we define a column using typmod and another using constraints."
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:683
+#, no-c-format
+msgid ""
+      "CREATE TABLE pois_ny(gid SERIAL PRIMARY KEY\n"
+      "   , poi_name text, cat varchar(20)\n"
+      "   , geom geometry(POINT,4326) );\n"
+      "SELECT AddGeometryColumn('pois_ny', 'geom_2160', 2160, 'POINT', 2, false);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:684
+#, no-c-format
+msgid "If we run in psql"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:685
+#, no-c-format
+msgid "\\d pois_ny;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:686
+#, no-c-format
+msgid "We observe they are defined differently -- one is typmod, one is constraint"
+msgstr ""
+
+#. Tag: screen
+#: using_postgis_dataman.xml:687
+#, no-c-format
+msgid ""
+      "Table \"public.pois_ny\"\n"
+      "  Column   |         Type          |                       Modifiers\n"
+      "\n"
+      "-----------+-----------------------+------------------------------------------------------\n"
+      " gid       | integer               | not null default nextval('pois_ny_gid_seq'::regclass)\n"
+      " poi_name  | text                  |\n"
+      " cat       | character varying(20) |\n"
+      " geom      | geometry(Point,4326)  |\n"
+      " geom_2160 | geometry              |\n"
+      "Indexes:\n"
+      "    \"pois_ny_pkey\" PRIMARY KEY, btree (gid)\n"
+      "Check constraints:\n"
+      "    \"enforce_dims_geom_2160\" CHECK (st_ndims(geom_2160) = 2)\n"
+      "    \"enforce_geotype_geom_2160\" CHECK (geometrytype(geom_2160) = 'POINT'::text \n"
+      "        OR geom_2160 IS NULL)\n"
+      "    \"enforce_srid_geom_2160\" CHECK (st_srid(geom_2160) = 2160)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:688
+#, no-c-format
+msgid "In geometry_columns, they both register correctly"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:689
+#, no-c-format
+msgid ""
+      "SELECT f_table_name, f_geometry_column, srid, type \n"
+      "        FROM geometry_columns \n"
+      "        WHERE f_table_name = 'pois_ny';"
+msgstr ""
+
+#. Tag: screen
+#: using_postgis_dataman.xml:690
+#, no-c-format
+msgid ""
+      "f_table_name | f_geometry_column | srid | type\n"
+      "-------------+-------------------+------+-------\n"
+      "pois_ny      | geom              | 4326 | POINT\n"
+      "pois_ny      | geom_2160         | 2160 | POINT"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:691
+#, no-c-format
+msgid "However -- if we were to create a view like this"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:692
+#, no-c-format
+msgid ""
+      "CREATE VIEW vw_pois_ny_parks AS \n"
+      "SELECT * \n"
+      "  FROM pois_ny \n"
+      "  WHERE cat='park';\n"
+      "  \n"
+      "SELECT f_table_name, f_geometry_column, srid, type \n"
+      "        FROM geometry_columns \n"
+      "        WHERE f_table_name = 'vw_pois_ny_parks';"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:693
+#, no-c-format
+msgid "The typmod based geom view column registers correctly, but the constraint based one does not."
+msgstr ""
+
+#. Tag: screen
+#: using_postgis_dataman.xml:695
+#, no-c-format
+msgid ""
+      "f_table_name   | f_geometry_column | srid |   type\n"
+      "------------------+-------------------+------+----------\n"
+      " vw_pois_ny_parks | geom              | 4326 | POINT\n"
+      " vw_pois_ny_parks | geom_2160         |    0 | GEOMETRY"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:697
+#, no-c-format
+msgid "This may change in future versions of PostGIS, but for now To force the constraint based view column to register correctly, we need to do this:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:699
+#, no-c-format
+msgid ""
+      "DROP VIEW vw_pois_ny_parks;\n"
+      "CREATE VIEW vw_pois_ny_parks AS \n"
+      "SELECT gid, poi_name, cat\n"
+      "  , geom\n"
+      "  , geom_2160::geometry(POINT,2160) As geom_2160 \n"
+      "  FROM pois_ny \n"
+      "  WHERE cat='park';\n"
+      "SELECT f_table_name, f_geometry_column, srid, type \n"
+      "        FROM geometry_columns \n"
+      "        WHERE f_table_name = 'vw_pois_ny_parks';"
+msgstr ""
+
+#. Tag: screen
+#: using_postgis_dataman.xml:700
+#, no-c-format
+msgid ""
+      "f_table_name   | f_geometry_column | srid | type\n"
+      "------------------+-------------------+------+-------\n"
+      " vw_pois_ny_parks | geom              | 4326 | POINT\n"
+      " vw_pois_ny_parks | geom_2160         | 2160 | POINT"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:704
+#, no-c-format
+msgid "Ensuring OpenGIS compliancy of geometries"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:706
+#, no-c-format
+msgid "PostGIS is compliant with the Open Geospatial Consortium’s (OGC) OpenGIS Specifications. As such, many PostGIS methods require, or more accurately, assume that geometries that are operated on are both simple and valid. For example, it does not make sense to calculate the area of a polygon that has a hole defined outside of the polygon, or to construct a polygon from a non-simple boundary line."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:713
+#, no-c-format
+msgid "According to the OGC Specifications, a <emphasis>simple</emphasis> geometry is one that has no anomalous geometric points, such as self intersection or self tangency and primarily refers to 0 or 1-dimensional geometries (i.e. <varname>[MULTI]POINT, [MULTI]LINESTRING</varname>). Geometry validity, on the other hand, primarily refers to 2-dimensional geometries (i.e. <varname>[MULTI]POLYGON)</varname> and defines the set of assertions that characterizes a valid polygon. The description of each geometric class includes specific conditions that further detail geometric simplicity and validity."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:723
+#, no-c-format
+msgid "A <varname>POINT</varname> is inheritably <emphasis>simple</emphasis> as a 0-dimensional geometry object."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:726
+#, no-c-format
+msgid "<varname>MULTIPOINT</varname>s are <emphasis>simple</emphasis> if no two coordinates (<varname>POINT</varname>s) are equal (have identical coordinate values)."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:730
+#, no-c-format
+msgid "A <varname>LINESTRING</varname> is <emphasis>simple</emphasis> if it does not pass through the same <varname>POINT</varname> twice (except for the endpoints, in which case it is referred to as a linear ring and additionally considered closed)."
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:745
+#, no-c-format
+msgid "<emphasis>(a)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:755
+#, no-c-format
+msgid "<emphasis>(b)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:767
+#, no-c-format
+msgid "<emphasis>(c)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:777
+#, no-c-format
+msgid "<emphasis>(d)</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:787
+#, no-c-format
+msgid "<emphasis role=\"bold\">(a)</emphasis> and <emphasis role=\"bold\">(c)</emphasis> are simple <varname>LINESTRING</varname>s, <emphasis role=\"bold\">(b)</emphasis> and <emphasis role=\"bold\">(d)</emphasis> are not."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:796
+#, no-c-format
+msgid "A <varname>MULTILINESTRING</varname> is <emphasis>simple</emphasis> only if all of its elements are simple and the only intersection between any two elements occurs at <varname>POINT</varname>s that are on the boundaries of both elements."
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:811
+#, no-c-format
+msgid "<emphasis>(e)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:821
+#, no-c-format
+msgid "<emphasis>(f)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:831
+#, no-c-format
+msgid "<emphasis>(g)</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:841
+#, no-c-format
+msgid "<emphasis role=\"bold\">(e)</emphasis> and <emphasis role=\"bold\">(f)</emphasis> are simple <varname>MULTILINESTRING</varname>s, <emphasis role=\"bold\">(g)</emphasis> is not."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:850
+#, no-c-format
+msgid "By definition, a <varname>POLYGON</varname> is always <emphasis>simple</emphasis>. It is <emphasis>valid</emphasis> if no two rings in the boundary (made up of an exterior ring and interior rings) cross. The boundary of a <varname>POLYGON</varname> may intersect at a <varname>POINT</varname> but only as a tangent (i.e. not on a line). A <varname>POLYGON</varname> may not have cut lines or spikes and the interior rings must be contained entirely within the exterior ring."
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:868
+#, no-c-format
+msgid "<emphasis>(h)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:878
+#, no-c-format
+msgid "<emphasis>(i)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:888
+#, no-c-format
+msgid "<emphasis>(j)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:900
+#, no-c-format
+msgid "<emphasis>(k)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:910
+#, no-c-format
+msgid "<emphasis>(l)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:920
+#, no-c-format
+msgid "<emphasis>(m)</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:929
+#, no-c-format
+msgid "<emphasis role=\"bold\">(h)</emphasis> and <emphasis role=\"bold\">(i)</emphasis> are valid <varname>POLYGON</varname>s, <emphasis role=\"bold\">(j-m)</emphasis> cannot be represented as single <varname>POLYGON</varname>s, but <emphasis role=\"bold\">(j)</emphasis> and <emphasis role=\"bold\">(m)</emphasis> could be represented as a valid <varname>MULTIPOLYGON</varname>."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:941
+#, no-c-format
+msgid "A <varname>MULTIPOLYGON</varname> is <emphasis>valid</emphasis> if and only if all of its elements are valid and the interiors of no two elements intersect. The boundaries of any two elements may touch, but only at a finite number of <varname>POINT</varname>s."
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:956
+#, no-c-format
+msgid "<emphasis>(n)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:966
+#, no-c-format
+msgid "<emphasis>(o)</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:976
+#, no-c-format
+msgid "<emphasis>(p)</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:985
+#, no-c-format
+msgid "<emphasis role=\"bold\">(n)</emphasis> and <emphasis role=\"bold\">(o)</emphasis> are not valid <varname>MULTIPOLYGON</varname>s. <emphasis role=\"bold\">(p)</emphasis>, however, is valid."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:994
+#, no-c-format
+msgid "Most of the functions implemented by the GEOS library rely on the assumption that your geometries are valid as specified by the OpenGIS Simple Feature Specification. To check simplicity or validity of geometries you can use the <link linkend=\"ST_IsSimple\">ST_IsSimple()</link> and <link linkend=\"ST_IsValid\">ST_IsValid()</link>"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1000
+#, no-c-format
+msgid ""
+      "-- Typically, it doesn't make sense to check\n"
+      "-- for validity on linear features since it will always return TRUE.\n"
+      "-- But in this example, PostGIS extends the definition of the OGC IsValid\n"
+      "-- by returning false if a LineString has less than 2 *distinct* vertices.\n"
+      "gisdb=# SELECT\n"
+      "   ST_IsValid('LINESTRING(0 0, 1 1)'),\n"
+      "   ST_IsValid('LINESTRING(0 0, 0 0, 0 0)');\n"
+      "\n"
+      " st_isvalid | st_isvalid\n"
+      "------------+-----------\n"
+      "      t     |     f"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1002
+#, no-c-format
+msgid "By default, PostGIS does not apply this validity check on geometry input, because testing for validity needs lots of CPU time for complex geometries, especially polygons. If you do not trust your data sources, you can manually enforce such a check to your tables by adding a check constraint:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1008
+#, no-c-format
+msgid ""
+      "ALTER TABLE mytable\n"
+      "  ADD CONSTRAINT geometry_valid_check\n"
+      "        CHECK (ST_IsValid(the_geom));"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1010
+#, no-c-format
+msgid "If you encounter any strange error messages such as \"GEOS Intersection() threw an error!\" or \"JTS Intersection() threw an error!\" when calling PostGIS functions with valid input geometries, you likely found an error in either PostGIS or one of the libraries it uses, and you should contact the PostGIS developers. The same is true if a PostGIS function returns an invalid geometry for valid input."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1018
+#, no-c-format
+msgid "Strictly compliant OGC geometries cannot have Z or M values. The <link linkend=\"ST_IsValid\">ST_IsValid()</link> function won't consider higher dimensioned geometries invalid! Invocations of <link linkend=\"AddGeometryColumn\">AddGeometryColumn()</link> will add a constraint checking geometry dimensions, so it is enough to specify 2 there."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:1028
+#, no-c-format
+msgid "Dimensionally Extended 9 Intersection Model (DE-9IM)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1030
+#, no-c-format
+msgid "It is sometimes the case that the typical spatial predicates (<xref linkend=\"ST_Contains\"/>, <xref linkend=\"ST_Crosses\"/>, <xref linkend=\"ST_Intersects\"/>, <xref linkend=\"ST_Touches\"/>, ...) are insufficient in and of themselves to adequately provide that desired spatial filter."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1042
+#, no-c-format
+msgid "For example, consider a linear dataset representing a road network. It may be the task of a GIS analyst to identify all road segments that cross each other, not at a point, but on a line, perhaps invalidating some business rule. In this case, <xref linkend=\"ST_Crosses\"/> does not adequately provide the necessary spatial filter since, for linear features, it returns <varname>true</varname> only where they cross at a point."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1049
+#, no-c-format
+msgid "One two-step solution might be to first perform the actual intersection (<xref linkend=\"ST_Intersection\"/>) of pairs of road segments that spatially intersect (<xref linkend=\"ST_Intersects\"/>), and then compare the intersection's <xref linkend=\"ST_GeometryType\"/> with '<varname>LINESTRING</varname>' (properly dealing with cases that return <varname>GEOMETRYCOLLECTION</varname>s of <varname>[MULTI]POINT</varname>s, <varname>[MULTI]LINESTRING</varname>s, etc.)."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1057
+#, no-c-format
+msgid "A more elegant / faster solution may indeed be desirable."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1071
+#, no-c-format
+msgid "A second [theoretical] example may be that of a GIS analyst trying to locate all wharfs or docks that intersect a lake's boundary on a line and where only one end of the wharf is up on shore. In other words, where a wharf is within, but not completely within a lake, intersecting the boundary of a lake on a line, and where the wharf's endpoints are both completely within and on the boundary of the lake. The analyst may need to use a combination of spatial predicates to isolate the sought after features:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1082
+#, no-c-format
+msgid "(lake, wharf) = TRUE"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1086
+#, no-c-format
+msgid "(lake, wharf) = FALSE"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1090
+#, no-c-format
+msgid "(<xref linkend=\"ST_Intersection\"/>(wharf, lake)) = 'LINESTRING'"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1095
+#, no-c-format
+msgid "(<xref linkend=\"ST_Multi\"/>(<xref linkend=\"ST_Intersection\"/>(<xref linkend=\"ST_Boundary\"/>(wharf), <xref linkend=\"ST_Boundary\"/>(lake)))) = 1"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1098
+#, no-c-format
+msgid "... (needless to say, this could get quite complicated)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1107
+#, no-c-format
+msgid "So enters the Dimensionally Extended 9 Intersection Model, or DE-9IM for short."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:1111
+#, no-c-format
+msgid "Theory"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1113
+#, no-c-format
+msgid "According to the <ulink url=\"http://www.opengeospatial.org/standards/sfs\">OpenGIS Simple Features Implementation Specification for SQL</ulink>, \"the basic approach to comparing two geometries is to make pair-wise tests of the intersections between the Interiors, Boundaries and Exteriors of the two geometries and to classify the relationship between the two geometries based on the entries in the resulting 'intersection' matrix.\""
+msgstr ""
+
+#. Tag: glossterm
+#: using_postgis_dataman.xml:1124
+#, no-c-format
+msgid "<glossterm>Boundary</glossterm>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1127
+#, no-c-format
+msgid "The boundary of a geometry is the set of geometries of the next lower dimension. For <varname>POINT</varname>s, which have a dimension of 0, the boundary is the empty set. The boundary of a <varname>LINESTRING</varname> are the two endpoints. For <varname>POLYGON</varname>s, the boundary is the linework that make up the exterior and interior rings."
+msgstr ""
+
+#. Tag: glossterm
+#: using_postgis_dataman.xml:1138
+#, no-c-format
+msgid "<glossterm>Interior</glossterm>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1141
+#, no-c-format
+msgid "The interior of a geometry are those points of a geometry that are left when the boundary is removed. For <varname>POINT</varname>s, the interior is the <varname>POINT</varname> itself. The interior of a <varname>LINESTRING</varname> are the set of real points between the endpoints. For <varname>POLYGON</varname>s, the interior is the areal surface inside the polygon."
+msgstr ""
+
+#. Tag: glossterm
+#: using_postgis_dataman.xml:1152
+#, no-c-format
+msgid "<glossterm>Exterior</glossterm>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1155
+#, no-c-format
+msgid "The exterior of a geometry is the universe, an areal surface, not on the interior or boundary of the geometry."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1162
+#, no-c-format
+msgid "Given geometry <emphasis>a</emphasis>, where the <emphasis>I(a)</emphasis>, <emphasis>B(a)</emphasis>, and <emphasis>E(a)</emphasis> are the <emphasis>Interior</emphasis>, <emphasis>Boundary</emphasis>, and <emphasis>Exterior</emphasis> of a, the mathematical representation of the matrix is:"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1174 using_postgis_dataman.xml:1184 using_postgis_dataman.xml:1377 using_postgis_dataman.xml:1390
+#, no-c-format
+msgid "<emphasis role=\"bold\">Interior</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1176 using_postgis_dataman.xml:1227 using_postgis_dataman.xml:1380 using_postgis_dataman.xml:1413
+#, no-c-format
+msgid "<emphasis role=\"bold\">Boundary</emphasis>"
+msgstr ""
+
+#. Tag: emphasis
+#: using_postgis_dataman.xml:1178 using_postgis_dataman.xml:1270 using_postgis_dataman.xml:1383 using_postgis_dataman.xml:1436
+#, no-c-format
+msgid "<emphasis role=\"bold\">Exterior</emphasis>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1188
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( I(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">I(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1201
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( I(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">B(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1214
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( I(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">E(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1231
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( B(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">I(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1244
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( B(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">B(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1257
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( B(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">E(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1274
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( E(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">I(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1287
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( E(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">B(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: mml:mrow
+#: using_postgis_dataman.xml:1300
+#, no-c-format
+msgid "<mml:mtext mathvariant=\"italic\">dim( E(a)</mml:mtext> <mml:mo>∩</mml:mo> <mml:mtext mathvariant=\"italic\">E(b) )</mml:mtext>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1315
+#, no-c-format
+msgid "Where <emphasis>dim(a)</emphasis> is the dimension of <emphasis>a</emphasis> as specified by <xref linkend=\"ST_Dimension\"/> but has the domain of <literal>{0,1,2,T,F,*}</literal>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1322
+#, no-c-format
+msgid "<literal>0</literal> =&gt; point"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1326
+#, no-c-format
+msgid "<literal>1</literal> =&gt; line"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1330
+#, no-c-format
+msgid "<literal>2</literal> =&gt; area"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1334
+#, no-c-format
+msgid "<literal>T</literal> =&gt; <literal>{0,1,2}</literal>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1339
+#, no-c-format
+msgid "<literal>F</literal> =&gt; empty set"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1343
+#, no-c-format
+msgid "<literal>*</literal> =&gt; don't care"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1347
+#, no-c-format
+msgid "Visually, for two overlapping polygonal geometries, this looks like:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1394 using_postgis_dataman.xml:1406 using_postgis_dataman.xml:1440 using_postgis_dataman.xml:1452
+#, no-c-format
+msgid "<emphasis>dim(...) = </emphasis><emphasis role=\"bold\">2</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1400 using_postgis_dataman.xml:1417 using_postgis_dataman.xml:1429 using_postgis_dataman.xml:1446
+#, no-c-format
+msgid "<emphasis>dim(...) = </emphasis><emphasis role=\"bold\">1</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1423
+#, no-c-format
+msgid "<emphasis>dim(...) = </emphasis><emphasis role=\"bold\">0</emphasis>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1464
+#, no-c-format
+msgid "Read from left to right and from top to bottom, the dimensional matrix is represented, '<emphasis role=\"bold\">212101212</emphasis>'."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1467
+#, no-c-format
+msgid "A relate matrix that would therefore represent our first example of two lines that intersect on a line would be: '<emphasis role=\"bold\">1*1***1**</emphasis>'"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1471
+#, no-c-format
+msgid ""
+      "-- Identify road segments that cross on a line\n"
+      "SELECT a.id\n"
+      "FROM roads a, roads b\n"
+      "WHERE a.id != b.id \n"
+      "AND a.geom &amp;&amp; b.geom\n"
+      "AND ST_Relate(a.geom, b.geom, '1*1***1**');"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1473
+#, no-c-format
+msgid "A relate matrix that represents the second example of wharfs partly on the lake's shoreline would be '<emphasis role=\"bold\">102101FF2</emphasis>'"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1477
+#, no-c-format
+msgid ""
+      "-- Identify wharfs partly on a lake's shoreline\n"
+      "SELECT a.lake_id, b.wharf_id\n"
+      "FROM lakes a, wharfs b\n"
+      "WHERE a.geom &amp;&amp; b.geom\n"
+      "AND ST_Relate(a.geom, b.geom, '102101FF2');"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1479
+#, no-c-format
+msgid "For more information or reading, see:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1483
+#, no-c-format
+msgid "<ulink url=\"http://www.opengeospatial.org/standards/sfs\">OpenGIS Simple Features Implementation Specification for SQL</ulink> (version 1.1, section 2.1.13.2)"
+msgstr ""
+
+#. Tag: ulink
+#: using_postgis_dataman.xml:1488
+#, no-c-format
+msgid "Dimensionally Extended Nine-Intersection Model (DE-9IM) by Christian Strobl"
+msgstr ""
+
+#. Tag: ulink
+#: using_postgis_dataman.xml:1492
+#, no-c-format
+msgid "GeoTools: Point Set Theory and the DE-9IM Matrix"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1495
+#, no-c-format
+msgid "<emphasis>Encyclopedia of GIS</emphasis> By Hui Xiong"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:1505
+#, no-c-format
+msgid "Loading GIS Data"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1507
+#, no-c-format
+msgid "Once you have created a spatial table, you are ready to upload GIS data to the database. Currently, there are two ways to get data into a PostGIS/PostgreSQL database: using formatted SQL statements or using the Shape file loader/dumper."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:1513 using_postgis_dataman.xml:1789
+#, no-c-format
+msgid "Using SQL"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1515
+#, no-c-format
+msgid "If you can convert your data to a text representation, then using formatted SQL might be the easiest way to get your data into PostGIS. As with Oracle and other SQL databases, data can be bulk loaded by piping a large text file full of SQL \"INSERT\" statements into the SQL terminal monitor."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1521
+#, no-c-format
+msgid "A data upload file (<filename>roads.sql</filename> for example) might look like this:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1524
+#, no-c-format
+msgid ""
+      "BEGIN;\n"
+      "INSERT INTO roads (road_id, roads_geom, road_name)\n"
+      "  VALUES (1,ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',-1),'Jeff Rd');\n"
+      "INSERT INTO roads (road_id, roads_geom, road_name)\n"
+      "  VALUES (2,ST_GeomFromText('LINESTRING(189141 244158,189265 244817)',-1),'Geordie Rd');\n"
+      "INSERT INTO roads (road_id, roads_geom, road_name)\n"
+      "  VALUES (3,ST_GeomFromText('LINESTRING(192783 228138,192612 229814)',-1),'Paul St');\n"
+      "INSERT INTO roads (road_id, roads_geom, road_name)\n"
+      "  VALUES (4,ST_GeomFromText('LINESTRING(189412 252431,189631 259122)',-1),'Graeme Ave');\n"
+      "INSERT INTO roads (road_id, roads_geom, road_name)\n"
+      "  VALUES (5,ST_GeomFromText('LINESTRING(190131 224148,190871 228134)',-1),'Phil Tce');\n"
+      "INSERT INTO roads (road_id, roads_geom, road_name)\n"
+      "  VALUES (6,ST_GeomFromText('LINESTRING(198231 263418,198213 268322)',-1),'Dave Cres');\n"
+      "COMMIT;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1526
+#, no-c-format
+msgid "The data file can be piped into PostgreSQL very easily using the \"psql\" SQL terminal monitor:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1529
+#, no-c-format
+msgid "psql -d [database] -f roads.sql"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:1533
+#, no-c-format
+msgid "Using the Loader"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1535
+#, no-c-format
+msgid "The <filename>shp2pgsql</filename> data loader converts ESRI Shape files into SQL suitable for insertion into a PostGIS/PostgreSQL database either in geometry or geography format. The loader has several operating modes distinguished by command line flags:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1540
+#, no-c-format
+msgid "In addition to the shp2pgsql command-line loader, there is an <filename>shp2pgsql-gui</filename> graphical interface with most of the options as the command-line loader, but may be easier to use for one-off non-scripted loading or if you are new to PostGIS. It can also be configured as a plugin to PgAdminIII."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1547
+#, no-c-format
+msgid "(c|a|d|p) These are mutually exclusive options:"
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1552
+#, no-c-format
+msgid "<term>-c</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1554
+#, no-c-format
+msgid "Creates a new table and populates it from the shapefile. <emphasis>This is the default mode.</emphasis>"
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1562
+#, no-c-format
+msgid "<term>-a</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1564
+#, no-c-format
+msgid "Appends data from the Shape file into the database table. Note that to use this option to load multiple files, the files must have the same attributes and same data types."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1573 using_postgis_dataman.xml:1948
+#, no-c-format
+msgid "<term>-d</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1575
+#, no-c-format
+msgid "Drops the database table before creating a new table with the data in the Shape file."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1583
+#, no-c-format
+msgid "<term>-p</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1585
+#, no-c-format
+msgid "Only produces the table creation SQL code, without adding any actual data. This can be used if you need to completely separate the table creation and data loading steps."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1598
+#, no-c-format
+msgid "<term>-?</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1600
+#, no-c-format
+msgid "Display help screen."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1607
+#, no-c-format
+msgid "<term>-D</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1609
+#, no-c-format
+msgid "Use the PostgreSQL \"dump\" format for the output data. This can be combined with -a, -c and -d. It is much faster to load than the default \"insert\" SQL format. Use this for very large data sets."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1618
+#, no-c-format
+msgid "-s [&lt;FROM_SRID%gt;:]&lt;SRID&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1620
+#, no-c-format
+msgid "Creates and populates the geometry tables with the specified SRID. Optionally specifies that the input shapefile uses the given FROM_SRID, in which case the geometries will be reprojected to the target SRID. FROM_SRID cannot be specified with -D."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1631
+#, no-c-format
+msgid "<term>-k</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1633
+#, no-c-format
+msgid "Keep identifiers' case (column, schema and attributes). Note that attributes in Shapefile are all UPPERCASE."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1641
+#, no-c-format
+msgid "<term>-i</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1643
+#, no-c-format
+msgid "Coerce all integers to standard 32-bit integers, do not create 64-bit bigints, even if the DBF header signature appears to warrant it."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1651
+#, no-c-format
+msgid "<term>-I</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1653
+#, no-c-format
+msgid "Create a GiST index on the geometry column."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1659
+#, no-c-format
+msgid "<term>-S</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1661
+#, no-c-format
+msgid "Generate simple geometries instead of MULTI geometries. Will only succeed if all the geometries are actually single (I.E. a MULTIPOLYGON with a single shell, or or a MULTIPOINT with a single vertex)."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1670
+#, no-c-format
+msgid "-t &lt;dimensionality&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1672
+#, no-c-format
+msgid "Force the output geometry to have the specified dimensionality. Use the following strings to indicate the dimensionality: 2D, 3DZ, 3DM, 4D."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1676
+#, no-c-format
+msgid "If the input has fewer dimensions that specified, the output will have those dimensions filled in with zeroes. If the input has more dimensions that specified, the unwanted dimensions will be stripped."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1685
+#, no-c-format
+msgid "<term>-w</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1687
+#, no-c-format
+msgid "Output WKT format, instead of WKB. Note that this can introduce coordinate drifts due to loss of precision."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1695
+#, no-c-format
+msgid "<term>-e</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1697
+#, no-c-format
+msgid "Execute each statement on its own, without using a transaction. This allows loading of the majority of good data when there are some bad geometries that generate errors. Note that this cannot be used with the -D flag as the \"dump\" format always uses a transaction."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1707
+#, no-c-format
+msgid "-W &lt;encoding&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1709
+#, no-c-format
+msgid "Specify encoding of the input data (dbf file). When used, all attributes of the dbf are converted from the specified encoding to UTF8. The resulting SQL output will contain a <code>SET CLIENT_ENCODING to UTF8</code> command, so that the backend will be able to reconvert from UTF8 to whatever encoding the database is configured to use internally."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1719
+#, no-c-format
+msgid "-N &lt;policy&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1721
+#, no-c-format
+msgid "NULL geometries handling policy (insert*,skip,abort)"
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1727
+#, no-c-format
+msgid "<term>-n</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1729
+#, no-c-format
+msgid "-n Only import DBF file. If your data has no corresponding shapefile, it will automatically switch to this mode and load just the dbf. So setting this flag is only needed if you have a full shapefile set, and you only want the attribute data and no geometry."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1737
+#, no-c-format
+msgid "<term>-G</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1739
+#, no-c-format
+msgid "Use geography type instead of geometry (requires lon/lat data) in WGS84 long lat (SRID=4326)"
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1745
+#, no-c-format
+msgid "-T &lt;tablespace&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1747
+#, no-c-format
+msgid "Specify the tablespace for the new table. Indexes will still use the default tablespace unless the -X parameter is also used. The PostgreSQL documentation has a good description on when to use custom tablespaces."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1755
+#, no-c-format
+msgid "-X &lt;tablespace&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1757
+#, no-c-format
+msgid "Specify the tablespace for the new table's indexes. This applies to the primary key index, and the GIST spatial index if -I is also used."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1765
+#, no-c-format
+msgid "An example session using the loader to create an input file and uploading it might look like this:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1770
+#, no-c-format
+msgid ""
+      "# shp2pgsql -c -D -s 4269 -i -I shaperoads.shp myschema.roadstable &gt; roads.sql\n"
+      "# psql -d roadsdb -f roads.sql"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1772
+#, no-c-format
+msgid "A conversion and upload can be done all in one step using UNIX pipes:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1776
+#, no-c-format
+msgid "# shp2pgsql shaperoads.shp myschema.roadstable | psql -d roadsdb"
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:1781
+#, no-c-format
+msgid "Retrieving GIS Data"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1783
+#, no-c-format
+msgid "Data can be extracted from the database using either SQL or the Shape file loader/dumper. In the section on SQL we will discuss some of the operators available to do comparisons and queries on spatial tables."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1791
+#, no-c-format
+msgid "The most straightforward means of pulling data out of the database is to use a SQL select query to reduce the number of RECORDS and COLUMNS returned and dump the resulting columns into a parsable text file:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1796
+#, no-c-format
+msgid ""
+      "db=# SELECT road_id, ST_AsText(road_geom) AS geom, road_name FROM roads;\n"
+      "\n"
+      "road_id | geom                                    | road_name\n"
+      "--------+-----------------------------------------+-----------\n"
+      "          1 | LINESTRING(191232 243118,191108 243242) | Jeff Rd\n"
+      "          2 | LINESTRING(189141 244158,189265 244817) | Geordie Rd\n"
+      "          3 | LINESTRING(192783 228138,192612 229814) | Paul St\n"
+      "          4 | LINESTRING(189412 252431,189631 259122) | Graeme Ave\n"
+      "          5 | LINESTRING(190131 224148,190871 228134) | Phil Tce\n"
+      "          6 | LINESTRING(198231 263418,198213 268322) | Dave Cres\n"
+      "          7 | LINESTRING(218421 284121,224123 241231) | Chris Way\n"
+      "(6 rows)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1798
+#, no-c-format
+msgid "However, there will be times when some kind of restriction is necessary to cut down the number of fields returned. In the case of attribute-based restrictions, just use the same SQL syntax as normal with a non-spatial table. In the case of spatial restrictions, the following operators are available/useful:"
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1806
+#, no-c-format
+msgid "&amp;&amp;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1809
+#, no-c-format
+msgid "This operator tells whether the bounding box of one geometry intersects the bounding box of another."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1815
+#, no-c-format
+msgid "ST_OrderingEquals"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1818
+#, no-c-format
+msgid "This tests whether two geometries are geometrically identical. For example, if 'POLYGON((0 0,1 1,1 0,0 0))' is the same as 'POLYGON((0 0,1 1,1 0,0 0))' (it is)."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1825
+#, no-c-format
+msgid "<term>=</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1828
+#, no-c-format
+msgid "This operator is a little more naive, it only tests whether the bounding boxes of two geometries are the same."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1834
+#, no-c-format
+msgid "Next, you can use these operators in queries. Note that when specifying geometries and boxes on the SQL command line, you must explicitly turn the string representations into geometries by using the \"ST_GeomFromText()\" function. The 312 is a fictitious spatial reference system that matches our data. So, for example:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1840
+#, no-c-format
+msgid ""
+      "SELECT road_id, road_name\n"
+      "  FROM roads\n"
+      "  WHERE ST_OrderingEquals(roads_geom , ST_GeomFromText('LINESTRING(191232 243118,191108 243242)',312) ) ;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1842
+#, no-c-format
+msgid "The above query would return the single record from the \"ROADS_GEOM\" table in which the geometry was equal to that value."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1845
+#, no-c-format
+msgid "When using the \"&amp;&amp;\" operator, you can specify either a BOX3D as the comparison feature or a GEOMETRY. When you specify a GEOMETRY, however, its bounding box will be used for the comparison."
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1850
+#, no-c-format
+msgid ""
+      "SELECT road_id, road_name\n"
+      "FROM roads\n"
+      "WHERE roads_geom &amp;&amp; ST_GeomFromText('POLYGON((...))',312);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1852
+#, no-c-format
+msgid "The above query will use the bounding box of the polygon for comparison purposes."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1855
+#, no-c-format
+msgid "The most common spatial query will probably be a \"frame-based\" query, used by client software, like data browsers and web mappers, to grab a \"map frame\" worth of data for display. Using a \"BOX3D\" object for the frame, such a query looks like this:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1860
+#, no-c-format
+msgid ""
+      "SELECT ST_AsText(roads_geom) AS geom\n"
+      "FROM roads\n"
+      "WHERE\n"
+      "  roads_geom &amp;&amp; ST_MakeEnvelope(191232, 243117,191232, 243119,312);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1862
+#, no-c-format
+msgid "Note the use of the SRID 312, to specify the projection of the envelope."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:1866
+#, no-c-format
+msgid "Using the Dumper"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1868
+#, no-c-format
+msgid "The <filename>pgsql2shp</filename> table dumper connects directly to the database and converts a table (possibly defined by a query) into a shape file. The basic syntax is:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1872
+#, no-c-format
+msgid "pgsql2shp [&lt;options&gt;] &lt;database&gt; [&lt;schema&gt;.]&lt;table&gt;"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:1874
+#, no-c-format
+msgid "pgsql2shp [&lt;options&gt;] &lt;database&gt; &lt;query&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1876
+#, no-c-format
+msgid "The commandline options are:"
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1880
+#, no-c-format
+msgid "-f &lt;filename&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1883
+#, no-c-format
+msgid "Write the output to a particular filename."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1888
+#, no-c-format
+msgid "-h &lt;host&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1891
+#, no-c-format
+msgid "The database host to connect to."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1896
+#, no-c-format
+msgid "-p &lt;port&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1899
+#, no-c-format
+msgid "The port to connect to on the database host."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1904
+#, no-c-format
+msgid "-P &lt;password&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1907
+#, no-c-format
+msgid "The password to use when connecting to the database."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1912
+#, no-c-format
+msgid "-u &lt;user&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1915
+#, no-c-format
+msgid "The username to use when connecting to the database."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1920
+#, no-c-format
+msgid "-g &lt;geometry column&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1923
+#, no-c-format
+msgid "In the case of tables with multiple geometry columns, the geometry column to use when writing the shape file."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1929
+#, no-c-format
+msgid "<term>-b</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1932
+#, no-c-format
+msgid "Use a binary cursor. This will make the operation faster, but will not work if any NON-geometry attribute in the table lacks a cast to text."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1939
+#, no-c-format
+msgid "<term>-r</term>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1942
+#, no-c-format
+msgid "Raw mode. Do not drop the <varname>gid</varname> field, or escape column names."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1951
+#, no-c-format
+msgid "For backward compatibility: write a 3-dimensional shape file when dumping from old (pre-1.0.0) postgis databases (the default is to write a 2-dimensional shape file in that case). Starting from postgis-1.0.0+, dimensions are fully encoded."
+msgstr ""
+
+#. Tag: term
+#: using_postgis_dataman.xml:1959
+#, no-c-format
+msgid "-m <varname>filename</varname>"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1961
+#, no-c-format
+msgid "Remap identifiers to ten character names. The content of the file is lines of two symbols separated by a single white space and no trailing or leading space: VERYLONGSYMBOL SHORTONE ANOTHERVERYLONGSYMBOL SHORTER etc."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:1974
+#, no-c-format
+msgid "Building Indexes"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1976
+#, no-c-format
+msgid "Indexes are what make using a spatial database for large data sets possible. Without indexing, any search for a feature would require a \"sequential scan\" of every record in the database. Indexing speeds up searching by organizing the data into a search tree which can be quickly traversed to find a particular record. PostgreSQL supports three kinds of indexes by default: B-Tree indexes, R-Tree indexes, and GiST indexes."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1986
+#, no-c-format
+msgid "B-Trees are used for data which can be sorted along one axis; for example, numbers, letters, dates. GIS data cannot be rationally sorted along one axis (which is greater, (0,0) or (0,1) or (1,0)?) so B-Tree indexing is of no use for us."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:1993
+#, no-c-format
+msgid "R-Trees break up data into rectangles, and sub-rectangles, and sub-sub rectangles, etc. R-Trees are used by some spatial databases to index GIS data, but the PostgreSQL R-Tree implementation is not as robust as the GiST implementation."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2000
+#, no-c-format
+msgid "GiST (Generalized Search Trees) indexes break up data into \"things to one side\", \"things which overlap\", \"things which are inside\" and can be used on a wide range of data-types, including GIS data. PostGIS uses an R-Tree index implemented on top of GiST to index GIS data."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:2009
+#, no-c-format
+msgid "GiST Indexes"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2011
+#, no-c-format
+msgid "GiST stands for \"Generalized Search Tree\" and is a generic form of indexing. In addition to GIS indexing, GiST is used to speed up searches on all kinds of irregular data structures (integer arrays, spectral data, etc) which are not amenable to normal B-Tree indexing."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2016
+#, no-c-format
+msgid "Once a GIS data table exceeds a few thousand rows, you will want to build an index to speed up spatial searches of the data (unless all your searches are based on attributes, in which case you'll want to build a normal index on the attribute fields)."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2021
+#, no-c-format
+msgid "The syntax for building a GiST index on a \"geometry\" column is as follows:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2024
+#, no-c-format
+msgid "CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] );"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2025
+#, no-c-format
+msgid "The above syntax will always build a 2D-index. To get the an n-dimensional index supported in PostGIS 2.0+ for the geometry type, you can create one using this syntax"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2026
+#, no-c-format
+msgid "CREATE INDEX [indexname] ON [tablename] USING GIST ([geometryfield] gist_geometry_ops_nd);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2028
+#, no-c-format
+msgid "Building a spatial index is a computationally intensive exercise: on tables of around 1 million rows, on a 300MHz Solaris machine, we have found building a GiST index takes about 1 hour. After building an index, it is important to force PostgreSQL to collect table statistics, which are used to optimize query plans:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2034
+#, no-c-format
+msgid ""
+      "VACUUM ANALYZE [table_name] [(column_name)];\n"
+      "-- This is only needed for PostgreSQL 7.4 installations and below\n"
+      "SELECT UPDATE_GEOMETRY_STATS([table_name], [column_name]);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2036
+#, no-c-format
+msgid "GiST indexes have two advantages over R-Tree indexes in PostgreSQL. Firstly, GiST indexes are \"null safe\", meaning they can index columns which include null values. Secondly, GiST indexes support the concept of \"lossiness\" which is important when dealing with GIS objects larger than the PostgreSQL 8K page size. Lossiness allows PostgreSQL to store only the \"important\" part of an object in an index -- in the case of GIS objects, just the bounding box. GIS objects larger than 8K will cause R-Tree indexes to fail in the process of being built."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:2048
+#, no-c-format
+msgid "Using Indexes"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2050
+#, no-c-format
+msgid "Ordinarily, indexes invisibly speed up data access: once the index is built, the query planner transparently decides when to use index information to speed up a query plan. Unfortunately, the PostgreSQL query planner does not optimize the use of GiST indexes well, so sometimes searches which should use a spatial index instead default to a sequence scan of the whole table."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2057
+#, no-c-format
+msgid "If you find your spatial indexes are not being used (or your attribute indexes, for that matter) there are a couple things you can do:"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2063
+#, no-c-format
+msgid "Firstly, make sure statistics are gathered about the number and distributions of values in a table, to provide the query planner with better information to make decisions around index usage. For PostgreSQL 7.4 installations and below this is done by running <command>update_geometry_stats([table_name, column_name])</command> (compute distribution) and <command>VACUUM ANALYZE [table_name] [column_name]</command> (compute number of values). Starting with PostgreSQL 8.0 running <command>VACUUM ANALYZE</command> will do both operations. You should regularly vacuum your databases anyways -- many PostgreSQL DBAs have <command>VACUUM</command> run as an off-peak cron job on a regular basis."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2077
+#, no-c-format
+msgid "If vacuuming does not work, you can force the planner to use the index information by using the <command>SET ENABLE_SEQSCAN=OFF</command> command. You should only use this command sparingly, and only on spatially indexed queries: generally speaking, the planner knows better than you do about when to use normal B-Tree indexes. Once you have run your query, you should consider setting <varname>ENABLE_SEQSCAN</varname> back on, so that other queries will utilize the planner as normal."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2087
+#, no-c-format
+msgid "As of version 0.6, it should not be necessary to force the planner to use the index with <varname>ENABLE_SEQSCAN</varname>."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2094
+#, no-c-format
+msgid "If you find the planner wrong about the cost of sequential vs index scans try reducing the value of random_page_cost in postgresql.conf or using SET random_page_cost=#. Default value for the parameter is 4, try setting it to 1 or 2. Decrementing the value makes the planner more inclined of using Index scans."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:2105
+#, no-c-format
+msgid "Complex Queries"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2107
+#, no-c-format
+msgid "The <emphasis>raison d'etre</emphasis> of spatial database functionality is performing queries inside the database which would ordinarily require desktop GIS functionality. Using PostGIS effectively requires knowing what spatial functions are available, and ensuring that appropriate indexes are in place to provide good performance. The SRID of 312 used in these examples is purely for demonstration. You should be using a REAL SRID listed in the the spatial_ref_sys table and one that matches the projection of your data. If your data has no spatial reference system specified, you should be THINKING very thoughtfully why it doesn't and maybe it should. If your reason is because you are modeling something that doesn't have a geographic spatial reference system defined such as the internals of a molecule or a good location on Mars to transport the human race in the event of a nuclear holocaust, then simply leave out the SRID or make one up and insert it in the <varname>spatial_ref_sys</varname> table."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:2121
+#, no-c-format
+msgid "Taking Advantage of Indexes"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2123
+#, no-c-format
+msgid "When constructing a query it is important to remember that only the bounding-box-based operators such as &amp;&amp; can take advantage of the GiST spatial index. Functions such as <varname>ST_Distance()</varname> cannot use the index to optimize their operation. For example, the following query would be quite slow on a large table:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2130
+#, no-c-format
+msgid ""
+      "SELECT the_geom\n"
+      "FROM geom_table\n"
+      "WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(100000 200000)', 312)) &lt; 100"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2132
+#, no-c-format
+msgid "This query is selecting all the geometries in geom_table which are within 100 units of the point (100000, 200000). It will be slow because it is calculating the distance between each point in the table and our specified point, ie. one <varname>ST_Distance()</varname> calculation for each row in the table. We can avoid this by using the &amp;&amp; operator to reduce the number of distance calculations required:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2139
+#, no-c-format
+msgid ""
+      "SELECT the_geom\n"
+      "FROM geom_table\n"
+      "WHERE ST_DWithin(the_geom,  ST_MakeEnvelope(90900, 190900, 100100, 200100,312), 100)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2141
+#, no-c-format
+msgid "This query selects the same geometries, but it does it in a more efficient way. Assuming there is a GiST index on the_geom, the query planner will recognize that it can use the index to reduce the number of rows before calculating the result of the <varname>ST_distance()</varname> function. Notice that the <varname>ST_MakeEnvelope</varname> geometry which is used in the &amp;&amp; operation is a 200 unit square box centered on the original point - this is our \"query box\". The &amp;&amp; operator uses the index to quickly reduce the result set down to only those geometries which have bounding boxes that overlap the \"query box\". Assuming that our query box is much smaller than the extents of the entire geometry table, this will drastically reduce the number of distance calculations that need to be done."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:2155
+#, no-c-format
+msgid "Change in Behavior"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2157
+#, no-c-format
+msgid "As of PostGIS 1.3.0, most of the Geometry Relationship Functions, with the notable exceptions of ST_Disjoint and ST_Relate, include implicit bounding box overlap operators."
+msgstr ""
+
+#. Tag: title
+#: using_postgis_dataman.xml:2164
+#, no-c-format
+msgid "Examples of Spatial SQL"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2166
+#, no-c-format
+msgid "The examples in this section will make use of two tables, a table of linear roads, and a table of polygonal municipality boundaries. The table definitions for the <varname>bc_roads</varname> table is:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2170
+#, no-c-format
+msgid ""
+      "Column      | Type              | Description\n"
+      "------------+-------------------+-------------------\n"
+      "gid         | integer           | Unique ID\n"
+      "name        | character varying | Road Name\n"
+      "the_geom    | geometry          | Location Geometry (Linestring)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2172
+#, no-c-format
+msgid "The table definition for the <varname>bc_municipality</varname> table is:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2175
+#, no-c-format
+msgid ""
+      "Column     | Type              | Description\n"
+      "-----------+-------------------+-------------------\n"
+      "gid        | integer           | Unique ID\n"
+      "code       | integer           | Unique ID\n"
+      "name       | character varying | City / Town Name\n"
+      "the_geom   | geometry          | Location Geometry (Polygon)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2180
+#, no-c-format
+msgid "What is the total length of all roads, expressed in kilometers?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2185
+#, no-c-format
+msgid "You can answer this question with a very simple piece of SQL:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2188
+#, no-c-format
+msgid ""
+      "SELECT sum(ST_Length(the_geom))/1000 AS km_roads FROM bc_roads;\n"
+      "\n"
+      "km_roads\n"
+      "------------------\n"
+      "70842.1243039643\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2194
+#, no-c-format
+msgid "How large is the city of Prince George, in hectares?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2198
+#, no-c-format
+msgid "This query combines an attribute condition (on the municipality name) with a spatial calculation (of the area):"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2202
+#, no-c-format
+msgid ""
+      "SELECT\n"
+      "  ST_Area(the_geom)/10000 AS hectares\n"
+      "FROM bc_municipality\n"
+      "WHERE name = 'PRINCE GEORGE';\n"
+      "\n"
+      "hectares\n"
+      "------------------\n"
+      "32657.9103824927\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2208
+#, no-c-format
+msgid "What is the largest municipality in the province, by area?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2213
+#, no-c-format
+msgid "This query brings a spatial measurement into the query condition. There are several ways of approaching this problem, but the most efficient is below:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2217
+#, no-c-format
+msgid ""
+      "SELECT\n"
+      "  name,\n"
+      "  ST_Area(the_geom)/10000 AS hectares\n"
+      "FROM\n"
+      "  bc_municipality\n"
+      "ORDER BY hectares DESC\n"
+      "LIMIT 1;\n"
+      "\n"
+      "name           | hectares\n"
+      "---------------+-----------------\n"
+      "TUMBLER RIDGE  | 155020.02556131\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2219
+#, no-c-format
+msgid "Note that in order to answer this query we have to calculate the area of every polygon. If we were doing this a lot it would make sense to add an area column to the table that we could separately index for performance. By ordering the results in a descending direction, and them using the PostgreSQL \"LIMIT\" command we can easily pick off the largest value without using an aggregate function like max()."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2231
+#, no-c-format
+msgid "What is the length of roads fully contained within each municipality?"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2236
+#, no-c-format
+msgid "This is an example of a \"spatial join\", because we are bringing together data from two tables (doing a join) but using a spatial interaction condition (\"contained\") as the join condition rather than the usual relational approach of joining on a common key:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2242
+#, no-c-format
+msgid ""
+      "SELECT\n"
+      "  m.name,\n"
+      "  sum(ST_Length(r.the_geom))/1000 as roads_km\n"
+      "FROM\n"
+      "  bc_roads AS r,\n"
+      "  bc_municipality AS m\n"
+      "WHERE\n"
+      "  ST_Contains(m.the_geom,r.the_geom)\n"
+      "GROUP BY m.name\n"
+      "ORDER BY roads_km;\n"
+      "\n"
+      "name                        | roads_km\n"
+      "----------------------------+------------------\n"
+      "SURREY                      | 1539.47553551242\n"
+      "VANCOUVER                   | 1450.33093486576\n"
+      "LANGLEY DISTRICT            | 833.793392535662\n"
+      "BURNABY                     | 773.769091404338\n"
+      "PRINCE GEORGE               | 694.37554369147\n"
+      "..."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2244
+#, no-c-format
+msgid "This query takes a while, because every road in the table is summarized into the final result (about 250K roads for our particular example table). For smaller overlays (several thousand records on several hundred) the response can be very fast."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2253
+#, no-c-format
+msgid "Create a new table with all the roads within the city of Prince George."
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2258
+#, no-c-format
+msgid "This is an example of an \"overlay\", which takes in two tables and outputs a new table that consists of spatially clipped or cut resultants. Unlike the \"spatial join\" demonstrated above, this query actually creates new geometries. An overlay is like a turbo-charged spatial join, and is useful for more exact analysis work:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2265
+#, no-c-format
+msgid ""
+      "CREATE TABLE pg_roads as\n"
+      "SELECT\n"
+      "  ST_Intersection(r.the_geom, m.the_geom) AS intersection_geom,\n"
+      "  ST_Length(r.the_geom) AS rd_orig_length,\n"
+      "  r.*\n"
+      "FROM\n"
+      "  bc_roads AS r,\n"
+      "  bc_municipality AS m\n"
+      "WHERE  m.name = 'PRINCE GEORGE' AND ST_Intersects(r.the_geom, m.the_geom);"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2271
+#, no-c-format
+msgid "What is the length in kilometers of \"Douglas St\" in Victoria?"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2276
+#, no-c-format
+msgid ""
+      "SELECT\n"
+      "  sum(ST_Length(r.the_geom))/1000 AS kilometers\n"
+      "FROM\n"
+      "  bc_roads r,\n"
+      "  bc_municipality m\n"
+      "WHERE  r.name = 'Douglas St' AND m.name = 'VICTORIA'\n"
+      "        AND ST_Contains(m.the_geom, r.the_geom) ;\n"
+      "\n"
+      "kilometers\n"
+      "------------------\n"
+      "4.89151904172838\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: using_postgis_dataman.xml:2282
+#, no-c-format
+msgid "What is the largest municipality polygon that has a hole?"
+msgstr ""
+
+#. Tag: programlisting
+#: using_postgis_dataman.xml:2287
+#, no-c-format
+msgid ""
+      "SELECT gid, name, ST_Area(the_geom) AS area\n"
+      "FROM bc_municipality\n"
+      "WHERE ST_NRings(the_geom) &gt; 1\n"
+      "ORDER BY area DESC LIMIT 1;\n"
+      "\n"
+      "gid  | name         | area\n"
+      "-----+--------------+------------------\n"
+      "12   | SPALLUMCHEEN | 257374619.430216\n"
+      "(1 row)"
+msgstr ""
+

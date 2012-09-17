@@ -1,0 +1,24 @@
+# This file should be included by the Makefile
+# in each language directory
+
+local-all: local-html comments
+
+local-html: symlinks
+	$(MAKE) html
+
+local-pdf: symlinks
+	$(MAKE) pdf
+
+symlinks:
+	rm -f html; ln -s ../../html html
+	rm -f xsl; ln -s ../../xsl xsl
+
+# for XML_SOURCES
+include ../../Makefile
+
+# XML gettext tools
+PO2XML=po2xml
+
+$(XML_SOURCES): %.xml: %.xml.po
+	$(PO2XML) ../../$@ $< > $@
+

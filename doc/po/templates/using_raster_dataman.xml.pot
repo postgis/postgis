@@ -1,0 +1,1264 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: using_raster_dataman.xml:3
+#, no-c-format
+msgid "Raster Data Management, Queries, and Applications"
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:5
+#, no-c-format
+msgid "Loading and Creating Rasters"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:6
+#, no-c-format
+msgid "For most use cases, you will create PostGIS rasters by loading existing raster files using the packaged <varname>raster2pgsql</varname> raster loader."
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:9
+#, no-c-format
+msgid "Using raster2pgsql to load rasters"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:10
+#, no-c-format
+msgid "The <varname>raster2pgsql</varname> is a raster loader executable that loads GDAL supported raster formats into sql suitable for loading into a PostGIS raster table. It is capable of loading folders of raster files as well as creating overviews of rasters."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:13
+#, no-c-format
+msgid "Since the raster2pgsql is compiled as part of PostGIS most often (unless you compile your own GDAL library), the raster types supported by the executable will be the same as those compiled in the GDAL dependency library. To get a list of raster types your particular raster2pgsql supports use the <varname>-G</varname> switch. These should be the same as those provided by your PostGIS install documented here <xref linkend=\"RT_ST_GDALDrivers\"/> if you are using the same gdal library for both."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:16
+#, no-c-format
+msgid "The older version of this tool was a python script. The executable has replaced the python script. If you still find the need for the Python script Examples of the python one can be found at <ulink url=\"http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html\">GDAL PostGIS Raster Driver Usage</ulink>. Please note that the raster2pgsql python script may not work with future versions of PostGIS raster and is no longer supported."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:21
+#, no-c-format
+msgid "When creating overviews of a specific factor from a set of rasters that are aligned, it is possible for the overviews to not align. Visit <ulink url=\"http://trac.osgeo.org/postgis/ticket/1764\">http://trac.osgeo.org/postgis/ticket/1764</ulink> for an example where the overviews do not align."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:25
+#, no-c-format
+msgid "EXAMPLE USAGE:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:26
+#, no-c-format
+msgid "raster2pgsql <varname>raster_options_go_here</varname> <varname>raster_file</varname> <varname>someschema</varname>.<varname>sometable</varname> &gt; out.sql"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:30
+#, no-c-format
+msgid "<term>-?</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:32
+#, no-c-format
+msgid "Display help screen. Help will also display if you don't pass in any arguments."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:39
+#, no-c-format
+msgid "<term>-G</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:41
+#, no-c-format
+msgid "Print the supported raster formats."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:48
+#, no-c-format
+msgid "(c|a|d|p) These are mutually exclusive options:"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:53
+#, no-c-format
+msgid "<term>-c</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:55
+#, no-c-format
+msgid "Create new table and populate it with raster(s), <emphasis>this is the default mode</emphasis>"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:62
+#, no-c-format
+msgid "<term>-a</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:64
+#, no-c-format
+msgid "Append raster(s) to an existing table."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:71
+#, no-c-format
+msgid "<term>-d</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:73
+#, no-c-format
+msgid "Drop table, create new one and populate it with raster(s)"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:80
+#, no-c-format
+msgid "<term>-p</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:82
+#, no-c-format
+msgid "Prepare mode, only create the table."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:93
+#, no-c-format
+msgid "Raster processing: Applying constraints for proper registering in raster catalogs"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:98
+#, no-c-format
+msgid "<term>-C</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:100
+#, no-c-format
+msgid "Apply raster constraints -- srid, pixelsize etc. to ensure raster is properly registered in <varname>raster_columns</varname> view."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:106
+#, no-c-format
+msgid "<term>-x</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:108
+#, no-c-format
+msgid "Disable setting the max extent constraint. Only applied if -C flag is also used."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:114
+#, no-c-format
+msgid "<term>-r</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:116
+#, no-c-format
+msgid "Set the regular blocking constraint. Only applied if -C flag is also used."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:127
+#, no-c-format
+msgid "Raster processing: Optional parameters used to manipulate input raster dataset"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:132
+#, no-c-format
+msgid "-s &lt;SRID&gt;"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:134
+#, no-c-format
+msgid "Assign output raster with specified SRID. If not provided or is zero, raster's metadata will be checked to determine an appropriate SRID."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:141
+#, no-c-format
+msgid "-b BAND"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:143
+#, no-c-format
+msgid "Index (1-based) of band to extract from raster. For more than one band index, separate with comma (,). If unspecified, all bands of raster will be extracted."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:151
+#, no-c-format
+msgid "-t TILE_SIZE"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:153
+#, no-c-format
+msgid "Cut raster into tiles to be inserted one per table row. <varname>TILE_SIZE</varname> is expressed as WIDTHxHEIGHT."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:160
+#, no-c-format
+msgid "-R, --register"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:162
+#, no-c-format
+msgid "Register the raster as a filesystem (out-db) raster."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:163
+#, no-c-format
+msgid "Only the metadata of the raster and path location to the raster is stored in the database (not the pixels)."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:168
+#, no-c-format
+msgid "-l <varname>OVERVIEW_FACTOR</varname>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:169
+#, no-c-format
+msgid "Create overview of the raster. For more than one factor, separate with comma(,). Overview table name follows the pattern o_<varname>overview factor</varname>_<varname>table</varname>. Created overview is stored in the database and is not affected by -R. Note that your generated sql file will contain both the main table and overview tables."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:177
+#, no-c-format
+msgid "-N <varname>NODATA</varname>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:179
+#, no-c-format
+msgid "NODATA value to use on bands without a NODATA value."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:191
+#, no-c-format
+msgid "Optional parameters used to manipulate database objects"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:196
+#, no-c-format
+msgid "<term>-q</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:198
+#, no-c-format
+msgid "Wrap PostgreSQL identifiers in quotes"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:203
+#, no-c-format
+msgid "-f COLUMN"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:205
+#, no-c-format
+msgid "Specify name of destination raster column, default is 'rast'"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:211
+#, no-c-format
+msgid "<term>-F</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:213
+#, no-c-format
+msgid "Add a column with the name of the file"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:218
+#, no-c-format
+msgid "<term>-I</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:220
+#, no-c-format
+msgid "Create a GiST index on the raster column."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:227
+#, no-c-format
+msgid "<term>-M</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:229
+#, no-c-format
+msgid "Vacuum analyze the raster table."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:236
+#, no-c-format
+msgid "-T <varname>tablespace</varname>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:238
+#, no-c-format
+msgid "Specify the tablespace for the new table. Note that indices (including the primary key) will still use the default tablespace unless the -X flag is also used."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:247
+#, no-c-format
+msgid "-X <varname>tablespace</varname>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:249
+#, no-c-format
+msgid "Specify the tablespace for the table's new index. This applies to the primary key and the spatial index if the -I flag is used."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:258
+#, no-c-format
+msgid "<term>-Y</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:260
+#, no-c-format
+msgid "Use copy statements instead of insert statements."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:271
+#, no-c-format
+msgid "<term>-e</term>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:272
+#, no-c-format
+msgid "Execute each statement individually, do not use a transaction."
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:276
+#, no-c-format
+msgid "-E ENDIAN"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:277
+#, no-c-format
+msgid "Control endianness of generated binary output of raster; specify 0 for XDR and 1 for NDR (default); only NDR output is supported now"
+msgstr ""
+
+#. Tag: term
+#: using_raster_dataman.xml:281
+#, no-c-format
+msgid "-V <varname>version</varname>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:282
+#, no-c-format
+msgid "Specify version of output format. Default is 0. Only 0 is supported at this time."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:285
+#, no-c-format
+msgid "An example session using the loader to create an input file and uploading it chunked in 100x100 tiles might look like this:"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:286
+#, no-c-format
+msgid "You can leave the schema name out e.g <varname>demelevation</varname> instead of <varname>public.demelevation</varname> and the raster table will be created in the default schema of the database or user"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:288
+#, no-c-format
+msgid ""
+      "raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation > elev.sql\n"
+      "psql -d gisdb -f elev.sql"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:290
+#, no-c-format
+msgid "A conversion and upload can be done all in one step using UNIX pipes:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:292
+#, no-c-format
+msgid "raster2pgsql -s 4236 -I -C -M *.tif -F -t 100x100 public.demelevation | psql -d gisdb"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:294
+#, no-c-format
+msgid "Load rasters Massachusetts state plane meters aerial tiles into a schema called <varname>aerial</varname> and create a full view, 2 and 4 level overview tables, use copy mode for inserting (no intermediary file just straight to db), and -e don't force everything in a transaction (good if you want to see data in tables right away without waiting). Break up the rasters into 128x128 pixel tiles and apply raster constraints. Use copy mode instead of table insert. (-F) Include a field called filename to hold the name of the file the tiles were cut from."
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:296
+#, no-c-format
+msgid "raster2pgsql -I -C -e -Y -F -s 26986 -t 128x128  -l 2,4 bostonaerials2008/*.jpg aerials.boston | psql -U postgres -d gisdb -h localhost -p 5432"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:298
+#, no-c-format
+msgid ""
+      "--get a list of raster types supported:\n"
+      "raster2pgsql -G"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:300
+#, no-c-format
+msgid "The -G commands outputs a list something like"
+msgstr ""
+
+#. Tag: screen
+#: using_raster_dataman.xml:301
+#, no-c-format
+msgid ""
+      "Available GDAL raster formats:\n"
+      "  Virtual Raster\n"
+      "  GeoTIFF\n"
+      "  National Imagery Transmission Format\n"
+      "  Raster Product Format TOC format\n"
+      "  ECRG TOC format\n"
+      "  Erdas Imagine Images (.img)\n"
+      "  CEOS SAR Image\n"
+      "  CEOS Image\n"
+      "  JAXA PALSAR Product Reader (Level 1.1/1.5)\n"
+      "  Ground-based SAR Applications Testbed File Format (.gff)\n"
+      "  ELAS\n"
+      "  Arc/Info Binary Grid\n"
+      "  Arc/Info ASCII Grid\n"
+      "  GRASS ASCII Grid\n"
+      "  SDTS Raster\n"
+      "  DTED Elevation Raster\n"
+      "  Portable Network Graphics\n"
+      "  JPEG JFIF\n"
+      "  In Memory Raster\n"
+      "  Japanese DEM (.mem)\n"
+      "  Graphics Interchange Format (.gif)\n"
+      "  Graphics Interchange Format (.gif)\n"
+      "  Envisat Image Format\n"
+      "  Maptech BSB Nautical Charts\n"
+      "  X11 PixMap Format\n"
+      "  MS Windows Device Independent Bitmap\n"
+      "  SPOT DIMAP\n"
+      "  AirSAR Polarimetric Image\n"
+      "  RadarSat 2 XML Product\n"
+      "  PCIDSK Database File\n"
+      "  PCRaster Raster File\n"
+      "  ILWIS Raster Map\n"
+      "  SGI Image File Format 1.0\n"
+      "  SRTMHGT File Format\n"
+      "  Leveller heightfield\n"
+      "  Terragen heightfield\n"
+      "  USGS Astrogeology ISIS cube (Version 3)\n"
+      "  USGS Astrogeology ISIS cube (Version 2)\n"
+      "  NASA Planetary Data System\n"
+      "  EarthWatch .TIL\n"
+      "  ERMapper .ers Labelled\n"
+      "  NOAA Polar Orbiter Level 1b Data Set\n"
+      "  FIT Image\n"
+      "  GRIdded Binary (.grb)\n"
+      "  Raster Matrix Format\n"
+      "  EUMETSAT Archive native (.nat)\n"
+      "  Idrisi Raster A.1\n"
+      "  Intergraph Raster\n"
+      "  Golden Software ASCII Grid (.grd)\n"
+      "  Golden Software Binary Grid (.grd)\n"
+      "  Golden Software 7 Binary Grid (.grd)\n"
+      "  COSAR Annotated Binary Matrix (TerraSAR-X)\n"
+      "  TerraSAR-X Product\n"
+      "  DRDC COASP SAR Processor Raster\n"
+      "  R Object Data Store\n"
+      "  Portable Pixmap Format (netpbm)\n"
+      "  USGS DOQ (Old Style)\n"
+      "  USGS DOQ (New Style)\n"
+      "  ENVI .hdr Labelled\n"
+      "  ESRI .hdr Labelled\n"
+      "  Generic Binary (.hdr Labelled)\n"
+      "  PCI .aux Labelled\n"
+      "  Vexcel MFF Raster\n"
+      "  Vexcel MFF2 (HKV) Raster\n"
+      "  Fuji BAS Scanner Image\n"
+      "  GSC Geogrid\n"
+      "  EOSAT FAST Format\n"
+      "  VTP .bt (Binary Terrain) 1.3 Format\n"
+      "  Erdas .LAN/.GIS\n"
+      "  Convair PolGASP\n"
+      "  Image Data and Analysis\n"
+      "  NLAPS Data Format\n"
+      "  Erdas Imagine Raw\n"
+      "  DIPEx\n"
+      "  FARSITE v.4 Landscape File (.lcp)\n"
+      "  NOAA Vertical Datum .GTX\n"
+      "  NADCON .los/.las Datum Grid Shift\n"
+      "  NTv2 Datum Grid Shift\n"
+      "  ACE2\n"
+      "  Snow Data Assimilation System\n"
+      "  Swedish Grid RIK (.rik)\n"
+      "  USGS Optional ASCII DEM (and CDED)\n"
+      "  GeoSoft Grid Exchange Format\n"
+      "  Northwood Numeric Grid Format .grd/.tab\n"
+      "  Northwood Classified Grid Format .grc/.tab\n"
+      "  ARC Digitized Raster Graphics\n"
+      "  Standard Raster Product (ASRP/USRP)\n"
+      "  Magellan topo (.blx)\n"
+      "  SAGA GIS Binary Grid (.sdat)\n"
+      "  Kml Super Overlay\n"
+      "  ASCII Gridded XYZ\n"
+      "  HF2/HFZ heightfield raster\n"
+      "  OziExplorer Image File\n"
+      "  USGS LULC Composite Theme Grid\n"
+      "  Arc/Info Export E00 GRID\n"
+      "  ZMap Plus Grid\n"
+      "  NOAA NGS Geoid Height Grids"
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:304
+#, no-c-format
+msgid "Creating rasters using PostGIS raster functions"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:305
+#, no-c-format
+msgid "On many occasions, you'll want to create rasters and raster tables right in the database. There are a plethora of functions to do that. The general steps to follow."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:307
+#, no-c-format
+msgid "Create a table with a raster column to hold the new raster records which can be accomplished with:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:308
+#, no-c-format
+msgid "CREATE TABLE myrasters(rid serial primary key, rast raster);"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:311
+#, no-c-format
+msgid "There are many functions to help with that goal. If you are creating rasters not as a derivative of other rasters, you will want to start with: <xref linkend=\"RT_ST_MakeEmptyRaster\"/>, followed by <xref linkend=\"RT_ST_AddBand\"/>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:313
+#, no-c-format
+msgid "You can also create rasters from geometries. To achieve that you'll want to use <xref linkend=\"RT_ST_AsRaster\"/> perhaps accompanied with other functions such as <xref linkend=\"RT_ST_Union\"/> or <xref linkend=\"RT_ST_MapAlgebraFct2\"/> or any of the family of other map algebra functions."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:315
+#, no-c-format
+msgid "There are even many more options for creating new raster tables from existing tables. For example you can create a raster table in a different projection from an existing one using <xref linkend=\"RT_ST_Transform\"/>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:317
+#, no-c-format
+msgid "Once you are done populating your table initially, you'll want to create a spatial index on the raster column with something like:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:318
+#, no-c-format
+msgid "CREATE INDEX myrasters_rast_st_convexhull_idx ON myrasters USING gist( ST_ConvexHull(rast) );"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:319
+#, no-c-format
+msgid "Note the use of <xref linkend=\"RT_ST_ConvexHull\"/> since most raster operators are based on the convex hull of the rasters."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:320
+#, no-c-format
+msgid "Pre-2.0 versions of PostGIS raster were based on the envelop rather than the convex hull. For the spatial indexes to work properly you'll need to drop those and replace with convex hull based index."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:321
+#, no-c-format
+msgid "Apply raster constraints using <xref linkend=\"RT_AddRasterConstraints\"/>"
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:326
+#, no-c-format
+msgid "Raster Catalogs"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:327
+#, no-c-format
+msgid "There are two raster catalog views that come packaged with PostGIS. Both views utilize information embedded in the constraints of the raster tables. As a result the catalog views are always consistent with the raster data in the tables since the constraints are enforced."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:331
+#, no-c-format
+msgid "<varname>raster_columns</varname> this view catalogs all the raster table columns in your database."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:334
+#, no-c-format
+msgid "<varname>raster_overviews</varname> this view catalogs all the raster table columns in your database that serve as overviews for a finer grained table. Tables of this type are generated when you use the <varname>-l</varname> switch during load."
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:338
+#, no-c-format
+msgid "Raster Columns Catalog"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:339
+#, no-c-format
+msgid "The <varname>raster_columns</varname> is a catalog of all raster table columns in your database that are of type raster. It is a view utilizing the constraints on the tables so the information is always consistent even if you restore one raster table from a backup of another database. The following columns exist in the <varname>raster_columns</varname> catalog."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:341
+#, no-c-format
+msgid "If you created your tables not with the loader or forgot to specify the <varname>-C</varname> flag during load, you can enforce the constraints after the fact using <xref linkend=\"RT_AddRasterConstraints\"/> so that the <varname>raster_columns</varname> catalog registers the common information about your raster tiles."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:346
+#, no-c-format
+msgid "<varname>r_table_catalog</varname> The database the table is in. This will always read the current database."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:349
+#, no-c-format
+msgid "<varname>r_table_schema</varname> The database schema the raster table belongs to."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:352
+#, no-c-format
+msgid "<varname>r_table_name</varname> raster table"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:355
+#, no-c-format
+msgid "<varname>r_raster_column</varname> the column in the <varname>r_table_name</varname> table that is of type raster. There is nothing in PostGIS preventing you from having multiple raster columns per table so its possible to have a raster table listed multiple times with a different raster column for each."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:358
+#, no-c-format
+msgid "<varname>srid</varname> The spatial reference identifier of the raster. Should be an entry in the <xref linkend=\"spatial_ref_sys\"/>."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:361
+#, no-c-format
+msgid "<varname>scale_x</varname> The scaling between geometric spatial coordinates and pixel. This is only available if all tiles in the raster column have the same <varname>scale_x</varname> and this constraint is applied. Refer to <xref linkend=\"RT_ST_ScaleX\"/> for more details."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:364
+#, no-c-format
+msgid "<varname>scale_y</varname> The scaling between geometric spatial coordinates and pixel. This is only available if all tiles in the raster column have the same <varname>scale_y</varname> and the <varname>scale_y</varname> constraint is applied. Refer to <xref linkend=\"RT_ST_ScaleY\"/> for more details."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:367
+#, no-c-format
+msgid "<varname>blocksize_x</varname> The width (number of pixels across) of each raster tile . Refer to <xref linkend=\"RT_ST_Width\"/> for more details."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:370
+#, no-c-format
+msgid "<varname>blocksize_y</varname> The width (number of pixels down) of each raster tile . Refer to <xref linkend=\"RT_ST_Height\"/> for more details."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:373
+#, no-c-format
+msgid "<varname>same_alignment</varname> A boolean that is true if all the raster tiles have the same alignment . Refer to <xref linkend=\"RT_ST_SameAlignment\"/> for more details."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:376
+#, no-c-format
+msgid "<varname>regular_blocking</varname> This is a true/false constraint flag set on the table to denote that the tiles do not overlap, are of the same alignment, pixel size, srid etc. It is not really validated but just taken as a given so should be used for informational. In the future we plan to properly constrain this so that this inforamtion is guaranteed to be right when it returns <varname>true</varname>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:379
+#, no-c-format
+msgid "<varname>num_bands</varname> The number of bands in each tile of your raster set. This is the same information as what is provided by"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:382
+#, no-c-format
+msgid "<varname>pixel_types</varname> An array defining the pixel type for each band. You will have the same number of elements in this array as you have number of bands. The pixel_types are one of the following defined in <xref linkend=\"RT_ST_BandPixelType\"/>."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:385
+#, no-c-format
+msgid "<varname>nodata_values</varname> An array of double precision numbers denoting the <varname>nodata_value</varname> for each band. You will have the same number of elements in this array as you have number of bands. These numbers define the pixel value for each band that should be ignored for most operations. This is similar information provided by <xref linkend=\"RT_ST_BandNoDataValue\"/>."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:388
+#, no-c-format
+msgid "<varname>extent</varname> This is the extent of all the raster rows in your raster set. If you plan to load more data that will change the extent of the set, you'll want to run the <xref linkend=\"RT_DropRasterConstraints\"/> function before load and then reapply constraints with <xref linkend=\"RT_AddRasterConstraints\"/> after load."
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:393
+#, no-c-format
+msgid "Raster Overviews"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:394
+#, no-c-format
+msgid "<varname>raster_overviews</varname> catalogs information about raster table columns used for overviews and additional information about them that is useful to know when utilizing overviews. Overview tables are cataloged in both <varname>raster_columns</varname> and <varname>raster_overviews</varname> because they are rasters in their own right but also serve an additional special purpose of being a lower resolution caricature of a higher resolution table. These are generated along-side the main raster table when you use the <varname>-l</varname> switch in raster loading."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:395
+#, no-c-format
+msgid "Overview tables contain the same constraints as other raster tables as well as additional informational only constraints specific to overviews."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:396
+#, no-c-format
+msgid "The information in <varname>raster_overviews</varname> does not duplicate the information in <varname>raster_columns</varname>. If you need the information about an overview table present in <varname>raster_columns</varname> you can join the <varname>raster_overviews</varname> and <varname>raster_columns</varname> together to get the full set of information you need."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:397
+#, no-c-format
+msgid "Two main reasons for overviews are:"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:399
+#, no-c-format
+msgid "Low resolution representation of the core tables commonly used for fast mapping zoom-out."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:400
+#, no-c-format
+msgid "Computations are generally faster to do on them than their higher resolution parents because there are fewer records and each pixel covers more territory. Though the computations are not as accurate as the high-res tables they support, they can be sufficient in many rule-of-thumb computations."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:403
+#, no-c-format
+msgid "The <varname>raster_overviews</varname> catalog contains the following columns of information."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:406
+#, no-c-format
+msgid "<varname>o_table_catalog</varname> The database the overview table is in. This will always read the current database."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:409
+#, no-c-format
+msgid "<varname>o_table_schema</varname> The database schema the overview raster table belongs to."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:412
+#, no-c-format
+msgid "<varname>o_table_name</varname> raster overview table name"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:415
+#, no-c-format
+msgid "<varname>o_raster_column</varname> the raster column in the overview table."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:419
+#, no-c-format
+msgid "<varname>r_table_catalog</varname> The database the raster table that this overview services is in. This will always read the current database."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:422
+#, no-c-format
+msgid "<varname>r_table_schema</varname> The database schema the raster table that this overview services belongs to."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:425
+#, no-c-format
+msgid "<varname>r_table_name</varname> raster table that this overview services."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:428
+#, no-c-format
+msgid "<varname>r_raster_column</varname> the raster column that this overview column services."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:431
+#, no-c-format
+msgid "<varname>overview_factor</varname> - this is the pyramid level of the overview table. The higher the number the lower the resolution of the table. raster2pgsql if given a folder of images, will compute overview of each image file and load separately. Level 1 is assumed and always the original file. Level 2 is will have each tile represent 4 of the original. So for example if you have a folder of 5000x5000 pixel image files that you chose to chunk 125x125, for each image file your base table will have (5000*5000)/(125*125) records = 1600, your (l=2) <varname>o_2</varname> table will have ceiling(1600/Power(2,2)) = 400 rows, your (l=3) <varname>o_3</varname> will have ceiling(1600/Power(2,3) ) = 200 rows. If your pixels aren't divisible by the size of your tiles, you'll get some scrap tiles (tiles not completely filled). Note that each overview tile generated by raster2pgsql has the same number of pixels as its parent, but is of a lower resolution where each pixel of it represents (Power(2,overview_factor) pixels of the original)."
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:443
+#, no-c-format
+msgid "Building Custom Applications with PostGIS Raster"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:444
+#, no-c-format
+msgid "The fact that PostGIS raster provides you with SQL functions to render rasters in known image formats gives you a lot of optoins for rendering them. For example you can use OpenOffice / LibreOffice for rendering as demonstrated in <ulink url=\"http://www.postgresonline.com/journal/archives/244-Rendering-PostGIS-Raster-graphics-with-LibreOffice-Base-Reports.html\">Rendering PostGIS Raster graphics with LibreOffice Base Reports</ulink>. In addition you can use a wide variety of languages as demonstrated in this section."
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:447
+#, no-c-format
+msgid "PHP Example Outputting using ST_AsPNG in concert with other raster functions"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:448
+#, no-c-format
+msgid "In this section, we'll demonstrate how to use the PHP PostgreSQL driver and the <xref linkend=\"RT_ST_AsGDALRaster\"/> family of functions to output band 1,2,3 of a raster to a PHP request stream that can then be embedded in an img src html tag."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:451 using_raster_dataman.xml:463
+#, no-c-format
+msgid "The sample query demonstrates how to combine a whole bunch of raster functions together to grab all tiles that intersect a particular wgs 84 bounding box and then unions with <xref linkend=\"RT_ST_Union\"/> the intersecting tiles together returning all bands, transforms to user specified projection using <xref linkend=\"RT_ST_Transform\"/>, and then outputs the results as a png using <xref linkend=\"RT_ST_AsPNG\"/>."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:454
+#, no-c-format
+msgid "You would call the below using <programlisting>http://mywebserver/test_raster.php?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet."
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:455
+#, no-c-format
+msgid ""
+      "<![CDATA[<?php\n"
+      "/** contents of test_raster.php **/\n"
+      "$conn_str ='dbname=mydb host=localhost port=5432 user=myuser password=mypwd';\n"
+      "$dbconn = pg_connect($conn_str);\n"
+      "header('Content-Type: image/png');  \n"
+      "/**If a particular projection was requested use it otherwise use mass state plane meters **/\n"
+      "if (!empty( $_REQUEST['srid'] ) && is_numeric( $_REQUEST['srid']) ){\n"
+      "                $input_srid = intval($_REQUEST['srid']);\n"
+      "}\n"
+      "else { $input_srid = 26986; }\n"
+      "/** The set bytea_output may be needed for PostgreSQL 9.0+, but not for 8.4 **/\n"
+      "$sql = \"set bytea_output='escape';\n"
+      "SELECT ST_AsPNG(ST_Transform(\n"
+      "                        ST_AddBand(ST_Union(rast,1), ARRAY[ST_Union(rast,2),ST_Union(rast,3)])\n"
+      "                                ,$input_srid) ) As new_rast\n"
+      " FROM aerials.boston \n"
+      "        WHERE \n"
+      "         ST_Intersects(rast, ST_Transform(ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),26986) )\"; \n"
+      "$result = pg_query($sql);\n"
+      "$row = pg_fetch_row($result);\n"
+      "pg_free_result($result);\n"
+      "if ($row === false) return;\n"
+      "echo pg_unescape_bytea($row[0]);\n"
+      "?>]]>"
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:458
+#, no-c-format
+msgid "ASP.NET C# Example Outputting using ST_AsPNG in concert with other raster functions"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:459
+#, no-c-format
+msgid "In this section, we'll demonstrate how to use Npgsql PostgreSQL .NET driver and the <xref linkend=\"RT_ST_AsGDALRaster\"/> family of functions to output band 1,2,3 of a raster to a PHP request stream that can then be embedded in an img src html tag."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:462
+#, no-c-format
+msgid "You will need the npgsql .NET PostgreSQL driver for this exercise which you can get the latest of from <ulink url=\"http://npgsql.projects.postgresql.org/\">http://npgsql.projects.postgresql.org/</ulink>. Just download the latest and drop into your ASP.NET bin folder and you'll be good to go."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:466
+#, no-c-format
+msgid "This is same example as <xref linkend=\"RT_PHP_Output\"/> except implemented in C#."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:467
+#, no-c-format
+msgid "You would call the below using <programlisting>http://mywebserver/TestRaster.ashx?srid=2249</programlisting> to get the raster image in Massachusetts state plane feet."
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:468
+#, no-c-format
+msgid ""
+      "-- web.config connection string section --\n"
+      "<![CDATA[<connectionStrings>\n"
+      "    <add name=\"DSN\" \n"
+      "        connectionString=\"server=localhost;database=mydb;Port=5432;User Id=myuser;password=mypwd\"/>\n"
+      "</connectionStrings>]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:469
+#, no-c-format
+msgid ""
+      "// Code for TestRaster.ashx\n"
+      "<![CDATA[<%@ WebHandler Language=\"C#\" Class=\"TestRaster\" %>\n"
+      "using System;\n"
+      "using System.Data;\n"
+      "using System.Web;\n"
+      "using Npgsql;\n"
+      "\n"
+      "public class TestRaster : IHttpHandler\n"
+      "{\n"
+      "        public void ProcessRequest(HttpContext context)\n"
+      "        {\n"
+      "                \n"
+      "                context.Response.ContentType = \"image/png\";\n"
+      "                context.Response.BinaryWrite(GetResults(context));\n"
+      "                \n"
+      "        }\n"
+      "\n"
+      "        public bool IsReusable {\n"
+      "                get { return false; }\n"
+      "        }\n"
+      "\n"
+      "        public byte[] GetResults(HttpContext context)\n"
+      "        {\n"
+      "                byte[] result = null;\n"
+      "                NpgsqlCommand command;\n"
+      "                string sql = null;\n"
+      "                int input_srid = 26986;\n"
+      "        try {\n"
+      "                    using (NpgsqlConnection conn = new NpgsqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings[\"DSN\"].ConnectionString)) {\n"
+      "                            conn.Open();\n"
+      "\n"
+      "                if (context.Request[\"srid\"] != null)\n"
+      "                {\n"
+      "                    input_srid = Convert.ToInt32(context.Request[\"srid\"]);  \n"
+      "                }\n"
+      "                sql = @\"SELECT ST_AsPNG(\n"
+      "                            ST_Transform(\n"
+      "                                        ST_AddBand(\n"
+      "                                ST_Union(rast,1), ARRAY[ST_Union(rast,2),ST_Union(rast,3)])\n"
+      "                                                    ,:input_srid) ) As new_rast \n"
+      "                        FROM aerials.boston \n"
+      "                                WHERE \n"
+      "                                    ST_Intersects(rast, \n"
+      "                                    ST_Transform(ST_MakeEnvelope(-71.1217, 42.227, -71.1210, 42.218,4326),26986) )\";\n"
+      "                            command = new NpgsqlCommand(sql, conn);\n"
+      "                command.Parameters.Add(new NpgsqlParameter(\"input_srid\", input_srid));\n"
+      "           \n"
+      "                        \n"
+      "                            result = (byte[]) command.ExecuteScalar();\n"
+      "                conn.Close();\n"
+      "                        }\n"
+      "\n"
+      "                }\n"
+      "        catch (Exception ex)\n"
+      "        {\n"
+      "            result = null;\n"
+      "            context.Response.Write(ex.Message.Trim());\n"
+      "        }\n"
+      "                return result;\n"
+      "        }\n"
+      "}]]>"
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:472
+#, no-c-format
+msgid "Java console app that outputs raster query as Image file"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:473
+#, no-c-format
+msgid "This is a simple java console app that takes a query that returns one image and outputs to specified file."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:474
+#, no-c-format
+msgid "You can download the latest PostgreSQL JDBC drivers from <ulink url=\"http://jdbc.postgresql.org/download.html\">http://jdbc.postgresql.org/download.html</ulink>"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:475
+#, no-c-format
+msgid "You can compile the following code using a command something like:"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:476
+#, no-c-format
+msgid ""
+      "set env CLASSPATH .:..\\postgresql-9.0-801.jdbc4.jar\n"
+      "javac SaveQueryImage.java\n"
+      "jar cfm SaveQueryImage.jar Manifest.txt *.class"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:477
+#, no-c-format
+msgid "And call it from the command-line with something like"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:478
+#, no-c-format
+msgid "java -jar SaveQueryImage.jar \"SELECT ST_AsPNG(ST_AsRaster(ST_Buffer(ST_Point(1,5),10, 'quad_segs=2'),150, 150, '8BUI',100));\" \"test.png\""
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:479
+#, no-c-format
+msgid ""
+      "-- Manifest.txt --\n"
+      "<![CDATA[Class-Path: postgresql-9.0-801.jdbc4.jar\n"
+      "Main-Class: SaveQueryImage]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:480
+#, no-c-format
+msgid ""
+      "// Code for SaveQueryImage.java\n"
+      "<![CDATA[import java.sql.Connection;\n"
+      "import java.sql.SQLException;\n"
+      "import java.sql.PreparedStatement;\n"
+      "import java.sql.ResultSet;\n"
+      "import java.io.*;\n"
+      "\n"
+      "public class SaveQueryImage {\n"
+      "  public static void main(String[] argv) {\n"
+      "      System.out.println(\"Checking if Driver is registered with DriverManager.\");\n"
+      "      \n"
+      "      try {\n"
+      "        //java.sql.DriverManager.registerDriver (new org.postgresql.Driver());\n"
+      "        Class.forName(\"org.postgresql.Driver\");\n"
+      "      } \n"
+      "      catch (ClassNotFoundException cnfe) {\n"
+      "        System.out.println(\"Couldn't find the driver!\");\n"
+      "        cnfe.printStackTrace();\n"
+      "        System.exit(1);\n"
+      "      }\n"
+      "      \n"
+      "      Connection conn = null;\n"
+      "      \n"
+      "      try {\n"
+      "        conn = DriverManager.getConnection(\"jdbc:postgresql://localhost:5432/mydb\",\"myuser\", \"mypwd\");\n"
+      "        conn.setAutoCommit(false);\n"
+      "\n"
+      "        PreparedStatement sGetImg = conn.prepareStatement(argv[0]);\n"
+      "                \n"
+      "        ResultSet rs = sGetImg.executeQuery();\n"
+      "                \n"
+      "                FileOutputStream fout;\n"
+      "                try\n"
+      "                {\n"
+      "                        rs.next();\n"
+      "                        /** Output to file name requested by user **/\n"
+      "                        fout = new FileOutputStream(new File(argv[1]) );\n"
+      "                        fout.write(rs.getBytes(1));\n"
+      "                        fout.close();\n"
+      "                }\n"
+      "                catch(Exception e)\n"
+      "                {\n"
+      "                        System.out.println(\"Can't create file\");\n"
+      "                        e.printStackTrace();\n"
+      "                }\n"
+      "                \n"
+      "        rs.close();\n"
+      "                sGetImg.close();\n"
+      "        conn.close();\n"
+      "      } \n"
+      "      catch (SQLException se) {\n"
+      "        System.out.println(\"Couldn't connect: print out a stack trace and exit.\");\n"
+      "        se.printStackTrace();\n"
+      "        System.exit(1);\n"
+      "      }   \n"
+      "  }\n"
+      "}]]>"
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:484
+#, no-c-format
+msgid "Use PLPython to dump out images via SQL"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:485
+#, no-c-format
+msgid "This is a plpython stored function that creates a file in the server directory for each record."
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:486
+#, no-c-format
+msgid ""
+      "//plpython postgresql stored proc.  Requires you have plpython installed\n"
+      "<![CDATA[CREATE OR REPLACE FUNCTION write_file (param_bytes bytea, param_filepath text)\n"
+      "RETURNS text\n"
+      "AS $$\n"
+      "f = open(param_filepath, 'wb+')\n"
+      "f.write(param_bytes)\n"
+      "return param_filepath\n"
+      "$$ LANGUAGE plpythonu;]]>"
+msgstr ""
+
+#. Tag: programlisting
+#: using_raster_dataman.xml:487
+#, no-c-format
+msgid ""
+      "--write out 5 images to the PostgreSQL server in varying sizes\n"
+      "-- note the postgresql daemon account needs to have write access to folder\n"
+      "-- this echos back the file names created;\n"
+      " SELECT write_file(ST_AsPNG(\n"
+      "        ST_AsRaster(ST_Buffer(ST_Point(1,5),j*5, 'quad_segs=2'),150*j, 150*j, '8BUI',100)),\n"
+      "         'C:/temp/slices'|| j || '.png')\n"
+      "         FROM generate_series(1,5) As j;\n"
+      "         \n"
+      "     write_file\n"
+      "---------------------\n"
+      " C:/temp/slices1.png\n"
+      " C:/temp/slices2.png\n"
+      " C:/temp/slices3.png\n"
+      " C:/temp/slices4.png\n"
+      " C:/temp/slices5.png"
+msgstr ""
+
+#. Tag: title
+#: using_raster_dataman.xml:490
+#, no-c-format
+msgid "Outputting Rasters with PSQL"
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:491
+#, no-c-format
+msgid "Sadly PSQL doesn't have easy to use built-in functionality for outputting binaries. This is a bit of a hack and based on one of the suggestions outlined in <ulink url=\"http://people.planetpostgresql.org/andrew/index.php?/archives/196-Clever-trick-challenge.html\">Clever Trick Challenge -- Outputting bytea with psql</ulink> that piggy backs on PostgreSQL somewhat legacy large object support. To use first launch your psql commandline connected to your database."
+msgstr ""
+
+#. Tag: para
+#: using_raster_dataman.xml:494
+#, no-c-format
+msgid "Unlike the python approach, this approach creates the file on your local computer."
+msgstr ""
+
+#. Tag: screen
+#: using_raster_dataman.xml:495
+#, no-c-format
+msgid ""
+      "SELECT oid, lowrite(lo_open(oid, 131072), png) As num_bytes\n"
+      " FROM \n"
+      " ( VALUES (lo_create(0), \n"
+      "   ST_AsPNG( (SELECT rast FROM aerials.boston WHERE rid=1) ) \n"
+      "  ) ) As v(oid,png);\n"
+      "-- you'll get an output something like --\n"
+      "   oid   | num_bytes\n"
+      "---------+-----------\n"
+      " 2630819 |     74860\n"
+      " \n"
+      "-- next note the oid and do this replacing the c:/test.png to file path location\n"
+      "-- on your local computer\n"
+      " \\lo_export 2630819 'C:/temp/aerial_samp.png'\n"
+      " \n"
+      "-- this deletes the file from large object storage on db\n"
+      "SELECT lo_unlink(2630819);"
+msgstr ""
+

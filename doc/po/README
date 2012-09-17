@@ -1,0 +1,11 @@
+Translation files for the PostGIS manual.
+
+Compilation of the files require the ``poxml`` package,
+part of the KDE development kit.
+
+Run ``make`` in language directories to generate the 
+localized manual.
+
+Run ``make update-po`` from the parent directory to
+update the translation files to be in sync with the 
+official documentation.

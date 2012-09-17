@@ -1,0 +1,170 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reporting.xml:3
+#, no-c-format
+msgid "Reporting Problems"
+msgstr ""
+
+#. Tag: title
+#: reporting.xml:6
+#, no-c-format
+msgid "Reporting Software Bugs"
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:8
+#, no-c-format
+msgid ""
+"Reporting bugs effectively is a fundamental way to help PostGIS development. "
+"The most effective bug report is that enabling PostGIS developers to "
+"reproduce it, so it would ideally contain a script triggering it and every "
+"information regarding the environment in which it was detected. Good enough "
+"info can be extracted running <code>SELECT postgis_full_version()</code> "
+"[for postgis] and <code>SELECT version()</code> [for postgresql]."
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:16
+#, no-c-format
+msgid ""
+"If you aren't using the latest release, it's worth taking a look at its "
+"<ulink url=\"http://svn.osgeo.org/postgis/trunk/NEWS\">release changelog</"
+"ulink> first, to find out if your bug has already been fixed."
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:21
+#, no-c-format
+msgid ""
+"Using the <ulink url=\"http://trac.osgeo.org/postgis/\">PostGIS bug tracker</"
+"ulink> will ensure your reports are not discarded, and will keep you "
+"informed on its handling process. Before reporting a new bug please query "
+"the database to see if it is a known one, and if it is please add any new "
+"information you have about it."
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:28
+#, no-c-format
+msgid ""
+"You might want to read Simon Tatham's paper about <ulink url=\"http://www."
+"chiark.greenend.org.uk/~sgtatham/bugs.html\">How to Report Bugs Effectively</"
+"ulink> before filing a new report."
+msgstr ""
+
+#. Tag: title
+#: reporting.xml:34
+#, no-c-format
+msgid "Reporting Documentation Issues"
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:36
+#, no-c-format
+msgid ""
+"The documentation should accurately reflect the features and behavior of the "
+"software. If it doesn't, it could be because of a software bug or because "
+"the documentation is in error or deficient."
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:40
+#, no-c-format
+msgid ""
+"Documentation issues can also be reported to the <ulink url=\"http://trac."
+"osgeo.org/postgis\">PostGIS bug tracker</ulink>."
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:44
+#, no-c-format
+msgid ""
+"If your revision is trivial, just describe it in a new bug tracker issue, "
+"being specific about its location in the documentation."
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:47
+#, no-c-format
+msgid ""
+"If your changes are more extensive, a Subversion patch is definitely "
+"preferred. This is a four step process on Unix (assuming you already have "
+"<ulink url=\"http://subversion.apache.org/\">Subversion</ulink> installed):"
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:54
+#, no-c-format
+msgid "Check out a copy of PostGIS' Subversion trunk. On Unix, type:"
+msgstr ""
+
+#. Tag: command
+#: reporting.xml:57
+#, no-c-format
+msgid "svn checkout http://svn.osgeo.org/postgis/trunk/"
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:60
+#, no-c-format
+msgid "This will be stored in the directory ./trunk"
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:64
+#, no-c-format
+msgid ""
+"Make your changes to the documentation with your favorite text editor. On "
+"Unix, type (for example):"
+msgstr ""
+
+#. Tag: command
+#: reporting.xml:67
+#, no-c-format
+msgid "vim trunk/doc/postgis.xml"
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:69
+#, no-c-format
+msgid ""
+"Note that the documentation is written in DocBook XML rather than HTML, so "
+"if you are not familiar with it please follow the example of the rest of the "
+"documentation."
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:75
+#, no-c-format
+msgid ""
+"Make a patch file containing the differences from the master copy of the "
+"documentation. On Unix, type:"
+msgstr ""
+
+#. Tag: command
+#: reporting.xml:78
+#, no-c-format
+msgid "svn diff trunk/doc/postgis.xml &gt; doc.patch"
+msgstr ""
+
+#. Tag: para
+#: reporting.xml:83
+#, no-c-format
+msgid "Attach the patch to a new issue in bug tracker."
+msgstr ""

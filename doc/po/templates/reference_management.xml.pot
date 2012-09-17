@@ -1,0 +1,854 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_management.xml:3
+#, no-c-format
+msgid "Management Functions"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:7
+#, no-c-format
+msgid "AddGeometryColumn"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:9
+#, no-c-format
+msgid "Adds a geometry column to an existing table of attributes. By default uses type modifier to define rather than constraints. Pass in false for use_typmod to get old check constraint based behavior"
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_management.xml:15
+#, no-c-format
+msgid "<funcprototype> <funcdef>text <function>AddGeometryColumn</function></funcdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></paramdef> <paramdef><type>varchar </type> <parameter>type</parameter></paramdef> <paramdef><type>integer </type> <parameter>dimension</parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>AddGeometryColumn</function></funcdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></paramdef> <paramdef><type>varchar </type> <parameter>type</parameter></paramdef> <paramdef><type>integer </type> <parameter>dimension</parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>AddGeometryColumn</function></funcdef> <paramdef><type>varchar </type> <parameter>catalog_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></paramdef> <paramdef><type>varchar </type> <parameter>type</parameter></paramdef> <paramdef><type>integer </type> <parameter>dimension</parameter></paramdef> <paramdef choice=\"opt\"><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: title
+#: reference_management.xml:92 reference_management.xml:188 reference_management.xml:254 reference_management.xml:298 reference_management.xml:344 reference_management.xml:386 reference_management.xml:427 reference_management.xml:458 reference_management.xml:499 reference_management.xml:540 reference_management.xml:583 reference_management.xml:631 reference_management.xml:677 reference_management.xml:726 reference_management.xml:862
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:94
+#, no-c-format
+msgid "Adds a geometry column to an existing table of attributes. The <varname>schema_name</varname> is the name of the table schema. The <varname>srid</varname> must be an integer value reference to an entry in the SPATIAL_REF_SYS table. The <varname>type</varname> must be a string corresponding to the geometry type, eg, 'POLYGON' or 'MULTILINESTRING' . An error is thrown if the schemaname doesn't exist (or not visible in the current search_path) or the specified SRID, geometry type, or dimension is invalid."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:104
+#, no-c-format
+msgid "Changed: 2.0.0 This function no longer updates geometry_columns since geometry_columns is a view that reads from system catalogs. It by default also does not create constraints, but instead uses the built in type modifier behavior of PostgreSQL. So for example building a wgs84 POINT column with this function is now equivalent to: <code>ALTER TABLE some_table ADD COLUMN geom geometry(Point,4326);</code>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:107
+#, no-c-format
+msgid "Changed: 2.0.0 If you require the old behavior of constraints use the default <varname>use_typmod</varname>, but set it to false."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:111
+#, no-c-format
+msgid "Changed: 2.0.0 Views can no longer be manually registered in geometry_columns, however views built against geometry typmod tables geometries and used without wrapper functions will register themselves correctly because they inherit the typmod behavior of their parent table column. Views that use geometry functions that output other geometries will need to be cast to typmod geometries for these view geometry columns to be registered correctly in geometry_columns. Refer to <xref linkend=\"Manual_Register_Spatial_Column\"/>."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:117 reference_management.xml:194
+#, no-c-format
+msgid "&sfs_compliant;"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:118 reference_management.xml:195 reference_management.xml:868
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:119 reference_management.xml:196 reference_management.xml:869
+#, no-c-format
+msgid "&curve_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:120
+#, no-c-format
+msgid "Enhanced: 2.0.0 use_typmod argument introduced. Defaults to creating typmod geometry column instead of constraint-based."
+msgstr ""
+
+#. Tag: title
+#: reference_management.xml:124 reference_management.xml:203 reference_management.xml:267 reference_management.xml:306 reference_management.xml:351 reference_management.xml:393 reference_management.xml:433 reference_management.xml:464 reference_management.xml:506 reference_management.xml:548 reference_management.xml:600 reference_management.xml:646 reference_management.xml:683 reference_management.xml:784
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:126
+#, no-c-format
+msgid ""
+      "-- Create schema to hold data\n"
+      "CREATE SCHEMA my_schema;\n"
+      "-- Create a new simple PostgreSQL table\n"
+      "CREATE TABLE my_schema.my_spatial_table (id serial);\n"
+      "\n"
+      "-- Describing the table shows a simple table with a single \"id\" column.\n"
+      "postgis=# \\d my_schema.my_spatial_table\n"
+      "                                                         Table \"my_schema.my_spatial_table\"\n"
+      " Column |  Type   |                                Modifiers\n"
+      "--------+---------+-------------------------------------------------------------------------\n"
+      " id     | integer | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)\n"
+      "\n"
+      "-- Add a spatial column to the table\n"
+      "SELECT AddGeometryColumn ('my_schema','my_spatial_table','geom',4326,'POINT',2);\n"
+      "\n"
+      "-- Add a point using the old constraint based behavior\n"
+      "SELECT AddGeometryColumn ('my_schema','my_spatial_table','geom_c',4326,'POINT',2, false);\n"
+      "\n"
+      "--Add a curvepolygon using old constraint behavior\n"
+      "SELECT AddGeometryColumn ('my_schema','my_spatial_table','geomcp_c',4326,'CURVEPOLYGON',2, false);\n"
+      "\n"
+      "-- Describe the table again reveals the addition of a new geometry columns.\n"
+      "\\d my_schema.my_spatial_table\n"
+      "                            addgeometrycolumn                            \n"
+      "-------------------------------------------------------------------------\n"
+      " my_schema.my_spatial_table.geomcp_c SRID:4326 TYPE:CURVEPOLYGON DIMS:2 \n"
+      "(1 row)\n"
+      "\n"
+      "                                    Table \"my_schema.my_spatial_table\"\n"
+      "  Column  |         Type         |                                Modifiers                                \n"
+      "----------+----------------------+-------------------------------------------------------------------------\n"
+      " id       | integer              | not null default nextval('my_schema.my_spatial_table_id_seq'::regclass)\n"
+      " geom     | geometry(Point,4326) | \n"
+      " geom_c   | geometry             | \n"
+      " geomcp_c | geometry             | \n"
+      "Check constraints:\n"
+      "    \"enforce_dims_geom_c\" CHECK (st_ndims(geom_c) = 2)\n"
+      "    \"enforce_dims_geomcp_c\" CHECK (st_ndims(geomcp_c) = 2)\n"
+      "    \"enforce_geotype_geom_c\" CHECK (geometrytype(geom_c) = 'POINT'::text OR geom_c IS NULL)\n"
+      "    \"enforce_geotype_geomcp_c\" CHECK (geometrytype(geomcp_c) = 'CURVEPOLYGON'::text OR geomcp_c IS NULL)\n"
+      "    \"enforce_srid_geom_c\" CHECK (st_srid(geom_c) = 4326)\n"
+      "    \"enforce_srid_geomcp_c\" CHECK (st_srid(geomcp_c) = 4326)\n"
+      "    \n"
+      "-- geometry_columns view also registers the new columns --\n"
+      "SELECT f_geometry_column As col_name, type, srid, coord_dimension As ndims \n"
+      "    FROM geometry_columns\n"
+      "    WHERE f_table_name = 'my_spatial_table' AND f_table_schema = 'my_schema';\n"
+      "\n"
+      " col_name |     type     | srid | ndims \n"
+      "----------+--------------+------+-------\n"
+      " geom     | Point        | 4326 |     2\n"
+      " geom_c   | Point        | 4326 |     2\n"
+      " geomcp_c | CurvePolygon | 4326 |     2"
+msgstr ""
+
+#. Tag: title
+#: reference_management.xml:130 reference_management.xml:208 reference_management.xml:272 reference_management.xml:312 reference_management.xml:357 reference_management.xml:399 reference_management.xml:470 reference_management.xml:512 reference_management.xml:554 reference_management.xml:606 reference_management.xml:652 reference_management.xml:689 reference_management.xml:873
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:132
+#, no-c-format
+msgid ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>, <xref linkend=\"Manual_Register_Spatial_Column\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:138
+#, no-c-format
+msgid "DropGeometryColumn"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:140
+#, no-c-format
+msgid "Removes a geometry column from a spatial table."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_management.xml:145
+#, no-c-format
+msgid "<funcprototype> <funcdef>text <function>DropGeometryColumn</function></funcdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>DropGeometryColumn</function></funcdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>DropGeometryColumn</function></funcdef> <paramdef><type>varchar </type> <parameter>catalog_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:190
+#, no-c-format
+msgid "Removes a geometry column from a spatial table. Note that schema_name will need to match the f_table_schema field of the table's row in the geometry_columns table."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:198
+#, no-c-format
+msgid "Changed: 2.0.0 This function is provided for backward compatibility. Now that since geometry_columns is now a view against the system catalogs, you can drop a geometry column like any other table column using <code>ALTER TABLE</code>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:205
+#, no-c-format
+msgid ""
+      "SELECT DropGeometryColumn ('my_schema','my_spatial_table','geom');\n"
+      "                        ----RESULT output ---\n"
+      "                                          dropgeometrycolumn\n"
+      "------------------------------------------------------\n"
+      " my_schema.my_spatial_table.geom effectively removed.\n"
+      " \n"
+      "-- In PostGIS 2.0+ the above is also equivalent to the standard\n"
+      "-- the standard alter table.  Both will deregister from geometry_columns\n"
+      "ALTER TABLE my_schema.my_spatial_table DROP column geom;"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:210
+#, no-c-format
+msgid ", <xref linkend=\"DropGeometryTable\"/>, <xref linkend=\"geometry_columns\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:216
+#, no-c-format
+msgid "DropGeometryTable"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:218
+#, no-c-format
+msgid "Drops a table and all its references in geometry_columns."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_management.xml:223
+#, no-c-format
+msgid "<funcprototype> <funcdef>boolean <function>DropGeometryTable</function></funcdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>boolean <function>DropGeometryTable</function></funcdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>boolean <function>DropGeometryTable</function></funcdef> <paramdef><type>varchar </type> <parameter>catalog_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:256
+#, no-c-format
+msgid "Drops a table and all its references in geometry_columns. Note: uses current_schema() on schema-aware pgsql installations if schema is not provided."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:261
+#, no-c-format
+msgid "Changed: 2.0.0 This function is provided for backward compatibility. Now that since geometry_columns is now a view against the system catalogs, you can drop a table with geometry columns like any other table using <code>DROP TABLE</code>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:269
+#, no-c-format
+msgid ""
+      "SELECT DropGeometryTable ('my_schema','my_spatial_table');\n"
+      "----RESULT output ---\n"
+      "my_schema.my_spatial_table dropped.\n"
+      "                        \n"
+      "-- The above is now equivalent to --\n"
+      "DROP TABLE my_schema.my_spatial_table;"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:274
+#, no-c-format
+msgid ", <xref linkend=\"DropGeometryColumn\"/>, <xref linkend=\"geometry_columns\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:281
+#, no-c-format
+msgid "PostGIS_Full_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:283
+#, no-c-format
+msgid "Reports full postgis version and build configuration infos."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:289
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_Full_Version</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:300
+#, no-c-format
+msgid "Reports full postgis version and build configuration infos. Also informs about synchronization between libraries and scripts suggesting upgrades as needed."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:308
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_Full_Version();\n"
+      "                                                           postgis_full_version\n"
+      "----------------------------------------------------------------------------------\n"
+      " POSTGIS=\"1.3.3\" GEOS=\"3.1.0-CAPI-1.5.0\" PROJ=\"Rel. 4.4.9, 29 Oct 2004\" USE_STATS\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:314
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:327
+#, no-c-format
+msgid "PostGIS_GEOS_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:329
+#, no-c-format
+msgid "Returns the version number of the GEOS library."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:335
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_GEOS_Version</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:346
+#, no-c-format
+msgid "Returns the version number of the GEOS library, or <varname>NULL</varname> if GEOS support is not enabled."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:353
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_GEOS_Version();\n"
+      " postgis_geos_version\n"
+      "----------------------\n"
+      " 3.1.0-CAPI-1.5.0\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:359
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:369
+#, no-c-format
+msgid "PostGIS_LibXML_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:371
+#, no-c-format
+msgid "Returns the version number of the libxml2 library."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:377
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_LibXML_Version</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:388
+#, no-c-format
+msgid "Returns the version number of the LibXML2 library."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:389
+#, no-c-format
+msgid "Availability: 1.5"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:395
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_LibXML_Version();\n"
+      " postgis_libxml_version\n"
+      "----------------------\n"
+      " 2.7.6\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:401
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:411
+#, no-c-format
+msgid "PostGIS_Lib_Build_Date"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:413
+#, no-c-format
+msgid "<refpurpose>Returns build date of the PostGIS library.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:418
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_Lib_Build_Date</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:429
+#, no-c-format
+msgid "<para>Returns build date of the PostGIS library.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:435
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_Lib_Build_Date();\n"
+      " postgis_lib_build_date\n"
+      "------------------------\n"
+      " 2008-06-21 17:53:21\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:441
+#, no-c-format
+msgid "PostGIS_Lib_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:443
+#, no-c-format
+msgid "<refpurpose>Returns the version number of the PostGIS library.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:449
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_Lib_Version</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:460
+#, no-c-format
+msgid "<para>Returns the version number of the PostGIS library.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:466
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_Lib_Version();\n"
+      " postgis_lib_version\n"
+      "---------------------\n"
+      " 1.3.3\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:472
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:482
+#, no-c-format
+msgid "PostGIS_PROJ_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:484
+#, no-c-format
+msgid "Returns the version number of the PROJ4 library."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:490
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_PROJ_Version</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:501
+#, no-c-format
+msgid "Returns the version number of the PROJ4 library, or <varname>NULL</varname> if PROJ4 support is not enabled."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:508
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_PROJ_Version();\n"
+      "  postgis_proj_version\n"
+      "-------------------------\n"
+      " Rel. 4.4.9, 29 Oct 2004\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:514 reference_management.xml:556
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:524
+#, no-c-format
+msgid "PostGIS_Scripts_Build_Date"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:526
+#, no-c-format
+msgid "<refpurpose>Returns build date of the PostGIS scripts.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:531
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_Scripts_Build_Date</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:542
+#, no-c-format
+msgid "<para>Returns build date of the PostGIS scripts.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:544
+#, no-c-format
+msgid "Availability: 1.0.0RC1"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:550
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_Scripts_Build_Date();\n"
+      "  postgis_scripts_build_date\n"
+      "-------------------------\n"
+      " 2007-08-18 09:09:26\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:566
+#, no-c-format
+msgid "PostGIS_Scripts_Installed"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:568
+#, no-c-format
+msgid "<refpurpose>Returns version of the postgis scripts installed in this database.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:574
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_Scripts_Installed</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:585
+#, no-c-format
+msgid "<para>Returns version of the postgis scripts installed in this database.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:589
+#, no-c-format
+msgid "If the output of this function doesn't match the output of <xref linkend=\"PostGIS_Scripts_Released\"/> you probably missed to properly upgrade an existing database. See the <link linkend=\"upgrading\">Upgrading</link> section for more info."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:596 reference_management.xml:642
+#, no-c-format
+msgid "Availability: 0.9.0"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:602
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_Scripts_Installed();\n"
+      "  postgis_scripts_installed\n"
+      "-------------------------\n"
+      " 1.5.0SVN\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:608
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Scripts_Released\"/>, <xref linkend=\"PostGIS_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:614
+#, no-c-format
+msgid "PostGIS_Scripts_Released"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:616
+#, no-c-format
+msgid "<refpurpose>Returns the version number of the postgis.sql script released with the installed postgis lib.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:622
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_Scripts_Released</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:633
+#, no-c-format
+msgid "<para>Returns the version number of the postgis.sql script released with the installed postgis lib.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:637
+#, no-c-format
+msgid "Starting with version 1.1.0 this function returns the same value of <xref linkend=\"PostGIS_Lib_Version\"/>. Kept for backward compatibility."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:648
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_Scripts_Released();\n"
+      "  postgis_scripts_released\n"
+      "-------------------------\n"
+      " 1.3.4SVN\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:654
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_Scripts_Installed\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:660
+#, no-c-format
+msgid "PostGIS_Version"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:662
+#, no-c-format
+msgid "<refpurpose>Returns PostGIS version number and compile-time options.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_management.xml:668
+#, no-c-format
+msgid "<funcdef>text <function>PostGIS_Version</function></funcdef> <paramdef></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:679
+#, no-c-format
+msgid "<para>Returns PostGIS version number and compile-time options.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:685
+#, no-c-format
+msgid ""
+      "SELECT PostGIS_Version();\n"
+      "                        postgis_version\n"
+      "---------------------------------------\n"
+      " 1.3 USE_GEOS=1 USE_PROJ=1 USE_STATS=1\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:691
+#, no-c-format
+msgid ", <xref linkend=\"PostGIS_GEOS_Version\"/>, <xref linkend=\"PostGIS_Lib_Version\"/>, <xref linkend=\"PostGIS_LibXML_Version\"/>, <xref linkend=\"PostGIS_PROJ_Version\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:701
+#, no-c-format
+msgid "Populate_Geometry_Columns"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:703
+#, no-c-format
+msgid "Ensures geometry columns are defined with type modifiers or have appropriate spatial constraints This ensures they will be registered correctly in <varname>geometry_columns</varname> view. By default will convert all geometry columns with no type modifier to ones with type modifiers. To get old behavior set <varname>use_typmod=false</varname>"
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_management.xml:709
+#, no-c-format
+msgid "<funcprototype> <funcdef>text <function>Populate_Geometry_Columns</function></funcdef> <paramdef><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>int <function>Populate_Geometry_Columns</function></funcdef> <paramdef><type>oid</type> <parameter>relation_oid</parameter></paramdef> <paramdef><type>boolean </type> <parameter>use_typmod=true</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:728
+#, no-c-format
+msgid "Ensures geometry columns have appropriate type modifiers or spatial constraints to ensure they are registered correctly in <varname>geometry_columns</varname> table."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:730
+#, no-c-format
+msgid "For backwards compatibility and for spatial needs such as tble inheritance where each child table may have different geometry type, the old check constraint behavior is still supported. If you need the old behavior, you need to pass in the new optional argument as false <varname>use_typmod=false</varname>. When this is done geometry columns will be created with no type modifiers but will have 3 constraints defined. In particular, this means that every geometry column belonging to a table has at least three constraints:"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:738
+#, no-c-format
+msgid "<varname>enforce_dims_the_geom</varname> - ensures every geometry has the same dimension (see <xref linkend=\"ST_NDims\"/>)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:744
+#, no-c-format
+msgid "<varname>enforce_geotype_the_geom</varname> - ensures every geometry is of the same type (see <xref linkend=\"GeometryType\"/>)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:750
+#, no-c-format
+msgid "<varname>enforce_srid_the_geom</varname> - ensures every geometry is in the same projection (see <xref linkend=\"ST_SRID\"/>)"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:756
+#, no-c-format
+msgid "If a table <varname>oid</varname> is provided, this function tries to determine the srid, dimension, and geometry type of all geometry columns in the table, adding constraints as necessary. If successful, an appropriate row is inserted into the geometry_columns table, otherwise, the exception is caught and an error notice is raised describing the problem."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:763
+#, no-c-format
+msgid "If the <varname>oid</varname> of a view is provided, as with a table oid, this function tries to determine the srid, dimension, and type of all the geometries in the view, inserting appropriate entries into the <varname>geometry_columns</varname> table, but nothing is done to enforce constraints."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:769
+#, no-c-format
+msgid "The parameterless variant is a simple wrapper for the parameterized variant that first truncates and repopulates the geometry_columns table for every spatial table and view in the database, adding spatial constraints to tables where appropriate. It returns a summary of the number of geometry columns detected in the database and the number that were inserted into the <varname>geometry_columns</varname> table. The parameterized version simply returns the number of rows inserted into the <varname>geometry_columns</varname> table."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:777
+#, no-c-format
+msgid "Availability: 1.4.0"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:778
+#, no-c-format
+msgid "Changed: 2.0.0 By default, now uses type modifiers instead of check constraints to constrain geometry types. You can still use check constraint behavior instead by using the new <varname>use_typmod</varname> and setting it to false."
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:780
+#, no-c-format
+msgid "Enhanced: 2.0.0 <varname>use_typmod</varname> optional argument was introduced that allows controlling if columns are created with typmodifiers or with check constraints."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:786
+#, no-c-format
+msgid ""
+      "CREATE TABLE public.myspatial_table(gid serial, geom geometry);\n"
+      "INSERT INTO myspatial_table(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );\n"
+      "-- This will now use typ modifiers.  For this to work, there must exist data\n"
+      "SELECT Populate_Geometry_Columns('public.myspatial_table'::regclass);\n"
+      "\n"
+      "populate_geometry_columns\n"
+      "--------------------------\n"
+      "                        1\n"
+      "                        \n"
+      "                        \n"
+      "\\d myspatial_table\n"
+      "\n"
+      "                                   Table \"public.myspatial_table\"\n"
+      " Column |           Type            |                           Modifiers                           \n"
+      "--------+---------------------------+---------------------------------------------------------------\n"
+      " gid    | integer                   | not null default nextval('myspatial_table_gid_seq'::regclass)\n"
+      " geom   | geometry(LineString,4326) |"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_management.xml:788
+#, no-c-format
+msgid ""
+      "-- This will change the geometry columns to use constraints if they are not typmod or have constraints already.  \n"
+      "--For this to work, there must exist data\n"
+      "CREATE TABLE public.myspatial_table_cs(gid serial, geom geometry);\n"
+      "INSERT INTO myspatial_table_cs(geom) VALUES(ST_GeomFromText('LINESTRING(1 2, 3 4)',4326) );\n"
+      "SELECT Populate_Geometry_Columns('public.myspatial_table_cs'::regclass, false);\n"
+      "populate_geometry_columns\n"
+      "--------------------------\n"
+      "                        1\n"
+      "\\d myspatial_table_cs\n"
+      "\n"
+      "                          Table \"public.myspatial_table_cs\"\n"
+      " Column |   Type   |                            Modifiers                             \n"
+      "--------+----------+------------------------------------------------------------------\n"
+      " gid    | integer  | not null default nextval('myspatial_table_cs_gid_seq'::regclass)\n"
+      " geom   | geometry | \n"
+      "Check constraints:\n"
+      "    \"enforce_dims_geom\" CHECK (st_ndims(geom) = 2)\n"
+      "    \"enforce_geotype_geom\" CHECK (geometrytype(geom) = 'LINESTRING'::text OR geom IS NULL)\n"
+      "    \"enforce_srid_geom\" CHECK (st_srid(geom) = 4326)"
+msgstr ""
+
+#. Tag: refname
+#: reference_management.xml:803
+#, no-c-format
+msgid "UpdateGeometrySRID"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_management.xml:805
+#, no-c-format
+msgid "Updates the SRID of all features in a geometry column, geometry_columns metadata and srid table constraint"
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_management.xml:810
+#, no-c-format
+msgid "<funcprototype> <funcdef>text <function>UpdateGeometrySRID</function></funcdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>UpdateGeometrySRID</function></funcdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>text <function>UpdateGeometrySRID</function></funcdef> <paramdef><type>varchar </type> <parameter>catalog_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>column_name</parameter></paramdef> <paramdef><type>integer </type> <parameter>srid</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_management.xml:864
+#, no-c-format
+msgid "Updates the SRID of all features in a geometry column, updating constraints and reference in geometry_columns. Note: uses current_schema() on schema-aware pgsql installations if schema is not provided."
+msgstr ""
+

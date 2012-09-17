@@ -1,0 +1,681 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_misc.xml:3
+#, no-c-format
+msgid "Miscellaneous Functions"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:7
+#, no-c-format
+msgid "ST_Accum"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:9
+#, no-c-format
+msgid "<refpurpose>Aggregate. Constructs an array of geometries.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_misc.xml:14
+#, no-c-format
+msgid "<funcdef>geometry[] <function>ST_Accum</function></funcdef> <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>"
+msgstr ""
+
+#. Tag: title
+#: reference_misc.xml:22 reference_misc.xml:64 reference_misc.xml:106 reference_misc.xml:158 reference_misc.xml:229 reference_misc.xml:289 reference_misc.xml:343 reference_misc.xml:396 reference_misc.xml:438 reference_misc.xml:488
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:24
+#, no-c-format
+msgid "<para>Aggregate. Constructs an array of geometries.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:25 reference_misc.xml:68 reference_misc.xml:109 reference_misc.xml:255 reference_misc.xml:309 reference_misc.xml:355
+#, no-c-format
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:26 reference_misc.xml:113 reference_misc.xml:357 reference_misc.xml:447
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:27 reference_misc.xml:69 reference_misc.xml:110 reference_misc.xml:183 reference_misc.xml:358 reference_misc.xml:448
+#, no-c-format
+msgid "&curve_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:28 reference_misc.xml:70 reference_misc.xml:111 reference_misc.xml:256 reference_misc.xml:310 reference_misc.xml:359 reference_misc.xml:449
+#, no-c-format
+msgid "&P_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:29 reference_misc.xml:71 reference_misc.xml:112 reference_misc.xml:257 reference_misc.xml:311 reference_misc.xml:360 reference_misc.xml:450
+#, no-c-format
+msgid "&T_support;"
+msgstr ""
+
+#. Tag: title
+#: reference_misc.xml:34 reference_misc.xml:76 reference_misc.xml:118 reference_misc.xml:188 reference_misc.xml:262 reference_misc.xml:316 reference_misc.xml:364 reference_misc.xml:408 reference_misc.xml:455 reference_misc.xml:499
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:36
+#, no-c-format
+msgid ""
+      "SELECT (ST_Accum(the_geom)) As all_em, ST_AsText((ST_Accum(the_geom))[1]) As grabone,\n"
+      "(ST_Accum(the_geom))[2:4] as grab_rest\n"
+      "                        FROM (SELECT ST_MakePoint(a*CAST(random()*10 As integer), a*CAST(random()*10 As integer), a*CAST(random()*10 As integer)) As the_geom\n"
+      "                                FROM generate_series(1,4) a) As foo;\n"
+      "\n"
+      "all_em|grabone   | grab_rest\n"
+      "\n"
+      "-------------------------------------------------------------------------------+\n"
+      "\n"
+      " {0101000080000000000000144000000000000024400000000000001040:\n"
+      " 0101000080000000000\n"
+      "00018400000000000002C400000000000003040:\n"
+      "0101000080000000000000354000000000000038400000000000001840:\n"
+      "010100008000000000000040400000000000003C400000000000003040} |\n"
+      " POINT(5 10) | {010100008000000000000018400000000000002C400000000000003040:\n"
+      " 0101000080000000000000354000000000000038400000000000001840:\n"
+      " 010100008000000000000040400000000000003C400000000000003040}\n"
+      "(1 row)"
+msgstr ""
+
+#. Tag: title
+#: reference_misc.xml:41 reference_misc.xml:83 reference_misc.xml:125 reference_misc.xml:195 reference_misc.xml:268 reference_misc.xml:322 reference_misc.xml:369 reference_misc.xml:415 reference_misc.xml:462 reference_misc.xml:506
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:49
+#, no-c-format
+msgid "Box2D"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:51
+#, no-c-format
+msgid "<refpurpose>Returns a BOX2D representing the maximum extents of the geometry.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_misc.xml:56
+#, no-c-format
+msgid "<funcdef>box2d <function>Box2D</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:66
+#, no-c-format
+msgid "<para>Returns a BOX2D representing the maximum extents of the geometry.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:78
+#, no-c-format
+msgid ""
+      "SELECT Box2D(ST_GeomFromText('LINESTRING(1 2, 3 4, 5 6)'));\n"
+      "        box2d\n"
+      "        ---------\n"
+      "        BOX(1 2,5 6)\n"
+      "\n"
+      "        SELECT Box2D(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));\n"
+      "        box2d\n"
+      "        --------\n"
+      "        BOX(220186.984375 150406,220288.25 150506.140625)"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:85
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromText\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:91
+#, no-c-format
+msgid "Box3D"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:93
+#, no-c-format
+msgid "<refpurpose>Returns a BOX3D representing the maximum extents of the geometry.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_misc.xml:98
+#, no-c-format
+msgid "<funcdef>box3d <function>Box3D</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:108
+#, no-c-format
+msgid "<para>Returns a BOX3D representing the maximum extents of the geometry.</para>"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:120
+#, no-c-format
+msgid ""
+      "SELECT Box3D(ST_GeomFromEWKT('LINESTRING(1 2 3, 3 4 5, 5 6 5)'));\n"
+      "        Box3d\n"
+      "        ---------\n"
+      "        BOX3D(1 2 3,5 6 5)\n"
+      "\n"
+      "        SELECT Box3D(ST_GeomFromEWKT('CIRCULARSTRING(220268 150415 1,220227 150505 1,220227 150406 1)'));\n"
+      "        Box3d\n"
+      "        --------\n"
+      "        BOX3D(220227 150406 1,220268 150415 1)"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:127
+#, no-c-format
+msgid ", <xref linkend=\"ST_GeomFromEWKT\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:133
+#, no-c-format
+msgid "ST_EstimatedExtent"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:135
+#, no-c-format
+msgid "<refpurpose>Return the 'estimated' extent of the given spatial table. The estimated is taken from the geometry column's statistics. The current schema will be used if not specified.</refpurpose>"
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_misc.xml:141
+#, no-c-format
+msgid "<funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></funcdef> <paramdef><type>text </type> <parameter>schema_name</parameter></paramdef> <paramdef><type>text </type> <parameter>table_name</parameter></paramdef> <paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>box2d <function>ST_EstimatedExtent</function></funcdef> <paramdef><type>text </type> <parameter>table_name</parameter></paramdef> <paramdef><type>text </type> <parameter>geocolumn_name</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:160
+#, no-c-format
+msgid "<para>Return the 'estimated' extent of the given spatial table. The estimated is taken from the geometry column's statistics. The current schema will be used if not specified.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:164
+#, no-c-format
+msgid "For PostgreSQL&gt;=8.0.0 statistics are gathered by VACUUM ANALYZE and resulting extent will be about 95% of the real one."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:169
+#, no-c-format
+msgid "In absence of statistics (empty table or no ANALYZE called) this function returns NULL. Prior to version 1.5.4 an exception was thrown instead."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:177
+#, no-c-format
+msgid "For PostgreSQL&lt;8.0.0 statistics are gathered by update_geometry_stats() and resulting extent will be exact."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:180
+#, no-c-format
+msgid "Availability: 1.0.0"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:181
+#, no-c-format
+msgid "Changed: 2.1.0. Up to 2.0.x this was called ST_Estimated_Extent."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:190
+#, no-c-format
+msgid ""
+      "SELECT ST_EstimatedExtent('ny', 'edges', 'the_geom');\n"
+      "--result--\n"
+      "BOX(-8877653 4912316,-8010225.5 5589284)\n"
+      "\n"
+      "SELECT ST_EstimatedExtent('feature_poly', 'the_geom');\n"
+      "--result--\n"
+      "BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:202
+#, no-c-format
+msgid "ST_Expand"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:203
+#, no-c-format
+msgid "Returns bounding box expanded in all directions from the bounding box of the input geometry. Uses double-precision"
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_misc.xml:207
+#, no-c-format
+msgid "<funcprototype> <funcdef>geometry <function>ST_Expand</function></funcdef> <paramdef><type>geometry </type> <parameter>g1</parameter></paramdef> <paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>box2d <function>ST_Expand</function></funcdef> <paramdef><type>box2d </type> <parameter>g1</parameter></paramdef> <paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef> </funcprototype> <funcprototype> <funcdef>box3d <function>ST_Expand</function></funcdef> <paramdef><type>box3d </type> <parameter>g1</parameter></paramdef> <paramdef><type>float</type> <parameter>units_to_expand</parameter></paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:231
+#, no-c-format
+msgid "This function returns a bounding box expanded in all directions from the bounding box of the input geometry, by an amount specified in the second argument. Uses double-precision. Very useful for distance() queries, or bounding box queries to add an index filter to the query."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:235
+#, no-c-format
+msgid "There are 3 variants of this. The one that takes a geometry will return a POLYGON geometry representation of the bounding box and is the most commonly used variant."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:237
+#, no-c-format
+msgid "ST_Expand is similar in concept to ST_Buffer except while buffer expands the geometry in all directions, ST_Expand expands the bounding box an x,y,z unit amount."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:239
+#, no-c-format
+msgid "Units are in the units of the spatial reference system in use denoted by the SRID"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:242
+#, no-c-format
+msgid "Pre 1.3, ST_Expand was used in conjunction with distance to do indexable queries. Something of the form <code>the_geom &amp;&amp; ST_Expand('POINT(10 20)', 10) AND ST_Distance(the_geom, 'POINT(10 20)') &lt; 10</code> Post 1.2, this was replaced with the easier ST_DWithin construct."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:248
+#, no-c-format
+msgid "Bounding boxes of all geometries are currently 2-d even if they are 3-dimensional geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:252
+#, no-c-format
+msgid "Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:263
+#, no-c-format
+msgid "Examples below use US National Atlas Equal Area (SRID=2163) which is a meter projection"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:264
+#, no-c-format
+msgid ""
+      "<!-- TODO: fix results of documentation to reflect new behavior -->\n"
+      "--10 meter expanded box around bbox of a linestring\n"
+      "SELECT CAST(ST_Expand(ST_GeomFromText('LINESTRING(2312980 110676,2312923 110701,2312892 110714)', 2163),10) As box2d);\n"
+      "                                         st_expand\n"
+      "------------------------------------\n"
+      " BOX(2312882 110666,2312990 110724)\n"
+      "\n"
+      "--10 meter expanded 3d box of a 3d box\n"
+      "SELECT ST_Expand(CAST('BOX3D(778783 2951741 1,794875 2970042.61545891 10)' As box3d),10)\n"
+      "                                                          st_expand\n"
+      "-----------------------------------------------------\n"
+      " BOX3D(778773 2951731 -9,794885 2970052.61545891 20)\n"
+      "\n"
+      " --10 meter geometry astext rep of a expand box around a point geometry\n"
+      " SELECT ST_AsEWKT(ST_Expand(ST_GeomFromEWKT('SRID=2163;POINT(2312980 110676)'),10));\n"
+      "                                                                                        st_asewkt\n"
+      "-------------------------------------------------------------------------------------------------\n"
+      " SRID=2163;POLYGON((2312970 110666,2312970 110686,2312990 110686,2312990 110666,2312970 110666))"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:269
+#, no-c-format
+msgid ", <xref linkend=\"ST_Buffer\"/>, <xref linkend=\"ST_DWithin\"/>, <xref linkend=\"ST_GeomFromEWKT\"/>, <xref linkend=\"ST_GeomFromText\"/>, <xref linkend=\"ST_SRID\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:275
+#, no-c-format
+msgid "ST_Extent"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:276
+#, no-c-format
+msgid "an aggregate function that returns the bounding box that bounds rows of geometries."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_misc.xml:281
+#, no-c-format
+msgid "<funcdef>box2d <function>ST_Extent</function></funcdef> <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:291
+#, no-c-format
+msgid "ST_Extent returns a bounding box that encloses a set of geometries. The ST_Extent function is an \"aggregate\" function in the terminology of SQL. That means that it operates on lists of data, in the same way the SUM() and AVG() functions do."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:294 reference_misc.xml:348
+#, no-c-format
+msgid "Since it returns a bounding box, the spatial Units are in the units of the spatial reference system in use denoted by the SRID"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:295
+#, no-c-format
+msgid "ST_Extent is similar in concept to Oracle Spatial/Locator's SDO_AGGR_MBR"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:297
+#, no-c-format
+msgid "Since ST_Extent returns a bounding box, the SRID meta-data is lost. Use ST_SetSRID to force it back into a geometry with SRID meta data. The coordinates are in the units of the spatial ref of the orginal geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:302
+#, no-c-format
+msgid "ST_Extent will return boxes with only an x and y component even with (x,y,z) coordinate geometries. To maintain x,y,z use ST_3DExtent instead."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:306
+#, no-c-format
+msgid "Availability: 1.4.0"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:317
+#, no-c-format
+msgid "Examples below use Massachusetts State Plane ft (SRID=2249)"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:318
+#, no-c-format
+msgid ""
+      "SELECT ST_Extent(the_geom) as bextent FROM sometable;\n"
+      "                                         st_bextent\n"
+      "------------------------------------\n"
+      "BOX(739651.875 2908247.25,794875.8125 2970042.75)\n"
+      "\n"
+      "\n"
+      "--Return extent of each category of geometries\n"
+      "SELECT ST_Extent(the_geom) as bextent\n"
+      "FROM sometable\n"
+      "GROUP BY category ORDER BY category;\n"
+      "\n"
+      "                                          bextent                       |         name\n"
+      "----------------------------------------------------+----------------\n"
+      " BOX(778783.5625 2951741.25,794875.8125 2970042.75) | A\n"
+      " BOX(751315.8125 2919164.75,765202.6875 2935417.25) | B\n"
+      " BOX(739651.875 2917394.75,756688.375 2935866)      | C\n"
+      "\n"
+      " --Force back into a geometry\n"
+      " -- and render the extended text representation of that geometry\n"
+      "SELECT ST_SetSRID(ST_Extent(the_geom),2249) as bextent FROM sometable;\n"
+      "\n"
+      "                                bextent\n"
+      "--------------------------------------------------------------------------------\n"
+      " SRID=2249;POLYGON((739651.875 2908247.25,739651.875 2970042.75,794875.8125 2970042.75,\n"
+      " 794875.8125 2908247.25,739651.875 2908247.25))"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:323
+#, no-c-format
+msgid ", <xref linkend=\"ST_3DExtent\"/>, <xref linkend=\"ST_SetSRID\"/>, <xref linkend=\"ST_SRID\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:329
+#, no-c-format
+msgid "ST_3DExtent"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:330
+#, no-c-format
+msgid "an aggregate function that returns the box3D bounding box that bounds rows of geometries."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_misc.xml:335
+#, no-c-format
+msgid "<funcdef>box3d <function>ST_3DExtent</function></funcdef> <paramdef><type>geometry set</type> <parameter>geomfield</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:345
+#, no-c-format
+msgid "ST_3DExtent returns a box3d (includes Z coordinate) bounding box that encloses a set of geometries. The ST_3DExtent function is an \"aggregate\" function in the terminology of SQL. That means that it operates on lists of data, in the same way the SUM() and AVG() functions do."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:351
+#, no-c-format
+msgid "Since ST_3DExtent returns a bounding box, the SRID meta-data is lost. Use ST_SetSRID to force it back into a geometry with SRID meta data. The coordinates are in the units of the spatial ref of the orginal geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:356
+#, no-c-format
+msgid "Changed: 2.0.0 In prior versions this used to be called ST_Extent3D"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:365
+#, no-c-format
+msgid ""
+      "SELECT ST_3DExtent(foo.the_geom) As b3extent\n"
+      "FROM (SELECT ST_MakePoint(x,y,z) As the_geom\n"
+      "        FROM generate_series(1,3) As x\n"
+      "                CROSS JOIN generate_series(1,2) As y\n"
+      "                CROSS JOIN generate_series(0,2) As Z) As foo;\n"
+      "          b3extent\n"
+      "--------------------\n"
+      " BOX3D(1 1 0,3 2 2)\n"
+      "\n"
+      "--Get the extent of various elevated circular strings\n"
+      "SELECT ST_3DExtent(foo.the_geom) As b3extent\n"
+      "FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_MakePoint(x,y),1))),0,0,z) As the_geom\n"
+      "        FROM generate_series(1,3) As x\n"
+      "                CROSS JOIN generate_series(1,2) As y\n"
+      "                CROSS JOIN generate_series(0,2) As Z) As foo;\n"
+      "\n"
+      "        b3extent\n"
+      "--------------------\n"
+      " BOX3D(1 0 0,4 2 2)"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:370
+#, no-c-format
+msgid ", <xref linkend=\"ST_Force_3DZ\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:377
+#, no-c-format
+msgid "Find_SRID"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:379
+#, no-c-format
+msgid "The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;, &lt;column&gt;) and the function returns the integer SRID of the specified column by searching through the GEOMETRY_COLUMNS table."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_misc.xml:386
+#, no-c-format
+msgid "<funcdef>integer <function>Find_SRID</function></funcdef> <paramdef><type>varchar </type> <parameter>a_schema_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>a_table_name</parameter></paramdef> <paramdef><type>varchar </type> <parameter>a_geomfield_name</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:398
+#, no-c-format
+msgid "The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;, &lt;column&gt;) and the function returns the integer SRID of the specified column by searching through the GEOMETRY_COLUMNS table. If the geometry column has not been properly added with the AddGeometryColumns() function, this function will not work either."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:410
+#, no-c-format
+msgid ""
+      "SELECT Find_SRID('public', 'tiger_us_state_2007', 'the_geom_4269');\n"
+      "find_srid\n"
+      "----------\n"
+      "4269"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:423
+#, no-c-format
+msgid "ST_Mem_Size"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:425
+#, no-c-format
+msgid "<refpurpose>Returns the amount of space (in bytes) the geometry takes.</refpurpose>"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_misc.xml:430
+#, no-c-format
+msgid "<funcdef>integer <function>ST_Mem_Size</function></funcdef> <paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:440
+#, no-c-format
+msgid "<para>Returns the amount of space (in bytes) the geometry takes.</para>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:441
+#, no-c-format
+msgid "This is a nice compliment to PostgreSQL built in functions pg_size_pretty, pg_relation_size, pg_total_relation_size."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:442
+#, no-c-format
+msgid "pg_relation_size which gives the byte size of a table may return byte size lower than ST_Mem_Size. This is because pg_relation_size does not add toasted table contribution and large geometries are stored in TOAST tables."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:444
+#, no-c-format
+msgid "pg_total_relation_size - includes, the table, the toasted tables, and the indexes."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:457
+#, no-c-format
+msgid ""
+      "--Return how much byte space Boston takes up  in our Mass data set\n"
+      "SELECT pg_size_pretty(SUM(ST_Mem_Size(the_geom))) as totgeomsum,\n"
+      "pg_size_pretty(SUM(CASE WHEN town = 'BOSTON' THEN st_mem_size(the_geom) ELSE 0 END)) As bossum,\n"
+      "CAST(SUM(CASE WHEN town = 'BOSTON' THEN st_mem_size(the_geom) ELSE 0 END)*1.00 /\n"
+      "                SUM(st_mem_size(the_geom))*100 As numeric(10,2)) As perbos\n"
+      "FROM towns;\n"
+      "\n"
+      "totgeomsum        bossum        perbos\n"
+      "----------        ------        ------\n"
+      "1522 kB                30 kB        1.99\n"
+      "\n"
+      "\n"
+      "SELECT ST_Mem_Size(ST_GeomFromText('CIRCULARSTRING(220268 150415,220227 150505,220227 150406)'));\n"
+      "\n"
+      "---\n"
+      "73\n"
+      "\n"
+      "--What percentage of our table is taken up by just the geometry\n"
+      "SELECT pg_total_relation_size('public.neighborhoods') As fulltable_size, sum(ST_Mem_Size(the_geom)) As geomsize,\n"
+      "sum(ST_Mem_Size(the_geom))*1.00/pg_total_relation_size('public.neighborhoods')*100 As pergeom\n"
+      "FROM neighborhoods;\n"
+      "fulltable_size geomsize  pergeom\n"
+      "------------------------------------------------\n"
+      "262144         96238         36.71188354492187500000"
+msgstr ""
+
+#. Tag: refname
+#: reference_misc.xml:470
+#, no-c-format
+msgid "ST_Point_Inside_Circle"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_misc.xml:472
+#, no-c-format
+msgid "Is the point geometry insert circle defined by center_x, center_y, radius"
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_misc.xml:477
+#, no-c-format
+msgid "<funcdef>boolean <function>ST_Point_Inside_Circle</function></funcdef> <paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef> <paramdef><type>float </type> <parameter>center_x</parameter></paramdef> <paramdef><type>float </type> <parameter>center_y</parameter></paramdef> <paramdef><type>float </type> <parameter>radius</parameter></paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:490
+#, no-c-format
+msgid "The syntax for this functions is point_inside_circle(&lt;geometry&gt;,&lt;circle_center_x&gt;,&lt;circle_center_y&gt;,&lt;radius&gt;). Returns the true if the geometry is a point and is inside the circle. Returns false otherwise."
+msgstr ""
+
+#. Tag: para
+#: reference_misc.xml:494
+#, no-c-format
+msgid "This only works for points as the name suggests"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_misc.xml:501
+#, no-c-format
+msgid ""
+      "SELECT ST_Point_Inside_Circle(ST_Point(1,2), 0.5, 2, 3);\n"
+      " st_point_inside_circle\n"
+      "------------------------\n"
+      " t"
+msgstr ""
+

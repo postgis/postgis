@@ -1,0 +1,1307 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: reference_operator.xml:3
+#, no-c-format
+msgid "Operators"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:6
+#, no-c-format
+msgid "&amp;&amp;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:8
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's 2D bounding box intersects B's 2D "
+"bounding box."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_operator.xml:12
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>boolean <function>&amp;&amp;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef> </"
+"funcprototype> <funcprototype> <funcdef>boolean <function>&amp;&amp;</"
+"function></funcdef> <paramdef> <type>geography </type> <parameter>A</"
+"parameter> </paramdef> <paramdef> <type>geography </type> <parameter>B</"
+"parameter> </paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: title
+#: reference_operator.xml:50 reference_operator.xml:111
+#: reference_operator.xml:176 reference_operator.xml:234
+#: reference_operator.xml:295 reference_operator.xml:353
+#: reference_operator.xml:406 reference_operator.xml:475
+#: reference_operator.xml:546 reference_operator.xml:599
+#: reference_operator.xml:654 reference_operator.xml:712
+#: reference_operator.xml:765 reference_operator.xml:818
+#: reference_operator.xml:883 reference_operator.xml:949
+#, no-c-format
+msgid "Description"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:52
+#, no-c-format
+msgid ""
+"The <varname>&amp;&amp;</varname> operator returns <varname>TRUE</varname> "
+"if the 2D bounding box of geometry A intersects the 2D bounding box of "
+"geometry B."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:54 reference_operator.xml:115
+#: reference_operator.xml:182 reference_operator.xml:243
+#: reference_operator.xml:301 reference_operator.xml:358
+#: reference_operator.xml:411 reference_operator.xml:551
+#: reference_operator.xml:605 reference_operator.xml:660
+#: reference_operator.xml:717 reference_operator.xml:770
+#: reference_operator.xml:823
+#, no-c-format
+msgid ""
+"This operand will make use of any indexes that may be available on the "
+"geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:57
+#, no-c-format
+msgid "Enhanced: 2.0.0 support for Polyhedral surfaces was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:58
+#, no-c-format
+msgid "Availability: 1.5.0 support for geography was introduced."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:59 reference_operator.xml:119
+#: reference_operator.xml:240 reference_operator.xml:492
+#, no-c-format
+msgid "&curve_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:60 reference_operator.xml:120
+#: reference_operator.xml:241 reference_operator.xml:493
+#: reference_operator.xml:827
+#, no-c-format
+msgid "&P_support;"
+msgstr ""
+
+#. Tag: title
+#: reference_operator.xml:64 reference_operator.xml:187
+#: reference_operator.xml:248 reference_operator.xml:306
+#: reference_operator.xml:363 reference_operator.xml:416
+#: reference_operator.xml:502 reference_operator.xml:556
+#: reference_operator.xml:611 reference_operator.xml:665
+#: reference_operator.xml:722 reference_operator.xml:775
+#: reference_operator.xml:843 reference_operator.xml:899
+#: reference_operator.xml:963
+#, no-c-format
+msgid "Examples"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:66
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp; tbl2.column2 AS "
+"overlaps\n"
+"FROM ( VALUES\n"
+"        (1, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (2, 'LINESTRING(0 1, 0 5)'::geometry)) AS tbl1,\n"
+"( VALUES\n"
+"        (3, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overlaps\n"
+"---------+---------+----------\n"
+"           1 |       3 | t\n"
+"           2 |       3 | f\n"
+"(2 rows)"
+msgstr ""
+
+#. Tag: title
+#: reference_operator.xml:71 reference_operator.xml:139
+#: reference_operator.xml:193 reference_operator.xml:254
+#: reference_operator.xml:312 reference_operator.xml:369
+#: reference_operator.xml:422 reference_operator.xml:508
+#: reference_operator.xml:562 reference_operator.xml:617
+#: reference_operator.xml:671 reference_operator.xml:728
+#: reference_operator.xml:781 reference_operator.xml:848
+#: reference_operator.xml:915 reference_operator.xml:967
+#, no-c-format
+msgid "See Also"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:73
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>, <xref "
+"linkend=\"ST_Geometry_Contain\"/>, <xref linkend=\"ST_Geometry_Contained\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:85
+#, no-c-format
+msgid "&amp;&amp;&amp;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:87
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's 3D bounding box intersects B's 3D "
+"bounding box."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:92
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&amp;&amp;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:113
+#, no-c-format
+msgid ""
+"The <varname>&amp;&amp;&amp;</varname> operator returns <varname>TRUE</"
+"varname> if the n-D bounding box of geometry A intersects the n-D bounding "
+"box of geometry B."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:118
+#, no-c-format
+msgid "Availability: 2.0.0"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:121
+#, no-c-format
+msgid "&T_support;"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:122
+#, no-c-format
+msgid "&Z_support;"
+msgstr ""
+
+#. Tag: title
+#: reference_operator.xml:126
+#, no-c-format
+msgid "Examples: 3D LineStrings"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:128
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 "
+"AS overlaps_3d, \n"
+"                                    tbl1.column2 &amp;&amp; tbl2.column2 AS "
+"overlaps_2d\n"
+"FROM ( VALUES\n"
+"        (1, 'LINESTRING Z(0 0 1, 3 3 2)'::geometry),\n"
+"        (2, 'LINESTRING Z(1 2 0, 0 5 -1)'::geometry)) AS tbl1,\n"
+"( VALUES\n"
+"        (3, 'LINESTRING Z(1 2 1, 4 6 1)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overlaps_3d | overlaps_2d\n"
+"---------+---------+-------------+-------------\n"
+"       1 |       3 | t           | t\n"
+"       2 |       3 | f           | t"
+msgstr ""
+
+#. Tag: title
+#: reference_operator.xml:132
+#, no-c-format
+msgid "Examples: 3M LineStrings"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:134
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&amp;&amp; tbl2.column2 "
+"AS overlaps_3zm, \n"
+"                                    tbl1.column2 &amp;&amp; tbl2.column2 AS "
+"overlaps_2d\n"
+"FROM ( VALUES\n"
+"        (1, 'LINESTRING M(0 0 1, 3 3 2)'::geometry),\n"
+"        (2, 'LINESTRING M(1 2 0, 0 5 -1)'::geometry)) AS tbl1,\n"
+"( VALUES\n"
+"        (3, 'LINESTRING M(1 2 1, 4 6 1)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overlaps_3zm | overlaps_2d\n"
+"---------+---------+-------------+-------------\n"
+"       1 |       3 | t           | t\n"
+"       2 |       3 | f           | t"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:147
+#, no-c-format
+msgid "&amp;&lt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:149
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box overlaps or is to the "
+"left of B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:154
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&lt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:178
+#, no-c-format
+msgid ""
+"The <varname>&amp;&lt;</varname> operator returns <varname>TRUE</varname> if "
+"the bounding box of geometry A overlaps or is to the left of the bounding "
+"box of geometry B, or more accurately, overlaps or is NOT to the right of "
+"the bounding box of geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:189
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt; tbl2.column2 AS "
+"overleft\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (3, 'LINESTRING(0 1, 0 5)'::geometry),\n"
+"        (4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overleft\n"
+"---------+---------+----------\n"
+"           1 |       2 | f\n"
+"           1 |       3 | f\n"
+"           1 |       4 | t\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:195
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overbelow\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:205
+#, no-c-format
+msgid "&amp;&lt;|"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:207
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box overlaps or is below B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:212
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&lt;|</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:236
+#, no-c-format
+msgid ""
+"The <varname>&amp;&lt;|</varname> operator returns <varname>TRUE</varname> "
+"if the bounding box of geometry A overlaps or is below of the bounding box "
+"of geometry B, or more accurately, overlaps or is NOT above the bounding box "
+"of geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:250
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&lt;| tbl2.column2 AS "
+"overbelow\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (3, 'LINESTRING(0 1, 0 5)'::geometry),\n"
+"        (4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overbelow\n"
+"---------+---------+-----------\n"
+"           1 |       2 | f\n"
+"           1 |       3 | t\n"
+"           1 |       4 | t\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:256
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overright\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:266
+#, no-c-format
+msgid "&amp;&gt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:268
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A' bounding box overlaps or is to the "
+"right of B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:273
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&amp;&gt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:297
+#, no-c-format
+msgid ""
+"The <varname>&amp;&gt;</varname> operator returns <varname>TRUE</varname> if "
+"the bounding box of geometry A overlaps or is to the right of the bounding "
+"box of geometry B, or more accurately, overlaps or is NOT to the left of the "
+"bounding box of geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:308
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &amp;&gt; tbl2.column2 AS "
+"overright\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (3, 'LINESTRING(0 1, 0 5)'::geometry),\n"
+"        (4, 'LINESTRING(6 0, 6 1)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overright\n"
+"---------+---------+-----------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | t\n"
+"           1 |       4 | f\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:314
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Geometry_Overabove\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:324
+#, no-c-format
+msgid "&lt;&lt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:326
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box is strictly to the left "
+"of B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:331
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&lt;&lt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:355
+#, no-c-format
+msgid ""
+"The <varname>&lt;&lt;</varname> operator returns <varname>TRUE</varname> if "
+"the bounding box of geometry A is strictly to the left of the bounding box "
+"of geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:365
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt; tbl2.column2 AS "
+"left\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (1 2, 1 5)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (0 0, 4 3)'::geometry),\n"
+"        (3, 'LINESTRING (6 0, 6 5)'::geometry),\n"
+"        (4, 'LINESTRING (2 2, 5 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | left\n"
+"---------+---------+------\n"
+"           1 |       2 | f\n"
+"           1 |       3 | t\n"
+"           1 |       4 | t\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:371 reference_operator.xml:564
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Geometry_Above\"/>, <xref linkend=\"ST_Geometry_Below\"/"
+">"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:377
+#, no-c-format
+msgid "&lt;&lt;|"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:379
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box is strictly below B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:384
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&lt;&lt;|</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:408
+#, no-c-format
+msgid ""
+"The <varname>&lt;&lt;|</varname> operator returns <varname>TRUE</varname> if "
+"the bounding box of geometry A is strictly below the bounding box of "
+"geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:418
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &lt;&lt;| tbl2.column2 AS "
+"below\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (1 4, 1 7)'::geometry),\n"
+"        (3, 'LINESTRING (6 1, 6 5)'::geometry),\n"
+"        (4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | below\n"
+"---------+---------+-------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | f\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:424
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Above\"/"
+">"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:430
+#, no-c-format
+msgid "&#61;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:432
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box is the same as B's. Uses "
+"double precision bounding box."
+msgstr ""
+
+#. Tag: funcsynopsis
+#: reference_operator.xml:436
+#, no-c-format
+msgid ""
+"<funcprototype> <funcdef>boolean <function>&#61;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef> </"
+"funcprototype> <funcprototype> <funcdef>boolean <function>&#61;</function></"
+"funcdef> <paramdef> <type>geography </type> <parameter>A</parameter> </"
+"paramdef> <paramdef> <type>geography </type> <parameter>B</parameter> </"
+"paramdef> </funcprototype>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:477
+#, no-c-format
+msgid ""
+"The <varname>&#61;</varname> operator returns <varname>TRUE</varname> if the "
+"bounding box of geometry/geography A is the same as the bounding box of "
+"geometry/geography B. PostgreSQL uses the =, &lt;, and &gt; operators "
+"defined for geometries to perform internal orderings and comparison of "
+"geometries (ie. in a GROUP BY or ORDER BY clause)."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:482
+#, no-c-format
+msgid ""
+"This is cause for a lot of confusion. When you compare geometryA = geometryB "
+"it will return true even when the geometries are clearly different IF their "
+"bounding boxes are the same. To check for true equality use <xref linkend="
+"\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:489
+#, no-c-format
+msgid ""
+"This operand will NOT make use of any indexes that may be available on the "
+"geometries."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:494
+#, no-c-format
+msgid ""
+"Changed: 2.0.0 , the bounding box of geometries was changed to use double "
+"precision instead of float4 precision of prior. The side effect of this is "
+"that in particular points in prior versions that were a little different may "
+"have returned true in prior versions and false in 2.0+ since their float4 "
+"boxes would be the same but there float8 (double precision), would be "
+"different."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:504
+#, no-c-format
+msgid ""
+"SELECT 'LINESTRING(0 0, 0 1, 1 0)'::geometry = 'LINESTRING(1 1, 0 0)'::"
+"geometry;\n"
+" ?column?\n"
+"----------\n"
+" t\n"
+"(1 row)\n"
+"\n"
+"SELECT ST_AsText(column1)\n"
+"FROM ( VALUES\n"
+"        ('LINESTRING(0 0, 1 1)'::geometry),\n"
+"        ('LINESTRING(1 1, 0 0)'::geometry)) AS foo;\n"
+"          st_astext\n"
+"---------------------\n"
+" LINESTRING(0 0,1 1)\n"
+" LINESTRING(1 1,0 0)\n"
+"(2 rows)\n"
+"\n"
+"-- Note: the GROUP BY uses the \"=\" to compare for geometry equivalency.\n"
+"SELECT ST_AsText(column1)\n"
+"FROM ( VALUES\n"
+"        ('LINESTRING(0 0, 1 1)'::geometry),\n"
+"        ('LINESTRING(1 1, 0 0)'::geometry)) AS foo\n"
+"GROUP BY column1;\n"
+"          st_astext\n"
+"---------------------\n"
+" LINESTRING(0 0,1 1)\n"
+"(1 row)\n"
+"\n"
+"-- In versions prior to 2.0, this used to return true --\n"
+" SELECT ST_GeomFromText('POINT(1707296.37 4820536.77)') =\n"
+"        ST_GeomFromText('POINT(1707296.27 4820536.87)') As pt_intersect;\n"
+"        \n"
+"--pt_intersect --\n"
+"f"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:510
+#, no-c-format
+msgid ", <xref linkend=\"ST_OrderingEquals\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:517
+#, no-c-format
+msgid "&gt;&gt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:519
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box is strictly to the right "
+"of B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:524
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>&gt;&gt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:548
+#, no-c-format
+msgid ""
+"The <varname>&gt;&gt;</varname> operator returns <varname>TRUE</varname> if "
+"the bounding box of geometry A is strictly to the right of the bounding box "
+"of geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:558
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 &gt;&gt; tbl2.column2 AS "
+"right\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (1 4, 1 7)'::geometry),\n"
+"        (3, 'LINESTRING (6 1, 6 5)'::geometry),\n"
+"        (4, 'LINESTRING (0 0, 4 3)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | right\n"
+"---------+---------+-------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | f\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:570
+#, no-c-format
+msgid "<refname>@</refname>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:572
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box is contained by B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:577
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>@</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:601
+#, no-c-format
+msgid ""
+"The <varname>@</varname> operator returns <varname>TRUE</varname> if the "
+"bounding box of geometry A is completely contained by the bounding box of "
+"geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:613
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 @ tbl2.column2 AS contained\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (0 0, 4 4)'::geometry),\n"
+"        (3, 'LINESTRING (2 2, 4 4)'::geometry),\n"
+"        (4, 'LINESTRING (1 1, 3 3)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | contained\n"
+"---------+---------+-----------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | t\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:619 reference_operator.xml:783
+#, no-c-format
+msgid ", <xref linkend=\"geometry_overlaps\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:625
+#, no-c-format
+msgid "|&amp;&gt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:627
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box overlaps or is above B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:632
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>|&amp;&gt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:656
+#, no-c-format
+msgid ""
+"The <varname>|&amp;&gt;</varname> operator returns <varname>TRUE</varname> "
+"if the bounding box of geometry A overlaps or is above the bounding box of "
+"geometry B, or more accurately, overlaps or is NOT below the bounding box of "
+"geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:667
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&amp;&gt; tbl2.column2 AS "
+"overabove\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING(6 0, 6 4)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING(0 0, 3 3)'::geometry),\n"
+"        (3, 'LINESTRING(0 1, 0 5)'::geometry),\n"
+"        (4, 'LINESTRING(1 2, 4 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | overabove\n"
+"---------+---------+-----------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | f\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:673
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Geometry_Overright\"/>, <xref linkend="
+"\"ST_Geometry_Overbelow\"/>, <xref linkend=\"ST_Geometry_Overleft\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:683
+#, no-c-format
+msgid "|&gt;&gt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:685
+#, no-c-format
+msgid ""
+"Returns <varname>TRUE</varname> if A's bounding box is strictly above B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:690
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>|&gt;&gt;</function></funcdef> <paramdef> "
+"<type>geometry </type> <parameter>A</parameter> </paramdef> <paramdef> "
+"<type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:714
+#, no-c-format
+msgid ""
+"The <varname>|&gt;&gt;</varname> operator returns <varname>TRUE</varname> if "
+"the bounding box of geometry A is strictly to the right of the bounding box "
+"of geometry B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:724
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 |&gt;&gt; tbl2.column2 AS "
+"above\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (1 4, 1 7)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (0 0, 4 2)'::geometry),\n"
+"        (3, 'LINESTRING (6 1, 6 5)'::geometry),\n"
+"        (4, 'LINESTRING (2 3, 5 6)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | above\n"
+"---------+---------+-------\n"
+"           1 |       2 | t\n"
+"           1 |       3 | f\n"
+"           1 |       4 | f\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:730
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Geometry_Right\"/>, <xref linkend=\"ST_Geometry_Below\"/"
+">"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:736
+#, no-c-format
+msgid "<refname>~</refname>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:738
+#, no-c-format
+msgid "Returns <varname>TRUE</varname> if A's bounding box contains B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:743
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>~</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:767
+#, no-c-format
+msgid ""
+"The <varname>~</varname> operator returns <varname>TRUE</varname> if the "
+"bounding box of geometry A completely contains the bounding box of geometry "
+"B."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:777
+#, no-c-format
+msgid ""
+"SELECT tbl1.column1, tbl2.column1, tbl1.column2 ~ tbl2.column2 AS contains\n"
+"FROM\n"
+"  ( VALUES\n"
+"        (1, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl1,\n"
+"  ( VALUES\n"
+"        (2, 'LINESTRING (0 0, 4 4)'::geometry),\n"
+"        (3, 'LINESTRING (1 1, 2 2)'::geometry),\n"
+"        (4, 'LINESTRING (0 0, 3 3)'::geometry)) AS tbl2;\n"
+"\n"
+" column1 | column1 | contains\n"
+"---------+---------+----------\n"
+"           1 |       2 | f\n"
+"           1 |       3 | t\n"
+"           1 |       4 | t\n"
+"(3 rows)"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:789
+#, no-c-format
+msgid "<refname>~=</refname>"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:791
+#, no-c-format
+msgid "Returns <varname>TRUE</varname> if A's bounding box is the same as B's."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:796
+#, no-c-format
+msgid ""
+"<funcdef>boolean <function>~=</function></funcdef> <paramdef> <type>geometry "
+"</type> <parameter>A</parameter> </paramdef> <paramdef> <type>geometry </"
+"type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:820
+#, no-c-format
+msgid ""
+"The <varname>~=</varname> operator returns <varname>TRUE</varname> if the "
+"bounding box of geometry/geography A is the same as the bounding box of "
+"geometry/geography B."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:826
+#, no-c-format
+msgid "Availability: 1.5.0 changed behavior"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:830
+#, no-c-format
+msgid ""
+"This operator has changed behavior in PostGIS 1.5 from testing for actual "
+"geometric equality to only checking for bounding box equality. To complicate "
+"things it also depends on if you have done a hard or soft upgrade which "
+"behavior your database has. To find out which behavior your database has you "
+"can run the query below. To check for true equality use <xref linkend="
+"\"ST_OrderingEquals\"/> or <xref linkend=\"ST_Equals\"/> and to check for "
+"bounding box equality <xref linkend=\"ST_Geometry_EQ\"/>; operator is a "
+"safer option."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:844
+#, no-c-format
+msgid ""
+"select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry "
+"as equality;\n"
+" equality   |\n"
+"-----------------+\n"
+"          t    |"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:845
+#, no-c-format
+msgid ""
+"The above can be used to test if you have the new or old behavior of ~= "
+"operator."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:849
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_OrderingEquals\"/>, <xref linkend=\"ST_Geometry_EQ\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:855
+#, no-c-format
+msgid "&lt;-&gt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:857
+#, no-c-format
+msgid ""
+"Returns the distance between two points. For point / point checks it uses "
+"floating point accuracy (as opposed to the double precision accuracy of the "
+"underlying point geometry). For other geometry types the distance between "
+"the floating point bounding box centroids is returned. Useful for doing "
+"distance ordering and nearest neighbor limits using KNN gist functionality."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:864
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>&lt;-&gt;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:885
+#, no-c-format
+msgid ""
+"The <varname>&lt;-&gt;</varname> operator returns distance between two "
+"points read from the spatial index for points (float precision). For other "
+"geometries it returns the distance from centroid of bounding box of "
+"geometries. Useful for doing nearest neighbor <emphasis role=\"strong"
+"\">approximate</emphasis> distance ordering."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:888 reference_operator.xml:953
+#, no-c-format
+msgid ""
+"This operand will make use of any indexes that may be available on the "
+"geometries. It is different from other operators that use spatial indexes in "
+"that the spatial index is only used when the operator is in the ORDER BY "
+"clause."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:891
+#, no-c-format
+msgid ""
+"Index only kicks in if one of the geometries is a constant (not in a "
+"subquery/cte). e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a."
+"geom"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:893 reference_operator.xml:958
+#, no-c-format
+msgid "Availability: 2.0.0 only available for PostgreSQL 9.1+"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:900
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
+"geometry) as d,edabbr, vaabbr \n"
+"FROM va2005 \n"
+"ORDER BY d limit 10;]]>\n"
+"\n"
+"        d         | edabbr | vaabbr\n"
+"------------------+--------+--------\n"
+"                0 | ALQ    | 128\n"
+" 5541.57712511724 | ALQ    | 129A\n"
+" 5579.67450712005 | ALQ    | 001\n"
+"  6083.4207708641 | ALQ    | 131\n"
+"  7691.2205404848 | ALQ    | 003\n"
+" 7900.75451037313 | ALQ    | 122\n"
+" 8694.20710669982 | ALQ    | 129B\n"
+" 9564.24289057111 | ALQ    | 130\n"
+"  12089.665931705 | ALQ    | 127\n"
+" 18472.5531479404 | ALQ    | 002\n"
+"(10 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:901
+#, no-c-format
+msgid "Then the KNN raw answer:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:904
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT st_distance(geom, 'SRID=3005;POINT(1011102 450541)'::"
+"geometry) as d,edabbr, vaabbr \n"
+"FROM va2005 \n"
+"ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry limit 10;]]>\n"
+"\n"
+"        d         | edabbr | vaabbr\n"
+"------------------+--------+--------\n"
+"                0 | ALQ    | 128\n"
+" 5579.67450712005 | ALQ    | 001\n"
+" 5541.57712511724 | ALQ    | 129A\n"
+" 8694.20710669982 | ALQ    | 129B\n"
+" 9564.24289057111 | ALQ    | 130\n"
+"  6083.4207708641 | ALQ    | 131\n"
+"  12089.665931705 | ALQ    | 127\n"
+"  24795.264503022 | ALQ    | 124\n"
+" 24587.6584922302 | ALQ    | 123\n"
+" 26764.2555463114 | ALQ    | 125\n"
+"(10 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:905
+#, no-c-format
+msgid ""
+"Note the misordering in the actual distances and the different entries that "
+"actually show up in the top 10."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:909
+#, no-c-format
+msgid "Finally the hybrid:"
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:912
+#, no-c-format
+msgid ""
+"<![CDATA[WITH index_query AS (\n"
+"  SELECT ST_Distance(geom, 'SRID=3005;POINT(1011102 450541)'::geometry) as d,"
+"edabbr, vaabbr\n"
+"          FROM va2005\n"
+"  ORDER BY geom <-> 'SRID=3005;POINT(1011102 450541)'::geometry LIMIT 100) \n"
+"  SELECT * \n"
+"          FROM index_query \n"
+"  ORDER BY d limit 10;]]>\n"
+"\n"
+"        d         | edabbr | vaabbr\n"
+"------------------+--------+--------\n"
+"                0 | ALQ    | 128\n"
+" 5541.57712511724 | ALQ    | 129A\n"
+" 5579.67450712005 | ALQ    | 001\n"
+"  6083.4207708641 | ALQ    | 131\n"
+"  7691.2205404848 | ALQ    | 003\n"
+" 7900.75451037313 | ALQ    | 122\n"
+" 8694.20710669982 | ALQ    | 129B\n"
+" 9564.24289057111 | ALQ    | 130\n"
+"  12089.665931705 | ALQ    | 127\n"
+" 18472.5531479404 | ALQ    | 002\n"
+"(10 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:916
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_box\"/>"
+msgstr ""
+
+#. Tag: refname
+#: reference_operator.xml:922
+#, no-c-format
+msgid "&lt;#&gt;"
+msgstr ""
+
+#. Tag: refpurpose
+#: reference_operator.xml:924
+#, no-c-format
+msgid ""
+"Returns the distance between bounding box of 2 geometries. For point / point "
+"checks it's almost the same as distance (though may be different since the "
+"bounding box is at floating point accuracy and geometries are double "
+"precision). Useful for doing distance ordering and nearest neighbor limits "
+"using KNN gist functionality."
+msgstr ""
+
+#. Tag: funcprototype
+#: reference_operator.xml:930
+#, no-c-format
+msgid ""
+"<funcdef>double precision <function>&lt;#&gt;</function></funcdef> "
+"<paramdef> <type>geometry </type> <parameter>A</parameter> </paramdef> "
+"<paramdef> <type>geometry </type> <parameter>B</parameter> </paramdef>"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:951
+#, no-c-format
+msgid ""
+"The <varname>&lt;#&gt;</varname> KNN GIST operator returns distance between "
+"two floating point bounding boxes read from the spatial index if available. "
+"Useful for doing nearest neighbor <emphasis role=\"strong\">approximate</"
+"emphasis> distance ordering."
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:956
+#, no-c-format
+msgid ""
+"Index only kicks in if one of the geometries is a constant e.g. ORDER BY "
+"(ST_GeomFromText('POINT(1 2)') &lt;#&gt; geom) instead of g1.geom &lt;#&gt;."
+msgstr ""
+
+#. Tag: programlisting
+#: reference_operator.xml:964
+#, no-c-format
+msgid ""
+"<![CDATA[SELECT *\n"
+"FROM (\n"
+"SELECT b.tlid, b.mtfcc, \n"
+"        b.geom <#> ST_GeomFromText('LINESTRING(746149 2948672,745954 "
+"2948576,\n"
+"                745787 2948499,745740 2948468,745712 2948438,\n"
+"                745690 2948384,745677 2948319)',2249) As b_dist, \n"
+"                ST_Distance(b.geom, ST_GeomFromText('LINESTRING(746149 "
+"2948672,745954 2948576,\n"
+"                745787 2948499,745740 2948468,745712 2948438,\n"
+"                745690 2948384,745677 2948319)',2249)) As act_dist\n"
+"    FROM bos_roads As b \n"
+"    ORDER BY b_dist, b.tlid\n"
+"    LIMIT 100) As foo\n"
+"    ORDER BY act_dist, tlid LIMIT 10;]]>\n"
+"\n"
+"   tlid    | mtfcc |      b_dist      |     act_dist\n"
+"-----------+-------+------------------+------------------\n"
+"  85732027 | S1400 |                0 |                0\n"
+"  85732029 | S1400 |                0 |                0\n"
+"  85732031 | S1400 |                0 |                0\n"
+"  85734335 | S1400 |                0 |                0\n"
+"  85736037 | S1400 |                0 |                0\n"
+" 624683742 | S1400 |                0 | 128.528874268666\n"
+"  85719343 | S1400 | 260.839270432962 | 260.839270432962\n"
+"  85741826 | S1400 | 164.759294123275 | 260.839270432962\n"
+"  85732032 | S1400 |           277.75 | 311.830282365264\n"
+"  85735592 | S1400 |           222.25 | 311.830282365264\n"
+"(10 rows)"
+msgstr ""
+
+#. Tag: para
+#: reference_operator.xml:968
+#, no-c-format
+msgid ""
+", <xref linkend=\"ST_Distance\"/>, <xref linkend=\"geometry_distance_centroid"
+"\"/>"
+msgstr ""

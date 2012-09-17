@@ -1,0 +1,463 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: performance_tips.xml:3
+#, no-c-format
+msgid "Performance tips"
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:6
+#, no-c-format
+msgid "Small tables of large geometries"
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:9
+#, no-c-format
+msgid "Problem description"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:11
+#, no-c-format
+msgid ""
+"Current PostgreSQL versions (including 8.0) suffer from a query optimizer "
+"weakness regarding TOAST tables. TOAST tables are a kind of \"extension room"
+"\" used to store large (in the sense of data size) values that do not fit "
+"into normal data pages (like long texts, images or complex geometries with "
+"lots of vertices), see <ulink url=\"http://www.postgresql.org/docs/current/"
+"static/storage-toast.html\">the PostgreSQL Documentation for TOAST</ulink> "
+"for more information)."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:19
+#, no-c-format
+msgid ""
+"The problem appears if you happen to have a table with rather large "
+"geometries, but not too much rows of them (like a table containing the "
+"boundaries of all European countries in high resolution). Then the table "
+"itself is small, but it uses lots of TOAST space. In our example case, the "
+"table itself had about 80 rows and used only 3 data pages, but the TOAST "
+"table used 8225 pages."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:26
+#, no-c-format
+msgid ""
+"Now issue a query where you use the geometry operator &amp;&amp; to search "
+"for a bounding box that matches only very few of those rows. Now the query "
+"optimizer sees that the table has only 3 pages and 80 rows. He estimates "
+"that a sequential scan on such a small table is much faster than using an "
+"index. And so he decides to ignore the GIST index. Usually, this estimation "
+"is correct. But in our case, the &amp;&amp; operator has to fetch every "
+"geometry from disk to compare the bounding boxes, thus reading all TOAST "
+"pages, too."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:35
+#, no-c-format
+msgid ""
+"To see whether your suffer from this bug, use the \"EXPLAIN ANALYZE\" "
+"postgresql command. For more information and the technical details, you can "
+"read the thread on the postgres performance mailing list: http://archives."
+"postgresql.org/pgsql-performance/2005-02/msg00030.php"
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:43
+#, no-c-format
+msgid "Workarounds"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:45
+#, no-c-format
+msgid ""
+"The PostgreSQL people are trying to solve this issue by making the query "
+"estimation TOAST-aware. For now, here are two workarounds:"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:48
+#, no-c-format
+msgid ""
+"The first workaround is to force the query planner to use the index. Send "
+"\"SET enable_seqscan TO off;\" to the server before issuing the query. This "
+"basically forces the query planner to avoid sequential scans whenever "
+"possible. So it uses the GIST index as usual. But this flag has to be set on "
+"every connection, and it causes the query planner to make misestimations in "
+"other cases, so you should \"SET enable_seqscan TO on;\" after the query."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:56
+#, no-c-format
+msgid ""
+"The second workaround is to make the sequential scan as fast as the query "
+"planner thinks. This can be achieved by creating an additional column that "
+"\"caches\" the bbox, and matching against this. In our example, the commands "
+"are like:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:61
+#, no-c-format
+msgid ""
+"SELECT AddGeometryColumn"
+"('myschema','mytable','bbox','4326','GEOMETRY','2'); \n"
+"UPDATE mytable SET bbox = ST_Envelope(ST_Force_2d(the_geom));"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:63
+#, no-c-format
+msgid ""
+"Now change your query to use the &amp;&amp; operator against bbox instead of "
+"geom_column, like:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:66
+#, no-c-format
+msgid ""
+"SELECT geom_column \n"
+"FROM mytable \n"
+"WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:68
+#, no-c-format
+msgid ""
+"Of course, if you change or add rows to mytable, you have to keep the bbox "
+"\"in sync\". The most transparent way to do this would be triggers, but you "
+"also can modify your application to keep the bbox column current or run the "
+"UPDATE query above after every modification."
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:77
+#, no-c-format
+msgid "CLUSTERing on geometry indices"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:79
+#, no-c-format
+msgid ""
+"For tables that are mostly read-only, and where a single index is used for "
+"the majority of queries, PostgreSQL offers the CLUSTER command. This command "
+"physically reorders all the data rows in the same order as the index "
+"criteria, yielding two performance advantages: First, for index range scans, "
+"the number of seeks on the data table is drastically reduced. Second, if "
+"your working set concentrates to some small intervals on the indices, you "
+"have a more efficient caching because the data rows are spread along fewer "
+"data pages. (Feel invited to read the CLUSTER command documentation from the "
+"PostgreSQL manual at this point.)"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:89
+#, no-c-format
+msgid ""
+"However, currently PostgreSQL does not allow clustering on PostGIS GIST "
+"indices because GIST indices simply ignores NULL values, you get an error "
+"message like:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:93
+#, no-c-format
+msgid ""
+"lwgeom=# CLUSTER my_geom_index ON my_table; \n"
+"ERROR: cannot cluster when index access method does not handle null values\n"
+"HINT: You may be able to work around this by marking column \"the_geom\" NOT "
+"NULL."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:95
+#, no-c-format
+msgid ""
+"As the HINT message tells you, one can work around this deficiency by adding "
+"a \"not null\" constraint to the table:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:98
+#, no-c-format
+msgid ""
+"lwgeom=# ALTER TABLE my_table ALTER COLUMN the_geom SET not null; \n"
+"ALTER TABLE"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:100
+#, no-c-format
+msgid ""
+"Of course, this will not work if you in fact need NULL values in your "
+"geometry column. Additionally, you must use the above method to add the "
+"constraint, using a CHECK constraint like \"ALTER TABLE blubb ADD CHECK "
+"(geometry is not null);\" will not work."
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:107
+#, no-c-format
+msgid "Avoiding dimension conversion"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:109
+#, no-c-format
+msgid ""
+"Sometimes, you happen to have 3D or 4D data in your table, but always access "
+"it using OpenGIS compliant ST_AsText() or ST_AsBinary() functions that only "
+"output 2D geometries. They do this by internally calling the ST_Force_2d() "
+"function, which introduces a significant overhead for large geometries. To "
+"avoid this overhead, it may be feasible to pre-drop those additional "
+"dimensions once and forever:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:116
+#, no-c-format
+msgid ""
+"UPDATE mytable SET the_geom = ST_Force_2d(the_geom); \n"
+"VACUUM FULL ANALYZE mytable;"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:118
+#, no-c-format
+msgid ""
+"Note that if you added your geometry column using AddGeometryColumn() "
+"there'll be a constraint on geometry dimension. To bypass it you will need "
+"to drop the constraint. Remember to update the entry in the geometry_columns "
+"table and recreate the constraint afterwards."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:124
+#, no-c-format
+msgid ""
+"In case of large tables, it may be wise to divide this UPDATE into smaller "
+"portions by constraining the UPDATE to a part of the table via a WHERE "
+"clause and your primary key or another feasible criteria, and running a "
+"simple \"VACUUM;\" between your UPDATEs. This drastically reduces the need "
+"for temporary disk space. Additionally, if you have mixed dimension "
+"geometries, restricting the UPDATE by \"WHERE dimension(the_geom)&gt;2\" "
+"skips re-writing of geometries that already are in 2D."
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:136
+#, no-c-format
+msgid "Tuning your configuration"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:138
+#, no-c-format
+msgid ""
+"These tips are taken from Kevin Neufeld's presentation \"Tips for the "
+"PostGIS Power User\" at the FOSS4G 2007 conference. Depending on your use of "
+"PostGIS (for example, static data and complex analysis vs frequently updated "
+"data and lots of users) these changes can provide significant speedups to "
+"your queries."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:144
+#, no-c-format
+msgid ""
+"For a more tips (and better formatting), the original presentation is at "
+"<ulink url=\"http://2007.foss4g.org/presentations/view.php?"
+"abstract_id=117\"> http://2007.foss4g.org/presentations/view.php?"
+"abstract_id=117</ulink>."
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:151
+#, no-c-format
+msgid "Startup"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:153
+#, no-c-format
+msgid "These settings are configured in postgresql.conf:"
+msgstr ""
+
+#. Tag: ulink
+#: performance_tips.xml:158
+#, no-c-format
+msgid "checkpoint_segments"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:163
+#, no-c-format
+msgid ""
+"Maximum number of log file segments between automatic WAL checkpoints (each "
+"segment is normally 16MB); default is 3"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:169
+#, no-c-format
+msgid ""
+"Set to at least 10 or 30 for databases with heavy write activity, or more "
+"for large database loads. Another article on the topic worth reading <ulink "
+"url=\"http://www.westnet.com/~gsmith/content/postgresql/chkp-bgw-83.htm"
+"\">Greg Smith: Checkpoint and Background writer</ulink>"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:175
+#, no-c-format
+msgid "Possibly store the xlog on a separate disk device"
+msgstr ""
+
+#. Tag: ulink
+#: performance_tips.xml:182
+#, no-c-format
+msgid "constraint_exclusion"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:187
+#, no-c-format
+msgid ""
+"Default: off (prior to PostgreSQL 8.4 and for PostgreSQL 8.4+ is set to "
+"partition)"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:192
+#, no-c-format
+msgid ""
+"This is generally used for table partitioning. If you are running PostgreSQL "
+"versions below 8.4, set to \"on\" to ensure the query planner will optimize "
+"as desired. As of PostgreSQL 8.4, the default for this is set to \"partition"
+"\" which is ideal for PostgreSQL 8.4 and above since it will force the "
+"planner to only analyze tables for constraint consideration if they are in "
+"an inherited hierarchy and not pay the planner penalty otherwise."
+msgstr ""
+
+#. Tag: ulink
+#: performance_tips.xml:202
+#, no-c-format
+msgid "shared_buffers"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:207
+#, no-c-format
+msgid "Default: ~32MB"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:212
+#, no-c-format
+msgid "Set to about 1/3 to 3/4 of available RAM"
+msgstr ""
+
+#. Tag: title
+#: performance_tips.xml:220
+#, no-c-format
+msgid "Runtime"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:222
+#, no-c-format
+msgid ""
+"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-WORK-MEM\">work_mem</ulink> (the memory used for sort "
+"operations and complex queries)"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:228
+#, no-c-format
+msgid "Default: 1MB"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:233
+#, no-c-format
+msgid "Adjust up for large dbs, complex queries, lots of RAM"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:238
+#, no-c-format
+msgid "Adjust down for many concurrent users or low RAM."
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:243
+#, no-c-format
+msgid "If you have lots of RAM and few developers:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:245
+#, no-c-format
+msgid "SET work_mem TO 1200000;"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:250
+#, no-c-format
+msgid ""
+"<ulink url=\"http://www.postgresql.org/docs/current/static/runtime-config-"
+"resource.html#GUC-MAINTENANCE-WORK-MEM\">maintenance_work_mem</ulink> (used "
+"for VACUUM, CREATE INDEX, etc.)"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:256
+#, no-c-format
+msgid "Default: 16MB"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:261
+#, no-c-format
+msgid "Generally too low - ties up I/O, locks objects while swapping memory"
+msgstr ""
+
+#. Tag: para
+#: performance_tips.xml:266
+#, no-c-format
+msgid ""
+"Recommend 32MB to 256MB on production servers w/lots of RAM, but depends on "
+"the # of concurrent users. If you have lots of RAM and few developers:"
+msgstr ""
+
+#. Tag: programlisting
+#: performance_tips.xml:269
+#, no-c-format
+msgid "SET maintainence_work_mem TO 1200000;"
+msgstr ""

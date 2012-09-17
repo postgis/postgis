@@ -1,0 +1,3982 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: release_notes.xml:3
+#, no-c-format
+msgid "Appendix"
+msgstr ""
+
+#. Tag: subtitle
+#: release_notes.xml:4
+#, no-c-format
+msgid "Release Notes"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:6
+#, no-c-format
+msgid "Release 2.0.1"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:7
+#, no-c-format
+msgid "Release date: 2012/06/22"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:8
+#, no-c-format
+msgid "This is a bug fix release, addressing issues that have been filed since the 2.0.0 release."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:10 release_notes.xml:165 release_notes.xml:179 release_notes.xml:217 release_notes.xml:255 release_notes.xml:286
+#, no-c-format
+msgid "Bug Fixes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:11
+#, no-c-format
+msgid "#1264, fix st_dwithin(geog, geog, 0)."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:12
+#, no-c-format
+msgid "#1468 shp2pgsql-gui table column schema get shifted"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:13
+#, no-c-format
+msgid "#1694, fix building with clang. (vince)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:14
+#, no-c-format
+msgid "#1708, improve restore of pre-PostGIS 2.0 backups."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:15
+#, no-c-format
+msgid "#1714, more robust handling of high topology tolerance."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:16
+#, no-c-format
+msgid "#1755, ST_GeographyFromText support for higher dimensions."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:17
+#, no-c-format
+msgid "#1759, loading transformed shapefiles in raster enabled db."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:18
+#, no-c-format
+msgid "#1761, handling of subdatasets in NetCDF, HDF4 and HDF5 in raster2pgsql."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:19
+#, no-c-format
+msgid "#1763, topology.toTopoGeom use with custom search_path."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:20
+#, no-c-format
+msgid "#1766, don't let ST_RemEdge* destroy peripheral TopoGeometry objects."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:21
+#, no-c-format
+msgid "#1774, Clearer error on setting an edge geometry to an invalid one."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:22
+#, no-c-format
+msgid "#1775, ST_ChangeEdgeGeom collision detection with 2-vertex target."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:23
+#, no-c-format
+msgid "#1776, fix ST_SymDifference(empty, geom) to return geom."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:24
+#, no-c-format
+msgid "#1779, install SQL comment files."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:25
+#, no-c-format
+msgid "#1782, fix spatial reference string handling in raster."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:26
+#, no-c-format
+msgid "#1789, fix false edge-node crossing report in ValidateTopology."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:27
+#, no-c-format
+msgid "#1790, fix toTopoGeom handling of duplicated primitives."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:28
+#, no-c-format
+msgid "#1791, fix ST_Azimuth with very close but distinct points."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:29
+#, no-c-format
+msgid "#1797, fix (ValidateTopology(xxx)).* syntax calls."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:30
+#, no-c-format
+msgid "#1805, put back the 900913 SRID entry."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:31
+#, no-c-format
+msgid "#1813, Only show readable relations in metadata tables."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:32
+#, no-c-format
+msgid "#1819, fix floating point issues with ST_World2RasterCoord and ST_Raster2WorldCoord variants."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:34
+#, no-c-format
+msgid "#1820 compilation on 9.2beta1."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:35
+#, no-c-format
+msgid "#1822, topology load on PostgreSQL 9.2beta1."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:36
+#, no-c-format
+msgid "#1825, fix prepared geometry cache lookup"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:37
+#, no-c-format
+msgid "#1829, fix uninitialized read in GeoJSON parser"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:38
+#, no-c-format
+msgid "#1834, revise postgis extension to only backup user specified spatial_ref_sys"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:40
+#, no-c-format
+msgid "#1839, handling of subdatasets in GeoTIFF in raster2pgsql."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:41
+#, no-c-format
+msgid "#1840, fix logic of when to compute # of tiles in raster2pgsql."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:42
+#, no-c-format
+msgid "#1851, fix spatial_ref_system parameters for EPSG:3844"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:43
+#, no-c-format
+msgid "#1857, fix failure to detect endpoint mismatch in ST_AddEdge*Face*"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:44
+#, no-c-format
+msgid "#1865, data loss in postgis_restore.pl when data rows have leading dashes."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:46
+#, no-c-format
+msgid "#1867, catch invalid topology name passed to topogeo_add*"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:47
+#, no-c-format
+msgid "#1872, fix ST_ApproxSummarystats to prevent division by zero"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:48
+#, no-c-format
+msgid "#1873, fix ptarray_locate_point to return interpolated Z/M values for on-the-line case"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:50
+#, no-c-format
+msgid "#1875, ST_SummaryStats returns NULL for all parameters except count when count is zero"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:52
+#, no-c-format
+msgid "#1881, shp2pgsql-gui -- editing a field sometimes triggers removing row"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:54
+#, no-c-format
+msgid "#1883, Geocoder install fails trying to run create_census_base_tables() (Brian Panulla)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:58 release_notes.xml:148 release_notes.xml:349 release_notes.xml:404
+#, no-c-format
+msgid "Enhancements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:59
+#, no-c-format
+msgid "More detailed exception message from topology editing functions."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:60
+#, no-c-format
+msgid "#1786, improved build dependencies"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:61
+#, no-c-format
+msgid "#1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:62
+#, no-c-format
+msgid "#1812, Add lwgeom_normalize in LIBLWGEOM for more stable testing."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:66
+#, no-c-format
+msgid "Release 2.0.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:67
+#, no-c-format
+msgid "Release date: 2012/04/03"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:68
+#, no-c-format
+msgid "This is a major release. A hard upgrade is required. Yes this means a full dump reload and some special preparations if you are using obsolete functions. Refer to <xref linkend=\"hard_upgrade\"/> for details on upgrading. Refer to <xref linkend=\"NewFunctions_2_0\"/> for more details and changed/new functions."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:72
+#, no-c-format
+msgid "Testers - Our unsung heroes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:73
+#, no-c-format
+msgid "We are most indebted to the numerous members in the PostGIS community who were brave enough to test out the new features in this release. No major release can be successful without these folk."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:76
+#, no-c-format
+msgid "Below are those who have been most valiant, provided very detailed and thorough bug reports, and detailed analysis."
+msgstr ""
+
+#. Tag: member
+#: release_notes.xml:80
+#, no-c-format
+msgid "Andrea Peri - Lots of testing on topology, checking for correctness"
+msgstr ""
+
+#. Tag: member
+#: release_notes.xml:81
+#, no-c-format
+msgid "Andreas Forø Tollefsen - raster testing"
+msgstr ""
+
+#. Tag: member
+#: release_notes.xml:82
+#, no-c-format
+msgid "Chris English - topology stress testing loader functions"
+msgstr ""
+
+#. Tag: member
+#: release_notes.xml:83
+#, no-c-format
+msgid "Salvatore Larosa - topology robustness testing"
+msgstr ""
+
+#. Tag: member
+#: release_notes.xml:84
+#, no-c-format
+msgid "Brian Hamlin - Benchmarking (also experimental experimental branches before they are folded into core) , general testing of various pieces including Tiger and Topology. Testing on various server VMs"
+msgstr ""
+
+#. Tag: member
+#: release_notes.xml:89
+#, no-c-format
+msgid "Mike Pease - Tiger geocoder testing - very detailed reports of issues"
+msgstr ""
+
+#. Tag: member
+#: release_notes.xml:90
+#, no-c-format
+msgid "Tom van Tilburg - raster testing"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:94
+#, no-c-format
+msgid "Important / Breaking Changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:95
+#, no-c-format
+msgid "#722, #302, Most deprecated functions removed (over 250 functions) (Regina Obe, Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:96
+#, no-c-format
+msgid "Unknown SRID changed from -1 to 0. (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:97
+#, no-c-format
+msgid "-- (most deprecated in 1.2) removed non-ST variants buffer, length, intersects (and internal functions renamed) etc."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:99
+#, no-c-format
+msgid "-- If you have been using deprecated functions CHANGE your apps or suffer the consequences. If you don't see a function documented -- it ain't supported or it is an internal function. Some constraints in older tables were built with deprecated functions. If you restore you may need to rebuild table constraints with populate_geometry_columns(). If you have applications or tools that rely on deprecated functions, please refer to <link linkend=\"legacy_faq\"></link> for more details."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:104
+#, no-c-format
+msgid "#944 geometry_columns is now a view instead of a table (Paul Ramsey, Regina Obe) for tables created the old way reads (srid, type, dims) constraints for geometry columns created with type modifiers reads rom column definition"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:109
+#, no-c-format
+msgid "#1081, #1082, #1084, #1088 - Mangement functions support typmod geometry column creation functions now default to typmod creation (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:112
+#, no-c-format
+msgid "#1083 probe_geometry_columns(), rename_geometry_table_constraints(), fix_geometry_columns(); removed - now obsolete with geometry_column view (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:116
+#, no-c-format
+msgid "#817 Renaming old 3D functions to the convention ST_3D (Nicklas Avén)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:117
+#, no-c-format
+msgid "#548 (sorta), ST_NumGeometries,ST_GeometryN now returns 1 (or the geometry) instead of null for single geometries (Sandro Santilli, Maxime van Noppen)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:121 release_notes.xml:321 release_notes.xml:385 release_notes.xml:682
+#, no-c-format
+msgid "New Features"
+msgstr ""
+
+#. Tag: ulink
+#: release_notes.xml:122
+#, no-c-format
+msgid "KNN Gist index based centroid (&lt;-&gt;) and box (&lt;#&gt;) distance operators (Paul Ramsey / funded by Vizzuality)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:123
+#, no-c-format
+msgid "Support for TIN and PolyHedralSurface and enhancement of many functions to support 3D (Olivier Courtin / Oslandia)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:124
+#, no-c-format
+msgid "<ulink url=\"http://trac.osgeo.org/postgis/wiki/WKTRaster/PlanningAndFunding\">Raster support integrated and documented</ulink> (Pierre Racine, Jorge Arévalo, Mateusz Loskot, Sandro Santilli, David Zwarg, Regina Obe, Bborie Park) (Company developer and funding: University Laval, Deimos Space, CadCorp, Michigan Tech Research Institute, Azavea, Paragon Corporation, UC Davis Center for Vectorborne Diseases)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:127
+#, no-c-format
+msgid "Making spatial indexes 3D aware - in progress (Paul Ramsey, Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:128
+#, no-c-format
+msgid "Topology support improved (more functions), documented, testing (Sandro Santilli / Faunalia for RT-SIGTA), Andrea Peri, Regina Obe, Jose Carlos Martinez Llari"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:129
+#, no-c-format
+msgid "3D relationship and measurement support functions (Nicklas Avén)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:130
+#, no-c-format
+msgid "ST_3DDistance, ST_3DClosestPoint, ST_3DIntersects, ST_3DShortestLine and more..."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:131
+#, no-c-format
+msgid "N-Dimensional spatial indexes (Paul Ramsey / OpenGeo)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:132
+#, no-c-format
+msgid "ST_Split (Sandro Santilli / Faunalia for RT-SIGTA)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:133
+#, no-c-format
+msgid "ST_IsValidDetail (Sandro Santilli / Faunalia for RT-SIGTA)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:134
+#, no-c-format
+msgid "ST_MakeValid (Sandro Santilli / Faunalia for RT-SIGTA)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:135
+#, no-c-format
+msgid "ST_RemoveRepeatedPoints (Sandro Santilli / Faunalia for RT-SIGTA)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:136
+#, no-c-format
+msgid "ST_GeometryN and ST_NumGeometries support for non-collections (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:137
+#, no-c-format
+msgid "ST_IsCollection (Sandro Santilli, Maxime van Noppen)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:138
+#, no-c-format
+msgid "ST_SharedPaths (Sandro Santilli / Faunalia for RT-SIGTA)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:139
+#, no-c-format
+msgid "ST_Snap (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:140
+#, no-c-format
+msgid "ST_RelateMatch (Sandro Santilli / Faunalia for RT-SIGTA)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:141
+#, no-c-format
+msgid "ST_ConcaveHull (Regina Obe and Leo Hsu / Paragon Corporation)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:142
+#, no-c-format
+msgid "ST_UnaryUnion (Sandro Santilli / Faunalia for RT-SIGTA)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:143
+#, no-c-format
+msgid "ST_AsX3D (Regina Obe / Arrival 3D funding)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:144
+#, no-c-format
+msgid "ST_OffsetCurve (Sandro Santilli, Rafal Magda)"
+msgstr ""
+
+#. Tag: ulink
+#: release_notes.xml:145
+#, no-c-format
+msgid "ST_GeomFromGeoJSON (Kashif Rasul, Paul Ramsey / Vizzuality funding)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:149
+#, no-c-format
+msgid "Made shape file loader tolerant of truncated multibyte values found in some free worldwide shapefiles (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:150
+#, no-c-format
+msgid "Lots of bug fixes and enhancements to shp2pgsql Beefing up regression tests for loaders Reproject support for both geometry and geography during import (Jeff Adams / Azavea, Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:154
+#, no-c-format
+msgid "pgsql2shp conversion from predefined list (Loic Dachary / Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:156
+#, no-c-format
+msgid "Shp-pgsql GUI loader - support loading multiple files at a time. (Mark Leslie)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:157
+#, no-c-format
+msgid "Extras - upgraded tiger_geocoder from using old TIGER format to use new TIGER shp and file structure format (Stephen Frost)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:158
+#, no-c-format
+msgid "Extras - revised tiger_geocoder to work with TIGER census 2010 data, addition of reverse geocoder function, various bug fixes, accuracy enhancements, limit max result return, speed improvements, loading routines. (Regina Obe, Leo Hsu / Paragon Corporation / funding provided by Hunter Systems Group)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:161
+#, no-c-format
+msgid "Overall Documentation proofreading and corrections. (Kasif Rasul)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:162
+#, no-c-format
+msgid "Cleanup PostGIS JDBC classes, revise to use Maven build. (Maria Arias de Reyna, Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:166
+#, no-c-format
+msgid "#1335 ST_AddPoint returns incorrect result on Linux (Even Rouault)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:169
+#, no-c-format
+msgid "Release specific credits"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:170
+#, no-c-format
+msgid "We thank <ulink url=\"http://blog.opengeo.org/2012/02/01/it-goes-up-to-2-0/\">U.S Department of State Human Information Unit (HIU)</ulink> and <ulink url=\"http://blog.cartodb.com/post/17318840209/postgis-core-committer-sandro-santilli-joins-cartodb\">Vizzuality</ulink> for general monetary support to get PostGIS 2.0 out the door."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:175
+#, no-c-format
+msgid "Release 1.5.4"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:176
+#, no-c-format
+msgid "Release date: 2012/05/07"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:177
+#, no-c-format
+msgid "This is a bug fix release, addressing issues that have been filed since the 1.5.3 release."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:180
+#, no-c-format
+msgid "#547, ST_Contains memory problems (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:181
+#, no-c-format
+msgid "#621, Problem finding intersections with geography (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:182
+#, no-c-format
+msgid "#627, PostGIS/PostgreSQL process die on invalid geometry (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:183
+#, no-c-format
+msgid "#810, Increase accuracy of area calculation (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:184
+#, no-c-format
+msgid "#852, improve spatial predicates robustness (Sandro Santilli, Nicklas Avén)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:185
+#, no-c-format
+msgid "#877, ST_Estimated_Extent returns NULL on empty tables (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:186
+#, no-c-format
+msgid "#1028, ST_AsSVG kills whole postgres server when fails (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:187
+#, no-c-format
+msgid "#1056, Fix boxes of arcs and circle stroking code (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:188
+#, no-c-format
+msgid "#1121, populate_geometry_columns using deprecated functions (Regin Obe, Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:189
+#, no-c-format
+msgid "#1135, improve testsuite predictability (Andreas 'ads' Scherbaum)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:190
+#, no-c-format
+msgid "#1146, images generator crashes (bronaugh)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:191
+#, no-c-format
+msgid "#1170, North Pole intersection fails (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:192
+#, no-c-format
+msgid "#1179, ST_AsText crash with bad value (kjurka)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:193
+#, no-c-format
+msgid "#1184, honour DESTDIR in documentation Makefile (Bryce L Nordgren)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:194
+#, no-c-format
+msgid "#1227, server crash on invalid GML"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:195
+#, no-c-format
+msgid "#1252, SRID appearing in WKT (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:196
+#, no-c-format
+msgid "#1264, st_dwithin(g, g, 0) doesn't work (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:197
+#, no-c-format
+msgid "#1344, allow exporting tables with invalid geometries (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:198
+#, no-c-format
+msgid "#1389, wrong proj4text for SRID 31300 and 31370 (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:199
+#, no-c-format
+msgid "#1406, shp2pgsql crashes when loading into geography (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:200
+#, no-c-format
+msgid "#1595, fixed SRID redundancy in ST_Line_SubString (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:201
+#, no-c-format
+msgid "#1596, check SRID in UpdateGeometrySRID (Mike Toews, Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:202
+#, no-c-format
+msgid "#1602, fix ST_Polygonize to retain Z (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:203
+#, no-c-format
+msgid "#1697, fix crash with EMPTY entries in GiST index (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:204
+#, no-c-format
+msgid "#1772, fix ST_Line_Locate_Point with collapsed input (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:205
+#, no-c-format
+msgid "#1799, Protect ST_Segmentize from max_length=0 (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:206
+#, no-c-format
+msgid "Alter parameter order in 900913 (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:207
+#, no-c-format
+msgid "Support builds with \"gmake\" (Greg Troxel)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:212
+#, no-c-format
+msgid "Release 1.5.3"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:213
+#, no-c-format
+msgid "Release date: 2011/06/25"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:214
+#, no-c-format
+msgid "This is a bug fix release, addressing issues that have been filed since the 1.5.2 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient otherwise a hard upgrade is recommended."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:218
+#, no-c-format
+msgid "#1056, produce correct bboxes for arc geometries, fixes index errors (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:220
+#, no-c-format
+msgid "#1007, ST_IsValid crash fix requires GEOS 3.3.0+ or 3.2.3+ (Sandro Santilli, reported by Birgit Laggner)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:222
+#, no-c-format
+msgid "#940, support for PostgreSQL 9.1 beta 1 (Regina Obe, Paul Ramsey, patch submitted by stl)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:224
+#, no-c-format
+msgid "#845, ST_Intersects precision error (Sandro Santilli, Nicklas Avén) Reported by cdestigter"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:226
+#, no-c-format
+msgid "#884, Unstable results with ST_Within, ST_Intersects (Chris Hodgson)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:227
+#, no-c-format
+msgid "#779, shp2pgsql -S option seems to fail on points (Jeff Adams)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:228
+#, no-c-format
+msgid "#666, ST_DumpPoints is not null safe (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:229
+#, no-c-format
+msgid "#631, Update NZ projections for grid transformation support (jpalmer)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:230
+#, no-c-format
+msgid "#630, Peculiar Null treatment in arrays in ST_Collect (Chris Hodgson) Reported by David Bitner"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:232
+#, no-c-format
+msgid "#624, Memory leak in ST_GeogFromText (ryang, Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:233
+#, no-c-format
+msgid "#609, Bad source code in manual section 5.2 Java Clients (simoc, Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:234
+#, no-c-format
+msgid "#604, shp2pgsql usage touchups (Mike Toews, Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:235
+#, no-c-format
+msgid "#573 ST_Union fails on a group of linestrings Not a PostGIS bug, fixed in GEOS 3.3.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:237
+#, no-c-format
+msgid "#457 ST_CollectionExtract returns non-requested type (Nicklas Avén, Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:239
+#, no-c-format
+msgid "#441 ST_AsGeoJson Bbox on GeometryCollection error (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:240
+#, no-c-format
+msgid "#411 Ability to backup invalid geometries (Sando Santilli) Reported by Regione Toscana"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:242
+#, no-c-format
+msgid "#409 ST_AsSVG - degraded (Olivier Courtin) Reported by Sdikiy"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:244
+#, no-c-format
+msgid "#373 Documentation syntax error in hard upgrade (Paul Ramsey) Reported by psvensso"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:250
+#, no-c-format
+msgid "Release 1.5.2"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:251
+#, no-c-format
+msgid "Release date: 2010/09/27"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:252
+#, no-c-format
+msgid "This is a bug fix release, addressing issues that have been filed since the 1.5.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient otherwise a hard upgrade is recommended."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:256
+#, no-c-format
+msgid "Loader: fix handling of empty (0-verticed) geometries in shapefiles. (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:257
+#, no-c-format
+msgid "#536, Geography ST_Intersects, ST_Covers, ST_CoveredBy and Geometry ST_Equals not using spatial index (Regina Obe, Nicklas Aven)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:258
+#, no-c-format
+msgid "#573, Improvement to ST_Contains geography (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:259
+#, no-c-format
+msgid "Loader: Add support for command-q shutdown in Mac GTK build (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:260
+#, no-c-format
+msgid "#393, Loader: Add temporary patch for large DBF files (Maxime Guillaud, Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:261
+#, no-c-format
+msgid "#507, Fix wrong OGC URN in GeoJSON and GML output (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:262
+#, no-c-format
+msgid "spatial_ref_sys.sql Add datum conversion for projection SRID 3021 (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:263
+#, no-c-format
+msgid "Geography - remove crash for case when all geographies are out of the estimate (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:264
+#, no-c-format
+msgid "#469, Fix for array_aggregation error (Greg Stark, Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:265
+#, no-c-format
+msgid "#532, Temporary geography tables showing up in other user sessions (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:266
+#, no-c-format
+msgid "#562, ST_Dwithin errors for large geographies (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:267
+#, no-c-format
+msgid "#513, shape loading GUI tries to make spatial index when loading DBF only mode (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:268
+#, no-c-format
+msgid "#527, shape loading GUI should always append log messages (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:269
+#, no-c-format
+msgid "#504, shp2pgsql should rename xmin/xmax fields (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:270
+#, no-c-format
+msgid "#458, postgis_comments being installed in contrib instead of version folder (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:271
+#, no-c-format
+msgid "#474, Analyzing a table with geography column crashes server (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:272
+#, no-c-format
+msgid "#581, LWGEOM-expand produces inconsistent results (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:273
+#, no-c-format
+msgid "#513, Add dbf filter to shp2pgsql-gui and allow uploading dbf only (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:274
+#, no-c-format
+msgid "Fix further build issues against PostgreSQL 9.0 (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:275
+#, no-c-format
+msgid "#572, Password whitespace for Shape File (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:276
+#, no-c-format
+msgid "#603, shp2pgsql: \"-w\" produces invalid WKT for MULTI* objects. (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:281
+#, no-c-format
+msgid "Release 1.5.1"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:282
+#, no-c-format
+msgid "Release date: 2010/03/11"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:283
+#, no-c-format
+msgid "This is a bug fix release, addressing issues that have been filed since the 1.4.1 release. If you are running PostGIS 1.3+, a soft upgrade is sufficient otherwise a hard upgrade is recommended."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:287
+#, no-c-format
+msgid "#410, update embedded bbox when applying ST_SetPoint, ST_AddPoint ST_RemovePoint to a linestring (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:288
+#, no-c-format
+msgid "#411, allow dumping tables with invalid geometries (Sandro Santilli, for Regione Toscana-SIGTA)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:289
+#, no-c-format
+msgid "#414, include geography_columns view when running upgrade scripts (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:290
+#, no-c-format
+msgid "#419, allow support for multilinestring in ST_Line_Substring (Paul Ramsey, for Lidwala Consulting Engineers)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:291
+#, no-c-format
+msgid "#421, fix computed string length in ST_AsGML() (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:292
+#, no-c-format
+msgid "#441, fix GML generation with heterogeneous collections (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:293
+#, no-c-format
+msgid "#443, incorrect coordinate reversal in GML 3 generation (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:294
+#, no-c-format
+msgid "#450, #451, wrong area calculation for geography features that cross the date line (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:295
+#, no-c-format
+msgid "Ensure support for upcoming 9.0 PgSQL release (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:300
+#, no-c-format
+msgid "Release 1.5.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:301
+#, no-c-format
+msgid "Release date: 2010/02/04"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:302
+#, no-c-format
+msgid "This release provides support for geographic coordinates (lat/lon) via a new GEOGRAPHY type. Also performance enhancements, new input format support (GML,KML) and general upkeep."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:305 release_notes.xml:372
+#, no-c-format
+msgid "API Stability"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:306
+#, no-c-format
+msgid "The public API of PostGIS will not change during minor (0.0.X) releases."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:307
+#, no-c-format
+msgid "The definition of the =~ operator has changed from an exact geometric equality check to a bounding box equality check."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:311 release_notes.xml:377
+#, no-c-format
+msgid "Compatibility"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:312
+#, no-c-format
+msgid "GEOS, Proj4, and LibXML2 are now mandatory dependencies"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:313
+#, no-c-format
+msgid "The library versions below are the minimum requirements for PostGIS 1.5"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:314
+#, no-c-format
+msgid "PostgreSQL 8.3 and higher on all platforms"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:315
+#, no-c-format
+msgid "GEOS 3.1 and higher only (GEOS 3.2+ to take advantage of all features)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:316
+#, no-c-format
+msgid "LibXML2 2.5+ related to new ST_GeomFromGML/KML functionality"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:317
+#, no-c-format
+msgid "Proj4 4.5 and higher only"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:323
+#, no-c-format
+msgid "Added Hausdorff distance calculations (#209) (Vincent Picavet)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:324
+#, no-c-format
+msgid "Added parameters argument to ST_Buffer operation to support one-sided buffering and other buffering styles (Sandro Santilli)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:325
+#, no-c-format
+msgid "Addition of other Distance related visualization and analysis functions (Nicklas Aven)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:327
+#, no-c-format
+msgid "ST_ClosestPoint"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:328
+#, no-c-format
+msgid "ST_DFullyWithin"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:329
+#, no-c-format
+msgid "ST_LongestLine"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:330
+#, no-c-format
+msgid "ST_MaxDistance"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:331
+#, no-c-format
+msgid "ST_ShortestLine"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:333
+#, no-c-format
+msgid "ST_DumpPoints (Maxime van Noppen)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:334
+#, no-c-format
+msgid "KML, GML input via ST_GeomFromGML and ST_GeomFromKML (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:335
+#, no-c-format
+msgid "Extract homogeneous collection with ST_CollectionExtract (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:336
+#, no-c-format
+msgid "Add measure values to an existing linestring with ST_AddMeasure (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:337
+#, no-c-format
+msgid "History table implementation in utils (George Silva)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:338
+#, no-c-format
+msgid "Geography type and supporting functions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:340
+#, no-c-format
+msgid "Spherical algorithms (Dave Skea)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:341
+#, no-c-format
+msgid "Object/index implementation (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:342
+#, no-c-format
+msgid "Selectivity implementation (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:343
+#, no-c-format
+msgid "Serializations to KML, GML and JSON (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:344
+#, no-c-format
+msgid "ST_Area, ST_Distance, ST_DWithin, ST_GeogFromText, ST_GeogFromWKB, ST_Intersects, ST_Covers, ST_Buffer (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:350
+#, no-c-format
+msgid "Performance improvements to ST_Distance (Nicklas Aven)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:351
+#, no-c-format
+msgid "Documentation updates and improvements (Regina Obe, Kevin Neufeld)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:352
+#, no-c-format
+msgid "Testing and quality control (Regina Obe)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:353
+#, no-c-format
+msgid "PostGIS 1.5 support PostgreSQL 8.5 trunk (Guillaume Lelarge)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:354
+#, no-c-format
+msgid "Win32 support and improvement of core shp2pgsql-gui (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:355
+#, no-c-format
+msgid "In place 'make check' support (Paul Ramsey)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:359 release_notes.xml:425 release_notes.xml:610 release_notes.xml:661 release_notes.xml:712 release_notes.xml:846 release_notes.xml:912 release_notes.xml:1022 release_notes.xml:1129 release_notes.xml:1249 release_notes.xml:1314 release_notes.xml:1361
+#, no-c-format
+msgid "Bug fixes"
+msgstr ""
+
+#. Tag: ulink
+#: release_notes.xml:360
+#, no-c-format
+msgid "http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.5.0&amp;order=priority"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:365
+#, no-c-format
+msgid "Release 1.4.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:366
+#, no-c-format
+msgid "Release date: 2009/07/24"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:367
+#, no-c-format
+msgid "This release provides performance enhancements, improved internal structures and testing, new features, and upgraded documentation. If you are running PostGIS 1.1+, a soft upgrade is sufficient otherwise a hard upgrade is recommended."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:373
+#, no-c-format
+msgid "As of the 1.4 release series, the public API of PostGIS will not change during minor releases."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:378
+#, no-c-format
+msgid "The versions below are the *minimum* requirements for PostGIS 1.4"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:379
+#, no-c-format
+msgid "PostgreSQL 8.2 and higher on all platforms"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:380
+#, no-c-format
+msgid "GEOS 3.0 and higher only"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:381
+#, no-c-format
+msgid "PROJ4 4.5 and higher only"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:386
+#, no-c-format
+msgid "ST_Union() uses high-speed cascaded union when compiled against GEOS 3.1+ (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:388
+#, no-c-format
+msgid "ST_ContainsProperly() requires GEOS 3.1+"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:389
+#, no-c-format
+msgid "ST_Intersects(), ST_Contains(), ST_Within() use high-speed cached prepared geometry against GEOS 3.1+ (Paul Ramsey / funded by Zonar Systems)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:390
+#, no-c-format
+msgid "Vastly improved documentation and reference manual (Regina Obe &amp; Kevin Neufeld)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:391
+#, no-c-format
+msgid "Figures and diagram examples in the reference manual (Kevin Neufeld)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:392
+#, no-c-format
+msgid "ST_IsValidReason() returns readable explanations for validity failures (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:393
+#, no-c-format
+msgid "ST_GeoHash() returns a geohash.org signature for geometries (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:394
+#, no-c-format
+msgid "GTK+ multi-platform GUI for shape file loading (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:395
+#, no-c-format
+msgid "ST_LineCrossingDirection() returns crossing directions (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:396
+#, no-c-format
+msgid "ST_LocateBetweenElevations() returns sub-string based on Z-ordinate. (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:397
+#, no-c-format
+msgid "Geometry parser returns explicit error message about location of syntax errors (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:398
+#, no-c-format
+msgid "ST_AsGeoJSON() return JSON formatted geometry (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:399
+#, no-c-format
+msgid "Populate_Geometry_Columns() -- automatically add records to geometry_columns for TABLES and VIEWS (Kevin Neufeld)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:400
+#, no-c-format
+msgid "ST_MinimumBoundingCircle() -- returns the smallest circle polygon that can encompass a geometry (Bruce Rindahl)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:405
+#, no-c-format
+msgid "Core geometry system moved into independent library, liblwgeom. (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:406
+#, no-c-format
+msgid "New build system uses PostgreSQL \"pgxs\" build bootstrapper. (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:407
+#, no-c-format
+msgid "Debugging framework formalized and simplified. (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:408
+#, no-c-format
+msgid "All build-time #defines generated at configure time and placed in headers for easier cross-platform support (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:409
+#, no-c-format
+msgid "Logging framework formalized and simplified (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:410
+#, no-c-format
+msgid "Expanded and more stable support for CIRCULARSTRING, COMPOUNDCURVE and CURVEPOLYGON, better parsing, wider support in functions (Mark Leslie &amp; Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:411
+#, no-c-format
+msgid "Improved support for OpenSolaris builds (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:412
+#, no-c-format
+msgid "Improved support for MSVC builds (Mateusz Loskot)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:413
+#, no-c-format
+msgid "Updated KML support (Olivier Courtin)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:414
+#, no-c-format
+msgid "Unit testing framework for liblwgeom (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:415
+#, no-c-format
+msgid "New testing framework to comprehensively exercise every PostGIS function (Regine Obe)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:416
+#, no-c-format
+msgid "Performance improvements to all geometry aggregate functions (Paul Ramsey)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:417
+#, no-c-format
+msgid "Support for the upcoming PostgreSQL 8.4 (Mark Cave-Ayland, Talha Bin Rizwan)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:418
+#, no-c-format
+msgid "Shp2pgsql and pgsql2shp re-worked to depend on the common parsing/unparsing code in liblwgeom (Mark Cave-Ayland)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:419
+#, no-c-format
+msgid "Use of PDF DbLatex to build PDF docs and preliminary instructions for build (Jean David Techer)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:420
+#, no-c-format
+msgid "Automated User documentation build (PDF and HTML) and Developer Doxygen Documentation (Kevin Neufeld)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:421
+#, no-c-format
+msgid "Automated build of document images using ImageMagick from WKT geometry text files (Kevin Neufeld)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:422
+#, no-c-format
+msgid "More attractive CSS for HTML documentation (Dane Springmeyer)"
+msgstr ""
+
+#. Tag: ulink
+#: release_notes.xml:426
+#, no-c-format
+msgid "http://trac.osgeo.org/postgis/query?status=closed&amp;milestone=PostGIS+1.4.0&amp;order=priority"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:431
+#, no-c-format
+msgid "Release 1.3.6"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:432
+#, no-c-format
+msgid "Release date: 2009/05/04"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:433
+#, no-c-format
+msgid "If you are running PostGIS 1.1+, a soft upgrade is sufficient otherwise a hard upgrade is recommended. This release adds support for PostgreSQL 8.4, exporting prj files from the database with shape data, some crash fixes for shp2pgsql, and several small bug fixes in the handling of \"curve\" types, logical error importing dbf only files, improved error handling of AddGeometryColumns."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:440
+#, no-c-format
+msgid "Release 1.3.5"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:441
+#, no-c-format
+msgid "Release date: 2008/12/15"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:442
+#, no-c-format
+msgid "If you are running PostGIS 1.1+, a soft upgrade is sufficient otherwise a hard upgrade is recommended. This release is a bug fix release to address a failure in ST_Force_Collection and related functions that critically affects using MapServer with LINE layers."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:449
+#, no-c-format
+msgid "Release 1.3.4"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:450
+#, no-c-format
+msgid "Release date: 2008/11/24"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:451
+#, no-c-format
+msgid "This release adds support for GeoJSON output, building with PostgreSQL 8.4, improves documentation quality and output aesthetics, adds function-level SQL documentation, and improves performance for some spatial predicates (point-in-polygon tests)."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:456
+#, no-c-format
+msgid "Bug fixes include removal of crashers in handling circular strings for many functions, some memory leaks removed, a linear referencing failure for measures on vertices, and more. See the NEWS file for details."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:463
+#, no-c-format
+msgid "Release 1.3.3"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:465
+#, no-c-format
+msgid "Release date: 2008/04/12"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:467
+#, no-c-format
+msgid "This release fixes bugs shp2pgsql, adds enhancements to SVG and KML support, adds a ST_SimplifyPreserveTopology function, makes the build more sensitive to GEOS versions, and fixes a handful of severe but rare failure cases."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:474
+#, no-c-format
+msgid "Release 1.3.2"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:476
+#, no-c-format
+msgid "Release date: 2007/12/01"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:478
+#, no-c-format
+msgid "This release fixes bugs in ST_EndPoint() and ST_Envelope, improves support for JDBC building and OS/X, and adds better support for GML output with ST_AsGML(), including GML3 output."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:484
+#, no-c-format
+msgid "Release 1.3.1"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:486
+#, no-c-format
+msgid "Release date: 2007/08/13"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:488
+#, no-c-format
+msgid "This release fixes some oversights in the previous release around version numbering, documentation, and tagging."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:493
+#, no-c-format
+msgid "Release 1.3.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:495
+#, no-c-format
+msgid "Release date: 2007/08/09"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:497
+#, no-c-format
+msgid "This release provides performance enhancements to the relational functions, adds new relational functions and begins the migration of our function names to the SQL-MM convention, using the spatial type (SP) prefix."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:503
+#, no-c-format
+msgid "Added Functionality"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:505
+#, no-c-format
+msgid "JDBC: Added Hibernate Dialect (thanks to Norman Barker)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:507
+#, no-c-format
+msgid "Added ST_Covers and ST_CoveredBy relational functions. Description and justification of these functions can be found at <ulink url=\"http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html\">http://lin-ear-th-inking.blogspot.com/2007/06/subtleties-of-ogc-covers-spatial.html</ulink>"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:511
+#, no-c-format
+msgid "Added ST_DWithin relational function."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:515
+#, no-c-format
+msgid "Performance Enhancements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:517
+#, no-c-format
+msgid "Added cached and indexed point-in-polygon short-circuits for the functions ST_Contains, ST_Intersects, ST_Within and ST_Disjoint"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:520
+#, no-c-format
+msgid "Added inline index support for relational functions (except ST_Disjoint)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:525
+#, no-c-format
+msgid "Other Changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:527
+#, no-c-format
+msgid "Extended curved geometry support into the geometry accessor and some processing functions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:530
+#, no-c-format
+msgid "Began migration of functions to the SQL-MM naming convention; using a spatial type (ST) prefix."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:533
+#, no-c-format
+msgid "Added initial support for PostgreSQL 8.3"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:538
+#, no-c-format
+msgid "Release 1.2.1"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:540
+#, no-c-format
+msgid "Release date: 2007/01/11"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:542
+#, no-c-format
+msgid "This release provides bug fixes in PostgreSQL 8.2 support and some small performance enhancements."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:546 release_notes.xml:574 release_notes.xml:1796
+#, no-c-format
+msgid "Changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:548
+#, no-c-format
+msgid "Fixed point-in-polygon shortcut bug in Within()."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:550
+#, no-c-format
+msgid "Fixed PostgreSQL 8.2 NULL handling for indexes."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:552
+#, no-c-format
+msgid "Updated RPM spec files."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:554
+#, no-c-format
+msgid "Added short-circuit for Transform() in no-op case."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:556
+#, no-c-format
+msgid "JDBC: Fixed JTS handling for multi-dimensional geometries (thanks to Thomas Marti for hint and partial patch). Additionally, now JavaDoc is compiled and packaged. Fixed classpath problems with GCJ. Fixed pgjdbc 8.2 compatibility, losing support for jdk 1.3 and older."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:565
+#, no-c-format
+msgid "Release 1.2.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:567
+#, no-c-format
+msgid "Release date: 2006/12/08"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:569
+#, no-c-format
+msgid "This release provides type definitions along with serialization/deserialization capabilities for SQL-MM defined curved geometries, as well as performance enhancements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:576
+#, no-c-format
+msgid "Added curved geometry type support for serialization/deserialization"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:579
+#, no-c-format
+msgid "Added point-in-polygon shortcircuit to the Contains and Within functions to improve performance for these cases."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:585
+#, no-c-format
+msgid "Release 1.1.6"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:587
+#, no-c-format
+msgid "Release date: 2006/11/02"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:589
+#, no-c-format
+msgid "This is a bugfix release, in particular fixing a critical error with GEOS interface in 64bit systems. Includes an updated of the SRS parameters and an improvement in reprojections (take Z in consideration). Upgrade is <emphasis>encouraged</emphasis>."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:595 release_notes.xml:646 release_notes.xml:697 release_notes.xml:752 release_notes.xml:831 release_notes.xml:897 release_notes.xml:970 release_notes.xml:1114 release_notes.xml:1171 release_notes.xml:1234 release_notes.xml:1292 release_notes.xml:1350 release_notes.xml:1390 release_notes.xml:1442 release_notes.xml:1494 release_notes.xml:1533 release_notes.xml:1570 release_notes.xml:1637 release_notes.xml:1734 release_notes.xml:1788
+#, no-c-format
+msgid "Upgrading"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:597 release_notes.xml:648 release_notes.xml:699 release_notes.xml:754 release_notes.xml:833 release_notes.xml:899
+#, no-c-format
+msgid "If you are upgrading from release 1.0.3 or later follow the <link linkend=\"soft_upgrade\">soft upgrade</link> procedure."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:600 release_notes.xml:651 release_notes.xml:702 release_notes.xml:757 release_notes.xml:836 release_notes.xml:902 release_notes.xml:978 release_notes.xml:1119 release_notes.xml:1176 release_notes.xml:1239
+#, no-c-format
+msgid "If you are upgrading from a release <emphasis>between 1.0.0RC6 and 1.0.2</emphasis> (inclusive) and really want a live upgrade read the <link linkend=\"rel_1.0.3_upgrading\">upgrade section</link> of the 1.0.3 release notes chapter."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:605 release_notes.xml:656 release_notes.xml:707 release_notes.xml:762 release_notes.xml:841 release_notes.xml:907 release_notes.xml:983 release_notes.xml:1124 release_notes.xml:1181 release_notes.xml:1244
+#, no-c-format
+msgid "Upgrade from any release prior to 1.0.0RC6 requires an <link linkend=\"hard_upgrade\">hard upgrade</link>."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:612
+#, no-c-format
+msgid "fixed CAPI change that broke 64-bit platforms"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:614
+#, no-c-format
+msgid "loader/dumper: fixed regression tests and usage output"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:616
+#, no-c-format
+msgid "Fixed setSRID() bug in JDBC, thanks to Thomas Marti"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:620 release_notes.xml:804 release_notes.xml:875 release_notes.xml:1089 release_notes.xml:1215 release_notes.xml:1516 release_notes.xml:1553 release_notes.xml:1605 release_notes.xml:1707 release_notes.xml:1770
+#, no-c-format
+msgid "Other changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:622
+#, no-c-format
+msgid "use Z ordinate in reprojections"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:624
+#, no-c-format
+msgid "spatial_ref_sys.sql updated to EPSG 6.11.1"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:626
+#, no-c-format
+msgid "Simplified Version.config infrastructure to use a single pack of version variables for everything."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:629
+#, no-c-format
+msgid "Include the Version.config in loader/dumper USAGE messages"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:632
+#, no-c-format
+msgid "Replace hand-made, fragile JDBC version parser with Properties"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:638
+#, no-c-format
+msgid "Release 1.1.5"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:640
+#, no-c-format
+msgid "Release date: 2006/10/13"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:642
+#, no-c-format
+msgid "This is an bugfix release, including a critical segfault on win32. Upgrade is <emphasis>encouraged</emphasis>."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:663
+#, no-c-format
+msgid "Fixed MingW link error that was causing pgsql2shp to segfault on Win32 when compiled for PostgreSQL 8.2"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:666
+#, no-c-format
+msgid "fixed nullpointer Exception in Geometry.equals() method in Java"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:669
+#, no-c-format
+msgid "Added EJB3Spatial.odt to fulfill the GPL requirement of distributing the \"preferred form of modification\""
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:672
+#, no-c-format
+msgid "Removed obsolete synchronization from JDBC Jts code."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:674
+#, no-c-format
+msgid "Updated heavily outdated README files for shp2pgsql/pgsql2shp by merging them with the manpages."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:677
+#, no-c-format
+msgid "Fixed version tag in jdbc code that still said \"1.1.3\" in the \"1.1.4\" release."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:684
+#, no-c-format
+msgid "Added -S option for non-multi geometries to shp2pgsql"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:689
+#, no-c-format
+msgid "Release 1.1.4"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:691
+#, no-c-format
+msgid "Release date: 2006/09/27"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:693
+#, no-c-format
+msgid "This is an bugfix release including some improvements in the Java interface. Upgrade is <emphasis>encouraged</emphasis>."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:714
+#, no-c-format
+msgid "Fixed support for PostgreSQL 8.2"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:716
+#, no-c-format
+msgid "Fixed bug in collect() function discarding SRID of input"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:718
+#, no-c-format
+msgid "Added SRID match check in MakeBox2d and MakeBox3d"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:720
+#, no-c-format
+msgid "Fixed regress tests to pass with GEOS-3.0.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:722
+#, no-c-format
+msgid "Improved pgsql2shp run concurrency."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:726
+#, no-c-format
+msgid "Java changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:728
+#, no-c-format
+msgid "reworked JTS support to reflect new upstream JTS developers' attitude to SRID handling. Simplifies code and drops build depend on GNU trove."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:732
+#, no-c-format
+msgid "Added EJB2 support generously donated by the \"Geodetix s.r.l. Company\" <ulink url=\"http://www.geodetix.it/\">http://www.geodetix.it/</ulink>"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:735
+#, no-c-format
+msgid "Added EJB3 tutorial / examples donated by Norman Barker &lt;nbarker@ittvis.com&gt;"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:738
+#, no-c-format
+msgid "Reorganized java directory layout a little."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:743
+#, no-c-format
+msgid "Release 1.1.3"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:745
+#, no-c-format
+msgid "Release date: 2006/06/30"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:747
+#, no-c-format
+msgid "This is an bugfix release including also some new functionalities (most notably long transaction support) and portability enhancements. Upgrade is <emphasis>encouraged</emphasis>."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:767
+#, no-c-format
+msgid "Bug fixes / correctness"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:769
+#, no-c-format
+msgid "BUGFIX in distance(poly,poly) giving wrong results."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:771
+#, no-c-format
+msgid "BUGFIX in pgsql2shp successful return code."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:773
+#, no-c-format
+msgid "BUGFIX in shp2pgsql handling of MultiLine WKT."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:775
+#, no-c-format
+msgid "BUGFIX in affine() failing to update bounding box."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:777
+#, no-c-format
+msgid "WKT parser: forbidden construction of multigeometries with EMPTY elements (still supported for GEOMETRYCOLLECTION)."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:782 release_notes.xml:858 release_notes.xml:931
+#, no-c-format
+msgid "New functionalities"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:784
+#, no-c-format
+msgid "NEW Long Transactions support."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:786
+#, no-c-format
+msgid "NEW DumpRings() function."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:788
+#, no-c-format
+msgid "NEW AsHEXEWKB(geom, XDR|NDR) function."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:792 release_notes.xml:1683
+#, no-c-format
+msgid "JDBC changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:794
+#, no-c-format
+msgid "Improved regression tests: MultiPoint and scientific ordinates"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:797
+#, no-c-format
+msgid "Fixed some minor bugs in jdbc code"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:799
+#, no-c-format
+msgid "Added proper accessor functions for all fields in preparation of making those fields private later"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:806
+#, no-c-format
+msgid "NEW regress test support for loader/dumper."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:808
+#, no-c-format
+msgid "Added --with-proj-libdir and --with-geos-libdir configure switches."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:811
+#, no-c-format
+msgid "Support for build Tru64 build."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:813
+#, no-c-format
+msgid "Use Jade for generating documentation."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:815
+#, no-c-format
+msgid "Don't link pgsql2shp to more libs then required."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:817
+#, no-c-format
+msgid "Initial support for PostgreSQL 8.2."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:822
+#, no-c-format
+msgid "Release 1.1.2"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:824
+#, no-c-format
+msgid "Release date: 2006/03/30"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:826
+#, no-c-format
+msgid "This is an bugfix release including some new functions and portability enhancements. Upgrade is <emphasis>encouraged</emphasis>."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:848
+#, no-c-format
+msgid "BUGFIX in SnapToGrid() computation of output bounding box"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:850
+#, no-c-format
+msgid "BUGFIX in EnforceRHR()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:852
+#, no-c-format
+msgid "jdbc2 SRID handling fixes in JTS code"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:854
+#, no-c-format
+msgid "Fixed support for 64bit archs"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:860
+#, no-c-format
+msgid "Regress tests can now be run *before* postgis installation"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:863
+#, no-c-format
+msgid "New affine() matrix transformation functions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:865
+#, no-c-format
+msgid "New rotate{,X,Y,Z}() function"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:867
+#, no-c-format
+msgid "Old translating and scaling functions now use affine() internally"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:870
+#, no-c-format
+msgid "Embedded access control in estimated_extent() for builds against pgsql &gt;= 8.0.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:877
+#, no-c-format
+msgid "More portable ./configure script"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:879
+#, no-c-format
+msgid "Changed ./run_test script to have more sane default behaviour"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:885
+#, no-c-format
+msgid "Release 1.1.1"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:887
+#, no-c-format
+msgid "Release date: 2006/01/23"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:889
+#, no-c-format
+msgid "This is an important Bugfix release, upgrade is <emphasis>highly recommended</emphasis>. Previous version contained a bug in postgis_restore.pl preventing <link linkend=\"hard_upgrade\">hard upgrade</link> procedure to complete and a bug in GEOS-2.2+ connector preventing GeometryCollection objects to be used in topological operations."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:914
+#, no-c-format
+msgid "Fixed a premature exit in postgis_restore.pl"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:916
+#, no-c-format
+msgid "BUGFIX in geometrycollection handling of GEOS-CAPI connector"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:919
+#, no-c-format
+msgid "Solaris 2.7 and MingW support improvements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:921
+#, no-c-format
+msgid "BUGFIX in line_locate_point()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:923
+#, no-c-format
+msgid "Fixed handling of postgresql paths"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:925
+#, no-c-format
+msgid "BUGFIX in line_substring()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:927
+#, no-c-format
+msgid "Added support for localized cluster in regress tester"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:933
+#, no-c-format
+msgid "New Z and M interpolation in line_substring()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:935
+#, no-c-format
+msgid "New Z and M interpolation in line_interpolate_point()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:937
+#, no-c-format
+msgid "added NumInteriorRing() alias due to OpenGIS ambiguity"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:942
+#, no-c-format
+msgid "Release 1.1.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:944
+#, no-c-format
+msgid "Release date: 2005/12/21"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:946
+#, no-c-format
+msgid "This is a Minor release, containing many improvements and new things. Most notably: build procedure greatly simplified; transform() performance drastically improved; more stable GEOS connectivity (CAPI support); lots of new functions; draft topology support."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:951
+#, no-c-format
+msgid "It is <emphasis>highly recommended</emphasis> that you upgrade to GEOS-2.2.x before installing PostGIS, this will ensure future GEOS upgrades won't require a rebuild of the PostGIS library."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:956
+#, no-c-format
+msgid "Credits"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:958
+#, no-c-format
+msgid "This release includes code from Mark Cave Ayland for caching of proj4 objects. Markus Schaber added many improvements in his JDBC2 code. Alex Bodnaru helped with PostgreSQL source dependency relief and provided Debian specfiles. Michael Fuhr tested new things on Solaris arch. David Techer and Gerald Fenoy helped testing GEOS C-API connector. Hartmut Tschauner provided code for the azimuth() function. Devrim GUNDUZ provided RPM specfiles. Carl Anderson helped with the new area building functions. See the <link linkend=\"credits\">credits</link> section for more names."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:972
+#, no-c-format
+msgid "If you are upgrading from release 1.0.3 or later you <emphasis>DO NOT</emphasis> need a dump/reload. Simply sourcing the new lwpostgis_upgrade.sql script in all your existing databases will work. See the <link linkend=\"soft_upgrade\">soft upgrade</link> chapter for more information."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:988
+#, no-c-format
+msgid "New functions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:990
+#, no-c-format
+msgid "scale() and transscale() companion methods to translate()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:992
+#, no-c-format
+msgid "line_substring()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:994
+#, no-c-format
+msgid "line_locate_point()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:996
+#, no-c-format
+msgid "M(point)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:998
+#, no-c-format
+msgid "LineMerge(geometry)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1000
+#, no-c-format
+msgid "shift_longitude(geometry)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1002
+#, no-c-format
+msgid "azimuth(geometry)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1004
+#, no-c-format
+msgid "locate_along_measure(geometry, float8)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1006
+#, no-c-format
+msgid "locate_between_measures(geometry, float8, float8)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1008
+#, no-c-format
+msgid "SnapToGrid by point offset (up to 4d support)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1010
+#, no-c-format
+msgid "BuildArea(any_geometry)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1012
+#, no-c-format
+msgid "OGC BdPolyFromText(linestring_wkt, srid)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1014
+#, no-c-format
+msgid "OGC BdMPolyFromText(linestring_wkt, srid)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1016
+#, no-c-format
+msgid "RemovePoint(linestring, offset)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1018
+#, no-c-format
+msgid "ReplacePoint(linestring, offset, point)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1024
+#, no-c-format
+msgid "Fixed memory leak in polygonize()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1026
+#, no-c-format
+msgid "Fixed bug in lwgeom_as_anytype cast functions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1028
+#, no-c-format
+msgid "Fixed USE_GEOS, USE_PROJ and USE_STATS elements of postgis_version() output to always reflect library state."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1033
+#, no-c-format
+msgid "Function semantic changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1035
+#, no-c-format
+msgid "SnapToGrid doesn't discard higher dimensions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1037
+#, no-c-format
+msgid "Changed Z() function to return NULL if requested dimension is not available"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1042
+#, no-c-format
+msgid "Performance improvements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1044
+#, no-c-format
+msgid "Much faster transform() function, caching proj4 objects"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1046
+#, no-c-format
+msgid "Removed automatic call to fix_geometry_columns() in AddGeometryColumns() and update_geometry_stats()"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1051
+#, no-c-format
+msgid "JDBC2 works"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1053
+#, no-c-format
+msgid "Makefile improvements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1055 release_notes.xml:1091
+#, no-c-format
+msgid "JTS support improvements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1057
+#, no-c-format
+msgid "Improved regression test system"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1059
+#, no-c-format
+msgid "Basic consistency check method for geometry collections"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1061
+#, no-c-format
+msgid "Support for (Hex)(E)wkb"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1063
+#, no-c-format
+msgid "Autoprobing DriverWrapper for HexWKB / EWKT switching"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1065
+#, no-c-format
+msgid "fix compile problems in ValueSetter for ancient jdk releases."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1068
+#, no-c-format
+msgid "fix EWKT constructors to accept SRID=4711; representation"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1070
+#, no-c-format
+msgid "added preliminary read-only support for java2d geometries"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1074
+#, no-c-format
+msgid "Other new things"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1076
+#, no-c-format
+msgid "Full autoconf-based configuration, with PostgreSQL source dependency relief"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1079
+#, no-c-format
+msgid "GEOS C-API support (2.2.0 and higher)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1081
+#, no-c-format
+msgid "Initial support for topology modelling"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1083
+#, no-c-format
+msgid "Debian and RPM specfiles"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1085
+#, no-c-format
+msgid "New lwpostgis_upgrade.sql script"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1093
+#, no-c-format
+msgid "Stricter mapping between DBF and SQL integer and string attributes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1096
+#, no-c-format
+msgid "Wider and cleaner regression test suite"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1098
+#, no-c-format
+msgid "old jdbc code removed from release"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1100
+#, no-c-format
+msgid "obsoleted direct use of postgis_proc_upgrade.pl"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1102
+#, no-c-format
+msgid "scripts version unified with release version"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1107
+#, no-c-format
+msgid "Release 1.0.6"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1109
+#, no-c-format
+msgid "Release date: 2005/12/06"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1111 release_notes.xml:1347
+#, no-c-format
+msgid "Contains a few bug fixes and improvements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1116 release_notes.xml:1173
+#, no-c-format
+msgid "If you are upgrading from release 1.0.3 or later you <emphasis>DO NOT</emphasis> need a dump/reload."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1131
+#, no-c-format
+msgid "Fixed palloc(0) call in collection deserializer (only gives problem with --enable-cassert)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1134
+#, no-c-format
+msgid "Fixed bbox cache handling bugs"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1136
+#, no-c-format
+msgid "Fixed geom_accum(NULL, NULL) segfault"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1138
+#, no-c-format
+msgid "Fixed segfault in addPoint()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1140
+#, no-c-format
+msgid "Fixed short-allocation in lwcollection_clone()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1142
+#, no-c-format
+msgid "Fixed bug in segmentize()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1144
+#, no-c-format
+msgid "Fixed bbox computation of SnapToGrid output"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1148 release_notes.xml:1266 release_notes.xml:1328 release_notes.xml:1374
+#, no-c-format
+msgid "Improvements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1150
+#, no-c-format
+msgid "Initial support for postgresql 8.2"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1152
+#, no-c-format
+msgid "Added missing SRID mismatch checks in GEOS ops"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1157
+#, no-c-format
+msgid "Release 1.0.5"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1159
+#, no-c-format
+msgid "Release date: 2005/11/25"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1161
+#, no-c-format
+msgid "Contains memory-alignment fixes in the library, a segfault fix in loader's handling of UTF8 attributes and a few improvements and cleanups."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1166
+#, no-c-format
+msgid "Return code of shp2pgsql changed from previous releases to conform to unix standards (return 0 on success)."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1186 release_notes.xml:1401 release_notes.xml:1453 release_notes.xml:1502 release_notes.xml:1544 release_notes.xml:1578 release_notes.xml:1645 release_notes.xml:1742
+#, no-c-format
+msgid "Library changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1188
+#, no-c-format
+msgid "Fixed memory alignment problems"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1190
+#, no-c-format
+msgid "Fixed computation of null values fraction in analyzer"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1192
+#, no-c-format
+msgid "Fixed a small bug in the getPoint4d_p() low-level function"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1195
+#, no-c-format
+msgid "Speedup of serializer functions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1197
+#, no-c-format
+msgid "Fixed a bug in force_3dm(), force_3dz() and force_4d()"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1201
+#, no-c-format
+msgid "Loader changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1203
+#, no-c-format
+msgid "Fixed return code of shp2pgsql"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1205
+#, no-c-format
+msgid "Fixed back-compatibility issue in loader (load of null shapefiles)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1208
+#, no-c-format
+msgid "Fixed handling of trailing dots in dbf numerical attributes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1211
+#, no-c-format
+msgid "Segfault fix in shp2pgsql (utf8 encoding)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1217
+#, no-c-format
+msgid "Schema aware postgis_proc_upgrade.pl, support for pgsql 7.2+"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1220
+#, no-c-format
+msgid "New \"Reporting Bugs\" chapter in manual"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1225
+#, no-c-format
+msgid "Release 1.0.4"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1227
+#, no-c-format
+msgid "Release date: 2005/09/09"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1229
+#, no-c-format
+msgid "Contains important bug fixes and a few improvements. In particular, it fixes a memory leak preventing successful build of GiST indexes for large spatial tables."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1236
+#, no-c-format
+msgid "If you are upgrading from release 1.0.3 you <emphasis>DO NOT</emphasis> need a dump/reload."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1251
+#, no-c-format
+msgid "Memory leak plugged in GiST indexing"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1253
+#, no-c-format
+msgid "Segfault fix in transform() handling of proj4 errors"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1255
+#, no-c-format
+msgid "Fixed some proj4 texts in spatial_ref_sys (missing +proj)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1257
+#, no-c-format
+msgid "Loader: fixed string functions usage, reworked NULL objects check, fixed segfault on MULTILINESTRING input."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1260
+#, no-c-format
+msgid "Fixed bug in MakeLine dimension handling"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1262
+#, no-c-format
+msgid "Fixed bug in translate() corrupting output bounding box"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1268
+#, no-c-format
+msgid "Documentation improvements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1270
+#, no-c-format
+msgid "More robust selectivity estimator"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1272
+#, no-c-format
+msgid "Minor speedup in distance()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1274
+#, no-c-format
+msgid "Minor cleanups"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1276
+#, no-c-format
+msgid "GiST indexing cleanup"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1278
+#, no-c-format
+msgid "Looser syntax acceptance in box3d parser"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1283
+#, no-c-format
+msgid "Release 1.0.3"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1285
+#, no-c-format
+msgid "Release date: 2005/08/08"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1287
+#, no-c-format
+msgid "Contains some bug fixes - <emphasis>including a severe one affecting correctness of stored geometries</emphasis> - and a few improvements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1294
+#, no-c-format
+msgid "Due to a bug in a bounding box computation routine, the upgrade procedure requires special attention, as bounding boxes cached in the database could be incorrect."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1298
+#, no-c-format
+msgid "An <link linkend=\"hard_upgrade\">hard upgrade</link> procedure (dump/reload) will force recomputation of all bounding boxes (not included in dumps). This is <emphasis>required</emphasis> if upgrading from releases prior to 1.0.0RC6."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1303
+#, no-c-format
+msgid "If you are upgrading from versions 1.0.0RC6 or up, this release includes a perl script (utils/rebuild_bbox_caches.pl) to force recomputation of geometries' bounding boxes and invoke all operations required to propagate eventual changes in them (geometry statistics update, reindexing). Invoke the script after a make install (run with no args for syntax help). Optionally run utils/postgis_proc_upgrade.pl to refresh postgis procedures and functions signatures (see <link linkend=\"soft_upgrade\">Soft upgrade</link>)."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1316
+#, no-c-format
+msgid "Severe bugfix in lwgeom's 2d bounding box computation"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1318
+#, no-c-format
+msgid "Bugfix in WKT (-w) POINT handling in loader"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1320
+#, no-c-format
+msgid "Bugfix in dumper on 64bit machines"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1322
+#, no-c-format
+msgid "Bugfix in dumper handling of user-defined queries"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1324
+#, no-c-format
+msgid "Bugfix in create_undef.pl script"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1330
+#, no-c-format
+msgid "Small performance improvement in canonical input function"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1332
+#, no-c-format
+msgid "Minor cleanups in loader"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1334
+#, no-c-format
+msgid "Support for multibyte field names in loader"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1336
+#, no-c-format
+msgid "Improvement in the postgis_restore.pl script"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1338
+#, no-c-format
+msgid "New rebuild_bbox_caches.pl util script"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1343
+#, no-c-format
+msgid "Release 1.0.2"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1345
+#, no-c-format
+msgid "Release date: 2005/07/04"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1352 release_notes.xml:1392
+#, no-c-format
+msgid "If you are upgrading from release 1.0.0RC6 or up you <emphasis>DO NOT</emphasis> need a dump/reload."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1355 release_notes.xml:1395
+#, no-c-format
+msgid "Upgrading from older releases requires a dump/reload. See the <link linkend=\"upgrading\">upgrading</link> chapter for more informations."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1363
+#, no-c-format
+msgid "Fault tolerant btree ops"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1365
+#, no-c-format
+msgid "Memory leak plugged in pg_error"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1367
+#, no-c-format
+msgid "Rtree index fix"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1369
+#, no-c-format
+msgid "Cleaner build scripts (avoided mix of CFLAGS and CXXFLAGS)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1376
+#, no-c-format
+msgid "New index creation capabilities in loader (-I switch)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1378
+#, no-c-format
+msgid "Initial support for postgresql 8.1dev"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1383
+#, no-c-format
+msgid "Release 1.0.1"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1385
+#, no-c-format
+msgid "Release date: 2005/05/24"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1387
+#, no-c-format
+msgid "Contains a few bug fixes and some improvements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1403
+#, no-c-format
+msgid "BUGFIX in 3d computation of length_spheroid()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1405
+#, no-c-format
+msgid "BUGFIX in join selectivity estimator"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1409 release_notes.xml:1465
+#, no-c-format
+msgid "Other changes/additions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1411
+#, no-c-format
+msgid "BUGFIX in shp2pgsql escape functions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1413
+#, no-c-format
+msgid "better support for concurrent postgis in multiple schemas"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1415
+#, no-c-format
+msgid "documentation fixes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1417
+#, no-c-format
+msgid "jdbc2: compile with \"-target 1.2 -source 1.2\" by default"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1419
+#, no-c-format
+msgid "NEW -k switch for pgsql2shp"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1421
+#, no-c-format
+msgid "NEW support for custom createdb options in postgis_restore.pl"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1424
+#, no-c-format
+msgid "BUGFIX in pgsql2shp attribute names unicity enforcement"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1426
+#, no-c-format
+msgid "BUGFIX in Paris projections definitions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1428
+#, no-c-format
+msgid "postgis_restore.pl cleanups"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1433
+#, no-c-format
+msgid "Release 1.0.0"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1435
+#, no-c-format
+msgid "Release date: 2005/04/19"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1437
+#, no-c-format
+msgid "Final 1.0.0 release. Contains a few bug fixes, some improvements in the loader (most notably support for older postgis versions), and more docs."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1444
+#, no-c-format
+msgid "If you are upgrading from release 1.0.0RC6 you <emphasis>DO NOT</emphasis> need a dump/reload."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1447 release_notes.xml:1538
+#, no-c-format
+msgid "Upgrading from any other precedent release requires a dump/reload. See the <link linkend=\"upgrading\">upgrading</link> chapter for more informations."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1455
+#, no-c-format
+msgid "BUGFIX in transform() releasing random memory address"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1457
+#, no-c-format
+msgid "BUGFIX in force_3dm() allocating less memory then required"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1460
+#, no-c-format
+msgid "BUGFIX in join selectivity estimator (defaults, leaks, tuplecount, sd)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1467
+#, no-c-format
+msgid "BUGFIX in shp2pgsql escape of values starting with tab or single-quote"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1470
+#, no-c-format
+msgid "NEW manual pages for loader/dumper"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1472
+#, no-c-format
+msgid "NEW shp2pgsql support for old (HWGEOM) postgis versions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1474
+#, no-c-format
+msgid "NEW -p (prepare) flag for shp2pgsql"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1476
+#, no-c-format
+msgid "NEW manual chapter about OGC compliancy enforcement"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1478
+#, no-c-format
+msgid "NEW autoconf support for JTS lib"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1480
+#, no-c-format
+msgid "BUGFIX in estimator testers (support for LWGEOM and schema parsing)"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1486
+#, no-c-format
+msgid "Release 1.0.0RC6"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1488
+#, no-c-format
+msgid "Release date: 2005/03/30"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1490
+#, no-c-format
+msgid "Sixth release candidate for 1.0.0. Contains a few bug fixes and cleanups."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1496 release_notes.xml:1572 release_notes.xml:1639 release_notes.xml:1736 release_notes.xml:1790
+#, no-c-format
+msgid "You need a dump/reload to upgrade from precedent releases. See the <link linkend=\"upgrading\">upgrading</link> chapter for more informations."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1504
+#, no-c-format
+msgid "BUGFIX in multi()"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1506
+#, no-c-format
+msgid "early return [when noop] from multi()"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1510 release_notes.xml:1596 release_notes.xml:1669 release_notes.xml:1761
+#, no-c-format
+msgid "Scripts changes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1512
+#, no-c-format
+msgid "dropped {x,y}{min,max}(box2d) functions"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1518
+#, no-c-format
+msgid "BUGFIX in postgis_restore.pl scrip"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1520
+#, no-c-format
+msgid "BUGFIX in dumper's 64bit support"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1525
+#, no-c-format
+msgid "Release 1.0.0RC5"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1527
+#, no-c-format
+msgid "Release date: 2005/03/25"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1529
+#, no-c-format
+msgid "Fifth release candidate for 1.0.0. Contains a few bug fixes and a improvements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1535
+#, no-c-format
+msgid "If you are upgrading from release 1.0.0RC4 you <emphasis>DO NOT</emphasis> need a dump/reload."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1546
+#, no-c-format
+msgid "BUGFIX (segfaulting) in box3d computation (yes, another!)."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1549
+#, no-c-format
+msgid "BUGFIX (segfaulting) in estimated_extent()."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1555
+#, no-c-format
+msgid "Small build scripts and utilities refinements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1557
+#, no-c-format
+msgid "Additional performance tips documented."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1562
+#, no-c-format
+msgid "Release 1.0.0RC4"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1564
+#, no-c-format
+msgid "Release date: 2005/03/18"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1566
+#, no-c-format
+msgid "Fourth release candidate for 1.0.0. Contains bug fixes and a few improvements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1580
+#, no-c-format
+msgid "BUGFIX (segfaulting) in geom_accum()."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1582
+#, no-c-format
+msgid "BUGFIX in 64bit architectures support."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1584
+#, no-c-format
+msgid "BUGFIX in box3d computation function with collections."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1586
+#, no-c-format
+msgid "NEW subselects support in selectivity estimator."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1588
+#, no-c-format
+msgid "Early return from force_collection."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1590
+#, no-c-format
+msgid "Consistency check fix in SnapToGrid()."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1592
+#, no-c-format
+msgid "Box2d output changed back to 15 significant digits."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1598
+#, no-c-format
+msgid "NEW distance_sphere() function."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1600
+#, no-c-format
+msgid "Changed get_proj4_from_srid implementation to use PL/PGSQL instead of SQL."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1607
+#, no-c-format
+msgid "BUGFIX in loader and dumper handling of MultiLine shapes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1609
+#, no-c-format
+msgid "BUGFIX in loader, skipping all but first hole of polygons."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1612
+#, no-c-format
+msgid "jdbc2: code cleanups, Makefile improvements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1614
+#, no-c-format
+msgid "FLEX and YACC variables set *after* pgsql Makefile.global is included and only if the pgsql *stripped* version evaluates to the empty string"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1618
+#, no-c-format
+msgid "Added already generated parser in release"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1620
+#, no-c-format
+msgid "Build scripts refinements"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1622
+#, no-c-format
+msgid "improved version handling, central Version.config"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1624
+#, no-c-format
+msgid "improvements in postgis_restore.pl"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1629
+#, no-c-format
+msgid "Release 1.0.0RC3"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1631
+#, no-c-format
+msgid "Release date: 2005/02/24"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1633
+#, no-c-format
+msgid "Third release candidate for 1.0.0. Contains many bug fixes and improvements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1647
+#, no-c-format
+msgid "BUGFIX in transform(): missing SRID, better error handling."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1650
+#, no-c-format
+msgid "BUGFIX in memory alignment handling"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1652
+#, no-c-format
+msgid "BUGFIX in force_collection() causing mapserver connector failures on simple (single) geometry types."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1655
+#, no-c-format
+msgid "BUGFIX in GeometryFromText() missing to add a bbox cache."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1657
+#, no-c-format
+msgid "reduced precision of box2d output."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1659
+#, no-c-format
+msgid "prefixed DEBUG macros with PGIS_ to avoid clash with pgsql one"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1662
+#, no-c-format
+msgid "plugged a leak in GEOS2POSTGIS converter"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1664
+#, no-c-format
+msgid "Reduced memory usage by early releasing query-context palloced one."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1671
+#, no-c-format
+msgid "BUGFIX in 72 index bindings."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1673
+#, no-c-format
+msgid "BUGFIX in probe_geometry_columns() to work with PG72 and support multiple geometry columns in a single table"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1676
+#, no-c-format
+msgid "NEW bool::text cast"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1678
+#, no-c-format
+msgid "Some functions made IMMUTABLE from STABLE, for performance improvement."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1685
+#, no-c-format
+msgid "jdbc2: small patches, box2d/3d tests, revised docs and license."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1688
+#, no-c-format
+msgid "jdbc2: bug fix and testcase in for pgjdbc 8.0 type autoregistration"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1691
+#, no-c-format
+msgid "jdbc2: Removed use of jdk1.4 only features to enable build with older jdk releases."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1694
+#, no-c-format
+msgid "jdbc2: Added support for building against pg72jdbc2.jar"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1696
+#, no-c-format
+msgid "jdbc2: updated and cleaned makefile"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1698
+#, no-c-format
+msgid "jdbc2: added BETA support for jts geometry classes"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1700
+#, no-c-format
+msgid "jdbc2: Skip known-to-fail tests against older PostGIS servers."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1703
+#, no-c-format
+msgid "jdbc2: Fixed handling of measured geometries in EWKT."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1709
+#, no-c-format
+msgid "new performance tips chapter in manual"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1711
+#, no-c-format
+msgid "documentation updates: pgsql72 requirement, lwpostgis.sql"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1713
+#, no-c-format
+msgid "few changes in autoconf"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1715
+#, no-c-format
+msgid "BUILDDATE extraction made more portable"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1717
+#, no-c-format
+msgid "fixed spatial_ref_sys.sql to avoid vacuuming the whole database."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1720
+#, no-c-format
+msgid "spatial_ref_sys: changed Paris entries to match the ones distributed with 0.x."
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1726
+#, no-c-format
+msgid "Release 1.0.0RC2"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1728
+#, no-c-format
+msgid "Release date: 2005/01/26"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1730
+#, no-c-format
+msgid "Second release candidate for 1.0.0 containing bug fixes and a few improvements."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1744
+#, no-c-format
+msgid "BUGFIX in pointarray box3d computation"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1746
+#, no-c-format
+msgid "BUGFIX in distance_spheroid definition"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1748
+#, no-c-format
+msgid "BUGFIX in transform() missing to update bbox cache"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1750
+#, no-c-format
+msgid "NEW jdbc driver (jdbc2)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1752
+#, no-c-format
+msgid "GEOMETRYCOLLECTION(EMPTY) syntax support for backward compatibility"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1755
+#, no-c-format
+msgid "Faster binary outputs"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1757
+#, no-c-format
+msgid "Stricter OGC WKB/WKT constructors"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1763
+#, no-c-format
+msgid "More correct STABLE, IMMUTABLE, STRICT uses in lwpostgis.sql"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1766
+#, no-c-format
+msgid "stricter OGC WKB/WKT constructors"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1772
+#, no-c-format
+msgid "Faster and more robust loader (both i18n and not)"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1774
+#, no-c-format
+msgid "Initial autoconf script"
+msgstr ""
+
+#. Tag: title
+#: release_notes.xml:1779
+#, no-c-format
+msgid "Release 1.0.0RC1"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1781
+#, no-c-format
+msgid "Release date: 2005/01/13"
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1783
+#, no-c-format
+msgid "This is the first candidate of a major postgis release, with internal storage of postgis types redesigned to be smaller and faster on indexed queries."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1798
+#, no-c-format
+msgid "Faster canonical input parsing."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1800
+#, no-c-format
+msgid "Lossless canonical output."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1802
+#, no-c-format
+msgid "EWKB Canonical binary IO with PG&gt;73."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1804
+#, no-c-format
+msgid "Support for up to 4d coordinates, providing lossless shapefile-&gt;postgis-&gt;shapefile conversion."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1807
+#, no-c-format
+msgid "New function: UpdateGeometrySRID(), AsGML(), SnapToGrid(), ForceRHR(), estimated_extent(), accum()."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1810
+#, no-c-format
+msgid "Vertical positioning indexed operators."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1812
+#, no-c-format
+msgid "JOIN selectivity function."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1814
+#, no-c-format
+msgid "More geometry constructors / editors."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1816
+#, no-c-format
+msgid "PostGIS extension API."
+msgstr ""
+
+#. Tag: para
+#: release_notes.xml:1818
+#, no-c-format
+msgid "UTF8 support in loader."
+msgstr ""
+

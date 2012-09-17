@@ -1,0 +1,63 @@
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"PO-Revision-Date: 2012-09-14 19:55+CEST\n"
+"Last-Translator: Sandro Santilli <strk@keybit.net>\n"
+"Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: title
+#: postgis.xml:106
+#, no-c-format
+msgid "PostGIS &last_release_version; Manual"
+msgstr "Manuale di PostGIS &last_release_version;"
+
+#. Tag: affiliation
+#: postgis.xml:114
+#, no-c-format
+msgid ""
+"<orgname><ulink url=\"http://www.cleverelephant.ca\">clever elephant</"
+"ulink></orgname> <address><city>Victoria</city> <state>British Columbia</"
+"state> <country>Canada</country> <email>pramsey@cleverelephant.ca</email></"
+"address>"
+msgstr ""
+
+#. Tag: para
+#: postgis.xml:124
+#, no-c-format
+msgid ""
+"PostGIS is an extension to the PostgreSQL object-relational database system "
+"which allows GIS (Geographic Information Systems) objects to be stored in "
+"the database. PostGIS includes support for GiST-based R-Tree spatial "
+"indexes, and functions for analysis and processing of GIS objects."
+msgstr ""
+"PostGIS e' un'estensione per la base di dati relazionale ad oggetti PostgreSQL "
+"che consente di conservare oggetti GIS (Sistemi di Informazione Geografica) nella "
+"base di dati. PostGIS include il supporto per gli indici spaziali di tipo R-Tree "
+"basati sul GiST e le funzioni per l'analisi e il trattamento degli oggetti GIS."
+
+#. Tag: para
+#: postgis.xml:133
+#, no-c-format
+msgid "This is the manual for version &last_release_version;"
+msgstr "Questo e' il manuale per la versione &last_release_version;"
+
+#. Tag: para
+#: postgis.xml:134
+#, no-c-format
+msgid ""
+"This work is licensed under a <ulink url=\"http://creativecommons.org/"
+"licenses/by-sa/3.0/\">Creative Commons Attribution-Share Alike 3.0 License</"
+"ulink>. Feel free to use this material any way you like, but we ask that you "
+"attribute credit to the PostGIS Project and wherever possible, a link back "
+"to <ulink url=\"http://www.postgis.org\">http://www.postgis.org</ulink>."
+msgstr ""

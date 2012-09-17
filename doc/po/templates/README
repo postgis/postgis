@@ -1,0 +1,11 @@
+This directory contains the template files to use for starting
+a translation of the PostGIS manual.
+
+To start your own language add its code to the ``translations``
+variable in POSTGIS/doc/Makefile.in, re-run ./configure and
+then run ``make update-po``. The rule will take care of creating
+the initial .po files under POSTGIS/doc/po/<language_code>/, you
+can then add those files to the repository and send the whole
+(Makefile.in changes and new .po files) as a patch or pull request.
+
+ --strk(2012-09-14)
