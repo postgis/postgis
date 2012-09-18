@@ -298,6 +298,10 @@ flattenLayers(char* filename)
 	remove("tmp3.png");
 	remove("tmp4.png");
 	remove("tmp5.png");
+	remove("tmp6.png");
+	remove("tmp7.png");
+	remove("tmp8.png");
+	remove("tmp9.png");
 	free(str);
 }
 
