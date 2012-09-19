@@ -2521,12 +2521,12 @@ CREATE OR REPLACE FUNCTION st_stddev4ma(matrix float[][], nodatamode TEXT, VARIA
     $$ SELECT stddev(unnest) FROM unnest($1) $$
     LANGUAGE 'sql' IMMUTABLE;
 
--- Inverse distance weight equation is equation 3.51 from the book
+-- Inverse distance weight equation is based upon Equation 3.51 from the book
 -- Spatial Analysis A Guide for Ecologists
 -- by Marie-Josee Fortin and Mark Dale
 -- published by Cambridge University Press
 -- ISBN 0-521-00973-1
-CREATE OR REPLACE FUNCTION st_invdistweight4ma(IN matrix double precision[], IN nodatamode text, VARIADIC args text[])
+CREATE OR REPLACE FUNCTION st_invdistweight4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
 	RETURNS double precision
 	AS $$
 	DECLARE
@@ -2542,7 +2542,8 @@ CREATE OR REPLACE FUNCTION st_invdistweight4ma(IN matrix double precision[], IN 
 
 		cx integer;
 		cy integer;
-		cd double precision DEFAULT NULL;
+		cv double precision;
+		cw double precision DEFAULT NULL;
 
 		w integer;
 		h integer;
@@ -2591,23 +2592,37 @@ CREATE OR REPLACE FUNCTION st_invdistweight4ma(IN matrix double precision[], IN 
 			IF k IS NULL THEN
 				k := _k;
 			ELSEIF k < 0. THEN
-				RAISE NOTICE 'Weight (< 0) must be between 0 and 1.  Defaulting to 0';
+				RAISE NOTICE 'Power factor (< 0) must be between 0 and 1.  Defaulting to 0';
 				k := 0.;
 			ELSEIF k > 1. THEN
-				RAISE NOTICE 'Weight (> 1) must be between 0 and 1.  Defaulting to 1';
+				RAISE NOTICE 'Power factor (> 1) must be between 0 and 1.  Defaulting to 1';
 				k := 1.;
 			END IF;
 
 			-- second arg is what to do if center pixel has a value
+			-- this will be a weight to apply for the center pixel
 			IF array_length(args, 1) > 1 THEN
-				cd := args[array_lower(args, 1) + 1]::double precision;
+				cw := abs(args[array_lower(args, 1) + 1]::double precision);
+				IF cw IS NOT NULL THEN
+					IF cw < 0. THEN
+						RAISE NOTICE 'Weight (< 0) of center pixel value must be between 0 and 1.  Defaulting to 0';
+						cw := 0.;
+					ELSEIF cw > 1 THEN
+						RAISE NOTICE 'Weight (> 1) of center pixel value must be between 0 and 1.  Defaulting to 1';
+						cw := 1.;
+					END IF;
+				END IF;
 			END IF;
 		END IF;
 --		RAISE NOTICE 'k = %', k;
 		k = abs(k) * -1;
 
+		-- center pixel value
+		cv := matrix[cy][cx];
+
 		-- check to see if center pixel has value
-		IF cd IS NULL AND matrix[cy][cx] IS NOT NULL THEN
+--		RAISE NOTICE 'cw = %', cw;
+		IF cw IS NULL AND cv IS NOT NULL THEN
 			RETURN matrix[cy][cx];
 		END IF;
 
@@ -2615,25 +2630,27 @@ CREATE OR REPLACE FUNCTION st_invdistweight4ma(IN matrix double precision[], IN 
 			FOR x IN array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
 --				RAISE NOTICE 'matrix[%][%] = %', y, x, matrix[y][x];
 
-				-- skip NODATA values
-				IF matrix[y][x] IS NULL THEN
+				-- skip NODATA values and center pixel
+				IF matrix[y][x] IS NULL OR (x = cx AND y = cy) THEN
 					CONTINUE;
 				END IF;
 
 				z := z || matrix[y][x];
 
-				-- center pixel, use user-specified distance value
-				IF x = cx AND y = cy THEN
-					_d := cd;
 				-- use pythagorean theorem
-				ELSE
-					_d := sqrt(power(cx - x, 2) + power(cy - y, 2));
-				END IF;
+				_d := sqrt(power(cx - x, 2) + power(cy - y, 2));
 --				RAISE NOTICE 'distance = %', _d;
 
 				d := d || _d;
 			END LOOP;
 		END LOOP;
+--		RAISE NOTICE 'z = %', z;
+--		RAISE NOTICE 'd = %', d;
+
+		-- neighborhood is NODATA
+		IF z IS NULL OR array_length(z, 1) < 1 THEN
+			RETURN NULL;
+		END IF;
 
 		z0 := 0;
 		_d := 0;
@@ -2644,11 +2661,96 @@ CREATE OR REPLACE FUNCTION st_invdistweight4ma(IN matrix double precision[], IN 
 			z0 := z0 + z[x];
 		END LOOP;
 		z0 := z0 / _d;
+--		RAISE NOTICE 'z0 = %', z0;
+
+		-- apply weight for center pixel if center pixel has value
+		IF cv IS NOT NULL THEN
+			z0 := (cw * cv) + ((1 - cw) * z0);
+--			RAISE NOTICE '*z0 = %', z0;
+		END IF;
 
 		RETURN z0;
 	END;
-	$$
-	LANGUAGE plpgsql IMMUTABLE;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_mindist4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
+	RETURNS double precision
+	AS $$
+	DECLARE
+		d double precision DEFAULT NULL;
+		_d double precision;
+
+		x integer;
+		y integer;
+
+		cx integer;
+		cy integer;
+		cv double precision;
+
+		w integer;
+		h integer;
+		max_dx double precision;
+		max_dy double precision;
+	BEGIN
+		-- make sure matrix is 2 dimensions
+		IF array_ndims(matrix) != 2 THEN
+			RAISE EXCEPTION 'Neighborhood array must be of two dimensions';
+		END IF;
+
+		-- width and height (0-based)
+		w := array_upper(matrix, 2) - array_lower(matrix, 2);
+		h := array_upper(matrix, 1) - array_lower(matrix, 1);
+
+		-- max distance from center pixel
+		max_dx := w / 2;
+		max_dy := h / 2;
+
+		-- correct width and height (1-based)
+		w := w + 1;
+		h := h + 1;
+
+		-- width and height should be odd numbers
+		IF w % 2. != 1 THEN
+			RAISE EXCEPTION 'Width of neighborhood array does not permit for a center pixel';
+		END IF;
+		IF h % 2. != 1 THEN
+			RAISE EXCEPTION 'Height of neighborhood array does not permit for a center pixel';
+		END IF;
+
+		-- center pixel's coordinates
+		cx := max_dx + array_lower(matrix, 2);
+		cy := max_dy + array_lower(matrix, 1);
+
+		-- center pixel value
+		cv := matrix[cy][cx];
+
+		-- check to see if center pixel has value
+		IF cv IS NOT NULL THEN
+			RETURN 0.;
+		END IF;
+
+		FOR y IN array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
+			FOR x IN array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
+
+				-- skip NODATA values and center pixel
+				IF matrix[y][x] IS NULL OR (x = cx AND y = cy) THEN
+					CONTINUE;
+				END IF;
+
+				-- use pythagorean theorem
+				_d := sqrt(power(cx - x, 2) + power(cy - y, 2));
+--				RAISE NOTICE 'distance = %', _d;
+
+				IF d IS NULL OR _d < d THEN
+					d := _d;
+				END IF;
+			END LOOP;
+		END LOOP;
+--		RAISE NOTICE 'd = %', d;
+
+		RETURN d;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster
