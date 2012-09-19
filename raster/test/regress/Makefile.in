@@ -85,18 +85,21 @@ TEST_UTILITY = \
 	rt_astiff \
 	rt_asjpeg \
 	rt_aspng \
+	rt_reclass \
+	rt_resample \
+	rt_asraster \
+
+TEST_MAPALGEBRA = \
 	rt_mapalgebraexpr \
 	rt_mapalgebrafct \
 	rt_mapalgebraexpr_2raster \
 	rt_mapalgebrafct_2raster \
 	rt_mapalgebrafctngb \
 	rt_mapalgebrafctngb_userfunc \
-	rt_reclass \
-	rt_resample \
-	rt_asraster \
 	rt_intersection \
 	rt_clip \
-	rt_union
+	rt_union \
+	rt_invdistweight4ma
 
 TEST_GIST = \
 	rt_above \
@@ -138,7 +141,7 @@ TEST_LOADER = \
 
 TESTS = $(TEST_FIRST) $(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
 		$(TEST_PROPS) $(TEST_GIST) $(TEST_BANDPROPS) \
-		$(TEST_UTILITY) $(TEST_SREL) \
+		$(TEST_UTILITY) $(TEST_MAPALGEBRA) $(TEST_SREL) \
 		$(TEST_BUGS) \
 		$(TEST_LOADER)
 
