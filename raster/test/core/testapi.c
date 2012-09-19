@@ -7028,6 +7028,30 @@ static void testNearestPixel() {
 	if (rtn)
 		rtdealloc(npixels);
 
+	/* 2,7 distance 3,1 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		2, 7,
+		3, 1,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 13));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* 10,10 distance 1,3 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		10,10,
+		1, 3,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 3));
+	if (rtn)
+		rtdealloc(npixels);
+
 	deepRelease(rast);
 }
 

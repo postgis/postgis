@@ -2379,7 +2379,7 @@ int rt_band_get_nearest_pixel(
 	uint32_t i = 0;
 	uint32_t j = 0;
 	uint32_t k = 0;
-	uint32_t _max = 0;
+	int _max = 0;
 	int _x = 0;
 	int _y = 0;
 	int *_min = NULL;
@@ -2484,6 +2484,8 @@ int rt_band_get_nearest_pixel(
 	max_extent[1] = y - distance[1]; /* min Y */
 	max_extent[2] = x + distance[0]; /* max X */
 	max_extent[3] = y + distance[1]; /* max Y */
+	RASTER_DEBUGF(4, "Maximum Extent: (%d, %d, %d, %d)",
+		max_extent[0], max_extent[1], max_extent[2], max_extent[3]);
 
 	_d[0] = 0;
 	_d[1] = 0;
@@ -2538,13 +2540,14 @@ int rt_band_get_nearest_pixel(
 						_x = extent[2];
 				}
 
-				RASTER_DEBUGF(4, "_min, _max: %d, %d", _min, _max);
+				RASTER_DEBUGF(4, "_min, _max: %d, %d", *_min, _max);
 				for (k = 0; k < _max; k++) {
 					/* check that _x and _y are not outside max extent */
 					if (
 						_x < max_extent[0] || _x > max_extent[2] ||
 						_y < max_extent[1] || _y > max_extent[3]
 					) {
+						(*_min)++;
 						continue;
 					}
 
