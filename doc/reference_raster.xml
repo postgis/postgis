@@ -9114,7 +9114,124 @@ WHERE rid = 2;
                 </para>
 			</refsection>
 		</refentry>
-        
+
+		<refentry id="RT_ST_InvDistWeight4ma">
+			<refnamediv>
+				<refname>ST_InvDistWeight4ma</refname>
+				<refpurpose>Raster processing function that interpolates a pixel's value from the pixel's neighborhood.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef>
+						<paramdef><type>double precision[][]</type> <parameter>matrix</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Calculate an interpolated value for a pixel using the Inverse Distance Weighted method.</para>
+
+				<para>
+					There are two optional parameters that can be passed through <varname>args</varname>. The first parameter is the power factor (variable k in the equation below) between 0 and 1 used in the Inverse Distance Weighted equation. If not specified, default value is 1. The second parameter is the weight percentage applied only when the value of the pixel of interest is included with the interpolated value from the neighborhood. If not specified and the pixel of interest has a value, that value is returned.
+				</para>
+
+				<para>
+					The basic inverse distance weight equation is:
+
+					<informalfigure>
+						<mediaobject>
+							<imageobject>
+								<imagedata fileref="images/st_invdistweight4ma_equation.png" />
+							</imageobject>
+							<caption>
+								<para>
+									k = power factor, a real number between 0 and 1
+								</para>
+							</caption>
+						</mediaobject>
+					</informalfigure>
+				</para>
+
+				<note>
+					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+				</note>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- NEEDS EXAMPLE
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebraFctNgb" />, 
+					<xref linkend="RT_ST_MinDist4ma" />
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_MinDist4ma">
+			<refnamediv>
+				<refname>ST_MinDist4ma</refname>
+				<refpurpose>Raster processing function that returns the minimum distance (in number of pixels) between the pixel of interest and a neighboring pixel with value.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>double precision <function>ST_MinDist4ma</function></funcdef>
+						<paramdef><type>double precision[][]</type> <parameter>matrix</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Return the shortest distance (in number of pixels) between the pixel of interest and the closest pixel with value in the neighborhood.</para>
+
+				<note>
+					<para>
+						The intent of this function is to provide an informative data point that helps infer the usefulness of the pixel of interest's interpolated value from <xref linkend="RT_ST_InvDistWeight4ma" />. This function is particularly useful when the neighborhood is sparsely populated.
+					</para>
+				</note>
+
+				<note>
+					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+				</note>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- NEEDS EXAMPLE
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebraFctNgb" />, 
+					<xref linkend="RT_ST_InvDistWeight4ma" />
+				</para>
+			</refsection>
+		</refentry>
+
 	</sect1>
 	
 	<sect1 id="RT_Operators">

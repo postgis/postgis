@@ -2587,7 +2587,7 @@ CREATE OR REPLACE FUNCTION st_invdistweight4ma(matrix double precision[], nodata
 
 		-- if args provided, only use the first two args
 		IF args IS NOT NULL AND array_ndims(args) = 1 THEN
-			-- first arg is exponent
+			-- first arg is power factor
 			k := args[array_lower(args, 1)]::double precision;
 			IF k IS NULL THEN
 				k := _k;
