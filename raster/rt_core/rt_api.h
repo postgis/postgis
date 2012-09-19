@@ -345,18 +345,24 @@ int rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double ref
  * @param count: number of elements in npixel
  * @param x: the column of the center pixel (0-based)
  * @param y: the line of the center pixel (0-based)
- * @param distance: the number of pixels around the center pixel
+ * @param distancex: the number of pixels around the specified pixel
+ * along the X axis
+ * @param distancey: the number of pixels around the specified pixel
+ * along the Y axis
  * @param value: pointer to pointer for 2D value array
  * @param nodata: pointer to pointer for 2D NODATA array
+ * @param dimx: size of value and nodata along the X axis
+ * @param dimy: size of value and nodata along the Y axis
  *
- * @return 0 on error, otherwise the X/Y axis length of value and NODATA 
+ * @return 0 on error, otherwise 1
  */
 int rt_pixel_set_to_array(
 	rt_pixel npixel, int count,
 	int x, int y,
-	uint16_t distance,
+	uint16_t distancex, uint16_t distancey,
 	double ***value,
-	int ***nodata
+	int ***nodata,
+	int *dimx, int *dimy
 );
 
 /*- rt_band ----------------------------------------------------------*/
@@ -600,7 +606,10 @@ int rt_band_get_pixel(
  * @param band: the band to get nearest pixel(s) from
  * @param x: the column of the pixel (0-based)
  * @param y: the line of the pixel (0-based)
- * @param distance: the number of pixels around the specified pixel
+ * @param distancex: the number of pixels around the specified pixel
+ * along the X axis
+ * @param distancey: the number of pixels around the specified pixel
+ * along the Y axis
  * @param exclude_nodata_value: if non-zero, ignore nodata values
  * to check for pixels with value
  * @param npixels: return set of rt_pixel object or NULL
@@ -611,7 +620,7 @@ int rt_band_get_pixel(
 int rt_band_get_nearest_pixel(
 	rt_band band,
 	int x, int y,
-	uint16_t distance,
+	uint16_t distancex, uint16_t distancey,
 	int exclude_nodata_value,
 	rt_pixel *npixels
 );

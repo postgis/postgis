@@ -1157,22 +1157,28 @@ int rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double ref
  * @param count: number of elements in npixel
  * @param x: the column of the center pixel (0-based)
  * @param y: the line of the center pixel (0-based)
- * @param distance: the number of pixels around the center pixel
+ * @param distancex: the number of pixels around the specified pixel
+ * along the X axis
+ * @param distancey: the number of pixels around the specified pixel
+ * along the Y axis
  * @param value: pointer to pointer for 2D value array
  * @param nodata: pointer to pointer for 2D NODATA array
+ * @param dimx: size of value and nodata along the X axis
+ * @param dimy: size of value and nodata along the Y axis
  *
- * @return 0 on error, otherwise the X/Y axis length of value and NODATA 
+ * @return 0 on error, otherwise 1
  */
 int rt_pixel_set_to_array(
 	rt_pixel npixel, int count,
 	int x, int y,
-	uint16_t distance,
+	uint16_t distancex, uint16_t distancey,
 	double ***value,
-	int ***nodata
+	int ***nodata,
+	int *dimx, int *dimy
 ) {
 	uint32_t i;
 	uint32_t j;
-	uint32_t length = 0;
+	uint32_t dim[2] = {0};
 	double **values = NULL;
 	int **nodatas = NULL;
 	int zero[2] = {0};
@@ -1182,23 +1188,24 @@ int rt_pixel_set_to_array(
 	assert(npixel != NULL);
 	assert(count > 0);
 
-	/* length */
-	length = distance * 2 + 1;
-	RASTER_DEBUGF(4, "length = %d", length);
+	/* dimensions */
+	dim[0] = distancex * 2 + 1;
+	dim[1] = distancey * 2 + 1;
+	RASTER_DEBUGF(4, "dimensions = %d x %d", dim[0], dim[1]);
 
-	/* establish 2D arrays */
-	values = rtalloc(sizeof(double *) * length);
-	nodatas = rtalloc(sizeof(int *) * length);
+	/* establish 2D arrays (X axis) */
+	values = rtalloc(sizeof(double *) * dim[0]);
+	nodatas = rtalloc(sizeof(int *) * dim[0]);
 
 	if (values == NULL || nodatas == NULL) {
 		rterror("rt_pixel_set_to_array: Unable to allocate memory for 2D array");
 		return 0;
 	}
 
-	/* initialize */
-	for (i = 0; i < length; i++) {
-		values[i] = rtalloc(sizeof(double) * length);
-		nodatas[i] = rtalloc(sizeof(int) * length);
+	/* initialize Y axis */
+	for (i = 0; i < dim[0]; i++) {
+		values[i] = rtalloc(sizeof(double) * dim[1]);
+		nodatas[i] = rtalloc(sizeof(int) * dim[1]);
 
 		if (values[i] == NULL || nodatas[i] == NULL) {
 			rterror("rt_pixel_set_to_array: Unable to allocate memory for dimension of 2D array");
@@ -1224,16 +1231,16 @@ int rt_pixel_set_to_array(
 		}
 
 		/* set values to 0 */
-		memset(values[i], 0, sizeof(double) * length);
+		memset(values[i], 0, sizeof(double) * dim[1]);
 
 		/* set nodatas to 1 */
-		for (j = 0; j < length; j++)
+		for (j = 0; j < dim[1]; j++)
 			nodatas[i][j] = 1;
 	}
 
 	/* get zero, zero of grid */
-	zero[0] = x - distance;
-	zero[1] = y - distance;
+	zero[0] = x - distancex;
+	zero[1] = y - distancey;
 
 	/* populate 2D arrays */
 	for (i = 0; i < count; i++) {
@@ -1254,8 +1261,10 @@ int rt_pixel_set_to_array(
 
 	*value = &(*values);
 	*nodata = &(*nodatas);
+	*dimx = dim[0];
+	*dimy = dim[1];
 
-	return length;
+	return 1;
 }
 
 /*- rt_band ----------------------------------------------------------*/
@@ -2343,7 +2352,10 @@ rt_band_get_pixel(
  * @param band: the band to get nearest pixel(s) from
  * @param x: the column of the pixel (0-based)
  * @param y: the line of the pixel (0-based)
- * @param distance: the number of pixels around the specified pixel
+ * @param distancex: the number of pixels around the specified pixel
+ * along the X axis
+ * @param distancey: the number of pixels around the specified pixel
+ * along the Y axis
  * @param exclude_nodata_value: if non-zero, ignore nodata values
  * to check for pixels with value
  * @param npixels: return set of rt_pixel object or NULL
@@ -2354,21 +2366,23 @@ rt_band_get_pixel(
 int rt_band_get_nearest_pixel(
 	rt_band band,
 	int x, int y,
-	uint16_t distance,
+	uint16_t distancex, uint16_t distancey,
 	int exclude_nodata_value,
 	rt_pixel *npixels
 ) {
 	rt_pixel npixel = NULL;
 	int extent[4] = {0};
+	int max_extent[4] = {0};
 	int d0 = 0;
-	uint32_t _distance;
+	int distance[2] = {0};
+	uint32_t _d[2] = {0};
 	uint32_t i = 0;
 	uint32_t j = 0;
 	uint32_t k = 0;
-	uint32_t max = 0;
+	uint32_t _max = 0;
 	int _x = 0;
 	int _y = 0;
-	int *_inc = NULL;
+	int *_min = NULL;
 	double pixval = 0;
 	double minval = 0;
 	uint32_t count = 0;
@@ -2378,15 +2392,21 @@ int rt_band_get_nearest_pixel(
 
 	RASTER_DEBUG(3, "Starting");
 
-	minval = rt_pixtype_get_min_value(band->pixtype);
-	RASTER_DEBUGF(4, "pixtype: %s", rt_pixtype_name(band->pixtype));
-	RASTER_DEBUGF(4, "minval: %f", minval);
+	/* process distance */
+	distance[0] = distancex;
+	distance[1] = distancey;
 
-	if (!distance)
+	/* no distance */
+	if (!distance[0] && !distance[1])
 		d0 = 1;
+	/* distance for X or Y is missing */
+	else if (!distance[0] || !distance[1]) {
+		rterror("rt_band_get_nearest_pixel: distancex and distancey must both be zero if one is zero");
+		return 0;
+	}
 
 	RASTER_DEBUGF(4, "Selected pixel: %d x %d", x, y);
-	RASTER_DEBUGF(4, "Distance: %d", distance);
+	RASTER_DEBUGF(4, "Distances: %d x %d", distance[0], distance[1]);
 
 	/* shortcuts if outside band extent */
 	if (
@@ -2395,8 +2415,8 @@ int rt_band_get_nearest_pixel(
 			(y < 0 || y > band->height)
 		)
 	) {
-		/* no distance specified, jump to pixel close to extent */
-		if (!distance) {
+		/* no distances specified, jump to pixel close to extent */
+		if (d0) {
 			if (x < 0)
 				x = -1;
 			else if (x > band->width)
@@ -2410,14 +2430,14 @@ int rt_band_get_nearest_pixel(
 			RASTER_DEBUGF(4, "Moved selected pixel: %d x %d", x, y);
 		}
 		/*
-			distance specified
-			if distance won't capture extent of band, return 0
+			distances specified
+			if distances won't capture extent of band, return 0
 		*/
 		else if (
-			((x < 0 && abs(x) > distance) || (x - band->width >= distance)) ||
-			((x < 0 && abs(y) > distance) || (y - band->height >= distance))
+			((x < 0 && abs(x) > distance[0]) || (x - band->width >= distance[0])) ||
+			((y < 0 && abs(y) > distance[1]) || (y - band->height >= distance[1]))
 		) {
-			RASTER_DEBUG(4, "No nearest pixels possible for provided pixel and distance");
+			RASTER_DEBUG(4, "No nearest pixels possible for provided pixel and distances");
 			return 0;
 		}
 	}
@@ -2427,37 +2447,56 @@ int rt_band_get_nearest_pixel(
 		exclude_nodata_value = FALSE;
 
 	/* determine the maximum distance to prevent an infinite loop */
-	if (!distance) {
+	if (d0) {
 		int a, b;
+
+		/* X axis */
 		a = abs(x);
 		b = abs(x - band->width);
 
 		if (a > b)
-			distance = a;
+			distance[0] = a;
 		else
-			distance = b;
+			distance[0] = b;
 
+		/* Y axis */
 		a = abs(y);
 		b = abs(y - band->height);
-		if (a > distance)
-			distance = a;
-		if (b > distance)
-			distance = b;
+		if (a > b)
+			distance[1] = a;
+		else
+			distance[1] = b;
 
-		RASTER_DEBUGF(4, "Maximum distance: %d", distance);
+		RASTER_DEBUGF(4, "Maximum distances: %d x %d", distance[0], distance[1]);
 	}
 
-	count = 0;
-	_distance = 0;
-	*npixels = NULL;
-	do {
-		_distance++;
-		extent[0] = x - _distance; /* min x */
-		extent[1] = y - _distance; /* min y */
-		extent[2] = x + _distance; /* max x */
-		extent[3] = y + _distance; /* max y */
+	/* minimum possible value for pixel type */
+	minval = rt_pixtype_get_min_value(band->pixtype);
+	RASTER_DEBUGF(4, "pixtype: %s", rt_pixtype_name(band->pixtype));
+	RASTER_DEBUGF(4, "minval: %f", minval);
 
-		RASTER_DEBUGF(4, "Processing distance: %d", _distance);
+	/* set variables */
+	count = 0;
+	*npixels = NULL;
+
+	/* maximum extent */
+	max_extent[0] = x - distance[0]; /* min X */
+	max_extent[1] = y - distance[1]; /* min Y */
+	max_extent[2] = x + distance[0]; /* max X */
+	max_extent[3] = y + distance[1]; /* max Y */
+
+	_d[0] = 0;
+	_d[1] = 0;
+	do {
+		_d[0]++;
+		_d[1]++;
+
+		extent[0] = x - _d[0]; /* min x */
+		extent[1] = y - _d[1]; /* min y */
+		extent[2] = x + _d[0]; /* max x */
+		extent[3] = y + _d[1]; /* max y */
+
+		RASTER_DEBUGF(4, "Processing distances: %d x %d", _d[0], _d[1]);
 		RASTER_DEBUGF(4, "Extent: (%d, %d, %d, %d)",
 			extent[0], extent[1], extent[2], extent[3]);
 
@@ -2465,17 +2504,17 @@ int rt_band_get_nearest_pixel(
 
 			/* by row */
 			if (i < 1)
-				max = extent[2] - extent[0] + 1;
+				_max = extent[2] - extent[0] + 1;
 			/* by column */
 			else
-				max = extent[3] - extent[1] + 1;
-			max = abs(max);
+				_max = extent[3] - extent[1] + 1;
+			_max = abs(_max);
 
 			for (j = 0; j < 2; j++) {
 				/* by row */
 				if (i < 1) {
 					_x = extent[0];
-					_inc = &_x;
+					_min = &_x;
 
 					/* top row */
 					if (j < 1)
@@ -2487,20 +2526,28 @@ int rt_band_get_nearest_pixel(
 				/* by column */
 				else {
 					_y = extent[1] + 1;
-					_inc = &_y;
+					_min = &_y;
 
 					/* left column */
 					if (j < 1) {
 						_x = extent[0];
-						max -= 2;
+						_max -= 2;
 					}
 					/* right column */
 					else
 						_x = extent[2];
 				}
 
-				RASTER_DEBUGF(4, "max: %d", max);
-				for (k = 0; k < max; k++) {
+				RASTER_DEBUGF(4, "_min, _max: %d, %d", _min, _max);
+				for (k = 0; k < _max; k++) {
+					/* check that _x and _y are not outside max extent */
+					if (
+						_x < max_extent[0] || _x > max_extent[2] ||
+						_y < max_extent[1] || _y > max_extent[3]
+					) {
+						continue;
+					}
+
 					/* outside band extent, set to NODATA */
 					if (
 						(_x < 0 || _x >= band->width) ||
@@ -2557,13 +2604,13 @@ int rt_band_get_nearest_pixel(
 						npixel->value = pixval;
 					}
 
-					(*_inc)++;
+					(*_min)++;
 				}
 			}
 		}
 
-		/* distance threshhold met */
-		if (_distance >= distance)
+		/* distance threshholds met */
+		if (_d[0] >= distance[0] && _d[1] >= distance[1])
 			break;
 		else if (d0 && count)
 			break;

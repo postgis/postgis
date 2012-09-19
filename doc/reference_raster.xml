@@ -3739,7 +3739,7 @@ FROM (
 			<refnamediv>
 				<refname>ST_Neighborhood</refname>
 				<refpurpose>
-					Returns a 2-D double precision array of the non-<varname>NODATA</varname> values around a given band's pixel specified by either a columnx and rowy or a geometric point expressed in the same spatial reference coordinate system as the raster.
+					Returns a 2-D double precision array of the non-<varname>NODATA</varname> values around a given band's pixel specified by either a columnX and rowY or a geometric point expressed in the same spatial reference coordinate system as the raster.
 				</refpurpose>
 			</refnamediv>
 
@@ -3749,18 +3749,20 @@ FROM (
 						<funcdef>double precision[][] <function>ST_Neighborhood</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>distance</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnX</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowY</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>distanceX</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>distanceY</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
 						<funcdef>double precision[][] <function>ST_Neighborhood</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>distance</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnX</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowY</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>distanceX</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>distanceY</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
@@ -3769,7 +3771,8 @@ FROM (
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>distance</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>distanceX</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>distanceY</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 
@@ -3777,7 +3780,8 @@ FROM (
 						<funcdef>double precision[][] <function>ST_Neighborhood</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>distance</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>distanceX</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>distanceY</parameter></paramdef>
 						<paramdef choice="opt"><type>boolean </type> <parameter>exclude_nodata_value=true</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
@@ -3786,14 +3790,14 @@ FROM (
 			<refsection>
 				<title>Description</title>
 				<para>
-					Returns a 2-D double precision array of the non-<varname>NODATA</varname> values around a given band's pixel specified by either a columnx and rowy or a geometric point expressed in the same spatial reference coordinate system as the raster.  The <varname>distance</varname> parameter defines the number of pixels around the specified pixel, e.g. I want all values within 3 pixel distance around my pixel of interest.  The center value of the 2-D array will be the value at the pixel specified by the columnx and rowy or the geometric point.
+					Returns a 2-D double precision array of the non-<varname>NODATA</varname> values around a given band's pixel specified by either a columnX and rowY or a geometric point expressed in the same spatial reference coordinate system as the raster.  The <varname>distanceX</varname> and <varname>distanceY</varname> parameters define the number of pixels around the specified pixel in the X and Y axes, e.g. I want all values within 3 pixel distance along the X axis and 2 pixel distance along the Y axis around my pixel of interest.  The center value of the 2-D array will be the value at the pixel specified by the columnX and rowY or the geometric point.
 				</para>
 				<para>
 					Band numbers start at 1 and <varname>bandnum</varname> is assumed to be 1 if not specified. If <varname>exclude_nodata_value</varname> is set to false, then all pixels include <varname>nodata</varname> pixels are considered to intersect and return value. If <varname>exclude_nodata_value</varname> is not passed in then reads it from metadata of raster.
 				</para>
 				<note>
 					<para>
-						The number of elements along each axis of the returning 2-D array is 2 * <varname>distance</varname> + 1.  So for a <varname>distance</varname> of 1, the returning array will be 3x3.
+						The number of elements along each axis of the returning 2-D array is 2 * (<varname>distanceX</varname>|<varname>distanceY</varname>) + 1.  So for a <varname>distanceX</varname> and <varname>distanceY</varname> of 1, the returning array will be 3x3.
 					</para>
 				</note>
 				<note>
@@ -3809,27 +3813,22 @@ FROM (
 				<programlisting>
 -- pixel 2x2 has value
 SELECT
-	ST_Neighborhood(rast, 2, 2, 1)
+	ST_Neighborhood(rast, 2, 2, 1, 1)
 FROM (
 	SELECT
-		ST_SetValue(
-			ST_SetValue(
-				ST_SetValue(
-					ST_SetValue(
-						ST_SetValue(
-							ST_AddBand(
-								ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
-								'8BUI'::text, 1, 0
-							),
-							1, 1, 0.
-						),
-						2, 3, 0.
-					),
-					3, 5, 0.
-				),
-				4, 2, 0.
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+				'8BUI'::text, 1, 0
 			),
-			5, 4, 0.
+			1, 1, 1, ARRAY[
+				[0, 1, 1, 1, 1],
+				[1, 1, 1, 0, 1],
+				[1, 0, 1, 1, 1],
+				[1, 1, 1, 1, 0],
+				[1, 1, 0, 1, 1]
+			]::double precision[],
+			1
 		) AS rast
 ) AS foo
 
@@ -3841,27 +3840,22 @@ FROM (
 				<programlisting>
 -- pixel 2x3 is NODATA
 SELECT
-	ST_Neighborhood(rast, 2, 3, 1)
+	ST_Neighborhood(rast, 2, 3, 1, 1)
 FROM (
 	SELECT
-		ST_SetValue(
-			ST_SetValue(
-				ST_SetValue(
-					ST_SetValue(
-						ST_SetValue(
-							ST_AddBand(
-								ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
-								'8BUI'::text, 1, 0
-							),
-							1, 1, 0.
-						),
-						2, 3, 0.
-					),
-					3, 5, 0.
-				),
-				4, 2, 0.
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+				'8BUI'::text, 1, 0
 			),
-			5, 4, 0.
+			1, 1, 1, ARRAY[
+				[0, 1, 1, 1, 1],
+				[1, 1, 1, 0, 1],
+				[1, 0, 1, 1, 1],
+				[1, 1, 1, 1, 0],
+				[1, 1, 0, 1, 1]
+			]::double precision[],
+			1
 		) AS rast
 ) AS foo
 
@@ -3874,27 +3868,21 @@ FROM (
 -- pixel 3x3 has value
 -- exclude_nodata_value = FALSE
 SELECT
-	ST_Neighborhood(rast, 3, 3, 1, false)
+	ST_Neighborhood(rast, 3, 3, 1, 1, false)
 FROM (
-	SELECT
-		ST_SetValue(
-			ST_SetValue(
-				ST_SetValue(
-					ST_SetValue(
-						ST_SetValue(
-							ST_AddBand(
-								ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
-								'8BUI'::text, 1, 0
-							),
-							1, 1, 0.
-						),
-						2, 3, 0.
-					),
-					3, 5, 0.
-				),
-				4, 2, 0.
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(5, 5, -2, 2, 1, -1, 0, 0, 0),
+				'8BUI'::text, 1, 0
 			),
-			5, 4, 0.
+			1, 1, 1, ARRAY[
+				[0, 1, 1, 1, 1],
+				[1, 1, 1, 0, 1],
+				[1, 0, 1, 1, 1],
+				[1, 1, 1, 1, 0],
+				[1, 1, 0, 1, 1]
+			]::double precision[],
+			1
 		) AS rast
 ) AS foo
 

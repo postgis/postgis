@@ -38,40 +38,40 @@ SELECT make_test_raster();
 DROP FUNCTION IF EXISTS make_test_raster();
 
 SELECT 
-	ST_Neighborhood(rast, 1, 1, 1, 1)
+	ST_Neighborhood(rast, 1, 1, 1, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(ST_SetBandNoDataValue(rast, NULL), 1, 1, 1, 1)
+	ST_Neighborhood(ST_SetBandNoDataValue(rast, NULL), 1, 1, 1, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, 2, 2, 1)
+	ST_Neighborhood(rast, 1, 2, 2, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, 5, 5, 1)
+	ST_Neighborhood(rast, 1, 5, 5, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, 5, 5, 2)
+	ST_Neighborhood(rast, 1, 5, 5, 2, 2)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, 11, 11, 1)
+	ST_Neighborhood(rast, 1, 11, 11, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, 12, 12, 1)
+	ST_Neighborhood(rast, 1, 12, 12, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, 0, 0, 1)
+	ST_Neighborhood(rast, 1, 0, 0, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, 0, 2, 1)
+	ST_Neighborhood(rast, 1, 0, 2, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, -1, 3, 1)
+	ST_Neighborhood(rast, 1, -1, 3, 1, 1)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, -9, 3, 3)
+	ST_Neighborhood(rast, 1, -9, 3, 3, 3)
 FROM raster_neighborhood;
 SELECT 
-	ST_Neighborhood(rast, 1, -9, 3, 3, FALSE)
+	ST_Neighborhood(rast, 1, -9, 3, 3, 3, FALSE)
 FROM raster_neighborhood;
 
 DROP TABLE IF EXISTS raster_neighborhood;

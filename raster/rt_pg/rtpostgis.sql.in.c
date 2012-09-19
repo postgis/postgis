@@ -4670,10 +4670,10 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 -- ST_Neighborhood
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_neighborhood(
+CREATE OR REPLACE FUNCTION _st_neighborhood(
 	rast raster, band integer,
 	columnx integer, rowy integer,
-	distance integer,
+	distancex integer, distancey integer,
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision[][]
@@ -4681,19 +4681,29 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_neighborhood(
-	rast raster,
+	rast raster, band integer,
 	columnx integer, rowy integer,
-	distance integer,
+	distancex integer, distancey integer,
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision[][]
-	AS $$ SELECT st_neighborhood($1, 1, $2, $3, $4, $5) $$
+	AS $$ SELECT _st_neighborhood($1, $2, $3, $4, $5, $6, $7) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_neighborhood(
+	rast raster,
+	columnx integer, rowy integer,
+	distancex integer, distancey integer,
+	exclude_nodata_value boolean DEFAULT TRUE
+)
+	RETURNS double precision[][]
+	AS $$ SELECT _st_neighborhood($1, 1, $2, $3, $4, $5, $6) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster, band integer,
 	pt geometry,
-	distance integer,
+	distancex integer, distancey integer,
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision[][]
@@ -4709,12 +4719,12 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 		wx := st_x($3);
 		wy := st_y($3);
 
-		SELECT st_neighborhood(
+		SELECT _st_neighborhood(
 			$1, $2,
 			st_world2rastercoordx(rast, wx, wy),
 			st_world2rastercoordy(rast, wx, wy),
-			$4,
-			$5
+			$4, $5,
+			$6
 		) INTO rtn;
 		RETURN rtn;
 	END;
@@ -4723,11 +4733,11 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 CREATE OR REPLACE FUNCTION st_neighborhood(
 	rast raster,
 	pt geometry,
-	distance integer,
+	distancex integer, distancey integer,
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision[][]
-	AS $$ SELECT st_neighborhood($1, 1, $2, $3, $4) $$
+	AS $$ SELECT st_neighborhood($1, 1, $2, $3, $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ------------------------------------------------------------------------------

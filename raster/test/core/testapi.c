@@ -6815,9 +6815,10 @@ static void testNearestPixel() {
 	const int maxY = 10;
 	rt_pixel npixels = NULL;
 
-	int length;
 	double **value;
 	int **nodata;
+	int dimx;
+	int dimy;
 
 	rast = rt_raster_new(maxX, maxY);
 	assert(rast);
@@ -6854,7 +6855,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		0, 0,
-		0,
+		0, 0,
 		1,
 		&npixels
 	);
@@ -6866,7 +6867,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		1, 1,
-		0,
+		0, 0,
 		1,
 		&npixels
 	);
@@ -6878,7 +6879,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		4, 4,
-		0,
+		0, 0,
 		1,
 		&npixels
 	);
@@ -6890,7 +6891,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		4, 4,
-		2,
+		2, 2,
 		1,
 		&npixels
 	);
@@ -6902,7 +6903,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		10, 10,
-		0,
+		0, 0,
 		1,
 		&npixels
 	);
@@ -6914,7 +6915,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		11, 11,
-		1,
+		1, 1,
 		1,
 		&npixels
 	);
@@ -6926,7 +6927,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		-1, -1,
-		0,
+		0, 0,
 		1,
 		&npixels
 	);
@@ -6938,7 +6939,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		-1, -1,
-		1,
+		1, 1,
 		1,
 		&npixels
 	);
@@ -6950,22 +6951,25 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		-1, 1,
-		1,
+		1, 1,
 		1,
 		&npixels
 	);
 	CHECK((rtn == 2));
 
-	length = rt_pixel_set_to_array(
+	rtn = rt_pixel_set_to_array(
 		npixels, rtn,
 		-1, 1, 
-		1,
+		1, 1,
 		&value,
-		&nodata
+		&nodata,
+		&dimx, &dimy
 	);
-	CHECK((length == 3));
+	CHECK((rtn != 0));
+	CHECK((dimx == 3));
+	CHECK((dimy == 3));
 
-	for (x = 0; x < length; x++) {
+	for (x = 0; x < dimx; x++) {
 		rtdealloc(nodata[x]);
 		rtdealloc(value[x]);
 	}
@@ -6980,7 +6984,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		-2, 2,
-		1,
+		1, 1,
 		1,
 		&npixels
 	);
@@ -6992,7 +6996,7 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		-10, 2,
-		3,
+		3, 3,
 		1,
 		&npixels
 	);
@@ -7004,11 +7008,23 @@ static void testNearestPixel() {
 	rtn = rt_band_get_nearest_pixel(
 		band,
 		-10, 2,
-		3,
+		3, 3,
 		0,
 		&npixels
 	);
 	CHECK((rtn == 48));
+	if (rtn)
+		rtdealloc(npixels);
+
+	/* 4,4 distance 3,2 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		4, 4,
+		3, 2,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 27));
 	if (rtn)
 		rtdealloc(npixels);
 
