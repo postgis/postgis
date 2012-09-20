@@ -146,3 +146,4 @@ $$
   LANGUAGE plpgsql IMMUTABLE
   COST 1000
   ROWS 10;
+ALTER FUNCTION geocode_intersection(IN text, IN text, IN text, IN text, IN text, IN integer) SET join_collapse_limit='2';
