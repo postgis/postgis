@@ -287,10 +287,6 @@ BOX(-124.659652709961 24.6830825805664,-67.7798080444336 49.0012092590332)
 		</note>
 
 		<note>
-		  <para>Bounding boxes of all geometries are currently 2-d even if they are 3-dimensional geometries.</para>
-		</note>
-		
-		<note>
 			<para>Availability: 1.5.0 behavior changed to output double precision instead of float4 coordinates.</para>
 		</note>
 		
