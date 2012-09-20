@@ -131,8 +131,8 @@ CREATE TYPE norm_addy AS (
     parsed BOOLEAN); */
 -- prefix and suffix street names for numbered highways
 CREATE TEMPORARY TABLE temp_types AS
-SELECT name, abbrev
-    FROM  ( VALUES
+SELECT name, abbrev, true
+    FROM (VALUES
         ('CAM', 'Cam'),
         ('CAM.', 'Cam'),
         ('CAMINO', 'Cam'),
@@ -141,6 +141,7 @@ SELECT name, abbrev
         ('COUNTY HIGHWAY', 'Co Hwy'),
         ('COUNTY HIGH WAY', 'Co Hwy'),
         ('COUNTY ROAD', 'Co Rd'),
+        ('COUNTY RD', 'Co Rd'),
         ('CO RD', 'Co Rd'),
         ('CORD', 'Co Rd'),
         ('CO RTE', 'Co Rte'),
@@ -172,6 +173,11 @@ SELECT name, abbrev
         ('I', 'I-'),
         ('I-', 'I-'),
         ('INTERSTATE', 'I-'),
+        ('INTERSTATE ROUTE', 'I-'),
+        ('INTERSTATE RTE', 'I-'),
+        ('INTERSTATE RTE.', 'I-'),
+        ('INTERSTATE RT', 'I-'),
+        ('LOOP', 'Loop'),
         ('ROUTE', 'Rte'),
         ('RTE', 'Rte'),
         ('RT', 'Rte'),
@@ -191,6 +197,7 @@ SELECT name, abbrev
         ('US HWY', 'US Hwy'),
         ('US HIGHWAY', 'US Hwy'),
         ('US HIGH WAY', 'US Hwy'),
+        ('U.S.', 'US Hwy'),
         ('US RTE', 'US Rte'),
         ('US ROUTE', 'US Rte'),
         ('US RT', 'US Rte'),
@@ -199,7 +206,8 @@ SELECT name, abbrev
         ('USFS HIGH WAY', 'USFS Hwy'),
         ('USFS RD', 'USFS Rd'),
         ('USFS ROAD', 'USFS Rd')
-           ) t(name, abbrev);
+           ) t(name, abbrev)
+           WHERE t.name NOT IN(SELECT name FROM street_type_lookup);
            
 DELETE FROM street_type_lookup WHERE name IN(SELECT name FROM temp_types);         
 INSERT INTO street_type_lookup (name, abbrev, is_hw) 

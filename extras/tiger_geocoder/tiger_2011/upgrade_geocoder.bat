@@ -9,6 +9,6 @@ set PGCONTRIB=C:\Program Files\PostgreSQL\8.4\share\contrib
 "%PGBIN%\psql"  -d "%THEDB%" -f "upgrade_geocode.sql"
 "%PGBIN%\psql"  -d "%THEDB%" -f "tiger_loader_2011.sql"
 cd regress
-"%PGBIN%\psql" -t -f regress.sql
+REM "%PGBIN%\psql"  -d "%THEDB%" -t -f regress.sql
 pause
 

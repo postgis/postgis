@@ -88,4 +88,8 @@ SELECT '#1125f' As ticket, pprint_addy(addy), addy.* FROM normalize_address('I 9
 
 -- location with prefixes getting caught in post prefix
 SELECT '#1310a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('1110 W CAPITOL AVE, WEST SACRAMENTO, CA') As addy;
+
+-- #1614 County Rd
+SELECT '#1614a' As ticket, pprint_addy(addy), addy.* FROM normalize_address('8435 COUNTY RD 20 SE, ROCHESTER, MN 55904') As addy;
+SELECT '#1614b' As ticket, pprint_addy(addy), addy.* FROM normalize_address('3208 U.S. 52, Rochester, MN 55901') As addy;
 \timing
