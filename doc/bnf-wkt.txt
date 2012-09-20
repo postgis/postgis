@@ -1,0 +1,173 @@
+<well-known text representation> ::= 
+    <point text representation> | 
+    <curve text representation> |
+    <surface text representation> |
+    <collection text representation>
+
+<point text representation> ::= POINT [ <z m> ] <point text>
+
+<curve text representation> ::= 
+    <linestring text representation> | 
+    <circularstring text representation> | 
+    <compoundcurve text representation>
+
+<linestring text representation> ::= 
+    LINESTRING [ <z m> ] <linestring text body>
+
+<circularstring text representation> ::= 
+    CIRCULARSTRING [ <z m> ] <circularstring text>
+
+<compoundcurve text representation> ::= 
+    COMPOUNDCURVE [ <z m> ] <compoundcurve text>
+
+<surface text representation> ::= 
+    <curvepolygon text representation>
+
+<curvepolygon text representation> ::= 
+    CURVEPOLYGON [ <z m> ] <curvepolygon text body> | 
+    <polygon text representation> |
+    <triangle text representation>
+
+<polygon text representation> ::= 
+    POLYGON [ <z m> ] <polygon text body>
+
+<triangle text representation> ::= 
+    TRIANGLE [ <z m> ] <triangle text body>
+
+<collection text representation> ::= 
+    <multipoint text representation> | 
+    <multicurve text representation> | 
+    <multisurface text representation> | 
+    <geometrycollection text representation>
+
+<multipoint text representation> ::= 
+    MULTIPOINT [ <z m> ] <multipoint text>
+
+<multicurve text representation> ::= 
+    MULTICURVE [ <z m> ] <multicurve text> | 
+    <multilinestring text representation>
+
+<multilinestring text representation> ::= 
+    MULTILINESTRING [ <z m> ] <multilinestring text>
+
+<multisurface text representation> ::= 
+    MULTISURFACE [ <z m> ] <multisurface text> | 
+    <multipolygon text representation> |
+    <polyhedralsurface text representation> |
+    <tin text representation>
+
+<multipolygon text representation> ::= 
+    MULTIPOLYGON [ <z m> ] <multipolygon text>
+
+<polyhedralsurface text representation> ::= 
+    POLYHEDRALSURFACE [ <z m> ] <polyhedralsurface text>
+
+<tin text representation> ::= 
+    TIN [ <z m> ] <tin text>
+
+<geometrycollection text representation> ::= 
+    GEOMETRYCOLLECTION [ <z m> ] <geometrycollection text>
+
+<linestring text body> ::= 
+    <linestring text>
+
+<curvepolygon text body> ::= 
+    <curvepolygon text>
+
+<polygon text body> ::= 
+    <polygon text>
+
+<triangle text body> ::= 
+    <triangle text>
+
+<point text> ::= 
+    <empty set> | 
+    <left paren> <point> <right paren> 
+
+<point> ::= <x> <y> [ <z> ] [ <m> ] 
+
+<x> ::= <number> 
+<y> ::= <number>
+<z> ::= <number>
+<m> ::= <number>
+
+<linestring text> ::= 
+    <empty set> | 
+    <left paren> <point> { <comma> <point> }... <right paren>
+
+<circularstring text> ::= 
+    <empty set> | 
+    <left paren> <point> { <comma> <point> }... <right paren>
+
+<compoundcurve text> ::= 
+    <empty set> | 
+    <left paren> <single curve text> { <comma> <single curve text> }... <right paren>
+
+<single curve text> ::= 
+    <linestring text body> | 
+    <circularstring text representation>
+
+<curve text> ::= 
+    <linestring text body> | 
+    <circularstring text representation> | 
+    <compoundcurve text representation>
+
+<ring text> ::= 
+    <linestring text body> | 
+    <circularstring text representation> | 
+    <compoundcurve text representation>
+
+<surface text> ::= 
+    CURVEPOLYGON <curvepolygon text body> | 
+    <polygon text body>
+
+<curvepolygon text> ::= 
+    <empty set> | 
+    <left paren> <ring text> { <comma> <ring text> }... <right paren>
+
+<polygon text> ::= 
+    <empty set> | 
+    <left paren> <linestring text> { <comma> <linestring text> }... <right paren>
+
+<triangle text> ::= 
+    <empty set> | 
+    <left paren> <linestring text> <right paren>
+
+<multipoint text> ::= 
+    <empty set> | 
+    <left paren> <point text> { <comma> <point text > }... <right paren>
+
+<multicurve text> ::= 
+    <empty set> | 
+    <left paren> <curve text> { <comma> <curve text> }... <right paren>
+
+<multilinestring text> ::= 
+    <empty set> | 
+    <left paren> <linestring text body> { <comma> <linestring text body> }... <right paren>
+
+<multisurface text> ::= 
+    <empty set> | 
+    <left paren> <surface text> { <comma> <surface text> }... <right paren>
+
+<multipolygon text> ::= 
+    <empty set> | 
+    <left paren> <polygon text body> { <comma> <polygon text body> }... <right paren>
+
+<polyhedralsurface text> ::= 
+    <empty set> | 
+    <left paren> <polygon text body> { <comma> <polygon text body> }... <right paren>
+
+<tin text> ::= 
+    <empty set> | 
+    <left paren> <triangle text body> { <comma> <triangle text body> }... <right paren>
+
+<geometrycollection text> ::= 
+    <empty set> | 
+    <left paren> <well-known text representation> { <comma> <well-known text representation> }... <right paren>
+
+<empty set> ::= EMPTY
+
+<z m> ::= ZM | Z | M
+<left paren> ::= (
+<right paren> ::= )
+
