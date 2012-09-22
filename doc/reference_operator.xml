@@ -1103,6 +1103,7 @@ select 'LINESTRING(0 0, 1 1)'::geometry ~= 'LINESTRING(0 1, 1 0)'::geometry as e
 			  geometries.  It is different from other operators that use spatial indexes in that the spatial index is only used when the operator
 			  is in the ORDER BY clause.</para></note>
 			<note><para>Index only kicks in if one of the geometries is a constant (not in a subquery/cte).  e.g. 'SRID=3005;POINT(1011102 450541)'::geometry instead of a.geom</para></note>
+			<para>Refer to <ulink url="http://workshops.opengeo.org/postgis-intro/knn.html">OpenGeo workshop: Nearest-Neighbour Searching</ulink> for real live example.</para>
 
 			 <para>Availability: 2.0.0 only available for PostgreSQL 9.1+</para>
 			 	
