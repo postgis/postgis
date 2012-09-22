@@ -23,12 +23,12 @@
 #include "utils/syscache.h"
 #include "utils/rel.h"
 
+#include "../postgis_config.h"
+
 #if POSTGIS_PGSQL_VERSION >= 93
 	#include "access/htup_details.h"
 #endif
 
-
-#include "../postgis_config.h"
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"       /* For debugging macros. */
 #include "gserialized_gist.h" /* For index common functions */
