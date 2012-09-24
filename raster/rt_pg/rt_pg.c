@@ -3966,8 +3966,10 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 
 	/* copy values from 2D arrays to 1D arrays */
 	k = 0;
-	for (i = 0; i < dim[0]; i++) {
-		for (j = 0; j < dim[1]; j++) {
+	/* Y-axis */
+	for (i = 0; i < dim[1]; i++) {
+		/* X-axis */
+		for (j = 0; j < dim[0]; j++) {
 			nodata1D[k] = (bool) nodata2D[i][j];
 			if (!nodata1D[k])
 				value1D[k] = Float8GetDatum(value2D[i][j]);
@@ -3979,7 +3981,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	}
 
 	/* no more need for 2D arrays */
-	for (i = 0; i < dim[0]; i++) {
+	for (i = 0; i < dim[1]; i++) {
 		pfree(value2D[i]);
 		pfree(nodata2D[i]);
 	}

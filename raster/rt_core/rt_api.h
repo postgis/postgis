@@ -339,7 +339,9 @@ int rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double ref
 /*- rt_pixel ----------------------------------------------------------*/
 
 /*
- * Convert an array of rt_pixel objects to two 2D arrays of value and NODATA
+ * Convert an array of rt_pixel objects to two 2D arrays of value and NODATA.
+ * The dimensions of the returned 2D array are [Y][X], going by row Y and
+ * then column X.
  *
  * @param npixel: array of rt_pixel objects
  * @param count: number of elements in npixel

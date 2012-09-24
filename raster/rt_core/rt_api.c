@@ -1151,7 +1151,9 @@ int rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double ref
 /*- rt_pixel ----------------------------------------------------------*/
 
 /*
- * Convert an array of rt_pixel objects to two 2D arrays of value and NODATA
+ * Convert an array of rt_pixel objects to two 2D arrays of value and NODATA.
+ * The dimensions of the returned 2D array are [Y][X], going by row Y and
+ * then column X.
  *
  * @param npixel: array of rt_pixel objects
  * @param count: number of elements in npixel
@@ -1193,19 +1195,19 @@ int rt_pixel_set_to_array(
 	dim[1] = distancey * 2 + 1;
 	RASTER_DEBUGF(4, "dimensions = %d x %d", dim[0], dim[1]);
 
-	/* establish 2D arrays (X axis) */
-	values = rtalloc(sizeof(double *) * dim[0]);
-	nodatas = rtalloc(sizeof(int *) * dim[0]);
+	/* establish 2D arrays (Y axis) */
+	values = rtalloc(sizeof(double *) * dim[1]);
+	nodatas = rtalloc(sizeof(int *) * dim[1]);
 
 	if (values == NULL || nodatas == NULL) {
 		rterror("rt_pixel_set_to_array: Unable to allocate memory for 2D array");
 		return 0;
 	}
 
-	/* initialize Y axis */
-	for (i = 0; i < dim[0]; i++) {
-		values[i] = rtalloc(sizeof(double) * dim[1]);
-		nodatas[i] = rtalloc(sizeof(int) * dim[1]);
+	/* initialize X axis */
+	for (i = 0; i < dim[1]; i++) {
+		values[i] = rtalloc(sizeof(double) * dim[0]);
+		nodatas[i] = rtalloc(sizeof(int) * dim[0]);
 
 		if (values[i] == NULL || nodatas[i] == NULL) {
 			rterror("rt_pixel_set_to_array: Unable to allocate memory for dimension of 2D array");
@@ -1231,14 +1233,14 @@ int rt_pixel_set_to_array(
 		}
 
 		/* set values to 0 */
-		memset(values[i], 0, sizeof(double) * dim[1]);
+		memset(values[i], 0, sizeof(double) * dim[0]);
 
 		/* set nodatas to 1 */
-		for (j = 0; j < dim[1]; j++)
+		for (j = 0; j < dim[0]; j++)
 			nodatas[i][j] = 1;
 	}
 
-	/* get zero, zero of grid */
+	/* get 0,0 of grid */
 	zero[0] = x - distancex;
 	zero[1] = y - distancey;
 
@@ -1253,10 +1255,10 @@ int rt_pixel_set_to_array(
 		RASTER_DEBUGF(4, "absolute x,y: %d x %d", npixel[i].x, npixel[i].y);
 		RASTER_DEBUGF(4, "relative x,y: %d x %d", _x, _y);
 
-		values[_x][_y] = npixel[i].value;
-		nodatas[_x][_y] = 0;
+		values[_y][_x] = npixel[i].value;
+		nodatas[_y][_x] = 0;
 
-		RASTER_DEBUGF(4, "(x, y, nodata, value) = (%d, %d, %d, %f)", _x, _y, nodatas[_x][_y], values[_x][_y]);
+		RASTER_DEBUGF(4, "(x, y, nodata, value) = (%d, %d, %d, %f)", _x, _y, nodatas[_y][_x], values[_y][_x]);
 	}
 
 	*value = &(*values);
