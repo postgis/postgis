@@ -11,3 +11,5 @@ NOTICE:  Pixel has no neighbors for band at distance 1 x 1
 NOTICE:  Pixel has no neighbors for band at distance 1 x 1
 NOTICE:  Pixel has no neighbors for band at distance 3 x 3
 {{0,0,0,0,0,0,0},{0,0,0,0,0,0,0},{0,0,0,0,0,0,0},{0,0,0,0,0,0,0},{0,0,0,0,0,0,0},{0,0,0,0,0,0,0},{0,0,0,0,0,0,0}}
+{{1,1,NULL},{1,1,1},{NULL,1,1}}
+{{1,1,1,NULL,1},{1,1,1,1,1},{1,NULL,1,1,1}}
