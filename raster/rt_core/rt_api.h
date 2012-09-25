@@ -1752,6 +1752,19 @@ rt_raster_from_two_rasters(
  * @param callback: callback function for actual processing of pixel values.
  * @param noerr: if 0, error occurred
  *
+ * The callback function _must_ have the following signature.
+ *
+ *    int FNAME(rt_iterator_arg arg, void *userarg, double *value, int *nodata)
+ *
+ * The callback function _must_ return zero (error) or non-zero (success)
+ * indicating whether the function ran successfully.
+ * The parameters passed to the callback function are as follows.
+ *
+ * - rt_iterator_arg arg: struct containing pixel values, NODATA flags and metadata
+ * - void *userarg: NULL or calling function provides to rt_raster_iterator() for use by callback function
+ * - double *value: value of pixel to be burned by rt_raster_iterator()
+ * - int *nodata: flag (0 or 1) indicating that pixel to be burned is NODATA
+ *
  * @return raster object if success, NULL otherwise
  */
 rt_raster
