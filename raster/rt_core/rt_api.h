@@ -1264,9 +1264,9 @@ rt_raster_gdal_polygonize(
 
 /**
  * Return this raster in serialized form.
+ * Memory (band data included) is copied from rt_raster.
  *
  * Serialized form is documented in doc/RFC1-SerializedFormat.
- *
  */
 void* rt_raster_serialize(rt_raster raster);
 
@@ -1276,10 +1276,9 @@ void* rt_raster_serialize(rt_raster raster);
  * Serialized form is documented in doc/RFC1-SerializedFormat.
  *
  * NOTE: the raster will contain pointer to the serialized
- *       form, which must be kept alive.
+ * form (including band data), which must be kept alive.
  */
 rt_raster rt_raster_deserialize(void* serialized, int header_only);
-
 
 /**
  * Return TRUE if the raster is empty. i.e. is NULL, width = 0 or height = 0
