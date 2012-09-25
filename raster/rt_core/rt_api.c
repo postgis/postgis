@@ -1317,7 +1317,7 @@ rt_band_new_inline(
 	band->hasnodata = hasnodata;
 	band->nodataval = 0;
 	band->data.mem = data;
-	band->ownsData = 0;
+	band->ownsdata = 0; /* we do NOT own this data!!! */
 	band->isnodata = FALSE;
 	band->raster = NULL;
 
@@ -1380,6 +1380,7 @@ rt_band_new_offline(
 	band->hasnodata = hasnodata;
 	band->nodataval = 0;
 	band->isnodata = FALSE;
+	band->ownsdata = 0;
 	band->raster = NULL;
 
 	/* properly set nodataval as it may need to be constrained to the data type */
@@ -1389,11 +1390,7 @@ rt_band_new_offline(
 		return NULL;
 	}
 
-	/* XXX QUESTION (jorgearevalo): What does exactly ownsData mean?? I think that
-	 * ownsData = 0 ==> the memory for band->data is externally owned
-	 * ownsData = 1 ==> the memory for band->data is internally owned
-	 */
-	band->ownsData = 0;
+	band->ownsdata = 0; /* offline, flag is useless as all offline data cache is owned internally */
 
 	band->data.offline.bandNum = bandNum;
 
@@ -1453,6 +1450,7 @@ rt_band_duplicate(rt_band band) {
 			band->hasnodata, band->nodataval,
 			data
 		);
+		rt_band_set_ownsdata_flag(rtn, 1); /* we DO own this data!!! */
 	}
 
 	if (rtn == NULL)
@@ -1484,11 +1482,10 @@ rt_band_destroy(rt_band band) {
 		/* offline band and has data, free as data is internally owned */
 		if (band->offline && band->data.offline.mem != NULL)
 			rtdealloc(band->data.offline.mem);
+		/* inline band and band owns the data */
+		else if (!band->offline && band->data.mem != NULL && band->ownsdata)
+			rtdealloc(band->data.mem);
 
-    /* band->data content is externally owned */
-    /* XXX jorgearevalo: not really... rt_band_from_wkb allocates memory for
-     * data.mem
-     */
     rtdealloc(band);
 }
 
@@ -1705,6 +1702,22 @@ rt_band_get_height(rt_band band) {
 
 
     return band->height;
+}
+
+/* Get ownsdata flag */
+int
+rt_band_get_ownsdata_flag(rt_band band) {
+	assert(NULL != band);
+
+	return (int) band->ownsdata;
+}
+
+/* set ownsdata flag */
+void
+rt_band_set_ownsdata_flag(rt_band band, int flag) {
+	assert(NULL != band);
+
+	band->ownsdata = (int8_t) flag;
 }
 
 #ifdef OPTIMIZE_SPACE
@@ -4836,6 +4849,7 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 		rtdealloc(mem);
 		return 0;
 	}
+	rt_band_set_ownsdata_flag(band, 1); /* we DO own this data!!! */
 	RASTER_DEBUGF(3, "rt_band_reclass: new band @ %p", band);
 
 	for (x = 0; x < width; x++) {
@@ -5364,13 +5378,14 @@ rt_raster_add_band(rt_raster raster, rt_band band, int index) {
 
     raster->numBands++;
 
-    RASTER_DEBUGF(4, "now raster has %d bands", raster->numBands);
+    RASTER_DEBUGF(4, "Raster now has %d bands", raster->numBands);
 
     return index;
 }
 
 /**
  * Generate a new inline band and add it to a raster.
+ * Memory is allocated in this function for band data.
  *
  * @param raster : the raster to add a band to
  * @param pixtype: the pixel type for the new band
@@ -5547,6 +5562,7 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
         rtdealloc(mem);
         return -1;
     }
+		rt_band_set_ownsdata_flag(band, 1); /* we DO own this data!!! */
     index = rt_raster_add_band(raster, band, index);
     numbands = rt_raster_get_num_bands(raster);
     if (numbands == oldnumbands || index == -1) {
@@ -7086,7 +7102,7 @@ rt_band_from_wkb(uint16_t width, uint16_t height,
                 return 0;
             }
 
-            band->ownsData = 1;
+            band->ownsdata = 0;
             band->data.offline.path = rtalloc(sz + 1);
 
             memcpy(band->data.offline.path, *ptr, sz);
@@ -7119,6 +7135,7 @@ rt_band_from_wkb(uint16_t width, uint16_t height,
         return 0;
     }
 
+    band->ownsdata = 1; /* we DO own this data!!! */
     memcpy(band->data.mem, *ptr, sz);
     *ptr += sz;
 
@@ -7930,7 +7947,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
         band->isnodata = BANDTYPE_IS_NODATA(type) ? 1 : 0;
         band->width = rast->width;
         band->height = rast->height;
-        band->ownsData = 0;
+        band->ownsdata = 0; /* we do NOT own this data!!! */
 				band->raster = rast;
 
         /* Advance by data padding */

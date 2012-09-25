@@ -42,7 +42,7 @@ deepRelease(rt_raster raster)
     for (i=0; i<nbands; ++i)
     {
         rt_band band = rt_raster_get_band(raster, i);
-				if (!rt_band_is_offline(band)) {
+				if (!rt_band_is_offline(band) && !rt_band_get_ownsdata_flag(band)) {
         	void* mem = rt_band_get_data(band);
 	        if (mem) rtdealloc(mem);
 				}
@@ -1446,7 +1446,6 @@ static void testBandReclass() {
 	int rtn;
 	rt_band newband;
 	double val;
-	void *mem = NULL;
 
 	raster = rt_raster_new(100, 10);
 	assert(raster); /* or we're out of virtual memory */
@@ -1518,8 +1517,6 @@ static void testBandReclass() {
 	rtdealloc(exprset);
 	deepRelease(raster);
 
-	mem = rt_band_get_data(newband);
-	if (mem) rtdealloc(mem);
 	rt_band_destroy(newband);
 }
 

@@ -466,6 +466,12 @@ uint16_t rt_band_get_width(rt_band band);
 /* Get height of this band */
 uint16_t rt_band_get_height(rt_band band);
 
+/* Get own_data flag */
+int rt_band_get_ownsdata_flag(rt_band band);
+
+/* set ownsdata flag */
+void rt_band_set_ownsdata_flag(rt_band band, int flag);
+
 /**
 	* Get pointer to raster band data
 	*
@@ -1957,7 +1963,7 @@ struct rt_band_t {
     int32_t isnodata;   /* a flag indicating if this band is filled only with
                            nodata values */
     double nodataval; /* int will be converted ... */
-    int32_t ownsData; /* XXX mloskot: its behaviour needs to be documented */
+    int8_t ownsdata; /* 0, externally owned. 1, internally owned. only applies to data.mem */
 
 		rt_raster raster; /* reference to parent raster */
 

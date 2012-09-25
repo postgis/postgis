@@ -83,7 +83,7 @@ raster_destroy(rt_raster raster) {
 	uint16_t nbands = rt_raster_get_num_bands(raster);
 	for (i = 0; i < nbands; i++) {
 		rt_band band = rt_raster_get_band(raster, i);
-		if (!rt_band_is_offline(band)) {
+		if (!rt_band_is_offline(band) && !rt_band_get_ownsdata_flag(band)) {
      	void* mem = rt_band_get_data(band);
        if (mem) rtdealloc(mem);
 		}
