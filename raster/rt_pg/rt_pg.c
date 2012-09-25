@@ -3854,14 +3854,9 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 		exclude_nodata_value,
 		&npixels
 	);
-	/* error or no neighbors */
-	if (count < 1) {
-		/* error */
-		if (count < 0)
-			elog(NOTICE, "Unable to get the pixel's neighborhood for band at index %d", bandindex);
-		/* no neighbors */
-		else
-			elog(NOTICE, "Pixel has no neighbors for band at distance %d x %d", distance[0], distance[1]);
+	/* error */
+	if (count < 0) {
+		elog(NOTICE, "Unable to get the pixel's neighborhood for band at index %d", bandindex);
 			
 		rt_band_destroy(band);
 		rt_raster_destroy(raster);
@@ -3898,7 +3893,28 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	}
 	POSTGIS_RT_DEBUGF(4, "pixval: %f", pixval);
 
+
 	/* add pixel to neighborhood */
+	count++;
+	if (count > 1)
+		npixels = (rt_pixel) repalloc(npixels, sizeof(struct rt_pixel_t) * count);
+	else
+		npixels = (rt_pixel) palloc(sizeof(struct rt_pixel_t));
+	if (npixels == NULL) {
+		elog(ERROR, "RASTER_neighborhood: Unable to reallocate memory for neighborhood");
+
+		rt_band_destroy(band);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+
+		PG_RETURN_NULL();
+	}
+	npixels[count - 1].x = _x;
+	npixels[count - 1].y = _y;
+	npixels[count - 1].nodata = 1;
+	npixels[count - 1].value = pixval;
+
+	/* set NODATA */
 	if (
 		!exclude_nodata_value || 
 		!rt_band_get_hasnodata_flag(band) || (
@@ -3909,22 +3925,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 			)
 		)
 	) {
-		count++;
-		npixels = (rt_pixel) repalloc(npixels, sizeof(struct rt_pixel_t) * count);
-		if (npixels == NULL) {
-			elog(ERROR, "RASTER_neighborhood: Unable to reallocate memory for neighborhood");
-
-			rt_band_destroy(band);
-			rt_raster_destroy(raster);
-			PG_FREE_IF_COPY(pgraster, 0);
-
-			PG_RETURN_NULL();
-		}
-
-		npixels[count - 1].x = _x;
-		npixels[count - 1].y = _y;
 		npixels[count - 1].nodata = 0;
-		npixels[count - 1].value = pixval;
 	}
 
 	/* free unnecessary stuff */
