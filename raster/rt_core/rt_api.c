@@ -13135,37 +13135,6 @@ _rti_param_arg_clean(_rti_param _param) {
 	}
 }
 
-#if POSTGIS_DEBUG_LEVEL > 0
-static void
-_rti_param_arg_dump(rt_iterator_arg arg) {
-	int i = 0;
-	int y = 0;
-	int x = 0;
-
-	printf("rasters, rows, columns = %d, %d, %d\n", arg->rasters, arg->rows, arg->columns);
-
-	for (i = 0; i < arg->rasters; i++) {
-		for (y = 0; y < arg->rows; y++) {
-			printf("raster %d row %d: [", i, y);
-
-			for (x = 0; x < arg->columns; x++) {
-				printf("%f", arg->values[i][y][x]);
-				if (x < arg->columns - 1)
-					printf(", ");
-			}
-			printf("], [");
-
-			for (x = 0; x < arg->columns; x++) {
-				printf("%d", arg->nodata[i][y][x]);
-				if (x < arg->columns - 1)
-					printf(", ");
-			}
-			printf("]\n");
-		}
-	}
-}
-#endif
-
 /**
  * n-raster iterator.
  * The raster returned should be freed by the caller
@@ -13433,7 +13402,12 @@ rt_raster_iterator(
 		case ET_FIRST:
 			i = 0;
 		case ET_SECOND:
-			if (i < 0) i = 1;
+			if (i < 0) {
+				if (itrcount < 2)
+					i = 0;
+				else
+					i = 1;
+			}
 		case ET_LAST:
 			if (i < 0) i = itrcount - 1;
 			
@@ -13553,7 +13527,6 @@ rt_raster_iterator(
 		rterror("rt_raster_iterator: Unable to initialize callback function argument");
 
 		_rti_param_destroy(_param);
-		rtdealloc(rt_band_get_data(rtnband));
 		rt_band_destroy(rtnband);
 		rt_raster_destroy(rtnrast);
 
@@ -13571,7 +13544,6 @@ rt_raster_iterator(
 			rterror("rt_raster_iterator: Unable to compute raster offsets");
 
 			_rti_param_destroy(_param);
-			rtdealloc(rt_band_get_data(rtnband));
 			rt_band_destroy(rtnband);
 			rt_raster_destroy(rtnrast);
 
@@ -13595,6 +13567,7 @@ rt_raster_iterator(
 			/* loop through each input raster */
 			for (i = 0; i < itrcount; i++) {
 				RASTER_DEBUGF(4, "raster %d", i);
+
 				/* empty raster */
 				if (_param->isempty[i]) {
 					RASTER_DEBUG(4, "empty raster. using empty values and NODATA");
@@ -13616,22 +13589,25 @@ rt_raster_iterator(
 				_param->arg->src_pixel[i][1] = y;
 
 				/* neighborhood */
-				status = rt_band_get_nearest_pixel(
-					_param->band[i],
-					x, y,
-					distancex, distancey,
-					1,
-					&npixels
-				);
-				if (status < 0) {
-					rterror("rt_raster_iterator: Unable to get pixel neighborhood");
+				npixels = NULL;
+				status = 0;
+				if (distancex > 0 && distancey > 0) {
+					status = rt_band_get_nearest_pixel(
+						_param->band[i],
+						x, y,
+						distancex, distancey,
+						1,
+						&npixels
+					);
+					if (status < 0) {
+						rterror("rt_raster_iterator: Unable to get pixel neighborhood");
 
-					_rti_param_destroy(_param);
-					rtdealloc(rt_band_get_data(rtnband));
-					rt_band_destroy(rtnband);
-					rt_raster_destroy(rtnrast);
+						_rti_param_destroy(_param);
+						rt_band_destroy(rtnband);
+						rt_raster_destroy(rtnrast);
 
-					return NULL;
+						return NULL;
+					}
 				}
 
 				/* get value of POI */
@@ -13648,7 +13624,6 @@ rt_raster_iterator(
 						rterror("rt_raster_iterator: Unable to get the pixel value of band");
 
 						_rti_param_destroy(_param);
-						rtdealloc(rt_band_get_data(rtnband));
 						rt_band_destroy(rtnband);
 						rt_raster_destroy(rtnrast);
 
@@ -13666,6 +13641,29 @@ rt_raster_iterator(
 				}
 
 				/* add pixel to neighborhood */
+				RASTER_DEBUGF(4, "value: %f", value);
+				status++;
+				if (status > 1)
+					npixels = (rt_pixel) rtrealloc(npixels, sizeof(struct rt_pixel_t) * status);
+				else
+					npixels = (rt_pixel) rtalloc(sizeof(struct rt_pixel_t));
+
+				if (npixels == NULL) {
+					rterror("rt_raster_iterator: Unable to reallocate memory for neighborhood");
+
+					_rti_param_destroy(_param);
+					rt_band_destroy(rtnband);
+					rt_raster_destroy(rtnrast);
+
+					return NULL;
+				}
+
+				npixels[status - 1].x = x;
+				npixels[status - 1].y = y;
+				npixels[status - 1].nodata = 1;
+				npixels[status - 1].value = value;
+
+				/* set nodata flag */
 				if (
 					!rt_band_get_hasnodata_flag(_param->band[i]) || (
 						(rt_band_get_hasnodata_flag(_param->band[i]) != FALSE) && (
@@ -13674,29 +13672,7 @@ rt_raster_iterator(
 						)
 					)
 				) {
-					RASTER_DEBUGF(4, "value: %f", value);
-
-					status++;
-					if (status > 1)
-						npixels = (rt_pixel) rtrealloc(npixels, sizeof(struct rt_pixel_t) * status);
-					else
-						npixels = (rt_pixel) rtalloc(sizeof(sizeof(struct rt_pixel_t)));
-
-					if (npixels == NULL) {
-						rterror("rt_raster_iterator: Unable to reallocate memory for neighborhood");
-
-						_rti_param_destroy(_param);
-						rtdealloc(rt_band_get_data(rtnband));
-						rt_band_destroy(rtnband);
-						rt_raster_destroy(rtnrast);
-
-						return NULL;
-					}
-
-					npixels[status - 1].x = x;
-					npixels[status - 1].y = y;
 					npixels[status - 1].nodata = 0;
-					npixels[status - 1].value = value;
 				}
 
 				/* no pixels in neighborhood */
@@ -13721,7 +13697,6 @@ rt_raster_iterator(
 					rterror("rt_raster_iterator: Unable to create 2D array of neighborhood");
 
 					_rti_param_destroy(_param);
-					rtdealloc(rt_band_get_data(rtnband));
 					rt_band_destroy(rtnband);
 					rt_raster_destroy(rtnrast);
 
@@ -13729,10 +13704,6 @@ rt_raster_iterator(
 				}
 			}
 	
-#if POSTGIS_DEBUG_LEVEL > 0
-			_rti_param_arg_dump(_param->arg);
-#endif
-
 			/* callback */
 			value = 0;
 			nodata = 0;
@@ -13746,7 +13717,6 @@ rt_raster_iterator(
 				rterror("rt_raster_iterator: Callback function returned an error");
 
 				_rti_param_destroy(_param);
-				rtdealloc(rt_band_get_data(rtnband));
 				rt_band_destroy(rtnband);
 				rt_raster_destroy(rtnrast);
 
@@ -13762,7 +13732,6 @@ rt_raster_iterator(
 				rterror("rt_raster_iterator: Unable to set pixel value");
 
 				_rti_param_destroy(_param);
-				rtdealloc(rt_band_get_data(rtnband));
 				rt_band_destroy(rtnband);
 				rt_raster_destroy(rtnrast);
 

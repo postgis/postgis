@@ -36,21 +36,22 @@ addBand(rt_raster raster, rt_pixtype pixtype, int hasnodata, double nodataval)
 }
 
 static void
-deepRelease(rt_raster raster)
-{
-    uint16_t i, nbands=rt_raster_get_num_bands(raster);
-    for (i=0; i<nbands; ++i)
-    {
-        rt_band band = rt_raster_get_band(raster, i);
-				if (!rt_band_is_offline(band) && !rt_band_get_ownsdata_flag(band)) {
-        	void* mem = rt_band_get_data(band);
-	        if (mem) rtdealloc(mem);
-				}
-        rt_band_destroy(band);
-    }
-    rt_raster_destroy(raster);
-}
+deepRelease(rt_raster raster) {
+	uint16_t i;
+	uint16_t nbands = rt_raster_get_num_bands(raster);
 
+	for (i = 0; i < nbands; ++i) {
+		rt_band band = rt_raster_get_band(raster, i);
+		if (!rt_band_is_offline(band) && !rt_band_get_ownsdata_flag(band)) {
+			void* mem = rt_band_get_data(band);
+			if (mem) rtdealloc(mem);
+		}
+		rt_band_destroy(band);
+	}
+
+	rt_raster_destroy(raster);
+	raster = NULL;
+}
 
 static rt_raster
 fillRasterToPolygonize(int hasnodata, double nodatavalue)
@@ -7307,7 +7308,8 @@ struct _userargs_t {
 	uint32_t columns;
 };
 
-static int testRasterIterator_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+/* callback for 1 raster, 0 distance, FIRST or SECOND or LAST or UNION or INTERSECTION */
+static int testRasterIterator1_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
 	_userargs _userarg = (_userargs) userarg;
 
 	/* check that we're getting what we expect from userarg */
@@ -7315,14 +7317,464 @@ static int testRasterIterator_callback(rt_iterator_arg arg, void *userarg, doubl
 	CHECK((arg->rows == _userarg->rows));
 	CHECK((arg->columns == _userarg->columns));
 
+	/* 0,0 */
+	if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 0));
+		CHECK((arg->nodata[0][0][0] == 0));
+	}
+	/* 4,4 */
+	else if (
+		arg->dst_pixel[0] == 4 &&
+		arg->dst_pixel[1] == 4
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 24));
+		CHECK((arg->nodata[0][0][0] == 0));
+	}
+	/* 1,1 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK((arg->nodata[0][0][0] == 1));
+	}
+	/* 2,2 */
+	else if (
+		arg->dst_pixel[0] == 2 &&
+		arg->dst_pixel[1] == 2
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 12));
+		CHECK((arg->nodata[0][0][0] == 0));
+	}
+	/* 3,1 */
+	else if (
+		arg->dst_pixel[0] == 3 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 8));
+		CHECK((arg->nodata[0][0][0] == 0));
+	}
+	/* 1,0 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 1));
+		CHECK((arg->nodata[0][0][0] == 0));
+	}
+
+	return 1;
+}
+
+/* callback for 2 raster, 0 distance, UNION */
+static int testRasterIterator2_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+	_userargs _userarg = (_userargs) userarg;
+
+	/* check that we're getting what we expect from userarg */
+	CHECK((arg->rasters == _userarg->rasters));
+	CHECK((arg->rows == _userarg->rows));
+	CHECK((arg->columns == _userarg->columns));
+
+	/* 0,0 */
+	if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 0));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+	/* 4,4 */
+	else if (
+		arg->dst_pixel[0] == 4 &&
+		arg->dst_pixel[1] == 4
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 24));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 118));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 1,1 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK((arg->nodata[0][0][0] == 1));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 100));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 2,2 */
+	else if (
+		arg->dst_pixel[0] == 2 &&
+		arg->dst_pixel[1] == 2
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 12));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 106));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 3,1 */
+	else if (
+		arg->dst_pixel[0] == 3 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 8));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 102));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 1,0 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 1));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+	/* 1,3 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 3
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 16));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+	/* 5,0 */
+	else if (
+		arg->dst_pixel[0] == 5 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK((arg->nodata[0][0][0] == 1));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+
+	return 1;
+}
+
+/* callback for 2 raster, 0 distance, INTERSECTION */
+static int testRasterIterator3_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+	_userargs _userarg = (_userargs) userarg;
+
+	/* check that we're getting what we expect from userarg */
+	CHECK((arg->rasters == _userarg->rasters));
+	CHECK((arg->rows == _userarg->rows));
+	CHECK((arg->columns == _userarg->columns));
+
+	/* 0,0 */
+	if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK((arg->nodata[0][0][0] == 1));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 100));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 0,3 */
+	else if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 3
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 21));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 115));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 3,0 */
+	else if (
+		arg->dst_pixel[0] == 3 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 9));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 103));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 3,3 */
+	else if (
+		arg->dst_pixel[0] == 3 &&
+		arg->dst_pixel[1] == 3
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 24));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 118));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 0,2 */
+	else if (
+		arg->dst_pixel[0] == 3 &&
+		arg->dst_pixel[1] == 3
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 16));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+
+	return 1;
+}
+
+/* callback for 2 raster, 0 distance, FIRST */
+static int testRasterIterator4_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+	_userargs _userarg = (_userargs) userarg;
+
+	/* check that we're getting what we expect from userarg */
+	CHECK((arg->rasters == _userarg->rasters));
+	CHECK((arg->rows == _userarg->rows));
+	CHECK((arg->columns == _userarg->columns));
+
+	/* 0,0 */
+	if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 0));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+	/* 4,4 */
+	else if (
+		arg->dst_pixel[0] == 4 &&
+		arg->dst_pixel[1] == 4
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 24));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 118));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 4,1 */
+	else if (
+		arg->dst_pixel[0] == 4 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 9));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 103));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 4,0 */
+	else if (
+		arg->dst_pixel[0] == 4 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 4));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+
+	return 1;
+}
+
+/* callback for 2 raster, 0 distance, SECOND or LAST */
+static int testRasterIterator5_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+	_userargs _userarg = (_userargs) userarg;
+
+	/* check that we're getting what we expect from userarg */
+	CHECK((arg->rasters == _userarg->rasters));
+	CHECK((arg->rows == _userarg->rows));
+	CHECK((arg->columns == _userarg->columns));
+
+	/* 0,0 */
+	if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK((arg->nodata[0][0][0] == 1));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 100));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 4,4 */
+	else if (
+		arg->dst_pixel[0] == 4 &&
+		arg->dst_pixel[1] == 4
+	) {
+		CHECK((arg->nodata[0][0][0] == 1));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 124));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 4,1 */
+	else if (
+		arg->dst_pixel[0] == 4 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK((arg->nodata[0][0][0] == 1));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 109));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 0,2 */
+	else if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 2
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 16));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+
+	return 1;
+}
+
+/* callback for 2 raster, 0 distance, CUSTOM */
+static int testRasterIterator6_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+	_userargs _userarg = (_userargs) userarg;
+
+	/* check that we're getting what we expect from userarg */
+	CHECK((arg->rasters == _userarg->rasters));
+	CHECK((arg->rows == _userarg->rows));
+	CHECK((arg->columns == _userarg->columns));
+
+	/* 0,0 */
+	if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 16));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+	/* 1,0 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 17));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 111));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 0,1 */
+	else if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 21));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 115));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+	/* 1,1 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK(FLT_EQ(arg->values[0][0][0], 22));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][0][0], 116));
+		CHECK((arg->nodata[1][0][0] == 0));
+	}
+
+	return 1;
+}
+
+/* callback for 2 raster, 1 distance, CUSTOM */
+static int testRasterIterator7_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+	_userargs _userarg = (_userargs) userarg;
+
+	/* check that we're getting what we expect from userarg */
+	CHECK((arg->rasters == _userarg->rasters));
+	CHECK((arg->rows == _userarg->rows));
+	CHECK((arg->columns == _userarg->columns));
+
+	/* 0,0 */
+	if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][1][1], 16));
+		CHECK((arg->nodata[0][1][1] == 0));
+
+		CHECK((arg->nodata[1][1][1] == 1));
+
+		CHECK(FLT_EQ(arg->values[0][0][0], 10));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+	/* 1,0 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 0
+	) {
+		CHECK(FLT_EQ(arg->values[0][1][1], 17));
+		CHECK((arg->nodata[0][1][1] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][1][1], 111));
+		CHECK((arg->nodata[1][1][1] == 0));
+
+		CHECK(FLT_EQ(arg->values[0][2][2], 23));
+		CHECK((arg->nodata[0][2][2] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][2][2], 117));
+		CHECK((arg->nodata[1][2][2] == 0));
+	}
+	/* 0,1 */
+	else if (
+		arg->dst_pixel[0] == 0 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK(FLT_EQ(arg->values[0][1][1], 21));
+		CHECK((arg->nodata[0][1][1] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][1][1], 115));
+		CHECK((arg->nodata[1][1][1] == 0));
+
+		CHECK((arg->nodata[0][2][0] == 1));
+
+		CHECK((arg->nodata[1][2][0] == 1));
+	}
+	/* 1,1 */
+	else if (
+		arg->dst_pixel[0] == 1 &&
+		arg->dst_pixel[1] == 1
+	) {
+		CHECK(FLT_EQ(arg->values[0][1][1], 22));
+		CHECK((arg->nodata[0][1][1] == 0));
+
+		CHECK(FLT_EQ(arg->values[1][1][1], 116));
+		CHECK((arg->nodata[1][1][1] == 0));
+
+		CHECK(FLT_EQ(arg->values[0][0][0], 16));
+		CHECK((arg->nodata[0][0][0] == 0));
+
+		CHECK((arg->nodata[1][0][0] == 1));
+	}
+
 	return 1;
 }
 
 static void testRasterIterator() {
 	rt_raster rast1;
 	rt_raster rast2;
+	rt_raster rast3;
 
-	int num = 3;
+	int num = 2;
 
 	rt_raster rtn = NULL;
 	rt_band band;
@@ -7333,8 +7785,6 @@ static void testRasterIterator() {
 	int noerr = 0;
 	int x = 0;
 	int y = 0;
-	int distanceX = 1;
-	int distanceY = 1;
 
 	rast1 = rt_raster_new(maxX, maxY);
 	assert(rast1);
@@ -7342,7 +7792,7 @@ static void testRasterIterator() {
 	rt_raster_set_offsets(rast1, 0, 0);
 	rt_raster_set_scale(rast1, 1, -1);
 
-	band = addBand(rast1, PT_32BUI, 1, 0);
+	band = addBand(rast1, PT_32BUI, 1, 6);
 	CHECK(band);
 
 	for (y = 0; y < maxY; y++) {
@@ -7357,7 +7807,7 @@ static void testRasterIterator() {
 	rt_raster_set_offsets(rast2, 1, -1);
 	rt_raster_set_scale(rast2, 1, -1);
 
-	band = addBand(rast2, PT_32BUI, 1, 0);
+	band = addBand(rast2, PT_32BUI, 1, 110);
 	CHECK(band);
 
 	for (y = 0; y < maxY; y++) {
@@ -7366,27 +7816,64 @@ static void testRasterIterator() {
 		}
 	}
 
-	userargs = rtalloc(sizeof(struct _userargs_t));
-	userargs->rasters = num;
-	userargs->rows = distanceY * 2 + 1;
-	userargs->columns = distanceX * 2 + 1;
+	rast3 = rt_raster_new(2, 2);
+	assert(rast3);
 
+	rt_raster_set_offsets(rast3, 1, -3);
+	rt_raster_set_scale(rast3, 1, -1);
+
+	/* allocate user args */
+	userargs = rtalloc(sizeof(struct _userargs_t));
+
+	/* allocate itrset */
 	itrset = rtalloc(sizeof(struct rt_iterator_t) * num);
 	itrset[0].rast = rast1;
 	itrset[0].nband = 0;
 	itrset[1].rast = rast2;
 	itrset[1].nband = 0;
-	itrset[2].rast = NULL;
-	itrset[2].nband = 0;
+
+	/* 1 raster, 0 distance, FIRST or SECOND or LAST or UNION or INTERSECTION */
+	userargs->rasters = 1;
+	userargs->rows = 1;
+	userargs->columns = 1;
 
 	rtn = rt_raster_iterator(
-		itrset, num,
-		ET_UNION, NULL,
-		PT_8BUI,
+		itrset, 1,
+		ET_LAST, NULL,
+		PT_32BUI,
 		1, 0,
-		distanceX, distanceY,
+		0, 0,
 		userargs,
-		testRasterIterator_callback,
+		testRasterIterator1_callback,
+		&noerr
+	);
+	CHECK(noerr);
+	CHECK((rt_raster_get_width(rtn) == 5));
+	CHECK((rt_raster_get_height(rtn) == 5));
+	CHECK((rt_raster_get_x_offset(rtn) == 0));
+	CHECK((rt_raster_get_y_offset(rtn) == 0));
+	CHECK((rt_raster_get_x_scale(rtn) == 1));
+	CHECK((rt_raster_get_y_scale(rtn) == -1));
+	CHECK((rt_raster_get_x_skew(rtn) == 0));
+	CHECK((rt_raster_get_y_skew(rtn) == 0));
+	CHECK((rt_raster_get_srid(rtn) == 0));
+
+	if (rtn != NULL) deepRelease(rtn);
+	rtn = NULL;
+
+	/* 2 raster, 0 distance, UNION */
+	userargs->rasters = 2;
+	userargs->rows = 1;
+	userargs->columns = 1;
+
+	rtn = rt_raster_iterator(
+		itrset, 2,
+		ET_UNION, NULL,
+		PT_32BUI,
+		1, 0,
+		0, 0,
+		userargs,
+		testRasterIterator2_callback,
 		&noerr
 	);
 	CHECK(noerr);
@@ -7400,11 +7887,144 @@ static void testRasterIterator() {
 	CHECK((rt_raster_get_y_skew(rtn) == 0));
 	CHECK((rt_raster_get_srid(rtn) == 0));
 
+	if (rtn != NULL) deepRelease(rtn);
+	rtn = NULL;
+
+	/* 2 raster, 0 distance, INTERSECTION */
+	rtn = rt_raster_iterator(
+		itrset, 2,
+		ET_INTERSECTION, NULL,
+		PT_32BUI,
+		1, 0,
+		0, 0,
+		userargs,
+		testRasterIterator3_callback,
+		&noerr
+	);
+	CHECK(noerr);
+	CHECK((rt_raster_get_width(rtn) == 4));
+	CHECK((rt_raster_get_height(rtn) == 4));
+	CHECK((rt_raster_get_x_offset(rtn) == 1));
+	CHECK((rt_raster_get_y_offset(rtn) == -1));
+	CHECK((rt_raster_get_x_scale(rtn) == 1));
+	CHECK((rt_raster_get_y_scale(rtn) == -1));
+	CHECK((rt_raster_get_x_skew(rtn) == 0));
+	CHECK((rt_raster_get_y_skew(rtn) == 0));
+	CHECK((rt_raster_get_srid(rtn) == 0));
+
+	if (rtn != NULL) deepRelease(rtn);
+	rtn = NULL;
+
+	/* 2 raster, 0 distance, FIRST */
+	rtn = rt_raster_iterator(
+		itrset, 2,
+		ET_FIRST, NULL,
+		PT_32BUI,
+		1, 0,
+		0, 0,
+		userargs,
+		testRasterIterator4_callback,
+		&noerr
+	);
+	CHECK(noerr);
+	CHECK((rt_raster_get_width(rtn) == 5));
+	CHECK((rt_raster_get_height(rtn) == 5));
+	CHECK((rt_raster_get_x_offset(rtn) == 0));
+	CHECK((rt_raster_get_y_offset(rtn) == 0));
+	CHECK((rt_raster_get_x_scale(rtn) == 1));
+	CHECK((rt_raster_get_y_scale(rtn) == -1));
+	CHECK((rt_raster_get_x_skew(rtn) == 0));
+	CHECK((rt_raster_get_y_skew(rtn) == 0));
+	CHECK((rt_raster_get_srid(rtn) == 0));
+
+	if (rtn != NULL) deepRelease(rtn);
+	rtn = NULL;
+
+	/* 2 raster, 0 distance, LAST or SECOND */
+	rtn = rt_raster_iterator(
+		itrset, 2,
+		ET_LAST, NULL,
+		PT_32BUI,
+		1, 0,
+		0, 0,
+		userargs,
+		testRasterIterator5_callback,
+		&noerr
+	);
+	CHECK(noerr);
+	CHECK((rt_raster_get_width(rtn) == 5));
+	CHECK((rt_raster_get_height(rtn) == 5));
+	CHECK((rt_raster_get_x_offset(rtn) == 1));
+	CHECK((rt_raster_get_y_offset(rtn) == -1));
+	CHECK((rt_raster_get_x_scale(rtn) == 1));
+	CHECK((rt_raster_get_y_scale(rtn) == -1));
+	CHECK((rt_raster_get_x_skew(rtn) == 0));
+	CHECK((rt_raster_get_y_skew(rtn) == 0));
+	CHECK((rt_raster_get_srid(rtn) == 0));
+
+	if (rtn != NULL) deepRelease(rtn);
+	rtn = NULL;
+
+	/* 2 raster, 0 distance, CUSTOM */
+	rtn = rt_raster_iterator(
+		itrset, 2,
+		ET_CUSTOM, rast3,
+		PT_32BUI,
+		1, 0,
+		0, 0,
+		userargs,
+		testRasterIterator6_callback,
+		&noerr
+	);
+	CHECK(noerr);
+	CHECK((rt_raster_get_width(rtn) == 2));
+	CHECK((rt_raster_get_height(rtn) == 2));
+	CHECK((rt_raster_get_x_offset(rtn) == 1));
+	CHECK((rt_raster_get_y_offset(rtn) == -3));
+	CHECK((rt_raster_get_x_scale(rtn) == 1));
+	CHECK((rt_raster_get_y_scale(rtn) == -1));
+	CHECK((rt_raster_get_x_skew(rtn) == 0));
+	CHECK((rt_raster_get_y_skew(rtn) == 0));
+	CHECK((rt_raster_get_srid(rtn) == 0));
+
+	if (rtn != NULL) deepRelease(rtn);
+	rtn = NULL;
+
+	/* 2 raster, 1 distance, CUSTOM */
+	userargs->rasters = 2;
+	userargs->rows = 3;
+	userargs->columns = 3;
+
+	rtn = rt_raster_iterator(
+		itrset, 2,
+		ET_CUSTOM, rast3,
+		PT_32BUI,
+		1, 0,
+		1, 1,
+		userargs,
+		testRasterIterator7_callback,
+		&noerr
+	);
+	CHECK(noerr);
+	CHECK((rt_raster_get_width(rtn) == 2));
+	CHECK((rt_raster_get_height(rtn) == 2));
+	CHECK((rt_raster_get_x_offset(rtn) == 1));
+	CHECK((rt_raster_get_y_offset(rtn) == -3));
+	CHECK((rt_raster_get_x_scale(rtn) == 1));
+	CHECK((rt_raster_get_y_scale(rtn) == -1));
+	CHECK((rt_raster_get_x_skew(rtn) == 0));
+	CHECK((rt_raster_get_y_skew(rtn) == 0));
+	CHECK((rt_raster_get_srid(rtn) == 0));
+
+	if (rtn != NULL) deepRelease(rtn);
+	rtn = NULL;
+
 	rtdealloc(userargs);
 	rtdealloc(itrset);
 
 	deepRelease(rast1);
 	deepRelease(rast2);
+	deepRelease(rast3);
 
 	if (rtn != NULL) deepRelease(rtn);
 }
