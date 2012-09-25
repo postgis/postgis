@@ -12262,7 +12262,8 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	/* add band to output raster */
 	if (rt_raster_generate_new_band(
 		raster,
-		pixtype, nodataval,
+		pixtype,
+		nodataval,
 		1, nodataval,
 		0
 	) < 0) {
@@ -12674,8 +12675,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 					POSTGIS_RT_DEBUGF(5, "pixel r%d(%d, %d) = %d, %f",
 						i,
-						_x,
-						_y,
+						_x, _y,
 						_haspixel[i],
 						_pixel[i]
 					);

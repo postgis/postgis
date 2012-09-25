@@ -7300,6 +7300,115 @@ static void testRasterSurface() {
 	deepRelease(rast);
 }
 
+typedef struct _userargs_t* _userargs;
+struct _userargs_t {
+	uint16_t rasters;
+	uint32_t rows;
+	uint32_t columns;
+};
+
+static int testRasterIterator_callback(rt_iterator_arg arg, void *userarg, double *value, int *nodata) {
+	_userargs _userarg = (_userargs) userarg;
+
+	/* check that we're getting what we expect from userarg */
+	CHECK((arg->rasters == _userarg->rasters));
+	CHECK((arg->rows == _userarg->rows));
+	CHECK((arg->columns == _userarg->columns));
+
+	return 1;
+}
+
+static void testRasterIterator() {
+	rt_raster rast1;
+	rt_raster rast2;
+
+	int num = 3;
+
+	rt_raster rtn = NULL;
+	rt_band band;
+	int maxX = 5;
+	int maxY = 5;
+	rt_iterator itrset;
+	_userargs userargs;
+	int noerr = 0;
+	int x = 0;
+	int y = 0;
+	int distanceX = 1;
+	int distanceY = 1;
+
+	rast1 = rt_raster_new(maxX, maxY);
+	assert(rast1);
+
+	rt_raster_set_offsets(rast1, 0, 0);
+	rt_raster_set_scale(rast1, 1, -1);
+
+	band = addBand(rast1, PT_32BUI, 1, 0);
+	CHECK(band);
+
+	for (y = 0; y < maxY; y++) {
+		for (x = 0; x < maxX; x++) {
+			rt_band_set_pixel(band, x, y, x + (y * maxX));
+		}
+	}
+
+	rast2 = rt_raster_new(maxX, maxY);
+	assert(rast2);
+
+	rt_raster_set_offsets(rast2, 1, -1);
+	rt_raster_set_scale(rast2, 1, -1);
+
+	band = addBand(rast2, PT_32BUI, 1, 0);
+	CHECK(band);
+
+	for (y = 0; y < maxY; y++) {
+		for (x = 0; x < maxX; x++) {
+			rt_band_set_pixel(band, x, y, (x + (y * maxX)) + 100);
+		}
+	}
+
+	userargs = rtalloc(sizeof(struct _userargs_t));
+	userargs->rasters = num;
+	userargs->rows = distanceY * 2 + 1;
+	userargs->columns = distanceX * 2 + 1;
+
+	itrset = rtalloc(sizeof(struct rt_iterator_t) * num);
+	itrset[0].rast = rast1;
+	itrset[0].nband = 0;
+	itrset[1].rast = rast2;
+	itrset[1].nband = 0;
+	itrset[2].rast = NULL;
+	itrset[2].nband = 0;
+
+	rtn = rt_raster_iterator(
+		itrset, num,
+		ET_UNION, NULL,
+		PT_8BUI,
+		1, 0,
+		distanceX, distanceY,
+		userargs,
+		testRasterIterator_callback,
+		&noerr
+	);
+	CHECK(noerr);
+	CHECK((rt_raster_get_width(rtn) == 6));
+	CHECK((rt_raster_get_height(rtn) == 6));
+	CHECK((rt_raster_get_x_offset(rtn) == 0));
+	CHECK((rt_raster_get_y_offset(rtn) == 0));
+	CHECK((rt_raster_get_x_scale(rtn) == 1));
+	CHECK((rt_raster_get_y_scale(rtn) == -1));
+	CHECK((rt_raster_get_x_skew(rtn) == 0));
+	CHECK((rt_raster_get_y_skew(rtn) == 0));
+	CHECK((rt_raster_get_srid(rtn) == 0));
+
+	rtdealloc(userargs);
+	rtdealloc(itrset);
+
+	deepRelease(rast1);
+	deepRelease(rast2);
+
+	if (rtn != NULL) deepRelease(rtn);
+}
+
 int
 main()
 {
@@ -7612,6 +7721,10 @@ main()
 
 		printf("Testing rt_raster_pixel_as_polygon... ");
 		testPixelAsPolygon();
+		printf("OK\n");
+
+		printf("Testing rt_raster_iterator... ");
+		testRasterIterator();
 		printf("OK\n");
 
     deepRelease(raster);

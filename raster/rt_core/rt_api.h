@@ -142,6 +142,9 @@ typedef struct rt_valuecount_t* rt_valuecount;
 typedef struct rt_gdaldriver_t* rt_gdaldriver;
 typedef struct rt_reclassexpr_t* rt_reclassexpr;
 
+typedef struct rt_iterator_t* rt_iterator;
+typedef struct rt_iterator_arg_t* rt_iterator_arg;
+
 /* envelope information */
 typedef struct {
 	double MinX;
@@ -176,7 +179,9 @@ typedef enum {
 	ET_INTERSECTION = 0,
 	ET_UNION,
 	ET_FIRST,
-	ET_SECOND
+	ET_SECOND,
+	ET_LAST,
+	ET_CUSTOM
 } rt_extenttype;
 
 /**
@@ -923,8 +928,13 @@ int32_t rt_raster_add_band(rt_raster raster, rt_band band, int index);
  *
  * @return identifier (position) for the just-added raster, or -1 on error
  */
-int32_t rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
-        double initialvalue, uint32_t hasnodata, double nodatavalue, int index);
+int32_t rt_raster_generate_new_band(
+	rt_raster raster,
+	rt_pixtype pixtype,
+	double initialvalue,
+	uint32_t hasnodata, double nodatavalue,
+	int index
+);
 
 /**
  * Set scale in projection units
@@ -1232,11 +1242,11 @@ LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
  * @param raster: the raster to convert to a multipolygon
  * @param nband: the 0-based band of raster rast to use
  *   if value is less than zero, bands are ignored.
- * @param err: if 0, error occurred
+ * @param noerr: if 0, error occurred
  *
  * @return the raster surface or NULL
  */
-LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *err);
+LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr);
 
 /**
  * Returns a set of "geomval" value, one for each group of pixel
@@ -1708,7 +1718,7 @@ int rt_raster_same_alignment(
  * @param rast1 : the first raster
  * @param rast2 : the second raster
  * @param extenttype : type of extent for the output raster
- * @param err : if 0, error occurred
+ * @param noerr : if 0, error occurred
  * @param offset : 4-element array indicating the X,Y offsets
  * for each raster. 0,1 for rast1 X,Y. 2,3 for rast2 X,Y.
  *
@@ -1718,7 +1728,47 @@ rt_raster
 rt_raster_from_two_rasters(
 	rt_raster rast1, rt_raster rast2,
 	rt_extenttype extenttype,
-	int *err, double *offset
+	int *noerr, double *offset
+);
+
+/**
+ * n-raster iterator.  Returns a raster with one band.
+ * The raster returned should be freed by the caller
+ *
+ * @param itrset: set of rt_iterator objects.
+ * @param itrcount: number of objects in itrset.
+ * @param extenttype: type of extent for the output raster.
+ * @param customextent: raster specifying custom extent.
+ * is only used if extenttype is ET_CUSTOM.
+ * @param pixtype: the desired pixel type of the output raster's band.
+ * @param hasnodata: indicates if the band has nodata value
+ * @param nodataval: the nodata value, will be appropriately
+ * truncated to fit the pixtype size.
+ * @param distancex: the number of pixels around the specified pixel
+ * along the X axis
+ * @param distancey: the number of pixels around the specified pixel
+ * along the Y axis
+ * @param userarg: pointer to any argument that is passed as-is to callback.
+ * @param callback: callback function for actual processing of pixel values.
+ * @param noerr: if 0, error occurred
+ *
+ * @return raster object if success, NULL otherwise
+ */
+rt_raster
+rt_raster_iterator(
+	rt_iterator itrset, uint16_t itrcount,
+	rt_extenttype extenttype, rt_raster customextent,
+	rt_pixtype pixtype,
+	uint8_t hasnodata, double nodataval,
+	uint16_t distancex, uint16_t distancey,
+	void *userarg,
+	int (*callback)(
+		rt_iterator_arg arg,
+		void *userarg,
+		double *value,
+		int *nodata
+	),
+	int *noerr
 );
 
 /*- utilities -------------------------------------------------------*/
@@ -2071,6 +2121,34 @@ struct rt_reclassexpr_t {
 		int exc_min; /* exceed min */
 		int exc_max; /* exceed max */
 	} src, dst;
+};
+
+/* raster iterator */
+struct rt_iterator_t {
+	rt_raster rast;
+	uint16_t nband; /* 0-based */
+};
+
+/* callback argument from raster iterator */
+struct rt_iterator_arg_t {
+	/* # of rasters, Z-axis */
+	uint16_t rasters;
+	/* # of rows, Y-axis */
+	uint32_t rows;
+	/* # of columns, X-axis */
+	uint32_t columns;
+
+	/* axis order: Z,X,Y */
+	/* individual pixel values */
+	double ***values;
+	/* 0,1 value of nodata flag */
+	int ***nodata;
+
+	/* X,Y of pixel from each input raster */
+	int **src_pixel;
+
+	/* X,Y of pixel from output raster */
+	int dst_pixel[2];
 };
 
 /* gdal driver information */
