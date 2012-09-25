@@ -1,6 +1,3 @@
-NOTICE:  CREATE TABLE will create implicit sequence "test_pt_gid_seq" for serial column "test_pt.gid"
-NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "test_pt_pkey" for table "test_pt"
 1
 The result: public.test_pt dropped.
-NOTICE:  table "unexistent" does not exist, skipping
 Unexistant: public.unexistent dropped.
