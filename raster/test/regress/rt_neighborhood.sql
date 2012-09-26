@@ -78,7 +78,13 @@ SELECT
 	ST_Neighborhood(rast, 1, 4, 4, 1, 1)
 FROM raster_neighborhood;
 SELECT 
+	ST_Neighborhood(rast, 1, 4, 4, 2, 2)
+FROM raster_neighborhood;
+SELECT 
 	ST_Neighborhood(rast, 1, 4, 4, 1, 2)
+FROM raster_neighborhood;
+SELECT 
+	ST_Neighborhood(rast, 1, 4, 4, 1, 0)
 FROM raster_neighborhood;
 
 DROP TABLE IF EXISTS raster_neighborhood;

@@ -2417,14 +2417,9 @@ int rt_band_get_nearest_pixel(
 	distance[0] = distancex;
 	distance[1] = distancey;
 
-	/* no distance */
+	/* no distance, means get nearest pixels and return */
 	if (!distance[0] && !distance[1])
 		d0 = 1;
-	/* distance for X or Y is missing */
-	else if (!distance[0] || !distance[1]) {
-		rterror("rt_band_get_nearest_pixel: distancex and distancey must both be zero if one is zero");
-		return 0;
-	}
 
 	RASTER_DEBUGF(4, "Selected pixel: %d x %d", x, y);
 	RASTER_DEBUGF(4, "Distances: %d x %d", distance[0], distance[1]);

@@ -3815,8 +3815,8 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 
 	/* distance X axis */
 	distance[0] = PG_GETARG_INT32(4);
-	if (distance[0] < 1) {
-		elog(NOTICE, "Invalid value for distancex (must be greater than zero). Returning NULL");
+	if (distance[0] < 0) {
+		elog(NOTICE, "Invalid value for distancex (must be >= zero). Returning NULL");
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -3825,8 +3825,8 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 
 	/* distance Y axis */
 	distance[1] = PG_GETARG_INT32(5);
-	if (distance[1] < 1) {
-		elog(NOTICE, "Invalid value for distancey (must be greater than zero). Returning NULL");
+	if (distance[1] < 0) {
+		elog(NOTICE, "Invalid value for distancey (must be >= zero). Returning NULL");
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -3847,22 +3847,26 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	}
 
 	/* get neighborhood */
-	count = rt_band_get_nearest_pixel(
-		band,
-		_x, _y,
-		distance[0], distance[1],
-		exclude_nodata_value,
-		&npixels
-	);
-	/* error */
-	if (count < 0) {
-		elog(NOTICE, "Unable to get the pixel's neighborhood for band at index %d", bandindex);
+	count = 0;
+	npixels = NULL;
+	if (distance[0] > 0 || distance[1] > 0) {
+		count = rt_band_get_nearest_pixel(
+			band,
+			_x, _y,
+			distance[0], distance[1],
+			exclude_nodata_value,
+			&npixels
+		);
+		/* error */
+		if (count < 0) {
+			elog(NOTICE, "Unable to get the pixel's neighborhood for band at index %d", bandindex);
 			
-		rt_band_destroy(band);
-		rt_raster_destroy(raster);
-		PG_FREE_IF_COPY(pgraster, 0);
+			rt_band_destroy(band);
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
 
-		PG_RETURN_NULL();
+			PG_RETURN_NULL();
+		}
 	}
 
 	/* get pixel's value */
@@ -3934,13 +3938,14 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	PG_FREE_IF_COPY(pgraster, 0);
 
 	/* convert set of rt_pixel to 2D array */
+	/* dim is passed with element 0 being Y-axis and element 1 being X-axis */
 	count = rt_pixel_set_to_array(
 		npixels, count,
 		_x, _y,
 		distance[0], distance[1],
 		&value2D,
 		&nodata2D,
-		&(dim[0]), &(dim[1])
+		&(dim[1]), &(dim[0])
 	);
 	pfree(npixels);
 	if (!count) {
@@ -3968,9 +3973,9 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	/* copy values from 2D arrays to 1D arrays */
 	k = 0;
 	/* Y-axis */
-	for (i = 0; i < dim[1]; i++) {
+	for (i = 0; i < dim[0]; i++) {
 		/* X-axis */
-		for (j = 0; j < dim[0]; j++) {
+		for (j = 0; j < dim[1]; j++) {
 			nodata1D[k] = (bool) nodata2D[i][j];
 			if (!nodata1D[k])
 				value1D[k] = Float8GetDatum(value2D[i][j]);
@@ -3982,7 +3987,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	}
 
 	/* no more need for 2D arrays */
-	for (i = 0; i < dim[1]; i++) {
+	for (i = 0; i < dim[0]; i++) {
 		pfree(value2D[i]);
 		pfree(nodata2D[i]);
 	}
