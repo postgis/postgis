@@ -36,18 +36,17 @@ typedef struct
 
 
 /*
-Preprocessing functions
+* Preprocessing functions
 */
 int lw_dist2d_comp(LWGEOM *lw1, LWGEOM *lw2, DISTPTS *dl);
 int lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
 int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl);
 int lw_dist2d_check_overlap(LWGEOM *lwg1,LWGEOM *lwg2);
 int lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
-/*
-Brute force functions
-*/
 
-int lw_dist2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl);
+/*
+* Brute force functions
+*/
 int lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa, DISTPTS *dl);
 int lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS *dl);
 int lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl);
@@ -57,16 +56,23 @@ int lw_dist2d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS *dl);
 int lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl);
 int lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl);
 int lw_dist2d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS *dl);
-/*
-New faster distance calculations
-*/
 
+/*
+* New faster distance calculations
+*/
 int lw_dist2d_pre_seg_seg(POINTARRAY *l1, POINTARRAY *l2,LISTSTRUCT *list1, LISTSTRUCT *list2,double k, DISTPTS *dl);
 int lw_dist2d_selected_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl);
 int struct_cmp_by_measure(const void *a, const void *b);
 int lw_dist2d_fast_ptarray_ptarray(POINTARRAY *l1,POINTARRAY *l2, DISTPTS *dl,  GBOX *box1, GBOX *box2);
+
 /*
-Functions in common for Brute force and new calculation
+* Distance calculation primitives. 
 */
-int lw_dist2d_pt_pt(POINT2D *p1, POINT2D *p2, DISTPTS *dl);
-int lw_dist2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B, DISTPTS *dl);
+int lw_dist2d_pt_pt  (const POINT2D *P,  const POINT2D *Q,  DISTPTS *dl);
+int lw_dist2d_pt_seg (const POINT2D *P,  const POINT2D *A1, const POINT2D *A2, DISTPTS *dl);
+int lw_dist2d_pt_arc (const POINT2D *P,  const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, DISTPTS *dl);
+int lw_dist2d_seg_seg(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const POINT2D *B2, DISTPTS *dl);
+int lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const POINT2D *B2, const POINT2D *B3, DISTPTS *dl);
+int lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *B1, const POINT2D *B2, const POINT2D* B3, DISTPTS *dl);
+void lw_dist2d_distpts_init(DISTPTS *dl, int mode);
+

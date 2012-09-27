@@ -22,11 +22,25 @@ Initializing functions
 The functions starting the distance-calculation processses
 --------------------------------------------------------------------------------------------------------------*/
 
+void
+lw_dist2d_distpts_init(DISTPTS *dl, int mode)
+{
+	dl->twisted = -1;
+	dl->p1.x = dl->p1.y = 0.0;
+	dl->p2.x = dl->p2.y = 0.0;
+	dl->mode = mode;
+	dl->tolerance = 0.0;
+	if ( mode == DIST_MIN )
+		dl->distance = MAXFLOAT;
+	else
+		dl->distance = -1 * MAXFLOAT;
+}
+
 /**
 Function initializing shortestline and longestline calculations.
 */
 LWGEOM *
-lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2,int srid,int mode)
+lw_dist2d_distanceline(LWGEOM *lw1, LWGEOM *lw2, int srid, int mode)
 {
 	double x1,x2,y1,y2;
 
@@ -812,13 +826,417 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 }
 
 /**
+* Returns true if P is on the same side of the plane partition 
+* defined by A1/A3 as A2 is. Only makes sense if P has already been
+* determined to be on the circle defined by A1/A2/A3.
+*/
+static int
+lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
+{
+	return signum(lw_segment_side(A1, A3, A2)) == signum(lw_segment_side(A1, A3, P));
+}
 
+/**
+* Returns true if P is between A1/A2. Only makes sense if P has already been
+* deterined to be on the line defined by A1/A2.
+*/
+static int
+lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
+{
+	return ((A1->x < P->x && P->x < A2->x) || (A1->x > P->x && P->x > A2->x)) ||
+	       ((A1->y < P->y && P->y < A2->y) || (A1->y > P->y && P->y > A2->y));
+}
+
+/**
+* Returns true if arc A is actually a point (all vertices are the same) .
+*/
+static int
+lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
+{
+	if ( A1->x == A2->x && A2->x == A3->x && 
+	     A1->y == A2->y && A2->y == A3->y )
+		return LW_TRUE;
+	else
+		return LW_FALSE;
+}
+
+/**
+* Calculate the shortest distance between an arc and an edge.
+* Line/circle approach from http://stackoverflow.com/questions/1073336/circle-line-collision-detection 
+*/
+int 
+lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const POINT2D *B2, const POINT2D *B3, DISTPTS *dl)
+{
+	POINT2D C; /* center of arc circle */
+	double radius_C; /* radius of arc circle */
+	POINT2D D; /* point on A closest to C */
+	double dist_C_D; /* distance from C to D */
+	int pt_in_arc, pt_in_seg;
+	DISTPTS dltmp;
+	
+	/* Bail out on crazy modes */
+	if ( dl->mode < 0 )
+		lwerror("lw_dist2d_seg_arc does not support maxdistance mode");
+
+	/* What if the "arc" is a point? */
+	if ( lw_arc_is_pt(B1, B2, B3) )
+		return lw_dist2d_pt_seg(B1, A1, A2, dl);
+
+	/* Calculate center and radius of the circle. */
+	radius_C = lwcircle_center(B1, B2, B3, &C);
+
+	/* This "arc" is actually a line (B2 is colinear with B1,B3) */
+	if ( radius_C < 0.0 )
+		return lw_dist2d_seg_seg(A1, A2, B1, B3, dl);
+
+	/* Calculate distance between the line and circle center */
+	lw_dist2d_distpts_init(&dltmp, DIST_MIN);
+	if ( lw_dist2d_pt_seg(&C, A1, A2, &dltmp) == LW_FALSE )
+		lwerror("lw_dist2d_pt_seg failed in lw_dist2d_seg_arc");
+
+	D = dltmp.p1;
+	dist_C_D = dltmp.distance;
+	
+	/* Line intersects circle, maybe arc intersects edge? */
+	/* If so, that's the closest point. */
+	/* If not, the closest point is one of the end points of A */
+	if ( dist_C_D < radius_C )
+	{
+		double length_A; /* length of the segment A */
+		POINT2D E, F; /* points of interection of edge A and circle(B) */
+		double dist_D_EF; /* distance from D to E or F (same distance both ways) */
+
+		dist_D_EF = sqrt(radius_C*radius_C - dist_C_D*dist_C_D);
+		length_A = sqrt((A2->x-A1->x)*(A2->x-A1->x)+(A2->y-A1->y)*(A2->y-A1->y));
+
+		/* Point of intersection E */
+		E.x = D.x - (A2->x-A1->x) * dist_D_EF / length_A;
+		E.y = D.y - (A2->y-A1->y) * dist_D_EF / length_A;
+		/* Point of intersection F */
+		F.x = D.x + (A2->x-A1->x) * dist_D_EF / length_A;
+		F.y = D.y + (A2->y-A1->y) * dist_D_EF / length_A;
+
+
+		/* If E is within A and within B then it's an interesction point */
+		pt_in_arc = lw_pt_in_arc(&E, B1, B2, B3);
+		pt_in_seg = lw_pt_in_seg(&E, A1, A2);
+		
+		if ( pt_in_arc && pt_in_seg )
+		{
+			dl->distance = 0.0;
+			dl->p1 = E;
+			dl->p2 = E;
+			return LW_TRUE;
+		}
+		
+		/* If F is within A and within B then it's an interesction point */
+		pt_in_arc = lw_pt_in_arc(&F, B1, B2, B3);
+		pt_in_seg = lw_pt_in_seg(&F, A1, A2);
+		
+		if ( pt_in_arc && pt_in_seg )
+		{
+			dl->distance = 0.0;
+			dl->p1 = F;
+			dl->p2 = F;
+			return LW_TRUE;
+		}
+	}
+	
+	/* Line grazes circle, maybe arc intersects edge? */
+	/* If so, grazing point is the closest point. */
+	/* If not, the closest point is one of the end points of A */
+	else if ( dist_C_D == radius_C )
+	{		
+		/* Closest point D is also the point of grazing */
+		pt_in_arc = lw_pt_in_arc(&D, B1, B2, B3);
+		pt_in_seg = lw_pt_in_seg(&D, A1, A2);
+
+		/* Is D contained in both A and B? */
+		if ( pt_in_arc && pt_in_seg )
+		{
+			dl->distance = 0.0;
+			dl->p1 = D;
+			dl->p2 = D;
+			return LW_TRUE;
+		}
+	}
+	/* Line misses circle. */
+	/* If closest point to A on circle is within B, then that's the closest */
+	/* Otherwise, the closest point will be an end point of A */
+	else
+	{
+		POINT2D G; /* Point on circle closest to A */
+		G.x = C.x + (D.x-C.x) * radius_C / dist_C_D;
+		G.y = C.y + (D.y-C.y) * radius_C / dist_C_D;
+		
+		pt_in_arc = lw_pt_in_arc(&G, B1, B2, B3);
+		pt_in_seg = lw_pt_in_seg(&D, A1, A2);
+		
+		/* Closest point is on the interior of A and B */
+		if ( pt_in_arc && pt_in_seg )
+			return lw_dist2d_pt_pt(&D, &G, dl);
+
+	}
+	
+	/* Now we test the many combinations of end points with either */
+	/* arcs or edges. Each previous check determined if the closest */
+	/* potential point was within the arc/segment inscribed on the */
+	/* line/circle holding the arc/segment. */
+
+	/* Closest point is in the arc, but not in the segment, so */
+	/* one of the segment end points must be the closest. */
+	if ( pt_in_arc & ! pt_in_seg )
+	{
+		lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
+		lw_dist2d_pt_arc(A2, B1, B2, B3, dl);		
+		return LW_TRUE;
+	}
+	/* or, one of the arc end points is the closest */
+	else if  ( pt_in_seg && ! pt_in_arc )
+	{
+		lw_dist2d_pt_seg(B1, A1, A2, dl);
+		lw_dist2d_pt_seg(B3, A1, A2, dl);
+		return LW_TRUE;			
+	}
+	/* Finally, one of the end-point to end-point combos is the closest. */
+	else
+	{
+		lw_dist2d_pt_pt(A1, B1, dl);
+		lw_dist2d_pt_pt(A1, B3, dl);
+		lw_dist2d_pt_pt(A2, B1, dl);
+		lw_dist2d_pt_pt(A2, B3, dl);
+		return LW_TRUE;
+	}
+	
+	return LW_FALSE;
+}
+
+int
+lw_dist2d_pt_arc(const POINT2D* P, const POINT2D* A1, const POINT2D* A2, const POINT2D* A3, DISTPTS* dl)
+{
+	double radius_A, d;
+	POINT2D C; /* center of circle defined by arc A */
+	POINT2D X; /* point circle(A) where line from C to P crosses */
+	
+	if ( dl->mode < 0 )
+		lwerror("lw_dist2d_pt_arc does not support maxdistance mode");
+
+	/* What if the arc is a point? */
+	if ( lw_arc_is_pt(A1, A2, A3) )
+		return lw_dist2d_pt_pt(P, A1, dl);
+
+	/* Calculate centers and radii of circles. */
+	radius_A = lwcircle_center(A1, A2, A3, &C);
+	
+	/* This "arc" is actually a line (A2 is colinear with A1,A3) */
+	if ( radius_A < 0.0 )
+		return lw_dist2d_pt_seg(P, A1, A3, dl);
+	
+	/* Distance from point to center */	
+	d = distance2d_pt_pt(&C, P);
+	
+	/* X is the point on the circle where the line from P to C crosses */
+	X.x = C.x + (P->x - C.x) * radius_A / d;
+	X.y = C.y + (P->y - C.y) * radius_A / d;
+
+	/* Is crossing point inside the arc? Or arc is actually circle? */
+	if ( p2d_same(A1, A3) || lw_pt_in_arc(&X, A1, A2, A3) )
+	{
+		lw_dist2d_pt_pt(P, &X, dl);
+	}
+	else 
+	{
+		/* Distance is the minimum of the distances to the arc end points */
+		lw_dist2d_pt_pt(A1, P, dl);
+		lw_dist2d_pt_pt(A3, P, dl);
+	}
+	return LW_TRUE;
+}
+
+
+int
+lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, 
+                  const POINT2D *B1, const POINT2D *B2, const POINT2D *B3,
+                  DISTPTS *dl)
+{
+	POINT2D CA, CB; /* Center points of arcs A and B */
+	double radius_A, radius_B, d; /* Radii of arcs A and B */
+	POINT2D P; /* Temporary point P */
+	POINT2D D; /* Mid-point between the centers CA and CB */
+	int pt_in_arc_A, pt_in_arc_B; /* Test whether potential intersection point is within the arc */
+	
+	if ( dl->mode != DIST_MIN )
+		lwerror("lw_dist2d_arc_arc only supports mindistance");
+	
+	/* TODO: Handle case where arc is closed circle (A1 = A3) */
+	
+	/* What if one or both of our "arcs" is actually a point? */
+	if ( lw_arc_is_pt(B1, B2, B3) && lw_arc_is_pt(A1, A2, A3) )
+		return lw_dist2d_pt_pt(B1, A1, dl);
+	else if ( lw_arc_is_pt(B1, B2, B3) )
+		return lw_dist2d_pt_arc(B1, A1, A2, A3, dl);
+	else if ( lw_arc_is_pt(A1, A2, A3) )
+		return lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
+	
+	/* Calculate centers and radii of circles. */
+	radius_A = lwcircle_center(A1, A2, A3, &CA);
+	radius_B = lwcircle_center(B1, B2, B3, &CB);
+
+	/* Two co-linear arcs?!? That's two segments. */
+	if ( radius_A < 0 && radius_B < 0 )
+		return lw_dist2d_seg_seg(A1, A3, B1, B3, dl);
+
+	/* A is co-linear, delegate to lw_dist_seg_arc here. */
+	if ( radius_A < 0 )
+		return lw_dist2d_seg_arc(A1, A3, B1, B2, B3, dl);
+
+	/* B is co-linear, delegate to lw_dist_seg_arc here. */
+	if ( radius_B < 0 )
+		return lw_dist2d_seg_arc(B1, B3, A1, A2, A3, dl);
+
+	/* Make sure that arc "A" has the bigger radius */
+	if ( radius_B > radius_A )
+	{
+		const POINT2D *tmp;
+		tmp = B1; B1 = A1; A1 = tmp;
+		tmp = B2; B2 = A2; A2 = tmp;
+		tmp = B3; B3 = A3; A3 = tmp;
+		P = CB; CB = CA; CA = P;
+		d = radius_B; radius_B = radius_A; radius_A = d;
+	}
+	
+	/* Center-center distance */
+	d = distance2d_pt_pt(&CA, &CB);
+
+	/* Equal circles. Arcs may intersect at multiple points, or at none! */
+	if ( FP_EQUALS(d, 0.0) && FP_EQUALS(radius_A, radius_B) )
+	{
+		lwerror("lw_dist2d_arc_arc can't handle cojoint circles, uh oh");
+	}
+	
+	/* Circles touch at a point. Is that point within the arcs? */
+	if ( d == (radius_A + radius_B) )
+	{
+		D.x = CA.x + (CB.x - CA.x) * radius_A / d;
+		D.y = CA.y + (CB.y - CA.y) * radius_A / d;
+		
+		pt_in_arc_A = lw_pt_in_arc(&D, A1, A2, A3);
+		pt_in_arc_B = lw_pt_in_arc(&D, B1, B2, B3);
+		
+		/* Arcs do touch at D, return it */
+		if ( pt_in_arc_A && pt_in_arc_B )
+		{
+			dl->distance = 0.0;
+			dl->p1 = D;
+			dl->p2 = D;
+			return LW_TRUE;
+		}
+	}
+	/* Disjoint or contained circles don't intersect. Closest point may be on */
+	/* the line joining CA to CB. */
+	else if ( d > (radius_A + radius_B) /* Disjoint */ || d < (radius_A - radius_B) /* Contained */ )
+	{
+		POINT2D XA, XB; /* Points where the line from CA to CB cross their circle bounds */
+		
+		/* Calculate hypothetical nearest points, the places on the */
+		/* two circles where the center-center line crosses. If both */
+		/* arcs contain their hypothetical points, that's the crossing distance */
+		XA.x = CA.x + (CB.x - CA.x) * radius_A / d;
+		XA.y = CA.y + (CB.y - CA.y) * radius_A / d;
+		XB.x = CB.x + (CA.x - CB.x) * radius_B / d;
+		XB.y = CB.y + (CA.y - CB.y) * radius_B / d;
+		
+		pt_in_arc_A = lw_pt_in_arc(&XA, A1, A2, A3);
+		pt_in_arc_B = lw_pt_in_arc(&XB, B1, B2, B3);
+		
+		/* If the nearest points are both within the arcs, that's our answer */
+		/* the shortest distance is at the nearest points */
+		if ( pt_in_arc_A && pt_in_arc_B )
+		{
+			return lw_dist2d_pt_pt(&XA, &XB, dl);
+		}
+	}
+	/* Circles cross at two points, are either of those points in both arcs? */
+	/* http://paulbourke.net/geometry/2circle/ */
+	else if ( d < (radius_A + radius_B) )
+	{
+		POINT2D E, F; /* Points where circle(A) and circle(B) cross */
+		/* Distance from CA to D */
+		double a = (radius_A*radius_A - radius_B*radius_B + d*d) / (2*d);
+		/* Distance from D to E or F */
+		double h = sqrt(radius_A*radius_A - a*a);
+		
+		/* Location of D */
+		D.x = CA.x + (CB.x - CA.x) * a / d;
+		D.y = CA.y + (CB.y - CA.y) * a / d;
+		
+		/* Start from D and project h units perpendicular to CA-D to get E */
+		E.x = D.x + (D.y - CA.y) * h / a;
+		E.y = D.y + (D.x - CA.x) * h / a;
+
+		/* Crossing point E contained in arcs? */
+		pt_in_arc_A = lw_pt_in_arc(&E, A1, A2, A3);
+		pt_in_arc_B = lw_pt_in_arc(&E, B1, B2, B3);
+
+		if ( pt_in_arc_A && pt_in_arc_B ) 
+		{
+			dl->p1 = dl->p2 = E;
+			dl->distance = 0.0;
+			return LW_TRUE;
+		}
+
+		/* Start from D and project h units perpendicular to CA-D to get F */
+		F.x = D.x - (D.y - CA.y) * h / a;
+		F.y = D.y - (D.x - CA.x) * h / a;
+		
+		/* Crossing point F contained in arcs? */
+		pt_in_arc_A = lw_pt_in_arc(&F, A1, A2, A3);
+		pt_in_arc_B = lw_pt_in_arc(&F, B1, B2, B3);
+
+		if ( pt_in_arc_A && pt_in_arc_B ) 
+		{
+			dl->p1 = dl->p2 = F;
+			dl->distance = 0.0;
+			return LW_TRUE;
+		}
+	} 
+
+	/* Closest point is in the arc A, but not in the arc B, so */
+	/* one of the B end points must be the closest. */
+	if ( pt_in_arc_A & ! pt_in_arc_B )
+	{
+		lw_dist2d_pt_arc(B1, A1, A2, A3, dl);
+		lw_dist2d_pt_arc(B3, A1, A2, A3, dl);
+		return LW_TRUE;
+	}
+	/* Closest point is in the arc B, but not in the arc A, so */
+	/* one of the A end points must be the closest. */
+	else if  ( pt_in_arc_B && ! pt_in_arc_A )
+	{
+		lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
+		lw_dist2d_pt_arc(A3, B1, B2, B3, dl);		
+		return LW_TRUE;			
+	}
+	/* Finally, one of the end-point to end-point combos is the closest. */
+	else
+	{
+		lw_dist2d_pt_pt(A1, B1, dl);
+		lw_dist2d_pt_pt(A1, B3, dl);
+		lw_dist2d_pt_pt(A2, B1, dl);
+		lw_dist2d_pt_pt(A2, B3, dl);
+		return LW_TRUE;
+	}	
+
+	return LW_TRUE;
+}
+
+/**
 Finds the shortest distance between two segments.
 This function is changed so it is not doing any comparasion of distance
 but just sending every possible combination further to lw_dist2d_pt_seg
 */
 int
-lw_dist2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl)
+lw_dist2d_seg_seg(const POINT2D *A, const POINT2D *B, const POINT2D *C, const POINT2D *D, DISTPTS *dl)
 {
 	double	s_top, s_bot,s;
 	double	r_top, r_bot,r;
@@ -860,8 +1278,8 @@ lw_dist2d_seg_seg(POINT2D *A, POINT2D *B, POINT2D *C, POINT2D *D, DISTPTS *dl)
 		If the numerator in eqn 1 is also zero, AB & CD are collinear.
 
 	*/
-	r_top = (A->y-C->y)*(D->x-C->x) - (A->x-C->x)*(D->y-C->y) ;
-	r_bot = (B->x-A->x)*(D->y-C->y) - (B->y-A->y)*(D->x-C->x) ;
+	r_top = (A->y-C->y)*(D->x-C->x) - (A->x-C->x)*(D->y-C->y);
+	r_bot = (B->x-A->x)*(D->y-C->y) - (B->y-A->y)*(D->x-C->x);
 
 	s_top = (A->y-C->y)*(B->x-A->x) - (A->x-C->x)*(B->y-A->y);
 	s_bot = (B->x-A->x)*(D->y-C->y) - (B->y-A->y)*(D->x-C->x);
@@ -1272,7 +1690,7 @@ and just returning the distance without identifying the points.
 To get this points it was nessecary to change and it also showed to be about 10%faster.
 */
 int
-lw_dist2d_pt_seg(POINT2D *p, POINT2D *A, POINT2D *B, DISTPTS *dl)
+lw_dist2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B, DISTPTS *dl)
 {
 	POINT2D c;
 	double	r;
@@ -1348,7 +1766,7 @@ or most far away from each other
 depending on dl->mode (max or min)
 */
 int
-lw_dist2d_pt_pt(POINT2D *thep1, POINT2D *thep2,DISTPTS *dl)
+lw_dist2d_pt_pt(const POINT2D *thep1, const POINT2D *thep2, DISTPTS *dl)
 {
 	double hside = thep2->x - thep1->x;
 	double vside = thep2->y - thep1->y;
@@ -1419,10 +1837,6 @@ distance2d_pt_pt(const POINT2D *p1, const POINT2D *p2)
 
 	return sqrt ( hside*hside + vside*vside );
 
-	/* the above is more readable
-	   return sqrt(
-	  	(p2->x-p1->x) * (p2->x-p1->x) + (p2->y-p1->y) * (p2->y-p1->y)
-		);  */
 }
 
 

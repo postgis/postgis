@@ -345,6 +345,203 @@ test_lwgeom_locate_along(void)
 	lwfree(str);
 }
 
+static void
+test_lw_dist2d_pt_arc(void)
+{
+	/* int lw_dist2d_pt_arc(const POINT2D* P, const POINT2D* A1, const POINT2D* A2, const POINT2D* A3, DISTPTS* dl) */
+	DISTPTS dl;
+	POINT2D P, A1, A2, A3;
+	int rv;
+
+	
+	/* Point within unit semicircle, 0.5 units from arc */
+	A1.x = -1; A1.y = 0;
+	A2.x = 0 ; A2.y = 1;
+	A3.x = 1 ; A3.y = 0;
+	P.x  = 0 ; P.y  = 0.5;	
+
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* Point outside unit semicircle, 0.5 units from arc */
+	P.x  = 0 ; P.y  = 1.5;	
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* Point outside unit semicircle, sqrt(2) units from arc end point*/
+	P.x  = 0 ; P.y  = -1;	
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0), 0.000001);
+
+	/* Point outside unit semicircle, sqrt(2)-1 units from arc end point*/
+	P.x  = 1 ; P.y  = 1;	
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1, 0.000001);
+
+	/* Point on unit semicircle midpoint */
+	P.x  = 0 ; P.y  = 1;	
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
+
+	/* Point on unit semicircle endpoint */
+	P.x  = 1 ; P.y  = 0;	
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
+
+	/* Point inside closed circle */
+	P.x  = 0 ; P.y  = 0.5;
+	A2.x = 1; A2.y = 0;
+	A3 = A1;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_arc(&P, &A1, &A2, &A3, &dl);
+	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);	
+}
+
+static void
+test_lw_dist2d_seg_arc(void)
+{
+	/* int lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const POINT2D *B2, const POINT2D *B3, DISTPTS *dl) */
+
+	DISTPTS dl;
+	POINT2D A1, A2, B1, B2, B3;
+	int rv;
+	
+	/* Unit semicircle */
+	B1.x = -1; B1.y = 0;
+	B2.x = 0 ; B2.y = 1;
+	B3.x = 1 ; B3.y = 0;
+
+	/* Edge above the unit semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -2; A1.y = 2;
+	A2.x = 2 ; A2.y = 2;
+	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Edge to the right of the unit semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = 2; A1.y = -2;
+	A2.x = 2; A2.y = 2;
+	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Edge to the left of the unit semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -2; A1.y = -2;
+	A2.x = -2; A2.y = 2;
+	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Edge within the unit semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = 0; A1.y = 0;
+	A2.x = 0; A2.y = 0.5;
+	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* Edge grazing the unit semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -2; A1.y = 1;
+	A2.x =  2; A2.y = 1;
+	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0., 0.000001);
+
+	/* Line grazing the unit semicircle, but edge not */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = 1; A1.y = 1;
+	A2.x = 2; A2.y = 1;
+	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1, 0.000001);
+
+	/* Edge intersecting the unit semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = 0; A1.y = 0;
+	A2.x = 2; A2.y = 2;
+	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
+
+	/* Line intersecting the unit semicircle, but edge not */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1; A1.y = 1;
+	A2.x = -2; A2.y = 2;
+	rv = lw_dist2d_seg_arc(&A1, &A2, &B1, &B2, &B3, &dl);
+	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1, 0.000001);
+}
+
+static void
+test_lw_dist2d_arc_arc(void)
+{
+	/* lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, 
+	                     const POINT2D *B1, const POINT2D *B2, const POINT2D *B3,
+	                     DISTPTS *dl) */
+	DISTPTS dl;
+	POINT2D A1, A2, A3, B1, B2, B3;
+	int rv;
+	
+	/* Unit semicircle at 0,0 */
+	B1.x = -1; B1.y = 0;
+	B2.x = 0 ; B2.y = 1;
+	B3.x = 1 ; B3.y = 0;
+
+	/* Arc above the unit semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1; A1.y = 3;
+	A2.x = 0 ; A2.y = 2;
+	A3.x = 1 ; A3.y = 3;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Arc grazes the unit semicircle */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1; A1.y = 2;
+	A2.x = 0 ; A2.y = 1;
+	A3.x = 1 ; A3.y = 2;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
+
+	/* Circles intersect, but arcs do not */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1; A1.y =  1;
+	A2.x =  0; A2.y =  2;
+	A3.x =  1; A3.y =  1;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2)-1, 0.000001);
+
+	/* Circles and arcs intersect */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -1; A1.y =  1;
+	A2.x =  0; A2.y =  0;
+	A3.x =  1; A3.y =  1;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0, 0.000001);
+
+	/* inscribed and closest on arcs */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -0.5; A1.y = 0.0;
+	A2.x =  0.0; A2.y = 0.5;
+	A3.x =  0.5; A3.y = 0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* inscribed and closest not on arcs */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	A1.x = -0.5; A1.y =  0.0;
+	A2.x =  0.0; A2.y = -0.5;
+	A3.x =  0.5; A3.y =  0.0;
+	rv = lw_dist2d_arc_arc(&A1, &A2, &A3, &B1, &B2, &B3, &dl);
+	//printf("distance %g\n", dl.distance);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -355,6 +552,9 @@ CU_TestInfo measures_tests[] =
 	PG_TEST(test_rect_tree_intersects_tree),
 	PG_TEST(test_lwgeom_segmentize2d),
 	PG_TEST(test_lwgeom_locate_along),
+	PG_TEST(test_lw_dist2d_pt_arc),
+	PG_TEST(test_lw_dist2d_seg_arc),
+	PG_TEST(test_lw_dist2d_arc_arc),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo measures_suite = {"PostGIS Measures Suite",  NULL,  NULL, measures_tests};

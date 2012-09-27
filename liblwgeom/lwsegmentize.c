@@ -82,13 +82,13 @@ lwgeom_has_arc(const LWGEOM *geom)
  * point is coincident with either end point, they are taken as colinear.
  */
 double
-lwcircle_center(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, POINT4D *result)
+lwcircle_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)
 {
-	POINT4D c;
+	POINT2D c;
 	double cx, cy, cr;
 	double temp, bc, cd, det;
 
-    c.x = c.y = c.z = c.m = 0.0;
+    c.x = c.y = 0.0;
 
 	LWDEBUGF(2, "lwcircle_center called (%.16f,%.16f), (%.16f,%.16f), (%.16f,%.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
 
@@ -157,7 +157,7 @@ static double interpolate_arc(double angle, double a1, double a2, double a3, dou
 static POINTARRAY *
 lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 {
-	POINT4D center;
+	POINT2D center;
 	POINT4D pt;
 	int p2_side = 0;
 	int clockwise = LW_TRUE;
@@ -170,7 +170,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
 
-	radius = lwcircle_center(p1, p2, p3, &center);
+	radius = lwcircle_center((POINT2D*)p1, (POINT2D*)p2, (POINT2D*)p3, &center);
 	p2_side = signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2));
 
 	/* Matched start/end points imply circle */
@@ -527,16 +527,15 @@ lwgeom_segmentize(LWGEOM *geom, uint32_t perQuad)
 */
 static int pt_continues_arc(const POINT4D *a1, const POINT4D *a2, const POINT4D *a3, const POINT4D *b)
 {
-	POINT4D center;
-	POINT4D *centerptr=&center;
-	double radius = lwcircle_center(a1, a2, a3, &center);
+	POINT2D center;
+	double radius = lwcircle_center((POINT2D*)a1, (POINT2D*)a2, (POINT2D*)a3, &center);
 	double b_distance, diff;
 
 	/* Co-linear a1/a2/a3 */
 	if ( radius < 0.0 )
 		return LW_FALSE;
 
-	b_distance = distance2d_pt_pt((POINT2D*)b, (POINT2D*)centerptr);
+	b_distance = distance2d_pt_pt((POINT2D*)b, &center);
 	diff = fabs(radius - b_distance);
 	LWDEBUGF(4, "circle_radius=%g, b_distance=%g, diff=%g, percentage=%g", radius, b_distance, diff, diff/radius);
 	

@@ -213,7 +213,8 @@ int gbox_overlaps(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
-int gbox_overlaps_2d(const GBOX *g1, const GBOX *g2)
+int 
+gbox_overlaps_2d(const GBOX *g1, const GBOX *g2)
 {
 
 	/* Make sure our boxes are consistent */
@@ -323,13 +324,13 @@ size_t gbox_serialized_size(uint8_t flags)
 static int lwcircle_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, GBOX *gbox)
 {
 	POINT2D xmin, ymin, xmax, ymax;
-	POINT4D center;
+	POINT2D center;
 	int p2_side;
 	double radius;
 
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
 
-	radius = lwcircle_center(p1, p2, p3, &center);
+	radius = lwcircle_center((POINT2D*)p1, (POINT2D*)p2, (POINT2D*)p3, &center);
 	
 	/* Negative radius signals straight line, p1/p2/p3 are colinear */
 	if (radius < 0.0)
