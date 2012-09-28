@@ -542,6 +542,48 @@ test_lw_dist2d_arc_arc(void)
 	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
 }
 
+static void
+test_lw_arc_length(void)
+{
+/* double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3) */
+
+	POINT2D A1, A2, A3;
+	double d;
+	
+	/* Unit semicircle at 0,0 */
+	A1.x = -1; A1.y = 0;
+	A2.x = 0 ; A2.y = 1;
+	A3.x = 1 ; A3.y = 0;
+
+	/* Arc above the unit semicircle */
+	d = lw_arc_length(&A1, &A2, &A3);
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI, 0.000001);
+	d = lw_arc_length(&A3, &A2, &A1);
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI, 0.000001);
+
+	/* Unit semicircle at 0,0 */
+	A1.x = 0; A1.y = 1;
+	A2.x = 1; A2.y = 0;
+	A3.x = 0; A3.y = -1;
+
+	/* Arc to right of the unit semicircle */
+	d = lw_arc_length(&A1, &A2, &A3);
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI, 0.000001);
+	d = lw_arc_length(&A3, &A2, &A1);
+	CU_ASSERT_DOUBLE_EQUAL(d, M_PI, 0.000001);
+
+	/* Unit 3/4 circle at 0,0 */
+	A1.x = -1; A1.y = 0;
+	A2.x = 1; A2.y = 0;
+	A3.x = 0; A3.y = -1;
+
+	/* Arc to right of the unit semicircle */
+	d = lw_arc_length(&A1, &A2, &A3);
+	CU_ASSERT_DOUBLE_EQUAL(d, 3*M_PI/2, 0.000001);
+	d = lw_arc_length(&A3, &A2, &A1);
+	CU_ASSERT_DOUBLE_EQUAL(d, 3*M_PI/2, 0.000001);	
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -555,6 +597,7 @@ CU_TestInfo measures_tests[] =
 	PG_TEST(test_lw_dist2d_pt_arc),
 	PG_TEST(test_lw_dist2d_seg_arc),
 	PG_TEST(test_lw_dist2d_arc_arc),
+	PG_TEST(test_lw_arc_length),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo measures_suite = {"PostGIS Measures Suite",  NULL,  NULL, measures_tests};

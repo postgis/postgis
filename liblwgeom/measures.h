@@ -76,3 +76,8 @@ int lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, c
 int lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *B1, const POINT2D *B2, const POINT2D* B3, DISTPTS *dl);
 void lw_dist2d_distpts_init(DISTPTS *dl, int mode);
 
+/*
+* Length primitives
+*/
+double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
+

@@ -861,6 +861,69 @@ lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 }
 
 /**
+* Returns the length of a circular arc segment
+*/
+double
+lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
+{
+	POINT2D C;
+	double radius_A, circumference_A;
+	int a2_side, clockwise;
+	double a1, a2, a3;
+	double angle;
+	
+	if ( lw_arc_is_pt(A1, A2, A3) )
+		return 0.0;
+	
+	radius_A = lwcircle_center(A1, A2, A3, &C);
+
+	/* Co-linear! Return linear distance! */
+	if ( radius_A < 0 ) 
+	{
+		return sqrt((A1->x-A3->x)*(A1->x-A3->x) + (A1->y-A3->y)*(A1->y-A3->y));
+	}
+	
+	/* Closed circle! Return the circumference! */
+	circumference_A = M_PI * 2 * radius_A;
+	if ( p2d_same(A1, A3) )
+		return circumference_A;
+	
+	/* Determine the orientation of the arc */
+	a2_side = signum(lw_segment_side(A1, A3, A2));
+
+	/* The side of the A1/A3 line that A2 falls on dictates the sweep  
+	   direction from A1 to A3. */
+	if ( a2_side == -1 ) 
+		clockwise = LW_TRUE;
+	else 
+		clockwise = LW_FALSE;
+		
+	/* Angles of each point that defines the arc section */
+	a1 = atan2(A1->y - C.y, A1->x - C.x);
+	a2 = atan2(A2->y - C.y, A2->x - C.x);
+	a3 = atan2(A3->y - C.y, A3->x - C.x);
+
+	/* What's the sweep from A1 to A3? */
+	if ( clockwise )
+	{
+		if ( a1 > a3 )
+			angle = a1 - a3;
+		else
+			angle = 2*M_PI + a1 - a3; 
+	}
+	else
+	{
+		if ( a3 > a1 )
+			angle = a3 - a1;
+		else
+			angle = 2*M_PI + a3 - a1; 			
+	}
+
+	/* Length as proportion of circumference */
+	return circumference_A* (angle / (2*M_PI));
+}
+
+/**
 * Calculate the shortest distance between an arc and an edge.
 * Line/circle approach from http://stackoverflow.com/questions/1073336/circle-line-collision-detection 
 */
