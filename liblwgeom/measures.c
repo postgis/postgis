@@ -1957,20 +1957,6 @@ distance2d_pt_seg(const POINT2D *p, const POINT2D *A, const POINT2D *B)
 }
 
 
-
-int
-lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad)
-{
-	POINT2D center;
-
-	center.x = cx;
-	center.y = cy;
-
-	if ( distance2d_pt_pt(p, &center) < rad ) return 1;
-	else return 0;
-
-}
-
 /**
  * Compute the azimuth of segment AB in radians.
  * Return 0 on exception (same point), 1 otherwise.
