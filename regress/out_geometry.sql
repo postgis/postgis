@@ -145,6 +145,17 @@ SELECT 'geojson_options_14', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1
 SELECT 'geojson_options_15', ST_AsGeoJson(GeomFromEWKT('SRID=0;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 7);
 SELECT 'geojson_options_16', ST_AsGeoJson(GeomFromEWKT('SRID=4326;LINESTRING(1 1, 2 2, 3 3, 4 4)'), 0, 7);
 
+-- Out and in to PostgreSQL native geometric types
+WITH p AS ( SELECT '((0,0),(0,1),(1,1),(1,0),(0,0))'::text AS p ) 
+  SELECT 'pgcast_01', p = p::polygon::geometry::polygon::text FROM p;
+WITH p AS ( SELECT '[(0,0),(1,1)]'::text AS p ) 
+  SELECT 'pgcast_02', p = p::path::geometry::path::text FROM p;
+WITH p AS ( SELECT '(1,1)'::text AS p ) 
+  SELECT 'pgcast_03', p = p::point::geometry::point::text FROM p;
+SELECT 'pgcast_03','POLYGON EMPTY'::geometry::polygon IS NULL;
+SELECT 'pgcast_04','LINESTRING EMPTY'::geometry::path IS NULL;
+SELECT 'pgcast_05','POINT EMPTY'::geometry::point IS NULL;
+SELECT 'pgcast_06',ST_AsText('((0,0),(0,1),(1,1),(1,0))'::polygon::geometry);
 
 --
 -- Delete inserted spatial data

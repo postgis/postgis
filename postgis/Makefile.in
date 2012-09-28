@@ -59,7 +59,8 @@ PG_OBJS= \
 	geography_estimate.o \
 	geography_measurement.o \
 	geography_measurement_trees.o \
-	geometry_estimate.o 
+	geometry_estimate.o \
+	geometry_inout.o
 
 # Objects to build using PGXS
 OBJS=$(PG_OBJS)

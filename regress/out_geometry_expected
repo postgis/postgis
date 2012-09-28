@@ -72,3 +72,10 @@ geojson_options_13|{"type":"LineString","coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_14|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_15|{"type":"LineString","bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
 geojson_options_16|{"type":"LineString","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::4326"}},"bbox":[1,1,4,4],"coordinates":[[1,1],[2,2],[3,3],[4,4]]}
+pgcast_01|t
+pgcast_02|t
+pgcast_03|t
+pgcast_03|t
+pgcast_04|t
+pgcast_05|t
+pgcast_06|POLYGON((0 0,0 1,1 1,1 0,0 0))

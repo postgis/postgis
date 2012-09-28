@@ -113,6 +113,49 @@ CREATE OR REPLACE FUNCTION geometry(geometry, integer, boolean)
 CREATE CAST (geometry AS geometry) WITH FUNCTION geometry(geometry, integer, boolean) AS IMPLICIT;
 
 
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION geometry(point)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','point_to_geometry'
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION point(geometry)
+	RETURNS point
+	AS 'MODULE_PATHNAME','geometry_to_point'
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION geometry(path)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','path_to_geometry'
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION path(geometry)
+	RETURNS path
+	AS 'MODULE_PATHNAME','geometry_to_path'
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION geometry(polygon)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','polygon_to_geometry'
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION polygon(geometry)
+	RETURNS polygon
+	AS 'MODULE_PATHNAME','geometry_to_polygon'
+	LANGUAGE 'c' IMMUTABLE STRICT; 
+
+CREATE CAST (geometry AS point) WITH FUNCTION point(geometry);
+CREATE CAST (point AS geometry) WITH FUNCTION geometry(point);
+CREATE CAST (geometry AS path) WITH FUNCTION path(geometry);
+CREATE CAST (path AS geometry) WITH FUNCTION geometry(path);
+CREATE CAST (geometry AS polygon) WITH FUNCTION polygon(geometry);
+CREATE CAST (polygon AS geometry) WITH FUNCTION geometry(polygon);
+
 -------------------------------------------------------------------
 --  BOX3D TYPE
 -- Point coordinate data access
