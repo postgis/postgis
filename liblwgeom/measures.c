@@ -840,11 +840,11 @@ lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT
 * Returns true if P is between A1/A2. Only makes sense if P has already been
 * deterined to be on the line defined by A1/A2.
 */
-static int
+int
 lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
 {
-	return ((A1->x < P->x && P->x < A2->x) || (A1->x > P->x && P->x > A2->x)) ||
-	       ((A1->y < P->y && P->y < A2->y) || (A1->y > P->y && P->y > A2->y));
+	return ((A1->x <= P->x && P->x < A2->x) || (A1->x >= P->x && P->x > A2->x)) ||
+	       ((A1->y <= P->y && P->y < A2->y) || (A1->y >= P->y && P->y > A2->y));
 }
 
 /**

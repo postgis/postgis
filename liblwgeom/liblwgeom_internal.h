@@ -353,6 +353,10 @@ int lwpsurface_is_closed(const LWPSURFACE *psurface);
 int lwtin_is_closed(const LWTIN *tin);
 
 
+
+int lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2);
+int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt);
+
 /**
 * Split a line by a point and push components to the provided multiline.
 * If the point doesn't split the line, push nothing to the container.

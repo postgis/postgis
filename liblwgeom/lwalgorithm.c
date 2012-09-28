@@ -25,11 +25,11 @@ int signum(double n)
 }
 
 /**
-** lw_segment_side()
-**
-** Return < 0.0 if point Q is left of segment P
-** Return > 0.0 if point Q is right of segment P
-** Return = 0.0 if point Q in on segment P
+* lw_segment_side()
+*
+* Return < 0.0 if point Q is left of segment P
+* Return > 0.0 if point Q is right of segment P
+* Return = 0.0 if point Q in on segment P
 */
 double lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
@@ -39,6 +39,7 @@ double lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 	else
 		return side;
 }
+
 
 
 int lw_segment_envelope_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)

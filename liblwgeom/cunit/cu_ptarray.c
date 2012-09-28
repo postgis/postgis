@@ -374,6 +374,95 @@ static void test_ptarray_desegmentize()
 	
 }
 
+static void test_ptarray_contains_point() 
+{
+/* int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt) */
+
+	LWLINE *lwline;
+	POINTARRAY *pa;
+	POINT2D pt;
+	int rv;
+	
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0, 0 1, 1 1, 1 0, 0 0)"));
+	pa = lwline->points;
+
+	/* Point in middle of square */
+	pt.x = 0.5;
+	pt.y = 0.5;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);
+	
+	/* Point on left edge of square */
+	pt.x = 0;
+	pt.y = 0.5;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 0);
+
+	/* Point on top edge of square */
+	pt.x = 0.5;
+	pt.y = 1;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 0);
+
+	/* Point on bottom left corner of square */
+	pt.x = 0;
+	pt.y = 0;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 0);
+
+	/* Point on top left corner of square */
+	pt.x = 0;
+	pt.y = 1;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 0);
+
+	/* Point outside top left corner of square */
+	pt.x = -0.1;
+	pt.y = 1;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, -1);
+
+	/* Point outside top left corner of square */
+	pt.x = 0;
+	pt.y = 1.1;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, -1);
+
+	/* Point outside left side of square */
+	pt.x = -0.2;
+	pt.y = 0.5;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, -1);
+	
+	lwline_free(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0, 1 1, 2 0, 0 0)"));
+	pa = lwline->points;
+	
+	/* Point outside grazing top of triangle */
+	pt.x = 0;
+	pt.y = 1;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, -1);
+
+	lwline_free(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0, 0 4, 1 4, 2 2, 3 4, 4 4, 4 0, 0 0)"));
+	pa = lwline->points;
+
+	/* Point outside grazing top of triangle */
+	pt.x = 1;
+	pt.y = 2;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);
+
+	/* Point outside grazing top of triangle */
+	pt.x = 3;
+	pt.y = 2;
+	rv = ptarray_contains_point(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);
+
+	lwline_free(lwline);
+}
+
 /*
 ** Used by the test harness to register the tests in this file.
 */
@@ -385,6 +474,7 @@ CU_TestInfo ptarray_tests[] =
 	PG_TEST(test_ptarray_isccw),
 	PG_TEST(test_ptarray_desegmentize),
 	PG_TEST(test_ptarray_insert_point),
+	PG_TEST(test_ptarray_contains_point),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo ptarray_suite = {"ptarray", NULL, NULL, ptarray_tests };
