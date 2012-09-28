@@ -485,7 +485,7 @@ static LWPOLY* lwpoly_from_wkb_state(wkb_parse_state *s)
 		}
 
 		/* Check that first and last points are the same. */
-		if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_isclosed2d(pa) )
+		if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_is_closed_2d(pa) )
 		{
 			LWDEBUGF(2, "%s must have closed rings", lwtype_name(s->lwtype));
 			lwerror("%s must have closed rings", lwtype_name(s->lwtype));
@@ -540,13 +540,13 @@ static LWTRIANGLE* lwtriangle_from_wkb_state(wkb_parse_state *s)
 		return NULL;
 	}
 
-	if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_isclosed(pa) )
+	if( s->check & LW_PARSER_CHECK_CLOSURE && ! ptarray_is_closed(pa) )
 	{
 		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 		return NULL;
 	}
 
-	if( s->check & LW_PARSER_CHECK_ZCLOSURE && ! ptarray_isclosedz(pa) )
+	if( s->check & LW_PARSER_CHECK_ZCLOSURE && ! ptarray_is_closed_z(pa) )
 	{
 		lwerror("%s must have closed rings", lwtype_name(s->lwtype));
 		return NULL;

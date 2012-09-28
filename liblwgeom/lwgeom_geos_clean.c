@@ -189,7 +189,7 @@ ptarray_close2d(POINTARRAY* ring)
 	POINTARRAY* newring;
 
 	/* close the ring if not already closed (2d only) */
-	if ( ! ptarray_isclosed2d(ring) )
+	if ( ! ptarray_is_closed_2d(ring) )
 	{
 		/* close it up */
 		newring = ptarray_addPoint(ring,

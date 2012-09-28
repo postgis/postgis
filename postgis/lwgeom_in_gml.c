@@ -1107,8 +1107,8 @@ static LWGEOM* parse_gml_linearring(xmlNodePtr xnode, bool *hasz, int *root_srid
 	ppa[0] = parse_gml_data(xnode->children, hasz, root_srid);
 
 	if (ppa[0]->npoints < 4
-            || (!*hasz && !ptarray_isclosed2d(ppa[0]))
-            ||  (*hasz && !ptarray_isclosed3d(ppa[0])))
+            || (!*hasz && !ptarray_is_closed_2d(ppa[0]))
+            ||  (*hasz && !ptarray_is_closed_3d(ppa[0])))
 	    gml_lwerror("invalid GML representation", 42);
 
 	if (srs.reverse_axis) 
@@ -1160,8 +1160,8 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			ppa[0] = parse_gml_data(xb->children, hasz, root_srid);
 
 			if (ppa[0]->npoints < 4
-			        || (!*hasz && !ptarray_isclosed2d(ppa[0]))
-			        ||  (*hasz && !ptarray_isclosed3d(ppa[0])))
+			        || (!*hasz && !ptarray_is_closed_2d(ppa[0]))
+			        ||  (*hasz && !ptarray_is_closed_3d(ppa[0])))
 				gml_lwerror("invalid GML representation", 43);
 
 			if (srs.reverse_axis) ppa[0] = ptarray_flip_coordinates(ppa[0]);
@@ -1192,8 +1192,8 @@ static LWGEOM* parse_gml_polygon(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			ppa[ring] = parse_gml_data(xb->children, hasz, root_srid);
 
 			if (ppa[ring]->npoints < 4
-			        || (!*hasz && !ptarray_isclosed2d(ppa[ring]))
-			        ||  (*hasz && !ptarray_isclosed3d(ppa[ring])))
+			        || (!*hasz && !ptarray_is_closed_2d(ppa[ring]))
+			        ||  (*hasz && !ptarray_is_closed_3d(ppa[ring])))
 				gml_lwerror("invalid GML representation", 43);
 
 			if (srs.reverse_axis) ppa[ring] = ptarray_flip_coordinates(ppa[ring]);
@@ -1262,8 +1262,8 @@ static LWGEOM* parse_gml_triangle(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			pa = parse_gml_data(xb->children, hasz, root_srid);
 
 			if (pa->npoints != 4
-			        || (!*hasz && !ptarray_isclosed2d(pa))
-			        ||  (*hasz && !ptarray_isclosed3d(pa)))
+			        || (!*hasz && !ptarray_is_closed_2d(pa))
+			        ||  (*hasz && !ptarray_is_closed_3d(pa)))
 				gml_lwerror("invalid GML representation", 46);
 
 			if (srs.reverse_axis) pa = ptarray_flip_coordinates(pa);
@@ -1326,8 +1326,8 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			ppa[0] = parse_gml_data(xb->children, hasz, root_srid);
 
 			if (ppa[0]->npoints < 4
-			        || (!*hasz && !ptarray_isclosed2d(ppa[0]))
-			        ||  (*hasz && !ptarray_isclosed3d(ppa[0])))
+			        || (!*hasz && !ptarray_is_closed_2d(ppa[0]))
+			        ||  (*hasz && !ptarray_is_closed_3d(ppa[0])))
 				gml_lwerror("invalid GML representation", 48);
 
 			if (srs.reverse_axis)
@@ -1353,8 +1353,8 @@ static LWGEOM* parse_gml_patch(xmlNodePtr xnode, bool *hasz, int *root_srid)
 			ppa[ring] = parse_gml_data(xb->children, hasz, root_srid);
 
 			if (ppa[ring]->npoints < 4
-			        || (!*hasz && !ptarray_isclosed2d(ppa[ring]))
-			        || ( *hasz && !ptarray_isclosed3d(ppa[ring])))
+			        || (!*hasz && !ptarray_is_closed_2d(ppa[ring]))
+			        || ( *hasz && !ptarray_is_closed_3d(ppa[ring])))
 				gml_lwerror("invalid GML representation", 49);
 
 			if (srs.reverse_axis)

@@ -256,7 +256,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 
 	if ( shell->points->npoints < 4 )
 		lwerror("lwpoly_from_lwlines: shell must have at least 4 points");
-	if ( ! ptarray_isclosed2d(shell->points) )
+	if ( ! ptarray_is_closed_2d(shell->points) )
 		lwerror("lwpoly_from_lwlines: shell must be closed");
 	rings[0] = ptarray_clone_deep(shell->points);
 
@@ -269,7 +269,7 @@ lwpoly_from_lwlines(const LWLINE *shell,
 
 		if ( hole->points->npoints < 4 )
 			lwerror("lwpoly_from_lwlines: holes must have at least 4 points");
-		if ( ! ptarray_isclosed2d(hole->points) )
+		if ( ! ptarray_is_closed_2d(hole->points) )
 			lwerror("lwpoly_from_lwlines: holes must be closed");
 
 		rings[nrings] = ptarray_clone_deep(hole->points);
@@ -486,12 +486,12 @@ lwpoly_is_closed(const LWPOLY *poly)
 	{
 		if (FLAGS_GET_Z(poly->flags))
 		{
-			if ( ! ptarray_isclosed3d(poly->rings[i]) )
+			if ( ! ptarray_is_closed_3d(poly->rings[i]) )
 				return LW_FALSE;
 		}
 		else
 		{	
-			if ( ! ptarray_isclosed2d(poly->rings[i]) )
+			if ( ! ptarray_is_closed_2d(poly->rings[i]) )
 				return LW_FALSE;
 		}
 	}

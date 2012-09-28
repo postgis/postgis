@@ -662,31 +662,31 @@ ptarray_clone(const POINTARRAY *in)
 * pointarray.
 */
 int
-ptarray_isclosed(const POINTARRAY *in)
+ptarray_is_closed(const POINTARRAY *in)
 {
 	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), ptarray_point_size(in));
 }
 
 
 int
-ptarray_isclosed2d(const POINTARRAY *in)
+ptarray_is_closed_2d(const POINTARRAY *in)
 {
 	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT2D));
 }
 
 int
-ptarray_isclosed3d(const POINTARRAY *in)
+ptarray_is_closed_3d(const POINTARRAY *in)
 {
 	return 0 == memcmp(getPoint_internal(in, 0), getPoint_internal(in, in->npoints-1), sizeof(POINT3D));
 }
 
 int
-ptarray_isclosedz(const POINTARRAY *in)
+ptarray_is_closed_z(const POINTARRAY *in)
 {
 	if ( FLAGS_GET_Z(in->flags) )
-		return ptarray_isclosed3d(in);
+		return ptarray_is_closed_3d(in);
 	else
-		return ptarray_isclosed2d(in);
+		return ptarray_is_closed_2d(in);
 }
 
 

@@ -420,7 +420,7 @@ LWGEOM* wkt_parser_triangle_new(POINTARRAY *pa, char *dimensionality)
 	}	
 	
 	/* Triangles need closure. */	
-	if( ! ptarray_isclosed(pa) )
+	if( ! ptarray_is_closed(pa) )
 	{
 		ptarray_free(pa);
 		SET_PARSER_ERROR(PARSER_ERROR_UNCLOSED);
@@ -486,7 +486,7 @@ LWGEOM* wkt_parser_polygon_add_ring(LWGEOM *poly, POINTARRAY *pa, char dimcheck)
 	
 	/* Apply check for not closed rings, if requested. */	
 	if( (global_parser_result.parser_check_flags & LW_PARSER_CHECK_CLOSURE) && 
-	    ! (dimcheck == 'Z' ? ptarray_isclosedz(pa) : ptarray_isclosed2d(pa)) )
+	    ! (dimcheck == 'Z' ? ptarray_is_closed_z(pa) : ptarray_is_closed_2d(pa)) )
 	{
 		ptarray_free(pa);
 		lwgeom_free(poly);

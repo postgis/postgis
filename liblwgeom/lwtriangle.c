@@ -133,8 +133,8 @@ lwtriangle_from_lwline(const LWLINE *shell)
 	if ( shell->points->npoints != 4 )
 		lwerror("lwtriangle_from_lwline: shell must have exactly 4 points");
 
-	if (   (!FLAGS_GET_Z(shell->flags) && !ptarray_isclosed2d(shell->points)) ||
-	        (FLAGS_GET_Z(shell->flags) && !ptarray_isclosed3d(shell->points)) )
+	if (   (!FLAGS_GET_Z(shell->flags) && !ptarray_is_closed_2d(shell->points)) ||
+	        (FLAGS_GET_Z(shell->flags) && !ptarray_is_closed_3d(shell->points)) )
 		lwerror("lwtriangle_from_lwline: shell must be closed");
 
 	pa = ptarray_clone_deep(shell->points);
