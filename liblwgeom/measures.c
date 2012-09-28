@@ -1861,34 +1861,6 @@ End of Functions in common for Brute force and new calculation
 --------------------------------------------------------------------------------------------------------------*/
 
 
-/*Mixed functions*/
-
-
-/**
-
- true if point is in poly (and not in its holes)
- It's not used by postgis but since I don't know what else
- can be affectes in the world I don't dare removing it.
- */
-int
-pt_in_poly_2d(const POINT2D *p, const LWPOLY *poly)
-{
-	int i;
-
-	/* Not in outer ring */
-	if ( ! pt_in_ring_2d(p, poly->rings[0]) ) return 0;
-
-	/* Check holes */
-	for (i=1; i<poly->nrings; i++)
-	{
-		/* Inside a hole */
-		if ( pt_in_ring_2d(p, poly->rings[i]) ) return 0;
-	}
-
-	return 1; /* In outer ring, not in holes */
-}
-
-
 /**
 The old function nessecary for ptarray_segmentize2d in ptarray.c
 */
