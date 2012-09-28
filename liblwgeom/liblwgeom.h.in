@@ -765,6 +765,14 @@ extern POINT2D getPoint2d(const POINTARRAY *pa, int n);
  */
 extern int getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point);
 
+/**
+* Returns a pointer into the POINTARRAY serialized_ptlist, 
+* suitable for reading from. This is very high performance
+* and declared const because you aren't allowed to muck with the 
+* values, only read them.
+*/
+extern const POINT2D* getPoint2d_cp(const POINTARRAY *pa, int n);
+
 /*
  * set point N to the given value
  * NOTE that the pointarray can be of any

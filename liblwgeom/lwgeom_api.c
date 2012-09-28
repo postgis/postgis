@@ -448,6 +448,27 @@ getPoint2d_p(const POINTARRAY *pa, int n, POINT2D *point)
 	return 1;
 }
 
+/**
+* Returns a pointer into the POINTARRAY serialized_ptlist, 
+* suitable for reading from. This is very high performance
+* and declared const because you aren't allowed to muck with the 
+* values, only read them.
+*/
+const POINT2D*
+getPoint2d_cp(const POINTARRAY *pa, int n)
+{
+	if ( ! pa ) return 0;
+
+	if ( (n<0) || (n>=pa->npoints))
+	{
+		lwerror("getPoint2D_const_p: point offset out of range");
+		return 0; /*error */
+	}
+
+	return (const POINT2D*)getPoint_internal(pa, n);
+}
+
+
 /*
  * set point N to the given value
  * NOTE that the pointarray can be of any
