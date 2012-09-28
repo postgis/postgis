@@ -1077,7 +1077,7 @@ extern double ptarray_length(const POINTARRAY *pts);
 extern int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 extern int pt_in_poly_2d(const POINT2D *p, const LWPOLY *poly);
 extern int azimuth_pt_pt(const POINT2D *p1, const POINT2D *p2, double *ret);
-extern int lwgeom_pt_inside_circle(POINT2D *p, double cx, double cy, double rad);
+extern int lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double rad);
 extern void lwgeom_reverse(LWGEOM *lwgeom);
 extern void lwline_reverse(LWLINE *line);
 extern void lwpoly_reverse(LWPOLY *poly);

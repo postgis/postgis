@@ -1027,22 +1027,24 @@ Datum LWGEOM_inside_circle_point(PG_FUNCTION_ARGS)
 	double cx = PG_GETARG_FLOAT8(1);
 	double cy = PG_GETARG_FLOAT8(2);
 	double rr = PG_GETARG_FLOAT8(3);
-	LWPOINT *point;
-	POINT2D pt;
+	LWPOINT *lwpoint;
+	LWGEOM *lwgeom;
+	int inside;
 
 	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
-	point = lwgeom_as_lwpoint(lwgeom_from_gserialized(geom));
-	if ( point == NULL )
+	lwgeom = lwgeom_from_gserialized(geom);
+	lwpoint = lwgeom_as_lwpoint(lwgeom);
+	if ( lwpoint == NULL || lwgeom_is_empty(lwgeom) )
 	{
 		PG_FREE_IF_COPY(geom, 0);
 		PG_RETURN_NULL(); /* not a point */
 	}
 
-	getPoint2d_p(point->point, 0, &pt);
+	inside = lwpoint_inside_circle(lwpoint, cx, cy, rr);
+	lwpoint_free(lwpoint);
 
 	PG_FREE_IF_COPY(geom, 0);
-
-	PG_RETURN_BOOL(lwgeom_pt_inside_circle(&pt, cx, cy, rr));
+	PG_RETURN_BOOL(inside);
 }
 
 /**

@@ -528,6 +528,26 @@ lwgeom_same(const LWGEOM *lwgeom1, const LWGEOM *lwgeom2)
 
 }
 
+int
+lwpoint_inside_circle(const LWPOINT *p, double cx, double cy, double rad)
+{
+	POINT2D center;
+	POINT2D pt;
+
+	if ( ! p || ! p->point )
+		return LW_FALSE;
+		
+	getPoint2d_p(p->point, 0, &pt);
+
+	center.x = cx;
+	center.y = cy;
+
+	if ( distance2d_pt_pt(&pt, &center) < rad ) 
+		return LW_TRUE;
+
+	return LW_FALSE;
+}
+
 void
 lwgeom_drop_bbox(LWGEOM *lwgeom)
 {
