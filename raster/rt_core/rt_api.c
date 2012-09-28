@@ -982,25 +982,25 @@ rt_pixtype_index_from_name(const char* pixname) {
 
 	if (strcmp(pixname, "1BB") == 0)
 		return PT_1BB;
-	if (strcmp(pixname, "2BUI") == 0)
+	else if (strcmp(pixname, "2BUI") == 0)
 		return PT_2BUI;
-	if (strcmp(pixname, "4BUI") == 0)
+	else if (strcmp(pixname, "4BUI") == 0)
 		return PT_4BUI;
-	if (strcmp(pixname, "8BSI") == 0)
+	else if (strcmp(pixname, "8BSI") == 0)
 		return PT_8BSI;
-	if (strcmp(pixname, "8BUI") == 0)
+	else if (strcmp(pixname, "8BUI") == 0)
 		return PT_8BUI;
-	if (strcmp(pixname, "16BSI") == 0)
+	else if (strcmp(pixname, "16BSI") == 0)
 		return PT_16BSI;
-	if (strcmp(pixname, "16BUI") == 0)
+	else if (strcmp(pixname, "16BUI") == 0)
 		return PT_16BUI;
-	if (strcmp(pixname, "32BSI") == 0)
+	else if (strcmp(pixname, "32BSI") == 0)
 		return PT_32BSI;
-	if (strcmp(pixname, "32BUI") == 0)
+	else if (strcmp(pixname, "32BUI") == 0)
 		return PT_32BUI;
-	if (strcmp(pixname, "32BF") == 0)
+	else if (strcmp(pixname, "32BF") == 0)
 		return PT_32BF;
-	if (strcmp(pixname, "64BF") == 0)
+	else if (strcmp(pixname, "64BF") == 0)
 		return PT_64BF;
 
 	return PT_END;
@@ -8088,16 +8088,16 @@ rt_raster_is_empty(rt_raster raster) {
 }
 
 /**
- * Return TRUE if the raster do not have a band of this number.
+ * Return TRUE if the raster has a band of this number.
  *
  * @param raster: the raster to get info from
  * @param nband: the band number. 0-based
  *
- * @return TRUE if the raster do not have a band of this number, FALSE otherwise
+ * @return TRUE if the raster has a band of this number, FALSE otherwise
  */
 int
-rt_raster_has_no_band(rt_raster raster, int nband) {
-	return (NULL == raster || nband >= raster->numBands || nband < 0);
+rt_raster_has_band(rt_raster raster, int nband) {
+	return !(NULL == raster || nband >= raster->numBands || nband < 0);
 }
 
 /**
@@ -12230,12 +12230,6 @@ rt_raster_from_two_rasters(
 
 	*noerr = 0;
 
-	/* rasters must have same srid */
-	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
-		rterror("rt_raster_from_two_rasters: The two rasters provided do not have the same SRID");
-		return NULL;
-	}
-
 	/* rasters must be aligned */
 	if (!rt_raster_same_alignment(rast1, rast2, &aligned)) {
 		rterror("rt_raster_from_two_rasters: Unable to test for alignment on the two rasters");
@@ -12984,8 +12978,8 @@ _rti_param_populate(
 		_param->band[i] = NULL;
 		_param->offset[i] = NULL;
 
-		/* set isnull and isempty */
-		if (itrset[i].rast == NULL) {
+		/* set isempty */
+		if (itrset[i].raster == NULL) {
 			_param->isempty[i] = 1;
 
 			(*allnull)++;
@@ -12993,7 +12987,7 @@ _rti_param_populate(
 
 			continue;
 		}
-		else if (rt_raster_is_empty(itrset[i].rast)) {
+		else if (rt_raster_is_empty(itrset[i].raster)) {
 			_param->isempty[i] = 1;
 
 			(*allempty)++;
@@ -13002,13 +12996,13 @@ _rti_param_populate(
 		}
 
 		/* check band number */
-		if (rt_raster_has_no_band(itrset[i].rast, itrset[i].nband)) {
+		if (!rt_raster_has_band(itrset[i].raster, itrset[i].nband)) {
 			rterror("_rti_param_populate: Band %d not found for raster %d", itrset[i].nband, i);
 			return 0;
 		}
 
-		_param->raster[i] = itrset[i].rast;
-		_param->band[i] = rt_raster_get_band(itrset[i].rast, itrset[i].nband);
+		_param->raster[i] = itrset[i].raster;
+		_param->band[i] = rt_raster_get_band(itrset[i].raster, itrset[i].nband);
 		if (_param->band[i] == NULL) {
 			rterror("_rti_param_populate: Unable to get band %d for raster %d", itrset[i].nband, i);
 			return 0;
@@ -13684,12 +13678,14 @@ rt_raster_iterator(
 				}
 
 				/* no pixels in neighborhood */
+				/*
 				if (!status) {
 					RASTER_DEBUG(3, "no pixels in neighborhood, using empty");
 					_param->arg->values[i] = _param->empty.values;
 					_param->arg->nodata[i] = _param->empty.nodata;
 					continue;
 				}
+				*/
 
 				/* convert set of rt_pixel to 2D array */
 				status = rt_pixel_set_to_array(

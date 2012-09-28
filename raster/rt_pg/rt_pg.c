@@ -352,6 +352,10 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
 /* one-raster neighborhood MapAlgebra */
 Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS);
 
+/* raster union aggregate */
+Datum RASTER_union_transfn(PG_FUNCTION_ARGS);
+Datum RASTER_union_finalfn(PG_FUNCTION_ARGS);
+
 /* string replacement function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
@@ -4574,7 +4578,7 @@ Datum RASTER_hasNoBand(PG_FUNCTION_ARGS)
 
     /* Get band number */
     bandindex = PG_GETARG_INT32(1);
-    hasnoband = rt_raster_has_no_band(raster, bandindex - 1);
+    hasnoband = !rt_raster_has_band(raster, bandindex - 1);
 
     rt_raster_destroy(raster);
     PG_FREE_IF_COPY(pgraster, 0);
@@ -4718,7 +4722,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
      * Check if the raster has the required band. Otherwise, return a raster
      * without band
      **/
-    if (rt_raster_has_no_band(raster, nband - 1)) {
+    if (!rt_raster_has_band(raster, nband - 1)) {
         elog(NOTICE, "Raster does not have the required band. Returning a raster "
                 "without a band");
         rt_raster_destroy(raster);
@@ -5379,7 +5383,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
      * Check if the raster has the required band. Otherwise, return a raster
      * without band
      **/
-    if (rt_raster_has_no_band(raster, nband - 1)) {
+    if (!rt_raster_has_band(raster, nband - 1)) {
         elog(NOTICE, "Raster does not have the required band. Returning a raster "
             "without a band");
         rt_raster_destroy(raster);
@@ -12011,6 +12015,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	}
 
 	/* SRID must match */
+	/*
 	if (rt_raster_get_srid(_rast[0]) != rt_raster_get_srid(_rast[1])) {
 		elog(NOTICE, "The two rasters provided have different SRIDs.  Returning NULL");
 		for (k = 0; k < set_count; k++) {
@@ -12021,6 +12026,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		}
 		PG_RETURN_NULL();
 	}
+	*/
 
 	/* same alignment */
 	if (!rt_raster_same_alignment(_rast[0], _rast[1], &aligned)) {
@@ -12122,7 +12128,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			}
 
 			/* specified band not found */
-			if (rt_raster_has_no_band(_rast[i], bandindex[i] - 1)) {
+			if (!rt_raster_has_band(_rast[i], bandindex[i] - 1)) {
 				elog(NOTICE, "The %s raster does not have the band at index %d.  Returning no band raster of correct extent",
 					(i != 1 ? "FIRST" : "SECOND"), bandindex[i]
 				);
@@ -12187,12 +12193,23 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 				PG_RETURN_POINTER(pgrtn);
 			}
 			break;
+		case ET_LAST:
+		case ET_CUSTOM:
+			elog(ERROR, "RASTER_mapAlgebra2: ET_LAST and ET_CUSTOM are not implemented");
+			for (k = 0; k < set_count; k++) {
+				if (_rast[k] != NULL)
+					rt_raster_destroy(_rast[k]);
+				if (pgrastpos[k] != -1)
+					PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
+			PG_RETURN_NULL();
+			break;
 	}
 
 	/* both rasters do not have specified bands */
 	if (
-		(!_isempty[0] && rt_raster_has_no_band(_rast[0], bandindex[0] - 1)) &&
-		(!_isempty[1] && rt_raster_has_no_band(_rast[1], bandindex[1] - 1))
+		(!_isempty[0] && !rt_raster_has_band(_rast[0], bandindex[0] - 1)) &&
+		(!_isempty[1] && !rt_raster_has_band(_rast[1], bandindex[1] - 1))
 	) {
 		elog(NOTICE, "The two rasters provided do not have the respectively specified band indices.  Returning no band raster of correct extent");
 
@@ -12213,7 +12230,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 	/* get bands */
 	for (i = 0; i < set_count; i++) {
-		if (_isempty[i] || rt_raster_has_no_band(_rast[i], bandindex[i] - 1)) {
+		if (_isempty[i] || !rt_raster_has_band(_rast[i], bandindex[i] - 1)) {
 			_hasnodata[i] = 1;
 			_nodataval[i] = 0;
 
@@ -13058,7 +13075,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
      * Check if the raster has the required band. Otherwise, return a raster
      * without band
      **/
-    if (rt_raster_has_no_band(raster, nband - 1)) {
+    if (!rt_raster_has_band(raster, nband - 1)) {
         elog(NOTICE, "Raster does not have the required band. Returning a raster "
             "without a band");
         rt_raster_destroy(raster);
@@ -13520,6 +13537,524 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     
     SET_VARSIZE(pgrtn, pgrtn->size);    
     PG_RETURN_POINTER(pgrtn);
+}
+
+/* ---------------------------------------------------------------- */
+/*  ST_Union aggregate functions                                    */
+/* ---------------------------------------------------------------- */
+
+typedef enum {
+	UT_LAST = 0,
+	UT_FIRST,
+	UT_MIN,
+	UT_MAX,
+	UT_COUNT,
+	UT_SUM,
+	UT_MEAN
+} rtpg_union_type;
+
+typedef struct {
+	int numraster;
+	rt_raster *raster;
+
+	rtpg_union_type uniontype;
+} rtpg_union_arg;
+
+/* internal function translating text of UNION type to enum */
+static rtpg_union_type rtpg_uniontype_index_from_name(const char *cutype) {
+	assert(cutype && strlen(cutype) > 0);
+
+	if (strcmp(cutype, "LAST") == 0)
+		return UT_LAST;
+	else if (strcmp(cutype, "FIRST") == 0)
+		return UT_FIRST;
+	else if (strcmp(cutype, "MIN") == 0)
+		return UT_MIN;
+	else if (strcmp(cutype, "MAX") == 0)
+		return UT_MAX;
+	else if (strcmp(cutype, "COUNT") == 0)
+		return UT_COUNT;
+	else if (strcmp(cutype, "SUM") == 0)
+		return UT_SUM;
+	else if (strcmp(cutype, "MEAN") == 0)
+		return UT_MEAN;
+
+	return UT_LAST;
+}
+
+static int rtpg_union_callback(
+	rt_iterator_arg arg, void *userarg,
+	double *value, int *nodata
+) {
+	rtpg_union_type *utype = (rtpg_union_type *) userarg;
+
+	if (arg == NULL)
+		return 0;
+
+	if (
+		arg->rasters != 2 ||
+		arg->rows != 1 ||
+		arg->columns != 1
+	) {
+		elog(ERROR, "rtpg_union_callback: Invalid arguments passed to callback");
+		return 0;
+	}
+
+	*value = 0;
+	*nodata = 0;
+
+	/* handle NODATA situations except for COUNT, which is a special case */
+	if (*utype != UT_COUNT) {
+		/* both NODATA */
+		if (arg->nodata[0][0][0] && arg->nodata[1][0][0]) {
+			*nodata = 1;
+			return 1;
+		}
+		/* second NODATA */
+		else if (!arg->nodata[0][0][0] && arg->nodata[1][0][0]) {
+			*value = arg->values[0][0][0];
+			return 1;
+		}
+		/* first NODATA */
+		else if (arg->nodata[0][0][0] && !arg->nodata[1][0][0]) {
+			*value = arg->values[1][0][0];
+			return 1;
+		}
+	}
+
+	switch (*utype) {
+		case UT_FIRST:
+			*value = arg->values[0][0][0];
+			break;
+		case UT_MIN:
+			if (arg->values[0][0][0] < arg->values[1][0][0])
+				*value = arg->values[0][0][0];
+			else
+				*value = arg->values[1][0][0];
+			break;
+		case UT_MAX:
+			if (arg->values[0][0][0] > arg->values[1][0][0])
+				*value = arg->values[0][0][0];
+			else
+				*value = arg->values[1][0][0];
+			break;
+		case UT_COUNT:
+			/* both NODATA */
+			if (arg->nodata[0][0][0] && arg->nodata[1][0][0])
+				*value = 0;
+			/* second NODATA */
+			else if (!arg->nodata[0][0][0] && arg->nodata[1][0][0])
+				*value = arg->values[0][0][0];
+			/* first NODATA */
+			else if (arg->nodata[0][0][0] && !arg->nodata[1][0][0])
+				*value = 1;
+			/* has value, increment */
+			else
+				*value = arg->values[0][0][0] + 1;
+			break;
+		case UT_SUM:
+			*value = arg->values[0][0][0] + arg->values[1][0][0];
+			break;
+		case UT_MEAN:
+			break;
+		case UT_LAST:
+		default:
+			*value = arg->values[1][0][0];
+			break;
+	}
+
+	return 1;
+}
+
+static int rtpg_union_mean_callback(
+	rt_iterator_arg arg, void *userarg,
+	double *value, int *nodata
+) {
+	if (arg == NULL)
+		return 0;
+
+	if (
+		arg->rasters != 2 ||
+		arg->rows != 1 ||
+		arg->columns != 1
+	) {
+		elog(ERROR, "rtpg_union_mean_callback: Invalid arguments passed to callback");
+		return 0;
+	}
+
+	*value = 0;
+	*nodata = 1;
+
+	if (
+		!arg->nodata[0][0][0] &&
+		FLT_NEQ(arg->values[0][0][0], 0) &&
+		!arg->nodata[1][0][0]
+	) {
+		*value = arg->values[1][0][0] / arg->values[0][0][0];
+		*nodata = 0;
+	}
+
+	return 1;
+}
+
+/* UNION aggregate transition function */
+PG_FUNCTION_INFO_V1(RASTER_union_transfn);
+Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
+{
+	MemoryContext aggcontext;
+	MemoryContext oldcontext;
+	rtpg_union_arg *iwr;
+
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster = NULL;
+	rt_raster _raster = NULL;
+	rt_band _band = NULL;
+	int nband = 1;
+	int noerr = 1;
+	int isempty[2] = {0};
+	int hasband[2] = {0};
+
+	int i = 0;
+
+	rt_iterator itrset;
+	char *utypename = NULL;
+	rtpg_union_type utype = UT_LAST;
+	rt_pixtype pixtype = PT_END;
+	int hasnodata = 1;
+	double nodataval = 0;
+
+	/* cannot be called directly as this is exclusive aggregate function */
+	if (!AggCheckCallContext(fcinfo, &aggcontext)) {
+		elog(ERROR, "RASTER_union_transfn: Cannot be called in a non-aggregate context");
+		PG_RETURN_NULL();
+	}
+
+	/* switch to aggcontext */
+	oldcontext = MemoryContextSwitchTo(aggcontext);
+
+	if (PG_ARGISNULL(0)) {
+		/* allocate container in aggcontext */
+		iwr = (rtpg_union_arg *) palloc(sizeof(rtpg_union_arg));
+
+		iwr->numraster = 1;
+		iwr->raster = NULL;
+		iwr->uniontype = UT_LAST;
+	}
+	else
+		iwr = (rtpg_union_arg *) PG_GETARG_POINTER(0);
+
+	/* raster arg is NOT NULL */
+	if (!PG_ARGISNULL(1)) {
+		/* deserialize raster */
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(1));
+
+		/* Get raster object */
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (raster == NULL) {
+			elog(ERROR, "RASTER_union_transfn: Could not deserialize raster");
+
+			pfree(iwr->raster);
+			pfree(iwr);
+			PG_FREE_IF_COPY(pgraster, 1);
+
+			MemoryContextSwitchTo(oldcontext);
+			PG_RETURN_NULL();
+		}
+	}
+
+	/* if more than 2 arguments, determine the type of argument 3 */
+	/* band number or UNION type */
+	if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) {
+		Oid calltype = get_fn_expr_argtype(fcinfo->flinfo, 3);
+
+		switch (calltype) {
+			/* UNION type */
+			case TEXTOID:
+				utypename = text_to_cstring(PG_GETARG_TEXT_P(3));
+				utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
+				iwr->uniontype = utype;
+				break;
+			case INT2OID:
+			case INT4OID:
+				nband = PG_GETARG_INT32(2);
+				if (nband < 1) {
+					elog(ERROR, "RASTER_union_transfn: Band number must be greater than zero (1-based)");
+
+					pfree(iwr->raster);
+					pfree(iwr);
+					if (raster != NULL) {
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 1);
+					}
+
+					MemoryContextSwitchTo(oldcontext);
+					PG_RETURN_NULL();
+				}
+				break;
+		}
+	}
+
+	/* UNION type */
+	if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) {
+		utypename = text_to_cstring(PG_GETARG_TEXT_P(3));
+		utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
+		iwr->uniontype = utype;
+	}
+	if (utype == UT_MEAN)
+		iwr->numraster = 2;
+
+	/* allocate iwr->raster */
+	if (iwr->raster == NULL) {
+		iwr->raster = (rt_raster *) rtalloc(sizeof(rt_raster) * iwr->numraster);
+		if (iwr->raster == NULL) {
+			elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for pointer to raster");
+
+			pfree(iwr);
+			if (raster != NULL) {
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 1);
+			}
+
+			MemoryContextSwitchTo(oldcontext);
+			PG_RETURN_NULL();
+		}
+
+		memset(iwr->raster, 0, sizeof(rt_raster) * iwr->numraster);
+	}
+
+	for (i = 0; i < iwr->numraster; i++) {
+		/* raster flags */
+		isempty[0] = rt_raster_is_empty(iwr->raster[i]);
+		isempty[1] = rt_raster_is_empty(raster);
+		if (!isempty[0])
+			hasband[0] = rt_raster_has_band(iwr->raster[i], 0);
+		if (!isempty[1])
+			hasband[1] = rt_raster_has_band(raster, nband - 1);
+
+		/* determine pixtype, hasnodata and nodataval */
+		_band = NULL;
+		if (!isempty[0] && hasband[0])
+			_band = rt_raster_get_band(iwr->raster[i], 0);
+		else if (!isempty[1] && hasband[1])
+			_band = rt_raster_get_band(raster, nband - 1);
+		else {
+			pixtype = PT_64BF;
+			hasnodata = 1;
+			nodataval = rt_pixtype_get_min_value(pixtype);
+		}
+		if (_band != NULL) {
+			pixtype = rt_band_get_pixtype(_band);
+			hasnodata = rt_band_get_hasnodata_flag(_band);
+			if (hasnodata)
+				nodataval = rt_band_get_nodata(_band);
+		}
+
+		/* UT_MEAN requires two passes, first for UT_COUNT and second for UT_SUM */
+		if (iwr->uniontype == UT_MEAN) {
+			/* first pass, UT_COUNT */
+			if (i < 1)
+				utype = UT_COUNT;
+			else
+				utype = UT_SUM;
+		}
+
+		/* force band settings for UT_COUNT */
+		if (utype == UT_COUNT) {
+			pixtype = PT_32BUI;
+			hasnodata = 0;
+			nodataval = 0;
+		}
+
+		/* build itrset */
+		itrset = palloc(sizeof(struct rt_iterator_t) * 2);
+		if (itrset == NULL) {
+			elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for iterator arguments");
+
+			pfree(iwr->raster);
+			pfree(iwr);
+			if (raster != NULL) {
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 1);
+			}
+
+			MemoryContextSwitchTo(oldcontext);
+			PG_RETURN_NULL();
+		}
+
+		itrset[0].raster = iwr->raster[i];
+		itrset[0].nband = 0;
+		itrset[1].raster = raster;
+		itrset[1].nband = nband - 1;
+
+		/* pass everything to iterator */
+		_raster = rt_raster_iterator(
+			itrset, 2,
+			ET_UNION, NULL,
+			pixtype,
+			hasnodata, nodataval,
+			0, 0,
+			&utype,
+			rtpg_union_callback,
+			&noerr
+		);
+
+		/* proactive cleanup */
+		pfree(itrset);
+
+		if (!noerr) {
+			elog(ERROR, "RASTER_union_transfn: Unable to run raster interator function");
+
+			pfree(iwr->raster);
+			pfree(iwr);
+			if (raster != NULL) {
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 1);
+			}
+
+			MemoryContextSwitchTo(oldcontext);
+			PG_RETURN_NULL();
+		}
+
+		/* replace working raster */
+		if (iwr->raster[i] != NULL)
+			rt_raster_destroy(iwr->raster[i]);
+		iwr->raster[i] = _raster;
+	}
+
+	if (raster != NULL) {
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 1);
+	}
+
+	/* switch back to local context */
+	MemoryContextSwitchTo(oldcontext);
+
+	PG_RETURN_POINTER(iwr);
+}
+
+/* UNION aggregate final function */
+PG_FUNCTION_INFO_V1(RASTER_union_finalfn);
+Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
+{
+	rtpg_union_arg *iwr;
+	rt_pgraster *pgraster = NULL;
+
+	/* cannot be called directly as this is exclusive aggregate function */
+	if (!AggCheckCallContext(fcinfo, NULL)) {
+		elog(ERROR, "RASTER_union_finalfn: Cannot be called in a non-aggregate context");
+		PG_RETURN_NULL();
+	}
+
+	/* NULL, return null */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	iwr = (rtpg_union_arg *) PG_GETARG_POINTER(0);
+
+	/* all UNION types except UT_MEAN have one raster */
+	if (iwr->numraster < 2) {
+		/* return NULL if raster is NULL */
+		if (iwr->raster[0] == NULL) {
+			pfree(iwr->raster);
+			pfree(iwr);
+			PG_RETURN_NULL();
+		}
+
+		pgraster = rt_raster_serialize(iwr->raster[0]);
+		rt_raster_destroy(iwr->raster[0]);
+		pfree(iwr->raster);
+		pfree(iwr);
+	}
+	/* special case for UT_MEAN */
+	else {
+		int i;
+
+		/* return NULL if either raster is NULL */
+		if (iwr->raster[0] == NULL || iwr->raster[1] == NULL) {
+			for (i = 0; i < iwr->numraster; i++) {
+				if (iwr->raster[i] != NULL)
+					rt_raster_destroy(iwr->raster[i]);
+			}
+			pfree(iwr->raster);
+			pfree(iwr);
+			PG_RETURN_NULL();
+		}
+
+		/* if second raster is empty, return empty raster */
+		if (rt_raster_is_empty(iwr->raster[1])) {
+			pgraster = rt_raster_serialize(iwr->raster[1]);
+
+			for (i = 0; i < iwr->numraster; i++)
+				rt_raster_destroy(iwr->raster[i]);
+			pfree(iwr->raster);
+			pfree(iwr);
+		}
+		else {
+			rt_iterator itrset;
+			rt_raster _raster = NULL;
+			rt_band _band = NULL;
+			rt_pixtype pixtype;
+			int hasnodata = 1;
+			double nodataval = 0;
+			int noerr = 1;
+
+			_band = rt_raster_get_band(iwr->raster[1], 0);
+			pixtype = rt_band_get_pixtype(_band);
+			hasnodata = rt_band_get_hasnodata_flag(_band);
+			if (hasnodata)
+				nodataval = rt_band_get_nodata(_band);
+
+			/* build itrset */
+			itrset = palloc(sizeof(struct rt_iterator_t) * 2);
+			if (itrset == NULL) {
+				elog(ERROR, "RASTER_union_finalfn: Unable to allocate memory for iterator arguments");
+
+				for (i = 0; i < iwr->numraster; i++)
+					rt_raster_destroy(iwr->raster[i]);
+				pfree(iwr->raster);
+				pfree(iwr);
+				PG_RETURN_NULL();
+			}
+
+			itrset[0].raster = iwr->raster[0];
+			itrset[0].nband = 0;
+			itrset[1].raster = iwr->raster[1];
+			itrset[1].nband = 0;
+
+			/* pass everything to iterator */
+			_raster = rt_raster_iterator(
+				itrset, 2,
+				ET_UNION, NULL,
+				pixtype,
+				hasnodata, nodataval,
+				0, 0,
+				NULL,
+				rtpg_union_mean_callback,
+				&noerr
+			);
+
+			/* proactive cleanup */
+			pfree(itrset);
+			for (i = 0; i < iwr->numraster; i++)
+				rt_raster_destroy(iwr->raster[i]);
+			pfree(iwr->raster);
+			pfree(iwr);
+
+			if (!noerr) {
+				elog(ERROR, "RASTER_union_finalfn: Unable to run raster interator function");
+				PG_RETURN_NULL();
+			}
+
+			pgraster = rt_raster_serialize(_raster);
+			rt_raster_destroy(_raster);
+		}
+	}
+
+	if (!pgraster)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgraster, pgraster->size);
+	PG_RETURN_POINTER(pgraster);
 }
 
 /* ---------------------------------------------------------------- */

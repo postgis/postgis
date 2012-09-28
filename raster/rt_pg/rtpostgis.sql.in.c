@@ -4398,131 +4398,55 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
--- st_union aggregate
+-- ***NEW*** ST_Union aggregate
 -----------------------------------------------------------------------
--- Main state function
-CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,  rast2 raster, p_expression text, p_nodata1expr text, p_nodata2expr text, p_nodatanodataval double precision,t_expression text,t_nodata1expr text, t_nodata2expr text,t_nodatanodataval double precision)
-    RETURNS raster AS
-    $$
-    DECLARE
-        t_raster raster;
-        p_raster raster;
-    BEGIN
-        -- With the new ST_MapAlgebraExpr we must split the main expression in three expressions: expression, nodata1expr, nodata2expr and a nodatanodataval
-        -- ST_MapAlgebraExpr(rast1 raster, band1 integer, rast2 raster, band2 integer, expression text, pixeltype text, extentexpr text, nodata1expr text, nodata2expr text, nodatanodatadaval double precision)
-        -- We must make sure that when NULL is passed as the first raster to ST_MapAlgebraExpr, ST_MapAlgebraExpr resolve the nodata1expr
-        -- Note: rast2 is always a single band raster since it is the accumulated raster thus far
-        -- 		There we always set that to band 1 regardless of what band num is requested
-        IF upper(p_expression) = 'LAST' THEN
-            --RAISE NOTICE 'last asked for ';
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, '[rast2.val]'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
-        ELSIF upper(p_expression) = 'FIRST' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, '[rast1.val]'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
-        ELSIF upper(p_expression) = 'MIN' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'LEAST([rast1.val], [rast2.val])'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
-        ELSIF upper(p_expression) = 'MAX' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, 'GREATEST([rast1.val], [rast2.val])'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
-        ELSIF upper(p_expression) = 'COUNT' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, '[rast1.val] + 1'::text, NULL::text, 'UNION'::text, '1'::text, '[rast1.val]'::text, 0::double precision);
-        ELSIF upper(p_expression) = 'SUM' THEN
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, '[rast1.val] + [rast2.val]'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
-        ELSIF upper(p_expression) = 'RANGE' THEN
-        -- have no idea what this is 
-            t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, 'LEAST([rast1.val], [rast2.val])'::text, NULL::text, 'UNION'::text, '[rast2.val]'::text, '[rast1.val]'::text, NULL::double precision);
-            p_raster := _ST_MapAlgebra4UnionState(rast1, rast2, 'MAX'::text, NULL::text, NULL::text, NULL::double precision, NULL::text, NULL::text, NULL::text, NULL::double precision);
-            RETURN ST_AddBand(p_raster, t_raster, 1, 2);
-        ELSIF upper(p_expression) = 'MEAN' THEN
-        -- looks like t_raster is used to keep track of accumulated count
-        -- and p_raster is there to keep track of accumulated sum and final state function
-        -- would then do a final map to divide them.  This one is currently broken because 
-        	-- have not reworked it so it can do without a final function
-            t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, '[rast1.val] + 1'::text, NULL::text, 'UNION'::text, '1'::text, '[rast1.val]'::text, 0::double precision);
-            p_raster := _ST_MapAlgebra4UnionState(rast1, rast2, 'SUM'::text, NULL::text, NULL::text, NULL::double precision, NULL::text, NULL::text, NULL::text, NULL::double precision);
-            RETURN ST_AddBand(p_raster, t_raster, 1, 2);
-        ELSE
-            IF t_expression NOTNULL AND t_expression != '' THEN
-                t_raster = ST_MapAlgebraExpr(rast1, 2, rast2, 1, t_expression, NULL::text, 'UNION'::text, t_nodata1expr, t_nodata2expr, t_nodatanodataval::double precision);
-                p_raster = ST_MapAlgebraExpr(rast1, 1, rast2, 1, p_expression, NULL::text, 'UNION'::text, p_nodata1expr, p_nodata2expr, p_nodatanodataval::double precision);
-                RETURN ST_AddBand(p_raster, t_raster, 1, 2);
-            END IF;
-            RETURN ST_MapAlgebraExpr(rast1, 1, rast2, 1, p_expression, NULL, 'UNION'::text, NULL::text, NULL::text, NULL::double precision);
-        END IF;
-    END;
-    $$
-    LANGUAGE 'plpgsql';
+CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
+	LANGUAGE 'c' IMMUTABLE;
 
--- State function when there is a primary expression, band number and no alternative nodata expressions
-CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,rast2 raster,bandnum integer, p_expression text)
-    RETURNS raster
-    AS $$
-        SELECT _ST_MapAlgebra4UnionState($1, ST_Band($2,$3), $4, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
-    $$ LANGUAGE 'sql';
+CREATE OR REPLACE FUNCTION _st_union_finalfn(internal)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_union_finalfn'
+	LANGUAGE 'c' IMMUTABLE;
 
--- State function when there is no expressions but allows specifying band
-CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,rast2 raster, bandnum integer)
-    RETURNS raster
-    AS $$
-        SELECT _ST_MapAlgebra4UnionState($1,ST_Band($2,$3), 'LAST', NULL, NULL, NULL, NULL, NULL, NULL, NULL)
-    $$ LANGUAGE 'sql';
-    
--- State function when there is no expressions and assumes band 1
-CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,rast2 raster)
-    RETURNS raster
-    AS $$
-        SELECT _ST_MapAlgebra4UnionState($1,$2, 'LAST', NULL, NULL, NULL, NULL, NULL, NULL, NULL)
-    $$ LANGUAGE 'sql';
-    
--- State function when there isan expressions and assumes band 1
-CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionState(rast1 raster,rast2 raster, p_expression text)
-    RETURNS raster
-    AS $$
-        SELECT _ST_MapAlgebra4UnionState($1,$2, $3, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
-    $$ LANGUAGE 'sql';
-    
--- Final function with only the primary expression
-CREATE OR REPLACE FUNCTION _ST_MapAlgebra4UnionFinal1(rast raster)
-    RETURNS raster AS
-    $$
-    DECLARE
-    BEGIN
-    	-- NOTE: I have to sacrifice RANGE.  Sorry RANGE.  Any 2 banded raster is going to be treated
-    	-- as a MEAN
-        IF ST_NumBands(rast) = 2 THEN
-            RETURN ST_MapAlgebraExpr(rast, 1, rast, 2, 'CASE WHEN [rast2.val] > 0 THEN [rast1.val] / [rast2.val]::float8 ELSE NULL END'::text, NULL::text, 'UNION'::text, NULL::text, NULL::text, NULL::double precision);
-        ELSE
-            RETURN rast;
-        END IF;
-    END;
-    $$
-    LANGUAGE 'plpgsql';
-    
--- Variant with primary expression defaulting to 'LAST' and working on first band
-CREATE AGGREGATE ST_Union(raster) (
-    SFUNC = _ST_MapAlgebra4UnionState,
-    STYPE = raster,
-    FINALFUNC = _ST_MapAlgebra4UnionFinal1
+CREATE AGGREGATE st_union(raster, integer, text) (
+	SFUNC = _st_union_transfn,
+	STYPE = internal,
+	FINALFUNC = _st_union_finalfn
 );
 
--- Variant with primary expression defaulting to 'LAST' and working on specified band
-CREATE AGGREGATE ST_Union(raster, integer) (
-    SFUNC = _ST_MapAlgebra4UnionState,
-    STYPE = raster,
-    FINALFUNC = _ST_MapAlgebra4UnionFinal1
+CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE AGGREGATE st_union(raster, integer) (
+	SFUNC = _st_union_transfn,
+	STYPE = internal,
+	FINALFUNC = _st_union_finalfn
 );
 
--- Variant with simple primary expressions but without alternative nodata, temporary and final expressions
--- and working on first band
--- supports LAST, MIN,MAX,MEAN,FIRST,SUM
-CREATE AGGREGATE ST_Union(raster, text) (
-    SFUNC = _ST_MapAlgebra4UnionState,
-    STYPE = raster,
-    FINALFUNC = _ST_MapAlgebra4UnionFinal1
+CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE AGGREGATE st_union(raster) (
+	SFUNC = _st_union_transfn,
+	STYPE = internal,
+	FINALFUNC = _st_union_finalfn
 );
 
-CREATE AGGREGATE ST_Union(raster, integer, text) (
-    SFUNC = _ST_MapAlgebra4UnionState,
-    STYPE = raster,
-    FINALFUNC = _ST_MapAlgebra4UnionFinal1
+CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE AGGREGATE st_union(raster, text) (
+	SFUNC = _st_union_transfn,
+	STYPE = internal,
+	FINALFUNC = _st_union_finalfn
 );
 
 -------------------------------------------------------------------

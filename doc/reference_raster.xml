@@ -8614,37 +8614,36 @@ UPDATE wind
 		<refentry id="RT_ST_Union">
 			<refnamediv>
 				<refname>ST_Union</refname>
-				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST, MAX, MIN.</refpurpose>
+				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 band.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_Union</function></funcdef>
-					<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
+						<funcdef>raster <function>ST_Union</function></funcdef>
+						<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_Union</function></funcdef>
-					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer</type> <parameter>band_num</parameter></paramdef>
+						<funcdef>raster <function>ST_Union</function></funcdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_Union</function></funcdef>
-					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text</type> <parameter>p_expression</parameter></paramdef>
+						<funcdef>raster <function>ST_Union</function></funcdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_Union</function></funcdef>
-					<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer</type> <parameter>band_num</parameter></paramdef>
-					<paramdef><type>text</type> <parameter>p_expression</parameter></paramdef>
-					
+						<funcdef>raster <function>ST_Union</function></funcdef>
+						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -8652,19 +8651,16 @@ UPDATE wind
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If no band is specified for unioning, band num 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by p_expression which is one of the following: LAST - the default when none is specified, MEAN, SUM, FIRST, MAX, MIN </para>
+				<para>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If <varname>nband</varname> is not specified, band 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN.</para>
 				
-				<note><para>There are several other variants of this function not installed by default in PostGIS 2.0.0 -- these can be found in the raster/scripts/plpgsql/st_union.sql file of postgis source code.</para>
-				</note>
-				<note><para>The ST_Union function in 2.0.0 is currently implemented predominantly in plpgsql.  Because of the memory copying needed to copy between the C and plpgsql layer, this function is much much slower than it needs to be.
-				Future 2.0 releases will have this function implemented in C, so you should witness significant improvements in speed when that happens.  As a general rule of thumb you want to minimize the size of the rasters, that ST_Union works with.
-				One approach is to clip first and then union the clipped versions.  Refer to select parcels example in  <xref linkend="RT_ST_MapAlgebraExpr2" />.  That example if unioning is done before clipping takes about 4 times longer. With the higher res imagery the timing the ratio between is even higher.</para></note>
 				<para>Availability: 2.0.0 </para>
+				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
 			</refsection>
 				
 			<refsection>
 				<title>Examples: Reconstitute a single band chunked raster tile</title>
-				<programlisting>-- this creates a single band from first band of raster tiles
+				<programlisting>
+-- this creates a single band from first band of raster tiles
 -- that form the original file system tile
 SELECT filename, ST_Union(rast) As file_rast
 FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;</programlisting>
@@ -8672,20 +8668,24 @@ FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;</programli
 			
 			<refsection>
 				<title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
-				<programlisting>-- this creates a multi band raster collecting all the tiles that intersect a line
+				<programlisting>
+-- this creates a multi band raster collecting all the tiles that intersect a line
 SELECT ST_AddBand(NULL,ARRAY[ST_Union(rast,1), ST_Union(rast,2), ST_Union(rast,3) ])
 FROM aerials.boston
 WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );</programlisting>
 			</refsection>
-			
-		
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Envelope" />, <xref linkend="RT_ST_ConvexHull" />, , <xref linkend="RT_ST_MapAlgebraExpr2" /></para>
+				<para>
+					<xref linkend="RT_ST_Envelope" />, 
+					<xref linkend="RT_ST_ConvexHull" />, 
+					<xref linkend="RT_ST_MapAlgebraExpr2" />
+				</para>
 			</refsection>
 		</refentry>
-    </sect1>
+	</sect1>
 
 	<sect1 id="Raster_Processing_Builtin_Functions">
 	<title>Raster Processing Builtin Functions</title>

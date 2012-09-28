@@ -119,7 +119,7 @@ static void testGDALPolygonize() {
 	char *wkt = NULL;
 
 	rt = fillRasterToPolygonize(1, -1.0);
-	CHECK(!rt_raster_has_no_band(rt, 0));
+	CHECK(rt_raster_has_band(rt, 0));
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
@@ -173,8 +173,8 @@ static void testGDALPolygonize() {
 	rt = fillRasterToPolygonize(1, 2.0);
 #endif
 
-	/* We can check rt_raster_has_no_band here too */
-	CHECK(!rt_raster_has_no_band(rt, 0));
+	/* We can check rt_raster_has_band here too */
+	CHECK(rt_raster_has_band(rt, 0));
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
@@ -230,8 +230,8 @@ static void testGDALPolygonize() {
 	rt = fillRasterToPolygonize(1, 3.0);
 #endif
 
-	/* We can check rt_raster_has_no_band here too */
-	CHECK(!rt_raster_has_no_band(rt, 0));
+	/* We can check rt_raster_has_band here too */
+	CHECK(rt_raster_has_band(rt, 0));
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
@@ -275,8 +275,8 @@ static void testGDALPolygonize() {
 
 	/* Fourth test: NODATA value = 0 */
 	rt = fillRasterToPolygonize(1, 0.0);
-	/* We can check rt_raster_has_no_band here too */
-	CHECK(!rt_raster_has_no_band(rt, 0));
+	/* We can check rt_raster_has_band here too */
+	CHECK(rt_raster_has_band(rt, 0));
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
@@ -315,8 +315,8 @@ static void testGDALPolygonize() {
 
 	/* Last test: There is no NODATA value (all values are valid) */
 	rt = fillRasterToPolygonize(0, 0.0);
-	/* We can check rt_raster_has_no_band here too */
-	CHECK(!rt_raster_has_no_band(rt, 0));
+	/* We can check rt_raster_has_band here too */
+	CHECK(rt_raster_has_band(rt, 0));
 
 	nPols = 0;
 	gv = rt_raster_gdal_polygonize(rt, 0, TRUE, &nPols);
@@ -1202,7 +1202,7 @@ static void testRasterFromBand() {
 
 	CHECK(rast);
 	CHECK(!rt_raster_is_empty(rast));
-	CHECK(!rt_raster_has_no_band(rast, 1));
+	CHECK(rt_raster_has_band(rast, 1));
 
 	deepRelease(rast);
 	deepRelease(raster);
@@ -7827,9 +7827,9 @@ static void testRasterIterator() {
 
 	/* allocate itrset */
 	itrset = rtalloc(sizeof(struct rt_iterator_t) * num);
-	itrset[0].rast = rast1;
+	itrset[0].raster = rast1;
 	itrset[0].nband = 0;
-	itrset[1].rast = rast2;
+	itrset[1].raster = rast2;
 	itrset[1].nband = 0;
 
 	/* 1 raster, 0 distance, FIRST or SECOND or LAST or UNION or INTERSECTION */
@@ -8053,7 +8053,7 @@ main()
 		rt_raster_destroy(emptyraster);
 
 		/* Once we add a band to this raster, we'll check the opposite */
-		CHECK(rt_raster_has_no_band(raster, 1));
+		CHECK(!rt_raster_has_band(raster, 1));
 	}
 
 

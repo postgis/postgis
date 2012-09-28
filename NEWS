@@ -33,6 +33,7 @@ PostGIS 2.1.0
 * Enhancements *
   - #823, tiger geocoder: Make loader_generate_script download portion less greedy
   - #1363, ST_AddBand(raster, ...) array version rewritten in C
+  - #1364, ST_Union(raster, ...) aggregate function rewritten in C
   - #1661, Add aggregate variant of ST_SameAlignment
   - #1719, Add support for Point and GeometryCollection ST_MakeValid inputs
   - #1796, Big performance boost for distance calculations in geography

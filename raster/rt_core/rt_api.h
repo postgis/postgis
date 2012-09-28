@@ -1300,14 +1300,14 @@ rt_raster rt_raster_deserialize(void* serialized, int header_only);
 int rt_raster_is_empty(rt_raster raster);
 
 /**
- * Return TRUE if the raster do not have a band of this number.
+ * Return TRUE if the raster has a band of this number.
  *
  * @param raster: the raster to get info from
  * @param nband: the band number. 0-based
  *
- * @return TRUE if the raster do not have a band of this number, FALSE otherwise
+ * @return TRUE if the raster has a band of this number, FALSE otherwise
  */
-int rt_raster_has_no_band(rt_raster raster, int nband);
+int rt_raster_has_band(rt_raster raster, int nband);
 
 /**
  * Copy one band from one raster to another.  Bands are duplicated from
@@ -2138,7 +2138,7 @@ struct rt_reclassexpr_t {
 
 /* raster iterator */
 struct rt_iterator_t {
-	rt_raster rast;
+	rt_raster raster;
 	uint16_t nband; /* 0-based */
 };
 
