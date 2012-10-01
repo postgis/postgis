@@ -321,14 +321,14 @@ size_t gbox_serialized_size(uint8_t flags)
 ** Compute cartesian bounding GBOX boxes from LWGEOM.
 */
 
-int lwcircle_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, GBOX *gbox)
+int lw_arc_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, GBOX *gbox)
 {
 	POINT2D xmin, ymin, xmax, ymax;
 	POINT2D C;
 	int A2_side;
 	double radius_A;
 
-	LWDEBUG(2, "lwcircle_calculate_gbox_cartesian_2d called.");
+	LWDEBUG(2, "lw_arc_calculate_gbox_cartesian_2d called.");
 
 	radius_A = lw_arc_center(A1, A2, A3, &C);
 
@@ -390,13 +390,13 @@ int lwcircle_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, c
 }
 
 
-static int lwcircle_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, GBOX *gbox)
+static int lw_arc_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, GBOX *gbox)
 {
 	int rv;
 
-	LWDEBUG(2, "lwcircle_calculate_gbox_cartesian called.");
+	LWDEBUG(2, "lw_arc_calculate_gbox_cartesian called.");
 
-	rv = lwcircle_calculate_gbox_cartesian_2d((POINT2D*)p1, (POINT2D*)p2, (POINT2D*)p3, gbox);
+	rv = lw_arc_calculate_gbox_cartesian_2d((POINT2D*)p1, (POINT2D*)p2, (POINT2D*)p3, gbox);
     gbox->zmin = FP_MIN(p1->z, p3->z);
     gbox->mmin = FP_MIN(p1->m, p3->m);
     gbox->zmax = FP_MAX(p1->z, p3->z);
@@ -470,7 +470,7 @@ static int lwcircstring_calculate_gbox_cartesian(LWCIRCSTRING *curve, GBOX *gbox
 		getPoint4d_p(curve->points, i-1, &p2);
 		getPoint4d_p(curve->points, i, &p3);
 
-		if (lwcircle_calculate_gbox_cartesian(&p1, &p2, &p3, &tmp) == LW_FAILURE)
+		if (lw_arc_calculate_gbox_cartesian(&p1, &p2, &p3, &tmp) == LW_FAILURE)
 			continue;
 
 		gbox_merge(&tmp, gbox);

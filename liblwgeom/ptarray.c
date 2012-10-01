@@ -817,7 +817,7 @@ ptarray_arc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 			continue;
 		}
 		
-		lwcircle_calculate_gbox_cartesian_2d(seg1, seg2, seg3, &gbox);
+		lw_arc_calculate_gbox_cartesian_2d(seg1, seg2, seg3, &gbox);
 		
 		/* Only test segments in our vertical range */
 		if ( pt->y > gbox.ymax || pt->y < gbox.ymin ) 
