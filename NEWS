@@ -3,6 +3,8 @@ PostGIS 2.0.2
 
 * Bug Fixes *
 
+  - #1928, Accept array properties in GML input multi-geom input
+    (Kashif Rasul and Shoaib Burq / SpacialDB)
   - #1391, Errors during upgrade from 1.5
   - #1891, Use LDFLAGS environment when building liblwgeom
   - #1900, Fix pgsql2shp for big-endian systems 
