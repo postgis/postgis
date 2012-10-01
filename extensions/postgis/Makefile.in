@@ -29,14 +29,17 @@ EXTRA_CLEAN += ${SQL_BITS} sql/*.sql
 
 ifeq ($(PG91),yes)
 sql/$(EXTENSION).sql: sql_bits/postgis.sql sql_bits/postgis_comments.sql sql_bits/rtpostgis.sql sql_bits/mark_editable_objects.sql.in sql_bits/raster_comments.sql sql_bits/spatial_ref_sys.sql
+	mkdir -p sql
 	cat $^ > $@
 	
 all: sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql sql_minor_upgrade
 
 sql/$(EXTENSION)--$(EXTVERSION).sql: sql/$(EXTENSION).sql
+	mkdir -p sql
 	cp $< $@
 
 sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/postgis--unpackaged.sql.in
+	mkdir -p sql
 	cp $< $@
 
 #strip BEGIN/COMMIT since these are not allowed in extensions
