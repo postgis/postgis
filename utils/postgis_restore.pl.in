@@ -156,9 +156,9 @@ while( my $l = <INPUT> ) {
     $l =~ s/; *$/, public;/; 
   }
 
-  # This is to avoid confusing OPERATOR CLASS 
+  # This is to avoid confusing OPERATOR CLASS and OPERATOR FAMILY
   # with OPERATOR below
-  elsif ( $l =~ /CREATE OPERATOR CLASS/)
+  elsif ( $l =~ /CREATE OPERATOR CLASS/ || $l =~ /CREATE OPERATOR FAMILY/ )
   {
   }
 
