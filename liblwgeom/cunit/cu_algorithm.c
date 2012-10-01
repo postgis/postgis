@@ -61,7 +61,7 @@ static int clean_cg_suite(void)
 */
 static void test_lw_segment_side(void)
 {
-	double rv = 0.0;
+	int rv = 0;
 	POINT2D p1, p2, q;
 
 	/* Vertical line at x=0 */
@@ -75,19 +75,19 @@ static void test_lw_segment_side(void)
 	q.y = 1.5;
 	rv = lw_segment_side(&p1, &p2, &q);
 	//printf("left %g\n",rv);
-	CU_ASSERT(rv < 0.0);
+	CU_ASSERT(rv < 0);
 
 	/* On the right */
 	q.x = 2.0;
 	rv = lw_segment_side(&p1, &p2, &q);
 	//printf("right %g\n",rv);
-	CU_ASSERT(rv > 0.0);
+	CU_ASSERT(rv > 0);
 
 	/* On the line */
 	q.x = 0.0;
 	rv = lw_segment_side(&p1, &p2, &q);
 	//printf("on line %g\n",rv);
-	CU_ASSERT_EQUAL(rv, 0.0);
+	CU_ASSERT_EQUAL(rv, 0);
 
 }
 

@@ -121,6 +121,10 @@
 #define SIZE_GET(varsize) (((varsize) >> 2) & 0x3FFFFFFF)
 #define SIZE_SET(varsize, size) (((varsize) & 0x00000003)|(((size) & 0x3FFFFFFF) << 2 ))
 
+/*
+* Tolerance used to determine equality.
+*/
+#define EPSILON_SQLMM 1e-8
 
 /*
 * Internal prototypes
@@ -202,17 +206,6 @@ enum CG_SEGMENT_INTERSECTION_TYPE {
 * Do the segments intersect? How?
 */
 int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2);
-
-/*
-* What side of the line formed by p1 and p2 does q fall? 
-* Returns < 0 for left and > 0 for right and 0 for co-linearity
-*/
-double lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q);
-
-/* 
-* Do the envelopes of the the segments intersect?
-*/
-int lw_segment_envelope_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2);
 
 /*
 * Get/Set an enumeratoed ordinate. (x,y,z,m)
@@ -354,8 +347,22 @@ int lwtin_is_closed(const LWTIN *tin);
 
 
 
+/*
+* What side of the line formed by p1 and p2 does q fall? 
+* Returns -1 for left and 1 for right and 0 for co-linearity
+*/
+int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q);
+int lwcircle_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, GBOX *gbox);
+double lwcircle_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result);
 int lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2);
+int lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
+int lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
+double lw_seg_length(const POINT2D *A1, const POINT2D *A2);
+double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
+double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q);
+int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt);
+int ptarray_arc_contains_point(const POINTARRAY *pa, const POINT2D *pt);
 
 /**
 * Split a line by a point and push components to the provided multiline.

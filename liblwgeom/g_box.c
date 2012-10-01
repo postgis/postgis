@@ -321,83 +321,87 @@ size_t gbox_serialized_size(uint8_t flags)
 ** Compute cartesian bounding GBOX boxes from LWGEOM.
 */
 
-static int lwcircle_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, GBOX *gbox)
+int lwcircle_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, GBOX *gbox)
 {
 	POINT2D xmin, ymin, xmax, ymax;
-	POINT2D center;
-	int p2_side;
-	double radius;
+	POINT2D C;
+	int A2_side;
+	double radius_A;
 
-	LWDEBUG(2, "lwcircle_calculate_gbox called.");
+	LWDEBUG(2, "lwcircle_calculate_gbox_cartesian_2d called.");
 
-	radius = lwcircle_center((POINT2D*)p1, (POINT2D*)p2, (POINT2D*)p3, &center);
-	
+	radius_A = lwcircle_center(A1, A2, A3, &C);
+
 	/* Negative radius signals straight line, p1/p2/p3 are colinear */
-	if (radius < 0.0)
+	if (radius_A < 0.0)
 	{
-        gbox->xmin = FP_MIN(p1->x, p3->x);
-        gbox->ymin = FP_MIN(p1->y, p3->y);
-        gbox->zmin = FP_MIN(p1->z, p3->z);
-        gbox->xmax = FP_MAX(p1->x, p3->x);
-        gbox->ymax = FP_MAX(p1->y, p3->y);
-        gbox->zmax = FP_MAX(p1->z, p3->z);
+        gbox->xmin = FP_MIN(A1->x, A3->x);
+        gbox->ymin = FP_MIN(A1->y, A3->y);
+        gbox->xmax = FP_MAX(A1->x, A3->x);
+        gbox->ymax = FP_MAX(A1->y, A3->y);
 	    return LW_SUCCESS;
 	}
-	
+
 	/* Matched start/end points imply circle */
-	if ( p1->x == p3->x && p1->y == p3->y )
+	if ( A1->x == A3->x && A1->y == A3->y )
 	{
-		gbox->xmin = center.x - radius;
-		gbox->ymin = center.y - radius;
-		gbox->zmin = FP_MIN(p1->z,p2->z);
-		gbox->mmin = FP_MIN(p1->m,p2->m);
-		gbox->xmax = center.x + radius;
-		gbox->ymax = center.y + radius;
-		gbox->zmax = FP_MAX(p1->z,p2->z);
-		gbox->mmax = FP_MAX(p1->m,p2->m);
+		gbox->xmin = C.x - radius_A;
+		gbox->ymin = C.y - radius_A;
+		gbox->xmax = C.x + radius_A;
+		gbox->ymax = C.y + radius_A;
 		return LW_SUCCESS;
 	}
 
 	/* First approximation, bounds of start/end points */
-    gbox->xmin = FP_MIN(p1->x, p3->x);
-    gbox->ymin = FP_MIN(p1->y, p3->y);
-    gbox->zmin = FP_MIN(p1->z, p3->z);
-    gbox->mmin = FP_MIN(p1->m, p3->m);
-    gbox->xmax = FP_MAX(p1->x, p3->x);
-    gbox->ymax = FP_MAX(p1->y, p3->y);
-    gbox->zmax = FP_MAX(p1->z, p3->z);
-    gbox->mmax = FP_MAX(p1->m, p3->m);
+    gbox->xmin = FP_MIN(A1->x, A3->x);
+    gbox->ymin = FP_MIN(A1->y, A3->y);
+    gbox->xmax = FP_MAX(A1->x, A3->x);
+    gbox->ymax = FP_MAX(A1->y, A3->y);
 
 	/* Create points for the possible extrema */
-	xmin.x = center.x - radius;
-	xmin.y = center.y;
-	ymin.x = center.x;
-	ymin.y = center.y - radius;
-	xmax.x = center.x + radius;
-	xmax.y = center.y;
-	ymax.x = center.x;
-	ymax.y = center.y + radius;
-	
-	
+	xmin.x = C.x - radius_A;
+	xmin.y = C.y;
+	ymin.x = C.x;
+	ymin.y = C.y - radius_A;
+	xmax.x = C.x + radius_A;
+	xmax.y = C.y;
+	ymax.x = C.x;
+	ymax.y = C.y + radius_A;
+
 	/* Divide the circle into two parts, one on each side of a line
 	   joining p1 and p3. The circle extrema on the same side of that line
 	   as p2 is on, are also the extrema of the bbox. */
-	
-	p2_side = signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2));
 
-	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &xmin)) )
+	A2_side = lw_segment_side(A1, A3, A2);
+
+	if ( A2_side == lw_segment_side(A1, A3, &xmin) )
 		gbox->xmin = xmin.x;
 
-	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &ymin)) )
+	if ( A2_side == lw_segment_side(A1, A3, &ymin) )
 		gbox->ymin = ymin.y;
 
-	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &xmax)) )
+	if ( A2_side == lw_segment_side(A1, A3, &xmax) )
 		gbox->xmax = xmax.x;
 
-	if ( p2_side == signum(lw_segment_side((POINT2D*)p1, (POINT2D*)p3, &ymax)) )
+	if ( A2_side == lw_segment_side(A1, A3, &ymax) )
 		gbox->ymax = ymax.y;
 
 	return LW_SUCCESS;
+}
+
+
+static int lwcircle_calculate_gbox_cartesian(const POINT4D *p1, const POINT4D *p2, const POINT4D *p3, GBOX *gbox)
+{
+	int rv;
+
+	LWDEBUG(2, "lwcircle_calculate_gbox_cartesian called.");
+
+	rv = lwcircle_calculate_gbox_cartesian_2d((POINT2D*)p1, (POINT2D*)p2, (POINT2D*)p3, gbox);
+    gbox->zmin = FP_MIN(p1->z, p3->z);
+    gbox->mmin = FP_MIN(p1->m, p3->m);
+    gbox->zmax = FP_MAX(p1->z, p3->z);
+    gbox->mmax = FP_MAX(p1->m, p3->m);
+	return rv;
 }
 
 int ptarray_calculate_gbox_cartesian(const POINTARRAY *pa, GBOX *gbox )

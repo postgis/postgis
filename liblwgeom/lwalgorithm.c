@@ -27,22 +27,265 @@ int signum(double n)
 /**
 * lw_segment_side()
 *
-* Return < 0.0 if point Q is left of segment P
-* Return > 0.0 if point Q is right of segment P
-* Return = 0.0 if point Q in on segment P
+* Return -1  if point Q is left of segment P
+* Return  1  if point Q is right of segment P
+* Return  0  if point Q in on segment P
 */
-double lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
+int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
 	double side = ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
 	if ( FP_IS_ZERO(side) )
-		return 0.0;
+		return 0;
 	else
-		return side;
+		return signum(side);
+}
+
+/**
+* Returns the length of a linear segment
+*/
+double
+lw_seg_length(const POINT2D *A1, const POINT2D *A2)
+{
+	return sqrt((A1->x-A2->x)*(A1->x-A2->x)+(A1->y-A2->y)*(A1->y-A2->y));
+}
+
+/**
+* Returns true if P is on the same side of the plane partition 
+* defined by A1/A3 as A2 is. Only makes sense if P has already been
+* determined to be on the circle defined by A1/A2/A3.
+*/
+int
+lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
+{
+	return lw_segment_side(A1, A3, A2) == lw_segment_side(A1, A3, P);
+}
+
+/**
+* Returns true if P is between A1/A2. Only makes sense if P has already been
+* deterined to be on the line defined by A1/A2.
+*/
+int
+lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2)
+{
+	return ((A1->x <= P->x && P->x < A2->x) || (A1->x >= P->x && P->x > A2->x)) ||
+	       ((A1->y <= P->y && P->y < A2->y) || (A1->y >= P->y && P->y > A2->y));
+}
+
+/**
+* Returns true if arc A is actually a point (all vertices are the same) .
+*/
+int
+lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
+{
+	if ( A1->x == A2->x && A2->x == A3->x && 
+	     A1->y == A2->y && A2->y == A3->y )
+		return LW_TRUE;
+	else
+		return LW_FALSE;
+}
+
+/**
+* Returns the length of a circular arc segment
+*/
+double
+lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
+{
+	POINT2D C;
+	double radius_A, circumference_A;
+	int a2_side, clockwise;
+	double a1, a2, a3;
+	double angle;
+	
+	if ( lw_arc_is_pt(A1, A2, A3) )
+		return 0.0;
+	
+	radius_A = lwcircle_center(A1, A2, A3, &C);
+
+	/* Co-linear! Return linear distance! */
+	if ( radius_A < 0 ) 
+	{
+		return sqrt((A1->x-A3->x)*(A1->x-A3->x) + (A1->y-A3->y)*(A1->y-A3->y));
+	}
+	
+	/* Closed circle! Return the circumference! */
+	circumference_A = M_PI * 2 * radius_A;
+	if ( p2d_same(A1, A3) )
+		return circumference_A;
+	
+	/* Determine the orientation of the arc */
+	a2_side = lw_segment_side(A1, A3, A2);
+
+	/* The side of the A1/A3 line that A2 falls on dictates the sweep  
+	   direction from A1 to A3. */
+	if ( a2_side == -1 ) 
+		clockwise = LW_TRUE;
+	else 
+		clockwise = LW_FALSE;
+		
+	/* Angles of each point that defines the arc section */
+	a1 = atan2(A1->y - C.y, A1->x - C.x);
+	a2 = atan2(A2->y - C.y, A2->x - C.x);
+	a3 = atan2(A3->y - C.y, A3->x - C.x);
+
+	/* What's the sweep from A1 to A3? */
+	if ( clockwise )
+	{
+		if ( a1 > a3 )
+			angle = a1 - a3;
+		else
+			angle = 2*M_PI + a1 - a3; 
+	}
+	else
+	{
+		if ( a3 > a1 )
+			angle = a3 - a1;
+		else
+			angle = 2*M_PI + a3 - a1; 			
+	}
+
+	/* Length as proportion of circumference */
+	return circumference_A* (angle / (2*M_PI));
+}
+
+double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q)
+{
+	POINT2D C;
+	double radius_A;
+	double side_Q, side_A2;
+	double d;
+	
+	side_Q = lw_segment_side(A1, A3, Q);
+	radius_A = lwcircle_center(A1, A2, A3, &C);
+	side_A2 = lw_segment_side(A1, A3, A2);
+	
+	/* Linear case */
+	if ( radius_A < 0 )
+		return side_Q;
+		
+	d = distance2d_pt_pt(Q, &C);
+	
+	if ( d < radius_A && side_Q == side_A2 )
+	{
+		side_Q *= -1;
+	}
+	
+	return side_Q;
+}
+
+/**
+* Determines the center of the circle defined by the three given points.
+* In the event the circle is complete, the midpoint of the segment defined
+* by the first and second points is returned.  If the points are colinear,
+* as determined by equal slopes, then NULL is returned.  If the interior
+* point is coincident with either end point, they are taken as colinear.
+*/
+double
+lwcircle_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)
+{
+	POINT2D c;
+	double cx, cy, cr;
+	double temp, bc, cd, det;
+
+    c.x = c.y = 0.0;
+
+	LWDEBUGF(2, "lwcircle_center called (%.16f,%.16f), (%.16f,%.16f), (%.16f,%.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
+
+	/* Closed circle */
+	if (fabs(p1->x - p3->x) < EPSILON_SQLMM &&
+	    fabs(p1->y - p3->y) < EPSILON_SQLMM)
+	{
+		cx = p1->x + (p2->x - p1->x) / 2.0;
+		cy = p1->y + (p2->y - p1->y) / 2.0;
+		c.x = cx;
+		c.y = cy;
+		*result = c;
+		cr = sqrt(pow(cx - p1->x, 2.0) + pow(cy - p1->y, 2.0));
+		return cr;
+	}
+
+	temp = p2->x*p2->x + p2->y*p2->y;
+	bc = (p1->x*p1->x + p1->y*p1->y - temp) / 2.0;
+	cd = (temp - p3->x*p3->x - p3->y*p3->y) / 2.0;
+	det = (p1->x - p2->x)*(p2->y - p3->y)-(p2->x - p3->x)*(p1->y - p2->y);
+
+	/* Check colinearity */
+	if (fabs(det) < EPSILON_SQLMM)
+		return -1.0;
+
+
+	det = 1.0 / det;
+	cx = (bc*(p2->y - p3->y)-cd*(p1->y - p2->y))*det;
+	cy = ((p1->x - p2->x)*cd-(p2->x - p3->x)*bc)*det;
+	c.x = cx;
+	c.y = cy;
+	*result = c;
+	cr = sqrt((cx-p1->x)*(cx-p1->x)+(cy-p1->y)*(cy-p1->y));
+	
+	LWDEBUGF(2, "lwcircle_center center is (%.16f,%.16f)", result->x, result->y);
+	
+	return cr;
 }
 
 
+int
+pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring)
+{
+	int cn = 0;    /* the crossing number counter */
+	int i;
+	POINT2D v1, v2;
 
-int lw_segment_envelope_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
+	POINT2D first, last;
+
+	getPoint2d_p(ring, 0, &first);
+	getPoint2d_p(ring, ring->npoints-1, &last);
+	if ( memcmp(&first, &last, sizeof(POINT2D)) )
+	{
+		lwerror("pt_in_ring_2d: V[n] != V[0] (%g %g != %g %g)",
+		        first.x, first.y, last.x, last.y);
+		return LW_FALSE;
+
+	}
+
+	LWDEBUGF(2, "pt_in_ring_2d called with point: %g %g", p->x, p->y);
+	/* printPA(ring); */
+
+	/* loop through all edges of the polygon */
+	getPoint2d_p(ring, 0, &v1);
+	for (i=0; i<ring->npoints-1; i++)
+	{
+		double vt;
+		getPoint2d_p(ring, i+1, &v2);
+
+		/* edge from vertex i to vertex i+1 */
+		if
+		(
+		    /* an upward crossing */
+		    ((v1.y <= p->y) && (v2.y > p->y))
+		    /* a downward crossing */
+		    || ((v1.y > p->y) && (v2.y <= p->y))
+		)
+		{
+
+			vt = (double)(p->y - v1.y) / (v2.y - v1.y);
+
+			/* P.x <intersect */
+			if (p->x < v1.x + vt * (v2.x - v1.x))
+			{
+				/* a valid crossing of y=p.y right of p.x */
+				++cn;
+			}
+		}
+		v1 = v2;
+	}
+
+	LWDEBUGF(3, "pt_in_ring_2d returning %d", cn&1);
+
+	return (cn&1);    /* 0 if even (out), and 1 if odd (in) */
+}
+
+
+static int 
+lw_seg_interact(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
 	double minq=FP_MIN(q1->x,q2->x);
 	double maxq=FP_MAX(q1->x,q2->x);
@@ -80,10 +323,10 @@ int lw_segment_envelope_intersects(const POINT2D *p1, const POINT2D *p2, const P
 int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q1, const POINT2D *q2)
 {
 
-	double pq1, pq2, qp1, qp2;
+	int pq1, pq2, qp1, qp2;
 
 	/* No envelope interaction => we are done. */
-	if (!lw_segment_envelope_intersects(p1, p2, q1, p2))
+	if (!lw_seg_interact(p1, p2, q1, p2))
 	{
 		return SEG_NO_INTERSECTION;
 	}
@@ -119,31 +362,31 @@ int lw_segment_intersects(const POINT2D *p1, const POINT2D *p2, const POINT2D *q
 	LWDEBUGF(4, "qp1=%.15g qp2=%.15g", qp1, qp2);
 
 	/* Second point of p or q touches, it's not a crossing. */
-	if ( pq2 == 0.0 || qp2 == 0.0 )
+	if ( pq2 == 0 || qp2 == 0 )
 	{
 		return SEG_NO_INTERSECTION;
 	}
 
 	/* First point of p touches, it's a "crossing". */
-	if ( pq1 == 0.0 )
+	if ( pq1 == 0 )
 	{
-		if ( FP_GT(pq2,0.0) )
+		if ( pq2 > 0 )
 			return SEG_CROSS_RIGHT;
 		else
 			return SEG_CROSS_LEFT;
 	}
 
 	/* First point of q touches, it's a crossing. */
-	if ( qp1 == 0.0 )
+	if ( qp1 == 0 )
 	{
-		if ( FP_LT(pq1,pq2) )
+		if ( pq1 < pq2 )
 			return SEG_CROSS_RIGHT;
 		else
 			return SEG_CROSS_LEFT;
 	}
 
 	/* The segments cross, what direction is the crossing? */
-	if ( FP_LT(pq1,pq2) )
+	if ( pq1 < pq2 )
 		return SEG_CROSS_RIGHT;
 	else
 		return SEG_CROSS_LEFT;

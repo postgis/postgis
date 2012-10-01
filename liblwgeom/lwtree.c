@@ -38,9 +38,9 @@ int rect_tree_contains_point(const RECT_NODE *node, const POINT2D *pt, int *on_b
 		if ( rect_node_is_leaf(node) )
 		{
 			double side = lw_segment_side(node->p1, node->p2, pt);
-			if ( side == 0.0 )
+			if ( side == 0 )
 				*on_boundary = LW_TRUE;
-			return (side < 0.0 ? -1 : 1 );
+			return (side < 0 ? -1 : 1 );
 		}
 		else
 		{
