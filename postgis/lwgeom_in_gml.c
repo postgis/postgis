@@ -1487,7 +1487,7 @@ static LWGEOM* parse_gml_tin(xmlNodePtr xnode, bool *hasz, int *root_srid)
 static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
 	gmlSrs srs;
-	xmlNodePtr xa;
+	xmlNodePtr xa, xb;
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
@@ -1506,10 +1506,21 @@ static LWGEOM* parse_gml_mpoint(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		/* MultiPoint/pointMember */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (strcmp((char *) xa->name, "pointMember")) continue;
-		if (xa->children != NULL)
-			geom = (LWGEOM*)lwmpoint_add_lwpoint((LWMPOINT*)geom,
-			                                     (LWPOINT*)parse_gml(xa->children, hasz, root_srid));
+		if (!strcmp((char *) xa->name, "pointMembers"))
+		{
+			for (xb = xa->children ; xb != NULL ; xb = xb->next)
+			{
+				if (xb != NULL)
+					geom = (LWGEOM*)lwmpoint_add_lwpoint((LWMPOINT*)geom,
+				                                         (LWPOINT*)parse_gml(xb, hasz, root_srid));
+			}
+		}
+		else if (!strcmp((char *) xa->name, "pointMember"))
+		{
+			if (xa->children != NULL)
+				geom = (LWGEOM*)lwmpoint_add_lwpoint((LWMPOINT*)geom,
+			                                         (LWPOINT*)parse_gml(xa->children, hasz, root_srid));
+		}
 	}
 
 	return geom;
@@ -1557,7 +1568,7 @@ static LWGEOM* parse_gml_mline(xmlNodePtr xnode, bool *hasz, int *root_srid)
 static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
 	gmlSrs srs;
-	xmlNodePtr xa;
+	xmlNodePtr xa, xb;
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
@@ -1577,10 +1588,21 @@ static LWGEOM* parse_gml_mcurve(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		/* MultiCurve/curveMember */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (strcmp((char *) xa->name, "curveMember")) continue;
-		if (xa->children != NULL)
-			geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom,
-			                                   (LWLINE*)parse_gml(xa->children, hasz, root_srid));
+		if (!strcmp((char *) xa->name, "curveMembers"))
+		{
+			for (xb = xa->children ; xb != NULL ; xb = xb->next)
+			{
+				if (xb != NULL)
+					geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom,
+				                                       (LWLINE*)parse_gml(xb, hasz, root_srid));
+			}
+		}
+		else if (!strcmp((char *) xa->name, "curveMember"))
+		{
+			if (xa->children != NULL)
+				geom = (LWGEOM*)lwmline_add_lwline((LWMLINE*)geom,
+				                                   (LWLINE*)parse_gml(xa->children, hasz, root_srid));
+		}
 	}
 
 	return geom;
@@ -1628,7 +1650,7 @@ static LWGEOM* parse_gml_mpoly(xmlNodePtr xnode, bool *hasz, int *root_srid)
 static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 {
 	gmlSrs srs;
-	xmlNodePtr xa;
+	xmlNodePtr xa, xb;
 	LWGEOM *geom = NULL;
 
 	if (is_xlink(xnode)) xnode = get_xlink_node(xnode);
@@ -1647,10 +1669,21 @@ static LWGEOM* parse_gml_msurface(xmlNodePtr xnode, bool *hasz, int *root_srid)
 		/* MultiSurface/surfaceMember */
 		if (xa->type != XML_ELEMENT_NODE) continue;
 		if (!is_gml_namespace(xa, false)) continue;
-		if (strcmp((char *) xa->name, "surfaceMember")) continue;
-		if (xa->children != NULL)
-			geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom,
-			                                   (LWPOLY*)parse_gml(xa->children, hasz, root_srid));
+		if (!strcmp((char *) xa->name, "surfaceMembers"))
+		{
+			for (xb = xa->children ; xb != NULL ; xb = xb->next)
+			{
+				if (xb != NULL)
+					geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom,
+				                                       (LWPOLY*)parse_gml(xb, hasz, root_srid));
+			}
+		}
+		else if (!strcmp((char *) xa->name, "surfaceMember"))
+		{
+			if (xa->children != NULL)
+				geom = (LWGEOM*)lwmpoly_add_lwpoly((LWMPOLY*)geom,
+				                                   (LWPOLY*)parse_gml(xa->children, hasz, root_srid));
+		}
 	}
 
 	return geom;
