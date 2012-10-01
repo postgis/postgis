@@ -848,7 +848,7 @@ lw_dist2d_seg_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *B1, const
 		return lw_dist2d_pt_seg(B1, A1, A2, dl);
 
 	/* Calculate center and radius of the circle. */
-	radius_C = lwcircle_center(B1, B2, B3, &C);
+	radius_C = lw_arc_center(B1, B2, B3, &C);
 
 	/* This "arc" is actually a line (B2 is colinear with B1,B3) */
 	if ( radius_C < 0.0 )
@@ -991,7 +991,7 @@ lw_dist2d_pt_arc(const POINT2D* P, const POINT2D* A1, const POINT2D* A2, const P
 		return lw_dist2d_pt_pt(P, A1, dl);
 
 	/* Calculate centers and radii of circles. */
-	radius_A = lwcircle_center(A1, A2, A3, &C);
+	radius_A = lw_arc_center(A1, A2, A3, &C);
 	
 	/* This "arc" is actually a line (A2 is colinear with A1,A3) */
 	if ( radius_A < 0.0 )
@@ -1044,8 +1044,8 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 		return lw_dist2d_pt_arc(A1, B1, B2, B3, dl);
 	
 	/* Calculate centers and radii of circles. */
-	radius_A = lwcircle_center(A1, A2, A3, &CA);
-	radius_B = lwcircle_center(B1, B2, B3, &CB);
+	radius_A = lw_arc_center(A1, A2, A3, &CA);
+	radius_B = lw_arc_center(B1, B2, B3, &CB);
 
 	/* Two co-linear arcs?!? That's two segments. */
 	if ( radius_A < 0 && radius_B < 0 )

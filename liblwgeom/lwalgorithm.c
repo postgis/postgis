@@ -99,7 +99,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	if ( lw_arc_is_pt(A1, A2, A3) )
 		return 0.0;
 	
-	radius_A = lwcircle_center(A1, A2, A3, &C);
+	radius_A = lw_arc_center(A1, A2, A3, &C);
 
 	/* Co-linear! Return linear distance! */
 	if ( radius_A < 0 ) 
@@ -155,7 +155,7 @@ double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, cons
 	double d;
 	
 	side_Q = lw_segment_side(A1, A3, Q);
-	radius_A = lwcircle_center(A1, A2, A3, &C);
+	radius_A = lw_arc_center(A1, A2, A3, &C);
 	side_A2 = lw_segment_side(A1, A3, A2);
 	
 	/* Linear case */
@@ -180,7 +180,7 @@ double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, cons
 * point is coincident with either end point, they are taken as colinear.
 */
 double
-lwcircle_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)
+lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result)
 {
 	POINT2D c;
 	double cx, cy, cr;
@@ -188,7 +188,7 @@ lwcircle_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D
 
     c.x = c.y = 0.0;
 
-	LWDEBUGF(2, "lwcircle_center called (%.16f,%.16f), (%.16f,%.16f), (%.16f,%.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
+	LWDEBUGF(2, "lw_arc_center called (%.16f,%.16f), (%.16f,%.16f), (%.16f,%.16f).", p1->x, p1->y, p2->x, p2->y, p3->x, p3->y);
 
 	/* Closed circle */
 	if (fabs(p1->x - p3->x) < EPSILON_SQLMM &&
@@ -221,7 +221,7 @@ lwcircle_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D
 	*result = c;
 	cr = sqrt((cx-p1->x)*(cx-p1->x)+(cy-p1->y)*(cy-p1->y));
 	
-	LWDEBUGF(2, "lwcircle_center center is (%.16f,%.16f)", result->x, result->y);
+	LWDEBUGF(2, "lw_arc_center center is (%.16f,%.16f)", result->x, result->y);
 	
 	return cr;
 }

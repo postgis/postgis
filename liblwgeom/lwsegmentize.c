@@ -100,6 +100,9 @@ static POINTARRAY *
 lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 {
 	POINT2D center;
+	POINT2D *t1 = (POINT2D*)p1;
+	POINT2D *t2 = (POINT2D*)p2;
+	POINT2D *t3 = (POINT2D*)p3;
 	POINT4D pt;
 	int p2_side = 0;
 	int clockwise = LW_TRUE;
@@ -112,8 +115,8 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
 
-	radius = lwcircle_center((POINT2D*)p1, (POINT2D*)p2, (POINT2D*)p3, &center);
-	p2_side = lw_segment_side((POINT2D*)p1, (POINT2D*)p3, (POINT2D*)p2);
+	radius = lw_arc_center(t1, t2, t3, &center);
+	p2_side = lw_segment_side(t1, t3, t2);
 
 	/* Matched start/end points imply circle */
 	if ( p1->x == p3->x && p1->y == p3->y )
@@ -474,7 +477,7 @@ static int pt_continues_arc(const POINT4D *a1, const POINT4D *a2, const POINT4D 
 	POINT2D *t2 = (POINT2D*)a2;
 	POINT2D *t3 = (POINT2D*)a3;
 	POINT2D *tb = (POINT2D*)b;
-	double radius = lwcircle_center(t1, t2, t3, &center);
+	double radius = lw_arc_center(t1, t2, t3, &center);
 	double b_distance, diff;
 
 	/* Co-linear a1/a2/a3 */
