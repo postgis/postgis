@@ -785,6 +785,8 @@ Datum RASTER_in(PG_FUNCTION_ARGS)
     char *hexwkb = PG_GETARG_CSTRING(0);
     void *result = NULL;
 
+		POSTGIS_RT_DEBUG(3, "Starting");
+
     raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
     result = rt_raster_serialize(raster);
 
@@ -808,6 +810,8 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 	rt_raster raster = NULL;
 	uint32_t hexwkbsize = 0;
 	char *hexwkb = NULL;
+
+	POSTGIS_RT_DEBUG(3, "Starting");
 
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
