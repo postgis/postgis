@@ -30,6 +30,8 @@ DROP AGGREGATE IF EXISTS ST_Union(raster, text, text);
 DROP AGGREGATE IF EXISTS ST_Union(raster, text, text, text, double precision);
 DROP AGGREGATE IF EXISTS ST_Union(raster, text);
 DROP AGGREGATE IF EXISTS ST_Union(raster, integer);
+DROP AGGREGATE IF EXISTS ST_Union(raster, unionarg[]);
+DROP AGGREGATE IF EXISTS ST_Union(raster, record[]);
 DROP AGGREGATE IF EXISTS ST_Union(raster);
 
 DROP AGGREGATE IF EXISTS st_samealignment(raster);

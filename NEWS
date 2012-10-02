@@ -42,6 +42,7 @@ PostGIS 2.1.0
   - #1938, Refactor basic ST_AddBand to add multiple new bands in one call
   - #1978, wrong answer when calculating length of a closed circular arc (circle)
   - #1780, support ST_GeoHash for geography
+  - #2021, Added multi-band support to ST_Union(raster, ...) aggregate function
 
 * Fixes *
 

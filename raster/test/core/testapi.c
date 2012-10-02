@@ -7050,6 +7050,22 @@ static void testNearestPixel() {
 	if (rtn)
 		rtdealloc(npixels);
 
+	/* band with no NODATA */
+	band = addBand(rast, PT_32BUI, 0, 0);
+	CHECK(band);
+
+	/* 0,0 */
+	rtn = rt_band_get_nearest_pixel(
+		band,
+		0, 0,
+		0, 0,
+		1,
+		&npixels
+	);
+	CHECK((rtn == 8));
+	if (rtn)
+		rtdealloc(npixels);
+
 	deepRelease(rast);
 }
 

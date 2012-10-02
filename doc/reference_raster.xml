@@ -233,7 +233,56 @@ VALUES (1,
                 <para><xref linkend="RT_ST_Reclass" /></para>
            </refsection>
 		</refentry>
-		
+
+		<refentry id="unionarg">
+			<refnamediv>
+				<refname>unionarg</refname>
+				<refpurpose>A composite type used as input into the ST_Union function defining the bands to be processed and behavior of the UNION operation.</refpurpose>
+			</refnamediv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					A composite type used as input into the ST_Union function defining the bands to be processed and behavior of the UNION operation.
+
+					<variablelist>
+						<varlistentry>
+							<term>
+								<parameter>nband </parameter>
+								<type>integer</type>
+							</term>
+							<listitem>
+								<para>
+									1-based value indicating the band of each input raster to be processed.
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>uniontype </parameter>
+								<type>text</type>
+							</term>
+							<listitem>
+								<para>
+			        		Type of UNION operation. One of defined types as described in <xref linkend="RT_ST_Union" />.
+								</para>
+							</listitem>
+						</varlistentry>
+
+					</variablelist>
+
+				</para>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_Union" />
+				</para>
+			</refsection>
+		</refentry>
+
   </sect1>
 
   <sect1 id="Raster_Management_Functions">
@@ -8622,34 +8671,43 @@ UPDATE wind
 		<refentry id="RT_ST_Union">
 			<refnamediv>
 				<refname>ST_Union</refname>
-				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 band.</refpurpose>
+				<refpurpose>Returns the union of a set of raster tiles into a single raster composed of 1 or more bands.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
+<!-- NOT IMPLEMENTED YET
 				<funcsynopsis>
 				  <funcprototype>
 						<funcdef>raster <function>ST_Union</function></funcdef>
 						<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
+-->
 				<funcsynopsis>
 				  <funcprototype>
 						<funcdef>raster <function>ST_Union</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>unionarg[] </type> <parameter>unionargset</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_Union</function></funcdef>
+						<paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 				  <funcprototype>
 						<funcdef>raster <function>ST_Union</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 				<funcsynopsis>
 				  <funcprototype>
 						<funcdef>raster <function>ST_Union</function></funcdef>
-						<paramdef><type>raster set</type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>setof raster</type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer</type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>text</type> <parameter>uniontype</parameter></paramdef>
 				  </funcprototype>
@@ -8659,8 +8717,8 @@ UPDATE wind
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the union of a set of raster tiles into a single raster composed of 1 band.  If <varname>nband</varname> is not specified, band 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN.</para>
-				
+				<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  If <varname>nband</varname> is not specified, band 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN.</para>
+
 				<para>Availability: 2.0.0 </para>
 				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
 			</refsection>
@@ -8687,9 +8745,9 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 			<refsection>
 				<title>See Also</title>
 				<para>
+					<xref linkend="unionarg" />, 
 					<xref linkend="RT_ST_Envelope" />, 
-					<xref linkend="RT_ST_ConvexHull" />, 
-					<xref linkend="RT_ST_MapAlgebraExpr2" />
+					<xref linkend="RT_ST_ConvexHull" />
 				</para>
 			</refsection>
 		</refentry>

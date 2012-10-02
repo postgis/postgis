@@ -4398,16 +4398,33 @@ CREATE OR REPLACE FUNCTION st_intersection(
 	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
--- ***NEW*** ST_Union aggregate
+-- ST_Union aggregate
 -----------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer, text)
-	RETURNS internal
-	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
-	LANGUAGE 'c' IMMUTABLE;
+
+CREATE TYPE unionarg AS (
+	nband int,
+	uniontype text
+);
 
 CREATE OR REPLACE FUNCTION _st_union_finalfn(internal)
 	RETURNS raster
 	AS 'MODULE_PATHNAME', 'RASTER_union_finalfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, unionarg[])
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE AGGREGATE st_union(raster, unionarg[]) (
+	SFUNC = _st_union_transfn,
+	STYPE = internal,
+	FINALFUNC = _st_union_finalfn
+);
+
+CREATE OR REPLACE FUNCTION _st_union_transfn(internal, raster, integer, text)
+	RETURNS internal
+	AS 'MODULE_PATHNAME', 'RASTER_union_transfn'
 	LANGUAGE 'c' IMMUTABLE;
 
 CREATE AGGREGATE st_union(raster, integer, text) (

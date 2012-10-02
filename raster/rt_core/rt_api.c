@@ -2408,6 +2408,8 @@ int rt_band_get_nearest_pixel(
 	double minval = 0;
 	uint32_t count = 0;
 
+	int inextent = 0;
+
 	assert(NULL != band);
 	assert(NULL != npixels);
 
@@ -2579,6 +2581,7 @@ int rt_band_get_nearest_pixel(
 						else
 							pixval = band->nodataval;
 						RASTER_DEBUGF(4, "NODATA pixel outside band extent: (x, y, val) = (%d, %d, %f)", _x, _y, pixval);
+						inextent = 0;
 					}
 					else {
 						if (rt_band_get_pixel(
@@ -2591,6 +2594,7 @@ int rt_band_get_nearest_pixel(
 							return -1;
 						}
 						RASTER_DEBUGF(4, "Pixel: (x, y, val) = (%d, %d, %f)", _x, _y, pixval);
+						inextent = 1;
 					}
 
 					/* use pixval? */
@@ -2619,8 +2623,13 @@ int rt_band_get_nearest_pixel(
 						npixel = &((*npixels)[count - 1]);
 						npixel->x = _x;
 						npixel->y = _y;
-						npixel->nodata = 0;
 						npixel->value = pixval;
+
+						/* special case for when outside band extent */
+						if (!inextent && !band->hasnodata)
+							npixel->nodata = 1;
+						else
+							npixel->nodata = 0;
 					}
 
 					(*_min)++;
@@ -13193,6 +13202,7 @@ rt_raster_iterator(
 
 	int i = 0;
 	int status = 0;
+	int inextent = 0;
 	int x = 0;
 	int y = 0;
 	int _x = 0;
@@ -13631,19 +13641,21 @@ rt_raster_iterator(
 
 						return NULL;
 					}
+					inextent = 1;
 				}
 				/* outside band extent, set to NODATA */
 				else {
+					RASTER_DEBUG(4, "Outside band extent, setting value to NODATA");
 					/* has NODATA, use NODATA */
 					if (rt_band_get_hasnodata_flag(_param->band[i]))
 						value = rt_band_get_nodata(_param->band[i]);
 					/* no NODATA, use min possible value */
 					else
 						value = rt_band_get_min_value(_param->band[i]);
+					inextent = 0;
 				}
 
 				/* add pixel to neighborhood */
-				RASTER_DEBUGF(4, "value: %f", value);
 				status++;
 				if (status > 1)
 					npixels = (rt_pixel) rtrealloc(npixels, sizeof(struct rt_pixel_t) * status);
@@ -13667,7 +13679,7 @@ rt_raster_iterator(
 
 				/* set nodata flag */
 				if (
-					!rt_band_get_hasnodata_flag(_param->band[i]) || (
+					(!rt_band_get_hasnodata_flag(_param->band[i]) && inextent) || (
 						(rt_band_get_hasnodata_flag(_param->band[i]) != FALSE) && (
 							FLT_NEQ(value, rt_band_get_nodata(_param->band[i])) &&
 							(rt_band_clamped_value_is_nodata(_param->band[i], value) != 1)
@@ -13676,16 +13688,7 @@ rt_raster_iterator(
 				) {
 					npixels[status - 1].nodata = 0;
 				}
-
-				/* no pixels in neighborhood */
-				/*
-				if (!status) {
-					RASTER_DEBUG(3, "no pixels in neighborhood, using empty");
-					_param->arg->values[i] = _param->empty.values;
-					_param->arg->nodata[i] = _param->empty.nodata;
-					continue;
-				}
-				*/
+				RASTER_DEBUGF(4, "value, nodata: %f, %d", value, npixels[status - 1].nodata);
 
 				/* convert set of rt_pixel to 2D array */
 				status = rt_pixel_set_to_array(
@@ -13728,10 +13731,18 @@ rt_raster_iterator(
 			}
 
 			/* burn value to pixel */
-			if (!nodata)
+			status = 0;
+			if (!nodata) {
 				status = rt_band_set_pixel(rtnband, _x, _y, value);
-			else if (!hasnodata)
+				RASTER_DEBUGF(4, "burning pixel (%d, %d) with value: %f", _x, _y, value);
+			}
+			else if (!hasnodata) {
 				status = rt_band_set_pixel(rtnband, _x, _y, minval);
+				RASTER_DEBUGF(4, "burning pixel (%d, %d) with minval: %f", _x, _y, minval);
+			}
+			else {
+				RASTER_DEBUGF(4, "NOT burning pixel (%d, %d)", _x, _y);
+			}
 			if (status < 0) {
 				rterror("rt_raster_iterator: Unable to set pixel value");
 

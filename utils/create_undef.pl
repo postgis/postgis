@@ -172,7 +172,7 @@ foreach my $agg (@aggs)
 	{
 		print "DROP AGGREGATE IF EXISTS $1 ($2);\n";
 	}
-	elsif ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*([\w,\.\s]+)\s*\)/ism )
+	elsif ( $agg =~ /create aggregate\s*([\w\.]+)\s*\(\s*([\w,\.\s\[\]]+)\s*\)/ism )
 	{
 		print "DROP AGGREGATE IF EXISTS $1 ($2);\n";
 	}
