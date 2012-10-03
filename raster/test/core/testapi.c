@@ -8045,6 +8045,50 @@ static void testRasterIterator() {
 	if (rtn != NULL) deepRelease(rtn);
 }
 
+static void testRasterClone() {
+	rt_raster rast1;
+	rt_raster rast2;
+	rt_band band;
+
+	int maxX = 5;
+	int maxY = 5;
+	double gt[6];
+
+	rast1 = rt_raster_new(maxX, maxY);
+	assert(rast1);
+
+	rt_raster_set_offsets(rast1, 0, 0);
+	rt_raster_set_scale(rast1, 1, -1);
+	rt_raster_set_srid(rast1, 4326);
+
+	band = addBand(rast1, PT_32BUI, 1, 6);
+	CHECK(band);
+
+	/* clone without bands */
+	rast2 = rt_raster_clone(rast1, 0);
+	CHECK(rast2);
+	CHECK((rt_raster_get_num_bands(rast2) == 0));
+
+	rt_raster_get_geotransform_matrix(rast2, gt);
+	CHECK((rt_raster_get_srid(rast2) == 4326));
+	CHECK((FLT_EQ(gt[0], 0)));
+	CHECK((FLT_EQ(gt[1], 1)));
+	CHECK((FLT_EQ(gt[2], 0)));
+	CHECK((FLT_EQ(gt[3], 0)));
+	CHECK((FLT_EQ(gt[4], 0)));
+	CHECK((FLT_EQ(gt[5], -1)));
+
+	deepRelease(rast2);
+
+	/* clone with bands */
+	rast2 = rt_raster_clone(rast1, 1);
+	CHECK(rast2);
+	CHECK((rt_raster_get_num_bands(rast2) == 1));
+
+	deepRelease(rast2);
+	deepRelease(rast1);
+}
+
 int
 main()
 {
@@ -8361,6 +8405,10 @@ main()
 
 		printf("Testing rt_raster_iterator... ");
 		testRasterIterator();
+		printf("OK\n");
+
+		printf("Test rt_raster_clone... ");
+		testRasterClone();
 		printf("OK\n");
 
     deepRelease(raster);

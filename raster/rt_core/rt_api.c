@@ -8313,6 +8313,7 @@ rt_raster_clone(rt_raster raster, uint8_t deep) {
 
 	rt_raster_get_geotransform_matrix(raster, gt);
 	rt_raster_set_geotransform_matrix(rtn, gt);
+	rt_raster_set_srid(rtn, rt_raster_get_srid(raster));
 
 	return rtn;
 }
