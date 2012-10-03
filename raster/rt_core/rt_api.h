@@ -1354,6 +1354,16 @@ rt_band rt_raster_replace_band(rt_raster raster, rt_band band,
 	int index);
 
 /**
+ * Clone an existing raster
+ *
+ * @param raster: raster to clone
+ * @param deep: flag indicating if bands should be cloned
+ *
+ * @return a new rt_raster or NULL on error
+ */
+rt_raster rt_raster_clone(rt_raster raster, uint8_t deep);
+
+/**
  * Return formatted GDAL raster from raster
  *
  * @param raster : the raster to convert

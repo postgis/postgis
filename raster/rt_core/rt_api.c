@@ -8269,6 +8269,55 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
 }
 
 /**
+ * Clone an existing raster
+ *
+ * @param raster: raster to clone
+ * @param deep: flag indicating if bands should be cloned
+ *
+ * @return a new rt_raster or NULL on error
+ */
+rt_raster
+rt_raster_clone(rt_raster raster, uint8_t deep) {
+	rt_raster rtn = NULL;
+	double gt[6] = {0};
+
+	assert(NULL != raster);
+
+	if (deep) {
+		int numband = rt_raster_get_num_bands(raster);
+		uint32_t *nband = NULL;
+		int i = 0;
+
+		nband = rtalloc(sizeof(uint32_t) * numband);
+		if (nband == NULL) {
+			rterror("rt_raster_clone: Unable to allocate memory for deep clone");
+			return NULL;
+		}
+		for (i = 0; i < numband; i++)
+			nband[i] = i;
+
+		rtn = rt_raster_from_band(raster, nband, numband);
+		rtdealloc(nband);
+
+		return rtn;
+	}
+
+	rtn = rt_raster_new(
+		rt_raster_get_width(raster),
+		rt_raster_get_height(raster)
+	);
+	if (rtn == NULL) {
+		rterror("rt_raster_clone: Unable to create cloned raster");
+		return NULL;
+	}
+
+	rt_raster_get_geotransform_matrix(raster, gt);
+	rt_raster_set_geotransform_matrix(rtn, gt);
+
+	return rtn;
+}
+
+/**
  * Return formatted GDAL raster from raster
  *
  * @param raster : the raster to convert
