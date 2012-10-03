@@ -13000,6 +13000,7 @@ _rti_param_populate(
 	int *allnull, int *allempty
 ) {
 	int i = 0;
+	int hasband = 0;
 
 	_param->count = itrcount;
 	_param->distance.x = distancex;
@@ -13055,16 +13056,24 @@ _rti_param_populate(
 		}
 
 		/* check band number */
-		if (!rt_raster_has_band(itrset[i].raster, itrset[i].nband)) {
-			rterror("_rti_param_populate: Band %d not found for raster %d", itrset[i].nband, i);
-			return 0;
+		hasband = rt_raster_has_band(itrset[i].raster, itrset[i].nband);
+		if (!hasband) {
+			if (!itrset[i].nbnodata) {
+				rterror("_rti_param_populate: Band %d not found for raster %d", itrset[i].nband, i);
+				return 0;
+			}
+			else {
+				RASTER_DEBUGF(4, "Band %d not found for raster %d. Using NODATA", itrset[i].nband, i);
+			}
 		}
 
 		_param->raster[i] = itrset[i].raster;
-		_param->band[i] = rt_raster_get_band(itrset[i].raster, itrset[i].nband);
-		if (_param->band[i] == NULL) {
-			rterror("_rti_param_populate: Unable to get band %d for raster %d", itrset[i].nband, i);
-			return 0;
+		if (hasband) {
+			_param->band[i] = rt_raster_get_band(itrset[i].raster, itrset[i].nband);
+			if (_param->band[i] == NULL) {
+				rterror("_rti_param_populate: Unable to get band %d for raster %d", itrset[i].nband, i);
+				return 0;
+			}
 		}
 
 		/* init offset */
@@ -13545,7 +13554,7 @@ rt_raster_iterator(
 	);
 
 	/* init values and NODATA for use with empty rasters */
-	if (allempty > 0 && !_rti_param_empty_init(_param)) {
+	if (!_rti_param_empty_init(_param)) {
 		rterror("rt_raster_iterator: Unable to initialize empty values and NODATA");
 
 		_rti_param_destroy(_param);
@@ -13631,8 +13640,9 @@ rt_raster_iterator(
 				RASTER_DEBUGF(4, "raster %d", i);
 
 				/* empty raster */
-				if (_param->isempty[i]) {
-					RASTER_DEBUG(4, "empty raster. using empty values and NODATA");
+				/* OR band does not exist and flag set to use NODATA */
+				if (_param->isempty[i] || (_param->band[i] == NULL && itrset[i].nbnodata)) {
+					RASTER_DEBUG(4, "empty raster or band does not exist. using empty values and NODATA");
 					
 					x = _x;
 					y = _y;
@@ -13762,6 +13772,7 @@ rt_raster_iterator(
 			}
 	
 			/* callback */
+			RASTER_DEBUG(4, "calling callback function");
 			value = 0;
 			nodata = 0;
 			status = callback(_param->arg, userarg, &value, &nodata);

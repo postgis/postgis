@@ -7845,8 +7845,10 @@ static void testRasterIterator() {
 	itrset = rtalloc(sizeof(struct rt_iterator_t) * num);
 	itrset[0].raster = rast1;
 	itrset[0].nband = 0;
+	itrset[0].nbnodata = 1;
 	itrset[1].raster = rast2;
 	itrset[1].nband = 0;
+	itrset[1].nbnodata = 1;
 
 	/* 1 raster, 0 distance, FIRST or SECOND or LAST or UNION or INTERSECTION */
 	userargs->rasters = 1;

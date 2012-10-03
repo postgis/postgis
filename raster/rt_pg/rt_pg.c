@@ -14093,30 +14093,8 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				break;
 
 			numbands = rt_raster_get_num_bands(raster);
-			if (numbands == iwr->numband)
+			if (numbands <= iwr->numband)
 				break;
-
-			/* incoming has fewer bands, add NODATA bands to incoming */
-			/* TODO: have rt_raster_iterator() treat missing band as NODATA band? */
-			if (numbands < iwr->numband) {
-				POSTGIS_RT_DEBUG(4, "input raster has fewer bands, adding NODATA bands");
-				for (i = numbands; i < iwr->numband; i++) {
-					if (rt_raster_generate_new_band(raster, PT_8BUI, 0, 1, 0, i) < 0) {
-						elog(ERROR, "RASTER_union_transfn: Unable to create NODATA band");
-
-						rtpg_union_arg_destroy(iwr);
-						if (raster != NULL) {
-							rt_raster_destroy(raster);
-							PG_FREE_IF_COPY(pgraster, 1);
-						}
-
-						MemoryContextSwitchTo(oldcontext);
-						PG_RETURN_NULL();
-					}
-				}
-
-				break;
-			}
 
 			/* more bands to process */
 			POSTGIS_RT_DEBUG(4, "input raster has more bands, adding more bandargs");
@@ -14165,34 +14143,6 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					iwr->bandarg[i].raster[0] = rt_raster_clone(iwr->bandarg[0].raster[0], 0);
 					if (iwr->bandarg[i].raster[0] == NULL) {
 						elog(ERROR, "RASTER_union_transfn: Unable to create working raster");
-
-						rtpg_union_arg_destroy(iwr);
-						if (raster != NULL) {
-							rt_raster_destroy(raster);
-							PG_FREE_IF_COPY(pgraster, 1);
-						}
-
-						MemoryContextSwitchTo(oldcontext);
-						PG_RETURN_NULL();
-					}
-
-					/* create band of same type as input raster */
-					_band = rt_raster_get_band(raster, i);
-					pixtype = rt_band_get_pixtype(_band);
-					hasnodata = rt_band_get_hasnodata_flag(_band);
-					if (hasnodata)
-						nodataval = rt_band_get_nodata(_band);
-					else
-						nodataval = rt_band_get_min_value(_band);
-
-					if (rt_raster_generate_new_band(
-						iwr->bandarg[i].raster[0],
-						pixtype,
-						nodataval,
-						hasnodata, nodataval,
-						i
-					) < 0) {
-						elog(ERROR, "RASTER_union_transfn: Unable to add new band to working raster");
 
 						rtpg_union_arg_destroy(iwr);
 						if (raster != NULL) {
@@ -14284,6 +14234,17 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			itrset[0].nband = 0;
 			itrset[1].raster = raster;
 			itrset[1].nband = iwr->bandarg[i].nband;
+
+			/* no additional arguments in aggregate, allow use NODATA to replace missing bands */
+			if (nargs < 3) {
+				itrset[0].nbnodata = 1;
+				itrset[1].nbnodata = 1;
+			}
+			/* additional arguments in aggregate, missing bands are not ignored */
+			else {
+				itrset[0].nbnodata = 0;
+				itrset[1].nbnodata = 0;
+			}
 
 			/* pass everything to iterator */
 			_raster = rt_raster_iterator(

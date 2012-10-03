@@ -2150,6 +2150,7 @@ struct rt_reclassexpr_t {
 struct rt_iterator_t {
 	rt_raster raster;
 	uint16_t nband; /* 0-based */
+	uint8_t nbnodata; /* no band = treat as NODATA  */
 };
 
 /* callback argument from raster iterator */
