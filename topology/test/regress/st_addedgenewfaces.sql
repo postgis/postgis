@@ -430,6 +430,37 @@ SELECT 'T26', 'E'||edge_id, next_left_edge, next_right_edge,
     UNION VALUES (4),(5) )
   ORDER BY edge_id;
 
+--
+-- Split a face closing a ring inside a face
+-- and with the ring containing another edge
+--
+
+INSERT INTO newedge SELECT 27, topology.st_addedgenewfaces('city_data',
+  5, 6, 'LINESTRING(36 38, 50 38, 57 33)');
+SELECT 'T27', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN ( 
+    SELECT edge_id FROM newedge WHERE id IN (27, 17, 18, 26)
+    UNION VALUES (4),(5) )
+  ORDER BY edge_id;
+
+--
+-- Split a face closing a ring inside a face
+-- and with the left ring containing another edge
+-- and forming an invalid polygon of this shape: <>---<>
+--
+-- See http://trac.osgeo.org/postgis/ticket/2025
+--
+
+INSERT INTO newedge SELECT 28, topology.st_addedgenewfaces('city_data',
+  7, 7, 'LINESTRING(41 40, 38 40, 41 43, 41 40)');
+SELECT 'T28', 'E'||edge_id, next_left_edge, next_right_edge,
+  left_face, right_face FROM
+  city_data.edge WHERE edge_id IN ( 
+    SELECT edge_id FROM newedge WHERE id IN (26, 27, 28, 17, 18)
+    UNION VALUES (4),(5) )
+  ORDER BY edge_id;
+
 ---------------------------------------------------------------------
 -- Check new relations and faces status
 ---------------------------------------------------------------------

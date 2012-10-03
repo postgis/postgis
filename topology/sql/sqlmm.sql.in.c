@@ -3075,7 +3075,7 @@ BEGIN
     ishole := false;
   END IF; -- }
 
-  -- Update edges having new face on the left
+  -- Update edges bounding the old face
   sql := 'UPDATE '
     || quote_ident(atopology)
     || '.edge_data SET left_face = CASE WHEN left_face = '
@@ -3090,9 +3090,11 @@ BEGIN
        )::text )
     || ') AND ';
   IF ishole THEN sql := sql || 'NOT '; END IF;
-  sql := sql || 'ST_Contains(' || quote_literal(fan.shell::text) || '::geometry, geom)';
+  sql := sql || 'ST_Contains(' || quote_literal(fan.shell::text)
+    -- We only need to check a single point, but must not be an endpoint
+    || '::geometry, ST_Line_Interpolate_Point(geom, 0.2))';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Updating edges binding old face';
+  RAISE DEBUG 'Updating edges bounding the old face';
 #endif
   EXECUTE sql;
 
