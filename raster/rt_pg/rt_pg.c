@@ -13764,6 +13764,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	int noerr = 1;
 	int isempty[2] = {0};
 	int hasband[2] = {0};
+	int nargs = 0;
 
 	int i = 0;
 	int j = 0;
@@ -13826,12 +13827,14 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	}
 
 	/* process additional args if needed */
-	if (!skiparg) {
-		POSTGIS_RT_DEBUGF(4, "PG_NARGS() = %d", (int) PG_NARGS());
+	nargs = PG_NARGS();
+	POSTGIS_RT_DEBUGF(4, "nargs = %d", nargs);
+	if (!skiparg && nargs > 2) {
+		POSTGIS_RT_DEBUG(4, "processing additional arguments");
 
 		/* if more than 2 arguments, determine the type of argument 3 */
 		/* band number, UNION type or unionarg */
-		if (PG_NARGS() > 2 && !PG_ARGISNULL(2)) {
+		if (nargs > 2 && !PG_ARGISNULL(2)) {
 			Oid calltype = get_fn_expr_argtype(fcinfo->flinfo, 2);
 
 			switch (calltype) {
@@ -14049,7 +14052,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 		}
 
 		/* UNION type */
-		if (PG_NARGS() > 3 && !PG_ARGISNULL(3)) {
+		if (nargs > 3 && !PG_ARGISNULL(3)) {
 			utypename = text_to_cstring(PG_GETARG_TEXT_P(3));
 			utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
 			iwr->bandarg[0].uniontype = utype;
@@ -14060,7 +14063,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 
 		/* allocate space for pointers to rt_raster */
 		for (i = 0; i < iwr->numband; i++) {
-			iwr->bandarg[i].raster = (rt_raster *) rtalloc(sizeof(rt_raster) * iwr->bandarg[i].numraster);
+			iwr->bandarg[i].raster = (rt_raster *) palloc(sizeof(rt_raster) * iwr->bandarg[i].numraster);
 			if (iwr->bandarg[i].raster == NULL) {
 				elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for working raster(s)");
 
@@ -14076,6 +14079,136 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 
 			memset(iwr->bandarg[i].raster, 0, sizeof(rt_raster) * iwr->bandarg[i].numraster);
 		}
+	}
+	/* only raster, no additional args */
+	/* only do this if raster isn't empty */
+	else if (nargs < 3) {
+		POSTGIS_RT_DEBUG(4, "no additional args, checking input raster");
+
+		do {
+			int numbands;
+
+
+			if (rt_raster_is_empty(raster))
+				break;
+
+			numbands = rt_raster_get_num_bands(raster);
+			if (numbands == iwr->numband)
+				break;
+
+			/* incoming has fewer bands, add NODATA bands to incoming */
+			/* TODO: have rt_raster_iterator() treat missing band as NODATA band? */
+			if (numbands < iwr->numband) {
+				POSTGIS_RT_DEBUG(4, "input raster has fewer bands, adding NODATA bands");
+				for (i = numbands; i < iwr->numband; i++) {
+					if (rt_raster_generate_new_band(raster, PT_8BUI, 0, 1, 0, i) < 0) {
+						elog(ERROR, "RASTER_union_transfn: Unable to create NODATA band");
+
+						rtpg_union_arg_destroy(iwr);
+						if (raster != NULL) {
+							rt_raster_destroy(raster);
+							PG_FREE_IF_COPY(pgraster, 1);
+						}
+
+						MemoryContextSwitchTo(oldcontext);
+						PG_RETURN_NULL();
+					}
+				}
+
+				break;
+			}
+
+			/* more bands to process */
+			POSTGIS_RT_DEBUG(4, "input raster has more bands, adding more bandargs");
+			if (iwr->numband)
+				iwr->bandarg = repalloc(iwr->bandarg, sizeof(struct rtpg_union_band_arg_t) * numbands);
+			else
+				iwr->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * numbands);
+			if (iwr->bandarg == NULL) {
+				elog(ERROR, "RASTER_union_transfn: Unable to reallocate memory for band information");
+
+				rtpg_union_arg_destroy(iwr);
+				if (raster != NULL) {
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 1);
+				}
+
+				MemoryContextSwitchTo(oldcontext);
+				PG_RETURN_NULL();
+			}
+
+			i = iwr->numband;
+			iwr->numband = numbands;
+			for (; i < iwr->numband; i++) {
+				POSTGIS_RT_DEBUGF(4, "Adding bandarg for band at index %d", i);
+				iwr->bandarg[i].uniontype = UT_LAST;
+				iwr->bandarg[i].nband = i;
+				iwr->bandarg[i].numraster = 1;
+
+				iwr->bandarg[i].raster = (rt_raster *) palloc(sizeof(rt_raster) * iwr->bandarg[i].numraster);
+				if (iwr->bandarg[i].raster == NULL) {
+					elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for working rasters");
+
+					rtpg_union_arg_destroy(iwr);
+					if (raster != NULL) {
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 1);
+					}
+
+					MemoryContextSwitchTo(oldcontext);
+					PG_RETURN_NULL();
+				}
+				memset(iwr->bandarg[i].raster, 0, sizeof(rt_raster) * iwr->bandarg[i].numraster);
+
+				/* add new working rt_raster but only if working raster already exists */
+				if (!rt_raster_is_empty(iwr->bandarg[0].raster[0])) {
+					iwr->bandarg[i].raster[0] = rt_raster_clone(iwr->bandarg[0].raster[0], 0);
+					if (iwr->bandarg[i].raster[0] == NULL) {
+						elog(ERROR, "RASTER_union_transfn: Unable to create working raster");
+
+						rtpg_union_arg_destroy(iwr);
+						if (raster != NULL) {
+							rt_raster_destroy(raster);
+							PG_FREE_IF_COPY(pgraster, 1);
+						}
+
+						MemoryContextSwitchTo(oldcontext);
+						PG_RETURN_NULL();
+					}
+
+					/* create band of same type as input raster */
+					_band = rt_raster_get_band(raster, i);
+					pixtype = rt_band_get_pixtype(_band);
+					hasnodata = rt_band_get_hasnodata_flag(_band);
+					if (hasnodata)
+						nodataval = rt_band_get_nodata(_band);
+					/* shouldn't this be rt_band_get_min_val(_band) */
+					else
+						nodataval = 0;
+
+					if (rt_raster_generate_new_band(
+						iwr->bandarg[i].raster[0],
+						pixtype,
+						nodataval,
+						hasnodata, nodataval,
+						i
+					) < 0) {
+						elog(ERROR, "RASTER_union_transfn: Unable to add new band to working raster");
+
+						rtpg_union_arg_destroy(iwr);
+						if (raster != NULL) {
+							rt_raster_destroy(raster);
+							PG_FREE_IF_COPY(pgraster, 1);
+						}
+
+						MemoryContextSwitchTo(oldcontext);
+						PG_RETURN_NULL();
+					}
+				}
+
+			}
+		}
+		while (0);
 	}
 
 	/* init itrset */
@@ -14125,6 +14258,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				hasnodata = rt_band_get_hasnodata_flag(_band);
 				if (hasnodata)
 					nodataval = rt_band_get_nodata(_band);
+				/* shouldn't this be rt_band_get_min_val(_band) */
 				else
 					nodataval = 0;
 			}
@@ -14290,7 +14424,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 		else
 			status = rt_raster_copy_band(_rtn, _raster, 0, i);
 
-		POSTGIS_RT_DEBUG(3, "before destroy");
+		POSTGIS_RT_DEBUG(4, "destroying source rasters");
 
 		/* destroy source rasters */
 		if (iwr->bandarg[i].uniontype == UT_MEAN)
@@ -14302,7 +14436,6 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 			rt_raster_destroy(iwr->bandarg[i].raster[j]);
 			iwr->bandarg[i].raster[j] = NULL;
 		}
-		POSTGIS_RT_DEBUG(3, "after destroy");
 
 		if (status < 0) {
 			elog(ERROR, "RASTER_union_finalfn: Unable to add band to final raster");

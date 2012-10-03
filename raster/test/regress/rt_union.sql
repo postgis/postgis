@@ -310,5 +310,67 @@ FROM (
 ) foo
 ORDER BY uniontype, y, x;
 
+TRUNCATE raster_union_out;
+TRUNCATE raster_union_in;
+
+INSERT INTO raster_union_in
+	SELECT 50, NULL::raster AS rast UNION ALL
+	SELECT 51, NULL::raster AS rast UNION ALL
+	SELECT 52, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '32BF', 100, -9999) AS rast UNION ALL
+	SELECT 53, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 1, -1, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0), 2, '32BF', 200, -9999) AS rast UNION ALL
+	SELECT 54, NULL::raster AS rast UNION ALL
+	SELECT 55, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, -1, 1, 1, -1, 0, 0, 0), 1, '8BUI', 3, 0), 2, '32BF', 300, -9999), 3, '8BSI', -1, -10) AS rast UNION ALL
+	SELECT 56, ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 1, 1, 1, -1, 0, 0, 0), 1, '8BUI', 4, 0), 2, '32BF', 400, -9999) AS rast
+;
+
+INSERT INTO raster_union_out
+	SELECT
+		'LAST',
+		ST_Union(rast) AS rast
+	FROM raster_union_in;
+
+SELECT
+	(ST_Metadata(rast)).*
+FROM raster_union_out;
+
+SELECT
+	uniontype,
+	x,
+	y,
+	val
+FROM (
+	SELECT
+		uniontype,
+		(ST_PixelAsPoints(rast)).*
+	FROM raster_union_out
+) foo
+ORDER BY uniontype, y, x;
+
+SELECT
+	uniontype,
+	x,
+	y,
+	val
+FROM (
+	SELECT
+		uniontype,
+		(ST_PixelAsPoints(rast, 2)).*
+	FROM raster_union_out
+) foo
+ORDER BY uniontype, y, x;
+
+SELECT
+	uniontype,
+	x,
+	y,
+	val
+FROM (
+	SELECT
+		uniontype,
+		(ST_PixelAsPoints(rast, 3)).*
+	FROM raster_union_out
+) foo
+ORDER BY uniontype, y, x;
+
 DROP TABLE IF EXISTS raster_union_in;
 DROP TABLE IF EXISTS raster_union_out;
