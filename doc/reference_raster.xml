@@ -8675,14 +8675,12 @@ UPDATE wind
 			</refnamediv>
 		
 			<refsynopsisdiv>
-<!-- NOT IMPLEMENTED YET
 				<funcsynopsis>
 				  <funcprototype>
 						<funcdef>raster <function>ST_Union</function></funcdef>
 						<paramdef><type>setof raster </type> <parameter>rast</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
--->
 				<funcsynopsis>
 				  <funcprototype>
 						<funcdef>raster <function>ST_Union</function></funcdef>
@@ -8721,7 +8719,7 @@ UPDATE wind
 
 				<para>Availability: 2.0.0 </para>
 				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
-				<para>Changed: ST_Union(rast) is no longer supported. Need to specify a band number e.d ST_Union(rast,1)</para>
+				<para>Changed: 2.1.0 ST_Union(rast) now unions all bands of all input rasters.  Prior versions only unioned the first band of all input rasters.</para>
 			</refsection>
 				
 			<refsection>

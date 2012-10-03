@@ -5,6 +5,7 @@ PostGIS 2.1.0
 
   - ST_Intersects(raster, geometry) behaves in the same manner as
     ST_Intersects(geometry, raster).
+  - #2026, ST_Union(raster) now unions all bands of all rasters
 
 * Deprecated signatures
 
