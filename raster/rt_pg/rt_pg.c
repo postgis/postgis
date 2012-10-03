@@ -14182,9 +14182,8 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					hasnodata = rt_band_get_hasnodata_flag(_band);
 					if (hasnodata)
 						nodataval = rt_band_get_nodata(_band);
-					/* shouldn't this be rt_band_get_min_val(_band) */
 					else
-						nodataval = 0;
+						nodataval = rt_band_get_min_value(_band);
 
 					if (rt_raster_generate_new_band(
 						iwr->bandarg[i].raster[0],
@@ -14258,9 +14257,8 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				hasnodata = rt_band_get_hasnodata_flag(_band);
 				if (hasnodata)
 					nodataval = rt_band_get_nodata(_band);
-				/* shouldn't this be rt_band_get_min_val(_band) */
 				else
-					nodataval = 0;
+					nodataval = rt_band_get_min_value(_band);
 			}
 
 			/* UT_MEAN requires two passes, first for UT_COUNT and second for UT_SUM */
