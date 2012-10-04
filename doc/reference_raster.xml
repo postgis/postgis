@@ -8727,15 +8727,25 @@ UPDATE wind
 				<programlisting>
 -- this creates a single band from first band of raster tiles
 -- that form the original file system tile
-SELECT filename, ST_Union(rast) As file_rast
+SELECT filename, ST_Union(rast,1) As file_rast
 FROM sometable WHERE filename IN('dem01', 'dem02') GROUP BY filename;</programlisting>
 			</refsection>
 			
 			<refsection>
 				<title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
-				<programlisting>
--- this creates a multi band raster collecting all the tiles that intersect a line
-SELECT ST_Union(rast,ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[])
+				<para>-- this creates a multi band raster collecting all the tiles that intersect a line
+-- Note: In 2.0, this would have just returned a single band raster
+-- , new union works on all bands by default
+-- this is equivalent to unionarg: ARRAY[ROW(1, 'LAST'), ROW(2, 'LAST'), ROW(3, 'LAST')]::unionarg[] </para>
+				<programlisting>SELECT ST_Union(rast)
+FROM aerials.boston
+WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );</programlisting>
+			</refsection>
+			<refsection>
+				<title>Examples: Return a multi-band raster that is the union of tiles intersecting geometry</title>
+				<para>Here we use the longer syntax if we only wanted a subset of bands or we want to change order of bands</para>
+				<programlisting>-- this creates a multi band raster collecting all the tiles that intersect a line
+SELECT ST_Union(rast,ARRAY[ROW(2, 'LAST'), ROW(1, 'LAST'), ROW(3, 'LAST')]::unionarg[])
 FROM aerials.boston
 WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 88772)',26986) );</programlisting>
 			</refsection>
@@ -8746,7 +8756,8 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 				<para>
 					<xref linkend="unionarg" />, 
 					<xref linkend="RT_ST_Envelope" />, 
-					<xref linkend="RT_ST_ConvexHull" />
+					<xref linkend="RT_ST_ConvexHull" />,
+					<xref linkend="RT_ST_Clip" />
 				</para>
 			</refsection>
 		</refentry>
