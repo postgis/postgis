@@ -695,6 +695,7 @@ DECLARE
   snapedge GEOMETRY;
   snaptol FLOAT8;
   tol FLOAT8;
+  z FLOAT8;
 BEGIN
 
   -- 0. Check arguments
@@ -742,6 +743,12 @@ BEGIN
   IF rec IS NOT NULL THEN
     -- project point to line, split edge by point
     prj := ST_ClosestPoint(rec.geom, apoint);
+    -- This is a workaround for ClosestPoint lack of Z support:
+    -- http://trac.osgeo.org/postgis/ticket/2033
+    z := ST_Z(apoint);
+    IF z IS NOT NULL THEN
+      prj := ST_Translate(ST_Force_3DZ(prj), 0, 0, z); -- no ST_SetZ ...
+    END IF;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
     RAISE DEBUG 'Splitting edge % with closest point %', rec.edge_id, ST_AsText(prj);
 #endif
