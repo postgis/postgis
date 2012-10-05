@@ -926,7 +926,7 @@ SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degAz,
 	</refsection>
   </refentry>
   
-<refentry id="ST_ClosestPoint">
+  <refentry id="ST_ClosestPoint">
 	  <refnamediv>
 		<refname>ST_ClosestPoint</refname>
 
@@ -952,9 +952,9 @@ SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degAz,
 		<title>Description</title>
 
 		<para>Returns the 2-dimensional point on g1 that is closest to g2.  This is the first point of 
-			the shortest line. 	
+			the shortest line. 
 		</para>
-
+		<note><para>If you have a 3D Geometry, you may prefer to use <xref linkend="ST_3DClosestPoint" />.</para></note>
 		<para>Availability: 1.5.0</para>
 	  </refsection>
 
@@ -1018,9 +1018,9 @@ SELECT ST_AsText(
 	  <refsection>
 		<title>See Also</title>
 
-		<para><xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
+		<para><xref linkend="ST_3DClosestPoint" />,<xref linkend="ST_Distance"/>, <xref linkend="ST_LongestLine"/>, <xref linkend="ST_ShortestLine"/>, <xref linkend="ST_MaxDistance"/></para>
 	  </refsection>
-</refentry>
+  </refentry>
 
   <refentry id="ST_Contains">
 	  <refnamediv>
