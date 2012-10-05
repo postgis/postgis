@@ -47,3 +47,10 @@ SELECT 'E', n.edge_id, n.start_node, n.end_node
 ORDER BY n.edge_id;
 
 SELECT DropTopology('city_data');
+
+-- See http://trac.osgeo.org/postgis/ticket/2033
+SELECT 'tt2033.start', CreateTopology('t',0,0,true) > 0;
+SELECT 'tt2033', 'E' || topogeo_addlinestring('t', 'LINESTRING(0 0 0,0 1 0,0 2 1)');
+SELECT 'tt2033', 'N' || topogeo_addpoint('t', 'POINT(0.2 1 1)', 0.5);
+SELECT 'tt2033', 'NC', node_id, ST_AsText(geom) FROM t.node ORDER BY node_id;
+SELECT 'tt2033.end' || DropTopology('t');
