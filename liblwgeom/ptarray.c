@@ -690,7 +690,7 @@ ptarray_is_closed_z(const POINTARRAY *in)
 }
 
 /**
-* Return -1 if the point is inside the POINTARRAY, 1 if it is outside,
+* Return 1 if the point is inside the POINTARRAY, -1 if it is outside,
 * and 0 if it is on the boundary.
 */
 int 
@@ -737,7 +737,7 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 		*/
 		if ( (side == 0) && lw_pt_in_seg(pt, seg1, seg2) )
 		{
-				return 0;
+			return 0;
 		}
 
 		/*
@@ -774,34 +774,62 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 }
 
 /**
-* Return -1 if the point is inside the POINTARRAY, 1 if it is outside,
+* For POINTARRAYs representing CIRCULARSTRINGS. That is, linked triples
+* with each triple being control points of a circular arc. Such
+* POINTARRAYs have an odd number of vertices.
+*
+* Return 1 if the point is inside the POINTARRAY, -1 if it is outside,
 * and 0 if it is on the boundary.
 */
 int 
-ptarray_arc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
+ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 {
 	int wn = 0;
-	int i;
-	double side;
+	int i, side;
 	const POINT2D *seg1;
 	const POINT2D *seg2;
 	const POINT2D *seg3;
 	GBOX gbox;
 
 	/* Check for not an arc ring (always have odd # of points) */
-	if ( pa->npoints % 2 )
-		lwerror("ptarray_arc_contains_point called with even number of points");
-	
-	/* Check for unclosed */
+	if ( (pa->npoints % 2) == 0 )
+		lwerror("ptarray_contains_point_arc called with even number of points");
+
+	/* Check for not an arc ring (always have >= 3 points) */
+	if ( pa->npoints < 3 )
+		lwerror("ptarray_contains_point_arc called too-short pointarray");
+
+	/* Check for unclosed case */
 	seg1 = getPoint2d_cp(pa, 0);
-	seg2 = getPoint2d_cp(pa, pa->npoints-1);
-
-	if ( ! p2d_same(seg1, seg2) )
-		lwerror("ptarray_contains_point called on unclosed ring");
-
-	if ( pa->npoints == 3 && p2d_same(seg1, seg2) )
+	seg3 = getPoint2d_cp(pa, pa->npoints-1);
+	if ( ! p2d_same(seg1, seg3) )
 	{
-		/* TODO handle circlular case */
+		lwerror("ptarray_contains_point_arc called on unclosed ring");
+	} 
+	/* OK, it's closed. Is it just one circle? */
+	else if ( pa->npoints == 3 )
+	{
+		double radius, d;
+		POINT2D c;
+		seg2 = getPoint2d_cp(pa, 1);
+		
+		/* Wait, it's just a point, so it can't contain anything */
+		if ( lw_arc_is_pt(seg1, seg2, seg3) )
+			return -1;
+			
+		/* See if the point is within the circle radius */
+		radius = lw_arc_center(seg1, seg2, seg3, &c);
+		d = distance2d_pt_pt(pt, &c);
+		if ( FP_EQUALS(d, radius) )
+			return 0; /* Boundary of circle */
+		else if ( d < radius ) 
+			return 1; /* Inside circle */
+		else 
+			return -1; /* Outside circle */
+	} 
+	else if ( p2d_same(seg1, pt) )
+	{
+		return 0; /* Boundary case */
 	}
 
 	/* Start on the ring */
@@ -810,6 +838,11 @@ ptarray_arc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 	{
 		seg3 = getPoint2d_cp(pa, i);
 		
+		/* Catch an easy boundary case */
+		if( p2d_same(seg3, pt) )
+			return 0;
+		
+		/* Skip arcs that have no size */
 		if ( lw_arc_is_pt(seg1, seg2, seg3) )
 		{
 			seg1 = seg2;
@@ -817,9 +850,9 @@ ptarray_arc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 			continue;
 		}
 		
-		lw_arc_calculate_gbox_cartesian_2d(seg1, seg2, seg3, &gbox);
 		
 		/* Only test segments in our vertical range */
+		lw_arc_calculate_gbox_cartesian_2d(seg1, seg2, seg3, &gbox);
 		if ( pt->y > gbox.ymax || pt->y < gbox.ymin ) 
 		{
 			seg1 = seg2;
@@ -827,48 +860,22 @@ ptarray_arc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 			continue;
 		}
 		
-		side = lw_segment_side(seg1, seg3, pt);
+		side = lw_arc_side(seg1, seg2, seg3, pt);
 		
+		/* On the boundary */
+		if ( (side == 0) && lw_pt_in_arc(pt, seg1, seg2, seg3) )
+		{
+			return 0;
+		}
 		
-		/* Going "up"! */
-		if ( (seg1->y <= pt->y) && (pt->y < seg3->y) )
-		{
-		}
-
-		/* Going "down"! */
-		if ( (seg2->y <= pt->y) && (pt->y < seg1->y) )
-		{
-		}
-
-
-
-		side = lw_segment_side(seg1, seg2, pt);
-
-		/* 
-		* A point on the boundary of a ring is not contained. 
-		* WAS: if (fabs(side) < 1e-12), see #852 
-		*/
-		if ( (side == 0.0) && lw_pt_in_seg(pt, seg1, seg2) )
-		{
-				return 0;
-		}
-
-		/*
-		* If the point is to the left of the line, and it's rising,
-		* then the line is to the right of the point and
-		* circling counter-clockwise, so incremement.
-		*/
-		if ( (side < 0) && (seg1->y <= pt->y) && (pt->y < seg2->y) )
+		/* Going "up"! Point to left of arc. */
+		if ( side < 0 && (seg1->y <= pt->y) && (pt->y < seg3->y) )
 		{
 			wn++;
 		}
-		
-		/*
-		* If the point is to the right of the line, and it's falling,
-		* then the line is to the right of the point and circling
-		* clockwise, so decrement.
-		*/
-		else if ( (side > 0) && (seg2->y <= pt->y) && (pt->y < seg1->y) )
+
+		/* Going "down"! */
+		if ( side > 0 && (seg2->y <= pt->y) && (pt->y < seg1->y) )
 		{
 			wn--;
 		}
@@ -1475,24 +1482,6 @@ ptarray_length(const POINTARRAY *pts)
 	return dist;
 }
 
-
-int
-p4d_same(const POINT4D *p1, const POINT4D *p2)
-{
-	if( FP_EQUALS(p1->x,p2->x) && FP_EQUALS(p1->y,p2->y) && FP_EQUALS(p1->z,p2->z) && FP_EQUALS(p1->m,p2->m) )
-		return LW_TRUE;
-	else
-		return LW_FALSE;
-}
-
-int
-p2d_same(const POINT2D *p1, const POINT2D *p2)
-{
-	if( FP_EQUALS(p1->x,p2->x) && FP_EQUALS(p1->y,p2->y) )
-		return LW_TRUE;
-	else
-		return LW_FALSE;
-}
 
 /*
  * Get a pointer to nth point of a POINTARRAY.

@@ -463,6 +463,114 @@ static void test_ptarray_contains_point()
 	lwline_free(lwline);
 }
 
+
+static void test_ptarray_contains_point_arc() 
+{
+/* int ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt) */
+
+	LWLINE *lwline;
+	POINTARRAY *pa;
+	POINT2D pt;
+	int rv;
+	
+	/* Collection of semi-circles surrounding unit square */
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 -1, -2 0, -1 1, 0 2, 1 1, 2 0, 1 -1, 0 -2, -1 -1)"));
+	pa = lwline->points;
+
+	/* Point in middle of square */
+	pt.x = 0;
+	pt.y = 0;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);
+	
+	/* Point in left lobe */
+	pt.x = -1.1;
+	pt.y = 0.1;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);	
+
+	/* Point on boundary of left lobe */
+	pt.x = -1;
+	pt.y = 0;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);	
+
+	/* Point on boundary vertex */
+	pt.x = -1;
+	pt.y = 1;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 0);	
+
+	/* Point outside */
+	pt.x = -1.5;
+	pt.y = 1.5;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, -1);	
+
+	/* Two-edge ring made up of semi-circles (really, a circle) */
+	lwfree(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0, 0 -1, -1 0)"));
+	pa = lwline->points;
+	
+	/* Point outside */
+	pt.x = -1.5;
+	pt.y = 1.5;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, -1);	
+
+	/* Point inside */
+	pt.x = -0.2;
+	pt.y = 0.2;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);	
+
+	/* Point on edge vertex */
+	pt.x = 0;
+	pt.y = 1;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 0);	
+
+	/* One-edge ring, closed circle */
+	lwfree(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, -1 0)"));
+	pa = lwline->points;
+
+	/* Point inside */
+	pt.x = 0;
+	pt.y = 0;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);	
+
+	/* Point outside */
+	pt.x = 0;
+	pt.y = 2;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, -1);	
+
+	/* Point on boundary */
+	pt.x = 0;
+	pt.y = 1;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 0);	
+
+	/* Overshort ring */
+	lwfree(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0)"));
+	pa = lwline->points;
+	cu_error_msg_reset();
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_STRING_EQUAL("ptarray_contains_point_arc called on unclosed ring", cu_error_msg);
+
+	/* Unclosed ring */
+	lwfree(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, 1 0)"));
+	pa = lwline->points;
+	cu_error_msg_reset();
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_STRING_EQUAL("ptarray_contains_point_arc called on unclosed ring", cu_error_msg);
+
+	lwline_free(lwline);
+}
 /*
 ** Used by the test harness to register the tests in this file.
 */
@@ -475,6 +583,7 @@ CU_TestInfo ptarray_tests[] =
 	PG_TEST(test_ptarray_desegmentize),
 	PG_TEST(test_ptarray_insert_point),
 	PG_TEST(test_ptarray_contains_point),
+	PG_TEST(test_ptarray_contains_point_arc),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo ptarray_suite = {"ptarray", NULL, NULL, ptarray_tests };

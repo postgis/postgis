@@ -249,6 +249,7 @@ char *geohash_point(double longitude, double latitude, int precision);
 * Point comparisons
 */
 int p4d_same(const POINT4D *p1, const POINT4D *p2);
+int p3d_same(const POINT3D *p1, const POINT3D *p2);
 int p2d_same(const POINT2D *p1, const POINT2D *p2);
 
 /*
@@ -362,7 +363,7 @@ double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
 double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q);
 int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt);
-int ptarray_arc_contains_point(const POINTARRAY *pa, const POINT2D *pt);
+int ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt);
 
 /**
 * Split a line by a point and push components to the provided multiline.

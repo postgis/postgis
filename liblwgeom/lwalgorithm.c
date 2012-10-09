@@ -24,6 +24,33 @@ int signum(double n)
 	return 0;
 }
 
+int
+p4d_same(const POINT4D *p1, const POINT4D *p2)
+{
+	if( FP_EQUALS(p1->x,p2->x) && FP_EQUALS(p1->y,p2->y) && FP_EQUALS(p1->z,p2->z) && FP_EQUALS(p1->m,p2->m) )
+		return LW_TRUE;
+	else
+		return LW_FALSE;
+}
+
+int
+p3d_same(const POINT3D *p1, const POINT3D *p2)
+{
+	if( FP_EQUALS(p1->x,p2->x) && FP_EQUALS(p1->y,p2->y) && FP_EQUALS(p1->z,p2->z) )
+		return LW_TRUE;
+	else
+		return LW_FALSE;
+}
+
+int
+p2d_same(const POINT2D *p1, const POINT2D *p2)
+{
+	if( FP_EQUALS(p1->x,p2->x) && FP_EQUALS(p1->y,p2->y) )
+		return LW_TRUE;
+	else
+		return LW_FALSE;
+}
+
 /**
 * lw_segment_side()
 *
@@ -34,7 +61,7 @@ int signum(double n)
 int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q)
 {
 	double side = ( (q->x - p1->x) * (p2->y - p1->y) - (p2->x - p1->x) * (q->y - p1->y) );
-	if ( FP_IS_ZERO(side) )
+	if ( side == 0.0 )
 		return 0;
 	else
 		return signum(side);
@@ -144,7 +171,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	}
 
 	/* Length as proportion of circumference */
-	return circumference_A* (angle / (2*M_PI));
+	return circumference_A * (angle / (2*M_PI));
 }
 
 double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q)
@@ -164,6 +191,16 @@ double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, cons
 		
 	d = distance2d_pt_pt(Q, &C);
 	
+	/* Q is on the arc boundary */
+	if ( d == radius_A && side_Q == side_A2 )
+	{	
+		return 0;
+	}
+	
+	/* 
+	* Q is inside the arc boundary, so it's not on the side we 
+	* might think from examining only the end points
+	*/
 	if ( d < radius_A && side_Q == side_A2 )
 	{
 		side_Q *= -1;
