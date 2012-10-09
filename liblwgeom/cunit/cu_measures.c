@@ -20,6 +20,14 @@
 #include "measures.h"
 #include "lwtree.h"
 
+static LWGEOM* lwgeom_from_text(const char *str)
+{
+	LWGEOM_PARSER_RESULT r;
+	if( LW_FAILURE == lwgeom_parse_wkt(&r, (char*)str, LW_PARSER_CHECK_NONE) )
+		return NULL;
+	return r.geom;
+}
+
 static void do_test_mindistance2d_tolerance(char *in1, char *in2, double expected_res)
 {
 	LWGEOM *lw1;
@@ -584,6 +592,80 @@ test_lw_arc_length(void)
 	CU_ASSERT_DOUBLE_EQUAL(d, 3*M_PI/2, 0.000001);	
 }
 
+static void
+test_lw_dist2d_pt_ptarrayarc(void)
+{
+	/* lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl) */
+	DISTPTS dl;
+	int rv;
+	LWLINE *lwline;
+	POINT2D P;
+
+	/* Unit semi-circle above X axis */
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0)"));
+	
+	/* Point at origin */
+	P.x = P.y = 0;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Point above arc on Y axis */
+	P.y = 2;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Point 45 degrees off arc, 2 radii from center */
+	P.y = P.x = 2 * cos(M_PI/4);
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Four unit semi-circles surrounding the 2x2 box around origin */
+	lwline_free(lwline);
+	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 -1, -2 0, -1 1, 0 2, 1 1, 2 0, 1 -1, 0 -2, -1 -1)"));
+
+	/* Point at origin */
+	P.x = P.y = 0;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0), 0.000001);
+
+	/* Point on box edge */
+	P.x = -1; P.y = 0;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Point within a semicircle lobe */
+	P.x = -1.5; P.y = 0;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* Point outside a semicircle lobe */
+	P.x = -2.5; P.y = 0;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* Point outside a semicircle lobe */
+	P.y = -2.5; P.x = 0;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	/* Point outside a semicircle lobe */
+	P.y = 2; P.x = 1;
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_pt_ptarrayarc(&P, lwline->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, sqrt(2.0)-1.0, 0.000001);
+
+	/* Clean up */
+	lwline_free(lwline);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -598,6 +680,7 @@ CU_TestInfo measures_tests[] =
 	PG_TEST(test_lw_dist2d_seg_arc),
 	PG_TEST(test_lw_dist2d_arc_arc),
 	PG_TEST(test_lw_arc_length),
+	PG_TEST(test_lw_dist2d_pt_ptarrayarc),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo measures_suite = {"PostGIS Measures Suite",  NULL,  NULL, measures_tests};

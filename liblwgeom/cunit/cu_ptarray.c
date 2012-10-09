@@ -466,7 +466,7 @@ static void test_ptarray_contains_point()
 
 static void test_ptarray_contains_point_arc() 
 {
-/* int ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt) */
+	/* int ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt) */
 
 	LWLINE *lwline;
 	POINTARRAY *pa;

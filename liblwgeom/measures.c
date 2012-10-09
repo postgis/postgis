@@ -695,10 +695,9 @@ lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
 }
 
 /**
- * search all the segments of pointarray to see which one is closest to p1
- * Returns minimum distance between point and pointarray
- */
-#if 0
+* Search all the arcs of pointarray to see which one is closest to p1
+* Returns minimum distance between point and arc pointarray.
+*/
 int
 lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl)
 {
@@ -711,29 +710,28 @@ lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl)
 	LWDEBUG(2, "lw_dist2d_pt_ptarrayarc is called");
 
 	A1 = getPoint2d_cp(pa, 0);
-	A2 = getPoint2d_cp(pa, 1);
 
-	if ( !lw_dist2d_pt_pt(p, A1, dl) ) 
+	if ( ! lw_dist2d_pt_pt(p, A1, dl) ) 
 		return LW_FALSE;
 
-	for ( t=2; t<pa->npoints; t++ )
+	for ( t=1; t<pa->npoints; t += 2 )
 	{
-		dl->twisted=twist;
-		A3 = getPoint2d_cp(pa, t);
+		dl->twisted = twist;
+		A2 = getPoint2d_cp(pa, t);
+		A3 = getPoint2d_cp(pa, t+1);
 		
 		if ( lw_dist2d_pt_arc(p, A1, A2, A3, dl) == LW_FALSE ) 
 			return LW_FALSE;
 
-		if ( dl->distance<=dl->tolerance && dl->mode == DIST_MIN ) 
+		if ( dl->distance <= dl->tolerance && dl->mode == DIST_MIN ) 
 			return LW_TRUE; /*just a check if  the answer is already given*/
 			
-		A1 = A2;
-		A2 = A3;
+		A1 = A3;
 	}
 
 	return LW_TRUE;
 }
-#endif
+
 
 /**
  * Brute force.
