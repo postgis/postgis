@@ -120,7 +120,7 @@ void postgis_valid_typmod(const GSERIALIZED *gser, int32_t typmod)
 	POSTGIS_DEBUGF(3, "Got geom(type = %d, srid = %d, hasz = %d, hasm = %d)", geom_type, geom_srid, geom_z, geom_m);
 	POSTGIS_DEBUGF(3, "Got typmod(type = %d, srid = %d, hasz = %d, hasm = %d)", typmod_type, typmod_srid, typmod_z, typmod_m);
 
-	/* Typmod has a preference for SRID and geom has a non-default SRID? They had better match. */
+	/* Typmod has a preference for SRID? Geometry SRID had better match. */
 	if ( typmod_srid > 0 && typmod_srid != geom_srid )
 	{
 		ereport(ERROR, (
