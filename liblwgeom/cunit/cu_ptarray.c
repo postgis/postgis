@@ -472,7 +472,7 @@ static void test_ptarray_contains_point_arc()
 	POINTARRAY *pa;
 	POINT2D pt;
 	int rv;
-	
+
 	/* Collection of semi-circles surrounding unit square */
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 -1, -2 0, -1 1, 0 2, 1 1, 2 0, 1 -1, 0 -2, -1 -1)"));
 	pa = lwline->points;
@@ -509,18 +509,25 @@ static void test_ptarray_contains_point_arc()
 
 	/* Two-edge ring made up of semi-circles (really, a circle) */
 	lwfree(lwline);
+
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0, 0 -1, -1 0)"));
 	pa = lwline->points;
-	
+
 	/* Point outside */
 	pt.x = -1.5;
 	pt.y = 1.5;
 	rv = ptarray_contains_point_arc(pa, &pt);
 	CU_ASSERT_EQUAL(rv, -1);	
 
-	/* Point inside */
-	pt.x = -0.2;
-	pt.y = 0.2;
+	/* Point inside at middle */
+	pt.x = 0;
+	pt.y = 0;
+	rv = ptarray_contains_point_arc(pa, &pt);
+	CU_ASSERT_EQUAL(rv, 1);	
+
+	/* Point inside offset from middle */
+	pt.x = 0.01;
+	pt.y = 0.01;
 	rv = ptarray_contains_point_arc(pa, &pt);
 	CU_ASSERT_EQUAL(rv, 1);	
 
@@ -559,7 +566,8 @@ static void test_ptarray_contains_point_arc()
 	pa = lwline->points;
 	cu_error_msg_reset();
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_STRING_EQUAL("ptarray_contains_point_arc called on unclosed ring", cu_error_msg);
+	//printf("%s\n", cu_error_msg);
+	CU_ASSERT_STRING_EQUAL("ptarray_contains_point_arc called with even number of points", cu_error_msg);
 
 	/* Unclosed ring */
 	lwfree(lwline);
@@ -571,6 +579,7 @@ static void test_ptarray_contains_point_arc()
 
 	lwline_free(lwline);
 }
+
 /*
 ** Used by the test harness to register the tests in this file.
 */

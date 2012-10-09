@@ -665,7 +665,6 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 }
 
 /**
-
  * search all the segments of pointarray to see which one is closest to p1
  * Returns minimum distance between point and pointarray
  */
@@ -694,6 +693,47 @@ lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa,DISTPTS *dl)
 
 	return LW_TRUE;
 }
+
+/**
+ * search all the segments of pointarray to see which one is closest to p1
+ * Returns minimum distance between point and pointarray
+ */
+#if 0
+int
+lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl)
+{
+	int t;
+	const POINT2D *A1;
+	const POINT2D *A2;
+	const POINT2D *A3;
+	int twist = dl->twisted;
+
+	LWDEBUG(2, "lw_dist2d_pt_ptarrayarc is called");
+
+	A1 = getPoint2d_cp(pa, 0);
+	A2 = getPoint2d_cp(pa, 1);
+
+	if ( !lw_dist2d_pt_pt(p, A1, dl) ) 
+		return LW_FALSE;
+
+	for ( t=2; t<pa->npoints; t++ )
+	{
+		dl->twisted=twist;
+		A3 = getPoint2d_cp(pa, t);
+		
+		if ( lw_dist2d_pt_arc(p, A1, A2, A3, dl) == LW_FALSE ) 
+			return LW_FALSE;
+
+		if ( dl->distance<=dl->tolerance && dl->mode == DIST_MIN ) 
+			return LW_TRUE; /*just a check if  the answer is already given*/
+			
+		A1 = A2;
+		A2 = A3;
+	}
+
+	return LW_TRUE;
+}
+#endif
 
 /**
  * Brute force.

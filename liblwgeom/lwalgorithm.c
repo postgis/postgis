@@ -174,7 +174,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	return circumference_A * (angle / (2*M_PI));
 }
 
-double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q)
+int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q)
 {
 	POINT2D C;
 	double radius_A;
@@ -195,6 +195,12 @@ double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, cons
 	if ( d == radius_A && side_Q == side_A2 )
 	{	
 		return 0;
+	}
+	
+	/* Q on A1-A3 line, so its on opposite side to A2 */
+	if ( side_Q == 0 )
+	{
+		return -1 * side_A2;
 	}
 	
 	/* 

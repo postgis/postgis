@@ -793,11 +793,17 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 
 	/* Check for not an arc ring (always have odd # of points) */
 	if ( (pa->npoints % 2) == 0 )
+	{
 		lwerror("ptarray_contains_point_arc called with even number of points");
+		return -1;
+	}
 
 	/* Check for not an arc ring (always have >= 3 points) */
 	if ( pa->npoints < 3 )
+	{
 		lwerror("ptarray_contains_point_arc called too-short pointarray");
+		return -1;
+	}
 
 	/* Check for unclosed case */
 	seg1 = getPoint2d_cp(pa, 0);
@@ -805,6 +811,7 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 	if ( ! p2d_same(seg1, seg3) )
 	{
 		lwerror("ptarray_contains_point_arc called on unclosed ring");
+		return -1;
 	} 
 	/* OK, it's closed. Is it just one circle? */
 	else if ( pa->npoints == 3 )
@@ -833,10 +840,11 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 	}
 
 	/* Start on the ring */
-	seg2 = getPoint2d_cp(pa, 1);
-	for ( i=2; i < pa->npoints; i++ )
+	seg1 = getPoint2d_cp(pa, 0);
+	for ( i=1; i < pa->npoints; i += 2 )
 	{
-		seg3 = getPoint2d_cp(pa, i);
+		seg2 = getPoint2d_cp(pa, i);
+		seg3 = getPoint2d_cp(pa, i+1);
 		
 		/* Catch an easy boundary case */
 		if( p2d_same(seg3, pt) )
@@ -845,18 +853,15 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 		/* Skip arcs that have no size */
 		if ( lw_arc_is_pt(seg1, seg2, seg3) )
 		{
-			seg1 = seg2;
-			seg2 = seg3;
+			seg1 = seg3;
 			continue;
 		}
-		
 		
 		/* Only test segments in our vertical range */
 		lw_arc_calculate_gbox_cartesian_2d(seg1, seg2, seg3, &gbox);
 		if ( pt->y > gbox.ymax || pt->y < gbox.ymin ) 
 		{
-			seg1 = seg2;
-			seg2 = seg3;
+			seg1 = seg3;
 			continue;
 		}
 		
@@ -880,8 +885,30 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 			wn--;
 		}
 		
-		seg1 = seg2;
-		seg2 = seg3;
+		/* Inside the arc! */
+		if ( pt->x <= gbox.xmax && pt->x >= gbox.xmin ) 
+		{
+			POINT2D C;
+			double radius = lw_arc_center(seg1, seg2, seg3, &C);
+			double d = distance2d_pt_pt(pt, &C);
+
+			/* On the boundary! */
+			if ( d == radius )
+				return 0;
+			
+			/* Within the arc! */
+			if ( d  < radius )
+			{
+				/* Left side, increment winding number */
+				if ( side < 0 )
+					wn++;
+				/* Right side, decrement winding number */
+				if ( side > 0 ) 
+					wn--;
+			}
+		}
+
+		seg1 = seg3;
 	}
 
 	/* Outside */

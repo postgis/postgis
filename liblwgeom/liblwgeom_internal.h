@@ -353,6 +353,7 @@ int lwtin_is_closed(const LWTIN *tin);
 * Returns -1 for left and 1 for right and 0 for co-linearity
 */
 int lw_segment_side(const POINT2D *p1, const POINT2D *p2, const POINT2D *q);
+int lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q);
 int lw_arc_calculate_gbox_cartesian_2d(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, GBOX *gbox);
 double lw_arc_center(const POINT2D *p1, const POINT2D *p2, const POINT2D *p3, POINT2D *result);
 int lw_pt_in_seg(const POINT2D *P, const POINT2D *A1, const POINT2D *A2);
@@ -360,7 +361,6 @@ int lw_pt_in_arc(const POINT2D *P, const POINT2D *A1, const POINT2D *A2, const P
 int lw_arc_is_pt(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
 double lw_seg_length(const POINT2D *A1, const POINT2D *A2);
 double lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3);
-double lw_arc_side(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3, const POINT2D *Q);
 int pt_in_ring_2d(const POINT2D *p, const POINTARRAY *ring);
 int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt);
 int ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt);
