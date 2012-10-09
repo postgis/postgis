@@ -3593,6 +3593,33 @@ CREATE CAST (raster AS geometry)
 CREATE CAST (raster AS bytea)
     WITH FUNCTION bytea(raster) AS ASSIGNMENT;
 
+-------------------------------------------------------------------
+-- HASH operators
+-------------------------------------------------------------------
+
+-- call PostgreSQL's hashvarlena() function
+CREATE OR REPLACE FUNCTION raster_hash(raster)
+	RETURNS integer
+	AS 'hashvarlena'
+	LANGUAGE 'internal' IMMUTABLE STRICT;
+
+-- use raster_hash() to compare
+CREATE OR REPLACE FUNCTION raster_eq(raster, raster)
+	RETURNS bool
+	AS $$ SELECT raster_hash($1) = raster_hash($2) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+CREATE OPERATOR = (
+	LEFTARG = raster, RIGHTARG = raster, PROCEDURE = raster_eq,
+	COMMUTATOR = '=',
+	RESTRICT = eqsel, JOIN = eqjoinsel
+);
+
+CREATE OPERATOR CLASS hash_raster_ops
+	DEFAULT FOR TYPE raster USING hash AS
+	OPERATOR	1	= ,
+	FUNCTION	1	raster_hash (raster);
+
 ------------------------------------------------------------------------------
 --  GiST index OPERATOR support functions
 ------------------------------------------------------------------------------
