@@ -14088,7 +14088,6 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 		do {
 			int numbands;
 
-
 			if (rt_raster_is_empty(raster))
 				break;
 
