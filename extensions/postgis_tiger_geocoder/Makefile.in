@@ -1,8 +1,8 @@
 include ../upgradeable_versions.mk
 
 EXTENSION    = postgis_tiger_geocoder
-EXTVERSION    = @POSTGIS_LIB_VERSION@
-MINORVERSION  = 2011.@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+EXTVERSION    = 2.1.0SVN
+MINORVERSION  = 2011.2.1
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
@@ -19,7 +19,7 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
-PG_CONFIG    = @PGCONFIG@
+PG_CONFIG    = /c/projects/pg/pg91/bin/pg_config
 
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
@@ -38,7 +38,7 @@ sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_object
 #strip BEGIN/COMMIT since these are not allowed in extensions
 #strip CREATE SCHEMA since we force extension 
 # to create schema by setting schema to tiger_geocoder in control
-sql/tiger_geocoder.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
+sql_bits/tiger_geocoder.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
@@ -54,7 +54,7 @@ sql/tiger_geocoder.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/set_se
 	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract_place_exact.sql \
 	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract_place_fuzzy.sql \
 	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract.sql \
-	../../extras/tiger_geocoder/tiger_2011/normalize/../../extras/tiger_geocoder/tiger_2011/normalize_address.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/normalize_address.sql \
 	../../extras/tiger_geocoder/tiger_2011/normalize/pprint_addy.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/other_helper_functions.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/rate_attributes.sql \
@@ -65,7 +65,7 @@ sql/tiger_geocoder.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/set_se
 	../../extras/tiger_geocoder/tiger_2011/geocode/geocode_intersection.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/geocode.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/reverse_geocode.sql \
-	../../extras/tiger_geocoder/tiger_2011/geocode/census_tracts_functions.sql 
+	../../extras/tiger_geocoder/tiger_2011/geocode/census_tracts_functions.sql
 	cat $^ > $@
 sql_bits/tiger_geocoder.sql: sql_bits/tiger_geocoder.sql.in
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
