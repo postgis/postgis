@@ -1179,7 +1179,7 @@ CREATE TABLE addrfeat
   CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'LINESTRING'::text OR the_geom IS NULL),
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269)
 );
-CREATE INDEX idx_addrfeat_geom_gist ON addrfeat USING gist(geom );
+CREATE INDEX idx_addrfeat_geom_gist ON addrfeat USING gist(the_geom );
 CREATE INDEX idx_addrfeat_tlid ON addrfeat USING btree(tlid);
 CREATE INDEX idx_addrfeat_zipl ON addrfeat USING btree(zipl);
 CREATE INDEX idx_addrfeat_zipr ON addrfeat USING btree(zipr);
