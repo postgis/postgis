@@ -2011,6 +2011,9 @@ FROM dummy_rast;
 					Returns the upper left corner as geometric X and Y (longitude and latitude) given a column and row.  Returned X and Y are in geometric units of the georeferenced raster.
 					Numbering of column and row starts at 1 but if either parameter is passed a zero, a negative number or a number greater than the respective dimension of the raster, it will return coordinates outside of the raster assuming the raster's grid is applicable outside the raster's bounds.
 				</para>
+
+				<para>Availability: 2.1.0</para>
+
 			</refsection>
 				
 			<refsection>
@@ -2559,6 +2562,9 @@ rastwidth
 					This function works regardless of whether or not the geometric X and Y or point geometry is outside the extent of the raster.
 					Geometric X and Y must be expressed in the spatial reference coordinate system of the raster.
 				</para>
+
+				<para>Availability: 2.1.0</para>
+
 			</refsection>
 				
 			<refsection>
@@ -2732,6 +2738,8 @@ FROM dummy_rast;
 				<title>Description</title>
 				
 				<para>Returns true if the raster is empty (width = 0 and height = 0). Otherwise, returns false.</para>
+
+				<para>Availability: 2.0.0</para>
 			</refsection>
 				
 			<refsection>
@@ -3162,6 +3170,8 @@ rid | hb1 | hb2 | hb4 | numbands
 				
 				<para>Returns the polygon geometry that bounds the pixel for a particular row and column.</para>
 
+				<para>Availability: 2.0.0</para>
+
 			</refsection>
 				
 			<refsection>
@@ -3224,6 +3234,8 @@ WHERE rid=2;
 					</para>
 				</note>
 
+				<para>Availability: 2.0.0</para>
+				<para>Enhanced: 2.1.0 exclude_nodata_value optional argument was added.</para>
 			</refsection>
 				
 			<refsection>
@@ -3283,6 +3295,7 @@ FROM (SELECT ST_PixelAsPolygons(
 			<refsection>
 				<title>Description</title>
 				<para>Returns a point geometry of the pixel's upper-left corner.</para>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
@@ -3333,6 +3346,7 @@ SELECT ST_AsText(ST_PixelAsPoint(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 				<para>
 					Returns a point geometry for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The coordinates of the point geometry are of the pixel's upper-left corner.
 				</para>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
@@ -3456,6 +3470,7 @@ SELECT ST_AsText(ST_PixelAsCentroid(rast, 1, 1)) FROM dummy_rast WHERE rid = 1;
 				<para>
 					Returns the centroid (point geometry) for each pixel of a raster band along with the value, the X and the Y raster coordinates of each pixel.  The point geometry is the centroid of the area represented by a pixel.
 				</para>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
@@ -4179,6 +4194,7 @@ GROUP BY (foo.geomval).val;
 				<para>
 					Variant 4 is the same as Variant 3 with the exception that it assumes that the first band's pixels of <varname>rast</varname> will be set.
 				</para>
+
 				<para>Availability: 2.1.0</para>
 
 			</refsection>
@@ -4634,9 +4650,12 @@ ORDER BY 1, 2;
 
 			<refsection>
 				<title>Description</title>
+
 				<para>
 					Get the columnx, rowy coordinates of the pixel whose value equals the search value. If no band is specified, then band 1 is assumed.
 				</para>
+
+				<para>Availability: 2.1.0</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -7645,7 +7664,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 				</para>
 
 				<para>
-					Variants 4 operate upon two rasters with one band per raster. See example Variant 4.
+					Variant 4 operate upon two rasters with one band per raster. See example Variant 4.
 				</para>
 
 <!-- enable once these functions are deprecated
