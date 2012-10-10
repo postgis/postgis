@@ -3405,6 +3405,7 @@ SELECT x, y, val, ST_AsText(geom) FROM (SELECT (ST_PixelAsPoints(rast, 1)).* FRO
 			<refsection>
 				<title>Description</title>
 				<para>Returns the centroid (point geometry) of the area represented by a pixel.</para>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
@@ -3912,6 +3913,7 @@ FROM (
 						The 2-D array output can be passed along to any of the raster processing builtin functions, e.g. ST_Min4ma, ST_Sum4ma, ST_Mean4ma.
 					</para>
 				</note>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
@@ -4177,6 +4179,7 @@ GROUP BY (foo.geomval).val;
 				<para>
 					Variant 4 is the same as Variant 3 with the exception that it assumes that the first band's pixels of <varname>rast</varname> will be set.
 				</para>
+				<para>Availability: 2.1.0</para>
 
 			</refsection>
 
