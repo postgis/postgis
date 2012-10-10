@@ -30,6 +30,7 @@ PostGIS 2.1.0
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
   - ST_PixelOfValue (Bborie Park / UC Davis)
   - Casts to/from PostgreSQL geotypes (point/path/polygon).
+  - #2030, n-raster (and n-band) ST_MapAlgebra (Bborie Park / UC Davis)
 
 * Enhancements *
   - #823, tiger geocoder: Make loader_generate_script download portion less greedy

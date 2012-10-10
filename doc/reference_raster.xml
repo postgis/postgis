@@ -142,6 +142,56 @@ VALUES (1,
 			</refsection>
 		</refentry>
 
+		<refentry id="rastbandarg">
+			<refnamediv>
+				<refname>rastbandarg</refname>
+				<refpurpose>A composite type for use when needing to express a raster and a band index of that raster.</refpurpose>
+			</refnamediv>
+
+			<refsection>
+				<title>Description</title>
+				<para>
+					A composite type for use when needing to express a raster and a band index of that raster.
+
+					<variablelist>
+
+						<varlistentry>
+							<term>
+								<parameter>rast </parameter>
+								<type>raster</type>
+							</term>
+							<listitem>
+								<para>
+			        		The raster in question/
+								</para>
+							</listitem>
+						</varlistentry>
+
+						<varlistentry>
+							<term>
+								<parameter>nband </parameter>
+								<type>integer</type>
+							</term>
+							<listitem>
+								<para>
+									1-based value indicating the band of raster
+								</para>
+							</listitem>
+						</varlistentry>
+
+					</variablelist>
+
+				</para>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />
+				</para>
+			</refsection>
+		</refentry>
+
 		<refentry id="raster">
             <refnamediv>
                 <refname>raster</refname>
@@ -7460,6 +7510,299 @@ WHERE A.rid =2 ) As foo;
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_MapAlgebra">
+			<refnamediv>
+				<refname>ST_MapAlgebra</refname>
+				<refpurpose>
+					Returns a one-band raster given one or more input rasters, band indexes and one user-specified callback function.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+						<paramdef><type>rastbandarg[] </type> <parameter>rastbandargset</parameter></paramdef>
+						<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+						<paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>distancex=0</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>distancey=0</parameter></paramdef>
+						<paramdef choice="opt"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer[] </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>extenttype=FIRST</parameter></paramdef>
+						<paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>distancex=0</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>distancey=0</parameter></paramdef>
+						<paramdef choice="opt"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>extenttype=FIRST</parameter></paramdef>
+						<paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>distancex=0</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>distancey=0</parameter></paramdef>
+						<paramdef choice="opt"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband1</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband2</parameter></paramdef>
+						<paramdef><type>regprocedure </type> <parameter>callbackfunc</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+						<paramdef choice="opt"><type>raster </type> <parameter>customextent=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>distancex=0</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>distancey=0</parameter></paramdef>
+						<paramdef choice="opt"><type>text[] </type> <parameter>VARIADIC userargs=NULL</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Returns a one-band raster given one or more input rasters, band indexes and one user-specified callback function.
+				</para>
+
+				<para>
+					The <varname>tworastuserfunc</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
+					<programlisting>
+CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], position integer[][], VARIADIC userargs text[])
+	RETURNS double precision
+	AS $$
+	BEGIN
+		RETURN 0;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+					</programlisting>
+
+					The <varname>callbackfunc</varname> must have three arguments: a 3-dimension double precision array, a 2-dimension double precision array and a variadic 1-dimension text array. The first argument <varname>value</varname> is the set of values (as double precision) from all input rasters. The three dimensions (where indexes are 1-based) are: raster #, row y, column x. The second argument <varname>position</varname> is the set of pixel positions from the output raster and input rasters. The outer dimension (where indexes are 0-based) is the raster #.  The position at outer dimension index 0 is the output raster's pixel position.  For each outer dimension, there are two elements in the inner dimension for X and Y.  The third argument <varname>userargs</varname> is for passing through any user-specified arguments.
+				</para> 
+
+				<para>
+					Passing a <type>regprocedure</type> argument to a SQL function requires the full function signature to be passed, then cast to a <type>regprocedure</type> type. To pass the above example PL/pgSQL function as an argument, the SQL for the argument is:
+
+					<programlisting>
+'sample_callbackfunc(double precision[], integer[], text[])'::regprocedure
+					</programlisting>
+
+					Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.
+				</para>
+
+				<para>
+					The third argument to the <varname>callbackfunc</varname> is a <type>variadic text</type> array. All trailing text arguments are passed through to the specified <varname>callbackfunc</varname>, and are contained in the <varname>userargs</varname> argument.
+				</para>
+
+				<note>
+					<para>
+						For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/static/xfunc-sql.html">Query Language (SQL) Functions</ulink>.
+					</para>
+				</note>
+
+				<note>
+					<para>
+						The <type>text[]</type> argument to the <varname>callbackfunc</varname> is required, regardless of whether you choose to pass any arguments to the callback function for processing or not.
+					</para>
+				</note>
+
+				<para>
+					If <varname>pixeltype</varname> is passed in, the one band of the new raster will be of that pixeltype. If pixeltype is passed NULL or left out, the new raster band will have the same pixeltype as the specified band of the first raster (for extent types: INTERSECTION, UNION, FIRST, CUSTOM) or the specified band of the appropriate raster (for extent types: SECOND, LAST).  If in doubt, always specify <varname>pixeltype</varname>.
+				</para>
+
+				<para>
+					Possible values for <varname>extenttype</varname> are: INTERSECTION (default), UNION, FIRST (default for one raster variants), SECOND, LAST, CUSTOM. If <varname>extentype</varname> is CUSTOM, a raster must be provided for <varname>customextent</varname>. See example 4 of Variant 1.
+				</para>
+
+				<para>
+					Variant 1 accepts an array of <varname>rastbandarg</varname> allowing the use of a map algebra operation on many rasters and/or many bands. See example Variant 1.
+				</para>
+
+				<para>
+					Variants 2 and 3 operate upon one or more bands of one raster. See example Variant 2 and 3.
+				</para>
+
+				<para>
+					Variants 4 operate upon two rasters with one band per raster. See example Variant 4.
+				</para>
+
+<!-- enable once these functions are deprecated
+				<warning>
+					<para>
+						The functions <xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_MapAlgebraExpr2" />, <xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_MapAlgebraFct2" /> and <xref linkend="RT_ST_MapAlgebraFctNgb" /> are deprecated as of PostGIS 2.1.0 and use of these functions are strongly discouraged. These functions will be removed from PostGIS as of 2.2.0.
+					</para>
+				</warning>
+-->
+
+				<para>Availability: 2.1.0</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 1</title>
+
+				<programlisting>
+-- one raster, one band
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast
+)
+SELECT
+	ST_MapAlgebra(
+		ARRAY[ROW(rast, 1)]::rastbandarg[],
+		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
+	) AS rast
+FROM foo
+				</programlisting>
+
+				<programlisting>
+-- one raster, several bands
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast
+)
+SELECT
+	ST_MapAlgebra(
+		ARRAY[ROW(rast, 3), ROW(rast, 1), ROW(rast, 3), ROW(rast, 2)]::rastbandarg[],
+		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
+	) AS rast
+FROM foo
+				</programlisting>
+
+				<programlisting>
+-- several rasters, several bands
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
+	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
+)
+SELECT
+	ST_MapAlgebra(
+		ARRAY[ROW(t1.rast, 3), ROW(t2.rast, 1), ROW(t2.rast, 3), ROW(t1.rast, 2)]::rastbandarg[],
+		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
+	) AS rast
+FROM foo t1
+CROSS JOIN foo t2
+WHERE t1.rid = 1
+	AND t2.rid = 2
+				</programlisting>
+
+				<programlisting>
+-- complete example of tiles of a coverage with neighborhood
+WITH foo AS (
+	SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast UNION ALL
+	SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, 0, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0) AS rast UNION ALL
+	SELECT 2, ST_AddBand(ST_MakeEmptyRaster(2, 2, 4, 0, 1, -1, 0, 0, 0), 1, '16BUI', 3, 0) AS rast UNION ALL
+
+	SELECT 3, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, -2, 1, -1, 0, 0, 0), 1, '16BUI', 10, 0) AS rast UNION ALL
+	SELECT 4, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, -2, 1, -1, 0, 0, 0), 1, '16BUI', 20, 0) AS rast UNION ALL
+	SELECT 5, ST_AddBand(ST_MakeEmptyRaster(2, 2, 4, -2, 1, -1, 0, 0, 0), 1, '16BUI', 30, 0) AS rast UNION ALL
+
+	SELECT 6, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, -4, 1, -1, 0, 0, 0), 1, '16BUI', 100, 0) AS rast UNION ALL
+	SELECT 7, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, -4, 1, -1, 0, 0, 0), 1, '16BUI', 200, 0) AS rast UNION ALL
+	SELECT 8, ST_AddBand(ST_MakeEmptyRaster(2, 2, 4, -4, 1, -1, 0, 0, 0), 1, '16BUI', 300, 0) AS rast
+)
+SELECT
+	t1.rid,
+	ST_MapAlgebra(
+		ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
+		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure,
+		'32BUI',
+		'CUSTOM', t1.rast,
+		1, 1
+	) AS rast
+FROM raster_nmapalgebra_in t1
+CROSS JOIN raster_nmapalgebra_in t2
+WHERE t1.rid = 4
+	AND t2.rid BETWEEN 0 AND 8
+	AND ST_Intersects(t1.rast, t2.rast)
+GROUP BY t1.rid, t1.rast
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variants 2 and 3</title>
+
+				<programlisting>
+-- one raster, several bands
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast
+)
+SELECT
+	ST_MapAlgebra(
+		rast, ARRAY[3, 1, 3, 2]::integer[],
+		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
+	) AS rast
+FROM foo
+				</programlisting>
+
+				<programlisting>
+-- one raster, one band
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast
+)
+SELECT
+	ST_MapAlgebra(
+		rast, 2,
+		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
+	) AS rast
+FROM foo
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 4</title>
+
+				<programlisting>
+-- two rasters, two bands
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
+	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
+)
+SELECT
+	ST_MapAlgebra(
+		t1.rast, 2,
+		t2.rast, 1,
+		'sample_callbackfunc(double precision[], int[], text[])'::regprocedure
+	) AS rast
+FROM foo t1
+CROSS JOIN foo t2
+WHERE t1.rid = 1
+	AND t2.rid = 2
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+					<xref linkend="rastbandarg" />, 
+					<xref linkend="RT_ST_Union" />
+				</para>
+			</refsection>
+
+
+		</refentry>
+
 		<refentry id="RT_ST_MapAlgebraExpr">
 			<refnamediv>
 				<refname>ST_MapAlgebraExpr</refname>

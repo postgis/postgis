@@ -77,6 +77,15 @@ CREATE OR REPLACE FUNCTION postgis_gdal_version()
     LANGUAGE 'c' IMMUTABLE;
 
 -----------------------------------------------------------------------
+-- generic composite type of a raster and its band index
+-----------------------------------------------------------------------
+
+CREATE TYPE rastbandarg AS (
+	rast raster,
+	nband integer
+);
+
+-----------------------------------------------------------------------
 -- Raster Accessors
 -----------------------------------------------------------------------
 
@@ -2751,6 +2760,95 @@ CREATE OR REPLACE FUNCTION st_mindist4ma(matrix double precision[], nodatamode t
 		RETURN d;
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- n-Raster ST_MapAlgebra
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_mapalgebra(
+	rastbandargset rastbandarg[],
+	callbackfunc regprocedure,
+	pixeltype text DEFAULT NULL,
+	distancex integer DEFAULT 0, distancey integer DEFAULT 0,
+	extenttype text DEFAULT 'INTERSECTION', customextent raster DEFAULT NULL,
+	VARIADIC userargs text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_nMapAlgebra'
+	LANGUAGE 'c' STABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rastbandargset rastbandarg[],
+	callbackfunc regprocedure,
+	pixeltype text DEFAULT NULL,
+	extenttype text DEFAULT 'INTERSECTION', customextent raster DEFAULT NULL,
+	distancex integer DEFAULT 0, distancey integer DEFAULT 0,
+	VARIADIC userargs text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT _ST_MapAlgebra($1, $2, $3, $6, $7, $4, $5, VARIADIC $8) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rast raster, nband int[],
+	callbackfunc regprocedure,
+	pixeltype text DEFAULT NULL,
+	extenttype text DEFAULT 'FIRST', customextent raster DEFAULT NULL,
+	distancex integer DEFAULT 0, distancey integer DEFAULT 0,
+	VARIADIC userargs text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		x int;
+		argset rastbandarg[];
+	BEGIN
+		IF $2 IS NULL OR array_ndims($2) < 1 OR array_length($2, 1) < 1 THEN
+			RAISE EXCEPTION 'Populated 1D array must be provided for nband';
+			RETURN NULL;
+		END IF;
+
+		FOR x IN array_lower($2, 1)..array_upper($2, 1) LOOP
+			IF $2[x] IS NULL THEN
+				CONTINUE;
+			END IF;
+
+			argset := argset || ROW($1, $2[x])::rastbandarg;
+		END LOOP;
+
+		IF array_length(argset, 1) < 1 THEN
+			RAISE EXCEPTION 'Populated 1D array must be provided for nband';
+			RETURN NULL;
+		END IF;
+
+		RETURN _ST_MapAlgebra(argset, $3, $4, $7, $8, $5, $6, VARIADIC $9);
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rast raster, nband int,
+	callbackfunc regprocedure,
+	pixeltype text DEFAULT NULL,
+	extenttype text DEFAULT 'FIRST', customextent raster DEFAULT NULL,
+	distancex integer DEFAULT 0, distancey integer DEFAULT 0,
+	VARIADIC userargs text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], $3, $4, $7, $8, $5, $6, VARIADIC $9) $$
+	LANGUAGE 'sql' STABLE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rast1 raster, nband1 int,
+	rast2 raster, nband2 int,
+	callbackfunc regprocedure,
+	pixeltype text DEFAULT NULL,
+	extenttype text DEFAULT 'INTERSECTION', customextent raster DEFAULT NULL,
+	distancex integer DEFAULT 0, distancey integer DEFAULT 0,
+	VARIADIC userargs text[] DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8, VARIADIC $11) $$
+	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster

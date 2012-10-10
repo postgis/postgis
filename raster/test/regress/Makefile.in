@@ -98,6 +98,7 @@ TEST_MAPALGEBRA = \
 	rt_mapalgebrafctngb_userfunc \
 	rt_intersection \
 	rt_clip \
+	rt_mapalgebra \
 	rt_union \
 	rt_invdistweight4ma
 

@@ -7857,7 +7857,36 @@ static void testRasterIterator() {
 
 	rtn = rt_raster_iterator(
 		itrset, 1,
-		ET_LAST, NULL,
+		ET_INTERSECTION, NULL,
+		PT_32BUI,
+		1, 0,
+		0, 0,
+		userargs,
+		testRasterIterator1_callback,
+		&noerr
+	);
+	CHECK(noerr);
+	CHECK((rt_raster_get_width(rtn) == 5));
+	CHECK((rt_raster_get_height(rtn) == 5));
+	CHECK((rt_raster_get_x_offset(rtn) == 0));
+	CHECK((rt_raster_get_y_offset(rtn) == 0));
+	CHECK((rt_raster_get_x_scale(rtn) == 1));
+	CHECK((rt_raster_get_y_scale(rtn) == -1));
+	CHECK((rt_raster_get_x_skew(rtn) == 0));
+	CHECK((rt_raster_get_y_skew(rtn) == 0));
+	CHECK((rt_raster_get_srid(rtn) == 0));
+
+	if (rtn != NULL) deepRelease(rtn);
+	rtn = NULL;
+
+	/* 1 raster, 0 distance, FIRST or SECOND or LAST or UNION or INTERSECTION */
+	userargs->rasters = 1;
+	userargs->rows = 1;
+	userargs->columns = 1;
+
+	rtn = rt_raster_iterator(
+		itrset, 1,
+		ET_UNION, NULL,
 		PT_32BUI,
 		1, 0,
 		0, 0,

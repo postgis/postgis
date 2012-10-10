@@ -13461,6 +13461,15 @@ rt_raster_iterator(
 
 					return NULL;
 				}
+				else if (rt_raster_is_empty(rast)) {
+					rterror("rt_raster_iterator: Computed raster for %s extent is empty",
+						extenttype == ET_UNION ? "union" : "intersection"
+					);
+
+					_rti_param_destroy(_param);
+
+					return NULL;
+				}
 				rtnrast = rast;
 				rast = NULL;
 			}
