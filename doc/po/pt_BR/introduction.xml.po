@@ -469,6 +469,11 @@ msgid ""
 "PostGIS 2.0.0 and a final one planned for release that will be available on "
 "PostgreSQL stack builder."
 msgstr ""
+"<ulink url=\"http://www.pledgebank.com/postgis64windows\"><emphasis role="
+"\"bold\">postgis64windows</emphasis></ulink> - 20 patrocinadores, contribuiram cada um "
+"com USD $100 para custear o trabalho necessário para um lançamento do PostGIS 64-bits para Windows. "
+"Aconteceu e agora temos uma release beta 64bits disponível para o PostGIS 2.0.0 e uma versão final planejada "
+"que será disponibilizada junto com o stack builder."
 
 #. Tag: term
 #: introduction.xml:276
@@ -484,7 +489,7 @@ msgid ""
 "operations library, and the algorithmic work of Martin Davis in making it "
 "all work, ongoing maintenance and support of Mateusz Loskot, Sandro Santilli "
 "(strk), Paul Ramsey and others."
-msgstr ""
+msgstr "A <ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink>, biblioteca geométrica e o trabalho em algoritmos de Martin Davis, manutenção autal de Mateusz Loskot, Sandro Santilli (strk), Paul Ramsey e outros."
 
 #. Tag: para
 #: introduction.xml:284
@@ -494,7 +499,7 @@ msgid ""
 "Abstraction Library, by Frank Warmerdam and others is used to power much of "
 "the raster functionality introduced in PostGIS 2.0.0. In kind, improvements "
 "needed in GDAL to support PostGIS are contributed back to the GDAL project."
-msgstr ""
+msgstr "A <ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink>, Geospatial Data Abstraction Library (Biblioteca de abstração de dados geoespaciais), por Frank Wamerdam e outros é utilizada para rodar muitas das funcionalidades raster introduzidas na versão 2.0.0. Em tempo, as melhorias necessárias na GDAL para suportar o PostGIS tem sido contribuídas de volta para o projeto."
 
 #. Tag: para
 #: introduction.xml:289
@@ -503,7 +508,7 @@ msgid ""
 "The <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> cartographic "
 "projection library, and the work of Gerald Evenden and Frank Warmerdam in "
 "creating and maintaining it."
-msgstr ""
+msgstr "A biblioteca <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> e o trabalho de Gerald Evenden e Frank Wamerdam em sua criação e manutenção."
 
 #. Tag: para
 #: introduction.xml:293
@@ -514,13 +519,16 @@ msgid ""
 "flexibility of PostGIS would not be possible without the extensibility, "
 "great query planner, GIST index, and plethora of SQL features provided by "
 "PostgreSQL."
-msgstr ""
+msgstr "Por último, mas não menos importante, o ulink url=\"http://www.postgresql.org\">PostgreSQL "
+"DBMS</ulink>, o gigante sobre qual o PostGIS se apóia. Muito da velocidade e flexibilidade do PostGIS não seria "
+"possível sem a extensibilidade, um grande analisador de consultas, índice GIST e uma variedade de funcionalidades SQL dadas "
+"pelos PostgreSQl."
 
 #. Tag: title
 #: introduction.xml:302
 #, no-c-format
 msgid "More Information"
-msgstr ""
+msgstr "Mais informações"
 
 #. Tag: para
 #: introduction.xml:306
@@ -529,7 +537,9 @@ msgid ""
 "The latest software, documentation and news items are available at the "
 "PostGIS web site, <ulink url=\"http://www.postgis.org\">http://www.postgis."
 "org</ulink>."
-msgstr ""
+msgstr "A última versão, documentação e novidades estão disponíveis no "
+"site do PostGIS, <ulink url=\"http://www.postgis.org\">http://www.postgis."
+"org</ulink>."
 
 #. Tag: para
 #: introduction.xml:312
@@ -538,7 +548,8 @@ msgid ""
 "More information about the GEOS geometry operations library is available "
 "at<ulink url=\"http://trac.osgeo.org/geos/\"> http://trac.osgeo.org/geos/</"
 "ulink>."
-msgstr ""
+msgstr "Mais informações sobre a biblioteca GEOS estão disponíveis em <ulink url=\"http://trac.osgeo.org/geos/\"> http://trac.osgeo.org/geos/</"
+"ulink>."
 
 #. Tag: para
 #: introduction.xml:318
@@ -546,7 +557,8 @@ msgstr ""
 msgid ""
 "More information about the Proj4 reprojection library is available at <ulink "
 "url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
-msgstr ""
+msgstr "Mais informações sobre a biblioteca Proj4 estão disponíveis em <ulink "
+"url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
 
 #. Tag: para
 #: introduction.xml:324
@@ -555,7 +567,8 @@ msgid ""
 "More information about the PostgreSQL database server is available at the "
 "PostgreSQL main site <ulink url=\"http://www.postgresql.org\">http://www."
 "postgresql.org</ulink>."
-msgstr ""
+msgstr "Mais informações sobre o PostgreSQL estão disponíveis em <ulink url=\"http://www.postgresql.org\">http://www."
+"postgresql.org</ulink>."
 
 #. Tag: para
 #: introduction.xml:330
@@ -564,7 +577,8 @@ msgid ""
 "More information about GiST indexing is available at the PostgreSQL GiST "
 "development site, <ulink url=\"http://www.sai.msu.su/~megera/postgres/gist/"
 "\">http://www.sai.msu.su/~megera/postgres/gist/</ulink>."
-msgstr ""
+msgstr "Mais informações sobre o índice GiST estão disponíveis no site de desenvolvimento do PostgreSQL em <ulink url=\"http://www.sai.msu.su/~megera/postgres/gist/"
+"\">http://www.sai.msu.su/~megera/postgres/gist/</ulink>."
 
 #. Tag: para
 #: introduction.xml:336
@@ -572,7 +586,8 @@ msgstr ""
 msgid ""
 "More information about MapServer internet map server is available at <ulink "
 "url=\"http://mapserver.org/\">http://mapserver.org</ulink>."
-msgstr ""
+msgstr "Mais informações sobre o MapServer estão disponíveis em <ulink "
+"url=\"http://mapserver.org/\">http://mapserver.org</ulink>"
 
 #. Tag: para
 #: introduction.xml:342
@@ -582,4 +597,6 @@ msgid ""
 "Features for Specification for SQL</ulink>&quot; is available at the OpenGIS "
 "Consortium web site: <ulink url=\"http://www.opengeospatial.org/\">http://"
 "www.opengeospatial.org/</ulink>."
-msgstr ""
+msgstr "As especificações &quot;<ulink url=\"http://www.opengeospatial.org/standards/sfs\">Simple "
+"Features for Specification for SQL</ulink>&quot; estão disponíveis no site da OGC: "
+"<ulink url=\"http://www.opengeospatial.org/\">http://www.opengeospatial.org/</ulink>."
