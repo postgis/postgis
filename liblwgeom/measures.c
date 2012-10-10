@@ -709,6 +709,18 @@ lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl)
 
 	LWDEBUG(2, "lw_dist2d_pt_ptarrayarc is called");
 
+	if ( pa->npoints % 2 == 0 || pa->npoints < 3 )
+	{
+		lwerror("lw_dist2d_pt_ptarrayarc called with non-arc input");
+		return LW_FALSE;
+	}
+
+	if (dl->mode == DIST_MAX)
+	{
+		lwerror("lw_dist2d_pt_ptarrayarc does not currently support DIST_MAX mode");
+		return LW_FALSE;
+	}
+
 	A1 = getPoint2d_cp(pa, 0);
 
 	if ( ! lw_dist2d_pt_pt(p, A1, dl) ) 
@@ -811,8 +823,7 @@ lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 
 
 /**
-
-test each segment of l1 against each segment of l2.
+* test each segment of l1 against each segment of l2.
 */
 int
 lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
@@ -863,6 +874,109 @@ lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS *dl)
 	return LW_TRUE;
 }
 
+/**
+* Test each segment of pa against each arc of pb for distance.
+*/
+int
+lw_dist2d_ptarray_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS *dl)
+{
+	int t, u;
+	const POINT2D *A1;
+	const POINT2D *A2;
+	const POINT2D *B1;
+	const POINT2D *B2;
+	const POINT2D *B3;
+	int twist = dl->twisted;
+
+	LWDEBUGF(2, "lw_dist2d_ptarray_ptarrayarc called (points: %d-%d)",pa->npoints, pb->npoints);
+
+	if ( pb->npoints % 2 == 0 || pb->npoints < 3 )
+	{
+		lwerror("lw_dist2d_ptarray_ptarrayarc called with non-arc input");
+		return LW_FALSE;
+	}
+
+	if ( dl->mode == DIST_MAX )
+	{
+		lwerror("lw_dist2d_ptarray_ptarrayarc does not currently support DIST_MAX mode");
+		return LW_FALSE;
+	}
+	else
+	{
+		A1 = getPoint2d_cp(pa, 0);
+		for ( t=1; t < pa->npoints; t++ ) /* For each segment in pa */
+		{
+			A2 = getPoint2d_cp(pa, t);
+			B1 = getPoint2d_cp(pb, 0);
+			for ( u=1; u < pb->npoints; u += 2 ) /* For each arc in pb */
+			{
+				B2 = getPoint2d_cp(pb, u);
+				B3 = getPoint2d_cp(pb, u+1);
+				dl->twisted = twist;
+
+				lw_dist2d_seg_arc(A1, A2, B1, B2, B3, dl);
+
+				/* If we've found a distance within tolerance, we're done */
+				if ( dl->distance <= dl->tolerance && dl->mode == DIST_MIN ) 
+					return LW_TRUE; 
+
+				B1 = B3;
+			}
+			A1 = A2;
+		}
+	}
+	return LW_TRUE;
+}
+
+/**
+* Test each arc of pa against each arc of pb for distance.
+*/
+int
+lw_dist2d_ptarrayarc_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS *dl)
+{
+	int t, u;
+	const POINT2D *A1;
+	const POINT2D *A2;
+	const POINT2D *A3;
+	const POINT2D *B1;
+	const POINT2D *B2;
+	const POINT2D *B3;
+	int twist = dl->twisted;
+
+	LWDEBUGF(2, "lw_dist2d_ptarrayarc_ptarrayarc called (points: %d-%d)",pa->npoints, pb->npoints);
+
+	if (dl->mode == DIST_MAX)
+	{
+		lwerror("lw_dist2d_ptarrayarc_ptarrayarc does not currently support DIST_MAX mode");
+		return LW_FALSE;
+	}
+	else
+	{
+		A1 = getPoint2d_cp(pa, 0);
+		for ( t=1; t < pa->npoints; t++ ) /* For each segment in pa */
+		{
+			A2 = getPoint2d_cp(pa, t);
+			A3 = getPoint2d_cp(pa, t+1);
+			B1 = getPoint2d_cp(pb, 0);
+			for ( u=1; u < pb->npoints; u += 2 ) /* For each arc in pb */
+			{
+				B2 = getPoint2d_cp(pb, u);
+				B3 = getPoint2d_cp(pb, u+1);
+				dl->twisted = twist;
+
+				lw_dist2d_arc_arc(A1, A2, A3, B1, B2, B3, dl);
+
+				/* If we've found a distance within tolerance, we're done */
+				if ( dl->distance <= dl->tolerance && dl->mode == DIST_MIN ) 
+					return LW_TRUE; 
+
+				B1 = B3;
+			}
+			A1 = A3;
+		}
+	}
+	return LW_TRUE;
+}
 /**
 * Calculate the shortest distance between an arc and an edge.
 * Line/circle approach from http://stackoverflow.com/questions/1073336/circle-line-collision-detection 

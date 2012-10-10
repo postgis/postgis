@@ -666,6 +666,51 @@ test_lw_dist2d_pt_ptarrayarc(void)
 	lwline_free(lwline);
 }
 
+static void
+test_lw_dist2d_ptarray_ptarrayarc(void)
+{
+	/* int lw_dist2d_ptarray_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS *dl) */
+	DISTPTS dl;
+	int rv;
+	LWLINE *lwline1;
+	LWLINE *lwline2;
+
+	/* Unit semi-circle above X axis */
+	lwline1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0)"));
+	
+	/* Line above top of semi-circle */
+	lwline2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2 2, -1 2, 1 2, 2 2)"));
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_ptarray_ptarrayarc(lwline2->points, lwline1->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Reversed arguments, should fail */
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	cu_error_msg_reset();
+	rv = lw_dist2d_ptarray_ptarrayarc(lwline1->points, lwline2->points, &dl);
+	//printf("%s\n", cu_error_msg);
+	CU_ASSERT_STRING_EQUAL("lw_dist2d_ptarray_ptarrayarc called with non-arc input", cu_error_msg);
+
+	lwline_free(lwline2);
+	
+	/* Line along side of semi-circle */
+	lwline2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2 -3, -2 -2, -2 2, -2 3)"));
+	lw_dist2d_distpts_init(&dl, DIST_MIN);
+	rv = lw_dist2d_ptarray_ptarrayarc(lwline2->points, lwline1->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 1, 0.000001);
+
+	/* Four unit semi-circles surrounding the 2x2 box around origin */
+	lwline_free(lwline1);
+	lwline_free(lwline2);
+	lwline1 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 -1, -2 0, -1 1, 0 2, 1 1, 2 0, 1 -1, 0 -2, -1 -1)"));
+	lwline2 = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-2.5 -3, -2.5 -2, -2.5 2, -2.5 3)"));
+	rv = lw_dist2d_ptarray_ptarrayarc(lwline2->points, lwline1->points, &dl);
+	CU_ASSERT_DOUBLE_EQUAL(dl.distance, 0.5, 0.000001);
+
+	lwline_free(lwline2);
+	lwline_free(lwline1);
+}
+
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -681,6 +726,7 @@ CU_TestInfo measures_tests[] =
 	PG_TEST(test_lw_dist2d_arc_arc),
 	PG_TEST(test_lw_arc_length),
 	PG_TEST(test_lw_dist2d_pt_ptarrayarc),
+	PG_TEST(test_lw_dist2d_ptarray_ptarrayarc),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo measures_suite = {"PostGIS Measures Suite",  NULL,  NULL, measures_tests};

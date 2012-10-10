@@ -50,6 +50,8 @@ int lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
 int lw_dist2d_pt_ptarray(POINT2D *p, POINTARRAY *pa, DISTPTS *dl);
 int lw_dist2d_pt_ptarrayarc(const POINT2D *p, const POINTARRAY *pa, DISTPTS *dl);
 int lw_dist2d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2, DISTPTS *dl);
+int lw_dist2d_ptarray_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS *dl);
+int lw_dist2d_ptarrayarc_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DISTPTS *dl);
 int lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl);
 int lw_dist2d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS *dl);
 int lw_dist2d_point_line(LWPOINT *point, LWLINE *line, DISTPTS *dl);
