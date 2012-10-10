@@ -495,7 +495,7 @@ false
 		  <funcprototype>
 			<funcdef>text <function>get_tract</function></funcdef>
 			<paramdef><type>geometry </type> <parameter> loc_geom</parameter></paramdef>
-			<paramdef choice="opt"><type>text </type> <parameter> output_field='name'</parameter></paramdef>
+			<paramdef choice="opt"><type>text </type> <parameter> output_field=name</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>

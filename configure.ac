@@ -1103,6 +1103,8 @@ AC_OUTPUT([GNUmakefile
    extensions/postgis/postgis.control 
    extensions/postgis_topology/Makefile 
    extensions/postgis_topology/postgis_topology.control 
+   extensions/postgis_tiger_geocoder/Makefile 
+   extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control 
    liblwgeom/Makefile 
    liblwgeom/cunit/Makefile 
    liblwgeom/liblwgeom.h 

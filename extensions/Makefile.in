@@ -1,7 +1,7 @@
 #############################################################################
 #
 # Master makefile used to build extensions
-#
+# Copyright (C) 2012 Regina Obe and Leo Hsu <lr@pcorp.us>
 # Copyright (C) 2012 Sandro Santilli <strk@keybit.net>
 #
 # This is free software; you can redistribute and/or modify it under
@@ -10,7 +10,7 @@
 #############################################################################
 
 SUBDIRS = postgis 
-
+SUBDIRS += postgis_tiger_geocoder 
 ifeq (@TOPOLOGY@,topology)
 	SUBDIRS += postgis_topology
 endif

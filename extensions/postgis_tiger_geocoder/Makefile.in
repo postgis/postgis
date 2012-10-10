@@ -38,9 +38,7 @@ sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_object
 #strip BEGIN/COMMIT since these are not allowed in extensions
 #strip CREATE SCHEMA since we force extension 
 # to create schema by setting schema to tiger_geocoder in control
-sql_bits/tiger_geocoder.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
-	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
-	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
+sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/cull_null.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/nullable_levenshtein.sql \
@@ -67,6 +65,14 @@ sql_bits/tiger_geocoder.sql.in: ../../extras/tiger_geocoder/tiger_2011/utility/s
 	../../extras/tiger_geocoder/tiger_2011/geocode/reverse_geocode.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/census_tracts_functions.sql
 	cat $^ > $@
+	
+sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
+	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
+	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
+	sql_bits/tiger_geocoder_minor.sql.in
+	cat $^ > $@
+	
 sql_bits/tiger_geocoder.sql: sql_bits/tiger_geocoder.sql.in
 	sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 	
@@ -103,7 +109,7 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/tiger_geocoder--unpack
 #aggregates are special 
 #they can be dropped but we need to remove
 #them from the extension first
-sql/tiger_geocoder_upgrade_minor.sql:  sql_bits/tiger_geocoder.sql
+sql/tiger_geocoder_upgrade_minor.sql:  sql_bits/tiger_geocoder_minor.sql.in
 	 sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
 	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
 	 	 $< > $@
