@@ -45,6 +45,7 @@ PostGIS 2.1.0
   - #1978, wrong answer when calculating length of a closed circular arc (circle)
   - #1780, support ST_GeoHash for geography
   - #2021, Added multi-band support to ST_Union(raster, ...) aggregate function
+  - #2006, better support of ST_Area(geography) over poles and dateline
 
 * Fixes *
 

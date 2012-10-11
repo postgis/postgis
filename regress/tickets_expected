@@ -64,6 +64,7 @@ NOTICE:  No points or linestrings in input array
 #277|<gml:Point><gml:coordinates>1,1e+308</gml:coordinates></gml:Point>
 #299|2
 #304
+ERROR:  GetProj4StringSPI: Cannot find SRID (32704) in spatial_ref_sys
 #304.a|21
 #304.b|1
 #408|Too few points in geometry component[

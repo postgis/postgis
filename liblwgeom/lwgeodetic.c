@@ -564,12 +564,12 @@ int crosses_dateline(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e)
 }
 
 /**
-* Returns true if the point p is on the great circle plane.
-* Forms the scalar triple product of A,B,p and if the volume of the
-* resulting parallelepiped is near zero the point p is on the
-* great circle plane.
+* Returns -1 if the point is to the left of the plane formed
+* by the edge, 1 if the point is to the right, and 0 if the 
+* point is on the plane.
 */
-int edge_point_on_plane(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
+static int 
+edge_point_side(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 {
 	POINT3D normal, pt;
 	double w;
@@ -583,9 +583,79 @@ int edge_point_on_plane(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
 	if ( FP_IS_ZERO(w) )
 	{
 		LWDEBUG(4, "point is on plane (dot product is zero)");
-		return LW_TRUE;
+		return 0;
 	}
-	LWDEBUG(4, "point is not on plane");
+	
+	if ( w < 0 )
+		return -1;
+	else 
+		return 1;
+}
+
+/**
+* Returns the angle in radians at point B of the triangle formed by A-B-C
+*/
+static double
+sphere_angle(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b,  const GEOGRAPHIC_POINT *c)
+{
+	POINT3D normal1, normal2;
+	robust_cross_product(b, a, &normal1);
+	robust_cross_product(b, c, &normal2);
+	normalize(&normal1);
+	normalize(&normal2);
+	return sphere_distance_cartesian(&normal1, &normal2);	
+}
+
+/**
+* Computes the spherical area of a triangle. If C is to the left of A/B, 
+* the area is negative. If C is to the right of A/B, the area is positive.
+*
+* @param a The first triangle vertex.
+* @param b The second triangle vertex.
+* @param c The last triangle vertex.
+* @return the signed area in radians.
+*/
+static double 
+sphere_signed_area(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b, const GEOGRAPHIC_POINT *c)
+{
+	double angle_a, angle_b, angle_c;
+	double area_radians = 0.0;
+	int side;
+	GEOGRAPHIC_EDGE e;
+	
+	angle_a = sphere_angle(b,a,c);
+	angle_b = sphere_angle(a,b,c);
+	angle_c = sphere_angle(b,c,a);
+	
+	area_radians = angle_a + angle_b + angle_c - M_PI;
+
+	/* What's the direction of the B/C edge? */
+	e.start = *a;
+	e.end = *b;
+	side = edge_point_side(&e, c);
+	
+	/* Co-linear points implies no area */
+	if ( side == 0 ) 
+		return 0.0;
+
+	/* Add the sign to the area */
+	return side * area_radians;
+}
+
+
+
+/**
+* Returns true if the point p is on the great circle plane.
+* Forms the scalar triple product of A,B,p and if the volume of the
+* resulting parallelepiped is near zero the point p is on the
+* great circle plane.
+*/
+int edge_point_on_plane(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *p)
+{
+	int side = edge_point_side(e, p);
+	if ( side == 0 )
+		return LW_TRUE;
+		
 	return LW_FALSE;
 }
 
@@ -806,7 +876,6 @@ double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, do
 	return heading;
 }
 
-
 /**
 * Computes the spherical excess of a spherical triangle defined by
 * the three vectices A, B, C. Computes on the unit sphere (i.e., divides
@@ -830,7 +899,6 @@ static double sphere_excess(const GEOGRAPHIC_POINT *a, const GEOGRAPHIC_POINT *b
 	double E = tan(ss/2.0)*tan((ss-a_dist)/2.0)*tan((ss-b_dist)/2.0)*tan((ss-c_dist)/2.0);
 	return 4.0 * atan(sqrt(fabs(E))) * sign;
 }
-
 
 
 /**
@@ -1749,72 +1817,31 @@ lwgeom_segmentize_sphere(const LWGEOM *lwg_in, double max_seg_length)
 * Returns the area of the ring (ring must be closed) in square radians (surface of
 * the sphere is 4*PI).
 */
-double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
+double 
+ptarray_area_sphere(const POINTARRAY *pa)
 {
-	GEOGRAPHIC_POINT a, b, c;
-	POINT2D p;
 	int i;
+	const POINT2D *p;
+	GEOGRAPHIC_POINT a, b, c;
 	double area = 0.0;
-
-	/* Return zero on non-sensical inputs */
+	
+	/* Return zero on nonsensical inputs */
 	if ( ! pa || pa->npoints < 4 )
 		return 0.0;
-
-	geographic_point_init(pt_outside->x, pt_outside->y, &c);
-
-	/* Initialize first point */
-	getPoint2d_p(pa, 0, &p);
-	geographic_point_init(p.x, p.y, &a);
-
-	for ( i = 1; i < pa->npoints; i++ )
+	
+	p = getPoint2d_cp(pa, 0);
+	geographic_point_init(p->x, p->y, &a);
+	p = getPoint2d_cp(pa, 1);
+	geographic_point_init(p->x, p->y, &b);
+	
+	for ( i = 2; i < pa->npoints-1; i++ )
 	{
-		double excess = 0.0;
-
-		getPoint2d_p(pa, i, &p);
-		geographic_point_init(p.x, p.y, &b);
-
-		if ( crosses_dateline(&a, &b) )
-		{
-			GEOGRAPHIC_POINT a1 = a, b1 = b, c1 = c;
-			double shift;
-
-			if ( a.lon > 0.0 )
-				shift = (M_PI - a.lon) + 0.088; /* About 5deg more */
-			else
-				shift = (M_PI - b.lon) + 0.088; /* About 5deg more */
-
-			LWDEBUGF(4, "before shift a1(%.8g %.8g) b1(%.8g %.8g) c1(%.8g %.8g)", a1.lat, a1.lon, b1.lat, b1.lon, c1.lat, c1.lon);
-			point_shift(&a1, shift);
-			point_shift(&b1, shift);
-			point_shift(&c1, shift);
-			LWDEBUGF(4, "after shift a1(%.8g %.8g) b1(%.8g %.8g) c1(%.8g %.8g)", a1.lat, a1.lon, b1.lat, b1.lon, c1.lat, c1.lon);
-			excess = sphere_excess(&a1, &b1, &c1);
-		}
-		else if ( crosses_dateline(&a, &c) )
-		{
-			GEOGRAPHIC_POINT a1 = a, b1 = b, c1 = c;
-			double shift;
-
-			if ( a.lon > 0.0 )
-				shift = (M_PI - a.lon) + 0.088; /* About 5deg more */
-			else
-				shift = (M_PI - c.lon) + 0.088; /* About 5deg more */
-
-			point_shift(&a1, shift);
-			point_shift(&b1, shift);
-			point_shift(&c1, shift);
-			excess = sphere_excess(&a1, &b1, &c1);
-		}
-		else
-		{
-			excess = sphere_excess(&a, &b, &c);
-		}
-
-		area += excess;
-
-		/* B gets incremented in the next loop, so we save the value here */
-		a = b;
+		p = getPoint2d_cp(pa, i);
+		geographic_point_init(p->x, p->y, &c);
+		area += sphere_signed_area(&a, &b, &c);
+		b = c;
 	}
+	
 	return fabs(area);
 }
 
@@ -2106,7 +2133,6 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 {
 	int type;
-	POINT2D pt_outside;
 	double radius2 = spheroid->radius * spheroid->radius;
 	GBOX gbox;
 	gbox.flags = 0;
@@ -2124,16 +2150,6 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 	if ( ! ( type == POLYGONTYPE || type == MULTIPOLYGONTYPE || type == COLLECTIONTYPE ) )
 		return 0.0;
 
-	/* Make sure we have boxes */
-	if ( lwgeom->bbox )
-		gbox = *(lwgeom->bbox);
-	else
-		lwgeom_calculate_gbox_geodetic(lwgeom, &gbox);
-
-	gbox_pt_outside(&gbox, &pt_outside);
-
-	LWDEBUGF(2, "pt_outside = POINT(%.20g %.20g)", pt_outside.x, pt_outside.y);
-
 	/* Actually calculate area */
 	if ( type == POLYGONTYPE )
 	{
@@ -2146,12 +2162,12 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 			return 0.0;
 
 		/* First, the area of the outer ring */
-		area += radius2 * ptarray_area_sphere(poly->rings[0], &pt_outside);
+		area += radius2 * ptarray_area_sphere(poly->rings[0]);
 
 		/* Subtract areas of inner rings */
 		for ( i = 1; i < poly->nrings; i++ )
 		{
-			area -= radius2 * ptarray_area_sphere(poly->rings[i], &pt_outside);
+			area -= radius2 * ptarray_area_sphere(poly->rings[i]);
 		}
 		return area;
 	}

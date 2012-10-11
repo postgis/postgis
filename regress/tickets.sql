@@ -272,7 +272,7 @@ SELECT ST_AsText(the_geog) as the_pt,
        ST_Area(ST_Buffer(the_geog,10)) As the_area, 
        ST_Area(geography(ST_Transform(ST_Buffer(ST_Transform(geometry(the_geog),utm_srid),10),4326))) As geog_utm_area
 FROM utm_dots 
-WHERE ST_Area(ST_Buffer(the_geog,10)) NOT between 307 and 314
+WHERE ST_Area(ST_Buffer(the_geog,10)) NOT between 307 and 315
 LIMIT 10;
 
 SELECT '#304.a', Count(*) FROM utm_dots WHERE ST_DWithin(the_geog, 'POINT(0 0)'::geography, 3000000);
