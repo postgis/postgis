@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2012-10-11 21:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -1241,6 +1241,14 @@ msgid ""
 msgstr ""
 
 #. Tag: para
+#: reference_measure.xml:744
+#, no-c-format
+msgid ""
+"If you have a 3D Geometry, you may prefer to use <xref linkend="
+"\"ST_3DClosestPoint\"/>."
+msgstr ""
+
+#. Tag: para
 #: reference_measure.xml:745 reference_measure.xml:1690
 #: reference_measure.xml:1842 reference_measure.xml:2433
 #: reference_measure.xml:3005
@@ -1300,8 +1308,8 @@ msgstr ""
 #: reference_measure.xml:786
 #, no-c-format
 msgid ""
-", <xref linkend=\"ST_LongestLine\"/>, <xref linkend=\"ST_ShortestLine\"/>, "
-"<xref linkend=\"ST_MaxDistance\"/>"
+",<xref linkend=\"ST_Distance\"/>, <xref linkend=\"ST_LongestLine\"/>, <xref "
+"linkend=\"ST_ShortestLine\"/>, <xref linkend=\"ST_MaxDistance\"/>"
 msgstr ""
 
 #. Tag: refname
