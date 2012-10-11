@@ -977,6 +977,7 @@ lw_dist2d_ptarrayarc_ptarrayarc(const POINTARRAY *pa, const POINTARRAY *pb, DIST
 	}
 	return LW_TRUE;
 }
+
 /**
 * Calculate the shortest distance between an arc and an edge.
 * Line/circle approach from http://stackoverflow.com/questions/1073336/circle-line-collision-detection 

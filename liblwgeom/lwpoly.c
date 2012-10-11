@@ -384,54 +384,31 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 }
 
 /**
- * Find the area of the outer ring - sum (area of inner rings).
- * Could use a more numerically stable calculator...
- */
+* Find the area of the outer ring - sum (area of inner rings).
+*/
 double
 lwpoly_area(const LWPOLY *poly)
 {
-	double poly_area=0.0;
+	double poly_area = 0.0;
 	int i;
-	POINT2D pp;
-	POINT2D cp;
-	POINT2D np;
-        double x0 = cp.x;
+	
+	if ( ! poly ) 
+		lwerror("lwpoly_area called with null polygon pointer!");
 
-	LWDEBUGF(2, "in lwpoly_area (%d rings)", poly->nrings);
-
-	for (i=0; i<poly->nrings; i++)
+	for ( i=0; i < poly->nrings; i++ )
 	{
-		int j;
 		POINTARRAY *ring = poly->rings[i];
 		double ringarea = 0.0;
 
-		LWDEBUGF(4, " rings %d has %d points", i, ring->npoints);
-
-		if ( ! ring->npoints ) continue; /* empty ring */
-
-		getPoint2d_p(ring, 0, &cp);
-		getPoint2d_p(ring, 1, &np);
-                x0 = cp.x;
-                np.x -= x0;
-                for (j=0; j<ring->npoints-1; j++)
-		{
-                        pp.y = cp.y;
-                        cp.x = np.x;
-                        cp.y = np.y;
-			getPoint2d_p(ring, j+1, &np);
-                        np.x -= x0;
-                        ringarea += cp.x * (np.y - pp.y);
-		}
-
-		ringarea  /= 2.0;
-
-		LWDEBUGF(4, " ring 1 has area %lf",ringarea);
-
-		ringarea  = fabs(ringarea);
-		if (i != 0)	/*outer */
-			ringarea  = -1.0*ringarea ; /* its a hole */
-
-		poly_area += ringarea;
+		/* Empty or messed-up ring. */
+		if ( ring->npoints < 3 ) 
+			continue; 
+		
+		ringarea = fabs(ptarray_signed_area(ring));
+		if ( i == 0 ) /* Outer ring, positive area! */
+			poly_area += ringarea; 
+		else /* Inner ring, negative area! */
+			poly_area -= ringarea; 
 	}
 
 	return poly_area;

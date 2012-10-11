@@ -795,14 +795,14 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 	if ( (pa->npoints % 2) == 0 )
 	{
 		lwerror("ptarray_contains_point_arc called with even number of points");
-		return -1;
+		return LW_OUTSIDE;
 	}
 
 	/* Check for not an arc ring (always have >= 3 points) */
 	if ( pa->npoints < 3 )
 	{
 		lwerror("ptarray_contains_point_arc called too-short pointarray");
-		return -1;
+		return LW_OUTSIDE;
 	}
 
 	/* Check for unclosed case */
@@ -811,7 +811,7 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 	if ( ! p2d_same(seg1, seg3) )
 	{
 		lwerror("ptarray_contains_point_arc called on unclosed ring");
-		return -1;
+		return LW_OUTSIDE;
 	} 
 	/* OK, it's closed. Is it just one circle? */
 	else if ( pa->npoints == 3 )
@@ -832,7 +832,7 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 		else if ( d < radius ) 
 			return 1; /* Inside circle */
 		else 
-			return -1; /* Outside circle */
+			return LW_OUTSIDE; /* Outside circle */
 	} 
 	else if ( p2d_same(seg1, pt) )
 	{
@@ -919,6 +919,42 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 	
 	/* Inside */
 	return 1;
+}
+
+/**
+* Returns the area in cartesian units. Area is negative if ring is oriented CCW, 
+* positive if it is oriented CW and zero if the ring is degenerate or flat.
+* http://en.wikipedia.org/wiki/Shoelace_formula
+*/
+double
+ptarray_signed_area(const POINTARRAY *pa)
+{
+	const POINT2D *P1;
+	const POINT2D *P2;
+	const POINT2D *P3;
+	double sum = 0.0;
+	double x0, x, y1, y2;
+	int i;
+	
+	if (! pa || pa->npoints < 3 )
+		return 0.0;
+		
+	P1 = getPoint2d_cp(pa, 0);
+	P2 = getPoint2d_cp(pa, 1);
+	x0 = P1->x;
+	for ( i = 1; i < pa->npoints - 1; i++ )
+	{
+		P3 = getPoint2d_cp(pa, i+1);
+		x = P2->x - x0;
+		y1 = P3->y;
+		y2 = P1->y;
+		sum += x * (y2-y1);
+		
+		/* Move forwards! */
+		P1 = P2;
+		P2 = P3;
+	}
+	return sum / 2.0;	
 }
 
 POINTARRAY*

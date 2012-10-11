@@ -121,10 +121,17 @@
 #define SIZE_GET(varsize) (((varsize) >> 2) & 0x3FFFFFFF)
 #define SIZE_SET(varsize, size) (((varsize) & 0x00000003)|(((size) & 0x3FFFFFFF) << 2 ))
 
-/*
+/**
 * Tolerance used to determine equality.
 */
 #define EPSILON_SQLMM 1e-8
+
+/**
+* Constants for point-in-polygon return values
+*/
+#define LW_INSIDE 1
+#define LW_BOUNDARY 0
+#define LW_OUTSIDE -1
 
 /*
 * Internal prototypes
@@ -299,6 +306,7 @@ void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
 char ptarray_isccw(const POINTARRAY *pa);
 int ptarray_has_z(const POINTARRAY *pa);
 int ptarray_has_m(const POINTARRAY *pa);
+double ptarray_signed_area(const POINTARRAY *pa);
 
 /*
 * Clone support

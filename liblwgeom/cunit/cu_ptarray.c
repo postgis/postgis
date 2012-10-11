@@ -313,6 +313,34 @@ static void test_ptarray_isccw(void)
 	lwpoly_free(poly);
 }
 
+static void test_ptarray_signed_area() 
+{
+	LWLINE *line;
+	double area;
+
+	/* parallelogram */
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,1 1, 2 1, 1 0, 0 0)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT_DOUBLE_EQUAL(area, 1.0, 0.0000001);
+	lwline_free(line);
+
+	/* square */
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,0 2, 2 2, 2 0, 0 0)"));
+	area = ptarray_signed_area(line->points);
+	CU_ASSERT_DOUBLE_EQUAL(area, 4.0, 0.0000001);
+	lwline_free(line);
+
+	/* square backwares*/
+	line = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0,2 0, 2 2, 0 2, 0 0)"));
+	area = ptarray_signed_area(line->points);
+	//printf("%g\n",area);
+	CU_ASSERT_DOUBLE_EQUAL(area, -4.0, 0.0000001);
+	lwline_free(line);
+	
+}
+
+
+
 static void test_ptarray_desegmentize() 
 {
 	LWGEOM *in, *out;
@@ -580,6 +608,7 @@ static void test_ptarray_contains_point_arc()
 	lwline_free(lwline);
 }
 
+
 /*
 ** Used by the test harness to register the tests in this file.
 */
@@ -589,6 +618,7 @@ CU_TestInfo ptarray_tests[] =
 	PG_TEST(test_ptarray_append_ptarray),
 	PG_TEST(test_ptarray_locate_point),
 	PG_TEST(test_ptarray_isccw),
+	PG_TEST(test_ptarray_signed_area),
 	PG_TEST(test_ptarray_desegmentize),
 	PG_TEST(test_ptarray_insert_point),
 	PG_TEST(test_ptarray_contains_point),
