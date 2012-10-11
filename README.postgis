@@ -70,7 +70,7 @@ this to work.
 
   JSON-C is used to import GeoJSON via the function ST_GeomFromGeoJson().
 
-    http://oss.metaparadigm.com/json-c/.
+    http://github.com/json-c/json-c/wiki
 
   You can get it installed in apt-based systems using::
 
