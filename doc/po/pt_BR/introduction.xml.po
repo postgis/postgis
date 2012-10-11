@@ -489,7 +489,8 @@ msgid ""
 "operations library, and the algorithmic work of Martin Davis in making it "
 "all work, ongoing maintenance and support of Mateusz Loskot, Sandro Santilli "
 "(strk), Paul Ramsey and others."
-msgstr "A <ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink>, biblioteca geométrica e o trabalho em algoritmos de Martin Davis, manutenção autal de Mateusz Loskot, Sandro Santilli (strk), Paul Ramsey e outros."
+msgstr "A <ulink url=\"http://trac.osgeo.org/geos/\">GEOS</ulink>, biblioteca geométrica e o trabalho em algoritmos "
+"de Martin Davis, manutenção autal de Mateusz Loskot, Sandro Santilli (strk), Paul Ramsey e outros."
 
 #. Tag: para
 #: introduction.xml:284
@@ -499,7 +500,10 @@ msgid ""
 "Abstraction Library, by Frank Warmerdam and others is used to power much of "
 "the raster functionality introduced in PostGIS 2.0.0. In kind, improvements "
 "needed in GDAL to support PostGIS are contributed back to the GDAL project."
-msgstr "A <ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink>, Geospatial Data Abstraction Library (Biblioteca de abstração de dados geoespaciais), por Frank Wamerdam e outros é utilizada para rodar muitas das funcionalidades raster introduzidas na versão 2.0.0. Em tempo, as melhorias necessárias na GDAL para suportar o PostGIS tem sido contribuídas de volta para o projeto."
+msgstr "A <ulink url=\"http://trac.osgeo.org/gdal/\">GDAL</ulink>, Geospatial Data Abstraction Library "
+"(Biblioteca de abstração de dados geoespaciais), por Frank Wamerdam e outros é utilizada para rodar muitas das "
+"funcionalidades raster introduzidas na versão 2.0.0. Em tempo, as melhorias necessárias na GDAL para suportar o "
+"PostGIS tem sido contribuídas de volta para o projeto."
 
 #. Tag: para
 #: introduction.xml:289
@@ -508,7 +512,8 @@ msgid ""
 "The <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> cartographic "
 "projection library, and the work of Gerald Evenden and Frank Warmerdam in "
 "creating and maintaining it."
-msgstr "A biblioteca <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> e o trabalho de Gerald Evenden e Frank Wamerdam em sua criação e manutenção."
+msgstr "A biblioteca <ulink url=\"http://trac.osgeo.org/proj/\">Proj4</ulink> e o trabalho de Gerald Evenden "
+"e Frank Wamerdam em sua criação e manutenção."
 
 #. Tag: para
 #: introduction.xml:293
@@ -548,17 +553,17 @@ msgid ""
 "More information about the GEOS geometry operations library is available "
 "at<ulink url=\"http://trac.osgeo.org/geos/\"> http://trac.osgeo.org/geos/</"
 "ulink>."
-msgstr "Mais informações sobre a biblioteca GEOS estão disponíveis em <ulink url=\"http://trac.osgeo.org/geos/\"> http://trac.osgeo.org/geos/</"
-"ulink>."
+msgstr "Mais informações sobre a biblioteca GEOS estão disponíveis em "
+"<ulink url=\"http://trac.osgeo.org/geos/\"> http://trac.osgeo.org/geos/</ulink>."
 
 #. Tag: para
 #: introduction.xml:318
 #, no-c-format
 msgid ""
-"More information about the Proj4 reprojection library is available at <ulink "
-"url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
-msgstr "Mais informações sobre a biblioteca Proj4 estão disponíveis em <ulink "
-"url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
+"More information about the Proj4 reprojection library is available at "
+"<ulink "url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
+msgstr "Mais informações sobre a biblioteca Proj4 estão disponíveis em "
+"<ulink "url=\"http://trac.osgeo.org/proj/\">http://trac.osgeo.org/proj/</ulink>."
 
 #. Tag: para
 #: introduction.xml:324
