@@ -1,8 +1,8 @@
 include ../upgradeable_versions.mk
 
 EXTENSION    = postgis_tiger_geocoder
-EXTVERSION    = 2.1.0SVN
-MINORVERSION  = 2011.2.1
+EXTVERSION    = @POSTGIS_LIB_VERSION@
+MINORVERSION  = 2011.@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
@@ -19,7 +19,7 @@ PREREL_PREFIX = $(shell echo $(EXTVERSION) | \
 
 DATA         = $(filter-out $(wildcard sql/*--*.sql),$(wildcard sql/*.sql))
 
-PG_CONFIG    = /c/projects/pg/pg91/bin/pg_config
+PG_CONFIG    =  @PGCONFIG@
 
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
