@@ -10,6 +10,8 @@ PostGIS 2.1.0
 * Deprecated signatures
 
   - ST_Estimated_Extent renamed to ST_EstimatedExtent
+  - ST_MapAlgebraFctNgb and 1 and 2 raster variants of ST_MapAlgebraFct.
+    Use ST_MapAlgebra instead
 
 * New Features *
 
