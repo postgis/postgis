@@ -30,9 +30,14 @@ psql -d yourdatabase -f topology/topology.sql
 psql -d yourdatabase -f doc/topology_comments.sql
 
 </programlisting>
-<note><para>topology_comments.sql since its an optional feature is not installed by make install or make comments install. However if
-you do a <command>make comments</command> or <command>make topology_comments.sql</command>, it will be generated in the docs folder</para>
-</note>
+<note><para>
+<filename>topology_comments.sql</filename> since its an optional feature
+is not installed by <command>make install</command> or
+<command>make comments-install</command>.
+However if you do a <command>make comments</command> or
+<command>make topology_comments.sql</command>, it will be generated
+in the docs folder
+</para></note>
 
 	<para>
 	  The rest of this chapter goes into detail each of the above installation
