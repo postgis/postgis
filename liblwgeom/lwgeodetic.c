@@ -2134,8 +2134,6 @@ double lwgeom_area_sphere(const LWGEOM *lwgeom, const SPHEROID *spheroid)
 {
 	int type;
 	double radius2 = spheroid->radius * spheroid->radius;
-	GBOX gbox;
-	gbox.flags = 0;
 
 	assert(lwgeom);
 

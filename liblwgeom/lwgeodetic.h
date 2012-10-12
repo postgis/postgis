@@ -92,7 +92,7 @@ void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);
 int ptarray_point_in_ring_winding(const POINTARRAY *pa, const POINT2D *pt_to_test);
 int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test);
 int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
-double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside);
+double ptarray_area_sphere(const POINTARRAY *pa);
 double latitude_degrees_normalize(double lat);
 double longitude_degrees_normalize(double lon);
 double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s);
