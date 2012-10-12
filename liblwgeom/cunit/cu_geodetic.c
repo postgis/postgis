@@ -989,9 +989,9 @@ static void test_spheroid_area(void)
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &s);
 	a2 = lwgeom_area_spheroid(lwg, &s);
-	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
-	CU_ASSERT_DOUBLE_EQUAL(a1, 89.7127703297, 0.0001); /* sphere */
-	CU_ASSERT_DOUBLE_EQUAL(a2, 89.8684316032, 0.0001); /* spheroid */
+	printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	CU_ASSERT_DOUBLE_EQUAL(a1, 89.7127703297, 0.001); /* sphere */
+	CU_ASSERT_DOUBLE_EQUAL(a2, 89.8684316032, 0.001); /* spheroid */
 	lwgeom_free(lwg);
 
 	/* Big-ass polygon */
@@ -1009,7 +1009,7 @@ static void test_spheroid_area(void)
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &s);
 	a2 = lwgeom_area_spheroid(lwg, &s);
-	printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 12360265021.1, 10.0); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 12304814950.073, 100.0); /* spheroid */
 	lwgeom_free(lwg);
