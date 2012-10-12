@@ -22,8 +22,10 @@
 
 
 static void
-usage()
+usage(int status)
 {
+  /* TODO: if status != 0 print all to stderr */
+
 	printf(_( "RELEASE: %s (r%d)\n" ), POSTGIS_LIB_VERSION, POSTGIS_SVN_REVISION);
 	printf(_("USAGE: pgsql2shp [<options>] <database> [<schema>.]<table>\n"
 	         "       pgsql2shp [<options>] <database> <query>\n"
@@ -47,6 +49,7 @@ usage()
 	         "         COLUMNNAME DBFFIELD1\n"
 	         "         AVERYLONGCOLUMNNAME DBFFIELD2\n" ));
 	printf(_("  -? Display this help screen.\n\n" ));
+	exit(status);
 }
 
 int
@@ -60,8 +63,7 @@ main(int argc, char **argv)
 	/* If no options are specified, display usage */
 	if (argc == 1)
 	{
-		usage();
-		exit(0);
+		usage(0); /* TODO: should this exit with error ? */
 	}
 
 	/* Parse command line options and set configuration */
@@ -106,12 +108,8 @@ main(int argc, char **argv)
 		case 'k':
 			config->keep_fieldname_case = 1;
 			break;
-		case '?':
-			usage();
-			exit(0);
 		default:
-			usage();
-			exit(0);
+			usage(pgis_optopt == '?' ? 0 : 1);
 		}
 	}
 
@@ -124,8 +122,7 @@ main(int argc, char **argv)
 	}
 	else
 	{
-		usage();
-		exit(0);
+		usage(1);
 	}
 
 
