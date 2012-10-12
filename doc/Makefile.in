@@ -226,10 +226,16 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -P figure.warning="${PWD}/html/images/warning" \
 		   -P figure.caution="${PWD}/html/images/caution" \
 		   -P latex.output.revhistory=0 \
-		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf $<; \
+		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
 	fi
 
 pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
+
+pdf-localized:
+	@for lang in $(translations); do \
+    echo "Creating pdf for language $$lang..."; \
+    $(MAKE) -C po/$$lang local-pdf; \
+  done
 
 doxygen.cfg: doxygen.cfg.in
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@
