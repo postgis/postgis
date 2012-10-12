@@ -551,8 +551,11 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 	  <para>
 		The PostGIS extensions are built and installed automatically if you are using PostgreSQL 9.1+. 
 	  </para>
-	  <para>If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:</para>
+	  <para>If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:
+    </para>
+	  <para>
 	  <command>make comments</command>
+    </para>
 	  <para>Building the comments is not necessary if you are building from a release tar ball since these are packaged pre-built with the tar ball already.</para>
 	  <para>If you are building against PostgreSQL 9.1, the extensions should automatically build as part of the make install process.  You can if needed build from the extensions
 	  folders or copy files if you need them on a different server. </para>
