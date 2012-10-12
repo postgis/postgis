@@ -7670,12 +7670,6 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 					Variant 4 operate upon two rasters with one band per raster. See example Variant 4.
 				</para>
 
-				<warning>
-					<para>
-						The functions <!--<xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_MapAlgebraExpr2" />, --><xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_MapAlgebraFct2" /> and <xref linkend="RT_ST_MapAlgebraFctNgb" /> are deprecated as of PostGIS 2.1.0 and use of these functions are strongly discouraged. These functions may be removed in a future version of PostGIS.
-					</para>
-				</warning>
-
 				<para>Availability: 2.1.0</para>
 
 			</refsection>
@@ -8327,6 +8321,12 @@ FROM prunion;</programlisting>
 
 			<refsection>
 				<title>Description</title>
+
+				<warning>
+					<para>
+						<xref linkend="RT_ST_MapAlgebraFct" /> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra" /> instead.
+					</para>
+				</warning>
 				
 				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>onerasteruserfunc</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
 
@@ -8348,12 +8348,6 @@ FROM prunion;</programlisting>
                 <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/static/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
 
                 <note><para>The <type>text[]</type> argument to the <varname>userfunction</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
-
-				<warning>
-					<para>
-						<xref linkend="RT_ST_MapAlgebraFct" /> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra" /> instead.
-					</para>
-				</warning>
 
 				<para>Availability: 2.0.0</para>
 			</refsection>
@@ -8527,6 +8521,12 @@ WHERE rid=167;
 			<refsection>
 				<title>Description</title>
 				
+				<warning>
+					<para>
+						<xref linkend="RT_ST_MapAlgebraFct2" /> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra" /> instead.
+					</para>
+				</warning>
+
 				<para>Creates a new one band raster formed by applying a valid PostgreSQL function specified by the <varname>tworastuserfunc</varname> on the input raster <varname>rast1</varname>, <varname>rast2</varname>. If no <varname>band1</varname> or <varname>band2</varname> is specified, band 1 is assumed. The new raster will have the same georeference, width, and height as the original rasters but will only have one band.</para>
 
 				<para>If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype. If pixeltype is passed NULL or left out, then the new raster band will have the same pixeltype as the input <varname>rast1</varname> band.</para>
@@ -8548,12 +8548,6 @@ WHERE rid=167;
                 <note><para>For more information about the VARIADIC keyword, please refer to the PostgreSQL documentation and the "SQL Functions with Variable Numbers of Arguments" section of <ulink url="http://www.postgresql.org/docs/current/static/xfunc-sql.html">Query Language (SQL) Functions</ulink>.</para></note>
 
                 <note><para>The <type>text[]</type> argument to the <varname>tworastuserfunc</varname> is required, regardless of whether you choose to pass any arguments to your user function for processing or not.</para></note>
-
-				<warning>
-					<para>
-						<xref linkend="RT_ST_MapAlgebraFct2" /> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra" /> instead.
-					</para>
-				</warning>
 
 				<para>Availability: 2.0.0</para>
 			</refsection>
@@ -8726,6 +8720,12 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 		  <refsection>
 			<title>Description</title>
 		
+				<warning>
+					<para>
+						<xref linkend="RT_ST_MapAlgebraFctNgb" /> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra" /> instead.
+					</para>
+				</warning>
+
 			<para>(one raster version) Return a raster which values
                  are the result of a PLPGSQL user function involving a
                neighborhood of values from the input raster band. The user function takes the neighborhood of pixel values
@@ -8771,12 +8771,6 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 						<listitem><para>Arguments to pass into the user function.</para></listitem>
 					</varlistentry>
 				</variablelist>
-
-				<warning>
-					<para>
-						<xref linkend="RT_ST_MapAlgebraFctNgb" /> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra" /> instead.
-					</para>
-				</warning>
 
 			<para>Availability: 2.0.0 </para>
 			
