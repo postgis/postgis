@@ -52,7 +52,7 @@ POINTARRAY *
 ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d)
 {
 	uint32_t dims=2;
-	uint32_t size, i, ptsize;
+	uint32_t size, i;
 	POINTARRAY *pa;
 	POINT4D point;
 
@@ -75,8 +75,6 @@ ptarray_from_GEOSCoordSeq(const GEOSCoordSequence *cs, char want3d)
 	}
 
 	LWDEBUGF(4, " output dimensions: %d", dims);
-
-	ptsize = sizeof(double)*dims;
 
 	pa = ptarray_construct((dims==3), 0, size);
 
@@ -1305,6 +1303,7 @@ lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int edg
 {
 #if POSTGIS_GEOS_VERSION < 34
 	lwerror("lwgeom_delaunay_triangulation: GEOS 3.4 or higher required");
+	return NULL;
 #else
 	GEOSGeometry *g1, *g3;
 	LWGEOM *lwgeom_result;
