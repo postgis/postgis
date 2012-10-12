@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-09-14 17:50+0000\n"
+"POT-Creation-Date: 2012-10-12 07:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <kde-i18n-doc@kde.org>\n"
@@ -73,7 +73,7 @@ msgstr ""
 #. Tag: para
 #: installation.xml:18
 #, no-c-format
-msgid "topology_comments.sql since its an optional feature is not installed by make install or make comments install. However if you do a <varname>make comments</varname> or <varname>make topology_comments.sql</varname>, it will be generated in the docs folder"
+msgid "topology_comments.sql since its an optional feature is not installed by make install or make comments install. However if you do a <command>make comments</command> or <command>make topology_comments.sql</command>, it will be generated in the docs folder"
 msgstr ""
 
 #. Tag: para
@@ -445,7 +445,7 @@ msgid "As of PostGIS v1.4.0, all the functions have comments generated from the 
 msgstr ""
 
 #. Tag: command
-#: installation.xml:517
+#: installation.xml:517 installation.xml:539
 #, no-c-format
 msgid "make comments"
 msgstr ""
@@ -484,12 +484,6 @@ msgstr ""
 #: installation.xml:538
 #, no-c-format
 msgid "If you are building from source repository, you need to build the function descriptions first. These get built if you have docbook installed. You can also manually build with the statement:"
-msgstr ""
-
-#. Tag: programlisting
-#: installation.xml:539
-#, no-c-format
-msgid "make comments"
 msgstr ""
 
 #. Tag: para
