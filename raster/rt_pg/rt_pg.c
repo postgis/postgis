@@ -13927,10 +13927,11 @@ static int rtpg_nmapalgebra_callback(
 	get_typlenbyvalalign(INT4OID, &typlen, &typbyval, &typalign);
 
 	/* reuse dim and lbound, just tweak to what we need */
+	dim[0] = arg->rasters + 1;
 	dim[1] = 2;
 	lbound[0] = 0;
 
-	/* construct mdValues */
+	/* construct mdPos */
 	mdPos = construct_md_array(
 		_pos, _null,
 		2, dim, lbound,
