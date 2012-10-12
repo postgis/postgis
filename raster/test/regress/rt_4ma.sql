@@ -65,25 +65,16 @@ INSERT INTO raster_value_arrays VALUES
 	(18, make_value_array(3, 3, 1, 1, '[v] > 8'))
 ;
 
-
 SELECT
 	id,
 	val,
-	round(st_invdistweight4ma(val, NULL, NULL)::numeric, 6) AS idw1,
-	round(st_invdistweight4ma(val, NULL, '0')::numeric, 6) AS idw2,
-	round(st_invdistweight4ma(val, NULL, '0.5')::numeric, 6) AS idw3,
-	round(st_invdistweight4ma(val, NULL, '0.9')::numeric, 6) AS idw4,
-	round(st_invdistweight4ma(val, NULL, '1')::numeric, 6) AS idw5,
-	round(st_invdistweight4ma(val, NULL, '0.9', '1')::numeric, 6) AS idw6,
-	round(st_invdistweight4ma(val, NULL, '0.9', '0.9')::numeric, 6) AS idw7,
-	round(st_invdistweight4ma(val, NULL, '0.9', '0.75')::numeric, 6) AS idw8,
-	round(st_invdistweight4ma(val, NULL, '0.9', '0.5')::numeric, 6) AS idw9,
-	round(st_invdistweight4ma(val, NULL, '0.9', '0.25')::numeric, 6) AS idw10,
-	round(st_invdistweight4ma(val, NULL, '0.9', '0.1')::numeric, 6) AS idw11,
-	round(st_invdistweight4ma(val, NULL, '0.9', '0.01')::numeric, 6) AS idw12,
-	round(st_invdistweight4ma(val, NULL, '0.9', '0.001')::numeric, 6) AS idw13,
-	round(st_invdistweight4ma(val, NULL, '0.9', '0')::numeric, 6) AS idw14,
-	round(st_mindist4ma(val, NULL)::numeric, 6) AS mindist4ma
+	round(st_distinct4ma(val, NULL)::numeric, 6) AS distinct4ma,
+	round(st_max4ma(val, NULL)::numeric, 6) AS max4ma,
+	round(st_mean4ma(val, NULL)::numeric, 6) AS mean4ma,
+	round(st_min4ma(val, NULL)::numeric, 6) AS min4ma,
+	round(st_range4ma(val, NULL)::numeric, 6) AS range4ma,
+	round(st_stddev4ma(val, NULL)::numeric, 6) AS stddev4ma,
+	round(st_sum4ma(val, NULL)::numeric, 6) AS sum4ma
 FROM raster_value_arrays
 ORDER BY id;
 

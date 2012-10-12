@@ -100,7 +100,8 @@ TEST_MAPALGEBRA = \
 	rt_clip \
 	rt_mapalgebra \
 	rt_union \
-	rt_invdistweight4ma
+	rt_invdistweight4ma \
+	rt_4ma
 
 TEST_GIST = \
 	rt_above \

@@ -2265,7 +2265,7 @@ CREATE OR REPLACE FUNCTION st_mapalgebrafctngb(
     LANGUAGE 'c' IMMUTABLE;
 
 -----------------------------------------------------------------------
--- Neighborhood MapAlgebra processing functions.
+-- ST_MapAlgebraFctNgb() Neighborhood MapAlgebra processing functions.
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_max4ma(matrix float[][], nodatamode text, variadic args text[])
     RETURNS float AS
@@ -2433,10 +2433,12 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(matrix float[][], nodatamode text, varia
     $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
+/*
 CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer, pixeltype text)
     RETURNS RASTER
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_slope4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
     LANGUAGE 'sql' STABLE;
+*/
 
 CREATE OR REPLACE FUNCTION _st_aspect4ma(matrix float[][], nodatamode text, variadic args text[])
     RETURNS float
@@ -2467,10 +2469,12 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(matrix float[][], nodatamode text, vari
     $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
+/*
 CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text)
     RETURNS RASTER
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_aspect4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
     LANGUAGE 'sql' STABLE;
+*/
 
 
 CREATE OR REPLACE FUNCTION _st_hillshade4ma(matrix float[][], nodatamode text, variadic args text[])
@@ -2515,10 +2519,12 @@ CREATE OR REPLACE FUNCTION _st_hillshade4ma(matrix float[][], nodatamode text, v
     $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
+/*
 CREATE OR REPLACE FUNCTION st_hillshade(rast raster, band integer, pixeltype text, azimuth float, altitude float, max_bright float DEFAULT 255.0, elevation_scale float DEFAULT 1.0)
     RETURNS RASTER
     AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_hillshade4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text) $$
     LANGUAGE 'sql' STABLE;
+*/
 
 CREATE OR REPLACE FUNCTION st_distinct4ma(matrix float[][], nodatamode TEXT, VARIADIC args TEXT[])
     RETURNS float AS
@@ -2529,237 +2535,6 @@ CREATE OR REPLACE FUNCTION st_stddev4ma(matrix float[][], nodatamode TEXT, VARIA
     RETURNS float AS
     $$ SELECT stddev(unnest) FROM unnest($1) $$
     LANGUAGE 'sql' IMMUTABLE;
-
--- Inverse distance weight equation is based upon Equation 3.51 from the book
--- Spatial Analysis A Guide for Ecologists
--- by Marie-Josee Fortin and Mark Dale
--- published by Cambridge University Press
--- ISBN 0-521-00973-1
-CREATE OR REPLACE FUNCTION st_invdistweight4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-	RETURNS double precision
-	AS $$
-	DECLARE
-		k double precision DEFAULT 1.;
-		_k double precision DEFAULT 1.;
-		z double precision[];
-		d double precision[];
-		_d double precision;
-		z0 double precision;
-
-		x integer;
-		y integer;
-
-		cx integer;
-		cy integer;
-		cv double precision;
-		cw double precision DEFAULT NULL;
-
-		w integer;
-		h integer;
-		max_dx double precision;
-		max_dy double precision;
-	BEGIN
---		RAISE NOTICE 'matrix = %', matrix;
---		RAISE NOTICE 'args = %', args;
-
-		-- make sure matrix is 2 dimensions
-		IF array_ndims(matrix) != 2 THEN
-			RAISE EXCEPTION 'Neighborhood array must be of two dimensions';
-		END IF;
-
-		-- width and height (0-based)
-		w := array_upper(matrix, 2) - array_lower(matrix, 2);
-		h := array_upper(matrix, 1) - array_lower(matrix, 1);
-
-		-- max distance from center pixel
-		max_dx := w / 2;
-		max_dy := h / 2;
---		RAISE NOTICE 'max_dx, max_dy = %, %', max_dx, max_dy;
-
-		-- correct width and height (1-based)
-		w := w + 1;
-		h := h + 1;
---		RAISE NOTICE 'w, h = %, %', w, h;
-
-		-- width and height should be odd numbers
-		IF w % 2. != 1 THEN
-			RAISE EXCEPTION 'Width of neighborhood array does not permit for a center pixel';
-		END IF;
-		IF h % 2. != 1 THEN
-			RAISE EXCEPTION 'Height of neighborhood array does not permit for a center pixel';
-		END IF;
-
-		-- center pixel's coordinates
-		cx := max_dx + array_lower(matrix, 2);
-		cy := max_dy + array_lower(matrix, 1);
---		RAISE NOTICE 'cx, cy = %, %', cx, cy;
-
-		-- if args provided, only use the first two args
-		IF args IS NOT NULL AND array_ndims(args) = 1 THEN
-			-- first arg is power factor
-			k := args[array_lower(args, 1)]::double precision;
-			IF k IS NULL THEN
-				k := _k;
-			ELSEIF k < 0. THEN
-				RAISE NOTICE 'Power factor (< 0) must be between 0 and 1.  Defaulting to 0';
-				k := 0.;
-			ELSEIF k > 1. THEN
-				RAISE NOTICE 'Power factor (> 1) must be between 0 and 1.  Defaulting to 1';
-				k := 1.;
-			END IF;
-
-			-- second arg is what to do if center pixel has a value
-			-- this will be a weight to apply for the center pixel
-			IF array_length(args, 1) > 1 THEN
-				cw := abs(args[array_lower(args, 1) + 1]::double precision);
-				IF cw IS NOT NULL THEN
-					IF cw < 0. THEN
-						RAISE NOTICE 'Weight (< 0) of center pixel value must be between 0 and 1.  Defaulting to 0';
-						cw := 0.;
-					ELSEIF cw > 1 THEN
-						RAISE NOTICE 'Weight (> 1) of center pixel value must be between 0 and 1.  Defaulting to 1';
-						cw := 1.;
-					END IF;
-				END IF;
-			END IF;
-		END IF;
---		RAISE NOTICE 'k = %', k;
-		k = abs(k) * -1;
-
-		-- center pixel value
-		cv := matrix[cy][cx];
-
-		-- check to see if center pixel has value
---		RAISE NOTICE 'cw = %', cw;
-		IF cw IS NULL AND cv IS NOT NULL THEN
-			RETURN matrix[cy][cx];
-		END IF;
-
-		FOR y IN array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
-			FOR x IN array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
---				RAISE NOTICE 'matrix[%][%] = %', y, x, matrix[y][x];
-
-				-- skip NODATA values and center pixel
-				IF matrix[y][x] IS NULL OR (x = cx AND y = cy) THEN
-					CONTINUE;
-				END IF;
-
-				z := z || matrix[y][x];
-
-				-- use pythagorean theorem
-				_d := sqrt(power(cx - x, 2) + power(cy - y, 2));
---				RAISE NOTICE 'distance = %', _d;
-
-				d := d || _d;
-			END LOOP;
-		END LOOP;
---		RAISE NOTICE 'z = %', z;
---		RAISE NOTICE 'd = %', d;
-
-		-- neighborhood is NODATA
-		IF z IS NULL OR array_length(z, 1) < 1 THEN
-			RETURN NULL;
-		END IF;
-
-		z0 := 0;
-		_d := 0;
-		FOR x IN array_lower(z, 1)..array_upper(z, 1) LOOP
-			d[x] := power(d[x], k);
-			z[x] := z[x] * d[x];
-			_d := _d + d[x];
-			z0 := z0 + z[x];
-		END LOOP;
-		z0 := z0 / _d;
---		RAISE NOTICE 'z0 = %', z0;
-
-		-- apply weight for center pixel if center pixel has value
-		IF cv IS NOT NULL THEN
-			z0 := (cw * cv) + ((1 - cw) * z0);
---			RAISE NOTICE '*z0 = %', z0;
-		END IF;
-
-		RETURN z0;
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION st_mindist4ma(matrix double precision[], nodatamode text, VARIADIC args text[])
-	RETURNS double precision
-	AS $$
-	DECLARE
-		d double precision DEFAULT NULL;
-		_d double precision;
-
-		x integer;
-		y integer;
-
-		cx integer;
-		cy integer;
-		cv double precision;
-
-		w integer;
-		h integer;
-		max_dx double precision;
-		max_dy double precision;
-	BEGIN
-		-- make sure matrix is 2 dimensions
-		IF array_ndims(matrix) != 2 THEN
-			RAISE EXCEPTION 'Neighborhood array must be of two dimensions';
-		END IF;
-
-		-- width and height (0-based)
-		w := array_upper(matrix, 2) - array_lower(matrix, 2);
-		h := array_upper(matrix, 1) - array_lower(matrix, 1);
-
-		-- max distance from center pixel
-		max_dx := w / 2;
-		max_dy := h / 2;
-
-		-- correct width and height (1-based)
-		w := w + 1;
-		h := h + 1;
-
-		-- width and height should be odd numbers
-		IF w % 2. != 1 THEN
-			RAISE EXCEPTION 'Width of neighborhood array does not permit for a center pixel';
-		END IF;
-		IF h % 2. != 1 THEN
-			RAISE EXCEPTION 'Height of neighborhood array does not permit for a center pixel';
-		END IF;
-
-		-- center pixel's coordinates
-		cx := max_dx + array_lower(matrix, 2);
-		cy := max_dy + array_lower(matrix, 1);
-
-		-- center pixel value
-		cv := matrix[cy][cx];
-
-		-- check to see if center pixel has value
-		IF cv IS NOT NULL THEN
-			RETURN 0.;
-		END IF;
-
-		FOR y IN array_lower(matrix, 1)..array_upper(matrix, 1) LOOP
-			FOR x IN array_lower(matrix, 2)..array_upper(matrix, 2) LOOP
-
-				-- skip NODATA values and center pixel
-				IF matrix[y][x] IS NULL OR (x = cx AND y = cy) THEN
-					CONTINUE;
-				END IF;
-
-				-- use pythagorean theorem
-				_d := sqrt(power(cx - x, 2) + power(cy - y, 2));
---				RAISE NOTICE 'distance = %', _d;
-
-				IF d IS NULL OR _d < d THEN
-					d := _d;
-				END IF;
-			END LOOP;
-		END LOOP;
---		RAISE NOTICE 'd = %', d;
-
-		RETURN d;
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- n-Raster ST_MapAlgebra
@@ -2849,6 +2624,781 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	RETURNS raster
 	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8, VARIADIC $11) $$
 	LANGUAGE 'sql' STABLE;
+
+-----------------------------------------------------------------------
+-- ST_MapAlgebra callback functions
+-- Should be called with values for distancex and distancey
+-- These functions are meant for one raster
+-----------------------------------------------------------------------
+
+-- helper function to convert 2D array to 3D array
+CREATE OR REPLACE FUNCTION _st_convertarray4ma(value double precision[][])
+	RETURNS double precision[][][]
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		x int;
+		y int;
+	BEGIN
+		IF array_ndims(value) != 2 THEN
+			RAISE EXCEPTION 'Function parameter must be a 2-dimension array';
+		END IF;
+
+		_value := array_fill(NULL::double precision, ARRAY[1, array_length(value, 1), array_length(value, 2)]::int[], ARRAY[1, array_lower(value, 1), array_lower(value, 2)]::int[]);
+
+		-- row
+		FOR y IN array_lower(value, 1)..array_upper(value, 1) LOOP
+			-- column
+			FOR x IN array_lower(value, 2)..array_upper(value, 2) LOOP
+				_value[1][y][x] = value[y][x];
+			END LOOP;
+		END LOOP;
+
+		RETURN _value;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_max4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		max double precision;
+		x int;
+		y int;
+		z int;
+		ndims int;
+	BEGIN
+		max := '-Infinity'::double precision;
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- raster
+		FOR z IN array_lower(_value, 1)..array_upper(_value, 1) LOOP
+			-- row
+			FOR y IN array_lower(_value, 2)..array_upper(_value, 2) LOOP
+				-- column
+				FOR x IN array_lower(_value, 3)..array_upper(_value, 3) LOOP
+					IF _value[z][y][x] IS NULL THEN
+						IF array_length(userargs, 1) > 0 THEN
+							_value[z][y][x] = userargs[array_lower(userargs, 1)]::double precision;
+						ELSE
+							CONTINUE;
+						END IF;
+					END IF;
+
+					IF _value[z][y][x] > max THEN
+						max := _value[z][y][x];
+					END IF;
+				END LOOP;
+			END LOOP;
+		END LOOP;
+
+		IF max = '-Infinity'::double precision THEN
+			RETURN NULL;
+		END IF;
+
+		RETURN max;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_min4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		min double precision;
+		x int;
+		y int;
+		z int;
+		ndims int;
+	BEGIN
+		min := 'Infinity'::double precision;
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- raster
+		FOR z IN array_lower(_value, 1)..array_upper(_value, 1) LOOP
+			-- row
+			FOR y IN array_lower(_value, 2)..array_upper(_value, 2) LOOP
+				-- column
+				FOR x IN array_lower(_value, 3)..array_upper(_value, 3) LOOP
+					IF _value[z][y][x] IS NULL THEN
+						IF array_length(userargs, 1) > 0 THEN
+							_value[z][y][x] = userargs[array_lower(userargs, 1)]::double precision;
+						ELSE
+							CONTINUE;
+						END IF;
+					END IF;
+
+					IF _value[z][y][x] < min THEN
+						min := _value[z][y][x];
+					END IF;
+				END LOOP;
+			END LOOP;
+		END LOOP;
+
+		IF min = 'Infinity'::double precision THEN
+			RETURN NULL;
+		END IF;
+
+		RETURN min;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_sum4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		sum double precision;
+		x int;
+		y int;
+		z int;
+		ndims int;
+	BEGIN
+		sum := 0;
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- raster
+		FOR z IN array_lower(_value, 1)..array_upper(_value, 1) LOOP
+			-- row
+			FOR y IN array_lower(_value, 2)..array_upper(_value, 2) LOOP
+				-- column
+				FOR x IN array_lower(_value, 3)..array_upper(_value, 3) LOOP
+					IF _value[z][y][x] IS NULL THEN
+						IF array_length(userargs, 1) > 0 THEN
+							_value[z][y][x] = userargs[array_lower(userargs, 1)]::double precision;
+						ELSE
+							CONTINUE;
+						END IF;
+					END IF;
+
+					sum := sum + _value[z][y][x];
+				END LOOP;
+			END LOOP;
+		END LOOP;
+
+		RETURN sum;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_mean4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		sum double precision;
+		count int;
+		x int;
+		y int;
+		z int;
+		ndims int;
+	BEGIN
+		sum := 0;
+		count := 0;
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- raster
+		FOR z IN array_lower(_value, 1)..array_upper(_value, 1) LOOP
+			-- row
+			FOR y IN array_lower(_value, 2)..array_upper(_value, 2) LOOP
+				-- column
+				FOR x IN array_lower(_value, 3)..array_upper(_value, 3) LOOP
+					IF _value[z][y][x] IS NULL THEN
+						IF array_length(userargs, 1) > 0 THEN
+							_value[z][y][x] = userargs[array_lower(userargs, 1)]::double precision;
+						ELSE
+							CONTINUE;
+						END IF;
+					END IF;
+
+					sum := sum + _value[z][y][x];
+					count := count + 1;
+				END LOOP;
+			END LOOP;
+		END LOOP;
+
+		IF count < 1 THEN
+			RETURN NULL;
+		END IF;
+
+		RETURN sum / count::double precision;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_range4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		min double precision;
+		max double precision;
+		x int;
+		y int;
+		z int;
+		ndims int;
+	BEGIN
+		min := 'Infinity'::double precision;
+		max := '-Infinity'::double precision;
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- raster
+		FOR z IN array_lower(_value, 1)..array_upper(_value, 1) LOOP
+			-- row
+			FOR y IN array_lower(_value, 2)..array_upper(_value, 2) LOOP
+				-- column
+				FOR x IN array_lower(_value, 3)..array_upper(_value, 3) LOOP
+					IF _value[z][y][x] IS NULL THEN
+						IF array_length(userargs, 1) > 0 THEN
+							_value[z][y][x] = userargs[array_lower(userargs, 1)]::double precision;
+						ELSE
+							CONTINUE;
+						END IF;
+					END IF;
+
+					IF _value[z][y][x] < min THEN
+						min := _value[z][y][x];
+					END IF;
+					IF _value[z][y][x] > max THEN
+						max := _value[z][y][x];
+					END IF;
+				END LOOP;
+			END LOOP;
+		END LOOP;
+
+		IF max = '-Infinity'::double precision OR min = 'Infinity'::double precision THEN
+			RETURN NULL;
+		END IF;
+
+		RETURN max - min;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_distinct4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$ SELECT COUNT(DISTINCT unnest)::double precision FROM unnest($1) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_stddev4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$ SELECT stddev(unnest) FROM unnest($1) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+-- Inverse distance weight equation is based upon Equation 3.51 from the book
+-- Spatial Analysis A Guide for Ecologists
+-- by Marie-Josee Fortin and Mark Dale
+-- published by Cambridge University Press
+-- ISBN 0-521-00973-1
+CREATE OR REPLACE FUNCTION st_invdistweight4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		ndims int;
+
+		k double precision DEFAULT 1.;
+		_k double precision DEFAULT 1.;
+		z double precision[];
+		d double precision[];
+		_d double precision;
+		z0 double precision;
+
+		_z integer;
+		x integer;
+		y integer;
+
+		cx integer;
+		cy integer;
+		cv double precision;
+		cw double precision DEFAULT NULL;
+
+		w integer;
+		h integer;
+		max_dx double precision;
+		max_dy double precision;
+	BEGIN
+--		RAISE NOTICE 'value = %', value;
+--		RAISE NOTICE 'userargs = %', userargs;
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		_z := array_lower(_value, 1);
+
+		-- width and height (0-based)
+		h := array_upper(_value, 2) - array_lower(_value, 2);
+		w := array_upper(_value, 3) - array_lower(_value, 3);
+
+		-- max distance from center pixel
+		max_dx := w / 2;
+		max_dy := h / 2;
+--		RAISE NOTICE 'max_dx, max_dy = %, %', max_dx, max_dy;
+
+		-- correct width and height (1-based)
+		w := w + 1;
+		h := h + 1;
+--		RAISE NOTICE 'w, h = %, %', w, h;
+
+		-- width and height should be odd numbers
+		IF w % 2. != 1 THEN
+			RAISE EXCEPTION 'Width of neighborhood array does not permit for a center pixel';
+		END IF;
+		IF h % 2. != 1 THEN
+			RAISE EXCEPTION 'Height of neighborhood array does not permit for a center pixel';
+		END IF;
+
+		-- center pixel's coordinates
+		cy := max_dy + array_lower(_value, 2);
+		cx := max_dx + array_lower(_value, 3);
+--		RAISE NOTICE 'cx, cy = %, %', cx, cy;
+
+		-- if userargs provided, only use the first two args
+		IF userargs IS NOT NULL AND array_ndims(userargs) = 1 THEN
+			-- first arg is power factor
+			k := userargs[array_lower(userargs, 1)]::double precision;
+			IF k IS NULL THEN
+				k := _k;
+			ELSEIF k < 0. THEN
+				RAISE NOTICE 'Power factor (< 0) must be between 0 and 1.  Defaulting to 0';
+				k := 0.;
+			ELSEIF k > 1. THEN
+				RAISE NOTICE 'Power factor (> 1) must be between 0 and 1.  Defaulting to 1';
+				k := 1.;
+			END IF;
+
+			-- second arg is what to do if center pixel has a value
+			-- this will be a weight to apply for the center pixel
+			IF array_length(userargs, 1) > 1 THEN
+				cw := abs(userargs[array_lower(userargs, 1) + 1]::double precision);
+				IF cw IS NOT NULL THEN
+					IF cw < 0. THEN
+						RAISE NOTICE 'Weight (< 0) of center pixel value must be between 0 and 1.  Defaulting to 0';
+						cw := 0.;
+					ELSEIF cw > 1 THEN
+						RAISE NOTICE 'Weight (> 1) of center pixel value must be between 0 and 1.  Defaulting to 1';
+						cw := 1.;
+					END IF;
+				END IF;
+			END IF;
+		END IF;
+--		RAISE NOTICE 'k = %', k;
+		k = abs(k) * -1;
+
+		-- center pixel value
+		cv := _value[_z][cy][cx];
+
+		-- check to see if center pixel has value
+--		RAISE NOTICE 'cw = %', cw;
+		IF cw IS NULL AND cv IS NOT NULL THEN
+			RETURN cv;
+		END IF;
+
+		FOR y IN array_lower(_value, 2)..array_upper(_value, 2) LOOP
+			FOR x IN array_lower(_value, 3)..array_upper(_value, 3) LOOP
+--				RAISE NOTICE 'value[%][%][%] = %', _z, y, x, _value[_z][y][x];
+
+				-- skip NODATA values and center pixel
+				IF _value[_z][y][x] IS NULL OR (x = cx AND y = cy) THEN
+					CONTINUE;
+				END IF;
+
+				z := z || _value[_z][y][x];
+
+				-- use pythagorean theorem
+				_d := sqrt(power(cx - x, 2) + power(cy - y, 2));
+--				RAISE NOTICE 'distance = %', _d;
+
+				d := d || _d;
+			END LOOP;
+		END LOOP;
+--		RAISE NOTICE 'z = %', z;
+--		RAISE NOTICE 'd = %', d;
+
+		-- neighborhood is NODATA
+		IF z IS NULL OR array_length(z, 1) < 1 THEN
+			RETURN NULL;
+		END IF;
+
+		z0 := 0;
+		_d := 0;
+		FOR x IN array_lower(z, 1)..array_upper(z, 1) LOOP
+			d[x] := power(d[x], k);
+			z[x] := z[x] * d[x];
+			_d := _d + d[x];
+			z0 := z0 + z[x];
+		END LOOP;
+		z0 := z0 / _d;
+--		RAISE NOTICE 'z0 = %', z0;
+
+		-- apply weight for center pixel if center pixel has value
+		IF cv IS NOT NULL THEN
+			z0 := (cw * cv) + ((1 - cw) * z0);
+--			RAISE NOTICE '*z0 = %', z0;
+		END IF;
+
+		RETURN z0;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_mindist4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_value double precision[][][];
+		ndims int;
+
+		d double precision DEFAULT NULL;
+		_d double precision;
+
+		z integer;
+		x integer;
+		y integer;
+
+		cx integer;
+		cy integer;
+		cv double precision;
+
+		w integer;
+		h integer;
+		max_dx double precision;
+		max_dy double precision;
+	BEGIN
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		-- width and height (0-based)
+		h := array_upper(_value, 2) - array_lower(_value, 2);
+		w := array_upper(_value, 3) - array_lower(_value, 3);
+
+		-- max distance from center pixel
+		max_dx := w / 2;
+		max_dy := h / 2;
+
+		-- correct width and height (1-based)
+		w := w + 1;
+		h := h + 1;
+
+		-- width and height should be odd numbers
+		IF w % 2. != 1 THEN
+			RAISE EXCEPTION 'Width of neighborhood array does not permit for a center pixel';
+		END IF;
+		IF h % 2. != 1 THEN
+			RAISE EXCEPTION 'Height of neighborhood array does not permit for a center pixel';
+		END IF;
+
+		-- center pixel's coordinates
+		cy := max_dy + array_lower(_value, 2);
+		cx := max_dx + array_lower(_value, 3);
+
+		-- center pixel value
+		cv := _value[z][cy][cx];
+
+		-- check to see if center pixel has value
+		IF cv IS NOT NULL THEN
+			RETURN 0.;
+		END IF;
+
+		FOR y IN array_lower(_value, 2)..array_upper(_value, 2) LOOP
+			FOR x IN array_lower(_value, 3)..array_upper(_value, 3) LOOP
+
+				-- skip NODATA values and center pixel
+				IF _value[z][y][x] IS NULL OR (x = cx AND y = cy) THEN
+					CONTINUE;
+				END IF;
+
+				-- use pythagorean theorem
+				_d := sqrt(power(cx - x, 2) + power(cy - y, 2));
+--				RAISE NOTICE 'distance = %', _d;
+
+				IF d IS NULL OR _d < d THEN
+					d := _d;
+				END IF;
+			END LOOP;
+		END LOOP;
+--		RAISE NOTICE 'd = %', d;
+
+		RETURN d;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- ST_Slope
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		pwidth double precision;
+		pheight double precision;
+		dz_dx double precision;
+		dz_dy double precision;
+
+		_value double precision[][][];
+		ndims int;
+		z int;
+	BEGIN
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		IF (
+			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
+			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
+		) THEN
+			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
+		END IF;
+
+		IF array_length(userargs, 1) < 2 THEN
+			RAISE EXCEPTION 'At least two elements must be provided for the third parameter';
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		pwidth := userargs[1]::double precision;
+		pheight := userargs[2]::double precision;
+		dz_dy := ((_value[z][3][1] + 2.0 * _value[z][3][2] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][1][2] + _value[z][1][3])) / (8.0 * pwidth);
+		dz_dx := ((_value[z][1][3] + 2.0 * _value[z][2][3] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][2][1] + _value[z][3][1])) / (8.0 * pheight);
+
+		RETURN atan(sqrt(pow(dz_dx, 2.0) + pow(dz_dy, 2.0)));
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer, pixeltype text)
+	RETURNS raster
+	AS $$ SELECT ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_slope4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- ST_Aspect
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		pwidth double precision;
+		pheight double precision;
+		dz_dx double precision;
+		dz_dy double precision;
+		aspect double precision;
+
+		_value double precision[][][];
+		ndims int;
+		z int;
+	BEGIN
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		IF (
+			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
+			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
+		) THEN
+			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
+		END IF;
+
+		IF array_length(userargs, 1) < 2 THEN
+			RAISE EXCEPTION 'At least two elements must be provided for the third parameter';
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		pwidth := userargs[1]::double precision;
+		pheight := userargs[2]::double precision;
+
+		dz_dx := ((_value[z][1][3] + 2.0 * _value[z][2][3] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][2][1] + _value[z][3][1])) / (8.0 * pheight);
+		dz_dy := ((_value[z][3][1] + 2.0 * _value[z][3][2] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][1][2] + _value[z][1][3])) / (8.0 * pwidth);
+		IF abs(dz_dx) = 0::double precision AND abs(dz_dy) = 0::double precision THEN
+			RETURN -1;
+		END IF;
+
+		aspect := atan2(dz_dy, -dz_dx);
+		IF aspect > (pi() / 2.0) THEN
+			RETURN (5.0 * pi() / 2.0) - aspect;
+		ELSE
+			RETURN (pi() / 2.0) - aspect;
+		END IF;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text)
+	RETURNS raster
+	AS $$ SELECT ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_aspect4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- ST_HillShade
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		pwidth double precision;
+		pheight double precision;
+		dz_dx double precision;
+		dz_dy double precision;
+		zenith double precision;
+		azimuth double precision;
+		slope double precision;
+		aspect double precision;
+		max_bright double precision;
+		elevation_scale double precision;
+
+		_value double precision[][][];
+		ndims int;
+		z int;
+	BEGIN
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		IF (
+			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
+			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
+		) THEN
+			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
+		END IF;
+
+		IF array_length(userargs, 1) < 6 THEN
+			RAISE EXCEPTION 'At least six elements must be provided for the third parameter';
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		pwidth := userargs[1]::double precision;
+		pheight := userargs[2]::double precision;
+
+		azimuth := (5.0 * pi() / 2.0) - userargs[3]::double precision;
+		zenith := (pi() / 2.0) - userargs[4]::double precision;
+		dz_dy := ((_value[z][3][1] + 2.0 * _value[z][3][2] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][1][2] + _value[z][1][3])) / (8.0 * pwidth);
+		dz_dx := ((_value[z][1][3] + 2.0 * _value[z][2][3] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][2][1] + _value[z][3][1])) / (8.0 * pheight);
+		elevation_scale := userargs[6]::double precision;
+		slope := atan(sqrt(elevation_scale * pow(dz_dx, 2.0) + pow(dz_dy, 2.0)));
+
+		-- handle special case of 0, 0
+		IF abs(dz_dy) = 0::double precision AND abs(dz_dy) = 0::double precision THEN
+			-- set to pi as that is the expected PostgreSQL answer in Linux
+			aspect := pi();
+		ELSE
+			aspect := atan2(dz_dy, -dz_dx);
+		END IF;
+		max_bright := userargs[5]::double precision;
+
+		IF aspect < 0 THEN
+			aspect := aspect + (2.0 * pi());
+		END IF;
+
+		RETURN max_bright * ((cos(zenith) * cos(slope)) + (sin(zenith) * sin(slope) * cos(azimuth - aspect)));
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_hillshade(
+	rast raster, band integer,
+	pixeltype text,
+	azimuth double precision, altitude double precision, max_bright double precision DEFAULT 255.0, elevation_scale double precision DEFAULT 1.0
+)
+	RETURNS RASTER
+	AS $$ SELECT ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_hillshade4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster

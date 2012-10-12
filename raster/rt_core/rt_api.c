@@ -11496,6 +11496,9 @@ rt_raster_intersects(
 				return 1;
 			}
 		}
+		else {
+			RASTER_DEBUGF(4, "GEOSIntersects() returned a 2!!!!");
+		}
 	}
 	while (0);
 
@@ -11638,8 +11641,10 @@ rt_raster_intersects(
 				}
 			}
 		}
+		RASTER_DEBUG(4, "Smaller raster not in the other raster's pixel. Continuing");
 	}
 
+	RASTER_DEBUG(4, "Testing smaller raster vs larger raster");
 	*intersects = rt_raster_intersects_algorithm(
 		rastS, rastL,
 		bandS, bandL,
@@ -11649,6 +11654,7 @@ rt_raster_intersects(
 
 	if (*intersects) return 1;
 
+	RASTER_DEBUG(4, "Testing larger raster vs smaller raster");
 	*intersects = rt_raster_intersects_algorithm(
 		rastL, rastS,
 		bandL, bandS,
@@ -13349,16 +13355,20 @@ rt_raster_iterator(
 	}
 
 	/* check that all rasters are aligned */
+	RASTER_DEBUG(3, "checking alignment of all rasters");
 	rast = NULL;
 
 	/* find raster to use as reference */
 	/* use custom if provided */
-	if (extenttype == ET_CUSTOM)
+	if (extenttype == ET_CUSTOM) {
+		RASTER_DEBUG(4, "using custom extent as reference raster");
 		rast = customextent;
+	}
 	/* use first valid one in _param->raster */
 	else {
 		for (i = 0; i < itrcount; i++) {
 			if (!_param->isempty[i]) {
+				RASTER_DEBUGF(4, "using raster at index %d as reference raster", i);
 				rast = _param->raster[i];
 				break;
 			}
@@ -13387,6 +13397,7 @@ rt_raster_iterator(
 				return NULL;
 			}
 
+			RASTER_DEBUGF(5, "custom extent alignment: %d", aligned);
 			if (!aligned)
 				break;
 		}
@@ -13403,6 +13414,7 @@ rt_raster_iterator(
 
 				return NULL;
 			}
+			RASTER_DEBUGF(5, "raster at index %d alignment: %d", i, aligned);
 
 			/* abort checking since a raster isn't aligned */
 			if (!aligned)
@@ -13665,6 +13677,7 @@ rt_raster_iterator(
 				/* input raster's X,Y */
 				x = _x - (int) _param->offset[i][0];
 				y = _y - (int) _param->offset[i][1];
+				RASTER_DEBUGF(4, "source pixel (x, y) = (%d, %d)", x, y);
 
 				_param->arg->src_pixel[i][0] = x;
 				_param->arg->src_pixel[i][1] = y;
@@ -13673,6 +13686,8 @@ rt_raster_iterator(
 				npixels = NULL;
 				status = 0;
 				if (distancex > 0 && distancey > 0) {
+					RASTER_DEBUG(4, "getting neighborhood");
+
 					status = rt_band_get_nearest_pixel(
 						_param->band[i],
 						x, y,
@@ -13697,6 +13712,7 @@ rt_raster_iterator(
 					(x >= 0 && x < rt_band_get_width(_param->band[i])) &&
 					(y >= 0 && y < rt_band_get_height(_param->band[i]))
 				) {
+					RASTER_DEBUG(4, "getting value of POI");
 					if (rt_band_get_pixel(
 						_param->band[i],
 						x, y,

@@ -3925,7 +3925,7 @@ FROM (
 				</note>
 				<note>
 					<para>
-						The 2-D array output can be passed along to any of the raster processing builtin functions, e.g. ST_Min4ma, ST_Sum4ma, ST_Mean4ma.
+						The 2-D array output can be passed to any of the raster processing builtin functions, e.g. ST_Min4ma, ST_Sum4ma, ST_Mean4ma.
 					</para>
 				</note>
 				<para>Availability: 2.1.0</para>
@@ -9566,9 +9566,9 @@ WHERE rid = 2;
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>double precision <function>ST_InvDistWeight4ma</function></funcdef>
-						<paramdef><type>double precision[][]</type> <parameter>matrix</parameter></paramdef>
-						<paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
-						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
+						<paramdef><type>integer[][]</type> <parameter>pos</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -9579,7 +9579,7 @@ WHERE rid = 2;
 				<para>Calculate an interpolated value for a pixel using the Inverse Distance Weighted method.</para>
 
 				<para>
-					There are two optional parameters that can be passed through <varname>args</varname>. The first parameter is the power factor (variable k in the equation below) between 0 and 1 used in the Inverse Distance Weighted equation. If not specified, default value is 1. The second parameter is the weight percentage applied only when the value of the pixel of interest is included with the interpolated value from the neighborhood. If not specified and the pixel of interest has a value, that value is returned.
+					There are two optional parameters that can be passed through <varname>userargs</varname>. The first parameter is the power factor (variable k in the equation below) between 0 and 1 used in the Inverse Distance Weighted equation. If not specified, default value is 1. The second parameter is the weight percentage applied only when the value of the pixel of interest is included with the interpolated value from the neighborhood. If not specified and the pixel of interest has a value, that value is returned.
 				</para>
 
 				<para>
@@ -9600,7 +9600,7 @@ WHERE rid = 2;
 				</para>
 
 				<note>
-					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.</para>
 				</note>
 
 				<para>Availability: 2.1.0</para>
@@ -9632,9 +9632,9 @@ WHERE rid = 2;
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>double precision <function>ST_MinDist4ma</function></funcdef>
-						<paramdef><type>double precision[][]</type> <parameter>matrix</parameter></paramdef>
-						<paramdef><type>text </type> <parameter>nodatamode</parameter></paramdef>
-						<paramdef><type>text[]</type> <parameter>VARIADIC args</parameter></paramdef>
+						<paramdef><type>double precision[][][]</type> <parameter>value</parameter></paramdef>
+						<paramdef><type>integer[][]</type> <parameter>pos</parameter></paramdef>
+						<paramdef><type>text[]</type> <parameter>VARIADIC userargs</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -9651,7 +9651,7 @@ WHERE rid = 2;
 				</note>
 
 				<note>
-					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebraFctNgb" />.</para>
+					<para>This function is a specialized callback function for use as a callback parameter to <xref linkend="RT_ST_MapAlgebra" />.</para>
 				</note>
 
 				<para>Availability: 2.1.0</para>
@@ -9667,7 +9667,7 @@ WHERE rid = 2;
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_MapAlgebraFctNgb" />, 
+					<xref linkend="RT_ST_MapAlgebra" />, 
 					<xref linkend="RT_ST_InvDistWeight4ma" />
 				</para>
 			</refsection>
