@@ -948,7 +948,8 @@ Check constraints:
 		<refname>UpdateGeometrySRID</refname>
 
 		<refpurpose>Updates the SRID of all features in a geometry
-		column, geometry_columns metadata and srid table constraint</refpurpose>
+		column, geometry_columns metadata and srid. If it was enforced with constraints, the constraints will be updated with new srid constraint.
+		If the old was enforced by type definition, the type definition will be changed.</refpurpose>
 	  </refnamediv>
 
 	  <refsynopsisdiv>
@@ -1013,11 +1014,26 @@ Check constraints:
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
 	  </refsection>
-
+	  <refsection>
+		<title>Examples</title>
+		<para>This will change the srid of the roads table to 4326 from whatever it was before</para>
+		<programlisting>SELECT UpdateGeometrySRID('roads','geom',4326);</programlisting>
+		
+		<para>The prior example is equivalent to this DDL statement</para>
+		<programlisting>ALTER TABLE roads 
+  ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 4326) 
+    USING ST_SetSRID(geom,4326);</programlisting>
+    
+    	<para>If you got the projection wrong (or brought it in as unknown) in load and you wanted to transform to web mercator all in one shot
+    		You can do this with 
+    	DDL but there is no equivalent PostGIS management function to do so in one go.</para>
+    	<programlisting>ALTER TABLE roads 
+ ALTER COLUMN geom TYPE geometry(MULTILINESTRING, 3857) USING ST_Transform(ST_SetSRID(geom,4326),3857) ;</programlisting>
+	  </refsection>
 	  <refsection>
 		<title>See Also</title>
-
-		<para><xref linkend="ST_SetSRID"/></para>
+		
+		<para><xref linkend="ST_SetSRID"/> , <xref linkend="ST_Transform"/></para>
 	  </refsection>
 	</refentry>
   </sect1>
