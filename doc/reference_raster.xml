@@ -7610,7 +7610,7 @@ WHERE A.rid =2 ) As foo;
 				</para>
 
 				<para>
-					The <varname>tworastuserfunc</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
+					The <varname>callbackfunc</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
 					<programlisting>
 CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], position integer[][], VARIADIC userargs text[])
 	RETURNS double precision
@@ -7621,7 +7621,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 					</programlisting>
 
-					The <varname>callbackfunc</varname> must have three arguments: a 3-dimension double precision array, a 2-dimension double precision array and a variadic 1-dimension text array. The first argument <varname>value</varname> is the set of values (as double precision) from all input rasters. The three dimensions (where indexes are 1-based) are: raster #, row y, column x. The second argument <varname>position</varname> is the set of pixel positions from the output raster and input rasters. The outer dimension (where indexes are 0-based) is the raster #.  The position at outer dimension index 0 is the output raster's pixel position.  For each outer dimension, there are two elements in the inner dimension for X and Y.  The third argument <varname>userargs</varname> is for passing through any user-specified arguments.
+					The <varname>callbackfunc</varname> must have three arguments: a 3-dimension double precision array, a 2-dimension integer array and a variadic 1-dimension text array. The first argument <varname>value</varname> is the set of values (as double precision) from all input rasters. The three dimensions (where indexes are 1-based) are: raster #, row y, column x. The second argument <varname>position</varname> is the set of pixel positions from the output raster and input rasters. The outer dimension (where indexes are 0-based) is the raster #.  The position at outer dimension index 0 is the output raster's pixel position.  For each outer dimension, there are two elements in the inner dimension for X and Y.  The third argument <varname>userargs</varname> is for passing through any user-specified arguments.
 				</para> 
 
 				<para>
