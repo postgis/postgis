@@ -7677,8 +7677,8 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 			<refsection>
 				<title>Examples: Variant 1</title>
 
+				<para>One raster, one band</para>
 				<programlisting>
--- one raster, one band
 WITH foo AS (
 	SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast
 )
@@ -7690,8 +7690,8 @@ SELECT
 FROM foo
 				</programlisting>
 
+				<para>One raster, several bands</para>
 				<programlisting>
--- one raster, several bands
 WITH foo AS (
 	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast
 )
@@ -7703,8 +7703,8 @@ SELECT
 FROM foo
 				</programlisting>
 
+				<para>Several rasters, several bands</para>
 				<programlisting>
--- several rasters, several bands
 WITH foo AS (
 	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
 	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
@@ -7720,8 +7720,8 @@ WHERE t1.rid = 1
 	AND t2.rid = 2
 				</programlisting>
 
+				<para>Complete example of tiles of a coverage with neighborhood.  This query only works with PostgreSQL 9.1 or higher.</para>
 				<programlisting>
--- complete example of tiles of a coverage with neighborhood
 WITH foo AS (
 	SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast UNION ALL
 	SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, 0, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0) AS rast UNION ALL
@@ -7744,12 +7744,59 @@ SELECT
 		'CUSTOM', t1.rast,
 		1, 1
 	) AS rast
-FROM raster_nmapalgebra_in t1
-CROSS JOIN raster_nmapalgebra_in t2
+FROM foo t1
+CROSS JOIN foo t2
 WHERE t1.rid = 4
 	AND t2.rid BETWEEN 0 AND 8
 	AND ST_Intersects(t1.rast, t2.rast)
 GROUP BY t1.rid, t1.rast
+				</programlisting>
+
+				<para>Example like the prior one for tiles of a coverage with neighborhood but works with PostgreSQL 9.0.</para>
+				<programlisting>
+WITH src AS (
+	SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast UNION ALL
+	SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, 0, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0) AS rast UNION ALL
+	SELECT 2, ST_AddBand(ST_MakeEmptyRaster(2, 2, 4, 0, 1, -1, 0, 0, 0), 1, '16BUI', 3, 0) AS rast UNION ALL
+
+	SELECT 3, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, -2, 1, -1, 0, 0, 0), 1, '16BUI', 10, 0) AS rast UNION ALL
+	SELECT 4, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, -2, 1, -1, 0, 0, 0), 1, '16BUI', 20, 0) AS rast UNION ALL
+	SELECT 5, ST_AddBand(ST_MakeEmptyRaster(2, 2, 4, -2, 1, -1, 0, 0, 0), 1, '16BUI', 30, 0) AS rast UNION ALL
+
+	SELECT 6, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, -4, 1, -1, 0, 0, 0), 1, '16BUI', 100, 0) AS rast UNION ALL
+	SELECT 7, ST_AddBand(ST_MakeEmptyRaster(2, 2, 2, -4, 1, -1, 0, 0, 0), 1, '16BUI', 200, 0) AS rast UNION ALL
+	SELECT 8, ST_AddBand(ST_MakeEmptyRaster(2, 2, 4, -4, 1, -1, 0, 0, 0), 1, '16BUI', 300, 0) AS rast
+)
+WITH foo AS (
+	SELECT
+		t1.rid,
+		ST_Union(t2.rast) AS rast
+	FROM src t1
+	JOIN src t2
+		ON ST_Intersects(t1.rast, t2.rast)
+		AND t2.rid BETWEEN 0 AND 8
+	WHERE t1.rid = 4
+	GROUP BY t1.rid
+), bar AS (
+	SELECT
+		t1.rid,
+		ST_MapAlgebra(
+			ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
+			'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+			'32BUI',
+			'CUSTOM', t1.rast,
+			1, 1
+		) AS rast
+	FROM src t1
+	JOIN foo t2
+		ON t1.rid = t2.rid 
+)
+SELECT
+	rid,
+	(ST_Metadata(rast)),
+	(ST_BandMetadata(rast, 1)),
+	ST_Value(rast, 1, 1, 1)
+FROM bar;
 				</programlisting>
 
 			</refsection>
@@ -7757,8 +7804,8 @@ GROUP BY t1.rid, t1.rast
 			<refsection>
 				<title>Examples: Variants 2 and 3</title>
 
+				<para>One raster, several bands</para>
 				<programlisting>
--- one raster, several bands
 WITH foo AS (
 	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast
 )
@@ -7770,8 +7817,8 @@ SELECT
 FROM foo
 				</programlisting>
 
+				<para>One raster, one band</para>
 				<programlisting>
--- one raster, one band
 WITH foo AS (
 	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast
 )
@@ -7788,8 +7835,8 @@ FROM foo
 			<refsection>
 				<title>Examples: Variant 4</title>
 
+				<para>Two rasters, two bands</para>
 				<programlisting>
--- two rasters, two bands
 WITH foo AS (
 	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
 	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
