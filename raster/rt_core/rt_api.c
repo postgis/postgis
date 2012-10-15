@@ -11497,7 +11497,7 @@ rt_raster_intersects(
 			}
 		}
 		else {
-			RASTER_DEBUGF(4, "GEOSIntersects() returned a 2!!!!");
+			RASTER_DEBUG(4, "GEOSIntersects() returned a 2!!!!");
 		}
 	}
 	while (0);
