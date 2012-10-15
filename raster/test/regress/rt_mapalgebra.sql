@@ -110,78 +110,194 @@ INSERT INTO raster_nmapalgebra_in
 	SELECT 18, ST_AddBand(ST_MakeEmptyRaster(2, 2, 4, -4, 1, -1, 0, 0, 0), 1, '16BUI', 300, 0) AS rast
 ;
 
-WITH foo AS (
+DO $$ DECLARE r record;
+BEGIN
+-- this ONLY works for PostgreSQL version 9.1 or higher
+IF array_to_string(regexp_matches(split_part(version(), ' ', 2), E'([0-9]+)\.([0-9]+)'), '')::int > 90 THEN
+	WITH foo AS (
+		SELECT
+			t1.rid,
+			ST_MapAlgebra(
+				ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
+				'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+				'32BUI',
+				'CUSTOM', t1.rast,
+				1, 1
+			) AS rast
+		FROM raster_nmapalgebra_in t1
+		CROSS JOIN raster_nmapalgebra_in t2
+		WHERE t1.rid = 10
+			AND t2.rid BETWEEN 10 AND 18
+			AND ST_Intersects(t1.rast, t2.rast)
+		GROUP BY t1.rid, t1.rast
+	)
 	SELECT
-		t1.rid,
-		ST_MapAlgebra(
-			ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
-			'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
-			'32BUI',
-			'CUSTOM', t1.rast,
-			1, 1
-		) AS rast
-	FROM raster_nmapalgebra_in t1
-	CROSS JOIN raster_nmapalgebra_in t2
-	WHERE t1.rid = 10
-		AND t2.rid BETWEEN 10 AND 18
-		AND ST_Intersects(t1.rast, t2.rast)
-	GROUP BY t1.rid, t1.rast
-)
-SELECT
-	rid,
-	(ST_Metadata(rast)),
-	(ST_BandMetadata(rast, 1)),
-	ST_Value(rast, 1, 1, 1)
-FROM foo;
+		rid,
+		(ST_Metadata(rast)),
+		(ST_BandMetadata(rast, 1)),
+		ST_Value(rast, 1, 1, 1)
+	INTO r
+	FROM foo;
+	RAISE NOTICE 'record = %', r;
 
-WITH foo AS (
+	WITH foo AS (
+		SELECT
+			t1.rid,
+			ST_MapAlgebra(
+				ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
+				'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+				'32BUI',
+				'CUSTOM', t1.rast,
+				1, 1
+			) AS rast
+		FROM raster_nmapalgebra_in t1
+		CROSS JOIN raster_nmapalgebra_in t2
+		WHERE t1.rid = 14
+			AND t2.rid BETWEEN 10 AND 18
+			AND ST_Intersects(t1.rast, t2.rast)
+		GROUP BY t1.rid, t1.rast
+	)
 	SELECT
-		t1.rid,
-		ST_MapAlgebra(
-			ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
-			'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
-			'32BUI',
-			'CUSTOM', t1.rast,
-			1, 1
-		) AS rast
-	FROM raster_nmapalgebra_in t1
-	CROSS JOIN raster_nmapalgebra_in t2
-	WHERE t1.rid = 14
-		AND t2.rid BETWEEN 10 AND 18
-		AND ST_Intersects(t1.rast, t2.rast)
-	GROUP BY t1.rid, t1.rast
-)
-SELECT
-	rid,
-	(ST_Metadata(rast)),
-	(ST_BandMetadata(rast, 1)),
-	ST_Value(rast, 1, 1, 1)
-FROM foo;
+		rid,
+		(ST_Metadata(rast)),
+		(ST_BandMetadata(rast, 1)),
+		ST_Value(rast, 1, 1, 1)
+	INTO r
+	FROM foo;
+	RAISE NOTICE 'record = %', r;
 
-WITH foo AS (
+	WITH foo AS (
+		SELECT
+			t1.rid,
+			ST_MapAlgebra(
+				ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
+				'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+				'32BUI',
+				'CUSTOM', t1.rast,
+				1, 1,
+				'1000'
+			) AS rast
+		FROM raster_nmapalgebra_in t1
+		CROSS JOIN raster_nmapalgebra_in t2
+		WHERE t1.rid = 17
+			AND t2.rid BETWEEN 10 AND 18
+			AND ST_Intersects(t1.rast, t2.rast)
+		GROUP BY t1.rid, t1.rast
+	)
 	SELECT
-		t1.rid,
-		ST_MapAlgebra(
-			ARRAY[ROW(ST_Union(t2.rast), 1)]::rastbandarg[],
-			'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
-			'32BUI',
-			'CUSTOM', t1.rast,
-			1, 1,
-			'1000'
-		) AS rast
-	FROM raster_nmapalgebra_in t1
-	CROSS JOIN raster_nmapalgebra_in t2
-	WHERE t1.rid = 17
-		AND t2.rid BETWEEN 10 AND 18
-		AND ST_Intersects(t1.rast, t2.rast)
-	GROUP BY t1.rid, t1.rast
-)
-SELECT
-	rid,
-	(ST_Metadata(rast)),
-	(ST_BandMetadata(rast, 1)),
-	ST_Value(rast, 1, 1, 1)
-FROM foo;
+		rid,
+		(ST_Metadata(rast)),
+		(ST_BandMetadata(rast, 1)),
+		ST_Value(rast, 1, 1, 1)
+	INTO r
+	FROM foo;
+	RAISE NOTICE 'record = %', r;
+
+ELSE
+
+	WITH foo AS (
+		SELECT
+			t1.rid,
+			ST_Union(t2.rast) AS rast
+		FROM raster_nmapalgebra_in t1
+		JOIN raster_nmapalgebra_in t2
+			ON ST_Intersects(t1.rast, t2.rast)
+			AND t2.rid BETWEEN 10 AND 18
+		WHERE t1.rid = 10
+		GROUP BY t1.rid
+	), bar AS (
+		SELECT
+			t1.rid,
+			ST_MapAlgebra(
+				ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
+				'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+				'32BUI',
+				'CUSTOM', t1.rast,
+				1, 1
+			) AS rast
+		FROM raster_nmapalgebra_in t1
+		JOIN foo t2
+			ON t1.rid = t2.rid 
+	)
+	SELECT
+		rid,
+		(ST_Metadata(rast)),
+		(ST_BandMetadata(rast, 1)),
+		ST_Value(rast, 1, 1, 1)
+	INTO r
+	FROM bar;
+	RAISE NOTICE 'record = %', r;
+
+	WITH foo AS (
+		SELECT
+			t1.rid,
+			ST_Union(t2.rast) AS rast
+		FROM raster_nmapalgebra_in t1
+		JOIN raster_nmapalgebra_in t2
+			ON ST_Intersects(t1.rast, t2.rast)
+			AND t2.rid BETWEEN 10 AND 18
+		WHERE t1.rid = 14
+		GROUP BY t1.rid
+	), bar AS (
+		SELECT
+			t1.rid,
+			ST_MapAlgebra(
+				ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
+				'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+				'32BUI',
+				'CUSTOM', t1.rast,
+				1, 1
+			) AS rast
+		FROM raster_nmapalgebra_in t1
+		JOIN foo t2
+			ON t1.rid = t2.rid 
+	)
+	SELECT
+		rid,
+		(ST_Metadata(rast)),
+		(ST_BandMetadata(rast, 1)),
+		ST_Value(rast, 1, 1, 1)
+	INTO r
+	FROM bar;
+	RAISE NOTICE 'record = %', r;
+
+	WITH foo AS (
+		SELECT
+			t1.rid,
+			ST_Union(t2.rast) AS rast
+		FROM raster_nmapalgebra_in t1
+		JOIN raster_nmapalgebra_in t2
+			ON ST_Intersects(t1.rast, t2.rast)
+			AND t2.rid BETWEEN 10 AND 18
+		WHERE t1.rid = 17
+		GROUP BY t1.rid
+	), bar AS (
+		SELECT
+			t1.rid,
+			ST_MapAlgebra(
+				ARRAY[ROW(t2.rast, 1)]::rastbandarg[],
+				'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure,
+				'32BUI',
+				'CUSTOM', t1.rast,
+				1, 1,
+				'1000'
+			) AS rast
+		FROM raster_nmapalgebra_in t1
+		JOIN foo t2
+			ON t1.rid = t2.rid 
+	)
+	SELECT
+		rid,
+		(ST_Metadata(rast)),
+		(ST_BandMetadata(rast, 1)),
+		ST_Value(rast, 1, 1, 1)
+	INTO r
+	FROM bar;
+	RAISE NOTICE 'record = %', r;
+
+END IF;
+
+END $$;
 
 INSERT INTO raster_nmapalgebra_in
 	SELECT 20, ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0) AS rast UNION ALL

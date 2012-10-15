@@ -98,7 +98,7 @@ NOTICE:  userargs = <NULL>
 NOTICE:  value = {{{1,1,2},{1,1,2},{10,10,20}}}
 NOTICE:  pos = [0:1][1:2]={{2,2},{2,2}}
 NOTICE:  userargs = <NULL>
-10|(0,0,2,2,1,-1,0,0,0,1)|(32BUI,0,f,)|255
+NOTICE:  record = (10,"(0,0,2,2,1,-1,0,0,0,1)","(32BUI,0,f,)",255)
 NOTICE:  value = {{{1,2,2},{10,20,20},{10,20,20}}}
 NOTICE:  pos = [0:1][1:2]={{1,1},{3,3}}
 NOTICE:  userargs = <NULL>
@@ -111,7 +111,7 @@ NOTICE:  userargs = <NULL>
 NOTICE:  value = {{{20,20,30},{20,20,30},{200,200,300}}}
 NOTICE:  pos = [0:1][1:2]={{2,2},{4,4}}
 NOTICE:  userargs = <NULL>
-14|(2,-2,2,2,1,-1,0,0,0,1)|(32BUI,0,f,)|255
+NOTICE:  record = (14,"(2,-2,2,2,1,-1,0,0,0,1)","(32BUI,0,f,)",255)
 NOTICE:  value = {{{10,20,20},{100,200,200},{100,200,200}}}
 NOTICE:  pos = [0:1][1:2]={{1,1},{3,3}}
 NOTICE:  userargs = {1000}
@@ -124,7 +124,8 @@ NOTICE:  userargs = {1000}
 NOTICE:  value = {{{200,200,300},{200,200,300},{NULL,NULL,NULL}}}
 NOTICE:  pos = [0:1][1:2]={{2,2},{4,4}}
 NOTICE:  userargs = {1000}
-17|(2,-4,2,2,1,-1,0,0,0,1)|(32BUI,0,f,)|1000
+NOTICE:  record = (17,"(2,-4,2,2,1,-1,0,0,0,1)","(32BUI,0,f,)",1000)
+DO
 NOTICE:  value = {{{1}},{{2}}}
 NOTICE:  pos = [0:2][1:2]={{1,1},{2,2},{1,1}}
 NOTICE:  userargs = <NULL>
