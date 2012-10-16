@@ -435,3 +435,8 @@ DROP FUNCTION IF EXISTS _st_contains(geometry, raster, integer);
 
 -- function signature changed
 DROP FUNCTION IF EXISTS st_addband(raster, raster[], integer);
+
+-- function signatures changed
+DROP FUNCTION IF EXISTS st_slope(raster, integer, text);
+DROP FUNCTION IF EXISTS st_aspect(raster, integer, text);
+DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float, float);

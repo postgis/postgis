@@ -3466,10 +3466,17 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos intege
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer, pixeltype text)
+CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer, pixeltype text, interpolate_nodata boolean DEFAULT FALSE)
 	RETURNS raster
-	AS $$ SELECT ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_slope4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
-	LANGUAGE 'sql' IMMUTABLE;
+	AS $$
+		SELECT
+			CASE
+				WHEN $4 IS FALSE THEN
+					ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], '_st_slope4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text)
+				ELSE
+					ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_slope4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text)
+			END
+	$$ LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_Aspect
@@ -3533,10 +3540,17 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integ
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text)
+CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text, interpolate_nodata boolean DEFAULT FALSE)
 	RETURNS raster
-	AS $$ SELECT ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_aspect4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
-	LANGUAGE 'sql' IMMUTABLE;
+	AS $$
+		SELECT
+			CASE
+				WHEN $4 IS FALSE THEN
+					ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], '_st_aspect4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text)
+				ELSE
+					ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_aspect4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text)
+			END
+	$$ LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_HillShade
@@ -3617,11 +3631,20 @@ CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos in
 CREATE OR REPLACE FUNCTION st_hillshade(
 	rast raster, band integer,
 	pixeltype text,
-	azimuth double precision, altitude double precision, max_bright double precision DEFAULT 255.0, elevation_scale double precision DEFAULT 1.0
+	azimuth double precision, altitude double precision,
+	max_bright double precision DEFAULT 255.0, elevation_scale double precision DEFAULT 1.0,
+	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
-	AS $$ SELECT ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_hillshade4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text) $$
-	LANGUAGE 'sql' IMMUTABLE;
+	AS $$
+		SELECT
+			CASE
+				WHEN $8 IS FALSE THEN
+					ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], '_st_hillshade4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text)
+				ELSE
+					ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_hillshade4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text)
+			END
+	$$ LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster

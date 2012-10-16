@@ -52,6 +52,8 @@ PostGIS 2.1.0
   - #2006, better support of ST_Area(geography) over poles and dateline
   - TopologySummary output now includes unregistered layers and a count
     of missing TopoGeometry objects from their natural layer.
+  - ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional parameter to
+    interpolate NODATA pixels before running the operation.
 
 * Fixes *
 

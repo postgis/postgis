@@ -7243,6 +7243,7 @@ FROM dummy_rast;
 					<paramdef><type>double precision </type> <parameter>altitude</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>elevation_scale=1</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7251,10 +7252,15 @@ FROM dummy_rast;
 				<title>Description</title>
 				
 				<para>Returns the hypothetical illumination of an elevation raster band using the azimuth, altitude, brightness, and elevation scale inputs. Utilizes map algebra and applies the hill shade equation to neighboring pixels.</para>
+
+				<para>
+					If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma" /> before computing the hillshade illumination.
+				</para>
+
 				<para>The hill shade equation is: <programlisting>max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) )</programlisting>.</para>
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and runs <xref linkend="RT_ST_InvDistWeight4ma" /> before running the hillshade operation</para>
-			
+				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and added optional <varname>interpolate_nodata</varname> function parameter</para>
+
 			</refsection>
 				
 			<refsection>
@@ -7283,6 +7289,7 @@ FROM dummy_rast;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7291,6 +7298,10 @@ FROM dummy_rast;
 				<title>Description</title>
 				
 				<para>Returns the surface aspect of an elevation raster band. Utilizes map algebra and applies the aspect equation to neighboring pixels.</para>
+
+				<para>
+					If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma" /> before computing the surface aspect.
+				</para>
 
 				<para>Given the following representation of a 3x3 neighborhood of pixels:</para>
 
@@ -7319,7 +7330,7 @@ FROM dummy_rast;
                 <para>The equation for the pixel aspect of cell E is: atan2((((G + 2H + I) - (A + 2B + C))  / 8), -(((C + 2F + I) - (A + 2D + G)) / 8))</para>
 
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and runs <xref linkend="RT_ST_InvDistWeight4ma" /> before running the hillshade operation</para>
+				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and added optional <varname>interpolate_nodata</varname> function parameter</para>
 			
 			</refsection>
 				
@@ -7349,6 +7360,7 @@ FROM dummy_rast;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7357,6 +7369,10 @@ FROM dummy_rast;
 				<title>Description</title>
 				
 				<para>Returns the surface slope of an elevation raster band. Utilizes map algebra and applies the slope equation to neighboring pixels.</para>
+
+				<para>
+					If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma" /> before computing the surface slope.
+				</para>
 
 				<para>Given the following representation of a 3x3 neighborhood of pixels:</para>
 
@@ -7385,7 +7401,7 @@ FROM dummy_rast;
                 <para>The equation for the pixel slope of cell E is: atan(sqrt(((c + 2f + i) - (a + 2d + g) / 8)^2 + (((g + 2h + i) - (a + 2b + c)) / 8) ^ 2))</para>
 
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and runs <xref linkend="RT_ST_InvDistWeight4ma" /> before running the hillshade operation</para>
+				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and added optional <varname>interpolate_nodata</varname> function parameter</para>
 			
 			</refsection>
 				
