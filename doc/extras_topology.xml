@@ -136,10 +136,17 @@
 		  </refnamediv>
 		  <refsection>
 			<title>Description</title>
-			<para>An array of 2 integers used to represent the id and type of a topology primitive or the id and layer of a TopoGeometry. Sets of such pairs are used to define TopoGeometry objects (either simple or hierarchical).</para>
+			<para>An array of 2 integers used to represent the id (first element) and type (second element) of a topology primitive or the id (first element) and layer (second element) of a TopoGeometry. Sets of such pairs are used to define TopoGeometry objects (either simple or hierarchical).</para>
 		  </refsection>
             <refsection>
                 <title>Examples</title>
+                 <programlisting>
+SELECT te[1] AS id, te[2] AS type FROM
+( SELECT ARRAY[1,2]::topology.topoelement AS te ) f;
+ id | type
+----+------
+  1 |    2
+                 </programlisting>
                  <programlisting>SELECT ARRAY[1,2]::topology.topoelement;
   te
 -------
