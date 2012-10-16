@@ -2625,6 +2625,10 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8, VARIADIC $11) $$
 	LANGUAGE 'sql' STABLE;
 
+-----------------------------------------------------------------------
+-- n-Raster ST_MapAlgebra with expressions
+-----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION st_mapalgebra(
 	rast raster, nband integer,
 	pixeltype text,
@@ -2643,18 +2647,22 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 		funcname := 'pg_temp.callbackfunc' || (round(random() * 1000000))::text;
 
 		-- substitute keywords
-		expr := replace(expression, '[rast]', ''' || value[1][1][1] || ''');
-		expr := replace(expr, '[rast.val]', ''' || value[1][1][1] || ''');
-		expr := replace(expr, '[rast.x]', ''' || pos[1][1] || ''');
-		expr := replace(expr, '[rast.y]', ''' || pos[1][2] || ''');
+		IF expression IS NOT NULL THEN
+			expr := replace(expression, '[rast]', ''' || value[1][1][1] || ''');
+			expr := replace(expr, '[rast.val]', ''' || value[1][1][1] || ''');
+			expr := replace(expr, '[rast.x]', ''' || pos[1][1] || ''');
+			expr := replace(expr, '[rast.y]', ''' || pos[1][2] || ''');
+		ELSE
+			expr := NULL;
+		END IF;
 
 		-- build callback function body
 		funcbody := ' DECLARE val double precision; BEGIN';
 		--funcbody := funcbody || ' RAISE NOTICE ''value = %'', value;';
 		--funcbody := funcbody || ' RAISE NOTICE ''pos = %'', pos;';
-		funcbody := funcbody || ' IF value[1][1][1] IS NULL THEN';
 
 		-- handle NODATA in callback function
+		funcbody := funcbody || ' IF value[1][1][1] IS NULL THEN';
 		IF nodataval IS NOT NULL THEN
 			funcbody := funcbody || ' RETURN ' || nodataval::text || ';';
 		ELSE
@@ -2663,7 +2671,11 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 		funcbody := funcbody || ' END IF;';
 
 		-- handle value processing in callback function
-		funcbody := funcbody || ' EXECUTE ''SELECT (' || expr || ')::double precision'' INTO val;';
+		IF expr IS NOT NULL THEN
+			funcbody := funcbody || ' EXECUTE ''SELECT (' || expr || ')::double precision'' INTO val;';
+		ELSE
+			funcbody := funcbody || ' val := NULL;';
+		END IF;
 
 		-- handle val is NULL
 		IF nodataval IS NOT NULL THEN
@@ -2702,6 +2714,138 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 )
 	RETURNS raster
 	AS $$ SELECT st_mapalgebra($1, 1, $2, $3, $4) $$
+	LANGUAGE 'sql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rast1 raster, band1 integer,
+	rast2 raster, band2 integer,
+	expression text,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL,
+	nodatanodataval double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		rtn raster;
+		funcname text;
+		funcbody text;
+		funccmd text;
+		expr text;
+		nd1expr text;
+		nd2expr text;
+	BEGIN
+		-- set name of callback function
+		funcname := 'pg_temp.callbackfunc' || (round(random() * 1000000))::text;
+
+		-- substitute keywords
+		-- expression
+		IF expression IS NOT NULL THEN
+			expr := replace(expression, '[rast1]', ''' || value[1][1][1] || ''');
+			expr := replace(expr, '[rast1.val]', ''' || value[1][1][1] || ''');
+			expr := replace(expr, '[rast1.x]', ''' || pos[1][1] || ''');
+			expr := replace(expr, '[rast1.y]', ''' || pos[1][2] || ''');
+
+			expr := replace(expr, '[rast2]', ''' || value[2][1][1] || ''');
+			expr := replace(expr, '[rast2.val]', ''' || value[2][1][1] || ''');
+			expr := replace(expr, '[rast2.x]', ''' || pos[2][1] || ''');
+			expr := replace(expr, '[rast2.y]', ''' || pos[2][2] || ''');
+		ELSE
+			expr := NULL;
+		END IF;
+
+		-- nodata1expr
+		IF nodata1expr IS NOT NULL THEN
+			nd1expr := replace(nodata1expr, '[rast2]', ''' || value[2][1][1] || ''');
+			nd1expr := replace(nd1expr, '[rast2.val]', ''' || value[2][1][1] || ''');
+			nd1expr := replace(nd1expr, '[rast2.x]', ''' || pos[2][1] || ''');
+			nd1expr := replace(nd1expr, '[rast2.y]', ''' || pos[2][2] || ''');
+		END IF;
+
+		-- nodata2expr
+		IF nodata2expr IS NOT NULL THEN
+			nd2expr := replace(nodata2expr, '[rast1]', ''' || value[1][1][1] || ''');
+			nd2expr := replace(nd2expr, '[rast1.val]', ''' || value[1][1][1] || ''');
+			nd2expr := replace(nd2expr, '[rast1.x]', ''' || pos[1][1] || ''');
+			nd2expr := replace(nd2expr, '[rast1.y]', ''' || pos[1][2] || ''');
+		END IF;
+
+		-- build callback function body
+		funcbody := ' DECLARE val double precision; BEGIN';
+		--funcbody := funcbody || ' RAISE NOTICE ''value = %'', value;';
+		--funcbody := funcbody || ' RAISE NOTICE ''pos = %'', pos;';
+
+		-- handle both NODATA in callback function
+		funcbody := funcbody || ' IF value[1][1][1] IS NULL AND value[2][1][1] IS NULL THEN';
+		IF nodatanodataval IS NOT NULL THEN
+			funcbody := funcbody || ' RETURN ' || nodatanodataval::text || ';';
+		ELSE
+			funcbody := funcbody || ' RETURN NULL;';
+		END IF;
+		funcbody := funcbody || ' END IF;';
+
+		-- handle first NODATA in callback function
+		funcbody := funcbody || ' IF value[1][1][1] IS NULL AND value[2][1][1] IS NOT NULL THEN';
+		IF nodata1expr IS NOT NULL THEN
+			funcbody := funcbody || ' EXECUTE ''SELECT (' || nd1expr || ')::double precision'' INTO val;';
+			funcbody := funcbody || ' RETURN val;';
+		ELSE
+			funcbody := funcbody || ' RETURN NULL;';
+		END IF;
+		funcbody := funcbody || ' END IF;';
+
+		-- handle second NODATA in callback function
+		funcbody := funcbody || ' IF value[1][1][1] IS NOT NULL AND value[2][1][1] IS NULL THEN';
+		IF nodata2expr IS NOT NULL THEN
+			funcbody := funcbody || ' EXECUTE ''SELECT (' || nd2expr || ')::double precision'' INTO val;';
+			funcbody := funcbody || ' RETURN val;';
+		ELSE
+			funcbody := funcbody || ' RETURN NULL;';
+		END IF;
+		funcbody := funcbody || ' END IF;';
+
+		-- handle value processing in callback function
+		IF expr IS NOT NULL THEN
+			funcbody := funcbody || ' EXECUTE ''SELECT (' || expr || ')::double precision'' INTO val;';
+		ELSE
+			funcbody := funcbody || ' val := NULL;';
+		END IF;
+
+		-- finish callback function
+		funcbody := funcbody || ' RETURN val; END;';
+
+		funccmd := 'CREATE OR REPLACE FUNCTION ' || funcname
+			|| '(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)'
+			|| ' RETURNS double precision AS '
+			|| quote_literal(funcbody)
+			|| ' LANGUAGE ''plpgsql'' STABLE;';
+
+		--RAISE NOTICE 'funccmd = %', funccmd;
+
+		-- create callback function
+		EXECUTE funccmd;
+
+		-- call ST_MapAlgebra
+		rtn := ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], (funcname || '(double precision[][][], integer[][], text[])')::regprocedure, $6, $7);
+
+		-- drop callback function
+		EXECUTE 'DROP FUNCTION IF EXISTS ' || funcname
+			|| '(double precision[][][], integer[][], text[]);';
+
+		RETURN rtn;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rast1 raster,
+	rast2 raster,
+	expression text,
+	pixeltype text DEFAULT NULL, extenttype text DEFAULT 'INTERSECTION',
+	nodata1expr text DEFAULT NULL, nodata2expr text DEFAULT NULL,
+	nodatanodataval double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT st_mapalgebra($1, 1, $2, 1, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'sql' VOLATILE;
 
 -----------------------------------------------------------------------

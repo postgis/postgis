@@ -14146,13 +14146,12 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			elog(NOTICE, "Function provided is VOLATILE. Unless required and for best performance, function should be IMMUTABLE or STABLE");
 
 		/* prep function call data */
-#if POSTGIS_PGSQL_VERSION > 90 
+#if POSTGIS_PGSQL_VERSION > 90
 		InitFunctionCallInfoData(arg->callback.ufc_info, &(arg->callback.ufl_info), arg->callback.ufl_info.fn_nargs, InvalidOid, NULL, NULL);
-#else  
+#else
 		InitFunctionCallInfoData(arg->callback.ufc_info, &(arg->callback.ufl_info), arg->callback.ufl_info.fn_nargs, NULL, NULL);
 #endif
 		memset(arg->callback.ufc_info.argnull, FALSE, arg->callback.ufl_info.fn_nargs);
-		
 
 		/* userargs (7) */
 		if (!PG_ARGISNULL(7))
