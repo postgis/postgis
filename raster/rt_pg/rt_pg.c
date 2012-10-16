@@ -14238,9 +14238,11 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	rtpg_nmapalgebra_arg_destroy(arg);
 
 	if (!noerr) {
-		elog(ERROR, "RASTER_nMapAlgebra: Unable to run raster interator function");
+		elog(ERROR, "RASTER_nMapAlgebra: Unable to run raster iterator function");
 		PG_RETURN_NULL();
 	}
+	else if (raster == NULL)
+		PG_RETURN_NULL();
 
 	pgraster = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
@@ -14937,7 +14939,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			);
 
 			if (!noerr) {
-				elog(ERROR, "RASTER_union_transfn: Unable to run raster interator function");
+				elog(ERROR, "RASTER_union_transfn: Unable to run raster iterator function");
 
 				pfree(itrset);
 				rtpg_union_arg_destroy(iwr);
@@ -15041,7 +15043,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 			);
 
 			if (!noerr) {
-				elog(ERROR, "RASTER_union_finalfn: Unable to run raster interator function");
+				elog(ERROR, "RASTER_union_finalfn: Unable to run raster iterator function");
 				pfree(itrset);
 				rtpg_union_arg_destroy(iwr);
 				if (_rtn != NULL)

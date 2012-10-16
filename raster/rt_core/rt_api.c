@@ -13464,6 +13464,7 @@ rt_raster_iterator(
 
 				rast = rt_raster_from_two_rasters(rtnrast, _param->raster[i], extenttype, &status, NULL);
 				rtdealloc(rtnrast);
+
 				if (rast == NULL || !status) {
 					rterror("rt_raster_iterator: Unable to compute %s extent of rasters",
 						extenttype == ET_UNION ? "union" : "intersection"
@@ -13474,14 +13475,16 @@ rt_raster_iterator(
 					return NULL;
 				}
 				else if (rt_raster_is_empty(rast)) {
-					rterror("rt_raster_iterator: Computed raster for %s extent is empty",
+					rtinfo("rt_raster_iterator: Computed raster for %s extent is empty",
 						extenttype == ET_UNION ? "union" : "intersection"
 					);
 
 					_rti_param_destroy(_param);
 
+					*noerr = 1;
 					return NULL;
 				}
+
 				rtnrast = rast;
 				rast = NULL;
 			}

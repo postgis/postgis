@@ -519,6 +519,30 @@ SELECT
 	(ST_BandMetadata(rast, 1))
 FROM foo;
 
+WITH foo AS (
+	SELECT
+		t1.rid AS rid1,
+		t2.rid AS rid2,
+		t3.rid AS rid3,
+		ST_MapAlgebra(
+			ARRAY[ROW(t1.rast, 1), ROW(t2.rast, 1), ROW(t3.rast, 1)]::rastbandarg[],
+			'raster_nmapalgebra_test(double precision[], int[], text[])'::regprocedure
+		) AS rast
+	FROM raster_nmapalgebra_in t1
+	CROSS JOIN raster_nmapalgebra_in t2
+	CROSS JOIN raster_nmapalgebra_in t3
+	WHERE t1.rid = 20
+		AND t2.rid = 21
+		AND t3.rid = 22
+)
+SELECT
+	rid1,
+	rid2,
+	rid3,
+	(ST_Metadata(rast)),
+	(ST_BandMetadata(rast, 1))
+FROM foo;
+
 INSERT INTO raster_nmapalgebra_in
 	SELECT 30, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
 	SELECT 31, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
