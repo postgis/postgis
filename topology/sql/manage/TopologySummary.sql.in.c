@@ -100,6 +100,8 @@ BEGIN
         ret = ret || 'Lineal';
       WHEN rec.feature_type = 3 THEN
         ret = ret || 'Polygonal';
+      WHEN rec.feature_type = 4 THEN
+        ret = ret || 'Mixed';
       ELSE 
         ret = ret || '???';
     END CASE;
