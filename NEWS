@@ -48,6 +48,8 @@ PostGIS 2.1.0
   - #1780, support ST_GeoHash for geography
   - #2021, Added multi-band support to ST_Union(raster, ...) aggregate function
   - #2006, better support of ST_Area(geography) over poles and dateline
+  - TopologySummary output now includes unregistered layers and a count
+    of missing TopoGeometry objects from their natural layer.
 
 * Fixes *
 

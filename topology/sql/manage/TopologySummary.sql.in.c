@@ -24,6 +24,8 @@ DECLARE
   rec2 RECORD;
   var_topology_id integer;
   n int4;
+  missing int4;
+  sql text;
   ret text;
 BEGIN
 
@@ -87,7 +89,7 @@ BEGIN
       ret = ret || 'X topogeoms in X layers' || E'\n';
   END;
 
-  -- TODO: print informations about layers
+  -- print information about registered layers
   FOR rec IN SELECT * FROM topology.layer l
     WHERE l.topology_id = var_topology_id
     ORDER by layer_id
@@ -130,11 +132,45 @@ BEGIN
       IF rec.feature_column != '' THEN
         ret = ret || quote_ident(rec.schema_name) || '.'
                   || quote_ident(rec.table_name) || '.'
-                  || quote_ident(rec.feature_column)
-                  || E'\n';
+                  || quote_ident(rec.feature_column);
+
+        IF n > 0 THEN
+          sql := 'SELECT count(*) FROM ( SELECT topogeo_id FROM '
+            || quote_ident(atopology)
+            || '.relation r WHERE r.layer_id = ' || rec.layer_id
+            || ' EXCEPT SELECT DISTINCT id('
+            || quote_ident(rec.feature_column) || ') FROM '
+            || quote_ident(rec.schema_name) || '.'
+            || quote_ident(rec.table_name) || ') as foo';
+          EXECUTE sql INTO STRICT missing;
+          IF missing > 0 THEN
+            ret = ret || ' (' || missing || ' missing topogeoms)';
+          END IF;
+        END IF;
+        ret = ret || E'\n';
+
       ELSE
         ret = ret || E'NONE (detached)\n';
       END IF;
+
+  END LOOP; -- }
+
+  -- print information about unregistered layers containing topogeoms
+  sql := 'SELECT layer_id FROM '
+      || quote_ident(atopology) || '.relation EXCEPT SELECT layer_id'
+      || ' FROM topology.layer WHERE topology_id = '
+      || var_topology_id || 'ORDER BY layer_id';
+  --RAISE DEBUG '%', sql;
+  FOR rec IN  EXECUTE sql
+  LOOP -- {
+    ret = ret || 'Layer ' || rec.layer_id::text || ', UNREGISTERED, ';
+
+    EXECUTE 'SELECT count(*) FROM ( SELECT DISTINCT topogeo_id FROM '
+      || quote_ident(atopology)
+      || '.relation r WHERE r.layer_id = ' || rec.layer_id
+      || ' ) foo ' INTO STRICT n;
+
+    ret = ret || n || ' topogeoms' || E'\n';
 
   END LOOP; -- }
 
