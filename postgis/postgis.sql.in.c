@@ -1713,8 +1713,8 @@ BEGIN
                         ' TYPE geometry(' || postgis_type_name(gtype, gndims, true) || ', ' || gsrid::text  || ') ';
                     inserted := inserted + 1;
                 EXCEPTION
-                        WHEN invalid_parameter_value THEN
-                        RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type: % ', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, postgis_type_name(gtype, gndims, true);
+                        WHEN invalid_parameter_value OR feature_not_supported THEN
+                        RAISE WARNING 'Could not convert ''%'' in ''%.%'' to use typmod with srid %, type %: %', quote_ident(gcs.attname), quote_ident(gcs.nspname), quote_ident(gcs.relname), gsrid, postgis_type_name(gtype, gndims, true), SQLERRM;
                             gc_is_valid := false;
                 END;
                 
