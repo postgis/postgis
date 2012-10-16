@@ -2625,6 +2625,85 @@ CREATE OR REPLACE FUNCTION st_mapalgebra(
 	AS $$ SELECT _ST_MapAlgebra(ARRAY[ROW($1, $2), ROW($3, $4)]::rastbandarg[], $5, $6, $9, $10, $7, $8, VARIADIC $11) $$
 	LANGUAGE 'sql' STABLE;
 
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rast raster, nband integer,
+	pixeltype text,
+	expression text, nodataval double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		rtn raster;
+		funcname text;
+		funcbody text;
+		funccmd text;
+		expr text;
+	BEGIN
+		-- set name of callback function
+		funcname := 'pg_temp.callbackfunc' || (round(random() * 1000000))::text;
+
+		-- substitute keywords
+		expr := replace(expression, '[rast]', ''' || value[1][1][1] || ''');
+		expr := replace(expr, '[rast.val]', ''' || value[1][1][1] || ''');
+		expr := replace(expr, '[rast.x]', ''' || pos[1][1] || ''');
+		expr := replace(expr, '[rast.y]', ''' || pos[1][2] || ''');
+
+		-- build callback function body
+		funcbody := ' DECLARE val double precision; BEGIN';
+		--funcbody := funcbody || ' RAISE NOTICE ''value = %'', value;';
+		--funcbody := funcbody || ' RAISE NOTICE ''pos = %'', pos;';
+		funcbody := funcbody || ' IF value[1][1][1] IS NULL THEN';
+
+		-- handle NODATA in callback function
+		IF nodataval IS NOT NULL THEN
+			funcbody := funcbody || ' RETURN ' || nodataval::text || ';';
+		ELSE
+			funcbody := funcbody || ' RETURN NULL;';
+		END IF;
+		funcbody := funcbody || ' END IF;';
+
+		-- handle value processing in callback function
+		funcbody := funcbody || ' EXECUTE ''SELECT (' || expr || ')::double precision'' INTO val;';
+
+		-- handle val is NULL
+		IF nodataval IS NOT NULL THEN
+			funcbody := funcbody || ' IF val IS NULL THEN RETURN ' || nodataval::text || '; END IF;';
+		END IF;
+
+		-- finish callback function
+		funcbody := funcbody || ' RETURN val; END;';
+
+		funccmd := 'CREATE OR REPLACE FUNCTION ' || funcname
+			|| '(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)'
+			|| ' RETURNS double precision AS '
+			|| quote_literal(funcbody)
+			|| ' LANGUAGE ''plpgsql'' STABLE;';
+
+		--RAISE NOTICE 'funccmd = %', funccmd;
+
+		-- create callback function
+		EXECUTE funccmd;
+
+		-- call ST_MapAlgebra
+		rtn := ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], (funcname || '(double precision[][][], integer[][], text[])')::regprocedure, $3, 'FIRST');
+
+		-- drop callback function
+		EXECUTE 'DROP FUNCTION IF EXISTS ' || funcname
+			|| '(double precision[][][], integer[][], text[]);';
+
+		RETURN rtn;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION st_mapalgebra(
+	rast raster,
+	pixeltype text,
+	expression text, nodataval double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT st_mapalgebra($1, 1, $2, $3, $4) $$
+	LANGUAGE 'sql' VOLATILE;
+
 -----------------------------------------------------------------------
 -- ST_MapAlgebra callback functions
 -- Should be called with values for distancex and distancey

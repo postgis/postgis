@@ -99,6 +99,7 @@ TEST_MAPALGEBRA = \
 	rt_intersection \
 	rt_clip \
 	rt_mapalgebra \
+	rt_mapalgebra_expr \
 	rt_union \
 	rt_invdistweight4ma \
 	rt_4ma
