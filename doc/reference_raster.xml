@@ -7925,6 +7925,16 @@ WHERE t1.rid = 1
 			</refsynopsisdiv>
 
 			<refsection>
+				<title>Description</title>
+
+				<para>
+					Expression version - Returns a one-band raster given one or two input rasters, band indexes and one or more user-specified SQL expressions.
+				</para>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
 				<title>Description: Variants 1 and 2 (one raster)</title>
 
 				<para>
@@ -7935,7 +7945,7 @@ WHERE t1.rid = 1
 					If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If pixeltype is passed NULL, then the new raster band will have the same pixeltype as the input <varname>rast</varname> band.
 				</para>
 
-				<para>
+				<itemizedlist>
 					<listitem><para>Keywords permitted for <varname>expression</varname></para>
 					 <orderedlist>
 						<listitem>
@@ -7952,7 +7962,7 @@ WHERE t1.rid = 1
 						</listitem>
 					 </orderedlist>
 					</listitem>
-				</para>
+				</itemizedlist>
 
 			</refsection>
 
@@ -8037,7 +8047,7 @@ WHERE t1.rid = 1
 					</varlistentry>
 				</variablelist>
         
-				<para>
+				<itemizedlist>
 					<listitem><para>Keywords permitted in <varname>expression</varname>, <varname>nodata1expr</varname> and <varname>nodata2expr</varname></para>
 					 <orderedlist>
 						<listitem>
@@ -8066,12 +8076,8 @@ WHERE t1.rid = 1
 						</listitem>
 					 </orderedlist>
 					</listitem>
-				</para>
+				</itemizedlist>
 
-			</refsection>
-
-			<refsection>
-				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
