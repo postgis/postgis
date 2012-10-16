@@ -13482,7 +13482,7 @@ rt_raster_iterator(
 					_rti_param_destroy(_param);
 
 					*noerr = 1;
-					return NULL;
+					return rast;
 				}
 
 				rtnrast = rast;
