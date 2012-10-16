@@ -7539,7 +7539,7 @@ WHERE A.rid =2 ) As foo;
 			<refnamediv>
 				<refname>ST_MapAlgebra</refname>
 				<refpurpose>
-					Returns a one-band raster given one or more input rasters, band indexes and one user-specified callback function.
+					Callback function version - Returns a one-band raster given one or more input rasters, band indexes and one user-specified callback function.
 				</refpurpose>
 			</refnamediv>
 
@@ -7860,10 +7860,265 @@ WHERE t1.rid = 1
 
 				<para>
 					<xref linkend="rastbandarg" />, 
-					<xref linkend="RT_ST_Union" />
+					<xref linkend="RT_ST_Union" />, 
+					<xref linkend="RT_ST_MapAlgebra_expr" />
 				</para>
 			</refsection>
 
+		</refentry>
+
+		<refentry id="RT_ST_MapAlgebra_expr">
+			<refnamediv>
+				<refname>ST_MapAlgebra</refname>
+				<refpurpose>
+					Expression version - Returns a one-band raster given one or two input rasters, band indexes and one or more user-specified SQL expressions.
+				</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband1</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband2</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_MapAlgebra</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast1</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>rast2</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>expression</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>extenttype=INTERSECTION</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>nodata1expr=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>nodata2expr=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodatanodataval=NULL</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description: Variants 1 and 2 (one raster)</title>
+
+				<para>
+					Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If <varname>nband</varname> is not provided, band 1 is assumed. The new raster will have the same georeference, width, and height as the original raster but will only have one band.
+				</para>
+
+				<para>
+					If <varname>pixeltype</varname> is passed in, then the new raster will have a band of that pixeltype.  If pixeltype is passed NULL, then the new raster band will have the same pixeltype as the input <varname>rast</varname> band.
+				</para>
+
+				<para>
+					<listitem><para>Keywords permitted for <varname>expression</varname></para>
+					 <orderedlist>
+						<listitem>
+							<para><varname>[rast]</varname> - Pixel value of the pixel of interest</para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast.val]</varname> - Pixel value of the pixel of interest</para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast.x]</varname> - 1-based pixel column of the pixel of interest</para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast.y]</varname> - 1-based pixel row of the pixel of interest</para>
+						</listitem>
+					 </orderedlist>
+					</listitem>
+				</para>
+
+			</refsection>
+
+			<refsection>
+				<title>Description: Variants 3 and 4 (two raster)</title>
+
+				<para>
+					Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation to the two bands defined by the <varname>expression</varname> on the two input raster bands <varname>rast1</varname>, (<varname>rast2</varname>). If no <varname>band1</varname>,  <varname>band2</varname> is specified band 1 is assumed. The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the <varname>extenttype</varname> parameter.
+				</para>
+
+				<variablelist>
+					<varlistentry>
+						<term>expression</term>
+						<listitem>
+							<para>
+								A PostgreSQL algebraic expression involving the two rasters and PostgreSQL defined functions/operators that will define the pixel value when pixels intersect. e.g. (([rast1] + [rast2])/2.0)::integer
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>pixeltype</term>
+						<listitem>
+							<para>
+								The resulting pixel type of the output raster.  Must be one listed in <xref linkend="RT_ST_BandPixelType" />, left out or set to NULL.  If not passed in or set to NULL, will default to the pixeltype of the first raster.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>extenttype</term>
+						<listitem>
+							<para>
+								Controls the extent of resulting raster
+							</para>
+
+							<orderedlist>
+								<listitem>
+									<para>
+										<varname>INTERSECTION</varname> - The extent of the new raster is the intersection of the two rasters. This is the default.
+									</para>
+								</listitem>
+								<listitem>
+									<para>
+										<varname>UNION</varname> - The extent of the new raster is the union of the two rasters.
+									</para>
+								</listitem>
+								<listitem>
+									<para>
+										<varname>FIRST</varname> - The extent of the new raster is the  same as the one of the first raster.
+									</para>
+								</listitem>
+								<listitem>
+									<para>
+										<varname>SECOND</varname> - The extent of the new raster is the  same as the one of the second raster.
+									</para>
+								</listitem>
+							</orderedlist>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>nodata1expr</term>
+						<listitem>
+							<para>
+								An algebraic expression involving only <varname>rast2</varname> or a constant that defines what to return when pixels of <varname>rast1</varname> are nodata values and spatially corresponding rast2 pixels have values.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>nodata2expr</term>
+						<listitem>
+							<para>
+								An algebraic expression involving only <varname>rast1</varname> or a constant that defines what to return when pixels of <varname>rast2</varname> are nodata values and spatially corresponding rast1 pixels have values.
+							</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>nodatanodataval</term>
+						<listitem>
+							<para>
+								A numeric constant to return when spatially corresponding rast1 and rast2 pixels are both nodata values.
+							</para>
+						</listitem>
+					</varlistentry>
+				</variablelist>
+        
+				<para>
+					<listitem><para>Keywords permitted in <varname>expression</varname>, <varname>nodata1expr</varname> and <varname>nodata2expr</varname></para>
+					 <orderedlist>
+						<listitem>
+							<para><varname>[rast1]</varname> - Pixel value of the pixel of interest from <varname>rast1</varname></para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast1.val]</varname> - Pixel value of the pixel of interest from <varname>rast1</varname></para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast1.x]</varname> - 1-based pixel column of the pixel of interest from <varname>rast1</varname></para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast1.y]</varname> - 1-based pixel row of the pixel of interest from <varname>rast1</varname></para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast2]</varname> - Pixel value of the pixel of interest from <varname>rast2</varname></para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast2.val]</varname> - Pixel value of the pixel of interest from <varname>rast2</varname></para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast2.x]</varname> - 1-based pixel column of the pixel of interest from <varname>rast2</varname></para>
+						</listitem>
+						<listitem>
+							<para><varname>[rast2.y]</varname> - 1-based pixel row of the pixel of interest from <varname>rast2</varname></para>
+						</listitem>
+					 </orderedlist>
+					</listitem>
+				</para>
+
+			</refsection>
+
+			<refsection>
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variants 1 and 2</title>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, 1, 0, 0, 0), '32BF', 1, -1) AS rast
+)
+SELECT
+	ST_MapAlgebra(rast, 1, NULL, 'ceil([rast]*[rast.x]/[rast.y]+[rast.val])')
+FROM foo
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 3 and 4</title>
+
+				<programlisting>
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 1, -1, 0, 0, 0), 1, '16BUI', 1, 0), 2, '8BUI', 10, 0), 3, '32BUI', 100, 0) AS rast UNION ALL
+	SELECT 2 AS rid, ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 1, 1, -1, 0, 0, 0), 1, '16BUI', 2, 0), 2, '8BUI', 20, 0), 3, '32BUI', 300, 0) AS rast
+)
+SELECT
+	ST_MapAlgebra(
+		t1.rast, 2,
+		t2.rast, 1,
+		'([rast2] + [rast1.val]) / 2'
+	) AS rast
+FROM foo t1
+CROSS JOIN foo t2
+WHERE t1.rid = 1
+	AND t2.rid = 2
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+
+				<para>
+					<xref linkend="rastbandarg" />, 
+					<xref linkend="RT_ST_Union" />, 
+					<xref linkend="RT_ST_MapAlgebra" />
+				</para>
+			</refsection>
 
 		</refentry>
 
@@ -7896,6 +8151,12 @@ WHERE t1.rid = 1
 		
 			<refsection>
 				<title>Description</title>
+
+				<warning>
+					<para>
+						<xref linkend="RT_ST_MapAlgebraExpr" /> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra_expr" /> instead.
+					</para>
+				</warning>
 				
 				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation defined by the <varname>expression</varname> on the input raster (<varname>rast</varname>). If no <varname>band</varname> is specified band 1 is assumed.  The new raster will have the same georeference, width, and height as the original raster but will only have one band.</para>
         
@@ -8045,6 +8306,12 @@ WHERE rid=167;
 		
 			<refsection>
 				<title>Description</title>
+
+				<warning>
+					<para>
+						<xref linkend="RT_ST_MapAlgebraExpr2" /> is deprecated as of 2.1.0. Use <xref linkend="RT_ST_MapAlgebra_expr" /> instead.
+					</para>
+				</warning>
 				
 				<para>Creates a new one band raster formed by applying a valid PostgreSQL algebraic operation to the two bands defined by the <varname>expression</varname> on the two input raster bands <varname>rast1</varname>, (<varname>rast2</varname>). If no <varname>band1</varname>,  <varname>band2</varname> is specified band 1 is assumed. 
 				The resulting raster will be aligned (scale, skew and pixel corners) on the grid defined by the first raster. The resulting raster will have the extent defined by the <varname>extenttype</varname> parameter.</para>

@@ -12,6 +12,8 @@ PostGIS 2.1.0
   - ST_Estimated_Extent renamed to ST_EstimatedExtent
   - ST_MapAlgebraFctNgb and 1 and 2 raster variants of ST_MapAlgebraFct.
     Use ST_MapAlgebra instead
+  - 1 and 2 raster variants of ST_MapAlgebraExpr.
+    Use expression variants of ST_MapAlgebra instead
 
 * New Features *
 
