@@ -1684,7 +1684,7 @@ BEGIN
 		AND c.oid = tbl_oid
 	LOOP
 
-        RAISE DEBUG 'Processing table %.%.%', gcs.nspname, gcs.relname, gcs.attname;
+        RAISE DEBUG 'Processing column %.%.%', gcs.nspname, gcs.relname, gcs.attname;
     
         gc_is_valid := true;
         -- Find the srid, coord_dimension, and type of current geometry
