@@ -4180,7 +4180,11 @@ GROUP BY (foo.geomval).val;
 				</para>
 
 				<para>
-					For Variant 1, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates and the dimensions of the <varname>newvalueset</varname> array. <varname>noset</varname> can be used to prevent pixels with values present in <varname>newvalueset</varname> from being set (due to PostgreSQL not permitting ragged/jagged arrays). If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 1.
+					If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.
+ 				</para>
+
+				<para>
+					For Variant 1, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates and the dimensions of the <varname>newvalueset</varname> array. <varname>noset</varname> can be used to prevent pixels with values present in <varname>newvalueset</varname> from being set (due to PostgreSQL not permitting ragged/jagged arrays). See example Variant 1.
 				</para>
 
 				<para>
@@ -4188,7 +4192,7 @@ GROUP BY (foo.geomval).val;
 				</para>
 
 				<para>
-					For Variant 3, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates, <varname>width</varname> and <varname>height</varname>. If <varname>keepnodata</varname> is TRUE, those pixels whose values are NODATA will not be set with the corresponding value in <varname>newvalueset</varname>.  See example Variant 3.
+					For Variant 3, the specific pixels to be set are determined by the <varname>columnx</varname>, <varname>rowy</varname> pixel coordinates, <varname>width</varname> and <varname>height</varname>. See example Variant 3.
 				</para>
 
 				<para>
