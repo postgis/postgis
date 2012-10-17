@@ -88,6 +88,23 @@ static void out_geojson_test_precision(void)
 	    "{\"type\":\"Point\",\"coordinates\":[1,2]}",
 	    NULL, 100, 0);
 
+	/* double precision, see http://trac.osgeo.org/postgis/ticket/2051 */
+	do_geojson_test(
+	    "POINT(59.99 -59.99)",
+	    "{\"type\":\"Point\",\"coordinates\":[59.99,-59.99]}",
+	    NULL, 15, 0);
+
+	/* small numbers */
+  /* NOTE: precision of 300 will be converted to max precision (15) 
+   *       and being there no significant digit within that range
+   *       only zeroes will be returned
+   * See http://trac.osgeo.org/postgis/ticket/2051#comment:11
+   */
+	do_geojson_test(
+	    "POINT(1E-300 -2E-200)",
+	    "{\"type\":\"Point\",\"coordinates\":[0,-0]}",
+	    NULL, 300, 0);
+
 }
 
 
