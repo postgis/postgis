@@ -405,5 +405,8 @@ double gbox_angular_height(const GBOX* gbox);
 double gbox_angular_width(const GBOX* gbox);
 int gbox_centroid(const GBOX* gbox, POINT2D* out);
 
+/* Utilities */
+extern void trim_trailing_zeros(char *num);
+
 
 #endif /* _LIBLWGEOM_INTERNAL_H */
