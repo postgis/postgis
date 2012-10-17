@@ -1105,7 +1105,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		/* convert LWGEOM to GSERIALIZED */
 		gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(geomval2[call_cntr].geom), 0, &gser_size);
@@ -1894,7 +1894,7 @@ Datum RASTER_getGeotransform(PG_FUNCTION_ARGS)
     values[4] = Float8GetDatum(rt_raster_get_x_offset(raster));
     values[5] = Float8GetDatum(rt_raster_get_y_offset(raster));
 
-    memset(nulls, FALSE, values_length);
+    memset(nulls, FALSE, sizeof(bool) * values_length);
 
     /* stick em on the heap */
     heap_tuple = heap_form_tuple(result_tuple, values, nulls);
@@ -3639,7 +3639,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		/* convert LWGEOM to GSERIALIZED */
 		gser = gserialized_from_lwgeom(pix2[call_cntr].geom, 0, &gser_size);
@@ -3937,7 +3937,7 @@ Datum RASTER_pixelOfValue(PG_FUNCTION_ARGS)
 		HeapTuple tuple;
 		Datum result;
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		/* 0-based to 1-based */
 		pixels2[call_cntr].x += 1;
@@ -5960,7 +5960,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 #else
     InitFunctionCallInfoData(cbdata, &cbinfo, 2, InvalidOid, NULL, NULL);
 #endif
-    memset(cbdata.argnull, FALSE, cbinfo.fn_nargs);
+    memset(cbdata.argnull, FALSE, sizeof(bool) * cbinfo.fn_nargs);
     
     /* check that the function isn't strict if the args are null. */
     if (PG_ARGISNULL(4)) {
@@ -6341,7 +6341,7 @@ Datum RASTER_summaryStats(PG_FUNCTION_ARGS)
 
 	BlessTupleDesc(tupdesc);
 
-	memset(nulls, FALSE, values_length);
+	memset(nulls, FALSE, sizeof(bool) * values_length);
 
 	values[0] = Int64GetDatum(stats->count);
 	if (stats->count > 0) {
@@ -6643,7 +6643,7 @@ Datum RASTER_summaryStatsCoverage(PG_FUNCTION_ARGS)
 
 	BlessTupleDesc(tupdesc);
 
-	memset(nulls, FALSE, values_length);
+	memset(nulls, FALSE, sizeof(bool) * values_length);
 
 	values[0] = Int64GetDatum(rtn->count);
 	if (rtn->count > 0) {
@@ -6926,7 +6926,7 @@ Datum RASTER_histogram(PG_FUNCTION_ARGS)
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		values[0] = Float8GetDatum(hist2[call_cntr].min);
 		values[1] = Float8GetDatum(hist2[call_cntr].max);
@@ -7457,7 +7457,7 @@ Datum RASTER_histogramCoverage(PG_FUNCTION_ARGS)
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		values[0] = Float8GetDatum(covhist2[call_cntr].min);
 		values[1] = Float8GetDatum(covhist2[call_cntr].max);
@@ -7710,7 +7710,7 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		values[0] = Float8GetDatum(quant2[call_cntr].quantile);
 		values[1] = Float8GetDatum(quant2[call_cntr].value);
@@ -8139,7 +8139,7 @@ Datum RASTER_quantileCoverage(PG_FUNCTION_ARGS)
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		values[0] = Float8GetDatum(covquant2[call_cntr].quantile);
 		if (covquant2[call_cntr].has_value)
@@ -8354,7 +8354,7 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		values[0] = Float8GetDatum(vcnts2[call_cntr].value);
 		values[1] = UInt32GetDatum(vcnts2[call_cntr].count);
@@ -8786,7 +8786,7 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS) {
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		values[0] = Float8GetDatum(covvcnts2[call_cntr].value);
 		values[1] = UInt32GetDatum(covvcnts2[call_cntr].count);
@@ -9608,7 +9608,7 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS)
 
 		POSTGIS_RT_DEBUGF(3, "Result %d", call_cntr);
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		values[0] = Int32GetDatum(drv_set2[call_cntr].idx);
 		values[1] = CStringGetTextDatum(drv_set2[call_cntr].short_name);
@@ -10553,7 +10553,7 @@ Datum RASTER_metadata(PG_FUNCTION_ARGS)
 	values[8] = Int32GetDatum(srid);
 	values[9] = UInt32GetDatum(numBands);
 
-	memset(nulls, FALSE, values_length);
+	memset(nulls, FALSE, sizeof(bool) * values_length);
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -10792,7 +10792,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 		Datum values[values_length];
 		bool nulls[values_length];
 
-		memset(nulls, FALSE, values_length);
+		memset(nulls, FALSE, sizeof(bool) * values_length);
 
 		values[0] = UInt32GetDatum(bmd2[call_cntr].bandnum);
 		values[1] = CStringGetTextDatum(bmd2[call_cntr].pixeltype);
@@ -10911,7 +10911,7 @@ Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS)
 	values[0] = Float8GetDatum(cw[0]);
 	values[1] = Float8GetDatum(cw[1]);
 
-	memset(nulls, FALSE, values_length);
+	memset(nulls, FALSE, sizeof(bool) * values_length);
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -11012,7 +11012,7 @@ Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS)
 	values[0] = Int32GetDatum(cr[0]);
 	values[1] = Int32GetDatum(cr[1]);
 
-	memset(nulls, FALSE, values_length);
+	memset(nulls, FALSE, sizeof(bool) * values_length);
 
 	/* build a tuple */
 	tuple = heap_form_tuple(tupdesc, values, nulls);
@@ -12791,7 +12791,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 			}
 
 			/* reset hasargval */
-			memset(hasargval, 0, spi_count);
+			memset(hasargval, 0, sizeof(int) * spi_count);
 
 			/*
 				process expressions
@@ -13031,7 +13031,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 #else
 				InitFunctionCallInfoData(ufc_info, &ufl_info, ufl_info.fn_nargs, InvalidOid, NULL, NULL);
 #endif
-				memset(ufc_info.argnull, FALSE, ufl_info.fn_nargs);
+				memset(ufc_info.argnull, FALSE, sizeof(bool) * ufl_info.fn_nargs);
 
 				if (ufl_info.fn_nargs != 4)
 					k = 2;
@@ -13171,9 +13171,9 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							/* expression has argument(s) */
 							if (spi_argcount[i]) {
 								/* reset values to (Datum) NULL */
-								memset(values, (Datum) NULL, argkwcount);
+								memset(values, NULL, sizeof(Datum) * argkwcount);
 								/* reset nulls to FALSE */
-								memset(nulls, FALSE, argkwcount);
+								memset(nulls, FALSE, sizeof(bool) * argkwcount);
 
 								/* set values and nulls */
 								for (j = 0; j < argkwcount; j++) {
@@ -13648,7 +13648,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
 #else
     InitFunctionCallInfoData(cbdata, &cbinfo, 3, InvalidOid, NULL, NULL);
 #endif
-    memset(cbdata.argnull, FALSE, 3);
+    memset(cbdata.argnull, FALSE, sizeof(bool) * 3);
 
     /* check that the function isn't strict if the args are null. */
     if (PG_ARGISNULL(7)) {
@@ -14568,7 +14568,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 #else
 		InitFunctionCallInfoData(arg->callback.ufc_info, &(arg->callback.ufl_info), arg->callback.ufl_info.fn_nargs, NULL, NULL);
 #endif
-		memset(arg->callback.ufc_info.argnull, FALSE, arg->callback.ufl_info.fn_nargs);
+		memset(arg->callback.ufc_info.argnull, FALSE, sizeof(bool) * arg->callback.ufl_info.fn_nargs);
 
 		/* userargs (7) */
 		if (!PG_ARGISNULL(7))
