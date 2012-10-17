@@ -34,6 +34,7 @@ PostGIS 2.1.0
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
   - ST_PixelOfValue (Bborie Park / UC Davis)
   - Casts to/from PostgreSQL geotypes (point/path/polygon).
+  - #2011, ST_DumpValues to output raster as array (Bborie Park / UC Davis)
   - #2030, n-raster (and n-band) ST_MapAlgebra (Bborie Park / UC Davis)
 
 * Enhancements *
