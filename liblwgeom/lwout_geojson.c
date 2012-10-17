@@ -38,6 +38,8 @@ lwgeom_to_geojson(const LWGEOM *geom, char *srs, int precision, int has_bbox)
 	GBOX tmp;
 	int rv;
 
+	if ( precision > OUT_MAX_DIGS_DOUBLE ) precision = OUT_MAX_DIGS_DOUBLE;
+
 	if (has_bbox) 
 	{
 		/* Whether these are geography or geometry, 

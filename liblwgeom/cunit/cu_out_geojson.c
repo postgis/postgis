@@ -81,6 +81,13 @@ static void out_geojson_test_precision(void)
 	    "POINT(1E300 -1E300)",
 	    "{\"type\":\"Point\",\"coordinates\":[1e+300,-1e+300]}",
 	    NULL, 0, 0);
+
+	/* huge precision, see http://trac.osgeo.org/postgis/ticket/2052 */
+	do_geojson_test(
+	    "POINT(1 2)",
+	    "{\"type\":\"Point\",\"coordinates\":[1,2]}",
+	    NULL, 100, 0);
+
 }
 
 
