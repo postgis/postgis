@@ -271,7 +271,6 @@ trim_trailing_zeros(char *str)
 	LWDEBUGF(3, "output: %s", str);
 }
 
-
 /*
  * Returns a new string which contains a maximum of maxlength characters starting
  * from startpos and finishing at endpos (0-based indexing). If the string is
