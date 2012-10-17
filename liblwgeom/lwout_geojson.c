@@ -13,6 +13,7 @@
 
 #include "liblwgeom_internal.h"
 #include <string.h>	/* strlen */
+#include <assert.h>
 
 static char *asgeojson_point(const LWPOINT *point, char *srs, GBOX *bbox, int precision);
 static char *asgeojson_line(const LWLINE *line, char *srs, GBOX *bbox, int precision);
@@ -38,7 +39,7 @@ lwgeom_to_geojson(const LWGEOM *geom, char *srs, int precision, int has_bbox)
 	GBOX tmp;
 	int rv;
 
-	if ( precision > OUT_MAX_DIGS_DOUBLE ) precision = OUT_MAX_DIGS_DOUBLE;
+	if ( precision > OUT_MAX_DOUBLE_PRECISION ) precision = OUT_MAX_DOUBLE_PRECISION;
 
 	if (has_bbox) 
 	{
@@ -668,6 +669,8 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 	char y[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
 	char z[OUT_MAX_DIGS_DOUBLE+OUT_MAX_DOUBLE_PRECISION+1];
 
+	assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
+
 	ptr = output;
 
 	if (!FLAGS_GET_Z(pa->flags))
@@ -734,6 +737,7 @@ pointArray_to_geojson(POINTARRAY *pa, char *output, int precision)
 static size_t
 pointArray_geojson_size(POINTARRAY *pa, int precision)
 {
+	assert ( precision <= OUT_MAX_DOUBLE_PRECISION );
 	if (FLAGS_NDIMS(pa->flags) == 2)
 		return (OUT_MAX_DIGS_DOUBLE + precision + sizeof(","))
 		       * 2 * pa->npoints + sizeof(",[]");
