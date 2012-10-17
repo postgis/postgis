@@ -242,6 +242,7 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS);
 
 /* Get pixel value */
 Datum RASTER_getPixelValue(PG_FUNCTION_ARGS);
+Datum RASTER_dumpValues(PG_FUNCTION_ARGS);
 
 /* Set pixel value(s) */
 Datum RASTER_setPixelValue(PG_FUNCTION_ARGS);
@@ -2431,6 +2432,422 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     PG_FREE_IF_COPY(pgraster, 0);
 
     PG_RETURN_FLOAT8(pixvalue);
+}
+
+/* ---------------------------------------------------------------- */
+/*  ST_DumpValue function                                           */
+/* ---------------------------------------------------------------- */
+
+typedef struct rtpg_dumpvalues_arg_t *rtpg_dumpvalues_arg;
+struct rtpg_dumpvalues_arg_t {
+	int numbands;
+	int rows;
+	int columns;
+
+	int *nbands; /* 0-based */
+	Datum **values;
+	bool **nodata;
+};
+
+static rtpg_dumpvalues_arg rtpg_dumpvalues_arg_init() {
+	rtpg_dumpvalues_arg arg = NULL;
+
+	arg = palloc(sizeof(struct rtpg_dumpvalues_arg_t));
+	if (arg == NULL) {
+		elog(ERROR, "rtpg_dumpvalues_arg_init: Unable to allocate memory for arguments");
+		return NULL;
+	}
+
+	arg->numbands = 0;
+	arg->rows = 0;
+	arg->columns = 0;
+
+	arg->nbands = NULL;
+	arg->values = NULL;
+	arg->nodata = NULL;
+
+	return arg;
+}
+
+static void rtpg_dumpvalues_arg_destroy(rtpg_dumpvalues_arg arg) {
+	int i = 0;
+
+	if (arg->numbands) {
+		if (arg->nbands != NULL)
+			pfree(arg->nbands);
+
+		for (i = 0; i < arg->numbands; i++) {
+			if (arg->values[i] != NULL)
+				pfree(arg->values[i]);
+
+			if (arg->nodata[i] != NULL)
+				pfree(arg->nodata[i]);
+		}
+
+		if (arg->values != NULL)
+			pfree(arg->values);
+		if (arg->nodata != NULL)
+			pfree(arg->nodata);
+	}
+
+	pfree(arg);
+}
+
+PG_FUNCTION_INFO_V1(RASTER_dumpValues);
+Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	TupleDesc tupdesc;
+	int call_cntr;
+	int max_calls;
+	int i = 0;
+	int x = 0;
+	int y = 0;
+	int z = 0;
+
+	int16 typlen;
+	bool typbyval;
+	char typalign;
+
+	rtpg_dumpvalues_arg arg1 = NULL;
+	rtpg_dumpvalues_arg arg2 = NULL;
+
+	/* stuff done only on the first call of the function */
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+		rt_pgraster *pgraster = NULL;
+		rt_raster raster = NULL;
+		rt_band band = NULL;
+		int numbands = 0;
+		int j = 0;
+		bool exclude_nodata_value = TRUE;
+
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+
+		double val = 0;
+		int hasnodata = 0;
+		double nodataval = 0;
+
+		POSTGIS_RT_DEBUG(2, "RASTER_dumpValues first call");
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/* Get input arguments */
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			PG_FREE_IF_COPY(pgraster, 0);
+			ereport(ERROR, (
+				errcode(ERRCODE_OUT_OF_MEMORY),
+				errmsg("Could not deserialize raster")
+			));
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* check that raster is not empty */
+		if (rt_raster_is_empty(raster)) {
+			elog(NOTICE, "Raster provided is empty");
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* raster has bands */
+		numbands = rt_raster_get_num_bands(raster); 
+		if (!numbands) {
+			elog(NOTICE, "Raster provided has no bands");
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* initialize arg1 */
+		arg1 = rtpg_dumpvalues_arg_init();
+		if (arg1 == NULL) {
+			elog(ERROR, "RASTER_dumpValues: Unable to initialize argument structure");
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* nband, array */
+		if (!PG_ARGISNULL(1)) {
+			array = PG_GETARG_ARRAYTYPE_P(1);
+			etype = ARR_ELEMTYPE(array);
+			get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+			switch (etype) {
+				case INT2OID:
+				case INT4OID:
+					break;
+				default:
+					elog(ERROR, "RASTER_dumpValues: Invalid data type for band indexes");
+					rtpg_dumpvalues_arg_destroy(arg1);
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+					break;
+			}
+
+			deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &(arg1->numbands));
+
+			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
+			if (arg1->nbands == NULL) {
+				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+				rtpg_dumpvalues_arg_destroy(arg1);
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			for (i = 0, j = 0; i < arg1->numbands; i++) {
+				if (nulls[i]) continue;
+
+				switch (etype) {
+					case INT2OID:
+						arg1->nbands[j] = DatumGetInt16(e[i]) - 1;
+						break;
+					case INT4OID:
+						arg1->nbands[j] = DatumGetInt32(e[i]) - 1;
+						break;
+				}
+
+				j++;
+			}
+
+			if (j < arg1->numbands) {
+				arg1->nbands = repalloc(arg1->nbands, sizeof(int) * j);
+				if (arg1->nbands == NULL) {
+					elog(ERROR, "RASTER_dumpValues: Unable to reallocate memory for pixel values");
+					rtpg_dumpvalues_arg_destroy(arg1);
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				arg1->numbands = j;
+			}
+
+			/* validate nbands */
+			for (i = 0; i < arg1->numbands; i++) {
+				if (!rt_raster_has_band(raster, arg1->nbands[i])) {
+					elog(NOTICE, "Band at index %d not found in raster", arg1->nbands[i] + 1);
+					rtpg_dumpvalues_arg_destroy(arg1);
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
+			}
+
+		}
+		else {
+			arg1->numbands = numbands;
+			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
+
+			if (arg1->nbands == NULL) {
+				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+				rtpg_dumpvalues_arg_destroy(arg1);
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			for (i = 0; i < arg1->numbands; i++) {
+				arg1->nbands[i] = i;
+				POSTGIS_RT_DEBUGF(4, "arg1->nbands[%d] = %d", arg1->nbands[i], i);
+			}
+		}
+
+		arg1->rows = rt_raster_get_height(raster);
+		arg1->columns = rt_raster_get_width(raster);
+
+		/* exclude_nodata_value */
+		if (!PG_ARGISNULL(2))
+			exclude_nodata_value = PG_GETARG_BOOL(2);
+		POSTGIS_RT_DEBUGF(4, "exclude_nodata_value = %d", exclude_nodata_value);
+
+		/* allocate memory for each band's values and nodata flags */
+		arg1->values = palloc(sizeof(Datum *) * arg1->numbands);
+		arg1->nodata = palloc(sizeof(bool *) * arg1->numbands);
+		if (arg1->values == NULL || arg1->nodata == NULL) {
+			elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+			rtpg_dumpvalues_arg_destroy(arg1);
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		memset(arg1->values, 0, sizeof(Datum *) * arg1->numbands);
+		memset(arg1->nodata, 0, sizeof(bool *) * arg1->numbands);
+
+		/* get each band and dump data */
+		for (z = 0; z < arg1->numbands; z++) {
+			band = rt_raster_get_band(raster, arg1->nbands[z]);
+			if (!band) {
+				elog(ERROR, "RASTER_dumpValues: Unable to get band at index %d", arg1->nbands[z] + 1);
+				rtpg_dumpvalues_arg_destroy(arg1);
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			/* band's hasnodata and nodataval */
+			hasnodata = rt_band_get_hasnodata_flag(band);
+			if (hasnodata)
+				nodataval = rt_band_get_nodata(band);
+			POSTGIS_RT_DEBUGF(4, "(hasnodata, nodataval) = (%d, %f)", hasnodata, nodataval);
+
+			/* allocate memory for values and nodata flags */
+			arg1->values[z] = palloc(sizeof(Datum) * arg1->rows * arg1->columns);
+			arg1->nodata[z] = palloc(sizeof(bool) * arg1->rows * arg1->columns);
+			if (arg1->values[z] == NULL || arg1->nodata[z] == NULL) {
+				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+				rtpg_dumpvalues_arg_destroy(arg1);
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+			memset(arg1->values[z], 0, sizeof(Datum) * arg1->rows * arg1->columns);
+			memset(arg1->nodata[z], 0, sizeof(bool) * arg1->rows * arg1->columns);
+
+			i = 0;
+			for (y = 0; y < arg1->rows; y++) {
+				for (x = 0; x < arg1->columns; x++) {
+					/* get pixel */
+					if (rt_band_get_pixel(band, x, y, &val) != 0) {
+						elog(ERROR, "RASTER_dumpValues: Unable to pixel (%d, %d) of band %d", x, y, arg1->nbands[z] + 1);
+						rtpg_dumpvalues_arg_destroy(arg1);
+						rt_raster_destroy(raster);
+						PG_FREE_IF_COPY(pgraster, 0);
+						MemoryContextSwitchTo(oldcontext);
+						SRF_RETURN_DONE(funcctx);
+					}
+
+					arg1->values[z][i] = Float8GetDatum(val);
+					POSTGIS_RT_DEBUGF(5, "arg1->values[z][i] = %f", DatumGetFloat8(arg1->values[z][i]));
+					if (hasnodata) {
+						POSTGIS_RT_DEBUGF(5, "FLT_EQ?: %d", FLT_EQ(val, nodataval) ? 1 : 0);
+					}
+					POSTGIS_RT_DEBUGF(5, "clamped is?: %d", rt_band_clamped_value_is_nodata(band, val));
+
+					if (
+						exclude_nodata_value &&
+						hasnodata && (
+							FLT_EQ(val, nodataval) ||
+							rt_band_clamped_value_is_nodata(band, val) == 1
+						)
+					) {
+						arg1->nodata[z][i] = TRUE;
+						POSTGIS_RT_DEBUG(5, "nodata = 1");
+					}
+					else
+						POSTGIS_RT_DEBUG(5, "nodata = 0");
+
+					i++;
+				}
+			}
+		}
+
+		/* cleanup */
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+
+		/* Store needed information */
+		funcctx->user_fctx = arg1;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = arg1->numbands;
+
+		/* Build a tuple descriptor for our result type */
+		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE) {
+			MemoryContextSwitchTo(oldcontext);
+			ereport(ERROR, (
+				errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
+				errmsg(
+					"function returning record called in context "
+					"that cannot accept type record"
+				)
+			));
+		}
+
+		BlessTupleDesc(tupdesc);
+		funcctx->tuple_desc = tupdesc;
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	tupdesc = funcctx->tuple_desc;
+	arg2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		int values_length = 2;
+		Datum values[values_length];
+		bool nulls[values_length];
+		HeapTuple tuple;
+		Datum result;
+		ArrayType *mdValues = NULL;
+		int dim[2] = {arg2->rows, arg2->columns};
+		int lbound[2] = {1, 1};
+
+		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
+		POSTGIS_RT_DEBUGF(4, "dim = %d, %d", dim[0], dim[1]);
+
+		memset(nulls, FALSE, sizeof(bool) * values_length);
+
+		values[0] = Int32GetDatum(arg2->nbands[call_cntr] + 1);
+
+		/* info about the type of item in the multi-dimensional array (float8). */
+		get_typlenbyvalalign(FLOAT8OID, &typlen, &typbyval, &typalign);
+
+		/* assemble 3-dimension array of values */
+		mdValues = construct_md_array(
+			arg2->values[call_cntr], arg2->nodata[call_cntr],
+			2, dim, lbound,
+			FLOAT8OID,
+			typlen, typbyval, typalign
+		);
+		values[1] = PointerGetDatum(mdValues);
+
+		/* build a tuple and datum */
+		tuple = heap_form_tuple(tupdesc, values, nulls);
+		result = HeapTupleGetDatum(tuple);
+
+		SRF_RETURN_NEXT(funcctx, result);
+	}
+	/* do when there is no more left */
+	else {
+		rtpg_dumpvalues_arg_destroy(arg2);
+		SRF_RETURN_DONE(funcctx);
+	}
 }
 
 /**

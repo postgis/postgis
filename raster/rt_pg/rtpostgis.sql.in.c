@@ -4120,6 +4120,22 @@ CREATE OR REPLACE FUNCTION st_dumpaspolygons(rast raster, band integer DEFAULT 1
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_DumpValues
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_dumpvalues(
+	rast raster, nband integer[] DEFAULT NULL, exclude_nodata_value boolean DEFAULT TRUE,
+	OUT nband integer, OUT valarray double precision[][]
+)
+	RETURNS SETOF record
+	AS 'MODULE_PATHNAME','RASTER_dumpValues'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_dumpvalues(rast raster, nband integer, exclude_nodata_value boolean DEFAULT TRUE)
+	RETURNS double precision[][]
+	AS $$ SELECT valarray FROM st_dumpvalues($1, ARRAY[$2]::integer[], $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- ST_Polygon
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_polygon(rast raster, band integer DEFAULT 1)

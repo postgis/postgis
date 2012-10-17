@@ -88,6 +88,7 @@ TEST_UTILITY = \
 	rt_reclass \
 	rt_resample \
 	rt_asraster \
+	rt_dumpvalues
 
 TEST_MAPALGEBRA = \
 	rt_mapalgebraexpr \
