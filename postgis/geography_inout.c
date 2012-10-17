@@ -207,7 +207,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	int version;
 	char *srs;
 	int srid = SRID_DEFAULT;
-	int precision = OUT_MAX_DOUBLE_PRECISION;
+	int precision = DBL_DIG;
 	int option=0;
 	int lwopts = LW_GML_IS_DIMS;
 	static const char *default_prefix = "gml:";
@@ -237,8 +237,9 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		/* TODO: leave this to liblwgeom */
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -328,7 +329,7 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	char *kml;
 	text *result;
 	int version;
-	int precision = OUT_MAX_DOUBLE_PRECISION;
+	int precision = DBL_DIG;
 	static const char *default_prefix = "";
 	char *prefixbuf;
 	const char* prefix = default_prefix;
@@ -354,8 +355,9 @@ Datum geography_as_kml(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		/* TODO: leave this to liblwgeom */
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -406,7 +408,7 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	char *svg;
 	text *result;
 	int relative = 0;
-	int precision=OUT_MAX_DOUBLE_PRECISION;
+	int precision=DBL_DIG;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -422,8 +424,9 @@ Datum geography_as_svg(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		/* TODO: leave this to liblwgeom */
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -452,7 +455,7 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	int version;
 	int option = 0;
 	int has_bbox = 0;
-	int precision = OUT_MAX_DOUBLE_PRECISION;
+	int precision = DBL_DIG;
 	char * srs = NULL;
 
 	/* Get the version */
@@ -474,8 +477,9 @@ Datum geography_as_geojson(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		/* TODO: leave this to liblwgeom */
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 

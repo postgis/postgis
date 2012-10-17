@@ -1329,14 +1329,6 @@ int lwline_crossing_direction(const LWLINE *l1, const LWLINE *l2);
 */
 LWCOLLECTION* lwgeom_clip_to_ordinate_range(const LWGEOM *lwin, char ordinate, double from, double to, double offset);
 
-/*
- * Export functions
- */
-#define OUT_MAX_DOUBLE 1E15
-#define OUT_SHOW_DIGS_DOUBLE 20
-#define OUT_MAX_DOUBLE_PRECISION 15
-#define OUT_MAX_DIGS_DOUBLE (OUT_SHOW_DIGS_DOUBLE + 2) /* +2 mean add dot and sign */
-
 /**
  * Macros for specifying GML options. 
  * @{

@@ -14,6 +14,7 @@
  *  Commons functions for all export functions
  */
 
+#include "float.h" /* for DBL_DIG */
 #include "postgres.h"
 #include "executor/spi.h"
 
@@ -171,7 +172,7 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	int srid;
 	int option = 0;
 	int lwopts = LW_GML_IS_DIMS;
-	int precision = OUT_MAX_DOUBLE_PRECISION;
+	int precision = DBL_DIG;
 	static const char* default_prefix = "gml:"; /* default prefix */
 	const char* prefix = default_prefix;
 	const char* gml_id = NULL;
@@ -194,8 +195,9 @@ Datum LWGEOM_asGML(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		/* TODO: leave this to liblwgeom ? */
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -285,7 +287,7 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	char *kml;
 	text *result;
 	int version;
-	int precision = OUT_MAX_DOUBLE_PRECISION;
+	int precision = DBL_DIG;
 	static const char* default_prefix = ""; /* default prefix */
 	char *prefixbuf;
 	const char* prefix = default_prefix;
@@ -307,9 +309,10 @@ Datum LWGEOM_asKML(PG_FUNCTION_ARGS)
 	/* Retrieve precision if any (default is max) */
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
+		/* TODO: leave this to liblwgeom ? */
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -363,7 +366,7 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	int version;
 	int option = 0;
 	int has_bbox = 0;
-	int precision = OUT_MAX_DOUBLE_PRECISION;
+	int precision = DBL_DIG;
 	char * srs = NULL;
 
 	/* Get the version */
@@ -382,8 +385,8 @@ Datum LWGEOM_asGeoJson(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -441,7 +444,7 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	char *svg;
 	text *result;
 	int relative = 0;
-	int precision=OUT_MAX_DOUBLE_PRECISION;
+	int precision=DBL_DIG;
 
 	if ( PG_ARGISNULL(0) ) PG_RETURN_NULL();
 
@@ -454,8 +457,9 @@ Datum LWGEOM_asSVG(PG_FUNCTION_ARGS)
 	if ( PG_NARGS() > 2 && ! PG_ARGISNULL(2) )
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		/* TODO: leave this to liblwgeom ? */
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 
@@ -485,7 +489,7 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	int option = 0;
 	int is_deegree = 0;
 	int is_dims = 1;
-	int precision = OUT_MAX_DOUBLE_PRECISION;
+	int precision = DBL_DIG;
 	static const char* default_defid = "x3d:"; /* default defid */
 	char *defidbuf;
 	const char* defid = default_defid;
@@ -507,8 +511,9 @@ Datum LWGEOM_asX3D(PG_FUNCTION_ARGS)
 	if (PG_NARGS() >2 && !PG_ARGISNULL(2))
 	{
 		precision = PG_GETARG_INT32(2);
-		if ( precision > OUT_MAX_DOUBLE_PRECISION )
-			precision = OUT_MAX_DOUBLE_PRECISION;
+		/* TODO: leave this to liblwgeom ? */
+		if ( precision > DBL_DIG )
+			precision = DBL_DIG;
 		else if ( precision < 0 ) precision = 0;
 	}
 
