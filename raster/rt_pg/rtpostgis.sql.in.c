@@ -86,6 +86,15 @@ CREATE TYPE rastbandarg AS (
 );
 
 -----------------------------------------------------------------------
+-- generic composite type of a geometry and value
+-----------------------------------------------------------------------
+
+CREATE TYPE geomval AS (
+	geom geometry,
+	val double precision
+);
+
+-----------------------------------------------------------------------
 -- Raster Accessors
 -----------------------------------------------------------------------
 
@@ -4102,14 +4111,29 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE;
 
+-- cannot be STRICT as newvalue can be NULL
+CREATE OR REPLACE FUNCTION st_setvalues(
+	rast raster, nband integer,
+	geomvalset geomval[],
+	keepnodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesGeomval'
+	LANGUAGE 'c' IMMUTABLE;
+
+-- cannot be STRICT as newvalue can be NULL
+CREATE OR REPLACE FUNCTION st_setvalues(
+	rast raster, nband integer,
+	geom geometry, newvalue double precision,
+	keepnodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$ SELECT st_setvalues($1, $2, ARRAY[ROW($3, $4)]::geomval[], $5) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
 -----------------------------------------------------------------------
 -- Raster Processing Functions
 -----------------------------------------------------------------------
-
-CREATE TYPE geomval AS (
-	geom geometry,
-	val double precision
-);
 
 -----------------------------------------------------------------------
 -- ST_DumpAsPolygons

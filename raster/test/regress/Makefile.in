@@ -103,7 +103,8 @@ TEST_MAPALGEBRA = \
 	rt_mapalgebra_expr \
 	rt_union \
 	rt_invdistweight4ma \
-	rt_4ma
+	rt_4ma \
+	rt_setvalues_geomval
 
 TEST_GIST = \
 	rt_above \

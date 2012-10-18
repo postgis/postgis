@@ -5584,6 +5584,35 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
 }
 
 /**
+ * Get 6-element array of raster inverse geotransform matrix
+ *
+ * @param raster : the raster to get matrix of
+ * @param gt : optional input parameter, 6-element geotransform matrix
+ * @param igt : output parameter, 6-element inverse geotransform matrix
+ *
+ * @return if zero, error occurred in function
+ */
+int rt_raster_get_inverse_geotransform_matrix(rt_raster raster,
+	double *gt, double *igt) {
+	double _gt[6] = {0};
+
+	assert((raster != NULL || gt != NULL));
+	assert(igt != NULL);
+
+	if (gt == NULL)
+		rt_raster_get_geotransform_matrix(raster, _gt);
+	else
+		memcpy(_gt, gt, sizeof(double) * 6);
+	
+	if (!GDALInvGeoTransform(_gt, igt)) {
+		rterror("rt_raster_get_inverse_geotransform_matrix: Unable to compute inverse geotransform matrix");
+		return 0;
+	}
+
+	return 1;
+}
+
+/**
  * Get 6-element array of raster geotransform matrix
  *
  * @param raster : the raster to get matrix of
@@ -5643,28 +5672,14 @@ rt_raster_cell_to_geopoint(rt_raster raster,
 	double *xw, double *yw,
 	double *gt
 ) {
-	double *_gt = NULL;
-	int init_gt = 0;
-	int i = 0;
+	double _gt[6] = {0};
 
 	assert(NULL != raster);
 	assert(NULL != xw);
 	assert(NULL != yw);
 
-	if (NULL == gt) {
-		_gt = rtalloc(sizeof(double) * 6);
-		if (NULL == _gt) {
-			rterror("rt_raster_cell_to_geopoint: Unable to allocate memory for geotransform matrix");
-			return 0;
-		}
-		init_gt = 1;
-
-		for (i = 0; i < 6; i++) _gt[i] = 0;
-	}
-	else {
-		_gt = gt;
-		init_gt = 0;
-	}
+	if (NULL != gt)
+		memcpy(_gt, gt, sizeof(double) * 6);
 
 	/* scale of matrix is not set */
 	if (
@@ -5687,7 +5702,6 @@ rt_raster_cell_to_geopoint(rt_raster raster,
 	RASTER_DEBUGF(4, "GDALApplyGeoTransform (c -> g) for (%f, %f) = (%f, %f)",
 		xr, yr, *xw, *yw);
 
-	if (init_gt) rtdealloc(_gt);
 	return 1;
 }
 
@@ -5699,7 +5713,7 @@ rt_raster_cell_to_geopoint(rt_raster raster,
  * @param yw : Y ordinate of the geographical point
  * @param xr : output parameter, the pixel's column
  * @param yr : output parameter, the pixel's row
- * @param igt : input/output parameter, 3x2 inverse geotransform matrix
+ * @param igt : input/output parameter, inverse geotransform matrix
  *
  * @return if zero, error occurred in function
  */
@@ -5709,29 +5723,15 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 	double *xr, double *yr,
 	double *igt
 ) {
-	double *_igt = NULL;
-	int i = 0;
-	int init_igt = 0;
+	double _igt[6] = {0};
 	double rnd = 0;
 
 	assert(NULL != raster);
 	assert(NULL != xr);
 	assert(NULL != yr);
 
-	if (igt == NULL) {
-		_igt = rtalloc(sizeof(double) * 6);
-		if (_igt == NULL) {
-			rterror("rt_raster_geopoint_to_cell: Unable to allocate memory for inverse geotransform matrix");
-			return 0;
-		}
-		init_igt = 1;
-
-		for (i = 0; i < 6; i++) _igt[i] = 0;
-	}
-	else {
-		_igt = igt;
-		init_igt = 0;
-	}
+	if (igt != NULL)
+		memcpy(_igt, igt, sizeof(double) * 6);
 
 	/* matrix is not set */
 	if (
@@ -5742,12 +5742,8 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 		FLT_EQ(_igt[4], 0.) &&
 		FLT_EQ(_igt[5], 0.)
 	) {
-		double gt[6] = {0.0};
-		rt_raster_get_geotransform_matrix(raster, gt);
-
-		if (!GDALInvGeoTransform(gt, _igt)) {
-			rterror("rt_raster_geopoint_to_cell: Unable to compute inverse geotransform matrix");
-			if (init_igt) rtdealloc(_igt);
+		if (!rt_raster_get_inverse_geotransform_matrix(raster, NULL, _igt)) {
+			rterror("rt_raster_geopoint_to_cell: Unable to get inverse geotransform matrix");
 			return 0;
 		}
 	}
@@ -5771,7 +5767,6 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 	RASTER_DEBUGF(4, "Corrected GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
 		xw, yw, *xr, *yr);
 
-	if (init_igt) rtdealloc(_igt);
 	return 1;
 }
 

@@ -1115,6 +1115,18 @@ void rt_raster_set_srid(rt_raster raster, int32_t srid);
 int32_t rt_raster_get_srid(rt_raster raster);
 
 /**
+ * Get 6-element array of raster inverse geotransform matrix
+ *
+ * @param raster : the raster to get matrix of
+ * @param gt : optional input parameter, 6-element geotransform matrix
+ * @param igt : output parameter, 6-element inverse geotransform matrix
+ *
+ * @return if zero, error occurred in function
+ */
+int rt_raster_get_inverse_geotransform_matrix(rt_raster raster,
+	double *gt, double *igt);
+
+/**
  * Get 6-element array of raster geotransform matrix
  *
  * @param raster : the raster to get matrix of
