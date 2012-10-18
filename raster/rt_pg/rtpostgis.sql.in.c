@@ -2406,8 +2406,14 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, pt geometry, n
         IF ( gtype != 'ST_Point' ) THEN
             RAISE EXCEPTION 'Attempting to get the value of a pixel with a non-point geometry';
         END IF;
+
+        IF st_srid(pt) != st_srid(rast) THEN
+            RAISE EXCEPTION 'The SRIDs of the raster and point geometry do NOT match';
+        END IF;
+
         x := st_x(pt);
         y := st_y(pt);
+
         RETURN st_setvalue(rast,
                            band,
                            st_world2rastercoordx(rast, x, y),

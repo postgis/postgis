@@ -98,5 +98,9 @@ SELECT 'test 4.4', id
 
 SELECT 'test 5.1', id
     FROM rt_band_properties_test
-    WHERE st_value(st_setvalue(rast, 1, st_makepoint(st_upperleftx(rast), st_upperlefty(rast)), 3), 1, 1, 1) != 3;
+    WHERE st_value(st_setvalue(rast, 1, ST_SetSRID(st_makepoint(st_upperleftx(rast), st_upperlefty(rast)), ST_SRID(rast)), 3), 1, 1, 1) != 3;
 
+-- ticket #2056
+SELECT 'test 5.2', id
+    FROM rt_band_properties_test
+    WHERE st_value(st_setvalue(rast, 1, st_makepoint(st_upperleftx(rast), st_upperlefty(rast)), 3), 1, 1, 1) != 3;
