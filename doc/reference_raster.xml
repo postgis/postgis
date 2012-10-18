@@ -4037,7 +4037,7 @@ FROM (
 		   <refentry id="RT_ST_SetValue">
 			<refnamediv>
 				<refname>ST_SetValue</refname>
-				<refpurpose>Returns modified raster resulting from setting the value of a given band in a given columnx, rowy pixel or at a pixel that intersects a particular geometric point. Band numbers start at 1 and assumed to be 1 if not specified.</refpurpose>
+				<refpurpose>Returns modified raster resulting from setting the value of a given band in a given columnx, rowy pixel or the pixels that intersect a particular geometry. Band numbers start at 1 and assumed to be 1 if not specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -4075,10 +4075,10 @@ FROM (
 			
 			<refsection>
 				<title>Description</title>
-				<para>Returns modified raster resulting from setting the specified pixel value to new value for the designed band given the row column location or a geometric point location.
-					If no band is specified, then band 1 is assumed.
+				<para>Returns modified raster resulting from setting the specified pixels' values to new value for the designed band given the raster's row and column or a geometry. If no band is specified, then band 1 is assumed.
 				</para>
-				<note><para>Setting by geometry currently only works for points.</para></note>
+
+				<para>Enhanced: 2.1.0 Geometry variant of ST_SetValue() now supports any geometry type, not just point. The geometry variant is also a wrapper around the geomval[] variant of ST_SetValues()</para>
 			</refsection>
 			
 			<refsection>
@@ -4170,6 +4170,14 @@ GROUP BY (foo.geomval).val;
 						<paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
 					</funcprototype>
 
+				  <funcprototype>
+						<funcdef>raster <function>ST_SetValues</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>geomval[] </type> <parameter>geomvalset</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>keepnodata=FALSE</parameter></paramdef>
+					</funcprototype>
+
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -4197,6 +4205,10 @@ GROUP BY (foo.geomval).val;
 
 				<para>
 					Variant 4 is the same as Variant 3 with the exception that it assumes that the first band's pixels of <varname>rast</varname> will be set.
+				</para>
+
+				<para>
+					For Variant 5, an array of <xref linkend="geomval" /> is used to determine the specific pixels to be set.  If all the geometries in the array are of type POINT or MULTIPOINT, the function uses a shortcut where the longitude and latitude of each point is used to set a pixel directly.  Otherwise, the geometries are converted to rasters and then iterated through in one pass. See example Variant 5.
 				</para>
 
 				<para>Availability: 2.1.0</para>
@@ -4574,6 +4586,86 @@ ORDER BY 1, 2;
 				</programlisting>
 
 			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 5</title>
+
+				<programlisting>
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0) AS rast
+), bar AS (
+	SELECT 1 AS gid, 'SRID=0;POINT(2.5 -2.5)'::geometry geom UNION ALL
+	SELECT 2 AS gid, 'SRID=0;POLYGON((1 -1, 4 -1, 4 -4, 1 -4, 1 -1))'::geometry geom UNION ALL
+	SELECT 3 AS gid, 'SRID=0;POLYGON((0 0, 5 0, 5 -1, 1 -1, 1 -4, 0 -4, 0 0))'::geometry geom UNION ALL
+	SELECT 4 AS gid, 'SRID=0;MULTIPOINT(0 0, 4 4, 4 -4)'::geometry
+)
+SELECT
+	rid, gid, ST_DumpValues(ST_SetValue(rast, 1, geom, gid))
+FROM foo t1
+CROSS JOIN bar t2
+ORDER BY rid, gid;
+
+ rid | gid |                                                                st_dumpvalues                                                                
+-----+-----+---------------------------------------------------------------------------------------------------------------------------------------------
+   1 |   1 | (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,1,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL}}")
+   1 |   2 | (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},{NULL,2,2,2,NULL},{NULL,2,2,2,NULL},{NULL,NULL,NULL,NULL,NULL}}")
+   1 |   3 | (1,"{{3,3,3,3,3},{3,NULL,NULL,NULL,NULL},{3,NULL,NULL,NULL,NULL},{3,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL}}")
+   1 |   4 | (1,"{{4,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,NULL},{NULL,NULL,NULL,NULL,4}}")
+(4 rows)
+				</programlisting>
+
+				<para>The following shows that following geomvals in the array can overwrite prior geomvals</para>
+				<programlisting>
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0) AS rast
+), bar AS (
+	SELECT 1 AS gid, 'SRID=0;POINT(2.5 -2.5)'::geometry geom UNION ALL
+	SELECT 2 AS gid, 'SRID=0;POLYGON((1 -1, 4 -1, 4 -4, 1 -4, 1 -1))'::geometry geom UNION ALL
+	SELECT 3 AS gid, 'SRID=0;POLYGON((0 0, 5 0, 5 -1, 1 -1, 1 -4, 0 -4, 0 0))'::geometry geom UNION ALL
+	SELECT 4 AS gid, 'SRID=0;MULTIPOINT(0 0, 4 4, 4 -4)'::geometry
+)
+SELECT
+	t1.rid, t2.gid, t3.gid, ST_DumpValues(ST_SetValues(rast, 1, ARRAY[ROW(t2.geom, t2.gid), ROW(t3.geom, t3.gid)]::geomval[]))
+FROM foo t1
+CROSS JOIN bar t2
+CROSS JOIN bar t3
+WHERE t2.gid = 1
+	AND t3.gid = 2
+ORDER BY t1.rid, t2.gid, t3.gid;
+
+ rid | gid | gid |                                                    st_dumpvalues                                                    
+-----+-----+-----+---------------------------------------------------------------------------------------------------------------------
+   1 |   1 |   2 | (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},{NULL,2,2,2,NULL},{NULL,2,2,2,NULL},{NULL,NULL,NULL,NULL,NULL}}")
+(1 row)
+				</programlisting>
+
+				<para>This example is the opposite of the prior example</para>
+				<programlisting>
+WITH foo AS (
+	SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0) AS rast
+), bar AS (
+	SELECT 1 AS gid, 'SRID=0;POINT(2.5 -2.5)'::geometry geom UNION ALL
+	SELECT 2 AS gid, 'SRID=0;POLYGON((1 -1, 4 -1, 4 -4, 1 -4, 1 -1))'::geometry geom UNION ALL
+	SELECT 3 AS gid, 'SRID=0;POLYGON((0 0, 5 0, 5 -1, 1 -1, 1 -4, 0 -4, 0 0))'::geometry geom UNION ALL
+	SELECT 4 AS gid, 'SRID=0;MULTIPOINT(0 0, 4 4, 4 -4)'::geometry
+)
+SELECT
+	t1.rid, t2.gid, t3.gid, ST_DumpValues(ST_SetValues(rast, 1, ARRAY[ROW(t2.geom, t2.gid), ROW(t3.geom, t3.gid)]::geomval[]))
+FROM foo t1
+CROSS JOIN bar t2
+CROSS JOIN bar t3
+WHERE t2.gid = 2
+	AND t3.gid = 1
+ORDER BY t1.rid, t2.gid, t3.gid;
+
+ rid | gid | gid |                                                    st_dumpvalues                                                    
+-----+-----+-----+---------------------------------------------------------------------------------------------------------------------
+   1 |   2 |   1 | (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,2,2,2,NULL},{NULL,2,1,2,NULL},{NULL,2,2,2,NULL},{NULL,NULL,NULL,NULL,NULL}}")
+(1 row)
+				</programlisting>
+
+			</refsection>
+
 
 			<refsection>
 				<title>See Also</title>
@@ -7356,7 +7448,7 @@ FROM dummy_rast;
 
 				<para>The hill shade equation is: <programlisting>max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) )</programlisting>.</para>
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and added optional <varname>interpolate_nodata</varname> function parameter</para>
+				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra and added optional <varname>interpolate_nodata</varname> function parameter</para>
 
 			</refsection>
 				
