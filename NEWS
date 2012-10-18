@@ -6,6 +6,8 @@ PostGIS 2.1.0
   - ST_Intersects(raster, geometry) behaves in the same manner as
     ST_Intersects(geometry, raster).
   - #2026, ST_Union(raster) now unions all bands of all rasters
+  - point variant of ST_SetValue(raster) previously did not check SRID
+    of input geometry and raster.
 
 * Deprecated signatures
 
@@ -36,6 +38,9 @@ PostGIS 2.1.0
   - Casts to/from PostgreSQL geotypes (point/path/polygon).
   - #2011, ST_DumpValues to output raster as array (Bborie Park / UC Davis)
   - #2030, n-raster (and n-band) ST_MapAlgebra (Bborie Park / UC Davis)
+  - Added geomval array variant of ST_SetValues() to set many pixel values of
+    a band using a set of geometries and corresponding values in one call
+    (Bborie Park / UC Davis)
 
 * Enhancements *
   - #823, tiger geocoder: Make loader_generate_script download portion less greedy
@@ -55,6 +60,8 @@ PostGIS 2.1.0
     of missing TopoGeometry objects from their natural layer.
   - ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional parameter to
     interpolate NODATA pixels before running the operation.
+  - point variant of ST_SetValue(raster) is now a wrapper around geomval variant of
+    ST_SetValues(rast).
 
 * Fixes *
 
