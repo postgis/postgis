@@ -106,21 +106,8 @@ TEST_MAPALGEBRA = \
 	rt_4ma \
 	rt_setvalues_geomval
 
-TEST_GIST = \
-	rt_above \
-	rt_below \
-	rt_contained \
-	rt_contain \
-	rt_left \
-	rt_overabove \
-	rt_overbelow \
-	rt_overlap \
-	rt_overleft \
-	rt_overright \
-	rt_right \
-	rt_same 
-
 TEST_SREL = \
+	rt_gist_relationships \
 	rt_intersects \
 	rt_samealignment \
 	rt_geos_relationships
@@ -136,7 +123,7 @@ TEST_LOADER = \
 	loader/Tiled10x10Copy
 
 TESTS = $(TEST_FIRST) $(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
-		$(TEST_PROPS) $(TEST_GIST) $(TEST_BANDPROPS) \
+		$(TEST_PROPS) $(TEST_BANDPROPS) \
 		$(TEST_UTILITY) $(TEST_MAPALGEBRA) $(TEST_SREL) \
 		$(TEST_BUGS) \
 		$(TEST_LOADER)

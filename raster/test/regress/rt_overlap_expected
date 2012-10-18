@@ -1,6 +1,0 @@
-raster_overlap(X, query(1,1))|16|3|6|3|6|BOX(-40 -40,40 40)
-raster_geometry_overlap(X, query(1,1))|16|3|6|3|6|BOX(-40 -40,40 40)
-geometry_raster_overlap(X, query(1,1))|16|3|6|3|6|BOX(-40 -40,40 40)
-X && query(1,1)|16|3|6|3|6|BOX(-40 -40,40 40)
-X && query(1,1)|16|3|6|3|6|BOX(-40 -40,40 40)
-X && query(1,1)|16|3|6|3|6|BOX(-40 -40,40 40)

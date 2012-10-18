@@ -1,6 +1,0 @@
-raster_contain(query(1,1), X)|4|4|5|4|5|BOX(-20 -20,20 20)
-raster_geometry_contain(query(1,1), X)|4|4|5|4|5|BOX(-20 -20,20 20)
-geometry_raster_contain(query(1,1), X)|4|4|5|4|5|BOX(-20 -20,20 20)
-query(1,1) ~ X|4|4|5|4|5|BOX(-20 -20,20 20)
-query(1,1) ~ X|4|4|5|4|5|BOX(-20 -20,20 20)
-query(1,1) ~ X|4|4|5|4|5|BOX(-20 -20,20 20)
