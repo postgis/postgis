@@ -2408,7 +2408,8 @@ CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, pt geometry, n
         END IF;
 
         IF st_srid(pt) != st_srid(rast) THEN
-            RAISE EXCEPTION 'The SRIDs of the raster and point geometry do NOT match';
+            RAISE NOTICE 'The SRIDs of the raster and point geometry do NOT match. Returning original raster';
+            RETURN rast;
         END IF;
 
         x := st_x(pt);

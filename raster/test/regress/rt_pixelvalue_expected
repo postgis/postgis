@@ -6,4 +6,9 @@ NOTICE:  Raster do not have a nodata value defined. Set band nodata value first.
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
-ERROR:  The SRIDs of the raster and point geometry do NOT match
+NOTICE:  The SRIDs of the raster and point geometry do NOT match. Returning original raster
+NOTICE:  The SRIDs of the raster and point geometry do NOT match. Returning original raster
+NOTICE:  The SRIDs of the raster and point geometry do NOT match. Returning original raster
+NOTICE:  The SRIDs of the raster and point geometry do NOT match. Returning original raster
+test 5.2|1
+test 5.2|2
