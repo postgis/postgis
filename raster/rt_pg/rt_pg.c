@@ -3540,7 +3540,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	numbands = rt_raster_get_num_bands(raster);
 	width = rt_raster_get_width(raster);
 	height = rt_raster_get_height(raster);
-	srid = rt_raster_get_srid(raster);
+	srid = clamp_srid(rt_raster_get_srid(raster));
 	rt_raster_get_geotransform_matrix(raster, gt);
 
 	/* nband */
@@ -3652,7 +3652,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		}
 
 		/* check SRID */
-		if (gserialized_get_srid(gser) != srid) {
+		if (clamp_srid(gserialized_get_srid(gser)) != srid) {
 			elog(NOTICE, "Geometry provided for geomval at index %d does not have the same SRID as the raster: %d. Returning original raster", i, srid);
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(raster);
