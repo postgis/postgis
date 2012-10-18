@@ -17,6 +17,7 @@ PostGIS 2.0.2
   - #1978, wrong answer when calculating length of a closed circular arc (circle)
   - #1981, Remove unused but set variables as found with gcc 4.6+
   - Update URL of Maven jar
+  - #2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()
 
  * Enhancements *
 

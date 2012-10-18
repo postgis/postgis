@@ -3180,6 +3180,8 @@ WHERE
 					If no band is specified, then band 1 is assumed.
 				</para>
 				<note><para>Setting by geometry currently only works for points.</para></note>
+
+				<para>Changed: 2.0.2 Geometry variant of ST_SetValue() now checks to make sure that the input raster and geometry have the same SRID</para>
 			</refsection>
 			
 			<refsection>
