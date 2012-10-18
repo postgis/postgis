@@ -122,17 +122,8 @@ TEST_GIST = \
 
 TEST_SREL = \
 	rt_intersects \
-	rt_overlaps \
-	rt_touches \
-	rt_contains \
-	rt_containsproperly \
-	rt_covers \
-	rt_coveredby \
-	rt_within \
-	rt_disjoint \
-	rt_dwithin \
-	rt_dfullywithin \
-	rt_samealignment
+	rt_samealignment \
+	rt_geos_relationships
 	
 TEST_BUGS = \
 	bug_test_car5 \
