@@ -3988,52 +3988,6 @@ CREATE OR REPLACE FUNCTION st_setbandisnodata(rast raster, band integer DEFAULT 
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
--- ST_SetValue (set one or more pixels to a single value)
------------------------------------------------------------------------
-
--- This function can not be STRICT, because newvalue can be NULL for nodata
-CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, x integer, y integer, newvalue float8)
-    RETURNS raster
-    AS 'MODULE_PATHNAME','RASTER_setPixelValue'
-    LANGUAGE 'c' IMMUTABLE;
-
--- This function can not be STRICT, because newvalue can be NULL for nodata
-CREATE OR REPLACE FUNCTION st_setvalue(rast raster, x integer, y integer, newvalue float8)
-    RETURNS raster
-    AS $$ SELECT st_setvalue($1, 1, $2, $3, $4) $$
-    LANGUAGE 'sql';
-
--- This function can not be STRICT, because newvalue can be NULL for nodata
-CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, pt geometry, newvalue float8)
-    RETURNS raster AS
-    $$
-    DECLARE
-        x float8;
-        y float8;
-        gtype text;
-    BEGIN
-        gtype := st_geometrytype(pt);
-        IF ( gtype != 'ST_Point' ) THEN
-            RAISE EXCEPTION 'Attempting to get the value of a pixel with a non-point geometry';
-        END IF;
-        x := st_x(pt);
-        y := st_y(pt);
-        RETURN st_setvalue(rast,
-                           band,
-                           st_world2rastercoordx(rast, x, y),
-                           st_world2rastercoordy(rast, x, y),
-                           newvalue);
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE;
-
--- This function can not be STRICT, because newvalue can be NULL for nodata
-CREATE OR REPLACE FUNCTION st_setvalue(rast raster, pt geometry, newvalue float8)
-    RETURNS raster
-    AS $$ SELECT st_setvalue($1, 1, $2, $3) $$
-    LANGUAGE 'sql';
-
------------------------------------------------------------------------
 -- ST_SetValues (set one or more pixels to a one or more values)
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _st_setvalues(
@@ -4121,14 +4075,38 @@ CREATE OR REPLACE FUNCTION st_setvalues(
 	AS 'MODULE_PATHNAME', 'RASTER_setPixelValuesGeomval'
 	LANGUAGE 'c' IMMUTABLE;
 
+-----------------------------------------------------------------------
+-- ST_SetValue (set one or more pixels to a single value)
+-----------------------------------------------------------------------
+
+-- This function can not be STRICT, because newvalue can be NULL for nodata
+CREATE OR REPLACE FUNCTION st_setvalue(rast raster, band integer, x integer, y integer, newvalue float8)
+    RETURNS raster
+    AS 'MODULE_PATHNAME','RASTER_setPixelValue'
+    LANGUAGE 'c' IMMUTABLE;
+
+-- This function can not be STRICT, because newvalue can be NULL for nodata
+CREATE OR REPLACE FUNCTION st_setvalue(rast raster, x integer, y integer, newvalue float8)
+    RETURNS raster
+    AS $$ SELECT st_setvalue($1, 1, $2, $3, $4) $$
+    LANGUAGE 'sql';
+
 -- cannot be STRICT as newvalue can be NULL
-CREATE OR REPLACE FUNCTION st_setvalues(
+CREATE OR REPLACE FUNCTION st_setvalue(
 	rast raster, nband integer,
-	geom geometry, newvalue double precision,
-	keepnodata boolean DEFAULT FALSE
+	geom geometry, newvalue double precision
 )
 	RETURNS raster
-	AS $$ SELECT st_setvalues($1, $2, ARRAY[ROW($3, $4)]::geomval[], $5) $$
+	AS $$ SELECT st_setvalues($1, $2, ARRAY[ROW($3, $4)]::geomval[], FALSE) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+-- cannot be STRICT as newvalue can be NULL
+CREATE OR REPLACE FUNCTION st_setvalue(
+	rast raster,
+	geom geometry, newvalue double precision
+)
+	RETURNS raster
+	AS $$ SELECT st_setvalues($1, 1, ARRAY[ROW($2, $3)]::geomval[], FALSE) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------

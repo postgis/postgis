@@ -317,12 +317,4 @@ SELECT 'test 4.4', id
     FROM rt_band_properties_test
     WHERE st_value(st_setvalue(st_setbandnodatavalue(rast, NULL), 1, 1, 1, NULL), 1, 1, 1) != b1val;
 
------------------------------------------------------------------------
--- Test 5 - st_setvalue(rast raster, band integer, pt geometry, val float8)
------------------------------------------------------------------------
-
-SELECT 'test 5.1', id
-    FROM rt_band_properties_test
-    WHERE st_value(st_setvalue(rast, 1, st_makepoint(st_upperleftx(rast), st_upperlefty(rast)), 3), 1, 1, 1) != 3;
-
 DROP TABLE rt_band_properties_test;

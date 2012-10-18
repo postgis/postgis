@@ -3487,7 +3487,6 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	rt_raster _raster = NULL;
 	rt_band _band = NULL;
 	int nband = 0; /* 1-based */
-	rt_iterator itrset;
 
 	int numbands = 0;
 	int width = 0;
@@ -3732,7 +3731,6 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 
 	/* all elements are points */
 	if (allpoint == arg->ngv) {
-		POSTGIS_RT_DEBUG(3, "all geometries are points, using direct to pixel method");
 		double igt[6] = {0};
 		double xy[2] = {0};
 		double value = 0;
@@ -3740,6 +3738,8 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		LWCOLLECTION *coll = NULL;
 		LWPOINT *point = NULL;
 		POINT2D p;
+
+		POSTGIS_RT_DEBUG(3, "all geometries are points, using direct to pixel method");
 
 		/* cache inverse gretransform matrix */
 		rt_raster_get_inverse_geotransform_matrix(NULL, gt, igt);
@@ -3809,6 +3809,8 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	}
 	/* run iterator otherwise */
 	else {
+		rt_iterator itrset;
+
 		POSTGIS_RT_DEBUG(3, "a mix of geometries, using iterator method");
 
 		/* init itrset */

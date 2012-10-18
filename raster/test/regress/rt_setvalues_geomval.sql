@@ -12,7 +12,7 @@ CREATE TABLE raster_setvalues_geom AS
 ;
 
 SELECT
-	rid, gid, ST_DumpValues(ST_SetValues(rast, 1, geom, gid))
+	rid, gid, ST_DumpValues(ST_SetValue(rast, 1, geom, gid))
 FROM raster_setvalues_rast t1
 CROSS JOIN raster_setvalues_geom t2
 ORDER BY rid, gid;
