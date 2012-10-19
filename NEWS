@@ -18,6 +18,7 @@ PostGIS 2.0.2
   - #1981, Remove unused but set variables as found with gcc 4.6+
   - Update URL of Maven jar
   - #2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()
+  - #2057, Fixed linking issue for raster2psql to libpq
 
  * Enhancements *
 
