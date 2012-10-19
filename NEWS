@@ -77,6 +77,7 @@ PostGIS 2.1.0
   - #1951, remove crash on zero-length linestrings
   - #1957, ST_Distance to a one-point LineString returns NULL 
   - #1981, cleanup of unused variables causing warnings with gcc 4.6+
+  - #2057, Fixed linking issue for raster2psql to libpq
 
 PostGIS 2.0.1
 2012/06/22
