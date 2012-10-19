@@ -7460,9 +7460,11 @@ FROM dummy_rast;
 
 			<refsection>
 				<title>See Also</title>
-				<xref linkend="RT_ST_MapAlgebra" />, 
-				<xref linkend="RT_ST_Aspect" />, 
-				<xref linkend="RT_ST_Slope" />
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_Aspect" />, 
+					<xref linkend="RT_ST_Slope" />
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -7531,9 +7533,11 @@ FROM dummy_rast;
 
 			<refsection>
 				<title>See Also</title>
-				<xref linkend="RT_ST_MapAlgebra" />, 
-				<xref linkend="RT_ST_HillShade" />, 
-				<xref linkend="RT_ST_Slope" />
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_HillShade" />, 
+					<xref linkend="RT_ST_Slope" />
+				</para>
 			</refsection>
 		</refentry>
 		
@@ -7602,9 +7606,11 @@ FROM dummy_rast;
 
 			<refsection>
 				<title>See Also</title>
-				<xref linkend="RT_ST_MapAlgebra" />, 
-				<xref linkend="RT_ST_HillShade" />, 
-				<xref linkend="RT_ST_Aspect" />
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_HillShade" />, 
+					<xref linkend="RT_ST_Aspect" />
+				</para>
 			</refsection>
 		</refentry>
 		

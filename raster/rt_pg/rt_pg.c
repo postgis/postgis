@@ -1131,10 +1131,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 }
 
 /**
- * rt_MakeEmptyRaster( <width>, <height>, <ipx>, <ipy>,
- *                                        <scalex>, <scaley>,
- *                                        <skewx>, <skewy>,
- *                                        <srid>)
+ * Make a new raster with no bands
  */
 PG_FUNCTION_INFO_V1(RASTER_makeEmpty);
 Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
