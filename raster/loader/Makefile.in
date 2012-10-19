@@ -25,6 +25,10 @@ RASTER2PGSQL=raster2pgsql@EXESUFFIX@
 # PostgreSQL executable directory
 PGSQL_BINDIR=@PGSQL_BINDIR@
 
+# PostgreSQL frontend CPPFLAGS and LDFLAGS (for compiling and linking with libpq)
+PGSQL_FE_CPPFLAGS=@PGSQL_FE_CPPFLAGS@
+PGSQL_FE_LDFLAGS=@PGSQL_FE_LDFLAGS@
+
 RT_CORE=../rt_core
 
 LIBLWGEOM_LDFLAGS=../../liblwgeom/liblwgeom.la
@@ -51,6 +55,7 @@ CFLAGS = \
 	$(RTCORE_CFLAGS) \
 	$(LIBLWGEOM_CFLAGS) \
 	$(PROJ_CFLAGS) \
+	$(PGSQL_FE_CPPFLAGS) \
 	$(LIBGDAL_CFLAGS) \
 	$(GEOS_CFLAGS) \
 	$(GETTEXT_CFLAGS) \
@@ -60,6 +65,7 @@ LDFLAGS = \
 	@LDFLAGS@ \
 	$(RTCORE_LDFLAGS) \
 	$(LIBLWGEOM_LDFLAGS) \
+	$(PGSQL_FE_LDFLAGS) \
 	$(LIBGDAL_LDFLAGS) \
 	$(GEOS_LDFLAGS) \
 	$(GETTEXT_LDFLAGS) \
