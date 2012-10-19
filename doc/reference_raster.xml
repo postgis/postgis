@@ -4042,33 +4042,33 @@ FROM (
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
-				 <funcprototype>
-					<funcdef>raster <function>ST_SetValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
-				  </funcprototype>
+					<funcprototype>
+						<funcdef>raster <function>ST_SetValue</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+					</funcprototype>
+					<funcprototype>
+						<funcdef>raster <function>ST_SetValue</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+					</funcprototype>
 				  <funcprototype>
-					<funcdef>raster <function>ST_SetValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+						<funcdef>raster <function>ST_SetValue</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
 				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_SetValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
-				  </funcprototype>
-				  <funcprototype>
-					<funcdef>raster <function>ST_SetValue</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>bandnum</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
+					<funcprototype>
+						<funcdef>raster <function>ST_SetValue</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>columnx</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>rowy</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>newvalue</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -4078,7 +4078,7 @@ FROM (
 				<para>Returns modified raster resulting from setting the specified pixels' values to new value for the designed band given the raster's row and column or a geometry. If no band is specified, then band 1 is assumed.
 				</para>
 
-				<para>Enhanced: 2.1.0 Geometry variant of ST_SetValue() now supports any geometry type, not just point. The geometry variant is also a wrapper around the geomval[] variant of ST_SetValues()</para>
+				<para>Enhanced: 2.1.0 Geometry variant of ST_SetValue() now supports any geometry type, not just point. The geometry variant is a wrapper around the geomval[] variant of ST_SetValues()</para>
 			</refsection>
 			
 			<refsection>
@@ -4614,7 +4614,7 @@ ORDER BY rid, gid;
 (4 rows)
 				</programlisting>
 
-				<para>The following shows that following geomvals in the array can overwrite prior geomvals</para>
+				<para>The following shows that geomvals later in the array can overwrite prior geomvals</para>
 				<programlisting>
 WITH foo AS (
 	SELECT 1 AS rid, ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0) AS rast
@@ -7448,7 +7448,7 @@ FROM dummy_rast;
 
 				<para>The hill shade equation is: <programlisting>max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) )</programlisting>.</para>
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra and added optional <varname>interpolate_nodata</varname> function parameter</para>
+				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
 
 			</refsection>
 				
@@ -7460,9 +7460,9 @@ FROM dummy_rast;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_MapAlgebra" /></para>
-                <para><xref linkend="RT_ST_Aspect" /></para>
-                <para><xref linkend="RT_ST_Slope" /></para>
+				<xref linkend="RT_ST_MapAlgebra" />, 
+				<xref linkend="RT_ST_Aspect" />, 
+				<xref linkend="RT_ST_Slope" />
 			</refsection>
 		</refentry>
 		
@@ -7519,7 +7519,7 @@ FROM dummy_rast;
                 <para>The equation for the pixel aspect of cell E is: atan2((((G + 2H + I) - (A + 2B + C))  / 8), -(((C + 2F + I) - (A + 2D + G)) / 8))</para>
 
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and added optional <varname>interpolate_nodata</varname> function parameter</para>
+				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
 			
 			</refsection>
 				
@@ -7531,9 +7531,9 @@ FROM dummy_rast;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_MapAlgebra" /></para>
-                <para><xref linkend="RT_ST_HillShade" /></para>
-                <para><xref linkend="RT_ST_Slope" /></para>
+				<xref linkend="RT_ST_MapAlgebra" />, 
+				<xref linkend="RT_ST_HillShade" />, 
+				<xref linkend="RT_ST_Slope" />
 			</refsection>
 		</refentry>
 		
@@ -7590,7 +7590,7 @@ FROM dummy_rast;
                 <para>The equation for the pixel slope of cell E is: atan(sqrt(((c + 2f + i) - (a + 2d + g) / 8)^2 + (((g + 2h + i) - (a + 2b + c)) / 8) ^ 2))</para>
 
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses <xref linkend="RT_ST_MapAlgebra" /> and added optional <varname>interpolate_nodata</varname> function parameter</para>
+				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
 			
 			</refsection>
 				
@@ -7602,9 +7602,9 @@ FROM dummy_rast;
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_MapAlgebra" /></para>
-                <para><xref linkend="RT_ST_HillShade" /></para>
-                <para><xref linkend="RT_ST_Aspect" /></para>
+				<xref linkend="RT_ST_MapAlgebra" />, 
+				<xref linkend="RT_ST_HillShade" />, 
+				<xref linkend="RT_ST_Aspect" />
 			</refsection>
 		</refentry>
 		
