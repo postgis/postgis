@@ -1067,11 +1067,9 @@ AS
 $$
 DECLARE
   toponame varchar;
-  ret topology.TopoElementArray;
 BEGIN
   toponame = topology.GetTopologyName(tg.topology_id);
-  ret = topology.GetTopoGeomElementArray(toponame,tg.layer_id,tg.id);
-  RETURN ret;
+  RETURN topology.GetTopoGeomElementArray(toponame, tg.layer_id, tg.id);
 END;
 $$
 LANGUAGE 'plpgsql' STABLE STRICT;

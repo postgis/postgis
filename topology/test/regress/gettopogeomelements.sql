@@ -17,6 +17,11 @@ FROM (
 ) as f
 order by 1, 2;
 
+-- See http://trac.osgeo.org/postgis/ticket/2060
+SELECT 't2060', feature_name, GetTopoGeomElementArray(feature)
+FROM features.land_parcels
+ORDER BY feature_name;
+
 -- clean up
 SELECT topology.DropTopology('city_data');
 DROP SCHEMA features CASCADE;
