@@ -12947,9 +12947,18 @@ struct _rti_param_t {
 	int count;
 
 	rt_raster *raster;
-	rt_band *band;
 	int *isempty;
 	double **offset;
+	int *width;
+	int *height;
+
+	struct {
+		rt_band *rtband;
+		int *hasnodata;
+		int *isnodata;
+		double *nodataval;
+		double *minval;
+	} band;
 
 	struct {
 		uint16_t x;
@@ -12980,10 +12989,18 @@ _rti_param_init() {
 	}
 
 	_param->count = 0;
+
 	_param->raster = NULL;
-	_param->band = NULL;
 	_param->isempty = NULL;
 	_param->offset = NULL;
+	_param->width = NULL;
+	_param->height = NULL;
+
+	_param->band.rtband = NULL;
+	_param->band.hasnodata = NULL;
+	_param->band.isnodata = NULL;
+	_param->band.nodataval = NULL;
+	_param->band.minval = NULL;
 
 	_param->distance.x = 0;
 	_param->distance.y = 0;
@@ -13007,8 +13024,22 @@ _rti_param_destroy(_rti_param _param) {
 		rtdealloc(_param->raster);
 	if (_param->isempty != NULL)
 		rtdealloc(_param->isempty);
-	if (_param->band != NULL)
-		rtdealloc(_param->band);
+	if (_param->width != NULL)
+		rtdealloc(_param->width);
+	if (_param->height != NULL)
+		rtdealloc(_param->height);
+
+	if (_param->band.rtband != NULL)
+		rtdealloc(_param->band.rtband);
+	if (_param->band.hasnodata != NULL)
+		rtdealloc(_param->band.hasnodata);
+	if (_param->band.isnodata != NULL)
+		rtdealloc(_param->band.isnodata);
+	if (_param->band.nodataval != NULL)
+		rtdealloc(_param->band.nodataval);
+	if (_param->band.minval != NULL)
+		rtdealloc(_param->band.minval);
+
 	if (_param->offset != NULL) {
 		for (i = 0; i < _param->count; i++) {
 			if (_param->offset[i] == NULL)
@@ -13075,13 +13106,28 @@ _rti_param_populate(
 	/* allocate memory for children */
 	_param->raster = rtalloc(sizeof(rt_raster) * itrcount);
 	_param->isempty = rtalloc(sizeof(int) * itrcount);
-	_param->band = rtalloc(sizeof(rt_band) * itrcount);
+	_param->width = rtalloc(sizeof(int) * itrcount);
+	_param->height = rtalloc(sizeof(int) * itrcount);
+
 	_param->offset = rtalloc(sizeof(double *) * itrcount);
+
+	_param->band.rtband = rtalloc(sizeof(rt_band) * itrcount);
+	_param->band.hasnodata = rtalloc(sizeof(int) * itrcount);
+	_param->band.isnodata = rtalloc(sizeof(int) * itrcount);
+	_param->band.nodataval = rtalloc(sizeof(double) * itrcount);
+	_param->band.minval = rtalloc(sizeof(double) * itrcount);
+
 	if (
 		_param->raster == NULL ||
 		_param->isempty == NULL ||
-		_param->band == NULL ||
-		_param->offset == NULL
+		_param->width == NULL ||
+		_param->height == NULL ||
+		_param->offset == NULL ||
+		_param->band.rtband == NULL ||
+		_param->band.hasnodata == NULL ||
+		_param->band.isnodata == NULL ||
+		_param->band.nodataval == NULL ||
+		_param->band.minval == NULL
 	) {
 		rterror("_rti_param_populate: Unable to allocate memory for children of _rti_param");
 		return 0;
@@ -13099,8 +13145,16 @@ _rti_param_populate(
 		/* initialize elements */
 		_param->raster[i] = NULL;
 		_param->isempty[i] = 0;
-		_param->band[i] = NULL;
+		_param->width[i] = 0;
+		_param->height[i] = 0;
+
 		_param->offset[i] = NULL;
+
+		_param->band.rtband[i] = NULL;
+		_param->band.hasnodata[i] = 0;
+		_param->band.isnodata[i] = 0;
+		_param->band.nodataval[i] = 0;
+		_param->band.minval[i] = 0;
 
 		/* set isempty */
 		if (itrset[i].raster == NULL) {
@@ -13133,12 +13187,33 @@ _rti_param_populate(
 
 		_param->raster[i] = itrset[i].raster;
 		if (hasband) {
-			_param->band[i] = rt_raster_get_band(itrset[i].raster, itrset[i].nband);
-			if (_param->band[i] == NULL) {
+			_param->band.rtband[i] = rt_raster_get_band(itrset[i].raster, itrset[i].nband);
+			if (_param->band.rtband[i] == NULL) {
 				rterror("_rti_param_populate: Unable to get band %d for raster %d", itrset[i].nband, i);
 				return 0;
 			}
+
+			/* hasnodata */
+			_param->band.hasnodata[i] = rt_band_get_hasnodata_flag(_param->band.rtband[i]);
+
+			/* hasnodata = TRUE */
+			if (_param->band.hasnodata[i]) {
+				/* nodataval */
+				rt_band_get_nodata(_param->band.rtband[i], &(_param->band.nodataval[i]));
+
+				/* isnodata */
+				_param->band.isnodata[i] = rt_band_get_isnodata_flag(_param->band.rtband[i]);
+			}
+			/* hasnodata = FALSE */
+			else {
+				/* minval */
+				_param->band.minval[i] = rt_band_get_min_value(_param->band.rtband[i]);
+			}
 		}
+
+		/* width, height */
+		_param->width[i] = rt_raster_get_width(_param->raster[i]);
+		_param->height[i] = rt_raster_get_height(_param->raster[i]);
 
 		/* init offset */
 		_param->offset[i] = rtalloc(sizeof(double) * 2);
@@ -13729,8 +13804,8 @@ rt_raster_iterator(
 				*/
 				if (
 					_param->isempty[i] ||
-					(_param->band[i] == NULL && itrset[i].nbnodata) ||
-					rt_band_get_isnodata_flag(_param->band[i])
+					(_param->band.rtband[i] == NULL && itrset[i].nbnodata) ||
+					_param->band.isnodata[i]
 				) {
 					RASTER_DEBUG(4, "empty raster, band does not exist or band is NODATA. using empty values and NODATA");
 					
@@ -13758,7 +13833,7 @@ rt_raster_iterator(
 					RASTER_DEBUG(4, "getting neighborhood");
 
 					status = rt_band_get_nearest_pixel(
-						_param->band[i],
+						_param->band.rtband[i],
 						x, y,
 						distancex, distancey,
 						1,
@@ -13778,12 +13853,12 @@ rt_raster_iterator(
 				/* get value of POI */
 				/* get pixel's value */
 				if (
-					(x >= 0 && x < rt_band_get_width(_param->band[i])) &&
-					(y >= 0 && y < rt_band_get_height(_param->band[i]))
+					(x >= 0 && x < _param->width[i]) &&
+					(y >= 0 && y < _param->height[i])
 				) {
 					RASTER_DEBUG(4, "getting value of POI");
 					if (rt_band_get_pixel(
-						_param->band[i],
+						_param->band.rtband[i],
 						x, y,
 						&value,
 						&isnodata
@@ -13802,11 +13877,12 @@ rt_raster_iterator(
 				else {
 					RASTER_DEBUG(4, "Outside band extent, setting value to NODATA");
 					/* has NODATA, use NODATA */
-					if (rt_band_get_hasnodata_flag(_param->band[i]))
-						rt_band_get_nodata(_param->band[i], &value);
+					if (_param->band.hasnodata[i])
+						value = _param->band.nodataval[i];
 					/* no NODATA, use min possible value */
 					else
-						value = rt_band_get_min_value(_param->band[i]);
+						value = _param->band.minval[i];
+
 					inextent = 0;
 					isnodata = 1;
 				}
@@ -13834,7 +13910,7 @@ rt_raster_iterator(
 				npixels[status - 1].value = value;
 
 				/* set nodata flag */
-				if ((!rt_band_get_hasnodata_flag(_param->band[i]) && inextent) || !isnodata) {
+				if ((!_param->band.hasnodata[i] && inextent) || !isnodata) {
 					npixels[status - 1].nodata = 0;
 				}
 				RASTER_DEBUGF(4, "value, nodata: %f, %d", value, npixels[status - 1].nodata);
