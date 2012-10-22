@@ -950,6 +950,7 @@ if test "x$with_raster" != "xno"; then
 	USE_GDAL_SOURCE_TREE="no"
 	LIBGDAL_CFLAGS=""
 	LIBGDAL_LDFLAGS=""
+	LIBGDAL_DEPLIBS_LDFLAGS=""
 
 	dnl GDAL version constants, update here
 	GDAL_MIN_VERSION=1.8.0
@@ -997,6 +998,7 @@ if test "x$with_raster" != "xno"; then
 
 		dnl Extract the linker and include flags 
 		LIBGDAL_LDFLAGS=`$GDAL_CONFIG --libs`
+		LIBGDAL_DEPLIBS_LDFLAGS=`$GDAL_CONFIG --dep-libs`
 		LIBGDAL_CFLAGS=`$GDAL_CONFIG --cflags`
 
 		CPPFLAGS_SAVE="$CPPFLAGS"
@@ -1035,6 +1037,7 @@ if test "x$with_raster" != "xno"; then
 
 		AC_SUBST([LIBGDAL_CFLAGS])
 		AC_SUBST([LIBGDAL_LDFLAGS])
+		AC_SUBST([LIBGDAL_DEPLIBS_LDFLAGS])
 
 		AC_SUBST([GDALFPOLYGONIZE])
 
