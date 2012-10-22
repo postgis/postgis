@@ -1046,6 +1046,15 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 		if (!PG_ARGISNULL(2))
 			exclude_nodata_value = PG_GETARG_BOOL(2);
 
+		/* see if band is NODATA */
+		if (rt_band_get_isnodata_flag(rt_raster_get_band(raster, nband - 1))) {
+			POSTGIS_RT_DEBUGF(3, "Band at index %d is NODATA. Returning NULL");
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
 		/* Polygonize raster */
 
 		/**
@@ -1136,84 +1145,65 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 PG_FUNCTION_INFO_V1(RASTER_makeEmpty);
 Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
 {
-    uint16 width, height;
-    double ipx, ipy, scalex, scaley, skewx, skewy;
-    int32_t srid;
-    rt_pgraster *pgraster;
-    rt_raster raster;
+	uint16 width = 0, height = 0;
+	double ipx = 0, ipy = 0, scalex = 0, scaley = 0, skewx = 0, skewy = 0;
+	int32_t srid = SRID_UNKNOWN;
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster;
 
-    if ( PG_NARGS() < 9 )
-    {
-        elog(ERROR, "RASTER_makeEmpty: ST_MakeEmptyRaster requires 9 args");
-        PG_RETURN_NULL();
-    }
+	if (PG_NARGS() < 9) {
+		elog(ERROR, "RASTER_makeEmpty: ST_MakeEmptyRaster requires 9 args");
+		PG_RETURN_NULL();
+	} 
 
-    if (PG_ARGISNULL(0))
-        width = 0;
-    else
-        width = PG_GETARG_UINT16(0);
+	if (!PG_ARGISNULL(0))
+		width = PG_GETARG_UINT16(0);
 
-    if (PG_ARGISNULL(1))
-        height = 0;
-    else
-        height = PG_GETARG_UINT16(1);
+	if (!PG_ARGISNULL(1))
+		height = PG_GETARG_UINT16(1);
 
-    if (PG_ARGISNULL(2))
-        ipx = 0;
-    else
-        ipx = PG_GETARG_FLOAT8(2);
+	if (!PG_ARGISNULL(2))
+		ipx = PG_GETARG_FLOAT8(2);
 
-    if (PG_ARGISNULL(3))
-        ipy = 0;
-    else
-        ipy = PG_GETARG_FLOAT8(3);
+	if (!PG_ARGISNULL(3))
+		ipy = PG_GETARG_FLOAT8(3);
 
-    if (PG_ARGISNULL(4))
-        scalex = 0;
-    else
-        scalex = PG_GETARG_FLOAT8(4);
+	if (!PG_ARGISNULL(4))
+		scalex = PG_GETARG_FLOAT8(4);
 
-    if (PG_ARGISNULL(5))
-        scaley = 0;
-    else
-        scaley = PG_GETARG_FLOAT8(5);
+	if (!PG_ARGISNULL(5))
+		scaley = PG_GETARG_FLOAT8(5);
 
-    if (PG_ARGISNULL(6))
-        skewx = 0;
-    else
-        skewx = PG_GETARG_FLOAT8(6);
+	if (!PG_ARGISNULL(6))
+		skewx = PG_GETARG_FLOAT8(6);
 
-    if (PG_ARGISNULL(7))
-        skewy = 0;
-    else
-        skewy = PG_GETARG_FLOAT8(7);
+	if (!PG_ARGISNULL(7))
+		skewy = PG_GETARG_FLOAT8(7);
 
-    if (PG_ARGISNULL(8))
-        srid = SRID_UNKNOWN;
-    else
-        srid = PG_GETARG_INT32(8);
+	if (!PG_ARGISNULL(8))
+		srid = PG_GETARG_INT32(8);
 
-    POSTGIS_RT_DEBUGF(4, "%dx%d, ip:%g,%g, scale:%g,%g, skew:%g,%g srid:%d",
-                  width, height, ipx, ipy, scalex, scaley,
-                  skewx, skewy, srid);
+	POSTGIS_RT_DEBUGF(4, "%dx%d, ip:%g,%g, scale:%g,%g, skew:%g,%g srid:%d",
+		width, height, ipx, ipy, scalex, scaley,
+		skewx, skewy, srid);
 
-    raster = rt_raster_new(width, height);
-    if ( ! raster ) {
-        PG_RETURN_NULL(); /* error was supposedly printed already */
-    }
+	raster = rt_raster_new(width, height);
+	if (!raster) {
+		PG_RETURN_NULL(); /* error was supposedly printed already */
+	}
 
-    rt_raster_set_scale(raster, scalex, scaley);
-    rt_raster_set_offsets(raster, ipx, ipy);
-    rt_raster_set_skews(raster, skewx, skewy);
-    rt_raster_set_srid(raster, srid);
+	rt_raster_set_scale(raster, scalex, scaley);
+	rt_raster_set_offsets(raster, ipx, ipy);
+	rt_raster_set_skews(raster, skewx, skewy);
+	rt_raster_set_srid(raster, srid);
 
-    pgraster = rt_raster_serialize(raster);
-    rt_raster_destroy(raster);
-    if ( ! pgraster ) PG_RETURN_NULL();
+	pgraster = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (!pgraster)
+		PG_RETURN_NULL();
 
-    SET_VARSIZE(pgraster, pgraster->size);
-
-    PG_RETURN_POINTER(pgraster);
+	SET_VARSIZE(pgraster, pgraster->size);
+	PG_RETURN_POINTER(pgraster);
 }
 
 /**
@@ -2182,9 +2172,6 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 				/* Set the band's nodata value */
 				rt_band_set_nodata(band, nodata);
 
-				/* Set the hasnodata flag to TRUE */
-				rt_band_set_hasnodata_flag(band, TRUE);
-
 				/* Recheck all pixels if requested */
 				if (forcechecking)
 					rt_band_check_is_nodata(band);
@@ -2237,8 +2224,13 @@ Datum RASTER_setBandIsNoData(PG_FUNCTION_ARGS)
 		if (!band)
 			elog(NOTICE, "Could not find raster band of index %d. Isnodata flag not set. Returning original raster", bandindex);
 		else {
+			if (!rt_band_get_hasnodata_flag(band)) {
+				elog(NOTICE, "Band of index %d has no NODATA so cannot be NODATA. Returning original raster", bandindex);
+			}
 			/* Set the band's nodata value */
-			rt_band_set_isnodata_flag(band, 1);
+			else {
+				rt_band_set_isnodata_flag(band, 1);
+			}
 		}
 	}
 
@@ -2526,6 +2518,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 		bool *nulls;
 
 		double val = 0;
+		int isnodata = 0;
 		int hasnodata = 0;
 		double nodataval = 0;
 
@@ -2732,10 +2725,18 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			memset(arg1->nodata[z], 0, sizeof(bool) * arg1->rows * arg1->columns);
 
 			i = 0;
+
+			/* shortcut if band is NODATA */
+			if (rt_band_get_isnodata_flag(band)) {
+				for (i = (arg1->rows * arg1->columns) - 1; i >= 0; i--)
+					arg1->nodata[z][i] = TRUE;
+				continue;
+			}
+
 			for (y = 0; y < arg1->rows; y++) {
 				for (x = 0; x < arg1->columns; x++) {
 					/* get pixel */
-					if (rt_band_get_pixel(band, x, y, &val, NULL) != 0) {
+					if (rt_band_get_pixel(band, x, y, &val, &isnodata) != 0) {
 						elog(ERROR, "RASTER_dumpValues: Unable to pixel (%d, %d) of band %d", x, y, arg1->nbands[z] + 1);
 						rtpg_dumpvalues_arg_destroy(arg1);
 						rt_raster_destroy(raster);
@@ -2751,13 +2752,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 					}
 					POSTGIS_RT_DEBUGF(5, "clamped is?: %d", rt_band_clamped_value_is_nodata(band, val));
 
-					if (
-						exclude_nodata_value &&
-						hasnodata && (
-							FLT_EQ(val, nodataval) ||
-							rt_band_clamped_value_is_nodata(band, val) == 1
-						)
-					) {
+					if (exclude_nodata_value && isnodata) {
 						arg1->nodata[z][i] = TRUE;
 						POSTGIS_RT_DEBUG(5, "nodata = 1");
 					}
@@ -2994,6 +2989,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 
 	int rtn = 0;
 	double val = 0;
+	int isnodata = 0;
 
 	int i = 0;
 	int j = 0;
@@ -3332,7 +3328,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 
 		/* if hasnodata = TRUE and keepnodata = TRUE, inspect pixel value */
 		if (hasnodata && keepnodata) {
-			rtn = rt_band_get_pixel(band, pixval[i].x, pixval[i].y, &val, NULL);
+			rtn = rt_band_get_pixel(band, pixval[i].x, pixval[i].y, &val, &isnodata);
 			if (rtn != 0) {
 				elog(ERROR, "Cannot get value of pixel.  Returning NULL");
 				pfree(pixval);
@@ -3342,10 +3338,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 			}
 
 			/* pixel value = NODATA, skip */
-			if (
-				FLT_EQ(val, nodataval) ||
-				rt_band_clamped_value_is_nodata(band, val) == 1
-			) {
+			if (isnodata) {
 				continue;
 			}
 		}
@@ -3726,11 +3719,16 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		arg->keepnodata = PG_GETARG_BOOL(3);
 	POSTGIS_RT_DEBUGF(3, "keepnodata = %d", arg->keepnodata);
 
+	/* keepnodata = TRUE and band is NODATA */
+	if (arg->keepnodata && rt_band_get_isnodata_flag(band)) {
+		POSTGIS_RT_DEBUG(3, "keepnodata = TRUE and band is NODATA. Not doing anything");
+	}
 	/* all elements are points */
-	if (allpoint == arg->ngv) {
+	else if (allpoint == arg->ngv) {
 		double igt[6] = {0};
 		double xy[2] = {0};
 		double value = 0;
+		int isnodata = 0;
 
 		LWCOLLECTION *coll = NULL;
 		LWPOINT *point = NULL;
@@ -3769,7 +3767,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 				}
 
 				/* get pixel value */
-				if (rt_band_get_pixel(band, xy[0], xy[1], &value, NULL) != 0) {
+				if (rt_band_get_pixel(band, xy[0], xy[1], &value, &isnodata) != 0) {
 					elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to get pixel value");
 					rtpg_setvaluesgv_arg_destroy(arg);
 					rt_raster_destroy(raster);
@@ -3778,15 +3776,8 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 				}
 
 				/* keepnodata = TRUE AND pixel value is NODATA */
-				if (
-					arg->keepnodata &&
-					hasnodata && (
-						FLT_EQ(value, nodataval) ||
-						rt_band_clamped_value_is_nodata(band, value) == 1
-					)
-				) {
+				if (arg->keepnodata && isnodata)
 					continue;
-				}
 
 				/* set pixel */
 				if (arg->gv[i].pixval.nodata)
@@ -3908,6 +3899,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		int y = 0;
 		int bounds[4] = {0};
 		int pixcount = 0;
+		int isnodata = 0;
 
 		LWPOLY *poly;
 
@@ -4063,7 +4055,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 				/* value, NODATA flag */
 				if (!noband) {
-					if (rt_band_get_pixel(band, x - 1, y - 1, &(pix[pixcount].value), NULL) != 0) {
+					if (rt_band_get_pixel(band, x - 1, y - 1, &(pix[pixcount].value), &isnodata) != 0) {
 						elog(ERROR, "RASTER_getPixelPolygons: Could not get pixel value");
 
 						for (i = 0; i < pixcount; i++)
@@ -4078,16 +4070,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 						SRF_RETURN_DONE(funcctx);
 					}
 
-					if (
-						!exclude_nodata_value ||
-						!hasnodata || (
-							exclude_nodata_value &&
-							(hasnodata != FALSE) && (
-								FLT_NEQ(pix[pixcount].value, nodataval) &&
-								(rt_band_clamped_value_is_nodata(band, pix[pixcount].value) != 1)
-							)
-						)
-					) {
+					if (!exclude_nodata_value || !isnodata) {
 						pix[pixcount].nodata = 0;
 					}
 					else {
@@ -12788,6 +12771,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	double argval[3] = {0.};
 	int hasnodatanodataval = 0;
 	double nodatanodataval = 0;
+	int isnodata = 0;
 
 	Oid ufc_noid = InvalidOid;
 	FmgrInfo ufl_info;
@@ -13586,7 +13570,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						(_x >= 0 && _x < _dim[i][0]) &&
 						(_y >= 0 && _y < _dim[i][1])
 					) {
-						err = rt_band_get_pixel(_band[i], _x, _y, &(_pixel[i]), NULL);
+						err = rt_band_get_pixel(_band[i], _x, _y, &(_pixel[i]), &isnodata);
 						if (err < 0) {
 							elog(ERROR, "RASTER_mapAlgebra2: Unable to get pixel of %s raster", (i < 1 ? "FIRST" : "SECOND"));
 
@@ -13606,7 +13590,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 							PG_RETURN_NULL();
 						}
 
-						if (!_hasnodata[i] || FLT_NEQ(_nodataval[i], _pixel[i]))
+						if (!_hasnodata[i] || !isnodata)
 							_haspixel[i] = 1;
 					}
 

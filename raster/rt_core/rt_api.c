@@ -1811,18 +1811,25 @@ void
 rt_band_set_isnodata_flag(rt_band band, int flag) {
 	assert(NULL != band);
 
-	if (!band->hasnodata)
-		rterror("rt_band_set_isnodata_flag: Cannot set isnodata flag as band has no NODATA");
+	if (!band->hasnodata) {
+		/* silently permit setting isnodata flag to FALSE */
+		if (!flag)
+			band->isnodata = 0;
+		else
+			rterror("rt_band_set_isnodata_flag: Cannot set isnodata flag as band has no NODATA");
+	}
 	else 
 		band->isnodata = (flag) ? 1 : 0;
 }
 
 int
 rt_band_get_isnodata_flag(rt_band band) {
+	assert(NULL != band);
 
-    assert(NULL != band);
-
-    return band->isnodata;
+	if (band->hasnodata)
+		return band->isnodata;
+	else
+		return 0;
 }
 
 /**
@@ -1935,10 +1942,10 @@ rt_band_set_nodata(rt_band band, double val) {
 
 
     /* the nodata value was just set, so this band has NODATA */
-    rt_band_set_hasnodata_flag(band, 1);
+		band->hasnodata = 1;
 
 		/* also set isnodata flag to false */
-		rt_band_set_isnodata_flag(band, 0);
+		band->isnodata = 0;
 
     /* If the nodata value is different from the previous one, we need to check
      * again if the band is a nodata band
@@ -2220,6 +2227,7 @@ rt_band_set_pixel(
 		FLT_NEQ(val, band->nodataval) ||
 		rt_band_clamped_value_is_nodata(band, val) != 1
 	) {
+		RASTER_DEBUG(3, "Band has a value that is not NODATA. Setting isnodata to FALSE");
 		band->isnodata = FALSE;
 	}
 
@@ -5885,6 +5893,15 @@ rt_raster_gdal_polygonize(
 	}
 
 	if (exclude_nodata_value) {
+
+		/* band is NODATA */
+		if (rt_band_get_isnodata_flag(band)) {
+			RASTER_DEBUG(3, "Band is NODATA.  Returning null");
+			if (pnElements)
+				*pnElements = 0;
+			return NULL;
+		}
+
 		iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
 		if (iBandHasNodataValue)
 			rt_band_get_nodata(band, &dBandNoData);
