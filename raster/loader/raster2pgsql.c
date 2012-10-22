@@ -1422,6 +1422,8 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	const char* pszProjectionRef = NULL;
 
 	rt_raster rast = NULL;
+	int numbands = 0;
+	rt_band band = NULL;
 	char *hex;
 	uint32_t hexlen = 0;
 
@@ -1596,8 +1598,6 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 	/* out-db raster */
 	if (config->outdb) {
-		rt_band band = NULL;
-
 		GDALClose(hdsSrc);
 
 		/* each tile is a raster */
@@ -1636,6 +1636,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						raster_destroy(rast);
 						return 0;
 					}
+
+					/* inspect each band of raster where band is NODATA */
+					rt_band_check_is_nodata(band);
 
 					/* add band to raster */
 					if (rt_raster_add_band(rast, band, rt_raster_get_num_bands(rast)) == -1) {
@@ -1741,6 +1744,14 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 				/* set srid if provided */
 				rt_raster_set_srid(rast, info->srid);
+
+				/* inspect each band of raster where band is NODATA */
+				numbands = rt_raster_get_num_bands(rast);
+				for (i = 0; i < numbands; i++) {
+					band = rt_raster_get_band(rast, i);
+					if (band != NULL)
+						rt_band_check_is_nodata(band);
+				}
 
 				/* convert rt_raster to hexwkb */
 				hex = rt_raster_to_hexwkb(rast, &hexlen);

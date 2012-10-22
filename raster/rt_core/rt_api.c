@@ -7182,7 +7182,8 @@ rt_band_from_wkb(uint16_t width, uint16_t height,
             *ptr += sz + 1;
 
             /* TODO: How could we know if the offline band is a nodata band? */
-            band->isnodata = FALSE;
+						/* trust in the force */
+            /*band->isnodata = FALSE;*/
         }
         return band;
     }
