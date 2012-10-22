@@ -1802,7 +1802,7 @@ rt_band_set_hasnodata_flag(rt_band band, int flag) {
 
 		/* isnodata depends on hasnodata */
 		if (!band->hasnodata && band->isnodata) {
-			rtinfo("Setting isnodata to FALSE as band no longer has NODATA");
+			RASTER_DEBUG(3, "Setting isnodata to FALSE as band no longer has NODATA");
 			band->isnodata = 0;
 		}
 }
@@ -1939,7 +1939,6 @@ rt_band_set_nodata(rt_band band, double val) {
 
 		/* also set isnodata flag to false */
 		rt_band_set_isnodata_flag(band, 0);
-
 
     /* If the nodata value is different from the previous one, we need to check
      * again if the band is a nodata band
@@ -2286,7 +2285,7 @@ rt_band_get_pixel(
 
 	/* band is NODATA */
 	if (band->hasnodata && band->isnodata) {
-		rtinfo("Band's isnodata flag is TRUE. Returning NODATA value");
+		RASTER_DEBUG(3, "Band's isnodata flag is TRUE. Returning NODATA value");
 		*value = band->nodataval;
 		if (nodata != NULL) *nodata = 1;
 		return 0;
@@ -2980,6 +2979,7 @@ rt_band_get_summary_stats(
 	double nodata = 0;
 	double *values = NULL;
 	double value;
+	int isnodata = 0;
 	rt_bandstats stats = NULL;
 
 	uint32_t do_sample = 0;
@@ -3141,7 +3141,7 @@ rt_band_get_summary_stats(
 			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", x, y, z);
 			if (y >= band->height || z > sample_per) break;
 
-			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
+			rtn = rt_band_get_pixel(band, x, y, &value, &isnodata);
 #if POSTGIS_DEBUG_LEVEL > 0
 			if (rtn != -1) {
 				RASTER_DEBUGF(5, "(x, y, value) = (%d,%d, %f)", x, y, value);
@@ -3149,17 +3149,7 @@ rt_band_get_summary_stats(
 #endif
 
 			j++;
-			if (
-				rtn != -1 && (
-					!exclude_nodata_value || (
-						exclude_nodata_value &&
-						(hasnodata != FALSE) && (
-							FLT_NEQ(value, nodata) &&
-							(rt_band_clamped_value_is_nodata(band, value) != 1)
-						)
-					)
-				)
-			) {
+			if (rtn != -1 && (!exclude_nodata_value || (exclude_nodata_value && !isnodata))) {
 
 				/* inc_vals set, collect pixel values */
 				if (inc_vals) values[k] = value;
@@ -3277,9 +3267,12 @@ rt_band_get_summary_stats(
  * @return the histogram of the data
  */
 rt_histogram
-rt_band_get_histogram(rt_bandstats stats,
+rt_band_get_histogram(
+	rt_bandstats stats,
 	int bin_count, double *bin_width, int bin_width_count,
-	int right, double min, double max, uint32_t *rtn_count) {
+	int right, double min, double max,
+	uint32_t *rtn_count
+) {
 	rt_histogram bins = NULL;
 	int init_width = 0;
 	int i;
@@ -3531,8 +3524,11 @@ rt_band_get_histogram(rt_bandstats stats,
  * @return the default set of or requested quantiles for a band
  */
 rt_quantile
-rt_band_get_quantiles(rt_bandstats stats,
-	double *quantiles, int quantiles_count, uint32_t *rtn_count) {
+rt_band_get_quantiles(
+	rt_bandstats stats,
+	double *quantiles, int quantiles_count,
+	uint32_t *rtn_count
+) {
 	rt_quantile rtn;
 	int init_quantiles = 0;
 	int i = 0;
@@ -3860,12 +3856,14 @@ static void quantile_llist_index_reset(struct quantile_llist *qll) {
  * @return the default set of or requested quantiles for a band
  */
 rt_quantile
-rt_band_get_quantiles_stream(rt_band band,
+rt_band_get_quantiles_stream(
+	rt_band band,
 	int exclude_nodata_value, double sample,
 	uint64_t cov_count,
 	struct quantile_llist **qlls, uint32_t *qlls_count,
 	double *quantiles, int quantiles_count,
-	uint32_t *rtn_count) {
+	uint32_t *rtn_count
+) {
 	rt_quantile rtn = NULL;
 	int init_quantiles = 0;
 
@@ -3878,6 +3876,7 @@ rt_band_get_quantiles_stream(rt_band band,
 	int hasnodata = FALSE;
 	double nodata = 0;
 	double value;
+	int isnodata = 0;
 
 	uint32_t a = 0;
 	uint32_t i = 0;
@@ -3902,7 +3901,6 @@ rt_band_get_quantiles_stream(rt_band band,
 	assert(NULL != band);
 	assert(cov_count > 1);
 	RASTER_DEBUGF(3, "cov_count = %d", cov_count);
-
 
 	data = rt_band_get_data(band);
 	if (data == NULL) {
@@ -4035,6 +4033,12 @@ rt_band_get_quantiles_stream(rt_band band,
 		y = -1;
 		diff = 0;
 
+		/* exclude_nodata_value = TRUE and band is NODATA */
+		if (exclude_nodata_value && rt_band_get_isnodata_flag(band)) {
+			RASTER_DEBUG(3, "Skipping quantile calcuation as band is NODATA");
+			break;
+		}
+
 		for (i = 0, z = 0; i < sample_per; i++) {
 			if (do_sample != 1)
 				y = i;
@@ -4046,20 +4050,10 @@ rt_band_get_quantiles_stream(rt_band band,
 			RASTER_DEBUGF(5, "(x, y, z) = (%d, %d, %d)", x, y, z);
 			if (y >= band->height || z > sample_per) break;
 
-			status = rt_band_get_pixel(band, x, y, &value, NULL);
+			status = rt_band_get_pixel(band, x, y, &value, &isnodata);
 
 			j++;
-			if (
-				status != -1 && (
-					!exclude_nodata_value || (
-						exclude_nodata_value &&
-						(hasnodata != FALSE) && (
-							FLT_NEQ(value, nodata) &&
-							(rt_band_clamped_value_is_nodata(band, value) != 1)
-						)
-					)
-				)
-			) {
+			if (status != -1 && (!exclude_nodata_value || (exclude_nodata_value && !isnodata))) {
 
 				/* process each quantile */
 				for (a = 0; a < *qlls_count; a++) {
@@ -4462,9 +4456,11 @@ rt_band_get_quantiles_stream(rt_band band,
  * @return the number of times the provide value(s) occur
  */
 rt_valuecount
-rt_band_get_value_count(rt_band band, int exclude_nodata_value,
+rt_band_get_value_count(
+	rt_band band, int exclude_nodata_value,
 	double *search_values, uint32_t search_values_count, double roundto,
-	uint32_t *rtn_total, uint32_t *rtn_count) {
+	uint32_t *rtn_total, uint32_t *rtn_count
+) {
 	rt_valuecount vcnts = NULL;
 	rt_pixtype pixtype = PT_END;
 	uint8_t *data = NULL;
@@ -4724,9 +4720,11 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
  * @return a new rt_band or 0 on error
  */
 rt_band
-rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
-	uint32_t hasnodata, double nodataval, rt_reclassexpr *exprset,
-	int exprcount) {
+rt_band_reclass(
+	rt_band srcband, rt_pixtype pixtype,
+	uint32_t hasnodata, double nodataval,
+	rt_reclassexpr *exprset, int exprcount
+) {
 	rt_band band = NULL;
 	uint32_t width = 0;
 	uint32_t height = 0;
@@ -5448,9 +5446,11 @@ rt_raster_add_band(rt_raster raster, rt_band band, int index) {
  * @return identifier (position) for the just-added raster, or -1 on error
  */
 int32_t
-rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
-        double initialvalue, uint32_t hasnodata, double nodatavalue, int index)
-{
+rt_raster_generate_new_band(
+	rt_raster raster, rt_pixtype pixtype,
+	double initialvalue, uint32_t hasnodata, double nodatavalue,
+	int index
+) {
     rt_band band = NULL;
     int width = 0;
     int height = 0;
@@ -5620,6 +5620,10 @@ rt_raster_generate_new_band(rt_raster raster, rt_pixtype pixtype,
         rterror("rt_raster_generate_new_band: Could not add band to raster. Aborting");
         rt_band_destroy(band);
     }
+
+		/* set isnodata if hasnodata = TRUE and initial value = nodatavalue */
+		if (hasnodata && FLT_EQ(initialvalue, nodatavalue))
+			rt_band_set_isnodata_flag(band, 1);
 
     return index;
 }
@@ -7040,7 +7044,7 @@ rt_band_from_wkb(uint16_t width, uint16_t height,
     band->pixtype = type & BANDTYPE_PIXTYPE_MASK;
     band->offline = BANDTYPE_IS_OFFDB(type) ? 1 : 0;
     band->hasnodata = BANDTYPE_HAS_NODATA(type) ? 1 : 0;
-    band->isnodata = BANDTYPE_IS_NODATA(type) ? 1 : 0;
+    band->isnodata = band->hasnodata ? (BANDTYPE_IS_NODATA(type) ? 1 : 0) : 0;
     band->width = width;
     band->height = height;
 
@@ -8004,7 +8008,7 @@ rt_raster_deserialize(void* serialized, int header_only) {
 
         band->offline = BANDTYPE_IS_OFFDB(type) ? 1 : 0;
         band->hasnodata = BANDTYPE_HAS_NODATA(type) ? 1 : 0;
-        band->isnodata = BANDTYPE_IS_NODATA(type) ? 1 : 0;
+        band->isnodata = band->hasnodata ? (BANDTYPE_IS_NODATA(type) ? 1 : 0) : 0;
         band->width = rast->width;
         band->height = rast->height;
         band->ownsdata = 0; /* we do NOT own this data!!! */
@@ -8300,6 +8304,7 @@ rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
 	RASTER_DEBUGF(3, "rt_raster_replace_band: new band at %p", raster->bands[index]);
 
 	band->raster = raster;
+	oldband->raster = NULL;
 
 	return oldband;
 }
@@ -11066,8 +11071,10 @@ int rt_raster_intersects_algorithm(
 	double d;
 	double val1;
 	int noval1;
+	int isnodata1;
 	double val2;
 	int noval2;
+	int isnodata2;
 	uint32_t adjacent[8] = {0};
 
 	double xscale;
@@ -11287,7 +11294,7 @@ int rt_raster_intersects_algorithm(
 							else if (hasnodata1 == FALSE)
 								val1 = 1;
 							/* unable to get value at cell */
-							else if (rt_band_get_pixel(band1, Qr[pX], Qr[pY], &val1, NULL) < 0)
+							else if (rt_band_get_pixel(band1, Qr[pX], Qr[pY], &val1, &isnodata1) < 0)
 								noval1 = 1;
 
 							/* unable to convert point to cell */
@@ -11310,7 +11317,7 @@ int rt_raster_intersects_algorithm(
 							else if (hasnodata2 == FALSE)
 								val2 = 1;
 							/* unable to get value at cell */
-							else if (rt_band_get_pixel(band2, Qr[pX], Qr[pY], &val2, NULL) < 0)
+							else if (rt_band_get_pixel(band2, Qr[pX], Qr[pY], &val2, &isnodata2) < 0)
 								noval2 = 1;
 
 							if (!noval1) {
@@ -11322,18 +11329,12 @@ int rt_raster_intersects_algorithm(
 
 							/* pixels touch */
 							if (!noval1 && (
-								(hasnodata1 == FALSE) || (
-									(hasnodata1 != FALSE) &&
-									FLT_NEQ(val1, nodata1)
-								)
+								(hasnodata1 == FALSE) || !isnodata1
 							)) {
 								adjacent[i]++;
 							}
 							if (!noval2 && (
-								(hasnodata2 == FALSE) || (
-									(hasnodata2 != FALSE) &&
-									FLT_NEQ(val2, nodata2)
-								)
+								(hasnodata2 == FALSE) || !isnodata2
 							)) {
 								adjacent[i] += 3;
 							}
@@ -11345,17 +11346,10 @@ int rt_raster_intersects_algorithm(
 							}
 
 							/* pixels valid, so intersect */
-							if ((
-									(hasnodata1 == FALSE) || (
-										(hasnodata1 != FALSE) &&
-										FLT_NEQ(val1, nodata1)
-									)
-								) && (
-									(hasnodata2 == FALSE) || (
-										(hasnodata2 != FALSE) &&
-										FLT_NEQ(val2, nodata2)
-									)
-							)) {
+							if (
+								((hasnodata1 == FALSE) || !isnodata1) &&
+								((hasnodata2 == FALSE) || !isnodata2)
+							) {
 								RASTER_DEBUG(3, "The two rasters do intersect");
 
 								return 1;
@@ -11437,6 +11431,8 @@ rt_raster_intersects(
 	int hasnodataL = FALSE;
 	double nodataS = 0;
 	double nodataL = 0;
+	int isnodataS = 0;
+	int isnodataL = 0;
 	double gtS[6] = {0};
 	double igtL[6] = {0};
 
@@ -11619,6 +11615,16 @@ rt_raster_intersects(
 		hasnodataL = FALSE;
 	}
 
+	/* hasnodata(S|L) = TRUE and one of the two bands is isnodata */
+	if (
+		(hasnodataS && rt_band_get_isnodata_flag(bandS)) ||
+		(hasnodataL && rt_band_get_isnodata_flag(bandL))
+	) {
+		RASTER_DEBUG(3, "One of the two raster bands is NODATA. The two rasters do not intersect");
+		*intersects = 0;
+		return 1;
+	}
+
 	/* special case where a raster can fit inside another raster's pixel */
 	if (within != 0 && ((pixarea1 > area2) || (pixarea2 > area1))) {
 		RASTER_DEBUG(4, "Using special case of raster fitting into another raster's pixel");
@@ -11629,13 +11635,10 @@ rt_raster_intersects(
 					for (row = rowoffset; row < *heightS; row += 3) {
 						if (hasnodataS == FALSE)
 							valS = 1;
-						else if (rt_band_get_pixel(bandS, col, row, &valS, NULL) < 0)
+						else if (rt_band_get_pixel(bandS, col, row, &valS, &isnodataS) < 0)
 							continue;
 
-						if ((hasnodataS == FALSE) || (
-							(hasnodataS != FALSE) &&
-							FLT_NEQ(valS, nodataS)
-						)) {
+						if ((hasnodataS == FALSE) || !isnodataS) {
 							rt_raster_cell_to_geopoint(
 								rastS,
 								col, row,
@@ -11661,13 +11664,10 @@ rt_raster_intersects(
 
 							if (hasnodataS == FALSE)
 								valL = 1;
-							else if (rt_band_get_pixel(bandL, Qr[pX], Qr[pY], &valL, NULL) < 0)
+							else if (rt_band_get_pixel(bandL, Qr[pX], Qr[pY], &valL, &isnodataL) < 0)
 								continue;
 
-							if ((hasnodataL == FALSE) || (
-								(hasnodataL != FALSE) &&
-								FLT_NEQ(valL, nodataL)
-							)) {
+							if ((hasnodataL == FALSE) || !isnodataL) {
 								RASTER_DEBUG(3, "The two rasters do intersect");
 								*intersects = 1;
 								return 1;
@@ -12723,11 +12723,8 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 		return NULL;
 	}
 
-	/* band is NODATA or does not have a NODATA flag, return convex hull */
-	if (
-		rt_band_get_isnodata_flag(band) || 
-		!rt_band_get_hasnodata_flag(band)
-	) {
+	/* band does not have a NODATA flag, return convex hull */
+	if (!rt_band_get_hasnodata_flag(band)) {
 		/*
 			lwgeom_as_multi() only does a shallow clone internally
 			so input and output geometries may share memory
@@ -12742,6 +12739,12 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 
 		*noerr = 1;
 		return lwgeom_as_lwmpoly(clone);
+	}
+	/* band is NODATA, return NULL */
+	else if (rt_band_get_isnodata_flag(band)) {
+		RASTER_DEBUG(3, "Band is NODATA.  Returning NULL");
+		*noerr = 1;
+		return NULL;
 	}
 
 	/* initialize GEOS */
@@ -13700,10 +13703,17 @@ rt_raster_iterator(
 			for (i = 0; i < itrcount; i++) {
 				RASTER_DEBUGF(4, "raster %d", i);
 
-				/* empty raster */
-				/* OR band does not exist and flag set to use NODATA */
-				if (_param->isempty[i] || (_param->band[i] == NULL && itrset[i].nbnodata)) {
-					RASTER_DEBUG(4, "empty raster or band does not exist. using empty values and NODATA");
+				/*
+					empty raster
+					OR band does not exist and flag set to use NODATA
+					OR band is NODATA
+				*/
+				if (
+					_param->isempty[i] ||
+					(_param->band[i] == NULL && itrset[i].nbnodata) ||
+					rt_band_get_isnodata_flag(_param->band[i])
+				) {
+					RASTER_DEBUG(4, "empty raster, band does not exist or band is NODATA. using empty values and NODATA");
 					
 					x = _x;
 					y = _y;

@@ -12,9 +12,6 @@ CREATE OR REPLACE FUNCTION raster_plus_twenty(pixel FLOAT, VARIADIC args TEXT[])
     RETURNS FLOAT AS 
     $$
     BEGIN
-        IF pixel IS NULL THEN
-            RAISE NOTICE 'Pixel value is null.';
-        END IF;
         RETURN pixel + 20;
     END;
     $$ 
