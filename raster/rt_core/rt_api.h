@@ -598,13 +598,14 @@ int rt_band_set_pixel(
 );
 
 /**
- * Get pixel value
+ * Get pixel value. If band's isnodata flag is TRUE, value returned 
+ * will be the band's NODATA value
  *
  * @param band : the band to get pixel value from
  * @param x : x ordinate (0-based)
  * @param y : x ordinate (0-based)
  * @param *value: pixel value
- * @param *nodata: flag (0 or 1) indicating if pixel is NODATA
+ * @param *nodata: 0 if pixel is not NODATA
  *
  * @return 0 on success, -1 on error (value out of valid range).
  */

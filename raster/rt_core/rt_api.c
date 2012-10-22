@@ -1385,7 +1385,7 @@ rt_band_new_offline(
 	band->height = height;
 	band->hasnodata = hasnodata;
 	band->nodataval = 0;
-	band->isnodata = FALSE;
+	band->isnodata = FALSE; /* we don't know if the offline band is NODATA */
 	band->ownsdata = 0;
 	band->raster = NULL;
 
@@ -1798,17 +1798,23 @@ rt_band_set_hasnodata_flag(rt_band band, int flag) {
 
     assert(NULL != band);
 
-
     band->hasnodata = (flag) ? 1 : 0;
+
+		/* isnodata depends on hasnodata */
+		if (!band->hasnodata && band->isnodata) {
+			rtinfo("Setting isnodata to FALSE as band no longer has NODATA");
+			band->isnodata = 0;
+		}
 }
 
 void
 rt_band_set_isnodata_flag(rt_band band, int flag) {
+	assert(NULL != band);
 
-    assert(NULL != band);
-
-
-    band->isnodata = (flag) ? 1 : 0;
+	if (!band->hasnodata)
+		rterror("rt_band_set_isnodata_flag: Cannot set isnodata flag as band has no NODATA");
+	else 
+		band->isnodata = (flag) ? 1 : 0;
 }
 
 int
@@ -1930,6 +1936,10 @@ rt_band_set_nodata(rt_band band, double val) {
 
     /* the nodata value was just set, so this band has NODATA */
     rt_band_set_hasnodata_flag(band, 1);
+
+		/* also set isnodata flag to false */
+		rt_band_set_isnodata_flag(band, 0);
+
 
     /* If the nodata value is different from the previous one, we need to check
      * again if the band is a nodata band
@@ -2072,6 +2082,9 @@ rt_band_set_pixel_line(
 	}
 #endif
 
+	/* set band's isnodata flag to FALSE */
+	rt_band_set_isnodata_flag(band, 0);
+
 	return 1;
 }
 
@@ -2101,7 +2114,6 @@ rt_band_set_pixel(
 	uint32_t checkvaluint = 0;
 	float checkvalfloat = 0;
 	double checkvaldouble = 0;
-	double checkval = 0;
 
 	assert(NULL != band);
 
@@ -2203,8 +2215,11 @@ rt_band_set_pixel(
 		}
 	}
 
-	/* If the stored value is different from no data, reset the isnodata flag */
-	if (FLT_NEQ(checkval, band->nodataval)) {
+	/* If the stored value is not NODATA, reset the isnodata flag */
+	if (
+		FLT_NEQ(val, band->nodataval) ||
+		rt_band_clamped_value_is_nodata(band, val) != 1
+	) {
 		band->isnodata = FALSE;
 	}
 
@@ -2232,13 +2247,14 @@ rt_band_set_pixel(
 }
 
 /**
- * Get pixel value
+ * Get pixel value. If band's isnodata flag is TRUE, value returned 
+ * will be the band's NODATA value
  *
  * @param band : the band to set nodata value to
  * @param x : x ordinate (0-based)
  * @param y : x ordinate (0-based)
  * @param *value: pixel value
- * @param *nodata: flag (0 or 1) indicating if pixel is NODATA
+ * @param *nodata: 0 if pixel is not NODATA
  *
  * @return 0 on success, -1 on error (value out of valid range).
  */
@@ -2424,6 +2440,7 @@ int rt_band_get_nearest_pixel(
 	double pixval = 0;
 	double minval = 0;
 	uint32_t count = 0;
+	int isnodata = 0;
 
 	int inextent = 0;
 
@@ -2480,6 +2497,11 @@ int rt_band_get_nearest_pixel(
 	/* no NODATA, exclude is FALSE */
 	if (!band->hasnodata)
 		exclude_nodata_value = FALSE;
+	/* band is NODATA and excluding NODATA */
+	else if (exclude_nodata_value && band->isnodata) {
+		RASTER_DEBUG(4, "No nearest pixels possible as band is NODATA and excluding NODATA values");
+		return 0;
+	}
 
 	/* determine the maximum distance to prevent an infinite loop */
 	if (d0) {
@@ -2599,13 +2621,14 @@ int rt_band_get_nearest_pixel(
 							pixval = band->nodataval;
 						RASTER_DEBUGF(4, "NODATA pixel outside band extent: (x, y, val) = (%d, %d, %f)", _x, _y, pixval);
 						inextent = 0;
+						isnodata = 1;
 					}
 					else {
 						if (rt_band_get_pixel(
 							band,
 							_x, _y,
 							&pixval,
-							NULL
+							&isnodata
 						) < 0) {
 							rterror("rt_band_get_nearest_pixel: Unable to get pixel value");
 							if (count) rtdealloc(*npixels);
@@ -2616,15 +2639,7 @@ int rt_band_get_nearest_pixel(
 					}
 
 					/* use pixval? */
-					if (
-						!exclude_nodata_value || (
-							exclude_nodata_value &&
-							(band->hasnodata != FALSE) && (
-								FLT_NEQ(pixval, band->nodataval) &&
-								(rt_band_clamped_value_is_nodata(band, pixval) != 1)
-							)
-						)
-					) {
+					if (!exclude_nodata_value || (exclude_nodata_value && !isnodata)) {
 						/* add pixel to result set */
 						RASTER_DEBUGF(4, "Adding pixel to set of nearest pixels: (x, y, val) = (%d, %d, %f)", _x, _y, pixval);
 						count++;
@@ -2691,6 +2706,7 @@ rt_band_get_pixel_of_value(
 	double pixval;
 	int err;
 	int count = 0;
+	int isnodata = 0;
 
 	rt_pixel pixel = NULL;
 
@@ -2699,23 +2715,21 @@ rt_band_get_pixel_of_value(
 
 	if (!band->hasnodata)
 		exclude_nodata_value = FALSE;
+	/* band is NODATA and exclude_nodata_value = TRUE, nothing to search */
+	else if (exclude_nodata_value && band->isnodata) {
+		RASTER_DEBUG(4, "Pixels cannot be searched as band is NODATA and excluding NODATA values");
+		return 0;
+	}
 
 	for (x = 0; x < band->width; x++) {
 		for (y = 0; y < band->height; y++) {
-			err = rt_band_get_pixel(band, x, y, &pixval, NULL);
+			err = rt_band_get_pixel(band, x, y, &pixval, &isnodata);
 			if (err != 0) {
 				rterror("rt_band_get_pixel_of_value: Cannot get band pixel");
 				return -1;
 			}
-			else if (
-				exclude_nodata_value &&
-				(band->hasnodata != FALSE) && (
-					FLT_EQ(pixval, band->nodataval) ||
-					rt_band_clamped_value_is_nodata(band, pixval) == 1
-				)
-			) {
+			else if (exclude_nodata_value && isnodata)
 				continue;
-			}
 
 			for (i = 0; i < searchcount; i++) {
 				if (
@@ -2747,7 +2761,7 @@ rt_band_get_pixel_of_value(
 
 	return count;
 }
-
+// WORK FROM HERE
 double
 rt_band_get_nodata(rt_band band) {
 

@@ -1,7 +1,12 @@
+NOTICE:  Band's isnodata flag is TRUE. Returning NODATA value
+NOTICE:  Band's isnodata flag is TRUE. Returning NODATA value
+NOTICE:  Band's isnodata flag is TRUE. Returning NODATA value
+NOTICE:  Band's isnodata flag is TRUE. Returning NODATA value
 NOTICE:  Attempting to get pixel value with out of range raster coordinates: (-2, -2)
 NOTICE:  Attempting to get pixel value with out of range raster coordinates: (-2, -2)
 NOTICE:  Attempting to get pixel value with out of range raster coordinates: (-2, -2)
 NOTICE:  Attempting to get pixel value with out of range raster coordinates: (-2, -2)
+NOTICE:  Band's isnodata flag is TRUE. Returning NODATA value
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
 NOTICE:  Raster do not have a nodata value defined. Set band nodata value first. Nodata value not set. Returning original raster
