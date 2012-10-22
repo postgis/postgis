@@ -2903,11 +2903,8 @@ WHERE rid = 2;
 				<note>
 					<para>If the flag is dirty (this is, the result is different
                     using TRUE as last parameter and not using it) you should
-                    update the raster to set this flag to true, by using ST_SetBandIsNodata function, 
-                    or ST_SetBandNodataValue function with TRUE as last argument. The
-                    loader (raster2pgsql) currently can not properly set the
-                    flag while loading raster data. See <xref
-                    linkend="RT_ST_SetBandIsNoData" />.</para>
+                    update the raster to set this flag to true, by using ST_SetBandIsNodata(), 
+                    or ST_SetBandNodataValue() with TRUE as last argument. See <xref linkend="RT_ST_SetBandIsNoData" />.</para>
 				</note>
 			</refsection>
 				
@@ -5749,10 +5746,6 @@ WHERE rid = 2;
                 TRUE as last argument and without using it</para>
 
                 <para>Availability: 2.0.0</para>
-				<note><para>Currently, the loader (raster2pgsql) is not able
-                to set the isnodata flag for bands. So, this is the fastest way
-                to set it to TRUE, without changing any other band value</para></note>
-               
 				</refsection>
 				
 				<refsection>

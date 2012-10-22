@@ -65,6 +65,7 @@ PostGIS 2.1.0
     parameter to interpolate NODATA pixels before running the operation.
   - point variant of ST_SetValue(raster) is now a wrapper around geomval 
     variant of ST_SetValues(rast).
+  - proper support for raster band's isnodata flag in core API and loader.
 
 * Fixes *
 
