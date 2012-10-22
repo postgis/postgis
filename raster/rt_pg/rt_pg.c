@@ -1048,7 +1048,7 @@ Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
 
 		/* see if band is NODATA */
 		if (rt_band_get_isnodata_flag(rt_raster_get_band(raster, nband - 1))) {
-			POSTGIS_RT_DEBUGF(3, "Band at index %d is NODATA. Returning NULL");
+			POSTGIS_RT_DEBUGF(3, "Band at index %d is NODATA. Returning NULL", nband);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			MemoryContextSwitchTo(oldcontext);
