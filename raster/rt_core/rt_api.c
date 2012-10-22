@@ -2083,7 +2083,8 @@ rt_band_set_pixel_line(
 #endif
 
 	/* set band's isnodata flag to FALSE */
-	rt_band_set_isnodata_flag(band, 0);
+	if (rt_band_get_hasnodata_flag(band))
+		rt_band_set_isnodata_flag(band, 0);
 
 	return 1;
 }
@@ -2393,8 +2394,6 @@ rt_band_get_pixel(
 		) {
 			*nodata = 1;
 		}
-		else
-			*nodata = 0;
 	}
 
 	return 0;
@@ -2761,18 +2760,27 @@ rt_band_get_pixel_of_value(
 
 	return count;
 }
-// WORK FROM HERE
-double
-rt_band_get_nodata(rt_band band) {
 
+/**
+ * Get NODATA value
+ *
+ * @param band: the band whose NODATA value will be returned
+ * @param nodata: the band's NODATA value
+ *
+ * @return 0 if error, 1 otherwise
+ */
+int
+rt_band_get_nodata(rt_band band, double *nodata) { 
+	assert(NULL != band);
 
-    assert(NULL != band);
+	*nodata = band->nodataval;
 
-    if (!band->hasnodata)
-        RASTER_DEBUGF(3, "Getting nodata value for a band without NODATA values. Using %g", band->nodataval);
+	if (!band->hasnodata) {
+		rterror("rt_band_get_nodata: Band has no NODATA value");
+		return 0;
+	}
 
-
-    return band->nodataval;
+	return 1;
 }
 
 double
@@ -3021,7 +3029,7 @@ rt_band_get_summary_stats(
 
 	hasnodata = rt_band_get_hasnodata_flag(band);
 	if (hasnodata != FALSE)
-		nodata = rt_band_get_nodata(band);
+		rt_band_get_nodata(band, &nodata);
 	else
 		exclude_nodata_value = 0;
 
@@ -3904,7 +3912,7 @@ rt_band_get_quantiles_stream(rt_band band,
 
 	hasnodata = rt_band_get_hasnodata_flag(band);
 	if (hasnodata != FALSE)
-		nodata = rt_band_get_nodata(band);
+		rt_band_get_nodata(band, &nodata);
 	else
 		exclude_nodata_value = 0;
 	RASTER_DEBUGF(3, "nodata = %f", nodata);
@@ -4499,7 +4507,7 @@ rt_band_get_value_count(rt_band band, int exclude_nodata_value,
 
 	hasnodata = rt_band_get_hasnodata_flag(band);
 	if (hasnodata != FALSE)
-		nodata = rt_band_get_nodata(band);
+		rt_band_get_nodata(band, &nodata);
 	else
 		exclude_nodata_value = 0;
 
@@ -4744,7 +4752,8 @@ rt_band_reclass(rt_band srcband, rt_pixtype pixtype,
 
 	/* source nodata */
 	src_hasnodata = rt_band_get_hasnodata_flag(srcband);
-	src_nodataval = rt_band_get_nodata(srcband);
+	if (src_hasnodata)
+		rt_band_get_nodata(srcband, &src_nodataval);
 
 	/* size of memory block to allocate */
 	width = rt_band_get_width(srcband);
@@ -5874,7 +5883,7 @@ rt_raster_gdal_polygonize(
 	if (exclude_nodata_value) {
 		iBandHasNodataValue = rt_band_get_hasnodata_flag(band);
 		if (iBandHasNodataValue)
-			dBandNoData = rt_band_get_nodata(band);
+			rt_band_get_nodata(band, &dBandNoData);
 		else
 			exclude_nodata_value = FALSE;
 	}
@@ -8828,7 +8837,7 @@ rt_raster_to_gdal_mem(
 
 		/* Add nodata value for band */
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE && excludeNodataValues[i]) {
-			nodata = rt_band_get_nodata(rtband);
+			rt_band_get_nodata(rtband, &nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_to_gdal_mem: Could not set nodata value for band");
 			RASTER_DEBUGF(3, "nodata value set to %f", GDALGetRasterNoDataValue(band, NULL));
@@ -9807,7 +9816,7 @@ rt_raster rt_raster_gdal_warp(
 
 		/* set nodata */
 		if (rt_band_get_hasnodata_flag(rtband) != FALSE) {
-			nodata = rt_band_get_nodata(rtband);
+			rt_band_get_nodata(rtband, &nodata);
 			if (GDALSetRasterNoDataValue(band, nodata) != CE_None)
 				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d", i);
 			RASTER_DEBUGF(3, "nodata value set to %f", GDALGetRasterNoDataValue(band, NULL));
@@ -9965,7 +9974,7 @@ rt_raster rt_raster_gdal_warp(
 			wopts->padfSrcNoDataReal[i] = -123456.789;
 		}
 		else {
-			wopts->padfSrcNoDataReal[i] = rt_band_get_nodata(band);
+			rt_band_get_nodata(band, &(wopts->padfSrcNoDataReal[i]));
 		}
 
 		wopts->padfDstNoDataReal[i] = wopts->padfSrcNoDataReal[i];
@@ -11590,7 +11599,7 @@ rt_raster_intersects(
 
 	hasnodataS = rt_band_get_hasnodata_flag(bandS);
 	if (hasnodataS != FALSE)
-		nodataS = rt_band_get_nodata(bandS);
+		rt_band_get_nodata(bandS, &nodataS);
 
 	/* load band of larger raster */
 	bandL = rt_raster_get_band(rastL, nbandL);
@@ -11602,7 +11611,7 @@ rt_raster_intersects(
 
 	hasnodataL = rt_band_get_hasnodata_flag(bandL);
 	if (hasnodataL != FALSE)
-		nodataL = rt_band_get_nodata(bandL);
+		rt_band_get_nodata(bandL, &nodataL);
 
 	/* no band to use, ignore nodata */
 	if (nband1 < 0) {
@@ -13305,6 +13314,7 @@ rt_raster_iterator(
 
 	double minval;
 	double value;
+	int isnodata;
 	int nodata;
 
 	RASTER_DEBUG(3, "Starting...");
@@ -13747,7 +13757,7 @@ rt_raster_iterator(
 						_param->band[i],
 						x, y,
 						&value,
-						NULL
+						&isnodata
 					) < 0) {
 						rterror("rt_raster_iterator: Unable to get the pixel value of band");
 
@@ -13764,11 +13774,12 @@ rt_raster_iterator(
 					RASTER_DEBUG(4, "Outside band extent, setting value to NODATA");
 					/* has NODATA, use NODATA */
 					if (rt_band_get_hasnodata_flag(_param->band[i]))
-						value = rt_band_get_nodata(_param->band[i]);
+						rt_band_get_nodata(_param->band[i], &value);
 					/* no NODATA, use min possible value */
 					else
 						value = rt_band_get_min_value(_param->band[i]);
 					inextent = 0;
+					isnodata = 1;
 				}
 
 				/* add pixel to neighborhood */
@@ -13794,14 +13805,7 @@ rt_raster_iterator(
 				npixels[status - 1].value = value;
 
 				/* set nodata flag */
-				if (
-					(!rt_band_get_hasnodata_flag(_param->band[i]) && inextent) || (
-						(rt_band_get_hasnodata_flag(_param->band[i]) != FALSE) && (
-							FLT_NEQ(value, rt_band_get_nodata(_param->band[i])) &&
-							(rt_band_clamped_value_is_nodata(_param->band[i], value) != 1)
-						)
-					)
-				) {
+				if ((!rt_band_get_hasnodata_flag(_param->band[i]) && inextent) || !isnodata) {
 					npixels[status - 1].nodata = 0;
 				}
 				RASTER_DEBUGF(4, "value, nodata: %f, %d", value, npixels[status - 1].nodata);

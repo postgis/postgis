@@ -547,13 +547,14 @@ int rt_band_get_isnodata_flag(rt_band band);
 int rt_band_set_nodata(rt_band band, double val);
 
 /**
- * Get nodata value
+ * Get NODATA value
  *
- * @param band : the band to set nodata value to
+ * @param band: the band whose NODATA value will be returned
+ * @param nodata: the band's NODATA value
  *
- * @return nodata value
+ * @return 0 if error, 1 otherwise
  */
-double rt_band_get_nodata(rt_band band);
+int rt_band_get_nodata(rt_band band, double *nodata);
 
 /**
  * Set values of multiple pixels.  Unlike rt_band_set_pixel,

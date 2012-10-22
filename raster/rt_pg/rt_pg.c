@@ -2112,7 +2112,7 @@ Datum RASTER_getBandNoDataValue(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
 
-    nodata = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &nodata);
 
     rt_raster_destroy(raster);
     PG_FREE_IF_COPY(pgraster, 0);
@@ -2377,7 +2377,8 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
     int32_t x = 0;
     int32_t y = 0;
     int result = 0;
-    bool hasnodata = TRUE;
+    bool exclude_nodata_value = TRUE;
+		int isnodata = 0;
 
     /* Index is 1-based */
     bandindex = PG_GETARG_INT32(1);
@@ -2390,7 +2391,7 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
 
     y = PG_GETARG_INT32(3);
 
-    hasnodata = PG_GETARG_BOOL(4);
+    exclude_nodata_value = PG_GETARG_BOOL(4);
 
     POSTGIS_RT_DEBUGF(3, "Pixel coordinates (%d, %d)", x, y);
 
@@ -2415,12 +2416,11 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
     /* Fetch pixel using 0-based coordinates */
-    result = rt_band_get_pixel(band, x - 1, y - 1, &pixvalue, NULL);
+    result = rt_band_get_pixel(band, x - 1, y - 1, &pixvalue, &isnodata);
 
     /* If the result is -1 or the value is nodata and we take nodata into account
      * then return nodata = NULL */
-    if (result == -1 || (hasnodata && rt_band_get_hasnodata_flag(band) &&
-            pixvalue == rt_band_get_nodata(band))) {
+    if (result == -1 || (exclude_nodata_value && isnodata)) {
         rt_raster_destroy(raster);
         PG_FREE_IF_COPY(pgraster, 0);
         PG_RETURN_NULL();
@@ -2714,7 +2714,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			/* band's hasnodata and nodataval */
 			hasnodata = rt_band_get_hasnodata_flag(band);
 			if (hasnodata)
-				nodataval = rt_band_get_nodata(band);
+				rt_band_get_nodata(band, &nodataval);
 			POSTGIS_RT_DEBUGF(4, "(hasnodata, nodataval) = (%d, %f)", hasnodata, nodataval);
 
 			/* allocate memory for values and nodata flags */
@@ -2924,7 +2924,7 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 					PG_RETURN_POINTER(pgraster);
 				}
 				else {
-					pixvalue = rt_band_get_nodata(band);
+					rt_band_get_nodata(band, &pixvalue);
 					rt_band_set_pixel(band, x - 1, y - 1, pixvalue);
 				}
 			}
@@ -3298,7 +3298,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	/* has NODATA, use NODATA */
 	hasnodata = rt_band_get_hasnodata_flag(band);
 	if (hasnodata)
-		nodataval = rt_band_get_nodata(band);
+		rt_band_get_nodata(band, &nodataval);
 	/* no NODATA, use min possible value */
 	else
 		nodataval = rt_band_get_min_value(band);
@@ -3559,7 +3559,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 	pixtype = rt_band_get_pixtype(band);
 	hasnodata = rt_band_get_hasnodata_flag(band);
 	if (hasnodata)
-		nodataval = rt_band_get_nodata(band);
+		rt_band_get_nodata(band, &nodataval);
 
 	/* array of geomval (2) */
 	if (PG_ARGISNULL(2)) {
@@ -3993,7 +3993,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 				hasnodata = rt_band_get_hasnodata_flag(band);
 				if (hasnodata) {
-					nodataval = rt_band_get_nodata(band);
+					rt_band_get_nodata(band, &nodataval);
 					POSTGIS_RT_DEBUGF(4, "(hasnodata, nodataval) = (%d, %f)", hasnodata, nodataval);
 				}
 				else
@@ -4492,6 +4492,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 	rt_pixel npixels = NULL;
 	double value = 0;
 	int hasvalue = 0;
+	int isnodata = 0;
 
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
@@ -4580,7 +4581,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 		(x >= 0 && x < rt_raster_get_width(raster)) &&
 		(y >= 0 && y < rt_raster_get_height(raster))
 	) {
-		if (rt_band_get_pixel(band, x, y, &value, NULL) < 0) {
+		if (rt_band_get_pixel(band, x, y, &value, &isnodata) < 0) {
 			elog(ERROR, "RASTER_nearestValue: Unable to get pixel value for band at index %d", bandindex);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -4590,16 +4591,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 		}
 
 		/* value at point, return value */
-		if (
-			!exclude_nodata_value || 
-			!rt_band_get_hasnodata_flag(band) || (
-				exclude_nodata_value &&
-				rt_band_get_hasnodata_flag(band) && (
-					FLT_NEQ(value, rt_band_get_nodata(band)) &&
-					(rt_band_clamped_value_is_nodata(band, value) != 1)
-				)
-			)
-		) {
+		if (!exclude_nodata_value || !isnodata) {
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			lwgeom_free(lwgeom);
@@ -4699,6 +4691,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	int distance[2] = {0};
 	bool exclude_nodata_value = TRUE;
 	double pixval;
+	int isnodata = 0;
 	int inextent = 0;
 
 	rt_pixel npixels = NULL;
@@ -4815,7 +4808,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 			band,
 			_x, _y,
 			&pixval,
-			NULL
+			&isnodata
 		) < 0) {
 			elog(NOTICE, "Unable to get the pixel of band at index %d. Returning NULL", bandindex);
 			rt_band_destroy(band);
@@ -4829,11 +4822,12 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	else {
 		/* has NODATA, use NODATA */
 		if (rt_band_get_hasnodata_flag(band))
-			pixval = rt_band_get_nodata(band);
+			rt_band_get_nodata(band, &pixval);
 		/* no NODATA, use min possible value */
 		else
 			pixval = rt_band_get_min_value(band);
 		inextent = 0;
+		isnodata = 1;
 	}
 	POSTGIS_RT_DEBUGF(4, "pixval: %f", pixval);
 
@@ -4859,16 +4853,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	npixels[count - 1].value = pixval;
 
 	/* set NODATA */
-	if (
-		!exclude_nodata_value || 
-		(!rt_band_get_hasnodata_flag(band) && inextent) || (
-			exclude_nodata_value &&
-			(rt_band_get_hasnodata_flag(band) != FALSE) && (
-				FLT_NEQ(pixval, rt_band_get_nodata(band)) &&
-				(rt_band_clamped_value_is_nodata(band, pixval) != 1)
-			)
-		)
-	) {
+	if (!exclude_nodata_value || !isnodata) {
 		npixels[count - 1].nodata = 0;
 	}
 
@@ -5702,7 +5687,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraExpr: Getting NODATA value for band...");
 
     if (rt_band_get_hasnodata_flag(band)) {
-        newnodatavalue = rt_band_get_nodata(band);
+        rt_band_get_nodata(band, &newnodatavalue);
     }
 
     else {
@@ -6363,7 +6348,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFct: Getting NODATA value for band...");
 
     if (rt_band_get_hasnodata_flag(band)) {
-        newnodatavalue = rt_band_get_nodata(band);
+        rt_band_get_nodata(band, &newnodatavalue);
     }
 
     else {
@@ -11241,7 +11226,7 @@ Datum RASTER_bandmetadata(PG_FUNCTION_ARGS)
 
 			/* nodatavalue */
 			if (bmd[i].hasnodata)
-				bmd[i].nodataval = rt_band_get_nodata(band);
+				rt_band_get_nodata(band, &(bmd[i].nodataval));
 			else
 				bmd[i].nodataval = 0;
 
@@ -13191,7 +13176,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 		_hasnodata[i] = rt_band_get_hasnodata_flag(_band[i]);
 		if (_hasnodata[i])
-			_nodataval[i] = rt_band_get_nodata(_band[i]);
+			rt_band_get_nodata(_band[i], &(_nodataval[i]));
 	}
 
 	/* pixtype is PT_END, get pixtype based upon extent */
@@ -13267,12 +13252,6 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 		rt_raster_get_x_skew(raster),
 		rt_raster_get_y_skew(raster),
 		rt_raster_get_srid(raster)
-	);
-
-	POSTGIS_RT_DEBUGF(4, "bandmetadata = (%s, %d, %f)",
-		rt_pixtype_name(rt_band_get_pixtype(band)),
-		rt_band_get_hasnodata_flag(band),
-		rt_band_get_nodata(band)
 	);
 
 	/*
@@ -14055,7 +14034,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
     POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFctNgb: Getting NODATA value for band...");
 
     if (rt_band_get_hasnodata_flag(band)) {
-        newnodatavalue = rt_band_get_nodata(band);
+        rt_band_get_nodata(band, &newnodatavalue);
     }
 
     else {
@@ -15124,7 +15103,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	/* set hasnodata and nodataval */
 	arg->hasnodata = 1;
 	if (rt_band_get_hasnodata_flag(band))
-		arg->nodataval = rt_band_get_nodata(band);
+		rt_band_get_nodata(band, &(arg->nodataval));
 	else
 		arg->nodataval = rt_band_get_min_value(band);
 
@@ -15810,7 +15789,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				pixtype = rt_band_get_pixtype(_band);
 				hasnodata = 1;
 				if (rt_band_get_hasnodata_flag(_band))
-					nodataval = rt_band_get_nodata(_band);
+					rt_band_get_nodata(_band, &nodataval);
 				else
 					nodataval = rt_band_get_min_value(_band);
 			}
@@ -15946,7 +15925,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 			pixtype = rt_band_get_pixtype(_band);
 			hasnodata = rt_band_get_hasnodata_flag(_band);
 			if (hasnodata)
-				nodataval = rt_band_get_nodata(_band);
+				rt_band_get_nodata(_band, &nodataval);
 			POSTGIS_RT_DEBUGF(4, "(pixtype, hasnodata, nodataval) = (%s, %d, %f)", rt_pixtype_name(pixtype), hasnodata, nodataval);
 
 			itrset[0].raster = iwr->bandarg[i].raster[0];

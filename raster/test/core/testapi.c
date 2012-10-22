@@ -371,13 +371,13 @@ static void testBand1BB(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    //printf("1BB nodata is %g\n", rt_band_get_nodata(band));
-    CHECK_EQUALS(rt_band_get_nodata(band), 1);
+		rt_band_get_nodata(band, &val);
+    CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    //printf("1BB nodata is %g\n", rt_band_get_nodata(band));
-    CHECK_EQUALS(rt_band_get_nodata(band), 0);
+		rt_band_get_nodata(band, &val);
+    CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 2);
     CHECK(failure); /* out of range value */
@@ -421,22 +421,22 @@ static void testBand2BUI(rt_band band)
     int failure;
 
     failure = rt_band_set_nodata(band, 1);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
     CHECK(!failure);
 
     failure = rt_band_set_nodata(band, 0);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
     CHECK(!failure);
 
     failure = rt_band_set_nodata(band, 2);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 2);
     CHECK(!failure);
 
     failure = rt_band_set_nodata(band, 3);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 3);
     CHECK(!failure);
 
@@ -489,31 +489,31 @@ static void testBand4BUI(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK(!failure);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 2);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK(!failure);
     CHECK_EQUALS(val, 2);
 
     failure = rt_band_set_nodata(band, 4);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK(!failure);
     CHECK_EQUALS(val, 4);
 
     failure = rt_band_set_nodata(band, 8);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK(!failure);
     CHECK_EQUALS(val, 8);
 
     failure = rt_band_set_nodata(band, 15);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK(!failure);
     CHECK_EQUALS(val, 15);
 
@@ -570,42 +570,42 @@ static void testBand8BUI(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 2);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 2);
 
     failure = rt_band_set_nodata(band, 4);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 4);
 
     failure = rt_band_set_nodata(band, 8);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 8);
 
     failure = rt_band_set_nodata(band, 15);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 15);
 
     failure = rt_band_set_nodata(band, 31);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 31);
 
     failure = rt_band_set_nodata(band, 255);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 255);
 
     failure = rt_band_set_nodata(band, 256); /* out of value range */
@@ -649,46 +649,46 @@ static void testBand8BSI(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 2);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 2);
 
     failure = rt_band_set_nodata(band, 4);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 4);
 
     failure = rt_band_set_nodata(band, 8);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 8);
 
     failure = rt_band_set_nodata(band, 15);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 15);
 
     failure = rt_band_set_nodata(band, 31);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 31);
 
     failure = rt_band_set_nodata(band, -127);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, -127);
 
     failure = rt_band_set_nodata(band, 127);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 127);
 
     /* out of range (-127..127) */
@@ -750,27 +750,27 @@ static void testBand16BUI(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 31);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 31);
 
     failure = rt_band_set_nodata(band, 255);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 255);
 
     failure = rt_band_set_nodata(band, 65535);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     //printf("set 65535 on %s band gets %g back\n", pixtypeName, val);
     CHECK_EQUALS(val, 65535);
 
@@ -814,33 +814,33 @@ static void testBand16BSI(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 31);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 31);
 
     failure = rt_band_set_nodata(band, 255);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 255);
 
     failure = rt_band_set_nodata(band, -32767);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     //printf("set 65535 on %s band gets %g back\n", pixtypeName, val);
     CHECK_EQUALS(val, -32767);
 
     failure = rt_band_set_nodata(band, 32767);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     //printf("set 65535 on %s band gets %g back\n", pixtypeName, val);
     CHECK_EQUALS(val, 32767);
 
@@ -899,22 +899,22 @@ static void testBand32BUI(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 65535);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 65535);
 
     failure = rt_band_set_nodata(band, 4294967295UL);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 4294967295UL);
 
     /* out of range */
@@ -971,22 +971,22 @@ static void testBand32BSI(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 65535);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 65535);
 
     failure = rt_band_set_nodata(band, 2147483647);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     /*printf("32BSI pix is %ld\n", (long int)val);*/
     CHECK_EQUALS(val, 2147483647);
 
@@ -1044,23 +1044,23 @@ static void testBand32BF(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 65535.5);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     //printf("set 65535.56 on %s band gets %g back\n", pixtypeName, val);
     CHECK_EQUALS_DOUBLE(val, 65535.5);
 
     failure = rt_band_set_nodata(band, 0.006);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS_DOUBLE(val, 0.0060000000521540); /* XXX: Alternatively, use CHECK_EQUALS_DOUBLE_EX */
 
     {
@@ -1105,22 +1105,22 @@ static void testBand64BF(rt_band band)
 
     failure = rt_band_set_nodata(band, 1);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
     failure = rt_band_set_nodata(band, 0);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
     failure = rt_band_set_nodata(band, 65535.56);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 65535.56);
 
     failure = rt_band_set_nodata(band, 0.006);
     CHECK(!failure);
-    val = rt_band_get_nodata(band);
+    rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0.006);
 
     {
@@ -1243,7 +1243,7 @@ static void testBandStats() {
 		}
 	}
 
-	nodata = rt_band_get_nodata(band);
+	rt_band_get_nodata(band, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	stats = (rt_bandstats) rt_band_get_summary_stats(band, 1, 0, 1, NULL, NULL, NULL);
@@ -1340,7 +1340,7 @@ static void testBandStats() {
 		}
 	}
 
-	nodata = rt_band_get_nodata(band);
+	rt_band_get_nodata(band, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	quantile = (rt_quantile) rt_band_get_quantiles_stream(
@@ -1374,7 +1374,7 @@ static void testBandStats() {
 		}
 	}
 
-	nodata = rt_band_get_nodata(band);
+	rt_band_get_nodata(band, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	max_run = 5;
@@ -1424,7 +1424,7 @@ static void testRasterReplaceBand() {
 
 	rband = rt_raster_replace_band(raster, band, 0);
 	CHECK(rband);
-	nodata = rt_band_get_nodata(rt_raster_get_band(raster, 0));
+	rt_band_get_nodata(rt_raster_get_band(raster, 0), &nodata);
 	CHECK((nodata == 1));
 
 	deepRelease(raster);
@@ -1461,7 +1461,7 @@ static void testBandReclass() {
 		}
 	}
 
-	nodata = rt_band_get_nodata(band);
+	rt_band_get_nodata(band, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	exprset = rtalloc(cnt * sizeof(rt_reclassexpr));
@@ -1822,7 +1822,8 @@ static void testGDALWarp() {
 	CHECK(band);
 
 	CHECK(rt_band_get_hasnodata_flag(band));
-	CHECK(FLT_EQ(rt_band_get_nodata(band), 0.));
+	rt_band_get_nodata(band, &value);
+	CHECK(FLT_EQ(value, 0.));
 
 	CHECK(rt_band_get_pixel(band, 0, 0, &value, NULL) == 0);
 	CHECK(FLT_EQ(value, 0.));
@@ -1942,7 +1943,7 @@ static void testIntersects() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	/*
@@ -1967,7 +1968,7 @@ static void testIntersects() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_intersects(
@@ -2181,7 +2182,7 @@ static void testIntersects() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_intersects(
@@ -2405,7 +2406,7 @@ static void testOverlaps() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_overlaps(
@@ -2438,7 +2439,7 @@ static void testOverlaps() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_overlaps(
@@ -2652,7 +2653,7 @@ static void testOverlaps() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_overlaps(
@@ -2876,7 +2877,7 @@ static void testTouches() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_touches(
@@ -2909,7 +2910,7 @@ static void testTouches() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_touches(
@@ -3175,7 +3176,7 @@ static void testTouches() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_touches(
@@ -3399,7 +3400,7 @@ static void testContains() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_contains(
@@ -3432,7 +3433,7 @@ static void testContains() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_contains(
@@ -3698,7 +3699,7 @@ static void testContains() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_contains(
@@ -3922,7 +3923,7 @@ static void testContainsProperly() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_contains_properly(
@@ -3955,7 +3956,7 @@ static void testContainsProperly() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_contains_properly(
@@ -4221,7 +4222,7 @@ static void testContainsProperly() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_contains_properly(
@@ -4445,7 +4446,7 @@ static void testCovers() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_covers(
@@ -4478,7 +4479,7 @@ static void testCovers() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_covers(
@@ -4744,7 +4745,7 @@ static void testCovers() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_covers(
@@ -4968,7 +4969,7 @@ static void testCoveredBy() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_coveredby(
@@ -5001,7 +5002,7 @@ static void testCoveredBy() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_coveredby(
@@ -5267,7 +5268,7 @@ static void testCoveredBy() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_coveredby(
@@ -5491,7 +5492,7 @@ static void testDWithin() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_within_distance(
@@ -5533,7 +5534,7 @@ static void testDWithin() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_within_distance(
@@ -5774,7 +5775,7 @@ static void testDWithin() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_within_distance(
@@ -6049,7 +6050,7 @@ static void testDFullyWithin() {
 	rtn = rt_band_set_pixel(band1, 1, 0, 1);
 	rtn = rt_band_set_pixel(band1, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band1);
+	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_fully_within_distance(
@@ -6091,7 +6092,7 @@ static void testDFullyWithin() {
 	rtn = rt_band_set_pixel(band2, 1, 0, 1);
 	rtn = rt_band_set_pixel(band2, 1, 1, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_fully_within_distance(
@@ -6332,7 +6333,7 @@ static void testDFullyWithin() {
 	rtn = rt_band_set_pixel(band2, 2, 1, 1);
 	rtn = rt_band_set_pixel(band2, 2, 2, 1);
 
-	nodata = rt_band_get_nodata(band2);
+	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
 
 	rtn = rt_raster_fully_within_distance(

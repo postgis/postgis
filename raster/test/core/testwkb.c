@@ -187,7 +187,8 @@ main()
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_1BB);
         CHECK(!rt_band_is_offline(band));
         CHECK(rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), 0);
+				rt_band_get_nodata(band, &val);
+        CHECK_EQUALS(val, 0);
         failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 1);
@@ -252,7 +253,8 @@ main()
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BSI);
         CHECK(!rt_band_is_offline(band));
         CHECK(rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), -1);
+				rt_band_get_nodata(band, &val);
+        CHECK_EQUALS(val, -1);
 
         failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
@@ -350,7 +352,6 @@ main()
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
         CHECK(!rt_band_is_offline(band));
         CHECK(!rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), -1);
 
         failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
@@ -435,7 +436,6 @@ main()
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
         CHECK(!rt_band_is_offline(band));
         CHECK(!rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), -1);
 
         failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
@@ -510,12 +510,14 @@ main()
     CHECK_EQUALS(rt_raster_get_width(raster), 3);
     CHECK_EQUALS(rt_raster_get_height(raster), 2);
     {
+				double val;
         rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
         CHECK(rt_band_is_offline(band));
         CHECK(rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), -1);
+				rt_band_get_nodata(band, &val);
+        CHECK_EQUALS(val, -1);
         printf("ext band path: %s\n", rt_band_get_ext_path(band));
         printf("ext band  num: %u\n", rt_band_get_ext_band_num(band));
         CHECK( ! strcmp(rt_band_get_ext_path(band), "/tmp/t.tif"));
@@ -577,7 +579,8 @@ main()
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
         CHECK(!rt_band_is_offline(band));
         CHECK(rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), 1);
+				rt_band_get_nodata(band, &val);
+        CHECK_EQUALS(val, 1);
 
         failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
@@ -672,7 +675,8 @@ main()
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BUI);
         CHECK(!rt_band_is_offline(band));
         CHECK(rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), 0);
+				rt_band_get_nodata(band, &val);
+        CHECK_EQUALS(val, 0);
 
         failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
@@ -704,7 +708,8 @@ main()
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BUI);
         CHECK(!rt_band_is_offline(band));
         CHECK(rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), 0);
+				rt_band_get_nodata(band, &val);
+        CHECK_EQUALS(val, 0);
 
         failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
@@ -736,7 +741,8 @@ main()
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_8BUI);
         CHECK(!rt_band_is_offline(band));
         CHECK(rt_band_get_hasnodata_flag(band));
-        CHECK_EQUALS(rt_band_get_nodata(band), 0);
+				rt_band_get_nodata(band, &val);
+        CHECK_EQUALS(val, 0);
 
         failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
