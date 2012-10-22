@@ -188,7 +188,7 @@ main()
         CHECK(!rt_band_is_offline(band));
         CHECK(rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), 0);
-        failure = rt_band_get_pixel(band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 1);
     }
@@ -254,27 +254,27 @@ main()
         CHECK(rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), -1);
 
-        failure = rt_band_get_pixel(band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, -1);
 
-        failure = rt_band_get_pixel(band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 0);
 
-        failure = rt_band_get_pixel(band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 1);
 
-        failure = rt_band_get_pixel(band, 0, 1, &val);
+        failure = rt_band_get_pixel(band, 0, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 127);
 
-        failure = rt_band_get_pixel(band, 1, 1, &val);
+        failure = rt_band_get_pixel(band, 1, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 10);
 
-        failure = rt_band_get_pixel(band, 2, 1, &val);
+        failure = rt_band_get_pixel(band, 2, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 2);
     }
@@ -352,27 +352,27 @@ main()
         CHECK(!rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), -1);
 
-        failure = rt_band_get_pixel(band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, -1);
 
-        failure = rt_band_get_pixel(band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 0);
 
-        failure = rt_band_get_pixel(band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, -16);
 
-        failure = rt_band_get_pixel(band, 0, 1, &val);
+        failure = rt_band_get_pixel(band, 0, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 127);
 
-        failure = rt_band_get_pixel(band, 1, 1, &val);
+        failure = rt_band_get_pixel(band, 1, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 10);
 
-        failure = rt_band_get_pixel(band, 2, 1, &val);
+        failure = rt_band_get_pixel(band, 2, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 2);
     }
@@ -437,27 +437,27 @@ main()
         CHECK(!rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), -1);
 
-        failure = rt_band_get_pixel(band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, -1);
 
-        failure = rt_band_get_pixel(band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 0);
 
-        failure = rt_band_get_pixel(band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, -16);
 
-        failure = rt_band_get_pixel(band, 0, 1, &val);
+        failure = rt_band_get_pixel(band, 0, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 127);
 
-        failure = rt_band_get_pixel(band, 1, 1, &val);
+        failure = rt_band_get_pixel(band, 1, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 10);
 
-        failure = rt_band_get_pixel(band, 2, 1, &val);
+        failure = rt_band_get_pixel(band, 2, 1, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 2);
     }
@@ -579,15 +579,15 @@ main()
         CHECK(rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), 1);
 
-        failure = rt_band_get_pixel(band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 1);
 
-        failure = rt_band_get_pixel(band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 436);
 
-        failure = rt_band_get_pixel(band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 431);
     }
@@ -674,23 +674,23 @@ main()
         CHECK(rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), 0);
 
-        failure = rt_band_get_pixel(band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 253);
 
-        failure = rt_band_get_pixel(band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
 
-        failure = rt_band_get_pixel(band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 253);
 
-        failure = rt_band_get_pixel(band, 3, 0, &val);
+        failure = rt_band_get_pixel(band, 3, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
 
-        failure = rt_band_get_pixel(band, 4, 0, &val);
+        failure = rt_band_get_pixel(band, 4, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 254);
     }
@@ -706,23 +706,23 @@ main()
         CHECK(rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), 0);
 
-        failure = rt_band_get_pixel(band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 78);
 
-        failure = rt_band_get_pixel(band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 98);
 
-        failure = rt_band_get_pixel(band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 122);
 
-        failure = rt_band_get_pixel(band, 3, 0, &val);
+        failure = rt_band_get_pixel(band, 3, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 173);
 
-        failure = rt_band_get_pixel(band, 4, 0, &val);
+        failure = rt_band_get_pixel(band, 4, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 209);
     }
@@ -738,23 +738,23 @@ main()
         CHECK(rt_band_get_hasnodata_flag(band));
         CHECK_EQUALS(rt_band_get_nodata(band), 0);
 
-        failure = rt_band_get_pixel(band, 0, 0, &val);
+        failure = rt_band_get_pixel(band, 0, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 70);
 
-        failure = rt_band_get_pixel(band, 1, 0, &val);
+        failure = rt_band_get_pixel(band, 1, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 86);
 
-        failure = rt_band_get_pixel(band, 2, 0, &val);
+        failure = rt_band_get_pixel(band, 2, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 100);
 
-        failure = rt_band_get_pixel(band, 3, 0, &val);
+        failure = rt_band_get_pixel(band, 3, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 135);
 
-        failure = rt_band_get_pixel(band, 4, 0, &val);
+        failure = rt_band_get_pixel(band, 4, 0, &val, NULL);
         CHECK(!failure);
         CHECK_EQUALS(val, 161);
     }

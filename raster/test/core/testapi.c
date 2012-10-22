@@ -399,13 +399,13 @@ static void testBand1BB(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
 
                 failure = rt_band_set_pixel(band, x, y, 0);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 0);
 
@@ -461,19 +461,19 @@ static void testBand2BUI(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
 
                 failure = rt_band_set_pixel(band, x, y, 2);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 2);
 
                 failure = rt_band_set_pixel(band, x, y, 3);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 3);
             }
@@ -536,25 +536,25 @@ static void testBand4BUI(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
 
                 failure = rt_band_set_pixel(band, x, y, 3);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 3);
 
                 failure = rt_band_set_pixel(band, x, y, 7);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 7);
 
                 failure = rt_band_set_pixel(band, x, y, 15);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 15);
             }
@@ -622,19 +622,19 @@ static void testBand8BUI(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 31);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 31);
 
                 failure = rt_band_set_pixel(band, x, y, 255);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 255);
 
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
             }
@@ -716,25 +716,25 @@ static void testBand8BSI(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 31);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 31);
 
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
 
                 failure = rt_band_set_pixel(band, x, y, -127);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, -127);
 
                 failure = rt_band_set_pixel(band, x, y, 127);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 127);
 
@@ -793,13 +793,13 @@ static void testBand16BUI(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 255);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 255);
 
                 failure = rt_band_set_pixel(band, x, y, 65535);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 65535);
             }
@@ -872,19 +872,19 @@ static void testBand16BSI(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 255);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 255);
 
                 failure = rt_band_set_pixel(band, x, y, -32767);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, -32767);
 
                 failure = rt_band_set_pixel(band, x, y, 32767);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 32767);
             }
@@ -938,25 +938,25 @@ static void testBand32BUI(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
 
                 failure = rt_band_set_pixel(band, x, y, 0);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 0);
 
                 failure = rt_band_set_pixel(band, x, y, 65535);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 65535);
 
                 failure = rt_band_set_pixel(band, x, y, 4294967295UL);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 4294967295UL);
             }
@@ -1011,25 +1011,25 @@ static void testBand32BSI(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
 
                 failure = rt_band_set_pixel(band, x, y, 0);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 0);
 
                 failure = rt_band_set_pixel(band, x, y, 65535);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 65535);
 
                 failure = rt_band_set_pixel(band, x, y, 2147483647);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 2147483647);
             }
@@ -1071,25 +1071,25 @@ static void testBand32BF(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
 
                 failure = rt_band_set_pixel(band, x, y, 0);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 0);
 
                 failure = rt_band_set_pixel(band, x, y, 65535.5);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS_DOUBLE(val, 65535.5);
 
                 failure = rt_band_set_pixel(band, x, y, 0.006);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS_DOUBLE(val, 0.0060000000521540);
 
@@ -1131,25 +1131,25 @@ static void testBand64BF(rt_band band)
             {
                 failure = rt_band_set_pixel(band, x, y, 1);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 1);
 
                 failure = rt_band_set_pixel(band, x, y, 0);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 0);
 
                 failure = rt_band_set_pixel(band, x, y, 65535.56);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 65535.56);
 
                 failure = rt_band_set_pixel(band, x, y, 0.006);
                 CHECK(!failure);
-                failure = rt_band_get_pixel(band, x, y, &val);
+                failure = rt_band_get_pixel(band, x, y, &val, NULL);
                 CHECK(!failure);
                 CHECK_EQUALS(val, 0.006);
 
@@ -1502,15 +1502,15 @@ static void testBandReclass() {
 	newband = rt_band_reclass(band, PT_8BUI, 0, 0, exprset, cnt);
 	CHECK(newband);
 
-	rtn = rt_band_get_pixel(newband, 0, 0, &val);
+	rtn = rt_band_get_pixel(newband, 0, 0, &val, NULL);
 	CHECK((rtn != -1));
 	CHECK_EQUALS(val, 0);
 
-	rtn = rt_band_get_pixel(newband, 49, 5, &val);
+	rtn = rt_band_get_pixel(newband, 49, 5, &val, NULL);
 	CHECK((rtn != -1));
 	CHECK_EQUALS(val, 77);
 
-	rtn = rt_band_get_pixel(newband, 99, 9, &val);
+	rtn = rt_band_get_pixel(newband, 99, 9, &val, NULL);
 	CHECK((rtn != -1));
 	CHECK_EQUALS(val, 255);
 
@@ -1716,7 +1716,7 @@ static void testGDALToRaster() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_get_pixel(band, x, y, &value);
+			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
 			CHECK((rtn != -1));
 			CHECK(FLT_EQ(value, values[x][y]));
 		}
@@ -1760,7 +1760,7 @@ static void testGDALToRaster() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_get_pixel(band, x, y, &value);
+			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
 			CHECK((rtn != -1));
 			CHECK(FLT_EQ(value, values[x][y]));
 		}
@@ -1824,7 +1824,7 @@ static void testGDALWarp() {
 	CHECK(rt_band_get_hasnodata_flag(band));
 	CHECK(FLT_EQ(rt_band_get_nodata(band), 0.));
 
-	CHECK(rt_band_get_pixel(band, 0, 0, &value) == 0);
+	CHECK(rt_band_get_pixel(band, 0, 0, &value, NULL) == 0);
 	CHECK(FLT_EQ(value, 0.));
 
 	deepRelease(rast);
@@ -6763,7 +6763,7 @@ static void testLoadOfflineBand() {
 
 	for (x = 0; x < maxX; x++) {
 		for (y = 0; y < maxY; y++) {
-			rtn = rt_band_get_pixel(band, x, y, &val);
+			rtn = rt_band_get_pixel(band, x, y, &val, NULL);
 			CHECK((rtn == 0));
 			CHECK(FLT_EQ(val, 255));
 		}

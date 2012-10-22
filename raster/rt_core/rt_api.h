@@ -603,14 +603,16 @@ int rt_band_set_pixel(
  * @param band : the band to get pixel value from
  * @param x : x ordinate (0-based)
  * @param y : x ordinate (0-based)
- * @param *result: result if there is a value
+ * @param *value: pixel value
+ * @param *nodata: flag (0 or 1) indicating if pixel is NODATA
  *
  * @return 0 on success, -1 on error (value out of valid range).
  */
 int rt_band_get_pixel(
 	rt_band band,
 	int x, int y,
-	double *result
+	double *value,
+	int *nodata
 );
 
 /**
@@ -2045,7 +2047,7 @@ struct rt_band_t {
     uint16_t height;
     int32_t hasnodata; /* a flag indicating if this band contains nodata values */
     int32_t isnodata;   /* a flag indicating if this band is filled only with
-                           nodata values */
+                           nodata values. flag CANNOT be TRUE if hasnodata is FALSE */
     double nodataval; /* int will be converted ... */
     int8_t ownsdata; /* 0, externally owned. 1, internally owned. only applies to data.mem */
 

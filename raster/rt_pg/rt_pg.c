@@ -2415,7 +2415,7 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
         PG_RETURN_NULL();
     }
     /* Fetch pixel using 0-based coordinates */
-    result = rt_band_get_pixel(band, x - 1, y - 1, &pixvalue);
+    result = rt_band_get_pixel(band, x - 1, y - 1, &pixvalue, NULL);
 
     /* If the result is -1 or the value is nodata and we take nodata into account
      * then return nodata = NULL */
@@ -2735,7 +2735,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			for (y = 0; y < arg1->rows; y++) {
 				for (x = 0; x < arg1->columns; x++) {
 					/* get pixel */
-					if (rt_band_get_pixel(band, x, y, &val) != 0) {
+					if (rt_band_get_pixel(band, x, y, &val, NULL) != 0) {
 						elog(ERROR, "RASTER_dumpValues: Unable to pixel (%d, %d) of band %d", x, y, arg1->nbands[z] + 1);
 						rtpg_dumpvalues_arg_destroy(arg1);
 						rt_raster_destroy(raster);
@@ -3332,7 +3332,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 
 		/* if hasnodata = TRUE and keepnodata = TRUE, inspect pixel value */
 		if (hasnodata && keepnodata) {
-			rtn = rt_band_get_pixel(band, pixval[i].x, pixval[i].y, &val);
+			rtn = rt_band_get_pixel(band, pixval[i].x, pixval[i].y, &val, NULL);
 			if (rtn != 0) {
 				elog(ERROR, "Cannot get value of pixel.  Returning NULL");
 				pfree(pixval);
@@ -3769,7 +3769,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 				}
 
 				/* get pixel value */
-				if (rt_band_get_pixel(band, xy[0], xy[1], &value) != 0) {
+				if (rt_band_get_pixel(band, xy[0], xy[1], &value, NULL) != 0) {
 					elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to get pixel value");
 					rtpg_setvaluesgv_arg_destroy(arg);
 					rt_raster_destroy(raster);
@@ -4063,7 +4063,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 				/* value, NODATA flag */
 				if (!noband) {
-					if (rt_band_get_pixel(band, x - 1, y - 1, &(pix[pixcount].value)) != 0) {
+					if (rt_band_get_pixel(band, x - 1, y - 1, &(pix[pixcount].value), NULL) != 0) {
 						elog(ERROR, "RASTER_getPixelPolygons: Could not get pixel value");
 
 						for (i = 0; i < pixcount; i++)
@@ -4580,7 +4580,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 		(x >= 0 && x < rt_raster_get_width(raster)) &&
 		(y >= 0 && y < rt_raster_get_height(raster))
 	) {
-		if (rt_band_get_pixel(band, x, y, &value) < 0) {
+		if (rt_band_get_pixel(band, x, y, &value, NULL) < 0) {
 			elog(ERROR, "RASTER_nearestValue: Unable to get pixel value for band at index %d", bandindex);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -4814,7 +4814,8 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 		if (rt_band_get_pixel(
 			band,
 			_x, _y,
-			&pixval
+			&pixval,
+			NULL
 		) < 0) {
 			elog(NOTICE, "Unable to get the pixel of band at index %d. Returning NULL", bandindex);
 			rt_band_destroy(band);
@@ -6070,7 +6071,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
 
     for (x = 0; x < width; x++) {
         for(y = 0; y < height; y++) {
-            ret = rt_band_get_pixel(band, x, y, &r);
+            ret = rt_band_get_pixel(band, x, y, &r, NULL);
 
             /**
              * We compute a value only for the withdata value pixel since the
@@ -6554,7 +6555,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
 
     for (x = 0; x < width; x++) {
         for(y = 0; y < height; y++) {
-            ret = rt_band_get_pixel(band, x, y, &r);
+            ret = rt_band_get_pixel(band, x, y, &r, NULL);
 
             /**
              * We compute a value only for the withdata value pixel since the
@@ -13606,7 +13607,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						(_x >= 0 && _x < _dim[i][0]) &&
 						(_y >= 0 && _y < _dim[i][1])
 					) {
-						err = rt_band_get_pixel(_band[i], _x, _y, &(_pixel[i]));
+						err = rt_band_get_pixel(_band[i], _x, _y, &(_pixel[i]), NULL);
 						if (err < 0) {
 							elog(ERROR, "RASTER_mapAlgebra2: Unable to get pixel of %s raster", (i < 1 ? "FIRST" : "SECOND"));
 
@@ -14367,14 +14368,14 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
             nNodataOnly = true;
             pixelreplace = false;
             if (valuereplace) {
-                ret = rt_band_get_pixel(band, x, y, &rpix);
+                ret = rt_band_get_pixel(band, x, y, &rpix, NULL);
                 if (ret != -1 && FLT_NEQ(rpix, newnodatavalue)) {
                     pixelreplace = true;
                 }
             }
             for (u = x - ngbwidth; u <= x + ngbwidth; u++) {
                 for (v = y - ngbheight; v <= y + ngbheight; v++) {
-                    ret = rt_band_get_pixel(band, u, v, &r);
+                    ret = rt_band_get_pixel(band, u, v, &r, NULL);
                     if (ret != -1) {
                         if (FLT_NEQ(r, newnodatavalue)) {
                             /* If the pixel value for this neighbor cell is not NODATA */
