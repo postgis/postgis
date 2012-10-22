@@ -2519,8 +2519,6 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 		double val = 0;
 		int isnodata = 0;
-		int hasnodata = 0;
-		double nodataval = 0;
 
 		POSTGIS_RT_DEBUG(2, "RASTER_dumpValues first call");
 
@@ -2704,12 +2702,6 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 				SRF_RETURN_DONE(funcctx);
 			}
 
-			/* band's hasnodata and nodataval */
-			hasnodata = rt_band_get_hasnodata_flag(band);
-			if (hasnodata)
-				rt_band_get_nodata(band, &nodataval);
-			POSTGIS_RT_DEBUGF(4, "(hasnodata, nodataval) = (%d, %f)", hasnodata, nodataval);
-
 			/* allocate memory for values and nodata flags */
 			arg1->values[z] = palloc(sizeof(Datum) * arg1->rows * arg1->columns);
 			arg1->nodata[z] = palloc(sizeof(bool) * arg1->rows * arg1->columns);
@@ -2747,9 +2739,6 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 
 					arg1->values[z][i] = Float8GetDatum(val);
 					POSTGIS_RT_DEBUGF(5, "arg1->values[z][i] = %f", DatumGetFloat8(arg1->values[z][i]));
-					if (hasnodata) {
-						POSTGIS_RT_DEBUGF(5, "FLT_EQ?: %d", FLT_EQ(val, nodataval) ? 1 : 0);
-					}
 					POSTGIS_RT_DEBUGF(5, "clamped is?: %d", rt_band_clamped_value_is_nodata(band, val));
 
 					if (exclude_nodata_value && isnodata) {
@@ -3887,8 +3876,6 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 		rt_pgraster *pgraster = NULL;
 		rt_raster raster = NULL;
 		rt_band band = NULL;
-		int hasnodata = FALSE;
-		double nodataval = 0;
 		int nband = 1;
 		int numbands;
 		bool noband = FALSE;
@@ -3983,12 +3970,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 					break;
 				}
 
-				hasnodata = rt_band_get_hasnodata_flag(band);
-				if (hasnodata) {
-					rt_band_get_nodata(band, &nodataval);
-					POSTGIS_RT_DEBUGF(4, "(hasnodata, nodataval) = (%d, %f)", hasnodata, nodataval);
-				}
-				else
+				if (!rt_band_get_hasnodata_flag(band))
 					exclude_nodata_value = FALSE;
 			}
 			while (0);

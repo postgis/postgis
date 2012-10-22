@@ -2292,7 +2292,7 @@ rt_band_get_pixel(
 	}
 
 	/* band is NODATA */
-	if (band->hasnodata && band->isnodata) {
+	if (band->isnodata) {
 		RASTER_DEBUG(3, "Band's isnodata flag is TRUE. Returning NODATA value");
 		*value = band->nodataval;
 		if (nodata != NULL) *nodata = 1;
@@ -3882,8 +3882,6 @@ rt_band_get_quantiles_stream(
 	const uint32_t MAX_VALUES = 750;
 
 	uint8_t *data = NULL;
-	int hasnodata = FALSE;
-	double nodata = 0;
 	double value;
 	int isnodata = 0;
 
@@ -3917,13 +3915,8 @@ rt_band_get_quantiles_stream(
 		return NULL;
 	}
 
-	hasnodata = rt_band_get_hasnodata_flag(band);
-	if (hasnodata != FALSE)
-		rt_band_get_nodata(band, &nodata);
-	else
+	if (!rt_band_get_hasnodata_flag(band))
 		exclude_nodata_value = 0;
-	RASTER_DEBUGF(3, "nodata = %f", nodata);
-	RASTER_DEBUGF(3, "hasnodata = %d", hasnodata);
 	RASTER_DEBUGF(3, "exclude_nodata_value = %d", exclude_nodata_value);
 
 	/* quantile_llist not provided */
@@ -4473,7 +4466,6 @@ rt_band_get_value_count(
 	rt_valuecount vcnts = NULL;
 	rt_pixtype pixtype = PT_END;
 	uint8_t *data = NULL;
-	int hasnodata = FALSE;
 	double nodata = 0;
 
 	int scale = 0;
@@ -4485,6 +4477,7 @@ rt_band_get_value_count(
 	uint32_t y = 0;
 	int rtn;
 	double pxlval;
+	int isnodata = 0;
 	double rpxlval;
 	uint32_t total = 0;
 	int vcnts_count = 0;
@@ -4510,14 +4503,15 @@ rt_band_get_value_count(
 
 	pixtype = band->pixtype;
 
-	hasnodata = rt_band_get_hasnodata_flag(band);
-	if (hasnodata != FALSE)
+	if (rt_band_get_hasnodata_flag(band)) {
 		rt_band_get_nodata(band, &nodata);
-	else
+		RASTER_DEBUGF(3, "hasnodata, nodataval = 1, %f", nodata);
+	}
+	else {
 		exclude_nodata_value = 0;
+		RASTER_DEBUG(3, "hasnodata, nodataval = 0, 0");
+	}
 
-	RASTER_DEBUGF(3, "nodata = %f", nodata);
-	RASTER_DEBUGF(3, "hasnodata = %d", hasnodata);
 	RASTER_DEBUGF(3, "exclude_nodata_value = %d", exclude_nodata_value);
 
 	/* process roundto */
@@ -4641,20 +4635,12 @@ rt_band_get_value_count(
 
 	for (x = 0; x < band->width; x++) {
 		for (y = 0; y < band->height; y++) {
-			rtn = rt_band_get_pixel(band, x, y, &pxlval, NULL);
+			rtn = rt_band_get_pixel(band, x, y, &pxlval, &isnodata);
 
 			/* error getting value, continue */
 			if (rtn == -1) continue;
 
-			if (
-				!exclude_nodata_value || (
-					exclude_nodata_value &&
-					(hasnodata != FALSE) && (
-						FLT_NEQ(pxlval, nodata) &&
-						(rt_band_clamped_value_is_nodata(band, pxlval) != 1)
-					)
-				)
-			) {
+			if (!exclude_nodata_value || (exclude_nodata_value && !isnodata)) {
 				total++;
 				if (doround) {
 					rpxlval = ROUND(pxlval, scale);
@@ -4742,6 +4728,7 @@ rt_band_reclass(
 	void *mem = NULL;
 	uint32_t src_hasnodata = 0;
 	double src_nodataval = 0.0;
+	int isnodata = 0;
 
 	int rtn;
 	uint32_t x;
@@ -4912,7 +4899,7 @@ rt_band_reclass(
 
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
-			rtn = rt_band_get_pixel(srcband, x, y, &ov, NULL);
+			rtn = rt_band_get_pixel(srcband, x, y, &ov, &isnodata);
 
 			/* error getting value, skip */
 			if (rtn == -1) {
@@ -4924,7 +4911,7 @@ rt_band_reclass(
 				do_nv = 0;
 
 				/* no data*/
-				if (src_hasnodata && hasnodata && FLT_EQ(ov, src_nodataval)) {
+				if (hasnodata && isnodata) {
 					do_nv = 1;
 					break;
 				}
@@ -4983,11 +4970,7 @@ rt_band_reclass(
 			*/
 
 			/* nodata */
-			if (
-				src_hasnodata &&
-				hasnodata &&
-				FLT_EQ(ov, src_nodataval)
-			) {
+			if (hasnodata && isnodata) {
 				nv = nodataval;
 			}
 			/*
