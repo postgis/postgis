@@ -2801,6 +2801,7 @@ int
 rt_band_check_is_nodata(rt_band band) {
 	int i, j, err;
 	double pxValue;
+	int isnodata = 0;
 
 	assert(NULL != band);
 
@@ -2816,12 +2817,12 @@ rt_band_check_is_nodata(rt_band band) {
 	/* Check all pixels */
 	for (i = 0; i < band->width; i++) {
 		for (j = 0; j < band->height; j++) {
-			err = rt_band_get_pixel(band, i, j, &pxValue, NULL);
+			err = rt_band_get_pixel(band, i, j, &pxValue, &isnodata);
 			if (err != 0) {
 				rterror("rt_band_check_is_nodata: Cannot get band pixel");
 				return FALSE;
 			}
-			else if (FLT_NEQ(pxValue, band->nodataval)) {
+			else if (!isnodata) {
 				band->isnodata = FALSE;
 				return FALSE;
 			}
