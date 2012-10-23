@@ -1437,103 +1437,6 @@ double ptarray_area_sphere(const POINTARRAY *pa, const POINT2D *pt_outside)
 }
 
 
-/**
-* This routine returns LW_TRUE if the stabline joining the pt_outside and pt_to_test
-* crosses the ring an odd number of times, or if the pt_to_test is on the ring boundary itself,
-* returning LW_FALSE otherwise.
-* The pt_outside must be guaranteed to be outside the ring (use the geography_pt_outside() function
-* to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
-* building a gbox first).
-*/
-int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test)
-{
-	GEOGRAPHIC_EDGE crossing_edge, edge;
-	POINT2D p;
-	int count = 0;
-	int first_point = 0;
-	int i;
-
-	/* Null input, not enough points for a ring? You ain't closed! */
-	if ( ! pa || pa->npoints < 4 )
-		return LW_FALSE;
-
-	/* Set up our stab line */
-	geographic_point_init(pt_to_test->x, pt_to_test->y, &(crossing_edge.start));
-	geographic_point_init(pt_outside->x, pt_outside->y, &(crossing_edge.end));
-
-	/* Initialize first point */
-	getPoint2d_p(pa, first_point, &p);
-	LWDEBUGF(4, "start point == POINT(%.12g %.12g)", p.x, p.y);
-	geographic_point_init(p.x, p.y, &(edge.start));
-
-	/* If the start point is on the stab line, back up until it isn't */
-	while (edge_contains_point(&crossing_edge, &(edge.start)) && ! geographic_point_equals(&(crossing_edge.start), &(edge.start)) )
-	{
-		first_point--;
-		LWDEBUGF(4,"first point was on stab line, reversing %d points", first_point);
-		getPoint2d_p(pa, pa->npoints + first_point, &p);
-		LWDEBUGF(4, "start point == POINT(%.12g %.12g)", p.x, p.y);
-		geographic_point_init(p.x, p.y, &(edge.start));
-	}
-
-	/* Walk every edge and see if the stab line hits it */
-	for ( i = 1; i < pa->npoints; i++ )
-	{
-		GEOGRAPHIC_POINT g;
-
-		LWDEBUGF(4, "start point == POINT(%.12g %.12g)", p.x, p.y);
-
-		getPoint2d_p(pa, i, &p);
-		geographic_point_init(p.x, p.y, &(edge.end));
-
-		LWDEBUGF(4,"testing edge (%d)", i);
-
-		/* Our test point is on an edge! Point is "in ring" by our definition */
-		if ( geographic_point_equals(&(crossing_edge.start), &(edge.start)) ||
-		        geographic_point_equals(&(crossing_edge.start), &(edge.end)) ||
-		        edge_contains_point(&edge, &(crossing_edge.start)) )
-		{
-			LWDEBUGF(4,"edge (%d) contains the test point, returning true", i);
-			return LW_TRUE;
-		}
-
-		/* If the end of our edge is on the stab line, extend the edge to the
-		   next end point, by skipping the start->end assignment step at the
-		   end of this loop */
-		if (edge_contains_point(&crossing_edge, &(edge.end)))
-		{
-			LWDEBUGF(4,"edge (%d) end point is on the stab line, continuing", i);
-			continue;
-		}
-
-		LWDEBUG(4,"testing edge crossing");
-
-		if ( edge_intersection(&edge, &crossing_edge, &g) )
-		{
-			count++;
-			LWDEBUGF(4,"edge (%d) crossed, count == %d", i, count);
-		}
-		else
-		{
-			LWDEBUGF(4,"edge (%d) did not cross", i);
-		}
-
-		/* Increment to next edge */
-		edge.start = edge.end;
-	}
-
-	LWDEBUGF(4,"final count == %d", count);
-
-	/* An odd number of crossings implies containment! */
-	if ( count % 2 )
-	{
-		return LW_TRUE;
-	}
-
-	return LW_FALSE;
-}
-
-
 static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY *pa2, const SPHEROID *s, double tolerance, int check_intersection)
 {
 	GEOGRAPHIC_EDGE e1, e2;
@@ -2235,7 +2138,7 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 	LWDEBUGF(4, "gbox %s", gbox_to_string(&gbox));
 
 	/* Not in outer ring? We're done! */
-	if ( ! ptarray_point_in_ring(poly->rings[0], &pt_outside, pt_to_test) )
+	if ( ! ptarray_contains_point(poly->rings[0], &pt_outside, pt_to_test) )
 	{
 		LWDEBUG(4,"returning false, point is outside ring");
 		return LW_FALSE;
@@ -2248,7 +2151,7 @@ int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test)
 	{
 		LWDEBUGF(4, "ring test loop %d", i);
 		/* Count up hole containment. Odd => outside boundary. */
-		if ( ptarray_point_in_ring(poly->rings[i], &pt_outside, pt_to_test) )
+		if ( ptarray_contains_point(poly->rings[i], &pt_outside, pt_to_test) )
 			in_hole_count++;
 	}
 
@@ -2769,4 +2672,301 @@ lwgeom_nudge_geodetic(LWGEOM *geom)
 
 	lwerror("unsupported type (%s) passed to lwgeom_nudge_geodetic", lwtype_name(type));
 	return rv;
+}
+
+
+/**
+* Utility function for checking if P is within the cone defined by A1/A2.
+*/
+static int
+point_in_cone(const POINT3D *A1, const POINT3D *A2, const POINT3D *P)
+{
+	POINT3D AC; /* Center point of A1/A2 */
+	double min_similarity, similarity;
+	
+	/* The normalized sum bisects the angle between start and end. */
+	vector_sum(A1, A2, &AC);
+	normalize(&AC);
+	
+	/* The projection of start onto the center defines the minimum similarity */
+	min_similarity = dot_product(A1, &AC);
+
+	/* The projection of candidate p onto the center */
+	similarity = dot_product(P, &AC);
+
+	/* If the point is more similar than the end, the point is in the cone */
+	if ( similarity > min_similarity || fabs(similarity - min_similarity) < 2e-16 )
+	{
+		return LW_TRUE;
+	}
+	return LW_FALSE;
+}
+
+
+/**
+* Utility function for ptarray_contains_point()
+*/
+static int 
+point3d_equals(const POINT3D *p1, const POINT3D *p2)
+{
+	return FP_EQUALS(p1->x, p2->x) && FP_EQUALS(p1->y, p2->y) && FP_EQUALS(p1->z, p2->z);
+}
+
+/**
+* Utility function for edge_intersects(), signum with a tolerance
+* in determining if the value is zero.
+*/
+static int
+dot_product_side(const POINT3D *p, const POINT3D *q)
+{
+	double dp = dot_product(p, q);
+
+	if ( FP_IS_ZERO(dp) )
+		return 0;
+		
+	return dp < 0.0 ? -1 : 1;
+}
+
+/**
+* Bitmask elements for edge_intersects() return value.
+*/
+#define PIR_NO_INTERACT    0x00
+#define PIR_INTERSECTS     0x01
+#define PIR_COLINEAR       0x02
+#define PIR_A_TOUCH_LEFT   0x04
+#define PIR_A_TOUCH_RIGHT  0x08
+#define PIR_B_TOUCH_LEFT   0x10
+#define PIR_B_TOUCH_RIGHT  0x20
+
+/**
+* Returns non-zero if edges A and B interact. The type of interaction is given in the 
+* return value with the bitmask elements defined above.
+*/
+static int 
+edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2)
+{
+	POINT3D A3, B3;  /* Extra vector to build more cross-product-friendly angles */
+	POINT3D AN, BN;  /* Normals to plane A and plane B */
+	double a_dot, b_dot, ab_dot;
+	int a1_side, a2_side, b1_side, b2_side;
+	int rv = PIR_NO_INTERACT;
+	
+	/* How narrow are the A and B angles? */
+	a_dot = dot_product(A1, A2);
+	b_dot = dot_product(B1, B2);
+	
+	/* If edge is really large, calculate a narrower equivalent angle A1/A3. */
+	if ( a_dot < 0 )
+	{
+		vector_sum(A1, A2, &A3);
+		normalize(&A3);
+	}
+	/* If edge is narrow, calculate a wider equivalent angle A1/A3. */
+	else if ( b_dot > 0.95 )
+	{
+		vector_difference(A2, A1, &A3);
+		normalize(&A3);
+	}
+	/* Just keep the current angle in A1/A3. */
+	else
+	{
+		A3 = *A2;
+	}
+
+	/* Same for B */
+	if ( b_dot < 0 )
+	{
+		vector_sum(B1, B2, &B3);
+		normalize(&B3);
+	}
+	else if ( b_dot > 0.95 )
+	{
+		vector_difference(B2, B1, &B3);
+		normalize(&B3);
+	}
+	else
+	{
+		B3 = *B2;
+	}
+	
+	/* Normals to the A-plane and B-plane */
+	cross_product(A1, &A3, &AN);
+	normalize(&AN);
+	cross_product(B1, &B3, &BN);
+	normalize(&BN);
+	
+	/* Are A-plane and B-plane basically the same? */
+	ab_dot = dot_product(&AN, &BN);
+	if ( FP_EQUALS(fabs(ab_dot), 1.0) )
+	{
+		/* Co-linear case */
+		rv |= PIR_COLINEAR;
+		if ( point_in_cone(A1, A2, B1) || point_in_cone(A1, A2, B2) || 
+		     point_in_cone(B1, B2, A1) || point_in_cone(B1, B2, A2) )
+		{
+			rv |= PIR_INTERSECTS;
+		}
+		return rv;
+	}
+	
+	/* What side of plane-A and plane-B do the end points */
+	/* of A and B fall? */
+	a1_side = dot_product_side(&BN, A1);
+	a2_side = dot_product_side(&BN, A2);
+	b1_side = dot_product_side(&AN, B1);
+	b2_side = dot_product_side(&AN, B2);
+
+	/* Both ends of A on the same side of plane B. */
+	if ( a1_side == a2_side && a1_side != 0 )
+	{
+		/* No intersection. */
+		return PIR_NO_INTERACT;
+	}
+
+	/* Both ends of B on the same side of plane A. */
+	if ( b1_side == b2_side && b1_side != 0 )
+	{
+		/* No intersection. */
+		return PIR_NO_INTERACT;
+	}
+
+	/* A straddles B and B straddles A, so... */
+	if ( a1_side != a2_side && (a1_side + a2_side) == 0 &&
+	     b1_side != b2_side && (b1_side + b2_side) == 0 )
+	{
+		/* Mid-point intersection! */
+		return PIR_INTERSECTS;
+	}
+
+	/* The rest are all intersects variants... */
+	rv |= PIR_INTERSECTS;
+
+	/* A touches B */
+	if ( a1_side == 0 )
+	{
+		/* Touches at A1, A2 is on what side? */
+		rv |= (a2_side < 0 ? PIR_A_TOUCH_LEFT : PIR_A_TOUCH_RIGHT);
+	}
+	else if ( a2_side == 0 )
+	{
+		/* Touches at A2, A1 is on what side? */
+		rv |= (a1_side < 0 ? PIR_A_TOUCH_LEFT : PIR_A_TOUCH_RIGHT);
+	}
+
+	/* B touches A */
+	if ( b1_side == 0 )
+	{
+		/* Touches at B1, B2 is on what side? */
+		rv |= (b2_side < 0 ? PIR_B_TOUCH_LEFT : PIR_B_TOUCH_RIGHT);
+	}
+	else if ( b2_side == 0 )
+	{
+		/* Touches at B2, B1 is on what side? */
+		rv |= (b1_side < 0 ? PIR_B_TOUCH_LEFT : PIR_B_TOUCH_RIGHT);
+	}
+	
+	return rv;
+}
+
+/**
+* This routine returns LW_TRUE if the stabline joining the pt_outside and pt_to_test
+* crosses the ring an odd number of times, or if the pt_to_test is on the ring boundary itself,
+* returning LW_FALSE otherwise.
+* The pt_outside *must* be guaranteed to be outside the ring (use the geography_pt_outside() function
+* to derive one in postgis, or the gbox_pt_outside() function if you don't mind burning CPU cycles
+* building a gbox first).
+*/
+int ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test)
+{
+	GEOGRAPHIC_POINT g;
+	POINT3D S1, S2;
+	POINT3D E1, E2;
+	POINT2D p, q;
+	int count = 0, i, inter;
+
+	/* Null input, not enough points for a ring? You ain't closed! */
+	if ( ! pa || pa->npoints < 4 )
+		return LW_FALSE;
+
+	/* Set up our stab line */
+	geographic_point_init(pt_to_test->x, pt_to_test->y, &g);
+	geog2cart(&g, &S1);
+	geographic_point_init(pt_outside->x, pt_outside->y, &g);
+	geog2cart(&g, &S2);
+
+	/* Initialize first point */
+	getPoint2d_p(pa, 0, &p);
+	geographic_point_init(p.x, p.y, &g);
+	geog2cart(&g, &E1);
+	q = p;
+
+	/* Walk every edge and see if the stab line hits it */
+	for ( i = 1; i < pa->npoints; i++ )
+	{
+		LWDEBUGF(4, "testing edge (%d)", i);
+		LWDEBUGF(4, "  start point == POINT(%.12g %.12g)", p.x, p.y);
+
+		/* Read next point. */
+		getPoint2d_p(pa, i, &p);
+		geographic_point_init(p.x, p.y, &g);
+		geog2cart(&g, &E2);
+
+		/* Skip over too-short edges. */
+		if ( point3d_equals(&E1, &E2) )
+		{
+			continue;
+		}
+		
+		/* Our test point is on an edge end! Point is "in ring" by our definition */
+		if ( point3d_equals(&S1, &E1) )
+		{
+			return LW_TRUE;
+		}
+		
+		/* Calculate relationship between stab line and edge */
+		inter = edge_intersects(&S1, &S2, &E1, &E2);
+		
+		/* We have some kind of interaction... */
+		if ( inter & PIR_INTERSECTS )
+		{
+			/* If the stabline is touching the edge, that implies the test point */
+			/* is on the edge, so we're done, the point is in (on) the ring. */
+			if ( (inter & PIR_A_TOUCH_LEFT) || (inter & PIR_A_TOUCH_RIGHT) )
+			{
+				return LW_TRUE;
+			}
+			
+			/* It's a touching interaction, disregard all the left-side ones. */
+			/* It's a co-linear intersection, ignore those. */
+			if ( inter & PIR_B_TOUCH_LEFT || inter & PIR_COLINEAR )
+			{
+				/* Do nothing, to avoid double counts. */
+				LWDEBUGF(4,"    edge (%d) crossed, disregarding to avoid double count", i, count);
+			}
+			else
+			{
+				/* Increment crossingn count. */
+				count++;
+				LWDEBUGF(4,"    edge (%d) crossed, count == %d", i, count);
+			}
+		}
+		else
+		{
+			LWDEBUGF(4,"    edge (%d) did not cross", i);
+		}
+		
+		/* Increment to next edge */
+		E1 = E2;
+		q = p;
+	}
+
+	LWDEBUGF(4,"final count == %d", count);
+
+	/* An odd number of crossings implies containment! */
+	if ( count % 2 )
+	{
+		return LW_TRUE;
+	}
+
+	return LW_FALSE;
 }
