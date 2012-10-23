@@ -3966,7 +3966,7 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
 -- ST_Tile(raster)
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_tile(
+CREATE OR REPLACE FUNCTION _st_tile(
 	rast raster,
 	width integer, height integer,
 	nband int[] DEFAULT NULL
@@ -3976,12 +3976,27 @@ CREATE OR REPLACE FUNCTION st_tile(
 	LANGUAGE 'c' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_tile(
-	rast raster,
-	width integer, height integer,
-	nband int
+	rast raster, nband integer[],
+	width integer, height integer
 )
 	RETURNS SETOF raster
-	AS $$ SELECT st_tile($1, $2, $3, ARRAY[$4]::int[]) $$
+	AS $$ SELECT _st_tile($1, $3, $4, $2) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_tile(
+	rast raster, nband integer,
+	width integer, height integer
+)
+	RETURNS SETOF raster
+	AS $$ SELECT _st_tile($1, $3, $4, ARRAY[$2]::integer[]) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_tile(
+	rast raster,
+	width integer, height integer
+)
+	RETURNS SETOF raster
+	AS $$ SELECT _st_tile($1, $2, $3, NULL::integer[]) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------

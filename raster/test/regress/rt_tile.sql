@@ -23,21 +23,21 @@ SELECT
 FROM foo;
 
 WITH foo AS (
-	SELECT ST_Tile(rast, 3, 3, ARRAY[1]) AS rast FROM raster_tile
+	SELECT ST_Tile(rast, ARRAY[1], 3, 3) AS rast FROM raster_tile
 )
 SELECT
 	2, ST_DumpValues(rast)
 FROM foo;
 
 WITH foo AS (
-	SELECT ST_Tile(rast, 3, 3, ARRAY[2, 1]) AS rast FROM raster_tile
+	SELECT ST_Tile(rast, ARRAY[2, 1], 3, 3) AS rast FROM raster_tile
 )
 SELECT
 	3, ST_DumpValues(rast)
 FROM foo;
 
 WITH foo AS (
-	SELECT ST_Tile(rast, 3, 3, 2) AS rast FROM raster_tile
+	SELECT ST_Tile(rast, 2, 3, 3) AS rast FROM raster_tile
 )
 SELECT
 	4, ST_DumpValues(rast)

@@ -436,3 +436,7 @@ DROP FUNCTION IF EXISTS st_addband(raster, raster[], integer);
 DROP FUNCTION IF EXISTS st_slope(raster, integer, text);
 DROP FUNCTION IF EXISTS st_aspect(raster, integer, text);
 DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float, float);
+
+-- function no longer exists
+DROP FUNCTION IF EXISTS st_tile(raster, integer, integer, integer[]);
+DROP FUNCTION IF EXISTS st_tile(raster, integer, integer, integer);
