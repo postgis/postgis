@@ -43,7 +43,8 @@ TEST_BASIC_FUNC = \
 	rt_bytea \
 	box3d \
 	rt_addband \
-	rt_band
+	rt_band \
+	rt_tile
 
 TEST_PROPS = \
 	rt_dimensions \

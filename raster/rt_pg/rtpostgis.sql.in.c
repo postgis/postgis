@@ -3963,6 +3963,19 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
     LANGUAGE 'plpgsql' IMMUTABLE STRICT; -- WITH (isstrict);
 
 -----------------------------------------------------------------------
+-- ST_Tile(raster)
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_tile(
+	rast raster,
+	width integer, height integer,
+	nband int[] DEFAULT NULL
+)
+	RETURNS SETOF raster
+	AS 'MODULE_PATHNAME','RASTER_tile'
+	LANGUAGE 'c' IMMUTABLE;
+
+-----------------------------------------------------------------------
 -- Raster Band Editors
 -----------------------------------------------------------------------
 

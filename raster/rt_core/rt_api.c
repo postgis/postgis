@@ -2272,7 +2272,7 @@ rt_band_set_pixel(
  * @param vals : the pixel values
  * @param *nvals : the number of pixel values being returned
  *
- * @return values of multiple pixels
+ * @return 0 on success, -1 on error
  */
 int rt_band_get_pixel_line(
 	rt_band band,
@@ -2291,6 +2291,9 @@ int rt_band_get_pixel_line(
 
 	assert(NULL != band);
 
+	/* initialize to no values */
+	*nvals = 0;
+
 	if (
 		x < 0 || x >= band->width ||
 		y < 0 || y >= band->height
@@ -2298,6 +2301,9 @@ int rt_band_get_pixel_line(
 		rtwarn("Attempting to get pixel values with out of range raster coordinates: (%d, %d)", x, y);
 		return -1;
 	}
+
+	if (len < 1)
+		return 0;
 
 	data = rt_band_get_data(band);
 	if (data == NULL) {
@@ -2317,8 +2323,8 @@ int rt_band_get_pixel_line(
 	_nvals = len;
 	maxlen = band->width * band->height;
 
-	if ((maxlen - (int) (offset + _nvals)) < 0) {
-		_nvals = _nvals - (((int) (offset + _nvals)) - maxlen);
+	if (((int) (offset + _nvals)) > maxlen) {
+		_nvals = maxlen - offset;
 		rtwarn("Limiting returning number values to %d", _nvals);
 	}
 	RASTER_DEBUGF(4, "_nvals = %d", _nvals);

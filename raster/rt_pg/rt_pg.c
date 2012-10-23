@@ -269,6 +269,7 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS);
 Datum RASTER_addBand(PG_FUNCTION_ARGS);
 Datum RASTER_copyBand(PG_FUNCTION_ARGS);
 Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS);
+Datum RASTER_tile(PG_FUNCTION_ARGS);
 
 /* create new raster from existing raster's bands */
 Datum RASTER_band(PG_FUNCTION_ARGS);
@@ -5323,6 +5324,416 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_NULL();
+}
+
+/**
+ * Break up a raster into smaller tiles. SRF function
+ */
+PG_FUNCTION_INFO_V1(RASTER_tile);
+Datum RASTER_tile(PG_FUNCTION_ARGS)
+{
+	FuncCallContext *funcctx;
+	int call_cntr;
+	int max_calls;
+	int i = 0;
+	int j = 0;
+
+	struct tile_arg_t {
+
+		struct {
+			rt_raster raster;
+			double gt[6];
+			int srid;
+			int width;
+			int height;
+		} raster;
+
+		struct {
+			int width;
+			int height;
+
+			int nx;
+			int ny;
+		} tile;
+
+		int numbands;
+		int *nbands;
+	};
+	struct tile_arg_t *arg1 = NULL;
+	struct tile_arg_t *arg2 = NULL;
+
+	if (SRF_IS_FIRSTCALL()) {
+		MemoryContext oldcontext;
+		rt_pgraster *pgraster = NULL;
+		int numbands;
+
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+
+		int16 typlen;
+		bool typbyval;
+		char typalign;
+
+		POSTGIS_RT_DEBUG(2, "RASTER_tile: first call");
+
+		/* create a function context for cross-call persistence */
+		funcctx = SRF_FIRSTCALL_INIT();
+
+		/* switch to memory context appropriate for multiple function calls */
+		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		/* Get input arguments */
+		if (PG_ARGISNULL(0)) {
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* allocate arg1 */
+		arg1 = palloc(sizeof(struct tile_arg_t));
+		if (arg1 == NULL) {
+			elog(ERROR, "RASTER_tile: Unable to allocate memory for arguments");
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_COPY(PG_GETARG_DATUM(0));
+		arg1->raster.raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!arg1->raster.raster) {
+			ereport(ERROR, (
+				errcode(ERRCODE_OUT_OF_MEMORY),
+				errmsg("Could not deserialize raster")
+			));
+			pfree(arg1);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* raster has bands */
+		numbands = rt_raster_get_num_bands(arg1->raster.raster); 
+		if (!numbands) {
+			elog(NOTICE, "Raster provided has no bands");
+			rt_raster_destroy(arg1->raster.raster);
+			pfree(arg1);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* width (1) */
+		if (PG_ARGISNULL(1)) {
+			elog(NOTICE, "Width cannot be NULL. Returning NULL");
+			rt_raster_destroy(arg1->raster.raster);
+			pfree(arg1);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		arg1->tile.width = PG_GETARG_INT32(1);
+		if (arg1->tile.width < 1) {
+			elog(NOTICE, "Width must be greater than zero. Returning NULL");
+			rt_raster_destroy(arg1->raster.raster);
+			pfree(arg1);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* height (2) */
+		if (PG_ARGISNULL(2)) {
+			elog(NOTICE, "Height cannot be NULL. Returning NULL");
+			rt_raster_destroy(arg1->raster.raster);
+			pfree(arg1);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+		arg1->tile.height = PG_GETARG_INT32(2);
+		if (arg1->tile.height < 1) {
+			elog(NOTICE, "Height must be greater than zero. Returning NULL");
+			rt_raster_destroy(arg1->raster.raster);
+			pfree(arg1);
+			PG_FREE_IF_COPY(pgraster, 0);
+			MemoryContextSwitchTo(oldcontext);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		/* nband, array (3) */
+		if (!PG_ARGISNULL(3)) {
+			array = PG_GETARG_ARRAYTYPE_P(3);
+			etype = ARR_ELEMTYPE(array);
+			get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+			switch (etype) {
+				case INT2OID:
+				case INT4OID:
+					break;
+				default:
+					elog(ERROR, "RASTER_tile: Invalid data type for band indexes");
+					rt_raster_destroy(arg1->raster.raster);
+					pfree(arg1);
+					PG_FREE_IF_COPY(pgraster, 0);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+					break;
+			}
+
+			deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &(arg1->numbands));
+
+			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
+			if (arg1->nbands == NULL) {
+				elog(ERROR, "RASTER_tile: Unable to allocate memory for band indexes");
+				rt_raster_destroy(arg1->raster.raster);
+				pfree(arg1);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			for (i = 0, j = 0; i < arg1->numbands; i++) {
+				if (nulls[i]) continue;
+
+				switch (etype) {
+					case INT2OID:
+						arg1->nbands[j] = DatumGetInt16(e[i]) - 1;
+						break;
+					case INT4OID:
+						arg1->nbands[j] = DatumGetInt32(e[i]) - 1;
+						break;
+				}
+
+				j++;
+			}
+
+			if (j < arg1->numbands) {
+				arg1->nbands = repalloc(arg1->nbands, sizeof(int) * j);
+				if (arg1->nbands == NULL) {
+					elog(ERROR, "RASTER_tile: Unable to reallocate memory for band indexes");
+					rt_raster_destroy(arg1->raster.raster);
+					pfree(arg1);
+					PG_FREE_IF_COPY(pgraster, 0);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				arg1->numbands = j;
+			}
+
+			/* validate nbands */
+			for (i = 0; i < arg1->numbands; i++) {
+				if (!rt_raster_has_band(arg1->raster.raster, arg1->nbands[i])) {
+					elog(NOTICE, "Band at index %d not found in raster", arg1->nbands[i] + 1);
+					rt_raster_destroy(arg1->raster.raster);
+					pfree(arg1->nbands);
+					pfree(arg1);
+					PG_FREE_IF_COPY(pgraster, 0);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
+			}
+		}
+		else {
+			arg1->numbands = numbands;
+			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
+
+			if (arg1->nbands == NULL) {
+				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+				rt_raster_destroy(arg1->raster.raster);
+				pfree(arg1);
+				PG_FREE_IF_COPY(pgraster, 0);
+				MemoryContextSwitchTo(oldcontext);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			for (i = 0; i < arg1->numbands; i++) {
+				arg1->nbands[i] = i;
+				POSTGIS_RT_DEBUGF(4, "arg1->nbands[%d] = %d", arg1->nbands[i], i);
+			}
+		}
+
+		/* store some additional metadata */
+		arg1->raster.srid = rt_raster_get_srid(arg1->raster.raster);
+		arg1->raster.width = rt_raster_get_width(arg1->raster.raster);
+		arg1->raster.height = rt_raster_get_height(arg1->raster.raster);
+		rt_raster_get_geotransform_matrix(arg1->raster.raster, arg1->raster.gt);
+
+		/* determine maximum number of tiles from raster */
+		arg1->tile.nx = ceil(arg1->raster.width / (double) arg1->tile.width);
+		arg1->tile.ny = ceil(arg1->raster.height / (double) arg1->tile.height);
+		POSTGIS_RT_DEBUGF(4, "# of tiles (x, y) = (%d, %d)", arg1->tile.nx, arg1->tile.ny);
+
+		/* Store needed information */
+		funcctx->user_fctx = arg1;
+
+		/* total number of tuples to be returned */
+		funcctx->max_calls = (arg1->tile.nx * arg1->tile.ny);
+
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	/* stuff done on every call of the function */
+	funcctx = SRF_PERCALL_SETUP();
+
+	call_cntr = funcctx->call_cntr;
+	max_calls = funcctx->max_calls;
+	arg2 = funcctx->user_fctx;
+
+	/* do when there is more left to send */
+	if (call_cntr < max_calls) {
+		rt_pgraster *pgtile = NULL;
+		rt_raster tile = NULL;
+		rt_band _band = NULL;
+		rt_band band = NULL;
+		rt_pixtype pixtype = PT_END;
+		int hasnodata = 0;
+		double nodataval = 0;
+
+		int k = 0;
+		int tx = 0;
+		int ty = 0;
+		int rx = 0;
+		int ry = 0;
+		double ulx = 0;
+		double uly = 0;
+		uint16_t len = 0;
+		void *vals = NULL;
+		uint16_t nvals;
+
+		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
+
+		/* create empty raster */
+		tile = rt_raster_new(arg2->tile.width, arg2->tile.height);
+		rt_raster_set_geotransform_matrix(tile, arg2->raster.gt);
+		rt_raster_set_srid(tile, arg2->raster.srid);
+
+		/*
+			find offset based upon tile #
+
+			0 1 2
+			3 4 5
+			6 7 8
+		*/
+		ty = call_cntr / arg2->tile.nx;
+		tx = call_cntr % arg2->tile.nx;
+		POSTGIS_RT_DEBUGF(4, "tile (x, y) = (%d, %d)", tx, ty);
+
+		/* upper-left of tile */
+		rx = tx * arg2->tile.width;
+		ry = ty * arg2->tile.height;
+		POSTGIS_RT_DEBUGF(4, "raster coordinates = %d, %d", rx, ry);
+		if (!rt_raster_cell_to_geopoint(arg2->raster.raster, rx, ry, &ulx, &uly, arg2->raster.gt)) {
+			elog(ERROR, "RASTER_tile: Unable to compute the coordinates of the upper-left corner of the output tile");
+			rt_raster_destroy(tile);
+			rt_raster_destroy(arg2->raster.raster);
+			pfree(arg2->nbands);
+			pfree(arg2);
+			SRF_RETURN_DONE(funcctx);
+		}
+		POSTGIS_RT_DEBUGF(4, "spatial coordinates = %f, %f", ulx, uly);
+		rt_raster_set_offsets(tile, ulx, uly);
+
+		/* compute length of pixel line to read */
+		len = arg2->tile.width;
+		if (rx + arg2->tile.width >= arg2->raster.width)
+			len = arg2->raster.width - rx;
+		POSTGIS_RT_DEBUGF(3, "len = %d", len);
+
+		/* copy bands to tile */
+		for (i = 0; i < arg2->numbands; i++) {
+			POSTGIS_RT_DEBUGF(4, "copying band %d to tile %d", arg2->nbands[i], call_cntr);
+
+			_band = rt_raster_get_band(arg2->raster.raster, arg2->nbands[i]);
+			if (_band == NULL) {
+				elog(ERROR, "RASTER_tile: Unable to get band %d from source raster", arg2->nbands[i] + 1);
+				rt_raster_destroy(tile);
+				rt_raster_destroy(arg2->raster.raster);
+				pfree(arg2->nbands);
+				pfree(arg2);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			pixtype = rt_band_get_pixtype(_band);
+			hasnodata = rt_band_get_hasnodata_flag(_band);
+			if (hasnodata)
+				rt_band_get_nodata(_band, &nodataval);
+			else
+				nodataval = rt_band_get_min_value(_band);
+
+			if (rt_raster_generate_new_band(tile, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
+				elog(ERROR, "RASTER_tile: Unable to add new band to output tile");
+				rt_raster_destroy(tile);
+				rt_raster_destroy(arg2->raster.raster);
+				pfree(arg2->nbands);
+				pfree(arg2);
+				SRF_RETURN_DONE(funcctx);
+			}
+			band = rt_raster_get_band(tile, i);
+			if (band == NULL) {
+				elog(ERROR, "RASTER_tile: Unable to get newly added band from output tile");
+				rt_raster_destroy(tile);
+				rt_raster_destroy(arg2->raster.raster);
+				pfree(arg2->nbands);
+				pfree(arg2);
+				SRF_RETURN_DONE(funcctx);
+			}
+
+			/* if isnodata, set flag and continue */
+			if (rt_band_get_isnodata_flag(_band)) {
+				rt_band_set_isnodata_flag(band, 1);
+				continue;
+			}
+
+			/* copy data */
+			for (j = 0; j < arg2->tile.height; j++) {
+				k = ry + j;
+
+				if (k >= arg2->raster.height) {
+					POSTGIS_RT_DEBUGF(4, "row %d is beyond extent of source raster. skipping", k);
+					continue;
+				}
+
+				POSTGIS_RT_DEBUGF(4, "getting pixel line %d, %d for %d pixels", rx, k, len);
+				if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != 0) {
+					elog(ERROR, "RASTER_tile: Unable to get pixel line from source raster");
+					rt_raster_destroy(tile);
+					rt_raster_destroy(arg2->raster.raster);
+					pfree(arg2->nbands);
+					pfree(arg2);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				if (nvals && !rt_band_set_pixel_line(band, 0, j, vals, nvals)) {
+					elog(ERROR, "RASTER_tile: Unable to set pixel line of output tile");
+					rt_raster_destroy(tile);
+					rt_raster_destroy(arg2->raster.raster);
+					pfree(arg2->nbands);
+					pfree(arg2);
+					SRF_RETURN_DONE(funcctx);
+				}
+			}
+		}
+
+		pgtile = rt_raster_serialize(tile);
+		rt_raster_destroy(tile);
+		if (!pgtile) {
+			rt_raster_destroy(arg2->raster.raster);
+			pfree(arg2->nbands);
+			pfree(arg2);
+			SRF_RETURN_DONE(funcctx);
+		}
+
+		SET_VARSIZE(pgtile, pgtile->size);
+		SRF_RETURN_NEXT(funcctx, PointerGetDatum(pgtile));
+	}
+	/* do when there is no more left */
+	else {
+		rt_raster_destroy(arg2->raster.raster);
+		pfree(arg2->nbands);
+		pfree(arg2);
+		SRF_RETURN_DONE(funcctx);
+	}
 }
 
 /**

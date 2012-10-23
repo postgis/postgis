@@ -616,7 +616,7 @@ int rt_band_set_pixel(
  * @param vals : the pixel values
  * @param *nvals : the number of pixel values being returned
  *
- * @return 0 if success, -1 otherwise
+ * @return 0 on success, -1 on error
  */
 int rt_band_get_pixel_line(
 	rt_band band,
