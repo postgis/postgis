@@ -1491,6 +1491,7 @@ WHERE rid=35;
 				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_NumBands" />, , <xref linkend="RT_ST_Reclass" /></para>
 			</refsection>
 		</refentry>
+
   		<refentry id="RT_ST_MakeEmptyRaster">
 			<refnamediv>
 				<refname>ST_MakeEmptyRaster</refname>
@@ -1571,6 +1572,140 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_MetaData" />, <xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_SetValue" />, <xref linkend="RT_ST_SkewX" />, , <xref linkend="RT_ST_SkewY" /></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_Tile">
+
+			<refnamediv>
+				<refname>ST_Tile</refname>
+				<refpurpose>Returns a set of rasters resulting from the split of the input raster based upon the desired dimensions of the output rasters.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>text <function>ST_Tile</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef choice="opt"><type>int[] </type> <parameter>nband=NULL</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>text <function>ST_Tile</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef><type>int </type> <parameter>nband</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Returns a set of rasters resulting from the split of the input raster based upon the desired dimensions of the output rasters.
+				</para>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '8BUI', 10, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, 0, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0), 2, '8BUI', 20, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, 0, 1, -1, 0, 0, 0), 1, '8BUI', 3, 0), 2, '8BUI', 30, 0) AS rast UNION ALL
+
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, -3, 1, -1, 0, 0, 0), 1, '8BUI', 4, 0), 2, '8BUI', 40, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, -3, 1, -1, 0, 0, 0), 1, '8BUI', 5, 0), 2, '8BUI', 50, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, -3, 1, -1, 0, 0, 0), 1, '8BUI', 6, 0), 2, '8BUI', 60, 0) AS rast UNION ALL
+
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, -6, 1, -1, 0, 0, 0), 1, '8BUI', 7, 0), 2, '8BUI', 70, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, -6, 1, -1, 0, 0, 0), 1, '8BUI', 8, 0), 2, '8BUI', 80, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, -6, 1, -1, 0, 0, 0), 1, '8BUI', 9, 0), 2, '8BUI', 90, 0) AS rast
+), bar AS (
+	SELECT ST_Union(rast) AS rast FROM foo
+), baz AS (
+	SELECT ST_Tile(rast, 3, 3) AS rast FROM bar
+)
+SELECT
+	ST_DumpValues(rast)
+FROM baz;
+
+              st_dumpvalues               
+------------------------------------------
+ (1,"{{1,1,1},{1,1,1},{1,1,1}}")
+ (2,"{{10,10,10},{10,10,10},{10,10,10}}")
+ (1,"{{2,2,2},{2,2,2},{2,2,2}}")
+ (2,"{{20,20,20},{20,20,20},{20,20,20}}")
+ (1,"{{3,3,3},{3,3,3},{3,3,3}}")
+ (2,"{{30,30,30},{30,30,30},{30,30,30}}")
+ (1,"{{4,4,4},{4,4,4},{4,4,4}}")
+ (2,"{{40,40,40},{40,40,40},{40,40,40}}")
+ (1,"{{5,5,5},{5,5,5},{5,5,5}}")
+ (2,"{{50,50,50},{50,50,50},{50,50,50}}")
+ (1,"{{6,6,6},{6,6,6},{6,6,6}}")
+ (2,"{{60,60,60},{60,60,60},{60,60,60}}")
+ (1,"{{7,7,7},{7,7,7},{7,7,7}}")
+ (2,"{{70,70,70},{70,70,70},{70,70,70}}")
+ (1,"{{8,8,8},{8,8,8},{8,8,8}}")
+ (2,"{{80,80,80},{80,80,80},{80,80,80}}")
+ (1,"{{9,9,9},{9,9,9},{9,9,9}}")
+ (2,"{{90,90,90},{90,90,90},{90,90,90}}")
+(18 rows)
+				</programlisting>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0), 2, '8BUI', 10, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, 0, 1, -1, 0, 0, 0), 1, '8BUI', 2, 0), 2, '8BUI', 20, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, 0, 1, -1, 0, 0, 0), 1, '8BUI', 3, 0), 2, '8BUI', 30, 0) AS rast UNION ALL
+
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, -3, 1, -1, 0, 0, 0), 1, '8BUI', 4, 0), 2, '8BUI', 40, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, -3, 1, -1, 0, 0, 0), 1, '8BUI', 5, 0), 2, '8BUI', 50, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, -3, 1, -1, 0, 0, 0), 1, '8BUI', 6, 0), 2, '8BUI', 60, 0) AS rast UNION ALL
+
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 0, -6, 1, -1, 0, 0, 0), 1, '8BUI', 7, 0), 2, '8BUI', 70, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 3, -6, 1, -1, 0, 0, 0), 1, '8BUI', 8, 0), 2, '8BUI', 80, 0) AS rast UNION ALL
+	SELECT ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(3, 3, 6, -6, 1, -1, 0, 0, 0), 1, '8BUI', 9, 0), 2, '8BUI', 90, 0) AS rast
+), bar AS (
+	SELECT ST_Union(rast) AS rast FROM foo
+), baz AS (
+	SELECT ST_Tile(rast, 3, 3, 2) AS rast FROM bar
+)
+SELECT
+	ST_DumpValues(rast)
+FROM baz;
+
+              st_dumpvalues               
+------------------------------------------
+ (1,"{{10,10,10},{10,10,10},{10,10,10}}")
+ (1,"{{20,20,20},{20,20,20},{20,20,20}}")
+ (1,"{{30,30,30},{30,30,30},{30,30,30}}")
+ (1,"{{40,40,40},{40,40,40},{40,40,40}}")
+ (1,"{{50,50,50},{50,50,50},{50,50,50}}")
+ (1,"{{60,60,60},{60,60,60},{60,60,60}}")
+ (1,"{{70,70,70},{70,70,70},{70,70,70}}")
+ (1,"{{80,80,80},{80,80,80},{80,80,80}}")
+ (1,"{{90,90,90},{90,90,90},{90,90,90}}")
+(9 rows)
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_Union" />
+				</para>
+			</refsection>
+
+		</refentry>
+
   	</sect1>
 	<sect1 id="Raster_Accessors">
 		<title>Raster Accessors</title>

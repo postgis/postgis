@@ -3975,6 +3975,15 @@ CREATE OR REPLACE FUNCTION st_tile(
 	AS 'MODULE_PATHNAME','RASTER_tile'
 	LANGUAGE 'c' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION st_tile(
+	rast raster,
+	width integer, height integer,
+	nband int
+)
+	RETURNS SETOF raster
+	AS $$ SELECT st_tile($1, $2, $3, ARRAY[$4]::int[]) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
 -----------------------------------------------------------------------
 -- Raster Band Editors
 -----------------------------------------------------------------------

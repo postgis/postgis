@@ -19,35 +19,49 @@ WITH foo AS (
 	SELECT ST_Tile(rast, 3, 3) AS rast FROM raster_tile
 )
 SELECT
-	ST_DumpValues(rast)
+	1, ST_DumpValues(rast)
 FROM foo;
 
 WITH foo AS (
 	SELECT ST_Tile(rast, 3, 3, ARRAY[1]) AS rast FROM raster_tile
 )
 SELECT
-	ST_DumpValues(rast)
+	2, ST_DumpValues(rast)
+FROM foo;
+
+WITH foo AS (
+	SELECT ST_Tile(rast, 3, 3, ARRAY[2, 1]) AS rast FROM raster_tile
+)
+SELECT
+	3, ST_DumpValues(rast)
+FROM foo;
+
+WITH foo AS (
+	SELECT ST_Tile(rast, 3, 3, 2) AS rast FROM raster_tile
+)
+SELECT
+	4, ST_DumpValues(rast)
 FROM foo;
 
 WITH foo AS (
 	SELECT ST_Tile(rast, 2, 2) AS rast FROM raster_tile
 )
 SELECT
-	ST_DumpValues(rast)
+	5, ST_DumpValues(rast)
 FROM foo;
 
 WITH foo AS (
 	SELECT ST_Tile(rast, 1, 1) AS rast FROM raster_tile
 )
 SELECT
-	ST_DumpValues(rast)
+	6, ST_DumpValues(rast)
 FROM foo;
 
 WITH foo AS (
 	SELECT ST_Tile(rast, 5, 5) AS rast FROM raster_tile
 )
 SELECT
-	ST_DumpValues(rast)
+	7, ST_DumpValues(rast)
 FROM foo;
 
 DROP TABLE IF EXISTS raster_tile;
