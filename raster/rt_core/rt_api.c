@@ -2255,6 +2255,92 @@ rt_band_set_pixel(
 }
 
 /**
+ * Get values of multiple pixels.  Unlike rt_band_get_pixel,
+ * values in vals are of the band's pixel type so cannot be
+ * assumed to be double.  Function uses memcpy.
+ *
+ * It is important to be careful when using this function as
+ * the number of values being fetched may exceed a pixel "row".
+ * Remember that the band values are stored in a stream (1-D array)
+ * regardless of what the raster's width and height might be.
+ * So, getting a number of values may cross multiple pixel "rows".
+ *
+ * @param band : the band to get pixel value from
+ * @param x : pixel column (0-based)
+ * @param y : pixel row (0-based)
+ * @param len : the number of pixels to get
+ * @param vals : the pixel values
+ * @param *nvals : the number of pixel values being returned
+ *
+ * @return values of multiple pixels
+ */
+int rt_band_get_pixel_line(
+	rt_band band,
+	int x, int y,
+	uint16_t len,
+	void **vals, uint16_t *nvals
+) {
+	uint8_t *_vals = NULL;
+	rt_pixtype pixtype = PT_END;
+	int pixsize = 0;
+	uint8_t *data = NULL;
+	uint32_t offset = 0; 
+	uint16_t _nvals = 0;
+	int maxlen = 0;
+	uint8_t *ptr = NULL;
+
+	assert(NULL != band);
+
+	if (
+		x < 0 || x >= band->width ||
+		y < 0 || y >= band->height
+	) {
+		rtwarn("Attempting to get pixel values with out of range raster coordinates: (%d, %d)", x, y);
+		return -1;
+	}
+
+	data = rt_band_get_data(band);
+	if (data == NULL) {
+		rterror("rt_band_get_pixel_line: Cannot get band data");
+		return -1;
+	}
+
+	/* +1 for the nodata value */
+	offset = x + (y * band->width);
+	RASTER_DEBUGF(4, "offset = %d", offset);
+
+	pixtype = band->pixtype;
+	pixsize = rt_pixtype_size(band->pixtype);
+	RASTER_DEBUGF(4, "pixsize = %d", pixsize);
+
+	/* cap _nvals so that it doesn't overflow */
+	_nvals = len;
+	maxlen = band->width * band->height;
+
+	if ((maxlen - (int) (offset + _nvals)) < 0) {
+		_nvals = _nvals - (((int) (offset + _nvals)) - maxlen);
+		rtwarn("Limiting returning number values to %d", _nvals);
+	}
+	RASTER_DEBUGF(4, "_nvals = %d", _nvals);
+
+	ptr = data + (offset * pixsize);
+
+	_vals = rtalloc(_nvals * pixsize);
+	if (_vals == NULL) {
+		rterror("rt_band_get_pixel_line: Unable to allocate memory for pixel values");
+		return -1;
+	}
+
+	/* copy pixels */
+	memcpy(_vals, ptr, _nvals * pixsize);
+
+	*vals = _vals;
+	*nvals = _nvals;
+
+	return 0;
+}
+
+/**
  * Get pixel value. If band's isnodata flag is TRUE, value returned 
  * will be the band's NODATA value
  *

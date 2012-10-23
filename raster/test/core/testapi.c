@@ -8121,6 +8121,48 @@ static void testRasterClone() {
 	deepRelease(rast1);
 }
 
+static void testGetPixelLine() {
+	rt_raster rast;
+	rt_band band;
+	int maxX = 5;
+	int maxY = 5;
+	int x = 0;
+	int y = 0;
+	void *vals = NULL;
+	uint16_t nvals = 0;
+	int err = 0;
+
+	rast = rt_raster_new(maxX, maxY);
+	assert(rast);
+
+	rt_raster_set_scale(rast, 1, -1);
+
+	band = addBand(rast, PT_8BSI, 0, 0);
+	CHECK(band);
+
+	for (y = 0; y < maxY; y++) {
+		for (x = 0; x < maxX; x++)
+			rt_band_set_pixel(band, x, y, x + (y * maxX));
+	}
+
+	err = rt_band_get_pixel_line(band, 0, 0, maxX, &vals, &nvals);
+	CHECK((err == 0));
+	CHECK((nvals == maxX));
+	CHECK((((int8_t *) vals)[3] == 3));
+	rtdealloc(vals);
+	
+	err = rt_band_get_pixel_line(band, 4, 4, maxX, &vals, &nvals);
+	CHECK((err == 0));
+	CHECK((nvals == 1));
+	CHECK((((int8_t *) vals)[0] == 24));
+	rtdealloc(vals);
+
+	err = rt_band_get_pixel_line(band, maxX, maxY, maxX, &vals, &nvals);
+	CHECK((err != 0));
+
+	deepRelease(rast);
+}
+
 int
 main()
 {
@@ -8441,6 +8483,10 @@ main()
 
 		printf("Test rt_raster_clone... ");
 		testRasterClone();
+		printf("OK\n");
+
+		printf("Test rt_band_get_pixel_line... ");
+		testGetPixelLine();
 		printf("OK\n");
 
     deepRelease(raster);
