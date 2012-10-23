@@ -545,12 +545,41 @@ void
 lwgeom_add_bbox(LWGEOM *lwgeom)
 {
 	/* an empty LWGEOM has no bbox */
-	if( lwgeom_is_empty(lwgeom) ) return;
+	if ( lwgeom_is_empty(lwgeom) ) return;
 
 	if ( lwgeom->bbox ) return;
 	FLAGS_SET_BBOX(lwgeom->flags, 1);
 	lwgeom->bbox = gbox_new(lwgeom->flags);
 	lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);
+}
+
+void 
+lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox)
+{
+	if ( lwgeom_is_empty(lwgeom) ) return;
+
+	FLAGS_SET_BBOX(lwgeom->flags, 1);
+	
+	if ( ! ( gbox || lwgeom->bbox ) )
+	{
+		lwgeom->bbox = gbox_new(lwgeom->flags);
+		lwgeom_calculate_gbox(lwgeom, lwgeom->bbox);		
+	}
+	else if ( gbox && ! lwgeom->bbox )
+	{
+		lwgeom->bbox = gbox_clone(gbox);
+	}
+	
+	if ( lwgeom_is_collection(lwgeom) )
+	{
+		int i;
+		LWCOLLECTION *lwcol = (LWCOLLECTION*)lwgeom;
+
+		for ( i = 0; i < lwcol->ngeoms; i++ )
+		{
+			lwgeom_add_bbox_deep(lwcol->geoms[i], lwgeom->bbox);
+		}
+	}
 }
 
 const GBOX *

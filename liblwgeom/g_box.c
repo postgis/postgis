@@ -26,6 +26,12 @@ void gbox_init(GBOX *gbox)
 	memset(gbox, 0, sizeof(GBOX));
 }
 
+GBOX* gbox_clone(const GBOX *gbox)
+{
+	GBOX *g = lwalloc(sizeof(GBOX));
+	memcpy(g, gbox, sizeof(GBOX));
+	return g;
+}
 
 /* TODO to be removed */
 BOX3D* box3d_from_gbox(const GBOX *gbox)
