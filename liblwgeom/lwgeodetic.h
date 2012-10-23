@@ -89,7 +89,7 @@ int edge_intersection(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOG
 double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *gp, GEOGRAPHIC_POINT *closest);
 double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2);
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);
-int ptarray_point_in_ring_winding(const POINTARRAY *pa, const POINT2D *pt_to_test);
+int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
 int lwpoly_covers_point2d(const LWPOLY *poly, const POINT2D *pt_to_test);
 int ptarray_point_in_ring(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test);
 double ptarray_area_sphere(const POINTARRAY *pa);

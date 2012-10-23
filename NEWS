@@ -81,6 +81,7 @@ PostGIS 2.1.0
            valuecount
   - #1951, remove crash on zero-length linestrings
   - #1957, ST_Distance to a one-point LineString returns NULL 
+  - #1976, Geography point-in-ring code overhauled for more reliability
   - #1981, cleanup of unused variables causing warnings with gcc 4.6+
   - #2057, Fixed linking issue for raster2psql to libpq
 
