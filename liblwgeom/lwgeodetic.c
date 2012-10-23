@@ -3124,21 +3124,10 @@ dot_product_side(const POINT3D *p, const POINT3D *q)
 }
 
 /**
-* Bitmask elements for edge_intersects() return value.
-*/
-#define PIR_NO_INTERACT    0x00
-#define PIR_INTERSECTS     0x01
-#define PIR_COLINEAR       0x02
-#define PIR_A_TOUCH_LEFT   0x04
-#define PIR_A_TOUCH_RIGHT  0x08
-#define PIR_B_TOUCH_LEFT   0x10
-#define PIR_B_TOUCH_RIGHT  0x20
-
-/**
 * Returns non-zero if edges A and B interact. The type of interaction is given in the 
 * return value with the bitmask elements defined above.
 */
-static int 
+int 
 edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2)
 {
 	POINT3D A3, B3;  /* Extra vector to build more cross-product-friendly angles */

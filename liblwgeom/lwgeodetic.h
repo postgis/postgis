@@ -65,6 +65,19 @@ typedef struct
 */
 #define signum(a) ((a) < 0 ? -1 : ((a) > 0 ? 1 : (a)))
 
+
+/**
+* Bitmask elements for edge_intersects() return value.
+*/
+#define PIR_NO_INTERACT    0x00
+#define PIR_INTERSECTS     0x01
+#define PIR_COLINEAR       0x02
+#define PIR_A_TOUCH_LEFT   0x04
+#define PIR_A_TOUCH_RIGHT  0x08
+#define PIR_B_TOUCH_LEFT   0x10
+#define PIR_B_TOUCH_RIGHT  0x20
+
+
 /*
 * Geodetic calculations
 */
@@ -86,6 +99,7 @@ int sphere_project(const GEOGRAPHIC_POINT *r, double distance, double azimuth, G
 int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox);
 int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox);
 int edge_intersection(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *g);
+int edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2);
 double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *gp, GEOGRAPHIC_POINT *closest);
 double edge_distance_to_edge(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *closest1, GEOGRAPHIC_POINT *closest2);
 void geographic_point_init(double lon, double lat, GEOGRAPHIC_POINT *g);
