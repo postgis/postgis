@@ -87,6 +87,10 @@ Datum geography_distance_uncached(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	/* Make sure we have boxes attached */
+	lwgeom_add_bbox_deep(lwgeom1, NULL);
+	lwgeom_add_bbox_deep(lwgeom2, NULL);
+	
 	distance = lwgeom_distance_spheroid(lwgeom1, lwgeom2, &s, FP_TOLERANCE);
 
 	/* Clean up */

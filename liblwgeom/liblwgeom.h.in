@@ -681,6 +681,10 @@ extern void lwgeom_drop_srid(LWGEOM *lwgeom);
  * NULL if the geometry is empty.
  */
 extern void lwgeom_add_bbox(LWGEOM *lwgeom);
+/**
+* Compute a box for geom and all sub-geometries, if not already computed
+*/
+extern void lwgeom_add_bbox_deep(LWGEOM *lwgeom, GBOX *gbox);
 
 /** 
  * Get a non-empty geometry bounding box, computing and

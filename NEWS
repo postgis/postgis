@@ -83,6 +83,7 @@ PostGIS 2.1.0
   - #1957, ST_Distance to a one-point LineString returns NULL 
   - #1976, Geography point-in-ring code overhauled for more reliability
   - #1981, cleanup of unused variables causing warnings with gcc 4.6+
+  - #2026, improve performance of distance calculations 
   - #2057, Fixed linking issue for raster2psql to libpq
 
 PostGIS 2.0.1
