@@ -168,7 +168,7 @@
                     <term>-l <varname>OVERVIEW_FACTOR</varname></term>
 										<listitem><para>Create overview of the raster.  For more than
      one factor, separate with comma(,).  Overview table name follows
-     the pattern o_<varname>overview factor</varname>_<varname>table</varname>.  Created overview is
+		 the pattern o_<varname>overview factor</varname>_<varname>table</varname>, where <varname>overview factor</varname> is a placeholder for numerical overview factor and <varname>table</varname> is replaced with the base table name.  Created overview is
      stored in the database and is not affected by -R. Note that your generated sql file will contain both the main table and overview tables.</para>
                     </listitem>
                 </varlistentry>
