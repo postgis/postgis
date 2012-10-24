@@ -10628,6 +10628,26 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 		geom = geom2d;
 	}
 
+	/* empty geometry, return empty raster */
+	if (lwgeom_is_empty(geom)) {
+		POSTGIS_RT_DEBUG(3, "Input geometry is empty. Returning empty raster");
+		lwgeom_free(geom);
+		PG_FREE_IF_COPY(gser, 0);
+
+		rast = rt_raster_new(0, 0);
+		if (rast == NULL)
+			PG_RETURN_NULL();
+
+		pgrast = rt_raster_serialize(rast);
+		rt_raster_destroy(rast);
+
+		if (NULL == pgrast)
+			PG_RETURN_NULL();
+
+		SET_VARSIZE(pgrast, pgrast->size);
+		PG_RETURN_POINTER(pgrast);
+	}
+
 	/* scale x */
 	if (!PG_ARGISNULL(1)) {
 		scale[0] = PG_GETARG_FLOAT8(1);
