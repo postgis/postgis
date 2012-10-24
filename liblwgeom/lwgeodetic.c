@@ -1851,6 +1851,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	GEOGRAPHIC_EDGE e1, e2;
 	GEOGRAPHIC_POINT g1, g2;
 	GEOGRAPHIC_POINT nearest1, nearest2;
+	POINT3D A1, A2, B1, B2;
 	POINT2D p;
 	double distance;
 	int i, j;
@@ -1958,6 +1959,7 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	/* Initialize start of line 1 */
 	getPoint2d_p(pa1, 0, &p);
 	geographic_point_init(p.x, p.y, &(e1.start));
+	geog2cart(&(e1.start), &A1);
 
 
 	/* Handle line/line case */
@@ -1965,10 +1967,12 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 	{
 		getPoint2d_p(pa1, i, &p);
 		geographic_point_init(p.x, p.y, &(e1.end));
+		geog2cart(&(e1.end), &A2);
 
 		/* Initialize start of line 2 */
 		getPoint2d_p(pa2, 0, &p);
 		geographic_point_init(p.x, p.y, &(e2.start));
+		geog2cart(&(e2.start), &B1);
 
 		for ( j = 1; j < pa2->npoints; j++ )
 		{
@@ -1976,13 +1980,14 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 
 			getPoint2d_p(pa2, j, &p);
 			geographic_point_init(p.x, p.y, &(e2.end));
+			geog2cart(&(e2.end), &B2);
 
 			LWDEBUGF(4, "e1.start == GPOINT(%.6g %.6g) ", e1.start.lat, e1.start.lon);
 			LWDEBUGF(4, "e1.end == GPOINT(%.6g %.6g) ", e1.end.lat, e1.end.lon);
 			LWDEBUGF(4, "e2.start == GPOINT(%.6g %.6g) ", e2.start.lat, e2.start.lon);
 			LWDEBUGF(4, "e2.end == GPOINT(%.6g %.6g) ", e2.end.lat, e2.end.lon);
 
-			if ( check_intersection && edge_intersection(&e1, &e2, &g1) )
+			if ( check_intersection && edge_intersects(&A1, &A2, &B1, &B2) )
 			{
 				LWDEBUG(4,"edge intersection! returning 0.0");
 				return 0.0;
@@ -2012,11 +2017,12 @@ static double ptarray_distance_spheroid(const POINTARRAY *pa1, const POINTARRAY 
 
 			/* Copy end to start to allow a new end value in next iteration */
 			e2.start = e2.end;
+			B1 = B2;
 		}
 
 		/* Copy end to start to allow a new end value in next iteration */
 		e1.start = e1.end;
-
+		A1 = A2;
 	}
 	LWDEBUGF(4,"finished all loops, returning %.8g", distance);
 
@@ -3185,11 +3191,11 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 	if ( FP_EQUALS(fabs(ab_dot), 1.0) )
 	{
 		/* Co-linear case */
-		rv |= PIR_COLINEAR;
 		if ( point_in_cone(A1, A2, B1) || point_in_cone(A1, A2, B2) || 
 		     point_in_cone(B1, B2, A1) || point_in_cone(B1, B2, A2) )
 		{
 			rv |= PIR_INTERSECTS;
+			rv |= PIR_COLINEAR;
 		}
 		return rv;
 	}
