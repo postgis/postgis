@@ -56,6 +56,15 @@
 #define MINOVFACTOR 2
 #define MAXOVFACTOR 1000
 
+/*
+	maximum tile size
+	based upon maximum field size as defined for PostgreSQl
+	http://www.postgresql.org/about/
+
+	1 GB = 1024 x 1024 x 1024
+*/
+#define MAXTILESIZE 1073741824
+
 #define RCSID "$Id$"
 
 typedef struct raster_loader_config {

@@ -151,7 +151,7 @@
                     <term>-t TILE_SIZE</term>
                     <listitem>
 			<para>
-                        Cut raster into tiles to be inserted one per table row.  <varname>TILE_SIZE</varname> is expressed as WIDTHxHEIGHT.
+							Cut raster into tiles to be inserted one per table row.  <varname>TILE_SIZE</varname> is expressed as WIDTHxHEIGHT or set to the value "auto" to allow the loader to compute an appropriate tile size using the first raster and applied to all rasters.
 			</para>
                     </listitem>
                 </varlistentry>

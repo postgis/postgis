@@ -346,6 +346,9 @@ usage() {
 	printf(_(
 		"  -t <tile size> Cut raster into tiles to be inserted one per\n"
 		"      table row.  <tile size> is expressed as WIDTHxHEIGHT.\n"
+		"      <tile size> can also be \"auto\" to allow the loader to compute\n"
+		"      an appropriate tile size using the first raster and applied to\n"
+		"      all rasters.\n"
 	));
 	printf(_(
 		"  -R  Register the raster as an out-of-db (filesystem) raster.  Provided\n"
@@ -427,6 +430,66 @@ usage() {
 	printf(_(
 		"  -?  Display this help screen.\n"
 	));
+}
+
+static void calc_tile_size(
+	int dimX, int dimY,
+	int *tileX, int *tileY
+) {
+	int i = 0;
+	int j = 0;
+	int min = 30;
+	int max = 100;
+
+	int d = 0;
+	double r = 0;
+	int _d = 0;
+	double _r = -1;
+	int _i = 0;
+
+	/* j = 0, X */
+	for (j = 0; j < 2; j++) {
+		_i = 0;
+		_d = 0;
+		_r = -1;
+
+		if (j < 1 && dimX <= max) {
+			*tileX = dimX;
+			continue;
+		}
+		else if (dimY <= max) {
+			*tileY = dimY;
+			continue;
+		}
+
+		for (i = max; i >= min; i--) {
+			if (j < 1) {
+				d = dimX / i;
+				r = (double) dimX / (double) i;
+
+			}
+			else {
+				d = dimY / i;
+				r = (double) dimY / (double) i;
+			}
+			r = r - (double) d;
+
+			if (
+				FLT_EQ(_r, -1) ||
+				(r < _r) ||
+				FLT_EQ(r, _r)
+			) {
+				_d = d;
+				_r = r;
+				_i = i;
+			}
+		}
+
+		if (j < 1)
+			*tileX = _i;
+		else
+			*tileY = _i;
+	}
 }
 
 static void
@@ -1420,6 +1483,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int ytile = 0;
 	double gt[6] = {0.};
 	const char* pszProjectionRef = NULL;
+	int tilesize = 0;
 
 	rt_raster rast = NULL;
 	int numbands = 0;
@@ -1550,6 +1614,19 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	info->dim[0] = GDALGetRasterXSize(hdsSrc);
 	info->dim[1] = GDALGetRasterYSize(hdsSrc);
 
+	/* tile size is "auto" */
+	if (
+		config->tile_size[0] == -1 &&
+		config->tile_size[1] == -1
+	) {
+		calc_tile_size(
+			info->dim[0], info->dim[1],
+			&(config->tile_size[0]), &(config->tile_size[1])
+		);
+
+		rtinfo(_("Using computed tile size: %dx%d"), config->tile_size[0], config->tile_size[1]);
+	}
+
 	/* decide on tile size */
 	if (!config->tile_size[0])
 		info->tile_size[0] = info->dim[0];
@@ -1565,6 +1642,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		ntiles[0] = (info->dim[0] + info->tile_size[0]  - 1) / info->tile_size[0];
 	if (info->tile_size[1] != info->dim[1]) 
 		ntiles[1] = (info->dim[1] + info->tile_size[1]  - 1) / info->tile_size[1];
+
+	/* estimate size of 1 tile */
+	tilesize = info->tile_size[0] * info->tile_size[1];
 
 	/* go through bands for attributes */
 	for (i = 0; i < info->nband_count; i++) {
@@ -1594,7 +1674,15 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 			else
 				info->nodataval[i] = 0;
 		}
+
+		/* update estimated size of 1 tile */
+		tilesize *= rt_pixtype_size(info->bandtype[i]);
 	}
+
+	/* roughly estimate size of one tile and all bands */
+	tilesize *= 1.1;
+	if (tilesize > MAXTILESIZE)
+		rtwarn(_("The size of each output tile may exceed 1 GB. Use -t to specify a reasonable tile size"));
 
 	/* out-db raster */
 	if (config->outdb) {
@@ -2231,31 +2319,36 @@ main(int argc, char **argv) {
 		}
 		/* tile size */
 		else if (CSEQUAL(argv[i], "-t") && i < argc - 1) {
-			elements = strsplit(argv[++i], "x", &n);
-			if (n != 2) {
-				rterror(_("Could not process -t"));
-				rtdealloc_config(config);
-				exit(1);
+			if (CSEQUAL(argv[++i], "auto")) {
+				config->tile_size[0] = -1;
+				config->tile_size[1] = -1;
 			}
-
-			for (j = 0; j < n; j++) {
-				char *t = trim(elements[j]);
-				config->tile_size[j] = atoi(t);
-				rtdealloc(t);
-				rtdealloc(elements[j]);
-			}
-			rtdealloc(elements);
-			elements = NULL;
-			n = 0;
-
-			for (j = 0; j < 2; j++) {
-				if (config->tile_size[j] < 1) {
-					rterror(_("Tile size must be greater than 0x0"));
+			else {
+				elements = strsplit(argv[i], "x", &n);
+				if (n != 2) {
+					rterror(_("Could not process -t"));
 					rtdealloc_config(config);
 					exit(1);
 				}
-			}
 
+				for (j = 0; j < n; j++) {
+					char *t = trim(elements[j]);
+					config->tile_size[j] = atoi(t);
+					rtdealloc(t);
+					rtdealloc(elements[j]);
+				}
+				rtdealloc(elements);
+				elements = NULL;
+				n = 0;
+
+				for (j = 0; j < 2; j++) {
+					if (config->tile_size[j] < 1) {
+						rterror(_("Tile size must be greater than 0x0"));
+						rtdealloc_config(config);
+						exit(1);
+					}
+				}
+			}
 		}
 		/* out-of-db raster */
 		else if (CSEQUAL(argv[i], "-R")) {
