@@ -573,12 +573,14 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(-1.0 0.0, 1.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(0.0 -1.0, 0.0 0.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	printf("\nEnd touches middle of segment: %d\n", rv);
 	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_RIGHT);
 
 	/*  End touches end of segment at (0 0) */
 	line2pts("LINESTRING(0.0 0.0, 1.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(0.0 -1.0, 0.0 0.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	printf("End touches end of segment: %d\n", rv);
 	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_RIGHT|PIR_A_TOUCH_RIGHT);
 
 	/* Intersection at (180 0) */
@@ -615,13 +617,14 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(-180.0 80.0, 0.0 80.0)", &A1, &A2);
 	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	printf("End touches arc at north pole: %d\n", rv);
 	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_LEFT);
 	
 	/* End touches end at north pole */
 	line2pts("LINESTRING(-180.0 80.0, 0.0 90.0)", &A1, &A2);
 	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	//printf("%d\n",rv);
+	printf("End touches end at north pole: %d\n", rv);
 	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_LEFT|PIR_A_TOUCH_RIGHT);
 }
 
@@ -1190,7 +1193,7 @@ static void test_spheroid_area(void)
 	lwgeom_calculate_gbox_geodetic(lwg, &gbox);
 	a1 = lwgeom_area_sphere(lwg, &s);
 	a2 = lwgeom_area_spheroid(lwg, &s);
-	printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
+	//printf("\nsphere: %.12g\nspheroid: %.12g\n", a1, a2);
 	CU_ASSERT_DOUBLE_EQUAL(a1, 89.7127703297, 0.1); /* sphere */
 	CU_ASSERT_DOUBLE_EQUAL(a2, 89.8684316032, 0.1); /* spheroid */
 	lwgeom_free(lwg);
