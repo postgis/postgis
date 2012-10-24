@@ -9475,6 +9475,24 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		return NULL;
 	}
 
+	/* OGR Geometry is empty */
+	if (OGR_G_IsEmpty(src_geom)) {
+		rtinfo("Geometry provided is empty. Returning empty raster");
+
+		if (noband) {
+			rtdealloc(_pixtype);
+			rtdealloc(_init);
+			rtdealloc(_nodata);
+			rtdealloc(_hasnodata);
+			rtdealloc(_value);
+		}
+
+		OSRDestroySpatialReference(src_sr);
+		/* OGRCleanupAll(); */
+
+		return rt_raster_new(0, 0);
+	}
+
 	/* get envelope */
 	OGR_G_GetEnvelope(src_geom, &src_env);
 	rt_util_from_ogr_envelope(src_env, &extent);
