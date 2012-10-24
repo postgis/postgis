@@ -50,6 +50,7 @@ PostGIS 2.1.0
   - #1364, ST_Union(raster, ...) aggregate function rewritten in C
   - #1661, Add aggregate variant of ST_SameAlignment
   - #1719, Add support for Point and GeometryCollection ST_MakeValid inputs
+  - #1780, support ST_GeoHash for geography
   - #1796, Big performance boost for distance calculations in geography
   - #1802, improved function interruptibility.
   - #1856, tiger geocoder: reverse geocoder rating setting for prefer 
@@ -57,7 +58,8 @@ PostGIS 2.1.0
   - #1938, Refactor basic ST_AddBand to add multiple new bands in one call
   - #1978, wrong answer when calculating length of a closed circular 
            arc (circle)
-  - #1780, support ST_GeoHash for geography
+  - #1989, Preprocess input geometry to just intersection with raster
+           to be clipped
   - #2021, Added multi-band support to ST_Union(raster, ...) aggregate function
   - #2006, better support of ST_Area(geography) over poles and dateline
   - TopologySummary output now includes unregistered layers and a count

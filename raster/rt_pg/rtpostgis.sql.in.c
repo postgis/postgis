@@ -5461,6 +5461,7 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodatav
 	RETURNS raster
 	AS $$
 	DECLARE
+		g geometry;
 		newrast raster;
 		geomrast raster;
 		numband int;
@@ -5494,7 +5495,8 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodatav
 		newextent := CASE WHEN crop THEN 'INTERSECTION' ELSE 'FIRST' END;
 
 		-- Convert the geometry to a raster
-		geomrast := ST_AsRaster(geom, rast, ST_BandPixelType(rast, band), 1, newnodataval);
+		g := ST_Intersection(geom, rast::geometry);
+		geomrast := ST_AsRaster(g, rast, ST_BandPixelType(rast, band), 1, newnodataval);
 
 		-- Compute the first raster band
 		newrast := ST_MapAlgebraExpr(rast, bandstart, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodataval::text, newnodataval::text, newnodataval);
