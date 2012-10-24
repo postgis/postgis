@@ -486,6 +486,146 @@ static void test_edge_intersection(void)
 
 }
 
+static void line2pts(const char *wkt, POINT3D *A1, POINT3D *A2)
+{
+	LWLINE *l = (LWLINE*)lwgeom_from_wkt(wkt, LW_PARSER_CHECK_NONE);
+	POINTARRAY *pa;
+	POINT2D p1, p2;
+	GEOGRAPHIC_POINT g1, g2;
+	if ( ! l ) 
+	{
+		printf("BAD WKT FOUND in test_edge_intersects:\n  %s\n\n", wkt);
+		exit(0);
+	}
+	pa = l->points;
+	getPoint2d_p(pa, 0, &p1);
+	getPoint2d_p(pa, 1, &p2);
+	geographic_point_init(p1.x, p1.y, &g1);
+	geographic_point_init(p2.x, p2.y, &g2);
+	geog2cart(&g1, A1);
+	geog2cart(&g2, A2);
+	lwline_free(l);
+	return;
+}
+
+static void test_edge_intersects(void)
+{
+	POINT3D A1, A2, B1, B2;
+	GEOGRAPHIC_POINT g;
+	int rv;
+
+	/* Covers case, end-to-end intersection */
+	line2pts("LINESTRING(50 -10.999999999999998224, -10.0 50.0)", &A1, &A2);
+	line2pts("LINESTRING(-10.0 50.0, -10.272779983831613393 -16.937003313332997578)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv > 0);
+
+	/* Medford case, very short segment vs very long one */
+	g.lat = 0.74123572595649878103;
+	g.lon = -2.1496353191142714145;
+	geog2cart(&g, &A1);
+	g.lat = 0.74123631950116664058;
+	g.lon = -2.1496353248304860273;
+	geog2cart(&g, &A2);
+	g.lat = 0.73856343764436815924;
+	g.lon = -2.1461493501950630325;
+	geog2cart(&g, &B1);
+	g.lat = 0.70971354024834598651;
+	g.lon = 2.1082194552519770703;
+	geog2cart(&g, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+
+	/* Second Medford case, very short segment vs very long one */
+	g.lat = 0.73826546728290887156;
+	g.lon = -2.14426380171833042;
+	geog2cart(&g, &A1);
+	g.lat = 0.73826545883786642843;
+	g.lon = -2.1442638997530165668;
+	geog2cart(&g, &A2);
+	g.lat = 0.73775469118192538165;
+	g.lon = -2.1436035534281718817;
+	geog2cart(&g, &B1);
+	g.lat = 0.71021099548296817705;
+	g.lon = 2.1065275171200439353;
+	geog2cart(&g, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, 1);
+
+	/* Again, this time with a less exact input edge. */
+	line2pts("LINESTRING(-123.165031277506 42.4696787216231, -123.165031605021 42.4697127292275)", &A1, &A2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv == 0);
+
+	/* Intersection at (0 0) */
+	line2pts("LINESTRING(-1.0 0.0, 1.0 0.0)", &A1, &A2);
+	line2pts("LINESTRING(0.0 -1.0, 0.0 1.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS);
+
+	/*  No intersection at (0 0) */
+	line2pts("LINESTRING(-1.0 0.0, 1.0 0.0)", &A1, &A2);
+	line2pts("LINESTRING(0.0 -1.0, 0.0 -2.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, 0);
+
+	/*  End touches middle of segment at (0 0) */
+	line2pts("LINESTRING(-1.0 0.0, 1.0 0.0)", &A1, &A2);
+	line2pts("LINESTRING(0.0 -1.0, 0.0 0.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_RIGHT);
+
+	/*  End touches end of segment at (0 0) */
+	line2pts("LINESTRING(0.0 0.0, 1.0 0.0)", &A1, &A2);
+	line2pts("LINESTRING(0.0 -1.0, 0.0 0.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_RIGHT|PIR_A_TOUCH_RIGHT);
+
+	/* Intersection at (180 0) */
+	line2pts("LINESTRING(-179.0 -1.0, 179.0 1.0)", &A1, &A2);
+	line2pts("LINESTRING(-179.0 1.0, 179.0 -1.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS);
+
+	/* Intersection at (180 0) */
+	line2pts("LINESTRING(-170.0 0.0, 170.0 0.0)", &A1, &A2);
+	line2pts("LINESTRING(180.0 -10.0, 180.0 10.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS);
+
+	/* Intersection at north pole */
+	line2pts("LINESTRING(-180.0 80.0, 0.0 80.0)", &A1, &A2);
+	line2pts("LINESTRING(90.0 80.0, -90.0 80.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS);
+
+	/* Equal edges return true */
+	line2pts("LINESTRING(45.0 10.0, 50.0 20.0)", &A1, &A2);
+	line2pts("LINESTRING(45.0 10.0, 50.0 20.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT(rv & PIR_INTERSECTS);	
+	
+	/* Parallel edges (same great circle, different end points) return true  */
+	line2pts("LINESTRING(40.0 0.0, 70.0 0.0)", &A1, &A2);
+	line2pts("LINESTRING(60.0 0.0, 50.0 0.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_COLINEAR);
+
+	/* End touches arc at north pole */
+	line2pts("LINESTRING(-180.0 80.0, 0.0 80.0)", &A1, &A2);
+	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_LEFT);
+	
+	/* End touches end at north pole */
+	line2pts("LINESTRING(-180.0 80.0, 0.0 90.0)", &A1, &A2);
+	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
+	rv = edge_intersects(&A1, &A2, &B1, &B2);
+	//printf("%d\n",rv);
+	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_LEFT|PIR_A_TOUCH_RIGHT);
+}
+
+
 static void test_edge_distance_to_point(void)
 {
 	GEOGRAPHIC_EDGE e;
@@ -1249,6 +1389,7 @@ CU_TestInfo geodetic_tests[] =
 	PG_TEST(test_gserialized_get_gbox_geocentric),
 	PG_TEST(test_clairaut),
 	PG_TEST(test_edge_intersection),
+	PG_TEST(test_edge_intersects),
 	PG_TEST(test_edge_distance_to_point),
 	PG_TEST(test_edge_distance_to_edge),
 	PG_TEST(test_lwgeom_distance_sphere),
