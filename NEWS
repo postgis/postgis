@@ -18,6 +18,8 @@ PostGIS 2.0.2
   - #1976, Geography point-in-ring code overhauled for more reliability
   - #1978, wrong answer when calculating length of a closed circular arc (circle)
   - #1981, Remove unused but set variables as found with gcc 4.6+
+  - #1989, Preprocess input geometry to just intersection with raster
+  -        to be clipped
   - Update URL of Maven jar
   - #2026, improve performance of distance calculations
   - #2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()
