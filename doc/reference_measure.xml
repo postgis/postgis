@@ -2606,6 +2606,8 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 		</refsynopsisdiv>
 		<refsection>
 			<title>Description</title>
+			<para>If a geometry or geography shares any portion of space then they intersect.
+			For geography -- tolerance is 0.00001 meters (so any points that are close are considered to intersect)</para>
 			<para>Overlaps, Touches, Within all imply spatial intersection.  If any of the aforementioned
 				returns true, then the geometries also spatially intersect.
 				Disjoint implies false for spatial intersection.</para>

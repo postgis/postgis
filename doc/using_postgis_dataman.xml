@@ -1737,7 +1737,7 @@ COMMIT;</programlisting>
 	</sect2>
 
 <sect2 id="shp2pgsql_usage">
-  <title>Using the Loader</title>
+  <title>shp2pgsql: Using the ESRI Shapefile Loader</title>
 
   <para>
     The <filename>shp2pgsql</filename> data loader converts ESRI Shape files into SQL suitable for
