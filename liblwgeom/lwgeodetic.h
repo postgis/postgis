@@ -72,10 +72,10 @@ typedef struct
 #define PIR_NO_INTERACT    0x00
 #define PIR_INTERSECTS     0x01
 #define PIR_COLINEAR       0x02
-#define PIR_A_TOUCH_LEFT   0x04
-#define PIR_A_TOUCH_RIGHT  0x08
-#define PIR_B_TOUCH_LEFT   0x10
-#define PIR_B_TOUCH_RIGHT  0x20
+#define PIR_A_TOUCH_RIGHT   0x04
+#define PIR_A_TOUCH_LEFT  0x08
+#define PIR_B_TOUCH_RIGHT   0x10
+#define PIR_B_TOUCH_LEFT  0x20
 
 
 /*

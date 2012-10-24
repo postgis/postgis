@@ -3236,24 +3236,24 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 	if ( a1_side == 0 )
 	{
 		/* Touches at A1, A2 is on what side? */
-		rv |= (a2_side < 0 ? PIR_A_TOUCH_LEFT : PIR_A_TOUCH_RIGHT);
+		rv |= (a2_side < 0 ? PIR_A_TOUCH_RIGHT : PIR_A_TOUCH_LEFT);
 	}
 	else if ( a2_side == 0 )
 	{
 		/* Touches at A2, A1 is on what side? */
-		rv |= (a1_side < 0 ? PIR_A_TOUCH_LEFT : PIR_A_TOUCH_RIGHT);
+		rv |= (a1_side < 0 ? PIR_A_TOUCH_RIGHT : PIR_A_TOUCH_LEFT);
 	}
 
 	/* B touches A */
 	if ( b1_side == 0 )
 	{
 		/* Touches at B1, B2 is on what side? */
-		rv |= (b2_side < 0 ? PIR_B_TOUCH_LEFT : PIR_B_TOUCH_RIGHT);
+		rv |= (b2_side < 0 ? PIR_B_TOUCH_RIGHT : PIR_B_TOUCH_LEFT);
 	}
 	else if ( b2_side == 0 )
 	{
 		/* Touches at B2, B1 is on what side? */
-		rv |= (b1_side < 0 ? PIR_B_TOUCH_LEFT : PIR_B_TOUCH_RIGHT);
+		rv |= (b1_side < 0 ? PIR_B_TOUCH_RIGHT : PIR_B_TOUCH_LEFT);
 	}
 	
 	return rv;
@@ -3322,14 +3322,14 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 		{
 			/* If the stabline is touching the edge, that implies the test point */
 			/* is on the edge, so we're done, the point is in (on) the ring. */
-			if ( (inter & PIR_A_TOUCH_LEFT) || (inter & PIR_A_TOUCH_RIGHT) )
+			if ( (inter & PIR_A_TOUCH_RIGHT) || (inter & PIR_A_TOUCH_LEFT) )
 			{
 				return LW_TRUE;
 			}
 			
 			/* It's a touching interaction, disregard all the left-side ones. */
 			/* It's a co-linear intersection, ignore those. */
-			if ( inter & PIR_B_TOUCH_LEFT || inter & PIR_COLINEAR )
+			if ( inter & PIR_B_TOUCH_RIGHT || inter & PIR_COLINEAR )
 			{
 				/* Do nothing, to avoid double counts. */
 				LWDEBUGF(4,"    edge (%d) crossed, disregarding to avoid double count", i, count);

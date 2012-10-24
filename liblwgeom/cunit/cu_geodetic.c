@@ -518,7 +518,7 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(50 -10.999999999999998224, -10.0 50.0)", &A1, &A2);
 	line2pts("LINESTRING(-10.0 50.0, -10.272779983831613393 -16.937003313332997578)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT(rv > 0);
+	CU_ASSERT(rv & PIR_INTERSECTS);
 
 	/* Medford case, very short segment vs very long one */
 	g.lat = 0.74123572595649878103;
@@ -550,7 +550,7 @@ static void test_edge_intersects(void)
 	g.lon = 2.1065275171200439353;
 	geog2cart(&g, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT_EQUAL(rv, 1);
+	CU_ASSERT(rv == PIR_INTERSECTS);
 
 	/* Again, this time with a less exact input edge. */
 	line2pts("LINESTRING(-123.165031277506 42.4696787216231, -123.165031605021 42.4697127292275)", &A1, &A2);
@@ -561,45 +561,43 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(-1.0 0.0, 1.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(0.0 -1.0, 0.0 1.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS);
+	CU_ASSERT(rv == PIR_INTERSECTS);
 
 	/*  No intersection at (0 0) */
 	line2pts("LINESTRING(-1.0 0.0, 1.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(0.0 -1.0, 0.0 -2.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT_EQUAL(rv, 0);
+	CU_ASSERT(rv == 0);
 
 	/*  End touches middle of segment at (0 0) */
 	line2pts("LINESTRING(-1.0 0.0, 1.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(0.0 -1.0, 0.0 0.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	printf("\nEnd touches middle of segment: %d\n", rv);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_RIGHT);
+	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_B_TOUCH_RIGHT) );
 
 	/*  End touches end of segment at (0 0) */
 	line2pts("LINESTRING(0.0 0.0, 1.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(0.0 -1.0, 0.0 0.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	printf("End touches end of segment: %d\n", rv);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_RIGHT|PIR_A_TOUCH_RIGHT);
+	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_B_TOUCH_RIGHT|PIR_A_TOUCH_RIGHT) );
 
 	/* Intersection at (180 0) */
 	line2pts("LINESTRING(-179.0 -1.0, 179.0 1.0)", &A1, &A2);
 	line2pts("LINESTRING(-179.0 1.0, 179.0 -1.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS);
+	CU_ASSERT(rv == PIR_INTERSECTS);
 
 	/* Intersection at (180 0) */
 	line2pts("LINESTRING(-170.0 0.0, 170.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(180.0 -10.0, 180.0 10.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS);
+	CU_ASSERT(rv == PIR_INTERSECTS);
 
 	/* Intersection at north pole */
 	line2pts("LINESTRING(-180.0 80.0, 0.0 80.0)", &A1, &A2);
 	line2pts("LINESTRING(90.0 80.0, -90.0 80.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS);
+	CU_ASSERT(rv == PIR_INTERSECTS);
 
 	/* Equal edges return true */
 	line2pts("LINESTRING(45.0 10.0, 50.0 20.0)", &A1, &A2);
@@ -611,21 +609,19 @@ static void test_edge_intersects(void)
 	line2pts("LINESTRING(40.0 0.0, 70.0 0.0)", &A1, &A2);
 	line2pts("LINESTRING(60.0 0.0, 50.0 0.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_COLINEAR);
+	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_COLINEAR) );
 
 	/* End touches arc at north pole */
 	line2pts("LINESTRING(-180.0 80.0, 0.0 80.0)", &A1, &A2);
 	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	printf("End touches arc at north pole: %d\n", rv);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_LEFT);
+	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_B_TOUCH_LEFT) );
 	
 	/* End touches end at north pole */
 	line2pts("LINESTRING(-180.0 80.0, 0.0 90.0)", &A1, &A2);
 	line2pts("LINESTRING(90.0 80.0, -90.0 90.0)", &B1, &B2);
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
-	printf("End touches end at north pole: %d\n", rv);
-	CU_ASSERT_EQUAL(rv, PIR_INTERSECTS|PIR_B_TOUCH_LEFT|PIR_A_TOUCH_RIGHT);
+	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_B_TOUCH_LEFT|PIR_A_TOUCH_RIGHT) );
 }
 
 

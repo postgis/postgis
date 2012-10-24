@@ -439,7 +439,7 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 				/* To avoid double counting crossings-at-a-vertex, */
 				/* always ignore crossings at "lower" ends of edges*/
 
-				if ( inter & PIR_B_TOUCH_LEFT || inter & PIR_COLINEAR )
+				if ( inter & PIR_B_TOUCH_RIGHT || inter & PIR_COLINEAR )
 				{
 					LWDEBUG(3,"  rejecting stab line grazing by left-side edge");
 					return 0;
@@ -580,15 +580,21 @@ circ_tree_distance_tree_internal(const CIRC_NODE* n1, const CIRC_NODE* n2, doubl
 			else
 			{
 				GEOGRAPHIC_EDGE e1, e2;
-				GEOGRAPHIC_POINT g1;
+				GEOGRAPHIC_POINT g;
+				POINT3D A1, A2, B1, B2;
 				geographic_point_init(n1->p1->x, n1->p1->y, &(e1.start));
 				geographic_point_init(n1->p2->x, n1->p2->y, &(e1.end));
 				geographic_point_init(n2->p1->x, n2->p1->y, &(e2.start));
 				geographic_point_init(n2->p2->x, n2->p2->y, &(e2.end));
-				if ( edge_intersection(&e1, &e2, &g1) )
+				geog2cart(&(e1.start), &A1);
+				geog2cart(&(e1.end), &A2);
+				geog2cart(&(e2.start), &B1);
+				geog2cart(&(e2.end), &B2);
+				if ( edge_intersects(&A1, &A2, &B1, &B2) )
 				{
 					d = 0.0;
-					close1 = close2 = g1;
+					edge_intersection(&e1, &e2, &g);
+					close1 = close2 = g;
 				}
 				else
 				{
