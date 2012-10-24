@@ -5661,42 +5661,19 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			else
 				nodataval = rt_band_get_min_value(_band);
 
-			if (rt_raster_generate_new_band(tile, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
-				elog(ERROR, "RASTER_tile: Unable to add new band to output tile");
-				rt_raster_destroy(tile);
-				rt_raster_destroy(arg2->raster.raster);
-				pfree(arg2->nbands);
-				pfree(arg2);
-				SRF_RETURN_DONE(funcctx);
-			}
-			band = rt_raster_get_band(tile, i);
-			if (band == NULL) {
-				elog(ERROR, "RASTER_tile: Unable to get newly added band from output tile");
-				rt_raster_destroy(tile);
-				rt_raster_destroy(arg2->raster.raster);
-				pfree(arg2->nbands);
-				pfree(arg2);
-				SRF_RETURN_DONE(funcctx);
-			}
-
-			/* if isnodata, set flag and continue */
-			if (rt_band_get_isnodata_flag(_band)) {
-				rt_band_set_isnodata_flag(band, 1);
-				continue;
-			}
-
-			/* copy data */
-			for (j = 0; j < arg2->tile.height; j++) {
-				k = ry + j;
-
-				if (k >= arg2->raster.height) {
-					POSTGIS_RT_DEBUGF(4, "row %d is beyond extent of source raster. skipping", k);
-					continue;
+			/* inline band */
+			if (!rt_band_is_offline(_band)) {
+				if (rt_raster_generate_new_band(tile, pixtype, nodataval, hasnodata, nodataval, i) < 0) {
+					elog(ERROR, "RASTER_tile: Unable to add new band to output tile");
+					rt_raster_destroy(tile);
+					rt_raster_destroy(arg2->raster.raster);
+					pfree(arg2->nbands);
+					pfree(arg2);
+					SRF_RETURN_DONE(funcctx);
 				}
-
-				POSTGIS_RT_DEBUGF(4, "getting pixel line %d, %d for %d pixels", rx, k, len);
-				if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != 0) {
-					elog(ERROR, "RASTER_tile: Unable to get pixel line from source raster");
+				band = rt_raster_get_band(tile, i);
+				if (band == NULL) {
+					elog(ERROR, "RASTER_tile: Unable to get newly added band from output tile");
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
 					pfree(arg2->nbands);
@@ -5704,8 +5681,62 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					SRF_RETURN_DONE(funcctx);
 				}
 
-				if (nvals && !rt_band_set_pixel_line(band, 0, j, vals, nvals)) {
-					elog(ERROR, "RASTER_tile: Unable to set pixel line of output tile");
+				/* if isnodata, set flag and continue */
+				if (rt_band_get_isnodata_flag(_band)) {
+					rt_band_set_isnodata_flag(band, 1);
+					continue;
+				}
+
+				/* copy data */
+				for (j = 0; j < arg2->tile.height; j++) {
+					k = ry + j;
+
+					if (k >= arg2->raster.height) {
+						POSTGIS_RT_DEBUGF(4, "row %d is beyond extent of source raster. skipping", k);
+						continue;
+					}
+
+					POSTGIS_RT_DEBUGF(4, "getting pixel line %d, %d for %d pixels", rx, k, len);
+					if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != 0) {
+						elog(ERROR, "RASTER_tile: Unable to get pixel line from source raster");
+						rt_raster_destroy(tile);
+						rt_raster_destroy(arg2->raster.raster);
+						pfree(arg2->nbands);
+						pfree(arg2);
+						SRF_RETURN_DONE(funcctx);
+					}
+
+					if (nvals && !rt_band_set_pixel_line(band, 0, j, vals, nvals)) {
+						elog(ERROR, "RASTER_tile: Unable to set pixel line of output tile");
+						rt_raster_destroy(tile);
+						rt_raster_destroy(arg2->raster.raster);
+						pfree(arg2->nbands);
+						pfree(arg2);
+						SRF_RETURN_DONE(funcctx);
+					}
+				}
+			}
+			/* offline */
+			else {
+				band = rt_band_new_offline(
+					arg2->raster.width, arg2->raster.height,
+					pixtype,
+					hasnodata, nodataval,
+					rt_band_get_ext_band_num(_band), rt_band_get_ext_path(_band)
+				);
+
+				if (band == NULL) {
+					elog(ERROR, "RASTER_tile: Unable to create new offline band for output tile");
+					rt_raster_destroy(tile);
+					rt_raster_destroy(arg2->raster.raster);
+					pfree(arg2->nbands);
+					pfree(arg2);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				if (rt_raster_add_band(tile, band, i) < 0) {
+					elog(ERROR, "RASTER_tile: Unable to add new offline band to output tile");
+					rt_band_destroy(band);
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
 					pfree(arg2->nbands);

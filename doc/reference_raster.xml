@@ -1615,6 +1615,12 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 					Returns a set of rasters resulting from the split of the input raster based upon the desired dimensions of the output rasters.
 				</para>
 
+				<note>
+					<para>
+						If a specified band of the input raster is out-of-db, the corresponding band in the output rasters will also be out-of-db.
+					</para>
+				</note>
+
 				<para>Availability: 2.1.0</para>
 			</refsection>
 
