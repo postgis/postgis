@@ -1126,7 +1126,6 @@ extern int lwgeom_needs_bbox(const LWGEOM *geom);
 * Count the total number of vertices in any #LWGEOM.
 */
 extern int lwgeom_count_vertices(const LWGEOM *geom);
-extern int lwgeom_npoints(uint8_t *serialized);
 
 /**
 * Count the total number of rings in any #LWGEOM. Multipolygons
