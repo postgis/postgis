@@ -356,12 +356,34 @@ void geog2cart(const GEOGRAPHIC_POINT *g, POINT3D *p)
 }
 
 /**
-* Convert cartesion coordinates to spherical coordinates on unit sphere
+* Convert cartesion coordinates on unit sphere to spherical coordinates 
 */
 void cart2geog(const POINT3D *p, GEOGRAPHIC_POINT *g)
 {
 	g->lon = atan2(p->y, p->x);
 	g->lat = asin(p->z);
+}
+
+/**
+* Convert lon/lat coordinates to cartesion coordinates on unit sphere
+*/
+static void ll2cart(const POINT2D *g, POINT3D *p)
+{
+	double x_rad = M_PI * g->x / 180.0;
+	double y_rad = M_PI * g->y / 180.0;
+	double cos_y_rad = cos(y_rad);
+	p->x = cos_y_rad * cos(x_rad);
+	p->y = cos_y_rad * sin(x_rad);
+	p->z = sin(y_rad);
+}
+
+/**
+* Convert cartesion coordinates on unit sphere to lon/lat coordinates 
+*/
+static void cart2ll(const POINT3D *p, POINT2D *g)
+{
+	g->x = longitude_degrees_normalize(180.0 * atan2(p->y, p->x) / M_PI);
+	g->y = latitude_degrees_normalize(180.0 * asin(p->z) / M_PI);
 }
 
 /**
@@ -441,6 +463,58 @@ double vector_angle(const POINT3D* v1, const POINT3D* v2)
 	return angle;
 }
 
+/**
+* Normalize to a unit vector.
+*/
+static void normalize2d(POINT2D *p)
+{
+	double d = sqrt(p->x*p->x + p->y*p->y);
+	if (FP_IS_ZERO(d))
+	{
+		p->x = p->y = 0.0;
+		return;
+	}
+	p->x = p->x / d;
+	p->y = p->y / d;
+	return;
+}
+
+/**
+* Calculates the unit normal to two vectors, trying to avoid
+* problems with over-narrow or over-wide cases.
+*/
+static void unit_normal(const POINT3D *P1, const POINT3D *P2, POINT3D *normal)
+{
+	double p_dot = dot_product(P1, P2);
+	POINT3D P3;
+	
+	/* If edge is really large, calculate a narrower equivalent angle A1/A3. */
+	if ( p_dot < 0 )
+	{
+		vector_sum(P1, P2, &P3);
+		normalize(&P3);
+	}
+	/* If edge is narrow, calculate a wider equivalent angle A1/A3. */
+	else if ( p_dot > 0.95 )
+	{
+		vector_difference(P2, P1, &P3);
+		normalize(&P3);
+	}
+	/* Just keep the current angle in A1/A3. */
+	else
+	{
+		P3 = *P2;
+	}
+	
+	/* Normals to the A-plane and B-plane */
+	cross_product(P1, &P3, normal);
+	normalize(normal);
+}
+
+/** 
+* Rotates v1 through an angle (in radians) within the plane defined by v1/v2, returns
+* the rotated vector in n.
+*/
 void vector_rotate(const POINT3D* v1, const POINT3D* v2, double angle, POINT3D* n)
 {
 	POINT3D u;
@@ -451,8 +525,7 @@ void vector_rotate(const POINT3D* v1, const POINT3D* v2, double angle, POINT3D* 
 	double rxx, rxy, rxz, ryx, ryy, ryz, rzx, rzy, rzz;
 	
 	/* Need a unit vector normal to rotate around */
-	cross_product(v1, v2, &u);
-	normalize(&u);
+	unit_normal(v1, v2, &u);
 	
 	uxuy = u.x * u.y;
 	uxuz = u.x * u.z;
@@ -498,12 +571,6 @@ void normalize(POINT3D *p)
 	return;
 }
 
-static void unit_normal(const POINT3D *a, const POINT3D *b, POINT3D *n)
-{
-	cross_product(a, b, n);
-	normalize(n);
-	return;
-}
 
 /**
 * Computes the cross product of two vectors using their lat, lng representations.
@@ -1226,12 +1293,8 @@ int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 		LWDEBUG(4, "edge is zero length. returning");
 		geog2cart(&(e->start), &start);
 		geog2cart(&(e->end), &end);
-		gbox->xmin = FP_MIN(start.x, end.x);
-		gbox->ymin = FP_MIN(start.y, end.y);
-		gbox->zmin = FP_MIN(start.z, end.z);
-		gbox->xmax = FP_MAX(start.x, end.x);
-		gbox->ymax = FP_MAX(start.y, end.y);
-		gbox->zmax = FP_MAX(start.z, end.z);
+		gbox_init_point3d(&start, gbox);
+		gbox_merge_point3d(&end, gbox);
 		return LW_SUCCESS;
 	}
 
@@ -1271,295 +1334,83 @@ int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
 /**
 * The magic function, given an edge in spherical coordinates, calculate a
 * 3D bounding box that fully contains it, taking into account the curvature
-* of the sphere on which it is inscribed. Note special case testing
-* for edges over poles and fully around the globe. An edge is assumed
-* to follow the shortest great circle route between the end points.
+* of the sphere on which it is inscribed. 
+*
+* Any arc on the sphere defines a plane that bisects the sphere. In this plane,
+* the arc is a portion of a unit circle.
+* Projecting the end points of the axes (1,0,0), (-1,0,0) etc, into the plane
+* and normalizing yields potential extrema points. Those points on the 
+* side of the plane-dividing line formed by the end points that is opposite
+* the origin of the plane are extrema and should be added to the bounding box.
 */
-int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox)
+int edge_calculate_gbox(const POINT3D *A1, const POINT3D *A2, GBOX *gbox)
 {
-	double deltaLongitude;
-	double distance = sphere_distance(&(e->start), &(e->end));
-	int flipped_longitude = LW_FALSE;
-	int gimbal_lock = LW_FALSE;
-	POINT3D p, start, end, startXZ, endXZ, startYZ, endYZ, nT1, nT2;
-	GEOGRAPHIC_EDGE g;
-	GEOGRAPHIC_POINT vT1, vT2;
+	POINT2D R1, R2, RX, O;
+	POINT3D AN, A3;
+	POINT3D X[6];
+	int i, o_side;
 
-	/* We're testing, do this the slow way. */
-	if (gbox_geocentric_slow)
-	{
-		return edge_calculate_gbox_slow(e, gbox);
-	}
-
-	/* Initialize our working copy of the edge */
-	g = *e;
-
-	LWDEBUG(4, "entered function");
-	LWDEBUGF(4, "edge length: %.8g", distance);
-	LWDEBUGF(4, "edge values: (%.6g %.6g, %.6g %.6g)", g.start.lon, g.start.lat, g.end.lon, g.end.lat);
-
-	/* Edge is zero length, just return the naive box */
-	if ( FP_IS_ZERO(distance) )
-	{
-		LWDEBUG(4, "edge is zero length. returning");
-		geog2cart(&(g.start), &start);
-		geog2cart(&(g.end), &end);
-		gbox->xmin = FP_MIN(start.x, end.x);
-		gbox->ymin = FP_MIN(start.y, end.y);
-		gbox->zmin = FP_MIN(start.z, end.z);
-		gbox->xmax = FP_MAX(start.x, end.x);
-		gbox->ymax = FP_MAX(start.y, end.y);
-		gbox->zmax = FP_MAX(start.z, end.z);
+	/* Initialize the box with the edge end points */
+	gbox_init_point3d(A1, gbox);
+	gbox_merge_point3d(A2, gbox);
+	
+	/* Zero length edge, just return! */
+	if ( p3d_same(A1, A2) )
 		return LW_SUCCESS;
-	}
-
-	/* Edge is antipodal (one point on each side of the globe),
-	   set the box to contain the whole world and return */
-	if ( FP_EQUALS(distance, M_PI) )
+	
+	/* Error out on antipodal edge */
+	if ( FP_EQUALS(A1->x, -1*A2->x) && FP_EQUALS(A1->y, -1*A2->y) && FP_EQUALS(A1->z, -1*A2->z) )
 	{
-		lwerror("Invalid geography. Antipodal (180 degrees long) edge (%g %g,%g %g) detected, add a point between to make two edges that span less than 180 degrees.",
-		        rad2deg(e->start.lon),rad2deg(e->start.lat),rad2deg(e->end.lon),rad2deg(e->end.lat) );
+		lwerror("Antipodal (180 degrees long) edge detected!");
 		return LW_FAILURE;
+	}
+	
+	/* Create A3, a vector in the plane of A1/A2, orthogonal to A1  */
+	unit_normal(A1, A2, &AN);
+	unit_normal(&AN, A1, &A3);
 
-/*		LWDEBUG(4, "edge is antipodal. setting to maximum size box, and returning");
-		gbox->xmin = gbox->ymin = gbox->zmin = -1.0;
-		gbox->xmax = gbox->ymax = gbox->zmax = 1.0;
+	/* Project A1 and A2 into the 2-space formed by the plane A1/A3 */
+	R1.x = 1.0;
+	R1.y = 0.0;
+	R2.x = dot_product(A2, A1);
+	R2.y = dot_product(A2, &A3);
+
+	/* Initialize our 3-space axis points (x+, x-, y+, y-, z+, z-) */
+	memset(X, 0, sizeof(POINT3D) * 6);
+	X[0].x = X[2].y = X[4].z =  1.0;
+	X[1].x = X[3].y = X[5].z = -1.0;
+	
+	/* Initialize a 2-space origin point. */
+	O.x = O.y = 0.0;
+	/* What side of the line joining R1/R2 is O? */
+	o_side = lw_segment_side(&R1, &R2, &O);
+	
+	/* Add any extrema! */
+	for ( i = 0; i < 6; i++ )
+	{
+		/* Convert 3-space axis points to 2-space unit vectors */
+		RX.x = dot_product(&(X[i]), A1);
+		RX.y = dot_product(&(X[i]), &A3);
+		normalize2d(&RX);
 		
-		return LW_SUCCESS; */
-	}
-
-	/* Calculate the difference in longitude between the two points. */
-	if ( signum(g.start.lon) == signum(g.end.lon) )
-	{
-		deltaLongitude = fabs(fabs(g.start.lon) - fabs(g.end.lon));
-		LWDEBUG(4, "edge does not cross dateline (start.lon same sign as end.long)");
-	}
-	else
-	{
-		double dl = fabs(g.start.lon) + fabs(g.end.lon);
-		/* Less then a hemisphere apart */
-		if ( dl < M_PI )
+		/* Any axis end on the side of R1/R2 opposite the origin */
+		/* is an extreme point in the arc, so we add the 3-space */
+		/* version of the point on R1/R2 to the gbox */
+		if ( lw_segment_side(&R1, &R2, &RX) != o_side )
 		{
-			deltaLongitude = dl;
-			LWDEBUG(4, "edge does not cross dateline");
-		}
-		/* Exactly a hemisphere apart */
-		else if ( FP_EQUALS( dl, M_PI ) )
-		{
-			deltaLongitude = M_PI;
-			LWDEBUG(4, "edge points are 180d apart");
-		}
-		/* More than a hemisphere apart, return the other half of the sphere
-		   and note that we are crossing the dateline */
-		else
-		{
-			flipped_longitude = LW_TRUE;
-			deltaLongitude = dl - M_PI;
-			LWDEBUG(4, "edge crosses dateline");
-		}
-	}
-	LWDEBUGF(4, "longitude delta is %g", deltaLongitude);
-
-	/* If we are crossing the dateline, flip the calculation to the other
-	   side of the globe. We'll flip our output box back at the end of the
-	   calculation. */
-	if ( flipped_longitude )
-	{
-		LWDEBUG(4, "reversing longitudes");
-		if ( g.start.lon > 0.0 )
-			g.start.lon -= M_PI;
-		else
-			g.start.lon += M_PI;
-		if ( g.end.lon > 0.0 )
-			g.end.lon -= M_PI;
-		else
-			g.end.lon += M_PI;
-	}
-	LWDEBUGF(4, "edge values: (%.6g %.6g, %.6g %.6g)", g.start.lon, g.start.lat, g.end.lon, g.end.lat);
-
-	/* Initialize box with the start and end points of the edge. */
-	geog2cart(&(g.start), &start);
-	geog2cart(&(g.end), &end);
-	gbox->xmin = FP_MIN(start.x, end.x);
-	gbox->ymin = FP_MIN(start.y, end.y);
-	gbox->zmin = FP_MIN(start.z, end.z);
-	gbox->xmax = FP_MAX(start.x, end.x);
-	gbox->ymax = FP_MAX(start.y, end.y);
-	gbox->zmax = FP_MAX(start.z, end.z);
-	LWDEBUGF(4, "initialized gbox: %s", gbox_to_string(gbox));
-
-	/* Check for pole crossings. */
-	if ( FP_EQUALS(deltaLongitude, M_PI) )
-	{
-		/* Crosses the north pole, adjust box to contain pole */
-		if ( (g.start.lat + g.end.lat) > 0.0 )
-		{
-			LWDEBUG(4, "edge crosses north pole");
-			gbox->zmax = 1.0;
-		}
-		/* Crosses the south pole, adjust box to contain pole */
-		else
-		{
-			LWDEBUG(4, "edge crosses south pole");
-			gbox->zmin = -1.0;
-		}
-	}
-	/* How about maximal latitudes in this great circle. Are any
-	   of them contained within this arc? */
-	else
-	{
-		LWDEBUG(4, "not a pole crossing, calculating clairaut points");
-		clairaut_cartesian(&start, &end, &vT1, &vT2);
-		LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-		LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
-		if ( edge_contains_point(&g, &vT1) )
-		{
-			geog2cart(&vT1, &p);
-			LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-			gbox_merge_point3d(&p, gbox);
-			LWDEBUG(4, "edge contained vT1");
-			LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
-		}
-		else if ( edge_contains_point(&g, &vT2) )
-		{
-			geog2cart(&vT2, &p);
-			LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-			gbox_merge_point3d(&p, gbox);
-			LWDEBUG(4, "edge contained vT2");
-			LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
+			POINT3D Xn;
+			Xn.x = RX.x * A1->x + RX.y * A3.x;
+			Xn.y = RX.x * A1->y + RX.y * A3.y;
+			Xn.z = RX.x * A1->z + RX.y * A3.z;
+			
+			gbox_merge_point3d(&Xn, gbox);
 		}
 	}
 
-	/* Flip the X axis to Z and check for maximal latitudes again. */
-	LWDEBUG(4, "flipping x to z and calculating clairaut points");
-	startXZ = start;
-	endXZ = end;
-	x_to_z(&startXZ);
-	x_to_z(&endXZ);
-	clairaut_cartesian(&startXZ, &endXZ, &vT1, &vT2);
-	gimbal_lock = LW_FALSE;
-	LWDEBUG(4, "vT1/vT2 before flipping back z to x");
-	LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-	LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
-	if ( FP_IS_ZERO(vT1.lat) )
-	{
-		gimbal_lock = LW_TRUE;
-	}
-	geog2cart(&vT1, &nT1);
-	geog2cart(&vT2, &nT2);
-	x_to_z(&nT1);
-	x_to_z(&nT2);
-	cart2geog(&nT1, &vT1);
-	cart2geog(&nT2, &vT2);
-	LWDEBUG(4, "vT1/vT2 after flipping back z to x");
-	LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-	LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
-	if ( gimbal_lock )
-	{
-		LWDEBUG(4, "gimbal lock");
-		vT1.lon = 0.0;
-		vT2.lon = M_PI;
-		LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-		LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
-	}
-	/* For extra logging if needed
-	    geog2cart(vT1, &nT1);
-	    geog2cart(vT2, &nT2);
-	    LWDEBUGF(4, "p1 == POINT(%.8g %.8g %.8g)", nT1.x, nT1.y, nT1.z);
-	    LWDEBUGF(4, "p2 == POINT(%.8g %.8g %.8g)", nT2.x, nT2.y, nT2.z);
-	*/
-	if ( edge_contains_point(&g, &vT1) )
-	{
-		geog2cart(&vT1, &p);
-		LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-		gbox_merge_point3d(&p, gbox);
-		LWDEBUG(4, "edge contained vT1");
-		LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
-	}
-	else if ( edge_contains_point(&g, &vT2) )
-	{
-		geog2cart(&vT2, &p);
-		LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-		gbox_merge_point3d(&p, gbox);
-		LWDEBUG(4, "edge contained vT2");
-		LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
-	}
-
-	/* Flip the Y axis to Z and check for maximal latitudes again. */
-	LWDEBUG(4, "flipping y to z and calculating clairaut points");
-	startYZ = start;
-	endYZ = end;
-	y_to_z(&startYZ);
-	y_to_z(&endYZ);
-	clairaut_cartesian(&startYZ, &endYZ, &vT1, &vT2);
-	gimbal_lock = LW_FALSE;
-	LWDEBUG(4, "vT1/vT2 before flipping back z to y");
-	LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-	LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
-	if ( FP_IS_ZERO(vT1.lat) )
-	{
-		gimbal_lock = LW_TRUE;
-	}
-	geog2cart(&vT1, &nT1);
-	geog2cart(&vT2, &nT2);
-	y_to_z(&nT1);
-	y_to_z(&nT2);
-	cart2geog(&nT1, &vT1);
-	cart2geog(&nT2, &vT2);
-	LWDEBUG(4, "vT1/vT2 after flipping back z to y");
-	LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-	LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
-	if ( gimbal_lock )
-	{
-		LWDEBUG(4, "gimbal lock");
-		vT1.lon = M_PI_2;
-		vT2.lon = -1.0 * M_PI_2;
-		LWDEBUGF(4, "vT1 == GPOINT(%.6g %.6g) ", vT1.lat, vT1.lon);
-		LWDEBUGF(4, "vT2 == GPOINT(%.6g %.6g) ", vT2.lat, vT2.lon);
-	}
-	/* For extra logging if needed
-	    geog2cart(vT1, &nT1);
-	    geog2cart(vT2, &nT2);
-	    LWDEBUGF(4, "p1 == POINT(%.8g %.8g %.8g)", nT1.x, nT1.y, nT1.z);
-	    LWDEBUGF(4, "p2 == POINT(%.8g %.8g %.8g)", nT2.x, nT2.y, nT2.z);
-	*/
-	if ( edge_contains_point(&g, &vT1) )
-	{
-		geog2cart(&vT1, &p);
-		LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-		gbox_merge_point3d(&p, gbox);
-		LWDEBUG(4, "edge contained vT1");
-		LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
-	}
-	else if ( edge_contains_point(&g, &vT2) )
-	{
-		geog2cart(&vT2, &p);
-		LWDEBUGF(4, "p == POINT(%.8g %.8g %.8g)", p.x, p.y, p.z);
-		gbox_merge_point3d(&p, gbox);
-		LWDEBUG(4, "edge contained vT2");
-		LWDEBUGF(4, "gbox: %s", gbox_to_string(gbox));
-	}
-
-	/* Our cartesian gbox is complete!
-	   If we flipped our longitudes at the start, n
-	   now we have to flip our cartesian box. */
-	if ( flipped_longitude )
-	{
-		double tmp;
-		LWDEBUG(4, "flipping cartesian box back");
-		LWDEBUGF(4, "gbox before: %s", gbox_to_string(gbox));
-		tmp = gbox->xmax;
-		gbox->xmax = -1.0 * gbox->xmin;
-		gbox->xmin = -1.0 * tmp;
-		tmp = gbox->ymax;
-		gbox->ymax = -1.0 * gbox->ymin;
-		gbox->ymin = -1.0 * tmp;
-		LWDEBUGF(4, "gbox after: %s", gbox_to_string(gbox));
-	}
-
-	LWDEBUGF(4, "final gbox: %s", gbox_to_string(gbox));
 	return LW_SUCCESS;
 }
+
+
 
 /**
 * Given a unit geocentric gbox, return a lon/lat (degrees) coordinate point point that is
@@ -2592,9 +2443,8 @@ int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 {
 	int i;
 	int first = LW_TRUE;
-	POINT2D start_pt;
-	POINT2D end_pt;
-	GEOGRAPHIC_EDGE edge;
+	const POINT2D *p;
+	POINT3D A1, A2;
 	GBOX edge_gbox;
 
 	assert(gbox);
@@ -2606,48 +2456,41 @@ int ptarray_calculate_gbox_geodetic(const POINTARRAY *pa, GBOX *gbox)
 
 	if ( pa->npoints == 1 )
 	{
-		POINT2D in_pt;
-		POINT3D out_pt;
-		GEOGRAPHIC_POINT gp;
-		getPoint2d_p(pa, 0, &in_pt);
-		geographic_point_init(in_pt.x, in_pt.y, &gp);
-		geog2cart(&gp, &out_pt);
-		gbox->xmin = gbox->xmax = out_pt.x;
-		gbox->ymin = gbox->ymax = out_pt.y;
-		gbox->zmin = gbox->zmax = out_pt.z;
+		p = getPoint2d_cp(pa, 0);
+		ll2cart(p, &A1);
+		gbox->xmin = gbox->xmax = A1.x;
+		gbox->ymin = gbox->ymax = A1.y;
+		gbox->zmin = gbox->zmax = A1.z;
 		return LW_SUCCESS;
 	}
 
+	p = getPoint2d_cp(pa, 0);
+	ll2cart(p, &A1);
+	
 	for ( i = 1; i < pa->npoints; i++ )
 	{
-		getPoint2d_p(pa, i-1, &start_pt);
-		geographic_point_init(start_pt.x, start_pt.y, &(edge.start));
-
-		getPoint2d_p(pa, i, &end_pt);
-		geographic_point_init(end_pt.x, end_pt.y, &(edge.end));
-
-		edge_calculate_gbox(&edge, &edge_gbox);
-
-		LWDEBUGF(4, "edge_gbox: %s", gbox_to_string(&edge_gbox));
+		
+		p = getPoint2d_cp(pa, i);
+		ll2cart(p, &A2);
+		
+		edge_calculate_gbox(&A1, &A2, &edge_gbox);
 
 		/* Initialize the box */
 		if ( first )
 		{
 			gbox_duplicate(&edge_gbox, gbox);
-			LWDEBUGF(4, "gbox_duplicate: %s", gbox_to_string(gbox));
 			first = LW_FALSE;
 		}
 		/* Expand the box where necessary */
 		else
 		{
 			gbox_merge(&edge_gbox, gbox);
-			LWDEBUGF(4, "gbox_merge: %s", gbox_to_string(gbox));
 		}
-
+		
+		A1 = A2;
 	}
 
 	return LW_SUCCESS;
-
 }
 
 static int lwpoint_calculate_gbox_geodetic(const LWPOINT *point, GBOX *gbox)
@@ -3136,55 +2979,14 @@ dot_product_side(const POINT3D *p, const POINT3D *q)
 int 
 edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2)
 {
-	POINT3D A3, B3;  /* Extra vector to build more cross-product-friendly angles */
 	POINT3D AN, BN;  /* Normals to plane A and plane B */
-	double a_dot, b_dot, ab_dot;
+	double ab_dot;
 	int a1_side, a2_side, b1_side, b2_side;
 	int rv = PIR_NO_INTERACT;
 	
-	/* How narrow are the A and B angles? */
-	a_dot = dot_product(A1, A2);
-	b_dot = dot_product(B1, B2);
-	
-	/* If edge is really large, calculate a narrower equivalent angle A1/A3. */
-	if ( a_dot < 0 )
-	{
-		vector_sum(A1, A2, &A3);
-		normalize(&A3);
-	}
-	/* If edge is narrow, calculate a wider equivalent angle A1/A3. */
-	else if ( b_dot > 0.95 )
-	{
-		vector_difference(A2, A1, &A3);
-		normalize(&A3);
-	}
-	/* Just keep the current angle in A1/A3. */
-	else
-	{
-		A3 = *A2;
-	}
-
-	/* Same for B */
-	if ( b_dot < 0 )
-	{
-		vector_sum(B1, B2, &B3);
-		normalize(&B3);
-	}
-	else if ( b_dot > 0.95 )
-	{
-		vector_difference(B2, B1, &B3);
-		normalize(&B3);
-	}
-	else
-	{
-		B3 = *B2;
-	}
-	
 	/* Normals to the A-plane and B-plane */
-	cross_product(A1, &A3, &AN);
-	normalize(&AN);
-	cross_product(B1, &B3, &BN);
-	normalize(&BN);
+	unit_normal(A1, A2, &AN);
+	unit_normal(B1, B2, &BN);
 	
 	/* Are A-plane and B-plane basically the same? */
 	ab_dot = dot_product(&AN, &BN);
@@ -3269,10 +3071,9 @@ edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const P
 */
 int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outside, const POINT2D *pt_to_test)
 {
-	GEOGRAPHIC_POINT g;
-	POINT3D S1, S2;
-	POINT3D E1, E2;
-	POINT2D p, q;
+	POINT3D S1, S2; /* Stab line end points */
+	POINT3D E1, E2; /* Edge end points (3-space) */
+	POINT2D p, q;   /* Edge end points (lon/lat) */
 	int count = 0, i, inter;
 
 	/* Null input, not enough points for a ring? You ain't closed! */
@@ -3280,15 +3081,12 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 		return LW_FALSE;
 
 	/* Set up our stab line */
-	geographic_point_init(pt_to_test->x, pt_to_test->y, &g);
-	geog2cart(&g, &S1);
-	geographic_point_init(pt_outside->x, pt_outside->y, &g);
-	geog2cart(&g, &S2);
+	ll2cart(pt_to_test, &S1);
+	ll2cart(pt_outside, &S2);
 
 	/* Initialize first point */
 	getPoint2d_p(pa, 0, &p);
-	geographic_point_init(p.x, p.y, &g);
-	geog2cart(&g, &E1);
+	ll2cart(&p, &E1);
 	q = p;
 
 	/* Walk every edge and see if the stab line hits it */
@@ -3299,8 +3097,7 @@ int ptarray_contains_point_sphere(const POINTARRAY *pa, const POINT2D *pt_outsid
 
 		/* Read next point. */
 		getPoint2d_p(pa, i, &p);
-		geographic_point_init(p.x, p.y, &g);
-		geog2cart(&g, &E2);
+		ll2cart(&p, &E2);
 
 		/* Skip over too-short edges. */
 		if ( point3d_equals(&E1, &E2) )

@@ -96,8 +96,8 @@ int clairaut_geographic(const GEOGRAPHIC_POINT *start, const GEOGRAPHIC_POINT *e
 double sphere_distance(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e);
 double sphere_distance_cartesian(const POINT3D *s, const POINT3D *e);
 int sphere_project(const GEOGRAPHIC_POINT *r, double distance, double azimuth, GEOGRAPHIC_POINT *n);
-int edge_calculate_gbox(const GEOGRAPHIC_EDGE *e, GBOX *gbox);
 int edge_calculate_gbox_slow(const GEOGRAPHIC_EDGE *e, GBOX *gbox);
+int edge_calculate_gbox(const POINT3D *A1, const POINT3D *A2, GBOX *gbox);
 int edge_intersection(const GEOGRAPHIC_EDGE *e1, const GEOGRAPHIC_EDGE *e2, GEOGRAPHIC_POINT *g);
 int edge_intersects(const POINT3D *A1, const POINT3D *A2, const POINT3D *B1, const POINT3D *B2);
 double edge_distance_to_point(const GEOGRAPHIC_EDGE *e, const GEOGRAPHIC_POINT *gp, GEOGRAPHIC_POINT *closest);

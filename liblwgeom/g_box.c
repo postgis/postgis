@@ -153,6 +153,14 @@ int gbox_merge_point3d(const POINT3D *p, GBOX *gbox)
 	return LW_SUCCESS;
 }
 
+int gbox_init_point3d(const POINT3D *p, GBOX *gbox)
+{
+	gbox->xmin = gbox->xmax = p->x;
+	gbox->ymin = gbox->ymax = p->y;
+	gbox->zmin = gbox->zmax = p->z;
+	return LW_SUCCESS;
+}
+
 int gbox_contains_point3d(const GBOX *gbox, const POINT3D *pt)
 {
 	if ( gbox->xmin > pt->x || gbox->ymin > pt->y || gbox->zmin > pt->z ||

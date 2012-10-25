@@ -189,9 +189,9 @@ static void test_gbox_from_spherical_coordinates(void)
 		ll[3] = (double)rndlat;
 
 		gbox_geocentric_slow = LW_FALSE;
-		lwgeom_calculate_gbox_geocentric(lwline, gbox);
+		lwgeom_calculate_gbox_geodetic(lwline, &gbox);
 		gbox_geocentric_slow = LW_TRUE;
-		lwgeom_calculate_gbox_geocentric(lwline, gbox_slow);
+		lwgeom_calculate_gbox_geodetic(lwline, &gbox_slow);
 		gbox_geocentric_slow = LW_FALSE;
 
 		if (
@@ -206,8 +206,8 @@ static void test_gbox_from_spherical_coordinates(void)
 			printf("If you are seeing this, cut and paste it, it is a randomly generated test case!\n");
 			printf("LOOP: %d\n", i);
 			printf("SEGMENT (Lon Lat): (%.9g %.9g) (%.9g %.9g)\n", ll[0], ll[1], ll[2], ll[3]);
-			printf("CALC: %s\n", gbox_to_string(gbox));
-			printf("SLOW: %s\n", gbox_to_string(gbox_slow));
+			printf("CALC: %s\n", gbox_to_string(&gbox));
+			printf("SLOW: %s\n", gbox_to_string(&gbox_slow));
 			printf("-------\n\n");
 			CU_FAIL_FATAL(Slow (GOOD) and fast (CALC) box calculations returned different values!!);
 		}
@@ -623,7 +623,6 @@ static void test_edge_intersects(void)
 	rv = edge_intersects(&A1, &A2, &B1, &B2);
 	CU_ASSERT(rv == (PIR_INTERSECTS|PIR_B_TOUCH_LEFT|PIR_A_TOUCH_RIGHT) );
 }
-
 
 static void test_edge_distance_to_point(void)
 {

@@ -1554,6 +1554,11 @@ extern int gbox_union(const GBOX *g1, const GBOX *g2, GBOX *gout);
 extern void gbox_expand(GBOX *g, double d);
 
 /**
+* Initialize a #GBOX using the values of the point.
+*/
+extern int gbox_init_point3d(const POINT3D *p, GBOX *gbox);
+
+/**
 * Update the #GBOX to be large enough to include itself and the new point.
 */
 extern int gbox_merge_point3d(const POINT3D *p, GBOX *gbox);
