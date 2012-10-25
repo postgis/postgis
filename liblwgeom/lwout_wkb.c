@@ -332,20 +332,23 @@ static size_t ptarray_to_wkb_size(const POINTARRAY *pa, uint8_t variant)
 static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t variant)
 {
 	int dims = 2;
+	int pa_dims = FLAGS_NDIMS(pa->flags);
 	int i, j;
 	double *dbl_ptr;
 
 	/* SFSQL is always 2-d. Extended and ISO use all available dimensions */
 	if ( (variant & WKB_ISO) || (variant & WKB_EXTENDED) )
-		dims = FLAGS_NDIMS(pa->flags);
+		dims = pa_dims;
 
 	/* Set the number of points (if it's not a POINT type) */
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
 		buf = integer_to_wkb_buf(pa->npoints, buf, variant);
 
 	/* Set the ordinates. */
-	/* TODO: Make this faster by bulk copying the coordinates when
-	         the output endian/dims match the internal endian/dims */
+	/* TODO: Make this faster by bulk copying the coordinates.
+	         Can only do this when: wkb/pa dimensions match, 
+	         output is not hex-encoded, and
+	         machine endian matches requested endianness. */
 	for ( i = 0; i < pa->npoints; i++ )
 	{
 		LWDEBUGF(4, "Writing point #%d", i);

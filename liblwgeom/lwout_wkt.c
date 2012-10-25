@@ -83,8 +83,7 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 	/* Digits and commas */
 	for (i = 0; i < ptarray->npoints; i++)
 	{
-		uint8_t *p = getPoint_internal(ptarray, i);
-		double d;
+		double *dbl_ptr = (double*)getPoint_internal(ptarray, i);
 
 		/* Commas before ever coord but the first */
 		if ( i > 0 )
@@ -92,11 +91,10 @@ static void ptarray_to_wkt_sb(const POINTARRAY *ptarray, stringbuffer_t *sb, int
 
 		for (j = 0; j < dimensions; j++)
 		{
-			memcpy(&d, p + j * sizeof(double), sizeof(double));
 			/* Spaces before every ordinate but the first */
 			if ( j > 0 )
 				stringbuffer_append(sb, " ");
-			stringbuffer_aprintf(sb, "%.*g", precision, d);
+			stringbuffer_aprintf(sb, "%.*g", precision, dbl_ptr[j]);
 		}
 	}
 
