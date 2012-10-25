@@ -312,7 +312,7 @@ void ptarray_affine(POINTARRAY *pa, const AFFINE *affine);
 /*
 * PointArray
 */
-char ptarray_isccw(const POINTARRAY *pa);
+int ptarray_isccw(const POINTARRAY *pa);
 int ptarray_has_z(const POINTARRAY *pa);
 int ptarray_has_m(const POINTARRAY *pa);
 double ptarray_signed_area(const POINTARRAY *pa);

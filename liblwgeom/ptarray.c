@@ -957,6 +957,15 @@ ptarray_signed_area(const POINTARRAY *pa)
 	return sum / 2.0;	
 }
 
+int
+ptarray_isccw(const POINTARRAY *pa)
+{
+	double area = 0;
+	area = ptarray_signed_area(pa);
+	if ( area > 0 ) return LW_FALSE;
+	else return LW_TRUE;
+}
+
 POINTARRAY*
 ptarray_force_dims(const POINTARRAY *pa, int hasz, int hasm)
 {
@@ -1503,16 +1512,21 @@ ptarray_length_2d(const POINTARRAY *pts)
 {
 	double dist = 0.0;
 	int i;
-	POINT2D frm;
-	POINT2D to;
+	const POINT2D *frm;
+	const POINT2D *to;
 
 	if ( pts->npoints < 2 ) return 0.0;
-	for (i=0; i<pts->npoints-1; i++)
+
+	frm = getPoint2d_cp(pts, 0);
+	
+	for ( i=1; i < pts->npoints; i++ )
 	{
-		getPoint2d_p(pts, i, &frm);
-		getPoint2d_p(pts, i+1, &to);
-		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
-		              ((frm.y - to.y)*(frm.y - to.y) ) );
+		to = getPoint2d_cp(pts, i);
+
+		dist += sqrt( ((frm->x - to->x)*(frm->x - to->x))  +
+		              ((frm->y - to->y)*(frm->y - to->y)) );
+		
+		frm = to;
 	}
 	return dist;
 }
@@ -1534,13 +1548,14 @@ ptarray_length(const POINTARRAY *pts)
 	/* compute 2d length if 3d is not available */
 	if ( ! FLAGS_GET_Z(pts->flags) ) return ptarray_length_2d(pts);
 
-	for (i=0; i<pts->npoints-1; i++)
+	getPoint3dz_p(pts, 0, &frm);
+	for ( i=1; i < pts->npoints; i++ )
 	{
-		getPoint3dz_p(pts, i, &frm);
 		getPoint3dz_p(pts, i+1, &to);
-		dist += sqrt( ( (frm.x - to.x)*(frm.x - to.x) )  +
-		              ((frm.y - to.y)*(frm.y - to.y) ) +
-		              ((frm.z - to.z)*(frm.z - to.z) ) );
+		dist += sqrt( ((frm.x - to.x)*(frm.x - to.x)) +
+		              ((frm.y - to.y)*(frm.y - to.y)) +
+		              ((frm.z - to.z)*(frm.z - to.z)) );
+		frm = to;
 	}
 	return dist;
 }
