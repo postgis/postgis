@@ -344,19 +344,26 @@ static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t v
 	if ( ! ( variant & WKB_NO_NPOINTS ) )
 		buf = integer_to_wkb_buf(pa->npoints, buf, variant);
 
-	/* Set the ordinates. */
-	/* TODO: Make this faster by bulk copying the coordinates.
-	         Can only do this when: wkb/pa dimensions match, 
-	         output is not hex-encoded, and
-	         machine endian matches requested endianness. */
-	for ( i = 0; i < pa->npoints; i++ )
+	/* Bulk copy the coordinates when: dimensionality matches, output format */
+	/* is not hex, and output endian matches internal endian. */
+	if ( (dims == pa_dims) && ! wkb_swap_bytes(variant) && ! (variant & WKB_HEX)  )
 	{
-		LWDEBUGF(4, "Writing point #%d", i);
-		dbl_ptr = (double*)getPoint_internal(pa, i);
-		for ( j = 0; j < dims; j++ )
+		size_t size = pa->npoints * dims * WKB_DOUBLE_SIZE;
+		memcpy(buf, getPoint_internal(pa, 0), size);
+		buf += size;
+	}
+	/* Copy coordinates one-by-one otherwise */
+	else 
+	{
+		for ( i = 0; i < pa->npoints; i++ )
 		{
-			LWDEBUGF(4, "Writing dimension #%d (buf = %p)", j, buf);
-			buf = double_to_wkb_buf(dbl_ptr[j], buf, variant);
+			LWDEBUGF(4, "Writing point #%d", i);
+			dbl_ptr = (double*)getPoint_internal(pa, i);
+			for ( j = 0; j < dims; j++ )
+			{
+				LWDEBUGF(4, "Writing dimension #%d (buf = %p)", j, buf);
+				buf = double_to_wkb_buf(dbl_ptr[j], buf, variant);
+			}
 		}
 	}
 	LWDEBUGF(4, "Done (buf = %p)", buf);
