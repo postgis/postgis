@@ -84,7 +84,7 @@ NOTICE:  userargs = <NULL>
 NOTICE:  value = {{{200,200,NULL},{200,200,NULL},{NULL,NULL,NULL}}}
 NOTICE:  pos = [0:1][1:2]={{2,2},{2,2}}
 NOTICE:  userargs = <NULL>
-3|(0,0,0,0,1,1,0,0,0,0)|(,,,)|
+3|(0,0,0,0,1,-1,0,0,0,0)|(,,,)|
 4|(1,-1,2,2,1,-1,0,0,0,1)|(8BUI,0,f,)|255
 NOTICE:  value = {{{NULL,NULL,NULL},{NULL,1,1},{NULL,1,1}}}
 NOTICE:  pos = [0:1][1:2]={{1,1},{1,1}}

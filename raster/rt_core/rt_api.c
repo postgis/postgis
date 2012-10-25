@@ -5158,7 +5158,7 @@ rt_raster_new(uint32_t width, uint32_t height) {
 	ret->width = width;
 	ret->height = height;
 	ret->scaleX = 1;
-	ret->scaleY = 1;
+	ret->scaleY = -1;
 	ret->ipX = 0.0;
 	ret->ipY = 0.0;
 	ret->skewX = 0.0;

@@ -62,6 +62,7 @@ fillRasterToPolygonize(int hasnodata, double nodatavalue)
     uint16_t height = 9;
 
     rt_raster raster = rt_raster_new(width, height);
+		rt_raster_set_scale(raster, 1, 1);
 
     rt_band band = addBand(raster, PT_32BF, hasnodata, nodatavalue);
 
@@ -1933,6 +1934,7 @@ static void testIntersects() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -1959,6 +1961,7 @@ static void testIntersects() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -2168,6 +2171,7 @@ static void testIntersects() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -2325,6 +2329,7 @@ static void testIntersects() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -2396,6 +2401,7 @@ static void testOverlaps() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -2430,6 +2436,7 @@ static void testOverlaps() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -2639,6 +2646,7 @@ static void testOverlaps() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -2796,6 +2804,7 @@ static void testOverlaps() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -2867,6 +2876,7 @@ static void testTouches() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -2901,6 +2911,7 @@ static void testTouches() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -3162,6 +3173,7 @@ static void testTouches() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -3319,6 +3331,7 @@ static void testTouches() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -3390,6 +3403,7 @@ static void testContains() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -3424,6 +3438,7 @@ static void testContains() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -3685,6 +3700,7 @@ static void testContains() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -3842,6 +3858,7 @@ static void testContains() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -3913,6 +3930,7 @@ static void testContainsProperly() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -3947,6 +3965,7 @@ static void testContainsProperly() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -4208,6 +4227,7 @@ static void testContainsProperly() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -4365,6 +4385,7 @@ static void testContainsProperly() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -4436,6 +4457,7 @@ static void testCovers() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -4470,6 +4492,7 @@ static void testCovers() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -4731,6 +4754,7 @@ static void testCovers() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -4888,6 +4912,7 @@ static void testCovers() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -4959,6 +4984,7 @@ static void testCoveredBy() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -4993,6 +5019,7 @@ static void testCoveredBy() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -5254,6 +5281,7 @@ static void testCoveredBy() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -5411,6 +5439,7 @@ static void testCoveredBy() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -5482,6 +5511,7 @@ static void testDWithin() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -5525,6 +5555,7 @@ static void testDWithin() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -5761,6 +5792,7 @@ static void testDWithin() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -5966,6 +5998,7 @@ static void testDWithin() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -6040,6 +6073,7 @@ static void testDFullyWithin() {
 	*/
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
+	rt_raster_set_scale(rast1, 1, 1);
 	rt_raster_set_offsets(rast1, -1, -1);
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
@@ -6083,6 +6117,7 @@ static void testDFullyWithin() {
 	*/
 	rast2 = rt_raster_new(2, 2);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -6319,6 +6354,7 @@ static void testDFullyWithin() {
 	*/
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
@@ -6524,6 +6560,7 @@ static void testDFullyWithin() {
 	/* rast2 (skewed by -0.5, 0.5) */
 	rast2 = rt_raster_new(3, 3);
 	assert(rast2);
+	rt_raster_set_scale(rast2, 1, 1);
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
@@ -8174,6 +8211,7 @@ main()
 
     raster = rt_raster_new(256, 256);
     assert(raster); /* or we're out of virtual memory */
+		rt_raster_set_scale(raster, 1, 1);
 
 	printf("Checking empty and hasnoband functions...\n");
 	{ /* Check isEmpty and hasnoband */
