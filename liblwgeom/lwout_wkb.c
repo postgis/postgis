@@ -344,8 +344,6 @@ static uint8_t* ptarray_to_wkb_buf(const POINTARRAY *pa, uint8_t *buf, uint8_t v
 		buf = integer_to_wkb_buf(pa->npoints, buf, variant);
 
 	/* Set the ordinates. */
-	/* TODO: Ensure that getPoint_internal is always aligned so
-	         this doesn't fail on RiSC architectures */
 	/* TODO: Make this faster by bulk copying the coordinates when
 	         the output endian/dims match the internal endian/dims */
 	for ( i = 0; i < pa->npoints; i++ )
