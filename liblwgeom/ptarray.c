@@ -1551,7 +1551,7 @@ ptarray_length(const POINTARRAY *pts)
 	getPoint3dz_p(pts, 0, &frm);
 	for ( i=1; i < pts->npoints; i++ )
 	{
-		getPoint3dz_p(pts, i+1, &to);
+		getPoint3dz_p(pts, i, &to);
 		dist += sqrt( ((frm.x - to.x)*(frm.x - to.x)) +
 		              ((frm.y - to.y)*(frm.y - to.y)) +
 		              ((frm.z - to.z)*(frm.z - to.z)) );
