@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="using_raster">
+<chapter id="using_raster_dataman">
   <title>Raster Data Management, Queries, and Applications</title>
   <sect1 id="RT_Loading_Rasters"> 
     <title>Loading and Creating Rasters</title>
@@ -18,9 +18,7 @@
         Please note that the raster2pgsql python script may not work with future versions of PostGIS raster and is no longer supported.
         </para></note>
 
-				<note><para>
-												When creating overviews of a specific factor from a set of rasters that are aligned, it is possible for the overviews to not align.  Visit <ulink url="http://trac.osgeo.org/postgis/ticket/1764">http://trac.osgeo.org/postgis/ticket/1764</ulink> for an example where the overviews do not align.
-</para></note>
+	<note><para>When creating overviews of a specific factor from a set of rasters that are aligned, it is possible for the overviews to not align.  Visit <ulink url="http://trac.osgeo.org/postgis/ticket/1764">http://trac.osgeo.org/postgis/ticket/1764</ulink> for an example where the overviews do not align.</para></note>
         
     <para>EXAMPLE USAGE: 
     	<programlisting>raster2pgsql <varname>raster_options_go_here</varname> <varname>raster_file</varname> <varname>someschema</varname>.<varname>sometable</varname> &gt; out.sql</programlisting>
