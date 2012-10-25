@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="using_raster.xml">
+<chapter id="using_raster">
   <title>Raster Data Management, Queries, and Applications</title>
   <sect1 id="RT_Loading_Rasters"> 
     <title>Loading and Creating Rasters</title>
