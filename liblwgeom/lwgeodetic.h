@@ -119,7 +119,9 @@ void vector_sum(const POINT3D *a, const POINT3D *b, POINT3D *n);
 double vector_angle(const POINT3D* v1, const POINT3D* v2);
 void vector_rotate(const POINT3D* v1, const POINT3D* v2, double angle, POINT3D* n);
 void normalize(POINT3D *p);
+void unit_normal(const POINT3D *P1, const POINT3D *P2, POINT3D *normal);
 double sphere_direction(const GEOGRAPHIC_POINT *s, const GEOGRAPHIC_POINT *e, double d);
+void ll2cart(const POINT2D *g, POINT3D *p);
 
 /*
 ** Prototypes for spheroid functions.

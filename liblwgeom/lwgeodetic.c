@@ -367,7 +367,7 @@ void cart2geog(const POINT3D *p, GEOGRAPHIC_POINT *g)
 /**
 * Convert lon/lat coordinates to cartesion coordinates on unit sphere
 */
-static void ll2cart(const POINT2D *g, POINT3D *p)
+void ll2cart(const POINT2D *g, POINT3D *p)
 {
 	double x_rad = M_PI * g->x / 180.0;
 	double y_rad = M_PI * g->y / 180.0;
@@ -379,12 +379,12 @@ static void ll2cart(const POINT2D *g, POINT3D *p)
 
 /**
 * Convert cartesion coordinates on unit sphere to lon/lat coordinates 
-*/
 static void cart2ll(const POINT3D *p, POINT2D *g)
 {
 	g->x = longitude_degrees_normalize(180.0 * atan2(p->y, p->x) / M_PI);
 	g->y = latitude_degrees_normalize(180.0 * asin(p->z) / M_PI);
 }
+*/
 
 /**
 * Calculate the dot product of two unit vectors
@@ -483,7 +483,7 @@ static void normalize2d(POINT2D *p)
 * Calculates the unit normal to two vectors, trying to avoid
 * problems with over-narrow or over-wide cases.
 */
-static void unit_normal(const POINT3D *P1, const POINT3D *P2, POINT3D *normal)
+void unit_normal(const POINT3D *P1, const POINT3D *P2, POINT3D *normal)
 {
 	double p_dot = dot_product(P1, P2);
 	POINT3D P3;

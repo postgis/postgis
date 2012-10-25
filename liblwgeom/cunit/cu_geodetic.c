@@ -149,6 +149,58 @@ static void test_sphere_project(void)
 	CU_ASSERT_DOUBLE_EQUAL(dir2, -2.35612, 0.0001);	
 }
 
+#if 0
+/**
+* Tests the relative numerical stability of the "robust" and
+* naive cross product calculation methods.
+*/
+static void cross_product_stability(void)
+{
+	POINT2D p1, p2;
+	int i;
+	GEOGRAPHIC_POINT g1, g2;
+	POINT3D A1, A2;
+	POINT3D Nr, Nc;
+	POINT3D Or, Oc;
+
+	p1.x = 10.0;
+	p1.y = 45.0;
+	p2.x = 10.0;
+	p2.y = 50.0;
+	
+	geographic_point_init(p1.x, p1.y, &g1);
+	ll2cart(&p1, &A1);
+
+	for ( i = 0; i < 40; i++ )
+	{
+		geographic_point_init(p2.x, p2.y, &g2);
+		ll2cart(&p2, &A2);
+		
+		/* Skea */
+		robust_cross_product(&g1, &g2, &Nr);
+		normalize(&Nr);
+		
+		/* Ramsey */
+		unit_normal(&A1, &A2, &Nc);
+
+		if ( i > 0 ) 
+		{
+			printf("\n- %d -------------------- %.24g ------------------------\n", i, p2.y);
+			printf("Skea:         %.24g,%.24g,%.24g\n", Nr.x, Nr.y, Nr.z);
+			printf("Skea Diff:    %.24g,%.24g,%.24g\n", Or.x-Nr.x, Or.y-Nr.y, Or.z-Nr.z);
+			printf("Ramsey:       %.24g,%.24g,%.24g\n", Nc.x, Nc.y, Nc.z);
+			printf("Ramsey Diff:  %.24g,%.24g,%.24g\n", Oc.x-Nc.x, Oc.y-Nc.y, Oc.z-Nc.z);
+			printf("Diff:         %.24g,%.24g,%.24g\n", Nr.x-Nc.x, Nr.y-Nc.y, Nr.z-Nc.z);
+		}
+		
+		Or = Nr;
+		Oc = Nc;
+		
+		p2.y += (p1.y - p2.y)/2.0;
+	}
+}
+#endif
+
 static void test_gbox_from_spherical_coordinates(void)
 {
 #if RANDOM_TEST
@@ -247,12 +299,12 @@ static void test_gserialized_get_gbox_geocentric(void)
 		printf("line %d: diff %.9g\n", i, fabs(gbox.xmin - gbox_slow.xmin)+fabs(gbox.ymin - gbox_slow.ymin)+fabs(gbox.zmin - gbox_slow.zmin));
 		printf("------------\n");
 #endif
-		CU_ASSERT_DOUBLE_EQUAL(gbox.xmin, gbox_slow.xmin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox.ymin, gbox_slow.ymin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox.zmin, gbox_slow.zmin, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox.xmax, gbox_slow.xmax, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox.ymax, gbox_slow.ymax, 0.000001);
-		CU_ASSERT_DOUBLE_EQUAL(gbox.zmax, gbox_slow.zmax, 0.000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.xmin, gbox_slow.xmin, 0.00000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.ymin, gbox_slow.ymin, 0.00000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.zmin, gbox_slow.zmin, 0.00000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.xmax, gbox_slow.xmax, 0.00000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.ymax, gbox_slow.ymax, 0.00000001);
+		CU_ASSERT_DOUBLE_EQUAL(gbox.zmax, gbox_slow.zmax, 0.00000001);
 	}
 
 }
