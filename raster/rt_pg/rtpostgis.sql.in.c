@@ -5442,108 +5442,63 @@ CREATE AGGREGATE st_union(raster, text) (
 	FINALFUNC = _st_union_finalfn
 );
 
--------------------------------------------------------------------
--- ST_Clip(rast raster, band int, geom geometry, nodata float8 DEFAULT null, crop boolean DEFAULT true)
--- Clip the values of a raster to the shape of a polygon.
---
--- rast   - raster to be clipped
--- band   - limit the result to only one band
--- geom   - geometry defining the shape to clip the raster
--- nodata - define (if there is none defined) or replace the raster nodata value with this value
--- crop   - limit the extent of the result to the extent of the geometry
 -----------------------------------------------------------------------
 -- ST_Clip
 -----------------------------------------------------------------------
--- nodataval as array series
 
--- Major variant
-CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster, nband integer[],
+	geom geometry,
+	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+)
 	RETURNS raster
-	AS $$
-	DECLARE
-		g geometry;
-		newrast raster;
-		geomrast raster;
-		numband int;
-		bandstart int;
-		bandend int;
-		newextent text;
-		newnodataval double precision;
-		newpixtype text;
-		bandi int;
-	BEGIN
-		IF rast IS NULL THEN
-			RETURN NULL;
-		END IF;
-		IF geom IS NULL THEN
-			RETURN rast;
-		END IF;
-		numband := ST_Numbands(rast);
-		IF band IS NULL THEN
-			bandstart := 1;
-			bandend := numband;
-		ELSEIF ST_HasNoBand(rast, band) THEN
-			RAISE NOTICE 'Raster do not have band %. Returning null', band;
-			RETURN NULL;
-		ELSE
-			bandstart := band;
-			bandend := band;
-		END IF;
+	AS 'MODULE_PATHNAME', 'RASTER_clip'
+	LANGUAGE 'c' IMMUTABLE;
 
-		newpixtype := ST_BandPixelType(rast, bandstart);
-		newnodataval := coalesce(nodataval[1], ST_BandNodataValue(rast, bandstart), ST_MinPossibleValue(newpixtype));
-		newextent := CASE WHEN crop THEN 'INTERSECTION' ELSE 'FIRST' END;
-
-		-- Convert the geometry to a raster
-		g := ST_Intersection(geom, rast::geometry);
-		geomrast := ST_AsRaster(g, rast, ST_BandPixelType(rast, band), 1, newnodataval);
-
-		-- Compute the first raster band
-		newrast := ST_MapAlgebraExpr(rast, bandstart, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodataval::text, newnodataval::text, newnodataval);
-		-- Set the newnodataval
-		newrast := ST_SetBandNodataValue(newrast, bandstart, newnodataval);
-
-		FOR bandi IN bandstart+1..bandend LOOP
-			-- for each band we must determine the nodata value
-			newpixtype := ST_BandPixelType(rast, bandi);
-			newnodataval := coalesce(nodataval[bandi], nodataval[array_upper(nodataval, 1)], ST_BandNodataValue(rast, bandi), ST_MinPossibleValue(newpixtype));
-			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(rast, bandi, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodataval::text, newnodataval::text, newnodataval));
-			newrast := ST_SetBandNodataValue(newrast, bandi, newnodataval);
-		END LOOP;
-
-		RETURN newrast;
-	END;
-	$$ LANGUAGE 'plpgsql' STABLE;
-
--- Nodata values as integer series
-CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodataval double precision, crop boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster, nband integer,
+	geom geometry,
+	nodataval double precision, crop boolean DEFAULT TRUE
+)
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, $2, $3, ARRAY[$4], $5) $$
-	LANGUAGE 'sql' STABLE;
+	$$ SELECT ST_Clip($1, ARRAY[$2]::integer[], $3, ARRAY[$4]::double precision[], $5) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
--- Variant defaulting nodataval to the one of the raster or the min possible value
-CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, crop boolean)
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster, nband integer,
+	geom geometry,
+	crop boolean
+)
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, $2, $3, null::float8[], $4) $$
-	LANGUAGE 'sql' STABLE;
+	$$ SELECT ST_Clip($1, ARRAY[$2]::integer[], $3, null::double precision[], $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
--- Variant defaulting to all bands
-CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster,
+	geom geometry,
+	nodataval double precision[] DEFAULT NULL, crop boolean DEFAULT TRUE
+)
 	RETURNS raster AS
 	$$ SELECT ST_Clip($1, NULL, $2, $3, $4) $$
-	LANGUAGE 'sql' STABLE;
+	LANGUAGE 'sql' IMMUTABLE;
 
--- Variant defaulting to all bands
-CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, nodataval double precision, crop boolean DEFAULT TRUE)
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster,
+	geom geometry,
+	nodataval double precision, crop boolean DEFAULT TRUE
+)
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, NULL, $2, ARRAY[$3], $4) $$
-	LANGUAGE 'sql' STABLE;
+	$$ SELECT ST_Clip($1, NULL, $2, ARRAY[$3]::double precision[], $4) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
--- Variant defaulting nodataval to the one of the raster or the min possible value and returning all bands
-CREATE OR REPLACE FUNCTION st_clip(rast raster, geom geometry, crop boolean)
+CREATE OR REPLACE FUNCTION st_clip(
+	rast raster,
+	geom geometry,
+	crop boolean
+)
 	RETURNS raster AS
-	$$ SELECT ST_Clip($1, NULL, $2, null::float8[], $3) $$
-	LANGUAGE 'sql' STABLE;
+	$$ SELECT ST_Clip($1, NULL, $2, null::double precision[], $3) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_NearestValue
