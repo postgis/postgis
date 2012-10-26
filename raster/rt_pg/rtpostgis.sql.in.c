@@ -3427,6 +3427,7 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodatav
 		newnodataval double precision;
 		newpixtype text;
 		bandi int;
+		hasnodata bool;
 	BEGIN
 		IF rast IS NULL THEN
 			RETURN NULL;
@@ -3462,9 +3463,17 @@ CREATE OR REPLACE FUNCTION st_clip(rast raster, band int, geom geometry, nodatav
 		FOR bandi IN bandstart+1..bandend LOOP
 			-- for each band we must determine the nodata value
 			newpixtype := ST_BandPixelType(rast, bandi);
+			IF ST_BandNodataValue(rast, bandi) IS NULL THEN
+				hasnodata := FALSE;
+			ELSE
+				hasnodata := TRUE;
+			END IF;
 			newnodataval := coalesce(nodataval[bandi], nodataval[array_upper(nodataval, 1)], ST_BandNodataValue(rast, bandi), ST_MinPossibleValue(newpixtype));
 			newrast := ST_AddBand(newrast, ST_MapAlgebraExpr(rast, bandi, geomrast, 1, '[rast1.val]', newpixtype, newextent, newnodataval::text, newnodataval::text, newnodataval));
-			newrast := ST_SetBandNodataValue(newrast, bandi, newnodataval);
+
+			IF hasnodata THEN
+				newrast := ST_SetBandNodataValue(newrast, bandi, newnodataval);
+			END IF;
 		END LOOP;
 
 		RETURN newrast;

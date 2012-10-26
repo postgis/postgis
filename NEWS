@@ -24,6 +24,8 @@ PostGIS 2.0.2
   - #2026, improve performance of distance calculations
   - #2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()
   - #2057, Fixed linking issue for raster2psql to libpq
+  - #1581, ST_Clip(raster, ...) no longer imposes NODATA on a band if the
+           corresponding band from the source raster did not have NODATA
 
  * Enhancements *
 
