@@ -7185,60 +7185,101 @@ rid |        rastbox
 		<refentry id="RT_ST_Clip">
 			<refnamediv>
 				<refname>ST_Clip</refname>
-				<refpurpose>Returns the raster clipped by the input geometry.  If no band is specified all bands are returned. If <varname>crop</varname> is not specified, true is assumed meaning
-				the output raster is cropped.</refpurpose>
+				<refpurpose>Returns the raster clipped by the input geometry.  If band number not is specified, all bands are processed. If <varname>crop</varname> is not specified or TRUE, the output raster is cropped.</refpurpose>
 			</refnamediv>
-		
+
 			<refsynopsisdiv>
 				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>raster <function>ST_Clip</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>crop=true</parameter></paramdef>
-				  </funcprototype>
-				  
-				  <funcprototype>
-					<funcdef>raster <function>ST_Clip</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
-				  </funcprototype>
-				  
-				 <funcprototype>
-					<funcdef>raster <function>ST_Clip</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
-					<paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
-				  </funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_Clip</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer[] </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_Clip</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_Clip</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_Clip</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision[] </type> <parameter>nodataval=NULL</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_Clip</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>nodataval</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>crop=TRUE</parameter></paramdef>
+					</funcprototype>
+
+					<funcprototype>
+						<funcdef>raster <function>ST_Clip</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+						<paramdef><type>boolean </type> <parameter>crop</parameter></paramdef>
+					</funcprototype>
+
 				</funcsynopsis>
-			</refsynopsisdiv>
-		
+			</refsynopsisdiv>		
+
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns a raster that is clipped by the input geometry <varname>geom</varname>. If no band is specified all bands are returned.</para>
-				
-				<para>Rasters resulting from ST_Clip must have a nodata value assigned for areas clipped, one for each band. If none are provided and the input raster do not have a nodata value defined, nodata values of the resulting raster are set to ST_MinPossibleValue(ST_BandPixelType(rast, band)). When the number of nodata value in the array is smaller than the number of band, the last one in the array is used for the remaining bands. If the number of nodata value is greater than the number of band, the extra nodata values are ignored. All variants accepting an array of nodata values also accept a single value which will be assigned to each band.</para>        
+				<para>
+					Returns a raster that is clipped by the input geometry <varname>geom</varname>. If band index is not specified, all bands are processed.
+				</para>
 
-				<para>If <varname>crop</varname> is not specified, true is assumed meaning the output raster is cropped to the intersection of the <varname>geom</varname>and <varname>rast</varname> extents. If <varname>crop</varname> is set to false, the new raster gets the same extent as <varname>rast</varname>.</para>
+				<para>
+					Rasters resulting from ST_Clip must have a nodata value assigned for areas clipped, one for each band. If none are provided and the input raster do not have a nodata value defined, nodata values of the resulting raster are set to ST_MinPossibleValue(ST_BandPixelType(rast, band)). When the number of nodata value in the array is smaller than the number of band, the last one in the array is used for the remaining bands. If the number of nodata value is greater than the number of band, the extra nodata values are ignored. All variants accepting an array of nodata values also accept a single value which will be assigned to each band.
+				</para>
+
+				<para>
+					If <varname>crop</varname> is not specified, true is assumed meaning the output raster is cropped to the intersection of the <varname>geom</varname>and <varname>rast</varname> extents. If <varname>crop</varname> is set to false, the new raster gets the same extent as <varname>rast</varname>.
+				</para>
 				
 				<para>Availability: 2.0.0 </para>
 				
-				<para>Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.</para>
+				<para>Enhanced: 2.1.0 Rewritten in C</para>
+
+				<para>
+					Examples here use Massachusetts aerial data available on MassGIS site <ulink url="http://www.mass.gov/mgis/colororthos2008.htm">MassGIS Aerial Orthos</ulink>. Coordinates are in Massachusetts State Plane Meters.
+				</para>
 			</refsection>
-				
+
 			<refsection>
-				<title>Examples: 1 band clipping</title>				
-<programlisting>-- Clip the first band of an aerial tile by a 20 meter buffer.
+				<title>Examples: 1 band clipping</title>
+
+				<programlisting>
+-- Clip the first band of an aerial tile by a 20 meter buffer.
 SELECT ST_Clip(rast, 1,
 		ST_Buffer(ST_Centroid(ST_Envelope(rast)),20)
 	) from aerials.boston
-WHERE rid = 4;</programlisting>
+WHERE rid = 4;
+				</programlisting>
 
-<programlisting>-- Demonstrate effect of crop on final dimensions of raster
+				<programlisting>
+-- Demonstrate effect of crop on final dimensions of raster
 -- Note how final extent is clipped to that of the geometry
 -- if crop = true
 SELECT ST_XMax(ST_Envelope(ST_Clip(rast, 1, clipper, true))) As xmax_w_trim,
@@ -7252,114 +7293,159 @@ WHERE rid = 6) As foo;
    xmax_w_trim    |   xmax_clipper   |   xmax_wo_trim   |  xmax_rast_orig
 ------------------+------------------+------------------+------------------
  230657.436173996 | 230657.436173996 | 230666.436173996 | 230666.436173996
-</programlisting>
-<informaltable>
-  <tgroup cols="2">
-	<tbody>
-	  <row>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip01.png" />
-			  </imageobject>
-			  <caption><para>Full raster tile before clipping</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip02.png" />
-			  </imageobject>
-			  <caption><para>After Clipping</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		</row>
-	</tbody>
-</tgroup>
-</informaltable>
+				</programlisting>
+
+				<informaltable>
+					<tgroup cols="2">
+						<tbody>
+							<row>
+								<entry>
+									<para>
+										<informalfigure>
+											<mediaobject>
+												<imageobject>
+													<imagedata fileref="images/st_clip01.png" />
+												</imageobject>
+												<caption>
+													<para>Full raster tile before clipping</para>
+												</caption>
+											</mediaobject>
+										</informalfigure>
+									</para>
+								</entry>
+								<entry>
+									<para>
+										<informalfigure>
+											<mediaobject>
+												<imageobject>
+													<imagedata fileref="images/st_clip02.png" />
+												</imageobject>
+												<caption>
+													<para>After Clipping</para>
+												</caption>
+											</mediaobject>
+										</informalfigure>
+									</para>
+								</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</informaltable>
 			</refsection>
+
 			<refsection>
-				<title>Examples: 1 band clipping with no crop and add back other bands unchanged</title>				
-<programlisting>-- Same example as before, but we need to set crop to false to be able to use ST_AddBand
+				<title>Examples: 1 band clipping with no crop and add back other bands unchanged</title>
+
+				<programlisting>
+-- Same example as before, but we need to set crop to false to be able to use ST_AddBand
 -- because ST_AddBand requires all bands be the same Width and height
 SELECT ST_AddBand(ST_Clip(rast, 1,
 		ST_Buffer(ST_Centroid(ST_Envelope(rast)),20),false
 	), ARRAY[ST_Band(rast,2),ST_Band(rast,3)] ) from aerials.boston
-WHERE rid = 6;</programlisting>
-<informaltable>
-  <tgroup cols="2">
-	<tbody>
-	  <row>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip04.png" />
-			  </imageobject>
-			  <caption><para>Full raster tile before clipping</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip05.png" />
-			  </imageobject>
-			  <caption><para>After Clipping - surreal</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		</row>
-	</tbody>
-</tgroup>
-</informaltable>
+WHERE rid = 6;
+				</programlisting>
+
+				<informaltable>
+					<tgroup cols="2">
+						<tbody>
+							<row>
+								<entry>
+									<para>
+										<informalfigure>
+											<mediaobject>
+												<imageobject>
+													<imagedata fileref="images/st_clip04.png" />
+												</imageobject>
+												<caption>
+													<para>Full raster tile before clipping</para>
+												</caption>
+											</mediaobject>
+										</informalfigure>
+									</para>
+								</entry>
+								<entry>
+									<para>
+										<informalfigure>
+											<mediaobject>
+												<imageobject>
+													<imagedata fileref="images/st_clip05.png" />
+												</imageobject>
+												<caption>
+													<para>After Clipping - surreal</para>
+												</caption>
+											</mediaobject>
+										</informalfigure>
+									</para>
+								</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</informaltable>
 			</refsection>
+
 			<refsection>
-				<title>Examples: Clip all bands</title>				
-<programlisting>-- Clip all bands of an aerial tile by a 20 meter buffer.
+				<title>Examples: Clip all bands</title>
+
+				<programlisting>
+-- Clip all bands of an aerial tile by a 20 meter buffer.
 -- Only difference is we don't specify a specific band to clip
 -- so all bands are clipped
 SELECT ST_Clip(rast,
 	  ST_Buffer(ST_Centroid(ST_Envelope(rast)), 20), 
 	  false
 	) from aerials.boston
-WHERE rid = 4;</programlisting>
+WHERE rid = 4;
+				</programlisting>
 
-<informaltable>
-  <tgroup cols="2">
-	<tbody>
-	  <row>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip01.png" />
-			  </imageobject>
-			  <caption><para>Full raster tile before clipping</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_clip03.png" />
-			  </imageobject>
-			  <caption><para>After Clipping</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		</row>
-	</tbody>
-</tgroup>
-</informaltable>
+				<informaltable>
+					<tgroup cols="2">
+						<tbody>
+							<row>
+								<entry>
+									<para>
+										<informalfigure>
+											<mediaobject>
+												<imageobject>
+													<imagedata fileref="images/st_clip01.png" />
+												</imageobject>
+												<caption>
+													<para>Full raster tile before clipping</para>
+												</caption>
+											</mediaobject>
+										</informalfigure>
+									</para>
+								</entry>
+								<entry>
+									<para>
+										<informalfigure>
+											<mediaobject>
+												<imageobject>
+													<imagedata fileref="images/st_clip03.png" />
+												</imageobject>
+												<caption>
+													<para>After Clipping</para>
+												</caption>
+											</mediaobject>
+										</informalfigure>
+									</para>
+								</entry>
+							</row>
+						</tbody>
+					</tgroup>
+				</informaltable>
 			</refsection>
+
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_Intersection" /></para>
+				<para>
+					<xref linkend="RT_ST_AddBand" />, 
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_Intersection" />
+				</para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="RT_ST_ConvexHull">
 			<refnamediv>
 				<refname>ST_ConvexHull</refname>
