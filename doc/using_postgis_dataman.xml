@@ -2393,7 +2393,7 @@ WHERE ST_DWithin(the_geom,  ST_MakeEnvelope(90900, 190900, 100100, 200100,312), 
 	  </note>
 	</sect2>
 
-	<sect2>
+	<sect2 id="examples_spatial_sql">
 	  <title>Examples of Spatial SQL</title>
 
 	  <para>The examples in this section will make use of two tables, a table
@@ -2417,7 +2417,7 @@ name       | character varying | City / Town Name
 the_geom   | geometry          | Location Geometry (Polygon)</programlisting>
 
 	  <qandaset>
-		<qandaentry>
+		<qandaentry id="qa_total_length_roads">
 		  <question>
 			<para>What is the total length of all roads, expressed in
 			kilometers?</para>
