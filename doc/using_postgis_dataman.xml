@@ -1695,8 +1695,8 @@ AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 	
   </sect1>
 
-  <sect1>
-	<title>Loading GIS Data</title>
+  <sect1 id="loading_geometry_data">
+	<title>Loading GIS (Vector) Data</title>
 
 	<para>Once you have created a spatial table, you are ready to upload GIS
 	data to the database. Currently, there are two ways to get data into a
@@ -1704,7 +1704,7 @@ AND ST_Relate(a.geom, b.geom, '102101FF2');</programlisting>
 	Shape file loader/dumper.</para>
 
 	<sect2>
-	  <title>Using SQL</title>
+	  <title>Loading Data Using SQL</title>
 
 	  <para>If you can convert your data to a text representation, then using
 	  formatted SQL might be the easiest way to get your data into PostGIS. As
@@ -1985,7 +1985,7 @@ COMMIT;</programlisting>
 </sect2>
   </sect1>
 
-  <sect1>
+  <sect1 id="retrieving_vector-data">
 	<title>Retrieving GIS Data</title>
 
 	<para>Data can be extracted from the database using either SQL or the
@@ -1994,7 +1994,7 @@ COMMIT;</programlisting>
 	tables.</para>
 
 	<sect2>
-	  <title>Using SQL</title>
+	  <title>Using SQL to Retrieve Data</title>
 
 	  <para>The most straightforward means of pulling data out of the
         database is to use a SQL select query to reduce the number of RECORDS and COLUMNS returned
