@@ -2192,6 +2192,9 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, hasn
         IF ( gtype != 'ST_Point' ) THEN
             RAISE EXCEPTION 'Attempting to get the value of a pixel with a non-point geometry';
         END IF;
+				IF ST_SRID(rast) != ST_SRID(pt) THEN
+					RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+				END IF;
         x := st_x(pt);
         y := st_y(pt);
         RETURN st_value(rast,
@@ -2551,6 +2554,9 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, pt geometry)
 		IF ( st_geometrytype(pt) != 'ST_Point' ) THEN
 			RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
 		END IF;
+		IF ST_SRID(rast) != ST_SRID(pt) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+		END IF;
 		SELECT columnx INTO xr FROM _st_world2rastercoord($1, st_x(pt), st_y(pt));
 		RETURN xr;
 	END;
@@ -2594,6 +2600,9 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, pt geometry)
 	BEGIN
 		IF ( st_geometrytype(pt) != 'ST_Point' ) THEN
 			RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
+		END IF;
+		IF ST_SRID(rast) != ST_SRID(pt) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
 		SELECT rowy INTO yr FROM _st_world2rastercoord($1, st_x(pt), st_y(pt));
 		RETURN yr;
@@ -2938,6 +2947,10 @@ CREATE OR REPLACE FUNCTION _st_intersects(rast raster, geom geometry, nband inte
 		gr raster;
 		scale double precision;
 	BEGIN
+		IF ST_SRID(rast) != ST_SRID(geom) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+		END IF;
+
 		IF ST_Intersects(geom, ST_ConvexHull(rast)) IS NOT TRUE THEN
 			RETURN FALSE;
 		ELSEIF nband IS NULL THEN
@@ -3006,6 +3019,10 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 		w int;
 		h int;
 	BEGIN
+		IF ST_SRID(rast) != ST_SRID(geom) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+		END IF;
+
 		convexhull := ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
 			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
