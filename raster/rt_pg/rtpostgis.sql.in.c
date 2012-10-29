@@ -4893,6 +4893,10 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 		w int;
 		h int;
 	BEGIN
+		IF ST_SRID(rast) != ST_SRID(geom) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+		END IF;
+
 		convexhull := ST_ConvexHull(rast);
 		IF nband IS NOT NULL THEN
 			SELECT CASE WHEN bmd.nodatavalue IS NULL THEN FALSE ELSE NULL END INTO hasnodata FROM ST_BandMetaData(rast, nband) AS bmd;
@@ -5294,6 +5298,10 @@ CREATE OR REPLACE FUNCTION st_intersection(
 		newnodata1 float8;
 		newnodata2 float8;
 	BEGIN
+		IF ST_SRID(rast1) != ST_SRID(rast2) THEN
+			RAISE EXCEPTION 'The two rasters do not have the same SRID';
+		END IF;
+
 		newnodata1 := coalesce(nodataval[1], ST_BandNodataValue(rast1, band1), ST_MinPossibleValue(ST_BandPixelType(rast1, band1)));
 		newnodata2 := coalesce(nodataval[2], ST_BandNodataValue(rast2, band2), ST_MinPossibleValue(ST_BandPixelType(rast2, band2)));
 		
