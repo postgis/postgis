@@ -9,7 +9,7 @@ PostGIS 1.5.6
    - #1936, ST_GeomFromGML on CurvePolygon causes server crash
    - #1953, Segfault on GEOS calls with empty polygon
    - #1976, Geography point-in-ring code overhauled for more reliability
-
+   - #2071, Add PgSQL 9.2 support
 
 
 PostGIS 1.5.5
