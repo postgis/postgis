@@ -7120,6 +7120,101 @@ CREATE OR REPLACE FUNCTION DropOverviewConstraints (
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+------------------------------------------------------------------------------
+-- UpdateRasterSRID
+------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _UpdateRasterSRID(
+	schema_name name, table_name name, column_name name,
+	new_srid integer
+)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		fqtn text;
+		schema name;
+		sql text;
+		srid integer;
+	BEGIN
+		-- validate schema
+		schema := NULL;
+		IF length($1) > 0 THEN
+			sql := 'SELECT nspname FROM pg_namespace '
+				|| 'WHERE nspname = ' || quote_literal($1)
+				|| 'LIMIT 1';
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The value provided for schema is invalid';
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		IF schema IS NULL THEN
+			sql := 'SELECT n.nspname AS schemaname '
+				|| 'FROM pg_catalog.pg_class c '
+				|| 'JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace '
+				|| 'WHERE c.relkind = ' || quote_literal('r')
+				|| ' AND n.nspname NOT IN (' || quote_literal('pg_catalog')
+				|| ', ' || quote_literal('pg_toast')
+				|| ') AND pg_catalog.pg_table_is_visible(c.oid)'
+				|| ' AND c.relname = ' || quote_literal($2);
+			EXECUTE sql INTO schema;
+
+			IF schema IS NULL THEN
+				RAISE EXCEPTION 'The table % does not occur in the search_path', quote_literal($2);
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		-- clamp SRID
+		IF new_srid < 0 THEN
+			srid := ST_SRID('POINT EMPTY'::geometry);
+			RAISE NOTICE 'SRID % converted to the officially unknown SRID %', new_srid, srid;
+		ELSE
+			srid := new_srid;
+		END IF;
+
+		-- drop SRID, extent, alignment constraints
+		PERFORM DropRasterConstraints(schema, $2, $3, 'extent', 'alignment', 'srid');
+
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		-- update SRID
+		sql := 'UPDATE ' || fqtn ||
+			' SET ' || quote_ident($3) ||
+			' = ST_SetSRID(' || quote_ident($3) ||
+			'::raster, ' || srid || ')';
+		RAISE NOTICE 'sql = %', sql;
+		EXECUTE sql;
+
+		-- add SRID constraint
+		PERFORM AddRasterConstraints(schema, $2, $3, 'srid', 'extent', 'alignment');
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE;
+
+CREATE OR REPLACE FUNCTION UpdateRasterSRID(
+	schema_name name, table_name name, column_name name,
+	new_srid integer
+)
+	RETURNS boolean
+	AS $$ SELECT _UpdateRasterSRID($1, $2, $3, $4) $$
+	LANGUAGE 'sql' VOLATILE STRICT;
+
+CREATE OR REPLACE FUNCTION UpdateRasterSRID(
+	table_name name, column_name name,
+	new_srid integer
+)
+	RETURNS boolean
+	AS $$ SELECT _UpdateRasterSRID('', $1, $2, $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT;
+
 -------------------------------------------------------------------
 --  END
 -------------------------------------------------------------------

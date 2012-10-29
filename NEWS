@@ -42,6 +42,7 @@ PostGIS 2.1.0
     a band using a set of geometries and corresponding values in one call
     (Bborie Park / UC Davis)
   - ST_Tile(raster) to break up a raster into tiles (Bborie Park / UC Davis)
+  - #739, UpdateRasterSRID()
 
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 
