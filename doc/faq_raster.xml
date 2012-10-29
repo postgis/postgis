@@ -131,12 +131,11 @@
     	<answer>
     		<para>Yes. Check out the page <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries">GDAL Binaries</ulink> page.  Any compiled with PostgreSQL
     		support should have PostGIS Raster in them.  </para>
-    		<para>We know for sure the following windows binaries have PostGIS Raster built in.</para>
-    		<para><ulink url="http://fwtools.maptools.org/">FWTools latest stable version for Windows is compiled with Raster support</ulink>.</para>
     		<para>PostGIS Raster is undergoing many changes.  If you want to get the latest nightly build for Windows -- then check out 
 		 the Tamas Szekeres  nightly builds built with Visual Studio which contain GDAL trunk, Python Bindings and MapServer executables and PostGIS Raster driver built-in.  Just
 		 	click the SDK bat and run your commands from there.  <ulink url="http://vbkto.dyndns.org/sdk/">http://vbkto.dyndns.org/sdk/</ulink>.
 		 	Also available are VS project files.</para>
+		 	<para><ulink url="http://fwtools.maptools.org/">FWTools latest stable version for Windows is compiled with Raster support</ulink>.</para>
     	</answer>
     </qandaentry>
     
