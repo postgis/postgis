@@ -3746,6 +3746,11 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, excl
         IF ( gtype != 'ST_Point' ) THEN
             RAISE EXCEPTION 'Attempting to get the value of a pixel with a non-point geometry';
         END IF;
+
+				IF ST_SRID(pt) != ST_SRID(rast) THEN
+            RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+				END IF;
+
         x := st_x(pt);
         y := st_y(pt);
         RETURN st_value(rast,
