@@ -4330,9 +4330,13 @@ CREATE OR REPLACE FUNCTION st_world2rastercoord(
 		rx integer;
 		ry integer;
 	BEGIN
-		IF (st_geometrytype(pt) != 'ST_Point') THEN
+		IF st_geometrytype(pt) != 'ST_Point' THEN
 			RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
 		END IF;
+		IF ST_SRID(rast) != ST_SRID(pt) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+		END IF;
+
 		SELECT rc.columnx AS x, rc.rowy AS y INTO columnx, rowy FROM _st_world2rastercoord($1, st_x(pt), st_y(pt)) AS rc;
 		RETURN;
 	END;
@@ -4377,6 +4381,9 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, pt geometry)
 		IF ( st_geometrytype(pt) != 'ST_Point' ) THEN
 			RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
 		END IF;
+		IF ST_SRID(rast) != ST_SRID(pt) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+		END IF;
 		SELECT columnx INTO xr FROM _st_world2rastercoord($1, st_x(pt), st_y(pt));
 		RETURN xr;
 	END;
@@ -4420,6 +4427,9 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, pt geometry)
 	BEGIN
 		IF ( st_geometrytype(pt) != 'ST_Point' ) THEN
 			RAISE EXCEPTION 'Attempting to compute raster coordinate with a non-point geometry';
+		END IF;
+		IF ST_SRID(rast) != ST_SRID(pt) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
 		SELECT rowy INTO yr FROM _st_world2rastercoord($1, st_x(pt), st_y(pt));
 		RETURN yr;
