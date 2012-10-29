@@ -5613,6 +5613,11 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 		IF (st_geometrytype($3) != 'ST_Point') THEN
 			RAISE EXCEPTION 'Attempting to get the neighbor of a pixel with a non-point geometry';
 		END IF;
+
+		IF ST_SRID(rast) != ST_SRID(pt) THEN
+			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
+		END IF;
+
 		wx := st_x($3);
 		wy := st_y($3);
 
