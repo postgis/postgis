@@ -23,6 +23,10 @@
 #include "liblwgeom.h"
 #include "lwgeom_pg.h"
 
+#if POSTGIS_PGSQL_VERSION >= 92
+#include "utils/rel.h"
+#endif
+
 #include <math.h>
 #if HAVE_IEEEFP_H
 #include <ieeefp.h>

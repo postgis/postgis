@@ -6,6 +6,11 @@
 
 #include "lwgeom_pg.h"
 
+#if POSTGIS_PGSQL_VERSION >= 92
+#include "utils/rel.h"
+#endif
+
+
 #define ABORT_ON_AUTH_FAILURE 1
 
 Datum check_authorization(PG_FUNCTION_ARGS);

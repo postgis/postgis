@@ -3,6 +3,10 @@
 #include "commands/trigger.h"   /* ... and triggers */
 #include "lwgeom_pg.h"
 
+#if POSTGIS_PGSQL_VERSION >= 92
+#include "utils/rel.h"
+#endif
+
 Datum cache_bbox(PG_FUNCTION_ARGS);
 
 /** @file
