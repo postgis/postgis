@@ -7823,8 +7823,8 @@ FROM dummy_rast;
 				  <funcprototype>
 					<funcdef>raster <function>ST_Slope</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>

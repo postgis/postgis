@@ -3475,7 +3475,7 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos intege
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer, pixeltype text, interpolate_nodata boolean DEFAULT FALSE)
+CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer DEFAULT 1, pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE)
 	RETURNS raster
 	AS $$
 		SELECT
