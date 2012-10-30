@@ -10912,11 +10912,6 @@ rt_raster_intersects(
 		*intersects = 0;
 		return 0;
 	}
-	if (bandS->offline) {
-		rterror("rt_raster_intersects not implemented yet for OFFDB bands");
-		*intersects = 0;
-		return 0;
-	}
 
 	hasnodataS = rt_band_get_hasnodata_flag(bandS);
 	if (hasnodataS != FALSE)
@@ -10926,11 +10921,6 @@ rt_raster_intersects(
 	bandL = rt_raster_get_band(rastL, nbandL);
 	if (NULL == bandL) {
 		rterror("rt_raster_intersects: Unable to get band %d of the first raster", nbandL);
-		*intersects = 0;
-		return 0;
-	}
-	if (bandL->offline) {
-		rterror("rt_raster_intersects not implemented yet for OFFDB bands");
 		*intersects = 0;
 		return 0;
 	}

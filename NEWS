@@ -26,6 +26,8 @@ PostGIS 2.0.2
   - #2057, Fixed linking issue for raster2psql to libpq
   - #1581, ST_Clip(raster, ...) no longer imposes NODATA on a band if the
            corresponding band from the source raster did not have NODATA
+  - #2072, Removed outdated checks preventing ST_Intersects(raster) from
+           working on out-db bands
 
  * Enhancements *
 
