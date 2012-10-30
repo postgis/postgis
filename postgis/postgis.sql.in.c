@@ -1426,7 +1426,6 @@ CREATE OR REPLACE FUNCTION ST_DumpRings(geometry)
 -----------------------------------------------------------------------
 -- _ST_DumpPoints()
 -----------------------------------------------------------------------
--- A helper function for ST_DumpPoints(geom)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_DumpPoints(the_geom geometry, cur_path integer[]) RETURNS SETOF geometry_dump AS $$
 DECLARE
@@ -1523,13 +1522,11 @@ $$ LANGUAGE plpgsql;
 -----------------------------------------------------------------------
 -- This function mimicks that of ST_Dump for collections, but this function 
 -- that returns a path and all the points that make up a particular geometry.
--- This current implementation in plpgsql does not scale very well at all.
--- and should be ported to C at some point.
 -- Availability: 1.5.0
-CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry) RETURNS SETOF geometry_dump AS $$
-  SELECT * FROM _ST_DumpPoints($1, NULL);
-$$ LANGUAGE SQL  STRICT;
-
+CREATE OR REPLACE FUNCTION ST_DumpPoints(geometry)
+       	RETURNS SETOF geometry_dump
+	AS 'MODULE_PATHNAME', 'LWGEOM_dumppoints'
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 
 -------------------------------------------------------------------

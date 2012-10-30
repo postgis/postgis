@@ -46,6 +46,7 @@ PG_OBJS= \
 	lwgeom_in_geojson.o \
 	lwgeom_triggers.o \
 	lwgeom_dump.o \
+	lwgeom_dumppoints.o \
 	lwgeom_functions_lrs.o \
 	long_xact.o \
 	lwgeom_sqlmm.o \
