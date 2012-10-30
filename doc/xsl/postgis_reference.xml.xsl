@@ -19,7 +19,7 @@
 	
 	<!-- just grab link and title -->
 	 <xsl:template match="ulink">
-	 	<xsl:value-of select="@url" /> <xsl:value-of select="." />
+	 	<xsl:value-of select="@url" /><xsl:text> </xsl:text><xsl:value-of select="." />
 	 </xsl:template>
 
 	<!--just grab name of file --> 
