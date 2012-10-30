@@ -1,7 +1,8 @@
 PostGIS 1.5.6
-2012/xx/xx
+2012/10/31
 
  This is a bug fix release, addressing issues that have been
+ filed since the 1.5.5 release.
 
  - Bug Fixes
    - #547, ST_Contains memory problems, the remake 

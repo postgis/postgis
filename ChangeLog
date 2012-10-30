@@ -1,3 +1,64 @@
+2012-10-29 18:01  pramsey
+
+	* NEWS: Update news
+
+2012-10-29 18:00  pramsey
+
+	* postgis/long_xact.c, postgis/lwgeom_estimate.c,
+	  postgis/lwgeom_triggers.c: (#2071) add 9.2 support to PostGIS 1.5
+
+2012-10-23 21:19  pramsey
+
+	* NEWS, liblwgeom/cunit/cu_geodetic.c,
+	  liblwgeom/cunit/cu_geodetic.h,
+	  liblwgeom/cunit/cu_geodetic_data.h, liblwgeom/lwgeodetic.c,
+	  liblwgeom/lwgeodetic.h: (#1976) Geography point-in-ring code
+	  overhauled for more reliability
+
+2012-09-07 20:04  pramsey
+
+	* NEWS, postgis/lwgeom_in_gml.c, regress/tickets.sql,
+	  regress/tickets_expected: ST_GeomFromGML on CurvePolygon causes
+	  server crash (#1985)
+
+2012-09-07 18:25  pramsey
+
+	* regress/tickets.sql, regress/tickets_expected: Test for #1957
+
+2012-09-06 23:18  pramsey
+
+	* NEWS, postgis/lwgeom_geos.c: Segfault on GEOS calls with empty
+	  polygon (#1953)
+
+2012-09-06 22:43  pramsey
+
+	* NEWS, liblwgeom/measures.c: ST_Distance to a one-point LineString
+	  returns NULL (#1957)
+
+2012-08-17 12:35  strk
+
+	* NEWS, postgis/lwgeom_cache.c: Actually save Grand Unified Geom
+	  Cache rather than just building it
+	  
+	  Fixes #547
+
+2012-08-17 12:35  strk
+
+	* postgis/lwgeom_geos.c: Fix compiler warning.
+	  
+	  passing argument 3 of ‘GetRtreeCache’ from incompatible pointer
+	  type
+
+2012-07-20 17:16  pramsey
+
+	* NEWS, README.postgis, Version.config: Set version numbers for
+	  next release
+
+2012-07-20 16:49  pramsey
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml,
+	  install-sh: Prepare for 1.5.5
+
 2012-07-12 18:12  pramsey
 
 	* regress/regress_index_nulls.sql,

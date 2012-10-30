@@ -3,15 +3,28 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
       <sect1>
+        <title>Release 1.5.6</title>
+        <para>Release date: 2012/10/31</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.5 release.</para>
+        <simplesect>
+         <title>Bug Fixes</title>
+          <para>#547, ST_Contains memory problems, the remake</para>
+          <para>#1957, ST_Distance to a one-point LineString returns NULL</para>
+          <para>#1936, ST_GeomFromGML on CurvePolygon causes server crash</para>
+          <para>#1953, Segfault on GEOS calls with empty polygon</para>
+          <para>#1976, Geography point-in-ring code overhauled for more reliability</para>
+          <para>#2071, Add PgSQL 9.2 support</para>
+        </simplesect>
+      </sect1>
+      <sect1>
         <title>Release 1.5.5</title>
-        <para>Release date: 2012/06/xx</para>
+        <para>Release date: 2012/07/20</para>
         <para>This is a bug fix release, addressing issues that have been filed since the 1.5.4 release.</para>
         <simplesect>
          <title>Bug Fixes</title>
          <para>#1825, containsproperly fix in prepared geometry.</para>
          <para>#1832, Crash when updating GIST index on geography column</para>
          <para>#1865, don't strip comments COPY data from dumps on restore</para>
-        
         </simplesect>
       </sect1>
       <sect1>
