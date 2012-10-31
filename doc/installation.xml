@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter id="postgis_installation">
-  <title>Installation</title>
+  <title>PostGIS Installation</title>
 
   <para>
 	This chapter details the steps required to install PostGIS.
@@ -46,7 +46,7 @@ in the docs folder
   </sect1>
 
   <sect1>
-	<title>Requirements</title>
+	<title>Install Requirements</title>
 
 	<para>
 	  PostGIS has the following requirements for building and usage:
@@ -244,7 +244,7 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
   </sect1>
 
   <sect1 id="PGInstall">
-	<title>Installation</title>
+	<title>Compiling and Install from Source: Detailed</title>
 
 	<note>
 	  <para>
@@ -1340,7 +1340,7 @@ ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</progra
   </sect1>
 
   <sect1>
-	<title>Common Problems</title>
+	<title>Common Problems during installation</title>
 	<para>
 	  There are several things to check when your installation or upgrade
 	  doesn't go as you expected.
