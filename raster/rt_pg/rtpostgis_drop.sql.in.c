@@ -440,3 +440,7 @@ DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float,
 -- function no longer exists
 DROP FUNCTION IF EXISTS st_tile(raster, integer, integer, integer[]);
 DROP FUNCTION IF EXISTS st_tile(raster, integer, integer, integer);
+
+-- function signatures changed
+DROP FUNCTION IF EXISTS st_setvalue(raster, integer, geometry, double precision);
+DROP FUNCTION IF EXISTS st_setvalue(raster, geometry, double precision);
