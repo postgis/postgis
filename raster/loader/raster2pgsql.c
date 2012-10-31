@@ -1691,7 +1691,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 		/* each tile is a raster */
 		for (ytile = 0; ytile < ntiles[1]; ytile++) {
 			for (xtile = 0; xtile < ntiles[0]; xtile++) {
-				
+
 				/* compute tile's upper-left corner */
 				GDALApplyGeoTransform(
 					info->gt,
@@ -1725,9 +1725,6 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						return 0;
 					}
 
-					/* inspect each band of raster where band is NODATA */
-					rt_band_check_is_nodata(band);
-
 					/* add band to raster */
 					if (rt_raster_add_band(rast, band, rt_raster_get_num_bands(rast)) == -1) {
 						rterror(_("convert_raster: Could not add offlineband to raster"));
@@ -1735,6 +1732,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 						raster_destroy(rast);
 						return 0;
 					}
+
+					/* inspect each band of raster where band is NODATA */
+					rt_band_check_is_nodata(band);
 				}
 
 				/* convert rt_raster to hexwkb */
