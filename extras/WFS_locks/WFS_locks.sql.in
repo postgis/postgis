@@ -228,7 +228,7 @@ CREATEFUNCTION CheckAuth(text, text)
 	RETURNS INT
 	AS
 	'SELECT CheckAuth('''', $1, $2)'
-	LANGUAGE 'SQL';
+	LANGUAGE 'sql';
 
 CREATEFUNCTION CheckAuthTrigger()
 	RETURNS trigger AS 

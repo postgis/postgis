@@ -541,7 +541,7 @@ Datum LWGEOM_locate_between_m(PG_FUNCTION_ARGS)
 * CREATE OR REPLACE FUNCTION ST_AddMeasure(geometry, float8, float8)
 * RETURNS geometry
 * AS '$libdir/postgis-1.5', 'ST_AddMeasure'
-* LANGUAGE 'C' IMMUTABLE STRICT;
+* LANGUAGE 'c' IMMUTABLE STRICT;
 */
 PG_FUNCTION_INFO_V1(ST_AddMeasure);
 Datum ST_AddMeasure(PG_FUNCTION_ARGS)

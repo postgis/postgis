@@ -1686,12 +1686,12 @@ LANGUAGE 'plpgsql' _VOLATILE_STRICT;
 CREATEFUNCTION topology.CreateTopology(varchar, integer)
 RETURNS integer AS
 ' SELECT topology.CreateTopology($1, $2, -1); '
-LANGUAGE 'SQL' _VOLATILE_STRICT;
+LANGUAGE 'sql' _VOLATILE_STRICT;
 
 CREATEFUNCTION topology.CreateTopology(varchar)
 RETURNS integer AS
 ' SELECT topology.CreateTopology($1, -1, -1); '
-LANGUAGE 'SQL' _VOLATILE_STRICT;
+LANGUAGE 'sql' _VOLATILE_STRICT;
 
 --} CreateTopology
 

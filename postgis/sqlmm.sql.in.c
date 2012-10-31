@@ -53,7 +53,7 @@
 CREATE OR REPLACE FUNCTION ST_WKTToSQL(text)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_text'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- ST_GeomFromText(text, int4) - already defined
 -- ST_PointFromText(text, int4) - already defined
@@ -74,7 +74,7 @@ CREATE OR REPLACE FUNCTION ST_WKTToSQL(text)
 CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME','LWGEOM_from_WKB'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- ST_GeomFromWKB(bytea, int) - already defined
 -- ST_PointFromWKB(bytea, int) - already defined
@@ -121,7 +121,7 @@ CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
 --CREATE OR REPLACE FUNCTION SE_AsShape(geometry)
 --    RETURNS bytea
 --    AS 'MODULE_PATHNAME','LWGEOM_AsShape'
---    LANGUAGE 'C' IMMUTABLE STRICT; 
+--    LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Geometry
@@ -131,7 +131,7 @@ CREATE OR REPLACE FUNCTION ST_WKBToSQL(bytea)
 CREATE OR REPLACE FUNCTION ST_CoordDim(geometry)
 	RETURNS smallint
 	AS 'MODULE_PATHNAME', 'LWGEOM_ndims'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- ST_Dimension(geometry) - already defined.
 -- ST_GeometryType(geometry) - already defined.
@@ -152,7 +152,7 @@ CREATE OR REPLACE FUNCTION ST_CoordDim(geometry)
 CREATE OR REPLACE FUNCTION _ST_OrderingEquals(geometry, geometry)
 	RETURNS boolean
 	AS 'MODULE_PATHNAME', 'LWGEOM_same'
-	LANGUAGE 'C' IMMUTABLE STRICT
+	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
 -- Availability: 1.3.0
@@ -161,19 +161,19 @@ CREATE OR REPLACE FUNCTION ST_OrderingEquals(geometry, geometry)
 	AS $$ 
 	SELECT $1 ~= $2 AND _ST_OrderingEquals($1, $2)
 	$$	
-	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+	LANGUAGE 'sql' IMMUTABLE STRICT; 
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION SE_Is3D(geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasz'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION SE_IsMeasured(geometry)
 	RETURNS bool
 	AS 'MODULE_PATHNAME', 'LWGEOM_hasm'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Point
@@ -183,19 +183,19 @@ CREATE OR REPLACE FUNCTION SE_IsMeasured(geometry)
 CREATE OR REPLACE FUNCTION ST_Point(float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_makepoint'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- PostGIS equivalent function: Z(geometry)
 CREATE OR REPLACE FUNCTION SE_Z(geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','LWGEOM_z_point'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -- PostGIS equivalent function: M(geometry)
 CREATE OR REPLACE FUNCTION SE_M(geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME','LWGEOM_m_point'
-	LANGUAGE 'C' IMMUTABLE STRICT; 
+	LANGUAGE 'c' IMMUTABLE STRICT; 
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions on type ST_Curve
@@ -233,7 +233,7 @@ CREATE OR REPLACE FUNCTION ST_Polygon(geometry, int)
 	AS $$ 
 	SELECT setSRID(makepolygon($1), $2)
 	$$	
-	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+	LANGUAGE 'sql' IMMUTABLE STRICT; 
 
 -- ST_ExteriorRing(geometry) - already defined.
 -- ST_NumInteriorRing(geometry) - already defined.
@@ -282,7 +282,7 @@ CREATE OR REPLACE FUNCTION SE_EnvelopesIntersect(geometry,geometry)
 	AS $$ 
 	SELECT $1 && $2
 	$$	
-	LANGUAGE 'SQL' IMMUTABLE STRICT; 
+	LANGUAGE 'sql' IMMUTABLE STRICT; 
 
 -------------------------------------------------------------------------------
 -- SQL/MM (ArcSDE subset) - SQL Functions for distance relationships
@@ -311,7 +311,7 @@ CREATE OR REPLACE FUNCTION SE_LocateAlong(geometry, float8)
 CREATE OR REPLACE FUNCTION SE_LocateBetween(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
-	LANGUAGE 'C' IMMUTABLE STRICT;
+	LANGUAGE 'c' IMMUTABLE STRICT;
 
 
 
