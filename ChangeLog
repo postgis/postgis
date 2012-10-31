@@ -1,3 +1,21 @@
+2012-10-31 21:16  pramsey
+
+	* extras/WFS_locks/WFS_locks.sql.in, postgis/geography.sql.in.c,
+	  postgis/long_xact.sql.in.c, postgis/lwgeom_functions_lrs.c,
+	  postgis/postgis.sql.in.c, postgis/sqlmm.sql.in.c,
+	  topology/topology.sql.in.c: (#2071) Lower-case the 'c' and 'sql'
+	  function declarations to support PgSQL 9.2
+
+2012-10-30 19:16  pramsey
+
+	* NEWS, README.postgis, Version.config: Push forward versions for
+	  next release
+
+2012-10-30 17:07  pramsey
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml: Updates
+	  for 1.5.6 release
+
 2012-10-29 18:01  pramsey
 
 	* NEWS: Update news

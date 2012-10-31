@@ -3,8 +3,16 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
       <sect1>
-        <title>Release 1.5.6</title>
+        <title>Release 1.5.7</title>
         <para>Release date: 2012/10/31</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.6 release.</para>
+        <simplesect>
+         <title>Bug Fixes</title>
+          <para>#2071, Add PgSQL 9.2 support</para>
+        </simplesect>
+      <sect1>
+        <title>Release 1.5.6</title>
+        <para>Release date: 2012/10/30</para>
         <para>This is a bug fix release, addressing issues that have been filed since the 1.5.5 release.</para>
         <simplesect>
          <title>Bug Fixes</title>

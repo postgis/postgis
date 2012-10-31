@@ -1,11 +1,11 @@
 PostGIS 1.5.7
-2012/xx/xx
+2012/10/31
 
  This is a bug fix release, addressing issues that have been
  filed since the 1.5.6 release.
 
  - Bug Fixes
-
+   - #2071, Add PgSQL 9.2 support
 
 PostGIS 1.5.6
 2012/10/31
