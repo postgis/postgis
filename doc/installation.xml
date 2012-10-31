@@ -1178,10 +1178,19 @@ pretty_address
 ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;";</programlisting>
 		<para>If you get an error notice something like:</para>
 			<programlisting>No migration path defined for ... to &last_release_version;</programlisting>
-		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup ontop of this new database.
-		You might get a message that <code>postgis extension</code> already installed which you can safely ignore.</para>
+		<para>Then you'll need to backup your database, create a fresh one as described in <xref linkend="create_new_db_extensions" /> and then restore your backup ontop of this new database.</para>
+    <para>If you get a notice message like:</para>
+    <programlisting>Version "&last_release_version;" of extension "postgis" is already installed</programlisting>
+    <para>
+Then everything is already up to date and you can safely ignore it. <emphasis role="bold">UNLESS</emphasis>
+you're attempting to upgrade from an SVN version to the next (which
+doesn't get a new version number); in that case you can append "next" to the version
+string, and next time you'll need to drop the "next" suffix again:
+    </para>
+		<programlisting>ALTER EXTENSION postgis UPDATE TO "&last_release_version;next";
+ALTER EXTENSION postgis_topology UPDATE TO "&last_release_version;next";</programlisting>
 		<note><para>If you installed PostGIS originally without a version specified, you can often skip the reinstallation of postgis extension before restoring since the backup just has <code>CREATE EXTENSION postgis</code> and thus
-		picks up the newest latest version during restore. .</para></note>
+		picks up the newest latest version during restore.</para></note>
 	</sect3>
 
 	</sect2>
