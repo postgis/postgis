@@ -28,6 +28,7 @@ PostGIS 2.0.2
            corresponding band from the source raster did not have NODATA
   - #2072, Removed outdated checks preventing ST_Intersects(raster) from
            working on out-db bands
+  - #2077, Fixed incorrect answers from ST_Hillshade(raster)
 
  * Enhancements *
 
