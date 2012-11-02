@@ -228,3 +228,4 @@ ERROR:  ST_Segmentize: invalid max_distance 0 (must be >= 0)
 ERROR:  invalid GML representation
 #1957|1
 #1978|3.1413
+#1996|{"type":"Point","coordinates":[]}

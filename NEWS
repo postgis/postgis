@@ -94,6 +94,7 @@ PostGIS 2.1.0
   - #1957, ST_Distance to a one-point LineString returns NULL 
   - #1976, Geography point-in-ring code overhauled for more reliability
   - #1981, cleanup of unused variables causing warnings with gcc 4.6+
+  - #1996, support POINT EMPTY in GeoJSON output
   - #2026, improve performance of distance calculations 
   - #2057, Fixed linking issue for raster2psql to libpq
   - #2077, Fixed incorrect values returning from ST_Hillshade()

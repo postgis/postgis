@@ -725,5 +725,8 @@ SELECT '#1957', ST_Distance(ST_Makeline(ARRAY['POINT(1 0)'::geometry]), 'POINT(0
 -- #1978 --
 SELECT '#1978', round(ST_Length(ST_GeomFromText('CIRCULARSTRING(0 0,1 0,0 0)',0))::numeric,4);
 
+-- #1996 --
+SELECT '#1996', ST_AsGeoJSON(ST_GeomFromText('POINT EMPTY'));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
