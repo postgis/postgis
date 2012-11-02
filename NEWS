@@ -97,6 +97,8 @@ PostGIS 2.1.0
   - #2026, improve performance of distance calculations 
   - #2057, Fixed linking issue for raster2psql to libpq
   - #2077, Fixed incorrect values returning from ST_Hillshade()
+  - #2019, ST_FlipCoordinates does not update bbox
+
 
 PostGIS 2.0.1
 2012/06/22

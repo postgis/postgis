@@ -462,11 +462,27 @@ static void test_lwgeom_free(void)
 
 static void do_lwgeom_flip_coordinates(char *in, char *out)
 {
-	LWGEOM *g,*h;
+	LWGEOM *g;
 	char * t;
+	double xmax, ymax;
+	int testbox;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_flip_coordinates(g);
+	lwgeom_add_bbox(g);
+
+	if ( testbox = (g->bbox != NULL) )
+	{
+		xmax = g->bbox->xmax;
+		ymax = g->bbox->ymax;
+	}
+	
+	g = lwgeom_flip_coordinates(g);
+	
+	if ( testbox )
+	{
+		CU_ASSERT_DOUBLE_EQUAL(g->bbox->xmax, ymax, 0.00001);
+		CU_ASSERT_DOUBLE_EQUAL(g->bbox->ymax, xmax, 0.00001);
+	}
 
 	t = lwgeom_to_wkt(g, WKT_EXTENDED, 8, NULL);
 	if (t == NULL) fprintf(stderr, "In:%s", in);
@@ -872,7 +888,6 @@ static void test_lwgeom_same(void)
 
 }
 
-
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -896,6 +911,7 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_calculate_gbox),
 	PG_TEST(test_lwgeom_is_empty),
 	PG_TEST(test_lwgeom_same),
+	PG_TEST(test_lwgeom_flip_coordinates),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};
