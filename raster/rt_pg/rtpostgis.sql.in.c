@@ -2423,118 +2423,6 @@ CREATE OR REPLACE FUNCTION st_range4ma(matrix float[][], nodatamode text, variad
     $$
     LANGUAGE 'plpgsql' IMMUTABLE;
 
-CREATE OR REPLACE FUNCTION _st_slope4ma(matrix float[][], nodatamode text, variadic args text[])
-    RETURNS float
-    AS
-    $$
-    DECLARE
-        pwidth float;
-        pheight float;
-        dz_dx float;
-        dz_dy float;
-    BEGIN
-        pwidth := args[1]::float;
-        pheight := args[2]::float;
-        dz_dx := ((matrix[3][1] + 2.0 * matrix[3][2] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[1][2] + matrix[1][3])) / (8.0 * pwidth);
-        dz_dy := ((matrix[1][3] + 2.0 * matrix[2][3] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[2][1] + matrix[3][1])) / (8.0 * pheight);
-        RETURN atan(sqrt(pow(dz_dx, 2.0) + pow(dz_dy, 2.0)));
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE;
-
-/*
-CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer, pixeltype text)
-    RETURNS RASTER
-    AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_slope4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
-    LANGUAGE 'sql' STABLE;
-*/
-
-CREATE OR REPLACE FUNCTION _st_aspect4ma(matrix float[][], nodatamode text, variadic args text[])
-    RETURNS float
-    AS
-    $$
-    DECLARE
-        pwidth float;
-        pheight float;
-        dz_dx float;
-        dz_dy float;
-        aspect float;
-    BEGIN
-        pwidth := args[1]::float;
-        pheight := args[2]::float;
-        dz_dx := ((matrix[3][1] + 2.0 * matrix[3][2] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[1][2] + matrix[1][3])) / (8.0 * pwidth);
-        dz_dy := ((matrix[1][3] + 2.0 * matrix[2][3] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[2][1] + matrix[3][1])) / (8.0 * pheight);
-        IF abs(dz_dx) = 0::float AND abs(dz_dy) = 0::float THEN
-            RETURN -1;
-        END IF;
-
-        aspect := atan2(dz_dy, -dz_dx);
-        IF aspect > (pi() / 2.0) THEN
-            RETURN (5.0 * pi() / 2.0) - aspect;
-        ELSE
-            RETURN (pi() / 2.0) - aspect;
-        END IF;
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE;
-
-/*
-CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text)
-    RETURNS RASTER
-    AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_aspect4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text) $$
-    LANGUAGE 'sql' STABLE;
-*/
-
-
-CREATE OR REPLACE FUNCTION _st_hillshade4ma(matrix float[][], nodatamode text, variadic args text[])
-    RETURNS float
-    AS
-    $$
-    DECLARE
-        pwidth float;
-        pheight float;
-        dz_dx float;
-        dz_dy float;
-        zenith float;
-        azimuth float;
-        slope float;
-        aspect float;
-        max_bright float;
-        elevation_scale float;
-    BEGIN
-        pwidth := args[1]::float;
-        pheight := args[2]::float;
-        azimuth := (5.0 * pi() / 2.0) - args[3]::float;
-        zenith := (pi() / 2.0) - args[4]::float;
-        dz_dx := ((matrix[3][1] + 2.0 * matrix[3][2] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[1][2] + matrix[1][3])) / (8.0 * pwidth);
-        dz_dy := ((matrix[1][3] + 2.0 * matrix[2][3] + matrix[3][3]) - (matrix[1][1] + 2.0 * matrix[2][1] + matrix[3][1])) / (8.0 * pheight);
-        elevation_scale := args[6]::float;
-        slope := atan(sqrt(elevation_scale * pow(dz_dx, 2.0) + pow(dz_dy, 2.0)));
-        -- handle special case of 0, 0
-        IF abs(dz_dy) = 0::float AND abs(dz_dy) = 0::float THEN
-            -- set to pi as that is the expected PostgreSQL answer in Linux
-            aspect := pi();
-        ELSE
-            aspect := atan2(dz_dy, -dz_dx);
-        END IF;
-        max_bright := args[5]::float;
-
-        IF aspect < 0 THEN
-            aspect := aspect + (2.0 * pi());
-        END IF;
-
-        RETURN max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) );
-    END;
-    $$
-    LANGUAGE 'plpgsql' IMMUTABLE;
-
-/*
-CREATE OR REPLACE FUNCTION st_hillshade(rast raster, band integer, pixeltype text, azimuth float, altitude float, max_bright float DEFAULT 255.0, elevation_scale float DEFAULT 1.0)
-    RETURNS RASTER
-    AS $$ SELECT st_mapalgebrafctngb($1, $2, $3, 1, 1, '_st_hillshade4ma(float[][], text, text[])'::regprocedure, 'value', st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text) $$
-    LANGUAGE 'sql' STABLE;
-*/
-
 CREATE OR REPLACE FUNCTION st_distinct4ma(matrix float[][], nodatamode TEXT, VARIADIC args TEXT[])
     RETURNS float AS
     $$ SELECT COUNT(DISTINCT unnest)::float FROM unnest($1) $$
@@ -3424,10 +3312,9 @@ CREATE OR REPLACE FUNCTION st_mindist4ma(value double precision[][][], pos integ
 
 -----------------------------------------------------------------------
 -- ST_Slope
--- Hill Shading and the Reflectance Map
--- by Berthold K.P. Horn
--- Proceedings of the IEEE, Vol 69, No. 1
+-- http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works
 -----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
@@ -3576,7 +3463,9 @@ CREATE OR REPLACE FUNCTION st_slope(
 
 -----------------------------------------------------------------------
 -- ST_Aspect
+-- http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works
 -----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
@@ -3727,7 +3616,9 @@ CREATE OR REPLACE FUNCTION st_aspect(
 
 -----------------------------------------------------------------------
 -- ST_HillShade
+-- http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works
 -----------------------------------------------------------------------
+
 CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
