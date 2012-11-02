@@ -737,7 +737,7 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 		*/
 		if ( (side == 0) && lw_pt_in_seg(pt, seg1, seg2) )
 		{
-			return 0;
+			return LW_BOUNDARY;
 		}
 
 		/*
@@ -766,11 +766,11 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 	/* Outside */
 	if (wn == 0)
 	{
-		return -1;
+		return LW_OUTSIDE;
 	}
 	
 	/* Inside */
-	return 1;
+	return LW_INSIDE;
 }
 
 /**

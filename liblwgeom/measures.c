@@ -4,6 +4,7 @@
  * http://postgis.refractions.net
  * Copyright 2001-2006 Refractions Research Inc.
  * Copyright 2010 Nicklas Avén
+ * Copyright 2012 Paul Ramsey
  *
  * This is free software; you can redistribute and/or modify it under
  * the terms of the GNU General Public Licence. See the COPYING file.
@@ -520,7 +521,7 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 		return lw_dist2d_pt_ptarray(&p, poly->rings[0], dl);
 	}
 	/* Return distance to outer ring if not inside it */
-	if ( ! pt_in_ring_2d(&p, poly->rings[0]) )
+	if ( ptarray_contains_point(poly->rings[0], &p) == LW_OUTSIDE )	
 	{
 		LWDEBUG(3, "first point not inside outer-ring");
 		return lw_dist2d_pt_ptarray(&p, poly->rings[0], dl);
@@ -535,7 +536,7 @@ lw_dist2d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS *dl)
 	for (i=1; i<poly->nrings; i++)
 	{
 		/* Inside a hole. Distance = pt -> ring */
-		if ( pt_in_ring_2d(&p, poly->rings[i]) )
+		if ( ptarray_contains_point(poly->rings[i], &p) != LW_OUTSIDE )
 		{
 			LWDEBUG(3, " inside an hole");
 			return lw_dist2d_pt_ptarray(&p, poly->rings[i], dl);
@@ -604,10 +605,10 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 	/* 2	check if poly1 has first point outside poly2 and vice versa, if so, just check outer rings
 	here it would be possible to handle the information about wich one is inside wich one and only search for the smaller ones in the bigger ones holes.*/
 	getPoint2d_p(poly1->rings[0], 0, &pt);
-	if ( !pt_in_ring_2d(&pt, poly2->rings[0]))
+	if ( ptarray_contains_point(poly2->rings[0], &pt) == LW_OUTSIDE )
 	{
 		getPoint2d_p(poly2->rings[0], 0, &pt);
-		if (!pt_in_ring_2d(&pt, poly1->rings[0]))
+		if ( ptarray_contains_point(poly1->rings[0], &pt) == LW_OUTSIDE )
 		{
 			return lw_dist2d_ptarray_ptarray(poly1->rings[0],	poly2->rings[0],dl);
 		}
@@ -618,7 +619,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 	for (i=1; i<poly1->nrings; i++)
 	{
 		/* Inside a hole */
-		if ( pt_in_ring_2d(&pt, poly1->rings[i]) )
+		if ( ptarray_contains_point(poly1->rings[i], &pt) != LW_OUTSIDE )
 		{
 			return lw_dist2d_ptarray_ptarray(poly1->rings[i],	poly2->rings[0],dl);
 		}
@@ -629,7 +630,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 	for (i=1; i<poly2->nrings; i++)
 	{
 		/* Inside a hole */
-		if ( pt_in_ring_2d(&pt, poly2->rings[i]) )
+		if ( ptarray_contains_point(poly2->rings[i], &pt) != LW_OUTSIDE )
 		{
 			return lw_dist2d_ptarray_ptarray(poly1->rings[0],	poly2->rings[i],dl);
 		}
@@ -638,7 +639,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 
 	/*5	If we have come all the way here we know that the first point of one of them is inside the other ones outer ring and not in holes so we check wich one is inside.*/
 	getPoint2d_p(poly1->rings[0], 0, &pt);
-	if ( pt_in_ring_2d(&pt, poly2->rings[0]))
+	if ( ptarray_contains_point(poly2->rings[0], &pt) != LW_OUTSIDE )
 	{
 		dl->distance=0.0;
 		dl->p1.x=pt.x;
@@ -649,7 +650,7 @@ lw_dist2d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS *dl)
 	}
 
 	getPoint2d_p(poly2->rings[0], 0, &pt);
-	if (pt_in_ring_2d(&pt, poly1->rings[0]))
+	if ( ptarray_contains_point(poly1->rings[0], &pt) != LW_OUTSIDE )
 	{
 		dl->distance=0.0;
 		dl->p1.x=pt.x;
@@ -765,7 +766,7 @@ lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 	LWDEBUGF(2, "lw_dist2d_ptarray_poly called (%d rings)", poly->nrings);
 
 	getPoint2d_p(pa, 0, &pt);
-	if ( !pt_in_ring_2d(&pt, poly->rings[0]))
+	if ( ptarray_contains_point(poly->rings[0], &pt) == LW_OUTSIDE )
 	{
 		return lw_dist2d_ptarray_ptarray(pa,poly->rings[0],dl);
 	}
@@ -776,7 +777,8 @@ lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 
 		LWDEBUGF(3, " distance from ring %d: %f, mindist: %f",
 		         i, dl->distance, dl->tolerance);
-		if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; /*just a check if  the answer is already given*/
+		/* just a check if  the answer is already given */
+		if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; 
 	}
 
 	/*
@@ -800,7 +802,7 @@ lw_dist2d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly, DISTPTS *dl)
 	 */
 	for (i=1; i<poly->nrings; i++)
 	{
-		if ( pt_in_ring_2d(&pt, poly->rings[i]) )
+		if ( ptarray_contains_point(poly->rings[i], &pt) != LW_OUTSIDE )
 		{
 			/*
 			 * Its inside a hole, then the actual
@@ -1734,18 +1736,6 @@ Functions in common for Brute force and new calculation
 --------------------------------------------------------------------------------------------------------------*/
 
 /**
- * pt_in_ring_2d(): crossing number test for a point in a polygon
- *      input:   p = a point,
- *               pa = vertex points of a ring V[n+1] with V[n]=V[0]
- *      returns: 0 = outside, 1 = inside
- *
- *	Our polygons have first and last point the same,
- *
- */
-
-
-/**
-
 lw_dist2d_comp from p to line A->B
 This one is now sending every occation to lw_dist2d_pt_pt
 Before it was handling occations where r was between 0 and 1 internally

@@ -418,49 +418,49 @@ static void test_ptarray_contains_point()
 	pt.x = 0.5;
 	pt.y = 0.5;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 	
 	/* Point on left edge of square */
 	pt.x = 0;
 	pt.y = 0.5;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 0);
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/* Point on top edge of square */
 	pt.x = 0.5;
 	pt.y = 1;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 0);
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/* Point on bottom left corner of square */
 	pt.x = 0;
 	pt.y = 0;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 0);
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/* Point on top left corner of square */
 	pt.x = 0;
 	pt.y = 1;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 0);
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);
 
 	/* Point outside top left corner of square */
 	pt.x = -0.1;
 	pt.y = 1;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, -1);
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/* Point outside top left corner of square */
 	pt.x = 0;
 	pt.y = 1.1;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, -1);
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	/* Point outside left side of square */
 	pt.x = -0.2;
 	pt.y = 0.5;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, -1);
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 	
 	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0, 1 1, 2 0, 0 0)"));
@@ -470,7 +470,7 @@ static void test_ptarray_contains_point()
 	pt.x = 0;
 	pt.y = 1;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, -1);
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);
 
 	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(0 0, 0 4, 1 4, 2 2, 3 4, 4 4, 4 0, 0 0)"));
@@ -480,13 +480,13 @@ static void test_ptarray_contains_point()
 	pt.x = 1;
 	pt.y = 2;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 
 	/* Point outside grazing top of triangle */
 	pt.x = 3;
 	pt.y = 2;
 	rv = ptarray_contains_point(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 
 	lwline_free(lwline);
 }
@@ -509,31 +509,31 @@ static void test_ptarray_contains_point_arc()
 	pt.x = 0;
 	pt.y = 0;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);
 	
 	/* Point in left lobe */
 	pt.x = -1.1;
 	pt.y = 0.1;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point on boundary of left lobe */
 	pt.x = -1;
 	pt.y = 0;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point on boundary vertex */
 	pt.x = -1;
 	pt.y = 1;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 0);	
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
 
 	/* Point outside */
 	pt.x = -1.5;
 	pt.y = 1.5;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, -1);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
 
 	/* Two-edge ring made up of semi-circles (really, a circle) */
 	lwfree(lwline);
@@ -545,25 +545,25 @@ static void test_ptarray_contains_point_arc()
 	pt.x = -1.5;
 	pt.y = 1.5;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, -1);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
 
 	/* Point inside at middle */
 	pt.x = 0;
 	pt.y = 0;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point inside offset from middle */
 	pt.x = 0.01;
 	pt.y = 0.01;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point on edge vertex */
 	pt.x = 0;
 	pt.y = 1;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 0);	
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
 
 	/* One-edge ring, closed circle */
 	lwfree(lwline);
@@ -574,19 +574,19 @@ static void test_ptarray_contains_point_arc()
 	pt.x = 0;
 	pt.y = 0;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 1);	
+	CU_ASSERT_EQUAL(rv, LW_INSIDE);	
 
 	/* Point outside */
 	pt.x = 0;
 	pt.y = 2;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, -1);	
+	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
 
 	/* Point on boundary */
 	pt.x = 0;
 	pt.y = 1;
 	rv = ptarray_contains_point_arc(pa, &pt);
-	CU_ASSERT_EQUAL(rv, 0);	
+	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
 
 	/* Overshort ring */
 	lwfree(lwline);
