@@ -911,7 +911,6 @@ CU_TestInfo libgeom_tests[] =
 	PG_TEST(test_lwgeom_calculate_gbox),
 	PG_TEST(test_lwgeom_is_empty),
 	PG_TEST(test_lwgeom_same),
-	PG_TEST(test_lwgeom_flip_coordinates),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo libgeom_suite = {"libgeom",  NULL,  NULL, libgeom_tests};
