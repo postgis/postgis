@@ -7736,7 +7736,7 @@ FROM dummy_rast;
 
 				<note>
 					<para>
-						For more information about Hillshade, please refer to <ulink url="http://edndoc.esri.com/arcobjects/9.2/net/shared/geoprocessing/spatial_analyst_tools/how_hillshade_works.htm">How hillshade works</ulink>.
+						For more information about Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">How hillshade works</ulink>.
 					</para>
 				</note>
 
@@ -7826,7 +7826,7 @@ FROM foo
 
 				<note>
 					<para>
-						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://edndoc.esri.com/arcobjects/9.2/net/shared/geoprocessing/spatial_analyst_tools/how_hillshade_works.htm">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
+						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
 					</para>
 				</note>
 
@@ -7913,7 +7913,7 @@ FROM foo
 
 				<note>
 					<para>
-						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://edndoc.esri.com/arcobjects/9.2/net/shared/geoprocessing/spatial_analyst_tools/how_hillshade_works.htm">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
+						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
 					</para>
 				</note>
 
