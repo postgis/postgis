@@ -433,8 +433,12 @@ DROP FUNCTION IF EXISTS _st_contains(geometry, raster, integer);
 DROP FUNCTION IF EXISTS st_addband(raster, raster[], integer);
 
 -- function signatures changed
+DROP FUNCTION IF EXISTS st_slope(raster, integer, text, boolean);
 DROP FUNCTION IF EXISTS st_slope(raster, integer, text);
+DROP FUNCTION IF EXISTS st_aspect(raster, integer, text, boolean);
 DROP FUNCTION IF EXISTS st_aspect(raster, integer, text);
+DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, double precision, double precision, double precision, double precision, boolean);
+DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float, float, boolean);
 DROP FUNCTION IF EXISTS st_hillshade(raster, integer, text, float, float, float, float);
 
 -- function no longer exists

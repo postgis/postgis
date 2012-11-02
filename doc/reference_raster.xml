@@ -7691,7 +7691,7 @@ FROM dummy_rast;
 		<refentry id="RT_ST_HillShade">
 			<refnamediv>
 				<refname>ST_HillShade</refname>
-				<refpurpose>Returns the hypothetical illumination of an elevation raster band using provided azimuth, altitude, brightness and elevation scale inputs.  Useful for visualizing terrain.</refpurpose>
+				<refpurpose>Returns the hypothetical illumination of an elevation raster band using provided azimuth, altitude, brightness and scale inputs.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
@@ -7700,10 +7700,10 @@ FROM dummy_rast;
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
 					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>azimuth</parameter></paramdef>
-					<paramdef><type>double precision </type> <parameter>altitude</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>azimuth=315</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>altitude=45</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>elevation_scale=1</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -7712,22 +7712,67 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the hypothetical illumination of an elevation raster band using the azimuth, altitude, brightness, and elevation scale inputs. Utilizes map algebra and applies the hill shade equation to neighboring pixels.</para>
+				<para>Returns the hypothetical illumination of an elevation raster band using the azimuth, altitude, brightness, and scale inputs. Utilizes map algebra and applies the hill shade equation to neighboring pixels. Return pixel values are between 0 and 255.</para>
+
+				<para>
+					<varname>azimuth</varname> is a value between 0 and 360 degrees measured clockwise from North.
+				</para>
+
+				<para>
+					<varname>altitude</varname> is a value between 0 and 90 degrees where 0 degrees is at the horizon and 90 degrees is directly overhead.
+				</para>
+
+				<para>
+					<varname>max_bright</varname> is a value between 0 and 255 with 0 as no brightness and 255 as max brightness.
+				</para>
+
+				<para>
+					<varname>scale</varname> is the ratio of vertical units to horizontal. For Feet:LatLon use scale=370400, for Meters:LatLon use scale=111120.
+				</para>
 
 				<para>
 					If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma" /> before computing the hillshade illumination.
 				</para>
 
-				<para>The hill shade equation is: <programlisting>max_bright * ( (cos(zenith)*cos(slope)) + (sin(zenith)*sin(slope)*cos(azimuth - aspect)) )</programlisting>.</para>
+				<note>
+					<para>
+						For more information about Hillshade, please refer to <ulink url="http://edndoc.esri.com/arcobjects/9.2/net/shared/geoprocessing/spatial_analyst_tools/how_hillshade_works.htm">How hillshade works</ulink>.
+					</para>
+				</note>
+
 				<para>Availability: 2.0.0 </para>
 				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
+				<para>Changed: 2.1.0 In prior versions, azimuth and altitude were expressed in radians. Now, azimuth and altitude are expressed in degrees</para>
 
 			</refsection>
 				
 			<refsection>
-				<title>Examples - coming soon</title>				
-<programlisting>coming soon</programlisting>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT ST_SetValues(
+		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+		1, 1, 1, ARRAY[
+			[1, 1, 1, 1, 1],
+			[1, 2, 2, 2, 1],
+			[1, 2, 3, 2, 1],
+			[1, 2, 2, 2, 1],
+			[1, 1, 1, 1, 1]
+		]::double precision[][]
+	) AS rast
+)
+SELECT
+	ST_DumpValues(ST_Hillshade(rast, 1, '32BF'))
+FROM foo
 
+                                                                                                                       st_dumpvalues                                                
+                                                                       
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------
+ (1,"{{NULL,NULL,NULL,NULL,NULL},{NULL,251.32763671875,220.749786376953,147.224319458008,NULL},{NULL,220.749786376953,180.312225341797,67.7497863769531,NULL},{NULL,147.224319458008
+,67.7497863769531,43.1210060119629,NULL},{NULL,NULL,NULL,NULL,NULL}}")
+(1 row)
+				</programlisting>
 			</refsection>
 
 			<refsection>
@@ -7743,15 +7788,16 @@ FROM dummy_rast;
 		<refentry id="RT_ST_Aspect">
 			<refnamediv>
 				<refname>ST_Aspect</refname>
-				<refpurpose>Returns the surface aspect of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
+				<refpurpose>Returns the aspect (in degrees by default) of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
 					<funcdef>raster <function>ST_Aspect</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>pixeltype</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>measurement=DEGREES</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -7760,46 +7806,62 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the surface aspect of an elevation raster band. Utilizes map algebra and applies the aspect equation to neighboring pixels.</para>
+				<para>Returns the aspect (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the aspect equation to neighboring pixels.</para>
 
 				<para>
-					If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma" /> before computing the surface aspect.
+					<varname>measurement</varname> indicates the units of the aspect. Possible values are: RADIANS, DEGREES (default).
 				</para>
 
-				<para>Given the following representation of a 3x3 neighborhood of pixels:</para>
+				<para>
+					When <varname>measurement</varname> = RADIANS, values are between 0 and 2&pi; radians measured clockwise from North.
+				</para>
 
-                <informaltable rowsep="1" frame="all">
-                <tgroup cols="3">
-                    <tbody>
-                      <row>
-                        <entry>A</entry>
-                        <entry>B</entry>
-                        <entry>C</entry>
-                      </row>
-                      <row>
-                        <entry>D</entry>
-                        <entry>E</entry>
-                        <entry>F</entry>
-                      </row>
-                      <row>
-                        <entry>G</entry>
-                        <entry>H</entry>
-                        <entry>I</entry>
-                      </row>
-                    </tbody>
-                </tgroup>
-                </informaltable>
+				<para>
+					When <varname>measurement</varname> = DEGREES, values are between 0 and 360 degrees measured clockwise from North.
+				</para>
 
-                <para>The equation for the pixel aspect of cell E is: atan2((((G + 2H + I) - (A + 2B + C))  / 8), -(((C + 2F + I) - (A + 2D + G)) / 8))</para>
+				<para>
+					If slope of pixel is zero, aspect of pixel is -1.
+				</para>
+
+				<note>
+					<para>
+						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://edndoc.esri.com/arcobjects/9.2/net/shared/geoprocessing/spatial_analyst_tools/how_hillshade_works.htm">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
+					</para>
+				</note>
 
 				<para>Availability: 2.0.0 </para>
 				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
-			
+				<para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
 			</refsection>
 				
 			<refsection>
-				<title>Examples - coming soon</title>				
-                <programlisting>coming soon</programlisting>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT ST_SetValues(
+		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+		1, 1, 1, ARRAY[
+			[1, 1, 1, 1, 1],
+			[1, 2, 2, 2, 1],
+			[1, 2, 3, 2, 1],
+			[1, 2, 2, 2, 1],
+			[1, 1, 1, 1, 1]
+		]::double precision[][]
+	) AS rast
+)
+SELECT
+	ST_DumpValues(ST_Aspect(rast, 1, '32BF'))
+FROM foo
+
+                                                                                                    st_dumpvalues                                                                   
+                                  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------
+ (1,"{{315,341.565063476562,0,18.4349479675293,45},{288.434936523438,315,0,45,71.5650482177734},{270,270,-1,90,90},{251.565048217773,225,180,135,108.434951782227},{225,198.43495178
+2227,180,161.565048217773,135}}")
+(1 row)
+				</programlisting>
 
 			</refsection>
 
@@ -7816,15 +7878,17 @@ FROM dummy_rast;
 		<refentry id="RT_ST_Slope">
 			<refnamediv>
 				<refname>ST_Slope</refname>
-				<refpurpose>Returns the surface slope of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
+				<refpurpose>Returns the slope (in degrees by default) of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
 			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
 					<funcdef>raster <function>ST_Slope</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
 					<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>measurement=DEGREES</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
 					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
@@ -7833,47 +7897,62 @@ FROM dummy_rast;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the surface slope of an elevation raster band. Utilizes map algebra and applies the slope equation to neighboring pixels.</para>
+				<para>Returns the slope (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the slope equation to neighboring pixels.</para>
+
+				<para>
+					<varname>measurement</varname> indicates the units of the slope. Possible values are: RADIANS, DEGREES (default), PERCENT.
+				</para>
+
+				<para>
+					<varname>scale</varname> is the ratio of vertical units to horizontal. For Feet:LatLon use scale=370400, for Meters:LatLon use scale=111120.
+				</para>
 
 				<para>
 					If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma" /> before computing the surface slope.
 				</para>
 
-				<para>Given the following representation of a 3x3 neighborhood of pixels:</para>
-
-                <informaltable rowsep="1" frame="all">
-                <tgroup cols="3">
-                    <tbody>
-                      <row>
-                        <entry>A</entry>
-                        <entry>B</entry>
-                        <entry>C</entry>
-                      </row>
-                      <row>
-                        <entry>D</entry>
-                        <entry>E</entry>
-                        <entry>F</entry>
-                      </row>
-                      <row>
-                        <entry>G</entry>
-                        <entry>H</entry>
-                        <entry>I</entry>
-                      </row>
-                    </tbody>
-                </tgroup>
-                </informaltable>
-
-                <para>The equation for the pixel slope of cell E is: atan(sqrt(((c + 2f + i) - (a + 2d + g) / 8)^2 + (((g + 2h + i) - (a + 2b + c)) / 8) ^ 2))</para>
+				<note>
+					<para>
+						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://edndoc.esri.com/arcobjects/9.2/net/shared/geoprocessing/spatial_analyst_tools/how_hillshade_works.htm">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
+					</para>
+				</note>
 
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
+				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>measurement</varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> function parameters</para>
+				<para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
 			
 			</refsection>
 				
 			<refsection>
-				<title>Examples - coming soon</title>				
-                <programlisting>coming soon</programlisting>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT ST_SetValues(
+		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+		1, 1, 1, ARRAY[
+			[1, 1, 1, 1, 1],
+			[1, 2, 2, 2, 1],
+			[1, 2, 3, 2, 1],
+			[1, 2, 2, 2, 1],
+			[1, 1, 1, 1, 1]
+		]::double precision[][]
+	) AS rast
+)
+SELECT
+	ST_DumpValues(ST_Slope(rast, 1, '32BF'))
+FROM foo
 
+                            st_dumpvalues                                                                                                                                           
+                                                                     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------
+ (1,"{{10.0249881744385,21.5681285858154,26.5650520324707,21.5681285858154,10.0249881744385},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},
+{26.5650520324707,36.8698959350586,0,36.8698959350586,26.5650520324707},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},{10.0249881744385,21.
+5681285858154,26.5650520324707,21.5681285858154,10.0249881744385}}")
+(1 row)
+
+				</programlisting>
 			</refsection>
 
 			<refsection>
@@ -7885,7 +7964,7 @@ FROM dummy_rast;
 				</para>
 			</refsection>
 		</refentry>
-		
+
 		<refentry id="RT_ST_Intersection">
 			<refnamediv>
 				<refname>ST_Intersection</refname>

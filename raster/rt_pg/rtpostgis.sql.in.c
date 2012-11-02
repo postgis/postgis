@@ -3424,165 +3424,34 @@ CREATE OR REPLACE FUNCTION st_mindist4ma(value double precision[][][], pos integ
 
 -----------------------------------------------------------------------
 -- ST_Slope
+-- Hill Shading and the Reflectance Map
+-- by Berthold K.P. Horn
+-- Proceedings of the IEEE, Vol 69, No. 1
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
 	RETURNS double precision
 	AS $$
 	DECLARE
-		pwidth double precision;
-		pheight double precision;
+		x integer;
+		y integer;
+		z integer;
+
+		_pixwidth double precision;
+		_pixheight double precision;
+		_width double precision;
+		_height double precision;
+		_measure text;
+		_scale double precision;
+
 		dz_dx double precision;
 		dz_dy double precision;
 
-		_value double precision[][][];
-		ndims int;
-		z int;
-	BEGIN
-
-		ndims := array_ndims(value);
-		-- add a third dimension if 2-dimension
-		IF ndims = 2 THEN
-			_value := _st_convertarray4ma(value);
-		ELSEIF ndims != 3 THEN
-			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
-		ELSE
-			_value := value;
-		END IF;
-
-		IF (
-			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
-			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
-		) THEN
-			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
-		END IF;
-
-		IF array_length(userargs, 1) < 2 THEN
-			RAISE EXCEPTION 'At least two elements must be provided for the third parameter';
-		END IF;
-
-		-- only use the first raster passed to this function
-		IF array_length(_value, 1) > 1 THEN
-			RAISE NOTICE 'Only using the values from the first raster';
-		END IF;
-		z := array_lower(_value, 1);
-
-		pwidth := userargs[1]::double precision;
-		pheight := userargs[2]::double precision;
-		dz_dy := ((_value[z][3][1] + 2.0 * _value[z][3][2] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][1][2] + _value[z][1][3])) / (8.0 * pwidth);
-		dz_dx := ((_value[z][1][3] + 2.0 * _value[z][2][3] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][2][1] + _value[z][3][1])) / (8.0 * pheight);
-
-		RETURN atan(sqrt(pow(dz_dx, 2.0) + pow(dz_dy, 2.0)));
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION st_slope(rast raster, band integer DEFAULT 1, pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE)
-	RETURNS raster
-	AS $$
-		SELECT
-			CASE
-				WHEN $4 IS FALSE THEN
-					ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], '_st_slope4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text)
-				ELSE
-					ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_slope4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text)
-			END
-	$$ LANGUAGE 'sql' IMMUTABLE;
-
------------------------------------------------------------------------
--- ST_Aspect
------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
-	RETURNS double precision
-	AS $$
-	DECLARE
-		pwidth double precision;
-		pheight double precision;
-		dz_dx double precision;
-		dz_dy double precision;
-		aspect double precision;
-
-		_value double precision[][][];
-		ndims int;
-		z int;
-	BEGIN
-		ndims := array_ndims(value);
-		-- add a third dimension if 2-dimension
-		IF ndims = 2 THEN
-			_value := _st_convertarray4ma(value);
-		ELSEIF ndims != 3 THEN
-			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
-		ELSE
-			_value := value;
-		END IF;
-
-		IF (
-			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
-			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
-		) THEN
-			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
-		END IF;
-
-		IF array_length(userargs, 1) < 2 THEN
-			RAISE EXCEPTION 'At least two elements must be provided for the third parameter';
-		END IF;
-
-		-- only use the first raster passed to this function
-		IF array_length(_value, 1) > 1 THEN
-			RAISE NOTICE 'Only using the values from the first raster';
-		END IF;
-		z := array_lower(_value, 1);
-
-		pwidth := userargs[1]::double precision;
-		pheight := userargs[2]::double precision;
-
-		dz_dx := ((_value[z][1][3] + 2.0 * _value[z][2][3] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][2][1] + _value[z][3][1])) / (8.0 * pheight);
-		dz_dy := ((_value[z][3][1] + 2.0 * _value[z][3][2] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][1][2] + _value[z][1][3])) / (8.0 * pwidth);
-		IF abs(dz_dx) = 0::double precision AND abs(dz_dy) = 0::double precision THEN
-			RETURN -1;
-		END IF;
-
-		aspect := atan2(dz_dy, -dz_dx);
-		IF aspect > (pi() / 2.0) THEN
-			RETURN (5.0 * pi() / 2.0) - aspect;
-		ELSE
-			RETURN (pi() / 2.0) - aspect;
-		END IF;
-	END;
-	$$ LANGUAGE 'plpgsql' IMMUTABLE;
-
-CREATE OR REPLACE FUNCTION st_aspect(rast raster, band integer, pixeltype text, interpolate_nodata boolean DEFAULT FALSE)
-	RETURNS raster
-	AS $$
-		SELECT
-			CASE
-				WHEN $4 IS FALSE THEN
-					ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], '_st_aspect4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text)
-				ELSE
-					ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_aspect4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text)
-			END
-	$$ LANGUAGE 'sql' IMMUTABLE;
-
------------------------------------------------------------------------
--- ST_HillShade
------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
-	RETURNS double precision
-	AS $$
-	DECLARE
-		pwidth double precision;
-		pheight double precision;
-		dz_dx double precision;
-		dz_dy double precision;
-		zenith double precision;
-		azimuth double precision;
 		slope double precision;
-		aspect double precision;
-		max_bright double precision;
-		elevation_scale double precision;
 
 		_value double precision[][][];
 		ndims int;
-		z int;
 	BEGIN
+
 		ndims := array_ndims(value);
 		-- add a third dimension if 2-dimension
 		IF ndims = 2 THEN
@@ -3592,6 +3461,12 @@ CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos in
 		ELSE
 			_value := value;
 		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
 
 		IF (
 			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
@@ -3604,56 +3479,431 @@ CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos in
 			RAISE EXCEPTION 'At least six elements must be provided for the third parameter';
 		END IF;
 
+		_pixwidth := userargs[1]::double precision;
+		_pixheight := userargs[2]::double precision;
+		_width := userargs[3]::double precision;
+		_height := userargs[4]::double precision;
+		_measure := userargs[5];
+		_scale := userargs[6]::double precision;
+
+		/* ArcGIS returns values for edge pixels
+		-- check that pixel is not edge pixel
+		IF (pos[1][1] = 1 OR pos[1][2] = 1) OR (pos[1][1] = _width OR pos[1][2] = _height) THEN
+			RETURN NULL;
+		ELSEIF _value[z][2][2] IS NULL THEN
+		*/
+		-- check that center pixel isn't NODATA
+		IF _value[z][2][2] IS NULL THEN
+			RETURN NULL;
+		-- substitute center pixel for any neighbor pixels that are NODATA
+		ELSE
+			FOR y IN 1..3 LOOP
+				FOR x IN 1..3 LOOP
+					IF _value[z][y][x] IS NULL THEN
+						_value[z][y][x] = _value[z][2][2];
+					END IF;
+				END LOOP;
+			END LOOP;
+		END IF;
+
+		dz_dy := ((_value[z][3][1] + _value[z][3][2] + _value[z][3][2] + _value[z][3][3]) -
+			(_value[z][1][1] + _value[z][1][2] + _value[z][1][2] + _value[z][1][3])) / _pixheight;
+		dz_dx := ((_value[z][1][3] + _value[z][2][3] + _value[z][2][3] + _value[z][3][3]) -
+			(_value[z][1][1] + _value[z][2][1] + _value[z][2][1] + _value[z][3][1])) / _pixwidth;
+
+		slope := sqrt(dz_dx * dz_dx + dz_dy * dz_dy) / (8 * _scale);
+
+		-- output depends on user preference
+		CASE substring(upper(trim(leading from _measure)) for 3)
+			-- percentages
+			WHEN 'PER' THEN
+				slope := 100.0 * slope;
+			-- radians
+			WHEN 'rad' THEN
+				slope := atan(slope);
+			-- degrees (default)
+			ELSE
+				slope := degrees(atan(slope));
+		END CASE;
+
+		RETURN slope;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_slope(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', measurement text DEFAULT 'DEGREES',
+	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		_rast raster;
+		_nband integer;
+		_pixtype text;
+		_pixwidth double precision;
+		_pixheight double precision;
+		_width integer;
+		_height integer;
+	BEGIN
+		IF interpolate_nodata IS TRUE THEN
+			_rast := ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1);
+			_nband := 1;
+			_pixtype := NULL;
+		ELSE
+			_rast := rast;
+			_nband := nband;
+			_pixtype := pixeltype;
+		END IF;
+
+		-- get properties
+		_pixwidth := ST_PixelWidth(_rast);
+		_pixheight := ST_PixelHeight(_rast);
+		SELECT width, height INTO _width, _height FROM ST_Metadata(_rast);
+
+		RETURN ST_MapAlgebra(
+			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
+			'_st_slope4ma(double precision[][][], integer[][], text[])'::regprocedure,
+			_pixtype,
+			'FIRST', NULL,
+			1, 1,
+			_pixwidth::text, _pixheight::text,
+			_width::text, _height::text,
+			$4::text, $5::text
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- ST_Aspect
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		x integer;
+		y integer;
+		z integer;
+
+		_width double precision;
+		_height double precision;
+		_measure text;
+
+		dz_dx double precision;
+		dz_dy double precision;
+		aspect double precision;
+		halfpi double precision;
+
+		_value double precision[][][];
+		ndims int;
+	BEGIN
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		IF (
+			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
+			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
+		) THEN
+			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
+		END IF;
+
+		IF array_length(userargs, 1) < 3 THEN
+			RAISE EXCEPTION 'At least three elements must be provided for the third parameter';
+		END IF;
+
 		-- only use the first raster passed to this function
 		IF array_length(_value, 1) > 1 THEN
 			RAISE NOTICE 'Only using the values from the first raster';
 		END IF;
 		z := array_lower(_value, 1);
 
-		pwidth := userargs[1]::double precision;
-		pheight := userargs[2]::double precision;
+		_width := userargs[1]::double precision;
+		_height := userargs[2]::double precision;
+		_measure := userargs[3];
 
-		azimuth := (5.0 * pi() / 2.0) - userargs[3]::double precision;
-		zenith := (pi() / 2.0) - userargs[4]::double precision;
-		dz_dy := ((_value[z][3][1] + 2.0 * _value[z][3][2] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][1][2] + _value[z][1][3])) / (8.0 * pwidth);
-		dz_dx := ((_value[z][1][3] + 2.0 * _value[z][2][3] + _value[z][3][3]) - (_value[z][1][1] + 2.0 * _value[z][2][1] + _value[z][3][1])) / (8.0 * pheight);
-		elevation_scale := userargs[6]::double precision;
-		slope := atan(sqrt(elevation_scale * pow(dz_dx, 2.0) + pow(dz_dy, 2.0)));
-
-		-- handle special case of 0, 0
-		IF abs(dz_dy) = 0::double precision AND abs(dz_dy) = 0::double precision THEN
-			-- set to pi as that is the expected PostgreSQL answer in Linux
-			aspect := pi();
+		/* ArcGIS returns values for edge pixels
+		-- check that pixel is not edge pixel
+		IF (pos[1][1] = 1 OR pos[1][2] = 1) OR (pos[1][1] = _width OR pos[1][2] = _height) THEN
+			RETURN NULL;
+		ELSEIF _value[z][2][2] IS NULL THEN
+		*/
+		-- check that center pixel isn't NODATA
+		IF _value[z][2][2] IS NULL THEN
+			RETURN NULL;
+		-- substitute center pixel for any neighbor pixels that are NODATA
 		ELSE
+			FOR y IN 1..3 LOOP
+				FOR x IN 1..3 LOOP
+					IF _value[z][y][x] IS NULL THEN
+						_value[z][y][x] = _value[z][2][2];
+					END IF;
+				END LOOP;
+			END LOOP;
+		END IF;
+
+		dz_dy := ((_value[z][3][1] + _value[z][3][2] + _value[z][3][2] + _value[z][3][3]) -
+			(_value[z][1][1] + _value[z][1][2] + _value[z][1][2] + _value[z][1][3]));
+		dz_dx := ((_value[z][1][3] + _value[z][2][3] + _value[z][2][3] + _value[z][3][3]) -
+			(_value[z][1][1] + _value[z][2][1] + _value[z][2][1] + _value[z][3][1]));
+
+		-- aspect is flat
+		IF abs(dz_dx) = 0::double precision AND abs(dz_dy) = 0::double precision THEN
+			RETURN -1;
+		END IF;
+
+		-- aspect is in radians
+		aspect := atan2(dz_dy, -dz_dx);
+
+		-- north = 0, pi/2 = east, 3pi/2 = west
+		halfpi := pi() / 2.0;
+		IF aspect > halfpi THEN
+			aspect := (5.0 * halfpi) - aspect;
+		ELSE
+			aspect := halfpi - aspect;
+		END IF;
+
+		IF aspect = 2 * pi() THEN
+			aspect := 0.;
+		END IF;
+
+		-- output depends on user preference
+		CASE substring(upper(trim(leading from _measure)) for 3)
+			-- radians
+			WHEN 'rad' THEN
+				RETURN aspect;
+			-- degrees (default)
+			ELSE
+				RETURN degrees(aspect);
+		END CASE;
+
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_aspect(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', measurement text DEFAULT 'DEGREES',
+	interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		_rast raster;
+		_nband integer;
+		_pixtype text;
+		_width integer;
+		_height integer;
+	BEGIN
+		IF interpolate_nodata IS TRUE THEN
+			_rast := ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1);
+			_nband := 1;
+			_pixtype := NULL;
+		ELSE
+			_rast := rast;
+			_nband := nband;
+			_pixtype := pixeltype;
+		END IF;
+
+		-- get properties
+		SELECT width, height INTO _width, _height FROM ST_Metadata(_rast);
+
+		RETURN ST_MapAlgebra(
+			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
+			'_st_aspect4ma(double precision[][][], integer[][], text[])'::regprocedure,
+			_pixtype,
+			'FIRST', NULL,
+			1, 1,
+			_width::text, _height::text,
+			$4::text
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+-----------------------------------------------------------------------
+-- ST_HillShade
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		_pixwidth double precision;
+		_pixheight double precision;
+		_width double precision;
+		_height double precision;
+		_azimuth double precision;
+		_altitude double precision;
+		_bright double precision;
+		_scale double precision;
+
+		dz_dx double precision;
+		dz_dy double precision;
+		azimuth double precision;
+		zenith double precision;
+		slope double precision;
+		aspect double precision;
+		shade double precision;
+
+		_value double precision[][][];
+		ndims int;
+		z int;
+	BEGIN
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		IF (
+			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
+			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
+		) THEN
+			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
+		END IF;
+
+		IF array_length(userargs, 1) < 8 THEN
+			RAISE EXCEPTION 'At least eight elements must be provided for the third parameter';
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		_pixwidth := userargs[1]::double precision;
+		_pixheight := userargs[2]::double precision;
+		_width := userargs[3]::double precision;
+		_height := userargs[4]::double precision;
+		_azimuth := userargs[5]::double precision;
+		_altitude := userargs[6]::double precision;
+		_bright := userargs[7]::double precision;
+		_scale := userargs[8]::double precision;
+
+		-- check that pixel is not edge pixel
+		IF (pos[1][1] = 1 OR pos[1][2] = 1) OR (pos[1][1] = _width OR pos[1][2] = _height) THEN
+			RETURN NULL;
+		END IF;
+
+		-- clamp azimuth
+		IF _azimuth < 0. THEN
+			RAISE NOTICE 'Clamping provided azimuth value % to 0', _azimuth;
+			_azimuth := 0.;
+		ELSEIF _azimuth >= 360. THEN
+			RAISE NOTICE 'Converting provided azimuth value % to be between 0 and 360', _azimuth;
+			_azimuth := _azimuth - (360. * floor(_azimuth / 360.));
+		END IF;
+		azimuth := 360. - _azimuth + 90.;
+		IF azimuth >= 360. THEN
+			azimuth := azimuth - 360.;
+		END IF;
+		azimuth := radians(azimuth);
+		--RAISE NOTICE 'azimuth = %', azimuth;
+
+		-- clamp altitude
+		IF _altitude < 0. THEN
+			RAISE NOTICE 'Clamping provided altitude value % to 0', _altitude;
+			_altitude := 0.;
+		ELSEIF _altitude > 90. THEN
+			RAISE NOTICE 'Clamping provided altitude value % to 90', _altitude;
+			_altitude := 90.;
+		END IF;
+		zenith := radians(90. - _altitude);
+		--RAISE NOTICE 'zenith = %', zenith;
+
+		-- clamp bright
+		IF _bright < 0. THEN
+			RAISE NOTICE 'Clamping provided bright value % to 0', _bright;
+			_bright := 0.;
+		ELSEIF _bright > 255. THEN
+			RAISE NOTICE 'Clamping provided bright value % to 255', _bright;
+			_bright := 255.;
+		END IF;
+
+		dz_dy := ((_value[z][3][1] + _value[z][3][2] + _value[z][3][2] + _value[z][3][3]) -
+			(_value[z][1][1] + _value[z][1][2] + _value[z][1][2] + _value[z][1][3])) / (8 * _pixheight);
+		dz_dx := ((_value[z][1][3] + _value[z][2][3] + _value[z][2][3] + _value[z][3][3]) -
+			(_value[z][1][1] + _value[z][2][1] + _value[z][2][1] + _value[z][3][1])) / (8 * _pixwidth);
+
+		slope := atan(sqrt(dz_dx * dz_dx + dz_dy * dz_dy) / _scale);
+
+		IF dz_dx != 0. THEN
 			aspect := atan2(dz_dy, -dz_dx);
-		END IF;
-		max_bright := userargs[5]::double precision;
 
-		IF aspect < 0 THEN
-			aspect := aspect + (2.0 * pi());
+			IF aspect < 0. THEN
+				aspect := aspect + (2.0 * pi());
+			END IF;
+		ELSE
+			IF dz_dy > 0. THEN
+				aspect := pi() / 2.;
+			ELSEIF dz_dy < 0. THEN
+				aspect := (2. * pi()) - (pi() / 2.);
+			-- set to pi as that is the expected PostgreSQL answer in Linux
+			ELSE
+				aspect := pi();
+			END IF;
 		END IF;
 
-		RETURN max_bright * ((cos(zenith) * cos(slope)) + (sin(zenith) * sin(slope) * cos(azimuth - aspect)));
+		shade := _bright * ((cos(zenith) * cos(slope)) + (sin(zenith) * sin(slope) * cos(azimuth - aspect)));
+		RETURN shade;
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_hillshade(
-	rast raster, band integer,
-	pixeltype text,
-	azimuth double precision, altitude double precision,
-	max_bright double precision DEFAULT 255.0, elevation_scale double precision DEFAULT 1.0,
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF',
+	azimuth double precision DEFAULT 315.0, altitude double precision DEFAULT 45.0,
+	max_bright double precision DEFAULT 255.0, scale double precision DEFAULT 1.0,
 	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS RASTER
 	AS $$
-		SELECT
-			CASE
-				WHEN $8 IS FALSE THEN
-					ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], '_st_hillshade4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text)
-				ELSE
-					ST_MapAlgebra(ARRAY[ROW(ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1), 1)]::rastbandarg[], '_st_hillshade4ma(double precision[][][], integer[][], text[])'::regprocedure, NULL, 'FIRST', NULL, 1, 1, st_pixelwidth($1)::text, st_pixelheight($1)::text, $4::text, $5::text, $6::text, $7::text)
-			END
-	$$ LANGUAGE 'sql' IMMUTABLE;
+	DECLARE
+		_rast raster;
+		_nband integer;
+		_pixtype text;
+		_pixwidth double precision;
+		_pixheight double precision;
+		_width integer;
+		_height integer;
+	BEGIN
+		IF interpolate_nodata IS TRUE THEN
+			_rast := ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1);
+			_nband := 1;
+			_pixtype := NULL;
+		ELSE
+			_rast := rast;
+			_nband := nband;
+			_pixtype := pixeltype;
+		END IF;
+
+		-- get properties
+		_pixwidth := ST_PixelWidth(_rast);
+		_pixheight := ST_PixelHeight(_rast);
+		SELECT width, height, scalex INTO _width, _height FROM ST_Metadata(_rast);
+
+		RETURN ST_MapAlgebra(
+			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
+			'_st_hillshade4ma(double precision[][][], integer[][], text[])'::regprocedure,
+			_pixtype,
+			'FIRST', NULL,
+			1, 1,
+			_pixwidth::text, _pixheight::text,
+			_width::text, _height::text,
+			$4::text, $5::text,
+			$6::text, $7::text
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster

@@ -8,6 +8,9 @@ PostGIS 2.1.0
   - #2026, ST_Union(raster) now unions all bands of all rasters
   - point variant of ST_SetValue(raster) previously did not check SRID
     of input geometry and raster.
+  - ST_Hillshade parameters azimuth and altitude are now in degrees
+    instead of radians.
+  - ST_Slope and ST_Aspect return pixel values in degrees instead of radians
 
 * Deprecated signatures
 
@@ -44,7 +47,6 @@ PostGIS 2.1.0
     (Bborie Park / UC Davis)
   - ST_Tile(raster) to break up a raster into tiles (Bborie Park / UC Davis)
   - #739, UpdateRasterSRID()
-  - #1655, Addition default values for parameters of ST_Slope
 
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 
@@ -73,6 +75,8 @@ PostGIS 2.1.0
   - point variant of ST_SetValue(raster) is now a wrapper around geomval 
     variant of ST_SetValues(rast).
   - proper support for raster band's isnodata flag in core API and loader.
+  - #1655, Additional default values for parameters of ST_Slope
+  - Additional default values for parameters of ST_Aspect and ST_HillShade
 
 * Fixes *
 
@@ -92,6 +96,7 @@ PostGIS 2.1.0
   - #1981, cleanup of unused variables causing warnings with gcc 4.6+
   - #2026, improve performance of distance calculations 
   - #2057, Fixed linking issue for raster2psql to libpq
+  - #2077, Fixed incorrect values returning from ST_Hillshade()
 
 PostGIS 2.0.1
 2012/06/22
