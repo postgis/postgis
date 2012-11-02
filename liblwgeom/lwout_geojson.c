@@ -158,6 +158,9 @@ asgeojson_point_size(const LWPOINT *point, char *srs, GBOX *bbox, int precision)
 	size += sizeof("{'type':'Point',");
 	size += sizeof("'coordinates':}");
 
+	if ( lwpoint_is_empty(point) )
+		size += 2; /* [] */
+
 	if (srs) size += asgeojson_srs_size(srs);
 	if (bbox) size += asgeojson_bbox_size(FLAGS_GET_Z(point->flags), precision);
 
@@ -174,6 +177,8 @@ asgeojson_point_buf(const LWPOINT *point, char *srs, char *output, GBOX *bbox, i
 	if (bbox) ptr += asgeojson_bbox_buf(ptr, bbox, FLAGS_GET_Z(point->flags), precision);
 
 	ptr += sprintf(ptr, "\"coordinates\":");
+	if ( lwpoint_is_empty(point) )
+		ptr += sprintf(ptr, "[]");
 	ptr += pointArray_to_geojson(point->point, ptr, precision);
 	ptr += sprintf(ptr, "}");
 

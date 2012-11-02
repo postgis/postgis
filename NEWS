@@ -21,6 +21,7 @@ PostGIS 2.0.2
   - #1989, Preprocess input geometry to just intersection with raster
   -        to be clipped
   - Update URL of Maven jar
+  - #1996, support POINT EMPTY in GeoJSON output
   - #2019, ST_FlipCoordinates does not update bbox
   - #2026, improve performance of distance calculations
   - #2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()
