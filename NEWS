@@ -16,11 +16,12 @@ PostGIS 2.0.2
   - #1955, ST_ModEdgeHeal and ST_NewEdgeHeal for doubly connected edges
   - #1957, ST_Distance to a one-point LineString returns NULL
   - #1976, Geography point-in-ring code overhauled for more reliability
-  - #1978, wrong answer when calculating length of a closed circular arc (circle)
+  - #1978, wrong answer calculating length of closed circular arc (circle)
   - #1981, Remove unused but set variables as found with gcc 4.6+
   - #1989, Preprocess input geometry to just intersection with raster
   -        to be clipped
   - Update URL of Maven jar
+  - #2019, ST_FlipCoordinates does not update bbox
   - #2026, improve performance of distance calculations
   - #2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()
   - #2057, Fixed linking issue for raster2psql to libpq
@@ -29,6 +30,7 @@ PostGIS 2.0.2
   - #2072, Removed outdated checks preventing ST_Intersects(raster) from
            working on out-db bands
   - #2077, Fixed incorrect answers from ST_Hillshade(raster)
+
 
  * Enhancements *
 

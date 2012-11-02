@@ -1293,6 +1293,9 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	LWPOLY *poly;
 	int i;
 
+	if ( (!in) || lwgeom_is_empty(in) )
+		return in;
+
 	LWDEBUGF(4, "lwgeom_flip_coordinates, got type: %s",
 	         lwtype_name(in->type));
 
@@ -1300,25 +1303,27 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	{
 	case POINTTYPE:
 		ptarray_flip_coordinates(lwgeom_as_lwpoint(in)->point);
-		return in;
+		break;
 
 	case LINETYPE:
 		ptarray_flip_coordinates(lwgeom_as_lwline(in)->points);
-		return in;
+		break;
 
 	case CIRCSTRINGTYPE:
 		ptarray_flip_coordinates(lwgeom_as_lwcircstring(in)->points);
-		return in;
+		break;
 
 	case POLYGONTYPE:
 		poly = (LWPOLY *) in;
 		for (i=0; i<poly->nrings; i++)
+		{
 			ptarray_flip_coordinates(poly->rings[i]);
-		return in;
+		}
+		break;
 
 	case TRIANGLETYPE:
 		ptarray_flip_coordinates(lwgeom_as_lwtriangle(in)->points);
-		return in;
+		break;
 
 	case MULTIPOINTTYPE:
 	case MULTILINETYPE:
@@ -1332,14 +1337,20 @@ LWGEOM* lwgeom_flip_coordinates(LWGEOM *in)
 	case TINTYPE:
 		col = (LWCOLLECTION *) in;
 		for (i=0; i<col->ngeoms; i++)
+		{
 			lwgeom_flip_coordinates(col->geoms[i]);
-		return in;
+		}
+		break;
 
 	default:
 		lwerror("lwgeom_flip_coordinates: unsupported geometry type: %s",
 		        lwtype_name(in->type));
+		return NULL;
 	}
-	return NULL;
+
+	lwgeom_drop_bbox(in);
+	lwgeom_add_bbox(in);
+	return in;
 }
 
 void lwgeom_set_srid(LWGEOM *geom, int32_t srid)
