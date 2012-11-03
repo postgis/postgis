@@ -15,7 +15,7 @@ REM "%PGBIN%\psql" -d "%THEDB%" -c "ALTER DATABASE %THEDB% SET search_path=publi
 "%PGBIN%\psql"  -d "%THEDB%" -f "create_geocode.sql"
 REM "%PGBIN%\psql"  -d "%THEDB%" -f "tables\lookup_tables_2011.sql"
 "%PGBIN%\psql"  -d "%THEDB%" -c "CREATE SCHEMA tiger_data"
-"%PGBIN%\psql"  -d "%THEDB%" -f "tiger_loader_2011.sql"
+"%PGBIN%\psql"  -d "%THEDB%" -f "tiger_loader_2012.sql"
 "%PGBIN%\psql"  -d "%THEDB%" -f "census_loader.sql"
 "%PGBIN%\psql"  -d "%THEDB%" -c "SELECT tiger.create_census_base_tables();"
 "%PGBIN%\psql"  -d "%THEDB%" -c "CREATE INDEX idx_tiger_addr_least_address ON addr USING btree (least_hn(fromhn,tohn));"
