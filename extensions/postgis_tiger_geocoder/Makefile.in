@@ -68,9 +68,35 @@ sql_bits/tiger_geocoder_minor.sql.in: ../../extras/tiger_geocoder/tiger_2011/uti
 	
 sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
-	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
-	sql_bits/tiger_geocoder_minor.sql.in
+	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
+	../../extras/tiger_geocoder/tiger_2011/tables/tiger_loader_2011.sql \
+	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
+	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
+	../../extras/tiger_geocoder/tiger_2011/utility/cull_null.sql \
+	../../extras/tiger_geocoder/tiger_2011/utility/nullable_levenshtein.sql \
+	../../extras/tiger_geocoder/tiger_2011/utility/levenshtein_ignore_case.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/end_soundex.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/count_words.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/state_extract.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/get_last_words.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract_countysub_exact.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract_countysub_fuzzy.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract_place_exact.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract_place_fuzzy.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/location_extract.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/normalize_address.sql \
+	../../extras/tiger_geocoder/tiger_2011/normalize/pprint_addy.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/other_helper_functions.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/rate_attributes.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/includes_address.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/interpolate_from_address.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/geocode_address.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/geocode_location.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/geocode_intersection.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/geocode.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/reverse_geocode.sql \
+	../../extras/tiger_geocoder/tiger_2011/geocode/census_tracts_functions.sql
 	cat $^ > $@
 	
 sql_bits/tiger_geocoder.sql: sql_bits/tiger_geocoder.sql.in
@@ -119,7 +145,7 @@ sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extensio
   	  cat $^ > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
-DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
+DATA = $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql
 endif
 

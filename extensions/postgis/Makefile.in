@@ -150,7 +150,7 @@ sql_minor_upgrade: sql_bits/postgis_raster_upgrade_minor.sql
   	  cat $< > sql/$(EXTENSION)--$$OLD_VERSION--$(EXTVERSION).sql; \
 	done
 
-DATA = $(wildcard sql/*--*.sql) sql/$(EXTENSION)--$(EXTVERSION).sql
+DATA = $(wildcard sql/*--*.sql)
 EXTRA_CLEAN += sql/$(EXTENSION)--$(EXTVERSION).sql sql/postgis--unpackaged--$(EXTVERSION).sql
 endif
 
