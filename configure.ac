@@ -224,19 +224,22 @@ AC_SUBST([XSLBASE])
 dnl
 dnl Let's see if we can find mathml2.dtd
 dnl
-
-MATHML2_DTD="http://www.w3.org/Math/DTD/mathml2/mathml2.dtd"
+AC_ARG_WITH([mathmldtd], 
+	[AS_HELP_STRING([--with-mathmldtd=PATH], [specify the dtd path for mathml2.dtd])], 
+	[MATHML2_DTD="$withval"], [MATHML2_DTD=""])
 dnl TODO: get more paths to add here...
-SEARCHPATH="
-		/usr/share/xml/schema/w3c/mathml/dtd
-		"
-for p in ${SEARCHPATH}; do
-	if test -r "${p}"/mathml2.dtd; then
-		MATHML2_DTD="${p}/mathml2.dtd"
-		break
-	fi
-done
-
+if test "x$MATHML2_DTD" = "x"; then
+	MATHML2_DTD="http://www.w3.org/Math/DTD/mathml2/mathml2.dtd"
+	SEARCHPATH="
+			/usr/share/xml/schema/w3c/mathml/dtd
+			"
+	for p in ${SEARCHPATH}; do
+		if test -r "${p}"/mathml2.dtd; then
+			MATHML2_DTD="${p}/mathml2.dtd"
+			break
+		fi
+	done
+fi
 AC_SUBST([MATHML2_DTD])
 
 dnl ===========================================================================
