@@ -1902,6 +1902,9 @@ LWGEOM* lwgeom_buildarea(const LWGEOM *geom) ;
 
 /**
  * Attempts to make an invalid geometries valid w/out losing points.
+ *
+ * NOTE: this is only available when liblwgeom is built against
+ *       GEOS 3.3.0 or higher
  */
 LWGEOM* lwgeom_make_valid(LWGEOM* geom);
 
