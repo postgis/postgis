@@ -42,7 +42,7 @@ ORDER BY l.layer_id;
 SELECT * from "CITY_data_UP_down".node_node_id_seq;
 SELECT * from "CITY_data_UP_down".edge_data_edge_id_seq;
 SELECT * from "CITY_data_UP_down".face_face_id_seq;
-SELECT sequence_name, last_value, start_value, increment_by, max_value, min_value, cache_value, is_cycled, is_called from "CITY_data_UP_down".layer_id_seq;
+SELECT * from "CITY_data_UP_down".layer_id_seq;
 SELECT * from "CITY_data_UP_down".topogeo_s_1;
 SELECT * from "CITY_data_UP_down".topogeo_s_2;
 SELECT * from "CITY_data_UP_down".topogeo_s_3;
