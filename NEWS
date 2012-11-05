@@ -35,6 +35,7 @@ PostGIS 2.0.2
 
  * Enhancements *
 
+  - #2082, Add indices on start_node and end_node of topology edge tables
   - #1928, Accept array properties in GML input multi-geom input
     (Kashif Rasul and Shoaib Burq / SpacialDB)
 

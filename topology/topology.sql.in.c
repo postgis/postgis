@@ -1855,6 +1855,19 @@ BEGIN
     || quote_ident(atopology)
     || '.edge_data (right_face);';
 
+  ------- Indexes on start_node and end_node of edge_data
+  ------- NOTE: this indexes speed up node deletion
+  -------       by a factor of 1000 !
+  -------       See http://trac.osgeo.org/postgis/ticket/2082
+  EXECUTE 'CREATE INDEX edge_start_node_idx ON '
+    || quote_ident(atopology)
+    || '.edge_data (start_node);';
+  EXECUTE 'CREATE INDEX edge_end_node_idx ON '
+    || quote_ident(atopology)
+    || '.edge_data (end_node);';
+
+  -- TODO: consider also adding an index on node.containing_face 
+
   ------- Add record to the "topology" metadata table
   EXECUTE 'INSERT INTO topology.topology '
     || '(id, name, srid, precision, hasZ) VALUES ('
