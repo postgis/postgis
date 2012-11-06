@@ -229,3 +229,6 @@ ERROR:  invalid GML representation
 #1957|1
 #1978|3.1413
 #1996|{"type":"Point","coordinates":[]}
+#2048|1|f|f
+#2048|2|t|t
+#2048|3|f|f
