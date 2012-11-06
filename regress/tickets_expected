@@ -98,3 +98,6 @@ ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
 ERROR:  ST_Segmentize: invalid max_distance 0 (must be >= 0)
 ERROR:  invalid GML representation
 #1957|1
+#2048|1|f|f
+#2048|2|t|t
+#2048|3|f|f
