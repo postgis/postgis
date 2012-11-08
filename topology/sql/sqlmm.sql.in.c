@@ -733,6 +733,83 @@ $$
 LANGUAGE 'plpgsql' VOLATILE;
 --} ST_ModEdgeHeal
 
+-- {
+-- _ST_RemEdgeCheck - check that the given edge is not needed
+--                    by the definition of any TopoGeometry
+--
+CREATE OR REPLACE FUNCTION topology._ST_RemEdgeCheck(tname varchar, tid integer, eid integer, lf integer, rf integer)
+RETURNS VOID
+AS
+$$
+DECLARE
+  sql text;
+  fidary int[];
+  rec RECORD;
+BEGIN
+  -- Check that no TopoGeometry references the edge being removed
+  sql := 'SELECT r.topogeo_id, r.layer_id'
+      || ', l.schema_name, l.table_name, l.feature_column '
+      || 'FROM topology.layer l INNER JOIN '
+      || quote_ident(tname)
+      || '.relation r ON (l.layer_id = r.layer_id) '
+      || 'WHERE l.level = 0 AND l.feature_type = 2 '
+      || ' AND l.topology_id = ' || tid
+      || ' AND abs(r.element_id) = ' || eid ;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+  RAISE DEBUG 'Checking TopoGeometry definitions: %', sql;
+#endif
+  FOR rec IN EXECUTE sql LOOP
+    RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented dropping edge %',
+            rec.topogeo_id, rec.layer_id,
+            rec.schema_name, rec.table_name, rec.feature_column,
+            eid;
+  END LOOP;
+
+  IF lf != rf THEN -- {
+
+    RAISE NOTICE 'Deletion of edge % joins faces % and %',
+                    eid, lf, rf;
+
+    -- check if any topo_geom is defined only by one of the
+    -- joined faces. In such case there would be no way to adapt
+    -- the definition in case of healing, so we'd have to bail out
+    -- 
+    fidary = ARRAY[lf, rf];
+    sql := 'SELECT t.* from ('
+      || 'SELECT r.topogeo_id, r.layer_id'
+      || ', l.schema_name, l.table_name, l.feature_column'
+      || ', array_agg(r.element_id) as elems '
+      || 'FROM topology.layer l INNER JOIN '
+      || quote_ident(tname)
+      || '.relation r ON (l.layer_id = r.layer_id) '
+      || 'WHERE l.level = 0 AND l.feature_type = 3 '
+      || ' AND l.topology_id = ' || tid
+      || ' AND r.element_id = ANY (' || quote_literal(fidary)
+      || ') group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
+      || ' l.feature_column ) t';
+
+    -- No surface can be defined by universal face 
+    IF lf != 0 AND rf != 0 THEN -- {
+      sql := sql || ' WHERE NOT t.elems @> ' || quote_literal(fidary);
+    END IF; -- }
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'SQL: %', sql;
+#endif
+
+    FOR rec IN EXECUTE sql LOOP
+      RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
+            rec.topogeo_id, rec.layer_id,
+            rec.schema_name, rec.table_name, rec.feature_column,
+            rf, lf;
+    END LOOP;
+
+  END IF; -- } two faces healed...
+END
+$$
+LANGUAGE 'plpgsql' VOLATILE;
+--} _ST_RemEdgeCheck
+
 --{
 -- Topo-Geo and Topo-Net 3: Routine Details
 -- X.3.14
@@ -793,24 +870,9 @@ BEGIN
           toponame;
   END;
 
+  -- NOT IN THE SPECS:
   -- Check that no TopoGeometry references the edge being removed
-  sql := 'SELECT r.topogeo_id, r.layer_id'
-      || ', l.schema_name, l.table_name, l.feature_column '
-      || 'FROM topology.layer l INNER JOIN '
-      || quote_ident(toponame)
-      || '.relation r ON (l.layer_id = r.layer_id) '
-      || 'WHERE l.level = 0 AND l.feature_type = 2 '
-      || ' AND l.topology_id = ' || topoid
-      || ' AND abs(r.element_id) = ' || e1id ;
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Checking TopoGeometry definitions: %', sql;
-#endif
-  FOR rec IN EXECUTE sql LOOP
-    RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented dropping edge %',
-            rec.topogeo_id, rec.layer_id,
-            rec.schema_name, rec.table_name, rec.feature_column,
-            e1id;
-  END LOOP;
+  PERFORM topology._ST_RemEdgeCheck(toponame, topoid, e1id, e1rec.left_face, e1rec.right_face);
 
   -- Update next_left_edge and next_right_edge face
   -- for all edges bounding the new face
@@ -896,54 +958,10 @@ BEGIN
 
   IF e1rec.left_face = e1rec.right_face THEN -- {
 
-    RAISE NOTICE 'Deletion of edge % affects no face',
-                    e1rec.edge_id;
-
     newfaceid := e1rec.left_face; -- TODO: or what should we return ?
     newfacecreated := false;
 
   ELSE -- }{
-
-    RAISE NOTICE 'Deletion of edge % joins faces % and %',
-                    e1rec.edge_id, e1rec.left_face, e1rec.right_face;
-
-    -- NOT IN THE SPECS:
-    -- check if any topo_geom is defined only by one of the
-    -- joined faces. In such case there would be no way to adapt
-    -- the definition in case of healing, so we'd have to bail out
-    --
-    -- TODO: use an internal function and share with ST_RemEdgeNewFace
-    --
-    -- 
-    fidary = ARRAY[e1rec.left_face, e1rec.right_face];
-    sql := 'SELECT t.* from ('
-      || 'SELECT r.topogeo_id, r.layer_id'
-      || ', l.schema_name, l.table_name, l.feature_column'
-      || ', array_agg(r.element_id) as elems '
-      || 'FROM topology.layer l INNER JOIN '
-      || quote_ident(toponame)
-      || '.relation r ON (l.layer_id = r.layer_id) '
-      || 'WHERE l.level = 0 AND l.feature_type = 3 '
-      || ' AND l.topology_id = ' || topoid
-      || ' AND r.element_id = ANY (' || quote_literal(fidary)
-      || ') group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
-      || ' l.feature_column ) t';
-
-    -- No surface can be defined by universal face 
-    IF e1rec.left_face != 0 AND e1rec.right_face != 0 THEN -- {
-      sql := sql || ' WHERE NOT t.elems @> ' || quote_literal(fidary);
-    END IF; -- }
-
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'SQL: %', sql;
-#endif
-
-    FOR rec IN EXECUTE sql LOOP
-      RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
-            rec.topogeo_id, rec.layer_id,
-            rec.schema_name, rec.table_name, rec.feature_column,
-            e1rec.right_face, e1rec.left_face;
-    END LOOP;
 
     IF e1rec.left_face = 0 OR e1rec.right_face = 0 THEN -- {
 
@@ -1165,24 +1183,9 @@ BEGIN
           toponame;
   END;
 
+  -- NOT IN THE SPECS:
   -- Check that no TopoGeometry references the edge being removed
-  sql := 'SELECT r.topogeo_id, r.layer_id'
-      || ', l.schema_name, l.table_name, l.feature_column '
-      || 'FROM topology.layer l INNER JOIN '
-      || quote_ident(toponame)
-      || '.relation r ON (l.layer_id = r.layer_id) '
-      || 'WHERE l.level = 0 AND l.feature_type = 2 '
-      || ' AND l.topology_id = ' || topoid
-      || ' AND abs(r.element_id) = ' || e1id ;
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Checking TopoGeometry definitions: %', sql;
-#endif
-  FOR rec IN EXECUTE sql LOOP
-    RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented dropping edge %',
-            rec.topogeo_id, rec.layer_id,
-            rec.schema_name, rec.table_name, rec.feature_column,
-            e1id;
-  END LOOP;
+  PERFORM topology._ST_RemEdgeCheck(toponame, topoid, e1id, e1rec.left_face, e1rec.right_face);
 
   -- Update next_left_edge and next_right_edge face
   -- for all edges bounding the new face
@@ -1268,52 +1271,9 @@ BEGIN
 
   IF e1rec.left_face = e1rec.right_face THEN -- {
 
-    RAISE NOTICE 'Deletion of edge % affects no face',
-                    e1rec.edge_id;
-
     floodfaceid = e1rec.left_face; 
 
   ELSE -- }{
-
-    RAISE NOTICE 'Deletion of edge % joins faces % and %',
-                    e1rec.edge_id, e1rec.left_face, e1rec.right_face;
-
-    -- NOT IN THE SPECS:
-    -- check if any topo_geom is defined only by one of the
-    -- joined faces. In such case there would be no way to adapt
-    -- the definition in case of healing, so we'd have to bail out
-    --
-    -- TODO: use an internal function and share with ST_RemEdgeNewFace
-    --
-    fidary = ARRAY[e1rec.left_face, e1rec.right_face];
-    sql := 'SELECT t.* from ('
-      || 'SELECT r.topogeo_id, r.layer_id'
-      || ', l.schema_name, l.table_name, l.feature_column'
-      || ', array_agg(r.element_id) as elems '
-      || 'FROM topology.layer l INNER JOIN '
-      || quote_ident(toponame)
-      || '.relation r ON (l.layer_id = r.layer_id) '
-      || 'WHERE l.level = 0 AND l.feature_type = 3 '
-      || ' AND l.topology_id = ' || topoid
-      || ' AND r.element_id = ANY (' || quote_literal(fidary) 
-      || ') group by r.topogeo_id, r.layer_id, l.schema_name, l.table_name, '
-      || ' l.feature_column ) t';
-
-    -- No surface can be defined by universal face 
-    IF NOT 0 = ANY ( fidary ) THEN -- {
-      sql := sql || ' WHERE NOT t.elems @> ' || quote_literal(fidary);
-    END IF; -- }
-
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'SQL: %', sql;
-#endif
-
-    FOR rec IN EXECUTE sql LOOP
-      RAISE EXCEPTION 'TopoGeom % in layer % (%.%.%) cannot be represented healing faces % and %',
-            rec.topogeo_id, rec.layer_id,
-            rec.schema_name, rec.table_name, rec.feature_column,
-            e1rec.right_face, e1rec.left_face;
-    END LOOP;
 
     IF e1rec.left_face = 0 OR e1rec.right_face = 0 THEN -- {
 
