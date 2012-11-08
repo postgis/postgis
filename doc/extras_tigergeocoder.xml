@@ -3,9 +3,8 @@
   <sect1 id="Tiger_Geocoder">
 	 <sect1info>
 		<abstract>
-			<para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.  In versions prior to 2008 the TIGER files were
-			released in ASCII format.  The older geocoder used to work with that format and is available in PostGIS source 1.5 and below in <varname>extras/tiger_geocoder/tiger_2006andbefore</varname>. </para>
-			<para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. The latest version updated to use the TIGER 2011 census data is located in the <varname>extras/tiger_geocoder/tiger_2011</varname> folder.</para>
+			<para>A plpgsql based geocoder written to work with the <ulink url="http://www.census.gov/geo/www/tiger/">TIGER (Topologically Integrated Geographic Encoding and Referencing system ) / Line and Master Address database export</ulink> released by the US Census Bureau.   </para>
+			<para>There are four components to the geocoder: the data loader functions, the address normalizer, the address geocoder, and the reverse geocoder. The latest version updated to use the TIGER 2011 and 2012 census data is located in the <varname>extras/tiger_geocoder/tiger_2011</varname> folder. It defaults to downloading and installing TIGER 2012 files.  </para>
 			<para>Although it is designed specifically for the US, a lot of the concepts and functions are applicable and can be adapted to work with other country address and road networks.</para>
 			<para>The script builds a schema called <varname>tiger</varname> to house all the tiger related functions, reusable lookup data such as road type prefixes, suffixes, states, various control tables for managing data load, and skeleton base tables from which all the tiger loaded tables inherit from.</para>
 			<para>Another schema called <varname>tiger_data</varname> is also created which houses all the census data for each state that the loader downloads from Census site and loads into the database. In the current model, each set of state tables is
@@ -17,8 +16,8 @@
 			  <note><para>
 If you are using tiger geocoder (tiger_2010),
 you can upgrade the scripts using the accompanying upgrade_geocoder.bat
-/ .sh scripts in tiger_2011.  One major change between <varname>tiger_2010</varname> and <varname>tiger_2011</varname> is that the county and <varname>county</varname> and <varname>state</varname> tables are no longer broken out by state.  We'll be refining the upgrade scripts
-until release.  If you have data from tiger_2010 and want replace with tiger_2011 refer to <xref linkend="upgrade_tiger_geocoder" />
+/ .sh scripts in tiger_2011.  One major change between <varname>tiger_2010</varname> and <varname>tiger_2011/tiger_2012</varname> is that the county and <varname>county</varname> and <varname>state</varname> tables are no longer broken out by state.  We'll be refining the upgrade scripts
+until release.  If you have data from tiger_2010 and want replace with tiger_2012 refer to <xref linkend="upgrade_tiger_geocoder" />
 			  </para></note>
 			</para>
 			<para>Design:</para>
