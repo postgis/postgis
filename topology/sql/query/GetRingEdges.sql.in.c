@@ -3,7 +3,7 @@
 -- PostGIS - Spatial Types for PostgreSQL
 -- http://postgis.refractions.net
 --
--- Copyright (C) 2011 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2011 2012 Sandro Santilli <strk@keybit.net>
 --
 -- This is free software; you can redistribute and/or modify it under
 -- the terms of the GNU General Public Licence. See the COPYING file.
@@ -42,55 +42,30 @@ CREATE OR REPLACE FUNCTION topology.GetRingEdges(atopology varchar, anedge int, 
 AS
 $$
 DECLARE
-  curedge int;
-  nextedge int;
   rec RECORD;
-  bounds geometry;
   retrec topology.GetFaceEdges_ReturnType;
   n int;
   sql text;
 BEGIN
+  sql := 'WITH RECURSIVE edgering AS ( SELECT '
+    || anedge
+    || ' as signed_edge_id, edge_id, next_left_edge, next_right_edge FROM '
+    || quote_ident(atopology)
+    || '.edge_data WHERE edge_id = '
+    || abs(anedge)
+    || ' UNION '
+    || ' SELECT CASE WHEN p.signed_edge_id < 0 THEN p.next_right_edge '
+    || ' ELSE p.next_left_edge END, e.edge_id, e.next_left_edge, e.next_right_edge '
+    || ' FROM ' || quote_ident(atopology)
+    || '.edge_data e, edgering p WHERE e.edge_id = CASE WHEN p.signed_edge_id < 0 '
+    || 'THEN abs(p.next_right_edge) ELSE abs(p.next_left_edge) END ) SELECT * FROM edgering';
 
-  curedge := anedge;
   n := 1;
-
-  WHILE true LOOP
-    sql := 'SELECT edge_id, next_left_edge, next_right_edge FROM '
-      || quote_ident(atopology) || '.edge_data WHERE edge_id = '
-      || abs(curedge);
-    EXECUTE sql INTO rec;
+  FOR rec IN EXECUTE sql
+  LOOP
     retrec.sequence := n;
-    retrec.edge := curedge;
-
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Edge:% left:% right:%',
-      curedge, rec.next_left_edge, rec.next_right_edge;
-#endif
-
+    retrec.edge := rec.signed_edge_id;
     RETURN NEXT retrec;
-
-    IF curedge < 0 THEN
-      nextedge := rec.next_right_edge;
-    ELSE
-      nextedge := rec.next_left_edge;
-    END IF;
-
-    IF nextedge = anedge THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG ' finish';
-#endif
-      RETURN;
-    END IF;
-
-    IF nextedge = curedge THEN
-      RAISE EXCEPTION 'Detected bogus loop traversing edge %', curedge;
-    END IF;
-
-    curedge := nextedge;
-
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG ' curedge:% anedge:%', curedge, anedge;
-#endif
 
     n := n + 1;
 
