@@ -29,12 +29,6 @@
 
 #define PARANOIA_LEVEL 1
 
-/*
- * For win32, this can not be in a separate libary
- * See ticket #1158
- */
-/* PG_MODULE_MAGIC; */
-
 /**
 * Utility to convert cstrings to textp pointers 
 */
