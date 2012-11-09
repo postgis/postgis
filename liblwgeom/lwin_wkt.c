@@ -56,7 +56,7 @@ int wkt_lexer_read_srid(char *str)
 	srid = clamp_srid((int)i);
 	/* TODO: warn on explicit UNKNOWN srid ? */
 	return srid;
-};
+}
 
 static uint8_t wkt_dimensionality(char *dimensionality)
 {
@@ -201,7 +201,7 @@ POINT wkt_parser_coord_2(double c1, double c2)
 	FLAGS_SET_Z(p.flags, 0);
 	FLAGS_SET_M(p.flags, 0);
 	return p;
-};
+}
 
 /**
 * Note, if this is an XYM coordinate we'll have to fix it later when we build
@@ -218,7 +218,7 @@ POINT wkt_parser_coord_3(double c1, double c2, double c3)
 		FLAGS_SET_Z(p.flags, 1);
 		FLAGS_SET_M(p.flags, 0);
 		return p;
-};
+}
 
 /**
 */
@@ -233,7 +233,7 @@ POINT wkt_parser_coord_4(double c1, double c2, double c3, double c4)
 	FLAGS_SET_Z(p.flags, 1);
 	FLAGS_SET_M(p.flags, 1);
 	return p;
-};
+}
 
 POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 {
@@ -276,8 +276,8 @@ POINTARRAY* wkt_parser_ptarray_add_coord(POINTARRAY *pa, POINT p)
 POINTARRAY* wkt_parser_ptarray_new(POINT p)
 {
 	int ndims = FLAGS_NDIMS(p.flags);
-	LWDEBUG(4,"entered");
 	POINTARRAY *pa = ptarray_construct_empty((ndims>2), (ndims>3), 4);
+	LWDEBUG(4,"entered");
 	if ( ! pa )
 	{
 		SET_PARSER_ERROR(PARSER_ERROR_OTHER);
@@ -825,9 +825,15 @@ void lwgeom_parser_result_init(LWGEOM_PARSER_RESULT *parser_result)
 void lwgeom_parser_result_free(LWGEOM_PARSER_RESULT *parser_result)
 {
 	if ( parser_result->geom )
+	{
 		lwgeom_free(parser_result->geom);
+		parser_result->geom = 0;
+	}
 	if ( parser_result->serialized_lwgeom )
+	{
 		lwfree(parser_result->serialized_lwgeom );
+		parser_result->serialized_lwgeom = 0;
+	}
 	/* We don't free parser_result->message because
 	   it is a const *char */
 }
@@ -840,7 +846,10 @@ LWGEOM *lwgeom_from_wkt(const char *wkt, const char check)
 	LWGEOM_PARSER_RESULT r;
 
 	if( LW_FAILURE == lwgeom_parse_wkt(&r, (char*)wkt, check) )
+	{
 		lwerror(r.message);
+		return NULL;
+	}
 	
 	return r.geom;	
 }

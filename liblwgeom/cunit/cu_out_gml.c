@@ -975,7 +975,7 @@ static void out_gml2_extent(void)
 
 	/* GML2: MultiPolygon */
 	do_gml2_extent_test(
-	    "MULTIPOLYGON(((1 7,7 14, 14 7, 1 7)),((-4 -6, -15 3, 0 0, -4 -6))))",
+	    "MULTIPOLYGON(((1 7,7 14, 14 7, 1 7)),((-4 -6, -15 3, 0 0, -4 -6)))",
 	    "<Box><coordinates>-15,-6 14,14</coordinates></Box>",
 	    NULL, 15, "");
 
@@ -1053,7 +1053,7 @@ static void out_gml3_extent(void)
 
 	/* GML3: MultiPolygon */
 	do_gml3_extent_test(
-	    "MULTIPOLYGON(((1 7,7 14, 14 7, 1 7)),((-4 -6, -15 3, 0 0, -4 -6))))",
+	    "MULTIPOLYGON(((1 7,7 14, 14 7, 1 7)),((-4 -6, -15 3, 0 0, -4 -6)))",
 	    "<Envelope><lowerCorner>-15 -6</lowerCorner><upperCorner>14 14</upperCorner></Envelope>",
 	    NULL, 15, 0, "");
 

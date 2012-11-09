@@ -50,12 +50,7 @@ int lwgeom_parse_wkt(LWGEOM_PARSER_RESULT *parser_result, char *wktstr, int pars
 	int parse_rv = 0;
 
 	/* Clean up our global parser result. */
-	global_parser_result.geom = NULL;
-	global_parser_result.message = NULL;
-	global_parser_result.serialized_lwgeom = NULL;
-	global_parser_result.errcode = 0;
-	global_parser_result.errlocation = 0;
-	global_parser_result.size = 0;
+    lwgeom_parser_result_init(&global_parser_result);
 
 	/* Set the input text string, and parse checks. */
 	global_parser_result.wkinput = wktstr;

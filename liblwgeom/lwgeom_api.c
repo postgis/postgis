@@ -479,8 +479,9 @@ getPoint2d_cp(const POINTARRAY *pa, int n)
 void
 ptarray_set_point4d(POINTARRAY *pa, int n, const POINT4D *p4d)
 {
+	uint8_t *ptr;
 	assert(n >= 0 && n < pa->npoints);
-	uint8_t *ptr=getPoint_internal(pa, n);
+	ptr=getPoint_internal(pa, n);
 	switch ( FLAGS_GET_ZM(pa->flags) )
 	{
 	case 3:

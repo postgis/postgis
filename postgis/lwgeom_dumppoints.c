@@ -14,6 +14,8 @@
  * this entire file is in the public domain
  */
 
+Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS);
+
 struct dumpnode {
 	LWGEOM *geom;
 	int idx; /* which member geom we're working on */
@@ -40,7 +42,6 @@ struct dumpstate {
 };
 
 PG_FUNCTION_INFO_V1(LWGEOM_dumppoints);
-
 Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 	FuncCallContext *funcctx;
 	MemoryContext oldcontext, newcontext;

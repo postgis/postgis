@@ -837,9 +837,10 @@ findFaceHoles(Face** faces, int nfaces)
       const GEOSGeometry *hole = GEOSGetInteriorRingN(f->geom, h);
       LWDEBUGF(2, "Looking for hole %d/%d of face %d among %d other faces", h+1, nholes, i, nfaces-i-1);
       for (j=i+1; j<nfaces; ++j) {
+		const GEOSGeometry *f2er;
         Face* f2 = faces[j];
         if ( f2->parent ) continue; /* hole already assigned */
-        const GEOSGeometry *f2er = GEOSGetExteriorRing(f2->geom); 
+        f2er = GEOSGetExteriorRing(f2->geom); 
         /* TODO: can be optimized as the ring would have the
          *       same vertices, possibly in different order.
          *       maybe comparing number of points could already be

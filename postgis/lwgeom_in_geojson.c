@@ -17,7 +17,7 @@
 #include "liblwgeom.h"
 
 Datum geom_from_geojson(PG_FUNCTION_ARGS);
-
+Datum postgis_libjson_version(PG_FUNCTION_ARGS);
 
 static void geojson_lwerror(char *msg, int error_code)
 {

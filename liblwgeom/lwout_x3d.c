@@ -96,11 +96,11 @@ static size_t
 asx3d3_point_size(const LWPOINT *point, char *srs, int precision, int opts, const char *defid)
 {
 	int size;
-	//size_t defidlen = strlen(defid);
+	/* size_t defidlen = strlen(defid); */
 
 	size = pointArray_X3Dsize(point->point, precision);
-	//size += ( sizeof("<point><pos>/") + (defidlen*2) ) * 2;
-	//if (srs)     size += strlen(srs) + sizeof(" srsName=..");
+	/* size += ( sizeof("<point><pos>/") + (defidlen*2) ) * 2; */
+	/* if (srs)     size += strlen(srs) + sizeof(" srsName=.."); */
 	return size;
 }
 
@@ -108,19 +108,19 @@ static size_t
 asx3d3_point_buf(const LWPOINT *point, char *srs, char *output, int precision, int opts, const char *defid)
 {
 	char *ptr = output;
-	//int dimension=2;
+	/* int dimension=2; */
 
-	//if (FLAGS_GET_Z(point->flags)) dimension = 3;
+	/* if (FLAGS_GET_Z(point->flags)) dimension = 3; */
 	/*	if ( srs )
 		{
 			ptr += sprintf(ptr, "<%sPoint srsName=\"%s\">", defid, srs);
 		}
 		else*/
-	//ptr += sprintf(ptr, "%s", defid);
+	/* ptr += sprintf(ptr, "%s", defid); */
 
-	//ptr += sprintf(ptr, "<%spos>", defid);
+	/* ptr += sprintf(ptr, "<%spos>", defid); */
 	ptr += pointArray_toX3D3(point->point, ptr, precision, opts, 0);
-	//ptr += sprintf(ptr, "</%spos></%sPoint>", defid, defid);
+	/* ptr += sprintf(ptr, "</%spos></%sPoint>", defid, defid); */
 
 	return (ptr-output);
 }
@@ -150,7 +150,7 @@ asx3d3_line_size(const LWLINE *line, char *srs, int precision, int opts, const c
 	            sizeof("<LineSet vertexCount=''><Coordinate point='' /></LineSet>")  + defidlen
 	        ) * 2;
 
-	//if (srs)     size += strlen(srs) + sizeof(" srsName=..");
+	/* if (srs)     size += strlen(srs) + sizeof(" srsName=.."); */
 	return size;
 }
 
@@ -158,11 +158,11 @@ static size_t
 asx3d3_line_buf(const LWLINE *line, char *srs, char *output, int precision, int opts, const char *defid)
 {
 	char *ptr=output;
-	//int dimension=2;
+	/* int dimension=2; */
 	POINTARRAY *pa;
 
 
-	//if (FLAGS_GET_Z(line->flags)) dimension = 3;
+	/* if (FLAGS_GET_Z(line->flags)) dimension = 3; */
 
 	pa = line->points;
 	ptr += sprintf(ptr, "<LineSet %s vertexCount='%d'>", defid, pa->npoints);
@@ -181,7 +181,7 @@ static size_t
 asx3d3_line_coords(const LWLINE *line, char *output, int precision, int opts)
 {
 	char *ptr=output;
-	//ptr += sprintf(ptr, "");
+	/* ptr += sprintf(ptr, ""); */
 	ptr += pointArray_toX3D3(line->points, ptr, precision, opts, lwline_is_closed(line));
 	return (ptr-output);
 }
@@ -202,7 +202,7 @@ asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 		geom = (LWLINE *) mgeom->geoms[i];
 		pa = geom->points;
 		np = pa->npoints;
-		si = j; //start index of first point of linestring
+		si = j;  /* start index of first point of linestring */
 		for (k=0; k < np ; k++)
 		{
 			if (k)
@@ -224,7 +224,7 @@ asx3d3_mline_coordindex(const LWMLINE *mgeom, char *output)
 		}
 		if (i < (mgeom->ngeoms - 1) )
 		{
-			ptr += sprintf(ptr, " -1 "); //separator for each linestring
+			ptr += sprintf(ptr, " -1 "); /* separator for each linestring */
 		}
 	}
 	return (ptr-output);
@@ -266,12 +266,12 @@ asx3d3_mpoly_coordindex(const LWMPOLY *psur, char *output)
 				*  For now will leave it as polygons stacked on top of each other -- which is what we are doing here and perhaps an option
 				*  to color differently.  It's not ideal but the alternative sounds complicated.
 				**/
-				ptr += sprintf(ptr, " -1 "); //separator for each inner ring. Ideally we should probably triangulate and cut around as others do
+				ptr += sprintf(ptr, " -1 "); /* separator for each inner ring. Ideally we should probably triangulate and cut around as others do */
 			}
 		}
 		if (i < (psur->ngeoms - 1) )
 		{
-			ptr += sprintf(ptr, " -1 "); //separator for each subgeom
+			ptr += sprintf(ptr, " -1 "); /* separator for each subgeom */
 		}
 	}
 	return (ptr-output);
@@ -319,7 +319,7 @@ asx3d3_poly_buf(const LWPOLY *poly, char *srs, char *output, int precision, int 
 	ptr += pointArray_toX3D3(poly->rings[0], ptr, precision, opts, 1);
 	for (i=1; i<poly->nrings; i++)
 	{
-		ptr += sprintf(ptr, " "); //inner ring points start
+		ptr += sprintf(ptr, " "); /* inner ring points start */
 		ptr += pointArray_toX3D3(poly->rings[i], ptr, precision, opts,1);
 	}
 	return (ptr-output);
@@ -376,24 +376,24 @@ asx3d3_multi_size(const LWCOLLECTION *col, char *srs, int precision, int opts, c
 	/* the longest possible multi version needs to hold DEF=defid and coordinate breakout */
 	size = sizeof("<PointSet><Coordinate point='' /></PointSet>") + defidlen;
 
-	//if ( srs ) size += strlen(srs) + sizeof(" srsName=..");
+	/* if ( srs ) size += strlen(srs) + sizeof(" srsName=.."); */
 
 	for (i=0; i<col->ngeoms; i++)
 	{
 		subgeom = col->geoms[i];
 		if (subgeom->type == POINTTYPE)
 		{
-			//size += ( sizeof("point=''") + defidlen ) * 2;
+			/* size += ( sizeof("point=''") + defidlen ) * 2; */
 			size += asx3d3_point_size((LWPOINT*)subgeom, 0, precision, opts, defid);
 		}
 		else if (subgeom->type == LINETYPE)
 		{
-			//size += ( sizeof("<curveMember>/") + defidlen ) * 2;
+			/* size += ( sizeof("<curveMember>/") + defidlen ) * 2; */
 			size += asx3d3_line_size((LWLINE*)subgeom, 0, precision, opts, defid);
 		}
 		else if (subgeom->type == POLYGONTYPE)
 		{
-			//size += ( sizeof("<surfaceMember>/") + defidlen ) * 2;
+			/* size += ( sizeof("<surfaceMember>/") + defidlen ) * 2; */
 			size += asx3d3_poly_size((LWPOLY*)subgeom, 0, precision, opts, defid);
 		}
 	}
@@ -544,7 +544,7 @@ asx3d3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
 		}
 		if (i < (psur->ngeoms - 1) )
 		{
-			ptr += sprintf(ptr, " -1 "); //separator for each subgeom
+			ptr += sprintf(ptr, " -1 "); /* separator for each subgeom */
 		}
 		j += k;
 	}
@@ -556,7 +556,7 @@ asx3d3_psurface_buf(const LWPSURFACE *psur, char *srs, char *output, int precisi
 		ptr += asx3d3_poly_buf(psur->geoms[i], 0, ptr, precision, opts, 1, defid);
 		if (i < (psur->ngeoms - 1) )
 		{
-			ptr += sprintf(ptr, " "); //only add a trailing space if its not the last polygon in the set
+			ptr += sprintf(ptr, " "); /* only add a trailing space if its not the last polygon in the set */
 		}
 	}
 
@@ -588,7 +588,7 @@ asx3d3_tin_size(const LWTIN *tin, char *srs, int precision, int opts, const char
 	int i;
 	size_t size;
 	size_t defidlen = strlen(defid);
-	//int dimension=2;
+	/* int dimension=2; */
 
 	/** Need to make space for size of additional attributes,
 	** the coordIndex has a value for each edge for each triangle plus a space to separate so we need at least that much extra room ***/
@@ -612,7 +612,7 @@ asx3d3_tin_buf(const LWTIN *tin, char *srs, char *output, int precision, int opt
 	char *ptr;
 	int i;
 	int k;
-	//int dimension=2;
+	/* int dimension=2; */
 
 	ptr = output;
 

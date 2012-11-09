@@ -412,7 +412,6 @@ int circ_tree_contains_point(const CIRC_NODE* node, const POINT2D* pt, const POI
 	* If the stabline doesn't cross within the radius of a node, there's no 
 	* way it can cross.
 	*/
-//	circ_tree_print(node, 0);
 		
 	LWDEBUGF(3, "working on node %p, edge_num %d, radius %g, center POINT(%g %g)", node, node->edge_num, node->radius, rad2deg(node->center.lon), rad2deg(node->center.lat));
 	d = edge_distance_to_point(&stab_edge, &(node->center), &closest);

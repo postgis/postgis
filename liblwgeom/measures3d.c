@@ -378,9 +378,9 @@ point to point calculation
 int
 lw_dist3d_point_point(LWPOINT *point1, LWPOINT *point2, DISTPTS3D *dl)
 {
-	LWDEBUG(2, "lw_dist3d_point_point is called");
 	POINT3DZ p1;
 	POINT3DZ p2;
+	LWDEBUG(2, "lw_dist3d_point_point is called");
 
 	getPoint3dz_p(point1->point, 0, &p1);
 	getPoint3dz_p(point2->point, 0, &p2);
@@ -394,9 +394,9 @@ point to line calculation
 int
 lw_dist3d_point_line(LWPOINT *point, LWLINE *line, DISTPTS3D *dl)
 {
-	LWDEBUG(2, "lw_dist3d_point_line is called");
 	POINT3DZ p;
 	POINTARRAY *pa = line->points;
+	LWDEBUG(2, "lw_dist3d_point_line is called");
 
 	getPoint3dz_p(point->point, 0, &p);
 	return lw_dist3d_pt_ptarray(&p, pa, dl);
@@ -416,9 +416,9 @@ for max distance it is always point against boundary
 int
 lw_dist3d_point_poly(LWPOINT *point, LWPOLY *poly, DISTPTS3D *dl)
 {
-	LWDEBUG(2, "lw_dist3d_point_poly is called");
 	POINT3DZ p, projp;/*projp is "point projected on plane"*/
 	PLANE3D plane;
+	LWDEBUG(2, "lw_dist3d_point_poly is called");
 	getPoint3dz_p(point->point, 0, &p);
 	
 	/*If we are lookig for max distance, longestline or dfullywithin*/
@@ -446,9 +446,9 @@ line to line calculation
 int
 lw_dist3d_line_line(LWLINE *line1, LWLINE *line2, DISTPTS3D *dl)
 {
-	LWDEBUG(2, "lw_dist3d_line_line is called");
 	POINTARRAY *pa1 = line1->points;
 	POINTARRAY *pa2 = line2->points;
+	LWDEBUG(2, "lw_dist3d_line_line is called");
 
 	return lw_dist3d_ptarray_ptarray(pa1, pa2, dl);
 }
@@ -459,8 +459,8 @@ line to polygon calculation
 */
 int lw_dist3d_line_poly(LWLINE *line, LWPOLY *poly, DISTPTS3D *dl)
 {
-	LWDEBUG(2, "lw_dist3d_line_poly is called");	
 	PLANE3D plane;	
+	LWDEBUG(2, "lw_dist3d_line_poly is called");	
 		
 	if (dl->mode == DIST_MAX)
 	{
@@ -479,8 +479,8 @@ polygon to polygon calculation
 */
 int lw_dist3d_poly_poly(LWPOLY *poly1, LWPOLY *poly2, DISTPTS3D *dl)
 {		
-	LWDEBUG(2, "lw_dist3d_poly_poly is called");
 	PLANE3D plane;		
+	LWDEBUG(2, "lw_dist3d_poly_poly is called");
 	if (dl->mode == DIST_MAX)
 	{
 		return lw_dist3d_ptarray_ptarray(poly1->rings[0], poly2->rings[0], dl);
@@ -597,11 +597,11 @@ depending on dl->mode (max or min)
 int
 lw_dist3d_pt_pt(POINT3DZ *thep1, POINT3DZ *thep2,DISTPTS3D *dl)
 {
-	LWDEBUGF(2, "lw_dist3d_pt_pt called (with points: p1.x=%f, p1.y=%f,p1.z=%f,p2.x=%f, p2.y=%f,p2.z=%f)",thep1->x,thep1->y,thep1->z,thep2->x,thep2->y,thep2->z );
 	double dx = thep2->x - thep1->x;
 	double dy = thep2->y - thep1->y;
 	double dz = thep2->z - thep1->z;
 	double dist = sqrt ( dx*dx + dy*dy + dz*dz);
+	LWDEBUGF(2, "lw_dist3d_pt_pt called (with points: p1.x=%f, p1.y=%f,p1.z=%f,p2.x=%f, p2.y=%f,p2.z=%f)",thep1->x,thep1->y,thep1->z,thep2->x,thep2->y,thep2->z );
 
 	if (((dl->distance - dist)*(dl->mode))>0) /*multiplication with mode to handle mindistance (mode=1)  and maxdistance (mode = (-1)*/
 	{
@@ -629,11 +629,11 @@ Finds all combinationes of segments between two pointarrays
 int
 lw_dist3d_ptarray_ptarray(POINTARRAY *l1, POINTARRAY *l2,DISTPTS3D *dl)
 {
-	LWDEBUGF(2, "lw_dist3d_ptarray_ptarray called (points: %d-%d)",l1->npoints, l2->npoints);
 	int t,u;
 	POINT3DZ	start, end;
 	POINT3DZ	start2, end2;
 	int twist = dl->twisted;
+	LWDEBUGF(2, "lw_dist3d_ptarray_ptarray called (points: %d-%d)",l1->npoints, l2->npoints);
 
 
 
@@ -683,6 +683,11 @@ Finds the two closest points on two linesegments
 int 
 lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2, DISTPTS3D *dl)
 {
+	VECTOR3D v1, v2, vl;
+	double s1k, s2k; /*two variables representing where on Line 1 (s1k) and where on Line 2 (s2k) a connecting line between the two lines is perpendicular to both lines*/
+	POINT3DZ p1, p2;
+	double a, b, c, d, e, D;
+			
 	/*s1p1 and s1p2 are the same point */
 	if (  ( s1p1->x == s1p2->x) && (s1p1->y == s1p2->y) && (s1p1->z == s1p2->y) )
 	{
@@ -694,19 +699,13 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 		dl->twisted= ((dl->twisted) * (-1));
 		return lw_dist3d_pt_seg(s2p1,s1p1,s1p2,dl);
 	}
-	
-	
+		
 /*
 	Here we use algorithm from softsurfer.com
 	that can be found here
 	http://softsurfer.com/Archive/algorithm_0106/algorithm_0106.htm
 */
 	
-	
-	VECTOR3D v1, v2, vl;
-	double s1k, s2k; /*two variables representing where on Line 1 (s1k) and where on Line 2 (s2k) a connecting line between the two lines is perpendicular to both lines*/
-	POINT3DZ p1, p2;
-			
 	if (!get_3dvector_from_points(s1p1, s1p2, &v1))
 		return LW_FALSE;	
 
@@ -716,12 +715,12 @@ lw_dist3d_seg_seg(POINT3DZ *s1p1, POINT3DZ *s1p2, POINT3DZ *s2p1, POINT3DZ *s2p2
 	if (!get_3dvector_from_points(s2p1, s1p1, &vl))
 		return LW_FALSE;	
 
-	double    a = DOT(v1,v1);
-	double    b = DOT(v1,v2);
-	double    c = DOT(v2,v2);
-	double    d = DOT(v1,vl);
-	double    e = DOT(v2,vl);
-	double    D = a*c - b*b; 
+	a = DOT(v1,v1);
+	b = DOT(v1,v2);
+	c = DOT(v2,v2);
+	d = DOT(v1,vl);
+	e = DOT(v2,vl);
+	D = a*c - b*b; 
 
 
 	if (D <0.000000001) 
@@ -854,6 +853,7 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 	
 	for (i=1;i<pa->npoints;i++)
 	{		
+		int intersects;
 		getPoint3dz_p(pa, i, &p2);
 		s2=project_point_on_plane(&p2, plane, &projp2);	
 		lw_dist3d_pt_poly(&p2, poly, plane,&projp2, dl);
@@ -870,7 +870,7 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 			intersectionp.y=projp1.y+f*projp1_projp2.y;
 			intersectionp.z=projp1.z+f*projp1_projp2.z;
 			
-			int intersects = LW_TRUE; /*We set intersects to true until the opposite is proved*/
+			intersects = LW_TRUE; /*We set intersects to true until the opposite is proved*/
 			
 			if(pt_in_ring_3d(&intersectionp, poly->rings[0], plane)) /*Inside outer ring*/
 			{

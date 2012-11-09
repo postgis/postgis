@@ -30,7 +30,7 @@ static void test_lwline_split_by_point_to(void)
 	coll = lwmline_construct_empty(SRID_UNKNOWN, 0, 0);
 	CU_ASSERT_EQUAL(coll->ngeoms, 0);
 
-	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(0 0,5 5, 10 0))",
+	line = lwgeom_as_lwline(lwgeom_from_wkt("LINESTRING(0 0,5 5, 10 0)",
 		LW_PARSER_CHECK_NONE));
 	CU_ASSERT(line != NULL);
 

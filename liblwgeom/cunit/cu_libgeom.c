@@ -470,7 +470,8 @@ static void do_lwgeom_flip_coordinates(char *in, char *out)
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
 	lwgeom_add_bbox(g);
 
-	if ( testbox = (g->bbox != NULL) )
+	testbox = (g->bbox != NULL);
+	if ( testbox )
 	{
 		xmax = g->bbox->xmax;
 		ymax = g->bbox->ymax;
