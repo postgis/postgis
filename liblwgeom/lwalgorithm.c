@@ -120,7 +120,7 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 	POINT2D C;
 	double radius_A, circumference_A;
 	int a2_side, clockwise;
-	double a1, a2, a3;
+	double a1, a3;
 	double angle;
 	
 	if ( lw_arc_is_pt(A1, A2, A3) )
@@ -151,7 +151,6 @@ lw_arc_length(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3)
 		
 	/* Angles of each point that defines the arc section */
 	a1 = atan2(A1->y - C.y, A1->x - C.x);
-	a2 = atan2(A2->y - C.y, A2->x - C.x);
 	a3 = atan2(A3->y - C.y, A3->x - C.x);
 
 	/* What's the sweep from A1 to A3? */
