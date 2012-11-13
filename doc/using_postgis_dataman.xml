@@ -1367,133 +1367,24 @@ gisdb=# SELECT
               <tbody>
                 <row>
                   <entry><emphasis role="bold">Interior</emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          I(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">I(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          I(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">B(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          I(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">E(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( I(a) ∩ I(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( I(a) ∩ B(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( I(a) ∩ E(b) )</inlineequation></emphasis></entry>
                 </row>
-
                 <row>
                   <entry><emphasis role="bold">Boundary</emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          B(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">I(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          B(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">B(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          B(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">E(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( B(a) ∩ I(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( B(a) ∩ B(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( B(a) ∩ E(b) )</inlineequation></emphasis></entry>
                 </row>
-
                 <row>
                   <entry><emphasis role="bold">Exterior</emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          E(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">I(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          E(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">B(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
-
-                  <entry><emphasis><inlineequation>
-                      <mml:math display="block">
-                        <mml:mrow>
-                          <mml:mtext mathvariant="italic">dim(
-                          E(a)</mml:mtext>
-
-                          <mml:mo>∩</mml:mo>
-
-                          <mml:mtext mathvariant="italic">E(b) )</mml:mtext>
-                        </mml:mrow>
-                      </mml:math>
-                    </inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( E(a) ∩ I(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( E(a) ∩ B(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis><inlineequation>dim( E(a) ∩ E(b) )</inlineequation></emphasis></entry>
                 </row>
               </tbody>
+              
             </tgroup>
           </informaltable>
 
