@@ -47,6 +47,7 @@ PostGIS 2.1.0
     (Bborie Park / UC Davis)
   - ST_Tile(raster) to break up a raster into tiles (Bborie Park / UC Davis)
   - #739, UpdateRasterSRID()
+  - #1895, new r-tree node splitting algorithm (Alex Korotkov)
 
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 
