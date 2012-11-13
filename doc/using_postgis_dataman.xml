@@ -1367,21 +1367,21 @@ gisdb=# SELECT
               <tbody>
                 <row>
                   <entry><emphasis role="bold">Interior</emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( I(a) ∩ I(b) )</inlineequation></emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( I(a) ∩ B(b) )</inlineequation></emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( I(a) ∩ E(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis>dim( I(a) ∩ I(b) )</emphasis></entry>
+                  <entry><emphasis>dim( I(a) ∩ B(b) )</emphasis></entry>
+                  <entry><emphasis>dim( I(a) ∩ E(b) )</emphasis></entry>
                 </row>
                 <row>
                   <entry><emphasis role="bold">Boundary</emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( B(a) ∩ I(b) )</inlineequation></emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( B(a) ∩ B(b) )</inlineequation></emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( B(a) ∩ E(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis>dim( B(a) ∩ I(b) )</emphasis></entry>
+                  <entry><emphasis>dim( B(a) ∩ B(b) )</emphasis></entry>
+                  <entry><emphasis>dim( B(a) ∩ E(b) )</emphasis></entry>
                 </row>
                 <row>
                   <entry><emphasis role="bold">Exterior</emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( E(a) ∩ I(b) )</inlineequation></emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( E(a) ∩ B(b) )</inlineequation></emphasis></entry>
-                  <entry><emphasis><inlineequation>dim( E(a) ∩ E(b) )</inlineequation></emphasis></entry>
+                  <entry><emphasis>dim( E(a) ∩ I(b) )</emphasis></entry>
+                  <entry><emphasis>dim( E(a) ∩ B(b) )</emphasis></entry>
+                  <entry><emphasis>dim( E(a) ∩ E(b) )</emphasis></entry>
                 </row>
               </tbody>
               
