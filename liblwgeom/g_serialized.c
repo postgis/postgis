@@ -230,8 +230,8 @@ int gserialized_read_gbox_p(const GSERIALIZED *g, GBOX *gbox)
 			{
 				/* Advance to M */
 				i++;
-				gbox->zmin = FP_MIN(dptr[i], dptr[i+ndims]);
-				gbox->zmax = FP_MAX(dptr[i], dptr[i+ndims]);
+				gbox->mmin = FP_MIN(dptr[i], dptr[i+ndims]);
+				gbox->mmax = FP_MAX(dptr[i], dptr[i+ndims]);
 			}
 			gbox_float_round(gbox);
 			return LW_SUCCESS;
