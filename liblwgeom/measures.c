@@ -1320,6 +1320,11 @@ lw_dist2d_arc_arc(const POINT2D *A1, const POINT2D *A2, const POINT2D *A3,
 			return LW_TRUE;
 		}
 	} 
+	else
+	{
+		lwerror("lw_dist2d_arc_arc: arcs neither touch, intersect nor are disjoint! INCONCEIVABLE!");
+		return LW_FALSE;
+	}
 
 	/* Closest point is in the arc A, but not in the arc B, so */
 	/* one of the B end points must be the closest. */
