@@ -848,6 +848,8 @@ static inline bool gserialized_gist_consistent_leaf_2d(BOX2DF *key, BOX2DF *quer
 
 	switch (strategy)
 	{
+
+	/* Basic overlaps */
 	case RTOverlapStrategyNumber:
 		retval = (bool) box2df_overlaps(key, query);
 		break;
@@ -862,6 +864,35 @@ static inline bool gserialized_gist_consistent_leaf_2d(BOX2DF *key, BOX2DF *quer
 	case RTOldContainedByStrategyNumber:
 		retval = (bool) box2df_contains(query, key);
 		break;
+		
+	/* To one side */
+	case RTAboveStrategyNumber:
+		retval = (bool) box2df_above(key, query);
+		break;
+	case RTBelowStrategyNumber:
+		retval = (bool) box2df_below(key, query);
+		break;
+	case RTRightStrategyNumber:
+		retval = (bool) box2df_right(key, query);
+		break;
+	case RTLeftStrategyNumber:
+		retval = (bool) box2df_left(key, query);
+		break;
+
+	/* Overlapping to one side */
+	case RTOverAboveStrategyNumber:
+		retval = (bool) box2df_overabove(key, query);
+		break;
+	case RTOverBelowStrategyNumber:
+		retval = (bool) box2df_overbelow(key, query);
+		break;
+	case RTOverRightStrategyNumber:
+		retval = (bool) box2df_overright(key, query);
+		break;
+	case RTOverLeftStrategyNumber:
+		retval = (bool) box2df_overleft(key, query);
+		break;		
+		
 	default:
 		retval = FALSE;
 	}
@@ -881,6 +912,8 @@ static inline bool gserialized_gist_consistent_internal_2d(BOX2DF *key, BOX2DF *
 
 	switch (strategy)
 	{
+		
+	/* Basic overlaps */
 	case RTOverlapStrategyNumber:
 		retval = (bool) box2df_overlaps(key, query);
 		break;
@@ -893,6 +926,35 @@ static inline bool gserialized_gist_consistent_internal_2d(BOX2DF *key, BOX2DF *
 	case RTOldContainedByStrategyNumber:
 		retval = (bool) box2df_overlaps(key, query);
 		break;
+		
+	/* To one side */
+	case RTAboveStrategyNumber:
+		retval = (bool)(!box2df_overbelow(key, query));
+		break;
+	case RTBelowStrategyNumber:
+		retval = (bool)(!box2df_overabove(key, query));
+		break;
+	case RTRightStrategyNumber:
+		retval = (bool)(!box2df_overleft(key, query));
+		break;
+	case RTLeftStrategyNumber:
+		retval = (bool)(!box2df_overright(key, query));
+		break;
+
+	/* Overlapping to one side */
+	case RTOverAboveStrategyNumber:
+		retval = (bool)(!box2df_below(key, query));
+		break;
+	case RTOverBelowStrategyNumber:
+		retval = (bool)(!box2df_above(key, query));
+		break;
+	case RTOverRightStrategyNumber:
+		retval = (bool)(!box2df_left(key, query));
+		break;
+	case RTOverLeftStrategyNumber:
+		retval = (bool)(!box2df_right(key, query));
+		break;
+		
 	default:
 		retval = FALSE;
 	}

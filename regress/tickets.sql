@@ -734,6 +734,41 @@ SELECT '#2001', ST_AsText(ST_CurveToLine(ST_GeomFromText('CURVEPOLYGON((0 0, 0 1
 -- #2028 --
 SELECT '#2028', ST_AsText(ST_Multi('TRIANGLE((0 0, 0 1, 1 1, 0 0))'));
 
+
+-- #2035 START ------------------------------------------------------------
+
+-- Simple geographic table, with single point.
+CREATE TABLE "city" (
+    "id" integer,
+    "name" varchar(30) NOT NULL,
+    "point" geometry(POINT,4326) NOT NULL
+);
+CREATE INDEX "city_point_id" ON "city" USING GIST ( "point" );
+
+-- Initial data, with points around the world.
+INSERT INTO "city" (id, name, point) VALUES (1, 'Houston', 'SRID=4326;POINT(-95.363151 29.763374)');
+INSERT INTO "city" (id, name, point) VALUES (2, 'Dallas', 'SRID=4326;POINT(-95.363151 29.763374)');
+INSERT INTO "city" (id, name, point) VALUES (3, 'Oklahoma City', 'SRID=4326;POINT(-97.521157 34.464642)');
+INSERT INTO "city" (id, name, point) VALUES (4, 'Wellington', 'SRID=4326;POINT(174.783117 -41.315268)');
+INSERT INTO "city" (id, name, point) VALUES (5, 'Pueblo', 'SRID=4326;POINT(-104.609252 38.255001)');
+INSERT INTO "city" (id, name, point) VALUES (6, 'Lawrence', 'SRID=4326;POINT(-95.23506 38.971823)');
+INSERT INTO "city" (id, name, point) VALUES (7, 'Chicago', 'SRID=4326;POINT(-87.650175 41.850385)');
+INSERT INTO "city" (id, name, point) VALUES (8, 'Victoria', 'SRID=4326;POINT(-123.305196 48.462611)');
+
+-- This query, or COUNT(*), does not return anything; should return 6 cities,
+-- excluding Pueblo and Victoria.  The Polygon is a simple approximation of
+-- Colorado.
+SELECT '#2035a', Count(*) FROM "city"
+  WHERE "city"."point" >> ST_GeomFromEWKT('SRID=4326;POLYGON ((-109.060253 36.992426, -109.060253 41.003444, -102.041524 41.003444, -102.041524 36.992426, -109.060253 36.992426))');
+
+-- However, when a LIMIT is placed on statement, the query suddenly works.
+SELECT '#2035b', Count(*) FROM "city"
+  WHERE "city"."point" >> ST_GeomFromEWKT('SRID=4326;POLYGON ((-109.060253 36.992426, -109.060253 41.003444, -102.041524 41.003444, -102.041524 36.992426, -109.060253 36.992426))') LIMIT 6;
+
+DROP TABLE "city";
+-- #2035 END --------------------------------------------------------------
+
+
 -- #2084 --
 SELECT '#2048', num, ST_Within('POINT(-54.394 56.522)', "the_geom"), ST_CoveredBy('POINT(-54.394 56.522)', "the_geom")
 FROM ( VALUES
