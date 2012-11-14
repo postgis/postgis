@@ -65,21 +65,17 @@ Datum LWGEOM_curve_segmentize(PG_FUNCTION_ARGS)
 		elog(ERROR, "2nd argument must be positive.");
 		PG_RETURN_NULL();
 	}
-#if POSTGIS_DEBUG_LEVEL > 0
-	else
-	{
-		POSTGIS_DEBUGF(3, "perQuad = %d", perQuad);
-	}
-#endif
+
+	POSTGIS_DEBUGF(3, "perQuad = %d", perQuad);
+
 	igeom = lwgeom_from_gserialized(geom);
-	if ( ! lwgeom_has_arc(igeom) )
-	{
-		PG_RETURN_POINTER(geom);
-	}
 	ogeom = lwgeom_segmentize(igeom, perQuad);
-	if (ogeom == NULL) PG_RETURN_NULL();
-	ret = geometry_serialize(ogeom);
 	lwgeom_free(igeom);
+	
+	if (ogeom == NULL) 
+		PG_RETURN_NULL();
+		
+	ret = geometry_serialize(ogeom);
 	lwgeom_free(ogeom);
 	PG_FREE_IF_COPY(geom, 0);
 	PG_RETURN_POINTER(ret);

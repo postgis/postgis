@@ -315,7 +315,7 @@ lwcompound_segmentize(const LWCOMPOUND *icompound, uint32_t perQuad)
 				getPoint4d_p(tmp->points, j, &p);
 				ptarray_append_point(ptarray, &p, LW_TRUE);
 			}
-			lwfree(tmp);
+			lwline_free(tmp);
 		}
 		else if (geom->type == LINETYPE)
 		{

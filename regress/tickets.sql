@@ -723,5 +723,8 @@ SELECT '#1978', round(ST_Length(ST_GeomFromText('CIRCULARSTRING(0 0,1 0,0 0)',0)
 -- #1996 --
 SELECT '#1996', ST_AsGeoJSON(ST_GeomFromText('POINT EMPTY'));
 
+-- #2001 --
+SELECT '#2001', ST_AsText(ST_CurveToLine(ST_GeomFromText('CURVEPOLYGON((0 0, 0 1, 1 1, 0 0))'), 2));
+
 -- Clean up
 DELETE FROM spatial_ref_sys;
