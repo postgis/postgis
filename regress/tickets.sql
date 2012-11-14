@@ -728,6 +728,9 @@ SELECT '#1978', round(ST_Length(ST_GeomFromText('CIRCULARSTRING(0 0,1 0,0 0)',0)
 -- #1996 --
 SELECT '#1996', ST_AsGeoJSON(ST_GeomFromText('POINT EMPTY'));
 
+-- #2001 --
+SELECT '#2001', ST_AsText(ST_CurveToLine(ST_GeomFromText('CURVEPOLYGON((0 0, 0 1, 1 1, 0 0))'), 2));
+
 -- #2084 --
 SELECT '#2048', num, ST_Within('POINT(-54.394 56.522)', "the_geom"), ST_CoveredBy('POINT(-54.394 56.522)', "the_geom")
 FROM ( VALUES
