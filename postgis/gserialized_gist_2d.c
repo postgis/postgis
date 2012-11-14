@@ -46,7 +46,7 @@
 ** 0 == don't use it
 ** 1 == use it
 */
-#define KOROTKOV_SPLIT 0
+#define KOROTKOV_SPLIT 1
 
 /*
 ** For debugging
