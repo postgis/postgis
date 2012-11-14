@@ -85,15 +85,12 @@ GSERIALIZED* gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod
 	/* Check that this is a type we can handle */
 	geography_valid_type(lwgeom->type);
 
-	/* Check that the coordinates are in range */
-	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
+	/* Force the geometry to have valid geodetic coordinate range. */
+	if ( lwgeom_force_geodetic(lwgeom) == LW_TRUE )
 	{
-		if ( (! lwgeom_nudge_geodetic(lwgeom)) || lwgeom_check_geodetic(lwgeom) == LW_FALSE )
-		{
-			ereport(ERROR, (
-			        errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-			        errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
-		}
+		ereport(NOTICE, (
+		        errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY" ))
+		);
 	}
 
 	/* Force default SRID to the default */
@@ -589,15 +586,12 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	/* Error on any SRID != default */
 	srid_is_latlong(fcinfo, lwgeom->srid);
 
-	/* Check if the geography has valid coordinate range. */
-	if ( lwgeom_check_geodetic(lwgeom) == LW_FALSE )
+	/* Force the geometry to have valid geodetic coordinate range. */
+	if ( lwgeom_force_geodetic(lwgeom) == LW_TRUE )
 	{
-		if ( (! lwgeom_nudge_geodetic(lwgeom)) || lwgeom_check_geodetic(lwgeom) == LW_FALSE )
-		{
-			ereport(ERROR, (
-			        errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-			        errmsg("Coordinate values are out of range [-180 -90, 180 90] for GEOGRAPHY type" )));
-		}
+		ereport(NOTICE, (
+		        errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY" ))
+		);
 	}
 
 	/*

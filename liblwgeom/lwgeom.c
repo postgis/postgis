@@ -713,6 +713,13 @@ lwgeom_get_srid(const LWGEOM *geom)
 	return geom->srid;
 }
 
+uint32_t 
+lwgeom_get_type(const LWGEOM *geom)
+{
+	if ( ! geom ) return 0;
+	return geom->type;
+}
+
 int 
 lwgeom_has_z(const LWGEOM *geom)
 {

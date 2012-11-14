@@ -1244,6 +1244,11 @@ extern double lwpoint_get_m(const LWPOINT *point);
 extern int32_t lwgeom_get_srid(const LWGEOM *geom);
 
 /**
+* Return LWTYPE number
+*/
+extern uint32_t lwgeom_get_type(const LWGEOM *geom);
+
+/**
 * Return #LW_TRUE if geometry has Z ordinates
 */
 extern int lwgeom_has_z(const LWGEOM *geom);
@@ -1469,14 +1474,19 @@ extern char* gserialized_to_string(const GSERIALIZED *g);
 extern GSERIALIZED* gserialized_copy(const GSERIALIZED *g);
 
 /**
-* Check that coordinates of LWGEOM are all within the geodetic range.
+* Check that coordinates of LWGEOM are all within the geodetic range (-180, -90, 180, 90)
 */
 extern int lwgeom_check_geodetic(const LWGEOM *geom);
 
 /**
-* Check that coordinates of LWGEOM are all within the geodetic range.
+* Gently move coordinates of LWGEOM if they are close enough into geodetic range.
 */
 extern int lwgeom_nudge_geodetic(LWGEOM *geom);
+
+/**
+* Force coordinates of LWGEOM into geodetic range (-180, -90, 180, 90)
+*/
+extern int lwgeom_force_geodetic(LWGEOM *geom);
 
 /**
 * Set the FLAGS geodetic bit on geometry an all sub-geometries and pointlists

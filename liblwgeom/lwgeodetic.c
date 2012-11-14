@@ -2709,6 +2709,90 @@ int lwgeom_check_geodetic(const LWGEOM *geom)
 	return LW_FALSE;
 }
 
+static int ptarray_force_geodetic(POINTARRAY *pa)
+{
+	int t;
+	int changed = LW_FALSE;
+	POINT4D pt;
+
+	assert(pa);
+
+	for ( t=0; t < pa->npoints; t++ )
+	{
+		getPoint4d_p(pa, t, &pt);
+		if ( pt.x < -180.0 || pt.x > 180.0 || pt.y < -90.0 || pt.y > 90.0 )
+		{
+			pt.x = longitude_degrees_normalize(pt.x); 
+			pt.y = latitude_degrees_normalize(pt.y); 
+			ptarray_set_point4d(pa, t, &pt);
+			changed = LW_TRUE;
+		}
+	}
+	return changed;  
+}
+
+static int lwpoint_force_geodetic(LWPOINT *point)
+{
+	assert(point);
+	return ptarray_force_geodetic(point->point);
+}
+
+static int lwline_force_geodetic(LWLINE *line)
+{
+	assert(line);
+	return ptarray_force_geodetic(line->points);
+}
+
+static int lwpoly_force_geodetic(LWPOLY *poly)
+{
+	int i = 0;
+	int changed = LW_FALSE;
+	assert(poly);
+
+	for ( i = 0; i < poly->nrings; i++ )
+	{
+		if ( ptarray_force_geodetic(poly->rings[i]) == LW_TRUE )
+			changed = LW_TRUE;
+	}
+	return changed;
+}
+
+static int lwcollection_force_geodetic(LWCOLLECTION *col)
+{
+	int i = 0;
+	int changed = LW_FALSE;
+	assert(col);
+
+	for ( i = 0; i < col->ngeoms; i++ )
+	{
+		if ( lwgeom_force_geodetic(col->geoms[i]) == LW_TRUE )
+			changed = LW_TRUE;
+	}
+	return changed;
+}
+
+int lwgeom_force_geodetic(LWGEOM *geom)
+{
+	switch ( lwgeom_get_type(geom) )
+	{
+		case POINTTYPE:
+			return lwpoint_force_geodetic((LWPOINT *)geom);
+		case LINETYPE:
+			return lwline_force_geodetic((LWLINE *)geom);
+		case POLYGONTYPE:
+			return lwpoly_force_geodetic((LWPOLY *)geom);
+		case MULTIPOINTTYPE:
+		case MULTILINETYPE:
+		case MULTIPOLYGONTYPE:
+		case COLLECTIONTYPE:
+			return lwcollection_force_geodetic((LWCOLLECTION *)geom);
+		default:
+			lwerror("unsupported input geometry type: %d", lwgeom_get_type(geom));
+	}
+	return LW_FALSE;
+}
+
+
 double ptarray_length_spheroid(const POINTARRAY *pa, const SPHEROID *s)
 {
 	GEOGRAPHIC_POINT a, b;
