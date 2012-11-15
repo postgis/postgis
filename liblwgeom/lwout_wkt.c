@@ -123,7 +123,7 @@ static void lwpoint_to_wkt_sb(const LWPOINT *pt, stringbuffer_t *sb, int precisi
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)pt, sb, variant);
 	}
 
-	if ( (! pt->point) || (pt->point->npoints < 1) )
+	if ( lwpoint_is_empty(pt) )
 	{
 		empty_to_wkt_sb(sb);
 		return;
@@ -142,7 +142,7 @@ static void lwline_to_wkt_sb(const LWLINE *line, stringbuffer_t *sb, int precisi
 		stringbuffer_append(sb, "LINESTRING"); /* "LINESTRING" */
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)line, sb, variant);
 	}
-	if ( (! line->points) || (line->points->npoints < 1) )
+	if ( lwline_is_empty(line) )
 	{  
 		empty_to_wkt_sb(sb);
 		return;
@@ -162,7 +162,7 @@ static void lwpoly_to_wkt_sb(const LWPOLY *poly, stringbuffer_t *sb, int precisi
 		stringbuffer_append(sb, "POLYGON"); /* "POLYGON" */
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)poly, sb, variant);
 	}
-	if ( poly->nrings < 1 )
+	if ( lwpoly_is_empty(poly) )
 	{
 		empty_to_wkt_sb(sb);
 		return;
@@ -188,7 +188,7 @@ static void lwcircstring_to_wkt_sb(const LWCIRCSTRING *circ, stringbuffer_t *sb,
 		stringbuffer_append(sb, "CIRCULARSTRING"); /* "CIRCULARSTRING" */
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)circ, sb, variant);
 	}
-	if ( (! circ->points) || (circ->points->npoints < 1) )
+	if ( lwcircstring_is_empty(circ) )
 	{
 		empty_to_wkt_sb(sb);
 		return;
@@ -510,7 +510,7 @@ static void lwtriangle_to_wkt_sb(const LWTRIANGLE *tri, stringbuffer_t *sb, int 
 		stringbuffer_append(sb, "TRIANGLE"); /* "TRIANGLE" */
 		dimension_qualifiers_to_wkt_sb((LWGEOM*)tri, sb, variant);
 	}
-	if ( (! tri->points) || (tri->points->npoints < 1) )
+	if ( lwtriangle_is_empty(tri) )
 	{  
 		empty_to_wkt_sb(sb);
 		return;

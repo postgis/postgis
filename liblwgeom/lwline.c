@@ -456,7 +456,7 @@ lwline_force_dims(const LWLINE *line, int hasz, int hasm)
 
 int lwline_is_empty(const LWLINE *line)
 {
-	if ( !line->points || line->points->npoints == 0 )
+	if ( !line->points || line->points->npoints < 1 )
 		return LW_TRUE;
 	return LW_FALSE;
 }

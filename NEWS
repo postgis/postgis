@@ -31,6 +31,7 @@ PostGIS 2.0.2
   - #2072, Removed outdated checks preventing ST_Intersects(raster) from
            working on out-db bands
   - #2077, Fixed incorrect answers from ST_Hillshade(raster)
+  - #2015, ST_IsEmpty('POLYGON(EMPTY)') returns False
 
 
  * Enhancements *

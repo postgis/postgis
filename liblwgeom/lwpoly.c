@@ -325,7 +325,7 @@ lwpoly_force_dims(const LWPOLY *poly, int hasz, int hasm)
 
 int lwpoly_is_empty(const LWPOLY *poly)
 {
-	if ( (poly->nrings == 0) || (!poly->rings) )
+	if ( (poly->nrings < 1) || (!poly->rings) || (!poly->rings[0]) || (poly->rings[0]->npoints < 1) )
 		return LW_TRUE;
 	return LW_FALSE;
 }

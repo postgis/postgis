@@ -262,7 +262,7 @@ lwcircstring_is_closed(const LWCIRCSTRING *curve)
 
 int lwcircstring_is_empty(const LWCIRCSTRING *circ)
 {
-	if ( !circ->points || circ->points->npoints == 0 )
+	if ( !circ->points || circ->points->npoints < 1 )
 		return LW_TRUE;
 	return LW_FALSE;
 }

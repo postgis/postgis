@@ -107,7 +107,7 @@ static void test_wkb_out_polygon(void)
 	*  See http://http://trac.osgeo.org/postgis/ticket/937
 	*/
 	cu_wkb_from_hexwkb("01030000000100000000000000");
-	CU_ASSERT_STRING_EQUAL(s,"00000000030000000100000000");
+	CU_ASSERT_STRING_EQUAL(s,"000000000300000000");
 }
 
 static void test_wkb_out_multipoint(void) 

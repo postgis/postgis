@@ -161,7 +161,7 @@ lwtriangle_is_repeated_points(LWTRIANGLE *triangle)
 
 int lwtriangle_is_empty(const LWTRIANGLE *triangle)
 {
-	if ( !triangle->points || triangle->points->npoints == 0 )
+	if ( !triangle->points || triangle->points->npoints < 1 )
 		return LW_TRUE;
 	return LW_FALSE;
 }
