@@ -112,6 +112,13 @@ struct geomtype_struct geomtype_struct_array[] =
 };
 #define GEOMTYPE_STRUCT_ARRAY_LEN (sizeof geomtype_struct_array/sizeof(struct geomtype_struct))
 
+/*
+* We use a very simple upper case mapper here, because the system toupper() function
+* is locale dependent and may have trouble mapping lower case strings to the upper
+* case ones we expect (see, the "Turkisk I", http://www.i18nguy.com/unicode/turkish-i18n.html)
+* We could also count on PgSQL sending us *lower* case inputs, as it seems to do that
+* regardless of the case the user provides for the type arguments.
+*/
 const char dumb_upper_map[128] = "................................................0123456789.......ABCDEFGHIJKLMNOPQRSTUVWXYZ......ABCDEFGHIJKLMNOPQRSTUVWXYZ.....";
 
 static char dump_toupper(int in)
