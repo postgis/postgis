@@ -1,3 +1,32 @@
+2012-11-15 18:46  pramsey
+
+	* NEWS, postgis/lwgeom_transform.c, regress/tickets.sql,
+	  regress/tickets_expected: #2095, proj4 cache still corrupted by
+	  projection error in 1.5.5
+
+2012-11-06 00:23  pramsey
+
+	* NEWS: typo in NEWS
+
+2012-11-06 00:22  pramsey
+
+	* NEWS: Add entry for #2048
+
+2012-11-06 00:21  pramsey
+
+	* postgis/lwgeom_geos.c, regress/tickets.sql,
+	  regress/tickets_expected: #2048, ST_Within and ST_CoveredBy
+	  producing bad results after fix for #547
+
+2012-10-31 21:41  pramsey
+
+	* doc/release_notes.xml: Fix XML
+
+2012-10-31 21:38  pramsey
+
+	* ChangeLog, NEWS, README.postgis, Version.config,
+	  doc/release_notes.xml: Version push for release of 1.5.7
+
 2012-10-31 21:16  pramsey
 
 	* extras/WFS_locks/WFS_locks.sql.in, postgis/geography.sql.in.c,

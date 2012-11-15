@@ -3,6 +3,16 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
       <sect1>
+        <title>Release 1.5.8</title>
+        <para>Release date: 2012/11/15</para>
+        <para>This is a bug fix release, addressing issues that have been filed since the 1.5.7 release.</para>
+        <simplesect>
+         <title>Bug Fixes</title>
+          <para>#2048, ST_Within and ST_CoveredBy producing bad results</para>
+          <para>#2095, proj4 cache corrupted by projection error</para>
+        </simplesect>
+      </sect1>
+      <sect1>
         <title>Release 1.5.7</title>
         <para>Release date: 2012/10/31</para>
         <para>This is a bug fix release, addressing issues that have been filed since the 1.5.6 release.</para>
