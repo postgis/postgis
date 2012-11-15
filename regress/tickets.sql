@@ -9,6 +9,7 @@ INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32611, '+proj=utm +zone
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 4326, '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs' );
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32602, '+proj=utm +zone=2 +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
 INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 32702, '+proj=utm +zone=2 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs ' );
+INSERT INTO spatial_ref_sys ( srid, proj4text ) VALUES ( 3395, '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
 
 
 -- #2 --
@@ -326,6 +327,11 @@ select '#852.2', id, -- first run is not cached, consequent are cached
   st_intersects(g, 'POLYGON((0 0, 10 10, 1 0, 0 0))'::geometry),
   st_intersects(g, 'POLYGON((0 0, 1 1, 1 0, 0 0))'::geometry) from cacheable;
 DROP TABLE cacheable;
+
+-- #1580 
+select '#1580.1', ST_GeometryType(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395)), ST_SRID(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395)); 
+select '#1580.2', ST_Transform('SRID=4326;POINT(180 90)'::geometry, 3395); -- fails 
+select '#1580.3', ST_GeometryType(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395)), ST_SRID(ST_Transform('SRID=4326;POINT(0 0)'::geometry, 3395)); 
 
 -- #1595
 SELECT '#1595', 

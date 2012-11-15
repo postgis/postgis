@@ -87,6 +87,9 @@ WARNING:  No stats for "<current>"."t"."g" (empty or not analyzed)
 #852.1|2|f|f
 #852.2|1|t|t
 #852.2|2|t|t
+#1580.1|ST_Point|3395
+ERROR:  transform: couldn't project point (180 90 0): tolerance condition error (-20)
+#1580.3|ST_Point|3395
 #1595|SRID=32019;MULTILINESTRING((0 0,0 1))
 #1596.1|public.road_pg.roads_geom SRID:4326 TYPE:POINT DIMS:2 
 ERROR:  invalid SRID: 330000 not found in spatial_ref_sys

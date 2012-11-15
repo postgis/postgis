@@ -6,6 +6,7 @@ PostGIS 1.5.8
 
  - Bug Fixes
    - #2048, ST_Within and ST_CoveredBy producing bad results
+   - #2095, proj4 cache corrupted by projection error
 
 
 PostGIS 1.5.7
