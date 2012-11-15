@@ -112,6 +112,14 @@ struct geomtype_struct geomtype_struct_array[] =
 };
 #define GEOMTYPE_STRUCT_ARRAY_LEN (sizeof geomtype_struct_array/sizeof(struct geomtype_struct))
 
+const char dumb_upper_map[128] = "................................................0123456789.......ABCDEFGHIJKLMNOPQRSTUVWXYZ......ABCDEFGHIJKLMNOPQRSTUVWXYZ.....";
+
+static char dump_toupper(int in)
+{
+	if ( in < 0 || in > 127 ) 
+		return '.';
+	return dumb_upper_map[in];
+}
 
 uint8_t gflags(int hasz, int hasm, int geodetic)
 {
@@ -171,7 +179,7 @@ int geometry_type_from_string(const char *str, uint8_t *type, int *z, int *m)
 	/* Copy and convert to upper case for comparison */
 	tmpstr = lwalloc(tmpendpos - tmpstartpos + 2);
 	for (i = tmpstartpos; i <= tmpendpos; i++)
-		tmpstr[i - tmpstartpos] = toupper(str[i]);
+		tmpstr[i - tmpstartpos] = dump_toupper(str[i]);
 
 	/* Add NULL to terminate */
 	tmpstr[i - tmpstartpos] = '\0';
