@@ -8,7 +8,7 @@
 	 Purpose: This is an xsl transform that generates PostGIS flash cards
      ******************************************************************** -->
 	<xsl:output method="text" />
-	<xsl:variable name='postgis_version'>2.0</xsl:variable>
+	<xsl:variable name='postgis_version'>2.1</xsl:variable>
 	<xsl:variable name='new_tag'>Availability: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 
@@ -46,13 +46,13 @@ h1 {
 }
 
 </style>
-	</head><body><h1 style='text-align:center'>Post GIS ]]></xsl:text> <xsl:text><![CDATA[ Day 2011 Commemorative Playing Cards</h1>
+	</head><body><h1 style='text-align:center'>Post GIS ]]></xsl:text> <xsl:text><![CDATA[ Day 2012 Commemorative Playing Cards</h1>
 			<a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src='images/ccbysa.png' /></a>&nbsp;&nbsp; <a href="http://www.postgis.org">http://www.postgis.org</a>
 			<p>Celebrate this Post GIS day with these versatile Post GIS day commemorative playing cards. The number of games and fun-filled hours you
 			can have with these cards is priceless. Here is a small listing of the infinite number of games you can play with Post GIS cards:</p>
 			<ul><li><b>Name that thing</b> In this game you have the descriptions face up and have the opponent guess the name of the function, type, or operator.</li>
 				<li><b>What does it do?</b> In this game you have the name of the thing face up and have the opponent describe what the thing does or is for.  Your friends and even
-				strangers you tricked into playing this game will be amazed at your mastery of the 400 some-odd functions PostGIS provides. <em>To be able to exercise all 400 some-odd functions, you need to be running PostGIS 2.0+</em></li> 
+				strangers you tricked into playing this game will be amazed at your mastery of the 400 some-odd functions PostGIS provides. <em>To be able to exercise all 400 some-odd functions, you need to be running PostGIS ]]></xsl:text> <xsl:value-of select="$postgis_version" /><xsl:text><![CDATA[+</em></li> 
 				<li><b>Post GIS war game</b> This game requires no knowledge of PostGIS what-so-ever. In this game, you play with the descriptions face up. Even your kids will like this game, and may learn how to use PostGIS better than you.
 					There are two joker cards -- the &quot;What Is Post GIS?&quot; and &quot;What does Post GIS?&quot;.  Any player that is dealt either of these cards wins - period.  For other cards the order of precedence is: 
 						<sup>1</sup> - Is super and beats anything else except another <sup>1</sup> or joker card. In the event of multiple <sup>1</sup>, the one that happens alphabetically first trumps the others.  Symbols always trump letters. <br />
