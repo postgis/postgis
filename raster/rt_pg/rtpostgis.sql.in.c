@@ -3795,6 +3795,11 @@ CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos in
 		END IF;
 
 		shade := _bright * ((cos(zenith) * cos(slope)) + (sin(zenith) * sin(slope) * cos(azimuth - aspect)));
+
+		IF shade < 0. THEN
+			shade := 0;
+		END IF;
+
 		RETURN shade;
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
