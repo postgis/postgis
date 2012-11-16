@@ -7696,15 +7696,28 @@ FROM dummy_rast;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_HillShade</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
-					<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>azimuth=315</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>altitude=45</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+						<funcdef>raster <function>ST_HillShade</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>azimuth=315</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>altitude=45</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_HillShade</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>azimuth=315</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>altitude=45</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>max_bright=255</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7747,7 +7760,7 @@ FROM dummy_rast;
 			</refsection>
 				
 			<refsection>
-				<title>Examples</title>
+				<title>Examples: Variant 1</title>
 				<programlisting>
 WITH foo AS (
 	SELECT ST_SetValues(
@@ -7793,12 +7806,22 @@ FROM foo
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_Aspect</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
-					<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
-					<paramdef choice="opt"><type>text </type> <parameter>measurement=DEGREES</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+						<funcdef>raster <function>ST_Aspect</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_Aspect</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7809,15 +7832,15 @@ FROM foo
 				<para>Returns the aspect (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the aspect equation to neighboring pixels.</para>
 
 				<para>
-					<varname>measurement</varname> indicates the units of the aspect. Possible values are: RADIANS, DEGREES (default).
+					<varname>units</varname> indicates the units of the aspect. Possible values are: RADIANS, DEGREES (default).
 				</para>
 
 				<para>
-					When <varname>measurement</varname> = RADIANS, values are between 0 and 2&pi; radians measured clockwise from North.
+					When <varname>units</varname> = RADIANS, values are between 0 and 2&pi; radians measured clockwise from North.
 				</para>
 
 				<para>
-					When <varname>measurement</varname> = DEGREES, values are between 0 and 360 degrees measured clockwise from North.
+					When <varname>units</varname> = DEGREES, values are between 0 and 360 degrees measured clockwise from North.
 				</para>
 
 				<para>
@@ -7836,7 +7859,7 @@ FROM foo
 			</refsection>
 				
 			<refsection>
-				<title>Examples</title>
+				<title>Examples: Variant 1</title>
 				<programlisting>
 WITH foo AS (
 	SELECT ST_SetValues(
@@ -7883,13 +7906,24 @@ FROM foo
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>raster <function>ST_Slope</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-					<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
-					<paramdef choice="opt"><type>text </type> <parameter>measurement=DEGREES</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
-					<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+						<funcdef>raster <function>ST_Slope</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_Slope</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7900,7 +7934,7 @@ FROM foo
 				<para>Returns the slope (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the slope equation to neighboring pixels.</para>
 
 				<para>
-					<varname>measurement</varname> indicates the units of the slope. Possible values are: RADIANS, DEGREES (default), PERCENT.
+					<varname>units</varname> indicates the units of the slope. Possible values are: RADIANS, DEGREES (default), PERCENT.
 				</para>
 
 				<para>
@@ -7918,13 +7952,13 @@ FROM foo
 				</note>
 
 				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>measurement</varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> function parameters</para>
+				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>units</varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> function parameters</para>
 				<para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
 			
 			</refsection>
 				
 			<refsection>
-				<title>Examples</title>
+				<title>Examples: Variant 1</title>
 				<programlisting>
 WITH foo AS (
 	SELECT ST_SetValues(

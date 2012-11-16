@@ -73,11 +73,13 @@ PostGIS 2.1.0
     of missing TopoGeometry objects from their natural layer.
   - ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional 
     parameter to interpolate NODATA pixels before running the operation.
-  - point variant of ST_SetValue(raster) is now a wrapper around geomval 
+  - Point variant of ST_SetValue(raster) is now a wrapper around geomval 
     variant of ST_SetValues(rast).
-  - proper support for raster band's isnodata flag in core API and loader.
+  - Proper support for raster band's isnodata flag in core API and loader.
   - #1655, Additional default values for parameters of ST_Slope
   - Additional default values for parameters of ST_Aspect and ST_HillShade
+  - #2078, New variants of ST_Slope, ST_Aspect and ST_HillShade to provide
+    solution to handling tiles in a coverage
 
 * Fixes *
 

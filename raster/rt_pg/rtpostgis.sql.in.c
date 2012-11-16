@@ -3327,7 +3327,7 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos intege
 		_pixheight double precision;
 		_width double precision;
 		_height double precision;
-		_measure text;
+		_units text;
 		_scale double precision;
 
 		dz_dx double precision;
@@ -3370,7 +3370,7 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos intege
 		_pixheight := userargs[2]::double precision;
 		_width := userargs[3]::double precision;
 		_height := userargs[4]::double precision;
-		_measure := userargs[5];
+		_units := userargs[5];
 		_scale := userargs[6]::double precision;
 
 		/* ArcGIS returns values for edge pixels
@@ -3401,7 +3401,7 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos intege
 		slope := sqrt(dz_dx * dz_dx + dz_dy * dz_dy) / (8 * _scale);
 
 		-- output depends on user preference
-		CASE substring(upper(trim(leading from _measure)) for 3)
+		CASE substring(upper(trim(leading from _units)) for 3)
 			-- percentages
 			WHEN 'PER' THEN
 				slope := 100.0 * slope;
@@ -3418,8 +3418,9 @@ CREATE OR REPLACE FUNCTION _st_slope4ma(value double precision[][][], pos intege
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_slope(
-	rast raster, nband integer DEFAULT 1,
-	pixeltype text DEFAULT '32BF', measurement text DEFAULT 'DEGREES',
+	rast raster, nband integer,
+	customextent raster,
+	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
 	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
@@ -3432,9 +3433,24 @@ CREATE OR REPLACE FUNCTION st_slope(
 		_pixheight double precision;
 		_width integer;
 		_height integer;
+		_customextent raster;
+		_extenttype text;
 	BEGIN
+		_customextent := customextent;
+		IF _customextent IS NULL THEN
+			_extenttype := 'FIRST';
+		ELSE
+			_extenttype := 'CUSTOM';
+		END IF;
+
 		IF interpolate_nodata IS TRUE THEN
-			_rast := ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1);
+			_rast := ST_MapAlgebra(
+				ARRAY[ROW(rast, nband)]::rastbandarg[],
+				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				pixeltype,
+				'FIRST', NULL,
+				1, 1
+			);
 			_nband := 1;
 			_pixtype := NULL;
 		ELSE
@@ -3452,14 +3468,23 @@ CREATE OR REPLACE FUNCTION st_slope(
 			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
 			'_st_slope4ma(double precision[][][], integer[][], text[])'::regprocedure,
 			_pixtype,
-			'FIRST', NULL,
+			_extenttype, _customextent,
 			1, 1,
 			_pixwidth::text, _pixheight::text,
 			_width::text, _height::text,
-			$4::text, $5::text
+			units::text, scale::text
 		);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_slope(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
+	scale double precision DEFAULT 1.0,	interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$ SELECT st_slope($1, $2, NULL::raster, $3, $4, $5, $6) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_Aspect
@@ -3476,7 +3501,7 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integ
 
 		_width double precision;
 		_height double precision;
-		_measure text;
+		_units text;
 
 		dz_dx double precision;
 		dz_dy double precision;
@@ -3515,7 +3540,7 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integ
 
 		_width := userargs[1]::double precision;
 		_height := userargs[2]::double precision;
-		_measure := userargs[3];
+		_units := userargs[3];
 
 		/* ArcGIS returns values for edge pixels
 		-- check that pixel is not edge pixel
@@ -3563,7 +3588,7 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integ
 		END IF;
 
 		-- output depends on user preference
-		CASE substring(upper(trim(leading from _measure)) for 3)
+		CASE substring(upper(trim(leading from _units)) for 3)
 			-- radians
 			WHEN 'rad' THEN
 				RETURN aspect;
@@ -3576,8 +3601,9 @@ CREATE OR REPLACE FUNCTION _st_aspect4ma(value double precision[][][], pos integ
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_aspect(
-	rast raster, nband integer DEFAULT 1,
-	pixeltype text DEFAULT '32BF', measurement text DEFAULT 'DEGREES',
+	rast raster, nband integer,
+	customextent raster,
+	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
 	interpolate_nodata boolean DEFAULT FALSE
 )
 	RETURNS raster
@@ -3588,9 +3614,24 @@ CREATE OR REPLACE FUNCTION st_aspect(
 		_pixtype text;
 		_width integer;
 		_height integer;
+		_customextent raster;
+		_extenttype text;
 	BEGIN
+		_customextent := customextent;
+		IF _customextent IS NULL THEN
+			_extenttype := 'FIRST';
+		ELSE
+			_extenttype := 'CUSTOM';
+		END IF;
+
 		IF interpolate_nodata IS TRUE THEN
-			_rast := ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1);
+			_rast := ST_MapAlgebra(
+				ARRAY[ROW(rast, nband)]::rastbandarg[],
+				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				pixeltype,
+				'FIRST', NULL,
+				1, 1
+			);
 			_nband := 1;
 			_pixtype := NULL;
 		ELSE
@@ -3606,13 +3647,22 @@ CREATE OR REPLACE FUNCTION st_aspect(
 			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
 			'_st_aspect4ma(double precision[][][], integer[][], text[])'::regprocedure,
 			_pixtype,
-			'FIRST', NULL,
+			_extenttype, _customextent,
 			1, 1,
 			_width::text, _height::text,
-			$4::text
+			units::text
 		);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_aspect(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF', units text DEFAULT 'DEGREES',
+	interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$ SELECT st_aspect($1, $2, NULL::raster, $3, $4, $5) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- ST_HillShade
@@ -3750,7 +3800,8 @@ CREATE OR REPLACE FUNCTION _st_hillshade4ma(value double precision[][][], pos in
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_hillshade(
-	rast raster, nband integer DEFAULT 1,
+	rast raster, nband integer,
+	customextent raster,
 	pixeltype text DEFAULT '32BF',
 	azimuth double precision DEFAULT 315.0, altitude double precision DEFAULT 45.0,
 	max_bright double precision DEFAULT 255.0, scale double precision DEFAULT 1.0,
@@ -3766,9 +3817,24 @@ CREATE OR REPLACE FUNCTION st_hillshade(
 		_pixheight double precision;
 		_width integer;
 		_height integer;
+		_customextent raster;
+		_extenttype text;
 	BEGIN
+		_customextent := customextent;
+		IF _customextent IS NULL THEN
+			_extenttype := 'FIRST';
+		ELSE
+			_extenttype := 'CUSTOM';
+		END IF;
+
 		IF interpolate_nodata IS TRUE THEN
-			_rast := ST_MapAlgebra(ARRAY[ROW($1, $2)]::rastbandarg[], 'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure, $3, 'FIRST', NULL, 1, 1);
+			_rast := ST_MapAlgebra(
+				ARRAY[ROW(rast, nband)]::rastbandarg[],
+				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				pixeltype,
+				'FIRST', NULL,
+				1, 1
+			);
 			_nband := 1;
 			_pixtype := NULL;
 		ELSE
@@ -3786,15 +3852,26 @@ CREATE OR REPLACE FUNCTION st_hillshade(
 			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
 			'_st_hillshade4ma(double precision[][][], integer[][], text[])'::regprocedure,
 			_pixtype,
-			'FIRST', NULL,
+			_extenttype, _customextent,
 			1, 1,
 			_pixwidth::text, _pixheight::text,
 			_width::text, _height::text,
-			$4::text, $5::text,
-			$6::text, $7::text
+			$5::text, $6::text,
+			$7::text, $8::text
 		);
 	END;
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_hillshade(
+	rast raster, nband integer DEFAULT 1,
+	pixeltype text DEFAULT '32BF',
+	azimuth double precision DEFAULT 315.0, altitude double precision DEFAULT 45.0,
+	max_bright double precision DEFAULT 255.0, scale double precision DEFAULT 1.0,
+	interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS RASTER
+	AS $$ SELECT st_hillshade($1, $2, NULL::raster, $3, $4, $5, $6, $7, $8) $$
+	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------
 -- Get information about the raster
