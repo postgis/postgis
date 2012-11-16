@@ -10114,7 +10114,7 @@ UPDATE wind
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  If <varname>nband</varname> is not specified, band 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN.</para>
+				<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  If <varname>nband</varname> is not specified, band 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
 
 				<para>Availability: 2.0.0 </para>
 				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>

@@ -15624,7 +15624,8 @@ typedef enum {
 	UT_MAX,
 	UT_COUNT,
 	UT_SUM,
-	UT_MEAN
+	UT_MEAN,
+	UT_RANGE
 } rtpg_union_type;
 
 /* internal function translating text of UNION type to enum */
@@ -15645,6 +15646,8 @@ static rtpg_union_type rtpg_uniontype_index_from_name(const char *cutype) {
 		return UT_SUM;
 	else if (strcmp(cutype, "MEAN") == 0)
 		return UT_MEAN;
+	else if (strcmp(cutype, "RANGE") == 0)
+		return UT_RANGE;
 
 	return UT_LAST;
 }
@@ -15765,6 +15768,7 @@ static int rtpg_union_callback(
 			*value = arg->values[0][0][0] + arg->values[1][0][0];
 			break;
 		case UT_MEAN:
+		case UT_RANGE:
 			break;
 		case UT_LAST:
 		default:
@@ -15806,6 +15810,41 @@ static int rtpg_union_mean_callback(
 		!arg->nodata[1][0][0]
 	) {
 		*value = arg->values[1][0][0] / arg->values[0][0][0];
+		*nodata = 0;
+	}
+
+	POSTGIS_RT_DEBUGF(4, "value, nodata = (%f, %d)", *value, *nodata);
+
+	return 1;
+}
+
+static int rtpg_union_range_callback(
+	rt_iterator_arg arg, void *userarg,
+	double *value, int *nodata
+) {
+	if (arg == NULL)
+		return 0;
+
+	if (
+		arg->rasters != 2 ||
+		arg->rows != 1 ||
+		arg->columns != 1
+	) {
+		elog(ERROR, "rtpg_union_range_callback: Invalid arguments passed to callback");
+		return 0;
+	}
+
+	*value = 0;
+	*nodata = 1;
+
+	POSTGIS_RT_DEBUGF(4, "rast0: %f %d", arg->values[0][0][0], arg->nodata[0][0][0]);
+	POSTGIS_RT_DEBUGF(4, "rast1: %f %d", arg->values[1][0][0], arg->nodata[1][0][0]);
+
+	if (
+		!arg->nodata[0][0][0] &&
+		!arg->nodata[1][0][0]
+	) {
+		*value = arg->values[1][0][0] - arg->values[0][0][0];
 		*nodata = 0;
 	}
 
@@ -15901,8 +15940,12 @@ static int rtpg_union_unionarg_process(rtpg_union_arg arg, ArrayType *array) {
 		arg->bandarg[i].nband = nband - 1;
 		arg->bandarg[i].raster = NULL;
 
-		if (utype != UT_MEAN)
+		if (
+			utype != UT_MEAN &&
+			utype != UT_RANGE
+		) {
 			arg->bandarg[i].numraster = 1;
+		}
 		else
 			arg->bandarg[i].numraster = 2;
 	}
@@ -16085,8 +16128,12 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					iwr->bandarg[0].uniontype = utype;
 					iwr->bandarg[0].nband = 0;
 
-					if (iwr->bandarg[0].uniontype == UT_MEAN)
+					if (
+						iwr->bandarg[0].uniontype == UT_MEAN ||
+						iwr->bandarg[0].uniontype == UT_RANGE
+					) {
 						iwr->bandarg[0].numraster = 2;
+					}
 					else
 						iwr->bandarg[0].numraster = 1;
 					iwr->bandarg[0].raster = NULL;
@@ -16156,8 +16203,12 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
 			iwr->bandarg[0].uniontype = utype;
 
-			if (utype == UT_MEAN)
+			if (
+				utype == UT_MEAN ||
+				utype == UT_RANGE
+			) {
 				iwr->bandarg[0].numraster = 2;
+			}
 		}
 
 		/* allocate space for pointers to rt_raster */
@@ -16248,13 +16299,22 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					nodataval = rt_band_get_min_value(_band);
 			}
 
-			/* UT_MEAN requires two passes, first for UT_COUNT and second for UT_SUM */
+			/* UT_MEAN and UT_RANGE require two passes */
+			/* UT_MEAN: first for UT_COUNT and second for UT_SUM */
 			if (iwr->bandarg[i].uniontype == UT_MEAN) {
 				/* first pass, UT_COUNT */
 				if (j < 1)
 					utype = UT_COUNT;
 				else
 					utype = UT_SUM;
+			}
+			/* UT_RANGE: first for UT_MIN and second for UT_MAX */
+			else if (iwr->bandarg[i].uniontype == UT_RANGE) {
+				/* first pass, UT_MIN */
+				if (j < 1)
+					utype = UT_MIN;
+				else
+					utype = UT_MAX;
 			}
 
 			/* force band settings for UT_COUNT */
@@ -16372,8 +16432,11 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 	}
 
 	for (i = 0; i < iwr->numband; i++) {
-		if (iwr->bandarg[i].uniontype == UT_MEAN) {
-			/* raster containing the SUM is at index 1 */
+		if (
+			iwr->bandarg[i].uniontype == UT_MEAN ||
+			iwr->bandarg[i].uniontype == UT_RANGE
+		) {
+			/* raster containing the SUM or MAX is at index 1 */
 			_band = rt_raster_get_band(iwr->bandarg[i].raster[1], 0);
 
 			pixtype = rt_band_get_pixtype(_band);
@@ -16388,16 +16451,30 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 			itrset[1].nband = 0;
 
 			/* pass everything to iterator */
-			_raster = rt_raster_iterator(
-				itrset, 2,
-				ET_UNION, NULL,
-				pixtype,
-				hasnodata, nodataval,
-				0, 0,
-				NULL,
-				rtpg_union_mean_callback,
-				&noerr
-			);
+			if (iwr->bandarg[i].uniontype == UT_MEAN) {
+				_raster = rt_raster_iterator(
+					itrset, 2,
+					ET_UNION, NULL,
+					pixtype,
+					hasnodata, nodataval,
+					0, 0,
+					NULL,
+					rtpg_union_mean_callback,
+					&noerr
+				);
+			}
+			else if (iwr->bandarg[i].uniontype == UT_RANGE) {
+				_raster = rt_raster_iterator(
+					itrset, 2,
+					ET_UNION, NULL,
+					pixtype,
+					hasnodata, nodataval,
+					0, 0,
+					NULL,
+					rtpg_union_range_callback,
+					&noerr
+				);
+			}
 
 			if (!noerr) {
 				elog(ERROR, "RASTER_union_finalfn: Unable to run raster iterator function");
@@ -16423,8 +16500,12 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUG(4, "destroying source rasters");
 
 		/* destroy source rasters */
-		if (iwr->bandarg[i].uniontype == UT_MEAN)
+		if (
+			iwr->bandarg[i].uniontype == UT_MEAN ||
+			iwr->bandarg[i].uniontype == UT_RANGE
+		) {
 			rt_raster_destroy(_raster);
+		}
 			
 		for (j = 0; j < iwr->bandarg[i].numraster; j++) {
 			if (iwr->bandarg[i].raster[j] == NULL)

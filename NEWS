@@ -80,6 +80,7 @@ PostGIS 2.1.0
   - Additional default values for parameters of ST_Aspect and ST_HillShade
   - #2078, New variants of ST_Slope, ST_Aspect and ST_HillShade to provide
     solution to handling tiles in a coverage
+  - #2097, Added RANGE uniontype option for ST_Union(raster)
 
 * Fixes *
 

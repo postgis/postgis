@@ -57,6 +57,12 @@ INSERT INTO raster_union_out
 		ST_Union(rast, 'mean') AS rast
 	FROM raster_union_in;
 
+INSERT INTO raster_union_out
+	SELECT
+		'RANGE',
+		ST_Union(rast, 'range') AS rast
+	FROM raster_union_in;
+
 SELECT
 	uniontype,
 	x,
@@ -129,6 +135,12 @@ INSERT INTO raster_union_out
 		ST_Union(rast, 1, 'mean') AS rast
 	FROM raster_union_in;
 
+INSERT INTO raster_union_out
+	SELECT
+		'RANGE',
+		ST_Union(rast, 1, 'RANGE') AS rast
+	FROM raster_union_in;
+
 SELECT
 	uniontype,
 	x,
@@ -190,6 +202,12 @@ INSERT INTO raster_union_out
 	SELECT
 		'MEAN',
 		ST_Union(rast, 2, 'mean') AS rast
+	FROM raster_union_in;
+
+INSERT INTO raster_union_out
+	SELECT
+		'RANGE',
+		ST_Union(rast, 2, 'RANGE') AS rast
 	FROM raster_union_in;
 
 SELECT
@@ -282,6 +300,12 @@ INSERT INTO raster_union_out
 	SELECT
 		'MEAN',
 		ST_Union(rast, ARRAY[ROW(1, 'MEAN'), ROW(2, 'MEAN')]::unionarg[]) AS rast
+	FROM raster_union_in;
+
+INSERT INTO raster_union_out
+	SELECT
+		'RANGE',
+		ST_Union(rast, ARRAY[ROW(1, 'RANGE'), ROW(2, 'RANGE')]::unionarg[]) AS rast
 	FROM raster_union_in;
 
 SELECT
