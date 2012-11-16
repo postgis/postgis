@@ -222,7 +222,7 @@ ELSE
 		SELECT
 			t1.rid,
 			'slope',
-			ST_Slope(ST_Union(t2.rast), 1, t1.rast) AS rast
+			ST_Slope(t2.rast, 1, t1.rast) AS rast
 		FROM raster_elevation t1
 		JOIN foo t2
 			ON t1.rid = t2.rid
@@ -242,7 +242,7 @@ ELSE
 		SELECT
 			t1.rid,
 			'aspect',
-			ST_Aspect(ST_Union(t2.rast), 1, t1.rast) AS rast
+			ST_Aspect(t2.rast, 1, t1.rast) AS rast
 		FROM raster_elevation t1
 		JOIN foo t2
 			ON t1.rid = t2.rid
@@ -262,7 +262,7 @@ ELSE
 		SELECT
 			t1.rid,
 			'hillshade',
-			ST_Hillshade(ST_Union(t2.rast), 1, t1.rast) AS rast
+			ST_Hillshade(t2.rast, 1, t1.rast) AS rast
 		FROM raster_elevation t1
 		JOIN foo t2
 			ON t1.rid = t2.rid
