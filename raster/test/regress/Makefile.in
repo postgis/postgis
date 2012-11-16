@@ -105,7 +105,8 @@ TEST_MAPALGEBRA = \
 	rt_union \
 	rt_invdistweight4ma \
 	rt_4ma \
-	rt_setvalues_geomval
+	rt_setvalues_geomval \
+	rt_elevation_functions
 
 TEST_SREL = \
 	rt_gist_relationships \

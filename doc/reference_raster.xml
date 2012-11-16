@@ -1628,7 +1628,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>text <function>ST_Tile</function></funcdef>
+						<funcdef>setof raster <function>ST_Tile</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>int[] </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
@@ -1636,7 +1636,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 					</funcprototype>
 
 					<funcprototype>
-						<funcdef>text <function>ST_Tile</function></funcdef>
+						<funcdef>setof raster <function>ST_Tile</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
@@ -1644,7 +1644,7 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 					</funcprototype>
 
 					<funcprototype>
-						<funcdef>text <function>ST_Tile</function></funcdef>
+						<funcdef>setof raster <function>ST_Tile</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
@@ -7789,6 +7789,41 @@ FROM foo
 			</refsection>
 
 			<refsection>
+				<title>Examples: Variant 2</title>
+
+				<para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_Tile(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+				1, '32BF', 0, -9999
+			),
+			1, 1, 1, ARRAY[
+				[1, 1, 1, 1, 1, 1],
+				[1, 1, 1, 1, 2, 1],
+				[1, 2, 2, 3, 3, 1],
+				[1, 1, 3, 2, 1, 1],
+				[1, 2, 2, 1, 2, 1],
+				[1, 1, 1, 1, 1, 1]
+			]::double precision[]
+		),
+		2, 2
+	) AS rast
+)
+SELECT
+	t1.rast,
+	ST_Hillshade(ST_Union(t2.rast), 1, t1.rast)
+FROM foo t1
+CROSS JOIN foo t2
+WHERE ST_Intersects(t1.rast, t2.rast)
+GROUP BY t1.rast;
+				</programlisting>
+			</refsection>
+
+			<refsection>
 				<title>See Also</title>
 				<para>
 					<xref linkend="RT_ST_MapAlgebra" />, 
@@ -7889,6 +7924,41 @@ FROM foo
 			</refsection>
 
 			<refsection>
+				<title>Examples: Variant 2</title>
+
+				<para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_Tile(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+				1, '32BF', 0, -9999
+			),
+			1, 1, 1, ARRAY[
+				[1, 1, 1, 1, 1, 1],
+				[1, 1, 1, 1, 2, 1],
+				[1, 2, 2, 3, 3, 1],
+				[1, 1, 3, 2, 1, 1],
+				[1, 2, 2, 1, 2, 1],
+				[1, 1, 1, 1, 1, 1]
+			]::double precision[]
+		),
+		2, 2
+	) AS rast
+)
+SELECT
+	t1.rast,
+	ST_Aspect(ST_Union(t2.rast), 1, t1.rast)
+FROM foo t1
+CROSS JOIN foo t2
+WHERE ST_Intersects(t1.rast, t2.rast)
+GROUP BY t1.rast;
+				</programlisting>
+			</refsection>
+
+			<refsection>
 				<title>See Also</title>
 				<para>
 					<xref linkend="RT_ST_MapAlgebra" />, 
@@ -7986,6 +8056,40 @@ FROM foo
 5681285858154,26.5650520324707,21.5681285858154,10.0249881744385}}")
 (1 row)
 
+				</programlisting>
+			</refsection>
+			<refsection>
+				<title>Examples: Variant 2</title>
+
+				<para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_Tile(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+				1, '32BF', 0, -9999
+			),
+			1, 1, 1, ARRAY[
+				[1, 1, 1, 1, 1, 1],
+				[1, 1, 1, 1, 2, 1],
+				[1, 2, 2, 3, 3, 1],
+				[1, 1, 3, 2, 1, 1],
+				[1, 2, 2, 1, 2, 1],
+				[1, 1, 1, 1, 1, 1]
+			]::double precision[]
+		),
+		2, 2
+	) AS rast
+)
+SELECT
+	t1.rast,
+	ST_Slope(ST_Union(t2.rast), 1, t1.rast)
+FROM foo t1
+CROSS JOIN foo t2
+WHERE ST_Intersects(t1.rast, t2.rast)
+GROUP BY t1.rast;
 				</programlisting>
 			</refsection>
 
