@@ -3,6 +3,7 @@ PostGIS 2.0.2
 
  * Bug Fixes *
 
+  - #2099, Fix double free on exception in ST_OffsetCurve
   - #2060, Fix "dimension" check violation by GetTopoGeomElementArray
   - #2051, Fix excess of precision in ST_AsGeoJSON output
   - #2052, Fix buffer overflow in lwgeom_to_geojson

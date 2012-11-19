@@ -1278,7 +1278,6 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 
 	if (g3 == NULL)
 	{
-		GEOSGeom_destroy(g1);
 		lwerror("GEOSOffsetCurve: %s", lwgeom_geos_errmsg);
 		return NULL;
 	}
