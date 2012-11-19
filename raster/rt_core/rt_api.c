@@ -10130,6 +10130,68 @@ rt_raster rt_raster_gdal_warp(
 	return rast;
 }
 
+/******************************************************************************
+* rt_raster_gdal_rasterize()
+******************************************************************************/
+
+typedef struct _rti_rasterize_arg_t* _rti_rasterize_arg;
+struct _rti_rasterize_arg_t {
+	uint8_t noband;
+
+	uint32_t numbands; 
+
+	rt_pixtype *pixtype;
+	double *init;
+	double *nodata;
+	uint8_t *hasnodata;
+	double *value;
+	int *bandlist;
+};
+
+static _rti_rasterize_arg
+_rti_rasterize_arg_init() {
+	_rti_rasterize_arg arg = NULL;
+
+	arg = rtalloc(sizeof(struct _rti_rasterize_arg_t));
+	if (arg == NULL) {
+		rterror("_rti_rasterize_arg_init: Unable to allocate memory for _rti_rasterize_arg");
+		return NULL;
+	}
+
+	arg->noband = 0;
+
+	arg->numbands = 0;
+	arg->pixtype = NULL;
+	arg->init = NULL;
+	arg->nodata = NULL;
+	arg->hasnodata = NULL;
+	arg->value = NULL;
+	arg->bandlist = NULL;
+
+	return arg;
+}
+
+static void
+_rti_rasterize_arg_destroy(_rti_rasterize_arg arg) {
+	if (!arg->noband || !arg->numbands)
+		return;
+
+	if (arg->pixtype != NULL)
+		rtdealloc(arg->pixtype);
+	if (arg->init != NULL)
+		rtdealloc(arg->init);
+	if (arg->nodata != NULL)
+		rtdealloc(arg->nodata);
+	if (arg->hasnodata != NULL)
+		rtdealloc(arg->hasnodata);
+	if (arg->value != NULL)
+		rtdealloc(arg->value);
+	if (arg->bandlist != NULL)
+		rtdealloc(arg->bandlist);
+
+	rtdealloc(arg);
+}
+
 /**
  * Return a raster of the provided geometry
  *
@@ -10171,15 +10233,9 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 ) {
 	rt_raster rast;
 	int i = 0;
-	int noband = 0;
 	int banderr = 0;
-	int *band_list = NULL;
 
-	rt_pixtype *_pixtype = NULL;
-	double *_init = NULL;
-	double *_nodata = NULL;
-	uint8_t *_hasnodata = NULL;
-	double *_value = NULL;
+	_rti_rasterize_arg arg = NULL;
 
 	int _dim[2] = {0};
 	double _scale[2] = {0};
@@ -10205,53 +10261,50 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	assert(NULL != wkb);
 	assert(0 != wkb_len);
 
-	/* internal aliases */
-	_pixtype = pixtype;
-	_init = init;
-	_nodata = nodata;
-	_hasnodata = hasnodata;
-	_value = value;
+	/* internal variables */
+	arg = _rti_rasterize_arg_init();
+	if (arg == NULL) {
+		rterror("rt_raster_gdal_rasterize: Unable to initialize internal variables");
+		return NULL;
+	}
 
 	/* no bands, raster is a mask */
 	if (num_bands < 1) {
-		num_bands = 1;
-		noband = 1;
+		arg->noband = 1;
+		arg->numbands = 1;
 
-		_pixtype = (rt_pixtype *) rtalloc(sizeof(rt_pixtype));
-		*_pixtype = PT_8BUI;
+		arg->pixtype = (rt_pixtype *) rtalloc(sizeof(rt_pixtype));
+		arg->pixtype[0] = PT_8BUI;
 
-		_init = (double *) rtalloc(sizeof(double));
-		*_init = 0;
+		arg->init = (double *) rtalloc(sizeof(double));
+		arg->init[0] = 0;
 
-		_nodata = (double *) rtalloc(sizeof(double));
-		*_nodata = 0;
+		arg->nodata = (double *) rtalloc(sizeof(double));
+		arg->nodata[0] = 0;
 
-		_hasnodata = (uint8_t *) rtalloc(sizeof(uint8_t));
-		*_hasnodata = 1;
+		arg->hasnodata = (uint8_t *) rtalloc(sizeof(uint8_t));
+		arg->hasnodata[0] = 1;
 
-		_value = (double *) rtalloc(sizeof(double));
-		*_value = 1;
+		arg->value = (double *) rtalloc(sizeof(double));
+		arg->value[0] = 1;
 	}
+	else {
+		arg->noband = 0;
+		arg->numbands = num_bands;
 
-	assert(NULL != _pixtype);
-	assert(NULL != _init);
-	assert(NULL != _nodata);
-	assert(NULL != _hasnodata);
+		arg->pixtype = pixtype;
+		arg->init = init;
+		arg->nodata = nodata;
+		arg->hasnodata = hasnodata;
+		arg->value = value;
+	}
 
 	/* OGR spatial reference */
 	if (NULL != srs && strlen(srs)) {
 		src_sr = OSRNewSpatialReference(NULL);
 		if (OSRSetFromUserInput(src_sr, srs) != OGRERR_NONE) {
 			rterror("rt_raster_gdal_rasterize: Unable to create OSR spatial reference using the provided srs: %s", srs);
-
-			if (noband) {
-				rtdealloc(_pixtype);
-				rtdealloc(_init);
-				rtdealloc(_nodata);
-				rtdealloc(_hasnodata);
-				rtdealloc(_value);
-			}
-
+			_rti_rasterize_arg_destroy(arg);
 			return NULL;
 		}
 	}
@@ -10261,13 +10314,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	if (ogrerr != OGRERR_NONE) {
 		rterror("rt_raster_gdal_rasterize: Unable to create OGR Geometry from WKB");
 
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
+		_rti_rasterize_arg_destroy(arg);
 
 		OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
@@ -10279,13 +10326,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	if (OGR_G_IsEmpty(src_geom)) {
 		rtinfo("Geometry provided is empty. Returning empty raster");
 
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
+		_rti_rasterize_arg_destroy(arg);
 
 		OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
@@ -10334,13 +10375,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	else {
 		rterror("rt_raster_gdal_rasterize: Values must be provided for width and height or X and Y of scale");
 
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
+		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
@@ -10420,13 +10455,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		if (epoly == NULL) {
 			rterror("rt_raster_gdal_rasterize: Unable to create envelope's geometry to test if geometry is properly contained by extent");
 
-			if (noband) {
-				rtdealloc(_pixtype);
-				rtdealloc(_init);
-				rtdealloc(_nodata);
-				rtdealloc(_hasnodata);
-				rtdealloc(_value);
-			}
+			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
@@ -10451,13 +10480,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		if (result == 2) {
 			rterror("rt_raster_gdal_rasterize: Unable to test if geometry is properly contained by extent for geometry within extent");
 
-			if (noband) {
-				rtdealloc(_pixtype);
-				rtdealloc(_init);
-				rtdealloc(_nodata);
-				rtdealloc(_hasnodata);
-				rtdealloc(_value);
-			}
+			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
@@ -10563,13 +10586,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		if (skewedrast == NULL) {
 			rterror("rt_raster_gdal_rasterize: Could not compute skewed raster");
 
-			if (noband) {
-				rtdealloc(_pixtype);
-				rtdealloc(_init);
-				rtdealloc(_nodata);
-				rtdealloc(_hasnodata);
-				rtdealloc(_value);
-			}
+			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
@@ -10598,13 +10615,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	if (rast == NULL) {
 		rterror("rt_raster_gdal_rasterize: Out of memory allocating temporary raster");
 
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
+		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
@@ -10645,14 +10656,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		rterror("rt_raster_gdal_rasterize: Both X and Y upper-left corner values must be provided");
 
 		rt_raster_destroy(rast);
-
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
+		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
@@ -10675,14 +10679,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			rterror("rt_raster_gdal_rasterize: Both X and Y alignment values must be provided");
 
 			rt_raster_destroy(rast);
-
-			if (noband) {
-				rtdealloc(_pixtype);
-				rtdealloc(_init);
-				rtdealloc(_nodata);
-				rtdealloc(_hasnodata);
-				rtdealloc(_value);
-			}
+			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
@@ -10717,14 +10714,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				rterror("rt_raster_gdal_rasterize: Unable to compute raster pixel for spatial coordinates");
 
 				rt_raster_destroy(rast);
-
-				if (noband) {
-					rtdealloc(_pixtype);
-					rtdealloc(_init);
-					rtdealloc(_nodata);
-					rtdealloc(_hasnodata);
-					rtdealloc(_value);
-				}
+				_rti_rasterize_arg_destroy(arg);
 
 				OGR_G_DestroyGeometry(src_geom);
 				OSRDestroySpatialReference(src_sr);
@@ -10742,14 +10732,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
-
-				if (noband) {
-					rtdealloc(_pixtype);
-					rtdealloc(_init);
-					rtdealloc(_nodata);
-					rtdealloc(_hasnodata);
-					rtdealloc(_value);
-				}
+				_rti_rasterize_arg_destroy(arg);
 
 				OGR_G_DestroyGeometry(src_geom);
 				OSRDestroySpatialReference(src_sr);
@@ -10777,14 +10760,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 						rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 						rt_raster_destroy(rast);
-
-						if (noband) {
-							rtdealloc(_pixtype);
-							rtdealloc(_init);
-							rtdealloc(_nodata);
-							rtdealloc(_hasnodata);
-							rtdealloc(_value);
-						}
+						_rti_rasterize_arg_destroy(arg);
 
 						OGR_G_DestroyGeometry(src_geom);
 						OSRDestroySpatialReference(src_sr);
@@ -10814,14 +10790,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 						rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 						rt_raster_destroy(rast);
-
-						if (noband) {
-							rtdealloc(_pixtype);
-							rtdealloc(_init);
-							rtdealloc(_nodata);
-							rtdealloc(_hasnodata);
-							rtdealloc(_value);
-						}
+						_rti_rasterize_arg_destroy(arg);
 
 						OGR_G_DestroyGeometry(src_geom);
 						OSRDestroySpatialReference(src_sr);
@@ -10872,14 +10841,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
-
-				if (noband) {
-					rtdealloc(_pixtype);
-					rtdealloc(_init);
-					rtdealloc(_nodata);
-					rtdealloc(_hasnodata);
-					rtdealloc(_value);
-				}
+				_rti_rasterize_arg_destroy(arg);
 
 				OGR_G_DestroyGeometry(src_geom);
 				OSRDestroySpatialReference(src_sr);
@@ -10911,14 +10873,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
-
-				if (noband) {
-					rtdealloc(_pixtype);
-					rtdealloc(_init);
-					rtdealloc(_nodata);
-					rtdealloc(_hasnodata);
-					rtdealloc(_value);
-				}
+				_rti_rasterize_arg_destroy(arg);
 
 				OGR_G_DestroyGeometry(src_geom);
 				OSRDestroySpatialReference(src_sr);
@@ -10951,13 +10906,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	if (NULL == _drv) {
 		rterror("rt_raster_gdal_rasterize: Unable to load the MEM GDAL driver");
 
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
+		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
@@ -10970,13 +10919,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	if (NULL == _ds) {
 		rterror("rt_raster_gdal_rasterize: Could not create a GDALDataset to rasterize the geometry into");
 
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
+		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
@@ -10990,13 +10933,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_rasterize: Could not set geotransform on GDALDataset");
 
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
+		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
@@ -11013,13 +10950,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		if (cplerr != CE_None) {
 			rterror("rt_raster_gdal_rasterize: Could not set projection on GDALDataset");
 
-			if (noband) {
-				rtdealloc(_pixtype);
-				rtdealloc(_init);
-				rtdealloc(_nodata);
-				rtdealloc(_hasnodata);
-				rtdealloc(_value);
-			}
+			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
@@ -11032,12 +10963,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	}
 
 	/* set bands */
-	for (i = 0; i < num_bands; i++) {
+	for (i = 0; i < arg->numbands; i++) {
 		banderr = 0;
 
 		do {
 			/* add band */
-			cplerr = GDALAddBand(_ds, rt_util_pixtype_to_gdal_datatype(_pixtype[i]), NULL);
+			cplerr = GDALAddBand(_ds, rt_util_pixtype_to_gdal_datatype(arg->pixtype[i]), NULL);
 			if (cplerr != CE_None) {
 				rterror("rt_raster_gdal_rasterize: Unable to add band to GDALDataset");
 				banderr = 1;
@@ -11052,9 +10983,9 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			}
 
 			/* nodata value */
-			if (_hasnodata[i]) {
-				RASTER_DEBUGF(4, "Setting NODATA value of band %d to %f", i, _nodata[i]);
-				cplerr = GDALSetRasterNoDataValue(_band, _nodata[i]);
+			if (arg->hasnodata[i]) {
+				RASTER_DEBUGF(4, "Setting NODATA value of band %d to %f", i, arg->nodata[i]);
+				cplerr = GDALSetRasterNoDataValue(_band, arg->nodata[i]);
 				if (cplerr != CE_None) {
 					rterror("rt_raster_gdal_rasterize: Unable to set nodata value");
 					banderr = 1;
@@ -11064,7 +10995,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			}
 
 			/* initial value */
-			cplerr = GDALFillRaster(_band, _init[i], 0);
+			cplerr = GDALFillRaster(_band, arg->init[i], 0);
 			if (cplerr != CE_None) {
 				rterror("rt_raster_gdal_rasterize: Unable to set initial value");
 				banderr = 1;
@@ -11074,13 +11005,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		while (0);
 
 		if (banderr) {
-			if (noband) {
-				rtdealloc(_pixtype);
-				rtdealloc(_init);
-				rtdealloc(_nodata);
-				rtdealloc(_hasnodata);
-				rtdealloc(_value);
-			}
+			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
 			OSRDestroySpatialReference(src_sr);
@@ -11092,30 +11017,22 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		}
 	}
 
-	band_list = (int *) rtalloc(sizeof(int) * num_bands);
-	for (i = 0; i < num_bands; i++) band_list[i] = i + 1;
+	arg->bandlist = (int *) rtalloc(sizeof(int) * arg->numbands);
+	for (i = 0; i < arg->numbands; i++) arg->bandlist[i] = i + 1;
 
 	/* burn geometry */
 	cplerr = GDALRasterizeGeometries(
 		_ds,
-		num_bands, band_list,
+		arg->numbands, arg->bandlist,
 		1, &src_geom,
 		NULL, NULL,
-		_value,
+		arg->value,
 		options,
 		NULL, NULL
 	);
-	rtdealloc(band_list);
+	_rti_rasterize_arg_destroy(arg);
 	if (cplerr != CE_None) {
 		rterror("rt_raster_gdal_rasterize: Unable to rasterize geometry");
-
-		if (noband) {
-			rtdealloc(_pixtype);
-			rtdealloc(_init);
-			rtdealloc(_nodata);
-			rtdealloc(_hasnodata);
-			rtdealloc(_value);
-		}
 
 		OGR_G_DestroyGeometry(src_geom);
 		OSRDestroySpatialReference(src_sr);
@@ -11130,14 +11047,6 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	GDALFlushCache(_ds);
 	RASTER_DEBUG(3, "Converting GDAL dataset to raster");
 	rast = rt_raster_from_gdal_dataset(_ds);
-
-	if (noband) {
-		rtdealloc(_pixtype);
-		rtdealloc(_init);
-		rtdealloc(_nodata);
-		rtdealloc(_hasnodata);
-		rtdealloc(_value);
-	}
 
 	OGR_G_DestroyGeometry(src_geom);
 	OSRDestroySpatialReference(src_sr);
@@ -11154,6 +11063,10 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 	return rast;
 }
+
+/******************************************************************************
+* rt_raster_intersects()
+******************************************************************************/
 
 static
 int rt_raster_intersects_algorithm(
@@ -11819,6 +11732,10 @@ rt_raster_intersects(
 	*intersects = 0;
 	return 1;
 }
+
+/******************************************************************************
+* GEOS-based spatial relationship tests
+******************************************************************************/
 
 static
 int rt_raster_geos_spatial_relationship(
@@ -13041,7 +12958,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 * rt_raster_iterator()
 ******************************************************************************/
 
-typedef struct _rti_iterator_arg_t *_rti_iterator_arg;
+typedef struct _rti_iterator_arg_t* _rti_iterator_arg;
 struct _rti_iterator_arg_t {
 	int count;
 
