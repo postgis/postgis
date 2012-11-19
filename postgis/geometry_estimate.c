@@ -904,7 +904,7 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 
 		/** TODO: ask if we need geom or bvol size for stawidth */
-		total_width += geom->size;
+		total_width += VARSIZE(geom);
 		total_boxes_area += (box.xmax-box.xmin)*(box.ymax-box.ymin);
 
 #if USE_STANDARD_DEVIATION

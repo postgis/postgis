@@ -453,8 +453,6 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 	int geogstats_nvalues = 0;
 	Node *other;
 	Var *self;
-	GSERIALIZED *serialized;
-	LWGEOM *geometry;
 	GBOX search_box;
 	float8 selectivity = 0;
 
@@ -509,15 +507,12 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 	/*
 	 * Convert the constant to a GBOX
 	 */
-	serialized = (GSERIALIZED *)PG_DETOAST_DATUM( ((Const*)other)->constvalue );
-	geometry = lwgeom_from_gserialized(serialized);
 
 	/* Convert coordinates to 3D geodesic */
 	FLAGS_SET_GEODETIC(search_box.flags, 1);
-	if (!lwgeom_calculate_gbox_geodetic(geometry, &search_box))
+	if ( ! gserialized_datum_get_gbox_p(((Const*)other)->constvalue, &search_box) )
 	{
 		POSTGIS_DEBUG(3, " search box cannot be calculated");
-
 		PG_RETURN_FLOAT8(0.0);
 	}
 
@@ -863,11 +858,11 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		if (isnull)
 			continue;
 
-		serialized = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
-		geometry = lwgeom_from_gserialized(serialized);
+//		serialized = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
+//		geometry = lwgeom_from_gserialized(serialized);
 
 		/* Convert coordinates to 3D geodesic */
-		if (!lwgeom_calculate_gbox_geodetic(geometry, &gbox))
+		if ( ! gserialized_datum_get_gbox_p(datum, &gbox) )
 		{
 			/* Unable to obtain or calculate a bounding box */
 			POSTGIS_DEBUGF(3, "skipping geometry at position %d", i);
@@ -912,7 +907,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 
 		/** TODO: ask if we need geom or bvol size for stawidth */
-		total_width += serialized->size;
+		total_width += VARSIZE(serialized);
 
 #if USE_STANDARD_DEVIATION
 		/*
