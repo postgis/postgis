@@ -480,7 +480,8 @@ LWLINE* lwline_simplify(const LWLINE *iline, double dist)
 	if( lwline_is_empty(iline) )
 		return lwline_clone(iline);
 		
-	oline = lwline_construct(iline->srid, NULL, ptarray_simplify(iline->points, dist, 2));
+	static const int minvertices = 0; /* TODO: allow setting this */
+	oline = lwline_construct(iline->srid, NULL, ptarray_simplify(iline->points, dist, minvertices));
 	oline->type = iline->type;
 	return oline;
 }

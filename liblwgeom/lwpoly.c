@@ -350,36 +350,35 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 	LWDEBUGF(2, "simplify_polygon3d: simplifying polygon with %d rings", ipoly->nrings);
 
 	if( lwpoly_is_empty(ipoly) )
-		return opoly;
+		return opoly; /* should we return NULL instead ? */
 
 	for (i = 0; i < ipoly->nrings; i++)
 	{
-		POINTARRAY *opts = ptarray_simplify(ipoly->rings[i], dist, 3);
+		static const int minvertices = 0; /* TODO: allow setting this */
+		POINTARRAY *opts = ptarray_simplify(ipoly->rings[i], dist, minvertices);
+
+		LWDEBUGF(3, "ring%d simplified from %d to %d points", i, ipoly->rings[i]->npoints, opts->npoints);
 
 		/* Less points than are needed to form a closed ring, we can't use this */
-		if ( i && opts->npoints < 4 )
+		if ( opts->npoints < 4 )
 		{
 			LWDEBUGF(3, "ring%d skipped (% pts)", i, opts->npoints);
 			ptarray_free(opts);
-			continue;
+			if ( i ) continue;
+			else break; /* Don't scan holes if shell is collapsed */
 		}
-
-		LWDEBUGF(3, "ring%d simplified from %d to %d points", i, ipoly->rings[i]->npoints, opts->npoints);
 
 		/* Add ring to simplified polygon */
 		if( lwpoly_add_ring(opoly, opts) == LW_FAILURE )
 			return NULL;
-
-    /* Don't scan holes if shell is collapsed */
-		if (  !i && opts->npoints < 4 )
-		{
-		  LWDEBUG(3, "nothing more to do for collapsed shell");
-			break;
-		}
 	}
 
 	LWDEBUGF(3, "simplified polygon with %d rings", ipoly->nrings);
 	opoly->type = ipoly->type;
+
+	if( lwpoly_is_empty(opoly) )
+		return NULL;
+
 	return opoly;
 }
 

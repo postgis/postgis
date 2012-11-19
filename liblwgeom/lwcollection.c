@@ -499,12 +499,12 @@ LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist)
 	LWCOLLECTION *out = lwcollection_construct_empty(igeom->type, igeom->srid, FLAGS_GET_Z(igeom->flags), FLAGS_GET_M(igeom->flags));
 
 	if( lwcollection_is_empty(igeom) )
-		return out;
+		return out; /* should we return NULL instead ? */
 
 	for( i = 0; i < igeom->ngeoms; i++ )
 	{
 		LWGEOM *ngeom = lwgeom_simplify(igeom->geoms[i], dist);
-		out = lwcollection_add_lwgeom(out, ngeom);
+		if ( ngeom ) out = lwcollection_add_lwgeom(out, ngeom);
 	}
 
 	return out;
