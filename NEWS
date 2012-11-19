@@ -103,6 +103,7 @@ PostGIS 2.1.0
   - #2057, Fixed linking issue for raster2psql to libpq
   - #2077, Fixed incorrect values returning from ST_Hillshade()
   - #2019, ST_FlipCoordinates does not update bbox
+  - #2100, ST_AsRaster may not return raster with specified pixel type
 
 
 PostGIS 2.0.1
