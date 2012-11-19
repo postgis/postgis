@@ -92,8 +92,6 @@ int gserialized_get_gidx_p(GSERIALIZED *g, GIDX *gidx);
 /* Copy a new bounding box into an existing gserialized */
 GSERIALIZED* gserialized_set_gidx(GSERIALIZED *g, GIDX *gidx);
 
-/* Pull out a gbox bounding box as fast as possible. */
-int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
 /* Given two datums, do they overlap? Computed very fast using embedded boxes. */
 /* int gserialized_datum_overlaps(Datum gs1, Datum gs2); */
 /* Remove the box from a disk serialization */

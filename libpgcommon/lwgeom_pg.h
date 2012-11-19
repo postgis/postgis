@@ -102,6 +102,14 @@ GSERIALIZED *geometry_serialize(LWGEOM *lwgeom);
 GSERIALIZED* geography_serialize(LWGEOM *lwgeom);
 
 /**
+* Pull out a gbox bounding box as fast as possible. 
+* Tries to read cached box from front of serialized vardata.
+* If no cached box, calculates box from scratch.
+* Fails on empty.
+*/
+int gserialized_datum_get_gbox_p(Datum gsdatum, GBOX *gbox);
+
+/**
 * Convert cstrings (null-terminated byte array) to textp pointers 
 * (PgSQL varlena structure with VARSIZE header).
 */
