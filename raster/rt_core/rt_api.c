@@ -38,11 +38,14 @@
 #include "gdal_vrt.h"
 
 /******************************************************************************
- * Some rules for *.(c|h) files in rt_core
- *
- * All functions in rt_core that receive a band index parameter
- *   must be 0-based
- *****************************************************************************/
+* Some rules for *.(c|h) files in rt_core
+*
+* All functions in rt_core that receive a band index parameter
+*   must be 0-based
+*
+* Variables and functions that are interal to *.c should be prefixed
+*   with _rti_, e.g. _rti_iterator_arg.
+******************************************************************************/
 
 /*--- Utilities -------------------------------------------------*/
 
@@ -13034,8 +13037,12 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 	return NULL;
 }
 
-typedef struct _rti_param_t *_rti_param;
-struct _rti_param_t {
+/******************************************************************************
+* rt_raster_iterator()
+******************************************************************************/
+
+typedef struct _rti_iterator_arg_t *_rti_iterator_arg;
+struct _rti_iterator_arg_t {
 	int count;
 
 	rt_raster *raster;
@@ -13070,13 +13077,13 @@ struct _rti_param_t {
 	rt_iterator_arg arg;
 };
 
-static _rti_param
-_rti_param_init() {
-	_rti_param _param;
+static _rti_iterator_arg
+_rti_iterator_arg_init() {
+	_rti_iterator_arg _param;
 
-	_param = rtalloc(sizeof(struct _rti_param_t));
+	_param = rtalloc(sizeof(struct _rti_iterator_arg_t));
 	if (_param == NULL) {
-		rterror("_rti_param_init: Unable to allocate memory for _rti_param");
+		rterror("_rti_iterator_arg_init: Unable to allocate memory for _rti_iterator_arg");
 		return NULL;
 	}
 
@@ -13109,7 +13116,7 @@ _rti_param_init() {
 }
 
 static void
-_rti_param_destroy(_rti_param _param) {
+_rti_iterator_arg_destroy(_rti_iterator_arg _param) {
 	int i = 0;
 
 	if (_param->raster != NULL)
@@ -13180,8 +13187,8 @@ _rti_param_destroy(_rti_param _param) {
 }
 
 static int
-_rti_param_populate(
-	_rti_param _param,
+_rti_iterator_arg_populate(
+	_rti_iterator_arg _param,
 	rt_iterator itrset, uint16_t itrcount,
 	uint16_t distancex, uint16_t distancey,
 	int *allnull, int *allempty
@@ -13221,7 +13228,7 @@ _rti_param_populate(
 		_param->band.nodataval == NULL ||
 		_param->band.minval == NULL
 	) {
-		rterror("_rti_param_populate: Unable to allocate memory for children of _rti_param");
+		rterror("_rti_iterator_arg_populate: Unable to allocate memory for children of _rti_iterator_arg");
 		return 0;
 	}
 
@@ -13269,7 +13276,7 @@ _rti_param_populate(
 		hasband = rt_raster_has_band(itrset[i].raster, itrset[i].nband);
 		if (!hasband) {
 			if (!itrset[i].nbnodata) {
-				rterror("_rti_param_populate: Band %d not found for raster %d", itrset[i].nband, i);
+				rterror("_rti_iterator_arg_populate: Band %d not found for raster %d", itrset[i].nband, i);
 				return 0;
 			}
 			else {
@@ -13281,7 +13288,7 @@ _rti_param_populate(
 		if (hasband) {
 			_param->band.rtband[i] = rt_raster_get_band(itrset[i].raster, itrset[i].nband);
 			if (_param->band.rtband[i] == NULL) {
-				rterror("_rti_param_populate: Unable to get band %d for raster %d", itrset[i].nband, i);
+				rterror("_rti_iterator_arg_populate: Unable to get band %d for raster %d", itrset[i].nband, i);
 				return 0;
 			}
 
@@ -13310,7 +13317,7 @@ _rti_param_populate(
 		/* init offset */
 		_param->offset[i] = rtalloc(sizeof(double) * 2);
 		if (_param->offset[i] == NULL) {
-			rterror("_rti_param_populate: Unable to allocate memory for offsets");
+			rterror("_rti_iterator_arg_populate: Unable to allocate memory for offsets");
 			return 0;
 		}
 	}
@@ -13319,14 +13326,14 @@ _rti_param_populate(
 }
 
 static int
-_rti_param_empty_init(_rti_param _param) {
+_rti_iterator_arg_empty_init(_rti_iterator_arg _param) {
 	int x = 0;
 	int y = 0;
 
 	_param->empty.values = rtalloc(sizeof(double *) * _param->dimension.rows);
 	_param->empty.nodata = rtalloc(sizeof(int *) * _param->dimension.rows);
 	if (_param->empty.values == NULL || _param->empty.nodata == NULL) {
-		rterror("_rti_param_empty_init: Unable to allocate memory for empty values and NODATA");
+		rterror("_rti_iterator_arg_empty_init: Unable to allocate memory for empty values and NODATA");
 		return 0;
 	}
 
@@ -13335,7 +13342,7 @@ _rti_param_empty_init(_rti_param _param) {
 		_param->empty.nodata[y] = rtalloc(sizeof(int) * _param->dimension.columns);
 
 		if (_param->empty.values[y] == NULL || _param->empty.nodata[y] == NULL) {
-			rterror("_rti_param_empty_init: Unable to allocate memory for elements of empty values and NODATA");
+			rterror("_rti_iterator_arg_empty_init: Unable to allocate memory for elements of empty values and NODATA");
 			return 0;
 		}
 
@@ -13349,12 +13356,12 @@ _rti_param_empty_init(_rti_param _param) {
 }
 
 static int
-_rti_param_arg_init(_rti_param _param) {
+_rti_iterator_arg_callback_init(_rti_iterator_arg _param) {
 	int i = 0;
 
 	_param->arg = rtalloc(sizeof(struct rt_iterator_arg_t));
 	if (_param->arg == NULL) {
-		rterror("_rti_param_arg_init: Unable to allocate memory for rt_iterator_arg");
+		rterror("_rti_iterator_arg_callback_init: Unable to allocate memory for rt_iterator_arg");
 		return 0;
 	}
 
@@ -13367,7 +13374,7 @@ _rti_param_arg_init(_rti_param _param) {
 	_param->arg->nodata = rtalloc(sizeof(int **) * _param->count);
 	_param->arg->src_pixel = rtalloc(sizeof(int *) * _param->count);
 	if (_param->arg->values == NULL || _param->arg->nodata == NULL || _param->arg->src_pixel == NULL) {
-		rterror("_rti_param_arg_init: Unable to allocate memory for element of rt_iterator_arg");
+		rterror("_rti_iterator_arg_callback_init: Unable to allocate memory for element of rt_iterator_arg");
 		return 0;
 	}
 	memset(_param->arg->values, 0, sizeof(double **) * _param->count);
@@ -13378,7 +13385,7 @@ _rti_param_arg_init(_rti_param _param) {
 
 		_param->arg->src_pixel[i] = rtalloc(sizeof(int) * 2);
 		if (_param->arg->src_pixel[i] == NULL) {
-			rterror("_rti_param_arg_init: Unable to allocate memory for position elements of rt_iterator_arg");
+			rterror("_rti_iterator_arg_callback_init: Unable to allocate memory for position elements of rt_iterator_arg");
 			return 0;
 		}
 		memset(_param->arg->src_pixel[i], 0, sizeof(int) * 2);
@@ -13395,7 +13402,7 @@ _rti_param_arg_init(_rti_param _param) {
 }
 
 static void
-_rti_param_arg_clean(_rti_param _param) {
+_rti_iterator_arg_callback_clean(_rti_iterator_arg _param) {
 	int i = 0;
 	int y = 0;
 
@@ -13483,7 +13490,7 @@ rt_raster_iterator(
 	/* working raster */
 	rt_raster rast = NULL;
 
-	_rti_param _param = NULL;
+	_rti_iterator_arg _param = NULL;
 	int allnull = 0;
 	int allempty = 0;
 	int aligned = 0;
@@ -13541,16 +13548,16 @@ rt_raster_iterator(
 		return NULL;
 	}
 
-	/* initialize _rti_param */
-	if ((_param = _rti_param_init()) == NULL) {
+	/* initialize _param */
+	if ((_param = _rti_iterator_arg_init()) == NULL) {
 		rterror("rt_raster_iterator: Unable to initialize internal variables");
 		return NULL;
 	}
 
 	/* fill _param */
-	if (!_rti_param_populate(_param, itrset, itrcount, distancex, distancey, &allnull, &allempty)) {
+	if (!_rti_iterator_arg_populate(_param, itrset, itrcount, distancex, distancey, &allnull, &allempty)) {
 		rterror("rt_raster_iterator: Unable to populate for internal variables");
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 		return NULL;
 	}
 
@@ -13558,7 +13565,7 @@ rt_raster_iterator(
 	if (allnull == itrcount) {
 		RASTER_DEBUG(3, "all rasters are NULL, returning NULL");
 
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 
 		*noerr = 1;
 		return NULL;
@@ -13567,7 +13574,7 @@ rt_raster_iterator(
 	else if (allempty == itrcount) {
 		RASTER_DEBUG(3, "all rasters are empty, returning empty raster");
 
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 
 		rtnrast = rt_raster_new(0, 0);
 		if (rtnrast == NULL) {
@@ -13605,7 +13612,7 @@ rt_raster_iterator(
 	if (rast == NULL) {
 		rterror("rt_raster_iterator: Could not find reference raster to use for alignment tests");
 
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 
 		return NULL;
 	}
@@ -13618,7 +13625,7 @@ rt_raster_iterator(
 			if (!rt_raster_same_alignment(rast, customextent, &aligned)) {
 				rterror("rt_raster_iterator: Unable to test for alignment between reference raster and custom extent");
 
-				_rti_param_destroy(_param);
+				_rti_iterator_arg_destroy(_param);
 
 				return NULL;
 			}
@@ -13636,7 +13643,7 @@ rt_raster_iterator(
 			if (!rt_raster_same_alignment(rast, _param->raster[i], &aligned)) {
 				rterror("rt_raster_iterator: Unable to test for alignment between reference raster and raster %d", i);
 
-				_rti_param_destroy(_param);
+				_rti_iterator_arg_destroy(_param);
 
 				return NULL;
 			}
@@ -13653,7 +13660,7 @@ rt_raster_iterator(
 	if (!aligned) {
 		rterror("rt_raster_iterator: The set of rasters provided (custom extent included, if appropriate) do not have the same alignment");
 
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 
 		return NULL;
 	}
@@ -13668,7 +13675,7 @@ rt_raster_iterator(
 			if (rtnrast == NULL) {
 				rterror("rt_raster_iterator: Unable to allocate memory for output raster");
 
-				_rti_param_destroy(_param);
+				_rti_iterator_arg_destroy(_param);
 
 				return NULL;
 			}
@@ -13696,7 +13703,7 @@ rt_raster_iterator(
 						extenttype == ET_UNION ? "union" : "intersection"
 					);
 
-					_rti_param_destroy(_param);
+					_rti_iterator_arg_destroy(_param);
 
 					return NULL;
 				}
@@ -13705,7 +13712,7 @@ rt_raster_iterator(
 						extenttype == ET_UNION ? "union" : "intersection"
 					);
 
-					_rti_param_destroy(_param);
+					_rti_iterator_arg_destroy(_param);
 
 					*noerr = 1;
 					return rast;
@@ -13739,7 +13746,7 @@ rt_raster_iterator(
 					(i == 0 ? "FIRST" : (i == 1 ? "SECOND" : "LAST"))
 				);
 
-				_rti_param_destroy(_param);
+				_rti_iterator_arg_destroy(_param);
 
 				*noerr = 1;
 				return NULL;
@@ -13751,7 +13758,7 @@ rt_raster_iterator(
 					(i == 0 ? "FIRST" : (i == 1 ? "SECOND" : "LAST"))
 				);
 
-				_rti_param_destroy(_param);
+				_rti_iterator_arg_destroy(_param);
 
 				rtnrast = rt_raster_new(0, 0);
 				if (rtnrast == NULL) {
@@ -13769,7 +13776,7 @@ rt_raster_iterator(
 			if (rtnrast == NULL) {
 				rterror("rt_raster_iterator: Unable to allocate memory for output raster");
 
-				_rti_param_destroy(_param);
+				_rti_iterator_arg_destroy(_param);
 
 				return NULL;
 			}
@@ -13804,10 +13811,10 @@ rt_raster_iterator(
 	);
 
 	/* init values and NODATA for use with empty rasters */
-	if (!_rti_param_empty_init(_param)) {
+	if (!_rti_iterator_arg_empty_init(_param)) {
 		rterror("rt_raster_iterator: Unable to initialize empty values and NODATA");
 
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 		rt_raster_destroy(rtnrast);
 		
 		return NULL;
@@ -13823,7 +13830,7 @@ rt_raster_iterator(
 	) < 0) {
 		rterror("rt_raster_iterator: Unable to add new band to output raster");
 
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 		rt_raster_destroy(rtnrast);
 
 		return NULL;
@@ -13834,7 +13841,7 @@ rt_raster_iterator(
 	if (rtnband == NULL) {
 		rterror("rt_raster_iterator: Unable to get new band from output raster");
 
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 		rt_raster_destroy(rtnrast);
 
 		return NULL;
@@ -13844,10 +13851,10 @@ rt_raster_iterator(
 	minval = rt_band_get_min_value(rtnband);
 
 	/* initialize argument for callback function */
-	if (!_rti_param_arg_init(_param)) {
+	if (!_rti_iterator_arg_callback_init(_param)) {
 		rterror("rt_raster_iterator: Unable to initialize callback function argument");
 
-		_rti_param_destroy(_param);
+		_rti_iterator_arg_destroy(_param);
 		rt_band_destroy(rtnband);
 		rt_raster_destroy(rtnrast);
 
@@ -13864,7 +13871,7 @@ rt_raster_iterator(
 		if (!status) {
 			rterror("rt_raster_iterator: Unable to compute raster offsets");
 
-			_rti_param_destroy(_param);
+			_rti_iterator_arg_destroy(_param);
 			rt_band_destroy(rtnband);
 			rt_raster_destroy(rtnrast);
 
@@ -13934,7 +13941,7 @@ rt_raster_iterator(
 					if (status < 0) {
 						rterror("rt_raster_iterator: Unable to get pixel neighborhood");
 
-						_rti_param_destroy(_param);
+						_rti_iterator_arg_destroy(_param);
 						rt_band_destroy(rtnband);
 						rt_raster_destroy(rtnrast);
 
@@ -13957,7 +13964,7 @@ rt_raster_iterator(
 					) < 0) {
 						rterror("rt_raster_iterator: Unable to get the pixel value of band");
 
-						_rti_param_destroy(_param);
+						_rti_iterator_arg_destroy(_param);
 						rt_band_destroy(rtnband);
 						rt_raster_destroy(rtnrast);
 
@@ -13989,7 +13996,7 @@ rt_raster_iterator(
 				if (npixels == NULL) {
 					rterror("rt_raster_iterator: Unable to reallocate memory for neighborhood");
 
-					_rti_param_destroy(_param);
+					_rti_iterator_arg_destroy(_param);
 					rt_band_destroy(rtnband);
 					rt_raster_destroy(rtnrast);
 
@@ -14020,7 +14027,7 @@ rt_raster_iterator(
 				if (!status) {
 					rterror("rt_raster_iterator: Unable to create 2D array of neighborhood");
 
-					_rti_param_destroy(_param);
+					_rti_iterator_arg_destroy(_param);
 					rt_band_destroy(rtnband);
 					rt_raster_destroy(rtnrast);
 
@@ -14034,14 +14041,14 @@ rt_raster_iterator(
 			nodata = 0;
 			status = callback(_param->arg, userarg, &value, &nodata);
 
-			/* free memory */
-			_rti_param_arg_clean(_param);
+			/* free memory from callback */
+			_rti_iterator_arg_callback_clean(_param);
 
 			/* handle callback status */
 			if (status == 0) {
 				rterror("rt_raster_iterator: Callback function returned an error");
 
-				_rti_param_destroy(_param);
+				_rti_iterator_arg_destroy(_param);
 				rt_band_destroy(rtnband);
 				rt_raster_destroy(rtnrast);
 
@@ -14064,7 +14071,7 @@ rt_raster_iterator(
 			if (status < 0) {
 				rterror("rt_raster_iterator: Unable to set pixel value");
 
-				_rti_param_destroy(_param);
+				_rti_iterator_arg_destroy(_param);
 				rt_band_destroy(rtnband);
 				rt_raster_destroy(rtnrast);
 
@@ -14074,7 +14081,7 @@ rt_raster_iterator(
 	}
 
 	/* lots of cleanup */
-	_rti_param_destroy(_param);
+	_rti_iterator_arg_destroy(_param);
 
 	*noerr = 1;
 	return rtnrast;
