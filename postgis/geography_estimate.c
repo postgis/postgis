@@ -491,22 +491,25 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 	}
 
 	/*
-	 * We are working on two constants..
-	 * TODO: check if expression is true,
-	 *       returned set would be either
-	 *       the whole or none.
-	 */
+	* We don't have a nice <const> && <var> or <var> && <const> 
+	* situation here. <const> && <const> would probably get evaluated
+	* away by PgSQL earlier on. <func> && <const> is harder, and the
+	* case we get often is <const> && ST_Expand(<var>), which does 
+	* actually have a subtly different selectivity than a bae
+	* <const> && <var> call. It's calculatable though, by expanding
+	* every cell in the histgram appropriately.
+	* 
+	* Discussion: http://trac.osgeo.org/postgis/ticket/1828
+	*
+	* To do? Do variable selectivity based on the <func> node.
+	*/
 	if ( ! IsA(self, Var) )
 	{
-		POSTGIS_DEBUG(3, " no variable argument ? - returning default selectivity");
-
-		PG_RETURN_FLOAT8(DEFAULT_GEOGRAPHY_SEL);
+		POSTGIS_DEBUG(3, " no bare variable argument ? - returning a moderate selectivity");
+//		PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_SEL);
+		PG_RETURN_FLOAT8(0.33333);
 	}
-
-	/*
-	 * Convert the constant to a GBOX
-	 */
-
+	
 	/* Convert coordinates to 3D geodesic */
 	FLAGS_SET_GEODETIC(search_box.flags, 1);
 	if ( ! gserialized_datum_get_gbox_p(((Const*)other)->constvalue, &search_box) )
