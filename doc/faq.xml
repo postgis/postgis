@@ -29,6 +29,30 @@
             to get back all the 200 some-odd old functions we removed.</para>
       </answer>
     </qandaentry>
+    
+    <qandaentry id="legacy_faq_gist">
+      <question>
+        <para>When I load open street map data with osm2pgsql, I'm getting an error     
+    failed: ERROR:  operator class "gist_geometry_ops" does not exist for access me
+thod "gist"
+Error occurred.  This worked fine in PostGIS 1.5</para>
+      </question>
+
+      <answer>
+        <para>In PostGIS 2, the default geometry operator class gist_geometry_ops was changed to gist_geometry_ops_2d and the gist_geometry_ops was completely removed. This was done because PostGIS 2 also introduced Nd spatial indexes for 3D support and the old name was deemed confusing and a misnomer.</para>
+        <para>Some older applications that as part of the process create tables and indexes, explicitly referenced the operator class name.  This was unnecessary if you want the default 2D index.  So if you manage said good, change index creation from:</para>
+        <para>BAD:</para>
+        <programlisting>CREATE INDEX idx_my_table_geom ON my_table USING gist(geom gist_geometry_ops);</programlisting>
+        <para>To GOOD:</para>
+         <programlisting>CREATE INDEX idx_my_table_geom ON my_table USING gist(geom);</programlisting>
+         
+         <para>The only case where you WILL need to specify the operator class is if you want a 3D spatial index as follows:</para>
+         <programlisting>CREATE INDEX idx_my_super3d_geom ON my_super3d USING gist(geom gist_geometry_ops_nd);</programlisting>
+         
+         <para>If you are unfortunate to be stuck with compiled code you can't change that has the old gist_geometry_ops hard-coded, then you can create the old class using the <filename>legacy_gist.sql</filename> packaged in PostGIS 2.0.2+. However if you use this fix, you are advised to at a later point drop the index and recreate it without the operator class.  This will save you grief in the future when you need to upgrade again.</para>
+      </answer>
+    </qandaentry>
+
     <qandaentry>
       <question>
         <para>I'm running PostgreSQL 9.0 and I can no longer read/view geometries in OpenJump, Safe FME, and some other tools?</para>
