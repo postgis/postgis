@@ -11,6 +11,7 @@ PostGIS 2.0.2
   - #2025, Fix side location conflict at TopoGeo_AddLineString 
   - #1987, Restore 1.5.x behaviour of ST_Simplify 
   - #1391, Errors during upgrade from 1.5
+  - #1828, Poor selectivity estimate on ST_DWithin
   - #1891, Use LDFLAGS environment when building liblwgeom
   - #1900, Fix pgsql2shp for big-endian systems 
   - #1932, Fix raster2pgsql for invalid syntax for setting index tablespace
