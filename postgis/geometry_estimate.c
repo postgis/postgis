@@ -63,7 +63,6 @@
  * tweak the deviation factor used in computation with
  * SDFACTOR.
  */
-#define USE_STANDARD_DEVIATION 1
 #define SDFACTOR 3.25
 
 typedef struct GEOM_STATS_T
@@ -793,13 +792,13 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	double cell_area;
 	double cell_width;
 	double cell_height;
-#if USE_STANDARD_DEVIATION
+
 	/* for standard deviation */
 	double avgLOWx, avgLOWy, avgHIGx, avgHIGy;
 	double sumLOWx=0, sumLOWy=0, sumHIGx=0, sumHIGy=0;
 	double sdLOWx=0, sdLOWy=0, sdHIGx=0, sdHIGy=0;
 	GBOX *newhistobox=NULL;
-#endif
+
 	double geow, geoh; /* width and height of histogram */
 	int histocells;
 	int cols, rows; /* histogram grid size */
@@ -908,7 +907,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		total_width += VARSIZE(geom);
 		total_boxes_area += (box.xmax-box.xmin)*(box.ymax-box.ymin);
 
-#if USE_STANDARD_DEVIATION
 		/*
 		 * Add bvol coordinates to sum for standard deviation
 		 * computation.
@@ -917,7 +915,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		sumLOWy += box.ymin;
 		sumHIGx += box.xmax;
 		sumHIGy += box.ymax;
-#endif
 
 		notnull_cnt++;
 
@@ -933,7 +930,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		return;
 	}
 
-#if USE_STANDARD_DEVIATION
 
 	POSTGIS_DEBUGF(3, " sample_extent: xmin,ymin: %f,%f",
 	               sample_extent->xmin, sample_extent->ymin);
@@ -1035,18 +1031,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		histobox.xmax = newhistobox->xmax;
 	if ( histobox.ymax > newhistobox->ymax )
 		histobox.ymax = newhistobox->ymax;
-
-
-#else /* ! USE_STANDARD_DEVIATION */
-
-	/*
-	* Set histogram extent box
-	*/
-	histobox.xmin = sample_extent->xmin;
-	histobox.ymin = sample_extent->ymin;
-	histobox.xmax = sample_extent->xmax;
-	histobox.ymax = sample_extent->ymax;
-#endif /* USE_STANDARD_DEVIATION */
 
 
 	POSTGIS_DEBUGF(3, " histogram_extent: xmin,ymin: %f,%f",

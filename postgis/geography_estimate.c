@@ -55,7 +55,6 @@ Datum geography_analyze(PG_FUNCTION_ARGS);
  * tweak the deviation factor used in computation with
  * SDFACTOR.
  */
-#define USE_STANDARD_DEVIATION 1
 #define SDFACTOR 3.25
 
 
@@ -809,13 +808,11 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	double total_width = 0;
 	int notnull_cnt = 0, examinedsamples = 0, total_count_cells=0, total_cells_coverage = 0;
 
-#if USE_STANDARD_DEVIATION
 	/* for standard deviation */
 	double avgLOWx, avgLOWy, avgLOWz, avgHIGx, avgHIGy, avgHIGz;
 	double sumLOWx = 0, sumLOWy = 0, sumLOWz = 0, sumHIGx = 0, sumHIGy = 0, sumHIGz = 0;
 	double sdLOWx = 0, sdLOWy = 0, sdLOWz = 0, sdHIGx = 0, sdHIGy = 0, sdHIGz = 0;
 	GBOX *newhistobox = NULL;
-#endif
 
 	bool isnull;
 	int i;
@@ -849,7 +846,6 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	{
 		Datum datum;
 		GSERIALIZED *serialized;
-		LWGEOM *geometry;
 
 		/* Fetch the datum and cast it into a geography */
 		datum = fetchfunc(stats, i, &isnull);
@@ -857,9 +853,6 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		/* Skip nulls */
 		if (isnull)
 			continue;
-
-//		serialized = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
-//		geometry = lwgeom_from_gserialized(serialized);
 
 		/* Convert coordinates to 3D geodesic */
 		if ( ! gserialized_datum_get_gbox_p(datum, &gbox) )
@@ -909,7 +902,6 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		/** TODO: ask if we need geom or bvol size for stawidth */
 		total_width += VARSIZE(serialized);
 
-#if USE_STANDARD_DEVIATION
 		/*
 		 * Add bvol coordinates to sum for standard deviation
 		 * computation.
@@ -920,7 +912,6 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		sumHIGx += gbox.xmax;
 		sumHIGy += gbox.ymax;
 		sumHIGz += gbox.zmax;
-#endif
 
 		notnull_cnt++;
 
@@ -940,8 +931,6 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		stats->stats_valid = false;
 		return;
 	}
-
-#if USE_STANDARD_DEVIATION
 
 	POSTGIS_DEBUG(3, "Standard deviation filter enabled");
 
@@ -1062,21 +1051,6 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		histobox.ymax = newhistobox->ymax;
 	if ( histobox.zmax > newhistobox->zmax )
 		histobox.zmax = newhistobox->zmax;
-
-#else /* ! USE_STANDARD_DEVIATION */
-
-	/*
-	* Set histogram extent box
-	*/
-	histobox.xmin = sample_extent->xmin;
-	histobox.ymin = sample_extent->ymin;
-	histobox.zmin = sample_extent->zmin;
-	histobox.xmax = sample_extent->xmax;
-	histobox.ymax = sample_extent->ymax;
-	histobox.zmax = sample_extent->zmax;
-
-#endif /* USE_STANDARD_DEVIATION */
-
 
 	POSTGIS_DEBUGF(3, " histogram_extent: xmin, ymin, zmin: %f, %f, %f",
 	               histobox.xmin, histobox.ymin, histobox.zmin);
