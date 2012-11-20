@@ -35,7 +35,7 @@ DROP FUNCTION IF EXISTS interpolate_from_address(integer, character varying, cha
 DROP FUNCTION IF EXISTS interpolate_from_address(integer, integer, integer, geometry); /**don't need this since got collapes into varchar version **/
 
 -- TODO: Put in logic to update lookup tables as they change.  street_type_lookup has changed since initial release --
-CREATE TABLE zcta5
+/** CREATE TABLE zcta5
 (
   gid serial NOT NULL,
   statefp character varying(2),
@@ -54,7 +54,7 @@ CREATE TABLE zcta5
   CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
   CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4269),
   CONSTRAINT pk_tiger_zcta5_zcta5ce PRIMARY KEY (zcta5ce,statefp)
- );
+ ); **/
 
 ALTER TABLE street_type_lookup ALTER COLUMN abbrev  TYPE varchar(50);
 ALTER TABLE street_type_lookup ALTER COLUMN name  TYPE varchar(50);
