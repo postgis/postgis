@@ -296,7 +296,7 @@ LANGUAGE 'plpgsql' VOLATILE;
 CREATE OR REPLACE FUNCTION loader_load_staged_data(param_staging_table text, param_target_table text) 
 RETURNS integer AS
 $$
-   SELECT  loader_load_staged_data($1, $2,(SELECT COALESCE(columns_exclude,ARRAY['gid', 'geoid10','cpi','suffix1ce']) FROM loader_lookuptables WHERE $2 LIKE '%' || lookup_name))
+   SELECT  loader_load_staged_data($1, $2,(SELECT COALESCE(columns_exclude,ARRAY['gid', 'geoid10','cpi','suffix1ce', 'utyp', 'utyp10']) FROM loader_lookuptables WHERE $2 LIKE '%' || lookup_name))
 $$
 language 'sql' VOLATILE;
 COMMIT;
