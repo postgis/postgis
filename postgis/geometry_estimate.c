@@ -116,6 +116,7 @@ static float8 estimate_selectivity(GBOX *box, GEOM_STATS *geomstats);
 
 Datum geometry_gist_sel_2d(PG_FUNCTION_ARGS);
 Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS);
+Datum geometry_gist_read_selectivity(PG_FUNCTION_ARGS);
 Datum geometry_analyze_2d(PG_FUNCTION_ARGS);
 Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 
@@ -608,6 +609,52 @@ estimate_selectivity(GBOX *box, GEOM_STATS *geomstats)
 
 	return selectivity;
 }
+
+/**
+* Utility function to read the calculated selectivity for a given search
+* box and table/column. Used for debugging the selectivity code.
+*/
+PG_FUNCTION_INFO_V1(geometry_gist_read_selectivity);
+Datum geometry_gist_read_selectivity(PG_FUNCTION_ARGS)
+{
+	HeapTuple stats_tuple;
+	float4 *floatptr;
+	int32 table_oid = PG_GETARG_INT32(0);
+	int32 attr_num = PG_GETARG_INT32(1);
+	Datum geom_datum = PG_GETARG_DATUM(2);
+	int rv;
+	GBOX gbox;
+	int32 nvalues = 0;
+	float8 selectivity = 0;
+
+	/* Calculate the gbox */
+	if ( ! gserialized_datum_get_gbox_p(geom_datum, &gbox) )
+		elog(ERROR, "Unable to calculate search box from geometry");
+	
+	/* First pull the stats tuple */
+	stats_tuple = SearchSysCache2(STATRELATT, Int32GetDatum(table_oid), Int32GetDatum(attr_num));
+	if ( ! stats_tuple )
+		elog(ERROR, "Unable to retreive stats tuple for oid(%d) attrnum(%d)", table_oid, attr_num);
+		
+	/* Then read the geom status histogram from that */
+	rv = get_attstatsslot(stats_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL, NULL, &floatptr, &nvalues);
+	if ( ! rv )
+	{
+		ReleaseSysCache(stats_tuple);
+		elog(ERROR, "Unable to retreive geomstats");		
+	}
+	
+	/* Do the estimation */
+	selectivity = estimate_selectivity(&gbox, (GEOM_STATS*)floatptr);
+
+	/* Clean up */
+	free_attstatsslot(0, NULL, 0, floatptr, nvalues);
+	ReleaseSysCache(stats_tuple);
+	
+	PG_RETURN_FLOAT8(selectivity);
+}
+
+
 
 /**
  * This function should return an estimation of the number of

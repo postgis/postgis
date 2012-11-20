@@ -428,6 +428,35 @@ CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, sma
 	AS 'MODULE_PATHNAME', 'geometry_gist_joinsel_2d'
 	LANGUAGE 'c';
 
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION geometry_gist_read_selectivity(relid integer, attnum integer, geom geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'geometry_gist_read_selectivity'
+	LANGUAGE 'c';
+	
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION geometry_gist_selectivity(schemaname varchar, tablename varchar, attrname varchar, geom geometry)
+	RETURNS float8
+	AS $$
+	  DECLARE
+	  	selectivity float8;
+	  BEGIN
+	  	SELECT geometry_gist_read_selectivity(r.oid::integer, a.attnum::integer, 'SRID=4326;LINESTRING(0 0, 1 1)'::geometry)
+	  	INTO selectivity
+	  	FROM pg_class r 
+	    JOIN pg_attribute a ON (r.oid = a.attrelid) 
+	    JOIN pg_namespace n ON (r.relnamespace = n.oid) 
+	    WHERE  n.nspname = $1 AND r.relname = $2 and a.attname = $3;
+	    IF NOT FOUND THEN
+	  	   RAISE EXCEPTION 'Couldn''t find table? column?';
+	  	END IF;
+	  	RETURN selectivity;
+	  END;
+	$$
+	LANGUAGE 'plpgsql';
+
+
+
 -----------------------------------------------------------------------------
 -- GEOMETRY Operators
 -----------------------------------------------------------------------------
