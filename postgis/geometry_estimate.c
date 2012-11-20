@@ -627,19 +627,19 @@ Datum geometry_gist_read_selectivity(PG_FUNCTION_ARGS)
 
 	/* Calculate the gbox */
 	if ( ! gserialized_datum_get_gbox_p(geom_datum, &gbox) )
-		elog(ERROR, "Unable to calculate search box from geometry");
+		elog(ERROR, "Unable to calculate bounding box from geometry");
 	
 	/* First pull the stats tuple */
 	stats_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(table_oid), Int16GetDatum(attr_num));
 	if ( ! stats_tuple )
-		elog(ERROR, "Unable to retreive stats tuple for oid(%d) attrnum(%d)", table_oid, attr_num);
+		elog(ERROR, "Unable to retreive stats tuple for oid(%d) attrnum(%d), run ANALYZE?", table_oid, attr_num);
 		
 	/* Then read the geom status histogram from that */
 	rv = get_attstatsslot(stats_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL, NULL, &floatptr, &nvalues);
 	if ( ! rv )
 	{
 		ReleaseSysCache(stats_tuple);
-		elog(ERROR, "Unable to retreive geomstats");		
+		elog(ERROR, "Unable to retreive geomstats, hmmm.");		
 	}
 	
 	/* Do the estimation */
