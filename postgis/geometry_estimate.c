@@ -116,9 +116,9 @@ static float8 estimate_selectivity(GBOX *box, GEOM_STATS *geomstats);
 
 Datum geometry_gist_sel_2d(PG_FUNCTION_ARGS);
 Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS);
-Datum geometry_gist_read_selectivity(PG_FUNCTION_ARGS);
 Datum geometry_analyze_2d(PG_FUNCTION_ARGS);
 Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
+Datum _postgis_geometry_sel(PG_FUNCTION_ARGS);
 
 
 #if ! REALLY_DO_JOINSEL
@@ -612,27 +612,34 @@ estimate_selectivity(GBOX *box, GEOM_STATS *geomstats)
 * Utility function to read the calculated selectivity for a given search
 * box and table/column. Used for debugging the selectivity code.
 */
-PG_FUNCTION_INFO_V1(geometry_gist_read_selectivity);
-Datum geometry_gist_read_selectivity(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(_postgis_geometry_sel);
+Datum _postgis_geometry_sel(PG_FUNCTION_ARGS)
 {
 	HeapTuple stats_tuple;
 	float4 *floatptr;
-	Oid table_oid = PG_GETARG_INT32(0);
-	int16 attr_num = PG_GETARG_INT32(1);
+	Oid table_oid = PG_GETARG_OID(0);
 	Datum geom_datum = PG_GETARG_DATUM(2);
+	text *att_text = PG_GETARG_TEXT_P(1);
+	const char *att_name = text2cstring(att_text);
 	int rv;
 	GBOX gbox;
 	int32 nvalues = 0;
 	float8 selectivity = 0;
+	AttrNumber att_num;
 
 	/* Calculate the gbox */
 	if ( ! gserialized_datum_get_gbox_p(geom_datum, &gbox) )
 		elog(ERROR, "Unable to calculate bounding box from geometry");
+
+	/* Get the attribute number */
+	att_num = get_attnum(table_oid, att_name);
+	if  ( ! att_num )
+		elog(ERROR, "Unable to attribute number for attribute '%s'", att_name);
 	
 	/* First pull the stats tuple */
-	stats_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(table_oid), Int16GetDatum(attr_num));
+	stats_tuple = SearchSysCache2(STATRELATT, table_oid, att_num);
 	if ( ! stats_tuple )
-		elog(ERROR, "Unable to retreive stats tuple for oid(%d) attrnum(%d), run ANALYZE?", table_oid, attr_num);
+		elog(ERROR, "Unable to retreive stats tuple for oid(%d) attrnum(%d), run ANALYZE?", table_oid, att_num);
 		
 	/* Then read the geom status histogram from that */
 	rv = get_attstatsslot(stats_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL, NULL, &floatptr, &nvalues);
