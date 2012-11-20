@@ -9372,7 +9372,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	rt_raster rast;
 	int i = 0;
 	int noband = 0;
-	int banderr = 0;
+	int err = 0;
 	int *band_list = NULL;
 
 	rt_pixtype *_pixtype = NULL;
@@ -9399,6 +9399,9 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	GDALDriverH _drv = NULL;
 	GDALDatasetH _ds = NULL;
 	GDALRasterBandH _band = NULL;
+
+	uint16_t _width = 0;
+	uint16_t _height = 0;
 
 	RASTER_DEBUG(3, "starting");
 
@@ -10233,21 +10236,21 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 	/* set bands */
 	for (i = 0; i < num_bands; i++) {
-		banderr = 0;
+		err = 0;
 
 		do {
 			/* add band */
 			cplerr = GDALAddBand(_ds, rt_util_pixtype_to_gdal_datatype(_pixtype[i]), NULL);
 			if (cplerr != CE_None) {
 				rterror("rt_raster_gdal_rasterize: Unable to add band to GDALDataset");
-				banderr = 1;
+				err = 1;
 				break;
 			}
 
 			_band = GDALGetRasterBand(_ds, i + 1);
 			if (NULL == _band) {
 				rterror("rt_raster_gdal_rasterize: Unable to get band %d from GDALDataset", i + 1);
-				banderr = 1;
+				err = 1;
 				break;
 			}
 
@@ -10257,7 +10260,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				cplerr = GDALSetRasterNoDataValue(_band, _nodata[i]);
 				if (cplerr != CE_None) {
 					rterror("rt_raster_gdal_rasterize: Unable to set nodata value");
-					banderr = 1;
+					err = 1;
 					break;
 				}
 				RASTER_DEBUGF(4, "NODATA value set to %f", GDALGetRasterNoDataValue(_band, NULL));
@@ -10267,13 +10270,13 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			cplerr = GDALFillRaster(_band, _init[i], 0);
 			if (cplerr != CE_None) {
 				rterror("rt_raster_gdal_rasterize: Unable to set initial value");
-				banderr = 1;
+				err = 1;
 				break;
 			}
 		}
 		while (0);
 
-		if (banderr) {
+		if (err) {
 			if (noband) {
 				rtdealloc(_pixtype);
 				rtdealloc(_init);
@@ -10331,8 +10334,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	RASTER_DEBUG(3, "Converting GDAL dataset to raster");
 	rast = rt_raster_from_gdal_dataset(_ds);
 
+	/* we still need _pixtype */
 	if (noband) {
-		rtdealloc(_pixtype);
 		rtdealloc(_init);
 		rtdealloc(_nodata);
 		rtdealloc(_hasnodata);
@@ -10347,8 +10350,108 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 	if (NULL == rast) {
 		rterror("rt_raster_gdal_rasterize: Unable to rasterize geometry");
+		if (noband) rtdealloc(_pixtype);
 		return NULL;
 	}
+
+	/* width, height */
+	_width = rt_raster_get_width(rast);
+	_height = rt_raster_get_height(rast);
+
+	/* check each band for pixtype */
+	for (i = 0; i < num_bands; i++) {
+		uint8_t *data = NULL;
+		rt_band band = NULL;
+		rt_band oldband = NULL;
+
+		double val = 0;
+		int hasnodata = 0;
+		double nodataval = 0;
+		int x = 0;
+		int y = 0;
+
+		oldband = rt_raster_get_band(rast, i);
+		if (oldband == NULL) {
+			rterror("rt_raster_gdal_rasterize: Unable to get band %d of output raster", i);
+			if (noband) rtdealloc(_pixtype);
+			rt_raster_destroy(rast);
+			return NULL;
+		}
+
+		/* band is of user-specified type */
+		if (rt_band_get_pixtype(oldband) == _pixtype[i])
+			continue;
+
+		/* hasnodata, nodataval */
+		hasnodata = rt_band_get_hasnodata_flag(oldband);
+		if (hasnodata)
+			nodataval = rt_band_get_nodata(oldband);
+
+		/* allocate data */
+		data = rtalloc(rt_pixtype_size(_pixtype[i]) * _width * _height);
+		if (data == NULL) {
+			rterror("rt_raster_gdal_rasterize: Could not allocate memory for band data");
+			if (noband) rtdealloc(_pixtype);
+			rt_raster_destroy(rast);
+			return NULL;
+		}
+		memset(data, 0, rt_pixtype_size(_pixtype[i]) * _width * _height);
+
+		/* create new band of correct type */
+		band = rt_band_new_inline(
+			_width, _height,
+			_pixtype[i],
+			hasnodata, nodataval,
+			data
+		);
+		if (band == NULL) {
+			rterror("rt_raster_gdal_rasterize: Unable to create band");
+			rtdealloc(data);
+			if (noband) rtdealloc(_pixtype);
+			rt_raster_destroy(rast);
+			return NULL;
+		}
+
+		/* copy pixel by pixel */
+		for (x = 0; x < _width; x++) {
+			for (y = 0; y < _height; y++) {
+				err = rt_band_get_pixel(oldband, x, y, &val);
+				if (err != 0) {
+					rterror("rt_raster_gdal_rasterize: Unable to get pixel value");
+					if (noband) rtdealloc(_pixtype);
+					rt_raster_destroy(rast);
+					rt_band_destroy(band);
+					rtdealloc(data);
+					return NULL;
+				}
+
+				err = rt_band_set_pixel(band, x, y, val);
+				if (err < 0) {
+					rterror("rt_raster_gdal_rasterize: Unable to set pixel value");
+					if (noband) rtdealloc(_pixtype);
+					rt_raster_destroy(rast);
+					rt_band_destroy(band);
+					rtdealloc(data);
+					return NULL;
+				}
+			}
+		}
+
+		/* replace band */
+		oldband = rt_raster_replace_band(rast, band, i);
+		if (oldband == NULL) {
+			rterror("rt_raster_gdal_rasterize: Unable to replace band %d of output raster", i);
+			if (noband) rtdealloc(_pixtype);
+			rt_raster_destroy(rast);
+			rt_band_destroy(band);
+			return NULL;
+		}
+
+		/* free oldband */
+		rt_band_destroy(oldband);
+	}
+
+	if (noband) rtdealloc(_pixtype);
 
 	RASTER_DEBUG(3, "done");
 

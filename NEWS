@@ -34,6 +34,7 @@ PostGIS 2.0.2
            working on out-db bands
   - #2077, Fixed incorrect answers from ST_Hillshade(raster)
   - #2015, ST_IsEmpty('POLYGON(EMPTY)') returns False
+  - #2100, ST_AsRaster() may not return raster with specified pixel type
 
 
  * Enhancements *
