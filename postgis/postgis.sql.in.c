@@ -429,7 +429,7 @@ CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, sma
 	LANGUAGE 'c';
 
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION geometry_gist_read_selectivity(relid integer, attnum integer, geom geometry)
+CREATE OR REPLACE FUNCTION geometry_gist_read_selectivity(relid oid, attnum int2, geom geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'geometry_gist_read_selectivity'
 	LANGUAGE 'c';
@@ -441,7 +441,7 @@ CREATE OR REPLACE FUNCTION geometry_gist_selectivity(schemaname varchar, tablena
 	  DECLARE
 	  	selectivity float8;
 	  BEGIN
-	  	SELECT geometry_gist_read_selectivity(r.oid::integer, a.attnum::integer, 'SRID=4326;LINESTRING(0 0, 1 1)'::geometry)
+	  	SELECT geometry_gist_read_selectivity(r.oid, a.attnum, 'SRID=4326;LINESTRING(0 0, 1 1)'::geometry)
 	  	INTO selectivity
 	  	FROM pg_class r 
 	    JOIN pg_attribute a ON (r.oid = a.attrelid) 

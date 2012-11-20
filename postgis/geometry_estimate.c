@@ -617,8 +617,8 @@ Datum geometry_gist_read_selectivity(PG_FUNCTION_ARGS)
 {
 	HeapTuple stats_tuple;
 	float4 *floatptr;
-	int32 table_oid = PG_GETARG_INT32(0);
-	int32 attr_num = PG_GETARG_INT32(1);
+	Oid table_oid = PG_GETARG_INT32(0);
+	int16 attr_num = PG_GETARG_INT32(1);
 	Datum geom_datum = PG_GETARG_DATUM(2);
 	int rv;
 	GBOX gbox;
@@ -630,7 +630,7 @@ Datum geometry_gist_read_selectivity(PG_FUNCTION_ARGS)
 		elog(ERROR, "Unable to calculate search box from geometry");
 	
 	/* First pull the stats tuple */
-	stats_tuple = SearchSysCache2(STATRELATT, Int32GetDatum(table_oid), Int32GetDatum(attr_num));
+	stats_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(table_oid), Int16GetDatum(attr_num));
 	if ( ! stats_tuple )
 		elog(ERROR, "Unable to retreive stats tuple for oid(%d) attrnum(%d)", table_oid, attr_num);
 		
