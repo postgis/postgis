@@ -527,7 +527,7 @@ Datum geography_gist_selectivity(PG_FUNCTION_ARGS)
 	 */
 	relid = getrelid(self->varno, root->parse->rtable);
 
-	stats_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno), 0, 0);
+	stats_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno));
 	if ( ! stats_tuple )
 	{
 		POSTGIS_DEBUG(3, " No statistics, returning default estimate");
@@ -643,7 +643,7 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "Working with relations oids: %d %d", relid1, relid2);
 
 	/* Read the stats tuple from the first column */
-	stats1_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid1), Int16GetDatum(var1->varattno), 0, 0);
+	stats1_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(relid1), Int16GetDatum(var1->varattno));
 	if ( ! stats1_tuple )
 	{
 		POSTGIS_DEBUG(3, " No statistics, returning default geometry join selectivity");
@@ -665,7 +665,7 @@ Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS)
 
 
 	/* Read the stats tuple from the second column */
-	stats2_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid2), Int16GetDatum(var2->varattno), 0, 0);
+	stats2_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(relid2), Int16GetDatum(var2->varattno));
 	if ( ! stats2_tuple )
 	{
 		POSTGIS_DEBUG(3, " No statistics, returning default geometry join selectivity");

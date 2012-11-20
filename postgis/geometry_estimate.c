@@ -236,7 +236,7 @@ Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 	POSTGIS_DEBUGF(3, "Working with relations oids: %d %d", relid1, relid2);
 
 	/* Read the stats tuple from the first column */
-	stats1_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid1), Int16GetDatum(var1->varattno), 0, 0);
+	stats1_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(relid1), Int16GetDatum(var1->varattno));
 	if ( ! stats1_tuple )
 	{
 		POSTGIS_DEBUG(3, " No statistics, returning default geometry join selectivity");
@@ -258,7 +258,7 @@ Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 
 
 	/* Read the stats tuple from the second column */
-	stats2_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid2), Int16GetDatum(var2->varattno), 0, 0);
+	stats2_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(relid2), Int16GetDatum(var2->varattno));
 	if ( ! stats2_tuple )
 	{
 		POSTGIS_DEBUG(3, " No statistics, returning default geometry join selectivity");
@@ -315,8 +315,7 @@ Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 	* divided by the total number of tuples - hence we need to
 	* multiply out the returned selectivity by the total number of rows.
 	*/
-	class_tuple = SearchSysCache(RELOID, ObjectIdGetDatum(relid1),
-	                             0, 0, 0);
+	class_tuple = SearchSysCache1(RELOID, ObjectIdGetDatum(relid1));
 
 	if (HeapTupleIsValid(class_tuple))
 	{
@@ -327,8 +326,7 @@ Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 	ReleaseSysCache(class_tuple);
 
 
-	class_tuple = SearchSysCache(RELOID, ObjectIdGetDatum(relid2),
-	                             0, 0, 0);
+	class_tuple = SearchSysCache1(RELOID, ObjectIdGetDatum(relid2));
 
 	if (HeapTupleIsValid(class_tuple))
 	{
@@ -765,7 +763,7 @@ Datum geometry_gist_sel_2d(PG_FUNCTION_ARGS)
 
 	relid = getrelid(self->varno, root->parse->rtable);
 
-	stats_tuple = SearchSysCache(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno), 0, 0);
+	stats_tuple = SearchSysCache2(STATRELATT, ObjectIdGetDatum(relid), Int16GetDatum(self->varattno));
 	if ( ! stats_tuple )
 	{
 		POSTGIS_DEBUG(3, " No statistics, returning default estimate");
