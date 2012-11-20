@@ -629,24 +629,24 @@ Datum _postgis_geometry_sel(PG_FUNCTION_ARGS)
 
 	/* Calculate the gbox */
 	if ( ! gserialized_datum_get_gbox_p(geom_datum, &gbox) )
-		elog(ERROR, "Unable to calculate bounding box from geometry");
+		elog(ERROR, "unable to calculate bounding box from geometry");
 
 	/* Get the attribute number */
 	att_num = get_attnum(table_oid, att_name);
 	if  ( ! att_num )
-		elog(ERROR, "Unable to attribute number for attribute '%s'", att_name);
+		elog(ERROR, "attribute \"%s\" does not exist", att_name);
 	
 	/* First pull the stats tuple */
 	stats_tuple = SearchSysCache2(STATRELATT, table_oid, att_num);
 	if ( ! stats_tuple )
-		elog(ERROR, "Unable to retreive stats tuple for oid(%d) attrnum(%d), run ANALYZE?", table_oid, att_num);
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), att_name);
 		
 	/* Then read the geom status histogram from that */
 	rv = get_attstatsslot(stats_tuple, 0, 0, STATISTIC_KIND_GEOMETRY, InvalidOid, NULL, NULL, NULL, &floatptr, &nvalues);
 	if ( ! rv )
 	{
 		ReleaseSysCache(stats_tuple);
-		elog(ERROR, "Unable to retreive geomstats, hmmm.");		
+		elog(ERROR, "unable to retreive geomstats, hmmm");		
 	}
 	
 	/* Do the estimation */
