@@ -164,8 +164,12 @@ calculate_column_intersection(GBOX *search_box, GEOM_STATS *geomstats1, GEOM_STA
 }
 
 /**
-* JOIN selectivity in the GiST && operator
-* for all PG versions
+* Join selectivity of the && operator. The selectivity
+* is the ratio of the number of rows we think will be 
+* returned divided the maximum number of rows the join
+* could possibly return (the full combinatoric join).
+*
+* selectivity = estimated_nrows / (totalrows1 * totalrows2)
 */
 PG_FUNCTION_INFO_V1(geometry_gist_joinsel_2d);
 Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
@@ -202,8 +206,6 @@ Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 	* geometry in col 1 that intersects a geometry in col 2, the same
 	* will also be true.
 	*/
-
-
 	POSTGIS_DEBUGF(3, "geometry_gist_joinsel called with jointype %d", jointype);
 
 	/*
@@ -378,15 +380,15 @@ Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 
 #endif /* REALLY_DO_JOINSEL */
 
-/**************************** FROM POSTGIS ****************/
 
 
 /**
- * This function returns an estimate of the selectivity
- * of a search_box looking at data in the GEOM_STATS
- * structure.
- * */
-/**
+* This function returns an estimate of the selectivity
+* of a search GBOX by looking at data in the GEOM_STATS
+* structure. The selectivity is a float from 0-1, that estimates
+* the proportion of the rows in the table that will be returned
+* as a result of the search box.
+*
 * TODO: handle box dimension collapses (probably should be handled
 * by the statistic generator, avoiding GEOM_STATS with collapsed
 * dimensions)
@@ -672,8 +674,6 @@ Datum _postgis_geometry_sel(PG_FUNCTION_ARGS)
  * Note that the good work is done by estimate_selectivity() above.
  * This function just tries to find the search_box, loads the statistics
  * and invoke the work-horse.
- *
- * This is the one used for PG version >= 7.5
  *
  */
 PG_FUNCTION_INFO_V1(geometry_gist_sel_2d);
