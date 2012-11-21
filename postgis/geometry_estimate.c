@@ -106,36 +106,12 @@ static float8 estimate_selectivity(GBOX *box, GEOM_STATS *geomstats);
  */
 #define DEFAULT_GEOMETRY_JOINSEL 0.000005
 
-/**
- * Define this to actually DO join selectivity
- * (as contrary to just return the default JOINSEL value)
- * Note that this is only possible when compiling postgis
- * against pgsql >= 800
- */
-#define REALLY_DO_JOINSEL 1
-
 Datum geometry_gist_sel_2d(PG_FUNCTION_ARGS);
 Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS);
 Datum geometry_analyze_2d(PG_FUNCTION_ARGS);
 Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
 Datum _postgis_geometry_sel(PG_FUNCTION_ARGS);
 
-
-#if ! REALLY_DO_JOINSEL
-/**
- * JOIN selectivity in the GiST && operator
- * for all PG versions
- */
-PG_FUNCTION_INFO_V1(LWGEOM_gist_joinsel);
-Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
-{
-	POSTGIS_DEBUGF(2, "geometry_gist_joinsel_2d called (returning default, %f)",
-	               DEFAULT_GEOMETRY_JOINSEL);
-
-	PG_RETURN_FLOAT8(DEFAULT_GEOMETRY_JOINSEL);
-}
-
-#else /* REALLY_DO_JOINSEL */
 
 static int
 calculate_column_intersection(GBOX *search_box, GEOM_STATS *geomstats1, GEOM_STATS *geomstats2)
@@ -377,9 +353,6 @@ Datum geometry_gist_joinsel_2d(PG_FUNCTION_ARGS)
 
 	PG_RETURN_FLOAT8(rows_returned / total_tuples);
 }
-
-#endif /* REALLY_DO_JOINSEL */
-
 
 
 /**
