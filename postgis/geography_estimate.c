@@ -852,7 +852,6 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	{
 		Datum datum;
 		GSERIALIZED *serialized;
-		LWGEOM *geometry;
 
 		/* Fetch the datum and cast it into a geography */
 		datum = fetchfunc(stats, i, &isnull);
@@ -861,11 +860,10 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		if (isnull)
 			continue;
 
-//		serialized = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
-//		geometry = lwgeom_from_gserialized(serialized);
+		serialized = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
 
 		/* Convert coordinates to 3D geodesic */
-		if ( ! gserialized_datum_get_gbox_p(datum, &gbox) )
+		if ( ! gserialized_get_gbox_p(serialized, &gbox) )
 		{
 			/* Unable to obtain or calculate a bounding box */
 			POSTGIS_DEBUGF(3, "skipping geometry at position %d", i);
