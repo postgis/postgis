@@ -849,16 +849,17 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	{
 		Datum datum;
 		GSERIALIZED *serialized;
-
+        
 		/* Fetch the datum and cast it into a geography */
 		datum = fetchfunc(stats, i, &isnull);
+		serialized = (GSERIALIZED*)PG_DETOAST_DATUM(datum);
 
 		/* Skip nulls */
 		if (isnull)
 			continue;
 
 		/* Convert coordinates to 3D geodesic */
-		if ( ! gserialized_datum_get_gbox_p(datum, &gbox) )
+		if ( ! gserialized_get_gbox_p(serialized, &gbox) )
 		{
 			/* Unable to obtain or calculate a bounding box */
 			POSTGIS_DEBUGF(3, "skipping geometry at position %d", i);
