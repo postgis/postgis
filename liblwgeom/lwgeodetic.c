@@ -42,6 +42,9 @@ double longitude_radians_normalize(double lon)
 
 	if ( lon < -1.0 * M_PI )
 		lon = 2.0 * M_PI + lon;
+		
+	if ( lon == -2.0 * M_PI )
+		lon *= -1.0;
 
 	return lon;
 }
@@ -79,11 +82,6 @@ double latitude_radians_normalize(double lat)
 */
 double longitude_degrees_normalize(double lon)
 {
-	if ( lon == -180.0 )
-		return 180.0;
-	if ( lon == -360.0 )
-		return 0.0;
-
 	if ( lon > 360.0 )
 		lon = remainder(lon, 360.0);
 
@@ -95,6 +93,12 @@ double longitude_degrees_normalize(double lon)
 
 	if ( lon < -180.0 )
 		lon = 360 + lon;
+
+	if ( lon == -180.0 )
+		return 180.0;
+
+	if ( lon == -360.0 )
+		return 0.0;
 
 	return lon;
 }
