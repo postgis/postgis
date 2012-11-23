@@ -308,44 +308,23 @@ BEGIN
 
   -- Create new edge {
   rec := e1rec;
-  rec.geom = ST_LineMerge(ST_Collect(e1rec.geom, e2rec.geom));
   IF caseno = 1 THEN -- e1.end = e2.start
-    IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'caseno=1: LineMerge did not maintain startpoint';
-#endif
-      rec.geom = ST_Reverse(rec.geom);
-    END IF;
+    rec.geom = ST_MakeLine(e1rec.geom, e2rec.geom);
     rec.end_node = e2rec.end_node;
     rec.next_left_edge = e2rec.next_left_edge;
     e2sign = 1;
   ELSIF caseno = 2 THEN -- e1.end = e2.end
-    IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'caseno=2: LineMerge did not maintain startpoint';
-#endif
-      rec.geom = ST_Reverse(rec.geom);
-    END IF;
+    rec.geom = ST_MakeLine(e1rec.geom, st_reverse(e2rec.geom));
     rec.end_node = e2rec.start_node;
     rec.next_left_edge = e2rec.next_right_edge;
     e2sign = -1;
   ELSIF caseno = 3 THEN -- e1.start = e2.start
-    IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
-#endif
-      rec.geom = ST_Reverse(rec.geom);
-    END IF;
+    rec.geom = ST_MakeLine(st_reverse(e2rec.geom), e1rec.geom);
     rec.start_node = e2rec.end_node;
     rec.next_right_edge = e2rec.next_left_edge;
     e2sign = -1;
   ELSIF caseno = 4 THEN -- e1.start = e2.end
-    IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
-#endif
-      rec.geom = ST_Reverse(rec.geom);
-    END IF;
+    rec.geom = ST_MakeLine(e2rec.geom, e1rec.geom);
     rec.start_node = e2rec.start_node;
     rec.next_right_edge = e2rec.next_right_edge;
     e2sign = 1;
@@ -622,44 +601,23 @@ BEGIN
 
   -- Update data of the first edge {
   rec := e1rec;
-  rec.geom = ST_LineMerge(ST_Collect(e1rec.geom, e2rec.geom));
   IF caseno = 1 THEN -- e1.end = e2.start
-    IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'caseno=1: LineMerge did not maintain startpoint';
-#endif
-      rec.geom = ST_Reverse(rec.geom);
-    END IF;
+    rec.geom = ST_MakeLine(e1rec.geom, e2rec.geom);
     rec.end_node = e2rec.end_node;
     rec.next_left_edge = e2rec.next_left_edge;
     e2sign = 1;
   ELSIF caseno = 2 THEN -- e1.end = e2.end
-    IF NOT ST_Equals(ST_StartPoint(rec.geom), ST_StartPoint(e1rec.geom)) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'caseno=2: LineMerge did not maintain startpoint';
-#endif
-      rec.geom = ST_Reverse(rec.geom);
-    END IF;
+    rec.geom = ST_MakeLine(e1rec.geom, st_reverse(e2rec.geom));
     rec.end_node = e2rec.start_node;
     rec.next_left_edge = e2rec.next_right_edge;
     e2sign = -1;
   ELSIF caseno = 3 THEN -- e1.start = e2.start
-    IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
-#endif
-      rec.geom = ST_Reverse(rec.geom);
-    END IF;
+    rec.geom = ST_MakeLine(st_reverse(e2rec.geom), e1rec.geom);
     rec.start_node = e2rec.end_node;
     rec.next_right_edge = e2rec.next_left_edge;
     e2sign = -1;
   ELSIF caseno = 4 THEN -- e1.start = e2.end
-    IF NOT ST_Equals(ST_EndPoint(rec.geom), ST_EndPoint(e1rec.geom)) THEN
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'caseno=4: LineMerge did not maintain endpoint';
-#endif
-      rec.geom = ST_Reverse(rec.geom);
-    END IF;
+    rec.geom = ST_MakeLine(e2rec.geom, e1rec.geom);
     rec.start_node = e2rec.start_node;
     rec.next_right_edge = e2rec.next_right_edge;
     e2sign = 1;
