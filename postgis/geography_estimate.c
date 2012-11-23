@@ -849,17 +849,19 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	{
 		Datum datum;
 		GSERIALIZED *serialized;
-        
+		LWGEOM *geometry;
+		
 		/* Fetch the datum and cast it into a geography */
 		datum = fetchfunc(stats, i, &isnull);
-		serialized = (GSERIALIZED*)PG_DETOAST_DATUM(datum);
 
 		/* Skip nulls */
 		if (isnull)
 			continue;
 
+		serialized = (GSERIALIZED*)PG_DETOAST_DATUM(datum);
+		geometry = lwgeom_from_gserialized(serialized);
 		/* Convert coordinates to 3D geodesic */
-		if ( ! gserialized_get_gbox_p(serialized, &gbox) )
+		if ( ! lwgeom_calculate_gbox_geodetic(geometry, &gbox) )
 		{
 			/* Unable to obtain or calculate a bounding box */
 			POSTGIS_DEBUGF(3, "skipping geometry at position %d", i);
@@ -1183,9 +1185,9 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		else if (histodims[0].axis == 'Z' && histodims[1].axis == 'X')
 		{
 			/* Z and X */
-			unitsx = Abs(histodims[0].max - histodims[0].min) / edgelength;
+			unitsx = Abs(histodims[1].max - histodims[1].min) / edgelength;
 			unitsy = 1;
-			unitsz = Abs(histodims[1].max - histodims[1].min) / edgelength;
+			unitsz = Abs(histodims[0].max - histodims[0].min) / edgelength;
 		}
 		else if (histodims[0].axis == 'Y' && histodims[1].axis == 'Z')
 		{
@@ -1196,7 +1198,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		}
 		else if (histodims[0].axis == 'Z' && histodims[1].axis == 'Y')
 		{
-			/* Z and X */
+			/* Z and Y */
 			unitsx = 1;
 			unitsy = Abs(histodims[1].max - histodims[1].min) / edgelength;
 			unitsz = Abs(histodims[0].max - histodims[0].min) / edgelength;
