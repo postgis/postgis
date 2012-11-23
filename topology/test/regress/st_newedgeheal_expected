@@ -139,3 +139,12 @@ Topology 't' dropped
 #1955.3|H:8,9|E11|created
 #1955.3|4|nodes left
 #1955|Topology 't' dropped
+#1998.+|t
+#1998.N1|1
+#1998.N2|2
+#1998.E1|1
+#1998.E2|2
+#1998.E3|3
+#1998.NE|4
+#1998.NE4|LINESTRING(1 1,1 0,0 0,0 1,1 1)
+#1998.-|Topology 't1998' dropped

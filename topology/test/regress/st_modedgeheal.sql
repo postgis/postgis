@@ -160,6 +160,25 @@ SELECT '#1955', topology.DropTopology('t');
 -------------------------------------------------------------------------
 -------------------------------------------------------------------------
 
+-- Another case of merging edges sharing both endpoints
+-- See http://trac.osgeo.org/postgis/ticket/1998
+
+SELECT '#1998.+', CreateTopology('t1998') > 1;
+SELECT '#1998.N1', ST_AddIsoNode('t1998', 0, 'POINT(1 1)');
+SELECT '#1998.N2', ST_AddIsoNode('t1998', 0, 'POINT(0 0)');
+SELECT '#1998.E1', ST_AddEdgeModFace('t1998', 1, 1, 'LINESTRING(1 1,1 2,2 2,2 1,1 1)');
+SELECT '#1998.E2', ST_AddEdgeModFace('t1998', 2, 1, 'LINESTRING(0 0,0 1,1 1)');
+SELECT '#1998.E3', ST_AddEdgeModFace('t1998', 1, 2, 'LINESTRING(1 1,1 0,0 0)');
+SELECT '#1998.X0' as lbl, count(*) FROM ValidateTopology('t1998') GROUP BY lbl;
+SELECT '#1998.N-', ST_ModEdgeHeal('t1998', 2, 3);
+SELECT '#1998.M2', ST_AsText(geom) FROM t1998.edge WHERE edge_id = 2;
+SELECT '#1998.X1' as lbl, count(*) FROM ValidateTopology('t1998') GROUP BY lbl;
+SELECT '#1998.-', topology.DropTopology('t1998');
+
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+-------------------------------------------------------------------------
+
 -- TODO: test registered but unexistent topology
 -- TODO: test registered but corrupted topology
 --       (missing node, edge, relation...)

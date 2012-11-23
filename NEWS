@@ -9,6 +9,7 @@ PostGIS 2.0.2
   - #2052, Fix buffer overflow in lwgeom_to_geojson
   - #2033, Fix adding a splitting point into a 2.5d topology 
   - #2025, Fix side location conflict at TopoGeo_AddLineString 
+  - #1998, Fix ST_{Mod,New}EdgeHeal joining edges sharing both endpoints
   - #1987, Restore 1.5.x behaviour of ST_Simplify 
   - #1391, Errors during upgrade from 1.5
   - #1828, Poor selectivity estimate on ST_DWithin
