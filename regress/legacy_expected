@@ -17,5 +17,6 @@ MapServer4|-9465|010700000001000|-9465
 MapServer4|-9460|010700000001000|-9460
 Removing the data table...
 Done.
+1869|POINT(1 2)
 BEGIN
 COMMIT

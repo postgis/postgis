@@ -61,3 +61,19 @@ CREATE OR REPLACE FUNCTION SRID(geometry)
 	AS 'MODULE_PATHNAME','LWGEOM_get_srid'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 	
+-- Deprecation in 1.5.0
+-- hack to allow unknown to cast to geometry
+-- so does not yield function is not unique
+CREATE OR REPLACE FUNCTION ST_AsBinary(text)
+	RETURNS bytea
+	AS 
+	$$ SELECT ST_AsBinary($1::geometry);$$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+	
+-- Deprecation in 1.5.0
+-- hack to allow unknown to cast to geometry
+CREATE OR REPLACE FUNCTION ST_AsText(bytea)
+	RETURNS text
+	AS 
+	$$ SELECT ST_AsText($1::geometry);$$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
