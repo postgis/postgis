@@ -70,37 +70,37 @@ fillRasterToPolygonize(int hasnodata, double nodatavalue)
         int x, y;
         for (x = 0; x < rt_band_get_width(band); ++x)
             for (y = 0; y < rt_band_get_height(band); ++y)
-                rt_band_set_pixel(band, x, y, 0.0);
+                rt_band_set_pixel(band, x, y, 0.0, NULL);
     }
     
-    rt_band_set_pixel(band, 3, 1, 1.8);
-    rt_band_set_pixel(band, 4, 1, 1.8);
-    rt_band_set_pixel(band, 5, 1, 2.8);
-    rt_band_set_pixel(band, 2, 2, 1.8);
-    rt_band_set_pixel(band, 3, 2, 1.8);
-    rt_band_set_pixel(band, 4, 2, 1.8);
-    rt_band_set_pixel(band, 5, 2, 2.8);
-    rt_band_set_pixel(band, 6, 2, 2.8);
-    rt_band_set_pixel(band, 1, 3, 1.8);
-    rt_band_set_pixel(band, 2, 3, 1.8);
-    rt_band_set_pixel(band, 6, 3, 2.8);
-    rt_band_set_pixel(band, 7, 3, 2.8);
-    rt_band_set_pixel(band, 1, 4, 1.8);
-    rt_band_set_pixel(band, 2, 4, 1.8);
-    rt_band_set_pixel(band, 6, 4, 2.8);
-    rt_band_set_pixel(band, 7, 4, 2.8);
-    rt_band_set_pixel(band, 1, 5, 1.8);
-    rt_band_set_pixel(band, 2, 5, 1.8);
-    rt_band_set_pixel(band, 6, 5, 2.8);
-    rt_band_set_pixel(band, 7, 5, 2.8);
-    rt_band_set_pixel(band, 2, 6, 1.8);
-    rt_band_set_pixel(band, 3, 6, 1.8);
-    rt_band_set_pixel(band, 4, 6, 1.8);
-    rt_band_set_pixel(band, 5, 6, 2.8);
-    rt_band_set_pixel(band, 6, 6, 2.8);
-    rt_band_set_pixel(band, 3, 7, 1.8);
-    rt_band_set_pixel(band, 4, 7, 1.8);
-    rt_band_set_pixel(band, 5, 7, 2.8);
+    rt_band_set_pixel(band, 3, 1, 1.8, NULL);
+    rt_band_set_pixel(band, 4, 1, 1.8, NULL);
+    rt_band_set_pixel(band, 5, 1, 2.8, NULL);
+    rt_band_set_pixel(band, 2, 2, 1.8, NULL);
+    rt_band_set_pixel(band, 3, 2, 1.8, NULL);
+    rt_band_set_pixel(band, 4, 2, 1.8, NULL);
+    rt_band_set_pixel(band, 5, 2, 2.8, NULL);
+    rt_band_set_pixel(band, 6, 2, 2.8, NULL);
+    rt_band_set_pixel(band, 1, 3, 1.8, NULL);
+    rt_band_set_pixel(band, 2, 3, 1.8, NULL);
+    rt_band_set_pixel(band, 6, 3, 2.8, NULL);
+    rt_band_set_pixel(band, 7, 3, 2.8, NULL);
+    rt_band_set_pixel(band, 1, 4, 1.8, NULL);
+    rt_band_set_pixel(band, 2, 4, 1.8, NULL);
+    rt_band_set_pixel(band, 6, 4, 2.8, NULL);
+    rt_band_set_pixel(band, 7, 4, 2.8, NULL);
+    rt_band_set_pixel(band, 1, 5, 1.8, NULL);
+    rt_band_set_pixel(band, 2, 5, 1.8, NULL);
+    rt_band_set_pixel(band, 6, 5, 2.8, NULL);
+    rt_band_set_pixel(band, 7, 5, 2.8, NULL);
+    rt_band_set_pixel(band, 2, 6, 1.8, NULL);
+    rt_band_set_pixel(band, 3, 6, 1.8, NULL);
+    rt_band_set_pixel(band, 4, 6, 1.8, NULL);
+    rt_band_set_pixel(band, 5, 6, 2.8, NULL);
+    rt_band_set_pixel(band, 6, 6, 2.8, NULL);
+    rt_band_set_pixel(band, 3, 7, 1.8, NULL);
+    rt_band_set_pixel(band, 4, 7, 1.8, NULL);
+    rt_band_set_pixel(band, 5, 7, 2.8, NULL);
 
     return raster;
 }
@@ -368,29 +368,36 @@ static void testGDALPolygonize() {
 static void testBand1BB(rt_band band)
 {
     int failure;
+		int clamped;
     double val = 0;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+    CHECK(!clamped);
 		rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+    CHECK(!clamped);
 		rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 2);
-    CHECK(failure); /* out of range value */
+    failure = rt_band_set_nodata(band, 2, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_nodata(band, 3);
-    CHECK(failure); /* out of range value */
+    failure = rt_band_set_nodata(band, 3, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_pixel(band, 0, 0, 2);
-    CHECK(failure); /* out of range value */
+    failure = rt_band_set_pixel(band, 0, 0, 2, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_pixel(band, 0, 0, 3);
-    CHECK(failure); /* out of range value */
+    failure = rt_band_set_pixel(band, 0, 0, 3, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     {
         int x, y;
@@ -398,16 +405,16 @@ static void testBand1BB(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+                CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+                CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
 
-                failure = rt_band_set_pixel(band, x, y, 0);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 0, NULL);
+                CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+                CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 0);
 
             }
@@ -420,38 +427,47 @@ static void testBand2BUI(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
-    CHECK(!failure);
 
-    failure = rt_band_set_nodata(band, 0);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
-    CHECK(!failure);
 
-    failure = rt_band_set_nodata(band, 2);
+    failure = rt_band_set_nodata(band, 2, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 2);
-    CHECK(!failure);
 
-    failure = rt_band_set_nodata(band, 3);
+    failure = rt_band_set_nodata(band, 3, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 3);
-    CHECK(!failure);
 
-    failure = rt_band_set_nodata(band, 4); /* invalid: out of range */
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 4, &clamped); /* invalid: out of range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_nodata(band, 5); /* invalid: out of range */
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 5, &clamped); /* invalid: out of range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_pixel(band, 0, 0, 4); /* out of range */
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 4, &clamped); /* out of range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_pixel(band, 0, 0, 5); /* out of range */
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 5, &clamped); /* out of range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
 
     {
@@ -460,22 +476,22 @@ static void testBand2BUI(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
 
-                failure = rt_band_set_pixel(band, x, y, 2);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 2, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 2);
 
-                failure = rt_band_set_pixel(band, x, y, 3);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 3, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 3);
             }
         }
@@ -487,45 +503,55 @@ static void testBand4BUI(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
-    CHECK(!failure);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 2);
+    failure = rt_band_set_nodata(band, 2, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
-    CHECK(!failure);
     CHECK_EQUALS(val, 2);
 
-    failure = rt_band_set_nodata(band, 4);
+    failure = rt_band_set_nodata(band, 4, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
-    CHECK(!failure);
     CHECK_EQUALS(val, 4);
 
-    failure = rt_band_set_nodata(band, 8);
+    failure = rt_band_set_nodata(band, 8, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
-    CHECK(!failure);
     CHECK_EQUALS(val, 8);
 
-    failure = rt_band_set_nodata(band, 15);
+    failure = rt_band_set_nodata(band, 15, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
-    CHECK(!failure);
     CHECK_EQUALS(val, 15);
 
-    failure = rt_band_set_nodata(band, 16);  /* out of value range */
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 16, &clamped);  /* out of value range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_nodata(band, 17);  /* out of value range */
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 17, &clamped);  /* out of value range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_pixel(band, 0, 0, 35); /* out of value range */
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 35, &clamped); /* out of value range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
 
     {
@@ -535,28 +561,28 @@ static void testBand4BUI(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
 
-                failure = rt_band_set_pixel(band, x, y, 3);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 3, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 3);
 
-                failure = rt_band_set_pixel(band, x, y, 7);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 7, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 7);
 
-                failure = rt_band_set_pixel(band, x, y, 15);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 15, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 15);
             }
         }
@@ -568,52 +594,63 @@ static void testBand8BUI(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 2);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 2, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 2);
 
-    failure = rt_band_set_nodata(band, 4);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 4, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 4);
 
-    failure = rt_band_set_nodata(band, 8);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 8, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 8);
 
-    failure = rt_band_set_nodata(band, 15);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 15, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 15);
 
-    failure = rt_band_set_nodata(band, 31);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 31, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 31);
 
-    failure = rt_band_set_nodata(band, 255);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 255, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 255);
 
-    failure = rt_band_set_nodata(band, 256); /* out of value range */
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 256, &clamped); /* out of value range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
-    failure = rt_band_set_pixel(band, 0, 0, 256); /* out of value range */
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 256, &clamped); /* out of value range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     {
         int x, y;
@@ -621,22 +658,22 @@ static void testBand8BUI(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 31);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 31, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 31);
 
-                failure = rt_band_set_pixel(band, x, y, 255);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 255, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 255);
 
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
             }
         }
@@ -647,66 +684,81 @@ static void testBand8BSI(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 2);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 2, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 2);
 
-    failure = rt_band_set_nodata(band, 4);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 4, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 4);
 
-    failure = rt_band_set_nodata(band, 8);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 8, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 8);
 
-    failure = rt_band_set_nodata(band, 15);
+    failure = rt_band_set_nodata(band, 15, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 15);
 
-    failure = rt_band_set_nodata(band, 31);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 31, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 31);
 
-    failure = rt_band_set_nodata(band, -127);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, -127, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, -127);
 
-    failure = rt_band_set_nodata(band, 127);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 127, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 127);
 
     /* out of range (-127..127) */
-    failure = rt_band_set_nodata(band, -129);
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, -129, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of range (-127..127) */
-    failure = rt_band_set_nodata(band, 129);
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 129, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of range (-127..127) */
-    failure = rt_band_set_pixel(band, 0, 0, -129);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, -129, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of range (-127..127) */
-    failure = rt_band_set_pixel(band, 0, 0, 129);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 129, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
 
     {
@@ -715,28 +767,28 @@ static void testBand8BSI(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 31);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 31, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 31);
 
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
 
-                failure = rt_band_set_pixel(band, x, y, -127);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, -127, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, -127);
 
-                failure = rt_band_set_pixel(band, x, y, 127);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 127, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 127);
 
             }
@@ -748,43 +800,51 @@ static void testBand16BUI(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 31);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 31, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 31);
 
-    failure = rt_band_set_nodata(band, 255);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 255, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 255);
 
-    failure = rt_band_set_nodata(band, 65535);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 65535, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     //printf("set 65535 on %s band gets %g back\n", pixtypeName, val);
     CHECK_EQUALS(val, 65535);
 
-    failure = rt_band_set_nodata(band, 65536); /* out of range */
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 65536, &clamped); /* out of range */
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of value range */
-    failure = rt_band_set_pixel(band, 0, 0, 65536);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 65536, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of dimensions range */
-    failure = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, &clamped);
+    CHECK((failure != ES_NONE));
 
     {
         int x, y;
@@ -792,16 +852,16 @@ static void testBand16BUI(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 255);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 255, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 255);
 
-                failure = rt_band_set_pixel(band, x, y, 65535);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 65535, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 65535);
             }
         }
@@ -812,58 +872,69 @@ static void testBand16BSI(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 31);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 31, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 31);
 
-    failure = rt_band_set_nodata(band, 255);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 255, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 255);
 
-    failure = rt_band_set_nodata(band, -32767);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, -32767, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     //printf("set 65535 on %s band gets %g back\n", pixtypeName, val);
     CHECK_EQUALS(val, -32767);
 
-    failure = rt_band_set_nodata(band, 32767);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 32767, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     //printf("set 65535 on %s band gets %g back\n", pixtypeName, val);
     CHECK_EQUALS(val, 32767);
 
     /* out of range (-32767..32767) */
-    failure = rt_band_set_nodata(band, -32769);
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, -32769, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of range (-32767..32767) */
-    failure = rt_band_set_nodata(band, 32769);
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 32769, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of range (-32767..32767) */
-    failure = rt_band_set_pixel(band, 0, 0, -32769);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, -32769, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of range (-32767..32767) */
-    failure = rt_band_set_pixel(band, 0, 0, 32769);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 32769, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of dimensions range */
-    failure = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, NULL);
+    CHECK((failure != ES_NONE));
 
     {
         int x, y;
@@ -871,22 +942,22 @@ static void testBand16BSI(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 255);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 255, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 255);
 
-                failure = rt_band_set_pixel(band, x, y, -32767);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, -32767, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, -32767);
 
-                failure = rt_band_set_pixel(band, x, y, 32767);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 32767, NULL);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 32767);
             }
         }
@@ -897,39 +968,45 @@ static void testBand32BUI(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 65535);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 65535, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 65535);
 
-    failure = rt_band_set_nodata(band, 4294967295UL);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 4294967295UL, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 4294967295UL);
 
     /* out of range */
-    failure = rt_band_set_nodata(band, 4294967296ULL);
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 4294967296ULL, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of value range */
-    failure = rt_band_set_pixel(band, 0, 0, 4294967296ULL);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 4294967296ULL, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of dimensions range */
-    failure = rt_band_set_pixel(band, rt_band_get_width(band),
-                                0, 4294967296ULL);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, rt_band_get_width(band), 0, 4294967296ULL, NULL);
+    CHECK((failure != ES_NONE));
 
     {
         int x, y;
@@ -937,28 +1014,28 @@ static void testBand32BUI(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
 
-                failure = rt_band_set_pixel(band, x, y, 0);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 0, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 0);
 
-                failure = rt_band_set_pixel(band, x, y, 65535);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 65535, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 65535);
 
-                failure = rt_band_set_pixel(band, x, y, 4294967295UL);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 4294967295UL, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 4294967295UL);
             }
         }
@@ -969,39 +1046,46 @@ static void testBand32BSI(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 65535);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 65535, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 65535);
 
-    failure = rt_band_set_nodata(band, 2147483647);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 2147483647, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     /*printf("32BSI pix is %ld\n", (long int)val);*/
     CHECK_EQUALS(val, 2147483647);
 
-    failure = rt_band_set_nodata(band, 2147483648UL);
     /* out of range */
-    CHECK(failure);
+    failure = rt_band_set_nodata(band, 2147483648UL, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of value range */
-    failure = rt_band_set_pixel(band, 0, 0, 2147483648UL);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, 0, 0, 2147483648UL, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(clamped);
 
     /* out of dimensions range */
-    failure = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0);
-    CHECK(failure);
+    failure = rt_band_set_pixel(band, rt_band_get_width(band), 0, 0, NULL);
+    CHECK((failure != ES_NONE));
 
 
     {
@@ -1010,28 +1094,28 @@ static void testBand32BSI(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
 
-                failure = rt_band_set_pixel(band, x, y, 0);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 0, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 0);
 
-                failure = rt_band_set_pixel(band, x, y, 65535);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 65535, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 65535);
 
-                failure = rt_band_set_pixel(band, x, y, 2147483647);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 2147483647, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 2147483647);
             }
         }
@@ -1042,25 +1126,30 @@ static void testBand32BF(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 65535.5);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 65535.5, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     //printf("set 65535.56 on %s band gets %g back\n", pixtypeName, val);
     CHECK_EQUALS_DOUBLE(val, 65535.5);
 
-    failure = rt_band_set_nodata(band, 0.006);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0.006, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS_DOUBLE(val, 0.0060000000521540); /* XXX: Alternatively, use CHECK_EQUALS_DOUBLE_EX */
 
@@ -1070,28 +1159,28 @@ static void testBand32BF(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
 
-                failure = rt_band_set_pixel(band, x, y, 0);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 0, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 0);
 
-                failure = rt_band_set_pixel(band, x, y, 65535.5);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 65535.5, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS_DOUBLE(val, 65535.5);
 
-                failure = rt_band_set_pixel(band, x, y, 0.006);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 0.006, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS_DOUBLE(val, 0.0060000000521540);
 
             }
@@ -1103,24 +1192,29 @@ static void testBand64BF(rt_band band)
 {
     double val;
     int failure;
+		int clamped;
 
-    failure = rt_band_set_nodata(band, 1);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 1, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 1);
 
-    failure = rt_band_set_nodata(band, 0);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0);
 
-    failure = rt_band_set_nodata(band, 65535.56);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 65535.56, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 65535.56);
 
-    failure = rt_band_set_nodata(band, 0.006);
-    CHECK(!failure);
+    failure = rt_band_set_nodata(band, 0.006, &clamped);
+    CHECK_EQUALS(failure, ES_NONE);
+		CHECK(!clamped);
     rt_band_get_nodata(band, &val);
     CHECK_EQUALS(val, 0.006);
 
@@ -1130,28 +1224,28 @@ static void testBand64BF(rt_band band)
         {
             for (y=0; y<rt_band_get_height(band); ++y)
             {
-                failure = rt_band_set_pixel(band, x, y, 1);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 1, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 1);
 
-                failure = rt_band_set_pixel(band, x, y, 0);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 0, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 0);
 
-                failure = rt_band_set_pixel(band, x, y, 65535.56);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 65535.56, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 65535.56);
 
-                failure = rt_band_set_pixel(band, x, y, 0.006);
-                CHECK(!failure);
+                failure = rt_band_set_pixel(band, x, y, 0.006, NULL);
+    						CHECK_EQUALS(failure, ES_NONE);
                 failure = rt_band_get_pixel(band, x, y, &val, NULL);
-                CHECK(!failure);
+							 	CHECK_EQUALS(failure, ES_NONE);
                 CHECK_EQUALS(val, 0.006);
 
             }
@@ -1195,7 +1289,7 @@ static void testRasterFromBand() {
 	for (x = 0; x < 5; x++) {
 		band = addBand(raster, PT_32BUI, 0, 0);
 		CHECK(band);
-		rt_band_set_nodata(band, 0);
+		rt_band_set_nodata(band, 0, NULL);
 	}
 
 	rast = rt_raster_from_band(raster, bandNums, lenBandNums);
@@ -1239,8 +1333,8 @@ static void testBandStats() {
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, x + y);
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, x + y, NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
@@ -1332,12 +1426,12 @@ static void testBandStats() {
 	assert(raster);
 	band = addBand(raster, PT_8BUI, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, values[(x * ymax) + y]);
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, values[(x * ymax) + y], NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
@@ -1366,12 +1460,12 @@ static void testBandStats() {
 	assert(raster);
 	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
@@ -1453,12 +1547,12 @@ static void testBandReclass() {
 	assert(raster); /* or we're out of virtual memory */
 	band = addBand(raster, PT_16BUI, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	for (x = 0; x < 100; x++) {
 		for (y = 0; y < 10; y++) {
-			rtn = rt_band_set_pixel(band, x, y, x * y + (x + y));
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, x * y + (x + y), NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
@@ -1504,15 +1598,15 @@ static void testBandReclass() {
 	CHECK(newband);
 
 	rtn = rt_band_get_pixel(newband, 0, 0, &val, NULL);
-	CHECK((rtn != -1));
+ 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK_EQUALS(val, 0);
 
 	rtn = rt_band_get_pixel(newband, 49, 5, &val, NULL);
-	CHECK((rtn != -1));
+ 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK_EQUALS(val, 77);
 
 	rtn = rt_band_get_pixel(newband, 99, 9, &val, NULL);
-	CHECK((rtn != -1));
+ 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK_EQUALS(val, 255);
 
 	for (i = cnt - 1; i >= 0; i--) rtdealloc(exprset[i]);
@@ -1559,15 +1653,15 @@ static void testRasterToGDAL() {
 	assert(raster); /* or we're out of virtual memory */
 	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
@@ -1590,15 +1684,15 @@ static void testRasterToGDAL() {
 	assert(raster); /* or we're out of virtual memory */
 	band = addBand(raster, PT_8BSI, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, x);
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, x, NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
@@ -1631,12 +1725,12 @@ static void testValueCount() {
 	assert(raster); /* or we're out of virtual memory */
 	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 	vcnts = rt_band_get_value_count(band, 1, NULL, 0, 0, NULL, &rtn);
@@ -1692,13 +1786,13 @@ static void testGDALToRaster() {
 	assert(raster); /* or we're out of virtual memory */
 	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
 			values[x][y] = (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1);
-			rtn = rt_band_set_pixel(band, x, y, values[x][y]);
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, values[x][y], NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
@@ -1718,7 +1812,7 @@ static void testGDALToRaster() {
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
 			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
-			CHECK((rtn != -1));
+ 			CHECK_EQUALS(rtn, ES_NONE);
 			CHECK(FLT_EQ(value, values[x][y]));
 		}
 	}
@@ -1732,14 +1826,14 @@ static void testGDALToRaster() {
 	assert(raster); /* or we're out of virtual memory */
 	band = addBand(raster, PT_8BSI, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	v = -127;
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
 			values[x][y] = v++;
-			rtn = rt_band_set_pixel(band, x, y, values[x][y]);
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, values[x][y], NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 			if (v == 128)
 				v = -127;
 		}
@@ -1762,7 +1856,7 @@ static void testGDALToRaster() {
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
 			rtn = rt_band_get_pixel(band, x, y, &value, NULL);
-			CHECK((rtn != -1));
+ 			CHECK_EQUALS(rtn, ES_NONE);
 			CHECK(FLT_EQ(value, values[x][y]));
 		}
 	}
@@ -1792,15 +1886,15 @@ static void testGDALWarp() {
 	assert(raster); /* or we're out of virtual memory */
 	band = addBand(raster, PT_64BF, 0, 0);
 	CHECK(band);
-	rt_band_set_nodata(band, 0);
+	rt_band_set_nodata(band, 0, NULL);
 
 	rt_raster_set_offsets(raster, -500000, 600000);
 	rt_raster_set_scale(raster, 1000, -1000);
 
 	for (x = 0; x < xmax; x++) {
 		for (y = 0; y < ymax; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1));
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
@@ -1826,7 +1920,7 @@ static void testGDALWarp() {
 	rt_band_get_nodata(band, &value);
 	CHECK(FLT_EQ(value, 0.));
 
-	CHECK(rt_band_get_pixel(band, 0, 0, &value, NULL) == 0);
+	CHECK_EQUALS(rt_band_get_pixel(band, 0, 0, &value, NULL), ES_NONE);
 	CHECK(FLT_EQ(value, 0.));
 
 	deepRelease(rast);
@@ -1939,11 +2033,11 @@ static void testIntersects() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -1965,11 +2059,11 @@ static void testIntersects() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -1979,7 +2073,7 @@ static void testIntersects() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	rtn = rt_raster_intersects(
@@ -1987,7 +2081,7 @@ static void testIntersects() {
 		rast2, -1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2001,14 +2095,14 @@ static void testIntersects() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2022,15 +2116,15 @@ static void testIntersects() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2044,16 +2138,16 @@ static void testIntersects() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2067,17 +2161,17 @@ static void testIntersects() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2093,17 +2187,17 @@ static void testIntersects() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2120,17 +2214,17 @@ static void testIntersects() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2151,7 +2245,7 @@ static void testIntersects() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -2175,16 +2269,16 @@ static void testIntersects() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -2194,7 +2288,7 @@ static void testIntersects() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2212,22 +2306,22 @@ static void testIntersects() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2243,22 +2337,22 @@ static void testIntersects() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2274,22 +2368,22 @@ static void testIntersects() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2305,22 +2399,22 @@ static void testIntersects() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -2334,23 +2428,23 @@ static void testIntersects() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_intersects(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -2361,7 +2455,7 @@ static void testIntersects() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -2372,7 +2466,7 @@ static void testIntersects() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -2406,11 +2500,11 @@ static void testOverlaps() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -2420,7 +2514,7 @@ static void testOverlaps() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2440,11 +2534,11 @@ static void testOverlaps() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -2454,7 +2548,7 @@ static void testOverlaps() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	rtn = rt_raster_overlaps(
@@ -2462,7 +2556,7 @@ static void testOverlaps() {
 		rast2, -1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2476,14 +2570,14 @@ static void testOverlaps() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2497,15 +2591,15 @@ static void testOverlaps() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2519,16 +2613,16 @@ static void testOverlaps() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2542,17 +2636,17 @@ static void testOverlaps() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2568,17 +2662,17 @@ static void testOverlaps() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2595,17 +2689,17 @@ static void testOverlaps() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2626,7 +2720,7 @@ static void testOverlaps() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -2650,16 +2744,16 @@ static void testOverlaps() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -2669,7 +2763,7 @@ static void testOverlaps() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2687,22 +2781,22 @@ static void testOverlaps() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2718,22 +2812,22 @@ static void testOverlaps() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2749,22 +2843,22 @@ static void testOverlaps() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2780,22 +2874,22 @@ static void testOverlaps() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -2809,23 +2903,23 @@ static void testOverlaps() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_overlaps(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -2836,7 +2930,7 @@ static void testOverlaps() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -2847,7 +2941,7 @@ static void testOverlaps() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -2881,11 +2975,11 @@ static void testTouches() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -2895,7 +2989,7 @@ static void testTouches() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2915,11 +3009,11 @@ static void testTouches() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -2929,7 +3023,7 @@ static void testTouches() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_touches(
@@ -2937,7 +3031,7 @@ static void testTouches() {
 		rast2, -1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2951,14 +3045,14 @@ static void testTouches() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -2972,15 +3066,15 @@ static void testTouches() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -2994,16 +3088,16 @@ static void testTouches() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -3017,17 +3111,17 @@ static void testTouches() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3043,17 +3137,17 @@ static void testTouches() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3069,17 +3163,17 @@ static void testTouches() {
 	*/
 	rt_raster_set_offsets(rast2, 0, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -3095,17 +3189,17 @@ static void testTouches() {
 	*/
 	rt_raster_set_offsets(rast2, -1, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -3122,17 +3216,17 @@ static void testTouches() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3153,7 +3247,7 @@ static void testTouches() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -3177,16 +3271,16 @@ static void testTouches() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -3196,7 +3290,7 @@ static void testTouches() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3214,22 +3308,22 @@ static void testTouches() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3245,22 +3339,22 @@ static void testTouches() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3276,22 +3370,22 @@ static void testTouches() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -3307,22 +3401,22 @@ static void testTouches() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -3336,23 +3430,23 @@ static void testTouches() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_touches(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -3363,7 +3457,7 @@ static void testTouches() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -3374,7 +3468,7 @@ static void testTouches() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -3408,11 +3502,11 @@ static void testContains() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -3422,7 +3516,7 @@ static void testContains() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -3442,11 +3536,11 @@ static void testContains() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -3456,7 +3550,7 @@ static void testContains() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_contains(
@@ -3464,7 +3558,7 @@ static void testContains() {
 		rast2, -1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3478,14 +3572,14 @@ static void testContains() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3499,15 +3593,15 @@ static void testContains() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3521,16 +3615,16 @@ static void testContains() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3544,17 +3638,17 @@ static void testContains() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3570,17 +3664,17 @@ static void testContains() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3596,17 +3690,17 @@ static void testContains() {
 	*/
 	rt_raster_set_offsets(rast2, 0, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3622,17 +3716,17 @@ static void testContains() {
 	*/
 	rt_raster_set_offsets(rast2, -1, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3649,17 +3743,17 @@ static void testContains() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -3680,7 +3774,7 @@ static void testContains() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -3704,16 +3798,16 @@ static void testContains() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -3723,7 +3817,7 @@ static void testContains() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3741,22 +3835,22 @@ static void testContains() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3772,22 +3866,22 @@ static void testContains() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3803,22 +3897,22 @@ static void testContains() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3834,22 +3928,22 @@ static void testContains() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -3863,23 +3957,23 @@ static void testContains() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_contains(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -3890,7 +3984,7 @@ static void testContains() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -3901,7 +3995,7 @@ static void testContains() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -3935,11 +4029,11 @@ static void testContainsProperly() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -3949,7 +4043,7 @@ static void testContainsProperly() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -3969,11 +4063,11 @@ static void testContainsProperly() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -3983,7 +4077,7 @@ static void testContainsProperly() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_contains_properly(
@@ -3991,7 +4085,7 @@ static void testContainsProperly() {
 		rast2, -1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4005,14 +4099,14 @@ static void testContainsProperly() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4026,15 +4120,15 @@ static void testContainsProperly() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4048,16 +4142,16 @@ static void testContainsProperly() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4071,17 +4165,17 @@ static void testContainsProperly() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4097,17 +4191,17 @@ static void testContainsProperly() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4123,17 +4217,17 @@ static void testContainsProperly() {
 	*/
 	rt_raster_set_offsets(rast2, 0, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4149,17 +4243,17 @@ static void testContainsProperly() {
 	*/
 	rt_raster_set_offsets(rast2, -1, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4176,17 +4270,17 @@ static void testContainsProperly() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -4207,7 +4301,7 @@ static void testContainsProperly() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -4231,16 +4325,16 @@ static void testContainsProperly() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -4250,7 +4344,7 @@ static void testContainsProperly() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4268,22 +4362,22 @@ static void testContainsProperly() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4299,22 +4393,22 @@ static void testContainsProperly() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4330,22 +4424,22 @@ static void testContainsProperly() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4361,22 +4455,22 @@ static void testContainsProperly() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -4390,23 +4484,23 @@ static void testContainsProperly() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_contains_properly(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -4417,7 +4511,7 @@ static void testContainsProperly() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -4428,7 +4522,7 @@ static void testContainsProperly() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -4462,11 +4556,11 @@ static void testCovers() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -4476,7 +4570,7 @@ static void testCovers() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -4496,11 +4590,11 @@ static void testCovers() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -4510,7 +4604,7 @@ static void testCovers() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_covers(
@@ -4518,7 +4612,7 @@ static void testCovers() {
 		rast2, -1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4532,14 +4626,14 @@ static void testCovers() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4553,15 +4647,15 @@ static void testCovers() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4575,16 +4669,16 @@ static void testCovers() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4598,17 +4692,17 @@ static void testCovers() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4624,17 +4718,17 @@ static void testCovers() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4650,17 +4744,17 @@ static void testCovers() {
 	*/
 	rt_raster_set_offsets(rast2, 0, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4676,17 +4770,17 @@ static void testCovers() {
 	*/
 	rt_raster_set_offsets(rast2, -1, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4703,17 +4797,17 @@ static void testCovers() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -4734,7 +4828,7 @@ static void testCovers() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -4758,16 +4852,16 @@ static void testCovers() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -4777,7 +4871,7 @@ static void testCovers() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4795,22 +4889,22 @@ static void testCovers() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4826,22 +4920,22 @@ static void testCovers() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4857,22 +4951,22 @@ static void testCovers() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -4888,22 +4982,22 @@ static void testCovers() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -4917,23 +5011,23 @@ static void testCovers() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_covers(
 		rast1, 0,
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -4944,7 +5038,7 @@ static void testCovers() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -4955,7 +5049,7 @@ static void testCovers() {
 		rast2, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -4989,11 +5083,11 @@ static void testCoveredBy() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -5003,7 +5097,7 @@ static void testCoveredBy() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5023,11 +5117,11 @@ static void testCoveredBy() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -5037,7 +5131,7 @@ static void testCoveredBy() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_coveredby(
@@ -5045,7 +5139,7 @@ static void testCoveredBy() {
 		rast1, -1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5059,14 +5153,14 @@ static void testCoveredBy() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5080,15 +5174,15 @@ static void testCoveredBy() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5102,16 +5196,16 @@ static void testCoveredBy() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5125,17 +5219,17 @@ static void testCoveredBy() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5151,17 +5245,17 @@ static void testCoveredBy() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5177,17 +5271,17 @@ static void testCoveredBy() {
 	*/
 	rt_raster_set_offsets(rast2, 0, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5203,17 +5297,17 @@ static void testCoveredBy() {
 	*/
 	rt_raster_set_offsets(rast2, -1, 1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5230,17 +5324,17 @@ static void testCoveredBy() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5261,7 +5355,7 @@ static void testCoveredBy() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -5285,16 +5379,16 @@ static void testCoveredBy() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -5304,7 +5398,7 @@ static void testCoveredBy() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5322,22 +5416,22 @@ static void testCoveredBy() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5353,22 +5447,22 @@ static void testCoveredBy() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5384,22 +5478,22 @@ static void testCoveredBy() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5415,22 +5509,22 @@ static void testCoveredBy() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -5444,23 +5538,23 @@ static void testCoveredBy() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_coveredby(
 		rast2, 0,
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -5471,7 +5565,7 @@ static void testCoveredBy() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -5482,7 +5576,7 @@ static void testCoveredBy() {
 		rast1, 0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -5516,11 +5610,11 @@ static void testDWithin() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -5531,7 +5625,7 @@ static void testDWithin() {
 		0.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	rtn = rt_raster_within_distance(
@@ -5540,7 +5634,7 @@ static void testDWithin() {
 		-1.,
 		&result
 	);
-	CHECK((rtn == 0));
+	CHECK((rtn != ES_NONE));
 
 	/*
 		rast2
@@ -5559,11 +5653,11 @@ static void testDWithin() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -5574,7 +5668,7 @@ static void testDWithin() {
 		0.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	rtn = rt_raster_within_distance(
@@ -5583,7 +5677,7 @@ static void testDWithin() {
 		1.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	rtn = rt_raster_within_distance(
@@ -5592,7 +5686,7 @@ static void testDWithin() {
 		2.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5606,7 +5700,7 @@ static void testDWithin() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5614,7 +5708,7 @@ static void testDWithin() {
 		0.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5628,8 +5722,8 @@ static void testDWithin() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5637,7 +5731,7 @@ static void testDWithin() {
 		0.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5651,9 +5745,9 @@ static void testDWithin() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5661,7 +5755,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5675,10 +5769,10 @@ static void testDWithin() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5686,7 +5780,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -5702,10 +5796,10 @@ static void testDWithin() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5713,7 +5807,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_within_distance(
@@ -5722,7 +5816,7 @@ static void testDWithin() {
 		1.1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5739,10 +5833,10 @@ static void testDWithin() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5750,7 +5844,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5772,7 +5866,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -5796,16 +5890,16 @@ static void testDWithin() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -5816,7 +5910,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5834,15 +5928,15 @@ static void testDWithin() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5850,7 +5944,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5866,15 +5960,15 @@ static void testDWithin() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5882,7 +5976,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5898,15 +5992,15 @@ static void testDWithin() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5914,7 +6008,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5930,15 +6024,15 @@ static void testDWithin() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5946,7 +6040,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -5964,15 +6058,15 @@ static void testDWithin() {
 	*/
 	rt_raster_set_offsets(rast2, -10, -1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -5980,7 +6074,7 @@ static void testDWithin() {
 		5,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_within_distance(
@@ -5989,7 +6083,7 @@ static void testDWithin() {
 		6,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -6003,16 +6097,16 @@ static void testDWithin() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_within_distance(
 		rast1, 0,
@@ -6020,7 +6114,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -6032,7 +6126,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -6044,7 +6138,7 @@ static void testDWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -6078,11 +6172,11 @@ static void testDFullyWithin() {
 
 	band1 = addBand(rast1, PT_8BUI, 1, 0);
 	CHECK(band1);
-	rt_band_set_nodata(band1, 0);
-	rtn = rt_band_set_pixel(band1, 0, 0, 1);
-	rtn = rt_band_set_pixel(band1, 0, 1, 1);
-	rtn = rt_band_set_pixel(band1, 1, 0, 1);
-	rtn = rt_band_set_pixel(band1, 1, 1, 1);
+	rt_band_set_nodata(band1, 0, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band1, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band1, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -6093,7 +6187,7 @@ static void testDFullyWithin() {
 		0.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_fully_within_distance(
@@ -6102,7 +6196,7 @@ static void testDFullyWithin() {
 		-1.,
 		&result
 	);
-	CHECK((rtn == 0));
+	CHECK((rtn != ES_NONE));
 
 	/*
 		rast2
@@ -6121,11 +6215,11 @@ static void testDFullyWithin() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -6136,7 +6230,7 @@ static void testDFullyWithin() {
 		0.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_fully_within_distance(
@@ -6145,7 +6239,7 @@ static void testDFullyWithin() {
 		1.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_fully_within_distance(
@@ -6154,7 +6248,7 @@ static void testDFullyWithin() {
 		5.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -6168,7 +6262,7 @@ static void testDFullyWithin() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6176,7 +6270,7 @@ static void testDFullyWithin() {
 		2.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -6190,8 +6284,8 @@ static void testDFullyWithin() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6199,7 +6293,7 @@ static void testDFullyWithin() {
 		5.,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -6213,9 +6307,9 @@ static void testDFullyWithin() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6223,7 +6317,7 @@ static void testDFullyWithin() {
 		5,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -6237,10 +6331,10 @@ static void testDFullyWithin() {
 						+-+-+
 								(2, 2)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6248,7 +6342,7 @@ static void testDFullyWithin() {
 		10,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -6264,10 +6358,10 @@ static void testDFullyWithin() {
 	*/
 	rt_raster_set_offsets(rast2, 2, 0);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6275,7 +6369,7 @@ static void testDFullyWithin() {
 		0,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_fully_within_distance(
@@ -6284,7 +6378,7 @@ static void testDFullyWithin() {
 		5.9,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -6301,10 +6395,10 @@ static void testDFullyWithin() {
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rt_raster_set_scale(rast2, 0.4, 0.4);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6312,7 +6406,7 @@ static void testDFullyWithin() {
 		3,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -6334,7 +6428,7 @@ static void testDFullyWithin() {
 		2,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	deepRelease(rast2);
@@ -6358,16 +6452,16 @@ static void testDFullyWithin() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rt_band_get_nodata(band2, &nodata);
 	CHECK_EQUALS(nodata, 0);
@@ -6378,7 +6472,7 @@ static void testDFullyWithin() {
 		6,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -6396,15 +6490,15 @@ static void testDFullyWithin() {
 	*/
 	rt_raster_set_offsets(rast2, -2, -2);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6412,7 +6506,7 @@ static void testDFullyWithin() {
 		4.25,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -6428,15 +6522,15 @@ static void testDFullyWithin() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6444,7 +6538,7 @@ static void testDFullyWithin() {
 		3.5,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -6460,15 +6554,15 @@ static void testDFullyWithin() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6476,7 +6570,7 @@ static void testDFullyWithin() {
 		3.65,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/*
@@ -6492,15 +6586,15 @@ static void testDFullyWithin() {
 						+-+-+-+
 									(1, 1)
 	*/
-	rtn = rt_band_set_pixel(band2, 0, 0, 0);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 0);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 0);
-	rtn = rt_band_set_pixel(band2, 1, 2, 0);
-	rtn = rt_band_set_pixel(band2, 2, 0, 0);
-	rtn = rt_band_set_pixel(band2, 2, 1, 0);
-	rtn = rt_band_set_pixel(band2, 2, 2, 0);
+	rtn = rt_band_set_pixel(band2, 0, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 0, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6508,7 +6602,7 @@ static void testDFullyWithin() {
 		3.6,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	/*
@@ -6526,15 +6620,15 @@ static void testDFullyWithin() {
 	*/
 	rt_raster_set_offsets(rast2, -10, -1);
 
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 1);
-	rtn = rt_band_set_pixel(band2, 0, 2, 1);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 1);
-	rtn = rt_band_set_pixel(band2, 1, 2, 1);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 1);
-	rtn = rt_band_set_pixel(band2, 2, 2, 1);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 1, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6542,7 +6636,7 @@ static void testDFullyWithin() {
 		5,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result != 1));
 
 	rtn = rt_raster_fully_within_distance(
@@ -6551,7 +6645,7 @@ static void testDFullyWithin() {
 		11.5,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -6565,16 +6659,16 @@ static void testDFullyWithin() {
 
 	band2 = addBand(rast2, PT_8BUI, 1, 0);
 	CHECK(band2);
-	rt_band_set_nodata(band2, 0);
-	rtn = rt_band_set_pixel(band2, 0, 0, 1);
-	rtn = rt_band_set_pixel(band2, 0, 1, 2);
-	rtn = rt_band_set_pixel(band2, 0, 2, 3);
-	rtn = rt_band_set_pixel(band2, 1, 0, 1);
-	rtn = rt_band_set_pixel(band2, 1, 1, 2);
-	rtn = rt_band_set_pixel(band2, 1, 2, 3);
-	rtn = rt_band_set_pixel(band2, 2, 0, 1);
-	rtn = rt_band_set_pixel(band2, 2, 1, 2);
-	rtn = rt_band_set_pixel(band2, 2, 2, 3);
+	rt_band_set_nodata(band2, 0, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 0, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 1, 2, 3, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 0, 1, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 1, 2, NULL);
+	rtn = rt_band_set_pixel(band2, 2, 2, 3, NULL);
 
 	rtn = rt_raster_fully_within_distance(
 		rast1, 0,
@@ -6582,7 +6676,7 @@ static void testDFullyWithin() {
 		6.1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/* rast2 (skewed by -1, 1) */
@@ -6594,7 +6688,7 @@ static void testDFullyWithin() {
 		7.1,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	/* rast2 (skewed by 1, -1) */
@@ -6606,7 +6700,7 @@ static void testDFullyWithin() {
 		8,
 		&result
 	);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((result == 1));
 
 	deepRelease(rast2);
@@ -6628,34 +6722,34 @@ static void testAlignment() {
 	rt_raster_set_scale(rast2, 1, 1);
 
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned != 0));
 
 	rt_raster_set_scale(rast2, 0.1, 0.1);
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned == 0));
 	rt_raster_set_scale(rast2, 1, 1);
 
 	rt_raster_set_skews(rast2, -0.5, 0.5);
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned == 0));
 	rt_raster_set_skews(rast2, 0, 0);
 
 	rt_raster_set_offsets(rast2, 1, 1);
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned != 0));
 
 	rt_raster_set_offsets(rast2, 2, 3);
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned != 0));
 
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
 	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned == 0));
 
 	deepRelease(rast2);
@@ -6802,7 +6896,7 @@ static void testLoadOfflineBand() {
 	for (x = 0; x < maxX; x++) {
 		for (y = 0; y < maxY; y++) {
 			rtn = rt_band_get_pixel(band, x, y, &val, NULL);
-			CHECK((rtn == 0));
+ 			CHECK_EQUALS(rtn, ES_NONE);
 			CHECK(FLT_EQ(val, 255));
 		}
 	}
@@ -6830,12 +6924,12 @@ static void testCellGeoPoint() {
 	xr = 0;
 	yr = 0;
 	rtn = rt_raster_cell_to_geopoint(raster, xr, yr, &xw, &yw, NULL);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK(FLT_EQ(xw, gt[0]));
 	CHECK(FLT_EQ(yw, gt[3]));
 
 	rtn = rt_raster_geopoint_to_cell(raster, xw, yw, &xr, &yr, NULL);
-	CHECK((rtn != 0));
+	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK(FLT_EQ(xr, 0));
 	CHECK(FLT_EQ(yr, 0));
 
@@ -6864,28 +6958,28 @@ static void testNearestPixel() {
 
 	for (x = 0; x < maxX; x++) {
 		for (y = 0; y < maxY; y++) {
-			rtn = rt_band_set_pixel(band, x, y, 1);
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, 1, NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
-	rt_band_set_pixel(band, 0, 0, 0);
-	rt_band_set_pixel(band, 3, 0, 0);
-	rt_band_set_pixel(band, 6, 0, 0);
-	rt_band_set_pixel(band, 9, 0, 0);
-	rt_band_set_pixel(band, 1, 2, 0);
-	rt_band_set_pixel(band, 4, 2, 0);
-	rt_band_set_pixel(band, 7, 2, 0);
-	rt_band_set_pixel(band, 2, 4, 0);
-	rt_band_set_pixel(band, 5, 4, 0);
-	rt_band_set_pixel(band, 8, 4, 0);
-	rt_band_set_pixel(band, 0, 6, 0);
-	rt_band_set_pixel(band, 3, 6, 0);
-	rt_band_set_pixel(band, 6, 6, 0);
-	rt_band_set_pixel(band, 9, 6, 0);
-	rt_band_set_pixel(band, 1, 8, 0);
-	rt_band_set_pixel(band, 4, 8, 0);
-	rt_band_set_pixel(band, 7, 8, 0);
+	rt_band_set_pixel(band, 0, 0, 0, NULL);
+	rt_band_set_pixel(band, 3, 0, 0, NULL);
+	rt_band_set_pixel(band, 6, 0, 0, NULL);
+	rt_band_set_pixel(band, 9, 0, 0, NULL);
+	rt_band_set_pixel(band, 1, 2, 0, NULL);
+	rt_band_set_pixel(band, 4, 2, 0, NULL);
+	rt_band_set_pixel(band, 7, 2, 0, NULL);
+	rt_band_set_pixel(band, 2, 4, 0, NULL);
+	rt_band_set_pixel(band, 5, 4, 0, NULL);
+	rt_band_set_pixel(band, 8, 4, 0, NULL);
+	rt_band_set_pixel(band, 0, 6, 0, NULL);
+	rt_band_set_pixel(band, 3, 6, 0, NULL);
+	rt_band_set_pixel(band, 6, 6, 0, NULL);
+	rt_band_set_pixel(band, 9, 6, 0, NULL);
+	rt_band_set_pixel(band, 1, 8, 0, NULL);
+	rt_band_set_pixel(band, 4, 8, 0, NULL);
+	rt_band_set_pixel(band, 7, 8, 0, NULL);
 
 	/* 0,0 */
 	rtn = rt_band_get_nearest_pixel(
@@ -7001,7 +7095,8 @@ static void testNearestPixel() {
 		&nodata,
 		&dimx, &dimy
 	);
-	CHECK((rtn != 0));
+	rtdealloc(npixels);
+	CHECK((rtn == ES_NONE));
 	CHECK((dimx == 3));
 	CHECK((dimy == 3));
 
@@ -7013,8 +7108,6 @@ static void testNearestPixel() {
 	rtdealloc(nodata);
 	rtdealloc(value);
 
-	if (rtn)
-		rtdealloc(npixels);
 
 	/* -2,2 distance 1 */
 	rtn = rt_band_get_nearest_pixel(
@@ -7128,28 +7221,28 @@ static void testPixelOfValue() {
 
 	for (x = 0; x < maxX; x++) {
 		for (y = 0; y < maxY; y++) {
-			rtn = rt_band_set_pixel(band, x, y, 1);
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, 1, NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
-	rt_band_set_pixel(band, 0, 0, 0);
-	rt_band_set_pixel(band, 3, 0, 0);
-	rt_band_set_pixel(band, 6, 0, 0);
-	rt_band_set_pixel(band, 9, 0, 0);
-	rt_band_set_pixel(band, 1, 2, 0);
-	rt_band_set_pixel(band, 4, 2, 0);
-	rt_band_set_pixel(band, 7, 2, 0);
-	rt_band_set_pixel(band, 2, 4, 0);
-	rt_band_set_pixel(band, 5, 4, 0);
-	rt_band_set_pixel(band, 8, 4, 0);
-	rt_band_set_pixel(band, 0, 6, 0);
-	rt_band_set_pixel(band, 3, 6, 0);
-	rt_band_set_pixel(band, 6, 6, 0);
-	rt_band_set_pixel(band, 9, 6, 0);
-	rt_band_set_pixel(band, 1, 8, 0);
-	rt_band_set_pixel(band, 4, 8, 0);
-	rt_band_set_pixel(band, 7, 8, 0);
+	rt_band_set_pixel(band, 0, 0, 0, NULL);
+	rt_band_set_pixel(band, 3, 0, 0, NULL);
+	rt_band_set_pixel(band, 6, 0, 0, NULL);
+	rt_band_set_pixel(band, 9, 0, 0, NULL);
+	rt_band_set_pixel(band, 1, 2, 0, NULL);
+	rt_band_set_pixel(band, 4, 2, 0, NULL);
+	rt_band_set_pixel(band, 7, 2, 0, NULL);
+	rt_band_set_pixel(band, 2, 4, 0, NULL);
+	rt_band_set_pixel(band, 5, 4, 0, NULL);
+	rt_band_set_pixel(band, 8, 4, 0, NULL);
+	rt_band_set_pixel(band, 0, 6, 0, NULL);
+	rt_band_set_pixel(band, 3, 6, 0, NULL);
+	rt_band_set_pixel(band, 6, 6, 0, NULL);
+	rt_band_set_pixel(band, 9, 6, 0, NULL);
+	rt_band_set_pixel(band, 1, 8, 0, NULL);
+	rt_band_set_pixel(band, 4, 8, 0, NULL);
+	rt_band_set_pixel(band, 7, 8, 0, NULL);
 
 	pixels = NULL;
 	rtn = rt_band_get_pixel_of_value(
@@ -7171,9 +7264,9 @@ static void testPixelOfValue() {
 	if (rtn)
 		rtdealloc(pixels);
 
-	rt_band_set_pixel(band, 4, 2, 3);
-	rt_band_set_pixel(band, 7, 2, 5);
-	rt_band_set_pixel(band, 1, 8, 3);
+	rt_band_set_pixel(band, 4, 2, 3, NULL);
+	rt_band_set_pixel(band, 7, 2, 5, NULL);
+	rt_band_set_pixel(band, 1, 8, 3, NULL);
 
 	pixels = NULL;
 	rtn = rt_band_get_pixel_of_value(
@@ -7205,28 +7298,28 @@ static void testPixelAsPolygon() {
 
 	for (x = 0; x < maxX; x++) {
 		for (y = 0; y < maxY; y++) {
-			rtn = rt_band_set_pixel(band, x, y, 1);
-			CHECK((rtn != -1));
+			rtn = rt_band_set_pixel(band, x, y, 1, NULL);
+			CHECK_EQUALS(rtn, ES_NONE);
 		}
 	}
 
-	rt_band_set_pixel(band, 0, 0, 0);
-	rt_band_set_pixel(band, 3, 0, 0);
-	rt_band_set_pixel(band, 6, 0, 0);
-	rt_band_set_pixel(band, 9, 0, 0);
-	rt_band_set_pixel(band, 1, 2, 0);
-	rt_band_set_pixel(band, 4, 2, 0);
-	rt_band_set_pixel(band, 7, 2, 0);
-	rt_band_set_pixel(band, 2, 4, 0);
-	rt_band_set_pixel(band, 5, 4, 0);
-	rt_band_set_pixel(band, 8, 4, 0);
-	rt_band_set_pixel(band, 0, 6, 0);
-	rt_band_set_pixel(band, 3, 6, 0);
-	rt_band_set_pixel(band, 6, 6, 0);
-	rt_band_set_pixel(band, 9, 6, 0);
-	rt_band_set_pixel(band, 1, 8, 0);
-	rt_band_set_pixel(band, 4, 8, 0);
-	rt_band_set_pixel(band, 7, 8, 0);
+	rt_band_set_pixel(band, 0, 0, 0, NULL);
+	rt_band_set_pixel(band, 3, 0, 0, NULL);
+	rt_band_set_pixel(band, 6, 0, 0, NULL);
+	rt_band_set_pixel(band, 9, 0, 0, NULL);
+	rt_band_set_pixel(band, 1, 2, 0, NULL);
+	rt_band_set_pixel(band, 4, 2, 0, NULL);
+	rt_band_set_pixel(band, 7, 2, 0, NULL);
+	rt_band_set_pixel(band, 2, 4, 0, NULL);
+	rt_band_set_pixel(band, 5, 4, 0, NULL);
+	rt_band_set_pixel(band, 8, 4, 0, NULL);
+	rt_band_set_pixel(band, 0, 6, 0, NULL);
+	rt_band_set_pixel(band, 3, 6, 0, NULL);
+	rt_band_set_pixel(band, 6, 6, 0, NULL);
+	rt_band_set_pixel(band, 9, 6, 0, NULL);
+	rt_band_set_pixel(band, 1, 8, 0, NULL);
+	rt_band_set_pixel(band, 4, 8, 0, NULL);
+	rt_band_set_pixel(band, 7, 8, 0, NULL);
 
 	poly = rt_raster_pixel_as_polygon(rast, 1, 1);
 	CHECK((poly != NULL));
@@ -7256,7 +7349,7 @@ static void testRasterSurface() {
 
 	for (y = 0; y < maxY; y++) {
 		for (x = 0; x < maxX; x++) {
-			rt_band_set_pixel(band, x, y, 1);
+			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
 
@@ -7270,7 +7363,7 @@ static void testRasterSurface() {
 	mpoly = NULL;
 
 	/* 0,0 NODATA */
-	rt_band_set_pixel(band, 0, 0, 0);
+	rt_band_set_pixel(band, 0, 0, 0, NULL);
 
 	mpoly = rt_raster_surface(rast, 0, &err);
 	CHECK(err);
@@ -7282,7 +7375,7 @@ static void testRasterSurface() {
 	mpoly = NULL;
 
 	/* plus 1,1 NODATA */
-	rt_band_set_pixel(band, 1, 1, 0);
+	rt_band_set_pixel(band, 1, 1, 0, NULL);
 
 	mpoly = rt_raster_surface(rast, 0, &err);
 	CHECK(err);
@@ -7294,7 +7387,7 @@ static void testRasterSurface() {
 	mpoly = NULL;
 
 	/* plus 2,2 NODATA */
-	rt_band_set_pixel(band, 2, 2, 0);
+	rt_band_set_pixel(band, 2, 2, 0, NULL);
 
 	mpoly = rt_raster_surface(rast, 0, &err);
 	CHECK(err);
@@ -7310,7 +7403,7 @@ static void testRasterSurface() {
 	mpoly = NULL;
 
 	/* plus 3,3 NODATA */
-	rt_band_set_pixel(band, 3, 3, 0);
+	rt_band_set_pixel(band, 3, 3, 0, NULL);
 
 	mpoly = rt_raster_surface(rast, 0, &err);
 	CHECK(err);
@@ -7326,7 +7419,7 @@ static void testRasterSurface() {
 	mpoly = NULL;
 
 	/* plus 4,4 NODATA */
-	rt_band_set_pixel(band, 4, 4, 0);
+	rt_band_set_pixel(band, 4, 4, 0, NULL);
 
 	mpoly = rt_raster_surface(rast, 0, &err);
 	CHECK(err);
@@ -7338,10 +7431,10 @@ static void testRasterSurface() {
 	mpoly = NULL;
 
 	/* a whole lot more NODATA */
-	rt_band_set_pixel(band, 4, 0, 0);
-	rt_band_set_pixel(band, 3, 1, 0);
-	rt_band_set_pixel(band, 1, 3, 0);
-	rt_band_set_pixel(band, 0, 4, 0);
+	rt_band_set_pixel(band, 4, 0, 0, NULL);
+	rt_band_set_pixel(band, 3, 1, 0, NULL);
+	rt_band_set_pixel(band, 1, 3, 0, NULL);
+	rt_band_set_pixel(band, 0, 4, 0, NULL);
 
 	mpoly = rt_raster_surface(rast, 0, &err);
 	CHECK(err);
@@ -7851,7 +7944,7 @@ static void testRasterIterator() {
 
 	for (y = 0; y < maxY; y++) {
 		for (x = 0; x < maxX; x++) {
-			rt_band_set_pixel(band, x, y, x + (y * maxX));
+			rt_band_set_pixel(band, x, y, x + (y * maxX), NULL);
 		}
 	}
 
@@ -7866,7 +7959,7 @@ static void testRasterIterator() {
 
 	for (y = 0; y < maxY; y++) {
 		for (x = 0; x < maxX; x++) {
-			rt_band_set_pixel(band, x, y, (x + (y * maxX)) + 100);
+			rt_band_set_pixel(band, x, y, (x + (y * maxX)) + 100, NULL);
 		}
 	}
 
@@ -8179,23 +8272,23 @@ static void testGetPixelLine() {
 
 	for (y = 0; y < maxY; y++) {
 		for (x = 0; x < maxX; x++)
-			rt_band_set_pixel(band, x, y, x + (y * maxX));
+			rt_band_set_pixel(band, x, y, x + (y * maxX), NULL);
 	}
 
 	err = rt_band_get_pixel_line(band, 0, 0, maxX, &vals, &nvals);
-	CHECK((err == 0));
+	CHECK_EQUALS(err, ES_NONE);
 	CHECK((nvals == maxX));
 	CHECK((((int8_t *) vals)[3] == 3));
 	rtdealloc(vals);
 	
 	err = rt_band_get_pixel_line(band, 4, 4, maxX, &vals, &nvals);
-	CHECK((err == 0));
+	CHECK_EQUALS(err, ES_NONE);
 	CHECK((nvals == 1));
 	CHECK((((int8_t *) vals)[0] == 24));
 	rtdealloc(vals);
 
 	err = rt_band_get_pixel_line(band, maxX, maxY, maxX, &vals, &nvals);
-	CHECK((err != 0));
+	CHECK((err != ES_NONE));
 
 	deepRelease(rast);
 }

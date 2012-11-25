@@ -511,6 +511,7 @@ main()
     CHECK_EQUALS(rt_raster_get_height(raster), 2);
     {
 				double val;
+				uint8_t bandnum = 0;
         rt_band band = rt_raster_get_band(raster, 0);
         CHECK(band);
         CHECK_EQUALS(rt_band_get_pixtype(band), PT_16BSI);
@@ -518,10 +519,9 @@ main()
         CHECK(rt_band_get_hasnodata_flag(band));
 				rt_band_get_nodata(band, &val);
         CHECK_EQUALS(val, -1);
-        printf("ext band path: %s\n", rt_band_get_ext_path(band));
-        printf("ext band  num: %u\n", rt_band_get_ext_band_num(band));
         CHECK( ! strcmp(rt_band_get_ext_path(band), "/tmp/t.tif"));
-        CHECK_EQUALS(rt_band_get_ext_band_num(band), 3);
+        CHECK_EQUALS(rt_band_get_ext_band_num(band, &bandnum), ES_NONE);
+        CHECK_EQUALS(bandnum, 3);
     }
 
     out  = rt_raster_to_hexwkb(raster, &len);

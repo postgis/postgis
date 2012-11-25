@@ -1096,63 +1096,69 @@ rt_pixtype_get_min_value(rt_pixtype pixtype) {
  * @param pixtype : the pixel type to clamp the provided values
  * @param val : value to compare to reference value
  * @param refval : reference value to be compared with
+ * @param isequal : non-zero if clamped values are equal, 0 otherwise
  *
- * @return 1 if clamped values are equal, 0 if not equal, -1 if error
+ * @return ES_NONE on success, ES_ERROR on error
  */
-int rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double refval) {
-	int rtn = 0;
+rt_errorstate rt_pixtype_compare_clamped_values(
+	rt_pixtype pixtype,
+	double val, double refval,
+	int *isequal
+) {
+	assert(isequal != NULL);
+	*isequal = 0;
 
 	switch (pixtype) {
 		case PT_1BB:
 			if (rt_util_clamp_to_1BB(val) == rt_util_clamp_to_1BB(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_2BUI:
 			if (rt_util_clamp_to_2BUI(val) == rt_util_clamp_to_2BUI(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_4BUI:
 			if (rt_util_clamp_to_4BUI(val) == rt_util_clamp_to_4BUI(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_8BSI:
 			if (rt_util_clamp_to_8BSI(val) == rt_util_clamp_to_8BSI(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_8BUI:
 			if (rt_util_clamp_to_8BUI(val) == rt_util_clamp_to_8BUI(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_16BSI:
 			if (rt_util_clamp_to_16BSI(val) == rt_util_clamp_to_16BSI(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_16BUI:
 			if (rt_util_clamp_to_16BUI(val) == rt_util_clamp_to_16BUI(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_32BSI:
 			if (rt_util_clamp_to_32BSI(val) == rt_util_clamp_to_32BSI(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_32BUI:
 			if (rt_util_clamp_to_32BUI(val) == rt_util_clamp_to_32BUI(refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_32BF:
 			if (FLT_EQ(rt_util_clamp_to_32F(val), rt_util_clamp_to_32F(refval)))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		case PT_64BF:
 			if (FLT_EQ(val, refval))
-				rtn = 1;
+				*isequal = 1;
 			break;
 		default:
 			rterror("rt_pixtype_compare_clamped_values: Unknown pixeltype %d", pixtype);
-			rtn = -1;
+			return ES_ERROR;
 	}
 
-	return rtn;
+	return ES_NONE;
 }
 
 /*- rt_pixel ----------------------------------------------------------*/
@@ -1175,9 +1181,9 @@ int rt_pixtype_compare_clamped_values(rt_pixtype pixtype, double val, double ref
  * @param dimx : size of value and nodata along the X axis
  * @param dimy : size of value and nodata along the Y axis
  *
- * @return 0 on error, otherwise 1
+ * @return ES_NONE on success, ES_ERROR on error
  */
-int rt_pixel_set_to_array(
+rt_errorstate rt_pixel_set_to_array(
 	rt_pixel npixel, int count,
 	int x, int y,
 	uint16_t distancex, uint16_t distancey,
@@ -1208,7 +1214,7 @@ int rt_pixel_set_to_array(
 
 	if (values == NULL || nodatas == NULL) {
 		rterror("rt_pixel_set_to_array: Unable to allocate memory for 2D array");
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* initialize X axis */
@@ -1236,7 +1242,7 @@ int rt_pixel_set_to_array(
 			rtdealloc(values);
 			rtdealloc(nodatas);
 			
-			return 0;
+			return ES_ERROR;
 		}
 
 		/* set values to 0 */
@@ -1275,7 +1281,7 @@ int rt_pixel_set_to_array(
 	if (dimy != NULL)
 		*dimy = dim[1];
 
-	return 1;
+	return ES_NONE;
 }
 
 /*- rt_band ----------------------------------------------------------*/
@@ -1323,7 +1329,7 @@ rt_band_new_inline(
 	band->offline = 0;
 	band->width = width;
 	band->height = height;
-	band->hasnodata = hasnodata;
+	band->hasnodata = hasnodata ? 1 : 0;
 	band->isnodata = FALSE; /* we don't know what is in data, so must be FALSE */
 	band->nodataval = 0;
 	band->data.mem = data;
@@ -1333,7 +1339,7 @@ rt_band_new_inline(
 	RASTER_DEBUGF(3, "Created rt_band with dimensions %d x %d", band->width, band->height);
 
 	/* properly set nodataval as it may need to be constrained to the data type */
-	if (hasnodata && rt_band_set_nodata(band, nodataval) < 0) {
+	if (hasnodata && rt_band_set_nodata(band, nodataval, NULL) != ES_NONE) {
 		rterror("rt_band_new_inline: Unable to set NODATA value");
 		rtdealloc(band);
 		return NULL;
@@ -1386,14 +1392,14 @@ rt_band_new_offline(
 	band->offline = 1;
 	band->width = width;
 	band->height = height;
-	band->hasnodata = hasnodata;
+	band->hasnodata = hasnodata ? 1 : 0;
 	band->nodataval = 0;
 	band->isnodata = FALSE; /* we don't know if the offline band is NODATA */
 	band->ownsdata = 0;
 	band->raster = NULL;
 
 	/* properly set nodataval as it may need to be constrained to the data type */
-	if (hasnodata && rt_band_set_nodata(band, nodataval) < 0) {
+	if (hasnodata && rt_band_set_nodata(band, nodataval, NULL) != ES_NONE) {
 		rterror("rt_band_new_offline: Unable to set NODATA value");
 		rtdealloc(band);
 		return NULL;
@@ -1474,7 +1480,7 @@ rt_band_is_offline(rt_band band) {
     assert(NULL != band);
 
 
-    return band->offline;
+    return band->offline ? 1 : 0;
 }
 
 /**
@@ -1506,22 +1512,26 @@ rt_band_get_ext_path(rt_band band) {
 
     if (!band->offline) {
         RASTER_DEBUG(3, "rt_band_get_ext_path: Band is not offline");
-        return 0;
+        return NULL;
     }
     return band->data.offline.path;
 }
 
-uint8_t
-rt_band_get_ext_band_num(rt_band band) {
+rt_errorstate
+rt_band_get_ext_band_num(rt_band band, uint8_t *bandnum) {
+	assert(NULL != band);
+	assert(NULL != bandnum);
 
-    assert(NULL != band);
+	*bandnum = 0;
 
+	if (!band->offline) {
+		RASTER_DEBUG(3, "rt_band_get_ext_band_num: Band is not offline");
+		return ES_ERROR;
+	}
 
-    if (!band->offline) {
-        RASTER_DEBUG(3, "rt_band_get_ext_path: Band is not offline");
-        return 0;
-    }
-    return band->data.offline.bandNum;
+	*bandnum = band->data.offline.bandNum;
+
+	return ES_NONE;
 }
 
 /**
@@ -1529,23 +1539,20 @@ rt_band_get_ext_band_num(rt_band band) {
 	*
 	* @param band : the band who's data to get
 	*
-	* @return void pointer to band data
+	* @return pointer to band data or NULL if error
 	*/
 void *
 rt_band_get_data(rt_band band) {
 	assert(NULL != band);
 
 	if (band->offline) {
-		int state = 0;
-
 		if (band->data.offline.mem != NULL)
 			return band->data.offline.mem;
 
-		state = rt_band_load_offline_data(band);
-		if (state == 0)
-			return band->data.offline.mem;
-		else
+		if (rt_band_load_offline_data(band) != ES_NONE)
 			return NULL;
+		else
+			return band->data.offline.mem;
 	}
 	else
 		return band->data.mem;
@@ -1558,9 +1565,9 @@ rt_band_get_data(rt_band band) {
 	*
 	* @param band : the band who's data to get
 	*
-	* @return 0 if success, non-zero if failure
+	* @return ES_NONE if success, ES_ERROR if failure
 	*/
-int
+rt_errorstate
 rt_band_load_offline_data(rt_band band) {
 	GDALDatasetH hdsSrc = NULL;
 	int nband = 0;
@@ -1578,18 +1585,18 @@ rt_band_load_offline_data(rt_band band) {
 
 	if (!band->offline) {
 		rterror("rt_band_load_offline_data: Band is not offline");
-		return 1;
+		return ES_ERROR;
 	}
 	else if (!strlen(band->data.offline.path)) {
 		rterror("rt_band_load_offline_data: Offline band does not a have a specified file");
-		return 1;
+		return ES_ERROR;
 	}
 
 	rt_util_gdal_register_all();
 	hdsSrc = GDALOpenShared(band->data.offline.path, GA_ReadOnly);
 	if (hdsSrc == NULL) {
 		rterror("rt_band_load_offline_data: Cannot open offline raster: %s", band->data.offline.path);
-		return 1;
+		return ES_ERROR;
 	}
 
 	/* # of bands */
@@ -1597,13 +1604,13 @@ rt_band_load_offline_data(rt_band band) {
 	if (!nband) {
 		rterror("rt_band_load_offline_data: No bands found in offline raster: %s", band->data.offline.path);
 		GDALClose(hdsSrc);
-		return 1;
+		return ES_ERROR;
 	}
 	/* bandNum is 0-based */
 	else if (band->data.offline.bandNum + 1 > nband) {
 		rterror("rt_band_load_offline_data: Specified band %d not found in offline raster: %s", band->data.offline.bandNum, band->data.offline.path);
 		GDALClose(hdsSrc);
-		return 1;
+		return ES_ERROR;
 	}
 
 	/* get raster's geotransform */
@@ -1662,14 +1669,14 @@ rt_band_load_offline_data(rt_band band) {
 
 	if (_rast == NULL) {
 		rterror("rt_band_load_offline_data: Cannot load data from offline raster: %s", band->data.offline.path);
-		return 1;
+		return ES_ERROR;
 	}
 
 	_band = rt_raster_get_band(_rast, 0);
 	if (_band == NULL) {
 		rterror("rt_band_load_offline_data: Cannot load data from offline raster: %s", band->data.offline.path);
 		rt_raster_destroy(_rast);
-		return 1;
+		return ES_ERROR;
 	}
 
 	/* band->data.offline.mem not NULL, free first */
@@ -1683,7 +1690,7 @@ rt_band_load_offline_data(rt_band band) {
 	rtdealloc(_band); /* cannot use rt_band_destroy */
 	rt_raster_destroy(_rast);
 
-	return 0;
+	return ES_NONE;
 }
 
 rt_pixtype
@@ -1718,7 +1725,7 @@ int
 rt_band_get_ownsdata_flag(rt_band band) {
 	assert(NULL != band);
 
-	return (int) band->ownsdata;
+	return band->ownsdata ? 1 : 0;
 }
 
 /* set ownsdata flag */
@@ -1726,7 +1733,7 @@ void
 rt_band_set_ownsdata_flag(rt_band band, int flag) {
 	assert(NULL != band);
 
-	band->ownsdata = (int8_t) flag;
+	band->ownsdata = flag ? 1 : 0;
 }
 
 #ifdef OPTIMIZE_SPACE
@@ -1789,11 +1796,9 @@ setBits(char* ch, double val, int bits, int bitOffset) {
 
 int
 rt_band_get_hasnodata_flag(rt_band band) {
+	assert(NULL != band);
 
-    assert(NULL != band);
-
-
-    return band->hasnodata;
+	return band->hasnodata ? 1 : 0;
 }
 
 void
@@ -1810,7 +1815,7 @@ rt_band_set_hasnodata_flag(rt_band band, int flag) {
 		}
 }
 
-void
+rt_errorstate
 rt_band_set_isnodata_flag(rt_band band, int flag) {
 	assert(NULL != band);
 
@@ -1818,11 +1823,15 @@ rt_band_set_isnodata_flag(rt_band band, int flag) {
 		/* silently permit setting isnodata flag to FALSE */
 		if (!flag)
 			band->isnodata = 0;
-		else
+		else {
 			rterror("rt_band_set_isnodata_flag: Cannot set isnodata flag as band has no NODATA");
+			return ES_ERROR;
+		}
 	}
 	else 
 		band->isnodata = (flag) ? 1 : 0;
+
+	return ES_NONE;
 }
 
 int
@@ -1830,7 +1839,7 @@ rt_band_get_isnodata_flag(rt_band band) {
 	assert(NULL != band);
 
 	if (band->hasnodata)
-		return band->isnodata;
+		return band->isnodata ? 1 : 0;
 	else
 		return 0;
 }
@@ -1840,136 +1849,109 @@ rt_band_get_isnodata_flag(rt_band band) {
  *
  * @param band : the band to set nodata value to
  * @param val : the nodata value
+ * @param converted : if non-zero, value was truncated/clamped/coverted
  *
- * @return 0 on success, -1 on error (invalid pixel type),
- *   1 on truncation/clamping/converting.
+ * @return ES_NONE or ES_ERROR
  */
-int
-rt_band_set_nodata(rt_band band, double val) {
-    rt_pixtype pixtype = PT_END;
-    /*
-		double oldnodataval = band->nodataval;
-		*/
+rt_errorstate
+rt_band_set_nodata(rt_band band, double val, int *converted) {
+	rt_pixtype pixtype = PT_END;
+	int32_t checkvalint = 0;
+	uint32_t checkvaluint = 0;
+	float checkvalfloat = 0;
+	double checkvaldouble = 0;
 
-    int32_t checkvalint = 0;
-    uint32_t checkvaluint = 0;
-    float checkvalfloat = 0;
-    double checkvaldouble = 0;
+	assert(NULL != band);
 
+	if (converted != NULL)
+		*converted = 0;
 
+	pixtype = band->pixtype;
 
-    assert(NULL != band);
+	RASTER_DEBUGF(3, "rt_band_set_nodata: setting nodata value %g with band type %s", val, rt_pixtype_name(pixtype));
 
-    pixtype = band->pixtype;
-
-    RASTER_DEBUGF(3, "rt_band_set_nodata: setting nodata value %g with band type %s", val, rt_pixtype_name(pixtype));
-
-    /* return -1 on out of range */
-    switch (pixtype) {
-        case PT_1BB:
-        {
-            band->nodataval = rt_util_clamp_to_1BB(val);
-            checkvalint = band->nodataval;
-            break;
-        }
-        case PT_2BUI:
-        {
-            band->nodataval = rt_util_clamp_to_2BUI(val);
-            checkvalint = band->nodataval;
-            break;
-        }
-        case PT_4BUI:
-        {
-            band->nodataval = rt_util_clamp_to_4BUI(val);
-            checkvalint = band->nodataval;
-            break;
-        }
-        case PT_8BSI:
-        {
-            band->nodataval = rt_util_clamp_to_8BSI(val);
-            checkvalint = band->nodataval;
-            break;
-        }
-        case PT_8BUI:
-        {
-            band->nodataval = rt_util_clamp_to_8BUI(val);
-            checkvalint = band->nodataval;
-            break;
-        }
-        case PT_16BSI:
-        {
-            band->nodataval = rt_util_clamp_to_16BSI(val);
-            checkvalint = band->nodataval;
-            break;
-        }
-        case PT_16BUI:
-        {
-            band->nodataval = rt_util_clamp_to_16BUI(val);
-            checkvalint = band->nodataval;
-            break;
-        }
-        case PT_32BSI:
-        {
-            band->nodataval = rt_util_clamp_to_32BSI(val);
-            checkvalint = band->nodataval;
-            break;
-        }
-        case PT_32BUI:
-        {
-            band->nodataval = rt_util_clamp_to_32BUI(val);
-            checkvaluint = band->nodataval;
-            break;
-        }
-        case PT_32BF:
-        {
-            band->nodataval = rt_util_clamp_to_32F(val);
-            checkvalfloat = band->nodataval;
-            break;
-        }
-        case PT_64BF:
-        {
-            band->nodataval = val;
-            checkvaldouble = band->nodataval;
-            break;
-        }
-        default:
-            {
-            rterror("rt_band_set_nodata: Unknown pixeltype %d", pixtype);
-            band->hasnodata = 0;
-            return -1;
-        }
-    }
-
-    RASTER_DEBUGF(3, "rt_band_set_nodata: band->hasnodata = %d", band->hasnodata);
-    RASTER_DEBUGF(3, "rt_band_set_nodata: band->nodataval = %f", band->nodataval);
-
-
-    /* the nodata value was just set, so this band has NODATA */
-		band->hasnodata = 1;
-
-		/* also set isnodata flag to false */
-		band->isnodata = 0;
-
-    /* If the nodata value is different from the previous one, we need to check
-     * again if the band is a nodata band
-     * TODO: NO, THAT'S TOO SLOW!!!
-     */
-
-    /*
-    if (FLT_NEQ(band->nodataval, oldnodataval))
-        rt_band_check_is_nodata(band);
-    */
-
-    if (rt_util_dbl_trunc_warning(
-			val,
-			checkvalint, checkvaluint,
-			checkvalfloat, checkvaldouble,
-			pixtype
-		)) {
-        return 1;
+	/* return -1 on out of range */
+	switch (pixtype) {
+		case PT_1BB: {
+			band->nodataval = rt_util_clamp_to_1BB(val);
+			checkvalint = band->nodataval;
+			break;
 		}
+		case PT_2BUI: {
+			band->nodataval = rt_util_clamp_to_2BUI(val);
+			checkvalint = band->nodataval;
+			break;
+		}
+		case PT_4BUI: {
+			band->nodataval = rt_util_clamp_to_4BUI(val);
+			checkvalint = band->nodataval;
+			break;
+		}
+		case PT_8BSI: {
+			band->nodataval = rt_util_clamp_to_8BSI(val);
+			checkvalint = band->nodataval;
+			break;
+		}
+		case PT_8BUI: {
+			band->nodataval = rt_util_clamp_to_8BUI(val);
+			checkvalint = band->nodataval;
+			break;
+		}
+		case PT_16BSI: {
+			band->nodataval = rt_util_clamp_to_16BSI(val);
+			checkvalint = band->nodataval;
+			break;
+		}
+		case PT_16BUI: {
+			band->nodataval = rt_util_clamp_to_16BUI(val);
+			checkvalint = band->nodataval;
+			break;
+		}
+		case PT_32BSI: {
+			band->nodataval = rt_util_clamp_to_32BSI(val);
+			checkvalint = band->nodataval;
+			break;
+		}
+		case PT_32BUI: {
+			band->nodataval = rt_util_clamp_to_32BUI(val);
+			checkvaluint = band->nodataval;
+			break;
+		}
+		case PT_32BF: {
+			band->nodataval = rt_util_clamp_to_32F(val);
+			checkvalfloat = band->nodataval;
+			break;
+		}
+		case PT_64BF: {
+			band->nodataval = val;
+			checkvaldouble = band->nodataval;
+			break;
+		}
+		default: {
+			rterror("rt_band_set_nodata: Unknown pixeltype %d", pixtype);
+			band->hasnodata = 0;
+			return ES_ERROR;
+		}
+	}
 
-    return 0;
+	RASTER_DEBUGF(3, "rt_band_set_nodata: band->hasnodata = %d", band->hasnodata);
+	RASTER_DEBUGF(3, "rt_band_set_nodata: band->nodataval = %f", band->nodataval); 
+	/* the nodata value was just set, so this band has NODATA */
+	band->hasnodata = 1;
+
+	/* also set isnodata flag to false */
+	band->isnodata = 0; 
+
+	if (rt_util_dbl_trunc_warning(
+		val,
+		checkvalint, checkvaluint,
+		checkvalfloat, checkvaldouble,
+		pixtype
+	) && converted != NULL) {
+		*converted = 1;
+	}
+
+	return ES_NONE;
 }
 
 /**
@@ -1989,9 +1971,9 @@ rt_band_set_nodata(rt_band band, double val) {
  * @param vals : the pixel values to apply
  * @param len : # of elements in vals
  *
- * @return 1 on success, 0 on error
+ * @return ES_NONE on success, ES_ERROR on error
  */
-int
+rt_errorstate
 rt_band_set_pixel_line(
 	rt_band band,
 	int x, int y,
@@ -2006,7 +1988,7 @@ rt_band_set_pixel_line(
 
 	if (band->offline) {
 		rterror("rt_band_set_pixel_line not implemented yet for OFFDB bands");
-		return 0;
+		return ES_ERROR;
 	}
 
 	pixtype = band->pixtype;
@@ -2017,7 +1999,7 @@ rt_band_set_pixel_line(
 		y < 0 || y >= band->height
 	) {
 		rterror("rt_band_set_pixel_line: Coordinates out of range (%d, %d) vs (%d, %d)", x, y, band->width, band->height);
-		return 0;
+		return ES_ERROR;
 	}
 
 	data = rt_band_get_data(band);
@@ -2027,7 +2009,7 @@ rt_band_set_pixel_line(
 	/* make sure len of values to copy don't exceed end of data */
 	if (len > (band->width * band->height) - offset) {
 		rterror("rt_band_set_pixel_line: Unable to apply pixels as values length exceeds end of data");
-		return 0;
+		return ES_ERROR;
 	}
 
 	switch (pixtype) {
@@ -2079,7 +2061,7 @@ rt_band_set_pixel_line(
 		}
 		default: {
 			rterror("rt_band_set_pixel_line: Unknown pixeltype %d", pixtype);
-			return 0;
+			return ES_ERROR;
 		}
 	}
 
@@ -2095,7 +2077,7 @@ rt_band_set_pixel_line(
 	if (rt_band_get_hasnodata_flag(band))
 		rt_band_set_isnodata_flag(band, 0);
 
-	return 1;
+	return ES_NONE;
 }
 
 /**
@@ -2105,20 +2087,20 @@ rt_band_set_pixel_line(
  * @param x : x ordinate (0-based)
  * @param y : y ordinate (0-based)
  * @param val : the pixel value
+ * @param converted : (optional) non-zero if value truncated/clamped/converted
  *
- * @return 0 on success, -1 on error (value out of valid range),
- *   1 on truncation/clamping/converting.
+ * @return ES_NONE on success, ES_ERROR on error
  */
-int
+rt_errorstate
 rt_band_set_pixel(
 	rt_band band,
 	int x, int y,
-	double val
+	double val,
+	int *converted
 ) {
 	rt_pixtype pixtype = PT_END;
 	unsigned char* data = NULL;
 	uint32_t offset = 0;
-	int rtn = 0;
 
 	int32_t checkvalint = 0;
 	uint32_t checkvaluint = 0;
@@ -2127,9 +2109,12 @@ rt_band_set_pixel(
 
 	assert(NULL != band);
 
+	if (converted != NULL)
+		*converted = 0;
+
 	if (band->offline) {
 		rterror("rt_band_set_pixel not implemented yet for OFFDB bands");
-		return -1;
+		return ES_ERROR;
 	}
 
 	pixtype = band->pixtype;
@@ -2139,18 +2124,24 @@ rt_band_set_pixel(
 		y < 0 || y >= band->height
 	) {
 		rterror("rt_band_set_pixel: Coordinates out of range");
-		return -1;
+		return ES_ERROR;
 	}
 
 	/* check that clamped value isn't clamped NODATA */
 	if (band->hasnodata && pixtype != PT_64BF) {
 		double newval;
-		if (rt_band_corrected_clamped_value(band, val, &newval) == 1) {
+		int corrected;
+
+		rt_band_corrected_clamped_value(band, val, &newval, &corrected);
+
+		if (corrected) {
 #if POSTGIS_RASTER_WARN_ON_TRUNCATION > 0
 			rtwarn("Value for pixel %d x %d has been corrected as clamped value becomes NODATA", x, y);
 #endif
 			val = newval;
-			rtn = 1;
+
+			if (converted != NULL)
+				*converted = 1;
 		}
 	}
 
@@ -2221,28 +2212,15 @@ rt_band_set_pixel(
 		}
 		default: {
 			rterror("rt_band_set_pixel: Unknown pixeltype %d", pixtype);
-			return -1;
+			return ES_ERROR;
 		}
 	}
 
 	/* If the stored value is not NODATA, reset the isnodata flag */
-	if (
-		FLT_NEQ(val, band->nodataval) ||
-		rt_band_clamped_value_is_nodata(band, val) != 1
-	) {
+	if (!rt_band_clamped_value_is_nodata(band, val)) {
 		RASTER_DEBUG(3, "Band has a value that is not NODATA. Setting isnodata to FALSE");
 		band->isnodata = FALSE;
 	}
-
-	/*
-	 * If the pixel was a nodata value, now the band may be NODATA band)
-	 * TODO: NO, THAT'S TOO SLOW!!!
-	 */
-	/*
-	else {
-		rt_band_check_is_nodata(band);
-	}
-	*/
 
 	/* Overflow checking */
 	if (rt_util_dbl_trunc_warning(
@@ -2250,11 +2228,11 @@ rt_band_set_pixel(
 		checkvalint, checkvaluint,
 		checkvalfloat, checkvaldouble,
 		pixtype
-	)) {
-		return 1;
+	) && converted != NULL) {
+		*converted = 1;
 	}
 
-	return rtn;
+	return ES_NONE;
 }
 
 /**
@@ -2272,12 +2250,12 @@ rt_band_set_pixel(
  * @param x : pixel column (0-based)
  * @param y : pixel row (0-based)
  * @param len : the number of pixels to get
- * @param vals : the pixel values
+ * @param **vals : the pixel values
  * @param *nvals : the number of pixel values being returned
  *
- * @return 0 on success, -1 on error
+ * @return ES_NONE on success, ES_ERROR on error
  */
-int rt_band_get_pixel_line(
+rt_errorstate rt_band_get_pixel_line(
 	rt_band band,
 	int x, int y,
 	uint16_t len,
@@ -2302,16 +2280,16 @@ int rt_band_get_pixel_line(
 		y < 0 || y >= band->height
 	) {
 		rtwarn("Attempting to get pixel values with out of range raster coordinates: (%d, %d)", x, y);
-		return -1;
+		return ES_ERROR;
 	}
 
 	if (len < 1)
-		return 0;
+		return ES_NONE;
 
 	data = rt_band_get_data(band);
 	if (data == NULL) {
 		rterror("rt_band_get_pixel_line: Cannot get band data");
-		return -1;
+		return ES_ERROR;
 	}
 
 	/* +1 for the nodata value */
@@ -2337,7 +2315,7 @@ int rt_band_get_pixel_line(
 	_vals = rtalloc(_nvals * pixsize);
 	if (_vals == NULL) {
 		rterror("rt_band_get_pixel_line: Unable to allocate memory for pixel values");
-		return -1;
+		return ES_ERROR;
 	}
 
 	/* copy pixels */
@@ -2346,7 +2324,7 @@ int rt_band_get_pixel_line(
 	*vals = _vals;
 	*nvals = _nvals;
 
-	return 0;
+	return ES_NONE;
 }
 
 /**
@@ -2361,7 +2339,7 @@ int rt_band_get_pixel_line(
  *
  * @return 0 on success, -1 on error (value out of valid range).
  */
-int
+rt_errorstate
 rt_band_get_pixel(
 	rt_band band,
 	int x, int y,
@@ -2383,7 +2361,7 @@ rt_band_get_pixel(
 		y < 0 || y >= band->height
 	) {
 		rtwarn("Attempting to get pixel value with out of range raster coordinates: (%d, %d)", x, y);
-		return -1;
+		return ES_ERROR;
 	}
 
 	/* band is NODATA */
@@ -2391,13 +2369,13 @@ rt_band_get_pixel(
 		RASTER_DEBUG(3, "Band's isnodata flag is TRUE. Returning NODATA value");
 		*value = band->nodataval;
 		if (nodata != NULL) *nodata = 1;
-		return 0;
+		return ES_NONE;
 	}
 
 	data = rt_band_get_data(band);
 	if (data == NULL) {
 		rterror("rt_band_get_pixel: Cannot get band data");
-		return -1;
+		return ES_ERROR;
 	}
 
 	/* +1 for the nodata value */
@@ -2484,21 +2462,17 @@ rt_band_get_pixel(
 		}
 		default: {
 			rterror("rt_band_get_pixel: Unknown pixeltype %d", pixtype);
-			return -1;
+			return ES_ERROR;
 		}
 	}
 
 	/* set NODATA flag */
 	if (band->hasnodata && nodata != NULL) {
-		if (
-			FLT_EQ(*value, band->nodataval) ||
-			rt_band_clamped_value_is_nodata(band, *value) == 1
-		) {
+		if (rt_band_clamped_value_is_nodata(band, *value))
 			*nodata = 1;
-		}
 	}
 
-	return 0;
+	return ES_NONE;
 }
 
 /**
@@ -2808,6 +2782,7 @@ rt_band_get_pixel_of_value(
 	int err;
 	int count = 0;
 	int isnodata = 0;
+	int isequal = 0;
 
 	rt_pixel pixel = NULL;
 
@@ -2833,12 +2808,12 @@ rt_band_get_pixel_of_value(
 				continue;
 
 			for (i = 0; i < searchcount; i++) {
-				if (
-					FLT_NEQ(pixval, searchset[i]) ||
-					(rt_pixtype_compare_clamped_values(band->pixtype, searchset[i], pixval) != 1)
-				) {
+				if (rt_pixtype_compare_clamped_values(band->pixtype, searchset[i], pixval, &isequal) != ES_NONE) {
 					continue;
 				}
+
+				if (FLT_NEQ(pixval, searchset[i]) || !isequal)
+					continue;
 
 				/* match found */
 				count++;
@@ -2869,9 +2844,9 @@ rt_band_get_pixel_of_value(
  * @param band : the band whose NODATA value will be returned
  * @param nodata : the band's NODATA value
  *
- * @return 0 if error, 1 otherwise
+ * @return ES_NONE or ES_ERROR
  */
-int
+rt_errorstate
 rt_band_get_nodata(rt_band band, double *nodata) { 
 	assert(NULL != band);
 
@@ -2879,10 +2854,10 @@ rt_band_get_nodata(rt_band band, double *nodata) {
 
 	if (!band->hasnodata) {
 		rterror("rt_band_get_nodata: Band has no NODATA value");
-		return 0;
+		return ES_ERROR;
 	}
 
-	return 1;
+	return ES_NONE;
 }
 
 double
@@ -2929,35 +2904,37 @@ rt_band_check_is_nodata(rt_band band) {
 }
 
 /**
- * Compare clamped value to band's clamped NODATA value.  If unclamped
- * value is exactly unclamped NODATA value, function returns -1.
+ * Compare clamped value to band's clamped NODATA value.
  *
  * @param band : the band whose NODATA value will be used for comparison
  * @param val : the value to compare to the NODATA value
  *
- * @return 1 if clamped value is clamped NODATA
+ * @return 2 if unclamped value is unclamped NODATA
+ *         1 if clamped value is clamped NODATA
  *         0 if clamped value is NOT clamped NODATA
- *         -1 otherwise
  */
 int
 rt_band_clamped_value_is_nodata(rt_band band, double val) {
+	int isequal = 0;
 
 	assert(NULL != band);
 
-	/* no NODATA, so no need to test */
+	/* no NODATA, so never equal */
 	if (!band->hasnodata)
-		return -1;
+		return 0;
 
 	/* value is exactly NODATA */
-	if (FLT_EQ(val, band->nodataval)) {
-		return -1;
-	}
+	if (FLT_EQ(val, band->nodataval))
+		return 2;
 
-	return rt_pixtype_compare_clamped_values(
+	/* ignore error from rt_pixtype_compare_clamped_values */
+	rt_pixtype_compare_clamped_values(
 		band->pixtype,
-		val,
-		band->nodataval
+		val, band->nodataval,
+		&isequal
 	);
+
+	return isequal ? 1 : 0;
 }
 
 /**
@@ -2967,20 +2944,29 @@ rt_band_clamped_value_is_nodata(rt_band band, double val) {
  * 
  * @param band : the band whose NODATA value will be used for comparison
  * @param val : the value to compare to the NODATA value and correct
- * @param newval : pointer to corrected value
+ * @param *newval : pointer to corrected value
+ * @param *corrected : (optional) non-zero if val was corrected
  *
- * @return 0 on error, 1 if corrected, -1 otherwise
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int
-rt_band_corrected_clamped_value(rt_band band, double val, double *newval) {
+rt_errorstate
+rt_band_corrected_clamped_value(
+	rt_band band,
+	double val,
+	double *newval, int *corrected
+) {
 	double minval = 0.;
 
 	assert(NULL != band);
+	assert(NULL != newval);
 
-	/* check that value needs correcting */
+	if (corrected != NULL)
+		*corrected = 0;
+
+	/* no need to correct if clamped values IS NOT clamped NODATA */
 	if (rt_band_clamped_value_is_nodata(band, val) != 1) {
 		*newval = val;
-		return -1;
+		return ES_NONE;
 	}
 
 	minval = rt_pixtype_get_min_value(band->pixtype);
@@ -3047,11 +3033,14 @@ rt_band_corrected_clamped_value(rt_band band, double val, double *newval) {
 		case PT_64BF:
 			break;
 		default:
-			rterror("rt_band_alternative_clamped_value: Unknown pixeltype %d", band->pixtype);
-			return 0;
+			rterror("rt_band_corrected_clamped_value: Unknown pixeltype %d", band->pixtype);
+			return ES_ERROR;
 	}
 
-	return 1;
+	if (corrected != NULL)
+		*corrected = 1;
+
+	return ES_NONE;
 }
 
 /**
@@ -3065,7 +3054,7 @@ rt_band_corrected_clamped_value(rt_band band, double val, double *newval) {
  * @param cM : M component of 1-pass stddev for coverage
  * @param cQ : Q component of 1-pass stddev for coverage
  *
- * @return the summary statistics for a band
+ * @return the summary statistics for a band or NULL
  */
 rt_bandstats
 rt_band_get_summary_stats(
@@ -3368,7 +3357,7 @@ rt_band_get_summary_stats(
  *   if min = max, min and max are not used
  * @param rtn_count : set to the number of bins being returned
  *
- * @return the histogram of the data
+ * @return the histogram of the data or NULL
  */
 rt_histogram
 rt_band_get_histogram(
@@ -3625,7 +3614,7 @@ rt_band_get_histogram(
  * @param quantiles_count : the number of quantiles to be computed
  * @param rtn_count : set to the number of quantiles being returned
  *
- * @return the default set of or requested quantiles for a band
+ * @return the default set of or requested quantiles for a band or NULL
  */
 rt_quantile
 rt_band_get_quantiles(
@@ -3957,7 +3946,7 @@ static void quantile_llist_index_reset(struct quantile_llist *qll) {
  * @param quantiles_count : the number of quantiles to be computed
  * @param rtn_count : the number of quantiles being returned
  *
- * @return the default set of or requested quantiles for a band
+ * @return the default set of or requested quantiles for a band or NULL
  */
 rt_quantile
 rt_band_get_quantiles_stream(
@@ -4550,7 +4539,7 @@ rt_band_get_quantiles_stream(
  * @param rtn_total : the number of pixels examined in the band
  * @param rtn_count : the number of value counts being returned
  *
- * @return the number of times the provide value(s) occur
+ * @return the number of times the provide value(s) occur or NULL
  */
 rt_valuecount
 rt_band_get_value_count(
@@ -4807,7 +4796,7 @@ rt_band_get_value_count(
  * @param exprset : array of rt_reclassexpr structs
  * @param exprcount : number of elements in expr
  *
- * @return a new rt_band or 0 on error
+ * @return a new rt_band or NULL on error
  */
 rt_band
 rt_band_reclass(
@@ -5123,7 +5112,7 @@ rt_band_reclass(
 				, (NULL != expr) ? expr->dst.max : 0
 				, nv
 			);
-			if (rt_band_set_pixel(band, x, y, nv) < 0) {
+			if (rt_band_set_pixel(band, x, y, nv, NULL) != ES_NONE) {
 				rterror("rt_band_reclass: Could not assign value to new band");
 				rt_band_destroy(band);
 				rtdealloc(mem);
@@ -5139,6 +5128,17 @@ rt_band_reclass(
 
 /*- rt_raster --------------------------------------------------------*/
 
+/**
+ * Construct a raster with given dimensions.
+ *
+ * Transform will be set to identity.
+ * Will contain no bands.
+ *
+ * @param width : number of pixel columns
+ * @param height : number of pixel rows
+ *
+ * @return an rt_raster or NULL if out of memory
+ */
 rt_raster
 rt_raster_new(uint32_t width, uint32_t height) {
 	rt_raster ret = NULL;
@@ -5455,7 +5455,7 @@ rt_raster_get_band(rt_raster raster, int n) {
  *
  * @return identifier (position) for the just-added raster, or -1 on error
  */
-int32_t
+int
 rt_raster_add_band(rt_raster raster, rt_band band, int index) {
     rt_band *oldbands = NULL;
     rt_band oldband = NULL;
@@ -5532,7 +5532,7 @@ rt_raster_add_band(rt_raster raster, rt_band band, int index) {
  *
  * @return identifier (position) for the just-added raster, or -1 on error
  */
-int32_t
+int
 rt_raster_generate_new_band(
 	rt_raster raster, rt_pixtype pixtype,
 	double initialvalue, uint32_t hasnodata, double nodatavalue,
@@ -5722,10 +5722,12 @@ rt_raster_generate_new_band(
  * @param gt : optional input parameter, 6-element geotransform matrix
  * @param igt : output parameter, 6-element inverse geotransform matrix
  *
- * @return if zero, error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_get_inverse_geotransform_matrix(rt_raster raster,
-	double *gt, double *igt) {
+rt_errorstate rt_raster_get_inverse_geotransform_matrix(
+	rt_raster raster,
+	double *gt, double *igt
+) {
 	double _gt[6] = {0};
 
 	assert((raster != NULL || gt != NULL));
@@ -5738,10 +5740,10 @@ int rt_raster_get_inverse_geotransform_matrix(rt_raster raster,
 	
 	if (!GDALInvGeoTransform(_gt, igt)) {
 		rterror("rt_raster_get_inverse_geotransform_matrix: Unable to compute inverse geotransform matrix");
-		return 0;
+		return ES_ERROR;
 	}
 
-	return 1;
+	return ES_NONE;
 }
 
 /**
@@ -5796,10 +5798,11 @@ rt_raster_set_geotransform_matrix(rt_raster raster,
  * @param yw : output parameter, Y ordinate of the geographical point
  * @param gt : input/output parameter, 3x2 geotransform matrix
  *
- * @return if zero, error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error 
  */
-int
-rt_raster_cell_to_geopoint(rt_raster raster,
+rt_errorstate
+rt_raster_cell_to_geopoint(
+	rt_raster raster,
 	double xr, double yr,
 	double *xw, double *yw,
 	double *gt
@@ -5834,7 +5837,7 @@ rt_raster_cell_to_geopoint(rt_raster raster,
 	RASTER_DEBUGF(4, "GDALApplyGeoTransform (c -> g) for (%f, %f) = (%f, %f)",
 		xr, yr, *xw, *yw);
 
-	return 1;
+	return ES_NONE;
 }
 
 /**
@@ -5847,10 +5850,11 @@ rt_raster_cell_to_geopoint(rt_raster raster,
  * @param yr : output parameter, the pixel's row
  * @param igt : input/output parameter, inverse geotransform matrix
  *
- * @return if zero, error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int
-rt_raster_geopoint_to_cell(rt_raster raster,
+rt_errorstate
+rt_raster_geopoint_to_cell(
+	rt_raster raster,
 	double xw, double yw,
 	double *xr, double *yr,
 	double *igt
@@ -5874,9 +5878,9 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 		FLT_EQ(_igt[4], 0.) &&
 		FLT_EQ(_igt[5], 0.)
 	) {
-		if (!rt_raster_get_inverse_geotransform_matrix(raster, NULL, _igt)) {
+		if (rt_raster_get_inverse_geotransform_matrix(raster, NULL, _igt) != ES_NONE) {
 			rterror("rt_raster_geopoint_to_cell: Unable to get inverse geotransform matrix");
-			return 0;
+			return ES_ERROR;
 		}
 	}
 
@@ -5899,7 +5903,7 @@ rt_raster_geopoint_to_cell(rt_raster raster,
 	RASTER_DEBUGF(4, "Corrected GDALApplyGeoTransform (g -> c) for (%f, %f) = (%f, %f)",
 		xw, yw, *xr, *yr);
 
-	return 1;
+	return ES_NONE;
 }
 
 /**
@@ -6350,9 +6354,9 @@ rt_raster_get_convex_hull(rt_raster raster) {
  * @param raster : the raster to get envelope of
  * @param env : pointer to rt_envelope
  *
- * @return 0 on error, 1 on success
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_get_envelope(
+rt_errorstate rt_raster_get_envelope(
 	rt_raster raster,
 	rt_envelope *env
 ) {
@@ -6394,9 +6398,9 @@ int rt_raster_get_envelope(
 			&(_w[0]), &(_w[1]),
 			_gt
 		);
-		if (!rtn) {
+		if (rtn != ES_NONE) {
 			rterror("rt_raster_get_envelope: Unable to compute spatial coordinates for raster pixel");
-			return 0;
+			return ES_ERROR;
 		}
 
 		if (!set) {
@@ -6419,7 +6423,7 @@ int rt_raster_get_envelope(
 		}
 	}
 
-	return 1;
+	return ES_NONE;
 }
 
 /*
@@ -6606,7 +6610,7 @@ rt_raster_compute_skewed_raster(
 					&(_r[0]), &(_r[1]),
 					_igt
 				);
-				if (!rtn) {
+				if (rtn != ES_NONE) {
 					rterror("rt_raster_compute_skewed_raster: Unable to compute raster pixel for spatial coordinates");
 					rt_raster_destroy(raster);
 					return NULL;
@@ -6650,7 +6654,7 @@ rt_raster_compute_skewed_raster(
 					&(_w[0]), &(_w[1]),
 					_gt
 				);
-				if (!rtn) {
+				if (rtn != ES_NONE) {
 					rterror("rt_raster_compute_skewed_raster: Unable to compute spatial coordinates for raster pixel");
 					rt_raster_destroy(raster);
 					return NULL;
@@ -6689,7 +6693,7 @@ rt_raster_compute_skewed_raster(
 		&(_r[0]), &(_r[1]),
 		_igt
 	);
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		rterror("rt_raster_compute_skewed_raster: Unable to compute raster pixel for spatial coordinates");
 		rt_raster_destroy(raster);
 		return NULL;
@@ -8257,8 +8261,9 @@ rt_raster_has_band(rt_raster raster, int nband) {
  * @param toindex : index of new band in destination raster, 0-based
  *
  * @return The band index of the second raster where the new band is copied.
+ *   -1 if error
  */
-int32_t
+int
 rt_raster_copy_band(
 	rt_raster torast, rt_raster fromrast,
 	int fromindex, int toindex
@@ -8317,7 +8322,7 @@ rt_raster_copy_band(
  *                   and add to the new raster (0 based)
  * @param count : number of elements in bandNums
  *
- * @return a new rt_raster or 0 on error
+ * @return a new rt_raster or NULL on error
  */
 rt_raster
 rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
@@ -8374,7 +8379,7 @@ rt_raster_from_band(rt_raster raster, uint32_t *bandNums, int count) {
  * @param band : new band to add to raster
  * @param index : index of band to replace (0-based)
  *
- * @return 0 on error or replaced band
+ * @return NULL on error or replaced band
  */
 rt_band
 rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
@@ -8959,7 +8964,7 @@ rt_raster_to_gdal_mem(
  *
  * @param ds : the GDAL dataset to convert to a raster
  *
- * @return raster
+ * @return raster or NULL
  */
 rt_raster
 rt_raster_from_gdal_dataset(GDALDatasetH ds) {
@@ -9232,7 +9237,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
  * @param max_err : maximum error measured in input pixels permitted
  *   (0.0 for exact calculations)
  *
- * @return the warped raster
+ * @return the warped raster or NULL
  */
 rt_raster rt_raster_gdal_warp(
 	rt_raster raster, const char *src_srs,
@@ -9643,12 +9648,12 @@ rt_raster rt_raster_gdal_warp(
 			rt_raster_set_offsets(rast, *grid_xw, *grid_yw);
 
 			/* process upper-left corner */
-			if (!rt_raster_geopoint_to_cell(
+			if (rt_raster_geopoint_to_cell(
 				rast,
 				extent.UpperLeftX, extent.UpperLeftY,
 				&(_r[0]), &(_r[1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_gdal_warp: Unable to compute raster pixel for spatial coordinates");
 
 				rt_raster_destroy(rast);
@@ -9660,12 +9665,12 @@ rt_raster rt_raster_gdal_warp(
 				return NULL;
 			}
 
-			if (!rt_raster_cell_to_geopoint(
+			if (rt_raster_cell_to_geopoint(
 				rast,
 				_r[0], _r[1],
 				&(_w[0]), &(_w[1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
@@ -9687,12 +9692,12 @@ rt_raster rt_raster_gdal_warp(
 					rt_raster_set_offsets(rast, extent.UpperLeftX, extent.UpperLeftY);
 
 					/* get upper-right corner */
-					if (!rt_raster_cell_to_geopoint(
+					if (rt_raster_cell_to_geopoint(
 						rast,
 						rast->width, 0,
 						&(_c[0]), &(_c[1]),
 						NULL
-					)) {
+					) != ES_NONE) {
 						rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
 
 						rt_raster_destroy(rast);
@@ -9716,12 +9721,12 @@ rt_raster rt_raster_gdal_warp(
 					rt_raster_set_offsets(rast, extent.UpperLeftX, extent.UpperLeftY);
 
 					/* get upper-right corner */
-					if (!rt_raster_cell_to_geopoint(
+					if (rt_raster_cell_to_geopoint(
 						rast,
 						0, rast->height,
 						&(_c[0]), &(_c[1]),
 						NULL
-					)) {
+					) != ES_NONE) {
 						rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
 
 						rt_raster_destroy(rast);
@@ -9765,12 +9770,12 @@ rt_raster rt_raster_gdal_warp(
 			(NULL != scale_x) &&
 			(*scale_x < 0.)
 		) {
-			if (!rt_raster_cell_to_geopoint(
+			if (rt_raster_cell_to_geopoint(
 				rast,
 				rast->width, 0,
 				&(_w[0]), &(_w[1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
@@ -9795,12 +9800,12 @@ rt_raster rt_raster_gdal_warp(
 			(NULL != scale_y) &&
 			(*scale_y > 0)
 		) {
-			if (!rt_raster_cell_to_geopoint(
+			if (rt_raster_cell_to_geopoint(
 				rast,
 				0, rast->height,
 				&(_w[0]), &(_w[1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_gdal_warp: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
@@ -10216,7 +10221,7 @@ _rti_rasterize_arg_destroy(_rti_rasterize_arg arg) {
  * @param skew_y : the Y skew of the raster
  * @param options : array of options.  only option is "ALL_TOUCHED"
  *
- * @return the raster of the provided geometry
+ * @return the raster of the provided geometry or NULL
  */
 rt_raster
 rt_raster_gdal_rasterize(const unsigned char *wkb,
@@ -10708,12 +10713,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			rt_raster_set_offsets(rast, *grid_xw, *grid_yw);
 
 			/* process upper-left corner */
-			if (!rt_raster_geopoint_to_cell(
+			if (rt_raster_geopoint_to_cell(
 				rast,
 				extent.UpperLeftX, extent.UpperLeftY,
 				&(_r[0]), &(_r[1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_gdal_rasterize: Unable to compute raster pixel for spatial coordinates");
 
 				rt_raster_destroy(rast);
@@ -10726,12 +10731,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				return NULL;
 			}
 
-			if (!rt_raster_cell_to_geopoint(
+			if (rt_raster_cell_to_geopoint(
 				rast,
 				_r[0], _r[1],
 				&(_w[0]), &(_w[1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
@@ -10754,12 +10759,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 					rt_raster_set_offsets(rast, extent.UpperLeftX, extent.UpperLeftY);
 
 					/* get upper-right corner */
-					if (!rt_raster_cell_to_geopoint(
+					if (rt_raster_cell_to_geopoint(
 						rast,
 						rast->width, 0,
 						&(_c[0]), &(_c[1]),
 						NULL
-					)) {
+					) != ES_NONE) {
 						rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 						rt_raster_destroy(rast);
@@ -10784,12 +10789,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 					rt_raster_set_offsets(rast, extent.UpperLeftX, extent.UpperLeftY);
 
 					/* get upper-right corner */
-					if (!rt_raster_cell_to_geopoint(
+					if (rt_raster_cell_to_geopoint(
 						rast,
 						0, rast->height,
 						&(_c[0]), &(_c[1]),
 						NULL
-					)) {
+					) != ES_NONE) {
 						rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 						rt_raster_destroy(rast);
@@ -10835,12 +10840,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		) {
 			RASTER_DEBUG(3, "Processing negative scale-x");
 
-			if (!rt_raster_cell_to_geopoint(
+			if (rt_raster_cell_to_geopoint(
 				rast,
 				_dim[0], 0,
 				&(_w[0]), &(_w[1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
@@ -10867,12 +10872,12 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		) {
 			RASTER_DEBUG(3, "Processing positive scale-y");
 
-			if (!rt_raster_cell_to_geopoint(
+			if (rt_raster_cell_to_geopoint(
 				rast,
 				0, _dim[1],
 				&(_w[0]), &(_w[1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_gdal_rasterize: Unable to compute spatial coordinates for raster pixel");
 
 				rt_raster_destroy(rast);
@@ -11141,8 +11146,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				if (nodata)
 					val = nodataval;
 
-				err = rt_band_set_pixel(band, x, y, val);
-				if (err < 0) {
+				err = rt_band_set_pixel(band, x, y, val, NULL);
+				if (err != ES_NONE) {
 					rterror("rt_raster_gdal_rasterize: Unable to set pixel value");
 					_rti_rasterize_arg_destroy(arg);
 					rt_raster_destroy(rast);
@@ -11412,12 +11417,12 @@ int rt_raster_intersects_algorithm(
 
 							/* unable to convert point to cell */
 							noval1 = 0;
-							if (!rt_raster_geopoint_to_cell(
+							if (rt_raster_geopoint_to_cell(
 								rast1,
 								Qw[pX], Qw[pY],
 								&(Qr[pX]), &(Qr[pY]),
 								igt1
-							)) {
+							) != ES_NONE) {
 								noval1 = 1;
 							}
 							/* cell is outside bounds of grid */
@@ -11435,12 +11440,12 @@ int rt_raster_intersects_algorithm(
 
 							/* unable to convert point to cell */
 							noval2 = 0;
-							if (!rt_raster_geopoint_to_cell(
+							if (rt_raster_geopoint_to_cell(
 								rast2,
 								Qw[pX], Qw[pY],
 								&(Qr[pX]), &(Qr[pY]),
 								igt2
-							)) {
+							) != ES_NONE) {
 								noval2 = 1;
 							}
 							/* cell is outside bounds of grid */
@@ -11530,9 +11535,9 @@ int rt_raster_intersects_algorithm(
  *   if nband2 gte zero, nband1 must be gte zero
  * @param intersects : non-zero value if the two rasters' bands intersects
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int
+rt_errorstate
 rt_raster_intersects(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
@@ -11602,7 +11607,7 @@ rt_raster_intersects(
 	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
 		rterror("rt_raster_intersects: The two rasters provided have different SRIDs");
 		*intersects = 0;
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* raster extents need to intersect */
@@ -11656,12 +11661,12 @@ rt_raster_intersects(
 			RASTER_DEBUGF(4, "convex hulls of rasters do %sintersect", rtn != 1 ? "NOT " : "");
 			if (rtn != 1) {
 				*intersects = 0;
-				return 1;
+				return ES_NONE;
 			}
 			/* band isn't specified */
 			else if (nband1 < 0) {
 				*intersects = 1;
-				return 1;
+				return ES_NONE;
 			}
 		}
 		else {
@@ -11726,7 +11731,7 @@ rt_raster_intersects(
 	if (NULL == bandS) {
 		rterror("rt_raster_intersects: Unable to get band %d of the first raster", nbandS);
 		*intersects = 0;
-		return 0;
+		return ES_ERROR;
 	}
 
 	hasnodataS = rt_band_get_hasnodata_flag(bandS);
@@ -11738,7 +11743,7 @@ rt_raster_intersects(
 	if (NULL == bandL) {
 		rterror("rt_raster_intersects: Unable to get band %d of the first raster", nbandL);
 		*intersects = 0;
-		return 0;
+		return ES_ERROR;
 	}
 
 	hasnodataL = rt_band_get_hasnodata_flag(bandL);
@@ -11758,7 +11763,7 @@ rt_raster_intersects(
 	) {
 		RASTER_DEBUG(3, "One of the two raster bands is NODATA. The two rasters do not intersect");
 		*intersects = 0;
-		return 1;
+		return ES_NONE;
 	}
 
 	/* special case where a raster can fit inside another raster's pixel */
@@ -11782,12 +11787,12 @@ rt_raster_intersects(
 								gtS
 							);
 
-							if (!rt_raster_geopoint_to_cell(
+							if (rt_raster_geopoint_to_cell(
 								rastL,
 								lineS[X1], lineS[Y1],
 								&(Qr[pX]), &(Qr[pY]),
 								igtL
-							)) {
+							) != ES_NONE) {
 								continue;
 							}
 
@@ -11806,7 +11811,7 @@ rt_raster_intersects(
 							if ((hasnodataL == FALSE) || !isnodataL) {
 								RASTER_DEBUG(3, "The two rasters do intersect");
 								*intersects = 1;
-								return 1;
+								return ES_NONE;
 							}
 						}
 					}
@@ -11824,7 +11829,7 @@ rt_raster_intersects(
 		nodataS, nodataL
 	);
 
-	if (*intersects) return 1;
+	if (*intersects) return ES_NONE;
 
 	RASTER_DEBUG(4, "Testing larger raster vs smaller raster");
 	*intersects = rt_raster_intersects_algorithm(
@@ -11834,12 +11839,12 @@ rt_raster_intersects(
 		nodataL, nodataS
 	);
 
-	if (*intersects) return 1;
+	if (*intersects) return ES_NONE;
 
 	RASTER_DEBUG(3, "The two rasters do not intersect");
 
 	*intersects = 0;
-	return 1;
+	return ES_NONE;
 }
 
 /******************************************************************************
@@ -11847,7 +11852,7 @@ rt_raster_intersects(
 ******************************************************************************/
 
 static
-int rt_raster_geos_spatial_relationship(
+rt_errorstate rt_raster_geos_spatial_relationship(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	rt_geos_spatial_test testtype,
@@ -11864,6 +11869,7 @@ int rt_raster_geos_spatial_relationship(
 
 	assert(NULL != rast1);
 	assert(NULL != rast2);
+	assert(NULL != testresult);
 
 	if (nband1 < 0 && nband2 < 0) {
 		nband1 = -1;
@@ -11880,7 +11886,7 @@ int rt_raster_geos_spatial_relationship(
 	/* same srid */
 	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
 		rterror("rt_raster_geos_spatial_relationship: The two rasters provided have different SRIDs");
-		return 0;
+		return ES_ERROR;
 	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
@@ -11889,20 +11895,20 @@ int rt_raster_geos_spatial_relationship(
 	surface1 = rt_raster_surface(rast1, nband1, &rtn);
 	if (!rtn) {
 		rterror("rt_raster_geos_spatial_relationship: Unable to get surface of the specified band from the first raster");
-		return 0;
+		return ES_ERROR;
 	}
 	surface2 = rt_raster_surface(rast2, nband2, &rtn);
 	if (!rtn) {
 		rterror("rt_raster_geos_spatial_relationship: Unable to get surface of the specified band from the second raster");
 		lwmpoly_free(surface1);
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* either surface is NULL, spatial relationship test is false */
 	if (surface1 == NULL || surface2 == NULL) {
 		if (surface1 != NULL) lwmpoly_free(surface1);
 		if (surface2 != NULL) lwmpoly_free(surface2);
-		return 1;
+		return ES_NONE;
 	}
 
 	/* convert LWMPOLY to GEOSGeometry */
@@ -11911,14 +11917,14 @@ int rt_raster_geos_spatial_relationship(
 	if (geom1 == NULL) {
 		rterror("rt_raster_geos_spatial_relationship: Unable to convert surface of the specified band from the first raster to a GEOSGeometry");
 		lwmpoly_free(surface2);
-		return 0;
+		return ES_ERROR;
 	}
 
 	geom2 = LWGEOM2GEOS(lwmpoly_as_lwgeom(surface2));
 	lwmpoly_free(surface2);
 	if (geom2 == NULL) {
 		rterror("rt_raster_geos_spatial_relationship: Unable to convert surface of the specified band from the second raster to a GEOSGeometry");
-		return 0;
+		return ES_ERROR;
 	}
 
 	flag = 0;
@@ -11952,23 +11958,23 @@ int rt_raster_geos_spatial_relationship(
 	/* something happened in the spatial relationship test */
 	if (rtn == 2) {
 		rterror("rt_raster_geos_spatial_relationship: Unable to run the appropriate GEOS spatial relationship test");
-		flag = 0;
+		flag = ES_ERROR;
 	}
 	/* spatial relationship test ran fine */
 	else if (flag >= 0) {
 		if (rtn != 0)
 			*testresult = 1;
-		flag = 1;
+		flag = ES_NONE;
 	}
 	/* flag < 0 for when testtype is unknown */
 	else
-		flag = 0;
+		flag = ES_ERROR;
 
 	return flag;
 }
 
 /**
- * Return zero if error occurred in function.
+ * Return ES_ERROR if error occurred in function.
  * Parameter overlaps returns non-zero if two rasters overlap
  *
  * @param rast1 : the first raster whose band will be tested
@@ -11981,9 +11987,9 @@ int rt_raster_geos_spatial_relationship(
  *   if nband2 gte zero, nband1 must be gte zero
  * @param overlaps : non-zero value if the two rasters' bands overlaps
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_overlaps(
+rt_errorstate rt_raster_overlaps(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *overlaps
@@ -11999,7 +12005,7 @@ int rt_raster_overlaps(
 }
 
 /**
- * Return zero if error occurred in function.
+ * Return ES_ERROR if error occurred in function.
  * Parameter touches returns non-zero if two rasters touch
  *
  * @param rast1 : the first raster whose band will be tested
@@ -12012,9 +12018,9 @@ int rt_raster_overlaps(
  *   if nband2 gte zero, nband1 must be gte zero
  * @param touches : non-zero value if the two rasters' bands touch
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_touches(
+rt_errorstate rt_raster_touches(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *touches
@@ -12030,7 +12036,7 @@ int rt_raster_touches(
 }
 
 /**
- * Return zero if error occurred in function.
+ * Return ES_ERROR if error occurred in function.
  * Parameter contains returns non-zero if rast1 contains rast2
  *
  * @param rast1 : the first raster whose band will be tested
@@ -12043,9 +12049,9 @@ int rt_raster_touches(
  *   if nband2 gte zero, nband1 must be gte zero
  * @param contains : non-zero value if rast1 contains rast2
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_contains(
+rt_errorstate rt_raster_contains(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *contains
@@ -12061,7 +12067,7 @@ int rt_raster_contains(
 }
 
 /**
- * Return zero if error occurred in function.
+ * Return ES_ERROR if error occurred in function.
  * Parameter contains returns non-zero if rast1 contains properly rast2
  *
  * @param rast1 : the first raster whose band will be tested
@@ -12074,9 +12080,9 @@ int rt_raster_contains(
  *   if nband2 gte zero, nband1 must be gte zero
  * @param contains : non-zero value if rast1 contains properly rast2
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_contains_properly(
+rt_errorstate rt_raster_contains_properly(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *contains
@@ -12092,8 +12098,8 @@ int rt_raster_contains_properly(
 }
 
 /**
- * Return zero if error occurred in function.
- * Parameter contains returns non-zero if rast1 covers rast2
+ * Return ES_ERROR if error occurred in function.
+ * Parameter covers returns non-zero if rast1 covers rast2
  *
  * @param rast1 : the first raster whose band will be tested
  * @param nband1 : the 0-based band of raster rast1 to use
@@ -12105,9 +12111,9 @@ int rt_raster_contains_properly(
  *   if nband2 gte zero, nband1 must be gte zero
  * @param covers : non-zero value if rast1 covers rast2
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_covers(
+rt_errorstate rt_raster_covers(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *covers
@@ -12123,8 +12129,8 @@ int rt_raster_covers(
 }
 
 /**
- * Return zero if error occurred in function.
- * Parameter contains returns non-zero if rast1 is covered by rast2
+ * Return ES_ERROR if error occurred in function.
+ * Parameter coveredby returns non-zero if rast1 is covered by rast2
  *
  * @param rast1 : the first raster whose band will be tested
  * @param nband1 : the 0-based band of raster rast1 to use
@@ -12136,9 +12142,9 @@ int rt_raster_covers(
  *   if nband2 gte zero, nband1 must be gte zero
  * @param coveredby : non-zero value if rast1 is covered by rast2
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_coveredby(
+rt_errorstate rt_raster_coveredby(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	int *coveredby
@@ -12154,8 +12160,8 @@ int rt_raster_coveredby(
 }
 
 /**
- * Return zero if error occurred in function.
- * Parameter contains returns non-zero if rast1 is within the specified
+ * Return ES_ERROR if error occurred in function.
+ * Parameter dwithin returns non-zero if rast1 is within the specified
  *   distance of rast2
  *
  * @param rast1 : the first raster whose band will be tested
@@ -12169,9 +12175,9 @@ int rt_raster_coveredby(
  * @param dwithin : non-zero value if rast1 is within the specified distance
  *   of rast2
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_within_distance(
+rt_errorstate rt_raster_within_distance(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	double distance,
@@ -12202,33 +12208,33 @@ int rt_raster_within_distance(
 	/* same srid */
 	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
 		rterror("rt_raster_distance_within: The two rasters provided have different SRIDs");
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* distance cannot be less than zero */
 	if (distance < 0) {
 		rterror("rt_raster_distance_within: Distance cannot be less than zero");
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* get LWMPOLY of each band */
 	surface1 = lwmpoly_as_lwgeom(rt_raster_surface(rast1, nband1, &rtn));
 	if (!rtn) {
 		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the first raster");
-		return 0;
+		return ES_ERROR;
 	}
 	surface2 = lwmpoly_as_lwgeom(rt_raster_surface(rast2, nband2, &rtn));
 	if (!rtn) {
 		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the second raster");
 		lwgeom_free(surface1);
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* either surface is NULL, test is false */
 	if (surface1 == NULL || surface2 == NULL) {
 		if (surface1 != NULL) lwgeom_free(surface1);
 		if (surface2 != NULL) lwgeom_free(surface2);
-		return 1;
+		return ES_NONE;
 	}
 
 	/* get the min distance between the two surfaces */
@@ -12243,12 +12249,12 @@ int rt_raster_within_distance(
 
 	RASTER_DEBUGF(3, "(mindist, distance) = (%f, %f, %d)", mindist, distance, *dwithin);
 
-	return 1;
+	return ES_NONE;
 }
 
 /**
- * Return zero if error occurred in function.
- * Parameter contains returns non-zero if rast1 is fully within the specified
+ * Return ES_ERROR if error occurred in function.
+ * Parameter dfwithin returns non-zero if rast1 is fully within the specified
  *   distance of rast2
  *
  * @param rast1 : the first raster whose band will be tested
@@ -12262,9 +12268,9 @@ int rt_raster_within_distance(
  * @param dfwithin : non-zero value if rast1 is fully within the specified
  *   distance of rast2
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int rt_raster_fully_within_distance(
+rt_errorstate rt_raster_fully_within_distance(
 	rt_raster rast1, int nband1,
 	rt_raster rast2, int nband2,
 	double distance,
@@ -12295,33 +12301,33 @@ int rt_raster_fully_within_distance(
 	/* same srid */
 	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
 		rterror("rt_raster_distance_within: The two rasters provided have different SRIDs");
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* distance cannot be less than zero */
 	if (distance < 0) {
 		rterror("rt_raster_distance_within: Distance cannot be less than zero");
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* get LWMPOLY of each band */
 	surface1 = lwmpoly_as_lwgeom(rt_raster_surface(rast1, nband1, &rtn));
 	if (!rtn) {
 		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the first raster");
-		return 0;
+		return ES_ERROR;
 	}
 	surface2 = lwmpoly_as_lwgeom(rt_raster_surface(rast2, nband2, &rtn));
 	if (!rtn) {
 		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the second raster");
 		lwgeom_free(surface1);
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* either surface is NULL, test is false */
 	if (surface1 == NULL || surface2 == NULL) {
 		if (surface1 != NULL) lwgeom_free(surface1);
 		if (surface2 != NULL) lwgeom_free(surface2);
-		return 1;
+		return ES_NONE;
 	}
 
 	/* get the maximum distance between the two surfaces */
@@ -12336,20 +12342,20 @@ int rt_raster_fully_within_distance(
 
 	RASTER_DEBUGF(3, "(maxdist, distance, dfwithin) = (%f, %f, %d)", maxdist, distance, *dfwithin);
 
-	return 1;
+	return ES_NONE;
 }
 
 /*
- * Return zero if error occurred in function.
+ * Return ES_ERROR if error occurred in function.
  * Paramter aligned returns non-zero if two rasters are aligned
  *
  * @param rast1 : the first raster for alignment test
  * @param rast2 : the second raster for alignment test
  * @param aligned : non-zero value if the two rasters are aligned
  *
- * @return if zero, an error occurred in function
+ * @return ES_NONE if success, ES_ERROR if error
  */
-int
+rt_errorstate
 rt_raster_same_alignment(
 	rt_raster rast1,
 	rt_raster rast2,
@@ -12391,7 +12397,7 @@ rt_raster_same_alignment(
 
 	if (err) {
 		*aligned = 0;
-		return 1;
+		return ES_NONE;
 	}
 
 	/* raster coordinates in context of second raster of first raster's upper-left corner */
@@ -12400,10 +12406,10 @@ rt_raster_same_alignment(
 			rast1->ipX, rast1->ipY,
 			&xr, &yr,
 			NULL
-	) == 0) {
+	) != ES_NONE) {
 		rterror("rt_raster_same_alignment: Unable to get raster coordinates of second raster from first raster's spatial coordinates");
 		*aligned = 0;
-		return 0;
+		return ES_ERROR;
 	}
 
 	/* spatial coordinates of raster coordinates from above */
@@ -12412,10 +12418,10 @@ rt_raster_same_alignment(
 		xr, yr,
 		&xw, &yw,
 		NULL
-	) == 0) {
+	) != ES_NONE) {
 		rterror("rt_raster_same_alignment: Unable to get spatial coordinates of second raster from raster coordinates");
 		*aligned = 0;
-		return 0;
+		return ES_ERROR;
 	}
 
 	RASTER_DEBUGF(4, "rast1(ipX, ipxY) = (%f, %f)", rast1->ipX, rast1->ipY);
@@ -12426,13 +12432,13 @@ rt_raster_same_alignment(
 	if (FLT_EQ(xw, rast1->ipX) && FLT_EQ(yw, rast1->ipY)) {
 		RASTER_DEBUG(3, "The two rasters are aligned");
 		*aligned = 1;
-		return 1;
+		return ES_NONE;
 	}
 
 	/* no alignment */
 	RASTER_DEBUG(3, "The two rasters are NOT aligned");
 	*aligned = 0;
-	return 1;
+	return ES_NONE;
 }
 
 /*
@@ -12472,7 +12478,7 @@ rt_raster_from_two_rasters(
 	*noerr = 0;
 
 	/* rasters must be aligned */
-	if (!rt_raster_same_alignment(rast1, rast2, &aligned)) {
+	if (rt_raster_same_alignment(rast1, rast2, &aligned) != ES_NONE) {
 		rterror("rt_raster_from_two_rasters: Unable to test for alignment on the two rasters");
 		return NULL;
 	}
@@ -12488,12 +12494,12 @@ rt_raster_from_two_rasters(
 	_dim[1][1] = rast2->height;
 
 	/* get raster offsets */
-	if (!rt_raster_geopoint_to_cell(
+	if (rt_raster_geopoint_to_cell(
 		_rast[1],
 		_rast[0]->ipX, _rast[0]->ipY,
 		&(_offset[1][0]), &(_offset[1][1]),
 		NULL
-	)) {
+	) != ES_NONE) {
 		rterror("rt_raster_from_two_rasters: Unable to compute offsets of the second raster relative to the first raster");
 		return NULL;
 	}
@@ -12562,12 +12568,12 @@ rt_raster_from_two_rasters(
 				off[3] = _offset[1][3];
 
 			/* upper left corner */
-			if (!rt_raster_cell_to_geopoint(
+			if (rt_raster_cell_to_geopoint(
 				_rast[0],
 				off[0], off[1],
 				&(gt[0]), &(gt[3]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get spatial coordinates of upper-left pixel of output raster");
 				return NULL;
 			}
@@ -12602,12 +12608,12 @@ rt_raster_from_two_rasters(
 			);
 
 			/* get offsets */
-			if (!rt_raster_geopoint_to_cell(
+			if (rt_raster_geopoint_to_cell(
 				_rast[0],
 				gt[0], gt[3],
 				&(_offset[0][0]), &(_offset[0][1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get offsets of the FIRST raster relative to the output raster");
 				rt_raster_destroy(raster);
 				return NULL;
@@ -12615,12 +12621,12 @@ rt_raster_from_two_rasters(
 			_offset[0][0] *= -1;
 			_offset[0][1] *= -1;
 
-			if (!rt_raster_geopoint_to_cell(
+			if (rt_raster_geopoint_to_cell(
 				_rast[1],
 				gt[0], gt[3],
 				&(_offset[1][0]), &(_offset[1][1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get offsets of the SECOND raster relative to the output raster");
 				rt_raster_destroy(raster);
 				return NULL;
@@ -12683,12 +12689,12 @@ rt_raster_from_two_rasters(
 
 			/* get upper-left corner */
 			rt_raster_get_geotransform_matrix(_rast[0], gt);
-			if (!rt_raster_cell_to_geopoint(
+			if (rt_raster_cell_to_geopoint(
 				_rast[0],
 				off[0], off[1],
 				&(gt[0]), &(gt[3]),
 				gt
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get spatial coordinates of upper-left pixel of output raster");
 				rt_raster_destroy(raster);
 				return NULL;
@@ -12697,12 +12703,12 @@ rt_raster_from_two_rasters(
 			rt_raster_set_geotransform_matrix(raster, gt);
 
 			/* get offsets */
-			if (!rt_raster_geopoint_to_cell(
+			if (rt_raster_geopoint_to_cell(
 				_rast[0],
 				gt[0], gt[3],
 				&(_offset[0][0]), &(_offset[0][1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get pixel coordinates to compute the offsets of the FIRST raster relative to the output raster");
 				rt_raster_destroy(raster);
 				return NULL;
@@ -12710,12 +12716,12 @@ rt_raster_from_two_rasters(
 			_offset[0][0] *= -1;
 			_offset[0][1] *= -1;
 
-			if (!rt_raster_geopoint_to_cell(
+			if (rt_raster_geopoint_to_cell(
 				_rast[1],
 				gt[0], gt[3],
 				&(_offset[1][0]), &(_offset[1][1]),
 				NULL
-			)) {
+			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get pixel coordinates to compute the offsets of the SECOND raster relative to the output raster");
 				rt_raster_destroy(raster);
 				return NULL;
@@ -13648,7 +13654,7 @@ rt_raster_iterator(
 
 		/* check custom first if set. also skip if rasters are the same */
 		if (extenttype == ET_CUSTOM && rast != customextent) {
-			if (!rt_raster_same_alignment(rast, customextent, &aligned)) {
+			if (rt_raster_same_alignment(rast, customextent, &aligned) != ES_NONE) {
 				rterror("rt_raster_iterator: Unable to test for alignment between reference raster and custom extent");
 
 				_rti_iterator_arg_destroy(_param);
@@ -13666,7 +13672,7 @@ rt_raster_iterator(
 			if (_param->isempty[i] || rast == _param->raster[i])
 				continue;
 
-			if (!rt_raster_same_alignment(rast, _param->raster[i], &aligned)) {
+			if (rt_raster_same_alignment(rast, _param->raster[i], &aligned) != ES_NONE) {
 				rterror("rt_raster_iterator: Unable to test for alignment between reference raster and raster %d", i);
 
 				_rti_iterator_arg_destroy(_param);
@@ -14050,7 +14056,7 @@ rt_raster_iterator(
 					NULL, NULL
 				);
 				rtdealloc(npixels);
-				if (!status) {
+				if (status != ES_NONE) {
 					rterror("rt_raster_iterator: Unable to create 2D array of neighborhood");
 
 					_rti_iterator_arg_destroy(_param);
@@ -14084,17 +14090,17 @@ rt_raster_iterator(
 			/* burn value to pixel */
 			status = 0;
 			if (!nodata) {
-				status = rt_band_set_pixel(rtnband, _x, _y, value);
+				status = rt_band_set_pixel(rtnband, _x, _y, value, NULL);
 				RASTER_DEBUGF(4, "burning pixel (%d, %d) with value: %f", _x, _y, value);
 			}
 			else if (!hasnodata) {
-				status = rt_band_set_pixel(rtnband, _x, _y, minval);
+				status = rt_band_set_pixel(rtnband, _x, _y, minval, NULL);
 				RASTER_DEBUGF(4, "burning pixel (%d, %d) with minval: %f", _x, _y, minval);
 			}
 			else {
 				RASTER_DEBUGF(4, "NOT burning pixel (%d, %d)", _x, _y);
 			}
-			if (status < 0) {
+			if (status != ES_NONE) {
 				rterror("rt_raster_iterator: Unable to set pixel value");
 
 				_rti_iterator_arg_destroy(_param);

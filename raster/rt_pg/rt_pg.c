@@ -2174,7 +2174,7 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 				nodata = PG_GETARG_FLOAT8(2);
 
 				/* Set the band's nodata value */
-				rt_band_set_nodata(band, nodata);
+				rt_band_set_nodata(band, nodata, NULL);
 
 				/* Recheck all pixels if requested */
 				if (forcechecking)
@@ -2416,7 +2416,7 @@ Datum RASTER_getPixelValue(PG_FUNCTION_ARGS)
 
     /* If the result is -1 or the value is nodata and we take nodata into account
      * then return nodata = NULL */
-    if (result == -1 || (exclude_nodata_value && isnodata)) {
+    if (result != ES_NONE || (exclude_nodata_value && isnodata)) {
         rt_raster_destroy(raster);
         PG_FREE_IF_COPY(pgraster, 0);
         PG_RETURN_NULL();
@@ -2732,7 +2732,7 @@ Datum RASTER_dumpValues(PG_FUNCTION_ARGS)
 			for (y = 0; y < arg1->rows; y++) {
 				for (x = 0; x < arg1->columns; x++) {
 					/* get pixel */
-					if (rt_band_get_pixel(band, x, y, &val, &isnodata) != 0) {
+					if (rt_band_get_pixel(band, x, y, &val, &isnodata) != ES_NONE) {
 						elog(ERROR, "RASTER_dumpValues: Unable to pixel (%d, %d) of band %d", x, y, arg1->nbands[z] + 1);
 						rtpg_dumpvalues_arg_destroy(arg1);
 						rt_raster_destroy(raster);
@@ -2913,12 +2913,12 @@ Datum RASTER_setPixelValue(PG_FUNCTION_ARGS)
 				}
 				else {
 					rt_band_get_nodata(band, &pixvalue);
-					rt_band_set_pixel(band, x - 1, y - 1, pixvalue);
+					rt_band_set_pixel(band, x - 1, y - 1, pixvalue, NULL);
 				}
 			}
 			else {
 				pixvalue = PG_GETARG_FLOAT8(4);
-				rt_band_set_pixel(band, x - 1, y - 1, pixvalue);
+				rt_band_set_pixel(band, x - 1, y - 1, pixvalue, NULL);
 			}
 		}
 	}
@@ -3311,7 +3311,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		/* if hasnodata = TRUE and keepnodata = TRUE, inspect pixel value */
 		if (hasnodata && keepnodata) {
 			rtn = rt_band_get_pixel(band, pixval[i].x, pixval[i].y, &val, &isnodata);
-			if (rtn != 0) {
+			if (rtn != ES_NONE) {
 				elog(ERROR, "Cannot get value of pixel.  Returning NULL");
 				pfree(pixval);
 				rt_raster_destroy(raster);
@@ -3326,9 +3326,9 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		}
 
 		if (pixval[i].nodata)
-			rt_band_set_pixel(band, pixval[i].x, pixval[i].y, nodataval);
+			rt_band_set_pixel(band, pixval[i].x, pixval[i].y, nodataval, NULL);
 		else
-			rt_band_set_pixel(band, pixval[i].x, pixval[i].y, pixval[i].value);
+			rt_band_set_pixel(band, pixval[i].x, pixval[i].y, pixval[i].value, NULL);
 	}
 
 	pfree(pixval);
@@ -3741,7 +3741,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 				point = lwgeom_as_lwpoint(coll->geoms[j]);
 				getPoint2d_p(point->point, 0, &p);
 
-				if (!rt_raster_geopoint_to_cell(raster, p.x, p.y, &(xy[0]), &(xy[1]), igt)) {
+				if (rt_raster_geopoint_to_cell(raster, p.x, p.y, &(xy[0]), &(xy[1]), igt) != ES_NONE) {
 					elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to process coordinates of point");
 					rtpg_setvaluesgv_arg_destroy(arg);
 					rt_raster_destroy(raster);
@@ -3759,7 +3759,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 				}
 
 				/* get pixel value */
-				if (rt_band_get_pixel(band, xy[0], xy[1], &value, &isnodata) != 0) {
+				if (rt_band_get_pixel(band, xy[0], xy[1], &value, &isnodata) != ES_NONE) {
 					elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to get pixel value");
 					rtpg_setvaluesgv_arg_destroy(arg);
 					rt_raster_destroy(raster);
@@ -3773,11 +3773,11 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 
 				/* set pixel */
 				if (arg->gv[i].pixval.nodata)
-					noerr = rt_band_set_pixel(band, xy[0], xy[1], nodataval);
+					noerr = rt_band_set_pixel(band, xy[0], xy[1], nodataval, NULL);
 				else
-					noerr = rt_band_set_pixel(band, xy[0], xy[1], arg->gv[i].pixval.value);
+					noerr = rt_band_set_pixel(band, xy[0], xy[1], arg->gv[i].pixval.value, NULL);
 
-				if (noerr < 0) {
+				if (noerr != ES_NONE) {
 					elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to set pixel value");
 					rtpg_setvaluesgv_arg_destroy(arg);
 					rt_raster_destroy(raster);
@@ -4057,7 +4057,7 @@ Datum RASTER_getPixelPolygons(PG_FUNCTION_ARGS)
 
 				/* value, NODATA flag */
 				if (!noband) {
-					if (rt_band_get_pixel(band, x - 1, y - 1, &(pix[pixcount].value), &isnodata) != 0) {
+					if (rt_band_get_pixel(band, x - 1, y - 1, &(pix[pixcount].value), &isnodata) != ES_NONE) {
 						elog(ERROR, "RASTER_getPixelPolygons: Could not get pixel value");
 
 						for (i = 0; i < pixcount; i++)
@@ -4554,12 +4554,12 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 	point = lwgeom_as_lwpoint(lwgeom);
 	getPoint2d_p(point->point, 0, &p);
 
-	if (!rt_raster_geopoint_to_cell(
+	if (rt_raster_geopoint_to_cell(
 		raster,
 		p.x, p.y,
 		&x, &y,
 		NULL
-	)) {
+	) != ES_NONE) {
 		elog(ERROR, "RASTER_nearestValue: Unable to compute pixel coordinates from spatial coordinates");
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
@@ -4573,7 +4573,7 @@ Datum RASTER_nearestValue(PG_FUNCTION_ARGS)
 		(x >= 0 && x < rt_raster_get_width(raster)) &&
 		(y >= 0 && y < rt_raster_get_height(raster))
 	) {
-		if (rt_band_get_pixel(band, x, y, &value, &isnodata) < 0) {
+		if (rt_band_get_pixel(band, x, y, &value, &isnodata) != ES_NONE) {
 			elog(ERROR, "RASTER_nearestValue: Unable to get pixel value for band at index %d", bandindex);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -4801,7 +4801,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 			_x, _y,
 			&pixval,
 			&isnodata
-		) < 0) {
+		) != ES_NONE) {
 			elog(NOTICE, "Unable to get the pixel of band at index %d. Returning NULL", bandindex);
 			rt_band_destroy(band);
 			rt_raster_destroy(raster);
@@ -4865,7 +4865,7 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 		&(dim[1]), &(dim[0])
 	);
 	pfree(npixels);
-	if (!count) {
+	if (count != ES_NONE) {
 		elog(NOTICE, "Unable to create 2D array of neighborhood");
 		PG_RETURN_NULL();
 	}
@@ -5649,7 +5649,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		rx = tx * arg2->tile.width;
 		ry = ty * arg2->tile.height;
 		POSTGIS_RT_DEBUGF(4, "raster coordinates = %d, %d", rx, ry);
-		if (!rt_raster_cell_to_geopoint(arg2->raster.raster, rx, ry, &ulx, &uly, arg2->raster.gt)) {
+		if (rt_raster_cell_to_geopoint(arg2->raster.raster, rx, ry, &ulx, &uly, arg2->raster.gt) != ES_NONE) {
 			elog(ERROR, "RASTER_tile: Unable to compute the coordinates of the upper-left corner of the output tile");
 			rt_raster_destroy(tile);
 			rt_raster_destroy(arg2->raster.raster);
@@ -5723,7 +5723,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					}
 
 					POSTGIS_RT_DEBUGF(4, "getting pixel line %d, %d for %d pixels", rx, k, len);
-					if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != 0) {
+					if (rt_band_get_pixel_line(_band, rx, k, len, &vals, &nvals) != ES_NONE) {
 						elog(ERROR, "RASTER_tile: Unable to get pixel line from source raster");
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
@@ -5732,7 +5732,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 						SRF_RETURN_DONE(funcctx);
 					}
 
-					if (nvals && !rt_band_set_pixel_line(band, 0, j, vals, nvals)) {
+					if (nvals && rt_band_set_pixel_line(band, 0, j, vals, nvals) != ES_NONE) {
 						elog(ERROR, "RASTER_tile: Unable to set pixel line of output tile");
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
@@ -5744,11 +5744,14 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			}
 			/* offline */
 			else {
+				uint8_t bandnum = 0;
+				rt_band_get_ext_band_num(_band, &bandnum);
+
 				band = rt_band_new_offline(
 					arg2->raster.width, arg2->raster.height,
 					pixtype,
 					hasnodata, nodataval,
-					rt_band_get_ext_band_num(_band), rt_band_get_ext_path(_band)
+					bandnum, rt_band_get_ext_path(_band)
 				);
 
 				if (band == NULL) {
@@ -6495,7 +6498,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
              * We compute a value only for the withdata value pixel since the
              * nodata value has already been set by the first optimization
              **/
-            if (ret != -1 && FLT_NEQ(r, newnodatavalue)) {
+            if (ret == ES_NONE && FLT_NEQ(r, newnodatavalue)) {
                 if (skipcomputation == 0) {
                     if (initexpr != NULL) {
                         /* Reset the null arg flags. */
@@ -6573,7 +6576,7 @@ Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS)
                 }
 
 
-                rt_band_set_pixel(newband, x, y, newval);
+                rt_band_set_pixel(newband, x, y, newval, NULL);
             }
 
         }
@@ -6979,7 +6982,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
              * We compute a value only for the withdata value pixel since the
              * nodata value has already been set by the first optimization
              **/
-            if (ret != -1) {
+            if (ret == ES_NONE) {
                 if (FLT_EQ(r, newnodatavalue)) {
                     if (cbinfo.fn_strict) {
                         POSTGIS_RT_DEBUG(3, "RASTER_mapAlgebraFct: Strict callbacks cannot accept NULL arguments, skipping NODATA cell.");
@@ -7022,7 +7025,7 @@ Datum RASTER_mapAlgebraFct(PG_FUNCTION_ARGS)
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFct: new value = %f", 
                     newval);
                 
-                rt_band_set_pixel(newband, x, y, newval);
+                rt_band_set_pixel(newband, x, y, newval, NULL);
             }
 
         }
@@ -11833,7 +11836,7 @@ Datum RASTER_rasterToWorldCoord(PG_FUNCTION_ARGS)
 		(double) cr[0] - 1, (double) cr[1] - 1,
 		&(cw[0]), &(cw[1]),
 		NULL
-	) == 0) {
+	) != ES_NONE) {
 		elog(ERROR, "RASTER_rasterToWorldCoord: Could not compute longitude and latitude from pixel row and column");
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
@@ -11930,7 +11933,7 @@ Datum RASTER_worldToRasterCoord(PG_FUNCTION_ARGS)
 		cw[0], cw[1],
 		&(_cr[0]), &(_cr[1]),
 		NULL
-	) == 0) {
+	) != ES_NONE) {
 		elog(ERROR, "RASTER_worldToRasterCoord: Could not compute pixel row and column from longitude and latitude");
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
@@ -12081,7 +12084,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_intersects: Unable to test for intersection on the two rasters");
 		PG_RETURN_NULL();
 	}
@@ -12200,7 +12203,7 @@ Datum RASTER_overlaps(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_overlaps: Unable to test for overlap on the two rasters");
 		PG_RETURN_NULL();
 	}
@@ -12319,7 +12322,7 @@ Datum RASTER_touches(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_touches: Unable to test for touch on the two rasters");
 		PG_RETURN_NULL();
 	}
@@ -12438,7 +12441,7 @@ Datum RASTER_contains(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_contains: Unable to test that the first raster contains the second raster");
 		PG_RETURN_NULL();
 	}
@@ -12557,7 +12560,7 @@ Datum RASTER_containsProperly(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_containsProperly: Unable to test that the first raster contains properly the second raster");
 		PG_RETURN_NULL();
 	}
@@ -12676,7 +12679,7 @@ Datum RASTER_covers(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_covers: Unable to test that the first raster covers the second raster");
 		PG_RETURN_NULL();
 	}
@@ -12795,7 +12798,7 @@ Datum RASTER_coveredby(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_coveredby: Unable to test that the first raster is covered by the second raster");
 		PG_RETURN_NULL();
 	}
@@ -12936,7 +12939,7 @@ Datum RASTER_dwithin(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_dwithin: Unable to test that the two rasters are within the specified distance of each other");
 		PG_RETURN_NULL();
 	}
@@ -13077,7 +13080,7 @@ Datum RASTER_dfullywithin(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_dfullywithin: Unable to test that the two rasters are fully within the specified distance of each other");
 		PG_RETURN_NULL();
 	}
@@ -13172,7 +13175,7 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
 	}
 
-	if (!rtn) {
+	if (rtn != ES_NONE) {
 		elog(ERROR, "RASTER_sameAlignment: Unable to test for alignment on the two rasters");
 		PG_RETURN_NULL();
 	}
@@ -13404,7 +13407,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	*/
 
 	/* same alignment */
-	if (!rt_raster_same_alignment(_rast[0], _rast[1], &aligned)) {
+	if (rt_raster_same_alignment(_rast[0], _rast[1], &aligned) != ES_NONE) {
 		elog(ERROR, "RASTER_mapAlgebra2: Unable to test for alignment on the two rasters");
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
@@ -14041,7 +14044,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 						(_y >= 0 && _y < _dim[i][1])
 					) {
 						err = rt_band_get_pixel(_band[i], _x, _y, &(_pixel[i]), &isnodata);
-						if (err < 0) {
+						if (err != ES_NONE) {
 							elog(ERROR, "RASTER_mapAlgebra2: Unable to get pixel of %s raster", (i < 1 ? "FIRST" : "SECOND"));
 
 							if (calltype == TEXTOID) {
@@ -14262,7 +14265,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 
 				/* burn pixel if haspixel != 0 */
 				if (haspixel) {
-					if (rt_band_set_pixel(band, x, y, pixel) < 0) {
+					if (rt_band_set_pixel(band, x, y, pixel, NULL) != ES_NONE) {
 						elog(ERROR, "RASTER_mapAlgebra2: Unable to set pixel value of output raster");
 
 						if (calltype == TEXTOID) {
@@ -14802,14 +14805,14 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
             pixelreplace = false;
             if (valuereplace) {
                 ret = rt_band_get_pixel(band, x, y, &rpix, NULL);
-                if (ret != -1 && FLT_NEQ(rpix, newnodatavalue)) {
+                if (ret == ES_NONE && FLT_NEQ(rpix, newnodatavalue)) {
                     pixelreplace = true;
                 }
             }
             for (u = x - ngbwidth; u <= x + ngbwidth; u++) {
                 for (v = y - ngbheight; v <= y + ngbheight; v++) {
                     ret = rt_band_get_pixel(band, u, v, &r, NULL);
-                    if (ret != -1) {
+                    if (ret == ES_NONE) {
                         if (FLT_NEQ(r, newnodatavalue)) {
                             /* If the pixel value for this neighbor cell is not NODATA */
                             neighborData[nIndex] = Float8GetDatum((double)r);
@@ -14873,7 +14876,7 @@ Datum RASTER_mapAlgebraFctNgb(PG_FUNCTION_ARGS)
                 POSTGIS_RT_DEBUGF(3, "RASTER_mapAlgebraFctNgb: new value = %f", 
                     newval);
                 
-                rt_band_set_pixel(newband, x, y, newval);
+                rt_band_set_pixel(newband, x, y, newval, NULL);
             }
 
             /* reset the number of null items in the neighborhood */
