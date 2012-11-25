@@ -49,6 +49,9 @@ DROP TABLE wmstest;
 DELETE FROM geometry_columns WHERE f_table_name = 'wmstest' AND f_table_schema = 'public';
 SELECT 'Done.';
 
+-- test #1869 ST_AsBinary is not unique --
+SELECT 1869 As ticket_id, ST_AsText(ST_AsBinary('POINT(1 2)'));
+
 DELETE FROM spatial_ref_sys WHERE SRID = '4326';
 
 \i 00-regress-install/share/contrib/postgis/uninstall_legacy.sql
