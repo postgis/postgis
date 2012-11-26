@@ -5759,6 +5759,16 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 					<funcdef>raster <function>ST_Transform</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>scalex</parameter></paramdef>
+					<paramdef choice="opt"><type>double precision </type> <parameter>scaley</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+					<funcdef>raster <function>ST_Transform</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
 					<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
@@ -5768,11 +5778,9 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 				  <funcprototype>
 					<funcdef>raster <function>ST_Transform</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>integer </type> <parameter>srid</parameter></paramdef>
+					<paramdef><type>raster </type> <parameter>alignto</parameter></paramdef>
 					<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
 					<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>scalex</parameter></paramdef>
-					<paramdef choice="opt"><type>double precision </type> <parameter>scaley</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -5783,9 +5791,16 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 				<para>Reprojects a raster in a known spatial reference system to another known spatial reference system using specified pixel warping algorithm. 
 				    Uses 'NearestNeighbor' if no algorithm is specified and maxerror percent of 0.125 if no maxerr is specified.</para>
 				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
+
+				<para>
+					Unlike the other variants, Variant 3 requires a reference raster as <varname>alignto</varname>. The transformed raster will be transformed to the spatial reference system (SRID) of the reference raster and be aligned (ST_SameAlignment = TRUE) to the reference raster.
+				</para>
+
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 				<note><para>If you find your transformation support is not working right, you may need to set the environment variable PROJSO to the .so or .dll projection library
 					your PostGIS is using.  This just needs to have the name of the file. So for example on windows, you would in Control Panel -> System -> Environment Variables add a system variable called <varname>PROJSO</varname> and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1).  You'll have to restart your PostgreSQL service/daemon after this change.</para></note>
+
+				<para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
 			</refsection>
 				
 			<refsection>
@@ -5840,6 +5855,49 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 	</tbody>
 </tgroup>
 </informaltable>
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 3</title>
+
+				<para>The following shows the difference between using ST_Transform(raster, srid) and ST_Transform(raster, alignto)</para>
+				<programlisting>
+WITH foo AS (
+	SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 600000, 100, -100, 0, 0, 2163), 1, '16BUI', 1, 0) AS rast UNION ALL
+	SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 600000, 100, -100, 0, 0, 2163), 1, '16BUI', 2, 0) AS rast UNION ALL
+	SELECT 2, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499600, 600000, 100, -100, 0, 0, 2163), 1, '16BUI', 3, 0) AS rast UNION ALL
+
+	SELECT 3, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 599800, 100, -100, 0, 0, 2163), 1, '16BUI', 10, 0) AS rast UNION ALL
+	SELECT 4, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 599800, 100, -100, 0, 0, 2163), 1, '16BUI', 20, 0) AS rast UNION ALL
+	SELECT 5, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499600, 599800, 100, -100, 0, 0, 2163), 1, '16BUI', 30, 0) AS rast UNION ALL
+
+	SELECT 6, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 599600, 100, -100, 0, 0, 2163), 1, '16BUI', 100, 0) AS rast UNION ALL
+	SELECT 7, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 599600, 100, -100, 0, 0, 2163), 1, '16BUI', 200, 0) AS rast UNION ALL
+	SELECT 8, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499600, 599600, 100, -100, 0, 0, 2163), 1, '16BUI', 300, 0) AS rast
+), bar AS (
+	SELECT
+		ST_Transform(rast, 4269) AS alignto
+	FROM foo
+	LIMIT 1
+), baz AS (
+	SELECT
+		rid,
+		rast,
+		ST_Transform(rast, 4269) AS not_aligned,
+		ST_Transform(rast, alignto) AS aligned
+	FROM foo
+	CROSS JOIN bar
+)
+SELECT
+	ST_SameAlignment(rast) AS rast,
+	ST_SameAlignment(not_aligned) AS not_aligned,
+	ST_SameAlignment(aligned) AS aligned
+FROM baz
+
+ rast | not_aligned | aligned 
+------+-------------+---------
+ t    | f           | t
+				</programlisting>
 			</refsection>
 
 			<refsection>

@@ -590,6 +590,41 @@ FROM (
 	ORDER BY rid
 ) foo;
 
+DROP TABLE raster_resample_src;
+DROP TABLE raster_resample_dst;
+
+WITH foo AS (
+	SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 600000, 100, -100, 0, 0, 992163), 1, '16BUI', 1, 0) AS rast UNION ALL
+	SELECT 1, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 600000, 100, -100, 0, 0, 992163), 1, '16BUI', 2, 0) AS rast UNION ALL
+	SELECT 2, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499600, 600000, 100, -100, 0, 0, 992163), 1, '16BUI', 3, 0) AS rast UNION ALL
+
+	SELECT 3, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 599800, 100, -100, 0, 0, 992163), 1, '16BUI', 10, 0) AS rast UNION ALL
+	SELECT 4, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 599800, 100, -100, 0, 0, 992163), 1, '16BUI', 20, 0) AS rast UNION ALL
+	SELECT 5, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499600, 599800, 100, -100, 0, 0, 992163), 1, '16BUI', 30, 0) AS rast UNION ALL
+
+	SELECT 6, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 599600, 100, -100, 0, 0, 992163), 1, '16BUI', 100, 0) AS rast UNION ALL
+	SELECT 7, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499800, 599600, 100, -100, 0, 0, 992163), 1, '16BUI', 200, 0) AS rast UNION ALL
+	SELECT 8, ST_AddBand(ST_MakeEmptyRaster(2, 2, -499600, 599600, 100, -100, 0, 0, 992163), 1, '16BUI', 300, 0) AS rast
+), bar AS (
+	SELECT
+		ST_Transform(rast, 994269) AS alignto
+	FROM foo
+	LIMIT 1
+), baz AS (
+	SELECT
+		rid,
+		rast,
+		ST_Transform(rast, 994269) AS not_aligned,
+		ST_Transform(rast, alignto) AS aligned
+	FROM foo
+	CROSS JOIN bar
+)
+SELECT
+	ST_SameAlignment(rast) AS rast,
+	ST_SameAlignment(not_aligned) AS not_aligned,
+	ST_SameAlignment(aligned) AS aligned
+FROM baz;
+
 DELETE FROM "spatial_ref_sys" WHERE srid = 992163;
 DELETE FROM "spatial_ref_sys" WHERE srid = 993309;
 DELETE FROM "spatial_ref_sys" WHERE srid = 993310;
@@ -597,5 +632,3 @@ DELETE FROM "spatial_ref_sys" WHERE srid = 994269;
 DELETE FROM "spatial_ref_sys" WHERE srid = 984269;
 DELETE FROM "spatial_ref_sys" WHERE srid = 974269;
 
-DROP TABLE raster_resample_src;
-DROP TABLE raster_resample_dst;

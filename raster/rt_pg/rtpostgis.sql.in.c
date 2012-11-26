@@ -2074,6 +2074,15 @@ CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalexy doubl
 	AS $$ SELECT _st_resample($1, $4, $5, $2, $3, $3) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
+CREATE OR REPLACE FUNCTION st_transform(
+	rast raster, 
+	alignto raster,
+	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
+)
+	RETURNS raster
+	AS $$ SELECT st_resample($1, $2, $3, $4, TRUE) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
 -----------------------------------------------------------------------
 -- ST_Rescale
 -----------------------------------------------------------------------
