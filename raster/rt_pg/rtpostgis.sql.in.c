@@ -3978,8 +3978,8 @@ CREATE OR REPLACE FUNCTION st_value(rast raster, band integer, pt geometry, excl
         y := st_y(pt);
         RETURN st_value(rast,
                         band,
-                        st_world2rastercoordx(rast, x, y),
-                        st_world2rastercoordy(rast, x, y),
+                        st_worldtorastercoordx(rast, x, y),
+                        st_worldtorastercoordy(rast, x, y),
                         exclude_nodata_value);
     END;
     $$
@@ -4510,10 +4510,10 @@ CREATE OR REPLACE FUNCTION st_pixelascentroid(rast raster, x integer, y integer)
 -----------------------------------------------------------------------
 
 -----------------------------------------------------------------------
--- ST_World2RasterCoord
+-- ST_WorldToRasterCoord
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION _st_world2rastercoord(
+CREATE OR REPLACE FUNCTION _st_worldtorastercoord(
 	rast raster,
 	longitude double precision DEFAULT NULL, latitude double precision DEFAULT NULL,
 	OUT columnx integer,
@@ -4523,26 +4523,26 @@ CREATE OR REPLACE FUNCTION _st_world2rastercoord(
 	LANGUAGE 'c' IMMUTABLE;
 
 ---------------------------------------------------------------------------------
--- ST_World2RasterCoord(rast raster, longitude float8, latitude float8)
+-- ST_WorldToRasterCoord(rast raster, longitude float8, latitude float8)
 -- Returns the pixel column and row covering the provided X and Y world
 -- coordinates.
 -- This function works even if the world coordinates are outside the raster extent.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_world2rastercoord(
+CREATE OR REPLACE FUNCTION st_worldtorastercoord(
 	rast raster,
 	longitude double precision, latitude double precision,
 	OUT columnx integer,
 	OUT rowy integer
 )
-	AS $$ SELECT columnx, rowy FROM _st_world2rastercoord($1, $2, $3) $$
+	AS $$ SELECT columnx, rowy FROM _st_worldtorastercoord($1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_World2RasterCoordX(rast raster, pt geometry)
+-- ST_WorldToRasterCoordX(rast raster, pt geometry)
 -- Returns the pixel column and row covering the provided point geometry. 
 -- This function works even if the point is outside the raster extent.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_world2rastercoord(
+CREATE OR REPLACE FUNCTION st_worldtorastercoord(
 	rast raster, pt geometry,
 	OUT columnx integer,
 	OUT rowy integer
@@ -4560,42 +4560,42 @@ CREATE OR REPLACE FUNCTION st_world2rastercoord(
 			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
 
-		SELECT rc.columnx AS x, rc.rowy AS y INTO columnx, rowy FROM _st_world2rastercoord($1, st_x(pt), st_y(pt)) AS rc;
+		SELECT rc.columnx AS x, rc.rowy AS y INTO columnx, rowy FROM _st_worldtorastercoord($1, st_x(pt), st_y(pt)) AS rc;
 		RETURN;
 	END;
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_World2RasterCoordX(rast raster, xw float8, yw float8)
+-- ST_WorldToRasterCoordX(rast raster, xw float8, yw float8)
 -- Returns the column number of the pixel covering the provided X and Y world
 -- coordinates.
 -- This function works even if the world coordinates are outside the raster extent.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8, yw float8)
+CREATE OR REPLACE FUNCTION st_worldtorastercoordx(rast raster, xw float8, yw float8)
 	RETURNS int
-	AS $$ SELECT columnx FROM _st_world2rastercoord($1, $2, $3) $$
+	AS $$ SELECT columnx FROM _st_worldtorastercoord($1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_World2RasterCoordX(rast raster, xw float8)
+-- ST_WorldToRasterCoordX(rast raster, xw float8)
 -- Returns the column number of the pixels covering the provided world X coordinate
 -- for a non-rotated raster.
 -- This function works even if the world coordinate is outside the raster extent.
 -- This function returns an error if the raster is rotated. In this case you must
 -- also provide a Y.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, xw float8)
+CREATE OR REPLACE FUNCTION st_worldtorastercoordx(rast raster, xw float8)
 	RETURNS int
-	AS $$ SELECT columnx FROM _st_world2rastercoord($1, $2, NULL) $$
+	AS $$ SELECT columnx FROM _st_worldtorastercoord($1, $2, NULL) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_World2RasterCoordX(rast raster, pt geometry)
+-- ST_WorldToRasterCoordX(rast raster, pt geometry)
 -- Returns the column number of the pixel covering the provided point geometry.
 -- This function works even if the point is outside the raster extent.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, pt geometry)
+CREATE OR REPLACE FUNCTION st_worldtorastercoordx(rast raster, pt geometry)
 	RETURNS int AS
 	$$
 	DECLARE
@@ -4607,42 +4607,42 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordx(rast raster, pt geometry)
 		IF ST_SRID(rast) != ST_SRID(pt) THEN
 			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
-		SELECT columnx INTO xr FROM _st_world2rastercoord($1, st_x(pt), st_y(pt));
+		SELECT columnx INTO xr FROM _st_worldtorastercoord($1, st_x(pt), st_y(pt));
 		RETURN xr;
 	END;
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_World2RasterCoordY(rast raster, xw float8, yw float8)
+-- ST_WorldToRasterCoordY(rast raster, xw float8, yw float8)
 -- Returns the row number of the pixel covering the provided X and Y world
 -- coordinates.
 -- This function works even if the world coordinates are outside the raster extent.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, xw float8, yw float8)
+CREATE OR REPLACE FUNCTION st_worldtorastercoordy(rast raster, xw float8, yw float8)
 	RETURNS int
-	AS $$ SELECT rowy FROM _st_world2rastercoord($1, $2, $3) $$
+	AS $$ SELECT rowy FROM _st_worldtorastercoord($1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_World2RasterCoordY(rast raster, yw float8)
+-- ST_WorldToRasterCoordY(rast raster, yw float8)
 -- Returns the row number of the pixels covering the provided world Y coordinate
 -- for a non-rotated raster.
 -- This function works even if the world coordinate is outside the raster extent.
 -- This function returns an error if the raster is rotated. In this case you must
 -- also provide an X.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, yw float8)
+CREATE OR REPLACE FUNCTION st_worldtorastercoordy(rast raster, yw float8)
 	RETURNS int
-	AS $$ SELECT rowy FROM _st_world2rastercoord($1, NULL, $2) $$
+	AS $$ SELECT rowy FROM _st_worldtorastercoord($1, NULL, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_World2RasterCoordY(rast raster, pt geometry)
+-- ST_WorldToRasterCoordY(rast raster, pt geometry)
 -- Returns the row number of the pixel covering the provided point geometry.
 -- This function works even if the point is outside the raster extent.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, pt geometry)
+CREATE OR REPLACE FUNCTION st_worldtorastercoordy(rast raster, pt geometry)
 	RETURNS int AS
 	$$
 	DECLARE
@@ -4654,17 +4654,17 @@ CREATE OR REPLACE FUNCTION st_world2rastercoordy(rast raster, pt geometry)
 		IF ST_SRID(rast) != ST_SRID(pt) THEN
 			RAISE EXCEPTION 'Raster and geometry do not have the same SRID';
 		END IF;
-		SELECT rowy INTO yr FROM _st_world2rastercoord($1, st_x(pt), st_y(pt));
+		SELECT rowy INTO yr FROM _st_worldtorastercoord($1, st_x(pt), st_y(pt));
 		RETURN yr;
 	END;
 	$$
 	LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_Raster2WorldCoord
+-- ST_RasterToWorldCoord
 ---------------------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION _st_raster2worldcoord(
+CREATE OR REPLACE FUNCTION _st_rastertoworldcoord(
 	rast raster,
 	columnx integer DEFAULT NULL, rowy integer DEFAULT NULL,
 	OUT longitude double precision,
@@ -4674,35 +4674,35 @@ CREATE OR REPLACE FUNCTION _st_raster2worldcoord(
 	LANGUAGE 'c' IMMUTABLE;
 
 ---------------------------------------------------------------------------------
--- ST_Raster2WorldCoordX(rast raster, xr int, yr int)
+-- ST_RasterToWorldCoordX(rast raster, xr int, yr int)
 -- Returns the longitude and latitude of the upper left corner of the pixel
 -- located at the provided pixel column and row.
 -- This function works even if the provided raster column and row are beyond or
 -- below the raster width and height.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_raster2worldcoord(
+CREATE OR REPLACE FUNCTION st_rastertoworldcoord(
 	rast raster,
 	columnx integer, rowy integer,
 	OUT longitude double precision,
 	OUT latitude double precision
 )
-	AS $$ SELECT longitude, latitude FROM _st_raster2worldcoord($1, $2, $3) $$
+	AS $$ SELECT longitude, latitude FROM _st_rastertoworldcoord($1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_Raster2WorldCoordX(rast raster, xr int, yr int)
+-- ST_RasterToWorldCoordX(rast raster, xr int, yr int)
 -- Returns the X world coordinate of the upper left corner of the pixel located at
 -- the provided column and row numbers.
 -- This function works even if the provided raster column and row are beyond or
 -- below the raster width and height.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int, yr int)
+CREATE OR REPLACE FUNCTION st_rastertoworldcoordx(rast raster, xr int, yr int)
 	RETURNS float8
-	AS $$ SELECT longitude FROM _st_raster2worldcoord($1, $2, $3) $$
+	AS $$ SELECT longitude FROM _st_rastertoworldcoord($1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_Raster2WorldCoordX(rast raster, xr int)
+-- ST_RasterToWorldCoordX(rast raster, xr int)
 -- Returns the X world coordinate of the upper left corner of the pixel located at
 -- the provided column number for a non-rotated raster.
 -- This function works even if the provided raster column is beyond or below the
@@ -4710,25 +4710,25 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int, yr int)
 -- This function returns an error if the raster is rotated. In this case you must
 -- also provide a Y.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_raster2worldcoordx(rast raster, xr int)
+CREATE OR REPLACE FUNCTION st_rastertoworldcoordx(rast raster, xr int)
 	RETURNS float8
-	AS $$ SELECT longitude FROM _st_raster2worldcoord($1, $2, NULL) $$
+	AS $$ SELECT longitude FROM _st_rastertoworldcoord($1, $2, NULL) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_Raster2WorldCoordY(rast raster, xr int, yr int)
+-- ST_RasterToWorldCoordY(rast raster, xr int, yr int)
 -- Returns the Y world coordinate of the upper left corner of the pixel located at
 -- the provided column and row numbers.
 -- This function works even if the provided raster column and row are beyond or
 -- below the raster width and height.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, xr int, yr int)
+CREATE OR REPLACE FUNCTION st_rastertoworldcoordy(rast raster, xr int, yr int)
 	RETURNS float8
-	AS $$ SELECT latitude FROM _st_raster2worldcoord($1, $2, $3) $$
+	AS $$ SELECT latitude FROM _st_rastertoworldcoord($1, $2, $3) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 ---------------------------------------------------------------------------------
--- ST_Raster2WorldCoordY(rast raster, yr int)
+-- ST_RasterToWorldCoordY(rast raster, yr int)
 -- Returns the Y world coordinate of the upper left corner of the pixel located at
 -- the provided row number for a non-rotated raster.
 -- This function works even if the provided raster row is beyond or below the
@@ -4736,9 +4736,9 @@ CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, xr int, yr int)
 -- This function returns an error if the raster is rotated. In this case you must
 -- also provide an X.
 ---------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION st_raster2worldcoordy(rast raster, yr int)
+CREATE OR REPLACE FUNCTION st_rastertoworldcoordy(rast raster, yr int)
 	RETURNS float8
-	AS $$ SELECT latitude FROM _st_raster2worldcoord($1, NULL, $2) $$
+	AS $$ SELECT latitude FROM _st_rastertoworldcoord($1, NULL, $2) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
@@ -5161,14 +5161,14 @@ CREATE OR REPLACE FUNCTION _st_intersects(geom geometry, rast raster, nband inte
 --RAISE NOTICE 'x1w=%, y1w=%, x2w=%, y2w=%', x1w, y1w, x2w, y2w;
 
 		-- Convert world coordinates to raster coordinates
-		x1 := st_world2rastercoordx(rast, x1w, y1w);
-		y1 := st_world2rastercoordy(rast, x1w, y1w);
-		x2 := st_world2rastercoordx(rast, x2w, y1w);
-		y2 := st_world2rastercoordy(rast, x2w, y1w);
-		x3 := st_world2rastercoordx(rast, x1w, y2w);
-		y3 := st_world2rastercoordy(rast, x1w, y2w);
-		x4 := st_world2rastercoordx(rast, x2w, y2w);
-		y4 := st_world2rastercoordy(rast, x2w, y2w);
+		x1 := st_worldtorastercoordx(rast, x1w, y1w);
+		y1 := st_worldtorastercoordy(rast, x1w, y1w);
+		x2 := st_worldtorastercoordx(rast, x2w, y1w);
+		y2 := st_worldtorastercoordy(rast, x2w, y1w);
+		x3 := st_worldtorastercoordx(rast, x1w, y2w);
+		y3 := st_worldtorastercoordy(rast, x1w, y2w);
+		x4 := st_worldtorastercoordx(rast, x2w, y2w);
+		y4 := st_worldtorastercoordy(rast, x2w, y2w);
 
 --RAISE NOTICE 'x1=%, y1=%, x2=%, y2=%, x3=%, y3=%, x4=%, y4=%', x1, y1, x2, y2, x3, y3, x4, y4;
 
@@ -5774,7 +5774,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision
-	AS $$ SELECT st_nearestvalue($1, $2, st_setsrid(st_makepoint(st_raster2worldcoordx($1, $3, $4), st_raster2worldcoordy($1, $3, $4)), st_srid($1)), $5) $$
+	AS $$ SELECT st_nearestvalue($1, $2, st_setsrid(st_makepoint(st_rastertoworldcoordx($1, $3, $4), st_rastertoworldcoordy($1, $3, $4)), st_srid($1)), $5) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_nearestvalue(
@@ -5783,7 +5783,7 @@ CREATE OR REPLACE FUNCTION st_nearestvalue(
 	exclude_nodata_value boolean DEFAULT TRUE
 )
 	RETURNS double precision
-	AS $$ SELECT st_nearestvalue($1, 1, st_setsrid(st_makepoint(st_raster2worldcoordx($1, $2, $3), st_raster2worldcoordy($1, $2, $3)), st_srid($1)), $4) $$
+	AS $$ SELECT st_nearestvalue($1, 1, st_setsrid(st_makepoint(st_rastertoworldcoordx($1, $2, $3), st_rastertoworldcoordy($1, $2, $3)), st_srid($1)), $4) $$
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
@@ -5846,8 +5846,8 @@ CREATE OR REPLACE FUNCTION st_neighborhood(
 
 		SELECT _st_neighborhood(
 			$1, $2,
-			st_world2rastercoordx(rast, wx, wy),
-			st_world2rastercoordy(rast, wx, wy),
+			st_worldtorastercoordx(rast, wx, wy),
+			st_worldtorastercoordy(rast, wx, wy),
 			$4, $5,
 			$6
 		) INTO rtn;

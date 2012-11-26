@@ -356,8 +356,8 @@ DROP FUNCTION IF EXISTS st_intersects(raster, integer, raster, integer);
 DROP FUNCTION IF EXISTS st_intersects(raster, raster);
 
 -- functions have changed dramatically
-DROP FUNCTION IF EXISTS st_intersection(rast raster, band integer, geom geometry);
-DROP FUNCTION IF EXISTS st_intersection(rast raster, geom geometry);
+DROP FUNCTION IF EXISTS st_intersection(raster, integer, geometry);
+DROP FUNCTION IF EXISTS st_intersection(raster, geometry);
 
 -- function was renamed
 DROP FUNCTION IF EXISTS st_minpossibleval(text);
@@ -450,3 +450,20 @@ DROP FUNCTION IF EXISTS st_tile(raster, integer, integer, integer);
 -- function signatures changed
 DROP FUNCTION IF EXISTS st_setvalue(raster, integer, geometry, double precision);
 DROP FUNCTION IF EXISTS st_setvalue(raster, geometry, double precision);
+
+-- function name change
+DROP FUNCTION IF EXISTS st_world2rastercoord(raster, double precision, double precision);
+DROP FUNCTION IF EXISTS st_world2rastercoord(raster, geometry);
+DROP FUNCTION IF EXISTS _st_world2rastercoord(raster, double precision, double precision);
+DROP FUNCTION IF EXISTS st_world2rastercoordx(raster, float8, float8);
+DROP FUNCTION IF EXISTS st_world2rastercoordx(raster, float8);
+DROP FUNCTION IF EXISTS st_world2rastercoordx(raster, geometry);
+DROP FUNCTION IF EXISTS st_world2rastercoordy(raster, float8, float8);
+DROP FUNCTION IF EXISTS st_world2rastercoordy(raster, float8);
+DROP FUNCTION IF EXISTS st_world2rastercoordy(raster, geometry);
+DROP FUNCTION IF EXISTS st_raster2worldcoord( raster, integer, integer);
+DROP FUNCTION IF EXISTS _st_raster2worldcoord(raster, integer, integer);
+DROP FUNCTION IF EXISTS st_raster2worldcoordx(raster, int, int);
+DROP FUNCTION IF EXISTS st_raster2worldcoordx(raster, int);
+DROP FUNCTION IF EXISTS st_raster2worldcoordy(raster, int, int);
+DROP FUNCTION IF EXISTS st_raster2worldcoordy(raster, int);

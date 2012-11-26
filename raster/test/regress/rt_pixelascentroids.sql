@@ -34,8 +34,8 @@ DROP FUNCTION make_test_raster();
 SELECT
 	(pix).x,
 	(pix).y,
-	ST_Raster2WorldCoordX(rast, (pix).x, (pix).y),
-	ST_Raster2WorldCoordY(rast, (pix).x, (pix).y),
+	ST_RasterToWorldCoordX(rast, (pix).x, (pix).y),
+	ST_RasterToWorldCoordY(rast, (pix).x, (pix).y),
 	(pix).val,
 	ST_AsText((pix).geom)
 FROM (SELECT rast, ST_PixelAsCentroids(rast) AS pix FROM raster_pixelascentroids) foo
@@ -44,8 +44,8 @@ ORDER BY 1, 2, 3, 4, 6;
 SELECT
 	(pix).x,
 	(pix).y,
-	ST_Raster2WorldCoordX(rast, (pix).x, (pix).y),
-	ST_Raster2WorldCoordY(rast, (pix).x, (pix).y),
+	ST_RasterToWorldCoordX(rast, (pix).x, (pix).y),
+	ST_RasterToWorldCoordY(rast, (pix).x, (pix).y),
 	(pix).val,
 	ST_AsText((pix).geom)
 FROM (SELECT rast, ST_PixelAsCentroids(rast, NULL) AS pix FROM raster_pixelascentroids) foo
@@ -54,8 +54,8 @@ ORDER BY 1, 2, 3, 4, 6;
 SELECT
 	(pix).x,
 	(pix).y,
-	ST_Raster2WorldCoordX(rast, (pix).x, (pix).y),
-	ST_Raster2WorldCoordY(rast, (pix).x, (pix).y),
+	ST_RasterToWorldCoordX(rast, (pix).x, (pix).y),
+	ST_RasterToWorldCoordY(rast, (pix).x, (pix).y),
 	(pix).val,
 	ST_AsText((pix).geom)
 FROM (SELECT rast, ST_PixelAsCentroids(rast, 1, FALSE) AS pix FROM raster_pixelascentroids) foo

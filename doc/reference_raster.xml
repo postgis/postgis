@@ -2180,16 +2180,16 @@ FROM dummy_rast;
 			</refsection>
 		</refentry>
 
-		<refentry id="RT_ST_Raster2WorldCoord">
+		<refentry id="RT_ST_RasterToWorldCoord">
 			<refnamediv>
-				<refname>ST_Raster2WorldCoord</refname>
+				<refname>ST_RasterToWorldCoord</refname>
 				<refpurpose>Returns the raster's upper left corner as geometric X and Y (longitude and latitude) given a column and row. Column and row starts at 1.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>record <function>ST_Raster2WorldCoord</function></funcdef>
+					<funcdef>record <function>ST_RasterToWorldCoord</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>
@@ -2216,8 +2216,8 @@ FROM dummy_rast;
 -- non-skewed raster
 SELECT
 	rid,
-	(ST_Raster2WorldCoord(rast,1, 1)).*,
-	(ST_Raster2WorldCoord(rast,2, 2)).*
+	(ST_RasterToWorldCoord(rast,1, 1)).*,
+	(ST_RasterToWorldCoord(rast,2, 2)).*
 FROM dummy_rast
 
  rid | longitude  | latitude | longitude |  latitude  
@@ -2230,8 +2230,8 @@ FROM dummy_rast
 -- skewed raster
 SELECT
 	rid,
-	(ST_Raster2WorldCoord(rast, 1, 1)).*,
-	(ST_Raster2WorldCoord(rast, 2, 3)).*
+	(ST_RasterToWorldCoord(rast, 1, 1)).*,
+	(ST_RasterToWorldCoord(rast, 2, 3)).*
 FROM (
 	SELECT
 		rid,
@@ -2251,16 +2251,16 @@ FROM (
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_Raster2WorldCoordX" />, 
-					<xref linkend="RT_ST_Raster2WorldCoordY" />, 
+					<xref linkend="RT_ST_RasterToWorldCoordX" />, 
+					<xref linkend="RT_ST_RasterToWorldCoordY" />, 
 					<xref linkend="RT_ST_SetSkew" />
 				</para>
 			</refsection>
 		</refentry>
 		
-		<refentry id="RT_ST_Raster2WorldCoordX">
+		<refentry id="RT_ST_RasterToWorldCoordX">
 			<refnamediv>
-				<refname>ST_Raster2WorldCoordX</refname>
+				<refname>ST_RasterToWorldCoordX</refname>
 				<refpurpose>Returns the geometric X coordinate upper left of a raster, column and row. Numbering of columns
 					and rows starts at 1.</refpurpose>
 			</refnamediv>
@@ -2268,12 +2268,12 @@ FROM (
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>float8 <function>ST_Raster2WorldCoordX</function></funcdef>
+					<funcdef>float8 <function>ST_RasterToWorldCoordX</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>float8 <function>ST_Raster2WorldCoordX</function></funcdef>
+					<funcdef>float8 <function>ST_RasterToWorldCoordX</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>
@@ -2292,6 +2292,9 @@ FROM (
 				<note><para>For non-skewed rasters, providing the X column is sufficient.  For skewed rasters,
 						the georeferenced coordinate is a function of the ST_ScaleX and ST_SkewX and row and column.
 						An error will be raised if you give just the X column for a skewed raster.</para></note>
+
+				<para>Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordX</para>
+
 				</refsection>
 				
 				<refsection>
@@ -2299,8 +2302,8 @@ FROM (
 				
 					<programlisting>
 -- non-skewed raster providing column is sufficient					
-SELECT rid, ST_Raster2WorldCoordX(rast,1) As x1coord, 
-	ST_Raster2WorldCoordX(rast,2) As x2coord,
+SELECT rid, ST_RasterToWorldCoordX(rast,1) As x1coord, 
+	ST_RasterToWorldCoordX(rast,2) As x2coord,
 	ST_ScaleX(rast) As pixelx
 FROM dummy_rast;
 
@@ -2312,8 +2315,8 @@ FROM dummy_rast;
 				
 					<programlisting>
 -- for fun lets skew it				
-SELECT rid, ST_Raster2WorldCoordX(rast, 1, 1) As x1coord, 
-	ST_Raster2WorldCoordX(rast, 2, 3) As x2coord,
+SELECT rid, ST_RasterToWorldCoordX(rast, 1, 1) As x1coord, 
+	ST_RasterToWorldCoordX(rast, 2, 3) As x2coord,
 	ST_ScaleX(rast) As pixelx
 FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
 
@@ -2328,13 +2331,13 @@ FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewX" /></para>
+				<para><xref linkend="RT_ST_ScaleX" />, <xref linkend="RT_ST_RasterToWorldCoordY" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewX" /></para>
 			</refsection>
 		</refentry>
 
-		<refentry id="RT_ST_Raster2WorldCoordY">
+		<refentry id="RT_ST_RasterToWorldCoordY">
 			<refnamediv>
-				<refname>ST_Raster2WorldCoordY</refname>
+				<refname>ST_RasterToWorldCoordY</refname>
 				<refpurpose>Returns the geometric Y coordinate upper left corner of a raster, column and row. Numbering of columns
 					and rows starts at 1. </refpurpose>
 			</refnamediv>
@@ -2342,12 +2345,12 @@ FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>float8 <function>ST_Raster2WorldCoordY</function></funcdef>
+					<funcdef>float8 <function>ST_RasterToWorldCoordY</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>
 				  </funcprototype>
 				  <funcprototype>
-					<funcdef>float8 <function>ST_Raster2WorldCoordY</function></funcdef>
+					<funcdef>float8 <function>ST_RasterToWorldCoordY</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>xcolumn</parameter></paramdef>
 					<paramdef><type>integer </type> <parameter>yrow</parameter></paramdef>
@@ -2366,6 +2369,8 @@ FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
 				<note><para>For non-skewed rasters, providing the Y column is sufficient. For skewed rasters,
 						the georeferenced coordinate is a function of the ST_ScaleY and ST_SkewY and row and column.
 						An error will be raised if you give just the Y row for a skewed raster.</para></note>
+
+				<para>Changed: 2.1.0 In prior versions, this was called ST_Raster2WorldCoordY</para>
 				</refsection>
 				
 				<refsection>
@@ -2373,8 +2378,8 @@ FROM (SELECT rid, ST_SetSkew(rast, 100.5, 0) As rast FROM dummy_rast) As foo;
 				
 					<programlisting>
 -- non-skewed raster providing row is sufficient					
-SELECT rid, ST_Raster2WorldCoordY(rast,1) As y1coord, 
-	ST_Raster2WorldCoordY(rast,3) As y2coord,
+SELECT rid, ST_RasterToWorldCoordY(rast,1) As y1coord, 
+	ST_RasterToWorldCoordY(rast,3) As y2coord,
 	ST_ScaleY(rast) As pixely
 FROM dummy_rast;
 
@@ -2386,8 +2391,8 @@ FROM dummy_rast;
 				
 					<programlisting>
 -- for fun lets skew it				
-SELECT rid, ST_Raster2WorldCoordY(rast,1,1) As y1coord, 
-	ST_Raster2WorldCoordY(rast,2,3) As y2coord,
+SELECT rid, ST_RasterToWorldCoordY(rast,1,1) As y1coord, 
+	ST_RasterToWorldCoordY(rast,2,3) As y2coord,
 	ST_ScaleY(rast) As pixely
 FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
 
@@ -2402,7 +2407,7 @@ FROM (SELECT rid, ST_SetSkew(rast,0,100.5) As rast FROM dummy_rast) As foo;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewY" /></para>
+				<para><xref linkend="RT_ST_ScaleY" />, <xref linkend="RT_ST_RasterToWorldCoordX" />, <xref linkend="RT_ST_SetSkew" />, <xref linkend="RT_ST_SkewY" /></para>
 			</refsection>
 		</refentry>
 
@@ -2724,22 +2729,22 @@ rastwidth
 		</refentry>
 		
 
-		<refentry id="RT_ST_World2RasterCoord">
+		<refentry id="RT_ST_WorldToRasterCoord">
 			<refnamediv>
-				<refname>ST_World2RasterCoord</refname>
+				<refname>ST_WorldToRasterCoord</refname>
 				<refpurpose>	Returns the upper left corner as column and row given geometric X and Y (longitude and latitude) or a point geometry expressed in the spatial reference coordinate system of the raster.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>integer <function>ST_World2RasterCoord</function></funcdef>
+					<funcdef>integer <function>ST_WorldToRasterCoord</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 				  </funcprototype>
 				  
 				   <funcprototype>
-					<funcdef>integer <function>ST_World2RasterCoord</function></funcdef>
+					<funcdef>integer <function>ST_WorldToRasterCoord</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>longitude</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>latitude</parameter></paramdef>
@@ -2766,8 +2771,8 @@ rastwidth
 				<programlisting>
 SELECT
 	rid,
-	(ST_World2RasterCoord(rast,3427927.8,20.5)).*,
-	(ST_World2RasterCoord(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast)))).*
+	(ST_WorldToRasterCoord(rast,3427927.8,20.5)).*,
+	(ST_WorldToRasterCoord(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast)))).*
 FROM dummy_rast;
 
  rid | columnx |   rowy    | columnx |   rowy    
@@ -2781,18 +2786,18 @@ FROM dummy_rast;
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_World2RasterCoordX" />,
-					<xref linkend="RT_ST_World2RasterCoordY" />,
-					<xref linkend="RT_ST_Raster2WorldCoordX" />,
-					<xref linkend="RT_ST_Raster2WorldCoordY" />,
+					<xref linkend="RT_ST_WorldToRasterCoordX" />,
+					<xref linkend="RT_ST_WorldToRasterCoordY" />,
+					<xref linkend="RT_ST_RasterToWorldCoordX" />,
+					<xref linkend="RT_ST_RasterToWorldCoordY" />,
 					<xref linkend="RT_ST_SRID" />
 				</para>
 			</refsection>
 		</refentry>
 
-		<refentry id="RT_ST_World2RasterCoordX">
+		<refentry id="RT_ST_WorldToRasterCoordX">
 			<refnamediv>
-				<refname>ST_World2RasterCoordX</refname>
+				<refname>ST_WorldToRasterCoordX</refname>
 				<refpurpose>Returns the column in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw) represented
 				in world spatial reference system of raster.</refpurpose>
 			</refnamediv>
@@ -2800,19 +2805,19 @@ FROM dummy_rast;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>integer <function>ST_World2RasterCoordX</function></funcdef>
+					<funcdef>integer <function>ST_WorldToRasterCoordX</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>integer <function>ST_World2RasterCoordX</function></funcdef>
+					<funcdef>integer <function>ST_WorldToRasterCoordX</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>xw</parameter></paramdef>
 				  </funcprototype>
 				  
 				   <funcprototype>
-					<funcdef>integer <function>ST_World2RasterCoordX</function></funcdef>
+					<funcdef>integer <function>ST_WorldToRasterCoordX</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>xw</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>yw</parameter></paramdef>
@@ -2825,14 +2830,15 @@ FROM dummy_rast;
 				
 				<para>Returns the column in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
 					is not skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the raster.</para>
+				<para>Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordX</para>
 			</refsection>
 				
 			<refsection>
 				<title>Examples</title>
 			
-				<programlisting>SELECT rid, ST_World2RasterCoordX(rast,3427927.8) As xcoord, 
-		ST_World2RasterCoordX(rast,3427927.8,20.5) As xcoord_xwyw, 
-		ST_World2RasterCoordX(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast))) As ptxcoord
+				<programlisting>SELECT rid, ST_WorldToRasterCoordX(rast,3427927.8) As xcoord, 
+		ST_WorldToRasterCoordX(rast,3427927.8,20.5) As xcoord_xwyw, 
+		ST_WorldToRasterCoordX(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast))) As ptxcoord
 FROM dummy_rast;
 
  rid | xcoord  |  xcoord_xwyw   | ptxcoord
@@ -2846,16 +2852,16 @@ FROM dummy_rast;
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_Raster2WorldCoordX" />, 
-					<xref linkend="RT_ST_Raster2WorldCoordY" />, 
+					<xref linkend="RT_ST_RasterToWorldCoordX" />, 
+					<xref linkend="RT_ST_RasterToWorldCoordY" />, 
 					<xref linkend="RT_ST_SRID" />
 				</para>
 			</refsection>
 		</refentry>
 		
-		<refentry id="RT_ST_World2RasterCoordY">
+		<refentry id="RT_ST_WorldToRasterCoordY">
 			<refnamediv>
-				<refname>ST_World2RasterCoordY</refname>
+				<refname>ST_WorldToRasterCoordY</refname>
 				<refpurpose>Returns the row in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw) represented
 				in world spatial reference system of raster.</refpurpose>
 			</refnamediv>
@@ -2863,19 +2869,19 @@ FROM dummy_rast;
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>integer <function>ST_World2RasterCoordY</function></funcdef>
+					<funcdef>integer <function>ST_WorldToRasterCoordY</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 				  </funcprototype>
 				  
 				  <funcprototype>
-					<funcdef>integer <function>ST_World2RasterCoordY</function></funcdef>
+					<funcdef>integer <function>ST_WorldToRasterCoordY</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>xw</parameter></paramdef>
 				  </funcprototype>
 				  
 				   <funcprototype>
-					<funcdef>integer <function>ST_World2RasterCoordY</function></funcdef>
+					<funcdef>integer <function>ST_WorldToRasterCoordY</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>xw</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>yw</parameter></paramdef>
@@ -2888,14 +2894,15 @@ FROM dummy_rast;
 				
 				<para>Returns the row in the raster of the point geometry (pt) or a X and Y world coordinate (xw, yw).  A point, or (both xw and yw world coordinates are required if a raster is skewed).  If a raster
 					is not skewed then xw is sufficient. World coordinates are in the spatial reference coordinate system of the raster.</para>
+				<para>Changed: 2.1.0 In prior versions, this was called ST_World2RasterCoordY</para>
 			</refsection>
 				
 			<refsection>
 				<title>Examples</title>
 			
-				<programlisting>SELECT rid, ST_World2RasterCoordY(rast,20.5) As ycoord, 
-		ST_World2RasterCoordY(rast,3427927.8,20.5) As ycoord_xwyw, 
-		ST_World2RasterCoordY(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast))) As ptycoord
+				<programlisting>SELECT rid, ST_WorldToRasterCoordY(rast,20.5) As ycoord, 
+		ST_WorldToRasterCoordY(rast,3427927.8,20.5) As ycoord_xwyw, 
+		ST_WorldToRasterCoordY(rast,ST_GeomFromText('POINT(3427927.8 20.5)',ST_SRID(rast))) As ptycoord
 FROM dummy_rast;
 
  rid |  ycoord   | ycoord_xwyw | ptycoord
@@ -2908,7 +2915,7 @@ FROM dummy_rast;
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_Raster2WorldCoordX" />, <xref linkend="RT_ST_Raster2WorldCoordY" />, <xref linkend="RT_ST_SRID" /></para>
+				<para><xref linkend="RT_ST_RasterToWorldCoordX" />, <xref linkend="RT_ST_RasterToWorldCoordY" />, <xref linkend="RT_ST_SRID" /></para>
 			</refsection>
 		</refentry>
 

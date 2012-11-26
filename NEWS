@@ -19,6 +19,11 @@ PostGIS 2.1.0
     Use ST_MapAlgebra instead
   - 1 and 2 raster variants of ST_MapAlgebraExpr.
     Use expression variants of ST_MapAlgebra instead
+  - #2104, ST_World2RasterCoord, ST_World2RasterCoordX and
+    ST_World2RasterCoordY renamed to ST_WorldToRasterCoord,
+    ST_WorldToRasterCoordX and ST_WorldToRasterCoordY. ST_Raster2WorldCoord,
+    ST_Raster2WorldCoordX and ST_Raster2WorldCoordY renamed to
+    ST_RasterToWorldCoord, ST_RasterToWorldCoordX and ST_RasterToWorldCoordY
 
 * New Features *
 

@@ -57,8 +57,8 @@ TEST_PROPS = \
 	rt_isempty \
 	rt_hasnoband \
 	rt_metadata \
-	rt_raster2worldcoord \
-	rt_world2rastercoord
+	rt_rastertoworldcoord \
+	rt_worldtorastercoord
 
 TEST_BANDPROPS = \
 	rt_band_properties \
