@@ -6712,6 +6712,7 @@ static void testAlignment() {
 	rt_raster rast2;
 	int rtn;
 	int aligned;
+	char *reason;
 
 	rast1 = rt_raster_new(2, 2);
 	assert(rast1);
@@ -6721,36 +6722,39 @@ static void testAlignment() {
 	assert(rast2);
 	rt_raster_set_scale(rast2, 1, 1);
 
-	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned, NULL);
 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned != 0));
 
 	rt_raster_set_scale(rast2, 0.1, 0.1);
-	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned, &reason);
 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned == 0));
+	CHECK(!strcmp(reason, "The rasters have different scales on the X axis"));
 	rt_raster_set_scale(rast2, 1, 1);
 
 	rt_raster_set_skews(rast2, -0.5, 0.5);
-	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned, &reason);
 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned == 0));
+	CHECK(!strcmp(reason, "The rasters have different skews on the X axis"));
 	rt_raster_set_skews(rast2, 0, 0);
 
 	rt_raster_set_offsets(rast2, 1, 1);
-	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned, NULL);
 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned != 0));
 
 	rt_raster_set_offsets(rast2, 2, 3);
-	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned, NULL);
 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned != 0));
 
 	rt_raster_set_offsets(rast2, 0.1, 0.1);
-	rtn = rt_raster_same_alignment(rast1, rast2, &aligned);
+	rtn = rt_raster_same_alignment(rast1, rast2, &aligned, &reason);
 	CHECK_EQUALS(rtn, ES_NONE);
 	CHECK((aligned == 0));
+	CHECK(!strcmp(reason, "The rasters (pixel corner coordinates) are not aligned"));
 
 	deepRelease(rast2);
 	deepRelease(rast1);

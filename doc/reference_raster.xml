@@ -12034,7 +12034,70 @@ NOTICE:  The two rasters provided have different SRIDs
 		  </refsection>	
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_Loading_Rasters" />, <xref linkend="RT_ST_MakeEmptyRaster" /></para>
+				<para>
+					<xref linkend="RT_Loading_Rasters" />, 
+					<xref linkend="RT_ST_NotSameAlignmentReason" />, 
+					<xref linkend="RT_ST_MakeEmptyRaster" />
+				</para>
+			</refsection>
+		</refentry>
+
+		<refentry id="RT_ST_NotSameAlignmentReason">
+			<refnamediv>
+				<refname>ST_NotSameAlignmentReason</refname>
+				<refpurpose>Returns text stating if rasters are aligned and if not aligned, a reason why.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>boolean <function>ST_SameAlignment</function></funcdef>
+						<paramdef><type>raster </type><parameter>rastA</parameter></paramdef>
+						<paramdef><type>raster </type><parameter>rastB</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				<para>Returns text stating if rasters are aligned and if not aligned, a reason why.</para>
+
+				<note>
+					<para>
+						If there are several reasons why the rasters are not aligned, only one reason (the first test to fail) will be returned.
+					</para>
+				</note>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT
+	ST_SameAlignment(
+		ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+		ST_MakeEmptyRaster(1, 1, 0, 0, 1.1, 1.1, 0, 0)
+	),
+	ST_NotSameAlignmentReason(
+		ST_MakeEmptyRaster(1, 1, 0, 0, 1, 1, 0, 0),
+		ST_MakeEmptyRaster(1, 1, 0, 0, 1.1, 1.1, 0, 0)
+	)
+;
+
+ st_samealignment |            st_notsamealignmentreason            
+------------------+-------------------------------------------------
+ f                | The rasters have different scales on the X axis
+(1 row)
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_Loading_Rasters" />, 
+					<xref linkend="RT_ST_SameAlignment" />
+				</para>
 			</refsection>
 		</refentry>
 

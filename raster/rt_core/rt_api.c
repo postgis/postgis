@@ -12351,7 +12351,8 @@ rt_errorstate rt_raster_fully_within_distance(
  *
  * @param rast1 : the first raster for alignment test
  * @param rast2 : the second raster for alignment test
- * @param aligned : non-zero value if the two rasters are aligned
+ * @param *aligned : non-zero value if the two rasters are aligned
+ * @param *reason : reason why rasters are not aligned
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
@@ -12359,7 +12360,7 @@ rt_errorstate
 rt_raster_same_alignment(
 	rt_raster rast1,
 	rt_raster rast2,
-	int *aligned
+	int *aligned, char **reason
 ) {
 	double xr;
 	double yr;
@@ -12369,29 +12370,30 @@ rt_raster_same_alignment(
 
 	assert(NULL != rast1);
 	assert(NULL != rast2);
+	assert(NULL != aligned);
 
 	err = 0;
 	/* same srid */
 	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
-		RASTER_DEBUG(3, "The two rasters provided have different SRIDs");
+		if (reason != NULL) *reason = "The rasters have different SRIDs";
 		err = 1;
 	}
 	/* scales must match */
 	else if (FLT_NEQ(fabs(rast1->scaleX), fabs(rast2->scaleX))) {
-		RASTER_DEBUG(3, "The two raster provided have different scales on the X axis");
+		if (reason != NULL) *reason = "The rasters have different scales on the X axis";
 		err = 1;
 	}
 	else if (FLT_NEQ(fabs(rast1->scaleY), fabs(rast2->scaleY))) {
-		RASTER_DEBUG(3, "The two raster provided have different scales on the Y axis");
+		if (reason != NULL) *reason = "The rasters have different scales on the Y axis";
 		err = 1;
 	}
 	/* skews must match */
 	else if (FLT_NEQ(rast1->skewX, rast2->skewX)) {
-		RASTER_DEBUG(3, "The two raster provided have different skews on the X axis");
+		if (reason != NULL) *reason = "The rasters have different skews on the X axis";
 		err = 1;
 	}
 	else if (FLT_NEQ(rast1->skewY, rast2->skewY)) {
-		RASTER_DEBUG(3, "The two raster provided have different skews on the Y axis");
+		if (reason != NULL) *reason = "The rasters have different skews on the Y axis";
 		err = 1;
 	}
 
@@ -12430,13 +12432,14 @@ rt_raster_same_alignment(
 
 	/* spatial coordinates are identical to that of first raster's upper-left corner */
 	if (FLT_EQ(xw, rast1->ipX) && FLT_EQ(yw, rast1->ipY)) {
-		RASTER_DEBUG(3, "The two rasters are aligned");
+		if (reason != NULL) *reason = "The rasters are aligned";
 		*aligned = 1;
 		return ES_NONE;
 	}
 
 	/* no alignment */
-	RASTER_DEBUG(3, "The two rasters are NOT aligned");
+	if (reason != NULL) *reason = "The rasters (pixel corner coordinates) are not aligned";
+
 	*aligned = 0;
 	return ES_NONE;
 }
@@ -12478,7 +12481,7 @@ rt_raster_from_two_rasters(
 	*noerr = 0;
 
 	/* rasters must be aligned */
-	if (rt_raster_same_alignment(rast1, rast2, &aligned) != ES_NONE) {
+	if (rt_raster_same_alignment(rast1, rast2, &aligned, NULL) != ES_NONE) {
 		rterror("rt_raster_from_two_rasters: Unable to test for alignment on the two rasters");
 		return NULL;
 	}
@@ -13654,7 +13657,7 @@ rt_raster_iterator(
 
 		/* check custom first if set. also skip if rasters are the same */
 		if (extenttype == ET_CUSTOM && rast != customextent) {
-			if (rt_raster_same_alignment(rast, customextent, &aligned) != ES_NONE) {
+			if (rt_raster_same_alignment(rast, customextent, &aligned, NULL) != ES_NONE) {
 				rterror("rt_raster_iterator: Unable to test for alignment between reference raster and custom extent");
 
 				_rti_iterator_arg_destroy(_param);
@@ -13672,7 +13675,7 @@ rt_raster_iterator(
 			if (_param->isempty[i] || rast == _param->raster[i])
 				continue;
 
-			if (rt_raster_same_alignment(rast, _param->raster[i], &aligned) != ES_NONE) {
+			if (rt_raster_same_alignment(rast, _param->raster[i], &aligned, NULL) != ES_NONE) {
 				rterror("rt_raster_iterator: Unable to test for alignment between reference raster and raster %d", i);
 
 				_rti_iterator_arg_destroy(_param);

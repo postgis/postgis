@@ -5069,6 +5069,15 @@ CREATE AGGREGATE st_samealignment(raster) (
 );
 
 -----------------------------------------------------------------------
+-- ST_NotSameAlignmentReason
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_notsamealignmentreason(rast1 raster, rast2 raster)
+	RETURNS text
+	AS 'MODULE_PATHNAME', 'RASTER_notSameAlignmentReason'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- ST_Intersects(raster, raster)
 -----------------------------------------------------------------------
 

@@ -88,4 +88,21 @@ NOTICE:  Values must be provided for both X and Y when specifying the scale.  Re
 5.7|992163|10|11|1|1000.000|-1000.000|0.000|0.000|-500000.000|600991.000|t|t|t
 5.8|992163|10|11|1|1000.000|-1000.000|0.000|0.000|-500000.000|600001.000|t|t|t
 5.9|992163|10|11|1|1000.000|-1000.000|0.000|0.000|-500000.000|600009.000|t|t|t
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters (pixel corner coordinates) are not aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
 t|f|t

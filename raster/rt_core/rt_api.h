@@ -1851,14 +1851,15 @@ rt_errorstate rt_raster_fully_within_distance(
  *
  * @param rast1 : the first raster for alignment test
  * @param rast2 : the second raster for alignment test
- * @param aligned : non-zero value if the two rasters are aligned
+ * @param *aligned : non-zero value if the two rasters are aligned
+ * @param *reason : reason why rasters are not aligned
  *
  * @return ES_NONE if success, ES_ERROR if error
  */
 rt_errorstate rt_raster_same_alignment(
 	rt_raster rast1,
 	rt_raster rast2,
-	int *aligned
+	int *aligned, char **reason
 );
 
 /*

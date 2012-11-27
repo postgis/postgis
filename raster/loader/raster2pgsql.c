@@ -646,7 +646,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 		rt_raster_set_geotransform_matrix(rx, x->gt);
 		rt_raster_set_geotransform_matrix(rref, ref->gt);
 
-		err = rt_raster_same_alignment(rx, rref, &aligned);
+		err = rt_raster_same_alignment(rx, rref, &aligned, NULL);
 		rt_raster_destroy(rx);
 		rt_raster_destroy(rref);
 		if (!err) {

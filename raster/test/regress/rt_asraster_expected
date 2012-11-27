@@ -10,10 +10,17 @@ NOTICE:  The geometry's SRID (993310) is not the same as the raster's SRID (9921
 NOTICE:  The geometry's SRID (993310) is not the same as the raster's SRID (992163).  The geometry will be transformed to the raster's projection
 NOTICE:  The geometry's SRID (993310) is not the same as the raster's SRID (992163).  The geometry will be transformed to the raster's projection
 NOTICE:  The geometry's SRID (993310) is not the same as the raster's SRID (992163).  The geometry will be transformed to the raster's projection
-NOTICE:  The two rasters provided have different scales on the X axis
-NOTICE:  The two rasters provided have different scales on the X axis
-NOTICE:  The two rasters provided have different scales on the X axis
-NOTICE:  The two rasters provided have different scales on the X axis
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters are aligned
+NOTICE:  The rasters have different scales on the X axis
+NOTICE:  The rasters have different scales on the X axis
+NOTICE:  The rasters have different scales on the X axis
+NOTICE:  The rasters have different scales on the X axis
 1.0||||||||||||||||
 1.1|993310|100|100|1|1406.537|-869.114|0.000|0.000|-175453.086|114987.661|8BUI|0.000|t|1.000|1.000|
 1.10|993310|141|87|1|1000.000|-1000.000|0.000|0.000|-175453.086|114987.661|32BF|0.000|t|1.000|1.000|

@@ -344,6 +344,7 @@ Datum RASTER_dfullywithin(PG_FUNCTION_ARGS);
 
 /* determine if two rasters are aligned */
 Datum RASTER_sameAlignment(PG_FUNCTION_ARGS);
+Datum RASTER_notSameAlignmentReason(PG_FUNCTION_ARGS);
 
 /* one-raster MapAlgebra */
 Datum RASTER_mapAlgebraExpr(PG_FUNCTION_ARGS);
@@ -13104,7 +13105,7 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 	uint32_t k;
 	int rtn;
 	int aligned = 0;
-	int err = 0;
+	char *reason = NULL;
 
 	for (i = 0, j = 0; i < set_count; i++) {
 		/* pgrast is null, return null */
@@ -13132,43 +13133,11 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 		}
 	}
 
-	err = 0;
-	/* SRID must match */
-	if (rt_raster_get_srid(rast[0]) != rt_raster_get_srid(rast[1])) {
-		elog(NOTICE, "The two rasters provided have different SRIDs");
-		err = 1;
-	}
-	/* scales must match */
-	else if (FLT_NEQ(fabs(rt_raster_get_x_scale(rast[0])), fabs(rt_raster_get_x_scale(rast[1])))) {
-		elog(NOTICE, "The two rasters provided have different scales on the X axis");
-		err = 1;
-	}
-	else if (FLT_NEQ(fabs(rt_raster_get_y_scale(rast[0])), fabs(rt_raster_get_y_scale(rast[1])))) {
-		elog(NOTICE, "The two rasters provided have different scales on the Y axis");
-		err = 1;
-	}
-	/* skews must match */
-	else if (FLT_NEQ(rt_raster_get_x_skew(rast[0]), rt_raster_get_x_skew(rast[1]))) {
-		elog(NOTICE, "The two rasters provided have different skews on the X axis");
-		err = 1;
-	}
-	else if (FLT_NEQ(rt_raster_get_y_skew(rast[0]), rt_raster_get_y_skew(rast[1]))) {
-		elog(NOTICE, "The two rasters provided have different skews on the Y axis");
-		err = 1;
-	}
-
-	if (err) {
-		for (k = 0; k < set_count; k++) {
-			rt_raster_destroy(rast[k]);
-			PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
-		}
-		PG_RETURN_BOOL(0);
-	}
-
 	rtn = rt_raster_same_alignment(
 		rast[0],
 		rast[1],
-		&aligned
+		&aligned,
+		&reason
 	);
 	for (k = 0; k < set_count; k++) {
 		rt_raster_destroy(rast[k]);
@@ -13180,7 +13149,75 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	if (reason != NULL)
+		elog(NOTICE, "%s", reason);
+
 	PG_RETURN_BOOL(aligned);
+}
+
+/**
+ * Return a reason why two rasters are not aligned
+ */
+PG_FUNCTION_INFO_V1(RASTER_notSameAlignmentReason);
+Datum RASTER_notSameAlignmentReason(PG_FUNCTION_ARGS)
+{
+	const int set_count = 2;
+	rt_pgraster *pgrast[2];
+	int pgrastpos[2] = {-1, -1};
+	rt_raster rast[2] = {NULL};
+
+	uint32_t i;
+	uint32_t j;
+	uint32_t k;
+	int rtn;
+	int aligned = 0;
+	char *reason = NULL;
+	text *result = NULL;
+
+	for (i = 0, j = 0; i < set_count; i++) {
+		/* pgrast is null, return null */
+		if (PG_ARGISNULL(j)) {
+			for (k = 0; k < i; k++) {
+				rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
+			PG_RETURN_NULL();
+		}
+		pgrast[i] = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(j), 0, sizeof(struct rt_raster_serialized_t));
+		pgrastpos[i] = j;
+		j++;
+
+		/* raster */
+		rast[i] = rt_raster_deserialize(pgrast[i], TRUE);
+		if (!rast[i]) {
+			elog(ERROR, "RASTER_notSameAlignmentReason: Could not deserialize the %s raster", i < 1 ? "first" : "second");
+			for (k = 0; k <= i; k++) {
+				if (k < i)
+					rt_raster_destroy(rast[k]);
+				PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+			}
+			PG_RETURN_NULL();
+		}
+	}
+
+	rtn = rt_raster_same_alignment(
+		rast[0],
+		rast[1],
+		&aligned,
+		&reason
+	);
+	for (k = 0; k < set_count; k++) {
+		rt_raster_destroy(rast[k]);
+		PG_FREE_IF_COPY(pgrast[k], pgrastpos[k]);
+	}
+
+	if (rtn != ES_NONE) {
+		elog(ERROR, "RASTER_notSameAlignmentReason: Unable to test for alignment on the two rasters");
+		PG_RETURN_NULL();
+	}
+
+	result = cstring2text(reason);
+	PG_RETURN_TEXT_P(result);
 }
 
 /**
@@ -13407,7 +13444,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	*/
 
 	/* same alignment */
-	if (rt_raster_same_alignment(_rast[0], _rast[1], &aligned) != ES_NONE) {
+	if (rt_raster_same_alignment(_rast[0], _rast[1], &aligned, NULL) != ES_NONE) {
 		elog(ERROR, "RASTER_mapAlgebra2: Unable to test for alignment on the two rasters");
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
