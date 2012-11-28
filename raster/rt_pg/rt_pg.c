@@ -13490,12 +13490,12 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS)
 	POSTGIS_RT_DEBUGF(3, "extenttype: %d %s", extenttype, extenttypename);
 
 	/* computed raster from extent type */
-	raster = rt_raster_from_two_rasters(
+	err = rt_raster_from_two_rasters(
 		_rast[0], _rast[1],
 		extenttype,
-		&err, _offset
+		&raster, _offset
 	);
-	if (!err) {
+	if (err != ES_NONE) {
 		elog(ERROR, "RASTER_mapAlgebra2: Unable to get output raster of correct extent");
 		for (k = 0; k < set_count; k++) {
 			if (_rast[k] != NULL)
@@ -17021,8 +17021,8 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		if (rt_band_get_isnodata_flag(band)) {
 			/* create raster */
 			if (rtn == NULL) {
-				rtn = rt_raster_from_two_rasters(arg->raster, arg->mask, arg->extenttype, &noerr, NULL);
-				if (!noerr) {
+				noerr = rt_raster_from_two_rasters(arg->raster, arg->mask, arg->extenttype, &rtn, NULL);
+				if (noerr != ES_NONE) {
 					elog(ERROR, "RASTER_clip: Unable to create output raster");
 					rtpg_clip_arg_destroy(arg);
 					PG_FREE_IF_COPY(pgraster, 0);

@@ -6776,13 +6776,13 @@ static void testFromTwoRasters() {
 	assert(rast2);
 	rt_raster_set_scale(rast2, 1, 1);
 
-	rast = rt_raster_from_two_rasters(
+	err = rt_raster_from_two_rasters(
 		rast1, rast2,
 		ET_FIRST,
-		&err,
+		&rast,
 		offset
 	);
-	CHECK((err != 0));
+	CHECK(err == ES_NONE);
 	CHECK(rast);
 	CHECK((rt_raster_get_width(rast) == 4));
 	CHECK((rt_raster_get_height(rast) == 4));
@@ -6792,13 +6792,13 @@ static void testFromTwoRasters() {
 	CHECK(FLT_EQ(offset[3], 2));
 	deepRelease(rast);
 
-	rast = rt_raster_from_two_rasters(
+	err = rt_raster_from_two_rasters(
 		rast1, rast2,
 		ET_SECOND,
-		&err,
+		&rast,
 		offset
 	);
-	CHECK((err != 0));
+	CHECK(err == ES_NONE);
 	CHECK(rast);
 	CHECK((rt_raster_get_width(rast) == 2));
 	CHECK((rt_raster_get_height(rast) == 2));
@@ -6808,13 +6808,13 @@ static void testFromTwoRasters() {
 	CHECK(FLT_EQ(offset[3], 0));
 	deepRelease(rast);
 
-	rast = rt_raster_from_two_rasters(
+	err = rt_raster_from_two_rasters(
 		rast1, rast2,
 		ET_INTERSECTION,
-		&err,
+		&rast,
 		offset
 	);
-	CHECK((err != 0));
+	CHECK(err == ES_NONE);
 	CHECK(rast);
 	CHECK((rt_raster_get_width(rast) == 2));
 	CHECK((rt_raster_get_height(rast) == 2));
@@ -6824,13 +6824,13 @@ static void testFromTwoRasters() {
 	CHECK(FLT_EQ(offset[3], 0));
 	deepRelease(rast);
 
-	rast = rt_raster_from_two_rasters(
+	err = rt_raster_from_two_rasters(
 		rast1, rast2,
 		ET_UNION,
-		&err,
+		&rast,
 		offset
 	);
-	CHECK((err != 0));
+	CHECK(err == ES_NONE);
 	CHECK(rast);
 	CHECK((rt_raster_get_width(rast) == 4));
 	CHECK((rt_raster_get_height(rast) == 4));
@@ -6841,33 +6841,33 @@ static void testFromTwoRasters() {
 	deepRelease(rast);
 
 	rt_raster_set_scale(rast2, 1, 0.1);
-	rast = rt_raster_from_two_rasters(
+	err = rt_raster_from_two_rasters(
 		rast1, rast2,
 		ET_UNION,
-		&err,
+		&rast,
 		offset
 	);
-	CHECK((err == 0));
+	CHECK(err != ES_NONE);
 	rt_raster_set_scale(rast2, 1, 1);
 
 	rt_raster_set_srid(rast2, 9999);
-	rast = rt_raster_from_two_rasters(
+	err = rt_raster_from_two_rasters(
 		rast1, rast2,
 		ET_UNION,
-		&err,
+		&rast,
 		offset
 	);
-	CHECK((err == 0));
+	CHECK(err != ES_NONE);
 	rt_raster_set_srid(rast2, 0);
 
 	rt_raster_set_skews(rast2, -1, 1);
-	rast = rt_raster_from_two_rasters(
+	err = rt_raster_from_two_rasters(
 		rast1, rast2,
 		ET_UNION,
-		&err,
+		&rast,
 		offset
 	);
-	CHECK((err == 0));
+	CHECK(err != ES_NONE);
 
 	deepRelease(rast2);
 	deepRelease(rast1);

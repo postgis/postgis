@@ -12452,17 +12452,17 @@ rt_raster_same_alignment(
  * @param rast1 : the first raster
  * @param rast2 : the second raster
  * @param extenttype : type of extent for the output raster
- * @param noerr : if 0, error occurred
- * @param offset : 4-element array indicating the X,Y offsets
+ * @param *rtnraster : raster of computed extent
+ * @param *offset : 4-element array indicating the X,Y offsets
  * for each raster. 0,1 for rast1 X,Y. 2,3 for rast2 X,Y.
  *
- * @return raster object if success, NULL otherwise
+ * @return ES_NONE if success, ES_ERROR if error
  */
-rt_raster
+rt_errorstate
 rt_raster_from_two_rasters(
 	rt_raster rast1, rt_raster rast2,
 	rt_extenttype extenttype,
-	int *noerr, double *offset
+	rt_raster *rtnraster, double *offset
 ) {
 	int i;
 
@@ -12477,17 +12477,19 @@ rt_raster_from_two_rasters(
 
 	assert(NULL != rast1);
 	assert(NULL != rast2);
+	assert(NULL != rtnraster);
 
-	*noerr = 0;
+	/* set rtnraster to NULL */
+	*rtnraster = NULL;
 
 	/* rasters must be aligned */
 	if (rt_raster_same_alignment(rast1, rast2, &aligned, NULL) != ES_NONE) {
 		rterror("rt_raster_from_two_rasters: Unable to test for alignment on the two rasters");
-		return NULL;
+		return ES_ERROR;
 	}
 	if (!aligned) {
 		rterror("rt_raster_from_two_rasters: The two rasters provided do not have the same alignment");
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* dimensions */
@@ -12504,7 +12506,7 @@ rt_raster_from_two_rasters(
 		NULL
 	) != ES_NONE) {
 		rterror("rt_raster_from_two_rasters: Unable to compute offsets of the second raster relative to the first raster");
-		return NULL;
+		return ES_ERROR;
 	}
 	_offset[1][0] = -1 * _offset[1][0];
 	_offset[1][1] = -1 * _offset[1][1];
@@ -12535,7 +12537,7 @@ rt_raster_from_two_rasters(
 			);
 			if (raster == NULL) {
 				rterror("rt_raster_from_two_rasters: Unable to create output raster");
-				return NULL;
+				return ES_ERROR;
 			}
 			rt_raster_set_srid(raster, _rast[i]->srid);
 			rt_raster_get_geotransform_matrix(_rast[i], gt);
@@ -12578,7 +12580,7 @@ rt_raster_from_two_rasters(
 				NULL
 			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get spatial coordinates of upper-left pixel of output raster");
-				return NULL;
+				return ES_ERROR;
 			}
 
 			dim[0] = off[2] - off[0] + 1;
@@ -12597,7 +12599,7 @@ rt_raster_from_two_rasters(
 			);
 			if (raster == NULL) {
 				rterror("rt_raster_from_two_rasters: Unable to create output raster");
-				return NULL;
+				return ES_ERROR;
 			}
 			rt_raster_set_srid(raster, _rast[0]->srid);
 			rt_raster_set_geotransform_matrix(raster, gt);
@@ -12619,7 +12621,7 @@ rt_raster_from_two_rasters(
 			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get offsets of the FIRST raster relative to the output raster");
 				rt_raster_destroy(raster);
-				return NULL;
+				return ES_ERROR;
 			}
 			_offset[0][0] *= -1;
 			_offset[0][1] *= -1;
@@ -12632,7 +12634,7 @@ rt_raster_from_two_rasters(
 			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get offsets of the SECOND raster relative to the output raster");
 				rt_raster_destroy(raster);
-				return NULL;
+				return ES_ERROR;
 			}
 			_offset[1][0] *= -1;
 			_offset[1][1] *= -1;
@@ -12651,7 +12653,7 @@ rt_raster_from_two_rasters(
 				raster = rt_raster_new(0, 0);
 				if (raster == NULL) {
 					rterror("rt_raster_from_two_rasters: Unable to create output raster");
-					return NULL;
+					return ES_ERROR;
 				}
 				rt_raster_set_srid(raster, _rast[0]->srid);
 				rt_raster_set_scale(raster, 0, 0);
@@ -12662,8 +12664,8 @@ rt_raster_from_two_rasters(
 						offset[i] = _offset[i / 2][i % 2];
 				}
 
-				*noerr = 1;
-				return raster;
+				*rtnraster = raster;
+				return ES_NONE;
 			}
 
 			if (_offset[1][0] > 0)
@@ -12686,7 +12688,7 @@ rt_raster_from_two_rasters(
 			);
 			if (raster == NULL) {
 				rterror("rt_raster_from_two_rasters: Unable to create output raster");
-				return NULL;
+				return ES_ERROR;
 			}
 			rt_raster_set_srid(raster, _rast[0]->srid);
 
@@ -12700,7 +12702,7 @@ rt_raster_from_two_rasters(
 			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get spatial coordinates of upper-left pixel of output raster");
 				rt_raster_destroy(raster);
-				return NULL;
+				return ES_ERROR;
 			}
 
 			rt_raster_set_geotransform_matrix(raster, gt);
@@ -12714,7 +12716,7 @@ rt_raster_from_two_rasters(
 			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get pixel coordinates to compute the offsets of the FIRST raster relative to the output raster");
 				rt_raster_destroy(raster);
-				return NULL;
+				return ES_ERROR;
 			}
 			_offset[0][0] *= -1;
 			_offset[0][1] *= -1;
@@ -12727,7 +12729,7 @@ rt_raster_from_two_rasters(
 			) != ES_NONE) {
 				rterror("rt_raster_from_two_rasters: Unable to get pixel coordinates to compute the offsets of the SECOND raster relative to the output raster");
 				rt_raster_destroy(raster);
-				return NULL;
+				return ES_ERROR;
 			}
 			_offset[1][0] *= -1;
 			_offset[1][1] *= -1;
@@ -12744,8 +12746,8 @@ rt_raster_from_two_rasters(
 			offset[i] = _offset[i / 2][i % 2];
 	}
 
-	*noerr = 1;
-	return raster;
+	*rtnraster = raster;
+	return ES_NONE;
 }
 
 /**
@@ -13731,10 +13733,10 @@ rt_raster_iterator(
 				if (_param->isempty[i])
 					continue;
 
-				rast = rt_raster_from_two_rasters(rtnrast, _param->raster[i], extenttype, &status, NULL);
+				status = rt_raster_from_two_rasters(rtnrast, _param->raster[i], extenttype, &rast, NULL);
 				rtdealloc(rtnrast);
 
-				if (rast == NULL || !status) {
+				if (rast == NULL || status != ES_NONE) {
 					rterror("rt_raster_iterator: Unable to compute %s extent of rasters",
 						extenttype == ET_UNION ? "union" : "intersection"
 					);
@@ -13902,9 +13904,9 @@ rt_raster_iterator(
 		if (_param->isempty[i])
 			continue;
 
-		rast = rt_raster_from_two_rasters(rtnrast, _param->raster[i], ET_FIRST, &status, offset);
+		status = rt_raster_from_two_rasters(rtnrast, _param->raster[i], ET_FIRST, &rast, offset);
 		rtdealloc(rast);
-		if (!status) {
+		if (status != ES_NONE) {
 			rterror("rt_raster_iterator: Unable to compute raster offsets");
 
 			_rti_iterator_arg_destroy(_param);

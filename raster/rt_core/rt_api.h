@@ -1871,17 +1871,17 @@ rt_errorstate rt_raster_same_alignment(
  * @param rast1 : the first raster
  * @param rast2 : the second raster
  * @param extenttype : type of extent for the output raster
- * @param noerr : if 0, error occurred
- * @param offset : 4-element array indicating the X,Y offsets
+ * @param *rtnraster : raster of computed extent
+ * @param *offset : 4-element array indicating the X,Y offsets
  * for each raster. 0,1 for rast1 X,Y. 2,3 for rast2 X,Y.
  *
- * @return raster object if success, NULL otherwise
+ * @return ES_NONE if success, ES_ERROR if error
  */
-rt_raster
+rt_errorstate
 rt_raster_from_two_rasters(
 	rt_raster rast1, rt_raster rast2,
 	rt_extenttype extenttype,
-	int *noerr, double *offset
+	rt_raster *rtnraster, double *offset
 );
 
 /**
