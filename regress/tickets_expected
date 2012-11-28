@@ -237,3 +237,5 @@ ERROR:  invalid GML representation
 #2048|1|f|f
 #2048|2|t|t
 #2048|3|f|f
+#2112a|0|LINESTRING(2.5 2.5 1,2.5 2.5 1)
+#2112b|1|LINESTRING(1 1 1,1 0 1)
