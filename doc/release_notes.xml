@@ -8,7 +8,55 @@
 		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.1 release.</para>
 		<simplesect>
 		 	<title>Bug Fixes</title>
-		 	<para>Coming soon</para>
+		 	<para>#1287, Drop of "gist_geometry_ops" broke a few clients
+     package of legacy_gist.sql for these cases</para>
+ 			 <para>#1391, Errors during upgrade from 1.5</para>
+ 			 <para>#1828, Poor selectivity estimate on ST_DWithin</para>
+ 			 <para>#1838, error importing tiger/line data</para>
+ 			 <para>#1869, ST_AsBinary is not unique added to legacy_minor/legacy.sql scripts</para>
+ 			 <para>#1885, Missing field from tabblock table in tiger2010 census_loader.sql</para>
+ 			 <para>#1891, Use LDFLAGS environment when building liblwgeom</para>
+ 			 <para>#1900, Fix pgsql2shp for big-endian systems </para>
+ 			 <para>#1932, Fix raster2pgsql for invalid syntax for setting index tablespace</para>
+ 			 <para>#1936, ST_GeomFromGML on CurvePolygon causes server crash</para>
+ 			 <para>#1955, ST_ModEdgeHeal and ST_NewEdgeHeal for doubly connected edges</para>
+ 			 <para>#1957, ST_Distance to a one-point LineString returns NULL</para>
+ 			 <para>#1976, Geography point-in-ring code overhauled for more reliability</para>
+ 			 <para>#1978, wrong answer calculating length of closed circular arc (circle)</para>
+ 			 <para>#1981, Remove unused but set variables as found with gcc 4.6+</para>
+ 			 <para>#1987, Restore 1.5.x behaviour of ST_Simplify</para> 
+ 			 <para>#1989, Preprocess input geometry to just intersection with raster
+           to be clipped</para>
+ 			 <para>#1991, geocode really slow on PostgreSQL 9.2</para>
+ 			 <para>#1996, support POINT EMPTY in GeoJSON output</para>
+ 			 <para>#1998, Fix ST_{Mod,New}EdgeHeal joining edges sharing both endpoints</para>
+ 			 <para>#2001, ST_CurveToLine has no effect if the geometry doesn't actually contain an arc</para>
+ 			 <para>#2015, ST_IsEmpty('POLYGON(EMPTY)') returns False</para>
+ 			 <para>#2019, ST_FlipCoordinates does not update bbox</para>
+ 			 <para>#2025, Fix side location conflict at TopoGeo_AddLineString</para> 
+ 			 <para>#2026, improve performance of distance calculations</para>
+ 			 <para>#2033, Fix adding a splitting point into a 2.5d topology </para>
+ 			 <para>#2051, Fix excess of precision in ST_AsGeoJSON output</para>
+ 			 <para>#2052, Fix buffer overflow in lwgeom_to_geojson</para>
+ 			 <para>#2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()</para>
+ 			 <para>#2057, Fixed linking issue for raster2psql to libpq</para>
+ 			 <para>#2060, Fix "dimension" check violation by GetTopoGeomElementArray</para>
+ 			 <para>#2072, Removed outdated checks preventing ST_Intersects(raster) from
+           working on out-db bands</para>
+ 			 <para>#2077, Fixed incorrect answers from ST_Hillshade(raster) </para>
+ 			 <para>#2099, Fix double free on exception in ST_OffsetCurve</para> 
+ 			 <para>#2100, ST_AsRaster() may not return raster with specified pixel type</para>
+
+ 			 <para>Update URL of Maven jar</para>
+		</simplesect>
+		<simplesect>
+			 <title>Enhancements</title>
+			 <para>#1581, ST_Clip(raster, ...) no longer imposes NODATA on a band if the
+           corresponding band from the source raster did not have NODATA</para>
+  			 <para>#1928, Accept array properties in GML input multi-geom input
+    (Kashif Rasul and Shoaib Burq / SpacialDB)</para>
+  			 <para>#2082, Add indices on start_node and end_node of topology edge tables</para>
+  			 <para>#2087, Speedup topology.GetRingEdges using a recursive CTE</para> 	
 		</simplesect>
 	  </sect1>
       <sect1>

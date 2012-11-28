@@ -1,18 +1,15 @@
 PostGIS 2.0.2
-2012/10/DD
+2012/11/DD
 
  * Bug Fixes *
-
-  - #2099, Fix double free on exception in ST_OffsetCurve
-  - #2060, Fix "dimension" check violation by GetTopoGeomElementArray
-  - #2051, Fix excess of precision in ST_AsGeoJSON output
-  - #2052, Fix buffer overflow in lwgeom_to_geojson
-  - #2033, Fix adding a splitting point into a 2.5d topology 
-  - #2025, Fix side location conflict at TopoGeo_AddLineString 
-  - #1998, Fix ST_{Mod,New}EdgeHeal joining edges sharing both endpoints
-  - #1987, Restore 1.5.x behaviour of ST_Simplify 
+  - #1287, Drop of "gist_geometry_ops" broke a few clients
+     package of legacy_gist.sql for these cases
   - #1391, Errors during upgrade from 1.5
   - #1828, Poor selectivity estimate on ST_DWithin
+  - #1838, error importing tiger/line data
+  - #1869, ST_AsBinary is not unique - 
+       added to legacy_minor/legacy.sql scripts
+  - #1885, Missing field from tabblock table in tiger2010 census_loader.sql
   - #1891, Use LDFLAGS environment when building liblwgeom
   - #1900, Fix pgsql2shp for big-endian systems 
   - #1932, Fix raster2pgsql for invalid syntax for setting index tablespace
@@ -22,29 +19,39 @@ PostGIS 2.0.2
   - #1976, Geography point-in-ring code overhauled for more reliability
   - #1978, wrong answer calculating length of closed circular arc (circle)
   - #1981, Remove unused but set variables as found with gcc 4.6+
+  - #1987, Restore 1.5.x behaviour of ST_Simplify 
   - #1989, Preprocess input geometry to just intersection with raster
            to be clipped
-  - Update URL of Maven jar
+  - #1991, geocode really slow on PostgreSQL 9.2
   - #1996, support POINT EMPTY in GeoJSON output
+  - #1998, Fix ST_{Mod,New}EdgeHeal joining edges sharing both endpoints
+  - #2001, ST_CurveToLine has no effect if the geometry doesn't actually contain an arc
+  - #2015, ST_IsEmpty('POLYGON(EMPTY)') returns False
   - #2019, ST_FlipCoordinates does not update bbox
+  - #2025, Fix side location conflict at TopoGeo_AddLineString 
   - #2026, improve performance of distance calculations
+  - #2033, Fix adding a splitting point into a 2.5d topology 
+  - #2051, Fix excess of precision in ST_AsGeoJSON output
+  - #2052, Fix buffer overflow in lwgeom_to_geojson
   - #2056, Fixed lack of SRID check of raster and geometry in ST_SetValue()
   - #2057, Fixed linking issue for raster2psql to libpq
-  - #1581, ST_Clip(raster, ...) no longer imposes NODATA on a band if the
-           corresponding band from the source raster did not have NODATA
+  - #2060, Fix "dimension" check violation by GetTopoGeomElementArray
   - #2072, Removed outdated checks preventing ST_Intersects(raster) from
            working on out-db bands
-  - #2077, Fixed incorrect answers from ST_Hillshade(raster)
-  - #2015, ST_IsEmpty('POLYGON(EMPTY)') returns False
+  - #2077, Fixed incorrect answers from ST_Hillshade(raster) 
+  - #2099, Fix double free on exception in ST_OffsetCurve 
   - #2100, ST_AsRaster() may not return raster with specified pixel type
 
+  - Update URL of Maven jar
+  
 
  * Enhancements *
-
-  - #2087, Speedup topology.GetRingEdges using a recursive CTE 
-  - #2082, Add indices on start_node and end_node of topology edge tables
+  - #1581, ST_Clip(raster, ...) no longer imposes NODATA on a band if the
+           corresponding band from the source raster did not have NODATA
   - #1928, Accept array properties in GML input multi-geom input
     (Kashif Rasul and Shoaib Burq / SpacialDB)
+  - #2082, Add indices on start_node and end_node of topology edge tables
+  - #2087, Speedup topology.GetRingEdges using a recursive CTE 
 
 PostGIS 2.0.1
 2012/06/22
