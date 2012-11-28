@@ -726,5 +726,15 @@ SELECT '#1996', ST_AsGeoJSON(ST_GeomFromText('POINT EMPTY'));
 -- #2001 --
 SELECT '#2001', ST_AsText(ST_CurveToLine(ST_GeomFromText('CURVEPOLYGON((0 0, 0 1, 1 1, 0 0))'), 2));
 
+-- #2112 -- Start
+SELECT '#2112a', ST_3DDistance(a,b), ST_ASEWKT(ST_3DShortestLine(a,b))
+FROM (SELECT 'POLYGON((1 1 1, 5 1 1,5 5 1, 1 5 1,1 1 1))'::geometry as a, 'LINESTRING(0 0 2, 0 0 0,5 5 2)'::geometry as b
+     ) as foo;
+
+SELECT '#2112b', ST_3DDistance(a,b), ST_ASEWKT(ST_3DShortestLine(a,b)) 
+FROM (SELECT 'POLYGON((1 1 1, 5 1 1,5 5 1, 1 5 1,1 1 1))'::geometry as a, 'LINESTRING(1 0 2, 1 0 0,5 5 -1)'::geometry as b
+     ) as foo;
+-- 2112 -- End
+
 -- Clean up
 DELETE FROM spatial_ref_sys;

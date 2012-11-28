@@ -899,9 +899,9 @@ int lw_dist3d_ptarray_poly(POINTARRAY *pa, LWPOLY *poly,PLANE3D *plane, DISTPTS3
 			}			
 		}
 		
-		projp2=projp1;
-		s2=s1;
-		p2=p1;
+		projp1=projp2;
+		s1=s2;
+		p1=p2;
 	}	
 	
 	/*check or pointarray against boundary and inner boundaries of the polygon*/

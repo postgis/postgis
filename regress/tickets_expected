@@ -225,3 +225,5 @@ ERROR:  invalid GML representation
 #1978|3.1413
 #1996|{"type":"Point","coordinates":[]}
 #2001|POLYGON((0 0,0 1,1 1,0 0))
+#2112a|0|LINESTRING(2.5 2.5 1,2.5 2.5 1)
+#2112b|1|LINESTRING(1 1 1,1 0 1)
