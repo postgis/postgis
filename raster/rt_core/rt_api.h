@@ -1382,11 +1382,12 @@ LWPOLY* rt_raster_pixel_as_polygon(rt_raster raster, int x, int y);
  * @param raster : the raster to convert to a multipolygon
  * @param nband : the 0-based band of raster rast to use
  *   if value is less than zero, bands are ignored.
- * @param noerr : if 0, error occurred
+ * @param **surface : raster as a surface (multipolygon).
+ *   if all pixels are NODATA, NULL is set
  *
- * @return the raster surface or NULL
+ * @return ES_NONE on success, ES_ERROR on error
  */
-LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr);
+rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface);
 
 /**
  * Returns a set of "geomval" value, one for each group of pixel

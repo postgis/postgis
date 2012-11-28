@@ -7357,8 +7357,8 @@ static void testRasterSurface() {
 		}
 	}
 
-	mpoly = rt_raster_surface(rast, 0, &err);
-	CHECK(err);
+	err = rt_raster_surface(rast, 0, &mpoly);
+	CHECK(err == ES_NONE);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((0 0,0 -5,5 -5,5 0,0 0)))"));
@@ -7369,8 +7369,8 @@ static void testRasterSurface() {
 	/* 0,0 NODATA */
 	rt_band_set_pixel(band, 0, 0, 0, NULL);
 
-	mpoly = rt_raster_surface(rast, 0, &err);
-	CHECK(err);
+	err = rt_raster_surface(rast, 0, &mpoly);
+	CHECK(err == ES_NONE);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0)))"));
@@ -7381,8 +7381,8 @@ static void testRasterSurface() {
 	/* plus 1,1 NODATA */
 	rt_band_set_pixel(band, 1, 1, 0, NULL);
 
-	mpoly = rt_raster_surface(rast, 0, &err);
-	CHECK(err);
+	err = rt_raster_surface(rast, 0, &mpoly);
+	CHECK(err == ES_NONE);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 0,1 -1,0 -1,0 -5,4 -5,5 -5,5 0,1 0),(1 -1,1 -2,2 -2,2 -1,1 -1)))"));
@@ -7393,8 +7393,8 @@ static void testRasterSurface() {
 	/* plus 2,2 NODATA */
 	rt_band_set_pixel(band, 2, 2, 0, NULL);
 
-	mpoly = rt_raster_surface(rast, 0, &err);
-	CHECK(err);
+	err = rt_raster_surface(rast, 0, &mpoly);
+	CHECK(err == ES_NONE);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 #if POSTGIS_GEOS_VERSION >= 33
@@ -7409,8 +7409,8 @@ static void testRasterSurface() {
 	/* plus 3,3 NODATA */
 	rt_band_set_pixel(band, 3, 3, 0, NULL);
 
-	mpoly = rt_raster_surface(rast, 0, &err);
-	CHECK(err);
+	err = rt_raster_surface(rast, 0, &mpoly);
+	CHECK(err == ES_NONE);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 #if POSTGIS_GEOS_VERSION >= 33
@@ -7425,8 +7425,8 @@ static void testRasterSurface() {
 	/* plus 4,4 NODATA */
 	rt_band_set_pixel(band, 4, 4, 0, NULL);
 
-	mpoly = rt_raster_surface(rast, 0, &err);
-	CHECK(err);
+	err = rt_raster_surface(rast, 0, &mpoly);
+	CHECK(err == ES_NONE);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((4 -4,4 -5,0 -5,0 -1,1 -1,1 -2,2 -2,2 -3,3 -3,3 -4,4 -4)),((1 -1,1 0,5 0,5 -4,4 -4,4 -3,3 -3,3 -2,2 -2,2 -1,1 -1)))"));
@@ -7440,8 +7440,8 @@ static void testRasterSurface() {
 	rt_band_set_pixel(band, 1, 3, 0, NULL);
 	rt_band_set_pixel(band, 0, 4, 0, NULL);
 
-	mpoly = rt_raster_surface(rast, 0, &err);
-	CHECK(err);
+	err = rt_raster_surface(rast, 0, &mpoly);
+	CHECK(err == ES_NONE);
 	CHECK((mpoly != NULL));
 	wkt = lwgeom_to_text(lwmpoly_as_lwgeom(mpoly));
 	CHECK(!strcmp(wkt, "MULTIPOLYGON(((1 -4,2 -4,2 -3,3 -3,3 -4,4 -4,4 -5,3 -5,1 -5,1 -4)),((1 -4,0 -4,0 -1,1 -1,1 -2,2 -2,2 -3,1 -3,1 -4)),((3 -2,4 -2,4 -1,5 -1,5 -4,4 -4,4 -3,3 -3,3 -2)),((3 -2,2 -2,2 -1,1 -1,1 0,4 0,4 -1,3 -1,3 -2)))"));

@@ -11892,13 +11892,11 @@ rt_errorstate rt_raster_geos_spatial_relationship(
 	initGEOS(lwnotice, lwgeom_geos_error);
 
 	/* get LWMPOLY of each band */
-	surface1 = rt_raster_surface(rast1, nband1, &rtn);
-	if (!rtn) {
+	if (rt_raster_surface(rast1, nband1, &surface1) != ES_NONE) {
 		rterror("rt_raster_geos_spatial_relationship: Unable to get surface of the specified band from the first raster");
 		return ES_ERROR;
 	}
-	surface2 = rt_raster_surface(rast2, nband2, &rtn);
-	if (!rtn) {
+	if (rt_raster_surface(rast2, nband2, &surface2) != ES_NONE) {
 		rterror("rt_raster_geos_spatial_relationship: Unable to get surface of the specified band from the second raster");
 		lwmpoly_free(surface1);
 		return ES_ERROR;
@@ -12183,10 +12181,10 @@ rt_errorstate rt_raster_within_distance(
 	double distance,
 	int *dwithin
 ) {
+	LWMPOLY *surface = NULL;
 	LWGEOM *surface1 = NULL;
 	LWGEOM *surface2 = NULL;
 	double mindist = 0;
-	int rtn = 0;
 
 	RASTER_DEBUG(3, "Starting");
 
@@ -12218,17 +12216,18 @@ rt_errorstate rt_raster_within_distance(
 	}
 
 	/* get LWMPOLY of each band */
-	surface1 = lwmpoly_as_lwgeom(rt_raster_surface(rast1, nband1, &rtn));
-	if (!rtn) {
+	if (rt_raster_surface(rast1, nband1, &surface) != ES_NONE) {
 		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the first raster");
 		return ES_ERROR;
 	}
-	surface2 = lwmpoly_as_lwgeom(rt_raster_surface(rast2, nband2, &rtn));
-	if (!rtn) {
+	surface1 = lwmpoly_as_lwgeom(surface);
+
+	if (rt_raster_surface(rast2, nband2, &surface) != ES_NONE) {
 		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the second raster");
 		lwgeom_free(surface1);
 		return ES_ERROR;
 	}
+	surface2 = lwmpoly_as_lwgeom(surface);
 
 	/* either surface is NULL, test is false */
 	if (surface1 == NULL || surface2 == NULL) {
@@ -12276,10 +12275,10 @@ rt_errorstate rt_raster_fully_within_distance(
 	double distance,
 	int *dfwithin
 ) {
+	LWMPOLY *surface = NULL;
 	LWGEOM *surface1 = NULL;
 	LWGEOM *surface2 = NULL;
 	double maxdist = 0;
-	int rtn = 0;
 
 	RASTER_DEBUG(3, "Starting");
 
@@ -12300,28 +12299,29 @@ rt_errorstate rt_raster_fully_within_distance(
 
 	/* same srid */
 	if (rt_raster_get_srid(rast1) != rt_raster_get_srid(rast2)) {
-		rterror("rt_raster_distance_within: The two rasters provided have different SRIDs");
+		rterror("rt_raster_fully_within_distance: The two rasters provided have different SRIDs");
 		return ES_ERROR;
 	}
 
 	/* distance cannot be less than zero */
 	if (distance < 0) {
-		rterror("rt_raster_distance_within: Distance cannot be less than zero");
+		rterror("rt_raster_fully_within_distance: Distance cannot be less than zero");
 		return ES_ERROR;
 	}
 
 	/* get LWMPOLY of each band */
-	surface1 = lwmpoly_as_lwgeom(rt_raster_surface(rast1, nband1, &rtn));
-	if (!rtn) {
-		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the first raster");
+	if (rt_raster_surface(rast1, nband1, &surface) != ES_NONE) {
+		rterror("rt_raster_fully_within_distance: Unable to get surface of the specified band from the first raster");
 		return ES_ERROR;
 	}
-	surface2 = lwmpoly_as_lwgeom(rt_raster_surface(rast2, nband2, &rtn));
-	if (!rtn) {
-		rterror("rt_raster_distance_within: Unable to get surface of the specified band from the second raster");
+	surface1 = lwmpoly_as_lwgeom(surface);
+
+	if (rt_raster_surface(rast2, nband2, &surface) != ES_NONE) {
+		rterror("rt_raster_fully_within_distance: Unable to get surface of the specified band from the second raster");
 		lwgeom_free(surface1);
 		return ES_ERROR;
 	}
+	surface2 = lwmpoly_as_lwgeom(surface);
 
 	/* either surface is NULL, test is false */
 	if (surface1 == NULL || surface2 == NULL) {
@@ -12818,11 +12818,12 @@ rt_raster_pixel_as_polygon(rt_raster rast, int x, int y)
  * @param raster : the raster to convert to a multipolygon
  * @param nband : the 0-based band of raster rast to use
  *   if value is less than zero, bands are ignored.
- * @param noerr : if 0, error occurred
+ * @param *surface : raster as a surface (multipolygon).
+ *   if all pixels are NODATA, NULL is set
  *
- * @return the raster surface or NULL
+ * @return ES_NONE on success, ES_ERROR on error
  */
-LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
+rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) {
 	rt_band band = NULL;
 	LWGEOM *mpoly = NULL;
 	LWGEOM *tmp = NULL;
@@ -12835,12 +12836,15 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 	int geomscount = 0;
 	int i = 0;
 
-	/* initialize to 0, error occurred */
-	*noerr = 0;
+	assert(surface != NULL);
 
-	/* raster is empty, return NULL */
-	if (rt_raster_is_empty(raster))
-		return NULL;
+	/* init *surface to NULL */
+	*surface = NULL;
+
+	/* raster is empty, surface = NULL */
+	if (rt_raster_is_empty(raster)) {
+		return ES_NONE;
+	}
 
 	/* if nband < 0, return the convex hull as a multipolygon */
 	if (nband < 0) {
@@ -12856,20 +12860,20 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 		lwgeom_free(tmp);
 		lwgeom_free(mpoly);
 
-		*noerr = 1;
-		return lwgeom_as_lwmpoly(clone);
+		*surface = lwgeom_as_lwmpoly(clone);
+		return ES_NONE;
 	}
 	/* check that nband is valid */
 	else if (nband >= rt_raster_get_num_bands(raster)) {
 		rterror("rt_raster_surface: The band index %d is invalid", nband);
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* get band */
 	band = rt_raster_get_band(raster, nband);
 	if (band == NULL) {
 		rterror("rt_raster_surface: Error getting band %d from raster", nband);
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* band does not have a NODATA flag, return convex hull */
@@ -12886,14 +12890,13 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 		lwgeom_free(tmp);
 		lwgeom_free(mpoly);
 
-		*noerr = 1;
-		return lwgeom_as_lwmpoly(clone);
+		*surface = lwgeom_as_lwmpoly(clone);
+		return ES_NONE;
 	}
 	/* band is NODATA, return NULL */
 	else if (rt_band_get_isnodata_flag(band)) {
 		RASTER_DEBUG(3, "Band is NODATA.  Returning NULL");
-		*noerr = 1;
-		return NULL;
+		return ES_NONE;
 	}
 
 	/* initialize GEOS */
@@ -12905,8 +12908,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 	if (gvcount < 1) {
 		RASTER_DEBUG(3, "All pixels of band are NODATA.  Returning NULL");
 		if (gv != NULL) rtdealloc(gv);
-		*noerr = 1;
-		return NULL;
+		return ES_NONE;
 	}
 	/* more than 1 polygon */
 	else if (gvcount > 1) {
@@ -12917,7 +12919,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 			rterror("rt_raster_surface: Unable to allocate memory for pixel polygons as GEOSGeometry");
 			for (i = 0; i < gvcount; i++) lwpoly_free(gv[i].geom);
 			rtdealloc(gv);
-			return NULL;
+			return ES_ERROR;
 		}
 		for (i = 0; i < gvcount; i++) {
 #if POSTGIS_DEBUG_LEVEL > 3
@@ -12950,7 +12952,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 			for (i = 0; i < geomscount; i++)
 				GEOSGeom_destroy(geoms[i]);
 			rtdealloc(geoms);
-			return NULL;
+			return ES_ERROR;
 		}
 
 		/* run the union */
@@ -12968,7 +12970,7 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 #else
 			rterror("rt_raster_surface: Unable to union the pixel polygons using GEOSUnionCascaded()");
 #endif
-			return NULL;
+			return ES_ERROR;
 		}
 
 		/* convert union result from GEOSGeometry to LWGEOM */
@@ -13064,12 +13066,11 @@ LWMPOLY* rt_raster_surface(rt_raster raster, int nband, int *noerr) {
 		}
 #endif
 
-		*noerr = 1;
-		return lwgeom_as_lwmpoly(mpoly);
+		*surface = lwgeom_as_lwmpoly(mpoly);
+		return ES_NONE;
 	}
 
-	*noerr = 1;
-	return NULL;
+	return ES_NONE;
 }
 
 /******************************************************************************

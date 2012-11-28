@@ -4208,11 +4208,11 @@ Datum RASTER_getPolygon(PG_FUNCTION_ARGS)
 	}
 
 	/* get band surface */
-	surface = rt_raster_surface(raster, nband - 1, &err);
+	err = rt_raster_surface(raster, nband - 1, &surface);
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 
-	if (!err) {
+	if (err != ES_NONE) {
 		elog(ERROR, "RASTER_getPolygon: Could not get raster band's surface");
 		PG_RETURN_NULL();
 	}
