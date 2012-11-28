@@ -1901,9 +1901,9 @@ rt_raster_from_two_rasters(
  * along the X axis
  * @param distancey : the number of pixels around the specified pixel
  * along the Y axis
- * @param userarg : pointer to any argument that is passed as-is to callback.
- * @param callback : callback function for actual processing of pixel values.
- * @param noerr : if 0, error occurred
+ * @param *userarg : pointer to any argument that is passed as-is to callback.
+ * @param *callback : callback function for actual processing of pixel values.
+ * @param *rtnraster : return one band raster from iterator process
  *
  * The callback function _must_ have the following signature.
  *
@@ -1918,9 +1918,9 @@ rt_raster_from_two_rasters(
  * - double *value : value of pixel to be burned by rt_raster_iterator()
  * - int *nodata : flag (0 or 1) indicating that pixel to be burned is NODATA
  *
- * @return raster object if success, NULL otherwise
+ * @return ES_NONE on success, ES_ERROR on error
  */
-rt_raster
+rt_errorstate
 rt_raster_iterator(
 	rt_iterator itrset, uint16_t itrcount,
 	rt_extenttype extenttype, rt_raster customextent,
@@ -1934,7 +1934,7 @@ rt_raster_iterator(
 		double *value,
 		int *nodata
 	),
-	int *noerr
+	rt_raster *rtnraster
 );
 
 /*- utilities -------------------------------------------------------*/

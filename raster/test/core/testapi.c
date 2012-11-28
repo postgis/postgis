@@ -7990,7 +7990,7 @@ static void testRasterIterator() {
 	userargs->rows = 1;
 	userargs->columns = 1;
 
-	rtn = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, 1,
 		ET_INTERSECTION, NULL,
 		PT_32BUI,
@@ -7998,9 +7998,9 @@ static void testRasterIterator() {
 		0, 0,
 		userargs,
 		testRasterIterator1_callback,
-		&noerr
+		&rtn
 	);
-	CHECK(noerr);
+	CHECK(noerr == ES_NONE);
 	CHECK((rt_raster_get_width(rtn) == 5));
 	CHECK((rt_raster_get_height(rtn) == 5));
 	CHECK((rt_raster_get_x_offset(rtn) == 0));
@@ -8019,7 +8019,7 @@ static void testRasterIterator() {
 	userargs->rows = 1;
 	userargs->columns = 1;
 
-	rtn = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, 1,
 		ET_UNION, NULL,
 		PT_32BUI,
@@ -8027,9 +8027,9 @@ static void testRasterIterator() {
 		0, 0,
 		userargs,
 		testRasterIterator1_callback,
-		&noerr
+		&rtn
 	);
-	CHECK(noerr);
+	CHECK(noerr == ES_NONE);
 	CHECK((rt_raster_get_width(rtn) == 5));
 	CHECK((rt_raster_get_height(rtn) == 5));
 	CHECK((rt_raster_get_x_offset(rtn) == 0));
@@ -8048,7 +8048,7 @@ static void testRasterIterator() {
 	userargs->rows = 1;
 	userargs->columns = 1;
 
-	rtn = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, 2,
 		ET_UNION, NULL,
 		PT_32BUI,
@@ -8056,9 +8056,9 @@ static void testRasterIterator() {
 		0, 0,
 		userargs,
 		testRasterIterator2_callback,
-		&noerr
+		&rtn
 	);
-	CHECK(noerr);
+	CHECK(noerr == ES_NONE);
 	CHECK((rt_raster_get_width(rtn) == 6));
 	CHECK((rt_raster_get_height(rtn) == 6));
 	CHECK((rt_raster_get_x_offset(rtn) == 0));
@@ -8073,7 +8073,7 @@ static void testRasterIterator() {
 	rtn = NULL;
 
 	/* 2 raster, 0 distance, INTERSECTION */
-	rtn = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, 2,
 		ET_INTERSECTION, NULL,
 		PT_32BUI,
@@ -8081,9 +8081,9 @@ static void testRasterIterator() {
 		0, 0,
 		userargs,
 		testRasterIterator3_callback,
-		&noerr
+		&rtn
 	);
-	CHECK(noerr);
+	CHECK(noerr == ES_NONE);
 	CHECK((rt_raster_get_width(rtn) == 4));
 	CHECK((rt_raster_get_height(rtn) == 4));
 	CHECK((rt_raster_get_x_offset(rtn) == 1));
@@ -8098,7 +8098,7 @@ static void testRasterIterator() {
 	rtn = NULL;
 
 	/* 2 raster, 0 distance, FIRST */
-	rtn = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, 2,
 		ET_FIRST, NULL,
 		PT_32BUI,
@@ -8106,9 +8106,9 @@ static void testRasterIterator() {
 		0, 0,
 		userargs,
 		testRasterIterator4_callback,
-		&noerr
+		&rtn
 	);
-	CHECK(noerr);
+	CHECK(noerr == ES_NONE);
 	CHECK((rt_raster_get_width(rtn) == 5));
 	CHECK((rt_raster_get_height(rtn) == 5));
 	CHECK((rt_raster_get_x_offset(rtn) == 0));
@@ -8123,7 +8123,7 @@ static void testRasterIterator() {
 	rtn = NULL;
 
 	/* 2 raster, 0 distance, LAST or SECOND */
-	rtn = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, 2,
 		ET_LAST, NULL,
 		PT_32BUI,
@@ -8131,9 +8131,9 @@ static void testRasterIterator() {
 		0, 0,
 		userargs,
 		testRasterIterator5_callback,
-		&noerr
+		&rtn
 	);
-	CHECK(noerr);
+	CHECK(noerr == ES_NONE);
 	CHECK((rt_raster_get_width(rtn) == 5));
 	CHECK((rt_raster_get_height(rtn) == 5));
 	CHECK((rt_raster_get_x_offset(rtn) == 1));
@@ -8148,7 +8148,7 @@ static void testRasterIterator() {
 	rtn = NULL;
 
 	/* 2 raster, 0 distance, CUSTOM */
-	rtn = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, 2,
 		ET_CUSTOM, rast3,
 		PT_32BUI,
@@ -8156,9 +8156,9 @@ static void testRasterIterator() {
 		0, 0,
 		userargs,
 		testRasterIterator6_callback,
-		&noerr
+		&rtn
 	);
-	CHECK(noerr);
+	CHECK(noerr == ES_NONE);
 	CHECK((rt_raster_get_width(rtn) == 2));
 	CHECK((rt_raster_get_height(rtn) == 2));
 	CHECK((rt_raster_get_x_offset(rtn) == 1));
@@ -8177,7 +8177,7 @@ static void testRasterIterator() {
 	userargs->rows = 3;
 	userargs->columns = 3;
 
-	rtn = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, 2,
 		ET_CUSTOM, rast3,
 		PT_32BUI,
@@ -8185,9 +8185,9 @@ static void testRasterIterator() {
 		1, 1,
 		userargs,
 		testRasterIterator7_callback,
-		&noerr
+		&rtn
 	);
-	CHECK(noerr);
+	CHECK(noerr == ES_NONE);
 	CHECK((rt_raster_get_width(rtn) == 2));
 	CHECK((rt_raster_get_height(rtn) == 2));
 	CHECK((rt_raster_get_x_offset(rtn) == 1));

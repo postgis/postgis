@@ -13487,7 +13487,7 @@ _rti_iterator_arg_callback_clean(_rti_iterator_arg _param) {
  * along the Y axis
  * @param userarg : pointer to any argument that is passed as-is to callback.
  * @param callback : callback function for actual processing of pixel values.
- * @param noerr : if 0, error occurred
+ * @param *rtnraster : return one band raster from iterator process
  *
  * The callback function _must_ have the following signature.
  *
@@ -13502,9 +13502,9 @@ _rti_iterator_arg_callback_clean(_rti_iterator_arg _param) {
  * - double *value: value of pixel to be burned by rt_raster_iterator()
  * - int *nodata: flag (0 or 1) indicating that pixel to be burned is NODATA
  *
- * @return raster object if success, NULL otherwise
+ * @return ES_NONE on success, ES_ERROR on error
  */
-rt_raster
+rt_errorstate
 rt_raster_iterator(
 	rt_iterator itrset, uint16_t itrcount,
 	rt_extenttype extenttype, rt_raster customextent,
@@ -13518,7 +13518,7 @@ rt_raster_iterator(
 		double *value,
 		int *nodata
 	),
-	int *noerr
+	rt_raster *rtnraster
 ) {
 	/* output raster */
 	rt_raster rtnrast = NULL;
@@ -13553,50 +13553,52 @@ rt_raster_iterator(
 
 	RASTER_DEBUG(3, "Starting...");
 
-	/* assume error for flag */
-	*noerr = 0;
+	assert(rtnraster != NULL);
+
+	/* init rtnraster to NULL */
+	*rtnraster = NULL;
 
 	/* check that callback function is not NULL */
 	if (callback == NULL) {
 		rterror("rt_raster_iterator: Callback function not provided");
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* check that custom extent is provided if extenttype = ET_CUSTOM */
 	if (extenttype == ET_CUSTOM && rt_raster_is_empty(customextent)) {
 		rterror("rt_raster_iterator: Custom extent cannot be empty if extent type is ET_CUSTOM");
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* check that pixtype != PT_END */
 	if (pixtype == PT_END) {
 		rterror("rt_raster_iterator: Pixel type cannot be PT_END");
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* itrcount must be greater than 0 */
 	if (itrcount < 1) {
 		rterror("rt_raster_iterator: At least one element must be provided for itrset");
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* itrset is not NULL */
 	if (itrset == NULL) {
 		rterror("rt_raster_iterator: itrset cannot be NULL");
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* initialize _param */
 	if ((_param = _rti_iterator_arg_init()) == NULL) {
 		rterror("rt_raster_iterator: Unable to initialize internal variables");
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* fill _param */
 	if (!_rti_iterator_arg_populate(_param, itrset, itrcount, distancex, distancey, &allnull, &allempty)) {
 		rterror("rt_raster_iterator: Unable to populate for internal variables");
 		_rti_iterator_arg_destroy(_param);
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* shortcut if all null, return NULL */
@@ -13605,8 +13607,7 @@ rt_raster_iterator(
 
 		_rti_iterator_arg_destroy(_param);
 
-		*noerr = 1;
-		return NULL;
+		return ES_NONE;
 	}
 	/* shortcut if all empty, return empty raster */
 	else if (allempty == itrcount) {
@@ -13617,12 +13618,12 @@ rt_raster_iterator(
 		rtnrast = rt_raster_new(0, 0);
 		if (rtnrast == NULL) {
 			rterror("rt_raster_iterator: Unable to create empty raster");
-			return NULL;
+			return ES_ERROR;
 		}
 		rt_raster_set_scale(rtnrast, 0, 0);
 
-		*noerr = 1;
-		return rtnrast;
+		*rtnraster = rtnrast;
+		return ES_NONE;
 	}
 
 	/* check that all rasters are aligned */
@@ -13652,7 +13653,7 @@ rt_raster_iterator(
 
 		_rti_iterator_arg_destroy(_param);
 
-		return NULL;
+		return ES_ERROR;
 	}
 
 	do {
@@ -13665,7 +13666,7 @@ rt_raster_iterator(
 
 				_rti_iterator_arg_destroy(_param);
 
-				return NULL;
+				return ES_ERROR;
 			}
 
 			RASTER_DEBUGF(5, "custom extent alignment: %d", aligned);
@@ -13683,7 +13684,7 @@ rt_raster_iterator(
 
 				_rti_iterator_arg_destroy(_param);
 
-				return NULL;
+				return ES_ERROR;
 			}
 			RASTER_DEBUGF(5, "raster at index %d alignment: %d", i, aligned);
 
@@ -13700,7 +13701,7 @@ rt_raster_iterator(
 
 		_rti_iterator_arg_destroy(_param);
 
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* use extenttype to build output raster (no bands though) */
@@ -13715,7 +13716,7 @@ rt_raster_iterator(
 
 				_rti_iterator_arg_destroy(_param);
 
-				return NULL;
+				return ES_ERROR;
 			}
 
 			for (i = 0; i < itrcount; i++) {
@@ -13743,7 +13744,7 @@ rt_raster_iterator(
 
 					_rti_iterator_arg_destroy(_param);
 
-					return NULL;
+					return ES_ERROR;
 				}
 				else if (rt_raster_is_empty(rast)) {
 					rtinfo("rt_raster_iterator: Computed raster for %s extent is empty",
@@ -13752,8 +13753,8 @@ rt_raster_iterator(
 
 					_rti_iterator_arg_destroy(_param);
 
-					*noerr = 1;
-					return rast;
+					*rtnraster = rast;
+					return ES_NONE;
 				}
 
 				rtnrast = rast;
@@ -13786,8 +13787,7 @@ rt_raster_iterator(
 
 				_rti_iterator_arg_destroy(_param);
 
-				*noerr = 1;
-				return NULL;
+				return ES_NONE;
 			}
 			/* input raster is empty, return empty raster */
 			else if (_param->isempty[i]) {
@@ -13801,12 +13801,12 @@ rt_raster_iterator(
 				rtnrast = rt_raster_new(0, 0);
 				if (rtnrast == NULL) {
 					rterror("rt_raster_iterator: Unable to create empty raster");
-					return NULL;
+					return ES_ERROR;
 				}
 				rt_raster_set_scale(rtnrast, 0, 0);
 
-				*noerr = 1;
-				return rtnrast;
+				*rtnraster = rtnrast;
+				return ES_NONE;
 			}
 		/* copy the custom extent raster */
 		case ET_CUSTOM:
@@ -13816,7 +13816,7 @@ rt_raster_iterator(
 
 				_rti_iterator_arg_destroy(_param);
 
-				return NULL;
+				return ES_ERROR;
 			}
 
 			switch (extenttype) {
@@ -13855,7 +13855,7 @@ rt_raster_iterator(
 		_rti_iterator_arg_destroy(_param);
 		rt_raster_destroy(rtnrast);
 		
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* create output band */
@@ -13871,7 +13871,7 @@ rt_raster_iterator(
 		_rti_iterator_arg_destroy(_param);
 		rt_raster_destroy(rtnrast);
 
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* get output band */
@@ -13882,7 +13882,7 @@ rt_raster_iterator(
 		_rti_iterator_arg_destroy(_param);
 		rt_raster_destroy(rtnrast);
 
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* output band's minimum value */
@@ -13896,7 +13896,7 @@ rt_raster_iterator(
 		rt_band_destroy(rtnband);
 		rt_raster_destroy(rtnrast);
 
-		return NULL;
+		return ES_ERROR;
 	}
 
 	/* fill _param->offset */
@@ -13913,7 +13913,7 @@ rt_raster_iterator(
 			rt_band_destroy(rtnband);
 			rt_raster_destroy(rtnrast);
 
-			return NULL;
+			return ES_ERROR;
 		}
 
 		_param->offset[i][0] = offset[2];
@@ -13983,7 +13983,7 @@ rt_raster_iterator(
 						rt_band_destroy(rtnband);
 						rt_raster_destroy(rtnrast);
 
-						return NULL;
+						return ES_ERROR;
 					}
 				}
 
@@ -14006,7 +14006,7 @@ rt_raster_iterator(
 						rt_band_destroy(rtnband);
 						rt_raster_destroy(rtnrast);
 
-						return NULL;
+						return ES_ERROR;
 					}
 					inextent = 1;
 				}
@@ -14038,7 +14038,7 @@ rt_raster_iterator(
 					rt_band_destroy(rtnband);
 					rt_raster_destroy(rtnrast);
 
-					return NULL;
+					return ES_ERROR;
 				}
 
 				npixels[status - 1].x = x;
@@ -14069,7 +14069,7 @@ rt_raster_iterator(
 					rt_band_destroy(rtnband);
 					rt_raster_destroy(rtnrast);
 
-					return NULL;
+					return ES_ERROR;
 				}
 			}
 	
@@ -14090,7 +14090,7 @@ rt_raster_iterator(
 				rt_band_destroy(rtnband);
 				rt_raster_destroy(rtnrast);
 
-				return NULL;
+				return ES_ERROR;
 			}
 
 			/* burn value to pixel */
@@ -14113,7 +14113,7 @@ rt_raster_iterator(
 				rt_band_destroy(rtnband);
 				rt_raster_destroy(rtnrast);
 
-				return NULL;
+				return ES_ERROR;
 			}
 		}
 	}
@@ -14121,6 +14121,6 @@ rt_raster_iterator(
 	/* lots of cleanup */
 	_rti_iterator_arg_destroy(_param);
 
-	*noerr = 1;
-	return rtnrast;
+	*rtnraster = rtnrast;
+	return ES_NONE;
 }

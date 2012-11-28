@@ -3817,7 +3817,7 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 		}
 
 		/* pass to iterator */
-		_raster = rt_raster_iterator(
+		noerr = rt_raster_iterator(
 			itrset, arg->ngv + 1,
 			ET_FIRST, NULL,
 			pixtype,
@@ -3825,11 +3825,11 @@ Datum RASTER_setPixelValuesGeomval(PG_FUNCTION_ARGS)
 			0, 0,
 			arg,
 			rtpg_setvalues_geomval_callback,
-			&noerr
+			&_raster
 		);
 		pfree(itrset);
 
-		if (!noerr) {
+		if (noerr != ES_NONE) {
 			elog(ERROR, "RASTER_setPixelValuesGeomval: Unable to run raster iterator function");
 			rtpg_setvaluesgv_arg_destroy(arg);
 			rt_raster_destroy(raster);
@@ -15619,7 +15619,7 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	}
 
 	/* pass everything to iterator */
-	raster = rt_raster_iterator(
+	noerr = rt_raster_iterator(
 		itrset, arg->numraster,
 		arg->extenttype, arg->cextent,
 		arg->pixtype,
@@ -15627,14 +15627,14 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 		arg->distance[0], arg->distance[1],
 		&(arg->callback),
 		rtpg_nmapalgebra_callback,
-		&noerr
+		&raster
 	);
 
 	/* cleanup */
 	pfree(itrset);
 	rtpg_nmapalgebra_arg_destroy(arg);
 
-	if (!noerr) {
+	if (noerr != ES_NONE) {
 		elog(ERROR, "RASTER_nMapAlgebra: Unable to run raster iterator function");
 		PG_RETURN_NULL();
 	}
@@ -16384,7 +16384,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			}
 
 			/* pass everything to iterator */
-			_raster = rt_raster_iterator(
+			noerr = rt_raster_iterator(
 				itrset, 2,
 				ET_UNION, NULL,
 				pixtype,
@@ -16392,10 +16392,10 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 				0, 0,
 				&utype,
 				rtpg_union_callback,
-				&noerr
+				&_raster
 			);
 
-			if (!noerr) {
+			if (noerr != ES_NONE) {
 				elog(ERROR, "RASTER_union_transfn: Unable to run raster iterator function");
 
 				pfree(itrset);
@@ -16492,7 +16492,7 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 
 			/* pass everything to iterator */
 			if (iwr->bandarg[i].uniontype == UT_MEAN) {
-				_raster = rt_raster_iterator(
+				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_UNION, NULL,
 					pixtype,
@@ -16500,11 +16500,11 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 					0, 0,
 					NULL,
 					rtpg_union_mean_callback,
-					&noerr
+					&_raster
 				);
 			}
 			else if (iwr->bandarg[i].uniontype == UT_RANGE) {
-				_raster = rt_raster_iterator(
+				noerr = rt_raster_iterator(
 					itrset, 2,
 					ET_UNION, NULL,
 					pixtype,
@@ -16512,11 +16512,11 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS)
 					0, 0,
 					NULL,
 					rtpg_union_range_callback,
-					&noerr
+					&_raster
 				);
 			}
 
-			if (!noerr) {
+			if (noerr != ES_NONE) {
 				elog(ERROR, "RASTER_union_finalfn: Unable to run raster iterator function");
 				pfree(itrset);
 				rtpg_union_arg_destroy(iwr);
@@ -17053,7 +17053,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		itrset[1].nbnodata = 1;
 
 		/* pass to iterator */
-		_raster = rt_raster_iterator(
+		noerr = rt_raster_iterator(
 			itrset, 2,
 			arg->extenttype, NULL,
 			pixtype,
@@ -17061,10 +17061,10 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 			0, 0,
 			NULL,
 			rtpg_clip_callback,
-			&noerr
+			&_raster
 		);
 
-		if (!noerr) {
+		if (noerr != ES_NONE) {
 			elog(ERROR, "RASTER_clip: Unable to run raster iterator function");
 			pfree(itrset);
 			rtpg_clip_arg_destroy(arg);
