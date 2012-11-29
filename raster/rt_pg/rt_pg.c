@@ -300,8 +300,8 @@ Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
 /* rasterize a geometry */
 Datum RASTER_asRaster(PG_FUNCTION_ARGS);
 
-/* resample a raster */
-Datum RASTER_resample(PG_FUNCTION_ARGS);
+/* warp a raster using GDAL Warp API */
+Datum RASTER_GDALWarp(PG_FUNCTION_ARGS);
 
 /* get raster's meta data */
 Datum RASTER_metadata(PG_FUNCTION_ARGS);
@@ -11174,10 +11174,10 @@ Datum RASTER_asRaster(PG_FUNCTION_ARGS)
 }
 
 /**
- * Resample a raster
+ * warp a raster using GDAL Warp API
  */
-PG_FUNCTION_INFO_V1(RASTER_resample);
-Datum RASTER_resample(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(RASTER_GDALWarp);
+Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgraster = NULL;
 	rt_pgraster *pgrast = NULL;
@@ -11210,7 +11210,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	int *dim_x = NULL;
 	int *dim_y = NULL;
 
-	POSTGIS_RT_DEBUG(3, "RASTER_resample: Starting");
+	POSTGIS_RT_DEBUG(3, "RASTER_GDALWarp: Starting");
 
 	/* pgraster is null, return null */
 	if (PG_ARGISNULL(0))
@@ -11220,7 +11220,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	/* raster */
 	raster = rt_raster_deserialize(pgraster, FALSE);
 	if (!raster) {
-		elog(ERROR, "RASTER_resample: Could not deserialize raster");
+		elog(ERROR, "RASTER_GDALWarp: Could not deserialize raster");
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
@@ -11243,7 +11243,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	/* source srid */
 	src_srid = rt_raster_get_srid(raster);
 	if (clamp_srid(src_srid) == SRID_UNKNOWN) {
-		elog(ERROR, "RASTER_resample: Input raster has unknown (%d) SRID", src_srid);
+		elog(ERROR, "RASTER_GDALWarp: Input raster has unknown (%d) SRID", src_srid);
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -11254,7 +11254,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	if (!PG_ARGISNULL(3)) {
 		dst_srid = PG_GETARG_INT32(3);
 		if (clamp_srid(dst_srid) == SRID_UNKNOWN) {
-			elog(ERROR, "RASTER_resample: %d is an invalid target SRID", dst_srid);
+			elog(ERROR, "RASTER_GDALWarp: %d is an invalid target SRID", dst_srid);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
@@ -11362,7 +11362,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	/* source srs */
 	src_srs = rtpg_getSR(src_srid);
 	if (NULL == src_srs) {
-		elog(ERROR, "RASTER_resample: Input raster has unknown SRID (%d)", src_srid);
+		elog(ERROR, "RASTER_GDALWarp: Input raster has unknown SRID (%d)", src_srid);
 		rt_raster_destroy(raster);
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
@@ -11373,7 +11373,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 	if (clamp_srid(dst_srid) != SRID_UNKNOWN) {
 		dst_srs = rtpg_getSR(dst_srid);
 		if (NULL == dst_srs) {
-			elog(ERROR, "RASTER_resample: Target SRID (%d) is unknown", dst_srid);
+			elog(ERROR, "RASTER_GDALWarp: Target SRID (%d) is unknown", dst_srid);
 			if (NULL != src_srs) pfree(src_srs);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -11407,7 +11407,7 @@ Datum RASTER_resample(PG_FUNCTION_ARGS)
 
 	if (NULL == pgrast) PG_RETURN_NULL();
 
-	POSTGIS_RT_DEBUG(3, "RASTER_resample: done");
+	POSTGIS_RT_DEBUG(3, "RASTER_GDALWarp: done");
 
 	SET_VARSIZE(pgrast, pgrast->size);
 	PG_RETURN_POINTER(pgrast);

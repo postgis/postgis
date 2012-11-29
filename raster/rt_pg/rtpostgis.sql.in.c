@@ -1971,10 +1971,12 @@ CREATE OR REPLACE FUNCTION st_asraster(
 	LANGUAGE 'sql' STABLE;
 
 -----------------------------------------------------------------------
--- ST_Resample
+-- ST_GDALWarp
+-- has no public functions
 -----------------------------------------------------------------------
+
 -- cannot be strict as almost all parameters can be NULL
-CREATE OR REPLACE FUNCTION _st_resample(
+CREATE OR REPLACE FUNCTION _st_gdalwarp(
 	rast raster,
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125,
 	srid integer DEFAULT NULL,
@@ -1984,8 +1986,12 @@ CREATE OR REPLACE FUNCTION _st_resample(
 	width integer DEFAULT NULL, height integer DEFAULT NULL
 )
 	RETURNS raster
-	AS 'MODULE_PATHNAME', 'RASTER_resample'
+	AS 'MODULE_PATHNAME', 'RASTER_GDALWarp'
 	LANGUAGE 'c' STABLE;
+
+-----------------------------------------------------------------------
+-- ST_Resample
+-----------------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
@@ -1996,7 +2002,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
 )
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $9,	$10, $2, $3, $4, $5, $6, $7, $8) $$
+	AS $$ SELECT _st_gdalwarp($1, $9,	$10, $2, $3, $4, $5, $6, $7, $8) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_resample(
@@ -2008,7 +2014,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
 )
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $9,	$10, $4, NULL, NULL, $5, $6, $7, $8, $2, $3) $$
+	AS $$ SELECT _st_gdalwarp($1, $9,	$10, $4, NULL, NULL, $5, $6, $7, $8, $2, $3) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_resample(
@@ -2041,7 +2047,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 			scale_y := NULL;
 		END IF;
 
-		RETURN _st_resample($1, $3, $4, sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y, dim_x, dim_y);
+		RETURN _st_gdalwarp($1, $3, $4, sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y, dim_x, dim_y);
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
@@ -2061,17 +2067,17 @@ CREATE OR REPLACE FUNCTION st_resample(
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125, scalex double precision DEFAULT 0, scaley double precision DEFAULT 0)
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $3, $4, $2, $5, $6) $$
+	AS $$ SELECT _st_gdalwarp($1, $3, $4, $2, $5, $6) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $5, $6, $2, $3, $4) $$
+	AS $$ SELECT _st_gdalwarp($1, $5, $6, $2, $3, $4) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_transform(rast raster, srid integer, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $4, $5, $2, $3, $3) $$
+	AS $$ SELECT _st_gdalwarp($1, $4, $5, $2, $3, $3) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_transform(
@@ -2088,12 +2094,12 @@ CREATE OR REPLACE FUNCTION st_transform(
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalex double precision, scaley double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $4, $5, NULL, $2, $3) $$
+	AS $$ SELECT _st_gdalwarp($1, $4, $5, NULL, $2, $3) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalexy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $3, $4, NULL, $2, $2) $$
+	AS $$ SELECT _st_gdalwarp($1, $3, $4, NULL, $2, $2) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
@@ -2101,12 +2107,12 @@ CREATE OR REPLACE FUNCTION st_rescale(rast raster, scalexy double precision, alg
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewx double precision, skewy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $4, $5, NULL, 0, 0, NULL, NULL, $2, $3) $$
+	AS $$ SELECT _st_gdalwarp($1, $4, $5, NULL, 0, 0, NULL, NULL, $2, $3) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_reskew(rast raster, skewxy double precision, algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125)
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $3, $4, NULL, 0, 0, NULL, NULL, $2, $2) $$
+	AS $$ SELECT _st_gdalwarp($1, $3, $4, NULL, 0, 0, NULL, NULL, $2, $2) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
@@ -2119,7 +2125,7 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(
 	scalex double precision DEFAULT 0, scaley double precision DEFAULT 0
 )
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $4, $5, NULL, $6, $7, $2, $3) $$
+	AS $$ SELECT _st_gdalwarp($1, $4, $5, NULL, $6, $7, $2, $3) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_snaptogrid(
@@ -2129,7 +2135,7 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
 )
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $6, $7, NULL, $4, $5, $2, $3) $$
+	AS $$ SELECT _st_gdalwarp($1, $6, $7, NULL, $4, $5, $2, $3) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 CREATE OR REPLACE FUNCTION st_snaptogrid(
@@ -2139,7 +2145,7 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
 )
 	RETURNS raster
-	AS $$ SELECT _st_resample($1, $5, $6, NULL, $4, $4, $2, $3) $$
+	AS $$ SELECT _st_gdalwarp($1, $5, $6, NULL, $4, $4, $2, $3) $$
 	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
