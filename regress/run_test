@@ -668,7 +668,7 @@ create_spatial ()
 {
 	echo "Creating spatial db ${DB} " 
 
-	createdb --encoding=UTF-8 --template=template0 --lc-collate="C" "${DB}" > ${PGIS_REG_TMPDIR}/regress_log 2>&1 
+	createdb --encoding=UTF-8 --template=template0 --lc-ctype="en_US.utf8" --lc-collate="C" "${DB}" > ${PGIS_REG_TMPDIR}/regress_log 2>&1 
 	if [ $? -gt 0 ]; then # {
 		fail "createdb failed" "${PGIS_REG_TMPDIR}/regress_log"
 		exit 1

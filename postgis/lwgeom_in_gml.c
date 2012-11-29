@@ -1799,14 +1799,13 @@ static LWGEOM* lwgeom_from_gml(const char* xml)
 
 	/* Begin to Parse XML doc */
 	xmlInitParser();
-	xmldoc = xmlParseMemory(xml, xml_size);
+        xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
 	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL)
 	{
 		xmlFreeDoc(xmldoc);
 		xmlCleanupParser();
 		gml_lwerror("invalid GML representation", 1);
 	}
-
 
 	lwgeom = parse_gml(xmlroot, &hasz, &root_srid);
 
