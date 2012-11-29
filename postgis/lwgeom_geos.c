@@ -1586,6 +1586,7 @@ Datum centroid(PG_FUNCTION_ARGS)
 	{
 		lwg = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
 		result = geometry_serialize(lwpoint_as_lwgeom(lwg));
+    lwgeom_free(lwg);
 		PG_RETURN_POINTER(result);
 	}
 
