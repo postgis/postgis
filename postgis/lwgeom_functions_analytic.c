@@ -80,6 +80,7 @@ PG_FUNCTION_INFO_V1(LWGEOM_line_interpolate_point);
 Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *gser = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	GSERIALIZED *result;
 	double distance = PG_GETARG_FLOAT8(1);
 	LWLINE *line;
 	LWGEOM *geom;
@@ -99,6 +100,15 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	{
 		elog(ERROR,"line_interpolate_point: 1st arg isnt a line");
 		PG_RETURN_NULL();
+	}
+
+	/* Empty.InterpolatePoint == Point Empty */
+	if ( gserialized_is_empty(gser) )
+	{
+		geom = lwpoint_construct_empty(gserialized_get_srid(gser), gserialized_has_z(gser), gserialized_has_m(gser));
+		result = geometry_serialize(lwpoint_as_lwgeom(geom));
+		lwgeom_free(geom);
+		PG_RETURN_POINTER(result);
 	}
 
 	geom = lwgeom_from_gserialized(gser);
