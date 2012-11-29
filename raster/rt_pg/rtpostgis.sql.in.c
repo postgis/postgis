@@ -7487,5 +7487,7 @@ CREATE OR REPLACE FUNCTION UpdateRasterSRID(
 -------------------------------------------------------------------
 --  END
 -------------------------------------------------------------------
-
+-- make views public viewable --
+GRANT SELECT ON TABLE raster_columns TO public;
+GRANT SELECT ON TABLE raster_overviews TO public;
 COMMIT;

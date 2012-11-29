@@ -5092,4 +5092,8 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 	AS $$SELECT _ST_AsX3D(3,$1,$2,$3,'');$$
 	LANGUAGE 'sql' IMMUTABLE;
 
+-- make views and spatial_ref_sys public viewable --
+GRANT SELECT ON TABLE geography_columns TO public;
+GRANT SELECT ON TABLE geometry_columns TO public;
+GRANT SELECT ON TABLE spatial_ref_sys TO public;
 COMMIT;
