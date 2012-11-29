@@ -159,7 +159,7 @@ SELECT 'ns_1', ST_AsEWKT(ST_GeomFromKML('<kml:Point xmlns:kml="http://www.opengi
 SELECT 'ns_2', ST_AsEWKT(ST_GeomFromKML('<kml:Point xmlns="http://www.opengis.net/kml/2.2"><kml:coordinates>1,2</kml:coordinates></kml:Point>'));
 
 -- ERROR wrong namespace
-SELECT 'ns_3', ST_AsEWKT(ST_GeomFromKML('<kml:Point xmlns:gml="http://foo.net"><kml:coordinates>1,2</kml:coordinates></kml:Point>'));
+SELECT 'ns_3', ST_AsEWKT(ST_GeomFromKML('<kml:Point xmlns:kml="http://foo.net"><kml:coordinates>1,2</kml:coordinates></kml:Point>'));
 
 -- Several namespaces
 SELECT 'ns_4', ST_AsEWKT(ST_GeomFromKML('<kml:Point xmlns:foo="http://bar.net" xmlns:kml="http://www.opengis.net/kml/2.2"><kml:coordinates>1,2</kml:coordinates></kml:Point>'));
