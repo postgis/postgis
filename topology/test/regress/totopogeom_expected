@@ -15,6 +15,9 @@ ERROR:  Layer "3" of topology "tt" is lineal, cannot hold a puntal feature.
 ERROR:  Layer "4" of topology "tt" is areal, cannot hold a puntal feature.
 ERROR:  Layer "1" of topology "tt" is puntal, cannot hold an areal feature.
 ERROR:  Layer "3" of topology "tt" is lineal, cannot hold an areal feature.
+ERROR:  Unsupported feature type TIN
+ERROR:  Unsupported feature type TRIANGLE
+ERROR:  Unsupported feature type CIRCULARSTRING
 POINT(0 0)|t
 LINESTRING(0 10,10 10)|t
 POLYGON((0 20,10 20,5 30,0 20),(2 22,8 22,5 28,2 22))|t
