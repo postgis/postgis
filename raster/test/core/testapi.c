@@ -8432,194 +8432,240 @@ main()
 
         rt_raster_set_skews(raster, 0, 0);
     }
+		/* done all above */
 
+		/* done */
 		printf("Testing rt_util_gdal_configured... ");
 		testGDALConfigured();
 		printf("OK\n");
 
+		/* done */
     printf("Testing rt_raster_gdal_polygonize... ");
 		testGDALPolygonize();
 		printf("OK\n");
 
+		/* done */
     printf("Testing 1BB band... ");
     band_1BB = addBand(raster, PT_1BB, 0, 0);
     testBand1BB(band_1BB);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 2BB band... ");
     band_2BUI = addBand(raster, PT_2BUI, 0, 0);
     testBand2BUI(band_2BUI);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 4BUI band... ");
     band_4BUI = addBand(raster, PT_4BUI, 0, 0);
     testBand4BUI(band_4BUI);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 8BUI band... ");
     band_8BUI = addBand(raster, PT_8BUI, 0, 0);
     testBand8BUI(band_8BUI);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 8BSI band... ");
     band_8BSI = addBand(raster, PT_8BSI, 0, 0);
     testBand8BSI(band_8BSI);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 16BSI band... ");
     band_16BSI = addBand(raster, PT_16BSI, 0, 0);
     testBand16BSI(band_16BSI);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 16BUI band... ");
     band_16BUI = addBand(raster, PT_16BUI, 0, 0);
     testBand16BUI(band_16BUI);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 32BUI band... ");
     band_32BUI = addBand(raster, PT_32BUI, 0, 0);
     testBand32BUI(band_32BUI);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 32BSI band... ");
     band_32BSI = addBand(raster, PT_32BSI, 0, 0);
     testBand32BSI(band_32BSI);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 32BF band... ");
     band_32BF = addBand(raster, PT_32BF, 0, 0);
     testBand32BF(band_32BF);
 		printf("OK\n");
 
+		/* done */
     printf("Testing 64BF band... ");
     band_64BF = addBand(raster, PT_64BF, 0, 0);
     testBand64BF(band_64BF);
 		printf("OK\n");
 
+		/* done */
     printf("Testing band hasnodata flag... ");
     testBandHasNoData(band_64BF);
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_from_band... ");
 		testRasterFromBand();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing band stats... ");
 		testBandStats();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_replace_band... ");
 		testRasterReplaceBand();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_band_reclass... ");
 		testBandReclass();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_to_gdal... ");
 		testRasterToGDAL();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_gdal_drivers... ");
 		testGDALDrivers();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_band_get_value_count... ");
 		testValueCount();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_from_gdal_dataset... ");
 		testGDALToRaster();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_util_compute_skewed_extent... ");
 		testComputeSkewedExtent();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_gdal_warp... ");
 		testGDALWarp();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_gdal_rasterize... ");
 		testGDALRasterize();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_intersects... ");
 		testIntersects();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_surface... ");
 		testRasterSurface();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_overlaps... ");
 		testOverlaps();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_touches... ");
 		testTouches();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_contains... ");
 		testContains();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_contains_properly... ");
 		testContainsProperly();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_covers... ");
 		testCovers();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_covered_by... ");
 		testCoveredBy();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_within_distance... ");
 		testDWithin();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_fully_within_distance... ");
 		testDFullyWithin();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_same_alignment... ");
 		testAlignment();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_from_two_rasters... ");
 		testFromTwoRasters();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_load_offline_band... ");
 		testLoadOfflineBand();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing cell <-> geopoint... ");
 		testCellGeoPoint();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_band_get_nearest_pixel... ");
 		testNearestPixel();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_band_get_pixel_of_value... ");
 		testPixelOfValue();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_pixel_as_polygon... ");
 		testPixelAsPolygon();
 		printf("OK\n");
 
+		/* done */
 		printf("Testing rt_raster_iterator... ");
 		testRasterIterator();
 		printf("OK\n");
 
+		/* done */
 		printf("Test rt_raster_clone... ");
 		testRasterClone();
 		printf("OK\n");
 
+		/* done */
 		printf("Test rt_band_get_pixel_line... ");
 		testGetPixelLine();
 		printf("OK\n");

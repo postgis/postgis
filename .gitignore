@@ -102,6 +102,8 @@ raster/scripts/python/Makefile
 raster/test/core/Makefile
 raster/test/core/testapi
 raster/test/core/testwkb
+raster/test/cunit/Makefile
+raster/test/cunit/cu_tester
 raster/test/Makefile
 raster/test/regress/Makefile
 raster/test/regress/rtpostgis.sql

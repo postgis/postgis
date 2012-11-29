@@ -13,16 +13,16 @@ RT_CORE=../rt_core
 all: check
 
 core-check:
-	$(MAKE) -C core check
+	$(MAKE) -C cunit check
 
 check: core-check
 	$(MAKE) -C regress check
 
 clean:
-	$(MAKE) -C core $@
+	$(MAKE) -C cunit $@
 	$(MAKE) -C regress $@
 
 distclean: clean
-	$(MAKE) -C core $@
+	$(MAKE) -C cunit $@
 	$(MAKE) -C regress $@
 	rm -f Makefile
