@@ -788,6 +788,7 @@ FROM (SELECT 'POLYGON((1 1 1, 5 1 1,5 5 1, 1 5 1,1 1 1))'::geometry as a, 'LINES
      ) as foo;
 -- 2112 -- End
 
+SELECT '#2108', ST_AsEWKT(ST_Line_Interpolate_Point('SRID=3395;LINESTRING M EMPTY'::geometry, 0.5));
 SELECT '#2117', ST_AsEWKT(ST_PointOnSurface('SRID=3395;MULTIPOLYGON M EMPTY'::geometry));
 
 -- Clean up
