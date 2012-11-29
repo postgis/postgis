@@ -1494,19 +1494,25 @@ Datum difference(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
-	GSERIALIZED *geom1;
+	LWGEOM *lwg;
+	GSERIALIZED *geom;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
 
-	geom1 = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+	geom = (GSERIALIZED *)PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	/* Empty.PointOnSurface == Empty */
-	if ( gserialized_is_empty(geom1) )
-		PG_RETURN_POINTER(geom1);
+	/* Empty.PointOnSurface == Point Empty */
+	if ( gserialized_is_empty(geom) )
+	{
+		lwg = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
+		result = geometry_serialize(lwpoint_as_lwgeom(lwg));
+		lwgeom_free(lwg);
+		PG_RETURN_POINTER(result);
+	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1);
+	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom);
 
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{
@@ -1525,9 +1531,9 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 
 	POSTGIS_DEBUGF(3, "result: %s", GEOSGeomToWKT(g3) ) ;
 
-	GEOSSetSRID(g3, gserialized_get_srid(geom1));
+	GEOSSetSRID(g3, gserialized_get_srid(geom));
 
-	result = GEOS2POSTGIS(g3, gserialized_has_z(geom1));
+	result = GEOS2POSTGIS(g3, gserialized_has_z(geom));
 
 	if (result == NULL)
 	{
@@ -1540,7 +1546,7 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	GEOSGeom_destroy(g1);
 	GEOSGeom_destroy(g3);
 
-	PG_FREE_IF_COPY(geom1, 0);
+	PG_FREE_IF_COPY(geom, 0);
 
 	PG_RETURN_POINTER(result);
 }
