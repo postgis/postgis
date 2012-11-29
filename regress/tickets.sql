@@ -346,8 +346,9 @@ SELECT '#682', ST_Buffer(ST_GeomFromText('POLYGON EMPTY',4326) , 0.5);
 -- #683 --
 SELECT '#683', ST_BuildArea(ST_GeomFromText('POINT EMPTY',4326));
 
--- #684 --
-SELECT '#684', ST_Centroid(ST_GeomFromText('POLYGON EMPTY',4326));
+-- #684,#2109 --
+SELECT '#684,#2109', ST_AsEWKT(ST_Centroid(ST_GeomFromText('POLYGON EMPTY',4326)));
+SELECT '#2109', ST_AsEWKT(ST_Centroid(ST_GeomFromText('MULTILINESTRING ZM EMPTY',3395)));
 
 -- #685 --
 SELECT '#685', ST_ConvexHull(ST_GeomFromText('POLYGON EMPTY',4326));

@@ -41,6 +41,7 @@ PostGIS 2.0.2
   - #2077, Fixed incorrect answers from ST_Hillshade(raster) 
   - #2099, Fix double free on exception in ST_OffsetCurve 
   - #2100, ST_AsRaster() may not return raster with specified pixel type
+  - #2109, Ensure ST_Centroid always returns POINT
 
   - Update URL of Maven jar
   

@@ -1575,14 +1575,19 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
+	LWGEOM *lwg;
 	GSERIALIZED *geom, *result;
 	GEOSGeometry *geosgeom, *geosresult;
 
 	geom = (GSERIALIZED *)  PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
 
-	/* Empty.Centroid() == Empty */
+	/* Empty.Centroid() == Point Empty */
 	if ( gserialized_is_empty(geom) )
-		PG_RETURN_POINTER(geom);
+	{
+		lwg = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
+		result = geometry_serialize(lwpoint_as_lwgeom(lwg));
+		PG_RETURN_POINTER(result);
+	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
