@@ -29,7 +29,7 @@ PostGIS 2.0.2
   - #2015, ST_IsEmpty('POLYGON(EMPTY)') returns False
   - #2019, ST_FlipCoordinates does not update bbox
   - #2025, Fix side location conflict at TopoGeo_AddLineString 
-  - #2026, improve performance of distance calculations
+  - #2062, improve performance of distance calculations
   - #2033, Fix adding a splitting point into a 2.5d topology 
   - #2051, Fix excess of precision in ST_AsGeoJSON output
   - #2052, Fix buffer overflow in lwgeom_to_geojson
