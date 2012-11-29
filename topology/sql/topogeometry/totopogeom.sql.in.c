@@ -111,7 +111,7 @@ BEGIN
   ELSE
       -- Should never happen
       RAISE EXCEPTION
-        'Unexpected feature dimension %', ST_Dimension(ageom);
+        'Unsupported feature type %', typ;
   END IF;
 
   -- Now that we have a topogeometry, we loop over distinct components 

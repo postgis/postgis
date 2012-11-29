@@ -11,6 +11,7 @@ PostGIS 2.0.2
        added to legacy_minor/legacy.sql scripts
   - #1885, Missing field from tabblock table in tiger2010 census_loader.sql
   - #1891, Use LDFLAGS environment when building liblwgeom
+  - #1899, Enhance toTopoGeom error on unsupported input
   - #1900, Fix pgsql2shp for big-endian systems 
   - #1932, Fix raster2pgsql for invalid syntax for setting index tablespace
   - #1936, ST_GeomFromGML on CurvePolygon causes server crash

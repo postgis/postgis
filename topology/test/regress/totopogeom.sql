@@ -40,6 +40,11 @@ select totopogeom('MULTIPOINT(0 0, 10 10)'::geometry, 'tt', 3); -- invalid (line
 select totopogeom('MULTIPOINT(0 0, 10 10)'::geometry, 'tt', 4); -- invalid (areal) layer
 select totopogeom('POLYGON((0 0, 10 10, 10 0, 0 0))'::geometry, 'tt', 1); -- invalid (puntal) layer
 select totopogeom('POLYGON((0 0, 10 10, 10 0, 0 0))'::geometry, 'tt', 3); -- invalid (lineal) layer
+-- Unsupported feature types
+select totopogeom('TIN( ((0 0 0, 0 0 1, 0 1 0, 0 0 0)), ((0 0 0, 0 1 0, 1 1 0, 0 0 0)) )'::geometry, 'tt', 4); -- TODO: support !
+select totopogeom('TRIANGLE ((0 0, 0 9, 9 0, 0 0))'::geometry, 'tt', 4); -- TODO: support !
+select totopogeom('CIRCULARSTRING(0 0, 1 1, 1 0)'::geometry, 'tt', 3); -- Unsupported feature type
+
 
 -- Convert a point
 with inp as ( select 'POINT(0 0)' ::geometry as g)
