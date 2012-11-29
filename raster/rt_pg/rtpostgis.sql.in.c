@@ -1995,26 +1995,24 @@ CREATE OR REPLACE FUNCTION _st_gdalwarp(
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
-	srid integer DEFAULT NULL,
 	scalex double precision DEFAULT 0, scaley double precision DEFAULT 0,
 	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
 	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0,
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
 )
 	RETURNS raster
-	AS $$ SELECT _st_gdalwarp($1, $9,	$10, $2, $3, $4, $5, $6, $7, $8) $$
+	AS $$ SELECT _st_gdalwarp($1, $8,	$9, NULL, $2, $3, $4, $5, $6, $7) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
 	width integer, height integer,
-	srid integer DEFAULT NULL,
 	gridx double precision DEFAULT NULL, gridy double precision DEFAULT NULL,
 	skewx double precision DEFAULT 0, skewy double precision DEFAULT 0,
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
 )
 	RETURNS raster
-	AS $$ SELECT _st_gdalwarp($1, $9,	$10, $4, NULL, NULL, $5, $6, $7, $8, $2, $3) $$
+	AS $$ SELECT _st_gdalwarp($1, $8,	$9, NULL, NULL, NULL, $4, $5, $6, $7, $2, $3) $$
 	LANGUAGE 'sql' STABLE;
 
 CREATE OR REPLACE FUNCTION st_resample(
@@ -2027,7 +2025,6 @@ CREATE OR REPLACE FUNCTION st_resample(
 	RETURNS raster
 	AS $$
 	DECLARE
-		sr_id int;
 		dim_x int;
 		dim_y int;
 		scale_x double precision;
@@ -2037,7 +2034,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 		skew_x double precision;
 		skew_y double precision;
 	BEGIN
-		SELECT srid, width, height, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO sr_id, dim_x, dim_y, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y FROM st_metadata($2);
+		SELECT width, height, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO dim_x, dim_y, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y FROM st_metadata($2);
 
 		IF usescale IS TRUE THEN
 			dim_x := NULL;
@@ -2047,7 +2044,7 @@ CREATE OR REPLACE FUNCTION st_resample(
 			scale_y := NULL;
 		END IF;
 
-		RETURN _st_gdalwarp($1, $3, $4, sr_id, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y, dim_x, dim_y);
+		RETURN _st_gdalwarp($1, $3, $4, NULL, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y, dim_x, dim_y);
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
@@ -2086,8 +2083,21 @@ CREATE OR REPLACE FUNCTION st_transform(
 	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
 )
 	RETURNS raster
-	AS $$ SELECT st_resample($1, $2, $3, $4, TRUE) $$
-	LANGUAGE 'sql' STABLE STRICT;
+	AS $$
+	DECLARE
+		_srid integer;
+		_scalex double precision;
+		_scaley double precision;
+		_gridx double precision;
+		_gridy double precision;
+		_skewx double precision;
+		_skewy double precision;
+	BEGIN
+		SELECT srid, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO _srid, _scalex, _scaley, _gridx, _gridy, _skewx, _skewy FROM st_metadata($2);
+
+		RETURN _st_gdalwarp($1, $3, $4, _srid, _scalex, _scaley, _gridx, _gridy, _skewx, _skewy, NULL, NULL);
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Rescale

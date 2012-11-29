@@ -87,7 +87,7 @@ TEST_UTILITY = \
 	rt_asjpeg \
 	rt_aspng \
 	rt_reclass \
-	rt_resample \
+	rt_gdalwarp \
 	rt_asraster \
 	rt_dumpvalues
 

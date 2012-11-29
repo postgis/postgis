@@ -5430,7 +5430,7 @@ WHERE rid = 2;
 		<refentry id="RT_ST_Resample">
 			<refnamediv>
 				<refname>ST_Resample</refname>
-				<refpurpose>Resample a raster using a specified resampling algorithm, new dimensions, an arbitrary grid corner and a set of raster georeferencing attributes defined or borrowed from another raster. New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor.</refpurpose>
+				<refpurpose>Resample a raster using a specified resampling algorithm, new dimensions, an arbitrary grid corner and a set of raster georeferencing attributes defined or borrowed from another raster. New pixel values are computed using the NearestNeighbor (English or American spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5440,7 +5440,6 @@ WHERE rid = 2;
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
-						<paramdef choice="opt"><type>integer </type> <parameter>srid=same_as_rast</parameter></paramdef>
 						<paramdef choice="opt"><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
 						<paramdef choice="opt"><type>double precision </type> <parameter>gridy=NULL</parameter></paramdef>
 						<paramdef choice="opt"><type>double precision </type> <parameter>skewx=0</parameter></paramdef>
@@ -5452,7 +5451,6 @@ WHERE rid = 2;
 					<funcprototype>
 						<funcdef>raster <function>ST_Resample</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef choice="opt"><type>integer </type> <parameter>srid=NULL</parameter></paramdef>
 						<paramdef choice="opt"><type>double precision </type> <parameter>scalex=0</parameter></paramdef>
 						<paramdef choice="opt"><type>double precision </type> <parameter>scaley=0</parameter></paramdef>
 						<paramdef choice="opt"><type>double precision </type> <parameter>gridx=NULL</parameter></paramdef>
@@ -5488,30 +5486,39 @@ WHERE rid = 2;
 				
 				<para>Resample a raster using a specified resampling algorithm, new dimensions (width &amp; height), a grid corner (gridx &amp; gridy) and a set of raster georeferencing attributes (scalex, scaley, skewx &amp; skewy) defined or borrowed from another raster.</para>
 				
-				<para>New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor which is the fastest but produce the worst interpolation.</para>
+				<para>New pixel values are computed using the NearestNeighbor (English or American spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor which is the fastest but produce the worst interpolation.</para>
 				
 				<para>A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.</para>
 				
 				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para></note>
-				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				<para>Availability: 2.0.0 Requires GDAL 1.6.1+</para>
+				<para>Changed: 2.1.0 Parameter srid removed. Use ST_Transform() to reproject raster</para>
 			</refsection>
 				
 			<refsection>
-					<title>Examples</title>
+				<title>Examples</title>
 				
-					<programlisting>SELECT ST_Width(orig) As orig_width, ST_Width(reduce_100) As new_width
- FROM (
- SELECT rast As orig, ST_Resample(rast,100,100) As reduce_100   
-  FROM aerials.boston 
+				<programlisting>
+SELECT
+	ST_Width(orig) AS orig_width,
+	ST_Width(reduce_100) AS new_width
+FROM (
+	SELECT
+		rast AS orig,
+		ST_Resample(rast,100,100) AS reduce_100
+	FROM aerials.boston 
 	WHERE ST_Intersects(rast,
-	  ST_Transform(
-	    ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986) ) 
-	        limit 1 ) As foo;
+		ST_Transform(
+			ST_MakeEnvelope(-71.128, 42.2392,-71.1277, 42.2397, 4326),26986)
+	)
+	LIMIT 1
+) AS foo;
+
  orig_width | new_width
 ------------+-------------
         200 |         100				
-</programlisting>
+				</programlisting>
 			</refsection>
 
 			<refsection>

@@ -1,9 +1,9 @@
-DROP TABLE IF EXISTS raster_resample_src;
-DROP TABLE IF EXISTS raster_resample_dst;
-CREATE TABLE raster_resample_src (
+DROP TABLE IF EXISTS raster_gdalwarp_src;
+DROP TABLE IF EXISTS raster_gdalwarp_dst;
+CREATE TABLE raster_gdalwarp_src (
 	rast raster
 );
-CREATE TABLE raster_resample_dst (
+CREATE TABLE raster_gdalwarp_dst (
 	rid varchar,
 	rast raster
 );
@@ -27,7 +27,7 @@ CREATE OR REPLACE FUNCTION make_test_raster()
 			END LOOP;
 		END LOOP;
 
-		INSERT INTO raster_resample_src VALUES (rast);
+		INSERT INTO raster_gdalwarp_src VALUES (rast);
 
 		RETURN;
 	END;
@@ -50,520 +50,664 @@ INSERT INTO "spatial_ref_sys" ("srid","auth_name","auth_srid","srtext","proj4tex
 INSERT INTO "spatial_ref_sys" ("srid","auth_name","srtext","proj4text") VALUES (984269,'EPSG','GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]]','+proj=longlat +ellps=GRS80 +datum=NAD83 +no_defs ');
 INSERT INTO "spatial_ref_sys" ("srid","srtext") VALUES (974269,'GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]]');
 
+-- _st_gdalwarp
+INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
+	0.0, (SELECT _st_gdalwarp(
+		NULL
+	))
+), (
+	0.1, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbour', 0.125,
+		993310
+	) FROM raster_gdalwarp_src)
+), (
+	0.2, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbour', 0.125,
+		993309
+	) FROM raster_gdalwarp_src)
+), (
+	0.3, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbour', 0.125,
+		994269
+	) FROM raster_gdalwarp_src)
+), (
+	0.4, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		993310,
+		500., 500.,
+		NULL, NULL,
+		0, 0
+	) FROM raster_gdalwarp_src)
+), (
+	0.5, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		100., NULL
+	) FROM raster_gdalwarp_src)
+), (
+	0.6, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL::double precision, 100.
+	) FROM raster_gdalwarp_src)
+), (
+	0.7, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		500., 500.
+	) FROM raster_gdalwarp_src)
+), (
+	0.8, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		250., 250.,
+		NULL, NULL,
+		NULL, NULL
+	) FROM raster_gdalwarp_src)
+), (
+	0.9, (SELECT _st_gdalwarp(
+		rast,
+		'Bilinear', 0,
+		NULL,
+		250., 250.,
+		NULL, NULL,
+		NULL, NULL
+	) FROM raster_gdalwarp_src)
+), (
+	0.10, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		-500000, 600000
+	) FROM raster_gdalwarp_src)
+), (
+	0.11, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		-500001, 600000
+	) FROM raster_gdalwarp_src)
+), (
+	0.12, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		-500000, 600009
+	) FROM raster_gdalwarp_src)
+), (
+	0.13, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		-500100, 599950
+	) FROM raster_gdalwarp_src)
+), (
+	0.14, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		50., 50.,
+		-290, 7
+	) FROM raster_gdalwarp_src)
+), (
+	0.15, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		121., 121.,
+		0, 0
+	) FROM raster_gdalwarp_src)
+), (
+	0.16, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		993310,
+		50., 50.,
+		-290, 7
+	) FROM raster_gdalwarp_src)
+), (
+	0.17, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		993309,
+		50., 50.,
+		-290, 7
+	) FROM raster_gdalwarp_src)
+), (
+	0.18, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		NULL, NULL,
+		3, 3
+	) FROM raster_gdalwarp_src)
+), (
+	0.19, (SELECT _st_gdalwarp(
+		rast,
+		'Cubic', 0,
+		993310,
+		NULL, NULL,
+		NULL, NULL,
+		3, 3
+	) FROM raster_gdalwarp_src)
+), (
+	0.20, (SELECT _st_gdalwarp(
+		rast,
+		'Bilinear', 0.125,
+		993309,
+		NULL, NULL,
+		NULL, NULL,
+		1, 3
+	) FROM raster_gdalwarp_src)
+), (
+	0.21, (SELECT _st_gdalwarp(
+		rast,
+		'Cubic', 0,
+		993310,
+		500., 500.,
+		NULL, NULL,
+		3, 3
+	) FROM raster_gdalwarp_src)
+), (
+	0.22, (SELECT _st_gdalwarp(
+		rast,
+		'CubicSpline', 0.125,
+		993310,
+		500., 500.,
+		-12048, 14682,
+		0, 6
+	) FROM raster_gdalwarp_src)
+), (
+	0.23, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		984269
+	) FROM raster_gdalwarp_src)
+), (
+	0.24, (SELECT _st_gdalwarp(
+		rast,
+		'NearestNeighbor', 0.125,
+		974269
+	) FROM raster_gdalwarp_src)
+);
+
 -- ST_Resample
-INSERT INTO raster_resample_dst (rid, rast) VALUES (
+INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 	1.0, (SELECT ST_Resample(
 		NULL
 	))
 ), (
 	1.1, (SELECT ST_Resample(
 		rast
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	1.2, (SELECT ST_Resample(
 		rast,
-		993310
-	) FROM raster_resample_src)
-), (
-	1.3, (SELECT ST_Resample(
-		rast,
-		993309
-	) FROM raster_resample_src)
-), (
-	1.4, (SELECT ST_Resample(
-		rast,
-		994269
-	) FROM raster_resample_src)
-), (
-	1.5, (SELECT ST_Resample(
-		rast,
-		993310,
 		500., 500.,
 		NULL, NULL,
 		0, 0,
 		'NearestNeighbor', 0.125
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
+), (
+	1.3, (SELECT ST_Resample(
+		rast,
+		100., NULL
+	) FROM raster_gdalwarp_src)
+), (
+	1.4, (SELECT ST_Resample(
+		rast,
+		NULL::double precision, 100.
+	) FROM raster_gdalwarp_src)
+), (
+	1.5, (SELECT ST_Resample(
+		rast,
+		500., 500.
+	) FROM raster_gdalwarp_src)
 ), (
 	1.6, (SELECT ST_Resample(
 		rast,
-		NULL,
-		100., NULL
-	) FROM raster_resample_src)
-), (
-	1.7, (SELECT ST_Resample(
-		rast,
-		NULL,
-		NULL::double precision, 100.
-	) FROM raster_resample_src)
-), (
-	1.8, (SELECT ST_Resample(
-		rast,
-		NULL,
-		500., 500.
-	) FROM raster_resample_src)
-), (
-	1.9, (SELECT ST_Resample(
-		rast,
-		NULL,
 		250., 250.,
 		NULL, NULL,
 		NULL, NULL
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
-	1.10, (SELECT ST_Resample(
+	1.7, (SELECT ST_Resample(
 		rast,
-		NULL,
 		250., 250.,
 		NULL, NULL,
 		NULL, NULL,
 		'Bilinear', 0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
+), (
+	1.8, (SELECT ST_Resample(
+		rast,
+		NULL::double precision, NULL::double precision,
+		-500000, 600000
+	) FROM raster_gdalwarp_src)
+), (
+	1.9, (SELECT ST_Resample(
+		rast,
+		NULL::double precision, NULL::double precision,
+		-500001, 600000
+	) FROM raster_gdalwarp_src)
+), (
+	1.10, (SELECT ST_Resample(
+		rast,
+		NULL::double precision, NULL::double precision,
+		-500000, 600009
+	) FROM raster_gdalwarp_src)
 ), (
 	1.11, (SELECT ST_Resample(
 		rast,
-		NULL,
-		NULL, NULL,
-		-500000, 600000
-	) FROM raster_resample_src)
+		NULL::double precision, NULL::double precision,
+		-500100, 599950
+	) FROM raster_gdalwarp_src)
 ), (
 	1.12, (SELECT ST_Resample(
 		rast,
-		NULL,
-		NULL, NULL,
-		-500001, 600000
-	) FROM raster_resample_src)
+		50., 50.,
+		-290, 7
+	) FROM raster_gdalwarp_src)
 ), (
 	1.13, (SELECT ST_Resample(
 		rast,
-		NULL,
-		NULL, NULL,
-		-500000, 600009
-	) FROM raster_resample_src)
+		121., 121.,
+		0, 0
+	) FROM raster_gdalwarp_src)
 ), (
 	1.14, (SELECT ST_Resample(
 		rast,
-		NULL,
-		NULL, NULL,
-		-500100, 599950
-	) FROM raster_resample_src)
+		50., 50.,
+		-290, 7
+	) FROM raster_gdalwarp_src)
 ), (
 	1.15, (SELECT ST_Resample(
 		rast,
-		NULL,
 		50., 50.,
 		-290, 7
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	1.16, (SELECT ST_Resample(
 		rast,
-		NULL,
-		121., 121.,
-		0, 0
-	) FROM raster_resample_src)
+		NULL::double precision, NULL,
+		NULL, NULL,
+		3, 3
+	) FROM raster_gdalwarp_src)
 ), (
 	1.17, (SELECT ST_Resample(
 		rast,
-		993310,
-		50., 50.,
-		-290, 7
-	) FROM raster_resample_src)
+		NULL::double precision, NULL,
+		NULL, NULL,
+		3, 3,
+		'Cubic', 0
+	) FROM raster_gdalwarp_src)
 ), (
 	1.18, (SELECT ST_Resample(
 		rast,
-		993309,
-		50., 50.,
-		-290, 7
-	) FROM raster_resample_src)
-), (
-	1.19, (SELECT ST_Resample(
-		rast,
-		NULL,
-		NULL, NULL,
-		NULL, NULL,
-		3, 3
-	) FROM raster_resample_src)
-), (
-	1.20, (SELECT ST_Resample(
-			rast,
-			993310,
-			NULL, NULL,
-			NULL, NULL,
-			3, 3,
-			'Cubic', 0
-	) FROM raster_resample_src)
-), (
-	1.21, (SELECT ST_Resample(
-		rast,
-		993309,
-		NULL, NULL,
+		NULL::double precision, NULL,
 		NULL, NULL,
 		1, 3,
 		'Bilinear'
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
-	1.22, (SELECT ST_Resample(
+	1.19, (SELECT ST_Resample(
 		rast,
-		993310,
 		500., 500.,
 		NULL, NULL,
 		3, 3,
 		'Cubic', 0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
-	1.23, (SELECT ST_Resample(
+	1.20, (SELECT ST_Resample(
 		rast,
-		993310,
 		500., 500.,
 		-12048, 14682,
 		0, 6,
 		'CubicSpline'
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
-	1.24, (SELECT ST_Resample(
+	1.21, (SELECT ST_Resample(
 		rast,
 		ST_MakeEmptyRaster(5, 5, -654321, 123456, 50, -100, 3, 0, 992163)
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
-	1.25, (SELECT ST_Resample(
+	1.22, (SELECT ST_Resample(
 		rast,
 		ST_MakeEmptyRaster(5, 5, -654321, 123456, 50, -100, 3, 0, 992163),
 		TRUE
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
-	1.26, (SELECT ST_Resample(
+	1.23, (SELECT ST_Resample(
 		rast,
-		150, 150
-	) FROM raster_resample_src)
+		150::int, 150::int
+	) FROM raster_gdalwarp_src)
 ), (
-	1.27, (SELECT ST_Resample(
-		rast,
-		150, 150,
-		993310
-	) FROM raster_resample_src)
-), (
-	1.28, (SELECT ST_Resample(
+	1.24, (SELECT ST_Resample(
 		rast,
 		ST_MakeEmptyRaster(5, 5, -654321, 123456, 100, 100, 0, 0, 992163),
 		FALSE
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
-	1.29, (SELECT ST_Resample(
+	1.25, (SELECT ST_Resample(
 		rast,
 		NULL::raster,
 		FALSE
-	) FROM raster_resample_src)
-), (
-	1.30, (SELECT ST_Resample(
-		rast,
-		984269
-	) FROM raster_resample_src)
-), (
-	1.31, (SELECT ST_Resample(
-		rast,
-		974269
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 );
 
 -- ST_Transform
-INSERT INTO raster_resample_dst (rid, rast) VALUES (
+INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 	2.1, (SELECT ST_Transform(
 		rast,
 		993310
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.2, (SELECT ST_Transform(
 		rast,
 		993309
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.3, (SELECT ST_Transform(
 		rast,
 		994269
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.4, (SELECT ST_Transform(
 		rast,
 		993310, NULL
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.5, (SELECT ST_Transform(
 		rast,
 		993310, 'Bilinear'
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.6, (SELECT ST_Transform(
 		rast,
 		993310, 'Bilinear', NULL::double precision
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.7, (SELECT ST_Transform(
 		rast,
 		993310, 'Cubic', 0.0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.8, (SELECT ST_Transform(
 		rast,
 		993310, 'NearestNeighbour', 0.0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.9, (SELECT ST_Transform(
 		rast,
 		993310, 'NearestNeighbor', 0.0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.10, (SELECT ST_Transform(
 		rast,
 		993310, 'NearestNeighbor', 0.125, 500, 500
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.11, (SELECT ST_Transform(
 		rast,
 		993309, 'Cubic', 0., 100, 100
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.12, (SELECT ST_Transform(
 		rast,
 		993310, 'CubicSpline', 0., 2000, 2000
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.13, (SELECT ST_Transform(
 		rast,
 		993310, 'CubicSpline', 0.1, 1500, 1500
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.14, (SELECT ST_Transform(
 		rast,
 		993310, 500, 500
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	2.15, (SELECT ST_Transform(
 		rast,
 		993310, 750
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 );
 
 -- ST_Rescale
-INSERT INTO raster_resample_dst (rid, rast) VALUES (
+INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 	3.1, (SELECT ST_Rescale(
 		rast,
 		100, 100
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	3.2, (SELECT ST_Rescale(
 		rast,
 		100
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	3.3, (SELECT ST_Rescale(
 		rast,
 		0, 0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	3.4, (SELECT ST_Rescale(
 		rast,
 		0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	3.5, (SELECT ST_Rescale(
 		rast,
 		100, 100,
 		'Bilinear', 0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	3.6, (SELECT ST_Rescale(
 		rast,
 		150, 125,
 		'Cubic'
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 );
 
 -- ST_Reskew
-INSERT INTO raster_resample_dst (rid, rast) VALUES (
+INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 	4.1, (SELECT ST_Reskew(
 		rast,
 		0, 0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	4.2, (SELECT ST_Reskew(
 		rast,
 		1, 1
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	4.3, (SELECT ST_Reskew(
 		rast,
 		0.5, 0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	4.4, (SELECT ST_Reskew(
 		rast,
 		10
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	4.5, (SELECT ST_Reskew(
 		rast,
 		10,
 		'CubicSpline'
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	4.6, (SELECT ST_Reskew(
 		rast,
 		10,
 		'Bilinear', 0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 );
 
 -- ST_SnapToGrid
-INSERT INTO raster_resample_dst (rid, rast) VALUES (
+INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 	5.1, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, 600000
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.2, (SELECT ST_SnapToGrid(
 		rast,
 		0, 0
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.3, (SELECT ST_SnapToGrid(
 		rast,
 		-1, 600000
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.4, (SELECT ST_SnapToGrid(
 		rast,
 		-500001, 600000
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.5, (SELECT ST_SnapToGrid(
 		rast,
 		1, 600000
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.6, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, -1
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.7, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, -9
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.8, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, 1
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.9, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, 9
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.10, (SELECT ST_SnapToGrid(
 		rast,
 		-5, 1
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.11, (SELECT ST_SnapToGrid(
 		rast,
 		9, -9
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.12, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, 600000,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.13, (SELECT ST_SnapToGrid(
 		rast,
 		0, 0,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.14, (SELECT ST_SnapToGrid(
 		rast,
 		-1, 600000,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.15, (SELECT ST_SnapToGrid(
 		rast,
 		-500001, 600000,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.16, (SELECT ST_SnapToGrid(
 		rast,
 		1, 600000,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.17, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, -1,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.18, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, -9,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.19, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, 1,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.20, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, 9,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.21, (SELECT ST_SnapToGrid(
 		rast,
 		-5, 1,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.22, (SELECT ST_SnapToGrid(
 		rast,
 		9, -9,
 		50, 50
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.23, (SELECT ST_SnapToGrid(
 		rast,
 		0, 0,
 		121
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.24, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, 1,
 		121
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.25, (SELECT ST_SnapToGrid(
 		rast,
 		-500000, 9,
 		121
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.26, (SELECT ST_SnapToGrid(
 		rast,
 		-5, 1,
 		121
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 ), (
 	5.27, (SELECT ST_SnapToGrid(
 		rast,
 		9, -9,
 		121
-	) FROM raster_resample_src)
+	) FROM raster_gdalwarp_src)
 );
 
 SELECT
@@ -586,12 +730,12 @@ FROM (
 		rid,
 		(ST_MetaData(rast)).*,
 		(ST_SummaryStats(rast)).*
-	FROM raster_resample_dst
+	FROM raster_gdalwarp_dst
 	ORDER BY rid
 ) foo;
 
-DROP TABLE raster_resample_src;
-DROP TABLE raster_resample_dst;
+DROP TABLE raster_gdalwarp_src;
+DROP TABLE raster_gdalwarp_dst;
 
 WITH foo AS (
 	SELECT 0 AS rid, ST_AddBand(ST_MakeEmptyRaster(2, 2, -500000, 600000, 100, -100, 0, 0, 992163), 1, '16BUI', 1, 0) AS rast UNION ALL
@@ -631,4 +775,3 @@ DELETE FROM "spatial_ref_sys" WHERE srid = 993310;
 DELETE FROM "spatial_ref_sys" WHERE srid = 994269;
 DELETE FROM "spatial_ref_sys" WHERE srid = 984269;
 DELETE FROM "spatial_ref_sys" WHERE srid = 974269;
-

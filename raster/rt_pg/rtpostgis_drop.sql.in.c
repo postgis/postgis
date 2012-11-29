@@ -470,3 +470,7 @@ DROP FUNCTION IF EXISTS st_raster2worldcoordy(raster, int);
 
 -- function name change
 DROP FUNCTION IF EXISTS _st_resample(raster, text, double precision, integer, double precision, double precision, double precision, double precision, double precision, double precision, integer, integer);
+
+-- function signatures changed
+DROP FUNCTION IF EXISTS st_resample(raster, integer, double precision, double precision, double precision, double precision, double precision, double precision, text, double precision);
+DROP FUNCTION IF EXISTS st_resample(raster, integer, integer, integer, double precision, double precision, double precision, double precision, text, double precision);
