@@ -42,6 +42,7 @@ PostGIS 2.0.2
   - #2099, Fix double free on exception in ST_OffsetCurve 
   - #2100, ST_AsRaster() may not return raster with specified pixel type
   - #2109, Ensure ST_Centroid always returns POINT
+  - #2117, Ensure ST_PointOnSurface always returns POINT
 
   - Update URL of Maven jar
   
