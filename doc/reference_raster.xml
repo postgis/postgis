@@ -5490,10 +5490,9 @@ WHERE rid = 2;
 				
 				<para>A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.</para>
 				
-				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para></note>
 				<para>Availability: 2.0.0 Requires GDAL 1.6.1+</para>
-				<para>Changed: 2.1.0 Parameter srid removed. Use ST_Transform() to reproject raster</para>
+				<para>Changed: 2.1.0 Parameter srid removed. Use ST_Transform() to reproject raster. Works on rasters with no SRID.</para>
 			</refsection>
 				
 			<refsection>
@@ -5568,12 +5567,11 @@ FROM (
 				<para>A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.</para>
 				
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
-				
-				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
 
 				<note><para>ST_Rescale is different from <xref linkend="RT_ST_SetScale" /> in that ST_SetScale do not resample the raster to match the raster extent. ST_SetScale only changes the metadata (or georeference) of the raster to correct an originally mis-specified scaling. ST_Rescale results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetScale do not modify the width, nor the height of the raster.</para></note>
 				
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				<para>Changed: 2.1.0 Works on rasters with no SRID</para>
 			</refsection>
 				
 			<refsection>
@@ -5642,13 +5640,12 @@ SELECT ST_PixelWidth(ST_Rescale(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.
 				
 				<para>A maxerror percent of 0.125 if no <varname>maxerr</varname> is specified.</para>
 				
-				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
-
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
 				
 				<note><para>ST_Reskew is different from <xref linkend="RT_ST_SetSkew" /> in that ST_SetSkew do not resample the raster to match the raster extent. ST_SetSkew only changes the metadata (or georeference) of the raster to correct an originally mis-specified skew. ST_Reskew results in a raster having different width and height computed to fit the geographic extent of the input raster. ST_SetSkew do not modify the width, nor the height of the raster.</para></note>
 				
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				<para>Changed: 2.1.0 Works on rasters with no SRID</para>
 			</refsection>
 				
 			<refsection>
@@ -5726,13 +5723,12 @@ SELECT ST_Rotation(ST_Reskew(ST_AddBand(ST_MakeEmptyRaster(100, 100, 0, 0, 0.001
 				
 				<para>A maxerror percent of 0.125 if no <varname>maxerr</varname> is specified.</para>
 				
-				<note><para>Only works if raster is in a known spatial reference system (SRID).</para></note>
-
 				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details. </para></note>
 				
 				<note><para>Use <xref linkend="RT_ST_Resample" /> if you need more control over the grid parameters.</para></note>
 				
 				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
+				<para>Changed: 2.1.0 Works on rasters with no SRID</para>
 			</refsection>
 				
 			<refsection>
@@ -5800,13 +5796,20 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 				<para>Algorithm options are: 'NearestNeighbor', 'Bilinear', 'Cubic', 'CubicSpline', and 'Lanczos'.  Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para>
 
 				<para>
+					ST_Transform is often confused with ST_SetSRID(). ST_Transform actually changes the coordinates of a raster (and resamples the pixel values) from one spatial reference system to another, while ST_SetSRID() simply changes the SRID identifier of the raster.
+				</para>
+
+				<para>
 					Unlike the other variants, Variant 3 requires a reference raster as <varname>alignto</varname>. The transformed raster will be transformed to the spatial reference system (SRID) of the reference raster and be aligned (ST_SameAlignment = TRUE) to the reference raster.
 				</para>
 
-				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
-				<note><para>If you find your transformation support is not working right, you may need to set the environment variable PROJSO to the .so or .dll projection library
-					your PostGIS is using.  This just needs to have the name of the file. So for example on windows, you would in Control Panel -> System -> Environment Variables add a system variable called <varname>PROJSO</varname> and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1).  You'll have to restart your PostgreSQL service/daemon after this change.</para></note>
+				<note>
+					<para>
+						If you find your transformation support is not working right, you may need to set the environment variable PROJSO to the .so or .dll projection library your PostGIS is using.  This just needs to have the name of the file. So for example on windows, you would in Control Panel -> System -> Environment Variables add a system variable called <varname>PROJSO</varname> and set it to <varname>libproj.dll</varname> (if you are using proj 4.6.1).  You'll have to restart your PostgreSQL service/daemon after this change.
+					</para>
+				</note>
 
+				<para>Availability: 2.0.0  Requires GDAL 1.6.1+</para>
 				<para>Enhanced: 2.1.0 Addition of ST_Transform(rast, alignto) variant</para>
 			</refsection>
 				

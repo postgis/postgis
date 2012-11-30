@@ -90,6 +90,8 @@ PostGIS 2.1.0
   - #2097, Added RANGE uniontype option for ST_Union(raster)
   - #2105, Added ST_Transform(raster) variant for aligning output to
     reference raster
+  - #2119, Rasters passed to ST_Resample(), ST_Rescale(), ST_Reskew(),
+    and ST_SnapToGrid() no longer require an SRID
 
 * Fixes *
 
