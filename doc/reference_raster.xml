@@ -7958,7 +7958,7 @@ GROUP BY t1.rast;
 				</para>
 
 				<para>
-					When <varname>units</varname> = RADIANS, values are between 0 and 2&pi; radians measured clockwise from North.
+					When <varname>units</varname> = RADIANS, values are between 0 and 2 * pi radians measured clockwise from North.
 				</para>
 
 				<para>
