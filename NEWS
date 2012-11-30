@@ -40,6 +40,7 @@ PostGIS 2.0.2
   - #2072, Removed outdated checks preventing ST_Intersects(raster) from
            working on out-db bands
   - #2077, Fixed incorrect answers from ST_Hillshade(raster) 
+  - #2092, Namespace issue with ST_GeomFromKML,ST_GeomFromGML for libxml 2.8+
   - #2099, Fix double free on exception in ST_OffsetCurve 
   - #2100, ST_AsRaster() may not return raster with specified pixel type
   - #2108, Ensure ST_Line_Interpolate_Point always returns POINT

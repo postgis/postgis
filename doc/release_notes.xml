@@ -44,6 +44,7 @@
  			 <para>#2072, Removed outdated checks preventing ST_Intersects(raster) from
            working on out-db bands</para>
  			 <para>#2077, Fixed incorrect answers from ST_Hillshade(raster) </para>
+ 			 <para>#2092, Namespace issue with ST_GeomFromKML,ST_GeomFromGML for libxml 2.8+</para>
  			 <para>#2099, Fix double free on exception in ST_OffsetCurve</para> 
  			 <para>#2100, ST_AsRaster() may not return raster with specified pixel type</para>
 
