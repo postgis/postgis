@@ -11193,6 +11193,7 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	char *src_srs = NULL;
 	int dst_srid = SRID_UNKNOWN;
 	char *dst_srs = NULL;
+	int no_srid = 0;
 
 	double scale[2] = {0};
 	double *scale_x = NULL;
@@ -11240,20 +11241,14 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	}
 	POSTGIS_RT_DEBUGF(4, "max_err: %f", max_err);
 
-	/* source srid */
-	src_srid = rt_raster_get_srid(raster);
-	if (clamp_srid(src_srid) == SRID_UNKNOWN) {
-		elog(ERROR, "RASTER_GDALWarp: Input raster has unknown (%d) SRID", src_srid);
-		rt_raster_destroy(raster);
-		PG_FREE_IF_COPY(pgraster, 0);
-		PG_RETURN_NULL();
-	}
-	POSTGIS_RT_DEBUGF(4, "source srid: %d", src_srid);
+	/* source SRID */
+	src_srid = clamp_srid(rt_raster_get_srid(raster));
+	POSTGIS_RT_DEBUGF(4, "source SRID: %d", src_srid);
 
-	/* target srid */
+	/* target SRID */
 	if (!PG_ARGISNULL(3)) {
-		dst_srid = PG_GETARG_INT32(3);
-		if (clamp_srid(dst_srid) == SRID_UNKNOWN) {
+		dst_srid = clamp_srid(PG_GETARG_INT32(3));
+		if (dst_srid == SRID_UNKNOWN) {
 			elog(ERROR, "RASTER_GDALWarp: %d is an invalid target SRID", dst_srid);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
@@ -11262,7 +11257,21 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	}
 	else
 		dst_srid = src_srid;
-	POSTGIS_RT_DEBUGF(4, "destination srid: %d", dst_srid);
+	POSTGIS_RT_DEBUGF(4, "destination SRID: %d", dst_srid);
+
+	/* source SRID = SRID_UNKNOWN */
+	if (src_srid == SRID_UNKNOWN) {
+		/* target SRID != src SRID, error */
+		if (dst_srid != src_srid) {
+			elog(ERROR, "RASTER_GDALWarp: Input raster has unknown (%d) SRID", src_srid);
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		/* target SRID == src SRID, special */
+		no_srid = 1;
+	}
 
 	/* scale x */
 	if (!PG_ARGISNULL(4)) {
@@ -11316,7 +11325,7 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 
 	/* check that at least something is to be done */
 	if (
-		(clamp_srid(dst_srid) == SRID_UNKNOWN) &&
+		(dst_srid == SRID_UNKNOWN) &&
 		(scale_x == NULL) &&
 		(scale_y == NULL) &&
 		(grid_xw == NULL) &&
@@ -11360,21 +11369,31 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 
 	/* get srses from srids */
 	/* source srs */
-	src_srs = rtpg_getSR(src_srid);
-	if (NULL == src_srs) {
-		elog(ERROR, "RASTER_GDALWarp: Input raster has unknown SRID (%d)", src_srid);
-		rt_raster_destroy(raster);
-		PG_FREE_IF_COPY(pgraster, 0);
-		PG_RETURN_NULL();
+	/* no SRID, use EPSG:4326 (WGS84) */
+	if (no_srid)
+		src_srs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+	/* legitimate SRID */
+	else {
+		src_srs = rtpg_getSR(src_srid);
+		if (NULL == src_srs) {
+			elog(ERROR, "RASTER_GDALWarp: Input raster has unknown SRID (%d)", src_srid);
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
 	}
 	POSTGIS_RT_DEBUGF(4, "src srs: %s", src_srs);
 
 	/* target srs */
-	if (clamp_srid(dst_srid) != SRID_UNKNOWN) {
+	/* no SRID, use src_srs */
+	if (no_srid)
+		dst_srs = src_srs;
+	/* legitimate SRID */
+	else if (dst_srid != SRID_UNKNOWN) {
 		dst_srs = rtpg_getSR(dst_srid);
 		if (NULL == dst_srs) {
 			elog(ERROR, "RASTER_GDALWarp: Target SRID (%d) is unknown", dst_srid);
-			if (NULL != src_srs) pfree(src_srs);
+			if (!no_srid && NULL != src_srs) pfree(src_srs);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
@@ -11382,8 +11401,9 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 		POSTGIS_RT_DEBUGF(4, "dst srs: %s", dst_srs);
 	}
 
-	rast = rt_raster_gdal_warp(raster, src_srs,
-		dst_srs,
+	rast = rt_raster_gdal_warp(
+		raster,
+		src_srs, dst_srs,
 		scale_x, scale_y,
 		dim_x, dim_y,
 		NULL, NULL,
@@ -11392,15 +11412,18 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 		alg, max_err);
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
-	if (NULL != src_srs) pfree(src_srs);
-	if (NULL != dst_srs) pfree(dst_srs);
+	if (!no_srid) {
+		if (NULL != src_srs) pfree(src_srs);
+		if (NULL != dst_srs) pfree(dst_srs);
+	}
 	if (!rast) {
 		elog(ERROR, "RASTER_band: Could not create transformed raster");
 		PG_RETURN_NULL();
 	}
 
-	/* add target srid */
-	rt_raster_set_srid(rast, dst_srid);
+	/* add target SRID but only if we're not using a no SRID */
+	if (!no_srid)
+		rt_raster_set_srid(rast, dst_srid);
 
 	pgrast = rt_raster_serialize(rast);
 	rt_raster_destroy(rast);

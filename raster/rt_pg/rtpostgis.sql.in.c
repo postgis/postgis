@@ -1974,7 +1974,6 @@ CREATE OR REPLACE FUNCTION st_asraster(
 -- ST_GDALWarp
 -- has no public functions
 -----------------------------------------------------------------------
-
 -- cannot be strict as almost all parameters can be NULL
 CREATE OR REPLACE FUNCTION _st_gdalwarp(
 	rast raster,
@@ -1992,7 +1991,6 @@ CREATE OR REPLACE FUNCTION _st_gdalwarp(
 -----------------------------------------------------------------------
 -- ST_Resample
 -----------------------------------------------------------------------
-
 CREATE OR REPLACE FUNCTION st_resample(
 	rast raster,
 	scalex double precision DEFAULT 0, scaley double precision DEFAULT 0,
