@@ -11,7 +11,8 @@ PostGIS 2.1.0
   - ST_Hillshade parameters azimuth and altitude are now in degrees
     instead of radians.
   - ST_Slope and ST_Aspect return pixel values in degrees instead of radians.
-  - #1653, Removed srid parameter from ST_Resample(raster).
+  - #1653, Removed srid parameter from ST_Resample(raster) and variants
+    with reference raster no longer apply reference raster's SRID.
 
 * Deprecated signatures
 

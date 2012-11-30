@@ -2023,26 +2023,37 @@ CREATE OR REPLACE FUNCTION st_resample(
 	RETURNS raster
 	AS $$
 	DECLARE
-		dim_x int;
-		dim_y int;
-		scale_x double precision;
-		scale_y double precision;
-		grid_x double precision;
-		grid_y double precision;
-		skew_x double precision;
-		skew_y double precision;
-	BEGIN
-		SELECT width, height, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO dim_x, dim_y, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y FROM st_metadata($2);
+		rastsrid int;
 
-		IF usescale IS TRUE THEN
-			dim_x := NULL;
-			dim_y := NULL;
-		ELSE
-			scale_x := NULL;
-			scale_y := NULL;
+		_srid int;
+		_dimx int;
+		_dimy int;
+		_scalex double precision;
+		_scaley double precision;
+		_gridx double precision;
+		_gridy double precision;
+		_skewx double precision;
+		_skewy double precision;
+	BEGIN
+		SELECT srid, width, height, scalex, scaley, upperleftx, upperlefty, skewx, skewy INTO _srid, _dimx, _dimy, _scalex, _scaley, _gridx, _gridy, _skewx, _skewy FROM st_metadata($2);
+
+		rastsrid := ST_SRID($1);
+
+		-- both rasters must have the same SRID
+		IF (rastsrid != _srid) THEN
+			RAISE EXCEPTION 'The raster to be resampled has a different SRID from the reference raster';
+			RETURN NULL;
 		END IF;
 
-		RETURN _st_gdalwarp($1, $3, $4, NULL, scale_x, scale_y, grid_x, grid_y, skew_x, skew_y, dim_x, dim_y);
+		IF usescale IS TRUE THEN
+			_dimx := NULL;
+			_dimy := NULL;
+		ELSE
+			_scalex := NULL;
+			_scaley := NULL;
+		END IF;
+
+		RETURN _st_gdalwarp($1, $3, $4, NULL, _scalex, _scaley, _gridx, _gridy, _skewx, _skewy, _dimx, _dimy);
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE STRICT;
 

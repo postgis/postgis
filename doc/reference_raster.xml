@@ -5430,7 +5430,9 @@ WHERE rid = 2;
 		<refentry id="RT_ST_Resample">
 			<refnamediv>
 				<refname>ST_Resample</refname>
-				<refpurpose>Resample a raster using a specified resampling algorithm, new dimensions, an arbitrary grid corner and a set of raster georeferencing attributes defined or borrowed from another raster. New pixel values are computed using the NearestNeighbor (English or American spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor.</refpurpose>
+				<refpurpose>
+					Resample a raster using a specified resampling algorithm, new dimensions, an arbitrary grid corner and a set of raster georeferencing attributes defined or borrowed from another raster.
+				</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -5484,15 +5486,25 @@ WHERE rid = 2;
 			<refsection>
 				<title>Description</title>
 				
-				<para>Resample a raster using a specified resampling algorithm, new dimensions (width &amp; height), a grid corner (gridx &amp; gridy) and a set of raster georeferencing attributes (scalex, scaley, skewx &amp; skewy) defined or borrowed from another raster.</para>
+				<para>
+					Resample a raster using a specified resampling algorithm, new dimensions (width &amp; height), a grid corner (gridx &amp; gridy) and a set of raster georeferencing attributes (scalex, scaley, skewx &amp; skewy) defined or borrowed from another raster. If using a reference raster, the two rasters must have the same SRID.
+				</para>
 				
-				<para>New pixel values are computed using the NearestNeighbor (English or American spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor which is the fastest but produce the worst interpolation.</para>
+				<para>
+					New pixel values are computed using the NearestNeighbor (English or American spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. Default is NearestNeighbor which is the fastest but produce the worst interpolation.
+				</para>
 				
-				<para>A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.</para>
+				<para>
+					A maxerror percent of 0.125 is used if no <varname>maxerr</varname> is specified.
+				</para>
 				
-				<note><para>Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.</para></note>
+				<note>
+					<para>
+						Refer to: <ulink url="http://www.gdal.org/gdalwarp.html">GDAL Warp resampling methods</ulink> for more details.
+					</para>
+				</note>
 				<para>Availability: 2.0.0 Requires GDAL 1.6.1+</para>
-				<para>Changed: 2.1.0 Parameter srid removed. Use ST_Transform() to reproject raster. Works on rasters with no SRID.</para>
+				<para>Changed: 2.1.0 Parameter srid removed. Variants with a reference raster no longer applies the reference raster's SRID. Use ST_Transform() to reproject raster. Works on rasters with no SRID.</para>
 			</refsection>
 				
 			<refsection>
