@@ -835,7 +835,7 @@ Adds a polygon to an existing topology using a tolerance and possibly splitting 
 					<funcprototype>
 						<funcdef>integer <function>TopoGeo_AddPolygon</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>atopology</parameter></paramdef>
-						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
+						<paramdef><type>geometry </type> <parameter>apoly</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>atolerance</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
