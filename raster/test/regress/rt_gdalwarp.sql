@@ -805,3 +805,36 @@ DELETE FROM "spatial_ref_sys" WHERE srid = 993310;
 DELETE FROM "spatial_ref_sys" WHERE srid = 994269;
 DELETE FROM "spatial_ref_sys" WHERE srid = 984269;
 DELETE FROM "spatial_ref_sys" WHERE srid = 974269;
+
+-- ST_Resize()
+WITH foo AS(
+SELECT
+	1 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+	, '50%', '500') AS rast
+UNION ALL
+SELECT
+	2 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+	, 500, 100) AS rast
+UNION ALL
+SELECT
+	3 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+	, 0.25, 0.9) AS rast
+), bar AS (
+	SELECT rid, ST_Metadata(rast) AS meta, rast FROM foo
+)
+SELECT rid, (meta).* FROM bar

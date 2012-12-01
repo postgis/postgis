@@ -2168,6 +2168,140 @@ CREATE OR REPLACE FUNCTION st_snaptogrid(
 	LANGUAGE 'sql' STABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_Resize
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_resize(
+	rast raster,
+	width text, height text,
+	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		i integer;
+
+		wh text[2];
+
+		whi integer[2];
+		whd double precision[2];
+
+		_width integer;
+		_height integer;
+	BEGIN
+		wh[1] := trim(both from $2);
+		wh[2] := trim(both from $3);
+
+		-- see if width and height are percentages
+		FOR i IN 1..2 LOOP
+			IF position('%' in wh[i]) > 0 THEN
+				BEGIN
+					wh[i] := (regexp_matches(wh[i], E'^(\\d*.?\\d*)%{1}$'))[1];
+					IF length(wh[i]) < 1 THEN
+						RAISE invalid_parameter_value;
+					END IF;
+
+					whd[i] := wh[i]::double precision * 0.01;
+				EXCEPTION WHEN OTHERS THEN
+					RAISE EXCEPTION 'Invalid percentage value provided for width/height';
+					RETURN NULL;
+				END;
+			ELSE
+				BEGIN
+					whi[i] := abs(wh[i]::integer);
+				EXCEPTION WHEN OTHERS THEN
+					RAISE EXCEPTION 'Non-integer value provided for width/height';
+					RETURN NULL;
+				END;
+			END IF;
+		END LOOP;
+
+		IF whd[1] IS NOT NULL OR whd[2] IS NOT NULL THEN
+			SELECT foo.width, foo.height INTO _width, _height FROM ST_Metadata($1) AS foo;
+
+			IF whd[1] IS NOT NULL THEN
+				whi[1] := round(_width::double precision * whd[1])::integer;
+			END IF;
+
+			IF whd[2] IS NOT NULL THEN
+				whi[2] := round(_height::double precision * whd[2])::integer;
+			END IF;
+
+		END IF;
+
+		-- should NEVER be here
+		IF whi[1] IS NULL OR whi[2] IS NULL THEN
+			RAISE EXCEPTION 'Unable to determine appropriate width or height';
+			RETURN NULL;
+		END IF;
+
+		FOR i IN 1..2 LOOP
+			IF whi[i] < 1 THEN
+				whi[i] = 1;
+			END IF;
+		END LOOP;
+
+		RETURN _st_gdalwarp(
+			$1,
+			$4, $5,
+			NULL,
+			NULL, NULL,
+			NULL, NULL,
+			NULL, NULL,
+			whi[1], whi[2]
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_resize(
+	rast raster,
+	width integer, height integer,
+	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
+)
+	RETURNS raster
+	AS $$ SELECT _st_gdalwarp($1, $4, $5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, abs($2), abs($3)) $$
+	LANGUAGE 'sql' STABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_resize(
+	rast raster,
+	percentwidth double precision, percentheight double precision,
+	algorithm text DEFAULT 'NearestNeighbour', maxerr double precision DEFAULT 0.125
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		_width integer;
+		_height integer;
+	BEGIN
+		-- range check
+		IF $2 <= 0. OR $2 > 1. OR $3 <= 0. OR $3 > 1. THEN
+			RAISE EXCEPTION 'Percentages must be a value greater than zero and less than or equal to one, e.g. 0.5 for 50%';
+		END IF;
+
+		SELECT width, height INTO _width, _height FROM ST_Metadata($1);
+
+		_width := round(_width::double precision * $2)::integer;
+		_height:= round(_height::double precision * $3)::integer;
+
+		IF _width < 1 THEN
+			_width := 1;
+		END IF;
+		IF _height < 1 THEN
+			_height := 1;
+		END IF;
+
+		RETURN _st_gdalwarp(
+			$1,
+			$4, $5,
+			NULL,
+			NULL, NULL,
+			NULL, NULL,
+			NULL, NULL,
+			_width, _height
+		);
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+
+-----------------------------------------------------------------------
 -- One Raster ST_MapAlgebra
 -----------------------------------------------------------------------
 -- This function can not be STRICT, because nodataval can be NULL

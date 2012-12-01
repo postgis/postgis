@@ -5762,6 +5762,124 @@ SELECT ST_UpperLeftX(ST_SnapToGrid(ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 0
 			</refsection>
 		</refentry>
 		
+		<refentry id="RT_ST_Resize">
+			<refnamediv>
+				<refname>ST_Resize</refname>
+				<refpurpose>Resize a raster to a new width/height</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_Resize</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_Resize</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>percentwidth</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>percentheight</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_Resize</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>width</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>height</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>algorithm=NearestNeighbor</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>maxerr=0.125</parameter></paramdef>
+				  </funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Resize a raster to a new width/height.  The new width/height can be specified in exact number of pixels or a percentage of the raster's width/height.
+				</para>
+
+				<para>
+					New pixel values are computed using the NearestNeighbor (english or american spelling), Bilinear, Cubic, CubicSpline or Lanczos resampling algorithm. The default is NearestNeighbor which is the fastest but results in the worst interpolation.
+				</para>
+
+				<para>
+					Variant 1 expects the actual width/height of the output raster.
+				</para>
+
+				<para>
+					Variant 2 expects decimal values between zero (0) and one (1) indicating the percentage of the input raster's width/height.
+				</para>
+
+				<para>
+					Variant 3 takes either the actual width/height of the output raster or a textual percentage ("20%") indicating the percentage of the input raster's width/height.
+				</para>
+
+				<para>Availability: 2.1.0  Requires GDAL 1.6.1+</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS(
+SELECT
+	1 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+	, '50%', '500') AS rast
+UNION ALL
+SELECT
+	2 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+	, 500, 100) AS rast
+UNION ALL
+SELECT
+	3 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+	, 0.25, 0.9) AS rast
+), bar AS (
+	SELECT rid, ST_Metadata(rast) AS meta, rast FROM foo
+)
+SELECT rid, (meta).* FROM bar
+
+ rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands 
+-----+------------+------------+-------+--------+--------+--------+-------+-------+------+----------
+   1 |          0 |          0 |   500 |    500 |      1 |     -1 |     0 |     0 |    0 |        1
+   2 |          0 |          0 |   500 |    100 |      1 |     -1 |     0 |     0 |    0 |        1
+   3 |          0 |          0 |   250 |    900 |      1 |     -1 |     0 |     0 |    0 |        1
+(3 rows)
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_Resample" />, 
+					<xref linkend="RT_ST_Rescale" />, 
+					<xref linkend="RT_ST_Reskew" />, 
+					<xref linkend="RT_ST_SnapToGrid" />
+				</para>
+			</refsection>
+		</refentry>
+
 		<refentry id="RT_ST_Transform">
 			<refnamediv>
 				<refname>ST_Transform</refname>
