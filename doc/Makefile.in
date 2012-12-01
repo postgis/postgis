@@ -157,32 +157,32 @@ ifeq ($(XSLTPROC),)
 postgis_aggs_mm.xml: requirements_not_met_xsltproc
 else
 postgis_aggs_mm.xml: ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml Makefile
-	$(XSLTPROC) ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/postgis_aggs_mm.xml.xsl postgis-out.xml > $@
 endif
 
 postgis_comments.sql: ./xsl/postgis_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/postgis_comments.sql.xsl postgis-out.xml > $@
 	
 postgis_cheatsheet.html: ./xsl/postgis_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/postgis_cheatsheet.html.xsl postgis-out.xml > $@
 	
 raster_comments.sql: ./xsl/raster_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) ./xsl/raster_comments.sql.xsl postgis-out.xml > $@
 	
 raster_cheatsheet.html: ./xsl/raster_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/raster_cheatsheet.html.xsl postgis-out.xml > $@
 	
 topology_comments.sql: ./xsl/topology_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/topology_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/topology_comments.sql.xsl postgis-out.xml > $@
 	
 topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
 	
 tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
 	
 tiger_geocoder_cheatsheet.html: ./xsl/tiger_geocoder_cheatsheet.html.xsl $(XML_INPUTS)
-	$(XSLTPROC) ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
+	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_cheatsheet.html.xsl postgis-out.xml > $@
 
 postgis-out.xml: postgis.xml Makefile
 	$(PERL) -lpe "s'@@LAST_RELEASE_VERSION@@'${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}'g" $< > $@
