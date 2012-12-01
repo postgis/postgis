@@ -9240,8 +9240,8 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
  * @return the warped raster or NULL
  */
 rt_raster rt_raster_gdal_warp(
-	rt_raster raster, const char *src_srs,
-	const char *dst_srs,
+	rt_raster raster,
+	const char *src_srs, const char *dst_srs,
 	double *scale_x, double *scale_y,
 	int *width, int *height,
 	double *ul_xw, double *ul_yw,
@@ -9288,7 +9288,6 @@ rt_raster rt_raster_gdal_warp(
 	RASTER_DEBUG(3, "starting");
 
 	assert(NULL != raster);
-	assert(NULL != src_srs);
 
 	/*
 		max_err must be gte zero
@@ -9298,20 +9297,34 @@ rt_raster rt_raster_gdal_warp(
 	if (max_err < 0.) max_err = 0.125;
 	RASTER_DEBUGF(4, "max_err = %f", max_err);
 
-	_src_srs = rt_util_gdal_convert_sr(src_srs, 0);
-	/* dst_srs not provided, set to src_srs */
-	if (NULL == dst_srs)
-		_dst_srs = rt_util_gdal_convert_sr(src_srs, 0);
-	else
-		_dst_srs = rt_util_gdal_convert_sr(dst_srs, 0);
+	/* handle srs */
+	if (src_srs != NULL) {
+		/* reprojection taking place */
+		if (dst_srs != NULL && strcmp(src_srs, dst_srs) != 0) {
+			RASTER_DEBUG(4, "Warp operation does include a reprojection");
+			_src_srs = rt_util_gdal_convert_sr(src_srs, 0);
+			_dst_srs = rt_util_gdal_convert_sr(dst_srs, 0);
+		}
+		/* no reprojection, a stub just for clarity */
+		else {
+			RASTER_DEBUG(4, "Warp operation does NOT include reprojection");
+		}
+	}
+	else if (dst_srs != NULL) {
+		/* dst_srs provided but not src_srs */
+		rterror("rt_raster_gdal_warp: SRS required for input raster if SRS provided for warped raster");
+		return NULL;
+	}
 
 	/* load raster into a GDAL MEM dataset */
 	src_ds = rt_raster_to_gdal_mem(raster, _src_srs, NULL, NULL, 0, &src_drv);
 	if (NULL == src_ds) {
 		rterror("rt_raster_gdal_warp: Unable to convert raster to GDAL MEM format");
 
-		CPLFree(_src_srs);
-		CPLFree(_dst_srs);
+		if (_src_srs != NULL) {
+			CPLFree(_src_srs);
+			CPLFree(_dst_srs);
+		}
 
 		return NULL;
 	}
@@ -9324,18 +9337,26 @@ rt_raster rt_raster_gdal_warp(
 
 		GDALClose(src_ds);
 
-		CPLFree(_src_srs);
-		CPLFree(_dst_srs);
+		if (_src_srs != NULL) {
+			CPLFree(_src_srs);
+			CPLFree(_dst_srs);
+		}
 
 		return NULL;
 	}
 	for (i = 0; i < transform_opts_len; i++) {
 		switch (i) {
 			case 1:
-				transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("DST_SRS=") + strlen(_dst_srs) + 1));
+				if (_dst_srs != NULL)
+					transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("DST_SRS=") + strlen(_dst_srs) + 1));
+				else
+					transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("DST_SRS=") + 1));
 				break;
 			case 0:
-				transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("SRC_SRS=") + strlen(_src_srs) + 1));
+				if (_src_srs != NULL)
+					transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("SRC_SRS=") + strlen(_src_srs) + 1));
+				else
+					transform_opts[i] = (char *) rtalloc(sizeof(char) * (strlen("SRC_SRS=") + 1));
 				break;
 		}
 		if (NULL == transform_opts[i]) {
@@ -9345,35 +9366,44 @@ rt_raster rt_raster_gdal_warp(
 			rtdealloc(transform_opts);
 			GDALClose(src_ds);
 
-			CPLFree(_src_srs);
-			CPLFree(_dst_srs);
+			if (_src_srs != NULL) {
+				CPLFree(_src_srs);
+				CPLFree(_dst_srs);
+			}
 
 			return NULL;
 		}
 
 		switch (i) {
 			case 1:
-				snprintf(
-					transform_opts[i],
-					sizeof(char) * (strlen("DST_SRS=") + strlen(_dst_srs) + 1),
-					"DST_SRS=%s",
-					_dst_srs
-				);
+				if (_dst_srs != NULL) {
+					snprintf(
+						transform_opts[i],
+						sizeof(char) * (strlen("DST_SRS=") + strlen(_dst_srs) + 1),
+						"DST_SRS=%s",
+						_dst_srs
+					);
+				}
+				else
+					sprintf(transform_opts[i], "%s", "DST_SRS=");
 				break;
 			case 0:
-				snprintf(
-					transform_opts[i],
-					sizeof(char) * (strlen("SRC_SRS=") + strlen(_src_srs) + 1),
-					"SRC_SRS=%s",
-					_src_srs
-				);
+				if (_src_srs != NULL) {
+					snprintf(
+						transform_opts[i],
+						sizeof(char) * (strlen("SRC_SRS=") + strlen(_src_srs) + 1),
+						"SRC_SRS=%s",
+						_src_srs
+					);
+				}
+				else
+					sprintf(transform_opts[i], "%s", "SRC_SRS=");
 				break;
 		}
 		RASTER_DEBUGF(4, "transform_opts[%d] = %s", i, transform_opts[i]);
 	}
 	transform_opts[transform_opts_len] = NULL;
-	CPLFree(_src_srs);
-	CPLFree(_dst_srs);
+	if (_src_srs != NULL) CPLFree(_src_srs);
 
 	/* transformation object for building dst dataset */
 	transform_arg = GDALCreateGenImgProjTransformer2(src_ds, NULL, transform_opts);
@@ -9384,6 +9414,7 @@ rt_raster rt_raster_gdal_warp(
 
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
+		if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 		return NULL;
 	}
@@ -9399,6 +9430,7 @@ rt_raster rt_raster_gdal_warp(
 
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
+		if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 		return NULL;
 	}
@@ -9436,6 +9468,7 @@ rt_raster rt_raster_gdal_warp(
 
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
+		if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 		return NULL;
 	}
@@ -9469,6 +9502,7 @@ rt_raster rt_raster_gdal_warp(
 
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
+		if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 		return NULL;
 	}
@@ -9535,6 +9569,7 @@ rt_raster rt_raster_gdal_warp(
 
 			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 			rtdealloc(transform_opts);
+			if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 			return NULL;
 		}
@@ -9565,6 +9600,7 @@ rt_raster rt_raster_gdal_warp(
 
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
+		if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 		return NULL;
 	}
@@ -9605,6 +9641,7 @@ rt_raster rt_raster_gdal_warp(
 
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
+		if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 		return NULL;
 	}
@@ -9627,6 +9664,7 @@ rt_raster rt_raster_gdal_warp(
 
 			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 			rtdealloc(transform_opts);
+			if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 			return NULL;
 		}
@@ -9661,6 +9699,7 @@ rt_raster rt_raster_gdal_warp(
 
 				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 				rtdealloc(transform_opts);
+				if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 				return NULL;
 			}
@@ -9678,6 +9717,7 @@ rt_raster rt_raster_gdal_warp(
 
 				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 				rtdealloc(transform_opts);
+				if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 				return NULL;
 			}
@@ -9705,6 +9745,7 @@ rt_raster rt_raster_gdal_warp(
 
 						for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 						rtdealloc(transform_opts);
+						if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 						return NULL;
 					}
@@ -9734,6 +9775,7 @@ rt_raster rt_raster_gdal_warp(
 
 						for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 						rtdealloc(transform_opts);
+						if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 						return NULL;
 					}
@@ -9784,6 +9826,7 @@ rt_raster rt_raster_gdal_warp(
 
 				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 				rtdealloc(transform_opts);
+				if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 				return NULL;
 			}
@@ -9814,6 +9857,7 @@ rt_raster rt_raster_gdal_warp(
 
 				for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 				rtdealloc(transform_opts);
+				if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 				return NULL;
 			}
@@ -9842,6 +9886,7 @@ rt_raster rt_raster_gdal_warp(
 
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
 		rtdealloc(transform_opts);
+		if (_dst_srs != NULL) CPLFree(_dst_srs);
 
 		return NULL;
 	}
@@ -9863,6 +9908,38 @@ rt_raster rt_raster_gdal_warp(
 	if (NULL == dst_ds) {
 		rterror("rt_raster_gdal_warp: Unable to create GDAL VRT dataset");
 
+		GDALClose(src_ds);
+
+		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+		rtdealloc(transform_opts);
+		if (_dst_srs != NULL) CPLFree(_dst_srs);
+
+		return NULL;
+	}
+
+	/* set dst srs */
+	if (_dst_srs != NULL) {
+		cplerr = GDALSetProjection(dst_ds, _dst_srs);
+		CPLFree(_dst_srs);
+		if (cplerr != CE_None) {
+			rterror("rt_raster_gdal_warp: Unable to set projection");
+
+			GDALClose(dst_ds);
+			GDALClose(src_ds);
+
+			for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
+			rtdealloc(transform_opts);
+
+			return NULL;
+		}
+	}
+
+	/* set dst geotransform */
+	cplerr = GDALSetGeoTransform(dst_ds, _gt);
+	if (cplerr != CE_None) {
+		rterror("rt_raster_gdal_warp: Unable to set geotransform");
+
+		GDALClose(dst_ds);
 		GDALClose(src_ds);
 
 		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
@@ -9927,36 +10004,6 @@ rt_raster rt_raster_gdal_warp(
 				rtwarn("rt_raster_gdal_warp: Could not set nodata value for band %d", i);
 			RASTER_DEBUGF(3, "nodata value set to %f", GDALGetRasterNoDataValue(band, NULL));
 		}
-	}
-
-	/* set dst srs */
-	_dst_srs = rt_util_gdal_convert_sr((NULL == dst_srs ? src_srs : dst_srs), 1);
-	cplerr = GDALSetProjection(dst_ds, _dst_srs);
-	CPLFree(_dst_srs);
-	if (cplerr != CE_None) {
-		rterror("rt_raster_gdal_warp: Unable to set projection");
-
-		GDALClose(dst_ds);
-		GDALClose(src_ds);
-
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
-		rtdealloc(transform_opts);
-
-		return NULL;
-	}
-
-	/* set dst geotransform */
-	cplerr = GDALSetGeoTransform(dst_ds, _gt);
-	if (cplerr != CE_None) {
-		rterror("rt_raster_gdal_warp: Unable to set geotransform");
-
-		GDALClose(dst_ds);
-		GDALClose(src_ds);
-
-		for (i = 0; i < transform_opts_len; i++) rtdealloc(transform_opts[i]);
-		rtdealloc(transform_opts);
-
-		return NULL;
 	}
 
 	/* create transformation object */

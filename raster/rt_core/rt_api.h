@@ -1594,8 +1594,9 @@ rt_raster rt_raster_from_gdal_dataset(GDALDatasetH ds);
  *
  * @return the warped raster or NULL
  */
-rt_raster rt_raster_gdal_warp(rt_raster raster, const char *src_srs,
-	const char *dst_srs,
+rt_raster rt_raster_gdal_warp(
+	rt_raster raster,
+	const char *src_srs, const char *dst_srs,
 	double *scale_x, double *scale_y,
 	int *width, int *height,
 	double *ul_xw, double *ul_yw,

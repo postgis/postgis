@@ -11259,17 +11259,21 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 		dst_srid = src_srid;
 	POSTGIS_RT_DEBUGF(4, "destination SRID: %d", dst_srid);
 
-	/* source SRID = SRID_UNKNOWN */
-	if (src_srid == SRID_UNKNOWN) {
-		/* target SRID != src SRID, error */
-		if (dst_srid != src_srid) {
-			elog(ERROR, "RASTER_GDALWarp: Input raster has unknown (%d) SRID", src_srid);
-			rt_raster_destroy(raster);
-			PG_FREE_IF_COPY(pgraster, 0);
-			PG_RETURN_NULL();
+	/* target SRID != src SRID, error */
+	if (src_srid == SRID_UNKNOWN && dst_srid != src_srid) {
+		elog(ERROR, "RASTER_GDALWarp: Input raster has unknown (%d) SRID", src_srid);
+		rt_raster_destroy(raster);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+	/* target SRID == src SRID, no reprojection */
+	else if (dst_srid == src_srid) {
+		/* set geotransform */
+		if (src_srid == SRID_UNKNOWN) {
+			double gt[6] = {0, 10, 0, 0, 0, -10};
+			rt_raster_set_geotransform_matrix(raster, gt);
 		}
 
-		/* target SRID == src SRID, special */
 		no_srid = 1;
 	}
 
@@ -11368,12 +11372,8 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	}
 
 	/* get srses from srids */
-	/* source srs */
-	/* no SRID, use EPSG:4326 (WGS84) */
-	if (no_srid)
-		src_srs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
-	/* legitimate SRID */
-	else {
+	if (!no_srid) {
+		/* source srs */
 		src_srs = rtpg_getSR(src_srid);
 		if (NULL == src_srs) {
 			elog(ERROR, "RASTER_GDALWarp: Input raster has unknown SRID (%d)", src_srid);
@@ -11381,19 +11381,12 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
 		}
-	}
-	POSTGIS_RT_DEBUGF(4, "src srs: %s", src_srs);
+		POSTGIS_RT_DEBUGF(4, "src srs: %s", src_srs);
 
-	/* target srs */
-	/* no SRID, use src_srs */
-	if (no_srid)
-		dst_srs = src_srs;
-	/* legitimate SRID */
-	else if (dst_srid != SRID_UNKNOWN) {
 		dst_srs = rtpg_getSR(dst_srid);
 		if (NULL == dst_srs) {
 			elog(ERROR, "RASTER_GDALWarp: Target SRID (%d) is unknown", dst_srid);
-			if (!no_srid && NULL != src_srs) pfree(src_srs);
+			if (!no_srid) pfree(src_srs);
 			rt_raster_destroy(raster);
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
@@ -11413,17 +11406,21 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 	if (!no_srid) {
-		if (NULL != src_srs) pfree(src_srs);
-		if (NULL != dst_srs) pfree(dst_srs);
+		pfree(src_srs);
+		pfree(dst_srs);
 	}
 	if (!rast) {
 		elog(ERROR, "RASTER_band: Could not create transformed raster");
 		PG_RETURN_NULL();
 	}
 
-	/* add target SRID but only if we're not using a no SRID */
-	if (!no_srid)
-		rt_raster_set_srid(rast, dst_srid);
+	/* add target SRID */
+	rt_raster_set_srid(rast, dst_srid);
+
+	if (no_srid && src_srid == SRID_UNKNOWN) {
+		double gt[6] = {0, 1, 0, 0, 0, -1};
+		rt_raster_set_geotransform_matrix(rast, gt);
+	}
 
 	pgrast = rt_raster_serialize(rast);
 	rt_raster_destroy(rast);

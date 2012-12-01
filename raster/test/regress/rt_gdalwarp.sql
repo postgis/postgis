@@ -247,7 +247,30 @@ INSERT INTO raster_gdalwarp_dst (rid, rast) VALUES (
 		ST_SetSRID(rast, 0),
 		'NearestNeighbor', 0.125,
 		NULL,
-		500., 500.
+		NULL, NULL,
+		NULL, NULL,
+		NULL, NULL,
+		5, 5
+	) FROM raster_gdalwarp_src)
+), (
+	0.26, (SELECT _st_gdalwarp(
+		ST_SetSRID(rast, 0),
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		NULL, NULL,
+		NULL, NULL,
+		2, 2
+	) FROM raster_gdalwarp_src)
+), (
+	0.27, (SELECT _st_gdalwarp(
+		ST_SetSRID(rast, 0),
+		'NearestNeighbor', 0.125,
+		NULL,
+		NULL, NULL,
+		NULL, NULL,
+		NULL, NULL,
+		100, 100
 	) FROM raster_gdalwarp_src)
 );
 
