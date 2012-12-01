@@ -780,14 +780,14 @@ An existing edge may be split by the snapped point.
 				<refname>TopoGeo_AddLineString</refname>
 			
 				<refpurpose>
-Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces.
+Adds a linestring to an existing topology using a tolerance and possibly splitting existing edges/faces. Returns edge identifiers
 				</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 					<funcprototype>
-						<funcdef>integer <function>TopoGeo_AddLineString</function></funcdef>
+						<funcdef>SETOF integer <function>TopoGeo_AddLineString</function></funcdef>
 						<paramdef><type>varchar </type> <parameter>toponame</parameter></paramdef>
 						<paramdef><type>geometry </type> <parameter>aline</parameter></paramdef>
 						<paramdef choice="opt"><type>float8 </type> <parameter>tolerance</parameter></paramdef>
