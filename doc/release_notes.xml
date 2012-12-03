@@ -51,6 +51,7 @@
 			 <para>#2109, Ensure ST_Centroid always returns POINT</para>
 			 <para>#2117, Ensure ST_PointOnSurface always returns POINT</para>
 			 <para>#2129, Fix SRID in ST_Homogenize output with collection input</para>
+       <para>#2130, Fix memory error in MultiPolygon GeoJson parsing</para>
 
  			 <para>Update URL of Maven jar</para>
 		</simplesect>

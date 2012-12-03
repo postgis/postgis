@@ -376,7 +376,7 @@ parse_geojson_multipolygon(json_object *geojson, bool *hasz,  int *root_srid)
 				{
 					int nPoints;
 					ppa = (POINTARRAY**) lwrealloc((POINTARRAY *) ppa, sizeof(POINTARRAY*) * (j + 1));
-					ppa[i] = ptarray_construct_empty(1, 0, 1);
+					ppa[j] = ptarray_construct_empty(1, 0, 1);
 					points = json_object_array_get_idx( poObjPoly, j );
 
 					nPoints = json_object_array_length( points );

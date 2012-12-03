@@ -47,6 +47,7 @@ PostGIS 2.0.2
   - #2109, Ensure ST_Centroid always returns POINT
   - #2117, Ensure ST_PointOnSurface always returns POINT
   - #2129, Fix SRID in ST_Homogenize output with collection input
+  - #2130, Fix memory error in MultiPolygon GeoJson parsing 
 
   - Update URL of Maven jar
   
