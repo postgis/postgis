@@ -9,17 +9,16 @@ INSERT INTO spatial_ref_sys ( auth_name, auth_srid, srid, proj4text ) VALUES ( '
 
 -- Utility functions for the test {
 
+CREATE TEMP TABLE orig_node_summary(node_id integer, containing_face integer);
 CREATE OR REPLACE FUNCTION save_nodes()
 RETURNS VOID
 AS $$
-BEGIN
-  DROP TABLE IF EXISTS city_data.orig_node_summary;
-  CREATE TABLE city_data.orig_node_summary
-  AS SELECT node_id,
+  TRUNCATE TABLE orig_node_summary;
+  INSERT INTO orig_node_summary
+  SELECT node_id,
     containing_face
     FROM city_data.node;
-END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION check_nodes(lbl text)
 RETURNS TABLE (l text, o text, node_id int,
@@ -34,7 +33,7 @@ BEGIN
       containing_face 
   		FROM city_data.node';
   sql2 := 'node_id, containing_face
-  		FROM city_data.orig_node_summary';
+  		FROM orig_node_summary';
 
   q := '(' ||
           'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
@@ -53,17 +52,16 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
+CREATE TEMP TABLE orig_edge_summary (edge_id integer, next_left_edge integer, next_right_edge integer, left_face integer, right_face integer);
 CREATE OR REPLACE FUNCTION save_edges()
 RETURNS VOID
 AS $$
-BEGIN
-  DROP TABLE IF EXISTS city_data.orig_edge_summary;
-  CREATE TABLE city_data.orig_edge_summary AS
+  TRUNCATE orig_edge_summary;
+  INSERT INTO orig_edge_summary 
   SELECT edge_id,
     next_left_edge, next_right_edge, left_face, right_face
     FROM city_data.edge_data;
-END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION check_edges(lbl text)
 RETURNS TABLE (l text, o text, edge_id int,
@@ -81,7 +79,7 @@ BEGIN
   		FROM city_data.edge_data';
   sql2 := 'edge_id,
   		next_left_edge, next_right_edge, left_face, right_face
-  		FROM city_data.orig_edge_summary';
+  		FROM orig_edge_summary';
 
   q := '(' ||
           'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
@@ -100,16 +98,15 @@ BEGIN
 END
 $$ LANGUAGE 'plpgsql';
 
+CREATE TEMP TABLE orig_face_summary(face_id integer, mbr geometry);
 CREATE OR REPLACE FUNCTION save_faces()
 RETURNS VOID
 AS $$
-BEGIN
-  DROP TABLE IF EXISTS city_data.orig_face_summary;
-  CREATE TABLE city_data.orig_face_summary AS
+  TRUNCATE orig_face_summary;
+  INSERT INTO orig_face_summary 
   SELECT face_id, mbr
     FROM city_data.face;
-END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE 'sql';
 
 CREATE OR REPLACE FUNCTION check_faces(lbl text)
 RETURNS TABLE (l text, o text, face_id int, mbr text)
@@ -120,7 +117,7 @@ DECLARE
   q text;
 BEGIN
   sql1 := 'face_id, ST_AsEWKT(mbr) FROM city_data.face';
-  sql2 := 'face_id, ST_AsEWKT(mbr) FROM city_data.orig_face_summary';
+  sql2 := 'face_id, ST_AsEWKT(mbr) FROM orig_face_summary';
 
   q := '(' ||
           'SELECT ' || quote_literal(lbl) || ',''+'' as op,' || sql1 ||
