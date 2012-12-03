@@ -47,6 +47,10 @@
  			 <para>#2092, Namespace issue with ST_GeomFromKML,ST_GeomFromGML for libxml 2.8+</para>
  			 <para>#2099, Fix double free on exception in ST_OffsetCurve</para> 
  			 <para>#2100, ST_AsRaster() may not return raster with specified pixel type</para>
+			 <para>#2108, Ensure ST_Line_Interpolate_Point always returns POINT</para>
+			 <para>#2109, Ensure ST_Centroid always returns POINT</para>
+			 <para>#2117, Ensure ST_PointOnSurface always returns POINT</para>
+			 <para>#2129, Fix SRID in ST_Homogenize output with collection input</para>
 
  			 <para>Update URL of Maven jar</para>
 		</simplesect>
