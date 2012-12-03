@@ -4036,17 +4036,13 @@ WHERE rid = 2;
 		<refentry id="RT_ST_SetBandIsNoData">
 			<refnamediv>
 				<refname>ST_SetBandIsNoData</refname>
-				<refpurpose>Sets the isnodata flag of the band to TRUE. You may
-                want to call this function if ST_BandIsNoData(rast, band) !=
-                ST_BandIsNodata(rast, band, TRUE). This is, if the isnodata flag
-                is dirty. Band 1 is assumed if no band is specified.
-                </refpurpose>
+				<refpurpose>Sets the isnodata flag of the band to TRUE.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
 				 <funcprototype>
-					<funcdef>integer <function>ST_SetBandIsNoData</function></funcdef>
+					<funcdef>raster <function>ST_SetBandIsNoData</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef choice='opt'><type>integer </type> <parameter>band=1</parameter></paramdef>
 				  </funcprototype>
@@ -4058,7 +4054,7 @@ WHERE rid = 2;
 				
 				<para>Sets the isnodata flag for the band to true. Band 1 is
                 assumed if not specified. This function should be called only
-                when the flag is considered dirty. This is, when the result
+                when the flag is considered dirty. That is, when the result
                 calling <xref linkend="RT_ST_BandIsNoData" /> is different using
                 TRUE as last argument and without using it</para>
 
