@@ -1,14 +1,14 @@
 PostGIS 2.0.2
-2012/11/DD
+2012/12/03
 
  * Bug Fixes *
   - #1287, Drop of "gist_geometry_ops" broke a few clients
-     package of legacy_gist.sql for these cases
+           package of legacy_gist.sql for these cases
   - #1391, Errors during upgrade from 1.5
   - #1828, Poor selectivity estimate on ST_DWithin
   - #1838, error importing tiger/line data
   - #1869, ST_AsBinary is not unique - 
-       added to legacy_minor/legacy.sql scripts
+           added to legacy_minor/legacy.sql scripts
   - #1885, Missing field from tabblock table in tiger2010 census_loader.sql
   - #1891, Use LDFLAGS environment when building liblwgeom
   - #1899, Enhance toTopoGeom error on unsupported input
@@ -26,7 +26,8 @@ PostGIS 2.0.2
   - #1991, geocode really slow on PostgreSQL 9.2
   - #1996, support POINT EMPTY in GeoJSON output
   - #1998, Fix ST_{Mod,New}EdgeHeal joining edges sharing both endpoints
-  - #2001, ST_CurveToLine has no effect if the geometry doesn't actually contain an arc
+  - #2001, ST_CurveToLine has no effect if the geometry doesn't actually
+           contain an arc
   - #2015, ST_IsEmpty('POLYGON(EMPTY)') returns False
   - #2019, ST_FlipCoordinates does not update bbox
   - #2025, Fix side location conflict at TopoGeo_AddLineString 
