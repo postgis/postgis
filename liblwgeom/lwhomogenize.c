@@ -145,6 +145,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		{
 			outgeom = lwcollection_as_lwgeom(outcol);
 		}
+		outgeom->srid = col->srid;
 	}
 	/* Bah, more than out type, return anonymous collection */
 	else if ( ntypes > 1 )
