@@ -210,6 +210,18 @@ static void test_geom(void)
 	do_geom_test("SRID=4326;GEOMETRYCOLLECTION EMPTY",
 	             "SRID=4326;GEOMETRYCOLLECTION EMPTY");
 
+	/* See http://trac.osgeo.org/postgis/ticket/2129 */
+	do_geom_test("SRID=4326;GEOMETRYCOLLECTION(MULTIPOINT(0 0))",
+	             "SRID=4326;POINT(0 0)");
+
+	/* See http://trac.osgeo.org/postgis/ticket/2129 */
+	do_geom_test("SRID=4326;GEOMETRYCOLLECTION(MULTIPOINT(0 0, 1 2))",
+	             "SRID=4326;MULTIPOINT(0 0,1 2)");
+
+	/* See http://trac.osgeo.org/postgis/ticket/2129 */
+	do_geom_test("SRID=4326;GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,10 0))",
+	             "SRID=4326;GEOMETRYCOLLECTION(POINT(0 0),LINESTRING(0 0,10 0))");
+
 	do_geom_test("SRID=4326;POINT(1 2)",
 	             "SRID=4326;POINT(1 2)");
 
@@ -249,4 +261,4 @@ CU_TestInfo homogenize_tests[] =
 	PG_TEST(test_coll_curve),
 	CU_TEST_INFO_NULL
 };
-CU_SuiteInfo homogenize_suite = {"Homogenize Suite",  NULL,  NULL, homogenize_tests};
+CU_SuiteInfo homogenize_suite = {"homogenize",  NULL,  NULL, homogenize_tests};

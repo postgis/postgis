@@ -46,6 +46,7 @@ PostGIS 2.0.2
   - #2108, Ensure ST_Line_Interpolate_Point always returns POINT
   - #2109, Ensure ST_Centroid always returns POINT
   - #2117, Ensure ST_PointOnSurface always returns POINT
+  - #2129, Fix SRID in ST_Homogenize output with collection input
 
   - Update URL of Maven jar
   
