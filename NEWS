@@ -57,6 +57,8 @@ PostGIS 2.1.0
   - #1895, new r-tree node splitting algorithm (Alex Korotkov)
   - #1709, ST_NotSameAlignmentReason(raster, raster)
   - #1293, ST_Resize(raster) to resize rasters based upon width/height
+  - #945, improved join selectivity, N-D selectivity calculations, user
+    accessible selectivity and stats reader functions for testing
 
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 

@@ -74,7 +74,7 @@ CREATE OR REPLACE FUNCTION geometry_typmod_out(integer)
 
 CREATE OR REPLACE FUNCTION geometry_analyze(internal)
 	RETURNS bool
-	AS 'MODULE_PATHNAME', 'geometry_analyze_2d'
+	AS 'MODULE_PATHNAME', 'gserialized_analyze_nd'
 	LANGUAGE 'c' VOLATILE STRICT;
 
 CREATE OR REPLACE FUNCTION geometry_recv(internal)
@@ -428,12 +428,50 @@ CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, sma
 	AS 'MODULE_PATHNAME', 'geometry_gist_joinsel_2d'
 	LANGUAGE 'c';
 
+
+-----------------------------------------------------------------------------
+
 -- Availability: 2.1.0
-CREATE OR REPLACE FUNCTION _postgis_geometry_sel(tbl regclass, att_name text, geom geometry)
+CREATE OR REPLACE FUNCTION _postgis_selectivity(tbl regclass, att_name text, geom geometry, mode text default '2')
 	RETURNS float8
-	AS 'MODULE_PATHNAME', '_postgis_geometry_sel'
+	AS 'MODULE_PATHNAME', '_postgis_gserialized_sel'
 	LANGUAGE 'c' STRICT;
 
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION _postgis_join_selectivity(regclass, text, regclass, text, text default '2')
+	RETURNS float8
+	AS 'MODULE_PATHNAME', '_postgis_gserialized_joinsel'
+	LANGUAGE 'c' STRICT;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION _postgis_stats(tbl regclass, att_name text, text default '2')
+	RETURNS text
+	AS 'MODULE_PATHNAME', '_postgis_gserialized_stats'
+	LANGUAGE 'c' STRICT;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION gserialized_gist_sel_2d (internal, oid, internal, int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'gserialized_gist_sel_2d'
+	LANGUAGE 'c';
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION gserialized_gist_sel_nd (internal, oid, internal, int4)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'gserialized_gist_sel_nd'
+	LANGUAGE 'c';
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_2d (internal, oid, internal, smallint)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'gserialized_gist_joinsel_2d'
+	LANGUAGE 'c';
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION gserialized_gist_joinsel_nd (internal, oid, internal, smallint)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'gserialized_gist_joinsel_nd'
+	LANGUAGE 'c';
 
 
 -----------------------------------------------------------------------------
@@ -452,9 +490,9 @@ CREATE OR REPLACE FUNCTION geometry_overlaps(geom1 geometry, geom2 geometry)
 
 CREATE OPERATOR && (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps,
-	COMMUTATOR = '&&'
---	,RESTRICT = contsel, JOIN = contjoinsel
- 	,RESTRICT = geometry_gist_sel_2d, JOIN = geometry_gist_joinsel_2d	
+	COMMUTATOR = '&&',
+ 	RESTRICT = gserialized_gist_sel_2d, 
+	JOIN = gserialized_gist_joinsel_2d	
 );
 
 -- Availability: 2.0.0
@@ -692,17 +730,6 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_nd(internal)
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress'
 	LANGUAGE 'c';
 
--- Availability: 2.0.0
---CREATE OR REPLACE FUNCTION geometry_gist_selectivity_nd (internal, oid, internal, int4)
---	RETURNS float8
---	AS 'MODULE_PATHNAME', 'geometry_gist_selectivity_nd'
---	LANGUAGE 'c';
-
--- Availability: 2.0.0
---CREATE OR REPLACE FUNCTION geography_gist_join_selectivity_nd(internal, oid, internal, smallint)
---	RETURNS float8
---	AS 'MODULE_PATHNAME', 'geometry_gist_join_selectivity_nd'
---	LANGUAGE 'c';
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 -- N-D GEOMETRY Operators
@@ -717,10 +744,9 @@ CREATE OR REPLACE FUNCTION geometry_overlaps_nd(geometry, geometry)
 -- Availability: 2.0.0
 CREATE OPERATOR &&& (
 	LEFTARG = geometry, RIGHTARG = geometry, PROCEDURE = geometry_overlaps_nd,
-	COMMUTATOR = '&&&'
-	,RESTRICT = contsel, JOIN = contjoinsel
---	,RESTRICT = geometry_gist_selectivity_nd 
---	,JOIN = geometry_gist_join_selectivity_nd
+	COMMUTATOR = '&&&',
+	RESTRICT = gserialized_gist_sel_nd,
+	JOIN = gserialized_gist_joinsel_nd	
 );
 
 -- Availability: 2.0.0
@@ -904,12 +930,12 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 -- Availability: 1.2.2
 -- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
+	'MODULE_PATHNAME', 'gserialized_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
+	'MODULE_PATHNAME', 'gserialized_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
 -----------------------------------------------------------------------
@@ -918,12 +944,12 @@ CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
 -- Availability: 1.2.2
 -- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
+	'MODULE_PATHNAME', 'gserialized_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'geometry_estimated_extent'
+	'MODULE_PATHNAME', 'gserialized_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
 -----------------------------------------------------------------------

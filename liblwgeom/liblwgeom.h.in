@@ -1627,6 +1627,11 @@ extern int gbox_same(const GBOX *g1, const GBOX *g2);
 extern void gbox_float_round(GBOX *gbox);
 
 /**
+* Return false if any of the dimensions is NaN or infinite
+*/
+extern int gbox_is_valid(const GBOX *gbox);
+
+/**
 * Utility function to get type number from string. For example, a string 'POINTZ' 
 * would return type of 1 and z of 1 and m of 0. Valid 
 */

@@ -55,6 +55,7 @@ PG_OBJS= \
 	gserialized_typmod.o \
 	gserialized_gist_2d.o \
 	gserialized_gist_nd.o \
+	gserialized_estimate.o \
 	geography_inout.o \
 	geography_btree.o \
 	geography_estimate.o \

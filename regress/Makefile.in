@@ -69,6 +69,7 @@ TESTS = \
 	regress \
 	regress_index \
 	regress_index_nulls \
+	regress_selectivity \
 	lwgeom_regress \
 	regress_lrs \
 	removepoint \

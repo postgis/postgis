@@ -455,12 +455,23 @@ analyze t;
 select '#877.2', ST_EstimatedExtent('public', 't','g');
 select '#877.2.deprecated', ST_Estimated_Extent('public', 't','g');
 insert into t(g) values ('LINESTRING(-10 -50, 20 30)');
-select '#877.3', ST_EstimatedExtent('t','g');
+
+-- #877.3
+with e as ( select ST_EstimatedExtent('t','g') as e )
+select '#877.3', round(st_xmin(e.e)::numeric, 5), round(st_xmax(e.e)::numeric, 5),
+round(st_ymin(e.e)::numeric, 5), round(st_ymax(e.e)::numeric, 5) from e;
+
+-- #877.4
 analyze t;
-select '#877.4', ST_EstimatedExtent('t','g');
+with e as ( select ST_EstimatedExtent('t','g') as e )
+select '#877.4', round(st_xmin(e.e)::numeric, 5), round(st_xmax(e.e)::numeric, 5),
+round(st_ymin(e.e)::numeric, 5), round(st_ymax(e.e)::numeric, 5) from e;
+
+-- #877.5
 truncate t;
-select '#818.1', ST_EstimatedExtent('t','g');
-select '#818.1.deprecated', ST_Estimated_Extent('t','g');
+with e as ( select ST_EstimatedExtent('t','g') as e )
+select '#877.5', round(st_xmin(e.e)::numeric, 5), round(st_xmax(e.e)::numeric, 5),
+round(st_ymin(e.e)::numeric, 5), round(st_ymax(e.e)::numeric, 5) from e;
 drop table t;
 
 -- #1320

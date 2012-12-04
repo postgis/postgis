@@ -143,19 +143,12 @@ ERROR:  First argument must be a LINESTRING
 #1060|FFFFFFFF2
 #1273|t
 #1273.1|t
-NOTICE:  "<current>"."t"."g" is empty or not analyzed
-#877.1|
-NOTICE:  "public"."t"."g" is empty or not analyzed
-#877.2|
-NOTICE:  "public"."t"."g" is empty or not analyzed
-#877.2.deprecated|
-NOTICE:  "<current>"."t"."g" is empty or not analyzed
-#877.3|
-#877.4|BOX(-10 -50,20 30)
-NOTICE:  "<current>"."t"."g" is empty or not analyzed
-#818.1|
-NOTICE:  "<current>"."t"."g" is empty or not analyzed
-#818.1.deprecated|
+ERROR:  stats for "t.g" do not exist
+ERROR:  stats for "t.g" do not exist
+ERROR:  stats for "t.g" do not exist
+ERROR:  stats for "t.g" do not exist
+#877.4|-10.15000|20.15000|-50.40000|30.40000
+#877.5|-10.15000|20.15000|-50.40000|30.40000
 <#1320>
 #1320.geog.1|MULTIPOLYGON|4326
 #1320.geom.1|MULTIPOLYGON|4326

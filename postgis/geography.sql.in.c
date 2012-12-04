@@ -52,7 +52,7 @@ CREATE OR REPLACE FUNCTION geography_send(geography)
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION geography_analyze(internal)
 	RETURNS bool
-	AS 'MODULE_PATHNAME','geography_analyze'
+	AS 'MODULE_PATHNAME','gserialized_analyze_nd'
 	LANGUAGE 'c' VOLATILE STRICT; 
 
 -- Availability: 1.5.0
@@ -255,8 +255,8 @@ CREATE OR REPLACE FUNCTION geography_overlaps(geography, geography)
 CREATE OPERATOR && (
 	LEFTARG = geography, RIGHTARG = geography, PROCEDURE = geography_overlaps,
 	COMMUTATOR = '&&',
-	RESTRICT = geography_gist_selectivity, 
-	JOIN = geography_gist_join_selectivity
+	RESTRICT = gserialized_gist_sel_nd,
+	JOIN = gserialized_gist_joinsel_nd	
 );
 
 

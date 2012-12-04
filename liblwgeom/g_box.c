@@ -142,6 +142,37 @@ int gbox_same(const GBOX *g1, const GBOX *g2)
 	return LW_TRUE;
 }
 
+int gbox_is_valid(const GBOX *gbox)
+{
+	/* X */
+	if ( ! isfinite(gbox->xmin) || isnan(gbox->xmin) ||
+	     ! isfinite(gbox->xmax) || isnan(gbox->xmax) )
+		return LW_FALSE;
+		
+	/* Y */
+	if ( ! isfinite(gbox->ymin) || isnan(gbox->ymin) ||
+	     ! isfinite(gbox->ymax) || isnan(gbox->ymax) )
+		return LW_FALSE;
+		
+	/* Z */
+	if ( FLAGS_GET_GEODETIC(gbox->flags) || FLAGS_GET_Z(gbox->flags) )
+	{
+		if ( ! isfinite(gbox->zmin) || isnan(gbox->zmin) ||
+		     ! isfinite(gbox->zmax) || isnan(gbox->zmax) )
+			return LW_FALSE;
+	}
+
+	/* M */
+	if ( FLAGS_GET_M(gbox->flags) )
+	{
+		if ( ! isfinite(gbox->mmin) || isnan(gbox->mmin) ||
+		     ! isfinite(gbox->mmax) || isnan(gbox->mmax) )
+			return LW_FALSE;
+	}
+	
+	return LW_TRUE;		
+}
+
 int gbox_merge_point3d(const POINT3D *p, GBOX *gbox)
 {
 	if ( gbox->xmin > p->x ) gbox->xmin = p->x;
