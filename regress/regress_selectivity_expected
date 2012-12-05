@@ -1,3 +1,7 @@
+ERROR:  stats for "no_stats.g" do not exist
+ERROR:  stats for "no_stats.g" do not exist
+ERROR:  stats for "no_stats.g" do not exist
+ERROR:  stats for "no_stats_join.g" do not exist
 selectivity_00|2127
 selectivity_01|1068
 selectivity_02|actual|0.502

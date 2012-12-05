@@ -1873,6 +1873,8 @@ estimate_selectivity(const GBOX *box, const ND_STATS *nd_stats, int mode)
 PG_FUNCTION_INFO_V1(_postgis_gserialized_stats);
 Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 {
+	Oid table_oid = PG_GETARG_OID(0);
+	text *att_text = PG_GETARG_TEXT_P(1);
 	ND_STATS *nd_stats;
 	char *str;
 	text *json;
@@ -1883,7 +1885,11 @@ Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS)
 		mode = text_p_get_mode(PG_GETARG_TEXT_P(2));
 
 	/* Retrieve the stats object */
-	nd_stats = pg_get_nd_stats_by_name(PG_GETARG_OID(0), PG_GETARG_TEXT_P(1), mode);
+	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode);
+	if ( ! nd_stats )
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text2cstring(att_text));
+		
+	/* Convert to JSON */
 	str = nd_stats_to_json(nd_stats);
 	json = cstring2text(str);
 	pfree(str);
@@ -1915,7 +1921,7 @@ Datum _postgis_gserialized_sel(PG_FUNCTION_ARGS)
 	nd_stats = pg_get_nd_stats_by_name(table_oid, att_text, mode);
 	
 	if ( ! nd_stats )
-		elog(ERROR, "unable to load statistics! analyze?");
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid), text2cstring(att_text));
 
 	/* Calculate the gbox */
 	if ( ! gserialized_datum_get_gbox_p(geom_datum, &gbox) )
@@ -1951,8 +1957,11 @@ Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS)
 	nd_stats1 = pg_get_nd_stats_by_name(table_oid1, att_text1, mode);
 	nd_stats2 = pg_get_nd_stats_by_name(table_oid2, att_text2, mode);
 
-	if ( ! ( nd_stats1 && nd_stats2 ) ) 
-		elog(ERROR, "unable to load statistics! analyze?");
+	if ( ! nd_stats1 ) 
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid1), text2cstring(att_text1));
+
+	if ( ! nd_stats2 ) 
+		elog(ERROR, "stats for \"%s.%s\" do not exist", get_rel_name(table_oid2), text2cstring(att_text2));
 
 	/* Check if we've been asked to not use 2d mode */
 	if ( ! PG_ARGISNULL(4) )

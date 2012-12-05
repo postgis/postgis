@@ -1,3 +1,16 @@
+
+-- Check for error messages
+create table no_stats ( g geometry, id integer );
+create table no_stats_join ( g geometry, id integer );
+select _postgis_selectivity('no_stats','g', 'LINESTRING(0 0, 1 1)');
+select _postgis_stats('no_stats','g');
+select _postgis_join_selectivity('no_stats', 'g', 'no_stats_join', 'g');
+insert into no_stats (g, id) values ('POINT(0 0)', 0);
+analyze no_stats;
+select _postgis_join_selectivity('no_stats', 'g', 'no_stats_join', 'g');
+drop table no_stats;
+drop table no_stats_join;
+
 -- Table with uniformly variable density, highest at 1,1, lowest at 10,10
 create table regular_overdots as
 with 
