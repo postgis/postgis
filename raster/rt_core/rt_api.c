@@ -7930,7 +7930,14 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 
 	/* set spatial reference */
 	if (NULL != srs && strlen(srs)) {
-		cplerr = GDALSetProjection(ds, srs);
+		char *_srs = rt_util_gdal_convert_sr(srs, 0);
+		if (_srs == NULL) {
+			rterror("rt_raster_to_gdal_mem: Unable to convert srs to GDAL accepted format");
+			GDALClose(ds);
+			return 0;
+		}
+
+		cplerr = GDALSetProjection(ds, _srs);
 		if (cplerr != CE_None) {
 			rterror("rt_raster_to_gdal_mem: Unable to set projection");
 			GDALClose(ds);
@@ -10212,7 +10219,10 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 	/* set SRS */
 	if (NULL != src_sr) {
-		cplerr = GDALSetProjection(_ds, srs);
+		char *_srs = NULL;
+		OSRExportToWkt(src_sr, &_srs);
+
+		cplerr = GDALSetProjection(_ds, _srs);
 		if (cplerr != CE_None) {
 			rterror("rt_raster_gdal_rasterize: Could not set projection on GDALDataset");
 

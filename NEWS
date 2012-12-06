@@ -1,3 +1,9 @@
+PostGIS 2.0.3
+2013/MM/DD
+
+ * Bug Fixes *
+  - #2134, Make sure to process SRS before passing it off to GDAL functions
+
 PostGIS 2.0.2
 2012/12/03
 
