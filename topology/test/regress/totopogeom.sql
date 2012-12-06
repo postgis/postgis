@@ -9,7 +9,7 @@ select totopogeom('POINT(0 0)'::geometry, 'tt', 1);
 select totopogeom(null, 'tt', 1);
 select totopogeom('POINT(0 0)'::geometry, '', 1);
 select totopogeom('POINT(0 0)'::geometry, null, 1);
-select totopogeom('POINT(0 0)'::geometry, 'tt', null);
+select totopogeom('POINT(0 0)'::geometry, 'tt', null::integer);
 
 -- Create simple puntual layer (will be layer 1)
 CREATE TABLE tt.f_puntal(id serial);
@@ -169,6 +169,24 @@ with inp as ( select
 tg as ( select totopogeom(g, 'tt', 5) as g from inp )
 select '#1790.3', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDistance(tg.g::geometry, inp.g) FROM inp, tg;
 
+-- Test adding portions to an existing TopoGeometry
+INSERT INTO tt.f_areal (id, g)
+ SELECT -1, toTopoGeom('POLYGON((0 0, 10 0, 10 10, 0 10, 0 0))', 'tt', 4);
+SELECT 'tgup1.1', id(t.g), st_area(t.g), count(r.*)
+  FROM tt.f_areal t, tt.relation r
+  WHERE t.id = -1 AND r.layer_id = 4 AND r.topogeo_id = id(t.g)
+  GROUP BY id(t.g), st_area(t.g);
+UPDATE tt.f_areal SET g = toTopoGeom(st_translate(g, st_xmax(g::geometry)+1, 0), g);
+SELECT 'tgup1.2', id(t.g), st_area(t.g), count(r.*)
+  FROM tt.f_areal t, tt.relation r
+  WHERE t.id = -1 AND r.layer_id = 4 AND r.topogeo_id = id(t.g)
+  GROUP BY id(t.g), st_area(t.g);
+-- now add a smaller area
+UPDATE tt.f_areal SET g = toTopoGeom(st_buffer(g, -1), g);
+SELECT 'tgup1.3', id(t.g), st_area(t.g), count(r.*)
+  FROM tt.f_areal t, tt.relation r
+  WHERE t.id = -1 AND r.layer_id = 4 AND r.topogeo_id = id(t.g)
+  GROUP BY id(t.g), st_area(t.g);
 
 DROP TABLE tt.f_coll;
 DROP TABLE tt.f_areal;
