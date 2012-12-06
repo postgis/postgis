@@ -471,7 +471,7 @@ Available GDAL raster formats:
 					<para><varname>same_alignment</varname> A boolean that is true if all the raster tiles have the same alignment . Refer to <xref linkend="RT_ST_SameAlignment" /> for more details.</para>
 				</listitem>
 				<listitem>
-					<para><varname>regular_blocking</varname> This is a true/false constraint flag set on the table to denote that the tiles do not overlap, are of the same alignment, pixel size, srid etc. It is not really validated but just taken as a given so should be used for informational.  In the future we plan to properly constrain this so that this inforamtion is guaranteed to be right when it returns <varname>true</varname></para>
+					<para><varname>regular_blocking</varname> This is a true/false constraint flag set on the table to denote that the tiles do not overlap, are of the same alignment, pixel size, srid etc. It is not really validated but just taken as a given so should be used for informational.  In the future we plan to properly constrain this so that this information is guaranteed to be right when it returns <varname>true</varname></para>
 				</listitem>
 				<listitem>
 					<para><varname>num_bands</varname> The number of bands in each tile of your raster set.  This is the same information as what is provided by <xref linkend="RT_ST_NumBands" /></para>
