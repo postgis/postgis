@@ -432,18 +432,28 @@ CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, sma
 -----------------------------------------------------------------------------
 
 -- Availability: 2.1.0
+-- Given a table, column and query geometry, returns the estimate of what proportion
+-- of the table would be returned by a query using the &&/&&& operators. The mode
+-- changes whether the estimate is in x/y only or in all available dimensions.
 CREATE OR REPLACE FUNCTION _postgis_selectivity(tbl regclass, att_name text, geom geometry, mode text default '2')
 	RETURNS float8
 	AS 'MODULE_PATHNAME', '_postgis_gserialized_sel'
 	LANGUAGE 'c' STRICT;
 
 -- Availability: 2.1.0
+-- Given a two tables and columns, returns estimate of the proportion of rows
+-- a &&/&&& join will return relative to the number of rows an unconstrained
+-- table join would return. Mode flips result between evaluation in x/y only
+-- and evaluation in all available dimensions.
 CREATE OR REPLACE FUNCTION _postgis_join_selectivity(regclass, text, regclass, text, text default '2')
 	RETURNS float8
 	AS 'MODULE_PATHNAME', '_postgis_gserialized_joinsel'
 	LANGUAGE 'c' STRICT;
 
 -- Availability: 2.1.0
+-- Given a table and a column, returns the statistics information stored by 
+-- PostgreSQL, in a JSON text form. Mode determines whether the 2D statistics
+-- or the ND statistics are returned.
 CREATE OR REPLACE FUNCTION _postgis_stats(tbl regclass, att_name text, text default '2')
 	RETURNS text
 	AS 'MODULE_PATHNAME', '_postgis_gserialized_stats'
