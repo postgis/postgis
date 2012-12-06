@@ -120,6 +120,12 @@ PostGIS 2.1.0
   - #2019, ST_FlipCoordinates does not update bbox
   - #2100, ST_AsRaster may not return raster with specified pixel type
 
+PostGIS 2.0.3
+2013/MM/DD
+
+ * Bug Fixes *
+  - #2134, Fixed handling of SRS strings as they are passed to GDAL functions
+
 PostGIS 2.0.2
 2012/12/03
 
@@ -241,7 +247,7 @@ PostGIS 2.0.1
   - #1786, improved build dependencies 
   - #1806, speedup of ST_BuildArea, ST_MakeValid and ST_GetFaceGeometry.
   - #1812, Add lwgeom_normalize in LIBLWGEOM for more stable testing.
-  
+	  
 PostGIS 2.0.0
 2012/04/03
    

@@ -8489,12 +8489,12 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 
 	/* any supported format is possible */
 	rt_util_gdal_register_all();
-	RASTER_DEBUG(3, "rt_raster_to_gdal: loaded all supported GDAL formats");
+	RASTER_DEBUG(3, "loaded all supported GDAL formats");
 
 	/* output format not specified */
 	if (format == NULL || !strlen(format))
 		format = "GTiff";
-	RASTER_DEBUGF(3, "rt_raster_to_gdal: output format is %s", format);
+	RASTER_DEBUGF(3, "output format is %s", format);
 
 	/* load raster into a GDAL MEM raster */
 	src_ds = rt_raster_to_gdal_mem(raster, srs, NULL, NULL, 0, &src_drv);
@@ -8510,10 +8510,10 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 		GDALClose(src_ds);
 		return 0;
 	}
-	RASTER_DEBUG(3, "rt_raster_to_gdal: Output driver loaded");
+	RASTER_DEBUG(3, "Output driver loaded");
 
 	/* convert GDAL MEM raster to output format */
-	RASTER_DEBUG(3, "rt_raster_to_gdal: Copying GDAL MEM raster to memory file in output format");
+	RASTER_DEBUG(3, "Copying GDAL MEM raster to memory file in output format");
 	rtn_ds = GDALCreateCopy(
 		rtn_drv,
 		"/vsimem/out.dat", /* should be fine assuming this is in a process */
@@ -8531,18 +8531,20 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 
 	/* close source dataset */
 	GDALClose(src_ds);
-	RASTER_DEBUG(3, "rt_raster_to_gdal: Closed GDAL MEM raster");
+	RASTER_DEBUG(3, "Closed GDAL MEM raster");
+
+	RASTER_DEBUGF(4, "dataset SRS: %s", GDALGetProjectionRef(rtn_ds));
 
 	/* close dataset, this also flushes any pending writes */
 	GDALClose(rtn_ds);
-	RASTER_DEBUG(3, "rt_raster_to_gdal: Closed GDAL output raster");
+	RASTER_DEBUG(3, "Closed GDAL output raster");
 
-	RASTER_DEBUG(3, "rt_raster_to_gdal: Done copying GDAL MEM raster to memory file in output format");
+	RASTER_DEBUG(3, "Done copying GDAL MEM raster to memory file in output format");
 
 	/* from memory file to buffer */
-	RASTER_DEBUG(3, "rt_raster_to_gdal: Copying GDAL memory file to buffer");
+	RASTER_DEBUG(3, "Copying GDAL memory file to buffer");
 	rtn = VSIGetMemFileBuffer("/vsimem/out.dat", &rtn_lenvsi, TRUE);
-	RASTER_DEBUG(3, "rt_raster_to_gdal: Done copying GDAL memory file to buffer");
+	RASTER_DEBUG(3, "Done copying GDAL memory file to buffer");
 	if (NULL == rtn) {
 		rterror("rt_raster_to_gdal: Unable to create the output GDAL raster");
 		return 0;
@@ -8715,13 +8717,21 @@ rt_raster_to_gdal_mem(
 
 	/* set spatial reference */
 	if (NULL != srs && strlen(srs)) {
-		cplerr = GDALSetProjection(ds, srs);
+		char *_srs = rt_util_gdal_convert_sr(srs, 0);
+		if (_srs == NULL) {
+			rterror("rt_raster_to_gdal_mem: Unable to convert srs to GDAL accepted format");
+			GDALClose(ds);
+			return 0;
+		}
+
+		cplerr = GDALSetProjection(ds, _srs);
+		CPLFree(_srs);
 		if (cplerr != CE_None) {
 			rterror("rt_raster_to_gdal_mem: Unable to set projection");
 			GDALClose(ds);
 			return 0;
 		}
-		RASTER_DEBUGF(3, "Projection set to: %s", srs);
+		RASTER_DEBUGF(3, "Projection set to: %s", GDALGetProjectionRef(ds));
 	}
 
 	/* process bandNums */
@@ -9304,6 +9314,14 @@ rt_raster rt_raster_gdal_warp(
 			RASTER_DEBUG(4, "Warp operation does include a reprojection");
 			_src_srs = rt_util_gdal_convert_sr(src_srs, 0);
 			_dst_srs = rt_util_gdal_convert_sr(dst_srs, 0);
+
+			if (_src_srs == NULL || _dst_srs == NULL) {
+				rterror("rt_raster_gdal_warp: Unable to convert srs values to GDAL accepted format");
+				if (_src_srs != NULL) CPLFree(_src_srs);
+				if (_dst_srs != NULL) CPLFree(_dst_srs);
+
+				return NULL;
+			}
 		}
 		/* no reprojection, a stub just for clarity */
 		else {
@@ -11001,7 +11019,10 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 	/* set SRS */
 	if (NULL != src_sr) {
-		cplerr = GDALSetProjection(_ds, srs);
+		char *_srs = NULL;
+		OSRExportToWkt(src_sr, &_srs);
+
+		cplerr = GDALSetProjection(_ds, _srs);
 		if (cplerr != CE_None) {
 			rterror("rt_raster_gdal_rasterize: Could not set projection on GDALDataset");
 
