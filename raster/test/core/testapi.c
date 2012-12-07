@@ -2696,14 +2696,17 @@ main()
         rt_raster_get_num_bands(raster));
 
     { /* Check convex hull, based on offset, scale and rotation */
-        LWPOLY *convexhull;
-        POINTARRAY *ring;
+        LWGEOM *hull = NULL;
+        LWPOLY *convexhull = NULL;
+        POINTARRAY *ring = NULL;
         POINT4D pt;
 
         /* will rotate the raster to see difference with the envelope */
         rt_raster_set_skews(raster, 4, 5);
 
-        convexhull = rt_raster_get_convex_hull(raster);
+        hull = rt_raster_get_convex_hull(raster);
+				convexhull = lwgeom_as_lwpoly(hull);
+
         CHECK_EQUALS(convexhull->srid, rt_raster_get_srid(raster));
         CHECK_EQUALS(convexhull->nrings, 1);
         ring = convexhull->rings[0];
@@ -2735,7 +2738,7 @@ main()
         CHECK_EQUALS_DOUBLE(pt.x, 0.5);
         CHECK_EQUALS_DOUBLE(pt.y, 0.5);
 
-        lwpoly_free(convexhull);
+        lwgeom_free(hull);
 
         rt_raster_set_skews(raster, 0, 0);
     }

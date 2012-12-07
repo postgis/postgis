@@ -1062,7 +1062,7 @@ int rt_raster_geopoint_to_cell(rt_raster raster,
  * @return the convex hull, or NULL on error.
  *
  */
-LWPOLY* rt_raster_get_convex_hull(rt_raster raster);
+LWGEOM* rt_raster_get_convex_hull(rt_raster raster);
 
 /**
  * Get raster's envelope.

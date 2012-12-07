@@ -838,7 +838,7 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 {
     rt_pgraster *pgraster;
     rt_raster raster;
-    LWPOLY* convexhull = NULL;
+    LWGEOM* convexhull = NULL;
     GSERIALIZED* gser = NULL;
 
     if (PG_ARGISNULL(0)) PG_RETURN_NULL();
@@ -861,7 +861,7 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 
     {
         size_t gser_size;
-        gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(convexhull), 0, &gser_size);
+        gser = gserialized_from_lwgeom(convexhull, 0, &gser_size);
         SET_VARSIZE(gser, gser_size);
     }
 
@@ -8575,7 +8575,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 	int rtn;
 	int intersects;
 
-	LWPOLY *hull[2] = {NULL};
+	LWGEOM *hull[2] = {NULL};
 	GEOSGeometry *ghull[2] = {NULL};
 
 	for (i = 0, j = 0; i < set_count; i++) {
@@ -8647,16 +8647,16 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 			if (NULL == hull[i]) {
 				for (j = 0; j < i; j++) {
 					GEOSGeom_destroy(ghull[j]);
-					lwpoly_free(hull[j]);
+					lwgeom_free(hull[j]);
 				}
 				rtn = 0;
 				break;
 			}
-			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(hull[i]));
+			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(hull[i]);
 			if (NULL == ghull[i]) {
 				for (j = 0; j < i; j++) {
 					GEOSGeom_destroy(ghull[j]);
-					lwpoly_free(hull[j]);
+					lwgeom_free(hull[j]);
 				}
 				lwpoly_free(hull[i]);
 				rtn = 0;
@@ -8669,7 +8669,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 
 		for (i = 0; i < 2; i++) {
 			GEOSGeom_destroy(ghull[i]);
-			lwpoly_free(hull[i]);
+			lwgeom_free(hull[i]);
 		}
 
 		if (rtn != 2) {
