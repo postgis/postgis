@@ -2574,7 +2574,9 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 			<refnamediv>
 				<refname>toTopoGeom</refname>
 			
-				<refpurpose>Creates a new topo geometry from a simple geometry</refpurpose>
+				<refpurpose>
+Converts a simple Geometry into a topo geometry
+        </refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -2586,6 +2588,13 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
 					<paramdef><type>integer</type> <parameter>layer_id</parameter></paramdef>
 					<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
 					</funcprototype>
+
+					<funcprototype>
+					<funcdef>topogeometry <function>toTopoGeom</function></funcdef>
+					<paramdef><type>geometry </type> <parameter>geom</parameter></paramdef>
+					<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></paramdef>
+					<paramdef choice="opt"><type>float8</type> <parameter>tolerance</parameter></paramdef>
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -2593,20 +2602,41 @@ UPDATE boston.blockgroups SET new_geom = topo::geometry;
                 <title>Description</title>
             
                 <para>
-Creates a topogeometry object for layer denoted by layer_id and registers it in the relations table in the <varname>toponame</varname> schema.
+Converts a simple Geometry into a <xref linkend="topogeometry">TopoGeometry</xref>.
                 </para>
 
                 <para>
-Topological primitives required to represent the input geometry will be added, possibly splitting existing ones.
-Pre-existing TopoGeometry objects will retain their shapes.
+Topological primitives required to represent the input geometry will be
+added to the underlying topology, possibly splitting existing ones,
+and they will be associated with the output TopoGeometry in the
+<varname>relation</varname> table.
                 </para>
 
                 <para>
-When <varname>tolerance</varname> is given it will be used to snap the input geometry to existing primitives.
+Existing TopoGeometry objects (with the possible exception of
+<varname>topogeom</varname>, if given) will retain their shapes.
+                </para>
+
+                <para>
+When <varname>tolerance</varname> is given it will be used to snap the
+input geometry to existing primitives.
+                </para>
+
+                <para>
+In the first form a new TopoGeometry will be created for the given
+layer (<varname>layer_id</varname>) of the given topology (<varname>toponame</varname>).
+                </para>
+
+                <para>
+In the second form the primitives resulting from the conversion will be
+added to the pre-existing TopoGeometry (<varname>topogeom</varname>),
+possibly adding space to its final shape. To have the new shape completely
+replace the old one see <xref linkend="clearTopoGeom" />.
                 </para>
 
                 <!-- use this format if new function -->
                 <para>Availability: 2.0</para>
+                <para>Enhanced: 2.1.0 adds the version taking an existing TopoGeometry.</para>
 			</refsection>
 			<refsection>
 				<title>Examples</title>
@@ -2638,13 +2668,79 @@ Topology topo_boston_test (5), SRID 2249, precision 0
 61 nodes, 87 edges, 35 faces, 15 topogeoms in 1 layers
 Layer 1, type Polygonal (3), 15 topogeoms
  Deploy: public.nei_topo.topo</programlisting>
+
+        <programlisting>
+-- Shrink all TopoGeometry polygons by 10 meters
+UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
+
+-- Get the no-one-lands left by the above operation
+-- I think GRASS calls this "polygon0 layer"
+SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id) 
+  FROM topo_boston_test.face f
+  WHERE f.face_id > 0 -- don't consider the universe face
+  AND NOT EXISTS ( -- check that no TopoGeometry references the face
+    SELECT * FROM topo_boston_test.relation
+    WHERE layer_id = 1 AND element_id = f.face_id
+  );
+        </programlisting>
 			</refsection>
 
 			<!-- Optionally add a "See Also" section -->
 			<refsection>
 				<title>See Also</title>
-				<para> <xref linkend="CreateTopology" />,<xref linkend="AddTopoGeometryColumn"/>,
-<xref linkend="CreateTopoGeom" />, <xref linkend="TopologySummary" /></para>
+        <para>
+<xref linkend="CreateTopology" />,
+<xref linkend="AddTopoGeometryColumn"/>,
+<xref linkend="CreateTopoGeom" />,
+<xref linkend="TopologySummary" />,
+<xref linkend="clearTopoGeom" />
+        </para>
+			</refsection>
+		</refentry>
+
+	  	<refentry id="clearTopoGeom">
+			<refnamediv>
+				<refname>clearTopoGeom</refname>
+			
+				<refpurpose>Clears the content of a topo geometry</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+					<funcdef>topogeometry <function>clearTopoGeom</function></funcdef>
+					<paramdef><type>topogeometry </type> <parameter>topogeom</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>
+Clears the content a <xref linkend="topogeometry">TopoGeometry</xref>
+turning it into an empty one. Mostly useful in conjunction with <xref
+linkend="toTopoGeom">toTopoGeom</xref> to replace the shape of existing
+objects and any dependent object in higher hierarchical levels.
+                </para>
+
+                <!-- use this format if new function -->
+                <para>Availability: 2.1</para>
+			</refsection>
+			<refsection>
+				<title>Examples</title>
+        <programlisting>
+-- Shrink all TopoGeometry polygons by 10 meters
+UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
+				</programlisting> 
+			</refsection>
+
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+        <para>
+<xref linkend="toTopoGeom" />
+        </para>
 			</refsection>
 		</refentry>
 		
