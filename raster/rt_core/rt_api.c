@@ -6281,69 +6281,132 @@ rt_raster_gdal_polygonize(
 	return pols;
 }
 
-LWPOLY*
-rt_raster_get_convex_hull(rt_raster raster) {
-		double gt[6] = {0.0};
-    POINTARRAY **rings = NULL;
-    POINTARRAY *pts = NULL;
-    LWPOLY* ret = NULL;
-    POINT4D p4d;
+/**
+ * Get raster's convex hull.
+ *
+ * The convex hull is typically a 4 vertices (5 to be closed)
+ * single ring polygon bearing the raster's rotation and using
+ * projection coordinates.
+ *
+ * @param raster : the raster to get info from
+ * @param **hull : pointer to convex hull
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate
+rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull) {
+	double gt[6] = {0.0};
+	int srid = SRID_UNKNOWN;
 
-    assert(NULL != raster);
+	POINTARRAY *pts = NULL;
+	POINT4D p4d;
 
-    RASTER_DEBUGF(3, "rt_raster_get_convex_hull: raster is %dx%d",
-            raster->width, raster->height);
+	assert(hull != NULL);
+	*hull = NULL;
 
-    if ((!raster->width) || (!raster->height)) {
-        return 0;
-    }
+	/* raster is NULL, convex hull is NULL */
+	if (raster == NULL)
+		return ES_NONE;
 
-    rings = (POINTARRAY **) rtalloc(sizeof (POINTARRAY*));
-    if (!rings) {
-        rterror("rt_raster_get_convex_hull: Out of memory [%s:%d]", __FILE__, __LINE__);
-        return 0;
-    }
-    rings[0] = ptarray_construct(0, 0, 5);
-    /* TODO: handle error on ptarray construction */
-    /* XXX jorgearevalo: the error conditions aren't managed in ptarray_construct */
-    if (!rings[0]) {
-        rterror("rt_raster_get_convex_hull: Out of memory [%s:%d]", __FILE__, __LINE__);
-        return 0;
-    }
-    pts = rings[0];
+	/* raster metadata */
+	srid = rt_raster_get_srid(raster);
+	rt_raster_get_geotransform_matrix(raster, gt);
 
-    /* Upper-left corner (first and last points) */
-    rt_raster_cell_to_geopoint(raster,
-            0, 0,
-            &p4d.x, &p4d.y,
-						gt);
-    ptarray_set_point4d(pts, 0, &p4d);
-    ptarray_set_point4d(pts, 4, &p4d); /* needed for closing it? */
+	RASTER_DEBUGF(3, "rt_raster_get_convex_hull: raster is %dx%d", raster->width, raster->height); 
 
-    /* Upper-right corner (we go clockwise) */
-    rt_raster_cell_to_geopoint(raster,
-            raster->width, 0,
-            &p4d.x, &p4d.y,
-						gt);
-    ptarray_set_point4d(pts, 1, &p4d);
+	/* return point or line since at least one of the two dimensions is 0 */
+	if ((!raster->width) || (!raster->height)) {
+		p4d.x = gt[0];
+		p4d.y = gt[3];
 
-    /* Lower-right corner */
-    rt_raster_cell_to_geopoint(raster,
-            raster->width, raster->height,
-            &p4d.x, &p4d.y,
-						gt);
-    ptarray_set_point4d(pts, 2, &p4d);
+		/* return point */
+		if (!raster->width && !raster->height) {
+			LWPOINT *point = lwpoint_make2d(srid, p4d.x, p4d.y);
+			*hull = lwpoint_as_lwgeom(point);
+		}
+		/* return linestring */
+		else {
+			LWLINE *line = NULL;
+			pts = ptarray_construct_empty(0, 0, 2);
 
-    /* Lower-left corner */
-    rt_raster_cell_to_geopoint(raster,
-            0, raster->height,
-            &p4d.x, &p4d.y,
-						gt);
-    ptarray_set_point4d(pts, 3, &p4d);
+			/* first point of line */
+			ptarray_append_point(pts, &p4d, LW_TRUE);
 
-    ret = lwpoly_construct(rt_raster_get_srid(raster), 0, 1, rings);
+			/* second point of line */
+			if (rt_raster_cell_to_geopoint(
+				raster,
+				rt_raster_get_width(raster), rt_raster_get_height(raster),
+				&p4d.x, &p4d.y,
+				gt
+			) != ES_NONE) {
+				rterror("rt_raster_get_convex_hull: Unable to get second point for linestring");
+				return ES_ERROR;
+			}
+			ptarray_append_point(pts, &p4d, LW_TRUE);
+			line = lwline_construct(srid, NULL, pts);
 
-    return ret;
+			*hull = lwline_as_lwgeom(line);
+		}
+
+		return ES_NONE;
+	}
+	else {
+		POINTARRAY **rings = NULL;
+		LWPOLY* poly = NULL;
+
+		/* only one ring */
+		rings = (POINTARRAY **) rtalloc(sizeof (POINTARRAY*));
+		if (!rings) {
+			rterror("rt_raster_get_convex_hull: Unable to allocate memory for polygon ring");
+			return ES_ERROR;
+		}
+		rings[0] = ptarray_construct(0, 0, 5);
+		/* TODO: handle error on ptarray construction */
+		/* XXX jorgearevalo: the error conditions aren't managed in ptarray_construct */
+		if (!rings[0]) {
+			rterror("rt_raster_get_convex_hull: Unable to construct point array");
+			return ES_ERROR;
+		}
+		pts = rings[0];
+
+		/* Upper-left corner (first and last points) */
+		p4d.x = gt[0];
+		p4d.y = gt[3];
+		ptarray_set_point4d(pts, 0, &p4d);
+		ptarray_set_point4d(pts, 4, &p4d);
+
+		/* Upper-right corner (we go clockwise) */
+		rt_raster_cell_to_geopoint(
+			raster,
+			raster->width, 0,
+			&p4d.x, &p4d.y,
+			gt
+		);
+		ptarray_set_point4d(pts, 1, &p4d);
+
+		/* Lower-right corner */
+		rt_raster_cell_to_geopoint(
+			raster,
+			raster->width, raster->height,
+			&p4d.x, &p4d.y,
+			gt
+		);
+		ptarray_set_point4d(pts, 2, &p4d);
+
+		/* Lower-left corner */
+		rt_raster_cell_to_geopoint(
+			raster,
+			0, raster->height,
+			&p4d.x, &p4d.y,
+			gt
+		);
+		ptarray_set_point4d(pts, 3, &p4d);
+
+		poly = lwpoly_construct(srid, 0, 1, rings);
+		*hull = lwpoly_as_lwgeom(poly);
+	}
+
+	return ES_NONE;
 }
 
 /**
@@ -6465,7 +6528,7 @@ rt_raster_compute_skewed_raster(
 	int x;
 	int y;
 
-	LWPOLY *spoly = NULL;
+	LWGEOM *geom = NULL;
 	GEOSGeometry *sgeom = NULL;
 	GEOSGeometry *ngeom = NULL;
 
@@ -6723,17 +6786,16 @@ rt_raster_compute_skewed_raster(
 	do {
 		covers = 0;
 
-		/* construct spoly from raster */
-		spoly = rt_raster_get_convex_hull(raster);
-		if (spoly == NULL) {
+		/* construct sgeom from raster */
+		if ((rt_raster_get_convex_hull(raster, &geom) != ES_NONE) || geom == NULL) {
 			rterror("rt_raster_compute_skewed_raster: Unable to build skewed extent's geometry for covers test");
 			GEOSGeom_destroy(ngeom);
 			rt_raster_destroy(raster);
 			return NULL;
 		}
 
-		sgeom = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(spoly));
-		lwpoly_free(spoly);
+		sgeom = (GEOSGeometry *) LWGEOM2GEOS(geom);
+		lwgeom_free(geom);
 
 		covers = GEOSRelatePattern(sgeom, ngeom, "******FF*");
 		GEOSGeom_destroy(sgeom);
@@ -6772,17 +6834,16 @@ rt_raster_compute_skewed_raster(
 			else
 				raster->height--;
 			
-			/* construct spoly from raster */
-			spoly = rt_raster_get_convex_hull(raster);
-			if (spoly == NULL) {
+			/* construct sgeom from raster */
+			if ((rt_raster_get_convex_hull(raster, &geom) != ES_NONE) || geom == NULL) {
 				rterror("rt_raster_compute_skewed_raster: Unable to build skewed extent's geometry for minimizing dimensions");
 				GEOSGeom_destroy(ngeom);
 				rt_raster_destroy(raster);
 				return NULL;
 			}
 
-			sgeom = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(spoly));
-			lwpoly_free(spoly);
+			sgeom = (GEOSGeometry *) LWGEOM2GEOS(geom);
+			lwgeom_free(geom);
 
 			covers = GEOSRelatePattern(sgeom, ngeom, "******FF*");
 			GEOSGeom_destroy(sgeom);
@@ -11615,7 +11676,7 @@ rt_raster_intersects(
 	int j;
 	int within = 0;
 
-	LWPOLY *hull[2] = {NULL};
+	LWGEOM *hull[2] = {NULL};
 	GEOSGeometry *ghull[2] = {NULL};
 
 	uint16_t width1;
@@ -11686,22 +11747,21 @@ rt_raster_intersects(
 
 		rtn = 1;
 		for (i = 0; i < 2; i++) {
-			hull[i] = rt_raster_get_convex_hull(i < 1 ? rast1 : rast2);
-			if (NULL == hull[i]) {
+			if ((rt_raster_get_convex_hull(i < 1 ? rast1 : rast2, &(hull[i])) != ES_NONE) || NULL == hull[i]) {
 				for (j = 0; j < i; j++) {
 					GEOSGeom_destroy(ghull[j]);
-					lwpoly_free(hull[j]);
+					lwgeom_free(hull[j]);
 				}
 				rtn = 0;
 				break;
 			}
-			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(lwpoly_as_lwgeom(hull[i]));
+			ghull[i] = (GEOSGeometry *) LWGEOM2GEOS(hull[i]);
 			if (NULL == ghull[i]) {
 				for (j = 0; j < i; j++) {
 					GEOSGeom_destroy(ghull[j]);
-					lwpoly_free(hull[j]);
+					lwgeom_free(hull[j]);
 				}
-				lwpoly_free(hull[i]);
+				lwgeom_free(hull[i]);
 				rtn = 0;
 				break;
 			}
@@ -11722,7 +11782,7 @@ rt_raster_intersects(
 
 		for (i = 0; i < 2; i++) {
 			GEOSGeom_destroy(ghull[i]);
-			lwpoly_free(hull[i]);
+			lwgeom_free(hull[i]);
 		}
 
 		if (rtn != 2) {
@@ -12912,9 +12972,8 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 	*surface = NULL;
 
 	/* raster is empty, surface = NULL */
-	if (rt_raster_is_empty(raster)) {
+	if (rt_raster_is_empty(raster))
 		return ES_NONE;
-	}
 
 	/* if nband < 0, return the convex hull as a multipolygon */
 	if (nband < 0) {
@@ -12924,7 +12983,10 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 			hence the deep clone of the output geometry for returning
 			is the only way to guarentee the memory isn't shared
 		*/
-		tmp = lwpoly_as_lwgeom(rt_raster_get_convex_hull(raster));
+		if (rt_raster_get_convex_hull(raster, &tmp) != ES_NONE) {
+			rterror("rt_raster_surface: Unable to get convex hull of raster");
+			return ES_ERROR;
+		}
 		mpoly = lwgeom_as_multi(tmp);
 		clone = lwgeom_clone_deep(mpoly);
 		lwgeom_free(tmp);
@@ -12954,7 +13016,10 @@ rt_errorstate rt_raster_surface(rt_raster raster, int nband, LWMPOLY **surface) 
 			hence the deep clone of the output geometry for returning
 			is the only way to guarentee the memory isn't shared
 		*/
-		tmp = lwpoly_as_lwgeom(rt_raster_get_convex_hull(raster));
+		if (rt_raster_get_convex_hull(raster, &tmp) != ES_NONE) {
+			rterror("rt_raster_surface: Unable to get convex hull of raster");
+			return ES_ERROR;
+		}
 		mpoly = lwgeom_as_multi(tmp);
 		clone = lwgeom_clone_deep(mpoly);
 		lwgeom_free(tmp);

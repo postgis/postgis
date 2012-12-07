@@ -1311,17 +1311,18 @@ rt_errorstate rt_raster_geopoint_to_cell(
 );
 
 /**
- * Get raster's polygon convex hull.
+ * Get raster's convex hull.
  *
- * The convex hull is a 4 vertices (5 to be closed) single
- * ring polygon bearing the raster's rotation
- * and using projection coordinates
+ * The convex hull is typically a 4 vertices (5 to be closed)
+ * single ring polygon bearing the raster's rotation and using
+ * projection coordinates.
  *
  * @param raster : the raster to get info from
+ * @param **hull : pointer to convex hull
  *
- * @return the convex hull, or NULL on error.
+ * @return ES_NONE if success, ES_ERROR if error
  */
-LWPOLY* rt_raster_get_convex_hull(rt_raster raster);
+rt_errorstate rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull);
 
 /**
  * Get raster's envelope.

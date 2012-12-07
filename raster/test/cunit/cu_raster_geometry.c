@@ -26,11 +26,40 @@
 
 static void test_raster_convex_hull() {
 	rt_raster raster = NULL;
-	LWPOLY *convexhull = NULL;
+	LWGEOM *hull = NULL;
+	LWPOLY *poly = NULL;
 	POINTARRAY *ring = NULL;
 	POINT4D pt;
 
-	/* create raster */
+	/* NULL raster */
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(NULL, &hull), ES_NONE);
+	CU_ASSERT(hull == NULL);
+
+	/* width = 0, height = 0 */
+	raster = rt_raster_new(0, 0);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
+	CU_ASSERT_EQUAL(hull->type, POINTTYPE);
+	cu_free_raster(raster);
+
+	/* width = 0 */
+	raster = rt_raster_new(0, 256);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
+	CU_ASSERT_EQUAL(hull->type, LINETYPE);
+	cu_free_raster(raster);
+
+	/* height = 0 */
+	raster = rt_raster_new(256, 0);
+	CU_ASSERT(raster != NULL);
+
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
+	CU_ASSERT_EQUAL(hull->type, LINETYPE);
+	cu_free_raster(raster);
+
+	/* normal raster */
 	raster = rt_raster_new(256, 256);
 	CU_ASSERT(raster != NULL);
 
@@ -38,11 +67,12 @@ static void test_raster_convex_hull() {
 	rt_raster_set_scale(raster, 1, 1);
 	rt_raster_set_skews(raster, 4, 5);
 
-	convexhull = rt_raster_get_convex_hull(raster);
-	CU_ASSERT_EQUAL(convexhull->srid, rt_raster_get_srid(raster));
-	CU_ASSERT_EQUAL(convexhull->nrings, 1);
+	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
+	poly = lwgeom_as_lwpoly(hull);
+	CU_ASSERT_EQUAL(poly->srid, rt_raster_get_srid(raster));
+	CU_ASSERT_EQUAL(poly->nrings, 1);
 
-	ring = convexhull->rings[0];
+	ring = poly->rings[0];
 	CU_ASSERT(ring != NULL);
 	CU_ASSERT_EQUAL(ring->npoints, 5);
 
@@ -66,7 +96,7 @@ static void test_raster_convex_hull() {
 	CU_ASSERT_DOUBLE_EQUAL(pt.x, 0.5, DBL_EPSILON);
 	CU_ASSERT_DOUBLE_EQUAL(pt.y, 0.5, DBL_EPSILON);
 
-	lwpoly_free(convexhull);
+	lwgeom_free(hull);
 	cu_free_raster(raster);
 }
 

@@ -121,6 +121,7 @@ PostGIS 2.1.0
   - #2077, Fixed incorrect values returning from ST_Hillshade()
   - #2019, ST_FlipCoordinates does not update bbox
   - #2100, ST_AsRaster may not return raster with specified pixel type
+  - #2126, Better handling of empty rasters from ST_ConvexHull()
 
 PostGIS 2.0.3
 2013/MM/DD

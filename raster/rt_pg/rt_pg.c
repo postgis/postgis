@@ -943,50 +943,48 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 }
 
 /**
- * Return the convex hull of this raster as a 4-vertices POLYGON.
+ * Return the convex hull of this raster
  */
 PG_FUNCTION_INFO_V1(RASTER_convex_hull);
 Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 {
-    rt_pgraster *pgraster;
-    rt_raster raster;
-    LWPOLY* convexhull = NULL;
-    GSERIALIZED* gser = NULL;
+	rt_pgraster *pgraster;
+	rt_raster raster;
+	LWGEOM *hull = NULL;
+	GSERIALIZED* gser = NULL;
+	size_t gser_size;
+	int err = ES_NONE;
 
-    if (PG_ARGISNULL(0)) PG_RETURN_NULL();
-    pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
-    {
-        raster = rt_raster_deserialize(pgraster, TRUE);
-        if ( ! raster ) {
-            elog(ERROR, "RASTER_convex_hull: Could not deserialize raster");
-						PG_FREE_IF_COPY(pgraster, 0);
-            PG_RETURN_NULL();
-        }
-
-        convexhull = rt_raster_get_convex_hull(raster);
-        if ( ! convexhull ) {
-            elog(ERROR, "RASTER_convex_hull: Could not get raster's convex hull");
-            rt_raster_destroy(raster);
-						PG_FREE_IF_COPY(pgraster, 0);
-            PG_RETURN_NULL();
-        }
-    }
-
-    {
-        size_t gser_size;
-        gser = gserialized_from_lwgeom(lwpoly_as_lwgeom(convexhull), 0, &gser_size);
-        SET_VARSIZE(gser, gser_size);
-    }
-
-    /* Free raster and lwgeom memory */
-    rt_raster_destroy(raster);
-    pfree(convexhull);
+	raster = rt_raster_deserialize(pgraster, TRUE);
+	if (!raster) {
+		elog(ERROR, "RASTER_convex_hull: Could not deserialize raster");
 		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
 
-    PG_RETURN_POINTER(gser);
+	err = rt_raster_get_convex_hull(raster, &hull);
+	rt_raster_destroy(raster);
+	PG_FREE_IF_COPY(pgraster, 0);
+
+	if (err != ES_NONE) {
+		elog(ERROR, "RASTER_convex_hull: Could not get raster's convex hull");
+		PG_RETURN_NULL();
+	}
+	else if (hull == NULL) {
+		elog(NOTICE, "Raster's convex hull is NULL");
+		PG_RETURN_NULL();
+	}
+
+	gser = gserialized_from_lwgeom(hull, 0, &gser_size);
+	lwgeom_free(hull);
+
+	SET_VARSIZE(gser, gser_size);
+	PG_RETURN_POINTER(gser);
 }
-
 
 PG_FUNCTION_INFO_V1(RASTER_dumpAsPolygons);
 Datum RASTER_dumpAsPolygons(PG_FUNCTION_ARGS) {
@@ -16784,8 +16782,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 		arg->extenttype = ET_FIRST;
 
 	/* get intersection geometry of input raster and input geometry */
-	rastgeom = lwpoly_as_lwgeom(rt_raster_get_convex_hull(arg->raster));
-	if (rastgeom == NULL) {
+	if (rt_raster_get_convex_hull(arg->raster, &rastgeom) != ES_NONE) {
 		elog(ERROR, "RASTER_clip: Unable to get convex hull of raster");
 
 		rtpg_clip_arg_destroy(arg);
