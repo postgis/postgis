@@ -599,7 +599,7 @@
                     <note><para>Most deprecated functions have been removed.  These are functions that haven't been documented since 1.2
                         or some internal functions that were never documented.  If you are using a function that you don't see documented,
                         it's probably deprecated, about to be deprecated, or internal and should be avoided.  If you have applications or tools
-                        that rely on deprecated functions, please refer to <link linkend="legacy_faq" /> for more details.</para></note>
+                        that rely on deprecated functions, please refer to <xref linkend="legacy_faq" /> for more details.</para></note>
                     <note><para>Bounding boxes of geometries have been changed from float4 to double precision (float8).  This has an impact
                     	on answers you get using bounding box operators and casting of bounding boxes to geometries. E.g ST_SetSRID(abbox) will
                     	often return a different more accurate answer in PostGIS 2.0+ than it did in prior versions which may very well slightly
