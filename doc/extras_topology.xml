@@ -2602,7 +2602,7 @@ Converts a simple Geometry into a topo geometry
                 <title>Description</title>
             
                 <para>
-Converts a simple Geometry into a <xref linkend="topogeometry">TopoGeometry</xref>.
+Converts a simple Geometry into a <xref linkend="topogeometry" />.
                 </para>
 
                 <para>
@@ -2718,9 +2718,9 @@ SELECT ST_GetFaceGeometry('topo_boston_test', f.face_id)
                 <title>Description</title>
             
                 <para>
-Clears the content a <xref linkend="topogeometry">TopoGeometry</xref>
+Clears the content a <xref linkend="topogeometry" />
 turning it into an empty one. Mostly useful in conjunction with <xref
-linkend="toTopoGeom">toTopoGeom</xref> to replace the shape of existing
+linkend="toTopoGeom" /> to replace the shape of existing
 objects and any dependent object in higher hierarchical levels.
                 </para>
 
