@@ -98,6 +98,8 @@ PostGIS 2.1.0
     reference raster
   - #2119, Rasters passed to ST_Resample(), ST_Rescale(), ST_Reskew(),
     and ST_SnapToGrid() no longer require an SRID
+  - #2141, More verbose output when constraints fail to be added
+    to a raster column
 
 * Fixes *
 
