@@ -5,6 +5,10 @@ PostGIS 2.0.3
   - #2126, Better handling of empty rasters from ST_ConvexHull()
   - #2134, Make sure to process SRS before passing it off to GDAL functions
 
+ * Enhancements *
+  - #2141, More verbose output when constraints fail to be added
+    to a raster column
+
 PostGIS 2.0.2
 2012/12/03
 

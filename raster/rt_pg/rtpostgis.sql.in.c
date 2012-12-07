@@ -3545,7 +3545,9 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint(cn name, sql text)
 			WHEN duplicate_object THEN
 				RAISE NOTICE 'The constraint "%" already exists.  To replace the existing constraint, delete the constraint and call ApplyRasterConstraints again', cn;
 			WHEN OTHERS THEN
-				RAISE NOTICE 'Unable to add constraint "%"', cn;
+				RAISE NOTICE 'Unable to add constraint: %', cn;
+				RAISE NOTICE 'SQL used for failed constraint: %', sql;
+				RAISE NOTICE 'Returned error message: %', SQLERRM;
 				RETURN FALSE;
 		END;
 
