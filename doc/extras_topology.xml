@@ -2792,7 +2792,7 @@ UPDATE nei_topo SET topo = ST_Buffer(clearTopoGeom(topo), -10);
 			</refsection>
 		</refentry>
 
-    <refentry>
+    <refentry id="toTopoGeom_editor_proxy">
 			<refnamediv>
         <refname>toTopoGeom</refname>
 				<refpurpose>Adds a geometry shape to an existing topo geometry</refpurpose>
