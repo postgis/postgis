@@ -1540,7 +1540,13 @@ ptarray_segmentize_sphere(const POINTARRAY *pa_in, double max_seg_length)
 		
 		/* Skip duplicate points (except in case of 2-point lines!) */
 		if ( (pa_in->npoints > 2) && p4d_same(&p1, &p2) )
+		{
+			/* Move one offset forward */
+			p1 = p2;
+			g1 = g2;
+			pa_in_offset++;
 			continue;
+		}
 
 		/* How long is this edge? */
 		d = sphere_distance(&g1, &g2);
