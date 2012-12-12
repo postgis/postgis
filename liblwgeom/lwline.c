@@ -473,15 +473,26 @@ int lwline_count_vertices(LWLINE *line)
 LWLINE* lwline_simplify(const LWLINE *iline, double dist)
 {
 	LWLINE *oline;
+	POINTARRAY *opts;
 
 	LWDEBUG(2, "function called");
 
 	/* Skip empty case */
 	if( lwline_is_empty(iline) )
-		return lwline_clone(iline);
+		return NULL;
 		
 	static const int minvertices = 0; /* TODO: allow setting this */
-	oline = lwline_construct(iline->srid, NULL, ptarray_simplify(iline->points, dist, minvertices));
+	opts = ptarray_simplify(iline->points, dist, minvertices);
+
+	/* Less points than are needed to form a line, we can't use this */
+	if ( opts->npoints < 2 )
+	{
+			LWDEBUGF(3, "line skipped (% pts)", opts->npoints);
+			ptarray_free(opts);
+			return NULL;
+	}
+
+	oline = lwline_construct(iline->srid, NULL, opts);
 	oline->type = iline->type;
 	return oline;
 }

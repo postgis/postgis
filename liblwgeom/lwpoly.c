@@ -350,7 +350,7 @@ LWPOLY* lwpoly_simplify(const LWPOLY *ipoly, double dist)
 	LWDEBUGF(2, "simplify_polygon3d: simplifying polygon with %d rings", ipoly->nrings);
 
 	if( lwpoly_is_empty(ipoly) )
-		return opoly; /* should we return NULL instead ? */
+		return NULL;
 
 	for (i = 0; i < ipoly->nrings; i++)
 	{
