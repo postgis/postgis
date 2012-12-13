@@ -496,20 +496,15 @@ int lwcollection_count_vertices(LWCOLLECTION *col)
 LWCOLLECTION* lwcollection_simplify(const LWCOLLECTION *igeom, double dist)
 {
  	int i;
-	LWCOLLECTION *out = NULL;
+	LWCOLLECTION *out = lwcollection_construct_empty(igeom->type, igeom->srid, FLAGS_GET_Z(igeom->flags), FLAGS_GET_M(igeom->flags));
 
 	if( lwcollection_is_empty(igeom) )
-		return NULL;
+		return out; /* should we return NULL instead ? */
 
 	for( i = 0; i < igeom->ngeoms; i++ )
 	{
 		LWGEOM *ngeom = lwgeom_simplify(igeom->geoms[i], dist);
-		if ( ngeom ) {
-			if ( ! out ) {
-				out = lwcollection_construct_empty(igeom->type, igeom->srid, FLAGS_GET_Z(igeom->flags), FLAGS_GET_M(igeom->flags));
-			}
-			out = lwcollection_add_lwgeom(out, ngeom);
-		}
+		if ( ngeom ) out = lwcollection_add_lwgeom(out, ngeom);
 	}
 
 	return out;
