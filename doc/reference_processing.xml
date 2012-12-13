@@ -2355,6 +2355,9 @@ LINESTRING(241.42 38.38,241.8 38.45)
 
 		<para>Performed by the GEOS module.</para>
 		<para>Availability: 1.2.2</para>
+		<para>Changed: 2.0.0 -- the behavior of this function changed to be more consistent. This made  <ulink url="http://trac.osgeo.org/postgis/ticket/1987">some people unhappy</ulink>.</para>
+		<para>Changed: 2.0.2 -- the behavior of this function was changed back 1.5 behavior. This made people who liked the <ulink url="http://trac.osgeo.org/postgis/ticket/1987">newer more consistent behavior</ulink> so will
+		probably result in change back.</para>
 	  </refsection>
 
 		  <refsection>
