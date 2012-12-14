@@ -5305,6 +5305,16 @@ CREATE OR REPLACE FUNCTION st_iscoveragetile(rast raster, coverage raster, tilew
 			END IF;
 		END IF;
 
+		-- edge tile
+
+		-- edge tile may have same size as inner tile
+		IF 
+			(_rastmeta.width = tilewidth) AND
+			(_rastmeta.height = tileheight)
+		THEN
+			RETURN TRUE;
+		END IF;
+
 		-- get edge tile width and height
 		edge[0] := _covmeta.width - ((max[0] - 1) * tilewidth);
 		edge[1] := _covmeta.height - ((max[1] - 1) * tileheight);
