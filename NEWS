@@ -65,8 +65,11 @@ PostGIS 2.1.0
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 
            less greedy
+  - #826,  raster2pgsql no longer defaults to padding tiles. Flag -P
+           can be used to pad tiles
   - #1363, ST_AddBand(raster, ...) array version rewritten in C
   - #1364, ST_Union(raster, ...) aggregate function rewritten in C
+  - #1655, Additional default values for parameters of ST_Slope
   - #1661, Add aggregate variant of ST_SameAlignment
   - #1719, Add support for Point and GeometryCollection ST_MakeValid inputs
   - #1780, support ST_GeoHash for geography
@@ -82,6 +85,19 @@ PostGIS 2.1.0
   - #2021, Added multi-band support to ST_Union(raster, ...) aggregate function
   - #2006, better support of ST_Area(geography) over poles and dateline
   - #2065, ST_Clip(raster, ...) now a C function
+  - #2069, Added parameters to ST_Tile(raster) to control padding of tiles
+  - #2078, New variants of ST_Slope, ST_Aspect and ST_HillShade to provide
+           solution to handling tiles in a coverage
+  - #2097, Added RANGE uniontype option for ST_Union(raster)
+  - #2105, Added ST_Transform(raster) variant for aligning output to
+           reference raster
+  - #2119, Rasters passed to ST_Resample(), ST_Rescale(), ST_Reskew(),
+           and ST_SnapToGrid() no longer require an SRID
+  - #2141, More verbose output when constraints fail to be added
+           to a raster column
+  - #2143, Changed blocksize constraint of raster to allow multiple values
+  - #2148, Addition of coverage_tile constraint for raster
+  - #2149, Addition of spatially_unique constraint for raster
   - TopologySummary output now includes unregistered layers and a count
     of missing TopoGeometry objects from their natural layer.
   - ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional 
@@ -89,19 +105,7 @@ PostGIS 2.1.0
   - Point variant of ST_SetValue(raster) is now a wrapper around geomval 
     variant of ST_SetValues(rast).
   - Proper support for raster band's isnodata flag in core API and loader.
-  - #1655, Additional default values for parameters of ST_Slope
   - Additional default values for parameters of ST_Aspect and ST_HillShade
-  - #2078, New variants of ST_Slope, ST_Aspect and ST_HillShade to provide
-    solution to handling tiles in a coverage
-  - #2097, Added RANGE uniontype option for ST_Union(raster)
-  - #2105, Added ST_Transform(raster) variant for aligning output to
-    reference raster
-  - #2119, Rasters passed to ST_Resample(), ST_Rescale(), ST_Reskew(),
-    and ST_SnapToGrid() no longer require an SRID
-  - #2141, More verbose output when constraints fail to be added
-    to a raster column
-  - #2069, Added parameters to ST_Tile(raster) to control padding of tiles
-  - #2148, Addition of coverage_tile constraint for raster
 
 * Fixes *
 
