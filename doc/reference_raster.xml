@@ -452,7 +452,7 @@ VALUES (1,
 			<parameter>same_alignment=true</parameter></paramdef>
 			
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>regular_blocking=true</parameter></paramdef>
+			<parameter>regular_blocking=false</parameter></paramdef>
 			
 			<paramdef choice="opt"><type>boolean </type>
 			<parameter>num_bands=true</parameter></paramdef>
@@ -490,7 +490,7 @@ VALUES (1,
 
 			<listitem><para><varname>num_bands</varname> number of bands</para></listitem>
 			<listitem><para><varname>pixel_types</varname> reads array of pixel types for each band ensure all band n have same pixel type</para></listitem>
-			<listitem><para><varname>regular_blocking</varname> apply informational flag to denote all tiles are regularly blocked</para></listitem>
+			<listitem><para><varname>regular_blocking</varname> sets spatially unique (no two rasters can be spatially the same) and coverage tile (raster is aligned to a coverage) constraints</para></listitem>
 			<listitem><para><varname>same_alignment</varname> ensures they all have same alignment meaning any two tiles you compare will return true for. Refer to <xref linkend="RT_ST_SameAlignment" /></para></listitem>
 			<listitem><para><varname>srid</varname> ensures all have same srid</para></listitem>
 			<listitem><para>More -- any listed as inputs into the above functions</para></listitem>
@@ -539,8 +539,6 @@ SELECT ST_AddBand(ST_MakeEmptyRaster(1000, 1000, 0.3, -0.3, 2, 2, 0, 0,4326), 1,
 SELECT AddRasterConstraints('public'::name, 'myrasters2'::name, 'rast'::name,'regular_blocking', 'blocksize');
 -- get notice--
 NOTICE:  Adding regular blocking constraint
-INFO:  The regular_blocking constraint is just a flag indicating that the column "rast" is regularly blocked.  As no function exist yet to assert that a raster column is regularly blocked, it is up to the end-user to ensure that the column is truly regularly blocked.
-CONTEXT:  PL/pgSQL function "addrasterconstraints" line 85 at assignment
 NOTICE:  Adding blocksize-X constraint
 NOTICE:  Adding blocksize-Y constraint</programlisting>
 	  </refsection>
@@ -635,7 +633,7 @@ NOTICE:  Adding blocksize-Y constraint</programlisting>
 			<parameter>same_alignment=true</parameter></paramdef>
 			
 			<paramdef choice="opt"><type>boolean </type>
-			<parameter>regular_blocking=true</parameter></paramdef>
+			<parameter>regular_blocking=false</parameter></paramdef>
 			
 			<paramdef choice="opt"><type>boolean </type>
 			<parameter>num_bands=true</parameter></paramdef>

@@ -397,8 +397,8 @@ usage() {
 		"      if one or more rasters violate the constraint.\n"
 		"  -x  Disable setting the max extent constraint.  Only applied if\n"
 		"      -C flag is also used.\n"
-		"  -r  Set the regular blocking constraint.  Only applied if -C flag is\n"
-		"      also used.\n"
+		"  -r  Set the constraints (spatially unique and coverage tile) for\n"
+		"      regular blocking.  Only applied if -C flag is also used.\n"
 	));
 	printf(_(
 		"  -T <tablespace> Specify the tablespace for the new table.\n"
