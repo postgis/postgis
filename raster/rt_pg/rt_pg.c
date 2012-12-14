@@ -5444,6 +5444,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 		/* raster has bands */
 		numbands = rt_raster_get_num_bands(arg1->raster.raster); 
+		/*
 		if (!numbands) {
 			elog(NOTICE, "Raster provided has no bands");
 			rt_raster_destroy(arg1->raster.raster);
@@ -5452,6 +5453,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
+		*/
 
 		/* width (1) */
 		if (PG_ARGISNULL(1)) {
@@ -5492,7 +5494,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		}
 
 		/* nband, array (3) */
-		if (!PG_ARGISNULL(3)) {
+		if (numbands && !PG_ARGISNULL(3)) {
 			array = PG_GETARG_ARRAYTYPE_P(3);
 			etype = ARR_ELEMTYPE(array);
 			get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
@@ -5567,20 +5569,23 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		}
 		else {
 			arg1->numbands = numbands;
-			arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 
-			if (arg1->nbands == NULL) {
-				elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
-				rt_raster_destroy(arg1->raster.raster);
-				pfree(arg1);
-				PG_FREE_IF_COPY(pgraster, 0);
-				MemoryContextSwitchTo(oldcontext);
-				SRF_RETURN_DONE(funcctx);
-			}
+			if (numbands) {
+				arg1->nbands = palloc(sizeof(int) * arg1->numbands);
 
-			for (i = 0; i < arg1->numbands; i++) {
-				arg1->nbands[i] = i;
-				POSTGIS_RT_DEBUGF(4, "arg1->nbands[%d] = %d", arg1->nbands[i], i);
+				if (arg1->nbands == NULL) {
+					elog(ERROR, "RASTER_dumpValues: Unable to allocate memory for pixel values");
+					rt_raster_destroy(arg1->raster.raster);
+					pfree(arg1);
+					PG_FREE_IF_COPY(pgraster, 0);
+					MemoryContextSwitchTo(oldcontext);
+					SRF_RETURN_DONE(funcctx);
+				}
+
+				for (i = 0; i < arg1->numbands; i++) {
+					arg1->nbands[i] = i;
+					POSTGIS_RT_DEBUGF(4, "arg1->nbands[%d] = %d", arg1->nbands[i], i);
+				}
 			}
 		}
 
@@ -5706,7 +5711,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			elog(ERROR, "RASTER_tile: Unable to compute the coordinates of the upper-left corner of the output tile");
 			rt_raster_destroy(tile);
 			rt_raster_destroy(arg2->raster.raster);
-			pfree(arg2->nbands);
+			if (arg2->numbands) pfree(arg2->nbands);
 			pfree(arg2);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -5728,7 +5733,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				elog(ERROR, "RASTER_tile: Unable to get band %d from source raster", arg2->nbands[i] + 1);
 				rt_raster_destroy(tile);
 				rt_raster_destroy(arg2->raster.raster);
-				pfree(arg2->nbands);
+				if (arg2->numbands) pfree(arg2->nbands);
 				pfree(arg2);
 				SRF_RETURN_DONE(funcctx);
 			}
@@ -5759,7 +5764,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					elog(ERROR, "RASTER_tile: Unable to get newly added band from output tile");
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					pfree(arg2->nbands);
+					if (arg2->numbands) pfree(arg2->nbands);
 					pfree(arg2);
 					SRF_RETURN_DONE(funcctx);
 				}
@@ -5784,7 +5789,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 						elog(ERROR, "RASTER_tile: Unable to get pixel line from source raster");
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
-						pfree(arg2->nbands);
+						if (arg2->numbands) pfree(arg2->nbands);
 						pfree(arg2);
 						SRF_RETURN_DONE(funcctx);
 					}
@@ -5793,7 +5798,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 						elog(ERROR, "RASTER_tile: Unable to set pixel line of output tile");
 						rt_raster_destroy(tile);
 						rt_raster_destroy(arg2->raster.raster);
-						pfree(arg2->nbands);
+						if (arg2->numbands) pfree(arg2->nbands);
 						pfree(arg2);
 						SRF_RETURN_DONE(funcctx);
 					}
@@ -5815,7 +5820,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					elog(ERROR, "RASTER_tile: Unable to create new offline band for output tile");
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					pfree(arg2->nbands);
+					if (arg2->numbands) pfree(arg2->nbands);
 					pfree(arg2);
 					SRF_RETURN_DONE(funcctx);
 				}
@@ -5825,7 +5830,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 					rt_band_destroy(band);
 					rt_raster_destroy(tile);
 					rt_raster_destroy(arg2->raster.raster);
-					pfree(arg2->nbands);
+					if (arg2->numbands) pfree(arg2->nbands);
 					pfree(arg2);
 					SRF_RETURN_DONE(funcctx);
 				}
@@ -5836,7 +5841,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		rt_raster_destroy(tile);
 		if (!pgtile) {
 			rt_raster_destroy(arg2->raster.raster);
-			pfree(arg2->nbands);
+			if (arg2->numbands) pfree(arg2->nbands);
 			pfree(arg2);
 			SRF_RETURN_DONE(funcctx);
 		}
@@ -5847,7 +5852,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 	/* do when there is no more left */
 	else {
 		rt_raster_destroy(arg2->raster.raster);
-		pfree(arg2->nbands);
+		if (arg2->numbands) pfree(arg2->nbands);
 		pfree(arg2);
 		SRF_RETURN_DONE(funcctx);
 	}
