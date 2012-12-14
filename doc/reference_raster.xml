@@ -2738,13 +2738,13 @@ rastwidth
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>integer <function>ST_WorldToRasterCoord</function></funcdef>
+					<funcdef>record <function>ST_WorldToRasterCoord</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>geometry </type> <parameter>pt</parameter></paramdef>
 				  </funcprototype>
 				  
 				   <funcprototype>
-					<funcdef>integer <function>ST_WorldToRasterCoord</function></funcdef>
+					<funcdef>record <function>ST_WorldToRasterCoord</function></funcdef>
 					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>longitude</parameter></paramdef>
 					<paramdef><type>double precision </type> <parameter>latitude</parameter></paramdef>
