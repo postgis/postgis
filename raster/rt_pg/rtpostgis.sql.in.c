@@ -6231,7 +6231,12 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_scale(rastschema name, rastta
 CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, rasttable name, rastcolumn name, axis text)
 	RETURNS integer AS $$
 	SELECT
-		replace(replace(split_part(s.consrc, ' = ', 2), ')', ''), '(', '')::integer
+		CASE
+			WHEN strpos(s.consrc, 'ANY (ARRAY[') > 0 THEN
+				split_part((regexp_matches(s.consrc, E'ARRAY\\[(.*?){1}\\]'))[1], ',', 1)::integer
+			ELSE
+				replace(replace(split_part(s.consrc, '= ', 2), ')', ''), '(', '')::integer
+			END
 	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
 	WHERE n.nspname = $1
 		AND c.relname = $2
@@ -6240,7 +6245,7 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_blocksize(rastschema name, ra
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
 		AND a.attnum = ANY (s.conkey)
-		AND s.consrc LIKE '%st_' || $4 || '(% = %';
+		AND s.consrc LIKE '%st_' || $4 || '(%= %';
 	$$ LANGUAGE sql STABLE STRICT
   COST 100;
 
@@ -6250,7 +6255,8 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_blocksize(rastschema name, ras
 		fqtn text;
 		cn name;
 		sql text;
-		attr int;
+		attrset integer[];
+		attr integer;
 	BEGIN
 		IF lower($4) != 'width' AND lower($4) != 'height' THEN
 			RAISE EXCEPTION 'axis must be either "width" or "height"';
@@ -6268,9 +6274,12 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_blocksize(rastschema name, ras
 		sql := 'SELECT st_' || $4 || '('
 			|| quote_ident($3)
 			|| ') FROM ' || fqtn
-			|| ' LIMIT 1';
+			|| ' GROUP BY 1 ORDER BY count(*) DESC';
 		BEGIN
-			EXECUTE sql INTO attr;
+			attrset := ARRAY[]::integer[];
+			FOR attr IN EXECUTE sql LOOP
+				attrset := attrset || attr;
+			END LOOP;
 		EXCEPTION WHEN OTHERS THEN
 			RAISE NOTICE 'Unable to get the % of a sample raster', $4;
 			RETURN FALSE;
@@ -6280,7 +6289,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_blocksize(rastschema name, ras
 			|| ' ADD CONSTRAINT ' || quote_ident(cn)
 			|| ' CHECK (st_' || $4 || '('
 			|| quote_ident($3)
-			|| ') = ' || attr || ')';
+			|| ') IN (' || array_to_string(attrset, ',') || '))';
 		RETURN _add_raster_constraint(cn, sql);
 	END;
 	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
