@@ -112,7 +112,8 @@ TEST_SREL = \
 	rt_gist_relationships \
 	rt_intersects \
 	rt_samealignment \
-	rt_geos_relationships
+	rt_geos_relationships \
+	rt_iscoveragetile
 	
 TEST_BUGS = \
 	bug_test_car5 \
