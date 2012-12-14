@@ -6340,23 +6340,23 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_extent(rastschema name, rastta
 
 		cn := 'enforce_max_extent_' || $3;
 
-		sql := 'SELECT st_ashexewkb(st_convexhull(st_collect(st_convexhull('
+		sql := 'SELECT st_ashexewkb(st_union(st_convexhull('
 			|| quote_ident($3)
-			|| ')))) FROM '
+			|| '))) FROM '
 			|| fqtn;
 		BEGIN
 			EXECUTE sql INTO attr;
 		EXCEPTION WHEN OTHERS THEN
-			RAISE NOTICE 'Unable to get the extent of a sample raster. Attempting memory efficient (slower) approach';
+			RAISE NOTICE 'Unable to get the extent of the raster column. Attempting memory efficient (slower) approach';
 
-			sql := 'SELECT st_ashexewkb(st_convexhull(st_memunion(st_convexhull('
+			sql := 'SELECT st_ashexewkb(st_memunion(st_convexhull('
 				|| quote_ident($3)
-				|| ')))) FROM '
+				|| '))) FROM '
 				|| fqtn;
 			BEGIN
 				EXECUTE sql INTO attr;
 			EXCEPTION WHEN OTHERS THEN
-				RAISE NOTICE 'Still unable to get the extent of a sample raster. Cannot add extent constraint';
+				RAISE NOTICE 'Still unable to get the extent of the raster column. Cannot add extent constraint';
 				RETURN FALSE;
 			END;
 		END;
