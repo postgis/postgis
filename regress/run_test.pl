@@ -767,7 +767,7 @@ sub run_raster_loader_and_check_output
 		show_progress();
 
 		# Produce the output SQL file.
-		$cmd = "$RASTER2PGSQL $loader_options -C -f the_rast ${TEST}.tif $tblname > $outfile 2> $errfile";
+		$cmd = "$RASTER2PGSQL $loader_options ${TEST}.tif $tblname > $outfile 2> $errfile";
 		$rv = system($cmd);
 		
 		if ( $rv )

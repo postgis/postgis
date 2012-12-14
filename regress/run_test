@@ -480,7 +480,7 @@ run_raster_loader_and_check_output()
 		show_progress
 
 		# Produce the output SQL file.
-		${RASTER2PGSQL} $_loader_options -C -f the_rast ${TEST}.tif $_tblname \
+		${RASTER2PGSQL} $_loader_options ${TEST}.tif $_tblname \
 			> ${PGIS_REG_TMPDIR}/loader.out \
 			2> ${PGIS_REG_TMPDIR}/loader.err
 
