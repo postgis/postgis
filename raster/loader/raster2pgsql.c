@@ -351,6 +351,10 @@ usage() {
 		"      all rasters.\n"
 	));
 	printf(_(
+		"  -P Pad right-most and bottom-most tiles to guarantee that all tiles\n"
+		"     have the same width and height.\n"
+	));
+	printf(_(
 		"  -R  Register the raster as an out-of-db (filesystem) raster.  Provided\n"
 		"      raster should have absolute path to the file\n"
 	));
@@ -689,6 +693,7 @@ init_config(RTLOADERCFG *config) {
 	config->nband = NULL;
 	config->nband_count = 0;
 	memset(config->tile_size, 0, sizeof(int) * 2);
+	config->pad_tile = 0;
 	config->outdb = 0;
 	config->opt = 'c';
 	config->idx = 0;
@@ -1288,6 +1293,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 	VRTDatasetH hdsDst;
 	VRTSourcedRasterBandH hbandDst;
 	int tile_size[2] = {0};
+	int _tile_size[2] = {0};
 	int ntiles[2] = {1, 1};
 	int xtile = 0;
 	int ytile = 0;
@@ -1381,11 +1387,24 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 	/* tile overview */
 	/* each tile is a VRT with constraints set for just the data required for the tile */
 	for (ytile = 0; ytile < ntiles[1]; ytile++) {
+
+		/* edge y tile */
+		if (!config->pad_tile && ntiles[1] > 1 && (ytile + 1) == ntiles[1])
+			_tile_size[1] = dimOv[1] - (ytile * tile_size[1]);
+		else
+			_tile_size[1] = tile_size[1];
+
 		for (xtile = 0; xtile < ntiles[0]; xtile++) {
 			/*
 			char fn[100];
 			sprintf(fn, "/tmp/ovtile%d.vrt", (ytile * ntiles[0]) + xtile);
 			*/
+
+			/* edge x tile */
+			if (!config->pad_tile && ntiles[0] > 1 && (xtile + 1) == ntiles[0])
+				_tile_size[0] = dimOv[0] - (xtile * tile_size[0]);
+			else
+				_tile_size[0] = tile_size[0];
 
 			/* compute tile's upper-left corner */
 			GDALApplyGeoTransform(
@@ -1395,7 +1414,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 			);
 
 			/* create VRT dataset */
-			hdsDst = VRTCreate(tile_size[0], tile_size[1]);
+			hdsDst = VRTCreate(_tile_size[0], _tile_size[1]);
 			/*
 			GDALSetDescription(hdsDst, fn);
 			*/
@@ -1413,9 +1432,9 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 				VRTAddSimpleSource(
 					hbandDst, GDALGetRasterBand(hdsOv, j + 1),
 					xtile * tile_size[0], ytile * tile_size[1],
-					tile_size[0], tile_size[1],
+					_tile_size[0], _tile_size[1],
 					0, 0,
-					tile_size[0], tile_size[1],
+					_tile_size[0], _tile_size[1],
 					"near", VRT_NODATA_UNSET
 				);
 			}
@@ -1479,6 +1498,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 	int nband = 0;
 	int i = 0;
 	int ntiles[2] = {1, 1};
+	int _tile_size[2] = {0, 0};
 	int xtile = 0;
 	int ytile = 0;
 	double gt[6] = {0.};
@@ -1690,7 +1710,19 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 		/* each tile is a raster */
 		for (ytile = 0; ytile < ntiles[1]; ytile++) {
+			/* edge y tile */
+			if (!config->pad_tile && ntiles[1] > 1 && (ytile + 1) == ntiles[1])
+				_tile_size[1] = info->dim[1] - (ytile * info->tile_size[1]);
+			else
+				_tile_size[1] = info->tile_size[1];
+
 			for (xtile = 0; xtile < ntiles[0]; xtile++) {
+
+				/* edge x tile */
+				if (!config->pad_tile && ntiles[0] > 1 && (xtile + 1) == ntiles[0])
+					_tile_size[0] = info->dim[0] - (xtile * info->tile_size[0]);
+				else
+					_tile_size[0] = info->tile_size[0];
 
 				/* compute tile's upper-left corner */
 				GDALApplyGeoTransform(
@@ -1700,7 +1732,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				);
 
 				/* create raster object */
-				rast = rt_raster_new(info->tile_size[0], info->tile_size[1]);
+				rast = rt_raster_new(_tile_size[0], _tile_size[1]);
 				if (rast == NULL) {
 					rterror(_("convert_raster: Could not create raster"));
 					return 0;
@@ -1713,7 +1745,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				/* add bands */
 				for (i = 0; i < info->nband_count; i++) {
 					band = rt_band_new_offline(
-						info->tile_size[0], info->tile_size[1],
+						_tile_size[0], _tile_size[1],
 						info->bandtype[i],
 						info->hasnodata[i], info->nodataval[i],
 						info->nband[i] - 1,
@@ -1774,11 +1806,24 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 
 		/* each tile is a VRT with constraints set for just the data required for the tile */
 		for (ytile = 0; ytile < ntiles[1]; ytile++) {
+
+			/* edge y tile */
+			if (!config->pad_tile && ntiles[1] > 1 && (ytile + 1) == ntiles[1])
+				_tile_size[1] = info->dim[1] - (ytile * info->tile_size[1]);
+			else
+				_tile_size[1] = info->tile_size[1];
+
 			for (xtile = 0; xtile < ntiles[0]; xtile++) {
 				/*
 				char fn[100];
 				sprintf(fn, "/tmp/tile%d.vrt", (ytile * ntiles[0]) + xtile);
 				*/
+
+				/* edge x tile */
+				if (!config->pad_tile && ntiles[0] > 1 && (xtile + 1) == ntiles[0])
+					_tile_size[0] = info->dim[0] - (xtile * info->tile_size[0]);
+				else
+					_tile_size[0] = info->tile_size[0];
 
 				/* compute tile's upper-left corner */
 				GDALApplyGeoTransform(
@@ -1794,7 +1839,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				*/
 
 				/* create VRT dataset */
-				hdsDst = VRTCreate(info->tile_size[0], info->tile_size[1]);
+				hdsDst = VRTCreate(_tile_size[0], _tile_size[1]);
 				/*
   	 		GDALSetDescription(hdsDst, fn);
 				*/
@@ -1812,9 +1857,9 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 					VRTAddSimpleSource(
 						hbandDst, GDALGetRasterBand(hdsSrc, info->nband[i]),
 						xtile * info->tile_size[0], ytile * info->tile_size[1],
-						info->tile_size[0], info->tile_size[1],
+						_tile_size[0], _tile_size[1],
 						0, 0,
-						info->tile_size[0], info->tile_size[1],
+						_tile_size[0], _tile_size[1],
 						"near", VRT_NODATA_UNSET
 					);
 				}
@@ -2349,6 +2394,10 @@ main(int argc, char **argv) {
 					}
 				}
 			}
+		}
+		/* pad tiles */
+		else if (CSEQUAL(argv[i], "-P")) {
+			config->pad_tile = 1;
 		}
 		/* out-of-db raster */
 		else if (CSEQUAL(argv[i], "-R")) {

@@ -122,7 +122,8 @@ TEST_LOADER = \
 	loader/Basic \
 	loader/BasicCopy \
 	loader/Tiled10x10 \
-	loader/Tiled10x10Copy
+	loader/Tiled10x10Copy \
+	loader/Tiled8x8
 
 TESTS = $(TEST_FIRST) $(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
 		$(TEST_PROPS) $(TEST_BANDPROPS) \

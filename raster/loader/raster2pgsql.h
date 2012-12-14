@@ -103,6 +103,9 @@ typedef struct raster_loader_config {
 	/* tile size */
 	int tile_size[2];
 
+	/* pad tiles */
+	int pad_tile;
+
 	/* register raster as of out-of-db, 1 = yes, 0 = no (default) */
 	int outdb;
 
