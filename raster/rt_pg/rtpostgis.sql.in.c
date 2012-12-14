@@ -6581,6 +6581,84 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema n
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+CREATE OR REPLACE FUNCTION _raster_constraint_info_coverage_tile(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	SELECT
+		TRUE
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.consrc LIKE '%st_iscoveragetile(%';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_coverage_tile(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+
+		_scalex double precision;
+		_scaley double precision;
+		_skewx double precision;
+		_skewy double precision;
+		_tilewidth integer;
+		_tileheight integer;
+		_alignment boolean;
+
+		_covextent geometry;
+		_covrast raster;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_coverage_tile_' || $3;
+
+		-- metadata
+		BEGIN
+			sql := 'WITH foo AS (SELECT ST_Metadata(' || quote_ident($3) || ') AS meta, ST_ConvexHull(' || quote_ident($3) || ') AS hull FROM ' || fqtn || ') SELECT max((meta).scalex), max((meta).scaley), max((meta).skewx), max((meta).skewy), max((meta).width), max((meta).height), ST_Union(hull) FROM foo';
+			EXECUTE sql INTO _scalex, _scaley, _skewx, _skewy, _tilewidth, _tileheight, _covextent;
+		EXCEPTION WHEN OTHERS THEN
+		END;
+
+		-- rasterize extent
+		BEGIN
+			_covrast := ST_AsRaster(_covextent, _scalex, _scaley, '8BUI', 1, 0, NULL, NULL, _skewx, _skewy);
+			IF _covrast IS NULL THEN
+				RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint';
+				RETURN FALSE;
+			END IF;
+
+			-- remove band
+			_covrast := ST_MakeEmptyRaster(_covrast);
+		EXCEPTION WHEN OTHERS THEN
+			RAISE NOTICE 'Unable to create coverage raster. Cannot add coverage tile constraint';
+			RETURN FALSE;
+		END;
+
+		sql := 'ALTER TABLE ' || fqtn ||
+			' ADD CONSTRAINT ' || quote_ident(cn) ||
+			' CHECK (st_iscoveragetile(' || quote_ident($3) || ', ''' || _covrast || '''::raster, ' || _tilewidth || ', ' || _tileheight || '))';
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_coverage_tile(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_coverage_tile_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
 CREATE OR REPLACE FUNCTION _raster_constraint_info_regular_blocking(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean
 	AS $$

@@ -100,6 +100,8 @@ PostGIS 2.1.0
     and ST_SnapToGrid() no longer require an SRID
   - #2141, More verbose output when constraints fail to be added
     to a raster column
+  - #2069, Added parameters to ST_Tile(raster) to control padding of tiles
+  - #2148, Addition of coverage_tile constraint for raster
 
 * Fixes *
 
