@@ -13167,7 +13167,8 @@ Datum RASTER_sameAlignment(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	if (reason != NULL)
+	/* only output reason if not aligned */
+	if (reason != NULL && !aligned)
 		elog(NOTICE, "%s", reason);
 
 	PG_RETURN_BOOL(aligned);
