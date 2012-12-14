@@ -3,29 +3,33 @@ PostGIS 2.1.0
 
 * Important / Breaking Changes  *
 
+  - #1653, Removed srid parameter from ST_Resample(raster) and variants
+           with reference raster no longer apply reference raster's SRID.
+  - #2026, ST_Union(raster) now unions all bands of all rasters
+  - #2150, regular_blocking is no longer a constraint. column of same name
+           in raster_columns now checks for existance of spatially_unique
+           and coverage_tile constraints
   - ST_Intersects(raster, geometry) behaves in the same manner as
     ST_Intersects(geometry, raster).
-  - #2026, ST_Union(raster) now unions all bands of all rasters
   - point variant of ST_SetValue(raster) previously did not check SRID
     of input geometry and raster.
   - ST_Hillshade parameters azimuth and altitude are now in degrees
     instead of radians.
   - ST_Slope and ST_Aspect return pixel values in degrees instead of radians.
-  - #1653, Removed srid parameter from ST_Resample(raster) and variants
-    with reference raster no longer apply reference raster's SRID.
 
 * Deprecated signatures
 
+  - #2104, ST_World2RasterCoord, ST_World2RasterCoordX and
+           ST_World2RasterCoordY renamed to ST_WorldToRasterCoord,
+           ST_WorldToRasterCoordX and ST_WorldToRasterCoordY.
+           ST_Raster2WorldCoord, ST_Raster2WorldCoordX and
+           ST_Raster2WorldCoordY renamed to ST_RasterToWorldCoord,
+           ST_RasterToWorldCoordX and ST_RasterToWorldCoordY
   - ST_Estimated_Extent renamed to ST_EstimatedExtent
   - ST_MapAlgebraFctNgb and 1 and 2 raster variants of ST_MapAlgebraFct.
     Use ST_MapAlgebra instead
   - 1 and 2 raster variants of ST_MapAlgebraExpr.
     Use expression variants of ST_MapAlgebra instead
-  - #2104, ST_World2RasterCoord, ST_World2RasterCoordX and
-    ST_World2RasterCoordY renamed to ST_WorldToRasterCoord,
-    ST_WorldToRasterCoordX and ST_WorldToRasterCoordY. ST_Raster2WorldCoord,
-    ST_Raster2WorldCoordX and ST_Raster2WorldCoordY renamed to
-    ST_RasterToWorldCoord, ST_RasterToWorldCoordX and ST_RasterToWorldCoordY
 
 * New Features *
 

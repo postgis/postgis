@@ -481,3 +481,5 @@ DROP FUNCTION IF EXISTS st_tile(raster, integer[], integer, integer);
 DROP FUNCTION IF EXISTS st_tile(raster, integer, integer, integer);
 DROP FUNCTION IF EXISTS st_tile(raster, integer, integer);
 
+-- function no longer exists
+DROP FUNCTION IF EXISTS _add_raster_constraint_regular_blocking(name, name, name);

@@ -16,9 +16,11 @@ SET client_min_messages TO warning;
 -----------------------------------------------------------------------
 
 -- Check table exists
-SELECT c.relname FROM pg_class c, pg_views v
-  WHERE c.relname = v.viewname
-    AND v.viewname = 'raster_columns';
+SELECT
+	c.relname
+FROM pg_class c, pg_views v
+WHERE c.relname = v.viewname
+	AND v.viewname = 'raster_columns';
 
 -----------------------------------------------------------------------
 --- Test AddRasterConstraints and DropRasterConstraints
@@ -79,6 +81,29 @@ SELECT AddRasterConstraints('test_raster_columns', 'rast', FALSE, TRUE, TRUE, FA
 SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
 SELECT DropRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'scale'::text);
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
+
+SELECT DropRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name);
+DELETE FROM test_raster_columns;
+
+-- regular_blocking
+
+SELECT make_test_raster(1, 3, 3, 0, 0);
+SELECT make_test_raster(2, 3, 3, 3, 0);
+SELECT make_test_raster(3, 3, 3, 0, 3);
+SELECT make_test_raster(4, 3, 3, 3, 3);
+
+SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name);
+SELECT AddRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'regular_blocking');
+SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
+
+-- spatially unique, this should fail 
+SELECT make_test_raster(0, 3, 3, 0, 0);
+
+-- coverage tile, this should fail
+SELECT make_test_raster(0, 3, 3, 1, 0);
+
+SELECT DropRasterConstraints(current_schema(), 'test_raster_columns', 'rast'::name, 'regular_blocking');
 SELECT r_table_name, r_raster_column, srid, scale_x, scale_y, blocksize_x, blocksize_y, same_alignment, regular_blocking, num_bands, pixel_types, nodata_values, ST_AsEWKT(extent) FROM raster_columns WHERE r_table_name = 'test_raster_columns';
 
 DROP FUNCTION make_test_raster(integer, integer, integer, double precision, double precision, double precision, double precision, double precision, double precision);

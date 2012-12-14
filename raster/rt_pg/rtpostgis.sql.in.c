@@ -6552,15 +6552,19 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_spatially_unique(rastschema n
 	RETURNS boolean AS $$
 	SELECT
 		TRUE
-	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s, pg_index idx, pg_operator op
 	WHERE n.nspname = $1
 		AND c.relname = $2
 		AND a.attname = $3
 		AND a.attrelid = c.oid
 		AND s.connamespace = n.oid
 		AND s.conrelid = c.oid
-		AND a.attnum = ANY (s.conkey)
-		AND s.contype = 'u';
+		AND s.contype = 'x'
+		AND 0::smallint = ANY (s.conkey)
+		AND idx.indexrelid = s.conindid
+		AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::geometry)'
+		AND s.conexclop[1] = op.oid
+		AND op.oprname = '=';
 	$$ LANGUAGE sql STABLE STRICT
   COST 100;
 
@@ -6677,48 +6681,20 @@ CREATE OR REPLACE FUNCTION _raster_constraint_info_regular_blocking(rastschema n
 	RETURNS boolean
 	AS $$
 	DECLARE
-		cn text;
-		sql text;
-		rtn boolean;
+		covtile boolean;
+		spunique boolean;
 	BEGIN
-		cn := 'enforce_regular_blocking_' || $3;
+		-- check existance of constraints
+		-- coverage tile constraint
+		covtile := COALESCE(_raster_constraint_info_coverage_tile($1, $2, $3), FALSE);
 
-		sql := 'SELECT TRUE FROM pg_class c, pg_namespace n, pg_constraint s'
-			|| ' WHERE n.nspname = ' || quote_literal($1)
-			|| ' AND c.relname = ' || quote_literal($2)
-			|| ' AND s.connamespace = n.oid AND s.conrelid = c.oid'
-			|| ' AND s.conname = ' || quote_literal(cn);
-		EXECUTE sql INTO rtn;
-		RETURN rtn;
+		-- spatially unique constraint
+		spunique := COALESCE(_raster_constraint_info_spatially_unique($1, $2, $3), FALSE);
+
+		RETURN (covtile AND spunique);
 	END;
 	$$ LANGUAGE 'plpgsql' STABLE STRICT
   COST 100;
-
-CREATE OR REPLACE FUNCTION _add_raster_constraint_regular_blocking(rastschema name, rasttable name, rastcolumn name)
-	RETURNS boolean AS $$
-	DECLARE
-		fqtn text;
-		cn name;
-		sql text;
-	BEGIN
-
-		RAISE INFO 'The regular_blocking constraint is just a flag indicating that the column "%" is regularly blocked.  It is up to the end-user to ensure that the column is truely regularly blocked.', quote_ident($3);
-
-		fqtn := '';
-		IF length($1) > 0 THEN
-			fqtn := quote_ident($1) || '.';
-		END IF;
-		fqtn := fqtn || quote_ident($2);
-
-		cn := 'enforce_regular_blocking_' || $3;
-
-		sql := 'ALTER TABLE ' || fqtn
-			|| ' ADD CONSTRAINT ' || quote_ident(cn)
-			|| ' CHECK (TRUE)';
-		RETURN _add_raster_constraint(cn, sql);
-	END;
-	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
-	COST 100;
 
 CREATE OR REPLACE FUNCTION _drop_raster_constraint_regular_blocking(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean AS
@@ -7114,8 +7090,12 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 						RAISE NOTICE 'Adding alignment constraint';
 						rtn := _add_raster_constraint_alignment(schema, $2, $3);
 					WHEN kw IN ('regular_blocking', 'regularblocking') THEN
-						RAISE NOTICE 'Adding regular blocking constraint';
-						rtn := _add_raster_constraint_regular_blocking(schema, $2, $3);
+						RAISE NOTICE 'Adding coverage tile constraint required for regular blocking';
+						rtn := _add_raster_constraint_coverage_tile(schema, $2, $3);
+						IF rtn IS NOT FALSE THEN
+							RAISE NOTICE 'Adding spatially unique constraint required for regular blocking';
+							rtn := _add_raster_constraint_spatially_unique(schema, $2, $3);
+						END IF;
 					WHEN kw IN ('num_bands', 'numbands') THEN
 						RAISE NOTICE 'Adding number of bands constraint';
 						rtn := _add_raster_constraint_num_bands(schema, $2, $3);
@@ -7354,8 +7334,15 @@ CREATE OR REPLACE FUNCTION DropRasterConstraints (
 						RAISE NOTICE 'Dropping alignment constraint';
 						rtn := _drop_raster_constraint_alignment(schema, $2, $3);
 					WHEN kw IN ('regular_blocking', 'regularblocking') THEN
-						RAISE NOTICE 'Dropping regular blocking constraint';
 						rtn := _drop_raster_constraint_regular_blocking(schema, $2, $3);
+
+						RAISE NOTICE 'Dropping coverage tile constraint required for regular blocking';
+						rtn := _drop_raster_constraint_coverage_tile(schema, $2, $3);
+
+						IF rtn IS NOT FALSE THEN
+							RAISE NOTICE 'Dropping spatially unique constraint required for regular blocking';
+							rtn := _drop_raster_constraint_spatially_unique(schema, $2, $3);
+						END IF;
 					WHEN kw IN ('num_bands', 'numbands') THEN
 						RAISE NOTICE 'Dropping number of bands constraint';
 						rtn := _drop_raster_constraint_num_bands(schema, $2, $3);
