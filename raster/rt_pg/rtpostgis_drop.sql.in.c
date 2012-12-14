@@ -474,3 +474,10 @@ DROP FUNCTION IF EXISTS _st_resample(raster, text, double precision, integer, do
 -- function signatures changed
 DROP FUNCTION IF EXISTS st_resample(raster, integer, double precision, double precision, double precision, double precision, double precision, double precision, text, double precision);
 DROP FUNCTION IF EXISTS st_resample(raster, integer, integer, integer, double precision, double precision, double precision, double precision, text, double precision);
+
+-- function signatures changed
+DROP FUNCTION IF EXISTS _st_tile(raster, integer, integer, int[]);
+DROP FUNCTION IF EXISTS st_tile(raster, integer[], integer, integer);
+DROP FUNCTION IF EXISTS st_tile(raster, integer, integer, integer);
+DROP FUNCTION IF EXISTS st_tile(raster, integer, integer);
+

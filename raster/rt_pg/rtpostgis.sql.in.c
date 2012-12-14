@@ -4365,7 +4365,8 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
 CREATE OR REPLACE FUNCTION _st_tile(
 	rast raster,
 	width integer, height integer,
-	nband int[] DEFAULT NULL
+	nband integer[] DEFAULT NULL,
+	padwithnodata boolean DEFAULT FALSE, nodataval double precision DEFAULT NULL
 )
 	RETURNS SETOF raster
 	AS 'MODULE_PATHNAME','RASTER_tile'
@@ -4373,26 +4374,29 @@ CREATE OR REPLACE FUNCTION _st_tile(
 
 CREATE OR REPLACE FUNCTION st_tile(
 	rast raster, nband integer[],
-	width integer, height integer
+	width integer, height integer,
+	padwithnodata boolean DEFAULT FALSE, nodataval double precision DEFAULT NULL
 )
 	RETURNS SETOF raster
-	AS $$ SELECT _st_tile($1, $3, $4, $2) $$
+	AS $$ SELECT _st_tile($1, $3, $4, $2, $5, $6) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_tile(
 	rast raster, nband integer,
-	width integer, height integer
+	width integer, height integer,
+	padwithnodata boolean DEFAULT FALSE, nodataval double precision DEFAULT NULL
 )
 	RETURNS SETOF raster
-	AS $$ SELECT _st_tile($1, $3, $4, ARRAY[$2]::integer[]) $$
+	AS $$ SELECT _st_tile($1, $3, $4, ARRAY[$2]::integer[], $5, $6) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION st_tile(
 	rast raster,
-	width integer, height integer
+	width integer, height integer,
+	padwithnodata boolean DEFAULT FALSE, nodataval double precision DEFAULT NULL
 )
 	RETURNS SETOF raster
-	AS $$ SELECT _st_tile($1, $2, $3, NULL::integer[]) $$
+	AS $$ SELECT _st_tile($1, $2, $3, NULL::integer[], $4, $5) $$
 	LANGUAGE 'sql' IMMUTABLE;
 
 -----------------------------------------------------------------------

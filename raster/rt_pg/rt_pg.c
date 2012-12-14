@@ -5383,6 +5383,12 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 
 		int numbands;
 		int *nbands;
+
+		struct {
+			int pad;
+			double hasnodata;
+			double nodataval;
+		} pad;
 	};
 	struct tile_arg_t *arg1 = NULL;
 	struct tile_arg_t *arg2 = NULL;
@@ -5578,6 +5584,25 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			}
 		}
 
+		/* pad (4) and padnodata (5) */
+		if (!PG_ARGISNULL(4)) {
+			arg1->pad.pad = PG_GETARG_BOOL(4) ? 1 : 0;
+
+			if (arg1->pad.pad && !PG_ARGISNULL(5)) {
+				arg1->pad.hasnodata = 1;
+				arg1->pad.nodataval = PG_GETARG_FLOAT8(5);
+			}
+			else {
+				arg1->pad.hasnodata = 0;
+				arg1->pad.nodataval = 0;
+			}
+		}
+		else {
+			arg1->pad.pad = 0;
+			arg1->pad.hasnodata = 0;
+			arg1->pad.nodataval = 0;
+		}
+
 		/* store some additional metadata */
 		arg1->raster.srid = rt_raster_get_srid(arg1->raster.raster);
 		arg1->raster.width = rt_raster_get_width(arg1->raster.raster);
@@ -5614,12 +5639,16 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		rt_pixtype pixtype = PT_END;
 		int hasnodata = 0;
 		double nodataval = 0;
+		int width = 0;
+		int height = 0;
 
 		int k = 0;
 		int tx = 0;
 		int ty = 0;
 		int rx = 0;
 		int ry = 0;
+		int ex = 0; /* edge tile on right */
+		int ey = 0; /* edge tile on bottom */
 		double ulx = 0;
 		double uly = 0;
 		uint16_t len = 0;
@@ -5627,11 +5656,6 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		uint16_t nvals;
 
 		POSTGIS_RT_DEBUGF(3, "call number %d", call_cntr);
-
-		/* create empty raster */
-		tile = rt_raster_new(arg2->tile.width, arg2->tile.height);
-		rt_raster_set_geotransform_matrix(tile, arg2->raster.gt);
-		rt_raster_set_srid(tile, arg2->raster.srid);
 
 		/*
 			find offset based upon tile #
@@ -5644,10 +5668,40 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 		tx = call_cntr % arg2->tile.nx;
 		POSTGIS_RT_DEBUGF(4, "tile (x, y) = (%d, %d)", tx, ty);
 
-		/* upper-left of tile */
+		/* edge tile? only important if padding is false */
+		if (!arg2->pad.pad) {
+			if (ty + 1 == arg2->tile.ny)
+				ey = 1;
+			if (tx + 1 == arg2->tile.nx)
+				ex = 1;
+		}
+
+		/* upper-left of tile in raster coordinates */
 		rx = tx * arg2->tile.width;
 		ry = ty * arg2->tile.height;
 		POSTGIS_RT_DEBUGF(4, "raster coordinates = %d, %d", rx, ry);
+
+		/* determine tile width and height */
+		/* default to user-defined */
+		width = arg2->tile.width;
+		height = arg2->tile.height;
+
+		/* override user-defined if edge tile (only possible if padding is false */
+		if (ex || ey) {
+			/* right edge */
+			if (ex)
+				width = arg2->raster.width - rx;
+			/* bottom edge */
+			if (ey)
+				height = arg2->raster.height - ry;
+		}
+
+		/* create empty raster */
+		tile = rt_raster_new(width, height);
+		rt_raster_set_geotransform_matrix(tile, arg2->raster.gt);
+		rt_raster_set_srid(tile, arg2->raster.srid);
+
+		/* upper-left of tile in spatial coordinates */
 		if (rt_raster_cell_to_geopoint(arg2->raster.raster, rx, ry, &ulx, &uly, arg2->raster.gt) != ES_NONE) {
 			elog(ERROR, "RASTER_tile: Unable to compute the coordinates of the upper-left corner of the output tile");
 			rt_raster_destroy(tile);
@@ -5656,14 +5710,14 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			pfree(arg2);
 			SRF_RETURN_DONE(funcctx);
 		}
-		POSTGIS_RT_DEBUGF(4, "spatial coordinates = %f, %f", ulx, uly);
 		rt_raster_set_offsets(tile, ulx, uly);
+		POSTGIS_RT_DEBUGF(4, "spatial coordinates = %f, %f", ulx, uly);
 
 		/* compute length of pixel line to read */
 		len = arg2->tile.width;
 		if (rx + arg2->tile.width >= arg2->raster.width)
 			len = arg2->raster.width - rx;
-		POSTGIS_RT_DEBUGF(3, "len = %d", len);
+		POSTGIS_RT_DEBUGF(3, "read line len = %d", len);
 
 		/* copy bands to tile */
 		for (i = 0; i < arg2->numbands; i++) {
@@ -5683,6 +5737,10 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 			hasnodata = rt_band_get_hasnodata_flag(_band);
 			if (hasnodata)
 				rt_band_get_nodata(_band, &nodataval);
+			else if (arg2->pad.pad && arg2->pad.hasnodata) {
+				hasnodata = 1;
+				nodataval = arg2->pad.nodataval;
+			}
 			else
 				nodataval = rt_band_get_min_value(_band);
 

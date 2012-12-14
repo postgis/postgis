@@ -1633,6 +1633,8 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 						<paramdef><type>int[] </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>padwithnodata=FALSE</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -1641,6 +1643,8 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>padwithnodata=FALSE</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 					</funcprototype>
 
 					<funcprototype>
@@ -1648,6 +1652,8 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>width</parameter></paramdef>
 						<paramdef><type>integer </type> <parameter>height</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>padwithnodata=FALSE</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>nodataval=NULL</parameter></paramdef>
 					</funcprototype>
 
 				</funcsynopsis>
@@ -1658,6 +1664,10 @@ FROM (SELECT rid, ST_MetaData(rast) As md
 
 				<para>
 					Returns a set of rasters resulting from the split of the input raster based upon the desired dimensions of the output rasters.
+				</para>
+
+				<para>
+					If <varname>padwithnodata</varname> = FALSE, edge tiles on the right and bottom sides of the raster may have different dimensions than the rest of the tiles. If <varname>padwithnodata</varname> = TRUE, all tiles will have the same dimensions with the possibilty that edge tiles being padded with NODATA values.  If raster band(s) do not have NODATA value(s) specified, one can be specified by setting <varname>nodataval</varname>.
 				</para>
 
 				<note>
@@ -1688,7 +1698,7 @@ WITH foo AS (
 ), bar AS (
 	SELECT ST_Union(rast) AS rast FROM foo
 ), baz AS (
-	SELECT ST_Tile(rast, 3, 3) AS rast FROM bar
+	SELECT ST_Tile(rast, 3, 3, TRUE) AS rast FROM bar
 )
 SELECT
 	ST_DumpValues(rast)
