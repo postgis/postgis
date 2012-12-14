@@ -6433,6 +6433,53 @@ CREATE OR REPLACE FUNCTION _drop_raster_constraint_alignment(rastschema name, ra
 	LANGUAGE 'sql' VOLATILE STRICT
 	COST 100;
 
+CREATE OR REPLACE FUNCTION _raster_constraint_info_spatially_unique(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	SELECT
+		TRUE
+	FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s
+	WHERE n.nspname = $1
+		AND c.relname = $2
+		AND a.attname = $3
+		AND a.attrelid = c.oid
+		AND s.connamespace = n.oid
+		AND s.conrelid = c.oid
+		AND a.attnum = ANY (s.conkey)
+		AND s.contype = 'u';
+	$$ LANGUAGE sql STABLE STRICT
+  COST 100;
+
+CREATE OR REPLACE FUNCTION _add_raster_constraint_spatially_unique(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS $$
+	DECLARE
+		fqtn text;
+		cn name;
+		sql text;
+		attr text;
+		meta record;
+	BEGIN
+		fqtn := '';
+		IF length($1) > 0 THEN
+			fqtn := quote_ident($1) || '.';
+		END IF;
+		fqtn := fqtn || quote_ident($2);
+
+		cn := 'enforce_spatially_unique_' || $3;
+
+		sql := 'ALTER TABLE ' || fqtn ||
+			' ADD CONSTRAINT ' || quote_ident(cn) ||
+			' EXCLUDE ((' || quote_ident($3) || '::geometry) WITH =)';
+		RETURN _add_raster_constraint(cn, sql);
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
+	COST 100;
+
+CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema name, rasttable name, rastcolumn name)
+	RETURNS boolean AS
+	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_spatially_unique_' || $3) $$
+	LANGUAGE 'sql' VOLATILE STRICT
+	COST 100;
+
 CREATE OR REPLACE FUNCTION _raster_constraint_info_regular_blocking(rastschema name, rasttable name, rastcolumn name)
 	RETURNS boolean
 	AS $$
@@ -6934,7 +6981,7 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 	blocksize_x boolean DEFAULT TRUE,
 	blocksize_y boolean DEFAULT TRUE,
 	same_alignment boolean DEFAULT TRUE,
-	regular_blocking boolean DEFAULT FALSE, -- false as regular_blocking is not a usable constraint
+	regular_blocking boolean DEFAULT FALSE, -- false as regular_blocking is an enhancement
 	num_bands boolean DEFAULT TRUE,
 	pixel_types boolean DEFAULT TRUE,
 	nodata_values boolean DEFAULT TRUE,
@@ -7008,7 +7055,7 @@ CREATE OR REPLACE FUNCTION AddRasterConstraints (
 	blocksize_x boolean DEFAULT TRUE,
 	blocksize_y boolean DEFAULT TRUE,
 	same_alignment boolean DEFAULT TRUE,
-	regular_blocking boolean DEFAULT FALSE, -- false as regular_blocking is not a usable constraint
+	regular_blocking boolean DEFAULT FALSE, -- false as regular_blocking is an enhancement
 	num_bands boolean DEFAULT TRUE,
 	pixel_types boolean DEFAULT TRUE,
 	nodata_values boolean DEFAULT TRUE,
