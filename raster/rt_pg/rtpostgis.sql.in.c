@@ -5237,6 +5237,107 @@ CREATE OR REPLACE FUNCTION st_notsamealignmentreason(rast1 raster, rast2 raster)
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_IsCoverageTile
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION st_iscoveragetile(rast raster, coverage raster, tilewidth integer, tileheight integer)
+	RETURNS boolean
+	AS $$
+	DECLARE
+		_rastmeta record;
+		_covmeta record;
+		cr record;
+		max integer[];
+		tile integer[];
+		edge integer[];
+	BEGIN
+		IF NOT ST_SameAlignment(rast, coverage) THEN
+			RAISE NOTICE 'Raster and coverage are not aligned';
+			RETURN FALSE;
+		END IF;
+
+		_rastmeta := ST_Metadata(rast);
+		_covmeta := ST_Metadata(coverage);
+
+		-- get coverage grid coordinates of upper-left of rast
+		cr := ST_WorldToRasterCoord(coverage, _rastmeta.upperleftx, _rastmeta.upperlefty);
+
+		-- rast is not part of coverage
+		IF
+			(cr.columnx < 1 OR cr.columnx > _covmeta.width) OR
+			(cr.rowy < 1 OR cr.rowy > _covmeta.height)
+		THEN
+			RAISE NOTICE 'Raster is not in the coverage';
+			RETURN FALSE;
+		END IF;
+
+		-- rast isn't on the coverage's grid
+		IF
+			((cr.columnx - 1) % tilewidth != 0) OR
+			((cr.rowy - 1) % tileheight != 0)
+		THEN
+			RAISE NOTICE 'Raster is not aligned to tile grid of coverage';
+			RETURN FALSE;
+		END IF;
+
+		-- max # of tiles on X and Y for coverage
+		max[0] := ceil(_covmeta.width::double precision / tilewidth::double precision)::integer;
+		max[1] := ceil(_covmeta.height::double precision / tileheight::double precision)::integer;
+
+		-- tile # of rast in coverge
+		tile[0] := (cr.columnx / tilewidth) + 1;
+		tile[1] := (cr.rowy / tileheight) + 1;
+
+		-- inner tile
+		IF tile[0] < max[0] AND tile[1] < max[1] THEN
+			IF
+				(_rastmeta.width != tilewidth) OR
+				(_rastmeta.height != tileheight)
+			THEN
+				RAISE NOTICE 'Raster width/height is invalid for interior tile of coverage';
+				RETURN FALSE;
+			ELSE
+				RETURN TRUE;
+			END IF;
+		END IF;
+
+		-- get edge tile width and height
+		edge[0] := _covmeta.width - ((max[0] - 1) * tilewidth);
+		edge[1] := _covmeta.height - ((max[1] - 1) * tileheight);
+
+		-- edge tile not of expected tile size
+		-- right and bottom
+		IF tile[0] = max[0] AND tile[1] = max[1] THEN
+			IF
+				_rastmeta.width != edge[0] OR
+				_rastmeta.height != edge[1]
+			THEN
+				RAISE NOTICE 'Raster width/height is invalid for right-most AND bottom-most tile of coverage';
+				RETURN FALSE;
+			END IF;
+		ELSEIF tile[0] = max[0] THEN
+			IF
+				_rastmeta.width != edge[0] OR
+				_rastmeta.height != tileheight
+			THEN
+				RAISE NOTICE 'Raster width/height is invalid for right-most tile of coverage';
+				RETURN FALSE;
+			END IF;
+		ELSE
+			IF
+				_rastmeta.width != tilewidth OR
+				_rastmeta.height != edge[1]
+			THEN
+				RAISE NOTICE 'Raster width/height is invalid for bottom-most tile of coverage';
+				RETURN FALSE;
+			END IF;
+		END IF;
+
+		RETURN TRUE;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- ST_Intersects(raster, raster)
 -----------------------------------------------------------------------
 
