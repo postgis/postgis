@@ -1152,6 +1152,7 @@ add_raster_constraints(
 	char *sql = NULL;
 	uint32_t len = 0;
 
+	char *_tmp = NULL;
 	char *_schema = NULL;
 	char *_table = NULL;
 	char *_column = NULL;
@@ -1159,13 +1160,25 @@ add_raster_constraints(
 	assert(table != NULL);
 	assert(column != NULL);
 
+	/* schema */
 	if (schema != NULL) {
-		char *tmp = chartrim(schema, ".");
-		_schema = chartrim(tmp, "\"");
-		rtdealloc(tmp);
+		_tmp = chartrim(schema, ".");
+		_schema = chartrim(_tmp, "\"");
+		rtdealloc(_tmp);
+		_tmp = strreplace(_schema, "'", "''", NULL);
+		rtdealloc(_schema);
+		_schema = _tmp;
 	}
-	_table = chartrim(table, "\"");
-	_column = chartrim(column, "\"");
+
+	/* table */
+	_tmp = chartrim(table, "\"");
+	_table = strreplace(_tmp, "'", "''", NULL);
+	rtdealloc(_tmp);
+
+	/* column */
+	_tmp = chartrim(column, "\"");
+	_column = strreplace(_tmp, "'", "''", NULL);
+	rtdealloc(_tmp);
 
 	len = strlen("SELECT AddRasterConstraints('','','',TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE);") + 1;
 	if (_schema != NULL)
@@ -1207,6 +1220,8 @@ add_overview_constraints(
 	char *sql = NULL;
 	uint32_t len = 0;
 
+	char *_tmp = NULL;
+
 	char *_ovschema = NULL;
 	char *_ovtable = NULL;
 	char *_ovcolumn = NULL;
@@ -1221,21 +1236,45 @@ add_overview_constraints(
 	assert(column != NULL);
 	assert(factor >= MINOVFACTOR && factor <= MAXOVFACTOR);
 
+	/* overview schema */
 	if (ovschema != NULL) {
-		char *tmp = chartrim(ovschema, ".");
-		_ovschema = chartrim(tmp, "\"");
-		rtdealloc(tmp);
+		_tmp = chartrim(ovschema, ".");
+		_ovschema = chartrim(_tmp, "\"");
+		rtdealloc(_tmp);
+		_tmp = strreplace(_ovschema, "'", "''", NULL);
+		rtdealloc(_ovschema);
+		_schema = _tmp;
 	}
-	_ovtable = chartrim(ovtable, "\"");
-	_ovcolumn = chartrim(ovcolumn, "\"");
 
+	/* overview table */
+	_tmp = chartrim(ovtable, "\"");
+	_ovtable = strreplace(_tmp, "'", "''", NULL);
+	rtdealloc(_tmp);
+
+	/* overview column*/
+	_tmp = chartrim(ovcolumn, "\"");
+	_ovcolumn = strreplace(_tmp, "'", "''", NULL);
+	rtdealloc(_tmp);
+
+	/* schema */
 	if (schema != NULL) {
-		char *tmp = chartrim(schema, ".");
-		_schema = chartrim(tmp, "\"");
-		rtdealloc(tmp);
+		_tmp = chartrim(schema, ".");
+		_schema = chartrim(_tmp, "\"");
+		rtdealloc(_tmp);
+		_tmp = strreplace(_schema, "'", "''", NULL);
+		rtdealloc(_schema);
+		_schema = _tmp;
 	}
-	_table = chartrim(table, "\"");
-	_column = chartrim(column, "\"");
+
+	/* table */
+	_tmp = chartrim(table, "\"");
+	_table = strreplace(_tmp, "'", "''", NULL);
+	rtdealloc(_tmp);
+
+	/* column */
+	_tmp = chartrim(column, "\"");
+	_column = strreplace(_tmp, "'", "''", NULL);
+	rtdealloc(_tmp);
 
 	len = strlen("SELECT AddOverviewConstraints('','','','','','',);") + 5;
 	if (_ovschema != NULL)
