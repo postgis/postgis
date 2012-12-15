@@ -3,6 +3,7 @@ include ../upgradeable_versions.mk
 EXTENSION    = postgis_topology
 EXTVERSION    = @POSTGIS_LIB_VERSION@
 MINORVERSION  = @POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@
+PGIS_MAJ_MIN=@POSTGIS_MAJOR_VERSION@@POSTGIS_MINOR_VERSION@
 
 MICRO_NUMBER  = $(shell echo $(EXTVERSION) | sed "s/[0-9]\.[0-9]\.\([0-9]*\)[a-zA-Z]*[0-9]*/\1/")
 PREREL_NUMBER = $(shell echo $(EXTVERSION) | \
@@ -83,10 +84,8 @@ sql/$(EXTENSION)--unpackaged--$(EXTVERSION).sql: sql_bits/topology--unpackaged.s
 #aggregates are special 
 #they can be dropped but we need to remove
 #them from the extension first
-sql/topology_upgrade_minor.sql:  sql_bits/topology.sql
-	 sed -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\).*;/d' \
-	 	 -e '/^\(CREATE\|ALTER\) \(CAST\|TYPE\|TABLE\|SCHEMA\|DOMAIN\|TRIGGER\)/,/\;/d' \
-	 	 $< > $@
+sql/topology_upgrade_minor.sql:  ../../topology/topology_upgrade_$(PGIS_MAJ_MIN)_minor.sql
+	 sed -e 's/BEGIN;//g' -e 's/COMMIT;//g' -e '/^CREATE SCHEMA/d;'  $< > $@
 	
 sql_minor_upgrade: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/topology_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/topology_comments.sql ../postgis_extension_helper_uninstall.sql
 	for OLD_VERSION in $(UPGRADEABLE_VERSIONS); do \
