@@ -7801,6 +7801,7 @@ CREATE OR REPLACE FUNCTION _UpdateRasterSRID(
 		schema name;
 		sql text;
 		srid integer;
+		ct boolean;
 	BEGIN
 		-- validate schema
 		schema := NULL;
@@ -7841,6 +7842,13 @@ CREATE OR REPLACE FUNCTION _UpdateRasterSRID(
 			srid := new_srid;
 		END IF;
 
+		-- drop coverage tile constraint
+		-- done separately just in case constraint doesn't exist
+		ct := _raster_constraint_info_coverage_tile(schema, $2, $3);
+		IF ct IS TRUE THEN
+			PERFORM _drop_raster_constraint_coverage_tile(schema, $2, $3);
+		END IF;
+
 		-- drop SRID, extent, alignment constraints
 		PERFORM DropRasterConstraints(schema, $2, $3, 'extent', 'alignment', 'srid');
 
@@ -7860,6 +7868,11 @@ CREATE OR REPLACE FUNCTION _UpdateRasterSRID(
 
 		-- add SRID constraint
 		PERFORM AddRasterConstraints(schema, $2, $3, 'srid', 'extent', 'alignment');
+
+		-- add coverage tile constraint if needed
+		IF ct IS TRUE THEN
+			PERFORM _add_raster_constraint_coverage_tile(schema, $2, $3);
+		END IF;
 
 		RETURN TRUE;
 	END;
