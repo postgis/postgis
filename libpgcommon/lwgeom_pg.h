@@ -28,6 +28,9 @@ void pg_free(void *ptr);
 void pg_error(const char *msg, va_list vp);
 void pg_notice(const char *msg, va_list vp);
 
+/* Install PostgreSQL memory management and error handling functions */
+void pg_install_handlers(void);
+
 
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
