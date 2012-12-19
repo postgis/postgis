@@ -9,6 +9,8 @@
  *
  **********************************************************************/
 
+#include <stdarg.h>
+
 #define PG_TEST(test_func) { #test_func, test_func }
 #define MAX_CUNIT_ERROR_LENGTH 512
 
