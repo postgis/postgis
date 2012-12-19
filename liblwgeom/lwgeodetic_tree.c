@@ -317,8 +317,10 @@ circ_tree_new(const POINTARRAY* pa)
 	}
 	
 	/* Special case: only zero-length edges. Make a point node. */
-	if ( j == 0 )
+	if ( j == 0 ) {
+		lwfree(nodes);
 		return circ_node_leaf_point_new(pa);
+	}
 
 	/* Merge the node list pairwise up into a tree */
 	tree = circ_nodes_merge(nodes, j);
