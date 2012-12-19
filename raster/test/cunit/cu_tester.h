@@ -9,6 +9,7 @@
  *
  **********************************************************************/
 
+#include <stdarg.h>
 #include "rt_api.h"
 
 #define PG_TEST(test_func) { #test_func, test_func }
@@ -19,6 +20,9 @@ char cu_error_msg[MAX_CUNIT_MSG_LENGTH+1];
 
 /* Resets cu_error_msg back to blank. */
 void cu_error_msg_reset(void);
+
+/* error handler */
+void cu_error_reporter(const char *fmt, va_list ap);
 
 /* free raster object */
 void cu_free_raster(rt_raster raster);

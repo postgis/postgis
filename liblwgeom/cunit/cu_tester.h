@@ -20,5 +20,5 @@ char cu_error_msg[MAX_CUNIT_ERROR_LENGTH+1];
 /* Resets cu_error_msg back to blank. */
 void cu_error_msg_reset(void);
 
-void
-cu_errorreporter(const char *fmt, va_list ap);
+/* error handler */
+void cu_errorreporter(const char *fmt, va_list ap);
