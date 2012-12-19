@@ -1100,22 +1100,20 @@ static void test_ptarray_contains_point_sphere_iowa(void)
 	
 	rv = ptarray_contains_point_sphere(pa, &pt_outside, &pt_to_test);
 	CU_ASSERT_EQUAL(rv, LW_TRUE);
+
+	lwgeom_free(lwg);
 }
 
 
 static void test_lwgeom_distance_sphere(void)
 {
 	LWGEOM *lwg1, *lwg2;
-	GBOX gbox1, gbox2;
 	double d;
 	SPHEROID s;
 
 	/* Init and force spherical */
 	spheroid_init(&s, 6378137.0, 6356752.314245179498);
 	s.a = s.b = s.radius;
-
-	gbox1.flags = gflags(0, 0, 1);
-	gbox2.flags = gflags(0, 0, 1);
 
 	/* Line/line distance, 1 degree apart */
 	lwg1 = lwgeom_from_wkt("LINESTRING(-30 10, -20 5, -10 3, 0 1)", LW_PARSER_CHECK_NONE);
