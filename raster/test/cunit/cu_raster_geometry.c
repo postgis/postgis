@@ -41,6 +41,7 @@ static void test_raster_convex_hull() {
 
 	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
 	CU_ASSERT_EQUAL(hull->type, POINTTYPE);
+	lwgeom_free(hull);
 	cu_free_raster(raster);
 
 	/* width = 0 */
@@ -49,6 +50,7 @@ static void test_raster_convex_hull() {
 
 	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
 	CU_ASSERT_EQUAL(hull->type, LINETYPE);
+	lwgeom_free(hull);
 	cu_free_raster(raster);
 
 	/* height = 0 */
@@ -57,6 +59,7 @@ static void test_raster_convex_hull() {
 
 	CU_ASSERT_EQUAL(rt_raster_get_convex_hull(raster, &hull), ES_NONE);
 	CU_ASSERT_EQUAL(hull->type, LINETYPE);
+	lwgeom_free(hull);
 	cu_free_raster(raster);
 
 	/* normal raster */

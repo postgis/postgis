@@ -85,11 +85,11 @@ static void test_raster_wkb() {
 		serialized = rt_raster_serialize(raster);
 		rast2 = rt_raster_deserialize(serialized, FALSE);
 
-		rt_raster_destroy(rast2);
+		cu_free_raster(rast2);
 		free(serialized);
 	}
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 
 	/* ------------------------------------------------------ */
 	/* No bands, 7x8 - big endian                             */
@@ -135,7 +135,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -197,7 +197,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -295,12 +295,12 @@ static void test_raster_wkb() {
 		serialized = rt_raster_serialize(raster);
 		rast2 = rt_raster_deserialize(serialized, FALSE);
 
-		rt_raster_destroy(rast2);
+		cu_free_raster(rast2);
 		free(serialized);
 
 	}
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 
 	/* ------------------------------------------------------ */
 	/* 3x2, little endian, band0(16BSI)                       */
@@ -385,7 +385,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -471,7 +471,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -535,7 +535,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_STRING_EQUAL(hexwkb, out);
 */
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 	free((/*no const*/ void*)out);
 
 	/* ------------------------------------------------------ */
@@ -618,11 +618,11 @@ static void test_raster_wkb() {
 		serialized = rt_raster_serialize(raster);
 		rast2 = rt_raster_deserialize(serialized, FALSE);
 
-		rt_raster_destroy(rast2);
+		cu_free_raster(rast2);
 		free(serialized);
 	}
 
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 
 	/* ------------------------------------------------------ */
 	/* 5x5, little endian, 3 x band 8BUI (RGB),               */
@@ -786,10 +786,10 @@ static void test_raster_wkb() {
 		serialized = rt_raster_serialize(raster);
 		rast2 = rt_raster_deserialize(serialized, FALSE);
 
-		rt_raster_destroy(rast2);
+		cu_free_raster(rast2);
 		free(serialized);
 	}
-	rt_raster_destroy(raster);
+	cu_free_raster(raster);
 
 	} /* for-loop running car5 tests */
 
