@@ -70,7 +70,7 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
 	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
-	../../extras/tiger_geocoder/tiger_2011/tables/tiger_loader_2011.sql \
+	../../extras/tiger_geocoder/tiger_2011/tiger_loader_2012.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/cull_null.sql \
