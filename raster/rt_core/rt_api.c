@@ -7982,6 +7982,7 @@ rt_raster_to_gdal_mem(rt_raster raster, const char *srs,
 		}
 
 		cplerr = GDALSetProjection(ds, _srs);
+		CPLFree(_srs);
 		if (cplerr != CE_None) {
 			rterror("rt_raster_to_gdal_mem: Unable to set projection");
 			GDALClose(ds);
@@ -10267,6 +10268,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		OSRExportToWkt(src_sr, &_srs);
 
 		cplerr = GDALSetProjection(_ds, _srs);
+		CPLFree(_srs);
 		if (cplerr != CE_None) {
 			rterror("rt_raster_gdal_rasterize: Could not set projection on GDALDataset");
 
