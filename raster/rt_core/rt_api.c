@@ -1375,6 +1375,7 @@ rt_band_new_offline(
 	uint8_t bandNum, const char* path
 ) {
 	rt_band band = NULL;
+	int pathlen = 0;
 
 	assert(NULL != path);
 
@@ -1409,8 +1410,16 @@ rt_band_new_offline(
 
 	band->data.offline.bandNum = bandNum;
 
-	/* memory for data.offline.path should be managed externally */
-	band->data.offline.path = (char *) path;
+	/* memory for data.offline.path is managed internally */
+	pathlen = strlen(path);
+	band->data.offline.path = rtalloc(sizeof(char) * (pathlen + 1));
+	if (band == NULL) {
+		rterror("rt_band_new_offline: Out of memory allocating offline path");
+		rtdealloc(band);
+		return NULL;
+	}
+	memcpy(band->data.offline.path, path, pathlen);
+	band->data.offline.path[pathlen] = '\0';
 
 	band->data.offline.mem = NULL;
 
@@ -1494,11 +1503,17 @@ rt_band_destroy(rt_band band) {
 
     RASTER_DEBUGF(3, "Destroying rt_band @ %p", band);
 
-		/* offline band and has data, free as data is internally owned */
-		if (band->offline && band->data.offline.mem != NULL)
-			rtdealloc(band->data.offline.mem);
+		/* offline band */
+		if (band->offline) {
+			/* memory cache */
+			if (band->data.offline.mem != NULL)
+				rtdealloc(band->data.offline.mem);
+			/* offline file path */
+			if (band->data.offline.path != NULL)
+				rtdealloc(band->data.offline.path);
+		}
 		/* inline band and band owns the data */
-		else if (!band->offline && band->data.mem != NULL && band->ownsdata)
+		else if (band->data.mem != NULL && band->ownsdata)
 			rtdealloc(band->data.mem);
 
     rtdealloc(band);
@@ -7313,8 +7328,8 @@ rt_band_from_wkb(uint16_t width, uint16_t height,
             }
 
             band->ownsdata = 0;
-            band->data.offline.path = rtalloc(sz + 1);
 
+            band->data.offline.path = rtalloc(sz + 1);
             memcpy(band->data.offline.path, *ptr, sz);
             band->data.offline.path[sz] = '\0';
 
@@ -8252,13 +8267,24 @@ rt_raster_deserialize(void* serialized, int header_only) {
         assert(!((ptr - beg) % pixbytes));
 
         if (band->offline) {
+					int pathlen = 0;
             /* Read band number */
             band->data.offline.bandNum = *ptr;
             ptr += 1;
 
             /* Register path */
-            band->data.offline.path = (char*) ptr;
-            ptr += strlen(band->data.offline.path) + 1;
+						pathlen = strlen((char*) ptr);
+						band->data.offline.path = rtalloc(sizeof(char) * (pathlen + 1));
+						if (band->data.offline.path == NULL) {
+							rterror("rt_raster_deserialize: Unable to allocate momory for offline band path");
+							rt_band_destroy(band);
+							rt_raster_destroy(rast);
+							return NULL;
+						}
+
+            memcpy(band->data.offline.path, ptr, pathlen);
+						band->data.offline.path[pathlen] = '\0';
+            ptr += pathlen + 1;
 
 						band->data.offline.mem = NULL;
         } else {
@@ -11084,6 +11110,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		OSRExportToWkt(src_sr, &_srs);
 
 		cplerr = GDALSetProjection(_ds, _srs);
+		CPLFree(_srs);
 		if (cplerr != CE_None) {
 			rterror("rt_raster_gdal_rasterize: Could not set projection on GDALDataset");
 

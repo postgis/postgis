@@ -2167,7 +2167,7 @@ struct rt_raster_t {
 
 struct rt_extband_t {
     uint8_t bandNum; /* 0-based */
-    char* path; /* externally owned ? */
+    char* path; /* internally owned */
 		void *mem; /* loaded external band data, internally owned */
 };
 
