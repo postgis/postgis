@@ -92,8 +92,6 @@ _PG_init(void)
    );
 #endif
 
-    /* install PostgreSQL handlers */
-    pg_install_handlers();
 }
 
 /*

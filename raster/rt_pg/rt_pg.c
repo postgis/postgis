@@ -60,6 +60,11 @@
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
 
+/*
+ * This is required for builds against pgsql 
+ */
+PG_MODULE_MAGIC;
+
 /***************************************************************
  * Internal functions must be prefixed with rtpg_.  This is
  * keeping inline with the use of pgis_ for ./postgis C utility
@@ -17263,14 +17268,6 @@ rt_pg_notice(const char *fmt, va_list ap)
     }
     ereport(NOTICE, (errmsg_internal("%s", msg)));
     free(msg);
-}
-
-void
-rt_pg_install_handlers(void)
-{
-    /* install raster handlers */
-    lwgeom_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free, rt_pg_error,
-            rt_pg_notice);
 }
 
 

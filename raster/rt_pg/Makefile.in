@@ -24,9 +24,7 @@ SQLPP = @SQLPP@
 SQL_OBJS=rtpostgis.sql.in rtpostgis_drop.sql.in rtpostgis_upgrade_cleanup.sql.in rtpostgis_legacy.sql.in
 
 # Objects to build using PGXS
-OBJS= \
-	rt_module.o \
-	rt_pg.o
+OBJS=rt_pg.o
 
 # Libraries to link into the module (proj, geos)
 #
