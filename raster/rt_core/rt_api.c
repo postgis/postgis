@@ -10376,8 +10376,9 @@ _rti_rasterize_arg_destroy(_rti_rasterize_arg arg) {
  * @return the raster of the provided geometry or NULL
  */
 rt_raster
-rt_raster_gdal_rasterize(const unsigned char *wkb,
-	uint32_t wkb_len, const char *srs,
+rt_raster_gdal_rasterize(
+	const unsigned char *wkb, uint32_t wkb_len,
+	const char *srs,
 	uint32_t num_bands, rt_pixtype *pixtype,
 	double *init, double *value,
 	double *nodata, uint8_t *hasnodata,
@@ -10476,7 +10477,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		_rti_rasterize_arg_destroy(arg);
 
-		OSRDestroySpatialReference(src_sr);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -10488,7 +10489,8 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 
 		_rti_rasterize_arg_destroy(arg);
 
-		OSRDestroySpatialReference(src_sr);
+		OGR_G_DestroyGeometry(src_geom);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		return rt_raster_new(0, 0);
@@ -10538,7 +10540,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
-		OSRDestroySpatialReference(src_sr);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -10618,7 +10620,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
-			OSRDestroySpatialReference(src_sr);
+			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 			/* OGRCleanupAll(); */
 
 			return NULL;
@@ -10643,7 +10645,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
-			OSRDestroySpatialReference(src_sr);
+			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 			/* OGRCleanupAll(); */
 
 			return NULL;
@@ -10749,7 +10751,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
-			OSRDestroySpatialReference(src_sr);
+			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 			/* OGRCleanupAll(); */
 
 			return NULL;
@@ -10778,7 +10780,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
-		OSRDestroySpatialReference(src_sr);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -10819,7 +10821,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
-		OSRDestroySpatialReference(src_sr);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -10842,7 +10844,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
-			OSRDestroySpatialReference(src_sr);
+			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 			/* OGRCleanupAll(); */
 
 			return NULL;
@@ -10877,7 +10879,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				_rti_rasterize_arg_destroy(arg);
 
 				OGR_G_DestroyGeometry(src_geom);
-				OSRDestroySpatialReference(src_sr);
+				if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 				/* OGRCleanupAll(); */
 
 				return NULL;
@@ -10895,7 +10897,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				_rti_rasterize_arg_destroy(arg);
 
 				OGR_G_DestroyGeometry(src_geom);
-				OSRDestroySpatialReference(src_sr);
+				if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 				/* OGRCleanupAll(); */
 
 				return NULL;
@@ -10923,7 +10925,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 						_rti_rasterize_arg_destroy(arg);
 
 						OGR_G_DestroyGeometry(src_geom);
-						OSRDestroySpatialReference(src_sr);
+						if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 						/* OGRCleanupAll(); */
 
 						return NULL;
@@ -10953,7 +10955,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 						_rti_rasterize_arg_destroy(arg);
 
 						OGR_G_DestroyGeometry(src_geom);
-						OSRDestroySpatialReference(src_sr);
+						if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 						/* OGRCleanupAll(); */
 
 						return NULL;
@@ -11004,7 +11006,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				_rti_rasterize_arg_destroy(arg);
 
 				OGR_G_DestroyGeometry(src_geom);
-				OSRDestroySpatialReference(src_sr);
+				if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 				/* OGRCleanupAll(); */
 
 				return NULL;
@@ -11036,7 +11038,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 				_rti_rasterize_arg_destroy(arg);
 
 				OGR_G_DestroyGeometry(src_geom);
-				OSRDestroySpatialReference(src_sr);
+				if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 				/* OGRCleanupAll(); */
 
 				return NULL;
@@ -11069,7 +11071,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
-		OSRDestroySpatialReference(src_sr);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -11082,7 +11084,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
-		OSRDestroySpatialReference(src_sr);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		return NULL;
@@ -11096,7 +11098,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
-		OSRDestroySpatialReference(src_sr);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
@@ -11172,7 +11174,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 			_rti_rasterize_arg_destroy(arg);
 
 			OGR_G_DestroyGeometry(src_geom);
-			OSRDestroySpatialReference(src_sr);
+			if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 			/* OGRCleanupAll(); */
 
 			GDALClose(_ds);
@@ -11201,7 +11203,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 		_rti_rasterize_arg_destroy(arg);
 
 		OGR_G_DestroyGeometry(src_geom);
-		OSRDestroySpatialReference(src_sr);
+		if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 		/* OGRCleanupAll(); */
 
 		GDALClose(_ds);
@@ -11215,7 +11217,7 @@ rt_raster_gdal_rasterize(const unsigned char *wkb,
 	rast = rt_raster_from_gdal_dataset(_ds);
 
 	OGR_G_DestroyGeometry(src_geom);
-	OSRDestroySpatialReference(src_sr);
+	if (src_sr != NULL) OSRDestroySpatialReference(src_sr);
 	/* OGRCleanupAll(); */
 
 	GDALClose(_ds);
