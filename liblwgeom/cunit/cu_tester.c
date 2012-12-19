@@ -93,6 +93,9 @@ int main(int argc, char *argv[])
 	int num_run;
 	int num_failed;
 
+	/* install the custom error handler */
+	lwgeom_set_handlers(0, 0, 0, cu_errorreporter, 0);
+
 	/* initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())
 	{
@@ -209,7 +212,7 @@ int main(int argc, char *argv[])
  *
  * CAUTION: Not stop execution on lwerror case !!!
  */
-static void
+void
 cu_errorreporter(const char *fmt, va_list ap)
 {
 	char *msg;
@@ -232,17 +235,3 @@ cu_error_msg_reset()
 {
 	memset(cu_error_msg, '\0', MAX_CUNIT_ERROR_LENGTH);
 }
-
-/*
-** Set up liblwgeom to run in stand-alone mode using the
-** usual system memory handling functions.
-*/
-void lwgeom_init_allocators(void)
-{
-	lwalloc_var = default_allocator;
-	lwrealloc_var = default_reallocator;
-	lwfree_var = default_freeor;
-	lwnotice_var = default_noticereporter;
-	lwerror_var = cu_errorreporter;
-}
-

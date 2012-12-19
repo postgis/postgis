@@ -9,6 +9,8 @@
  *
  **********************************************************************/
 
+#include <stdarg.h> /* for va_list */
+
 #define PG_TEST(test_func) { #test_func, test_func }
 #define MAX_CUNIT_ERROR_LENGTH 512
 
@@ -18,3 +20,5 @@ char cu_error_msg[MAX_CUNIT_ERROR_LENGTH+1];
 /* Resets cu_error_msg back to blank. */
 void cu_error_msg_reset(void);
 
+void
+cu_errorreporter(const char *fmt, va_list ap);
