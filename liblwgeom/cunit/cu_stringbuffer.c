@@ -30,6 +30,8 @@ static void test_stringbuffer_append(void)
 	str = stringbuffer_getstring(sb);
 
 	CU_ASSERT_STRING_EQUAL("hello world", str);
+
+	stringbuffer_destroy(sb);
 }
 
 static void test_stringbuffer_aprintf(void)
@@ -42,6 +44,8 @@ static void test_stringbuffer_aprintf(void)
 	str = stringbuffer_getstring(sb);
 
 	CU_ASSERT_STRING_EQUAL("hello 14th world", str);
+
+	stringbuffer_destroy(sb);
 }
 
 
