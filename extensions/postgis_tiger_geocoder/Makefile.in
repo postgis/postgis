@@ -23,7 +23,7 @@ PG_CONFIG    =  @PGCONFIG@
 
 PG91         = $(shell $(PG_CONFIG) --version | grep -qE " 8\.| 9\.0" && echo no || echo yes)
 SQL_BITS     = $(wildcard sql_bits/*.sql)
-EXTRA_CLEAN += sql/*.sql ${SQL_BITS}
+EXTRA_CLEAN += sql/*.sql ${SQL_BITS} 
 
 
 ifeq ($(PG91),yes)
@@ -71,6 +71,7 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/geocode_settings.sql \
 	../../extras/tiger_geocoder/tiger_2011/tables/lookup_tables_2011.sql \
 	../../extras/tiger_geocoder/tiger_2011/tiger_loader_2012.sql \
+	../../extras/tiger_geocoder/tiger_2011/census_loader.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/set_search_path.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/utmzone.sql \
 	../../extras/tiger_geocoder/tiger_2011/utility/cull_null.sql \
@@ -96,7 +97,8 @@ sql_bits/tiger_geocoder.sql.in: sql_bits/norm_addy_create.sql.in \
 	../../extras/tiger_geocoder/tiger_2011/geocode/geocode_intersection.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/geocode.sql \
 	../../extras/tiger_geocoder/tiger_2011/geocode/reverse_geocode.sql \
-	../../extras/tiger_geocoder/tiger_2011/geocode/census_tracts_functions.sql
+	../../extras/tiger_geocoder/tiger_2011/geocode/census_tracts_functions.sql \
+	../../extras/tiger_geocoder/tiger_2011/topology/tiger_topology_loader.sql
 	cat $^ > $@
 	
 sql_bits/tiger_geocoder.sql: sql_bits/tiger_geocoder.sql.in
