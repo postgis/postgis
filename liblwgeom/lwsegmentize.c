@@ -648,6 +648,8 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 			edge_type = edges_in_arcs[i];
 		}
 	}
+	lwfree(edges_in_arcs); /* not needed anymore */
+
 	/* Roll out last item */
 	end = num_edges - 1;
 	lwcollection_add_lwgeom(outcol, geom_from_pa(points, srid, edge_type, start, end));
@@ -656,7 +658,7 @@ pta_desegmentize(POINTARRAY *points, int type, int srid)
 	if ( outcol->ngeoms == 1 )
 	{
 		LWGEOM *outgeom = outcol->geoms[0];
-		lwfree(outcol);
+		outcol->ngeoms = 0; lwcollection_free(outcol);
 		return outgeom;
 	}
 	return lwcollection_as_lwgeom(outcol);

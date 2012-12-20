@@ -199,6 +199,7 @@ static void test_ptarray_append_ptarray(void)
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
 	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 10,10 0,11 0)");
 	lwfree(wkt);
+	FLAGS_SET_READONLY(line2->points->flags, 0); /* for lwline_free */
 	lwline_free(line2);
 	lwline_free(line1);
 
@@ -209,6 +210,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
 	CU_ASSERT(ret == LW_FAILURE);
 	lwline_free(line2);
+	FLAGS_SET_READONLY(line1->points->flags, 0); /* for lwline_free */
 	lwline_free(line1);
 
 }
@@ -391,7 +393,10 @@ static void test_ptarray_desegmentize()
 	lwgeom_free(out);
 	lwfree(str);	
 	
-	in = lwgeom_segmentize(lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))"),8);
+	in = lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))");
+	out = lwgeom_segmentize(in,8);
+	lwgeom_free(in);
+  in = out;
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((0 0,1 1,1 1),CIRCULARSTRING(1 1,1.8049097 1.9807853,3 1),(3 1,4 4))");
@@ -536,7 +541,7 @@ static void test_ptarray_contains_point_arc()
 	CU_ASSERT_EQUAL(rv, LW_OUTSIDE);	
 
 	/* Two-edge ring made up of semi-circles (really, a circle) */
-	lwfree(lwline);
+	lwline_free(lwline);
 
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 0 1, 1 0, 0 -1, -1 0)"));
 	pa = lwline->points;
@@ -566,7 +571,7 @@ static void test_ptarray_contains_point_arc()
 	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
 
 	/* One-edge ring, closed circle */
-	lwfree(lwline);
+	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, -1 0)"));
 	pa = lwline->points;
 
@@ -589,7 +594,7 @@ static void test_ptarray_contains_point_arc()
 	CU_ASSERT_EQUAL(rv, LW_BOUNDARY);	
 
 	/* Overshort ring */
-	lwfree(lwline);
+	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0)"));
 	pa = lwline->points;
 	cu_error_msg_reset();
@@ -598,7 +603,7 @@ static void test_ptarray_contains_point_arc()
 	CU_ASSERT_STRING_EQUAL("ptarray_contains_point_arc called with even number of points", cu_error_msg);
 
 	/* Unclosed ring */
-	lwfree(lwline);
+	lwline_free(lwline);
 	lwline = lwgeom_as_lwline(lwgeom_from_text("LINESTRING(-1 0, 1 0, 1 0)"));
 	pa = lwline->points;
 	cu_error_msg_reset();
