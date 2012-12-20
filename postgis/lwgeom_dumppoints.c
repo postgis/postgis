@@ -7,6 +7,11 @@
 #include "catalog/pg_type.h"
 #include "funcapi.h"
 
+#include "../postgis_config.h"
+#if POSTGIS_PGSQL_VERSION > 92
+#include "access/htup_details.h"
+#endif
+
 #include "liblwgeom.h"
 
 /* ST_DumpPoints for postgis.

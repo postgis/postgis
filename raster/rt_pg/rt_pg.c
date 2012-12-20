@@ -52,9 +52,13 @@
 #include "rt_pg.h"
 #include "pgsql_compat.h"
 
-#include <utils/lsyscache.h> /* for get_typlenbyvalalign */
-#include <utils/array.h> /* for ArrayType */
-#include <catalog/pg_type.h> /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+#include "utils/lsyscache.h" /* for get_typlenbyvalalign */
+#include "utils/array.h" /* for ArrayType */
+#include "catalog/pg_type.h" /* for INT2OID, INT4OID, FLOAT4OID, FLOAT8OID and TEXTOID */
+
+#if POSTGIS_PGSQL_VERSION > 92
+#include "access/htup_details.h"
+#endif
 
 /* maximum char length required to hold any double or long long value */
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
