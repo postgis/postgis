@@ -199,6 +199,7 @@ static void test_ptarray_append_ptarray(void)
 	wkt = lwgeom_to_text(lwline_as_lwgeom(line1));
 	CU_ASSERT_STRING_EQUAL(wkt, "LINESTRING(0 10,10 0,11 0)");
 	lwfree(wkt);
+	FLAGS_SET_READONLY(line2->points->flags, 0); /* for lwline_free */
 	lwline_free(line2);
 	lwline_free(line1);
 
@@ -209,6 +210,7 @@ static void test_ptarray_append_ptarray(void)
 	ret = ptarray_append_ptarray(line1->points, line2->points, -1);
 	CU_ASSERT(ret == LW_FAILURE);
 	lwline_free(line2);
+	FLAGS_SET_READONLY(line1->points->flags, 0); /* for lwline_free */
 	lwline_free(line1);
 
 }
@@ -363,7 +365,10 @@ static void test_ptarray_desegmentize()
 	lwgeom_free(out);
 	lwfree(str);	
 	
-	in = lwgeom_segmentize(lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))"),8);
+	in = lwgeom_from_text("COMPOUNDCURVE((0 0, 1 1), CIRCULARSTRING(1 1, 2 2, 3 1), (3 1, 4 4))");
+	out = lwgeom_segmentize(in,8);
+	lwgeom_free(in);
+  in = out;
 	out = lwgeom_desegmentize(in);
 	str = lwgeom_to_wkt(out, WKT_ISO, 8, NULL);
 	CU_ASSERT_STRING_EQUAL(str, "COMPOUNDCURVE((0 0,1 1,1 1),CIRCULARSTRING(1 1,1.8049097 1.9807853,3 1),(3 1,4 4))");
