@@ -251,10 +251,10 @@ dnl ===========================================================================
 CUNIT_LDFLAGS=""
 AC_CHECK_HEADER([CUnit/CUnit.h], [
 	CUNIT_CPPFLAGS="$CPPFLAGS"
-	AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS="$LDFLAGS -lcunit"], [AC_MSG_WARN([could not locate CUnit required for liblwgeom unit tests])])
+	AC_CHECK_LIB([cunit], [CU_initialize_registry], [CUNIT_LDFLAGS="$LDFLAGS -lcunit"], [AC_MSG_WARN([could not locate CUnit required for unit tests])])
 	],
 	[
-	AC_MSG_WARN([could not locate CUnit required for liblwgeom unit tests])
+	AC_MSG_WARN([could not locate CUnit required for unit tests])
 	])
 	
 AC_SUBST([CUNIT_CPPFLAGS])
