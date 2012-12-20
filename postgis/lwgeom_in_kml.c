@@ -77,7 +77,7 @@ Datum geom_from_kml(PG_FUNCTION_ARGS)
 
 	/* Begin to Parse XML doc */
 	xmlInitParser();
-        xmldoc = xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
+	xmldoc = xmlReadMemory(xml, xml_size, NULL, NULL, XML_PARSE_SAX1);
 	if (!xmldoc || (xmlroot = xmlDocGetRootElement(xmldoc)) == NULL)
 	{
 		xmlFreeDoc(xmldoc);
