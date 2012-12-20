@@ -17,7 +17,6 @@
 #include "utils/geo_decls.h"
 
 #include "liblwgeom_internal.h"
-#include "libtgeom.h"
 #include "lwgeom_pg.h"
 
 #include <math.h>
