@@ -994,7 +994,7 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	int is3d;
 	GEOSGeom geosgeom;
 	GEOSGeometry* geosout;
-	LWGEOM *lwgeom_out;
+	LWGEOM *lwgeom_out, *lwgeom_tmp;
 
 	is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -1048,7 +1048,9 @@ lwgeom_make_valid(LWGEOM* lwgeom_in)
 	if ( lwgeom_is_collection(lwgeom_in) && ! lwgeom_is_collection(lwgeom_out) )
 	{
 		LWDEBUG(3, "lwgeom_make_valid: forcing multi");
-		lwgeom_out = lwgeom_as_multi(lwgeom_out);
+		lwgeom_tmp = lwgeom_as_multi(lwgeom_out);
+		lwgeom_free(lwgeom_out);
+		lwgeom_out = lwgeom_tmp;
 	}
 
 	GEOSGeom_destroy(geosout);
