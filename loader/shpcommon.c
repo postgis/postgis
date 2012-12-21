@@ -14,14 +14,6 @@
 
 #include <stdlib.h>
 #include "shpcommon.h"
-#include "../liblwgeom/liblwgeom.h" /* for lwgeom_install_default_allocators */
-
-
-/* liblwgeom allocator callback - install the defaults (malloc/free/stdout/stderr) */
-void lwgeom_init_allocators()
-{
-	lwgeom_install_default_allocators();
-}
 
 
 /**
