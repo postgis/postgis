@@ -139,7 +139,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		if ( outcol->ngeoms == 1 )
 		{
 			outgeom = outcol->geoms[0];
-			lwfree(outcol);
+			outcol->ngeoms=0; lwcollection_free(outcol);
 		}
 		else
 		{
@@ -161,7 +161,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 				if ( bcol->ngeoms == 1 )
 				{
 					lwcollection_add_lwgeom(outcol, bcol->geoms[0]);
-					lwfree(bcol);
+					bcol->ngeoms=0; lwcollection_free(bcol);
 				}
 				else 
 				{
@@ -171,7 +171,7 @@ lwcollection_homogenize(const LWCOLLECTION *col)
 		}
 		outgeom = lwcollection_as_lwgeom(outcol);
 	}
-	
+
 	return outgeom;
 }
 
