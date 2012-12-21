@@ -803,13 +803,6 @@ main()
     return EXIT_SUCCESS;
 }
 
-/* This is needed by liblwgeom */
-void
-lwgeom_init_allocators(void)
-{
-    lwgeom_install_default_allocators();
-}
-
 void rt_init_allocators(void)
 {
     rt_install_default_allocators();

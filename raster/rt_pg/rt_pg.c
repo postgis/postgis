@@ -60,10 +60,28 @@
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
 
+static void *rt_pg_alloc(size_t size);
+static void *rt_pg_realloc(void *mem, size_t size);
+static void rt_pg_free(void *ptr);
+static void rt_pg_error(const char *fmt, va_list ap);
+static void rt_pg_notice(const char *fmt, va_list ap);
+
 /*
- * This is required for builds against pgsql 
+ * This is required for builds against pgsql
  */
 PG_MODULE_MAGIC;
+
+/*
+ * Module load callback
+ */
+void _PG_init(void);
+void
+_PG_init(void)
+{
+    /* Install raster handlers */
+    lwgeom_set_handlers(rt_pg_alloc, rt_pg_realloc, rt_pg_free,
+            rt_pg_error, rt_pg_notice);
+}
 
 /***************************************************************
  * Internal functions must be prefixed with rtpg_.  This is
