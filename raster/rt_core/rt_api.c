@@ -7915,195 +7915,186 @@ rt_raster_serialized_size(rt_raster raster) {
  */
 void*
 rt_raster_serialize(rt_raster raster) {
-    uint32_t size = rt_raster_serialized_size(raster);
-    uint8_t* ret = NULL;
-    uint8_t* ptr = NULL;
-    uint16_t i = 0;
+	uint32_t size = 0;
+	uint8_t* ret = NULL;
+	uint8_t* ptr = NULL;
+	uint16_t i = 0;
 
+	assert(NULL != raster);
 
-    assert(NULL != raster);
+	size = rt_raster_serialized_size(raster);
+	ret = (uint8_t*) rtalloc(size);
+	if (!ret) {
+		rterror("rt_raster_serialize: Out of memory allocating %d bytes for serializing a raster", size);
+		return NULL;
+	}
+	memset(ret, '-', size);
+	ptr = ret;
 
-    ret = (uint8_t*) rtalloc(size);
-    if (!ret) {
-        rterror("rt_raster_serialize: Out of memory allocating %d bytes for serializing a raster",
-                size);
-        return 0;
-    }
-    memset(ret, '-', size);
+	RASTER_DEBUGF(3, "sizeof(struct rt_raster_serialized_t):%u",
+		sizeof (struct rt_raster_serialized_t));
+	RASTER_DEBUGF(3, "sizeof(struct rt_raster_t):%u",
+		sizeof (struct rt_raster_t));
+	RASTER_DEBUGF(3, "serialized size:%lu", (long unsigned) size);
 
-    ptr = ret;
+	/* Set size */
+	/* NOTE: Value of rt_raster.size may be updated in
+	 * returned object, for instance, by rt_pg layer to
+	 * store value calculated by SET_VARSIZE.
+	 */
+	raster->size = size;
 
-    RASTER_DEBUGF(3, "sizeof(struct rt_raster_serialized_t):%u",
-            sizeof (struct rt_raster_serialized_t));
-    RASTER_DEBUGF(3, "sizeof(struct rt_raster_t):%u",
-            sizeof (struct rt_raster_t));
-    RASTER_DEBUGF(3, "serialized size:%lu", (long unsigned) size);
+	/* Set version */
+	raster->version = 0;
 
-    /* Set size */
-    /* NOTE: Value of rt_raster.size may be updated in
-     * returned object, for instance, by rt_pg layer to
-     * store value calculated by SET_VARSIZE.
-     */
-    raster->size = size;
+	/* Copy header */
+	memcpy(ptr, raster, sizeof (struct rt_raster_serialized_t));
 
-    /* Set version */
-    raster->version = 0;
-
-    /* Copy header */
-    memcpy(ptr, raster, sizeof (struct rt_raster_serialized_t));
-
-    RASTER_DEBUG(3, "Start hex dump of raster being serialized using 0x2D to mark non-written bytes");
+	RASTER_DEBUG(3, "Start hex dump of raster being serialized using 0x2D to mark non-written bytes");
 
 #if POSTGIS_DEBUG_LEVEL > 2
-    uint8_t* dbg_ptr = ptr;
-    d_print_binary_hex("HEADER", dbg_ptr, size);
+	uint8_t* dbg_ptr = ptr;
+	d_print_binary_hex("HEADER", dbg_ptr, size);
 #endif
 
-    ptr += sizeof (struct rt_raster_serialized_t);
+	ptr += sizeof (struct rt_raster_serialized_t);
 
-    /* Serialize bands now */
-    for (i = 0; i < raster->numBands; ++i) {
-        rt_band band = raster->bands[i];
-        assert(NULL != band);
+	/* Serialize bands now */
+	for (i = 0; i < raster->numBands; ++i) {
+		rt_band band = raster->bands[i];
+		assert(NULL != band);
 
-        rt_pixtype pixtype = band->pixtype;
-        int pixbytes = rt_pixtype_size(pixtype);
-        if (pixbytes < 1) {
-            rterror("rt_raster_serialize: Corrupted band: unknown pixtype");
-            return 0;
-        }
+		rt_pixtype pixtype = band->pixtype;
+		int pixbytes = rt_pixtype_size(pixtype);
+		if (pixbytes < 1) {
+			rterror("rt_raster_serialize: Corrupted band: unknown pixtype");
+			rtdealloc(ret);
+			return NULL;
+		}
 
-        /* Add band type */
-        *ptr = band->pixtype;
-        if (band->offline) {
-            *ptr |= BANDTYPE_FLAG_OFFDB;
-        }
-        if (band->hasnodata) {
-            *ptr |= BANDTYPE_FLAG_HASNODATA;
-        }
+		/* Add band type */
+		*ptr = band->pixtype;
+		if (band->offline) {
+			*ptr |= BANDTYPE_FLAG_OFFDB;
+		}
+		if (band->hasnodata) {
+			*ptr |= BANDTYPE_FLAG_HASNODATA;
+		}
 
-        if (band->isnodata) {
-            *ptr |= BANDTYPE_FLAG_ISNODATA;
-        }
+		if (band->isnodata) {
+			*ptr |= BANDTYPE_FLAG_ISNODATA;
+		}
 
 #if POSTGIS_DEBUG_LEVEL > 2
-        d_print_binary_hex("PIXTYPE", dbg_ptr, size);
+		d_print_binary_hex("PIXTYPE", dbg_ptr, size);
 #endif
 
-        ptr += 1;
+		ptr += 1;
 
-        /* Add padding (if needed) */
-        if (pixbytes > 1) {
-            memset(ptr, '\0', pixbytes - 1);
-            ptr += pixbytes - 1;
-        }
+		/* Add padding (if needed) */
+		if (pixbytes > 1) {
+			memset(ptr, '\0', pixbytes - 1);
+			ptr += pixbytes - 1;
+		}
 
 #if POSTGIS_DEBUG_LEVEL > 2
-        d_print_binary_hex("PADDING", dbg_ptr, size);
+		d_print_binary_hex("PADDING", dbg_ptr, size);
 #endif
 
-        /* Consistency checking (ptr is pixbytes-aligned) */
-        assert(!((ptr - ret) % pixbytes));
+		/* Consistency checking (ptr is pixbytes-aligned) */
+		assert(!((ptr - ret) % pixbytes));
 
-        /* Add nodata value */
-        switch (pixtype) {
-            case PT_1BB:
-            case PT_2BUI:
-            case PT_4BUI:
-            case PT_8BUI:
-            {
-                uint8_t v = band->nodataval;
-                *ptr = v;
-                ptr += 1;
-                break;
-            }
-            case PT_8BSI:
-            {
-                int8_t v = band->nodataval;
-                *ptr = v;
-                ptr += 1;
-                break;
-            }
-            case PT_16BSI:
-            case PT_16BUI:
-            {
-                uint16_t v = band->nodataval;
-                memcpy(ptr, &v, 2);
-                ptr += 2;
-                break;
-            }
-            case PT_32BSI:
-            case PT_32BUI:
-            {
-                uint32_t v = band->nodataval;
-                memcpy(ptr, &v, 4);
-                ptr += 4;
-                break;
-            }
-            case PT_32BF:
-            {
-                float v = band->nodataval;
-                memcpy(ptr, &v, 4);
-                ptr += 4;
-                break;
-            }
-            case PT_64BF:
-            {
-                memcpy(ptr, &band->nodataval, 8);
-                ptr += 8;
-                break;
-            }
-            default:
-                rterror("rt_raster_serialize: Fatal error caused by unknown pixel type. Aborting.");
-                abort(); /* shouldn't happen */
-                return 0;
-        }
+		/* Add nodata value */
+		switch (pixtype) {
+			case PT_1BB:
+			case PT_2BUI:
+			case PT_4BUI:
+			case PT_8BUI: {
+				uint8_t v = band->nodataval;
+				*ptr = v;
+				ptr += 1;
+				break;
+			}
+			case PT_8BSI: {
+				int8_t v = band->nodataval;
+				*ptr = v;
+				ptr += 1;
+				break;
+			}
+			case PT_16BSI:
+			case PT_16BUI: {
+				uint16_t v = band->nodataval;
+				memcpy(ptr, &v, 2);
+				ptr += 2;
+				break;
+			}
+			case PT_32BSI:
+			case PT_32BUI: {
+				uint32_t v = band->nodataval;
+				memcpy(ptr, &v, 4);
+				ptr += 4;
+				break;
+			}
+			case PT_32BF: {
+				float v = band->nodataval;
+				memcpy(ptr, &v, 4);
+				ptr += 4;
+				break;
+			}
+			case PT_64BF: {
+				memcpy(ptr, &band->nodataval, 8);
+				ptr += 8;
+				break;
+			}
+			default:
+				rterror("rt_raster_serialize: Fatal error caused by unknown pixel type. Aborting.");
+				rtdealloc(ret);
+				return NULL;
+		}
 
-        /* Consistency checking (ptr is pixbytes-aligned) */
-        assert(!((ptr - ret) % pixbytes));
+		/* Consistency checking (ptr is pixbytes-aligned) */
+		assert(!((ptr - ret) % pixbytes));
 
 #if POSTGIS_DEBUG_LEVEL > 2
-        d_print_binary_hex("nodata", dbg_ptr, size);
+		d_print_binary_hex("nodata", dbg_ptr, size);
 #endif
 
-        if (band->offline) {
-            /* Write band number */
-            *ptr = band->data.offline.bandNum;
-            ptr += 1;
+		if (band->offline) {
+			/* Write band number */
+			*ptr = band->data.offline.bandNum;
+			ptr += 1;
 
-            /* Write path */
-            strcpy((char*) ptr, band->data.offline.path);
-            ptr += strlen(band->data.offline.path) + 1;
-        } else {
-            /* Write data */
-            uint32_t datasize = raster->width * raster->height * pixbytes;
-            memcpy(ptr, band->data.mem, datasize);
-            ptr += datasize;
-        }
+			/* Write path */
+			strcpy((char*) ptr, band->data.offline.path);
+			ptr += strlen(band->data.offline.path) + 1;
+		}
+		else {
+			/* Write data */
+			uint32_t datasize = raster->width * raster->height * pixbytes;
+			memcpy(ptr, band->data.mem, datasize);
+			ptr += datasize;
+		}
 
 #if POSTGIS_DEBUG_LEVEL > 2
-        d_print_binary_hex("BAND", dbg_ptr, size);
+		d_print_binary_hex("BAND", dbg_ptr, size);
 #endif
 
-        /* Pad up to 8-bytes boundary */
-        while ((uintptr_t) ptr % 8) {
-            *ptr = 0;
-            ++ptr;
+		/* Pad up to 8-bytes boundary */
+		while ((uintptr_t) ptr % 8) {
+			*ptr = 0;
+			++ptr;
 
-            RASTER_DEBUGF(3, "PAD at %d", (uintptr_t) ptr % 8);
+			RASTER_DEBUGF(3, "PAD at %d", (uintptr_t) ptr % 8);
+		}
 
-        }
-
-        /* Consistency checking (ptr is pixbytes-aligned) */
-        assert(!((ptr - ret) % pixbytes));
-
-    } /* for-loop over bands */
+		/* Consistency checking (ptr is pixbytes-aligned) */
+		assert(!((ptr - ret) % pixbytes));
+	} /* for-loop over bands */
 
 #if POSTGIS_DEBUG_LEVEL > 2
-    d_print_binary_hex("SERIALIZED RASTER", dbg_ptr, size);
+		d_print_binary_hex("SERIALIZED RASTER", dbg_ptr, size);
 #endif
-
-    return ret;
+	return ret;
 }
 
 /**
