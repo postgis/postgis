@@ -36,6 +36,8 @@ extensions/postgis_tiger_geocoder/Makefile
 extensions/postgis_tiger_geocoder/postgis_tiger_geocoder.control
 extensions/postgis_tiger_geocoder/sql
 extensions/postgis_tiger_geocoder/sql_bits/*.sql
+extensions/postgis_tiger_geocoder/sql_bits/tiger_geocoder.sql.in
+extensions/postgis_tiger_geocoder/sql_bits/tiger_geocoder_minor.sql.in
 extensions/postgis_topology/Makefile
 extensions/postgis_topology/postgis_topology.control
 extensions/postgis_topology/sql/
@@ -65,6 +67,7 @@ macros/ltversion.m4
 *.o
 postgis_config.h
 postgis/Makefile
+postgis/legacy_gist.sql
 postgis/legacy_minimal.sql
 postgis/legacy_minimal.sql.in
 postgis/legacy.sql
@@ -76,6 +79,9 @@ postgis/postgis_upgrade_14_to_15.sql
 postgis/postgis_upgrade_15_minor.sql
 postgis/postgis_upgrade_20_minor.sql
 postgis/postgis_upgrade_20_minor.sql.in
+postgis/postgis_upgrade_20_21.sql
+postgis/postgis_upgrade_20_21.sql.in
+postgis/postgis_upgrade_21_minor.sql
 postgis/sqldefines.h
 postgis/uninstall_legacy.sql
 postgis/uninstall_legacy.sql.in
@@ -125,6 +131,7 @@ topology/topology_drop_before.sql.in
 topology/topology.sql
 topology/topology.sql.in
 topology/topology_upgrade_20_minor.sql
+topology/topology_upgrade_21_minor.sql
 topology/topology_upgrade.sql
 topology/uninstall_topology.sql
 libpgcommon/Makefile
