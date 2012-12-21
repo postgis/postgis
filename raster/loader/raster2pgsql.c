@@ -31,11 +31,6 @@
 #include "ogr_srs_api.h"
 #include <assert.h>
 
-/* This is needed by liblwgeom */
-void lwgeom_init_allocators(void) {
-	lwgeom_install_default_allocators();
-}
-
 static void
 loader_rt_error_handler(const char *fmt, va_list ap) {
 	static const char *label = "ERROR: ";

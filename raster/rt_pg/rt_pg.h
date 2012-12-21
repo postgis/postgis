@@ -99,4 +99,8 @@ typedef struct rt_pgband_t {
  * and binary representation of it */
 typedef struct rt_raster_serialized_t rt_pgraster;
 
+
+/* Install raster memory management and error handling functions */
+void rt_pg_install_handlers(void);
+
 #endif /* RT_PG_H_INCLUDED */

@@ -62,6 +62,9 @@ int main(int argc, char *argv[])
 	int num_run;
 	int num_failed;
 
+	/* install the custom error handler */
+	lwgeom_set_handlers(0, 0, 0, cu_error_reporter, 0);
+
 	/* initialize the CUnit test registry */
 	if (CUE_SUCCESS != CU_initialize_registry())
 	{
@@ -179,7 +182,7 @@ int main(int argc, char *argv[])
  *
  * CAUTION: Not stop execution on rterror case !!!
  */
-static void cu_error_reporter(const char *fmt, va_list ap) {
+void cu_error_reporter(const char *fmt, va_list ap) {
 	char *msg;
 
 	/** This is a GNU extension.
@@ -234,14 +237,6 @@ rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double 
 	CU_ASSERT(bandNum >= 0);
 
 	return band;
-}
-
-void lwgeom_init_allocators(void) {
-	lwalloc_var = default_allocator;
-	lwrealloc_var = default_reallocator;
-	lwfree_var = default_freeor;
-	lwnotice_var = default_noticereporter;
-	lwerror_var = cu_error_reporter;
 }
 
 void rt_init_allocators(void) {
