@@ -286,7 +286,6 @@ static void
 pgui_raise_error_dialogue(void)
 {
 	GtkWidget *dialog, *label;
-	gint result;
 
 	label = gtk_label_new(pgui_errmsg);
 	dialog = gtk_dialog_new_with_buttons(_("Error"), GTK_WINDOW(window_main),
@@ -297,7 +296,7 @@ pgui_raise_error_dialogue(void)
 	gtk_container_set_border_width(GTK_CONTAINER (GTK_DIALOG(dialog)->vbox), 15);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), label);
 	gtk_widget_show_all(dialog);
-	result = gtk_dialog_run(GTK_DIALOG(dialog));
+	gtk_dialog_run(GTK_DIALOG(dialog));
 	gtk_widget_destroy(dialog);
 	return;
 }
@@ -677,7 +676,7 @@ update_table_chooser_from_database()
 	PGresult *result, *geocol_result;
 	GtkTreeIter iter, geocol_iter;
 	GtkListStore *dumper_geocol_combo_list;
-	char *connection_string, *sql_form, *query, *schema, *table, *geocol_query, *geocol_name;
+	char *connection_string, *sql_form, *query, *schema, *table, *geocol_query, *geocol_name=NULL;
 	int hasgeo, i, j;
 	
 	/* Open a connection to the database */
@@ -1426,7 +1425,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 	char *sql_form, *query, *connection_string, *progress_text = NULL, *progress_shapefile = NULL;
 	PGresult *result;
 	
-	int ret, success, i = 0;
+	int ret, i = 0;
 	char *header, *footer, *record;
 	
 	/* Get the first row of the import list */
@@ -1514,7 +1513,6 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		 * Loop through the items in the shapefile
 		 */
 		is_running = TRUE;
-		success = FALSE;
 		
 		/* One connection per file, otherwise error handling becomes tricky... */
 		pg_connection = PQconnectdb(connection_string);
@@ -1708,9 +1706,6 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 				goto import_cleanup;
 		}
 		
-		/* Indicate success */
-		success = TRUE;
-
 import_cleanup:
 		/* Import has definitely stopped running */
 		is_running = FALSE;
@@ -2787,7 +2782,6 @@ pgui_create_tablechooser_dialog()
 	GtkWidget *vbox_tree, *table_progress;
 	GtkWidget *sw, *label;
 	GtkTreeSelection *chooser_selection;
-	gint *column_indexes;
 
 	/* Create the main top level window with a 10px border */
 	dialog_tablechooser = gtk_dialog_new_with_buttons(_("Table selection"), GTK_WINDOW(window_main),
@@ -2816,13 +2810,6 @@ pgui_create_tablechooser_dialog()
 	chooser_tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(chooser_filtered_table_list_store));
 	chooser_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(chooser_tree));
 	gtk_tree_selection_set_mode(chooser_selection, GTK_SELECTION_MULTIPLE);
-	
-	/* GTK has a slightly brain-dead API in that you can't directly find
-	   the column being used by a GtkCellRenderer when using the same
-	   callback to handle multiple fields; hence we manually store this
-	   information here and pass a pointer to the column index into
-	   the signal handler */
-	column_indexes = g_malloc(sizeof(gint) * TABLECHOOSER_N_COLUMNS);
 	
 	/* Make the tree view in a scrollable window */
 	sw = gtk_scrolled_window_new(NULL, NULL);
