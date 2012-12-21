@@ -35,6 +35,12 @@
 #include "../../postgis_config.h"
 #include "../raster_config.h"
 
+void *rt_pg_alloc(size_t size);
+void *rt_pg_realloc(void *ptr, size_t size);
+void rt_pg_free(void *ptr);
+void rt_pg_error(const char *msg, va_list vp);
+void rt_pg_notice(const char *msg, va_list vp);
+
 /* Debugging macros */
 #if POSTGIS_DEBUG_LEVEL > 0
 

@@ -60,11 +60,6 @@
 #define MAX_DBL_CHARLEN (3 + DBL_MANT_DIG - DBL_MIN_EXP)
 #define MAX_INT_CHARLEN 32
 
-/*
- * This is required for builds against pgsql 
- */
-PG_MODULE_MAGIC;
-
 /***************************************************************
  * Internal functions must be prefixed with rtpg_.  This is
  * keeping inline with the use of pgis_ for ./postgis C utility
@@ -17204,7 +17199,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 /*  Memory allocation / error reporting hooks                       */
 /* ---------------------------------------------------------------- */
 
-static void *
+void *
 rt_pg_alloc(size_t size)
 {
     void * result;
@@ -17216,7 +17211,7 @@ rt_pg_alloc(size_t size)
     return result;
 }
 
-static void *
+void *
 rt_pg_realloc(void *mem, size_t size)
 {
     void * result;
@@ -17232,14 +17227,14 @@ rt_pg_realloc(void *mem, size_t size)
     return result;
 }
 
-static void
+void
 rt_pg_free(void *ptr)
 {
     POSTGIS_RT_DEBUG(5, "rt_pfree called");
     pfree(ptr);
 }
 
-static void
+void
 rt_pg_error(const char *fmt, va_list ap)
 {
 #define ERRMSG_MAXLEN 256
@@ -17252,7 +17247,7 @@ rt_pg_error(const char *fmt, va_list ap)
     ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
-static void
+void
 rt_pg_notice(const char *fmt, va_list ap)
 {
     char *msg;
@@ -17269,7 +17264,6 @@ rt_pg_notice(const char *fmt, va_list ap)
     ereport(NOTICE, (errmsg_internal("%s", msg)));
     free(msg);
 }
-
 
 void
 rt_init_allocators(void)
