@@ -4,6 +4,7 @@ PostGIS 2.0.3
  * Bug Fixes *
   - #2126, Better handling of empty rasters from ST_ConvexHull()
   - #2134, Make sure to process SRS before passing it off to GDAL functions
+  - Fix various memory leaks in liblwgeom
 
  * Enhancements *
   - #2141, More verbose output when constraints fail to be added
