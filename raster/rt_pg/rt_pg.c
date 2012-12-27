@@ -65,9 +65,22 @@
 #define MAX_INT_CHARLEN 32
 
 /*
- * This is required for builds against pgsql 
+ * This is required for builds against pgsql
  */
 PG_MODULE_MAGIC;
+
+/*
+ * Module load callback
+ */
+void _PG_init(void);
+void
+_PG_init(void)
+{
+    /* Install liblwgeom handlers */
+    pg_install_lwgeom_handlers();
+
+    /* TODO: Install raster callbacks (see rt_init_allocators) */
+}
 
 /***************************************************************
  * Internal functions must be prefixed with rtpg_.  This is
@@ -17206,6 +17219,7 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 /* ---------------------------------------------------------------- */
 /*  Memory allocation / error reporting hooks                       */
+/*  TODO: reuse the ones in libpgcommon ?                           */
 /* ---------------------------------------------------------------- */
 
 static void *

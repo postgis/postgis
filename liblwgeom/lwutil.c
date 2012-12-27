@@ -8,17 +8,19 @@
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
 
-void *init_allocator(size_t size);
-void init_freeor(void *mem);
-void *init_reallocator(void *mem, size_t size);
-void init_noticereporter(const char *fmt, va_list ap);
-void init_errorreporter(const char *fmt, va_list ap);
+/* Default allocators */
+static void * default_allocator(size_t size);
+static void default_freeor(void *mem);
+static void * default_reallocator(void *mem, size_t size);
+lwallocator lwalloc_var = default_allocator;
+lwreallocator lwrealloc_var = default_reallocator;
+lwfreeor lwfree_var = default_freeor;
 
-lwallocator lwalloc_var = init_allocator;
-lwreallocator lwrealloc_var = init_reallocator;
-lwfreeor lwfree_var = init_freeor;
-lwreporter lwnotice_var = init_noticereporter;
-lwreporter lwerror_var = init_errorreporter;
+/* Default reporters */
+static void default_noticereporter(const char *fmt, va_list ap);
+static void default_errorreporter(const char *fmt, va_list ap);
+lwreporter lwnotice_var = default_noticereporter;
+lwreporter lwerror_var = default_errorreporter;
 
 static char *lwgeomTypeName[] =
 {
@@ -41,7 +43,7 @@ static char *lwgeomTypeName[] =
 };
 
 /*
- * lwnotice/lwerror handlers
+ * Default lwnotice/lwerror handlers
  *
  * Since variadic functions cannot pass their parameters directly, we need
  * wrappers for these functions to convert the arguments into a va_list
@@ -75,57 +77,6 @@ lwerror(const char *fmt, ...)
 }
 
 /*
- * Initialisation allocators
- *
- * These are used the first time any of the allocators are called
- * to enable executables/libraries that link into liblwgeom to
- * be able to set up their own allocators. This is mainly useful
- * for older PostgreSQL versions that don't have functions that
- * are called upon startup.
- */
-
-void *
-init_allocator(size_t size)
-{
-	lwgeom_init_allocators();
-
-	return lwalloc_var(size);
-}
-
-void
-init_freeor(void *mem)
-{
-	lwgeom_init_allocators();
-
-	lwfree_var(mem);
-}
-
-void *
-init_reallocator(void *mem, size_t size)
-{
-	lwgeom_init_allocators();
-
-	return lwrealloc_var(mem, size);
-}
-
-void
-init_noticereporter(const char *fmt, va_list ap)
-{
-	lwgeom_init_allocators();
-
-	(*lwnotice_var)(fmt, ap);
-}
-
-void
-init_errorreporter(const char *fmt, va_list ap)
-{
-	lwgeom_init_allocators();
-
-	(*lwerror_var)(fmt, ap);
-}
-
-
-/*
  * Default allocators
  *
  * We include some default allocators that use malloc/free/realloc
@@ -133,27 +84,27 @@ init_errorreporter(const char *fmt, va_list ap)
  *
  */
 
-void *
+static void *
 default_allocator(size_t size)
 {
 	void *mem = malloc(size);
 	return mem;
 }
 
-void
+static void
 default_freeor(void *mem)
 {
 	free(mem);
 }
 
-void *
+static void *
 default_reallocator(void *mem, size_t size)
 {
 	void *ret = realloc(mem, size);
 	return ret;
 }
 
-void
+static void
 default_noticereporter(const char *fmt, va_list ap)
 {
 	char *msg;
@@ -171,7 +122,7 @@ default_noticereporter(const char *fmt, va_list ap)
 	free(msg);
 }
 
-void
+static void
 default_errorreporter(const char *fmt, va_list ap)
 {
 	char *msg;
@@ -190,21 +141,24 @@ default_errorreporter(const char *fmt, va_list ap)
 	exit(1);
 }
 
-
-/*
- * This function should be called from lwgeom_init_allocators() by programs
- * which wish to use the default allocators above
+/**
+ * This function is called by programs which want to set up custom handling 
+ * for memory management and error reporting
+ *
+ * Only non-NULL values change their respective handler
  */
+void
+lwgeom_set_handlers(lwallocator allocator, lwreallocator reallocator,
+	        lwfreeor freeor, lwreporter errorreporter,
+	        lwreporter noticereporter) {
 
-void lwgeom_install_default_allocators(void)
-{
-	lwalloc_var = default_allocator;
-	lwrealloc_var = default_reallocator;
-	lwfree_var = default_freeor;
-	lwerror_var = default_errorreporter;
-	lwnotice_var = default_noticereporter;
+	if ( allocator ) lwalloc_var = allocator;
+	if ( reallocator ) lwrealloc_var = reallocator;
+	if ( freeor ) lwfree_var = freeor;
+
+	if ( errorreporter ) lwerror_var = errorreporter;
+	if ( noticereporter ) lwnotice_var = noticereporter;
 }
-
 
 const char* 
 lwtype_name(uint8_t type)

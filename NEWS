@@ -3,6 +3,7 @@ PostGIS 2.1.0
 
 * Important / Breaking Changes  *
 
+  - #2089, liblwgeom: lwgeom_set_handlers replaces lwgeom_init_allocators.
   - #1653, Removed srid parameter from ST_Resample(raster) and variants
            with reference raster no longer apply reference raster's SRID.
   - #2026, ST_Union(raster) now unions all bands of all rasters
