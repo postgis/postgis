@@ -87,7 +87,7 @@ lwerror(const char *fmt, ...)
 void *
 init_allocator(size_t size)
 {
-	lwgeom_init_allocators();
+	lwgeom_install_default_allocators();
 
 	return lwalloc_var(size);
 }
@@ -95,7 +95,7 @@ init_allocator(size_t size)
 void
 init_freeor(void *mem)
 {
-	lwgeom_init_allocators();
+	lwgeom_install_default_allocators();
 
 	lwfree_var(mem);
 }
@@ -103,7 +103,7 @@ init_freeor(void *mem)
 void *
 init_reallocator(void *mem, size_t size)
 {
-	lwgeom_init_allocators();
+	lwgeom_install_default_allocators();
 
 	return lwrealloc_var(mem, size);
 }
@@ -111,7 +111,7 @@ init_reallocator(void *mem, size_t size)
 void
 init_noticereporter(const char *fmt, va_list ap)
 {
-	lwgeom_init_allocators();
+	lwgeom_install_default_allocators();
 
 	(*lwnotice_var)(fmt, ap);
 }
@@ -119,7 +119,7 @@ init_noticereporter(const char *fmt, va_list ap)
 void
 init_errorreporter(const char *fmt, va_list ap)
 {
-	lwgeom_init_allocators();
+	lwgeom_install_default_allocators();
 
 	(*lwerror_var)(fmt, ap);
 }
@@ -192,8 +192,8 @@ default_errorreporter(const char *fmt, va_list ap)
 
 
 /*
- * This function should be called from lwgeom_init_allocators() by programs
- * which wish to use the default allocators above
+ * This function set up default which wish to use the default memory managers
+ * and error handlers
  */
 
 void lwgeom_install_default_allocators(void)
@@ -205,6 +205,22 @@ void lwgeom_install_default_allocators(void)
 	lwnotice_var = default_noticereporter;
 }
 
+/**
+ * This function is called by programs which want to set up custom handling 
+ * for memory management and error reporting
+ */
+void
+lwgeom_set_handlers(lwallocator allocator, lwreallocator reallocator,
+	        lwfreeor freeor, lwreporter errorreporter,
+	        lwreporter noticereporter) {
+
+	lwalloc_var = allocator ? allocator : default_allocator;
+	lwrealloc_var = reallocator ? reallocator : default_reallocator;
+	lwfree_var = freeor ? freeor : default_freeor;
+
+	lwerror_var = errorreporter ? errorreporter : default_errorreporter;
+	lwnotice_var = noticereporter ? noticereporter : default_noticereporter;
+}
 
 const char* 
 lwtype_name(uint8_t type)
