@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter>
+<chapter id="performance_tips">
   <title>Performance tips</title>
 
-  <sect1>
+  <sect1 id="small_tables_large_objects">
     <title>Small tables of large geometries</title>
 
     <sect2>
@@ -76,7 +76,7 @@ WHERE bbox &amp;&amp; ST_SetSRID('BOX3D(0 0,1 1)'::box3d,4326);</programlisting>
     </sect2>
   </sect1>
 
-  <sect1>
+  <sect1 id="database_clustering">
     <title>CLUSTERing on geometry indices</title>
 
     <para>For tables that are mostly read-only, and where a single index is
@@ -109,7 +109,7 @@ ALTER TABLE</programlisting>
     (geometry is not null);" will not work.</para>
   </sect1>
 
-  <sect1>
+  <sect1 id="avoiding_dimension_conversion">
     <title>Avoiding dimension conversion</title>
 
     <para>Sometimes, you happen to have 3D or 4D data in your table, but
@@ -139,7 +139,7 @@ VACUUM FULL ANALYZE mytable;</programlisting>
 
   </sect1>
 
-  <sect1>
+  <sect1 id="database_tuning_configuration">
     <title>Tuning your configuration</title>
 
     <para>These tips are taken from Kevin Neufeld's presentation "Tips for the
