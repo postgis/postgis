@@ -273,7 +273,7 @@ requirements_not_met_xsltproc:
 	@echo "Install xsltproc and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_xmllint:
@@ -283,7 +283,7 @@ requirements_not_met_xmllint:
 	@echo "Install xmllint and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_xslbase:
@@ -294,7 +294,7 @@ requirements_not_met_xslbase:
 	@echo "with the --with-xsldir option."
 	@echo "Alternatively refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_imagemagick:
@@ -303,6 +303,6 @@ requirements_not_met_imagemagick:
 	@echo "To build the documentation, install ImageMagick and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://www.postgis.org/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo 
 	
