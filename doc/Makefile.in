@@ -68,7 +68,7 @@ postgis_comments.sql: ./xsl/postgis_comments.sql.xsl reference.xml
 	$(XSLTPROC) ./xsl/postgis_comments.sql.xsl reference.xml > $@
 
 postgis-out.xml: postgis.xml introduction.xml installation.xml faq.xml using_postgis_dataman.xml  using_postgis_app.xml performance_tips.xml reference.xml postgis_aggs_mm.xml reporting.xml release_notes.xml ../Version.config
-	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" > $@
+	cat $< | sed -e "s/@@LAST_RELEASE_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}/g" -e "s/@@LAST_MINOR_VERSION@@/${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}/g" > $@
 
 chunked-html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \
@@ -154,7 +154,7 @@ requirements_not_met_xsltproc:
 	@echo "To build the documentation, install xsltproc and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://postgis.refractions.net/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_xslbase:
@@ -163,7 +163,7 @@ requirements_not_met_xslbase:
 	@echo "To build the documentation, install the Docbook XSL stylesheets and/or re-run configure with the --with-xsldir option. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://postgis.refractions.net/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo
 
 requirements_not_met_imagemagick:
@@ -172,7 +172,7 @@ requirements_not_met_imagemagick:
 	@echo "To build the documentation, install ImageMagick and then re-run configure. Alternatively "
 	@echo "refer to online manual:"
 	@echo
-	@echo "  http://postgis.refractions.net/docs"
+	@echo "  http://postgis.net/documentation"
 	@echo 
 	
 .PHONY: html
