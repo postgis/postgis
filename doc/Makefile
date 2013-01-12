@@ -29,7 +29,7 @@ requirements_not_met:
 	@echo
 
 postgis-out.xml: postgis.xml long_xact.xml ../Version.config
-	cat $< | sed "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" > $@
+	cat $< | sed -e "s/@@LAST_RELEASE_VERSION@@/$(LAST_RELEASE_VERSION)/g" -e "s/@@LAST_MINOR_VERSION@@/${REL_MAJOR_VERSION}.${REL_MINOR_VERSION}/g" > $@
 
 chunked-html: postgis-out.xml
 	$(XSLTPROC) $(XSLTPROC_COMMONOPTS) $(XSLTPROC_HTMLOPTS) \

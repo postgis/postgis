@@ -4,7 +4,7 @@
 <!ENTITY long_xact SYSTEM "long_xact.xml">
 ]>
 <book>
-  <title>PostGIS @@LAST_RELEASE_VERSION@@ Manual</title>
+  <title>PostGIS @@LAST_MINOR_VERSION@@ Manual</title>
 
   <bookinfo>
     <editor>
@@ -18,7 +18,7 @@
 
         <address><street>Suite 300, 1207 Douglas Street</street> <city>Victoria</city>
         <state>British Columbia</state> <country>Canada</country>
-        <email>pramsey@refractions.net</email></address>
+        <email>pramsey@cleverelephant.ca</email></address>
       </affiliation>
     </editor>
 
