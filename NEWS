@@ -7,6 +7,7 @@ PostGIS 2.0.3
   - Fix various memory leaks in liblwgeom
   - #2173, Fix robustness issue in splitting a line with own vertex
            also affecting topology building (#2172)
+  - #2174, Fix usage of wrong function lwpoly_free()
 
  * Enhancements *
   - #2141, More verbose output when constraints fail to be added

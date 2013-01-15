@@ -8658,7 +8658,7 @@ Datum RASTER_intersects(PG_FUNCTION_ARGS)
 					GEOSGeom_destroy(ghull[j]);
 					lwgeom_free(hull[j]);
 				}
-				lwpoly_free(hull[i]);
+				lwgeom_free(hull[i]);
 				rtn = 0;
 				break;
 			}
