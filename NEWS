@@ -5,6 +5,8 @@ PostGIS 2.0.3
   - #2126, Better handling of empty rasters from ST_ConvexHull()
   - #2134, Make sure to process SRS before passing it off to GDAL functions
   - Fix various memory leaks in liblwgeom
+  - #2173, Fix robustness issue in splitting a line with own vertex
+           also affecting topology building (#2172)
 
  * Enhancements *
   - #2141, More verbose output when constraints fail to be added
