@@ -198,7 +198,11 @@ lwline_split_by_point_to(const LWLINE* lwline_in, const LWPOINT* blade_in,
 	}
 
 	/* There is a real intersection, let's get two substrings */
-	vstol = 1e-14; /* TODO: take this as parameter ? */
+
+	/* Compute vertex snap tolerance based on line length
+	 * TODO: take as parameter ? */
+	vstol = ptarray_length_2d(lwline_in->points) / 1e14;
+
 	pa1 = ptarray_substring(lwline_in->points, 0, loc, vstol);
 	pa2 = ptarray_substring(lwline_in->points, loc, 1, vstol);
 
