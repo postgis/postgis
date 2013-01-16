@@ -19,8 +19,10 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
 / .sh scripts in tiger_2011.  One major change between <varname>tiger_2010</varname> and <varname>tiger_2011/tiger_2012</varname> is that the county and <varname>county</varname> and <varname>state</varname> tables are no longer broken out by state.  We'll be refining the upgrade scripts
 until release.  If you have data from tiger_2010 and want replace with tiger_2012 refer to <xref linkend="upgrade_tiger_geocoder" />
 			  </para></note>
+			  
+			  <note><para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+. Refer to <xref linkend="install_tiger_geocoder_extension" /> for details.</para></note>
 			</para>
-			<note><para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+.</para></note>
+
 
 			<para>Design:</para>
 			<para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
