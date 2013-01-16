@@ -47,23 +47,35 @@ Release procedure
 7) Checkout tag:
    svn checkout http://svn.osgeo.org/postgis/tags/x.x.x
 8) Update Version.config as specified in Versioning Scheme above.
-9) Commit your version number change to the tag.
-10) Run: sh make_dist.sh x.x.x
-11) Copy tarball to web site and edit downloads page
-12) Announce on e-mail 
+9) Update doc/postgis.xml to download.osgeo.org link 
+  (note: unreleased are on postgis.net, and released download.osgeo.org )
+   Also make sure the correct minimum and lastest geos etc are noted.
+10) Commit your version number change to the tag.
+11) Run: sh make_dist.sh x.x.x
+12) Copy tarball to web site and edit downloads page
+13) Announce on e-mail 
     - postgis-users
     - postgis-devel
     - pgsql-announce
     - osgeo-discuss
-13) Update web sites
+14) Update web sites
     - PostGIS News
-    - PostGIS doc release versioned doc - http://www.postgis.org/documentation/
-     (or remind Chris Hodgson)
+     - https://svn.osgeo.org/postgis/web/_content_posts
+       a) create a new Post for current year making sure the page name starts with mm-dd
+       b) commit and wait 5 minutes to see changes on website
+    - PostGIS doc release versioned doc - http://postgis.net/documentation/
+     (For building pdf, debbie has tagged jobs 
+       -- http://debbie.postgis.net:8080 (log in)
+       Create new job copy last tag e.g. PostGIS_2.0_tagged_docs to PostGIS_2.1_tagged_docs
+       and make appropriate edits and then just run.
+       Oh just be lazy and bug Regina Obe do this.
     - Freshmeat
     - Wikipedia
-14) Update Trac and make old Milestone as completed
+    - Twitter (we all love twitter don't we)
+    - PlanetPostGIS
+15) Update Trac and make old Milestone as completed
 
-15) Push the revision number in trunk forward if necessary
-16) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
+16) Push the revision number in trunk forward if necessary
+17) Ensure all the previous released minor versions are listed in extension/upgradeable_versions.mk
 
 
