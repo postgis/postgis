@@ -2644,8 +2644,9 @@ BEGIN
     || quote_ident(atopology)
     || '.node WHERE geom && '
     || quote_literal(acurve::text)
-    || '::geometry'
-    -- TODO: skip start_node and end_node !
+    || '::geometry AND node_id NOT IN ('
+    || oldedge.start_node || ',' || oldedge.end_node
+    || ')'
   LOOP
     IF ST_RelateMatch(rec.relate, 'T********') THEN
       RAISE EXCEPTION 'SQL/MM Spatial exception - geometry crosses a node';
