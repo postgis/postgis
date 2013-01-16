@@ -37,4 +37,8 @@ T11|Edge 16 changed
 T11F|t
 T12.1|23
 ERROR:  Edge motion collision at POINT(49 10)
+T13.1|29
+T13.2|Edge 29 changed
+T13.3|26
+ERROR:  Edge motion collision at POINT(-1.1697 47.7825)
 Topology 'city_data' dropped
