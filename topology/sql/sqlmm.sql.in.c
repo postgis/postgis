@@ -13,7 +13,7 @@
 --  
 -- 
 
-/*#define POSTGIS_TOPOLOGY_DEBUG 1*/
+/* #define POSTGIS_TOPOLOGY_DEBUG 1 */
 
 --={ ----------------------------------------------------------------
 --  SQL/MM block
@@ -2585,10 +2585,10 @@ CREATE OR REPLACE FUNCTION topology.ST_ChangeEdgeGeom(atopology varchar, anedge 
 $$
 DECLARE
   rec RECORD;
+  rng_info RECORD; -- movement range info
   oldedge RECORD;
   range GEOMETRY; -- movement range
   tmp1 GEOMETRY;
-  tmp2 GEOMETRY;
   snode_info RECORD;
   enode_info RECORD;
   sql TEXT;
@@ -2685,6 +2685,7 @@ BEGIN
     || '.node WHERE geom && '
     || quote_literal(acurve::text)
     || '::geometry'
+    -- TODO: skip start_node and end_node !
   LOOP
     IF ST_RelateMatch(rec.relate, 'T********') THEN
       RAISE EXCEPTION 'SQL/MM Spatial exception - geometry crosses a node';
@@ -2734,51 +2735,71 @@ BEGIN
   -- Check that the "motion range" doesn't include any node 
   --{
 
-  tmp1 := ST_MakeLine(ST_EndPoint(oldedge.geom), ST_StartPoint(oldedge.geom));
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'end-to-start: %', ST_AsText(tmp1);
-#endif
-
-  tmp2 := ST_MakeLine(oldedge.geom, tmp1);
-  IF ST_NumPoints(tmp2) < 4 THEN
-    tmp2 := ST_AddPoint(tmp2, ST_StartPoint(oldedge.geom));
-  END IF;
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Old-ring: %', ST_AsText(tmp2);
-#endif
-  tmp2 := ST_CollectionExtract(ST_MakeValid(ST_MakePolygon(tmp2)), 3);
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Old-ring (poly): %', ST_AsText(tmp2);
-#endif
-
-  range := ST_MakeLine(acurve, tmp1);
-  IF ST_NumPoints(range) < 4 THEN
-    range := ST_AddPoint(range, ST_StartPoint(oldedge.geom));
-  END IF;
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'New-ring: %', ST_AsText(range);
-#endif
-  range := ST_CollectionExtract(ST_MakeValid(ST_MakePolygon(range)), 3);
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'New-ring (poly): %', ST_AsText(range);
-#endif
-
-  range := ST_SymDifference(range, tmp2);
-#ifdef POSTGIS_TOPOLOGY_DEBUG
-  RAISE DEBUG 'Range motion: %', ST_AsText(range);
-#endif
-
-  sql := 'SELECT node_id, geom FROM '
+  sql := 'SELECT ST_Collect(geom) as nodes, '
+    || 'null::geometry as r1, null::geometry as r2 FROM '
     || quote_ident(atopology)
-    || '.node WHERE ST_Contains('
-    || quote_literal(range::text)
-    || '::geometry, geom) LIMIT 1';
+    || '.node WHERE geom && '
+    || quote_literal(ST_Collect(ST_Envelope(oldedge.geom),
+                                ST_Envelope(acurve))::text)
+    || '::geometry AND node_id NOT IN ( '
+    || oldedge.start_node || ',' || oldedge.end_node || ')';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG '%', sql;
 #endif
-  FOR rec IN EXECUTE sql LOOP -- {
-    RAISE EXCEPTION 'Edge motion collision at %', ST_AsText(rec.geom);
-  END LOOP; -- }
+  EXECUTE sql INTO rng_info;
+
+  -- There's no collision if there's no nodes in the combined
+  -- bbox of old and new edges.
+  --
+  IF NOT ST_IsEmpty(rng_info.nodes) THEN -- {
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG '% nodes in the edge movement range bbox: %',
+                              ST_NumGeometries(rng_info.nodes),
+                              ST_AsText(rng_info.nodes)
+                              ;
+#endif
+
+    tmp1 := ST_MakeLine(ST_EndPoint(oldedge.geom), ST_StartPoint(oldedge.geom));
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'end-to-start: %', ST_AsText(tmp1);
+#endif
+
+    rng_info.r1 := ST_MakeLine(oldedge.geom, tmp1);
+    IF ST_NumPoints(rng_info.r1) < 4 THEN
+      rng_info.r1 := ST_AddPoint(rng_info.r1, ST_StartPoint(oldedge.geom));
+    END IF;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Old-ring: %', ST_AsText(rng_info.r1);
+#endif
+    rng_info.r1 := ST_CollectionExtract(
+                       ST_MakeValid(ST_MakePolygon(rng_info.r1)), 3);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Old-ring (poly): %', ST_AsText(rng_info.r1);
+#endif
+
+    rng_info.r2 := ST_MakeLine(acurve, tmp1);
+    IF ST_NumPoints(rng_info.r2) < 4 THEN
+      rng_info.r2 := ST_AddPoint(rng_info.r2, ST_StartPoint(oldedge.geom));
+    END IF;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'New-ring: %', ST_AsText(rng_info.r2);
+#endif
+    rng_info.r2 := ST_CollectionExtract(
+                       ST_MakeValid(ST_MakePolygon(rng_info.r2)), 3);
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'New-ring (poly): %', ST_AsText(rng_info.r2);
+#endif
+
+     tmp1 := ST_CollectionExtract(ST_Intersection(rng_info.nodes, rng_info.r1), 1);
+    range := ST_CollectionExtract(ST_Intersection(rng_info.nodes, rng_info.r2), 1);
+    IF ST_IsEmpty(tmp1) != ST_IsEmpty(range) OR NOT ST_Equals(tmp1, range)
+    THEN
+      RAISE EXCEPTION 'Edge motion collision at %',
+                        ST_AsText(ST_GeometryN(ST_Union(tmp1, range), 1));
+    END IF;
+
+  END IF; -- }
 
   --} motion range checking end
 
