@@ -203,12 +203,12 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 
 	<para>
 	  Retrieve the PostGIS source archive from the downloads website
-	  <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">
-		http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
+	  <ulink url="&postgis_download_url;">
+		&postgis_download_url;
 	  </ulink>
 	</para>
 
-	<programlisting>wget http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
+	<programlisting>wget &postgis_download_url;
 tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	<para>
@@ -988,7 +988,7 @@ Failed: 0
 		</para>
 	
 		<para>
-		  If you don't have an extras folder, download <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">http://www.postgis.org/download/postgis-&last_release_version;.tar.gz</ulink>
+		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
 		</para>
 	
 		<para>
@@ -1019,7 +1019,7 @@ pretty_address
 		</para>
 	
 		<para>
-		  If you don't have an extras folder, download <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">http://www.postgis.org/download/postgis-&last_release_version;.tar.gz</ulink>
+		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
 		</para>
 	
 		<para>
