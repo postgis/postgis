@@ -20,6 +20,11 @@ you can upgrade the scripts using the accompanying upgrade_geocoder.bat
 until release.  If you have data from tiger_2010 and want replace with tiger_2012 refer to <xref linkend="upgrade_tiger_geocoder" />
 			  </para></note>
 			</para>
+			<note><para>New in PostGIS 2.1.0 release is ability to install tiger geocoder with PostgreSQL extension model if you are running PostgreSQL 9.1+.</para>
+				<para>To do so: 
+<programlisting>CREATE EXTENSION fuzzystrmatch;
+CREATE EXTENSION postgis_tiger_geocoder;</programlisting>
+</para></note>
 			<para>Design:</para>
 			<para>The goal of this project is to build a fully functional geocoder that can process an arbitrary 
 			United States address string and using normalized TIGER census data, produce a point geometry and rating reflecting the location of the given address and likeliness of the location. The higher the rating number the worse the result.</para>

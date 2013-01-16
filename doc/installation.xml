@@ -208,12 +208,12 @@ in the docs folder
 
 	<para>
 	  Retrieve the PostGIS source archive from the downloads website
-	  <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">
-		http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
+	  <ulink url="&postgis_download_url;">
+		&postgis_download_url;
 	  </ulink>
 	</para>
 
-	<programlisting>wget http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
+	<programlisting>wget &postgis_download_url;
 tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	<para>
@@ -989,14 +989,57 @@ Failed: 0
 	<para>The Tiger geocoder does not get installed / upgraded with the core PostGIS scripts because it is only of regional use.  In fact nothing located
 	in the extras folder is installed by default with the regular PostGIS install / upgrade.  Extras like Tiger geocoder may also not be packaged in your PostGIS distribution, but will always be available in the postgis-&last_release_version;.tar.gz file. The instructions provided here are also available in the <filename>extras/tiger_geocoder/tiger_2011/README</filename> </para>
 	<para>If you are on Windows and you don't have tar installed, you can use <ulink url="http://www.7-zip.org/">http://www.7-zip.org/</ulink> to unzip the PostGIS tarball.</para>
+	<sect2 id="install_tiger_geocoder_extension">
+		<title>Tiger Geocoder Enabling your PostGIS database: Using Extension</title>	
+		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1.0, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
+		<orderedlist>
+			<listitem><para>First get binaries for PostGIS 2.1.0 or compile and install as usual.  This should install the necessary extension files as well for tiger geocoder.</para></listitem>
+			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.
+			<programlisting>CREATE EXTENSION postgis;		
+	CREATE EXTENSION fuzzystrmatch;
+	CREATE EXTENSION postgis_tiger_geocoder;</programlisting></para></listitem>
+			<listitem><para>To confirm your install is working correctly, run this sql in your database:</para>
+				<programlisting>SELECT na.address, na.streetname,na.streettypeabbrev, na.zip
+	FROM normalize_address('1 Devonshire Place, Boston, MA 02109') AS na;</programlisting>
+				<para>Which should output</para>
+				<para><screen> address | streetname | streettypeabbrev |  zip
+	---------+------------+------------------+-------
+		   1 | Devonshire | Pl               | 02109</screen></para>
+			</listitem>
+			<listitem><para>Create a new profile in <varname>tiger.loader_platform</varname> with the paths of your executables and server. </para>  
+				<para>So for example to create a profile called debbie that follows <code>sh</code> convention. I would do:</para>
+				<programlisting>INSERT INTO tiger.loader_platform(os, declare_sect, pgbin, wget, unzip_command, psql, path_sep, 
+		   loader, environ_set_command, county_process_command)
+	SELECT 'debbie', declare_sect, pgbin, wget, unzip_command, psql, path_sep, 
+		   loader, environ_set_command, county_process_command
+	  FROM tiger.loader_platform
+	  WHERE os = 'sh';</programlisting>
+				<para>And then edit the paths in the <emphasis>declare_sect</emphasis> to those that fit Debbie's pg path locations.</para>
+			
+				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para></listitem>
+			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile.  So for example to do the nation load using our new profile we would:</para>
+					</para>
+					<programlisting>SELECT Loader_Generate_Nation_Script('debbie')</programlisting>
+			</listitem>
+		</orderedlist>
+		<sect3 id="convert_tiger_geocoder_extension"><title>Converting a Tiger Geocoder Regular Install to Extension Model</title>
+			<para>If you installed the tiger geocoder without using the extension model, you can convert to the extension model as follows:</para>
+			<orderedlist>
+				<listitem><para>Follow instructions in <xref linkend="upgrade_tiger_geocoder" /> for the non-extension model upgrade.</para></listitem>
+				<listitem><para>Connect to your data with psql or pgAdmin and run the following command:</para>
+					<programlisting>CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
+				</listitem>
+			</orderedlist>
+		</sect3>
+	</sect2>
 	<sect2 id="install_tiger_geocoder">
-		<title>Tiger Geocoder Enabling your PostGIS database</title>
+		<title>Tiger Geocoder Enabling your PostGIS database: Not Using Extensions</title>
 		<para>
 		  First install PostGIS using the prior instructions.
 		</para>
 	
 		<para>
-		  If you don't have an extras folder, download <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">http://www.postgis.org/download/postgis-&last_release_version;.tar.gz</ulink>
+		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
 		</para>
 	
 		<para>
@@ -1050,11 +1093,11 @@ pretty_address
 	<sect2 id="upgrade_tiger_geocoder">
 		<title>Upgrading your Tiger Geocoder Install</title>
 		<para>
-		  If you have Tiger Geocoder packaged with 2.0+ already installed, you can upgrade the functions at any time even from an interim tar ball if there are fixes you badly need.
+		  If you have Tiger Geocoder packaged with 2.0+ already installed, you can upgrade the functions at any time even from an interim tar ball if there are fixes you badly need.  This will only work for Tiger geocoder not installed with extensions. 
 		</para>
 	
 		<para>
-		  If you don't have an extras folder, download <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">http://www.postgis.org/download/postgis-&last_release_version;.tar.gz</ulink>
+		  If you don't have an extras folder, download <ulink url="&postgis_download_url;">&postgis_download_url;</ulink>
 		</para>
 	
 		<para>
