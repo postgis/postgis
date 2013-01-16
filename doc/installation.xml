@@ -994,8 +994,8 @@ Failed: 0
 		<para>If you are using PostgreSQL 9.1+ and PostGIS 2.1.0, you can take advantage of the new extension model for installing tiger geocoder. To do so:</para>
 		<orderedlist>
 			<listitem><para>First get binaries for PostGIS 2.1.0 or compile and install as usual.  This should install the necessary extension files as well for tiger geocoder.</para></listitem>
-			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.
-			<programlisting>CREATE EXTENSION postgis;		
+			<listitem><para>Connect to your database via psql or pgAdmin or some other tool and run the following SQL commands.  Note that if you are installing in a database that already has postgis, you don't need to do the first step.  If you have <varname>fuzzystrmatch</varname> extension already installed, you don't need to do the second step either.</para>
+			<para><programlisting>CREATE EXTENSION postgis;		
 	CREATE EXTENSION fuzzystrmatch;
 	CREATE EXTENSION postgis_tiger_geocoder;</programlisting></para></listitem>
 			<listitem><para>To confirm your install is working correctly, run this sql in your database:</para>
@@ -1016,9 +1016,9 @@ Failed: 0
 	  WHERE os = 'sh';</programlisting>
 				<para>And then edit the paths in the <emphasis>declare_sect</emphasis> to those that fit Debbie's pg path locations.</para>
 			
-				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para></listitem>
+				<para>If you don't edit this  <varname>loader_platform</varname> table, it will just contain common case locations of items and you'll have to edit the generated script after the script is generated.</para>
+			</listitem>
 			<listitem><para>Then run the  <xref linkend="Loader_Generate_Nation_Script" /> and <xref linkend="Loader_Generate_Script" />  SQL functions make sure to use the name of your custom profile.  So for example to do the nation load using our new profile we would:</para>
-					</para>
 					<programlisting>SELECT Loader_Generate_Nation_Script('debbie')</programlisting>
 			</listitem>
 		</orderedlist>
