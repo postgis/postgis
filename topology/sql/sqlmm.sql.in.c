@@ -2752,13 +2752,22 @@ BEGIN
     RAISE DEBUG 'New-ring (poly): %', ST_AsText(rng_info.r2);
 #endif
 
-     tmp1 := ST_CollectionExtract(ST_Intersection(rng_info.nodes, rng_info.r1), 1);
-    range := ST_CollectionExtract(ST_Intersection(rng_info.nodes, rng_info.r2), 1);
-    IF ST_IsEmpty(tmp1) != ST_IsEmpty(range) OR NOT ST_Equals(tmp1, range)
-    THEN
+    FOR rec IN WITH
+      nodes AS ( SELECT * FROM ST_Dump(rng_info.nodes) ),
+      inr1 AS ( SELECT path[1] FROM nodes WHERE ST_Contains(rng_info.r1, geom) ),
+      inr2 AS ( SELECT path[1] FROM nodes WHERE ST_Contains(rng_info.r2, geom) )
+      ( SELECT * FROM inr1
+          EXCEPT
+        SELECT * FROM inr2
+      ) UNION 
+      ( SELECT * FROM inr2
+          EXCEPT
+        SELECT * FROM inr1
+      )
+    LOOP
       RAISE EXCEPTION 'Edge motion collision at %',
-                        ST_AsText(ST_GeometryN(ST_Union(tmp1, range), 1));
-    END IF;
+                     ST_AsText(ST_GeometryN(rng_info.nodes, rec.path));
+    END LOOP;
 
   END IF; -- }
 
