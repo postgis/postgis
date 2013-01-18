@@ -212,13 +212,13 @@ tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 		svn
 	  </ulink>
 	  repository
-	  <ulink url="http://svn.osgeo.org/postgis/trunk/">
-		http://svn.osgeo.org/postgis/trunk/
+	  <ulink url="http://svn.osgeo.org/postgis/branches/&last_minor_release_version;">
+		http://svn.osgeo.org/postgis/trunk/&last_minor_release_version;
 	  </ulink>
 	  .
 	</para>
 
-	<programlisting>svn checkout http://svn.osgeo.org/postgis/trunk/ postgis-&last_release_version;</programlisting>
+	<programlisting>svn checkout http://svn.osgeo.org/postgis/branches/&last_minor_release_version; postgis-&last_release_version;</programlisting>
 
 	<para>
 	  Change into the newly created
