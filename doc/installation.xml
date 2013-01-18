@@ -192,12 +192,12 @@ psql -d yourdatabase -f spatial_ref_sys.sql</programlisting>
 
 	<para>
 	  Retrieve the PostGIS source archive from the downloads website
-	  <ulink url="http://www.postgis.org/download/postgis-&last_release_version;.tar.gz">
-		http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
+	  <ulink url="&postgis_download_url;">
+		&postgis_download_url;
 	  </ulink>
 	</para>
 
-	<programlisting>wget http://www.postgis.org/download/postgis-&last_release_version;.tar.gz
+	<programlisting>wget &postgis_download_url;
 tar -xvzf postgis-&last_release_version;.tar.gz</programlisting>
 
 	<para>
