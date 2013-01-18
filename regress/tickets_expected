@@ -198,9 +198,9 @@ NOTICE:  Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRA
 #1398b|POINT(-160.137654 77.091608)
 #1543|MULTILINESTRING((0 0,10 0,10 10,0 0),(0 0))|POLYGON((0 0,10 10,10 0,0 0))
 #1578|f|f
-#1580.1|Point[B]
+#1580.1|Point[BS]
 ERROR:  transform: couldn't project point (180 90 0): tolerance condition error (-20)
-#1580.3|Point[B]
+#1580.3|Point[BS]
 #1596.1|public.road_pg.roads_geom SRID:3395 TYPE:POINT DIMS:2 
 ERROR:  invalid SRID: 330000 not found in spatial_ref_sys
 #1596.3|3395
@@ -209,7 +209,7 @@ ERROR:  invalid SRID: 999000 not found in spatial_ref_sys
 NOTICE:  SRID value -1 converted to the officially unknown SRID value 0
 #1596.6|public.road_pg.roads_geom SRID changed to 0
 #1596.7|0
-#1596|Point[BG]
+#1596|Point[BGS]
 #1695|MULTIPOLYGON EMPTY
 #1697.1|0
 #1697.2|0
