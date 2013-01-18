@@ -48,7 +48,8 @@ PostGIS 2.1.0
     (Bborie Park / UC Davis)
   - Added array variants of ST_SetValues() to set many pixel values of a band
     in one call (Bborie Park / UC Davis)
-  - #1643, Tiger Geocoder - Tiger 2011 loader 
+  - #1627, package tiger_geocoder as a PostgreSQL extension
+  - #1643, #2076, Upgrade tiger geocoder to support loading tiger 2011 and 2012 
     (Regina Obe / Paragon Corporation) Funded by Hunter Systems Group
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
   - ST_PixelOfValue (Bborie Park / UC Davis)
