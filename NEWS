@@ -137,6 +137,7 @@ PostGIS 2.1.0
   - #2019, ST_FlipCoordinates does not update bbox
   - #2100, ST_AsRaster may not return raster with specified pixel type
   - #2126, Better handling of empty rasters from ST_ConvexHull()
+  - #2182, Fix issue with outdb rasters with no SRID and ST_Resize
 
 PostGIS 2.0.3
 2013/MM/DD
