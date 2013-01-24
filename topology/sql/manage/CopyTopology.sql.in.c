@@ -34,7 +34,7 @@ BEGIN
   oldtopo_id = rec.id;
   -- TODO: more gracefully handle unexistent topology
 
-  SELECT topology.CreateTopology(newtopo, rec.SRID, rec.precision)
+  SELECT topology.CreateTopology(newtopo, rec.SRID, rec.precision, rec.hasZ)
   INTO strict newtopo_id;
 
   -- Copy faces
