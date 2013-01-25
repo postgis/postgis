@@ -224,15 +224,25 @@ while( my $l = <INPUT> ) {
   #     CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 2249))
   # );
   # 
+  # Example 3:
+  # CREATE TABLE "PIANIFICAZIONE__ELEMENTO_LINEA" (
+  #     soft_gis_serial integer NOT NULL,
+  #     "G" public.geometry,
+  #     CONSTRAINT "enforce_dims_G" CHECK ((public.st_ndims("G") = 2)),
+  #     CONSTRAINT "enforce_geotype_G" CHECK (((public.geometrytype("G") = 'MULTICURVE'::text) OR ("G" IS NULL))),
+  #     CONSTRAINT "enforce_srid_G" CHECK ((public.st_srid("G") = (-1)))
+  # );
+  # 
+  # 
   elsif ( $l =~ /CREATE TABLE *([^ ,]*)/)
   {
     my @sublines = ($l);
     while( my $subline = <INPUT>)
     {
-      if ( $subline =~ /CONSTRAINT enforce_dims_/i ) {
+      if ( $subline =~ /CONSTRAINT "?enforce_dims_/i ) {
         $subline =~ s/\bndims\(/st_ndims(/;
       }
-      if ( $subline =~ /CONSTRAINT enforce_srid_/i ) {
+      if ( $subline =~ /CONSTRAINT "?enforce_srid_/i ) {
         $subline =~ s/\bsrid\(/st_srid(/;
         if ( $subline =~ /=\s\(?([-0-9][0-9]*)\)/ ) {
           my $oldsrid = $1;
