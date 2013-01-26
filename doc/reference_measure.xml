@@ -803,7 +803,7 @@ SELECT degrees( ST_Azimuth(ST_Point(25,45), ST_Point(75,100)) ) as degAz,
 		</refsection>
 		<refsection>
 			<title>See Also</title>
-			<para><xref linkend="ST_Point" />, <xref linkend="ST_Translate" /></para>
+			<para><xref linkend="ST_Point" />, <xref linkend="ST_Translate" />, <xref linkend="ST_Project" />, <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
 		</refsection>
 
   </refentry>
@@ -3662,7 +3662,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 		  <refsection>
 			<title>See Also</title>
 
-			<para><xref linkend="ST_Azimuth" />, <xref linkend="ST_Distance" /></para>
+			<para><xref linkend="ST_Azimuth" />, <xref linkend="ST_Distance" />,  <ulink url="http://www.postgresql.org/docs/current/interactive/functions-math.html">PostgreSQL Math Functions</ulink></para>
 		  </refsection>
 	</refentry>
 
