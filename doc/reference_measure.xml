@@ -3607,7 +3607,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 		  <refnamediv>
 			<refname>ST_Project</refname>
 
-			<refpurpose>Returns a <varname>POINT</varname> projected from a start point using a distance and bearing (azimuth) in radians.</refpurpose>
+			<refpurpose>Returns a <varname>POINT</varname> projected from a start point using a distance in meters and bearing (azimuth) in radians.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
