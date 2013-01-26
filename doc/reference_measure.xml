@@ -3636,6 +3636,8 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 			<para>Distance, azimuth and projection are all aspects of the same operation, describing (or in the case of projection, constructing) the relationship between two points on the world.</para>
 			<para>The azimuth is sometimes called the heading or the bearing in navigation. It is measured relative to true north (azimuth zero). East is azimuth 90 (<varname>pi/2</varname>), south is azimuth 180 (<varname>pi</varname>), west is azimuth 270 (<varname>pi*1.5</varname>).</para>
 			<para>The distance is given in meters.</para>
+			
+			<para>Availability: 2.0.0</para>
 
 		  </refsection>
 
