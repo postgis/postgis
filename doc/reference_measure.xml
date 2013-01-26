@@ -3367,8 +3367,7 @@ FROM (SELECT ST_Buffer(ST_GeomFromText('POINT(1 0.5)'), 3)  As a,
 			  <funcdef>float <function>ST_Perimeter</function></funcdef>
 				<paramdef><type>geometry </type><parameter>g1</parameter></paramdef>
 			</funcprototype>
-		  </funcsynopsis>
-		   <funcsynopsis>
+
 			<funcprototype>
 			  <funcdef>float <function>ST_Perimeter</function></funcdef>
 				<paramdef><type>geography </type><parameter>geog</parameter></paramdef>
