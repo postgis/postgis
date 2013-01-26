@@ -3607,11 +3607,11 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 	  </refsection>
 	</refentry>
 
-		<refentry id="ST_Project">
+	<refentry id="ST_Project">
 		  <refnamediv>
 			<refname>ST_Project</refname>
 
-			<refpurpose>Returns a <varname>POINT</varname> projected from a start point using a bearing and distance.</refpurpose>
+			<refpurpose>Returns a <varname>POINT</varname> projected from a start point using a distance and bearing (azimuth) in radians.</refpurpose>
 		  </refnamediv>
 
 		  <refsynopsisdiv>
@@ -3632,21 +3632,32 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 		  <refsection>
 			<title>Description</title>
 
-			<para>Returns a <varname>POINT</varname> projected from a start point using an azimuth (bearing) and distance.</para>
+			<para>Returns a <varname>POINT</varname> projected from a start point using an azimuth (bearing) measured in radians and distance measured in meters.</para>
 			<para>Distance, azimuth and projection are all aspects of the same operation, describing (or in the case of projection, constructing) the relationship between two points on the world.</para>
-			<para>The azimuth is sometimes called the heading or the bearing in navigation. It is measured relative to true north (azimuth zero). East is azimuth 90, south is azimuth 180, west is azimuth 270.</para>
+			<para>The azimuth is sometimes called the heading or the bearing in navigation. It is measured relative to true north (azimuth zero). East is azimuth 90 (<varname>pi/2</varname>), south is azimuth 180 (<varname>pi</varname>), west is azimuth 270 (<varname>pi*1.5</varname>).</para>
 			<para>The distance is given in meters.</para>
 
 		  </refsection>
 
 		  <refsection>
-			<title>Examples</title>
+			<title>Example: Using degrees - projected point 100,000 meters and bearing 45 degreees </title>
 
-			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, 45));
-                  st_astext
-	------------------------------------------
-	 POINT(0.63523102912532 0.63947233472882)
-	(1 row)
+			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
+			  st_astext
+------------------------------------------
+ POINT(0.63523102912532 0.63947233472882)
+(1 row)
+	</programlisting>
+		  </refsection>
+		  
+		  <refsection>
+			<title>Example: Using radians - projected point 100,000 meters and bearing pi/4 (45 degreees) </title>
+
+			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, pi()/4));
+			  st_astext
+------------------------------------------
+ POINT(0.63523102912532 0.63947233472882)
+(1 row)
 	</programlisting>
 		  </refsection>
 
@@ -3655,7 +3666,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 
 			<para><xref linkend="ST_Azimuth" />, <xref linkend="ST_Distance" /></para>
 		  </refsection>
-		</refentry>
+	</refentry>
 
 	<refentry id="ST_Relate">
 		<refnamediv>
