@@ -3640,7 +3640,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 		  </refsection>
 
 		  <refsection>
-			<title>Example: Using degrees - projected point 100,000 meters and bearing 45 degreees </title>
+			<title>Example: Using degrees - projected point 100,000 meters and bearing 45 degrees </title>
 
 			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, radians(45.0)));
 			  st_astext
@@ -3651,7 +3651,7 @@ SELECT ST_AsEWKT(ST_PointOnSurface(ST_GeomFromEWKT('LINESTRING(0 5 1, 0 0 1, 0 1
 		  </refsection>
 		  
 		  <refsection>
-			<title>Example: Using radians - projected point 100,000 meters and bearing pi/4 (45 degreees) </title>
+			<title>Example: Using radians - projected point 100,000 meters and bearing pi/4 (45 degrees) </title>
 
 			<programlisting>SELECT ST_AsText(ST_Project('POINT(0 0)'::geography, 100000, pi()/4));
 			  st_astext
