@@ -1985,7 +1985,7 @@ rt_errorstate
 rt_band_set_pixel_line(
 	rt_band band,
 	int x, int y,
-	void *vals, uint16_t len
+	void *vals, uint32_t len
 ) {
 	rt_pixtype pixtype = PT_END;
 	int size = 0;
@@ -1993,6 +1993,8 @@ rt_band_set_pixel_line(
 	uint32_t offset = 0;
 
 	assert(NULL != band);
+
+	RASTER_DEBUGF(3, "length of values = %d", len);
 
 	if (band->offline) {
 		rterror("rt_band_set_pixel_line not implemented yet for OFFDB bands");
@@ -2012,7 +2014,7 @@ rt_band_set_pixel_line(
 
 	data = rt_band_get_data(band);
 	offset = x + (y * band->width);
-	RASTER_DEBUGF(5, "offset = %d", offset);
+	RASTER_DEBUGF(4, "offset = %d", offset);
 
 	/* make sure len of values to copy don't exceed end of data */
 	if (len > (band->width * band->height) - offset) {
@@ -9013,6 +9015,21 @@ rt_raster_to_gdal_mem(
 				rtwarn("rt_raster_to_gdal_mem: Could not set nodata value for band");
 			RASTER_DEBUGF(3, "nodata value set to %f", GDALGetRasterNoDataValue(band, NULL));
 		}
+
+#if POSTGIS_DEBUG_LEVEL > 3
+		{
+			GDALRasterBandH _grb = NULL;
+			double _min;
+			double _max;
+			double _mean;
+			double _stddev;
+
+			_grb = GDALGetRasterBand(ds, i + 1);
+			GDALComputeRasterStatistics(_grb, FALSE, &_min, &_max, &_mean, &_stddev, NULL, NULL);
+			RASTER_DEBUGF(4, "GDAL Band %d stats: %f, %f, %f, %f", i + 1, _min, _max, _mean, _stddev);
+		}
+#endif
+
 	}
 
 	/* necessary??? */
@@ -9089,11 +9106,12 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		rt_raster_destroy(rast);
 		return NULL;
 	}
-	RASTER_DEBUGF(3, "Raster geotransform (%f, %f, %f, %f, %f, %f)",
-		gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
 	/* apply raster attributes */
 	rt_raster_set_geotransform_matrix(rast, gt);
+
+	RASTER_DEBUGF(3, "Raster geotransform (%f, %f, %f, %f, %f, %f)",
+		gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
 	/* srid */
 	srs = GDALGetProjectionRef(ds);
@@ -9108,13 +9126,29 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 				pszAuthorityCode != NULL
 			) {
 				rt_raster_set_srid(rast, atoi(pszAuthorityCode));
+				RASTER_DEBUGF(3, "New raster's SRID = %d", rast->srid);
 			}
 		}
 		OSRDestroySpatialReference(hSRS);
 	}
 
-	/* copy bands */
 	numBands = GDALGetRasterCount(ds);
+
+#if POSTGIS_DEBUG_LEVEL > 3
+	for (i = 1; i <= numBands; i++) {
+		GDALRasterBandH _grb = NULL;
+		double _min;
+		double _max;
+		double _mean;
+		double _stddev;
+
+		_grb = GDALGetRasterBand(ds, i);
+		GDALComputeRasterStatistics(_grb, FALSE, &_min, &_max, &_mean, &_stddev, NULL, NULL);
+		RASTER_DEBUGF(4, "GDAL Band %d stats: %f, %f, %f, %f", i, _min, _max, _mean, _stddev);
+	}
+#endif
+
+	/* copy bands */
 	for (i = 1; i <= numBands; i++) {
 		RASTER_DEBUGF(3, "Processing band %d of %d", i, numBands);
 		gdband = NULL;
@@ -9138,7 +9172,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		/* size: width and height */
 		width = GDALGetRasterBandXSize(gdband);
 		height = GDALGetRasterBandYSize(gdband);
-		RASTER_DEBUGF(3, "Band dimensions (width x height): %d x %d", width, height);
+		RASTER_DEBUGF(3, "GDAL band dimensions (width x height): %d x %d", width, height);
 
 		/* nodata */
 		nodataval = GDALGetRasterNoDataValue(gdband, &status);
@@ -9206,15 +9240,16 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 			rt_raster_destroy(rast);
 			return NULL;
 		}
+		RASTER_DEBUGF(3, "values len = %d", valueslen);
 
 		for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++) {
 			for (iXBlock = 0; iXBlock < nXBlocks; iXBlock++) {
-				memset(values, 0, valueslen);
-
 				x = iXBlock * nXBlockSize;
 				y = iYBlock * nYBlockSize;
 				RASTER_DEBUGF(4, "(iXBlock, iYBlock) = (%d, %d)", iXBlock, iYBlock);
 				RASTER_DEBUGF(4, "(x, y) = (%d, %d)", x, y);
+
+				memset(values, 0, valueslen);
 
 				/* valid block width */
 				if ((iXBlock + 1) * nXBlockSize > width)
@@ -9239,7 +9274,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 					0, 0
 				);
 				if (cplerr != CE_None) {
-					rterror("rt_raster_from_gdal_dataset: Unable to get data from transformed raster");
+					rterror("rt_raster_from_gdal_dataset: Unable to get data from GDAL raster");
 					rtdealloc(values);
 					rt_raster_destroy(rast);
 					return NULL;
@@ -9491,17 +9526,6 @@ rt_raster rt_raster_gdal_warp(
 		return NULL;
 	}
 	RASTER_DEBUG(3, "raster loaded into GDAL MEM dataset");
-	{
-		GDALRasterBandH _grb = NULL;
-		double _min;
-		double _max;
-		double _mean;
-		double _stddev;
-
-		_grb = GDALGetRasterBand(arg->src.ds, 1);
-		GDALComputeRasterStatistics(_grb, FALSE, &_min, &_max, &_mean, &_stddev, NULL, NULL);
-		RASTER_DEBUGF(4, "GDAL stats: %f, %f, %f, %f", _min, _max, _mean, _stddev);
-	}
 
 	/* set transform options */
 	if (arg->src.srs != NULL || arg->dst.srs != NULL) {

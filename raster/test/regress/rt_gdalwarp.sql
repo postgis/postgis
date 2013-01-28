@@ -815,7 +815,8 @@ SELECT
 			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
 			, 1, '8BUI', 255, 0
 		)
-	, '50%', '500') AS rast
+		, '50%', '500'
+	) AS rast
 UNION ALL
 SELECT
 	2 AS rid, 
@@ -824,7 +825,8 @@ SELECT
 			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
 			, 1, '8BUI', 255, 0
 		)
-	, 500, 100) AS rast
+		, 500, 100
+	) AS rast
 UNION ALL
 SELECT
 	3 AS rid, 
@@ -833,8 +835,19 @@ SELECT
 			ST_MakeEmptyRaster(1000, 1000, 0, 0, 1, -1, 0, 0, 0)
 			, 1, '8BUI', 255, 0
 		)
-	, 0.25, 0.9) AS rast
+		, 0.25, 0.9
+	) AS rast
+UNION ALL
+SELECT -- ticket #2188
+	4 AS rid, 
+	ST_Resize(
+		ST_AddBand(
+			ST_MakeEmptyRaster(1024, 768, 0, 0, 1, -1, 0, 0, 0)
+			, 1, '8BUI', 255, 0
+		)
+		, 0.5, 0.5
+	) AS rast
 ), bar AS (
-	SELECT rid, ST_Metadata(rast) AS meta, rast FROM foo
+	SELECT rid, ST_Metadata(rast) AS meta, ST_SummaryStats(rast) AS stats FROM foo
 )
-SELECT rid, (meta).* FROM bar
+SELECT rid, (meta).*, (stats).* FROM bar
