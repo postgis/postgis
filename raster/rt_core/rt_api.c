@@ -1751,7 +1751,7 @@ int
 rt_band_set_pixel_line(
 	rt_band band,
 	int x, int y,
-	void *vals, uint16_t len
+	void *vals, uint32_t len
 ) {
 	rt_pixtype pixtype = PT_END;
 	int size = 0;
