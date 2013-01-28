@@ -11346,7 +11346,7 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	}
 	/* target SRID == src SRID, no reprojection */
 	else if (dst_srid == src_srid) {
-		/* set geotransform BUT ONLY when geotransform isn't default */
+		/* set geotransform BUT ONLY when geotransform IS the default */
 		if (src_srid == SRID_UNKNOWN) {
 			double gt[6];
 
