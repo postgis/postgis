@@ -10175,8 +10175,8 @@ rt_raster rt_raster_gdal_warp(
 		return NULL;
 	}
 	/*
-	*/
 	GDALSetDescription(arg->dst.ds, "/tmp/warped.vrt");
+	*/
 	GDALFlushCache(arg->dst.ds);
 	RASTER_DEBUG(3, "Raster warped");
 
