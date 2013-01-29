@@ -1584,6 +1584,7 @@ rt_band_load_offline_data(rt_band band) {
 	double gt[6] = {0.};
 	double ogt[6] = {0.};
 	double offset[2] = {0};
+	int i = 0;
 
 	rt_raster _rast = NULL;
 	rt_band _band = NULL;
@@ -1631,6 +1632,15 @@ rt_band_load_offline_data(rt_band band) {
 	RASTER_DEBUGF(3, "Offline geotransform (%f, %f, %f, %f, %f, %f)",
 		ogt[0], ogt[1], ogt[2], ogt[3], ogt[4], ogt[5]);
 
+	/* check that geotransforms match */
+	for (i = 0; i < 6; i++) {
+		if (FLT_NEQ(gt[i], ogt[i])) {
+			rtwarn("Georeferencing metadata does not match. Incorrect band data may be loaded");
+			RASTER_DEBUGF(3, "Geotransform matrix element %d does not match", i);
+			break;
+		}
+	}
+
 	/* get offsets */
 	rt_raster_geopoint_to_cell(
 		band->raster,
@@ -1640,8 +1650,6 @@ rt_band_load_offline_data(rt_band band) {
 	);
 	RASTER_DEBUGF(4, "offsets: (%f, %f)", offset[0], offset[1]);
 
-	/* XXX: should there be a check for the spatial attributes between the offline raster file and that of the raster? */
-	
 	/* create VRT dataset */
 	hdsDst = VRTCreate(band->width, band->height);
 	GDALSetGeoTransform(hdsDst, gt);
