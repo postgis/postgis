@@ -117,11 +117,11 @@
 		 For example floating point band types and 32 bit unsigned ints
 		 	will not translate easily to JPG or some others.</para>
 		 <para>Here is an example simple translation</para>
-		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
+		  <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable" C:\somefile.png</programlisting>
 		 <para>You can also use SQL where clauses in your export using the where=... in your driver connection string. 
 		 	Below are some using a where clause</para>
-		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable where="owner='jimmy'" " C:\somefile.png</programlisting>
-		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost dbname='mygisdb' user='postgres' password=whatever' schema='someschema' table=sometable where='ST_Intersects(rast, ST_SetSRID(ST_Point(-71.032,42.3793),4326) )' " C:\intersectregion.png</programlisting>
+		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable where='filename=\'abcd.sid\''" " C:\somefile.png</programlisting>
+		 <programlisting>gdal_translate -of PNG -outsize 10% 10% "PG:host=localhost port=5432 dbname='mygisdb' user='postgres' password='whatever' schema='someschema' table=sometable where='ST_Intersects(rast, ST_SetSRID(ST_Point(-71.032,42.3793),4326) )' " C:\intersectregion.png</programlisting>
 		 <para>To see more examples and syntax refer to <ulink url="http://trac.osgeo.org/gdal/wiki/frmts_wtkraster.html#a3.2-Readingrasterdatafromthedatabase">Reading Raster Data of PostGIS Raster section</ulink></para>
       </answer>
     </qandaentry>
