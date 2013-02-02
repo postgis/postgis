@@ -57,8 +57,8 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
   END IF;
 
-  IF toponame = '' THEN
-        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+  IF NOT EXISTS(SELECT name FROM topology WHERE name = toponame)  THEN
+    RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
   END IF;
 
   n := 1;
@@ -1393,7 +1393,7 @@ BEGIN
     RAISE EXCEPTION 'SQL/MM Spatial exception - null argument';
   END IF;
 
-  IF toponame = '' THEN
+  IF NOT EXISTS(SELECT name FROM topology WHERE name = toponame)  THEN
     RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
   END IF;
 
@@ -1817,6 +1817,15 @@ BEGIN
     RAISE EXCEPTION
      'SQL/MM Spatial exception - null argument';
   END IF;
+  
+  -- Get topology id
+  BEGIN
+    SELECT id FROM topology.topology
+      INTO STRICT topoid WHERE name = atopology;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+  END;
 
   --
   -- Check node existance
@@ -1996,14 +2005,6 @@ BEGIN
     || ' AND edge_id NOT IN (' || edgeid1 || ',' || edgeid2 || ')'
     ;
 
-  -- Get topology id
-        SELECT id FROM topology.topology into topoid
-                WHERE name = atopology;
-  IF topoid IS NULL THEN
-    RAISE EXCEPTION 'No topology % registered',
-      quote_ident(atopology);
-  END IF;
-
   --
   -- Update references in the Relation table.
   -- We only take into considerations non-hierarchical
@@ -2115,8 +2116,13 @@ BEGIN
   END IF;
 
   -- Get topology id
-  SELECT id FROM topology.topology into topoid
-    WHERE name = atopology;
+  BEGIN
+    SELECT id FROM topology.topology
+      INTO STRICT topoid WHERE name = atopology;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        RAISE EXCEPTION 'SQL/MM Spatial exception - invalid topology name';
+  END;
 
   --
   -- Check node existance
