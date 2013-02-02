@@ -9,7 +9,7 @@ ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - null argument
 ERROR:  SQL/MM Spatial exception - invalid topology name
-ERROR:  zero-length delimited identifier at or near """" at character 21
+ERROR:  SQL/MM Spatial exception - invalid topology name
 ERROR:  SQL/MM Spatial exception - not within face
 ERROR:  SQL/MM Spatial exception - not within face
 ERROR:  SQL/MM Spatial exception - not within face

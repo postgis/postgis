@@ -1,9 +1,9 @@
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 -- 
 -- PostGIS - Spatial Types for PostgreSQL
--- http://postgis.refractions.net
+-- http://postgis.net
 --
--- Copyright (C) 2010, 2011, 2012 Sandro Santilli <strk@keybit.net>
+-- Copyright (C) 2010, 2011, 2012, 2013 Sandro Santilli <strk@keybit.net>
 -- Copyright (C) 2005 Refractions Research Inc.
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -1464,6 +1464,13 @@ BEGIN
      'SQL/MM Spatial exception - null argument';
   END IF;
 
+      --
+  -- Atopology must  be registered
+  -- 
+  IF NOT EXISTS(SELECT name FROM topology WHERE topology.name = atopology) THEN
+    RAISE EXCEPTION
+     'SQL/MM Spatial exception - invalid topology name';
+  END IF;
   --
   -- Apoint must be a point
   --
