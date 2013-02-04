@@ -2169,8 +2169,6 @@ Datum RASTER_setBandNoDataValue(PG_FUNCTION_ARGS)
 	}
 
 	if (!skipset) {
-		assert(0 <= (bandindex - 1));
-
 		/* Fetch requested band */
 		band = rt_raster_get_band(raster, bandindex - 1);
 		if (!band) {
@@ -8562,7 +8560,6 @@ Datum RASTER_quantile(PG_FUNCTION_ARGS)
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
-		assert(0 <= (bandindex - 1));
 
 		/* exclude_nodata_value flag */
 		if (!PG_ARGISNULL(2))
@@ -9241,7 +9238,6 @@ Datum RASTER_valueCount(PG_FUNCTION_ARGS) {
 			MemoryContextSwitchTo(oldcontext);
 			SRF_RETURN_DONE(funcctx);
 		}
-		assert(0 <= (bandindex - 1));
 
 		/* exclude_nodata_value flag */
 		if (!PG_ARGISNULL(2))
