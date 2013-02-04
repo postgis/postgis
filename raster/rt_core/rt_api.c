@@ -1587,7 +1587,6 @@ rt_band_load_offline_data(rt_band band) {
 	double gt[6] = {0.};
 	double ogt[6] = {0.};
 	double offset[2] = {0};
-	int i = 0;
 
 	rt_raster _rast = NULL;
 	rt_band _band = NULL;

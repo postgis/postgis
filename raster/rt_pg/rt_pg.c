@@ -5825,7 +5825,7 @@ Datum RASTER_tile(PG_FUNCTION_ARGS)
 				rt_band_get_ext_band_num(_band, &bandnum);
 
 				band = rt_band_new_offline(
-					arg2->raster.width, arg2->raster.height,
+					width, height,
 					pixtype,
 					hasnodata, nodataval,
 					bandnum, rt_band_get_ext_path(_band)

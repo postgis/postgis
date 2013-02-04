@@ -140,6 +140,8 @@ PostGIS 2.1.0
   - #2182, Fix issue with outdb rasters with no SRID and ST_Resize
   - #2188, Fix function parameter value overflow that caused problems
            when copying data from a GDAL dataset
+  - #2198, Fix incorrect dimensions used when generating bands of out-db
+           rasters in ST_Tile()
 
 PostGIS 2.0.3
 2013/MM/DD
