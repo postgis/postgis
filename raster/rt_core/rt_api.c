@@ -200,7 +200,7 @@ static void quicksort(double *left, double *right) {
  */
 GDALResampleAlg
 rt_util_gdal_resample_alg(const char *algname) {
-	if (!algname || !strlen(algname))	return GRA_NearestNeighbour;
+	assert(algname != NULL && strlen(algname) > 0);
 
 	if (strcmp(algname, "NEARESTNEIGHBOUR") == 0)
 		return GRA_NearestNeighbour;
@@ -300,6 +300,8 @@ rt_util_gdal_version(const char *request) {
 */
 rt_extenttype
 rt_util_extent_type(const char *name) {
+	assert(name != NULL && strlen(name) > 0);
+
 	if (strcmp(name, "UNION") == 0)
 		return ET_UNION;
 	else if (strcmp(name, "FIRST") == 0)
@@ -321,6 +323,8 @@ char*
 rt_util_gdal_convert_sr(const char *srs, int proj4) {
 	OGRSpatialReferenceH hsrs;
 	char *rtn = NULL;
+
+	assert(srs != NULL);
 
 	hsrs = OSRNewSpatialReference(NULL);
 	if (OSRSetFromUserInput(hsrs, srs) == OGRERR_NONE) {
@@ -350,6 +354,8 @@ int
 rt_util_gdal_supported_sr(const char *srs) {
 	OGRSpatialReferenceH hsrs;
 	OGRErr rtn = OGRERR_NONE;
+
+	assert(srs != NULL);
 
 	hsrs = OSRNewSpatialReference(NULL);
 	rtn = OSRSetFromUserInput(hsrs, srs);
@@ -509,8 +515,6 @@ void init_rt_errorreporter(const char * fmt, va_list ap);
 void init_rt_warnreporter(const char * fmt, va_list ap);
 void init_rt_inforeporter(const char * fmt, va_list ap);
 
-
-
 /*
  * Default allocators
  *
@@ -538,7 +542,6 @@ default_rt_deallocator(void *mem)
     free(mem);
 }
 
-
 void
 default_rt_error_handler(const char *fmt, va_list ap) {
 
@@ -565,7 +568,6 @@ default_rt_warning_handler(const char *fmt, va_list ap) {
     va_end(ap);
 }
 
-
 void
 default_rt_info_handler(const char *fmt, va_list ap) {
 
@@ -578,7 +580,6 @@ default_rt_info_handler(const char *fmt, va_list ap) {
 
     va_end(ap);
 }
-
 
 /**
  * Struct definition here
@@ -1200,8 +1201,9 @@ rt_errorstate rt_pixel_set_to_array(
 	int _x;
 	int _y;
 
-	assert(npixel != NULL);
-	assert(count > 0);
+	assert(npixel != NULL && count > 0);
+	assert(value != NULL);
+	assert(nodata != NULL);
 
 	/* dimensions */
 	dim[0] = distancex * 2 + 1;
@@ -1437,6 +1439,7 @@ rt_band_new_offline(
 rt_band
 rt_band_duplicate(rt_band band) {
 	rt_band rtn = NULL;
+
 	assert(band != NULL);
 
 	/* offline */
@@ -1588,6 +1591,7 @@ rt_band_load_offline_data(rt_band band) {
 
 	rt_raster _rast = NULL;
 	rt_band _band = NULL;
+	int aligned = 0;
 
 	assert(band != NULL);
 	assert(band->raster != NULL);
@@ -1632,14 +1636,19 @@ rt_band_load_offline_data(rt_band band) {
 	RASTER_DEBUGF(3, "Offline geotransform (%f, %f, %f, %f, %f, %f)",
 		ogt[0], ogt[1], ogt[2], ogt[3], ogt[4], ogt[5]);
 
-	/* check that geotransforms match */
-	for (i = 0; i < 6; i++) {
-		if (FLT_NEQ(gt[i], ogt[i])) {
-			rtwarn("Georeferencing metadata does not match. Incorrect band data may be loaded");
-			RASTER_DEBUGF(3, "Geotransform matrix element %d does not match", i);
-			break;
-		}
+	/* are rasters aligned? */
+	_rast = rt_raster_new(1, 1);
+	rt_raster_set_geotransform_matrix(_rast, ogt);
+	rt_raster_set_srid(_rast, band->raster->srid);
+	if (rt_raster_same_alignment(band->raster, _rast, &aligned, NULL) != ES_NONE) {
+		rterror("rt_band_load_offline_data: : Could not test alignment of in-db representation of out-db raster");
+		GDALClose(hdsSrc);
+		return ES_ERROR;
 	}
+	else if (!aligned) {
+		rtwarn("The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
+	}
+	rt_raster_destroy(_rast);
 
 	/* get offsets */
 	rt_raster_geopoint_to_cell(
@@ -1773,6 +1782,7 @@ setBits(char* ch, double val, int bits, int bitOffset) {
     char ival = val;
 
 
+		assert(ch != NULL);
     assert(8 - bitOffset >= bits);
 
     RASTER_DEBUGF(4, "ival:%d bits:%d mask:%hhx bitoffset:%d\n",
@@ -2001,6 +2011,7 @@ rt_band_set_pixel_line(
 	uint32_t offset = 0;
 
 	assert(NULL != band);
+	assert(vals != NULL && len > 0);
 
 	RASTER_DEBUGF(3, "length of values = %d", len);
 
@@ -2289,6 +2300,7 @@ rt_errorstate rt_band_get_pixel_line(
 	uint8_t *ptr = NULL;
 
 	assert(NULL != band);
+	assert(vals != NULL && nvals != NULL);
 
 	/* initialize to no values */
 	*nvals = 0;
@@ -2369,6 +2381,7 @@ rt_band_get_pixel(
 	uint32_t offset = 0; 
 
 	assert(NULL != band);
+	assert(NULL != value);
 
 	/* set nodata to 0 */
 	if (nodata != NULL)
@@ -2806,6 +2819,7 @@ rt_band_get_pixel_of_value(
 
 	assert(NULL != band);
 	assert(NULL != pixels);
+	assert(NULL != searchset && searchcount > 0);
 
 	if (!band->hasnodata)
 		exclude_nodata_value = FALSE;
@@ -2867,6 +2881,7 @@ rt_band_get_pixel_of_value(
 rt_errorstate
 rt_band_get_nodata(rt_band band, double *nodata) { 
 	assert(NULL != band);
+	assert(NULL != nodata);
 
 	*nodata = band->nodataval;
 
