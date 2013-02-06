@@ -10323,11 +10323,11 @@ UPDATE wind
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  If <varname>nband</varname> is not specified, band 1 is assumed.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
+				<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  If <varname>nband</varname> is not specified, band 1 is assumed for all function variants except <code>ST_Union(rast)</code>.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
 
 				<para>Availability: 2.0.0 </para>
 				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
-				<para>Changed: 2.1.0 ST_Union(rast) now unions all bands of all input rasters.  Prior versions only unioned the first band of all input rasters.</para>
+				<note><para>Changed: 2.1.0 ST_Union(rast) (variant 1) now unions all bands of all input rasters.  Prior versions of ST_Union(rast) only unioned the first band of all input rasters. The other variants still only union 1 band and default to first band if not specified.</para></note>
 			</refsection>
 				
 			<refsection>
@@ -10365,7 +10365,8 @@ WHERE ST_Intersects(rast,  ST_GeomFromText('LINESTRING(230486 887771, 230500 887
 					<xref linkend="unionarg" />, 
 					<xref linkend="RT_ST_Envelope" />, 
 					<xref linkend="RT_ST_ConvexHull" />,
-					<xref linkend="RT_ST_Clip" />
+					<xref linkend="RT_ST_Clip" />,
+					<xref linkend="ST_Union" />
 				</para>
 			</refsection>
 		</refentry>
