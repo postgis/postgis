@@ -808,23 +808,23 @@ Datum RASTER_minPossibleValue(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(RASTER_in);
 Datum RASTER_in(PG_FUNCTION_ARGS)
 {
-    rt_raster raster;
-    char *hexwkb = PG_GETARG_CSTRING(0);
-    void *result = NULL;
+	rt_raster raster;
+	char *hexwkb = PG_GETARG_CSTRING(0);
+	void *result = NULL;
 
-		POSTGIS_RT_DEBUG(3, "Starting");
+	POSTGIS_RT_DEBUG(3, "Starting");
 
-    raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
-    result = rt_raster_serialize(raster);
+	raster = rt_raster_from_hexwkb(hexwkb, strlen(hexwkb));
+	if (raster == NULL)
+		PG_RETURN_NULL();
 
-    SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	result = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (result == NULL)
+		PG_RETURN_NULL();
 
-    rt_raster_destroy(raster);
-
-    if ( NULL != result )
-        PG_RETURN_POINTER(result);
-    else
-        PG_RETURN_NULL();
+	SET_VARSIZE(result, ((rt_pgraster*)result)->size);
+	PG_RETURN_POINTER(result);
 }
 
 /**
@@ -1208,9 +1208,8 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS)
 		skewx, skewy, srid);
 
 	raster = rt_raster_new(width, height);
-	if (!raster) {
+	if (raster == NULL)
 		PG_RETURN_NULL(); /* error was supposedly printed already */
-	}
 
 	rt_raster_set_scale(raster, scalex, scaley);
 	rt_raster_set_offsets(raster, ipx, ipy);
@@ -3077,7 +3076,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		default:
 			elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for new values");
 			rt_raster_destroy(raster);
-			pfree(pgraster);
+			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
 			break;
 	}
@@ -3117,7 +3116,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 			pfree(nulls);
 		}
 		rt_raster_destroy(raster);
-		pfree(pgraster);
+		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
 
@@ -3129,7 +3128,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 		pfree(elements);
 		pfree(nulls);
 		rt_raster_destroy(raster);
-		pfree(pgraster);
+		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
 
@@ -3178,7 +3177,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				elog(ERROR, "RASTER_setPixelValuesArray: Invalid data type for noset flags");
 				pfree(pixval);
 				rt_raster_destroy(raster);
-				pfree(pgraster);
+				PG_FREE_IF_COPY(pgraster, 0);
 				PG_RETURN_NULL();
 				break;
 		}
@@ -3220,7 +3219,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				pfree(nulls);
 			}
 			rt_raster_destroy(raster);
-			pfree(pgraster);
+			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
 		}
 
@@ -3329,7 +3328,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 				elog(ERROR, "Cannot get value of pixel.  Returning NULL");
 				pfree(pixval);
 				rt_raster_destroy(raster);
-				pfree(pgraster);
+				PG_FREE_IF_COPY(pgraster, 0);
 				PG_RETURN_NULL();
 			}
 
@@ -3350,7 +3349,7 @@ Datum RASTER_setPixelValuesArray(PG_FUNCTION_ARGS)
 	/* serialize new raster */
 	pgrtn = rt_raster_serialize(raster);
 	rt_raster_destroy(raster);
-	pfree(pgraster);
+	PG_FREE_IF_COPY(pgraster, 0);
 	if (!pgrtn)
 		PG_RETURN_NULL();
 
