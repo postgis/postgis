@@ -10323,11 +10323,15 @@ UPDATE wind
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  If <varname>nband</varname> is not specified, band 1 is assumed for all function variants except <code>ST_Union(rast)</code>.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
+				<para>Returns the union of a set of raster tiles into a single raster composed of at least one band.  The resulting raster's extent is the extent of the whole set.  In the case of intersection, the resulting value is defined by <varname>uniontype</varname> which is one of the following: LAST (default), FIRST, MIN, MAX, COUNT, SUM, MEAN, RANGE.</para>
 
 				<para>Availability: 2.0.0 </para>
+				<note><para>For variant ST_Union(rast,uniontype),  band 1 is assumed.</para></note>
 				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
-				<note><para>Changed: 2.1.0 ST_Union(rast) (variant 1) now unions all bands of all input rasters.  Prior versions of ST_Union(rast) only unioned the first band of all input rasters. The other variants still only union 1 band and default to first band if not specified.</para></note>
+				<para>Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced.</para>
+				<para>Enhanced: 2.1.0 ST_Union(rast) (variant 1) now unions all bands of all input rasters, if no band is specified.  Prior versions of PostGIS assumed the first band.</para>
+				
+				
 			</refsection>
 				
 			<refsection>
