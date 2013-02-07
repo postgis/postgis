@@ -27,7 +27,7 @@
 #define CIRC_CACHE_ENTRY 3
 #define RECT_CACHE_ENTRY 4
 
-#define NUM_CACHE_ENTRIES 5
+#define NUM_CACHE_ENTRIES 16
 
 
 /* 
