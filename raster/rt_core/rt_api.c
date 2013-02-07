@@ -3420,6 +3420,7 @@ rt_band_get_histogram(
 #endif
 
 	assert(NULL != stats);
+	assert(NULL != rtn_count);
 
 	if (stats->count < 1 || NULL == stats->values) {
 		rterror("rt_util_get_histogram: rt_bandstats object has no value");
@@ -3671,6 +3672,7 @@ rt_band_get_quantiles(
 #endif
 
 	assert(NULL != stats);
+	assert(NULL != rtn_count);
 
 	if (stats->count < 1 || NULL == stats->values) {
 		rterror("rt_band_get_quantiles: rt_bandstats object has no value");
@@ -4023,6 +4025,7 @@ rt_band_get_quantiles_stream(
 
 	assert(NULL != band);
 	assert(cov_count > 1);
+	assert(NULL != rtn_count);
 	RASTER_DEBUGF(3, "cov_count = %d", cov_count);
 
 	data = rt_band_get_data(band);
@@ -4610,6 +4613,7 @@ rt_band_get_value_count(
 #endif
 
 	assert(NULL != band);
+	assert(NULL != rtn_count);
 
 	data = rt_band_get_data(band);
 	if (data == NULL) {
@@ -4858,7 +4862,7 @@ rt_band_reclass(
 	rt_reclassexpr expr = NULL;
 
 	assert(NULL != srcband);
-	assert(NULL != exprset);
+	assert(NULL != exprset && exprcount > 0);
 
 	/* source nodata */
 	src_hasnodata = rt_band_get_hasnodata_flag(srcband);
@@ -5498,6 +5502,7 @@ rt_raster_add_band(rt_raster raster, rt_band band, int index) {
 
 
     assert(NULL != raster);
+		assert(NULL != band);
 
     RASTER_DEBUGF(3, "Adding band %p to raster %p", band, raster);
 
@@ -5843,8 +5848,7 @@ rt_raster_cell_to_geopoint(
 	double _gt[6] = {0};
 
 	assert(NULL != raster);
-	assert(NULL != xw);
-	assert(NULL != yw);
+	assert(NULL != xw && NULL != yw);
 
 	if (NULL != gt)
 		memcpy(_gt, gt, sizeof(double) * 6);
@@ -5896,8 +5900,7 @@ rt_raster_geopoint_to_cell(
 	double rnd = 0;
 
 	assert(NULL != raster);
-	assert(NULL != xr);
-	assert(NULL != yr);
+	assert(NULL != xr && NULL != yr);
 
 	if (igt != NULL)
 		memcpy(_igt, igt, sizeof(double) * 6);
@@ -5995,9 +5998,11 @@ rt_raster_gdal_polygonize(
 
 	/* checks */
 	assert(NULL != raster);
-	assert(nband >= 0 && nband < rt_raster_get_num_bands(raster));
+	assert(NULL != pnElements);
 
 	RASTER_DEBUG(2, "In rt_raster_gdal_polygonize");
+
+	*pnElements = 0;
 
 	/*******************************
 	 * Get band
@@ -6013,8 +6018,7 @@ rt_raster_gdal_polygonize(
 		/* band is NODATA */
 		if (rt_band_get_isnodata_flag(band)) {
 			RASTER_DEBUG(3, "Band is NODATA.  Returning null");
-			if (pnElements)
-				*pnElements = 0;
+			*pnElements = 0;
 			return NULL;
 		}
 
@@ -6182,9 +6186,6 @@ rt_raster_gdal_polygonize(
 
 	RASTER_DEBUGF(3, "storing polygons (%d)", nFeatureCount);
 
-	if (pnElements)
-		*pnElements = 0;
-
 	/* Reset feature reading to start in the first feature */
 	OGR_L_ResetReading(hLayer);
 
@@ -6299,8 +6300,7 @@ rt_raster_gdal_polygonize(
 		pols[j].val = dValue;
 	}
 
-	if (pnElements)
-		*pnElements = nFeatureCount;
+	*pnElements = nFeatureCount;
 
 	RASTER_DEBUG(3, "destroying GDAL MEM raster");
 	GDALClose(memdataset);
@@ -8464,6 +8464,7 @@ rt_band
 rt_raster_replace_band(rt_raster raster, rt_band band, int index) {
 	rt_band oldband = NULL;
 	assert(NULL != raster);
+	assert(NULL != band);
 
 	if (band->width != raster->width || band->height != raster->height) {
 		rterror("rt_raster_replace_band: Band does not match raster's dimensions: %dx%d band to %dx%d raster",
@@ -8565,6 +8566,7 @@ rt_raster_to_gdal(rt_raster raster, const char *srs,
 	uint8_t *rtn = NULL;
 
 	assert(NULL != raster);
+	assert(NULL != gdalsize);
 
 	/* any supported format is possible */
 	rt_util_gdal_register_all();
@@ -8654,6 +8656,8 @@ rt_raster_gdal_drivers(uint32_t *drv_count, uint8_t cancc) {
 	int count;
 	int i;
 	uint32_t j;
+
+	assert(drv_count != NULL);
 
 	rt_util_gdal_register_all();
 	count = GDALGetDriverCount();
@@ -8762,6 +8766,7 @@ rt_raster_to_gdal_mem(
 	rt_pixtype pt = PT_END;
 
 	assert(NULL != raster);
+	assert(NULL != rtn_drv);
 
 	/* store raster in GDAL MEM raster */
 	if (!rt_util_gdal_driver_registered("MEM"))
@@ -11682,6 +11687,7 @@ rt_raster_intersects(
 
 	assert(NULL != rast1);
 	assert(NULL != rast2);
+	assert(NULL != intersects);
 
 	if (nband1 < 0 && nband2 < 0) {
 		nband1 = -1;
@@ -12278,6 +12284,7 @@ rt_errorstate rt_raster_within_distance(
 
 	assert(NULL != rast1);
 	assert(NULL != rast2);
+	assert(NULL != dwithin);
 
 	if (nband1 < 0 && nband2 < 0) {
 		nband1 = -1;
@@ -12372,6 +12379,7 @@ rt_errorstate rt_raster_fully_within_distance(
 
 	assert(NULL != rast1);
 	assert(NULL != rast2);
+	assert(NULL != dfwithin);
 
 	if (nband1 < 0 && nband2 < 0) {
 		nband1 = -1;
@@ -13646,6 +13654,7 @@ rt_raster_iterator(
 
 	RASTER_DEBUG(3, "Starting...");
 
+	assert(itrset != NULL && itrcount > 0);
 	assert(rtnraster != NULL);
 
 	/* init rtnraster to NULL */
@@ -13666,18 +13675,6 @@ rt_raster_iterator(
 	/* check that pixtype != PT_END */
 	if (pixtype == PT_END) {
 		rterror("rt_raster_iterator: Pixel type cannot be PT_END");
-		return ES_ERROR;
-	}
-
-	/* itrcount must be greater than 0 */
-	if (itrcount < 1) {
-		rterror("rt_raster_iterator: At least one element must be provided for itrset");
-		return ES_ERROR;
-	}
-
-	/* itrset is not NULL */
-	if (itrset == NULL) {
-		rterror("rt_raster_iterator: itrset cannot be NULL");
 		return ES_ERROR;
 	}
 
