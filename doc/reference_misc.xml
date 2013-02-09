@@ -482,8 +482,8 @@ FROM (SELECT ST_Translate(ST_Force_3DZ(ST_LineToCurve(ST_Buffer(ST_MakePoint(x,y
 	  <refnamediv>
 		<refname>Find_SRID</refname>
 
-		<refpurpose>The syntax is find_srid(&lt;db/schema&gt;, &lt;table&gt;,
-			&lt;column&gt;) and the function returns the integer SRID of the
+		<refpurpose>The syntax is find_srid(a_db_schema, a_table,
+			a_column) and the function returns the integer SRID of the
 			specified column by searching through the GEOMETRY_COLUMNS table.</refpurpose>
 	  </refnamediv>
 
