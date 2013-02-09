@@ -19,6 +19,10 @@
 	<xsl:text><![CDATA[<html><head><title>PostGIS Cheat Sheet</title>
 	<style type="text/css">
 <!--
+table { page-break-inside:avoid; page-break-after:auto }
+tr    { page-break-inside:avoid; page-break-after:avoid }
+thead { display:table-header-group }
+tfoot { display:table-footer-group }
 body {
 	font-family: Arial, sans-serif;
 	font-size: 8.5pt;
