@@ -14,7 +14,7 @@
 	<xsl:variable name='enhanced_tag'>Enhanced: <xsl:value-of select="$postgis_version" /></xsl:variable>
 	<xsl:variable name='include_examples'>false</xsl:variable>
 	<xsl:variable name='output_purpose'>true</xsl:variable>
-	<xsl:variable name='linkstub'>http://www.postgis.org/documentation/manual-svn/</xsl:variable>
+	<xsl:variable name='linkstub'>http://postgis.net/docs/manual-2.0/</xsl:variable>
 <xsl:template match="/">
 	<xsl:text><![CDATA[<html><head><title>PostGIS Raster Cheat Sheet</title>
 	<style type="text/css">
