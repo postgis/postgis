@@ -9474,7 +9474,6 @@ rt_raster rt_raster_gdal_warp(
 	double *skew_x, double *skew_y,
 	GDALResampleAlg resample_alg, double max_err
 ) {
-	// keep these
 	CPLErr cplerr;
 	char *dst_options[] = {"SUBCLASS=VRTWarpedDataset", NULL};
 	_rti_warp_arg arg = NULL;
@@ -9499,6 +9498,8 @@ rt_raster rt_raster_gdal_warp(
 	rt_raster rast = NULL;
 	int i = 0;
 	int numBands = 0;
+
+	int subgt = 0;
 
 	RASTER_DEBUG(3, "starting");
 
@@ -9553,6 +9554,26 @@ rt_raster rt_raster_gdal_warp(
 		return NULL;
 	}
 	RASTER_DEBUG(3, "raster loaded into GDAL MEM dataset");
+
+	/* special case when src_srs and dst_srs is NULL and raster's geotransform matrix is default */
+	if (src_srs == NULL && dst_srs == NULL && rt_raster_get_srid(raster) == SRID_UNKNOWN) {
+		double gt[6];
+
+		/* default geotransform */
+		rt_raster_get_geotransform_matrix(raster, gt);
+		if (
+			FLT_EQ(gt[0], 0) &&
+			FLT_EQ(gt[1], 1) &&
+			FLT_EQ(gt[2], 0) &&
+			FLT_EQ(gt[3], 0) &&
+			FLT_EQ(gt[4], 0) &&
+			FLT_EQ(gt[5], -1)
+		) {
+			double ngt[6] = {0, 10, 0, 0, 0, -10};
+			GDALSetGeoTransform(arg->src.ds, ngt);
+			subgt = 1;
+		}
+	}
 
 	/* set transform options */
 	if (arg->src.srs != NULL || arg->dst.srs != NULL) {
@@ -10216,6 +10237,12 @@ rt_raster rt_raster_gdal_warp(
 	if (NULL == rast) {
 		rterror("rt_raster_gdal_warp: Unable to warp raster");
 		return NULL;
+	}
+
+	/* substitute geotransform matrix, reset back to default */
+	if (subgt) {
+		double gt[6] = {0, 1, 0, 0, 0, -1};
+		rt_raster_set_geotransform_matrix(rast, gt);
 	}
 
 	RASTER_DEBUG(3, "done");

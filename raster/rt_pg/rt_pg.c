@@ -11341,24 +11341,6 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 	}
 	/* target SRID == src SRID, no reprojection */
 	else if (dst_srid == src_srid) {
-		/* set geotransform BUT ONLY when geotransform IS the default */
-		if (src_srid == SRID_UNKNOWN) {
-			double gt[6];
-
-			rt_raster_get_geotransform_matrix(raster, gt);
-			if (
-				FLT_EQ(gt[0], 0) &&
-				FLT_EQ(gt[1], 1) &&
-				FLT_EQ(gt[2], 0) &&
-				FLT_EQ(gt[3], 0) &&
-				FLT_EQ(gt[4], 0) &&
-				FLT_EQ(gt[5], -1)
-			) {
-				double ngt[6] = {0, 10, 0, 0, 0, -10};
-				rt_raster_set_geotransform_matrix(raster, ngt);
-			}
-		}
-
 		no_srid = 1;
 	}
 
@@ -11501,11 +11483,6 @@ Datum RASTER_GDALWarp(PG_FUNCTION_ARGS)
 
 	/* add target SRID */
 	rt_raster_set_srid(rast, dst_srid);
-
-	if (no_srid && src_srid == SRID_UNKNOWN) {
-		double gt[6] = {0, 1, 0, 0, 0, -1};
-		rt_raster_set_geotransform_matrix(rast, gt);
-	}
 
 	pgrast = rt_raster_serialize(rast);
 	rt_raster_destroy(rast);

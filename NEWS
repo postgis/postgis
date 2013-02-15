@@ -142,6 +142,8 @@ PostGIS 2.1.0
            when copying data from a GDAL dataset
   - #2198, Fix incorrect dimensions used when generating bands of out-db
            rasters in ST_Tile()
+  - #2203, Changed how rasters with unknown SRID and default geotransform
+           are handled when passing to GDAL Warp API
 
 PostGIS 2.0.3
 2013/MM/DD
