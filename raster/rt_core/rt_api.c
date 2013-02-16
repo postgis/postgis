@@ -9559,8 +9559,17 @@ rt_raster rt_raster_gdal_warp(
 	if (src_srs == NULL && dst_srs == NULL && rt_raster_get_srid(raster) == SRID_UNKNOWN) {
 		double gt[6];
 
+#if POSTGIS_DEBUG_LEVEL > 3
+		GDALGetGeoTransform(arg->src.ds, gt);
+		RASTER_DEBUGF(3, "GDAL MEM geotransform: %f, %f, %f, %f, %f, %f",
+			gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
+#endif
+
 		/* default geotransform */
 		rt_raster_get_geotransform_matrix(raster, gt);
+		RASTER_DEBUGF(3, "raster geotransform: %f, %f, %f, %f, %f, %f",
+			gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
+
 		if (
 			FLT_EQ(gt[0], 0) &&
 			FLT_EQ(gt[1], 1) &&
@@ -9571,7 +9580,15 @@ rt_raster rt_raster_gdal_warp(
 		) {
 			double ngt[6] = {0, 10, 0, 0, 0, -10};
 			GDALSetGeoTransform(arg->src.ds, ngt);
+			GDALFlushCache(arg->src.ds);
+
 			subgt = 1;
+
+#if POSTGIS_DEBUG_LEVEL > 3
+			GDALGetGeoTransform(arg->src.ds, gt);
+			RASTER_DEBUGF(3, "GDAL MEM geotransform: %f, %f, %f, %f, %f, %f",
+				gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
+#endif
 		}
 	}
 
