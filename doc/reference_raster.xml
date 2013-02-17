@@ -8517,8 +8517,19 @@ WHERE A.rid =2 ) As foo;
 				<para>
 					Returns a one-band raster given one or more input rasters, band indexes and one user-specified callback function.
 				</para>
-
-				<para>
+				
+				<variablelist>
+					<varlistentry>
+						<term>rast,rast1,rast2, rastbandarg[]</term>
+						<listitem><para>Rasters on which the map algebra process is evaluated.</para><para><varname>rastbandarg</varname> allowing the use of a map algebra operation on many rasters and/or many bands. See example Variant 1.</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>nband, nband1, nband2</term>
+						<listitem><para>Band numbers of the raster to be evaluated. nband can be an integer or integer[] denoting the bands. nband1 is band on rast1 and nband2 is band on rast2 for hte 2 raster/2band case.</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>callbackfunc</term>
+							<listitem><para>
 					The <varname>callbackfunc</varname> parameter must be the name and signature of an SQL or PL/pgSQL function, cast to a regprocedure. An example PL/pgSQL function example is:
 					<programlisting>
 CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], position integer[][], VARIADIC userargs text[])
@@ -8543,9 +8554,46 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 					Note that the argument contains the name of the function, the types of the function arguments, quotes around the name and argument types, and a cast to a <type>regprocedure</type>.
 				</para>
 
-				<para>
-					The third argument to the <varname>callbackfunc</varname> is a <type>variadic text</type> array. All trailing text arguments are passed through to the specified <varname>callbackfunc</varname>, and are contained in the <varname>userargs</varname> argument.
-				</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>pixeltype</term>
+						<listitem><para>If <varname>pixeltype</varname> is passed in, the one band of the new raster will be of that pixeltype. If pixeltype is passed NULL or left out, the new raster band will have the same pixeltype as the specified band of the first raster (for extent types: INTERSECTION, UNION, FIRST, CUSTOM) or the specified band of the appropriate raster (for extent types: SECOND, LAST).  If in doubt, always specify <varname>pixeltype</varname>.</para>
+							<para>The resulting pixel type of the output raster must be one listed in <xref linkend="RT_ST_BandPixelType" /> or left out or set to NULL. </para></listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>extenttype</term>
+						<listitem>
+							<para>Possible values are INTERSECTION (default), UNION, FIRST (default for one raster variants), SECOND, LAST, CUSTOM. </para>
+						</listitem>
+					</varlistentry>
+					
+					<varlistentry>
+						<term>customextent</term>
+						<listitem>
+							<para>If <varname>extentype</varname> is CUSTOM, a raster must be provided for <varname>customextent</varname>. See example 4 of Variant 1.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>distancex</term>
+						<listitem><para>The width of the neighborhood, in cells. If not specified only the reference cell is consider (neighborhood of 0).</para></listitem>
+					</varlistentry>
+					<varlistentry>
+						<term>distancey</term>
+						<listitem><para>The height of the neighborhood, in cells. If not specified only the reference cell is considered (neighborhood of 0)</para></listitem>
+					</varlistentry>
+
+					<varlistentry>
+						<term>userargs</term>
+						<listitem><para>
+					The third argument to the <varname>callbackfunc</varname> is a <type>variadic text</type> array. All trailing text arguments are passed through to the specified <varname>callbackfunc</varname>, and are contained in the <varname>userargs</varname> argument.</para>
+						</listitem>
+					</varlistentry>
+
+				</variablelist>
+
+
 
 				<note>
 					<para>
@@ -8559,13 +8607,6 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 					</para>
 				</note>
 
-				<para>
-					If <varname>pixeltype</varname> is passed in, the one band of the new raster will be of that pixeltype. If pixeltype is passed NULL or left out, the new raster band will have the same pixeltype as the specified band of the first raster (for extent types: INTERSECTION, UNION, FIRST, CUSTOM) or the specified band of the appropriate raster (for extent types: SECOND, LAST).  If in doubt, always specify <varname>pixeltype</varname>.
-				</para>
-
-				<para>
-					Possible values for <varname>extenttype</varname> are: INTERSECTION (default), UNION, FIRST (default for one raster variants), SECOND, LAST, CUSTOM. If <varname>extentype</varname> is CUSTOM, a raster must be provided for <varname>customextent</varname>. See example 4 of Variant 1.
-				</para>
 
 				<para>
 					Variant 1 accepts an array of <varname>rastbandarg</varname> allowing the use of a map algebra operation on many rasters and/or many bands. See example Variant 1.
@@ -9999,7 +10040,7 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 						<term>args</term>
 						<listitem><para>Arguments to pass into the user function.</para></listitem>
 					</varlistentry>
-				</variablelist>
+			</variablelist>
 
 			<para>Availability: 2.0.0 </para>
 			
