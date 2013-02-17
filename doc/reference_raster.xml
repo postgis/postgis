@@ -8520,8 +8520,8 @@ WHERE A.rid =2 ) As foo;
 				
 				<variablelist>
 					<varlistentry>
-						<term>rast,rast1,rast2, rastbandarg[]</term>
-						<listitem><para>Rasters on which the map algebra process is evaluated.</para><para><varname>rastbandarg</varname> allowing the use of a map algebra operation on many rasters and/or many bands. See example Variant 1.</para></listitem>
+						<term>rast,rast1,rast2, rastbandargset</term>
+						<listitem><para>Rasters on which the map algebra process is evaluated.</para><para><varname>rastbandargset</varname> allows the use of a map algebra operation on many rasters and/or many bands. See example Variant 1.</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>nband, nband1, nband2</term>
