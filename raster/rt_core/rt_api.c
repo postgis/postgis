@@ -1585,7 +1585,7 @@ rt_band_load_offline_data(rt_band band) {
 	VRTDatasetH hdsDst = NULL;
 	VRTSourcedRasterBandH hbandDst = NULL;
 	double gt[6] = {0.};
-	double ogt[6] = {0.};
+	double ogt[6] = {0};
 	double offset[2] = {0};
 
 	rt_raster _rast = NULL;
@@ -1631,7 +1631,15 @@ rt_band_load_offline_data(rt_band band) {
 		gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
 	/* get offline raster's geotransform */
-	GDALGetGeoTransform(hdsSrc, ogt);
+	if (GDALGetGeoTransform(hdsSrc, ogt) != CE_None) {
+		RASTER_DEBUGF(4, "Using default geotransform matrix (0, 1, 0, 0, 0, -1)");
+		ogt[0] = 0;
+		ogt[1] = 1;
+		ogt[2] = 0;
+		ogt[3] = 0;
+		ogt[4] = 0;
+		ogt[5] = -1;
+	}
 	RASTER_DEBUGF(3, "Offline geotransform (%f, %f, %f, %f, %f, %f)",
 		ogt[0], ogt[1], ogt[2], ogt[3], ogt[4], ogt[5]);
 
@@ -1656,6 +1664,7 @@ rt_band_load_offline_data(rt_band band) {
 		&(offset[0]), &(offset[1]),
 		NULL
 	);
+
 	RASTER_DEBUGF(4, "offsets: (%f, %f)", offset[0], offset[1]);
 
 	/* create VRT dataset */
