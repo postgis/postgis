@@ -1632,7 +1632,7 @@ rt_band_load_offline_data(rt_band band) {
 
 	/* get offline raster's geotransform */
 	if (GDALGetGeoTransform(hdsSrc, ogt) != CE_None) {
-		RASTER_DEBUGF(4, "Using default geotransform matrix (0, 1, 0, 0, 0, -1)");
+		RASTER_DEBUG(4, "Using default geotransform matrix (0, 1, 0, 0, 0, -1)");
 		ogt[0] = 0;
 		ogt[1] = 1;
 		ogt[2] = 0;
