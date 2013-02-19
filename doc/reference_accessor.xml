@@ -1909,7 +1909,7 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 	  <refsection>
 		<title>Description</title>
 
-		<para>Return the Nth point in the first linestring or circular linestring in the
+		<para>Return the Nth point in a single linestring or circular linestring in the
 			geometry. Return NULL if there is no linestring in the
 			geometry.</para>
 
@@ -1927,6 +1927,9 @@ VALUES (ST_GeomFromEWKT('POLYHEDRALSURFACE( ((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)
 		<para>&sqlmm_compliant; SQL-MM 3: 7.2.5, 7.3.5</para>
 		<para>&Z_support;</para>
 		<para>&curve_support;</para>
+		<note><para>Changed: 2.0.0 no longer works with single geometry multilinestrings.  In older
+	  versions of PostGIS -- a single line multilinestring would work happily with this
+	  function and return the start point.  In 2.0.0 it just returns NULL like any other multilinestring.</para></note>
 
 	  </refsection>
 
