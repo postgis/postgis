@@ -267,7 +267,6 @@ END
        	We think it is a big advantage that raster structure should benefit as well. </para>
       </answer>
     </qandaentry> 
-  </qandaset>
   
   <qandaentry  id="qa_raster_fails_encoding_conversion">
       <question>
@@ -277,14 +276,14 @@ END
       <answer>
       	<para>raster2pgsql doesn't make any connections to your database when generating the file to load. If your database has set an explicit client encoding different
       	from your database encoding, then when loading large raster files (above 30 MB in size), you may run into a <code>bytes is too long for encoding conversion</code>.</para>
-      	This generally happens if for example you have your database in UTF8, but to support windows apps, you have the client encoding set to <code>WIN1252</code>.</para>
-      	<para>To work around this make sure the client encoding is the same as your database encoding during load.  You can do this by explicitly setting the encoding in your load script.  Example, if you are on windows:</para>
-      		<programlisting>set PGCLIENTENCODING=UTF8</programlisting>
-      	<para>If you are on Unix/Linux</para>
-      	<programlisting>export PGCLIENTENCODING=UTF8</programlisting>
+      	<para>This generally happens if for example you have your database in UTF8, but to support windows apps, you have the client encoding set to <code>WIN1252</code>.</para>
+      	<para>To work around this make sure the client encoding is the same as your database encoding during load.  You can do this by explicitly setting the encoding in your load script.  Example, if you are on windows:
+      		<programlisting>set PGCLIENTENCODING=UTF8</programlisting></para>
+      	<para>If you are on Unix/Linux
+      	<programlisting>export PGCLIENTENCODING=UTF8</programlisting></para>
       	<para>Gory details of this issue are detailed in <ulink url="http://trac.osgeo.org/postgis/ticket/2209">http://trac.osgeo.org/postgis/ticket/2209</ulink></para>
       </answer>
-    </qandaentry> 
-  </qandaset>
-
+  </qandaentry> 
+  
+ </qandaset>
 </chapter>
