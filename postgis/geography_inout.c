@@ -86,7 +86,7 @@ GSERIALIZED* gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod
 	geography_valid_type(lwgeom->type);
 
 	/* Force the geometry to have valid geodetic coordinate range. */
-	if ( lwgeom_force_geodetic(lwgeom) == LW_TRUE )
+	if ( ! lwgeom_nudge_geodetic(lwgeom) && lwgeom_force_geodetic(lwgeom) == LW_TRUE )
 	{
 		ereport(NOTICE, (
 		        errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY" ))
@@ -587,7 +587,7 @@ Datum geography_from_geometry(PG_FUNCTION_ARGS)
 	srid_is_latlong(fcinfo, lwgeom->srid);
 
 	/* Force the geometry to have valid geodetic coordinate range. */
-	if ( lwgeom_force_geodetic(lwgeom) == LW_TRUE )
+	if ( ! lwgeom_nudge_geodetic(lwgeom) && lwgeom_force_geodetic(lwgeom) == LW_TRUE )
 	{
 		ereport(NOTICE, (
 		        errmsg_internal("Coordinate values were coerced into range [-180 -90, 180 90] for GEOGRAPHY" ))
