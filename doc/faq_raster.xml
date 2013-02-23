@@ -270,7 +270,7 @@ END
   
   <qandaentry  id="qa_raster_fails_encoding_conversion">
       <question>
-        <para>raster2pgsql load of large file fails with String of 388800145 bytes is too long for encoding conversion?</para>
+        <para>raster2pgsql load of large file fails with String of N bytes is too long for encoding conversion?</para>
       </question>
 
       <answer>
