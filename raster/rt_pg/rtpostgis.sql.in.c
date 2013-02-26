@@ -103,6 +103,14 @@ CREATE OR REPLACE FUNCTION st_convexhull(raster)
     AS 'MODULE_PATHNAME','RASTER_convex_hull'
     LANGUAGE 'c' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION st_minconvexhull(
+	rast raster,
+	nband integer DEFAULT NULL
+)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','RASTER_convex_hull'
+	LANGUAGE 'c' IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION box3d(raster)
     RETURNS box3d
     AS 'select box3d(st_convexhull($1))'

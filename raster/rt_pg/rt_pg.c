@@ -383,6 +383,9 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS);
 /* raster clip */
 Datum RASTER_clip(PG_FUNCTION_ARGS);
 
+/* raster perimeter */
+Datum RASTER_perimeter(PG_FUNCTION_ARGS);
+
 /* string replacement function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
  */
@@ -967,23 +970,55 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 {
 	rt_pgraster *pgraster;
 	rt_raster raster;
-	LWGEOM *hull = NULL;
+	LWGEOM *geom = NULL;
 	GSERIALIZED* gser = NULL;
 	size_t gser_size;
 	int err = ES_NONE;
 
+	bool minhull = FALSE;
+
 	if (PG_ARGISNULL(0))
 		PG_RETURN_NULL();
-	pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
 
-	raster = rt_raster_deserialize(pgraster, TRUE);
+	/* # of args */
+	if (PG_NARGS() > 1)
+		minhull = TRUE;
+
+	if (!minhull) {
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM_SLICE(PG_GETARG_DATUM(0), 0, sizeof(struct rt_raster_serialized_t));
+		raster = rt_raster_deserialize(pgraster, TRUE);
+	}
+	else {
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+		raster = rt_raster_deserialize(pgraster, FALSE);
+	}
+
 	if (!raster) {
 		elog(ERROR, "RASTER_convex_hull: Could not deserialize raster");
 		PG_FREE_IF_COPY(pgraster, 0);
 		PG_RETURN_NULL();
 	}
 
-	err = rt_raster_get_convex_hull(raster, &hull);
+	if (!minhull)
+		err = rt_raster_get_convex_hull(raster, &geom);
+	else {
+		int nband = -1;
+
+		/* get arg 1 */
+		if (!PG_ARGISNULL(1)) {
+			nband = PG_GETARG_INT32(1);
+			if (!rt_raster_has_band(raster, nband - 1)) {
+				elog(NOTICE, "Invalid band index (must use 1-based). Returning NULL");
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+				PG_RETURN_NULL();
+			}
+			nband = nband - 1;
+		}
+
+		err = rt_raster_get_perimeter(raster, nband, &geom);
+	}
+
 	rt_raster_destroy(raster);
 	PG_FREE_IF_COPY(pgraster, 0);
 
@@ -991,13 +1026,13 @@ Datum RASTER_convex_hull(PG_FUNCTION_ARGS)
 		elog(ERROR, "RASTER_convex_hull: Could not get raster's convex hull");
 		PG_RETURN_NULL();
 	}
-	else if (hull == NULL) {
+	else if (geom == NULL) {
 		elog(NOTICE, "Raster's convex hull is NULL");
 		PG_RETURN_NULL();
 	}
 
-	gser = gserialized_from_lwgeom(hull, 0, &gser_size);
-	lwgeom_free(hull);
+	gser = gserialized_from_lwgeom(geom, 0, &gser_size);
+	lwgeom_free(geom);
 
 	SET_VARSIZE(gser, gser_size);
 	PG_RETURN_POINTER(gser);
@@ -17437,6 +17472,16 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
+}
+
+/* ---------------------------------------------------------------- */
+/* Find perimeter of raster                                         */
+/* ---------------------------------------------------------------- */
+
+PG_FUNCTION_INFO_V1(RASTER_perimeter);
+Datum RASTER_perimeter(PG_FUNCTION_ARGS)
+{
+	PG_RETURN_NULL();
 }
 
 /* ---------------------------------------------------------------- */

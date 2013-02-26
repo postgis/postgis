@@ -67,6 +67,7 @@ PostGIS 2.1.0
   - #1293, ST_Resize(raster) to resize rasters based upon width/height
   - #945, improved join selectivity, N-D selectivity calculations, user
     accessible selectivity and stats reader functions for testing
+  - #2210, ST_MinConvexHull(raster)
 
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 

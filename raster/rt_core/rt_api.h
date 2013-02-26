@@ -4,7 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
- * Copyright (C) 2011-2012 Regents of the University of California
+ * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
@@ -1313,7 +1313,7 @@ rt_errorstate rt_raster_geopoint_to_cell(
 /**
  * Get raster's convex hull.
  *
- * The convex hull is typically a 4 vertices (5 to be closed)
+ * The convex hull is a 4 vertices (5 to be closed)
  * single ring polygon bearing the raster's rotation and using
  * projection coordinates.
  *
@@ -1337,6 +1337,24 @@ rt_errorstate rt_raster_get_convex_hull(rt_raster raster, LWGEOM **hull);
 rt_errorstate rt_raster_get_envelope(
 	rt_raster raster,
 	rt_envelope *env
+);
+
+/**
+ * Get raster perimeter
+ *
+ * The perimeter is a 4 vertices (5 to be closed)
+ * single ring polygon bearing the raster's rotation and using
+ * projection coordinates.
+ *
+ * @param raster : the raster to get info from
+ * @param nband : the band for the perimeter. 0-based
+ * @param **perimeter : pointer to perimeter
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate rt_raster_get_perimeter(
+	rt_raster raster, int nband,
+	LWGEOM **perimeter
 );
 
 /*

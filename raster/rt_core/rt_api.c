@@ -4,7 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://trac.osgeo.org/postgis/wiki/WKTRaster
  *
- * Copyright (C) 2011-2012 Regents of the University of California
+ * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
@@ -14267,5 +14267,308 @@ rt_raster_iterator(
 	_rti_iterator_arg_destroy(_param);
 
 	*rtnraster = rtnrast;
+	return ES_NONE;
+}
+
+/******************************************************************************
+* rt_raster_perimeter()
+******************************************************************************/
+static rt_errorstate
+_rti_raster_get_band_perimeter(rt_band band, uint16_t *trim) {
+	uint16_t width = 0;
+	uint16_t height = 0;
+	int x = 0;
+	int y = 0;
+	int offset = 0;
+	int done[4] = {0};
+	double value = 0;
+	int nodata = 0;
+
+	assert(band != NULL);
+	assert(band->raster != NULL);
+	assert(trim != NULL);
+
+	memset(trim, 0, sizeof(uint16_t) * 4);
+
+	width = rt_band_get_width(band);
+	height = rt_band_get_height(band);
+		
+	/* top */
+	for (y = 0; y < height; y++) {
+		for (offset = 0; offset < 3; offset++) {
+			/* every third pixel */
+			for (x = offset; x < width; x += 3) {
+				if (rt_band_get_pixel(band, x, y, &value, &nodata) != ES_NONE) {
+					rterror("_rti_raster_get_band_perimeter: Unable to get band pixel");
+					return ES_ERROR;
+				}
+
+				RASTER_DEBUGF(4, "top (x, y, value, nodata) = (%d, %d, %f, %d)", x, y, value, nodata);
+				if (!nodata) {
+					trim[0] = y;
+					done[0] = 1;
+					break;
+				}
+			}
+
+			if (done[0])
+				break;
+		}
+
+		if (done[0])
+			break;
+	}
+
+	/* right */
+	for (x = width - 1; x >= 0; x--) {
+		for (offset = 0; offset < 3; offset++) {
+			/* every third pixel */
+			for (y = offset; y < height; y += 3) {
+				if (rt_band_get_pixel(band, x, y, &value, &nodata) != ES_NONE) {
+					rterror("_rti_raster_get_band_perimeter: Unable to get band pixel");
+					return ES_ERROR;
+				}
+
+				RASTER_DEBUGF(4, "right (x, y, value, nodata) = (%d, %d, %f, %d)", x, y, value, nodata);
+				if (!nodata) {
+					trim[1] = width - (x + 1);
+					done[1] = 1;
+					break;
+				}
+			}
+
+			if (done[1])
+				break;
+		}
+
+		if (done[1])
+			break;
+	}
+
+	/* bottom */
+	for (y = height - 1; y >= 0; y--) {
+		for (offset = 0; offset < 3; offset++) {
+			/* every third pixel */
+			for (x = offset; x < width; x += 3) {
+				if (rt_band_get_pixel(band, x, y, &value, &nodata) != ES_NONE) {
+					rterror("_rti_raster_get_band_perimeter: Unable to get band pixel");
+					return ES_ERROR;
+				}
+
+				RASTER_DEBUGF(4, "bottom (x, y, value, nodata) = (%d, %d, %f, %d)", x, y, value, nodata);
+				if (!nodata) {
+					trim[2] = height - (y + 1);
+					done[2] = 1;
+					break;
+				}
+			}
+
+			if (done[2])
+				break;
+		}
+
+		if (done[2])
+			break;
+	}
+
+	/* left */
+	for (x = 0; x < width; x++) {
+		for (offset = 0; offset < 3; offset++) {
+			/* every third pixel */
+			for (y = offset; y < height; y += 3) {
+				if (rt_band_get_pixel(band, x, y, &value, &nodata) != ES_NONE) {
+					rterror("_rti_raster_get_band_perimeter: Unable to get band pixel");
+					return ES_ERROR;
+				}
+
+				RASTER_DEBUGF(4, "left (x, , value, nodata) = (%d, %d, %f, %d)", x, y, value, nodata);
+				if (!nodata) {
+					trim[3] = x;
+					done[3] = 1;
+					break;
+				}
+			}
+
+			if (done[3])
+				break;
+		}
+
+		if (done[3])
+			break;
+	}
+
+	RASTER_DEBUGF(4, "trim = (%d, %d, %d, %d)",
+		trim[0], trim[1], trim[2], trim[3]);
+
+	return ES_NONE;
+}
+
+/**
+ * Get raster perimeter
+ *
+ * The perimeter is a 4 vertices (5 to be closed)
+ * single ring polygon bearing the raster's rotation and using
+ * projection coordinates.
+ *
+ * @param raster : the raster to get info from
+ * @param nband : the band for the perimeter. 0-based
+ * value less than zero means all bands
+ * @param **perimeter : pointer to perimeter
+ *
+ * @return ES_NONE if success, ES_ERROR if error
+ */
+rt_errorstate rt_raster_get_perimeter(
+	rt_raster raster, int nband,
+	LWGEOM **perimeter
+) {
+	rt_band band = NULL;
+	int numband = 0;
+	uint16_t *_nband = NULL;
+	int i = 0;
+	int j = 0;
+	uint16_t _trim[4] = {0};
+	uint16_t trim[4] = {0}; /* top, right, bottom, left */
+	int isset[4] = {0};
+	double gt[6] = {0.0};
+	int srid = SRID_UNKNOWN;
+
+	POINTARRAY *pts = NULL;
+	POINT4D p4d;
+	POINTARRAY **rings = NULL;
+	LWPOLY* poly = NULL;
+
+	assert(perimeter != NULL);
+
+	*perimeter = NULL;
+
+	/* empty raster, no perimeter */
+	if (rt_raster_is_empty(raster))
+		return ES_NONE;
+
+	/* raster metadata */
+	srid = rt_raster_get_srid(raster);
+	rt_raster_get_geotransform_matrix(raster, gt);
+	numband = rt_raster_get_num_bands(raster);
+
+	RASTER_DEBUGF(3, "rt_raster_get_perimeter: raster is %dx%d", raster->width, raster->height); 
+
+	/* nband < 0 means all bands */
+	if (nband >= 0) {
+		if (nband >= numband) {
+			rterror("rt_raster_get_boundary: Band %d not found for raster", nband);
+			return ES_ERROR;
+		}
+
+		numband = 1;
+	}
+	else
+		nband = -1;
+	
+	RASTER_DEBUGF(3, "rt_raster_get_perimeter: nband, numband = %d, %d", nband, numband); 
+
+	_nband = rtalloc(sizeof(uint16_t) * numband);
+	if (_nband == NULL) {
+		rterror("rt_raster_get_boundary: Unable to allocate memory for band indices");
+		return ES_ERROR;
+	}
+
+	if (nband < 0) {
+		for (i = 0; i < numband; i++)
+			_nband[i] = i;
+	}
+	else
+		_nband[0] = nband;
+
+	for (i = 0; i < numband; i++) {
+		band = rt_raster_get_band(raster, _nband[i]);
+		if (band == NULL) {
+			rterror("rt_raster_get_boundary: Unable to get band at index %d", _nband[i]);
+			rtdealloc(_nband);
+			return ES_ERROR;
+		}
+
+		/* band is nodata */
+		if (rt_band_get_isnodata_flag(band) != 0)
+			continue;
+
+		if (_rti_raster_get_band_perimeter(band, trim) != ES_NONE) {
+			rterror("rt_raster_get_boundary: Unable band perimeter");
+			rtdealloc(_nband);
+			return ES_ERROR;
+		}
+
+		for (j = 0; j < 4; j++) {
+			if (!isset[j] || trim[j] < _trim[j]) {
+				_trim[j] = trim[j];
+				isset[j] = 1;
+			}
+		}
+	}
+
+	/* no longer needed */
+	rtdealloc(_nband);
+
+	/* check isset, just need to check one element */
+	if (!isset[0]) {
+		/* return NULL as bands are empty */
+		return ES_NONE;
+	}
+
+	RASTER_DEBUGF(4, "trim = (%d, %d, %d, %d)",
+		trim[0], trim[1], trim[2], trim[3]);
+
+	/* only one ring */
+	rings = (POINTARRAY **) rtalloc(sizeof (POINTARRAY*));
+	if (!rings) {
+		rterror("rt_raster_get_perimeter: Unable to allocate memory for polygon ring");
+		return ES_ERROR;
+	}
+	rings[0] = ptarray_construct(0, 0, 5);
+	if (!rings[0]) {
+		rterror("rt_raster_get_perimeter: Unable to construct point array");
+		return ES_ERROR;
+	}
+	pts = rings[0];
+
+	/* Upper-left corner (first and last points) */
+	rt_raster_cell_to_geopoint(
+		raster,
+		_trim[3], _trim[0],
+		&p4d.x, &p4d.y,
+		gt
+	);
+	ptarray_set_point4d(pts, 0, &p4d);
+	ptarray_set_point4d(pts, 4, &p4d);
+
+	/* Upper-right corner (we go clockwise) */
+	rt_raster_cell_to_geopoint(
+		raster,
+		raster->width - _trim[1], _trim[0],
+		&p4d.x, &p4d.y,
+		gt
+	);
+	ptarray_set_point4d(pts, 1, &p4d);
+
+	/* Lower-right corner */
+	rt_raster_cell_to_geopoint(
+		raster,
+		raster->width - _trim[1], raster->height - _trim[2],
+		&p4d.x, &p4d.y,
+		gt
+	);
+	ptarray_set_point4d(pts, 2, &p4d);
+
+	/* Lower-left corner */
+	rt_raster_cell_to_geopoint(
+		raster,
+		_trim[3], raster->height - _trim[2],
+		&p4d.x, &p4d.y,
+		gt
+	);
+	ptarray_set_point4d(pts, 3, &p4d);
+
+	poly = lwpoly_construct(srid, 0, 1, rings);
+	*perimeter = lwpoly_as_lwgeom(poly);
+
 	return ES_NONE;
 }
