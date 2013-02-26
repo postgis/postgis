@@ -6583,7 +6583,7 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_spatially_unique(rastschema na
 		END IF;
 		fqtn := fqtn || quote_ident($2);
 
-		cn := 'enforce_spatially_unique_' || $3;
+		cn := 'enforce_spatially_unique_' || quote_ident($2) || '_'|| $3;
 
 		sql := 'ALTER TABLE ' || fqtn ||
 			' ADD CONSTRAINT ' || quote_ident(cn) ||
@@ -6594,9 +6594,29 @@ CREATE OR REPLACE FUNCTION _add_raster_constraint_spatially_unique(rastschema na
 	COST 100;
 
 CREATE OR REPLACE FUNCTION _drop_raster_constraint_spatially_unique(rastschema name, rasttable name, rastcolumn name)
-	RETURNS boolean AS
-	$$ SELECT _drop_raster_constraint($1, $2, 'enforce_spatially_unique_' || $3) $$
-	LANGUAGE 'sql' VOLATILE STRICT
+	RETURNS boolean AS $$
+	DECLARE
+		cn text;
+	BEGIN
+		SELECT
+			s.conname INTO cn
+		FROM pg_class c, pg_namespace n, pg_attribute a, pg_constraint s, pg_index idx, pg_operator op
+		WHERE n.nspname = $1
+			AND c.relname = $2
+			AND a.attname = $3
+			AND a.attrelid = c.oid
+			AND s.connamespace = n.oid
+			AND s.conrelid = c.oid
+			AND s.contype = 'x'
+			AND 0::smallint = ANY (s.conkey)
+			AND idx.indexrelid = s.conindid
+			AND pg_get_indexdef(idx.indexrelid, 1, true) LIKE '(' || quote_ident($3) || '::geometry)'
+			AND s.conexclop[1] = op.oid
+			AND op.oprname = '=';
+
+		RETURN _drop_raster_constraint($1, $2, cn); 
+	END;
+	$$ LANGUAGE 'plpgsql' VOLATILE STRICT
 	COST 100;
 
 CREATE OR REPLACE FUNCTION _raster_constraint_info_coverage_tile(rastschema name, rasttable name, rastcolumn name)
