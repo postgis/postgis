@@ -9194,9 +9194,11 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 			rt_raster_destroy(rast);
 			return NULL;
 		}
+		RASTER_DEBUGF(4, "gdband @ %p", gdband);
 
 		/* pixtype */
 		gdpixtype = GDALGetRasterDataType(gdband);
+		RASTER_DEBUGF(4, "gdpixtype, size = %s, %d", GDALGetDataTypeName(gdpixtype), GDALGetDataTypeSize(gdpixtype) / 8);
 		pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
 		if (pt == PT_END) {
 			rterror("rt_raster_from_gdal_dataset: Unknown pixel type for GDAL band");
@@ -9276,7 +9278,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 			rt_raster_destroy(rast);
 			return NULL;
 		}
-		RASTER_DEBUGF(3, "values len = %d", valueslen);
+		RASTER_DEBUGF(3, "values @ %p of length = %d", values, valueslen);
 
 		for (iYBlock = 0; iYBlock < nYBlocks; iYBlock++) {
 			for (iXBlock = 0; iXBlock < nXBlocks; iXBlock++) {
