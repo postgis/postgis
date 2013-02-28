@@ -392,7 +392,7 @@ parse_geojson_multipolygon(json_object *geojson, int *hasz,  int root_srid)
 					{
 						json_object* coords = NULL;
 						coords = json_object_array_get_idx( points, k );
-						parse_geojson_coord(coords, hasz, ppa[i]);
+						parse_geojson_coord(coords, hasz, ppa[j]);
 					}
 				}
 
