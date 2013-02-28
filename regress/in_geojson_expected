@@ -8,3 +8,4 @@ geomfromgeojson_06|MULTIPOLYGON(((0 0,1 1,1 0,0 0)))
 ERROR:  Unable to find 'coordinates' in GeoJSON string
 ERROR:  unexpected character (at offset 0)
 #2130|8
+#2216|30
