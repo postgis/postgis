@@ -68,6 +68,7 @@ PostGIS 2.1.0
   - #945, improved join selectivity, N-D selectivity calculations, user
     accessible selectivity and stats reader functions for testing
   - #2210, ST_MinConvexHull(raster)
+  - lwgeom_from_geojson in liblwgeom (Sandro Santilli / Vizzuality)
 
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 

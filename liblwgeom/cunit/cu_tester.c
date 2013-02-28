@@ -40,6 +40,7 @@ extern CU_SuiteInfo geos_suite;
 extern CU_SuiteInfo tree_suite;
 extern CU_SuiteInfo triangulate_suite;
 extern CU_SuiteInfo homogenize_suite;
+extern CU_SuiteInfo in_geojson_suite;
 extern CU_SuiteInfo stringbuffer_suite;
 extern CU_SuiteInfo surface_suite;
 extern CU_SuiteInfo out_gml_suite;
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
 		stringbuffer_suite,
 		surface_suite,
 		homogenize_suite,
+		in_geojson_suite,
 		out_gml_suite,
 		out_kml_suite,
 		out_geojson_suite,
