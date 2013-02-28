@@ -518,6 +518,7 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 		char err[256];
 		snprintf(err, 256, "%s (at offset %d)", json_tokener_errors[jstok->err], jstok->char_offset);
 		json_tokener_free(jstok);
+		json_object_put(poObj);
 		geojson_lwerror(err, 1);
 	}
 	json_tokener_free(jstok);
@@ -537,6 +538,7 @@ Datum geom_from_geojson(PG_FUNCTION_ARGS)
 	}
 
 	lwgeom = parse_geojson(poObj, &hasz, &root_srid);
+	json_object_put(poObj);
 
 	lwgeom_add_bbox(lwgeom);
 	if (root_srid && lwgeom->srid == -1) lwgeom->srid = root_srid;

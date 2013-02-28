@@ -13,7 +13,8 @@ PostGIS 2.0.3
   - postgis_restore.pl support for mixed case geometry column name in dumps
   - #2188, Fix function parameter value overflow that caused problems
            when copying data from a GDAL dataset
-  - #2216, More memory errors in MultiPolygon GeoJson parsing (with holes)
+  - #2216, More memory errors in MultiPolygon GeoJSON parsing (with holes)
+  - Fix Memory leak in GeoJSON parser
 
  * Enhancements *
   - #2141, More verbose output when constraints fail to be added
