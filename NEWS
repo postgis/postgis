@@ -1,5 +1,5 @@
 PostGIS 2.0.3
-2013/MM/DD
+2013/03/01
 
  * Bug Fixes *
   - #2126, Better handling of empty rasters from ST_ConvexHull()

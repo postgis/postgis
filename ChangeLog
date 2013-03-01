@@ -1,3 +1,271 @@
+2013-02-28 18:35  strk
+
+	* NEWS, postgis/lwgeom_in_geojson.c: Fix memory leak in GeoJSON
+	  parser
+
+2013-02-28 18:14  strk
+
+	* NEWS, postgis/lwgeom_in_geojson.c, regress/in_geojson.sql,
+	  regress/in_geojson_expected: More memory errors in GeoJSON input
+	  fixed (#2216)
+	  
+	  Thanks halset for patch
+
+2013-02-23 05:06  robe
+
+	* doc/faq.xml: FAQ on creating geometry table grossly out of data.
+	  Who is charge of QA around here :)
+
+2013-02-23 02:06  robe
+
+	* doc/faq_raster.xml: #2209: backport FAQ about issue with encoding
+	  conversion
+
+2013-02-19 23:06  robe
+
+	* doc/reference_accessor.xml: #2208: document breaking change in
+	  2.0 that ST_PointN no longer works with multilinestrings
+
+2013-02-09 03:47  robe
+
+	* doc/xsl/postgis_cheatsheet.html.xsl,
+	  doc/xsl/raster_cheatsheet.html.xsl,
+	  doc/xsl/topology_cheatsheet.html.xsl: fix doc links
+
+2013-01-28 23:13  dustymugs
+
+	* NEWS, raster/rt_core/rt_api.c, raster/rt_core/rt_api.h: Fix
+	  function parameter value overflow that caused problems when
+	  copying data from a GDAL dataset. Problem first appeared in
+	  ST_Resize(). Ticket #2188
+
+2013-01-26 18:18  robe
+
+	* doc/reference_measure.xml: ST_Perimeter not being flagged in
+	  matrix as geography function because of double function synopsis
+
+2013-01-26 17:34  robe
+
+	* doc/reference_measure.xml: link happiness -- add ref to
+	  postgresql math functions so people aren't puzzled by degrees,
+	  pi, radians where they came from
+
+2013-01-26 17:27  robe
+
+	* doc/reference_measure.xml: clarify distance is in meters in the
+	  short-descrip that shows in db environment
+
+2013-01-26 17:23  robe
+
+	* doc/reference_measure.xml: ST_Project add version of PostGIS this
+	  was introduced
+
+2013-01-26 02:41  robe
+
+	* doc/reference_measure.xml: spell degrees correctly -- its degrees
+	  not degreees
+
+2013-01-26 02:34  robe
+
+	* doc/reference_measure.xml: #657: update the documentation to
+	  reflect ST_Projects takes radians (NOT degrees)
+
+2013-01-25 11:02  strk
+
+	* NEWS, utils/postgis_restore.pl.in: postgis_restore.pl support for
+	  mixed case geometry column name in dumps
+
+2013-01-24 21:18  strk
+
+	* NEWS, topology/sql/manage/CopyTopology.sql.in.c,
+	  topology/test/regress/copytopology.sql,
+	  topology/test/regress/copytopology_expected: Properly copy
+	  topologies with Z value (#2184)
+
+2013-01-18 13:08  robe
+
+	* doc/introduction.xml, doc/postgis.xml: fix obsolete links
+
+2013-01-17 08:06  strk
+
+	* topology/sql/sqlmm.sql.in.c: Prefer boolean predicates over
+	  overlay ops in ST_ChangeEdgeGeom
+	  
+	  Further reduces robustness issues and squeezes another bit of
+	  performance.
+
+2013-01-16 21:44  strk
+
+	* NEWS, topology/sql/sqlmm.sql.in.c: Drop useless input endpoints
+	  relate check in ST_ChangeEdgeGeom
+
+2013-01-16 15:13  strk
+
+	* NEWS, topology/sql/sqlmm.sql.in.c,
+	  topology/test/regress/st_changeedgegeom.sql,
+	  topology/test/regress/st_changeedgegeom_expected: Make
+	  ST_ChangeEdgeGeom motion collision detection code more robust
+	  
+	  The new model avoids a call to GEOSSymDifference but rather
+	  checks
+	  each candidate node against both "motion ranges" containment.
+	  It still constructs something, but only MULTIPOINT, which should
+	  be safe. Haven't profiled but the new code should also be faster
+	  than the previous. Fixes ticket #2176, includes testcase for it.
+
+2013-01-16 09:19  robe
+
+	* doc/installation.xml, doc/postgis.xml: update download links
+
+2013-01-15 14:56  dustymugs
+
+	* NEWS, raster/rt_pg/rt_pg.c: Fixed incorrect function use. Ticket
+	  #2174
+
+2013-01-15 11:34  strk
+
+	* NEWS, liblwgeom/lwgeom_geos_split.c, regress/split.sql,
+	  regress/split_expected: Base vertex snap tolerance in
+	  lwline_split_by_point on line length
+	  
+	  Fixes robustness issue in splitting line with own vertex (#2173)
+	  Also fixes one case of topology building (#2172)
+
+2013-01-11 05:58  robe
+
+	* doc/postgis.xml: minor correction
+
+2013-01-09 06:14  robe
+
+	* doc/Makefile.in, doc/postgis.xml: get rid of micro in title of
+	  docs, replace old links
+
+2012-12-21 11:04  strk
+
+	* NEWS, liblwgeom/lwhomogenize.c: Fix memory leak in
+	  lwcollection_homogenize
+
+2012-12-20 18:27  strk
+
+	* liblwgeom/cunit/cu_stringbuffer.c: Fix leak in cu_stringbuffer
+	  test
+
+2012-12-20 18:07  strk
+
+	* liblwgeom/lwlinearreferencing.c: Fix memory leak in
+	  lwmline_locate_along
+
+2012-12-20 17:50  strk
+
+	* liblwgeom/lwgeom_geos_clean.c: Fix memory leak in geometry
+	  cleaner
+
+2012-12-20 17:40  strk
+
+	* liblwgeom/cunit/cu_ptarray.c, liblwgeom/lwsegmentize.c: Fix
+	  memory leaks in lwsegmentize and cu_ptarray
+
+2012-12-20 17:39  strk
+
+	* liblwgeom/cunit/cu_geodetic.c: Fix leak in cu_geodetic test
+
+2012-12-20 17:38  strk
+
+	* configure.ac: CUnit is not only needed for liblwgeom
+
+2012-12-19 23:55  dustymugs
+
+	* raster/rt_core/rt_api.c: Make sure to free memory allocated for
+	  various SRS strings
+
+2012-12-19 18:28  strk
+
+	* regress/in_geojson.sql, regress/in_geojson_expected,
+	  regress/tickets.sql, regress/tickets_expected: Put JSON input
+	  test where it belongs (#2156)
+
+2012-12-15 20:12  robe
+
+	* extensions/upgradeable_versions.mk: oops typo
+
+2012-12-15 20:09  robe
+
+	* extensions/postgis_topology/Makefile.in,
+	  extensions/upgradeable_versions.mk: #2147 upgrade topology
+	  doesn't work on Mac BSD sed doesn't default to extended. Use
+	  already perl built topology upgrade script instead as template
+	  for extension upgrade. Also add 2.0.2 as lower upgrade path and
+	  get rid of double building of .sql files
+
+2012-12-15 00:55  dustymugs
+
+	* raster/loader/raster2pgsql.c: Fixed handling of identifiers with
+	  single quote (') such as in O'Reilly.
+
+2012-12-13 13:36  robe
+
+	* doc/reference_processing.xml: fix typo
+
+2012-12-13 13:30  robe
+
+	* doc/reference_processing.xml: forgot to wrap in highlighted note
+
+2012-12-13 13:26  robe
+
+	* doc/reference_processing.xml: warn people that ST_Simplify
+	  suffers from dissociative identity disorder in 2.0
+
+2012-12-07 22:06  dustymugs
+
+	* NEWS, raster/rt_pg/rtpostgis.sql.in.c: More verbose output when
+	  constraints fail to be added to a raster
+	  column. Ticket #2141
+
+2012-12-07 21:17  dustymugs
+
+	* NEWS, raster/rt_core/rt_api.c, raster/rt_core/rt_api.h,
+	  raster/rt_pg/rt_pg.c, raster/test/core/testapi.c: Fixed behavior
+	  of ST_ConvexHull() for empty rasters. Ticket #2126
+
+2012-12-06 05:23  dustymugs
+
+	* NEWS, raster/rt_core/rt_api.c: Make sure to process SRS before
+	  passing string to GDAL functions.
+	  Ticket #2134
+
+2012-12-05 10:38  strk
+
+	* loader/shp2pgsql-cli.c: Fix broken shp2pgsql help string
+	  suggesting -r to reproject
+
+2012-12-04 21:51  strk
+
+	* README.postgis: Tweak version in README.postgis too
+
+2012-12-04 10:36  robe
+
+	* Version.config, doc/Makefile.in: somebody didn't bump up to 2.0.3
+	  making debbie not correctly update the docs. #2121 Also get rid
+	  of validation during comment generation.
+
+2012-12-03 22:20  dustymugs
+
+	* doc/reference_raster.xml: Fixed incorrect return type for
+	  ST_BandIsNoData(raster) in docs
+
+2012-12-03 17:24  strk
+
+	* Version.config: Drop SVN label from version
+	  
+	  NOTE: I'm intentionally doing it differently than
+	  HOWTO_RELEASE prescribes, don't like committing
+	  to a tag...
+
+2012-12-03 17:21  strk
+
+	* ChangeLog, NEWS, README.postgis, doc/release_notes.xml: 2.0.2
+	  release
+
 2012-12-03 16:18  strk
 
 	* NEWS, doc/release_notes.xml, postgis/lwgeom_in_geojson.c,

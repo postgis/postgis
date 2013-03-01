@@ -1,9 +1,9 @@
 PostGIS - Geographic Information Systems Extensions to PostgreSQL
 =================================================================
 
-:Version: 2.0.3SVN
-:Date: 2013-MM-DD
-:Website: http://postgis.org
+:Version: 2.0.3
+:Date: 2013-03-01
+:Website: http://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
 the features to R-tree indexing, and provides many spatial functions for
