@@ -807,6 +807,10 @@ FROM (SELECT 'POLYGON((1 1 1, 5 1 1,5 5 1, 1 5 1,1 1 1))'::geometry as a, 'LINES
 SELECT '#2108', ST_AsEWKT(ST_Line_Interpolate_Point('SRID=3395;LINESTRING M EMPTY'::geometry, 0.5));
 SELECT '#2117', ST_AsEWKT(ST_PointOnSurface('SRID=3395;MULTIPOLYGON M EMPTY'::geometry));
 
+SELECT '#2110.1', 'POINT(0 0)'::geometry = 'POINT EMPTY'::geometry;
+SELECT '#2110.2', 'POINT EMPTY'::geometry = 'POINT EMPTY'::geometry;
+SELECT '#2110.3', 'POINT(0 0)'::geometry = 'POINT(0 0)'::geometry;
+
 
 SELECT '#2145',
 round(ST_Length(St_Segmentize(ST_GeographyFromText('LINESTRING(-89.3000030518 28.2000007629,-89.1999969482 89.1999969482,-89.1999969482 89.1999969482)'), 10000))::numeric,0);
