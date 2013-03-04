@@ -1,3 +1,9 @@
+PostGIS 2.0.4
+2013/MM/DD
+
+ * Bug Fixes *
+  - #2110, Equality operator between EMPTY and point on origin
+
 PostGIS 2.0.3
 2013/03/01
 
