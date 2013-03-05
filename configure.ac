@@ -699,8 +699,15 @@ dnl ===========================================================================
 dnl Detect if json-c installed
 dnl ===========================================================================
 
+CHECK_JSON=yes
 HAVE_JSON=no
 AC_SUBST([HAVE_JSON])
+
+AC_ARG_WITH([json],
+	[AS_HELP_STRING([--without-json], [build without json-c support])],
+	[CHECK_JSON="$withval"], [])
+
+if test "$CHECK_JSON" != "no"; then dnl {
 
 AC_ARG_WITH([jsondir],
 	[AS_HELP_STRING([--with-jsondir=PATH], [specify the json-c installation directory])],
@@ -750,6 +757,8 @@ fi
 
 AC_SUBST([JSON_CPPFLAGS])
 AC_SUBST([JSON_LDFLAGS])
+
+fi dnl }
 
 dnl ===========================================================================
 dnl Detect GTK+2.0 for GUI

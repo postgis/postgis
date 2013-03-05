@@ -115,6 +115,7 @@ PostGIS 2.1.0
   - Proper support for raster band's isnodata flag in core API and loader.
   - Additional default values for parameters of ST_Aspect and ST_HillShade
   - #2178, ST_Summary now advertises presence of known srid with an [S] flag
+  - #2202, Make libjson-c optional (--without-json configure switch)
 
 * Fixes *
 

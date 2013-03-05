@@ -15,6 +15,7 @@
 #include "CUnit/Basic.h"
 #include "liblwgeom_internal.h"
 #include "cu_tester.h"
+#include "../postgis_config.h"
 
 /* Internal funcs */
 static void
@@ -80,7 +81,9 @@ int main(int argc, char *argv[])
 		stringbuffer_suite,
 		surface_suite,
 		homogenize_suite,
+#if HAVE_JSON
 		in_geojson_suite,
+#endif
 		out_gml_suite,
 		out_kml_suite,
 		out_geojson_suite,
