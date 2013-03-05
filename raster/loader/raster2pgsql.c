@@ -78,9 +78,11 @@ raster_destroy(rt_raster raster) {
 	uint16_t nbands = rt_raster_get_num_bands(raster);
 	for (i = 0; i < nbands; i++) {
 		rt_band band = rt_raster_get_band(raster, i);
+		if (band == NULL) continue;
+
 		if (!rt_band_is_offline(band) && !rt_band_get_ownsdata_flag(band)) {
-     	void* mem = rt_band_get_data(band);
-       if (mem) rtdealloc(mem);
+			void* mem = rt_band_get_data(band);
+			if (mem) rtdealloc(mem);
 		}
 		rt_band_destroy(band);
 	}
@@ -648,7 +650,7 @@ diff_rastinfo(RASTERINFO *x, RASTERINFO *ref) {
 		err = rt_raster_same_alignment(rx, rref, &aligned, NULL);
 		rt_raster_destroy(rx);
 		rt_raster_destroy(rref);
-		if (!err) {
+		if (err != ES_NONE) {
 			rterror(_("diff_rastinfo: Could not run raster alignment test"));
 			return;
 		}
