@@ -7588,7 +7588,7 @@ rt_raster_from_hexwkb(const char* hexwkb, uint32_t hexwkbsize) {
 	assert(NULL != hexwkb);
 
 	RASTER_DEBUGF(3, "input wkb: %s", hexwkb);
-	RASTER_DEBUGF(3, "input wkbsize: %s", hexwkbsize);
+	RASTER_DEBUGF(3, "input wkbsize: %d", hexwkbsize);
 
 	if (hexwkbsize % 2) {
 		rterror("rt_raster_from_hexwkb: Raster HEXWKB input must have an even number of characters");
