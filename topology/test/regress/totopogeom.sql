@@ -90,7 +90,6 @@ inp as ( select
 tg as ( select totopogeom(g, 'tt', 5) as g from inp )
 select St_AsText(inp.g), st_astext(tg.g::geometry) from inp, tg;
 
-
 -- Convert some empties
 SELECT ST_AsText(toTopoGeom('POINT EMPTY', 'tt', 1)::geometry);
 SELECT ST_AsText(toTopoGeom('MULTIPOINT EMPTY', 'tt', 1)::geometry);
@@ -168,6 +167,13 @@ with inp as ( select
  ::geometry as g),
 tg as ( select totopogeom(g, 'tt', 5) as g from inp )
 select '#1790.3', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDistance(tg.g::geometry, inp.g) FROM inp, tg;
+
+-- http://trac.osgeo.org/postgis/ticket/1968
+with inp as ( select
+'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5))'
+::geometry as g ),
+tg as ( select totopogeom(g, 'tt', 3) as g from inp )
+SELECT '#1968', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
 
 -- Test adding portions to an existing TopoGeometry
 INSERT INTO tt.f_areal (id, g)
