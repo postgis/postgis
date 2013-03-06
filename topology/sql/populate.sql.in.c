@@ -706,13 +706,15 @@ BEGIN
   -- Get tolerance, if 0 was given
   tol := COALESCE( NULLIF(tolerance, 0), topology._st_mintolerance(atopology, apoint) );
 
-  -- 1. Check if any existing node falls within tolerance
+  -- 1. Check if any existing node is closer than the given precision
   --    and if so pick the closest
   sql := 'SELECT a.node_id FROM ' 
     || quote_ident(atopology) 
     || '.node as a WHERE ST_DWithin(a.geom,'
     || quote_literal(apoint::text) || '::geometry,'
-    || tol || ') ORDER BY ST_Distance('
+    || tol || ') AND ST_Distance('
+    || quote_literal(apoint::text)
+    || '::geometry, a.geom) < ' || tol || ' ORDER BY ST_Distance('
     || quote_literal(apoint::text)
     || '::geometry, a.geom) LIMIT 1;';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
