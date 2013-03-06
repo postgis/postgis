@@ -148,7 +148,13 @@ RAISE DEBUG 'Elem % NOT in %', elem, elems;
         sql := 'INSERT INTO ' || quote_ident(atopology)
             || '.relation(topogeo_id, layer_id, element_type, element_id) VALUES ('
             || rec.id || ',' || rec.lyr || ',' || rec.dims+1
-            || ',' || rec2.primitive || ')';
+            || ',' || rec2.primitive || ')'
+            -- NOTE: we're avoiding duplicated rows here
+            || ' EXCEPT SELECT ' || rec.id || ', ' || rec.lyr
+            || ', element_type, element_id FROM '
+            || quote_ident(topology_info.name)
+            || '.relation WHERE layer_id = ' || rec.lyr
+            || ' AND topogeo_id = ' || rec.id;
 #ifdef POSTGIS_TOPOLOGY_DEBUG
         RAISE DEBUG '%', sql;
 #endif

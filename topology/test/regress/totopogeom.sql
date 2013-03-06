@@ -171,7 +171,7 @@ select '#1790.3', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDista
 
 -- http://trac.osgeo.org/postgis/ticket/1968
 with inp as ( select
-'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5))'
+'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5),(0 0, 5 0),(5 0, 10 0))'
 ::geometry as g ),
 tg as ( select totopogeom(g, 'tt', 3) as g from inp )
 SELECT '#1968', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
