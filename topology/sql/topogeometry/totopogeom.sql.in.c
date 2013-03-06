@@ -24,8 +24,10 @@ DECLARE
   layer_info RECORD;
   topology_info RECORD;
   rec RECORD;
+  rec2 RECORD;
   tg topology.TopoGeometry;
-  elems topology.TopoElementArray = '{{0,0}}';
+  elems INT[][];
+  elem INT[];
   sql TEXT;
   typ TEXT;
   tolerance FLOAT8;
@@ -118,30 +120,41 @@ BEGIN
   -- and add them to the definition of it. We add them as soon
   -- as possible so that each element can further edit the
   -- definition by splitting
-  FOR rec IN SELECT DISTINCT id(tg), alayer as lyr,
-    CASE WHEN ST_Dimension(geom) = 0 THEN 1
-         WHEN ST_Dimension(geom) = 1 THEN 2
-         WHEN ST_Dimension(geom) = 2 THEN 3
-    END as type,
-    CASE WHEN ST_Dimension(geom) = 0 THEN
-           topology.topogeo_addPoint(atopology, geom, tolerance)
-         WHEN ST_Dimension(geom) = 1 THEN
-           topology.topogeo_addLineString(atopology, geom, tolerance)
-         WHEN ST_Dimension(geom) = 2 THEN
-           topology.topogeo_addPolygon(atopology, geom, tolerance)
-    END as primitive
+  FOR rec IN SELECT id(tg), alayer as lyr,
+    geom, ST_Dimension(geom) as dims
     FROM (SELECT (ST_Dump(ageom)).geom) as f
     WHERE NOT ST_IsEmpty(geom)
   LOOP
-    -- TODO: consider use a single INSERT statement for the whole thing
-    sql := 'INSERT INTO ' || quote_ident(atopology)
-        || '.relation(topogeo_id, layer_id, element_type, element_id) VALUES ('
-        || rec.id || ',' || rec.lyr || ',' || rec.type
-        || ',' || rec.primitive || ')';
+    FOR rec2 IN SELECT CASE
+       WHEN rec.dims = 0 THEN
+         topology.topogeo_addPoint(atopology, rec.geom, tolerance)
+       WHEN rec.dims = 1 THEN
+         topology.topogeo_addLineString(atopology, rec.geom, tolerance)
+       WHEN rec.dims = 2 THEN
+         topology.topogeo_addPolygon(atopology, rec.geom, tolerance)
+       END as primitive
+    LOOP
+      elem := ARRAY[rec.dims+1, rec2.primitive];
+      IF elems @> ARRAY[elem] THEN
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG '%', sql;
+RAISE DEBUG 'Elem % already in %', elem, elems;
 #endif
-    EXECUTE sql;
+      ELSE
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+RAISE DEBUG 'Elem % NOT in %', elem, elems;
+#endif
+        elems := elems || elem;
+        -- TODO: consider use a single INSERT statement for the whole thing
+        sql := 'INSERT INTO ' || quote_ident(atopology)
+            || '.relation(topogeo_id, layer_id, element_type, element_id) VALUES ('
+            || rec.id || ',' || rec.lyr || ',' || rec.dims+1
+            || ',' || rec2.primitive || ')';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+        RAISE DEBUG '%', sql;
+#endif
+        EXECUTE sql;
+      END IF;
+    END LOOP;
   END LOOP;
 
   RETURN tg;

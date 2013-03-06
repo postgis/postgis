@@ -169,6 +169,12 @@ with inp as ( select
 tg as ( select totopogeom(g, 'tt', 5) as g from inp )
 select '#1790.3', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDistance(tg.g::geometry, inp.g) FROM inp, tg;
 
+-- http://trac.osgeo.org/postgis/ticket/1968
+with inp as ( select
+'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5))'
+::geometry as g ),
+tg as ( select totopogeom(g, 'tt', 3) as g from inp )
+SELECT '#1968', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
 
 DROP TABLE tt.f_coll;
 DROP TABLE tt.f_areal;
