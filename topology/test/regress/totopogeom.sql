@@ -171,10 +171,16 @@ select '#1790.3', ST_HausdorffDistance(inp.g, tg.g::geometry), ST_HausdorffDista
 
 -- http://trac.osgeo.org/postgis/ticket/1968
 with inp as ( select
-'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5),(0 0, 5 0),(5 0, 10 0))'
+'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5))'
 ::geometry as g ),
 tg as ( select totopogeom(g, 'tt', 3) as g from inp )
-SELECT '#1968', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
+SELECT '#1968.1', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
+with inp as ( select
+ST_Translate(
+'MULTILINESTRING ((0 0, 10 0),(5 0, 5 5),(0 0, 5 0),(5 0, 10 0))'
+::geometry, 20, 0) as g ),
+tg as ( select totopogeom(g, 'tt', 3) as g from inp )
+SELECT '#1968.2', ST_HausdorffDistance(inp.g, tg.g::geometry) FROM inp, tg;
 
 DROP TABLE tt.f_coll;
 DROP TABLE tt.f_areal;
