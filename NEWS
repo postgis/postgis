@@ -69,6 +69,7 @@ PostGIS 2.1.0
     accessible selectivity and stats reader functions for testing
   - #2210, ST_MinConvexHull(raster)
   - lwgeom_from_geojson in liblwgeom (Sandro Santilli / Vizzuality)
+  - #1687, ST_Simplify for TopoGeometry (Sandro Santilli / Vizzuality)
 
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 
