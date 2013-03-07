@@ -1984,6 +1984,7 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 --  TopoGeometry
 #include "sql/topogeometry/type.sql.in.c"
 #include "sql/topogeometry/cleartopogeom.sql.in.c"
+#include "sql/topogeometry/simplify.sql.in.c"
 #include "sql/topogeometry/totopogeom.sql.in.c"
 
 --  GML

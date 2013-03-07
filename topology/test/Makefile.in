@@ -44,6 +44,7 @@ TESTS = regress/legacy_validate.sql regress/legacy_predicate.sql \
 	regress/st_newedgessplit.sql \
 	regress/st_remedgenewface.sql \
 	regress/st_remedgemodface.sql \
+	regress/st_simplify.sql \
 	regress/topoelement.sql \
 	regress/topoelementarray_agg.sql \
 	regress/topogeo_addlinestring \
