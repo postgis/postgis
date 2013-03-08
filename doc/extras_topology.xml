@@ -2447,7 +2447,7 @@ faceid
 	<refentry id="TP_ST_Simplify">
 	  <refnamediv>
 		<refname>ST_Simplify</refname>
-		<refpurpose>Returns a "simplified" version of the given geometry using
+		<refpurpose>Returns a "simplified" geometry version of the given TopoGeometry using
 				the Douglas-Peucker algorithm.</refpurpose>
 	  </refnamediv>
 
@@ -2463,7 +2463,7 @@ faceid
 
 	  <refsection>
 		<title>Description</title>
-		<para>Returns a "simplified" version of the given TopoGeometry using
+		<para>Returns a "simplified" geometry version of the given TopoGeometry using
 				the Douglas-Peucker algorithm on each component edge.</para>
 
 		<note><para>The returned geometry may be non-simple or non-valid.</para>
