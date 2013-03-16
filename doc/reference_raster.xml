@@ -7078,7 +7078,7 @@ FROM dummy_rast WHERE rid=1;
 					<programlisting>SELECT ST_AsGDALRaster(rast, 'JPEG') As rastjpg
 FROM dummy_rast WHERE rid=1;
 
-SELECT ST_AsGDALRaster(rast, 'JPEG', ARRAY!['QUALITY=50']) As rastjpg
+SELECT ST_AsGDALRaster(rast, 'JPEG', ARRAY['QUALITY=50']) As rastjpg
 FROM dummy_rast WHERE rid=2;
 				</programlisting>
 			
