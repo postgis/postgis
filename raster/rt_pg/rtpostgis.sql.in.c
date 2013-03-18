@@ -2282,7 +2282,7 @@ CREATE OR REPLACE FUNCTION st_resize(
 	BEGIN
 		-- range check
 		IF $2 <= 0. OR $2 > 1. OR $3 <= 0. OR $3 > 1. THEN
-			RAISE EXCEPTION 'Percentages must be a value greater than zero and less than or equal to one, e.g. 0.5 for 50%';
+			RAISE EXCEPTION 'Percentages must be a value greater than zero and less than or equal to one, e.g. 0.5 for 50%%';
 		END IF;
 
 		SELECT width, height INTO _width, _height FROM ST_Metadata($1);
