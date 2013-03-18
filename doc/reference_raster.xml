@@ -8648,11 +8648,11 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 					</varlistentry>
 					<varlistentry>
 						<term>distancex</term>
-						<listitem><para>The width of the neighborhood, in cells. If not specified only the reference cell is consider (neighborhood of 0).</para></listitem>
+						<listitem><para>The distance in pixels from the reference cell. So width of resulting matrix would be <code>2*distancex + 1</code>.If not specified only the reference cell is considered (neighborhood of 0).</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>distancey</term>
-						<listitem><para>The height of the neighborhood, in cells. If not specified only the reference cell is considered (neighborhood of 0)</para></listitem>
+						<listitem><para>The distance in pixels from reference cell in y direction. Height of resulting matrix would be <code>2*distancey + 1</code> .If not specified only the reference cell is considered (neighborhood of 0).</para></listitem>
 					</varlistentry>
 
 					<varlistentry>
@@ -8664,7 +8664,7 @@ CREATE OR REPLACE FUNCTION sample_callbackfunc(value double precision[][][], pos
 
 				</variablelist>
 
-
+				
 
 				<note>
 					<para>
