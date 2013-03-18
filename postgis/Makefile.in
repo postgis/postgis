@@ -22,7 +22,7 @@ DATA=../spatial_ref_sys.sql
 SQLPP = @SQLPP@
 
 # SQL objects (files requiring pre-processing)
-SQL_OBJS=postgis.sql.in legacy.sql.in legacy_minimal.sql.in 
+SQL_OBJS=postgis.sql legacy.sql legacy_minimal.sql
 
 # PostgreSQL objects
 PG_OBJS= \
@@ -133,7 +133,8 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" $< > $@
+	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
 
 postgis_upgrade_20_21.sql.in: postgis_drop_before.sql postgis.sql postgis_drop_after.sql
 	cat $^ > $@
@@ -145,15 +146,14 @@ postgis_upgrade_21_minor.sql: postgis_upgrade_20_21.sql
 	cp $< $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
-$(SQL_OBJS): %.in: %.in.c
-	$(SQLPP) -I../libpgcommon $< | grep -v '^#' > $@
+#$(SQL_OBJS): %.in: %.in.c
+# $(SQLPP) -I../libpgcommon $< | grep -v '^#' > $@
 
 # SQL objects are also dependent on postgis_config.h for PostgreSQL version
 $(SQL_OBJS): ../postgis_config.h ../postgis_svn_revision.h
 
-postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c 
+#postgis.sql.in: sqldefines.h long_xact.sql.in.c geography.sql.in.c 
 
-#uninstall_postgis.sql.in: sqldefines.h uninstall_sqlmm.sql.in.c uninstall_long_xact.sql.in.c uninstall_geography.sql.in.c
 uninstall_postgis.sql: postgis.sql ../utils/create_undef.pl 
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
 

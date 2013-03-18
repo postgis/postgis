@@ -4371,8 +4371,9 @@ END;
 $$
 LANGUAGE 'plpgsql' IMMUTABLE STRICT;
 
-#include "long_xact.sql.in.c"
-#include "geography.sql.in.c"
+/* Should we include the .sql directly here ? */
+#include "long_xact.sql.in"
+#include "geography.sql.in"
 
 
 
