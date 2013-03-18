@@ -175,7 +175,6 @@ DECLARE
   rec RECORD;
   rec2 RECORD;
   bounds geometry;
-  side int;
 BEGIN
 
   nsprefix := 'gml:';
@@ -283,8 +282,6 @@ DECLARE
   sql text;
   rec RECORD;
   rec2 RECORD;
-  --bounds geometry;
-  side int;
 BEGIN
 
   nsprefix := 'gml:';
