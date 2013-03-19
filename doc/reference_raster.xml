@@ -6931,11 +6931,11 @@ SELECT ST_MapAlgebraFct(m1.rast, 1, m1.rast, 3,
 					</varlistentry>
 					<varlistentry>
 						<term>ngbwidth</term>
-						<listitem><para>The width of the neighborhood, in cells.</para></listitem>
+						<listitem><para>The horizontal distance in pixels from the reference cell where reference cell is the center cell. <code>ngbwidth=2</code> would result in a neighborhood matrix that is 5 pixels wide (2*ngbwidth + 1).</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>ngbheight</term>
-						<listitem><para>The height of the neighborhood, in cells.</para></listitem>
+						<listitem><para>The vertical distance in pixels from the reference cell where reference cell is the center cell. <code>ngbheight=1</code> would result in a neighborhood matrix that is 3 pixels in height (2*ngbheight + 1).</para></listitem>
 					</varlistentry>
 					<varlistentry>
 						<term>onerastngbuserfunc</term>
