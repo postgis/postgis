@@ -21,7 +21,7 @@ DATA=
 SQLPP = @SQLPP@
 
 # SQL objects (files requiring pre-processing)
-SQL_OBJS=rtpostgis.sql.in rtpostgis_drop.sql.in rtpostgis_upgrade_cleanup.sql.in rtpostgis_legacy.sql.in
+SQL_OBJS=rtpostgis.sql rtpostgis_drop.sql rtpostgis_upgrade_cleanup.sql rtpostgis_legacy.sql
 
 # Objects to build using PGXS
 OBJS=rt_pg.o
@@ -84,15 +84,16 @@ endif
 
 # Borrow the $libdir substitution from PGXS but customise by adding the version number
 %.sql: %.sql.in
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" $< > $@
+	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' | \
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/rtpostgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
 
 
 # Objects dependencies
 $(OBJS): ../../liblwgeom/.libs/liblwgeom.a ../../libpgcommon/libpgcommon.a ../../postgis_config.h ../../postgis_svn_revision.h
 
 # Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
-$(SQL_OBJS): %.in: %.in.c
-	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' > $@
+#$(SQL_OBJS): %.in: %.in.c
+#	$(SQLPP) -I../../postgis/ -I../../ $< | grep -v '^#' > $@
 
 # SQL objects deps here
 $(SQL_OBJS): ../../postgis/sqldefines.h ../../postgis_svn_revision.h
