@@ -39,7 +39,7 @@ SQL_OBJS = \
   topology_drop_after.sql
 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS) $(SQL_OBJS:.sql=.sql.in)
+EXTRA_CLEAN=$(SQL_OBJS)
 
 # PGXS information
 PG_CONFIG = @PGCONFIG@ 
@@ -76,11 +76,12 @@ endif
 # Unfortunately we have to copy this from the PGXS Makefile as it only gets picked up
 # if MODULE_big is defined
 %.sql: %.sql.in
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/$*'g" $< > $@
+	$(SQLPP) $< | grep -v '^#' | \
+	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/$*'g" > $@
 
 # Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
-%.in: %.in.c
-	$(SQLPP) $< | grep -v '^#' > $@
+#%.in: %.in.c
+#	$(SQLPP) $< | grep -v '^#' > $@
 	
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
@@ -90,7 +91,7 @@ topology_upgrade.sql:  topology.sql
 topology_upgrade_$(PGIS_MAJ_MIN)_minor.sql:  topology_drop_before.sql topology_upgrade.sql topology_drop_after.sql
 	cat $^ > $@
 
-topology.sql.in: sql/sqlmm.sql.in.c sql/populate.sql.in.c sql/polygonize.sql.in.c sql/gml.sql.in.c sql/query/getnodebypoint.sql.in.c sql/query/getedgebypoint.sql.in.c sql/query/getfacebypoint.sql.in.c sql/query/GetRingEdges.sql.in.c sql/query/GetNodeEdges.sql.in.c sql/manage/TopologySummary.sql.in.c sql/manage/CopyTopology.sql.in.c sql/manage/ManageHelper.sql.in.c sql/topoelement/topoelement_agg.sql.in.c sql/topogeometry/type.sql.in.c sql/topogeometry/totopogeom.sql.in.c sql/topogeometry/cleartopogeom.sql.in.c sql/topogeometry/simplify.sql.in.c sql/predicates.sql.in.c ../postgis/sqldefines.h ../postgis_svn_revision.h
+topology.sql: sql/sqlmm.sql.in sql/populate.sql.in sql/polygonize.sql.in sql/gml.sql.in sql/query/getnodebypoint.sql.in sql/query/getedgebypoint.sql.in sql/query/getfacebypoint.sql.in sql/query/GetRingEdges.sql.in sql/query/GetNodeEdges.sql.in sql/manage/TopologySummary.sql.in sql/manage/CopyTopology.sql.in sql/manage/ManageHelper.sql.in sql/topoelement/topoelement_agg.sql.in sql/topogeometry/type.sql.in sql/topogeometry/totopogeom.sql.in sql/topogeometry/cleartopogeom.sql.in sql/topogeometry/simplify.sql.in sql/predicates.sql.in ../postgis/sqldefines.h ../postgis_svn_revision.h
 
 uninstall_topology.sql: topology.sql ../utils/create_undef.pl 
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@

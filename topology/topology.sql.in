@@ -1963,44 +1963,44 @@ $$
 LANGUAGE 'plpgsql' VOLATILE STRICT;
 --} DropTopology
 
-#include "sql/manage/TopologySummary.sql.in.c"
-#include "sql/manage/CopyTopology.sql.in.c"
+#include "sql/manage/TopologySummary.sql.in"
+#include "sql/manage/CopyTopology.sql.in"
 
 -- Spatial predicates
-#include "sql/predicates.sql.in.c"
+#include "sql/predicates.sql.in"
 
 --  Querying
-#include "sql/query/getnodebypoint.sql.in.c"
-#include "sql/query/getedgebypoint.sql.in.c"
-#include "sql/query/getfacebypoint.sql.in.c"
+#include "sql/query/getnodebypoint.sql.in"
+#include "sql/query/getedgebypoint.sql.in"
+#include "sql/query/getfacebypoint.sql.in"
 
 --  Populating
-#include "sql/populate.sql.in.c"
-#include "sql/polygonize.sql.in.c"
+#include "sql/populate.sql.in"
+#include "sql/polygonize.sql.in"
 
 --  TopoElement
-#include "sql/topoelement/topoelement_agg.sql.in.c"
+#include "sql/topoelement/topoelement_agg.sql.in"
 
 --  TopoGeometry
-#include "sql/topogeometry/type.sql.in.c"
-#include "sql/topogeometry/cleartopogeom.sql.in.c"
-#include "sql/topogeometry/simplify.sql.in.c"
-#include "sql/topogeometry/totopogeom.sql.in.c"
+#include "sql/topogeometry/type.sql.in"
+#include "sql/topogeometry/cleartopogeom.sql.in"
+#include "sql/topogeometry/simplify.sql.in"
+#include "sql/topogeometry/totopogeom.sql.in"
 
 --  GML
-#include "sql/gml.sql.in.c"
+#include "sql/gml.sql.in"
 
 --=}  POSTGIS-SPECIFIC block
 
 --  SQL/MM block
-#include "sql/sqlmm.sql.in.c"
+#include "sql/sqlmm.sql.in"
 
 -- The following files needs getfaceedges_returntype, defined in sqlmm.sql
-#include "sql/query/GetRingEdges.sql.in.c"
-#include "sql/query/GetNodeEdges.sql.in.c"
+#include "sql/query/GetRingEdges.sql.in"
+#include "sql/query/GetNodeEdges.sql.in"
 
 --general management --
-#include "sql/manage/ManageHelper.sql.in.c"
+#include "sql/manage/ManageHelper.sql.in"
 
 CREATE OR REPLACE FUNCTION postgis_topology_scripts_installed() RETURNS text
 	AS _POSTGIS_SQL_SELECT_POSTGIS_SCRIPTS_VERSION
