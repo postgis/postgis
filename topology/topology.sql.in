@@ -1987,8 +1987,9 @@ LANGUAGE 'plpgsql' VOLATILE STRICT;
 #include "sql/topogeometry/simplify.sql.in"
 #include "sql/topogeometry/totopogeom.sql.in"
 
---  GML
+--  Exports
 #include "sql/export/gml.sql.in"
+#include "sql/export/TopoJSON.sql.in"
 
 --=}  POSTGIS-SPECIFIC block
 

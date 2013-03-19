@@ -1,0 +1,171 @@
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+-- 
+-- PostGIS - Spatial Types for PostgreSQL
+-- http://postgis.refractions.net
+--
+-- Copyright (C) 2013 Sandro Santilli <strk@keybit.net>
+--
+-- This is free software; you can redistribute and/or modify it under
+-- the terms of the GNU General Public Licence. See the COPYING file.
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+--
+-- Functions used for TopoJSON export
+--
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+--{
+--
+-- API FUNCTION
+--
+-- text AsTopoJSON(TopoGeometry, edgeMapTable)
+--
+-- }{
+CREATE OR REPLACE FUNCTION topology.AsTopoJSON(tg topology.TopoGeometry, edgeMapTable regclass)
+  RETURNS text AS
+$$
+DECLARE
+  visited bool;
+  toponame text;
+  json text;
+  sql text;
+  bounds GEOMETRY;
+  rec RECORD;
+  rec2 RECORD;
+  side int;
+  arcid int;
+  arcs int[];
+BEGIN
+
+  IF tg IS NULL THEN
+    RETURN NULL;
+  END IF;
+
+  -- Get topology name (for subsequent queries)
+  SELECT name FROM topology.topology into toponame
+              WHERE id = tg.topology_id;
+
+  -- Puntual TopoGeometry
+  IF tg.type = 1 THEN
+    -- TODO: implement scale ?
+    --json := ST_AsGeoJSON(topology.Geometry(tg));
+    --return json;
+    RAISE EXCEPTION 'TopoJSON export does not support puntual objects';
+  ELSIF tg.type = 2 THEN -- lineal
+
+    FOR rec IN SELECT (ST_Dump(topology.Geometry(tg))).geom
+    LOOP -- {
+
+      sql := 'SELECT e.*, ST_Line_Locate_Point('
+            || quote_literal(rec.geom::text)
+            || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
+            || ', ST_Line_Locate_Point('
+            || quote_literal(rec.geom::text)
+            || ', ST_Line_Interpolate_Point(e.geom, 0.8)) as pos2 FROM '
+            || quote_ident(toponame)
+            || '.edge e WHERE ST_Covers('
+            || quote_literal(rec.geom::text)
+            || ', e.geom) ORDER BY pos';
+            -- TODO: add relation to the conditional, to reduce load ?
+      FOR rec2 IN EXECUTE sql
+      LOOP -- {
+
+        IF edgeMapTable IS NOT NULL THEN
+          sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = ' || rec2.edge_id;
+          EXECUTE sql INTO arcid;
+          IF arcid IS NULL THEN
+            EXECUTE 'INSERT INTO ' || edgeMapTable::text
+              || '(edge_id) VALUES (' || rec2.edge_id || ') RETURNING arc_id-1'
+            INTO arcid;
+          END IF;
+        ELSE
+          arcid := rec2.edge_id;
+        END IF;
+
+        -- edge goes in opposite direction
+        IF rec2.pos2 < rec2.pos THEN
+          arcid := -(arcid+1);
+        END IF;
+
+        arcs := arcs || arcid;
+
+      END LOOP; -- }
+    END LOOP; -- }
+
+    json := '{ "type": "LineString", "arcs": [' || array_to_string(arcs,',') || ']}';
+
+    return json;
+
+  ELSIF tg.type = 3 THEN -- areal
+
+    json := '{ "type": "Polygon", "arcs": [';
+
+    FOR rec IN SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR(
+      topology.Geometry(tg)))).geom)).geom
+    LOOP -- {
+
+      arcs := NULL;
+      bounds = ST_Boundary(rec.geom);
+
+      sql := 'SELECT e.*, ST_Line_Locate_Point('
+        || quote_literal(bounds::text)
+        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
+        || ', ST_Line_Locate_Point('
+        || quote_literal(bounds::text)
+        || ', ST_Line_Interpolate_Point(e.geom, 0.8)) as pos2 FROM '
+        || quote_ident(toponame)
+        || '.edge e WHERE ST_Covers('
+        || quote_literal(bounds::text)
+        || ', e.geom) ORDER BY pos';
+
+      -- RAISE DEBUG 'SQL: %', sql;
+
+      FOR rec2 IN EXECUTE sql
+      LOOP
+
+        IF edgeMapTable IS NOT NULL THEN
+          sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = ' || rec2.edge_id;
+          EXECUTE sql INTO arcid;
+          IF arcid IS NULL THEN
+            EXECUTE 'INSERT INTO ' || edgeMapTable::text
+              || '(edge_id) VALUES (' || rec2.edge_id || ') RETURNING arc_id-1'
+            INTO arcid;
+          END IF;
+        ELSE
+          arcid := rec2.edge_id;
+        END IF;
+
+        -- RAISE DEBUG 'Arc id: %' , arcid;
+
+        -- edge goes in same direction
+        IF rec2.pos2 < rec2.pos THEN
+          arcid := -(arcid+1);
+        END IF;
+
+        arcs := arcs || arcid;
+
+      END LOOP;
+
+      --RAISE DEBUG 'Ring arcs: %' , arcs;
+
+      json := json || '[' || array_to_string(arcs,',') || ']';
+
+      --RAISE DEBUG 'JSON : %' , json;
+
+    END LOOP; -- }
+
+    json := json || ']}';
+    RETURN json;
+
+  ELSIF tg.type = 4 THEN -- collection
+    RAISE EXCEPTION 'Collection TopoGeometries are not supported by AsTopoJSON';
+
+  END IF;
+	
+
+  RETURN json;
+	
+END
+$$ LANGUAGE 'plpgsql' VOLATILE; -- writes into visited table
+-- } AsTopoJSON(TopoGeometry, visited_table)
+

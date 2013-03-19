@@ -3120,5 +3120,103 @@ CREATE TABLE visited (
 				<para><xref linkend="CreateTopoGeom"/>, <xref linkend="ST_CreateTopoGeo" /></para>
 			</refsection>
 	  </refentry>
+	  <refentry id="AsTopoJSON">
+	  	    <refnamediv>
+				<refname>AsTopoJSON</refname>
+			
+				<refpurpose>Returns the TopoJSON representation of a topogeometry.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				    	<funcprototype>
+                        <funcdef>text <function>AsTopoJSON</function></funcdef>
+                        <paramdef><type>topogeometry </type> <parameter>tg</parameter></paramdef>
+                        <paramdef><type>regclass </type> <parameter>edgeMapTable</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+                <title>Description</title>
+            
+                <para>Returns the TopoJSON representation of a topogeometry. If <varname>edgeMapTable</varname> is not null, it will be used as a lookup/storage mapping of edge identifiers to arc indices. This is to be able to allow for a compact "arcs" array in the final document.
+</para>
+
+<para>
+The table, if given, is expected to have an "arc_id" field of type "serial" and an "edge_id" of type integer; the code will query the table for "edge_id" so it is recommended to add an index on that field.
+</para>
+
+		<para>
+A full TopoJSON document will be need to contain, in addition to the snippets returned by this function, the actual arcs plus some headers. See the <ulink url="http://github.com/mbostock/topojson/wiki/Specification">TopoJSON specification</ulink>.
+		</para>
+              
+                <!-- use this format if new function -->
+                <para>Availability: 2.1.0 </para>
+			</refsection>
+		
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="ST_AsGeoJSON" /></para>
+			</refsection>
+
+            <refsection>
+                <title>Examples</title>
+<programlisting>
+CREATE TEMP TABLE edgemap(arc_id serial, edge_id int unique);
+
+-- header
+SELECT '{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {';
+
+-- objects
+SELECT '"' || feature_name || '": ' || AsTopoJSON(feature, 'edgemap')
+FROM features.land_parcels;
+
+-- arcs
+SELECT '}, "arcs": ['
+  UNION ALL
+SELECT (regexp_matches(ST_AsGEOJSON(ST_SnapToGrid(e.geom,1)), '\[.*\]'))[1] as t
+FROM edgemap m, city_data.edge e WHERE e.edge_id = m.edge_id;
+
+-- footer
+SELECT ']}'::text as t
+
+-- Result:
+{ "type": "Topology", "transform": { "scale": [1,1], "translate": [0,0] }, "objects": {
+"P1": { "type": "Polygon", "arcs": [[-1,-2,2,3,4,-6]]}
+"P2": { "type": "Polygon", "arcs": [[-7,-8,0,5,8,-10]]}
+"P3": { "type": "Polygon", "arcs": [[-11,-12,6,9,12,-14]]}
+"P4": { "type": "Polygon", "arcs": [[-15]]}
+"P5": { "type": "Polygon", "arcs": [[-16][16]]}
+"F3": { "type": "Polygon", "arcs": [[4,-6,-18,3]]}
+"F6": { "type": "Polygon", "arcs": [[17,-1,-2,2]]}
+"F3F4": { "type": "Polygon", "arcs": [[4,8,-10,18,-18,3]]}
+"F1": { "type": "Polygon", "arcs": [[-16][16]]}
+}, "arcs": [
+[[21,6],[21,14]]
+[[9,6],[21,6]]
+[[9,6],[9,14]]
+[[9,14],[9,22]]
+[[9,22],[21,22]]
+[[21,14],[21,22]]
+[[35,6],[35,14]]
+[[21,6],[35,6]]
+[[21,22],[35,22]]
+[[35,14],[35,22]]
+[[47,6],[47,14]]
+[[35,6],[47,6]]
+[[35,22],[47,22]]
+[[47,14],[47,22]]
+[[25,30],[31,30],[31,40],[17,40],[17,30],[25,30]]
+[[8,30],[16,30],[16,38],[3,38],[3,30],[8,30]]
+[[4,31],[7,31],[7,34],[4,34],[4,31]]
+[[9,14],[21,14]]
+[[35,14],[21,14]]
+]}
+</programlisting>
+            </refsection>
+	  </refentry>
 </sect1>
 </chapter>
