@@ -1939,7 +1939,7 @@ ERROR:  Two or more faces found</programlisting>
 			<refnamediv>
 				<refname>ST_GetFaceEdges</refname>
 			
-				<refpurpose>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.</refpurpose>
+				<refpurpose>Returns a set of ordered edges that bound <varname>aface</varname>.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -1955,10 +1955,11 @@ ERROR:  Two or more faces found</programlisting>
 			<refsection>
                 <title>Description</title>
             
-                <para>Returns a set of ordered edges that bound <varname>aface</varname> includes the sequence order.  Each output consists of a sequence and edgeid. Sequence numbers start with value 1.</para>
+                <para>Returns a set of ordered edges that bound <varname>aface</varname>. Each output consists of a sequence and edgeid. Sequence numbers start with value 1.</para>
 
 		<para>
 Enumeration of each ring edges start from the edge with smallest identifier.
+Order of edges follows a left-hand-rule (bound face is on the left of each directed edge).
 		</para>
 
                 <!-- use this format if new function -->
