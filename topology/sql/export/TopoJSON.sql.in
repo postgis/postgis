@@ -14,6 +14,8 @@
 --
 -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+/* #define POSTGIS_TOPOLOGY_DEBUG 1 */
+
 --{
 --
 -- API FUNCTION
@@ -25,7 +27,6 @@ CREATE OR REPLACE FUNCTION topology.AsTopoJSON(tg topology.TopoGeometry, edgeMap
   RETURNS text AS
 $$
 DECLARE
-  visited bool;
   toponame text;
   json text;
   sql text;
@@ -35,6 +36,10 @@ DECLARE
   side int;
   arcid int;
   arcs int[];
+  arctxt TEXT[];
+  old_search_path TEXT;
+  faces int[];
+  visited_edges int[];
 BEGIN
 
   IF tg IS NULL THEN
@@ -100,69 +105,133 @@ BEGIN
 
     json := '{ "type": "Polygon", "arcs": [';
 
-    FOR rec IN SELECT (ST_DumpRings((ST_Dump(ST_ForceRHR(
-      topology.Geometry(tg)))).geom)).geom
+    EXECUTE 'SHOW search_path' INTO old_search_path;
+    EXECUTE 'SET search_path TO ' || quote_ident(toponame) || ',' || old_search_path;
+
+    SELECT array_agg(id) as f
+    FROM ( SELECT (GetTopoGeomElements(tg))[1] as id ) as f
+    INTO faces;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+    RAISE DEBUG 'Faces: %', faces;
+#endif
+
+    visited_edges := ARRAY[]::int[];
+
     LOOP -- {
 
       arcs := NULL;
-      bounds = ST_Boundary(rec.geom);
 
-      sql := 'SELECT e.*, ST_Line_Locate_Point('
-        || quote_literal(bounds::text)
-        || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
-        || ', ST_Line_Locate_Point('
-        || quote_literal(bounds::text)
-        || ', ST_Line_Interpolate_Point(e.geom, 0.8)) as pos2 FROM '
-        || quote_ident(toponame)
-        || '.edge e WHERE ST_Covers('
-        || quote_literal(bounds::text)
-        || ', e.geom) ORDER BY pos';
+      FOR rec in -- {
+WITH RECURSIVE
+_edges AS (
+  SELECT e.*, 
+         e.left_face = ANY ( faces ) as lf,
+         e.right_face = ANY ( faces ) as rf
+  FROM edge e
+  WHERE ( e.left_face = ANY ( faces ) OR
+          e.right_face = ANY ( faces ) )
+),
+_leftmost_non_dangling_edge AS (
+  SELECT * FROM _edges e
+    WHERE ( e.lf or e.rf ) AND ( e.lf != e.rf )
+          AND NOT e.edge_id = ANY ( visited_edges )
+      -- TODO: and not in visited ?
+  ORDER BY geom LIMIT 1
+),
+_edgepath AS (
+  SELECT
+    CASE
+      WHEN e.lf THEN lme.edge_id
+      ELSE -lme.edge_id
+    END as signed_edge_id,
+    false as back,
 
-      -- RAISE DEBUG 'SQL: %', sql;
+    e.lf = e.rf as dangling,
+    e.lf, e.rf,
+    e.next_right_edge, e.next_left_edge
 
-      FOR rec2 IN EXECUTE sql
-      LOOP
+  FROM _edges e, _leftmost_non_dangling_edge lme
+  WHERE e.edge_id = abs(lme.edge_id)
+    UNION
+  SELECT
+    CASE
+      WHEN p.dangling AND NOT p.back THEN -p.signed_edge_id
+      WHEN p.signed_edge_id < 0 THEN p.next_right_edge
+      ELSE p.next_left_edge
+    END, -- signed_edge_id
+    CASE
+      WHEN p.dangling AND NOT p.back THEN true
+      ELSE false
+    END, -- back
+
+    e.lf = e.rf, -- dangling
+    e.lf, e.rf,
+    e.next_right_edge, e.next_left_edge
+
+  FROM _edges e, _edgepath p
+  WHERE
+    e.edge_id = CASE
+      WHEN p.dangling AND NOT p.back THEN abs(p.signed_edge_id)
+      WHEN p.signed_edge_id < 0 THEN abs(p.next_right_edge)
+      ELSE abs(p.next_left_edge)
+    END
+)
+SELECT abs(signed_edge_id) as edge_id, signed_edge_id FROM _edgepath WHERE NOT dangling
+      LOOP  -- }{
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+        RAISE DEBUG 'Edge id: %' , rec.signed_edge_id;
+#endif
 
         IF edgeMapTable IS NOT NULL THEN
-          sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = ' || rec2.edge_id;
+          sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = ' || rec.edge_id;
           EXECUTE sql INTO arcid;
           IF arcid IS NULL THEN
             EXECUTE 'INSERT INTO ' || edgeMapTable::text
-              || '(edge_id) VALUES (' || rec2.edge_id || ') RETURNING arc_id-1'
+              || '(edge_id) VALUES (' || rec.edge_id || ') RETURNING arc_id-1'
             INTO arcid;
           END IF;
         ELSE
-          arcid := rec2.edge_id;
+          arcid := rec.edge_id-1;
         END IF;
 
-        -- RAISE DEBUG 'Arc id: %' , arcid;
-
-        -- edge goes in same direction
-        IF rec2.pos2 < rec2.pos THEN
-          arcid := -(arcid+1);
+        -- Swap sign, use two's complement for negative edges
+        IF rec.signed_edge_id >= 0 THEN
+          arcid := - ( arcid + 1 );
         END IF;
 
-        arcs := arcs || arcid;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+        RAISE DEBUG 'ARC id: %' , arcid;
+#endif
 
-      END LOOP;
+        visited_edges := visited_edges || rec.edge_id;
+        arcs := arcid || arcs;
 
-      --RAISE DEBUG 'Ring arcs: %' , arcs;
+      END LOOP; -- }
 
-      json := json || '[' || array_to_string(arcs,',') || ']';
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'ARCS: %' , arcs;
+#endif
 
-      --RAISE DEBUG 'JSON : %' , json;
+      IF arcs IS NULL THEN
+        EXIT; -- end of loop
+      END IF;
+
+      arctxt := arctxt || ( '[' || array_to_string(arcs,',') || ']' );
 
     END LOOP; -- }
 
-    json := json || ']}';
-    RETURN json;
+    json := json || array_to_string(arctxt, ',') || ']}';
+
+    EXECUTE 'SET search_path TO ' || old_search_path;
+
 
   ELSIF tg.type = 4 THEN -- collection
     RAISE EXCEPTION 'Collection TopoGeometries are not supported by AsTopoJSON';
 
   END IF;
 	
-
   RETURN json;
 	
 END

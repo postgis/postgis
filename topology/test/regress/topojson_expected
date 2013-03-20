@@ -14,29 +14,30 @@ features.big_parcels.the_geom SRID:0 TYPE:MULTIPOLYGON DIMS:2
 5
 6
 features.big_signs.the_geom SRID:0 TYPE:MULTIPOINT DIMS:2 
-R1-vanilla|{ "type": "LineString", "arcs": [9,-11]}
-R2-vanilla|{ "type": "LineString", "arcs": [4,-6]}
-R3-vanilla|{ "type": "LineString", "arcs": [25]}
-R4-vanilla|{ "type": "LineString", "arcs": [3]}
-R1R2-vanilla|{ "type": "LineString", "arcs": [9,-11,4,-6]}
-R4-vanilla|{ "type": "LineString", "arcs": [3]}
-P1-vanilla|{ "type": "Polygon", "arcs": [[-21,-13,22,21,6,-20]]}
-P2-vanilla|{ "type": "Polygon", "arcs": [[-19,-14,20,19,7,-18]]}
-P3-vanilla|{ "type": "Polygon", "arcs": [[-17,-15,18,17,8,-16]]}
-P4-vanilla|{ "type": "Polygon", "arcs": [[-3]]}
-P5-vanilla|{ "type": "Polygon", "arcs": [[-2][26]]}
-ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
-R1-edgemap|{ "type": "LineString", "arcs": [0,-2]}
-R2-edgemap|{ "type": "LineString", "arcs": [2,-4]}
-R3-edgemap|{ "type": "LineString", "arcs": [4]}
-R4-edgemap|{ "type": "LineString", "arcs": [5]}
-R1R2-edgemap|{ "type": "LineString", "arcs": [0,-2,2,-4]}
-R4-edgemap|{ "type": "LineString", "arcs": [5]}
-P1-edgemap|{ "type": "Polygon", "arcs": [[-7,-8,8,9,10,-12]]}
-P2-edgemap|{ "type": "Polygon", "arcs": [[-13,-14,6,11,14,-16]]}
-P3-edgemap|{ "type": "Polygon", "arcs": [[-17,-18,12,15,18,-20]]}
-P4-edgemap|{ "type": "Polygon", "arcs": [[-21]]}
-P5-edgemap|{ "type": "Polygon", "arcs": [[-22][22]]}
-P1P2-edgemap|{ "type": "Polygon", "arcs": [[-8,8,9,10,14,-16,-13,-14]]}
-P3P4-edgemap|{ "type": "Polygon", "arcs": [[-17,-18,12,15,18,-20][-21]]}
+L1-vanilla|R1|{ "type": "LineString", "arcs": [9,-11]}
+L1-vanilla|R2|{ "type": "LineString", "arcs": [4,-6]}
+L1-vanilla|R3|{ "type": "LineString", "arcs": [25]}
+L1-vanilla|R4|{ "type": "LineString", "arcs": [3]}
+L2-vanilla|R1R2|{ "type": "LineString", "arcs": [9,-11,4,-6]}
+L2-vanilla|R4|{ "type": "LineString", "arcs": [3]}
+A1-vanilla|P1|{ "type": "Polygon", "arcs": [[20,5,-19,-20,-12,21]]}
+A1-vanilla|P2|{ "type": "Polygon", "arcs": [[18,6,-17,-18,-13,19]]}
+A1-vanilla|P3|{ "type": "Polygon", "arcs": [[16,7,-15,-16,-14,17]]}
+A1-vanilla|P4|{ "type": "Polygon", "arcs": [[-2]]}
+A1-vanilla|P5|{ "type": "Polygon", "arcs": [[-1],[25]]}
+A2-vanilla|P1P2|{ "type": "Polygon", "arcs": [[20,5,6,-17,-18,-13,-12,21]]}
+A2-vanilla|P3P4|{ "type": "Polygon", "arcs": [[-2],[16,7,-15,-16,-14,17]]}
+L1-edgemap|R1|{ "type": "LineString", "arcs": [0,-2]}
+L1-edgemap|R2|{ "type": "LineString", "arcs": [2,-4]}
+L1-edgemap|R3|{ "type": "LineString", "arcs": [4]}
+L1-edgemap|R4|{ "type": "LineString", "arcs": [5]}
+L2-edgemap|R1R2|{ "type": "LineString", "arcs": [0,-2,2,-4]}
+L2-edgemap|R4|{ "type": "LineString", "arcs": [4]}
+A1-edgemap|P1|{ "type": "Polygon", "arcs": [[5,4,-4,-3,-2,0]]}
+A1-edgemap|P2|{ "type": "Polygon", "arcs": [[3,9,-9,-8,-7,2]]}
+A1-edgemap|P3|{ "type": "Polygon", "arcs": [[8,13,-13,-12,-11,7]]}
+A1-edgemap|P4|{ "type": "Polygon", "arcs": [[-15]]}
+A1-edgemap|P5|{ "type": "Polygon", "arcs": [[-16],[16]]}
+A2-edgemap|P1P2|{ "type": "Polygon", "arcs": [[7,6,5,-5,-4,-3,-2,0]]}
+A2-edgemap|P3P4|{ "type": "Polygon", "arcs": [[-9],[4,12,-12,-11,-10,3]]}
 Topology 'city_data' dropped
