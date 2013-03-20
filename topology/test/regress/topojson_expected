@@ -14,21 +14,29 @@ features.big_parcels.the_geom SRID:0 TYPE:MULTIPOLYGON DIMS:2
 5
 6
 features.big_signs.the_geom SRID:0 TYPE:MULTIPOINT DIMS:2 
+R1-vanilla|{ "type": "LineString", "arcs": [9,-11]}
+R2-vanilla|{ "type": "LineString", "arcs": [4,-6]}
+R3-vanilla|{ "type": "LineString", "arcs": [25]}
+R4-vanilla|{ "type": "LineString", "arcs": [3]}
+R1R2-vanilla|{ "type": "LineString", "arcs": [9,-11,4,-6]}
+R4-vanilla|{ "type": "LineString", "arcs": [3]}
+P1-vanilla|{ "type": "Polygon", "arcs": [[-21,-13,22,21,6,-20]]}
+P2-vanilla|{ "type": "Polygon", "arcs": [[-19,-14,20,19,7,-18]]}
+P3-vanilla|{ "type": "Polygon", "arcs": [[-17,-15,18,17,8,-16]]}
+P4-vanilla|{ "type": "Polygon", "arcs": [[-3]]}
+P5-vanilla|{ "type": "Polygon", "arcs": [[-2][26]]}
 ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
-ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
-ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
-ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
-R1-vanilla|{ "type": "LineString", "arcs": [0,-2]}
-R2-vanilla|{ "type": "LineString", "arcs": [2,-4]}
-R3-vanilla|{ "type": "LineString", "arcs": [4]}
-R4-vanilla|{ "type": "LineString", "arcs": [5]}
-R1R2-vanilla|{ "type": "LineString", "arcs": [0,-2,2,-4]}
-R4-vanilla|{ "type": "LineString", "arcs": [5]}
-P1-vanilla|{ "type": "Polygon", "arcs": [[-7,-8,8,9,10,-12]]}
-P2-vanilla|{ "type": "Polygon", "arcs": [[-13,-14,6,11,14,-16]]}
-P3-vanilla|{ "type": "Polygon", "arcs": [[-17,-18,12,15,18,-20]]}
-P4-vanilla|{ "type": "Polygon", "arcs": [[-21]]}
-P5-vanilla|{ "type": "Polygon", "arcs": [[-22][22]]}
-P1P2-vanilla|{ "type": "Polygon", "arcs": [[-8,8,9,10,14,-16,-13,-14]]}
-P3P4-vanilla|{ "type": "Polygon", "arcs": [[-17,-18,12,15,18,-20][-21]]}
+R1-edgemap|{ "type": "LineString", "arcs": [0,-2]}
+R2-edgemap|{ "type": "LineString", "arcs": [2,-4]}
+R3-edgemap|{ "type": "LineString", "arcs": [4]}
+R4-edgemap|{ "type": "LineString", "arcs": [5]}
+R1R2-edgemap|{ "type": "LineString", "arcs": [0,-2,2,-4]}
+R4-edgemap|{ "type": "LineString", "arcs": [5]}
+P1-edgemap|{ "type": "Polygon", "arcs": [[-7,-8,8,9,10,-12]]}
+P2-edgemap|{ "type": "Polygon", "arcs": [[-13,-14,6,11,14,-16]]}
+P3-edgemap|{ "type": "Polygon", "arcs": [[-17,-18,12,15,18,-20]]}
+P4-edgemap|{ "type": "Polygon", "arcs": [[-21]]}
+P5-edgemap|{ "type": "Polygon", "arcs": [[-22][22]]}
+P1P2-edgemap|{ "type": "Polygon", "arcs": [[-8,8,9,10,14,-16,-13,-14]]}
+P3P4-edgemap|{ "type": "Polygon", "arcs": [[-17,-18,12,15,18,-20][-21]]}
 Topology 'city_data' dropped
