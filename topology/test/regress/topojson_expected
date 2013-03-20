@@ -14,6 +14,10 @@ features.big_parcels.the_geom SRID:0 TYPE:MULTIPOLYGON DIMS:2
 5
 6
 features.big_signs.the_geom SRID:0 TYPE:MULTIPOINT DIMS:2 
+E27
+E28
+E29
+E30
 L1-vanilla|R1|{ "type": "LineString", "arcs": [9,-11]}
 L1-vanilla|R2|{ "type": "LineString", "arcs": [4,-6]}
 L1-vanilla|R3|{ "type": "LineString", "arcs": [25]}

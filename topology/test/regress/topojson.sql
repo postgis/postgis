@@ -4,6 +4,13 @@ set client_min_messages to WARNING;
 \i load_features.sql
 \i hierarchy.sql
 
+-- This edge perturbates the topology so that walking around the boundaries
+-- of P1 and P2 may require walking on some of them
+SELECT 'E' || TopoGeo_addLinestring('city_data', 'LINESTRING(9 14, 15 10)');
+SELECT 'E' || TopoGeo_addLinestring('city_data', 'LINESTRING(21 14, 15 18)');
+SELECT 'E' || TopoGeo_addLinestring('city_data', 'LINESTRING(21 14, 28 10)');
+SELECT 'E' || TopoGeo_addLinestring('city_data', 'LINESTRING(35 14, 28 18)');
+
 --- Lineal non-hierarchical 
 SELECT 'L1-vanilla', feature_name, topology.AsTopoJSON(feature, NULL)
  FROM features.city_streets
