@@ -4,7 +4,7 @@
 	
 		<refentry id="ST_Line_Interpolate_Point">
 		  <refnamediv>
-			<refname>ST_Line_Interpolate_Point</refname>
+			<refname>ST_LineInterpolatePoint</refname>
 
 			<refpurpose>Returns a point interpolated along a line. Second argument is a float8 between 0 and 1
 			representing fraction of total length of linestring the point has to be located.</refpurpose>
@@ -13,7 +13,7 @@
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometry <function>ST_Line_Interpolate_Point</function></funcdef>
+				<funcdef>geometry <function>ST_LineInterpolatePoint</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 				<paramdef><type>float </type> <parameter>a_fraction</parameter></paramdef>
 			  </funcprototype>
@@ -36,6 +36,7 @@
 			  0.0.</para>
 			</note>
 			<para>Availability: 0.8.2, Z and M supported added in 1.1.1</para>
+      <para>Changed: 2.1.0. Up to 2.0.x this was called ST_LineInterpolatePoint.</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -88,7 +89,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 
 		<refentry id="ST_Line_Locate_Point">
 		  <refnamediv>
-			<refname>ST_Line_Locate_Point</refname>
+			<refname>ST_LineLocatePoint</refname>
 
 			<refpurpose>Returns a float between 0 and 1 representing the location of
 			the closest point on LineString to the given Point, as a fraction
@@ -98,7 +99,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>float <function>ST_Line_Locate_Point</function></funcdef>
+				<funcdef>float <function>ST_LineLocatePoint</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 				<paramdef><type>geometry </type> <parameter>a_point</parameter></paramdef>
 			  </funcprototype>
@@ -118,6 +119,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			<para>This is useful for approximating numbers of addresses</para>
 
 			<para>Availability: 1.1.0</para>
+      <para>Changed: 2.1.0. Up to 2.0.x this was called ST_Line_Locate_Point.</para>
 		  </refsection>
 
 
@@ -133,7 +135,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 SELECT ST_AsText(house_loc) As as_text_house_loc,
 	startstreet_num +
 		CAST( (endstreet_num - startstreet_num)
-			* ST_Line_Locate_Point(street_line, house_loc) As integer) As street_num
+			* ST_LineLocatePoint(street_line, house_loc) As integer) As street_num
 FROM
 (SELECT ST_GeomFromText('LINESTRING(1 2, 3 4)') As street_line,
 	ST_MakePoint(x*1.01,y*1.03) As house_loc, 10 As startstreet_num,
@@ -149,7 +151,7 @@ WHERE ST_DWithin(street_line, house_loc, 0.2);
  POINT(3.03 4.12)  |         20
 
  --find closest point on a line to a point or other geometry
- SELECT ST_AsText(ST_Line_Interpolate_Point(foo.the_line, ST_Line_Locate_Point(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
+ SELECT ST_AsText(ST_Line_Interpolate_Point(foo.the_line, ST_LineLocatePoint(foo.the_line, ST_GeomFromText('POINT(4 3)'))))
 FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
    st_astext
 ----------------
@@ -168,7 +170,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 
 		<refentry id="ST_Line_Substring">
 		  <refnamediv>
-			<refname>ST_Line_Substring</refname>
+			<refname>ST_LineSubstring</refname>
 
 			<refpurpose>Return a linestring being a substring of the input one
 			starting and ending at the given fractions of total 2d length.
@@ -179,7 +181,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 		  <refsynopsisdiv>
 			<funcsynopsis>
 			  <funcprototype>
-				<funcdef>geometry <function>ST_Line_Substring</function></funcdef>
+				<funcdef>geometry <function>ST_LineSubstring</function></funcdef>
 				<paramdef><type>geometry </type> <parameter>a_linestring</parameter></paramdef>
 				<paramdef><type>float </type> <parameter>startfraction</parameter></paramdef>
 				<paramdef><type>float </type> <parameter>endfraction</parameter></paramdef>
@@ -209,6 +211,7 @@ FROM (SELECT ST_GeomFromText('LINESTRING(1 2, 4 5, 6 7)') As the_line) As foo;
 			</note>
 
 			<para>Availability: 1.1.0, Z and M supported added in 1.1.1</para>
+    <para>Changed: 2.1.0. Up to 2.0.x this was called ST_LineSubstring.</para>
 			<para>&Z_support;</para>
 		  </refsection>
 
@@ -240,7 +243,7 @@ LINESTRING(69.2846934853974 94.2846934853974,100 125,111.700356260683 140.210463
 --for better performance you can reduce the 10000
 --to match max number of segments you expect
 
-SELECT field1, field2, ST_Line_Substring(the_geom, 100.00*n/length,
+SELECT field1, field2, ST_LineSubstring(the_geom, 100.00*n/length,
   CASE
 	WHEN 100.00*(n+1) &lt; length THEN 100.00*(n+1)/length
 	ELSE 1

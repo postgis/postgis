@@ -27,6 +27,9 @@ PostGIS 2.1.0
            ST_Raster2WorldCoordY renamed to ST_RasterToWorldCoord,
            ST_RasterToWorldCoordX and ST_RasterToWorldCoordY
   - ST_Estimated_Extent renamed to ST_EstimatedExtent
+  - ST_Line_Interpolate_Point renamed to ST_LineInterpolatePoint
+  - ST_Line_Substring renamed to ST_LineSubstring
+  - ST_Line_Locate_Point renamed to ST_LineLocatePoint
   - ST_MapAlgebraFctNgb and 1 and 2 raster variants of ST_MapAlgebraFct.
     Use ST_MapAlgebra instead
   - 1 and 2 raster variants of ST_MapAlgebraExpr.

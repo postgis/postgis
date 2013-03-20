@@ -2692,19 +2692,40 @@ CREATE OR REPLACE FUNCTION ST_Segmentize(geometry, float8)
 ---------------------------------------------------------------
 
 -- Availability: 1.2.2
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_line_interpolate_point(geometry, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(geometry, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_line_substring(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_substring'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_LineSubstring(geometry, float8, float8)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_line_substring'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
+-- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
+	RETURNS float8
+	AS 'MODULE_PATHNAME', 'LWGEOM_line_locate_point'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_locate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT;
@@ -2714,7 +2735,6 @@ CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_locate_between_m'
 	LANGUAGE 'c' IMMUTABLE STRICT;
-
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_locate_along_measure(geometry, float8)
