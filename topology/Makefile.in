@@ -91,7 +91,7 @@ topology_upgrade.sql:  topology.sql
 topology_upgrade_$(PGIS_MAJ_MIN)_minor.sql:  topology_drop_before.sql topology_upgrade.sql topology_drop_after.sql
 	cat $^ > $@
 
-topology.sql: sql/sqlmm.sql.in sql/populate.sql.in sql/polygonize.sql.in sql/export/gml.sql.in sql/query/getnodebypoint.sql.in sql/query/getedgebypoint.sql.in sql/query/getfacebypoint.sql.in sql/query/GetRingEdges.sql.in sql/query/GetNodeEdges.sql.in sql/manage/TopologySummary.sql.in sql/manage/CopyTopology.sql.in sql/manage/ManageHelper.sql.in sql/topoelement/topoelement_agg.sql.in sql/topogeometry/type.sql.in sql/topogeometry/totopogeom.sql.in sql/topogeometry/cleartopogeom.sql.in sql/topogeometry/simplify.sql.in sql/predicates.sql.in ../postgis/sqldefines.h ../postgis_svn_revision.h
+topology.sql: sql/sqlmm.sql.in sql/populate.sql.in sql/polygonize.sql.in sql/export/gml.sql.in sql/export/TopoJSON.sql.in sql/query/getnodebypoint.sql.in sql/query/getedgebypoint.sql.in sql/query/getfacebypoint.sql.in sql/query/GetRingEdges.sql.in sql/query/GetNodeEdges.sql.in sql/manage/TopologySummary.sql.in sql/manage/CopyTopology.sql.in sql/manage/ManageHelper.sql.in sql/topoelement/topoelement_agg.sql.in sql/topogeometry/type.sql.in sql/topogeometry/totopogeom.sql.in sql/topogeometry/cleartopogeom.sql.in sql/topogeometry/simplify.sql.in sql/predicates.sql.in ../postgis/sqldefines.h ../postgis_svn_revision.h
 
 uninstall_topology.sql: topology.sql ../utils/create_undef.pl 
 	$(PERL) ../utils/create_undef.pl $< $(POSTGIS_PGSQL_VERSION) > $@
