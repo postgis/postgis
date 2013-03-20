@@ -1,0 +1,34 @@
+BEGIN
+t
+9
+22
+26
+COMMIT
+BEGIN
+1
+2
+3
+COMMIT
+4
+features.big_parcels.the_geom SRID:0 TYPE:MULTIPOLYGON DIMS:2 
+5
+6
+features.big_signs.the_geom SRID:0 TYPE:MULTIPOINT DIMS:2 
+ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
+ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
+ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
+ERROR:  function topology.astopojson(topogeometry) does not exist at character 34
+R1-vanilla|{ "type": "LineString", "arcs": [0,-2]}
+R2-vanilla|{ "type": "LineString", "arcs": [2,-4]}
+R3-vanilla|{ "type": "LineString", "arcs": [4]}
+R4-vanilla|{ "type": "LineString", "arcs": [5]}
+R1R2-vanilla|{ "type": "LineString", "arcs": [0,-2,2,-4]}
+R4-vanilla|{ "type": "LineString", "arcs": [5]}
+P1-vanilla|{ "type": "Polygon", "arcs": [[-7,-8,8,9,10,-12]]}
+P2-vanilla|{ "type": "Polygon", "arcs": [[-13,-14,6,11,14,-16]]}
+P3-vanilla|{ "type": "Polygon", "arcs": [[-17,-18,12,15,18,-20]]}
+P4-vanilla|{ "type": "Polygon", "arcs": [[-21]]}
+P5-vanilla|{ "type": "Polygon", "arcs": [[-22][22]]}
+P1P2-vanilla|{ "type": "Polygon", "arcs": [[-8,8,9,10,14,-16,-13,-14]]}
+P3P4-vanilla|{ "type": "Polygon", "arcs": [[-17,-18,12,15,18,-20][-21]]}
+Topology 'city_data' dropped
