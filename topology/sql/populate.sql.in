@@ -508,22 +508,22 @@ BEGIN
       p3 = ST_StartPoint(bounds);
       IF ST_DWithin(edgeseg, p3, 0) THEN
         -- Edge segment covers ring endpoint, See bug #874
-        loc = ST_Line_Locate_Point(edgeseg, p3);
+        loc = ST_LineLocatePoint(edgeseg, p3);
         -- WARNING: this is as robust as length of edgeseg allows...
         IF loc > 0.9 THEN
           -- shift last point down 
-          p2 = ST_Line_Interpolate_Point(edgeseg, loc - 0.1);
+          p2 = ST_LineInterpolatePoint(edgeseg, loc - 0.1);
         ELSIF loc < 0.1 THEN
           -- shift first point up
-          p1 = ST_Line_Interpolate_Point(edgeseg, loc + 0.1); 
+          p1 = ST_LineInterpolatePoint(edgeseg, loc + 0.1); 
         ELSE
           -- when ring start point is in between, we swap the points
           p3 = p1; p1 = p2; p2 = p3;
         END IF;
       END IF;
 
-      right_side = ST_Line_Locate_Point(bounds, p1) < 
-                   ST_Line_Locate_Point(bounds, p2);
+      right_side = ST_LineLocatePoint(bounds, p1) < 
+                   ST_LineLocatePoint(bounds, p2);
   
 #ifdef POSTGIS_TOPOLOGY_DEBUG
       RAISE DEBUG 'Edge % (left:%, right:%) - ring : % - right_side : %',

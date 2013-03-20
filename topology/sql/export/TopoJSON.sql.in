@@ -61,12 +61,12 @@ BEGIN
     FOR rec IN SELECT (ST_Dump(topology.Geometry(tg))).geom
     LOOP -- {
 
-      sql := 'SELECT e.*, ST_Line_Locate_Point('
+      sql := 'SELECT e.*, ST_LineLocatePoint('
             || quote_literal(rec.geom::text)
-            || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
-            || ', ST_Line_Locate_Point('
+            || ', ST_LineInterpolatePoint(e.geom, 0.2)) as pos'
+            || ', ST_LineLocatePoint('
             || quote_literal(rec.geom::text)
-            || ', ST_Line_Interpolate_Point(e.geom, 0.8)) as pos2 FROM '
+            || ', ST_LineInterpolatePoint(e.geom, 0.8)) as pos2 FROM '
             || quote_ident(toponame)
             || '.edge e WHERE ST_Covers('
             || quote_literal(rec.geom::text)

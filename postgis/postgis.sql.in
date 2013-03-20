@@ -30,6 +30,17 @@ BEGIN;
 -------------------------------------------------------------------
 --  SPHEROID TYPE
 -------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION _postgis_deprecate(oldname text, newname text, version text)
+RETURNS void AS
+$$
+BEGIN
+    RAISE WARNING '% signature was deprecated in %. Please use %', oldname, version, newname;
+END;
+$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+-------------------------------------------------------------------
+--  SPHEROID TYPE
+-------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION spheroid_in(cstring)
 	RETURNS spheroid
 	AS 'MODULE_PATHNAME','ellipsoid_in'
@@ -935,32 +946,40 @@ CREATE OR REPLACE FUNCTION ST_Combine_BBox(box2d,geometry)
 	LANGUAGE 'c' IMMUTABLE;
 
 -----------------------------------------------------------------------
--- ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
+-- ST_ESTIMATED_EXTENT( <schema name>, <table name>, <column name> )
 -----------------------------------------------------------------------
--- Availability: 1.2.2
--- Deprecation in 2.1.0 
-CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'gserialized_estimated_extent'
-	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'gserialized_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
 
------------------------------------------------------------------------
--- ESTIMATED_EXTENT( <table name>, <column name> )
------------------------------------------------------------------------
 -- Availability: 1.2.2
 -- Deprecation in 2.1.0 
-CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
-	'MODULE_PATHNAME', 'gserialized_estimated_extent'
-	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
+  $$ SELECT _postgis_deprecate('ST_Estimated_Extent', 'ST_EstimatedExtent', '2.1.0');
+    -- explicit schema for security reason
+    SELECT public.ST_EstimatedExtent($1, $2, $3);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY DEFINER;
+
+-----------------------------------------------------------------------
+-- ST_ESTIMATED_EXTENT( <table name>, <column name> )
+-----------------------------------------------------------------------
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text) RETURNS box2d AS
 	'MODULE_PATHNAME', 'gserialized_estimated_extent'
 	LANGUAGE 'c' IMMUTABLE STRICT SECURITY DEFINER;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.1.0 
+CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
+  $$ SELECT _postgis_deprecate('ST_Estimated_Extent', 'ST_EstimatedExtent', '2.1.0');
+    -- explicit schema for security reason
+    SELECT public.ST_EstimatedExtent($1, $2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY DEFINER;
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
@@ -2691,13 +2710,6 @@ CREATE OR REPLACE FUNCTION ST_Segmentize(geometry, float8)
 -- LRS
 ---------------------------------------------------------------
 
--- Availability: 1.2.2
--- Deprecation in 2.1.0 
-CREATE OR REPLACE FUNCTION ST_line_interpolate_point(geometry, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_line_interpolate_point'
-	LANGUAGE 'c' IMMUTABLE STRICT;
-
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(geometry, float8)
 	RETURNS geometry
@@ -2706,10 +2718,12 @@ CREATE OR REPLACE FUNCTION ST_LineInterpolatePoint(geometry, float8)
 
 -- Availability: 1.2.2
 -- Deprecation in 2.1.0 
-CREATE OR REPLACE FUNCTION ST_line_substring(geometry, float8, float8)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_line_substring'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+CREATE OR REPLACE FUNCTION ST_line_interpolate_point(geometry, float8)
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Line_Interpolate_Point', 'ST_LineInterpolatePoint', '2.1.0');
+    SELECT ST_LineInterpolatePoint($1, $2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineSubstring(geometry, float8, float8)
@@ -2719,16 +2733,27 @@ CREATE OR REPLACE FUNCTION ST_LineSubstring(geometry, float8, float8)
 
 -- Availability: 1.2.2
 -- Deprecation in 2.1.0 
-CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_line_locate_point'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+CREATE OR REPLACE FUNCTION ST_line_substring(geometry, float8, float8)
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Line_Substring', 'ST_LineSubstring', '2.1.0');
+     SELECT ST_LineSubstring($1, $2, $3);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_LineLocatePoint(geom1 geometry, geom2 geometry)
 	RETURNS float8
 	AS 'MODULE_PATHNAME', 'LWGEOM_line_locate_point'
 	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.1.0 
+CREATE OR REPLACE FUNCTION ST_line_locate_point(geom1 geometry, geom2 geometry)
+	RETURNS float8 AS
+  $$ SELECT _postgis_deprecate('ST_Line_Locate_Point', 'ST_LineLocatePoint', '2.1.0');
+     SELECT ST_LineLocatePoint($1, $2);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_locate_between_measures(geometry, float8, float8)
@@ -4856,7 +4881,7 @@ $BODY$
 
 	-- The radius is half the distance between them and the center is midway between them
 	radius = ST_Distance(ST_PointN(ring,idx1),ST_PointN(ring,idx2)) / 2.0;
-	center = ST_Line_interpolate_point(ST_MakeLine(ST_PointN(ring,idx1),ST_PointN(ring,idx2)),0.5);
+	center = ST_LineInterpolatePoint(ST_MakeLine(ST_PointN(ring,idx1),ST_PointN(ring,idx2)),0.5);
 
 	-- Loop through each vertex and check if the distance from the center to the point
 	-- is greater than the current radius.
@@ -4871,7 +4896,7 @@ $BODY$
 				-- Draw a line from the first diameter to this point
 				l1 = ST_Makeline(ST_PointN(ring,idx1),ST_PointN(ring,k));
 				-- Compute the midpoint
-				p1 = ST_line_interpolate_point(l1,0.5);
+				p1 = ST_LineInterpolatePoint(l1,0.5);
 				-- Rotate the line 90 degrees around the midpoint (perpendicular bisector)
 				l1 = ST_Rotate(l1,pi()/2,p1);
 				--  Compute the azimuth of the bisector
@@ -4882,7 +4907,7 @@ $BODY$
 
 				-- Repeat for the line from the point to the other diameter point
 				l2 = ST_Makeline(ST_PointN(ring,idx2),ST_PointN(ring,k));
-				p2 = ST_Line_interpolate_point(l2,0.5);
+				p2 = ST_LineInterpolatePoint(l2,0.5);
 				l2 = ST_Rotate(l2,pi()/2,p2);
 				a2 = ST_Azimuth(ST_PointN(l2,1),ST_PointN(l2,2));
 				l2 = ST_AddPoint(l2,ST_Makepoint(ST_X(ST_PointN(l2,2))+sin(a2)*dist,ST_Y(ST_PointN(l2,2))+cos(a2)*dist),-1);

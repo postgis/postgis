@@ -78,12 +78,12 @@ BEGIN
     sql := 'WITH er2 AS ( ' 
       || 'WITH er AS ( SELECT ' 
       || 'min(e.edge_id) over (), count(*) over () as cnt, e.edge_id, '
-      || 'ST_Line_Locate_Point('
+      || 'ST_LineLocatePoint('
       || quote_literal(bounds::text)
-      || ', ST_Line_Interpolate_Point(e.geom, 0.2)) as pos'
-      || ', ST_Line_Locate_Point('
+      || ', ST_LineInterpolatePoint(e.geom, 0.2)) as pos'
+      || ', ST_LineLocatePoint('
       || quote_literal(bounds::text)
-      || ', ST_Line_Interpolate_Point(e.geom, 0.8)) as pos2 FROM '
+      || ', ST_LineInterpolatePoint(e.geom, 0.8)) as pos2 FROM '
       || quote_ident(toponame)
       || '.edge e WHERE ( e.left_face = ' || face_id
       || ' OR e.right_face = ' || face_id
@@ -3054,7 +3054,7 @@ BEGIN
   IF ishole THEN sql := sql || 'NOT '; END IF;
   sql := sql || 'ST_Contains(' || quote_literal(fan.shell::text)
     -- We only need to check a single point, but must not be an endpoint
-    || '::geometry, ST_Line_Interpolate_Point(geom, 0.2))';
+    || '::geometry, ST_LineInterpolatePoint(geom, 0.2))';
 #ifdef POSTGIS_TOPOLOGY_DEBUG
   RAISE DEBUG 'Updating edges bounding the old face';
 #endif
