@@ -36,10 +36,16 @@ DECLARE
   side int;
   arcid int;
   arcs int[];
-  arctxt TEXT[];
+  ringtxt TEXT[];
+  polytxt TEXT[];
+  edges_found BOOLEAN;
   old_search_path TEXT;
+  all_faces int[];
   faces int[];
+  visited_face int;
+  shell_faces int[];
   visited_edges int[];
+  looking_for_holes BOOLEAN;
 BEGIN
 
   IF tg IS NULL THEN
@@ -103,24 +109,33 @@ BEGIN
 
   ELSIF tg.type = 3 THEN -- areal
 
-    json := '{ "type": "Polygon", "arcs": [';
+    json := '{ "type": "MultiPolygon", "arcs": [';
 
     EXECUTE 'SHOW search_path' INTO old_search_path;
     EXECUTE 'SET search_path TO ' || quote_ident(toponame) || ',' || old_search_path;
 
     SELECT array_agg(id) as f
     FROM ( SELECT (GetTopoGeomElements(tg))[1] as id ) as f
-    INTO faces;
+    INTO all_faces;
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-    RAISE DEBUG 'Faces: %', faces;
+    RAISE DEBUG 'Faces: %', all_faces;
 #endif
 
     visited_edges := ARRAY[]::int[];
+    faces := all_faces;
+    looking_for_holes := false;
+    shell_faces := ARRAY[]::int[];
 
     LOOP -- {
 
       arcs := NULL;
+      edges_found := false;
+
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+      RAISE DEBUG 'LOOP START - looking for next % binding faces %',
+        CASE WHEN looking_for_holes THEN 'hole' ELSE 'shell' END, faces;
+#endif
 
       FOR rec in -- {
 WITH RECURSIVE
@@ -148,6 +163,7 @@ _edgepath AS (
     false as back,
 
     e.lf = e.rf as dangling,
+    e.left_face, e.right_face,
     e.lf, e.rf,
     e.next_right_edge, e.next_left_edge
 
@@ -166,6 +182,7 @@ _edgepath AS (
     END, -- back
 
     e.lf = e.rf, -- dangling
+    e.left_face, e.right_face,
     e.lf, e.rf,
     e.next_right_edge, e.next_left_edge
 
@@ -177,12 +194,36 @@ _edgepath AS (
       ELSE abs(p.next_left_edge)
     END
 )
-SELECT abs(signed_edge_id) as edge_id, signed_edge_id FROM _edgepath WHERE NOT dangling
+SELECT abs(signed_edge_id) as edge_id, signed_edge_id, dangling,
+        lf, rf, left_face, right_face
+FROM _edgepath
       LOOP  -- }{
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-        RAISE DEBUG 'Edge id: %' , rec.signed_edge_id;
+        RAISE DEBUG ' edge % lf:%(%) rf:%(%)' , rec.signed_edge_id, rec.lf, rec.left_face, rec.rf, rec.right_face;
 #endif
+
+
+        IF rec.left_face = ANY (all_faces) AND NOT rec.left_face = ANY (shell_faces) THEN
+          shell_faces := shell_faces || rec.left_face;
+        END IF;
+
+        IF rec.right_face = ANY (all_faces) AND NOT rec.right_face = ANY (shell_faces) THEN
+          shell_faces := shell_faces || rec.right_face;
+        END IF;
+
+        visited_edges := visited_edges || rec.edge_id;
+
+        edges_found := true;
+
+        -- TODO: drop ?
+        IF rec.dangling THEN
+          CONTINUE;
+        END IF;
+
+        IF rec.left_face = ANY (all_faces) AND rec.right_face = ANY (all_faces) THEN
+          CONTINUE;
+        END IF;
 
         IF edgeMapTable IS NOT NULL THEN
           sql := 'SELECT arc_id-1 FROM ' || edgeMapTable::text || ' WHERE edge_id = ' || rec.edge_id;
@@ -205,24 +246,41 @@ SELECT abs(signed_edge_id) as edge_id, signed_edge_id FROM _edgepath WHERE NOT d
         RAISE DEBUG 'ARC id: %' , arcid;
 #endif
 
-        visited_edges := visited_edges || rec.edge_id;
         arcs := arcid || arcs;
 
       END LOOP; -- }
 
 #ifdef POSTGIS_TOPOLOGY_DEBUG
-      RAISE DEBUG 'ARCS: %' , arcs;
+      --RAISE DEBUG 'Edges found:%, visited faces: %, ARCS: %' , edges_found, shell_faces, arcs;
 #endif
 
-      IF arcs IS NULL THEN
-        EXIT; -- end of loop
+      IF NOT edges_found THEN
+        IF looking_for_holes THEN
+          looking_for_holes := false;
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+          RAISE DEBUG 'NO MORE holes, rings:%', ringtxt;
+#endif
+          polytxt := polytxt || ( '[' || array_to_string(ringtxt, ',') || ']' );
+          ringtxt := NULL;
+          faces := all_faces;
+          shell_faces := ARRAY[]::int[];
+        ELSE
+          EXIT; -- end of loop
+        END IF;
+      ELSE
+        faces := shell_faces;
+        IF arcs IS NOT NULL THEN
+#ifdef POSTGIS_TOPOLOGY_DEBUG
+          RAISE DEBUG ' % arcs: %', CASE WHEN looking_for_holes THEN 'hole' ELSE 'shell' END, arcs;
+#endif
+          ringtxt := ringtxt || ( '[' || array_to_string(arcs,',') || ']' );
+        END IF;
+        looking_for_holes := true;
       END IF;
-
-      arctxt := arctxt || ( '[' || array_to_string(arcs,',') || ']' );
 
     END LOOP; -- }
 
-    json := json || array_to_string(arctxt, ',') || ']}';
+    json := json || array_to_string(polytxt, ',') || ']}';
 
     EXECUTE 'SET search_path TO ' || old_search_path;
 
