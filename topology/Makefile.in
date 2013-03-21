@@ -73,16 +73,10 @@ endif
 
 
 
-# Unfortunately we have to copy this from the PGXS Makefile as it only gets picked up
-# if MODULE_big is defined
+# Generate any .sql file from .sql.in.c files by running them through the SQL pre-processor 
 %.sql: %.sql.in
-	$(SQLPP) $< | grep -v '^#' | \
-	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/$*'g" > $@
+	$(SQLPP) $< | grep -v '^#' > $@
 
-# Generate any .sql.in files from .sql.in.c files by running them through the SQL pre-processor 
-#%.in: %.in.c
-#	$(SQLPP) $< | grep -v '^#' > $@
-	
 #Generate upgrade script by stripping things that can't be reinstalled
 #e.g. don't bother with tables, types, triggers, and domains
 topology_upgrade.sql:  topology.sql

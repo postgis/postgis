@@ -131,7 +131,8 @@ $(PG_OBJS): ../liblwgeom/.libs/liblwgeom.a ../libpgcommon/libpgcommon.a ../postg
 ../libpgcommon/libpgcommon.a:
 	make -C ../libpgcommon libpgcommon.a
 
-# Borrow the $libdir substitution from PGXS but customise by adding the version number
+# Borrow the $libdir substitution from PGXS but customise by running the preprocessor
+# and adding the version number
 %.sql: %.sql.in
 	$(SQLPP) -I../libpgcommon $< | grep -v '^#' | \
 	$(PERL) -lpe "s'MODULE_PATHNAME'\$$libdir/postgis-@POSTGIS_MAJOR_VERSION@.@POSTGIS_MINOR_VERSION@'g" > $@
