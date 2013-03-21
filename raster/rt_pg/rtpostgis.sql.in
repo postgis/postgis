@@ -3367,7 +3367,12 @@ CREATE OR REPLACE FUNCTION st_invdistweight4ma(value double precision[][][], pos
 
 		-- neighborhood is NODATA
 		IF z IS NULL OR array_length(z, 1) < 1 THEN
-			RETURN NULL;
+			-- center pixel has value
+			IF cv IS NOT NULL THEN
+				RETURN cv;
+			ELSE
+				RETURN NULL;
+			END IF;
 		END IF;
 
 		z0 := 0;
