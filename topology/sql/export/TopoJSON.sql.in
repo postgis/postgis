@@ -37,7 +37,7 @@ DECLARE
   arcid int;
   arcs int[];
   ringtxt TEXT[];
-  polytxt TEXT[];
+  comptxt TEXT[];
   edges_found BOOLEAN;
   old_search_path TEXT;
   all_faces int[];
@@ -101,9 +101,13 @@ BEGIN
         arcs := arcs || arcid;
 
       END LOOP; -- }
+
+      comptxt := comptxt || ( '[' || array_to_string(arcs, ',') || ']' );
+      arcs := NULL;
+
     END LOOP; -- }
 
-    json := '{ "type": "LineString", "arcs": [' || array_to_string(arcs,',') || ']}';
+    json := '{ "type": "MultiLineString", "arcs": [' || array_to_string(comptxt,',') || ']}';
 
     return json;
 
@@ -260,7 +264,7 @@ FROM _edgepath
 #ifdef POSTGIS_TOPOLOGY_DEBUG
           RAISE DEBUG 'NO MORE holes, rings:%', ringtxt;
 #endif
-          polytxt := polytxt || ( '[' || array_to_string(ringtxt, ',') || ']' );
+          comptxt := comptxt || ( '[' || array_to_string(ringtxt, ',') || ']' );
           ringtxt := NULL;
           faces := all_faces;
           shell_faces := ARRAY[]::int[];
@@ -280,7 +284,7 @@ FROM _edgepath
 
     END LOOP; -- }
 
-    json := json || array_to_string(polytxt, ',') || ']}';
+    json := json || array_to_string(comptxt, ',') || ']}';
 
     EXECUTE 'SET search_path TO ' || old_search_path;
 
