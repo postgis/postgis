@@ -330,19 +330,19 @@ usage() {
 		"OPTIONS:\n"
 	));
 	printf(_(
-		"  -s <srid> Set the raster's SRID. Defaults to %d.  If SRID not\n"
+		"  -s <srid> Set the raster's SRID. Defaults to %d. If SRID not\n"
 		"      provided or is %d, raster's metadata will be checked to\n"
 		"      determine an appropriate SRID.\n"
 	), SRID_UNKNOWN, SRID_UNKNOWN);
 	printf(_(
-		"  -b <band> Index (1-based) of band to extract from raster.  For more\n"
-		"      than one band index, separate with comma (,).  Ranges can be\n"
-		"      defined by separating with dash (-).  If unspecified, all bands\n"
+		"  -b <band> Index (1-based) of band to extract from raster. For more\n"
+		"      than one band index, separate with comma (,). Ranges can be\n"
+		"      defined by separating with dash (-). If unspecified, all bands\n"
 		"      of raster will be extracted.\n"
 	));
 	printf(_(
 		"  -t <tile size> Cut raster into tiles to be inserted one per\n"
-		"      table row.  <tile size> is expressed as WIDTHxHEIGHT.\n"
+		"      table row. <tile size> is expressed as WIDTHxHEIGHT.\n"
 		"      <tile size> can also be \"auto\" to allow the loader to compute\n"
 		"      an appropriate tile size using the first raster and applied to\n"
 		"      all rasters.\n"
@@ -352,7 +352,7 @@ usage() {
 		"     have the same width and height.\n"
 	));
 	printf(_(
-		"  -R  Register the raster as an out-of-db (filesystem) raster.  Provided\n"
+		"  -R  Register the raster as an out-of-db (filesystem) raster. Provided\n"
 		"      raster should have absolute path to the file\n"
 	));
 	printf(_(
@@ -372,30 +372,33 @@ usage() {
 		"  -F  Add a column with the filename of the raster.\n"
 	));
 	printf(_(
-		"  -l <overview factor> Create overview of the raster.  For more than\n"
-		"      one factor, separate with comma(,).  Overview table name follows\n" 
-		"      the pattern o_<overview factor>_<table>.  Created overview is\n"
+		"  -n <column> Specify the name of the filename column. Implies -F.\n"
+	));
+	printf(_(
+		"  -l <overview factor> Create overview of the raster. For more than\n"
+		"      one factor, separate with comma(,). Overview table name follows\n" 
+		"      the pattern o_<overview factor>_<table>. Created overview is\n"
 		"      stored in the database and is not affected by -R.\n"
 	));
 	printf(_(
 		"  -q  Wrap PostgreSQL identifiers in quotes.\n"
 	));
 	printf(_(
-		"  -I  Create a GIST spatial index on the raster column.  The ANALYZE\n"
+		"  -I  Create a GIST spatial index on the raster column. The ANALYZE\n"
 		"      command will automatically be issued for the created index.\n"
 	));
 	printf(_(
-		"  -M  Run VACUUM ANALYZE on the table of the raster column.  Most\n"
+		"  -M  Run VACUUM ANALYZE on the table of the raster column. Most\n"
 		"      useful when appending raster to existing table with -a.\n"
 	));
 	printf(_(
 		"  -C  Set the standard set of constraints on the raster\n"
-		"      column after the rasters are loaded.  Some constraints may fail\n"
+		"      column after the rasters are loaded. Some constraints may fail\n"
 		"      if one or more rasters violate the constraint.\n"
-		"  -x  Disable setting the max extent constraint.  Only applied if\n"
+		"  -x  Disable setting the max extent constraint. Only applied if\n"
 		"      -C flag is also used.\n"
 		"  -r  Set the constraints (spatially unique and coverage tile) for\n"
-		"      regular blocking.  Only applied if -C flag is also used.\n"
+		"      regular blocking. Only applied if -C flag is also used.\n"
 	));
 	printf(_(
 		"  -T <tablespace> Specify the tablespace for the new table.\n"
@@ -412,12 +415,12 @@ usage() {
 	));
 	printf(_(
 		"  -E <endian> Control endianness of generated binary output of\n"
-		"      raster.  Use 0 for XDR and 1 for NDR (default).  Only NDR\n"
+		"      raster. Use 0 for XDR and 1 for NDR (default). Only NDR\n"
 		"      is supported at this time.\n"
 	));
 	printf(_(
-		"  -V <version> Specify version of output format.  Default\n"
-		"      is 0.  Only 0 is supported at this time.\n"
+		"  -V <version> Specify version of output WKB format. Default\n"
+		"      is 0. Only 0 is supported at this time.\n"
 	));
 	printf(_(
 		"  -e  Execute each statement individually, do not use a transaction.\n"
@@ -682,6 +685,7 @@ init_config(RTLOADERCFG *config) {
 	config->table = NULL;
 	config->raster_column = NULL;
 	config->file_column = 0;
+	config->file_column_name = NULL;
 	config->overview_count = 0;
 	config->overview = NULL;
 	config->overview_table = NULL;
@@ -727,6 +731,8 @@ rtdealloc_config(RTLOADERCFG *config) {
 		rtdealloc(config->table);
 	if (config->raster_column != NULL)
 		rtdealloc(config->raster_column);
+	if (config->file_column_name != NULL)
+		rtdealloc(config->file_column_name);
 	if (config->overview_count > 0) {
 		if (config->overview != NULL)
 			rtdealloc(config->overview);
@@ -816,7 +822,8 @@ append_sql_to_buffer(STRINGBUFFER *buffer, const char *str) {
 static int
 insert_records(
 	const char *schema, const char *table, const char *column,
-	const char *filename, int copy_statements,
+	const char *filename, const char *file_column_name,
+	int copy_statements,
 	STRINGBUFFER *tileset, STRINGBUFFER *buffer
 ) {
 	char *fn = NULL;
@@ -866,7 +873,7 @@ insert_records(
 		len += strlen(table);
 		len += strlen(column);
 		if (filename != NULL)
-			len += strlen(",\"filename\"");
+			len += strlen(",") + strlen(file_column_name);
 
 		/* escape single-quotes in filename */
 		if (filename != NULL)
@@ -884,11 +891,12 @@ insert_records(
 				rterror(_("insert_records: Could not allocate memory for INSERT statement"));
 				return 0;
 			}
-			sprintf(sql, "INSERT INTO %s%s (%s%s) VALUES ('%s'::raster%s%s%s);",
+			sprintf(sql, "INSERT INTO %s%s (%s%s%s) VALUES ('%s'::raster%s%s%s);",
 				(schema != NULL ? schema : ""),
 				table,
 				column,
-				(filename != NULL ? ",\"filename\"" : ""),
+				(filename != NULL ? "," : ""),
+				(filename != NULL ? file_column_name : ""),
 				tileset->line[x],
 				(filename != NULL ? ",'" : ""),
 				(filename != NULL ? fn : ""),
@@ -934,7 +942,7 @@ drop_table(const char *schema, const char *table, STRINGBUFFER *buffer) {
 static int
 create_table(
 	const char *schema, const char *table, const char *column,
-	const int file_column,
+	const int file_column, const char *file_column_name,
 	const char *tablespace, const char *idx_tablespace,
 	STRINGBUFFER *buffer
 ) {
@@ -950,7 +958,7 @@ create_table(
 	len += strlen(table);
 	len += strlen(column);
 	if (file_column)
-		len += strlen(",\"filename\" text");
+		len += strlen(", text") + strlen(file_column_name);
 	if (tablespace != NULL)
 		len += strlen(" TABLESPACE ") + strlen(tablespace);
 	if (idx_tablespace != NULL)
@@ -961,13 +969,15 @@ create_table(
 		rterror(_("create_table: Could not allocate memory for CREATE TABLE statement"));
 		return 0;
 	}
-	sprintf(sql, "CREATE TABLE %s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s)%s%s;",
+	sprintf(sql, "CREATE TABLE %s%s (\"rid\" serial PRIMARY KEY%s%s,%s raster%s%s%s)%s%s;",
 		(schema != NULL ? schema : ""),
 		table,
 		(idx_tablespace != NULL ? " USING INDEX TABLESPACE " : ""),
 		(idx_tablespace != NULL ? idx_tablespace : ""),
 		column,
-		(file_column ? ",\"filename\" text" : ""),
+		(file_column ? "," : ""),
+		(file_column ? file_column_name : ""),
+		(file_column ? " text" : ""),
 		(tablespace != NULL ? " TABLESPACE " : ""),
 		(tablespace != NULL ? tablespace : "")
 	);
@@ -981,7 +991,7 @@ create_table(
 static int
 copy_from(
 	const char *schema, const char *table, const char *column,
-	const char *filename,
+	const char *filename, const char *file_column_name,
 	STRINGBUFFER *buffer
 ) {
 	char *sql = NULL;
@@ -996,18 +1006,19 @@ copy_from(
 	len += strlen(table);
 	len += strlen(column);
 	if (filename != NULL)
-		len += strlen(",\"filename\"");
+		len += strlen(",") + strlen(file_column_name);
 
 	sql = rtalloc(sizeof(char) * len);
 	if (sql == NULL) {
 		rterror(_("copy_from: Could not allocate memory for COPY statement"));
 		return 0;
 	}
-	sprintf(sql, "COPY %s%s (%s%s) FROM stdin;",
+	sprintf(sql, "COPY %s%s (%s%s%s) FROM stdin;",
 		(schema != NULL ? schema : ""),
 		table,
 		column,
-		(filename != NULL ? ",\"filename\"" : "")
+		(filename != NULL ? "," : ""),
+		(filename != NULL ? file_column_name : "")
 	);
 
 	append_sql_to_buffer(buffer, sql);
@@ -1509,7 +1520,8 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 			if (tileset->length > 10) {
 				if (!insert_records(
 					config->schema, ovtable, config->raster_column,
-					(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
+					(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
+					config->copy_statements,
 					tileset, buffer
 				)) {
 					rterror(_("build_overview: Could not convert raster tiles into INSERT or COPY statements"));
@@ -1823,7 +1835,8 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				if (tileset->length > 10) {
 					if (!insert_records(
 						config->schema, config->table, config->raster_column,
-						(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
+						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
+						config->copy_statements,
 						tileset, buffer
 					)) {
 						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
@@ -1942,7 +1955,8 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				if (tileset->length > 10) {
 					if (!insert_records(
 						config->schema, config->table, config->raster_column,
-						(config->file_column ? config->rt_filename[idx] : NULL), config->copy_statements,
+						(config->file_column ? config->rt_filename[idx] : NULL), config->file_column_name,
+						config->copy_statements,
 						tileset, buffer
 					)) {
 						rterror(_("convert_raster: Could not convert raster tiles into INSERT or COPY statements"));
@@ -1997,7 +2011,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 	if (config->opt != 'a') {
 		if (!create_table(
 			config->schema, config->table, config->raster_column,
-			config->file_column,
+			config->file_column, config->file_column_name,
 			config->tablespace, config->idx_tablespace,
 			buffer
 		)) {
@@ -2009,7 +2023,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			for (i = 0; i < config->overview_count; i++) {
 				if (!create_table(
 					config->schema, config->overview_table[i], config->raster_column,
-					config->file_column,
+					config->file_column, config->file_column_name,
 					config->tablespace, config->idx_tablespace,
 					buffer
 				)) {
@@ -2037,7 +2051,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 			if (config->copy_statements && !copy_from(
 				config->schema, config->table, config->raster_column,
-				(config->file_column ? config->rt_filename[i] : NULL),
+				(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
 				buffer
 			)) {
 				rterror(_("process_rasters: Could not add COPY statement to string buffer"));
@@ -2057,7 +2071,8 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 			/* process raster tiles into COPY or INSERT statements */
 			if (tileset.length && !insert_records(
 				config->schema, config->table, config->raster_column,
-				(config->file_column ? config->rt_filename[i] : NULL), config->copy_statements,
+				(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
+				config->copy_statements,
 				&tileset, buffer
 			)) {
 				rterror(_("process_rasters: Could not convert raster tiles into INSERT or COPY statements"));
@@ -2085,7 +2100,7 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 					if (config->copy_statements && !copy_from(
 							config->schema, config->overview_table[j], config->raster_column,
-							(config->file_column ? config->rt_filename[i] : NULL),
+							(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
 							buffer
 					)) {
 						rterror(_("process_rasters: Could not add COPY statement to string buffer"));
@@ -2103,7 +2118,8 @@ process_rasters(RTLOADERCFG *config, STRINGBUFFER *buffer) {
 
 					if (tileset.length && !insert_records(
 						config->schema, config->overview_table[j], config->raster_column,
-						(config->file_column ? config->rt_filename[i] : NULL), config->copy_statements,
+						(config->file_column ? config->rt_filename[i] : NULL), config->file_column_name,
+						config->copy_statements,
 						&tileset, buffer
 					)) {
 						rterror(_("process_rasters: Could not convert overview tiles into INSERT or COPY statements"));
@@ -2469,6 +2485,17 @@ main(int argc, char **argv) {
 		else if (CSEQUAL(argv[i], "-F")) {
 			config->file_column = 1;
 		}
+		/* filename column name */
+		else if (CSEQUAL(argv[i], "-n") && i < argc - 1) {
+			config->file_column_name = rtalloc(sizeof(char) * (strlen(argv[++i]) + 1));
+			if (config->file_column_name == NULL) {
+				rterror(_("Could not allocate memory for storing filename column name"));
+				rtdealloc_config(config);
+				exit(1);
+			}
+			strncpy(config->file_column_name, argv[i], strlen(argv[i]) + 1);
+			config->file_column = 1;
+		}
 		/* overview factors */
 		else if (CSEQUAL(argv[i], "-l") && i < argc - 1) {
 			elements = strsplit(argv[++i], ",", &n);
@@ -2774,6 +2801,17 @@ main(int argc, char **argv) {
 		strcpy(config->raster_column, "rast");
 	}
 
+	/* file_column_name not specified, default to "filename" */
+	if (config->file_column_name == NULL) {
+		config->file_column_name = rtalloc(sizeof(char) * (strlen("filename") + 1));
+		if (config->file_column_name == NULL) {
+			rterror(_("Could not allocate memory for default filename column name"));
+			rtdealloc_config(config);
+			exit(1);
+		}
+		strcpy(config->file_column_name, "filename");
+	}
+
 	/****************************************************************************
 	* literal PostgreSQL identifiers disabled
 	****************************************************************************/
@@ -2786,6 +2824,8 @@ main(int argc, char **argv) {
 			config->table = strtolower(config->table);
 		if (config->raster_column != NULL)
 			config->raster_column = strtolower(config->raster_column);
+		if (config->file_column_name != NULL)
+			config->file_column_name = strtolower(config->file_column_name);
 		if (config->tablespace != NULL)
 			config->tablespace = strtolower(config->tablespace);
 		if (config->idx_tablespace != NULL)
@@ -2837,6 +2877,12 @@ main(int argc, char **argv) {
 	if (config->raster_column != NULL && strlen(config->raster_column) > MAXNAMELEN) {
 		rtwarn(_("The column name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
 			config->raster_column,
+			MAXNAMELEN
+		);
+	}
+	if (config->file_column_name != NULL && strlen(config->file_column_name) > MAXNAMELEN) {
+		rtwarn(_("The column name \"%s\" may exceed the maximum string length permitted for PostgreSQL identifiers (%d)"),
+			config->file_column_name,
 			MAXNAMELEN
 		);
 	}
@@ -2902,6 +2948,18 @@ main(int argc, char **argv) {
 		sprintf(tmp, "\"%s\"", config->raster_column);
 		rtdealloc(config->raster_column);
 		config->raster_column = tmp;
+	}
+	if (config->file_column_name != NULL) {
+		tmp = rtalloc(sizeof(char) * (strlen(config->file_column_name) + 3));
+		if (tmp == NULL) {
+			rterror(_("Could not allocate memory for quoting raster column name"));
+			rtdealloc_config(config);
+			exit(1);
+		}
+
+		sprintf(tmp, "\"%s\"", config->file_column_name);
+		rtdealloc(config->file_column_name);
+		config->file_column_name = tmp;
 	}
 	if (config->tablespace != NULL) {
 		tmp = rtalloc(sizeof(char) * (strlen(config->tablespace) + 3));

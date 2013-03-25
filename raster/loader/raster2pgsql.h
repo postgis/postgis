@@ -84,6 +84,7 @@ typedef struct raster_loader_config {
 
 	/* add column with raster filename, 1 = yes, 0 = no (default) */
 	int file_column;
+	char *file_column_name;
 
 	/* overview factor */
 	int overview_count;
