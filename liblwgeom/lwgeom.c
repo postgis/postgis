@@ -16,7 +16,6 @@
 
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
-#include "libtgeom.h"
 
 
 /** Force Right-hand-rule on LWGEOM polygons **/
@@ -1253,7 +1252,7 @@ extern int lwgeom_dimensionality(LWGEOM *geom)
 
 	case POLYHEDRALSURFACETYPE:
 	case TINTYPE:
-		dim = lwgeom_is_solid(geom)?3:2;
+		dim = lwgeom_is_closed(geom)?3:2;
 		return dim;
 		break;
 
@@ -1453,10 +1452,6 @@ double lwgeom_perimeter(const LWGEOM *geom)
 		return lwcurvepoly_perimeter((LWCURVEPOLY*)geom);
 	else if ( type == TRIANGLETYPE )
 		return lwtriangle_perimeter((LWTRIANGLE*)geom);
-	else if ( type == POLYHEDRALSURFACETYPE || type == TINTYPE )
-	{
-		return tgeom_perimeter(tgeom_from_lwgeom(geom));		
-	}
 	else if ( lwgeom_is_collection(geom) )
 	{
 		double perimeter = 0.0;
@@ -1479,10 +1474,6 @@ double lwgeom_perimeter_2d(const LWGEOM *geom)
 		return lwcurvepoly_perimeter_2d((LWCURVEPOLY*)geom);
 	else if ( type == TRIANGLETYPE )
 		return lwtriangle_perimeter_2d((LWTRIANGLE*)geom);
-	else if ( type == POLYHEDRALSURFACETYPE || type == TINTYPE )
-	{
-		return tgeom_perimeter(tgeom_from_lwgeom(geom));		
-	}
 	else if ( lwgeom_is_collection(geom) )
 	{
 		double perimeter = 0.0;

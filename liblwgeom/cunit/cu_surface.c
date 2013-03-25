@@ -85,7 +85,9 @@ void triangle_parse(void)
 	geom = lwgeom_from_wkt("TRIANGLE EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TRIANGLETYPE);
-	CU_ASSERT_STRING_EQUAL("TRIANGLE EMPTY", lwgeom_to_wkt(geom, LW_PARSER_CHECK_NONE, 0, 0));
+	tmp = lwgeom_to_wkt(geom, LW_PARSER_CHECK_NONE, 0, 0);
+	CU_ASSERT_STRING_EQUAL("TRIANGLE EMPTY", tmp);
+	lwfree(tmp);
 	lwgeom_free(geom);
 
 	/* explicit SRID */
@@ -121,6 +123,7 @@ void tin_parse(void)
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
 	tmp = lwgeom_to_ewkt(geom);
 	CU_ASSERT_STRING_EQUAL("TIN EMPTY", tmp);
+	lwfree(tmp);
 	lwgeom_free(geom);
 
 	/* 2 dims */
@@ -187,7 +190,9 @@ void tin_parse(void)
 	geom = lwgeom_from_wkt("TIN EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, TINTYPE);
-	CU_ASSERT_STRING_EQUAL("TIN EMPTY", lwgeom_to_ewkt(geom));
+	tmp = lwgeom_to_ewkt(geom);
+	CU_ASSERT_STRING_EQUAL("TIN EMPTY", tmp);
+	lwfree(tmp);
 	lwgeom_free(geom);
 
 	/* A simple tetrahedron */
@@ -227,80 +232,6 @@ void tin_parse(void)
 	CU_ASSERT_EQUAL(gserialized_get_type(g), TINTYPE);
 	lwgeom_free(geom);
 	lwfree(g);
-}
-
-
-static void
-check_tgeom(char *ewkt, int type, uint32_t srid, int is_solid)
-{
-	LWGEOM *g1, *g2;
-	TGEOM *tgeom, *tgeom2;
-	TSERIALIZED *tser;
-
-	g1 = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
-	if (strlen(cu_error_msg)) printf("\n[%s], %s\n", ewkt, cu_error_msg);
-	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
-
-	if (g1->type != type)
-		printf("\n[%s], TYPE %s\n", ewkt, lwtype_name(g1->type));
-	CU_ASSERT_EQUAL(g1->type, type);
-	tgeom = tgeom_from_lwgeom(g1);
-
-	if (srid != tgeom->srid)
-		printf("\n[%s], srid %i / %i\n", ewkt, srid, tgeom->srid);
-	CU_ASSERT_EQUAL(srid, tgeom->srid);
-
-	if (FLAGS_GET_SOLID(tgeom->flags) != is_solid)
-		printf("\n[%s], solid %i / %i\n", ewkt,
-		       FLAGS_GET_SOLID(tgeom->flags), is_solid);
-	CU_ASSERT_EQUAL(FLAGS_GET_SOLID(tgeom->flags), is_solid);
-
-	g2 = lwgeom_from_tgeom(tgeom);
-	if (!lwgeom_same(g1, g2))
-	{
-		printf("\n[%s]\nlwgeom_same I\n", ewkt);
-		printTGEOM(tgeom);
-		if (type == TINTYPE)
-		{
-			printLWTIN((LWTIN *)g1);
-			printLWTIN((LWTIN *)g2);
-		}
-		else
-		{
-			printLWPSURFACE((LWPSURFACE *)g1);
-			printLWPSURFACE((LWPSURFACE *)g2);
-		}
-	}
-	CU_ASSERT(lwgeom_same(g1, g2));
-
-	lwgeom_free(g2);
-	tser = tgeom_serialize(tgeom);
-	tgeom2 = tgeom_deserialize(tser);
-	lwfree(tser);
-	g2 = lwgeom_from_tgeom(tgeom2);
-	tgeom_free(tgeom2);
-
-	if (!lwgeom_same(g1, g2))
-	{
-		printf("\n[%s]\n, lwgeom_same II\n", ewkt);
-		printTGEOM(tgeom);
-		printTGEOM(tgeom2);
-		if (type == TINTYPE)
-		{
-			printLWTIN((LWTIN *)g1);
-			printLWTIN((LWTIN *)g2);
-		}
-		else
-		{
-			printLWPSURFACE((LWPSURFACE *)g1);
-			printLWPSURFACE((LWPSURFACE *)g2);
-		}
-	}
-	CU_ASSERT(lwgeom_same(g1, g2));
-
-	lwgeom_free(g1);
-	lwgeom_free(g2);
-	tgeom_free(tgeom);
 }
 
 
@@ -382,8 +313,12 @@ void polyhedralsurface_parse(void)
 	geom = lwgeom_from_wkt("POLYHEDRALSURFACE EMPTY", LW_PARSER_CHECK_NONE);
 	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
 	CU_ASSERT_EQUAL(geom->type, POLYHEDRALSURFACETYPE);
-	CU_ASSERT_STRING_EQUAL("010F00000000000000", lwgeom_to_wkb(geom, WKB_HEX | WKB_ISO | WKB_NDR, 0));
-	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACE EMPTY", lwgeom_to_ewkt(geom));
+	tmp = lwgeom_to_wkb(geom, WKB_HEX | WKB_ISO | WKB_NDR, 0);
+	CU_ASSERT_STRING_EQUAL("010F00000000000000", tmp);
+	lwfree(tmp);
+	tmp = lwgeom_to_ewkt(geom);
+	CU_ASSERT_STRING_EQUAL("POLYHEDRALSURFACE EMPTY", tmp);
+	lwfree(tmp);
 	lwgeom_free(geom);
 
 	/* A simple tetrahedron */
@@ -436,63 +371,6 @@ void polyhedralsurface_parse(void)
 	lwfree(g);
 }
 
-void
-tin_tgeom(void)
-{
-	/* EMPTY TIN */
-	check_tgeom("TIN EMPTY", TINTYPE, 0, 0);
-
-	/* 2D a single face */
-	check_tgeom("TIN(((0 0,0 1,1 1,0 0)))", TINTYPE, 0, 0);
-
-	/* 3DM a single face */
-	check_tgeom("TINM(((0 1 2,3 4 5,6 7 8,0 1 2)))", TINTYPE, 0, 0);
-
-	/* 4D a single face */
-	check_tgeom("TIN(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 2 3)))", TINTYPE, 0, 0);
-
-	/* 3D a simple polyhedron */
-	check_tgeom("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", TINTYPE, 0, 1);
-
-	/* 3D a simple polyhedron with SRID */
-	check_tgeom("SRID=4326;TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", TINTYPE, 4326, 1);
-}
-
-
-void
-psurface_tgeom(void)
-{
-	/* EMPTY POLYHEDRALSURFACE */
-	check_tgeom("POLYHEDRALSURFACE EMPTY", POLYHEDRALSURFACETYPE, 0, 0);
-
-	/* 2D a single face */
-	check_tgeom("POLYHEDRALSURFACE(((0 0,0 1,1 1,0 0)))", POLYHEDRALSURFACETYPE, 0, 0);
-
-	/* 3DM a single face */
-	check_tgeom("POLYHEDRALSURFACEM(((0 1 2,3 4 5,6 7 8,0 1 2)))", POLYHEDRALSURFACETYPE, 0, 0);
-
-	/* 4D a single face */
-	check_tgeom("POLYHEDRALSURFACE(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 2 3)))", POLYHEDRALSURFACETYPE, 0, 0);
-
-	/* 3D a simple polyhedron */
-	check_tgeom("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", POLYHEDRALSURFACETYPE, 0, 1);
-
-	/* 3D a simple polyhedron with SRID */
-	check_tgeom("SRID=4326;POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", POLYHEDRALSURFACETYPE, 4326, 1);
-
-	/* 4D a simple polyhedron */
-	check_tgeom("POLYHEDRALSURFACE(((0 0 0 1,0 0 1 2,0 1 0 3,0 0 0 1)),((0 0 0 4,0 1 0 5,1 0 0 6,0 0 0 4)),((0 0 0 7,1 0 0 8,0 0 1 9,0 0 0 7)),((1 0 0 10,0 1 0 11,0 0 1 12,1 0 0 10)))", POLYHEDRALSURFACETYPE, 0, 0);
-
-	/* 2D single face with one internal ring */
-	check_tgeom("POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7)))", POLYHEDRALSURFACETYPE, 0, 0);
-
-	/* 2D single face with two internal rings */
-	check_tgeom("POLYHEDRALSURFACE(((0 1,2 3,4 5,0 1),(6 7,8 9,10 11,6 7),(12 13,14 15,16 17,12 13)))", POLYHEDRALSURFACETYPE, 0, 0);
-
-	/* 4D single face with two internal rings */
-	check_tgeom("POLYHEDRALSURFACE(((0 1 2 3,4 5 6 7,8 9 10 11,0 1 2 3),(12 13 14 15,16 17 18 19,20 21 22 23,12 13 14 15),(16 17 18 19,20 21 22 23,24 25 26 27,16 17 18 19)))", POLYHEDRALSURFACETYPE, 0, 0);
-}
-
 
 static void
 check_dimension(char *ewkt, int dim)
@@ -522,40 +400,6 @@ surface_dimension(void)
 }
 
 
-static void
-check_perimeter(char *ewkt, int dim, double p)
-{
-	LWGEOM *geom;
-	TGEOM *tgeom;
-
-	geom = lwgeom_from_wkt(ewkt, LW_PARSER_CHECK_NONE);
-	CU_ASSERT_EQUAL(strlen(cu_error_msg), 0);
-	tgeom = tgeom_from_lwgeom(geom);
-
-	if (dim == 2) CU_ASSERT_DOUBLE_EQUAL(tgeom_perimeter2d(tgeom), p, 0.01);
-	if (dim == 3) CU_ASSERT_DOUBLE_EQUAL(tgeom_perimeter(tgeom), p, 0.01);
-
-	tgeom_free(tgeom);
-	lwgeom_free(geom);
-}
-
-void
-surface_perimeter(void)
-{
-	/* 2D single face */
-	check_perimeter("POLYHEDRALSURFACE(((0 0,0 1,1 1,0 0)))", 2, 3.4142);
-	check_perimeter("TIN(((0 0,0 1,1 1,0 0)))", 2, 3.4142);
-
-	/* 3D single face */
-	check_perimeter("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)))", 3, 3.4142);
-	check_perimeter("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)))", 3, 3.4142);
-
-	/* 3D Tetrahedron */
-	check_perimeter("POLYHEDRALSURFACE(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", 3, 0.0);
-	check_perimeter("TIN(((0 0 0,0 0 1,0 1 0,0 0 0)),((0 0 0,0 1 0,1 0 0,0 0 0)),((0 0 0,1 0 0,0 0 1,0 0 0)),((1 0 0,0 1 0,0 0 1,1 0 0)))", 3, 0.0);
-}
-
-
 /*
 ** Used by test harness to register the tests in this file.
 */
@@ -567,10 +411,7 @@ CU_TestInfo surface_tests[] =
 	PG_TEST(triangle_parse),
 	PG_TEST(tin_parse),
 	PG_TEST(polyhedralsurface_parse),
-	PG_TEST(tin_tgeom),
-	PG_TEST(psurface_tgeom),
 	PG_TEST(surface_dimension),
-	PG_TEST(surface_perimeter),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo surface_suite = {"surface",  NULL,  NULL, surface_tests};

@@ -76,7 +76,6 @@ SA_OBJS = \
 	lwgeodetic.o \
 	lwgeodetic_tree.o \
 	lwtree.o \
-	libtgeom.o \
 	lwout_gml.o \
 	lwout_kml.o \
 	lwout_geojson.o \
@@ -99,7 +98,6 @@ LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
 SA_HEADERS = \
 	liblwgeom.h \
 	liblwgeom_internal.h \
-	libtgeom.h \
 	lwgeom_log.h \
 	lwgeom_geos.h
 
