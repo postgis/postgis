@@ -959,7 +959,7 @@ sub create_spatial
 	my ($cmd, $rv);
 	print "Creating database '$DB' \n";
 
-	$cmd = "createdb --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
+	$cmd = "createdb --encoding=UTF-8 --template=template0 --lc-collate=C $DB > $REGRESS_LOG";
 	$rv = system($cmd);
 	$cmd = "createlang plpgsql $DB >> $REGRESS_LOG 2>&1";
 	$rv = system($cmd);
