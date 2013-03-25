@@ -121,6 +121,7 @@ PostGIS 2.1.0
   - Additional default values for parameters of ST_Aspect and ST_HillShade
   - #2178, ST_Summary now advertises presence of known srid with an [S] flag
   - #2202, Make libjson-c optional (--without-json configure switch)
+  - #2231, raster2pgsql supports user naming of filename column with -n
 
 * Fixes *
 
