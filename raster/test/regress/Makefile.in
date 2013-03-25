@@ -83,6 +83,7 @@ TEST_BANDPROPS = \
 
 TEST_UTILITY = \
 	rt_utility \
+	rt_fromgdalraster \
 	rt_asgdalraster \
 	rt_astiff \
 	rt_asjpeg \

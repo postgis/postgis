@@ -1772,7 +1772,78 @@ FROM baz;
 
 		</refentry>
 
-  	</sect1>
+		<refentry id="RT_ST_FromGDALRaster">
+
+			<refnamediv>
+				<refname>ST_FromGDALRaster</refname>
+				<refpurpose>Returns a raster from a supported GDAL raster file.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>raster <function>ST_FromGDALRaster</function></funcdef>
+						<paramdef><type>bytea </type> <parameter>gdaldata</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>srid=NULL</parameter></paramdef>
+					</funcprototype>
+
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Returns a raster from a supported GDAL raster file. <varname>gdaldata</varname> is of type bytea and should be the contents of the GDAL raster file.
+				</para>
+
+				<para>
+					If <varname>srid</varname> is NULL, the function will try to autmatically assign the SRID from the GDAL raster. If <varname>srid</varname> is provided, the value provided will override any automatically assigned SRID.
+				</para>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_AsPNG(ST_AddBand(ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(2, 2, 0, 0, 0.1, -0.1, 0, 0, 4326), 1, '8BUI', 1, 0), 2, '8BUI', 2, 0), 3, '8BUI', 3, 0)) AS png
+),
+bar AS (
+	SELECT 1 AS rid, ST_FromGDALRaster(png) AS rast FROM foo
+	UNION ALL
+	SELECT 2 AS rid, ST_FromGDALRaster(png, 3310) AS rast FROM foo
+)
+SELECT
+	rid,
+	ST_Metadata(rast) AS metadata,
+	ST_SummaryStats(rast, 1) AS stats1,
+	ST_SummaryStats(rast, 2) AS stats2,
+	ST_SummaryStats(rast, 3) AS stats3
+FROM bar
+ORDER BY rid;
+
+ rid |         metadata          |    stats1     |    stats2     |     stats3     
+-----+---------------------------+---------------+---------------+----------------
+   1 | (0,0,2,2,1,-1,0,0,0,3)    | (4,4,1,0,1,1) | (4,8,2,0,2,2) | (4,12,3,0,3,3)
+   2 | (0,0,2,2,1,-1,0,0,3310,3) | (4,4,1,0,1,1) | (4,8,2,0,2,2) | (4,12,3,0,3,3)
+(2 rows)
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_AsGDALRaster" />
+				</para>
+			</refsection>
+
+		</refentry>
+
+ 	</sect1>
 	<sect1 id="Raster_Accessors">
 		<title>Raster Accessors</title>
 	

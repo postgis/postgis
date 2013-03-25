@@ -1511,6 +1511,14 @@ CREATE OR REPLACE FUNCTION st_reclass(rast raster, reclassexpr text, pixeltype t
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_FromGDALRaster
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION st_fromgdalraster(gdaldata bytea, srid integer DEFAULT NULL)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_fromGDALRaster'
+	LANGUAGE 'c' IMMUTABLE;
+
+-----------------------------------------------------------------------
 -- ST_AsGDALRaster and supporting functions
 -----------------------------------------------------------------------
 -- returns set of available and usable GDAL drivers

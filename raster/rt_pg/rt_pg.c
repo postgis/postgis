@@ -310,6 +310,9 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS);
 /* reclassify specified bands of a raster */
 Datum RASTER_reclass(PG_FUNCTION_ARGS);
 
+/* convert GDAL raster to raster */
+Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS);
+
 /* convert raster to GDAL raster */
 Datum RASTER_asGDALRaster(PG_FUNCTION_ARGS);
 Datum RASTER_getGDALDrivers(PG_FUNCTION_ARGS);
@@ -10375,6 +10378,93 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
+}
+
+/**
+ * Returns raster from GDAL raster;
+ */
+PG_FUNCTION_INFO_V1(RASTER_fromGDALRaster);
+Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
+{
+	bytea *bytea_data;
+	uint8_t *data;
+	int data_len = 0;
+	VSILFILE *vsifp = NULL;
+	GDALDatasetH hdsSrc;
+	int srid = -1; /* -1 for NULL */
+
+	rt_pgraster *pgraster = NULL;
+	rt_raster raster;
+
+	/* NULL if NULL */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	/* get data */
+	bytea_data = (bytea *) PG_GETARG_BYTEA_P(0);
+	data = (uint8_t *) VARDATA(bytea_data);
+	data_len = VARSIZE(bytea_data) - VARHDRSZ;
+
+	/* process srid */
+	/* NULL srid means try to determine SRID from bytea */
+	if (!PG_ARGISNULL(1))
+		srid = clamp_srid(PG_GETARG_INT32(1));
+
+	/* create memory "file" */
+	vsifp = VSIFileFromMemBuffer("/vsimem/in.dat", data, data_len, FALSE);
+	if (vsifp == NULL) {
+		elog(ERROR, "RASTER_fromGDALRaster: Could not load bytea into memory file for use by GDAL");
+		PG_FREE_IF_COPY(bytea_data, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* register all GDAL drivers */
+	rt_util_gdal_register_all();
+
+	/* open GDAL raster */
+	hdsSrc = GDALOpenShared("/vsimem/in.dat", GA_ReadOnly);
+	if (hdsSrc == NULL) {
+		elog(ERROR, "RASTER_fromGDALRaster: Could not open bytea with GDAL. Check that the bytea is of a GDAL supported format");
+		VSIFCloseL(vsifp);
+		PG_FREE_IF_COPY(bytea_data, 0);
+		PG_RETURN_NULL();
+	}
+	
+#if POSTGIS_DEBUG_LEVEL > 3
+	{
+		GDALDriverH hdrv = GDALGetDatasetDriver(hdsSrc);
+
+		POSTGIS_RT_DEBUGF(4, "Input GDAL Raster info: %s, (%d x %d)",
+			GDALGetDriverShortName(hdrv),
+			GDALGetRasterXSize(hdsSrc),
+			GDALGetRasterYSize(hdsSrc)
+		);
+	}
+#endif
+
+	/* convert GDAL raster to raster */
+	raster = rt_raster_from_gdal_dataset(hdsSrc);
+
+	GDALClose(hdsSrc);
+	VSIFCloseL(vsifp);
+	PG_FREE_IF_COPY(bytea_data, 0);
+
+	if (raster == NULL) {
+		elog(ERROR, "RASTER_fromGDALRaster: Could not convert GDAL raster to raster");
+		PG_RETURN_NULL();
+	}
+
+	/* apply SRID if set */
+	if (srid != -1)
+		rt_raster_set_srid(raster, srid);
+ 
+	pgraster = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (!pgraster)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgraster, pgraster->size);
+	PG_RETURN_POINTER(pgraster);
 }
 
 /**

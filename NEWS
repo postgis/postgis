@@ -74,6 +74,7 @@ PostGIS 2.1.0
   - lwgeom_from_geojson in liblwgeom (Sandro Santilli / Vizzuality)
   - #1687, ST_Simplify for TopoGeometry (Sandro Santilli / Vizzuality)
   - #2228, TopoJSON output for TopoGeometry (Sandro Santilli / Vizzuality)
+  - #2123, ST_FromGDALRaster
 
 * Enhancements *
   - #823,  tiger geocoder: Make loader_generate_script download portion 

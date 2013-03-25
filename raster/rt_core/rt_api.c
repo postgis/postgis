@@ -9138,10 +9138,14 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 
 	/* get raster attributes */
 	cplerr = GDALGetGeoTransform(ds, gt);
-	if (cplerr != CE_None) {
-		rterror("rt_raster_from_gdal_dataset: Unable to get geotransformation");
-		rt_raster_destroy(rast);
-		return NULL;
+	if (GDALGetGeoTransform(ds, gt) != CE_None) {
+		RASTER_DEBUG(4, "Using default geotransform matrix (0, 1, 0, 0, 0, -1)");
+		gt[0] = 0;
+		gt[1] = 1;
+		gt[2] = 0;
+		gt[3] = 0;
+		gt[4] = 0;
+		gt[5] = -1;
 	}
 
 	/* apply raster attributes */
