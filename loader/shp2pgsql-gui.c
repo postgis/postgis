@@ -1578,6 +1578,12 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 		/* If we are in prepare mode, we need to skip the actual load. */
 		if (state->config->opt != 'p')
 		{
+            int numrecords = ShpLoaderGetRecordCount(state);
+            int records_per_tick = (numrecords / 200) - 1;
+            
+            if ( records_per_tick < 1 ) 
+                records_per_tick = 1;
+		    
 			/* If we are in COPY (dump format) mode, output the COPY statement and enter COPY mode */
 			if (state->config->dump_format)
 			{
@@ -1600,7 +1606,7 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 			}
 
 			/* Main loop: iterate through all of the records and send them to stdout */
-			for (i = 0; i < ShpLoaderGetRecordCount(state) && is_running; i++)
+			for (i = 0; i < numrecords && is_running; i++)
 			{
 				ret = ShpLoaderGenerateSQLRowStatement(state, i, &record);
 
@@ -1652,7 +1658,8 @@ pgui_action_import(GtkWidget *widget, gpointer data)
 				}
 
 				/* Update the progress bar */
-				gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / ShpLoaderGetRecordCount(state));
+				if ( i % records_per_tick == 0 )
+				    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), (float)i / numrecords);
 
 				/* Allow GTK events to get a look in */
 				while (gtk_events_pending())
