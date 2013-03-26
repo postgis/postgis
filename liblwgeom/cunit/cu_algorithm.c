@@ -716,12 +716,12 @@ static void test_geohash_point(void)
 
 	geohash = geohash_point(0, 0, 16);
 	//printf("\ngeohash %s\n",geohash);
-	CU_ASSERT_STRING_EQUAL(geohash, "7zzzzzzzzzzzzzzz");
+	CU_ASSERT_STRING_EQUAL(geohash, "s000000000000000");
 	lwfree(geohash);
 
 	geohash = geohash_point(90, 0, 16);
 	//printf("\ngeohash %s\n",geohash);
-	CU_ASSERT_STRING_EQUAL(geohash, "mzzzzzzzzzzzzzzz");
+	CU_ASSERT_STRING_EQUAL(geohash, "w000000000000000");
 	lwfree(geohash);
 
 	geohash = geohash_point(20.012345, -20.012345, 15);
