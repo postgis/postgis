@@ -592,7 +592,7 @@ char *geohash_point(double longitude, double latitude, int precision)
 		if (is_even)
 		{
 			mid = (lon[0] + lon[1]) / 2;
-			if (longitude > mid)
+			if (longitude >= mid)
 			{
 				ch |= bits[bit];
 				lon[0] = mid;
@@ -605,7 +605,7 @@ char *geohash_point(double longitude, double latitude, int precision)
 		else
 		{
 			mid = (lat[0] + lat[1]) / 2;
-			if (latitude > mid)
+			if (latitude >= mid)
 			{
 				ch |= bits[bit];
 				lat[0] = mid;
