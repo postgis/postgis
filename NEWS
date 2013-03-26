@@ -68,8 +68,9 @@ PostGIS 2.1.0
   - #1895, new r-tree node splitting algorithm (Alex Korotkov)
   - #1709, ST_NotSameAlignmentReason(raster, raster)
   - #1293, ST_Resize(raster) to resize rasters based upon width/height
-  - #945, improved join selectivity, N-D selectivity calculations, user
-    accessible selectivity and stats reader functions for testing
+  - #945, improved join selectivity, N-D selectivity calculations, 
+    user accessible selectivity and stats reader functions for 
+    testing (Paul Ramsey / OpenGeo)
   - #2210, ST_MinConvexHull(raster)
   - lwgeom_from_geojson in liblwgeom (Sandro Santilli / Vizzuality)
   - #1687, ST_Simplify for TopoGeometry (Sandro Santilli / Vizzuality)
