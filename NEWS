@@ -5,6 +5,7 @@ PostGIS 2.0.4
   - #2110, Equality operator between EMPTY and point on origin
   - Allow adding points at precision distance with TopoGeo_addPoint
   - #1968, Fix missing edge from toTopoGeom return
+  - #2201, ST_GeoHash wrong on boundaries
 
 PostGIS 2.0.3
 2013/03/01
