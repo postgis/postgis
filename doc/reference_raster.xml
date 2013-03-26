@@ -10512,7 +10512,8 @@ UPDATE wind
 				<note><para>For variant ST_Union(rast,uniontype),  band 1 is assumed.</para></note>
 				<para>Enhanced: 2.1.0 Improved Speed (fully C-Based).</para>
 				<para>Availability: 2.1.0 ST_Union(rast, unionarg) variant was introduced.</para>
-				<para>Enhanced: 2.1.0 ST_Union(rast) (variant 1) now unions all bands of all input rasters, if no band is specified.  Prior versions of PostGIS assumed the first band.</para>
+				<para>Enhanced: 2.1.0 ST_Union(rast) (variant 1) unions all bands of all input rasters.  Prior versions of PostGIS assumed the first band.</para>
+				<para>Enhanced: 2.1.0 ST_Union(rast, uniontype) (variant 4) unions all bands of all input rasters.</para>
 				
 				
 			</refsection>

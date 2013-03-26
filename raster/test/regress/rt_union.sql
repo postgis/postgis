@@ -349,13 +349,33 @@ INSERT INTO raster_union_in
 
 INSERT INTO raster_union_out
 	SELECT
-		'LAST',
+		'LAST-1',
 		ST_Union(rast) AS rast
 	FROM raster_union_in;
 
+INSERT INTO raster_union_out
+	SELECT
+		'LAST-2',
+		ST_Union(rast, 'last') AS rast
+	FROM raster_union_in;
+
+INSERT INTO raster_union_out
+	SELECT
+		'FIRST-2',
+		ST_Union(rast, 'first') AS rast
+	FROM raster_union_in;
+
+INSERT INTO raster_union_out
+	SELECT
+		'MEAN-2',
+		ST_Union(rast, 'mean') AS rast
+	FROM raster_union_in;
+
 SELECT
+	uniontype,
 	(ST_Metadata(rast)).*
-FROM raster_union_out;
+FROM raster_union_out
+ORDER BY uniontype;
 
 SELECT
 	uniontype,

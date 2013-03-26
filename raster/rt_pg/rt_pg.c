@@ -4735,7 +4735,6 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 	bool exclude_nodata_value = TRUE;
 	double pixval;
 	int isnodata = 0;
-	int inextent = 0;
 
 	rt_pixel npixels = NULL;
 	int count;
@@ -4859,7 +4858,6 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 			PG_FREE_IF_COPY(pgraster, 0);
 			PG_RETURN_NULL();
 		}
-		inextent = 1;
 	}
 	/* outside band extent, set to NODATA */
 	else {
@@ -4869,7 +4867,6 @@ Datum RASTER_neighborhood(PG_FUNCTION_ARGS)
 		/* no NODATA, use min possible value */
 		else
 			pixval = rt_band_get_min_value(band);
-		inextent = 0;
 		isnodata = 1;
 	}
 	POSTGIS_RT_DEBUGF(4, "pixval: %f", pixval);
@@ -16253,7 +16250,7 @@ static int rtpg_union_noarg(rtpg_union_arg arg, rt_raster raster) {
 
 		/* add new working rt_raster but only if working raster already exists */
 		if (!rt_raster_is_empty(arg->bandarg[0].raster[0])) {
-			arg->bandarg[i].raster[0] = rt_raster_clone(arg->bandarg[0].raster[0], 0);
+			arg->bandarg[i].raster[0] = rt_raster_clone(arg->bandarg[0].raster[0], 0); /* shallow clone */
 			if (arg->bandarg[i].raster[0] == NULL) {
 				elog(ERROR, "rtpg_union_noarg: Unable to create working raster");
 				return 0;
@@ -16283,6 +16280,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	int hasband[2] = {0};
 	int nargs = 0;
 	double _offset[4] = {0.};
+	int nbnodata = 0; /* 1 if adding bands */
 
 	int i = 0;
 	int j = 0;
@@ -16356,24 +16354,60 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 	/* process additional args if needed */
 	nargs = PG_NARGS();
 	POSTGIS_RT_DEBUGF(4, "nargs = %d", nargs);
-	if (!skiparg && nargs > 2) {
+	if (nargs > 2) {
 		POSTGIS_RT_DEBUG(4, "processing additional arguments");
 
 		/* if more than 2 arguments, determine the type of argument 3 */
 		/* band number, UNION type or unionarg */
-		if (nargs > 2 && !PG_ARGISNULL(2)) {
+		if (!PG_ARGISNULL(2)) {
 			Oid calltype = get_fn_expr_argtype(fcinfo->flinfo, 2);
 
 			switch (calltype) {
 				/* UNION type */
-				case TEXTOID:
+				case TEXTOID: {
+					int idx = 0;
+					int numband = 0;
+
 					POSTGIS_RT_DEBUG(4, "Processing arg 3 as UNION type");
+					nbnodata = 1;
+
 					utypename = text_to_cstring(PG_GETARG_TEXT_P(2));
 					utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
+					POSTGIS_RT_DEBUGF(4, "Union type: %s", utypename);
 
-					iwr->numband = 1;
+					POSTGIS_RT_DEBUGF(4, "iwr->numband: %d", iwr->numband);
+					/* see if we need to append new bands */
+					if (raster) {
+						idx = iwr->numband;
+						numband = rt_raster_get_num_bands(raster);
+						POSTGIS_RT_DEBUGF(4, "numband: %d", numband);
 
-					iwr->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * iwr->numband);
+						/* only worry about appended bands */
+						if (numband > iwr->numband)
+							iwr->numband = numband;
+					}
+
+					if (!iwr->numband)
+						iwr->numband = 1;
+					POSTGIS_RT_DEBUGF(4, "iwr->numband: %d", iwr->numband);
+					POSTGIS_RT_DEBUGF(4, "numband, idx: %d, %d", numband, idx);
+
+					/* bandarg set. only possible after the first call to function */
+					if (iwr->bandarg) {
+						/* only reallocate if new bands need to be added */
+						if (numband > idx) {
+							POSTGIS_RT_DEBUG(4, "Reallocating iwr->bandarg");
+							iwr->bandarg = repalloc(iwr->bandarg, sizeof(struct rtpg_union_band_arg_t) * iwr->numband);
+						}
+						/* prevent initial values step happening below */
+						else
+							idx = iwr->numband;
+					}
+					/* bandarg not set, first call to function */
+					else {
+						POSTGIS_RT_DEBUG(4, "Allocating iwr->bandarg");
+						iwr->bandarg = palloc(sizeof(struct rtpg_union_band_arg_t) * iwr->numband);
+					}
 					if (iwr->bandarg == NULL) {
 						elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for band information");
 
@@ -16387,22 +16421,30 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 						PG_RETURN_NULL();
 					}
 
-					iwr->bandarg[0].uniontype = utype;
-					iwr->bandarg[0].nband = 0;
+					/* set initial values for bands that are "new" */
+					for (i = idx; i < iwr->numband; i++) {
+						iwr->bandarg[i].uniontype = utype;
+						iwr->bandarg[i].nband = i;
 
-					if (
-						iwr->bandarg[0].uniontype == UT_MEAN ||
-						iwr->bandarg[0].uniontype == UT_RANGE
-					) {
-						iwr->bandarg[0].numraster = 2;
+						if (
+							utype == UT_MEAN ||
+							utype == UT_RANGE
+						) {
+							iwr->bandarg[i].numraster = 2;
+						}
+						else
+							iwr->bandarg[i].numraster = 1;
+						iwr->bandarg[i].raster = NULL;
 					}
-					else
-						iwr->bandarg[0].numraster = 1;
-					iwr->bandarg[0].raster = NULL;
+
 					break;
+				}
 				/* band number */
 				case INT2OID:
 				case INT4OID:
+					if (skiparg)
+						break;
+
 					POSTGIS_RT_DEBUG(4, "Processing arg 3 as band number");
 					nband = PG_GETARG_INT32(2);
 					if (nband < 1) {
@@ -16441,6 +16483,9 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					break;
 				/* only other type allowed is unionarg */
 				default: 
+					if (skiparg)
+						break;
+
 					POSTGIS_RT_DEBUG(4, "Processing arg 3 as unionarg");
 					if (!rtpg_union_unionarg_process(iwr, PG_GETARG_ARRAYTYPE_P(2))) {
 						elog(ERROR, "RASTER_union_transfn: Unable to process unionarg");
@@ -16464,6 +16509,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			utypename = text_to_cstring(PG_GETARG_TEXT_P(3));
 			utype = rtpg_uniontype_index_from_name(rtpg_strtoupper(utypename));
 			iwr->bandarg[0].uniontype = utype;
+			POSTGIS_RT_DEBUGF(4, "Union type: %s", utypename);
 
 			if (
 				utype == UT_MEAN ||
@@ -16475,6 +16521,14 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 
 		/* allocate space for pointers to rt_raster */
 		for (i = 0; i < iwr->numband; i++) {
+			POSTGIS_RT_DEBUGF(4, "iwr->bandarg[%d].raster @ %p", i, iwr->bandarg[i].raster);
+
+			/* no need to allocate */
+			if (iwr->bandarg[i].raster != NULL)
+				continue;
+
+			POSTGIS_RT_DEBUGF(4, "Allocating space for working rasters of band %d", i);
+
 			iwr->bandarg[i].raster = (rt_raster *) palloc(sizeof(rt_raster) * iwr->bandarg[i].numraster);
 			if (iwr->bandarg[i].raster == NULL) {
 				elog(ERROR, "RASTER_union_transfn: Unable to allocate memory for working raster(s)");
@@ -16490,12 +16544,32 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			}
 
 			memset(iwr->bandarg[i].raster, 0, sizeof(rt_raster) * iwr->bandarg[i].numraster);
+
+			/* add new working rt_raster but only if working raster already exists */
+			if (i > 0 && !rt_raster_is_empty(iwr->bandarg[0].raster[0])) {
+				for (j = 0; j < iwr->bandarg[i].numraster; j++) {
+					iwr->bandarg[i].raster[j] = rt_raster_clone(iwr->bandarg[0].raster[0], 0); /* shallow clone */
+					if (iwr->bandarg[i].raster[j] == NULL) {
+						elog(ERROR, "RASTER_union_transfn: Unable to create working raster");
+
+						rtpg_union_arg_destroy(iwr);
+						if (raster != NULL) {
+							rt_raster_destroy(raster);
+							PG_FREE_IF_COPY(pgraster, 1);
+						}
+
+						MemoryContextSwitchTo(oldcontext);
+						PG_RETURN_NULL();
+					}
+				}
+			}
 		}
 	}
 	/* only raster, no additional args */
 	/* only do this if raster isn't empty */
-	else if (nargs < 3) {
+	else {
 		POSTGIS_RT_DEBUG(4, "no additional args, checking input raster");
+		nbnodata = 1;
 		if (!rtpg_union_noarg(iwr, raster)) {
 			elog(ERROR, "RASTER_union_transfn: Unable to check and balance number of bands");
 
@@ -16597,12 +16671,12 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 			itrset[1].raster = raster;
 			itrset[1].nband = iwr->bandarg[i].nband;
 
-			/* no additional arguments in aggregate, allow use NODATA to replace missing bands */
-			if (nargs < 3) {
+			/* allow use NODATA to replace missing bands */
+			if (nbnodata) {
 				itrset[0].nbnodata = 1;
 				itrset[1].nbnodata = 1;
 			}
-			/* additional arguments in aggregate, missing bands are not ignored */
+			/* missing bands are not ignored */
 			else {
 				itrset[0].nbnodata = 0;
 				itrset[1].nbnodata = 0;
