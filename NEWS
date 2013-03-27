@@ -159,6 +159,8 @@ PostGIS 2.1.0
            are handled when passing to GDAL Warp API
   - #2215, Fixed raster exclusion constraint for conflicting name of
            implicit index
+  - #2251, Fix bad dimensions when rescaling rasters with default
+           geotransform matrix
 
 PostGIS 2.0.3
 2013/MM/DD

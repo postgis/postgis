@@ -850,4 +850,13 @@ SELECT -- ticket #2188
 ), bar AS (
 	SELECT rid, ST_Metadata(rast) AS meta, ST_SummaryStats(rast) AS stats FROM foo
 )
-SELECT rid, (meta).*, (stats).* FROM bar
+SELECT rid, (meta).*, (stats).* FROM bar;
+
+-- edge case
+WITH foo AS (
+	SELECT ST_AddBand(ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 1, 0) AS rast
+)
+SELECT
+	ST_Metadata(ST_Rescale(rast, 2, 2)) AS rescale,
+	ST_Metadata(ST_Resize(rast, 0.5, 0.5)) AS resize
+FROM foo;

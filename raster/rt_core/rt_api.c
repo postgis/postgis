@@ -2299,7 +2299,6 @@ rt_errorstate rt_band_get_pixel_line(
 	void **vals, uint16_t *nvals
 ) {
 	uint8_t *_vals = NULL;
-	rt_pixtype pixtype = PT_END;
 	int pixsize = 0;
 	uint8_t *data = NULL;
 	uint32_t offset = 0; 
@@ -2334,7 +2333,6 @@ rt_errorstate rt_band_get_pixel_line(
 	offset = x + (y * band->width);
 	RASTER_DEBUGF(4, "offset = %d", offset);
 
-	pixtype = band->pixtype;
 	pixsize = rt_pixtype_size(band->pixtype);
 	RASTER_DEBUGF(4, "pixsize = %d", pixsize);
 
@@ -3414,7 +3412,6 @@ rt_band_get_histogram(
 	double tmp;
 	double value;
 	int sum = 0;
-	int user_minmax = 0;
 	double qmin;
 	double qmax;
 
@@ -3452,7 +3449,6 @@ rt_band_get_histogram(
 		qmax = stats->max;
 	}
 	else {
-		user_minmax = 1;
 		qmin = min;
 		qmax = max;
 		if (qmin > qmax) {
@@ -9595,6 +9591,9 @@ rt_raster rt_raster_gdal_warp(
 			FLT_EQ(gt[5], -1)
 		) {
 			double ngt[6] = {0, 10, 0, 0, 0, -10};
+
+			rtinfo("Raster has default geotransform. Adjusting metadata for use of GDAL Warp API");
+
 			GDALSetGeoTransform(arg->src.ds, ngt);
 			GDALFlushCache(arg->src.ds);
 
@@ -9742,6 +9741,12 @@ rt_raster rt_raster_gdal_warp(
 	) {
 		_scale[0] = fabs(*scale_x);
 		_scale[1] = fabs(*scale_y);
+
+		/* special override */
+		if (subgt) {
+			_scale[0] *= 10;
+			_scale[1] *= 10;
+		}
 	}
 	else if (
 		((NULL != scale_x) && (NULL == scale_y)) ||
@@ -10275,6 +10280,7 @@ rt_raster rt_raster_gdal_warp(
 	/* substitute geotransform matrix, reset back to default */
 	if (subgt) {
 		double gt[6] = {0, 1, 0, 0, 0, -1};
+
 		rt_raster_set_geotransform_matrix(rast, gt);
 	}
 
