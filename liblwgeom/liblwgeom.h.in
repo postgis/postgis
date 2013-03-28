@@ -919,9 +919,11 @@ extern int lwcurvepoly_add_ring(LWCURVEPOLY *poly, LWGEOM *ring);
 */
 extern int lwcompound_add_lwgeom(LWCOMPOUND *comp, LWGEOM *geom);
 
-
-
-
+/**
+* Construct an equivalent curve polygon from a polygon. Curve polygons
+* can have linear rings as their rings, so this works fine (in theory?)
+*/
+extern LWCURVEPOLY* lwcurvepoly_construct_from_lwpoly(LWPOLY *lwpoly);
 
 
 /******************************************************************

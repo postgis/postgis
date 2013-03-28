@@ -696,6 +696,12 @@ ptarray_is_closed_z(const POINTARRAY *in)
 int 
 ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 {
+	return ptarray_contains_point_partial(pa, pt, LW_TRUE, NULL);
+}
+
+int 
+ptarray_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number)
+{
 	int wn = 0;
 	int i;
 	double side;
@@ -705,7 +711,7 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 
 	seg1 = getPoint2d_cp(pa, 0);
 	seg2 = getPoint2d_cp(pa, pa->npoints-1);
-	if ( ! p2d_same(seg1, seg2) )
+	if ( check_closed && ! p2d_same(seg1, seg2) )
 		lwerror("ptarray_contains_point called on unclosed ring");
 	
 	for ( i=1; i < pa->npoints; i++ )
@@ -763,6 +769,10 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 		seg1 = seg2;
 	}
 
+	/* Sent out the winding number for calls that are building on this as a primitive */
+	if ( winding_number )
+		*winding_number = wn;
+
 	/* Outside */
 	if (wn == 0)
 	{
@@ -781,8 +791,15 @@ ptarray_contains_point(const POINTARRAY *pa, const POINT2D *pt)
 * Return 1 if the point is inside the POINTARRAY, -1 if it is outside,
 * and 0 if it is on the boundary.
 */
+
 int 
-ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
+ptarrayarc_contains_point(const POINTARRAY *pa, const POINT2D *pt)
+{
+	return ptarrayarc_contains_point_partial(pa, pt, LW_TRUE /* Check closed*/, NULL);
+}
+
+int 
+ptarrayarc_contains_point_partial(const POINTARRAY *pa, const POINT2D *pt, int check_closed, int *winding_number)
 {
 	int wn = 0;
 	int i, side;
@@ -794,27 +811,27 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 	/* Check for not an arc ring (always have odd # of points) */
 	if ( (pa->npoints % 2) == 0 )
 	{
-		lwerror("ptarray_contains_point_arc called with even number of points");
+		lwerror("ptarrayarc_contains_point called with even number of points");
 		return LW_OUTSIDE;
 	}
 
 	/* Check for not an arc ring (always have >= 3 points) */
 	if ( pa->npoints < 3 )
 	{
-		lwerror("ptarray_contains_point_arc called too-short pointarray");
+		lwerror("ptarrayarc_contains_point called too-short pointarray");
 		return LW_OUTSIDE;
 	}
 
 	/* Check for unclosed case */
 	seg1 = getPoint2d_cp(pa, 0);
 	seg3 = getPoint2d_cp(pa, pa->npoints-1);
-	if ( ! p2d_same(seg1, seg3) )
+	if ( check_closed && ! p2d_same(seg1, seg3) )
 	{
-		lwerror("ptarray_contains_point_arc called on unclosed ring");
+		lwerror("ptarrayarc_contains_point called on unclosed ring");
 		return LW_OUTSIDE;
 	} 
 	/* OK, it's closed. Is it just one circle? */
-	else if ( pa->npoints == 3 )
+	else if ( p2d_same(seg1, seg3) && pa->npoints == 3 )
 	{
 		double radius, d;
 		POINT2D c;
@@ -822,21 +839,21 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 		
 		/* Wait, it's just a point, so it can't contain anything */
 		if ( lw_arc_is_pt(seg1, seg2, seg3) )
-			return -1;
+			return LW_OUTSIDE;
 			
 		/* See if the point is within the circle radius */
 		radius = lw_arc_center(seg1, seg2, seg3, &c);
 		d = distance2d_pt_pt(pt, &c);
 		if ( FP_EQUALS(d, radius) )
-			return 0; /* Boundary of circle */
+			return LW_BOUNDARY; /* Boundary of circle */
 		else if ( d < radius ) 
-			return 1; /* Inside circle */
+			return LW_INSIDE; /* Inside circle */
 		else 
 			return LW_OUTSIDE; /* Outside circle */
 	} 
-	else if ( p2d_same(seg1, pt) )
+	else if ( p2d_same(seg1, pt) || p2d_same(seg3, pt) )
 	{
-		return 0; /* Boundary case */
+		return LW_BOUNDARY; /* Boundary case */
 	}
 
 	/* Start on the ring */
@@ -848,7 +865,7 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 		
 		/* Catch an easy boundary case */
 		if( p2d_same(seg3, pt) )
-			return 0;
+			return LW_BOUNDARY;
 		
 		/* Skip arcs that have no size */
 		if ( lw_arc_is_pt(seg1, seg2, seg3) )
@@ -864,13 +881,21 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 			seg1 = seg3;
 			continue;
 		}
+
+		/* Outside of horizontal range, and not between end points we also skip */
+		if ( (pt->x > gbox.xmax || pt->x < gbox.xmin) && 
+			 (pt->y > FP_MAX(seg1->y, seg3->y) || pt->y < FP_MIN(seg1->y, seg3->y)) ) 
+		{
+			seg1 = seg3;
+			continue;
+		}		
 		
 		side = lw_arc_side(seg1, seg2, seg3, pt);
 		
 		/* On the boundary */
 		if ( (side == 0) && lw_pt_in_arc(pt, seg1, seg2, seg3) )
 		{
-			return 0;
+			return LW_BOUNDARY;
 		}
 		
 		/* Going "up"! Point to left of arc. */
@@ -894,7 +919,7 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 
 			/* On the boundary! */
 			if ( d == radius )
-				return 0;
+				return LW_BOUNDARY;
 			
 			/* Within the arc! */
 			if ( d  < radius )
@@ -911,14 +936,18 @@ ptarray_contains_point_arc(const POINTARRAY *pa, const POINT2D *pt)
 		seg1 = seg3;
 	}
 
+	/* Sent out the winding number for calls that are building on this as a primitive */
+	if ( winding_number )
+		*winding_number = wn;
+
 	/* Outside */
 	if (wn == 0)
 	{
-		return -1;
+		return LW_OUTSIDE;
 	}
 	
 	/* Inside */
-	return 1;
+	return LW_INSIDE;
 }
 
 /**
