@@ -209,7 +209,7 @@ stringbuffer_avprintf(stringbuffer_t *s, const char *fmt, va_list ap)
 
 	/* Propogate errors up */
 	if ( len < 0 ) 
-		#if defined(__MINGW64__)
+		#if defined(__MINGW64_VERSION_MAJOR)
 		len = _vscprintf(fmt, ap2);/**Assume windows flaky vsnprintf that returns -1 if initial buffer to small and add more space **/
 		#else
 		return len;
