@@ -43,7 +43,7 @@
         	<para>Instructions for installing and running under windows are available at <ulink url="http://gis4free.wordpress.com/2011/03/10/how-to-install-and-configure-postgis-raster-on-windows/">How to Install and Configure PostGIS raster on windows</ulink></para>
         <para>
 			If you are on windows, you can compile yourself, or use the <ulink
-            url="http://www.postgis.org/download/windows/experimental.php#wktraster">pre-compiled
+            url="http://postgis.net/windows_downloads">pre-compiled
             PostGIS Raster windows binaries</ulink>.
 			If you are on Mac OSX Leopard or Snow Leopard, there are binaries available at <ulink url="http://www.kyngchaos.com/software/postgres">Kyng Chaos Mac OSX PostgreSQL/GIS binaries</ulink>.
 		</para>
