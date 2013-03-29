@@ -378,6 +378,7 @@ Datum RASTER_mapAlgebra2(PG_FUNCTION_ARGS);
 
 /* n-raster MapAlgebra */
 Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS);
+Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS);
 
 /* raster union aggregate */
 Datum RASTER_union_transfn(PG_FUNCTION_ARGS);
@@ -15180,7 +15181,7 @@ struct rtpg_nmapalgebra_arg_t {
 
 	int distance[2]; /* distance in X and Y axis */
 
-	rt_extenttype extenttype; /* oupt raster's extent type */
+	rt_extenttype extenttype; /* ouput raster's extent type */
 	rt_pgraster *pgcextent; /* custom extent of type rt_pgraster */
 	rt_raster cextent; /* custom extent of type rt_raster */
 
@@ -15792,6 +15793,8 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 			if (arg->hasband[i])
 				break;
 		}
+		if (i >= arg->numraster)
+			i = arg->numraster - 1;
 	}
 	band = rt_raster_get_band(arg->raster[i], arg->nband[i]);
 
@@ -15850,6 +15853,721 @@ Datum RASTER_nMapAlgebra(PG_FUNCTION_ARGS)
 	rt_raster_destroy(raster);
 
 	POSTGIS_RT_DEBUG(3, "Finished");
+
+	if (!pgraster)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgraster, pgraster->size);
+	PG_RETURN_POINTER(pgraster);
+}
+
+/* ---------------------------------------------------------------- */
+/* expression ST_MapAlgebra for n rasters                           */
+/* ---------------------------------------------------------------- */
+
+typedef struct {
+	int exprcount;
+
+	struct {
+		SPIPlanPtr spi_plan;
+		uint32_t spi_argcount;
+		uint8_t *spi_argpos;
+
+		int hasval;
+		double val;
+	} expr[3];
+
+	struct {
+		int hasval;
+		double val;
+	} nodatanodata;
+
+	struct {
+		int count;
+		char **val;
+	} kw;
+
+} rtpg_nmapalgebraexpr_callback_arg;
+
+typedef struct rtpg_nmapalgebraexpr_arg_t *rtpg_nmapalgebraexpr_arg;
+struct rtpg_nmapalgebraexpr_arg_t {
+	rtpg_nmapalgebra_arg bandarg;
+
+	rtpg_nmapalgebraexpr_callback_arg	callback;
+};
+
+static rtpg_nmapalgebraexpr_arg rtpg_nmapalgebraexpr_arg_init(int cnt, char **kw) {
+	rtpg_nmapalgebraexpr_arg arg = NULL;
+	int i = 0;
+
+	arg = palloc(sizeof(struct rtpg_nmapalgebraexpr_arg_t));
+	if (arg == NULL) {
+		elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for arguments");
+		return NULL;
+	}
+
+	arg->bandarg = rtpg_nmapalgebra_arg_init();
+	if (arg->bandarg == NULL) {
+		elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for arg->bandarg");
+		return NULL;
+	}
+
+	arg->callback.kw.count = cnt;
+	arg->callback.kw.val = kw;
+
+	arg->callback.exprcount = 3;
+	for (i = 0; i < arg->callback.exprcount; i++) {
+		arg->callback.expr[i].spi_plan = NULL;
+		arg->callback.expr[i].spi_argcount = 0;
+		arg->callback.expr[i].spi_argpos = palloc(cnt * sizeof(uint8_t));
+		if (arg->callback.expr[i].spi_argpos == NULL) {
+			elog(ERROR, "rtpg_nmapalgebraexpr_arg_init: Unable to allocate memory for spi_argpos");
+			return NULL;
+		}
+		memset(arg->callback.expr[i].spi_argpos, 0, sizeof(uint8_t) * cnt);
+		arg->callback.expr[i].hasval = 0;
+		arg->callback.expr[i].val = 0;
+	}
+
+	arg->callback.nodatanodata.hasval = 0;
+	arg->callback.nodatanodata.val = 0;
+
+	return arg;
+}
+
+static void rtpg_nmapalgebraexpr_arg_destroy(rtpg_nmapalgebraexpr_arg arg) {
+	int i = 0;
+
+	rtpg_nmapalgebra_arg_destroy(arg->bandarg);
+
+	for (i = 0; i < arg->callback.exprcount; i++) {
+		if (arg->callback.expr[i].spi_plan)
+			SPI_freeplan(arg->callback.expr[i].spi_plan);
+		if (arg->callback.kw.count)
+			pfree(arg->callback.expr[i].spi_argpos);
+	}
+
+	pfree(arg);
+}
+
+static int rtpg_nmapalgebraexpr_callback(
+	rt_iterator_arg arg, void *userarg,
+	double *value, int *nodata
+) {
+	rtpg_nmapalgebraexpr_callback_arg *callback = (rtpg_nmapalgebraexpr_callback_arg *) userarg;
+	SPIPlanPtr plan = NULL;
+	int i = 0;
+	int id = -1;
+
+	if (arg == NULL)
+		return 0;
+
+	*value = 0;
+	*nodata = 0;
+
+	/* 2 raster */
+	if (arg->rasters > 1) {
+		/* nodata1 = 1 AND nodata2 = 1, nodatanodataval */
+		if (arg->nodata[0][0][0] && arg->nodata[1][0][0]) {
+			if (callback->nodatanodata.hasval)
+				*value = callback->nodatanodata.val;
+			else
+				*nodata = 1;
+		}
+		/* nodata1 = 1 AND nodata2 != 1, nodata1expr */
+		else if (arg->nodata[0][0][0] && !arg->nodata[1][0][0]) {
+			id = 1;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else
+				*nodata = 1;
+		}
+		/* nodata1 != 1 AND nodata2 = 1, nodata2expr */
+		else if (!arg->nodata[0][0][0] && arg->nodata[1][0][0]) {
+			id = 2;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else
+				*nodata = 1;
+		}
+		/* expression */
+		else {
+			id = 0;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else {
+				if (callback->nodatanodata.hasval)
+					*value = callback->nodatanodata.val;
+				else
+					*nodata = 1;
+			}
+		}
+	}
+	/* 1 raster */
+	else {
+		/* nodata = 1, nodata1expr */
+		if (arg->nodata[0][0][0]) {
+			id = 1;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else
+				*nodata = 1;
+		}
+		/* expression */
+		else {
+			id = 0;
+			if (callback->expr[id].hasval)
+				*value = callback->expr[id].val;
+			else if (callback->expr[id].spi_plan)
+				plan = callback->expr[id].spi_plan;
+			else {
+				/* see if nodata1expr is available */
+				id = 1;
+				if (callback->expr[id].hasval)
+					*value = callback->expr[id].val;
+				else if (callback->expr[id].spi_plan)
+					plan = callback->expr[id].spi_plan;
+				else
+					*nodata = 1;
+			}
+		}
+	}
+
+	/* run prepared plan */
+	if (plan != NULL) {
+		Datum values[12];
+		bool nulls[12];
+		int err = 0;
+
+		TupleDesc tupdesc;
+		SPITupleTable *tuptable = NULL;
+		HeapTuple tuple;
+		Datum datum;
+		double v = 0;
+		bool isnull = FALSE;
+
+		POSTGIS_RT_DEBUGF(4, "Running plan %d", id);
+
+		/* init values and nulls */
+		memset(values, (Datum) NULL, sizeof(Datum) * callback->kw.count);
+		memset(nulls, FALSE, sizeof(bool) * callback->kw.count);
+
+		if (callback->expr[id].spi_argcount) {
+			int idx = 0;
+
+			for (i = 0; i < callback->kw.count; i++) {
+				idx = callback->expr[id].spi_argpos[i];
+				if (idx < 1) continue;
+				idx--; /* 1-based now 0-based */
+
+				switch (i) {
+					/* [rast.x] */
+					case 0:
+						values[idx] = Int32GetDatum(arg->src_pixel[0][0] + 1);
+						v = arg->src_pixel[0][0] + 1;
+						break;
+					/* [rast.y] */
+					case 1:
+						values[idx] = Int32GetDatum(arg->src_pixel[0][1] + 1);
+						v = arg->src_pixel[0][1] + 1;
+						v = values[idx];
+						break;
+					/* [rast.val] */
+					case 2:
+					/* [rast] */
+					case 3:
+						if (!arg->nodata[0][0][0]) {
+							values[idx] = Float8GetDatum(arg->values[0][0][0]);
+							v = arg->values[0][0][0];
+						}
+						else
+							nulls[idx] = TRUE;
+						break;
+
+					/* [rast1.x] */
+					case 4:
+						values[idx] = Int32GetDatum(arg->src_pixel[0][0] + 1);
+						v = arg->src_pixel[0][0] + 1;
+						break;
+					/* [rast1.y] */
+					case 5:
+						values[idx] = Int32GetDatum(arg->src_pixel[0][1] + 1);
+						v = arg->src_pixel[0][1] + 1;
+						break;
+					/* [rast1.val] */
+					case 6:
+					/* [rast1] */
+					case 7:
+						if (!arg->nodata[0][0][0]) {
+							values[idx] = Float8GetDatum(arg->values[0][0][0]);
+							v = arg->values[0][0][0];
+						}
+						else
+							nulls[idx] = TRUE;
+						break;
+
+					/* [rast2.x] */
+					case 8:
+						values[idx] = Int32GetDatum(arg->src_pixel[1][0] + 1);
+						v = arg->src_pixel[1][0] + 1;
+						break;
+					/* [rast2.y] */
+					case 9:
+						values[idx] = Int32GetDatum(arg->src_pixel[1][1] + 1);
+						v = arg->src_pixel[1][1] + 1;
+						break;
+					/* [rast2.val] */
+					case 10:
+					/* [rast2] */
+					case 11:
+						if (!arg->nodata[1][0][0]){
+							values[idx] = Float8GetDatum(arg->values[1][0][0]);
+							v = arg->values[1][0][0];
+						}
+						else
+							nulls[idx] = TRUE;
+						break;
+				}
+
+				POSTGIS_RT_DEBUGF(4, "(i, idx, value, null) = (%d, %d, %f, %d)",
+					i,
+					idx,
+					v,
+					nulls[idx] != TRUE ? 0 : 1
+				);
+
+			}
+		}
+
+		/* run prepared plan */
+		err = SPI_execute_plan(plan, values, nulls, TRUE, 1);
+		if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+			elog(ERROR, "rtpg_nmapalgebraexpr_callback: Unexpected error when running prepared statement %d", id);
+			return 0;
+		}
+
+		/* get output of prepared plan */
+		tupdesc = SPI_tuptable->tupdesc;
+		tuptable = SPI_tuptable;
+		tuple = tuptable->vals[0];
+
+		datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+		if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
+			elog(ERROR, "rtpg_nmapalgebraexpr_callback: Unable to get result of prepared statement %d", id);
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+			return 0;
+		}
+
+		if (!isnull) {
+			*value = DatumGetFloat8(datum);
+			POSTGIS_RT_DEBUG(4, "Getting value from Datum");
+		}
+		else {
+			/* 2 raster, check nodatanodataval */
+			if (arg->rasters > 1) {
+				if (callback->nodatanodata.hasval)
+					*value = callback->nodatanodata.val;
+				else
+					*nodata = 1;
+			}
+			/* 1 raster, check nodataval */
+			else {
+				if (callback->expr[1].hasval)
+					*value = callback->expr[1].val;
+				else
+					*nodata = 1;
+			}
+		}
+
+		if (SPI_tuptable) SPI_freetuptable(tuptable);
+	}
+
+	POSTGIS_RT_DEBUGF(4, "(value, nodata) = (%f, %d)", *value, *nodata);
+	return 1;
+}
+
+PG_FUNCTION_INFO_V1(RASTER_nMapAlgebraExpr);
+Datum RASTER_nMapAlgebraExpr(PG_FUNCTION_ARGS)
+{
+	MemoryContext mainMemCtx = CurrentMemoryContext;
+	rtpg_nmapalgebraexpr_arg arg = NULL;
+	rt_iterator itrset;
+	uint16_t exprpos[3] = {1, 4, 5};
+
+	int i = 0;
+	int j = 0;
+	int k = 0;
+
+	int numraster = 0;
+	int err = 0;
+	int allnull = 0;
+	int allempty = 0;
+	int noband = 0;
+	int len = 0;
+
+	TupleDesc tupdesc;
+	SPITupleTable *tuptable = NULL;
+	HeapTuple tuple;
+	Datum datum;
+	bool isnull = FALSE;
+
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	rt_pgraster *pgraster = NULL;
+
+	const int argkwcount = 12;
+	char *argkw[] = {
+		"[rast.x]",
+		"[rast.y]",
+		"[rast.val]",
+		"[rast]",
+		"[rast1.x]",
+		"[rast1.y]",
+		"[rast1.val]",
+		"[rast1]",
+		"[rast2.x]",
+		"[rast2.y]",
+		"[rast2.val]",
+		"[rast2]"
+	};
+
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	/* init argument struct */
+	arg = rtpg_nmapalgebraexpr_arg_init(argkwcount, argkw);
+	if (arg == NULL) {
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to initialize argument structure");
+		PG_RETURN_NULL();
+	}
+
+	/* let helper function process rastbandarg (0) */
+	if (!rtpg_nmapalgebra_rastbandarg_process(arg->bandarg, PG_GETARG_ARRAYTYPE_P(0), &allnull, &allempty, &noband)) {
+		elog(ERROR, "RASTER_nMapAlgebra: Unable to process rastbandarg");
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+		PG_RETURN_NULL();
+	}
+
+	POSTGIS_RT_DEBUGF(4, "allnull, allempty, noband = %d, %d, %d", allnull, allempty, noband);
+
+	/* all rasters are NULL, return NULL */
+	if (allnull == arg->bandarg->numraster) {
+		elog(NOTICE, "All input rasters are NULL. Returning NULL");
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+		PG_RETURN_NULL();
+	}
+
+	/* only work on one or two rasters */
+	if (arg->bandarg->numraster > 1)
+		numraster = 2;
+	else
+		numraster = 1;
+
+	/* pixel type (2) */
+	if (!PG_ARGISNULL(2)) {
+		char *pixtypename = text_to_cstring(PG_GETARG_TEXT_P(2));
+
+		/* Get the pixel type index */
+		arg->bandarg->pixtype = rt_pixtype_index_from_name(pixtypename);
+		if (arg->bandarg->pixtype == PT_END) {
+			elog(ERROR, "RASTER_nMapAlgebraExpr: Invalid pixel type: %s", pixtypename);
+			rtpg_nmapalgebraexpr_arg_destroy(arg);
+			PG_RETURN_NULL();
+		}
+	}
+	POSTGIS_RT_DEBUGF(4, "pixeltype: %d", arg->bandarg->pixtype);
+
+	/* extent type (3) */
+	if (!PG_ARGISNULL(3)) {
+		char *extenttypename = rtpg_strtoupper(rtpg_trim(text_to_cstring(PG_GETARG_TEXT_P(3))));
+		arg->bandarg->extenttype = rt_util_extent_type(extenttypename);
+	}
+
+	if (arg->bandarg->extenttype == ET_CUSTOM) {
+		if (numraster < 2) {
+			elog(NOTICE, "CUSTOM extent type not supported. Defaulting to FIRST");
+			arg->bandarg->extenttype = ET_FIRST;
+		}
+		else {
+			elog(NOTICE, "CUSTOM extent type not supported. Defaulting to INTERSECTION");
+			arg->bandarg->extenttype = ET_INTERSECTION;
+		}
+	}
+	else if (numraster < 2)
+		arg->bandarg->extenttype = ET_FIRST;
+
+	POSTGIS_RT_DEBUGF(4, "extenttype: %d", arg->bandarg->extenttype);
+
+	/* nodatanodataval (6) */
+	if (!PG_ARGISNULL(6)) {
+		arg->callback.nodatanodata.hasval = 1;
+		arg->callback.nodatanodata.val = PG_GETARG_FLOAT8(6);
+	}
+
+	err = 0;
+	/* all rasters are empty, return empty raster */
+	if (allempty == arg->bandarg->numraster) {
+		elog(NOTICE, "All input rasters are empty. Returning empty raster");
+		err = 1;
+	}
+	/* all rasters don't have indicated band, return empty raster */
+	else if (noband == arg->bandarg->numraster) {
+		elog(NOTICE, "All input rasters do not have bands at indicated indexes. Returning empty raster");
+		err = 1;
+	}
+	if (err) {
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+
+		raster = rt_raster_new(0, 0);
+		if (raster == NULL) {
+			elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to create empty raster");
+			PG_RETURN_NULL();
+		}
+
+		pgraster = rt_raster_serialize(raster);
+		rt_raster_destroy(raster);
+		if (!pgraster) PG_RETURN_NULL();
+
+		SET_VARSIZE(pgraster, pgraster->size);
+		PG_RETURN_POINTER(pgraster);
+	}
+
+	/* connect SPI */
+	if (SPI_connect() != SPI_OK_CONNECT) {
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to connect to the SPI manager");
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+		PG_RETURN_NULL();
+	}
+
+	/*
+		process expressions
+
+		exprpos elements are:
+			1 - expression => spi_plan[0]
+			4 - nodata1expr => spi_plan[1]
+			5 - nodata2expr => spi_plan[2]
+	*/
+	for (i = 0; i < arg->callback.exprcount; i++) {
+		char *expr = NULL;
+		char *tmp = NULL;
+		char *sql = NULL;
+		char place[5] = "$1";
+
+		if (PG_ARGISNULL(exprpos[i]))
+			continue;
+
+		expr = text_to_cstring(PG_GETARG_TEXT_P(exprpos[i]));
+		POSTGIS_RT_DEBUGF(3, "raw expr of argument #%d: %s", exprpos[i], expr);
+
+		for (j = 0, k = 1; j < argkwcount; j++) {
+			/* attempt to replace keyword with placeholder */
+			len = 0;
+			tmp = rtpg_strreplace(expr, argkw[j], place, &len);
+			pfree(expr);
+			expr = tmp;
+
+			if (len) {
+				POSTGIS_RT_DEBUGF(4, "kw #%d (%s) at pos $%d", j, argkw[j], k);
+				arg->callback.expr[i].spi_argcount++;
+				arg->callback.expr[i].spi_argpos[j] = k++;
+
+				sprintf(place, "$%d", k);
+			}
+			else
+				arg->callback.expr[i].spi_argpos[j] = 0;
+		}
+
+		len = strlen("SELECT (") + strlen(expr) + strlen(")::double precision");
+		sql = (char *) palloc(len + 1);
+		if (sql == NULL) {
+			elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to allocate memory for expression parameter %d", exprpos[i]);
+			rtpg_nmapalgebraexpr_arg_destroy(arg);
+			SPI_finish();
+			PG_RETURN_NULL();
+		}
+
+		strncpy(sql, "SELECT (", strlen("SELECT ("));
+		strncpy(sql + strlen("SELECT ("), expr, strlen(expr));
+		strncpy(sql + strlen("SELECT (") + strlen(expr), ")::double precision", strlen(")::double precision"));
+		sql[len] = '\0';
+
+		POSTGIS_RT_DEBUGF(3, "sql #%d: %s", exprpos[i], sql);
+
+		/* prepared plan */
+		if (arg->callback.expr[i].spi_argcount) {
+			Oid *argtype = (Oid *) palloc(arg->callback.expr[i].spi_argcount * sizeof(Oid));
+			POSTGIS_RT_DEBUGF(3, "expression parameter %d is a prepared plan", exprpos[i]);
+			if (argtype == NULL) {
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to allocate memory for prepared plan argtypes of expression parameter %d", exprpos[i]);
+				pfree(sql);
+				rtpg_nmapalgebraexpr_arg_destroy(arg);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+
+			/* specify datatypes of parameters */
+			for (j = 0, k = 0; j < argkwcount; j++) {
+				if (arg->callback.expr[i].spi_argpos[j] < 1) continue;
+
+				/* positions are INT4 */
+				if (
+					(strstr(argkw[j], "[rast.x]") != NULL) ||
+					(strstr(argkw[j], "[rast.y]") != NULL) ||
+					(strstr(argkw[j], "[rast1.x]") != NULL) ||
+					(strstr(argkw[j], "[rast1.y]") != NULL) ||
+					(strstr(argkw[j], "[rast2.x]") != NULL) ||
+					(strstr(argkw[j], "[rast2.y]") != NULL)
+				)
+					argtype[k] = INT4OID;
+				/* everything else is FLOAT8 */
+				else
+					argtype[k] = FLOAT8OID;
+
+				k++;
+			}
+
+			arg->callback.expr[i].spi_plan = SPI_prepare(sql, arg->callback.expr[i].spi_argcount, argtype);
+			pfree(argtype);
+			pfree(sql);
+
+			if (arg->callback.expr[i].spi_plan == NULL) {
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to create prepared plan of expression parameter %d", exprpos[i]);
+				rtpg_nmapalgebraexpr_arg_destroy(arg);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+		}
+		/* no args, just execute query */
+		else {
+			POSTGIS_RT_DEBUGF(3, "expression parameter %d has no args, simply executing", exprpos[i]);
+			err = SPI_execute(sql, TRUE, 0);
+			pfree(sql);
+
+			if (err != SPI_OK_SELECT || SPI_tuptable == NULL || SPI_processed != 1) {
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to evaluate expression parameter %d", exprpos[i]);
+				rtpg_nmapalgebraexpr_arg_destroy(arg);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+
+			/* get output of prepared plan */
+			tupdesc = SPI_tuptable->tupdesc;
+			tuptable = SPI_tuptable;
+			tuple = tuptable->vals[0];
+
+			datum = SPI_getbinval(tuple, tupdesc, 1, &isnull);
+			if (SPI_result == SPI_ERROR_NOATTRIBUTE) {
+				elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to get result of expression parameter %d", exprpos[i]);
+				if (SPI_tuptable) SPI_freetuptable(tuptable);
+				rtpg_nmapalgebraexpr_arg_destroy(arg);
+				SPI_finish();
+				PG_RETURN_NULL();
+			}
+
+			if (!isnull) {
+				arg->callback.expr[i].hasval = 1;
+				arg->callback.expr[i].val = DatumGetFloat8(datum);
+			} 
+
+			if (SPI_tuptable) SPI_freetuptable(tuptable);
+		}
+	}
+
+	/* determine nodataval and possibly pixtype */
+	/* band to check */
+	switch (arg->bandarg->extenttype) {
+		case ET_LAST:
+		case ET_SECOND:
+			if (numraster > 1)
+				i = 1;
+			else
+				i = 0;
+			break;
+		default:
+			i = 0;
+			break;
+	}
+	/* find first viable band */
+	if (!arg->bandarg->hasband[i]) {
+		for (i = 0; i < numraster; i++) {
+			if (arg->bandarg->hasband[i])
+				break;
+		}
+		if (i >= numraster)
+			i = numraster - 1;
+	}
+	band = rt_raster_get_band(arg->bandarg->raster[i], arg->bandarg->nband[i]);
+
+	/* set pixel type if PT_END */
+	if (arg->bandarg->pixtype == PT_END)
+		arg->bandarg->pixtype = rt_band_get_pixtype(band);
+
+	/* set hasnodata and nodataval */
+	arg->bandarg->hasnodata = 1;
+	if (rt_band_get_hasnodata_flag(band))
+		rt_band_get_nodata(band, &(arg->bandarg->nodataval));
+	else
+		arg->bandarg->nodataval = rt_band_get_min_value(band);
+
+	POSTGIS_RT_DEBUGF(4, "pixtype, hasnodata, nodataval: %s, %d, %f", rt_pixtype_name(arg->bandarg->pixtype), arg->bandarg->hasnodata, arg->bandarg->nodataval);
+
+	/* init itrset */
+	itrset = palloc(sizeof(struct rt_iterator_t) * numraster);
+	if (itrset == NULL) {
+		elog(ERROR, "RASTER_nMapAlgebra: Unable to allocate memory for iterator arguments");
+		rtpg_nmapalgebraexpr_arg_destroy(arg);
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
+	/* set itrset */
+	for (i = 0; i < numraster; i++) {
+		itrset[i].raster = arg->bandarg->raster[i];
+		itrset[i].nband = arg->bandarg->nband[i];
+		itrset[i].nbnodata = 1;
+	}
+
+	/* pass everything to iterator */
+	err = rt_raster_iterator(
+		itrset, numraster,
+		arg->bandarg->extenttype, arg->bandarg->cextent,
+		arg->bandarg->pixtype,
+		arg->bandarg->hasnodata, arg->bandarg->nodataval,
+		0, 0,
+		&(arg->callback),
+		rtpg_nmapalgebraexpr_callback,
+		&raster
+	);
+
+	pfree(itrset);
+	rtpg_nmapalgebraexpr_arg_destroy(arg);
+
+	if (err != ES_NONE) {
+		elog(ERROR, "RASTER_nMapAlgebraExpr: Unable to run raster iterator function");
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+	else if (raster == NULL) {
+		SPI_finish();
+		PG_RETURN_NULL();
+	}
+
+	/* switch to prior memory context to ensure memory allocated in correct context */
+	MemoryContextSwitchTo(mainMemCtx);
+
+	pgraster = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+
+	/* finish SPI */
+	SPI_finish();
 
 	if (!pgraster)
 		PG_RETURN_NULL();
