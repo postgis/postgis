@@ -316,7 +316,7 @@ int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 			}
 			else
 			{
-				if (!lw_dist2d_distribute_bruteforce2(g1, g2, dl)) return LW_FALSE;
+				if (!lw_dist2d_distribute_bruteforce(g1, g2, dl)) return LW_FALSE;
 				if (dl->distance<=dl->tolerance && dl->mode == DIST_MIN) return LW_TRUE; /*just a check if  the answer is already given*/				
 			}
 		}
@@ -326,7 +326,7 @@ int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl)
 
 
 int
-lw_dist2d_distribute_bruteforce2(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
+lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 {
 
 	int	t1 = lwg1->type;
@@ -448,97 +448,6 @@ lw_dist2d_distribute_bruteforce2(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
 
 
 
-/**
-This function distributes the "old-type" brut-force tasks depending on type
-*/
-int
-lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl)
-{
-
-	int	t1 = lwg1->type;
-	int	t2 = lwg2->type;
-
-	LWDEBUGF(2, "lw_dist2d_distribute_bruteforce is called with typ1=%d, type2=%d", lwg1->type, lwg2->type);
-
-	if  ( t1 == POINTTYPE )
-	{
-		if  ( t2 == POINTTYPE )
-		{
-			dl->twisted=1;
-			return lw_dist2d_point_point((LWPOINT *)lwg1, (LWPOINT *)lwg2, dl);
-		}
-		else if  ( t2 == LINETYPE )
-		{
-			dl->twisted=1;
-			return lw_dist2d_point_line((LWPOINT *)lwg1, (LWLINE *)lwg2, dl);
-		}
-		else if  ( t2 == POLYGONTYPE )
-		{
-			dl->twisted=1;
-			return lw_dist2d_point_poly((LWPOINT *)lwg1, (LWPOLY *)lwg2,dl);
-		}
-		else
-		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
-			return LW_FALSE;
-		}
-	}
-	else if ( t1 == LINETYPE )
-	{
-		if ( t2 == POINTTYPE )
-		{
-			dl->twisted=(-1);
-			return lw_dist2d_point_line((LWPOINT *)lwg2,(LWLINE *)lwg1,dl);
-		}
-		else if ( t2 == LINETYPE )
-		{
-			dl->twisted=1;
-			/*lwnotice("start line");*/
-			return lw_dist2d_line_line((LWLINE *)lwg1,(LWLINE *)lwg2,dl);
-		}
-		else if ( t2 == POLYGONTYPE )
-		{
-			dl->twisted=1;
-			return lw_dist2d_line_poly((LWLINE *)lwg1,(LWPOLY *)lwg2,dl);
-		}
-		else
-		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
-			return LW_FALSE;
-		}
-	}
-	else if ( t1 == POLYGONTYPE )
-	{
-		if ( t2 == POLYGONTYPE )
-		{
-			dl->twisted=(1);
-			return lw_dist2d_poly_poly((LWPOLY *)lwg1,(LWPOLY *)lwg2,dl);
-		}
-		else if ( t2 == POINTTYPE )
-		{
-			dl->twisted=(-1);
-			return lw_dist2d_point_poly((LWPOINT *)lwg2,  (LWPOLY *)lwg1, dl);
-		}
-		else if ( t2 == LINETYPE )
-		{
-			dl->twisted=(-1);
-			return lw_dist2d_line_poly((LWLINE *)lwg2,(LWPOLY *)lwg1,dl);
-		}
-		else
-		{
-			lwerror("Unsupported geometry type: %s", lwtype_name(t2));
-			return LW_FALSE;
-		}
-	}
-	else
-	{
-		lwerror("Unsupported geometry type: %s", lwtype_name(t1));
-		return LW_FALSE;
-	}
-	/*You shouldn't being able to get here*/
-	lwerror("unspecified error in function lw_dist2d_distribute_bruteforce");
-	return LW_FALSE;
-}
 
 /**
 

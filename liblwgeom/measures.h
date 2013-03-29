@@ -40,7 +40,6 @@ typedef struct
 */
 int lw_dist2d_comp(LWGEOM *lw1, LWGEOM *lw2, DISTPTS *dl);
 int lw_dist2d_distribute_bruteforce(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
-int lw_dist2d_distribute_bruteforce2(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
 int lw_dist2d_recursive(const LWGEOM *lwg1, const LWGEOM *lwg2, DISTPTS *dl);
 int lw_dist2d_check_overlap(LWGEOM *lwg1,LWGEOM *lwg2);
 int lw_dist2d_distribute_fast(LWGEOM *lwg1, LWGEOM *lwg2, DISTPTS *dl);
