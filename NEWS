@@ -163,9 +163,10 @@ PostGIS 2.1.0
            implicit index
   - #2251, Fix bad dimensions when rescaling rasters with default
            geotransform matrix
+  - #2133, Fix performance regression in expression variant of ST_MapAlgebra
 
 PostGIS 2.0.3
-2013/MM/DD
+2013/03/01
 
  * Bug Fixes *
   - #2134, Fixed handling of SRS strings as they are passed to GDAL functions
