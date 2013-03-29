@@ -391,7 +391,6 @@ static void test_raster_pixel_as_polygon() {
 	rt_raster rast;
 	rt_band band;
 	uint32_t x, y;
-	int rtn;
 	const int maxX = 10;
 	const int maxY = 10;
 	LWPOLY *poly = NULL;
@@ -404,7 +403,7 @@ static void test_raster_pixel_as_polygon() {
 
 	for (x = 0; x < maxX; x++) {
 		for (y = 0; y < maxY; y++) {
-			rtn = rt_band_set_pixel(band, x, y, 1, NULL);
+			rt_band_set_pixel(band, x, y, 1, NULL);
 		}
 	}
 

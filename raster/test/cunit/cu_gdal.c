@@ -412,7 +412,6 @@ static void test_raster_to_gdal() {
 	uint32_t width = 100;
 	uint32_t y;
 	uint32_t height = 100;
-	int rtn = 0;
 	char srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
 
 	uint64_t gdalSize;
@@ -429,7 +428,7 @@ static void test_raster_to_gdal() {
 
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
 
@@ -459,7 +458,7 @@ static void test_raster_to_gdal() {
 
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
-			rtn = rt_band_set_pixel(band, x, y, x, NULL);
+			rt_band_set_pixel(band, x, y, x, NULL);
 		}
 	}
 
@@ -502,7 +501,7 @@ static void test_gdal_to_raster() {
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
 			values[x][y] = (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1);
-			rtn = rt_band_set_pixel(band, x, y, values[x][y], NULL);
+			rt_band_set_pixel(band, x, y, values[x][y], NULL);
 		}
 	}
 
@@ -545,7 +544,7 @@ static void test_gdal_to_raster() {
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
 			values[x][y] = v++;
-			rtn = rt_band_set_pixel(band, x, y, values[x][y], NULL);
+			rt_band_set_pixel(band, x, y, values[x][y], NULL);
 			if (v == 128)
 				v = -127;
 		}
@@ -589,7 +588,6 @@ static void test_gdal_warp() {
 	uint32_t width = 100;
 	uint32_t y;
 	uint32_t height = 100;
-	int rtn = 0;
 	double value = 0;
 
 	char src_srs[] = "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",6370997,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Lambert_Azimuthal_Equal_Area\"],PARAMETER[\"latitude_of_center\",45],PARAMETER[\"longitude_of_center\",-100],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"Meter\",1],AUTHORITY[\"EPSG\",\"2163\"]]";
@@ -607,7 +605,7 @@ static void test_gdal_warp() {
 
 	for (x = 0; x < width; x++) {
 		for (y = 0; y < height; y++) {
-			rtn = rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
+			rt_band_set_pixel(band, x, y, (((double) x * y) + (x + y) + (x + y * x)) / (x + y + 1), NULL);
 		}
 	}
 

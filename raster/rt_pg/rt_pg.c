@@ -16051,7 +16051,6 @@ static int rtpg_nmapalgebraexpr_callback(
 		SPITupleTable *tuptable = NULL;
 		HeapTuple tuple;
 		Datum datum;
-		double v = 0;
 		bool isnull = FALSE;
 
 		POSTGIS_RT_DEBUGF(4, "Running plan %d", id);
@@ -16072,22 +16071,17 @@ static int rtpg_nmapalgebraexpr_callback(
 					/* [rast.x] */
 					case 0:
 						values[idx] = Int32GetDatum(arg->src_pixel[0][0] + 1);
-						v = arg->src_pixel[0][0] + 1;
 						break;
 					/* [rast.y] */
 					case 1:
 						values[idx] = Int32GetDatum(arg->src_pixel[0][1] + 1);
-						v = arg->src_pixel[0][1] + 1;
-						v = values[idx];
 						break;
 					/* [rast.val] */
 					case 2:
 					/* [rast] */
 					case 3:
-						if (!arg->nodata[0][0][0]) {
+						if (!arg->nodata[0][0][0])
 							values[idx] = Float8GetDatum(arg->values[0][0][0]);
-							v = arg->values[0][0][0];
-						}
 						else
 							nulls[idx] = TRUE;
 						break;
@@ -16095,21 +16089,17 @@ static int rtpg_nmapalgebraexpr_callback(
 					/* [rast1.x] */
 					case 4:
 						values[idx] = Int32GetDatum(arg->src_pixel[0][0] + 1);
-						v = arg->src_pixel[0][0] + 1;
 						break;
 					/* [rast1.y] */
 					case 5:
 						values[idx] = Int32GetDatum(arg->src_pixel[0][1] + 1);
-						v = arg->src_pixel[0][1] + 1;
 						break;
 					/* [rast1.val] */
 					case 6:
 					/* [rast1] */
 					case 7:
-						if (!arg->nodata[0][0][0]) {
+						if (!arg->nodata[0][0][0])
 							values[idx] = Float8GetDatum(arg->values[0][0][0]);
-							v = arg->values[0][0][0];
-						}
 						else
 							nulls[idx] = TRUE;
 						break;
@@ -16117,32 +16107,21 @@ static int rtpg_nmapalgebraexpr_callback(
 					/* [rast2.x] */
 					case 8:
 						values[idx] = Int32GetDatum(arg->src_pixel[1][0] + 1);
-						v = arg->src_pixel[1][0] + 1;
 						break;
 					/* [rast2.y] */
 					case 9:
 						values[idx] = Int32GetDatum(arg->src_pixel[1][1] + 1);
-						v = arg->src_pixel[1][1] + 1;
 						break;
 					/* [rast2.val] */
 					case 10:
 					/* [rast2] */
 					case 11:
-						if (!arg->nodata[1][0][0]){
+						if (!arg->nodata[1][0][0])
 							values[idx] = Float8GetDatum(arg->values[1][0][0]);
-							v = arg->values[1][0][0];
-						}
 						else
 							nulls[idx] = TRUE;
 						break;
 				}
-
-				POSTGIS_RT_DEBUGF(4, "(i, idx, value, null) = (%d, %d, %f, %d)",
-					i,
-					idx,
-					v,
-					nulls[idx] != TRUE ? 0 : 1
-				);
 
 			}
 		}

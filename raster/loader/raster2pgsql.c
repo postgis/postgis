@@ -447,14 +447,14 @@ static void calc_tile_size(
 
 	int d = 0;
 	double r = 0;
-	int _d = 0;
+	/*int _d = 0;*/
 	double _r = -1;
 	int _i = 0;
 
 	/* j = 0, X */
 	for (j = 0; j < 2; j++) {
 		_i = 0;
-		_d = 0;
+		/*_d = 0;*/
 		_r = -1;
 
 		if (j < 1 && dimX <= max) {
@@ -483,7 +483,7 @@ static void calc_tile_size(
 				(r < _r) ||
 				FLT_EQ(r, _r)
 			) {
-				_d = d;
+				/*_d = d;*/
 				_r = r;
 				_i = i;
 			}
