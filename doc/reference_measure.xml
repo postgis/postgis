@@ -1970,13 +1970,15 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.23</para>
+		<para>&curve_support;</para>
 
 		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+		<para>Enhanced: 2.1.0 - support for curved geometries was introduced.</para>
 	  </refsection>
 
 	  <refsection>
-		<title>Examples</title>
+		<title>Basic Geometry Examples</title>
 
 		<programlisting>
 --Geometry example - units in planar degrees 4326 is WGS 84 long lat unit=degrees
@@ -2006,8 +2008,11 @@ SELECT ST_Distance(
 st_distance
 ------------------
 126.664256056812
-
--- Geography example -- same but note units in meters - use sphere for slightly faster less accurate
+</programlisting>
+	</refsection>
+	  <refsection>
+		<title>Geography Examples</title>
+<programlisting>-- same as geometry example but note units in meters - use sphere for slightly faster less accurate
 SELECT ST_Distance(gg1, gg2) As spheroid_dist, ST_Distance(gg1, gg2, false) As sphere_dist 
 FROM (SELECT
 	ST_GeographyFromText('SRID=4326;POINT(-72.1235 42.3521)') As gg1,
@@ -2017,9 +2022,10 @@ FROM (SELECT
   spheroid_dist   |   sphere_dist
 ------------------+------------------
  123.802076746848 | 123.475736916397
-
 </programlisting>
-	  </refsection>
+	</refsection>
+
+	  
 
 	  <refsection>
 		<title>See Also</title>
