@@ -2434,6 +2434,7 @@ FROM
 		<para>&sfs_compliant;</para>
 		<para>Availability: 1.5.0 support for geography was introduced</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
+		<para>Enhanced: 2.1.0 support for curved geometries was introduced.</para>
 	  </refsection>
 
 	  <refsection>
