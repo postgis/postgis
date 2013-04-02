@@ -34,7 +34,8 @@ BEGIN
   result.streetName := trim(rec.name);
   result.location := trim(rec.city);
   result.stateAbbrev := trim(rec.state);
-  result.streettypeAbbrev := trim(rec.suftype);
+  --this should be broken out separately like pagc, but normalizer doesn't have a slot for it
+  result.streettypeAbbrev := trim(COALESCE(rec.suftype, rec.pretype)); 
   result.preDirAbbrev := trim(rec.predir);
   result.postDirAbbrev := trim(rec.sufdir);
   result.internal := trim(rec.unit);
