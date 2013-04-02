@@ -33,6 +33,7 @@ BEGIN
 			, ('debug_normalize_address', 'false', 'boolean','debug', 'outputs debug information in notice log such as queries and intermediate expressions when normalize_address is called if true')
 			, ('debug_reverse_geocode', 'false', 'boolean','debug', 'if true, outputs debug information in notice log such as queries and intermediate expressions when reverse_geocode')
 			, ('reverse_geocode_numbered_roads', '0', 'integer','rating', 'For state and county highways, 0 - no preference in name, 1 - prefer the numbered highway name, 2 - prefer local state/county name')
+			, ('use_pagc_address_parser', 'false', 'boolean','normalize', 'If set to true, will try to use the pagc_address normalizer instead of tiger built one')
 		) f(name,setting,unit,category,short_desc)
 		WHERE f.name NOT IN(SELECT name FROM geocode_settings);
 END;
