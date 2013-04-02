@@ -35,6 +35,7 @@ BEGIN
   result.location := trim(rec.city);
   result.stateAbbrev := trim(rec.state);
   result.streettypeAbbrev := trim(rec.suftype);
+  result.preDirAbbrev := trim(rec.predir);
   result.postDirAbbrev := trim(rec.sufdir);
   result.internal := trim(rec.unit);
   result.parsed := TRUE;
