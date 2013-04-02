@@ -57,6 +57,7 @@ CREATE OR REPLACE FUNCTION normalize_address(in_rawinput character varying)
 $$
 DECLARE
   debug_flag boolean := get_geocode_setting('debug_normalize_address')::boolean;
+  use_pagc boolean := COALESCE(get_geocode_setting('use_pagc_address_parser')::boolean, false);
   result norm_addy;
   addressString VARCHAR;
   zipString VARCHAR;
@@ -77,6 +78,10 @@ DECLARE
 BEGIN
 --$Id$-
   result.parsed := FALSE;
+  IF use_pagc THEN
+  	result := pagc_normalize_address(in_rawinput);
+  	RETURN result;
+  END IF;
 
   rawInput := trim(in_rawInput);
 
