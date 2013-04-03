@@ -958,10 +958,11 @@ CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text,text) RETURNS box2d AS
 -- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text,text) RETURNS box2d AS
   $$ SELECT _postgis_deprecate('ST_Estimated_Extent', 'ST_EstimatedExtent', '2.1.0');
-    -- explicit schema for security reason
-    SELECT public.ST_EstimatedExtent($1, $2, $3);
+    -- We use security invoker instead of security definer 
+    -- to prevent malicious injection of a different same named function
+    SELECT ST_EstimatedExtent($1, $2, $3);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY DEFINER;
+	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY INVOKER;
 
 -----------------------------------------------------------------------
 -- ST_ESTIMATED_EXTENT( <table name>, <column name> )
@@ -976,10 +977,12 @@ CREATE OR REPLACE FUNCTION ST_EstimatedExtent(text,text) RETURNS box2d AS
 -- Deprecation in 2.1.0 
 CREATE OR REPLACE FUNCTION ST_estimated_extent(text,text) RETURNS box2d AS
   $$ SELECT _postgis_deprecate('ST_Estimated_Extent', 'ST_EstimatedExtent', '2.1.0');
-    -- explicit schema for security reason
-    SELECT public.ST_EstimatedExtent($1, $2);
+    -- We use security invoker instead of security definer 
+    -- to prevent malicious injection of a same named different function
+    -- that would be run under elevated permissions
+    SELECT ST_EstimatedExtent($1, $2);
   $$
-	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY DEFINER;
+	LANGUAGE 'sql' IMMUTABLE STRICT SECURITY INVOKER;
 
 -----------------------------------------------------------------------
 -- FIND_EXTENT( <schema name>, <table name>, <column name> )
