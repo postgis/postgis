@@ -24,8 +24,8 @@ BEGIN
   rec := (SELECT standardize_address( 'select seq, word::text, stdword::text, token from tiger.pagc_gaz union all select seq, word::text, stdword::text, token from tiger.pagc_lex '
        , 'select seq, word::text, stdword::text, token from tiger.pagc_gaz order by id'
        , 'select * from tiger.pagc_rules order by id'
-, 'select 0::int4 as id, ' || quote_literal(address1) || '::text As micro, 
-   ' || quote_literal(city || ', ' || state || ' ' || zip) || '::text As macro') As pagc_addr
+, 'select 0::int4 as id, ' || quote_literal(COALESCE(address1,'')) || '::text As micro, 
+   ' || quote_literal(COALESCE(city || ', ','') || COALESCE(state || ' ', '') || COALESCE(zip,'')) || '::text As macro') As pagc_addr
  FROM  (SELECT * FROM parse_address(rawInput) ) As a ) ;
  -- For address number only put numbers and stop if reach a non-number e.g. 123-456 will return 123
   result.address := to_number(substring(rec.house_num, '[0-9]+'), '99999999999');

@@ -37,7 +37,7 @@ sql/$(EXTENSION).sql: sql_bits/tiger_geocoder.sql  sql_bits/mark_editable_object
 	
 #this is a cludge to allow upgrading from same SVN to same SVN
 sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql: ../postgis_extension_helper.sql sql_bits/remove_from_extension.sql.in sql/tiger_geocoder_upgrade_minor.sql sql_bits/mark_editable_objects.sql.in sql_bits/tiger_geocoder_comments.sql ../postgis_extension_helper_uninstall.sql
-	cp $< $@
+	cat $^ > $@
 sql/$(EXTENSION)--$(EXTVERSION)next--$(EXTVERSION).sql: sql/$(EXTENSION)--$(EXTVERSION)--$(EXTVERSION)next.sql
 	cp $< $@
 	
