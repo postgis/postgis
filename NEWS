@@ -164,6 +164,7 @@ PostGIS 2.1.0
   - #2251, Fix bad dimensions when rescaling rasters with default
            geotransform matrix
   - #2133, Fix performance regression in expression variant of ST_MapAlgebra
+  - #2257, GBOX variables not initialized when testing with empty geometries
 
 PostGIS 2.0.3
 2013/03/01

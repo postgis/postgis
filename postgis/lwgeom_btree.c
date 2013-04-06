@@ -182,10 +182,16 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	gbox_init(&box1);
+	gbox_init(&box2);
+	
 	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
 	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
 	PG_FREE_IF_COPY(geom1, 0);
 	PG_FREE_IF_COPY(geom2, 1);
+	POSTGIS_DEBUGF(3, "empty1, empty2 = %d, %d", empty1, empty2);
+	POSTGIS_DEBUGF(4, "%f ~ %f, %f ~ %f, %f ~ %f, %f ~ %f",
+		box1.xmin, box2.xmin, box1.ymin, box2.ymin, box1.xmax, box2.xmax, box1.ymax, box2.ymax);
 
 	if  ( empty1 != empty2 ) 
 	{
