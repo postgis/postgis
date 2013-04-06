@@ -182,6 +182,9 @@ Datum lwgeom_eq(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	gbox_init(&box1);
+	gbox_init(&box2);
+
 	empty1 = ( gserialized_get_gbox_p(geom1, &box1) == LW_FAILURE );
 	empty2 = ( gserialized_get_gbox_p(geom2, &box2) == LW_FAILURE );
 	PG_FREE_IF_COPY(geom1, 0);
