@@ -15348,7 +15348,7 @@ static int rtpg_nmapalgebra_rastbandarg_process(rtpg_nmapalgebra_arg arg, ArrayT
 
 		/* see if this is a copy of an existing pgraster */
 		for (j = 0; j < i; j++) {
-			if (arg->pgraster[i] == arg->pgraster[j]) {
+			if (!arg->isempty[j] && (arg->pgraster[i] == arg->pgraster[j])) {
 				POSTGIS_RT_DEBUG(4, "raster matching existing same raster found");
 				arg->raster[i] = arg->raster[j];
 				arg->ownsdata[i] = 0;
