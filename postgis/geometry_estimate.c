@@ -872,7 +872,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	for (i=0; i<samplerows; i++)
 	{
 		Datum datum;
-		GSERIALIZED *geom;
 		GBOX box;
 
 		datum = fetchfunc(stats, i, &isnull);
@@ -885,6 +884,9 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			null_cnt++;
 			continue;
 		}
+
+		/** NOTE: we use the toasted width for stawidth */
+		total_width += VARSIZE_ANY(DatumGetPointer(datum));
 
 		if ( LW_FAILURE == gserialized_datum_get_gbox_p(datum, &box) )
 		{
@@ -934,8 +936,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			                                  box.ymin);
 		}
 
-		/** TODO: ask if we need geom or bvol size for stawidth */
-		total_width += VARSIZE(geom);
 		total_boxes_area += (box.xmax-box.xmin)*(box.ymax-box.ymin);
 
 		/*
