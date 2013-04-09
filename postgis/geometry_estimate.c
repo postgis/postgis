@@ -886,8 +886,6 @@ compute_geometry_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 			continue;
 		}
 
-		geom = (GSERIALIZED *)PG_DETOAST_DATUM(datum);
-
 		if ( LW_FAILURE == gserialized_datum_get_gbox_p(datum, &box) )
 		{
 			/* Skip empty geometry */
