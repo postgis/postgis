@@ -8,6 +8,9 @@ PostGIS 2.0.4
   - #2201, ST_GeoHash wrong on boundaries
   - #2257, GBOX variables not initialized when testing with empty geometries
 
+ * Enhancements *
+  - #2269, Avoid uselessly detoasting full geometries on ANALYZE
+
 PostGIS 2.0.3
 2013/03/01
 
