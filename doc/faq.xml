@@ -392,7 +392,7 @@ WHERE ST_DWithin(geocolumn, 'POINT(1000 1000)', 100.0);</programlisting>
       </answer>
     </qandaentry>
 
-	<qandaentry>
+	<qandaentry id="license_faq">
       <question>
         <para>I am releasing software that uses PostGIS, does that mean my software has to be licensed using the GPL like PostGIS? Will I have to publish all my code if I use PostGIS?</para>
       </question>
