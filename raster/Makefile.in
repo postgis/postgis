@@ -10,6 +10,7 @@
 #
 #############################################################################
 
+.NOTPARALLEL:
 
 all: @RT_CORE_LIB@ @RT_PG_LIB@ @RT_LOADER@ @RT_POSTGIS_SQL@ 
 

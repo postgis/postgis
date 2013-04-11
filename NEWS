@@ -7,6 +7,7 @@ PostGIS 2.0.4
   - #1968, Fix missing edge from toTopoGeom return
   - #2201, ST_GeoHash wrong on boundaries
   - #2257, GBOX variables not initialized when testing with empty geometries
+  - #2271, Prevent parallel make of raster
 
  * Enhancements *
   - #2269, Avoid uselessly detoasting full geometries on ANALYZE
