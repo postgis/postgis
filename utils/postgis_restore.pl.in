@@ -34,7 +34,7 @@ use strict;
 my $me = $0;
 
 my $usage = qq{
-Usage:	$me [-v] <dumpfile>
+Usage:	$me [-v] [-s schema] <dumpfile>
         Restore a custom dump (pg_dump -Fc) of a PostGIS-enabled database.
         First dump the old database: pg_dump -Fc MYDB > MYDB.dmp
         Then create a new database: createdb NEWDB
@@ -50,15 +50,22 @@ Usage:	$me [-v] <dumpfile>
 };
 
 my $DEBUG = 0;
+my $POSTGIS_SCHEMA;
 
 # NOTE: the SRID limits here are being discussed:
 # http://postgis.refractions.net/pipermail/postgis-devel/2012-February/018463.html
 my $SRID_MAXIMUM = @SRID_MAXIMUM@;
 my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@; 
 
-if ( @ARGV && $ARGV[0] eq '-v' ) {
-  $DEBUG = 1;
-  shift(@ARGV);
+while (@ARGV && $ARGV[0] =~ /-/) {
+  if ( $ARGV[0] eq '-v' ) {
+    $DEBUG = 1;
+    shift(@ARGV);
+  }
+  elsif ( $ARGV[0] eq '-s' ) {
+    shift(@ARGV);
+    $POSTGIS_SCHEMA = shift(@ARGV);
+  }
 }
 
 die $usage if (@ARGV < 1);
@@ -119,6 +126,10 @@ close(DUMP) || die "$me: pg_restore returned an error\n";
 #
 print STDERR "  Writing ASCII to stdout...\n";
 open( INPUT, "pg_restore -L $manifest $dumpfile |") || die "$me:\tCan't run pg_restore\n";
+
+if ( defined $POSTGIS_SCHEMA ) {
+  print STDOUT "SET search_path = \"" . $POSTGIS_SCHEMA . "\";\n";
+}
 
 #
 # Disable topology metadata tables triggers to allow for population
@@ -278,6 +289,10 @@ while( my $l = <INPUT> ) {
 
   print STDOUT $l;
 
+}
+
+if ( defined $POSTGIS_SCHEMA ) {
+  print STDOUT "SET search_path = \"" . $POSTGIS_SCHEMA . "\";\n";
 }
 
 if ( $hasTopology ) {
