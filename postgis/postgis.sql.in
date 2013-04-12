@@ -427,18 +427,6 @@ CREATE OR REPLACE FUNCTION geometry_gist_decompress_2d(internal)
 	AS 'MODULE_PATHNAME' ,'gserialized_gist_decompress_2d'
 	LANGUAGE 'c';
 
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_sel_2d (internal, oid, internal, int4)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'geometry_gist_sel_2d'
-	LANGUAGE 'c';
-
--- Availability: 2.0.0
-CREATE OR REPLACE FUNCTION geometry_gist_joinsel_2d(internal, oid, internal, smallint)
-	RETURNS float8
-	AS 'MODULE_PATHNAME', 'geometry_gist_joinsel_2d'
-	LANGUAGE 'c';
-
 
 -----------------------------------------------------------------------------
 

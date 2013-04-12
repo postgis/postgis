@@ -91,6 +91,9 @@ Datum _postgis_gserialized_sel(PG_FUNCTION_ARGS);
 Datum _postgis_gserialized_joinsel(PG_FUNCTION_ARGS);
 Datum _postgis_gserialized_stats(PG_FUNCTION_ARGS);
 
+/* Old Prototype */
+Datum geometry_estimated_extent(PG_FUNCTION_ARGS);
+
 /**
 * Assign a number to the n-dimensional statistics kind
 *
@@ -2182,3 +2185,31 @@ Datum gserialized_estimated_extent(PG_FUNCTION_ARGS)
 	PG_RETURN_POINTER(gbox);
 }
 
+/**
+ * Return the estimated extent of the table
+ * looking at gathered statistics (or NULL if
+ * no statistics have been gathered).
+ */
+  
+PG_FUNCTION_INFO_V1(geometry_estimated_extent);
+Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
+{
+	if ( PG_NARGS() == 3 )
+	{
+	    DirectFunctionCall3(gserialized_estimated_extent, 
+	    PG_GETARG_DATUM(0), 
+	    PG_GETARG_DATUM(1), 
+        PG_GETARG_DATUM(2));
+	}
+	else if ( PG_NARGS() == 2 )
+	{
+	    DirectFunctionCall2(gserialized_estimated_extent, 
+	    PG_GETARG_DATUM(0), 
+	    PG_GETARG_DATUM(1));
+	}
+	else
+	{
+		elog(ERROR, "geometry_estimated_extent() called with wrong number of arguments");
+		PG_RETURN_NULL();
+	}
+}

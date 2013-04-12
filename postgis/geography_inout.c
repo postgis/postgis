@@ -46,9 +46,6 @@ Datum geometry_from_geography(PG_FUNCTION_ARGS);
 Datum geography_send(PG_FUNCTION_ARGS);
 Datum geography_recv(PG_FUNCTION_ARGS);
 
-/* Datum geography_gist_selectivity(PG_FUNCTION_ARGS); TBD */
-/* Datum geography_gist_join_selectivity(PG_FUNCTION_ARGS); TBD */
-
 GSERIALIZED* gserialized_geography_from_lwgeom(LWGEOM *lwgeom, int32 geog_typmod);
 
 /**
