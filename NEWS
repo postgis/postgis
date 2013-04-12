@@ -8,6 +8,7 @@ PostGIS 2.0.4
   - #2201, ST_GeoHash wrong on boundaries
   - #2257, GBOX variables not initialized when testing with empty geometries
   - #2271, Prevent parallel make of raster
+  - #2267, Server crash from analyze table
 
  * Enhancements *
   - #2269, Avoid uselessly detoasting full geometries on ANALYZE

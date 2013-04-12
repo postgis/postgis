@@ -21,6 +21,7 @@
 
 #include "../postgis_config.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"         /* For FP comparators. */
 #include "lwgeom_pg.h"
 
 /* Prototypes */
@@ -802,7 +803,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	GBOX *sample_extent = NULL;
 	GBOX **sampleboxes;
 	GBOX histobox;
-	int histocells;
+	int histocells, histocells_guess;
 	double sizex, sizey, sizez, edgelength;
 	int unitsx = 0, unitsy = 0, unitsz = 0;
 	int geog_stats_size;
@@ -1093,7 +1094,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 	   to work out how many dimensions exist within our sample data (which we
 	   assume is representative of the whole data) */
 	ndims = 0;
-	if (sizex != 0)
+    if ( ! FP_IS_ZERO(sizex) )
 	{
 		histodims[ndims].axis = 'X';
 		histodims[ndims].min = histobox.xmin;
@@ -1101,7 +1102,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		ndims++;
 	}
 
-	if (sizey != 0)
+	if ( ! FP_IS_ZERO(sizey) )
 	{
 		histodims[ndims].axis = 'Y';
 		histodims[ndims].min = histobox.ymin;
@@ -1110,7 +1111,7 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		ndims++;
 	}
 
-	if (sizez != 0)
+	if ( ! FP_IS_ZERO(sizez) )
 	{
 		histodims[ndims].axis = 'Z';
 		histodims[ndims].min = histobox.zmin;
@@ -1241,6 +1242,23 @@ compute_geography_stats(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfunc,
 		unitsy = Abs(histodims[1].max - histodims[1].min) / edgelength;
 		unitsz = Abs(histodims[2].max - histodims[2].min) / edgelength;
 
+        /* Condition the results */
+        if ( unitsx < 1 ) unitsx = 1;
+        if ( unitsy < 1 ) unitsy = 1;
+        if ( unitsz < 1 ) unitsz = 1;
+        
+        histocells_guess = unitsx * unitsy * unitsz;
+        if ( histocells_guess > histocells )
+        {
+            double ratio = (double)histocells/(double)histocells_guess;
+            unitsx *= ratio;
+            unitsy *= ratio;
+            unitsz *= ratio;
+            if ( unitsx < 1 ) unitsx = 1;
+            if ( unitsy < 1 ) unitsy = 1;
+            if ( unitsz < 1 ) unitsz = 1;
+        }
+        
 		break;
 	}
 
