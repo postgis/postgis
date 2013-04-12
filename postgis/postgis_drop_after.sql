@@ -135,5 +135,10 @@ DROP FUNCTION IF EXISTS st_geometry_eq(geometry, geometry);
 DROP FUNCTION IF EXISTS st_geometry_cmp(geometry, geometry);
 DROP FUNCTION IF EXISTS SnapToGrid(geometry, float8, float8);
 
+DROP FUNCTION IF EXISTS geometry_gist_sel_2d (internal, oid, internal, int4);
+DROP FUNCTION IF EXISTS geometry_gist_joinsel_2d(internal, oid, internal, smallint);
+DROP FUNCTION IF EXISTS geography_gist_selectivity (internal, oid, internal, int4);
+DROP FUNCTION IF EXISTS geography_gist_join_selectivity(internal, oid, internal, smallint);
+
 DROP FUNCTION IF EXISTS ST_AsBinary(text); -- deprecated in 2.0
 DROP FUNCTION IF EXISTS postgis_uses_stats(); -- deprecated in 2.0

@@ -437,29 +437,28 @@ nd_stats_to_json(const ND_STATS *nd_stats)
 * Caller is responsible for freeing.
 * Currently only prints first two dimensions.
 */
-static char* 
-nd_stats_to_grid(const ND_STATS *stats)
-{
-	char *rv;
-	int j, k;
-//	int ndims = (int)roundf(stats->ndims);
-	int sizex = (int)roundf(stats->size[0]);
-	int sizey = (int)roundf(stats->size[1]);
-	stringbuffer_t *sb = stringbuffer_create();
-
-	for ( k = 0; k < sizey; k++ )
-	{
-		for ( j = 0; j < sizex; j++ )
-		{
-			stringbuffer_aprintf(sb, "%3d ", (int)roundf(stats->value[j + k*sizex]));
-		}
-		stringbuffer_append(sb,  "\n");
-	}
-		
-	rv = stringbuffer_getstringcopy(sb);
-	stringbuffer_destroy(sb);
-	return rv;
-}
+// static char* 
+// nd_stats_to_grid(const ND_STATS *stats)
+// {
+//  char *rv;
+//  int j, k;
+//  int sizex = (int)roundf(stats->size[0]);
+//  int sizey = (int)roundf(stats->size[1]);
+//  stringbuffer_t *sb = stringbuffer_create();
+// 
+//  for ( k = 0; k < sizey; k++ )
+//  {
+//      for ( j = 0; j < sizex; j++ )
+//      {
+//          stringbuffer_aprintf(sb, "%3d ", (int)roundf(stats->value[j + k*sizex]));
+//      }
+//      stringbuffer_append(sb,  "\n");
+//  }
+//      
+//  rv = stringbuffer_getstringcopy(sb);
+//  stringbuffer_destroy(sb);
+//  return rv;
+// }
 
 
 /** Expand the bounds of target to include source */
@@ -2196,20 +2195,20 @@ Datum geometry_estimated_extent(PG_FUNCTION_ARGS)
 {
 	if ( PG_NARGS() == 3 )
 	{
+	    PG_RETURN_DATUM(
 	    DirectFunctionCall3(gserialized_estimated_extent, 
 	    PG_GETARG_DATUM(0), 
 	    PG_GETARG_DATUM(1), 
-        PG_GETARG_DATUM(2));
+        PG_GETARG_DATUM(2)));
 	}
 	else if ( PG_NARGS() == 2 )
 	{
+	    PG_RETURN_DATUM(
 	    DirectFunctionCall2(gserialized_estimated_extent, 
 	    PG_GETARG_DATUM(0), 
-	    PG_GETARG_DATUM(1));
+	    PG_GETARG_DATUM(1)));
 	}
-	else
-	{
-		elog(ERROR, "geometry_estimated_extent() called with wrong number of arguments");
-		PG_RETURN_NULL();
-	}
+
+	elog(ERROR, "geometry_estimated_extent() called with wrong number of arguments");
+	PG_RETURN_NULL();
 }

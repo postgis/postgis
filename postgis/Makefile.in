@@ -76,7 +76,12 @@ PG_CPPFLAGS += @CPPFLAGS@ -I../liblwgeom -I../libpgcommon
 SHLIB_LINK_F = ../libpgcommon/libpgcommon.a ../liblwgeom/.libs/liblwgeom.a @SHLIB_LINK@ 
 
 # Extra files to remove during 'make clean'
-EXTRA_CLEAN=$(SQL_OBJS) legacy_uninstall.sql
+EXTRA_CLEAN=$(SQL_OBJS) \
+	uninstall_postgis.sql \
+	uninstall_legacy.sql \
+	postgis_upgrade_20_21.sql.in \
+	postgis_upgrade_20_21.sql \
+	postgis_upgrade_21_minor.sql 
 
 # PGXS information
 PG_CONFIG = @PGCONFIG@ 
