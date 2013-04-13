@@ -285,12 +285,20 @@ main (int argc, char **argv)
 	{
 		char *shp_file = strdup(config->shp_file);
 		char *ptr;
+		
+		/* Remove the extension, if present */
 		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
 		{
 			if ( *ptr == '.' )
 			{
 				*ptr = '\0';
+				break;
 			}
+		}
+
+		/* The remaining non-path section is the table name */
+		for ( ptr = shp_file + strlen(shp_file); ptr > shp_file; ptr-- )
+		{
 			if ( *ptr == '/' || *ptr == '\\' )
 			{
 				ptr++;
