@@ -3799,6 +3799,9 @@ INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1766, 1,
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1769, 1, 'NORTHEAST', 'NE', 22, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1771, 1, 'NTH', 'N', 22, false);
 INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (1774, 1, 'NW', 'NW', 22, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2931, 1, 'SERVICE DR', 'Svc Dr', 2, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2932, 1, 'SERVICE DRIVE', 'Svc Dr', 2, false);
+INSERT INTO pagc_lex (id, seq, word, stdword, token, is_custom) VALUES (2933, 1, 'SVC DR', 'Svc Dr', 2, false);
 
 
 SELECT pg_catalog.setval('pagc_lex_id_seq', (SELECT greatest((SELECT MAX(id) FROM pagc_lex),50000)), true);
