@@ -931,9 +931,6 @@ create_new_file_config(const char *filename)
 	table_end = loader_file_config->shp_file + strlen(loader_file_config->shp_file);
 	while (*table_end != '.' && table_end > loader_file_config->shp_file && table_end > table_start )
 		table_end--;
-	
-	/* Sneakily remove .shp from shp_file */
-	*table_end = '\0';
 
 	/* Copy the table name */
 	loader_file_config->table = malloc(table_end - table_start + 1);

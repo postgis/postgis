@@ -792,6 +792,7 @@ ShpLoaderCreate(SHPLOADERCONFIG *config)
 	state->widths = NULL;
 	state->precisions = NULL;
 	state->col_names = NULL;
+	state->field_names = NULL;
 
 	state->from_srid = config->shp_sr_id;
 	state->to_srid = config->sr_id;
