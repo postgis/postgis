@@ -1521,7 +1521,6 @@ Datum difference(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(pointonsurface);
 Datum pointonsurface(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwg;
 	GSERIALIZED *geom;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
@@ -1531,9 +1530,10 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 	/* Empty.PointOnSurface == Point Empty */
 	if ( gserialized_is_empty(geom) )
 	{
-		lwg = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
-		result = geometry_serialize(lwpoint_as_lwgeom(lwg));
-		lwgeom_free(lwg);
+		LWPOINT *point;
+		point = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
+		result = geometry_serialize(lwpoint_as_lwgeom(point));
+		lwpoint_free(point);
 		PG_RETURN_POINTER(result);
 	}
 
@@ -1581,7 +1581,6 @@ Datum pointonsurface(PG_FUNCTION_ARGS)
 PG_FUNCTION_INFO_V1(centroid);
 Datum centroid(PG_FUNCTION_ARGS)
 {
-	LWGEOM *lwg;
 	GSERIALIZED *geom, *result;
 	GEOSGeometry *geosgeom, *geosresult;
 
@@ -1590,9 +1589,10 @@ Datum centroid(PG_FUNCTION_ARGS)
 	/* Empty.Centroid() == Point Empty */
 	if ( gserialized_is_empty(geom) )
 	{
-		lwg = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
-		result = geometry_serialize(lwpoint_as_lwgeom(lwg));
-		lwgeom_free(lwg);
+		LWPOINT *point;
+		point = lwpoint_construct_empty(gserialized_get_srid(geom), gserialized_has_z(geom), gserialized_has_m(geom));
+		result = geometry_serialize(lwpoint_as_lwgeom(point));
+		lwpoint_free(point);
 		PG_RETURN_POINTER(result);
 	}
 

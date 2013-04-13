@@ -105,9 +105,9 @@ Datum LWGEOM_line_interpolate_point(PG_FUNCTION_ARGS)
 	/* Empty.InterpolatePoint == Point Empty */
 	if ( gserialized_is_empty(gser) )
 	{
-		geom = lwpoint_construct_empty(gserialized_get_srid(gser), gserialized_has_z(gser), gserialized_has_m(gser));
-		result = geometry_serialize(lwpoint_as_lwgeom(geom));
-		lwgeom_free(geom);
+		point = lwpoint_construct_empty(gserialized_get_srid(gser), gserialized_has_z(gser), gserialized_has_m(gser));
+		result = geometry_serialize(lwpoint_as_lwgeom(point));
+		lwpoint_free(point);
 		PG_RETURN_POINTER(result);
 	}
 
