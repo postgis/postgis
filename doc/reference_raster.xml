@@ -5212,6 +5212,14 @@ FROM (
 <programlisting>scalex skewy skewx scaley upperleftx upperlefty</programlisting></para>
 				<para><varname>ESRI</varname>: 
 <programlisting>scalex skewy skewx scaley upperleftx + scalex*0.5 upperlefty + scaley*0.5</programlisting></para>
+
+
+				<note>
+					<para>
+						If the raster has out-db bands, changing the georeference may result in incorrect access of the band's externally stored data.
+					</para>
+				</note>
+
 			</refsection>
 				
 			<refsection>

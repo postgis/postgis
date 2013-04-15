@@ -2106,6 +2106,12 @@ rt_util_envelope_to_lwpoly(
 	rt_envelope ext
 );
 
+int
+rt_util_same_geotransform_matrix(
+	double *gt1,
+	double *gt2
+);
+
 /*
 	helper macros for consistent floating point equality checks
 */

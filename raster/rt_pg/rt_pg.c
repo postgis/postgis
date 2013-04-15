@@ -17415,13 +17415,7 @@ Datum RASTER_union_transfn(PG_FUNCTION_ARGS)
 					rt_raster_get_geotransform_matrix(iwr->bandarg[i].raster[j], gt);
 					rt_raster_get_geotransform_matrix(iraster, igt);
 
-					reuserast = 1;
-					for (k = 0; k < 6; k++) {
-						if (FLT_NEQ(gt[k], igt[k])) {
-							reuserast = 0;
-							break;
-						}
-					}
+					reuserast = rt_util_same_geotransform_matrix(gt, igt);
 				}
 
 				/* use internal raster */

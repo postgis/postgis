@@ -43,7 +43,7 @@
 * All functions in rt_core that receive a band index parameter
 *   must be 0-based
 *
-* Variables and functions that are interal to *.c should be prefixed
+* Variables and functions internal for a public function should be prefixed
 *   with _rti_, e.g. _rti_iterator_arg.
 ******************************************************************************/
 
@@ -503,6 +503,21 @@ rt_util_envelope_to_lwpoly(
 	}
 
 	return npoly;
+}
+
+int
+rt_util_same_geotransform_matrix(double *gt1, double *gt2) {
+	int k = 0;
+
+	if (gt1 == NULL || gt2 == NULL)
+		return FALSE;
+
+	for (k = 0; k < 6; k++) {
+		if (FLT_NEQ(gt1[k], gt2[k]))
+			return FALSE;
+	}
+
+	return TRUE;
 }
 
 /*- rt_context -------------------------------------------------------*/
@@ -1591,6 +1606,7 @@ rt_band_load_offline_data(rt_band band) {
 	rt_raster _rast = NULL;
 	rt_band _band = NULL;
 	int aligned = 0;
+	int err = ES_NONE;
 
 	assert(band != NULL);
 	assert(band->raster != NULL);
@@ -1647,7 +1663,10 @@ rt_band_load_offline_data(rt_band band) {
 	_rast = rt_raster_new(1, 1);
 	rt_raster_set_geotransform_matrix(_rast, ogt);
 	rt_raster_set_srid(_rast, band->raster->srid);
-	if (rt_raster_same_alignment(band->raster, _rast, &aligned, NULL) != ES_NONE) {
+	err =rt_raster_same_alignment(band->raster, _rast, &aligned, NULL);
+	rt_raster_destroy(_rast);
+
+	if (err != ES_NONE) {
 		rterror("rt_band_load_offline_data: : Could not test alignment of in-db representation of out-db raster");
 		GDALClose(hdsSrc);
 		return ES_ERROR;
@@ -1655,7 +1674,6 @@ rt_band_load_offline_data(rt_band band) {
 	else if (!aligned) {
 		rtwarn("The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
 	}
-	rt_raster_destroy(_rast);
 
 	/* get offsets */
 	rt_raster_geopoint_to_cell(
@@ -5227,6 +5245,32 @@ rt_raster_destroy(rt_raster raster) {
 	rtdealloc(raster);
 }
 
+static void
+_rt_raster_geotransform_warn_offline_band(rt_raster raster) {
+	int numband = 0;
+	int i = 0;
+	rt_band band = NULL;
+
+	if (raster == NULL)
+		return;
+
+	numband = rt_raster_get_num_bands(raster);
+	if (numband < 1)
+		return;
+
+	for (i = 0; i < numband; i++) {
+		band = rt_raster_get_band(raster, i);
+		if (NULL == band)
+			continue;
+
+		if (!rt_band_is_offline(band))
+			continue;
+
+		rtwarn("Changes made to raster geotransform matrix may affect out-db band data. Returned band data may be incorrect");
+		break;
+	}
+}
+
 uint16_t
 rt_raster_get_width(rt_raster raster) {
 
@@ -5244,14 +5288,16 @@ rt_raster_get_height(rt_raster raster) {
 }
 
 void
-rt_raster_set_scale(rt_raster raster,
-        double scaleX, double scaleY) {
+rt_raster_set_scale(
+	rt_raster raster,
+	double scaleX, double scaleY
+) {
+	assert(NULL != raster);
 
+	raster->scaleX = scaleX;
+	raster->scaleY = scaleY;
 
-    assert(NULL != raster);
-
-    raster->scaleX = scaleX;
-    raster->scaleY = scaleY;
+	_rt_raster_geotransform_warn_offline_band(raster);
 }
 
 double
@@ -5273,14 +5319,16 @@ rt_raster_get_y_scale(rt_raster raster) {
 }
 
 void
-rt_raster_set_skews(rt_raster raster,
-        double skewX, double skewY) {
+rt_raster_set_skews(
+	rt_raster raster,
+	double skewX, double skewY
+) {
+	assert(NULL != raster);
 
+	raster->skewX = skewX;
+	raster->skewY = skewY;
 
-    assert(NULL != raster);
-
-    raster->skewX = skewX;
-    raster->skewY = skewY;
+	_rt_raster_geotransform_warn_offline_band(raster);
 }
 
 double
@@ -5302,13 +5350,17 @@ rt_raster_get_y_skew(rt_raster raster) {
 }
 
 void
-rt_raster_set_offsets(rt_raster raster, double x, double y) {
+rt_raster_set_offsets(
+	rt_raster raster,
+	double x, double y
+) {
 
+	assert(NULL != raster);
 
-    assert(NULL != raster);
+	raster->ipX = x;
+	raster->ipY = y;
 
-    raster->ipX = x;
-    raster->ipY = y;
+	_rt_raster_geotransform_warn_offline_band(raster);
 }
 
 double
@@ -5466,6 +5518,8 @@ rt_raster_set_srid(rt_raster raster, int32_t srid) {
 	assert(NULL != raster);
 
 	raster->srid = clamp_srid(srid);
+
+	_rt_raster_geotransform_warn_offline_band(raster);
 }
 
 int
@@ -5479,12 +5533,12 @@ rt_raster_get_num_bands(rt_raster raster) {
 
 rt_band
 rt_raster_get_band(rt_raster raster, int n) {
+	assert(NULL != raster);
 
+	if (n >= raster->numBands || n < 0)
+		return NULL;
 
-    assert(NULL != raster);
-
-    if (n >= raster->numBands || n < 0) return 0;
-    return raster->bands[n];
+	return raster->bands[n];
 }
 
 /**
@@ -5829,6 +5883,8 @@ rt_raster_set_geotransform_matrix(rt_raster raster,
 	raster->ipY = gt[3];
 	raster->skewY = gt[4];
 	raster->scaleY = gt[5];
+
+	_rt_raster_geotransform_warn_offline_band(raster);
 }
 
 /**
@@ -7494,7 +7550,7 @@ rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize) {
 	rast->ipY = read_float64(&ptr, endian);
 	rast->skewX = read_float64(&ptr, endian);
 	rast->skewY = read_float64(&ptr, endian);
-	rt_raster_set_srid(rast, read_int32(&ptr, endian));
+	rast->srid = clamp_srid(read_int32(&ptr, endian));
 	rast->width = read_uint16(&ptr, endian);
 	rast->height = read_uint16(&ptr, endian);
 

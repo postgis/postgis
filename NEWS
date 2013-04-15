@@ -130,6 +130,8 @@ PostGIS 2.1.0
   - #2200, ST_Union(raster, uniontype) unions all bands of all rasters
   - #2264, postgis_restore.pl support for restoring into databases
            with postgis in a custom schema
+  - #2244, emit warning when changing raster's georeference if raster has
+           out-db bands
 
 * Fixes *
 
