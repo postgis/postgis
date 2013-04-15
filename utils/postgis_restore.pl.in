@@ -46,6 +46,7 @@ Usage:	$me [-v] [-s schema] <dumpfile>
         Finally, pass the dump to this script and feed output to psql:
            $me MYDB.dmp | psql NEWDB
         The -v switch writes detailed report on stderr.
+        Use -s if you installed PostGIS in a custom schema.
 
 };
 
