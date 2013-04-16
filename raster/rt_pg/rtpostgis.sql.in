@@ -9,7 +9,7 @@
 -- Copyright (c) 2009-2010 Jorge Arevalo <jorge.arevalo@deimos-space.com>
 -- Copyright (c) 2009-2010 Mateusz Loskot <mateusz@loskot.net>
 -- Copyright (c) 2010 David Zwarg <dzwarg@azavea.com>
--- Copyright (C) 2011-2012 Regents of the University of California
+-- Copyright (C) 2011-2013 Regents of the University of California
 --   <bkpark@ucdavis.edu>
 --
 -- This is free software; you can redistribute and/or modify it under
@@ -4212,6 +4212,16 @@ CREATE OR REPLACE FUNCTION st_setgeoreference(rast raster, georef text, format t
     END;
     $$
     LANGUAGE 'plpgsql' IMMUTABLE STRICT; -- WITH (isstrict);
+
+CREATE OR REPLACE FUNCTION st_setgeoreference(
+	rast raster,
+	upperleftx double precision, upperlefty double precision,
+	scalex double precision, scaley double precision,
+	skewx double precision, skewy double precision
+)
+	RETURNS raster
+	AS $$ SELECT st_setgeoreference($1, array_to_string(ARRAY[$4, $7, $6, $5, $2, $3], ' ')) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
 -- ST_Tile(raster)

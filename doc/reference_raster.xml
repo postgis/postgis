@@ -5194,12 +5194,25 @@ FROM (
 		
 			<refsynopsisdiv>
 				<funcsynopsis>
+
 				  <funcprototype>
-					<funcdef>raster <function>ST_SetGeoReference</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-					<paramdef><type>text </type> <parameter>georefcoords</parameter></paramdef>
-					<paramdef choice="opt"><type>text </type> <parameter>format=GDAL</parameter></paramdef>
+						<funcdef>raster <function>ST_SetGeoReference</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>georefcoords</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>format=GDAL</parameter></paramdef>
 				  </funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_SetGeoReference</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>upperleftx</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>upperlefty</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>scalex</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>scaley</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>skewx</parameter></paramdef>
+						<paramdef><type>double precision </type> <parameter>skewy</parameter></paramdef>
+				  </funcprototype>
+
 				</funcsynopsis>
 			</refsynopsisdiv>
 		
@@ -5213,24 +5226,45 @@ FROM (
 				<para><varname>ESRI</varname>: 
 <programlisting>scalex skewy skewx scaley upperleftx + scalex*0.5 upperlefty + scaley*0.5</programlisting></para>
 
-
 				<note>
 					<para>
 						If the raster has out-db bands, changing the georeference may result in incorrect access of the band's externally stored data.
 					</para>
 				</note>
 
+				<para>Enhanced: 2.1.0 Addition of ST_SetGeoReference(raster, double precision, ...) variant</para>
+
 			</refsection>
 				
 			<refsection>
 				<title>Examples</title>
 			
-				<programlisting>UPDATE dummy_rast SET rast = ST_SetGeoReference(rast, '2 0 0 3 0.5 0.5','GDAL') 
-	WHERE rid=1;
-	
--- same coordinates set in 'ESRI' format
-UPDATE dummy_rast SET rast = ST_SetGeoReference(rast, '2 0 0 3 1.5 2','ESRI') 
-	WHERE rid=1;
+				<programlisting>
+WITH foo AS (
+	SELECT ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0) AS rast
+)
+SELECT
+	0 AS rid, (ST_Metadata(rast)).*
+FROM foo
+UNION ALL
+SELECT
+	1, (ST_Metadata(ST_SetGeoReference(rast, '10 0 0 -10 0.1 0.1', 'GDAL'))).*
+FROM foo
+UNION ALL
+SELECT
+	2, (ST_Metadata(ST_SetGeoReference(rast, '10 0 0 -10 5.1 -4.9', 'ESRI'))).*
+FROM foo
+UNION ALL
+SELECT
+	3, (ST_Metadata(ST_SetGeoReference(rast, 1, 1, 10, -10, 0.001, 0.001))).*
+FROM foo
+
+ rid |     upperleftx     |     upperlefty     | width | height | scalex | scaley | skewx | skewy | srid | numbands 
+-----+--------------------+--------------------+-------+--------+--------+--------+-------+-------+------+----------
+   0 |                  0 |                  0 |     5 |      5 |      1 |     -1 |     0 |     0 |    0 |        0
+   1 |                0.1 |                0.1 |     5 |      5 |     10 |    -10 |     0 |     0 |    0 |        0
+   2 | 0.0999999999999996 | 0.0999999999999996 |     5 |      5 |     10 |    -10 |     0 |     0 |    0 |        0
+   3 |                  1 |                  1 |     5 |      5 |     10 |    -10 | 0.001 | 0.001 |    0 |        0
 				</programlisting>	
 			</refsection>
 
