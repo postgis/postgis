@@ -49,7 +49,7 @@ SHLIB_LINK_F = ../rt_core/librtcore.a $(LIBLWGEOM_LDFLAGS) $(LIBPGCOMMON_LDFLAGS
 EXTRA_CLEAN=$(SQL_OBJS) $(DATA_built) rtpostgis_upgrade.sql
 
 # PGXS information
-PG_CONFIG = @PGCONFIG@ 
+PG_CONFIG = @PG_CONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
 

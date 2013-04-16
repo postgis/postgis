@@ -42,7 +42,7 @@ SQL_OBJS = \
 EXTRA_CLEAN=$(SQL_OBJS)
 
 # PGXS information
-PG_CONFIG = @PGCONFIG@ 
+PG_CONFIG = @PG_CONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
 

@@ -84,7 +84,7 @@ EXTRA_CLEAN=$(SQL_OBJS) \
 	postgis_upgrade_21_minor.sql 
 
 # PGXS information
-PG_CONFIG = @PGCONFIG@ 
+PG_CONFIG = @PG_CONFIG@ 
 PGXS := @PGXS@
 include $(PGXS)
 

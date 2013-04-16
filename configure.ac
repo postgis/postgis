@@ -330,27 +330,32 @@ dnl ===========================================================================
 dnl Detect the version of PostgreSQL installed on the system
 dnl ===========================================================================
 
-AC_ARG_WITH([pgconfig], 
-	[AS_HELP_STRING([--with-pgconfig=FILE], [specify an alternative pg_config file])], 
-	[PGCONFIG="$withval"], [PGCONFIG=""])
+AC_ARG_VAR(PG_CONFIG, [PostgreSQL configure command to determine Postgres version to bulid against.])
+AC_ARG_WITH([pg_config], 
+	[AS_HELP_STRING([--with-pg_config=FILE], [specify an alternative pg_config file])], 
+	[PG_CONFIG="$withval"], [])
 
-if test "x$PGCONFIG" = "x"; then
-	dnl PGCONFIG was not specified, so search within the current path
-	AC_PATH_PROG([PGCONFIG], [pg_config])
+if test "x$PG_CONFIG" = "xno"; then
+	dnl disabling pg_config doesn't make sense
+	AC_MSG_ERROR([Cannot disable pg_config.])
+
+elif test "x$PG_CONFIG" = "x"; then
+	dnl PG_CONFIG was not specified, so search within the current path
+	AC_PATH_PROG([PG_CONFIG], [pg_config])
 
 	dnl If we couldn't find pg_config, display an error
-	if test "x$PGCONFIG" = "x"; then
-		AC_MSG_ERROR([could not find pg_config within the current path. You may need to try re-running configure with a --with-pgconfig parameter.])
+	if test "x$PG_CONFIG" = "x"; then
+		AC_MSG_ERROR([could not find pg_config within the current path. You may need to try re-running configure with a --with-pg_config parameter.])
 	fi
 else
-	dnl PGCONFIG was specified; display a message to the user
-	if test "x$PGCONFIG" = "xyes"; then
-		AC_MSG_ERROR([you must specify a parameter to --with-pgconfig, e.g. --with-pgconfig=/path/to/pg_config])
+	dnl PG_CONFIG was specified; display a message to the user
+	if test "x$PG_CONFIG" = "xyes"; then
+		AC_MSG_ERROR([you must specify a parameter to --with-pg_config, e.g. --with-pg_config=/path/to/pg_config])
 	else
-		if test -f $PGCONFIG; then
-			AC_MSG_RESULT([Using user-specified pg_config file: $PGCONFIG])
+		if test -f $PG_CONFIG; then
+			AC_MSG_RESULT([Using user-specified pg_config file: $PG_CONFIG])
 		else
-			AC_MSG_ERROR([the user-specified pg_config file $PGCONFIG does not exist])
+			AC_MSG_ERROR([the user-specified pg_config file $PG_CONFIG does not exist])
 		fi
 	fi
 fi
@@ -363,7 +368,7 @@ dnl packages, but don't install the Makefile it points to unless
 dnl the postgresql-server-dev packages are installed :)
 dnl ===========================================================================
 
-PGXS=`$PGCONFIG --pgxs`
+PGXS=`$PG_CONFIG --pgxs`
 if test ! -f $PGXS; then
 	AC_MSG_ERROR([the PGXS Makefile $PGXS cannot be found. Please install the PostgreSQL server development packages and re-run configure.])
 fi
@@ -374,14 +379,14 @@ AC_SUBST([PGXS])
 dnl Extract the version information from pg_config
 dnl Note: we extract the major & minor separately, ensure they are numeric, and then combine to give
 dnl the final version. This is to guard against user error... 
-PGSQL_MAJOR_VERSION=`$PGCONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f1 | sed 's/[[^0-9]]//g'`	
-PGSQL_MINOR_VERSION=`$PGCONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f2 | sed 's/[[^0-9]]//g'`	
-PGSQL_FULL_VERSION=`$PGCONFIG --version`
+PGSQL_MAJOR_VERSION=`$PG_CONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f1 | sed 's/[[^0-9]]//g'`	
+PGSQL_MINOR_VERSION=`$PG_CONFIG --version | sed 's/[[A-Za-z ]]*//' | cut -d. -f2 | sed 's/[[^0-9]]//g'`	
+PGSQL_FULL_VERSION=`$PG_CONFIG --version`
 POSTGIS_PGSQL_VERSION="$PGSQL_MAJOR_VERSION$PGSQL_MINOR_VERSION"
 
-PGSQL_PKGLIBDIR=`$PGCONFIG --pkglibdir`
-PGSQL_LIBDIR=`$PGCONFIG --libdir`
-PGSQL_SHAREDIR=`$PGCONFIG --sharedir`
+PGSQL_PKGLIBDIR=`$PG_CONFIG --pkglibdir`
+PGSQL_LIBDIR=`$PG_CONFIG --libdir`
+PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
 
 AC_MSG_RESULT([checking PostgreSQL version... $PGSQL_FULL_VERSION])
 dnl Ensure that we are using PostgreSQL >= 9.0
@@ -401,14 +406,14 @@ AC_SUBST([PGXSOVERRIDE])
 dnl Note: We don't need the server-side LDFLAGS or CPPFLAGS because we get these from PGXS 
 
 dnl Extract the linker and include flags for the frontend (for programs that use libpq)
-PGSQL_FE_LDFLAGS=-L`$PGCONFIG --libdir`" -lpq"
-PGSQL_FE_CPPFLAGS=-I`$PGCONFIG --includedir`
+PGSQL_FE_LDFLAGS=-L`$PG_CONFIG --libdir`" -lpq"
+PGSQL_FE_CPPFLAGS=-I`$PG_CONFIG --includedir`
 
 AC_SUBST([PGSQL_FE_LDFLAGS])
 AC_SUBST([PGSQL_FE_CPPFLAGS])
 
 dnl Extract the include flags for the backend (libpgcommon)
-PGSRV_INC=`$PGCONFIG --includedir-server`
+PGSRV_INC=`$PG_CONFIG --includedir-server`
 PGSQL_BE_CPPFLAGS="-I${PGSRV_INC}"
 dnl Add $PGSRV_INC/port/win32 to MinGW build to pick up netdb.h
 case $host in
@@ -420,23 +425,23 @@ esac
 AC_SUBST([PGSQL_BE_CPPFLAGS])
 
 dnl Extract the documentation and man page directories
-PGSQL_DOCDIR=`$PGCONFIG --docdir`
-PGSQL_MANDIR=`$PGCONFIG --mandir`
+PGSQL_DOCDIR=`$PG_CONFIG --docdir`
+PGSQL_MANDIR=`$PG_CONFIG --mandir`
 
 AC_SUBST([PGSQL_DOCDIR])
 AC_SUBST([PGSQL_MANDIR])
 
 dnl Extract the locale directory
-PGSQL_LOCALEDIR=`$PGCONFIG --localedir`
+PGSQL_LOCALEDIR=`$PG_CONFIG --localedir`
 AC_DEFINE_UNQUOTED([PGSQL_LOCALEDIR], ["$PGSQL_LOCALEDIR"], [Location of PostgreSQL locale directory])
 
 dnl Extract the executable directory
-PGSQL_BINDIR=`$PGCONFIG --bindir`
+PGSQL_BINDIR=`$PG_CONFIG --bindir`
 
 AC_SUBST([PGSQL_BINDIR])
 
 dnl Extract the share directory
-PGSQL_SHAREDIR=`$PGCONFIG --sharedir`
+PGSQL_SHAREDIR=`$PG_CONFIG --sharedir`
 
 AC_SUBST([PGSQL_SHAREDIR])
 
@@ -467,7 +472,7 @@ if test "$prefix" != "NONE"; then
   AC_MSG_RESULT([------------------------------------------------------------------------])
   AC_MSG_RESULT([  WARNING: You have set the --prefix to '$prefix'. But we mostly    ])
   AC_MSG_RESULT([  ignore the --prefix. For your info, using the values determined from ])
-  AC_MSG_RESULT([  $PGCONFIG we will be installing:   ])
+  AC_MSG_RESULT([  $PG_CONFIG we will be installing:   ])
   AC_MSG_RESULT([    * postgis shared library in $PGSQL_LIBDIR ])
   AC_MSG_RESULT([    * postgis SQL files in $PGSQL_SHAREDIR/contrib/postgis-$POSTGIS_MAJOR_VERSION.$POSTGIS_MINOR_VERSION ])
   AC_MSG_RESULT([    * postgis executables in $PGSQL_BINDIR ])
@@ -1159,7 +1164,7 @@ if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
     AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
 fi
-AC_MSG_RESULT([  PostgreSQL config:    ${PGCONFIG}])
+AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])
 AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
 AC_MSG_RESULT([  Libxml2 config:       ${XML2CONFIG}])
