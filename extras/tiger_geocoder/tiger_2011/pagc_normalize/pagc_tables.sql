@@ -10,11 +10,11 @@ DECLARE var_temp text;
 BEGIN
 	var_temp := tiger.SetSearchPathForInstall('tiger'); /** set set search path to have tiger in front **/
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_gaz')  THEN
-		CREATE TABLE pagc_gaz (id serial NOT NULL primary key ,seq integer ,word character varying, stdword character varying, token integer,is_custom boolean NOT NULL default true);
+		CREATE TABLE pagc_gaz (id serial NOT NULL primary key ,seq integer ,word text, stdword text, token integer,is_custom boolean NOT NULL default true);
 		GRANT SELECT ON pagc_gaz TO public;
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_lex')  THEN
-		CREATE TABLE pagc_lex (id serial NOT NULL primary key,seq integer,word character varying,stdword character varying,token integer,is_custom boolean NOT NULL default true);
+		CREATE TABLE pagc_lex (id serial NOT NULL primary key,seq integer,word text,stdword text,token integer,is_custom boolean NOT NULL default true);
 		GRANT SELECT ON pagc_lex TO public;
 	END IF;
 	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_rules')  THEN
