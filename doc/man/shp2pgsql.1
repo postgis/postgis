@@ -28,7 +28,7 @@ the geometry will be placed in the 'geo_value' column by default.
 .LP 
 The loader has several operating modes distinguished by command line flags:
 
-(Note that -a, -c, -d and -p are mutually exclusive.)
+(Note that \-a, \-c, \-d and \-p are mutually exclusive.)
 .TP 
 \fB\-d\fR
 Drops the database table before creating a new table with the data in the 
@@ -50,8 +50,8 @@ data loading steps.
 .TP 
 \fB\-D\fR
 Use the PostgreSQL "dump" format for the output data. This can be combined 
-with -a, -c and -d. It is much faster to load than the default "insert" SQL
-format. Use this for very large data sets.
+with \-a, \-c and \-d. It is much faster to load than the default "insert"
+SQL format. Use this for very large data sets.
 .TP 
 \fB\-w\fR
 Output WKT format, instead of WKB.  Note that this can
@@ -61,12 +61,12 @@ introduce coordinate drifts due to loss of precision.
 Execute each statement on its own, without using a transaction.
 This allows loading of the majority of good data when there are some bad
 geometries that generate errors.  Note that this cannot be used with the
--D flag as the "dump" format always uses a transaction.
+\-D flag as the "dump" format always uses a transaction.
 .TP 
 \fB\-s\fR [<\fIFROM_SRID\fR>:]<\fISRID\fR>
 Creates and populates the geometry tables with the specified SRID.
 If FROM_SRID is given, the geometries will be reprojected.
-Reprojection cannot be used with -D.
+Reprojection cannot be used with \-D.
 .TP 
 \fB\-G\fR
 Use the geography type instead of geometry.  Geography is used to store
@@ -102,12 +102,12 @@ Specify NULL geometries handling policy (insert,skip,abort).
 .TP 
 \fB\-T\fR <\fItablespace\fR>
 Specify the tablespace for the new table.  Indexes will still use the
-default tablespace unless the -X parameter is also used.  The PostgreSQL
+default tablespace unless the \-X parameter is also used.  The PostgreSQL
 documentation has a good description on when to use custom tablespaces.
 .TP 
 \fB\-X\fR <\fItablespace\fR>
 Specify the tablespace for the new table's indexes.  This applies to
-the primary key index, and the GIST spatial index if -I is also used.
+the primary key index, and the GIST spatial index if \-I is also used.
 .TP 
 \fB\-?\fR
 Display version and usage information.
