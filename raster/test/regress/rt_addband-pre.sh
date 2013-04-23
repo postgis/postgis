@@ -44,6 +44,6 @@ SELECT \
 	) AS rast \
 "
 
-echo "$SQL" > $DIR/$TEST-pre.sql
+echo "$SQL" > "$DIR/$TEST-pre.sql"
 
-echo "DROP TABLE IF EXISTS raster_outdb_template;" > $DIR/$TEST-post.sql
+echo "DROP TABLE IF EXISTS raster_outdb_template;" > "$DIR/$TEST-post.sql"
