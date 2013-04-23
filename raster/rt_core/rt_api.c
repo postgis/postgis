@@ -7722,7 +7722,7 @@ rt_raster_from_hexwkb(const char* hexwkb, uint32_t hexwkbsize) {
 }
 
 static uint32_t
-rt_raster_wkb_size(rt_raster raster) {
+rt_raster_wkb_size(rt_raster raster, int outasin) {
 	uint32_t size = RT_WKB_HDR_SZ;
 	uint16_t i = 0;
 
@@ -7749,7 +7749,7 @@ rt_raster_wkb_size(rt_raster raster) {
 		/* Add space for nodata value */
 		size += pixbytes;
 
-		if (band->offline) {
+		if (!outasin && band->offline) {
 			/* Add space for band number */
 			size += 1;
 
@@ -7765,8 +7765,17 @@ rt_raster_wkb_size(rt_raster raster) {
 	return size;
 }
 
+/**
+ * Return this raster in WKB form
+ *
+ * @param raster : the raster
+ * @param outasin : if TRUE, out-db bands are treated as in-db
+ * @param wkbsize : will be set to the size of returned wkb form
+ *
+ * @return WKB of raster or NULL on error
+ */
 uint8_t *
-rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
+rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize) {
 
 #if POSTGIS_DEBUG_LEVEL > 0
 	const uint8_t *wkbend = NULL;
@@ -7782,7 +7791,7 @@ rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
 
 	RASTER_DEBUG(2, "rt_raster_to_wkb: about to call rt_raster_wkb_size");
 
-	*wkbsize = rt_raster_wkb_size(raster);
+	*wkbsize = rt_raster_wkb_size(raster, outasin);
 	RASTER_DEBUGF(3, "rt_raster_to_wkb: found size: %d", *wkbsize);
 
 	wkb = (uint8_t*) rtalloc(*wkbsize);
@@ -7831,7 +7840,7 @@ rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
 
 		/* Add band type */
 		*ptr = band->pixtype;
-		if (band->offline) *ptr |= BANDTYPE_FLAG_OFFDB;
+		if (!outasin && band->offline) *ptr |= BANDTYPE_FLAG_OFFDB;
 		if (band->hasnodata) *ptr |= BANDTYPE_FLAG_HASNODATA;
 		if (band->isnodata) *ptr |= BANDTYPE_FLAG_ISNODATA;
 		ptr += 1;
@@ -7905,7 +7914,7 @@ rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
 		assert(!((uint64_t) ptr % pixbytes));
 #endif
 
-		if (band->offline) {
+		if (!outasin && band->offline) {
 			/* Write band number */
 			*ptr = band->data.offline.bandNum;
 			ptr += 1;
@@ -7918,7 +7927,9 @@ rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
 			/* Write data */
 			uint32_t datasize = raster->width * raster->height * pixbytes;
 			RASTER_DEBUGF(4, "rt_raster_to_wkb: Copying %d bytes", datasize);
-			memcpy(ptr, band->data.mem, datasize);
+
+			memcpy(ptr, rt_band_get_data(band), datasize);
+
 			ptr += datasize;
 		}
 
@@ -7939,7 +7950,7 @@ rt_raster_to_wkb(rt_raster raster, uint32_t *wkbsize) {
 }
 
 char *
-rt_raster_to_hexwkb(rt_raster raster, uint32_t *hexwkbsize) {
+rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize) {
 	uint8_t *wkb = NULL;
 	char* hexwkb = NULL;
 	uint32_t i = 0;
@@ -7950,7 +7961,7 @@ rt_raster_to_hexwkb(rt_raster raster, uint32_t *hexwkbsize) {
 
 	RASTER_DEBUG(2, "rt_raster_to_hexwkb: calling rt_raster_to_wkb");
 
-	wkb = rt_raster_to_wkb(raster, &wkbsize);
+	wkb = rt_raster_to_wkb(raster, outasin, &wkbsize);
 
 	RASTER_DEBUG(3, "rt_raster_to_hexwkb: rt_raster_to_wkb returned");
 

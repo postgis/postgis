@@ -959,8 +959,7 @@ rt_raster rt_raster_new(uint32_t width, uint32_t height);
  *         malformed WKB).
  *
  */
-rt_raster rt_raster_from_wkb(const uint8_t* wkb,
-                             uint32_t wkbsize);
+rt_raster rt_raster_from_wkb(const uint8_t* wkb, uint32_t wkbsize);
 
 /**
  * Construct an rt_raster from a text HEXWKB representation
@@ -972,31 +971,30 @@ rt_raster rt_raster_from_wkb(const uint8_t* wkb,
  *         malformed WKB).
  *
  */
-rt_raster rt_raster_from_hexwkb(const char* hexwkb,
-                             uint32_t hexwkbsize);
+rt_raster rt_raster_from_hexwkb(const char* hexwkb, uint32_t hexwkbsize);
 
 /**
  * Return this raster in WKB form
  *
  * @param raster : the raster
+ * @param outasin : if TRUE, out-db bands are treated as in-db
  * @param wkbsize : will be set to the size of returned wkb form
  *
  * @return WKB of raster or NULL on error
  */
-uint8_t *rt_raster_to_wkb(rt_raster raster,
-                                    uint32_t *wkbsize);
+uint8_t *rt_raster_to_wkb(rt_raster raster, int outasin, uint32_t *wkbsize);
 
 /**
  * Return this raster in HEXWKB form (null-terminated hex)
  *
  * @param raster : the raster
+ * @param outasin : if TRUE, out-db bands are treated as in-db
  * @param hexwkbsize : will be set to the size of returned wkb form,
  *                     not including the null termination
  *
  * @return HEXWKB of raster or NULL on error
  */
-char *rt_raster_to_hexwkb(rt_raster raster,
-                                    uint32_t *hexwkbsize);
+char *rt_raster_to_hexwkb(rt_raster raster, int outasin, uint32_t *hexwkbsize);
 
 /**
  * Release memory associated to a raster

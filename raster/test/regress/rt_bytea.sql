@@ -167,3 +167,40 @@ WHERE
 
 -- Cleanup
 DROP TABLE rt_bytea_test;
+
+-----------------------------------------------------------------------
+--- Test out-db as in-db
+-----------------------------------------------------------------------
+WITH foo AS (
+	SELECT
+		rid,
+		ST_AsBinary(rast, FALSE) AS outout,
+		ST_AsBinary(rast, TRUE) AS outin
+	FROM raster_outdb_template
+)
+SELECT
+	rid
+FROM foo
+WHERE encode(outout, 'base64') = encode(outin, 'base64');
+WITH foo AS (
+	SELECT
+		rid,
+		rast::bytea AS outbytea,
+		ST_AsBinary(rast, FALSE) AS outout
+	FROM raster_outdb_template
+)
+SELECT
+	rid
+FROM foo
+WHERE encode(outbytea, 'base64') != encode(outout, 'base64');
+WITH foo AS (
+	SELECT
+		rid,
+		rast::bytea AS outbytea,
+		ST_AsBinary(rast, TRUE) AS outin
+	FROM raster_outdb_template
+)
+SELECT
+	rid
+FROM foo
+WHERE encode(outbytea, 'base64') = encode(outin, 'base64');

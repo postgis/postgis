@@ -858,7 +858,7 @@ Datum RASTER_out(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
-	hexwkb = rt_raster_to_hexwkb(raster, &hexwkbsize);
+	hexwkb = rt_raster_to_hexwkb(raster, FALSE, &hexwkbsize);
 	if (!hexwkb) {
 		elog(ERROR, "RASTER_out: Could not HEX-WKBize raster");
 		rt_raster_destroy(raster);
@@ -898,7 +898,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 	}
 
 	/* Parse raster to wkb object */
-	wkb = rt_raster_to_wkb(raster, &wkb_size);
+	wkb = rt_raster_to_wkb(raster, FALSE, &wkb_size);
 	if (!wkb) {
 		elog(ERROR, "RASTER_to_bytea: Could not allocate and generate WKB data");
 		rt_raster_destroy(raster);
@@ -921,7 +921,7 @@ Datum RASTER_to_bytea(PG_FUNCTION_ARGS)
 }
 
 /**
- * Return bytea object with raster requested using ST_AsBinary function.
+ * Return bytea object with raster in Well-Known-Binary form requested using ST_AsBinary function.
  */
 PG_FUNCTION_INFO_V1(RASTER_to_binary);
 Datum RASTER_to_binary(PG_FUNCTION_ARGS)
@@ -932,6 +932,7 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 	uint32_t wkb_size = 0;
 	char *result = NULL;
 	int result_size = 0;
+	int outasin = FALSE;
 
 	if (PG_ARGISNULL(0)) PG_RETURN_NULL();
 	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
@@ -944,8 +945,11 @@ Datum RASTER_to_binary(PG_FUNCTION_ARGS)
 		PG_RETURN_NULL();
 	}
 
+	if (!PG_ARGISNULL(1))
+		outasin = PG_GETARG_BOOL(1);
+
 	/* Parse raster to wkb object */
-	wkb = rt_raster_to_wkb(raster, &wkb_size);
+	wkb = rt_raster_to_wkb(raster, outasin, &wkb_size);
 	if (!wkb) {
 		elog(ERROR, "RASTER_to_binary: Could not allocate and generate WKB data");
 		rt_raster_destroy(raster);

@@ -7148,8 +7148,9 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-					<funcdef>bytea <function>ST_AsBinary</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<funcdef>bytea <function>ST_AsBinary</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>outasin=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
@@ -7157,18 +7158,27 @@ SELECT rid, ST_ValueCount(rast,2,100) As count
 			<refsection>
 				<title>Description</title>
 				
-				<para>Returns the Binary representation of the raster.  There are 2 variants of the function.  The first
-				variant takes no endian encoding parameter and defaults to little endian.  The second variant takes a second argument
-				denoting the encoding - using little-endian ('NDR') or big-endian ('XDR') encoding.</para>
-				<para>This is useful in binary cursors to pull data out of the
-				database without converting it to a string representation.</para>
-				</refsection>
+				<para>
+					Returns the Binary representation of the raster. If <varname>outasin</varname> is TRUE, out-db bands are treated as in-db.
+				</para>
+
+				<para>
+					This is useful in binary cursors to pull data out of the database without converting it to a string representation.
+				</para>
+
+				<note>
+					<para>
+						By default, WKB output contains the external file path for out-db bands. If the client does not have access to the raster file underlying an out-db band, set <varname>outasin</varname> to TRUE.</para>
+				</note>
+
+				<para>Enhanced: 2.1.0 Addition of <varname>outasin</varname></para>
+			</refsection>
 				
 				<refsection>
 					<title>Examples</title>
 				
-					<programlisting>SELECT ST_AsBinary(rast) As rastbin
-FROM dummy_rast WHERE rid=1;
+					<programlisting>
+SELECT ST_AsBinary(rast) As rastbin FROM dummy_rast WHERE rid=1;
 
 					 rastbin
 ---------------------------------------------------------------------------------

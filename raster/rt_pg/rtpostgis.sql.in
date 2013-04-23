@@ -4814,7 +4814,7 @@ CREATE OR REPLACE FUNCTION st_minpossiblevalue(pixeltype text)
 -- Raster Outputs
 -----------------------------------------------------------------------
 
-CREATE OR REPLACE FUNCTION st_asbinary(raster)
+CREATE OR REPLACE FUNCTION st_asbinary(raster, outasin boolean DEFAULT FALSE)
     RETURNS bytea
     AS 'MODULE_PATHNAME', 'RASTER_to_binary'
     LANGUAGE 'c' IMMUTABLE STRICT;

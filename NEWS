@@ -135,6 +135,8 @@ PostGIS 2.1.0
            with postgis in a custom schema
   - #2244, emit warning when changing raster's georeference if raster has
            out-db bands
+  - #2222, add parameter OutAsIn to flag whether ST_AsBinary should
+           return out-db bands as in-db bands
 
 * Fixes *
 

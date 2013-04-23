@@ -65,7 +65,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_EQUAL(rt_raster_get_width(raster), 7);
 	CU_ASSERT_EQUAL(rt_raster_get_height(raster), 8);
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %d\n", strlen(hexwkb));
 	printf("out hexwkb len: %d\n", len);
@@ -123,7 +123,7 @@ static void test_raster_wkb() {
 	CU_ASSERT_EQUAL(rt_raster_get_width(raster), 7);
 	CU_ASSERT_EQUAL(rt_raster_get_height(raster), 8);
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -187,7 +187,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 1, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -276,7 +276,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 2, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -375,7 +375,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 2, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -461,7 +461,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 2, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -525,7 +525,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_EQUAL(bandnum, 3);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);
@@ -598,7 +598,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 431, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %d\n", strlen(hexwkb));
 	printf("out hexwkb len: %d\n", len);
@@ -768,7 +768,7 @@ static void test_raster_wkb() {
 		CU_ASSERT_DOUBLE_EQUAL(val, 161, DBL_EPSILON);
 	}
 
-	out  = rt_raster_to_hexwkb(raster, &len);
+	out  = rt_raster_to_hexwkb(raster, FALSE, &len);
 /*
 	printf(" in hexwkb len: %u\n", (uint32_t) strlen(hexwkb));
 	printf("out hexwkb len: %u\n", len);

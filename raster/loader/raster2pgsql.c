@@ -1501,7 +1501,7 @@ build_overview(int idx, RTLOADERCFG *config, RASTERINFO *info, int ovx, STRINGBU
 			rt_raster_set_srid(rast, info->srid);
 
 			/* convert rt_raster to hexwkb */
-			hex = rt_raster_to_hexwkb(rast, &hexlen);
+			hex = rt_raster_to_hexwkb(rast, FALSE, &hexlen);
 			raster_destroy(rast);
 
 			if (hex == NULL) {
@@ -1818,7 +1818,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				}
 
 				/* convert rt_raster to hexwkb */
-				hex = rt_raster_to_hexwkb(rast, &hexlen);
+				hex = rt_raster_to_hexwkb(rast, FALSE, &hexlen);
 				raster_destroy(rast);
 
 				if (hex == NULL) {
@@ -1936,7 +1936,7 @@ convert_raster(int idx, RTLOADERCFG *config, RASTERINFO *info, STRINGBUFFER *til
 				}
 
 				/* convert rt_raster to hexwkb */
-				hex = rt_raster_to_hexwkb(rast, &hexlen);
+				hex = rt_raster_to_hexwkb(rast, FALSE, &hexlen);
 				raster_destroy(rast);
 
 				if (hex == NULL) {
