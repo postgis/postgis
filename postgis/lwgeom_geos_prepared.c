@@ -259,11 +259,13 @@ DeletePrepGeomHashEntry(MemoryContext mcxt)
 	/* Delete the projection object from the hash */
 	he = (PrepGeomHashEntry *) hash_search(PrepGeomHash, key, HASH_REMOVE, NULL);
 
+	if (!he)
+	{
+		elog(ERROR, "DeletePrepGeomHashEntry: There was an error removing the geometry object from this MemoryContext (%p)", (void *)mcxt);
+	}
+
 	he->prepared_geom = NULL;
 	he->geom = NULL;
-
-	if (!he)
-		elog(ERROR, "DeletePrepGeomHashEntry: There was an error removing the geometry object from this MemoryContext (%p)", (void *)mcxt);
 }
 
 /**
