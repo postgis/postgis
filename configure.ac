@@ -331,8 +331,8 @@ dnl Detect the version of PostgreSQL installed on the system
 dnl ===========================================================================
 
 AC_ARG_VAR(PG_CONFIG, [PostgreSQL configure command to determine Postgres version to bulid against.])
-AC_ARG_WITH([pg_config], 
-	[AS_HELP_STRING([--with-pg_config=FILE], [specify an alternative pg_config file])], 
+AC_ARG_WITH([pgconfig], 
+	[AS_HELP_STRING([--with-pgconfig=FILE], [specify an alternative pg_config file])], 
 	[PG_CONFIG="$withval"], [])
 
 if test "x$PG_CONFIG" = "xno"; then
@@ -350,7 +350,7 @@ elif test "x$PG_CONFIG" = "x"; then
 else
 	dnl PG_CONFIG was specified; display a message to the user
 	if test "x$PG_CONFIG" = "xyes"; then
-		AC_MSG_ERROR([you must specify a parameter to --with-pg_config, e.g. --with-pg_config=/path/to/pg_config])
+		AC_MSG_ERROR([you must specify a parameter to --with-pgconfig, e.g. --with-pgconfig=/path/to/pg_config])
 	else
 		if test -f $PG_CONFIG; then
 			AC_MSG_RESULT([Using user-specified pg_config file: $PG_CONFIG])
