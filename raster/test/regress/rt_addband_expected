@@ -108,3 +108,13 @@ NOTICE:  RASTER_copyBand: Could not add band to raster. Returning original raste
 5|64BF|0|f|
 6|2BUI|0|f|
 90
+1|1|t|t
+1|2|t|t
+1|3|t|t
+2|1|t|t
+2|2|t|t
+2|3|t|t
+3|1|f|
+3|2|t|t
+4|1|t|t
+4|2|f|

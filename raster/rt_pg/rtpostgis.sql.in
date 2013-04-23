@@ -303,6 +303,26 @@ CREATE OR REPLACE FUNCTION st_addband(
 	AS 'MODULE_PATHNAME', 'RASTER_addBandRasterArray'
 	LANGUAGE 'c' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION st_addband(
+	rast raster,
+	index int,
+	outdbfile text, outdbindex int[],
+	nodataval double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_addBandOutDB'
+	LANGUAGE 'c' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_addband(
+	rast raster,
+	outdbfile text, outdbindex int[],
+	index int DEFAULT NULL,
+	nodataval double precision DEFAULT NULL
+)
+	RETURNS raster
+	AS $$ SELECT ST_AddBand($1, $4, $2, $3, $5) $$
+	LANGUAGE 'sql' IMMUTABLE;
+
 -----------------------------------------------------------------------
 -- Constructor ST_Band
 -----------------------------------------------------------------------

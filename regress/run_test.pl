@@ -30,11 +30,11 @@ if ( @ARGV < 1 )
 # Global configuration items
 ##################################################################
 
-my $DB = "postgis_reg";
-my $REGDIR = abs_path(dirname($0));
-my $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
-my $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
-my $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
+our $DB = "postgis_reg";
+our $REGDIR = abs_path(dirname($0));
+our $SHP2PGSQL = $REGDIR . "/../loader/shp2pgsql";
+our $PGSQL2SHP = $REGDIR . "/../loader/pgsql2shp";
+our $RASTER2PGSQL = $REGDIR . "/../raster/loader/raster2pgsql";
 
 
 ##################################################################
@@ -493,10 +493,11 @@ sub eval_file
     my $pl;
     if ( -r $file )
     {
-        open(PL, $file);
-        $pl = <PL>;
-        close(PL);
-        eval($pl);
+        #open(PL, $file);
+        #$pl = <PL>;
+        #close(PL);
+        #eval($pl);
+				do $file;
     }
 }
 

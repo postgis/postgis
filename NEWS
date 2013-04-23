@@ -79,6 +79,7 @@ PostGIS 2.1.0
   - #2228, TopoJSON output for TopoGeometry (Sandro Santilli / Vizzuality)
   - #2123, ST_FromGDALRaster
   - #613, ST_SetGeoReference with numerical parameters instead of text
+  - #2276, ST_AddBand(raster) variant for out-db bands
 
 * Enhancements *
 
@@ -118,11 +119,12 @@ PostGIS 2.1.0
   - #2148, Addition of coverage_tile constraint for raster
   - #2149, Addition of spatially_unique constraint for raster
   - TopologySummary output now includes unregistered layers and a count
-    of missing TopoGeometry objects from their natural layer.
+           of missing TopoGeometry objects from their natural layer.
   - ST_HillShade(), ST_Aspect() and ST_Slope() have one new optional 
-    parameter to interpolate NODATA pixels before running the operation.
+           parameter to interpolate NODATA pixels before running the
+           operation.
   - Point variant of ST_SetValue(raster) is now a wrapper around geomval 
-    variant of ST_SetValues(rast).
+           variant of ST_SetValues(rast).
   - Proper support for raster band's isnodata flag in core API and loader.
   - Additional default values for parameters of ST_Aspect and ST_HillShade
   - #2178, ST_Summary now advertises presence of known srid with an [S] flag

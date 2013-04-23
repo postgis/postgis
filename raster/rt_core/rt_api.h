@@ -2071,6 +2071,18 @@ rt_util_gdal_convert_sr(const char *srs, int proj4);
 int
 rt_util_gdal_supported_sr(const char *srs);
 
+/**
+ * Get auth name and code
+ *
+ * @param authname: authority organization of code. calling function
+ * is expected to free the memory allocated for value
+ * @param authcode: code assigned by authority organization. calling function
+ * is expected to free the memory allocated for value
+ *
+ * @return ES_NONE on success, ES_ERROR on error
+ */
+rt_errorstate rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode);
+
 /*
 	is GDAL configured correctly?
 */

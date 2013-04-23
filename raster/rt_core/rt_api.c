@@ -367,6 +367,62 @@ rt_util_gdal_supported_sr(const char *srs) {
 		return 0;
 }
 
+/**
+ * Get auth name and code
+ *
+ * @param authname: authority organization of code. calling function
+ * is expected to free the memory allocated for value
+ * @param authcode: code assigned by authority organization. calling function
+ * is expected to free the memory allocated for value
+ *
+ * @return ES_NONE on success, ES_ERROR on error
+ */
+rt_errorstate
+rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode) {
+	const char *srs = NULL;
+
+	assert(authname != NULL);
+	assert(authcode != NULL);
+
+	*authname = NULL;
+	*authcode = NULL;
+
+	srs = GDALGetProjectionRef(hds);
+	if (srs != NULL && srs[0] != '\0') {
+		OGRSpatialReferenceH hSRS = OSRNewSpatialReference(NULL);
+
+		if (OSRSetFromUserInput(hSRS, srs) == OGRERR_NONE) {
+			const char* pszAuthorityName = OSRGetAuthorityName(hSRS, NULL);
+			const char* pszAuthorityCode = OSRGetAuthorityCode(hSRS, NULL);
+
+			if (pszAuthorityName != NULL && pszAuthorityCode != NULL) {
+				*authname = rtalloc(sizeof(char) * (strlen(pszAuthorityName) + 1));
+				*authcode = rtalloc(sizeof(char) * (strlen(pszAuthorityCode) + 1));
+
+				if (*authname == NULL || *authcode == NULL) {
+					rterror("rt_util_gdal_sr_auth_info: Unable to allocate memory for auth name and code");
+					if (*authname != NULL) rtdealloc(*authname);
+					if (*authcode != NULL) rtdealloc(*authcode);
+					OSRDestroySpatialReference(hSRS);
+					return ES_ERROR;
+				}
+
+				strncpy(*authname, pszAuthorityName, strlen(pszAuthorityName) + 1);
+				strncpy(*authcode, pszAuthorityCode, strlen(pszAuthorityCode) + 1);
+			}
+			else {
+				rtinfo("Cound not get auth name and code. The SRS may be custom");
+				OSRDestroySpatialReference(hSRS);
+				return ES_NONE;
+			}
+		}
+
+		OSRDestroySpatialReference(hSRS);
+	}
+
+	return ES_NONE;
+}
+
 /*
 	is GDAL configured correctly?
 */
@@ -1663,11 +1719,11 @@ rt_band_load_offline_data(rt_band band) {
 	_rast = rt_raster_new(1, 1);
 	rt_raster_set_geotransform_matrix(_rast, ogt);
 	rt_raster_set_srid(_rast, band->raster->srid);
-	err =rt_raster_same_alignment(band->raster, _rast, &aligned, NULL);
+	err = rt_raster_same_alignment(band->raster, _rast, &aligned, NULL);
 	rt_raster_destroy(_rast);
 
 	if (err != ES_NONE) {
-		rterror("rt_band_load_offline_data: : Could not test alignment of in-db representation of out-db raster");
+		rterror("rt_band_load_offline_data: Could not test alignment of in-db representation of out-db raster");
 		GDALClose(hdsSrc);
 		return ES_ERROR;
 	}
@@ -9146,9 +9202,8 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	uint32_t height = 0;
 	uint32_t numBands = 0;
 	int i = 0;
-	int status;
-
-	const char *srs = NULL;
+	char *authname = NULL;
+	char *authcode = NULL;
 
 	GDALRasterBandH gdband = NULL;
 	GDALDataType gdpixtype = GDT_Unknown;
@@ -9156,7 +9211,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 	int32_t idx;
 	rt_pixtype pt = PT_END;
 	uint32_t ptlen = 0;
-	uint32_t hasnodata = 0;
+	int hasnodata = 0;
 	double nodataval;
 
 	int x;
@@ -9207,22 +9262,20 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		gt[0], gt[1], gt[2], gt[3], gt[4], gt[5]);
 
 	/* srid */
-	srs = GDALGetProjectionRef(ds);
-	if (srs != NULL && srs[0] != '\0') {
-		OGRSpatialReferenceH hSRS = OSRNewSpatialReference(NULL);
-		if (OSRSetFromUserInput(hSRS, srs) == OGRERR_NONE) {
-			const char* pszAuthorityName = OSRGetAuthorityName(hSRS, NULL);
-			const char* pszAuthorityCode = OSRGetAuthorityCode(hSRS, NULL);
-			if (
-				pszAuthorityName != NULL &&
-				strcmp(pszAuthorityName, "EPSG") == 0 &&
-				pszAuthorityCode != NULL
-			) {
-				rt_raster_set_srid(rast, atoi(pszAuthorityCode));
-				RASTER_DEBUGF(3, "New raster's SRID = %d", rast->srid);
-			}
+	if (rt_util_gdal_sr_auth_info(ds, &authname, &authcode) == ES_NONE) {
+		if (
+			authname != NULL &&
+			strcmp(authname, "EPSG") == 0 &&
+			authcode != NULL
+		) {
+			rt_raster_set_srid(rast, atoi(authcode));
+			RASTER_DEBUGF(3, "New raster's SRID = %d", rast->srid);
 		}
-		OSRDestroySpatialReference(hSRS);
+
+		if (authname != NULL)
+			rtdealloc(authname);
+		if (authcode != NULL)
+			rtdealloc(authcode);
 	}
 
 	numBands = GDALGetRasterCount(ds);
@@ -9270,13 +9323,7 @@ rt_raster_from_gdal_dataset(GDALDatasetH ds) {
 		RASTER_DEBUGF(3, "GDAL band dimensions (width x height): %d x %d", width, height);
 
 		/* nodata */
-		nodataval = GDALGetRasterNoDataValue(gdband, &status);
-		if (!status) {
-			nodataval = 0;
-			hasnodata = 0;
-		}
-		else
-			hasnodata = 1;
+		nodataval = GDALGetRasterNoDataValue(gdband, &hasnodata);
 		RASTER_DEBUGF(3, "(hasnodata, nodataval) = (%d, %f)", hasnodata, nodataval);
 
 		/* create band object */

@@ -286,6 +286,7 @@ Datum RASTER_makeEmpty(PG_FUNCTION_ARGS);
 Datum RASTER_addBand(PG_FUNCTION_ARGS);
 Datum RASTER_copyBand(PG_FUNCTION_ARGS);
 Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS);
+Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS);
 Datum RASTER_tile(PG_FUNCTION_ARGS);
 
 /* create new raster from existing raster's bands */
@@ -5399,6 +5400,364 @@ Datum RASTER_addBandRasterArray(PG_FUNCTION_ARGS)
 	}
 
 	PG_RETURN_NULL();
+}
+
+/**
+ * Add out-db band to the given raster at the given position
+ */
+PG_FUNCTION_INFO_V1(RASTER_addBandOutDB);
+Datum RASTER_addBandOutDB(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rt_pgraster *pgrtn = NULL;
+
+	rt_raster raster = NULL;
+	rt_band band = NULL;
+	int numbands = 0;
+	int dstnband = 1; /* 1-based */
+	int appendband = FALSE;
+	char *outdbfile = NULL;
+	int *srcnband = NULL; /* 1-based */
+	int numsrcnband = 0;
+	int allbands = FALSE;
+	int hasnodata = FALSE;
+	double nodataval = 0.;
+	uint16_t width = 0;
+	uint16_t height = 0;
+	char *authname = NULL;
+	char *authcode = NULL;
+
+	int i = 0;
+	int j = 0;
+
+	GDALDatasetH hdsOut;
+	GDALRasterBandH hbandOut;
+	GDALDataType gdpixtype;
+
+	rt_pixtype pt = PT_END;
+	double gt[6] = {0.};
+	double ogt[6] = {0.};
+	rt_raster _rast = NULL;
+	int aligned = 0;
+	int err = 0;
+
+	/* destination raster */
+	if (!PG_ARGISNULL(0)) {
+		pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+		/* raster */
+		raster = rt_raster_deserialize(pgraster, FALSE);
+		if (!raster) {
+			elog(ERROR, "RASTER_addBandOutDB: Could not deserialize destination raster");
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		POSTGIS_RT_DEBUG(4, "destination raster isn't NULL");
+	}
+
+	/* destination band index (1) */
+	if (!PG_ARGISNULL(1))
+		dstnband = PG_GETARG_INT32(1);
+	else
+		appendband = TRUE;
+
+	/* outdb file (2) */
+	if (PG_ARGISNULL(2)) {
+		elog(NOTICE, "Out-db raster file not provided. Returning original raster");
+		if (pgraster != NULL) {
+			rt_raster_destroy(raster);
+			PG_RETURN_POINTER(pgraster);
+		}
+		else
+			PG_RETURN_NULL();
+	}
+	else {
+		outdbfile = text_to_cstring(PG_GETARG_TEXT_P(2));
+		if (!strlen(outdbfile)) {
+			elog(NOTICE, "Out-db raster file not provided. Returning original raster");
+			if (pgraster != NULL) {
+				rt_raster_destroy(raster);
+				PG_RETURN_POINTER(pgraster);
+			}
+			else
+				PG_RETURN_NULL();
+		}
+	}
+
+	/* outdb band index (3) */
+	if (!PG_ARGISNULL(3)) {
+		ArrayType *array;
+		Oid etype;
+		Datum *e;
+		bool *nulls;
+
+		int16 typlen;
+		bool typbyval;
+		char typalign;
+
+		allbands = FALSE;
+
+		array = PG_GETARG_ARRAYTYPE_P(3);
+		etype = ARR_ELEMTYPE(array);
+		get_typlenbyvalalign(etype, &typlen, &typbyval, &typalign);
+
+		switch (etype) {
+			case INT2OID:
+			case INT4OID:
+				break;
+			default:
+				elog(ERROR, "RASTER_addBandOutDB: Invalid data type for band indexes");
+				if (pgraster != NULL) {
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+				}
+				PG_RETURN_NULL();
+				break;
+		}
+
+		deconstruct_array(array, etype, typlen, typbyval, typalign, &e, &nulls, &numsrcnband);
+
+		srcnband = palloc(sizeof(int) * numsrcnband);
+		if (srcnband == NULL) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to allocate memory for band indexes");
+			if (pgraster != NULL) {
+				rt_raster_destroy(raster);
+				PG_FREE_IF_COPY(pgraster, 0);
+			}
+			PG_RETURN_NULL();
+		}
+
+		for (i = 0, j = 0; i < numsrcnband; i++) {
+			if (nulls[i]) continue;
+
+			switch (etype) {
+				case INT2OID:
+					srcnband[j] = DatumGetInt16(e[i]);
+					break;
+				case INT4OID:
+					srcnband[j] = DatumGetInt32(e[i]);
+					break;
+			}
+			j++;
+		}
+
+		if (j < numsrcnband) {
+			srcnband = repalloc(srcnband, sizeof(int) * j);
+			if (srcnband == NULL) {
+				elog(ERROR, "RASTER_addBandOutDB: Unable to reallocate memory for band indexes");
+				if (pgraster != NULL) {
+					rt_raster_destroy(raster);
+					PG_FREE_IF_COPY(pgraster, 0);
+				}
+				PG_RETURN_NULL();
+			}
+
+			numsrcnband = j;
+		}
+	}
+	else
+		allbands = TRUE;
+
+	/* nodataval (4) */
+	if (!PG_ARGISNULL(4)) {
+		hasnodata = TRUE;
+		nodataval = PG_GETARG_FLOAT8(4);
+	}
+	else
+		hasnodata = FALSE;
+
+	/* validate input */
+
+	/* make sure dstnband is valid */
+	if (raster != NULL) {
+		numbands = rt_raster_get_num_bands(raster);
+		if (!appendband) {
+			if (dstnband < 1) {
+				elog(NOTICE, "Invalid band index %d for adding bands. Using band index 1", dstnband);
+				dstnband = 1;
+			}
+			else if (dstnband > numbands) {
+				elog(NOTICE, "Invalid band index %d for adding bands. Using band index %d", dstnband, numbands);
+				dstnband = numbands + 1; 
+			}
+		}
+		else
+			dstnband = numbands + 1; 
+	}
+
+	/* open outdb raster file */
+	rt_util_gdal_register_all();
+	hdsOut = GDALOpenShared(outdbfile, GA_ReadOnly);
+	if (hdsOut == NULL) {
+		elog(ERROR, "RASTER_addBandOutDB: Could not open out-db file with GDAL");
+		if (pgraster != NULL) {
+			rt_raster_destroy(raster);
+			PG_FREE_IF_COPY(pgraster, 0);
+		}
+		PG_RETURN_NULL();
+	}
+
+	/* get offline raster's geotransform */
+	if (GDALGetGeoTransform(hdsOut, ogt) != CE_None) {
+		ogt[0] = 0;
+		ogt[1] = 1;
+		ogt[2] = 0;
+		ogt[3] = 0;
+		ogt[4] = 0;
+		ogt[5] = -1;
+	}
+
+	/* raster doesn't exist, create it now */
+	if (raster == NULL) {
+		raster = rt_raster_new(GDALGetRasterXSize(hdsOut), GDALGetRasterYSize(hdsOut));
+		if (rt_raster_is_empty(raster)) {
+			elog(ERROR, "RASTER_addBandOutDB: Could not create new raster");
+			PG_RETURN_NULL();
+		}
+		rt_raster_set_geotransform_matrix(raster, ogt);
+		rt_raster_get_geotransform_matrix(raster, gt);
+
+		if (rt_util_gdal_sr_auth_info(hdsOut, &authname, &authcode) == ES_NONE) {
+			if (
+				authname != NULL &&
+				strcmp(authname, "EPSG") == 0 &&
+				authcode != NULL
+			) {
+				rt_raster_set_srid(raster, atoi(authcode));
+			}
+			else
+				elog(INFO, "Unknown SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
+		}
+		else
+			elog(INFO, "Unable to get SRS auth name and code from out-db file. Defaulting SRID of new raster to %d", SRID_UNKNOWN);
+	}
+
+	/* some raster info */
+	width = rt_raster_get_width(raster);
+	height = rt_raster_get_width(raster);
+
+	/* are rasters aligned? */
+	_rast = rt_raster_new(1, 1);
+	rt_raster_set_geotransform_matrix(_rast, ogt);
+	rt_raster_set_srid(_rast, rt_raster_get_srid(raster));
+	err = rt_raster_same_alignment(raster, _rast, &aligned, NULL);
+	rt_raster_destroy(_rast);
+
+	if (err != ES_NONE) {
+		elog(ERROR, "RASTER_addBandOutDB: Could not test alignment of out-db file");
+		GDALClose(hdsOut);
+		if (raster != NULL)
+			rt_raster_destroy(raster);
+		if (pgraster != NULL)
+			PG_FREE_IF_COPY(pgraster, 0);
+		return ES_ERROR;
+	}
+	else if (!aligned)
+		elog(WARNING, "The in-db representation of the out-db raster is not aligned. Band data may be incorrect");
+
+	numbands = GDALGetRasterCount(hdsOut);
+
+	/* build up srcnband */
+	if (allbands) {
+		numsrcnband = numbands;
+		srcnband = palloc(sizeof(int) * numsrcnband);
+		if (srcnband == NULL) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to allocate memory for band indexes");
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		for (i = 0, j = 1; i < numsrcnband; i++, j++)
+			srcnband[i] = j;
+	}
+
+	/* check band properties and add band */
+	for (i = 0, j = dstnband - 1; i < numsrcnband; i++, j++) {
+		/* valid index? */
+		if (srcnband[i] < 1 || srcnband[i] > numbands) {
+			elog(NOTICE, "Out-db file does not have a band at index %d. Returning original raster", srcnband[i]);
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_RETURN_POINTER(pgraster);
+			else
+				PG_RETURN_NULL();
+		}
+
+		/* get outdb band */
+		hbandOut = NULL;
+		hbandOut = GDALGetRasterBand(hdsOut, srcnband[i]);
+		if (NULL == hbandOut) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to get band %d from GDAL dataset", srcnband[i]);
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		/* supported pixel type */
+		gdpixtype = GDALGetRasterDataType(hbandOut);
+		pt = rt_util_gdal_datatype_to_pixtype(gdpixtype);
+		if (pt == PT_END) {
+			elog(NOTICE, "Pixel type %s of band %d from GDAL dataset is not supported. Returning original raster", GDALGetDataTypeName(gdpixtype), srcnband[i]);
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_RETURN_POINTER(pgraster);
+			else
+				PG_RETURN_NULL();
+		}
+
+		/* use out-db band's nodata value if nodataval not already set */
+		if (!hasnodata)
+			nodataval = GDALGetRasterNoDataValue(hbandOut, &hasnodata);
+
+		/* add band */
+		band = rt_band_new_offline(
+			width, height,
+			pt,
+			hasnodata, nodataval,
+			srcnband[i] - 1, outdbfile
+		);
+		if (band == NULL) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to create new out-db band");
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		if (rt_raster_add_band(raster, band, j) < 0) {
+			elog(ERROR, "RASTER_addBandOutDB: Unable to add new out-db band to raster");
+			GDALClose(hdsOut);
+			if (raster != NULL)
+				rt_raster_destroy(raster);
+			if (pgraster != NULL)
+				PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+	}
+
+	pgrtn = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+	if (pgraster != NULL)
+		PG_FREE_IF_COPY(pgraster, 0);
+	if (!pgrtn)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgrtn, pgrtn->size);
+	PG_RETURN_POINTER(pgrtn);
 }
 
 /**
