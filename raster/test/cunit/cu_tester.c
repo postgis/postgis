@@ -233,6 +233,11 @@ rt_band cu_add_band(rt_raster raster, rt_pixtype pixtype, int hasnodata, double 
 	mem = rtalloc(datasize);
 	CU_ASSERT(mem != NULL);
 
+	if (hasnodata)
+		memset(mem, nodataval, datasize);
+	else
+		memset(mem, 0, datasize);
+
 	band = rt_band_new_inline(width, height, pixtype, hasnodata, nodataval, mem);
 	CU_ASSERT(band != NULL);
 	rt_band_set_ownsdata_flag(band, 1);
