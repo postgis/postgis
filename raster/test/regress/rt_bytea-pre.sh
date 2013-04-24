@@ -4,6 +4,12 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 FILERASTER="$DIR/loader/testraster.tif"
 
+# special handling for msys
+CSYS=`uname -o | tr '[:upper:]' '[:lower:]'`
+if [ "$CSYS" == "msys" ]; then
+	FILERASTER=`cmd //c echo "${FILERASTER}"`
+fi
+
 SQL=" \
 DROP TABLE IF EXISTS raster_outdb_template; \
 CREATE TABLE raster_outdb_template AS \

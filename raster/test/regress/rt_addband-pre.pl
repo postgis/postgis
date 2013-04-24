@@ -5,6 +5,13 @@ my $REGDIR = abs_path(dirname($0));
 my $RASTERDIR = abs_path($REGDIR . "/../raster/test/regress");
 my $FILERASTER = $RASTERDIR . "/loader/testraster.tif";
 
+# special handling for msys
+if (lc($^O) eq "msys") {
+	$FILERASTER = `cmd //c echo "$FILERASTER"`;
+	$FILERASTER =~ s/^\s+//;
+	$FILERASTER =~ s/\s+$//;
+}
+
 my $sql = <<"END";
 DROP TABLE IF EXISTS raster_outdb_template;
 CREATE TABLE raster_outdb_template AS
