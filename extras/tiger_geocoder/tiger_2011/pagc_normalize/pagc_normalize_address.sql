@@ -26,11 +26,12 @@ BEGIN
   result.stateAbbrev := trim(var_parse_rec.state);
   result.zip := var_parse_rec.zip;
 
-  var_rec := (SELECT standardize_address( 'select seq, word::text, stdword::text, token from tiger.pagc_gaz union all select seq, word::text, stdword::text, token from tiger.pagc_lex '
-       , 'select seq, word::text, stdword::text, token from tiger.pagc_gaz order by id'
-       , 'select * from tiger.pagc_rules order by id'
-, 'select 0::int4 as id, ' || quote_literal(COALESCE(var_parse_rec.address1,'')) || '::text As micro, 
-   ' || quote_literal(COALESCE(var_parse_rec.city || ', ','') || COALESCE(var_parse_rec.state || ' ', '') || COALESCE(var_parse_rec.zip,'')) || '::text As macro') As pagc_addr ) ;
+ var_rec := standardize_address('pagc_lex'
+       , 'pagc_gaz'
+       , 'pagc_rules'
+, COALESCE(var_parse_rec.address1,''), 
+   COALESCE(var_parse_rec.city || ', ','') || COALESCE(var_parse_rec.state || ' ', '') || COALESCE(var_parse_rec.zip,'') ) ;
+ 
  -- For address number only put numbers and stop if reach a non-number e.g. 123-456 will return 123
   result.address := to_number(substring(var_rec.house_num, '[0-9]+'), '99999999999');
    --get rid of extraneous spaces before we return

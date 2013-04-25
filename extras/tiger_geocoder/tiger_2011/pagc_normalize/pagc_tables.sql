@@ -21,6 +21,13 @@ BEGIN
 		CREATE TABLE pagc_rules (id serial NOT NULL primary key,rule text);
 		GRANT SELECT ON pagc_rules TO public;
 	END IF;
+	IF NOT EXISTS(SELECT table_name FROM information_schema.columns WHERE table_schema = 'tiger' AND table_name = 'pagc_gaz' AND data_type='text')  THEN
+	-- its probably old table structure change type of lex and gaz columns
+		ALTER TABLE tiger.pagc_lex ALTER COLUMN word TYPE text;
+		ALTER TABLE tiger.pagc_lex ALTER COLUMN stdword TYPE text;
+		ALTER TABLE tiger.pagc_gaz ALTER COLUMN word TYPE text;
+		ALTER TABLE tiger.pagc_gaz ALTER COLUMN stdword TYPE text;
+	END IF;
 END;
 $$
 language plpgsql;
