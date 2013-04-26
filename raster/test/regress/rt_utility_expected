@@ -31,3 +31,23 @@ test 11.8|t
 test 11.9|t
 test 11.10|t
 test 11.11|t
+Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)
+    band 1 of pixtype 8BUI is in-db with NODATA value of 0
+    band 2 of pixtype 32BF is in-db with NODATA value of -9999
+    band 3 of pixtype 16BSI is in-db with no NODATA value
+Skewed raster of 10x10 pixels has 1 band and extent of BOX(0 -10,10 0.0001)
+    band 1 of pixtype 8BUI is in-db with NODATA value of 0
+1|Raster of 90x90 pixels has 3 bands and extent of BOX(0 -90,90 0)
+    band 1 of pixtype 8BUI is out-db with no NODATA value
+    band 2 of pixtype 8BUI is out-db with no NODATA value
+    band 3 of pixtype 8BUI is out-db with no NODATA value
+2|Raster of 90x90 pixels has 3 bands and extent of BOX(0 -90,90 0)
+    band 1 of pixtype 8BUI is out-db with no NODATA value
+    band 2 of pixtype 8BUI is out-db with no NODATA value
+    band 3 of pixtype 8BUI is out-db with no NODATA value
+3|Raster of 90x90 pixels has 2 bands and extent of BOX(0 -90,90 0)
+    band 1 of pixtype 8BUI is in-db with NODATA value of 0
+    band 2 of pixtype 8BUI is out-db with no NODATA value
+4|Raster of 90x90 pixels has 2 bands and extent of BOX(0 -90,90 0)
+    band 1 of pixtype 8BUI is out-db with NODATA value of 255
+    band 2 of pixtype 8BUI is in-db with NODATA value of 0

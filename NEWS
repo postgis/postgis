@@ -80,6 +80,7 @@ PostGIS 2.1.0
   - #2123, ST_FromGDALRaster
   - #613, ST_SetGeoReference with numerical parameters instead of text
   - #2276, ST_AddBand(raster) variant for out-db bands
+  - #2280, ST_Summary(raster)
 
 * Enhancements *
 

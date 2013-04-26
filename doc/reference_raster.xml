@@ -1986,7 +1986,54 @@ FROM dummy_rast;
 				<para><xref linkend="RT_ST_Width" /></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_IsEmpty">
+			<refnamediv>
+				<refname>ST_IsEmpty</refname>
+				<refpurpose>Returns true if the raster is empty (width = 0 and height = 0). Otherwise, returns false.</refpurpose>
+			</refnamediv>
 		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>boolean <function>ST_IsEmpty</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+			    </funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns true if the raster is empty (width = 0 and height = 0). Otherwise, returns false.</para>
+
+				<para>Availability: 2.0.0</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples</title>
+			
+				<programlisting>SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))
+st_isempty |
+-----------+
+f          |
+                       
+                        
+SELECT ST_IsEmpty(ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0))
+st_isempty |
+-----------+
+t          |
+
+                </programlisting>	
+			</refsection>
+		
+			<!-- Optionally add a "See Also" section -->
+			<refsection>
+				<title>See Also</title>
+				<para><xref linkend="RT_ST_HasNoBand" /></para>
+			</refsection>
+		</refentry>
+
 		<refentry id="RT_ST_MetaData">
 			<refnamediv>
 				<refname>ST_MetaData</refname>
@@ -2719,6 +2766,66 @@ srid
 				<para><xref linkend="spatial_ref_sys" />, <xref linkend="ST_SRID" /></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_Summary">
+			<refnamediv>
+				<refname>ST_Summary</refname>
+				<refpurpose>Returns a text summary of the contents of the raster.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+					<funcdef>text <function>ST_Summary</function></funcdef>
+					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns a text summary of the contents of the raster.</para>
+
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+SELECT ST_Summary(
+	ST_AddBand(
+		ST_AddBand(
+			ST_AddBand(
+				ST_MakeEmptyRaster(10, 10, 0, 0, 1, -1, 0, 0, 0)
+				, 1, '8BUI', 1, 0
+			)
+			, 2, '32BF', 0, -9999
+		)
+		, 3, '16BSI', 0, NULL
+	)
+);
+
+                            st_summary                            
+------------------------------------------------------------------
+ Raster of 10x10 pixels has 3 bands and extent of BOX(0 -10,10 0)+
+     band 1 of pixtype 8BUI is in-db with NODATA value of 0      +
+     band 2 of pixtype 32BF is in-db with NODATA value of -9999  +
+     band 3 of pixtype 16BSI is in-db with no NODATA value
+(1 row)
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MetaData" />,
+					<xref linkend="RT_ST_BandMetaData" />,
+					<xref linkend="ST_Summary" />
+					<xref linkend="ST_Extent" />
+				</para>
+			</refsection>
+		</refentry>
 	
 		<refentry id="RT_ST_UpperLeftX">
 			<refnamediv>
@@ -3036,52 +3143,6 @@ FROM dummy_rast;
 			</refsection>
 		</refentry>
 
-		<refentry id="RT_ST_IsEmpty">
-			<refnamediv>
-				<refname>ST_IsEmpty</refname>
-				<refpurpose>Returns true if the raster is empty (width = 0 and height = 0). Otherwise, returns false.</refpurpose>
-			</refnamediv>
-		
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-					<funcdef>boolean <function>ST_IsEmpty</function></funcdef>
-					<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-				  </funcprototype>
-			    </funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns true if the raster is empty (width = 0 and height = 0). Otherwise, returns false.</para>
-
-				<para>Availability: 2.0.0</para>
-			</refsection>
-				
-			<refsection>
-				<title>Examples</title>
-			
-				<programlisting>SELECT ST_IsEmpty(ST_MakeEmptyRaster(100, 100, 0, 0, 0, 0, 0, 0))
-st_isempty |
------------+
-f          |
-                       
-                        
-SELECT ST_IsEmpty(ST_MakeEmptyRaster(0, 0, 0, 0, 0, 0, 0, 0))
-st_isempty |
------------+
-t          |
-
-                </programlisting>	
-			</refsection>
-		
-			<!-- Optionally add a "See Also" section -->
-			<refsection>
-				<title>See Also</title>
-				<para><xref linkend="RT_ST_HasNoBand" /></para>
-			</refsection>
-		</refentry>
 	</sect1>
 	
 	<sect1 id="RasterBand_Accessors">

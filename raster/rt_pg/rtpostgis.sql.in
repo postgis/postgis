@@ -212,6 +212,59 @@ CREATE OR REPLACE FUNCTION st_metadata(
 	AS 'MODULE_PATHNAME', 'RASTER_metadata'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+CREATE OR REPLACE FUNCTION st_summary(rast raster)
+	RETURNS text
+	AS $$
+	DECLARE
+		extent box2d;
+		metadata record;
+		bandmetadata record;
+		msg text;
+		msgset text[];
+	BEGIN
+		extent := ST_Extent(rast::geometry);
+		metadata := ST_Metadata(rast);
+
+		msg := 'Raster of ' || metadata.width || 'x' || metadata.height || ' pixels has ' || metadata.numbands || ' ';
+
+		IF metadata.numbands = 1 THEN
+			msg := msg || 'band ';
+		ELSE
+			msg := msg || 'bands ';
+		END IF;
+		msg := msg || 'and extent of ' || extent;
+
+		IF
+			metadata.skewx::numeric(16, 10) <> 0::numeric(16, 10) OR 
+			metadata.skewy::numeric(16, 10) <> 0::numeric(16, 10)
+		THEN
+			msg := 'Skewed ' || overlay(msg placing 'r' from 1 for 1);
+		END IF;
+
+		msgset := Array[]::text[] || msg;
+
+		FOR bandmetadata IN SELECT * FROM ST_BandMetadata(rast, ARRAY[]::int[]) LOOP
+			msg := 'band ' || bandmetadata.bandnum || ' of pixtype ' || bandmetadata.pixeltype || ' is ';
+			IF bandmetadata.isoutdb IS FALSE THEN
+				msg := msg || 'in-db ';
+			ELSE
+				msg := msg || 'out-db ';
+			END IF;
+
+			msg := msg || 'with ';
+			IF bandmetadata.nodatavalue IS NOT NULL THEN
+				msg := msg || 'NODATA value of ' || bandmetadata.nodatavalue;
+			ELSE
+				msg := msg || 'no NODATA value';
+			END IF;
+
+			msgset := msgset || ('    ' || msg);
+		END LOOP;
+
+		RETURN array_to_string(msgset, E'\n');
+	END;
+	$$ LANGUAGE 'plpgsql' STABLE STRICT;
+
 -----------------------------------------------------------------------
 -- Constructor ST_MakeEmptyRaster
 -----------------------------------------------------------------------
