@@ -48,13 +48,13 @@ BEGIN
 	-- fix geography ops --
 	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprrest::text = 'geography_gist_selectivity') THEN
 	--it is bound to old name, drop new, rename old to new, install will fix body of code
-		DROP FUNCTION IF EXISTS gserialized_gist_sel_nd(internal, oid, internal, smallint) ;
+		DROP FUNCTION IF EXISTS gserialized_gist_sel_nd(internal, oid, internal, int4) ;
 		ALTER FUNCTION geography_gist_selectivity(internal, oid, internal, int4) RENAME TO gserialized_gist_sel_nd;
 	END IF;
 	
 	IF EXISTS(SELECT oprname from pg_operator where oprname = '&&' AND oprjoin::text = 'geography_gist_join_selectivity') THEN
 	--it is bound to old name, drop new, rename old to new, install will fix body of code
-		DROP FUNCTION IF EXISTS gserialized_gist_joinsel_nd(internal, oid, internal, int4) ;
+		DROP FUNCTION IF EXISTS gserialized_gist_joinsel_nd(internal, oid, internal, smallint) ;
 		ALTER FUNCTION geography_gist_join_selectivity(internal, oid, internal, smallint) RENAME TO gserialized_gist_joinsel_nd;
 	END IF;
 END;
