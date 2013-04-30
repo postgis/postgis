@@ -140,9 +140,10 @@ in the docs folder
 	</para>
 
 	<itemizedlist>
-	<listitem>
+	  <listitem>
 		<para>
 		  GDAL (pseudo optional) only if you don't want raster and don't care about installing with <code>CREATE EXTENSION postgis</code> can you leave it out.
+		  Keep in mind other extensions may have a requires postgis extension which will prevent you from installing them unless you install postgis as an extension. So it is highly recommended you compile with GDAL support.
 		</para>
 	  </listitem>	
 	  <listitem>
