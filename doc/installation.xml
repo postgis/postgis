@@ -129,7 +129,7 @@ in the docs folder
 	  
 	  <listitem>
 		<para>
-		  GDAL, version 1.8 or higher (1.9 or higher is strongly recommended since some things will not work well or behavior differently with lower versions).  This is required for raster support.
+		  GDAL, version 1.8 or higher (1.9 or higher is strongly recommended since some things will not work well or behavior differently with lower versions).  This is required for raster support and to be able to install with <code>CREATE EXTENSION postgis</code> so highly recommended for those running 9.1+.
 		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
 		</para>
 	  </listitem>
@@ -140,6 +140,11 @@ in the docs folder
 	</para>
 
 	<itemizedlist>
+	<listitem>
+		<para>
+		  GDAL (pseudo optional) only if you don't want raster and don't care about installing with <code>CREATE EXTENSION postgis</code> can you leave it out.
+		</para>
+	  </listitem>	
 	  <listitem>
 		<para>
 		  GTK (requires GTK+2.0, 2.8+) to compile the shp2pgsql-gui shape file loader.
