@@ -124,7 +124,7 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	  
 	  <listitem>
 		<para>
-		  GDAL, version 1.6 or higher (1.9 or higher is preferable since some things will not work well with lower versions).  This is needed for raster support and will be required in final release of PostGIS 2.0.
+		  GDAL, version 1.6 or higher (1.9 or higher is preferable since some things will not work well with lower versions).  This is required for raster support and to be able to install with <code>CREATE EXTENSION postgis</code> so highly recommended for those running 9.1+ even if you don't need raster.
 		  <ulink url="http://trac.osgeo.org/gdal/wiki/DownloadSource">http://trac.osgeo.org/gdal/wiki/DownloadSource</ulink>.
 		</para>
 	  </listitem>
@@ -135,6 +135,12 @@ you do a <varname>make comments</varname> or <varname>make topology_comments.sql
 	</para>
 
 	<itemizedlist>
+	  <listitem>
+		<para>
+		  GDAL (pseudo optional) only if you don't want raster and don't care about installing with <code>CREATE EXTENSION postgis</code> can you leave it out.
+		  Keep in mind other extensions may have a requires postgis extension which will prevent you from installing them unless you install postgis as an extension. So it is highly recommended you compile with GDAL support.
+		</para>
+	  </listitem>
 	  <listitem>
 		<para>
 		  GTK (requires GTK+2.0 (2.8+)) to compile the shp2pgsql-gui shape file loader.
