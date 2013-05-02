@@ -2641,7 +2641,11 @@ CREATE OR REPLACE FUNCTION bytea(geometry)
 -- 7.3+ explicit casting definitions
 CREATE CAST (geometry AS box2d) WITH FUNCTION box2d(geometry) AS IMPLICIT;
 CREATE CAST (geometry AS box3d) WITH FUNCTION box3d(geometry) AS IMPLICIT;
-CREATE CAST (geometry AS box) WITH FUNCTION box(geometry) AS IMPLICIT;
+
+-- ticket: 2262 changed 2.1.0 to assignment to prevent PostGIS 
+-- from misusing PostgreSQL geometric functions
+CREATE CAST (geometry AS box) WITH FUNCTION box(geometry) AS ASSIGNMENT;
+
 CREATE CAST (box3d AS box2d) WITH FUNCTION box2d(box3d) AS IMPLICIT;
 CREATE CAST (box2d AS box3d) WITH FUNCTION box3d(box2d) AS IMPLICIT;
 CREATE CAST (box2d AS geometry) WITH FUNCTION geometry(box2d) AS IMPLICIT;
