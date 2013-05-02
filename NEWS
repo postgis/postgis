@@ -2,7 +2,9 @@ PostGIS 2.1.0
 2013/MM/DD
 
 * Important / Breaking Changes  *
-
+  - #1962 ST_Segmentize - As a result of the introduction of geography support: 
+		The construct SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5); 
+		will result in ambiguous function error
   - #2089, liblwgeom: lwgeom_set_handlers replaces lwgeom_init_allocators.
   - #1653, Removed srid parameter from ST_Resample(raster) and variants
            with reference raster no longer apply reference raster's SRID.

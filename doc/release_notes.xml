@@ -3,6 +3,86 @@
   <title>Appendix</title>
     <subtitle>Release Notes</subtitle>
       <sect1>
+		<title>Release 2.1.0</title>
+		<para>Release date: 2013/MM/DD</para>
+		<para>This is a minor release addressing both bug fixes and performance and functionality enhancements addressing issues since 2.0.3 release.
+		If you are upgrading from 2.0+, only a soft upgrade is required.  If you are upgrading from 1.5 or earlier, a hard upgrade is required.</para>
+		<simplesect>
+			 <title>Enhancements</title>
+			 <para>For detail of new functions and function improvements, please refer to <xref linkend="NewFunctions_2_1" />.</para>
+			 <para>Much faster raster ST_Union,  ST_Clip and many more function additions operations</para>
+			 <para>For geometry/geography better planner selectivity and a lot more functions.</para>
+		</simplesect>
+		<simplesect>
+			<title>Important / Breaking Changes</title>
+				<para>For full detail of breaking function changes, please refer to <xref linkend="ChangedFunctions_2_1" /></para>
+				<para>#1962 ST_Segmentize - As a result of the introduction of geography support: 
+				The construct SELECT ST_Segmentize('LINESTRING(1 2, 3 4)',0.5); will result in ambiguous function error. 
+				You need to have properly typed object e.g. a geometry/geography column, use ST_GeomFromText
+				, ST_GeogFromText or SELECT ST_Segmentize('LINESTRING(1 2, 3 4)'::geometry,0.5);</para>
+				<para>#1653, Removed srid parameter from ST_Resample(raster) and variants
+						   with reference raster no longer apply reference raster's SRID.</para>
+				<para>#2026, ST_Union(raster) now unions all bands of all rasters</para>
+				<para>#2089, liblwgeom: lwgeom_set_handlers replaces lwgeom_init_allocators.</para>
+				<para>#2150, regular_blocking is no longer a constraint. column of same name
+						   in raster_columns now checks for existance of spatially_unique
+						   and coverage_tile constraints</para>
+				<para>ST_Intersects(raster, geometry) behaves in the same manner as
+					ST_Intersects(geometry, raster) and is checked in geometry space.</para>
+				<para>point variant of ST_SetValue(raster) previously did not check SRID
+					of input geometry and raster.</para>
+				<para>ST_Hillshade parameters azimuth and altitude are now in degrees
+					instead of radians.</para>
+				<para>ST_Slope and ST_Aspect return pixel values in degrees instead of radians.</para>
+  		</simplesect>
+  		<simplesect>
+  				<title>Deprecated signatures</title>
+				<para>#2104, ST_World2RasterCoord, ST_World2RasterCoordX and
+								   ST_World2RasterCoordY renamed to ST_WorldToRasterCoord,
+								   ST_WorldToRasterCoordX and ST_WorldToRasterCoordY.
+								   ST_Raster2WorldCoord, ST_Raster2WorldCoordX and
+								   ST_Raster2WorldCoordY renamed to ST_RasterToWorldCoord,
+								   ST_RasterToWorldCoordX and ST_RasterToWorldCoordY</para>
+				<para>ST_Estimated_Extent renamed to ST_EstimatedExtent</para>
+				<para>ST_Line_Interpolate_Point renamed to ST_LineInterpolatePoint</para>
+				<para>ST_Line_Substring renamed to ST_LineSubstring</para>
+				<para>ST_Line_Locate_Point renamed to ST_LineLocatePoint</para>
+				<para>ST_MapAlgebraFctNgb and 1 and 2 raster variants of ST_MapAlgebraFct.
+							Use ST_MapAlgebra instead</para>
+				<para>1 and 2 raster variants of ST_MapAlgebraExpr.
+							Use expression variants of ST_MapAlgebra instead</para>
+  		</simplesect>
+		<simplesect>
+		 	<title>Bug Fixes</title>
+		 	<para>#2126, Better handling of empty rasters from ST_ConvexHull()</para>
+		</simplesect>
+	  </sect1>
+	  
+       <sect1>
+		<title>Release 2.0.3</title>
+		<para>Release date: 2013/03/01</para>
+		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.2 release.</para>
+		<simplesect>
+		 	<title>Bug Fixes</title>
+  <para>#2126, Better handling of empty rasters from ST_ConvexHull()</para>
+  <para>#2134, Make sure to process SRS before passing it off to GDAL functions</para>
+  <para>Fix various memory leaks in liblwgeom</para>
+  <para>#2173, Fix robustness issue in splitting a line with own vertex also affecting topology building (#2172)</para>
+  <para>#2174, Fix usage of wrong function lwpoly_free()</para>
+  <para>#2176, Fix robustness issue with ST_ChangeEdgeGeom</para>
+  <para>#2184, Properly copy topologies with Z value </para>
+  <para>postgis_restore.pl support for mixed case geometry column name in dumps</para>
+  <para>#2188, Fix function parameter value overflow that caused problems when copying data from a GDAL dataset</para>
+  <para>#2216, More memory errors in MultiPolygon GeoJSON parsing (with holes)</para>
+  <para>Fix Memory leak in GeoJSON parser</para>
+		</simplesect>
+		<simplesect>
+			 <title>Enhancements</title>
+  <para>#2141, More verbose output when constraints fail to be added to a raster column</para>
+  <para>Speedup ST_ChangeEdgeGeom</para>
+		</simplesect>
+	  </sect1>
+      <sect1>
 		<title>Release 2.0.2</title>
 		<para>Release date: 2012/12/03</para>
 		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.1 release.</para>

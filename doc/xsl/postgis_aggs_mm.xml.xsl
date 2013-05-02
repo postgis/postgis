@@ -439,8 +439,8 @@
 
 		<sect1 id="NewFunctions">
 			<title>New, Enhanced or changed PostGIS Functions</title>
-				<sect2 id="NewFunctions_2_1">
-				<title>PostGIS Functions new, behavior changed, or enhanced in 2.1</title>
+			<sect2 id="NewFunctions_2_1">
+				<title>PostGIS Functions new or enhanced in 2.1</title>
 				<para>The functions given below are PostGIS functions that were added or enhanced.</para>
 				
 				<note><para>More Topology performance Improvements.  Please refer to <xref linkend="Topology" /> for more details.</para></note>
@@ -448,7 +448,7 @@
 				<note><para>Tiger Geocoder upgraded to work with TIGER 2012 census data.  <varname>geocode_settings</varname> added for debugging and tweaking rating preferences, loader made less greedy, now only downloads tables to be loaded.
 					Please refer to <xref linkend="Tiger_Geocoder" /> for more details.</para></note>
 					
-				<para>Functions enhanced in PostGIS 2.1</para>
+				<para>Functions new in PostGIS 2.1</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry and strip whitespace and put in a variable to be tagged unto each function comment  -->
 					<xsl:for-each select='//refentry'>
@@ -477,7 +477,7 @@
 							</xsl:for-each>
 					</xsl:for-each>
 				</itemizedlist>
-				
+			
 				<para>The functions given below are PostGIS functions that are enhanced in PostGIS 2.1.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry   -->
@@ -502,7 +502,10 @@
 							</xsl:for-each>
 					</xsl:for-each>
 				</itemizedlist>	
-				
+			
+			</sect2>
+			
+			<sect2 id="ChangedFunctions_2_1"><title>PostGIS functions breaking changes in 2.1</title>
 				<para>The functions given below are PostGIS functions that have possibly breaking changes in PostGIS 2.1.  If you use any of these, you may need to check your existing code.</para>
 				<itemizedlist>
 				<!-- Pull out the purpose section for each ref entry   -->
@@ -527,9 +530,8 @@
 							</xsl:for-each>
 					</xsl:for-each>
 				</itemizedlist>
-				
-			
 			</sect2>
+
 		
 			<sect2 id="NewFunctions_2_0">
 				<title>PostGIS Functions new, behavior changed, or enhanced in 2.0</title>
