@@ -38,7 +38,7 @@ PostGIS 2.1.0
     Use expression variants of ST_MapAlgebra instead
 
 * New Features *
-
+  - #310, ST_DumpPoints converted to a C function (Nathan Wagner)
   - toTopoGeom with TopoGeometry sink (Sandro Santilli / Vizzuality)
   - clearTopoGeom (Sandro Santilli / Vizzuality)
   - ST_Segmentize(geography) (Paul Ramsey / OpenGeo)
@@ -57,9 +57,9 @@ PostGIS 2.1.0
   - #1643, #2076, Upgrade tiger geocoder to support loading tiger 2011 and 2012 
     (Regina Obe / Paragon Corporation) Funded by Hunter Systems Group
   - GEOMETRYCOLLECTION support for ST_MakeValid (Sandro Santilli / Vizzuality)
+  - #1818, ST_GeomFromGeoHash and friends (J.Smith (darkpanda))
   - ST_PixelOfValue (Bborie Park / UC Davis)
   - Casts to/from PostgreSQL geotypes (point/path/polygon).
-  - #310, ST_DumpPoints converted to a C function (Nathan Wagner)
   - #2011, ST_DumpValues to output raster as array (Bborie Park / UC Davis)
   - #2018, ST_Distance support for CircularString, CurvePolygon, MultiCurve,
     MultiSurface, CompoundCurve 
