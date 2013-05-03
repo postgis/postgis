@@ -260,6 +260,7 @@ LWCOLLECTION *lwpoint_clip_to_ordinate_range(const LWPOINT *mpoint, char ordinat
 */
 int lwgeom_geohash_precision(GBOX bbox, GBOX *bounds);
 char *geohash_point(double longitude, double latitude, int precision);
+void decode_geohash_bbox(char *geohash, double *lat, double *lon, int precision);
 
 /*
 * Point comparisons

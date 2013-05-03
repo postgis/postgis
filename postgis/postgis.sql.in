@@ -3664,6 +3664,28 @@ CREATE OR REPLACE FUNCTION ST_GeoHash(geom geometry, maxchars int4 DEFAULT 0)
 		AS 'MODULE_PATHNAME', 'ST_GeoHash'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-----------------------------------------------------------------------
+-- GeoHash input
+-- Availability: 2.0.?
+-----------------------------------------------------------------------
+-- ST_Box2dFromGeoHash(geohash text, precision int4)
+CREATE OR REPLACE FUNCTION ST_Box2dFromGeoHash(text, int4 DEFAULT NULL)
+	RETURNS box2d
+	AS 'MODULE_PATHNAME','box2d_from_geohash'
+	LANGUAGE 'c' IMMUTABLE;
+
+-- ST_PointFromGeoHash(geohash text, precision int4)
+CREATE OR REPLACE FUNCTION ST_PointFromGeoHash(text, int4 DEFAULT NULL)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME','point_from_geohash'
+	LANGUAGE 'c' IMMUTABLE;
+
+-- ST_GeomFromGeoHash(geohash text, precision int4)
+CREATE OR REPLACE FUNCTION ST_GeomFromGeoHash(text, int4 DEFAULT NULL)
+	RETURNS geometry
+	AS $$ SELECT CAST(ST_Box2dFromGeoHash($1, $2) AS geometry); $$
+	LANGUAGE 'sql' IMMUTABLE;
+
 ------------------------------------------------------------------------
 -- OGC defined
 ------------------------------------------------------------------------

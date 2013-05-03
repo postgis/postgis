@@ -96,6 +96,7 @@ TESTS = \
 	geography \
 	out_geometry \
 	out_geography \
+	in_geohash \
 	in_gml \
 	in_kml \
 	iscollection \
