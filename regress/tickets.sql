@@ -479,6 +479,10 @@ SELECT '#1292', ST_AsText(ST_SnapToGrid(ST_GeomFromText(
 	'GEOMETRYCOLLECTION(POINT(180 90),POLYGON((140 50,150 50,180 50,140 50),(140 60,150 60,180 60,140 60)))'
 	, 4326), 0.00001)::geography);
 
+-- #1292.1
+SELECT '#1292.1', ST_AsText(ST_GeomFromText('POINT(180.00000000001 95)')::geography),
+	ST_AsText(ST_GeomFromText('POINT(185 90.00000000001)')::geography);
+
 -- #1320
 SELECT '<#1320>';
 CREATE TABLE A ( geom geometry(MultiPolygon, 4326),
