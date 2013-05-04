@@ -236,7 +236,7 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   echo "       try installing dbtoepub"; \
 	   false; \
 	else \
-		$(DBTOEPUB) -I "${PWD}/html" \
+		$(DBTOEPUB) \
 		  $<; \
 	fi
 
