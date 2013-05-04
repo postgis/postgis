@@ -858,7 +858,7 @@ SELECT ST_AsEWKT(a.geom), ST_HasArc(a.geom)
 				<para>Availability: 1.5.0</para>
 
 				<para>&Z_support;</para>
-				<para>&curve_support;</para>
+				<para>Throws an error if curved geometries or other unsupported geometries are used.</para>
 		</refsection>
 
 		<refsection>
