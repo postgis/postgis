@@ -74,6 +74,9 @@ MSGMERGE=msgmerge
 # XML gettext tools
 XML2POT=xml2pot
 
+# DOCBOOK to EPUB
+DBTOEPUB=dbtoepub
+
 # Directories for postgresql subdirectories
 PGSQL_DOCDIR=@PGSQL_DOCDIR@
 PGSQL_MANDIR=@PGSQL_MANDIR@
@@ -226,6 +229,17 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 		   -P latex.output.revhistory=0 \
 		   -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf $<; \
 	fi
+	
+postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub: postgis-out.xml images $(XML_INPUTS)
+	if test x"$(DBTOEPUB)" = x; then \
+	   echo "Error: dbtoepub not found, can't build epub"; \
+	   echo "       try installing dbtoepub"; \
+	   false; \
+	else \
+		$(DBTOEPUB) $<; \
+	fi
+
+epub: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub
 
 pdf: postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).pdf
 
@@ -250,6 +264,7 @@ images-clean:
 clean: 
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
+	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.epub
 	$(MAKE) -C html/image_src clean
 	rm -f $(XML_GENERATED_SOURCES)
 
