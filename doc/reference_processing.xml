@@ -1112,9 +1112,9 @@ SELECT (g.gdump).path, ST_AsEWKT((g.gdump).geom) as wkt
 					<varname>i</varname> is the ring number (1 is outer; inner rings follow) and <varname>j</varname> 
 					enumerates the <varname>POINT</varname>s (again 1-based index).
 				</para>
+				<para>Throws an error if curved geometries or other unsupported geometries are used.</para>
 				<para>Enhanced: 2.0.0 support for Polyhedral surfaces, Triangles and TIN was introduced.</para>
 				<para>Availability: 1.5.0</para>
-				<para>&curve_support;</para>
 				<para>&P_support;</para>
 				<para>&T_support;</para>
 				<para>&Z_support;</para>
