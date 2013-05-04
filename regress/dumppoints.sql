@@ -157,3 +157,23 @@ FROM (
         )'::geometry AS geom
     ) AS g
   ) j;
+
+SELECT path, ST_AsText(geom) 
+FROM (
+  SELECT (ST_DumpPoints(g.geom)).* 
+  FROM
+	(SELECT 'SRID=4326;CURVEPOLYGON(
+			CIRCULARSTRING(-71.0821 42.3036, -71.4821 42.3036,
+			       	-71.7821 42.7036, -71.0821 42.7036, -71.0821 42.3036),
+			(-71.1821 42.4036, -71.3821 42.6036, -71.3821 42.4036, -71.1821 42.4036)
+ )'::geometry as geom
+) as g
+) j;
+
+SELECT path, ST_AsText(geom) 
+FROM (
+  SELECT (ST_DumpPoints(g.geom)).* 
+  FROM (
+SELECT 'CURVEPOLYGON(CIRCULARSTRING(0 0, 4 0, 4 4, 0 4, 0 0),(1 1, 3 3, 3 1, 1 1))'::geometry as geom
+) as g
+) j;

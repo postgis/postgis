@@ -192,18 +192,17 @@ Datum LWGEOM_dumppoints(PG_FUNCTION_ARGS) {
 					if (state->pt == 0) lwpoint = lwgeom_as_lwpoint(lwgeom);
 					break;
 				case LINETYPE:
-				case CIRCSTRINGTYPE:
 					line = lwgeom_as_lwline(lwgeom);
 					if (line->points && state->pt <= line->points->npoints) {
 						lwpoint = lwline_get_lwpoint((LWLINE*)lwgeom, state->pt);
 					}
 					break;
-				case CURVEPOLYTYPE:
+				case CIRCSTRINGTYPE:
+					ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION),
+						errmsg("Invalid Geometry type circstring passed to ST_DumpPoints()")));
 				default:
-					/* TODO error? */
-					if (--state->stacklen == 0) SRF_RETURN_DONE(funcctx);
-					state->pathlen--;
-					continue;
+					ereport(ERROR, (errcode(ERRCODE_DATA_EXCEPTION),
+						errmsg("Invalid Geometry type passed to ST_DumpPoints()")));
 			}
 
 			/*

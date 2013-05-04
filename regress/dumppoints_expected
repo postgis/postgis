@@ -82,3 +82,5 @@
 {5,1,2,2}|POINT(5 6)
 {5,1,2,3}|POINT(6 6)
 {5,1,2,4}|POINT(5 5)
+ERROR:  Invalid Geometry type circstring passed to ST_DumpPoints()
+ERROR:  Invalid Geometry type circstring passed to ST_DumpPoints()
