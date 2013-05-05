@@ -903,9 +903,24 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	srid = gserialized_get_srid(geom1);
 
+	LWGEOM *lwgeom = lwgeom_from_gserialized(geom1);
+	if ( ! lwgeom ) {
+		lwerror("POSTGIS2GEOS: unable to deserialize input");
+		return NULL;
+	}
+
+	/* GEOS doesn't do triangle type, so we special case that here */
+	if (lwgeom->type == TRIANGLETYPE) {
+		lwgeom->type = LINETYPE;
+		result = geometry_serialize(lwgeom);
+		lwgeom_free(lwgeom);
+		PG_RETURN_POINTER(result);
+	}
+
 	initGEOS(lwnotice, lwgeom_geos_error);
 
-	g1 = (GEOSGeometry *)POSTGIS2GEOS(geom1 );
+	g1 = LWGEOM2GEOS(lwgeom);
+	lwgeom_free(lwgeom);
 
 	if ( 0 == g1 )   /* exception thrown at construction */
 	{

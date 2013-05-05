@@ -108,6 +108,7 @@ TESTS = \
 	regress_management \
 	dump \
 	dumppoints \
+	boundary \
 	wmsservers \
 	wkt \
 	wkb \
