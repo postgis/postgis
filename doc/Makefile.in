@@ -236,7 +236,8 @@ postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSIO
 	   echo "       try installing dbtoepub"; \
 	   false; \
 	else \
-		$(DBTOEPUB) \
+		$(DBTOEPUB) -c "${PWD}/html/style.css" \
+		 -o postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}$(DOCSUFFIX).epub \
 		  $<; \
 	fi
 
@@ -265,7 +266,7 @@ images-clean:
 clean: 
 	rm -f html/*.html
 	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.pdf
-	rm -f postgis-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_VERSION}.${POSTGIS_MICRO_VERSION}.epub
+	rm -f *.epub
 	$(MAKE) -C html/image_src clean
 	rm -f $(XML_GENERATED_SOURCES)
 
