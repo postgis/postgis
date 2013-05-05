@@ -122,6 +122,7 @@
 		<para>&sfs_compliant; OGC SPEC s2.1.1.1</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.14</para>
 		<para>&Z_support;</para>
+		<para>Enhanced: 2.1.0 support for Triangle was introduced</para>
 	  </refsection>
 
 	  <refsection>
