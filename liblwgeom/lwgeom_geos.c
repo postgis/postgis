@@ -17,6 +17,8 @@
 
 #include <stdlib.h>
 
+LWTIN *lwtin_from_geos(const GEOSGeometry *geom, int want3d);
+
 #undef LWGEOM_PROFILE_BUILDAREA
 
 #define LWGEOM_GEOS_ERRMSG_MAXSIZE 256
@@ -1298,15 +1300,21 @@ lwgeom_offsetcurve(const LWLINE *lwline, double size, int quadsegs, int joinStyl
 #endif /* POSTGIS_GEOS_VERSION < 32 */
 }
 
-LWGEOM*
-lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int edgeOnly)
-{
+/*
+ * output = 1 for edges, 2 for TIN, 0 for polygons
+ */
+LWGEOM* lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int output) {
 #if POSTGIS_GEOS_VERSION < 34
 	lwerror("lwgeom_delaunay_triangulation: GEOS 3.4 or higher required");
 	return NULL;
 #else
 	GEOSGeometry *g1, *g3;
 	LWGEOM *lwgeom_result;
+
+	if (output < 0 || output > 2) {
+		lwerror("lwgeom_delaunay_triangulation: invalid output type specified %d", output);
+		return NULL;
+	}
 
 	initGEOS(lwnotice, lwgeom_geos_error);
 
@@ -1317,7 +1325,8 @@ lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int edg
 		return NULL;
 	}
 
-	g3 = GEOSDelaunayTriangulation(g1, tolerance, edgeOnly);
+	/* if output != 1 we want polys */
+	g3 = GEOSDelaunayTriangulation(g1, tolerance, output == 1);
 
 	/* Don't need input geometry anymore */
 	GEOSGeom_destroy(g1);
@@ -1331,12 +1340,21 @@ lwgeom_delaunay_triangulation(const LWGEOM *lwgeom_in, double tolerance, int edg
 	/* LWDEBUGF(3, "result: %s", GEOSGeomToWKT(g3)); */
 
 	GEOSSetSRID(g3, lwgeom_get_srid(lwgeom_in));
-	lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwgeom_in));
+
+	if (output == 2) {
+		lwgeom_result = (LWGEOM *)lwtin_from_geos(g3, lwgeom_has_z(lwgeom_in));
+	} else {
+		lwgeom_result = GEOS2LWGEOM(g3, lwgeom_has_z(lwgeom_in));
+	}
+
 	GEOSGeom_destroy(g3);
 
-	if (lwgeom_result == NULL)
-	{
-		lwerror("lwgeom_delaunay_triangulation: GEOS2LWGEOM returned null");
+	if (lwgeom_result == NULL) {
+		if (output != 2) {
+			lwerror("lwgeom_delaunay_triangulation: GEOS2LWGEOM returned null");
+		} else {
+			lwerror("lwgeom_delaunay_triangulation: lwtin_from_geos returned null");
+		}
 		return NULL;
 	}
 
