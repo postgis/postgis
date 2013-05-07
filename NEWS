@@ -84,6 +84,7 @@ PostGIS 2.1.0
   - #2276, ST_AddBand(raster) variant for out-db bands
   - #2280, ST_Summary(raster)
   - #2163, ST_TPI for raster (Nathaniel Clay)
+  - #2302, ST_Roughness for raster (Nathaniel Clay)
 
 * Enhancements *
 

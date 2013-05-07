@@ -358,7 +358,14 @@ INSERT INTO raster_value_arrays VALUES
 SELECT
 	id,
 	val,
-	_st_tpi4ma(val,NULL,NULL)::numeric(16, 10) as tpi
+	round(_st_tpi4ma(val,NULL,NULL)::numeric, 6) as tpi
+FROM raster_value_arrays
+ORDER BY id;
+
+SELECT
+	id,
+	val,
+	round(_st_roughness4ma(val,NULL,NULL)::numeric, 6) as roughness
 FROM raster_value_arrays
 ORDER BY id;
 

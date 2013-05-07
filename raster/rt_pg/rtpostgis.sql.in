@@ -4119,6 +4119,129 @@ CREATE OR REPLACE FUNCTION st_tpi(
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 -----------------------------------------------------------------------
+-- ST_Roughness
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_roughness4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		x integer;
+		y integer;
+		z integer;
+
+		minimum double precision;
+		maximum double precision;
+
+		_value double precision[][][];
+		ndims int;
+	BEGIN
+
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		IF (
+			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
+			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
+		) THEN
+			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
+		END IF;
+
+		-- check that center pixel isn't NODATA
+		IF _value[z][2][2] IS NULL THEN
+			RETURN NULL;
+		-- substitute center pixel for any neighbor pixels that are NODATA
+		ELSE
+			FOR y IN 1..3 LOOP
+				FOR x IN 1..3 LOOP
+					IF _value[z][y][x] IS NULL THEN
+						_value[z][y][x] = _value[z][2][2];
+					END IF;
+				END LOOP;
+			END LOOP;
+		END IF;
+
+		minimum := _value[z][1][1];
+		maximum := _value[z][1][1];
+
+		FOR Y IN 1..3 LOOP
+		    FOR X IN 1..3 LOOP
+		    	 IF _value[z][y][x] < minimum THEN
+			    minimum := _value[z][y][x];
+			 ELSIF _value[z][y][x] > maximum THEN
+			    maximum := _value[z][y][x];
+			 END IF;
+		    END LOOP;
+		END LOOP;
+
+		RETURN maximum - minimum;
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_roughness(
+	rast raster, nband integer,
+	customextent raster,
+	pixeltype text DEFAULT '32BF', interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		_rast raster;
+		_nband integer;
+		_pixtype text;
+		_pixwidth double precision;
+		_pixheight double precision;
+		_width integer;
+		_height integer;
+		_customextent raster;
+		_extenttype text;
+	BEGIN
+		_customextent := customextent;
+		IF _customextent IS NULL THEN
+			_extenttype := 'FIRST';
+		ELSE
+			_extenttype := 'CUSTOM';
+		END IF;
+
+		IF interpolate_nodata IS TRUE THEN
+			_rast := ST_MapAlgebra(
+				ARRAY[ROW(rast, nband)]::rastbandarg[],
+				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				pixeltype,
+				'FIRST', NULL,
+				1, 1
+			);
+			_nband := 1;
+			_pixtype := NULL;
+		ELSE
+			_rast := rast;
+			_nband := nband;
+			_pixtype := pixeltype;
+		END IF;
+
+		RETURN ST_MapAlgebra(
+			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
+			'_st_roughness4ma(double precision[][][], integer[][], text[])'::regprocedure,
+			_pixtype,
+			_extenttype, _customextent,
+			1, 1);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+-----------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_isempty(rast raster)
