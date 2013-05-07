@@ -369,5 +369,12 @@ SELECT
 FROM raster_value_arrays
 ORDER BY id;
 
+SELECT
+	id,
+	val,
+	round(_st_tri4ma(val,NULL,NULL)::numeric, 6) as tri
+FROM raster_value_arrays
+ORDER BY id;
+
 DROP TABLE IF EXISTS raster_value_arrays;
 DROP FUNCTION IF EXISTS make_value_array(integer,integer,double precision, double precision, text);

@@ -4242,6 +4242,149 @@ CREATE OR REPLACE FUNCTION st_roughness(
 	$$ LANGUAGE 'plpgsql' IMMUTABLE;
 
 -----------------------------------------------------------------------
+-- ST_TRI
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_tri4ma(value double precision[][][], pos integer[][], VARIADIC userargs text[] DEFAULT NULL)
+	RETURNS double precision
+	AS $$
+	DECLARE
+		x integer;
+		y integer;
+		z integer;
+
+		Z1 double precision;
+		Z2 double precision;
+		Z3 double precision;
+		Z4 double precision;
+		Z5 double precision;
+		Z6 double precision;
+		Z7 double precision;
+		Z8 double precision;
+		Z9 double precision;
+
+		tri double precision;
+		_value double precision[][][];
+		ndims int;
+	BEGIN
+		ndims := array_ndims(value);
+		-- add a third dimension if 2-dimension
+		IF ndims = 2 THEN
+			_value := _st_convertarray4ma(value);
+		ELSEIF ndims != 3 THEN
+			RAISE EXCEPTION 'First parameter of function must be a 3-dimension array';
+		ELSE
+			_value := value;
+		END IF;
+
+		-- only use the first raster passed to this function
+		IF array_length(_value, 1) > 1 THEN
+			RAISE NOTICE 'Only using the values from the first raster';
+		END IF;
+		z := array_lower(_value, 1);
+
+		IF (
+			array_lower(_value, 2) != 1 OR array_upper(_value, 2) != 3 OR
+			array_lower(_value, 3) != 1 OR array_upper(_value, 3) != 3
+		) THEN
+			RAISE EXCEPTION 'First parameter of function must be a 1x3x3 array with each of the lower bounds starting from 1';
+		END IF;
+
+		-- check that center pixel isn't NODATA
+		IF _value[z][2][2] IS NULL THEN
+			RETURN NULL;
+		-- substitute center pixel for any neighbor pixels that are NODATA
+		ELSE
+			FOR y IN 1..3 LOOP
+				FOR x IN 1..3 LOOP
+					IF _value[z][y][x] IS NULL THEN
+						_value[z][y][x] = _value[z][2][2];
+					END IF;
+				END LOOP;
+			END LOOP;
+		END IF;
+
+		-------------------------------------------------
+		--|   Z1= Z(-1,1) |  Z2= Z(0,1)	| Z3= Z(1,1)  |--
+		-------------------------------------------------
+		--|   Z4= Z(-1,0) |  Z5= Z(0,0) | Z6= Z(1,0)  |--
+		-------------------------------------------------
+		--|   Z7= Z(-1,-1)|  Z8= Z(0,-1)|  Z9= Z(1,-1)|--
+		-------------------------------------------------
+
+		-- _scale width and height units / z units to make z units equal to height width units
+		Z1 := _value[z][1][1];
+		Z2 := _value[z][2][1];
+		Z3 := _value[z][3][1];
+		Z4 := _value[z][1][2];
+		Z5 := _value[z][2][2];
+		Z6 := _value[z][3][2];
+		Z7 := _value[z][1][3];
+		Z8 := _value[z][2][3];
+		Z9 := _value[z][3][3];
+
+		tri := ( abs(Z1 - Z5 ) + abs( Z2 - Z5 ) + abs( Z3 - Z5 ) + abs( Z4 - Z5 ) + abs( Z6 - Z5 ) + abs( Z7 - Z5 ) + abs( Z8 - Z5 ) + abs ( Z9 - Z5 )) / 8;
+		
+		return tri;  
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION st_tri(
+	rast raster, nband integer,
+	customextent raster,
+	pixeltype text DEFAULT '32BF',	interpolate_nodata boolean DEFAULT FALSE
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		_rast raster;
+		_nband integer;
+		_pixtype text;
+		_pixwidth double precision;
+		_pixheight double precision;
+		_width integer;
+		_height integer;
+		_customextent raster;
+		_extenttype text;
+	BEGIN
+		_customextent := customextent;
+		IF _customextent IS NULL THEN
+			_extenttype := 'FIRST';
+		ELSE
+			_extenttype := 'CUSTOM';
+		END IF;
+
+		IF interpolate_nodata IS TRUE THEN
+			_rast := ST_MapAlgebra(
+				ARRAY[ROW(rast, nband)]::rastbandarg[],
+				'st_invdistweight4ma(double precision[][][], integer[][], text[])'::regprocedure,
+				pixeltype,
+				'FIRST', NULL,
+				1, 1
+			);
+			_nband := 1;
+			_pixtype := NULL;
+		ELSE
+			_rast := rast;
+			_nband := nband;
+			_pixtype := pixeltype;
+		END IF;
+
+		-- get properties
+		_pixwidth := ST_PixelWidth(_rast);
+		_pixheight := ST_PixelHeight(_rast);
+		SELECT width, height INTO _width, _height FROM ST_Metadata(_rast);
+
+		RETURN ST_MapAlgebra(
+			ARRAY[ROW(_rast, _nband)]::rastbandarg[],
+			'_st_tri4ma(double precision[][][], integer[][], text[])'::regprocedure,
+			_pixtype,
+			_extenttype, _customextent,
+			1, 1);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE;
+
+-----------------------------------------------------------------------
 -- Get information about the raster
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_isempty(rast raster)
