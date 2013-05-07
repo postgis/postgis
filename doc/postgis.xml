@@ -101,22 +101,22 @@
   <title>PostGIS &last_release_version; Manual</title>
 
   <bookinfo>
-  	<authorgroup>
-  		<corpauthor>The PostGIS Development Group</corpauthor>
-		<editor>
-			<firstname>Paul</firstname>
-			
-			<surname>Ramsey</surname>
-			
-			<affiliation>
-			<orgname><ulink url="http://www.cleverelephant.ca">clever elephant</ulink></orgname>
-			
-			<address><city>Victoria</city>
-			<state>British Columbia</state> <country>Canada</country>
-			<email>pramsey@cleverelephant.ca</email></address>
-			</affiliation>
-		</editor>
-  	</authorgroup>
+
+	<corpauthor>The PostGIS Development Group</corpauthor>
+	<editor>
+		<firstname>Paul</firstname>
+		
+		<surname>Ramsey</surname>
+		
+		<affiliation>
+		<orgname><ulink url="http://www.cleverelephant.ca">clever elephant</ulink></orgname>
+		
+		<address><city>Victoria</city>
+		<state>British Columbia</state> <country>Canada</country>
+		<email>pramsey@cleverelephant.ca</email></address>
+		</affiliation>
+	</editor>
+
   	
   	<productname>PostGIS</productname>
     <productnumber>&last_release_version;</productnumber>
