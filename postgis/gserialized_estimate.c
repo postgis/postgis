@@ -1651,7 +1651,9 @@ compute_gserialized_stats_mode(VacAttrStats *stats, AnalyzeAttrFetchFunc fetchfu
 	POSTGIS_DEBUGF(3, " out: average width: %d bytes", stats->stawidth);
 	POSTGIS_DEBUG (3, " out: distinct values: all (no check done)");
 	POSTGIS_DEBUGF(3, " out: %s", nd_stats_to_json(nd_stats));
+	/*
 	POSTGIS_DEBUGF(3, " out histogram:\n%s", nd_stats_to_grid(nd_stats));
+	*/
 
 	return;
 }
