@@ -8641,7 +8641,7 @@ GROUP BY t1.rast;
 		    <note>
     		  <para>This function only supports a focalmean radius of one.</para>
 		    </note>
-				<para>Availability: 2.1</para>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
@@ -8686,7 +8686,7 @@ GROUP BY t1.rast;
 			<refsection>
 				<title>Description</title>
 		    <para>Calculates the "roughness" of a DEM, by subtracting the maximum from the minimum for a given area.</para>
-				<para>Availability: 2.1</para>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
@@ -8739,7 +8739,7 @@ GROUP BY t1.rast;
 					<para>This function only supports a focalmean radius of one.</para>
 				</note>
 
-				<para>Availability: 2.1</para>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
