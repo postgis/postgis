@@ -267,7 +267,7 @@ Datum geography_as_gml(PG_FUNCTION_ARGS)
 	/* retrieve id */
 	if (PG_NARGS() >5 && !PG_ARGISNULL(5))
 	{
-		prefix_text = PG_GETARG_TEXT_P(5);
+		id_text = PG_GETARG_TEXT_P(5);
 		if ( VARSIZE(id_text)-VARHDRSZ == 0 )
 		{
 			id = "";
