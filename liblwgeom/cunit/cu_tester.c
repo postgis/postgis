@@ -38,9 +38,11 @@ extern CU_SuiteInfo libgeom_suite;
 extern CU_SuiteInfo split_suite;
 extern CU_SuiteInfo geodetic_suite;
 extern CU_SuiteInfo geos_suite;
+extern CU_SuiteInfo sfcgal_suite;
 extern CU_SuiteInfo tree_suite;
 extern CU_SuiteInfo triangulate_suite;
 extern CU_SuiteInfo homogenize_suite;
+extern CU_SuiteInfo force_sfs_suite;
 extern CU_SuiteInfo in_geojson_suite;
 extern CU_SuiteInfo stringbuffer_suite;
 extern CU_SuiteInfo surface_suite;
@@ -76,11 +78,15 @@ int main(int argc, char *argv[])
 		split_suite,
 		geodetic_suite,
 		geos_suite,
+#if HAVE_SFCGAL
+		sfcgal_suite,
+#endif
 		tree_suite,
 		triangulate_suite,
 		stringbuffer_suite,
 		surface_suite,
 		homogenize_suite,
+		force_sfs_suite,
 #if HAVE_JSON
 		in_geojson_suite,
 #endif

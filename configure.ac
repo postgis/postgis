@@ -610,6 +610,45 @@ AC_SUBST([POSTGIS_GEOS_VERSION])
 
 
 dnl ===========================================================================
+dnl SFCGAL library support
+dnl ===========================================================================
+
+AC_ARG_WITH([sfcgal], 
+	[AS_HELP_STRING([--with-sfcgal=PATH], [Add SFCGAL support. ARG allows to specify an alternate PATH to sfcgal-config])], 
+	[SFCGAL_CONFIG="$withval"], 
+	[AC_PATH_PROG([SFCGAL_CONFIG], [sfcgal-config], [])])
+
+HAVE_SFCGAL="no"
+
+if test "x$with_sfcgal" != "xno"; then
+	if test -x "$SFCGAL_CONFIG"; then
+		SFCGAL_VERSION=`$SFCGAL_CONFIG --version`
+		SFCGAL_LDFLAGS=`$SFCGAL_CONFIG --libs`
+		SFCGAL_CPPFLAGS=`$SFCGAL_CONFIG --cflags`" -DHAVE_SFCGAL"
+
+		SFCGAL_STATIC=`$SFCGAL_CONFIG --static`
+		if test "x$SFCGAL_STATIC" = "xON"; then
+			AC_MSG_WARN([The SFCGAL version found is not installed as a dynamic library.])
+		else
+        		SFCGAL="sfcgal"
+			HAVE_SFCGAL="yes"
+		fi
+
+	else
+		if test "x$with_sfcgal" != "x"; then
+			AC_MSG_ERROR([sfcgal-config cannot be found. Please install sfcgal])
+		fi
+	fi
+fi 
+
+AC_SUBST([SFCGAL_VERSION])
+AC_SUBST([SFCGAL_CPPFLAGS])
+AC_SUBST([SFCGAL_LDFLAGS])
+AC_SUBST([SFCGAL_OBJS])
+AC_SUBST([SFCGAL])
+AC_SUBST([HAVE_SFCGAL])
+
+dnl ===========================================================================
 dnl Detect gettext
 dnl ===========================================================================
 
@@ -854,10 +893,10 @@ dnl Always enable use of ANALYZE statistics by default
 AC_DEFINE_UNQUOTED([POSTGIS_USE_STATS], [1], [Enable use of ANALYZE statistics])
 
 
-CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $XML2_CPPFLAGS"
+CPPFLAGS="$PGSQL_CPPFLAGS $GEOS_CPPFLAGS $PROJ_CPPFLAGS $XML2_CPPFLAGS $SFCGAL_CPPFLAGS"
 dnl AC_MSG_RESULT([CPPFLAGS: $CPPFLAGS])
 
-SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $XML2_LDFLAGS"
+SHLIB_LINK="$PGSQL_LDFLAGS $GEOS_LDFLAGS $PROJ_LDFLAGS -lgeos_c -lproj $JSON_LDFLAGS $XML2_LDFLAGS $SFCGAL_LDFLAGS"
 AC_SUBST([SHLIB_LINK])
 dnl AC_MSG_RESULT([SHLIB_LINK: $SHLIB_LINK])
 
@@ -1092,6 +1131,7 @@ else
 	RT_MAKEFILE_LIST="raster/Makefile"
 fi
 
+
 dnl ===========================================================================
 dnl See if we have the requirements for building the extensions, namely
 dnl PostgreSQL 9.1 or better and the xlstproc tool for generating the commends
@@ -1164,6 +1204,10 @@ if test "x$RASTER" = "xraster"; then
     AC_MSG_RESULT([  GDAL config:          ${GDAL_CONFIG}])
     AC_MSG_RESULT([  GDAL version:         ${GDAL_FULL_VERSION}])
 fi
+if test "x$SFCGAL" = "xsfcgal"; then
+    AC_MSG_RESULT([  SFCGAL config:        ${SFCGAL_CONFIG}])
+    AC_MSG_RESULT([  SFCGAL version:       ${SFCGAL_VERSION}])
+fi
 AC_MSG_RESULT([  PostgreSQL config:    ${PG_CONFIG}])
 AC_MSG_RESULT([  PostgreSQL version:   ${PGSQL_FULL_VERSION}])
 AC_MSG_RESULT([  PROJ4 version:        ${POSTGIS_PROJ_VERSION}])
@@ -1184,6 +1228,11 @@ if test "x$TOPOLOGY" = "xtopology"; then
     AC_MSG_RESULT([  PostGIS Topology:     enabled])
 else
     AC_MSG_RESULT([  PostGIS Topology:     disabled])
+fi
+if test "x$SFCGAL" = "xsfcgal"; then
+    AC_MSG_RESULT([  SFCGAL support:       enabled])
+else
+    AC_MSG_RESULT([  SFCGAL support:       disabled])
 fi
 AC_MSG_RESULT()
 AC_MSG_RESULT([ -------- Documentation Generation -------- ])

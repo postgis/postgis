@@ -57,6 +57,7 @@ OPT_CREATE=yes
 OPT_UPGRADE=no
 OPT_WITH_TOPO=no
 OPT_WITH_RASTER=no
+OPT_WITH_SFCGAL=no
 OPT_EXPECT=no
 OPT_EXTENSIONS=no
 
@@ -661,6 +662,23 @@ prepare_spatial ()
         init_db_error "raster comments"
 		fi
 	fi # }
+
+	if test x"$OPT_WITH_SFCGAL" = "xyes"; then # {
+		SCRIPT=${STAGED_SCRIPTS_DIR}/sfcgal.sql
+		if test -e ${SCRIPT}; then
+			echo "Adding sfcgal support"
+			${PSQL} ${_psql_opts} -Xf ${SCRIPT} "${DB}" \
+        >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || init_db_error "raster module"
+		else
+			echo "${SCRIPT} not found" >&2
+			exit 1
+		fi
+		if test -e ${STAGED_SCRIPTS_DIR}/sfcgal_comments.sql; then
+			${PSQL} ${_psql_opts} -Xf ${STAGED_SCRIPTS_DIR}/sfcgal_comments.sql \
+        "${DB}" >> ${PGIS_REG_TMPDIR}/regress_log 2>&1 || \
+        init_db_error "sfcgal comments"
+		fi
+	fi # }
 }
 
 # Create the spatial database
@@ -848,6 +866,10 @@ while [ -n "$1" ]; do
 		OPT_WITH_RASTER=yes
 		shift
 		continue
+	elif test "$1" = "--sfcgal"; then
+		OPT_WITH_SFCGAL=yes
+		shift
+		continue
 	elif test "$1" = "--clean"; then
 		OPT_CLEAN=yes
 		shift
@@ -866,6 +888,7 @@ if [ -z "$1" ]; then
 	echo " --nodrop     do not drop the regression database on exit" >&2
 	echo " --raster     load also raster extension" >&2
 	echo " --topology   load also topology extension" >&2
+	echo " --sfcgal     use also sfcgal backend" >&2
 	echo " --clean      cleanup test logs on exit" >&2
 	echo " --expect     save obtained output as expected" >&2
 	exit 1

@@ -21,6 +21,7 @@
 #include "lwgeom_log.h"
 #include "lwgeom_pg.h"
 #include "geos_c.h"
+#include "lwgeom_backend_api.h"
 
 /*
  * This is required for builds against pgsql
@@ -94,6 +95,9 @@ _PG_init(void)
 
     /* install PostgreSQL handlers */
     pg_install_lwgeom_handlers();
+
+    /* initialize geometry backend */
+    lwgeom_init_backend();
 }
 
 /*

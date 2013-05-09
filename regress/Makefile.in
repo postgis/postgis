@@ -19,6 +19,7 @@ POSTGIS_PGSQL_VERSION=@POSTGIS_PGSQL_VERSION@
 POSTGIS_GEOS_VERSION=@POSTGIS_GEOS_VERSION@
 POSTGIS_PROJ_VERSION=@POSTGIS_PROJ_VERSION@
 HAVE_JSON=@HAVE_JSON@
+HAVE_SFCGAL=@HAVE_SFCGAL@
 MINGWBUILD=@MINGWBUILD@
 
 # MingW hack: rather than use PGSQL_BINDIR directly, we change
@@ -157,6 +158,25 @@ ifeq ($(HAVE_JSON),yes)
 	TESTS += \
 		in_geojson 
 endif
+
+ifeq ($(HAVE_SFCGAL),yes)
+	# SFCGAL additionnal backend
+	TESTS += \
+		regress_sfcgal \
+		sfcgal/empty.sql \
+		sfcgal/geography.sql \
+		sfcgal/legacy.sql \
+		sfcgal/measures.sql \
+		sfcgal/regress_ogc_prep.sql \
+		sfcgal/regress_ogc.sql \
+		sfcgal/regress.sql \
+		sfcgal/tickets.sql \
+		sfcgal/concave_hull.sql \
+		sfcgal/wmsservers.sql
+
+	RUNTESTFLAGS = --sfcgal
+endif
+
 
 all install uninstall:
 

@@ -705,6 +705,59 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 	}
 }
 
+LWGEOM*
+lwgeom_force_sfs(LWGEOM *geom)
+{	
+	LWCOLLECTION *col;
+	int i;
+	LWGEOM *g;
+
+
+	switch(geom->type)
+	{
+		/* SQL/MM types */
+		case CIRCSTRINGTYPE:
+		case COMPOUNDTYPE:
+		case CURVEPOLYTYPE:
+		case MULTICURVETYPE:
+		case MULTISURFACETYPE:
+			return lwgeom_segmentize(geom, 32);
+
+		/* SFS 1.2 types */
+		case TRIANGLETYPE:
+			g = lwpoly_as_lwgeom(lwpoly_from_lwlines((LWLINE*)geom, 0, NULL));
+			lwgeom_free(geom);
+			return g;
+
+		case TINTYPE:
+			col = (LWCOLLECTION*) geom;
+			for ( i = 0; i < col->ngeoms; i++ )
+			{
+				g = lwpoly_as_lwgeom(lwpoly_from_lwlines((LWLINE*)col->geoms[i], 0, NULL));
+				lwgeom_free(col->geoms[i]);
+				col->geoms[i] = g;
+			}
+
+			col->type = MULTIPOLYGONTYPE;
+			return lwmpoly_as_lwgeom((LWMPOLY*)geom);
+		
+		case POLYHEDRALSURFACETYPE:
+			geom->type = MULTIPOLYGONTYPE;
+			return (LWGEOM *)geom;
+
+		/* Collection */
+		case COLLECTIONTYPE:
+			col = (LWCOLLECTION*)geom;
+			for ( i = 0; i < col->ngeoms; i++ ) 
+				col->geoms[i] = lwgeom_force_sfs((LWGEOM*)col->geoms[i]);
+
+			return lwcollection_as_lwgeom((LWCOLLECTION*)geom);
+		
+		default:
+			return (LWGEOM *)geom;
+	}
+}
+
 int32_t 
 lwgeom_get_srid(const LWGEOM *geom)
 {

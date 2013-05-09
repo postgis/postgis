@@ -1134,7 +1134,7 @@ CREATE OR REPLACE FUNCTION ST_area2d(geometry)
 -- PostGIS equivalent function: area(geometry)
 CREATE OR REPLACE FUNCTION ST_Area(geometry)
 	RETURNS FLOAT8
-	AS 'MODULE_PATHNAME','LWGEOM_area_polygon'
+	AS 'MODULE_PATHNAME','area'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -1149,7 +1149,7 @@ CREATE OR REPLACE FUNCTION ST_distance_spheroid(geom1 geometry, geom2 geometry,s
 -- PostGIS equivalent function: distance(geom1 geometry, geom2 geometry)
 CREATE OR REPLACE FUNCTION ST_Distance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance2d'
+	AS 'MODULE_PATHNAME', 'distance'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 
@@ -1221,6 +1221,12 @@ CREATE OR REPLACE FUNCTION ST_CollectionHomogenize(geometry)
 CREATE OR REPLACE FUNCTION ST_Multi(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_multi'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_force_sfs(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_sfs'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
@@ -2437,6 +2443,10 @@ CREATE OR REPLACE FUNCTION postgis_geos_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
 
+CREATE OR REPLACE FUNCTION postgis_sfcgal_version() RETURNS text
+	AS 'MODULE_PATHNAME'
+	LANGUAGE 'c' IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION postgis_svn_version() RETURNS text
 	AS 'MODULE_PATHNAME'
 	LANGUAGE 'c' IMMUTABLE;
@@ -2460,6 +2470,8 @@ DECLARE
 	svnver text;
 	projver text;
 	geosver text;
+	sfcgalver text;
+	cgalver text;
 	gdalver text;
 	libxmlver text;
 	dbproc text;
@@ -2480,6 +2492,12 @@ BEGIN
 		WHEN undefined_function THEN
 			gdalver := NULL;
 			RAISE NOTICE 'Function postgis_gdal_version() not found.  Is raster support enabled and rtpostgis.sql installed?';
+	END;
+	BEGIN
+		SELECT postgis_sfcgal_version() INTO sfcgalver;
+	EXCEPTION
+		WHEN undefined_function THEN
+			sfcgalver := NULL;
 	END;
 	SELECT postgis_libxml_version() INTO libxmlver;
 	SELECT postgis_scripts_installed() INTO dbproc;
@@ -2519,6 +2537,10 @@ BEGIN
 
 	IF  geosver IS NOT NULL THEN
 		fullver = fullver || ' GEOS="' || geosver || '"';
+	END IF;
+
+	IF  sfcgalver IS NOT NULL THEN
+		fullver = fullver || ' SFCGAL="' || sfcgalver || '"';
 	END IF;
 
 	IF  projver IS NOT NULL THEN
@@ -4656,7 +4678,7 @@ CREATE OR REPLACE RULE geometry_columns_delete AS
 
 CREATE OR REPLACE FUNCTION ST_3DDistance(geom1 geometry, geom2 geometry)
 	RETURNS float8
-	AS 'MODULE_PATHNAME', 'LWGEOM_mindistance3d'
+	AS 'MODULE_PATHNAME', 'distance3d'
 	LANGUAGE 'c' IMMUTABLE STRICT
 	COST 100;
 	
@@ -4707,10 +4729,16 @@ CREATE OR REPLACE FUNCTION ST_3DDFullyWithin(geom1 geometry, geom2 geometry,floa
 	AS 'SELECT $1 && ST_Expand($2,$3) AND $2 && ST_Expand($1,$3) AND _ST_3DDFullyWithin($1, $2, $3)'
 	LANGUAGE 'sql' IMMUTABLE
 	COST 100;
+
+CREATE OR REPLACE FUNCTION _ST_3DIntersects(geom1 geometry, geom2 geometry)
+	RETURNS boolean
+	AS 'MODULE_PATHNAME','intersects3d'
+	LANGUAGE 'c' IMMUTABLE STRICT
+	COST 100;
 	
 CREATE OR REPLACE FUNCTION ST_3DIntersects(geom1 geometry, geom2 geometry)
 	RETURNS boolean
-	AS 'SELECT $1 && $2 AND _ST_3DDWithin($1, $2, 0.0)'
+	AS 'SELECT $1 && $2 AND _ST_3DIntersects($1, $2)'
 	LANGUAGE 'sql' IMMUTABLE
 	COST 100;
 	
@@ -5086,7 +5114,7 @@ $$
 								ORDER BY 1, 2
 							) As foo	) );
 				IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
-					var_tempgeom := ST_Intersection(var_tempgeom, var_convhull);
+					var_tempgeom := ST_force_sfs(ST_Intersection(var_tempgeom, var_convhull));
 					IF param_allow_holes THEN
 						var_param_geom := var_tempgeom;
 					ELSE
@@ -5094,7 +5122,7 @@ $$
 					END IF;
 					return var_param_geom;
 				ELSIF ST_IsValid(var_tempgeom) THEN
-					var_param_geom := ST_Intersection(var_tempgeom, var_convhull);	
+					var_param_geom := ST_force_sfs(ST_Intersection(var_tempgeom, var_convhull));	
 				END IF;
 			END IF;
 
@@ -5119,7 +5147,7 @@ $$
                     -- break envelope into 4 triangles about the centroid of the geometry and returned the clipped geometry in each quadrant
                     FOR i in 1 .. 4 LOOP
                        var_geoms[i] := ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
-                       var_geoms[i] := ST_Intersection(var_param_geom, ST_Buffer(var_geoms[i],var_buf));
+                       var_geoms[i] := ST_force_sfs(ST_Intersection(var_param_geom, ST_Buffer(var_geoms[i],var_buf)));
                        IF ST_IsValid(var_geoms[i]) THEN 
                             
                        ELSE
@@ -5165,7 +5193,7 @@ $$
                 ELSE
                     var_resultgeom := ST_Buffer(var_resultgeom,var_buf);
                 END IF;
-                var_resultgeom := ST_Intersection(var_resultgeom, ST_ConvexHull(var_param_geom));
+                var_resultgeom := ST_force_sfs(ST_Intersection(var_resultgeom, ST_ConvexHull(var_param_geom)));
             ELSE
                 -- dimensions are too small to cut
                 var_resultgeom := _ST_ConcaveHull(var_param_geom);
@@ -5195,4 +5223,5 @@ CREATE OR REPLACE FUNCTION ST_AsX3D(geom geometry, maxdecimaldigits integer DEFA
 GRANT SELECT ON TABLE geography_columns TO public;
 GRANT SELECT ON TABLE geometry_columns TO public;
 GRANT SELECT ON TABLE spatial_ref_sys TO public;
+
 COMMIT;

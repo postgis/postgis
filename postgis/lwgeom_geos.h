@@ -23,6 +23,11 @@
 GSERIALIZED *GEOS2POSTGIS(GEOSGeom geom, char want3d);
 GEOSGeometry * POSTGIS2GEOS(GSERIALIZED *g);
 
+Datum geos_intersects(PG_FUNCTION_ARGS);
+Datum geos_intersection(PG_FUNCTION_ARGS);
+Datum LWGEOM_area_polygon(PG_FUNCTION_ARGS);
+Datum LWGEOM_mindistance2d(PG_FUNCTION_ARGS);
+Datum LWGEOM_mindistance3d(PG_FUNCTION_ARGS);
 
 void errorIfGeometryCollection(GSERIALIZED *g1, GSERIALIZED *g2);
 

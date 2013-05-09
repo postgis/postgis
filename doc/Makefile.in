@@ -108,7 +108,7 @@ XML_SOURCES = \
 	installation.xml \
 	introduction.xml \
 	performance_tips.xml \
-  postgis.xml \
+	postgis.xml \
 	reference_accessor.xml \
 	reference_constructor.xml \
 	reference_editor.xml \
@@ -180,6 +180,12 @@ topology_comments.sql: ./xsl/topology_comments.sql.xsl $(XML_INPUTS)
 	
 topology_cheatsheet.html: ./xsl/topology_cheatsheet.html.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/topology_cheatsheet.html.xsl postgis-out.xml > $@
+	
+sfcgal_comments.sql: ./xsl/sfcgal_comments.sql.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/sfcgal_comments.sql.xsl postgis-out.xml > $@
+	
+sfcgal_cheatsheet.html: ./xsl/sfcgal_cheatsheet.html.xsl $(XML_INPUTS)
+	$(XSLTPROC) --novalid ./xsl/sfcgal_cheatsheet.html.xsl postgis-out.xml > $@
 	
 tiger_geocoder_comments.sql: ./xsl/tiger_geocoder_comments.sql.xsl $(XML_INPUTS)
 	$(XSLTPROC) --novalid ./xsl/tiger_geocoder_comments.sql.xsl postgis-out.xml > $@
@@ -280,16 +286,17 @@ maintainer-clean: clean images-clean
 ifeq ($(XSLTPROC),)
 comments: requirements_not_met_xsltproc
 else
-comments: postgis_comments.sql raster_comments.sql topology_comments.sql tiger_geocoder_comments.sql
+comments: postgis_comments.sql raster_comments.sql topology_comments.sql sfcgal_comments.sql tiger_geocoder_comments.sql
 endif
 
-cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html tiger_geocoder_cheatsheet.html
+cheatsheets: postgis_cheatsheet.html raster_cheatsheet.html topology_cheatsheet.html sfcgal_cheatsheet.html tiger_geocoder_cheatsheet.html
 
 ifeq ($(XSLTPROC),)
 comments-install: 
 	if test -e postgis_comments.sql  -a \
 	        -e raster_comments.sql   -a \
 	        -e topology_comments.sql -a \
+	        -e sfcgal_comments.sql -a \
 	        -e tiger_geocoder_comments.sql; then \
 	  $(MAKE) -f Makefile.comments install; \
 	fi

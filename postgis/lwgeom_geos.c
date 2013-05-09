@@ -41,7 +41,7 @@ Datum relate_full(PG_FUNCTION_ARGS);
 Datum relate_pattern(PG_FUNCTION_ARGS);
 Datum disjoint(PG_FUNCTION_ARGS);
 Datum touches(PG_FUNCTION_ARGS);
-Datum intersects(PG_FUNCTION_ARGS);
+Datum geos_intersects(PG_FUNCTION_ARGS);
 Datum crosses(PG_FUNCTION_ARGS);
 Datum contains(PG_FUNCTION_ARGS);
 Datum containsproperly(PG_FUNCTION_ARGS);
@@ -51,7 +51,7 @@ Datum isvalid(PG_FUNCTION_ARGS);
 Datum isvalidreason(PG_FUNCTION_ARGS);
 Datum isvaliddetail(PG_FUNCTION_ARGS);
 Datum buffer(PG_FUNCTION_ARGS);
-Datum intersection(PG_FUNCTION_ARGS);
+Datum geos_intersection(PG_FUNCTION_ARGS);
 Datum convexhull(PG_FUNCTION_ARGS);
 Datum topologypreservesimplify(PG_FUNCTION_ARGS);
 Datum difference(PG_FUNCTION_ARGS);
@@ -1443,8 +1443,8 @@ Datum ST_OffsetCurve(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(intersection);
-Datum intersection(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geos_intersection);
+Datum geos_intersection(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;
@@ -2554,8 +2554,8 @@ Datum crosses(PG_FUNCTION_ARGS)
 }
 
 
-PG_FUNCTION_INFO_V1(intersects);
-Datum intersects(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(geos_intersects);
+Datum geos_intersects(PG_FUNCTION_ARGS)
 {
 	GSERIALIZED *geom1;
 	GSERIALIZED *geom2;

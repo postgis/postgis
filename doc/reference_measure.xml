@@ -127,6 +127,7 @@ SELECT ST_AsEWKT(ST_3DClosestPoint(line,pt)) AS cp3d_line_pt,
 		<!-- Optionally mention supports Polyhedral Surface  -->
 		<para>&P_support;</para>
 		<para>&sqlmm_compliant; SQL-MM ?</para>
+                <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 2.0.0</para>
 	  </refsection>
@@ -661,6 +662,7 @@ SELECT ST_AsEWKT(ST_3DShortestLine(line,pt)) AS shl3d_line_pt,
 		 	<para>&P_support;</para>
 		 	<note><para>For polyhedral surfaces, only supports 2D polyhedral surfaces (not 2.5D).  For 2.5D, may give a non-zero answer, but only for the faces that
 		 	sit completely in XY plane.</para></note>
+                        <para>&sfcgal_enhanced;</para>
 		</refsection>
 
 		  <refsection>
@@ -1971,6 +1973,7 @@ SELECT ST_Disjoint('POINT(0 0)'::geometry, 'LINESTRING ( 0 0, 0 2 )'::geometry);
 		<para>&sfs_compliant;</para>
 		<para>&sqlmm_compliant; SQL-MM 3: 5.1.23</para>
 		<para>&curve_support;</para>
+                <para>&sfcgal_enhanced;</para>
 
 		<para>Availability: 1.5.0 geography support was introduced in 1.5.  Speed improvements for planar to better handle large or many vertex geometries</para>
 		<para>Enhanced: 2.1.0 improved speed for geography. See <ulink url="http://blog.opengeo.org/2012/07/12/making-geography-faster/">Making Geography faster</ulink> for details.</para>
@@ -2643,6 +2646,7 @@ SELECT ST_Equals(ST_Reverse(ST_GeomFromText('LINESTRING(0 0, 10 10)')),
 			  - ST_Intersects(g1, g2 ) --&gt; Not (ST_Disjoint(g1, g2 ))
 			</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 5.1.27</para>
+                        <para>&sfcgal_enhanced;</para>
 		</refsection>
 		<refsection>
 		<title>Geometry Examples</title>
@@ -2708,6 +2712,7 @@ t
 			<para>&sfs_compliant; s2.1.5.1</para>
 			<para>&sqlmm_compliant; SQL-MM 3: 7.1.2, 9.3.4</para>
 			<para>Availability: 1.5.0 geography support was introduced in 1.5.</para>
+                        <para>&sfcgal_enhanced;</para>
 		</refsection>
 
 		  <refsection>

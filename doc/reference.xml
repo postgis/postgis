@@ -24,6 +24,7 @@
   &reference_output;
   &reference_operator;
   &reference_measure;
+  &reference_sfcgal;
   &reference_processing;
   &reference_lrs;
   &reference_transaction;

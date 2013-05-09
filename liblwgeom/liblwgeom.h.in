@@ -873,6 +873,12 @@ extern LWGEOM* lwgeom_force_4d(const LWGEOM *geom);
 
 extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
 
+/* 
+ * Force to use SFS 1.1 geometry type
+ * (rather than SFS 1.2 and/or SQL/MM)
+ */
+extern LWGEOM* lwgeom_force_sfs(LWGEOM *geom);
+
 
 /*--------------------------------------------------------
  * all the base types (point/line/polygon) will have a

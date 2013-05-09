@@ -47,6 +47,7 @@ my $OPT_NOCREATE = 0;
 my $OPT_UPGRADE = 0;
 my $OPT_WITH_TOPO = 0;
 my $OPT_WITH_RASTER = 0;
+my $OPT_WITH_SFCGAL = 0;
 my $OPT_EXPECT = 0;
 my $OPT_EXTENSIONS = 0;
 my $VERBOSE = 0;
@@ -59,10 +60,10 @@ GetOptions (
 	'nocreate' => \$OPT_NOCREATE,
 	'topology' => \$OPT_WITH_TOPO,
 	'raster' => \$OPT_WITH_RASTER,
+	'sfcgal' => \$OPT_WITH_SFCGAL,
 	'expect' => \$OPT_EXPECT,
 	'extensions' => \$OPT_EXTENSIONS
 	);
-
 
 ##################################################################
 # Set the locale to "C" so error messages match
@@ -305,7 +306,6 @@ foreach $TEST (@ARGV)
 }
 
 
-
 ################################################################### 
 # Uninstall postgis (serves as an uninstall test)
 ##################################################################
@@ -365,6 +365,7 @@ Options:
   --nodrop     do not drop the regression database on exit
   --raster     load also raster extension
   --topology   load also topology extension
+  --sfcgal     use also sfcgal backend
   --clean      cleanup test logs on exit
   --expect     save obtained output as expected
 };
@@ -1036,14 +1037,23 @@ sub prepare_spatial
 	
 	if ( $OPT_WITH_TOPO )
 	{
+		print "Loading Topology";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/topology.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/topology_comments.sql", 0);
 	}
 	
 	if ( $OPT_WITH_RASTER )
 	{
+		print "Loading Raster";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/rtpostgis.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/raster_comments.sql", 0);
+	}
+
+	if ( $OPT_WITH_SFCGAL )
+	{
+		print "Loading sfcgal";
+		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal.sql", 1);
+		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal_comments.sql", 0);
 	}
 
 	return 1;
@@ -1110,6 +1120,10 @@ sub drop_spatial
 	if ( $OPT_WITH_RASTER )
 	{
 		load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_rtpostgis.sql");
+	}
+	if ( $OPT_WITH_SFCGAL )
+	{
+		load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_sfcgal.sql");
 	}
 	load_sql_file("${STAGED_SCRIPTS_DIR}/uninstall_postgis.sql");
 

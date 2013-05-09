@@ -91,6 +91,12 @@ SA_OBJS = \
 NM_OBJS = \
 	lwspheroid.o 
 
+ifeq (@SFCGAL@,sfcgal)
+CFLAGS += @SFCGAL_CPPFLAGS@
+LDFLAGS += @SFCGAL_LDFLAGS@
+SA_OBJS += lwgeom_sfcgal.o
+endif
+
 LT_SA_OBJS = $(SA_OBJS:.o=.lo)
 LT_NM_OBJS = $(NM_OBJS:.o=.lo)
 LT_OBJS = $(LT_SA_OBJS) $(LT_NM_OBJS)
@@ -157,7 +163,6 @@ $(LT_NM_OBJS): %.lo: %.c
 parser:
 	$(YACC) -o'lwin_wkt_parse.c' -d lwin_wkt_parse.y
 	$(LEX) -i lwin_wkt_lex.l
-	
 #	$(YACC) --debug --verbose -o'$@' -d $<
 #	$(YACC) -o'$@' -d $^
 #	$(LEX) -i $<
