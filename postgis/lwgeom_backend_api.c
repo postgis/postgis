@@ -22,7 +22,9 @@
 #include "../postgis_config.h"
 #include "lwgeom_backend_api.h"
 #include "lwgeom_geos.h"
+#if HAVE_SFCGAL
 #include "lwgeom_sfcgal.h"
+#endif
 
 Datum intersects(PG_FUNCTION_ARGS);
 Datum intersects3d(PG_FUNCTION_ARGS);
