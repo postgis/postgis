@@ -528,6 +528,33 @@ GEOMETRYCOLLECTION(
 	</refentry>
 
 
+	<refentry id="ST_Force_SFS">
+	  <refnamediv>
+		<refname>ST_Force_SFS</refname>
+
+		<refpurpose>Forces the geometries to use SFS 1.1 geometry types only.</refpurpose>
+	  </refnamediv>
+
+	  <refsynopsisdiv>
+		<funcsynopsis>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_Force_SFS</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+		  </funcprototype>
+		</funcsynopsis>
+	  </refsynopsisdiv>
+
+	  <refsection>
+		<title>Description</title>
+
+		<para>&P_support;</para>
+		<para>&T_support;</para>
+	  	<para>&curve_support;</para>
+	  	<para>&Z_support;</para>
+	  </refsection>
+	</refentry>
+
+
 	<refentry id="ST_ForceRHR">
 		<refnamediv>
 			<refname>ST_ForceRHR</refname>
