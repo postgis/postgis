@@ -157,11 +157,15 @@ lwcompound_contains_point(const LWCOMPOUND *comp, const POINT2D *pt)
 			{
 				/* Don't check closure while doing p-i-p test */
 				result = ptarray_contains_point_partial(lwline->points, pt, LW_FALSE, &winding_number);
-			}	
+			}
 		}
-		else if ( lwgeom->type == CIRCSTRINGTYPE )
+		else
 		{
 			lwcirc = lwgeom_as_lwcircstring(lwgeom);
+			if ( ! lwcirc ) {
+				lwerror("Unexpected component of type %s in compound curve", lwtype_name(lwgeom->type));
+				return 0;
+			}
 			if ( comp->ngeoms == 1 )
 			{
 				return ptarrayarc_contains_point(lwcirc->points, pt); 				
