@@ -737,12 +737,11 @@ lwgeom_force_sfs(LWGEOM *geom)
 				lwgeom_free(col->geoms[i]);
 				col->geoms[i] = g;
 			}
-
-			col->type = MULTIPOLYGONTYPE;
+			col->type = COLLECTIONTYPE;
 			return lwmpoly_as_lwgeom((LWMPOLY*)geom);
 		
 		case POLYHEDRALSURFACETYPE:
-			geom->type = MULTIPOLYGONTYPE;
+			geom->type = COLLECTIONTYPE;
 			return (LWGEOM *)geom;
 
 		/* Collection */
