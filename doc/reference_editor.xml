@@ -528,9 +528,9 @@ GEOMETRYCOLLECTION(
 	</refentry>
 
 
-	<refentry id="ST_Force_SFS">
+	<refentry id="ST_ForceSFS">
 	  <refnamediv>
-		<refname>ST_Force_SFS</refname>
+		<refname>ST_ForceSFS</refname>
 
 		<refpurpose>Forces the geometries to use SFS 1.1 geometry types only.</refpurpose>
 	  </refnamediv>
@@ -538,7 +538,7 @@ GEOMETRYCOLLECTION(
 	  <refsynopsisdiv>
 		<funcsynopsis>
 		  <funcprototype>
-			<funcdef>geometry <function>ST_Force_SFS</function></funcdef>
+			<funcdef>geometry <function>ST_ForceSFS</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
 		</funcsynopsis>
