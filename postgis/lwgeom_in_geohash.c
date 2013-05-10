@@ -15,6 +15,7 @@
 #include "../postgis_config.h"
 #include "lwgeom_pg.h"
 #include "liblwgeom.h"
+#include "liblwgeom_internal.h"/* for decode_geohash_bbox */
 
 Datum box2d_from_geohash(PG_FUNCTION_ARGS);
 Datum point_from_geohash(PG_FUNCTION_ARGS);
@@ -27,7 +28,7 @@ static void geohash_lwerror(char *msg, int error_code)
 
 #include "lwgeom_export.h"
 
-GBOX*
+static GBOX*
 parse_geohash(char *geohash, int precision)
 {
 	GBOX *box = NULL;

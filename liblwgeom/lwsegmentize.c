@@ -110,7 +110,6 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 	double increment; /* Angle per segment */
 	double a1, a2, a3, angle;
 	POINTARRAY *pa;
-	int result;
 	int is_circle = LW_FALSE;
 
 	LWDEBUG(2, "lwcircle_calculate_gbox called.");
@@ -179,7 +178,7 @@ lwcircle_segmentize(POINT4D *p1, POINT4D *p2, POINT4D *p3, uint32_t perQuad)
 		pt.y = center.y + radius * sin(angle);
 		pt.z = interpolate_arc(angle, a1, a2, a3, p1->z, p2->z, p3->z);
 		pt.m = interpolate_arc(angle, a1, a2, a3, p1->m, p2->m, p3->m);
-		result = ptarray_append_point(pa, &pt, LW_FALSE);
+		ptarray_append_point(pa, &pt, LW_FALSE);
 	}	
 	return pa;
 }

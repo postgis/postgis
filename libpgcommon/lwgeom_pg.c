@@ -106,7 +106,7 @@ pg_unparser_errhint(LWGEOM_UNPARSER_RESULT *lwg_unparser_result)
 }
 
 
-void *
+static void *
 pg_alloc(size_t size)
 {
 	void * result;
@@ -127,7 +127,7 @@ pg_alloc(size_t size)
 	return result;
 }
 
-void *
+static void *
 pg_realloc(void *mem, size_t size)
 {
 	void * result;
@@ -143,13 +143,13 @@ pg_realloc(void *mem, size_t size)
 	return result;
 }
 
-void
+static void
 pg_free(void *ptr)
 {
 	pfree(ptr);
 }
 
-void
+static void
 pg_error(const char *fmt, va_list ap)
 {
 #define ERRMSG_MAXLEN 256
@@ -162,7 +162,7 @@ pg_error(const char *fmt, va_list ap)
 	ereport(ERROR, (errmsg_internal("%s", errmsg)));
 }
 
-void
+static void
 pg_notice(const char *fmt, va_list ap)
 {
 	char *msg;

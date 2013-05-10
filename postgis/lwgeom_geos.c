@@ -892,6 +892,7 @@ Datum boundary(PG_FUNCTION_ARGS)
 	GSERIALIZED	*geom1;
 	GEOSGeometry *g1, *g3;
 	GSERIALIZED *result;
+	LWGEOM *lwgeom;
 	int srid;
 
 
@@ -903,10 +904,10 @@ Datum boundary(PG_FUNCTION_ARGS)
 
 	srid = gserialized_get_srid(geom1);
 
-	LWGEOM *lwgeom = lwgeom_from_gserialized(geom1);
+	lwgeom = lwgeom_from_gserialized(geom1);
 	if ( ! lwgeom ) {
 		lwerror("POSTGIS2GEOS: unable to deserialize input");
-		return NULL;
+		PG_RETURN_NULL();
 	}
 
 	/* GEOS doesn't do triangle type, so we special case that here */
