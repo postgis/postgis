@@ -31,7 +31,6 @@ static void do_geom_test(char * in, char * out)
 		        in, tmp, out);
 	CU_ASSERT_STRING_EQUAL(tmp, out);
 	lwfree(tmp);
-	lwgeom_free(g);
 	lwgeom_free(h);
 }
 
@@ -46,7 +45,6 @@ static void do_type_test(char * in, int type)
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n", 
 			in, lwtype_name(h->type), lwtype_name(type));
 	CU_ASSERT_EQUAL(h->type, type);
-	lwgeom_free(g);
 	lwgeom_free(h);
 }
 
