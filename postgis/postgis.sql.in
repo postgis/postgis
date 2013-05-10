@@ -1168,42 +1168,96 @@ CREATE OR REPLACE FUNCTION ST_azimuth(geom1 geometry, geom2 geometry)
 ------------------------------------------------------------------------
 -- MISC
 ------------------------------------------------------------------------
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_force_2d(geometry)
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_Force2D(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_2d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
+-- Deprecation in 2.1.0
+CREATE OR REPLACE FUNCTION ST_force_2d(geometry)
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Force_2d', 'ST_Force2D', '2.1.0');
+    SELECT ST_Force2D($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_Force3DZ(geometry)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.1.0
 CREATE OR REPLACE FUNCTION ST_force_3dz(geometry)
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Force_3dz', 'ST_Force3DZ', '2.1.0');
+    SELECT ST_Force3DZ($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_Force3D(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
-
 -- Availability: 1.2.2
+-- Deprecation in 2.1.0
 CREATE OR REPLACE FUNCTION ST_force_3d(geometry)
-	RETURNS geometry
-	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dz'
-	LANGUAGE 'c' IMMUTABLE STRICT;
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Force_3d', 'ST_Force3D', '2.1.0');
+    SELECT ST_Force3D($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
--- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_force_3dm(geometry)
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_Force3DM(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_3dm'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_force_4d(geometry)
+-- Deprecation in 2.1.0
+CREATE OR REPLACE FUNCTION ST_force_3dm(geometry)
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Force_3dm', 'ST_Force3DM', '2.1.0');
+    SELECT ST_Force3DM($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_Force4D(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_4d'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
 -- Availability: 1.2.2
-CREATE OR REPLACE FUNCTION ST_force_collection(geometry)
+-- Deprecation in 2.1.0
+CREATE OR REPLACE FUNCTION ST_force_4d(geometry)
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Force_4d', 'ST_Force4D', '2.1.0');
+    SELECT ST_Force4D($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_ForceCollection(geometry)
 	RETURNS geometry
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_collection'
 	LANGUAGE 'c' IMMUTABLE STRICT;
+
+-- Availability: 1.2.2
+-- Deprecation in 2.1.0
+CREATE OR REPLACE FUNCTION ST_force_collection(geometry)
+	RETURNS geometry AS
+  $$ SELECT _postgis_deprecate('ST_Force_Collection', 'ST_ForceCollection', '2.1.0');
+    SELECT ST_ForceCollection($1);
+  $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_CollectionExtract(geometry, integer)

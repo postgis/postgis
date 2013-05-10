@@ -32,6 +32,7 @@ PostGIS 2.1.0
   - ST_Line_Interpolate_Point renamed to ST_LineInterpolatePoint
   - ST_Line_Substring renamed to ST_LineSubstring
   - ST_Line_Locate_Point renamed to ST_LineLocatePoint
+  - ST_Force_XXX renamed to ST_ForceXXX
   - ST_MapAlgebraFctNgb and 1 and 2 raster variants of ST_MapAlgebraFct.
     Use ST_MapAlgebra instead
   - 1 and 2 raster variants of ST_MapAlgebraExpr.
