@@ -297,14 +297,14 @@ POINTARRAY *
 ptarray_grid(POINTARRAY *pa, gridspec *grid)
 {
 	POINT4D pbuf;
-	int ipn, opn; /* point numbers (input/output) */
+	int ipn; /* input point numbers */
 	POINTARRAY *dpa;
 
 	POSTGIS_DEBUGF(2, "ptarray_grid called on %p", pa);
 
 	dpa = ptarray_construct_empty(FLAGS_GET_Z(pa->flags),FLAGS_GET_M(pa->flags), pa->npoints);
 
-	for (ipn=0, opn=0; ipn<pa->npoints; ++ipn)
+	for (ipn=0; ipn<pa->npoints; ++ipn)
 	{
 
 		getPoint4d_p(pa, ipn, &pbuf);
@@ -373,15 +373,15 @@ lwpoly_grid(LWPOLY *poly, gridspec *grid)
 	int ri;
 	POINTARRAY **newrings = NULL;
 	int nrings = 0;
-	double minvisiblearea;
-
+#if 0
 	/*
 	 * TODO: control this assertion
 	 * it is assumed that, since the grid size will be a pixel,
 	 * a visible ring should show at least a white pixel inside,
 	 * thus, for a square, that would be grid_xsize*grid_ysize
 	 */
-	minvisiblearea = grid->xsize * grid->ysize;
+	double minvisiblearea = grid->xsize * grid->ysize;
+#endif
 
 	nrings = 0;
 
@@ -1177,7 +1177,6 @@ int point_in_multipolygon_rtree(RTREE_NODE **root, int polyCount, int *ringCount
 int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 {
 	int i, result, in_ring;
-	POINTARRAY *ring;
 	POINT2D pt;
 
 	POSTGIS_DEBUG(2, "point_in_polygon called.");
@@ -1188,7 +1187,6 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 	/* everything is outside of an empty polygon */
 	if ( polygon->nrings == 0 ) return -1;
 
-	ring = polygon->rings[0];
 	in_ring = point_in_ring(polygon->rings[0], &pt);
 	if ( in_ring == -1) /* outside the exterior ring */
 	{
@@ -1199,7 +1197,6 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 
 	for (i=1; i<polygon->nrings; i++)
 	{
-		ring = polygon->rings[i];
 		in_ring = point_in_ring(polygon->rings[i], &pt);
 		if (in_ring == 1) /* inside a hole => outside the polygon */
 		{
@@ -1223,7 +1220,6 @@ int point_in_polygon(LWPOLY *polygon, LWPOINT *point)
 int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 {
 	int i, j, result, in_ring;
-	POINTARRAY *ring;
 	POINT2D pt;
 
 	POSTGIS_DEBUG(2, "point_in_polygon called.");
@@ -1241,7 +1237,6 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 		/* everything is outside of an empty polygon */
 		if ( polygon->nrings == 0 ) continue;
 
-		ring = polygon->rings[0];
 		in_ring = point_in_ring(polygon->rings[0], &pt);
 		if ( in_ring == -1) /* outside the exterior ring */
 		{
@@ -1257,7 +1252,6 @@ int point_in_multipolygon(LWMPOLY *mpolygon, LWPOINT *point)
 
 		for (i=1; i<polygon->nrings; i++)
 		{
-			ring = polygon->rings[i];
 			in_ring = point_in_ring(polygon->rings[i], &pt);
 			if (in_ring == 1) /* inside a hole => outside the polygon */
 			{
