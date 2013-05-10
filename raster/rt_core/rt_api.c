@@ -410,11 +410,6 @@ rt_util_gdal_sr_auth_info(GDALDatasetH hds, char **authname, char **authcode) {
 				strncpy(*authname, pszAuthorityName, strlen(pszAuthorityName) + 1);
 				strncpy(*authcode, pszAuthorityCode, strlen(pszAuthorityCode) + 1);
 			}
-			else {
-				rtinfo("Cound not get auth name and code. The SRS may be custom");
-				OSRDestroySpatialReference(hSRS);
-				return ES_NONE;
-			}
 		}
 
 		OSRDestroySpatialReference(hSRS);
