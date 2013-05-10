@@ -32,34 +32,7 @@
 		<title>Description</title>
 
 		<para>Availability</para>
-		<para>&Z_support;</para>
-		<para>&P_support;</para>
-		<para>&T_support;</para>
-	  </refsection>
-
-	</refentry>
-
-
-	<refentry id="ST_MakeSolid">
-	  <refnamediv>
-		<refname>ST_MakeSolid</refname>
-
-		<refpurpose>Make a Solid from a Geometry</refpurpose>
-	  </refnamediv>
-
-	  <refsynopsisdiv>
-		<funcsynopsis>
-		  <funcprototype>
-			<funcdef>geometry <function>ST_MakeSolid</function></funcdef>
-			<paramdef><type>geometry</type> <parameter>geom</parameter></paramdef>
-		  </funcprototype>
-		</funcsynopsis>
-	  </refsynopsisdiv>
-
-	  <refsection>
-		<title>Description</title>
-
-		<para>Availability</para>
+		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -88,6 +61,7 @@
 		<title>Description</title>
 
 		<para>Availability</para>
+		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -116,6 +90,7 @@
 		<title>Description</title>
 
 		<para>Availability</para>
+		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -144,6 +119,7 @@
 		<title>Description</title>
 
 		<para>Availability</para>
+		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -172,6 +148,7 @@
 		<title>Description</title>
 
 		<para>Availability</para>
+		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -200,6 +177,7 @@
 		<title>Description</title>
 
 		<para>Availability</para>
+		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>
@@ -228,6 +206,7 @@
 		<title>Description</title>
 
 		<para>Availability</para>
+		<para>&sfcgal_required;</para>
 		<para>&Z_support;</para>
 		<para>&P_support;</para>
 		<para>&T_support;</para>

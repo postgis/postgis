@@ -67,6 +67,13 @@
    </imageobject>
  </inlinemediaobject> This method is also provided by SFCGAL backend.">
 
+<!ENTITY sfcgal_required 
+"<inlinemediaobject>
+   <imageobject>
+     <imagedata fileref='images/check.png' />
+   </imageobject>
+ </inlinemediaobject> This method need SFCGAL backend.">
+
 <!ENTITY curve_support 
 "<inlinemediaobject>
    <imageobject><imagedata fileref='images/check.png' /></imageobject>
