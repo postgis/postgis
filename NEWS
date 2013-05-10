@@ -199,7 +199,8 @@ PostGIS 2.1.0
   - #2133, Fix performance regression in expression variant of ST_MapAlgebra
   - #2257, GBOX variables not initialized when testing with empty geometries
   - #2271, Prevent parallel make of raster
-  - #2282, Fix call to undefined function nd_stats_to_grid()
+  - #2282, Fix call to undefined function nd_stats_to_grid() in debug mode
+  - #2309, Remove confusing INFO message when trying to get SRS info
 
 PostGIS 2.0.3
 2013/03/01

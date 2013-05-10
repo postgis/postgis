@@ -10819,12 +10819,22 @@ UPDATE wind
 				<itemizedlist>
 					<listitem>
 						<para>
-							<varname>grayscale</varname>, <varname>greyscale</varname> for a one 8BUI band raster
+							<varname>grayscale</varname> or <varname>greyscale</varname> for a one 8BUI band raster of shades of gray.
 						</para>
 					</listitem>
 					<listitem>
 						<para>
-							<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster
+							<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with colors going from blue to green to red.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>fire</varname> for a four 8BUI (RGBA) band raster with colors going from black to red to pale yellow.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>bluered</varname> for a four 8BUI (RGBA) band raster with colors going from blue to pale white to red.
 						</para>
 					</listitem>
 				</itemizedlist>

@@ -10989,6 +10989,7 @@ Datum RASTER_colorMap(PG_FUNCTION_ARGS)
 
 			/* empty entry, continue */
 			if (!strlen(_entry)) {
+				POSTGIS_RT_DEBUGF(3, "Skipping empty entry[%d]", i);
 				pfree(_entry);
 				continue;
 			}

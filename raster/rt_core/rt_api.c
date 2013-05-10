@@ -14823,13 +14823,7 @@ rt_errorstate rt_raster_get_perimeter(
 * rt_raster_colormap()
 ******************************************************************************/
 
-typedef struct _rti_colormap_rgbhsv_t* _rti_colormap_rgbhsv;
 typedef struct _rti_colormap_arg_t* _rti_colormap_arg;
-struct _rti_colormap_rgbhsv_t {
-	double rgb[3];
-	double hsv[3];
-};
-
 struct _rti_colormap_arg_t {
 	rt_raster raster;
 	rt_band band;
@@ -14843,9 +14837,6 @@ struct _rti_colormap_arg_t {
 
 	int npos;
 	uint16_t *pos;
-
-	int nrgbhsv;
-	_rti_colormap_rgbhsv rgbhsv;
 
 };
 
@@ -14881,9 +14872,6 @@ _rti_colormap_arg_init(rt_raster raster) {
 	arg->npos = 0;
 	arg->pos = NULL;
 
-	arg->nrgbhsv = 0;
-	arg->rgbhsv = NULL;
-
 	return arg;
 }
 
@@ -14913,9 +14901,6 @@ _rti_colormap_arg_destroy(_rti_colormap_arg arg) {
 
 	if (arg->npos)
 		rtdealloc(arg->pos);
-
-	if (arg->rgbhsv != NULL)
-		rtdealloc(arg->rgbhsv);
 
 	rtdealloc(arg);
 	arg = NULL;
@@ -15058,35 +15043,6 @@ rt_raster rt_raster_colormap(
 		}
 	}
 
-	/* rgb to hsv */
-	if (colormap->method == CM_INTERPOLATE && colormap->ncolor > 2) {
-		arg->nrgbhsv = arg->npos;
-		if (arg->nodataentry != NULL)
-			arg->nrgbhsv += 1;
-
-		/* allocate space */
-		arg->rgbhsv = rtalloc(sizeof(struct _rti_colormap_rgbhsv_t) * arg->nrgbhsv);
-		if (arg->rgbhsv == NULL) {
-			rterror("rt_raster_colormap: Unable to allocate memory for RGB to HSV conversion");
-			_rti_colormap_arg_destroy(arg);
-			return NULL;
-		}
-		memset(arg->rgbhsv, 0, sizeof(struct _rti_colormap_rgbhsv_t) * arg->nrgbhsv);
-
-		for (i = 0; i < arg->nrgbhsv; i++) {
-			/* convert colormap's 0 - 255 to 0 - 1 */
-			for (j = 0; j < 3; j++) {
-				if (i < arg->npos)
-					arg->rgbhsv[i].rgb[j] = ((double) colormap->entry[arg->pos[i]].color[j]) / 255.;
-				else
-					arg->rgbhsv[i].rgb[j] = ((double) arg->nodataentry->color[j]) / 255.;
-			}
-			
-			/* convert to hsv */
-			rt_util_rgb_to_hsv(arg->rgbhsv[i].rgb, arg->rgbhsv[i].hsv);
-		}
-	}
-
 	/* reclassify bands */
 	/* by # of colors */
 	for (i = 0; i < colormap->ncolor; i++) {
@@ -15101,16 +15057,8 @@ rt_raster rt_raster_colormap(
 			arg->expr[k]->src.exc_min = 0;
 			arg->expr[k]->src.exc_max = 0;
 
-			/* use HSV */
-			if (arg->nrgbhsv && i < 3) {
-				arg->expr[k]->dst.min = arg->rgbhsv[arg->nrgbhsv - 1].hsv[i];
-				arg->expr[k]->dst.max = arg->rgbhsv[arg->nrgbhsv - 1].hsv[i];
-			}
-			/* use RGB */
-			else {
-				arg->expr[k]->dst.min = arg->nodataentry->color[i];
-				arg->expr[k]->dst.max = arg->nodataentry->color[i];
-			}
+			arg->expr[k]->dst.min = arg->nodataentry->color[i];
+			arg->expr[k]->dst.max = arg->nodataentry->color[i];
 
 			arg->expr[k]->dst.inc_min = 1;
 			arg->expr[k]->dst.inc_max = 1;
@@ -15153,16 +15101,8 @@ rt_raster rt_raster_colormap(
 				arg->expr[k]->src.inc_max = 1;
 				arg->expr[k]->src.exc_max = 0;
 
-				/* use HSV */
-				if (arg->nrgbhsv && i < 3) {
-					arg->expr[k]->dst.min = arg->rgbhsv[j + 1].hsv[i];
-					arg->expr[k]->dst.max = arg->rgbhsv[j].hsv[i];
-				}
-				/* use RGB */
-				else {
-					arg->expr[k]->dst.min = colormap->entry[arg->pos[j + 1]].color[i];
-					arg->expr[k]->dst.max = colormap->entry[arg->pos[j]].color[i];
-				}
+				arg->expr[k]->dst.min = colormap->entry[arg->pos[j + 1]].color[i];
+				arg->expr[k]->dst.max = colormap->entry[arg->pos[j]].color[i];
 
 				arg->expr[k]->dst.inc_min = 1;
 				arg->expr[k]->dst.exc_min = 0;
@@ -15289,10 +15229,7 @@ rt_raster rt_raster_colormap(
 		}
 
 		/* call rt_band_reclass */
-		if (arg->nrgbhsv)
-			arg->band = rt_band_reclass(band, PT_32BF, 0, 0, arg->expr, arg->nexpr);
-		else
-			arg->band = rt_band_reclass(band, PT_8BUI, 0, 0, arg->expr, arg->nexpr);
+		arg->band = rt_band_reclass(band, PT_8BUI, 0, 0, arg->expr, arg->nexpr);
 		if (arg->band == NULL) {
 			rterror("rt_raster_colormap: Unable to reclassify band");
 			_rti_colormap_arg_destroy(arg);
@@ -15304,93 +15241,6 @@ rt_raster rt_raster_colormap(
 			rterror("rt_raster_colormap: Unable to add reclassified band to output raster");
 			_rti_colormap_arg_destroy(arg);
 			return NULL;
-		}
-	}
-
-	/* convert HSV back to RGB 0 - 255 */
-	if (arg->nrgbhsv) {
-		int width = rt_raster_get_width(arg->raster);
-		int height = rt_raster_get_height(arg->raster);
-		rt_band _band = NULL;
-		rt_band band[6];
-		struct _rti_colormap_rgbhsv_t hsvrgb;
-
-		/* get band objects */
-		for (i = 0; i < 6; i++) {
-			/* existing band */
-			if (i < 3)
-				band[i] = rt_raster_get_band(arg->raster, i);
-			/* new band */
-			else {
-				void *mem =rtalloc(rt_pixtype_size(PT_8BUI) * width * height);
-				if (mem == NULL) {
-					rterror("rt_raster_colormap: Unable to allocate memory for new band");
-					for (j = 3; j < i; j++)
-						rt_band_destroy(band[j]);
-					_rti_colormap_arg_destroy(arg);
-					return NULL;
-				}
-				memset(mem, 0, rt_pixtype_size(PT_8BUI) * width * height);
-
-				band[i] = rt_band_new_inline(
-					width, height,
-					PT_8BUI,
-					0, 0,
-					mem
-				);
-				if (band[i] == NULL) {
-					rterror("rt_raster_colormap: Unable to create new band");
-					rtdealloc(mem);
-					for (j = 3; j < i; j++)
-						rt_band_destroy(band[j]);
-					_rti_colormap_arg_destroy(arg);
-					return NULL;
-				}
-				rt_band_set_ownsdata_flag(band[i], 1);
-			}
-		}
-
-		/* process each pixel */
-		for (i = 0; i < height; i++) {
-			for (j = 0; j < width; j++) {
-				/* get HSV components */
-				for (k = 0; k < 3; k++) {
-					if (rt_band_get_pixel(band[k], j, i, &(hsvrgb.hsv[k]), NULL) != ES_NONE) {
-						rterror("rt_raster_colormap: Unable to process HSV values from bands");
-						for (i = 3; i < 6; i++)
-							rt_band_destroy(band[j]);
-						_rti_colormap_arg_destroy(arg);
-						return NULL;
-					}
-				}
-
-				/* convert HSV to RGB 0 - 1 */
-				rt_util_hsv_to_rgb(hsvrgb.hsv, hsvrgb.rgb);
-
-				/* convert RGB 0 - 1 to 0 - 255 and burn */
-				for (k = 0; k < 3; k++) {
-					if (rt_band_set_pixel(band[k + 3], j, i, ROUND(hsvrgb.rgb[k] * 255., 0), NULL) != ES_NONE) {
-						rterror("rt_raster_colormap: Unable to set RGB values to bands");
-						for (i = 3; i < 6; i++)
-							rt_band_destroy(band[j]);
-						_rti_colormap_arg_destroy(arg);
-						return NULL;
-					}
-				}
-			}
-		}
-
-		/* replace bands */
-		for (i = 0; i < 3; i++) {
-			_band = rt_raster_replace_band(arg->raster, band[i + 3], i);
-			if (_band == NULL) {
-				rterror("rt_raster_colormap: Unable to replace HSV band with RGB band");
-				for (j = i + 3; j < 6; j++)
-					rt_band_destroy(band[j]);
-				_rti_colormap_arg_destroy(arg);
-				return NULL;
-			}
-			rt_band_destroy(_band);
 		}
 	}
 
