@@ -55,7 +55,7 @@ CREATE OR REPLACE FUNCTION ST_Orientation(geometry)
        LANGUAGE 'c' IMMUTABLE STRICT
        COST 100;
 
-CREATE OR REPLACE FUNCTION ST_Minkowski(geometry, geometry)
+CREATE OR REPLACE FUNCTION ST_MinkowskiSum(geometry, geometry)
        RETURNS geometry
        AS 'MODULE_PATHNAME','sfcgal_minkowski_sum'
        LANGUAGE 'c' IMMUTABLE STRICT

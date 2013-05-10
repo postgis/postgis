@@ -156,9 +156,9 @@
 
 	</refentry>
 
-	<refentry id="ST_Triangulate">
+	<refentry id="ST_MinkowskiSum">
 	  <refnamediv>
-		<refname>ST_Minkowski</refname>
+		<refname>ST_MinkowskiSum</refname>
 
 		<refpurpose>Perform Minkowski sum</refpurpose>
 	  </refnamediv>

@@ -29,7 +29,7 @@ DROP FUNCTION IF EXISTS ST_ForceLHR(geometry);
 
 DROP FUNCTION IF EXISTS ST_Orientation(geometry);
 
-DROP FUNCTION IF EXISTS ST_Minkowski(geometry, geometry);
+DROP FUNCTION IF EXISTS ST_MinkowskiSum(geometry, geometry);
 
 DROP FUNCTION IF EXISTS ST_StraightSkeleton(geometry);
 
