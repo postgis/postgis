@@ -10898,21 +10898,35 @@ FROM (SELECT
 <programlisting>SELECT ST_NumBands(rast) As n_orig
    , ST_NumBands(ST_ColorMap(rast, 'pseudocolor')) As npseudo
    , ST_NumBands(ST_ColorMap(rast, 'greyscale')) As ngrey
+   , ST_NumBands(ST_ColorMap(rast, '100% 255 0 0
+80% 160 0 0
+50% 130 0 0
+30% 30 0 0
+20% 60 0 0
+0% 0 0 0
+nv 255 255 255')) As nred
 FROM funky_shapes;
 
- n_orig | npseudo | ngrey
---------+---------+-------
-      1 |       4 |     1
+ n_orig | npseudo | ngrey | nred
+--------+---------+-------+------
+      1 |       4 |     1 |    3
 </programlisting>			
 			</refsection>
 			<refsection><title>Examples: Compare different color map looks using ST_AsPNG</title>
 				<programlisting>SELECT ST_AsPNG(rast) As orig_png
  , ST_AsPNG(ST_ColorMap(rast,'greyscale')) As grey_png
  , ST_AsPNG(ST_ColorMap(rast, 'pseudocolor')) As pseudo_png
+ , ST_AsPNG(ST_ColorMap(rast, '100% 255 0 0
+80% 160 0 0
+50% 130 0 0
+30% 30 0 0
+20% 60 0 0
+0% 0 0 0
+nv 255 255 255')) As red_png
 FROM funky_shapes;</programlisting>
 
 <informaltable>
-  <tgroup cols="3">
+  <tgroup cols="2">
 	<tbody>
 	  <row>
 		<entry><para><informalfigure>
@@ -10933,6 +10947,8 @@ FROM funky_shapes;</programlisting>
 			</mediaobject>
 		  </informalfigure></para>
 		 </entry>
+	 </row>
+	<row>
 		<entry><para><informalfigure>
 			<mediaobject>
 			  <imageobject>
@@ -10942,7 +10958,16 @@ FROM funky_shapes;</programlisting>
 			</mediaobject>
 		  </informalfigure></para>
 		 </entry>
-		</row>
+		 <entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_red.png" />
+			  </imageobject>
+			  <caption><para>red_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+	</row>	
 	</tbody>
 </tgroup>
 </informaltable>
@@ -10951,10 +10976,11 @@ FROM funky_shapes;</programlisting>
 			<refsection>
 				<title>See Also</title>
 				<para>
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_Reclass" />,
 					<xref linkend="RT_ST_AsPNG" />,
 					<xref linkend="RT_ST_AsRaster" />
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_Reclass" />,
+					<xref linkend="RT_ST_Union" />
 				</para>
 			</refsection>
 		</refentry>
