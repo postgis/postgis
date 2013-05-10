@@ -517,11 +517,24 @@ Datum LWGEOM_force_sfs(PG_FUNCTION_ARGS)
 	GSERIALIZED *result;
 	LWGEOM *lwgeom;
 	LWGEOM *ogeom;
+	text * ver;
+	int version = 110; /* default version is SFS 1.1 */
 
 	POSTGIS_DEBUG(2, "LWGEOM_force_sfs called");
 
+        /* If user specified version, respect it */
+        if ( (PG_NARGS()>1) && (!PG_ARGISNULL(1)) )
+        {
+                ver = PG_GETARG_TEXT_P(1);
+
+                if  ( ! strncmp(VARDATA(ver), "1.2", 3))
+                {
+                        version = 120;
+                }
+        }
+
 	lwgeom = lwgeom_from_gserialized(geom);
-	ogeom = lwgeom_force_sfs(lwgeom);
+	ogeom = lwgeom_force_sfs(lwgeom, version);
 
 	result = geometry_serialize(ogeom);
 

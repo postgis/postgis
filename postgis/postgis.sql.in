@@ -1283,6 +1283,12 @@ CREATE OR REPLACE FUNCTION ST_ForceSFS(geometry)
 	AS 'MODULE_PATHNAME', 'LWGEOM_force_sfs'
 	LANGUAGE 'c' IMMUTABLE STRICT;
 
+-- Availability: 2.1.0
+CREATE OR REPLACE FUNCTION ST_ForceSFS(geometry, version text)
+	RETURNS geometry
+	AS 'MODULE_PATHNAME', 'LWGEOM_force_sfs'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
 -- Availability: 1.2.2
 CREATE OR REPLACE FUNCTION ST_Expand(box3d,float8)
 	RETURNS box3d

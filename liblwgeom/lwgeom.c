@@ -706,13 +706,39 @@ lwgeom_force_dims(const LWGEOM *geom, int hasz, int hasm)
 }
 
 LWGEOM*
-lwgeom_force_sfs(LWGEOM *geom)
+lwgeom_force_sfs(LWGEOM *geom, int version)
 {	
 	LWCOLLECTION *col;
 	int i;
 	LWGEOM *g;
 
+	/* SFS 1.2 version */
+	if (version == 120)
+	{
+		switch(geom->type)
+		{
+			/* SQL/MM types */
+			case CIRCSTRINGTYPE:
+			case COMPOUNDTYPE:
+			case CURVEPOLYTYPE:
+			case MULTICURVETYPE:
+			case MULTISURFACETYPE:
+				return lwgeom_segmentize(geom, 32);
 
+			case COLLECTIONTYPE:
+				col = (LWCOLLECTION*)geom;
+				for ( i = 0; i < col->ngeoms; i++ ) 
+					col->geoms[i] = lwgeom_force_sfs((LWGEOM*)col->geoms[i], version);
+
+				return lwcollection_as_lwgeom((LWCOLLECTION*)geom);
+
+			default:
+				return (LWGEOM *)geom;
+		}
+	}
+	
+
+	/* SFS 1.1 version */
 	switch(geom->type)
 	{
 		/* SQL/MM types */
@@ -748,7 +774,7 @@ lwgeom_force_sfs(LWGEOM *geom)
 		case COLLECTIONTYPE:
 			col = (LWCOLLECTION*)geom;
 			for ( i = 0; i < col->ngeoms; i++ ) 
-				col->geoms[i] = lwgeom_force_sfs((LWGEOM*)col->geoms[i]);
+				col->geoms[i] = lwgeom_force_sfs((LWGEOM*)col->geoms[i], version);
 
 			return lwcollection_as_lwgeom((LWCOLLECTION*)geom);
 		

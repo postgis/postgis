@@ -547,6 +547,11 @@ GEOMETRYCOLLECTION(
 			<funcdef>geometry <function>ST_ForceSFS</function></funcdef>
 			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
 		  </funcprototype>
+		  <funcprototype>
+			<funcdef>geometry <function>ST_ForceSFS</function></funcdef>
+			<paramdef><type>geometry </type> <parameter>geomA</parameter></paramdef>
+			<paramdef><type>text </type> <parameter>version</parameter></paramdef>
+		  </funcprototype>
 		</funcsynopsis>
 	  </refsynopsisdiv>
 

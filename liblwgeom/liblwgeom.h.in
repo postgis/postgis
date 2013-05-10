@@ -877,7 +877,7 @@ extern LWGEOM* lwgeom_simplify(const LWGEOM *igeom, double dist);
  * Force to use SFS 1.1 geometry type
  * (rather than SFS 1.2 and/or SQL/MM)
  */
-extern LWGEOM* lwgeom_force_sfs(LWGEOM *geom);
+extern LWGEOM* lwgeom_force_sfs(LWGEOM *geom, int version);
 
 
 /*--------------------------------------------------------

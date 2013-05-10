@@ -24,7 +24,7 @@ static void do_geom_test(char * in, char * out)
 	char *tmp;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_force_sfs(g);
+	h = lwgeom_force_sfs(g, 110);
 	tmp = lwgeom_to_ewkt(h);
 	if (strcmp(tmp, out))
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n",
@@ -40,7 +40,7 @@ static void do_type_test(char * in, int type)
 	LWGEOM *g, *h;
 
 	g = lwgeom_from_wkt(in, LW_PARSER_CHECK_NONE);
-	h = lwgeom_force_sfs(g);
+	h = lwgeom_force_sfs(g, 110);
 	if(h->type != type)
 		fprintf(stderr, "\nIn:   %s\nOut:  %s\nExp:  %s\n", 
 			in, lwtype_name(h->type), lwtype_name(type));
