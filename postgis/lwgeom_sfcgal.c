@@ -16,9 +16,11 @@
 #include "fmgr.h"
 #include "../liblwgeom/liblwgeom.h"
 
+#include "lwgeom_pg.h"
 #include "lwgeom_sfcgal.h"
 
 
+Datum postgis_sfcgal_version(PG_FUNCTION_ARGS);
 
 Datum sfcgal_from_ewkt(PG_FUNCTION_ARGS);
 Datum sfcgal_distance(PG_FUNCTION_ARGS);
@@ -529,3 +531,12 @@ Datum sfcgal_extrude(PG_FUNCTION_ARGS)
     
     PG_RETURN_POINTER(output);
 }
+
+PG_FUNCTION_INFO_V1(postgis_sfcgal_version);
+Datum postgis_sfcgal_version(PG_FUNCTION_ARGS)
+{
+        const char *ver = lwgeom_sfcgal_version();
+        text *result = cstring2text(ver);
+        PG_RETURN_POINTER(result);
+}
+

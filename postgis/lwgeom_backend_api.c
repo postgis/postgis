@@ -34,7 +34,6 @@ Datum distance(PG_FUNCTION_ARGS);
 Datum distance3d(PG_FUNCTION_ARGS);
 
 Datum intersects3d_dwithin(PG_FUNCTION_ARGS);
-Datum postgis_sfcgal_version(PG_FUNCTION_ARGS);
 
 
 struct lwgeom_backend_definition
@@ -175,17 +174,4 @@ Datum intersects3d_dwithin(PG_FUNCTION_ARGS)
     /*empty geometries cases should be right handled since return from underlying
       functions should be MAXFLOAT which causes false as answer*/
     PG_RETURN_BOOL(0.0 == mindist);
-}
-
-
-PG_FUNCTION_INFO_V1(postgis_sfcgal_version);
-Datum postgis_sfcgal_version(PG_FUNCTION_ARGS)
-{
-#if HAVE_SFCGAL
-        const char *ver = lwgeom_sfcgal_version();
-        text *result = cstring2text(ver);
-#else 
-	text *result = NULL;
-#endif
-        PG_RETURN_POINTER(result);
 }

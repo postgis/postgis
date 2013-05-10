@@ -1,3 +1,4 @@
+postgis_sfcgal_version|1
 ST_Tesselate|GEOMETRYCOLLECTION(POINT(4 4),TIN(((0 1,1 0,1 1,0 1)),((0 1,0 0,1 0,0 1))))
 ST_3DArea|1
 ST_Extrude_point|LINESTRING Z (0 0 0,1 0 0)
