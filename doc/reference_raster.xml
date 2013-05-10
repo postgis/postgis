@@ -10979,6 +10979,7 @@ FROM funky_shapes;</programlisting>
 					<xref linkend="RT_ST_AsPNG" />,
 					<xref linkend="RT_ST_AsRaster" />
 					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_NumBands" />, 
 					<xref linkend="RT_ST_Reclass" />,
 					<xref linkend="RT_ST_Union" />
 				</para>
