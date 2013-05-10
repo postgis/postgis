@@ -31,6 +31,7 @@ extern CU_SuiteInfo band_stats_suite;
 extern CU_SuiteInfo band_misc_suite;
 extern CU_SuiteInfo mapalgebra_suite;
 extern CU_SuiteInfo spatial_relationship_suite;
+extern CU_SuiteInfo misc_suite;
 
 /*
 ** The main() function for setting up and running the tests.
@@ -53,6 +54,7 @@ int main(int argc, char *argv[])
 		band_misc_suite,
 		spatial_relationship_suite,
 		mapalgebra_suite,
+		misc_suite,
 		CU_SUITE_INFO_NULL
 	};
 

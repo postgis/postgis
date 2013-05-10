@@ -145,6 +145,9 @@ typedef struct rt_reclassexpr_t* rt_reclassexpr;
 typedef struct rt_iterator_t* rt_iterator;
 typedef struct rt_iterator_arg_t* rt_iterator_arg;
 
+typedef struct rt_colormap_entry_t* rt_colormap_entry;
+typedef struct rt_colormap_t* rt_colormap;
+
 /* envelope information */
 typedef struct {
 	double MinX;
@@ -1955,6 +1958,22 @@ rt_raster_iterator(
 	rt_raster *rtnraster
 );
 
+/**
+ * Returns a new raster with up to four 8BUI bands (RGBA) from
+ * applying a colormap to the user-specified band of the
+ * input raster.
+ *
+ * @param raster: input raster
+ * @param nband: 0-based index of the band to process with colormap
+ * @param colormap: rt_colormap object of colormap to apply to band
+ *
+ * @return new raster or NULL on error
+ */
+rt_raster rt_raster_colormap(
+	rt_raster raster, int nband,
+	rt_colormap colormap
+);
+
 /*- utilities -------------------------------------------------------*/
 
 /*
@@ -2120,6 +2139,20 @@ int
 rt_util_same_geotransform_matrix(
 	double *gt1,
 	double *gt2
+);
+
+/* coordinates in RGB and HSV are floating point values between 0 and 1 */
+rt_errorstate
+rt_util_rgb_to_hsv(
+	double rgb[3],
+	double hsv[3]
+);
+
+/* coordinates in RGB and HSV are floating point values between 0 and 1 */
+rt_errorstate
+rt_util_hsv_to_rgb(
+	double hsv[3],
+	double rgb[3]
 );
 
 /*
@@ -2360,6 +2393,25 @@ struct rt_gdaldriver_t {
 	char *short_name;
 	char *long_name;
 	char *create_options;
+};
+
+/* raster colormap entry */
+struct rt_colormap_entry_t {
+	int isnodata;
+	double value;
+	uint8_t color[4]; /* RGBA */
+};
+
+struct rt_colormap_t {
+	enum {
+		CM_INTERPOLATE,
+		CM_EXACT,
+		CM_NEAREST
+	} method;
+
+	int ncolor;
+	uint16_t nentry;
+	rt_colormap_entry entry;
 };
 
 #endif /* RT_API_H_INCLUDED */

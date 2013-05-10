@@ -4,7 +4,7 @@
  * WKTRaster - Raster Types for PostGIS
  * http://www.postgis.org/support/wiki/index.php?WKTRasterHomePage
  *
- * Copyright (C) 2011-2012 Regents of the University of California
+ * Copyright (C) 2011-2013 Regents of the University of California
  *   <bkpark@ucdavis.edu>
  * Copyright (C) 2010-2011 Jorge Arevalo <jorge.arevalo@deimos-space.com>
  * Copyright (C) 2010-2011 David Zwarg <dzwarg@azavea.com>
@@ -311,6 +311,9 @@ Datum RASTER_valueCountCoverage(PG_FUNCTION_ARGS);
 /* reclassify specified bands of a raster */
 Datum RASTER_reclass(PG_FUNCTION_ARGS);
 
+/* apply colormap to specified band of a raster */
+Datum RASTER_colorMap(PG_FUNCTION_ARGS);
+
 /* convert GDAL raster to raster */
 Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS);
 
@@ -387,9 +390,6 @@ Datum RASTER_union_finalfn(PG_FUNCTION_ARGS);
 
 /* raster clip */
 Datum RASTER_clip(PG_FUNCTION_ARGS);
-
-/* raster perimeter */
-Datum RASTER_perimeter(PG_FUNCTION_ARGS);
 
 /* string replacement function taken from
  * http://ubuntuforums.org/showthread.php?s=aa6f015109fd7e4c7e30d2fd8b717497&t=141670&page=3
@@ -585,6 +585,7 @@ rtpg_trim(const char *input) {
 	char *rtn;
 	char *ptr;
 	uint32_t offset = 0;
+	int inputlen = 0;
 
 	if (!input)
 		return NULL;
@@ -592,21 +593,24 @@ rtpg_trim(const char *input) {
 		return (char *) input;
 
 	/* trim left */
-	while (isspace(*input))
+	while (isspace(*input) && *input != '\0')
 		input++;
 
 	/* trim right */
-	ptr = ((char *) input) + strlen(input);
-	while (isspace(*--ptr))
-		offset++;
+	inputlen = strlen(input);
+	if (inputlen) {
+		ptr = ((char *) input) + inputlen;
+		while (isspace(*--ptr))
+			offset++;
+	}
 
-	rtn = palloc(sizeof(char) * (strlen(input) - offset + 1));
+	rtn = palloc(sizeof(char) * (inputlen - offset + 1));
 	if (rtn == NULL) {
 		fprintf(stderr, "Not enough memory\n");
 		return NULL;
 	}
-	strncpy(rtn, input, strlen(input) - offset);
-	rtn[strlen(input) - offset] = '\0';
+	strncpy(rtn, input, inputlen - offset);
+	rtn[inputlen - offset] = '\0';
 
 	return rtn;
 }
@@ -10741,9 +10745,444 @@ Datum RASTER_reclass(PG_FUNCTION_ARGS) {
 	PG_RETURN_POINTER(pgrtn);
 }
 
-/**
- * Returns raster from GDAL raster;
- */
+/* ---------------------------------------------------------------- */
+/* apply colormap to specified band of a raster                     */
+/* ---------------------------------------------------------------- */
+
+typedef struct rtpg_colormap_arg_t *rtpg_colormap_arg;
+struct rtpg_colormap_arg_t {
+	rt_raster raster;
+	int nband; /* 1-based */
+	rt_band band;
+	rt_bandstats bandstats;
+
+	rt_colormap colormap;
+	int nodataentry;
+
+	char **entry;
+	int nentry;
+	char **element;
+	int nelement;
+};
+
+static rtpg_colormap_arg
+rtpg_colormap_arg_init() {
+	rtpg_colormap_arg arg = NULL;
+
+	arg = palloc(sizeof(struct rtpg_colormap_arg_t));
+	if (arg == NULL) {
+		elog(ERROR, "rtpg_colormap_arg: Unable to allocate memory for function arguments");
+		return NULL;
+	}
+
+	arg->raster = NULL;
+	arg->nband = 1;
+	arg->band = NULL;
+	arg->bandstats = NULL;
+
+	arg->colormap = palloc(sizeof(struct rt_colormap_t));
+	if (arg->colormap == NULL) {
+		elog(ERROR, "rtpg_colormap_arg: Unable to allocate memory for function arguments");
+		return NULL;
+	}
+	arg->colormap->nentry = 0;
+	arg->colormap->entry = NULL;
+	arg->colormap->ncolor = 4; /* assume RGBA */
+	arg->colormap->method = CM_INTERPOLATE;
+	arg->nodataentry = -1;
+
+	arg->entry = NULL;
+	arg->nentry = 0;
+	arg->element = NULL;
+	arg->nelement = 0;
+
+	return arg;
+}
+
+static void
+rtpg_colormap_arg_destroy(rtpg_colormap_arg arg) {
+	int i = 0;
+	if (arg->raster != NULL)
+		rt_raster_destroy(arg->raster);
+
+	if (arg->bandstats != NULL)
+		pfree(arg->bandstats);
+
+	if (arg->colormap != NULL) {
+		if (arg->colormap->entry != NULL)
+			pfree(arg->colormap->entry);
+		pfree(arg->colormap);
+	}
+
+	if (arg->nentry) {
+		for (i = 0; i < arg->nentry; i++) {
+			if (arg->entry[i] != NULL)
+				pfree(arg->entry[i]);
+		}
+		pfree(arg->entry);
+	}
+
+	if (arg->nelement) {
+		for (i = 0; i < arg->nelement; i++)
+			pfree(arg->element[i]);
+		pfree(arg->element);
+	}
+
+	pfree(arg);
+	arg = NULL;
+}
+
+PG_FUNCTION_INFO_V1(RASTER_colorMap);
+Datum RASTER_colorMap(PG_FUNCTION_ARGS)
+{
+	rt_pgraster *pgraster = NULL;
+	rtpg_colormap_arg arg = NULL;
+	char *junk = NULL;
+	rt_raster raster = NULL;
+
+	POSTGIS_RT_DEBUG(3, "RASTER_colorMap: Starting");
+
+	/* pgraster is NULL, return NULL */
+	if (PG_ARGISNULL(0))
+		PG_RETURN_NULL();
+
+	/* init arg */
+	arg = rtpg_colormap_arg_init();
+	if (arg == NULL) {
+		elog(ERROR, "RASTER_colorMap: Unable to initialize argument structure");
+		PG_RETURN_NULL();
+	}
+
+	/* raster (0) */
+	pgraster = (rt_pgraster *) PG_DETOAST_DATUM(PG_GETARG_DATUM(0));
+
+	/* raster object */
+	arg->raster = rt_raster_deserialize(pgraster, FALSE);
+	if (!arg->raster) {
+		elog(ERROR, "RASTER_colorMap: Could not deserialize raster");
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* nband (1) */
+	if (!PG_ARGISNULL(1))
+		arg->nband = PG_GETARG_INT32(1);
+	POSTGIS_RT_DEBUGF(4, "nband = %d", arg->nband);
+
+	/* check that band works */
+	if (!rt_raster_has_band(arg->raster, arg->nband - 1)) {
+		elog(NOTICE, "Raster does not have band at index %d. Returning empty raster", arg->nband);
+
+		raster = rt_raster_clone(arg->raster, 0);
+		if (raster == NULL) {
+			elog(ERROR, "RASTER_colorMap: Unable to create empty raster");
+			rtpg_colormap_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+
+		pgraster = rt_raster_serialize(raster);
+		rt_raster_destroy(raster);
+		if (pgraster == NULL)
+			PG_RETURN_NULL();
+
+		SET_VARSIZE(pgraster, ((rt_pgraster*) pgraster)->size);
+		PG_RETURN_POINTER(pgraster);
+	}
+
+	/* get band */
+	arg->band = rt_raster_get_band(arg->raster, arg->nband - 1);
+	if (arg->band == NULL) {
+		elog(ERROR, "RASTER_colorMap: Unable to get band at index %d", arg->nband);
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	/* method (3) */
+	if (!PG_ARGISNULL(3)) {
+		char *method = NULL;
+		char *tmp = text_to_cstring(PG_GETARG_TEXT_P(3));
+		POSTGIS_RT_DEBUGF(4, "raw method = %s", tmp);
+
+		method = rtpg_trim(tmp);
+		pfree(tmp);
+		method = rtpg_strtoupper(method);
+
+		if (strcmp(method, "INTERPOLATE") == 0)
+			arg->colormap->method = CM_INTERPOLATE;
+		else if (strcmp(method, "EXACT") == 0)
+			arg->colormap->method = CM_EXACT;
+		else if (strcmp(method, "NEAREST") == 0)
+			arg->colormap->method = CM_NEAREST;
+		else {
+			elog(NOTICE, "Unknown value provided for method. Defaulting to INTERPOLATE");
+			arg->colormap->method = CM_INTERPOLATE;
+		}
+	}
+	/* default to INTERPOLATE */
+	else
+		arg->colormap->method = CM_INTERPOLATE;
+	POSTGIS_RT_DEBUGF(4, "method = %d", arg->colormap->method);
+
+	/* colormap (2) */
+	if (PG_ARGISNULL(2)) {
+		elog(ERROR, "RASTER_colorMap: Value must be provided for colormap");
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+	else {
+		char *tmp = NULL;
+		char *colormap = text_to_cstring(PG_GETARG_TEXT_P(2));
+		char *_entry;
+		char *_element;
+		int i = 0;
+		int j = 0;
+
+		POSTGIS_RT_DEBUGF(4, "colormap = %s", colormap);
+
+		/* empty string */
+		if (!strlen(colormap)) {
+			elog(ERROR, "RASTER_colorMap: Value must be provided for colormap");
+			rtpg_colormap_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		arg->entry = rtpg_strsplit(colormap, "\n", &(arg->nentry));
+		pfree(colormap);
+		if (arg->nentry < 1) {
+			elog(ERROR, "RASTER_colorMap: Unable to process the value provided for colormap");
+			rtpg_colormap_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+
+		/* allocate the max # of colormap entries */
+		arg->colormap->entry = palloc(sizeof(struct rt_colormap_entry_t) * arg->nentry);
+		if (arg->colormap->entry == NULL) {
+			elog(ERROR, "RASTER_colorMap: Unable to allocate memory for colormap entries");
+			rtpg_colormap_arg_destroy(arg);
+			PG_FREE_IF_COPY(pgraster, 0);
+			PG_RETURN_NULL();
+		}
+		memset(arg->colormap->entry, 0, sizeof(struct rt_colormap_entry_t) * arg->nentry);
+
+		/* each entry */
+		for (i = 0; i < arg->nentry; i++) {
+			/* substitute space for other delimiters */
+			tmp = rtpg_strreplace(arg->entry[i], ":", " ", NULL);
+			_entry = rtpg_strreplace(tmp, ",", " ", NULL);
+			pfree(tmp);
+			tmp = rtpg_strreplace(_entry, "\t", " ", NULL);
+			pfree(_entry);
+			_entry = rtpg_trim(tmp);
+			pfree(tmp);
+
+			POSTGIS_RT_DEBUGF(4, "Processing entry[%d] = %s", i, arg->entry[i]);
+			POSTGIS_RT_DEBUGF(4, "Cleaned entry[%d] = %s", i, _entry);
+
+			/* empty entry, continue */
+			if (!strlen(_entry)) {
+				pfree(_entry);
+				continue;
+			}
+
+			arg->element = rtpg_strsplit(_entry, " ", &(arg->nelement));
+			pfree(_entry);
+			if (arg->nelement < 2) {
+				elog(ERROR, "RASTER_colorMap: Unable to process colormap entry %d", i + 1);
+				rtpg_colormap_arg_destroy(arg);
+				PG_FREE_IF_COPY(pgraster, 0);
+				PG_RETURN_NULL();
+			}
+			else if (arg->nelement > 5) {
+				elog(NOTICE, "More than five elements in colormap entry %d. Using at most five elements", i + 1);
+				arg->nelement = 5;
+			}
+
+			/* smallest # of colors */
+			if ((arg->nelement - 1) < arg->colormap->ncolor)
+				arg->colormap->ncolor = arg->nelement - 1;
+
+			/* each element of entry */
+			for (j = 0; j < arg->nelement; j++) {
+
+				_element = rtpg_trim(arg->element[j]);
+				_element = rtpg_strtoupper(_element);
+				POSTGIS_RT_DEBUGF(4, "Processing entry[%d][%d] = %s", i, j, arg->element[j]);
+				POSTGIS_RT_DEBUGF(4, "Cleaned entry[%d][%d] = %s", i, j, _element);
+
+				/* first element is ALWAYS a band value, percentage OR "nv" string */
+				if (j == 0) {
+					char *percent = NULL;
+
+					/* NODATA */
+					if (
+						strcmp(_element, "NV") == 0 ||
+						strcmp(_element, "NULL") == 0 ||
+						strcmp(_element, "NODATA") == 0
+					) {
+						POSTGIS_RT_DEBUG(4, "Processing NODATA string");
+
+						if (arg->nodataentry > -1) {
+							elog(NOTICE, "More than one NODATA entry found. Using only the first one");
+						}
+						else {
+							arg->colormap->entry[arg->colormap->nentry].isnodata = 1;
+							/* no need to set value as value comes from band's NODATA */
+							arg->colormap->entry[arg->colormap->nentry].value = 0;
+						}
+					}
+					/* percent value */
+					else if ((percent = strchr(_element, '%')) != NULL) {
+						double value;
+						POSTGIS_RT_DEBUG(4, "Processing percent string");
+
+						/* get the band stats */
+						if (arg->bandstats == NULL) {
+							POSTGIS_RT_DEBUG(4, "Getting band stats");
+							
+							arg->bandstats = rt_band_get_summary_stats(arg->band, 1, 1, 0, NULL, NULL, NULL);
+							if (arg->bandstats == NULL) {
+								elog(ERROR, "RASTER_colorMap: Unable to get band's summary stats to process percentages");
+								pfree(_element);
+								rtpg_colormap_arg_destroy(arg);
+								PG_FREE_IF_COPY(pgraster, 0);
+								PG_RETURN_NULL();
+							}
+						}
+
+						/* get the string before the percent char */
+						tmp = palloc(sizeof(char) * (percent - _element + 1));
+						if (tmp == NULL) {
+							elog(ERROR, "RASTER_colorMap: Unable to allocate memory for value of percentage");
+							pfree(_element);
+							rtpg_colormap_arg_destroy(arg);
+							PG_FREE_IF_COPY(pgraster, 0);
+							PG_RETURN_NULL();
+						}
+
+						memcpy(tmp, _element, percent - _element);
+						tmp[percent - _element] = '\0';
+						POSTGIS_RT_DEBUGF(4, "Percent value = %s", tmp);
+
+						/* get percentage value */
+						errno = 0;
+						value = strtod(tmp, NULL);
+						pfree(tmp);
+						if (errno != 0 || _element == junk) {
+							elog(ERROR, "RASTER_colorMap: Unable to process percent string to value");
+							pfree(_element);
+							rtpg_colormap_arg_destroy(arg);
+							PG_FREE_IF_COPY(pgraster, 0);
+							PG_RETURN_NULL();
+						}
+
+						/* check percentage */
+						if (value < 0.) {
+							elog(NOTICE, "Percentage values cannot be less than zero. Defaulting to zero");
+							value = 0.;
+						}
+						else if (value > 100.) {
+							elog(NOTICE, "Percentage values cannot be greater than 100. Defaulting to 100");
+							value = 100.;
+						}
+
+						/* get the true pixel value */
+						/* TODO: should the percentage be quantile based? */
+						arg->colormap->entry[arg->colormap->nentry].value = ((value / 100.) * (arg->bandstats->max - arg->bandstats->min)) + arg->bandstats->min;
+					}
+					/* straight value */
+					else {
+						errno = 0;
+						arg->colormap->entry[arg->colormap->nentry].value = strtod(_element, &junk);
+						if (errno != 0 || _element == junk) {
+							elog(ERROR, "RASTER_colorMap: Unable to process string to value");
+							pfree(_element);
+							rtpg_colormap_arg_destroy(arg);
+							PG_FREE_IF_COPY(pgraster, 0);
+							PG_RETURN_NULL();
+						}
+					}
+
+				}
+				/* RGB values (0 - 255) */
+				else {
+					int value = 0;
+
+					errno = 0;
+					value = (int) strtod(_element, &junk);
+					if (errno != 0 || _element == junk) {
+						elog(ERROR, "RASTER_colorMap: Unable to process string to value");
+						pfree(_element);
+						rtpg_colormap_arg_destroy(arg);
+						PG_FREE_IF_COPY(pgraster, 0);
+						PG_RETURN_NULL();
+					}
+
+					if (value > 255) {
+						elog(NOTICE, "RGBA value cannot be greater than 255. Defaulting to 255");
+						value = 255;
+					}
+					else if (value < 0) {
+						elog(NOTICE, "RGBA value cannot be less than zero. Defaulting to zero");
+						value = 0;
+					}
+					arg->colormap->entry[arg->colormap->nentry].color[j - 1] = value;
+				}
+
+				pfree(_element);
+			}
+
+			POSTGIS_RT_DEBUGF(4, "colormap->entry[%d] (isnodata, value, R, G, B, A) = (%d, %f, %d, %d, %d, %d)",
+				arg->colormap->nentry,
+				arg->colormap->entry[arg->colormap->nentry].isnodata,
+				arg->colormap->entry[arg->colormap->nentry].value,
+				arg->colormap->entry[arg->colormap->nentry].color[0],
+				arg->colormap->entry[arg->colormap->nentry].color[1],
+				arg->colormap->entry[arg->colormap->nentry].color[2],
+				arg->colormap->entry[arg->colormap->nentry].color[3]
+			);
+
+			arg->colormap->nentry++;
+		}
+
+		POSTGIS_RT_DEBUGF(4, "colormap->nentry = %d", arg->colormap->nentry);
+		POSTGIS_RT_DEBUGF(4, "colormap->ncolor = %d", arg->colormap->ncolor);
+	}
+
+	/* call colormap */
+	raster = rt_raster_colormap(arg->raster, arg->nband - 1, arg->colormap);
+	if (raster == NULL) {
+		elog(ERROR, "RASTER_colorMap: Unable to create new raster with applied colormap");
+		rtpg_colormap_arg_destroy(arg);
+		PG_FREE_IF_COPY(pgraster, 0);
+		PG_RETURN_NULL();
+	}
+
+	rtpg_colormap_arg_destroy(arg);
+	PG_FREE_IF_COPY(pgraster, 0);
+	pgraster = rt_raster_serialize(raster);
+	rt_raster_destroy(raster);
+
+	POSTGIS_RT_DEBUG(3, "RASTER_colorMap: Done");
+
+	if (pgraster == NULL)
+		PG_RETURN_NULL();
+
+	SET_VARSIZE(pgraster, ((rt_pgraster*) pgraster)->size);
+	PG_RETURN_POINTER(pgraster);
+}
+
+/* ---------------------------------------------------------------- */
+/* Returns raster from GDAL raster                                  */
+/* ---------------------------------------------------------------- */
 PG_FUNCTION_INFO_V1(RASTER_fromGDALRaster);
 Datum RASTER_fromGDALRaster(PG_FUNCTION_ARGS)
 {
@@ -18690,16 +19129,6 @@ Datum RASTER_clip(PG_FUNCTION_ARGS)
 
 	SET_VARSIZE(pgrtn, pgrtn->size);
 	PG_RETURN_POINTER(pgrtn);
-}
-
-/* ---------------------------------------------------------------- */
-/* Find perimeter of raster                                         */
-/* ---------------------------------------------------------------- */
-
-PG_FUNCTION_INFO_V1(RASTER_perimeter);
-Datum RASTER_perimeter(PG_FUNCTION_ARGS)
-{
-	PG_RETURN_NULL();
 }
 
 /* ---------------------------------------------------------------- */

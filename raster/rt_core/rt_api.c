@@ -576,6 +576,129 @@ rt_util_same_geotransform_matrix(double *gt1, double *gt2) {
 	return TRUE;
 }
 
+/* coordinates in RGB and HSV are floating point values between 0 and 1 */
+rt_errorstate
+rt_util_rgb_to_hsv(double rgb[3], double hsv[3]) {
+	int i;
+
+	double minc;
+	double maxc;
+
+	double h = 0.;
+	double s = 0.;
+	double v = 0.;
+
+	minc = rgb[0];
+	maxc = rgb[0];
+
+	/* get min and max values from RGB */
+	for (i = 1; i < 3; i++) {
+		if (rgb[i] > maxc)
+			maxc = rgb[i];
+		if (rgb[i] < minc)
+			minc = rgb[i];
+	}
+	v = maxc;
+
+	if (maxc != minc) {
+		double diff = 0.;
+		double rc = 0.;
+		double gc = 0.;
+		double bc = 0.;
+		double junk = 0.;
+
+		diff = maxc - minc;
+		s = diff / maxc;
+		rc = (maxc - rgb[0]) / diff;
+		gc = (maxc - rgb[1]) / diff;
+		bc = (maxc - rgb[2]) / diff;
+
+		if (DBL_EQ(rgb[0], maxc))
+			h = bc - gc;
+		else if (DBL_EQ(rgb[1], maxc))
+			h = 2.0 + rc - bc;
+		else
+			h = 4.0 + gc - rc;
+
+		h = modf((h / 6.0), &junk);
+	}
+
+	hsv[0] = h;
+	hsv[1] = s;
+	hsv[2] = v;
+
+	return ES_NONE;
+}
+
+/* coordinates in RGB and HSV are floating point values between 0 and 1 */
+rt_errorstate
+rt_util_hsv_to_rgb(double hsv[3], double rgb[3]) {
+	double r = 0;
+	double g = 0;
+	double b = 0;
+	double v = hsv[2];
+
+	if (DBL_EQ(hsv[1], 0.))
+		r = g = b = v;
+	else {
+		double i;
+		double f;
+		double p;
+		double q;
+		double t;
+
+		int a;
+
+		i = floor(hsv[0] * 6.);
+		f = (hsv[0] * 6.0) - i;
+		p = v * (1. - hsv[1]);
+		q = v * (1. - hsv[1] * f);
+		t = v * (1. - hsv[1] * (1. - f));
+
+		a = (int) i;
+		switch (a) {
+			case 1:
+				r = q;
+				g = v;
+				b = p;
+				break;
+			case 2:
+				r = p;
+				g = v;
+				b = t;
+				break;
+			case 3:
+				r = p;
+				g = q;
+				b = v;
+				break;
+			case 4:
+				r = t;
+				g = p;
+				b = v;
+				break;
+			case 5:
+				r = v;
+				g = p;
+				b = q;
+				break;
+			case 0:
+			case 6:
+			default:
+				r = v;
+				g = t;
+				b = p;
+				break;
+		}
+	}
+
+	rgb[0] = r;
+	rgb[1] = g;
+	rgb[2] = b;
+
+	return ES_NONE;
+}
+
 /*- rt_context -------------------------------------------------------*/
 
 /* Functions definitions */
@@ -4942,6 +5065,8 @@ rt_band_reclass(
 
 	assert(NULL != srcband);
 	assert(NULL != exprset && exprcount > 0);
+	RASTER_DEBUGF(4, "exprcount = %d", exprcount);
+	RASTER_DEBUGF(4, "exprset @ %p", exprset);
 
 	/* source nodata */
 	src_hasnodata = rt_band_get_hasnodata_flag(srcband);
@@ -5161,6 +5286,7 @@ rt_band_reclass(
 
 			/* no expression matched, do not continue */
 			if (!do_nv) continue;
+			RASTER_DEBUGF(3, "Using exprset[%d] unless NODATA", i);
 
 			/* converting a value from one range to another range
 			OldRange = (OldMax - OldMin)
@@ -5168,7 +5294,7 @@ rt_band_reclass(
 			NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
 			*/
 
-			/* nodata */
+			/* NODATA */
 			if (hasnodata && isnodata) {
 				nv = nodataval;
 			}
@@ -5217,7 +5343,7 @@ rt_band_reclass(
 					break;
 			}
 
-			RASTER_DEBUGF(3, "(%d, %d) ov: %f or: %f - %f nr: %f - %f nv: %f"
+			RASTER_DEBUGF(4, "(%d, %d) ov: %f or: %f - %f nr: %f - %f nv: %f"
 				, x
 				, y
 				, ov
@@ -14696,4 +14822,586 @@ rt_errorstate rt_raster_get_perimeter(
 	*perimeter = lwpoly_as_lwgeom(poly);
 
 	return ES_NONE;
+}
+
+/******************************************************************************
+* rt_raster_colormap()
+******************************************************************************/
+
+typedef struct _rti_colormap_rgbhsv_t* _rti_colormap_rgbhsv;
+typedef struct _rti_colormap_arg_t* _rti_colormap_arg;
+struct _rti_colormap_rgbhsv_t {
+	double rgb[3];
+	double hsv[3];
+};
+
+struct _rti_colormap_arg_t {
+	rt_raster raster;
+	rt_band band;
+
+	rt_colormap_entry nodataentry;
+	int hasnodata;
+	double nodataval;
+
+	int nexpr;
+	rt_reclassexpr *expr;
+
+	int npos;
+	uint16_t *pos;
+
+	int nrgbhsv;
+	_rti_colormap_rgbhsv rgbhsv;
+
+};
+
+static _rti_colormap_arg
+_rti_colormap_arg_init(rt_raster raster) {
+	_rti_colormap_arg arg = NULL;
+
+	arg = rtalloc(sizeof(struct _rti_colormap_arg_t));
+	if (arg == NULL) {
+		rterror("_rti_colormap_arg_init: Unable to allocate memory for _rti_color_arg");
+		return NULL;
+	}
+
+	arg->band = NULL;
+	arg->nodataentry = NULL;
+	arg->hasnodata = 0;
+	arg->nodataval = 0;
+
+	if (raster == NULL)
+		arg->raster = NULL;
+	/* raster provided */
+	else {
+		arg->raster = rt_raster_clone(raster, 0);
+		if (arg->raster == NULL) {
+			rterror("_rti_colormap_arg_init: Unable to create output raster");
+			return NULL;
+		}
+	}
+
+	arg->nexpr = 0;
+	arg->expr = NULL;
+
+	arg->npos = 0;
+	arg->pos = NULL;
+
+	arg->nrgbhsv = 0;
+	arg->rgbhsv = NULL;
+
+	return arg;
+}
+
+static void
+_rti_colormap_arg_destroy(_rti_colormap_arg arg) {
+	int i = 0;
+
+	if (arg->raster != NULL) {
+		rt_band band = NULL;
+
+		for (i = rt_raster_get_num_bands(arg->raster) - 1; i >= 0; i--) {
+			band = rt_raster_get_band(arg->raster, i);
+			if (band != NULL)
+				rt_band_destroy(band);
+		}
+
+		rt_raster_destroy(arg->raster);
+	}
+
+	if (arg->nexpr) {
+		for (i = 0; i < arg->nexpr; i++) {
+			if (arg->expr[i] != NULL)
+				rtdealloc(arg->expr[i]);
+		}
+		rtdealloc(arg->expr);
+	}
+
+	if (arg->npos)
+		rtdealloc(arg->pos);
+
+	if (arg->rgbhsv != NULL)
+		rtdealloc(arg->rgbhsv);
+
+	rtdealloc(arg);
+	arg = NULL;
+}
+
+/**
+ * Returns a new raster with up to four 8BUI bands (RGBA) from
+ * applying a colormap to the user-specified band of the
+ * input raster.
+ *
+ * @param raster: input raster
+ * @param nband: 0-based index of the band to process with colormap
+ * @param colormap: rt_colormap object of colormap to apply to band
+ *
+ * @return new raster or NULL on error
+ */
+rt_raster rt_raster_colormap(
+	rt_raster raster, int nband,
+	rt_colormap colormap
+) {
+	_rti_colormap_arg arg = NULL;
+	rt_raster rtnraster = NULL;
+	rt_band band = NULL;
+	int i = 0;
+	int j = 0;
+	int k = 0;
+
+	assert(colormap != NULL);
+
+	/* empty raster */
+	if (rt_raster_is_empty(raster))
+		return NULL;
+
+	/* no colormap entries */
+	if (colormap->nentry < 1) {
+		rterror("rt_raster_colormap: colormap must have at least one entry");
+		return NULL;
+	}
+
+	/* nband is valid */
+	if (!rt_raster_has_band(raster, nband)) {
+		rterror("rt_raster_colormap: raster has no band at index %d", nband);
+		return NULL;
+	}
+
+	band = rt_raster_get_band(raster, nband);
+	if (band == NULL) {
+		rterror("rt_raster_colormap: Unable to get band at index %d", nband);
+		return NULL;
+	}
+
+	/* init internal variables */
+	arg = _rti_colormap_arg_init(raster);
+	if (arg == NULL) {
+		rterror("rt_raster_colormap: Unable to initialize internal variables");
+		return NULL;
+	}
+
+	/* handle NODATA */
+	if (rt_band_get_hasnodata_flag(band)) {
+		arg->hasnodata = 1;
+		rt_band_get_nodata(band, &(arg->nodataval));
+	}
+
+	/* # of colors */
+	if (colormap->ncolor < 1) {
+		rterror("rt_raster_colormap: At least one color must be provided");
+		_rti_colormap_arg_destroy(arg);
+		return NULL;
+	}
+	else if (colormap->ncolor > 4) {
+		rtinfo("More than four colors indicated. Using only the first four colors");
+		colormap->ncolor = 4;
+	}
+
+	/* find non-NODATA entries */
+	arg->npos = 0;
+	arg->pos = rtalloc(sizeof(uint16_t) * colormap->nentry);
+	if (arg->pos == NULL) {
+		rterror("rt_raster_colormap: Unable to allocate memory for valid entries");
+		_rti_colormap_arg_destroy(arg);
+		return NULL;
+	}
+	for (i = 0, j = 0; i < colormap->nentry; i++) {
+		/* special handling for NODATA entries */
+		if (colormap->entry[i].isnodata) {
+			/* first NODATA entry found, use it */
+			if (arg->nodataentry == NULL)
+				arg->nodataentry = &(colormap->entry[i]);
+			else
+				rtwarn("More than one colormap entry found for NODATA value. Only using first NOTDATA entry");
+
+			continue;
+		}
+
+		(arg->npos)++;
+		arg->pos[j++] = i;
+	}
+
+	/* INTERPOLATE and only one non-NODATA entry */
+	if (colormap->method == CM_INTERPOLATE && arg->npos < 2) {
+		rtinfo("Method INTERPOLATE requires at least two non-NODATA colormap entries. Using NEAREST instead");
+		colormap->method = CM_NEAREST;
+	}
+
+	/* NODATA entry but band has no NODATA value */
+	if (!arg->hasnodata && arg->nodataentry != NULL) {
+		rtinfo("Band at index %d has no NODATA value. Ignoring NODATA entry", nband);
+		arg->nodataentry = NULL;
+	}
+
+	/* allocate expr */
+	arg->nexpr = arg->npos;
+
+	/* INTERPOLATE needs one less than the number of entries */
+	if (colormap->method == CM_INTERPOLATE)
+		arg->nexpr -= 1;
+	/* EXACT requires a no matching expression */
+	else if (colormap->method == CM_EXACT)
+		arg->nexpr += 1;
+
+	/* NODATA entry exists, add expression */
+	if (arg->nodataentry != NULL)
+		arg->nexpr += 1;
+	arg->expr = rtalloc(sizeof(rt_reclassexpr) * arg->nexpr);
+	if (arg->expr == NULL) {
+		rterror("rt_raster_colormap: Unable to allocate memory for reclass expressions");
+		_rti_colormap_arg_destroy(arg);
+		return NULL;
+	}
+	RASTER_DEBUGF(4, "nexpr = %d", arg->nexpr);
+	RASTER_DEBUGF(4, "expr @ %p", arg->expr);
+
+	for (i = 0; i < arg->nexpr; i++) {
+		arg->expr[i] = rtalloc(sizeof(struct rt_reclassexpr_t));
+		if (arg->expr[i] == NULL) {
+			rterror("rt_raster_colormap: Unable to allocate memory for reclass expression");
+			_rti_colormap_arg_destroy(arg);
+			return NULL;
+		}
+	}
+
+	/* rgb to hsv */
+	if (colormap->method == CM_INTERPOLATE && colormap->ncolor > 2) {
+		arg->nrgbhsv = arg->npos;
+		if (arg->nodataentry != NULL)
+			arg->nrgbhsv += 1;
+
+		/* allocate space */
+		arg->rgbhsv = rtalloc(sizeof(struct _rti_colormap_rgbhsv_t) * arg->nrgbhsv);
+		if (arg->rgbhsv == NULL) {
+			rterror("rt_raster_colormap: Unable to allocate memory for RGB to HSV conversion");
+			_rti_colormap_arg_destroy(arg);
+			return NULL;
+		}
+		memset(arg->rgbhsv, 0, sizeof(struct _rti_colormap_rgbhsv_t) * arg->nrgbhsv);
+
+		for (i = 0; i < arg->nrgbhsv; i++) {
+			/* convert colormap's 0 - 255 to 0 - 1 */
+			for (j = 0; j < 3; j++) {
+				if (i < arg->npos)
+					arg->rgbhsv[i].rgb[j] = ((double) colormap->entry[arg->pos[i]].color[j]) / 255.;
+				else
+					arg->rgbhsv[i].rgb[j] = ((double) arg->nodataentry->color[j]) / 255.;
+			}
+			
+			/* convert to hsv */
+			rt_util_rgb_to_hsv(arg->rgbhsv[i].rgb, arg->rgbhsv[i].hsv);
+		}
+	}
+
+	/* reclassify bands */
+	/* by # of colors */
+	for (i = 0; i < colormap->ncolor; i++) {
+		k = 0;
+
+		/* handle NODATA entry first */
+		if (arg->nodataentry != NULL) {
+			arg->expr[k]->src.min = arg->nodataentry->value;
+			arg->expr[k]->src.max = arg->nodataentry->value;
+			arg->expr[k]->src.inc_min = 1;
+			arg->expr[k]->src.inc_max = 1;
+			arg->expr[k]->src.exc_min = 0;
+			arg->expr[k]->src.exc_max = 0;
+
+			/* use HSV */
+			if (arg->nrgbhsv && i < 3) {
+				arg->expr[k]->dst.min = arg->rgbhsv[arg->nrgbhsv - 1].hsv[i];
+				arg->expr[k]->dst.max = arg->rgbhsv[arg->nrgbhsv - 1].hsv[i];
+			}
+			/* use RGB */
+			else {
+				arg->expr[k]->dst.min = arg->nodataentry->color[i];
+				arg->expr[k]->dst.max = arg->nodataentry->color[i];
+			}
+
+			arg->expr[k]->dst.inc_min = 1;
+			arg->expr[k]->dst.inc_max = 1;
+			arg->expr[k]->dst.exc_min = 0;
+			arg->expr[k]->dst.exc_max = 0;
+
+			RASTER_DEBUGF(4, "NODATA expr[%d]->src (min, max, in, ix, en, ex) = (%f, %f, %d, %d, %d, %d)",
+				k,
+				arg->expr[k]->src.min,
+				arg->expr[k]->src.max,
+				arg->expr[k]->src.inc_min,
+				arg->expr[k]->src.inc_max,
+				arg->expr[k]->src.exc_min,
+				arg->expr[k]->src.exc_max
+			);
+			RASTER_DEBUGF(4, "NODATA expr[%d]->dst (min, max, in, ix, en, ex) = (%f, %f, %d, %d, %d, %d)",
+				k,
+				arg->expr[k]->dst.min,
+				arg->expr[k]->dst.max,
+				arg->expr[k]->dst.inc_min,
+				arg->expr[k]->dst.inc_max,
+				arg->expr[k]->dst.exc_min,
+				arg->expr[k]->dst.exc_max
+			);
+
+			k++;
+		}
+
+		/* by non-NODATA entry */
+		for (j = 0; j < arg->npos; j++) {
+			if (colormap->method == CM_INTERPOLATE) {
+				if (j == arg->npos - 1)
+					continue;
+
+				arg->expr[k]->src.min = colormap->entry[arg->pos[j + 1]].value;
+				arg->expr[k]->src.inc_min = 1;
+				arg->expr[k]->src.exc_min = 0;
+
+				arg->expr[k]->src.max = colormap->entry[arg->pos[j]].value;
+				arg->expr[k]->src.inc_max = 1;
+				arg->expr[k]->src.exc_max = 0;
+
+				/* use HSV */
+				if (arg->nrgbhsv && i < 3) {
+					arg->expr[k]->dst.min = arg->rgbhsv[j + 1].hsv[i];
+					arg->expr[k]->dst.max = arg->rgbhsv[j].hsv[i];
+				}
+				/* use RGB */
+				else {
+					arg->expr[k]->dst.min = colormap->entry[arg->pos[j + 1]].color[i];
+					arg->expr[k]->dst.max = colormap->entry[arg->pos[j]].color[i];
+				}
+
+				arg->expr[k]->dst.inc_min = 1;
+				arg->expr[k]->dst.exc_min = 0;
+
+				arg->expr[k]->dst.inc_max = 1;
+				arg->expr[k]->dst.exc_max = 0;
+			}
+			else if (colormap->method == CM_NEAREST) {
+
+				/* NOT last entry */
+				if (j != arg->npos - 1) {
+					arg->expr[k]->src.min = ((colormap->entry[arg->pos[j]].value - colormap->entry[arg->pos[j + 1]].value) / 2.) + colormap->entry[arg->pos[j + 1]].value;
+					arg->expr[k]->src.inc_min = 0;
+					arg->expr[k]->src.exc_min = 0;
+				}
+				/* last entry */
+				else {
+					arg->expr[k]->src.min = colormap->entry[arg->pos[j]].value;
+					arg->expr[k]->src.inc_min = 1;
+					arg->expr[k]->src.exc_min = 1;
+				}
+
+				/* NOT first entry */
+				if (j > 0) {
+					arg->expr[k]->src.max = arg->expr[k - 1]->src.min;
+					arg->expr[k]->src.inc_max = 1;
+					arg->expr[k]->src.exc_max = 0;
+				}
+				/* first entry */
+				else {
+					arg->expr[k]->src.max = colormap->entry[arg->pos[j]].value;
+					arg->expr[k]->src.inc_max = 1;
+					arg->expr[k]->src.exc_max = 1;
+				}
+
+				arg->expr[k]->dst.min = colormap->entry[arg->pos[j]].color[i];
+				arg->expr[k]->dst.inc_min = 1;
+				arg->expr[k]->dst.exc_min = 0;
+
+				arg->expr[k]->dst.max = colormap->entry[arg->pos[j]].color[i];
+				arg->expr[k]->dst.inc_max = 1;
+				arg->expr[k]->dst.exc_max = 0;
+			}
+			else if (colormap->method == CM_EXACT) {
+				arg->expr[k]->src.min = colormap->entry[arg->pos[j]].value;
+				arg->expr[k]->src.inc_min = 1;
+				arg->expr[k]->src.exc_min = 0;
+
+				arg->expr[k]->src.max = colormap->entry[arg->pos[j]].value;
+				arg->expr[k]->src.inc_max = 1;
+				arg->expr[k]->src.exc_max = 0;
+
+				arg->expr[k]->dst.min = colormap->entry[arg->pos[j]].color[i];
+				arg->expr[k]->dst.inc_min = 1;
+				arg->expr[k]->dst.exc_min = 0;
+
+				arg->expr[k]->dst.max = colormap->entry[arg->pos[j]].color[i];
+				arg->expr[k]->dst.inc_max = 1;
+				arg->expr[k]->dst.exc_max = 0;
+			}
+
+			RASTER_DEBUGF(4, "expr[%d]->src (min, max, in, ix, en, ex) = (%f, %f, %d, %d, %d, %d)",
+				k,
+				arg->expr[k]->src.min,
+				arg->expr[k]->src.max,
+				arg->expr[k]->src.inc_min,
+				arg->expr[k]->src.inc_max,
+				arg->expr[k]->src.exc_min,
+				arg->expr[k]->src.exc_max
+			);
+
+			RASTER_DEBUGF(4, "expr[%d]->dst (min, max, in, ix, en, ex) = (%f, %f, %d, %d, %d, %d)",
+				k,
+				arg->expr[k]->dst.min,
+				arg->expr[k]->dst.max,
+				arg->expr[k]->dst.inc_min,
+				arg->expr[k]->dst.inc_max,
+				arg->expr[k]->dst.exc_min,
+				arg->expr[k]->dst.exc_max
+			);
+
+			k++;
+		}
+
+		/* EXACT has one last expression for catching all uncaught values */
+		if (colormap->method == CM_EXACT) {
+			arg->expr[k]->src.min = 0;
+			arg->expr[k]->src.inc_min = 1;
+			arg->expr[k]->src.exc_min = 1;
+
+			arg->expr[k]->src.max = 0;
+			arg->expr[k]->src.inc_max = 1;
+			arg->expr[k]->src.exc_max = 1;
+
+			arg->expr[k]->dst.min = 0;
+			arg->expr[k]->dst.inc_min = 1;
+			arg->expr[k]->dst.exc_min = 0;
+
+			arg->expr[k]->dst.max = 0;
+			arg->expr[k]->dst.inc_max = 1;
+			arg->expr[k]->dst.exc_max = 0;
+
+			RASTER_DEBUGF(4, "expr[%d]->src (min, max, in, ix, en, ex) = (%f, %f, %d, %d, %d, %d)",
+				k,
+				arg->expr[k]->src.min,
+				arg->expr[k]->src.max,
+				arg->expr[k]->src.inc_min,
+				arg->expr[k]->src.inc_max,
+				arg->expr[k]->src.exc_min,
+				arg->expr[k]->src.exc_max
+			);
+
+			RASTER_DEBUGF(4, "expr[%d]->dst (min, max, in, ix, en, ex) = (%f, %f, %d, %d, %d, %d)",
+				k,
+				arg->expr[k]->dst.min,
+				arg->expr[k]->dst.max,
+				arg->expr[k]->dst.inc_min,
+				arg->expr[k]->dst.inc_max,
+				arg->expr[k]->dst.exc_min,
+				arg->expr[k]->dst.exc_max
+			);
+
+			k++;
+		}
+
+		/* call rt_band_reclass */
+		if (arg->nrgbhsv)
+			arg->band = rt_band_reclass(band, PT_32BF, 0, 0, arg->expr, arg->nexpr);
+		else
+			arg->band = rt_band_reclass(band, PT_8BUI, 0, 0, arg->expr, arg->nexpr);
+		if (arg->band == NULL) {
+			rterror("rt_raster_colormap: Unable to reclassify band");
+			_rti_colormap_arg_destroy(arg);
+			return NULL;
+		}
+
+		/* add reclassified band to raster */
+		if (rt_raster_add_band(arg->raster, arg->band, rt_raster_get_num_bands(arg->raster)) < 0) {
+			rterror("rt_raster_colormap: Unable to add reclassified band to output raster");
+			_rti_colormap_arg_destroy(arg);
+			return NULL;
+		}
+	}
+
+	/* convert HSV back to RGB 0 - 255 */
+	if (arg->nrgbhsv) {
+		int width = rt_raster_get_width(arg->raster);
+		int height = rt_raster_get_height(arg->raster);
+		rt_band _band = NULL;
+		rt_band band[6];
+		struct _rti_colormap_rgbhsv_t hsvrgb;
+
+		/* get band objects */
+		for (i = 0; i < 6; i++) {
+			/* existing band */
+			if (i < 3)
+				band[i] = rt_raster_get_band(arg->raster, i);
+			/* new band */
+			else {
+				void *mem =rtalloc(rt_pixtype_size(PT_8BUI) * width * height);
+				if (mem == NULL) {
+					rterror("rt_raster_colormap: Unable to allocate memory for new band");
+					for (j = 3; j < i; j++)
+						rt_band_destroy(band[j]);
+					_rti_colormap_arg_destroy(arg);
+					return NULL;
+				}
+				memset(mem, 0, rt_pixtype_size(PT_8BUI) * width * height);
+
+				band[i] = rt_band_new_inline(
+					width, height,
+					PT_8BUI,
+					0, 0,
+					mem
+				);
+				if (band[i] == NULL) {
+					rterror("rt_raster_colormap: Unable to create new band");
+					rtdealloc(mem);
+					for (j = 3; j < i; j++)
+						rt_band_destroy(band[j]);
+					_rti_colormap_arg_destroy(arg);
+					return NULL;
+				}
+				rt_band_set_ownsdata_flag(band[i], 1);
+			}
+		}
+
+		/* process each pixel */
+		for (i = 0; i < height; i++) {
+			for (j = 0; j < width; j++) {
+				/* get HSV components */
+				for (k = 0; k < 3; k++) {
+					if (rt_band_get_pixel(band[k], j, i, &(hsvrgb.hsv[k]), NULL) != ES_NONE) {
+						rterror("rt_raster_colormap: Unable to process HSV values from bands");
+						for (i = 3; i < 6; i++)
+							rt_band_destroy(band[j]);
+						_rti_colormap_arg_destroy(arg);
+						return NULL;
+					}
+				}
+
+				/* convert HSV to RGB 0 - 1 */
+				rt_util_hsv_to_rgb(hsvrgb.hsv, hsvrgb.rgb);
+
+				/* convert RGB 0 - 1 to 0 - 255 and burn */
+				for (k = 0; k < 3; k++) {
+					if (rt_band_set_pixel(band[k + 3], j, i, ROUND(hsvrgb.rgb[k] * 255., 0), NULL) != ES_NONE) {
+						rterror("rt_raster_colormap: Unable to set RGB values to bands");
+						for (i = 3; i < 6; i++)
+							rt_band_destroy(band[j]);
+						_rti_colormap_arg_destroy(arg);
+						return NULL;
+					}
+				}
+			}
+		}
+
+		/* replace bands */
+		for (i = 0; i < 3; i++) {
+			_band = rt_raster_replace_band(arg->raster, band[i + 3], i);
+			if (_band == NULL) {
+				rterror("rt_raster_colormap: Unable to replace HSV band with RGB band");
+				for (j = i + 3; j < 6; j++)
+					rt_band_destroy(band[j]);
+				_rti_colormap_arg_destroy(arg);
+				return NULL;
+			}
+			rt_band_destroy(_band);
+		}
+	}
+
+	rtnraster = arg->raster;
+	arg->raster = NULL;
+	_rti_colormap_arg_destroy(arg);
+
+	return rtnraster;
 }

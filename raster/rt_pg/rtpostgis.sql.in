@@ -1584,6 +1584,79 @@ CREATE OR REPLACE FUNCTION st_reclass(rast raster, reclassexpr text, pixeltype t
 	LANGUAGE 'sql' IMMUTABLE STRICT;
 
 -----------------------------------------------------------------------
+-- ST_ColorMap
+-----------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION _st_colormap(
+	rast raster, nband int,
+	colormap text,
+	method text DEFAULT 'INTERPOLATE'
+)
+	RETURNS raster
+	AS 'MODULE_PATHNAME', 'RASTER_colorMap'
+	LANGUAGE 'c' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_colormap(
+	rast raster, nband int DEFAULT 1,
+	colormap text DEFAULT 'grayscale',
+	method text DEFAULT 'INTERPOLATE'
+)
+	RETURNS raster
+	AS $$
+	DECLARE
+		_ismap boolean;
+		_colormap text;
+		_element text[];
+	BEGIN
+		_ismap := TRUE;
+
+		-- clean colormap to see what it is
+		_colormap := split_part(colormap, E'\n', 1);
+		_colormap := regexp_replace(_colormap, E':+', ' ', 'g');
+		_colormap := regexp_replace(_colormap, E',+', ' ', 'g');
+		_colormap := regexp_replace(_colormap, E'\\t+', ' ', 'g');
+		_colormap := regexp_replace(_colormap, E' +', ' ', 'g');
+		_element := regexp_split_to_array(_colormap, ' ');
+
+		-- treat as colormap
+		IF (array_length(_element, 1) > 1) THEN
+			_colormap := colormap;
+		-- treat as keyword
+		ELSE
+			method := 'INTERPOLATE';
+			CASE lower(trim(both from _colormap))
+				WHEN 'grayscale', 'greyscale' THEN
+					_colormap = '
+					100%   0
+					  0% 254
+					  nv 255 
+					';
+				WHEN 'pseudocolor' THEN
+					_colormap = '
+					100% 255   0   0 255
+					 50%   0 255   0 255
+					  0%   0   0 255 255
+						nv   0   0   0   0
+					';
+				ELSE
+					RAISE EXCEPTION 'Unknown colormap keyword: %', colormap;
+			END CASE;
+		END IF;
+
+		RETURN _st_colormap($1, $2, _colormap, $4);
+	END;
+	$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+
+CREATE OR REPLACE FUNCTION st_colormap(
+	rast raster,
+	colormap text,
+	method text DEFAULT 'INTERPOLATE'
+)
+	RETURNS RASTER
+	AS $$ SELECT ST_ColorMap($1, 1, $2, $3) $$
+	LANGUAGE 'sql' IMMUTABLE STRICT;
+
+-----------------------------------------------------------------------
 -- ST_FromGDALRaster
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION st_fromgdalraster(gdaldata bytea, srid integer DEFAULT NULL)

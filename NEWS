@@ -86,6 +86,7 @@ PostGIS 2.1.0
   - #2163, ST_TPI for raster (Nathaniel Clay)
   - #2164, ST_TRI for raster (Nathaniel Clay)
   - #2302, ST_Roughness for raster (Nathaniel Clay)
+  - #2290, ST_ColorMap(raster) to generate RGBA bands
 
 * Enhancements *
 

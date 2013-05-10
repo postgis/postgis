@@ -10763,10 +10763,136 @@ UPDATE wind
 
 			<refsection>
 				<title>See Also</title>
-				<para><xref linkend="RT_ST_AddBand" />, <xref linkend="RT_ST_Band" />, <xref linkend="RT_ST_BandPixelType" />, <xref linkend="RT_ST_MakeEmptyRaster" />,  <xref linkend="reclassarg" />, <xref linkend="RT_ST_Value" /></para>
+				<para>
+					<xref linkend="RT_ST_AddBand" />, 
+					<xref linkend="RT_ST_Band" />, 
+					<xref linkend="RT_ST_BandPixelType" />, 
+					<xref linkend="RT_ST_MakeEmptyRaster" />,  
+					<xref linkend="reclassarg" />, 
+					<xref linkend="RT_ST_Value" />
+				</para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_ColorMap">
+			<refnamediv>
+				<refname>ST_ColorMap</refname>
+				<refpurpose>Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from the source raster and specified band.</refpurpose>
+			</refnamediv>
 		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_ColorMap</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>colormap=grayscale</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_ColorMap</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>colormap</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Apply a <varname>colormap</varname> to the band at <varname>nband</varname> of <varname>rast</varname> resulting a new raster comprised of up to four 8BUI bands. The number of 8BUI bands in the new raster is determined by the number of color components defined in <varname>colormap</varname>.
+				</para>
+
+				<para>
+					<varname>colormap</varname> can be a keyword of a pre-defined colormap or a set of lines defining the value and the color components.
+				</para>
+
+				<para>
+					Valid pre-defined <varname>colormap</varname> keyword:
+				</para>
+					
+				<itemizedlist>
+					<listitem>
+						<para>
+							<varname>grayscale</varname>, <varname>greyscale</varname> for a one 8BUI band raster
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster
+						</para>
+					</listitem>
+				</itemizedlist>
+
+				<para>
+					Users can pass a set of entries (one per line) to <varname>colormap</varname> to specify custom colormaps. Each entry generally consists of five values: the pixel value and corresponding Red, Green, Blue, Alpha components (color components between 0 and 255). Percent values can be used instead of pixel values where 0% and 100% are the minimum and maximum values found in the raster band. Values can be separated with commas (','), tabs, colons (':') and/or spaces. The pixel value can be set to <emphasis>nv</emphasis>, <emphasis>null</emphasis> or <emphasis>nodata</emphasis> for the NODATA value. An example is provided below.
+				</para>
+
+				<programlisting>
+5 0 0 0 255
+4 100:50 55 255
+1 150,100 150 255
+0% 255 255 255 255
+nv 0 0 0 0
+				</programlisting>
+
+				<para>
+					The syntax of <varname>colormap</varname> is similar to that of the color-relief mode of GDAL <ulink url="http://www.gdal.org/gdaldem.html#gdaldem_color_relief">gdaldem</ulink>.
+				</para>
+
+				<para>
+					Valid keywords for <varname>method</varname>:
+				</para>
+
+				<itemizedlist>
+					<listitem>
+						<para>
+							<varname>INTERPOLATE</varname> to use linear interpolation to smoothly blend the colors between the given pixel values
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>EXACT</varname> to strictly match only those pixels values found in the colormap. Pixels whose value does not match a colormap entry will be set to 0 0 0 0 (RGBA)
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>NEAREST</varname> to use the colormap entry whose value is closest to the pixel value
+						</para>
+					</listitem>
+				</itemizedlist>
+
+				<note>
+					<para>
+						A great reference for colormaps is <ulink url="http://www.colorbrewer2.org">ColorBrewer</ulink>.
+					</para>
+				</note>
+
+				<para>Availability: 2.1.0 </para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<para></para>
+				<programlisting>
+-- needs examples
+				</programlisting>			
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_Reclass" />
+				</para>
+			</refsection>
+		</refentry>
+
 		<refentry id="RT_ST_Union">
 			<refnamediv>
 				<refname>ST_Union</refname>

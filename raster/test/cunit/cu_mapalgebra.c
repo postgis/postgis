@@ -871,10 +871,315 @@ static void test_band_reclass() {
 	rt_band_destroy(newband);
 }
 
+static void test_raster_colormap() {
+	rt_raster raster;
+	rt_raster rtn;
+	rt_band band;
+	int x;
+	int y;
+	rt_colormap colormap = NULL;
+	double value;
+	int nodata;
+
+	raster = rt_raster_new(9, 9);
+	CU_ASSERT(raster != NULL); /* or we're out of virtual memory */
+	band = cu_add_band(raster, PT_8BUI, 0, 0);
+	CU_ASSERT(band != NULL);
+	rt_band_set_nodata(band, 0, NULL);
+
+	for (y = 0; y < 9; y++) {
+		for (x = 0; x < 9; x++) {
+			rt_band_set_pixel(band, x, y, x, NULL);
+		}
+	}
+
+	colormap = (rt_colormap) rtalloc(sizeof(struct rt_colormap_t));
+	CU_ASSERT(colormap != NULL);
+	colormap->nentry = 3;
+	colormap->entry = (rt_colormap_entry) rtalloc(sizeof(struct rt_colormap_entry_t) * colormap->nentry);
+	CU_ASSERT(colormap->entry != NULL);
+
+	colormap->entry[0].isnodata = 0;
+	colormap->entry[0].value = 8;
+	colormap->entry[0].color[0] = 255;
+	colormap->entry[0].color[1] = 255;
+	colormap->entry[0].color[2] = 255;
+	colormap->entry[0].color[3] = 255;
+
+	colormap->entry[1].isnodata = 0;
+	colormap->entry[1].value = 3;
+	colormap->entry[1].color[0] = 127;
+	colormap->entry[1].color[1] = 127;
+	colormap->entry[1].color[2] = 127;
+	colormap->entry[1].color[3] = 255;
+
+	colormap->entry[2].isnodata = 0;
+	colormap->entry[2].value = 0;
+	colormap->entry[2].color[0] = 0;
+	colormap->entry[2].color[1] = 0;
+	colormap->entry[2].color[2] = 0;
+	colormap->entry[2].color[3] = 255;
+
+	/* 2 colors, 3 entries, INTERPOLATE */
+	colormap->ncolor = 2;
+	colormap->method = CM_INTERPOLATE;
+
+	rtn = rt_raster_colormap(
+		raster, 0, 
+		colormap
+	);
+	CU_ASSERT(rtn != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
+
+	band = rt_raster_get_band(rtn, 0);
+	CU_ASSERT(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 0, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 0, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 3, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 8, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 255, DBL_EPSILON);
+
+	cu_free_raster(rtn);
+
+	/* 4 colors, 3 entries, INTERPOLATE */
+	colormap->ncolor = 4;
+
+	rtn = rt_raster_colormap(
+		raster, 0, 
+		colormap
+	);
+	CU_ASSERT(rtn != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
+	cu_free_raster(rtn);
+
+	/* 4 colors, 3 entries, EXACT */
+	colormap->method = CM_EXACT;
+
+	rtn = rt_raster_colormap(
+		raster, 0, 
+		colormap
+	);
+	CU_ASSERT(rtn != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
+
+	band = rt_raster_get_band(rtn, 0);
+	CU_ASSERT(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 0, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 0, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 3, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 8, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 255, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 1, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 0, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 7, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 0, DBL_EPSILON);
+
+	cu_free_raster(rtn);
+
+	/* 4 colors, 3 entries, NEAREST */
+	colormap->method = CM_NEAREST;
+
+	rtn = rt_raster_colormap(
+		raster, 0, 
+		colormap
+	);
+	CU_ASSERT(rtn != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
+
+	band = rt_raster_get_band(rtn, 0);
+	CU_ASSERT(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 0, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 0, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 3, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 8, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 255, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 1, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 0, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 2, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 4, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 7, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 255, DBL_EPSILON);
+
+	cu_free_raster(rtn);
+
+	/* 4 colors, 2 entries, NEAREST */
+	colormap->nentry = 2;
+	colormap->method = CM_NEAREST;
+
+	rtn = rt_raster_colormap(
+		raster, 0, 
+		colormap
+	);
+	CU_ASSERT(rtn != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
+
+	band = rt_raster_get_band(rtn, 0);
+	CU_ASSERT(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 0, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 3, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 8, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 255, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 1, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 2, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 4, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 127, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 7, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 255, DBL_EPSILON);
+
+	cu_free_raster(rtn);
+
+	rtdealloc(colormap->entry);
+	rtdealloc(colormap);
+
+	cu_free_raster(raster);
+
+	/* new set of tests */
+	raster = rt_raster_new(10, 10);
+	CU_ASSERT(raster != NULL); /* or we're out of virtual memory */
+	band = cu_add_band(raster, PT_8BUI, 0, 0);
+	CU_ASSERT(band != NULL);
+	rt_band_set_nodata(band, 0, NULL);
+
+	for (y = 0; y < 10; y++) {
+		for (x = 0; x < 10; x++) {
+			rt_band_set_pixel(band, x, y, (x * y) + x, NULL);
+		}
+	}
+
+	colormap = (rt_colormap) rtalloc(sizeof(struct rt_colormap_t));
+	CU_ASSERT(colormap != NULL);
+	colormap->nentry = 10;
+	colormap->entry = (rt_colormap_entry) rtalloc(sizeof(struct rt_colormap_entry_t) * colormap->nentry);
+	CU_ASSERT(colormap->entry != NULL);
+
+	colormap->entry[0].isnodata = 0;
+	colormap->entry[0].value = 90;
+	colormap->entry[0].color[0] = 255;
+	colormap->entry[0].color[1] = 255;
+	colormap->entry[0].color[2] = 255;
+	colormap->entry[0].color[3] = 255;
+
+	colormap->entry[1].isnodata = 0;
+	colormap->entry[1].value = 80;
+	colormap->entry[1].color[0] = 255;
+	colormap->entry[1].color[1] = 227;
+	colormap->entry[1].color[2] = 227;
+	colormap->entry[1].color[3] = 255;
+
+	colormap->entry[2].isnodata = 0;
+	colormap->entry[2].value = 70;
+	colormap->entry[2].color[0] = 255;
+	colormap->entry[2].color[1] = 198;
+	colormap->entry[2].color[2] = 198;
+	colormap->entry[2].color[3] = 255;
+
+	colormap->entry[3].isnodata = 0;
+	colormap->entry[3].value = 60;
+	colormap->entry[3].color[0] = 255;
+	colormap->entry[3].color[1] = 170;
+	colormap->entry[3].color[2] = 170;
+	colormap->entry[3].color[3] = 255;
+
+	colormap->entry[4].isnodata = 0;
+	colormap->entry[4].value = 50;
+	colormap->entry[4].color[0] = 255;
+	colormap->entry[4].color[1] = 142;
+	colormap->entry[4].color[2] = 142;
+	colormap->entry[4].color[3] = 255;
+
+	colormap->entry[5].isnodata = 0;
+	colormap->entry[5].value = 40;
+	colormap->entry[5].color[0] = 255;
+	colormap->entry[5].color[1] = 113;
+	colormap->entry[5].color[2] = 113;
+	colormap->entry[5].color[3] = 255;
+
+	colormap->entry[6].isnodata = 0;
+	colormap->entry[6].value = 30;
+	colormap->entry[6].color[0] = 255;
+	colormap->entry[6].color[1] = 85;
+	colormap->entry[6].color[2] = 85;
+	colormap->entry[6].color[3] = 255;
+
+	colormap->entry[7].isnodata = 0;
+	colormap->entry[7].value = 20;
+	colormap->entry[7].color[0] = 255;
+	colormap->entry[7].color[1] = 57;
+	colormap->entry[7].color[2] = 57;
+	colormap->entry[7].color[3] = 255;
+
+	colormap->entry[8].isnodata = 0;
+	colormap->entry[8].value = 10;
+	colormap->entry[8].color[0] = 255;
+	colormap->entry[8].color[1] = 28;
+	colormap->entry[8].color[2] = 28;
+	colormap->entry[8].color[3] = 255;
+
+	colormap->entry[9].isnodata = 0;
+	colormap->entry[9].value = 0;
+	colormap->entry[9].color[0] = 255;
+	colormap->entry[9].color[1] = 0;
+	colormap->entry[9].color[2] = 0;
+	colormap->entry[9].color[3] = 255;
+
+	/* 2 colors, 3 entries, INTERPOLATE */
+	colormap->ncolor = 4;
+	colormap->method = CM_INTERPOLATE;
+
+	rtn = rt_raster_colormap(
+		raster, 0, 
+		colormap
+	);
+	CU_ASSERT(rtn != NULL);
+	CU_ASSERT_EQUAL(rt_raster_get_num_bands(rtn), colormap->ncolor);
+
+	band = rt_raster_get_band(rtn, 2);
+	CU_ASSERT(band != NULL);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 0, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 0, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 5, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 14, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 6, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 17, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 9, 0, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 25, DBL_EPSILON);
+
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 2, 4, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 28, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 3, 4, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 43, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 4, 4, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 57, DBL_EPSILON);
+
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 6, 9, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 170, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 7, 9, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 198, DBL_EPSILON);
+	CU_ASSERT_EQUAL(rt_band_get_pixel(band, 8, 9, &value, &nodata), ES_NONE);
+	CU_ASSERT_DOUBLE_EQUAL(value, 227, DBL_EPSILON);
+
+	cu_free_raster(rtn);
+
+	rtdealloc(colormap->entry);
+	rtdealloc(colormap);
+
+	cu_free_raster(raster);
+}
+
 /* register tests */
 CU_TestInfo mapalgebra_tests[] = {
 	PG_TEST(test_raster_iterator),
 	PG_TEST(test_band_reclass),
+	PG_TEST(test_raster_colormap),
 	CU_TEST_INFO_NULL
 };
 CU_SuiteInfo mapalgebra_suite = {"mapalgebra",  NULL,  NULL, mapalgebra_tests};
