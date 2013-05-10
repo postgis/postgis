@@ -87,6 +87,19 @@ PostGIS 2.1.0
   - #2164, ST_TRI for raster (Nathaniel Clay)
   - #2302, ST_Roughness for raster (Nathaniel Clay)
   - #2290, ST_ColorMap(raster) to generate RGBA bands
+  - #2254, Add SFCGAL backend support. 
+           (Backend selection throught postgis.backend var)
+           Functions available both throught GEOS or SFCGAL: 
+            ST_Intersects, ST_3DIntersects, ST_Intersection, ST_Area, 
+            ST_Distance, ST_3DDistance
+           New functions available only with SFCGAL backend:
+            ST_3DIntersection, ST_Tesselate, ST_3DArea, ST_Extrude, ST_ForceLHR
+            ST_Orientation, ST_Minkowski, ST_StraightSkeleton
+            postgis_sfcgal_version
+           New function available in PostGIS: ST_ForceSFS
+           (Olivier Courtin and Hugo Mercier / Oslandia)
+
+    
 
 * Enhancements *
 
@@ -144,6 +157,8 @@ PostGIS 2.1.0
            out-db bands
   - #2222, add parameter OutAsIn to flag whether ST_AsBinary should
            return out-db bands as in-db bands
+  - #1823, add parameter in ST_AsGML to use id column for GML 3 output 
+           (become mandatory since GML 3.2.1)
 
 * Fixes *
 
