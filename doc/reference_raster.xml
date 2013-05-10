@@ -10878,17 +10878,83 @@ nv 0 0 0 0
 
 			<refsection>
 				<title>Examples</title>
-				<para></para>
+				<para>This is a junk table to play with</para>
 				<programlisting>
--- needs examples
-				</programlisting>			
+-- setup test raster table --
+DROP TABLE IF EXISTS funky_shapes;
+CREATE TABLE funky_shapes(rast raster);
+INSERT INTO funky_shapes(rast)
+WITH ref As ( 
+	SELECT ST_MakeEmptyRaster( 200, 200, 0, 200, 1, -1, 0, 0) As rast
+	)
+SELECT ST_Union(rast)
+FROM (SELECT 
+  ST_AsRaster(
+    ST_Rotate(ST_Buffer(
+		ST_GeomFromText('LINESTRING(0 2,50 50,150 150,125 50)'), i*2
+	 ), pi()*i*0.125, ST_Point(50,50))
+	, ref.rast, '8BUI'::text, i*5) As rast
+	FROM ref cross JOIN generate_series(1,10,3) As i ) As shapes ;</programlisting>
+<programlisting>SELECT ST_NumBands(rast) As n_orig
+   , ST_NumBands(ST_ColorMap(rast, 'pseudocolor')) As npseudo
+   , ST_NumBands(ST_ColorMap(rast, 'greyscale')) As ngrey
+FROM funky_shapes;
+
+ n_orig | npseudo | ngrey
+--------+---------+-------
+      1 |       4 |     1
+</programlisting>			
+			</refsection>
+			<refsection><title>Examples: Compare different color map looks using ST_AsPNG</title>
+				<programlisting>SELECT ST_AsPNG(rast) As orig_png
+ , ST_AsPNG(ST_ColorMap(rast,'greyscale')) As grey_png
+ , ST_AsPNG(ST_ColorMap(rast, 'pseudocolor')) As pseudo_png
+FROM funky_shapes;</programlisting>
+
+<informaltable>
+  <tgroup cols="3">
+	<tbody>
+	  <row>
+		<entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_orig.png" />
+			  </imageobject>
+			  <caption><para>orig_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		<entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_grey.png" />
+			  </imageobject>
+			  <caption><para>grey_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		<entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_pseudo.png" />
+			  </imageobject>
+			  <caption><para>pseudo_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		</row>
+	</tbody>
+</tgroup>
+</informaltable>
 			</refsection>
 
 			<refsection>
 				<title>See Also</title>
 				<para>
 					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_Reclass" />
+					<xref linkend="RT_ST_Reclass" />,
+					<xref linkend="RT_ST_AsPNG" />,
+					<xref linkend="RT_ST_AsRaster" />
 				</para>
 			</refsection>
 		</refentry>
