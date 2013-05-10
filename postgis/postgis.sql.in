@@ -5110,7 +5110,7 @@ $$
 								ORDER BY 1, 2
 							) As foo	) );
 				IF ST_IsValid(var_tempgeom) AND ST_GeometryType(var_tempgeom) = 'ST_Polygon' THEN
-					var_tempgeom := ST_force_sfs(ST_Intersection(var_tempgeom, var_convhull));
+					var_tempgeom := ST_ForceSFS(ST_Intersection(var_tempgeom, var_convhull));
 					IF param_allow_holes THEN
 						var_param_geom := var_tempgeom;
 					ELSE
@@ -5118,7 +5118,7 @@ $$
 					END IF;
 					return var_param_geom;
 				ELSIF ST_IsValid(var_tempgeom) THEN
-					var_param_geom := ST_force_sfs(ST_Intersection(var_tempgeom, var_convhull));	
+					var_param_geom := ST_ForceSFS(ST_Intersection(var_tempgeom, var_convhull));	
 				END IF;
 			END IF;
 
@@ -5143,7 +5143,7 @@ $$
                     -- break envelope into 4 triangles about the centroid of the geometry and returned the clipped geometry in each quadrant
                     FOR i in 1 .. 4 LOOP
                        var_geoms[i] := ST_MakePolygon(ST_MakeLine(ARRAY[ST_PointN(var_enline,i), ST_PointN(var_enline,i+1), var_cent, ST_PointN(var_enline,i)]));
-                       var_geoms[i] := ST_force_sfs(ST_Intersection(var_param_geom, ST_Buffer(var_geoms[i],var_buf)));
+                       var_geoms[i] := ST_ForceSFS(ST_Intersection(var_param_geom, ST_Buffer(var_geoms[i],var_buf)));
                        IF ST_IsValid(var_geoms[i]) THEN 
                             
                        ELSE
@@ -5189,7 +5189,7 @@ $$
                 ELSE
                     var_resultgeom := ST_Buffer(var_resultgeom,var_buf);
                 END IF;
-                var_resultgeom := ST_force_sfs(ST_Intersection(var_resultgeom, ST_ConvexHull(var_param_geom)));
+                var_resultgeom := ST_ForceSFS(ST_Intersection(var_resultgeom, ST_ConvexHull(var_param_geom)));
             ELSE
                 -- dimensions are too small to cut
                 var_resultgeom := _ST_ConcaveHull(var_param_geom);
