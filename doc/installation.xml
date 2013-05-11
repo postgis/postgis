@@ -8,18 +8,27 @@
 
   <sect1 id="install_short_version">
 	<title>Short Version</title>
-	<note><para>The raster support is currently optional, but installed by default. For installing using the PostgreSQL 9.1+ extensions model it is required.
-	Please refer to <xref linkend="make_install_postgis_extensions" /> if you are using PostgreSQL 9.1+.</para></note>
-	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_release_version; folder
-		of your PostgreSQL install</para>
-	<para>The <varname>postgis_comments.sql</varname>, <varname>raster_comments.sql</varname>, <varname>topology_comments.sql</varname>
-		generate quick help tips for each function that can be accessed via pgAdmin III or psql. In psql with a command of the form e.g.<varname>\dd ST_SetPoint</varname></para>
+	<para>To compile assuming you have all the dependencies in your search path:</para>
 	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
-./configure --with-raster --with-topology --with-gui
+./configure --with-gui
 make
-make install
-createdb yourdatabase
+make install</programlisting>
+	<note><para>The raster support is currently optional, but installed by default. For installing using the PostgreSQL 9.1+ extensions model raster is required. Using the extension install process is preferred and more user-friendly. To install with extensions you can do the below from psql or by connecting to your database with pgAdmin or psql and just issuing the CREATE EXTENSION sql commands or picking from pgAdmin available extensions list. The extension install does not require you to know paths to script files like the old fogey way.</para></note>
+	<programlisting>psql -d yourdatabase -c "CREATE EXTENSION postgis;"
+psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
+psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"</programlisting>
+	
+	
+	<para>Please refer to <xref linkend="make_install_postgis_extensions" /> for more details about querying installed/available extensions and upgrading extensions and uninstalling extensions.</para>
+	<para>The <varname>postgis_comments.sql</varname>, <varname>raster_comments.sql</varname>, <varname>topology_comments.sql</varname>
+		generate quick help tips for each function that can be accessed via pgAdmin III or psql. In psql with a command of the form e.g.<varname>\dd ST_SetPoint</varname></para>
+	
+	<para>For those running PostgreSQL 9.0 or who decided for some reason not to compile with raster support, or just are old-fashioned, here are longer more painful instructions for you:</para>
+	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_release_version; folder
+		of your PostgreSQL install</para>
+
+	<programlisting>createdb yourdatabase
 createlang plpgsql yourdatabase
 psql -d yourdatabase -f postgis.sql
 psql -d yourdatabase -f postgis_comments.sql
@@ -27,17 +36,7 @@ psql -d yourdatabase -f spatial_ref_sys.sql
 psql -d yourdatabase -f rtpostgis.sql
 psql -d yourdatabase -f raster_comments.sql
 psql -d yourdatabase -f topology/topology.sql
-psql -d yourdatabase -f doc/topology_comments.sql
-
-</programlisting>
-<note><para>
-<filename>topology_comments.sql</filename> since its an optional feature
-is not installed by <command>make install</command> or
-<command>make comments-install</command>.
-However if you do a <command>make comments</command> or
-<command>make topology_comments.sql</command>, it will be generated
-in the docs folder
-</para></note>
+psql -d yourdatabase -f doc/topology_comments.sql</programlisting>
 
 	<para>
 	  The rest of this chapter goes into detail each of the above installation
