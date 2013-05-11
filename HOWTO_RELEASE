@@ -42,6 +42,11 @@ Release procedure
 3) Edit README.postgis and set release date and version.
 4) Add release notes in doc/release_notes.xml
 5) Commit all your changes
+  a) make sure to run the extensions/make_unpackaged.sql and copy contents to  
+    (TODO: we need to automate this) 
+      postgis/sql_bits/postgis--unpackages.sql.in
+      postgis_topology/sql_bits/topology_unpackaged.sql.in
+      postgis_tiger_geocoder/sql_bits/tiger_geocoder--unpackaged.sql.in
 6) Tag trunk:  
    svn copy http://svn.osgeo.org/postgis/trunk http://svn.osgeo.org/postgis/tags/x.x.x
 7) Checkout tag:
@@ -51,7 +56,7 @@ Release procedure
   (note: unreleased are on postgis.net, and released download.osgeo.org )
    Also make sure the correct minimum and lastest geos etc are noted.
 10) Commit your version number change to the tag.
-11) Run: sh make_dist.sh x.x.x
+11) Run: sh make_dist.sh x.x.x (or use debbie for this)
 12) Copy tarball to web site and edit downloads page
 13) Announce on e-mail 
     - postgis-users

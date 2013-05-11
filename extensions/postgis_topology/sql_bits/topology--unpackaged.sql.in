@@ -6,6 +6,7 @@ ALTER EXTENSION postgis_topology ADD function _st_addfacesplit(character varying
 ALTER EXTENSION postgis_topology ADD function _st_adjacentedges(character varying,integer,integer);
 ALTER EXTENSION postgis_topology ADD function _st_mintolerance(character varying,geometry);
 ALTER EXTENSION postgis_topology ADD function _st_mintolerance(geometry);
+ALTER EXTENSION postgis_topology ADD function _st_remedgecheck(character varying,integer,integer,integer,integer);
 ALTER EXTENSION postgis_topology ADD function addedge(character varying,geometry);
 ALTER EXTENSION postgis_topology ADD function addface(character varying,geometry,boolean);
 ALTER EXTENSION postgis_topology ADD function addnode(character varying,geometry);
@@ -21,6 +22,8 @@ ALTER EXTENSION postgis_topology ADD function asgml(topogeometry,text,integer,in
 ALTER EXTENSION postgis_topology ADD function asgml(topogeometry,text,integer,integer,regclass);
 ALTER EXTENSION postgis_topology ADD function asgml(topogeometry,text,integer,integer,regclass,text);
 ALTER EXTENSION postgis_topology ADD function asgml(topogeometry,text,integer,integer,regclass,text,integer);
+ALTER EXTENSION postgis_topology ADD function astopojson(topogeometry,regclass);
+ALTER EXTENSION postgis_topology ADD function cleartopogeom(topogeometry);
 ALTER EXTENSION postgis_topology ADD function copytopology(character varying,character varying);
 ALTER EXTENSION postgis_topology ADD function createtopogeom(character varying,integer,integer);
 ALTER EXTENSION postgis_topology ADD function createtopogeom(character varying,integer,integer,topoelementarray);
@@ -70,6 +73,7 @@ ALTER EXTENSION postgis_topology ADD function st_remedgenewface(character varyin
 ALTER EXTENSION postgis_topology ADD function st_remisonode(character varying,integer);
 ALTER EXTENSION postgis_topology ADD function st_removeisoedge(character varying,integer);
 ALTER EXTENSION postgis_topology ADD function st_removeisonode(character varying,integer);
+ALTER EXTENSION postgis_topology ADD function st_simplify(topogeometry,double precision);
 ALTER EXTENSION postgis_topology ADD function topoelementarray_agg(topoelement);
 ALTER EXTENSION postgis_topology ADD function topoelementarray_append(topoelementarray,topoelement);
 ALTER EXTENSION postgis_topology ADD function topogeo_addgeometry(character varying,geometry,double precision);
@@ -78,6 +82,7 @@ ALTER EXTENSION postgis_topology ADD function topogeo_addpoint(character varying
 ALTER EXTENSION postgis_topology ADD function topogeo_addpolygon(character varying,geometry,double precision);
 ALTER EXTENSION postgis_topology ADD function topologysummary(character varying);
 ALTER EXTENSION postgis_topology ADD function totopogeom(geometry,character varying,integer,double precision);
+ALTER EXTENSION postgis_topology ADD function totopogeom(geometry,topogeometry,double precision);
 ALTER EXTENSION postgis_topology ADD function validatetopology(character varying);
 ALTER EXTENSION postgis_topology ADD sequence topology_id_seq;
 ALTER EXTENSION postgis_topology ADD table layer;
