@@ -72,7 +72,7 @@
    <imageobject>
      <imagedata fileref='images/check.png' />
    </imageobject>
- </inlinemediaobject> This method need SFCGAL backend.">
+ </inlinemediaobject> This method needs SFCGAL backend.">
 
 <!ENTITY curve_support 
 "<inlinemediaobject>

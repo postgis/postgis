@@ -297,6 +297,7 @@
 						and may accumulate floating point junk.</simpara></listitem>
 				<listitem><simpara>A <xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</simpara></listitem>
 				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal" disable-output-escaping="yes"/> means the function only available if PostGIS compiled with SFCGAL support.</simpara></listitem>
+				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/> means the function uses SFCGAL if PostGIS compiled with SFCGAL.</simpara></listitem>
 				<listitem><simpara>geom - Basic 2D geometry support (x,y).</simpara></listitem>
 				<listitem><simpara>geog - Basic 2D geography support (x,y).</simpara></listitem>
 				<listitem><simpara>2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord).</simpara></listitem>
@@ -382,7 +383,7 @@
 									<!-- supports -->
 									<xsl:when test="contains(.,'This function supports 3d')">
 										<!-- if 3d denote if it needs sfcgal -->
-										<entry><xsl:choose><xsl:when test="contains(.,'SFCGAL')"><xsl:value-of select="$matrix_sfcgal" disable-output-escaping="yes"/></xsl:when>
+										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal" disable-output-escaping="yes"/></xsl:when>
 										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
 									</xsl:when>
 									<!-- no support -->
