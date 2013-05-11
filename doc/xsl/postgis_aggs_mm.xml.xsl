@@ -285,6 +285,8 @@
 			<xsl:variable name='matrix_checkmark'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_checkmark.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
 			<xsl:variable name='matrix_transform'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_transform.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
 			<xsl:variable name='matrix_autocast'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_autocast.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
+			<xsl:variable name='matrix_sfcgal'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_3dglasses.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
+			
 			<title>PostGIS Function Support Matrix</title>
 
 			<para>Below is an alphabetical listing of spatial specific functions in PostGIS and the kinds of spatial
@@ -294,6 +296,7 @@
 				<listitem><simpara>A <xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/> means it works but with a transform cast built-in using cast to geometry, transform to a "best srid" spatial ref and then cast back. Results may not be as expected for large areas or areas at poles 
 						and may accumulate floating point junk.</simpara></listitem>
 				<listitem><simpara>A <xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</simpara></listitem>
+				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal" disable-output-escaping="yes"/> means the function only available if PostGIS compiled with SFCGAL support.</simpara></listitem>
 				<listitem><simpara>geom - Basic 2D geometry support (x,y).</simpara></listitem>
 				<listitem><simpara>geog - Basic 2D geography support (x,y).</simpara></listitem>
 				<listitem><simpara>2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord).</simpara></listitem>
@@ -378,7 +381,9 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'This function supports 3d')">
-										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
+										<!-- if 3d denote if it needs sfcgal -->
+										<entry><xsl:choose><xsl:when test="contains(.,'SFCGAL')"><xsl:value-of select="$matrix_sfcgal" disable-output-escaping="yes"/></xsl:when>
+										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
