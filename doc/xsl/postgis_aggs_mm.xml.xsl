@@ -285,7 +285,8 @@
 			<xsl:variable name='matrix_checkmark'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_checkmark.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
 			<xsl:variable name='matrix_transform'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_transform.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
 			<xsl:variable name='matrix_autocast'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_autocast.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
-			<xsl:variable name='matrix_sfcgal'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_3dglasses.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
+			<xsl:variable name='matrix_sfcgal_required'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_sfcgal_required.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
+			<xsl:variable name='matrix_sfcgal_enhanced'><![CDATA[<inlinemediaobject><imageobject><imagedata fileref='images/matrix_sfcgal_enhanced.png' /></imageobject></inlinemediaobject>]]></xsl:variable>
 			
 			<title>PostGIS Function Support Matrix</title>
 
