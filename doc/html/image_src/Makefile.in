@@ -2,7 +2,7 @@
 # * $Id: Makefile.in
 # *
 # * PostGIS - Spatial Types for PostgreSQL
-# * http://postgis.refractions.net
+# * http://postgis.net
 # * Copyright 2008 Kevin Neufeld
 # *
 # * This is free software; you can redistribute and/or modify it under
@@ -11,10 +11,12 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
+GEOS_CFLAGS=@GEOS_CPPFLAGS@ 
+GEOS_LDFLAGS=@GEOS_LDFLAGS@ -lgeos_c 
+CFLAGS=@CFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@ $(GEOS_CFLAGS)
 
-CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
+CUNIT_LDFLAGS=@CUNIT_LDFLAGS@ $(GEOS_LDFLAGS)
+CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom 
 
 IMAGES= \
 	../images/de9im01.png \
