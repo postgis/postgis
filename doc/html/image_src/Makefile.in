@@ -11,7 +11,9 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
+CFLAGS=@CFLAGS@ @WARNFLAGS@ @GEOS_CPPFLAGS@ @PROJ_CPPFLAGS@ 
+LDFLAGS = @GEOS_LDFLAGS@ -lgeos_c
+top_builddir = @top_builddir@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
