@@ -11,10 +11,11 @@
 	<para>To compile assuming you have all the dependencies in your search path:</para>
 	<programlisting>tar xvfz postgis-&last_release_version;.tar.gz
 cd postgis-&last_release_version;
-./configure --with-gui
+./configure
 make
 make install</programlisting>
-	<note><para>The raster support is currently optional, but installed by default. For installing using the PostgreSQL 9.1+ extensions model raster is required. Using the extension install process is preferred and more user-friendly. To install with extensions you can do the below from psql or by connecting to your database with pgAdmin or psql and just issuing the CREATE EXTENSION sql commands or picking from pgAdmin available extensions list. The extension install does not require you to know paths to script files like the old fogey way.</para></note>
+	<para>Once postgis is installed, it needs to be enabled in each individual database you want to use it in.</para>
+	<note><para>The raster support is currently optional, but installed by default. For enabling using the PostgreSQL 9.1+ extensions model raster is required. Using the extension enable process is preferred and more user-friendly. To spatially enable your database:</para></note>
 	<programlisting>psql -d yourdatabase -c "CREATE EXTENSION postgis;"
 psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
 psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"</programlisting>
@@ -701,8 +702,9 @@ CREATE EXTENSION postgis_tiger_geocoder FROM unpackaged;</programlisting>
 		following:
 	  </para>
 
-	  <programlisting>     CUnit - A Unit testing framework for C - Version 2.1-0
-	 http://cunit.sourceforge.net/
+	  <programlisting>
+     CUnit - A Unit testing framework for C - Version 2.1-0
+     http://cunit.sourceforge.net/
 
 
 Suite: print_suite
@@ -711,15 +713,22 @@ Suite: print_suite
   Test: test_lwprint_optional_format ... passed
   Test: test_lwprint_oddball_formats ... passed
   Test: test_lwprint_bad_formats ... passed
-Suite: Misc Suite
+Suite: misc
   Test: test_misc_force_2d ... passed
   Test: test_misc_simplify ... passed
   Test: test_misc_count_vertices ... passed
   Test: test_misc_area ... passed
   Test: test_misc_wkb ... passed
-Suite: PointArray Suite
+Suite: ptarray
   Test: test_ptarray_append_point ... passed
   Test: test_ptarray_append_ptarray ... passed
+  Test: test_ptarray_locate_point ... passed
+  Test: test_ptarray_isccw ... passed
+  Test: test_ptarray_signed_area ... passed
+  Test: test_ptarray_desegmentize ... passed
+  Test: test_ptarray_insert_point ... passed
+  Test: test_ptarray_contains_point ... passed
+  Test: test_ptarrayarc_contains_point ... passed
 Suite: PostGIS Computational Geometry Suite
   Test: test_lw_segment_side ... passed
   Test: test_lw_segment_intersects ... passed
@@ -735,92 +744,248 @@ Suite: PostGIS Computational Geometry Suite
   Test: test_geohash_point ... passed
   Test: test_geohash_precision ... passed
   Test: test_geohash ... passed
+  Test: test_geohash_point_as_int ... passed
   Test: test_isclosed ... passed
+Suite: buildarea
+  Test: buildarea1 ... passed
+  Test: buildarea2 ... passed
+  Test: buildarea3 ... passed
+  Test: buildarea4 ... passed
+  Test: buildarea4b ... passed
+  Test: buildarea5 ... passed
+  Test: buildarea6 ... passed
+  Test: buildarea7 ... passed
+Suite: clean
+  Test: test_lwgeom_make_valid ... passed
 Suite: PostGIS Measures Suite
   Test: test_mindistance2d_tolerance ... passed
   Test: test_rect_tree_contains_point ... passed
   Test: test_rect_tree_intersects_tree ... passed
   Test: test_lwgeom_segmentize2d ... passed
+  Test: test_lwgeom_locate_along ... passed
+  Test: test_lw_dist2d_pt_arc ... passed
+  Test: test_lw_dist2d_seg_arc ... passed
+  Test: test_lw_dist2d_arc_arc ... passed
+  Test: test_lw_arc_length ... passed
+  Test: test_lw_dist2d_pt_ptarrayarc ... passed
+  Test: test_lw_dist2d_ptarray_ptarrayarc ... passed
+Suite: node
+  Test: test_lwgeom_node ... passed
 Suite: WKT Out Suite
   Test: test_wkt_out_point ... passed
   Test: test_wkt_out_linestring ... passed
   Test: test_wkt_out_polygon ... passed
   Test: test_wkt_out_multipoint ... passed
   Test: test_wkt_out_multilinestring ... passed
+  Test: test_wkt_out_multipolygon ... passed
+  Test: test_wkt_out_collection ... passed
+  Test: test_wkt_out_circularstring ... passed
+  Test: test_wkt_out_compoundcurve ... passed
+  Test: test_wkt_out_curvpolygon ... passed
+  Test: test_wkt_out_multicurve ... passed
+  Test: test_wkt_out_multisurface ... passed
+Suite: WKT In Suite
+  Test: test_wkt_in_point ... passed
+  Test: test_wkt_in_linestring ... passed
+  Test: test_wkt_in_polygon ... passed
+  Test: test_wkt_in_multipoint ... passed
+  Test: test_wkt_in_multilinestring ... passed
+  Test: test_wkt_in_multipolygon ... passed
+  Test: test_wkt_in_collection ... passed
+  Test: test_wkt_in_circularstring ... passed
+  Test: test_wkt_in_compoundcurve ... passed
+  Test: test_wkt_in_curvpolygon ... passed
+  Test: test_wkt_in_multicurve ... passed
+  Test: test_wkt_in_multisurface ... passed
+  Test: test_wkt_in_tin ... passed
+  Test: test_wkt_in_polyhedralsurface ... passed
+  Test: test_wkt_in_errlocation ... passed
+Suite: WKB Out Suite
+  Test: test_wkb_out_point ... passed
+  Test: test_wkb_out_linestring ... passed
+  Test: test_wkb_out_polygon ... passed
+  Test: test_wkb_out_multipoint ... passed
+  Test: test_wkb_out_multilinestring ... passed
+  Test: test_wkb_out_multipolygon ... passed
+  Test: test_wkb_out_collection ... passed
+  Test: test_wkb_out_circularstring ... passed
+  Test: test_wkb_out_compoundcurve ... passed
+  Test: test_wkb_out_curvpolygon ... passed
+  Test: test_wkb_out_multicurve ... passed
+  Test: test_wkb_out_multisurface ... passed
+  Test: test_wkb_out_polyhedralsurface ... passed
 :
+Suite: Geodetic Suite
+  Test: test_sphere_direction ... passed
+  Test: test_sphere_project ... passed
+  Test: test_lwgeom_area_sphere ... passed
+  Test: test_signum ... passed
+  Test: test_gbox_from_spherical_coordinates ... passed
 :
+  Test: test_geos_noop ... passed
+Suite: Internal Spatial Trees
+  Test: test_tree_circ_create ... passed
+  Test: test_tree_circ_pip ... passed
+  Test: test_tree_circ_pip2 ... passed
+  Test: test_tree_circ_distance ... passed
+Suite: triangulate
+  Test: test_lwgeom_delaunay_triangulation ... passed
+Suite: stringbuffer
+  Test: test_stringbuffer_append ... passed
+  Test: test_stringbuffer_aprintf ... passed
+Suite: surface
+  Test: triangle_parse ... passed
+  Test: tin_parse ... passed
+  Test: polyhedralsurface_parse ... passed
+  Test: surface_dimension ... passed
+Suite: homogenize
+  Test: test_coll_point ... passed
+  Test: test_coll_line ... passed
+  Test: test_coll_poly ... passed
+  Test: test_coll_coll ... passed
+  Test: test_geom ... passed
+  Test: test_coll_curve ... passed
+Suite: force_sfs
+  Test: test_sfs_11 ... passed
+  Test: test_sfs_12 ... passed
+  Test: test_sqlmm ... passed
+Suite: out_gml
+  Test: out_gml_test_precision ... passed
+  Test: out_gml_test_srid ... passed
+  Test: out_gml_test_dims ... passed
+  Test: out_gml_test_geodetic ... passed
+  Test: out_gml_test_geoms ... passed
+  Test: out_gml_test_geoms_prefix ... passed
+  Test: out_gml_test_geoms_nodims ... passed
+  Test: out_gml2_extent ... passed
+  Test: out_gml3_extent ... passed
+Suite: KML Out Suite
+  Test: out_kml_test_precision ... passed
+  Test: out_kml_test_dims ... passed
+  Test: out_kml_test_geoms ... passed
+  Test: out_kml_test_prefix ... passed
+Suite: GeoJson Out Suite
+  Test: out_geojson_test_precision ... passed
+  Test: out_geojson_test_dims ... passed
+  Test: out_geojson_test_srid ... passed
+  Test: out_geojson_test_bbox ... passed
+  Test: out_geojson_test_geoms ... passed
+Suite: SVG Out Suite
+  Test: out_svg_test_precision ... passed
+  Test: out_svg_test_dims ... passed
+  Test: out_svg_test_relative ... passed
+  Test: out_svg_test_geoms ... passed
+  Test: out_svg_test_srid ... passed
+Suite: X3D Out Suite
+  Test: out_x3d3_test_precision ... passed
+  Test: out_x3d3_test_geoms ... passed
+
 --Run Summary: Type      Total     Ran  Passed  Failed
-               suites       17      17     n/a       0
-               tests       143     143     143       0
-               asserts    1228    1228    1228       0
+               suites       27      27     n/a       0
+               tests       198     198     198       0
+               asserts    1728    1728    1728       0
 
-
-Creating spatial db postgis_reg
- Postgis 2.0.0SVN - 2011-01-11 15:33:37
-   GEOS: 3.3.0-CAPI-1.7.0
-   PROJ: Rel. 4.6.1, 21 August 2008
+Creating database 'postgis_reg' 
+Loading PostGIS into 'postgis_reg' 
+PostgreSQL 9.3beta1 on x86_64-unknown-linux-gnu, compiled by gcc (Debian 4.4.5-8) 4.4.5, 64-bit
+  Postgis 2.1.0SVN - r11415 - 2013-05-11 02:48:21
+  GEOS: 3.4.0dev-CAPI-1.8.0 r3797
+  PROJ: Rel. 4.7.1, 23 September 2009
 
 Running tests
 
- loader/Point.............. ok
- loader/PointM.............. ok
- loader/PointZ.............. ok
- loader/MultiPoint.............. ok
- loader/MultiPointM.............. ok
- loader/MultiPointZ.............. ok
- loader/Arc.............. ok
- loader/ArcM.............. ok
- loader/ArcZ.......... ok
- loader/Polygon.............. ok
- loader/PolygonM.............. ok
- loader/PolygonZ.............. ok
- regress. ok
- regress_index. ok
- regress_index_nulls. ok
- lwgeom_regress. ok
- regress_lrs. ok
- removepoint. ok
- setpoint. ok
- simplify. ok
- snaptogrid. ok
- affine. ok
- measures. ok
- long_xact. ok
- ctors. ok
- sql-mm-serialize. ok
- sql-mm-circularstring. ok
- sql-mm-compoundcurve. ok
- sql-mm-curvepoly. ok
- sql-mm-general. ok
- sql-mm-multicurve. ok
- sql-mm-multisurface. ok
- polyhedralsurface. ok
- out_geometry. ok
- out_geography. ok
- in_gml. ok
- in_kml. ok
- iscollection. ok
- regress_ogc. ok
- regress_ogc_cover. ok
- regress_ogc_prep. ok
- regress_bdpoly. ok
- regress_proj. ok
- dump. ok
- dumppoints. ok
- wmsservers_new. ok
- tickets. ok
- remove_repeated_points. ok
- split. ok
- relatematch. ok
- regress_buffer_params. ok
- hausdorff. ok
- clean. ok
- sharedpaths. ok
- snap. ok
+ loader/Point .............. ok 
+ loader/PointM .............. ok 
+ loader/PointZ .............. ok 
+ loader/MultiPoint .............. ok 
+ loader/MultiPointM .............. ok 
+ loader/MultiPointZ .............. ok 
+ loader/Arc .............. ok 
+ loader/ArcM .............. ok 
+ loader/ArcZ .............. ok 
+ loader/Polygon .............. ok 
+ loader/PolygonM .............. ok 
+ loader/PolygonZ .............. ok 
+ loader/TSTPolygon ......... ok 
+ loader/TSIPolygon ......... ok 
+ loader/TSTIPolygon ......... ok 
+ loader/PointWithSchema ..... ok 
+ loader/NoTransPoint ......... ok 
+ loader/NotReallyMultiPoint ......... ok 
+ loader/MultiToSinglePoint ......... ok 
+ loader/ReprojectPts ........ ok 
+ loader/ReprojectPtsGeog ........ ok 
+ loader/Latin1 .... ok 
+ binary .. ok 
+ regress .. ok 
+ regress_index .. ok 
+ regress_index_nulls .. ok 
+ regress_selectivity .. ok 
+ lwgeom_regress .. ok 
+ regress_lrs .. ok 
+ removepoint .. ok 
+ setpoint .. ok 
+ simplify .. ok 
+ snaptogrid .. ok 
+ summary .. ok 
+ affine .. ok 
+ empty .. ok 
+ measures .. ok 
+ legacy .. ok 
+ long_xact .. ok 
+ ctors .. ok 
+ sql-mm-serialize .. ok 
+ sql-mm-circularstring .. ok 
+ sql-mm-compoundcurve .. ok 
+ sql-mm-curvepoly .. ok 
+ sql-mm-general .. ok 
+ sql-mm-multicurve .. ok 
+ sql-mm-multisurface .. ok 
+ polyhedralsurface .. ok 
+ polygonize .. ok 
+ postgis_type_name .. ok 
+ geography .. ok 
+ out_geometry .. ok 
+ out_geography .. ok 
+ in_geohash .. ok 
+ in_gml .. ok 
+ in_kml .. ok 
+ iscollection .. ok 
+ regress_ogc .. ok 
+ regress_ogc_cover .. ok 
+ regress_ogc_prep .. ok 
+ regress_bdpoly .. ok 
+ regress_proj .. ok 
+ regress_management .. ok 
+ dump .. ok 
+ dumppoints .. ok 
+ boundary .. ok 
+ wmsservers .. ok 
+ wkt .. ok 
+ wkb .. ok 
+ tickets .. ok 
+ typmod .. ok 
+ remove_repeated_points .. ok 
+ split .. ok 
+ relate .. ok 
+ bestsrid .. ok 
+ concave_hull .. ok 
+ hausdorff .. ok 
+ regress_buffer_params .. ok 
+ offsetcurve .. ok 
+ relatematch .. ok 
+ isvaliddetail .. ok 
+ sharedpaths .. ok 
+ snap .. ok 
+ node .. ok 
+ unaryunion .. ok 
+ clean .. ok 
+ relate_bnr .. ok 
+ delaunaytriangles .. ok 
+ in_geojson .. ok 
+ uninstall .. ok (4112)
 
-Run tests: 55
-Failed: 0
-</programlisting>
+Run tests: 90</programlisting>
 	</sect2>
 
 	<sect2>
