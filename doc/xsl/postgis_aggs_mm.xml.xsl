@@ -297,8 +297,8 @@
 				<listitem><simpara>A <xsl:value-of select="$matrix_transform" disable-output-escaping="yes"/> means it works but with a transform cast built-in using cast to geometry, transform to a "best srid" spatial ref and then cast back. Results may not be as expected for large areas or areas at poles 
 						and may accumulate floating point junk.</simpara></listitem>
 				<listitem><simpara>A <xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</simpara></listitem>
-				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal" disable-output-escaping="yes"/> means the function only available if PostGIS compiled with SFCGAL support.</simpara></listitem>
-				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/> means the function uses SFCGAL if PostGIS compiled with SFCGAL.</simpara></listitem>
+				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/> means the function only available if PostGIS compiled with SFCGAL support.</simpara></listitem>
+				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal_provided" disable-output-escaping="yes"/> means the function support is provided by SFCGAL if PostGIS compiled with SFCGAL support, otherwise GEOS/built-in support.</simpara></listitem>
 				<listitem><simpara>geom - Basic 2D geometry support (x,y).</simpara></listitem>
 				<listitem><simpara>geog - Basic 2D geography support (x,y).</simpara></listitem>
 				<listitem><simpara>2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord).</simpara></listitem>
@@ -384,7 +384,8 @@
 									<!-- supports -->
 									<xsl:when test="contains(.,'This function supports 3d')">
 										<!-- if 3d denote if it needs sfcgal -->
-										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal" disable-output-escaping="yes"/></xsl:when>
+										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when>
+										<xsl:when test="contains(.,'provided by SFCGAL')"><xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/></xsl:when>
 										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
 									</xsl:when>
 									<!-- no support -->
@@ -407,7 +408,9 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'implements the SQL/MM')">
-										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
+										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when>
+										<xsl:when test="contains(.,'provided by SFCGAL')"><xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/></xsl:when>
+										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -418,7 +421,9 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'Polyhedral')">
-										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
+										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when>
+										<xsl:when test="contains(.,'provided by SFCGAL')"><xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/></xsl:when>
+										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
@@ -429,7 +434,9 @@
 								<xsl:choose>
 									<!-- supports -->
 									<xsl:when test="contains(.,'Triang')">
-										<entry><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></entry>
+										<entry><xsl:choose><xsl:when test="contains(.,'needs SFCGAL')"><xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/></xsl:when>
+										<xsl:when test="contains(.,'provided by SFCGAL')"><xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/></xsl:when>
+										<xsl:otherwise><xsl:value-of select="$matrix_checkmark" disable-output-escaping="yes"/></xsl:otherwise></xsl:choose></entry>
 									</xsl:when>
 									<!-- no support -->
 									<xsl:otherwise>
