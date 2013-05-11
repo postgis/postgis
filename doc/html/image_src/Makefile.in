@@ -14,7 +14,7 @@ CC=@CC@
 CFLAGS=@CFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom 
+CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
 
 IMAGES= \
 	../images/de9im01.png \
@@ -158,7 +158,7 @@ generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
 
 # Build liblwgeom
 ../../../liblwgeom/.libs/liblwgeom.a:
-	$(MAKE) -C ../../../liblwgeom liblwgeom.la
+	make -C ../../../liblwgeom liblwgeom.la
 
 # Clean target
 clean:
