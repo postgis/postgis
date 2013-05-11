@@ -154,7 +154,7 @@ $(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
 
 # Build the main executable
 generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
-	$(CC) -o $@ $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a -lgeos_c -lm $(CUNIT_LDFLAGS)
+	$(CC) -o $@ $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a @GEOS_LDFLAGS@ -lgeos_c -lm $(CUNIT_LDFLAGS)
 
 # Build liblwgeom
 ../../../liblwgeom/.libs/liblwgeom.a:
