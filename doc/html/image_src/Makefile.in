@@ -14,7 +14,7 @@ CC=@CC@
 CFLAGS=@CFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom
+CUNIT_CPPFLAGS=-I../../../liblwgeom @CUNIT_CPPFLAGS@
 
 IMAGES= \
 	../images/de9im01.png \
@@ -154,11 +154,11 @@ $(IMAGES_RESIZED): ../images/%.png: %.wkt generator styles.conf
 
 # Build the main executable
 generator: ../../../liblwgeom/.libs/liblwgeom.a $(OBJS)
-	$(CC) -o $@ $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a @GEOS_LDFLAGS@ -lgeos_c -lm $(CUNIT_LDFLAGS)
+	$(CC) -o $@ $(OBJS) ../../../liblwgeom/.libs/liblwgeom.a -lm $(CUNIT_LDFLAGS)
 
 # Build liblwgeom
 ../../../liblwgeom/.libs/liblwgeom.a:
-	make -C ../../../liblwgeom liblwgeom.la
+	$(MAKE) -C ../../../liblwgeom liblwgeom.la
 
 # Clean target
 clean:
