@@ -3,7 +3,7 @@ PostGIS - Geographic Information Systems Extensions to PostgreSQL
 
 :Version: 2.1.0
 :Date: 2013-MM-DD
-:Website: http://postgis.org
+:Website: http://postgis.net
 
 This distribution contains a module which implements GIS simple features, ties
 the features to R-tree indexing, and provides many spatial functions for
@@ -46,7 +46,8 @@ this to work.
 
     http://trac.osgeo.org/proj/
 
-* GEOS (Required, Version 3.3.0 or higher):
+* GEOS (Required, Version 3.3.0 or higher 
+  - 3.4+ is strongly recommended and needed for full features):
 
   The GEOS library provides support for exact topological tests such as
   ST_Touches(), ST_Contains(), ST_Disjoint() and spatial operations such as
@@ -64,6 +65,7 @@ this to work.
 * GNU gettext
 
    The loader, and hence PostGIS, requires GNU gettext 0.14 or higher
+   for translation support
    (typically in libc on GNU/Linux, in which case 0.17 is required).
 
 * JSON-C (Optional, Version 0.9 or higher)
@@ -76,11 +78,15 @@ this to work.
 
     apt-get install libjson0-dev
 
-* GDAL (Optional, Version 1.6.0 or higher)
+* GDAL (Optional, Version 1.8.0 or higher 1.9+ is strongly recommended) needed for raster support
+  Also needed to install PostGIS using CREATE EXTENSION postgis; syntax
 
   GDAL (http://gdal.org) is *required* if you want to compile PostGIS 
   with raster support.  To compile without raster support you 
   must ``./configure --without-raster``
+  
+* CGAL 4.1+ and SFCGAL (Optional) needed for advanced 3D support
+https://github.com/Oslandia/SFCGAL
 
 
 CONFIGURATION
@@ -116,6 +122,9 @@ If you want to compile PostGIS *without* Raster support, you must provide the
 
 If you want to compile PostGIS *without* Topology support, you must provide the
 ``--without-topology`` option.
+
+PostGIS will be compiled with sfcgal support if it is found.  You can explicitly
+state the location with --with-sfcgal=path/to/sfcgal
 
 See ``./configure --help`` for more options.
 

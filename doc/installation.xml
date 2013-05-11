@@ -6,7 +6,7 @@
 	This chapter details the steps required to install PostGIS.
   </para>
 
-  <sect1>
+  <sect1 id="install_short_version">
 	<title>Short Version</title>
 	<note><para>The raster support is currently optional, but installed by default. For installing using the PostgreSQL 9.1+ extensions model it is required.
 	Please refer to <xref linkend="make_install_postgis_extensions" /> if you are using PostgreSQL 9.1+.</para></note>
@@ -45,7 +45,7 @@ in the docs folder
 	</para>
   </sect1>
 
-  <sect1>
+  <sect1 id="install_requirements">
 	<title>Install Requirements</title>
 
 	<para>
@@ -209,7 +209,7 @@ in the docs folder
 	</itemizedlist>
   </sect1>
 
-  <sect1>
+  <sect1 id="install_getting_source">
 	<title>Getting the Source</title>
 
 	<para>
