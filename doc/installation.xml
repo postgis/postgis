@@ -20,7 +20,7 @@ psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
 psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"</programlisting>
 	
 	
-	<para>Please refer to <xref linkend="make_install_postgis_extensions" /> for more details about querying installed/available extensions and upgrading extensions and uninstalling extensions.</para>
+	<para>Please refer to <xref linkend="make_install_postgis_extensions" /> for more details about querying installed/available extensions and upgrading extensions, or switching from a non-extension install to an extension install.</para>
 	<para>The <varname>postgis_comments.sql</varname>, <varname>raster_comments.sql</varname>, <varname>topology_comments.sql</varname>
 		generate quick help tips for each function that can be accessed via pgAdmin III or psql. In psql with a command of the form e.g.<varname>\dd ST_SetPoint</varname></para>
 	
