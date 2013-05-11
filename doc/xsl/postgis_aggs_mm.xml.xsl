@@ -298,7 +298,7 @@
 						and may accumulate floating point junk.</simpara></listitem>
 				<listitem><simpara>A <xsl:value-of select="$matrix_autocast" disable-output-escaping="yes"/> means the function works with the type because of a auto-cast to another such as to box3d rather than direct type support.</simpara></listitem>
 				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal_required" disable-output-escaping="yes"/> means the function only available if PostGIS compiled with SFCGAL support.</simpara></listitem>
-				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal_provided" disable-output-escaping="yes"/> means the function support is provided by SFCGAL if PostGIS compiled with SFCGAL support, otherwise GEOS/built-in support.</simpara></listitem>
+				<listitem><simpara>A <xsl:value-of select="$matrix_sfcgal_enhanced" disable-output-escaping="yes"/> means the function support is provided by SFCGAL if PostGIS compiled with SFCGAL support, otherwise GEOS/built-in support.</simpara></listitem>
 				<listitem><simpara>geom - Basic 2D geometry support (x,y).</simpara></listitem>
 				<listitem><simpara>geog - Basic 2D geography support (x,y).</simpara></listitem>
 				<listitem><simpara>2.5D - basic 2D geometries in 3 D/4D space (has Z or M coord).</simpara></listitem>
