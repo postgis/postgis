@@ -73,7 +73,7 @@ SELECT '#69', ST_AsText(ST_Translate(ST_GeomFromText('CIRCULARSTRING(220268 1504
 SELECT '#70', ST_NPoints(ST_LinetoCurve(ST_Buffer('POINT(1 2)',3)));
 
 -- #73 --
-SELECT '#73', ST_AsText(ST_Force_Collection(ST_GeomFromEWKT('CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)')));
+SELECT '#73', ST_AsText(ST_ForceCollection(ST_GeomFromEWKT('CIRCULARSTRING(1 1, 2 3, 4 5, 6 7, 5 6)')));
 
 -- #80 --
 SELECT '#80', ST_AsText(ST_Multi('MULTILINESTRING((0 0,1 1))'));
@@ -555,7 +555,7 @@ with inp as ( select 'MULTILINESTRING((0 0, 2 0))'::geometry as g )
 SELECT '#1454', st_orderingequals(g,g) from inp;
 
 -- #1414
-SELECT '#1414', st_astext(st_force_3dz('CURVEPOLYGON EMPTY'));
+SELECT '#1414', st_astext(st_Force3DZ('CURVEPOLYGON EMPTY'));
 
 -- #1478
 SELECT '#1478', 'SRID=1;POINT EMPTY'::geometry::text::geometry;
