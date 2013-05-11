@@ -11,9 +11,13 @@
 # **********************************************************************
 
 CC=@CC@
-CFLAGS=@CFLAGS@ @WARNFLAGS@ @PROJ_CPPFLAGS@ @GEOS_CPPFLAGS@
+GEOS_CFLAGS=@GEOS_CPPFLAGS@
+GEOS_LDFLAGS=@GEOS_LDFLAGS@ -lgeos_c
+
+CFLAGS=@CFLAGS@ @WARNFLAGS@ $(GEOS_CFLAGS)
+
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
-CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ @GEOS_CPPFLAGS@ -I../../../liblwgeom 
+CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I../../../liblwgeom 
 
 IMAGES= \
 	../images/de9im01.png \
