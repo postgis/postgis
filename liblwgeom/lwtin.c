@@ -14,79 +14,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lwgeom_geos.h"
 #include "liblwgeom_internal.h"
 #include "lwgeom_log.h"
-
-LWTIN *lwtin_from_geos(const GEOSGeometry *geom, int want3d);
 
 
 LWTIN* lwtin_add_lwtriangle(LWTIN *mobj, const LWTRIANGLE *obj)
 {
 	return (LWTIN*)lwcollection_add_lwgeom((LWCOLLECTION*)mobj, (LWGEOM*)obj);
-}
-
-LWTIN *lwtin_from_geos(const GEOSGeometry *geom, int want3d) {
-	int type = GEOSGeomTypeId(geom);
-	int hasZ;
-	int SRID = GEOSGetSRID(geom);
-
-	/* GEOS's 0 is equivalent to our unknown as for SRID values */
-	if ( SRID == 0 ) SRID = SRID_UNKNOWN;
-
-	if ( want3d ) {
-		hasZ = GEOSHasZ(geom);
-		if ( ! hasZ ) {
-			LWDEBUG(3, "Geometry has no Z, won't provide one");
-			want3d = 0;
-		}
-	}
-
-	switch (type) {
-		LWTRIANGLE **geoms;
-		uint32_t i, ngeoms;
-	case GEOS_GEOMETRYCOLLECTION:
-		LWDEBUG(4, "lwgeom_from_geometry: it's a Collection or Multi");
-
-		ngeoms = GEOSGetNumGeometries(geom);
-		geoms = NULL;
-		if ( ngeoms ) {
-			geoms = lwalloc(ngeoms * sizeof *geoms);
-			if (!geoms) {
-				lwerror("lwtin_from_geos: can't allocate geoms");
-				return NULL;
-			}
-			for (i=0; i<ngeoms; i++) {
-				const GEOSGeometry *poly, *ring;
-				const GEOSCoordSequence *cs;
-				POINTARRAY *pa;
-
-				poly = GEOSGetGeometryN(geom, i);
-				ring = GEOSGetExteriorRing(poly);
-				cs = GEOSGeom_getCoordSeq(ring);
-				pa = ptarray_from_GEOSCoordSeq(cs, want3d);
-
-				geoms[i] = lwtriangle_construct(SRID, NULL, pa);
-			}
-		}
-		return (LWTIN *)lwcollection_construct(TINTYPE, SRID, NULL, ngeoms, (LWGEOM **)geoms);
-	case GEOS_POLYGON:
-	case GEOS_MULTIPOINT:
-	case GEOS_MULTILINESTRING:
-	case GEOS_MULTIPOLYGON:
-	case GEOS_LINESTRING:
-	case GEOS_LINEARRING:
-	case GEOS_POINT:
-		lwerror("lwtin_from_geos: invalid geometry type for tin: %d", type);
-		break;
-
-	default:
-		lwerror("GEOS2LWGEOM: unknown geometry type: %d", type);
-		return NULL;
-	}
-
-	/* shouldn't get here */
-	return NULL;
 }
 
 void lwtin_free(LWTIN *tin)

@@ -11,10 +11,7 @@
 # **********************************************************************
 
 CC=@CC@
-GEOS_CFLAGS=@GEOS_CPPFLAGS@
-GEOS_LDFLAGS=@GEOS_LDFLAGS@ -lgeos_c
-
-CFLAGS=@CFLAGS@ @WARNFLAGS@ $(GEOS_CFLAGS)
+CFLAGS=@CFLAGS@ @WARNFLAGS@
 
 CUNIT_LDFLAGS=@CUNIT_LDFLAGS@
 CUNIT_CPPFLAGS=@CUNIT_CPPFLAGS@ -I..
