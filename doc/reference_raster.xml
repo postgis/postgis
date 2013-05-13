@@ -10928,7 +10928,7 @@ FROM funky_shapes;</programlisting>
 				<programlisting>SELECT ST_AsPNG(rast) As orig_png
  , ST_AsPNG(ST_ColorMap(rast,'greyscale')) As grey_png
  , ST_AsPNG(ST_ColorMap(rast, 'pseudocolor')) As pseudo_png
- , ST_AsPNG(ST_ColorMap(rast, 'pseudocolor')) As fire_png
+ , ST_AsPNG(ST_ColorMap(rast, 'nfire')) As fire_png
  , ST_AsPNG(ST_ColorMap(rast, 'bluered')) As bluered_png
  , ST_AsPNG(ST_ColorMap(rast, '100% 255 0 0
 80% 160 0 0
