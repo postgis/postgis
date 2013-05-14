@@ -7657,7 +7657,145 @@ rid |        rastbox
 				<para><xref linkend="RT_ST_Envelope" /></para>
 			</refsection>
 		</refentry>
+
+		<refentry id="RT_ST_Aspect">
+			<refnamediv>
+				<refname>ST_Aspect</refname>
+				<refpurpose>Returns the aspect (in degrees by default) of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
+			</refnamediv>
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_Aspect</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_Aspect</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
 		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the aspect (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the aspect equation to neighboring pixels.</para>
+
+				<para>
+					<varname>units</varname> indicates the units of the aspect. Possible values are: RADIANS, DEGREES (default).
+				</para>
+
+				<para>
+					When <varname>units</varname> = RADIANS, values are between 0 and 2 * pi radians measured clockwise from North.
+				</para>
+
+				<para>
+					When <varname>units</varname> = DEGREES, values are between 0 and 360 degrees measured clockwise from North.
+				</para>
+
+				<para>
+					If slope of pixel is zero, aspect of pixel is -1.
+				</para>
+
+				<note>
+					<para>
+						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
+					</para>
+				</note>
+
+				<para>Availability: 2.0.0 </para>
+				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
+				<para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
+			</refsection>
+				
+			<refsection>
+				<title>Examples: Variant 1</title>
+				<programlisting>
+WITH foo AS (
+	SELECT ST_SetValues(
+		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+		1, 1, 1, ARRAY[
+			[1, 1, 1, 1, 1],
+			[1, 2, 2, 2, 1],
+			[1, 2, 3, 2, 1],
+			[1, 2, 2, 2, 1],
+			[1, 1, 1, 1, 1]
+		]::double precision[][]
+	) AS rast
+)
+SELECT
+	ST_DumpValues(ST_Aspect(rast, 1, '32BF'))
+FROM foo
+
+                                                                                                    st_dumpvalues                                                                   
+                                  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------
+ (1,"{{315,341.565063476562,0,18.4349479675293,45},{288.434936523438,315,0,45,71.5650482177734},{270,270,-1,90,90},{251.565048217773,225,180,135,108.434951782227},{225,198.43495178
+2227,180,161.565048217773,135}}")
+(1 row)
+				</programlisting>
+
+			</refsection>
+
+			<refsection>
+				<title>Examples: Variant 2</title>
+
+				<para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_Tile(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+				1, '32BF', 0, -9999
+			),
+			1, 1, 1, ARRAY[
+				[1, 1, 1, 1, 1, 1],
+				[1, 1, 1, 1, 2, 1],
+				[1, 2, 2, 3, 3, 1],
+				[1, 1, 3, 2, 1, 1],
+				[1, 2, 2, 1, 2, 1],
+				[1, 1, 1, 1, 1, 1]
+			]::double precision[]
+		),
+		2, 2
+	) AS rast
+)
+SELECT
+	t1.rast,
+	ST_Aspect(ST_Union(t2.rast), 1, t1.rast)
+FROM foo t1
+CROSS JOIN foo t2
+WHERE ST_Intersects(t1.rast, t2.rast)
+GROUP BY t1.rast;
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_TRI" />, 
+					<xref linkend="RT_ST_TPI" />, 
+					<xref linkend="RT_ST_Roughness" />, 
+					<xref linkend="RT_ST_HillShade" />, 
+					<xref linkend="RT_ST_Slope" />
+				</para>
+			</refsection>
+		</refentry>
+				
 		<refentry id="RT_ST_Clip">
 			<refnamediv>
 				<refname>ST_Clip</refname>
@@ -7921,6 +8059,254 @@ WHERE rid = 4;
 				</para>
 			</refsection>
 		</refentry>
+		
+		<refentry id="RT_ST_ColorMap">
+			<refnamediv>
+				<refname>ST_ColorMap</refname>
+				<refpurpose>Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from the source raster and a specified band. Band 1 is assumed if not specified.</refpurpose>
+			</refnamediv>
+		
+			<refsynopsisdiv>
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_ColorMap</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>colormap=grayscale</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+
+				<funcsynopsis>
+				  <funcprototype>
+						<funcdef>raster <function>ST_ColorMap</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>text </type> <parameter>colormap</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>
+				  </funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Apply a <varname>colormap</varname> to the band at <varname>nband</varname> of <varname>rast</varname> resulting a new raster comprised of up to four 8BUI bands. The number of 8BUI bands in the new raster is determined by the number of color components defined in <varname>colormap</varname>.
+				</para>
+				<para>If <varname>nband</varname> is not specified, then band 1 is assumed.</para>
+
+				<para>
+					<varname>colormap</varname> can be a keyword of a pre-defined colormap or a set of lines defining the value and the color components.
+				</para>
+
+				<para>
+					Valid pre-defined <varname>colormap</varname> keyword:
+				</para>
+					
+				<itemizedlist>
+					<listitem>
+						<para>
+							<varname>grayscale</varname> or <varname>greyscale</varname> for a one 8BUI band raster of shades of gray.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with colors going from blue to green to red.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>fire</varname> for a four 8BUI (RGBA) band raster with colors going from black to red to pale yellow.
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>bluered</varname> for a four 8BUI (RGBA) band raster with colors going from blue to pale white to red.
+						</para>
+					</listitem>
+				</itemizedlist>
+
+				<para>
+					Users can pass a set of entries (one per line) to <varname>colormap</varname> to specify custom colormaps. Each entry generally consists of five values: the pixel value and corresponding Red, Green, Blue, Alpha components (color components between 0 and 255). Percent values can be used instead of pixel values where 0% and 100% are the minimum and maximum values found in the raster band. Values can be separated with commas (','), tabs, colons (':') and/or spaces. The pixel value can be set to <emphasis>nv</emphasis>, <emphasis>null</emphasis> or <emphasis>nodata</emphasis> for the NODATA value. An example is provided below.
+				</para>
+
+				<programlisting>
+5 0 0 0 255
+4 100:50 55 255
+1 150,100 150 255
+0% 255 255 255 255
+nv 0 0 0 0
+				</programlisting>
+
+				<para>
+					The syntax of <varname>colormap</varname> is similar to that of the color-relief mode of GDAL <ulink url="http://www.gdal.org/gdaldem.html#gdaldem_color_relief">gdaldem</ulink>.
+				</para>
+
+				<para>
+					Valid keywords for <varname>method</varname>:
+				</para>
+
+				<itemizedlist>
+					<listitem>
+						<para>
+							<varname>INTERPOLATE</varname> to use linear interpolation to smoothly blend the colors between the given pixel values
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>EXACT</varname> to strictly match only those pixels values found in the colormap. Pixels whose value does not match a colormap entry will be set to 0 0 0 0 (RGBA)
+						</para>
+					</listitem>
+					<listitem>
+						<para>
+							<varname>NEAREST</varname> to use the colormap entry whose value is closest to the pixel value
+						</para>
+					</listitem>
+				</itemizedlist>
+
+				<note>
+					<para>
+						A great reference for colormaps is <ulink url="http://www.colorbrewer2.org">ColorBrewer</ulink>.
+					</para>
+				</note>
+				<warning><para>The resulting bands of new raster will have no nodata value set.  To get back nodatavalue suitable for overlay with other rasters,
+					apply a <xref linkend="RT_ST_SetBandNoDataValue" /> operation.</para></warning>
+
+				<para>Availability: 2.1.0 </para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<para>This is a junk table to play with</para>
+				<programlisting>
+-- setup test raster table --
+DROP TABLE IF EXISTS funky_shapes;
+CREATE TABLE funky_shapes(rast raster);
+INSERT INTO funky_shapes(rast)
+WITH ref As ( 
+	SELECT ST_MakeEmptyRaster( 200, 200, 0, 200, 1, -1, 0, 0) As rast
+	)
+SELECT ST_Union(rast)
+FROM (SELECT 
+  ST_AsRaster(
+    ST_Rotate(ST_Buffer(
+		ST_GeomFromText('LINESTRING(0 2,50 50,150 150,125 50)'), i*2
+	 ), pi()*i*0.125, ST_Point(50,50))
+	, ref.rast, '8BUI'::text, i*5) As rast
+	FROM ref cross JOIN generate_series(1,10,3) As i ) As shapes ;</programlisting>
+<programlisting>SELECT ST_NumBands(rast) As n_orig
+   , ST_NumBands(ST_ColorMap(rast,1, 'greyscale')) As ngrey
+   , ST_NumBands(ST_ColorMap(rast,1, 'pseudocolor')) As npseudo
+   , ST_NumBands(ST_ColorMap(rast,1, 'fire')) As nfire
+   , ST_NumBands(ST_ColorMap(rast,1, 'bluered')) As nbluered
+   , ST_NumBands(ST_ColorMap(rast,1, '100% 255 0 0
+80% 160 0 0
+50% 130 0 0
+30% 30 0 0
+20% 60 0 0
+0% 0 0 0
+nv 255 255 255')) As nred
+FROM funky_shapes;</programlisting>
+<screen>
+ n_orig | ngrey | npseudo | nfire | nbluered | nred
+--------+-------+---------+-------+----------+------
+      1 |     1 |       4 |     4 |        4 |    3
+</screen>			
+			</refsection>
+			<refsection><title>Examples: Compare different color map looks using ST_AsPNG</title>
+				<programlisting>SELECT ST_AsPNG(rast) As orig_png
+ , ST_AsPNG(ST_ColorMap(rast,1,'greyscale')) As grey_png
+ , ST_AsPNG(ST_ColorMap(rast,1, 'pseudocolor')) As pseudo_png
+ , ST_AsPNG(ST_ColorMap(rast,1, 'nfire')) As fire_png
+ , ST_AsPNG(ST_ColorMap(rast,1, 'bluered')) As bluered_png
+ , ST_AsPNG(ST_ColorMap(rast,1, '100% 255 0 0
+80% 160 0 0
+50% 130 0 0
+30% 30 0 0
+20% 60 0 0
+0% 0 0 0
+nv 255 255 255')) As red_png
+FROM funky_shapes;</programlisting>
+
+<informaltable>
+  <tgroup cols="3">
+	<tbody>
+	  <row>
+		<entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_orig.png" />
+			  </imageobject>
+			  <caption><para>orig_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		<entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_grey.png" />
+			  </imageobject>
+			  <caption><para>grey_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		<entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_pseudo.png" />
+			  </imageobject>
+			  <caption><para>pseudo_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+	</row>
+	<row>
+		 <entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_fire.png" />
+			  </imageobject>
+			  <caption><para>fire_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		 <entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_bluered.png" />
+			  </imageobject>
+			  <caption><para>bluered_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+		 <entry><para><informalfigure>
+			<mediaobject>
+			  <imageobject>
+				<imagedata fileref="images/st_colormap_red.png" />
+			  </imageobject>
+			  <caption><para>red_png</para></caption>
+			</mediaobject>
+		  </informalfigure></para>
+		 </entry>
+	</row>	
+	</tbody>
+</tgroup>
+</informaltable>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_AsPNG" />,
+					<xref linkend="RT_ST_AsRaster" />
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_NumBands" />, 
+					<xref linkend="RT_ST_Reclass" />,
+					<xref linkend="RT_ST_SetBandNoDataValue" />, 
+					<xref linkend="RT_ST_Union" />
+				</para>
+			</refsection>
+		</refentry>
 
 		<refentry id="RT_ST_ConvexHull">
 			<refnamediv>
@@ -7984,92 +8370,6 @@ FROM (SELECT ST_SetRotation(rast, 0.1, 0.1) As rast
 				<para>
 					<xref linkend="RT_ST_Envelope" />,
 					<xref linkend="RT_ST_MinConvexHull" />,
-					<xref linkend="ST_ConvexHull" />,
-					<xref linkend="ST_AsText" />
-				</para>
-			</refsection>
-		</refentry>
-
-		<refentry id="RT_ST_MinConvexHull">
-			<refnamediv>
-				<refname>ST_MinConvexHull</refname>
-				<refpurpose>
-					Return the convex hull geometry of the raster excluding NODATA pixels.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-						<funcdef>geometry <function>ST_MinConvexHull</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef choice="opt"><type>integer </type> <parameter>nband=NULL</parameter></paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-				<title>Description</title>
-
-				<para>
-					Return the convex hull geometry of the raster excluding NODATA pixels.  If <varname>nband</varname> is NULL, all bands of the raster are considered.
-				</para>
-				
-				<para>Availability: 2.1.0 </para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-				<programlisting>
-WITH foo AS (
-	SELECT
-		ST_SetValues(
-			ST_SetValues(
-				ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(9, 9, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0), 2, '8BUI', 1, 0),
-				1, 1, 1,
-				ARRAY[
-					[0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 1, 0, 0, 0, 0, 1],
-					[0, 0, 0, 1, 1, 0, 0, 0, 0],
-					[0, 0, 0, 1, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0]
-				]::double precision[][]
-			),
-			2, 1, 1,
-			ARRAY[
-				[0, 0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0, 0],
-				[1, 0, 0, 0, 0, 1, 0, 0, 0],
-				[0, 0, 0, 0, 1, 1, 0, 0, 0],
-				[0, 0, 0, 0, 0, 1, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0, 0],
-				[0, 0, 1, 0, 0, 0, 0, 0, 0]
-			]::double precision[][]
-		) AS rast
-)
-SELECT
-	ST_AsText(ST_ConvexHull(rast)) AS hull,
-	ST_AsText(ST_MinConvexHull(rast)) AS mhull,
-	ST_AsText(ST_MinConvexHull(rast, 1)) AS mhull_1,
-	ST_AsText(ST_MinConvexHull(rast, 2)) AS mhull_2
-FROM foo
-
-               hull               |                mhull                |               mhull_1               |               mhull_2               
-----------------------------------+-------------------------------------+-------------------------------------+-------------------------------------
- POLYGON((0 0,9 0,9 -9,0 -9,0 0)) | POLYGON((0 -3,9 -3,9 -9,0 -9,0 -3)) | POLYGON((3 -3,9 -3,9 -6,3 -6,3 -3)) | POLYGON((0 -3,6 -3,6 -9,0 -9,0 -3))
-				</programlisting>
-			</refsection>
-		
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_Envelope" />,
-					<xref linkend="RT_ST_ConvexHull" />,
 					<xref linkend="ST_ConvexHull" />,
 					<xref linkend="ST_AsText" />
 				</para>
@@ -8337,430 +8637,6 @@ GROUP BY t1.rast;
 				</para>
 			</refsection>
 		</refentry>
-		
-		<refentry id="RT_ST_Aspect">
-			<refnamediv>
-				<refname>ST_Aspect</refname>
-				<refpurpose>Returns the aspect (in degrees by default) of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
-			</refnamediv>
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-						<funcdef>raster <function>ST_Aspect</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef choice="opt"><type>integer </type> <parameter>band=1</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
-						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
-				  </funcprototype>
-
-				  <funcprototype>
-						<funcdef>raster <function>ST_Aspect</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>band</parameter></paramdef>
-						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
-						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns the aspect (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the aspect equation to neighboring pixels.</para>
-
-				<para>
-					<varname>units</varname> indicates the units of the aspect. Possible values are: RADIANS, DEGREES (default).
-				</para>
-
-				<para>
-					When <varname>units</varname> = RADIANS, values are between 0 and 2 * pi radians measured clockwise from North.
-				</para>
-
-				<para>
-					When <varname>units</varname> = DEGREES, values are between 0 and 360 degrees measured clockwise from North.
-				</para>
-
-				<para>
-					If slope of pixel is zero, aspect of pixel is -1.
-				</para>
-
-				<note>
-					<para>
-						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Aspect_Images.html">ERDAS Field Guide - Aspect Images</ulink>.
-					</para>
-				</note>
-
-				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>interpolate_nodata</varname> function parameter</para>
-				<para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
-			</refsection>
-				
-			<refsection>
-				<title>Examples: Variant 1</title>
-				<programlisting>
-WITH foo AS (
-	SELECT ST_SetValues(
-		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
-		1, 1, 1, ARRAY[
-			[1, 1, 1, 1, 1],
-			[1, 2, 2, 2, 1],
-			[1, 2, 3, 2, 1],
-			[1, 2, 2, 2, 1],
-			[1, 1, 1, 1, 1]
-		]::double precision[][]
-	) AS rast
-)
-SELECT
-	ST_DumpValues(ST_Aspect(rast, 1, '32BF'))
-FROM foo
-
-                                                                                                    st_dumpvalues                                                                   
-                                  
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-----------------------------------
- (1,"{{315,341.565063476562,0,18.4349479675293,45},{288.434936523438,315,0,45,71.5650482177734},{270,270,-1,90,90},{251.565048217773,225,180,135,108.434951782227},{225,198.43495178
-2227,180,161.565048217773,135}}")
-(1 row)
-				</programlisting>
-
-			</refsection>
-
-			<refsection>
-				<title>Examples: Variant 2</title>
-
-				<para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
-
-				<programlisting>
-WITH foo AS (
-	SELECT ST_Tile(
-		ST_SetValues(
-			ST_AddBand(
-				ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
-				1, '32BF', 0, -9999
-			),
-			1, 1, 1, ARRAY[
-				[1, 1, 1, 1, 1, 1],
-				[1, 1, 1, 1, 2, 1],
-				[1, 2, 2, 3, 3, 1],
-				[1, 1, 3, 2, 1, 1],
-				[1, 2, 2, 1, 2, 1],
-				[1, 1, 1, 1, 1, 1]
-			]::double precision[]
-		),
-		2, 2
-	) AS rast
-)
-SELECT
-	t1.rast,
-	ST_Aspect(ST_Union(t2.rast), 1, t1.rast)
-FROM foo t1
-CROSS JOIN foo t2
-WHERE ST_Intersects(t1.rast, t2.rast)
-GROUP BY t1.rast;
-				</programlisting>
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_TRI" />, 
-					<xref linkend="RT_ST_TPI" />, 
-					<xref linkend="RT_ST_Roughness" />, 
-					<xref linkend="RT_ST_HillShade" />, 
-					<xref linkend="RT_ST_Slope" />
-				</para>
-			</refsection>
-		</refentry>
-		
-		<refentry id="RT_ST_Slope">
-			<refnamediv>
-				<refname>ST_Slope</refname>
-				<refpurpose>Returns the slope (in degrees by default) of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
-			</refnamediv>
-			<refsynopsisdiv>
-				<funcsynopsis>
-				  <funcprototype>
-						<funcdef>raster <function>ST_Slope</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
-						<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
-						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
-				  </funcprototype>
-
-				  <funcprototype>
-						<funcdef>raster <function>ST_Slope</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
-						<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
-						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
-				  </funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-		
-			<refsection>
-				<title>Description</title>
-				
-				<para>Returns the slope (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the slope equation to neighboring pixels.</para>
-
-				<para>
-					<varname>units</varname> indicates the units of the slope. Possible values are: RADIANS, DEGREES (default), PERCENT.
-				</para>
-
-				<para>
-					<varname>scale</varname> is the ratio of vertical units to horizontal. For Feet:LatLon use scale=370400, for Meters:LatLon use scale=111120.
-				</para>
-
-				<para>
-					If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma" /> before computing the surface slope.
-				</para>
-
-				<note>
-					<para>
-						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
-					</para>
-				</note>
-
-				<para>Availability: 2.0.0 </para>
-				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>units</varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> function parameters</para>
-				<para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
-			
-			</refsection>
-				
-			<refsection>
-				<title>Examples: Variant 1</title>
-				<programlisting>
-WITH foo AS (
-	SELECT ST_SetValues(
-		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
-		1, 1, 1, ARRAY[
-			[1, 1, 1, 1, 1],
-			[1, 2, 2, 2, 1],
-			[1, 2, 3, 2, 1],
-			[1, 2, 2, 2, 1],
-			[1, 1, 1, 1, 1]
-		]::double precision[][]
-	) AS rast
-)
-SELECT
-	ST_DumpValues(ST_Slope(rast, 1, '32BF'))
-FROM foo
-
-                            st_dumpvalues                                                                                                                                           
-                                                                     
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------
- (1,"{{10.0249881744385,21.5681285858154,26.5650520324707,21.5681285858154,10.0249881744385},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},
-{26.5650520324707,36.8698959350586,0,36.8698959350586,26.5650520324707},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},{10.0249881744385,21.
-5681285858154,26.5650520324707,21.5681285858154,10.0249881744385}}")
-(1 row)
-
-				</programlisting>
-			</refsection>
-			<refsection>
-				<title>Examples: Variant 2</title>
-
-				<para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
-
-				<programlisting>
-WITH foo AS (
-	SELECT ST_Tile(
-		ST_SetValues(
-			ST_AddBand(
-				ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
-				1, '32BF', 0, -9999
-			),
-			1, 1, 1, ARRAY[
-				[1, 1, 1, 1, 1, 1],
-				[1, 1, 1, 1, 2, 1],
-				[1, 2, 2, 3, 3, 1],
-				[1, 1, 3, 2, 1, 1],
-				[1, 2, 2, 1, 2, 1],
-				[1, 1, 1, 1, 1, 1]
-			]::double precision[]
-		),
-		2, 2
-	) AS rast
-)
-SELECT
-	t1.rast,
-	ST_Slope(ST_Union(t2.rast), 1, t1.rast)
-FROM foo t1
-CROSS JOIN foo t2
-WHERE ST_Intersects(t1.rast, t2.rast)
-GROUP BY t1.rast;
-				</programlisting>
-			</refsection>
-
-			<refsection>
-				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_TRI" />, 
-					<xref linkend="RT_ST_TPI" />, 
-					<xref linkend="RT_ST_Roughness" />, 
-					<xref linkend="RT_ST_HillShade" />, 
-					<xref linkend="RT_ST_Aspect" />
-				</para>
-			</refsection>
-		</refentry>
-
-		<refentry id="RT_ST_TPI">
-			<refnamediv>
-				<refname>ST_TPI</refname>
-				<refpurpose>Returns a raster with the calculated Topographic Position Index.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-						<funcdef>raster <function>ST_TPI</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
-						<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-				<title>Description</title>
-
-				<para>Calculates the Topographic Position Index, which is defined as the folcal mean with radius of one minus the center cell.</para>
-
-		    <note>
-    		  <para>This function only supports a focalmean radius of one.</para>
-		    </note>
-				<para>Availability: 2.1.0</para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-				<programlisting>
--- needs examples
-				</programlisting>
-		  </refsection>
-
-		  <refsection>
-		    <title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_TRI" />, 
-					<xref linkend="RT_ST_Roughness" />, 
-					<xref linkend="RT_ST_Slope" />, 
-					<xref linkend="RT_ST_HillShade" />, 
-					<xref linkend="RT_ST_Aspect" />
-				</para>
-			</refsection>
-		</refentry>
-
-		<refentry id="RT_ST_Roughness">
-			<refnamediv>
-				<refname>ST_Roughness</refname>
-				<refpurpose>Returns a raster with the calculated "roughness" of a DEM.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-						<funcdef>raster <function>ST_Roughness</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
-						<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef>
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-				<title>Description</title>
-		    <para>Calculates the "roughness" of a DEM, by subtracting the maximum from the minimum for a given area.</para>
-				<para>Availability: 2.1.0</para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-				<programlisting>
--- needs examples
-				</programlisting>
-		  </refsection>
-
-		  <refsection>
-		    <title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_TRI" />, 
-					<xref linkend="RT_ST_TPI" />, 
-					<xref linkend="RT_ST_Slope" />, 
-					<xref linkend="RT_ST_HillShade" />, 
-					<xref linkend="RT_ST_Aspect" />
-				</para>
-			</refsection>
-		</refentry>
-
-		<refentry id="RT_ST_TRI">
-			<refnamediv>
-				<refname>ST_TRI</refname>
-				<refpurpose>Returns a raster with the calculated Terrain Ruggedness Index.</refpurpose>
-			</refnamediv>
-
-			<refsynopsisdiv>
-				<funcsynopsis>
-					<funcprototype>
-						<funcdef>raster <function>ST_TRI</function></funcdef>
-						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
-						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
-						<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef> 
-					</funcprototype>
-				</funcsynopsis>
-			</refsynopsisdiv>
-
-			<refsection>
-				<title>Description</title>
-
-				<para>
-					Terrain Ruggedness Index is calculated by comparing a central pixel with its neighbors, taking the absolute values of the differences, and averaging the result.
-				</para>
-
-				<note>
-					<para>This function only supports a focalmean radius of one.</para>
-				</note>
-
-				<para>Availability: 2.1.0</para>
-			</refsection>
-
-			<refsection>
-				<title>Examples</title>
-				<programlisting>
--- needs examples
-				</programlisting>
-		  </refsection>
-
-			<refsection>
-				<title>See Also</title>
-					<para>
-						<xref linkend="RT_ST_MapAlgebra" />, 
-						<xref linkend="RT_ST_Roughness" />, 
-						<xref linkend="RT_ST_TPI" />, 
-						<xref linkend="RT_ST_Slope" />, 
-						<xref linkend="RT_ST_HillShade" />, 
-						<xref linkend="RT_ST_Aspect" />
-					</para>
-			</refsection>
-		</refentry>
 
 		<refentry id="RT_ST_Intersection">
 			<refnamediv>
@@ -8893,7 +8769,7 @@ WHERE A.rid =2 ) As foo;
 				<para><xref linkend="geomval" />, <xref linkend="RT_ST_Intersects" />, <xref linkend="RT_ST_MapAlgebraExpr2" />, <xref linkend="RT_ST_Clip" />, <xref linkend="ST_AsText" /></para>
 			</refsection>
 		</refentry>
-		
+				
 		<refentry id="RT_ST_MapAlgebra">
 			<refnamediv>
 				<refname>ST_MapAlgebra</refname>
@@ -10570,6 +10446,92 @@ SELECT ST_MapAlgebraFctNgb(rast, 1,  '8BUI', 4,4,
 			<para><xref linkend="RT_ST_MapAlgebraFct" />, <xref linkend="RT_ST_MapAlgebraExpr" />, <xref linkend="RT_ST_Rescale" /></para>
 		  </refsection>
 		</refentry>
+
+		<refentry id="RT_ST_MinConvexHull">
+			<refnamediv>
+				<refname>ST_MinConvexHull</refname>
+				<refpurpose>
+					Return the convex hull geometry of the raster excluding NODATA pixels.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>geometry <function>ST_MinConvexHull</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef choice="opt"><type>integer </type> <parameter>nband=NULL</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>
+					Return the convex hull geometry of the raster excluding NODATA pixels.  If <varname>nband</varname> is NULL, all bands of the raster are considered.
+				</para>
+				
+				<para>Availability: 2.1.0 </para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+WITH foo AS (
+	SELECT
+		ST_SetValues(
+			ST_SetValues(
+				ST_AddBand(ST_AddBand(ST_MakeEmptyRaster(9, 9, 0, 0, 1, -1, 0, 0, 0), 1, '8BUI', 0, 0), 2, '8BUI', 1, 0),
+				1, 1, 1,
+				ARRAY[
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 1, 0, 0, 0, 0, 1],
+					[0, 0, 0, 1, 1, 0, 0, 0, 0],
+					[0, 0, 0, 1, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0, 0]
+				]::double precision[][]
+			),
+			2, 1, 1,
+			ARRAY[
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[1, 0, 0, 0, 0, 1, 0, 0, 0],
+				[0, 0, 0, 0, 1, 1, 0, 0, 0],
+				[0, 0, 0, 0, 0, 1, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0, 0],
+				[0, 0, 1, 0, 0, 0, 0, 0, 0]
+			]::double precision[][]
+		) AS rast
+)
+SELECT
+	ST_AsText(ST_ConvexHull(rast)) AS hull,
+	ST_AsText(ST_MinConvexHull(rast)) AS mhull,
+	ST_AsText(ST_MinConvexHull(rast, 1)) AS mhull_1,
+	ST_AsText(ST_MinConvexHull(rast, 2)) AS mhull_2
+FROM foo
+
+               hull               |                mhull                |               mhull_1               |               mhull_2               
+----------------------------------+-------------------------------------+-------------------------------------+-------------------------------------
+ POLYGON((0 0,9 0,9 -9,0 -9,0 0)) | POLYGON((0 -3,9 -3,9 -9,0 -9,0 -3)) | POLYGON((3 -3,9 -3,9 -6,3 -6,3 -3)) | POLYGON((0 -3,6 -3,6 -9,0 -9,0 -3))
+				</programlisting>
+			</refsection>
+		
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_Envelope" />,
+					<xref linkend="RT_ST_ConvexHull" />,
+					<xref linkend="ST_ConvexHull" />,
+					<xref linkend="ST_AsText" />
+				</para>
+			</refsection>
+		</refentry>
 		
 		<refentry id="RT_ST_Polygon">
 		  <refnamediv>
@@ -10774,30 +10736,256 @@ UPDATE wind
 			</refsection>
 		</refentry>
 
-		<refentry id="RT_ST_ColorMap">
+				<refentry id="RT_ST_Roughness">
 			<refnamediv>
-				<refname>ST_ColorMap</refname>
-				<refpurpose>Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from the source raster and a specified band. Band 1 is assumed if not specified.</refpurpose>
+				<refname>ST_Roughness</refname>
+				<refpurpose>Returns a raster with the calculated "roughness" of a DEM.</refpurpose>
 			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>raster <function>ST_Roughness</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+		    <para>Calculates the "roughness" of a DEM, by subtracting the maximum from the minimum for a given area.</para>
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- needs examples
+				</programlisting>
+		  </refsection>
+
+		  <refsection>
+		    <title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_TRI" />, 
+					<xref linkend="RT_ST_TPI" />, 
+					<xref linkend="RT_ST_Slope" />, 
+					<xref linkend="RT_ST_HillShade" />, 
+					<xref linkend="RT_ST_Aspect" />
+				</para>
+			</refsection>
+		</refentry>
 		
+		<refentry id="RT_ST_Slope">
+			<refnamediv>
+				<refname>ST_Slope</refname>
+				<refpurpose>Returns the slope (in degrees by default) of an elevation raster band.  Useful for analyzing terrain.</refpurpose>
+			</refnamediv>
 			<refsynopsisdiv>
 				<funcsynopsis>
 				  <funcprototype>
-						<funcdef>raster <function>ST_ColorMap</function></funcdef>
+						<funcdef>raster <function>ST_Slope</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
 						<paramdef choice="opt"><type>integer </type> <parameter>nband=1</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>colormap=grayscale</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
+				  </funcprototype>
+
+				  <funcprototype>
+						<funcdef>raster <function>ST_Slope</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype=32BF</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>units=DEGREES</parameter></paramdef>
+						<paramdef choice="opt"><type>double precision </type> <parameter>scale=1.0</parameter></paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter>interpolate_nodata=FALSE</parameter></paramdef>
 				  </funcprototype>
 				</funcsynopsis>
+			</refsynopsisdiv>
+		
+			<refsection>
+				<title>Description</title>
+				
+				<para>Returns the slope (in degrees by default) of an elevation raster band. Utilizes map algebra and applies the slope equation to neighboring pixels.</para>
 
+				<para>
+					<varname>units</varname> indicates the units of the slope. Possible values are: RADIANS, DEGREES (default), PERCENT.
+				</para>
+
+				<para>
+					<varname>scale</varname> is the ratio of vertical units to horizontal. For Feet:LatLon use scale=370400, for Meters:LatLon use scale=111120.
+				</para>
+
+				<para>
+					If <varname>interpolate_nodata</varname> is TRUE, values for NODATA pixels from the input raster will be interpolated using <xref linkend="RT_ST_InvDistWeight4ma" /> before computing the surface slope.
+				</para>
+
+				<note>
+					<para>
+						For more information about Slope, Aspect and Hillshade, please refer to <ulink url="http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=How%20Hillshade%20works">ESRI - How hillshade works</ulink> and <ulink url="http://geospatial.intergraph.com/fieldguide/wwhelp/wwhimpl/common/html/wwhelp.htm?context=FieldGuide&amp;file=Slope_Images.html">ERDAS Field Guide - Slope Images</ulink>.
+					</para>
+				</note>
+
+				<para>Availability: 2.0.0 </para>
+				<para>Enhanced: 2.1.0 Uses ST_MapAlgebra() and added optional <varname>units</varname>, <varname>scale</varname>, <varname>interpolate_nodata</varname> function parameters</para>
+				<para>Changed: 2.1.0 In prior versions, return values were in radians. Now, return values default to degrees</para>
+			
+			</refsection>
+				
+			<refsection>
+				<title>Examples: Variant 1</title>
+				<programlisting>
+WITH foo AS (
+	SELECT ST_SetValues(
+		ST_AddBand(ST_MakeEmptyRaster(5, 5, 0, 0, 1, -1, 0, 0, 0), 1, '32BF', 0, -9999),
+		1, 1, 1, ARRAY[
+			[1, 1, 1, 1, 1],
+			[1, 2, 2, 2, 1],
+			[1, 2, 3, 2, 1],
+			[1, 2, 2, 2, 1],
+			[1, 1, 1, 1, 1]
+		]::double precision[][]
+	) AS rast
+)
+SELECT
+	ST_DumpValues(ST_Slope(rast, 1, '32BF'))
+FROM foo
+
+                            st_dumpvalues                                                                                                                                           
+                                                                     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------
+ (1,"{{10.0249881744385,21.5681285858154,26.5650520324707,21.5681285858154,10.0249881744385},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},
+{26.5650520324707,36.8698959350586,0,36.8698959350586,26.5650520324707},{21.5681285858154,35.2643890380859,36.8698959350586,35.2643890380859,21.5681285858154},{10.0249881744385,21.
+5681285858154,26.5650520324707,21.5681285858154,10.0249881744385}}")
+(1 row)
+
+				</programlisting>
+			</refsection>
+			<refsection>
+				<title>Examples: Variant 2</title>
+
+				<para>Complete example of tiles of a coverage.  This query only works with PostgreSQL 9.1 or higher.</para>
+
+				<programlisting>
+WITH foo AS (
+	SELECT ST_Tile(
+		ST_SetValues(
+			ST_AddBand(
+				ST_MakeEmptyRaster(6, 6, 0, 0, 1, -1, 0, 0, 0),
+				1, '32BF', 0, -9999
+			),
+			1, 1, 1, ARRAY[
+				[1, 1, 1, 1, 1, 1],
+				[1, 1, 1, 1, 2, 1],
+				[1, 2, 2, 3, 3, 1],
+				[1, 1, 3, 2, 1, 1],
+				[1, 2, 2, 1, 2, 1],
+				[1, 1, 1, 1, 1, 1]
+			]::double precision[]
+		),
+		2, 2
+	) AS rast
+)
+SELECT
+	t1.rast,
+	ST_Slope(ST_Union(t2.rast), 1, t1.rast)
+FROM foo t1
+CROSS JOIN foo t2
+WHERE ST_Intersects(t1.rast, t2.rast)
+GROUP BY t1.rast;
+				</programlisting>
+			</refsection>
+
+			<refsection>
+				<title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_TRI" />, 
+					<xref linkend="RT_ST_TPI" />, 
+					<xref linkend="RT_ST_Roughness" />, 
+					<xref linkend="RT_ST_HillShade" />, 
+					<xref linkend="RT_ST_Aspect" />
+				</para>
+			</refsection>
+		</refentry>
+		
+		<refentry id="RT_ST_TPI">
+			<refnamediv>
+				<refname>ST_TPI</refname>
+				<refpurpose>Returns a raster with the calculated Topographic Position Index.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
 				<funcsynopsis>
-				  <funcprototype>
-						<funcdef>raster <function>ST_ColorMap</function></funcdef>
+					<funcprototype>
+						<funcdef>raster <function>ST_TPI</function></funcdef>
 						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
-						<paramdef><type>text </type> <parameter>colormap</parameter></paramdef>
-						<paramdef choice="opt"><type>text </type> <parameter>method=INTERPOLATE</parameter></paramdef>
-				  </funcprototype>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef>
+					</funcprototype>
+				</funcsynopsis>
+			</refsynopsisdiv>
+
+			<refsection>
+				<title>Description</title>
+
+				<para>Calculates the Topographic Position Index, which is defined as the folcal mean with radius of one minus the center cell.</para>
+
+		    <note>
+    		  <para>This function only supports a focalmean radius of one.</para>
+		    </note>
+				<para>Availability: 2.1.0</para>
+			</refsection>
+
+			<refsection>
+				<title>Examples</title>
+				<programlisting>
+-- needs examples
+				</programlisting>
+		  </refsection>
+
+		  <refsection>
+		    <title>See Also</title>
+				<para>
+					<xref linkend="RT_ST_MapAlgebra" />, 
+					<xref linkend="RT_ST_TRI" />, 
+					<xref linkend="RT_ST_Roughness" />, 
+					<xref linkend="RT_ST_Slope" />, 
+					<xref linkend="RT_ST_HillShade" />, 
+					<xref linkend="RT_ST_Aspect" />
+				</para>
+			</refsection>
+		</refentry>
+
+
+		<refentry id="RT_ST_TRI">
+			<refnamediv>
+				<refname>ST_TRI</refname>
+				<refpurpose>Returns a raster with the calculated Terrain Ruggedness Index.</refpurpose>
+			</refnamediv>
+
+			<refsynopsisdiv>
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>raster <function>ST_TRI</function></funcdef>
+						<paramdef><type>raster </type> <parameter>rast</parameter></paramdef>
+						<paramdef><type>integer </type> <parameter>nband</parameter></paramdef>
+						<paramdef><type>raster </type> <parameter>customextent</parameter></paramdef>
+						<paramdef choice="opt"><type>text </type> <parameter>pixeltype="32BF"</parameter> </paramdef>
+						<paramdef choice="opt"><type>boolean </type> <parameter> interpolate_nodata=FALSE </parameter> </paramdef> 
+					</funcprototype>
 				</funcsynopsis>
 			</refsynopsisdiv>
 
@@ -10805,223 +10993,37 @@ UPDATE wind
 				<title>Description</title>
 
 				<para>
-					Apply a <varname>colormap</varname> to the band at <varname>nband</varname> of <varname>rast</varname> resulting a new raster comprised of up to four 8BUI bands. The number of 8BUI bands in the new raster is determined by the number of color components defined in <varname>colormap</varname>.
+					Terrain Ruggedness Index is calculated by comparing a central pixel with its neighbors, taking the absolute values of the differences, and averaging the result.
 				</para>
-				<para>If <varname>nband</varname> is not specified, then band 1 is assumed.</para>
-
-				<para>
-					<varname>colormap</varname> can be a keyword of a pre-defined colormap or a set of lines defining the value and the color components.
-				</para>
-
-				<para>
-					Valid pre-defined <varname>colormap</varname> keyword:
-				</para>
-					
-				<itemizedlist>
-					<listitem>
-						<para>
-							<varname>grayscale</varname> or <varname>greyscale</varname> for a one 8BUI band raster of shades of gray.
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<varname>pseudocolor</varname> for a four 8BUI (RGBA) band raster with colors going from blue to green to red.
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<varname>fire</varname> for a four 8BUI (RGBA) band raster with colors going from black to red to pale yellow.
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<varname>bluered</varname> for a four 8BUI (RGBA) band raster with colors going from blue to pale white to red.
-						</para>
-					</listitem>
-				</itemizedlist>
-
-				<para>
-					Users can pass a set of entries (one per line) to <varname>colormap</varname> to specify custom colormaps. Each entry generally consists of five values: the pixel value and corresponding Red, Green, Blue, Alpha components (color components between 0 and 255). Percent values can be used instead of pixel values where 0% and 100% are the minimum and maximum values found in the raster band. Values can be separated with commas (','), tabs, colons (':') and/or spaces. The pixel value can be set to <emphasis>nv</emphasis>, <emphasis>null</emphasis> or <emphasis>nodata</emphasis> for the NODATA value. An example is provided below.
-				</para>
-
-				<programlisting>
-5 0 0 0 255
-4 100:50 55 255
-1 150,100 150 255
-0% 255 255 255 255
-nv 0 0 0 0
-				</programlisting>
-
-				<para>
-					The syntax of <varname>colormap</varname> is similar to that of the color-relief mode of GDAL <ulink url="http://www.gdal.org/gdaldem.html#gdaldem_color_relief">gdaldem</ulink>.
-				</para>
-
-				<para>
-					Valid keywords for <varname>method</varname>:
-				</para>
-
-				<itemizedlist>
-					<listitem>
-						<para>
-							<varname>INTERPOLATE</varname> to use linear interpolation to smoothly blend the colors between the given pixel values
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<varname>EXACT</varname> to strictly match only those pixels values found in the colormap. Pixels whose value does not match a colormap entry will be set to 0 0 0 0 (RGBA)
-						</para>
-					</listitem>
-					<listitem>
-						<para>
-							<varname>NEAREST</varname> to use the colormap entry whose value is closest to the pixel value
-						</para>
-					</listitem>
-				</itemizedlist>
 
 				<note>
-					<para>
-						A great reference for colormaps is <ulink url="http://www.colorbrewer2.org">ColorBrewer</ulink>.
-					</para>
+					<para>This function only supports a focalmean radius of one.</para>
 				</note>
-				<warning><para>The resulting bands of new raster will have no nodata value set.  To get back nodatavalue suitable for overlay with other rasters,
-					apply a <xref linkend="RT_ST_SetBandNoDataValue" /> operation.</para></warning>
 
-				<para>Availability: 2.1.0 </para>
+				<para>Availability: 2.1.0</para>
 			</refsection>
 
 			<refsection>
 				<title>Examples</title>
-				<para>This is a junk table to play with</para>
 				<programlisting>
--- setup test raster table --
-DROP TABLE IF EXISTS funky_shapes;
-CREATE TABLE funky_shapes(rast raster);
-INSERT INTO funky_shapes(rast)
-WITH ref As ( 
-	SELECT ST_MakeEmptyRaster( 200, 200, 0, 200, 1, -1, 0, 0) As rast
-	)
-SELECT ST_Union(rast)
-FROM (SELECT 
-  ST_AsRaster(
-    ST_Rotate(ST_Buffer(
-		ST_GeomFromText('LINESTRING(0 2,50 50,150 150,125 50)'), i*2
-	 ), pi()*i*0.125, ST_Point(50,50))
-	, ref.rast, '8BUI'::text, i*5) As rast
-	FROM ref cross JOIN generate_series(1,10,3) As i ) As shapes ;</programlisting>
-<programlisting>SELECT ST_NumBands(rast) As n_orig
-   , ST_NumBands(ST_ColorMap(rast,1, 'greyscale')) As ngrey
-   , ST_NumBands(ST_ColorMap(rast,1, 'pseudocolor')) As npseudo
-   , ST_NumBands(ST_ColorMap(rast,1, 'fire')) As nfire
-   , ST_NumBands(ST_ColorMap(rast,1, 'bluered')) As nbluered
-   , ST_NumBands(ST_ColorMap(rast,1, '100% 255 0 0
-80% 160 0 0
-50% 130 0 0
-30% 30 0 0
-20% 60 0 0
-0% 0 0 0
-nv 255 255 255')) As nred
-FROM funky_shapes;</programlisting>
-<screen>
- n_orig | ngrey | npseudo | nfire | nbluered | nred
---------+-------+---------+-------+----------+------
-      1 |     1 |       4 |     4 |        4 |    3
-</screen>			
-			</refsection>
-			<refsection><title>Examples: Compare different color map looks using ST_AsPNG</title>
-				<programlisting>SELECT ST_AsPNG(rast) As orig_png
- , ST_AsPNG(ST_ColorMap(rast,1,'greyscale')) As grey_png
- , ST_AsPNG(ST_ColorMap(rast,1, 'pseudocolor')) As pseudo_png
- , ST_AsPNG(ST_ColorMap(rast,1, 'nfire')) As fire_png
- , ST_AsPNG(ST_ColorMap(rast,1, 'bluered')) As bluered_png
- , ST_AsPNG(ST_ColorMap(rast,1, '100% 255 0 0
-80% 160 0 0
-50% 130 0 0
-30% 30 0 0
-20% 60 0 0
-0% 0 0 0
-nv 255 255 255')) As red_png
-FROM funky_shapes;</programlisting>
-
-<informaltable>
-  <tgroup cols="3">
-	<tbody>
-	  <row>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_colormap_orig.png" />
-			  </imageobject>
-			  <caption><para>orig_png</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_colormap_grey.png" />
-			  </imageobject>
-			  <caption><para>grey_png</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		<entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_colormap_pseudo.png" />
-			  </imageobject>
-			  <caption><para>pseudo_png</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-	</row>
-	<row>
-		 <entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_colormap_fire.png" />
-			  </imageobject>
-			  <caption><para>fire_png</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		 <entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_colormap_bluered.png" />
-			  </imageobject>
-			  <caption><para>bluered_png</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-		 <entry><para><informalfigure>
-			<mediaobject>
-			  <imageobject>
-				<imagedata fileref="images/st_colormap_red.png" />
-			  </imageobject>
-			  <caption><para>red_png</para></caption>
-			</mediaobject>
-		  </informalfigure></para>
-		 </entry>
-	</row>	
-	</tbody>
-</tgroup>
-</informaltable>
-			</refsection>
+-- needs examples
+				</programlisting>
+		  </refsection>
 
 			<refsection>
 				<title>See Also</title>
-				<para>
-					<xref linkend="RT_ST_AsPNG" />,
-					<xref linkend="RT_ST_AsRaster" />
-					<xref linkend="RT_ST_MapAlgebra" />, 
-					<xref linkend="RT_ST_NumBands" />, 
-					<xref linkend="RT_ST_Reclass" />,
-					<xref linkend="RT_ST_SetBandNoDataValue" />, 
-					<xref linkend="RT_ST_Union" />
-				</para>
+					<para>
+						<xref linkend="RT_ST_MapAlgebra" />, 
+						<xref linkend="RT_ST_Roughness" />, 
+						<xref linkend="RT_ST_TPI" />, 
+						<xref linkend="RT_ST_Slope" />, 
+						<xref linkend="RT_ST_HillShade" />, 
+						<xref linkend="RT_ST_Aspect" />
+					</para>
 			</refsection>
 		</refentry>
 
+		
 		<refentry id="RT_ST_Union">
 			<refnamediv>
 				<refname>ST_Union</refname>
