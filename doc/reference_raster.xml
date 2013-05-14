@@ -10882,6 +10882,8 @@ nv 0 0 0 0
 						A great reference for colormaps is <ulink url="http://www.colorbrewer2.org">ColorBrewer</ulink>.
 					</para>
 				</note>
+				<warning><para>The resulting bands of new raster will have no nodata value set.  To get back nodatavalue suitable for overlay with other rasters,
+					apply a <xref linkend="RT_ST_SetBandNoDataValue" /> operation.</para></warning>
 
 				<para>Availability: 2.1.0 </para>
 			</refsection>
@@ -10906,11 +10908,11 @@ FROM (SELECT
 	, ref.rast, '8BUI'::text, i*5) As rast
 	FROM ref cross JOIN generate_series(1,10,3) As i ) As shapes ;</programlisting>
 <programlisting>SELECT ST_NumBands(rast) As n_orig
-   , ST_NumBands(ST_ColorMap(rast, 'greyscale')) As ngrey
-   , ST_NumBands(ST_ColorMap(rast, 'pseudocolor')) As npseudo
-   , ST_NumBands(ST_ColorMap(rast, 'fire')) As nfire
-   , ST_NumBands(ST_ColorMap(rast, 'bluered')) As nbluered
-   , ST_NumBands(ST_ColorMap(rast, '100% 255 0 0
+   , ST_NumBands(ST_ColorMap(rast,1, 'greyscale')) As ngrey
+   , ST_NumBands(ST_ColorMap(rast,1, 'pseudocolor')) As npseudo
+   , ST_NumBands(ST_ColorMap(rast,1, 'fire')) As nfire
+   , ST_NumBands(ST_ColorMap(rast,1, 'bluered')) As nbluered
+   , ST_NumBands(ST_ColorMap(rast,1, '100% 255 0 0
 80% 160 0 0
 50% 130 0 0
 30% 30 0 0
@@ -10926,11 +10928,11 @@ FROM funky_shapes;</programlisting>
 			</refsection>
 			<refsection><title>Examples: Compare different color map looks using ST_AsPNG</title>
 				<programlisting>SELECT ST_AsPNG(rast) As orig_png
- , ST_AsPNG(ST_ColorMap(rast,'greyscale')) As grey_png
- , ST_AsPNG(ST_ColorMap(rast, 'pseudocolor')) As pseudo_png
- , ST_AsPNG(ST_ColorMap(rast, 'nfire')) As fire_png
- , ST_AsPNG(ST_ColorMap(rast, 'bluered')) As bluered_png
- , ST_AsPNG(ST_ColorMap(rast, '100% 255 0 0
+ , ST_AsPNG(ST_ColorMap(rast,1,'greyscale')) As grey_png
+ , ST_AsPNG(ST_ColorMap(rast,1, 'pseudocolor')) As pseudo_png
+ , ST_AsPNG(ST_ColorMap(rast,1, 'nfire')) As fire_png
+ , ST_AsPNG(ST_ColorMap(rast,1, 'bluered')) As bluered_png
+ , ST_AsPNG(ST_ColorMap(rast,1, '100% 255 0 0
 80% 160 0 0
 50% 130 0 0
 30% 30 0 0
@@ -11013,6 +11015,7 @@ FROM funky_shapes;</programlisting>
 					<xref linkend="RT_ST_MapAlgebra" />, 
 					<xref linkend="RT_ST_NumBands" />, 
 					<xref linkend="RT_ST_Reclass" />,
+					<xref linkend="RT_ST_SetBandNoDataValue" />, 
 					<xref linkend="RT_ST_Union" />
 				</para>
 			</refsection>
