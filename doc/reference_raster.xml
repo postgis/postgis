@@ -10777,7 +10777,7 @@ UPDATE wind
 		<refentry id="RT_ST_ColorMap">
 			<refnamediv>
 				<refname>ST_ColorMap</refname>
-				<refpurpose>Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from the source raster and specified band.</refpurpose>
+				<refpurpose>Creates a new raster of up to four 8BUI bands (grayscale, RGB, RGBA) from the source raster and a specified band. Band 1 is assumed if not specified.</refpurpose>
 			</refnamediv>
 		
 			<refsynopsisdiv>
@@ -10807,6 +10807,7 @@ UPDATE wind
 				<para>
 					Apply a <varname>colormap</varname> to the band at <varname>nband</varname> of <varname>rast</varname> resulting a new raster comprised of up to four 8BUI bands. The number of 8BUI bands in the new raster is determined by the number of color components defined in <varname>colormap</varname>.
 				</para>
+				<para>If <varname>nband</varname> is not specified, then band 1 is assumed.</para>
 
 				<para>
 					<varname>colormap</varname> can be a keyword of a pre-defined colormap or a set of lines defining the value and the color components.
