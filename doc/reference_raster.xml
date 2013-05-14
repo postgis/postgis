@@ -8169,8 +8169,11 @@ nv 0 0 0 0
 						A great reference for colormaps is <ulink url="http://www.colorbrewer2.org">ColorBrewer</ulink>.
 					</para>
 				</note>
-				<warning><para>The resulting bands of new raster will have no nodata value set.  To get back nodatavalue suitable for overlay with other rasters,
-					apply a <xref linkend="RT_ST_SetBandNoDataValue" /> operation.</para></warning>
+				<warning>
+					<para>
+						The resulting bands of new raster will have no NODATA value set.  Use <xref linkend="RT_ST_SetBandNoDataValue" /> to set a NODATA value if one is needed.
+					</para>
+				</warning>
 
 				<para>Availability: 2.1.0 </para>
 			</refsection>
