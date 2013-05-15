@@ -226,11 +226,13 @@ my $svnrev = sql("select postgis_svn_version()");
 my $libbuilddate = sql("select postgis_lib_build_date()");
 my $pgsqlver = sql("select version()");
 my $gdalver = sql("select postgis_gdal_version()") if $OPT_WITH_RASTER;
+my $sfcgalver = sql("select postgis_sfcgal_version()") if $OPT_WITH_SFCGAL;
 
 print "$pgsqlver\n";
 print "  Postgis $libver - r${svnrev} - $libbuilddate\n";
 print "  GEOS: $geosver\n" if $geosver;
 print "  PROJ: $projver\n" if $projver;
+print "  SFCGAL: $sfcgalver\n" if $sfcgalver;
 print "  GDAL: $gdalver\n" if $gdalver;
 
 
@@ -1037,21 +1039,21 @@ sub prepare_spatial
 	
 	if ( $OPT_WITH_TOPO )
 	{
-		print "Loading Topology";
+		print "Loading Topology\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/topology.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/topology_comments.sql", 0);
 	}
 	
 	if ( $OPT_WITH_RASTER )
 	{
-		print "Loading Raster";
+		print "Loading Raster\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/rtpostgis.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/raster_comments.sql", 0);
 	}
 
 	if ( $OPT_WITH_SFCGAL )
 	{
-		print "Loading sfcgal";
+		print "Loading sfcgal\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal_comments.sql", 0);
 	}

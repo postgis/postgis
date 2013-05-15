@@ -948,6 +948,9 @@ fi
 
 geosver=`${PSQL} -tAc "select postgis_geos_version()" "${DB}"`
 projver=`${PSQL} -tAc "select postgis_proj_version()" "${DB}"`
+if test x"$OPT_WITH_SFCGAL" = "xyes"; then
+  sfcgalver=`${PSQL} -tAc "select postgis_sfcgal_version()" "${DB}"`
+fi
 if test x"$OPT_WITH_RASTER" = "xyes"; then
   gdalver=`${PSQL} -tAc "select postgis_gdal_version()" "${DB}"`
 fi
@@ -966,6 +969,9 @@ if [ -n "$geosver" ]; then
 fi
 if [ -n "$projver" ]; then
 	echo "   PROJ: $projver"
+fi
+if [ -n "$sfcgalver" ]; then
+	echo "   SFCGAL: $sfcgalver"
 fi
 if [ -n "$gdalver" ]; then
 	echo "   GDAL: $gdalver"
