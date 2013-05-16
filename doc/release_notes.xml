@@ -6,7 +6,7 @@
        <sect1>
 		<title>Release 2.0.3</title>
 		<para>Release date: 2013/03/01</para>
-		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.2 release.</para>
+		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.2 release. If you are using PostGIS 2.0+ a soft upgrade is required.  For users of PostGIS 1.5 or below, a hard upgrade is required.</para>
 		<simplesect>
 		 	<title>Bug Fixes</title>
   <para>#2126, Better handling of empty rasters from ST_ConvexHull()</para>
@@ -31,7 +31,7 @@
        <sect1>
 		<title>Release 2.0.2</title>
 		<para>Release date: 2012/12/03</para>
-		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.1 release.</para>
+		<para>This is a bug fix release, addressing issues that have been filed since the 2.0.1 release. As soft update is required for PostGIS 2.0.0 and 2.0.1 users.</para>
 		<simplesect>
 		 	<title>Bug Fixes</title>
 		 	<para>#1287, Drop of "gist_geometry_ops" broke a few clients
