@@ -10,6 +10,7 @@ PostGIS 2.0.4
   - #2271, Prevent parallel make of raster
   - #2267, Server crash from analyze table
   - #2277, potential segfault removed
+  - Fix build with systemwide liblwgeom installed
 
  * Enhancements *
   - #2269, Avoid uselessly detoasting full geometries on ANALYZE
