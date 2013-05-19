@@ -783,7 +783,8 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
  * 		return a geometry.
  *
  * @note that this is a wrapper around
- * 		LWGEOMFromWKB, where we refuse to
+ * 		lwgeom_from_wkb, where we throw 
+ *      a warning if ewkb passed in
  * 		accept EWKB.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_from_WKB);
