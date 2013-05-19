@@ -783,26 +783,33 @@ Datum LWGEOM_from_text(PG_FUNCTION_ARGS)
  * 		return a geometry.
  *
  * @note that this is a wrapper around
- * 		LWGEOMFromWKB, where we refuse to
+ * 		lwgeom_from_wkb, where we throw 
+ *      a warning if ewkb passed in
  * 		accept EWKB.
  */
 PG_FUNCTION_INFO_V1(LWGEOM_from_WKB);
 Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 {
+	bytea *bytea_wkb = (bytea*)PG_GETARG_BYTEA_P(0);
+	int32 srid = 0;
 	GSERIALIZED *geom;
-	int32 srid;
-	GSERIALIZED *result = NULL;
-
-	geom = (GSERIALIZED *)DatumGetPointer(DirectFunctionCall1(
-	                                        LWGEOMFromWKB, PG_GETARG_DATUM(0)));
-
+	LWGEOM *lwgeom;
+	uint8_t *wkb = (uint8_t*)VARDATA(bytea_wkb);
+	
+	lwgeom = lwgeom_from_wkb(wkb, VARSIZE(bytea_wkb)-VARHDRSZ, LW_PARSER_CHECK_ALL);
+	
+	if ( lwgeom_needs_bbox(lwgeom) )
+		lwgeom_add_bbox(lwgeom);
+	
+	geom = geometry_serialize(lwgeom);
+	lwgeom_free(lwgeom);
+	PG_FREE_IF_COPY(bytea_wkb, 0);
+	
 	if ( gserialized_get_srid(geom) != SRID_UNKNOWN )
 	{
 		elog(WARNING, "OGC WKB expected, EWKB provided - use GeometryFromEWKB() for this");
 	}
-
-
-	/* read user-requested SRID if any */
+	
 	if ( PG_NARGS() > 1 )
 	{
 		srid = PG_GETARG_INT32(1);
@@ -810,9 +817,7 @@ Datum LWGEOM_from_WKB(PG_FUNCTION_ARGS)
 			gserialized_set_srid(geom, srid);
 	}
 
-	if ( ! result )	result = geom;
-
-	PG_RETURN_POINTER(result);
+	PG_RETURN_POINTER(geom);
 }
 
 /** convert LWGEOM to wkt (in TEXT format) */
