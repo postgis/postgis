@@ -108,7 +108,7 @@ CREATE OR REPLACE FUNCTION ST_AsText(geography)
 CREATE OR REPLACE FUNCTION ST_AsText(text)
 	RETURNS text AS
 	$$ SELECT ST_AsText($1::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT COST 1;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_GeographyFromText(text)
@@ -423,7 +423,7 @@ CREATE OR REPLACE FUNCTION ST_AsKML(geog geography, maxdecimaldigits int4 DEFAUL
 CREATE OR REPLACE FUNCTION ST_AsKML(text)
 	RETURNS text AS
 	$$ SELECT _ST_AsKML(2, $1::geometry, 15, null);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT COST 1;
 
 -- ST_AsKML(version, geography, precision, prefix)
 -- Availability: 2.0.0 nprefix added
@@ -447,7 +447,7 @@ CREATE OR REPLACE FUNCTION _ST_AsGeoJson(int4, geography, int4, int4)
 CREATE OR REPLACE FUNCTION ST_AsGeoJson(text)
 	RETURNS text AS
 	$$ SELECT _ST_AsGeoJson(1, $1::geometry,15,0);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT COST 1;
 
 -- ST_AsGeoJson(geography, precision, options) / version=1
 -- Changed: 2.0.0 to use default args and named args
@@ -501,7 +501,7 @@ CREATE OR REPLACE FUNCTION ST_Distance(geography, geography)
 CREATE OR REPLACE FUNCTION ST_Distance(text, text)
 	RETURNS float8 AS
 	$$ SELECT ST_Distance($1::geometry, $2::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT COST 1;
 
 -- Only expands the bounding box, the actual geometry will remain unchanged, use with care.
 -- Availability: 1.5.0
@@ -527,7 +527,7 @@ CREATE OR REPLACE FUNCTION ST_DWithin(geography, geography, float8)
 CREATE OR REPLACE FUNCTION ST_DWithin(text, text, float8)
 	RETURNS boolean AS
 	$$ SELECT ST_DWithin($1::geometry, $2::geometry, $3);  $$
-	LANGUAGE 'sql' IMMUTABLE;
+	LANGUAGE 'sql' IMMUTABLE COST 1;
 
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
@@ -595,7 +595,7 @@ CREATE OR REPLACE FUNCTION ST_Area(geog geography, use_spheroid boolean DEFAULT 
 CREATE OR REPLACE FUNCTION ST_Area(text)
 	RETURNS float8 AS
 	$$ SELECT ST_Area($1::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT COST 1;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_Length(geog geography, use_spheroid boolean DEFAULT true)
@@ -608,7 +608,7 @@ CREATE OR REPLACE FUNCTION ST_Length(geog geography, use_spheroid boolean DEFAUL
 CREATE OR REPLACE FUNCTION ST_Length(text)
 	RETURNS float8 AS
 	$$ SELECT ST_Length($1::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION ST_Project(geog geography, distance float8, azimuth float8)
@@ -656,7 +656,7 @@ CREATE OR REPLACE FUNCTION ST_Covers(geography, geography)
 CREATE OR REPLACE FUNCTION ST_Covers(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_Covers($1::geometry, $2::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE ;
+	LANGUAGE 'sql' IMMUTABLE COST 1;
 
 -- Only implemented for polygon-over-point
 -- Availability: 1.5.0
@@ -669,7 +669,7 @@ CREATE OR REPLACE FUNCTION ST_CoveredBy(geography, geography)
 CREATE OR REPLACE FUNCTION ST_CoveredBy(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_CoveredBy($1::geometry, $2::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE ;
+	LANGUAGE 'sql' IMMUTABLE COST 1;
 
 -- Availability: 2.1.0
 CREATE OR REPLACE FUNCTION ST_Segmentize(geog geography, max_segment_length float8)
@@ -688,7 +688,7 @@ CREATE OR REPLACE FUNCTION ST_Intersects(geography, geography)
 CREATE OR REPLACE FUNCTION ST_Intersects(text, text)
 	RETURNS boolean AS
 	$$ SELECT ST_Intersects($1::geometry, $2::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE ;
+	LANGUAGE 'sql' IMMUTABLE COST 1;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION _ST_BestSRID(geography, geography)
@@ -724,7 +724,7 @@ CREATE OR REPLACE FUNCTION ST_Intersection(geography, geography)
 CREATE OR REPLACE FUNCTION ST_Intersection(text, text)
 	RETURNS geometry AS
 	$$ SELECT ST_Intersection($1::geometry, $2::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT COST 1;
 
 -- Availability: 1.5.0
 CREATE OR REPLACE FUNCTION ST_AsBinary(geography)
@@ -748,7 +748,7 @@ CREATE OR REPLACE FUNCTION ST_AsEWKT(geography)
 CREATE OR REPLACE FUNCTION ST_AsEWKT(text)
 	RETURNS text AS
 	$$ SELECT ST_AsEWKT($1::geometry);  $$
-	LANGUAGE 'sql' IMMUTABLE STRICT;
+	LANGUAGE 'sql' IMMUTABLE STRICT COST 1;
 
 -- Availability: 2.0.0
 CREATE OR REPLACE FUNCTION GeometryType(geography)
