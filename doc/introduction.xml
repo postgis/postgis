@@ -44,6 +44,13 @@
 		  smoke testing new functionality or major code changes.</para>
 		</listitem>
 	  </varlistentry>
+	  
+	  <varlistentry>
+		<term>Bborie Park</term>
+		<listitem>
+		  <para>Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
+		</listitem>
+	  </varlistentry>
 
 	  <varlistentry>
 		<term>Paul Ramsey (Chair)</term>
@@ -135,13 +142,6 @@
 		</listitem>
 	  </varlistentry>
 
-	 <varlistentry>
-		<term>Bborie Park</term>
-		<listitem>
-		  <para>Raster development, raster loader</para>
-		</listitem>
-	  </varlistentry>
-	  
 	 <varlistentry>
 		<term>Mateusz Loskot</term>
 		<listitem>
