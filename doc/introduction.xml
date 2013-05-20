@@ -35,21 +35,20 @@
 		   and new function enhancements.</para>
 		</listitem>
 	  </varlistentry>
-	 
-	  <varlistentry>
-		<term>Chris Hodgson</term>
-
-		<listitem>
-		  <para>General development, site and buildbot maintenance, OSGeo incubation management</para>
-		</listitem>
-	  </varlistentry>
-	 
+	 	 
 	  <varlistentry>
 		<term>Regina Obe</term>
 		<listitem>
 		  <para>Documentation, general user support on PostGIS newsgroup, windows production and experimental builds, 
 		  X3D support, Tiger Geocoder Support, management functions,  and 
 		  smoke testing new functionality or major code changes.</para>
+		</listitem>
+	  </varlistentry>
+	  
+	  <varlistentry>
+		<term>Bborie Park</term>
+		<listitem>
+		  <para>Raster development, integration with GDAL, raster loader, user support, general bug fixing, testing on various OS (Slackware, Mac, Windows, and more)</para>
 		</listitem>
 	  </varlistentry>
 
@@ -75,6 +74,15 @@
 	<title>Contributors Past and Present</title>
 
 	<variablelist>
+	
+	  <varlistentry>
+		<term>Chris Hodgson</term>
+
+		<listitem>
+		  <para>General development, site and buildbot maintenance, OSGeo incubation management</para>
+		</listitem>
+	  </varlistentry>
+	  
 	  <varlistentry>
 		<term>Kevin Neufeld</term>
 		<listitem>
@@ -134,13 +142,6 @@
 
 		<listitem>
 		  <para>Raster development, GDAL driver support, loader</para>
-		</listitem>
-	  </varlistentry>
-
-	 <varlistentry>
-		<term>Bborie Park</term>
-		<listitem>
-		  <para>Raster development</para>
 		</listitem>
 	  </varlistentry>
 	  
