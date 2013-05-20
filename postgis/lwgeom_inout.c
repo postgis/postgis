@@ -62,8 +62,10 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 	lwgeom_parser_result_init(&lwg_parser_result);
 
 	/* Empty string. */
-	if ( str[0] == '\0' )
+	if ( str[0] == '\0' ) {
 		ereport(ERROR,(errmsg("parse error - invalid geometry")));
+		PG_RETURN_NULL();
+	}
 
 	/* Starts with "SRID=" */
 	if( strncasecmp(str,"SRID=",5) == 0 )
@@ -108,6 +110,7 @@ Datum LWGEOM_in(PG_FUNCTION_ARGS)
 		if ( lwgeom_parse_wkt(&lwg_parser_result, str, LW_PARSER_CHECK_ALL) == LW_FAILURE )
 		{
 			PG_PARSER_ERROR(lwg_parser_result);
+			PG_RETURN_NULL();
 		}
 		lwgeom = lwg_parser_result.geom;
 		if ( lwgeom_needs_bbox(lwgeom) )
