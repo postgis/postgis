@@ -907,7 +907,7 @@ BEGIN
     RAISE DEBUG 'Snapped to nodes: %', ST_AsText(noded);
 #endif
 
-    FOR rec IN SELECT (ST_Dump(inodes)).*
+    FOR rec IN SELECT (ST_Dump(inodes)).geom
     LOOP
         -- Use the node to split edges
         SELECT ST_Collect(geom) 
