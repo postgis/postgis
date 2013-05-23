@@ -2933,7 +2933,7 @@ int rt_band_get_nearest_pixel(
 							_x, _y,
 							&pixval,
 							&isnodata
-						) < 0) {
+						) != ES_NONE) {
 							rterror("rt_band_get_nearest_pixel: Unable to get pixel value");
 							if (count) rtdealloc(*npixels);
 							return -1;
@@ -3030,7 +3030,7 @@ rt_band_get_pixel_of_value(
 	for (x = 0; x < band->width; x++) {
 		for (y = 0; y < band->height; y++) {
 			err = rt_band_get_pixel(band, x, y, &pixval, &isnodata);
-			if (err != 0) {
+			if (err != ES_NONE) {
 				rterror("rt_band_get_pixel_of_value: Cannot get band pixel");
 				return -1;
 			}
@@ -3119,7 +3119,7 @@ rt_band_check_is_nodata(rt_band band) {
 	for (i = 0; i < band->width; i++) {
 		for (j = 0; j < band->height; j++) {
 			err = rt_band_get_pixel(band, i, j, &pxValue, &isnodata);
-			if (err != 0) {
+			if (err != ES_NONE) {
 				rterror("rt_band_check_is_nodata: Cannot get band pixel");
 				return FALSE;
 			}
@@ -3466,14 +3466,9 @@ rt_band_get_summary_stats(
 			if (y >= band->height || z > sample_per) break;
 
 			rtn = rt_band_get_pixel(band, x, y, &value, &isnodata);
-#if POSTGIS_DEBUG_LEVEL > 0
-			if (rtn != -1) {
-				RASTER_DEBUGF(5, "(x, y, value) = (%d,%d, %f)", x, y, value);
-			}
-#endif
 
 			j++;
-			if (rtn != -1 && (!exclude_nodata_value || (exclude_nodata_value && !isnodata))) {
+			if (rtn == ES_NONE && (!exclude_nodata_value || (exclude_nodata_value && !isnodata))) {
 
 				/* inc_vals set, collect pixel values */
 				if (inc_vals) values[k] = value;
@@ -3557,8 +3552,8 @@ rt_band_get_summary_stats(
 	else if (inc_vals)
 		rtdealloc(values);
 
-	/* if count is zero and do_sample is one */
-	if (k < 0 && do_sample)
+	/* if do_sample is one */
+	if (do_sample && k < 1)
 		rtwarn("All sampled pixels of band have the NODATA value");
 
 #if POSTGIS_DEBUG_LEVEL > 0
@@ -4371,7 +4366,7 @@ rt_band_get_quantiles_stream(
 			status = rt_band_get_pixel(band, x, y, &value, &isnodata);
 
 			j++;
-			if (status != -1 && (!exclude_nodata_value || (exclude_nodata_value && !isnodata))) {
+			if (status == ES_NONE && (!exclude_nodata_value || (exclude_nodata_value && !isnodata))) {
 
 				/* process each quantile */
 				for (a = 0; a < *qlls_count; a++) {
@@ -4955,7 +4950,8 @@ rt_band_get_value_count(
 			rtn = rt_band_get_pixel(band, x, y, &pxlval, &isnodata);
 
 			/* error getting value, continue */
-			if (rtn == -1) continue;
+			if (rtn != ES_NONE)
+				continue;
 
 			if (!exclude_nodata_value || (exclude_nodata_value && !isnodata)) {
 				total++;
@@ -5221,7 +5217,7 @@ rt_band_reclass(
 			rtn = rt_band_get_pixel(srcband, x, y, &ov, &isnodata);
 
 			/* error getting value, skip */
-			if (rtn == -1) {
+			if (rtn != ES_NONE) {
 				RASTER_DEBUGF(3, "Cannot get value at %d, %d", x, y);
 				continue;
 			}
@@ -9072,7 +9068,7 @@ rt_raster_to_gdal_mem(
 	numBands = rt_raster_get_num_bands(raster);
 	if (NULL != bandNums && count > 0) {
 		for (i = 0; i < count; i++) {
-			if (bandNums[i] < 0 || bandNums[i] >= numBands) {
+			if (bandNums[i] >= numBands) {
 				rterror("rt_raster_to_gdal_mem: The band index %d is invalid", bandNums[i]);
 				GDALClose(ds);
 				return 0;
@@ -9250,7 +9246,7 @@ rt_raster_to_gdal_mem(
 					iXMax = x + nXValid;
 					for (iY = y; iY < iYMax; iY++)  {
 						for (iX = x; iX < iXMax; iX++)  {
-							if (rt_band_get_pixel(rtband, iX, iY, &value, NULL) != 0) {
+							if (rt_band_get_pixel(rtband, iX, iY, &value, NULL) != ES_NONE) {
 								rterror("rt_raster_to_gdal_mem: Could not get pixel value to convert from 8BSI to 16BSI");
 								rtdealloc(values);
 								if (allocBandNums) rtdealloc(bandNums);
@@ -11530,7 +11526,7 @@ rt_raster_gdal_rasterize(
 		for (x = 0; x < _width; x++) {
 			for (y = 0; y < _height; y++) {
 				err = rt_band_get_pixel(oldband, x, y, &val, &nodata);
-				if (err != 0) {
+				if (err != ES_NONE) {
 					rterror("rt_raster_gdal_rasterize: Unable to get pixel value");
 					_rti_rasterize_arg_destroy(arg);
 					rt_raster_destroy(rast);
@@ -11830,7 +11826,7 @@ int rt_raster_intersects_algorithm(
 							else if (hasnodata1 == FALSE)
 								val1 = 1;
 							/* unable to get value at cell */
-							else if (rt_band_get_pixel(band1, Qr[pX], Qr[pY], &val1, &isnodata1) < 0)
+							else if (rt_band_get_pixel(band1, Qr[pX], Qr[pY], &val1, &isnodata1) != ES_NONE)
 								noval1 = 1;
 
 							/* unable to convert point to cell */
@@ -11853,7 +11849,7 @@ int rt_raster_intersects_algorithm(
 							else if (hasnodata2 == FALSE)
 								val2 = 1;
 							/* unable to get value at cell */
-							else if (rt_band_get_pixel(band2, Qr[pX], Qr[pY], &val2, &isnodata2) < 0)
+							else if (rt_band_get_pixel(band2, Qr[pX], Qr[pY], &val2, &isnodata2) != ES_NONE)
 								noval2 = 1;
 
 							if (!noval1) {
@@ -12171,7 +12167,7 @@ rt_raster_intersects(
 					for (row = rowoffset; row < *heightS; row += 3) {
 						if (hasnodataS == FALSE)
 							valS = 1;
-						else if (rt_band_get_pixel(bandS, col, row, &valS, &isnodataS) < 0)
+						else if (rt_band_get_pixel(bandS, col, row, &valS, &isnodataS) != ES_NONE)
 							continue;
 
 						if ((hasnodataS == FALSE) || !isnodataS) {
@@ -12200,7 +12196,7 @@ rt_raster_intersects(
 
 							if (hasnodataS == FALSE)
 								valL = 1;
-							else if (rt_band_get_pixel(bandL, Qr[pX], Qr[pY], &valL, &isnodataL) < 0)
+							else if (rt_band_get_pixel(bandL, Qr[pX], Qr[pY], &valL, &isnodataL) != ES_NONE)
 								continue;
 
 							if ((hasnodataL == FALSE) || !isnodataL) {
@@ -14390,7 +14386,7 @@ rt_raster_iterator(
 						x, y,
 						&value,
 						&isnodata
-					) < 0) {
+					) != ES_NONE) {
 						rterror("rt_raster_iterator: Unable to get the pixel value of band");
 
 						_rti_iterator_arg_destroy(_param);
