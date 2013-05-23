@@ -56,7 +56,7 @@ my $POSTGIS_SCHEMA;
 # NOTE: the SRID limits here are being discussed:
 # http://postgis.refractions.net/pipermail/postgis-devel/2012-February/018463.html
 my $SRID_MAXIMUM = @SRID_MAXIMUM@;
-my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@; 
+my $SRID_USER_MAXIMUM = @SRID_USER_MAXIMUM@;
 
 while (@ARGV && $ARGV[0] =~ /-/) {
   if ( $ARGV[0] eq '-v' ) {
@@ -122,7 +122,7 @@ close(MANIFEST);
 close(DUMP) || die "$me: pg_restore returned an error\n";
 
 ######################################################################
-# Convert the dump file into an ASCII file, stripping out the 
+# Convert the dump file into an ASCII file, stripping out the
 # unwanted bits.
 #
 print STDERR "  Writing ASCII to stdout...\n";
@@ -165,7 +165,7 @@ while( my $l = <INPUT> ) {
   next if !$inCopy && $l =~ /^ *--/;
 
   if ( $l =~ /^SET search_path/ ) {
-    $l =~ s/; *$/, public;/; 
+    $l =~ s/; *$/, public;/;
   }
 
   # This is to avoid confusing OPERATOR CLASS and OPERATOR FAMILY
@@ -235,7 +235,7 @@ while( my $l = <INPUT> ) {
   #     CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))),
   #     CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 2249))
   # );
-  # 
+  #
   # Example 3:
   # CREATE TABLE "PIANIFICAZIONE__ELEMENTO_LINEA" (
   #     soft_gis_serial integer NOT NULL,
@@ -244,8 +244,8 @@ while( my $l = <INPUT> ) {
   #     CONSTRAINT "enforce_geotype_G" CHECK (((public.geometrytype("G") = 'MULTICURVE'::text) OR ("G" IS NULL))),
   #     CONSTRAINT "enforce_srid_G" CHECK ((public.st_srid("G") = (-1)))
   # );
-  # 
-  # 
+  #
+  #
   elsif ( $l =~ /CREATE TABLE *([^ ,]*)/)
   {
     my @sublines = ($l);
@@ -298,7 +298,7 @@ if ( defined $POSTGIS_SCHEMA ) {
 
 if ( $hasTopology ) {
 
-  # Re-enable topology.layer table triggers 
+  # Re-enable topology.layer table triggers
   print STDOUT "ALTER TABLE topology.layer ENABLE TRIGGER ALL;\n";
 
   # Update topology SRID from geometry_columns view.
@@ -317,14 +317,14 @@ print STDOUT "UPDATE spatial_ref_sys o set auth_name = n.auth_name, "
            . "_pgis_restore_spatial_ref_sys n WHERE o.srid = n.srid;\n";
 # Insert entries only found in new table
 print STDOUT "INSERT INTO spatial_ref_sys SELECT * FROM "
-           . "_pgis_restore_spatial_ref_sys n WHERE n.srid " 
+           . "_pgis_restore_spatial_ref_sys n WHERE n.srid "
            . "NOT IN ( SELECT srid FROM spatial_ref_sys );\n";
 # DROP TABLE _pgis_restore_spatial_ref_sys;
 print STDOUT "DROP TABLE _pgis_restore_spatial_ref_sys;\n";
 
 # Try re-enforcing spatial_ref_sys_srid_check, would fail if impossible
 # but you'd still have your data
-print STDOUT "ALTER TABLE spatial_ref_sys ADD constraint " 
+print STDOUT "ALTER TABLE spatial_ref_sys ADD constraint "
            . "spatial_ref_sys_srid_check check "
            . "( srid > 0 and srid < " . ($SRID_USER_MAXIMUM+1) ." ) ;\n";
 # Try re-enforcing spatial_ref_sys primary key, would fail if impossible
@@ -424,7 +424,7 @@ clamp_srid
     printf STDERR "  WARNING: SRID $oldsrid converted to $newsrid (official UNKNOWN)\n";
   } elsif ( $oldsrid > $SRID_MAXIMUM ) {
     $newsrid = $SRID_USER_MAXIMUM + 1 +
-      # -1 is to reduce likelyhood of clashes 
+      # -1 is to reduce likelyhood of clashes
       # NOTE: must match core implementation (lwutil.c)
       ( $oldsrid % ( $SRID_MAXIMUM - $SRID_USER_MAXIMUM - 1 ) );
     printf STDERR "  WARNING: SRID $oldsrid converted to $newsrid (in reserved zone)\n";
@@ -881,6 +881,7 @@ COMMENT FUNCTION st_geometryn(geometry, integer)
 COMMENT FUNCTION st_geometrytype(geometry)
 COMMENT FUNCTION st_geomfromewkb(bytea)
 COMMENT FUNCTION st_geomfromewkt(text)
+COMMENT FUNCTION st_linefromencodedpolyline(text)
 COMMENT FUNCTION st_geomfromgeojson(text)
 COMMENT FUNCTION st_geomfromgeohash(text)
 COMMENT FUNCTION st_geomfromgeohash(text, integer)
@@ -2242,6 +2243,7 @@ FUNCTION st_geometrytype(geometry)
 FUNCTION st_geometrytype(topogeometry)
 FUNCTION st_geomfromewkb(bytea)
 FUNCTION st_geomfromewkt(text)
+FUNCTION st_linefromencodedpolyline(text)
 FUNCTION st_geomfromgeojson(text)
 FUNCTION st_geomfromgml(text)
 FUNCTION _st_geomfromgml(text, integer)

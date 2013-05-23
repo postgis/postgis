@@ -653,6 +653,7 @@ ALTER EXTENSION postgis ADD function st_geometryn(geometry,integer);
 ALTER EXTENSION postgis ADD function st_geometrytype(geometry);
 ALTER EXTENSION postgis ADD function st_geomfromewkb(bytea);
 ALTER EXTENSION postgis ADD function st_geomfromewkt(text);
+ALTER EXTENSION postgis ADD function st_linefromencodedpolyline(text);
 ALTER EXTENSION postgis ADD function st_geomfromgeohash(text,integer);
 ALTER EXTENSION postgis ADD function st_geomfromgeojson(text);
 ALTER EXTENSION postgis ADD function st_geomfromgml(text);
