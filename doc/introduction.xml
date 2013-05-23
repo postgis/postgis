@@ -55,7 +55,7 @@
 	  <varlistentry>
 		<term>Paul Ramsey (Chair)</term>
 		<listitem>
-		  <para>Co-founder of PostGIS project.  General bug fixing, geography support,  geography and geometry index support (2D, 3D, nD index and anything spatial index), underlying geometry internal structures, GEOS functionality integration and alignment with 
+		  <para>Co-founder of PostGIS project.  General bug fixing, geography support,  geography and geometry index support (2D, 3D, nD index and anything spatial index), underlying geometry internal structures, PointCloud (in development), GEOS functionality integration and alignment with 
 		  GEOS releases, loader/dumper, and Shapefile GUI loader.</para>
 		</listitem>
 	  </varlistentry>
@@ -70,95 +70,101 @@
 	  
 	</variablelist>
   </sect1>
-  <sect1 id="credits">
-	<title>Contributors Past and Present</title>
+  <sect1 id="credits_core_present">
+  	<title>Core Contributors Present</title>
+  	<variablelist>
+		<varlistentry>
+			<term>Jorge Arévalo</term>
+			<listitem>
+			  <para>Raster development, GDAL driver support, loader</para>
+			</listitem>
+		</varlistentry>
+		
+		<varlistentry>
+			<term>Nicklas Avén</term>
+			
+			<listitem>
+			  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, TinyWKB and general user support</para>
+			</listitem>
+		</varlistentry>
+		
+		<varlistentry>
+			<term>Olivier Courtin</term>
+			<listitem>
+			  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
+			</listitem>
+		</varlistentry>
+				
+		<varlistentry>
+			<term>Pierre Racine</term>
+			<listitem>
+			  <para>Raster overall architecture, prototyping, programming support</para>
+			</listitem>
+		</varlistentry>
+			
+		<varlistentry>
+			<term>David Zwarg</term>
+			<listitem>
+			  <para>Raster development</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
+  </sect1>
+  <sect1 id="credits_core_past">
+	<title>Core Contributors Past</title>
 
 	<variablelist>
-	  <varlistentry>
+		<varlistentry>
 		<term>Chris Hodgson</term>
 		<listitem>
 		  <para>Prior PSC Member. General development, site and buildbot maintenance, OSGeo incubation management</para>
 		</listitem>
-	  </varlistentry>
-	  <varlistentry>
+		</varlistentry>
+		<varlistentry>
 		<term>Kevin Neufeld</term>
 		<listitem>
 		  <para>Prior PSC Member. Documentation and documentation support tools, advanced user support
 		  on PostGIS newsgroup, and PostGIS maintenance function enhancements.</para>
 		</listitem>
-	  </varlistentry>
-	 
-	  <varlistentry>
+		</varlistentry>
+		
+		<varlistentry>
 		<term>Dave Blasby</term>
-
+		
 		<listitem>
 		  <para>The original developer/Co-founder of PostGIS. Dave wrote the server side
 		  objects, index bindings, and many of the server side analytical
 		  functions.</para>
 		</listitem>
-	  </varlistentry>
-	  
-	 <varlistentry>
+		</varlistentry>
+		
+		<varlistentry>
+			<term>Mateusz Loskot</term>
+			<listitem>
+			  <para>Raster loader, low level raster api functions</para>
+			</listitem>
+		</varlistentry>	  
+		
+		<varlistentry>
 		<term>Jeff Lounsbury</term>
 		<listitem>
 		  <para>Original development of the Shape file loader/dumper. Current PostGIS Project Owner representative.</para>
 		</listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-		<term>Olivier Courtin</term>
-		<listitem>
-		  <para>Input output XML (KML,GML)/GeoJSON functions, 3D support and bug fixes.</para>
-		</listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
+		</varlistentry>
+		
+		
+		<varlistentry>
 		<term>Mark Leslie</term>
 		<listitem>
 		  <para>Ongoing maintenance and development of core functions.  Enhanced curve support. Shapefile GUI loader.</para>
 		</listitem>
-	  </varlistentry>
-	  
-	 <varlistentry>
-		<term>Pierre Racine</term>
-		<listitem>
-		  <para>Raster overall architecture, prototyping, programming support</para>
-		</listitem>
-	 </varlistentry>
-	 
-	 <varlistentry>
-		<term>Nicklas Avén</term>
+		</varlistentry>
+	</variablelist>
+</sect1>
 
-		<listitem>
-		  <para>Distance function enhancements (including 3D distance and relationship functions) and additions, Windows testing, and general user support</para>
-		</listitem>
-	  </varlistentry>
-	  
+<sect1 id="credits_other_contributors"><title>Other Contributors</title>
 	  <varlistentry>
-		<term>Jorge Arévalo</term>
-
-		<listitem>
-		  <para>Raster development, GDAL driver support, loader</para>
-		</listitem>
-	  </varlistentry>
-
-	 <varlistentry>
-		<term>Mateusz Loskot</term>
-		<listitem>
-		  <para>Raster loader, low level raster api functions</para>
-		</listitem>
-	  </varlistentry>
-	  
-	  <varlistentry>
-		<term>David Zwarg</term>
-
-		<listitem>
-		  <para>Raster development</para>
-		</listitem>
-	  </varlistentry>
-
-	  <varlistentry>
-		<term>Other contributors: Individuals</term>
+		<term>Individual Contributors</term>
 
 		<listitem>
 		  <para>In alphabetical order:
@@ -221,7 +227,7 @@ Vincent Picavet
 	  </varlistentry>
 	  
 	  <varlistentry>
-		<term>Other contributors: Corporate Sponsors</term>
+		<term>Corporate Sponsors</term>
 
 		<listitem>
 		  <para>These are corporate entities that have contributed developer time, hosting, or direct monetary funding to the PostGIS project</para>
@@ -248,8 +254,9 @@ Norwegian Forest and Landscape Institute,
 OpenGeo,
 OSGeo,
 Oslandia,
+Palantir Technologies,
 Paragon Corporation,
-R3 GIS,,
+R3 GIS,
 Refractions Research,
 Regione Toscana-SIGTA,
 Safe Software,
@@ -259,8 +266,7 @@ UC Davis Center for Vectorborne Diseases,
 University of Laval,
 U.S Department of State (HIU),
 Vizzuality,
-Zonar Systems
-		  </para>
+Zonar Systems</para>
 		</listitem>
 	  </varlistentry>
 	  
