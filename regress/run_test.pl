@@ -1039,21 +1039,21 @@ sub prepare_spatial
 	
 	if ( $OPT_WITH_TOPO )
 	{
-		print "Loading Topology\n";
+		print "Loading Topology into '${DB}'\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/topology.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/topology_comments.sql", 0);
 	}
 	
 	if ( $OPT_WITH_RASTER )
 	{
-		print "Loading Raster\n";
+		print "Loading Raster into '${DB}'\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/rtpostgis.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/raster_comments.sql", 0);
 	}
 
 	if ( $OPT_WITH_SFCGAL )
 	{
-		print "Loading sfcgal\n";
+		print "Loading SFCGAL into '${DB}'\n";
 		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal.sql", 1);
 		load_sql_file("${STAGED_SCRIPTS_DIR}/sfcgal_comments.sql", 0);
 	}

@@ -56,6 +56,7 @@ open(PRESQL, '>', $RASTERDIR . '/' . $TEST . '-pre.sql');
 print PRESQL $sql;
 close(PRESQL);
 
-open(POSTSQL, '>', $RASTERDIR . '/' . $TEST . '-post.sql');
-print POSTSQL "DROP TABLE IF EXISTS raster_outdb_template;\n";
-close(POSTSQL);
+# no longer needed as the "clean" test takes care of it
+#open(POSTSQL, '>', $RASTERDIR . '/' . $TEST . '-post.sql');
+#print POSTSQL "DROP TABLE IF EXISTS raster_outdb_template;\n";
+#close(POSTSQL);

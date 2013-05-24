@@ -30,7 +30,11 @@ PATH := $(PGSQL_BINDIR):$(PATH)
 export PATH
 
 TEST_FIRST = \
-	check_gdal
+	check_gdal \
+	load_outdb
+
+TEST_LAST = \
+	clean
 
 TEST_METADATA = \
 	check_raster_columns \
@@ -131,11 +135,13 @@ TEST_LOADER = \
 	loader/Tiled10x10Copy \
 	loader/Tiled8x8
 
-TESTS = $(TEST_FIRST) $(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
-		$(TEST_PROPS) $(TEST_BANDPROPS) \
-		$(TEST_UTILITY) $(TEST_MAPALGEBRA) $(TEST_SREL) \
-		$(TEST_BUGS) \
-		$(TEST_LOADER)
+TESTS = $(TEST_FIRST) \
+	$(TEST_METADATA) $(TEST_IO) $(TEST_BASIC_FUNC) \
+	$(TEST_PROPS) $(TEST_BANDPROPS) \
+	$(TEST_UTILITY) $(TEST_MAPALGEBRA) $(TEST_SREL) \
+	$(TEST_BUGS) \
+	$(TEST_LOADER) \
+	$(TEST_LAST)
 
 all:
 	@echo "Use 'make check' to run all tests"

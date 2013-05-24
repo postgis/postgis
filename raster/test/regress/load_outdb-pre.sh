@@ -52,4 +52,5 @@ SELECT \
 
 echo "$SQL" > "$DIR/$TEST-pre.sql"
 
-echo "DROP TABLE IF EXISTS raster_outdb_template;" > "$DIR/$TEST-post.sql"
+# no longer needed as "clean" test takes care of it
+#echo "DROP TABLE IF EXISTS raster_outdb_template;" > "$DIR/$TEST-post.sql"
