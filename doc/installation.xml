@@ -22,11 +22,9 @@ psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"</programlisti
 	
 	
 	<para>Please refer to <xref linkend="make_install_postgis_extensions" /> for more details about querying installed/available extensions and upgrading extensions, or switching from a non-extension install to an extension install.</para>
-	<para>The <varname>postgis_comments.sql</varname>, <varname>raster_comments.sql</varname>, <varname>topology_comments.sql</varname>
-		generate quick help tips for each function that can be accessed via pgAdmin III or psql. In psql with a command of the form e.g.<varname>\dd ST_SetPoint</varname></para>
 	
 	<para>For those running PostgreSQL 9.0 or who decided for some reason not to compile with raster support, or just are old-fashioned, here are longer more painful instructions for you:</para>
-	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_release_version; folder
+	<para>All the .sql files once installed will be installed in share/contrib/postgis-&last_minor_version; folder
 		of your PostgreSQL install</para>
 
 	<programlisting>createdb yourdatabase
@@ -37,7 +35,7 @@ psql -d yourdatabase -f spatial_ref_sys.sql
 psql -d yourdatabase -f rtpostgis.sql
 psql -d yourdatabase -f raster_comments.sql
 psql -d yourdatabase -f topology/topology.sql
-psql -d yourdatabase -f doc/topology_comments.sql</programlisting>
+psql -d yourdatabase -f topology_comments.sql</programlisting>
 
 	<para>
 	  The rest of this chapter goes into detail each of the above installation
